@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — PWA & Native
-overview: "v7.22.27 PWA·Shell→Push→자동fanout→WebAuthn→Store(v2). Index §20.2 pointer. Index=00."
+overview: "v7.22.33 PWA pointer·Shell→Push→자동fanout→WebAuthn→Store(v2). Index §20.2. Index=00."
 todos:
   - id: pwa-native-shell
     content: "[composer-2.5|200K] manifest=퍼뜩·Lux색·Serwist·Install·standalone/safe-area·Brand icons·SW update UX·Canon wires"
@@ -19,7 +19,7 @@ todos:
     status: pending
 isProject: false
 ---
-# AI Profit OS — PWA & Native (v7.22.27)
+# AI Profit OS — PWA & Native (v7.22.33 pointer · Owns 본문 유지)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 > **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만

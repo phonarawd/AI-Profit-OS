@@ -78,7 +78,7 @@ isProject: false
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
 > **AI 이름:** **퍼뜩** (§47.12) · **P레인=플랫폼 Fact** · **G레인=일상 LLM** · **S=실행 금지**  
 > **Phase0 버스:** **in-process** (NATS=Phase1+) · Infra/Index pointer  
-> **todo 순서:** 시세/어댑터 → 자본대/이미지/버티컬 → 잔액피드 → **§4.2a 스캔투영** → **Rule(P0b)** → 엄격도 → 멤버십 → 시뮬/KPI → AI (Index §18 정렬)  
+> **todo 순서:** projection(§4.2b·§4.2a) → 시세/어댑터 → 자본대/이미지/버티컬 → 잔액피드 → Rule→엄격도→멤버십 → 시뮬/KPI → AI (File-Serial)  
 > **v7.22.20:** §0.0.6 `assetImageUrl` · `luxury_bag`  
 > **v7.22.21:** §0.0.5.1 잔액 인식 피드 · SKU 1:1 · Admin §9.8.9  
 > **v7.22.23:** §48.13.3 **매칭 엄격도** · 난수 `successRatePercent` **0**  

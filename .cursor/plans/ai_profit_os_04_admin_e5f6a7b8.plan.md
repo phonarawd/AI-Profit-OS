@@ -1,12 +1,15 @@
 ---
 name: AI Profit OS — Admin & Ops
-overview: "v7.22.28 Admin·유저CTA수익벌기 pointer·12모듈·유저360. Index §20.2. Index=00."
+overview: "v7.22.33 Admin·§9.1.1자식route전수·12모듈·유저360·simulation탭. Index §20.2 pointer. Index=00."
 todos:
+  - id: admin-ia-child-routes-911
+    content: "[grok-4.5|256K] v7.22.33 §9.1.1 자식 route/tab 전수 잠금 · sidebar13 0 · BOOTSTRAP §6 sync · monorepo routes 선행 SSOT"
+    status: completed
   - id: admin-isolated-deploy
     content: "[composer-2.5|200K] §40 apps/admin 별도 CF Pages·ops 도메인·Admin JWT·IP allowlist·유저앱 분리"
     status: pending
   - id: admin-ops
-    content: "[composer-2.5|200K] apps/admin 왕초보 한글UI(IT용어0) + 12모듈+2b + §39/§40 + TOP5 + 유저360"
+    content: "[composer-2.5|200K] apps/admin 왕초보 한글UI(IT용어0) + 12모듈+2b + §9.1.1 자식 + §39/§40 + TOP5 + 유저360"
     status: pending
   - id: admin-price-sync
     content: "[composer-2.5|200K] §36 Admin 가격·마진 조정 UI + opportunity.price.updated SSE/WS(Phase0 in-process) + 유저 전 surface 실시간 반영"
@@ -37,12 +40,12 @@ todos:
     status: pending
 isProject: false
 ---
-# AI Profit OS — Admin & Ops (v7.22.27)
+# AI Profit OS — Admin & Ops (v7.22.33)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
-> **todo 순서:** ops 분리배포 → 12모듈 셸 → 가격동기 → 유저360 → 진행정책 → override/멤버십/차단·쪽지 → 남용·CS·Analytics (Index §18 M4)  
+> **todo 순서:** §9.1.1 잠금(완료) → 격리배포 → 12모듈 → 가격동기 → 유저360 → 실행정책 → override/자격/차단 → abuse → CS → analytics (File-Serial)  
 > **KRW Day-1:** TOP1 = Admin **승인/거절** · CSV Auto-Recon 라벨 **금지**(L2+)  
 > **v7.22.21:** §9.8.9 유저별 기회 매치·수익/마진 override · 피드 merge=Engine §0.0.5.1 · **ledger 직접 변경 금지**  
 > **v7.22.22:** referral 탭 — `rewardsEnabled` · Pool top-up · **초대 인원캡 UI 0** · Money §51.5  
@@ -50,7 +53,9 @@ isProject: false
 > **v7.22.24:** §9.8.10 **멤버십·성향메모·밴·로그인비번·출금PIN·프로필전수·유저별 엄격도** · Engine §0.0.7 · Money §43.6a  
 > **v7.22.25:** §9.8.4a **유저별 매칭·출금신청 차단** · §9.8.8d **1인 쪽지/알림** · 공지·이벤트·매칭등록 **자동 Push** (prefs·PWA)  
 > **v7.22.26:** Index §20.1 기회스캔 **pointer** · Admin Owns **변경 0**  
-> **v7.22.28:** Index §20.2 · 유저 CTA `수익 벌기` **pointer** · domain=`participate` · Admin Owns **변경 0** · `executionPlatforms` Admin only
+> **v7.22.28:** Index §20.2 · 유저 CTA `수익 벌기` **pointer** · domain=`participate` · Admin Owns **변경 0** · `executionPlatforms` Admin only  
+> **v7.22.29~32 pointer:** Soft60/Hard90 · 긴장감 · listing=ebay멀티\|admin · yahoo 영구FORBIDDEN (Owns=Index/Engine · Admin 표시만)  
+> **v7.22.33:** **§9.1.1** 자식 route 전수 · `growth?tab=simulation` · feature-platform 유령 제거 · BOOTSTRAP §6 sync
 
 ## 9. Admin — IA 및 구성 SSOT
 
@@ -82,6 +87,42 @@ isProject: false
 - Pause Opportunity → **이 기회 잠시 멈추기**
 - Open Circuit → **긴급 정지 켜기**
 
+### 9.1.1 자식 route / tab 전수 (sidebar 13 금지 · v7.22.33 · 중복0)
+
+> **Owns:** 본 절 · BOOTSTRAP §6 = 체크리스트 복사 · monorepo `apps/admin/routes.ts`가 본 표를 구현.  
+> **실물:** `apps/admin` 코드 **0** (2026-08-09) — 아래는 구현 필수 IA.
+
+| 자식 (코드 route) | 부모 | 기능 (ko) |
+|-------------------|------|-----------|
+| `/admin/execution-policy` | 2b | 매칭 성공 조절 · Soft60/Hard90 표시 · 난수성공률 UI **0** |
+| `/admin/wallet?tab=deposit-settings` | 4 | 원화 대표계좌 · TronGrid/watcher 설정 |
+| `/admin/wallet?tab=review` | 4 | TOP1 검수함 (USDT예외·원화·고액출금) |
+| `/admin/wallet?tab=krw-pending` | 4 | 원화 **[승인]/[거절]** · CSV Day-1 비필수 |
+| `/admin/wallet?tab=disputes` | 4 | 오입금·wrong-chain 분쟁 |
+| `/admin/support?tab=queue` | 1·6 링크 | CS 티켓 큐 · **sidebar 모듈 추가 금지** |
+| `/admin/reports/financial` | 5 하위 | 일/월 금융 리포트 · user drill-down |
+| `/admin/ledger?userId=` | 5 | 유저 점프 |
+| `/admin/growth?tab=simulation` | 11 | §51.4 M0.5 · Growth ON 전 필수 Pass |
+| `/admin/growth?tab=referral` | 11 | 초대 Pool·보류·clawback · 인원캡 UI **0** |
+| `/admin/growth?tab=notices` | 11 | 운영 공지 (보상문구 0) |
+| `/admin/growth?tab=campaigns` | 11 | 이벤트/캠페인 |
+| `/admin/growth?tab=share` | 11 | 공유 카드 템플릿 |
+| `/admin/growth?tab=content` | 11 | §35 G1 (기본 OFF) |
+| `/admin/growth?tab=deposit` | 11 | §35 G2 (기본 OFF) |
+| `/admin/growth?tab=whale` | 11 | §35 G3 (기본 OFF) |
+| `/admin/growth?tab=ticker` | 11 | §35 G4 (기본 OFF) |
+| `/admin/ai-logs?tab=coach` | 10 | 퍼뜩 P/G/S Eval·trace |
+| `/admin/ai-logs?tab=spotcheck` | 10 | §38.6b 이용성 점검 메모 |
+| `/admin/users/:id` | 6 | 유저360 (§9.8.8) |
+| `/admin/users/:id/finance` | 6 | 순유입·입출금·시세차익 (§9.8.7) |
+| `/admin/users/:id/finance?tab=buckets` | 6 | 원금/수익/잠금/연습 |
+| 유저상세 §9.8.4a / §9.8.8d / §9.8.9 / §9.8.10 | 6 | 매칭·출금차단 · 쪽지 · 기회override · 멤버십·PIN·엄격도 |
+| `/admin/risk?tab=queue` | 7 | TOP3 동결 큐 |
+| `/admin/adapters` KPI면 | 3 | 수집기 health · listing legs · 매칭실패율 · yahoo **0** |
+| `/admin/system-control` `pushEnabled` | 9 | Web Push kill + audit |
+
+**Growth 경로 잠금:** canonical = **`/admin/growth?tab=*`** · 구 path `/admin/growth/content|deposit|whale|ticker` = **tab으로 redirect** (이중 IA 금지).
+
 ### 9.2 Admin ↔ User 대응 (오차0)
 
 | User 화면 | Admin 관리 |
@@ -95,8 +136,8 @@ isProject: false
 | 회원 프로필·잔액·차단 | `/admin/users/:id` §37 |
 | **유저 입금·출금·시세차익·순유입** | `/admin/users/:id/finance` §39 · §9.8.7 |
 | **유저 360 (추천·유입·CS·등급·prefs)** | `/admin/users/:id` §9.8.8 |
-| 오늘 지급 ticker | `ticker_mode` + `counter_mode` §35 G4 |
-| AI 추천도 | ai-logs + feature-platform |
+| 오늘 지급 ticker | `ticker_mode` + `counter_mode` §35 G4 · `/admin/growth?tab=ticker` |
+| AI 추천도 | `/admin/ai-logs` (+ Engine feature 계산 · **Admin 모듈 추가 금지**) |
 | Circuit toast | system-control |
 
 ### 9.3 Admin 버튼 (핵심)
@@ -722,7 +763,7 @@ GET/PUT  /admin/api/v1/users/:id/match-policy-override
 | A10 | Click farm on payout ticker/counter | rate limit SSE + `ticker_mode` audit log | risk + realtime |
 | A11 | Participate on stale price | pricingVersion guard + PRICE_STALE toast | api-nest + engine |
 | A12 | Admin price typo (margin drain) | simulation floor + preview Confirm | engine + admin |
-| A13 | Manipulate AI PICK | AI score from feature-platform only, L3 no money | ai-platform |
+| A13 | Manipulate AI PICK | AI score from Engine feature calc only (Admin 모듈 추가 금지), L3 no money | ai-logs · Engine |
 | A14 | Chargeback social eng. | **§51.11** support ticket + freeze path, no manual balance | admin + ledger |
 | M1 | Fake OG share spam | rate limit share + referral cap + 서버 OG only | risk + marketing |
 | N1 | notice에 보상·확정수익 문구 | `verify:notice-no-reward-copy` Fail | growth |
@@ -805,11 +846,12 @@ active → flagged → restricted → frozen → banned
 
 ## 35. Growth Conversion Presentation (G1~G4)
 
-> **Admin route:** `/admin/growth/content` · `deposit` · `whale` · **`ticker`** (모듈 11)  
+> **Admin route (canonical):** `/admin/growth?tab=content|deposit|whale|ticker|simulation|…` (모듈 11 · §9.1.1)  
+> **구 path** `/admin/growth/content` 등 = **tab redirect** (이중 IA 금지)  
 > **Default:** 전부 OFF · ON 시 audit + Growth budget/circuit  
 > **§51.24 경계 (모순0):** DayPulse·PreCTA mayStop·platformSafeStopToday = **Growth 스위치와 무관 · live only · Admin 수동 편집 필드 0** · G4 demo/hybrid 수치를 DayPulse에 merge **금지** (L16) · Presence “보는 중 N” = 기본 OFF · flag `presence_live`+실측만 (L5/L6)
 
-### 35.1 G1 — 가짜 연혁·공지 (`/admin/growth/content`)
+### 35.1 G1 — 가짜 연혁·공지 (`/admin/growth?tab=content`)
 
 | 기능 | 설명 |
 |------|------|
@@ -817,7 +859,7 @@ active → flagged → restricted → frozen → banned
 | 연혁 타임라인 | synthetic milestone ("2021 글로벌 런칭" 등) |
 | 누적 실적 **문구** | "5년 운영" · "누적 지급 X억" |
 
-### 35.2 G2 — 입금 유도 FOMO (`/admin/growth/deposit`)
+### 35.2 G2 — 입금 유도 FOMO (`/admin/growth?tab=deposit`)
 
 | Surface | 허용 (Admin ON) |
 |---------|-----------------|
@@ -825,7 +867,7 @@ active → flagged → restricted → frozen → banned
 | 공지·온보딩 | "오늘 N명 첫 입금" seed copy |
 | `/me` 이용안내 | platform stats 블록 |
 
-### 35.3 G3 — 고액 입금 심리전 (`/admin/growth/whale`)
+### 35.3 G3 — 고액 입금 심리전 (`/admin/growth?tab=whale`)
 
 | 루트 | UX | Guard |
 |------|-----|-------|
@@ -835,7 +877,7 @@ active → flagged → restricted → frozen → banned
 
 **NOT 허용:** balance 직접 가감 · fake settlement · AML bypass
 
-### 35.4 G4 — 실시간 ticker·counter (`/admin/growth/ticker`)
+### 35.4 G4 — 실시간 ticker·counter (`/admin/growth?tab=ticker`)
 
 | 설정 | 값 | UX |
 |------|-----|-----|
@@ -892,6 +934,7 @@ interface GrowthConversionSettings {
 
 | tab | 역할 | 핵심 액션 |
 |-----|------|-----------|
+| `simulation` | **§51.4 M0.5 시뮬 Pass** | Growth ON 전 필수 · report 조회 · fail 시 스위치 잠금 |
 | `content` | G1 FOMO · synthetic 연혁 | ON/OFF · seed · **notice와 분리** |
 | `notices` | **운영 공지 CRUD** (§51.5b) | draft→schedule→live · push · 금지어 CI |
 | `campaigns` | **이벤트/캠페인 마법사** | budget · reward kind · allowlist CTA · kill |

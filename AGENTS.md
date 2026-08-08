@@ -7,9 +7,10 @@ Cursor는 **플랜 집행기**다. 스택을 ADR 없이 바꾸지 않는다.
 1. `TOOLCHAIN.md` + `.cursor/rules/*` (always) + 해당 glob rules
 2. 착수 전: `docs/CONSTITUTION_BOOTSTRAP.md` (실물·헌법·모델배정)
 3. ACTIVE Index: `.cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md` (논리명 `*_ssot` = STALE stub)
-4. 도메인 `01`~`06` **해시 파일만** · 한 채팅=한 todo · todo 접두사 `[grok-4.5|256K]` / `[composer-2.5|200K]`
-5. launch = **ARCHIVE** (`ai_profit_os_launch_54c1261e.plan.md`)
-6. UI → Canon + Brand + Lux · AI 이름=**퍼뜩** (앱명과 동일 · §47 Personal AI · 타프로젝트 코치명 금지)
+4. 도메인 `01`~`06` **해시 파일만** · **File-Serial:** 한 파일 todos 전부 완료 후 다음 번호 · 한 채팅=한 todo · 접두사 `[grok-4.5|256K]` / `[composer-2.5|200K]`
+5. 직렬 번호: **01 Money** · **02 Engine** · 03 UI · 04 Admin · 05 PWA · 06 Infra
+6. launch = **ARCHIVE** (`ai_profit_os_launch_54c1261e.plan.md`)
+7. UI → Canon + Brand + Lux · AI 이름=**퍼뜩** (앱명과 동일 · §47 Personal AI · 타프로젝트 코치명 금지)
 
 ## 연동 SSOT (ADR-016)
 
@@ -34,10 +35,13 @@ Cursor는 **플랜 집행기**다. 스택을 ADR 없이 바꾸지 않는다.
 - GitHub 도착물 = **오류0 · 오차0 · 결함0 · 중복0** (로컬 gate + 원격 CI 둘 다 green)
 - done = 도메인 `verify:*` PASS + `pnpm cleanup:lowspec` (+ push했다면 CI green)
 
-## Phase0 RAM
+## Phase0 RAM (이 PC = Celeron G6900 2C / ~8GB)
 
-- 프로세스 1개 · 서브에이전트 병렬 금지 · E2E는 CI
-- `NODE_OPTIONS=--max-old-space-size=2048`
+- 프로세스 1개 · 서브에이전트 병렬 0 · E2E/release = CI
+- `NODE_OPTIONS=--max-old-space-size=1536` · Docker OFF
+- 상태: `pnpm lowspec:status` · 정리: `pnpm cleanup:lowspec`
+- 이중 AI 확장(Continue 등)·rust-analyzer 상시 ON 금지 (engine 작업 때만)
+
 
 ## 금지
 

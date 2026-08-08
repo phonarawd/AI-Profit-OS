@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/referral-program.v1.json",
+  "title": "ReferralProgramConfigV1",
+  "description": "Money §51.5 · FORBIDDEN field capPerReferrerMonth · invite-count reject · principal credit for rewards.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "enabled",
+    "rewardsEnabled",
+    "l1RefereeExtraPracticeUsdt",
+    "l2ReferrerPct",
+    "l2ReferrerHardCapUsdt",
+    "l2RefereePracticeCapUsdt",
+    "l3ReferrerFlatUsdt",
+    "l3ReferrerHardCapUsdt",
+    "l3RefereeRewardKind",
+    "clawbackHoursL2",
+    "minRefereeDepositUsdt",
+    "sharePerUserPerDay",
+    "promoPoolTopUpPolicy",
+    "tiers"
+  ],
+  "properties": {
+    "enabled": {
+      "type": "boolean"
+    },
+    "rewardsEnabled": {
+      "type": "boolean"
+    },
+    "l1RefereeExtraPracticeUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "l2ReferrerPct": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "l2ReferrerHardCapUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "l2RefereePracticeCapUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "l3ReferrerFlatUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "l3ReferrerHardCapUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "l3RefereeRewardKind": {
+      "type": "string",
+      "enum": [
+        "fee_coupon",
+        "practice",
+        "none"
+      ]
+    },
+    "clawbackHoursL2": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "minRefereeDepositUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "sharePerUserPerDay": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "systemPayoutCapPerDayUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "promoPoolTopUpPolicy": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "pct_of_prior_week_margin"
+      ]
+    },
+    "promoPoolTopUpPct": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "tiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "minValidInvites",
+          "perks"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "seed",
+              "flame",
+              "rocket",
+              "whale_maker"
+            ]
+          },
+          "minValidInvites": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "perks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "not": {
+    "required": [
+      "capPerReferrerMonth"
+    ]
+  }
+}

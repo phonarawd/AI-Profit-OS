@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/support-ticket.v1.json",
+  "title": "SupportTicketV1",
+  "description": "§51.6 CS ticket. NEVER: balance adjust from ticket UI.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "userId",
+    "category",
+    "subjectKo",
+    "bodyKo",
+    "status",
+    "slaDueAt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "deposit",
+        "withdraw",
+        "trade",
+        "account",
+        "other"
+      ]
+    },
+    "subjectKo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "bodyKo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "pending_user",
+        "resolved",
+        "escalated"
+      ]
+    },
+    "linkedTradeId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "linkedTxHash": {
+      "type": "string"
+    },
+    "slaDueAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    }
+  }
+}

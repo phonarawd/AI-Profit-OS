@@ -1,13 +1,13 @@
 ---
 name: AI Profit OS — Money & Chain
-overview: "v7.22.28 Money·원장→지갑·실금액정산·PG사0. Index §20.2 CTA=수익벌기 pointer. Index=00."
+overview: "v7.22.33 Money pointer·원장→지갑·실금액정산·PG사0. Index §20.2 CTA=수익벌기. Index=00."
 todos:
-  - id: money-double-entry
-    content: "[grok-4.5|256K] Double-Entry + §49 버킷 + ASC FOR UPDATE + idempotency + recon · 잔액 UPDATE 0"
-    status: pending
   - id: pg-gateway-ban
     content: "[grok-4.5|256K] §41 PG사0 · verify:pg-module-scan · 용어≠PostgreSQL"
     status: completed
+  - id: money-double-entry
+    content: "[grok-4.5|256K] Double-Entry + §49 버킷 + ASC FOR UPDATE + idempotency + recon · 잔액 UPDATE 0"
+    status: pending
   - id: compliance-wallet
     content: "[composer-2.5|200K] wallet-service §41/§43 TRC20 + 출금모드 + KRW Admin승인/거절 Day-1 + §37 · PG사0 · CSV비필수(L2+)"
     status: pending
@@ -40,7 +40,7 @@ todos:
     status: pending
 isProject: false
 ---
-# AI Profit OS — Money & Chain (v7.22.27)
+# AI Profit OS — Money & Chain (v7.22.33 pointer · Owns 본문 유지)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 
@@ -48,7 +48,7 @@ isProject: false
 > **퍼뜩(AI) Fact:** 버킷·입금·출금·레퍼럴·practice + depositPref · **principalUsdt** (§49.2a) · §47.12 (머니 엔진 비파괴)  
 > **유저 네트워크 카피:** §41.6 · 가이드 UI=§38.8 pointer  
 > **KRW Day-1:** Admin **승인/거절** · CSV Auto-Recon=**L2+만** (ARCHIVE/구문구 무시)  
-> **todo 순서:** 원장 → PG사0 → 지갑/KYC → 체인 → 출금(+차단가드) → 남용방어 → suggest/한글네트워크 → 초대/practice  
+> **todo 순서:** PG사0(완료) → 원장 → 지갑/KYC → 체인 → sweeper → 출금(+차단가드) → 남용방어 → suggest/네트워크카피 → 초대 → practice (File-Serial)  
 > **v7.22.21:** §49.2a 잔액 Fact + 입금 `suggest`  
 > **v7.22.22:** §51.5 초대 **횟수 ∞** · 예산/%/품질/타이밍 가드 · 0원 런칭 · KR 설명 Owns=UI §5.9.1a  
 > **v7.22.24:** §43.6a Admin 출금 PIN·WebAuthn 초기화 pointer · Admin §9.8.10E  

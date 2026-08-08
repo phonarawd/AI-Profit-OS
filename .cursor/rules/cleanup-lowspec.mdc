@@ -1,15 +1,9 @@
 ---
-description: ADR-016 — 8GB 렉 방지. 더러운 작업 후 캐시/아티팩트 자동 정리.
-alwaysApply: true
+description: ADR-016 cleanup — phase0-ram에 통합. 검색용 별칭만 유지.
+alwaysApply: false
 ---
 
-# Cleanup Low-Spec (ADR-016)
+# Cleanup Low-Spec
 
-세션/작업 끝마다:
-
-- 미사용 `.next` · `dist` · `coverage` · `playwright-report` · `*.log` · `_tmp*`
-- Rust `target/debug` 대용량 (engine 작업 후)
-- 백그라운드 `next`/`nest` 불필요 프로세스 종료 안내
-- `pnpm cleanup:lowspec` 실행
-
-인덱싱 제외 유지: `node_modules` · `.next` · `target` · `.wrangler` · `dist`
+운영 SSOT는 `phase0-ram.mdc`다. 세션 끝·stop hook = `pnpm cleanup:lowspec`.
+상태 = `pnpm lowspec:status`.

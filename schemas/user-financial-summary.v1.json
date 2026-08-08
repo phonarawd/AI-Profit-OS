@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/user-financial-summary.v1.json",
+  "title": "UserFinancialSummaryV1",
+  "description": "Admin §9.8.7·§39 · netInflowUsdt REQUIRED · buckets. NEVER: demo/G4 into finance · label netInflow as 수익.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "userId",
+    "totalDepositUsdt",
+    "totalWithdrawUsdt",
+    "netInflowUsdt",
+    "spreadProfitUsdt",
+    "platformMarginUsdt",
+    "balanceUsdt",
+    "buckets",
+    "tradeCount",
+    "tradeSuccessRate"
+  ],
+  "properties": {
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "asOf": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "totalDepositUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "totalWithdrawUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "netInflowUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "totalDepositUsdt − totalWithdrawUsdt · REQUIRED KPI"
+    },
+    "spreadProfitUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "platformMarginUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "balanceUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "withdrawFeeUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "netPnlUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "depositKrwApprox": {
+      "type": "number"
+    },
+    "buckets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "principal",
+        "profit",
+        "locked",
+        "practice"
+      ],
+      "properties": {
+        "principal": {
+          "type": "string",
+          "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+          "description": "Decimal as string (no float money)"
+        },
+        "profit": {
+          "type": "string",
+          "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+          "description": "Decimal as string (no float money)"
+        },
+        "locked": {
+          "type": "string",
+          "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+          "description": "Decimal as string (no float money)"
+        },
+        "practice": {
+          "type": "string",
+          "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+          "description": "Decimal as string (no float money)"
+        }
+      }
+    },
+    "tradeCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "tradeSuccessRate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "MATCH_SUCCESS/(SUCCESS+PRICE_MOVED+BELOW_MIN) · ≠ sellSuccessRate"
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "deposits": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "withdrawals": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "settlements": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "lastDepositAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "lastWithdrawAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "fxSnapshotId": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

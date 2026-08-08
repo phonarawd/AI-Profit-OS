@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/opportunity-card.v1.json",
+  "title": "OpportunityCardV1",
+  "description": "Engine §4.1 · available requires assetImageUrl+compareReady. NEVER: yahoo_jp · executionMode≠orchestrate · sellSuccessRate as Rule.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "pricingVersion",
+    "pricedAt",
+    "expectedProfitUsdt",
+    "expectedProfitKrwApprox",
+    "fxSnapshotId",
+    "estimatedDurationSec",
+    "aiConfidenceScore",
+    "difficulty",
+    "tags",
+    "requiredCapitalUsdt",
+    "executionMode",
+    "category",
+    "assetId",
+    "assetLabel",
+    "assetImageUrl",
+    "assetImageSource",
+    "assetImageAltKo",
+    "arbitrageType",
+    "arbitrageTypeKo",
+    "staleAt",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pricingVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "pricedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "expectedProfitUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "expectedProfitKrwApprox": {
+      "type": "number"
+    },
+    "fxSnapshotId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "estimatedDurationSec": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "aiConfidenceScore": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "beginner",
+        "normal",
+        "premium",
+        "hot"
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "instant",
+          "high_profit",
+          "ai_pick",
+          "beginner",
+          "time_sensitive"
+        ]
+      }
+    },
+    "requiredCapitalUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "pricing": {
+      "$ref": "https://ai-profit-os.local/schemas/opportunity-pricing.v1.json"
+    },
+    "expectedSellDays": {
+      "type": "number",
+      "description": "DEPRECATED user surface · Admin historical only"
+    },
+    "sellSuccessRate": {
+      "type": "number",
+      "description": "Historical display only · NEVER Rule input"
+    },
+    "sellSuccessWindowDays": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "sellSuccessAsOf": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "riskScore": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "executionMode": {
+      "const": "orchestrate"
+    },
+    "executionPlatforms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "INTERNAL · ebay_*|admin only · yahoo_jp FORBIDDEN · user UI 0"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "watch",
+        "trading_card",
+        "luxury_bag"
+      ]
+    },
+    "assetId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "assetLabel": {
+      "type": "string"
+    },
+    "assetImageUrl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "assetImageSource": {
+      "type": "string",
+      "enum": [
+        "ebay",
+        "pokemontcg",
+        "ygoprodeck",
+        "admin_r2"
+      ]
+    },
+    "assetImageAltKo": {
+      "type": "string"
+    },
+    "assetIcon": {
+      "type": "string"
+    },
+    "arbitrageType": {
+      "type": "string",
+      "enum": [
+        "price",
+        "fx",
+        "benefit",
+        "limited",
+        "resale"
+      ]
+    },
+    "arbitrageTypeKo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "staleAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "paused",
+        "expired",
+        "circuit_open"
+      ]
+    }
+  }
+}

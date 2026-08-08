@@ -17,7 +17,7 @@ Problems에 수백 개가 뜨는 주원인 = `davidanson.vscode-markdownlint`가
 |------|------|
 | `.markdownlint.json` | 스타일 규칙 OFF (MD013/MD060 등) |
 | `.markdownlintignore` · `.markdownlint-cli2.jsonc` | plans/rules/감사/docs ignore |
-| `.vscode/settings.json` | markdownlint ignore + workspace globs · ESLint OFF(설정 전) · MD formatOnSave OFF |
+| `.vscode/settings.json` | markdownlint ignore(+CONSTITUTION) · ESLint OFF · TS server 1GB cap · RA onDemand · MD formatOnSave OFF |
 
 ## 에이전트 금지
 

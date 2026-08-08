@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/fact-card.v1.json",
+  "title": "FactCardV1",
+  "description": "Engine §47.4 Fact freshness. Sources: ledger|opportunity|kyc|fx|...",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "source",
+    "captured_at",
+    "expires_at",
+    "confidence",
+    "payload"
+  ],
+  "properties": {
+    "source": {
+      "type": "string",
+      "enum": [
+        "ledger",
+        "opportunity",
+        "kyc",
+        "fx",
+        "wallet",
+        "membership",
+        "referral",
+        "ux_prefs",
+        "other"
+      ]
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "payload": {
+      "type": "object"
+    }
+  }
+}

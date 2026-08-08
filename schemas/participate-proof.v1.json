@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/participate-proof.v1.json",
+  "title": "ParticipateProofV1",
+  "description": "UI §51.16 proof-at-participate · SHA256 canonical JSON.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tradeId",
+    "pricingVersion",
+    "buyPriceUsdt",
+    "sellPriceUsdt",
+    "expectedProfitUsdt",
+    "fxSnapshotId",
+    "proofHash",
+    "capturedAt"
+  ],
+  "properties": {
+    "tradeId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pricingVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "buyPriceUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "sellPriceUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "expectedProfitUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "fxSnapshotId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "proofHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA256 hex of canonical JSON"
+    },
+    "capturedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    }
+  }
+}

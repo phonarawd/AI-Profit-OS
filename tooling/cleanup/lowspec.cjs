@@ -1,4 +1,4 @@
-/** pnpm cleanup:lowspec — free disk/RAM pressure on 8GB machines */
+/** pnpm cleanup:lowspec — free disk/RAM pressure on 8GB / 2-core machines */
 const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
@@ -23,7 +23,6 @@ for (const d of killDirs) {
   if (rmrf(path.join(root, d))) removed.push(d);
 }
 
-// per-package build junk (safe)
 for (const base of ["apps", "packages", "services", "workers"]) {
   const b = path.join(root, base);
   if (!fs.existsSync(b)) continue;
@@ -32,10 +31,12 @@ for (const base of ["apps", "packages", "services", "workers"]) {
       const p = path.join(b, name, junk);
       if (rmrf(p)) removed.push(path.relative(root, p));
     }
+    // Rust debug artifacts (largest local RAM/disk spike after engine work)
+    const debug = path.join(b, name, "target", "debug");
+    if (rmrf(debug)) removed.push(path.relative(root, debug));
   }
 }
 
-// agent tmp logs at root
 for (const f of fs.readdirSync(root)) {
   if (/^_tmp/.test(f) || /\.log$/.test(f)) {
     try {
@@ -55,3 +56,14 @@ try {
 }
 
 console.log("[cleanup:lowspec] removed:", removed.length ? removed.join(", ") : "(nothing)");
+
+try {
+  const { spawnSync } = require("child_process");
+  const st = spawnSync(process.execPath, [path.join(root, "tooling/lowspec/status.cjs")], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  if (st.stdout) process.stdout.write(st.stdout);
+} catch {
+  /* ignore */
+}

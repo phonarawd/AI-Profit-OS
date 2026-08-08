@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/krw-deposit-request.v1.json",
+  "title": "KrwDepositRequestV1",
+  "description": "§41+§43 PG-free unique payableAmount + TTL. NEVER: PG사 SDK.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "userId",
+    "requestedAmountKrw",
+    "payableAmountKrw",
+    "uniqueSuffixKrw",
+    "depositCode",
+    "depositorName",
+    "status",
+    "expiresAt",
+    "idempotencyKey",
+    "createdAt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requestedAmountKrw": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "payableAmountKrw": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "UNIQUE among active requests"
+    },
+    "uniqueSuffixKrw": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "depositCode": {
+      "type": "string",
+      "minLength": 4
+    },
+    "depositorName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "matched",
+        "approved",
+        "expired",
+        "rejected",
+        "manual_review"
+      ]
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "adminNote": {
+      "type": "string"
+    },
+    "ledgerEntryId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "minLength": 8
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "decidedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "decidedByAdminId": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

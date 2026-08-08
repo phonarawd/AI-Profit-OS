@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/user-twin.v1.json",
+  "title": "UserTwinV1",
+  "description": "Engine §47 slow prefs/behavior · non-numeric money. NEVER: cache balanceUsdt/expectedProfitUsdt/live quotes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "userId",
+    "updatedAt"
+  ],
+  "properties": {
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "preferredCapitalBand": {
+      "type": "string",
+      "enum": [
+        "micro",
+        "small",
+        "mid",
+        "high",
+        "whale"
+      ]
+    },
+    "categoryInterest": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "watch",
+          "trading_card",
+          "luxury_bag"
+        ]
+      }
+    },
+    "toneBand": {
+      "type": "string",
+      "enum": [
+        "young",
+        "mid",
+        "senior"
+      ]
+    },
+    "objectionPatterns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "twinSnapshotId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    }
+  },
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "balanceUsdt"
+        ]
+      },
+      {
+        "required": [
+          "expectedProfitUsdt"
+        ]
+      },
+      {
+        "required": [
+          "liveQuote"
+        ]
+      }
+    ]
+  }
+}

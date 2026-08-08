@@ -1,4 +1,4 @@
-﻿node_modules/
+node_modules/
 .next/
 dist/
 build/
@@ -9,10 +9,16 @@ target/
 coverage/
 playwright-report/
 test-results/
+blob-report/
 pnpm-lock.yaml
 *.log
+*.tsbuildinfo
 .env
 .git/
+
+# ADR-016 — keep agent index thin on 8GB
+**/pnpm-store/**
+**/.pnpm-store/**
 
 # ADR-013 — photo mockups must not be indexed / reintroduced
 docs/mockups/

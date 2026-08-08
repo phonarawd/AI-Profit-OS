@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/admin-rbac.v1.json",
+  "title": "AdminRbacV1",
+  "description": "Admin §9.9 · CONSTITUTION/40 role×capability matrix. NEVER: admin routes in apps/web · shared JWT with users.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "roles"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "roles": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "labelKo",
+          "capabilities"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "super",
+              "finance",
+              "cs",
+              "risk",
+              "marketing"
+            ]
+          },
+          "labelKo": {
+            "type": "string"
+          },
+          "capabilities": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "none",
+                "read",
+                "write"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "default": {
+    "version": 1,
+    "roles": [
+      {
+        "id": "super",
+        "labelKo": "최고관리자",
+        "capabilities": {
+          "all": "write",
+          "rbac": "write",
+          "circuit": "write",
+          "growth": "write",
+          "userOpportunityOverride": "write",
+          "userMatchPolicy": "write",
+          "userMembershipForce": "write",
+          "loginPasswordReset": "write",
+          "withdrawPinReset": "write",
+          "financeExport": "write",
+          "balanceAdjust": "write"
+        }
+      },
+      {
+        "id": "finance",
+        "labelKo": "재무",
+        "capabilities": {
+          "wallet": "write",
+          "ledger": "write",
+          "financeExport": "write",
+          "withdrawApprove": "write",
+          "balanceAdjust": "write",
+          "userOpportunityOverride": "write",
+          "userMatchPolicy": "write",
+          "userMembershipForce": "write",
+          "withdrawPinReset": "write",
+          "loginPasswordReset": "none",
+          "growth": "none"
+        }
+      },
+      {
+        "id": "cs",
+        "labelKo": "고객지원",
+        "capabilities": {
+          "users": "write",
+          "tendencyMemo": "write",
+          "kyc": "write",
+          "opsMessage": "write",
+          "supportTicket": "write",
+          "loginPasswordReset": "write",
+          "withdrawPinReset": "write",
+          "userOpportunityOverride": "read",
+          "userMatchPolicy": "read",
+          "balanceAdjust": "none",
+          "financeExport": "none"
+        }
+      },
+      {
+        "id": "risk",
+        "labelKo": "리스크",
+        "capabilities": {
+          "risk": "write",
+          "compliance": "write",
+          "freezeBan": "write",
+          "ipBlock": "write",
+          "financeExport": "none",
+          "growth": "none"
+        }
+      },
+      {
+        "id": "marketing",
+        "labelKo": "마케팅",
+        "capabilities": {
+          "growth": "write",
+          "attribution": "write",
+          "content": "write",
+          "financeExport": "none",
+          "balanceAdjust": "none",
+          "userOpportunityOverride": "none",
+          "userMatchPolicy": "none"
+        }
+      }
+    ]
+  }
+}

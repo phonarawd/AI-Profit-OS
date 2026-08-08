@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/deposit-config.v1.json",
+  "title": "DepositConfigV1",
+  "description": "Admin §37 · KRW rep account + TronGrid/onchain. NEVER: shared user deposit address · poll watcher · PG사 fields.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "configVersion",
+    "krw",
+    "usdtOnchain",
+    "pricingGuards",
+    "updatedAt",
+    "updatedByAdminId"
+  ],
+  "properties": {
+    "configVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "krw": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bankName",
+        "accountNumber",
+        "accountHolder",
+        "noticeKo"
+      ],
+      "properties": {
+        "bankName": {
+          "type": "string"
+        },
+        "accountNumber": {
+          "type": "string"
+        },
+        "accountHolder": {
+          "type": "string"
+        },
+        "noticeKo": {
+          "type": "string"
+        }
+      }
+    },
+    "usdtOnchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "network",
+        "tronGridBaseUrl",
+        "chainWatcherMode",
+        "usdtUiConfirmations",
+        "usdtLedgerConfirmations",
+        "usdtContract",
+        "hotWalletXpubRef",
+        "treasuryHotAddressRef",
+        "energyDelegateEnabled"
+      ],
+      "properties": {
+        "network": {
+          "const": "TRC20"
+        },
+        "tronGridBaseUrl": {
+          "type": "string",
+          "format": "uri",
+          "default": "https://api.trongrid.io"
+        },
+        "tronGridApiKey": {
+          "type": "string"
+        },
+        "chainWatcherMode": {
+          "const": "event_stream"
+        },
+        "usdtUiConfirmations": {
+          "type": "integer",
+          "const": 1
+        },
+        "usdtLedgerConfirmations": {
+          "type": "integer",
+          "const": 19
+        },
+        "usdtContract": {
+          "const": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
+        },
+        "hotWalletXpubRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "treasuryHotAddressRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "energyDelegateEnabled": {
+          "type": "boolean"
+        },
+        "usdtWithdrawNetworkFeeUsdt": {
+          "type": "string",
+          "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+          "description": "Decimal as string (no float money)"
+        },
+        "minTrxStakeForSweeper": {
+          "type": "string",
+          "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+          "description": "Decimal as string (no float money)"
+        }
+      }
+    },
+    "pricingGuards": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "priceStaleMaxSec",
+        "requireMinProfitUsdt"
+      ],
+      "properties": {
+        "priceStaleMaxSec": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 3
+        },
+        "requireMinProfitUsdt": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "updatedByAdminId": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

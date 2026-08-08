@@ -11,14 +11,31 @@
 > **Amendment A6:** 2026-08-09 — 매칭 긴장감·등급대기 흡수 → Index/UI **v7.22.30** · §48.3b  
 > **Amendment A7:** 2026-08-09 — JP번호 없음 → Day1 listing=ebay멀티\|admin · yahoo_jp Phase1+ · **v7.22.31**  
 > **Amendment A8:** 2026-08-09 — Yahoo! JAPAN **영구 배제** · Phase1+ 철회 · **v7.22.32**  
+> **Amendment A9:** 2026-08-09 — 실물재감사(DB0·Admin §9.1.1·카드위계·adapter5·M0 todo큐) → Index **v7.22.33**  
 > **Mode:** 감사 이력 + 잔여 gap · 앱 코드 구현 없음  
 > **Classification:** CONFIRMED / PROPOSED / UNKNOWN  
 > **CTA Owns:** Index **§20.2** — 유저 Primary=`수익 벌기` · domain=`participate` · `verify:cta-earn-profit`  
 > **1분/REQUEUE Owns:** Index **§20.2** · Engine Rule · UI §48  
 > **긴장감 Owns:** Index §20.2 원칙 · UI **§48.3b** · `verify:match-tension-surface`  
 > **Listing Owns:** Engine **§0.0.1a · §0.0.2 v7.22.32** · `verify:listing-legs-day1`  
-> **착수 순서 Owns:** Index §18 + `docs/CONSTITUTION_BOOTSTRAP.md` §9.1 · Audit A5=이력  
+> **착수 순서 Owns:** Index §18 + `docs/CONSTITUTION_BOOTSTRAP.md` §9.1 · Audit A5=이력 · A9=실물재감사  
+> **Admin IA Owns:** Admin **§9.1.1** · BOOTSTRAP §6  
 > **이 파일:** Audit 이력 · **플랜 대체 아님** · 충돌 시 Index/도메인 플랜 승
+
+---
+
+## A9. 실물재감사 · Admin IA · M0 큐 (흡수 · Owns→Index v7.22.33)
+
+| 잠금 | 값 |
+|------|-----|
+| Supabase `public` | 테이블 **0** · migrations applied **0** |
+| pgvector | available · **미설치** → migrations에서 ON |
+| 시스템 `auth` 스키마 | 존재 ≠ 앱 Auth SoT · Nest JWT only |
+| Admin §9.1.1 | 자식 route/tab 전수 · `growth?tab=simulation` 포함 |
+| 카드위계 | `기회→투입→수익→AI→[수익 벌기]` · 기간슬롯 유저0 |
+| Day-1 adapters | **5종** (Signup-Ready6 문구 폐기) |
+| M0 pending 큐 | constitution→ai-money→schemas→migrations→monorepo→`copy-canon-cta-sla-lock` |
+| 다음 채팅 | `constitution-28-core` only |
 
 ---
 
@@ -75,7 +92,7 @@
 | 3 | `schemas-contracts-core` | `schemas/` Day-1 JSON | 1~2 |
 | 4 | `schemas-migrations-supabase` | `supabase/migrations/` 초기 · 원격 Seoul | 3 |
 | 5 | `monorepo-skeleton` | apps/web·admin · services · packages/{ui,sdk,schemas} | 1~4 + stack-lock |
-| 6 | UI copy/Canon 슬라이스 | `packages/ui/copy/ko` `ctaEarn`·면책·SLA 3키 · Canon `primaryCta` | 5 |
+| 6 | `copy-canon-cta-sla-lock` | `packages/ui/copy/ko` `ctaEarn`·면책·SLA 3키 · Canon `primaryCta` | 5 |
 | 7+ | 도메인 기능 todo | 한 채팅=한 todo · 접두사 모델 배정 | 해당 도메인 verify |
 
 ### A5.2 금지 (착수 drift)
@@ -327,8 +344,8 @@ AI 매칭 적합도  N%     ← ≠당첨/보장 (문서 필드 aiConfidenceScor
 | File | Role | Authority | Status | Conflicts | Notes |
 |------|------|-----------|--------|-----------|-------|
 | `ai_profit_os_00_index_*.plan.md` | SSOT Index · Product | Highest ACTIVE | **v7.22.28** | — | §20.2 Owns CTA·역할 |
-| `ai_profit_os_01_engine_*.plan.md` | Opportunity · Rule | Architecture | ACTIVE v7.22.28 | REQUEUE vs 1분 UX | `expectedSellDays` 유저0 · §48.13 |
-| `ai_profit_os_02_money_*.plan.md` | Ledger · deposit | Money | ACTIVE | 입금 latency ≠ 처리 SLA (의도적 분리) | §49 · PG사0 |
+| `ai_profit_os_01_money_*.plan.md` | Ledger · deposit | Money | ACTIVE | 입금 latency ≠ 처리 SLA (의도적 분리) | §49 · PG사0 · File-Serial #01 |
+| `ai_profit_os_02_engine_*.plan.md` | Opportunity · Rule | Architecture | ACTIVE v7.22.28 | REQUEUE vs 1분 UX | `expectedSellDays` 유저0 · §48.13 · File-Serial #02 |
 | `ai_profit_os_03_ui_ux_*.plan.md` | UX · CTA · 5탭 | UX | ACTIVE v7.22.28 | copy/Canon 실물 0 | `내거래` KEEP |
 | `ai_profit_os_04_admin_*.plan.md` | Admin Ops | Ops | ACTIVE | Admin 매입/판매 컬럼=내부 | 유저 유출 금지 |
 | `ai_profit_os_05_pwa_*.plan.md` | PWA | Support | ACTIVE | — | |

@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/simulation-report.v1.json",
+  "title": "SimulationReportV1",
+  "description": "Engine §51.4 M0.5 simulation-engine report (+ SimulationFeasibility $defs).",
+  "$defs": {
+    "SimulationFeasibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "opportunityId",
+        "payoutFeasible"
+      ],
+      "properties": {
+        "opportunityId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "payoutFeasible": {
+          "type": "boolean"
+        },
+        "reasonKo": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "runId",
+    "asOf",
+    "horizonHours",
+    "opportunityPublishRate",
+    "spreadDistribution",
+    "payoutFeasibilityScore",
+    "worstCasePlatformDrainUsdt",
+    "uxDisplayAccuracy",
+    "adapterMatchFailureRate"
+  ],
+  "properties": {
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "asOf": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "horizonHours": {
+      "type": "integer",
+      "const": 24
+    },
+    "opportunityPublishRate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "spreadDistribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "p50",
+        "p10",
+        "p90"
+      ],
+      "properties": {
+        "p50": {
+          "type": "string",
+          "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+          "description": "Decimal as string (no float money)"
+        },
+        "p10": {
+          "type": "string",
+          "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+          "description": "Decimal as string (no float money)"
+        },
+        "p90": {
+          "type": "string",
+          "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+          "description": "Decimal as string (no float money)"
+        }
+      }
+    },
+    "payoutFeasibilityScore": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "worstCasePlatformDrainUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "uxDisplayAccuracy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "field",
+          "sample",
+          "mismatch"
+        ],
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "sample": {
+            "type": "number"
+          },
+          "mismatch": {
+            "type": "number",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "adapterMatchFailureRate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "feasibility": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SimulationFeasibility"
+      }
+    }
+  }
+}

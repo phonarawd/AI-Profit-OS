@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — UI & UX
-overview: "v7.22.32 UI·시장LabelKo동적·야후문자열0·긴장감§48.3b·CTA수익벌기. Index=00."
+overview: "v7.22.32 UI(+Index.33 pointer)·시장LabelKo·야후0·긴장감§48.3b·CTA수익벌기·위계=기회→투입→수익→AI→수익벌기. Index=00."
 todos:
   - id: yahoo-jp-copy-ban
     content: "[grok-4.5|256K] v7.22.32 유저카피 야후/Yahoo/yahoo_jp 0 · LabelKo만 · Engine §0.0.2 · verify:listing-legs-day1"
@@ -11,12 +11,6 @@ todos:
   - id: sla-requeue-copy-lock
     content: "[grok-4.5|256K] v7.22.29 §48 Soft/Hard 카피3줄·MATCH_TIMEOUT safe_stop · Index §20.2 · Audit A4"
     status: completed
-  - id: capital-provider-match-ux
-    content: "[composer-2.5|200K] §5.3b/§48 CTA=수익 벌기·카드위계·면책배지·trader jargon0 · verify:cta-earn-profit/user-trader-jargon-0"
-    status: pending
-  - id: opportunity-scan-home-ux
-    content: "[composer-2.5|200K] §5.3b 홈3초·arbitrageTypeKo·기회스캔 위계 · verify:opportunity-scan-surface (CTA는 capital-provider todo)"
-    status: pending
   - id: korean-first-copy
     content: "[grok-4.5|256K] packages/ui/copy/ko + toneBand + 퍼뜩 + auth/onboarding/landing/kyc/toast keys · verify:korean-ui/brand-consumer/age-tone-surfaces"
     status: pending
@@ -24,7 +18,7 @@ todos:
     content: "[grok-4.5|256K] §33.8 Canon wire 권위 · archive INTENT ONLY · verify:mockup-governance/canon-surfaces/brand-logo-single"
     status: pending
   - id: ux-design-system
-    content: "[composer-2.5|200K] Lux tokens + fontScale 3단 + contrast/line-height senior · Canon wire + MotionCTA · reduced-motion"
+    content: "[composer-2.5|200K] Lux tokens + fontScale 3단 + spacing/line-height senior · Canon wire + MotionCTA · reduced-motion"
     status: pending
   - id: onboarding-experiential
     content: "[composer-2.5|200K] §6.4 체험형 온보딩(identity·demo·practice) + Canon wires · verify:onboarding-experiential/canon-surfaces"
@@ -34,6 +28,12 @@ todos:
     status: pending
   - id: landing-3s-ui
     content: "[composer-2.5|200K] Canon landing-3s · firstViewport≤5 · /l/*+/ads 동일 · Infra §31.2 pointer · verify:landing-3s"
+    status: pending
+  - id: capital-provider-match-ux
+    content: "[composer-2.5|200K] §5.3b/§48 CTA=수익 벌기·카드위계·면책배지·trader jargon0 · verify:cta-earn-profit/user-trader-jargon-0"
+    status: pending
+  - id: opportunity-scan-home-ux
+    content: "[composer-2.5|200K] §5.3b 홈3초·arbitrageTypeKo·기회스캔 위계 · verify:opportunity-scan-surface (CTA는 capital-provider todo)"
     status: pending
   - id: price-compare-margin-ux
     content: "[composer-2.5|200K] PriceCompareMargin 4면 · 공식=Engine §0.0.4 pointer · compareReady 가드 · verify:margin-compare-surface"
@@ -103,7 +103,8 @@ isProject: false
 > **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
-> **todo 순서:** 카피/Canon/Lux → 온보딩·인증·랜딩 → 마진/썸네일/피드/**§5.3b 스캔홈** → 진행실·퍼뜩·5탭 → 신뢰/KYC → 초대·엄격도·멤버십·알림 → Loop/반응형/spot-check (Index §18)  
+> **todo 순서:** 카피/거버넌스/Lux → 온보딩·인증·랜딩 → 홈·마진·잔액·실행실·퍼뜩 → 5탭/설정/토스트/KYC/신뢰/초대/멤버십/루프/반응형/spot-check (File-Serial)  
+
 > **v7.22.20:** §48.3a `assetImageUrl` · `시세 불러오는 중...` · 필터 `가방`  
 > **v7.22.21:** §5.3a 잔액 인식 홈 · 사진 PNG 목업 **레포 0**  
 > **v7.22.22:** §5.9.1a 친구초대 **20~70 설명** · 초대횟수∞ 카피 · Money §51.5 pointer  
@@ -2206,7 +2207,7 @@ CONSTITUTION/46b_ASSET_IMAGE_SSOT.md
 | Admin 긴급정지 | §9.5 TOP5 = circuitStatus 표시 |
 | 성공 후 출금 CTA | **§49** 수익만/합치기/나중에 |
 
-> **§48.13 MATCH_SUCCESS Rule Engine** → `ai_profit_os_01_engine_b2c3d4e5.plan.md` (§48.13.1 participate · §48.13.2 golden)
+> **§48.13 MATCH_SUCCESS Rule Engine** → `ai_profit_os_02_engine_b2c3d4e5.plan.md` (§48.13.1 participate · §48.13.2 golden)
 
 ## 50. 설정 · 약관 대본 · 운영사 DET · 쉬운 한글 · 토스트 이모지 (v7.21)
 

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/ops-inbox-message.v1.json",
+  "title": "OpsInboxMessageV1",
+  "description": "Admin §9.8.8d · UI §5.9.4 · 1-user ops message. NEVER: hard delete · guaranteed profit · tendency-memo to user.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "userId",
+    "template",
+    "titleKo",
+    "bodyKo",
+    "createdByAdminId",
+    "createdAt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "template": {
+      "type": "string",
+      "enum": [
+        "OPS_NOTICE",
+        "OPS_KYC",
+        "OPS_DEPOSIT",
+        "OPS_WITHDRAW",
+        "OPS_CUSTOM"
+      ]
+    },
+    "titleKo": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "bodyKo": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "href": {
+      "type": "string"
+    },
+    "readAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "hiddenAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "sourceEventId": {
+      "type": "string"
+    },
+    "createdByAdminId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    }
+  }
+}

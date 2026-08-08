@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/kyc-status.v1.json",
+  "title": "KycStatusV1",
+  "description": "§42 withdraw-only KYC gate status. Participate/deposit do not require KYC.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "userId",
+    "kycStatus"
+  ],
+  "properties": {
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kycStatus": {
+      "type": "string",
+      "enum": [
+        "none",
+        "pending",
+        "approved",
+        "rejected"
+      ]
+    },
+    "decidedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "rejectReason": {
+      "type": "string",
+      "minLength": 10
+    },
+    "submissionId": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

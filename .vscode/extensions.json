@@ -1,13 +1,18 @@
 {
   "recommendations": [
     "bradlc.vscode-tailwindcss",
-    "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "rust-lang.rust-analyzer",
-    "ms-azuretools.vscode-docker",
-    "Prisma.prisma",
-    "cloudflare.cloudflare-workers",
     "davidanson.vscode-markdownlint"
   ],
-  "unwantedRecommendations": []
+  "unwantedRecommendations": [
+    "Prisma.prisma",
+    "ms-azuretools.vscode-docker",
+    "continue.continue",
+    "anysphere.remote-ssh",
+    "dbaeumer.vscode-eslint",
+    "rust-lang.rust-analyzer",
+    "GitHub.copilot",
+    "GitHub.copilot-chat",
+    "ms-vscode.vscode-typescript-next"
+  ]
 }

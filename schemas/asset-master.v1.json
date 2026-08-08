@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/asset-master.v1.json",
+  "title": "AssetMasterV1",
+  "description": "Engine §0.0.6 · imageUrl SKU 1:1. Cross-category image = FAIL.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "assetId",
+    "category",
+    "assetLabel",
+    "imageUrl",
+    "imageSource",
+    "imageAltKo",
+    "imageRightsNoteKo"
+  ],
+  "properties": {
+    "assetId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "watch",
+        "trading_card",
+        "luxury_bag"
+      ]
+    },
+    "assetLabel": {
+      "type": "string",
+      "minLength": 1
+    },
+    "imageUrl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "imageSource": {
+      "type": "string",
+      "enum": [
+        "ebay",
+        "pokemontcg",
+        "ygoprodeck",
+        "admin_r2"
+      ]
+    },
+    "imageAltKo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "imageRightsNoteKo": {
+      "const": "시세 참고용"
+    },
+    "imageFetchedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "meta": {
+      "type": "object"
+    }
+  }
+}

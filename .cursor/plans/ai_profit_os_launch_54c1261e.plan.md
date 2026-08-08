@@ -48,8 +48,8 @@ isProject: false
 > | 플랜 | 파일 |
 > |------|------|
 > | Index | `ai_profit_os_00_index_a1b2c3d4.plan.md` |
-> | Engine | `ai_profit_os_01_engine_b2c3d4e5.plan.md` |
-> | Money & Chain | `ai_profit_os_02_money_c3d4e5f6.plan.md` |
+> | Money & Chain | `ai_profit_os_01_money_c3d4e5f6.plan.md` |
+> | Engine | `ai_profit_os_02_engine_b2c3d4e5.plan.md` |
 > | UI & UX | `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` |
 > | Admin & Ops | `ai_profit_os_04_admin_e5f6a7b8.plan.md` |
 > | PWA & Native | `ai_profit_os_05_pwa_f6a7b8c9.plan.md` |

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/user-match-policy-override.v1.json",
+  "title": "UserMatchPolicyOverrideV1",
+  "description": "Admin §9.8.10. NEVER: successRatePercent · winRate · rngSuccess.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "userId",
+    "reason",
+    "updatedByAdminId",
+    "updatedAt"
+  ],
+  "properties": {
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "matchStrictnessOverride": {
+      "type": "string",
+      "enum": [
+        "lenient",
+        "standard",
+        "tight",
+        "scarce",
+        "custom"
+      ]
+    },
+    "minProfitUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "staleAllowanceSec": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "maxRematchCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "dailyUserMatchCap": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 10
+    },
+    "updatedByAdminId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    }
+  },
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "successRatePercent"
+        ]
+      },
+      {
+        "required": [
+          "winRate"
+        ]
+      },
+      {
+        "required": [
+          "rngSuccess"
+        ]
+      }
+    ]
+  }
+}

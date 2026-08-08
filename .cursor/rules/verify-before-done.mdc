@@ -10,6 +10,6 @@ alwaysApply: true
 1. 해당 도메인 `verify:*` 실행 (목록=`tooling/verify/CATALOG.md`)
 2. money면 `bucket-invariant` · `pg-module-scan` 필수
 3. UI면 `no-it-jargon` · canon/mockup 게이트
-4. `pnpm cleanup:lowspec` (또는 hook stop)
+4. `pnpm cleanup:lowspec` (또는 hook stop) · 여유 RAM 의심 시 `pnpm lowspec:status`
 5. 이 세션에서 `git push` 했으면 GitHub `gate` CI **green**까지 (`gh run watch` · FAIL=즉시 수정·재푸시 · `git-safety.mdc`)
 6. **done = verify PASS + cleanup PASS** (+ push했다면 CI green) — 한쪽 FAIL이면 미완료

@@ -60,12 +60,15 @@ pnpm exec wrangler -v
 ```powershell
 pnpm verify:gate          # commit/push 전
 pnpm cleanup:lowspec      # 작업 후 렉 방지
+pnpm lowspec:status       # RAM/Docker/Cursor 압력 확인 (이 PC=Celeron 2C/8GB)
 ```
 
-- Cursor hooks: `.cursor/hooks.json` (git deny · stop cleanup)
+- 이 PC: `NODE_OPTIONS=--max-old-space-size=1536` · Docker OFF · 프로세스 1개
+- Cursor hooks: `.cursor/hooks.json` (git deny · stop cleanup · session RAM warn)
 - Husky: `.husky/pre-commit` → `verify:gate`
 - CI: `.github/workflows/gate.yml`
 - Rules: always ≤7 + domain globs · catalog `tooling/verify/CATALOG.md`
+
 
 ## 검증
 

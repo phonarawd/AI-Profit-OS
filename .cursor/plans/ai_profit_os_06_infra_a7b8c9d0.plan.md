@@ -1,25 +1,23 @@
 ---
 name: AI Profit OS — Infra & Marketing
-overview: "v7.22.27 Infra pointer·Auth/Ads·스택잠금. Index §20.2 pointer. Index=00."
+overview: "v7.22.33 Infra pointer·Auth/Ads·스택잠금·Supabase Auth0. Index §20.2. Index=00."
 todos:
   - id: stack-lock-sync
     content: "[grok-4.5|256K] ADR-014/015/016 stack-lock·AGENTS·verify:stack-lock — Index cursor-stack-lock과 동기(완료)·재실행 금지"
     status: completed
-  - id: auth-ssot
-    content: "[grok-4.5|256K] §51.9+§51.9.1 OAuth/Passkey/Stage A·B 필드/세션/탈퇴 · Nest JWT only · verify:auth-flows"
-    status: pending
   - id: marketing-seo-engine
     content: "[composer-2.5|200K] Ad Funnel+/ads alias·3s budget·CAPI+UTM+sitemap · JSON-LD=퍼뜩 · verify:marketing-compliance/landing-3s"
     status: pending
-  - id: infra-observability-launch
-    content: "[composer-2.5|200K] Phase0 Bootstrap $0(CF+Supabase+Upstash) · Compose옵션 · 이후 EKS/OTel · PWA E2E는 CI"
+  - id: infra-observability-late
+    content: "[composer-2.5|200K] 후반 EKS/OTel full trace · PWA E2E는 CI · Phase0 Bootstrap 실행큐=Index phase0-bootstrap-hosts(재실행 금지)"
     status: pending
 isProject: false
 ---
-# AI Profit OS — Infra & Marketing (v7.22.27)
+# AI Profit OS — Infra & Marketing (v7.22.33 pointer · Owns 본문 유지)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`  
-> **Owns 범위:** §15~16·§31~32·§51.9/13 · Auth/Ads/호스팅 · **Money/KRW 운영 스토리 재정의 금지**(pointer only)
+> **Owns 범위:** §15~16·§31~32·§51.9/13 · Auth/Ads/호스팅 · **Money/KRW 운영 스토리 재정의 금지**(pointer only)  
+> **실행 큐 이동 (v7.22.34):** `auth-ssot` · `phase0-bootstrap-hosts` = **Index** pending · 본 파일 todo = Marketing/CAPI + 후반 관측만 · Owns 본문(§51.9/§51.13)은 여기 유지
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
 > **에이전트 SSOT:** **ADR-014** · §15.0b · Cursor=플랜 집행기  
@@ -29,7 +27,7 @@ isProject: false
 > **SEO name:** Consumer=**퍼뜩** · retired `오늘수익`·`바로번다` **0**  
 > **v7.22.11 본문 잠금:** `/ads`·랜딩3초·Stage A/B — 이후 개정은 Index changelog + 본 절 pointer  
 > **v7.22.28:** Index §20.2 자본참여자 **pointer only** · Infra Owns **변경 0** · 랜딩 CTA 톤=UI `수익 벌기`  
-> **todo 순서:** stack-lock(완료) → Auth → Marketing/CAPI → Phase0 Bootstrap/관측
+> **todo 순서:** stack-lock(완료) · Auth/Phase0 Bootstrap 실행큐=Index · 본 파일=Marketing/CAPI → 후반 관측(OTel/EKS)
 ## 15. Infrastructure
 
 ### 15.0b Cursor Agent · Stack Lock (ADR-014/015 · monorepo **전** 필수)

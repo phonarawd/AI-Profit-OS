@@ -1,20 +1,41 @@
 ---
-description: ADR-016 · 8GB Phase0 — 단일 프로세스·Docker off·병렬 서브에이전트 금지.
+description: ADR-016 · 이 PC(Celeron 2C/8GB) Phase0 — 단일 프로세스·Docker off·병렬 금지·렉0.
 alwaysApply: true
 ---
 
-# Phase0 Low-Spec RAM (ADR-016 · 8GB)
+# Phase0 Low-Spec RAM (ADR-016)
 
-## 필수
+## 머신 프로필 (이 워크스테이션)
 
-- DB/Redis = **원격** (Supabase + Upstash) · Docker Desktop **기본 OFF**
-- 동시 기동 **1개만**: `web` **또는** `api` (둘 다 금지)
-- `apps/admin`은 필요할 때만
-- `NODE_OPTIONS=--max-old-space-size=2048`
-- 로컬: `cargo check`만 · release/E2E/풀 monorepo test = **GitHub Actions**
-- Agent: 서브에이전트 **병렬 금지** (explore 최대 1)
-- 컨텍스트: Index + **해당 도메인 플랜만** (launch 전문 매우기 금지)
+| 항목 | 실측 |
+|------|------|
+| CPU | Intel Celeron G6900 · **2C/2T** |
+| RAM | **~8GB** (여유 常時 1~2GB · Cursor만 ~2GB+) |
+| GPU | UHD 710 (내장) |
+| Disk | Kingston SSD · Docker **OFF** |
+| 판정 | monorepo 풀스택 로컬 동시 기동 **불가** · CI에 무거운 일 위임 |
+
+## 필수 (에이전트+유저)
+
+- DB/Redis = **원격만** (Supabase Seoul + Upstash) · Docker Desktop **기동 금지**
+- 동시 기동 **1개만**: `web` **또는** `api` (둘 다·admin 병행 금지)
+- `NODE_OPTIONS=--max-old-space-size=1536` (이 PC 기본 · 2048은 OOM 유발)
+- 로컬: `cargo check`만 · `cargo build --release` / E2E / 풀 test = **GitHub Actions**
+- Agent: 서브에이전트 **병렬 0** · Task/explore **최대 1** · `best-of-n` 금지
+- 컨텍스트: Index + **해당 도메인 플랜 1개만** · launch/헌법 전문 대량 로드 금지
+- 터미널 동시 실행 명령 **1개** · `pnpm -r` 전체 빌드 로컬 금지
+- IDE: rust-analyzer는 engine 작업 중에만 · Continue 등 이중 AI 확장 **OFF**
+- 세션 끝: `pnpm cleanup:lowspec` (+ 불필요 `next`/`nest`/`node` 종료)
 
 ## 금지
 
-Docker+Next+Nest+Rust 풀빌드+브라우저 동시 · NATS/Temporal/EKS Phase0 필수화
+- Docker + Next + Nest + Rust + 브라우저 동시
+- Chrome/Edge 탭 다수 + Cursor Composer + 로컬 서버 동시
+- NATS/Temporal/EKS Phase0 필수화 · 로컬 Postgres/Redis 컨테이너
+- 서브에이전트 병렬 · monorepo 전체 `tsc`/test 로컬 강행
+
+## Cleanup (세션 stop과 동일)
+
+- 삭제 대상: `.next` · `dist` · `coverage` · `playwright-report` · `*.log` · `_tmp*` · Rust `target/debug`(engine 후)
+- 인덱싱 제외 유지: `node_modules` · `.next` · `target` · `.wrangler` · `dist`
+- 상태 확인: `pnpm lowspec:status` (여유 RAM <1.5GB면 작업 중단·정리 먼저)

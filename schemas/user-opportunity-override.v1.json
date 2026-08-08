@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/user-opportunity-override.v1.json",
+  "title": "UserOpportunityOverrideV1",
+  "description": "Admin §9.8.9. NEVER: balance UPDATE · RNG success · compareReady false→true · cross-SKU images.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "userId",
+    "opportunityId",
+    "reason",
+    "updatedByAdminId",
+    "updatedAt"
+  ],
+  "properties": {
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "opportunityId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hidden": {
+      "type": "boolean"
+    },
+    "forceShow": {
+      "type": "boolean",
+      "description": "Mutually exclusive with hidden"
+    },
+    "pinOrder": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Max 10 pins per user Day-1"
+    },
+    "marginPctOverride": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "expectedProfitUsdtOverride": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Display/participate guard · NOT ledger credit"
+    },
+    "capitalBandForce": {
+      "type": "string",
+      "enum": [
+        "micro",
+        "small",
+        "mid",
+        "high",
+        "whale"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 10
+    },
+    "updatedByAdminId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    }
+  }
+}

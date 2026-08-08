@@ -12,11 +12,13 @@
 5. commit/push = `verify:gate` PASS only · `--no-verify` deny
 6. **push 후** = `gh run watch`로 GitHub Actions `gate` **실시간 감시** · FAIL→즉시 수정→재푸시→**CI green**까지 (오류0·오차0·결함0·중복0) · `git-safety.mdc`
 7. stop/sessionEnd = `cleanup:lowspec`
+8. 워크스테이션 실측 = **Celeron G6900 2C / ~8GB** → `NODE_OPTIONS=--max-old-space-size=1536` · `pnpm lowspec:status` · IDE 저사양 settings · 이중 AI 확장 OFF
 
 ## Artifacts
 
 - `.cursor/rules/*` · `.cursor/hooks.json` · `.husky/pre-commit`
-- `tooling/verify/*` · `tooling/cleanup/lowspec.cjs`
+- `tooling/verify/*` · `tooling/cleanup/lowspec.cjs` · `tooling/lowspec/status.cjs`
+- `.vscode/settings.json` (저사양) · `.npmrc` concurrency=1
 - `.github/workflows/gate.yml`
 - `AGENTS.md` · `TOOLCHAIN.md`
 

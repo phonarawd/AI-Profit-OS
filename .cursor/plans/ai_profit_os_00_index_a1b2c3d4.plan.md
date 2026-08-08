@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Index
-overview: "v7.22.32 ACTIVE Index. Day1 listing=ebay멀티|admin·yahoo_jp영구FORBIDDEN·CTA수익벌기·Soft60/Hard90."
+overview: v7.22.34 ACTIVE Index. File-Serial=00→01Money→02Engine→03→06. Auth/Phase0=Index. listing=ebay멀티|admin·yahoo영구FORBIDDEN·CTA수익벌기·Soft60/Hard90.
 todos:
   - id: yahoo-jp-permanent-ban
     content: "[grok-4.5|256K] v7.22.32 yahoo_jp 영구 FORBIDDEN · Phase1+ 철회 · Engine/UI/ENV 0 · verify:listing-legs-day1"
@@ -35,24 +35,37 @@ todos:
   - id: brand-adr002-peotteok
     content: "[grok-4.5|256K] ADR-002 Consumer=퍼뜩 · retired 오늘수익+바로번다 · 전 플랜/카피 drift 0 · verify:brand-consumer"
     status: completed
+  - id: index-admin-bootstrap-resync-733
+    content: "[grok-4.5|256K] v7.22.33 실물재감사(DB0·pgvector미설치·apps0)·Admin§9.1.1·카드위계통일·SignupReady→adapter5·BOOTSTRAP§6전수·M0 todo큐"
+    status: completed
   - id: constitution-28-core
     content: "[grok-4.5|256K] CONSTITUTION/ 14·17·20·22~28·35~46b 파일 생성(BOOTSTRAP §2) · owns/pointer만 · 구현코드 0"
-    status: pending
+    status: completed
   - id: constitution-28-ai-money-ops
     content: "[grok-4.5|256K] CONSTITUTION/ 47(+§47.12~14 퍼뜩 P/G/S·Adapter)·48·49·50(+§50.9)·51·51r 파일 생성 · Personal AI/Execution/Buckets/Rule/Referral SSOT"
-    status: pending
+    status: completed
   - id: schemas-contracts-core
     content: "[grok-4.5|256K] schemas/ Day-1(+opportunity·membership·user-match-policy-override·tendency-memo·user-capability·notification-prefs·ops-inbox·opportunity-card·asset-master·user-opportunity-override·buckets·user-financial-summary·ux-prefs·auth/kyc) + legal"
-    status: pending
+    status: completed
   - id: schemas-migrations-supabase
-    content: "[grok-4.5|256K] supabase/migrations 초기(extensions·ledger_*·wallet·ai_*·RLS) · 원격 Seoul apply · Dashboard DDL 0 · Auth Nest only"
-    status: pending
+    content: "[grok-4.5|256K] supabase/migrations 초기(extensions+vector·ledger_*·wallet·ai_*·RLS) · 원격 Seoul apply · public테이블생성 · Dashboard DDL0 · Nest Auth only(시스템auth스키마≠SoT)"
+    status: completed
   - id: monorepo-skeleton
-    content: "[composer-2.5|200K] apps/web·apps/admin·services·workers·packages/{ui,sdk,schemas} 골격 + IA routes lock · verify:stack-lock 유지"
+    content: "[composer-2.5|200K] apps/web·apps/admin·services·workers·packages/{ui,sdk,schemas} 골격 + Admin routes=§9.1.1·User 5탭 IA lock · verify:stack-lock 유지"
+    status: pending
+  - id: copy-canon-cta-sla-lock
+    content: "[grok-4.5|256K] packages/ui/copy/ko ctaEarn·면책·배지·Soft/Hard카피3줄 + Canon primaryCta · verify:cta-earn-profit/match-tension-surface stub배선"
+    status: pending
+  - id: auth-ssot
+    content: "[grok-4.5|256K] §51.9+§51.9.1 OAuth/Passkey/Stage A·B 필드/세션/탈퇴 · Nest JWT only · Owns=Infra §51.9 · verify:auth-flows"
+    status: pending
+  - id: phase0-bootstrap-hosts
+    content: "[composer-2.5|200K] Phase0 Bootstrap $0(CF Pages/Workers+Supabase Seoul+Upstash) · Compose옵션 · Owns=Infra §51.13/§15 · NATS/Temporal/EKS 0"
     status: pending
 isProject: false
 ---
-# AI Profit OS — Index · Constitution · Gates (v7.22.32)
+
+# AI Profit OS — Index · Constitution · Gates (v7.22.34)
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
 > **착수 전 SSOT:** [`docs/CONSTITUTION_BOOTSTRAP.md`](file:///c:/Users/PC/Desktop/AI_PROFIT_OS/docs/CONSTITUTION_BOOTSTRAP.md) — 헌법·스키마·마이그레이션·실물상태 기록  
@@ -69,7 +82,8 @@ isProject: false
 > **에이전트 SSOT:** **ADR-014** Cursor=플랜 집행기 · Infra §15.0b  
 > **툴체인 SSOT:** **ADR-015** Node22 · pnpm@10.14 · **next@16** · **Tailwind v4** · Rust · Compose=**옵션** · `TOOLCHAIN.md`  
 > **자동화 SSOT:** **ADR-016** Docker-less 기본(Supabase Seoul+Upstash) · `verify:gate` · cleanup  
-> **모델 배정:** todo 접두사 `[grok-4.5|256K]`=헌법·스키마·크로스 SSOT · `[composer-2.5|200K]`=확정 SSOT 후 단일 슬라이스 구현
+> **모델 배정:** todo 접두사 `[grok-4.5|256K]`=헌법·스키마·크로스 SSOT · `[composer-2.5|200K]`=확정 SSOT 후 단일 슬라이스 구현  
+> **File-Serial (절대):** 파일 N pending=0 전 파일 N+1 착수 금지 · 파일 내 todos 위→아래 · §18 Milestone=설명용 종속 · 아래「플랜 직렬 완료 규칙」Owns
 
 
 ---
@@ -78,16 +92,58 @@ isProject: false
 
 | # | 플랜 | 범위 | **실파일** |
 |---|------|------|------------|
-| 00 | Index · Constitution · Roadmap · Gates | §0·§1·§17~22(+§20.1·§20.2)·§51.1/22/23 · **v7.22.32** | `ai_profit_os_00_index_a1b2c3d4.plan.md` |
-| 01 | Engine | §0.0(+§0.0.1a)·§2~4(+§4.2a·§4.2b)·§12~13·§47·§48.13 · **v7.22.32** | `ai_profit_os_01_engine_b2c3d4e5.plan.md` |
-| 02 | Money & Chain | §11·§41~43·§49(+withdrawApplyBlocked)·§51.5~8/11 · **v7.22.32** pointer | `ai_profit_os_02_money_c3d4e5f6.plan.md` |
-| 03 | UI & UX | §0.1·§5~8(+§5.3b)·§27~30·§33~34·§38(+38.8~9)·§48(+§48.3b)·§50(+50.1n)·§51.14/16~19/21/**24** · **v7.22.32** | `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` |
-| 04 | Admin & Ops | §9~10·§14·§35~37·§39~40·§51.6/10 · §9.8.4a/8d · **v7.22.32** pointer | `ai_profit_os_04_admin_e5f6a7b8.plan.md` |
-| 05 | PWA & Native | §23~26 (+§23.5a 자동Push) · **v7.22.32** pointer | `ai_profit_os_05_pwa_f6a7b8c9.plan.md` |
-| 06 | Infra & Marketing | §15~16·§31~32·§51.9/13 · Auth/Ads lock · **v7.22.32** pointer | `ai_profit_os_06_infra_a7b8c9d0.plan.md` |
+| 00 | Index · Constitution · Roadmap · Gates | §0·§1·§17~22(+§20.1·§20.2)·§51.1/22/23 · **v7.22.34** | `ai_profit_os_00_index_a1b2c3d4.plan.md` |
+| 01 | Money & Chain *(구 02)* | §11·§41~43·§49(+withdrawApplyBlocked)·§51.5~8/11 · **v7.22.33** pointer | `ai_profit_os_01_money_c3d4e5f6.plan.md` |
+| 02 | Engine *(구 01)* | §0.0(+§0.0.1a)·§2~4(+§4.2a·§4.2b)·§12~13·§47·§48.13 · **v7.22.32** (+Index .34 pointer) | `ai_profit_os_02_engine_b2c3d4e5.plan.md` |
+| 03 | UI & UX | §0.1·§5~8(+§5.3b)·§27~30·§33~34·§38(+38.8~9)·§48(+§48.3b)·§50(+50.1n)·§51.14/16~19/21/**24** · **v7.22.32** (+.34 pointer) | `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` |
+| 04 | Admin & Ops | §9~10(+**§9.1.1**)·§14·§35~37·§39~40·§51.6/10 · §9.8.4a/8d · **v7.22.33** | `ai_profit_os_04_admin_e5f6a7b8.plan.md` |
+| 05 | PWA & Native | §23~26 (+§23.5a 자동Push) · **v7.22.33** pointer | `ai_profit_os_05_pwa_f6a7b8c9.plan.md` |
+| 06 | Infra & Marketing | §15~16·§31~32·§51.9/13 Owns · **실행큐=Marketing/후반관측만** · Auth/Phase0=Index · **v7.22.34** | `ai_profit_os_06_infra_a7b8c9d0.plan.md` |
 
 > **원본 아카이브:** `ai_profit_os_launch_54c1261e.plan.md` (전체 통합본 — **편집 시 분리 플랜 우선**)  
 > **착수 전 기록:** `docs/CONSTITUTION_BOOTSTRAP.md`
+
+---
+
+## 플랜 직렬 완료 규칙 (File-Serial · 절대 · 삭제 금지)
+
+> **Owns:** 본 절. 실행 큐 = 각 ACTIVE 해시 플랜 frontmatter `todos` only.  
+> **§18 종속:** §18 선행·Milestone 표기는 **본 직렬의 설명용**이다. Milestone 교차·병행·건너뛰기 착수 **폐기**.
+
+### 절대 규칙
+
+1. **한 파일**의 frontmatter `todos`를 **위 → 아래**로만 실행한다.
+2. **파일 N**의 todos가 전부 `completed`(pending=0) 되기 전 **파일 N+1 착수 금지**.
+3. **한 채팅 = 한 todo** (기존 유지 · 접두사 `[grok-4.5|256K]` / `[composer-2.5|200K]`).
+4. `status: completed` todo는 **손대지 않음 · 재실행 금지**. 재개는 해당 파일의 **첫 pending**부터 위→아래.
+
+### 직렬 파일 순서 (먼저 끝낼 파일 → 마지막)
+
+| # | 파일 | 끝내고 넘어가는 조건 |
+|---|------|----------------------|
+| **00** | Index | pending **0**(골격·카피잠금·**auth-ssot**·**phase0-bootstrap-hosts**) 후만 01 착수 |
+| **01** | Money *(구 02)* | Money pending **0**(원장→지갑→체인→출금→초대) 후만 02 착수 |
+| **02** | Engine *(구 01)* | Engine pending **0**(시세→Rule→시뮬→AI) 후만 03 착수 |
+| **03** | UI & UX | UI pending **0** 후만 04 착수 |
+| **04** | Admin & Ops | Admin pending **0** 후만 05 착수 |
+| **05** | PWA & Native | PWA pending **0** 후만 06 착수 |
+| **06** | Infra & Marketing | pending **0**(Marketing/CAPI + 후반 관측만 · Auth/Phase0 실행큐≠여기) = 전 플랜 직렬 완료 |
+
+**00 Index pending 큐 (위→아래 · completed 재실행 금지):** `monorepo-skeleton` → `copy-canon-cta-sla-lock` → `auth-ssot`(Owns=Infra §51.9) → `phase0-bootstrap-hosts`(Owns=Infra §51.13/§15) → pending 0 후 **01 Money**.
+
+```mermaid
+flowchart TD
+  f00[00_Index_all_todos]
+  f01[01_Money_all_todos]
+  f02[02_Engine_all_todos]
+  f03[03_UI_all_todos]
+  f04[04_Admin_all_todos]
+  f05[05_PWA_all_todos]
+  f06[06_Infra_Marketing_all_todos]
+  f00 --> f01 --> f02 --> f03 --> f04 --> f05 --> f06
+```
+
+**금지:** 앞 파일 pending>0인데 뒤 파일 todo 착수 · §18 Milestone만 보고 도메인 교차 병행 · completed 재실행 · launch ARCHIVE를 실행 큐로 사용.
 
 ---
 
@@ -142,7 +198,7 @@ isProject: false
 | **원화 입금** | **§41.3+§43.3** Day-1=Admin **승인/거절** → USDT credit · CSV=L2+ · **PG사 0** |
 | **KYC/출금인증** | **§42** 출금 1회 + **§43** WebAuthn·Email OTP·PIN fallback |
 | **가격/원장** | **§43** minProfitUsdt + staleAt≤3s · FOR UPDATE ASC · idempotency_key |
-| **시세 소스** | **§0.0 v7.13** Signup-Ready 6 · **가격비교→마진 UX** · **소액~웨일 capitalBand** |
+| **시세 소스** | **§0.0** Day-1 adapter **5종**(ebay·pokemontcg·ygoprodeck·coingecko·frankfurter) + admin legs · `yahoo_jp` 영구0 · **가격비교→마진 UX** · capitalBand |
 | **마진 인지** | `PriceCompareMargin` 홈/상세/확인/영수증 4면 필수 · compareReady 가드 |
 | **Personal AI** | **§47.9** 단일PG SoT · Redis hot · pgvector→Qdrant later · 학습OFF+Eval · GH코드만 |
 | **AI 진행 UX** | **§48** 진행실·성공영수증·안전중단 + Admin 진행정책 — **Canon 4면** (사진목업≠픽셀SSOT · ADR-013) |
@@ -181,6 +237,8 @@ isProject: false
 | **v7.22.30 매칭 긴장감·등급대기** | Soft/Hard **전 등급 동일** · 긴장감=시세·스텝 Fact·적합도 수렴·Soft중반/성공직전 정적(연출 only) · 등급 차별=일일캡·기회·지위카피(**≠대기특권·≠성공구매**) · 가짜 대기인원/난수성공/보장 0 · UI **§48.3b** · `verify:match-tension-surface` · Audit A6 |
 | **v7.22.31 Listing legs (JP번호 없음)** | Day-1 = **ebay 멀티 marketplace**(US×GB 등) **또는 ebay×admin** · (당시 `yahoo_jp`=Phase1+) · KR/Chrono24 대체 금지 · Engine §0.0.1a · `verify:listing-legs-day1` |
 | **v7.22.32 Yahoo 영구 배제** | `yahoo_jp` / Yahoo! JAPAN Auction / yahoo-jp-adapter / YAHOO_* ENV = **영구 FORBIDDEN** · Phase1+ **철회** · stub·재제안 **0** · listing = ebay 멀티\|admin **only** · 유저 「야후」문자열 **0** · ADR-003 adapter **5종** · `verify:listing-legs-day1` |
+| **v7.22.33 실물재감사·Admin IA·M0큐** | FS+Supabase MCP 재스캔 · `public`테이블0·migrations0·pgvector미설치·apps/services0 · Admin **§9.1.1** 자식 route 전수 · 카드위계=`기회→투입→수익→AI→[수익 벌기]` · Signup-Ready6 문구 폐기 · BOOTSTRAP §6 전수 · Index todo `copy-canon-cta-sla-lock` · Audit A9 |
+| **v7.22.34 File-Serial** | 실행 순서=**파일 N pending=0 전 N+1 금지** · git mv Engine↔Money 번호 스왑(해시 유지) → **01 Money · 02 Engine** · Infra `auth-ssot`/`phase0-bootstrap-hosts`→Index 실행큐 · Owns 본문=Infra 유지 · 파일 내 todos 의존순 재배열 · §18=설명용 종속 · 구번호 파일명 문자열 **0** |
 
 ### 점수판 (목표)
 
@@ -288,14 +346,18 @@ isProject: false
 
 ## 18. 로드맵 (UX 통합)
 
-### 선행 순서 (오류0 · **= 아래 Milestone과 1:1** · 한 줄에 MS 여러 개 묶기 금지)
+> **File-Serial 종속 (절대):** 본 절의 선행·Milestone은 **설명·검수용**이다.  
+> **실행 권위 = Index「플랜 직렬 완료 규칙」** — 파일 N pending=0 전 파일 N+1 착수 금지 · 파일 내부 todos 위→아래 · 한 채팅=한 todo.  
+> Milestone 표기로 Engine∥Money∥UI 교차 병행·건너뛰기 **금지**.
+
+### 선행 순서 (오류0 · **= 아래 Milestone과 1:1** · 한 줄에 MS 여러 개 묶기 금지 · **실행은 File-Serial**)
 
 0. **ADR-014/015/016 툴체인 PASS** — `pnpm verify:stack-lock` · `verify:brand-consumer` · `TOOLCHAIN.md` · next@16 · TW4 · pnpm10 · **원격 Supabase+Upstash** · PG사0 (Compose=옵션)  
 0b. **`docs/CONSTITUTION_BOOTSTRAP.md` PASS**  
-0c. **M0 todo 순서 잠금 (Audit A5 · BOOTSTRAP §9.1 · 건너뛰기 금지):**  
-   `constitution-28-core` → `constitution-28-ai-money-ops` → `schemas-contracts-core` → `schemas-migrations-supabase` → `monorepo-skeleton` → copy/Canon(`ctaEarn`·SLA3키) → 기능 todo  
-1. **M0** — CONSTITUTION 22~28·35~51 (+§47.12~14 · §50.9) + schemas + **supabase/migrations** + brand + Lux `@theme` + monorepo-skeleton  
-2. **M0+UI 기초** — packages/ui (lux components · responsive · **copy/ko** · toneBand/fontScale) + useCopy + ESLint · Canon wires  
+0c. **M0 todo 순서 잠금 (Audit A5/A9 · BOOTSTRAP §9.1 · File-Serial · 건너뛰기 금지 · Grok 위→아래):**  
+   `constitution-28-core` → `constitution-28-ai-money-ops` → `schemas-contracts-core` → `schemas-migrations-supabase` → `monorepo-skeleton`(Admin=§9.1.1) → `copy-canon-cta-sla-lock` → `auth-ssot` → `phase0-bootstrap-hosts` → *(Index pending 0 후 다음 파일)*  
+1. **M0** — CONSTITUTION 22~28·35~51 (+§47.12~14 · §50.9) + schemas + **supabase/migrations**(+vector) + brand + Lux `@theme` + monorepo-skeleton  
+2. **M0+UI 기초** — `copy-canon-cta-sla-lock` + packages/ui (lux · responsive · **copy/ko** · toneBand/fontScale) + Canon wires  
 3. **M0.5** — simulation (**§51.4** · Growth ON 전 필수) + Admin `growth?tab=simulation`  
 4. **M1** — Money Core (**PG사 0** · ledger/buckets · USDT · KRW Admin 승인/거절 · withdraw) + Nest Auth JWT (§51.9)  
 5. **M1↔M2 정산 핵** — **§48.13 MATCH_SUCCESS Rule** + golden traces (participate/settlement와 동시 · Admin 뒤로 미루지 **않음**)  
@@ -308,7 +370,7 @@ isProject: false
 12. **M7** — Stage→Prod + Lighthouse PWA + 320px~4K visual regression  
 13. **M8 / M8a~c** — Expansion adapters · Store Bridge (TWA/Capacitor · **optional · Day-1 게이트 제외**)
 
-### Milestone (SSOT · 선행 순서와 동일)
+### Milestone (설명용 · 선행 순서와 1:1 · **착수 권위≠본 표 · File-Serial 승**)
 
 | MS | 내용 |
 |----|------|
@@ -505,7 +567,7 @@ isProject: false
 |---|-----|------|-----------|
 | **P0** | 홈 “오늘/지금 가능한 기회” 강조 | UX | UI §5.3b 섹션·히어로 카피 강화 |
 | **P0** | `arbitrageType` 유저 비가시 | 발견성 | Engine §4.2a 라벨 · 카드/상세 뱃지 필수 |
-| **P0** | “왜 지금 돈이 되는지” + 참여 모델 | 설명 | 카드 위계 **기회→투입→수익→기간→AI→매칭** · §20.2 · PriceCompare=**기회 근거**(직접거래 암시 0) |
+| **P0** | “왜 지금 돈이 되는지” + 참여 모델 | 설명 | 카드 위계 **기회→투입→수익→AI→[수익 벌기]** · §20.2 · `expectedSellDays`/기간슬롯 유저0 · PriceCompare=**기회 근거**(직접거래 암시 0) |
 | **P1** | “오늘만 / 마감 임박” 필터 | 필터 | Engine tag `time_sensitive` · UI 칩 **검토 후** Day-1 노출(강제 ON 아님) |
 | **P1** | `sellSuccessRate` 신뢰 설명 | 신뢰 | Engine §51.3 meta · 유저 라벨 **「과거 유사 매칭」**(「판매 성공률」금지) |
 | **P1** | FX 기회 시각 | UX | **동일 OpportunityCard + PriceCompareMargin** · FX 전용 이질 레이아웃 금지 |
@@ -898,6 +960,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | 성별 UI | **분기 금지** · 중성 존댓말 (UI §27.3 · §38.1) |
 | 착수 전 기록 | `docs/CONSTITUTION_BOOTSTRAP.md` |
 | 에이전트 모델 | todo `[grok-4.5\|256K]` / `[composer-2.5\|200K]` · 한 채팅=한 todo |
+| **File-Serial** | Index「플랜 직렬 완료 규칙」· 파일N pending=0 전 N+1 금지 · §18=설명용 종속 |
 
 ---
 
@@ -913,7 +976,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | 4 | ADR-015 Compose 필수처럼 읽힘 vs ADR-016 Docker-less 기본 | Compose=**옵션** · 기본=원격 Supabase+Upstash |
 | 5 | Admin 문서 `NATS *.updated` vs Phase0 NATS0 | Phase0=in-process 동등 이벤트 · NATS=Phase1+ · UI 노출 0 |
 | 6 | Personal AI만 있고 **퍼뜩(AI)** 유저명/제안루프 없음 | §47.12 퍼뜩(AI) 흡수 |
-| 7 | CS/simulation/퍼뜩(AI) Admin이 본문만 있고 §9.1 자식 잠금 약함 | Admin §9.1.1 자식 route 표 잠금 |
+| 7 | CS/simulation/퍼뜩(AI) Admin이 본문만 있고 §9.1 자식 잠금 약함 | → **v7.22.33** Admin §9.1.1 전수표 + simulation 탭 잠금 |
 | 8 | launch ARCHIVE todos에 모델·파트 분할 없음 | 전 플랜 todo에 모델 접두사 · 256K/200K 기준 분할 |
 | 9 | `supabase/config.toml` 주석에 바로번다 | **퍼뜩**으로 교정 |
 | 10 | v7.22.2 히스토리에 next@15 잔존 문구 | 히스토리로 유지 · 실행핀=ADR-015 next@16 (재착수 금지) |
@@ -1078,7 +1141,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | 유저 금지행위(구매/판매/처선택/협상/외부이동) | Index §20.2 · UI | [x] |
 | CTA `수익 벌기` · retired 직접거래/`이 상품으로…` | Index ADR-007 · UI §48 · **E-CTA** | [x] |
 | 내부필드↔유저표기 맵 · executionPlatforms 유저0 | Engine §4.2b | [x] |
-| 카드위계 기회→투입→수익→기간→AI→매칭 | UI §5.3b · §6.1 | [x] |
+| 카드위계 기회→투입→수익→AI→[수익 벌기] (`기간`/`expectedSellDays` 유저0) | UI §5.3b · §6.1 · §20.2 | [x] |
 | 진행실=매칭대기·처리 · 대기 Fact 가짜0 | UI §48 · Engine Fact | [x] |
 | `verify:cta-earn-profit` · `user-trader-jargon-0` | CATALOG | [x] stub |
 | 구현 시 copy/ko · Canon | UI 구현 todo | [ ] |
@@ -1128,6 +1191,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | 항목 | 상태 |
 |------|------|
 | §18 선행 ⇄ Milestone 1:1 (한 줄 다중 MS 묶기 0) | [x] |
+| **File-Serial 잠금** · 파일N pending=0 전 N+1 착수 금지 · §18=직렬 종속(설명용) | [x] |
 | §48.13 Rule = M1 핵 · Admin(M4) 뒤로 미루지 않음 | [x] |
 | M3.5 Push/WebAuthn · M5 퍼뜩 AI 분리 | [x] |
 | §21 NATS/Temporal = Phase1+/2+ 명시 | [x] |
@@ -1224,3 +1288,47 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 - [x] Canon wires: onboarding·auth·landing-3s·kyc-* + manifest  
 - [x] RRN 타이핑 0 · 성별 필드 0 · `/ads` 이중 페이지 금지  
 - [ ] 구현 시 `verify:onboarding-experiential` · `verify:auth-surfaces` · `verify:landing-3s` · `verify:kyc-surfaces` PASS
+
+---
+
+## v7.22.33 실물재감사 · 모순 해소 (Audit A9 · 예측 금지)
+
+> **방법:** 레포 FS + Supabase MCP + 도메인 플랜 frontmatter/본문 대조 · 2026-08-09.  
+> **기록 SSOT:** `docs/CONSTITUTION_BOOTSTRAP.md` (v7.22.33) · Admin **§9.1.1**.
+
+### A9. 확인된 모순 → 흡수 조치
+
+| # | 실측 모순 | 해소 |
+|---|-----------|------|
+| 1 | Index/BOOTSTRAP가 Admin **§9.1.1**을 잠금으로 인용했으나 Admin 파일에 절 **부재** | Admin에 **§9.1.1** 전수표 신설 · BOOTSTRAP §6 동기 |
+| 2 | §20.1 P0 카드위계=`…→기간→AI→매칭` vs §20.2/`expectedSellDays`유저0 | 전수 **기회→투입→수익→AI→[수익 벌기]** |
+| 3 | 흡수표 “Signup-Ready **6**” vs ADR-003 adapter **5** + yahoo 영구0 | Day-1=**5종** 문구로 교정 |
+| 4 | Index 맵 Admin/Money/PWA/Infra=`v7.22.32` vs 파일 overview `v7.22.27/28` | pointer **v7.22.33** sync |
+| 5 | Growth `simulation` 탭이 Index M0.5 필수인데 Admin §35.6 표에 **누락** | §35.6에 `simulation` 행 추가 |
+| 6 | Admin §9.2 `feature-platform` 유령 모듈 암시 | **ai-logs** + Engine pointer만 (sidebar 추가 0) |
+| 7 | M0 step6 copy/Canon이 BOOTSTRAP에만 있고 Index YAML todo **없음** | todo `copy-canon-cta-sla-lock` 추가 |
+| 8 | Supabase `auth` 스키마 23 relations 존재 → Auth SoT 오해 가능 | BOOTSTRAP: 시스템스키마≠앱 Auth · Nest JWT only |
+| 9 | `vector` extension available·**미설치** · public 테이블0 · migrations0 | migrations todo에 pgvector+Seoul apply 명시 |
+| 10 | `apps`/`services`/`CONSTITUTION`/`schemas`/`engine-rust` **0** | 착수 순서 유지 · 구현 착수=constitution-28-core |
+
+### A9. 다관점 판정
+
+| 관점 | 판정 |
+|------|------|
+| 앱테크·핀테크 개발팀 | 머니/Rule/단일PG 잠금 유지. 착수 전 빈 DB·빈 apps는 **정상**(M0 미실행). 순서 이탈만 치명. |
+| 운영자 | Admin 12+자식(KRW승인·CS·시뮬·퍼뜩·유저360·엄격도) 없으면 런칭 운영 불가 → §9.1.1=골격 필수. |
+| KR 유저 20~70 | CTA=`수익 벌기`·쉬운한글·퍼뜩 안내·Soft60 카피 유지. 카드에「기간 N일」재등장 금지. |
+| 감사관 | brand/PG사0/Auth Nest/yahoo0/ledger 불변식 유지. 플랜≠코드 drift는 M0 게이트로 차단. |
+| 분석관 | 문서 drift(§9.1.1부재·위계·adapter수)가 구현 전 최대 리스크였음 → v7.22.33로 흡수 완료. |
+
+### A9. 다음 실행 (운영자 · Grok-4.5 · 위→아래)
+
+1. `constitution-28-core` *(completed)*  
+2. `constitution-28-ai-money-ops` *(completed)*  
+3. `schemas-contracts-core` *(completed)*  
+4. `schemas-migrations-supabase` *(completed)*  
+5. `monorepo-skeleton` ← **다음**  
+6. `copy-canon-cta-sla-lock`  
+7. `auth-ssot` *(Infra→Index 실행큐 이동 · Owns=Infra §51.9)*  
+8. `phase0-bootstrap-hosts` *(Infra→Index 실행큐 이동 · Owns=Infra §51.13)*  
+9. Index pending 0 후 도메인 파일 todo (한 채팅=1 · File-Serial)

@@ -24,7 +24,7 @@ Cursor = **플랜 집행기**. ADR 없는 스택 재설계 금지.
 
 - Node22 · pnpm@10.14 · **next@16** · **Tailwind v4** · Nest · Rust engine
 - Host = **Cloudflare only** (Vercel 병행 금지)
-- DB = Supabase-managed PostgreSQL **서울** 권장 · Docker 옵션(8GB면 원격만)
+- DB = Supabase-managed PostgreSQL **서울** 권장 · Docker 옵션(이 PC=Celeron/8GB → 원격만)
 - Auth = Nest JWT only (**Supabase Auth 금지**)
 - Phase0 in-process · PG사 0 · GH=코드만
 

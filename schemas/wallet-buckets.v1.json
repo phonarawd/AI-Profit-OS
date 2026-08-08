@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/wallet-buckets.v1.json",
+  "title": "WalletBucketsV1",
+  "description": "Money §49 · principal/profit/locked/practice · sum==liabilityUsdt. NEVER: balance+= · practice withdraw/participate.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "userId",
+    "principalUsdt",
+    "profitUsdt",
+    "lockedUsdt",
+    "practiceUsdt",
+    "liabilityUsdt",
+    "asOfLedgerEntryId"
+  ],
+  "properties": {
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "principalUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "profitUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "lockedUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "practiceUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "liabilityUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "asOfLedgerEntryId": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
