@@ -17,7 +17,9 @@ Problems에 수백 개가 뜨는 주원인 = `davidanson.vscode-markdownlint`가
 |------|------|
 | `.markdownlint.json` | 스타일 규칙 OFF (MD013/MD060 등) |
 | `.markdownlintignore` · `.markdownlint-cli2.jsonc` | plans/rules/감사/docs ignore |
+| `%USERPROFILE%\.cursor\plans\.markdownlint.json` | **전역 Cursor plan** ENOENT 방지 · `default:false` · `pnpm cursor:ensure-plans-markdownlint` |
 | `.vscode/settings.json` | markdownlint ignore(+CONSTITUTION) · ESLint OFF · TS server 1GB cap · RA onDemand · MD formatOnSave OFF |
+| Cursor User `settings.json` | `${userHome}/.cursor/plans/**` ignore |
 
 ## 에이전트 금지
 
@@ -35,3 +37,15 @@ Problems에 수백 개가 뜨는 주원인 = `davidanson.vscode-markdownlint`가
 
 - 제품 카피(`packages/ui/copy/**`)만 markdownlint 대상 후보
 - 플랜·규칙·감사는 ignore 목록에 두고, 스타일 빚으로 취급하지 않음
+
+## Plan 이중본 (todo 미완료 UI 버그 방지)
+
+| 위치 | 역할 |
+|---|---|
+| 워크스페이스 `.cursor/plans/ai_profit_os_*.plan.md` | **편집 SSOT** · todo `status` 여기만 |
+| `%USERPROFILE%\.cursor\plans\` | Cursor UI 미러 · **직접 편집 금지** |
+| `*_ssot` · 구번호 논리명 | **STALE** · `_archive/ai_profit_os_stale/` |
+
+- sync: `pnpm cursor:sync-plans` (prepare · sessionStart · stop 훅 자동)
+- verify: `pnpm verify:plans-ssot` (`verify:gate` 포함)
+- 에이전트: 홈 플랜 열어 todo 완료하지 말 것 · 워크스페이스 YAML `status: completed` 후 sync가 미러 갱신

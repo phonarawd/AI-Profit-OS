@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Index
-overview: v7.22.34 ACTIVE Index. File-Serial=00→01Money→02Engine→03→06. Auth/Phase0=Index. listing=ebay멀티|admin·yahoo영구FORBIDDEN·CTA수익벌기·Soft60/Hard90.
+overview: v7.22.36 Index CLOSED(pending0). 실측=DB41·mig10·pgvectorON·헌법29·schemas38·apps web+admin·Nest Auth·Phase0 hosts. File-Serial→01Money. listing=ebay멀티|admin·yahoo영구FORBIDDEN·CTA수익벌기·Soft60/Hard90.
 todos:
   - id: yahoo-jp-permanent-ban
     content: "[grok-4.5|256K] v7.22.32 yahoo_jp 영구 FORBIDDEN · Phase1+ 철회 · Engine/UI/ENV 0 · verify:listing-legs-day1"
@@ -50,22 +50,25 @@ todos:
   - id: schemas-migrations-supabase
     content: "[grok-4.5|256K] supabase/migrations 초기(extensions+vector·ledger_*·wallet·ai_*·RLS) · 원격 Seoul apply · public테이블생성 · Dashboard DDL0 · Nest Auth only(시스템auth스키마≠SoT)"
     status: completed
+  - id: index-bootstrap-resync-735
+    content: "[grok-4.5|256K] v7.22.35 실물재감사(DB38·mig9·pgvectorON·헌법29·스키마38·apps0)·BOOTSTRAP§0/§9동기·Admin todo의존순·Engine시장선행·RLS deny-by-default 기록"
+    status: completed
   - id: monorepo-skeleton
     content: "[composer-2.5|200K] apps/web·apps/admin·services·workers·packages/{ui,sdk,schemas} 골격 + Admin routes=§9.1.1·User 5탭 IA lock · verify:stack-lock 유지"
-    status: pending
+    status: completed
   - id: copy-canon-cta-sla-lock
     content: "[grok-4.5|256K] packages/ui/copy/ko ctaEarn·면책·배지·Soft/Hard카피3줄 + Canon primaryCta · verify:cta-earn-profit/match-tension-surface stub배선"
-    status: pending
+    status: completed
   - id: auth-ssot
     content: "[grok-4.5|256K] §51.9+§51.9.1 OAuth/Passkey/Stage A·B 필드/세션/탈퇴 · Nest JWT only · Owns=Infra §51.9 · verify:auth-flows"
-    status: pending
+    status: completed
   - id: phase0-bootstrap-hosts
     content: "[composer-2.5|200K] Phase0 Bootstrap $0(CF Pages/Workers+Supabase Seoul+Upstash) · Compose옵션 · Owns=Infra §51.13/§15 · NATS/Temporal/EKS 0"
-    status: pending
+    status: completed
 isProject: false
 ---
 
-# AI Profit OS — Index · Constitution · Gates (v7.22.34)
+# AI Profit OS — Index · Constitution · Gates (v7.22.36 · CLOSED)
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
 > **착수 전 SSOT:** [`docs/CONSTITUTION_BOOTSTRAP.md`](file:///c:/Users/PC/Desktop/AI_PROFIT_OS/docs/CONSTITUTION_BOOTSTRAP.md) — 헌법·스키마·마이그레이션·실물상태 기록  
@@ -92,13 +95,13 @@ isProject: false
 
 | # | 플랜 | 범위 | **실파일** |
 |---|------|------|------------|
-| 00 | Index · Constitution · Roadmap · Gates | §0·§1·§17~22(+§20.1·§20.2)·§51.1/22/23 · **v7.22.34** | `ai_profit_os_00_index_a1b2c3d4.plan.md` |
-| 01 | Money & Chain *(구 02)* | §11·§41~43·§49(+withdrawApplyBlocked)·§51.5~8/11 · **v7.22.33** pointer | `ai_profit_os_01_money_c3d4e5f6.plan.md` |
-| 02 | Engine *(구 01)* | §0.0(+§0.0.1a)·§2~4(+§4.2a·§4.2b)·§12~13·§47·§48.13 · **v7.22.32** (+Index .34 pointer) | `ai_profit_os_02_engine_b2c3d4e5.plan.md` |
-| 03 | UI & UX | §0.1·§5~8(+§5.3b)·§27~30·§33~34·§38(+38.8~9)·§48(+§48.3b)·§50(+50.1n)·§51.14/16~19/21/**24** · **v7.22.32** (+.34 pointer) | `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` |
-| 04 | Admin & Ops | §9~10(+**§9.1.1**)·§14·§35~37·§39~40·§51.6/10 · §9.8.4a/8d · **v7.22.33** | `ai_profit_os_04_admin_e5f6a7b8.plan.md` |
-| 05 | PWA & Native | §23~26 (+§23.5a 자동Push) · **v7.22.33** pointer | `ai_profit_os_05_pwa_f6a7b8c9.plan.md` |
-| 06 | Infra & Marketing | §15~16·§31~32·§51.9/13 Owns · **실행큐=Marketing/후반관측만** · Auth/Phase0=Index · **v7.22.34** | `ai_profit_os_06_infra_a7b8c9d0.plan.md` |
+| 00 | Index · Constitution · Roadmap · Gates | §0·§1·§17~22(+§20.1·§20.2)·§51.1/22/23 · **v7.22.36 CLOSED** | `ai_profit_os_00_index_a1b2c3d4.plan.md` |
+| 01 | Money & Chain *(구 02)* | §11·§41~43·§49(+withdrawApplyBlocked)·§51.5~8/11 · **v7.22.35** pointer | `ai_profit_os_01_money_c3d4e5f6.plan.md` |
+| 02 | Engine *(구 01)* | §0.0(+§0.0.1a)·§2~4(+§4.2a·§4.2b)·§12~13·§47·§48.13 · **v7.22.32** (+Index .35 pointer · todo의존순) | `ai_profit_os_02_engine_b2c3d4e5.plan.md` |
+| 03 | UI & UX | §0.1·§5~8(+§5.3b)·§27~30·§33~34·§38(+38.8~9)·§48(+§48.3b)·§50(+50.1n)·§51.14/16~19/21/**24** · **v7.22.32** (+.35 pointer) | `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` |
+| 04 | Admin & Ops | §9~10(+**§9.1.1**)·§14·§35~37·§39~40·§51.6/10 · §9.8.4a/8d/8e · **v7.22.35** | `ai_profit_os_04_admin_e5f6a7b8.plan.md` |
+| 05 | PWA & Native | §23~26 (+§23.5a 자동Push) · **v7.22.35** pointer | `ai_profit_os_05_pwa_f6a7b8c9.plan.md` |
+| 06 | Infra & Marketing | §15~16·§31~32·§51.9/13 Owns · **실행큐=Marketing/후반관측만** · Auth/Phase0=Index · **v7.22.35** | `ai_profit_os_06_infra_a7b8c9d0.plan.md` |
 
 > **원본 아카이브:** `ai_profit_os_launch_54c1261e.plan.md` (전체 통합본 — **편집 시 분리 플랜 우선**)  
 > **착수 전 기록:** `docs/CONSTITUTION_BOOTSTRAP.md`
@@ -129,7 +132,7 @@ isProject: false
 | **05** | PWA & Native | PWA pending **0** 후만 06 착수 |
 | **06** | Infra & Marketing | pending **0**(Marketing/CAPI + 후반 관측만 · Auth/Phase0 실행큐≠여기) = 전 플랜 직렬 완료 |
 
-**00 Index pending 큐 (위→아래 · completed 재실행 금지):** `monorepo-skeleton` → `copy-canon-cta-sla-lock` → `auth-ssot`(Owns=Infra §51.9) → `phase0-bootstrap-hosts`(Owns=Infra §51.13/§15) → pending 0 후 **01 Money**.
+**00 Index pending 큐:** **pending 0 · CLOSED (v7.22.36)**. 다음 파일=**01 Money** 첫 pending (`money-double-entry`). *(Index completed: monorepo-skeleton · copy-canon-cta-sla-lock · auth-ssot · phase0-bootstrap-hosts)*
 
 ```mermaid
 flowchart TD
@@ -238,6 +241,8 @@ flowchart TD
 | **v7.22.31 Listing legs (JP번호 없음)** | Day-1 = **ebay 멀티 marketplace**(US×GB 등) **또는 ebay×admin** · (당시 `yahoo_jp`=Phase1+) · KR/Chrono24 대체 금지 · Engine §0.0.1a · `verify:listing-legs-day1` |
 | **v7.22.32 Yahoo 영구 배제** | `yahoo_jp` / Yahoo! JAPAN Auction / yahoo-jp-adapter / YAHOO_* ENV = **영구 FORBIDDEN** · Phase1+ **철회** · stub·재제안 **0** · listing = ebay 멀티\|admin **only** · 유저 「야후」문자열 **0** · ADR-003 adapter **5종** · `verify:listing-legs-day1` |
 | **v7.22.33 실물재감사·Admin IA·M0큐** | FS+Supabase MCP 재스캔 · `public`테이블0·migrations0·pgvector미설치·apps/services0 · Admin **§9.1.1** 자식 route 전수 · 카드위계=`기회→투입→수익→AI→[수익 벌기]` · Signup-Ready6 문구 폐기 · BOOTSTRAP §6 전수 · Index todo `copy-canon-cta-sla-lock` · Audit A9 |
+| **v7.22.35 실물재감사·BOOTSTRAP동기·todo의존순** | FS+Supabase MCP 재스캔 · public **38** · migrations **9** · pgvector **ON** · CONSTITUTION **29** · schemas **38** · apps/services **0** · BOOTSTRAP §0/§9 · Admin todo=`ops→기능→isolated-deploy` · Engine=`market→adapters→projection` · RLS deny-by-default 의도 기록 · `.cursorignore` BOOTSTRAP 예외 |
+| **v7.22.36 Index CLOSE·실물재동기** | Index todos pending **0** · MCP 재실측 public **41**(+auth oauth/passkey/magic) · migrations **10**(로컬파일버전=`20260808224856`=원격) · apps `web`+`admin` · services `api-nest`/`engine-rust` · Phase0 hosts PASS · BOOTSTRAP §0 동기 · 다음=**01 Money** · Audit A11 |
 | **v7.22.34 File-Serial** | 실행 순서=**파일 N pending=0 전 N+1 금지** · git mv Engine↔Money 번호 스왑(해시 유지) → **01 Money · 02 Engine** · Infra `auth-ssot`/`phase0-bootstrap-hosts`→Index 실행큐 · Owns 본문=Infra 유지 · 파일 내 todos 의존순 재배열 · §18=설명용 종속 · 구번호 파일명 문자열 **0** |
 
 ### 점수판 (목표)
@@ -355,7 +360,7 @@ flowchart TD
 0. **ADR-014/015/016 툴체인 PASS** — `pnpm verify:stack-lock` · `verify:brand-consumer` · `TOOLCHAIN.md` · next@16 · TW4 · pnpm10 · **원격 Supabase+Upstash** · PG사0 (Compose=옵션)  
 0b. **`docs/CONSTITUTION_BOOTSTRAP.md` PASS**  
 0c. **M0 todo 순서 잠금 (Audit A5/A9 · BOOTSTRAP §9.1 · File-Serial · 건너뛰기 금지 · Grok 위→아래):**  
-   `constitution-28-core` → `constitution-28-ai-money-ops` → `schemas-contracts-core` → `schemas-migrations-supabase` → `monorepo-skeleton`(Admin=§9.1.1) → `copy-canon-cta-sla-lock` → `auth-ssot` → `phase0-bootstrap-hosts` → *(Index pending 0 후 다음 파일)*  
+   `constitution-28-core` → `constitution-28-ai-money-ops` → `schemas-contracts-core` → `schemas-migrations-supabase` → `monorepo-skeleton`(Admin=§9.1.1) → `copy-canon-cta-sla-lock`*(done)* → `auth-ssot`*(done)* → `phase0-bootstrap-hosts`*(done)* → **Index CLOSED** → **01 Money**
 1. **M0** — CONSTITUTION 22~28·35~51 (+§47.12~14 · §50.9) + schemas + **supabase/migrations**(+vector) + brand + Lux `@theme` + monorepo-skeleton  
 2. **M0+UI 기초** — `copy-canon-cta-sla-lock` + packages/ui (lux · responsive · **copy/ko** · toneBand/fontScale) + Canon wires  
 3. **M0.5** — simulation (**§51.4** · Growth ON 전 필수) + Admin `growth?tab=simulation`  
@@ -517,8 +522,9 @@ flowchart TD
 - [ ] **v7.22.9:** 유저 surface/카피/manifest/JSON-LD에 retired 표기 **0** · Legal 법인명 제외
 - [x] **v7.22.8:** ADR-016 rules·hooks·Husky·`verify:gate`·GH Actions·Docker-less·cleanup 흡수
 - [ ] **v7.22.8:** GitHub branch protection = gate required · Upstash `REDIS_URL` · `DATABASE_URL` 채움
-- [x] **v7.22.9:** `docs/CONSTITUTION_BOOTSTRAP.md` · 실물감사(헌법0·migrations0·apps skeleton) · 퍼뜩(AI)·Admin자식·모델분할 흡수
-- [ ] **v7.22.9:** `CONSTITUTION/` + `schemas/` + `supabase/migrations/` 생성 PASS 후 monorepo-skeleton
+- [x] **v7.22.9:** `docs/CONSTITUTION_BOOTSTRAP.md` · 실물감사(당시 헌법0·migrations0) · 퍼뜩(AI)·Admin자식·모델분할 흡수
+- [x] **v7.22.35:** `CONSTITUTION/`29 + `schemas/`38 + migrations9/DB38/pgvector ON PASS · 다음=`monorepo-skeleton`
+- [x] **v7.22.36 Index CLOSE:** pending **0** · 실측 DB**41**·mig**10**(버전=원격1:1)·pgvectorON·apps `web`+`admin`·`api-nest` Auth·Phase0 hosts · 다음=**01 Money**
 
 ---
 
@@ -1040,7 +1046,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | 진행 스텝 active **`시세 불러오는 중...`** | UI §48.3 · T.execution.steps | [x] |
 | Canon `productThumb` running+success · manifest 1.3.2 | UI Canon | [x] |
 | `verify:asset-image-surface` CATALOG | tooling | [x] stub |
-| schemas `opportunity-card`+`asset-master` 필드 | schemas-contracts | [ ] 구현 |
+| schemas `opportunity-card`+`asset-master` 필드 | schemas-contracts | [x] 파일 |
 
 ### E-FEED. v7.22.21 흡수 체크 (잔액 인식 · 유저 매치 · 목업 0)
 
@@ -1053,7 +1059,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | SKU 1:1 실사진 강조 | Engine §0.0.6 | [x] |
 | 사진 PNG 목업 레포 삭제 · Brand ready만 · cursorignore | ADR-013 | [x] |
 | `verify:balance-aware-feed` · `verify:admin-user-opportunity-override` | CATALOG | [x] stub |
-| schema `user-opportunity-override.v1` | schemas-contracts | [ ] 구현 |
+| schema `user-opportunity-override.v1` | schemas-contracts | [x] 파일 |
 
 ### E-MATCH. v7.22.23 흡수 체크 (매칭 성공 조절 · 중복0)
 
@@ -1065,7 +1071,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | `successRatePercent` 스키마/컨트롤 금지 | CI | [x] |
 | Canon admin-execution-policy matchStrictness | Canon | [x] |
 | `verify:match-strictness` | CATALOG | [x] stub |
-| execution-policy.v1 필드 구현 | schemas-contracts | [ ] |
+| execution-policy.v1 필드 | schemas-contracts | [x] 파일 |
 
 ### E-SCAN. v7.22.26 흡수 체크 (기회스캔 표현계층 · 중복0)
 
@@ -1101,8 +1107,8 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | 등급=캡·기회·지위 · ≠대기특권 | §20.2 · Engine §0.0.7 · §5.9.2c | [x] |
 | Soft중반·성공직전 정적·아깝게실패 카피 | UI §48.3b | [x] |
 | 연출≠정산 · CountUp=`settlement.completed` only | UI §0.1·§48 | [x] |
-| `verify:match-tension-surface` | CATALOG | [x] stub |
-| Canon/copy 실물 | UI 구현 | [ ] |
+| `verify:match-tension-surface` | CATALOG | [x] live (copy/Canon) |
+| Canon/copy 실물 | UI 구현 | [x] `copy-canon-cta-sla-lock` |
 
 ### E-SLA. v7.22.29 흡수 체크 (Soft60/Hard90 · REQUEUE · 중복0)
 
@@ -1115,7 +1121,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | presentation≠SLA · 입금 체인 합산 0 | Index · UI | [x] |
 | Soft/Hard 전등급동일 · 긴장감 UX | **E-TENSION / v7.22.30** | → |
 | Audit A4 Freeze | Audit | [x] |
-| Canon/copy 실물 keys | UI 구현 | [ ] |
+| Canon/copy 실물 keys | UI 구현 | [x] `copy-canon-cta-sla-lock` · `verify:soft-hard-requeue-sla` |
 
 ### E-CTA. v7.22.28 흡수 체크 (수익 벌기 · 1분 · 시간축 · 중복0)
 
@@ -1130,7 +1136,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | Soft/Hard·REQUEUE | **E-SLA / v7.22.29** | → |
 | `내거래` KEEP(이력) · 직접거래 CTA 0 | UI | [x] |
 | `platform_reserve`=Ops · 제품 P0 아님 | Index · Engine sim | [x] |
-| `verify:cta-earn-profit` (구 cta-match-participate 별칭 허용) | CATALOG | [x] stub |
+| `verify:cta-earn-profit` (구 cta-match-participate 별칭 허용) | CATALOG | [x] live (copy/Canon) |
 
 ### E-CAPITAL. v7.22.27 흡수 체크 (자본참여자 · INTERNAL/USER · 중복0)
 
@@ -1143,8 +1149,8 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | 내부필드↔유저표기 맵 · executionPlatforms 유저0 | Engine §4.2b | [x] |
 | 카드위계 기회→투입→수익→AI→[수익 벌기] (`기간`/`expectedSellDays` 유저0) | UI §5.3b · §6.1 · §20.2 | [x] |
 | 진행실=매칭대기·처리 · 대기 Fact 가짜0 | UI §48 · Engine Fact | [x] |
-| `verify:cta-earn-profit` · `user-trader-jargon-0` | CATALOG | [x] stub |
-| 구현 시 copy/ko · Canon | UI 구현 todo | [ ] |
+| `verify:cta-earn-profit` · `user-trader-jargon-0` | CATALOG | [x] cta live · jargon stub |
+| 구현 시 copy/ko · Canon | UI 구현 todo | [x] `copy-canon-cta-sla-lock` |
 
 ### E-NOTIFY. v7.22.25 흡수 체크 (차단 · 쪽지 · 자동Push · 배지 · 중복0)
 
@@ -1170,7 +1176,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | % 조절 = matchStrictnessOverride · successRatePercent 0 | Admin §9.8.10G · Engine | [x] |
 | Admin PIN wipe 정책 pointer | Money §43.6a | [x] |
 | `verify:membership-*` · `admin-user-credentials` · `admin-user-ban` · `admin-user-match-override` | CATALOG | [x] stub |
-| schemas user-membership · tendency-memo · user-match-policy-override | schemas-contracts | [ ] 구현 |
+| schemas user-membership · tendency-memo · user-match-policy-override | schemas-contracts | [x] 파일 |
 
 ### E-REF. v7.22.22 흡수 체크 (친구초대 ∞ · KR 설명 · 중복0)
 
@@ -1184,7 +1190,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | Canon `invite-home` · manifest 1.3.3 | UI Canon | [x] |
 | Admin 인원캡 UI 0 · Pool widgets | Admin §35.6 | [x] |
 | `verify:referral-unlimited-invites` · `invite-explain-surfaces` · `referral-pool-fifo` | CATALOG | [x] stub |
-| schemas referral-program/edge 갱신 | schemas-contracts | [ ] 구현 |
+| schemas referral-program/edge | schemas-contracts | [x] 파일 |
 
 ### E-ROAD. v7.22.18 흡수 체크 (로드맵 정렬 · 중복0)
 
@@ -1220,7 +1226,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | Day-1 vs v2(TWA/FCM) 표 | PWA Non-goal | [x] |
 | SW update · apple-title · reduced-motion · Canon | PWA §23.3·7 · UI §27.8 | [x] |
 | CATALOG verify:pwa-* | tooling/verify | [x] |
-| 플랜 이중본 해시 sync | `.cursor/plans` ↔ home | [x] |
+| 플랜 이중본 해시 sync | `.cursor/plans` ↔ home · `pnpm cursor:sync-plans` · `verify:plans-ssot` · stale quarantine | [x] |
 | 구현 시 Lighthouse/CI · 실파일 | — | [ ] |
 
 ### E-AI. v7.22.16 흡수 체크 (퍼뜩 P/G/S · 중복0)
@@ -1294,7 +1300,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 ## v7.22.33 실물재감사 · 모순 해소 (Audit A9 · 예측 금지)
 
 > **방법:** 레포 FS + Supabase MCP + 도메인 플랜 frontmatter/본문 대조 · 2026-08-09.  
-> **기록 SSOT:** `docs/CONSTITUTION_BOOTSTRAP.md` (v7.22.33) · Admin **§9.1.1**.
+> **기록 SSOT:** `docs/CONSTITUTION_BOOTSTRAP.md` (이력=v7.22.33 · **현재=v7.22.35**) · Admin **§9.1.1**.
 
 ### A9. 확인된 모순 → 흡수 조치
 
@@ -1327,8 +1333,78 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 2. `constitution-28-ai-money-ops` *(completed)*  
 3. `schemas-contracts-core` *(completed)*  
 4. `schemas-migrations-supabase` *(completed)*  
-5. `monorepo-skeleton` ← **다음**  
-6. `copy-canon-cta-sla-lock`  
-7. `auth-ssot` *(Infra→Index 실행큐 이동 · Owns=Infra §51.9)*  
-8. `phase0-bootstrap-hosts` *(Infra→Index 실행큐 이동 · Owns=Infra §51.13)*  
-9. Index pending 0 후 도메인 파일 todo (한 채팅=1 · File-Serial)
+5. `monorepo-skeleton` *(completed)*  
+6. `copy-canon-cta-sla-lock` *(completed)*  
+7. `auth-ssot` *(completed · Nest JWT · Stage A/B · verify:auth-flows · Owns=Infra §51.9)*  
+8. `phase0-bootstrap-hosts` *(completed · Owns=Infra §51.13)*  
+9. **Index CLOSED** → **01 Money** (한 채팅=1 · File-Serial)
+
+## v7.22.35 실물재감사 · 모순 해소 (Audit A10 · 예측 금지)
+
+> **방법:** 레포 FS + Supabase MCP(`list_tables`/`list_migrations`/`list_extensions`/`execute_sql`/`get_advisors`) + 도메인 frontmatter 대조 · 2026-08-09.  
+> **기록 SSOT:** `docs/CONSTITUTION_BOOTSTRAP.md` (**v7.22.35**) · Admin **§9.1.1**.
+
+### A10. 확인된 모순 → 흡수 조치
+
+| # | 실측 모순 | 해소 |
+|---|-----------|------|
+| 1 | BOOTSTRAP/A9가 `public`0·migrations0·pgvector미설치·CONSTITUTION0·schemas0을 **현재상태처럼** 유지 | BOOTSTRAP §0 전면 재기록 · A9=이력 · 본 절=현재 |
+| 2 | Index 체크리스트가 schemas Day-1을 `[ ] 구현`으로 잔존 | 파일 존재=[x] · 앱 코드 구현은 도메인 todo |
+| 3 | Admin todo `admin-isolated-deploy`가 `admin-ops` **앞** → 빈 앱 배포 위험 | Admin 순서=`ops 골격 → 유저360/가격/정책/override… → isolated-deploy 마지막` |
+| 4 | Admin `admin-ops`가 유저360 deep까지 포함 → 후속 todo와 **중복** | `admin-ops`=12모듈+§9.1.1 shell/TOP5/wallet·growth·reports 골격 · deep=전용 todo |
+| 5 | Engine pending 첫줄이 projection → market-intel보다 앞 | Engine=`market-intel → adapters → tier/image/vertical → projection → rule/AI` |
+| 6 | Advisor `rls_enabled_no_policy` INFO 전수 | Day-1 **의도**(deny-by-default · Nest service_role) · BOOTSTRAP §0 기록 · 클라 policy 무단 추가 금지 |
+| 7 | `.cursorignore`가 `docs/` 전부 차단 → BOOTSTRAP 에이전트 불가독 | `!docs/CONSTITUTION_BOOTSTRAP.md` 예외 |
+| 8 | `packages/ui/copy/ko` 본문 0 | **해소** · `execution.ts`/`opportunity.ts` + Canon primaryCta · `copy-canon-cta-sla-lock` completed |
+
+### A10. 다관점 판정
+
+| 관점 | 판정 |
+|------|------|
+| 앱테크·핀테크 개발팀 | DDL/헌법/스키마 PASS. 다음 위험은 apps 골격·원장 구현 순서 이탈뿐. |
+| 운영자 | Admin §9.1.1 자식(KRW승인·CS·시뮬·퍼뜩·유저360·엄격도·쪽지) 없으면 런칭 불가 → skeleton routes lock 필수. |
+| KR 유저 20~70 | CTA=`수익 벌기`·쉬운한글·퍼뜩·Soft60 카피 유지. copy stub는 skeleton 직후 채움. |
+| 감사관 | brand/PG사0/Auth Nest/yahoo0/ledger 불변식·RLS deny-by-default 유지. BOOTSTRAP≠DB drift 해소. |
+| 분석관 | 문서 stale(BOOTSTRAP DB0)가 최대 리스크였음 → v7.22.35로 흡수. |
+
+### A10. 다음 실행 (운영자 · 위→아래 · completed 재실행 금지)
+
+1. `monorepo-skeleton` *(completed)*  
+2. `copy-canon-cta-sla-lock` *(completed · copy/Canon · verify:cta-earn-profit/soft-hard/match-tension)*  
+3. `auth-ssot` *(completed · Nest JWT · Stage A/B · verify:auth-flows)*  
+4. `phase0-bootstrap-hosts` *(completed)*  
+5. **해소됨 → A11 / Index CLOSED → 01 Money**
+
+## v7.22.36 Index CLOSE · 실물 재검증 (Audit A11 · 예측 금지)
+
+> **방법:** 레포 FS + Supabase MCP(`list_tables`/`list_migrations`/`list_extensions`/`execute_sql`) + Index YAML todos + Nest/infra/apps 대조 · 2026-08-09.  
+> **기록 SSOT:** `docs/CONSTITUTION_BOOTSTRAP.md` (**v7.22.36**) · Index pending **0**.
+
+### A11. 확인된 모순 → 흡수 조치
+
+| # | 실측 모순 | 해소 |
+|---|-----------|------|
+| 1 | overview/BOOTSTRAP가 v7.22.35 스냅샷(DB38·mig9·apps0)을 **현재**처럼 유지 | overview+BOOTSTRAP §0 → **DB41·mig10·apps web+admin** |
+| 2 | A9/A10「다음=`phase0-bootstrap-hosts`」잔존 | phase0 **completed** · Index **CLOSED** · 다음=**01 Money** |
+| 3 | auth 마이그레이션 로컬파일 `…24740…` ≠ 원격 applied `…24856…` | 로컬 rename=`20260808224856_auth_oauth_passkey_stage_a_b.sql` · `verify:auth-flows` 경로 동기 |
+| 4 | auth-ssot 후 테이블+3·함수+1 미반영 | public **41** · 함수 **4**(`users_stage_a_identity_ok` 포함) BOOTSTRAP 동기 |
+
+### A11. 실측 PASS (오류0)
+
+| 대상 | 실측 |
+|------|------|
+| Index todos | **20/20 completed · pending 0** |
+| CONSTITUTION/ | **29** MD |
+| schemas/ | **38** JSON(계약37+`manifest.day1.json`) |
+| supabase/migrations | **10** = 원격 applied **1:1**(버전 포함) |
+| public 테이블 | **41** · RLS ON 전수 |
+| pgvector | **0.8.2 installed** |
+| public 함수 | `ledger_forbid_mutation` · `ledger_require_posting_flag` · `provision_user_bucket_accounts` · `users_stage_a_identity_ok` |
+| apps/ | `web`+`admin` · next@**16.3.0** · TW4 |
+| services/ | `api-nest`(Nest JWT) · `engine-rust` · `marketing-attribution` |
+| Phase0 | `infra/hosts.manifest.json` bus=in-process · Seoul ref `mgsytcetsiecllmhcyox` · NATS/Temporal/EKS/Vercel **0** |
+| Auth | Nest only · `@supabase/auth*` **0** · 시스템 `auth` 스키마 ≠ SoT |
+
+### A11. 판정
+
+**Index = CLOSED.** File-Serial 다음 실행 파일 = **01 Money** (`money-double-entry`). completed Index todo 재실행 **금지**.

@@ -27,6 +27,8 @@ PRE_IMPLEMENTATION_MASTER_AUDIT.md
 COMPANY_REGISTRATION_SUMMARY.md
 FOOTER_LICENSE_COPY.md
 docs/
+# bootstrap SSOT exception for agents (must stay readable)
+!docs/CONSTITUTION_BOOTSTRAP.md
 
 # ADR-013 — photo mockups must not be indexed / reintroduced
 docs/mockups/

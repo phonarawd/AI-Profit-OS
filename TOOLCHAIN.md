@@ -55,16 +55,34 @@ pnpm exec wrangler -v
 - Redis: **Upstash** URL을 `REDIS_URL`에 (Docker Redis 불필요)
 - 마이그레이션: `supabase/migrations` + MCP/`db push` · 대시보드 DDL 금지
 
+## Phase0 Bootstrap hosts (§51.13 · $0)
+
+| Host | 경로 |
+|------|------|
+| User PWA | CF Pages `ai-profit-web` · `infra/web` · `pnpm cf:deploy:web` |
+| Admin Ops | CF Pages `ai-profit-ops` · `infra/ops` · `pnpm cf:deploy:ops` |
+| API | Nest Node · `infra/api/runtime.json` · `API_HOST` :4000 |
+| DB | Supabase Seoul · `DATABASE_URL` |
+| Redis | Upstash · `REDIS_URL` |
+| KYC | R2 `kyc-docs` · `infra/r2/kyc-docs.toml` |
+| Bus | Nest **in-process** · NATS/Temporal/EKS **0** |
+
+- SSOT: `infra/hosts.manifest.json` · cutover: `infra/phase0-migration-playbook.md`
+- Verify: `pnpm verify:phase0-bootstrap` (in `verify:gate`)
+- Compose=`pnpm docker:up` **옵션만** (8GB OFF)
+
 ## 자동화 게이트 (ADR-016)
 
 ```powershell
 pnpm verify:gate          # commit/push 전
+pnpm cursor:sync-plans    # Plan SSOT → %USERPROFILE%\.cursor\plans 미러 (todo UI drift 방지)
 pnpm cleanup:lowspec      # 작업 후 렉 방지
 pnpm lowspec:status       # RAM/Docker/Cursor 압력 확인 (이 PC=Celeron 2C/8GB)
 ```
 
 - 이 PC: `NODE_OPTIONS=--max-old-space-size=1536` · Docker OFF · 프로세스 1개
-- Cursor hooks: `.cursor/hooks.json` (git deny · stop cleanup · session RAM warn)
+- Cursor hooks: `.cursor/hooks.json` (git deny · **sessionStart/stop plan sync** · cleanup · RAM warn)
+- Plan SSOT: 워크스페이스 `.cursor/plans` only · `verify:plans-ssot` in gate · stale home aliases quarantine
 - Husky: `.husky/pre-commit` → `verify:gate`
 - CI: `.github/workflows/gate.yml`
 - Rules: always ≤7 + domain globs · catalog `tooling/verify/CATALOG.md`
@@ -79,14 +97,15 @@ pnpm verify:stack-lock
 
 PASS 없으면 기능 구현 착수 **금지**.
 
-## 디렉터리 골격 (채우기 전 placeholder)
+## 디렉터리 골격 (monorepo-skeleton)
 
 ```
-apps/          # web · admin  — monorepo-skeleton
-packages/      # ui (tokens 선잠금) · sdk · schemas
-services/      # api-nest · engine-rust · wallet-service …
-workers/       # adapters · chain-watchers …
-tooling/verify # CI gates
+apps/web       # Next@16 · User 5탭 · routes.ts lock
+apps/admin     # Next@16 · Admin §9.1+§9.1.1 · routes.ts lock
+packages/      # ui · sdk · schemas (JSON SSOT=/schemas)
+services/      # api-nest · engine-rust · marketing-attribution
+workers/       # push/capi + adapter stubs (Phase1+)
+tooling/verify # CI gates (ia-tabs · admin-routes · next-major-pin)
 ```
 
 ## bun / npm 정책

@@ -7,9 +7,12 @@ const fails = [];
 
 const required = [
   ".cursor/mcp.json",
+  "infra/hosts.manifest.json",
   "infra/web/wrangler.toml",
   "infra/ops/wrangler.toml",
   "infra/ops/access-policy.json",
+  "infra/api/runtime.json",
+  "infra/r2/kyc-docs.toml",
   "infra/workers.manifest.json",
   "workers/push-dispatcher/wrangler.toml",
   "workers/push-dispatcher/src/index.ts",

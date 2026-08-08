@@ -74,6 +74,7 @@
   "markdownlint.ignore": [
     "**/node_modules/**",
     "**/.git/**",
+    "${userHome}/.cursor/plans/**",
     ".cursor/plans/**",
     "**/.cursor/plans/**",
     ".cursor/rules/**",
@@ -94,6 +95,7 @@
     "**/*.{md,markdown}",
     "!**/node_modules/**",
     "!**/.git/**",
+    "!${userHome}/.cursor/plans/**",
     "!.cursor/plans/**",
     "!**/.cursor/plans/**",
     "!.cursor/rules/**",

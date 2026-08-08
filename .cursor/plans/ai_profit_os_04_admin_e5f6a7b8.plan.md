@@ -1,21 +1,18 @@
 ---
 name: AI Profit OS — Admin & Ops
-overview: "v7.22.33 Admin·§9.1.1자식route전수·12모듈·유저360·simulation탭. Index §20.2 pointer. Index=00."
+overview: "v7.22.35 Admin·§9.1.1·todo의존순(ops→기능→deploy)·12모듈·유저360·simulation탭. Index §20.2 pointer. Index=00."
 todos:
   - id: admin-ia-child-routes-911
     content: "[grok-4.5|256K] v7.22.33 §9.1.1 자식 route/tab 전수 잠금 · sidebar13 0 · BOOTSTRAP §6 sync · monorepo routes 선행 SSOT"
     status: completed
-  - id: admin-isolated-deploy
-    content: "[composer-2.5|200K] §40 apps/admin 별도 CF Pages·ops 도메인·Admin JWT·IP allowlist·유저앱 분리"
-    status: pending
   - id: admin-ops
-    content: "[composer-2.5|200K] apps/admin 왕초보 한글UI(IT용어0) + 12모듈+2b + §9.1.1 자식 + §39/§40 + TOP5 + 유저360"
+    content: "[composer-2.5|200K] apps/admin 왕초보한글·IT용어0 + 12모듈+2b shell + §9.1.1 routes + TOP5 + wallet(deposit/review/krw-pending/disputes) + growth탭shell + reports/financial shell · 유저360 deep≠여기"
+    status: pending
+  - id: admin-user-ops
+    content: "[grok-4.5|256K] §37·§39·§9.8.7/8 유저360 + finance KPI(순유입) + referral/attribution/CS 링크 + export + RBAC · verify:admin-user-360"
     status: pending
   - id: admin-price-sync
     content: "[composer-2.5|200K] §36 Admin 가격·마진 조정 UI + opportunity.price.updated SSE/WS(Phase0 in-process) + 유저 전 surface 실시간 반영"
-    status: pending
-  - id: admin-user-ops
-    content: "[grok-4.5|256K] §37·§39·§9.8.8 유저360 + finance KPI(순유입) + referral/attribution/CS 링크 + export + RBAC · verify:admin-user-360"
     status: pending
   - id: admin-execution-policy
     content: "[composer-2.5|200K] §48.6 매칭성공조절 프리셋·실조건·관측KPI·난수0·audit · Engine §48.13.3 · verify:match-strictness"
@@ -27,7 +24,7 @@ todos:
     content: "[grok-4.5|256K] §9.8.10 등급표시/강제·성향메모·밴강화·로그인비번·출금PIN·프로필전수·유저별엄격도 · verify:admin-user-credentials"
     status: pending
   - id: admin-user-block-notify
-    content: "[grok-4.5|256K] §9.8.4a 매칭/출금신청 개별차단 · §9.8.8d 1인쪽지·Push · verify:admin-user-capability-block/ops-inbox"
+    content: "[grok-4.5|256K] §9.8.4a 매칭/출금신청 개별차단 · §9.8.8d 1인쪽지 · §9.8.8e fanout pointer(PWA) · verify:admin-user-capability-block/ops-inbox"
     status: pending
   - id: abuse-error-matrix
     content: "[grok-4.5|256K] risk A1~ + §49 P1~P24/E1~E12 + UI §51.24 L1~L24 + rate limit + circuit + toast 100% 커버"
@@ -38,14 +35,17 @@ todos:
   - id: product-analytics
     content: "[composer-2.5|200K] §51.10 D1/D7·입금→2회거래·퍼널 OTel + Admin 리텐션 위젯"
     status: pending
+  - id: admin-isolated-deploy
+    content: "[composer-2.5|200K] §40 apps/admin 별도 CF Pages·ops 도메인·Admin JWT·IP allowlist·유저앱 분리 (admin-ops 이후)"
+    status: pending
 isProject: false
 ---
-# AI Profit OS — Admin & Ops (v7.22.33)
+# AI Profit OS — Admin & Ops (v7.22.35)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
-> **todo 순서:** §9.1.1 잠금(완료) → 격리배포 → 12모듈 → 가격동기 → 유저360 → 실행정책 → override/자격/차단 → abuse → CS → analytics (File-Serial)  
+> **todo 순서:** §9.1.1 잠금(완료) → **12모듈 shell(admin-ops)** → 유저360 → 가격동기 → 실행정책 → override/자격/차단(+§9.8.8e pointer) → abuse → CS → analytics → **격리배포(마지막)** (File-Serial · v7.22.35)  
 > **KRW Day-1:** TOP1 = Admin **승인/거절** · CSV Auto-Recon 라벨 **금지**(L2+)  
 > **v7.22.21:** §9.8.9 유저별 기회 매치·수익/마진 override · 피드 merge=Engine §0.0.5.1 · **ledger 직접 변경 금지**  
 > **v7.22.22:** referral 탭 — `rewardsEnabled` · Pool top-up · **초대 인원캡 UI 0** · Money §51.5  
@@ -55,7 +55,8 @@ isProject: false
 > **v7.22.26:** Index §20.1 기회스캔 **pointer** · Admin Owns **변경 0**  
 > **v7.22.28:** Index §20.2 · 유저 CTA `수익 벌기` **pointer** · domain=`participate` · Admin Owns **변경 0** · `executionPlatforms` Admin only  
 > **v7.22.29~32 pointer:** Soft60/Hard90 · 긴장감 · listing=ebay멀티\|admin · yahoo 영구FORBIDDEN (Owns=Index/Engine · Admin 표시만)  
-> **v7.22.33:** **§9.1.1** 자식 route 전수 · `growth?tab=simulation` · feature-platform 유령 제거 · BOOTSTRAP §6 sync
+> **v7.22.33:** **§9.1.1** 자식 route 전수 · `growth?tab=simulation` · feature-platform 유령 제거 · BOOTSTRAP §6 sync  
+> **v7.22.36:** Index CLOSED · BOOTSTRAP §0 동기=DB**41**·mig**10** · `admin-ops`=shell/TOP5/wallet·growth·reports 골격 · deep=전용 todo · `admin-isolated-deploy` 마지막
 
 ## 9. Admin — IA 및 구성 SSOT
 

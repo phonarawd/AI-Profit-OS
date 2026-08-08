@@ -1,0 +1,10 @@
+{
+  "name": "@aipo/coingecko-adapter",
+  "private": true,
+  "version": "0.0.0",
+  "description": "coingecko-adapter — Phase1+ market adapter stub (ADR-003)",
+  "scripts": {
+    "dev": "wrangler dev --config wrangler.toml",
+    "deploy": "echo 'Phase1+ only'"
+  }
+}

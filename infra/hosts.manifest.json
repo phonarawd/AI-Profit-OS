@@ -1,0 +1,51 @@
+{
+  "phase": 0,
+  "bus": "in-process",
+  "forbiddenDay1": ["nats", "temporal", "eks", "vercel"],
+  "compose": {
+    "file": "docker-compose.dev.yml",
+    "required": false,
+    "note": "ADR-016 Docker-less default — remote Supabase Seoul + Upstash"
+  },
+  "hosts": {
+    "web": {
+      "project": "ai-profit-web",
+      "app": "apps/web",
+      "envHost": "APP_HOST",
+      "wrangler": "infra/web/wrangler.toml"
+    },
+    "ops": {
+      "project": "ai-profit-ops",
+      "app": "apps/admin",
+      "envHost": "OPS_HOST",
+      "wrangler": "infra/ops/wrangler.toml",
+      "accessPolicy": "infra/ops/access-policy.json"
+    },
+    "api": {
+      "runtime": "node-nest",
+      "service": "services/api-nest",
+      "envHost": "API_HOST",
+      "defaultPort": 4000,
+      "manifest": "infra/api/runtime.json"
+    },
+    "db": {
+      "provider": "supabase",
+      "region": "ap-northeast-2",
+      "projectRef": "mgsytcetsiecllmhcyox",
+      "env": "DATABASE_URL",
+      "authSoT": "nest-jwt-only"
+    },
+    "redis": {
+      "provider": "upstash",
+      "env": "REDIS_URL",
+      "composeService": "redis",
+      "composeRequired": false
+    },
+    "r2": {
+      "bucket": "kyc-docs",
+      "config": "infra/r2/kyc-docs.toml"
+    }
+  },
+  "workersPhase0": ["push-dispatcher"],
+  "notes": "Phase0=$0 path · CF Pages/Workers + Supabase Seoul + Upstash · NATS/Temporal/EKS=0"
+}

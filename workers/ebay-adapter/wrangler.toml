@@ -1,0 +1,4 @@
+name = "ebay-adapter"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]

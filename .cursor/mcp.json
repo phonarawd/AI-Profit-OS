@@ -8,6 +8,9 @@
     },
     "cloudflare-builds": {
       "url": "https://builds.mcp.cloudflare.com/mcp"
+    },
+    "heygen": {
+      "url": "https://mcp.heygen.com/mcp/v1/"
     }
   }
 }

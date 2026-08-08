@@ -1,0 +1,10 @@
+{
+  "name": "@aipo/marketing-attribution",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "UTM / ROAS / CAPI orchestration — skeleton",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

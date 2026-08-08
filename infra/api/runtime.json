@@ -1,0 +1,24 @@
+{
+  "name": "ai-profit-api",
+  "phase": 0,
+  "runtime": "node22-nest",
+  "servicePath": "services/api-nest",
+  "listenEnv": "PORT",
+  "defaultPort": 4000,
+  "hostEnv": "API_HOST",
+  "prefix": "/api/v1",
+  "requires": ["DATABASE_URL", "REDIS_URL", "JWT_USER_SECRET", "JWT_ADMIN_SECRET"],
+  "optionalOAuth": [
+    "OAUTH_KAKAO_CLIENT_ID",
+    "OAUTH_KAKAO_CLIENT_SECRET",
+    "OAUTH_GOOGLE_CLIENT_ID",
+    "OAUTH_GOOGLE_CLIENT_SECRET"
+  ],
+  "bus": "in-process",
+  "forbidden": ["nats", "temporal", "eks", "supabase-auth"],
+  "deploy": {
+    "phase0": "Node process (local or small VPS) behind API_HOST — not Cloudflare Pages",
+    "phase3": "EKS / container — see Infra §15 Production (later todo)"
+  },
+  "health": "/api/v1/health"
+}

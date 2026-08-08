@@ -1,0 +1,9 @@
+@import "@aipo/ui/tokens/lux-theme.css";
+
+html,
+body {
+  min-height: 100%;
+  background: var(--color-lux-bg);
+  color: var(--color-lux-text);
+  font-family: var(--font-lux-sans);
+}

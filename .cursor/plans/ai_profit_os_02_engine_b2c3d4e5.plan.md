@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Engine
-overview: "v7.22.32 Engine·Day1 ebay멀티|admin·yahoo_jp 영구배제·Soft/Hard. Index=00."
+overview: "v7.22.35 Engine·todo의존순(market→adapters→projection)·Day1 ebay멀티|admin·yahoo_jp 영구배제·Soft/Hard. Index=00."
 todos:
   - id: yahoo-jp-permanent-ban
     content: "[grok-4.5|256K] v7.22.32 §0.0 yahoo_jp 영구 FORBIDDEN · Phase1+ 철회 · enum/워커/카피 0 · verify:listing-legs-day1"
@@ -11,12 +11,6 @@ todos:
   - id: soft-hard-requeue-timeout
     content: "[grok-4.5|256K] v7.22.29 §48.13 Soft60/Hard90·REQUEUE가드·MATCH_TIMEOUT · Index §20.2 · Audit A4"
     status: completed
-  - id: capital-provider-projection
-    content: "[grok-4.5|256K] §4.2b 내부필드↔유저표기·executionPlatforms유저0·대기Fact · verify:user-trader-jargon-0"
-    status: pending
-  - id: opportunity-scan-projection
-    content: "[grok-4.5|256K] §4.2a arbitrageTypeKo·time_sensitive·sellSuccess meta·FX동일스키마 · verify:arbitrage-type-label"
-    status: pending
   - id: market-intel-engine
     content: "[grok-4.5|256K] §0.0 Day1 ebay·카드·FX·admin · yahoo_jp 영구0 · Asset Master · 금지 adapter 0"
     status: pending
@@ -37,6 +31,12 @@ todos:
     status: pending
   - id: ultra-watch-whale
     content: "[composer-2.5|200K] PP/AP/Rolex 시드 + whale≥100k 경로 (소액 카탈로그 공존)"
+    status: pending
+  - id: opportunity-scan-projection
+    content: "[grok-4.5|256K] §4.2a arbitrageTypeKo·time_sensitive·sellSuccess meta·FX동일스키마 · verify:arbitrage-type-label"
+    status: pending
+  - id: capital-provider-projection
+    content: "[grok-4.5|256K] §4.2b 내부필드↔유저표기·executionPlatforms유저0·대기Fact · verify:user-trader-jargon-0"
     status: pending
   - id: balance-aware-feed
     content: "[grok-4.5|256K] §0.0.5.1 principal→affordable/nearMiss 피드·suggestDeposit·user override merge·verify:balance-aware-feed"
@@ -70,15 +70,16 @@ todos:
     status: pending
 isProject: false
 ---
-# AI Profit OS — Engine (v7.22.32)
+# AI Profit OS — Engine (v7.22.32 · Index pointer v7.22.35)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 > **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만 (에이전트 편집 SSOT)
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
+> **todo 순서 (v7.22.35):** market-intel → adapters → tier/image/vertical → scan/capital projection → balance-aware → Rule/strictness/membership → simulation/KPI → AI층 (File-Serial)  
 > **AI 이름:** **퍼뜩** (§47.12) · **P레인=플랫폼 Fact** · **G레인=일상 LLM** · **S=실행 금지**  
 > **Phase0 버스:** **in-process** (NATS=Phase1+) · Infra/Index pointer  
-> **todo 순서:** projection(§4.2b·§4.2a) → 시세/어댑터 → 자본대/이미지/버티컬 → 잔액피드 → Rule→엄격도→멤버십 → 시뮬/KPI → AI (File-Serial)  
+
 > **v7.22.20:** §0.0.6 `assetImageUrl` · `luxury_bag`  
 > **v7.22.21:** §0.0.5.1 잔액 인식 피드 · SKU 1:1 · Admin §9.8.9  
 > **v7.22.23:** §48.13.3 **매칭 엄격도** · 난수 `successRatePercent` **0**  

@@ -5,6 +5,11 @@
   "type": "module",
   "exports": {
     "./tokens": "./tokens/lux-fintech.ts",
-    "./tokens/lux-theme.css": "./tokens/lux-theme.css"
+    "./tokens/lux-theme.css": "./tokens/lux-theme.css",
+    "./brand/brand.manifest.json": "./brand/brand.manifest.json",
+    "./canon/manifest.json": "./canon/manifest.json",
+    "./copy/ko": "./copy/ko/index.ts",
+    "./copy/ko/execution": "./copy/ko/execution.ts",
+    "./copy/ko/opportunity": "./copy/ko/opportunity.ts"
   }
 }

@@ -1,5 +1,6 @@
-# Phase0 local SoT — PostgreSQL 단일 + Redis (ADR-001 · ADR-015)
-# Usage: pnpm docker:up
+# Phase0 local OPTION — PostgreSQL 17 + Redis 7 (ADR-001 · ADR-015 · ADR-016)
+# Docker-less default = remote Supabase Seoul + Upstash (this PC 8GB: keep OFF)
+# Usage (RAM surplus only): pnpm docker:up
 services:
   postgres:
     image: postgres:17-alpine

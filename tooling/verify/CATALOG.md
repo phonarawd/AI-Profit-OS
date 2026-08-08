@@ -12,9 +12,13 @@
 | brand-consumer | `verify:brand-consumer` | ✅ live |
 | brand-assets | `verify:brand-assets` | ✅ live (visual_kit_v1) |
 | cf-infra | `verify:cf-infra` | ✅ live |
+| phase0-bootstrap | `verify:phase0-bootstrap` | ✅ live (§51.13 · CF+Supabase Seoul+Upstash · Compose optional · NATS/Temporal/EKS 0) |
 | root-domain-env | `verify:root-domain-env` | ✅ live |
-| next-major-pin | skeleton until apps exist | stub OK |
-| no-admin-in-web | skeleton | stub OK |
+| next-major-pin | `verify:next-major-pin` | ✅ live (next@16) |
+| no-admin-in-web | `verify:no-admin-in-web` | ✅ live (§40) |
+| ia-tabs | `verify:ia-tabs` | ✅ live (User 5탭) |
+| admin-routes | `verify:admin-routes` | ✅ live (Admin §9.1.1) |
+| plans-ssot | `verify:plans-ssot` | ✅ live (workspace `.cursor/plans` ↔ `%USERPROFILE%\.cursor\plans` hash) |
 
 ## Domain gates (구현되면 hard · 현재 stub PASS + TODO)
 
@@ -25,6 +29,7 @@
 | no-it-jargon · toast-emoji · korean-ui | UI §50 |
 | age-tone-surfaces · font-scale-three · deposit-network-plain-ko | UI §38.9·§50.1 · Money §41.6 (v7.22.10) |
 | onboarding-experiential · auth-surfaces · landing-3s · kyc-surfaces | UI §6.4~6.4d · Infra §31.2a/b · Money §42 (v7.22.11) |
+| auth-flows | Infra §51.9+§51.9.1 — Nest JWT only · Stage A/B · OAuth/Passkey · session · 탈퇴 · **live** |
 | ai-coach-fact-only · ai-coach-no-autonomy | Engine §47.12 — **P레인** Fact-only · 전레인 자율집행 0 |
 | ai-general-no-money-tools · ai-lane-router · llm-adapter-contract | Engine §47.8·47.13~14 (v7.22.16) |
 | llm-quota-degrade | Engine §47.13 — 429→G busy·P Fact · 자동 failover 0 · toast `PEOTTEOK_LLM_BUSY` |
@@ -47,9 +52,9 @@
 | push-channel-prefs | PWA §23.5a — notice/campaign/opp/ops prefs 필터 (v7.22.25) |
 | membership-badge-assets | UI §5.9.2c — Brand membership SVG 5종 · 사진목업0 (v7.22.25) |
 | opportunity-scan-surface · arbitrage-type-label | UI §5.3b · Engine §4.2a — 홈기회스캔·타입뱃지 (v7.22.26) |
-| cta-earn-profit · user-trader-jargon-0 | Index §20.2 · UI §48 — 유저 CTA=`수익 벌기` · domain=`participate` · `이 상품으로…`/구매/판매/유저메인`매칭 참여`/판매성공률/executionPlatforms 유저0 · 면책+배지 (v7.22.28) · 구명 `cta-match-participate`=alias |
-| soft-hard-requeue-sla | Index §20.2 · Engine §48.13 · UI §48 — Soft60/Hard90 · `MATCH_TIMEOUT` · 카피3줄(보통1분/다시맞추는중/시간지나안전정지) · presentation≠SLA (v7.22.29) · Audit A4 |
-| match-tension-surface | Index §20.2 · UI §48.3b — Soft/Hard전등급동일 · 긴장감=과정Fact · 등급≠대기특권 · slaAlmost/priceNearMiss · 난수틱·가짜대기·당첨게이지0 (v7.22.30) · Audit A6 |
+| cta-earn-profit · user-trader-jargon-0 | Index §20.2 · UI §48 — 유저 CTA=`수익 벌기` · domain=`participate` · `이 상품으로…`/구매/판매/유저메인`매칭 참여`/판매성공률/executionPlatforms 유저0 · 면책+배지 (v7.22.28) · 구명 `cta-match-participate`=alias · **copy/Canon live** · jargon=stub |
+| soft-hard-requeue-sla | Index §20.2 · Engine §48.13 · UI §48 — Soft60/Hard90 · `MATCH_TIMEOUT` · 카피3줄(보통1분/다시맞추는중/시간지나안전정지) · presentation≠SLA (v7.22.29) · Audit A4 · **copy/Canon live** |
+| match-tension-surface | Index §20.2 · UI §48.3b — Soft/Hard전등급동일 · 긴장감=과정Fact · 등급≠대기특권 · slaAlmost/priceNearMiss · 난수틱·가짜대기·당첨게이지0 (v7.22.30) · Audit A6 · **copy/Canon live** |
 | listing-legs-day1 | Engine §0.0.1a/§0.0.2 — ebay 멀티marketplace\|admin only · yahoo_jp 영구FORBIDDEN · 야후/Yahoo카피0 · KR/Chrono24대체0 (v7.22.32) |
 | kyc-withdraw-only · kyc-redirect · kyc-r2-only | Money §42 |
 | krw-admin-decide | Money §41.3·§43.3 — approve credit / reject no-credit (v7.22.12) |

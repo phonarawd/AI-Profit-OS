@@ -5,6 +5,17 @@
   "tokenRef": "packages/ui/tokens/lux-fintech.ts",
   "surfaces": [
     {
+      "id": "opportunity-card",
+      "route": "/",
+      "aliases": ["/profits"],
+      "wire": "surfaces/opportunity-card.wire.json"
+    },
+    {
+      "id": "opportunity-detail",
+      "route": "/profits/[id]",
+      "wire": "surfaces/opportunity-detail.wire.json"
+    },
+    {
       "id": "execution-running",
       "route": "/trades/[id]/execute",
       "state": "running",

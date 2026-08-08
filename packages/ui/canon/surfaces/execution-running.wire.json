@@ -3,6 +3,12 @@
   "route": "/trades/[id]/execute",
   "brandRef": "packages/ui/brand",
   "primaryCta": null,
+  "softHard": {
+    "softSec": 60,
+    "hardSec": 90,
+    "membershipUniform": true,
+    "note": "전 등급 동일 · presentation≠SLA · Index §20.2"
+  },
   "blocks": [
     {
       "id": "productThumb",
@@ -28,6 +34,42 @@
       "copyKey": "T.execution.progressTitle"
     },
     {
+      "id": "handsFree",
+      "role": "note",
+      "copyKey": "T.execution.progressHandsFree"
+    },
+    {
+      "id": "slaSoftHint",
+      "role": "footnote",
+      "copyKey": "T.execution.slaSoftHint",
+      "note": "Soft 안내 · 보장 톤 금지"
+    },
+    {
+      "id": "requeueHint",
+      "role": "status",
+      "copyKey": "T.execution.requeueHint",
+      "when": "status=requeue"
+    },
+    {
+      "id": "slaAlmost",
+      "role": "tension",
+      "copyKey": "T.execution.slaAlmost",
+      "when": "T0+45s..55s",
+      "note": "§48.3b Soft 중반 피크 · 1회"
+    },
+    {
+      "id": "aiConfidence",
+      "role": "metric",
+      "field": "aiConfidenceScore",
+      "copyKey": "T.opportunity.labelAiConfidence",
+      "note": "서버값 표시 수렴 only · 당첨 게이지 금지"
+    },
+    {
+      "id": "tensionBeats",
+      "role": "tension",
+      "note": "스텝·로그 박자 · Fact only · 난수틱/가짜대기 0"
+    },
+    {
       "id": "steps",
       "role": "progress",
       "copyKey": "T.execution.steps",
@@ -51,6 +93,11 @@
     "sell_cta",
     "orderbook",
     "success_rate_percent",
+    "fake_match_waiters",
+    "random_success_timer",
+    "soft_hard_by_membership",
+    "guarantee_one_minute",
+    "IT_timeout_SLA_user",
     "gender_branch",
     "photo_pixel_match",
     "non_brand_logo",

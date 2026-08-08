@@ -5,7 +5,21 @@
   "primaryCta": { "copyKey": "T.execution.browseOther", "href": "/profits" },
   "blocks": [
     { "id": "title", "role": "heading", "copyKey": "T.execution.safeStopTitle" },
+    {
+      "id": "matchTimeout",
+      "role": "heading",
+      "copyKey": "T.execution.matchTimeout",
+      "when": "result=MATCH_TIMEOUT",
+      "note": "Hard wall · 카피③ 우선 · 잔액 불변"
+    },
     { "id": "reason", "role": "body", "copyKey": "T.execution.safeStopReason" },
+    {
+      "id": "priceNearMiss",
+      "role": "body",
+      "copyKey": "T.execution.priceNearMiss",
+      "when": "result=PRICE_MOVED",
+      "note": "§48.3b 아깝게 실패"
+    },
     { "id": "balance", "role": "note", "copyKey": "T.execution.balanceUnchanged" },
     {
       "id": "recommend",
@@ -22,6 +36,7 @@
     "photo_pixel_match",
     "non_brand_logo",
     "ledger_debit_on_stop",
-    "cross_category_image"
+    "cross_category_image",
+    "IT_timeout_SLA_user"
   ]
 }

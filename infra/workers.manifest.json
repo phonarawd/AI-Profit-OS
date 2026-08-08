@@ -1,5 +1,5 @@
 {
   "phase0": ["push-dispatcher"],
   "phase1": ["push-dispatcher", "marketing-capi-dispatcher"],
-  "notes": "Phase0: push via Nest in-process → Worker stub. Phase1+: NATS bridge."
+  "notes": "Phase0: Nest in-process → push-dispatcher stub · NATS/Temporal/EKS 0. Phase1+: NATS bridge + adapters. See infra/phase0-migration-playbook.md · infra/hosts.manifest.json"
 }
