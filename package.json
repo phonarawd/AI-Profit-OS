@@ -22,6 +22,7 @@
     "verify:tooling": "node tooling/verify/gate.cjs",
     "cleanup:lowspec": "node tooling/cleanup/lowspec.cjs",
     "lowspec:status": "node tooling/lowspec/status.cjs",
+    "lowspec:lean-extensions": "node tooling/lowspec/disable-heavy-extensions.cjs",
 
     "docker:up": "docker compose -f docker-compose.dev.yml up -d",
     "docker:down": "docker compose -f docker-compose.dev.yml down",

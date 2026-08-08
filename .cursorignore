@@ -20,6 +20,14 @@ pnpm-lock.yaml
 **/pnpm-store/**
 **/.pnpm-store/**
 
+# ARCHIVE / audit bulk — human can open; agent index skip
+.cursor/plans/ai_profit_os_launch_*.plan.md
+CONSTITUTION/
+PRE_IMPLEMENTATION_MASTER_AUDIT.md
+COMPANY_REGISTRATION_SUMMARY.md
+FOOTER_LICENSE_COPY.md
+docs/
+
 # ADR-013 — photo mockups must not be indexed / reintroduced
 docs/mockups/
 **/mockup*.png

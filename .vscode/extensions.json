@@ -9,6 +9,8 @@
     "ms-azuretools.vscode-docker",
     "continue.continue",
     "anysphere.remote-ssh",
+    "anysphere.remote-wsl",
+    "anysphere.remote-containers",
     "dbaeumer.vscode-eslint",
     "rust-lang.rust-analyzer",
     "GitHub.copilot",
