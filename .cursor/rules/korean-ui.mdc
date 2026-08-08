@@ -1,0 +1,16 @@
+---
+description: §50·§27·§38.9 — 쉬운한글·IT0·toneBand·성별분기0·퍼뜩
+globs: "apps/web/**,apps/admin/**,packages/ui/copy/**,packages/ui/canon/**"
+alwaysApply: false
+---
+
+# Korean UI (§50 · §27 · §38.9)
+
+- 화면 문자열 = `packages/ui/copy/ko/*` SSOT · JSX 하드코딩 금지
+- IT/개발/테스트 용어 화면 0 (API, Staging, DLQ, NATS, Mock…)
+- 유저 toast = 한글 + 이모지 **1~2**
+- Consumer/AI 앱명 = **퍼뜩**
+- 연령 표현 = **toneBand** young/mid/senior only (§38.9) · 나이 숫자 UI 강제 금지
+- 글자 = **fontScale** md/lg/xl (§50.1) · Light/시스템 테마 토글 금지
+- **성별:** 필드·카피·테마·호칭·광고 타깃 분기 **영구 금지** · 중성 존댓말만
+- Canon `forbidden`에 `gender_branch` / `gender_field` 유지

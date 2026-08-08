@@ -1,0 +1,18 @@
+{
+  "id": "auth-signup",
+  "route": "/auth/signup",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.auth.kakaoStart", "action": "oauth_kakao" },
+  "blocks": [
+    { "id": "brand", "role": "brand", "copyKey": "T.brand.consumer" },
+    { "id": "headline", "role": "heading", "copyKey": "T.auth.signupHeadline" },
+    { "id": "kakao", "role": "primary", "copyKey": "T.auth.kakaoStart" },
+    { "id": "google", "role": "secondary", "copyKey": "T.auth.googleStart" },
+    { "id": "passkey", "role": "secondary", "copyKey": "T.auth.passkeyStart" },
+    { "id": "emailFields", "role": "form", "copyKey": "T.auth.emailForm", "when": "email_path" },
+    { "id": "terms", "role": "checkbox", "copyKey": "T.auth.termsRequired" },
+    { "id": "marketing", "role": "checkbox", "copyKey": "T.auth.marketingOptional" },
+    { "id": "referral", "role": "optional_field", "copyKey": "T.auth.referralCode" }
+  ],
+  "forbidden": ["rrn_field", "gender_field", "address_required_v1", "photo_pixel_match"]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@aipo/ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./tokens": "./tokens/lux-fintech.ts",
+    "./tokens/lux-theme.css": "./tokens/lux-theme.css"
+  }
+}

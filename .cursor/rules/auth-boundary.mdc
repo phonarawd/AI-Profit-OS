@@ -1,0 +1,12 @@
+---
+description: ADR-006 — User Auth = Nest JWT only. Supabase Auth 금지.
+globs: "**/auth/**,**/session/**,apps/**/login/**,services/**/api*/**"
+alwaysApply: false
+---
+
+# Auth Boundary (ADR-006)
+
+- User Auth = **api-nest JWT** + OAuth/Passkey/magic link
+- Admin JWT issuer **분리** (§40)
+- **Supabase Auth 병행 금지** (DB managed만 허용)
+- service_role · anon으로 세션 SoT 만들지 말 것

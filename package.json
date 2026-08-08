@@ -1,0 +1,50 @@
+{
+  "name": "ai-profit-os",
+  "private": true,
+  "version": "0.0.0",
+  "description": "AI Profit OS · Consumer app 퍼뜩 — Phase0 toolchain lock (ADR-015/016)",
+  "packageManager": "pnpm@10.14.0",
+  "engines": {
+    "node": ">=22.14.0 <23",
+    "pnpm": ">=10.14.0 <11"
+  },
+  "scripts": {
+    "preinstall": "node tooling/verify/only-pnpm.cjs",
+    "prepare": "husky",
+    "verify:stack-lock": "node tooling/verify/stack-lock.cjs",
+    "verify:secrets": "node tooling/verify/secrets.cjs",
+    "verify:pg-module-scan": "node tooling/verify/pg-module-scan.cjs",
+    "verify:brand-consumer": "node tooling/verify/brand-consumer.cjs",
+    "verify:brand-assets": "node tooling/verify/brand-assets.cjs",
+    "verify:root-domain-env": "node tooling/verify/root-domain-env.cjs",
+    "verify:cf-infra": "node tooling/verify/cf-infra.cjs",
+    "verify:gate": "node tooling/verify/gate.cjs",
+    "verify:tooling": "node tooling/verify/gate.cjs",
+    "cleanup:lowspec": "node tooling/cleanup/lowspec.cjs",
+    "docker:up": "docker compose -f docker-compose.dev.yml up -d",
+    "docker:down": "docker compose -f docker-compose.dev.yml down",
+    "docker:ps": "docker compose -f docker-compose.dev.yml ps",
+    "cf:login": "pnpm exec wrangler login",
+    "cf:preflight": "node tooling/deploy/cf-preflight.cjs preview workers",
+    "cf:deploy:workers": "node tooling/deploy/cf-workers.cjs preview phase0",
+    "cf:deploy:workers:prod": "node tooling/deploy/cf-workers.cjs production phase0",
+    "cf:deploy:web": "node tooling/deploy/cf-pages-web.cjs preview",
+    "cf:deploy:web:prod": "node tooling/deploy/cf-pages-web.cjs production",
+    "cf:deploy:ops": "node tooling/deploy/cf-pages-ops.cjs preview",
+    "cf:deploy:ops:prod": "node tooling/deploy/cf-pages-ops.cjs production",
+    "cf:deploy:all": "node tooling/deploy/cf-deploy-all.cjs preview",
+    "cf:deploy:all:prod": "node tooling/deploy/cf-deploy-all.cjs production"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "@nestjs/core"
+    ]
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "typescript": "^5.9.2",
+    "wrangler": "^4.120.0"
+  }
+}

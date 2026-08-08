@@ -1,0 +1,39 @@
+# Phase0 local SoT — PostgreSQL 단일 + Redis (ADR-001 · ADR-015)
+# Usage: pnpm docker:up
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: aipo-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: aipo
+      POSTGRES_PASSWORD: aipo_dev_only
+      POSTGRES_DB: aipo
+    volumes:
+      - aipo_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aipo -d aipo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: aipo-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - aipo_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  aipo_pg_data:
+  aipo_redis_data:

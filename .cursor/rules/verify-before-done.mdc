@@ -1,0 +1,14 @@
+---
+description: ADR-016 — 기능 done = 도메인 verify PASS + cleanup PASS.
+alwaysApply: true
+---
+
+# Verify Before Done (ADR-016)
+
+작업 종료(`stop`) 전:
+
+1. 해당 도메인 `verify:*` 실행 (목록=`tooling/verify/CATALOG.md`)
+2. money면 `bucket-invariant` · `pg-module-scan` 필수
+3. UI면 `no-it-jargon` · canon/mockup 게이트
+4. `pnpm cleanup:lowspec` (또는 hook stop)
+5. **done = verify PASS + cleanup PASS** — 한쪽 FAIL이면 미완료

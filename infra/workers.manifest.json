@@ -1,0 +1,5 @@
+{
+  "phase0": ["push-dispatcher"],
+  "phase1": ["push-dispatcher", "marketing-capi-dispatcher"],
+  "notes": "Phase0: push via Nest in-process → Worker stub. Phase1+: NATS bridge."
+}

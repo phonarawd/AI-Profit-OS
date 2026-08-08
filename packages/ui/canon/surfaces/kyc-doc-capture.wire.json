@@ -1,0 +1,14 @@
+{
+  "id": "kyc-doc-capture",
+  "route": "/me/kyc",
+  "state": "doc",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.kyc.nextConfirm", "action": "next_confirm" },
+  "blocks": [
+    { "id": "docType", "role": "segment", "copyKey": "T.kyc.docType" },
+    { "id": "frame", "role": "capture_frame", "copyKey": "T.kyc.captureHint" },
+    { "id": "preview", "role": "preview", "copyKey": "T.kyc.preview" },
+    { "id": "retake", "role": "secondary", "copyKey": "T.kyc.retake" }
+  ],
+  "forbidden": ["rrn_type_in", "public_r2_url", "gender_field", "photo_pixel_match"]
+}

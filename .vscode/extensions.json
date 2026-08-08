@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "rust-lang.rust-analyzer",
+    "ms-azuretools.vscode-docker",
+    "Prisma.prisma",
+    "cloudflare.cloudflare-workers",
+    "davidanson.vscode-markdownlint"
+  ],
+  "unwantedRecommendations": []
+}

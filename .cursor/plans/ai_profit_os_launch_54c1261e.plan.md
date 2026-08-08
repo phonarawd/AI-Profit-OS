@@ -1,99 +1,307 @@
 ---
 name: AI Profit OS Launch
-overview: AI Profit OS v7.7 — §41 TronGrid 유저별 USDT 자동입금 + 원화 PG-free + §42 출금 KYC 1회 + §39~§40. 오류0·결함0·오차0·중복0.
+overview: "ARCHIVE v7.22.25 pointer. ACTIVE=00~06 only. KRW=Admin승인. 본문동기화금지."
 todos:
-  - id: constitution-28
-    content: CONSTITUTION 28+35~42 + lux-fintech + Motion SSOT
+  - id: archive-use-active-index
+    content: "[grok-4.5|256K] ARCHIVE — 실행 todo는 Index 00 + 도메인 01~06만 · launch에서 구현 착수 금지"
+    status: completed
+  - id: constitution-bootstrap-inventory
+    content: "[grok-4.5|256K] docs/CONSTITUTION_BOOTSTRAP.md 실물대조 기록 PASS (Index sync)"
+    status: completed
+  - id: brand-adr002-peotteok
+    content: "[grok-4.5|256K] ADR-002 Consumer=퍼뜩 · retired 오늘수익+바로번다 · verify:brand-consumer"
+    status: completed
+  - id: constitution-28-core
+    content: "[grok-4.5|256K] → ACTIVE Index constitution-28-core (CONSTITUTION 14·17·20·22~46b)"
     status: pending
-  - id: schemas-contracts
-    content: schemas + user-deposit-address.v1 + krw-deposit-request.v1 + kyc-status.v1 + user-financial-summary.v1 + admin-rbac.v1 + OpportunityCard·Toast·Admin·Ledger SSOT
+  - id: constitution-28-ai-money-ops
+    content: "[grok-4.5|256K] → ACTIVE Index constitution-28-ai-money-ops (47퍼뜩 AI·48·49·50·51·51r)"
+    status: pending
+  - id: schemas-contracts-core
+    content: "[grok-4.5|256K] → ACTIVE Index schemas-contracts-core"
+    status: pending
+  - id: schemas-migrations-supabase
+    content: "[grok-4.5|256K] → ACTIVE Index schemas-migrations-supabase"
     status: pending
   - id: monorepo-skeleton
-    content: monorepo 골격(apps/web,apps/admin,services,workers,packages/ui) + IA routes lock
+    content: "[composer-2.5|200K] → ACTIVE Index monorepo-skeleton"
     status: pending
-  - id: ux-design-system
-    content: Lux-Fintech tokens + LivePayoutTicker(ticker_mode) + counter_mode + MotionCTA + tier motion
-    status: pending
-  - id: m05-simulation
-    content: simulation-engine 기회빈도·spread·지급가능성·margin·worst-case + UX 표시값 검증
-    status: pending
-  - id: money-double-entry
-    content: Nest ledger + Double-Entry + projection + reconciliation + USDT/KRW 이중표시 projection
-    status: pending
-  - id: compliance-wallet
-    content: wallet-service + §41 TronGrid chain-watchers·유저별 TRC20 주소 + §41 원화 입금신청·Admin 승인(PG 0) + §37 KRW 대표계좌
-    status: pending
-  - id: kyc-withdraw-gate
-    content: §42 출금 시 KYC 1회 게이트 — ko 이모지 toast + /me/kyc 자동이동 + Admin 승인
-    status: pending
-  - id: chain-watchers
-    content: workers/chain-watchers TronGrid 무료 API 폴링·0.1s ledger credit·DEPOSIT_DETECTED SSE/toast
-    status: pending
-  - id: admin-user-ops
-    content: §37·§39 회원관리 + 유저별 입금·출금·시세차익 원장 + export + RBAC
-    status: pending
-  - id: admin-isolated-deploy
-    content: §40 apps/admin 별도 CF Pages·ops 도메인·Admin JWT·IP allowlist·유저앱 분리
-    status: pending
-  - id: market-intel-engine
-    content: market-intelligence + adapters + Rust engine + execution-score + **§36 pricing recalc** + NATS 3NS
-    status: pending
-  - id: admin-price-sync
-    content: §36 Admin 가격·마진 조정 UI + opportunity.price.updated SSE/WS + 유저 전 surface 실시간 반영
-    status: pending
-  - id: user-app-screens
-    content: apps/web 5탭 + 거래플로우 + **useOpportunityPatch §36** + ProfitAmount CountUp
-    status: pending
-  - id: toast-notification
-    content: toast SSOT(user cute/admin ops) + push/in-app + (user_id,source_event_id) UNIQUE + 중복0
-    status: pending
-  - id: admin-ops
-    content: apps/admin 12모듈 + §39 금융원장 + §40 분리배포 + TOP5 + RBAC + 리포트
-    status: pending
-  - id: abuse-error-matrix
-    content: risk-service 어뷰징 룰 + rate limit + circuit breaker + error/toast 매핑 100% 커버
-    status: pending
-  - id: ai-feature-platform
-    content: feature-platform + ai-platform(L1/L2) + AI_LOG/Eval + Shadow Replay + AI PICK 점수
-    status: pending
-  - id: pwa-native-shell
-    content: apps/web PWA — manifest·Serwist SW·App Shell·install prompt(iOS/Android)·standalone CSS·safe-area
-    status: pending
-  - id: pwa-push-badge
-    content: Web Push(VAPID)+App Badge+packages/sdk/push + CF Worker dispatch + iOS installed-PWA fallback
-    status: pending
-  - id: pwa-webauthn-haptics
-    content: WebAuthn 출금·packages/sdk/haptics·WebAudio 수익 사운드·플랫폼 capability degrade
-    status: pending
-  - id: store-bridge-scaffold
-    content: TWA(PWABuilder+assetlinks) + Capacitor iOS shell + packages/sdk/native-bridge (코드 재작성 0)
-    status: pending
-  - id: responsive-device-tier
-    content: packages/ui fluid+container+touch-target + packages/sdk/device-tier S/A/B + TanStack Virtual + verify:responsive
-    status: pending
-  - id: korean-first-copy
-    content: packages/ui/copy/ko + **§38 trust(usdt-why·platform-revenue·FAQ)** + useCopy + verify:korean-ui
-    status: pending
-  - id: trust-education-ux
-    content: §38 WhyUsdtCard·PlatformRevenueExplainer·/me/guide/* + 입금 USDT 추천 UX + 면책 CI
-    status: pending
-  - id: marketing-seo-engine
-    content: Ad Funnel Matrix(3매체) + packages/sdk/marketing CAPI·UTM + sitemap·IndexNow·OG share + verify:marketing-compliance
-    status: pending
-  - id: infra-observability-launch
-    content: Bootstrap=$0(Cloudflare Pages+Workers) → Compose→EKS + OTel + PWA/Store E2E 게이트
-    status: pending
+  - id: domain-todos-follow-01-06
+    content: "[grok-4.5|256K] 엔진·머니·UI·Admin·PWA·Infra todo/모델배정은 각 분리 플랜 frontmatter SSOT (여기 중복 실행 금지)"
+    status: completed
 isProject: false
 ---
 
-# AI Profit OS — 통합 플랜 (v7.7 · On-Chain + KYC Gate)
+# AI Profit OS — 통합 아카이브 (v7.22.25 ARCHIVE pointer)
+
+> ⚠️ **ARCHIVE.** 일상 작업·구현·todo 실행은 ACTIVE `00`~`06` 해시 플랜만.
+> **착수 전:** `docs/CONSTITUTION_BOOTSTRAP.md` · **ACTIVE Index:** `ai_profit_os_00_index_a1b2c3d4.plan.md`
+> **브랜드:** Consumer+AI=**퍼뜩** · retired=`오늘수익`·`바로번다` · §47.12~14 P/G/S
+> **결제 SSOT (ACTIVE 승):** PG사0 · KRW=**Admin 승인/거절 Day-1** · CSV Auto-Recon=L2+ only (본 ARCHIVE 구 Auto-Recon 문구 **무시**)
+> **CTA SSOT (ACTIVE v7.22.28 승 · 본문 구문구 무시):** 유저 Primary=`수익 벌기` · domain=`participate` · `이 상품으로 수익 벌기` **금지** · `이 기회로 수익 벌기`=상세 허용 · 유저메인 `매칭 참여` **금지** · `expectedSellDays` 유저0 · CTA후≈1분  
+> **Listing SSOT (ACTIVE v7.22.32 승 · 본문 ebay+yahoo Day1 문구 무시):** listing=`ebay` 멀티 marketplace\|admin only · `yahoo_jp`=**영구 FORBIDDEN** · 「야후」카피 0
+> **스택:** next@16 · TW4 · pnpm10 · Node22 · Phase0 in-process · CF only
+> **수직:** watch + trading_card + **luxury_bag**
+> **본문:** 역사 mirror · **편집·동기화 금지** · 충돌 시 ACTIVE 분리 플랜 승
+> todo 모델=`[grok-4.5|256K]` / `[composer-2.5|200K]`
+>
+> | 플랜 | 파일 |
+> |------|------|
+> | Index | `ai_profit_os_00_index_a1b2c3d4.plan.md` |
+> | Engine | `ai_profit_os_01_engine_b2c3d4e5.plan.md` |
+> | Money & Chain | `ai_profit_os_02_money_c3d4e5f6.plan.md` |
+> | UI & UX | `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` |
+> | Admin & Ops | `ai_profit_os_04_admin_e5f6a7b8.plan.md` |
+> | PWA & Native | `ai_profit_os_05_pwa_f6a7b8c9.plan.md` |
+> | Infra & Marketing | `ai_profit_os_06_infra_a7b8c9d0.plan.md` |
+
+
+---
+
+# AI Profit OS — 통합 플랜 (v7.22.25 ARCHIVE pointer · ACTIVE 분리 플랜 우선)
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
-> **유저앱:** `apps/web` → `app.domain.com` (PWA)  
-> **어드민:** `apps/admin` → **`ops.domain.com` 별도 배포** (§40) · 메이저 베팅사급  
-> **USDT 입금:** §41 — **유저별 TRC20 주소** · TronGrid 무료 API · chain-watchers **≤0.1s** 자동 반영  
-> **원화 입금:** §41 — **PG 0** · 입금신청 → 대표계좌 송금 → Admin [승인]  
-> **KYC:** §42 — **출금 1회만** · ko 이모지 toast → `/me/kyc` 자동 이동
+> **편집 충돌 시:** ACTIVE 분리 플랜이 승 · 본 ARCHIVE는 mirror  
+
+> **시세 SSOT:** §0.0 Signup-Ready 6 adapters만  
+> **인지 UX SSOT:** §0.0.4 가격비교→마진 · §0.0.5 소액~웨일 · §38.7 Objection4  
+> **정산 SSOT:** **§48.13 + §51.2** MATCH_SUCCESS Rule Engine (난수·연출타이머 금지)  
+> **잔액·출금 SSOT:** **§49** 원금 유지 · 수익 출금 기본 · 버킷 원장  
+> **화면 언어 SSOT:** **§50 + §27** — 유저·어드민 **쉬운 한글만** · 테스트/개발/IT/문서 용어 **화면 노출 0** · 유저 토스트 **한글+이모지**  
+> **설정·약관 SSOT:** **§50** Lux다크 고정 · 글자크기 · 약관/개인정보/오픈소스/라이선스 대본  
+> **운영사·사업자 SSOT:** **§50.9** PRE-OWNED WATCHES L.L.C · DET **1135431** · 푸터·약관·JSON-LD 단일 schema  
+> **브랜드 3층 SSOT:** **§51.1 ADR-002** Platform=AI Profit OS · Consumer app=**퍼뜩** · AI=**퍼뜩** · Legal=§50.9 · retired=`오늘수익`·`바로번다`  
+> **DB SSOT:** **§51.1 ADR-001** PostgreSQL **단일 인스턴스**(Supabase-managed 권장) · 이중 Postgres SoT **금지**  
+> **결제 SSOT:** **PG사(결제대행) 0** — USDT TRC20 + 원화 **Admin 승인/거절 Day-1**(ACTIVE Money §41.3) · CSV=L2+ · Toss/Nice/PortOne 등 **영구 배제** · (아래 본문 Auto-Recon 구문=역사·무시)  
+> **용어 잠금:** **PostgreSQL(ADR-001)** ≠ **PG사/결제대행(§41 PG 0)**  
+> **에이전트 SSOT:** **ADR-014** Cursor=플랜 집행기 · 스택 재설계 금지 · Infra §15.0b  
+> **Personal AI SSOT:** **§47 + §47.12~14** P/G/S · Adapter=`gemini_free` Day-1 · GitHub=코드만  
+> **수직:** 하이엔드 시계 + 트레이딩 카드 + **luxury_bag** · KR 마켓 0
+
+---
+
+## 0.0 시세 소스 잠금 (v7.13) — Signup-Ready + Margin UX + Capital Tiers
+
+**선별 기준 (전부 충족해야 Active):**
+1. 공식/문서화된 HTTP API 또는 공개 bulk JSON  
+2. **가입만 하면** 또는 **가입 없이** 즉시 키/호출 가능  
+3. 신규 키 발급이 막혀 있지 않음  
+4. 무료 티어가 **상업 플랫폼 표시를 명시 금지**하지 않음  
+5. 한국 마켓플레이스가 아님  
+
+### 0.0.1 ACTIVE — v1 수집 허용 (이 목록만 구현)
+
+| adapter_id | 가입 | 역할 | 수직 | 문서/엔드포인트 | 한도·캐시 규칙 |
+|------------|------|------|------|-----------------|----------------|
+| `ebay` | developer.ebay.com 무료 | **실호가 Listing** (buy/sell leg) | watch + trading_card | Browse API `item_summary/search` | ~5k calls/day · Redis cache · 유저요청 시 외부호출 금지 |
+| `yahoo_jp` | developer.yahoo.co.jp AppID | **실호가 Listing** (JP) | watch + trading_card | Auction Web API search | 일일 한도 준수 · backoff |
+| `pokemontcg` | dev.pokemontcg.io 무료 키 | 포켓몬 **카탈로그+참고가** | trading_card (pokemon) | `api.pokemontcg.io/v2` | 키 시 ~20k/day · 메타 캐시 24h · 가격 캐시 ≥1h |
+| `ygoprodeck` | **가입 불필요** | 유희왕 **카탈로그+참고가** | trading_card (yugioh) | `db.ygoprodeck.com/api/v7` | IP rate limit · bulk/local cache 권장 |
+| `coingecko` | Demo 키 권장(무료) | USDT↔KRW/USD | fx | `api.coingecko.com/api/v3/simple/price` | Demo 월 한도 · **최소 60s~5m 캐시** |
+| `frankfurter` | **가입 불필요** | 법정화폐 FX | fx | `api.frankfurter.dev` | 일 단위 고시 · 1h 캐시 |
+
+**역할 분리 (중복0·오차0):**
+- **Listing leg (스프레드 계산 입력):** `ebay` + `yahoo_jp` **만**  
+- **Card catalog / reference price hint:** `pokemontcg` + `ygoprodeck` **만** (자동 Opportunity 단독 근거 금지 — listing과 매칭될 때만 보조)  
+- **FX:** `coingecko` + `frankfurter` **만**  
+- 동일 필드를 두 adapter가 쓰지 않음. `PriceObservation.source` enum = 위 `adapter_id` 6개뿐.
+
+### 0.0.2 FORBIDDEN — v1 코드경로 0 (중복·결함 방지)
+
+| 소스 | 제외 이유 |
+|------|-----------|
+| 번개/중고나라/당근/크림/필웨이 등 KR | 정책 제외 |
+| **TCGPlayer API** | 공식 문서: **신규 API 키 발급 중단** |
+| **JustTCG Free** | Terms: free = **non-commercial** |
+| **PriceCharting API** | 3자 공개/재배포 제한 안내 |
+| **Chrono24** | 공식 무료 개발자 API 없음 |
+| **Cardmarket 3rd-party** | commercial + 심사 필요 → Day-1 제외 |
+| **Scryfall** | Fan Policy: 페이월·단순 재배포 제한 → 유료 Money OS와 충돌 위험 |
+| **PSA** | 시세 없음(cert 검증만) → 시세 adapter 아님 (출시 후 옵션) |
+| HTML 전수 스크래핑 Day-1 | 안정·약관·쿼터 결함 |
+
+### 0.0.3 파이프라인 (오류0)
+
+```
+Asset Master (수동 시드)
+  → pokemontcg / ygoprodeck 로 메타 hydrate (카드만)
+  → ebay + yahoo_jp 로 Listing/PriceObservation
+  → frankfurter + coingecko 로 FX snapshot
+  → engine-rust spread (listing×listing or listing×admin_override)
+  → Opportunity (출처 수·staleAt·adapter_id 표시)
+  → Redis → DO/SSE → 유저 UI
+```
+
+**가드:**
+- 유저 클릭 경로에서 외부 API 호출 **금지** (캐시 miss 시 stale 표시 또는 백그라운드 refresh 큐)  
+- Opportunity 자동 공개: **listing 소스 ≥1** (권장 2: ebay+yahoo) + fresh + 이상치 필터  
+- `pokemontcg`/`ygoprodeck` 가격만으로 자동 공개 **금지** (참고가 ≠ 체결 가능 호가)  
+- Admin override는 listing 부재 시에도 가능 (출처=`admin`)
+
+### 0.0.4 가격비교 → 마진=내수익 인지 UX (삭제 금지 · SSOT)
+
+**헌법:** 유저는 반드시 **「시장 A 가격 vs 시장 B 가격 → 차이(마진) = 내 예상 수익」** 을 한눈에 이해해야 한다.  
+숫자만 크게 보여 주고 비교 근거를 숨기는 UI는 **결함**이다.
+
+#### 필수 비교 블록 `PriceCompareMargin` (모든 Opportunity 표면)
+
+홈 카드·상세·거래확인·완료영수증에 **동일 공식·동일 라벨** (중복 정의 금지, 컴포넌트 1개):
+
+```
+┌─ 시세 비교 ─────────────────────────────┐
+│ 🛒 매수 시장  eBay US     12,400 USDT   │
+│ 🏷️ 매도 시장  Yahoo JP    12,980 USDT   │
+│ ─────────────────────────────────────── │
+│ 차이(스프레드)              +580 USDT   │
+│ 수수료·버퍼 차감             −80 USDT   │
+│ ✅ 예상 내 수익(마진)       +500 USDT   │
+│ ≈ ₩○○○  · 갱신 방금 전 · 출처 2        │
+└─────────────────────────────────────────┘
+한줄 카피: "두 시장 가격 차이가 곧 당신의 수익이에요"
+```
+
+| 규칙 | 잠금 |
+|------|------|
+| 매수/매도 시장명 | `adapter_id` → ko 라벨 (eBay, Yahoo 경매 등) **필수 표시** |
+| 매수/매도 가격 | listing 실호가 (USDT 환산) · Admin override 시 배지 `운영자 기준가` |
+| 마진 | `netProfitUsdt` = sell − buy − fees − riskBuffer − platformMargin |
+| 플랫폼 몫 | 상세에만 `플랫폼 수수료/마진` 한 줄 투명 표시 (§38과 충돌 0) |
+| 예상 vs 확정 | 참여 전=`예상 내 수익` / 참여 후=`확정 지급` **혼용 금지** |
+| 비교 불가 시 | 카드 **자동 공개 금지** 또는 `비교 준비중` + 거래 버튼 비활성 |
+| 소스 1개뿐 | 반대 레그는 Admin override 또는 비공개 · 가짜 반대가 생성 **금지** |
+| FOMO/티커 | 비교 블록을 가리거나 대체 **금지** |
+
+**스키마 필수 필드** (`OpportunityCard` / `OpportunityPricing`):
+- `buyMarketId`, `buyMarketLabelKo`, `buyPriceUsdt`
+- `sellMarketId`, `sellMarketLabelKo`, `sellPriceUsdt`
+- `grossSpreadUsdt`, `costBufferUsdt`, `platformMarginUsdt`, `expectedProfitUsdt` (유저 마진)
+- `compareReady: boolean` — false면 CTA 잠금
+
+**카피 SSOT:** `packages/ui/copy/ko/margin-compare.ts`  
+**검증:** `verify:margin-compare-surface` — 홈/상세/확인/영수증 4면 비교블록 100%
+
+#### 0.0.4.1 수수료·버퍼·플랫폼마진 산출 (오차0 · Engine SSOT)
+
+```
+grossSpreadUsdt     = sellPriceUsdt − buyPriceUsdt
+buyLegFeeUsdt       = buyPriceUsdt  × feePct(buyMarketId)     // default 표
+sellLegFeeUsdt      = sellPriceUsdt × feePct(sellMarketId)
+feesUsdt            = buyLegFeeUsdt + sellLegFeeUsdt
+riskBufferUsdt      = max(grossSpreadUsdt × riskBufferPct, minRiskBufferUsdt)
+costBufferUsdt      = feesUsdt + riskBufferUsdt               // UI "수수료·버퍼 차감"
+platformMarginUsdt  = max(0, (grossSpreadUsdt − costBufferUsdt) × effectiveMarginPct)
+expectedProfitUsdt  = grossSpreadUsdt − costBufferUsdt − platformMarginUsdt
+```
+
+| 파라미터 | Day-1 기본 | 편집 |
+|----------|------------|------|
+| `feePct.ebay` | **0.135** | Admin `/admin/adapters` · fee 표 |
+| `feePct.yahoo_jp` | **0.10** | 동일 |
+| `feePct.admin` | **0** | override 레그 |
+| `riskBufferPct` | **0.05** | Admin |
+| `minRiskBufferUsdt` | **1** | Admin |
+| `effectiveMarginPct` | 개별 `adminMarginPct` **우선**, 없으면 전역 `platform_margin_pct` | §36 · TOP2 |
+
+**금지:** UI에 하드코딩 수수료 · adapter별 공식 분기 복제(엔진 함수 1곳) · expectedProfit < 0 인 기회 자동 공개  
+**CI:** `verify:pricing-formula` — fixture listing → 위 식 ±0.000001 USDT
+
+#### 0.0.4.2 FX Snapshot 합성 (오차0)
+
+| 목적 | Primary | Fallback |
+|------|---------|----------|
+| USDT→KRW 표시 | CoinGecko `tether`/`krw` | CoinGecko USDT/USD × Frankfurter USD/KRW |
+| 법정화폐 교차 | Frankfurter | — |
+| USDT/USD | CoinGecko | — |
+
+**규칙:** 매 snapshot에 `fx_snapshot_id` · `sources[]` · `formulaId`(`cg_usdt_krw` \| `cg_usdt_usd__frank_usd_krw`) 저장.  
+표시 ≈원화는 **항상 동일 snapshot**. 혼합 시점 환율 금지.  
+**CI:** `verify:fx-snapshot-formula`
+
+#### 0.0.4.3 platform_reserve (시뮬 S2 입력)
+
+| 필드 | SSOT |
+|------|------|
+| 계정 | ledger `ops.platform_reserve_usdt` (USDT) |
+| Admin | `/admin/system-control?tab=reserve` · 목표 잔액 설정 · audit |
+| Day-1 | **미설정 시 Growth ON 차단** · 시뮬 S2 Fail |
+| S2 | `worstCasePlatformDrain ≤ platform_reserve × 0.10` |
+
+### 0.0.5 자본대(소액~웨일) 상품·카테고리 구성
+
+**헌법:** 웨일(≥100k USDT)과 **소액 부업 유저**를 동시에 받는다.  
+초고가 시계만 있으면 소액 유저 유입 실패 = 제품 결함.
+
+#### capitalBand (기회·필터·시드 공통 enum)
+
+| capitalBand | 필요 자본 (USDT) | 타깃 | v1 주력 상품 |
+|-------------|------------------|------|----------------|
+| `micro` | **10 ~ 99** | 첫 입금·연습 | 저가 TCG 싱글, 소액 카드 묶음급 SKU |
+| `small` | **100 ~ 999** | 소액 부업 | 중급 포켓몬/유희왕, 소형 Omega 등 저~중가 시계(시드 제한) |
+| `mid` | **1,000 ~ 9,999** | 본격 참여 | Rolex 엔트리·중가 레퍼런스, 고등급 카드 |
+| `high` | **10,000 ~ 99,999** | 고액 | Rolex/Cartier 핵심, 일부 AP |
+| `whale` | **≥ 100,000** | 초고액 | Patek/AP Ultra, 초고가 레퍼런스 |
+
+#### 카탈로그 시드 비율 (v1 잠금 · 오차0)
+
+| 밴드 | 전체 Opportunity 시드 비중 | 비고 |
+|------|---------------------------|------|
+| micro + small | **≥ 40%** | 소액 유저 필수 물량 |
+| mid | **≥ 25%** | |
+| high + whale | **≤ 35%** | 하이엔드·웨일 유지하되 독식 금지 |
+
+#### 마켓 UI
+
+필터 칩 (한글):
+`전체` `시계` `카드` · `소액(10~)` `입문(100~)` `중급(1천~)` `고액(1만~)` `웨일(10만~)` · `초고가`
+
+홈 기본 정렬:
+1. `compareReady=true`
+2. 유저 잔액 밴드에 맞는 기회 우선 (잔액 없으면 micro/small 우선)
+3. 예상 마진율 / AI pick
+
+입금 UX:
+- 소액 퀵버튼: `10` `50` `100` `500` USDT  
+- 웨일 퀵버튼: `1만` `5만` `10만` `25만` `50만` USDT  
+- 두 그룹 모두 노출 (소액 유저 배제 금지)
+
+온보딩 한 줄:
+`시세가 다른 두 시장의 차이만큼 수익이 나요. 소액부터 시작할 수 있어요.`
+
+### 시계 브랜드 (v1 watch)
+
+| tier | 브랜드 | v1 |
+|------|--------|-----|
+| Ultra | Patek Philippe, Audemars Piguet, Richard Mille(선택) | ✅ |
+| Core | Rolex, Cartier, Vacheron(선택) | ✅ |
+| Strong | Omega, Tudor(선택) | ✅ partial |
+
+시드 40~80 refs · 호가 소스 = **ebay + yahoo_jp만**
+
+### 카테고리 / Asset Master
+
+| category | 시드 | 메타 | 호가 |
+|----------|------|------|------|
+| `watch` | 40~80 | 수동 시드 | ebay, yahoo_jp |
+| `trading_card` | 20~40 | pokemontcg(포켓몬), ygoprodeck(유희왕), 기타 게임은 수동+ebay | ebay, yahoo_jp |
+
+**카드 매칭:** set+number+lang+finish(+grade) · 퍼지 단독 자동공개 금지.  
+**등급/PSA (§51.12):** PSA=시세 adapter 아님 · listing title/caption에서 grade 추출 · **등급 불일치 → compareReady=false** · Admin `/admin/opportunities`에 `gradeMismatch` 배지 · 매칭 실패율 KPI → §51.15
+
+### 웨일 / 초고액 입금 (≥100,000 USDT)
+
+| 항목 | 잠금 |
+|------|------|
+| 입금 | 저액 강제 캡 금지 · 퀵버튼 1만~50만 USDT |
+| tier | standard / premium / **whale** |
+| 컴플라이언스 | 출금 KYC + whale 강화 AML |
+| Ultra 기회 | requiredCapitalUsdt ≥ 100000 노출 가능 |
+
+**유저 UI 필터:** §0.0.5 자본대 칩 + `전체|시계|카드`
+
+**헌법 파일:**
+- `CONSTITUTION/44_SIGNUP_READY_MARKET_SOURCES.md`
+- `CONSTITUTION/45_PRICE_COMPARE_MARGIN_UX.md` (= §0.0.4)
+- `CONSTITUTION/46_CAPITAL_TIER_CATALOG.md` (= §0.0.5)
 
 ---
 
@@ -116,7 +324,7 @@ isProject: false
 |---|------|-------|-----------|
 | G1 | **가짜 연혁·공지** | `/admin/growth/content` | `published_at` 소급 · 5년 narrative · synthetic changelog |
 | G2 | **입금 유도 FOMO** | `/admin/growth/deposit` | 랜딩·공지·온보딩 과장 copy · social proof |
-| G3 | **고액 입금 심리전** | `/admin/growth/whale` | 1억+ VIP Desk · tier ladder · OTC (AML 필수) |
+| G3 | **고액 입금·웨일** | `/admin/growth/whale` | **≥100,000 USDT** VIP Desk · tier ladder · OTC/고액 AML · Ultra 시계 기회 우선 노출 |
 | G4 | **실시간 ticker·counter** | `/admin/growth/ticker` | fake/demo ticker · counter blend · demo queue CRUD |
 
 **Ledger 분리 (오차0):** UI demo/blend ≠ ledger SSOT · reconciliation은 **ledger만** · audit log 필수
@@ -148,10 +356,25 @@ isProject: false
 | **Lux-Fintech** | Deep Obsidian · Tier Motion · G4 ticker/counter |
 | **신뢰 교육** | **§38** — USDT 입금 납득 · 원화 비교 · **플랫폼 수익 투명** · 20~70대 ko |
 | **어드민 Ops** | **§40** 분리 배포 · RBAC · **§39** 유저별 금융 전수 |
-| **USDT 온체인** | **§41** TronGrid · 유저별 TRC20 · chain-watchers ≤0.1s · **PG 모듈 0** |
-| **원화 입금** | **§41** 입금신청 → 대표계좌 → Admin 승인 · **PG 심사 우회** |
-| **KYC** | **§42** 출금 시 **1회** · toast+이모지 → `/me/kyc` 자동 이동 |
-| 품질 | 오류0·결함0·오차0·중복0 게이트 |
+| **USDT 온체인** | **§41+§43** 유저별 TRC20 · **이벤트 스트림** · 1conf UI/19conf ledger · sweeper · **폴링 폐지** |
+| **원화 입금** | **§41+§43** 난수 가산금 Auto-Recon · 예외만 Admin · **PG 0** |
+| **KYC/출금인증** | **§42** 출금 1회 + **§43** WebAuthn·Email OTP·PIN fallback |
+| **가격/원장** | **§43** minProfitUsdt + staleAt≤3s · FOR UPDATE ASC · idempotency_key |
+| **시세 소스** | **§0.0 v7.13** Signup-Ready 6 · **가격비교→마진 UX** · **소액~웨일 capitalBand** |
+| **마진 인지** | `PriceCompareMargin` 홈/상세/확인/영수증 4면 필수 · compareReady 가드 |
+| **Personal AI** | **§47.9** 단일PG SoT · Redis hot · pgvector→Qdrant later · 학습OFF+Eval · GH코드만 |
+| **AI 진행 UX** | **§48** 진행실·성공영수증·안전중단 + Admin 진행정책 — **Canon 4면** (사진목업≠픽셀SSOT · ADR-013) |
+| **원금·수익 출금** | **§49** 버킷(원금/수익/잠금/연습) · 기본 수익출금 · 원금확인시트 · P/E 전수방어 |
+| **설정·약관·쉬운한글·운영사** | **§50+§50.9** 설정IA · 약관4종 · DET 푸터 · 토스트이모지 · 어드민 왕초보 한글 · IT용어0 |
+| **v7.22 완성도** | **§51** MATCH_SUCCESS Rule · M0.5 Simulation · Referral · CS/Dispute · Auth · Analytics · Trust Surfaces · Phase0 Bootstrap |
+| **v7.22.1 drift 흡수** | **ADR-006/007** — 원화 `payableAmountKrw` · PRICE_STALE=§43 soft match · CTA · 온보딩≤15초 · tier/WS · manifest · Auth · orchestrate≠실체결 |
+| **v7.22.2 스펙 완성 흡수** | **ADR-008~010** — 수수료·FX·platform_reserve · v1 orchestrate-only · ROOT_DOMAIN · 출금수수료·minHolding · Resend·R2 KYC · TRX stake · KRW CSV Day-1 · 승률정의 · 내정보3면 · Phase0 in-process · next@15 · DET verifiedAt-only · 2인Confirm필수 · §21 라벨교정 |
+| **v7.22.3 성장·공지·브랜드 흡수** | **ADR-011/012** — notice≠campaign · Viral Ladder L1/L2/L3 · clawback·시즌·공유카드 · Brand Kit `packages/ui/brand` · Admin growth 자식탭(보류큐) · R*/N*/B* 전수 · toast REFERRAL_*/CAMPAIGN_* · deep link/CAPI · verify:* 전수 |
+| **v7.22.4 목업 거버넌스 흡수** | **ADR-013** — 사진목업=intent archive only · 시각복제 금지 · Canon=Lux+Brand+컴포넌트+구조와이어 · 충돌시 코드/토큰>플랜>Canon>사진 · `verify:mockup-governance` · Cursor rule alwaysApply |
+| **v7.22.5 Cursor·PG사0 흡수** | **ADR-014** — Cursor=집행기·스택 재설계 금지 · Phase0=NATS0 · next@15/Nest/Rust/단일Postgres/CF only · **PG사(결제대행)0 확정** · 용어 Postgres≠PG사 · `stack-lock.mdc`+`AGENTS.md` · `verify:pg-module-scan`·`verify:stack-lock` |
+| **v7.22.6 그린필드 툴체인 흡수** | **ADR-015** — next@16 · Tailwind v4 · pnpm@10.14 · Node22 · rust-toolchain · Compose/원격 DB · `TOOLCHAIN.md` · `verify:stack-lock` |
+| **v7.22.7 소비자 브랜드 개정** | **ADR-002** Consumer=**퍼뜩** (구 `오늘수익`·`바로번다` 폐기) · Platform=AI Profit OS · Legal=§50.9 불변 · Brand Kit SSOT |
+| **v7.22.8 에이전트 자동화 흡수** | **ADR-016** — rules·hooks·Husky·`verify:gate`·GH Actions·Docker-less Supabase·cleanup · Vercel 금지 · 8GB Phase0 |
 
 ### 점수판 (목표)
 
@@ -178,7 +401,7 @@ isProject: false
 - **10년 경계는 지금 잠근다.** 처음부터 모든 서비스·카테고리·Growth 스위치를 켜지 않는다.
 - **메뉴는 5개만.** 하단/사이드바 추가 탭 금지 (이벤트·친구초대는 내정보 하위).
 - **모든 화면 시선 순서 고정:** 예상수익 → 완료시간 → AI신뢰도 → 난이도 → 버튼 → 상품(작게).
-- **화면 노출 텍스트 = 한국어만.** 코드·로그·API는 영어 가능, **유저·어드민 UI는 ko copy SSOT만** (§27).
+- **화면 노출 텍스트 = 쉬운 한국어만.** 코드·로그·API는 영어 가능, **유저·어드민 UI는 ko copy SSOT만** (§27·§50). 테스트/개발/IT/문서 용어 **화면 0**.
 
 ---
 
@@ -230,7 +453,6 @@ flowchart TB
   Admin --> AdminAPI[Admin_API /admin/api/v1]
   AdminAPI --> Nest[api-nest]
   APIGW --> Nest
-  APIGW --> Nest[api-nest]
   APIGW --> RT[realtime-service_DO]
   Nest --> MI[market-intelligence]
   Nest --> Engine[engine-rust]
@@ -270,7 +492,7 @@ flowchart TB
 ### Domain / Money
 - `services/api-nest` — auth, users, opportunity API, settlement, saved-strategies, admin API, **attribution ingest**
 - `services/marketing-attribution` — UTM/gclid/fbclid/ttclid 귀속, CAPI orchestration, ROAS projection, consent log
-- `services/engine-rust` — spread, ranking, execution-score, HOT/AI_PICK, anomaly
+- `services/engine-rust` — spread, ranking, execution-score, HOT/AI_PICK, anomaly, **§48.13 settlement_rule**
 - `services/wallet-service` — **§41** 유저별 TRC20 주소 발급 · TronGrid ingest · KRW 입금신청 · withdraw · ledger credit
 - `services/risk-service` — abuse score, rate limit, circuit breaker, device fingerprint hook
 - `services/compliance-service` — **§42** KYC 출금 1회 게이트 · AML · sanctions · jurisdiction
@@ -280,7 +502,7 @@ flowchart TB
 - `services/feature-platform` — user/market/opportunity features
 - `services/ai-platform` — L1/L2 only, AI PICK score, AI_LOG
 - `services/realtime-service` — WS/SSE, ticker, **opportunity.price.updated feed** §36
-- `services/simulation-engine` — M0.5 gate
+- `services/simulation-engine` — **§51.4** M0.5 gate · payoutFeasibility · weekly briefing
 - `services/shadow-replay-engine` — 24h replay, 오차 0.000% gate
 
 ### Apps (분리 배포 §40)
@@ -291,13 +513,15 @@ flowchart TB
 ```
 workers/
 ├── marketing-capi-dispatcher   # Meta/TikTok/Google CAPI (CF Worker)
-├── rolex-adapter
-├── chrono24-adapter
-├── exchange-rate-adapter
-├── electronics-adapter
-├── giftcard-adapter
-├── resale-adapter
-├── chain-watchers          # §41 TronGrid TRC20 poll · ≤0.1s ledger credit
+├── ebay-adapter            # §0.0 ACTIVE · Browse API · watch|trading_card
+├── yahoo-jp-adapter        # §0.0 ACTIVE · Auction search
+├── pokemontcg-adapter      # §0.0 ACTIVE · catalog+ref price (pokemon only)
+├── ygoprodeck-adapter      # §0.0 ACTIVE · catalog+ref price (yugioh only)
+├── coingecko-adapter       # §0.0 ACTIVE · USDT FX
+├── frankfurter-adapter     # §0.0 ACTIVE · fiat FX
+├── chain-watchers          # §43 USDT Transfer stream
+├── chain-sweeper           # §43 Energy delegate + Treasury sweep
+# ❌ KR marketplaces · tcgplayer · justtcg-free · pricecharting-publish · chrono24 · scryfall-paywall · cardmarket-3rd — FORBIDDEN v1
 └── temporal-workers
 ```
 
@@ -327,31 +551,46 @@ interface OpportunityCard {
   pricing?: OpportunityPricing;
   // 실행 가능성 (상세 moat)
   expectedSellDays?: number;
-  sellSuccessRate?: number;           // 0-1 → 91%
+  sellSuccessRate?: number;           // §51.3 — HistoricalSpread 30d **표시 전용** · §48 실행 입력 **금지**
   riskScore?: number;                 // 1-5 stars
   executionMode: 'info' | 'orchestrate' | 'full';  // v1: info+orchestrate만
-  executionPlatforms?: string[];      // 크림, Chrono24...
+  executionPlatforms?: string[];      // v1: ebay | yahoo_jp only · Chrono24/KR marketplace FORBIDDEN (§0.0.2)
+  // orchestrate SSOT (오차0): 유저 외부 입찰/구매 없음 · §48.13 Rule이 MATCH_SUCCESS면 ledger 정산
+  // = listing 신선도·compareReady·policy·simulation 기반 **가격조건 정산** (marketplace fill/재고 체결 확인 ≠ 성공조건)
+  // full = later · 실마켓 체결 오케스트레이션 (v1 숨김)
   // 상품 (보조, 작게)
-  assetLabel: string;                 // "Rolex Submariner"
-  assetIcon?: string;
+  category: 'watch' | 'trading_card';  // v1 수직 · 마켓 탭 필터
+  assetId: string;                    // Asset Master FK
+  assetLabel: string;                 // "Rolex Submariner" | "PSA10 Charizard Base #4"
+  assetIcon?: string;                 // ⌚ / 🃏
   arbitrageType: 'price' | 'fx' | 'benefit' | 'limited' | 'resale';
   staleAt: ISO8601;
   status: 'available' | 'paused' | 'expired' | 'circuit_open';
 }
 
 interface OpportunityPricing {
-  marketBuyUsdt: Decimal;             // adapter 수집 매입 시세
-  marketSellUsdt: Decimal;            // adapter 수집 판매 시세
-  adminBuyUsdt?: Decimal;             // Admin override 매입가
-  adminSellUsdt?: Decimal;            // Admin override 판매가
-  adminMarginPct?: Decimal;           // 개별 마진 % (platform default override)
-  useAdminOverride: boolean;          // true = admin 필드 SSOT
-  spreadUsdt: Decimal;                // engine computed
-  platformFeeUsdt: Decimal;
-  netProfitUsdt: Decimal;             // = expectedProfitUsdt
+  // §0.0.4 PriceCompareMargin SSOT (유저 인지 — 삭제 금지)
+  buyMarketId: 'ebay' | 'yahoo_jp' | 'admin';
+  buyMarketLabelKo: string;           // "이베이" 등
+  buyPriceUsdt: Decimal;              // 매수 시장가
+  sellMarketId: 'ebay' | 'yahoo_jp' | 'admin';
+  sellMarketLabelKo: string;
+  sellPriceUsdt: Decimal;             // 매도 시장가
+  grossSpreadUsdt: Decimal;           // sell − buy
+  costBufferUsdt: Decimal;
+  platformMarginUsdt: Decimal;        // 플랫폼 몫 (상세 투명 표시)
+  expectedProfitUsdt: Decimal;        // 유저 마진 = 내 수익
+  compareReady: boolean;              // false → CTA lock
+  capitalBand: 'micro' | 'small' | 'mid' | 'high' | 'whale';
+  // Admin / engine
+  adminBuyUsdt?: Decimal;
+  adminSellUsdt?: Decimal;
+  adminMarginPct?: Decimal;
+  useAdminOverride: boolean;
   pricingSource: 'adapter' | 'admin' | 'blended';
   lastAdapterSyncAt?: ISO8601;
-  lastAdminEditBy?: string;           // admin user id (audit)
+  lastAdminEditBy?: string;
+  // legacy aliases — 코드에서 buyPriceUsdt/sellPriceUsdt/expectedProfitUsdt만 사용 (중복 기입 금지)
 }
 ```
 
@@ -359,13 +598,15 @@ interface OpportunityPricing {
 
 | Type | v1 | 예 |
 |------|-----|-----|
-| price | ✅ | Rolex, iPhone, LEGO |
+| price | ✅ | Patek/AP/Rolex 등 하이엔드 시계, PSA·TCG 카드 · iPhone/LEGO = **v2+** |
 | fx | ✅ | USD/JPY/EUR |
 | benefit | v2 | 카드·상품권·쿠폰 |
-| limited | v1 partial | Nike 한정판 |
-| resale | v2 | 당근·번개 비교 |
+| limited | ❌ v1 | Nike 등 — **v2+** (adapter 준비 전 코드경로 0) |
+| resale | ❌ KR 제외 | 한국 C2C 비교 **영구 제외** · 해외 리세일만 별도 type로 재정의 시 ADR 필요 |
 
 **v1 홈/수익 피드:** `status=available` + adapter live + executionMode≠info-only-blocked 만 노출.
+
+**sellSuccessRate (§51.3):** HistoricalSpread 30d **표시 전용** · 상세 `"과거 유사 조건"` footnote · §48 Rule·AI PICK 입력 **금지** · `verify:no-success-rate-as-rule`
 
 ### 4.3 Admin 가격·수익 연동 (§36 SSOT)
 
@@ -423,7 +664,7 @@ sequenceDiagram
 - `/profits/[id]` 상세 · participate modal
 - 진행 중 `/trades/{id}/execute` — pricingVersion mismatch → toast 갱신
 
-**Participate guard:** `POST /participate` body에 `pricingVersion` — 서버 불일치 시 `PRICE_STALE` toast
+**Participate guard (§43):** `POST /participate` body에 `pricingVersion` + `minProfitUsdt` — 버전 불일치여도 **예상수익 ≥ minProfitUsdt**면 성공; 미만만 `PRICE_STALE`. `staleAt > 3s` 시세는 엔진 진입 차단.
 
 #### 스키마·서비스
 
@@ -461,10 +702,11 @@ sequenceDiagram
  ├─ [D] 💰 오늘 가능한 수익
  ├─ [E] 🤖 AI 추천
  ├─ [F] 🎉 오늘 지급 합계    `counter_mode` §35 G4 (ledger/demo/blended)
- └─ [G] Sticky MotionCTA      ko SSOT "거래 시작"
+ └─ [G] Sticky MotionCTA      ko SSOT **"수익 벌기"** (모바일 only · 기회 바인딩 시 §48 Primary와 동일 action)
 ```
 
-**Sticky CTA:** `position: sticky; bottom: calc(5tab + safe-area)` — 5탭 가리지 않음
+**Sticky CTA:** `position: sticky; bottom: calc(5tab + safe-area)` — 5탭 가리지 않음 · **PC 전폭 sticky 하단 CTA 금지** (Hero/카드 Primary만)  
+**기회 Primary 정식 라벨:** `이 상품으로 수익 벌기` (§7.3 · §48)
 
 ### 5.4 수익 `/profits` — Market Radar (선택 뷰)
 
@@ -495,15 +737,21 @@ sequenceDiagram
  ├─ 진행 중 · 완료 · 거래 내역 · 월별 수익
 ```
 
-### 5.6 지갑 `/wallet`
+### 5.6 지갑 `/wallet` — **§49 버킷 표시 SSOT**
 
 ```
 💰 지갑
- ├─ 🪙 USDT (메인, 크게) + ≈ ₩
+ ├─ 🪙 USDT 총액 (크게) + ≈ ₩
+ ├─ 분리 표시 (오차0 · 숨김 금지):
+ │    · 근무 중 원금 (principal)     ← 참여에 사용
+ │    · 출금 가능 수익 (profit)      ← 기본 출금 대상
+ │    · 진행 중 잠금 (locked)        ← 거래 중
+ │    · 연습 잔액 (practice)         ← 출금·참여 불가 (있으면)
+ ├─ 한 줄: "원금은 다음 수익에 쓰이고, 수익만 가져갈 수 있어요"
  ├─ 💵 원화 (동등 노출)
  ├─ ➕ 입금하기 → /wallet/deposit
- ├─ ➖ 출금하기 → /wallet/withdraw
- └─ 📜 입출금·수익 내역
+ ├─ ➖ 출금하기 → /wallet/withdraw  (?mode=profit 기본)
+ └─ 📜 입출금·수익 내역 (버킷별 필터)
 ```
 
 ### 5.7 입금 `/wallet/deposit` — **USDT · 원화 둘 다 · USDT 추천 ⭐**
@@ -517,7 +765,8 @@ sequenceDiagram
 ```
 ┌─ 🪙 테더(USDT) 입금 ⭐ 추천 ─────────────────┐
 │ [QR]  [내 전용 주소 복사]  ← user별 TRC20 §41 │
-│ ⚡ 입금 즉시 자동 확인 (보통 0.1초 이내)        │
+│ ⚡ 입금 감지→19확정 후 잔액 반영 (§43)         │
+│ 🐋 10만 USDT+ 고액 입금 가능 (웨일 지원)       │
 │ ── 💡 왜 USDT가 편할까요? (탭하면 펼침) ──      │
 │ ① 빠름 — 온체인 확인 후 바로 거래 (원화는 검수) │
 │ ② 한 흐름 — 입금→수익→출금이 USDT로 이어짐     │
@@ -547,56 +796,147 @@ sequenceDiagram
 │ ③ [입금 신청하기]                              │
 │ ── 송금 안내 (Admin 대표계좌 §37) ──           │
 │  국민은행 123-456-789012  예금주 ○○○           │
-│  ⚠️ 신청 금액과 **동일하게** 송금해 주세요      │
+│  💳 입금 요청 금액  **{payableAmountKrw}원**   │
+│  ⚠️ 위 금액 **그대로** 송금 (끝자리 가산 포함) │
 │ ── 상태 ──                                     │
 │  ⏳ 검수 대기 / ✅ 반영 완료 / ❌ 거절          │
 │ [더 빠른 USDT 입금 보기 →]                     │
 └────────────────────────────────────────────────┘
 ```
 
-- **PG 모듈 0** — 유저 송금 → Admin **입금 대기목록** → [승인] → ledger
+- **PG 모듈 0** — 신청 → `payableAmountKrw`(난수 가산) 표시 → 유저 송금 → Auto-Recon/예외만 Admin (§41·§43)
 - 은행명 · 계좌 · 예금주 — §37 Admin · SSE 즉시 반영
-- **짧은 안내:** "계좌 이체 후 운영자 확인 (통상 10분~24시간)"
+- **카피 잠금:** 「신청액과 동일」단독 문구 **금지** · 반드시 `payableAmountKrw` 숫자 노출 (§51.8)
+- **짧은 안내:** "표시된 입금 요청 금액으로 이체 후 자동/운영자 확인 (통상 10분~24시간)"
 
 **Admin 변경 → 유저:** `wallet.deposit_config.updated` SSE
 
-### 5.8 출금 `/wallet/withdraw` — **USDT · 원화 · §42 KYC 1회**
+### 5.8 출금 `/wallet/withdraw` — **§49 수익 기본 · 원금 항상 가능 · §42 KYC 1회**
 
 **탭 (동등):** `🪙 USDT 출금` | `💵 원화 출금`
 
 | 탭 | route | guard |
 |----|-------|-------|
-| USDT | `/wallet/withdraw/usdt` | **§42 KYC approved** · WebAuthn · 잔액 · tier cap |
-| 원화 | `/wallet/withdraw/krw` | **§42 KYC approved** · WebAuthn · **Admin 승인** · tier cap |
+| USDT | `/wallet/withdraw/usdt` | **§42 KYC** · WebAuthn · **§49 mode+bucket** · tier cap |
+| 원화 | `/wallet/withdraw/krw` | **§42 KYC** · WebAuthn · **Admin 승인** · **§49 mode+bucket** · tier cap |
+
+**출금 모드 (§49 · 기본값 잠금):**
+
+| mode | 기본 | 차감 버킷 | UX |
+|------|------|-----------|-----|
+| `profit` | **✅ 기본 진입** | `profit` only | 카드 강조 · 상한=출금가능수익 |
+| `principal` | 접힘/고급 | `principal` | **확인 시트 필수** (기회비용 비교) |
+| `combined` | 접힘 | profit 우선 후 principal | 확인 시트 필수 · 명세 분리 |
+
+**금지:** 원금 출금 메뉴 숨김 · 고객센터-only 원금출금 · 원금출금 시 수익 몰수  
+**고정 카피:** `원금은 언제든 출금할 수 있어요. 보통은 수익만 가져가요.`
 
 **§42 KYC 게이트 (출금만 · 1회):**
 ```
 유저 [출금하기] 클릭
   → kycStatus !== 'approved'
   → toast: "🔐 출금하려면 본인 확인이 필요해요! 1번만 하면 돼요 😊"
-  → 800ms 후 router.push('/me/kyc?return=/wallet/withdraw')
+  → 800ms 후 router.push('/me/kyc?return=/wallet/withdraw?mode=profit')
   → /me/kyc 에서 신청 → Admin 승인 → 이후 출금 **재요청 없음**
 ```
 
 - USDT: TRC20 주소 입력 · TronScan 추적
 - 원화: 등록 계좌 · 출금액 · 승인 대기 toast
-- **거래(participate)는 KYC 불필요** — 잔액·circuit·pricingVersion만
+- **거래(participate)는 KYC 불필요** — **principal(+명시 merge)** · circuit · pricingVersion
+- 상세 SSOT → **§49**
 
 ### 5.9 내정보 `/me`
 
 ```
  👤 내정보
- ├─ 👥 친구 초대
- ├─ 🎁 이벤트
+ ├─ 👥 친구 초대              ← /me/invite (§51.5 Viral Ladder)
+ ├─ 🎁 이벤트·공지            ← /me/events (notice|campaign · Growth OFF면 campaign 빈 안내)
  ├─ 🔔 알림 설정
- ├─ 💾 내 전략 (saved filters)
- ├─ 📞 고객센터
+ ├─ 💾 내 전략                ← /me/strategies
+ ├─ 📞 고객센터              ← §51.6 `/me/support` 티켓·FAQ·분쟁
  ├─ 📖 이용안내
- │   ├─ /me/guide/usdt        ← §38 왜 USDT?
- │   ├─ /me/guide/revenue     ← §38 플랫폼 수익 구조
- │   └─ /me/guide/faq         ← 세금·출금·수수료 FAQ
- ├─ 🪪 본인 확인             ← §42 /me/kyc (출금 1회)
- └─ ⚙️ 설정
+ │   ├─ /me/guide/usdt        ← 왜 테더로 충전하나요?
+ │   ├─ /me/guide/revenue     ← 플랫폼은 어떻게 운영되나요?
+ │   ├─ /me/guide/faq         ← 자주 묻는 질문
+ │   └─ /me/guide/principal   ← 원금과 수익 출금
+ ├─ 🪪 본인 확인             ← §42 (출금 1회)
+ └─ ⚙️ 설정                  ← **§50.1 전수**
+```
+
+#### 5.9.1 친구 초대 `/me/invite` (§51.5 Viral Ladder)
+
+```
+👥 친구 초대
+ ├─ Viral Ladder 진행: L1 가입 → L2 첫충전 → L3 첫수익 (한국어 3단)
+ ├─ 내 코드 · 공유 링크 (Web Share / 카카오 / 복사) · 일 공유 한도 표시
+ ├─ 초대 현황: 가입 N · **유효(L2+) N** · 보류 N · 보너스 합계(프로모→profit)
+ ├─ 티어: 씨앗/불꽃/로켓/고래메이커 · 시즌 리더보드(마스킹)
+ ├─ 공유 카드 미리보기 4종 · [자랑하기]
+ ├─ 안내: 친구 L1 보너스=**연습** · 내 L2/L3=**수익 버킷(프로모)** · 어뷰징 시 회수
+ └─ 상태 toast: 보류/회수/한도 — §8.2 REFERRAL_*
+```
+
+**딥링크:** `/r/{code}` · 설치 후 sticky 90d · 수동 코드 입력 1회  
+**성공 영수증 Secondary:** 「친구에게 자랑하고 보너스」→ share (Primary=출금/지갑 유지)
+
+#### 5.9.2 이벤트·공지 `/me/events` (§51.5b)
+
+```
+🎁 이벤트·공지
+ ├─ 탭 A 공지(notice): 운영 사실만 · 보상/확정수익 문구 0 · 읽음 표시
+ ├─ 탭 B 이벤트(campaign): Growth ON + live만 · 예산/기간/CTA allowlist
+ ├─ Growth OFF 또는 campaign 0: "진행 중인 이벤트가 없어요" (fake 카드 금지)
+ ├─ 홈 배너: notice|campaign 각 1 · dismiss persist · G4 ticker와 슬롯 분리
+ └─ claim 실패: 종료/예산마감/중복 → CAMPAIGN_* toast (서버 권위)
+```
+
+**금지:** G1 FOMO seed를 notice 본문에 합치기 · campaign을 notice로 위장 · demo 금액을 이벤트 보상으로 표시
+
+#### 5.9.2b Brand Kit Surface (중복0 · ADR-011)
+
+> **SSOT 경로:** `packages/ui/brand/` · 소비자 표기 **퍼뜩** · 코드명 AI Profit OS  
+> **필수 에셋:** app-icon-512 · maskable · splash · og-default · share-card×4 · favicon · wordmark light/dark  
+> **생성 파이프라인:** AI/디자인 산출 → 리뷰 → `packages/ui/brand/manifest.json` 등록 → `verify:brand-assets`  
+> **금지:** 런타임 AI 생성 아이콘 · 미등록 에셋 CDN · Chrono24/타사 로고
+
+
+#### 5.9.3 내 전략 `/me/strategies`
+
+```
+💾 내 전략
+ ├─ CRUD: 소액고회전 / 고수익 / 30초 / 안정 / AI추천 (필터 프리셋)
+ ├─ 알림 토글 → push `strategy_match`
+ └─ [이 전략으로 수익 보기] → /profits?strategy=
+```
+### 5.10 설정 `/me/settings` — **§50.1 SSOT (v1)**
+
+```
+⚙️ 설정
+ ├─ 계정 · 보안
+ │   ├─ 내 프로필
+ │   ├─ 로그인 보안 (지문·얼굴·비밀번호)
+ │   ├─ 본인 확인 상태
+ │   ├─ 로그아웃
+ │   └─ 회원 탈퇴 (깊은 곳 · 확인 2회)
+ ├─ 알림
+ │   ├─ 앱 알림 켜기/끄기
+ │   ├─ 수익 기회 알림
+ │   ├─ 충전·출금 알림
+ │   └─ 공지 알림
+ ├─ 보기
+ │   ├─ 글자 크기: 보통 / 크게     ← v1 핵심
+ │   ├─ 화면 스타일: 어두운 화면(고정)  ← 다크/밝은/시스템 토글 **v1 금지**
+ │   └─ (선택) 움직임 줄이기 안내 — 휴대폰 설정 연동
+ ├─ 내 돈 관련
+ │   ├─ 기본 출금: 수익만 (§49 고정 권장)
+ │   ├─ 기본 충전 탭: 테더 / 원화
+ │   └─ 출금 주소·계좌 관리
+ ├─ 약관과 정보 (§50.3 대본)
+ │   ├─ 이용약관
+ │   ├─ 개인정보 처리방침
+ │   ├─ 오픈소스 고지
+ │   └─ 라이선스·저작권
+ └─ 앱 정보: 버전 · 고객센터
 ```
 
 ---
@@ -609,7 +949,7 @@ sequenceDiagram
 2. ⏱️ **완료 예상 시간**
 3. 🤖 **AI 추천도** (보라)
 4. 😊 **난이도/태그**
-5. 🟢 **거래 시작** (파랑, Primary)
+5. 🟢 **이 상품으로 수익 벌기** (파랑, Primary · §7.3/§48)
 6. 📦 **상품명** (작게, 하단)
 7. 📎 **마진 footnote** (§38 — "포함 운영 수수료", 작게)
 
@@ -640,13 +980,13 @@ sequenceDiagram
 - **수익 확정 금지** — "예상 수익" + 리스크 tooltip (§35 G2는 **공지·랜딩·온보딩**만 예외)
 - 차트/호가 등 UX 금지 (§22 레이아웃 유지)
 
-### 6.4 온보딩 (5 step, 15초)
+### 6.4 온보딩 (5 step, ≤15초 · §19 게이트 동일)
 
 ```
 1 😊 "AI가 전 세계 시세 차이에서 수익 기회를 찾아드려요"
 2 🪙 "충전은 테더(USDT)가 가장 빨라요 — 입금→거래→출금 한 번에"
    [왜 USDT? 10초 설명] → §38 미니카드 (skip 가능)
-3 💰 "원하는 거래를 고르고 [거래 시작]만 누르세요"
+3 💰 "원하는 거래를 고르고 [이 상품으로 수익 벌기]만 누르세요"
 4 🎉 "수익은 내 지갑(USDT)으로 지급돼요"
 5 [ 시작하기 ] → /wallet/deposit?tab=usdt (또는 홈)
 ```
@@ -675,17 +1015,23 @@ sequenceDiagram
 
 | 버튼 | label | action | guard |
 |------|-------|--------|-------|
-| Primary | 🟢 거래 시작 | POST `/opportunities/{id}/participate` | balance, circuit, **pricingVersion**, rate limit (**KYC ❌ §42**) |
+| Primary | **이 상품으로 수익 벌기** | POST `/opportunities/{id}/participate` → `/trades/{id}/execute` (§48) | balance, circuit, **pricingVersion+minProfitUsdt (§43)**, staleAt≤policy, rate limit (**KYC ❌ §42**) |
 | Secondary | ❤️ 즐겨찾기 | toggle favorite | auth |
 | Tertiary | 📋 실행 경로 보기 | expand platforms | — |
 
-### 7.4 거래 진행 `/trades/{id}/execute`
+**필수 배지(Primary 인근):** `직접 사지 않아요` · `직접 입찰·판매 안 함` (§48.2)  
+**잔액 부족 시 Primary 대체:** `잔액 충전 후 참여` → `/wallet/deposit?tab=usdt`
 
-| 상태 | UI | 버튼 |
-|------|-----|------|
-| pending | ⏳ AI 거래중... progress bar | 취소 (orchestrate only) |
-| success | 🎉 +X USDT | 💰 확인 → `/wallet` |
-| failed | 😔 | 다시 시도 / 고객센터 |
+### 7.4 거래 진행 `/trades/{id}/execute` — **§48 SSOT (목업 3면)**
+
+> 구 `AI 거래중...` 한 줄 UI **폐기**. 아래 3화면으로 **100% 대체**.
+
+| 상태 | 화면 (§48) | Primary | Secondary |
+|------|------------|---------|-----------|
+| `running` / `requeue` | **AI 진행실** | (없음·자동) | `그만두기` (orchestrate cancel) |
+| `success` | **수익 들어옴 영수증** | `확인 · 지갑 보기` → `/wallet` | `다른 상품 보기` → `/profits` |
+| `safe_stop` (시세변동·미달 등) | **안전하게 멈춤** | `비슷한 상품 보기` | `홈으로` |
+| `failed` (시스템) | 안전중단 변형 또는 toast | `고객센터` / `홈으로` | — |
 
 ### 7.5 지갑 · 입출금
 
@@ -720,11 +1066,11 @@ sequenceDiagram
 
 | Surface | Resolver | Tone | visibleToasts |
 |---------|----------|------|---------------|
-| User error | `resolveToastDetail` | 귀여운 한국어, 이모지 1~2 | 1 |
-| User success (금융) | `toastSurfaceMessage` | 금액 합성 SSOT | 1 |
-| Admin | `resolveAdminToastDetail` | 운영 평문, 이모지 ≤1 | 2 |
+| User error | `resolveToastDetail` | **쉬운 한글 + 이모지 1~2 필수** (§50.2) | 1 |
+| User success (금융) | `toastSurfaceMessage` | 쉬운 한글 + 이모지 1~2 + 금액 합성 | 1 |
+| Admin | `resolveAdminToastDetail` | **왕초보 한글 평문** · 이모지 ≤1 · IT용어 0 | 2 |
 
-**금지:** `CODE_MESSAGES`를 cute로 rewrite · ErrorState에 toast resolver 연결
+**금지:** `CODE_MESSAGES`를 cute로 rewrite · ErrorState에 toast resolver 연결 · 유저 토스트에 영문 코드·HTTP·스택 · 어드민 토스트에 DLQ/API/Error 등
 
 ### 8.2 User Toast Catalog (필수)
 
@@ -738,7 +1084,18 @@ sequenceDiagram
 | `CIRCUIT_OPEN` | ⏸️ 잠시 거래를 멈췄어요. 곧 다시 열릴게요 | any money |
 | `RATE_LIMITED` | 🐢 잠깐만요! 너무 빠르게 눌렀어요 | click spam |
 | `OPPORTUNITY_EXPIRED` | ⏰ 이 기회는 방금 마감됐어요 | stale participate |
-| `DEPOSIT_DETECTED` | 🎉 USDT {amount} 입금 확인! 바로 거래할 수 있어요 | §41 chain watcher |
+| `EXEC_SAFE_STOP_PRICE` | 🛡️ 가격이 움직여서 이번엔 안전하게 멈췄어요 | execute PRICE_MOVED |
+| `EXEC_SAFE_STOP_MIN` | 🛡️ 예상보다 적어져서 진행하지 않았어요 (잔액 그대로) | execute BELOW_MIN_PROFIT |
+| `EXEC_SUCCESS` | 🎉 수익이 들어왔어요 | settlement.completed |
+| `EXEC_CANCELLED` | 중단했어요. 잔액은 그대로예요 | user cancel |
+| `WITHDRAW_PROFIT_OK` | 🎉 수익 출금을 신청했어요 | profit withdraw |
+| `WITHDRAW_PRINCIPAL_WARN` | 원금을 빼면 다음 기회 참여가 줄어들 수 있어요 | principal confirm |
+| `INSUFFICIENT_PROFIT` | 출금 가능한 수익이 부족해요 | profit mode |
+| `INSUFFICIENT_PRINCIPAL` | 근무 중 원금이 부족해요. 충전 후 참여해 주세요 | participate |
+| `PRACTICE_NOT_WITHDRAWABLE` | 연습 잔액은 출금할 수 없어요 | practice |
+| `MERGE_PROFIT_OK` | 수익을 원금에 합쳤어요. 다음 기회에 바로 쓸 수 있어요 | merge |
+| `DEPOSIT_DETECTED` | 👀 USDT {amount} 입금 감지! 확정까지 잠시만요 | §43 1 confirmation (잔액 미반영) |
+| `DEPOSIT_CONFIRMED` | 🎉 USDT {amount} 입금 확정! 바로 거래할 수 있어요 | §43 19 confirmations + ledger |
 | `KRW_DEPOSIT_SUBMITTED` | 📝 원화 입금 신청 접수! 송금 후 확인해 드릴게요 | krw request |
 | `KRW_DEPOSIT_APPROVED` | ✅ 원화 입금이 반영됐어요! | admin approve |
 | `WITHDRAW_SUBMITTED` | 📤 출금 요청을 받았어요 | withdraw |
@@ -750,6 +1107,20 @@ sequenceDiagram
 | `WITHDRAW_BLOCKED` | 📤 출금이 일시 중지됐어요 | admin restrict |
 | `BALANCE_ADJUSTED` | 💰 잔액이 조정됐어요 | admin ledger adjust |
 | `DEPOSIT_CONFIG_UPDATED` | 🔄 입금 정보가 업데이트됐어요 | SSE (optional toast) |
+| `MIN_HOLDING` | ⏳ 원금은 충전 후 {hours}시간이 지나야 출금할 수 있어요 | §11.2 principal/combined |
+| `WITHDRAW_FEE_HINT` | 💸 이체 수수료 {fee} USDT가 빠져요 | withdraw confirm |
+| `REFERRAL_BOUND` | 🤝 초대가 연결됐어요! | code bind L1 |
+| `REFERRAL_L2_PENDING` | ⏳ 친구 첫충전 보너스를 확인 중이에요 | L2 hold window |
+| `REFERRAL_L2_RELEASED` | 🎉 초대 보너스가 수익에 들어왔어요 | L2 release |
+| `REFERRAL_CLAWBACK` | ↩️ 어뷰징으로 초대 보너스가 회수됐어요 | wash/clawback |
+| `REFERRAL_HELD` | ⏸️ 초대 보너스가 잠시 보류됐어요 | risk hold |
+| `REFERRAL_CAP` | 📊 오늘 초대 한도에 도달했어요 | cap/day |
+| `REFERRAL_SHARE_LIMIT` | 🐢 공유는 하루 {n}번까지예요 | share rate |
+| `CAMPAIGN_CLAIM_OK` | 🎁 이벤트 보너스를 받았어요 | campaign claim |
+| `CAMPAIGN_ENDED` | ⏰ 이 이벤트는 종료됐어요 | claim after end |
+| `CAMPAIGN_BUDGET` | 📭 이벤트 예산이 마감됐어요 | budget_exhausted |
+| `CAMPAIGN_DUP` | ✋ 이미 받은 보너스예요 | idempotent claim |
+| `NOTICE_PUSH` | 📢 새 공지가 있어요 | notice live+push |
 
 ### 8.3 Push / In-app Notification
 
@@ -759,7 +1130,9 @@ sequenceDiagram
 | `strategy_match` | 💾 내 전략에 맞는 기회 3건 | `/profits?strategy=` |
 | `deposit` | 🎉 입금 확인 | `/wallet` |
 | `withdraw` | 📤 출금 처리 중/완료 | `/wallet/history` |
-| `promo` | 🎁 수수료 면제 이벤트 (Growth ON 시) | `/me/events` |
+| `promo` | 🎁 이벤트 (campaign live · Growth ON) | `/me/events?tab=campaign` |
+| `notice` | 📢 공지 | `/me/events?tab=notice` |
+| `referral` | 🤝 초대 보너스 / 보류 안내 | `/me/invite` |
 
 ### 8.4 중복0 기술
 
@@ -778,6 +1151,7 @@ sequenceDiagram
 |---|----------------|----------------------|-------------|------|
 | 1 | 📊 한눈에 보기 | `/admin` | dashboard | 오늘 정산·활성 기회·긴급 상태 |
 | 2 | 🔥 수익 기회 관리 | `/admin/opportunities` | opportunities | **§36 가격·마진·수익** · 등록·일시정지 |
+| 2b | ⚙️ 진행 정책 | `/admin/execution-policy` | execution-policy | **§48** 실조건≠연출 · 오늘 결과 KPI · **난수성공률 UI 금지** · audit |
 | 3 | 🔌 해외 시세 수집기 | `/admin/adapters` | adapters | 수집기 연결·상태 |
 | 4 | 💰 입출금 관리 | `/admin/wallet` | wallet | **§37 입금설정** · 검수 · 출금승인 |
 | 5 | 📒 입출금·정산 장부 | `/admin/ledger` | ledger | **§39** 전역·유저별 원장 · reconciliation |
@@ -789,7 +1163,9 @@ sequenceDiagram
 | 11 | 📣 이벤트·프로모션 | `/admin/growth` | growth | **기본 OFF** · §35 G1~G4 탭 |
 | 12 | 📋 운영 기록 | `/admin/audit` | audit | 관리자 행동 로그 |
 
-**금지 (어드민 화면 노출):** Market Adapters, Settlement Ledger, DLQ, NATS, Temporal, Feature Store, Execute Rerun 등 **영어/IT 용어 그대로 노출**
+**IA 잠금 (중복0):** 톱레벨 모듈 수는 **12 유지**. `2b 진행 정책`은 모듈2 **하위·사이드바 자식 링크**(목업의 독립 활성 항목과 동일 시각). route만 `/admin/execution-policy`로 고정 — **13번째 톱레벨 금지**.
+
+**금지 (어드민 화면 노출):** 영어 IT·개발·테스트·문서 용어 **전부** (Market Adapters, DLQ, NATS, Temporal, Feature Store, Execute Rerun, Webhook, Staging, QA, Mock, API, JSON, Stack trace, successRatePercent, 당첨확률 등). 표시는 **쉬운 한글 라벨만** (§27.5 · §50.4).
 
 **어드민 액션 버튼 ko 예:**
 - Execute Rerun → **오류 건 다시 시도하기**
@@ -803,7 +1179,7 @@ sequenceDiagram
 |-----------|------------|
 | 홈/수익 카드 **예상수익** | `/admin/opportunities` §36 pricing |
 | 홈/수익 카드 (목록) | opportunities + adapters |
-| 거래 시작 (가격 스냅샷) | pricingVersion guard + settlement |
+| 이 상품으로 수익 벌기 → AI 진행실/성공/안전중단 | **§48** execution-policy + participate + settlement |
 | 지갑 입출금 | wallet + **§37 deposit-config** + ledger + compliance |
 | 입금 QR/원화계좌 | `/admin/wallet?tab=deposit-settings` · `krw-pending` |
 | USDT 전용주소 | 코드 자동발급 §41 · Admin 조회 `/admin/users/:id` |
@@ -857,7 +1233,7 @@ sequenceDiagram
 └──────────────────────────────────────────┘
 ```
 
-- USDT 온체인: chain-watchers **자동 확인 ≤0.1s** → 어드민은 **예외·분쟁만** 검수
+- USDT 온체인: chain-watchers **이벤트스트림 → 19conf ledger** → 어드민은 **예외·분쟁·집금 모니터링만**
 - 원화: 유저 **입금신청** → 대표계좌 송금 → **대기목록** → 초보 운영자 [승인] · **PG 0**
 - TronScan: `wallet.withdraw.tx_hash` → 마스킹 + 원클릭
 
@@ -931,7 +1307,7 @@ sequenceDiagram
 | **전역 마진 연동** | TOP2 저장 시 개별 override 없는 상품만 bulk update |
 | **감사** | before/after JSON · admin id · `audit.events` |
 
-**유저 동기화 SLA:** Admin [적용] → 유저 카드 숫자 변경 **≤500ms** (S/A) · B-tier WS batch ≤1s
+**유저 동기화 SLA:** Admin [적용] → 유저 카드 숫자 변경 **≤500ms** (S/A) · B-tier WS batch **≤3s** (§29 tier SSOT)
 
 **오류 UX:** `PRICE_STALE` · "가격이 바뀌었어요 — 새로고침할게요" + auto patch
 
@@ -948,25 +1324,30 @@ sequenceDiagram
 │ 계좌번호           [123-456-789012 ]           │
 │ 예금주             [주식회사 ○○○   ]           │
 │ 입금 안내 문구     [편집]                       │
-├─ USDT 온체인 (§41 — 유저별 주소 자동발급) ─────┤
-│ TronGrid API       [________] (무료 tier)      │
+├─ USDT 온체인 (§41+§43 — 유저별 주소 · event stream) ─┤
+│ TronGrid API key   [________] (optional free)  │
 │ Hot wallet xpub    [secrets — UI 마스킹]       │
-│ min confirmations  [1]                         │
-│ poll interval ms   [100]  ← 0.1s 목표           │
-│ chain-watcher      🟢 running / 🔴 stopped     │
+│ UI conf / Ledger   [1] / [19]                  │
+│ watcher mode       [event_stream] 폴링 금지    │
+│ sweeper / energy   [ON] Treasury TRX stake     │
+│ chain-watcher      🟢 stream / 🔴 stopped      │
 └─ [저장] ──────────────────────────────────────┘
 
-┌─ 💵 원화 입금 대기목록 (§41) ─── N건 ─────────┐
-│ 유저 │ 신청액 │ 입금자명 │ 신청시각 │ [승인][거절] │
+┌─ 💵 원화 Auto-Recon / 예외큐 (§43) ─ N건 ─────┐
+│ 유저 │ 송금액(가산) │ 코드 │ TTL │ matched/manual │
 └───────────────────────────────────────────────┘
 ```
+
 
 | 필드 | Admin | 유저 surface |
 |------|-------|--------------|
 | `krwBankName` · `krwAccountNumber` · `krwAccountHolder` | text | 원화 탭 송금 안내 |
 | `tronGridApiKey` | secret | — (backend only) |
-| `usdtMinConfirmations` | number | — |
-| `chainWatcherPollMs` | number default 100 | — |
+| `usdtUiConfirmations` | number default **1** | UI 감지 알림만 |
+| `usdtLedgerConfirmations` | number default **19** | ledger `DEPOSIT_CONFIRMED` |
+| `chainWatcherMode` | `event_stream` only | **per-address poll 금지** |
+| `priceStaleMaxSec` | number default **3** | 엔진 진입 차단 |
+| `krwUniqueAmountTtlMin` | number default **120** | 원화 임시코드 유효 |
 | **유저 TRC20 주소** | 조회 only `/admin/users/:id` | `/wallet/deposit?tab=usdt` **전용 QR** |
 
 **USDT:** Admin이 **공유 입금주소 설정 ❌** → 코드가 **유저별 TRC20 발급** (§41)  
@@ -1025,7 +1406,7 @@ Admin [저장] krw fields → NATS wallet.deposit_config.updated
 | 차감 | Debit User / Credit Ops Pool | `admin.user.balance.debit` |
 | 정정 | reversal + new entry | `admin.user.balance.correct` |
 
-**Guard:** 고액(>1000 USDT) · 2인 Confirm optional · circuit 연동 · 유저 push/toast `BALANCE_ADJUSTED`
+**Guard:** 고액(**>1000 USDT**) · **2인 Confirm 필수** (승인자 ≠ 신청자 · 재무|최고만) · circuit 연동 · 유저 push/toast `BALANCE_ADJUSTED`
 
 #### 9.8.4 유저 차단 · 제재 (전체)
 
@@ -1068,7 +1449,12 @@ Admin [저장] krw fields → NATS wallet.deposit_config.updated
 
 **요약 KPI (상단 고정):**
 - **총 입금** / **총 출금** / **시세차익 순수익** / **플랫폼 마진 기여** (USDT + ≈원화)
-- **현재 잔액** · **거래 횟수** · **승률** · **최근 입금/출금**
+- **현재 잔액** · **거래 횟수** · **거래 성공 비율** · **최근 입금/출금**
+
+**「거래 성공 비율」정의 (오차0 · `sellSuccessRate`와 혼용 금지):**  
+`MATCH_SUCCESS ÷ (MATCH_SUCCESS + PRICE_MOVED + BELOW_MIN_PROFIT)` · 해당 user · ledger/execution 집계만  
+화면 라벨 ko: **거래 성공 비율** · footnote `과거 유사 조건 %`(**Opportunity.sellSuccessRate**)와 **별 필드**  
+**금지:** 난수·demo·G4 수치를 승률에 합산
 
 | 탭 | 표시 (ko) | 데이터 |
 |----|-----------|--------|
@@ -1114,7 +1500,7 @@ GET /admin/api/v1/users/:id/finance/export.csv?type=all|deposits|withdrawals|pro
 | **유저 검색** | 이름·휴대폰·이메일·user_id·tx_hash·지갑주소 | `/admin/users` |
 | **유저 금융 §39** | 개인 입금·출금·시세차익·마진·순손익 | `/admin/users/:id/finance` |
 | **입금** | USDT §41 자동 · 원화 §41 대기목록 · TronScan | `/admin/wallet` |
-| **출금** | 대기열 · 승인/거절 · 고액 2인 Confirm | `/admin/wallet?tab=review` |
+| **출금** | 대기열 · 승인/거절 · **>1000 USDT 2인 Confirm 필수** (§9.8.3 동일 규칙) | `/admin/wallet?tab=review` |
 | **장부** | double-entry · reconciliation · shadow replay | `/admin/ledger` |
 | **거래/수익** | 기회 가격 §36 · participate·settlement 이력 | opportunities + user finance |
 | **리스크** | 동일IP·매크로·Sybil · freeze queue | `/admin/risk` |
@@ -1135,7 +1521,7 @@ GET /admin/api/v1/users/:id/finance/export.csv?type=all|deposits|withdrawals|pro
 
 | # | 공격 | 방어 | 서비스 |
 |---|------|------|--------|
-| A1 | 다계정 referral farming | device graph + **§42 withdraw KYC** + referral cap/day | risk + compliance |
+| A1 | 다계정 referral farming | device graph + **§42 withdraw KYC** + **§51.5** referral cap/day | risk + compliance |
 | A2 | 입금 후 즉시 출금 wash | min holding 24h (설정 가능) + AML rule | compliance + ledger |
 | A3 | 기회 participate spam | rate limit 5/min/user + idempotency key | api-nest + risk |
 | A4 | Stale 기회 arbitrage (UI lag) | staleAt + **pricingVersion** enforce | engine + api |
@@ -1148,12 +1534,24 @@ GET /admin/api/v1/users/:id/finance/export.csv?type=all|deposits|withdrawals|pro
 | A11 | Participate on stale price | pricingVersion guard + PRICE_STALE toast | api-nest + engine |
 | A12 | Admin price typo (margin drain) | simulation floor + preview Confirm | engine + admin |
 | A13 | Manipulate AI PICK | AI score from feature-platform only, L3 no money | ai-platform |
-| A14 | Chargeback social eng. | support ticket + freeze path, no manual balance | admin + ledger |
-| M1 | Fake OG share spam | rate limit share + referral cap | risk + marketing |
+| A14 | Chargeback social eng. | **§51.11** support ticket + freeze path, no manual balance | admin + ledger |
+| M1 | Fake OG share spam | rate limit share + referral cap + 서버 OG only | risk + marketing |
+| N1 | notice에 보상·확정수익 문구 | `verify:notice-no-reward-copy` Fail | growth |
+| N2 | campaign을 notice로 위장 | 스키마·탭 분리 · claim 경로 notice에 0 | growth |
+| N3 | 종료/예산 후 claim 러시 | status gate + budget circuit | growth + ledger |
+| N4 | Growth OFF인데 campaign 노출 | API 빈 목록 · UI empty | growth |
+| N5 | 딥링크 open redirect | ctaRoute allowlist | growth + web |
+| R\* | Viral Ladder 어뷰징 | **Money §51.5.2 R1~R12 · RE1~RE6** | risk + growth |
+| B1 | 미등록 brand 에셋 | `verify:brand-assets` Fail | ui + ci |
+| B2 | 런타임 AI 아이콘 | 금지 · manifest만 | web |
+| B3 | 타사/Chrono24 로고 | CI 금지어·에셋 스캔 | ci |
+| B4 | wordmark drift (퍼뜩≠코드) | ADR-002 + brand manifest | marketing |
+| B5 | splash/manifest 색 불일치 | lux tokens + `#090A10` | pwa |
 | M2 | UTM injection / steal | signed attribution cookie + server validate | marketing-attribution |
 | M3 | Fake JSON-LD ratings | verify:seo-schema — no aggregateRating without source |
 | M4 | Consent-less CAPI | consent log required before dispatch | marketing + compliance |
 | M5 | Landing policy bait-and-switch | landing variant audit + 27 compliance gate | marketing |
+| **P\*** | **§49 원금/수익 버킷 어뷰징** | **§49.9 전수 (P1~P24)** | risk + ledger + wallet |
 
 ### 10.2 악성유저 상태 머신
 
@@ -1191,11 +1589,17 @@ active → flagged → restricted → frozen → banned
 | API | 503 circuit | CIRCUIT_OPEN | system-control | risk |
 | Wallet | deposit fail | support link | wallet queue | fin |
 | Wallet | withdraw fail | toast + retry | admin approve | fin |
+| Wallet | §49 INSUFFICIENT_PROFIT | 출금가능 수익 부족 toast · 원금모드 안내 | — | fin |
+| Wallet | §49 INSUFFICIENT_PRINCIPAL | 근무 원금 부족 · 입금 CTA | — | fin |
+| Wallet | §49 PRACTICE_NOT_WITHDRAWABLE | 연습잔액 출금 불가 안내 | — | fin |
+| Wallet | §49 BUCKET_INVARIANT_FAIL | CIRCUIT money ops | P0 pager | fin+audit |
 | Engine | stale opportunity | OPPORTUNITY_EXPIRED | adapter alert | domain |
 | Ledger | reconciliation fail | CIRCUIT_OPEN | P0 pager | fin+audit |
+| Ledger | §49 bucket drift | CIRCUIT money · 출금/참여 halt | P0 | fin+audit |
 | Realtime | WS disconnect | auto reconnect | — | OTel |
 
-**침묵 실패 금지:** 모든 error path → toast OR inline OR redirect.
+**침묵 실패 금지:** 모든 error path → toast OR inline OR redirect.  
+**§49 전수:** §49.9 E1~E12 · P1~P24
 
 ---
 
@@ -1219,14 +1623,62 @@ active → flagged → restricted → frozen → banned
 - Promo: Debit Promo Pool / Credit User (Growth only)
 - **Admin adjust:** Debit/Credit Ops Adjustment Pool ↔ User (§37)
 
+### 버킷 분개 (§49 — 오차0 · 중복 정의 금지)
+
+| 이벤트 | principal | profit | locked | practice |
+|--------|-----------|--------|--------|----------|
+| 입금 confirmed | **+** | — | — | — |
+| participate lock | **−** | — | **+** | — |
+| safe_stop / cancel unlock | **+** | — | **−** | — |
+| settlement.completed (유저 몫) | — | **+** | **−**(원금복귀+) | — |
+| 수익 출금 | — | **−** | — | — |
+| 원금 출금 | **−** | — | — | — |
+| 수익→원금 merge | **+** | **−** | — | — |
+| 체험 지급 | — | — | — | **+** |
+| 연습 출금/참여 | **금지** | **금지** | — | 소멸/만료만 |
+
+**불변식 (CI `verify:bucket-invariant`):**  
+`principal + profit + locked + practice = user_usdt_liability`  
+`profit ≤ Σsettlement_user − Σprofit_withdraw − Σmerge_to_principal`  
+`practice`는 withdraw/participate 경로 **진입 금지**
+
+**settlement 시 원금:** locked에서 `requiredCapital`은 principal로 복귀, 유저 마진만 profit 증가 (플랫폼 마진은 Ops 수익 계정 — 유저 profit 금지)
+
+### 11.1 USDT 출금 네트워크 수수료 (오차0)
+
+| 항목 | 잠금 |
+|------|------|
+| 설정 키 | `deposit-config.usdtWithdrawNetworkFeeUsdt` (Admin §37) |
+| Day-1 기본 | **1 USDT** (고정 견적 · 실가스 변동은 Ops가 흡수하거나 Admin 갱신) |
+| 차감 버킷 | 출금 `mode`와 동일 (profit → profit, principal → principal, combined → 명세 분리) |
+| 분개 | Debit User (해당 버킷) / Credit `ops.network_fee_usdt` · `withdrawFeeUsdt` 필드 |
+| UX | 출금 확인 전 **「이체 수수료 {n} USDT」** 필수 표시 · 숨김 금지 |
+| 원화 출금 | 별도 `krwWithdrawFeeKrw` (기본 0) · Admin 설정 |
+
+**CI:** `verify:withdraw-fee-ledger` — fee 미표시·미분개 Fail
+
+### 11.2 min holding (A2 wash · 오차0)
+
+| 항목 | 잠금 |
+|------|------|
+| 설정 키 | `compliance.minHoldingHours` · Day-1 **24** · Admin 변경+audit |
+| 적용 | **원금**이 포함된 출금 (`principal` \| `combined`의 principal 분) |
+| 기산 | 해당 principal을 만든 **입금 confirmedAt** 기준 (FIFO) |
+| **미적용** | `mode=profit` 순수 수익 출금 · merge |
+| UX | 미충족 시 toast `MIN_HOLDING` · 남은 시간 ko · 원금 출금만 차단 |
+
+**CI:** `verify:min-holding-scope` — profit-only 출금은 24h 내에도 200
+
+---
+
 ---
 
 ## 12. Event Architecture (3 NS, 중복0)
 
 ```
 domain.events    — opportunity.*, opportunity.price.updated, market.*, ai.analysis.*
-financial.events — ledger.*, wallet.*, wallet.deposit_config.updated, settlement.*
-audit.events     — admin.user.*, admin.wallet.deposit_config.*, admin.opportunity.pricing.*, policy.changed
+financial.events — ledger.*, wallet.*, wallet.deposit_config.updated, settlement.*, wallet.bucket.*, wallet.withdraw_intent.*, wallet.profit_merged
+audit.events     — admin.user.*, admin.wallet.deposit_config.*, admin.opportunity.pricing.*, policy.changed, admin.bucket.adjust.*
 ```
 
 스키마 단일 소스: `schemas/` → `packages/types` → `data-contracts/` (복사 금지)
@@ -1262,35 +1714,55 @@ audit.events     — admin.user.*, admin.wallet.deposit_config.*, admin.opportun
 | | **유저 PWA** | **Admin Ops** |
 |---|-------------|---------------|
 | App | `apps/web` | `apps/admin` |
-| Domain | `app.{domain}` | **`ops.{domain}`** |
+| Domain | `app.{ROOT_DOMAIN}` | **`ops.{ROOT_DOMAIN}`** |
 | CF Pages | project `ai-profit-web` | project **`ai-profit-ops`** |
 | Auth | user JWT / Passkey | **admin JWT** · MFA · RBAC |
 | Route | 5탭 only | 12모듈 · **/admin/** |
 | Public link | 마케팅·SEO | **비공개** · 검색엔진 차단 |
 | WAF | bot score | **IP allowlist** + CF Access(optional) |
 
+#### 15.0 ROOT_DOMAIN 잠금 (출시 전 필수 · ADR-010)
+
+| env | 예 | 용도 |
+|-----|-----|------|
+| `ROOT_DOMAIN` | owner-provided (예: `oneulprofit.com`) | 쿠키·CORS·SEO canonical 루트 |
+| `APP_HOST` | `app.{ROOT_DOMAIN}` | 유저 PWA |
+| `OPS_HOST` | `ops.{ROOT_DOMAIN}` | Admin |
+| `API_HOST` | `api.{ROOT_DOMAIN}` | Nest |
+| `GO_HOST` | `go.{ROOT_DOMAIN}` optional | 광고 랜딩 |
+
+**규칙:** `ROOT_DOMAIN` 미설정 시 **prod deploy Fail** · local은 `localhost`만. 플랜 본문의 `domain.com` = placeholder 의미.  
+**CI:** `verify:root-domain-env` — prod artifact에 미치환 `{domain}` 문자열 0
+
 **금지:** `apps/web`에 `/admin` route · 동일 도메인에 admin mount · 유저앱에서 ops URL 노출
 
 ```
 infra/
-├── web/          # wrangler/pages — app.domain.com
-├── ops/          # wrangler/pages — ops.domain.com  ← §40
+├── web/          # wrangler/pages — APP_HOST
+├── ops/          # wrangler/pages — OPS_HOST  ← §40
 │   ├── pages.toml
 │   └── access-policy.json   # IP allowlist / Zero Trust
-└── api/          # api.domain.com (shared backend)
+└── api/          # API_HOST
 ```
 
-### Bootstrap ($0)
+### Bootstrap ($0) — **Phase 0 우선 (§51.13)**
+
+| Phase | 이벤트 버스 | 스택 | Milestone |
+|-------|-------------|------|-----------|
+| **0** | **in-process** (Nest 내부 emit · NATS **0**) | CF Pages + Nest + PG + Redis + engine-rust | M1 deposit→participate→settlement |
+| **1** | **NATS JetStream** | + adapters · realtime-service · chain-watchers | M2 |
+| **2** | NATS + Temporal | + shadow-replay · sweeper 고도화 | M4 |
+| **3** | 동일 | EKS + full OTel | M7 |
+
 ```
-Cloudflare Pages:
-  ai-profit-web  → apps/web
-  ai-profit-ops  → apps/admin   ← 별도 프로젝트
-Workers: push-dispatcher, marketing-capi-dispatcher
-Upstash Redis
-→ local Docker Compose dev (web:3000 · ops:3001 · api:4000)
+Cloudflare Pages: ai-profit-web → apps/web · ai-profit-ops → apps/admin
+Workers: push-dispatcher, marketing-capi-dispatcher (M1+) · chain-watchers (Phase1+)
+Email: Resend free (§43.6)
+Upstash Redis · R2 kyc-docs
+→ local Docker Compose (web:3000 · ops:3001 · api:4000)
 ```
 
-### Production
+**오차0:** 아키텍처 mermaid의 NATS = **Phase1+ 목표 토폴로지**. Phase0에서 NATS 필수화 = 결함.### Production
 ```
 Docker Compose → Compose+Tilt → Stage(ECS/small K8s) → Prod(EKS)
 ```
@@ -1300,6 +1772,9 @@ Observability: User click → SW → API → Engine → Ledger → Wallet (OTel 
 ---
 
 ## 16. Monorepo (최종)
+
+**런타임 pin (오차0):** `apps/web` · `apps/admin` → **`next@15`** (App Router) · `package.json` engines 고정 · major 16 강제 업 **금지**(별도 ADR).
+**CI:** `verify:next-major-pin` — next major ≠ 15 Fail
 
 ```
 AI_PROFIT_OS
@@ -1311,8 +1786,16 @@ AI_PROFIT_OS
 │   └── ...
 ├── workers/
 │   ├── marketing-capi-dispatcher/
-│   ├── rolex-adapter, ...
-│   └── push-dispatcher/
+│   ├── ebay-adapter/            # §0.0 · §3 workers SSOT (rolex-adapter drift 금지)
+│   ├── yahoo-jp-adapter/
+│   ├── pokemontcg-adapter/
+│   ├── ygoprodeck-adapter/
+│   ├── coingecko-adapter/
+│   ├── frankfurter-adapter/
+│   ├── chain-watchers/
+│   ├── chain-sweeper/
+│   ├── push-dispatcher/
+│   └── temporal-workers/
 ├── packages/
 │   ├── ui/
 │   ├── types/
@@ -1330,6 +1813,10 @@ AI_PROFIT_OS
 │   ├── admin-rbac.v1.json        # §40 역할×권한 matrix
 │   ├── toast-codes.v1.json
 │   ├── admin-actions.v1.json
+│   ├── execution-policy.v1.json      # §48 실조건·연출 (successRate 금지)
+│   ├── trade-execution-state.v1.json # §48 진행 상태
+│   ├── wallet-buckets.v1.json        # §49 principal/profit/locked/practice
+│   ├── withdraw-intent.v1.json       # §49 mode profit|principal|combined
 │   └── ui-copy-glossary.v1.json   # enum→한글 표시 SSOT
 ├── data-contracts/
 ├── migrations/
@@ -1339,13 +1826,13 @@ AI_PROFIT_OS
 │   └── api/
 ├── docs/
 │   └── ux/
-├── CONSTITUTION/            # 00~28
+├── CONSTITUTION/            # 00~28 + 35~51
 └── research/
 ```
 
 ---
 
-## 17. Constitution (28개 + §35~§42)
+## 17. Constitution (28개 + §35~§50)
 
 ```
 ...
@@ -1359,6 +1846,11 @@ AI_PROFIT_OS
 40_ADMIN_ISOLATED_OPS_PLATFORM.md  ← ops 분리배포·RBAC·보안 (§40)
 41_ONCHAIN_USDT_AND_KRW_DEPOSIT.md ← TronGrid·유저별 TRC20·원화 PG-free (§41)
 42_KYC_WITHDRAW_ONE_TIME_GATE.md   ← 출금 1회 KYC·toast·/me/kyc (§42)
+47_PERSONAL_AI_USER_TWIN.md        ← Personal AI (§47)
+48_AI_EXECUTION_ROOM_AND_POLICY.md ← AI 진행실·성공·안전중단·Admin 진행정책 (§48)
+49_PRINCIPAL_RETENTION_AND_PROFIT_WITHDRAW.md ← 원금유지·수익출금·버킷·P/E방어 (§49)
+50_SETTINGS_LEGAL_AND_PLAIN_KOREAN.md ← 설정·약관대본·운영사DET·쉬운한글·토스트이모지 (§50+§50.9)
+51_PLATFORM_COMPLETENESS_AND_RULE_ENGINE.md ← Rule Engine·Simulation·Referral·CS·Trust (§51)
 ```
 
 ---
@@ -1370,12 +1862,13 @@ AI_PROFIT_OS
 2. schemas + manifest + **lux-fintech tokens**
 3. packages/ui (**lux components** + responsive + copy/ko)
 4. packages/ui/copy/ko + useCopy + ESLint
-5. M0.5 simulation
+5. M0.5 simulation (**§51.4** — Growth ON 전 필수)
 6. Money Core
-7. User 5탭 + Install Prompt + Push + WebAuthn + **device tier**
-8. Admin 12모듈 + **TOP5** + **§36 가격** + **§39 금융** + **§40 ops 분리배포**
-9. **Marketing landing + CAPI + SEO** (M6)
-10. Store Bridge scaffold
+7. User 5탭 + **§51.9 Auth** + Install Prompt + Push + WebAuthn + device tier
+8. Admin 12모듈 + TOP5 + §36 + §39 + §40 + **§51.6 CS 큐**
+9. **§48.13 MATCH_SUCCESS Rule Engine** + shadow-replay golden traces
+10. **Marketing landing + CAPI + SEO** (M6)
+11. Store Bridge scaffold
 
 ### Milestone
 
@@ -1385,7 +1878,7 @@ AI_PROFIT_OS
 | M0.5 | Simulation pass |
 | M1 | Ledger + wallet + **§41 TronGrid·유저별 TRC20·원화 대기승인** + withdraw |
 | M2 | Engine + adapters + **§36 pricing** + 홈/수익 실시간 피드 |
-| M3 | 거래 flow + **CountUp/MotionCTA** + toast + Serwist + TronScan |
+| M3 | 거래 flow **§48 진행실·성공·안전중단** + Admin 진행정책 + CountUp/MotionCTA + toast + Serwist + TronScan |
 | M3.5 | **Web Push + Badge + WebAuthn 출금** + haptics/audio |
 | M4 | Admin TOP5 + 12모듈 + **§37·§39 회원·금융** + **§40 ops CF Pages** + shadow replay |
 | M5 | AI PICK + saved strategies |
@@ -1417,7 +1910,7 @@ AI_PROFIT_OS
 - [ ] schema 단일 SSOT (no copy drift)
 
 ### UX · Trust
-- [ ] 온보딩 10초 완료 E2E
+- [ ] 온보딩 ≤15초 완료 E2E (§6.4)
 - [ ] TRC20 deposit→participate→payout→withdraw E2E
 - [ ] Circuit breaker drill pass
 - [ ] Compliance min flow pass
@@ -1433,13 +1926,18 @@ AI_PROFIT_OS
 - [ ] **§40:** `ops.*` 배포 · `app.*/admin` route **0** · verify:no-admin-in-web PASS
 - [ ] **§40:** Admin JWT ≠ User JWT · IP allowlist · MFA · RBAC matrix E2E
 - [ ] **§40:** ops robots/noindex · 유저앱 ops URL 노출 **0**
-- [ ] **§41:** TronGrid → chain-watchers → ledger **≤100ms** · tx_hash idempotent
+- [ ] **§41/§43:** event_stream watcher · **per-address poll 0** · rate-limit budgeter
+- [ ] **§43:** 1conf → DEPOSIT_DETECTED only (ledger 0) · 19conf → DEPOSIT_CONFIRMED
+- [ ] **§43:** chain-sweeper Energy delegate + Treasury sweep E2E (testnet)
+- [ ] **§41/§43:** KRW unique-amount auto-match · expiry · manual_review fallback
+- [ ] **§43:** participate with stale pricingVersion but minProfitUsdt OK → **200**
+- [ ] **§43:** staleAt>3s → engine reject · minProfit 미달 → PRICE_STALE
+- [ ] **§43:** ledger FOR UPDATE account_id ASC · idempotency_key UNIQUE · deadlock drill
+- [ ] **§43:** WebAuthn fail → Email OTP/PIN fallback withdraw E2E
 - [ ] **§41:** 유저별 TRC20 unique · PG import wallet path **0**
-- [ ] **§41:** KRW 입금신청 → Admin 승인 → ledger E2E
 - [ ] **§42:** 출금 KYC toast → `/me/kyc` auto · 승인 후 재요청 **0**
 - [ ] **§42:** participate without KYC **200**
 - [ ] **§37:** freeze/ban → login·거래·출금 block E2E
-- [ ] pricingVersion mismatch → PRICE_STALE toast + auto patch
 - [ ] 전역 마진 저장 → bulk recalc + SSE fanout
 - [ ] **verify:lux-tokens + verify:ticker-mode-audit PASS**
 - [ ] verify:marketing-compliance PASS
@@ -1455,19 +1953,66 @@ AI_PROFIT_OS
 - [ ] **Install E2E iOS guide + Android A2HS**
 - [ ] **Push dedup + WebAuthn withdraw E2E**
 - [ ] **assetlinks.json valid (TWA ready)**
+- [ ] **§48:** AI 진행실 5단계 + progress% + 로그라인 E2E (손댈 것 없음)
+- [ ] **§48:** success → CountUp only after settlement.completed · `확정 지급` 배지
+- [ ] **§48:** safe_stop → 잔액 불변 · `(지급 안 됨)` · 추천 카드 E2E
+- [ ] **§48:** Admin 실조건 저장 → participate/execute 가드 반영 · audit
+- [ ] **§48:** 연출 duration이 ledger credit 성공/실패를 **변경 0** (CI)
+- [ ] **§48:** `successRatePercent` / 난수 성공률 컨트롤 UI·API **0**
+- [ ] **§48:** verify:execution-surfaces PASS (진행/성공/안전중단/Admin정책 = 목업 SSOT)
+- [ ] **§48:** Primary CTA `이 상품으로 수익 벌기` + 배지 `직접 사지 않아요` 전 opportunity surface
+- [ ] **§49:** 지갑 4버킷 표시 100% · `principal+profit+locked+practice=liability` recon PASS
+- [ ] **§49:** 출금 기본 mode=profit E2E · principal/combined는 확인 시트 없이 제출 **0**
+- [ ] **§49:** 원금 출금 메뉴 숨김/제거 scan PASS (항상 도달 가능)
+- [ ] **§49:** practice 버킷 withdraw/participate **403** 100%
+- [ ] **§49:** settlement → profit만 + · requiredCapital → principal 복귀 오차0
+- [ ] **§49:** merge profit→principal atomic · idempotency
+- [ ] **§49:** verify:bucket-invariant + verify:withdraw-mode-default PASS
+- [ ] **§49:** P1~P24 abuse rules wired · E1~E12 toast/inline 100%
+- [ ] **§49:** 성공 영수증 3CTA (수익만 출금 / 원금에 합치기 / 나중에) E2E
+- [ ] **§50:** `/me/settings` IA 100% · 테마 3단 토글 **0**
+- [ ] **§50:** 약관·개인정보·오픈소스·라이선스 4면 `T.legal.*` 대본 노출
+- [ ] **§50.9:** SiteFooter + legal 운영주체 + operator-entity.v1 · DET **1135431** 일치
+- [ ] **§50.9:** DET Trade License PDF on file · Invest in Dubai 수동 확인 기록
+- [ ] **§50:** verify:no-it-jargon · verify:toast-emoji · verify:legal-plain-ko · verify:operator-footer PASS
+- [ ] **§50.9:** verify:operator-footer PASS · DET 1135431 3면 일치
+- [ ] **§51.2/§48.13:** `verify:match-success-rule` — golden trace 100% · random/timer 경로 **0**
+- [ ] **§51.4:** M0.5 simulation PASS · Growth ON blocked until pass
+- [ ] **§51.5:** referral ledger 분개 · cap/day · A1 defense E2E
+- [ ] **§51.6:** support ticket create→Admin queue→resolve E2E · SYSTEM_FAILED → CS link
+- [ ] **§51.7:** practice 1회 지급 · participate/withdraw **403** · 만료 E2E
+- [ ] **§51.9:** OAuth/Passkey signup→session→logout→탈퇴 E2E
+- [ ] **§51.10:** D1/D7 cohort dashboard · first_deposit→2nd participate funnel
+- [ ] **§51.11:** wrong-chain·오입금·duplicate deposit dispute playbook wired
+- [ ] **§51.13:** Phase0 bootstrap (Nest+PG+Redis) M1 E2E before NATS/Temporal
+- [ ] **§51.14:** USDT 1conf→19conf 중간 상태 카피·toast·participate guard E2E
+- [ ] **§51.15:** adapter SKU match failure rate Admin alert · compareReady=false audit
+- [ ] **§51.16:** participate-proof hash stored · success/safe_stop 대조 UI
+- [ ] **§51.17:** SafeStop trust metric (ledger 집계) 유저 표면
+- [ ] **§51.18:** capitalBand journey unlock after N settlements (not deposit-only)
+- [ ] **§51.19:** AdapterHealthChip on cards · stale CTA lock reason ko
+- [ ] **§51.20:** weekly market briefing from simulation (투자권유 금지 copy CI)
+- [ ] **§51.21:** DepositWhyGate + §47 template path first deposit E2E
+- [ ] **§5.7:** KRW payableAmount 가산 copy ↔ §37 schema 일치 scan PASS
 
 ---
 
 ## 20. v1 Scope Lock (확장 vs 출시)
 
 ### v1 사용자에게 보이는 것
-- arbitrageType: `price` + `fx` (+ limited partial)
-- executionMode: `orchestrate` (명품·환율), `info` (중고 비교 — "실행 경로 보기" only)
+- arbitrageType: **`price` + `fx` only** · `limited`/`benefit`/`resale` = v2+ 또는 영구제외
+- executionMode: **`orchestrate` only** (watch · trading_card · fx) · `info`/`full` = **v2+ 숨김** · KR 중고/resale **영구 제외**
 - 5탭, Hero, 필터 6개, 지갑 USDT-first
-- **Admin Ops:** `ops.{domain}` only — **유저앱 admin UI/route 0** (§40)
+- **§48 AI 진행실 · 성공 영수증 · 안전 중단** (목업 3면) + Admin **진행 정책**
+- Primary CTA: **이 상품으로 수익 벌기**
+- **§49** 지갑 버킷 · 출금 기본 **수익만** · 원금 출금 항상 가능 · 성공 후 3CTA
+- **§50** 설정(글자크기·다크고정) · 약관4종 · **§50.9 운영사 DET 푸터** · 전면 쉬운한글 · 토스트 이모지
+- **§51** Proof-at-Participate · SafeStop Trust · Adapter Health · Capital Journey · CS 티켓 · Referral
+- **Admin Ops:** `ops.{domain}` only — **유저앱 admin UI/route 0** · **화면=왕초보 한글만**
 
 ### v1 숨김 (adapter ready 후 ON)
 - benefit (카드·상품권)
+- limited (Nike 등) · executionMode `info`/`full`
 - AI 부업 vertical
 - Growth 3종 (Admin switch)
 
@@ -1478,7 +2023,7 @@ AI_PROFIT_OS
 ### 유지
 Rust Engine, NestJS, NATS, PostgreSQL Ledger, Temporal, AI L1/L2, Cloudflare, OTel, 단계 활성화
 
-### 추가 (v3 PWA)
+### 추가 (히스토리 — **이미 v1 SSOT에 흡수**, 별도 v3 대기열 아님)
 - Serwist SW + App Shell offline
 - manifest.webmanifest SSOT
 - Install Prompt (iOS/Android 분기)
@@ -1493,6 +2038,9 @@ Rust Engine, NestJS, NATS, PostgreSQL Ledger, Temporal, AI L1/L2, Cloudflare, OT
 - **CONSTITUTION 26 + fluid CSS + device tier + TanStack Virtual**
 - **Admin TOP5 + TOP6 광고 성과 위젯**
 - **CONSTITUTION 28 + Lux components + tier motion**
+- **CONSTITUTION 48 + AI 진행실/성공/안전중단/Admin 진행정책 (§48)**
+- **CONSTITUTION 49 + 원금유지·수익출금·버킷원장·P/E방어 (§49)**
+- **CONSTITUTION 50 + 설정·약관대본·쉬운한글·토스트이모지 (§50)**
 
 ### 폐기/금지
 - 6번째 하단 탭
@@ -1502,9 +2050,20 @@ Rust Engine, NestJS, NATS, PostgreSQL Ledger, Temporal, AI L1/L2, Cloudflare, OT
 - toast 중복 stack
 - Admin enum toast
 - **카지노 UI 톤** (설치 버튼·사운드 — "돈 버는 앱" 톤만)
+- **난수 successRatePercent로 실잔액 지급/실패 분기** (§48 절대금지)
+- **구 execute UI** (`AI 거래중...` 한 줄만) — §48 3면으로 대체
+- 유저 화면 **직접 입찰/판매/경매 참여 CTA**
+- **원금 출금 숨김·불가·고객센터-only** (§49 결함=치명)
+- **연습/연출/demo 잔액을 profit·출금 가능으로 승격**
+- **단일 balance 필드만으로 출금 분기** (버킷 무시)
+- **원금 출금 시 수익 몰수**
+- 유저·어드민 화면 **테스트/개발/IT/문서 용어** (API, Staging, DLQ, JSON, Mock, Beta…)
+- v1 **다크/밝은/시스템 테마 토글** (Lux 다크 고정 · §50.1)
+- 유저 토스트 **이모지 0개** 또는 **3개 이상** / 영어 문장
+- 약관·안내에 **투자 원금 보장·확정 수익** 허위 문구
 - **전역 user-select:none** (입금주소·거래ID 복사 불가 = 결함)
 - **Vercel+Cloudflare 이중 호스팅 SSOT** (호스트 1곳만)
-- **Supabase를 Ledger SSOT로 사용** (PostgreSQL double-entry와 중복 금지)
+- **두 번째 Postgres/Supabase 인스턴스를 Ledger SoT로 추가** (§47.9·§51.1 ADR-001 — **단일 PG**만 허용)
 - **JSX/TSX UI 문자열 하드코딩** (ko copy SSOT 위반)
 - **어드민 화면에 DLQ/NATS/Temporal 등 IT 용어 노출**
 - **API error code·stack trace 유저/어드민 노출**
@@ -1519,6 +2078,7 @@ Rust Engine, NestJS, NATS, PostgreSQL Ledger, Temporal, AI L1/L2, Cloudflare, OT
 - **IndexNow = 상위노출 보장** 주장 (크롤 알림만)
 - **"3초 차익 수령" / 수익 확정 CTA** (앱 카드·정산 UI)
 - **User App white background default** (Lux Dark SSOT)
+- **규제·법무 추가 절·Legal Sign-off·KR 규제 전용 절·Growth 법무 2단·Whale AML EDD 전용 스펙을 제품 플랜 잔여과제로 재도입** (§51 ADR-005 — 영구 배제 · 에이전트 언급 금지)
 
 **§35 Admin (기본 OFF):** G1~G4 — fake ticker · demo counter · 연혁 · 입금 FOMO · whale
 
@@ -1643,14 +2203,36 @@ export async function generateMetadata({ params }) {
 #### JSON-LD (honest)
 ```json
 {
-  "@type": "WebApplication",
-  "name": "오늘수익",
-  "applicationCategory": "FinanceApplication",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" }
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "퍼뜩",
+      "applicationCategory": "FinanceApplication",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" }
+    },
+    {
+      "@type": "Organization",
+      "name": "PRE-OWNED WATCHES L.L.C",
+      "identifier": {
+        "@type": "PropertyValue",
+        "propertyID": "DET Trade License",
+        "value": "1135431"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Dubai",
+        "addressCountry": "AE"
+      },
+      "url": "https://preownedwatches.ae"
+    }
+  ]
 }
 ```
 
-**금지:** fake `aggregateRating` · `FinancialProduct` with guaranteed returns
+**SSOT:** `schemas/operator-entity.v1.json` → `@graph` Organization 노드 생성 (§50.9)  
+**브랜드 (§51.1 ADR-002):** JSON-LD `name`=**퍼뜩**(consumer) · repo/platform=AI Profit OS · drift **금지**  
+**금지:** fake `aggregateRating` · `FinancialProduct` with guaranteed returns · UK dissolved entity 표기
 
 #### sitemap.ts + robots.ts
 - `/profits/*` opportunities · `/l/*` landings (noindex optional for pure ad URLs)
@@ -1660,13 +2242,25 @@ export async function generateMetadata({ params }) {
 - Trigger: `opportunity.created|updated` → NATS → worker ping (Google/Bing/Naver endpoints)
 - **효과:** crawl notify only — **ranking ≠ guaranteed**
 
-#### OG Dynamic Share
+#### OG Dynamic Share · Referral Deep Link (v7.22.3)
+
 ```
+apps/web/app/r/[code]/page.tsx              # sticky bind · 설치/로그인 후 §51.5
 apps/web/app/share/[receiptId]/opengraph-image.tsx
-→ referral code embedded · +X USDT image · ko only
+apps/web/app/share/card/[type]/opengraph-image.tsx   # success|compare|trust|invite
+→ referral code embedded · brand manifest assets · ko only · APP_HOST watermark
+go.{ROOT_DOMAIN}/r/{code} → 302 APP_HOST/r/{code}
 ```
-- Share targets: 카카오 · X · native Web Share API
-- Rate limit: 10/user/day (M1 abuse)
+- Share targets: 카카오 · X · native Web Share API  
+- Rate limit: `sharePerUserPerDay` (§51.5 · M1)  
+- **금지:** 클라이언트 임의 OG HTML · 미등록 brand 에셋 · open redirect  
+- CAPI events (consent 후): `ReferralBound` · `ReferralL2` · `ReferralL3` · `ShareCard` + `referral_edge_id`
+
+#### Brand Assets CI (ADR-011)
+
+- SSOT: `packages/ui/brand/manifest.json` + 필수 파일 전수  
+- `verify:brand-assets` — checksum · sizes · no Chrono24 · splash=`#090A10`
+
 
 ### 31.6 Landing 파일 트리
 
@@ -1690,9 +2284,10 @@ services/marketing-attribution/
 ### 31.7 CI Gates (§32)
 
 - `verify:marketing-compliance` — no banned words in landing copy (§35 G2 OFF default)
-- `verify:seo-schema` — JSON-LD validator, no aggregateRating without source
+- `verify:seo-schema` — JSON-LD validator, no aggregateRating without source · Organization license=1135431 matches §50.9
 - `verify:attribution-chain` — UTM fixture → signup → deposit → admin ROAS
 - `verify:capi-consent` — event without consent = test fail
+- `verify:operator-footer` — schema ↔ SiteFooter ↔ T.legal.operator 3-way match
 
 ---
 
@@ -1704,6 +2299,8 @@ services/marketing-attribution/
 - [ ] sitemap valid · IndexNow ping on opp create
 - [ ] OG share generates referral URL
 - [ ] No fake structured data (manual QA)
+- [ ] JSON-LD Organization = PRE-OWNED WATCHES L.L.C · license 1135431 (§50.9)
+- [ ] SiteFooter + landing footer = operator schema (verify:operator-footer PASS)
 - [ ] Ad policy checklist signed (27 appendix)
 
 ---
@@ -1733,7 +2330,7 @@ services/marketing-attribution/
 | **카지노 칩 사운드** | ❌ **금지** | **Lux chime** (§23.7) |
 | **카지노 슬롯 Count-Up 톤** | ⚠️ **수정** | fintech count-up · slot metaphor ❌ |
 | **폭죽 Confetti 3중** | ⚠️ **수정** | tier S/A: light burst · B: flash only · reduced-motion: none |
-| **"3초 차익 수령" CTA** | ❌ **금지** | ko SSOT **"거래 시작"** |
+| **"3초 차익 수령" CTA** | ❌ **금지** | ko SSOT **"이 상품으로 수익 벌기"** (sticky 단축 **"수익 벌기"**) |
 | **고급 카지노 심리 연출** | ❌ **금지** | **명품관 Lux-Fintech** reframe |
 | **CONSTITUTION 23** | ❌ **충돌** | **`28`** (23=PWA) |
 | DopamineButton name | ⚠️ **rename** | **`MotionCTA`** (카지노 연상 ↓) |
@@ -1849,7 +2446,79 @@ extend: {
 - `verify:lux-tokens` — no hardcoded hex outside lux-fintech.ts
 - `verify:ticker-mode-audit` — demo/hybrid modes emit audit events
 - `verify:motion-tier` — B-tier screenshot: no backdrop-filter
-- `verify:cta-copy` — no "차익 수령"/"확정" in ko copy (앱 카드)
+- `verify:cta-copy` — no "차익 수령"/"수익 확정" in **앱 카드·진행 중** (성공 화면 `확정 지급` 배지만 §48 허용)
+
+---
+
+### 33.8 Mockup Governance SSOT (v7.22.4 · ADR-013 · 오류0)
+
+> **헌법:** 사진/PNG 목업은 로고·톤·여백이 **서로 다름**. 픽셀 SSOT로 쓰면 화면이 깨지거나 화면마다 다른 앱이 된다.  
+> **잠금:** 구현·에이전트는 **시각 복제 금지**. 구조·플로우 의도만 허용.
+
+#### 33.8.1 권위 사다리 (오차0 · 상위 승)
+
+| 순위 | SSOT | 용도 |
+|------|------|------|
+| 1 | `packages/ui/tokens` · Lux · Brand Kit | 색·타입·로고·아이콘·간격 토큰 |
+| 2 | `packages/ui` 컴포넌트 · 5탭 IA · §8 toast · copy/ko | 재사용 UI·카피 |
+| 3 | 본 플랜 절(§5/§7/§48…) + Canon wire | 화면 위계·필수 블록·CTA |
+| 4 | `docs/mockups/_archive/**` 사진 목업 | **intent only** · 시각 무시 |
+
+**충돌 시:** 1>2>3>4. 사진목업이 1~3과 다르면 **사진이 틀린 것** (구현을 맞추지 않음).
+
+#### 33.8.2 사진 목업 — 강제 무시 목록 (결함0)
+
+에이전트/구현이 사진에서 **절대 가져오면 안 되는 것:**
+
+- 로고·워드마크·파비콘·스플래시 (→ Brand Kit만)
+- 색 헥스·그라데이션·그림자·블러 (→ Lux tokens)
+- 폰트 패밀리·크기 px (→ fluid type tokens)
+- 여백·카드 radius·아이콘 세트 (→ spacing/radius/icon SSOT)
+- 잘못된 하단 탭·영문 헤더·타사 마크·난수 성공률 UI
+- “목업이랑 픽셀 동일” QA 기준
+
+**허용 (구조 의도만):** 블록 순서 · Primary 1개 · 정보 위계(제목>금액>CTA) · 화면 목적(진행/성공/중단)
+
+#### 33.8.3 Canon Surfaces (진짜 시각 SSOT)
+
+```
+packages/ui/canon/
+  manifest.json                 # surface id → route · checklist
+  surfaces/
+    execution-running.wire.json
+    execution-success.wire.json
+    execution-safe-stop.wire.json
+    admin-execution-policy.wire.json
+    # … 홈/지갑/초대 등 추가 시 동일 패턴
+docs/mockups/_archive/          # 기존 PNG — README: INTENT ONLY · DO NOT PIXEL-MATCH
+.cursor/rules/mockup-governance.mdc  # alwaysApply
+```
+
+**Canon wire 필수 필드:** `route` · `blocks[]`(id, role, copyKey) · `primaryCta` · `forbidden[]` · `brandRef=packages/ui/brand`  
+**승격 규칙:** 새 화면은 Canon wire 작성 **후** 구현. 사진만 주고 “똑같이” 구현 **금지**.  
+**재생성(옵션):** 시각 레퍼런스가 필요하면 Canon+Brand로 **새** 스크린샷을 찍고 archive를 교체 — 구 사진 재사용 금지.
+
+#### 33.8.4 어뷰징·오류 매트릭스 (MUP*)
+
+| # | 실패 모드 | 방어 |
+|---|-----------|------|
+| MUP1 | 화면마다 다른 로고 | Brand Kit 단일 · `verify:brand-logo-single` |
+| MUP2 | 목업 색/여백 복제로 깨짐 | 토큰 only · hex hardcode Fail |
+| MUP3 | 탭/IA가 목업따라 drift | 5탭 불변 · `verify:ia-tabs` |
+| MUP4 | §48를 사진 픽셀 QA | Canon checklist · 픽셀 diff 금지 |
+| MUP5 | archive PNG를 SSOT 경로로 import | `_archive` import Fail CI |
+| MUP6 | 에이전트가 목업 첨부 복제 | rule alwaysApply · ADR-013 |
+| MUP7 | Canon 없이 화면 추가 | `verify:canon-surfaces` Fail |
+| MUP8 | 성공률/영문 헤더 목업 잔재 | §48.0 + copy CI |
+
+#### 33.8.5 에이전트 운영 규칙 (중복0)
+
+1. UI 작업 시 **사진 목업을 열지 않음** (기본). 열어도 구조 의도만.  
+2. 구현 전 Canon wire + Brand + Lux 확인.  
+3. “목업이랑 똑같이” 요청 → **Canon/토큰 기준으로 재해석** 후 구현 (픽셀 맞추기 거부).  
+4. 리뷰 지적에 사진-픽셀 불일치 = **비결함** (ADR-013). Canon/플랜 불일치만 결함.
+
+---
 
 ---
 
@@ -1860,7 +2529,7 @@ extend: {
 - [ ] `ticker_mode=live`: LivePayoutTicker = ledger only
 - [ ] `ticker_mode=demo`: Admin queue renders · audit logged
 - [ ] `counter_mode=blended`: ledger+demo sum · admin preview matches user
-- [ ] MotionCTA label = ko SSOT "거래 시작"
+- [ ] MotionCTA opportunity Primary = ko SSOT **"이 상품으로 수익 벌기"** (sticky 단축 **"수익 벌기"** · PC 전폭 sticky 금지)
 - [ ] B-tier: no blur, no particle, 45fps+ scroll
 - [ ] reduced-motion: all lux motion OFF
 - [ ] 320px sticky CTA clears 5-tab nav
@@ -1892,7 +2561,7 @@ extend: {
 
 | 루트 | UX | Guard |
 |------|-----|-------|
-| **VIP Desk** | 1억+ 전담 · `/wallet/deposit?tier=whale` | KYC enhanced |
+| **VIP Desk** | **≥100,000 USDT** 웨일 전담 · `/wallet/deposit?tier=whale` | KYC enhanced · §0.0.5 whale |
 | **Tier Ladder** | 무제한 입금 · 출금 tier cap | §11 ledger · AML |
 | **OTC / Desk** | 대량 입금 manual confirm | Temporal + admin approve |
 
@@ -1942,12 +2611,41 @@ interface GrowthConversionSettings {
   g2_depositFomo: { enabled: boolean; landingVariantIds: string[]; seededStats: Record<string, number> };
   g3_whaleRoutes: { enabled: boolean; minWhaleUsdt: Decimal; vipDeskUrl?: string };
   g4_tickerCounter: TickerCounterSettings;
+  referral: ReferralProgramConfig;          // Money §51.5
+  accrualHalted: boolean;                   // 긴급 적립 정지
 }
 ```
 
 **Audit:** 모든 ON/OFF → `audit.events` · reason≥10 · Growth budget+circuit 연동
 
+### 35.6 Growth 자식 탭 (sidebar 12 잠금 · 13번째 ❌)
+
+> **Route:** `/admin/growth` · **tabs only** (새 sidebar 모듈 금지)
+
+| tab | 역할 | 핵심 액션 |
+|-----|------|-----------|
+| `content` | G1 FOMO · synthetic 연혁 | ON/OFF · seed · **notice와 분리** |
+| `notices` | **운영 공지 CRUD** (§51.5b) | draft→schedule→live · push · 금지어 CI |
+| `campaigns` | **이벤트/캠페인 마법사** | budget · reward kind · allowlist CTA · kill |
+| `deposit` | G2 FOMO | landing variants |
+| `whale` | G3 | VIP desk |
+| `ticker` | G4 | demo/hybrid · audit |
+| `referral` | Viral Ladder · 시즌 · 티어 | config · season · **보류 큐** · clawback · accrual halt |
+| `share` | OG/공유 카드 템플릿 | 4종 미리보기 · rate · 워터마크 |
+
+**TOP widgets (기존 TOP 영역 하위 링크 · 모듈 추가 금지):**  
+- 초대 보류 N · 캠페인 예산 % · Promo Pool 잔액 · notice 예약 N
+
+**보류 큐 (referral hold):**  
+`held_risk` edges · 1-click release/clawback · reason≥10 · RBAC=risk|finance  
+**상태×기능:** flagged→모니터링 · restricted→share↓ · frozen/banned→적립·claim·share **0**
+
+**Admin toast (평문):** 「초대 보너스를 보류했어요」·「캠페인 예산을 멈췄어요」·「공지를 올렸어요」
+
+**CI:** `verify:admin-growth-tabs` · `verify:notice-campaign-split` · `verify:referral-hold-queue`
+
 ---
+
 
 ## 36. Admin 가격·수익 실시간 연동 (v7.3 신규)
 
@@ -1995,7 +2693,7 @@ useOpportunityDetail(id);
 ### 36.4 CI · 출시
 
 - `verify:pricing-sync` — Admin PATCH fixture → SSE → web card DOM/profit text change ≤500ms
-- `verify:pricing-version` — participate with stale version → PRICE_STALE 100%
+- `verify:pricing-version` — version mismatch라도 recomputed ≥ minProfitUsdt → **200** · 미만만 PRICE_STALE (§43)
 
 ---
 
@@ -2016,13 +2714,21 @@ interface DepositConfig {
     accountHolder: string;
     noticeKo: string;
   };
-  usdtOnchain: {                    // §41 — NOT a shared user deposit address
+  usdtOnchain: {                    // §41+§43 — NOT a shared user deposit address
     network: 'TRC20';
     tronGridBaseUrl: 'https://api.trongrid.io';
-    tronGridApiKey?: string;         // optional · free tier
-    minConfirmations: number;        // default 1
-    chainWatcherPollMs: number;      // default 100 (0.1s)
-    hotWalletXpubRef: string;        // secrets store pointer
+    tronGridApiKey?: string;         // optional free-tier key (NOT required paid RPC)
+    chainWatcherMode: 'event_stream'; // per-address polling FORBIDDEN
+    usdtUiConfirmations: 1;          // toast DEPOSIT_DETECTED only
+    usdtLedgerConfirmations: 19;     // DEPOSIT_CONFIRMED + double-entry
+    usdtContract: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+    hotWalletXpubRef: string;
+    treasuryHotAddressRef: string;
+    energyDelegateEnabled: boolean;  // §43 sweeper
+  };
+  pricingGuards: {
+    priceStaleMaxSec: 3;             // §43
+    requireMinProfitUsdt: true;
   };
   updatedAt: ISO8601;
   updatedByAdminId: string;
@@ -2038,15 +2744,20 @@ interface UserDepositAddress {
   lastSeenTxAt?: ISO8601;
 }
 
-// schemas/krw-deposit-request.v1.json — §41 PG-free
+// schemas/krw-deposit-request.v1.json — §41+§43 PG-free unique-amount
 interface KrwDepositRequest {
   id: string;
   userId: string;
-  amountKrw: number;
-  depositorName: string;             // 입금자명 (통장 표시)
-  status: 'pending' | 'approved' | 'rejected';
+  requestedAmountKrw: number;        // 유저 신청액
+  payableAmountKrw: number;          // 난수 가산금 포함 송금액 (UNIQUE active)
+  uniqueSuffixKrw: number;           // e.g. 37 → 100037
+  depositCode: string;               // 2h TTL 임시코드
+  depositorName: string;
+  status: 'pending' | 'matched' | 'approved' | 'expired' | 'rejected' | 'manual_review';
+  expiresAt: ISO8601;                // default now+120m
   adminNote?: string;
   ledgerEntryId?: string;
+  idempotencyKey: string;
   createdAt: ISO8601;
   decidedAt?: ISO8601;
   decidedByAdminId?: string;
@@ -2111,9 +2822,10 @@ interface KrwDepositRequest {
 
 - [ ] Admin 원화 계좌 변경 → 유저 원화 탭 **≤300ms** E2E
 - [ ] **§41:** 신규 유저 → 전용 TRC20 발급 · QR 표시
-- [ ] **§41:** TRC20 test tx → chain-watchers → ledger **≤100ms** + `DEPOSIT_DETECTED`
-- [ ] **§41:** 원화 입금신청 → Admin [승인] → ledger 일치
-- [ ] **§42:** 미인증 유저 출금 → toast → `/me/kyc` auto · 승인 후 출금 OK
+- [ ] **§43:** 1conf → `DEPOSIT_DETECTED` (ledger 0) · 19conf → `DEPOSIT_CONFIRMED`
+- [ ] **§43:** KRW unique-amount auto-match · manual_review fallback
+- [ ] **§42/§43:** 미인증 출금 → KYC · WebAuthn 실패 시 Email OTP/PIN fallback
+
 - [ ] Admin 잔액 +10 USDT → ledger + user balance display 일치
 - [ ] banned 유저 login block 100%
 - [ ] frozen 유저 participate/withdraw block + toast
@@ -2236,6 +2948,91 @@ export const trust = {
 - `verify:tax-disclaimer` — 입금·guide·온보딩에 면책 블록 **필수 존재**
 - [ ] 20·40·60대 usability spot-check (각 3명) — "USDT 왜?" 이해율
 - [ ] `/me/guide/revenue` — 마진 footnote ↔ Admin `platform_margin_pct` 일치
+- [ ] `verify:objection4` — 4반박 답변 surface(온보딩·입금게이트·FAQ·상세) 100%
+
+### 38.7 광고유입 4대 반박 — Objection UX (v7.14) SSOT
+
+광고·부업 키워드로 들어온 유저의 **이탈 질문 4개**.  
+답은 마케팅 문구가 아니라 **제품 구조 + 화면 증거**로 한다.
+
+#### Q1. “유저에게 수익 많이 주면 회사는 뭘로 벌어요?”
+
+| 레이어 | 설계 |
+|--------|------|
+| 한 줄 | “회사는 **시세 차이 안의 운영 마진**으로 벌어요. 회원 지갑 돈을 가져가지 않아요.” |
+| 증거 UI | `PriceCompareMargin`에서 **유저 마진 / 플랫폼 마진** 두 줄 분리 표시 |
+| 도식 | A시장 매수가 → B시장 매도가 → **차이 100** 중 회원 85 · 플랫폼 15 (예시 %, Admin 실제값 연동) |
+| 금지 | “회원 수익을 깎아서” 톤 · “영원히 공짜” |
+
+#### Q2. “왜 내가 입금해야 돼요?”
+
+| 레이어 | 설계 |
+|--------|------|
+| 비유 | “부동산 앱이 집을 대신 사 주지 않듯, **기회에 넣을 내 자본**이 필요해요.” |
+| 구조 | 입금 = **내 지갑 잔액(ledger)** · 거래 담보 · 출금 가능 자산 |
+| 증거 UI | 입금 전: 기회 카드는 보이되 CTA=`잔액 충전 후 참여` · 입금 후: 같은 카드로 즉시 참여 |
+| 소액 | “**10 USDT부터** 가능한 소액 기회” 칩으로 Q2 완화 (§0.0.5 micro) |
+
+#### Q3. “회사에서 돈 주고 그걸로 하면 안 돼요?”
+
+| 레이어 | 설계 |
+|--------|------|
+| 한 줄 | “회사 돈으로 대신 넣어 주면 **내 수익이 아니라 회사 투자**가 돼요. 여기는 **내 자본으로 기회에 참여**하는 구조예요.” |
+| 보조 | 데모/연습: **모의 잔액 1회** 가능하되 **실출금 0** · “연습과 실제는 분리” 배지 |
+| 금지 | 가입 보너스 실USDT를 ‘회사 대납 원금’처럼 포장 · 원금보장 |
+| 대안 | 첫 참여 수수료 할인(프로모 풀)은 OK · **원금 대납은 금지** |
+
+#### Q4. “부업인데 왜 돈을 넣어요?”
+
+| 레이어 | 설계 |
+|--------|------|
+| 재정의 | “알바형 부업(시간→시급)이 아니라 **시세차익형 부업(자본→마진)** 이에요.” |
+| 비교표 | `시간형 부업` vs `이 앱(자본형)` 2열 — 입금 이유·수익 원천·리스크를 plain ko로 |
+| 안심 | 소액 밴드·출금 경로·비교 근거 숫자 · “원하면 언제든 출금 신청” |
+| 금지 | “돈 안 넣어도 수익” · “클릭만 하면 월급” |
+
+#### 배치 (언제 보여 줄까)
+
+```
+광고 랜딩 히어로 하단: Objection 2줄 요약 + [자세히]
+온보딩 step: "회사는 마진으로 / 나는 내 자본으로" 1장
+첫 입금 게이트 모달: Q2+Q4 필수 확인 체크 1개 후 입금 폼
+/me/guide/faq: Q1~Q4 아코디언 (항상)
+기회 상세 하단: Q1 미니 (플랫폼 마진 한 줄) + [수익 구조 보기]
+```
+
+#### 컴포넌트 추가
+
+```
+packages/ui/components/trust/
+├── ObjectionFourAccordion.tsx   # Q1~Q4
+├── CapitalVsWageCompare.tsx     # Q4 부업 유형 비교
+├── DepositWhyGate.tsx           # 첫 입금 전 납득 모달
+└── DemoWalletBanner.tsx         # 모의 연습 (실출금 0)
+```
+
+#### Copy SSOT (`packages/ui/copy/ko/objections.ts`)
+
+```typescript
+export const objections = {
+  q1: {
+    q: '유저 수익을 주면 회사는 뭘로 벌어요?',
+    a: '두 시장 가격 차이 중 일부를 운영 마진으로 받아요. 내 지갑 잔액은 회사 수입이 아니에요.',
+  },
+  q2: {
+    q: '왜 내가 입금해야 돼요?',
+    a: '기회에 참여할 내 자본이에요. 입금은 내 지갑에 보관되고, 거래 후 남은 돈은 출금할 수 있어요.',
+  },
+  q3: {
+    q: '회사가 돈을 줘서 시작하면 안 돼요?',
+    a: '회사 돈으로 하면 내 부업이 아니에요. 연습은 모의로, 실제 수익·출금은 내 입금으로만 가능해요.',
+  },
+  q4: {
+    q: '부업인데 왜 돈을 넣어요?',
+    a: '시간 팔아 시급 받는 알바와 달라요. 시세 차이로 마진을 노리는 자본형 부업이라 소액부터 내 돈이 필요해요.',
+  },
+};
+```
 
 ---
 
@@ -2454,126 +3251,75 @@ Hosts optional: `app.local` · `ops.local` — cookie domain 분리 테스트
 
 ---
 
-## 41. USDT 온체인 자동입금 + 원화 PG-free 워크플로 (v7.7)
+## 41. USDT 온체인 자동입금 + 원화 PG-free (v7.8 · §43 결함 수정 반영)
 
-> **SSOT:** `CONSTITUTION/41_ONCHAIN_USDT_AND_KRW_DEPOSIT.md` · §5.7 · §9.7 · `workers/chain-watchers`  
-> **원칙:** **100% 코드** · **PG/결제모듈 0** · TronGrid **무료 공개 API** · 유저별 TRC20 · **≤0.1s** ledger
+> **SSOT:** `CONSTITUTION/41_ONCHAIN_USDT_AND_KRW_DEPOSIT.md` + `43_CHAIN_SETTLEMENT_HARDENING.md`  
+> **원칙:** PG 0 · 유저별 TRC20 · **이벤트 스트림** · **1conf UI / 19conf ledger** · **per-address 폴링 금지**
 
-### 41.1 아키텍처 (PG 대체)
+### 41.1 아키텍처 (v7.8)
 
 ```mermaid
 sequenceDiagram
   participant U as User
   participant W as wallet-service
   participant CW as chain-watchers
-  participant TG as TronGrid_API
+  participant TG as TronGrid_EventStream
   participant L as ledger
+  participant SW as chain-sweeper
   participant RT as realtime-service
 
   U->>W: GET my-deposit-address
-  W->>W: HD derive TRC20 (lazy)
   W-->>U: QR + 전용주소
   U->>U: USDT TRC20 send
-  loop poll 100ms
-    CW->>TG: GET .../transactions/trc20
-    TG-->>CW: incoming USDT
-  end
-  CW->>L: idempotent credit (tx_hash UNIQUE)
-  CW->>RT: wallet.deposit.confirmed
-  RT-->>U: SSE + DEPOSIT_DETECTED toast
+  CW->>TG: subscribe USDT Transfer single stream
+  TG-->>CW: Transfer to known address
+  CW->>RT: DEPOSIT_DETECTED at 1 conf
+  Note over L: NO ledger yet
+  CW->>L: DEPOSIT_CONFIRMED at 19 conf
+  L-->>RT: wallet.deposit.confirmed
+  SW->>SW: Energy delegate + sweep to Treasury
 ```
 
-| vs PG | 본 플랜 §41 |
-|-------|-------------|
-| 결제모듈·심사 | **TronGrid + chain-watchers** |
-| 공유 입금주소 | **유저별 TRC20** (HD derive) |
-| 수동 확인 | **온체인 자동 ≤0.1s** |
-| 원화 PG | **입금신청 + Admin [승인]** |
+| 금지 (v7.7 결함) | 필수 (v7.8) |
+|------------------|------------|
+| 주소별 100ms 폴링 | USDT 컨트랙트 Transfer **단일 스트림** + 로컬 address Set 매칭 |
+| 1conf 즉시 ledger | **1conf = UI만**, **19conf = Double-Entry** |
+| 집금 미설계 | `workers/chain-sweeper` Energy delegation |
+| 원화 수동 전량 | 난수 가산금 **Auto-Recon** (예외만 수동) |
 
-### 41.2 유저별 TRC20 주소 발급 (코드)
+상세 규격·무료 범위·반대의견 → **§43**
 
-```typescript
-// services/wallet-service/deposit-address.service.ts
-// Path: m/44'/195'/0'/0/{derivationIndex}  (TRON BIP44)
-// Secrets: HOT_WALLET_XPRV in CF Secrets / Vault — **never client**
+### 41.2 유저별 TRC20 주소 발급
 
-async ensureUserDepositAddress(userId: string): Promise<UserDepositAddress> {
-  // 1) SELECT ... FOR UPDATE by userId
-  // 2) if missing: next index, derive, persist, return QR payload
-}
-```
+- HD path `m/44'/195'/0'/0/{index}` · xprv secrets only
+- 유저당 1주소 · `tx_hash` UNIQUE · dust filter
+- 재발급 Admin + audit · 구주소 grace sweep
 
-**Guard:**
-- 주소 **유저당 1개** · 재발급 Admin only (audit · 구주소 24h sweep)
-- `tx_hash` **UNIQUE** — double credit **0**
-- min amount dust filter (config)
-
-### 41.3 chain-watchers (`workers/chain-watchers`)
-
-```typescript
-// workers/chain-watchers/src/tron-trc20-poller.ts
-const TRONGRID = 'https://api.trongrid.io';
-// GET /v1/accounts/{address}/transactions/trc20?only_to=true&contract_address=TR7NHq...
-
-while (true) {
-  for (const addr of activeDepositAddresses) {
-    const txs = await fetchTrc20Incoming(addr, sinceBlock);
-    for (const tx of txs) {
-      await walletService.confirmUsdtDeposit({
-        userId: addr.userId,
-        txHash: tx.transaction_id,
-        amountUsdt: tx.value,
-        confirmations: tx.confirmations,
-      }); // → ledger + NATS wallet.deposit.confirmed
-    }
-  }
-  await sleep(pollMs); // default 100ms
-}
-```
-
-| 설정 | default | Admin |
-|------|---------|-------|
-| poll interval | **100ms** | `chainWatcherPollMs` |
-| min confirmations | 1 | `usdtMinConfirmations` |
-| TronGrid | free tier | optional API key (rate limit) |
-| SLA | credit **≤100ms** from chain seen | metrics `deposit.detect.latency_ms` |
-
-**장애:** TronGrid down → exponential backoff · admin alert · **수동 confirm fallback** (ops only)
-
-### 41.4 원화 PG-free 입금 워크플로
+### 41.3 원화 PG-free + Auto-Recon (§43)
 
 ```
-[유저] 원화 탭 → 금액+입금자명 → [입금 신청하기]
-  → status: pending · toast KRW_DEPOSIT_SUBMITTED
-  → 화면: Admin 대표계좌 표시 + "송금 후 대기"
-
-[유저] 실제 은행 이체 (PG 없음)
-
-[Admin] /admin/wallet?tab=krw-pending
-  → 행: 유저 · 신청액 · 입금자명 · 시각
-  → 통장 확인 후 [승인] → ledger credit · toast KRW_DEPOSIT_APPROVED
-  → [거절] → reason · 유저 알림
+신청 100,000원 → payable 100,037원 + depositCode(2h)
+ → 유저 송금 → matcher가 payableAmount UNIQUE로 자동 matched
+ → ledger approve (또는 은행피드/CSV ingest)
+ → 불일치/동명이인 → manual_review 큐만 Admin
 ```
 
-**초보 운영자 UX:** 금액·입금자명 **일치 확인** 체크박스 → [승인] (Confirm 1회)  
-**PG 심사 우회:** 결제모듈·서류 업로드·PG webhook **전부 없음**
-
-### 41.5 Ledger 분개 (오차0)
+### 41.4 Ledger 분개 (오차0)
 
 | 이벤트 | 분개 |
 |--------|------|
-| USDT on-chain | Debit Treasury On-chain / Credit User |
-| KRW approved | Debit Ops KRW Pool / Credit User (USDT projection) |
-| Admin reject | — (no ledger) |
+| USDT `DEPOSIT_CONFIRMED` (19conf) | Debit Treasury On-chain / Credit User |
+| USDT `DEPOSIT_DETECTED` (1conf) | **분개 없음** (pending observation only) |
+| KRW auto/manual approved | Debit Ops KRW Pool / Credit User |
+| Sweep to Treasury | internal treasury move (user credit 불변) |
 
-### 41.6 CI · 출시
+### 41.5 CI
 
-- `verify:per-user-trc20` — N users → N unique addresses
-- `verify:tron-deposit-idempotent` — same tx_hash 2x → 1 credit
-- `verify:deposit-latency` — testnet fixture → ledger **≤100ms** p99
-- [ ] TronGrid mock → chain-watchers → user balance + toast E2E
-- [ ] KRW pending → approve → ledger + §39 finance tab
-- [ ] **PG module import scan = 0** in wallet path
+- `verify:no-per-address-poll` — poller 코드경로 0
+- `verify:deposit-confirm-stages` — 1conf no ledger / 19conf credit
+- `verify:tron-deposit-idempotent` — tx_hash 2x → 1 credit
+- `verify:krw-unique-amount` — collision 0 + expiry
+- `verify:pg-module-scan` — wallet path PG import 0
 
 ---
 
@@ -2622,6 +3368,19 @@ function assertWithdrawKyc(user: User) {
 ├─ [인증 신청하기] → pending
 └─ ⏳ 승인되면 알림 드릴게요!
 ```
+
+### 42.2.1 KYC 서류 저장 SoT (결함0)
+
+| 항목 | 잠금 |
+|------|------|
+| 스토리지 | **Cloudflare R2** 버킷 `kyc-docs` (서버 사이드만 · 유저 직접 URL 0) |
+| 객체 키 | `kyc/{userId}/{submissionId}/{hash}.enc` · at-rest encryption |
+| 메타 | PG `kyc_submissions` (status · r2_key · created_at) — 바이너리 PG 금지 |
+| 열람 | Admin **준법(compliance)·최고** RBAC only · signed URL TTL ≤5m |
+| 보존 | 계정 활성 중 + 탈퇴 후 **법정 최소(기본 5년 설정 키)** · 만료 cron+audit |
+| 금지 | 로컬 디스크 영구 저장 · Git · 공개 버킷 · CS 역할 원본 다운로드 |
+
+**CI:** `verify:kyc-r2-only` — apps/web에 R2 public URL 하드코딩 0
 
 ### 42.3 Admin (`/admin/compliance?tab=kyc`)
 
@@ -2746,7 +3505,7 @@ export function detectDeviceTier(): DeviceTier {
   const saveData = (navigator as any).connection?.saveData;
   if (reduced || saveData) return 'B';
   if (memory != null && memory <= 2) return 'B';
-  if (cores <= 4) return 'A';
+  if (cores <= 4) return 'B';
   if (memory != null && memory >= 8 && cores >= 8) return 'S';
   return 'A';
 }
@@ -2899,6 +3658,11 @@ packages/ui/copy/
 │   ├── toast.ts         # T.toast.* — schemas/toast-codes mirror
 │   ├── push.ts          # T.push.* — 알림 title/body
 │   ├── trust.ts         # T.trust.* — §38 USDT·수익·면책
+│   ├── settings.ts      # T.settings.* — §50.1
+│   ├── legal.ts         # T.legal.* — §50.3 약관4종 대본
+│   ├── operator.ts      # T.operator.* · T.legal.operator — §50.9 DET 푸터
+│   ├── principal-profit.ts
+│   ├── execution.ts
 │   └── glossary.ts      # G.status.* G.adminJob.* — enum→한글
 ├── use-copy.ts          # useCopy('user.wallet.title')
 └── index.ts
@@ -2932,13 +3696,23 @@ packages/ui/copy/
 | Arbitrage, ROI, PnL | **전부 금지** |
 | KYC | 본인 확인 |
 | TRC20 / Blockchain / Token | **숨김** → "테더(USDT)" / "입금 주소" |
-| Execute / Confirm / Submit | 거래 시작 / 확인 / 신청하기 |
+| Execute / Confirm / Submit | 이 상품으로 수익 벌기 / 확인 / 신청하기 |
+| Matching / Orchestrate / Pipeline | 진행 중 / AI가 진행 중 |
+| Principal / Profit bucket | 근무 중 원금 / 출금 가능 수익 |
+| Idempotency / Webhook / SSE | **화면 금지** |
+| Staging / QA / Debug / Testnet | **화면 금지** |
+| Mock / PoC / MVP / Beta | **화면 금지** (유저·어드민) |
+| API / JSON / Schema / Endpoint | **화면 금지** |
+| Ledger / Double-entry | 장부 / 받을돈·줄돈 기록 |
+| Hot wallet / Sweep / Gas | 회사 금고 / 모으기 / 이체 수수료 |
 
 **5탭 라벨 (잠금):** 홈 · 수익 · 내거래 · 지갑 · 내정보
 
-**카피 톤:**
-- ❌ "지금 누르면 45,000원 **수익 확정**!"
-- ✅ "예상 수익 **+45,000원**" + tooltip "실제 금액은 달라질 수 있어요"
+**카피 톤 (유저 · 쉬운말 · 20~70대):**
+- ❌ "지금 누르면 45,000원 **수익 확정**!" / 한자·영어·법률체 남발
+- ✅ "예상 수익 **+45,000원**" + "실제 금액은 달라질 수 있어요"
+- ✅ 문장 짧게 · 존댓말 · 초등~중학생도 이해 가능한 단어
+- ✅ 토스트·푸시: **한글 + 이모지 1~2개** (§50.2)
 
 ### 27.4 화면 노출 예외 화이트리스트 (오차0)
 
@@ -2946,32 +3720,41 @@ packages/ui/copy/
 |------|------|------|
 | **USDT** | 국제 표준 + 사용자 요청 | "12.45 USDT" + ≈원화 병기 |
 | **AI** | 국내 보편 약어 | "AI 추천" OK · "Artificial Intelligence" ❌ |
-| **브랜드·모델명** | 시장 데이터 | Rolex, iPhone, Chrono24 (카드 하단 작게) |
+| **브랜드·모델명** | 시장 데이터 | Rolex, iPhone 등 (카드 하단 작게) · 금지 adapter 브랜드를 **시세 출처**로 표기 ❌ |
 | **₩ / 원** | 원화 | "₩17,200" · "약 1만 7천원" |
 | **숫자·%** | universal | "+12.45", "91%" |
 
-**NOT 예외 (여전히 금지):** KRW 라벨, BTC, ETH, TRC20, Pending, Failed
+**NOT 예외 (여전히 금지):** KRW 라벨, BTC, ETH, TRC20, Pending, Failed, Test, Debug, Staging, Mock, API, JSON, Error 500, null, undefined
 
-### 27.5 어드민 — IT 용어 → 운영 한글 (전수)
+**브랜드 예외 추가 잠금:** Chrono24 등 **금지 시세출처 브랜드를 ‘시세 출처’로 표시 금지** (상품명 시장데이터와 별개 · §0.0.2)
 
-| 내부 (코드/로그) | 어드민 화면 표시 |
-|------------------|------------------|
+### 27.5 어드민 — 왕초보 운영자용 한글만 (IT·개발·테스트 용어 화면 0)
+
+> **헌법:** 프로그래밍 지식 0인 운영자도 **한눈에** 이해.  
+> **어드민 화면에 영어 IT/개발/테스트/문서 용어 절대 노출 금지** (§50.4 확장 금지어).
+
+| 내부 (코드/로그 · 비노출) | 어드민 화면 표시 (오직 이것) |
+|---------------------------|-------------------------------|
 | Market Adapters | 해외 시세 수집기 |
 | Settlement Ledger | 입출금·정산 장부 |
-| Double-Entry Journal | 받을돈/줄돈 기록 (쌍으로) |
-| Risk Service / Anomaly | 사기·이상 거래 방지 |
-| DLQ | 실패한 작업 보관함 |
-| NATS JetStream | 실시간 메시지 줄 (상세 접기) |
-| Temporal Workflow | 자동 처리 대기열 |
-| AI Gateway / Model Router | AI 분석 엔진 |
-| Feature Store / Feature Platform | 시세·회원 데이터 보관소 |
+| Double-Entry Journal | 받을돈·줄돈 기록 (쌍으로) |
+| Risk / Anomaly | 사기·이상 거래 방지 |
+| DLQ | 다시 해야 할 실패 목록 |
+| NATS / JetStream / Kafka | **화면 금지** → 필요 시 `실시간 알림 줄` |
+| Temporal / Workflow | 자동 처리 대기줄 |
+| Feature Store | 시세·회원 자료함 |
 | Circuit Breaker | 긴급 정지 |
 | Reconciliation | 장부 맞춤 검사 |
-| Shadow Replay | 어제 거래 다시 계산 검사 |
-| KYC / AML | 본인 확인 / 자금세탁 방지 |
-| WebAuthn | 지문·얼굴 확인 |
+| Shadow Replay | 어제 숫자 다시 맞춰보기 |
+| KYC / AML | 본인 확인 / 이상한 돈 흐름 감시 |
+| WebAuthn | 지문·얼굴로 확인 |
+| Idempotency | 같은 요청 두 번 막기 (화면 설명문만) |
+| Webhook / SSE / gRPC | **화면 금지** |
+| Staging / QA / Testnet | **화면 금지** |
+| successRatePercent | **화면 금지** |
 
-**어드민 상세 패널:** 기본 = 한글만 · **"개발자 보기"** 토글 시에만 internal id (opportunity_id 등) — default OFF
+**어드민 상세:** 기본 한글만.  
+내부번호(기회번호 등)가 필요하면 라벨을 **`관리 번호`** 로만 · **"개발자 보기" 영문 토글 금지** → 필요 시 RBAC `기술지원` 역할에 **`자세한 관리 번호 보기`**(한글) default OFF.
 
 ### 27.6 API 오류 · 상태 → 한글 (결함0)
 
@@ -2994,16 +3777,20 @@ problem.code (영어, 내부) → glossary.ts → toast/inline (한글)
 | Hardcoded UI | ESLint `no-hardcoded-ui-text` | JSX string literal in apps/web, apps/admin |
 | English leak | `verify:korean-ui.mjs` | `[A-Za-z]{3,}` in rendered copy keys (whitelist 제외) |
 | Glossary coverage | `verify:glossary-coverage` | 모든 ProblemCode·TradeStatus enum에 ko mapping |
-| Admin plain | `verify:admin-plain-language` | IT 용어 in admin.ts values |
+| Admin plain | `verify:admin-plain-language` | IT·개발·테스트 금지어 in admin.ts values |
+| No jargon | `verify:no-it-jargon` | 유저·어드민 렌더 트리 금지어 (§50.4) |
+| Toast emoji | `verify:toast-emoji` | 유저 toast 이모지 1~2 · 어드민 ≤1 |
+| Legal plain | `verify:legal-plain-ko` | 약관4종 어려운말/영문IT 스캔 |
+| Operator footer | `verify:operator-footer` | schema ↔ footer ↔ legal operator block 일치 |
 | check:light | CI | 위 전부 GREEN |
 
-**스캔 제외:** `route`, `className`, `data-testid`, import path, 주석
+**스캔 제외:** `route`, `className`, `data-testid`, import path, 주석, **L2 코드파일**(화면 번들 문자열만 검사)
 
 ### 27.8 PWA · Push · Install 한글
 
 | surface | ko SSOT |
 |---------|---------|
-| manifest `name` | 오늘수익 |
+| manifest `name` | 퍼뜩 |
 | Install prompt iOS | "홈 화면에 추가하면 앱처럼 쓸 수 있어요" |
 | Install Android | "1초 만에 앱 설치" |
 | Push title | `T.push.ai_pick.title` — "🤖 AI 추천 — +18.5 USDT" |
@@ -3027,9 +3814,15 @@ manifest `lang: ko-KR` · `description` 한국어 only
 - [ ] `verify:korean-ui` PASS
 - [ ] `verify:glossary-coverage` 100%
 - [ ] `verify:admin-plain-language` PASS
+- [ ] `verify:no-it-jargon` PASS (유저+어드민)
+- [ ] `verify:toast-emoji` PASS
+- [ ] `verify:legal-plain-ko` PASS (§50 약관4종)
+- [ ] `verify:operator-footer` PASS (§50.9 DET 1135431 · PRE-OWNED WATCHES L.L.C)
+- [ ] 설정: 다크/밝은/시스템 토글 **없음** · 글자 크기 있음 (§50.1)
 - [ ] 유저 5탭·어드민 12메뉴 **라벨 = admin.ts/user.ts 일치**
 - [ ] 스크린샷 회귀 — 영어 pixel 0 (브랜드·USDT·AI 예외만)
 - [ ] problem.code raw 노출 E2E 0건
+- [ ] 왕초보 운영자 워킹: 입출금 검수·긴급정지·회원찾기 **가이드 없이 완료**
 
 ---
 
@@ -3055,7 +3848,7 @@ manifest `lang: ko-KR` · `description` 한국어 only
 | Web Audio 즉시 재생 | ✅ 동의 | SW precache sfx, 금융 톤 (카지노 슬롯음 ❌) |
 | @ducanh2912/next-pwa | ⚠️ **업그레이드** | **Serwist** (`@serwist/next`) = next-pwa 후속, App Router SSOT |
 | Next.js 16 | ⚠️ **수정** | **Next.js App Router 15+** (버전 pin은 repo lock) |
-| Supabase Auth+DB 무료 | ⚠️ **부분** | **Bootstrap Auth optional** — **Ledger/Money SSOT = PostgreSQL(api-nest)** 단일, Supabase DB 이중 금지 |
+| Supabase-managed PostgreSQL | ✅ **권장** | Ledger+AI **단일 PG** (§47.9·ADR-001) · **User Auth = api-nest JWT** (ADR-006) · Supabase Auth **병행 금지** |
 | Vercel 무료 호스팅 | ⚠️ **택1** | **Cloudflare Pages SSOT** (Edge·DO·WAF와 동일 벤더, 중복0) |
 | PWABuilder TWA | ✅ 동의 | Play Store v2, `.aab` |
 | Capacitor iOS | ✅ 동의 (한계 명시) | **shell+push cert+review** 필요, "코드 0줄" ❌ → **UI 코드 0줄, 설정만** |
@@ -3065,8 +3858,8 @@ manifest `lang: ko-KR` · `description` 한국어 only
 
 ```json
 {
-  "name": "오늘수익",
-  "short_name": "오늘수익",
+  "name": "퍼뜩",
+  "short_name": "퍼뜩",
   "description": "AI가 찾아주는 수익 기회",
   "start_url": "/?source=pwa",
   "scope": "/",
@@ -3074,7 +3867,7 @@ manifest `lang: ko-KR` · `description` 한국어 only
   "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait-primary",
   "theme_color": "#1A56FF",
-  "background_color": "#FFFFFF",
+  "background_color": "#090A10",
   "lang": "ko-KR",
   "dir": "ltr",
   "categories": ["finance", "productivity"],
@@ -3241,7 +4034,7 @@ export function settlementSuccessFeedback() {
 
 | 이벤트 | 진동 | 사운드 |
 |--------|------|--------|
-| 거래 시작 탭 | short | soft tap |
+| 이 상품으로 수익 벌기 탭 | short | soft tap |
 | 거래 완료 | pattern | bright chime (카지노 ❌) |
 | 출금 승인 | single | confirm tone |
 
@@ -3271,13 +4064,13 @@ export function settlementSuccessFeedback() {
 | Hosting | **Cloudflare Pages** | 500 builds/mo, bandwidth generous | Next.js static+SSR export |
 | Edge/API | **Cloudflare Workers** | 100k req/day | push-dispatcher, fx snapshot edge |
 | Hot cache | **Upstash Redis** | 10k cmd/day | opportunity HOT ranking cache |
-| Auth (optional bootstrap) | Supabase Auth **또는** api-nest JWT | 50k MAU | **Money DB는 PostgreSQL 단일** |
+| Auth | **api-nest JWT** (ADR-006) + OAuth/Passkey | Nest free | Supabase Auth **병행 금지** · Money DB=단일 PG |
 | Push | web-push + VAPID | $0 | 브라우저 push |
 | Biometrics | WebAuthn | $0 | 표준 API |
 | Realtime | Cloudflare DO | free tier | SSE/WS (기존 realtime-service) |
 
 **제1조 (무료 인프라):** Bootstrap 단계 유료 SaaS 초과 모듈 **금지**.  
-**제2조 (DB 중복0):** Ledger·Journal·Wallet = **PostgreSQL(api-nest) only**. Supabase는 Auth-only 또는 **미사용** 택1 (ADR 잠금).  
+**제2조 (DB 중복0):** Ledger·Journal·Wallet·AI ops = **PostgreSQL 단일 인스턴스**(Supabase-managed 권장). api-nest가 동일 PG 접속. **두 개의 Postgres/Supabase 이중 SoT 금지** (§47.9).  
 **제3조 (호스팅 중복0):** Vercel **병행 금지** — Cloudflare Pages SSOT.
 
 ### 24.2 Production Scale Path (Bootstrap → EKS)
@@ -3415,7 +4208,8 @@ workers/push-dispatcher/          # CF Worker, VAPID, web-push
 | `40_ADMIN_ISOLATED_OPS_PLATFORM.md` | **ops 분리배포** · RBAC · IP · MFA (§40) |
 | `41_ONCHAIN_USDT_AND_KRW_DEPOSIT.md` | TronGrid · 유저별 TRC20 · chain-watchers · KRW PG-free (§41) |
 | `42_KYC_WITHDRAW_ONE_TIME_GATE.md` | 출금 1회 KYC · toast · /me/kyc (§42) |
-| `workers/chain-watchers/` | TronGrid TRC20 poller · ≤0.1s credit |
+| `workers/chain-watchers/` | §43 USDT Transfer event stream · 1/19 conf |
+| `workers/chain-sweeper/` | §43 Energy delegate + Treasury sweep |
 | `schemas/user-deposit-address.v1.json` | §41 per-user TRC20 |
 | `schemas/krw-deposit-request.v1.json` | §41 원화 입금신청 |
 | `schemas/kyc-status.v1.json` | §42 kycStatus enum |
@@ -3460,9 +4254,1718 @@ workers/push-dispatcher/          # CF Worker, VAPID, web-push
 | `schemas/toast-codes.v1.json` | toast code catalog |
 | `packages/ui` | tokens, components |
 | `apps/web/routes.ts` | user routes lock |
-| `apps/admin/routes.ts` | admin 12 routes lock |
+| `apps/admin/routes.ts` | admin 12 modules + 2b execution-policy route lock |
+| `CONSTITUTION/48_AI_EXECUTION_ROOM_AND_POLICY.md` | **§48** AI 진행실·성공·안전중단·Admin 진행정책 |
+| `schemas/execution-policy.v1.json` | §48 실조건·연출 (successRate 필드 **금지**) |
+| `schemas/trade-execution-state.v1.json` | §48 step/result enum |
+| `packages/ui/copy/ko/execution.ts` | T.execution.* 목업 카피 SSOT |
+| `packages/ui/components/execution/` | AiProgressRoom · SuccessReceipt · SafeStop |
+| `apps/admin/app/admin/execution-policy/` | §48 Admin 진행 정책 화면 |
+| `apps/web/app/trades/[id]/execute/` | §48 유저 3면 |
+| `verify:execution-surfaces` | 목업4장 surface 100% |
+| `CONSTITUTION/49_PRINCIPAL_RETENTION_AND_PROFIT_WITHDRAW.md` | **§49** 원금유지·수익출금·버킷·방어 |
+| `schemas/wallet-buckets.v1.json` | principal/profit/locked/practice |
+| `schemas/withdraw-intent.v1.json` | mode profit\|principal\|combined |
+| `packages/ui/copy/ko/principal-profit.ts` | T.walletBuckets.* · T.withdrawMode.* |
+| `packages/ui/components/wallet/` | BucketBreakdown · ProfitWithdrawDefault · PrincipalConfirmSheet |
+| `verify:bucket-invariant` | 버킷 합=부채 · practice 출금0 |
+| `verify:withdraw-mode-default` | 기본 mode=profit · 원금숨김0 |
+| `CONSTITUTION/50_SETTINGS_LEGAL_AND_PLAIN_KOREAN.md` | **§50+§50.9** 설정·약관·운영사DET·쉬운한글·토스트이모지 |
+| `schemas/operator-entity.v1.json` | §50.9 PRE-OWNED WATCHES L.L.C · DET 1135431 |
+| `packages/ui/copy/ko/operator.ts` | T.operator.* · T.legal.operator |
+| `packages/ui/components/SiteFooter.tsx` | §50.9 유저앱·랜딩 푸터 |
+| `packages/ui/copy/ko/settings.ts` · `legal.ts` | §50 설정·약관4종 |
+| `apps/web/app/me/settings/` · `me/legal/` | §50 라우트 |
+| `verify:no-it-jargon` · `verify:toast-emoji` · `verify:legal-plain-ko` · `verify:operator-footer` | §50 CI |
 | `CONSTITUTION/14_EVENT_CONTRACTS.md` | events |
 | `CONSTITUTION/17_FINANCIAL_LEDGER_STANDARD.md` | money |
 | `CONSTITUTION/20_SECURITY_THREAT_MODEL.md` | abuse A1~A12 |
+| `CONSTITUTION/43_CHAIN_SETTLEMENT_HARDENING.md` | §43 온체인·원화·슬리피지·원장락·Auth fallback |
+| `workers/chain-watchers/` | event stream (poll 금지) |
+| `workers/chain-sweeper/` | Energy delegate + sweep |
+| `schemas/participate-request.v1.json` | pricingVersion + minProfitUsdt |
+| `schemas/krw-deposit-request.v1.json` | unique payableAmount + TTL |
+| `CONSTITUTION/51_PLATFORM_COMPLETENESS_AND_RULE_ENGINE.md` | **§51** Rule·Simulation·Referral·CS·Trust |
+| `services/engine-rust/settlement_rule.rs` | §48.13 MATCH_SUCCESS |
+| `schemas/simulation-report.v1.json` | §51.4 M0.5 |
+| `schemas/participate-proof.v1.json` | §51.16 |
+| `schemas/referral-program.v1.json` | §51.5 |
+| `schemas/support-ticket.v1.json` | §51.6 |
+| `verify:match-success-rule` · `verify:simulation-gate` | §51 CI |
 
 **규칙:** 동일 정의 2곳 작성 시 **Fail**. 반드시 SSOT 1곳 + pointer만.
+
+---
+
+## 43. Chain / Settlement / Auth Hardening (v7.8) — 무료 범위 우선
+
+> **SSOT:** `CONSTITUTION/43_CHAIN_SETTLEMENT_HARDENING.md`  
+> **목표:** v7.7의 온체인·원화·가격·원장·WebAuthn 결함을 **무료 구현 가능 범위**에서 제거  
+> **유료 RPC(Chainstack/QuickNode)는 Optional Upgrade** — Day-1 필수 아님
+
+### 43.0 아키텍트 의견 (동의 / 반대 / 보강)
+
+| 피드백 | 판정 | 메모 |
+|--------|------|------|
+| TronGrid 15QPS + 주소별 100ms 폴링 마비 | **전면 동의** | 기존 플랜의 `chainWatcherPollMs=100`은 **폐기**. 치명적 결함 |
+| gRPC/WS 단일 Transfer 스트림 / Block Indexer | **동의 (무료 경로)** | Day-1 = TronGrid **USDT 컨트랙트 이벤트 스트림** + 로컬 address Set 매칭 + rate-limit budgeter |
+| Chainstack/QuickNode 필수화 | **반대 (무료 범위)** | L2 paid upgrade로만 문서화. 무료 티어로도 단일 스트림이면 수백~수천 주소 가능 |
+| 1conf UI / 19conf ledger | **전면 동의** | “≤0.1s ledger credit” SLA **폐기**. UI 알림은 빠를 수 있으나 원장은 ~1분 확정 |
+| Energy Delegation sweeper | **동의** | SaaS 비용 0으로 구현 가능. 단 **Treasury에 스테이킹용 TRX 자본** 필요(수수료 SaaS≠0원 자본). “가스비 완전 무료” 과장 금지 |
+| 원화 난수 가산금 Auto-Recon | **동의** | 은행 API 없이 가능. **충돌/오기입 manual_review 큐** 필수. CSV/SMS 파싱은 후순위 |
+| minProfitUsdt + version soft match | **동의** | 추가로 **platform maxSlippageUsdt** 가드(유저·플랫폼 양방향) |
+| staleAt > 3s 차단 | **동의** | Admin configurable, default 3s |
+| FOR UPDATE account_id ASC | **전면 동의** | 전 분개 경로 강제 |
+| idempotency_key UNIQUE | **전면 동의** | participate/settle/deposit/withdraw 전 경로 |
+| WebAuthn only 락아웃 | **동의** | **무료 fallback = Email OTP + encrypted PIN + recovery codes**. SMS는 유료라 Day-1 비필수 |
+
+### 43.1 온체인 입금 — Event Stream (무료)
+
+**금지:** `for (addr of users) poll every 100ms`
+
+**필수 구현 (Free):**
+```
+workers/chain-watchers
+  ├── usdt-trc20-event-stream.ts   # TronGrid WS/gRPC or events API on USDT contract
+  ├── address-index.ts             # Redis/Postgres Set: depositAddress → userId
+  ├── confirmation-tracker.ts      # 1 → DETECTED, 19 → CONFIRMED
+  └── rate-limit-budgeter.ts       # QPS/일일 쿼터 보호 · backoff · circuit
+```
+
+**확정 단계:**
+1. `DEPOSIT_DETECTED` (1 conf) — pending observation · **ledger 분개 없음** · UI toast만
+2. `DEPOSIT_CONFIRMED` (19 conf ≈ 19*3s) — Double-Entry credit · spendable balance
+3. Re-org로 DETECTED 무효화 가능 · CONFIRMED만 출금/거래 가능 잔액
+
+**Optional L2 (유료, 나중에):** Chainstack/QuickNode 전용 indexer · multi-region failover
+
+### 43.2 chain-sweeper + Energy Delegation (무료 API + TRX 자본)
+
+```
+workers/chain-sweeper
+  1) CONFIRMED deposit after grace
+  2) Treasury DelegateResource(Energy) → userDepositAddress
+  3) USDT Transfer → treasuryHotWallet
+  4) Undelegate / recycle energy
+  5) NATS financial: wallet.sweep.completed (user balance unchanged)
+```
+
+**가드:** DETECTED 단계 sweep 금지 · min sweep amount · sweeper keys HSM/secrets · Admin pause
+
+#### 43.2.1 Treasury TRX stake 모니터링 (오류0)
+
+| 항목 | 잠금 |
+|------|------|
+| 설정 | `usdtOnchain.minTrxStakeForSweeper` · Day-1 기본 **5000 TRX** |
+| 헬스 | sweeper cron이 Treasury TRX 잔액 조회 · `< min` → **sweeper PAUSE** + Admin 🔴 알림 |
+| 유저 | 입금 credit(19conf)는 **유지** · 집금만 지연 (잔액 사용 가능) |
+| 복구 | TRX 충전 후 Admin [집금 재개] · audit |
+| 과장 금지 | “가스비 완전 무료” UI/카피 **0** |
+
+**CI:** `verify:sweeper-trx-guard` — min 미달 시 sweep 호출 0
+
+### 43.3 원화 Auto-Reconciliation (무료) — **Day-1 운영 스토리 잠금**
+
+1. 신청 시 `payableAmountKrw = requested + uniqueSuffix(1..99 or broader)` **active UNIQUE**
+2. `depositCode` TTL **120분** → expire
+3. **Day-1 입력:** Admin `/admin/wallet?tab=krw-csv` **은행 입금 CSV 업로드** (스크래핑·은행 OpenAPI **비필수**)
+4. matcher가 `payableAmount` UNIQUE 매칭 → **auto ledger credit**
+5. mismatch / 동명이인 / 금액 불일치 → `manual_review` 큐만 사람 처리
+6. 동시 신청 충돌 시 suffix 재발급 루프
+
+**오차0:** “전량 수동 승인 폐지” = **매칭 성공 건은 자동**. 예외 큐·CSV 업로드는 Day-1 정상 경로(결함 아님).
+
+### 43.4 Pricing / Slippage (§36 개정)
+
+```typescript
+// POST /participate
+{
+  opportunityId,
+  pricingVersion,
+  minProfitUsdt,          // 유저 허용 최소 수익
+  amountUsdt
+}
+```
+
+규칙:
+- `now - quote.staleAt > priceStaleMaxSec(3)` → reject `PRICE_STALE_DATA`
+- version mismatch여도 **recomputed netProfit ≥ minProfitUsdt** 이고 **≤ maxSlippage bound**면 **성공**
+- 그 외만 `PRICE_STALE` + 클라이언트 auto-patch
+
+### 43.5 PostgreSQL Ledger Concurrency
+
+모든 분개 트랜잭션:
+1. 관련 `account_id` 목록 수집
+2. `ORDER BY account_id ASC` 후 `SELECT ... FOR UPDATE`
+3. journal insert (immutable)
+4. projection update
+5. 요청 헤더/바디 `idempotency_key` **UNIQUE** — 재시도 시 동일 결과 반환 (dup silent success)
+
+Deadlock drill CI: 교차 참여/정산 동시 부하 → `40P01` **0**
+
+### 43.6 WebAuthn Fallback (무료)
+
+출금 step-up 인증 우선순위:
+1. WebAuthn / Passkey (primary)
+2. Email OTP — **Day-1 SMTP SSOT = Resend free tier** (`RESEND_API_KEY` · CF/Nest secrets) · from 도메인 검증 필수
+3. Encrypted PIN (서버는 verifier만, rate-limited)
+4. Recovery codes (1회용)
+
+**가입 magic link:** 동일 Resend 경로 (`/auth/magic-link`) · ADR-006  
+**SMS OTP:** 유료 → Optional L2. Day-1 필수 아님.  
+기기 분실: Email+PIN+recovery로 락아웃 해제 · KYC 재확인 옵션  
+**CI:** `verify:email-provider-resend` — 대체 SMTP 하드코딩 병행 0
+
+### 43.7 헌법 / 이벤트 추가
+
+`CONSTITUTION/43_CHAIN_SETTLEMENT_HARDENING.md` 잠금 조항:
+1. Per-address high-frequency polling **금지**
+2. Ledger credit before N confirmations **금지**
+3. Sweep before CONFIRMED **금지**
+4. Participate must accept `minProfitUsdt`
+5. All money TX require `idempotency_key` + ordered locks
+6. Withdraw step-up must have non-WebAuthn fallback
+7. Paid RPC는 upgrade이지 dependency 아님
+
+Financial events 추가:
+- `wallet.deposit.detected`
+- `wallet.deposit.confirmed`
+- `wallet.deposit.reorg_voided`
+- `wallet.sweep.completed`
+- `wallet.krw_deposit.matched`
+- `wallet.krw_deposit.manual_review`
+
+### 43.8 무료 범위 요약
+
+| 항목 | $0 구현 | 필요 자본/옵션 |
+|------|---------|----------------|
+| Event stream watcher | ✅ TronGrid free | optional API key |
+| 19conf ledger | ✅ | — |
+| Sweeper + Energy delegate | ✅ 코드 | Treasury **TRX stake** |
+| KRW unique amount | ✅ | 은행 CSV 수동 업로드 가능 |
+| minProfit / staleAt | ✅ | — |
+| Lock order + idempotency | ✅ | — |
+| Email OTP + PIN fallback | ✅ | SMTP/free mail |
+| Chainstack/QuickNode | ❌ Day-1 제외 | L2 paid |
+| SMS OTP | ❌ Day-1 제외 | L2 paid |
+
+---
+
+## 47. Personal AI Layer (v7.17) — 기존 플랜 비파괴 부착 · 저장/학습 확정
+
+> **성격:** 머니·시세·원장·상품 엔진을 **수정·대체하지 않음**. Personal AI 레이어만 **이 구조로 확장**.  
+> **SSOT:** `CONSTITUTION/47_PERSONAL_AI_USER_TWIN.md`  
+> **확정 정의:**  
+> Personal AI는 데이터를 스스로 무작정 학습하는 AI가 아니라, **단일 PostgreSQL을 SoT**로 사용하고 **Redis에서 최신 User Twin**을 읽으며, **검증된 Fact와 Memory**로 답변하고, 축적된 **AI_LOG는 별도 Learning Plane에서 Eval Gate를 거친 후에만** 모델 개선에 쓰는 구조.  
+> **한 줄:** Twin + Memory + Fact 범위 안 답변 · **저장 ≠ 학습** · 모델은 Adapter로 교체.
+
+### 47.1 핵심 원칙 (유지)
+
+- AI가 자유롭게 판단하지 않는다.
+- **플랫폼 사실을 먼저 확보**하고, 그 사실 안에서만 자연어로 대화한다.
+- Sensitive(출금·지급·한도)는 기존처럼 **Rule Engine only** — AI 자율 집행 금지.
+- OpenAI / 자체모델 / Local LLM은 **Answer Brain의 교체 가능 Adapter**일 뿐 (Provider Independent).
+
+### 47.2 파이프라인 (고정 순서)
+
+```
+User
+ ↓
+Intent
+ ↓
+User Twin          ← 성향·행동·이력 (느린 사실)
+ ↓
+Memory             ← 대화·요약 기억
+ ↓
+Fact Card          ← 현재 숫자·상태 (빠른 사실, Twin과 분리)
+ ↓
+Answer Router
+ ├─ SSOT Template  ← Objection4 / FAQ (광고 유입 기본)
+ ├─ Fact Answer    ← 잔액·기회·마진 숫자
+ └─ LLM            ← 위 범위 안 자연어만
+ ↓
+Answer Guard       ← 금지어 + freshness + 사실검증
+ ↓
+User
+```
+
+### 47.3 User Twin ≠ Fact Card (분리 필수)
+
+| | User Twin | Fact Card |
+|--|-----------|-----------|
+| 정의 | 유저에 대한 사실·행동·성향 | **현재 시점** 실제 숫자·상태 |
+| 예 | capitalBand 선호, Q2 반복, 카드 관심, 톤 | balance, compareReady 기회 호가, KYC, staleAt |
+| 갱신 | 행동 이벤트 누적 | 답변 직전·만료 시 **재조회** |
+| 위험 | Twin만으로 잔액/기회 말하면 **오답** | Twin 없이 숫자만 말하면 **개인화 실패** |
+
+**금지:** Twin 캐시로 `balanceUsdt` / `expectedProfitUsdt` / 기회 가격을 답변에 사용.
+
+### 47.4 Fact Card freshness (Answer Guard)
+
+모든 Fact:
+
+```
+Fact
+├─ source          # ledger | opportunity | kyc | fx | ...
+├─ captured_at
+├─ expires_at
+└─ confidence      # 0~1
+```
+
+Guard 규칙:
+1. `now > expires_at` 또는 `confidence < threshold` → **답변 전 자동 재조회**
+2. 재조회 실패/여전히 stale → “시세 갱신 중” 템플릿 · **추정 숫자 금지**
+3. 가격·기회·잔액은 opportunity/ledger SSOT만 허용
+
+### 47.5 Explainability trace (답변마다 저장)
+
+```
+AI_ANSWER_TRACE
+├─ intent
+├─ twin_snapshot_id
+├─ memory_ids[]
+├─ facts_used[]          # source, captured_at, expires_at, confidence
+├─ answer_path           # template | fact | llm
+└─ guard_result          # pass | refresh | block + reason
+```
+
+Admin: “왜 이 유저에게 이 답변?” 1클릭 추적.  
+기존 `AI_LOG`와 스키마 정렬 · 중복 테이블 금지(확장 필드 또는 1:1 trace).
+
+### 47.6 모듈 (부착)
+
+```
+services/
+├── user-twin-service      # Twin 실시간 patch (Redis hot + PG)
+├── memory-service         # 세션/장기 요약 (+ pgvector 검색)
+└── (ai-platform 내부)
+    ├── assistant-router   # Intent + Template/Fact/LLM
+    ├── fact-card-loader   # freshness-aware · ledger/opportunity 재조회
+    └── answer-guard       # 금지어 + freshness + policy
+```
+
+### 47.7 기존 플랜과의 관계 (중복0)
+
+| 기존 | Personal AI |
+|------|-------------|
+| §38.7 Objection4 copy | Router `SSOT Template` 경로의 뼈대 |
+| §0.0.4 PriceCompareMargin | Fact Card의 기회 비교 숫자 출처 |
+| §0.0.5 capitalBand | Twin 필드 + 추천 톤 |
+| ai-platform L1/L2 | Answer Brain 위치 · L3 자금집행 여전히 금지 |
+| Provider Independent | LLM Adapter만 교체 |
+| Ledger SSOT = 단일 PostgreSQL | **AI 테이블도 같은 PG** (DB 이중화 금지) |
+
+### 47.8 CI
+
+- `verify:twin-fact-separation` — Twin 필드로 balance/price 응답 경로 0
+- `verify:fact-freshness` — expired Fact로 답변 나가면 Fail
+- `verify:answer-trace` — 모든 assistant 응답에 trace 100%
+- `verify:objection-template-path` — Q1~Q4는 template path 우선
+- `verify:no-ai-data-in-git` — 대화/PII/학습셋 GitHub 경로 0
+- `verify:single-postgres` — ledger + AI ops 스키마 동일 PG connection
+
+### 47.9 저장/학습 아키텍처 확정 (머니·시세 비파괴)
+
+**잠금 결정 3개 (오류0):**
+1. **PostgreSQL 하나 = SoT** — `ledger_*` + `ai_*` 동일 인스턴스(Supabase-managed). AI용/Ledger용 DB 이중화 **금지**.
+2. **pgvector → Qdrant는 나중 교체** — Day-1 = Postgres + pgvector만. 규모/성능 필요 시 Qdrant로 이전. **동시 이중 운영 금지**.
+3. **자동 학습 OFF + Eval Gate** — 대화 유입만으로 Production 모델이 학습·배포되지 않음. PASS만 Registry→Prod.
+
+**런타임 (확정):**
+
+```
+GitHub = Code / Prompt / Rule 만
+        ↓ (배포)
+USER → AI Runtime → Redis (hot twin/session/recent_memory/hot_intents)
+                         ↓
+                   Single PostgreSQL (Supabase)
+                   ├─ ledger_*
+                   ├─ ai_user_profile
+                   ├─ ai_memory
+                   ├─ ai_events
+                   ├─ ai_logs            # + answer trace
+                   ├─ ai_feedback
+                   └─ memory_embeddings  # pgvector L1
+                         ↓
+                   Hot Context → Answer Engine → USER
+```
+
+| 저장소 | 역할 | 금지 |
+|--------|------|------|
+| **Single PG (Supabase)** | Ledger + AI ops SoT | 두 번째 Postgres/Supabase를 SoT로 추가 |
+| **Redis** | 최신 Twin/세션 Hot Context | Twin에 balance/호가 Fact 대체 캐시 |
+| **pgvector (L1)** | 기억 Embedding 검색 | Day-1 Qdrant 병행 |
+| **Qdrant (L2 later)** | pgvector 대체 이전 | 이전 완료 전 이중 쓰기 |
+| **GitHub** | 코드·prompts·rules | PII·대화원문·AI_LOG·학습셋 **0** |
+| **Object Storage + Model Registry** | Dataset·모델 artifact·Prod 버전 | 핫패스에서 학습파일 직접 조회 |
+
+**User Auth (ADR-006 잠금):** api-nest JWT + OAuth/Passkey/Email magic link **만**. Supabase Auth **병행 금지** (저장 SoT와 무관 · PG는 Supabase-managed 가능).
+
+### 47.10 AI Learning Plane — 저장 ≠ 학습 · Eval Gate 필수
+
+**원칙:** 운영 DB 적재 ≠ 모델 학습. Day-1 **자동 학습/자동 Prod 배포 OFF**.
+
+```
+Single PG (ai_logs / ai_events / ai_feedback)
+        ↓
+Clean / Label / PII scrub / consent filter
+        ↓
+Training Dataset → Object Storage
+        ↓
+Model Training
+        ↓
+Evaluation Gate
+   ├─ PASS → Model Registry → Production Model
+   └─ FAIL → 폐기 (Prod 미반영)
+```
+
+| 데이터 계층 | AI 계층 |
+|-------------|---------|
+| PG + Redis + (pgvector) 고정 | 자체 ML 또는 OpenAI 등 — **Provider Adapter만 교체** |
+
+**가드:**
+- 학습 후보 ≠ 즉시 Train · 정제/라벨 후만 Dataset
+- Eval FAIL 모델은 Registry/Prod 경로 **진입 금지**
+- 학습셋에 출금키·과도 PII 금지(스크럽)
+- “데이터가 쌓이면 알아서 똑똑” 유저향 카피 **금지**
+
+### 47.11 Bootstrap (중복0)
+
+```
+Day-1:  Single PG(Supabase) + Redis + pgvector  → Personal AI 운영
+Later:  Learning Plane (Clean→Dataset→Train→Eval→Registry→Prod)
+Scale:  pgvector → Qdrant 교체 (병행 0)
+Model:  자체 ML 및/또는 LLM Adapter — 데이터 계층 불변
+```
+
+---
+
+## 48. AI 진행실 · 성공/안전중단 · Admin 진행정책 (v7.18) — Canon 4면 SSOT
+
+> **ADR-013:** 아래 PNG는 **intent archive**일 뿐 · **픽셀 SSOT 아님 · 시각 복제 금지**.  
+> Archive (참고 의도만 · `docs/mockups/_archive/`로 이전 권장):  
+> 1. Admin: `assets/ai-profit-os-admin-execution-policy.png`  
+> 2. User 진행: `assets/ai-profit-os-mobile-ai-progress.png`  
+> 3. User 성공: `assets/ai-profit-os-mobile-success.png`  
+> 4. User 안전중단: `assets/ai-profit-os-mobile-match-fail.png`  
+> **시각·구조 SSOT:** `packages/ui/canon/surfaces/execution-*.wire.json` + Lux + Brand Kit  
+> **헌법:** `CONSTITUTION/48_AI_EXECUTION_ROOM_AND_POLICY.md`  
+> **카피:** `packages/ui/copy/ko/execution.ts` = `T.execution.*`  
+> **스키마:** `schemas/execution-policy.v1.json` · `schemas/trade-execution-state.v1.json`  
+> **검증:** `verify:execution-surfaces` + `verify:canon-surfaces` — Canon 체크리스트·카피·금지어 100% (**사진 픽셀 diff 금지**)
+
+### 48.0 사진목업 drift 교정 (플랜·Canon 승 · 오차0 · ADR-013)
+
+| 사진목업에 보이는 현상 | 구현 잠금 (사진 무시) |
+|-----------|-----------|
+| 화면마다 로고·톤 다름 | **Brand Kit + Lux만** · 사진 로고/색 복제 금지 |
+| 성공 화면 하단 탭이 분석/상품/알림 등으로 보임 | **5탭 불변:** 홈·수익·내거래·지갑·내정보 · 성공 후 **지갑 탭 하이라이트**만 |
+| 안전중단 영문 `MATCH FAILURE` | 유저 노출 **`매칭 중단`** (ko) · 블록 위계는 Canon wire |
+| 추천 카드 `AI 매칭 성공률 92%` | 필드는 **`aiConfidenceScore`** · 라벨 **`AI 추천도 92%`** (난수 당첨률 아님) |
+| Admin 사이드바 단순화 | 톱레벨 **12모듈 유지** + **2b 진행 정책** 자식 링크 |
+| 성공 카드 `이베이 판매 완료` | **시스템 상태 문구** (유저가 판매한 것 아님) · 배지 `직접 입찰·판매 안 함`과 병기 필수 |
+| 여백·카드·아이콘이 장마다 다름 | spacing/radius/icon **토큰 단일** · 장별 미세조정 금지 |
+
+
+### 48.1 유저 플로우 (행동 최소)
+
+```
+상세/홈 Primary [이 상품으로 수익 벌기]
+  + 배지: 직접 사지 않아요 · 직접 입찰·판매 안 함
+  → POST /opportunities/:id/participate  (잔액·circuit·pricingVersion·minProfit·stale)
+  → /trades/:id/execute
+       ├─ running/requeue → AI 진행실 (§48.3)
+       ├─ success         → 수익 영수증 (§48.4)  ← settlement.completed 후에만
+       └─ safe_stop       → 안전하게 멈춤 (§48.5) ← 잔액 불변
+```
+
+**금지:** 진행 중 입찰/구매/판매 CTA · 호가창 · “경매 참여하기”  
+**허용 유저 행동:** `그만두기`(진행 중) · 성공/중단 후 확인·다른상품·비슷한상품·홈
+
+### 48.2 결과 enum (엔진·API·UI 단일)
+
+```typescript
+type ExecutionResultCode =
+  | 'MATCH_SUCCESS'       // → ledger settlement → success UI
+  | 'REQUEUE'             // → 진행실 유지 · "재매칭" 단계 루프
+  | 'PRICE_MOVED'         // → safe_stop
+  | 'BELOW_MIN_PROFIT'    // → safe_stop (Admin minProfitUsdt)
+  | 'CANCELLED_BY_USER'   // → 잔액 불변 · toast EXEC_CANCELLED
+  | 'CIRCUIT_OPEN'        // → CIRCUIT_OPEN toast
+  | 'SYSTEM_FAILED';       // → 안전중단 변형 + 고객센터
+```
+
+**절대금지:** `Math.random()` / `successRatePercent` 로 `MATCH_SUCCESS` 결정 · 연출 타이머 만료 = 자동 입금
+
+### 48.3 화면 A — AI 진행실 (`running`) — Canon wire 100%
+
+**Route:** `/trades/[id]/execute` · `status=running|requeue`  
+**테마:** Lux Dark (`#090A10`) · accent mint/emerald
+
+| 영역 | 잠금 (ko) |
+|------|-----------|
+| 상품 행 | 썸네일 + `assetLabel` + ref · 배지 **`직접 입찰·판매 안 함`** |
+| 헤드 | **`AI가 자동으로 진행 중`** · 보조 **`· 손댈 것 없음`** |
+| 스텝 1 | ✓ `상품 확인 완료` |
+| 스텝 2 | ✓ `이베이·야후 시세 대조 완료` |
+| 스텝 3 | ● `매칭 시도 중...` (active glow · S/A) |
+| 스텝 4 | ○ `정산 준비` |
+| 스텝 5 | ○ `내 잔액으로 송금` |
+| 진행바 | 0~100% · Admin `presentation.durationSecMin~Max` 구간에 매핑 (연출 only) |
+| 로그 | `HH:mm:ss` + 서버 step message 예: `수수료 차감 계산 중` |
+| Secondary | **`그만두기`** → cancel orchestrate · 잔액 불변 |
+
+**컴포넌트:** `packages/ui/components/execution/AiProgressRoom.tsx`  
+**실시간:** SSE/WS `trade.execution.step` · B-tier는 1s 배치 (§29)
+
+### 48.4 화면 B — 성공 영수증 (`success`) — Canon wire 100%
+
+**진입 조건:** `settlement.completed` + `ExecutionResultCode=MATCH_SUCCESS` only  
+**CountUp:** ledger 확정액만 (§0.1 · §33)
+
+| 영역 | 잠금 (ko) |
+|------|-----------|
+| 상단 칩 | `AI 분석 완료` |
+| 헤드 | **`수익이 들어왔어요`** |
+| 상품 | 썸네일 + assetLabel · 시스템 상태 예: `이베이·야후 시세 반영 완료` (목업 `이베이 판매 완료`와 동일 슬롯 · §48.0 교정) |
+| 금액 | `+{settledUsdt} USDT` · 배지 **`확정 지급`** · `≈ ₩…` |
+| 로그 | `이베이 기준 → 야후 기준 차이 반영` · `수수료 차감 완료` |
+| 잔액바 | **`내 잔액에 반영됐어요`** · `지금 바로 확인해보세요` |
+| Primary 행 (§49) | **`수익만 출금`** → `/wallet/withdraw?mode=profit` · **`원금에 합치기`** (merge) · **`나중에`** |
+| Secondary | **`확인 · 지갑 보기`** → `/wallet` · **`다른 상품 보기`** → `/profits` |
+| 하단탭 | 5탭 SSOT · **지갑** active |
+
+**모션:** tier S/A light spark · B flash · reduced-motion OFF · 카지노 confetti 금지  
+**컴포넌트:** `ExecutionSuccessReceipt.tsx` (ReceiptCard 계열) · 성공 직후 §49 습관 CTA 필수
+
+### 48.5 화면 C — 안전 중단 (`safe_stop`) — Canon wire 100%
+
+**진입:** `PRICE_MOVED` | `BELOW_MIN_PROFIT` | (선택) `SYSTEM_FAILED`  
+**장부:** 잔액 변동 **0** · 예상액 지급 **0**
+
+| 영역 | 잠금 (ko) |
+|------|-----------|
+| 칩 | **`매칭 중단`** |
+| 헤드 | **`이번엔 안전하게 멈췄어요`** |
+| 본문 | **`가격이 움직여서 매칭하지 않았어요. 손해 나지 않게 AI가 중단했습니다.`** |
+| 강조박스 | **`잔액은 그대로예요`** (민트 글로우) |
+| 사유 칩 | `시세 변동 · 수익 미달 방지` (코드별 분기 카피 허용) |
+| 예상 미지급 | `예상이었던 +{expected} USDT` · **`(지급 안 됨)`** |
+| Primary | **`비슷한 상품 보기`** → `/profits?similar={assetId}` |
+| Secondary | **`홈으로`** → `/` |
+| 하단 추천 | `AI 추천 상품` 카드 1장 · `+N USDT 예상` · 배지 `매칭 안정` · **`AI 추천도 {aiConfidenceScore}%`** |
+
+**컴포넌트:** `ExecutionSafeStop.tsx`
+
+### 48.6 화면 D — Admin 진행 정책 — Canon wire 100%
+
+**Route:** `/admin/execution-policy` · Ops Light  
+**헤더:** breadcrumb `홈 / admin / 진행 정책` · **`저장`**  
+**경고 배너 (고정):** `장부(실돈)와 연출은 분리됨`
+
+#### 좌 컬럼 — 실조건 (정산·성공/실패에 영향)
+
+| 필드 | 기본(목업) | 범위 | 효과 |
+|------|------------|------|------|
+| `minProfitUsdt` | **5** | 0~50 | participate/execute 미달 → `BELOW_MIN_PROFIT` |
+| `staleAllowanceSec` | **3** | 0~30 | stale 초과 → 엔진 거부/`PRICE_MOVED` |
+| `maxRematchCount` | **2** | 0~10 | `REQUEUE` 상한 |
+| `retryWaitSec` | **4** | 1~20 | 재매칭 대기 |
+| `autoCancelOnShortfall` | **ON** | bool | 미달 시 자동 취소 |
+| `circuitStatus` | read-only chip | — | §9.5 TOP5 긴급정지와 동일 소스 |
+
+**미리보기 박스:** `현재 설정이면 이 기회 → 성공 가능 / 미달 시 취소` (선택 opportunity 컨텍스트)
+
+#### 우 컬럼 — 화면 연출만 (잔액 지급 금지)
+
+| 필드 | 기본 | 규칙 |
+|------|------|------|
+| `durationSecMin` / `durationSecMax` | **8** / **15** | 진행바 연출 구간 only |
+| step 문구 preview | 상품확인→시세대조→매칭→정산준비 | 유저 스텝 라벨과 sync (`T.execution.steps`) |
+| 경고 | `연출이 ledger 입금 성공률을 바꾸지 않음` | 하드코딩 고정 |
+
+#### 금지 카드 (항상 disabled 노출)
+
+- 타이틀: **`금지: 난수 성공률`**
+- 게이지 0% disabled
+- 푸터: `잔액 지급과 무관한 난수 성공률 사용 금지`
+- API/`execution-policy` 스키마에 `successRatePercent` 필드 **존재 금지** (CI fail)
+
+#### 하단 KPI — 오늘 결과
+
+| KPI | 집계 소스 |
+|-----|-----------|
+| 성공 N건 (%) | `MATCH_SUCCESS` |
+| 시세 변동 N건 (%) | `PRICE_MOVED` |
+| 수익 미달 N건 (%) | `BELOW_MIN_PROFIT` |
+| 재매칭 N건 (평균 회/건) | `REQUEUE` 횟수 |
+
+**audit footer:** 마지막 변경 운영자 · timestamp · `admin.execution_policy.updated`
+
+### 48.7 스키마 잠금
+
+```typescript
+// schemas/execution-policy.v1.json
+interface ExecutionPolicy {
+  minProfitUsdt: string;          // Decimal
+  staleAllowanceSec: number;      // default 3
+  maxRematchCount: number;        // default 2
+  retryWaitSec: number;           // default 4
+  autoCancelOnShortfall: boolean; // default true
+  presentation: {
+    durationSecMin: number;       // default 8
+    durationSecMax: number;       // default 15
+    steps: Array<'product_check'|'price_compare'|'matching'|'settle_prep'|'credit'>;
+  };
+  // ❌ successRatePercent — FORBIDDEN key
+  updatedAt: string;
+  updatedByAdminId: string;
+}
+
+// schemas/trade-execution-state.v1.json
+interface TradeExecutionState {
+  tradeId: string;
+  opportunityId: string;
+  pricingVersion: number;
+  status: 'running'|'requeue'|'success'|'safe_stop'|'cancelled'|'failed';
+  resultCode?: ExecutionResultCode;
+  stepIndex: 0|1|2|3|4;
+  progressPct: number;            // presentation only until terminal
+  logLine?: string;
+  expectedProfitUsdt: string;
+  settledProfitUsdt?: string;     // only success
+  asset: { id: string; label: string; iconUrl?: string; ref?: string };
+}
+```
+
+### 48.8 API · 이벤트
+
+| Method | Path | 역할 |
+|--------|------|------|
+| GET | `/admin/api/v1/execution-policy` | 정책 조회 |
+| PUT | `/admin/api/v1/execution-policy` | 저장 + audit |
+| GET | `/admin/api/v1/execution-policy/stats/today` | KPI 4종 |
+| POST | `/api/v1/opportunities/:id/participate` | 기존 + policy 가드 |
+| GET/SSE | `/api/v1/trades/:id/execution` | TradeExecutionState 스트림 |
+| POST | `/api/v1/trades/:id/cancel` | 그만두기 |
+
+**Events:** `trade.execution.step` · `trade.execution.terminal` · `admin.execution_policy.updated`  
+**RBAC:** execution-policy 쓰기 = `ops`+`finance` 이상 (§40)
+
+### 48.9 카피 SSOT (`T.execution`)
+
+```typescript
+// packages/ui/copy/ko/execution.ts — 하드코딩 JSX 금지
+export const T = {
+  execution: {
+    ctaEarn: '이 상품으로 수익 벌기',
+    ctaStickyShort: '수익 벌기',
+    badgeNoBuy: '직접 사지 않아요',
+    badgeNoBid: '직접 입찰·판매 안 함',
+    progressTitle: 'AI가 자동으로 진행 중',
+    progressHandsFree: '손댈 것 없음',
+    steps: [
+      '상품 확인 완료',
+      '이베이·야후 시세 대조 완료',
+      '매칭 시도 중...',
+      '정산 준비',
+      '내 잔액으로 송금',
+    ],
+    cancel: '그만두기',
+    successTitle: '수익이 들어왔어요',
+    successBadge: '확정 지급',
+    successAiDone: 'AI 분석 완료',
+    successBalance: '내 잔액에 반영됐어요',
+    successBalanceSub: '지금 바로 확인해보세요',
+    successPrimary: '확인 · 지갑 보기',
+    successSecondary: '다른 상품 보기',
+    safeTitle: '이번엔 안전하게 멈췄어요',
+    safeBody: '가격이 움직여서 매칭하지 않았어요. 손해 나지 않게 AI가 중단했습니다.',
+    safeBalance: '잔액은 그대로예요',
+    safeChip: '시세 변동 · 수익 미달 방지',
+    safeExpectedNotPaid: '지급 안 됨',
+    safePrimary: '비슷한 상품 보기',
+    safeSecondary: '홈으로',
+    safeRecommend: 'AI 추천 상품',
+    adminTitle: 'AI 진행 정책',
+    adminLedgerSplit: '장부(실돈)와 연출은 분리됨',
+    adminRealCol: '실조건',
+    adminPresentCol: '화면 연출만',
+    adminForbidRng: '금지: 난수 성공률',
+    adminForbidRngHelp: '잔액 지급과 무관한 난수 성공률 사용 금지',
+    adminPresentWarn: '연출이 ledger 입금 성공률을 바꾸지 않음',
+  },
+} as const;
+```
+
+### 48.10 컴포넌트 · 파일 트리
+
+```
+packages/ui/components/execution/
+├── AiProgressRoom.tsx
+├── ExecutionSuccessReceipt.tsx
+├── ExecutionSafeStop.tsx
+├── ExecutionStepList.tsx
+└── index.ts
+packages/ui/copy/ko/execution.ts
+packages/sdk/execution-stream/useTradeExecution.ts
+apps/web/app/trades/[id]/execute/page.tsx
+apps/admin/app/admin/execution-policy/page.tsx
+schemas/execution-policy.v1.json
+schemas/trade-execution-state.v1.json
+CONSTITUTION/48_AI_EXECUTION_ROOM_AND_POLICY.md
+```
+
+### 48.11 CI · 출시 게이트 (§19 pointer)
+
+- `verify:execution-surfaces` — 4목업 surface 체크리스트 PASS  
+- `verify:no-success-rate-percent` — schema/API/UI에 난수 성공률 **0**  
+- `verify:presentation-cannot-credit` — duration만 변경한 테스트에서 settlement 결과 불변  
+- E2E: 벌기 → 진행실 → (성공|안전중단) · 성공 시 잔액+ · 중단 시 잔액0변화  
+- 금지어 스캔: 유저 CTA에 `입찰`/`경매 참여`/`판매하기` **0**
+
+### 48.12 §36 / §43 / §7 교차 (중복0)
+
+| 주제 | SSOT |
+|------|------|
+| 가격·pricingVersion | §36 · §43 |
+| minProfit / stale | **§48.6 정책값**이 §43 기본을 **오버라이드** (단일 읽기: execution-policy) |
+| Primary 버튼 라벨 | §7.3 = §48.9 `ctaEarn` |
+| execute 3면 | §7.4 → **본 절** |
+| CountUp | settlement.completed only (§33) |
+| Admin 긴급정지 | §9.5 TOP5 = circuitStatus 표시 |
+| 성공 후 출금 CTA | **§49** 수익만/합치기/나중에 |
+
+### 48.13 MATCH_SUCCESS Rule Engine (v7.22 · deterministic · SSOT)
+
+> **성격:** §48.2 enum의 `MATCH_SUCCESS`를 **난수·연출·sellSuccessRate 없이** 결정하는 단일 Rule Engine.  
+> **SSOT:** `services/engine-rust/settlement_rule.rs` · `CONSTITUTION/51` §51.2 · shadow-replay golden traces  
+> **금지:** `Math.random()` · `successRatePercent` · `presentation.duration` 만료 = 입금 · `sellSuccessRate` 입력
+
+#### 평가 순서 (고정 · 단일 함수)
+
+```
+evaluateExecution(trade, opportunity, policy, user, sim) → ExecutionResultCode
+```
+
+| # | 조건 (전부 AND) | 실패 시 코드 |
+|---|-----------------|-------------|
+| R1 | `circuit.status === 'closed'` | `CIRCUIT_OPEN` |
+| R2 | `user.status ∉ {frozen, banned}` | `SYSTEM_FAILED` → CS |
+| R3 | `opportunity.status === 'available'` | `PRICE_MOVED` |
+| R4 | `pricing.compareReady === true` | participate 차단 (진입 전) |
+| R5 | `age(now, pricing.staleAt) ≤ policy.staleAllowanceSec` | `PRICE_MOVED` |
+| R6 | `pricing.expectedProfitUsdt ≥ policy.minProfitUsdt` | `BELOW_MIN_PROFIT` |
+| R7 | `trade.pricingVersion === opportunity.pricingVersion` **OR** (§43) `expectedProfit ≥ minProfitUsdt` at participate | `PRICE_MOVED` |
+| R8 | `simulation.payoutFeasible(opportunityId) === true` (§51.4) | `BELOW_MIN_PROFIT` |
+| R9 | listing leg fresh: compareReady sources within adapter TTL (§0.0) | `PRICE_MOVED` |
+| R10 | `trade.rematchCount ≤ policy.maxRematchCount` | `BELOW_MIN_PROFIT` (상한) |
+
+**성공 경로:** R1~R10 **전부 true** → `MATCH_SUCCESS` → **즉시** `settlement.completed` ledger 분개 (연출 progress% **무관**)  
+**재매칭:** R1~R9 true · rematch < max · terminal 아님 → `REQUEUE` (policy.retryWaitSec 후 R1~R10 재평가)  
+**연출:** `presentation.durationSecMin~Max`는 **UI progress만** · settlement 시점 **변경 0**  
+**orchestrate 경계 (오차0·결함0):** v1 성공 = **Rule Engine 가격조건 충족**이지 eBay/Yahoo **호가 실체결·재고 확보 확인이 아님**. 유저 CTA에 외부 입찰/구매 **0**. `executionMode=full`에서만 실마켓 fill 경로 확장(v1 숨김).
+
+**유저·약관 고정 문장 (UI/UX §50.3·`T.execution.orchestrateTruth` 동일 · 중복0):**  
+> "직접 사지 않아요. AI가 두 시장 시세 조건이 맞을 때만 수익을 정산해요. 외부 경매장에 들어가 입찰·구매하지 않습니다."  
+성공 화면 시스템 상태 문구는 **「시세 반영 완료」** 계열만 · **「이베이 판매 완료」= 유저가 판매함 오해** 유발 시 결함(§48.0 교정 유지).
+
+
+```typescript
+// services/engine-rust — settlement_rule (pseudo)
+function evaluateMatchSuccess(ctx: RuleContext): ExecutionResultCode {
+  if (ctx.circuitOpen) return 'CIRCUIT_OPEN';
+  if (ctx.userFrozen || ctx.userBanned) return 'SYSTEM_FAILED';
+  if (!ctx.compareReady) throw ParticipateGuardError; // pre-trade
+  if (ctx.staleSec > ctx.policy.staleAllowanceSec) return 'PRICE_MOVED';
+  if (ctx.expectedProfitUsdt.lt(ctx.policy.minProfitUsdt)) return 'BELOW_MIN_PROFIT';
+  if (!ctx.simulationPayoutFeasible) return 'BELOW_MIN_PROFIT';
+  if (!ctx.listingLegsFresh) return 'PRICE_MOVED';
+  if (ctx.rematchCount > ctx.policy.maxRematchCount) return 'BELOW_MIN_PROFIT';
+  return 'MATCH_SUCCESS'; // → settlement service (idempotency_key)
+}
+```
+
+**CI:** `verify:match-success-rule` · `verify:presentation-cannot-credit` (기존 §48.11) · shadow-replay **24h golden traces 0.000% drift**
+
+---
+
+## 49. 원금 유지 · 수익 출금 · 버킷 원장 (v7.19) — 오류0·오차0·결함0
+
+> **SSOT:** `CONSTITUTION/49_PRINCIPAL_RETENTION_AND_PROFIT_WITHDRAW.md`  
+> **목표:** 유저가 **원금은 플랫폼에 두고 수익만 출금해도 괜찮다**고 납득 · 운영 유동성 유지  
+> **헌법:** 원금 출금 **항상 가능**(숨김=치명 결함) · 유도는 혜택·기회비용 · 강압·몰수 금지  
+> **원장:** §11 버킷 분개 + 본 절 · `user.balance +=` 금지 유지
+
+### 49.1 제품 원칙 (잠금)
+
+1. **출금 기본값 = 수익만** (`mode=profit`)  
+2. **원금 = 근무 중 자본** (participate 재원) · UI 라벨 `근무 중 원금`  
+3. **원금 출금은 언제든** — 접힘/확인 시트 OK · 경로 삭제 금지  
+4. **연습·연출·G4 demo ≠ 출금 가능 수익**  
+5. **남겨두면 이득** = 다음 기회·필요자본·우선권 비교 (횟수 갈증 협박 금지)  
+6. **운영 이익 ≠ 유저 원금 보관** · 유저 수익은 settlement 유저몫만 profit 버킷
+
+### 49.2 버킷 모델 (오차0)
+
+```typescript
+// schemas/wallet-buckets.v1.json
+interface WalletBuckets {
+  userId: string;
+  principalUsdt: Decimal;   // 근무 중 원금
+  profitUsdt: Decimal;      // 출금 가능 수익
+  lockedUsdt: Decimal;      // 진행 중 잠금
+  practiceUsdt: Decimal;    // 출금·참여 불가
+  // invariant: sum == liabilityUsdt
+  liabilityUsdt: Decimal;
+  asOfLedgerEntryId: string;
+}
+```
+
+**참여 재원 규칙:** `requiredCapital`은 **principal만** (부족 시 입금 CTA).  
+profit으로 참여하려면 유저가 **`원금에 합치기`(merge)** 명시 실행 후에만.
+
+### 49.3 출금 Intent (중복0)
+
+```typescript
+// schemas/withdraw-intent.v1.json
+interface WithdrawIntent {
+  mode: 'profit' | 'principal' | 'combined';
+  amountUsdt: Decimal;
+  asset: 'USDT' | 'KRW';
+  // server computes:
+  debitProfitUsdt: Decimal;
+  debitPrincipalUsdt: Decimal;
+  requirePrincipalConfirm: boolean; // principal|combined => true
+  idempotencyKey: string;
+}
+```
+
+**서버 가드 (순서 고정):**
+1. KYC approved (§42)  
+2. WebAuthn/OTP/PIN (§43)  
+3. circuit not open  
+4. bucket lock `SELECT … FOR UPDATE` account_id ASC  
+5. mode별 상한 검증 (profit 초과·practice 포함·locked 포함 → reject)  
+6. principal|combined → `principalConfirmToken` (클라이언트 확인 시트 완료 JWT/nonce) 필수  
+7. ledger 분개 + withdraw request  
+8. audit `wallet.withdraw_intent.created`
+
+### 49.4 UX SSOT (유저 납득)
+
+#### 지갑 홈
+- 총액 + 4버킷 브레이크다운 (practice=0이면 행 숨김 허용)  
+- 카피: `원금은 다음 수익에 쓰이고, 수익만 가져갈 수 있어요`  
+- 신뢰: `원금은 언제든 출금할 수 있어요`
+
+#### 출금 화면
+- 진입 `?mode=profit`  
+- 세그먼트/카드: **수익만(기본)** | 원금 포함(고급)  
+- 수익만: 상한=profit · Primary `수익 출금하기`  
+- 원금 포함: PrincipalConfirmSheet 필수
+
+#### PrincipalConfirmSheet (원금/combined)
+```
+원금을 빼면
+ · 참여 가능 상품이 줄어들 수 있어요
+ · 지금 잔액으로 못 여는 기회: N건 (있으면)
+[수익만 출금] [그래도 원금 출금]
+```
+협박·몰수·타이머 압박 금지.
+
+#### 성공 영수증 (§48.4 연동)
+- `수익만 출금` · `원금에 합치기` · `나중에`  
+- 기본 시각 강조: **수익만 출금** 또는 **원금에 합치기**(A/B는 Admin Growth 아님 · UX flag `success_cta_emphasis`: profit_withdraw | merge · default profit_withdraw)
+
+#### 가이드
+- `/me/guide/principal` + FAQ 항목 §38.7 톤으로 “왜 원금을 두나요?”
+
+### 49.5 유지 유도 레버 (허용 / 금지)
+
+| 허용 | 금지 |
+|------|------|
+| 기본 출금=수익 · 원금 확인 시트 | 원금 출금 숨김·불가 |
+| merge로 수익→원금 | 자동으로 수익을 원금 강제 잠금 |
+| 잔액 부족 시 잠금 상품 안내 | “하루 일을 사세요” 횟수 협박 |
+| 실비 네트워크 수수료 투명 | 원금 출금 위약금·수익 몰수 |
+| 유지 N일 수수료↓ (실측·audit) | 출금 막고 보너스만 |
+
+### 49.6 Admin
+
+| 화면 | 내용 |
+|------|------|
+| `/admin/users/:id/finance` | 버킷 4종 + 출금 mode 이력 |
+| 잔액 조정 | **버킷 지정 필수** (principal/profit/practice) + reason≥10 + audit |
+| risk | §49.9 룰 큐 · bucket drift alert |
+| reports | 수익출금율 · 원금잔류율 · merge율 (ledger only) |
+
+**금지:** Admin UI에 난수·demo로 profit 버킷 증가 (G4 ticker ≠ profit)
+
+### 49.7 API
+
+| Method | Path | |
+|--------|------|--|
+| GET | `/api/v1/wallet/buckets` | WalletBuckets |
+| POST | `/api/v1/wallet/profit/merge` | profit→principal |
+| POST | `/api/v1/wallet/withdraw` | body WithdrawIntent |
+| GET | `/admin/api/v1/users/:id/buckets` | ops |
+
+### 49.8 카피 SSOT (`T.walletBuckets` / `T.withdrawMode`)
+
+`packages/ui/copy/ko/principal-profit.ts` — JSX 하드코딩 금지  
+필수 키: `workingPrincipal`, `withdrawableProfit`, `locked`, `practice`, `defaultProfitHint`, `principalAlways`, `confirmTitle`, `confirmBody`, `ctaProfitOnly`, `ctaStillPrincipal`, `ctaMerge`, `ctaLater`
+
+### 49.9 어뷰징 · 악성유저 · 오류 · 결함 — 전수 방어
+
+#### A. 어뷰징 / 악성 (P1~P24)
+
+| # | 공격·악용 | 방어 | 감지/대응 |
+|---|-----------|------|-----------|
+| P1 | practice→profit 승격 시도 | practice 출금/merge/participate **코드경로 0** · CI | 403 PRACTICE_NOT_WITHDRAWABLE |
+| P2 | G4 demo/ticker 금액을 profit로 인출 | demo≠ledger · CountUp/profit credit는 settlement only | recon + audit |
+| P3 | 연출 완료만으로 profit + | §48 presentation 타이머≠credit | verify:presentation-cannot-credit |
+| P4 | profit 상한 초과 출금 | 서버 bucket FOR UPDATE 상한 | INSUFFICIENT_PROFIT |
+| P5 | locked 포함 출금 | locked 제외 가용만 | reject |
+| P6 | 확인 시트 우회 principal 출금 | `principalConfirmToken` 필수 | 403 |
+| P7 | 원금 출금 후 즉시 고액 기회 슬롯 점유 | participate는 **현재 principal** 기준 | 기회 잠금 |
+| P8 | 입금→즉시 전액 원금출금 wash | 기존 A2 min holding + AML · 수익출금과 분리 한도 | risk |
+| P9 | 수익출금 스팸 | rate limit + idempotency_key | 429 |
+| P10 | 다계정 유지보너스 파밍 | device graph · 보너스 per-KYC | §42+risk |
+| P11 | 추천인 연습잔액 현금화 | practice non-withdrawable | P1 |
+| P12 | Admin 조정으로 버킷 조작 은닉 | 버킷 지정+reason+RBAC+audit | §37 |
+| P13 | 이중 출금 레이스 | idempotency UNIQUE + row lock | 409 silent dup |
+| P14 | settlement와 출금 레이스 | 동일 계정 ASC FOR UPDATE · 순서 settle→withdraw | ledger |
+| P15 | merge와 출금 레이스 | 동일 락 · merge idempotency | ledger |
+| P16 | 환율로 KRW 수익 부풀려 출금 | USDT ledger truth · KRW는 snapshot | §11 |
+| P17 | 원화 입금 미확정 상태 profit 취급 | credit after confirm only | §41 |
+| P18 | chargeback 후 수익만 빼기 | KRW 출금 Admin · freeze path · USDT risk score | A14 |
+| P19 | 제재 주소로 수익 출금 | sanctions screen | A7 |
+| P20 | UI만 버킷 조작 (클라 변조) | 서버 재계산 · 클라 금액 trust 0 | api |
+| P21 | “원금 잠금” 사칭 고객센터 유도 | 인앱 원금출금 경로 E2E 게이트 | verify |
+| P22 | 수익 몰수 위협 카피 | copy CI 금지어 | verify:korean-ui |
+| P23 | Sybil로 소액 수익 반복 출금 | KYC·velocity·device | risk |
+| P24 | bucket drift 고의 유발 | recon job · mismatch=CIRCUIT | P0 |
+
+#### B. 오류 / 결함 (E1~E12)
+
+| # | 결함·오류 | 유저 | 시스템 |
+|---|-----------|------|--------|
+| E1 | 버킷 합 ≠ liability | money ops halt toast | CIRCUIT + P0 |
+| E2 | 출금 기본이 principal로 열림 | — | verify:withdraw-mode-default **FAIL build** |
+| E3 | 원금 출금 CTA 없음/숨김 | — | verify:principal-withdraw-reachable FAIL |
+| E4 | 성공 화면 3CTA 누락 | — | verify:execution-surfaces FAIL |
+| E5 | settlement가 principal에 유저수익 기입 | 오표시 | recon fail · shadow |
+| E6 | safe_stop 후 locked 미해제 | 잔액 묶임 | auto unlock job + alert |
+| E7 | merge 부분 실패 | toast 재시도 | 트랜잭션 atomic |
+| E8 | 출금 중 앱 종료 | 상태 pending 복구 | intent status machine |
+| E9 | FX 표시 오차 | ≈표기+snapshot | 출금 계산 USDT only |
+| E10 | 토스트 중복 | single-flight | UNIQUE source_event |
+| E11 | 오프라인 출금 큐잉 | NETWORK_ERROR · 큐 금지 | §23 money ops |
+| E12 | Admin 버킷 미지정 조정 | — | API 400 · UI block |
+
+#### C. 악성유저 상태 연동
+
+| 상태 | §49 효과 |
+|------|----------|
+| flagged | 정상 · velocity 모니터 |
+| restricted | 원금 출금·고액 출금 일일 캡↓ · 수익 출금은 소액 허용(정책) |
+| frozen | 전 출금·participate·merge block |
+| banned | login block |
+
+### 49.10 상태 머신 — WithdrawIntent
+
+```
+draft → confirmed(mode) → auth_ok → ledger_posted → broadcasting/queued
+                      ↘ rejected
+ledger_posted → completed | failed_refund_buckets
+```
+
+실패 시 버킷 **반드시 롤백** (오차0).
+
+### 49.11 CI · 출시 게이트
+
+- `verify:bucket-invariant`  
+- `verify:withdraw-mode-default`  
+- `verify:principal-withdraw-reachable`  
+- `verify:practice-non-withdrawable`  
+- `verify:settlement-profit-only`  
+- E2E: 입금→participate→success→profit withdraw / merge / principal confirm  
+- E2E: practice 유저 출금 403  
+- Abuse drill: P4·P6·P13·P14  
+- copy: 몰수·원금잠금영구 금지어 0  
+
+### 49.12 파일 트리
+
+```
+CONSTITUTION/49_PRINCIPAL_RETENTION_AND_PROFIT_WITHDRAW.md
+schemas/wallet-buckets.v1.json
+schemas/withdraw-intent.v1.json
+packages/ui/copy/ko/principal-profit.ts
+packages/ui/components/wallet/BucketBreakdown.tsx
+packages/ui/components/wallet/PrincipalConfirmSheet.tsx
+packages/ui/components/wallet/WithdrawModeCards.tsx
+apps/web/app/wallet/page.tsx          # 버킷
+apps/web/app/wallet/withdraw/         # mode=profit default
+apps/web/app/me/guide/principal/
+services/wallet-service/              # bucket ledger ops
+services/risk-service/rules/p49_*.ts
+```
+
+### 49.13 교차 참조 (중복0)
+
+| 주제 | SSOT |
+|------|------|
+| 더블엔트리·락 | §11 · §43 |
+| 출금 KYC/WebAuthn | §42 · §43 |
+| 성공 화면 CTA | §48.4 → 본 절 |
+| 지갑 IA | §5.6 · §5.8 |
+| 어뷰징 표 | §10.1 P\* → **본 절 49.9** |
+| Objection “왜 입금” | §38.7 + `/me/guide/principal` |
+| 설정·약관·쉬운한글 | **§50** |
+| 운영사·DET·푸터 | **§50.9** |
+
+---
+
+## 50. 설정 · 약관 대본 · 운영사 DET · 쉬운 한글 · 토스트 이모지 (v7.21)
+
+> **SSOT:** `CONSTITUTION/50_SETTINGS_LEGAL_AND_PLAIN_KOREAN.md`  
+> **카피:** `packages/ui/copy/ko/settings.ts` · `legal.ts` · `operator.ts` · `toast.ts` · `admin.ts`  
+> **운영사 schema:** `schemas/operator-entity.v1.json`  
+> **검증:** `verify:no-it-jargon` · `verify:toast-emoji` · `verify:legal-plain-ko` · `verify:operator-footer` · `verify:korean-ui`  
+> **중복0:** 레이아웃=§22 · 문자열=§27+본 절 · 약관 본문=본 절만 · 운영사=§50.9 schema 단일
+
+### 50.1 설정 `/me/settings` (잠금)
+
+| 구역 | v1 | 비고 |
+|------|----|------|
+| 글자 크기 보통/크게 | ✅ | fluid 스케일 토큰 연동 |
+| 화면 다크/밝은/시스템 | ❌ | **Lux 어두운 화면 고정** · 토글 UI 없음 |
+| 알림 세분화 | ✅ | 기회·충전출금·공지 |
+| 기본 출금=수익만 | ✅ | §49 · 토글로 원금기본 바꾸기 **비권장**(숨김 가능) |
+| 약관 4종 링크 | ✅ | §50.3 |
+| 언어 영어 전환 | ❌ | ko only |
+
+**결함:** 설정에 `Theme`/`System`/`Dark Mode` 영문 노출 · 미완성 Light 테마 제공
+
+### 50.2 유저 알림·토스트 (한글 친화 + 이모지)
+
+**규칙 (오류0):**
+1. 유저 toast/push/in-app **본문은 쉬운 한글만**  
+2. **이모지 1~2개** 필수 (과다 금지 · 카지노 슬롯 이모지 금지)  
+3. 문장 끝 부드러운 존댓말 (`해요`/`예요`)  
+4. **절대 금지:** problem.code, HTTP, null, Failed, Pending, API…  
+5. 어드민 toast: 이모지 ≤1 · **웃긴 톤 금지** · 평문 한글 (“입금 3건 검수 대기”)
+
+**문장 SSOT:** `schemas/toast-codes.v1.json` + §8.2 코드표 = **유일한 본문**. 아래는 tone 예시일 뿐 · §8.2와 불일치 시 **§8.2 승** (중복0).
+
+**카탈로그 보강 예 (전부 `T.toast.*` · §8.2 mirror):**
+
+| 상황 | 유저 토스트 |
+|------|-------------|
+| 충전 감지 | 🎉 충전이 확인됐어요! 곧 잔액에 반영돼요 |
+| 수익 지급 | ✨ 수익이 들어왔어요! 내 지갑을 확인해 보세요 |
+| 안전 중단 | 🛡️ 이번엔 안전하게 멈췄어요. 잔액은 그대로예요 |
+| 수익 출금 신청 | 💸 수익 출금을 신청했어요 |
+| 원금 출금 확인 | 💡 원금을 빼면 다음 기회 참여가 줄어들 수 있어요 |
+| 잔액 부족 | 😅 충전 금액이 부족해요. 충전 후 다시 시도해 주세요 |
+| 네트워크 | 📡 연결이 불안정해요. 잠시 후 다시 시도해 주세요 |
+| 긴급 정지 | ⏸️ 잠시 거래를 멈췄어요. 곧 다시 열릴게요 |
+| 본인 확인 | 🔐 출금하려면 본인 확인이 필요해요! 1번만 하면 돼요 😊 |
+| 글자 크기 변경 | 🔤 글자 크기를 바꿨어요 |
+
+### 50.3 약관·개인정보·오픈소스·라이선스 — **쉬운말 대본 SSOT**
+
+> 법률 확정본은 변호사 검수 필수. 아래는 **제품 톤·구조 SSOT**(유저가 읽는 화면 문구).  
+> 어려운 법률 한자어는 괄호 쉬운말로 병기. **영문 IT 용어 본문 금지**(USDT·AI 예외만).
+
+#### A) 이용약관 — 화면 제목: `이용약관`  
+경로: `/me/legal/terms` · `T.legal.terms.*`
+
+**한 줄 소개**  
+이 앱은 전 세계 가격 차이를 찾아 드리며, 버튼을 누르면 AI가 진행을 도와주는 **부수입·시세 기회 앱**입니다.
+
+**쉬운 조항 대본 (요약 카드 + 전문 스크롤):**
+
+1. **이 앱이 하는 일**  
+   해외 시세(예: 이베이·야후 쪽 가격)를 비교해 **예상 수익 기회**를 보여 줍니다. 직접 경매장에 들어가 입찰하실 필요가 없습니다. AI가 진행을 돕고, 조건이 안 맞으면 안전하게 멈출 수 있습니다.
+
+2. **회원과 계정**  
+   정확한 정보로 가입해 주세요. 계정 빌려주기·여러 계정으로 이벤트만 받아 가기 등은 제한될 수 있습니다.
+
+3. **충전(입금)과 잔액**  
+   테더(USDT) 또는 원화로 충전할 수 있습니다. 충전된 돈은 **근무 중 원금**과 **출금 가능 수익** 등으로 나뉘어 보입니다. 연습으로 받은 숫자는 출금할 수 없습니다.
+
+4. **수익 기회 참여**  
+   [이 상품으로 수익 벌기]를 누르면 참여가 시작됩니다. 예상 수익은 말 그대로 **예상**이며, 시세가 움직이면 진행이 취소되고 잔액은 그대로일 수 있습니다.
+
+5. **출금**  
+   기본은 **수익만 출금**입니다. 원금도 언제든 출금할 수 있으나, 원금을 빼면 다음 기회 참여가 어려워질 수 있습니다. 출금 전에는 **본인 확인을 한 번** 해 주세요. 테더 출금 시 **이체 수수료**가 빠질 수 있으며 화면에 표시합니다.
+
+5-1. **진행 방식 (orchestrate 진실)**  
+   **직접 사지 않아요.** AI가 두 시장 시세 조건이 맞을 때만 수익을 정산해요. 외부 경매장에 들어가 입찰·구매하지 않습니다. (`T.execution.orchestrateTruth` · Engine §48.13와 동일 문장)
+
+6. **수수료·플랫폼 몫**  
+   두 곳 가격 차이 중 일부는 운영 비용·플랫폼 몫으로 빠질 수 있습니다. 상품 상세에서 확인할 수 있게 합니다.
+
+7. **금지 행위**  
+   해킹, 시세 조작 시도, 타인 명의 도용, 불법 자금, 시스템을 속이는 행위는 이용 제한·수사 협조 대상이 될 수 있습니다.
+
+8. **서비스 중단**  
+   점검·긴급 상황에서는 거래를 잠시 멈출 수 있습니다. 멈춘 동안 안내를 드립니다.
+
+9. **책임 범위**  
+   시세 변동·통신 장애·외부 시장 사정으로 예상과 다른 결과가 날 수 있습니다. 법령이 허용하는 범위에서 책임을 정합니다.
+
+10. **문의**  
+    내정보 → 고객센터로 연락해 주세요.
+
+11. **운영 주체 (사업자 정보)** — `T.legal.operator.*` · §50.9  
+    본 서비스는 **PRE-OWNED WATCHES L.L.C**(두바이, UAE)가 운영합니다.  
+    두바이 경제관광부(DET) 상업 면허 **1135431** · 허가 업종: 시계·명품 중고 매매, 트레이딩 카드·수집품 거래, 해외 시세 비교·국제 중개, 온라인 전자상거래·앱 운영, AI 시세 기회 안내·거래 지원.
+
+**하단 고정 면책 (모든 약관·입금·온보딩 공통 톤)**  
+수익과 세금은 사람마다 달라요. 필요하면 세무 전문가와 상담하세요.
+
+#### B) 개인정보 처리방침 — `개인정보 처리방침`  
+`/me/legal/privacy` · `T.legal.privacy.*`
+
+**한 줄**  
+회원가입·충전·출금·본인 확인에 필요한 정보만 최소한으로 모으고, 안내한 목적 외로 쓰지 않습니다.
+
+**쉬운 대본 블록:**
+- **모으는 정보:** 연락처, 로그인 정보, 기기 알림 토큰, 입출금에 필요한 주소·계좌, 본인 확인 자료, 서비스 이용 기록  
+- **쓰는 이유:** 회원 확인, 충전·출금 처리, 부정 이용 방지, 고객 지원, 법령 의무  
+- **보관:** 목적 달성 또는 법령 기간까지 · 이후 안전하게 삭제·분리  
+- **맡기는 경우:** 문자·이메일·클라우드·본인 확인 대행 등 **필요한 업체만** · 계약으로 보호  
+- **해외 이전:** 있는 경우 화면에 알기 쉽게 고지  
+- **내 권리:** 열람·정정·삭제·처리 정지 요청 가능 (법령 예외 있음)  
+- **문의:** 개인정보 보호 담당 · 고객센터  
+- **운영 주체:** PRE-OWNED WATCHES L.L.C · DET 면허 1135431 · 허가 업종 §50.9.A-1
+
+**금지 문구:** 개인정보를 “마케팅에 무제한 활용” 같은 포괄 동의 숨김.
+
+#### C) 오픈소스 고지 — `오픈소스 고지`  
+`/me/legal/oss` · `T.legal.oss.*`
+
+**한 줄**  
+이 앱은 여러 오픈소스 프로그램을 안전하게 사용해 만들어졌습니다.
+
+**쉬운 대본:**
+- 화면에는 **이름 · 라이선스 종류 · 고마운 마음 한 줄**만 보여 줍니다.  
+- 어려운 영문 전문은 **「자세히」**를 눌렀을 때만 (가능하면 한글 요약 먼저).  
+- “오픈소스 = 우리 돈을 공개한다”가 아니라, **이미 공개된 도구를 규칙을 지켜 사용한다**는 뜻입니다.  
+- 목록은 빌드 시 자동 생성 (`NOTICE` / 고지 목록) · 누락 0.
+
+#### D) 라이선스·저작권 — `라이선스·저작권`  
+`/me/legal/license` · `T.legal.license.*`
+
+**한 줄**  
+앱 이름, 화면 디자인, 글, AI 안내 문구, 로고는 플랫폼과 정당한 권리자에게 있습니다.
+
+**쉬운 대본:**
+- 무단 복제·재판매·서비스 미러링 금지  
+- 상품 사진·브랜드명(롤렉스 등)은 각 권리·시장 관행을 존중하며, **시세 참고용**으로만 표시  
+- 유저가 올린 문의 내용 등은 지원 목적 범위에서만 사용  
+- 문의: 고객센터
+
+### 50.4 화면 금지어 확장 (유저+어드민 · 결함0)
+
+**카테고리별 절대 금지 (렌더 문자열):**
+
+| 종류 | 예시 (일부) |
+|------|-------------|
+| 테스트 | test, Testnet, QA, staging, sandbox, mock, dummy, fixture |
+| 개발 | debug, TODO, WIP, refactor, stack, traceback, console, localhost |
+| IT/인프라 | API, JSON, webhook, SSE, gRPC, NATS, Kafka, Redis, Postgres, Docker, K8s, DLQ, CDN, SSR |
+| 문서/ titling | RFC, ADR, SSOT, schema, enum, payload, idempotency(영문 그대로) |
+| 금융영문 | Ledger, PnL, ROI, Arbitrage, Margin(단독), Settlement(영문) |
+| 크립토영문 | TRC20, on-chain, gas, hot wallet, mnemonic |
+
+**허용 화이트리스트:** §27.4 (USDT, AI, ₩, 브랜드·모델명, 숫자/%)  
+**어드민도 동일 금지** + 왕초보 한글 대체표 §27.5
+
+### 50.5 어드민 UX 원칙 (왕초보)
+
+1. 메뉴·버튼·표 헤더·토스트·빈 화면 안내 = **쉬운 한글만**  
+2. 한 화면 한 일 · 큰 버튼 · 빨간/초록 의미 고정 (정지=위험, 승인=진행)  
+3. 설명은 `?` 아이콘으로 한 줄: “이 버튼을 누르면 회원 잔액에 돈이 반영돼요”  
+4. 실패 시: “다시 시도” + “고객센터로 남기기” · 영문 로그 화면 금지  
+5. TOP5 유지: 검수함·시세·사기방지·돈줄·긴급정지
+
+### 50.6 파일 · 라우트
+
+```
+apps/web/app/me/settings/page.tsx
+apps/web/app/me/legal/terms/page.tsx
+apps/web/app/me/legal/privacy/page.tsx
+apps/web/app/me/legal/oss/page.tsx
+apps/web/app/me/legal/license/page.tsx
+packages/ui/components/SiteFooter.tsx
+packages/ui/copy/ko/settings.ts
+packages/ui/copy/ko/legal.ts
+packages/ui/copy/ko/operator.ts
+packages/ui/copy/ko/toast.ts          # 이모지 포함 문장만
+schemas/operator-entity.v1.json
+CONSTITUTION/50_SETTINGS_LEGAL_AND_PLAIN_KOREAN.md
+scripts/verify-no-it-jargon.mjs
+scripts/verify-toast-emoji.mjs
+scripts/verify-legal-plain-ko.mjs
+scripts/verify-operator-footer.mjs
+```
+
+### 50.7 어뷰징·결함 방어 (본 절)
+
+| # | 위험 | 방어 |
+|---|------|------|
+| L1 | 약관에 확정수익·원금보장 | legal CI + Identity §1 |
+| L2 | 유저 화면에 API 에러 영문 | glossary + toast resolver |
+| L3 | 어드민에 DLQ/NATS 노출 | verify:no-it-jargon |
+| L4 | 토스트 이모지 과다/없음 | verify:toast-emoji |
+| L5 | 설정에 미완성 Light 테마 | 토글 코드경로 v1 삭제 |
+| L6 | 약관 영문 템플릿 복붙 | legal.ts ko only |
+| L7 | OSS 목록 누락 | NOTICE 생성 CI |
+| L8 | 운영사 면허번호·법인명 drift | operator-entity.v1 + verify:operator-footer |
+
+### 50.9 운영사 · DET 면허 · 푸터 (KYB SSOT)
+
+> **목적:** AI Profit OS 앱·랜딩·약관·SEO에 **동일한 사업자 정보** 노출.  
+> **내부 KYB 참고:** `COMPANY_REGISTRATION_SUMMARY.md` (플랜 §50.9가 SSOT · 문서는 pointer만)  
+> **외부 사이트(preownedwatches.ae):** WordPress 푸터는 `FOOTER_LICENSE_COPY.md` (EN) — **앱 SSOT와 번호·법인명 일치 필수**
+
+#### A) 운영 주체 (잠금 · owner-provided · DET PDF로 최종 확인)
+
+| Field | Value |
+|-------|-------|
+| **Legal Name** | PRE-OWNED WATCHES L.L.C |
+| **Legal Form** | Limited Liability Company (LLC) |
+| **License Number** | **1135431** |
+| **Issuing Authority** | Department of Economy and Tourism (DET), Dubai, UAE |
+| **License Type** | Commercial License |
+| **Status** | Active *(owner-stated; verify via DET portal before launch)* |
+| **Primary Activity (EN)** | Watches & Clocks & Spare Parts Retailing *(DET 등록 · PDF 확인)* |
+| **Primary Activity (KO)** | 시계 및 예비 부품 소매업 *(DET 등록 · PDF 확인)* |
+| **Platform-Aligned Activities** | §50.9.A 표 — AI Profit OS 운영 범위와 정렬 *(DET PDF·추가 등록 확인)* |
+
+#### A-1) 허가 업종 — 플랫폼 컨셉 정렬 (DET PDF 최종 확인)
+
+| # | 허가 업종 (KO) | Activity (EN) | Likely DET Code | 플랫폼 매핑 |
+|---|----------------|---------------|-----------------|-------------|
+| 1 | 시계·시계 부품 소매·무역 | Watches & clocks & spare parts retail/trading | 4773.03 · 4773.13 | §0.0 watch vertical |
+| 2 | 중고 명품 시계·시계류 매매 | Pre-owned luxury watches trading | 4774.02 · 4774.94 | preownedwatches.ae · 시계 기회 |
+| 3 | 트레이딩 카드·수집품 소매·무역 | Trading cards & collectibles retail/trading | 4778.99 · 4690.01 | §0.0 trading_card vertical |
+| 4 | 해외 시세 비교·국제 상품 중개 | Cross-border price comparison & trade brokerage | 4690.01 | 글로벌 시세 차익·기회 카드 |
+| 5 | 온라인 전자상거래·모바일 앱 운영 | E-commerce & mobile app operation | 4791.01 | **퍼뜩** PWA · 5탭 앱 |
+| 6 | AI 시세·수익 기회 안내·거래 지원 | AI-assisted market opportunity & execution support | 6201.01 *(면허 추가 시)* | §48 AI 진행실 · participate flow |
+
+> **오차0:** 위 코드는 **내부 KYB 참고용 추정** — 유저 화면·푸터·약관·JSON-LD에는 `operator-entity.verifiedAt`이 채워진 뒤 **PDF에 실제 등록된 값만** 노출. 추정 코드·미검증 업종 문자열 **렌더 경로 0** (`verify:operator-footer`). 미등록 업종은 PRO를 통해 DET **activity amendment** 후 schema 갱신.
+
+| **Likely Activity Code (registered)** | 4773.03 / 4773.13 *(confirm on official Trade License PDF)* |
+| **Trading Brand** | Pre-Owned Watches / Pre-Owned Watches UAE |
+| **Related Website** | https://preownedwatches.ae *(별도 WordPress · 앱 도메인과 분리)* |
+
+**주소 (웹사이트 공개 · Ejari/면허 PDF와 교차확인):**
+- Kia Flagship Office G05, Sheikh Zayed Road, Al Quoz 1, Dubai
+- Office 322, Blue Bay Tower, Al Abraj Street, Business Bay, Dubai
+
+**공식 확인 링크:**
+- [Invest in Dubai — Business Directory](https://www.investindubai.gov.ae/en/dubai-business-directory-search)
+- [DET License Lookup](https://eservices.dubaided.gov.ae/Pages/Anon/CompLookup.aspx)
+
+**금지:** 정부 발급 면허증 **위조·합성 이미지** · 면허 PDF에 없는 활동코드·법인명 **임의 표기**
+
+#### B) Schema SSOT — `schemas/operator-entity.v1.json`
+
+```typescript
+interface OperatorEntityV1 {
+  legalName: "PRE-OWNED WATCHES L.L.C";
+  legalForm: "LLC";
+  licenseNumber: "1135431";
+  issuingAuthority: "Dubai Department of Economy and Tourism";
+  jurisdiction: "AE-DU"; // Dubai Mainland
+  licenseStatus: "active" | "pending_verification";
+  primaryActivityEn: "Watches & Clocks & Spare Parts Retailing";
+  primaryActivityKo: "시계 및 예비 부품 소매업";
+  licensedActivities: {
+    activityKo: string;
+    activityEn: string;
+    likelyDetCode?: string;
+    platformScope: "watch" | "trading_card" | "platform" | "ecommerce" | "ai_service";
+  }[];
+  tradingBrand?: string;
+  relatedWebsite?: string; // preownedwatches.ae — optional cross-link
+  addresses: { label: string; lines: string[]; city: string; country: "AE" }[];
+  verificationUrls: { label: string; url: string }[];
+  verifiedAt?: ISO8601; // set after DET PDF on file
+}
+```
+
+**소비처 (단일 import):** `SiteFooter` · `T.legal.operator.*` · `generateMetadata` · JSON-LD `@graph` · Admin audit footer *(ops only, not user SEO)*
+
+#### C) 유저 앱 푸터 — `packages/ui/components/SiteFooter.tsx`
+
+**노출 surface (MUST):**
+- `apps/web` 5탭 레이아웃 — BottomNav **위** 고정 1줄 (320px ellipsis OK)
+- `/me/legal/*` 4면 하단
+- `(landing)/l/*` 랜딩 최하단 (ko)
+- **숨김:** Admin · ops · in-app modal · toast
+
+**카피 (ko · `T.operator.footer.line`):**
+```
+두바이 경제관광부(DET) 면허 | 사업자등록번호 1135431 | PRE-OWNED WATCHES L.L.C
+```
+
+**선택 링크:** DET → Invest in Dubai (새 탭 · `rel=noopener`)
+
+**스타일:** `text-xs` · muted · Lux 다크 토큰 · 5탭·sticky CTA 가리지 않음 (§5.3)
+
+**외부 WordPress (preownedwatches.ae · EN · pointer):**
+```
+Licensed by the Dubai Department of Economy and Tourism (DET) | Trade License No. 1135431 | PRE-OWNED WATCHES L.L.C
+```
+→ 구현 SSOT는 앱 repo 밖 · **번호·법인명은 schema와 100% 일치**
+
+#### D) 카피 키 — `packages/ui/copy/ko/operator.ts`
+
+```typescript
+export const T = {
+  operator: {
+    footer: {
+      line: "두바이 경제관광부(DET) 면허 | 사업자등록번호 1135431 | PRE-OWNED WATCHES L.L.C",
+      detLinkLabel: "두바이 경제관광부",
+    },
+    legal: {
+      sectionTitle: "운영 주체",
+      body: "본 서비스는 PRE-OWNED WATCHES L.L.C(두바이, UAE)가 운영합니다.",
+      licenseLine: "두바이 경제관광부(DET) 상업 면허 번호 1135431",
+      activityLine:
+        "허가 업종: 시계·명품 중고 매매, 트레이딩 카드·수집품 거래, 해외 시세 비교·국제 중개, 온라인 전자상거래·앱 운영, AI 시세 기회 안내·거래 지원",
+    },
+  },
+};
+```
+
+`T.legal.operator.*` = `operator.ts` re-export (중복 문자열 금지)
+
+#### E) 출시 전 KYB 체크리스트
+
+- [ ] DET Trade License PDF (1135431) 보관 · `verifiedAt` 기록
+- [ ] Invest in Dubai / DET 포털에서 면허 상태·만료일 확인
+- [ ] VAT TRN(해당 시) · §50.9.A-1 플랫폼 정렬 업종이 DET PDF에 포함 확인
+- [ ] `verify:operator-footer` PASS — schema ↔ footer ↔ legal 약관 3곳 일치
+- [ ] preownedwatches.ae 푸터(선택) 번호·법인명 동기화
+
+#### F) 어뷰징·결함 방어
+
+| # | 위험 | 방어 |
+|---|------|------|
+| O1 | 가짜 DET 면허번호 표기 | schema 단일 + launch gate DET PDF |
+| O2 | 앱·랜딩·약관 footer drift | verify:operator-footer |
+| O3 | JSON-LD fake rating/review | §31.5 honest Organization only |
+| O4 | UK dissolved entity 혼동 | UI=UAE LLC only · CH #05458999 **미표기** |
+| O5 | 면허 만료 후 미갱신 | Admin `licenseStatus` + 분기 재검수 알림 |
+
+### 50.8 교차 참조
+
+> **배치:** §50.9(운영사 본문) 다음 appendix pointer — ADR-004 허용 · 재번호 금지.
+
+| 주제 | SSOT |
+|------|------|
+| 금지어·glossary | §27 + 본 절 50.4 |
+| 토스트 코드 | **§8.2 = 본문 SSOT** · 본 절 50.2 = tone/이모지 규칙만 |
+| 설정 IA | §5.10 + 본 절 50.1 |
+| 면책·USDT | §38 |
+| 원금·수익 | §49 |
+| 어드민 모듈명 | §9.1 |
+| 운영사·DET·푸터 | **본 절 50.9** · `operator-entity.v1.json` |
+| SEO Organization | §31.5 |
+| 외부 WP 푸터(EN) | `FOOTER_LICENSE_COPY.md` → schema pointer |
+
+---
+
+## 51. Platform Completeness · Rule Engine · Ops SSOT (v7.22)
+
+> **SSOT:** `CONSTITUTION/51_PLATFORM_COMPLETENESS_AND_RULE_ENGINE.md`  
+> **흡수 범위:** v7.21 검토 보완안 **전부** 흡수 완료 (§51 = 제품·엔진·Ops 완성도 SSOT).  
+> **영구 배제 (잔여과제 0 · 에이전트 언급·제안·게이트 추가 금지):** 규제·법무 추가 절 / Legal Sign-off / KR 규제 전용 절 / Growth 법무 2단 검토 / Whale AML EDD 전용 스펙 — 제품 플랜·로드맵·§19·리뷰에 **미등재·미논의**.  
+> **중복0:** 정산 규칙=§48.13 · 시뮬=§51.4 · referral ledger=§51.5 · CS=§51.6 · Auth=§51.9
+
+### 51.1 ADR · 문서 drift 교정 (오차0)
+
+| ADR | 결정 | 금지 |
+|-----|------|------|
+| **ADR-001 Single PG** | Ledger+AI = **PostgreSQL 단일 인스턴스**(Supabase-managed 권장) · §47.9 | **두 번째** Postgres/Supabase SoT |
+| **ADR-002 Brand 3-layer** | Platform/code=**AI Profit OS** · Consumer PWA/SEO=**퍼뜩** (구 `오늘수익`·`바로번다` 폐기) · Legal=§50.9 · Brand Kit | retired 표기 유저 surface 재등장 · 코드명 유저노출 |
+| **ADR-003 Workers** | §3 adapter 6종 = §16 monorepo **동일 명칭** | `rolex-adapter` 등 drift |
+| **ADR-004 Section order** | 본문 21→31 비순차 = appendix 의도 · 교차=§22 | 전면 재번호 v1 금지 |
+| **ADR-005 Legal out of plan** | 규제·법무 추가 절·게이트·보완안 = **영구 배제** · 잔여과제 취급 금지 | 에이전트가 “법무 보완” 등으로 **재제안·리뷰 지적 금지** |
+| **ADR-006 User Auth** | User Auth = **api-nest JWT + OAuth(Google/Kakao) + Passkey** · Money/Admin과 동일 Nest 경계 | **Supabase Auth 병행 금지** (PG는 Supabase-managed 가능 · Auth SoT≠Supabase Auth) |
+| **ADR-007 Drift lock** | CTA=`이 상품으로 수익 벌기` · 온보딩/게이트 ≤15초 · B-tier WS=3s · cores≤4→tier B · manifest bg=`#090A10` · toast 본문=§8.2 · KRW=`payableAmountKrw` · whale=≥100k USDT · orchestrate≠실체결 | 구 문구(거래 시작/동일 송금/PRICE_STALE 100%/1억+/§47.17/이중 m05 todo) **재등장 금지** |
+| **ADR-008 Pricing+FX** | Engine §0.0.4.1~4.3 수수료·버퍼·마진·FX·platform_reserve | 하드코딩 수수료 · snapshot 없는 ≈원화 |
+| **ADR-009 v1 modes** | `executionMode=orchestrate` only · info/full/limited v1 경로 0 | 중고 info · Nike limited partial |
+| **ADR-010 Domain+Pin** | `ROOT_DOMAIN` 필수 · hosts app/ops/api · `next@15` pin · Phase0=in-process | prod `{domain}` 잔존 · Phase0 NATS 필수화 |
+| **ADR-011 Brand Kit** | 에셋 SSOT=`packages/ui/brand` + manifest · AI 산출은 리뷰 후 등록만 · `verify:brand-assets` | 런타임 AI 아이콘 · 미등록 CDN · 타사 로고 |
+| **ADR-012 Notice≠Campaign** | notice=운영사실(보상문구0) · campaign=예산 프로모 · G1 FOMO와 스키마/탭 분리 · Viral Ladder=Money §51.5 | notice에 reward · L1만 티어 가산 · sidebar 13번째 |
+| **ADR-013 Mockup Governance** | 사진/PNG 목업 = **intent archive only** · 구현 시각 SSOT = Lux tokens + Brand Kit + `packages/ui` + Canon wire · 충돌 시 **코드/토큰 > 플랜 > Canon > 사진목업** · UI §33.8 | 사진 픽셀 복제 · 목업별 로고/색/탭 drift · “목업이랑 똑같이” 픽셀 QA |
+| **ADR-014 Cursor Stack Lock** | Cursor=**플랜 집행기** · Nest+Rust+단일 PG+CF · **PG사0** · rules · `AGENTS.md` · Infra §15.0b · 버전핀=ADR-015 | 스택 재제안 · Vercel+CF · Supabase Auth · PG사 SDK |
+| **ADR-015 Greenfield Toolchain** | Node22 · pnpm@10.14 · **next@16** · Tailwind v4 · Rust · OpenNext/CF · `TOOLCHAIN.md` | next@15·TW3 · npm/bun SSOT |
+| **ADR-016 Agent Automation** | Rules+hooks+Husky+`verify:gate`+GH Actions · Docker-less=Supabase+Upstash · Vercel 금지 · 8GB Phase0 · `docs/ADR-016-AGENT-AUTOMATION.md` | `--no-verify` · Vercel · Docker 필수화 · Husky/CI 생략 |
+
+### 51.2 MATCH_SUCCESS (pointer)
+
+**전문:** §48.13 · `settlement_rule.rs` · golden traces · `verify:match-success-rule`
+
+### 51.3 sellSuccessRate — Historical Display Only (오차0)
+
+| 필드 | 소스 | UI | 금지 |
+|------|------|-----|------|
+| `sellSuccessRate` | `HistoricalSpread` 30d rolling · engine feature | 상세 보조 `"과거 유사 조건"` % · **작게** | §48 Rule 입력 · 난수 성공률 연상 카피 |
+
+**라벨 SSOT:** `T.opportunity.historicalMatchHint` — **"AI 추천도"와 혼용 금지** (§48.0)
+
+### 51.4 M0.5 simulation-engine (전체 스펙)
+
+> **서비스:** `services/simulation-engine` · **Gate:** Growth ON · Admin bulk margin · global 0% event  
+> **스키마:** `schemas/simulation-report.v1.json`
+
+```typescript
+interface SimulationReport {
+  runId: string;
+  asOf: ISO8601;
+  horizonHours: 24;
+  opportunityPublishRate: number;       // published / candidate
+  spreadDistribution: { p50: Decimal; p10: Decimal; p90: Decimal };
+  payoutFeasibilityScore: number;       // 0~1 · Rule R8 입력
+  worstCasePlatformDrainUsdt: Decimal;  // margin typo · 0% event stress
+  uxDisplayAccuracy: Array<{ field: string; sample: number; mismatch: number }>;
+  adapterMatchFailureRate: number;      // §51.15
+}
+
+interface SimulationFeasibility {
+  opportunityId: string;
+  payoutFeasible: boolean;              // R8 per-opportunity
+  reasonKo?: string;
+}
+```
+
+**Pass/Fail (M0.5 milestone):**
+
+| # | 기준 | Fail 시 |
+|---|------|---------|
+| S1 | `uxDisplayAccuracy` mismatch = **0** | block publish |
+| S2 | `worstCasePlatformDrain ≤ platform_reserve × 10%` | Admin alert |
+| S3 | published opp `payoutFeasibilityScore ≥ 0.85` | hide feed |
+| S4 | `adapterMatchFailureRate ≤ 15%` (v1 seed) | adapter alert |
+
+**API:** `POST /admin/simulation/run` · `GET /admin/simulation/latest` · NATS `simulation.completed`  
+**CI:** `verify:simulation-gate` · Growth `admin.growth.enabled` requires latest PASS ≤24h
+
+### 51.5 Referral · Viral Ladder SSOT (v7.22.3 · 성장 엔진)
+
+> **IA:** `/me/invite` · 딥링크 `/r/{code}` · `go.{ROOT_DOMAIN}/r/{code}` · Admin `/admin/growth?tab=referral` (sidebar 12 유지)  
+> **헌법:** 바이럴은 **L2/L3에만 실보상** · L1 파밍 무력화 · Promo Pool ≠ principal · practice 현금화 0
+
+#### 51.5.1 Viral Ladder (오차0)
+
+| Level | 트리거 | 초대자 (referrer) | 피초대 (referee) | 티어/리더보드 가산 |
+|-------|--------|-------------------|------------------|-------------------|
+| **L1** | 가입 + code 바인딩 | 0 또는 **극소 practice** (선택) | welcome **practice** (§51.7) | **❌ 비가산** |
+| **L2** | 피초대 **첫 USDT `DEPOSIT_CONFIRMED`** | Promo→**profit** (실출금 가능) · clawback window | 소액 promo/쿠폰 또는 practice | **✅ 유효 초대** |
+| **L3** | 피초대 첫 **`MATCH_SUCCESS`** | 추가 Promo→profit + 티어 점수 | 수수료 할인 1회(프로모) | **✅** |
+
+**상태머신 (edge):**  
+`bound → l1_done → l2_pending_hold → l2_released|clawed_back → l3_done` · 위험 시 `held_risk`
+
+```typescript
+// schemas/referral-program.v1.json
+interface ReferralProgramConfig {
+  enabled: boolean;
+  l1RefereePracticeUsdt: Decimal;       // default welcome path
+  l2ReferrerBonusUsdt: Decimal;         // Promo Pool → profit
+  l2RefereeBonusUsdt: Decimal;          // practice or tiny promo (Admin)
+  l3ReferrerBonusUsdt: Decimal;
+  clawbackHoursL2: number;              // default 72 · wash 방어
+  capPerDayUsdt: Decimal;
+  capPerReferrerMonth: number;
+  minRefereeDepositUsdt: Decimal;
+  sharePerUserPerDay: number;           // default 10
+  tiers: { id: 'seed'|'flame'|'rocket'|'whale_maker'; minValidInvites: number; perks: string[] }[];
+}
+
+// schemas/referral-edge.v1.json
+interface ReferralEdge {
+  id: string;
+  referrerUserId: string;
+  refereeUserId: string;
+  code: string;
+  boundAt: ISO8601;                     // 소급 바인딩 금지 (Admin+audit만 예외)
+  levelsAchieved: ('L1'|'L2'|'L3')[];
+  status: 'bound'|'l1_done'|'l2_pending_hold'|'l2_released'|'l3_done'|'held_risk'|'clawed_back';
+  idempotencyKeys: string[];            // referral:{edgeId}:{level}
+}
+```
+
+**Ledger (중복0):**  
+- L2/L3 초대자: `Debit Promo Pool / Credit User profit`  
+- 피초대 L1: practice only  
+- clawback: 역분개 + audit `referral.clawback`  
+- **금지:** principal 적립 · practice→profit 승격 · demo/G4 금액 적립
+
+**Attribution:** signup merge `referral_code` · cookie/localStorage 90d · `user_attribution.utmSource=referral` · CAPI에 `referral_edge_id`  
+**KYC:** 초대자 **profit 출금** 전 §42 · 피초대 L2 확정은 입금 19conf
+
+#### 51.5.2 어뷰징·악성·오류 (R1~R12 · RE1~RE6) — 전수
+
+| # | 시나리오 | 방어 | Admin |
+|---|---------|------|-------|
+| R1 | 다계정 셀프초대 | device graph · IP/ASN · install id | 보류 큐 |
+| R2 | L1만 반복 파밍 | 티어/시즌 = **유효 L2/L3만** | velocity 알림 |
+| R3 | 입금 후 즉시 출금 wash | clawbackHoursL2 + §11.2 principal holding | 자동 held → 회수 |
+| R4 | practice 현금화 | §49 403 | — |
+| R5 | 보너스→principal 위장 | profit only + CI | recon Fail |
+| R6 | 코드 탈취/재바인딩 | bound 1회 잠금 | Admin 예외+audit |
+| R7 | OG/공유 스팸 | sharePerUserPerDay | 429 · restrict |
+| R8 | 가짜 영수증 사기 | 서버 OG only · APP_HOST 워터마크 | 신고→freeze |
+| R9 | 리더보드 봇 | 유효 초대+KYC 초대자만 | 시즌 제외 |
+| R10 | Promo Pool 고갈 러시 | pool circuit · accrual halt | 긴급 정지 |
+| R11 | 협박·강요 카피 | copy CI 금지어 | 배포 Fail |
+| R12 | 주소/계좌 그래프 돌리기 | withdraw/KRW graph | 보류 |
+| RE1 | 더블 적립 | idempotency UNIQUE | — |
+| RE2 | 소급 코드 | 기본 금지 | Admin only |
+| RE3 | 딥링크 유실 | 90d sticky + 수동 코드 1회 | — |
+| RE4 | 시즌 종료 후 claim | seasonId 스냅샷 | 403 |
+| RE5 | CTA 가림 | 성공화면 초대=Secondary | verify UI |
+| RE6 | OG 깨짐 | 템플릿 CI | — |
+
+**악성 상태 연동:** frozen/banned → 적립·공유·claim **0** · restricted → share↓ · L2/L3 기본 보류
+
+#### 51.5.3 시즌 · 공유 무기
+
+- `schemas/referral-season.v1.json` — 주간 시즌 · Promo 상금 · 리더보드(마스킹) · on/off  
+- 공유 카드 4종 (서버 렌더): 성공영수증 · 시세비교 · 안전중단신뢰 · 초대도전장  
+- 성공 영수증 Secondary: **「친구에게 자랑하고 보너스」** → share · Primary 출금/지갑 원칙 유지(§7.7)
+
+**CI:** `verify:referral-ledger` · `verify:referral-ladder` · `verify:referral-idempotency` · `verify:share-copy` · promo ≠ principal
+
+### 51.5b Notice · Campaign Ops SSOT (공지≠이벤트 · 중복0)
+
+> **분리 헌법:** `notice` = 운영 사실(보상 문구 금지) · `campaign` = 예산 있는 프로모. G1 FOMO와 **스키마·탭·카피 분리**.
+
+```typescript
+// schemas/notice.v1.json
+interface Notice {
+  id: string;
+  titleKo: string;
+  bodyKo: string;
+  status: 'draft'|'scheduled'|'live'|'archived';
+  publishAt?: ISO8601;
+  audience: 'all'|'tier'|string;
+  pushEnabled: boolean;
+  // ❌ rewardUsdt · CTA 수익 확정 문구 FORBIDDEN
+}
+
+// schemas/campaign.v1.json
+interface Campaign {
+  id: string;
+  titleKo: string;
+  bodyKo: string;
+  status: 'draft'|'scheduled'|'live'|'ended'|'budget_exhausted';
+  startsAt: ISO8601;
+  endsAt: ISO8601;
+  reward: { kind: 'practice'|'promo_profit'|'fee_coupon'; amountUsdt: Decimal };
+  budgetUsdt: Decimal;
+  capPerUser: number;
+  ctaRoute: string;                     // allowlist app routes only
+  growthRequired: boolean;              // default true
+}
+```
+
+**Claim:** `UNIQUE(user_id, campaign_id, reward_key)` · Promo/practice만 · ended/budget_exhausted → 403  
+**어뷰징 N1~N5 / 오류 NE1~NE4:** notice에 보상 금지어 CI · 종료 후 claim 거부 · Growth OFF면 campaign API 빈 목록 · 딥링크 allowlist · 읽음 `notice_reads` 서버 카운트  
+**유저 toast:** 종료/예산마감/보류/회수 — §8.2 코드 `CAMPAIGN_*` · `REFERRAL_*`  
+**CI:** `verify:notice-no-reward-copy` · `verify:campaign-claim-idempotent`
+
+
+### 51.6 Customer Support · Dispute Ops
+
+```
+/me/support                    # 유저: FAQ + [문의하기] + 티켓 목록
+/me/support/[ticketId]         # 대화 스레드 (ko only)
+/admin/support?tab=queue       # Admin: 미처리 N건 · TOP5 하위 링크 (sidebar 13 금지)
+```
+
+```typescript
+// schemas/support-ticket.v1.json
+interface SupportTicket {
+  id: string;
+  userId: string;
+  category: 'deposit' | 'withdraw' | 'trade' | 'account' | 'other';
+  subjectKo: string;
+  bodyKo: string;
+  status: 'open' | 'pending_user' | 'resolved' | 'escalated';
+  linkedTradeId?: string;
+  linkedTxHash?: string;
+  slaDueAt: ISO8601;                    // default created+24h
+}
+```
+
+**트리거:** §48 `SYSTEM_FAILED` · §10 wallet fail · 유저 `/me/support`  
+**Admin RBAC:** CS=조회+reply · finance=escalated · **잔액 조정은 ticket에서 직접 불가** (§9.8.3)  
+**CI:** `verify:support-surfaces` · SYSTEM_FAILED → CS link 100%
+
+### 51.7 Practice Bucket Onboarding
+
+| 이벤트 | practice | 규칙 |
+|--------|----------|------|
+| 가입 welcome | +10 USDT **1회** | `practice_grant_welcome` · expire 7d |
+| Referee bonus | §51.5 refereeBonus | practice only |
+| Demo onboarding | §38.7 DemoWalletBanner | "연습" 배지 · 실출금 0 |
+| 만료 | 소멸 | cron · toast `연습 잔액이 만료됐어요` |
+| participate/withdraw | **403** | §49 · `PRACTICE_NOT_WITHDRAWABLE` |
+
+**금지:** practice → profit 승격 · practice로 real settlement
+
+### 51.8 원화 입금 copy (pointer · 오차0)
+
+**SSOT:** UI/UX §5.7 + §41/§43  
+- 신청 후 화면 필수: **`payableAmountKrw` 숫자** (requested + uniqueSuffix)  
+- 카피: 「위 금액 그대로 송금 (끝자리 가산 포함)」  
+- **금지:** 「신청액과 동일」단독 · payable 미표시  
+- CI: `verify:krw-payable-copy`
+
+### 51.9 Auth Flow SSOT
+
+> **ADR-006 (잠금):** User Auth SoT = **api-nest** (`/auth/*` · user JWT) + OAuth/Passkey/Email magic link. Supabase Auth **사용 금지**(DB managed만 허용). Admin JWT와 issuer **분리** (§40).  
+> **Email:** magic link + OTP = **Resend free** (§43.6) · from 도메인=`ROOT_DOMAIN` 검증.
+
+```
+(l landing) → OAuth(Google/Kakao) | Passkey | Email magic link (Resend)
+  → POST /auth/signup · merge attribution · issue user JWT
+  → optional: lazy TRC20 on first /wallet/deposit visit (§41)
+/me/settings → 로그인 보안 · Passkey add · logout
+/me/settings/delete-account → confirm×2 → ledger balance=0 guard → anonymize
+```
+
+| Flow | Guard |
+|------|-------|
+| Signup | consent marketing (§31) · referral_code optional |
+| Session | JWT refresh · device revoke Admin (§9.8) |
+| Withdraw | WebAuthn primary · Email OTP(Resend)/PIN fallback (§43) |
+| 탈퇴 | locked=0 · pending withdraw=0 · KYC R2 archive retention (§42.2.1) |
+
+**CI:** `verify:auth-flows` · `verify:email-provider-resend` · 1초 Passkey signup E2E (§31)
+### 51.13 Bootstrap Phase 0 ($0 minimal path)
+
+| Phase | Stack | Milestone |
+|-------|-------|-----------|
+| **Phase 0** | CF Pages + **Nest + PostgreSQL + Redis** + engine-rust | **M1** E2E deposit→participate→settlement |
+| Phase 1 | + NATS + workers adapters | M2 |
+| Phase 2 | + Temporal + shadow-replay | M4 |
+| Phase 3 | EKS (§15 Production) | M7 |
+
+**오차0:** Phase 0에서도 double-entry · §48.13 Rule · **NATS 없이** in-process events OK (migration playbook 필수)
+
+### 51.14 USDT Confirmation Intermediate UX
+
+| conf | 유저 상태 | ledger | participate |
+|------|-----------|--------|-------------|
+| 0 | — | — | — |
+| **1** | `DEPOSIT_DETECTED` toast · "거의 다 됐어요" | **0** | **locked principal 불가** (unconfirmed) |
+| 1~18 | progress chip `/wallet` | 0 | 불가 |
+| **19** | `DEPOSIT_CONFIRMED` · usable | credit principal | 가능 |
+
+**카피 SSOT:** `T.wallet.depositConfirming` · `T.wallet.depositAlmostDone`
+
+### 51.15 Adapter Matching Failure KPI
+
+| KPI | Threshold | Action |
+|-----|-----------|--------|
+| SKU match fail rate | >15% / 24h | Admin adapter alert · reduce auto-publish |
+| compareReady=false ratio | >40% catalog | seed review queue |
+| stale listing >TTL | any adapter 🔴 | TOP2 🔴 · hide stale opps |
+
+**Admin:** `/admin/adapters` KPI row · SSE `adapter.health.changed`
+
+### 51.16 Proof-at-Participate
+
+```typescript
+// schemas/participate-proof.v1.json
+interface ParticipateProof {
+  tradeId: string;
+  pricingVersion: number;
+  buyPriceUsdt: Decimal;
+  sellPriceUsdt: Decimal;
+  expectedProfitUsdt: Decimal;
+  fxSnapshotId: string;
+  proofHash: string;           // SHA256 canonical JSON
+  capturedAt: ISO8601;
+}
+```
+
+**UI:** success/safe_stop 화면 · "참여할 때 본 조건" collapsible · hash truncated + [복사]  
+**CI:** `verify:participate-proof` — every participate stores proof · success UI shows match
+
+### 51.17 Safe Stop Trust Metric
+
+- **유저:** `/me` 또는 `/wallet` · `"AI가 손해 없이 멈춘 횟수"` · ledger `safe_stop` count (demo ❌)  
+- **카피:** `T.trust.safeStopCount` — FOMO 대신 **신뢰 역전** (§38 납득 톤)  
+- **금지:** safe_stop = 실패 framing · "당첨 실패" metaphor
+
+### 51.18 Capital Band Journey
+
+| Unlock | 조건 | 효과 |
+|--------|------|------|
+| micro | default | catalog access |
+| small | **2× MATCH_SUCCESS** settlements OR deposit ≥100 | filter chip 해금 |
+| mid | 5× success OR deposit ≥1k | mid band sort boost |
+| high/whale | deposit threshold OR Admin whale tier | §0.0.5 catalog |
+
+**금지:** deposit-only paywall without micro path · **진행 = settlement 횟수 + 잔액** (§0.0.5 공존)
+
+### 51.19 Adapter Health — User Surface
+
+**컴포넌트:** `AdapterHealthChip.tsx` on OpportunityCard footer  
+**표시:** `시세 갱신 {relativeKo}` · `출처 {n}` · stale → `비교 준비중` + CTA lock reason (§0.0.4)  
+**데이터:** `staleAt` · `pricing.lastAdapterSyncAt` · **Admin health SSE**
+
+### 51.20 Weekly Market Briefing (Simulation Output)
+
+- **주 1회 push/in-app:** M0.5 `spreadDistribution` → **교육용** "이번 주 시세 차이 분포" (투자 권유 **금지** · §38 CI)  
+- **Route:** `/me/guide/market-weekly` · opt-out in `/me/settings` 알림  
+- **CI:** `verify:market-briefing-no-investment-advice`
+
+### 51.21 Personal AI — First Deposit 60s Consult
+
+- **Gate:** `DepositWhyGate` (§38.7) + §47 **Template path Q2/Q4 우선**  
+- **Flow:** 첫 `/wallet/deposit` · Objection accordion 60s · [이해했어요] → deposit form  
+- **Fact Card:** balance=0 · opportunities preview · **LLM은 Fact 범위만** (§47.4)  
+- **CI:** `verify:deposit-ai-template-path` — Q2/Q4 = template not raw LLM
+
+### 51.22 CI · 출시 게이트 (pointer §19)
+
+- `verify:match-success-rule` · `verify:simulation-gate` · `verify:referral-ledger`  
+- `verify:support-surfaces` · `verify:participate-proof` · `verify:deposit-ai-template-path`  
+- `verify:market-briefing-no-investment-advice` · `verify:krw-payable-copy`  
+- `verify:referral-ladder` · `verify:referral-idempotency` · `verify:referral-deeplink` · `verify:share-copy`  
+- `verify:notice-no-reward-copy` · `verify:campaign-claim-idempotent` · `verify:notice-campaign-split`  
+- `verify:admin-growth-tabs` · `verify:referral-hold-queue` · `verify:brand-assets`  
+- `verify:mockup-governance` · `verify:canon-surfaces` · `verify:brand-logo-single`  
+- `verify:pg-module-scan` · `verify:stack-lock`
+
+### 51.23 교차 참조 (중복0)
+
+| 주제 | SSOT |
+|------|------|
+| MATCH_SUCCESS | §48.13 · 본 절 §51.2 |
+| Simulation | 본 절 §51.4 · M0.5 · Growth §9.3 |
+| Referral · Viral | Money §51.5 · UI `/me/invite` · Admin growth/referral · Marketing `/r/{code}` |
+| Notice · Campaign | Money §51.5b · UI `/me/events` · Admin notices/campaigns · ADR-012 |
+| Brand Kit | UI §5.9.2b · Marketing brand CI · ADR-011 · PWA icons pointer |
+| Mockup · Canon | UI §33.8 · §48 Canon 4면 · ADR-013 · `.cursor/rules/mockup-governance.mdc` |
+| CS/Dispute | 본 절 §51.6 · §51.11 · A14 §10.1 |
+| Practice | 본 절 §51.7 · §49 · §38.7 |
+| Auth | 본 절 §51.9 · §42 · §43 |
+| Trust surfaces | §51.16~21 · §38 · §47 |
+| Bootstrap | §51.13 · §15 · §24 |
+| KRW copy | §51.8 · §5.7 · §37 |
+| Brand | §51.1 ADR-002 · ADR-011 · §31 JSON-LD · manifest |
+| DB | §51.1 ADR-001 · §47.9 · §21 폐기 목록 |

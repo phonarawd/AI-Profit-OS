@@ -1,0 +1,92 @@
+name: deploy-cloudflare
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Deploy target"
+        required: true
+        default: preview
+        type: choice
+        options:
+          - preview
+          - production
+      surface:
+        description: "What to deploy"
+        required: true
+        default: workers
+        type: choice
+        options:
+          - workers
+          - web
+          - ops
+          - all
+
+concurrency:
+  group: cf-deploy-${{ github.ref }}-${{ inputs.surface }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ inputs.target == 'production' && 'production' || 'preview' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: verify:root-domain-env
+        if: inputs.target == 'production'
+        run: pnpm verify:root-domain-env
+
+      - name: Cloudflare credentials
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || (echo "Missing CLOUDFLARE_API_TOKEN secret" && exit 1)
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || (echo "Missing CLOUDFLARE_ACCOUNT_ID secret" && exit 1)
+
+      - name: Production env
+        if: inputs.target == 'production'
+        env:
+          ROOT_DOMAIN: ${{ secrets.ROOT_DOMAIN }}
+          APP_HOST: ${{ secrets.APP_HOST }}
+          OPS_HOST: ${{ secrets.OPS_HOST }}
+          API_HOST: ${{ secrets.API_HOST }}
+        run: |
+          test -n "$ROOT_DOMAIN" || (echo "Missing ROOT_DOMAIN secret" && exit 1)
+          printf 'ROOT_DOMAIN=%s\nAPP_HOST=%s\nOPS_HOST=%s\nAPI_HOST=%s\n' \
+            "$ROOT_DOMAIN" "${APP_HOST:-app.$ROOT_DOMAIN}" "${OPS_HOST:-ops.$ROOT_DOMAIN}" "${API_HOST:-api.$ROOT_DOMAIN}" >> .env
+
+      - name: Deploy workers
+        if: inputs.surface == 'workers' || inputs.surface == 'all'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node tooling/deploy/cf-workers.cjs ${{ inputs.target }} phase0
+
+      - name: Deploy web (apps/web required)
+        if: inputs.surface == 'web' || inputs.surface == 'all'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node tooling/deploy/cf-preflight.cjs ${{ inputs.target }} web && node tooling/deploy/cf-pages-web.cjs ${{ inputs.target }}
+
+      - name: Deploy ops (apps/admin required)
+        if: inputs.surface == 'ops' || inputs.surface == 'all'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node tooling/deploy/cf-preflight.cjs ${{ inputs.target }} ops && node tooling/deploy/cf-pages-ops.cjs ${{ inputs.target }}

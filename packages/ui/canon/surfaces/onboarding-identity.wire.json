@@ -1,0 +1,14 @@
+{
+  "id": "onboarding-identity",
+  "route": "/onboarding",
+  "state": "identity",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.onboarding.next", "action": "next_step" },
+  "blocks": [
+    { "id": "brand", "role": "brand", "copyKey": "T.brand.consumer" },
+    { "id": "headline", "role": "heading", "copyKey": "T.onboarding.identityHeadline" },
+    { "id": "compareMini", "role": "price_compare_margin", "copyKey": "T.margin.compareMini" },
+    { "id": "disclaimer", "role": "disclaimer", "copyKey": "T.trust.expectedNotGuaranteed" }
+  ],
+  "forbidden": ["profit_guaranteed_cta", "gender_branch", "photo_pixel_match", "non_brand_logo", "stat_strip"]
+}

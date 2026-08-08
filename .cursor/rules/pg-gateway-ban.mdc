@@ -1,0 +1,12 @@
+---
+description: §41 PG사(결제대행) 0 — Toss/PortOne 등 wallet path 금지.
+globs: "**/wallet/**,**/deposit/**,**/withdraw/**,services/**/wallet*/**,apps/**/wallet/**"
+alwaysApply: false
+---
+
+# PG Gateway Ban (§41)
+
+- **결제대행 0**: Toss · Nice · Inicis · PortOne · iamport · Stripe Checkout · PayPal
+- 입금 = USDT TRC20 + 원화 Auto-Recon only
+- PostgreSQL ≠ PG사 (용어 혼동 금지)
+- CI: `verify:pg-module-scan`

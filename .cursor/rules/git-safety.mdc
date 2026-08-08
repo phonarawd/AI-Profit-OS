@@ -1,0 +1,22 @@
+---
+description: ADR-016 — commit/push 전 게이트. --no-verify 금지. .env 커밋 금지.
+alwaysApply: true
+---
+
+# Git Safety (ADR-016)
+
+## 커밋/푸시 전
+
+1. `pnpm verify:gate` PASS (또는 hook이 강제)
+2. secrets / `.env` / 키 파일 staged **0**
+3. `--no-verify` · `--no-gpg-sign` **금지**
+
+## 차단
+
+- `.env`, `*.pem`, service_role, JWT secret 커밋
+- 게이트 FAIL 상태 push
+- force push to `main`
+
+## 이중 문
+
+Cursor `beforeShellExecution` deny + Husky pre-commit + GitHub Actions/branch protection

@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "node .cursor/hooks/session-start.cjs",
+        "timeout": 15
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "node .cursor/hooks/before-shell-git-gate.cjs",
+        "timeout": 120,
+        "failClosed": true
+      }
+    ],
+    "beforeMCPExecution": [
+      {
+        "command": "node .cursor/hooks/before-mcp-gate.cjs",
+        "timeout": 15,
+        "failClosed": true
+      }
+    ],
+    "stop": [
+      {
+        "command": "node .cursor/hooks/stop-cleanup.cjs",
+        "timeout": 60
+      }
+    ],
+    "sessionEnd": [
+      {
+        "command": "node .cursor/hooks/stop-cleanup.cjs",
+        "timeout": 60
+      }
+    ]
+  }
+}

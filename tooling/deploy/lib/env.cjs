@@ -1,0 +1,90 @@
+/** Shared env helpers for Cloudflare deploy scripts (ADR-016) */
+const fs = require("fs");
+const path = require("path");
+
+const root = path.resolve(__dirname, "../..");
+
+function loadDotEnv() {
+  const envPath = path.join(root, ".env");
+  if (!fs.existsSync(envPath)) return {};
+  const out = {};
+  for (const line of fs.readFileSync(envPath, "utf8").split(/\r?\n/)) {
+    const t = line.trim();
+    if (!t || t.startsWith("#")) continue;
+    const i = t.indexOf("=");
+    if (i < 1) continue;
+    const key = t.slice(0, i).trim();
+    let val = t.slice(i + 1).trim();
+    if (
+      (val.startsWith('"') && val.endsWith('"')) ||
+      (val.startsWith("'") && val.endsWith("'"))
+    ) {
+      val = val.slice(1, -1);
+    }
+    if (!(key in process.env)) process.env[key] = val;
+    out[key] = val;
+  }
+  return out;
+}
+
+function isProdTarget(target) {
+  return target === "production" || target === "prod";
+}
+
+function requireRootDomainForProd(target) {
+  if (!isProdTarget(target)) return;
+  loadDotEnv();
+  const rootDomain = process.env.ROOT_DOMAIN || "";
+  if (!rootDomain || rootDomain === "localhost") {
+    console.error(
+      "[cf-deploy] FAIL: ROOT_DOMAIN must be set to real domain for production deploy"
+    );
+    console.error("  Set ROOT_DOMAIN=your-domain.com in .env (local) or CI secrets");
+    process.exit(1);
+  }
+  if (/\{.*\}/.test(rootDomain) || rootDomain.includes("domain.com")) {
+    console.error("[cf-deploy] FAIL: ROOT_DOMAIN still contains placeholder");
+    process.exit(1);
+  }
+}
+
+function requireCloudflareCreds() {
+  loadDotEnv();
+  const hasToken = Boolean(process.env.CLOUDFLARE_API_TOKEN);
+  const hasAccount = Boolean(process.env.CLOUDFLARE_ACCOUNT_ID);
+  if (!hasToken) {
+    console.warn(
+      "[cf-deploy] WARN: CLOUDFLARE_API_TOKEN not set — wrangler login session used if available"
+    );
+  }
+  if (!hasAccount) {
+    console.warn(
+      "[cf-deploy] WARN: CLOUDFLARE_ACCOUNT_ID not set — wrangler may prompt or use default account"
+    );
+  }
+  return { hasToken, hasAccount };
+}
+
+function mustExist(rel, label) {
+  const full = path.join(root, rel);
+  if (!fs.existsSync(full)) {
+    console.error(`[cf-deploy] FAIL: missing ${label}: ${rel}`);
+    console.error("  Complete monorepo-skeleton (apps/web or apps/admin) first.");
+    process.exit(1);
+  }
+}
+
+function readWorkersManifest() {
+  const p = path.join(root, "infra/workers.manifest.json");
+  return JSON.parse(fs.readFileSync(p, "utf8"));
+}
+
+module.exports = {
+  root,
+  loadDotEnv,
+  isProdTarget,
+  requireRootDomainForProd,
+  requireCloudflareCreds,
+  mustExist,
+  readWorkersManifest,
+};

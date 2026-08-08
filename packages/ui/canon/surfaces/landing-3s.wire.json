@@ -1,0 +1,26 @@
+{
+  "id": "landing-3s",
+  "route": "/l/[variant]",
+  "aliases": ["/ads", "/ads/[variant]"],
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.auth.kakaoStart", "action": "oauth_kakao" },
+  "firstViewportMaxBlocks": 5,
+  "blocks": [
+    { "id": "brand", "role": "brand", "copyKey": "T.brand.consumer" },
+    { "id": "headline", "role": "heading", "copyKey": "T.landing.identityOneLiner" },
+    { "id": "reassure", "role": "body", "copyKey": "T.landing.expectedNotGuaranteed" },
+    { "id": "cta", "role": "primary", "copyKey": "T.auth.kakaoStart" },
+    { "id": "trust", "role": "footer", "copyKey": "T.landing.trustOneLiner" }
+  ],
+  "forbidden": [
+    "stat_strip",
+    "schedule_block",
+    "multi_card_hero",
+    "profit_guaranteed_cta",
+    "three_second_profit_claim",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "casino_sfx"
+  ]
+}

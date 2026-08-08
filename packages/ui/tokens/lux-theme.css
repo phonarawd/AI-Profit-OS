@@ -1,0 +1,29 @@
+/**
+ * Tailwind CSS v4 @theme mirror of lux-fintech.ts (ADR-015)
+ * Import from apps/web & apps/admin globals — do not fork colors.
+ */
+@import "tailwindcss";
+
+@theme {
+  --color-lux-bg: #090a10;
+  --color-lux-surface: #12141c;
+  --color-lux-elevated: #1a1d28;
+  --color-lux-border: #2a2f3d;
+  --color-lux-text: #f2f4f8;
+  --color-lux-text-muted: #9aa3b5;
+  --color-lux-accent: #3ddc97;
+  --color-lux-accent-muted: #2a9b6c;
+  --color-lux-danger: #ff5c7a;
+  --color-lux-warning: #f5c542;
+  --color-lux-profit: #3ddc97;
+  --color-lux-principal: #7aa2ff;
+
+  --radius-lux-sm: 8px;
+  --radius-lux-md: 12px;
+  --radius-lux-lg: 16px;
+
+  --font-lux-sans: "Pretendard Variable", "Pretendard", "Noto Sans KR", ui-sans-serif,
+    system-ui, sans-serif;
+  --font-lux-display: "Pretendard Variable", "Pretendard", "Noto Sans KR", ui-sans-serif,
+    system-ui, sans-serif;
+}

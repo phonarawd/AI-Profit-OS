@@ -1,0 +1,12 @@
+---
+description: §48.13·§51.2 — MATCH_SUCCESS Rule Engine. 난수/연출타이머 정산 금지.
+globs: "**/settlement/**,**/execution/**,**/match-success/**,services/**/engine*/**"
+alwaysApply: false
+---
+
+# Settlement Rule (§48.13 · §51.2)
+
+- MATCH_SUCCESS = **deterministic Rule Engine** only
+- `successRatePercent` 난수·연출 타이머로 실잔액 분기 **금지**
+- orchestrate ≠ 실체결 주장
+- CI: `verify:match-success-rule` · golden traces

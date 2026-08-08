@@ -1,0 +1,20 @@
+# 퍼뜩 유저 PWA — Cloudflare Pages
+# Project: ai-profit-web · APP_HOST (app subdomain)
+# Deploy: pnpm cf:deploy:web
+
+name = "ai-profit-web"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+# OpenNext @opennextjs/cloudflare output (apps/web 빌드 후)
+pages_build_output_dir = "../../apps/web/.open-next/cloudflare"
+
+[vars]
+APP_NAME = "퍼뜩"
+PLATFORM_NAME = "AI Profit OS"
+
+[env.preview]
+name = "ai-profit-web-preview"
+
+[env.production]
+name = "ai-profit-web"

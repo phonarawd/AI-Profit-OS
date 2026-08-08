@@ -1,0 +1,95 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "javascript.validate.enable": true,
+  "typescript.validate.enable": true,
+  "js/ts.implicitProjectConfig.checkJs": false,
+
+  "editor.formatOnSave": true,
+  "files.eol": "\n",
+  "npm.packageManager": "pnpm",
+
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": false,
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "strings": "off",
+      "other": "off"
+    }
+  },
+  "[mdc]": {
+    "editor.formatOnSave": false
+  },
+
+  "files.associations": {
+    "*.mdc": "markdown",
+    "*.plan.md": "markdown"
+  },
+
+  "eslint.enable": false,
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+
+  "markdownlint.enable": true,
+  "markdownlint.run": "onSave",
+  "markdownlint.configFile": ".markdownlint.json",
+  "markdownlint.ignore": [
+    "**/node_modules/**",
+    "**/.git/**",
+    ".cursor/plans/**",
+    ".cursor/rules/**",
+    "**/*.plan.md",
+    "**/*.mdc",
+    "docs/**",
+    "PRE_IMPLEMENTATION_MASTER_AUDIT.md",
+    "COMPANY_REGISTRATION_SUMMARY.md",
+    "FOOTER_LICENSE_COPY.md",
+    "AGENTS.md",
+    "TOOLCHAIN.md",
+    "**/CATALOG.md",
+    "**/CONSTITUTION_BOOTSTRAP.md",
+    "**/ADR-*.md"
+  ],
+  "markdownlint.lintWorkspaceGlobs": [
+    "**/*.{md,markdown}",
+    "!**/node_modules/**",
+    "!**/.git/**",
+    "!.cursor/plans/**",
+    "!.cursor/rules/**",
+    "!**/*.plan.md",
+    "!**/*.mdc",
+    "!docs/**",
+    "!PRE_IMPLEMENTATION_MASTER_AUDIT.md",
+    "!COMPANY_REGISTRATION_SUMMARY.md",
+    "!FOOTER_LICENSE_COPY.md",
+    "!AGENTS.md",
+    "!TOOLCHAIN.md",
+    "!**/CATALOG.md",
+    "!**/CONSTITUTION_BOOTSTRAP.md",
+    "!**/ADR-*.md"
+  ],
+
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.next/**": true,
+    "**/dist/**": true,
+    "**/target/**": true,
+    "**/.turbo/**": true,
+    "**/.wrangler/**": true,
+    "**/coverage/**": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/target": true,
+    "**/.next": true,
+    "**/dist": true
+  },
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/target": true,
+    "**/.wrangler": true,
+    "**/coverage": true
+  }
+}

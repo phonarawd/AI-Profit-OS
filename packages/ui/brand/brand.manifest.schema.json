@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "brand.manifest.schema.json",
+  "type": "object",
+  "required": ["adr", "platform", "consumer", "ai", "legal", "assets"],
+  "properties": {
+    "adr": {},
+    "version": { "type": "string" },
+    "status": { "type": "string" },
+    "platform": {
+      "type": "object",
+      "required": ["name"],
+      "properties": { "name": { "type": "string" } }
+    },
+    "consumer": {
+      "type": "object",
+      "required": ["name", "short_name", "retired_names"],
+      "properties": {
+        "name": { "const": "퍼뜩" },
+        "short_name": { "const": "퍼뜩" },
+        "retired_names": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "ai": {
+      "type": "object",
+      "required": ["name"],
+      "properties": { "name": { "const": "퍼뜩" } }
+    },
+    "legal": { "type": "object" },
+    "visual": { "type": "object" },
+    "assets": { "type": "object" },
+    "exportPipeline": { "type": "object" }
+  }
+}

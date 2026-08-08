@@ -1,0 +1,13 @@
+{
+  "id": "onboarding-demo-card",
+  "route": "/onboarding",
+  "state": "demo_tap",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.onboarding.tryDemoCard", "action": "open_demo_opportunity" },
+  "blocks": [
+    { "id": "hint", "role": "body", "copyKey": "T.onboarding.demoHint" },
+    { "id": "demoCard", "role": "opportunity_card", "flags": ["demo", "practice_only"] },
+    { "id": "practiceNote", "role": "banner", "copyKey": "T.practice.notWithdrawable" }
+  ],
+  "forbidden": ["real_participate_without_practice_rules", "gender_branch", "photo_pixel_match"]
+}

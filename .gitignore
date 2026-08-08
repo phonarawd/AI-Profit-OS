@@ -1,0 +1,75 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Builds
+dist/
+build/
+.next/
+.turbo/
+.vercel/
+.open-next/
+.wrangler/
+out/
+coverage/
+*.tsbuildinfo
+
+# Env / secrets (never commit — ADR-016)
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.env
+!*.env.example
+.envrc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+.env.development
+secrets/
+**/secrets/**
+!**/secrets/.gitkeep
+credentials.json
+**/credentials.json
+service_account.json
+**/service_account.json
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+*.keystore
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Logs / caches
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.cache/
+.eslintcache
+
+# Rust
+target/
+**/*.rs.bk
+
+# Local data
+docker-data/
+*.pem
+*.key
+
+# Test / playwright
+test-results/
+playwright-report/
+blob-report/
+
+# Misc
+.claude/
+_docx_extract.txt

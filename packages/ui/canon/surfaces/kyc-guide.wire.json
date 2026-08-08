@@ -1,0 +1,14 @@
+{
+  "id": "kyc-guide",
+  "route": "/me/kyc",
+  "state": "guide",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.kyc.start", "action": "next_doc" },
+  "blocks": [
+    { "id": "title", "role": "heading", "copyKey": "T.kyc.pageTitle" },
+    { "id": "why", "role": "body", "copyKey": "T.kyc.whyOnce" },
+    { "id": "privacy", "role": "body", "copyKey": "T.kyc.storagePlain" },
+    { "id": "steps", "role": "progress", "copyKey": "T.kyc.steps123" }
+  ],
+  "forbidden": ["rrn_type_in", "emoji_spam", "gender_branch", "photo_pixel_match"]
+}

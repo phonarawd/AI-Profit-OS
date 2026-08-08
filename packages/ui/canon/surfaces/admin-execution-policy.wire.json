@@ -1,0 +1,40 @@
+{
+  "id": "admin-execution-policy",
+  "route": "/admin/execution-policy",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.admin.savePolicy", "href": null },
+  "blocks": [
+    { "id": "sidebar", "role": "nav", "copyKey": "T.admin.twelveModules" },
+    {
+      "id": "matchStrictness",
+      "role": "form",
+      "copyKey": "T.admin.matchSuccessControl",
+      "field": "matchStrictness",
+      "note": "lenient|standard|tight|scarce|custom → Engine §48.13.3 map · NOT rng"
+    },
+    { "id": "real_conditions", "role": "form", "copyKey": "T.admin.executionRealGuards" },
+    { "id": "presentation", "role": "form", "copyKey": "T.admin.executionPresentation" },
+    {
+      "id": "observedSuccessKpi",
+      "role": "kpi",
+      "copyKey": "T.admin.observedSuccessRate",
+      "note": "read-only today MATCH_SUCCESS ratio"
+    },
+    {
+      "id": "forbidRng",
+      "role": "banner",
+      "copyKey": "T.execution.adminForbidRng"
+    }
+  ],
+  "forbidden": [
+    "success_rate_percent_control",
+    "successRatePercent_field",
+    "rng_match_success",
+    "sidebar_not_twelve",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "presentation_changes_ledger",
+    "auto_tune_to_target_percent_day1"
+  ]
+}

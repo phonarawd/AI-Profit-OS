@@ -1,0 +1,37 @@
+---
+description: ADR-013 — 사진 목업 금지. Canon·Lux·Brand Kit만 시각 SSOT.
+alwaysApply: true
+---
+
+# Mockup Governance (ADR-013 · 오류0)
+
+## 권위 사다리 (충돌 시 상위 승)
+
+1. `packages/ui/tokens` · Lux · `packages/ui/brand`
+2. `packages/ui` 컴포넌트 · 5탭 IA · toast/copy SSOT
+3. 플랜 절 + `packages/ui/canon/**/*.wire.json`
+
+**사진 PNG 목업 = 레포에 없음.** 구현·리뷰는 위 1~3만.
+
+## 허용 이미지 (이 경로만)
+
+| 경로 | 용도 |
+|------|------|
+| `packages/ui/brand/assets/**` (manifest `status=ready`) | 앱 마크·워드마크·AI아바타·OG |
+| Opportunity `assetImageUrl` (런타임·R2/adapter) | 상품 시세 참고 썸네일 (§0.0.6) |
+
+## 금지
+
+- `docs/mockups/**` · `assets/ai-profit-os-*.png` · `*mockup*.png` 재추가
+- 사진/PNG를 로고·색·폰트·여백·그림자·탭 라벨 픽셀 기준으로 삼기
+- “목업이랑 똑같이” QA
+- 화면마다 다른 로고/워드마크 (Brand Kit 단일만)
+- Canon wire 없이 사진만 보고 새 화면 구현
+- Brand Kit 외 대체 마크·메탈헥스·아카이브 변형 재도입
+
+## UI 작업 시 필수
+
+1. Brand Kit + Lux 토큰 확인
+2. 해당 route Canon wire 확인 (없으면 wire 먼저)
+3. 사진 목업 파일 **열지 않음** (존재하지 않음)
+4. 결함 = Canon/플랜/토큰 불일치만

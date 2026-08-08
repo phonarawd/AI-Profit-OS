@@ -1,0 +1,29 @@
+{
+  "id": "membership-home",
+  "route": "/me/membership",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.membership.ctaBenefits", "action": "expand_ladder" },
+  "blocks": [
+    { "id": "title", "role": "heading", "copyKey": "T.membership.title" },
+    { "id": "currentBadge", "role": "badge", "copyKey": "T.membership.currentBadge" },
+    { "id": "nextHint", "role": "body", "copyKey": "T.membership.nextHint" },
+    { "id": "fulfillRate", "role": "metric", "copyKey": "T.membership.fulfillRateLabel" },
+    { "id": "aiUnlocks", "role": "list", "copyKey": "T.membership.aiUnlockList" },
+    { "id": "notGuaranteed", "role": "note", "copyKey": "T.membership.notGuaranteed" },
+    { "id": "highScarce", "role": "note", "copyKey": "T.membership.highScarce" },
+    { "id": "ladder", "role": "list", "copyKey": "T.membership.ladder" },
+    { "id": "faq", "role": "list", "copyKey": "T.membership.faq", "toneBands": ["mid", "senior"] }
+  ],
+  "forbidden": [
+    "success_rate_percent_slider",
+    "guaranteed_match_100",
+    "lottery_win_copy",
+    "invite_tier_badge_reuse",
+    "vip_desk_compliance_label_as_membership",
+    "fulfillRate_as_rule_input",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "IT_jargon"
+  ]
+}

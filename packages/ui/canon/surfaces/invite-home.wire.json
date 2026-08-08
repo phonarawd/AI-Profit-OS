@@ -1,0 +1,33 @@
+{
+  "id": "invite-home",
+  "route": "/me/invite",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.invite.ctaShare", "action": "share_link" },
+  "blocks": [
+    { "id": "title", "role": "heading", "copyKey": "T.invite.title" },
+    { "id": "oneLiner", "role": "body", "copyKey": "T.invite.oneLiner" },
+    { "id": "steps3", "role": "progress", "copyKey": "T.invite.steps3" },
+    { "id": "whenMoney", "role": "note", "copyKey": "T.invite.whenMoney" },
+    { "id": "practiceNote", "role": "note", "copyKey": "T.invite.practiceNote" },
+    { "id": "noCap", "role": "badge", "copyKey": "T.invite.noCap" },
+    { "id": "shareLimitNote", "role": "note", "copyKey": "T.invite.shareLimitNote" },
+    { "id": "holdNote", "role": "note", "copyKey": "T.invite.holdNote" },
+    { "id": "poolWaitNote", "role": "note", "copyKey": "T.invite.poolWaitNote" },
+    { "id": "abuseNote", "role": "note", "copyKey": "T.invite.abuseNote" },
+    { "id": "stats", "role": "list", "copyKey": "T.invite.stats" },
+    { "id": "ctaShare", "role": "primary", "copyKey": "T.invite.ctaShare" },
+    { "id": "ctaCode", "role": "secondary", "copyKey": "T.invite.ctaCode" },
+    { "id": "faq", "role": "list", "copyKey": "T.invite.faq", "toneBands": ["mid", "senior"] }
+  ],
+  "forbidden": [
+    "invite_count_cap_copy",
+    "mlm_pyramid_copy",
+    "guaranteed_profit",
+    "L1_L2_L3_english_labels",
+    "promo_pool_english",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "IT_jargon"
+  ]
+}

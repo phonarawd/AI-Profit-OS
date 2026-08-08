@@ -1,0 +1,100 @@
+{
+  "$schema": "./brand.manifest.schema.json",
+  "adr": ["ADR-002", "ADR-011", "ADR-013"],
+  "version": "1.0.0",
+  "status": "visual_kit_v1",
+  "platform": {
+    "name": "AI Profit OS",
+    "usage": ["repo", "internal", "engineering"]
+  },
+  "consumer": {
+    "name": "퍼뜩",
+    "short_name": "퍼뜩",
+    "usage": ["pwa_manifest", "json_ld", "seo", "store", "marketing", "user_ui"],
+    "retired_names": ["오늘수익", "바로번다"]
+  },
+  "ai": {
+    "name": "퍼뜩",
+    "usage": ["coach", "assistant_ui", "copy", "avatar"],
+    "note": "User-facing AI persona = consumer app name. Engine SSOT = §47.12~14 P/G/S + LLM Adapter. Other-project coach brand names forbidden.",
+    "visual": {
+      "style": "abstract_insight_mark",
+      "forbidden": [
+        "human_face",
+        "gendered_character",
+        "anime_mascot",
+        "casino_gold",
+        "purple_glow_theme",
+        "other_project_coach_likeness"
+      ],
+      "avatarPath": "assets/ai/avatar-512.png"
+    }
+  },
+  "legal": {
+    "pointer": "§50.9",
+    "entity": "PRE-OWNED WATCHES L.L.C",
+    "det": "1135431"
+  },
+  "visual": {
+    "direction": "lux_fintech_insight",
+    "summary": "Deep Obsidian + mint profit + principal blue. Instant-insight flash mark. Gender-neutral. No casino.",
+    "colorsFromLux": {
+      "bg": "#090A10",
+      "text": "#F2F4F8",
+      "accent": "#3DDC97",
+      "principal": "#7AA2FF"
+    },
+    "forbidden": [
+      "purple_indigo_ai_cliche",
+      "cream_terracotta_editorial",
+      "broadsheet_newspaper",
+      "photo_mockup_logo_clone",
+      "per_screen_different_logo",
+      "gender_split_assets"
+    ]
+  },
+  "assets": {
+    "appIcon": {
+      "id": "app-icon-1024",
+      "path": "assets/icons/app-icon-1024.png",
+      "role": "primary_mark",
+      "status": "ready"
+    },
+    "maskableSource": {
+      "id": "maskable-source-1024",
+      "path": "assets/icons/maskable-source-1024.png",
+      "role": "maskable_source",
+      "status": "ready"
+    },
+    "wordmarkDark": {
+      "id": "wordmark-dark",
+      "path": "assets/wordmark/wordmark-dark.png",
+      "role": "wordmark",
+      "status": "ready"
+    },
+    "aiAvatar": {
+      "id": "ai-avatar-512",
+      "path": "assets/ai/avatar-512.png",
+      "role": "peotteok_avatar",
+      "status": "ready"
+    },
+    "ogDefault": {
+      "id": "og-default",
+      "path": "assets/og/og-default.png",
+      "role": "open_graph",
+      "status": "ready"
+    }
+  },
+  "exportPipeline": {
+    "from": "packages/ui/brand/assets",
+    "toPwa": "apps/web/public/icons (when apps/web exists)",
+    "requiredExports": [
+      "icon-192.png",
+      "icon-512.png",
+      "maskable-512.png",
+      "apple-touch-180.png",
+      "favicon.ico"
+    ],
+    "rule": "Single mark hash family only · verify:brand-logo-single · no runtime AI icon generation"
+  }
+}

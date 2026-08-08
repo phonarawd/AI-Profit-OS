@@ -1,0 +1,27 @@
+{
+  // CLI twin of VS Code markdownlint — keep ignores/rules in sync with
+  // .markdownlint.json + .markdownlintignore (ADR-016 Problems hygiene)
+  "config": {
+    "extends": ".markdownlint.json"
+  },
+  "globs": [
+    "**/*.{md,markdown}"
+  ],
+  "ignores": [
+    "**/node_modules/**",
+    "**/.git/**",
+    ".cursor/plans/**",
+    ".cursor/rules/**",
+    "**/*.plan.md",
+    "**/*.mdc",
+    "docs/**",
+    "PRE_IMPLEMENTATION_MASTER_AUDIT.md",
+    "COMPANY_REGISTRATION_SUMMARY.md",
+    "FOOTER_LICENSE_COPY.md",
+    "AGENTS.md",
+    "TOOLCHAIN.md",
+    "**/CATALOG.md",
+    "**/CONSTITUTION_BOOTSTRAP.md",
+    "**/ADR-*.md"
+  ]
+}

@@ -1,0 +1,20 @@
+---
+description: ADR-016 · 8GB Phase0 — 단일 프로세스·Docker off·병렬 서브에이전트 금지.
+alwaysApply: true
+---
+
+# Phase0 Low-Spec RAM (ADR-016 · 8GB)
+
+## 필수
+
+- DB/Redis = **원격** (Supabase + Upstash) · Docker Desktop **기본 OFF**
+- 동시 기동 **1개만**: `web` **또는** `api` (둘 다 금지)
+- `apps/admin`은 필요할 때만
+- `NODE_OPTIONS=--max-old-space-size=2048`
+- 로컬: `cargo check`만 · release/E2E/풀 monorepo test = **GitHub Actions**
+- Agent: 서브에이전트 **병렬 금지** (explore 최대 1)
+- 컨텍스트: Index + **해당 도메인 플랜만** (launch 전문 매우기 금지)
+
+## 금지
+
+Docker+Next+Nest+Rust 풀빌드+브라우저 동시 · NATS/Temporal/EKS Phase0 필수화

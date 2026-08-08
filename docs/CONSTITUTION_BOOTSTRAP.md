@@ -1,0 +1,411 @@
+# Constitution Bootstrap — 작업 착수 전 실물 대조 기록 (v7.22.9)
+
+> **목적:** 구현 채팅 시작 전, 헌법·스키마·마이그레이션·어드민·브랜드 SSOT를 **예측 없이** 정리한다.  
+> **권위:** ACTIVE Index `ai_profit_os_00_index_a1b2c3d4.plan.md` > 도메인 01~06 > launch ARCHIVE.  
+> **검증일:** 2026-08-09 · 레포 실물 스캔 기준 · Index **v7.22.32** (§20.2 CTA · listing=ebay멀티\|admin · yahoo_jp 영구FORBIDDEN · Soft/Hard · 긴장감 §48.3b).
+
+---
+
+## 0. 실물 상태 (스캔 결과 · 오차0)
+
+| 경로 | 상태 | 비고 |
+|------|------|------|
+| `CONSTITUTION/` | **0** | 헌법 파일 미생성 — `constitution-28` 필수 |
+| `schemas/` | **0** | contract JSON 미생성 — `schemas-contracts` 필수 |
+| `supabase/migrations/` | **없음** | `config.toml`만 존재 · DDL 대시보드 금지 |
+| `apps/web` · `apps/admin` | **0** | `apps/.gitkeep` only |
+| `services/` | **0** | `.gitkeep` only |
+| `workers/` | **scaffold** | `push-dispatcher` · `marketing-capi-dispatcher` 골격만 · adapters/chain **0** |
+| `packages/ui/brand/brand.manifest.json` | ✅ | Consumer/AI=**퍼뜩** · visual_kit_v1 assets · `verify:brand-assets` |
+| `packages/ui/tokens/lux-fintech.ts` | ✅ | Lux 선잠금 |
+| `packages/ui/canon/surfaces/*.wire.json` | ✅ | execution 3면 + admin-execution-policy |
+| `AGENTS.md` · `TOOLCHAIN.md` · ADR-016 | ✅ | ADR-014/015/016 잠금 |
+| `tooling/verify/*` | ✅ | gate live · domain stub |
+| Supabase project | ✅ ref | `mgsytcetsiecllmhcyox` · Seoul · Auth 금지 |
+| GitHub | ✅ | `phonarawd/AI-Profit-OS` · 코드만 |
+
+**판정:** 툴체인·브랜드·Canon 일부만 존재. **헌법·스키마·마이그레이션·앱 코드 = 미착수**.  
+monorepo-skeleton / 기능 구현 **전** 아래 §1~§3 PASS 필수.
+
+---
+
+## 1. 작업 전 읽기 순서 (한 채팅=한 todo)
+
+1. `TOOLCHAIN.md` + `.cursor/rules/*` (always) + 해당 glob  
+2. ACTIVE Index: `.cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md`  
+3. 도메인 플랜 **하나만** (`01`~`06` 실제 파일명 해시 포함)  
+4. launch (`ai_profit_os_launch_54c1261e.plan.md`) = **ARCHIVE** (편집 시 분리 플랜 우선)  
+5. UI면 Canon wire + Brand Kit + Lux  
+6. Money면 `money-ledger.mdc` + bucket gates  
+
+### 실제 플랜 파일명 (이름 drift 금지)
+
+| # | 논리명 | **실파일** |
+|---|--------|------------|
+| 00 | Index | `ai_profit_os_00_index_a1b2c3d4.plan.md` |
+| 01 | Engine | `ai_profit_os_01_engine_b2c3d4e5.plan.md` |
+| 02 | Money | `ai_profit_os_02_money_c3d4e5f6.plan.md` |
+| 03 | UI/UX | `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` |
+| 04 | Admin | `ai_profit_os_04_admin_e5f6a7b8.plan.md` |
+| 05 | PWA | `ai_profit_os_05_pwa_f6a7b8c9.plan.md` |
+| 06 | Infra | `ai_profit_os_06_infra_a7b8c9d0.plan.md` |
+| — | ARCHIVE | `ai_profit_os_launch_54c1261e.plan.md` |
+
+> 구 pointer `*_ssot.plan.md` / `*_native.plan.md` 등 **논리명 파일**은 STALE ALIAS stub로 고정됨.  
+> 본문 편집·todo 실행은 **해시 ACTIVE 파일만**.
+
+---
+
+## 2. 헌법 파일 생성 목록 (`CONSTITUTION/` · constitution-28)
+
+생성 순서 = 번호순. 각 파일 **owns 1주제** · 교차는 pointer만 (§22).
+
+| # | 파일 | owns |
+|---|------|------|
+| 14 | `14_EVENT_CONTRACTS.md` | Phase0 in-process · Phase1 NATS 이벤트 |
+| 17 | `17_FINANCIAL_LEDGER_STANDARD.md` | Double-Entry · idempotency |
+| 20 | `20_SECURITY_THREAT_MODEL.md` | A1~ abuse |
+| 22 | `22_UX_AND_COPY_SSOT.md` | 5탭·레이아웃·버튼 (문자열→25) |
+| 23 | `23_PWA_AND_NATIVE_EXPERIENCE.md` | PWA |
+| 24 | `24_FREE_TIER_AND_STORE_BRIDGE.md` | $0 · TWA |
+| 25 | `25_KOREAN_FIRST_UX_POLICY.md` | ko copy·금지어·CI |
+| 26 | `26_PERFORMANCE_AND_RESPONSIVE_UX.md` | fluid·tier |
+| 27 | `27_MARKETING_AND_SEO_ENGINE.md` | CAPI·SEO |
+| 28 | `28_LUX_FINTECH_DESIGN_AND_MOTION.md` | Lux·motion·G4 |
+| 35 | `35_GROWTH_CONVERSION_PRESENTATION.md` | G1~G4 |
+| 36 | `36_ADMIN_PRICE_AND_PROFIT_SYNC.md` | Admin 가격 SSE |
+| 37 | `37_WALLET_AND_USER_ADMIN_OPS.md` | 입금설정·회원 |
+| 38 | `38_TRUST_EDUCATION_AND_REVENUE_TRANSPARENCY.md` | Trust |
+| 39 | `39_USER_FINANCIAL_LEDGER.md` | 유저별 금융전수 |
+| 40 | `40_ADMIN_ISOLATED_OPS_PLATFORM.md` | ops 분리 |
+| 41 | `41_ONCHAIN_USDT_AND_KRW_DEPOSIT.md` | TRC20·KRW · PG사0 |
+| 42 | `42_KYC_WITHDRAW_ONE_TIME_GATE.md` | 출금 KYC |
+| 43 | `43_CHAIN_SETTLEMENT_HARDENING.md` | chain·락·Auth fallback |
+| 44 | `44_SIGNUP_READY_MARKET_SOURCES.md` | Signup-Ready adapters |
+| 45 | `45_PRICE_COMPARE_MARGIN_UX.md` | §0.0.4 가격비교→마진 |
+| 46 | `46_CAPITAL_TIER_CATALOG.md` | §0.0.5 capitalBand |
+| 46b | `46b_ASSET_IMAGE_SSOT.md` | §0.0.6 `assetImageUrl`·카테고리 썸네일 |
+| 47 | `47_PERSONAL_AI_USER_TWIN.md` | Personal AI + **퍼뜩(§47.12~14 P/G/S·Adapter)** |
+| 48 | `48_AI_EXECUTION_ROOM_AND_POLICY.md` | 진행실·Rule · §48.3a 썸네일 표시 |
+| 49 | `49_PRINCIPAL_RETENTION_AND_PROFIT_WITHDRAW.md` | 버킷·출금 |
+| 50 | `50_SETTINGS_LEGAL_AND_PLAIN_KOREAN.md` | 설정·약관·DET·쉬운한글 |
+| 51 | `51_PLATFORM_COMPLETENESS_AND_RULE_ENGINE.md` | Rule·Sim·CS·Trust |
+| 51r | `51_REFERRAL_VIRAL_LADDER.md` | §51.5 초대∞·Pool·Ladder |
+
+**동시 기록 (repo root / docs):**
+
+| 문서 | 역할 |
+|------|------|
+| `AGENTS.md` | 에이전트 읽기순서 · 브랜드=퍼뜩 |
+| `TOOLCHAIN.md` | ADR-015 핀 · Docker-less 기본 |
+| `docs/ADR-016-AGENT-AUTOMATION.md` | hooks/Husky/CI |
+| `COMPANY_REGISTRATION_SUMMARY.md` | §50.9 KYB 편의복사 (SSOT≠여기) |
+| `FOOTER_LICENSE_COPY.md` | 푸터 라이선스 문구 |
+| `packages/ui/brand/*` | ADR-002 Brand Kit |
+| `this file` | 착수 전 체크리스트 |
+
+---
+
+## 3. 스키마·마이그레이션 선행 (`schemas-contracts`)
+
+### 3.1 `schemas/` (JSON contract · 최소 Day-1)
+
+`operator-entity.v1` · `user-ux-prefs.v1` (toneBand·fontScale·depositPref) · `user-membership.v1` · `user-capability.v1` (`matchBlocked`·`withdrawApplyBlocked`) · `notification-prefs.v1` · `ops-inbox-message.v1` · `wallet-buckets.v1` · `withdraw-intent.v1` · `deposit-config.v1` · `krw-deposit-request.v1` · `user-deposit-address.v1` · `kyc-status.v1` · `asset-master.v1` (**imageUrl** · §0.0.6) · `opportunity-card.v1` (**assetImageUrl** · category=`watch|trading_card|luxury_bag`) · `user-opportunity-override.v1` (**§9.8.9**) · `user-match-policy-override.v1` · `tendency-memo.v1` · `opportunity-pricing.v1` · `execution-policy.v1` · `trade-execution-state.v1` · `toast-codes.v1` · `participate-request.v1` · `participate-proof.v1` · `simulation-report.v1` · `referral-program.v1` · `support-ticket.v1` · `admin-rbac.v1` · `user-financial-summary.v1` · `user-attribution.v1` · `ui-copy-glossary.v1` · (AI) twin/fact/answer-trace per §47
+
+### 3.2 `supabase/migrations/` (단일 PG · Seoul)
+
+순서 잠금:
+
+1. extensions (`pgvector` 등)  
+2. ledger_* + bucket accounts  
+3. wallet / deposit / withdraw  
+4. opportunities / pricing  
+5. ai_* (동일 인스턴스 · ADR-001)  
+6. referral / support / attribution  
+7. RLS ON · ledger direct UPDATE 트리거 금지  
+
+Apply: CLI/`db push` · **Dashboard DDL 금지**.  
+Auth: Nest only · Supabase Auth **0**.
+
+---
+
+## 4. 브랜드 잠금 (ADR-002 · 검증됨)
+
+| 층 | 값 |
+|----|-----|
+| Platform | AI Profit OS |
+| Consumer | **퍼뜩** |
+| AI | **퍼뜩** (앱명과 동일 · §47.12) |
+| Legal | §50.9 PRE-OWNED WATCHES L.L.C · DET 1135431 |
+| Retired | `오늘수익` · `바로번다` |
+
+CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **0**).
+
+---
+
+## 5. 퍼뜩 (AI) — 헌법 흡수 포인터
+
+- **유저 AI 이름:** **퍼뜩** (앱명과 동일) — 타프로젝트 코치명 금지
+- **레인:** **P**=플랫폼 Fact tools · **G**=일상 LLM · **S**=실행 거절 (v7.22.16)
+- **Adapter Day-1:** **`gemini_free` 1개** (AI Studio 키 · `.env` only) → 이후 `openai` · 쿼터 시 degrade=`none`
+- **엔진 SSOT:** §47 Personal AI (Twin + Memory + Fact + Guard)  
+- **역할:** 구현된 Fact만 흡수 → 미션·입금·출금·초대·이벤트·CS 제안·안내  
+- **UX Fact:** `toneBand` · `fontScale` · `depositPref` (UI §38.9 · §50.1)  
+- **금지:** AI 자율 출금/지급 · Twin으로 잔액/호가 · 미구현 vertical 환각 · **성별 맞춤 멘트**  
+- **Admin:** `/admin/ai-logs?tab=coach` (톱레벨 13 금지)
+
+상세: Engine §47.12~14 · UI §6.4e·§38.8~38.9 · Index **v7.22.16** · `brand.manifest.json` → `ai.name`.
+
+### 5g. PWA 잠금 (v7.22.17 · 중복0)
+
+| 항목 | SSOT |
+|------|------|
+| 플랜 | `ai_profit_os_05_pwa_f6a7b8c9.plan.md` **v7.22.25** |
+| next | **next@16** + Serwist · next@15 0 |
+| Push 버스 | Phase0 **in-process** → push-dispatcher · NATS=Phase1+ |
+| 색 | Lux bg/principal · `#1A56FF` 금지 |
+| WebAuthn | 정책=Money §43.6 · UX=PWA §23.6 |
+| §24 | Store Bridge only · Infra pointer |
+| Admin | `pushEnabled` @ system-control |
+| CI | `verify:pwa-*` · `push-dedup` · `pwa-phase0-bus` · `webauthn-fallback-pointer` |
+| Day-1 아님 | FCM · TWA · Capacitor · 오프라인 머니 큐 |
+
+### 5f. 퍼뜩 P/G/S 잠금 (v7.22.16 · 중복0)
+
+| 항목 | SSOT |
+|------|------|
+| Intent → P/G/S | Engine §47.14 |
+| Fact tools · Help RAG | Engine §47.12 |
+| LLMAdapter Day-1 | Engine §47.13 · **`LLM_PROVIDER=gemini_free`** |
+| 쿼터/429 | degrade → G=`PEOTTEOK_LLM_BUSY` · P=Fact 유지 · 자동 failover 0 |
+| ENV | `GEMINI_API_KEY` · `GEMINI_MODEL` · `LLM_QUOTA_SOFT_RPM/RPD` · 커밋 0 |
+| UI stream+면책 | UI §6.4e · Canon peotteok 1.3 · §8.2 busy toast |
+| CI | `ai-coach-fact-only`(P) · `ai-general-no-money-tools` · `ai-lane-router` · `llm-adapter-contract` · `llm-quota-degrade` |
+| 금지 카피 | “모든 질문 완벽/오류0” · 무료한도=무제한 |
+
+### 5f-ops. Gemini 키 운영 체크 (사람이 할 일 · 에이전트는 키 발급 불가)
+
+1. https://aistudio.google.com/apikey 에서 키 발급  
+2. 워크스페이스 **`.env`**(gitignored)에만 붙여넣기 — `.env.example` 실키 **금지**  
+3. `LLM_PROVIDER=gemini_free` · `GEMINI_API_KEY` 슬롯 · (선택) soft RPM/RPD  
+4. `pnpm verify:secrets` PASS 후 커밋 · Adapter 구현 전에도 키 보관 OK  
+
+### 5e. UI 잠금 (v7.22.15 · 중복0)
+
+| 항목 | SSOT |
+|------|------|
+| Loop/DayPulse/PreCTA | UI **§51.24** (Admin/Engine pointer 대상 · 유령 금지) |
+| 퍼뜩 UI | `/me/peotteok` · Canon `peotteok-chat` · Engine §47.12~14 P/G/S |
+| Stage B UI | Canon `auth-complete-profile` · Infra §51.9.1 |
+| KRW 거절 토스트 | UI §8.2 `KRW_DEPOSIT_REJECTED` |
+| 마진 화면 | UI 컴포넌트 · 공식=Engine §0.0.4 |
+
+### 5h. 카테고리 상품 이미지 (v7.22.20 · 중복0)
+
+| 항목 | SSOT |
+|------|------|
+| 필드·hydrate·공개 가드 | Engine **§0.0.6** · `assetImageUrl` 없으면 available 자동공개 0 |
+| 카테고리 | `watch` · `trading_card` · **`luxury_bag`** |
+| 진행 UI | UI **§48.3a** 썸네일 · 스텝 active **`시세 불러오는 중...`** |
+| Canon | `execution-running`/`success` `productThumb` · manifest **1.3.2** |
+| 검증 | `verify:asset-image-surface` · `verify:execution-surfaces` |
+
+### 5h2. Listing legs · Yahoo 영구 배제 (v7.22.32 · 중복0)
+
+| 항목 | SSOT |
+|------|------|
+| 자동 | `ebay` @ `EBAY_US` × `EBAY_GB`(또는 DE/AU) |
+| 반자동 | `ebay` × `admin` (운영자 기준가) |
+| `yahoo_jp` | **영구 FORBIDDEN** · Phase1+ 철회 · AppID·워커·stub **0** |
+| 유저 카피 | 「야후」·Yahoo 문자열 **0** · `buyMarketLabelKo`/`sellMarketLabelKo` |
+| 금지 | KR 중고앱 · Chrono24 · 스크래핑 · yahoo 재도입 제안 |
+| 검증 | `verify:listing-legs-day1` |
+| 사람 준비 | eBay 키(대기 후) · Yahoo **준비 안 함** · Pokémon/CoinGecko/Gemini/R2 |
+
+### 5i. 잔액 인식 피드 · 유저별 매치 · 목업 0 (v7.22.21 · 중복0)
+
+| 항목 | SSOT |
+|------|------|
+| 피드 분류·suggestDeposit | Engine **§0.0.5.1** |
+| principal · 입금 딥링크 | Money **§49.2a** |
+| 홈 섹션·카피 | UI **§5.3a** · `T.feed.*` |
+| 유저별 숨김/핀/마진/수익 | Admin **§9.8.9** · `user-opportunity-override.v1` |
+| 시각 SSOT | Canon + Lux + Brand Kit ready **만** · `docs/mockups` **0** · `assets/ai-profit-os-*.png` **0** |
+| 검증 | `verify:balance-aware-feed` · `verify:admin-user-opportunity-override` |
+
+### 5k. 매칭 성공 조절 (v7.22.23 · 중복0)
+
+| 항목 | SSOT |
+|------|------|
+| 엄격도→Rule 맵 | Engine **§48.13.3** |
+| Admin UI | UI **§48.6** 「매칭 성공 조절」 |
+| 금지 | `successRatePercent` · 난수→MATCH_SUCCESS |
+| 검증 | `verify:match-strictness` · `verify:no-success-rate-percent` |
+
+### 5m. 차단 · 쪽지 · 자동 Push · 알림 기본 ON (v7.22.25 · 중복0)
+
+| 항목 | SSOT |
+|------|------|
+| 유저별 매칭/출금신청 차단 | Admin **§9.8.4a** · Engine P0b · Money §49.3 #1 |
+| 1인 쪽지 | Admin **§9.8.8d** · UI **§5.9.4** `/me/inbox` |
+| 공지·이벤트·매칭 자동 Push | PWA **§23.5a** · prefs 필터 |
+| 가입 알림 기본 | UI **§50.1n** 전부 `true` · OFF=Push만 스킵 |
+| 등급 배지 | Brand Kit SVG **B안** · 사진목업/실사 배지 **금지** |
+| 검증 | `verify:admin-user-capability-block` · `ops-inbox` · `notification-prefs-default-on` · `push-channel-prefs` · `membership-badge-assets` |
+
+### 5l. 멤버십 · Admin 유저 Ops (v7.22.24 · 중복0)
+
+| 항목 | SSOT |
+|------|------|
+| 등급·AI해금·일일캡·effectivePolicy | Engine **§0.0.7** |
+| 유저 등급표·참고율 카피 | UI **§5.9.2c** · **§51.18a** · Canon `membership-home` |
+| 등급·성향메모·밴·로그인비번·출금PIN·프로필전수·유저별엄격도 | Admin **§9.8.10** |
+| 「% 조절」 | `matchStrictnessOverride` only · KPI fulfillRate 읽기전용 |
+| 출금 PIN wipe | Money **§43.6a** (정책) · Admin UI Owns |
+| 금지 | 난수 성공률 · 등급=100%매칭 · PIN 평문 조회 |
+| 검증 | `verify:membership-*` · `verify:admin-user-credentials` · `verify:admin-user-ban` · `verify:admin-user-match-override` |
+
+### 5j. 친구초대 ∞ · KR 설명 · Pool (v7.22.22 · 중복0)
+
+| 항목 | SSOT |
+|------|------|
+| 초대 횟수 ∞ · %/Pool/0원 런칭 | Money **§51.5** |
+| 20~70 설명·FAQ·toneBand | UI **§5.9.1a** · Canon `invite-home` |
+| Admin | `growth?tab=referral` · 인원캡 UI **0** |
+| 스키마 | `referral-program.v1` · `referral-edge.v1` (+queued_pool) |
+| 검증 | `verify:referral-unlimited-invites` · `verify:invite-explain-surfaces` · `verify:referral-pool-fifo` |
+
+### 5d. Engine 잠금 (v7.22.14 · 중복0)
+
+| 항목 | SSOT |
+|------|------|
+| 플랜 파일 | `ai_profit_os_01_engine_b2c3d4e5.plan.md` **단일** (이중본 drift 금지) |
+| Phase0 버스 | **in-process** · NATS=Phase1+ (Engine §2.0) |
+| v1 실행 | `executionMode=orchestrate` only (ADR-009) |
+| 정산 Rule | Engine §48.13 · participate=§48.13.1 · golden=§48.13.2 |
+| 마진 공식 | Engine §0.0.4 · 화면=UI |
+| 퍼뜩 | Engine §47.12~14 |
+
+### 5b. KR 20~70 유저 SSOT (v7.22.10)
+
+| 항목 | SSOT |
+|------|------|
+| toneBand young/mid/senior | UI §38.9 · 온보딩 step0 · landing 시드 Infra §31.2 |
+| fontScale md/lg/xl | UI §50.1 · Light 테마 금지 |
+| 테더 준비 가이드 | UI §38.8 `/me/guide/get-usdt` |
+| 입금 네트워크 한글 | Money §41.6 (화면 TRC20 0) |
+| 본인 진행 1줄 | UI §50.1b |
+| 성별 UI | **분기 금지** · 중성 존댓말 |
+| spot-check | UI §38.6b · 표본 **20·40·60~70** 각3 · 남녀혼합·중성 과제 |
+| schema | `user-ux-prefs.v1.json` |
+| 로드맵 | Index **v7.22.18** §18 ⇄ Milestone 1:1 · Rule=M1 핵 |
+
+### 5c2. 원화 입금 Day-1 (v7.22.12)
+
+| 항목 | SSOT |
+|------|------|
+| 경로 | 신청 → 운영자 통장 확인 → Admin **[승인]/[거절]** |
+| 승인 시 | USDT 잔액 반영 + 유저 토스트/내역 |
+| 거절 시 | 잔액 0변화 + 거절 내역·알림 |
+| CSV | **Day-1 필수 아님** (L2+) |
+| PG사 | 0 |
+
+### 5c. 온보딩·인증·광고·KYC (v7.22.11 · 중복0)
+
+| 항목 | Owns | Pointer |
+|------|------|---------|
+| 체험형 온보딩 | UI §6.4 + Canon `onboarding-*` | practice §51.7 |
+| 로그인/가입 UI | UI §6.4b Canon `auth-*` | Infra §51.9 |
+| Stage A/B 필드 | Infra §51.9.1 | withdraw/KYC 게이트 |
+| `/ads` alias | Infra §31.2a | `/l/*` canonical |
+| 3초 랜딩 예산 | Infra §31.2b + Canon `landing-3s` | CAPI §31 |
+| KYC Lux 3면·제출 | Money §42 + Canon `kyc-*` | UI wire only |
+| 금지 | RRN 타이핑 · 성별 필드 · `/ads` 이중 페이지 | — |
+
+---
+
+## 6. 어드민 — 톱레벨 12 유지 · 자식 route 필수 (검증 갭 흡수)
+
+| 자식 (sidebar 13 금지) | 부모 | 기능 |
+|------------------------|------|------|
+| `/admin/execution-policy` | 모듈2 | §48 진행정책 |
+| `/admin/support` | 모듈1 TOP 또는 모듈6 | §51.6 CS 큐 |
+| `/admin/wallet?tab=disputes` | 모듈4 | §51.11 오입금·wrong-chain |
+| `/admin/growth?tab=simulation` | 모듈11 | §51.4 Growth 전 Pass |
+| `/admin/growth?tab=referral` | 모듈11 | §51.5 보류·clawback |
+| `/admin/ai-logs?tab=coach` | 모듈10 | 퍼뜩(AI)·toneBand 템플릿·Eval·trace |
+| `/admin/ai-logs?tab=spotcheck` | 모듈10 | §38.6b 이용성 점검 메모 |
+| `/admin/users/:id` 유저360 | 모듈6 | Admin §9.8.8 요약·추천·유입·CS·prefs·알림 |
+| `/admin/users/:id/finance` | 모듈6 | §39 · **순유입** · 입출금·시세차익·버킷·추천보상 |
+| `/admin/users/:id/finance?tab=buckets` | 모듈6 | §49/§51.7 practice 포함 |
+| `/admin/adapters` KPI | 모듈3 | §51.15/19 매칭실패·health |
+
+### 6b. 유저360 KPI 잠금 (v7.22.13 · 중복0)
+
+| KPI | 공식 | Owns |
+|-----|------|------|
+| 총 입금 / 총 출금 | ledger 집계 | Admin §9.8.7 |
+| **순유입** | 총입금 − 총출금 | Admin §9.8.7 |
+| 시세차익 순수익 | settlement 유저 몫 | Admin §9.8.7 |
+| 추천·유입·CS | 표시만 | Money §51.5 · Infra §31 · §51.6 |
+
+---
+
+## 7. 에이전트 모델 배정 (todo 작업 기준)
+
+| 모델 | Context | 배정 |
+|------|---------|------|
+| **grok-4.5** | 256K | 헌법·스키마·원장불변식·퍼뜩(AI) 아키텍처·어드민 IA·크로스도메인 SSOT·게이트 설계 |
+| **composer-2.5** | 200K | SSOT 확정 후 **단일 도메인 슬라이스** 구현 (한 화면·한 워커·한 모듈) |
+
+규칙: 한 todo = 한 모델 · 한 도메인 플랜 · verify:* + `cleanup:lowspec` 까지가 done.
+
+---
+
+## 8. Phase0 버스·인프라 (모순 해소)
+
+| 항목 | SSOT |
+|------|------|
+| Event bus | Phase0 = **in-process** · NATS/Temporal **0** |
+| DB/Redis | **원격** Supabase + Upstash · Docker Desktop **기본 OFF** (8GB) |
+| Compose PG17/Redis | **옵션** (RAM 여유 시) · 필수 아님 |
+| Host | Cloudflare only · Vercel 금지 |
+| 동시 기동 | `web` **또는** `api` 1개 |
+
+어드민/문서의 `NATS *.updated` 표기는 **Phase1+** 또는 Phase0 in-process 동등 이벤트로 해석 · UI에 NATS 문자열 **노출 0**.
+
+---
+
+## 9. 착수 체크리스트 (전부 ✅ 후 monorepo-skeleton)
+
+- [ ] 이 문서 최신 · Index **v7.22.32** 흡수 확인 (CTA · ebay멀티\|admin · yahoo 영구FORBIDDEN · Soft/Hard · §48.3b)  
+
+- [ ] `pnpm verify:stack-lock` PASS  
+- [ ] `pnpm verify:brand-consumer` PASS  
+- [ ] `CONSTITUTION/` §2 목록 파일 존재 (constitution-28)  
+- [ ] `schemas/` Day-1 계약 존재 (schemas-contracts)  
+- [ ] `supabase/migrations/` 초기 마이그레이션 존재  
+- [ ] `DATABASE_URL` · `REDIS_URL` 로컬 `.env` (git 0)  
+- [ ] 한 채팅 = Index 또는 도메인 **한 todo**만  
+
+**done 정의:** 해당 todo의 `verify:*` PASS + `pnpm cleanup:lowspec` PASS.
+
+---
+
+## 9.1 착수 순서 잠금 (Audit A5 · Index §18 · 건너뛰기 금지)
+
+> **Owns:** 본 절 + Index §18 선행 순서. Audit A5=이력.  
+> **다음 채팅:** `constitution-28-core` only.
+
+| 순 | Index todo | 산출물 |
+|----|------------|--------|
+| 0 | 게이트 | `verify:stack-lock` · `verify:brand-consumer` |
+| 1 | `constitution-28-core` | `CONSTITUTION/` 14·17·20·22~28·35~46b |
+| 2 | `constitution-28-ai-money-ops` | `CONSTITUTION/` 47~51·51r |
+| 3 | `schemas-contracts-core` | `schemas/` Day-1 |
+| 4 | `schemas-migrations-supabase` | `supabase/migrations/` · Seoul apply |
+| 5 | `monorepo-skeleton` | apps · services · packages 골격 |
+| 6 | UI copy/Canon | `ctaEarn` · 면책 · SLA 3키 · `primaryCta` |
+| 7+ | 기능 todo | 한 채팅=1 · 모델 접두사 |
+
+**금지:** 헌법/스키마 없이 apps 화면 · constitution∥monorepo 병렬 · Dashboard DDL · launch를 착수 SSOT로 사용.

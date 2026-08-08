@@ -1,0 +1,60 @@
+{
+  "id": "execution-running",
+  "route": "/trades/[id]/execute",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": null,
+  "blocks": [
+    {
+      "id": "productThumb",
+      "role": "media",
+      "field": "assetImageUrl",
+      "fallbackIconField": "assetIcon",
+      "copyKey": "T.execution.imageRightsNote",
+      "note": "category-matched product photo · Engine §0.0.6 · UI §48.3a"
+    },
+    {
+      "id": "productLabel",
+      "role": "label",
+      "field": "assetLabel"
+    },
+    {
+      "id": "noBidBadge",
+      "role": "badge",
+      "copyKey": "T.execution.badgeNoBid"
+    },
+    {
+      "id": "title",
+      "role": "heading",
+      "copyKey": "T.execution.progressTitle"
+    },
+    {
+      "id": "steps",
+      "role": "progress",
+      "copyKey": "T.execution.steps",
+      "activeExample": "시세 불러오는 중...",
+      "note": "steps[i].active while running · steps[i].done when complete"
+    },
+    {
+      "id": "log",
+      "role": "log",
+      "copyKey": "T.execution.logLine"
+    },
+    {
+      "id": "cancel",
+      "role": "secondary",
+      "copyKey": "T.execution.cancel"
+    }
+  ],
+  "forbidden": [
+    "bid_cta",
+    "buy_cta",
+    "sell_cta",
+    "orderbook",
+    "success_rate_percent",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "cross_category_image",
+    "emoji_only_product_row"
+  ]
+}

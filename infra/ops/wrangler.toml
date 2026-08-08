@@ -1,0 +1,20 @@
+# Admin Ops — Cloudflare Pages (별도 배포 · §40)
+# Project: ai-profit-ops · OPS_HOST (ops subdomain)
+# Deploy: pnpm cf:deploy:ops
+# WAF: IP allowlist + optional CF Access (infra/ops/access-policy.json)
+
+name = "ai-profit-ops"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+pages_build_output_dir = "../../apps/admin/.open-next/cloudflare"
+
+[vars]
+APP_NAME = "AI Profit OS Ops"
+ROBOTS = "noindex, nofollow"
+
+[env.preview]
+name = "ai-profit-ops-preview"
+
+[env.production]
+name = "ai-profit-ops"

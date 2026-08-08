@@ -1,0 +1,27 @@
+{
+  "id": "execution-safe-stop",
+  "route": "/trades/[id]/execute",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.execution.browseOther", "href": "/profits" },
+  "blocks": [
+    { "id": "title", "role": "heading", "copyKey": "T.execution.safeStopTitle" },
+    { "id": "reason", "role": "body", "copyKey": "T.execution.safeStopReason" },
+    { "id": "balance", "role": "note", "copyKey": "T.execution.balanceUnchanged" },
+    {
+      "id": "recommend",
+      "role": "list",
+      "copyKey": "T.execution.recommendCards",
+      "itemMediaField": "assetImageUrl",
+      "note": "§48.3a category-matched thumb on recommend card"
+    }
+  ],
+  "forbidden": [
+    "MATCH_FAILURE_english",
+    "success_rate_percent",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "ledger_debit_on_stop",
+    "cross_category_image"
+  ]
+}

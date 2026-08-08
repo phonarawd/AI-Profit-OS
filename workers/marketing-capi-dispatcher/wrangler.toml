@@ -1,0 +1,13 @@
+name = "marketing-capi-dispatcher"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVICE = "marketing-capi-dispatcher"
+
+[env.production]
+name = "marketing-capi-dispatcher"
+
+[env.preview]
+name = "marketing-capi-dispatcher-preview"

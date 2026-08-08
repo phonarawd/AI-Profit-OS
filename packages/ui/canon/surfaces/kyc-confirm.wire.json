@@ -1,0 +1,16 @@
+{
+  "id": "kyc-confirm",
+  "route": "/me/kyc",
+  "state": "confirm",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.kyc.submit", "action": "submit_kyc" },
+  "blocks": [
+    { "id": "legalName", "role": "field", "copyKey": "T.kyc.legalName" },
+    { "id": "phone", "role": "field", "copyKey": "T.kyc.phone" },
+    { "id": "birthDate", "role": "field", "copyKey": "T.kyc.birthDate" },
+    { "id": "selfie", "role": "optional", "copyKey": "T.kyc.selfieOptional", "when": "tier2" },
+    { "id": "submit", "role": "primary", "copyKey": "T.kyc.submit" },
+    { "id": "security", "role": "footer", "copyKey": "T.kyc.securityFooter" }
+  ],
+  "forbidden": ["rrn_type_in", "address_required_v1", "gender_field", "emoji_spam", "photo_pixel_match"]
+}

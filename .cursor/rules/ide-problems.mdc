@@ -1,0 +1,37 @@
+---
+description: IDE Problems 패널 노이즈 금지 — markdownlint/ESLint는 제품 코드만
+alwaysApply: true
+---
+
+# IDE Problems Hygiene (ADR-016)
+
+## 원인 (고정)
+
+Problems에 수백 개가 뜨는 주원인 = `davidanson.vscode-markdownlint`가
+`.cursor/plans/**` · 감사 MD · 긴 표/한국어 SSOT에 **스타일 규칙**(MD013 80자, MD060 표정렬 등)을 건 것.
+코드/타입 오류가 아니다. Worker `tsc`·`verify:gate`와 무관하다.
+
+## 잠금 설정 (이미 레포에 있음 · 되돌리지 말 것)
+
+| 파일 | 역할 |
+|------|------|
+| `.markdownlint.json` | 스타일 규칙 OFF (MD013/MD060 등) |
+| `.markdownlintignore` · `.markdownlint-cli2.jsonc` | plans/rules/감사/docs ignore |
+| `.vscode/settings.json` | markdownlint ignore + workspace globs · ESLint OFF(설정 전) · MD formatOnSave OFF |
+
+## 에이전트 금지
+
+- 플랜/감사/ADR/AGENTS/TOOLCHAIN의 markdownlint “고치기” 대량 편집 **금지**
+- Problems 숫자를 내리려고 SSOT 표·절을 Prettier/줄바꿈으로 재포맷 **금지**
+- `eslint.enable`을 config 없이 true로 켜기 **금지** (ESLint 9는 `eslint.config.*` 필수)
+- `**/node_modules/**` 를 Problems 대상으로 다시 열기 **금지**
+
+## 허용 Problems (진짜 부채)
+
+- `workers/**` · 향후 `apps/**` · `packages/**` 의 **TypeScript/ESLint(설정 후)** 진단
+- `pnpm verify:*` FAIL
+
+## 새 MD를 쓸 때
+
+- 제품 카피(`packages/ui/copy/**`)만 markdownlint 대상 후보
+- 플랜·규칙·감사는 ignore 목록에 두고, 스타일 빚으로 취급하지 않음

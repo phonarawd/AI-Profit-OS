@@ -1,0 +1,15 @@
+name = "push-dispatcher"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVICE = "push-dispatcher"
+PHASE = "0"
+
+[env.production]
+name = "push-dispatcher"
+vars = { SERVICE = "push-dispatcher", PHASE = "0" }
+
+[env.preview]
+name = "push-dispatcher-preview"

@@ -1,0 +1,13 @@
+---
+description: ADR-013 — Canon wire·Lux·Brand만. 목업 픽셀 복제 금지.
+globs: "apps/web/**,apps/admin/**,packages/ui/**"
+alwaysApply: false
+---
+
+# Canon UI (ADR-013)
+
+권위: Lux/Brand → ui 컴포넌트 → 플랜+Canon wire → 사진(intent only)
+
+- 새 화면 = Canon wire 먼저
+- 사진 픽셀 복제 금지 · Brand Kit 단일 로고
+- `_archive` import 금지

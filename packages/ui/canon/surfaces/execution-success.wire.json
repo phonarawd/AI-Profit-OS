@@ -1,0 +1,59 @@
+{
+  "id": "execution-success",
+  "route": "/trades/[id]/execute",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": {
+    "copyKey": "T.execution.withdrawProfit",
+    "href": "/wallet/withdraw?mode=profit"
+  },
+  "blocks": [
+    {
+      "id": "badge",
+      "role": "badge",
+      "copyKey": "T.execution.settledBadge"
+    },
+    {
+      "id": "productThumb",
+      "role": "media",
+      "field": "assetImageUrl",
+      "fallbackIconField": "assetIcon",
+      "copyKey": "T.execution.imageRightsNote",
+      "note": "same SKU image as running · §48.3a"
+    },
+    {
+      "id": "productLabel",
+      "role": "label",
+      "field": "assetLabel"
+    },
+    {
+      "id": "amount",
+      "role": "amount",
+      "copyKey": "T.execution.profitAmount"
+    },
+    {
+      "id": "trust",
+      "role": "badge",
+      "copyKey": "T.execution.noBidBadge"
+    },
+    {
+      "id": "share",
+      "role": "secondary",
+      "copyKey": "T.execution.shareBoast"
+    },
+    {
+      "id": "tabs",
+      "role": "tabbar",
+      "copyKey": "T.ia.fiveTabs"
+    }
+  ],
+  "forbidden": [
+    "wrong_tabbar",
+    "success_rate_percent",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "user_sold_copy",
+    "cross_category_image",
+    "emoji_only_product_row"
+  ]
+}

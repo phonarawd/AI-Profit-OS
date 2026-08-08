@@ -1,0 +1,17 @@
+{
+  "id": "auth-login",
+  "route": "/auth/login",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.auth.kakaoStart", "action": "oauth_kakao" },
+  "blocks": [
+    { "id": "brand", "role": "brand", "copyKey": "T.brand.consumer" },
+    { "id": "headline", "role": "heading", "copyKey": "T.auth.loginHeadline" },
+    { "id": "sub", "role": "body", "copyKey": "T.auth.loginSub" },
+    { "id": "kakao", "role": "primary", "copyKey": "T.auth.kakaoStart" },
+    { "id": "google", "role": "secondary", "copyKey": "T.auth.googleStart" },
+    { "id": "passkey", "role": "secondary", "copyKey": "T.auth.passkeyStart" },
+    { "id": "email", "role": "tertiary", "copyKey": "T.auth.emailMagic" },
+    { "id": "legal", "role": "footer", "copyKey": "T.legal.operator.footerLine" }
+  ],
+  "forbidden": ["stat_strip", "gender_branch", "profit_guaranteed_cta", "photo_pixel_match", "non_brand_logo", "three_second_profit_claim"]
+}

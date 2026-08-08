@@ -1,0 +1,101 @@
+{
+  "version": "1.3.5",
+  "adr": "ADR-013",
+  "brandRef": "packages/ui/brand",
+  "tokenRef": "packages/ui/tokens/lux-fintech.ts",
+  "surfaces": [
+    {
+      "id": "execution-running",
+      "route": "/trades/[id]/execute",
+      "state": "running",
+      "wire": "surfaces/execution-running.wire.json"
+    },
+    {
+      "id": "execution-success",
+      "route": "/trades/[id]/execute",
+      "state": "success",
+      "wire": "surfaces/execution-success.wire.json"
+    },
+    {
+      "id": "execution-safe-stop",
+      "route": "/trades/[id]/execute",
+      "state": "safe_stop",
+      "wire": "surfaces/execution-safe-stop.wire.json"
+    },
+    {
+      "id": "admin-execution-policy",
+      "route": "/admin/execution-policy",
+      "wire": "surfaces/admin-execution-policy.wire.json"
+    },
+    {
+      "id": "onboarding-identity",
+      "route": "/onboarding",
+      "state": "identity",
+      "wire": "surfaces/onboarding-identity.wire.json"
+    },
+    {
+      "id": "onboarding-demo-card",
+      "route": "/onboarding",
+      "state": "demo_tap",
+      "wire": "surfaces/onboarding-demo-card.wire.json"
+    },
+    {
+      "id": "auth-login",
+      "route": "/auth/login",
+      "wire": "surfaces/auth-login.wire.json"
+    },
+    {
+      "id": "auth-signup",
+      "route": "/auth/signup",
+      "wire": "surfaces/auth-signup.wire.json"
+    },
+    {
+      "id": "auth-complete-profile",
+      "route": "/auth/complete-profile",
+      "wire": "surfaces/auth-complete-profile.wire.json"
+    },
+    {
+      "id": "peotteok-chat",
+      "route": "/me/peotteok",
+      "wire": "surfaces/peotteok-chat.wire.json"
+    },
+    {
+      "id": "invite-home",
+      "route": "/me/invite",
+      "wire": "surfaces/invite-home.wire.json"
+    },
+    {
+      "id": "membership-home",
+      "route": "/me/membership",
+      "wire": "surfaces/membership-home.wire.json"
+    },
+    {
+      "id": "landing-3s",
+      "route": "/l/[variant]",
+      "aliases": ["/ads", "/ads/[variant]"],
+      "wire": "surfaces/landing-3s.wire.json"
+    },
+    {
+      "id": "kyc-guide",
+      "route": "/me/kyc",
+      "state": "guide",
+      "wire": "surfaces/kyc-guide.wire.json"
+    },
+    {
+      "id": "kyc-doc-capture",
+      "route": "/me/kyc",
+      "state": "doc",
+      "wire": "surfaces/kyc-doc-capture.wire.json"
+    },
+    {
+      "id": "kyc-confirm",
+      "route": "/me/kyc",
+      "state": "confirm",
+      "wire": "surfaces/kyc-confirm.wire.json"
+    }
+  ],
+  "rules": {
+    "photoMockups": "REMOVED — do not reintroduce PNG mockups; Canon+Brand+Lux only",
+    "authority": ["tokens", "brand", "components", "plan", "canon"]
+  }
+}

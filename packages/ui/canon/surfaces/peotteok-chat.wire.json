@@ -1,0 +1,28 @@
+{
+  "id": "peotteok-chat",
+  "route": "/me/peotteok",
+  "brandRef": "packages/ui/brand",
+  "engineRef": "Engine §47.12~47.14",
+  "primaryCta": null,
+  "blocks": [
+    { "id": "brand", "role": "brand", "copyKey": "T.brand.consumer" },
+    { "id": "title", "role": "heading", "copyKey": "T.peotteok.chatTitle" },
+    { "id": "disclaimer", "role": "disclaimer", "copyKey": "T.peotteok.laneDisclaimer" },
+    { "id": "log", "role": "chat_log_stream", "copyKey": "T.peotteok.log" },
+    { "id": "chips", "role": "suggestion_chips", "copyKey": "T.peotteok.factChips", "lane": "P" },
+    { "id": "input", "role": "input", "copyKey": "T.peotteok.placeholder", "lanes": ["P", "G", "S"] }
+  ],
+  "forbidden": [
+    "withdraw_execute_cta",
+    "payout_approve_cta",
+    "twin_balance_cache_answer",
+    "marketplace_fill_claim",
+    "gender_branch",
+    "net_inflow_as_profit",
+    "perfect_answer_guarantee_copy",
+    "photo_pixel_match",
+    "non_brand_logo"
+  ],
+  "toasts": ["PEOTTEOK_LLM_BUSY"],
+  "degradeCopyKey": "T.peotteok.llmBusy"
+}

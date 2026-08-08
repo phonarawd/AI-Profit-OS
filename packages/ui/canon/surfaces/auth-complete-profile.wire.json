@@ -1,0 +1,16 @@
+{
+  "id": "auth-complete-profile",
+  "route": "/auth/complete-profile",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.auth.saveContinue", "action": "patch_profile_stage_b" },
+  "blocks": [
+    { "id": "brand", "role": "brand", "copyKey": "T.brand.consumer" },
+    { "id": "headline", "role": "heading", "copyKey": "T.auth.completeHeadline" },
+    { "id": "displayName", "role": "field", "copyKey": "T.auth.displayName" },
+    { "id": "phone", "role": "field", "copyKey": "T.auth.phone" },
+    { "id": "email", "role": "field", "copyKey": "T.auth.email", "when": "email_missing" },
+    { "id": "birthDate", "role": "field", "copyKey": "T.auth.birthDate" },
+    { "id": "hint", "role": "body", "copyKey": "T.auth.completeHintWithdraw" }
+  ],
+  "forbidden": ["rrn_field", "gender_field", "address_required_v1", "photo_pixel_match", "profit_guaranteed_cta"]
+}
