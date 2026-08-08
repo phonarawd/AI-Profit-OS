@@ -30,7 +30,9 @@ Cursor는 **플랜 집행기**다. 스택을 ADR 없이 바꾸지 않는다.
 
 - Node22 · pnpm@10.14 · next@16 · Tailwind v4 · Nest · Rust
 - `pnpm verify:gate` PASS 전 commit/push 금지 (hook+husky)
-- done = 도메인 `verify:*` PASS + `pnpm cleanup:lowspec`
+- push 후 **`gh run watch`로 GitHub `gate` CI 감시** · FAIL이면 즉시 수정→재푸시→green까지 (`.cursor/rules/git-safety.mdc`)
+- GitHub 도착물 = **오류0 · 오차0 · 결함0 · 중복0** (로컬 gate + 원격 CI 둘 다 green)
+- done = 도메인 `verify:*` PASS + `pnpm cleanup:lowspec` (+ push했다면 CI green)
 
 ## Phase0 RAM
 

@@ -10,7 +10,8 @@
 3. 연동 = Supabase(DB) + GitHub + Cloudflare only · **Vercel 금지**
 4. alwaysApply rules ≤7 · 나머지는 globs
 5. commit/push = `verify:gate` PASS only · `--no-verify` deny
-6. stop/sessionEnd = `cleanup:lowspec`
+6. **push 후** = `gh run watch`로 GitHub Actions `gate` **실시간 감시** · FAIL→즉시 수정→재푸시→**CI green**까지 (오류0·오차0·결함0·중복0) · `git-safety.mdc`
+7. stop/sessionEnd = `cleanup:lowspec`
 
 ## Artifacts
 
@@ -24,3 +25,4 @@
 - 로컬=얇은 게이트 · CI=동일 gate(+향후 두꺼운 도메인 verify)
 - SCM UI 커밋도 Husky로 차단
 - Cursor hook `permission:deny`만 신뢰 (ask 비신뢰)
+- 에이전트 push 세션 = CI watch 루프 필수 · red CI 방치 종료 금지
