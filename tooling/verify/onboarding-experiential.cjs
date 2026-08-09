@@ -68,8 +68,11 @@ if (flow) {
   ]) {
     if (!flow.includes(need)) fails.push(`OnboardingFlow missing ${need}`);
   }
-  if (flow.includes("T.execution.ctaEarn")) {
-    fails.push("OnboardingFlow must not use T.execution.ctaEarn (capital surface only · v7.22.55)");
+  if (flow.includes("T.execution.ctaEarn") || /["'`]수익 벌기["'`]/.test(flow)) {
+    fails.push("OnboardingFlow must not use capital CTA 「수익 벌기」(v7.22.55)");
+  }
+  if (/T\.margin\.compareMini[^U]/.test(flow) || /\{T\.margin\.compareMini\}/.test(flow)) {
+    fails.push("OnboardingFlow must use T.margin.compareMiniUtility (차익 라벨 0)");
   }
   if (flow.includes("WhyUsdtCard") || flow.includes("TaxDisclaimerBlock")) {
     fails.push("OnboardingFlow Guest path must not mount WhyUsdtCard/TaxDisclaimerBlock (USDT/테더 카피)");
@@ -77,9 +80,63 @@ if (flow) {
   if (flow.includes("gender_male") || flow.includes("gender_female") || flow.includes("성별")) {
     fails.push("OnboardingFlow must not branch on gender");
   }
+  if (!flow.includes("demoPriceExample")) {
+    fails.push("OnboardingFlow demo must use T.onboarding.demoPriceExample (not +$ profit tease)");
+  }
+  if (/\+\s*\$|\+\$/.test(flow)) {
+    fails.push("OnboardingFlow must not tease demo profit with +$ amounts");
+  }
+  if (/practiceUsdt\s*=/.test(flow) || flow.includes("usdtSuffix")) {
+    fails.push(
+      "OnboardingFlow Guest DemoWalletBanner must omit practiceUsdt/usdtSuffix (USDT ticker 0)",
+    );
+  }
+  if (
+    !flow.includes("T.landing.ctaStartUtility") &&
+    !flow.includes("T.landing.ctaContinueUtility")
+  ) {
+    fails.push(
+      "OnboardingFlow ACTION must use T.landing.ctaStartUtility or ctaContinueUtility",
+    );
+  }
   // USDT skip only
   if (!flow.includes('SKIPPABLE') && !flow.includes('"usdt"')) {
     fails.push("OnboardingFlow must allow skip on USDT step only");
+  }
+}
+
+// practice banner — Guest-facing strings · 수익|USDT 0 (CLOSE)
+const practice = read("packages/ui/copy/ko/practice.ts");
+if (practice) {
+  const guestBanned = /수익|투자|USDT|테더|보장|차익|괴리율/;
+  for (const key of ["bannerTitle", "bannerBody", "notWithdrawable", "badge"]) {
+    const m = practice.match(new RegExp(`${key}:\\s*"([^"]*)"`));
+    if (!m) {
+      fails.push(`practice.ts missing ${key}`);
+      continue;
+    }
+    if (guestBanned.test(m[1])) {
+      fails.push(`practice.${key} Guest banned token in "${m[1]}"`);
+    }
+  }
+}
+
+const idWire = read("packages/ui/canon/surfaces/onboarding-identity.wire.json");
+if (idWire) {
+  if (
+    idWire.includes("T.trust.expectedNotGuaranteed") ||
+    /"copyKey"\s*:\s*"T\.trust\.expectedNotGuaranteed"/.test(idWire)
+  ) {
+    fails.push("onboarding-identity.wire must not use expectedNotGuaranteed (Guest · use utilityDisclaimer)");
+  }
+  if (!idWire.includes("compareMiniUtility")) {
+    fails.push("onboarding-identity.wire missing compareMiniUtility");
+  }
+  if (!idWire.includes("utilityDisclaimer")) {
+    fails.push("onboarding-identity.wire missing utilityDisclaimer");
+  }
+  if (/T\.margin\.compareMini"/.test(idWire)) {
+    fails.push("onboarding-identity.wire must not use capital compareMini copyKey");
   }
 }
 

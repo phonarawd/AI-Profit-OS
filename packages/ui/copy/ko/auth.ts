@@ -1,6 +1,7 @@
 /**
  * T.auth.* — Canon auth-login / auth-signup / auth-complete-profile
  * §27.10 · Infra §51.9 field SSOT · wiring = auth-login-signup-ui
+ * Guest = utility 톤(§6.4c.1 F) · 수익|투자|USDT|테더|보장|차익|괴리율 0
  * Kakao callback = Infra auth-kakao-oauth-runtime (pending → UI disabled guard)
  */
 export const auth = {
@@ -11,9 +12,9 @@ export const auth = {
   emailForm: "이메일 주소",
   emailPlaceholder: "이름@예시.com",
   loginHeadline: "👋 다시 오신 걸 환영해요",
-  loginSub: "퍼뜩에서 이어서 수익 기회를 살펴보세요",
+  loginSub: "퍼뜩에서 이어서 시세·가격 비교를 살펴보세요",
   signupHeadline: "✨ 퍼뜩 시작하기",
-  signupSub: "가입하면 AI가 시세 기회를 찾아 드려요",
+  signupSub: "가입하면 실시간 시세 맵을 이어서 볼 수 있어요",
   completeHeadline: "📝 기본 정보만 남겨 주세요",
   completeSub: "이름·연락처만 있으면 바로 쓸 수 있어요",
   completeHintWithdraw: "출금·본인확인 전에 이 정보가 필요해요",

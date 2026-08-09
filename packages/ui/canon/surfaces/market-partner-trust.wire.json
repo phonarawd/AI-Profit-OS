@@ -114,7 +114,7 @@
   ],
   "blockingSubDeliverable": {
     "id": "market-partner-logo-svgs",
-    "status": "blocked",
+    "status": "unblocked",
     "assets": [
       "ebay.svg",
       "amazon.svg",
@@ -124,6 +124,6 @@
       "coingecko.svg",
       "frankfurter.svg"
     ],
-    "note": "ADR-011 Brand/Design · official monochrome marks · status=ready before render · verify:market-partner-trust tracks until unblocked"
+    "note": "ADR-011 Brand Kit · 7 monochrome/light marks ready on disk · verify:market-partner-trust PASS without BLOCKER"
   }
 }

@@ -9,5 +9,13 @@
     { "id": "demoCard", "role": "opportunity_card", "flags": ["demo", "practice_only"] },
     { "id": "practiceNote", "role": "banner", "copyKey": "T.practice.notWithdrawable" }
   ],
-  "forbidden": ["real_participate_without_practice_rules", "gender_branch", "photo_pixel_match"]
+  "forbidden": [
+    "real_participate_without_practice_rules",
+    "gender_branch",
+    "photo_pixel_match",
+    "cta_earn_profit",
+    "expected_profit_label"
+  ],
+  "note": "v7.22.55 Guest utility · demo compare = T.margin.compareMiniUtility · +$ 수익 암시 0"
 }
+

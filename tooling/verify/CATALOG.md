@@ -97,7 +97,7 @@
 | referral-ledger · notice-campaign-split | Money/Marketing |
 | loop-psychology · day-pulse-live-only · preflight-may-stop | UI **§51.24** DayPulse·PreCTA·L1~L24 (v7.22.15 Owns 복원) |
 | ticker-mode-audit · ticker-pii-0 · ticker-organic-hybrid | Admin §35.4 Organic Hybrid G4 · UI §33.2a |
-| market-partner-trust · market-partner-adapters | UI **§38.10** 공식협력 로고 · Engine **§0.0.1c** amazon/yahoo adapter Phase1+ (v7.22.41 Founder lock) — market-partner-adapters **live** · market-partner-trust **live** (Canon+copy+route+MarketPartner* · 7 SVGs tracked `status=blocked` until Brand Kit ready · `MARKET_PARTNER_LOGOS_REQUIRE_READY=1` hard-closes logos) |
+| market-partner-trust · market-partner-adapters | UI **§38.10** 공식협력 로고 · Engine **§0.0.1c** amazon/yahoo adapter Phase1+ (v7.22.41 Founder lock) — market-partner-adapters **live** · market-partner-trust **live** (Canon+copy+route+MarketPartner* · 7 SVGs `status=ready` · BLOCKER cleared · `MARKET_PARTNER_LOGOS_REQUIRE_READY=1` PASS) |
 | mission-auto-payout · mission-idempotency · mission-no-manual-grant · benefit-hub-surfaces · benefit-no-credits-currency · benefit-g4-ledger-separation | Money **§51.8a** · UI **§5.9.5** · Engine **§48.13.4** fanout0 · Admin **§35.7** (v7.22.42) — **live** SSOT |
 | peotteok-chat · auth-complete-profile (canon) | UI §6.4b/e · canon-surfaces |
 | auth-jwt-runtime | Infra §51.9 · ADR-006 — Engine Final Re-Verification Audit P0-1 (v7.22.50) — **live** (real HS256 sign/verify/tamper/expiry/issuer/audience round-trip against `jwt.core.cjs` + real Nest HTTP boot of `JwtAuthGuard` via `jwt-guard.selftest.ts` (no DB/Redis) + 6 session-protected controllers wired · AuthService fake-identity regression guard) |

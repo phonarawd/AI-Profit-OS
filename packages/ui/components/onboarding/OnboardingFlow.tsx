@@ -40,7 +40,7 @@ const SKIPPABLE: Step[] = ["usdt"];
 /**
  * §6.4 experiential onboarding — identity · partner strip · demo · practice
  * Canon: onboarding-identity · onboarding-demo-card
- * v7.22.55 Guest utility — 「수익 벌기」0 · USDT/테더 카드 마운트 0
+ * v7.22.55 Guest utility — capital CTA 0 · USDT/테더 카드 마운트 0
  */
 export function OnboardingFlow() {
   const [step, setStep] = useState<Step>("tone");
@@ -220,7 +220,8 @@ export function OnboardingFlow() {
           <p className="text-center text-sm text-lux-text-muted">
             {T.onboarding.demoHint}
           </p>
-          <DemoWalletBanner visible practiceUsdt="10" />
+          {/* Guest utility — amount/USDT ticker 0 (§6.4c.1 F) */}
+          <DemoWalletBanner visible />
           <button
             type="button"
             data-testid="demo-opportunity-card"
@@ -234,8 +235,12 @@ export function OnboardingFlow() {
                 {T.practice.notWithdrawable}
               </span>
             </div>
-            <p className="text-sm text-lux-text-muted">{T.margin.compareMini}</p>
-            <p className="mt-2 text-lg font-semibold text-lux-accent">+$12</p>
+            <p className="text-sm text-lux-text-muted">
+              {T.margin.compareMiniUtility}
+            </p>
+            <p className="mt-2 text-lg font-semibold text-lux-text">
+              {T.onboarding.demoPriceExample}
+            </p>
             <p className="mt-3 text-sm font-medium text-lux-principal">
               {T.onboarding.tryDemoCard}
             </p>
@@ -332,7 +337,8 @@ export function OnboardingFlow() {
           <p className="text-center text-sm text-lux-text-muted">
             {T.onboarding.payoutBody}
           </p>
-          <DemoWalletBanner visible practiceUsdt="10" />
+          {/* Guest utility — amount/USDT ticker 0 (§6.4c.1 F) */}
+          <DemoWalletBanner visible />
           <TouchButton
             variant="primary"
             className="w-full"

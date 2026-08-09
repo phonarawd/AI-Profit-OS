@@ -67,6 +67,54 @@ if (peotteok) {
   if (!peotteok.includes("voice:")) fails.push("peotteok.voice block missing");
 }
 
+// PART1b · §6.4c.1 A — landing utility namespace skeleton (depth = PART2c)
+const landing = read("packages/ui/copy/ko/landing.ts");
+if (landing) {
+  for (const k of [
+    "utilityDisclaimer",
+    "transitionDisclosure",
+    "ctaOpenPriceMap",
+    "ctaStartUtility",
+    "ctaContinueUtility",
+    "variants",
+    "meta:",
+    "tt:",
+    "google:",
+  ]) {
+    if (!landing.includes(k)) fails.push(`landing.ts missing utility key ${k}`);
+  }
+  if (!landing.includes("실시간 시세 맵 열기")) {
+    fails.push('landing.ctaOpenPriceMap must be "실시간 시세 맵 열기"');
+  }
+  if (!landing.includes("시작하기") || !landing.includes("시세 맵 계속")) {
+    fails.push("landing utility CTAs must include 시작하기 / 시세 맵 계속");
+  }
+}
+
+// Guest utility surfaces — §6.4c.1 F banned words (string literals only)
+const guestBanned = /수익|투자|USDT|테더|보장|차익|괴리율|재테크|알바/;
+for (const rel of [
+  "packages/ui/copy/ko/landing.ts",
+  "packages/ui/copy/ko/auth.ts",
+  "packages/ui/copy/ko/onboarding.ts",
+]) {
+  const src = read(rel);
+  if (!src) continue;
+  for (const m of src.matchAll(/:\s*"([^"]*)"/g)) {
+    const val = m[1];
+    if (guestBanned.test(val)) {
+      fails.push(`${rel} Guest utility banned token in "${val}"`);
+    }
+  }
+}
+
+const userSrc = read("packages/ui/copy/ko/user.ts");
+if (userSrc) {
+  for (const k of ["empty:", "hint:", "placeholder:", "tabs:"]) {
+    if (!userSrc.includes(k)) fails.push(`user.ts missing ${k}`);
+  }
+}
+
 const settings = read("packages/ui/copy/ko/settings.ts");
 if (settings && !settings.includes("themeToggleForbidden: true")) {
   fails.push("settings.ts must lock themeToggleForbidden: true");

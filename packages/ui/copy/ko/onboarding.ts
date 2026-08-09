@@ -12,6 +12,8 @@ export const onboarding = {
   tryDemoCard: "연습 카드 눌러보기",
   demoPreviewTitle: "연습 미리보기",
   demoPreviewBody: "실제 출금·정산은 없어요. 흐름만 익혀 보세요.",
+  /** Guest utility — 차익/$ 수익 암시 0 */
+  demoPriceExample: "시세 비교 예시",
   practiceHeadline: "🎁 연습 잔액으로 흐름을 익혀 보세요",
   partnerSlideLead: "🤝 공식 협력사 시세를 참고해요",
   usdtHeadline: "🪙 왜 이 충전 방식인가요?",

@@ -7,8 +7,18 @@
   "blocks": [
     { "id": "brand", "role": "brand", "copyKey": "T.brand.consumer" },
     { "id": "headline", "role": "heading", "copyKey": "T.onboarding.identityHeadline" },
-    { "id": "compareMini", "role": "price_compare_margin", "copyKey": "T.margin.compareMini" },
-    { "id": "disclaimer", "role": "disclaimer", "copyKey": "T.trust.expectedNotGuaranteed" }
+    { "id": "compareMini", "role": "price_compare_margin", "copyKey": "T.margin.compareMiniUtility" },
+    { "id": "disclaimer", "role": "disclaimer", "copyKey": "T.landing.utilityDisclaimer" }
   ],
-  "forbidden": ["profit_guaranteed_cta", "gender_branch", "photo_pixel_match", "non_brand_logo", "stat_strip"]
+  "forbidden": [
+    "profit_guaranteed_cta",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "stat_strip",
+    "cta_earn_profit",
+    "expected_not_guaranteed_on_guest",
+    "margin_compare_mini_capital"
+  ],
+  "note": "v7.22.55 Guest utility · 차익·capital CTA·app expected-disclaimer 0 · disclosure Owns=tone step T.landing.transitionDisclosure"
 }
