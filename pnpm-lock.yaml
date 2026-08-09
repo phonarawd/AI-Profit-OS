@@ -241,7 +241,17 @@ importers:
         specifier: ^4.120.0
         version: 4.120.0(@cloudflare/workers-types@5.20260808.1)
 
-  workers/api-stub: {}
+  workers/api-stub:
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^5.20260809.1
+        version: 5.20260809.1
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      wrangler:
+        specifier: ^4.120.0
+        version: 4.120.0(@cloudflare/workers-types@5.20260809.1)
 
   workers/chain-sweeper:
     devDependencies:
@@ -315,7 +325,17 @@ importers:
         specifier: ^4.120.0
         version: 4.120.0(@cloudflare/workers-types@5.20260808.1)
 
-  workers/ops-proxy: {}
+  workers/ops-proxy:
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^5.20260809.1
+        version: 5.20260809.1
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      wrangler:
+        specifier: ^4.120.0
+        version: 4.120.0(@cloudflare/workers-types@5.20260809.1)
 
   workers/pokemontcg-adapter:
     devDependencies:
@@ -341,7 +361,17 @@ importers:
         specifier: ^4.120.0
         version: 4.120.0(@cloudflare/workers-types@5.20260808.1)
 
-  workers/web-proxy: {}
+  workers/web-proxy:
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^5.20260809.1
+        version: 5.20260809.1
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      wrangler:
+        specifier: ^4.120.0
+        version: 4.120.0(@cloudflare/workers-types@5.20260809.1)
 
   workers/yahoo-jp-adapter:
     devDependencies:
