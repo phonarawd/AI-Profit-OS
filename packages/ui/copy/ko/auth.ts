@@ -30,6 +30,8 @@ export const auth = {
   /** Kakao env / callback missing — UI disabled guard (Infra pointer) */
   kakaoUnavailable: "💡 카카오 로그인은 곧 열려요. 다른 방법으로 시작해 주세요",
   oauthSoon: "💡 이 로그인 방법은 곧 열려요",
+  /** Stage A — Kakao enabled but terms unchecked */
+  termsNeeded: "약관에 동의한 뒤 카카오로 시작할 수 있어요",
   toSignup: "아직 계정이 없나요? 가입하기",
   toLogin: "이미 계정이 있나요? 로그인",
 } as const;

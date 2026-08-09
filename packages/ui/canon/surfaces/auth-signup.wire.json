@@ -14,5 +14,17 @@
     { "id": "marketing", "role": "checkbox", "copyKey": "T.auth.marketingOptional" },
     { "id": "referral", "role": "optional_field", "copyKey": "T.auth.referralCode" }
   ],
-  "forbidden": ["rrn_field", "gender_field", "address_required_v1", "photo_pixel_match"]
+  "forbidden": [
+    "rrn_field",
+    "gender_field",
+    "gender_branch",
+    "address_required_v1",
+    "photo_pixel_match",
+    "profit_guaranteed_cta",
+    "kakao_oauth_primary_on_landing",
+    "capital_cta_earn"
+  ],
+  "stage": "A",
+  "tone": "utility",
+  "notes": "Stage A immediate signup · Stage B = auth-complete-profile · Kakao primary · gender0"
 }

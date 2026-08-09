@@ -65,7 +65,14 @@ export function AuthSignup() {
               >
                 {T.auth.kakaoUnavailable}
               </p>
-            ) : null}
+            ) : (
+              <p
+                className="text-center text-xs text-lux-text-muted"
+                data-testid="auth-terms-needed"
+              >
+                {T.auth.termsNeeded}
+              </p>
+            )}
           </div>
         )}
 

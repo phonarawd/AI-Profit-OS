@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — UI & UX
-overview: v7.22.55 §6.4c.1 5결정문 잠금(톤허용시점·괴리율금지+Infra동기·consent실행계약·완료verify·2c-pre §0.8.2승격)+§6.4 CTA supersede — v7.22.54 듀얼레이어 불변. File-Serial=2b→2c-pre→2c. PART0 PASS. Index=00. 다음=market-partner-trust-surfaces only(§0.8.3 · PART1a=갭-only).
+overview: v7.22.55 §6.4c.1 5결정문 잠금(톤허용시점·괴리율금지+Infra동기·consent실행계약·완료verify·2c-pre §0.8.2승격)+§6.4 CTA supersede — v7.22.54 듀얼레이어 불변. File-Serial=2b→2c-pre→2c. PART0·PART1·PART2a·PART2b CLOSED. Index=00. 다음=operator-entity-support-email only.
 todos:
   - id: ui-preflight-constitution
     content: "[grok-4.5|256K] PART0 착수게이트 · **선행: Engine 02 Pre-UI Runtime Gate(§0.9 E-R1~E-R8) pending0 + Money money-user-benefits-read completed 필수(미충족 시 본 todo·이하 전부 착수 금지)** · BOOTSTRAP §0.6 실측기록(DB76/mig28/fn5·Canon·routes·Admin교차·verify live/pending) · **v7.22.50 감사 3정정 기록 흡수(§0.6 U13~U15·색토큰=lux-fintech·§29.6 Phase1+·eBay query: gap=Engine follow-up)** · File-Serial 재정렬 0 · 구현코드0 · 다음=market-partner-trust-surfaces"
@@ -15,23 +15,23 @@ todos:
     content: "[grok-4.5|256K] ABSORBED→Admin admin-execution-policy · Canon admin-execution-policy.wire.json 유지 · apps/admin §48.6 구현=Admin File-Serial · UI 재실행 금지"
     status: completed
   - id: market-partner-trust-surfaces
-    content: "[grok-4.5|256K] PART1a §38.10 Brand markets SVG+manifest·MarketPartner*·Canon market-partner-trust·/me/guide/partners·routes잠금 · adapter≠표기(yahoo_jp Day1 adapter0·표기필수) · verify:market-partner-trust/brand-logo-single · Admin partners=pointer · 실측(v7.22.52 §0.8.3): Grid/Leg/Strip+brand/markets.ts+guide페이지 이미 실물 존재·verify live — 착수 즉시 `pnpm verify:market-partner-trust` 먼저 실행, PASS면 로고 SVG 자산 교체 갭만(전면 재작성 금지)"
-    status: pending
+    content: "[grok-4.5|256K] PART1a §38.10 Brand markets SVG+manifest·MarketPartner*·Canon market-partner-trust·/me/guide/partners·routes잠금 · adapter≠표기(yahoo_jp Day1 adapter0·표기필수) · verify:market-partner-trust/brand-logo-single · Admin partners=pointer · 실측(v7.22.52 §0.8.3): Grid/Leg/Strip+brand/markets.ts+guide페이지 이미 실물 존재·verify live — 착수 즉시 `pnpm verify:market-partner-trust` 먼저 실행, PASS면 로고 SVG 자산 교체 갭만(전면 재작성 금지) · CLOSE: 7 SVG ready+manifest/markets.ts/wire unblocked · verify PASS without BLOCKER · REQUIRE_READY=1 PASS"
+    status: completed
   - id: korean-first-copy
-    content: "[grok-4.5|256K] PART1b §27+§27.10 copy/ko SSOT · toneBand · 퍼뜩voice·도움말·쉬운말·귀여운이모지(20~70·캡/팔레트) · auth/onboarding/landing/kyc/toast/empty/guide 키골격 · **landing utility namespace**(`utilityDisclaimer`·`transitionDisclosure`·`ctaOpenPriceMap`·`ctaStartUtility`·variant·금지어0) 키골격(본문깊이=PART2a/2c Owns·중복0) · retired브랜드0 · verify:korean-ui/brand-consumer/age-tone-surfaces/toast-emoji(+cute-emoji-palette CATALOG등록시)"
-    status: pending
+    content: "[grok-4.5|256K] PART1b §27+§27.10 copy/ko SSOT · toneBand · 퍼뜩voice·도움말·쉬운말·귀여운이모지(20~70·캡/팔레트) · auth/onboarding/landing/kyc/toast/empty/guide 키골격 · **landing utility namespace**(`utilityDisclaimer`·`transitionDisclosure`·`ctaOpenPriceMap`·`ctaStartUtility`·variant·금지어0) 키골격(본문깊이=PART2a/2c Owns·중복0) · retired브랜드0 · verify:korean-ui/brand-consumer/age-tone-surfaces/toast-emoji(+cute-emoji-palette CATALOG등록시) · CLOSE: Guest auth utility 금지어0 · korean-ui landing키+Guest금지어 잠금 · cute-emoji-palette PASS"
+    status: completed
   - id: mockup-governance-adr013
-    content: "[grok-4.5|256K] PART1c §33.8 Canon 권위·사진PNG0·archive INTENT ONLY · admin-execution-policy.wire=Admin Owns확인(UI앱구현0) · verify:mockup-governance/canon-surfaces/brand-logo-single"
-    status: pending
+    content: "[grok-4.5|256K] PART1c §33.8 Canon 권위·사진PNG0·archive INTENT ONLY · admin-execution-policy.wire=Admin Owns확인(UI앱구현0) · verify:mockup-governance/canon-surfaces/brand-logo-single · CLOSE: 3 verify PASS · photo0 · owns=Admin · appsWebImplement=false · apps/web/admin 0 · 갭코드0"
+    status: completed
   - id: ux-design-system
-    content: "[grok-4.5|256K] PART1d Lux tokens + fontScale md/lg/xl + spacing/line-height senior · MotionCTA · reduced-motion · Light테마토글0 · verify:lux-theme-sync"
-    status: pending
+    content: "[grok-4.5|256K] PART1d Lux tokens + fontScale md/lg/xl + spacing/line-height senior · MotionCTA · reduced-motion · Light테마토글0 · verify:lux-theme-sync · CLOSE: lux-theme-sync+ux-design-system+font-scale-three PASS · hex=#3DDC97/#7AA2FF 재발명0 · 갭코드0"
+    status: completed
   - id: onboarding-experiential
-    content: "[grok-4.5|256K] PART2a §6.4(+v7.22.55 supersede) 체험형 온보딩 · Guest/광고유입=utility 톤 · 첫화면 `T.landing.transitionDisclosure` 1줄(전환고지≠capital허가) · ACTION CTA=`시작하기`/`시세 맵 계속`(「수익 벌기」0) · 수익|투자|USDT|테더|보장|차익|괴리율 0 · Partner strip 1slide · Canon wires · verify:onboarding-experiential/canon-surfaces"
-    status: pending
+    content: "[grok-4.5|256K] PART2a §6.4(+v7.22.55 supersede) 체험형 온보딩 · Guest/광고유입=utility 톤 · 첫화면 `T.landing.transitionDisclosure` 1줄(전환고지≠capital허가) · ACTION CTA=`시작하기`/`시세 맵 계속`(「수익 벌기」0) · 수익|투자|USDT|테더|보장|차익|괴리율 0 · Partner strip 1slide · Canon wires · verify:onboarding-experiential/canon-surfaces · CLOSE: compareMiniUtility·utilityDisclaimer wire · demo +$제거 · practice banner 수익0 · verify 잠금"
+    status: completed
   - id: auth-login-signup-ui
     content: "[grok-4.5|256K] PART2b Canon auth-login/signup/complete-profile · Kakao primary(login/signup **내부** · 랜딩 firstViewport 직행0) · Guest=utility 톤(§6.4c.1 F) · Stage A/B · 성별필드0 · verify:auth-surfaces · 선행pointer=Infra auth-kakao-oauth-runtime(Kakao.env=founder·callback미구현→UI mock/disabled가드)"
-    status: pending
+    status: completed
   - id: operator-entity-support-email
     content: "[grok-4.5|256K] PART2c-pre §50.9 schemas/operator-entity.v1.json+instance.json `supportEmail`(format email·required) · examples 동기 · JSX 하드코딩0 · verify:operator-footer scaffold=supportEmail 존재+instance 일치 · LandingOperatorFooter 바인딩=landing-3s-ui Owns(중복0) · **§0.8.2 #5 승격(v7.22.55)** · 실측 supportEmail already→갭-only(전면 재작성 금지) · 구현=schema+instance only"
     status: pending
@@ -156,7 +156,7 @@ isProject: false
 > **Loop/Preflight:** **§51.24** (Admin/Engine/CATALOG pointer 대상 · 유령 절 금지)  
 
 > **마진 공식:** Engine §0.0.4 Owns · UI=화면/카피만  
-> **선행 CLOSED(1~26/1~15 불변):** 01 Money 15/15+benefits · 02 Engine 26/26+E-R1~E-R8 · Pre-UI Gate **CLOSED(v7.22.49)** · **PART0 `ui-preflight-constitution` PASS(v7.22.50)** · 다음 채팅=`market-partner-trust-surfaces` only  
+> **선행 CLOSED(1~26/1~15 불변):** 01 Money 15/15+benefits · 02 Engine 26/26+E-R1~E-R8 · Pre-UI Gate **CLOSED(v7.22.49)** · **PART0·PART1·PART2a·PART2b CLOSED** · 다음 채팅=`operator-entity-support-email` only  
 
 ## 0.6 UI 착수 전 실측 (v7.22.48 · `ui-preflight-constitution` · **PASS v7.22.50** · 예측0 · 감사 3정정 흡수)
 
@@ -224,7 +224,7 @@ isProject: false
 | U15 | 실 eBay 사진이 유저 카드에 안 보이는 원인 미기록 · `assetId: query:*` → persist drop · matchers 미배선 | → **EXTEND(문서)** · §0.6 표 + §48.3a pointer · Owns=Engine todo `engine-ebay-identity-match-ingest`(§0.10 filed v7.22.51) · UI todo/File-Serial **가산·재정렬 0** · PART3d는 URL 소스 무관 렌더만 |
 
 **판정 (v7.22.50 · 2026-08-10):** `ui-preflight-constitution` = **PASS** · 헌법 8종+46b ✅ · Canon 28 · Brand markets/**0** · CLIME **0** · 사진목업 PNG **0**(ADR-013) · U13~U15 **흡수** · File-Serial 재정렬 **0** · 구현코드 **0**.  
-**다음 채팅:** **03 UI** `market-partner-trust-surfaces` only · completed Engine/Money/본 PART0 todo 재실행 **금지**.
+**다음 채팅:** **03 UI** `operator-entity-support-email` only · completed Engine/Money/PART0·PART1·PART2a·PART2b todo 재실행 **금지**.
 
 ## 0.7 Admin 교차 계약 (UI surface → Admin Owns · 중복0)
 
@@ -292,12 +292,12 @@ isProject: false
 
 | PART | todo id | verify 검사 범위 (1줄 · `tooling/verify/*.cjs` 헤더+실측) | 실물 상태(2026-08-10 실측) | 다음 에이전트 필수 행동 |
 |------|---------|--------------------------------------------------------|---------------------------|----------------------|
-| 1a | market-partner-trust-surfaces | `market-partner-trust`: Canon+copy+route+MarketPartner*+guide **page** · 로고 SVG `blocked`=PASS | Grid/Leg/Strip+`brand/markets.ts`+Canon+`/me/guide/partners` 실물 · 로고 SVG만 Brand Kit `ready` 대기 | `pnpm verify:market-partner-trust` → PASS면 **로고 SVG 갭만** · 전면 재작성 금지 |
-| 1b | korean-first-copy | `korean-ui`/`toast-emoji`/`cute-emoji-palette`: copy/ko 필수 파일·voice·retired brand·EN leak (**페이지 UX 깊이 0**) | `copy/ko/*` 15+ · verify live | 누락 카피 키 diff만 · 파일 재생성 금지 |
-| 1c | mockup-governance-adr013 | `mockup-governance`/`canon-surfaces`/`brand-logo-single`: ADR-013·Canon manifest·단일 Brand Kit | 거버넌스·CI 정착 | 잔여 점검만 |
-| 1d | ux-design-system | `ux-design-system`: tokens/breakpoints/motion/font-scale/PPE **파일 존재** | tokens+`verify:ux-design-system` live | 누락 스타일·컴포넌트만 보완 |
-| 2a | onboarding-experiential | `onboarding-experiential`: Canon+OnboardingFlow+page · **v7.22.55:** Guest utility CTA(「수익 벌기」0)·transitionDisclosure | 각 페이지+verify live · **capital CTA drift 가능** | §6.4 supersede 전량 · Partner strip 1slide · mock 가드 |
-| 2b | auth-login-signup-ui | `auth-surfaces`: auth 3면+Kakao 가드 · Guest=utility(§6.4c.1 F) | 각 페이지+verify live | Infra Kakao callback 전 mock/disabled · 랜딩 직행 Kakao **0** |
+| 1a | market-partner-trust-surfaces | `market-partner-trust`: Canon+copy+route+MarketPartner*+guide **page** · 로고 SVG **7/7 ready** · BLOCKER **0** | Grid/Leg/Strip+`brand/markets.ts`+Canon+`/me/guide/partners`+7 SVG **CLOSED** | **COMPLETED** · `MARKET_PARTNER_LOGOS_REQUIRE_READY=1` PASS · 전면 재작성 금지 유지 |
+| 1b | korean-first-copy | `korean-ui`/`toast-emoji`/`cute-emoji-palette`: copy/ko 필수 파일·voice·retired brand·landing utility키·Guest금지어0 (**페이지 UX 깊이 0**) | `copy/ko/*` 15+ · verify live · auth Guest drift 해소 | **COMPLETED** · 파일 재생성 금지 유지 · 본문깊이=PART2a/2c |
+| 1c | mockup-governance-adr013 | `mockup-governance`/`canon-surfaces`/`brand-logo-single`: ADR-013·Canon manifest·단일 Brand Kit | 거버넌스·CI 정착 · Admin wire Owns 확인 | **COMPLETED** · 갭코드0 · 재작성 금지 |
+| 1d | ux-design-system | `lux-theme-sync`+`ux-design-system`+`font-scale-three`: tokens/breakpoints/motion/font-scale/PPE/MotionCTA | 전부 live · hex visual_kit_v1 일치 | **COMPLETED** · 갭코드0 · hex 재발명 금지 |
+| 2a | onboarding-experiential | `onboarding-experiential`: Canon+OnboardingFlow+page · Guest utility CTA0·transitionDisclosure·compareMiniUtility | live · capital drift **해소** | **COMPLETED** · wire/demo/practice 갭 닫음 |
+| 2b | auth-login-signup-ui | `auth-surfaces`: auth 3면+Kakao ENABLED가드 · Guest=utility(§6.4c.1 F) · landing Kakao0 | live · GuestChrome 3면 · tone=utility wire | **COMPLETED** · Infra callback 전 `NEXT_PUBLIC_OAUTH_KAKAO_ENABLED=0` |
 | 2c-pre | operator-entity-support-email | schema JSON Schema valid · instance `supportEmail` · **§0.8.2 #5** | v1 `required`+instance `support@hiptk.app` 실물 | 갭-only · footer=2c Owns · 전면 재작성 금지 |
 | 2c | landing-3s-ui | `landing-3s`+`marketing-compliance`+`operator-footer`: utility·footer·disclaimer·금지어(괴리율 포함)·consent emit 가드 | Landing3s+GuestChrome 골격 · **utility/footer/disclaimer/consent 갭** | §6.4c.1 A~H 전량 · 2c-pre 선행 · Infra 금지어 **동기 PASS** |
 | 3a | opportunity-scan-home-ux | `arbitrage-type-label` live · **`opportunity-scan-surface` 스크립트 0** · 홈 스캔 레이아웃 전량 검사 0 | `arbitrage-type-label` live | 홈 3초 위계 vs §5.3b 체크리스트 diff · PASS만으로 홈 완성 **아님** |
@@ -328,7 +328,7 @@ isProject: false
 | 세계 지존급 1위 감사관 | DB·보안 어드바이저·마이그레이션 정합성은 PASS(1건 드리프트는 발견 즉시 해소). **`verify:X=live` 라벨을 "완료 증빙"으로 오독할 수 있는 지점(0.8.2 #2)**이 감사 관점 최대 리스크였다 — CATALOG 표기 자체가 거짓은 아니다(스크립트는 실제로 그 좁은 범위에서 PASS한다). 그러나 범위가 좁아 오해를 유발하므로 **§0.8.3 verify 검사 범위 열 + todo content 범위 명시**가 감사 보완의 핵심이었고, v7.22.53 패치로 흡수했다. |
 | 세계 지존급 1위 분석관 | 이번 리스크의 본질은 v7.22.48 Pre-UI Runtime Gate 때(§0.6 U12)와 **동일 패턴**("완료 정의"의 해상도 부족)이 PART 단위에서 재발한 것이다 — 그때는 "Engine todo 26/26 completed"가 "유저 API 존재"를 의미하지 않았고, 지금은 "verify:X live"가 "화면 완성"을 의미하지 않는다. 재발 방지책은 §0.8.3처럼 **PART별 실측 스냅샷을 todo content에 직접 명시하는 것**(본문 어딘가에 적혀 있는 것만으로는 다음 에이전트가 놓칠 수 있음) — 아래 YAML 갱신에 반영했다. |
 
-**판정:** UI 플랜 §0.6/§0.7은 **오차0로 유지**(재검증 통과) · §0.8.2 4건 **감사 세션 문서 흡수 완료** · **구현 부채**=PART3c·4a·7b·8b(§0.8.2 **구현 시점** 열) · **PART0→8 구조·순서·모델배정 변경 없음**(적합 판정) · **다음 채팅 = `market-partner-trust-surfaces`만**(§0.8.3 · PART1a=갭-only·1채팅 목표 · completed todo 재실행 금지 불변).
+**판정:** UI 플랜 §0.6/§0.7은 **오차0로 유지**(재검증 통과) · §0.8.2 4건 **감사 세션 문서 흡수 완료** · **구현 부채**=PART3c·4a·7b·8b(§0.8.2 **구현 시점** 열) · **PART0→8 구조·순서·모델배정 변경 없음**(적합 판정) · **PART1·PART2a·PART2b CLOSED** · **다음 채팅 = `operator-entity-support-email`만**(completed todo 재실행 금지 불변).
 
 ## 0.1 Trust 잠금 정책 (v7.3)
 

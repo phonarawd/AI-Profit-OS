@@ -13,5 +13,18 @@
     { "id": "email", "role": "tertiary", "copyKey": "T.auth.emailMagic" },
     { "id": "legal", "role": "footer", "copyKey": "T.legal.operator.footerLine" }
   ],
-  "forbidden": ["stat_strip", "gender_branch", "profit_guaranteed_cta", "photo_pixel_match", "non_brand_logo", "three_second_profit_claim"]
+  "forbidden": [
+    "stat_strip",
+    "gender_branch",
+    "gender_field",
+    "rrn_field",
+    "profit_guaranteed_cta",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "three_second_profit_claim",
+    "kakao_oauth_primary_on_landing",
+    "capital_cta_earn"
+  ],
+  "tone": "utility",
+  "notes": "Kakao primary inside /auth/login only · Guest §6.4c.1 F · Infra auth-kakao-oauth-runtime pending → UI disabled guard"
 }

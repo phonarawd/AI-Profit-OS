@@ -12,5 +12,16 @@
     { "id": "birthDate", "role": "field", "copyKey": "T.auth.birthDate" },
     { "id": "hint", "role": "body", "copyKey": "T.auth.completeHintWithdraw" }
   ],
-  "forbidden": ["rrn_field", "gender_field", "address_required_v1", "photo_pixel_match", "profit_guaranteed_cta"]
+  "forbidden": [
+    "rrn_field",
+    "gender_field",
+    "gender_branch",
+    "address_required_v1",
+    "photo_pixel_match",
+    "profit_guaranteed_cta",
+    "capital_cta_earn"
+  ],
+  "stage": "B",
+  "tone": "utility",
+  "notes": "Stage B · withdraw/KYC gate · fields SSOT=Infra §51.9.1 · gender0"
 }
