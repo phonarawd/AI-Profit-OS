@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/practice-grant.v1.json",
+  "title": "PracticeGrantV1",
+  "description": "Money §51.7 practice bucket grant · welcome 1회 · expire 7d · withdraw/participate 403",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "userId",
+    "grantKey",
+    "amountUsdt",
+    "status",
+    "expiresAt",
+    "grantedAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "format": "uuid" },
+    "userId": { "type": "string", "format": "uuid" },
+    "grantKey": {
+      "type": "string",
+      "minLength": 8,
+      "description": "practice_grant_welcome | practice_grant_referee:{edgeId}"
+    },
+    "amountUsdt": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "expired", "revoked"]
+    },
+    "expiresAt": { "type": "string", "format": "date-time" },
+    "grantedAt": { "type": "string", "format": "date-time" },
+    "expiredAt": { "type": ["string", "null"], "format": "date-time" },
+    "grantJournalId": { "type": ["string", "null"], "format": "uuid" },
+    "expireJournalId": { "type": ["string", "null"], "format": "uuid" }
+  }
+}

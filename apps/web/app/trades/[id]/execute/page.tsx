@@ -1,10 +1,51 @@
 "use client";
 
+import { useParams, useSearchParams } from "next/navigation";
+import { SuccessBucketCtas } from "@aipo/ui/components/wallet/SuccessBucketCtas";
+import { T } from "@aipo/ui/copy/ko";
+
+/**
+ * Execution surface — success state ships §49.4 3CTA
+ * (수익만 출금 · 원금에 합치기 · 나중에).
+ * Full running/safe_stop UX = Engine/UI execution todos.
+ */
 export default function Page() {
+  const params = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
+  const state = searchParams.get("state") ?? "running";
+  const emphasis =
+    searchParams.get("cta") === "merge" ? "merge" : "profit_withdraw";
+
   return (
-    <main className="p-6 text-[var(--color-lux-text)]">
-      <h1 className="text-xl font-semibold">진행실</h1>
-      <p className="mt-2 text-sm text-[var(--color-lux-text-muted)]">골격 · 본구현은 도메인 todo</p>
+    <main
+      className="p-6 text-[var(--color-lux-text)]"
+      data-trade-id={params.id}
+      data-execution-state={state}
+    >
+      {state === "success" ? (
+        <>
+          <h1 className="text-xl font-semibold">{T.execution.successTitle}</h1>
+          <p className="mt-2 text-sm text-[var(--color-lux-text-muted)]">
+            {T.execution.successBalance}
+          </p>
+          <SuccessBucketCtas
+            emphasis={emphasis}
+            onMerge={() => {
+              /* POST /api/v1/wallet/profit/merge — session wiring */
+            }}
+            onLater={() => {
+              window.location.href = "/";
+            }}
+          />
+        </>
+      ) : (
+        <>
+          <h1 className="text-xl font-semibold">{T.execution.progressTitle}</h1>
+          <p className="mt-2 text-sm text-[var(--color-lux-text-muted)]">
+            {T.execution.progressHandsFree}
+          </p>
+        </>
+      )}
     </main>
   );
 }

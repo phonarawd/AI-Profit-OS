@@ -81,10 +81,12 @@
       },
       {
         "code": "TRC20",
-        "koLabel": "테더 네트워크",
+        "koLabel": "트론",
         "surface": "user",
         "forbiddenAliases": [
-          "TRC20"
+          "TRC20",
+          "ERC20",
+          "BEP20"
         ]
       },
       {

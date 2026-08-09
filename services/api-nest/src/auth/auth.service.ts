@@ -10,6 +10,8 @@ import {
   loadPhase0Env,
   oauthConfigured,
 } from "../config/phase0.env";
+import { LedgerProvisionService } from "../ledger/ledger.provision.service";
+import { PracticeGrantService } from "../ledger/practice-grant.service";
 import {
   ADMIN_JWT_ISSUER,
   DELETE_ACCOUNT_CONFIRM_PHRASE,
@@ -39,6 +41,21 @@ export type AuthSessionView = {
 
 @Injectable()
 export class AuthService {
+  constructor(
+    private readonly ledgerProvision: LedgerProvisionService,
+    private readonly practiceGrant: PracticeGrantService,
+  ) {}
+
+  /**
+   * After a real `users` row insert (Stage A persist) — provision §49 buckets
+   * then §51.7 welcome practice (+10 · 1회 · expire 7d).
+   * Calls SQL `provision_user_bucket_accounts` (idempotent).
+   */
+  async provisionLedgerBucketsForUser(userId: string): Promise<void> {
+    await this.ledgerProvision.provisionUserBucketAccounts(userId);
+    await this.practiceGrant.grantWelcome(userId);
+  }
+
   /** Fail-closed: admin issuer must never mint user sessions */
   assertUserIssuer(issuer: string): void {
     if (issuer === ADMIN_JWT_ISSUER) {
@@ -64,7 +81,9 @@ export class AuthService {
     const err = validateStageA(input);
     if (err) throw new BadRequestException(err);
 
-    // Skeleton response — DB write + JWT mint = M1 wiring
+    // Skeleton response — DB write + JWT mint = M1 wiring.
+    // Persist path MUST call provisionLedgerBucketsForUser(userId)
+    // → SQL provision_user_bucket_accounts (Money §49).
     const now = new Date();
     const expires = new Date(now.getTime() + 15 * 60 * 1000);
     const session: AuthSessionView = {
@@ -82,6 +101,8 @@ export class AuthService {
       onboarding: "incomplete" as const,
       session,
       issuer: USER_JWT_ISSUER,
+      ledgerProvision: "provisionLedgerBucketsForUser" as const,
+      practiceWelcome: "practice_grant_welcome" as const,
     };
   }
 

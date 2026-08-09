@@ -35,6 +35,7 @@ export const ADMIN_CHILD_ROUTES = [
   { href: "/admin/wallet?tab=review", parent: 4, note: "검수함" },
   { href: "/admin/wallet?tab=krw-pending", parent: 4, note: "원화 승인/거절" },
   { href: "/admin/wallet?tab=disputes", parent: 4, note: "분쟁" },
+  { href: "/admin/compliance?tab=kyc", parent: 8, note: "출금 KYC 승인/거절 · Money §42" },
   { href: "/admin/support?tab=queue", parent: "1|6", note: "CS 큐 · sidebar 모듈 금지" },
   { href: "/admin/reports/financial", parent: 5, note: "금융 리포트" },
   { href: "/admin/ledger?userId=", parent: 5, note: "유저 점프" },

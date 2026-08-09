@@ -10,6 +10,19 @@
     "./canon/manifest.json": "./canon/manifest.json",
     "./copy/ko": "./copy/ko/index.ts",
     "./copy/ko/execution": "./copy/ko/execution.ts",
-    "./copy/ko/opportunity": "./copy/ko/opportunity.ts"
+    "./copy/ko/kyc": "./copy/ko/kyc.ts",
+    "./copy/ko/opportunity": "./copy/ko/opportunity.ts",
+    "./copy/ko/principal-profit": "./copy/ko/principal-profit.ts",
+    "./copy/ko/deposit": "./copy/ko/deposit.ts",
+    "./copy/ko/wallet": "./copy/ko/wallet.ts",
+    "./copy/ko/invite": "./copy/ko/invite.ts",
+    "./copy/ko/practice": "./copy/ko/practice.ts",
+    "./components/wallet/BucketBreakdown": "./components/wallet/BucketBreakdown.tsx",
+    "./components/wallet/WithdrawModeCards": "./components/wallet/WithdrawModeCards.tsx",
+    "./components/wallet/PrincipalConfirmSheet": "./components/wallet/PrincipalConfirmSheet.tsx",
+    "./components/wallet/SuccessBucketCtas": "./components/wallet/SuccessBucketCtas.tsx",
+    "./components/wallet/DepositAmountPanel": "./components/wallet/DepositAmountPanel.tsx",
+    "./components/wallet/NetworkPlainWarning": "./components/wallet/NetworkPlainWarning.tsx",
+    "./components/wallet/DemoWalletBanner": "./components/wallet/DemoWalletBanner.tsx"
   }
 }

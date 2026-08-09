@@ -12,6 +12,7 @@
 | Sweeper | Energy delegate + Treasury sweep · CONFIRMED 전 sweep **금지** |
 | Participate | `minProfitUsdt` (+ `pricingVersion`) 필수 |
 | Money TX | `idempotency_key` + ordered locks |
+| Phase0 bus | **in-process** emit · NATS 문자열=Phase1+ 동등 · Day-1 NATS **0** |
 | Auth step-up | WebAuthn UX → PWA · **정책/Email OTP/PIN/recovery = 본 절 Owns** · non-WebAuthn fallback 필수 |
 | Paid RPC | upgrade · Day-1 dependency **아님** |
 

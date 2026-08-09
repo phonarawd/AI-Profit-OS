@@ -1,5 +1,10 @@
 {
   "phase0": ["push-dispatcher"],
-  "phase1": ["push-dispatcher", "marketing-capi-dispatcher"],
-  "notes": "Phase0: Nest in-process → push-dispatcher stub · NATS/Temporal/EKS 0. Phase1+: NATS bridge + adapters. See infra/phase0-migration-playbook.md · infra/hosts.manifest.json"
+  "phase1": [
+    "push-dispatcher",
+    "marketing-capi-dispatcher",
+    "chain-watchers",
+    "chain-sweeper"
+  ],
+  "notes": "Phase0: Nest in-process → push-dispatcher stub · chain-watchers/chain-sweeper emit=Nest in-process (not CF) · NATS/Temporal/EKS 0. Phase1+: NATS bridge + adapters + chain-watchers/sweeper deploy. See infra/phase0-migration-playbook.md · infra/hosts.manifest.json"
 }

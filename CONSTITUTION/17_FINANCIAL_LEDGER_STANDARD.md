@@ -13,6 +13,7 @@
 | KRW 표시 | `fx_snapshot_id` projection only · snapshot 없는 ≈원화 **금지** |
 | Trace | UI 금액 → `ledger_entry_id` 또는 `opportunity_id` |
 | Admin 잔액 조정 | double-entry + audit + reason · 직접 column UPDATE **0** |
+| 구현 경로 | `services/api-nest` ledger/wallet/compliance · `services/wallet-service` **금지** |
 | DB SoT | **단일 PostgreSQL** (ADR-001) · 이중 Postgres **금지** |
 
 ## Pointer

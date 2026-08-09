@@ -1,0 +1,20 @@
+name = "chain-sweeper"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVICE = "chain-sweeper"
+PHASE = "1"
+
+# Phase1 cron — Nest owns Phase0 in-process tick
+[triggers]
+crons = ["*/2 * * * *"]
+
+[env.production]
+name = "chain-sweeper"
+vars = { SERVICE = "chain-sweeper", PHASE = "1" }
+
+[env.preview]
+name = "chain-sweeper-preview"
+vars = { SERVICE = "chain-sweeper", PHASE = "1" }

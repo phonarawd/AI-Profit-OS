@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Admin & Ops
-overview: "v7.22.35 Admin·§9.1.1·todo의존순(ops→기능→deploy)·12모듈·유저360·simulation탭. Index §20.2 pointer. Index=00."
+overview: "v7.22.37 Admin·§9.1.1(+compliance?tab=kyc)·todo의존순(ops→기능→deploy)·Money계약동기. Index=00."
 todos:
   - id: admin-ia-child-routes-911
     content: "[grok-4.5|256K] v7.22.33 §9.1.1 자식 route/tab 전수 잠금 · sidebar13 0 · BOOTSTRAP §6 sync · monorepo routes 선행 SSOT"
@@ -56,7 +56,8 @@ isProject: false
 > **v7.22.28:** Index §20.2 · 유저 CTA `수익 벌기` **pointer** · domain=`participate` · Admin Owns **변경 0** · `executionPlatforms` Admin only  
 > **v7.22.29~32 pointer:** Soft60/Hard90 · 긴장감 · listing=ebay멀티\|admin · yahoo 영구FORBIDDEN (Owns=Index/Engine · Admin 표시만)  
 > **v7.22.33:** **§9.1.1** 자식 route 전수 · `growth?tab=simulation` · feature-platform 유령 제거 · BOOTSTRAP §6 sync  
-> **v7.22.36:** Index CLOSED · BOOTSTRAP §0 동기=DB**41**·mig**10** · `admin-ops`=shell/TOP5/wallet·growth·reports 골격 · deep=전용 todo · `admin-isolated-deploy` 마지막
+> **v7.22.36:** Index CLOSED · BOOTSTRAP §0 동기=DB**41**·mig**10** · `admin-ops`=shell/TOP5/wallet·growth·reports 골격 · deep=전용 todo · `admin-isolated-deploy` 마지막  
+> **v7.22.37:** Money 실측감사 동기 · `compliance?tab=kyc` 자식 route 잠금 · deposit-settings에 fee/minHolding/sweeper 필드 · Money §0.4 계약표 pointer
 
 ## 9. Admin — IA 및 구성 SSOT
 
@@ -72,7 +73,7 @@ isProject: false
 | 5 | 📒 입출금·정산 장부 | `/admin/ledger` | ledger | **§39** 전역·유저별 원장 · reconciliation |
 | 6 | 👤 회원 관리 | `/admin/users` | users | **§37·§39** · 편집·잔액·차단·**금융전수** |
 | 7 | 🛡️ 사기·이상 거래 방지 | `/admin/risk` | risk | 이상 징후·제재 |
-| 8 | ⚖️ 법적 확인·제재 | `/admin/compliance` | compliance | 제재국가·감시 |
+| 8 | ⚖️ 법적 확인·제재 | `/admin/compliance` | compliance | KYC 큐(`?tab=kyc`) · 제재국가·감시 |
 | 9 | 🚨 긴급 정지 | `/admin/system-control` | circuit | 전체·부분 정지 · **Web Push `pushEnabled` kill** + audit (PWA §23.5 · 톱레벨 13 금지) |
 | 10 | 🤖 AI 분석 기록 | `/admin/ai-logs` | ai-logs | AI 판단·수정 이력 · `?tab=coach`=퍼뜩 P/G/S Eval(Engine §47.12~14) |
 | 11 | 📣 이벤트·프로모션 | `/admin/growth` | growth | **기본 OFF** · §35 G1~G4 탭 |
@@ -91,15 +92,16 @@ isProject: false
 ### 9.1.1 자식 route / tab 전수 (sidebar 13 금지 · v7.22.33 · 중복0)
 
 > **Owns:** 본 절 · BOOTSTRAP §6 = 체크리스트 복사 · monorepo `apps/admin/routes.ts`가 본 표를 구현.  
-> **실물:** `apps/admin` 코드 **0** (2026-08-09) — 아래는 구현 필수 IA.
+> **실물:** `apps/admin/routes.ts` + 12모듈 **shell** 존재 (v7.22.36+) · deep 탭 UI=Admin todos · Money API 계약=`01` §0.4.
 
 | 자식 (코드 route) | 부모 | 기능 (ko) |
 |-------------------|------|-----------|
 | `/admin/execution-policy` | 2b | 매칭 성공 조절 · Soft60/Hard90 표시 · 난수성공률 UI **0** |
-| `/admin/wallet?tab=deposit-settings` | 4 | 원화 대표계좌 · TronGrid/watcher 설정 |
+| `/admin/wallet?tab=deposit-settings` | 4 | 원화 대표계좌 · TronGrid/watcher · **fee/minHolding/TRX stake/sweeper pause** (Money §11.1·§11.2·§43.2) |
 | `/admin/wallet?tab=review` | 4 | TOP1 검수함 (USDT예외·원화·고액출금) |
 | `/admin/wallet?tab=krw-pending` | 4 | 원화 **[승인]/[거절]** · CSV Day-1 비필수 |
 | `/admin/wallet?tab=disputes` | 4 | 오입금·wrong-chain 분쟁 |
+| `/admin/compliance?tab=kyc` | 8 | 출금 KYC **[승인]/[거절]** · R2 열람 · Money §42 |
 | `/admin/support?tab=queue` | 1·6 링크 | CS 티켓 큐 · **sidebar 모듈 추가 금지** |
 | `/admin/reports/financial` | 5 하위 | 일/월 금융 리포트 · user drill-down |
 | `/admin/ledger?userId=` | 5 | 유저 점프 |

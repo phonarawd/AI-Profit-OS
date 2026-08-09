@@ -1,0 +1,83 @@
+{
+  "id": "wallet-deposit",
+  "route": "/wallet/deposit",
+  "brandRef": "packages/ui/brand",
+  "query": {
+    "tab": ["usdt", "krw"],
+    "suggest": "suggestDepositUsdt",
+    "oppId": "opportunityId"
+  },
+  "deeplink": "/wallet/deposit?tab=usdt&suggest={suggestDepositUsdt}&oppId={id}",
+  "suggestOwner": "engine:§0.0.5.1",
+  "blocks": [
+    {
+      "id": "title",
+      "role": "title",
+      "copyKey": "T.deposit.pageTitle"
+    },
+    {
+      "id": "tabs",
+      "role": "segment",
+      "tabs": [
+        { "id": "usdt", "copyKey": "T.deposit.tabUsdt" },
+        { "id": "krw", "copyKey": "T.deposit.tabKrw" }
+      ]
+    },
+    {
+      "id": "networkWarning",
+      "role": "warning",
+      "tab": "usdt",
+      "component": "NetworkPlainWarning",
+      "placement": "above_address_qr",
+      "copyKeys": [
+        "T.wallet.networkWarning",
+        "T.wallet.networkWarningLine2",
+        "T.wallet.networkWarningDetail",
+        "T.wallet.networkWarningWrongSent"
+      ],
+      "links": {
+        "detail": "/me/guide/get-usdt",
+        "wrongSent": "/me/support?category=deposit&kind=wrong_chain"
+      }
+    },
+    {
+      "id": "addressPanel",
+      "role": "address",
+      "tab": "usdt",
+      "copyKeys": [
+        "T.wallet.addressLabel",
+        "T.wallet.addressCopy",
+        "T.wallet.qrLabel"
+      ],
+      "networkLabelCopyKey": "T.wallet.networkName"
+    },
+    {
+      "id": "amountPanel",
+      "role": "amount",
+      "component": "DepositAmountPanel",
+      "quickUsdt": [10, 50, 100, 500],
+      "suggestPrefill": true,
+      "suggestChip": true,
+      "forceDeposit": false,
+      "copyKeys": [
+        "T.deposit.amountLabel",
+        "T.deposit.suggestChip",
+        "T.deposit.suggestPrefillHint",
+        "T.deposit.krwSuggestNote",
+        "T.deposit.optionalHint"
+      ]
+    }
+  ],
+  "forbidden": [
+    "force_deposit",
+    "today_only_threat_cta",
+    "llm_balance_estimate",
+    "ledger_balance_update",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "trc20_user_render",
+    "erc20_user_render",
+    "bep20_user_render"
+  ]
+}

@@ -11,7 +11,7 @@
 | Surfaces | `/me/kyc` · Canon `kyc-*` · Lux 3면 |
 | Toast / redirect | 미완료 출금 시 KYC로 자동 이동 |
 | 서류 | R2 only · RRN 타이핑 **금지** · 성별 필드 **금지** |
-| Admin | `/admin/compliance` KYC 큐 |
+| Admin | `/admin/compliance?tab=kyc` 승인/거절 큐 |
 
 ## Pointer
 

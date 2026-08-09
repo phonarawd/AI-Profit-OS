@@ -9,6 +9,7 @@
     "configVersion",
     "krw",
     "usdtOnchain",
+    "withdrawGuards",
     "pricingGuards",
     "updatedAt",
     "updatedByAdminId"
@@ -25,7 +26,8 @@
         "bankName",
         "accountNumber",
         "accountHolder",
-        "noticeKo"
+        "noticeKo",
+        "krwWithdrawFeeKrw"
       ],
       "properties": {
         "bankName": {
@@ -39,6 +41,12 @@
         },
         "noticeKo": {
           "type": "string"
+        },
+        "krwWithdrawFeeKrw": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Money §11.1 · Day-1 default 0 · Admin deposit-settings"
         }
       }
     },
@@ -54,7 +62,9 @@
         "usdtContract",
         "hotWalletXpubRef",
         "treasuryHotAddressRef",
-        "energyDelegateEnabled"
+        "energyDelegateEnabled",
+        "usdtWithdrawNetworkFeeUsdt",
+        "minTrxStakeForSweeper"
       ],
       "properties": {
         "network": {
@@ -95,13 +105,33 @@
         },
         "usdtWithdrawNetworkFeeUsdt": {
           "type": "string",
-          "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
-          "description": "Decimal as string (no float money)"
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Money §11.1 · Day-1 default 1 · Admin deposit-settings"
         },
         "minTrxStakeForSweeper": {
           "type": "string",
-          "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
-          "description": "Decimal as string (no float money)"
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Money §43.2.1 · Day-1 default 5000 TRX"
+        },
+        "sweeperPaused": {
+          "type": "boolean",
+          "default": false,
+          "description": "Admin pause · user credit 불변 · 집금만 중지"
+        }
+      }
+    },
+    "withdrawGuards": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minHoldingHours"
+      ],
+      "properties": {
+        "minHoldingHours": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 24,
+          "description": "Money §11.2 · principal|combined only · profit-only 미적용 · 구호칭 compliance.minHoldingHours 승계"
         }
       }
     },

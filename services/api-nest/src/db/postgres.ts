@@ -4,8 +4,15 @@
  */
 
 import { Injectable, OnModuleDestroy } from "@nestjs/common";
-import { Pool, type QueryResultRow } from "pg";
+import { Pool, type PoolClient, type QueryResultRow } from "pg";
 import { loadPhase0Env } from "../config/phase0.env";
+
+export type DbQuerier = {
+  query<T extends QueryResultRow = QueryResultRow>(
+    text: string,
+    params?: unknown[],
+  ): Promise<{ rows: T[]; rowCount: number | null }>;
+};
 
 @Injectable()
 export class PostgresService implements OnModuleDestroy {
@@ -52,6 +59,28 @@ export class PostgresService implements OnModuleDestroy {
     const pool = this.ensurePool();
     if (!pool) throw new Error("DATABASE_URL unset");
     return pool.query<T>(text, params);
+  }
+
+  /** Serializable money TX helper — caller must set app.ledger_posting inside when mutating balances. */
+  async withTransaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
+    const pool = this.ensurePool();
+    if (!pool) throw new Error("DATABASE_URL unset");
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+      const result = await fn(client);
+      await client.query("COMMIT");
+      return result;
+    } catch (e) {
+      try {
+        await client.query("ROLLBACK");
+      } catch {
+        /* ignore rollback errors */
+      }
+      throw e;
+    } finally {
+      client.release();
+    }
   }
 
   async onModuleDestroy() {

@@ -504,7 +504,55 @@ written.push(
             description: "Required when mode is principal|combined",
           },
           idempotencyKey: { type: "string", minLength: 8 },
+          withdrawFeeUsdt: {
+            type: "string",
+            pattern: "^[0-9]+(\\.[0-9]+)?$",
+            description:
+              "Money §11.1 · quoted from deposit-config.usdtOnchain.usdtWithdrawNetworkFeeUsdt · confirm UX must show WITHDRAW_FEE_HINT",
+          },
           createdAt: iso8601,
+        },
+      }
+    )
+  )
+);
+
+written.push(
+  write(
+    "webauthn-challenge.v1.json",
+    meta(
+      "webauthn-challenge.v1.json",
+      "WebauthnChallengeV1",
+      "Money §43.6 step-up challenge · TTL 60s · origin=APP_HOST. NEVER: PWA redefine OTP/PIN/recovery policy · SMS Day-1 required.",
+      {
+        type: "object",
+        additionalProperties: false,
+        required: ["challengeId", "userId", "method", "expiresAt", "origin"],
+        properties: {
+          challengeId: uuidLike,
+          userId: uuidLike,
+          method: {
+            type: "string",
+            enum: ["webauthn", "email_otp", "pin", "recovery"],
+            description:
+              "§43.6 priority order: webauthn → email_otp → pin → recovery",
+          },
+          expiresAt: iso8601,
+          origin: {
+            type: "string",
+            minLength: 1,
+            description: "Must match APP_HOST allowlist",
+          },
+          rpId: {
+            type: "string",
+            description:
+              "WebAuthn RP ID = APP_HOST host only · UX package Owns=PWA §23.6",
+          },
+          publicKeyOptions: {
+            type: "object",
+            additionalProperties: true,
+            description: "Pass-through for @simplewebauthn/browser (PWA UX)",
+          },
         },
       }
     )
@@ -525,6 +573,7 @@ written.push(
           "configVersion",
           "krw",
           "usdtOnchain",
+          "withdrawGuards",
           "pricingGuards",
           "updatedAt",
           "updatedByAdminId",
@@ -534,12 +583,25 @@ written.push(
           krw: {
             type: "object",
             additionalProperties: false,
-            required: ["bankName", "accountNumber", "accountHolder", "noticeKo"],
+            required: [
+              "bankName",
+              "accountNumber",
+              "accountHolder",
+              "noticeKo",
+              "krwWithdrawFeeKrw",
+            ],
             properties: {
               bankName: { type: "string" },
               accountNumber: { type: "string" },
               accountHolder: { type: "string" },
               noticeKo: { type: "string" },
+              krwWithdrawFeeKrw: {
+                type: "integer",
+                minimum: 0,
+                default: 0,
+                description:
+                  "Money §11.1 · Day-1 default 0 · Admin deposit-settings",
+              },
             },
           },
           usdtOnchain: {
@@ -555,6 +617,8 @@ written.push(
               "hotWalletXpubRef",
               "treasuryHotAddressRef",
               "energyDelegateEnabled",
+              "usdtWithdrawNetworkFeeUsdt",
+              "minTrxStakeForSweeper",
             ],
             properties: {
               network: { const: "TRC20" },
@@ -573,8 +637,37 @@ written.push(
               hotWalletXpubRef: { type: "string", minLength: 1 },
               treasuryHotAddressRef: { type: "string", minLength: 1 },
               energyDelegateEnabled: { type: "boolean" },
-              usdtWithdrawNetworkFeeUsdt: decimal,
-              minTrxStakeForSweeper: decimal,
+              usdtWithdrawNetworkFeeUsdt: {
+                type: "string",
+                pattern: "^[0-9]+(\\.[0-9]+)?$",
+                description:
+                  "Money §11.1 · Day-1 default 1 · Admin deposit-settings",
+              },
+              minTrxStakeForSweeper: {
+                type: "string",
+                pattern: "^[0-9]+(\\.[0-9]+)?$",
+                description: "Money §43.2.1 · Day-1 default 5000 TRX",
+              },
+              sweeperPaused: {
+                type: "boolean",
+                default: false,
+                description:
+                  "Admin pause · user credit 불변 · 집금만 중지",
+              },
+            },
+          },
+          withdrawGuards: {
+            type: "object",
+            additionalProperties: false,
+            required: ["minHoldingHours"],
+            properties: {
+              minHoldingHours: {
+                type: "integer",
+                minimum: 0,
+                default: 24,
+                description:
+                  "Money §11.2 · principal|combined only · profit-only 미적용 · 구호칭 compliance.minHoldingHours 승계",
+              },
             },
           },
           pricingGuards: {
@@ -1239,13 +1332,19 @@ const toastCodes = [
   ["INSUFFICIENT_PROFIT", "출금 가능한 수익이 부족해요", "profit mode"],
   ["INSUFFICIENT_PRINCIPAL", "근무 중 원금이 부족해요. 충전 후 참여해 주세요", "participate"],
   ["PRACTICE_NOT_WITHDRAWABLE", "연습 잔액은 출금할 수 없어요", "practice"],
+  ["PRACTICE_GRANTED", "🎁 연습 잔액이 생겼어요. 출금은 안 돼요", "§51.7 welcome / referee practice"],
+  ["PRACTICE_EXPIRED", "⏰ 연습 잔액이 만료됐어요", "§51.7 practice expire cron"],
   ["MERGE_PROFIT_OK", "수익을 원금에 합쳤어요. 다음 기회에 바로 쓸 수 있어요", "merge"],
   ["DEPOSIT_DETECTED", "👀 USDT {amount} 입금 감지! 확정까지 잠시만요", "§43 1 conf"],
   ["DEPOSIT_CONFIRMED", "🎉 USDT {amount} 입금 확정! 바로 거래할 수 있어요", "§43 19 conf + ledger"],
+  ["SWEEPER_TRX_LOW", "🔴 Treasury TRX stake 부족 · 집금 일시 중지 (유저 잔액 유지)", "§43.2.1 Admin alert · user surface 0"],
   ["KRW_DEPOSIT_SUBMITTED", "📝 원화 입금 신청 접수! 송금 후 확인해 드릴게요", "krw request"],
   ["KRW_DEPOSIT_APPROVED", "✅ 원화 입금이 확인됐어요. 잔액에 반영됐어요 🎉", "admin approve"],
   ["KRW_DEPOSIT_REJECTED", "😔 원화 입금을 확인할 수 없어요. 내역에서 이유를 확인해 주세요", "admin reject"],
   ["KRW_DEPOSIT_EXPIRED", "⏰ 입금 신청이 만료됐어요. 다시 신청해 주세요", "TTL expire"],
+  ["DEPOSIT_DISPUTE_SUBMITTED", "📝 문의를 접수했어요. 확인 후 안내드릴게요", "§41.6 wrong-chain CS"],
+  ["DEPOSIT_DISPUTE_CREDITED", "✅ 확인했어요. 잔액에 반영됐어요 🎉", "admin wallet?tab=disputes credit"],
+  ["DEPOSIT_DISPUTE_REJECTED", "😔 이번 건은 반영하기 어려워요. 내역에서 이유를 확인해 주세요", "admin wallet?tab=disputes reject"],
   ["WITHDRAW_SUBMITTED", "📤 출금 요청을 받았어요", "withdraw"],
   ["TRADE_COMPLETE", "🎉 +{amount} USDT 지급 완료!", "settlement"],
   ["NETWORK_ERROR", "📡 연결이 불안정해요. 다시 시도해 주세요", "fetch fail"],
@@ -1257,6 +1356,10 @@ const toastCodes = [
   ["WITHDRAW_APPLY_BLOCKED", "📤 지금은 출금 신청을 받을 수 없어요. 고객센터에 문의해 주세요", "withdrawApplyBlocked"],
   ["PASSWORD_RESET_BY_OPS", "🔐 로그인 비밀번호가 재설정됐어요. 다시 로그인해 주세요", "admin password reset"],
   ["WITHDRAW_PIN_RESET", "🔑 출금 비밀번호가 초기화됐어요. 다음 출금 때 다시 등록해 주세요", "admin PIN reset"],
+  ["WITHDRAW_STEP_UP_REQUIRED", "🔐 출금하려면 본인 확인이 한 번 더 필요해요", "§43.6 step-up missing"],
+  ["PIN_REQUIRED", "🔑 출금 비밀번호를 다시 등록해 주세요", "PIN wipe or unset"],
+  ["WEBAUTHN_REVOKED", "🔐 패스키가 해제됐어요. 이메일·비밀번호로 본인 확인해 주세요", "admin webauthn revoke"],
+  ["STEP_UP_CHALLENGE_EXPIRED", "⏱️ 확인 시간이 지났어요. 다시 시도해 주세요", "§43.6 challenge TTL 60s"],
   ["BALANCE_ADJUSTED", "💰 잔액이 조정됐어요", "admin ledger adjust"],
   ["DEPOSIT_CONFIG_UPDATED", "🔄 입금 정보가 업데이트됐어요", "SSE optional"],
   ["MIN_HOLDING", "⏳ 원금은 충전 후 {hours}시간이 지나야 출금할 수 있어요", "§11.2"],
@@ -1936,9 +2039,9 @@ written.push(
             },
             {
               code: "TRC20",
-              koLabel: "테더 네트워크",
+              koLabel: "트론",
               surface: "user",
-              forbiddenAliases: ["TRC20"],
+              forbiddenAliases: ["TRC20", "ERC20", "BEP20"],
             },
             {
               code: "principal",

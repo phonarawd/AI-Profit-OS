@@ -76,6 +76,11 @@
         "trigger": "any money"
       },
       {
+        "code": "BUCKET_INVARIANT_FAIL",
+        "toastKo": "⏸️ 잔액 확인이 필요해서 잠시 멈췄어요. 곧 안내드릴게요",
+        "trigger": "§49.9 E1/P24 recon mismatch"
+      },
+      {
         "code": "RATE_LIMITED",
         "toastKo": "🐢 잠깐만요! 너무 빠르게 눌렀어요",
         "trigger": "click spam"
@@ -131,6 +136,16 @@
         "trigger": "practice"
       },
       {
+        "code": "PRACTICE_GRANTED",
+        "toastKo": "🎁 연습 잔액이 생겼어요. 출금은 안 돼요",
+        "trigger": "§51.7 welcome / referee practice"
+      },
+      {
+        "code": "PRACTICE_EXPIRED",
+        "toastKo": "⏰ 연습 잔액이 만료됐어요",
+        "trigger": "§51.7 practice expire cron"
+      },
+      {
         "code": "MERGE_PROFIT_OK",
         "toastKo": "수익을 원금에 합쳤어요. 다음 기회에 바로 쓸 수 있어요",
         "trigger": "merge"
@@ -144,6 +159,11 @@
         "code": "DEPOSIT_CONFIRMED",
         "toastKo": "🎉 USDT {amount} 입금 확정! 바로 거래할 수 있어요",
         "trigger": "§43 19 conf + ledger"
+      },
+      {
+        "code": "SWEEPER_TRX_LOW",
+        "toastKo": "🔴 Treasury TRX stake 부족 · 집금 일시 중지 (유저 잔액 유지)",
+        "trigger": "§43.2.1 Admin alert · user surface 0"
       },
       {
         "code": "KRW_DEPOSIT_SUBMITTED",
@@ -164,6 +184,21 @@
         "code": "KRW_DEPOSIT_EXPIRED",
         "toastKo": "⏰ 입금 신청이 만료됐어요. 다시 신청해 주세요",
         "trigger": "TTL expire"
+      },
+      {
+        "code": "DEPOSIT_DISPUTE_SUBMITTED",
+        "toastKo": "📝 문의를 접수했어요. 확인 후 안내드릴게요",
+        "trigger": "§41.6 wrong-chain CS"
+      },
+      {
+        "code": "DEPOSIT_DISPUTE_CREDITED",
+        "toastKo": "✅ 확인했어요. 잔액에 반영됐어요 🎉",
+        "trigger": "admin wallet?tab=disputes credit"
+      },
+      {
+        "code": "DEPOSIT_DISPUTE_REJECTED",
+        "toastKo": "😔 이번 건은 반영하기 어려워요. 내역에서 이유를 확인해 주세요",
+        "trigger": "admin wallet?tab=disputes reject"
       },
       {
         "code": "WITHDRAW_SUBMITTED",
@@ -219,6 +254,26 @@
         "code": "WITHDRAW_PIN_RESET",
         "toastKo": "🔑 출금 비밀번호가 초기화됐어요. 다음 출금 때 다시 등록해 주세요",
         "trigger": "admin PIN reset"
+      },
+      {
+        "code": "WITHDRAW_STEP_UP_REQUIRED",
+        "toastKo": "🔐 출금하려면 본인 확인이 한 번 더 필요해요",
+        "trigger": "§43.6 step-up missing"
+      },
+      {
+        "code": "PIN_REQUIRED",
+        "toastKo": "🔑 출금 비밀번호를 다시 등록해 주세요",
+        "trigger": "PIN wipe or unset"
+      },
+      {
+        "code": "WEBAUTHN_REVOKED",
+        "toastKo": "🔐 패스키가 해제됐어요. 이메일·비밀번호로 본인 확인해 주세요",
+        "trigger": "admin webauthn revoke"
+      },
+      {
+        "code": "STEP_UP_CHALLENGE_EXPIRED",
+        "toastKo": "⏱️ 확인 시간이 지났어요. 다시 시도해 주세요",
+        "trigger": "§43.6 challenge TTL 60s"
       },
       {
         "code": "BALANCE_ADJUSTED",

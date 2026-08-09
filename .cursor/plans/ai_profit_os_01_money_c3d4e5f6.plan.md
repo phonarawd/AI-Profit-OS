@@ -1,63 +1,163 @@
 ---
 name: AI Profit OS — Money & Chain
-overview: "v7.22.33 Money pointer·원장→지갑·실금액정산·PG사0. Index §20.2 CTA=수익벌기. Index=00."
+overview: v7.22.37 Money 실측감사흡수·원장→fee/holding→지갑/KRW→KYC→출금auth→체인→출금UI→남용→suggest→초대→practice. Admin계약잠금. Grok256K. Index=00.
 todos:
   - id: pg-gateway-ban
-    content: "[grok-4.5|256K] §41 PG사0 · verify:pg-module-scan · 용어≠PostgreSQL"
+    content: "[grok-4.5|256K] §41 PG사0 · verify:pg-module-scan · 용어≠PostgreSQL · Auto-Recon≠Day-1"
+    status: completed
+  - id: money-preflight-constitution
+    content: "[grok-4.5|256K] 착수전 BOOTSTRAP+CONSTITUTION(17/37/39/41/42/43/49/51r)+schemas+mig10+DB41+Admin routes 실측기록 · 규칙/스키마 모순0 · 구현코드0"
     status: completed
   - id: money-double-entry
-    content: "[grok-4.5|256K] Double-Entry + §49 버킷 + ASC FOR UPDATE + idempotency + recon · 잔액 UPDATE 0"
-    status: pending
-  - id: compliance-wallet
-    content: "[composer-2.5|200K] wallet-service §41/§43 TRC20 + 출금모드 + KRW Admin승인/거절 Day-1 + §37 · PG사0 · CSV비필수(L2+)"
-    status: pending
+    content: "[grok-4.5|256K] api-nest ledger posting only · ASC FOR UPDATE · idempotency · provision_user_bucket_accounts · 잔액UPDATE0 · recon · verify:bucket-invariant"
+    status: completed
+  - id: money-fee-min-holding
+    content: "[grok-4.5|256K] §11.1 fee+§11.2 minHolding · deposit-config keys · Admin deposit-settings 계약 · verify:withdraw-fee-ledger/min-holding-scope"
+    status: completed
+  - id: money-wallet-usdt-krw
+    content: "[grok-4.5|256K] §41 TRC20주소+KRW신청 · Admin krw-pending 승인/거절 API · PG사0·CSV=L2+ · verify:krw-admin-decide/pg-module-scan"
+    status: completed
   - id: kyc-withdraw-gate
-    content: "[composer-2.5|200K] §42 KYC Lux 3면+submission schema + 출금1회 게이트 + WebAuthn/OTP/PIN · verify:kyc-*"
-    status: pending
+    content: "[grok-4.5|256K] §42 KYC schema+R2+출금1회게이트 · Admin compliance?tab=kyc API · verify:kyc-withdraw-only/kyc-r2-only/kyc-redirect"
+    status: completed
+  - id: money-withdraw-auth-intent
+    content: "[grok-4.5|256K] §43.6 step-up+§49.3 intent(가드#1 withdrawApplyBlocked) · §43.6a PIN/WebAuthn wipe 계약 · verify:webauthn-fallback-pointer"
+    status: completed
   - id: chain-watchers
-    content: "[composer-2.5|200K] §43 USDT 단일 스트림·주소Set·1conf UI/19conf ledger · 폴링 0"
-    status: pending
+    content: "[grok-4.5|256K] §43 workers/chain-watchers 단일스트림·1/19 · Phase0 emit=in-process · Phase1 deploy · verify:deposit-confirm-stages/no-per-address-poll"
+    status: completed
   - id: chain-sweeper
-    content: "[composer-2.5|200K] §43 Energy Delegate + Treasury 집금 (TRX stake 자본만)"
-    status: pending
+    content: "[grok-4.5|256K] §43.2 Energy+TRX guard · Admin deposit-settings pause · Phase0 in-process(≠NATS Day-1) · verify:sweeper-trx-guard"
+    status: completed
   - id: principal-profit-withdraw
-    content: "[composer-2.5|200K] §49 버킷UI·기본=수익만·원금확인시트·3CTA · withdrawApplyBlocked(§9.8.4a) · verify:bucket-invariant/withdraw-mode-default"
-    status: pending
+    content: "[grok-4.5|256K] §49 버킷UI·기본profit·원금시트·3CTA · Admin finance?tab=buckets API · verify:bucket-invariant/withdraw-mode-default/principal-withdraw-reachable"
+    status: completed
   - id: principal-profit-abuse-defense
-    content: "[grok-4.5|256K] §49.9 P1~P24·E1~E12 + risk rules + CI 매핑"
-    status: pending
+    content: "[grok-4.5|256K] §49.9 P1~P24·E1~E12 · risk rules · Admin risk?tab=queue 매핑 · CI"
+    status: completed
   - id: balance-suggest-deposit
-    content: "[composer-2.5|200K] §49.2a principal Fact + deposit?suggest= · Engine §0.0.5.1 pointer · verify:balance-aware-feed"
-    status: pending
+    content: "[grok-4.5|256K] §49.2a principal Fact+deposit?suggest= · Engine §0.0.5.1 pointer only · verify:balance-aware-feed"
+    status: completed
   - id: deposit-network-plain-ko
-    content: "[composer-2.5|200K] §41.6 입금 네트워크 한글경고 + wrong-chain→CS · TRC20 화면0 · verify:deposit-network-plain-ko"
-    status: pending
+    content: "[grok-4.5|256K] §41.6 입금네트워크한글 · wrong-chain→CS+disputes · TRC20화면0 · verify:deposit-network-plain-ko"
+    status: completed
   - id: referral-program-ssot
-    content: "[grok-4.5|256K] §51.5 초대∞·Pool FIFO·%식·0원런칭·clawback·R* · UI§5.9.1a pointer · verify:referral-*"
-    status: pending
+    content: "[grok-4.5|256K] §51.5 초대∞·Pool FIFO·0원런칭·clawback · Admin growth?tab=referral 계약 · UI§5.9.1a pointer · verify:referral-*"
+    status: completed
   - id: practice-bucket-onboarding
-    content: "[composer-2.5|200K] §51.7 practice 1회·만료·Banner·participate/withdraw 403 · Admin buckets 탭"
-    status: pending
+    content: "[grok-4.5|256K] §51.7 practice 1회·만료·Banner·403 · Admin buckets 표시 · verify:practice-non-withdrawable"
+    status: completed
 isProject: false
 ---
-# AI Profit OS — Money & Chain (v7.22.33 pointer · Owns 본문 유지)
+
+# AI Profit OS — Money & Chain (v7.22.37 · Owns 본문 + 실측감사 흡수)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
 > **퍼뜩(AI) Fact:** 버킷·입금·출금·레퍼럴·practice + depositPref · **principalUsdt** (§49.2a) · §47.12 (머니 엔진 비파괴)  
 > **유저 네트워크 카피:** §41.6 · 가이드 UI=§38.8 pointer  
-> **KRW Day-1:** Admin **승인/거절** · CSV Auto-Recon=**L2+만** (ARCHIVE/구문구 무시)  
-> **todo 순서:** PG사0(완료) → 원장 → 지갑/KYC → 체인 → sweeper → 출금(+차단가드) → 남용방어 → suggest/네트워크카피 → 초대 → practice (File-Serial)  
-> **v7.22.21:** §49.2a 잔액 Fact + 입금 `suggest`  
-> **v7.22.22:** §51.5 초대 **횟수 ∞** · 예산/%/품질/타이밍 가드 · 0원 런칭 · KR 설명 Owns=UI §5.9.1a  
-> **v7.22.24:** §43.6a Admin 출금 PIN·WebAuthn 초기화 pointer · Admin §9.8.10E  
-> **v7.22.25:** §49.3 `#1` **withdrawApplyBlocked** (Admin §9.8.4a) · todo 의존 순서 잠금  
-> **v7.22.26:** Index §20.1 기회스캔 표현계층 **pointer only** · Money Owns(원장·출금·체인) **변경 0**  
-> **v7.22.27:** Index §20.2 자본참여자·정산 레이어 **pointer only** · 유저 CTA/표현 Owns=UI · Money Owns **변경 0**  
-> **v7.22.28:** 유저 CTA=`수익 벌기` · domain=`participate` · settlement=**실금액** ledger · `platform_reserve`=Ops(제품 P0 아님) · pointer only · Money Owns **변경 0**  
+> **KRW Day-1:** Admin **승인/거절** · CSV Auto-Recon=**L2+만** (ARCHIVE/구문구·규칙 drift 무시)  
+> **todo 순서 (Grok-4.5|256K · 위→아래 · 한 채팅=한 todo):** preflight(완료) → 원장 → fee/holding → USDT+KRW지갑 → KYC → 출금auth/intent → watchers → sweeper → 출금UI → 남용방어 → suggest → 네트워크카피 → 초대 → practice  
+> **모델 잠금 (본 파일):** 전 todo = **`[grok-4.5|256K]`만** (256K 한도 안 파트 분할 · composer 슬라이스 접두사 **금지**)  
+> **구현 경로 잠금:** `services/api-nest` 모듈(`ledger`/`wallet`/`compliance`) · `workers/chain-*` · **`services/wallet-service` 폴더 생성 금지**  
+> **버스 잠금:** Phase0 = **in-process** · NATS 문자열=Phase1+ 동등 이벤트 · Day-1 NATS 필수 **0**  
+> **체인 Phase:** 코드 Owns=Money · **deploy/활성=Phase1+** (Phase0 workers = `push-dispatcher` only · BOOTSTRAP §0)  
+> **v7.22.21~28:** pointer 유지 (CTA/표현 Owns≠Money)  
+> **v7.22.37:** 실측감사( DB41·mig10·함수4·Admin routes·스키마·헌법) · Admin 계약 전수 · todo 재분할 · 모순 흡수
 
-> **모델:** 불변식/방어=`grok-4.5` · 서비스/워커 슬라이스=`composer-2.5`
+---
+
+## 0. 착수 전 실물 대조 기록 (v7.22.37 · 예측 0 · MCP+FS)
+
+> **Owns:** 본 절 = Money 착수 게이트 기록. 구현 todo는 `money-double-entry`부터.  
+> **검증일:** 2026-08-09 · Supabase MCP `list_tables`/`list_migrations`/`execute_sql` + 레포 FS.
+
+### 0.1 읽기 순서 (한 채팅 시작 시 · 이 표만)
+
+| 순 | 문서/경로 | 목적 |
+|----|-----------|------|
+| 1 | `docs/CONSTITUTION_BOOTSTRAP.md` §0·§1·§6·§7·§9 | 실물·Admin IA·모델·다음 todo |
+| 2 | `CONSTITUTION/17` · `41` · `42` · `43` · `49` · `51_REFERRAL_*` · `37` · `39` | Money Owns/Forbidden |
+| 3 | **본 플랜** 해당 todo 절만 | 구현 SSOT |
+| 4 | `schemas/*.v1.json` (해당) + `supabase/migrations/*` | 계약·DDL |
+| 5 | `apps/admin/routes.ts` + Admin §9.1.1 | Admin 화면 Owns≠Money · **API 계약은 Money** |
+| 6 | `.cursor/rules/money-ledger.mdc` · `pg-gateway-ban.mdc` | 에이전트 가드 |
+
+**금지:** launch ARCHIVE를 착수 SSOT · Engine/UI 플랜 전문 대량 로드 · 사진 목업.
+
+### 0.2 실측 스냅샷 (오차0)
+
+| 대상 | 실측 | Money 함의 |
+|------|------|------------|
+| Supabase ref | `mgsytcetsiecllmhcyox` · Seoul · PG17.6 | 원격 only (Docker OFF) |
+| `public` 테이블 | **41** · RLS ON | ledger/wallet/kyc/referral 표 존재 · Nest service_role |
+| migrations applied | **10** · 끝=`20260808224856_auth_oauth_passkey_stage_a_b` | 로컬 파일명 1:1 · Dashboard DDL 0 |
+| public 함수 | `ledger_require_posting_flag` · `ledger_forbid_mutation` · `provision_user_bucket_accounts` · `users_stage_a_identity_ok` | **posting RPC 아직 0** → `money-double-entry`가 Nest TX+flag로 구현 |
+| ledger seed | system accounts **7** rows | 유저 버킷은 signup 시 provision |
+| `services/` | `api-nest` · `engine-rust` · `marketing-attribution` | **wallet-service 디렉터리 없음** → Nest 모듈 |
+| `workers/chain-*` | Phase1+ **stub** (`phase=1`) | Money가 구현 · Phase1 deploy |
+| `apps/admin/**` | 12모듈 shell only (탭 UI deep 미구현) | Money=Admin **API·분개·이벤트 계약** · UI deep=Admin todos |
+| Auth | Nest JWT · Supabase Auth **0** | KYC/출금 step-up도 Nest |
+| Engine | `settlement_rule.rs` skeleton SafeStop | settlement 금액 Owns=Engine Rule · Money=분개만 |
+| PG사 | 코드경로 0 · Day-1 KRW=Admin 승인/거절 | `pg-gateway-ban` Auto-Recon 문구 **교정됨**(구 drift) |
+
+### 0.3 v7.22.37에서 흡수한 모순·보완 (완료)
+
+| # | 발견(실측) | 흡수 |
+|---|------------|------|
+| M1 | 플랜/시퀀스 `wallet-service` · FS에 폴더 0 | → `services/api-nest` 모듈 잠금 · §49.12 트리 수정 |
+| M2 | §43.2 `NATS financial` · Phase0=in-process | → Phase0 in-process emit · NATS=Phase1+ 표기 |
+| M3 | `.cursor/rules/pg-gateway-ban.mdc` “원화 Auto-Recon only” | → Day-1=Admin 승인/거절 · CSV=L2+ (헌법§41과 일치) |
+| M4 | Money §42.3 `compliance?tab=kyc` · `ADMIN_CHILD_ROUTES` 누락 | → Admin routes + verify:admin-routes + Admin §9.1.1 흡수 |
+| M5 | §11.1/11.2 키 중 `krwWithdrawFeeKrw`·`minHoldingHours` 스키마 공백 | → `schemas/deposit-config.v1.json` 필드 잠금 |
+| M6 | todo에 `composer-2.5` 혼재 · 거대 슬라이스 | → 전 todo `grok-4.5\|256K` · 의존 파트 분할 |
+| M7 | §43.4 participate pricing가 Money 실행 본문에 혼재 | → **Engine Owns pointer** (Money 구현 todo 범위 0) |
+| M8 | Admin shell만 있고 Money Admin 계약 표 부재 | → **§0.4 Money→Admin 계약 전수** |
+
+### 0.4 Money→Admin 계약 전수 (UI Owns=Admin · API/원장 Owns=Money)
+
+> 실물: `apps/admin/routes.ts` + Admin 플랜 §9.1/§9.1.1/§37/§39.  
+> Money todo는 아래 **API·분개·이벤트·스키마**를 제공해야 Admin deep이 막히지 않음.
+
+| Admin surface (실route) | Money 제공 계약 | Money todo |
+|-------------------------|-----------------|------------|
+| `/admin/wallet?tab=deposit-settings` | `deposit-config.v1` CRUD · fee/minHolding/TRX stake/sweeper pause · audit | `money-fee-min-holding` · `chain-sweeper` |
+| `/admin/wallet?tab=review` | 고액출금·USDT예외 큐 read + decide hooks | `money-withdraw-auth-intent` · `principal-profit-withdraw` |
+| `/admin/wallet?tab=krw-pending` | `POST .../krw-deposits/:id/approve\|reject` · ledger credit 1회 · toast keys | `money-wallet-usdt-krw` |
+| `/admin/wallet?tab=disputes` | wrong-chain/오입금 티켓 링크·결정 audit · §51.11 | `deposit-network-plain-ko` (+ Admin CS UI) |
+| `/admin/ledger` · `?userId=` | journals/entries 조회 · recon mismatch | `money-double-entry` |
+| `/admin/reports/financial` | 일/월 집계 소스=ledger only | `money-double-entry` |
+| `/admin/users/:id/finance` · `?tab=buckets` | buckets + 입출금 mode 이력 + 순유입 KPI 소스 | `principal-profit-withdraw` · `practice-bucket-onboarding` |
+| `/admin/users/:id` (§9.8.3 조정) | admin_adjust 분개 · 버킷 지정 필수 · reason≥10 | `money-double-entry` |
+| `/admin/users/:id` (§9.8.4a) | `withdrawApplyBlocked` 가드#1 | `money-withdraw-auth-intent` |
+| `/admin/users/:id` (§9.8.10E PIN/WebAuthn) | verifier wipe · credential revoke (평문 0) | `money-withdraw-auth-intent` |
+| `/admin/compliance?tab=kyc` | KYC approve/reject · R2 signed URL ≤5m · push | `kyc-withdraw-gate` |
+| `/admin/risk?tab=queue` | §49.9 P* 룰 신호 · freeze 연동 | `principal-profit-abuse-defense` |
+| `/admin/growth?tab=referral` | Pool top-up · rewardsEnabled · clawback · **인원캡 UI 0** | `referral-program-ssot` |
+| `/admin/support?tab=queue` | deposit/withdraw category · ledger 직접조정 **0** | pointer §51.6 (UI=Admin) |
+
+**Admin sidebar 13번째 모듈 추가 금지.** 신규는 **자식 tab만**.
+
+### 0.5 CLOSE 재검증 (v7.22.38 · 2026-08-09 · 예측0)
+
+> **Owns:** Money 플랜 종료 게이트. todos **15/15 completed · pending 0**.  
+> **실측:** Supabase MCP `list_tables`/`list_migrations`/`execute_sql` + FS + `pnpm verify:*` 전수.
+
+| 대상 | 종료 실측 | 판정 |
+|------|-----------|------|
+| Supabase ref | `mgsytcetsiecllmhcyox` · Seoul | ✅ |
+| `public` 테이블 | **58** · RLS ON | ✅ (+deposit_disputes·referral_payout_queue·risk·practice·stepup 등) |
+| migrations applied | **18** · 로컬 파일명 **버전 1:1** · 끝=`20260809010858_referral_pool_fifo_clawback` | ✅ (누락 2건 `deposit_disputes`·`referral_pool_fifo_clawback` 본 턴 apply) |
+| public 함수 | 동일 4 · posting RPC **0** (Nest TX + `app.ledger_posting`) | ✅ |
+| system ledger accounts | **7** | ✅ |
+| `services/` | `api-nest`{ledger,wallet,compliance,risk,referral} · **wallet-service 0** | ✅ |
+| `workers/chain-*` | 구현 · Phase0 Nest in-process · Phase1 deploy | ✅ |
+| Admin routes | §0.4 계약 surface 전수 `ADMIN_CHILD_ROUTES` | ✅ |
+| PG사 | `verify:pg-module-scan` PASS · Day-1≠Auto-Recon | ✅ |
+| Money verify | bucket/fee/holding/krw/kyc×3/webauthn/deposit×2/sweeper/withdraw×2/abuse/suggest/plain-ko/referral×6/practice/email/admin-routes **전수 PASS** | ✅ |
+
+**CLOSE 판정:** Money = **CLOSED** · File-Serial 다음 = **02 Engine**. completed Money todo 재실행 **금지**.
 
 ## 11. Money / Double-Entry (금융급, 오차0)
 
@@ -104,12 +204,12 @@ isProject: false
 
 | 항목 | 잠금 |
 |------|------|
-| 설정 키 | `deposit-config.usdtWithdrawNetworkFeeUsdt` (Admin §37) |
+| 설정 키 | `deposit-config.usdtOnchain.usdtWithdrawNetworkFeeUsdt` (Admin §37 deposit-settings) |
 | Day-1 기본 | **1 USDT** (고정 견적 · 실가스 변동은 Ops가 흡수하거나 Admin 갱신) |
 | 차감 버킷 | 출금 `mode`와 동일 (profit → profit, principal → principal, combined → 명세 분리) |
-| 분개 | Debit User (해당 버킷) / Credit `ops.network_fee_usdt` · `withdrawFeeUsdt` 필드 |
+| 분개 | Debit User (해당 버킷) / Credit `SYS:FEE_REVENUE` · `withdrawFeeUsdt` 필드 |
 | UX | 출금 확인 전 **「이체 수수료 {n} USDT」** 필수 표시 · 숨김 금지 |
-| 원화 출금 | 별도 `krwWithdrawFeeKrw` (기본 0) · Admin 설정 |
+| 원화 출금 | `deposit-config.krw.krwWithdrawFeeKrw` (기본 **0**) · Admin 설정 |
 
 **CI:** `verify:withdraw-fee-ledger` — fee 미표시·미분개 Fail
 
@@ -117,11 +217,12 @@ isProject: false
 
 | 항목 | 잠금 |
 |------|------|
-| 설정 키 | `compliance.minHoldingHours` · Day-1 **24** · Admin 변경+audit |
+| 설정 키 | `deposit-config.withdrawGuards.minHoldingHours` · Day-1 **24** · Admin deposit-settings 변경+audit |
 | 적용 | **원금**이 포함된 출금 (`principal` \| `combined`의 principal 분) |
 | 기산 | 해당 principal을 만든 **입금 confirmedAt** 기준 (FIFO) |
 | **미적용** | `mode=profit` 순수 수익 출금 · merge |
 | UX | 미충족 시 toast `MIN_HOLDING` · 남은 시간 ko · 원금 출금만 차단 |
+| 별칭 금지 | 구호칭 `compliance.minHoldingHours` 문자열 = **본 키로 승계** (이중 설정 테이블 0) |
 
 **CI:** `verify:min-holding-scope` — profit-only 출금은 24h 내에도 200
 
@@ -152,22 +253,22 @@ isProject: false
 ```mermaid
 sequenceDiagram
   participant U as User
-  participant W as wallet-service
-  participant CW as chain-watchers
+  participant W as api_nest_wallet
+  participant CW as chain_watchers
   participant TG as TronGrid_EventStream
   participant L as ledger
-  participant SW as chain-sweeper
-  participant RT as realtime-service
+  participant SW as chain_sweeper
+  participant Bus as in_process_bus
 
   U->>W: GET my-deposit-address
   W-->>U: QR + 전용주소
   U->>U: USDT TRC20 send
   CW->>TG: subscribe USDT Transfer single stream
   TG-->>CW: Transfer to known address
-  CW->>RT: DEPOSIT_DETECTED at 1 conf
+  CW->>Bus: wallet.deposit.detected at 1 conf
   Note over L: NO ledger yet
   CW->>L: DEPOSIT_CONFIRMED at 19 conf
-  L-->>RT: wallet.deposit.confirmed
+  L-->>Bus: wallet.deposit.confirmed
   SW->>SW: Energy delegate + sweep to Treasury
 ```
 
@@ -325,13 +426,16 @@ interface KycSubmissionV1 {
 // NEVER: rrnFull · gender · publicUrl
 ```
 
-### 42.3 Admin (`/admin/compliance?tab=kyc`)
+### 42.3 Admin (`/admin/compliance?tab=kyc` · §9.1.1 자식 · sidebar 13 금지)
 
 | 컬럼 | 액션 |
 |------|------|
 | 유저 · 신청일 · 서류 썸네일 | [승인] [거절] reason≥10 |
 | 승인 | `kycStatus=approved` · push `KYC_APPROVED` · audit |
 | 거절 | `rejected` · 유저 재신청 가능 |
+
+**계약:** Money=`kyc-withdraw-gate`가 approve/reject API+R2 signed URL · Admin=`admin-ops`/compliance deep이 탭 UI.  
+**routes:** `apps/admin/routes.ts` `ADMIN_CHILD_ROUTES`에 `/admin/compliance?tab=kyc` **필수** (`verify:admin-routes`).
 
 ### 42.4 Copy (`packages/ui/copy/ko/kyc.ts`)
 
@@ -418,10 +522,11 @@ workers/chain-sweeper
   2) Treasury DelegateResource(Energy) → userDepositAddress
   3) USDT Transfer → treasuryHotWallet
   4) Undelegate / recycle energy
-  5) NATS financial: wallet.sweep.completed (user balance unchanged)
+  5) Phase0 in-process emit: wallet.sweep.completed (user balance unchanged)
+     Phase1+ 동등: NATS financial subject (Day-1 필수 0)
 ```
 
-**가드:** DETECTED 단계 sweep 금지 · min sweep amount · sweeper keys HSM/secrets · Admin pause
+**가드:** DETECTED 단계 sweep 금지 · min sweep amount · sweeper keys HSM/secrets · Admin pause (`deposit-settings`)
 
 #### 43.2.1 Treasury TRX stake 모니터링 (오류0)
 
@@ -450,22 +555,10 @@ workers/chain-sweeper
 **오차0:** Day-1 “자동” = **승인 버튼 한 번에 잔액 반영**(재계산·이중 credit 0). CSV 없음을 결함으로 보지 않음.  
 **CI:** `verify:krw-admin-decide` — approve→credit 1회 · reject→credit 0 · 유저 상태/토스트 키 존재
 
-### 43.4 Pricing / Slippage (§36 개정)
+### 43.4 Pricing / Slippage (**pointer · Engine Owns**)
 
-```typescript
-// POST /participate
-{
-  opportunityId,
-  pricingVersion,
-  minProfitUsdt,          // 유저 허용 최소 수익
-  amountUsdt
-}
-```
-
-규칙:
-- `now - quote.staleAt > priceStaleMaxSec(3)` → reject `PRICE_STALE_DATA`
-- version mismatch여도 **recomputed netProfit ≥ minProfitUsdt** 이고 **≤ maxSlippage bound**면 **성공**
-- 그 외만 `PRICE_STALE` + 클라이언트 auto-patch
+> **중복0:** `minProfitUsdt` · staleAt · slippage · participate 가드 = **Engine** (`ai_profit_os_02_engine_*.plan.md` · §0.0.4/§48) + Admin §36.  
+> Money 본 파일은 `deposit-config.pricingGuards` 키 **저장만** 허용 · Money todo에서 participate Rule **구현 금지**.
 
 ### 43.5 PostgreSQL Ledger Concurrency
 
@@ -786,8 +879,12 @@ packages/ui/components/wallet/WithdrawModeCards.tsx
 apps/web/app/wallet/page.tsx          # 버킷
 apps/web/app/wallet/withdraw/         # mode=profit default
 apps/web/app/me/guide/principal/
-services/wallet-service/              # bucket ledger ops
-services/risk-service/rules/p49_*.ts
+services/api-nest/src/ledger/         # double-entry posting (SoT)
+services/api-nest/src/wallet/         # buckets · withdraw · deposit
+services/api-nest/src/compliance/     # KYC gate
+services/api-nest/src/risk/rules/p49_*.ts  # §49.9 (Nest 모듈 · 별도 risk-service 폴더 금지)
+workers/chain-watchers/
+workers/chain-sweeper/
 ```
 
 ### 49.13 교차 참조 (중복0)

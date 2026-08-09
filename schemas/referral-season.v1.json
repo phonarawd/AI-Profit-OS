@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/referral-season.v1.json",
+  "title": "ReferralSeasonV1",
+  "description": "Money §51.5.3 weekly season · Promo prize inside Pool · masked leaderboard · on/off.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "enabled",
+    "startsAt",
+    "endsAt",
+    "prizePoolUsdt",
+    "leaderboardMasked"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "startsAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "endsAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "prizePoolUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string · funded from Promo Pool only"
+    },
+    "leaderboardMasked": {
+      "type": "boolean",
+      "description": "true = mask nicknames on public board"
+    },
+    "titleKo": {
+      "type": "string"
+    }
+  }
+}

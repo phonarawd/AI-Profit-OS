@@ -60,6 +60,11 @@
       "type": "string",
       "minLength": 8
     },
+    "withdrawFeeUsdt": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$",
+      "description": "Money §11.1 · quoted from deposit-config.usdtOnchain.usdtWithdrawNetworkFeeUsdt · confirm UX must show WITHDRAW_FEE_HINT"
+    },
     "createdAt": {
       "type": "string",
       "format": "date-time",

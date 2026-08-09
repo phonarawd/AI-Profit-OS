@@ -2,7 +2,7 @@
 
 > **목적:** 구현 채팅 시작 전, 헌법·스키마·마이그레이션·어드민·브랜드·DB SSOT를 **예측 없이** 정리한다.  
 > **권위:** ACTIVE Index `ai_profit_os_00_index_a1b2c3d4.plan.md` > 도메인 01~06 > launch ARCHIVE.  
-> **검증일:** 2026-08-09 (v7.22.36 Index CLOSE 재스캔) · 레포 FS + Supabase MCP `list_tables`/`list_migrations`/`execute_sql`/`list_extensions`/`get_advisors` · Index **v7.22.36 CLOSED**.
+> **검증일:** 2026-08-09 (v7.22.36 Index CLOSE + v7.22.37 Money preflight 재스캔) · 레포 FS + Supabase MCP `list_tables`/`list_migrations`/`execute_sql`/`list_extensions`/`get_advisors` · Index **v7.22.36 CLOSED**.
 
 ---
 
@@ -32,7 +32,7 @@
 | public 트리거 | ✅ ledger guards | balance_guard · entries/journals immutable |
 | Supabase Auth 앱 사용 | **0** | Nest JWT only · 시스템 `auth` ≠ Auth SoT |
 | GitHub | ✅ | `phonarawd/AI-Profit-OS` · 코드만 |
-| Index 플랜 | ✅ **CLOSED** | todos pending **0** · 다음=**01 Money** `money-double-entry` |
+| Index 플랜 | ✅ **CLOSED** | todos pending **0** · 다음=**01 Money** `money-double-entry` (preflight PASS) |
 | Advisor `rls_enabled_no_policy` | INFO 전수 | Day-1 **의도** · deny-by-default |
 
 **판정 (v7.22.36):** Index 실행큐 = **CLOSED** · 헌법·스키마·원격 PG·Auth·Phase0 hosts·apps 골격 = **PASS**.  
@@ -59,6 +59,57 @@
 
 
 ---
+
+
+### 0.3 Money 착수 전 실측 (v7.22.37 · `money-preflight-constitution` · 2026-08-09 재스캔)
+
+> **Owns:** Money 착수 게이트 기록 · 구현코드 **0** · 다음 todo=`money-double-entry`  
+> **방법:** Supabase MCP `list_tables`/`list_migrations`/`execute_sql`/`get_project` + 레포 FS · `pnpm verify:admin-routes` · `pnpm verify:pg-module-scan`
+
+| 대상 | 실측 | Money 함의 |
+|------|------|------------|
+| Supabase | ref=`mgsytcetsiecllmhcyox` · Seoul `ap-northeast-2` · PG **17.6** · ACTIVE_HEALTHY | 원격 only · Docker OFF |
+| `public` 테이블 | **41** · RLS ON 전수 | ledger/wallet/kyc/referral 표 존재 · Nest service_role |
+| migrations applied | **10** · 끝=`20260808224856_auth_oauth_passkey_stage_a_b` | 로컬 파일명 1:1 · Dashboard DDL 0 |
+| public 함수 **4** | `ledger_forbid_mutation` · `ledger_require_posting_flag` · `provision_user_bucket_accounts` · `users_stage_a_identity_ok` | **posting RPC 0** → Nest TX+flag (`money-double-entry`) |
+| ledger seed | system accounts **7** (`SYS:OPPORTUNITY_POOL`·`TREASURY`·`FX_CLEARING`·`OPS_POOL`·`PROMO_POOL`·`SUSPENSE`·`FEE_REVENUE`) | 유저 버킷=signup provision |
+| `deposit_config` DDL | columns=`krw`·`usdt_onchain`·`pricing_guards` jsonb · rows **0** | schema `withdrawGuards` 계약 잠금 · **DDL 컬럼 `withdraw_guards` 아직 0** → `money-fee-min-holding` |
+| `schemas/` | **38** files · `deposit-config.v1`에 `krwWithdrawFeeKrw`·`usdtWithdrawNetworkFeeUsdt`·`minHoldingHours`·`sweeperPaused` | §11.1/§11.2 스키마 공백 **해소** |
+| `services/` | `api-nest` · `engine-rust` · `marketing-attribution` · **`wallet-service` 0** | Nest 모듈 잠금 |
+| `workers/chain-*` | Phase1+ stub (`phase=1` description) | Money 구현 · Phase1 deploy |
+| `apps/admin/routes.ts` | TOP **12** · child에 `/admin/compliance?tab=kyc` · deposit-settings/review/krw-pending/disputes | sidebar 13 금지 · UI deep=Admin |
+| Auth | Nest JWT · Supabase Auth **0** | KYC/출금 step-up도 Nest |
+| PG사 | 코드경로 0 · Day-1 KRW=Admin 승인/거절 · CSV=L2+ | `pg-gateway-ban.mdc` 교정됨 |
+| CI (본 todo) | `verify:admin-routes` **PASS** · `verify:pg-module-scan` **PASS** | money 게이트 live |
+
+#### 0.3.1 헌법 Money Owns 읽기 확인 (17/37/39/41/42/43/49/51r)
+
+| 파일 | 판정 |
+|------|------|
+| `17_FINANCIAL_LEDGER_STANDARD.md` | ✅ double-entry · PG사 금지 · **api-nest 경로 잠금** · wallet-service 금지 |
+| `37_WALLET_AND_USER_ADMIN_OPS.md` | ✅ deposit-config · Admin wallet tabs pointer |
+| `39_USER_FINANCIAL_LEDGER.md` | ✅ finance/reports surfaces · ledger KPI only |
+| `41_ONCHAIN_USDT_AND_KRW_DEPOSIT.md` | ✅ PG사0 · KRW Admin 승인/거절 · CSV=L2+ |
+| `42_KYC_WITHDRAW_ONE_TIME_GATE.md` | ✅ `/admin/compliance?tab=kyc` (routes와 일치) |
+| `43_CHAIN_SETTLEMENT_HARDENING.md` | ✅ 1/19 · sweeper · **Phase0=in-process** · NATS=Phase1+ |
+| `49_PRINCIPAL_RETENTION_AND_PROFIT_WITHDRAW.md` | ✅ 4버킷 · principalUsdt · P*/E* |
+| `51_REFERRAL_VIRAL_LADDER.md` | ✅ 초대∞ · L2/L3 · Admin `growth?tab=referral` |
+
+#### 0.3.2 흡수 모순 (규칙/스키마 · 완료 · 구현코드 0)
+
+| # | 발견 | 해소 |
+|---|------|------|
+| M1 | `wallet-service` 유령 경로 | → api-nest 모듈 · §17 잠금 · FS에 폴더 **0** |
+| M2 | Phase0 NATS 혼동 | → §43 Phase0 in-process · NATS=Phase1+ |
+| M3 | `pg-gateway-ban` Auto-Recon-only | → Day-1=Admin 승인/거절 · CSV=L2+ · verify 강제 |
+| M4 | `compliance?tab=kyc` routes 누락 | → `ADMIN_CHILD_ROUTES` + verify:admin-routes |
+| M5 | fee/minHolding 스키마 공백 | → `deposit-config.v1` 필드 잠금 (DDL 컬럼은 fee todo) |
+| M6 | composer 혼재 | → Money 전 todo `grok-4.5\|256K` (플랜 YAML) |
+| M7 | participate pricing Money 혼재 | → Engine Owns pointer (본 preflight 범위 0) |
+| M8 | Admin Money 계약 표 | → Money 플랜 §0.4 (편집 본 todo 외) |
+
+**판정:** 규칙↔스키마↔헌법 Money Owns = **모순0** · 구현코드 **0** · `money-preflight-constitution` **PASS**.  
+**다음 채팅:** `money-double-entry` only.
 
 ## 1. 작업 전 읽기 순서 (한 채팅=한 todo)
 
@@ -464,7 +515,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 
 > **Owns:** 본 절 + Index「플랜 직렬 완료 규칙」.  
 > **운영자(Grok-4.5) 규칙:** YAML pending todo를 **위에서 아래로만** · 한 채팅=한 todo · 완료 잠금 todo 재실행 금지.  
-> **다음 채팅:** **01 Money** money-double-entry only (Index completed 재실행 금지).
+> **다음 채팅:** **01 Money** money-double-entry only (v7.22.37 `money-preflight-constitution` PASS) (Index completed 재실행 금지).
 
 | 순 | Index todo | 산출물 | 모델 | 상태 |
 |----|------------|--------|------|------|

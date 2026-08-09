@@ -1,0 +1,57 @@
+{
+  "id": "wallet-home",
+  "route": "/wallet",
+  "brandRef": "packages/ui/brand",
+  "blocks": [
+    {
+      "id": "title",
+      "role": "title",
+      "copyKey": "T.walletBuckets.pageTitle"
+    },
+    {
+      "id": "practiceBanner",
+      "role": "banner",
+      "component": "DemoWalletBanner",
+      "copyKeys": [
+        "T.practice.badge",
+        "T.practice.bannerTitle",
+        "T.practice.bannerBody",
+        "T.practice.notWithdrawable"
+      ],
+      "flags": ["practice_only", "non_withdrawable"]
+    },
+    {
+      "id": "buckets",
+      "role": "bucket-breakdown",
+      "component": "BucketBreakdown",
+      "copyKeys": [
+        "T.walletBuckets.workingPrincipal",
+        "T.walletBuckets.withdrawableProfit",
+        "T.walletBuckets.locked",
+        "T.walletBuckets.practice",
+        "T.walletBuckets.defaultProfitHint",
+        "T.walletBuckets.principalAlways"
+      ]
+    },
+    {
+      "id": "ctaProfit",
+      "role": "primary",
+      "copyKey": "T.withdrawMode.ctaProfitWithdraw",
+      "href": "/wallet/withdraw?mode=profit"
+    },
+    {
+      "id": "ctaPrincipal",
+      "role": "secondary",
+      "copyKey": "T.withdrawMode.ctaOpenPrincipal",
+      "href": "/wallet/withdraw?mode=principal",
+      "principalReachable": true
+    }
+  ],
+  "forbidden": [
+    "principal_withdraw_hidden",
+    "forfeit_threat_copy",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo"
+  ]
+}

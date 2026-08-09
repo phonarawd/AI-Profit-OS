@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/deposit-suggest-query.v1.json",
+  "title": "DepositSuggestQueryV1",
+  "description": "Money §49.2a deposit deeplink query. Path=/wallet/deposit?tab=usdt&suggest={suggestDepositUsdt}&oppId={id}. suggestDepositUsdt computed by Engine §0.0.5.1 — Money parses/prefills only. NEVER: force deposit · LLM invent amount.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tab",
+    "suggest",
+    "oppId"
+  ],
+  "properties": {
+    "tab": {
+      "type": "string",
+      "enum": ["usdt", "krw"],
+      "description": "Default usdt for nearMiss CTA · depositPref may open krw but suggest remains USDT units"
+    },
+    "suggest": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$",
+      "description": "suggestDepositUsdt from Engine · >0 prefills amount + adds quick chip"
+    },
+    "oppId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Opportunity id that produced the suggest"
+    }
+  }
+}

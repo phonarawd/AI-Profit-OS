@@ -1,10 +1,42 @@
 "use client";
 
+import Link from "next/link";
+import { NetworkPlainWarning } from "@aipo/ui/components/wallet/NetworkPlainWarning";
+import { T } from "@aipo/ui/copy/ko";
+
+/**
+ * UI §38.8 pointer shell · Money §41.6 network warning shared.
+ * Long-form guide blocks = UI todo; warning copy Owns=Money.
+ */
 export default function Page() {
   return (
-    <main className="p-6 text-[var(--color-lux-text)]">
-      <h1 className="text-xl font-semibold">테더 준비</h1>
-      <p className="mt-2 text-sm text-[var(--color-lux-text-muted)]">골격 · 본구현은 도메인 todo</p>
+    <main
+      className="p-6 text-[var(--color-lux-text)]"
+      data-testid="guide-get-usdt"
+    >
+      <h1 className="text-xl font-semibold">{T.wallet.guideGetUsdtTitle}</h1>
+      <div className="mt-4 flex flex-wrap gap-3 text-sm">
+        <Link
+          href="/wallet/deposit?tab=krw"
+          data-testid="guide-cta-krw"
+          className="rounded-[var(--radius-md)] border border-[var(--color-lux-border)] px-3 py-2"
+        >
+          {T.wallet.guideCtaKrw}
+        </Link>
+        <Link
+          href="/wallet/deposit?tab=usdt"
+          data-testid="guide-cta-usdt"
+          className="rounded-[var(--radius-md)] border border-[var(--color-lux-border)] px-3 py-2"
+        >
+          {T.wallet.guideCtaUsdt}
+        </Link>
+      </div>
+      <p className="mt-4 text-sm text-[var(--color-lux-text-muted)]">
+        {T.wallet.guideNetworkCheck}
+      </p>
+      <div className="mt-4">
+        <NetworkPlainWarning />
+      </div>
     </main>
   );
 }

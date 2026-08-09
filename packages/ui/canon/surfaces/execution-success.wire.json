@@ -3,8 +3,30 @@
   "route": "/trades/[id]/execute",
   "brandRef": "packages/ui/brand",
   "primaryCta": {
-    "copyKey": "T.execution.withdrawProfit",
+    "copyKey": "T.successBucketCta.ctaProfitOnly",
     "href": "/wallet/withdraw?mode=profit"
+  },
+  "successBucketCtas": {
+    "component": "SuccessBucketCtas",
+    "count": 3,
+    "emphasisDefault": "profit_withdraw",
+    "items": [
+      {
+        "id": "profit",
+        "copyKey": "T.successBucketCta.ctaProfitOnly",
+        "href": "/wallet/withdraw?mode=profit"
+      },
+      {
+        "id": "merge",
+        "copyKey": "T.successBucketCta.ctaMerge",
+        "action": "profit_merge"
+      },
+      {
+        "id": "later",
+        "copyKey": "T.successBucketCta.ctaLater",
+        "action": "dismiss"
+      }
+    ]
   },
   "blocks": [
     {
@@ -41,6 +63,16 @@
       "copyKey": "T.execution.shareBoast"
     },
     {
+      "id": "bucketCtas",
+      "role": "cta-row",
+      "component": "SuccessBucketCtas",
+      "copyKeys": [
+        "T.successBucketCta.ctaProfitOnly",
+        "T.successBucketCta.ctaMerge",
+        "T.successBucketCta.ctaLater"
+      ]
+    },
+    {
       "id": "tabs",
       "role": "tabbar",
       "copyKey": "T.ia.fiveTabs"
@@ -54,6 +86,7 @@
     "non_brand_logo",
     "user_sold_copy",
     "cross_category_image",
-    "emoji_only_product_row"
+    "emoji_only_product_row",
+    "missing_success_3cta"
   ]
 }

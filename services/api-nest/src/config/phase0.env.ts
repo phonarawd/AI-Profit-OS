@@ -22,6 +22,13 @@ export type Phase0Env = {
   oauthGoogleClientId: string | null;
   oauthGoogleClientSecret: string | null;
   r2KycBucket: string;
+  r2AccountId: string | null;
+  r2AccessKeyId: string | null;
+  r2SecretAccessKey: string | null;
+  r2KycEncryptionKey: string | null;
+  /** Money §43.6 Day-1 SMTP SSOT = Resend */
+  resendApiKey: string | null;
+  resendFromEmail: string | null;
   phase: 0;
   bus: "in-process";
 };
@@ -53,6 +60,12 @@ export function loadPhase0Env(): Phase0Env {
     oauthGoogleClientId: read("OAUTH_GOOGLE_CLIENT_ID"),
     oauthGoogleClientSecret: read("OAUTH_GOOGLE_CLIENT_SECRET"),
     r2KycBucket: read("R2_KYC_BUCKET") ?? "kyc-docs",
+    r2AccountId: read("R2_ACCOUNT_ID"),
+    r2AccessKeyId: read("R2_ACCESS_KEY_ID"),
+    r2SecretAccessKey: read("R2_SECRET_ACCESS_KEY"),
+    r2KycEncryptionKey: read("R2_KYC_ENCRYPTION_KEY"),
+    resendApiKey: read("RESEND_API_KEY"),
+    resendFromEmail: read("RESEND_FROM_EMAIL"),
     phase: 0,
     bus: "in-process",
   };

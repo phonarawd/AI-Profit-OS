@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/ledger-recon-report.v1.json",
+  "title": "LedgerReconReportV1",
+  "description": "Money §11 recon · journal balanced · projection=entries · bucket invariant. mismatch ⇒ CIRCUIT candidate.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ok",
+    "checkedAt",
+    "journalsChecked",
+    "accountsChecked",
+    "usersChecked",
+    "mismatches"
+  ],
+  "properties": {
+    "ok": { "type": "boolean" },
+    "checkedAt": { "type": "string", "format": "date-time" },
+    "journalsChecked": { "type": "integer", "minimum": 0 },
+    "accountsChecked": { "type": "integer", "minimum": 0 },
+    "usersChecked": { "type": "integer", "minimum": 0 },
+    "mismatches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "detail"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "JOURNAL_UNBALANCED",
+              "PROJECTION_DRIFT",
+              "BUCKET_INVARIANT"
+            ]
+          },
+          "detail": { "type": "string", "minLength": 1 },
+          "accountId": { "type": "string" },
+          "journalId": { "type": "string" },
+          "userId": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/financial-report.v1.json",
+  "title": "FinancialReportV1",
+  "description": "Admin /admin/reports/financial · day/month aggregates · ledger only (demo/G4 ≠ source).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["granularity", "buckets"],
+  "properties": {
+    "granularity": {
+      "type": "string",
+      "enum": ["day", "month"]
+    },
+    "buckets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "period",
+          "depositUsdt",
+          "withdrawUsdt",
+          "adminCreditUsdt",
+          "adminDebitUsdt",
+          "settlementUserProfitUsdt",
+          "feeUsdt",
+          "journalCount"
+        ],
+        "properties": {
+          "period": { "type": "string", "format": "date-time" },
+          "depositUsdt": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          },
+          "withdrawUsdt": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          },
+          "adminCreditUsdt": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          },
+          "adminDebitUsdt": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          },
+          "settlementUserProfitUsdt": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          },
+          "feeUsdt": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          },
+          "journalCount": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

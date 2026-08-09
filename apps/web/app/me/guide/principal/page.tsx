@@ -1,10 +1,29 @@
 "use client";
 
+import Link from "next/link";
+import { T } from "@aipo/ui/copy/ko";
+
+/** Money §49.4 guide — 왜 원금을 두나요? */
 export default function Page() {
   return (
     <main className="p-6 text-[var(--color-lux-text)]">
-      <h1 className="text-xl font-semibold">원금과 수익</h1>
-      <p className="mt-2 text-sm text-[var(--color-lux-text-muted)]">골격 · 본구현은 도메인 todo</p>
+      <h1 className="text-xl font-semibold">{T.principalGuide.pageTitle}</h1>
+      <p className="mt-3 text-sm text-[var(--color-lux-text-muted)]">
+        {T.principalGuide.whyKeep}
+      </p>
+      <p className="mt-3 text-sm text-[var(--color-lux-text)]">
+        {T.principalGuide.alwaysWithdraw}
+      </p>
+      <p className="mt-3 text-sm text-[var(--color-lux-text-muted)]">
+        {T.principalGuide.mergeHint}
+      </p>
+      <Link
+        href="/wallet/withdraw?mode=principal"
+        data-principal-reachable="true"
+        className="mt-6 inline-block text-sm text-[var(--color-lux-accent)] underline"
+      >
+        {T.withdrawMode.ctaOpenPrincipal}
+      </Link>
     </main>
   );
 }

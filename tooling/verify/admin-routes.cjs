@@ -44,6 +44,7 @@ const childRequired = [
   "/admin/wallet?tab=review",
   "/admin/wallet?tab=krw-pending",
   "/admin/wallet?tab=disputes",
+  "/admin/compliance?tab=kyc",
   "/admin/support?tab=queue",
   "/admin/reports/financial",
   "/admin/growth?tab=simulation",

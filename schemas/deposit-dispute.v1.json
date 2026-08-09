@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/deposit-dispute.v1.json",
+  "title": "DepositDisputeV1",
+  "description": "Money §41.6 · §51.11 wrong-chain/오입금 dispute. NEVER: balance UPDATE without ledger · credit without admin decide audit.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "userId",
+    "kind",
+    "status",
+    "linkedTxHash",
+    "supportCategory",
+    "createdAt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["wrong_chain", "mis_deposit"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["open", "credited", "rejected"]
+    },
+    "linkedTxHash": {
+      "type": "string",
+      "minLength": 8
+    },
+    "supportCategory": {
+      "type": "string",
+      "const": "deposit"
+    },
+    "supportTicketId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "amountUsdt": {
+      "type": "string"
+    },
+    "networkClaimedKo": {
+      "type": "string",
+      "description": "User-entered network name (plain ko) · never TRC20 required"
+    },
+    "ledgerJournalId": {
+      "type": "string"
+    },
+    "decidedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decidedByAdminId": {
+      "type": "string"
+    },
+    "decisionReason": {
+      "type": "string",
+      "minLength": 10
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

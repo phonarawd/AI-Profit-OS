@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/ledger-admin-adjust.v1.json",
+  "title": "LedgerAdminAdjustV1",
+  "description": "Admin §9.8.3 balance adjust · double-entry only · bucket required · reason≥10. NEVER: user.balance+= · ticket-direct adjust.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "userId",
+    "bucket",
+    "kind",
+    "amountUsdt",
+    "reason",
+    "idempotencyKey",
+    "createdBy"
+  ],
+  "properties": {
+    "userId": { "type": "string", "minLength": 1 },
+    "bucket": {
+      "type": "string",
+      "enum": ["principal", "profit", "locked", "practice"]
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["credit", "debit", "correct"]
+    },
+    "amountUsdt": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "reason": { "type": "string", "minLength": 10 },
+    "idempotencyKey": { "type": "string", "minLength": 8 },
+    "createdBy": { "type": "string", "minLength": 1 },
+    "secondApproverId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Required when amountUsdt > 1000 · ≠ createdBy"
+    },
+    "reverseJournalId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Required when kind=correct"
+    },
+    "applyKind": {
+      "type": "string",
+      "enum": ["credit", "debit"],
+      "description": "Replacement direction when kind=correct"
+    },
+    "fxSnapshotId": { "type": ["string", "null"] }
+  }
+}
