@@ -74,18 +74,21 @@ pnpm exec wrangler -v
 ## 자동화 게이트 (ADR-016)
 
 ```powershell
-pnpm verify:gate          # commit/push 전
+pnpm verify:gate:fast      # commit 전 (T0 · ~30s)
+pnpm verify:gate:push      # push 전 (T1 · infra+stubs)
+pnpm verify:gate           # CI / main (T2 · next+opennext 포함)
 pnpm cursor:sync-plans    # Plan SSOT → %USERPROFILE%\.cursor\plans 미러 (todo UI drift 방지)
 pnpm cleanup:lowspec      # 작업 후 렉 방지
 pnpm lowspec:status       # RAM/Docker/Cursor 압력 확인 (이 PC=Celeron 2C/8GB)
 ```
 
 - 이 PC: `NODE_OPTIONS=--max-old-space-size=1536` · Docker OFF · 프로세스 1개
-- Cursor hooks: `.cursor/hooks.json` (git deny · **sessionStart/stop plan sync** · cleanup · RAM warn)
-- Plan SSOT: 워크스페이스 `.cursor/plans` only · `verify:plans-ssot` in gate · stale home aliases quarantine
-- Husky: `.husky/pre-commit` → `verify:gate`
-- CI: `.github/workflows/gate.yml`
+- Cursor hooks: `.cursor/hooks.json` (commit=T0 · push=T1 · **sessionStart/stop plan sync** · cleanup · RAM warn)
+- Plan SSOT: 워크스페이스 `.cursor/plans` only · `verify:plans-ssot` in T0 · stale home aliases quarantine
+- Husky: pre-commit → `verify:gate:fast` · pre-push → `verify:gate:push`
+- CI: `.github/workflows/gate.yml` → T2 `verify:gate`
 - Rules: always ≤7 + domain globs · catalog `tooling/verify/CATALOG.md`
+- Git: **슬라이스=T0 commit** · **push=세션 stop/명시** = `.cursor/rules/git-auto-commit-push.mdc`
 
 
 ## 검증

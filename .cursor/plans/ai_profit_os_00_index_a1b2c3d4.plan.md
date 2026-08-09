@@ -557,12 +557,12 @@ flowchart TD
 - [ ] **v7.22.3:** Admin growth tabs(notices/campaigns/referral/share) · 보류 큐 · accrual halt · sidebar **12**
 - [ ] **v7.22.3:** `/r/{code}` · share 카드4 · CAPI Referral* · `verify:brand-assets`
 - [ ] **v7.22.3:** toast `REFERRAL_*`·`CAMPAIGN_*` §8.2 등록 · R1~R12/N1~N5/B1~B5 방어 매핑
-- [ ] **v7.22.4:** ADR-013 — 사진목업 시각복제 **0** · Canon surfaces · Brand Kit 단일 로고 · `verify:mockup-governance` PASS
-- [ ] **v7.22.4:** 에이전트 rule `mockup-governance.mdc` alwaysApply · 충돌시 토큰/플랜 승 · 화면간 로고·탭·여백 drift **0**
-- [ ] **v7.22.5:** ADR-014 — `stack-lock.mdc`·`phase-activation.mdc` alwaysApply · `AGENTS.md` 읽기순서 · 스택 재제안 **0**
-- [ ] **v7.22.5:** 용어 Postgres≠PG사 · wallet path **결제대행 SDK 0** · `verify:pg-module-scan` · `verify:stack-lock` PASS
+- [x] **v7.22.4:** ADR-013 — 사진목업 시각복제 **0** · Canon surfaces · Brand Kit 단일 로고 · `verify:mockup-governance` PASS
+- [x] **v7.22.4:** 에이전트 rule `mockup-governance.mdc` alwaysApply · 충돌시 토큰/플랜 승 · 화면간 로고·탭·여백 drift **0**
+- [x] **v7.22.5:** ADR-014 — `stack-lock.mdc`·`phase-activation.mdc` alwaysApply · `AGENTS.md` 읽기순서 · 스택 재제안 **0**
+- [x] **v7.22.5:** 용어 Postgres≠PG사 · wallet path **결제대행 SDK 0** · `verify:pg-module-scan` · `verify:stack-lock` PASS
 - [x] **v7.22.6:** ADR-015 — next@16 · Tailwind v4 · pnpm@10.14 · Node22 · rust-toolchain · Compose=옵션 · `TOOLCHAIN.md` 잠금
-- [ ] **v7.22.6:** 로컬 `pnpm verify:stack-lock` PASS · (옵션) `pnpm docker:up` · wrangler/dev 가능 · **기본=원격 DB/Redis**
+- [x] **v7.22.6:** 로컬 `pnpm verify:stack-lock` PASS · (옵션) `pnpm docker:up` · wrangler/dev 가능 · **기본=원격 DB/Redis**
 - [x] **v7.22.7→9:** ADR-002 Consumer=**퍼뜩** · retired `오늘수익`·`바로번다` · `brand.manifest.json` + `verify:brand-consumer` 잠금
 - [ ] **v7.22.9:** 유저 surface/카피/manifest/JSON-LD에 retired 표기 **0** · Legal 법인명 제외
 - [x] **v7.22.8:** ADR-016 rules·hooks·Husky·`verify:gate`·GH Actions·Docker-less·cleanup 흡수

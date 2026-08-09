@@ -1,0 +1,37 @@
+---
+description: ADR-007 — CTA·금지어·yahoo adapter Day-1 0 · 유저 surface drift 잠금
+globs: "packages/ui/copy/**,apps/web/**"
+alwaysApply: false
+---
+
+# Product Drift Lock (ADR-007 · Index §51.1)
+
+## CTA · domain
+
+- Primary CTA = **`수익 벌기`** · domain=`participate`
+- 상세 허용 = **`이 기회로 수익 벌기`**
+- **금지:** `이 상품으로 수익 벌기` · 유저메인 **`매칭 참여`** · `구매하기`/`판매하기`/`거래하기`
+
+## 유저 surface 0
+
+- `expectedSellDays` · `executionPlatforms` · 유저 **「판매 성공률」**
+- `successRatePercent` / `fulfillRate` → **Rule·PICK 입력 0** (표시전용만 Engine §0.0.7)
+
+## Listing · adapter Day-1
+
+- Listing legs = **ebay 멀티\|admin only**
+- **yahoo_jp** Day-1 adapter/leg/auto-publish **0**
+- §38.10 **공식협력 로고·LabelKo 표기** = OK (adapter 금지 ≠ 표기 금지)
+
+## Marketing · landing (§6.4c.1)
+
+Guest/landing 금지어 0: 수익·투자·USDT·테더·보장·차익·**괴리율**·재테크·알바  
+CTA utility = **`실시간 시세 맵 열기`** → `/onboarding` | `/auth/login`
+
+## 브랜드
+
+- Consumer = **퍼뜩** · 구 `오늘수익`/`바로번다` **재등장 0**
+
+## CI
+
+`verify:cta-earn-profit` · `verify:user-trader-jargon-0` · `verify:marketing-compliance` · `verify:brand-consumer`

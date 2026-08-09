@@ -31,10 +31,11 @@ Cursor는 **플랜 집행기**다. 스택을 ADR 없이 바꾸지 않는다.
 ## 툴체인
 
 - Node22 · pnpm@10.14 · next@16 · Tailwind v4 · Nest · Rust
-- `pnpm verify:gate` PASS 전 commit/push 금지 (hook+husky)
+- **commit/push 시점** = 3-tier (`git-auto-commit-push.mdc`) · **슬라이스=todo 완료→T0 commit** · **push=세션 stop/명시→T1** · atomic
+- commit → `pnpm verify:gate:fast` · push → `pnpm verify:gate:push` · CI/main → `pnpm verify:gate` (T2)
 - push 후 **`gh run watch`로 GitHub `gate` CI 감시** · FAIL이면 즉시 수정→재푸시→green까지 (`.cursor/rules/git-safety.mdc`)
-- GitHub 도착물 = **오류0 · 오차0 · 결함0 · 중복0** (로컬 gate + 원격 CI 둘 다 green)
-- done = 도메인 `verify:*` PASS + `pnpm cleanup:lowspec` (+ push했다면 CI green)
+- GitHub 도착물 = **오류0 · 오차0 · 결함0 · 중복0** (로컬 T1 + 원격 T2 CI green)
+- **슬라이스 done** = domain verify PASS + T0 commit · **세션 done** = cleanup (+ push 시 CI green)
 
 ## Phase0 RAM (이 PC = Celeron G6900 2C / ~8GB)
 

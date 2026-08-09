@@ -119,6 +119,33 @@ if (fs.existsSync(snapRoots)) {
   }
 }
 
+// --- Local Playwright browsers (E2E = CI only · ADR-016 Phase0) ---
+const msPw = process.env.LOCALAPPDATA
+  ? path.join(process.env.LOCALAPPDATA, "ms-playwright")
+  : "";
+if (msPw && rmrf(msPw)) removed.push("Local/ms-playwright");
+
+// --- Cursor AI checkpoints (keep newest 20) ---
+const ckpt = path.join(roaming, "User", "globalStorage", "anysphere.cursor-commits", "checkpoints");
+if (fs.existsSync(ckpt)) {
+  const dirs = fs
+    .readdirSync(ckpt)
+    .map((n) => {
+      try {
+        return { n, m: fs.statSync(path.join(ckpt, n)).mtimeMs };
+      } catch {
+        return null;
+      }
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.m - a.m);
+  let n = 0;
+  for (const d of dirs.slice(20)) {
+    if (rmrf(path.join(ckpt, d.n))) n += 1;
+  }
+  if (n) removed.push(`checkpoints×${n} (kept 20)`);
+}
+
 // --- Empty temp project metadata ---
 const projectsDir = path.join(userCursor, "projects");
 if (fs.existsSync(projectsDir)) {

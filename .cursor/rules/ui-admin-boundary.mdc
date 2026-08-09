@@ -1,0 +1,30 @@
+---
+description: UI Owns — apps/admin 구현 금지 · Admin spec=pointer · 중복0
+globs: "apps/web/**,packages/ui/**,.cursor/plans/ai_profit_os_03_ui_ux_*.plan.md"
+alwaysApply: false
+---
+
+# UI / Admin Boundary (03 UI §0.7)
+
+## Owns
+
+| 영역 | 담당 |
+|------|------|
+| `apps/web/**` · `packages/ui/**` (유저 surface) | **03 UI** 플랜 |
+| `apps/admin/**` · Admin API deep UI | **04 Admin** 플랜 |
+
+## 금지 (UI todo / web·ui 작업 시)
+
+- `apps/admin/**` 코드 **작성·수정·리팩터·라우트 추가** 금지
+- Admin 화면·탭·폼을 UI todo 명목으로 구현 금지
+- UI todo `ABSORBED→Admin` 항목 **재실행** 금지 (예: `admin-execution-policy`)
+
+## 허용
+
+- Admin이 구현할 **계약·pointer**만 UI 플랜/Canon/copy에 기록
+- `packages/ui/canon/**` wire — Admin surface **스펙 SSOT** (Admin 앱 코드 ≠ 여기)
+- `verify:*` 실행 · Admin 플랜/경로 **읽기** (구현은 Admin File-Serial)
+
+## 충돌 시
+
+Admin deep 구현 필요 → **04 Admin** 해당 todo로 넘기고 UI에서는 pointer만 유지.

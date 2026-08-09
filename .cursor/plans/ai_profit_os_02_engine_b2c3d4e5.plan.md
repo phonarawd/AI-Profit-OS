@@ -462,7 +462,7 @@ tooling/verify/
 2. 구현 → 해당 `verify:*` → 회귀 최소 세트
 3. `pnpm cleanup:lowspec`
 4. 워크스페이스 플랜 YAML `status: completed` → `pnpm cursor:sync-plans`
-5. 커밋은 사용자 요청 시에만 · push 시 CI watch
+5. commit/push = `git-auto-commit-push.mdc` (todo·슬라이스·stop 자동) · push 시 CI watch
 
 ### 0.9.10 Done = UI 착수 허용 조건
 

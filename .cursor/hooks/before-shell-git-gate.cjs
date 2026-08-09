@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 /**
- * beforeShellExecution — deny dirty git commit/push; allow after verify:gate
+ * beforeShellExecution — 3-tier gate (ADR-016)
+ * commit → verify:gate:fast (T0)
+ * push   → verify:gate:push (T1)
  * permission: deny is the reliable Cursor gate (ask is unreliable).
  */
 const fs = require("fs");
@@ -39,14 +41,12 @@ function hasNoVerify(c) {
   return /--no-verify|--no-gpg-sign/.test(c);
 }
 function touchesEnv(c) {
-  // any git add/commit/rm that mentions .env (except .env.example)
   if (!/\bgit\s+(add|commit|rm|update-index)\b/.test(c)) return false;
   if (/\.env\.example\b/.test(c) && !/\.env(?!\.example)\b/.test(c)) return false;
   return (
     /(^|[\s"'])\.env\b/.test(c) ||
     /\.env\.(local|production|development|test|rc)\b/.test(c) ||
-    /\bgit\s+add\s+(-[A-Za-z]*f[A-Za-z]*|--force)\b/.test(c) &&
-      /\.env\b/.test(c)
+    (/\bgit\s+add\s+(-[A-Za-z]*f[A-Za-z]*|--force)\b/.test(c) && /\.env\b/.test(c))
   );
 }
 
@@ -64,7 +64,7 @@ if (hasNoVerify(cmd)) {
     continue: true,
     permission: "deny",
     userMessage: "Blocked: --no-verify / --no-gpg-sign forbidden (ADR-016).",
-    agentMessage: "Remove --no-verify and run pnpm verify:gate before commit/push.",
+    agentMessage: "Remove --no-verify. commit=T0 fast · push=T1 push tier before push.",
   });
 }
 
@@ -77,21 +77,40 @@ if (touchesEnv(cmd) || forceAddSecrets(cmd)) {
   });
 }
 
-if (isGitCommit(cmd) || isGitPush(cmd)) {
+if (isGitCommit(cmd)) {
   try {
-    execSync("pnpm verify:gate", {
+    execSync("pnpm verify:gate:fast", {
       cwd: root,
       stdio: ["ignore", "pipe", "pipe"],
       env: process.env,
-      timeout: 110000,
+      timeout: 120000,
     });
   } catch (e) {
     const err = (e.stdout || e.stderr || e.message || "").toString().slice(0, 1500);
     out({
       continue: true,
       permission: "deny",
-      userMessage: "Blocked: verify:gate failed — fix before commit/push.",
-      agentMessage: `verify:gate FAIL:\n${err}`,
+      userMessage: "Blocked: verify:gate:fast failed — fix before commit.",
+      agentMessage: `verify:gate:fast FAIL:\n${err}`,
+    });
+  }
+}
+
+if (isGitPush(cmd)) {
+  try {
+    execSync("pnpm verify:gate:push", {
+      cwd: root,
+      stdio: ["ignore", "pipe", "pipe"],
+      env: process.env,
+      timeout: 300000,
+    });
+  } catch (e) {
+    const err = (e.stdout || e.stderr || e.message || "").toString().slice(0, 1500);
+    out({
+      continue: true,
+      permission: "deny",
+      userMessage: "Blocked: verify:gate:push failed — fix before push.",
+      agentMessage: `verify:gate:push FAIL:\n${err}`,
     });
   }
 }

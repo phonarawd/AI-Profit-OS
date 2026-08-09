@@ -1,0 +1,27 @@
+---
+description: ADR-005 — 법무·규제 절/게이트/보완안 영구 배제 · 재제안 금지
+globs: ".cursor/plans/**,docs/**,CONSTITUTION/**"
+alwaysApply: false
+---
+
+# Legal Out of Plan (ADR-005 · Index §51.1)
+
+## 영구 배제 (잔여과제 0)
+
+에이전트 **언급·제안·게이트 추가·리뷰 지적 금지:**
+
+- 규제·법무 **추가 절** / Legal Sign-off
+- KR 규제 **전용 절**
+- Growth **법무 2단 검토**
+- Whale AML **EDD 전용 스펙**
+
+## 허용 (이미 SSOT)
+
+- UI **면책·약관·operator footer** — `packages/ui/copy` · §50.9 · `verify:legal-plain-ko` · `verify:operator-footer`
+- Money **KYC·출금 게이트** — §42 (제품 기능 SSOT · “법무 보완” 아님)
+- Index §51 **pointer** · CONSTITUTION 기존 절 **유지**
+
+## 금지 응답 패턴
+
+- “법무 검토 절을 플랜에 추가합시다”
+- “규제 준수를 위해 새 ADR/게이트가 필요합니다” (ADR-005 범위 밖)

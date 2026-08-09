@@ -1,6 +1,6 @@
 ---
 description: §49 double-entry · 버킷 불변 · 잔액 직접 UPDATE 금지.
-globs: "**/ledger/**,**/wallet/**,**/buckets/**,services/**/wallet*/**,services/**/ledger*/**"
+globs: "**/ledger/**,**/wallet/**,**/buckets/**,**/risk/**,**/trades/**,**/missions/**,**/referral/**,services/**/wallet*/**,services/**/ledger*/**"
 alwaysApply: false
 ---
 

@@ -1,44 +1,52 @@
 ---
-description: ADR-016 — commit/push 게이트 · push 후 GitHub CI 실시간 감시·즉시 수정 · 오류0 푸시.
+description: ADR-016 — 3-tier gate · push 후 GitHub CI 실시간 감시 · main=T2 green.
 alwaysApply: true
 ---
 
-# Git Safety (ADR-016)
+# Git Safety (ADR-016 · 3-tier)
 
 ## 제로 목표 (GitHub 도착물)
 
 `main`(및 푸시하는 모든 브랜치)에 올리는 산출물은 **오류0 · 오차0 · 결함0 · 중복0**.  
-로컬 `verify:gate` PASS만으로 끝내지 말 것 — **원격 CI도 green**이어야 해당 push 작업 완료.
+로컬 T1 (`verify:gate:push`) PASS만으로 끝내지 말 것 — **원격 CI T2도 green**이어야 push 작업 완료.
+
+## tier ↔ hook
+
+| tier | 로컬 | 역할 |
+|------|------|------|
+| T0 | `verify:gate:fast` · Husky pre-commit · Cursor commit | 빠른 차단 |
+| T1 | `verify:gate:push` · Husky pre-push · Cursor push | 슬라이스 품질 |
+| T2 | `verify:gate` · GitHub `gate.yml` | main 최종 판정 |
+
+시점 판단 = `git-auto-commit-push.mdc` (슬라이스=commit · push=stop/명시).
 
 ## 커밋/푸시 전
 
-1. `pnpm verify:gate` PASS (또는 hook이 강제)
-2. secrets / `.env` / 키 파일 staged **0**
-3. `--no-verify` · `--no-gpg-sign` **금지**
-4. SSOT drift·중복 절·스텁 거짓말·게이트 약화로 “통과” 만들기 **금지**
+1. commit → `pnpm verify:gate:fast` PASS
+2. push → `pnpm verify:gate:push` PASS
+3. secrets / `.env` / 키 staged **0**
+4. `--no-verify` · `--no-gpg-sign` **금지**
+5. SSOT drift·게이트 약화로 “통과” 만들기 **금지**
 
 ## 푸시 직후 — CI 실시간 감시 (필수)
 
 에이전트가 `git push`를 실행했으면 **같은 턴에서** 끊지 말고:
 
 1. `gh run list --branch <현재브랜치> --workflow gate.yml --limit 1` 로 run id 확인  
-2. `gh run watch <id> --exit-status` 로 **끝날 때까지** 감시 (바쁜 폴링 루프 금지 · watch 사용)  
-3. **success** → 유저에게 CI green 보고 후 종료  
-4. **failure/cancelled** → 즉시:
-   - `gh run view <id> --log-failed` (실패 로그만)
-   - 최소 수정 → `pnpm verify:gate` PASS → commit → push → **다시 2번**
-5. CI red를 남긴 채 “다음에 고치자”로 세션 종료 **금지** (유저가 명시 중단할 때만)
+2. `gh run watch <id> --exit-status` 로 **끝날 때까지** 감시  
+3. **success** → 유저에게 CI green 보고  
+4. **failure/cancelled** → 즉시 수정 → T1 push gate → commit → push → **다시 2번**
+5. CI red를 남긴 채 세션 종료 **금지** (유저 명시 중단만 예외)
 
-PR면 `gh pr checks --watch` 동등. 복잡 FAIL은 Task `ci-investigator` **1개만** (Phase0 병렬 금지).
+PR면 `gh pr checks --watch` 동등.
 
 ## 차단
 
 - `.env`, `*.pem`, service_role, JWT secret 커밋
-- 게이트 FAIL 상태 push
+- T0/T1 FAIL 상태 push
 - force push to `main`
-- CI/워크플로를 느슨하게 바꿔 통과시키기
-- 로그 안 읽고 추측 수정 · 무관 대규모 리팩터
+- CI/워크플로 약화 · `--no-verify`
 
 ## 이중 문
 
-Cursor `beforeShellExecution` deny + Husky pre-commit + GitHub Actions `gate.yml` + **push 후 `gh run watch` 루프**
+Cursor `beforeShellExecution` + Husky pre-commit/pre-push + GitHub Actions `gate.yml` + **push 후 `gh run watch`**

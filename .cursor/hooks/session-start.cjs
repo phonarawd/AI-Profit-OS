@@ -38,7 +38,8 @@ const msg = [
   "Consumer brand=퍼뜩 · pnpm@10.14 · next@16 · Tailwind v4",
   "NODE_OPTIONS=--max-old-space-size=1536 · agents parallel=0 · explore max 1",
   "Read AGENTS.md → 00 index → one domain plan · one todo per chat",
-  "Done = verify PASS + cleanup PASS · commit requires verify:gate",
+  "Done = 슬라이스: domain verify + T0 commit · 세션: cleanup (+ push 시 CI green)",
+  "commit → verify:gate:fast · push → verify:gate:push · CI → verify:gate",
   "Status: pnpm lowspec:status · plans: pnpm cursor:sync-plans",
 ].join("\n");
 
