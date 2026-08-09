@@ -7,6 +7,7 @@ import { LedgerModule } from "./ledger/ledger.module";
 import { AdaptersModule } from "./adapters/adapters.module";
 import { ExecutionPolicyModule } from "./execution-policy/execution-policy.module";
 import { MembershipModule } from "./membership/membership.module";
+import { InboxModule } from "./inbox/inbox.module";
 import { OpportunitiesModule } from "./opportunities/opportunities.module";
 import { MissionModule } from "./missions/mission.module";
 import { ReferralModule } from "./referral/referral.module";
@@ -29,6 +30,7 @@ import { WalletModule } from "./wallet/wallet.module";
     TradesModule,
     ExecutionPolicyModule,
     MembershipModule,
+    InboxModule,
     AdaptersModule,
     SimulationModule,
     AiModule,

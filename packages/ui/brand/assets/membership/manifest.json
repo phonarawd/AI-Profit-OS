@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "adr": ["ADR-011", "ADR-013"],
+  "planRef": "UI §5.9.2c",
+  "basePath": "packages/ui/brand/assets/membership",
+  "renderRule": "status=ready only · Brand SVG B안 · emoji=aria-label 보조만 · photo mockup 0",
+  "badges": [
+    {
+      "id": "sprout",
+      "file": "sprout.svg",
+      "path": "assets/membership/sprout.svg",
+      "status": "ready",
+      "labelKo": "새싹",
+      "displayOrder": 1
+    },
+    {
+      "id": "entry",
+      "file": "entry.svg",
+      "path": "assets/membership/entry.svg",
+      "status": "ready",
+      "labelKo": "입문",
+      "displayOrder": 2
+    },
+    {
+      "id": "core",
+      "file": "core.svg",
+      "path": "assets/membership/core.svg",
+      "status": "ready",
+      "labelKo": "본격",
+      "displayOrder": 3
+    },
+    {
+      "id": "high",
+      "file": "high.svg",
+      "path": "assets/membership/high.svg",
+      "status": "ready",
+      "labelKo": "고액",
+      "displayOrder": 4
+    },
+    {
+      "id": "vip",
+      "file": "vip.svg",
+      "path": "assets/membership/vip.svg",
+      "status": "ready",
+      "labelKo": "VIP",
+      "displayOrder": 5
+    }
+  ]
+}

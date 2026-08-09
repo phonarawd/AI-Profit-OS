@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { applyFontScale, type FontScaleKey } from "../../tokens/font-scale";
 import { T } from "../../copy/ko";
 import { useOptionalToast } from "../toast";
@@ -9,20 +9,99 @@ import { useOptionalToast } from "../toast";
 type ToneBand = "young" | "mid" | "senior";
 type DepositPref = "usdt" | "krw";
 
+type NotifyPrefs = {
+  master: boolean;
+  opportunity: boolean;
+  wallet: boolean;
+  notice: boolean;
+  campaign: boolean;
+  opsMessage: boolean;
+  strategyMatch: boolean;
+};
+
+const NOTIFY_KEYS: { key: keyof NotifyPrefs; label: string }[] = [
+  { key: "master", label: T.settings.notify.master },
+  { key: "opportunity", label: T.settings.notify.opportunity },
+  { key: "wallet", label: T.settings.notify.wallet },
+  { key: "notice", label: T.settings.notify.notice },
+  { key: "campaign", label: T.settings.notify.campaign },
+  { key: "opsMessage", label: T.settings.notify.opsMessage },
+  { key: "strategyMatch", label: T.settings.notify.strategyMatch },
+];
+
+const DEFAULT_PREFS: NotifyPrefs = {
+  master: true,
+  opportunity: true,
+  wallet: true,
+  notice: true,
+  campaign: true,
+  opsMessage: true,
+  strategyMatch: true,
+};
+
 /**
- * SettingsPanel — §50.1 fontScale 3단 · toneBand · depositPref · Light 토글 0
+ * SettingsPanel — §50.1 fontScale 3단 · toneBand · depositPref · §50.1n 알림 · Light 토글 0
  */
 export function SettingsPanel() {
   const toast = useOptionalToast();
   const [fontScale, setFontScale] = useState<FontScaleKey>("md");
   const [toneBand, setToneBand] = useState<ToneBand>("mid");
   const [depositPref, setDepositPref] = useState<DepositPref>("usdt");
+  const [notify, setNotify] = useState<NotifyPrefs>(DEFAULT_PREFS);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadPrefs() {
+      try {
+        const res = await fetch("/api/v1/me/notification-prefs", {
+          credentials: "include",
+          headers: { Accept: "application/json" },
+        });
+        if (!res.ok || cancelled) return;
+        const json = (await res.json()) as Partial<NotifyPrefs>;
+        if (cancelled) return;
+        setNotify({
+          master: json.master !== false,
+          opportunity: json.opportunity !== false,
+          wallet: json.wallet !== false,
+          notice: json.notice !== false,
+          campaign: json.campaign !== false,
+          opsMessage: json.opsMessage !== false,
+          strategyMatch: json.strategyMatch !== false,
+        });
+      } catch {
+        /* keep defaults ALL ON */
+      }
+    }
+    void loadPrefs();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const onFont = (next: FontScaleKey) => {
     setFontScale(next);
     if (typeof document !== "undefined") applyFontScale(next);
     toast?.showToast({ code: "FONT_SCALE_CHANGED" });
   };
+
+  async function toggleNotify(key: keyof NotifyPrefs) {
+    const next = { ...notify, [key]: !notify[key] };
+    setNotify(next);
+    try {
+      await fetch("/api/v1/me/notification-prefs", {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(next),
+      });
+    } catch {
+      /* optimistic UI */
+    }
+  }
 
   return (
     <main
@@ -31,6 +110,40 @@ export function SettingsPanel() {
       data-theme-toggle-allowed="false"
     >
       <h1 className="text-xl font-semibold">{T.settings.title}</h1>
+
+      <section
+        className="mt-6"
+        data-testid="settings-notify"
+        id="notify"
+        data-notify-default-all-on={String(T.settings.notify.defaultAllOn)}
+      >
+        <h2 className="text-sm font-semibold">{T.settings.notify.label}</h2>
+        <p className="mt-1 text-xs text-lux-text-muted">
+          {T.settings.notify.offPushOnlyNote}
+        </p>
+        <ul className="mt-3 space-y-2">
+          {NOTIFY_KEYS.map(({ key, label }) => (
+            <li key={key} className="flex items-center justify-between gap-3">
+              <span className="text-sm">{label}</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={notify[key]}
+                data-notify-channel={key}
+                className={[
+                  "touch-target rounded-lux-md border px-3 py-2 text-sm",
+                  notify[key]
+                    ? "border-lux-accent text-lux-accent"
+                    : "border-lux-border text-lux-text-muted",
+                ].join(" ")}
+                onClick={() => void toggleNotify(key)}
+              >
+                {notify[key] ? "켜짐" : "꺼짐"}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section className="mt-6" data-testid="settings-font-scale">
         <h2 className="text-sm font-semibold">{T.settings.fontScale.label}</h2>

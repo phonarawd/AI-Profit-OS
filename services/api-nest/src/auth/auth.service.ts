@@ -29,6 +29,7 @@ import {
   oauthConfigured,
 } from "../config/phase0.env";
 import { PostgresService } from "../db/postgres";
+import { NotificationPrefsService } from "../inbox/notification-prefs.service";
 import { LedgerProvisionService } from "../ledger/ledger.provision.service";
 import { PracticeGrantService } from "../ledger/practice-grant.service";
 import {
@@ -93,6 +94,7 @@ export class AuthService {
     private readonly db: PostgresService,
     private readonly ledgerProvision: LedgerProvisionService,
     private readonly practiceGrant: PracticeGrantService,
+    private readonly notificationPrefs: NotificationPrefsService,
   ) {}
 
   /**
@@ -103,6 +105,8 @@ export class AuthService {
   async provisionLedgerBucketsForUser(userId: string): Promise<void> {
     await this.ledgerProvision.provisionUserBucketAccounts(userId);
     await this.practiceGrant.grantWelcome(userId);
+    /** UI §50.1n — 가입 시 알림 prefs 전부 ON */
+    await this.notificationPrefs.ensureDefaultsForUser(userId);
   }
 
   /** Fail-closed: admin issuer must never mint user sessions */

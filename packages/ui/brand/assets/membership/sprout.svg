@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Èù">
+  <!-- Brand Kit membership badge · Lux mint · flash DNA · ADR-013 · §5.9.2c -->
+  <circle cx="32" cy="32" r="30" fill="#12141C" stroke="#2A2F3D" stroke-width="2"/>
+  <path d="M32 44 V28" stroke="#3DDC97" stroke-width="3" stroke-linecap="round"/>
+  <path d="M32 34 C24 30 20 22 22 16 C28 18 32 24 32 30 Z" fill="#3DDC97"/>
+  <path d="M32 36 C38 32 44 26 42 18 C36 20 32 26 32 32 Z" fill="#2A9B6C"/>
+  <circle cx="46" cy="18" r="3" fill="#7AA2FF"/>
+</svg>

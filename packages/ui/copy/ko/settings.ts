@@ -30,6 +30,13 @@ export const settings = {
     opportunity: "수익 기회 알림",
     wallet: "충전·출금 알림",
     notice: "공지 알림",
+    campaign: "이벤트 알림",
+    opsMessage: "운영 쪽지 알림",
+    strategyMatch: "내 전략 매치 알림",
+    /** §50.1n — 가입 기본 전부 ON · OFF=Push만 스킵 */
+    defaultAllOn: true,
+    offPushOnlyNote:
+      "끄면 푸시만 멈춰요. 쪽지함에는 그대로 쌓여요.",
   },
   money: {
     label: "내 돈 관련",

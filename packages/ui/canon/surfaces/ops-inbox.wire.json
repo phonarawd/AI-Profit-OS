@@ -1,0 +1,29 @@
+{
+  "id": "ops-inbox",
+  "route": "/me/inbox",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.inbox.prefsLink", "action": "open_notify_prefs" },
+  "blocks": [
+    { "id": "title", "role": "heading", "copyKey": "T.inbox.title" },
+    { "id": "filters", "role": "tabs", "copyKey": "T.inbox.filterAll" },
+    { "id": "list", "role": "list", "copyKey": "T.inbox.empty" },
+    { "id": "row", "role": "card", "copyKey": "T.inbox.openBody" },
+    { "id": "hide", "role": "action", "copyKey": "T.inbox.hide" },
+    { "id": "blockedToasts", "role": "note", "copyKey": "T.inbox.matchBlockedHint" },
+    { "id": "prefsLink", "role": "link", "copyKey": "T.inbox.prefsLink" }
+  ],
+  "forbidden": [
+    "hard_delete",
+    "guaranteed_profit",
+    "tendency_memo_to_user",
+    "gender_branch",
+    "photo_pixel_match",
+    "IT_jargon",
+    "separate_dm_engine"
+  ],
+  "pointers": {
+    "admin": "Admin §9.8.8d",
+    "pwa": "PWA §23.5a",
+    "prefs": "UI §50.1n"
+  }
+}

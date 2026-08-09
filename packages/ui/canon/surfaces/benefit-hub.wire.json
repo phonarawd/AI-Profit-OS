@@ -1,7 +1,8 @@
 {
   "id": "benefit-hub",
   "route": "/me/benefits",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "brandRef": "packages/ui/brand",
   "sections": [
     "hero",
     "campaignCarousel",
@@ -11,17 +12,39 @@
     "streak",
     "footerLinks"
   ],
+  "blocks": [
+    { "id": "title", "role": "heading", "copyKey": "T.benefits.title" },
+    { "id": "hero", "role": "summary", "copyKey": "T.benefits.heroMonthly" },
+    { "id": "campaignCarousel", "role": "carousel", "copyKey": "T.benefits.carouselTitle" },
+    { "id": "daily", "role": "section", "copyKey": "T.benefits.sectionDaily" },
+    { "id": "oneTime", "role": "section", "copyKey": "T.benefits.sectionOneTime" },
+    { "id": "weekly", "role": "section", "copyKey": "T.benefits.sectionWeekly" },
+    { "id": "streak", "role": "section", "copyKey": "T.benefits.sectionStreak" },
+    { "id": "footerLinks", "role": "nav", "copyKey": "T.benefits.footerInvite" }
+  ],
   "copyKeys": [
     "T.benefits.title",
     "T.benefits.heroMonthly",
     "T.benefits.heroClaimable",
     "T.benefits.sectionDaily",
-    "T.benefits.sectionOneTime"
+    "T.benefits.sectionOneTime",
+    "T.benefits.sectionWeekly",
+    "T.benefits.sectionStreak"
   ],
+  "pointers": {
+    "money": "§51.8a",
+    "engine": "§48.13.4",
+    "admin": "growth?tab=missions"
+  },
   "forbidden": [
+    "photo_pixel_match",
     "Credits balance",
     "referral L2 L3 ladder body",
     "manual claim required for auto missions",
-    "G4 demo amounts in hero"
+    "G4 demo amounts in hero",
+    "casino metaphor",
+    "100% win copy",
+    "IT_jargon",
+    "gender_branch"
   ]
 }

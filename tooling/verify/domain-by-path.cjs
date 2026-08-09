@@ -91,6 +91,34 @@ const RULES = [
       "referral-unlimited-invites.cjs",
     ],
   },
+  {
+    test: (f) =>
+      /packages\/ui\/components\/membership\//.test(f) ||
+      /packages\/ui\/copy\/ko\/membership\.ts/.test(f) ||
+      /packages\/ui\/brand\/membership\.ts/.test(f) ||
+      /packages\/ui\/brand\/assets\/membership\//.test(f) ||
+      /packages\/ui\/brand\/brand\.manifest\.json/.test(f) ||
+      /packages\/ui\/canon\/surfaces\/membership-home\.wire\.json/.test(f) ||
+      /apps\/web\/app\/me\/membership\//.test(f),
+    scripts: [
+      "membership-surfaces.cjs",
+      "membership-badge-assets.cjs",
+      "no-fulfill-rate-as-rule.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /packages\/ui\/components\/inbox\//.test(f) ||
+      /packages\/ui\/copy\/ko\/inbox\.ts/.test(f) ||
+      /packages\/ui\/canon\/surfaces\/ops-inbox\.wire\.json/.test(f) ||
+      /apps\/web\/app\/me\/inbox\//.test(f) ||
+      (/^services\/api-nest\/src\/inbox\//.test(f) ||
+        /notification-prefs/.test(f)),
+    scripts: [
+      "ops-inbox.cjs",
+      "notification-prefs-default-on.cjs",
+    ],
+  },
 
   {
     test: (f) =>

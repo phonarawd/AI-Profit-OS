@@ -75,6 +75,11 @@ const live = [
   "execute-rule-loop.cjs",
   "catalog-runtime-seed.cjs",
   "benefit-hub-surfaces.cjs",
+  // PART7c/7d — membership grade UX · notify prefs · ops inbox
+  "membership-surfaces.cjs",
+  "membership-badge-assets.cjs",
+  "ops-inbox.cjs",
+  "notification-prefs-default-on.cjs",
   // P0-1 — real JWT sign/verify/tamper/expiry round-trip (see jwt.core.cjs)
   "auth-jwt-runtime.cjs",
   // PART1 korean-first-copy · mockup-governance · ux-design-system

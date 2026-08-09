@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="…8">
+  <!-- Brand Kit membership badge · Lux mint/principal · ADR-013 · §5.9.2c -->
+  <circle cx="32" cy="32" r="30" fill="#12141C" stroke="#2A2F3D" stroke-width="2"/>
+  <path d="M20 40 L32 18 L44 40 Z" fill="none" stroke="#3DDC97" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="32" cy="34" r="5" fill="#7AA2FF"/>
+  <path d="M28 44 H36" stroke="#2A9B6C" stroke-width="3" stroke-linecap="round"/>
+</svg>

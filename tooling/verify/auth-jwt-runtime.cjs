@@ -171,6 +171,7 @@ const guardedControllers = [
   "services/api-nest/src/trades/trades.user.controller.ts",
   "services/api-nest/src/membership/membership.user.controller.ts",
   "services/api-nest/src/missions/benefits.user.controller.ts",
+  "services/api-nest/src/inbox/inbox.user.controller.ts",
   "services/api-nest/src/referral/referral.controller.ts",
   "services/api-nest/src/ai/coach.controller.ts",
 ];

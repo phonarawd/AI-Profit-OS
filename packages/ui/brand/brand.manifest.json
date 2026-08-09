@@ -91,6 +91,12 @@
     "blockingSubDeliverable": "market-partner-logo-svgs",
     "note": "Partner marks are not peotteok Brand Kit slots · 7/7 status=ready · tracked in assets/markets"
   },
+  "membershipBadges": {
+    "status": "ready",
+    "manifest": "assets/membership/manifest.json",
+    "planRef": "UI §5.9.2c",
+    "note": "Brand SVG B안 5종 · emoji=aria only · photo mockup 0 · Admin/유저 동일 에셋"
+  },
   "exportPipeline": {
     "from": "packages/ui/brand/assets",
     "toPwa": "apps/web/public/icons (when apps/web exists)",

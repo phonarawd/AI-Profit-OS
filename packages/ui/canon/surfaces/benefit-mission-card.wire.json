@@ -1,6 +1,16 @@
 {
   "id": "benefit-mission-card",
+  "route": "/me/benefits",
   "version": "1.0.0",
+  "brandRef": "packages/ui/brand",
+  "blocks": [
+    { "id": "icon", "role": "icon", "copyKey": "T.benefits.statusStart" },
+    { "id": "title", "role": "heading", "copyKey": "T.benefits.title" },
+    { "id": "body", "role": "body", "copyKey": "T.benefits.sectionEmpty" },
+    { "id": "rewardAmount", "role": "metric", "copyKey": "T.benefits.rewardUsdtSuffix" },
+    { "id": "statusLabel", "role": "badge", "copyKey": "T.benefits.statusContinue" },
+    { "id": "cta", "role": "cta", "copyKey": "T.benefits.statusStart" }
+  ],
   "slots": ["icon", "title", "body", "rewardAmount", "statusLabel", "progressBar", "cta"],
   "states": [
     "locked",
@@ -12,5 +22,12 @@
     "expired"
   ],
   "rewardKinds": ["none", "practice", "promo_profit", "fee_coupon"],
-  "forbidden": ["Credits currency", "casino metaphor", "100% win copy"]
+  "forbidden": [
+    "photo_pixel_match",
+    "Credits currency",
+    "casino metaphor",
+    "100% win copy",
+    "IT_jargon",
+    "gender_branch"
+  ]
 }

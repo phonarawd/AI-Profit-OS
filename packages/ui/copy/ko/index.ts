@@ -1,5 +1,6 @@
 import { admin } from "./admin";
 import { auth } from "./auth";
+import { benefits } from "./benefits";
 import { brand } from "./brand";
 import { common } from "./common";
 import { deposit } from "./deposit";
@@ -11,11 +12,13 @@ import {
 import { execution } from "./execution";
 import { feed } from "./feed";
 import { guide } from "./guide";
+import { inbox } from "./inbox";
 import { invite } from "./invite";
 import { kyc } from "./kyc";
 import { landing } from "./landing";
 import { legal } from "./legal";
 import { margin } from "./margin";
+import { membership } from "./membership";
 import { objections } from "./objections";
 import { onboarding } from "./onboarding";
 import { operator } from "./operator";
@@ -40,17 +43,20 @@ import { wallet } from "./wallet";
 export const T = {
   admin,
   auth,
+  benefits,
   brand,
   common,
   deposit,
   execution,
   feed,
   guide,
+  inbox,
   invite,
   kyc,
   landing,
   legal,
   margin,
+  membership,
   objections,
   onboarding,
   operator,
@@ -74,6 +80,7 @@ export type CopyRoot = typeof T;
 export {
   admin,
   auth,
+  benefits,
   brand,
   common,
   CUTE_EMOJI_ALLOWED,
@@ -83,11 +90,13 @@ export {
   execution,
   feed,
   guide,
+  inbox,
   invite,
   kyc,
   landing,
   legal,
   margin,
+  membership,
   objections,
   onboarding,
   operator,

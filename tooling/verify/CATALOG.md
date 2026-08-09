@@ -100,12 +100,12 @@
 | invite-explain-surfaces | UI §5.9.1a — **live** (KR 20~70 설명·toneBand·noCap·Canon invite-home · Money §51.5 pointer) (v7.22.22) |
 | match-strictness · no-success-rate-percent | Engine §48.13.3 · §0.9 E-R2 · UI §48.6 — 엄격도 조절 · 난수 성공률 0 (v7.22.23) — **live** (preset→policy 맵 스냅샷 · Soft60/Hard90 · Admin GET/PUT `/api/v1/admin/execution-policy` + stats/today readOnly · active-row seed/ensure `matchStrictness=standard`+`feed.nearMissCapUsdt` · ensure insert-only≠Admin PUT · goldens tight/lenient · successRatePercent 0) |
 | membership-ladder · membership-daily-cap · no-fulfill-rate-as-rule | Engine §0.0.7 — 등급·일일캡 · fulfillRate≠Rule (v7.22.24) — **live** (ladder snapshot · 승급 max(입금,성공)·adminForce · overlay merge · participate 가드 · Admin `/users/:id` membership·match-policy · **GET `/api/v1/me/membership`** 유저 읽기(ladder·aiPerkFlags·fulfillRate 표시전용·Rule입력0) · fulfillRate 표시전용) |
-| membership-surfaces | UI §5.9.2c · Canon membership-home — 100%보장0 · 고액희소 (v7.22.24) |
+| membership-surfaces | UI §5.9.2c · Canon membership-home — 100%보장0 · 고액희소 (v7.22.24) — **live** (MembershipHome·Badge·copy·GET `/me/membership` · Admin §9.8.10 pointer) |
 | admin-user-credentials · admin-user-ban · admin-user-match-override | Admin §9.8.10 — 비번/PIN·밴·유저별엄격도 (v7.22.24) |
 | admin-user-capability-block | Admin §9.8.4a — 매칭/출금신청 개별차단 (v7.22.25) |
-| ops-inbox · notification-prefs-default-on | UI §5.9.4·§50.1n — 쪽지함 · 가입알림전부ON (v7.22.25) |
+| ops-inbox · notification-prefs-default-on | UI §5.9.4·§50.1n — 쪽지함 · 가입알림전부ON (v7.22.25) — **live** (OpsInbox·prefs signup ALL true·Admin ops-messages Nest·toast MATCH/WITHDRAW_BLOCK) |
 | push-channel-prefs | PWA §23.5a — notice/campaign/opp/ops prefs 필터 (v7.22.25) |
-| membership-badge-assets | UI §5.9.2c — Brand membership SVG 5종 · 사진목업0 (v7.22.25) |
+| membership-badge-assets | UI §5.9.2c — Brand membership SVG 5종 · 사진목업0 (v7.22.25) — **live** (`assets/membership/{sprout…vip}.svg` · manifest ready) |
 | opportunity-scan-surface · arbitrage-type-label | UI §5.3b · Engine §4.2a — 홈기회스캔·타입뱃지 (v7.22.26) · arbitrage-type-label=**live** · opportunity-scan-surface=**live** (BalanceAwareHome·OpportunityCard·ScanBadge·PartnerTrustStrip/Leg·feed homeTitle/scanSub) |
 | margin-compare-surface | UI §5.3 · Engine §0.0.4 — **PriceCompareMargin** 홈/상세/확인/영수증 4면 · compareReady 가드 · UI 재계산0 · **live** (컴포넌트+`tooling/verify/margin-compare-surface.cjs`+CATALOG 3종 세트) |
 | cta-earn-profit · user-trader-jargon-0 | Index §20.2 · UI §48 · Engine §4.2b — 유저 CTA=`수익 벌기` · domain=`participate` · `이 상품으로…`/구매/판매/유저메인`매칭 참여`/판매성공률/executionPlatforms·expectedSellDays 유저0 · 대기Fact 소스가드 · INTERNAL↔USER 맵 · 면책+배지 (v7.22.28) · 구명 `cta-match-participate`=alias · **both live** |
@@ -126,7 +126,7 @@
 | loop-psychology · day-pulse-live-only · preflight-may-stop | UI **§51.24** DayPulse·PreCTA·L1~L24 (v7.22.15 Owns 복원) |
 | ticker-mode-audit · ticker-pii-0 · ticker-organic-hybrid | Admin §35.4 Organic Hybrid G4 · UI §33.2a |
 | market-partner-trust · market-partner-adapters | UI **§38.10** 공식협력 로고 · Engine **§0.0.1c** amazon/yahoo adapter Phase1+ (v7.22.41 Founder lock) — market-partner-adapters **live** · market-partner-trust **live** (Canon+copy+route+MarketPartner* · 7 SVGs `status=ready` · BLOCKER cleared · `MARKET_PARTNER_LOGOS_REQUIRE_READY=1` PASS) |
-| mission-auto-payout · mission-idempotency · mission-no-manual-grant · benefit-hub-surfaces · benefit-no-credits-currency · benefit-g4-ledger-separation | Money **§51.8a** · UI **§5.9.5** · Engine **§48.13.4** fanout0 · Admin **§35.7** (v7.22.42) — **live** SSOT |
+| mission-auto-payout · mission-idempotency · mission-no-manual-grant · benefit-hub-surfaces · benefit-no-credits-currency · benefit-g4-ledger-separation | Money **§51.8a** · UI **§5.9.5** · Engine **§48.13.4** fanout0 · Admin **§35.7** (v7.22.42) — **live** SSOT · `benefit-hub-surfaces` = deep UI(BenefitHub Hero/Carousel/D·M·W·S)+Money GET+Credits0 (≠ API-only) |
 | peotteok-chat · auth-complete-profile (canon) | UI §6.4b/e · canon-surfaces |
 | auth-jwt-runtime | Infra §51.9 · ADR-006 — Engine Final Re-Verification Audit P0-1 (v7.22.50) — **live** (real HS256 sign/verify/tamper/expiry/issuer/audience round-trip against `jwt.core.cjs` + real Nest HTTP boot of `JwtAuthGuard` via `jwt-guard.selftest.ts` (no DB/Redis) + 6 session-protected controllers wired · AuthService fake-identity regression guard) |
 
