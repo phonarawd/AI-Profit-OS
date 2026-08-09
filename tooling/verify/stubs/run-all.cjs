@@ -94,7 +94,9 @@ const live = [
   "landing-3s.cjs",
   "operator-footer.cjs",
   "marketing-compliance.cjs",
-  // PART3 ProductImage (audit §26/§37 · source-agnostic)
+  // PART3 opportunity scan · CTA · margin · asset · balance-aware UI
+  "opportunity-scan-surface.cjs",
+  "margin-compare-surface.cjs",
   "product-image.cjs",
   // PART4 useTradeExecution (Phase0 polling · Phase1+ SSE boundary)
   "trade-execution-hook.cjs",

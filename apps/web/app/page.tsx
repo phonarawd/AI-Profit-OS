@@ -1,23 +1,20 @@
 "use client";
 
+import { BalanceAwareHome } from "@aipo/ui/components/opportunity";
 import { LivePayoutTicker } from "@aipo/ui/components/lux";
-import { T } from "@aipo/ui/copy/ko";
 
 /**
- * Home shell — §5.3 [A] LivePayoutTicker.
- * Opportunity feed depth = PART3 Owns (not this PART5 skeleton).
- * ticker_mode projected from Admin §35.4 — Day-1 default off until Growth ON.
+ * Home — §5.3 [A] LivePayoutTicker + §5.3a/b 잔액 인식·기회스캔
+ * Live items = GET /api/v1/opportunities (auth session) · Day-1 empty shell OK
+ * ticker_mode = Admin §35.4 · pulse 슬롯 분리(merge 0)
  */
 export default function Page() {
   return (
-    <main className="text-lux-text" data-testid="home-shell" data-canon-block="tickerSlot">
-      <LivePayoutTicker mode="off" events={[]} maxItems={50} />
-      <div className="p-6">
-        <h1 className="text-xl font-semibold">{T.user.tabs.home}</h1>
-        <p className="mt-2 text-sm text-lux-text-muted">
-          {T.user.hint.searchOpportunity}
-        </p>
+    <main className="text-lux-text" data-testid="home-shell">
+      <div data-home-slot="ticker" data-canon-block="tickerSlot">
+        <LivePayoutTicker mode="off" events={[]} maxItems={50} />
       </div>
+      <BalanceAwareHome items={[]} asSection />
     </main>
   );
 }

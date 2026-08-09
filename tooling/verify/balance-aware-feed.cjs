@@ -498,6 +498,74 @@ const copyIdx = read("packages/ui/copy/ko/index.ts");
 if (!copyIdx.includes("deposit")) {
   fails.push("T root must export deposit");
 }
+if (!copyIdx.includes("feed")) {
+  fails.push("T root must export feed (§5.3a)");
+}
+
+// --- UI §5.3a home slots (PART3e) ---
+mustExist("packages/ui/copy/ko/feed.ts");
+mustExist("packages/ui/components/opportunity/BalanceAwareHome.tsx");
+mustExist("apps/web/app/page.tsx");
+
+const feedCopy = read("packages/ui/copy/ko/feed.ts");
+for (const key of [
+  "homeTitle",
+  "sectionAffordable",
+  "sectionAffordableCount",
+  "sectionNearMiss",
+  "sectionLockedHigh",
+  "ctaDepositSuggest",
+  "badgeNearMiss",
+  "badgeLocked",
+  "peotteokLine",
+]) {
+  if (!feedCopy.includes(`${key}:`)) {
+    fails.push(`feed.ts missing §5.3a key: ${key}`);
+  }
+}
+for (const banned of ["오늘만", "강제 입금", "협박", "타이머 종료"]) {
+  if (feedCopy.includes(banned)) {
+    fails.push(`feed.ts forbidden threat copy: ${banned}`);
+  }
+}
+
+const homeUi = read("packages/ui/components/opportunity/BalanceAwareHome.tsx");
+for (const needle of [
+  'data-testid="section-affordable"',
+  'data-testid="section-near-miss"',
+  'data-testid="section-locked-high"',
+  "sectionAffordable",
+  "sectionNearMiss",
+  "sectionLockedHigh",
+  "peotteokLine",
+  "OpportunityCard",
+]) {
+  if (!homeUi.includes(needle)) {
+    fails.push(`BalanceAwareHome missing §5.3a slot: ${needle}`);
+  }
+}
+
+const homePage = read("apps/web/app/page.tsx");
+if (!homePage.includes("BalanceAwareHome")) {
+  fails.push("apps/web home must mount BalanceAwareHome for §5.3a");
+}
+
+const oppCard = read("packages/ui/components/opportunity/OpportunityCard.tsx");
+for (const needle of [
+  "cta-deposit-suggest",
+  "badge-near-miss",
+  "badge-locked-high",
+  "ctaDepositSuggest",
+  "badgeNearMiss",
+  "badgeLocked",
+  "/wallet/deposit",
+  "suggest=",
+  "oppId=",
+]) {
+  if (!oppCard.includes(needle)) {
+    fails.push(`OpportunityCard nearMiss deeplink/badge missing: ${needle}`);
+  }
+}
 
 // --- Money path must not invent Engine classification in wallet money files ---
 const moneyScan = [

@@ -43,6 +43,19 @@
       "note": "same SKU image as running · §48.3a"
     },
     {
+      "id": "priceCompareMargin",
+      "role": "compare",
+      "component": "PriceCompareMargin",
+      "fields": [
+        "buyPriceUsdt",
+        "sellPriceUsdt",
+        "expectedProfitUsdt",
+        "platformMarginUsdt",
+        "compareReady"
+      ],
+      "note": "Engine §0.0.4 pointer · UI 재계산 0 · 4면 중 receipt/success"
+    },
+    {
       "id": "productLabel",
       "role": "label",
       "field": "assetLabel"

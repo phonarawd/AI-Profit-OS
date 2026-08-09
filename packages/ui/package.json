@@ -35,6 +35,8 @@
     "./copy/ko/execution": "./copy/ko/execution.ts",
     "./copy/ko/kyc": "./copy/ko/kyc.ts",
     "./copy/ko/opportunity": "./copy/ko/opportunity.ts",
+    "./copy/ko/feed": "./copy/ko/feed.ts",
+    "./copy/ko/margin": "./copy/ko/margin.ts",
     "./copy/ko/principal-profit": "./copy/ko/principal-profit.ts",
     "./copy/ko/deposit": "./copy/ko/deposit.ts",
     "./copy/ko/wallet": "./copy/ko/wallet.ts",
@@ -96,6 +98,11 @@
     "./components/product": "./components/product/index.ts",
     "./components/product/ProductImage": "./components/product/ProductImage.tsx",
     "./components/execution": "./components/execution/index.ts",
-    "./components/execution/ProductThumb": "./components/execution/ProductThumb.tsx"
+    "./components/execution/ProductThumb": "./components/execution/ProductThumb.tsx",
+    "./components/opportunity": "./components/opportunity/index.ts",
+    "./components/opportunity/OpportunityCard": "./components/opportunity/OpportunityCard.tsx",
+    "./components/opportunity/PriceCompareMargin": "./components/opportunity/PriceCompareMargin.tsx",
+    "./components/opportunity/BalanceAwareHome": "./components/opportunity/BalanceAwareHome.tsx",
+    "./components/opportunity/CategoryFilterChips": "./components/opportunity/CategoryFilterChips.tsx"
   }
 }

@@ -1,0 +1,57 @@
+{
+  "id": "opportunity-confirm",
+  "route": "/profits/[id]",
+  "state": "confirm",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.execution.ctaEarn", "action": "participate" },
+  "blocks": [
+    {
+      "id": "arbitrageTypeBadge",
+      "role": "badge",
+      "field": "arbitrageTypeKo",
+      "note": "Engine §4.2a 투영 · UI type→ko 맵 금지"
+    },
+    {
+      "id": "productThumb",
+      "role": "media",
+      "field": "assetImageUrl",
+      "fallbackIconField": "assetIcon",
+      "copyKey": "T.execution.imageRightsNote"
+    },
+    {
+      "id": "priceCompareMargin",
+      "role": "compare",
+      "component": "PriceCompareMargin",
+      "fields": [
+        "buyPriceUsdt",
+        "sellPriceUsdt",
+        "expectedProfitUsdt",
+        "platformMarginUsdt",
+        "compareReady"
+      ],
+      "note": "Engine §0.0.4 pointer · UI 재계산 0 · 4면 중 confirm"
+    },
+    {
+      "id": "disclaimer",
+      "role": "disclaimer",
+      "copyKey": "T.execution.disclaimerResult"
+    },
+    {
+      "id": "cta",
+      "role": "primary",
+      "copyKey": "T.execution.ctaEarn"
+    }
+  ],
+  "forbidden": [
+    "buy_cta",
+    "sell_cta",
+    "recompute_margin",
+    "execution_platforms_user",
+    "expected_sell_days",
+    "매입가",
+    "판매가",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo"
+  ]
+}

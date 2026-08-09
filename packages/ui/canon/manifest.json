@@ -23,6 +23,13 @@
       "wire": "surfaces/opportunity-detail.wire.json"
     },
     {
+      "id": "opportunity-confirm",
+      "route": "/profits/[id]",
+      "state": "confirm",
+      "wire": "surfaces/opportunity-confirm.wire.json",
+      "note": "PriceCompareMargin 4면 중 confirm · §5.3"
+    },
+    {
       "id": "execution-running",
       "route": "/trades/[id]/execute",
       "state": "running",

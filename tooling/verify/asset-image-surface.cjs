@@ -365,6 +365,43 @@ for (const needle of ["imageUrl", "imageSource", "imageAltKo", "시세 참고용
   }
 }
 
+// PART3d UI — ProductThumb/ProductImage on card + CategoryFilterChips 가방
+mustExist("packages/ui/components/opportunity/OpportunityCard.tsx");
+mustExist("packages/ui/components/opportunity/CategoryFilterChips.tsx");
+mustExist("packages/ui/components/execution/ProductThumb.tsx");
+
+const oppCardUi = read("packages/ui/components/opportunity/OpportunityCard.tsx");
+if (!oppCardUi.includes("ProductImage") && !oppCardUi.includes("ProductThumb")) {
+  fails.push("OpportunityCard must render ProductImage or ProductThumb (assetImageUrl)");
+}
+if (!oppCardUi.includes("assetImageUrl") && !oppCardUi.includes("o.assetImageUrl")) {
+  fails.push("OpportunityCard must bind assetImageUrl");
+}
+if (!oppCardUi.includes("imageRightsNote")) {
+  fails.push("OpportunityCard must show 시세 참고용 note slot");
+}
+
+const chips = read(
+  "packages/ui/components/opportunity/CategoryFilterChips.tsx",
+);
+for (const needle of [
+  "filterCategoryBag",
+  "luxury_bag",
+  'data-testid="category-filter-chips"',
+]) {
+  if (!chips.includes(needle)) {
+    fails.push(`CategoryFilterChips missing ${needle}`);
+  }
+}
+if (!chips.includes("가방") && !read("packages/ui/copy/ko/opportunity.ts").includes('filterCategoryBag: "가방"')) {
+  fails.push("category filter must include 가방 (luxury_bag)");
+}
+
+const homeBal = read("packages/ui/components/opportunity/BalanceAwareHome.tsx");
+if (!homeBal.includes("CategoryFilterChips")) {
+  fails.push("BalanceAwareHome must include CategoryFilterChips");
+}
+
 const pkg = read("package.json");
 if (!pkg.includes('"verify:asset-image-surface"')) {
   fails.push("package.json missing verify:asset-image-surface script");

@@ -9,6 +9,7 @@ import {
   EMOJI_CAPS,
 } from "./emoji";
 import { execution } from "./execution";
+import { feed } from "./feed";
 import { guide } from "./guide";
 import { invite } from "./invite";
 import { kyc } from "./kyc";
@@ -43,6 +44,7 @@ export const T = {
   common,
   deposit,
   execution,
+  feed,
   guide,
   invite,
   kyc,
@@ -79,6 +81,7 @@ export {
   deposit,
   EMOJI_CAPS,
   execution,
+  feed,
   guide,
   invite,
   kyc,

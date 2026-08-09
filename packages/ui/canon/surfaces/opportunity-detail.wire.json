@@ -78,6 +78,19 @@
       "note": "Engine §4.2b · 고가 시세"
     },
     {
+      "id": "priceCompareMargin",
+      "role": "compare",
+      "component": "PriceCompareMargin",
+      "fields": [
+        "buyPriceUsdt",
+        "sellPriceUsdt",
+        "expectedProfitUsdt",
+        "platformMarginUsdt",
+        "compareReady"
+      ],
+      "note": "Engine §0.0.4 pointer · UI 재계산 0 · 4면 중 detail"
+    },
+    {
       "id": "executionModeHint",
       "role": "note",
       "copyKey": "T.execution.executionModeHint",

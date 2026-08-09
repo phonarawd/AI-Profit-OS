@@ -35,6 +35,8 @@
     "verify:cta-earn-profit": "node tooling/verify/cta-earn-profit.cjs",
     "verify:cta-match-participate": "node tooling/verify/cta-earn-profit.cjs",
     "verify:user-trader-jargon-0": "node tooling/verify/user-trader-jargon-0.cjs",
+    "verify:opportunity-scan-surface": "node tooling/verify/opportunity-scan-surface.cjs",
+    "verify:margin-compare-surface": "node tooling/verify/margin-compare-surface.cjs",
     "verify:soft-hard-requeue-sla": "node tooling/verify/soft-hard-requeue-sla.cjs",
     "verify:match-success-rule": "node tooling/verify/match-success-rule.cjs",
     "verify:match-strictness": "node tooling/verify/match-strictness.cjs",

@@ -1,33 +1,58 @@
 # verify:* Catalog (ADR-016 · §19 pointer)
 
-로컬(얇은 게이트) vs CI(두꺼운 게이트).
+**3-tier gate** — commit/push/CI 분리.
 
-## Local `pnpm verify:gate` (commit/push 전 · 필수)
+| tier | 명령 | 시점 | SSOT |
+|------|------|------|------|
+| **T0** | `pnpm verify:gate:fast` | commit · Husky pre-commit | `gate-fast.cjs` · `domain-by-path.cjs` |
+| **T1** | `pnpm verify:gate:push` | push · Husky pre-push | `gate-push.cjs` (= T0 + infra + stubs) |
+| **T2** | `pnpm verify:gate` | CI · main merge | `gate.cjs` (= T1 + next-build + opennext-build) |
 
-| id | 스크립트 | 상태 |
-|----|----------|------|
-| stack-lock | `verify:stack-lock` | ✅ live |
-| secrets | `verify:secrets` | ✅ live |
-| pg-module-scan | `verify:pg-module-scan` | ✅ live |
-| brand-consumer | `verify:brand-consumer` | ✅ live |
-| brand-assets | `verify:brand-assets` | ✅ live (visual_kit_v1) |
-| cf-infra | `verify:cf-infra` | ✅ live |
-| workers-types | `verify:workers-types` | ✅ live (@cloudflare/workers-types · workers/tsconfig.base.json · pnpm install) |
-| phase0-bootstrap | `verify:phase0-bootstrap` | ✅ live (§51.13 · CF+Supabase Seoul+Upstash · Compose optional · NATS/Temporal/EKS 0) |
-| root-domain-env | `verify:root-domain-env` | ✅ live |
-| next-major-pin | `verify:next-major-pin` | ✅ live (next@16) |
-| tailwind-v4 | `verify:tailwind-v4` | ✅ live (Tailwind v4 · @tailwindcss/postcss · lux-theme @source · Pretendard) |
-| lux-theme-sync | `verify:lux-theme-sync` | ✅ live (lux-fintech ↔ lux-theme hex/radius mirror) |
-| cf-deploy-packages | `verify:cf-deploy-packages` | ✅ live (@aipo/* · build:cf · OpenNext) |
-| next-build | `verify:next-build` | ✅ live (web + admin `next build`) |
-| opennext-build | `verify:opennext-build` | ✅ live (build:cf · `.open-next/cloudflare` · Windows=SKIP · CI ubuntu=full) |
-| no-admin-in-web | `verify:no-admin-in-web` | ✅ live (§40) |
-| ia-tabs | `verify:ia-tabs` | ✅ live (User 5탭) |
-| admin-routes | `verify:admin-routes` | ✅ live (Admin §9.1.1) |
-| plans-ssot | `verify:plans-ssot` | ✅ live (workspace `.cursor/plans` ↔ `%USERPROFILE%\.cursor\plans` hash) |
-| api-nest-build | `verify:api-nest-build` | ✅ live (Engine Final Re-Verification Audit P1-1 — `tsc -p services/api-nest/tsconfig.json`, catches broken imports/types pre-merge) |
+경로 기반 T0 도메인 = `tooling/verify/domain-by-path.cjs` (변경 파일 → 해당 `verify:*`만).
 
-## Domain gates (구현되면 hard · 현재 stub PASS + TODO)
+## T1 push tier (infra · domain stubs)
+
+| id | 스크립트 | tier | 상태 |
+|----|----------|------|------|
+| stack-lock | `verify:stack-lock` | T0 | ✅ live |
+| secrets | `verify:secrets` | T0 | ✅ live |
+| plans-ssot | `verify:plans-ssot` | T0 | ✅ live |
+| brand-consumer | `verify:brand-consumer` | T0 | ✅ live |
+| pg-module-scan | `verify:pg-module-scan` | T1 | ✅ live |
+| brand-assets | `verify:brand-assets` | T1 | ✅ live (visual_kit_v1) |
+| cf-infra | `verify:cf-infra` | T1 | ✅ live |
+| workers-types | `verify:workers-types` | T1 | ✅ live |
+| phase0-bootstrap | `verify:phase0-bootstrap` | T1 | ✅ live |
+| root-domain-env | `verify:root-domain-env` | T1 | ✅ live |
+| next-major-pin | `verify:next-major-pin` | T1 | ✅ live |
+| tailwind-v4 | `verify:tailwind-v4` | T1 | ✅ live |
+| lux-theme-sync | `verify:lux-theme-sync` | T1 | ✅ live |
+| cf-deploy-packages | `verify:cf-deploy-packages` | T1 | ✅ live |
+| no-admin-in-web | `verify:no-admin-in-web` | T1 | ✅ live |
+| ia-tabs | `verify:ia-tabs` | T1 | ✅ live |
+| admin-routes | `verify:admin-routes` | T1 | ✅ live |
+| api-nest-build | `verify:api-nest-build` | T1 | ✅ live |
+| stubs/run-all | domain stubs | T1 | ✅ live |
+
+## T2 CI-only (heavy build)
+
+| id | 스크립트 | tier | 상태 |
+|----|----------|------|------|
+| next-build | `verify:next-build` | T2 | ✅ live (web + admin `next build`) |
+| opennext-build | `verify:opennext-build` | T2 | ✅ live (Windows=SKIP · CI ubuntu=full) |
+
+## T0 path-trigger domain (변경 시에만)
+
+| 경로 패턴 | verify |
+|-----------|--------|
+| `packages/ui/**` · `apps/web/**` | no-it-jargon · mockup-governance · canon-surfaces |
+| `apps/admin/**` | no-admin-in-web · admin-routes |
+| opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |
+| money api-nest | pg-module-scan · bucket-invariant |
+| engine-rust · trade/opportunity api | match-success-rule · participate-http · execute-rule-loop |
+| auth/jwt | auth-jwt-runtime · auth-flows |
+
+## Domain gates (T1 `stubs/run-all` · 구현되면 hard)
 
 | id | 도메인 |
 |----|--------|
@@ -64,7 +89,7 @@
 | trading-card-vertical | Engine §0.0 / §51.12 — trading_card 시드20~40 · pokemontcg/ygoprodeck 메타 · ebay 호가 · 등급매칭 · 소액 SKU · Admin gradeMismatch 배지 — **live** |
 | luxury-bag-vertical | Engine §0.0 — luxury_bag 시드10~25 · Asset Master admin_r2 이미지 · ebay 멀티\|admin 호가 · brand+model 매칭 · 필터칩 `가방` — **live** |
 | ultra-watch-whale | Engine §0.0 — watch 시드40~80 · PP/AP/Rolex · whale≥100k Ultra 경로 · Day-1 카탈로그 소액공존(≥40%) · brand+reference 매칭 · 필터칩 `시계` — **live** |
-| balance-aware-feed | Engine §0.0.5.1 · Money §49.2a · UI §5.3a — **live** (Engine classify affordable/nearMiss/lockedHigh · suggestDeposit ceil_to_tick · nearMissCap=`execution-policy.feed.nearMissCapUsdt` · override hide 100% · Money suggest query·principal Fact·deposit prefill·feed invalidate) |
+| balance-aware-feed | Engine §0.0.5.1 · Money §49.2a · UI §5.3a — **live** (Engine classify affordable/nearMiss/lockedHigh · suggestDeposit ceil_to_tick · nearMissCap=`execution-policy.feed.nearMissCapUsdt` · override hide 100% · Money suggest query·principal Fact·deposit prefill·feed invalidate · UI `T.feed`+BalanceAwareHome 슬롯 affordable/nearMiss/lockedHigh·입금 suggest CTA) |
 | user-opportunity-feed | Engine §0.9 E-R3 — **live** (`GET /api/v1/opportunities(+/:id)` · `OpportunitiesUserController`≠admin · `OPPORTUNITY_USER_ROUTES` · `buildBalanceAwareFeedWithOverrides` · `executionPlatforms` 유저0 · `arbitrageTypeKo` DB pass-through · JWT session userId only) |
 | participate-http | Engine §0.9 E-R4 · §48.13.1 — **live** (`POST /api/v1/opportunities/:id/participate` · P0b~P5 · `participate_requests`+`trade_executions` · idempotency · KYC0 · practice/circuit/principal · JWT session userId only · external HTTP 0) |
 | execute-rule-loop | Engine §0.9 E-R5 · §48.13 — **live** (`GET/POST /api/v1/trades/:id(/execute-tick)` · Nest→`settlement_rule.cjs` · Soft60/Hard90/REQUEUE/MATCH_TIMEOUT · MATCH_SUCCESS→settlement journal · `SettlementCompletedFanout` 소비 · ticker/mission/demo Rule입력0 · FFI0 · Phase0 polling) |
@@ -80,7 +105,8 @@
 | ops-inbox · notification-prefs-default-on | UI §5.9.4·§50.1n — 쪽지함 · 가입알림전부ON (v7.22.25) |
 | push-channel-prefs | PWA §23.5a — notice/campaign/opp/ops prefs 필터 (v7.22.25) |
 | membership-badge-assets | UI §5.9.2c — Brand membership SVG 5종 · 사진목업0 (v7.22.25) |
-| opportunity-scan-surface · arbitrage-type-label | UI §5.3b · Engine §4.2a — 홈기회스캔·타입뱃지 (v7.22.26) · arbitrage-type-label=**live** |
+| opportunity-scan-surface · arbitrage-type-label | UI §5.3b · Engine §4.2a — 홈기회스캔·타입뱃지 (v7.22.26) · arbitrage-type-label=**live** · opportunity-scan-surface=**live** (BalanceAwareHome·OpportunityCard·ScanBadge·PartnerTrustStrip/Leg·feed homeTitle/scanSub) |
+| margin-compare-surface | UI §5.3 · Engine §0.0.4 — **PriceCompareMargin** 홈/상세/확인/영수증 4면 · compareReady 가드 · UI 재계산0 · **live** (컴포넌트+`tooling/verify/margin-compare-surface.cjs`+CATALOG 3종 세트) |
 | cta-earn-profit · user-trader-jargon-0 | Index §20.2 · UI §48 · Engine §4.2b — 유저 CTA=`수익 벌기` · domain=`participate` · `이 상품으로…`/구매/판매/유저메인`매칭 참여`/판매성공률/executionPlatforms·expectedSellDays 유저0 · 대기Fact 소스가드 · INTERNAL↔USER 맵 · 면책+배지 (v7.22.28) · 구명 `cta-match-participate`=alias · **both live** |
 | soft-hard-requeue-sla | Index §20.2 · Engine §48.13 · UI §48 — Soft60/Hard90 · `MATCH_TIMEOUT` · 카피3줄(보통1분/다시맞추는중/시간지나안전정지) · presentation≠SLA (v7.22.29) · Audit A4 · **copy/Canon live** |
 | match-tension-surface | Index §20.2 · UI §48.3b — Soft/Hard전등급동일 · 긴장감=과정Fact · 등급≠대기특권 · slaAlmost/priceNearMiss · 난수틱·가짜대기·당첨게이지0 (v7.22.30) · Audit A6 · **copy/Canon live** |

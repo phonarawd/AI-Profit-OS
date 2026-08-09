@@ -95,6 +95,53 @@ if (fs.existsSync(manifestPath)) {
   }
 }
 
+// PART3b — components wire CTA + 면책·배지
+const cardComp = path.join(
+  root,
+  "packages/ui/components/opportunity/OpportunityCard.tsx",
+);
+const detailComp = path.join(
+  root,
+  "packages/ui/components/opportunity/OpportunityDetail.tsx",
+);
+if (!fs.existsSync(cardComp)) {
+  fails.push("missing OpportunityCard.tsx");
+} else {
+  const c = fs.readFileSync(cardComp, "utf8");
+  for (const needle of [
+    "T.execution.ctaEarn",
+    "T.execution.disclaimerResult",
+    "T.execution.badgeNoBuy",
+    "T.execution.badgeNoSell",
+    'data-action="participate"',
+  ]) {
+    if (!c.includes(needle)) fails.push(`OpportunityCard missing ${needle}`);
+  }
+}
+if (!fs.existsSync(detailComp)) {
+  fails.push("missing OpportunityDetail.tsx");
+} else {
+  const d = fs.readFileSync(detailComp, "utf8");
+  for (const needle of [
+    "T.execution.ctaDetail",
+    "T.execution.ctaStickyShort",
+    "T.execution.disclaimerResult",
+    "T.execution.badgeNoBuy",
+    "T.execution.badgeNoSell",
+    'data-testid="sticky-cta-earn"',
+  ]) {
+    if (!d.includes(needle)) fails.push(`OpportunityDetail missing ${needle}`);
+  }
+}
+
+const detailPage = path.join(root, "apps/web/app/profits/[id]/page.tsx");
+if (fs.existsSync(detailPage)) {
+  const p = fs.readFileSync(detailPage, "utf8");
+  if (!p.includes("OpportunityDetail")) {
+    fails.push("profits/[id] must mount OpportunityDetail");
+  }
+}
+
 if (fails.length) {
   console.error("[verify:cta-earn-profit] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
