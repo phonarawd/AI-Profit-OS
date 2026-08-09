@@ -34,10 +34,17 @@
       ]
     },
     {
-      "id": "ctaProfit",
+      "id": "ctaDeposit",
       "role": "primary",
-      "copyKey": "T.withdrawMode.ctaProfitWithdraw",
-      "href": "/wallet/withdraw?mode=profit"
+      "copyKey": "T.walletBuckets.ctaDeposit",
+      "href": "/wallet/deposit?tab=usdt"
+    },
+    {
+      "id": "ctaWithdraw",
+      "role": "secondary",
+      "copyKey": "T.walletBuckets.ctaWithdraw",
+      "href": "/wallet/withdraw?mode=profit",
+      "defaultMode": "profit"
     },
     {
       "id": "ctaPrincipal",
@@ -45,6 +52,12 @@
       "copyKey": "T.withdrawMode.ctaOpenPrincipal",
       "href": "/wallet/withdraw?mode=principal",
       "principalReachable": true
+    },
+    {
+      "id": "historyLink",
+      "role": "nav",
+      "copyKey": "T.walletBuckets.historyLink",
+      "href": "/wallet/history"
     }
   ],
   "forbidden": [

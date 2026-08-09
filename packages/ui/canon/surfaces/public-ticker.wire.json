@@ -14,6 +14,18 @@
         "T.ticker.participantAmt"
       ],
       "flags": ["day_pulse_merge_0", "pii_0", "admin_mode_projection"]
+    },
+    {
+      "id": "counterSlot",
+      "role": "payout-counter",
+      "slot": "F",
+      "component": "HomePayoutCounter",
+      "copyKeys": ["T.ticker.todayPayoutLabel"],
+      "flags": [
+        "day_pulse_merge_0",
+        "counter_mode_projection",
+        "countup_ledger_only"
+      ]
     }
   ],
   "forbidden": [

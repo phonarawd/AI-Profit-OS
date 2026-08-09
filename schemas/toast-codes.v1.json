@@ -181,6 +181,11 @@
         "trigger": "admin reject"
       },
       {
+        "code": "KRW_REJECTED",
+        "toastKo": "😔 원화 입금을 확인할 수 없어요. 내역에서 이유를 확인해 주세요",
+        "trigger": "admin reject · §8.2 short alias of KRW_DEPOSIT_REJECTED"
+      },
+      {
         "code": "KRW_DEPOSIT_EXPIRED",
         "toastKo": "⏰ 입금 신청이 만료됐어요. 다시 신청해 주세요",
         "trigger": "TTL expire"

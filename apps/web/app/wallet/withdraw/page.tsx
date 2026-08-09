@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PrincipalConfirmSheet } from "@aipo/ui/components/wallet/PrincipalConfirmSheet";
 import {
@@ -56,8 +57,31 @@ function WithdrawContent() {
       className="p-6 text-lux-text"
       data-withdraw-default-mode="profit"
       data-withdraw-mode={mode}
+      data-testid="wallet-withdraw"
     >
       <h1 className="text-xl font-semibold">{T.withdrawMode.pageTitle}</h1>
+      <div
+        className="mt-4 flex gap-2"
+        role="tablist"
+        data-testid="withdraw-currency-tabs"
+      >
+        <Link
+          href={`/wallet/withdraw/usdt?mode=${mode}`}
+          role="tab"
+          data-tab="usdt"
+          className="rounded-lux-md border border-lux-border px-3 py-2 text-sm"
+        >
+          {T.withdrawMode.tabUsdt}
+        </Link>
+        <Link
+          href={`/wallet/withdraw/krw?mode=${mode}`}
+          role="tab"
+          data-tab="krw"
+          className="rounded-lux-md border border-lux-border px-3 py-2 text-sm"
+        >
+          {T.withdrawMode.tabKrw}
+        </Link>
+      </div>
       {gate.toastMessage ? (
         <p
           className="mt-3 text-sm"

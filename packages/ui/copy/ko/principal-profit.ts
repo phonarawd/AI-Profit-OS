@@ -13,10 +13,17 @@ export const walletBuckets = {
   principalAlways: "원금은 언제든 출금할 수 있어요",
   guideLink: "원금이 왜 필요해요?",
   usdtSuffix: "USDT",
+  ctaDeposit: "입금하기",
+  ctaWithdraw: "출금하기",
+  historyLink: "입출금·수익 내역",
 } as const;
 
 export const withdrawMode = {
   pageTitle: "출금",
+  pageTitleUsdt: "테더(USDT) 출금",
+  pageTitleKrw: "원화 출금",
+  tabUsdt: "테더(USDT)",
+  tabKrw: "원화",
   modeProfit: "수익만",
   modeProfitHint: "기본 · 출금 가능 수익만",
   modePrincipal: "원금 포함",

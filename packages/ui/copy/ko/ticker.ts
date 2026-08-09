@@ -7,6 +7,10 @@ export const ticker = {
   justReflected: "방금 {name}님 수익이 반영됐어요",
   participantAmt: "{name}님이 +{amount} 참여했어요",
   regionAria: "실시간 수익 소식",
+  /** Home [F] counter_mode §35 G4 · DayPulse와 슬롯 분리 */
+  todayPayoutLabel: "🎉 오늘 지급 합계",
+  todayPayoutAria: "오늘 지급 합계",
+  usdtSuffix: "USDT",
   /** Forbidden phrases in ticker body (verify:ticker-pii-0) */
   forbiddenPhrases: ["100만", "대박", "당첨", "잭팟"] as const,
 } as const;

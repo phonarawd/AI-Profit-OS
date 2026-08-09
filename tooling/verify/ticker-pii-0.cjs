@@ -64,6 +64,19 @@ if (!countUp.includes("data-countup-source")) {
   fails.push("CountUpNumber missing data-countup-source");
 }
 
+const counter = read("packages/ui/components/lux/HomePayoutCounter.tsx");
+for (const needle of [
+  "HomePayoutCounter",
+  'data-testid="home-payout-counter"',
+  'data-day-pulse-merge="false"',
+  "counter_mode",
+  "settlement.completed",
+]) {
+  if (!counter.includes(needle)) {
+    fails.push(`HomePayoutCounter missing ${needle}`);
+  }
+}
+
 const copy = read("packages/ui/copy/ko/ticker.ts");
 for (const k of ["justSettled", "justReflected", "participantAmt", "forbiddenPhrases"]) {
   if (!copy.includes(k)) fails.push(`T.ticker missing ${k}`);
@@ -72,6 +85,9 @@ for (const k of ["justSettled", "justReflected", "participantAmt", "forbiddenPhr
 const home = read("apps/web/app/page.tsx");
 if (!home.includes("LivePayoutTicker")) {
   fails.push("home must mount LivePayoutTicker [A]");
+}
+if (!home.includes("HomePayoutCounter")) {
+  fails.push("home must mount HomePayoutCounter [F]");
 }
 if (home.includes("DayPulse")) {
   fails.push("home must not merge DayPulse into ticker slot");

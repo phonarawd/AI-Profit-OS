@@ -29,7 +29,7 @@ function KrwWithdrawContent() {
       data-withdraw-default-mode="profit"
       data-withdraw-mode={mode}
     >
-      <h1 className="text-xl font-semibold">원화 {T.withdrawMode.pageTitle}</h1>
+      <h1 className="text-xl font-semibold">{T.withdrawMode.pageTitleKrw}</h1>
       {gate.toastMessage ? (
         <p
           className="mt-3 text-sm"

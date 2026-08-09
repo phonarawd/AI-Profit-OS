@@ -34,6 +34,9 @@ export const toast = {
   KRW_DEPOSIT_APPROVED: "✅ 원화 입금이 확인됐어요. 잔액에 반영됐어요 🎉",
   KRW_DEPOSIT_REJECTED:
     "😔 원화 입금을 확인할 수 없어요. 내역에서 이유를 확인해 주세요",
+  /** Index/§8.2 short alias — same body as KRW_DEPOSIT_REJECTED */
+  KRW_REJECTED:
+    "😔 원화 입금을 확인할 수 없어요. 내역에서 이유를 확인해 주세요",
   KRW_DEPOSIT_EXPIRED: "⏰ 입금 신청이 만료됐어요. 다시 신청해 주세요",
   DEPOSIT_DISPUTE_SUBMITTED: "📝 문의를 접수했어요. 확인 후 안내드릴게요",
   DEPOSIT_DISPUTE_CREDITED: "✅ 확인했어요. 잔액에 반영됐어요 🎉",

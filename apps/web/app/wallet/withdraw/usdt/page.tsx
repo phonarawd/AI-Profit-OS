@@ -29,7 +29,7 @@ function UsdtWithdrawContent() {
       data-withdraw-default-mode="profit"
       data-withdraw-mode={mode}
     >
-      <h1 className="text-xl font-semibold">USDT {T.withdrawMode.pageTitle}</h1>
+      <h1 className="text-xl font-semibold">{T.withdrawMode.pageTitleUsdt}</h1>
       {gate.toastMessage ? (
         <p
           className="mt-3 text-sm"
