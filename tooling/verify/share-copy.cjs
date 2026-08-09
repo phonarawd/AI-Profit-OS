@@ -81,8 +81,10 @@ if (!wire.forbidden?.includes("L1_L2_L3_english_labels")) {
 }
 
 const page = read("apps/web/app/me/invite/page.tsx");
-if (!page.includes("T.invite")) {
-  fails.push("invite page must use T.invite copy SSOT");
+if (!page.includes("T.invite") && !page.includes("InviteHome")) {
+  fails.push(
+    "invite page must use T.invite copy SSOT (direct or via InviteHome)",
+  );
 }
 if (!page.includes("UI §5.9.1a") && !page.includes("§5.9.1a")) {
   fails.push("invite page must pointer UI §5.9.1a");
