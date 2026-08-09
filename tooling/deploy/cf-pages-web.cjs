@@ -43,21 +43,25 @@ const build = spawnSync("pnpm", ["--filter", "@aipo/web", "build:cf"], {
 });
 if (build.status !== 0) process.exit(build.status || 1);
 
-console.log(`[cf:deploy:web] OpenNext Workers deploy · env=${envFlag} …`);
-const deploy = spawnSync(
-  "pnpm",
-  [
-    "exec",
-    "opennextjs-cloudflare",
-    "deploy",
-    `--config=${configPath}`,
-    `--env=${envFlag}`,
-  ],
-  {
-    cwd: appDir,
-    stdio: "inherit",
-    shell: true,
-    env: spawnEnv(),
-  }
+// preview = top-level name ai-profit-web (proxy/workers.dev SSOT)
+// production = --env=production (동일 이름 · 향후 바인딩 분리)
+const deployArgs = [
+  "exec",
+  "opennextjs-cloudflare",
+  "deploy",
+  `--config=${configPath}`,
+];
+if (envFlag === "production") {
+  deployArgs.push("--env=production");
+}
+
+console.log(
+  `[cf:deploy:web] OpenNext Workers deploy · target=${envFlag} · worker=ai-profit-web …`
 );
+const deploy = spawnSync("pnpm", deployArgs, {
+  cwd: appDir,
+  stdio: "inherit",
+  shell: true,
+  env: spawnEnv(),
+});
 process.exit(deploy.status || 0);

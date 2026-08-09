@@ -31,20 +31,22 @@ const build = spawnSync("pnpm", ["--filter", "@aipo/admin", "build:cf"], {
 });
 if (build.status !== 0) process.exit(build.status || 1);
 
-console.log(`[cf:deploy:ops] OpenNext Workers deploy · env=${envFlag} …`);
-const deploy = spawnSync(
-  "pnpm",
-  [
-    "exec",
-    "opennextjs-cloudflare",
-    "deploy",
-    `--config=${configPath}`,
-    `--env=${envFlag}`,
-  ],
-  {
-    cwd: appDir,
-    stdio: "inherit",
-    shell: true,
-  }
+const deployArgs = [
+  "exec",
+  "opennextjs-cloudflare",
+  "deploy",
+  `--config=${configPath}`,
+];
+if (envFlag === "production") {
+  deployArgs.push("--env=production");
+}
+
+console.log(
+  `[cf:deploy:ops] OpenNext Workers deploy · target=${envFlag} · worker=ai-profit-ops …`
 );
+const deploy = spawnSync("pnpm", deployArgs, {
+  cwd: appDir,
+  stdio: "inherit",
+  shell: true,
+});
 process.exit(deploy.status || 0);
