@@ -20,11 +20,23 @@ const buildDir = path.join(root, "apps/web/.open-next/cloudflare");
 const config = path.join(root, "infra/web/wrangler.toml");
 const envFlag = target === "production" || target === "prod" ? "production" : "preview";
 
+function spawnEnv() {
+  const env = { ...process.env };
+  if (process.platform === "win32") {
+    const shim = path.join(__dirname, "win32-symlink-shim.cjs");
+    const prev = env.NODE_OPTIONS || "";
+    env.NODE_OPTIONS = `--require ${shim}${prev ? ` ${prev}` : ""}`;
+    env.NODE_ENV = env.NODE_ENV || "production";
+  }
+  return env;
+}
+
 console.log("[cf:deploy:web] building apps/web …");
 const build = spawnSync("pnpm", ["--filter", "@aipo/web", "build:cf"], {
   cwd: root,
   stdio: "inherit",
   shell: true,
+  env: spawnEnv(),
 });
 if (build.status !== 0) process.exit(build.status || 1);
 
