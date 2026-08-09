@@ -28,9 +28,11 @@
 | Wordmark (dark) | `assets/wordmark/wordmark-dark.png` |
 | AI avatar | `assets/ai/avatar-512.png` |
 | OG | `assets/og/og-default.png` |
+| Market partners (§38.10) | `assets/markets/*.svg` + `assets/markets/manifest.json` |
 
-등록 SSOT = `brand.manifest.json` · CI = `pnpm verify:brand-assets` · `verify:brand-consumer`  
-**금지:** 사진 목업 PNG · metal-hex/대체 마크 · `docs/mockups` 재추가 (ADR-013)
+등록 SSOT = `brand.manifest.json` · CI = `pnpm verify:brand-assets` · `verify:brand-consumer` · `verify:market-partner-trust`  
+**Market logos:** 7 SVGs tracked as blocking sub-deliverable until `status=ready` (see `assets/markets/README.md`).  
+**금지:** 사진 목업 PNG · metal-hex/대체 마크 · `docs/mockups` 재추가 (ADR-013) · 미등록 몰 로고 · 퍼뜩 슬롯에 타사 마크
 
 ## 파이프라인
 

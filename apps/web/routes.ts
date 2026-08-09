@@ -12,7 +12,7 @@ export const USER_TABS = [
 
 export type UserTabHref = (typeof USER_TABS)[number]["href"];
 
-/** Nested routes (5탭 밖 · 탭 추가 금지) */
+/** Nested routes (5탭 밖 · 탭 추가 금지) · PART5b lock */
 export const USER_NESTED_ROUTES = [
   "/wallet/deposit",
   "/wallet/withdraw",
@@ -21,6 +21,10 @@ export const USER_NESTED_ROUTES = [
   "/wallet/history",
   "/me/settings",
   "/me/legal",
+  "/me/legal/terms",
+  "/me/legal/privacy",
+  "/me/legal/oss",
+  "/me/legal/license",
   "/me/kyc",
   "/me/peotteok",
   "/me/membership",
@@ -29,13 +33,22 @@ export const USER_NESTED_ROUTES = [
   "/me/events",
   "/me/strategies",
   "/me/support",
+  "/me/benefits",
   "/me/guide/usdt",
   "/me/guide/get-usdt",
   "/me/guide/revenue",
   "/me/guide/faq",
   "/me/guide/principal",
+  "/me/guide/partners",
   "/trades/[id]/execute",
   "/profits/[id]",
+  "/onboarding",
+  "/auth/login",
+  "/auth/signup",
+  "/auth/complete-profile",
+  "/l/[variant]",
+  "/ads",
+  "/ads/[variant]",
 ] as const;
 
 /** Forbidden in apps/web (Admin §40) */

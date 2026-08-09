@@ -25,7 +25,7 @@ function read(rel) {
 const files = [
   "services/market-intelligence/src/catalog-runtime-seed.cjs",
   "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
-  "supabase/migrations/20260809144409_catalog_runtime_day1_fx_bootstrap.sql",
+  "supabase/migrations/20260809144814_catalog_runtime_day1_fx_bootstrap.sql",
   "services/market-intelligence/src/trading-card-seed.cjs",
   "services/market-intelligence/src/luxury-bag-seed.cjs",
   "services/market-intelligence/src/watch-seed.cjs",
@@ -54,7 +54,7 @@ const adapters = read(
 );
 const adaptersMod = read("services/api-nest/src/adapters/adapters.module.ts");
 const mig = read(
-  "supabase/migrations/20260809144409_catalog_runtime_day1_fx_bootstrap.sql",
+  "supabase/migrations/20260809144814_catalog_runtime_day1_fx_bootstrap.sql",
 );
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");

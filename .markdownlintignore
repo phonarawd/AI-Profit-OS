@@ -12,6 +12,7 @@ node_modules
 
 # Repo governance / audit docs (long tables · Korean SSOT)
 docs/**
+CONSTITUTION/**
 PRE_IMPLEMENTATION_MASTER_AUDIT.md
 COMPANY_REGISTRATION_SUMMARY.md
 FOOTER_LICENSE_COPY.md

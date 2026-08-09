@@ -16,7 +16,11 @@ export const kyc = {
   start: "시작하기",
   nextConfirm: "다음",
   docType: "신분증 종류",
+  docTypeKrId: "주민등록증",
+  docTypeDriver: "운전면허증",
+  docTypePassport: "여권",
   captureHint: "프레임 안에 맞춰 찍어 주세요",
+  capturePick: "사진 선택",
   preview: "미리보기",
   retake: "다시 찍기",
   legalName: "이름",
@@ -26,6 +30,7 @@ export const kyc = {
   submit: "제출하기",
   securityFooter: "서류는 안전하게 보관되며 외부에 공개되지 않아요",
   pendingInline: "검토 중이에요",
+  submittedHint: "검토가 끝나면 알려 드릴게요",
 } as const;
 
 export type KycCopy = typeof kyc;

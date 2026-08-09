@@ -3,7 +3,8 @@
  * Day-1 auto-publish listing = ebay 멀티 marketplace | admin only
  * amazon/yahoo_jp = official partners · Phase1+ adapters (verify:market-partner-adapters)
  * KR C2C / Chrono24 as listing adapters = FORBIDDEN
- * User copy in packages/ui/copy + apps/web: Yahoo/야후 still gated until UI §38.10 todo
+ * UI §38.10 supersede: Yahoo/야후 partner label copy is REQUIRED (not banned) —
+ *   adapter Day-1 auto-publish yahoo_jp remains FORBIDDEN (below)
  */
 const fs = require("fs");
 const path = require("path");
@@ -18,21 +19,6 @@ function read(rel) {
     return null;
   }
   return fs.readFileSync(p, "utf8");
-}
-
-function walkFiles(dir, exts, out = []) {
-  if (!fs.existsSync(dir)) return out;
-  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
-    const full = path.join(dir, ent.name);
-    if (ent.isDirectory()) {
-      if (ent.name === "node_modules" || ent.name === ".git" || ent.name === "dist")
-        continue;
-      walkFiles(full, exts, out);
-    } else if (exts.some((e) => ent.name.endsWith(e))) {
-      out.push(full);
-    }
-  }
-  return out;
 }
 
 // --- workers: Day-1 signup-ready required · partner Phase1+ allowed ---
@@ -129,36 +115,6 @@ if (mig) {
   }
 }
 
-// --- user-facing copy: 야후 / Yahoo / yahoo_jp = 0 until UI §38.10 trust todo ---
-const copyRoot = path.join(root, "packages/ui/copy");
-const copyFiles = walkFiles(copyRoot, [".ts", ".tsx", ".json"]);
-const bannedCopy = [/야후/, /\bYahoo\b/, /yahoo_jp/i, /yahoo-jp/i];
-for (const file of copyFiles) {
-  const text = fs.readFileSync(file, "utf8");
-  for (const re of bannedCopy) {
-    if (re.test(text)) {
-      fails.push(
-        `user copy gated match ${re} in ${path.relative(root, file)} (UI §38.10 todo)`,
-      );
-    }
-  }
-}
-
-const webRoot = path.join(root, "apps/web");
-if (fs.existsSync(webRoot)) {
-  const webFiles = walkFiles(webRoot, [".ts", ".tsx"]);
-  for (const file of webFiles) {
-    const text = fs.readFileSync(file, "utf8");
-    for (const re of bannedCopy) {
-      if (re.test(text)) {
-        fails.push(
-          `apps/web gated match ${re} in ${path.relative(root, file)} (UI §38.10 todo)`,
-        );
-      }
-    }
-  }
-}
-
 // --- Engine plan SSOT: Day-1 ebay|admin + partner registry ---
 const enginePlan = path.join(
   root,
@@ -198,5 +154,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:listing-legs-day1] PASS (ebay 멀티|admin Day-1 · partner amazon/yahoo Phase1+ · UI copy gated)",
+  "[verify:listing-legs-day1] PASS (ebay 멀티|admin Day-1 · yahoo_jp auto-publish 0 · partner label §38.10 OK)",
 );

@@ -1,6 +1,6 @@
 /**
- * T.peotteok — Engine §47.12~15 · UI §6.4e
- * 퍼뜩 coach surface copy SSOT
+ * T.peotteok — Engine §47.12~15 · UI §6.4e · §27.10 voice.*
+ * 퍼뜩 coach surface copy SSOT · 중성 존댓말 · IT 레인명 화면 0
  */
 
 export const peotteok = {
@@ -22,6 +22,19 @@ export const peotteok = {
   chipInvite: "친구 초대",
   chipKyc: "본인 확인",
   chipUsdt: "테더 준비",
+  /** §27.10.5 voice SSOT */
+  voice: {
+    persona: "친근한 도우미 · 이름 퍼뜩 · 성별·인간형 암시 없음",
+    greeting: "안녕하세요! 퍼뜩이에요 😊 무엇을 도와드릴까요?",
+    shortConfirm: "네, 살펴볼게요 ✨",
+    moneyFactTail: "✨",
+    refuseS: "출금은 지갑에서 직접 해 주세요 🔐",
+    busy: "🤖 퍼뜩이 잠시 바빠요. 조금 뒤 다시 물어봐 주세요",
+    helpNudge: "💡 아래 안내를 눌러 보시면 더 쉬워요",
+    seniorPace: "한 문장씩 천천히 알려 드릴게요. 이어서 볼까요?",
+    youngPace: "짧게 알려 드릴게요 ✨",
+    midPace: "설명과 예시를 하나씩 보여 드릴게요 💡",
+  },
 } as const;
 
 export type PeotteokCopy = typeof peotteok;

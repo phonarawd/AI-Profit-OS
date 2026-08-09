@@ -58,6 +58,12 @@
       "copyKey": "T.execution.noBidBadge"
     },
     {
+      "id": "successLegLog",
+      "role": "log",
+      "copyKey": "T.trust.partners.successLegLog",
+      "note": "UI §38.10 · {buyLabel} ↔ {sellLabel} 시세 반영 · 「○○ 판매 완료」금지"
+    },
+    {
       "id": "share",
       "role": "secondary",
       "copyKey": "T.execution.shareBoast"

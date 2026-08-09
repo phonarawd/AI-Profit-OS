@@ -5,6 +5,7 @@
  * executionPlatforms 유저 0 · PriceCompare = 저가/고가 시세 (매입가/판매가 금지)
  */
 export const opportunity = {
+  detailTitle: "수익 상세",
   badgeMatchable: "AI 매칭 가능",
   historicalMatchHint: "과거 유사 매칭",
   historicalWindow: "최근 {n}일 기준",

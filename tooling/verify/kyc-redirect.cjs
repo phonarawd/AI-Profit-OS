@@ -63,8 +63,13 @@ for (const rel of withdrawPages) {
 }
 
 const meKyc = read("apps/web/app/me/kyc/page.tsx");
-if (!meKyc.includes("T.kyc.pageTitle") && !meKyc.includes("T.kyc")) {
-  fails.push("/me/kyc must use T.kyc copy");
+// T.kyc may be used on the page or via KycFlow (UI §6.4d · verify:kyc-surfaces Owns)
+const usesKycCopy =
+  meKyc.includes("T.kyc.pageTitle") ||
+  meKyc.includes("T.kyc") ||
+  meKyc.includes("KycFlow");
+if (!usesKycCopy) {
+  fails.push("/me/kyc must use T.kyc copy (or KycFlow)");
 }
 if (/rrn|주민등록번호|주민번호/i.test(meKyc)) {
   fails.push("/me/kyc must not include RRN type-in fields");

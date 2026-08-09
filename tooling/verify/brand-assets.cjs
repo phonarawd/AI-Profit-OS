@@ -60,9 +60,63 @@ if (fs.existsSync(brandAssetsDir)) {
   walk(brandAssetsDir);
 }
 
+// Market partner logos (§38.10) — tracked in assets/markets/manifest.json.
+// Ready marks must exist on disk. Blocked marks are an explicit sub-deliverable
+// (verify:market-partner-trust); do not invent unofficial trademark SVGs.
+const marketsManifestPath = path.join(brandRoot, "assets/markets/manifest.json");
+if (!fs.existsSync(marketsManifestPath)) {
+  fails.push("missing assets/markets/manifest.json (market-partner-logo-svgs tracker)");
+} else {
+  if (!m.marketPartners?.manifest) {
+    fails.push("brand.manifest.json missing marketPartners.manifest pointer");
+  }
+  let markets;
+  try {
+    markets = JSON.parse(fs.readFileSync(marketsManifestPath, "utf8"));
+  } catch {
+    fails.push("assets/markets/manifest.json invalid JSON");
+  }
+  if (markets) {
+    const required = [
+      "ebay.svg",
+      "amazon.svg",
+      "yahoo-jp.svg",
+      "pokemontcg.svg",
+      "ygoprodeck.svg",
+      "coingecko.svg",
+      "frankfurter.svg",
+    ];
+    const logos = markets.logos || [];
+    const byFile = new Map(logos.map((l) => [l.file, l]));
+    for (const f of required) {
+      const entry = byFile.get(f);
+      if (!entry) {
+        fails.push(`markets/manifest missing tracked logo ${f}`);
+        continue;
+      }
+      if (entry.status === "ready") {
+        const abs = path.join(brandRoot, entry.path || `assets/markets/${f}`);
+        if (!fs.existsSync(abs)) fails.push(`market logo ready but missing file: ${f}`);
+      } else if (entry.status !== "blocked") {
+        fails.push(`market logo ${f} status must be blocked|ready`);
+      }
+    }
+  }
+}
+
 if (fails.length) {
   console.error("[verify:brand-assets] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
 
-console.log("[verify:brand-assets] PASS (visual_kit_v1 ready assets)");
+const marketsBlocked =
+  fs.existsSync(marketsManifestPath) &&
+  (JSON.parse(fs.readFileSync(marketsManifestPath, "utf8")).logos || []).filter(
+    (l) => l.status !== "ready",
+  ).length;
+
+console.log(
+  marketsBlocked
+    ? `[verify:brand-assets] PASS (visual_kit_v1 ready · market logos blocked=${marketsBlocked}/7 tracked)`
+    : "[verify:brand-assets] PASS (visual_kit_v1 ready assets · market logos ready)",
+);

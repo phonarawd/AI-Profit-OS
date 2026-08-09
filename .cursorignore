@@ -26,7 +26,10 @@ CONSTITUTION/
 PRE_IMPLEMENTATION_MASTER_AUDIT.md
 COMPANY_REGISTRATION_SUMMARY.md
 FOOTER_LICENSE_COPY.md
-docs/
+# NOTE: "docs/*" (not "docs/") -- gitignore semantics forbid re-including a file
+# whose PARENT DIRECTORY is fully excluded, so a bare "docs/" would silently
+# break the exception below. Keep the wildcard form so the negation works.
+docs/*
 # bootstrap SSOT exception for agents (must stay readable)
 !docs/CONSTITUTION_BOOTSTRAP.md
 

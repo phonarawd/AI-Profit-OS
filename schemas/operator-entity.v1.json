@@ -16,7 +16,8 @@
     "primaryActivityKo",
     "licensedActivities",
     "addresses",
-    "verificationUrls"
+    "verificationUrls",
+    "supportEmail"
   ],
   "properties": {
     "legalName": {
@@ -90,6 +91,11 @@
     "relatedWebsite": {
       "type": "string",
       "format": "uri"
+    },
+    "supportEmail": {
+      "type": "string",
+      "format": "email",
+      "description": "§50.9 · Human Review 필수 · LandingOperatorFooter mailto · v7.22.54"
     },
     "addresses": {
       "type": "array",
@@ -191,7 +197,8 @@
         }
       ],
       "tradingBrand": "Pre-Owned Watches",
-      "relatedWebsite": "https://preownedwatches.ae",
+      "relatedWebsite": "https://hiptk.app",
+      "supportEmail": "support@hiptk.app",
       "addresses": [
         {
           "label": "showroom",

@@ -1,10 +1,8 @@
 "use client";
 
+import { SettingsPanel } from "@aipo/ui/components/settings/SettingsPanel";
+
+/** PART5d §50.1 settings */
 export default function Page() {
-  return (
-    <main className="p-6 text-lux-text">
-      <h1 className="text-xl font-semibold">설정</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">골격 · 본구현은 도메인 todo</p>
-    </main>
-  );
+  return <SettingsPanel />;
 }

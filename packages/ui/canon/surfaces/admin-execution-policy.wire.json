@@ -2,6 +2,9 @@
   "id": "admin-execution-policy",
   "route": "/admin/execution-policy",
   "brandRef": "packages/ui/brand",
+  "owns": "Admin",
+  "appsWebImplement": false,
+  "note": "ADR-013 · Admin File-Serial Owns · UI apps/web implement 0 · Canon wire kept for contract",
   "primaryCta": { "copyKey": "T.admin.savePolicy", "href": null },
   "softHard": {
     "softSec": 60,

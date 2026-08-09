@@ -1,10 +1,18 @@
 "use client";
 
+import {
+  PlatformRevenueExplainer,
+  TaxDisclaimerBlock,
+} from "@aipo/ui/components/trust";
+import { T } from "@aipo/ui/copy/ko";
+
+/** UI §38.3 — /me/guide/revenue */
 export default function Page() {
   return (
-    <main className="p-6 text-lux-text">
-      <h1 className="text-xl font-semibold">운영 안내</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">골격 · 본구현은 도메인 todo</p>
+    <main className="space-y-6 p-6 text-lux-text" data-testid="guide-revenue">
+      <p className="sr-only">{T.guide.revenue.title}</p>
+      <PlatformRevenueExplainer />
+      <TaxDisclaimerBlock />
     </main>
   );
 }

@@ -1,0 +1,31 @@
+/**
+ * Lux motion — MotionCTA pulse · reduced-motion hard override (all tiers)
+ */
+@keyframes lux-pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-lux-accent) 0%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-lux-accent) 35%, transparent);
+  }
+}
+
+.lux-motion-cta {
+  position: relative;
+  animation: lux-pulse-glow 1.6s ease-in-out infinite;
+}
+
+html[data-tier="b"] .lux-motion-cta,
+html[data-tier="b"] .lux-glass {
+  animation: none;
+  backdrop-filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lux-motion-cta,
+  .lux-motion-any {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -62,6 +62,14 @@
       "field": "aiConfidenceScore"
     },
     {
+      "id": "partnerLeg",
+      "role": "leg",
+      "component": "MarketPartnerLeg",
+      "copyKey": "T.trust.partners.legCaption",
+      "copyKeyFootnote": "T.trust.partners.legFootnote",
+      "note": "UI §38.10 · PriceCompareMargin 위 · logo status=ready only"
+    },
+    {
       "id": "priceCompareLow",
       "role": "compare",
       "copyKey": "T.opportunity.labelPriceLow",

@@ -1,0 +1,29 @@
+{
+  "id": "public-ticker",
+  "route": "/",
+  "brandRef": "packages/ui/brand",
+  "blocks": [
+    {
+      "id": "tickerSlot",
+      "role": "live-ticker",
+      "slot": "A",
+      "component": "LivePayoutTicker",
+      "copyKeys": [
+        "T.ticker.justSettled",
+        "T.ticker.justReflected",
+        "T.ticker.participantAmt"
+      ],
+      "flags": ["day_pulse_merge_0", "pii_0", "admin_mode_projection"]
+    }
+  ],
+  "forbidden": [
+    "photo_pixel_match",
+    "gender_branch",
+    "ticker_email",
+    "ticker_userid",
+    "ticker_kind_flag",
+    "day_pulse_merge",
+    "casino_copy",
+    "non_brand_logo"
+  ]
+}

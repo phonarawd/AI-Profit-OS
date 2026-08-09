@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "gate": "verify:responsive",
+  "diffMode": "canon_structure",
+  "forbiddenDiffModes": [
+    "raw_pixel_screenshot",
+    "toHaveScreenshot",
+    "photo_pixel_match",
+    "mockup_pixel_qa"
+  ],
+  "selectors": {
+    "surface": "[data-canon]",
+    "block": "[data-canon-block]",
+    "blockAttr": "data-canon-block",
+    "surfaceAttr": "data-canon",
+    "legacyBlockAliases": ["data-landing-block"]
+  },
+  "viewportsRef": "./viewports.json",
+  "breakpointsRef": "packages/ui/tokens/breakpoints.ts#RESPONSIVE_HARNESS_VIEWPORTS",
+  "playwrightConfig": "tooling/verify/responsive/playwright.config.cjs",
+  "playwrightSpec": "tooling/verify/responsive/tests/canon-structure.spec.cjs",
+  "localPolicy": "structure_only",
+  "ciPolicy": "structure_plus_playwright_when_browsers",
+  "notes": [
+    "ADR-013: never reintroduce mockup pixel matching via screenshot diffs",
+    "Expected structure = Canon wire blocks[].id order",
+    "DOM markers: data-canon + data-canon-block (preferred); data-landing-block accepted as alias",
+    "8GB Phase0: default verify path is Node structure (no browser); Playwright browsers = CI / RESPONSIVE_PW=1"
+  ]
+}

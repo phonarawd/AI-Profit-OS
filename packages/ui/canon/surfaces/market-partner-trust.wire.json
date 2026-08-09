@@ -1,0 +1,129 @@
+{
+  "id": "market-partner-trust",
+  "route": "/me/guide/partners",
+  "aliases": ["/", "/l/[variant]", "/profits/[id]", "/trades/[id]/execute"],
+  "brandRef": "packages/ui/brand",
+  "marketsManifestRef": "packages/ui/brand/assets/markets/manifest.json",
+  "registryRef": "schemas/market-partner.registry.json",
+  "primaryCta": null,
+  "logoHeightsPx": {
+    "leg": 20,
+    "strip": 24,
+    "edu": 32
+  },
+  "renderRule": "status=ready only · blocked logos must not render · CDN hotlink 0",
+  "blocks": [
+    {
+      "id": "guideHeadline",
+      "role": "heading",
+      "copyKey": "T.trust.partners.guideHeadline",
+      "surface": "/me/guide/partners"
+    },
+    {
+      "id": "guideSub",
+      "role": "body",
+      "copyKey": "T.trust.partners.guideSub",
+      "surface": "/me/guide/partners"
+    },
+    {
+      "id": "partnerGrid",
+      "role": "grid",
+      "component": "MarketPartnerGrid",
+      "copyKey": "T.trust.partners.gridSection",
+      "note": "Tier A/B/C · 2열 · logo+LabelKo+blurb · status=ready only",
+      "surface": "/me/guide/partners"
+    },
+    {
+      "id": "orchestrateTruth",
+      "role": "badge-row",
+      "copyKeys": [
+        "T.execution.badgeNoBuy",
+        "T.execution.badgeNoSell"
+      ],
+      "note": "공식 협력과 양립 · 대리 구매/판매 암시 0"
+    },
+    {
+      "id": "trustStrip",
+      "role": "strip",
+      "component": "MarketPartnerTrustStrip",
+      "copyKey": "T.trust.partners.stripHeadline",
+      "copyKeySub": "T.trust.partners.stripSub",
+      "tierFilter": "A",
+      "minLogos": 4,
+      "note": "홈 Hero 아래 · 랜딩 3s · 온보딩 DEMO · Lux monochrome · G4 ticker 슬롯 분리",
+      "surfaces": ["/", "/l/[variant]", "/onboarding"]
+    },
+    {
+      "id": "partnerLeg",
+      "role": "leg",
+      "component": "MarketPartnerLeg",
+      "copyKey": "T.trust.partners.legCaption",
+      "copyKeyFootnote": "T.trust.partners.legFootnote",
+      "note": "해당 opportunity buy/sell leg만 · PriceCompareMargin 위",
+      "surfaces": ["/", "/profits", "/profits/[id]"]
+    },
+    {
+      "id": "executionLeg",
+      "role": "leg",
+      "component": "MarketPartnerLeg",
+      "copyKey": "T.execution.steps",
+      "when": "stepKey=quote",
+      "note": "실행실 step2 active · 시세 불러오는 중... · LabelKo 동적",
+      "surface": "/trades/[id]/execute"
+    },
+    {
+      "id": "successLegLog",
+      "role": "log",
+      "copyKey": "T.trust.partners.successLegLog",
+      "note": "성공 영수증 · 「○○ 판매 완료」금지",
+      "surface": "/trades/[id]/execute"
+    },
+    {
+      "id": "siteFooterCompact",
+      "role": "footer",
+      "component": "MarketPartnerTrustStrip",
+      "variant": "compact",
+      "copyKey": "T.trust.partners.footerCompact",
+      "partners": ["ebay", "amazon", "yahoo-jp"],
+      "note": "로고 small + 공식 협력"
+    }
+  ],
+  "adminPointer": {
+    "route": "/admin/growth?tab=partners",
+    "note": "Tier-A 순서·ON/OFF · 로고 교체 금지(manifest only) · UI Owns≠Admin Brand wordmark"
+  },
+  "hrefPolicy": "external_mall_deeplink_forbidden · navigate=/me/guide/partners|noop",
+  "forbidden": [
+    "시세_참고용만_sole_trust",
+    "unregistered_mall_logo",
+    "partner_logo_in_peotteok_brand_slot",
+    "공식_대리_구매",
+    "공식_대리_판매",
+    "growth_g1_fake_history_as_partner",
+    "external_mall_deeplink",
+    "cdn_hotlink_logo",
+    "render_blocked_logo",
+    "yahoo_jp_label_ban",
+    "amazon_label_ban",
+    "wallet_cta_adjacent_partner_strip",
+    "g4_ticker_slot_reuse",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "판매_완료_leg_copy"
+  ],
+  "blockingSubDeliverable": {
+    "id": "market-partner-logo-svgs",
+    "status": "blocked",
+    "assets": [
+      "ebay.svg",
+      "amazon.svg",
+      "yahoo-jp.svg",
+      "pokemontcg.svg",
+      "ygoprodeck.svg",
+      "coingecko.svg",
+      "frankfurter.svg"
+    ],
+    "note": "ADR-011 Brand/Design · official monochrome marks · status=ready before render · verify:market-partner-trust tracks until unblocked"
+  }
+}

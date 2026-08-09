@@ -236,7 +236,7 @@ written.push(
               },
             ],
             tradingBrand: "Pre-Owned Watches",
-            relatedWebsite: "https://preownedwatches.ae",
+            relatedWebsite: "https://hiptk.app",
             addresses: [
               {
                 label: "showroom",

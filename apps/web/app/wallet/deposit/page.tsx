@@ -5,6 +5,12 @@ import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { DepositAmountPanel } from "@aipo/ui/components/wallet/DepositAmountPanel";
 import { NetworkPlainWarning } from "@aipo/ui/components/wallet/NetworkPlainWarning";
+import {
+  DepositWhyGate,
+  TaxDisclaimerBlock,
+  UsdtVsKrwCompareTable,
+  WhyUsdtCard,
+} from "@aipo/ui/components/trust";
 import { T } from "@aipo/ui/copy/ko";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 
@@ -18,7 +24,7 @@ function parseSuggest(raw: string | null): number {
 /**
  * Money §49.2a — `/wallet/deposit?tab=usdt&suggest=&oppId=`
  * Money §41.6 — NetworkPlainWarning above address/QR on USDT tab.
- * suggestDepositUsdt formula = Engine §0.0.5.1 (prefill/chip only here).
+ * UI §38 — WhyUsdt + compare + DepositWhyGate + tax disclaimer.
  */
 function DepositContent() {
   const searchParams = useSearchParams();
@@ -48,7 +54,14 @@ function DepositContent() {
       data-deposit-suggest={suggestUsdt > 0 ? String(suggestUsdt) : undefined}
       data-classification-owner="engine:§0.0.5.1"
     >
+      <DepositWhyGate />
+
       <h1 className="text-xl font-semibold">{T.deposit.pageTitle}</h1>
+
+      <div className="mt-4 space-y-3">
+        <WhyUsdtCard />
+        <UsdtVsKrwCompareTable />
+      </div>
 
       <div
         className="mt-4 flex gap-2"
@@ -114,6 +127,8 @@ function DepositContent() {
         oppId={oppId}
         tab={tab}
       />
+
+      <TaxDisclaimerBlock className="mt-4" />
 
       <button
         type="button"

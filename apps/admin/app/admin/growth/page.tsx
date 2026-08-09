@@ -3,6 +3,8 @@
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { TaxDisclaimerBlock } from "@aipo/ui/components/trust";
+import { T } from "@aipo/ui/copy/ko";
 
 const TABS = [
   "simulation",
@@ -209,6 +211,28 @@ function GrowthContent() {
           <p className="text-xs text-lux-text-muted">
             API: {programApi}
           </p>
+        </section>
+      ) : tab === "content" ? (
+        <section
+          className="mt-6 space-y-4"
+          data-testid="growth-content-panel"
+          data-tax-disclaimer-locked="true"
+          data-admin-override="false"
+        >
+          <h2 className="text-base font-medium">{T.admin.contentTab}</h2>
+          <p className="text-sm text-lux-text-muted">
+            {T.admin.taxDisclaimerLockedHint}
+          </p>
+          <div
+            data-testid="admin-tax-disclaimer-lock"
+            data-editable="false"
+            aria-readonly="true"
+          >
+            <p className="mb-2 text-xs font-medium text-lux-warning">
+              {T.admin.taxDisclaimerLocked}
+            </p>
+            <TaxDisclaimerBlock />
+          </div>
         </section>
       ) : (
         <section className="mt-6" data-testid={`growth-${tab}-panel`}>

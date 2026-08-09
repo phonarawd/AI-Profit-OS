@@ -9,6 +9,12 @@
 /* Monorepo: scan shared UI components (paths relative to this file). */
 @source "../components";
 
+@import "./component.css";
+@import "./motion.css";
+@import "../responsive/fluid-type.css";
+@import "../responsive/touch-target.css";
+@import "../responsive/container.css";
+
 @theme {
   --color-lux-bg: #090a10;
   --color-lux-surface: #12141c;
@@ -26,6 +32,12 @@
   --radius-lux-sm: 8px;
   --radius-lux-md: 12px;
   --radius-lux-lg: 16px;
+
+  --space-lux-xs: 4px;
+  --space-lux-sm: 8px;
+  --space-lux-md: 16px;
+  --space-lux-lg: 24px;
+  --space-lux-xl: 32px;
 
   --font-lux-sans: "Pretendard Variable", "Pretendard", "Noto Sans KR", ui-sans-serif,
     system-ui, sans-serif;

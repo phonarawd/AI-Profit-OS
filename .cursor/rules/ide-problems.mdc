@@ -18,8 +18,8 @@ Problems에 수백 개가 뜨는 주원인 = `davidanson.vscode-markdownlint`가
 | `.markdownlint.json` | 스타일 규칙 OFF (MD013/MD060 등) |
 | `.markdownlintignore` · `.markdownlint-cli2.jsonc` | plans/rules/감사/docs ignore |
 | `%USERPROFILE%\.cursor\plans\.markdownlint.json` | **전역 Cursor plan** ENOENT 방지 · `default:false` · `pnpm cursor:ensure-plans-markdownlint` |
-| `.vscode/settings.json` | markdownlint ignore(+CONSTITUTION) · ESLint OFF · TS server 1GB cap · RA onDemand · MD formatOnSave OFF |
-| Cursor User `settings.json` | `${userHome}/.cursor/plans/**` ignore |
+| `.vscode/settings.json` | markdownlint `appliesTo=workspaceFiles` + lintWorkspaceGlobs · `.markdownlintignore` · ESLint OFF · TS server 1GB cap · RA `initializeStopped` · MD formatOnSave OFF |
+| Cursor User `settings.json` | markdownlint `appliesTo=workspaceFiles` · lintWorkspaceGlobs (plans/CONSTITUTION 제외) |
 
 ## 에이전트 금지
 

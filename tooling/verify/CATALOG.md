@@ -36,9 +36,13 @@
 | match-success-rule · simulation-gate | Engine §48/§51 — match-success-rule **live** · simulation-gate **live** (M0.5 S1~S4 · platform_reserve · Growth ON ≤24h · Admin growth?tab=simulation · system-control?tab=reserve) |
 | ai-feature-platform · shadow-replay-drift · no-success-rate-as-rule · no-ai-data-in-git | Engine ai-feature-platform — feature-platform + ai-platform L1/L2 · AI PICK · AI_LOG/Eval · L3 money0 · shadow-replay drift **0.000%** · sellSuccessRate≠Rule/PICK · GitHub AI data0 — **live** |
 | twin-fact-separation | Engine §47 Personal AI — Twin≠money Fact · Memory+pgvector · Fact freshness · Answer Guard · P/G/S router — **live** |
-| no-it-jargon · toast-emoji · korean-ui | UI §50 |
-| age-tone-surfaces · font-scale-three · deposit-network-plain-ko | UI §38.9·§50.1 · Money §41.6 — **deposit-network-plain-ko live** (트론 경고 · TRC20 유저0 · wrong-chain→CS+disputes) (v7.22.10) |
-| onboarding-experiential · auth-surfaces · landing-3s · kyc-surfaces | UI §6.4~6.4d · Infra §31.2a/b · Money §42 (v7.22.11) |
+| no-it-jargon · toast-emoji · korean-ui · cute-emoji-palette | UI §50 · §27.10 — **live** (copy/ko skeleton · voice.* · toast 1~2 · palette/caps) |
+| ticker-pii-0 · legal-plain-ko · part5-shell-toast | UI PART5 §33.2a·§50.1/§50.3·§8.2 — **live** (LivePayoutTicker PII0 · CountUp ledger-only · 약관4종 · BottomNav5+ToastHost+nested routes) |
+| age-tone-surfaces · font-scale-three · deposit-network-plain-ko | UI §38.9·§50.1 · Money §41.6 — **age-tone-surfaces · font-scale-three live** · **deposit-network-plain-ko live** (트론 경고 · TRC20 유저0 · wrong-chain→CS+disputes) (v7.22.10) |
+| ux-design-system | UI PART1d — Lux fontScale/spacing · MotionCTA · PPE ladder · breakpoints/test-points · device-tier S/A/B — **live** |
+| responsive | UI audit §45 · PART8 — Playwright multi-viewport harness `390/430/768/1024/1366/1440/1920/2560/3440/3840` · Canon structure diff (`data-canon-block` vs wire `blocks[]`) · pixel/screenshot QA 0 (ADR-013) · local=Node structure · `RESPONSIVE_PW=1`=browsers — **live** |
+| onboarding-experiential · auth-surfaces · landing-3s · kyc-surfaces | UI §6.4~6.4d · Infra §31.2a/b · Money §42 (v7.22.11) — **onboarding-experiential · auth-surfaces · landing-3s · kyc-surfaces live** (Canon Lux3면 · RRN0) |
+| trust-copy · tax-disclaimer · objection4 | UI §38 PART6b — **live** (금지어0 · 면책 입금/guide · Guest onboarding 면책0=v7.22.55 utility · Admin content 잠금 · Objection Q1~Q4 온보딩·입금게이트·FAQ·상세) |
 | auth-flows | Infra §51.9+§51.9.1 — Nest JWT only · Stage A/B · OAuth/Passkey · session · 탈퇴 · **live** |
 | ai-coach-fact-only · ai-coach-no-autonomy | Engine §47.12~15 — **P레인** Fact-only · 전레인 자율집행 0 · FactToolService+CoachOrchestrator+SSE — **live** |
 | ai-general-no-money-tools · ai-lane-router · llm-adapter-contract | Engine §47.8·47.13~15 — G tools=[] · P/G/S router · **live** |
@@ -51,8 +55,11 @@
 | assetlinks | PWA §24.3 — `/.well-known/assetlinks.json` · package↔SHA-256 · TWA ready (v7.22.49 · v2 `store-bridge-scaffold`) — **planned** |
 | store-bridge-artifacts | PWA §24.3 — Play=`.aab` · Uptodown=`.apk`\|`.xapk` · 혼용 제출 문서/스크립트 0 (v7.22.49 · v2) — **planned** |
 | store-uptodown-listing | PWA §24.3b — listing 한도·webview/VT/배포권 체크리스트 · Console Owns=PWA (v7.22.49 · v2 `store-bridge-uptodown-listing`) — **planned** |
-| mockup-governance · canon-surfaces · brand-assets | UI ADR-013/011 |
+| attribution-chain · capi-consent · capi-config · capi-smoke · marketing-compliance · seo-schema · operator-footer | Infra §31.2c~§31.4 · UI §6.4c.1 (v7.22.55) — **planned** · D1~D3 dedup · consent=false send0 · **marketing-compliance**=landing 금지어(수익·투자·USDT·테더·보장·차익·**괴리율**·재테크·알바 1:1 §6.4c.1 A)+`/l/*` auto fbq/ttq import 0 · **operator-footer**=schema↔SiteFooter/LandingOperatorFooter↔**supportEmail** · capi-config/smoke · METRICS.md · Admin Worker health pointer · UI PART2c 완료 게이트 |
+| mockup-governance · canon-surfaces · brand-assets · brand-logo-single | UI ADR-013/011 — **live** (photo mockup 0 · Canon wire checklist · Admin owns execution-policy · single Brand Kit) |
 | asset-image-surface · execution-surfaces | Engine §0.0.6 · UI §48.3a — category thumb · `시세 불러오는 중...` (v7.22.20) — **asset-image-surface live** (hydrate·SKU1:1·공개가드·R2·Admin tab=assets · Canon4면) · execution-surfaces=UI todo |
+| trade-execution-hook | UI §29.6/§30 · Engine §0.9.2 — `useTradeExecution` Phase0=`POST …/execute-tick` polling · Phase1+ SSE swap inside hook only · StreamPolicy `executionTickMs` · execute page wire — **live** |
+| product-image | UI audit §26/§37 · PART3 — source-agnostic `ProductImage` (`ebay`\|`pokemontcg`\|`ygoprodeck`\|`admin_r2`) · loading/loaded/error/missing · `sizes`/lazy/priority · `ProductThumb` · next remotePatterns — **live** |
 | trading-card-vertical | Engine §0.0 / §51.12 — trading_card 시드20~40 · pokemontcg/ygoprodeck 메타 · ebay 호가 · 등급매칭 · 소액 SKU · Admin gradeMismatch 배지 — **live** |
 | luxury-bag-vertical | Engine §0.0 — luxury_bag 시드10~25 · Asset Master admin_r2 이미지 · ebay 멀티\|admin 호가 · brand+model 매칭 · 필터칩 `가방` — **live** |
 | ultra-watch-whale | Engine §0.0 — watch 시드40~80 · PP/AP/Rolex · whale≥100k Ultra 경로 · Day-1 카탈로그 소액공존(≥40%) · brand+reference 매칭 · 필터칩 `시계` — **live** |
@@ -76,7 +83,7 @@
 | cta-earn-profit · user-trader-jargon-0 | Index §20.2 · UI §48 · Engine §4.2b — 유저 CTA=`수익 벌기` · domain=`participate` · `이 상품으로…`/구매/판매/유저메인`매칭 참여`/판매성공률/executionPlatforms·expectedSellDays 유저0 · 대기Fact 소스가드 · INTERNAL↔USER 맵 · 면책+배지 (v7.22.28) · 구명 `cta-match-participate`=alias · **both live** |
 | soft-hard-requeue-sla | Index §20.2 · Engine §48.13 · UI §48 — Soft60/Hard90 · `MATCH_TIMEOUT` · 카피3줄(보통1분/다시맞추는중/시간지나안전정지) · presentation≠SLA (v7.22.29) · Audit A4 · **copy/Canon live** |
 | match-tension-surface | Index §20.2 · UI §48.3b — Soft/Hard전등급동일 · 긴장감=과정Fact · 등급≠대기특권 · slaAlmost/priceNearMiss · 난수틱·가짜대기·당첨게이지0 (v7.22.30) · Audit A6 · **copy/Canon live** |
-| listing-legs-day1 | Engine §0.0.1a/§0.0.2 — ebay 멀티marketplace\|admin only · yahoo_jp 영구FORBIDDEN · 야후/Yahoo카피0 · KR/Chrono24대체0 (v7.22.32) — **live** — **live** |
+| listing-legs-day1 | Engine §0.0.1a/§0.0.2 — ebay 멀티marketplace\|admin only · yahoo_jp Day-1 auto-publish FORBIDDEN · §38.10 partner 표기 OK(카피금지 supersede) · KR/Chrono24대체0 — **live** — **live** |
 | signup-ready-adapters | Engine §0.0 — ebay 멀티marketplaceId · pokemontcg+ygoprodeck · coingecko+frankfurter · yahoo-jp경로0 · Phase1 deploy (phase0 0) · Admin `/admin/adapters` health — **live** |
 | adapter-matching-kpi | Engine §51.12+§51.15 — 등급매칭·SKU실패율 KPI(>15%/24h 알림·자동공개축소) · compareReady false>40% 시드점검 · stale>TTL 적색 · Admin `/admin/adapters` KPI·알림 · yahoo0 · Simulation S4 `adapterMatchFailureRate` 선행 — **live** |
 | kyc-withdraw-only · kyc-redirect · kyc-r2-only | Money §42 — **live** (출금1회게이트 · toast→/me/kyc@800ms · R2 kyc-docs private) |
@@ -90,7 +97,7 @@
 | referral-ledger · notice-campaign-split | Money/Marketing |
 | loop-psychology · day-pulse-live-only · preflight-may-stop | UI **§51.24** DayPulse·PreCTA·L1~L24 (v7.22.15 Owns 복원) |
 | ticker-mode-audit · ticker-pii-0 · ticker-organic-hybrid | Admin §35.4 Organic Hybrid G4 · UI §33.2a |
-| market-partner-trust · market-partner-adapters | UI **§38.10** 공식협력 로고 · Engine **§0.0.1c** amazon/yahoo adapter Phase1+ (v7.22.41 Founder lock) — market-partner-adapters **live** · market-partner-trust=UI todo |
+| market-partner-trust · market-partner-adapters | UI **§38.10** 공식협력 로고 · Engine **§0.0.1c** amazon/yahoo adapter Phase1+ (v7.22.41 Founder lock) — market-partner-adapters **live** · market-partner-trust **live** (Canon+copy+route+MarketPartner* · 7 SVGs tracked `status=blocked` until Brand Kit ready · `MARKET_PARTNER_LOGOS_REQUIRE_READY=1` hard-closes logos) |
 | mission-auto-payout · mission-idempotency · mission-no-manual-grant · benefit-hub-surfaces · benefit-no-credits-currency · benefit-g4-ledger-separation | Money **§51.8a** · UI **§5.9.5** · Engine **§48.13.4** fanout0 · Admin **§35.7** (v7.22.42) — **live** SSOT |
 | peotteok-chat · auth-complete-profile (canon) | UI §6.4b/e · canon-surfaces |
 | auth-jwt-runtime | Infra §51.9 · ADR-006 — Engine Final Re-Verification Audit P0-1 (v7.22.50) — **live** (real HS256 sign/verify/tamper/expiry/issuer/audience round-trip against `jwt.core.cjs` + real Nest HTTP boot of `JwtAuthGuard` via `jwt-guard.selftest.ts` (no DB/Redis) + 6 session-protected controllers wired · AuthService fake-identity regression guard) |

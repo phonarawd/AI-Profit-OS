@@ -68,29 +68,9 @@
   "eslint.enable": false,
   "eslint.workingDirectories": [{ "mode": "auto" }],
 
-  "markdownlint.enable": true,
   "markdownlint.run": "onSave",
   "markdownlint.configFile": "${workspaceFolder}/.markdownlint.json",
-  "markdownlint.ignore": [
-    "**/node_modules/**",
-    "**/.git/**",
-    "${userHome}/.cursor/plans/**",
-    ".cursor/plans/**",
-    "**/.cursor/plans/**",
-    ".cursor/rules/**",
-    "**/*.plan.md",
-    "**/*.mdc",
-    "docs/**",
-    "CONSTITUTION/**",
-    "PRE_IMPLEMENTATION_MASTER_AUDIT.md",
-    "COMPANY_REGISTRATION_SUMMARY.md",
-    "FOOTER_LICENSE_COPY.md",
-    "AGENTS.md",
-    "TOOLCHAIN.md",
-    "**/CATALOG.md",
-    "**/CONSTITUTION_BOOTSTRAP.md",
-    "**/ADR-*.md"
-  ],
+  "markdownlint.appliesTo": "workspaceFiles",
   "markdownlint.lintWorkspaceGlobs": [
     "**/*.{md,markdown}",
     "!**/node_modules/**",
@@ -113,11 +93,11 @@
     "!**/ADR-*.md"
   ],
 
-  "rust-analyzer.startup.mode": "onDemand",
+  "rust-analyzer.initializeStopped": true,
   "rust-analyzer.checkOnSave": false,
   "rust-analyzer.cargo.buildScripts.enable": false,
   "rust-analyzer.procMacro.enable": false,
-  "rust-analyzer.files.excludeDirs": [
+  "rust-analyzer.files.exclude": [
     ".git",
     "node_modules",
     "target",
@@ -150,7 +130,9 @@
     "**/.open-next/**": true,
     "**/pnpm-lock.yaml": true,
     "**/CONSTITUTION/**": true,
-    "**/.cursor/plans/**": true
+    "**/.cursor/plans/**": true,
+    "**/.tools/**": true,
+    "**/docs/**": true
   },
   "search.exclude": {
     "**/node_modules": true,
@@ -163,7 +145,10 @@
     "**/playwright-report": true,
     "**/test-results": true,
     "**/.open-next": true,
-    "**/pnpm-lock.yaml": true
+    "**/pnpm-lock.yaml": true,
+    "**/CONSTITUTION": true,
+    "**/docs": true,
+    "**/.tools": true
   },
   "files.exclude": {
     "**/node_modules": true,

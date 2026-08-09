@@ -107,7 +107,7 @@
       },
       {
         "code": "EXEC_CANCELLED",
-        "toastKo": "중단했어요. 잔액은 그대로예요",
+        "toastKo": "🛑 중단했어요. 잔액은 그대로예요",
         "trigger": "user cancel"
       },
       {
@@ -117,22 +117,22 @@
       },
       {
         "code": "WITHDRAW_PRINCIPAL_WARN",
-        "toastKo": "원금을 빼면 다음 기회 참여가 줄어들 수 있어요",
+        "toastKo": "💡 원금을 빼면 다음 기회 참여가 줄어들 수 있어요",
         "trigger": "principal confirm"
       },
       {
         "code": "INSUFFICIENT_PROFIT",
-        "toastKo": "출금 가능한 수익이 부족해요",
+        "toastKo": "😅 출금 가능한 수익이 부족해요",
         "trigger": "profit mode"
       },
       {
         "code": "INSUFFICIENT_PRINCIPAL",
-        "toastKo": "근무 중 원금이 부족해요. 충전 후 참여해 주세요",
+        "toastKo": "😅 근무 중 원금이 부족해요. 충전 후 참여해 주세요",
         "trigger": "participate"
       },
       {
         "code": "PRACTICE_NOT_WITHDRAWABLE",
-        "toastKo": "연습 잔액은 출금할 수 없어요",
+        "toastKo": "🎁 연습 잔액은 출금할 수 없어요",
         "trigger": "practice"
       },
       {
@@ -147,7 +147,7 @@
       },
       {
         "code": "MERGE_PROFIT_OK",
-        "toastKo": "수익을 원금에 합쳤어요. 다음 기회에 바로 쓸 수 있어요",
+        "toastKo": "✨ 수익을 원금에 합쳤어요. 다음 기회에 바로 쓸 수 있어요",
         "trigger": "merge"
       },
       {

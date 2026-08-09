@@ -56,6 +56,14 @@
       "note": "sellSuccessRate 표시 · 「판매 성공률」금지 · Engine §4.2b"
     },
     {
+      "id": "partnerLeg",
+      "role": "leg",
+      "component": "MarketPartnerLeg",
+      "copyKey": "T.trust.partners.legCaption",
+      "copyKeyFootnote": "T.trust.partners.legFootnote",
+      "note": "UI §38.10 · PriceCompareMargin 위 · logo status=ready only"
+    },
+    {
       "id": "priceCompareLow",
       "role": "compare",
       "copyKey": "T.opportunity.labelPriceLow",

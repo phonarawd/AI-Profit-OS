@@ -1,65 +1,80 @@
 ---
 name: AI Profit OS — Admin & Ops
-overview: "v7.22.40 Admin·§35.4 Organic Hybrid G4·§9.1.1·todo의존순(ops→기능→deploy)·Money+Engine계약동기. Index=00."
+overview: "v7.22.46 Admin·UI교차(missions/partners/G4/coach)·Grok256K todo파트·§9.1.1. Index=00. UI pending0 후 착수."
 todos:
   - id: admin-ia-child-routes-911
     content: "[grok-4.5|256K] v7.22.33 §9.1.1 자식 route/tab 전수 잠금 · sidebar13 0 · BOOTSTRAP §6 sync · monorepo routes 선행 SSOT"
     status: completed
   - id: admin-ops
-    content: "[composer-2.5|200K] apps/admin 왕초보한글·IT용어0 + 12모듈+2b shell + §9.1.1 routes + TOP5 + wallet(deposit/review/krw-pending/disputes) + growth탭shell(§35.4 ticker Organic Hybrid 필드 골격) + reports/financial shell · 유저360 deep≠여기"
+    content: "[grok-4.5|256K] PART0 shell · 12모듈+2b · 왕초보한글·IT0 · TOP5 · wallet tabs shell · growth탭 shell(리다이렉트) · reports/financial shell · deep≠여기(missions/partners/ticker/coach=전용todo) · verify:admin-routes/admin-plain-language"
     status: pending
   - id: admin-user-ops
-    content: "[grok-4.5|256K] §37·§39·§9.8.7/8 유저360 + finance KPI(순유입) + referral/attribution/CS 링크 + export + RBAC · verify:admin-user-360"
+    content: "[grok-4.5|256K] PART1 §37·§39·§9.8.7/8 유저360 + finance KPI + referral/attribution/CS + OAuth Kakao표시 + Passkey + export + RBAC · verify:admin-user-360"
     status: pending
   - id: admin-price-sync
-    content: "[composer-2.5|200K] §36 Admin 가격·마진 조정 UI + opportunity.price.updated SSE/WS(Phase0 in-process) + 유저 전 surface 실시간 반영"
+    content: "[grok-4.5|256K] PART2 §36 가격·마진 UI + opportunity.price.updated Phase0 in-process + 유저 surface 반영 · verify 해당 게이트"
     status: pending
   - id: admin-execution-policy
-    content: "[composer-2.5|200K] §48.6 매칭성공조절 프리셋·실조건·관측KPI·난수0·audit · Engine §48.13.3 · verify:match-strictness"
+    content: "[grok-4.5|256K] PART3 §48.6 매칭성공조절 프리셋·실조건·관측KPI·난수0·audit · Engine §48.13.3 · Canon admin-execution-policy · UI apps/admin Owns여기 · verify:match-strictness/no-success-rate-percent"
     status: pending
   - id: admin-user-opportunity-override
-    content: "[grok-4.5|256K] §9.8.9 유저별 노출/핀/마진·수익 override + audit + verify:admin-user-opportunity-override"
+    content: "[grok-4.5|256K] PART4a §9.8.9 유저별 노출/핀/마진·수익 override + audit · verify:admin-user-opportunity-override"
     status: pending
   - id: admin-user-membership-credentials
-    content: "[grok-4.5|256K] §9.8.10 등급표시/강제·성향메모·밴강화·로그인비번·출금PIN·프로필전수·유저별엄격도 · verify:admin-user-credentials"
+    content: "[grok-4.5|256K] PART4b §9.8.10 등급표시/강제·성향메모·밴·로그인비번·출금PIN·프로필전수·유저별엄격도 · verify:admin-user-credentials"
     status: pending
   - id: admin-user-block-notify
-    content: "[grok-4.5|256K] §9.8.4a 매칭/출금신청 개별차단 · §9.8.8d 1인쪽지 · §9.8.8e fanout pointer(PWA) · verify:admin-user-capability-block/ops-inbox"
+    content: "[grok-4.5|256K] PART4c §9.8.4a 매칭/출금신청 차단 · §9.8.8d 1인쪽지 · §9.8.8e fanout pointer(PWA) · UI §5.9.4 · verify:admin-user-capability-block/ops-inbox"
+    status: pending
+  - id: admin-growth-missions
+    content: "[grok-4.5|256K] PART5a §35.7 growth?tab=missions · D/M/W/S catalog·budget·accrualHalt·queued_pool · 유저별수동지급0 · Money §51.8a · UI §5.9.5 pointer · verify:mission-no-manual-grant/admin-growth-tabs"
+    status: pending
+  - id: admin-growth-partners
+    content: "[grok-4.5|256K] PART5b growth?tab=partners §38.10 Tier-A 순서·ON/OFF·audit · 로고교체금지(Brand markets manifest) · yahoo_jp adapter Day1=0≠표기OFF · UI MarketPartner* pointer · verify:market-partner-trust(Admin면)+admin-growth-tabs"
+    status: pending
+  - id: admin-growth-ticker-organic
+    content: "[grok-4.5|256K] PART5c §35.4 growth?tab=ticker Organic Hybrid · live우선·침묵메움·24h곡선·지터·corpus · DayPulse편집UI0 · UI §33.2a pointer · verify:ticker-organic-hybrid/ticker-pii-0/ticker-mode-audit"
+    status: pending
+  - id: admin-ai-peotteok-ops
+    content: "[grok-4.5|256K] PART5d §9.5.7 ai-logs?tab=coach|eval|pick|spotcheck · P/G/S Eval·trace·degrade · AI PICK 읽기전용·Admin mutate0 · spotcheck=UI §38.6b · Engine §47.15 · verify:ai-coach-*/admin routes"
     status: pending
   - id: abuse-error-matrix
-    content: "[grok-4.5|256K] risk A1~ + §49 P1~P24/E1~E12 + UI §51.24 L1~L24 + rate limit + circuit + toast 100% 커버"
+    content: "[grok-4.5|256K] PART6 risk A1~ + §49 P1~P24/E1~E12 + UI §51.24 L1~L24 + rate limit + circuit + toast 100% 커버"
     status: pending
   - id: customer-support-ops
-    content: "[composer-2.5|200K] §51.6 /me/support 티켓·Admin 큐·SLA·dispute(§51.11) + 유저상세 링크 · verify:support-surfaces"
+    content: "[grok-4.5|256K] PART7 §51.6 support 큐·SLA·dispute(§51.11) + 유저상세 링크 · UI /me/support pointer · verify:support-surfaces"
     status: pending
   - id: product-analytics
-    content: "[composer-2.5|200K] §51.10 D1/D7·입금→2회거래·퍼널 OTel + Admin 리텐션 위젯"
+    content: "[grok-4.5|256K] PART8 §51.10 D1/D7·입금→2회·퍼널 OTel + Admin 리텐션 위젯"
     status: pending
   - id: admin-isolated-deploy
-    content: "[composer-2.5|200K] §40 apps/admin 별도 CF Pages·ops 도메인·Admin JWT·IP allowlist·유저앱 분리 (admin-ops 이후)"
+    content: "[grok-4.5|256K] PART9 §40 별도 CF Pages·ops도메인·Admin JWT·IP allowlist·유저앱 분리 (shell 이후·마지막)"
     status: pending
 isProject: false
 ---
-# AI Profit OS — Admin & Ops (v7.22.35)
+# AI Profit OS — Admin & Ops (v7.22.46)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
-> **todo 순서:** §9.1.1 잠금(완료) → **12모듈 shell(admin-ops)** → 유저360 → 가격동기 → 실행정책 → override/자격/차단(+§9.8.8e pointer) → abuse → CS → analytics → **격리배포(마지막)** (File-Serial · v7.22.35)  
+> **모델 잠금:** 전 todo = **`[grok-4.5|256K]`** · 한 채팅=한 todo  
+> **todo 파트:** §9.1.1(완료) → **0** shell → **1** 유저360 → **2** 가격 → **3** 실행정책 → **4** override/자격/차단 → **5** growth missions/partners/ticker + ai-logs → **6** abuse → **7** CS → **8** analytics → **9** 격리배포(마지막)  
+> **File-Serial:** **03 UI pending=0 전 본 플랜 착수 금지**  
 > **KRW Day-1:** TOP1 = Admin **승인/거절** · CSV Auto-Recon 라벨 **금지**(L2+)  
 > **v7.22.21:** §9.8.9 유저별 기회 매치·수익/마진 override · 피드 merge=Engine §0.0.5.1 · **ledger 직접 변경 금지**  
 > **v7.22.22:** referral 탭 — `rewardsEnabled` · Pool top-up · **초대 인원캡 UI 0** · Money §51.5  
-> **v7.22.23:** `/admin/execution-policy` **매칭 성공 조절**(엄격도) · 난수 성공률 컨트롤 **0** · UI §48.6 · Engine §48.13.3  
+> **v7.22.23:** `/admin/execution-policy` **매칭 성공 조절**(엄격도) · 난수 성공률 컨트롤 **0** · UI §48.6 Canon pointer · Engine §48.13.3 · **UI todo admin-match-strictness ABSORBED→여기**  
 > **v7.22.24:** §9.8.10 **멤버십·성향메모·밴·로그인비번·출금PIN·프로필전수·유저별 엄격도** · Engine §0.0.7 · Money §43.6a  
 > **v7.22.25:** §9.8.4a **유저별 매칭·출금신청 차단** · §9.8.8d **1인 쪽지/알림** · 공지·이벤트·매칭등록 **자동 Push** (prefs·PWA)  
 > **v7.22.26:** Index §20.1 기회스캔 **pointer** · Admin Owns **변경 0**  
 > **v7.22.28:** Index §20.2 · 유저 CTA `수익 벌기` **pointer** · domain=`participate` · Admin Owns **변경 0** · `executionPlatforms` Admin only  
-> **v7.22.29~32 pointer:** Soft60/Hard90 · 긴장감 · listing=ebay멀티\|admin · yahoo 영구FORBIDDEN (Owns=Index/Engine · Admin 표시만)  
+> **v7.22.29~32 pointer:** Soft60/Hard90 · 긴장감 · listing=ebay멀티\|admin · **`yahoo_jp` adapter Day-1 FORBIDDEN** · **표기(§38.10)는 partners 탭** (v7.22.41 supersede)  
 > **v7.22.33:** **§9.1.1** 자식 route 전수 · `growth?tab=simulation` · feature-platform 유령 제거 · BOOTSTRAP §6 sync  
-> **v7.22.36:** Index CLOSED · BOOTSTRAP §0 동기=DB**41**·mig**10** · `admin-ops`=shell/TOP5/wallet·growth·reports 골격 · deep=전용 todo · `admin-isolated-deploy` 마지막  
-> **v7.22.37:** Money 실측감사 동기 · `compliance?tab=kyc` 자식 route 잠금 · deposit-settings에 fee/minHolding/sweeper 필드 · Money §0.4 계약표 pointer  
-> **v7.22.40:** **§35.4** Organic Hybrid G4 — live우선·침묵메움·24h곡선·지터·실분포금액·마스킹코퍼스·규모레이어 · UI §33.2a · Engine §48.13 ticker fanout **경계만**(Rule 범위0) · DayPulse merge0
-> **v7.22.42:** **§35.7** `growth?tab=missions` · Money §51.8a accrual halt·queued_pool · **유저별 지급 0**
+> **v7.22.36:** Index CLOSED · `admin-ops`=shell · deep=전용 todo · `admin-isolated-deploy` 마지막  
+> **v7.22.37:** Money 실측감사 동기 · `compliance?tab=kyc` · deposit-settings fee/minHolding/sweeper  
+> **v7.22.40:** **§35.4** Organic Hybrid G4 — todo=`admin-growth-ticker-organic`  
+> **v7.22.42:** **§35.7** missions — todo=`admin-growth-missions`  
+> **v7.22.46 (UI감사 흡수):** partners/missions/ticker/coach **전용 todo** · composer 제거 · UI §0.7 교차표 동기 · adapters KPI 「yahoo 0」=adapter only
 
 ## 9. Admin — IA 및 구성 SSOT
 
@@ -126,7 +141,7 @@ isProject: false
 | `/admin/users/:id/finance?tab=buckets` | 6 | 원금/수익/잠금/연습 |
 | 유저상세 §9.8.4a / §9.8.8d / §9.8.9 / §9.8.10 | 6 | 매칭·출금차단 · 쪽지 · 기회override · 멤버십·PIN·엄격도 |
 | `/admin/risk?tab=queue` | 7 | TOP3 동결 큐 |
-| `/admin/adapters` KPI면 | 3 | 수집기 health · listing legs · 매칭실패율 · yahoo **0** · **nearMissCap 설정 UI 금지**(execution-policy Owns) |
+| `/admin/adapters` KPI면 | 3 | 수집기 health · listing legs · 매칭실패율 · **`yahoo_jp` Day-1 adapter 0**(표기 ON/OFF≠여기 · `growth?tab=partners`) · **nearMissCap 설정 UI 금지**(execution-policy Owns) |
 | `/admin/system-control` `pushEnabled` | 9 | Web Push kill + audit |
 | `/admin/system-control?tab=reserve` | 9 | `platform_reserve` 목표·audit · Growth/시뮬 S2 (Engine §0.0.4.3) |
 
@@ -145,9 +160,11 @@ isProject: false
 | 회원 프로필·잔액·차단 | `/admin/users/:id` §37 |
 | **유저 입금·출금·시세차익·순유입** | `/admin/users/:id/finance` §39 · §9.8.7 |
 | **유저 360 (추천·유입·CS·등급·prefs)** | `/admin/users/:id` §9.8.8 |
-| 오늘 지급 ticker | `ticker_mode` + `counter_mode` §35 G4 · `/admin/growth?tab=ticker` |
-| **혜택·미션 허브** | `/admin/growth?tab=missions` · Money §51.8a |
-| AI 추천도 | `/admin/ai-logs` (+ Engine feature 계산 · **Admin 모듈 추가 금지**) |
+| 오늘 지급 ticker | `ticker_mode` + `counter_mode` §35 G4 · `/admin/growth?tab=ticker` · todo=`admin-growth-ticker-organic` |
+| **혜택·미션 허브** | `/admin/growth?tab=missions` · Money §51.8a · todo=`admin-growth-missions` · **유저별 수동지급 0** |
+| **공식 협력사 표기** | `/admin/growth?tab=partners` · UI §38.10 · todo=`admin-growth-partners` |
+| AI 추천도·퍼뜩 Eval | `/admin/ai-logs?tab=coach\|eval\|pick` · todo=`admin-ai-peotteok-ops` · **모듈 추가 금지** |
+| spot-check 메모 | `/admin/ai-logs?tab=spotcheck` · UI §38.6b · 동일 todo |
 | Circuit toast | system-control |
 
 ### 9.3 Admin 버튼 (핵심)
@@ -238,13 +255,29 @@ isProject: false
 
 #### 9.5.6 TOP6 — 광고 성과 (돈줄 위젯 확장, sidebar 변경 없음)
 
-| 지표 | 소스 |
-|------|------|
-| 캠페인별 USDT 입금 | `user_attribution` + ledger first_deposit |
-| ROAS | ad spend import (manual/API) / attributed deposit |
-| CAPI 전송 성공률 | marketing-capi-dispatcher logs |
+> **SSOT:** Infra §31.4a METRICS.md · §31.4b Admin IA · todo=`marketing-admin-roas-health` (Infra owns wire)
 
-**화면:** `/admin` 돈줄 전광판 하단 "광고에서 온 입금" — **12모듈 sidebar 변경 없음**
+| 지표 | 분모 | 소스 |
+|------|------|------|
+| 캠페인별 USDT 입금 | attributed users | `user_attributions` + ledger first_deposit |
+| ROAS | ad spend import | attributed deposit / spend (manual/API) |
+| `meta_events_accepted_rate` | Meta CAPI 전송 | Graph API response (METRICS.md) |
+| `meta_parameter_minimum_met_rate` | Meta CAPI 전송 | Worker self-check · **minimum baseline** (em OR fbc/fbp) |
+| `tiktok_events_accepted_rate` | TikTok 전송 | Events API response |
+| `google_conversions_uploaded_rate` | Google upload | Ads API response |
+| `click_id_present_rate` | touch/signup merge | **내부 DB** |
+| `consent_marketing_rate` | signup Stage A | **내부 DB** |
+
+**금지:** `platform_match_rate` 통합 단일 지표 · Worker vs 플랫폼 리포트 **동급 나란히**
+
+**화면 IA (v7.22.51):**
+
+| 블록 | 노출 |
+|------|------|
+| **기본 (매일)** | `/admin` 돈줄 하단 · Worker 실시간 지표 + attributed 입금 + dedup |
+| **48h 대조** | **접힌 섹션 또는 별도 탭** · Events Manager/Ads/TikTok 리포트 |
+
+**12모듈 sidebar 변경 없음**
 
 #### 9.5.7 AI 분석 — 퍼뜩 Coach (`/admin/ai-logs?tab=coach` · v7.22.43)
 
@@ -369,7 +402,7 @@ Admin [저장] krw fields
 | **가입정보** | 이름 · 휴대폰 · 이메일 · 생년월일 · 추천코드 | [저장] audit |
 | **프로필 완성** | Stage A/B (Infra §51.9.1 pointer) · `profileComplete` | 읽기 · 미완이면 출금/KYC 게이트 표시 |
 | **본인확인** | KYC tier · 서류 상태 · 메모 | 승인/거절/재요청 |
-| **계정** | 가입일(표시) · OAuth 연동 · Passkey | 연동 해제 · 재설정 |
+| **계정** | 가입일(표시) · **OAuth 연동**(Kakao primary: `provider`·`raw_profile.nickname`·`linked_at` 표시 · `provider_subject` 내부만) · Google(동일 패턴) · Passkey | Kakao/Google **연동 해제** · Passkey 재설정 |
 | **지갑** | USDT 잔액(표시) · ≈원화 · 버킷4 (Money §49 pointer) | **§9.8.3 잔액 조정** |
 | **출금계좌** | 유저 등록 원화 계좌 | 편집/초기화 |
 | **등급·한도** | `userTier` (default/vip_desk) · withdraw cap override(optional) | whale≥100k 배지 · cap 변경은 재무|최고 · audit |
@@ -541,7 +574,7 @@ GET /admin/api/v1/users/:id/finance/export.csv?type=all|deposits|withdrawals|pro
 
 | 탭 (ko) | 내용 | Owns / pointer |
 |---------|------|----------------|
-| **요약** | 잔액·순유입·상태·KYC·Stage B·**멤버십**·vip_desk 배지 · 최근 이벤트 5 | §9.8.2 + §9.8.7 KPI · §9.8.10 |
+| **요약** | 잔액·순유입·상태·KYC·Stage B·**멤버십**·vip_desk 배지 · **로그인=Kakao/Google/Passkey/Email** · Kakao **닉네임·연동일** · 최근 이벤트 5 | §9.8.2 계정 + §9.8.7 KPI · §9.8.10 · Infra §51.9 `auth_oauth_identities` |
 | **금융** | → `/finance` (§9.8.7) | §39 |
 | **추천** | 초대코드 · 상위 추천인 · 피초대 목록 · L2/L3 보상·보류·clawback 요약 | Money §51.5 · Growth referral 큐 딥링크 |
 | **유입** | first/last touch UTM · landingVariant · firstDepositAt · CAPI 동의 | Infra §31 |

@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Money & Chain
-overview: v7.22.37 Money 실측감사흡수·원장→fee/holding→지갑/KRW→KYC→출금auth→체인→출금UI→남용→suggest→초대→practice. Admin계약잠금. Grok256K. Index=00.
+overview: v7.22.49 CLOSED(15/15+가산 money-user-benefits-read) · GET /me/benefits(+summary) live · Pre-UI Gate 예외 소멸 · UI PART0 PASS(v7.22.50) · File-Serial 다음=03 UI market-partner-trust-surfaces. Admin계약잠금. Grok256K. Index=00.
 todos:
   - id: pg-gateway-ban
     content: "[grok-4.5|256K] §41 PG사0 · verify:pg-module-scan · 용어≠PostgreSQL · Auto-Recon≠Day-1"
@@ -47,6 +47,9 @@ todos:
   - id: practice-bucket-onboarding
     content: "[grok-4.5|256K] §51.7 practice 1회·만료·Banner·403 · Admin buckets 표시 · verify:practice-non-withdrawable"
     status: completed
+  - id: money-user-benefits-read
+    content: "[grok-4.5|256K] v7.22.39 Pre-UI Runtime Gate 가산 · §51.8a GET /api/v1/me/benefits(+summary) 유저 읽기 컨트롤러 신설(MissionModule에 controllers 0 → 추가) · Credits화폐0·수동grant0·accrual/ledger/idempotency 로직 수정금지(이미 구현됨·컨트롤러만 공백) · 선행=Engine `engine-execute-rule-loop` completed(File-Serial 예외·Index §참조·02 Engine 착수 재차단 금지) · verify:benefit-hub-surfaces API존재부분 + benefit-no-credits-currency/benefit-g4-ledger-separation 회귀"
+    status: completed
 isProject: false
 ---
 
@@ -64,7 +67,9 @@ isProject: false
 > **버스 잠금:** Phase0 = **in-process** · NATS 문자열=Phase1+ 동등 이벤트 · Day-1 NATS 필수 **0**  
 > **체인 Phase:** 코드 Owns=Money · **deploy/활성=Phase1+** (Phase0 workers = `push-dispatcher` only · BOOTSTRAP §0)  
 > **v7.22.21~28:** pointer 유지 (CTA/표현 Owns≠Money)  
-> **v7.22.37:** 실측감사( DB41·mig10·함수4·Admin routes·스키마·헌법) · Admin 계약 전수 · todo 재분할 · 모순 흡수
+> **v7.22.37:** 실측감사( DB41·mig10·함수4·Admin routes·스키마·헌법) · Admin 계약 전수 · todo 재분할 · 모순 흡수  
+> **v7.22.38 CLOSE(불변):** todos 1~15 **completed 유지 · 재실행 금지**.  
+> **v7.22.39 (Pre-UI Runtime Gate 가산 · pointer=Engine §0.9):** `money-user-benefits-read` 1건 REOPEN · §51.8a 컨트롤러 공백(providers만·controllers 0)만 채움 · accrual/ledger 로직 **불변** · 선행=Engine `engine-execute-rule-loop` · **File-Serial 예외 1건**(Index「플랜 직렬 완료 규칙」참조 · 이 재오픈이 02 Engine 착수를 재차단하지 않음) · 새 병렬 플랜 파일 생성 금지(중복0 · 흡수원=구 `pre-ui_engine_gate_8f59a783.plan.md` 홈 미러 단독본)
 
 ---
 
@@ -1295,6 +1300,8 @@ GET  /api/v1/me/benefits/summary
 POST /api/v1/me/benefits/sync          # rate limited · idempotent refresh
 SSE  benefits.updated
 ```
+
+> **실측 갭(v7.22.39 · Pre-UI Runtime Gate · 해소 v7.22.49):** `MissionModule`에 `controllers` 공백이었음 → `BenefitsUserController` + `BENEFITS_USER_ROUTES` + `BenefitsUserService`로 **GET 2종** 채움 · accrual/ledger/idempotency **불변**. `POST /benefits/sync`·SSE는 gate 범위 밖(추후 todo). `verify:benefit-hub-surfaces`(+credits/g4) PASS.
 
 **Admin:**
 ```

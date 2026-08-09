@@ -85,6 +85,12 @@
       "status": "ready"
     }
   },
+  "marketPartners": {
+    "manifest": "assets/markets/manifest.json",
+    "planRef": "UI §38.10.3",
+    "blockingSubDeliverable": "market-partner-logo-svgs",
+    "note": "Partner marks are not peotteok Brand Kit slots · status=ready only · tracked in assets/markets"
+  },
   "exportPipeline": {
     "from": "packages/ui/brand/assets",
     "toPwa": "apps/web/public/icons (when apps/web exists)",

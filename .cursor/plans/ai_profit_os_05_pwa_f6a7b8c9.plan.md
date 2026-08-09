@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — PWA & Native
-overview: "v7.22.33 PWA pointer·Shell→Push→자동fanout→WebAuthn→Store(v2). Index §20.2. Index=00."
+overview: "v7.22.49 PWA Store Bridge+=Uptodown APK·Shell→Push→자동fanout→WebAuthn→Store(v2). Index §20.2. Index=00."
 todos:
   - id: pwa-native-shell
     content: "[composer-2.5|200K] manifest=퍼뜩·Lux색·Serwist·Install·standalone/safe-area·Brand icons·SW update UX·Canon wires"
@@ -15,20 +15,24 @@ todos:
     content: "[composer-2.5|200K] WebAuthn UX/RP (§23.6) · 정책/fallback=Money §43 pointer · haptics/audio+reduced-motion"
     status: pending
   - id: store-bridge-scaffold
-    content: "[composer-2.5|200K] v2 only: TWA+assetlinks · Capacitor iOS shell · native-bridge stub (Day-1 게이트 제외)"
+    content: "[composer-2.5|200K] v2 only §24.3: TWA+assetlinks · Play `.aab`+Uptodown `.apk`/`.xapk` 동일 패키지·서명 · Capacitor iOS shell · native-bridge stub · verify:assetlinks · Day-1 게이트 제외 · 선행=pwa-webauthn-haptics"
+    status: pending
+  - id: store-bridge-uptodown-listing
+    content: "[composer-2.5|200K] v2 only §24.3b: Uptodown Developers Console Organization(§50.9 pointer)·listing(icon≥256·feature 1024×500·short≤70·full≥50단어)·Country Restriction·publication criteria(VT·webview부가가치·배포권)·Submit for review · verify:store-uptodown-listing · 선행=store-bridge-scaffold · Day-1 제외"
     status: pending
 isProject: false
 ---
-# AI Profit OS — PWA & Native (v7.22.33 pointer · Owns 본문 유지)
+# AI Profit OS — PWA & Native (v7.22.49 Store Bridge Uptodown 흡수 · Owns 본문 유지)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 > **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
-> **todo 순서:** App Shell/manifest → Push/Badge → §23.5a 자동 fanout → WebAuthn UX → Store Bridge(v2·Day-1 제외)  
+> **todo 순서:** App Shell/manifest → Push/Badge → §23.5a 자동 fanout → WebAuthn UX → Store Bridge scaffold → Uptodown listing (v2·Day-1 제외)  
 > **v7.22.25:** §23.5a 공지·이벤트·매칭·쪽지 **자동 Push** · UI prefs 필터 · 가입 기본 ON  
 > **v7.22.26:** Index §20.1 기회스캔 표현 **pointer only** · PWA Owns **변경 0**  
 > **v7.22.28:** Index §20.2 · opp Push 카피=`수익 벌기`/자본참여자 톤 (UI §5.3b) · PWA Owns **변경 0**  
+> **v7.22.49:** Store Bridge += **Uptodown APK/XAPK** 채널 · Play=AAB·Uptodown=APK **오차0 분리** · Money/Engine/Admin 본문 **0** · Index/Infra/UI=pointer only  
 
 
 > **manifest name/short_name:** **퍼뜩** · retired `오늘수익`·`바로번다` **0**  
@@ -41,18 +45,20 @@ isProject: false
 | 주제 | Owns | Pointer |
 |------|------|---------|
 | manifest·SW·Install·Push client·Badge·standalone CSS | **본 플랜 §23** | — |
+| Store Bridge (TWA·assetlinks·**Play AAB**·**Uptodown APK/XAPK**·Capacitor·listing 절차) | **본 플랜 §24** | Index M8a~d · Infra `.well-known` 서빙 · UI §27.8a listing 카피 |
 | WebAuthn **정책·챌린지·Email OTP/PIN/recovery** | **Money §43.6** | 본 절 §23.6 = 브라우저/RP/UX only |
 | Push kill · circuit | **Admin** `/admin/system-control` | 본 절 §23.5 |
 | Hosting·DB·Phase bus·Compose | **Infra §15/Phase** | §24.0 pointer |
 | Install/Push **한글 카피** | **UI §27.8** · toast §8.2/§8.3 | payload title/body keys |
-| Brand icons | **`packages/ui/brand`** | → `public/icons/*` |
+| Store listing **한글 short/full** | **UI §27.8a** | 본 절 §24.3b 필드·한도만 |
+| Brand icons · store 512/1024 자산 | **`packages/ui/brand`** | → `public/icons/*` · listing feature graphic |
 
 ### Day-1 vs Non-goal (과장0)
 
 | Day-1 (출시 게이트 §26) | Day-1 **아님** (v2 / Store) |
 |-------------------------|-----------------------------|
 | manifest · Serwist · Install · OfflineBanner · SW update UX | FCM |
-| VAPID Web Push · Badge degrade · iOS installed-only | TWA `.aab` · Capacitor · APNs |
+| VAPID Web Push · Badge degrade · iOS installed-only | TWA **Play `.aab`** · **Uptodown `.apk`/`.xapk`** · Capacitor · APNs |
 | WebAuthn **UX** + Money §43 fallback | Background Sync 필수화 |
 | HTTPS `APP_HOST` installable | 오프라인 participate/withdraw 큐 |
 | Canon install/offline wires | Vercel |
@@ -84,7 +90,7 @@ isProject: false
 | Next.js | ✅ **ADR-015 잠금** | **`next@16` only** · next@15 문구 **폐기** |
 | Supabase PG | ✅ | DB SoT · Auth=Nest JWT only |
 | Vercel | ❌ | CF Pages SSOT (Infra) |
-| TWA / Capacitor | ✅ v2 | Day-1 게이트 **제외** · §24.3 |
+| TWA / Capacitor / Uptodown APK | ✅ v2 | Day-1 게이트 **제외** · §24.3 · Play≠Uptodown 산출물 분리 |
 
 ### 23.1 Manifest SSOT (`apps/web/public/manifest.webmanifest`)
 
@@ -342,13 +348,16 @@ export function profitTapFeedback() {
 | Supabase PG · Upstash · Phase0 in-process | Infra · ADR-016 |
 | Docker Compose | **옵션** · 8GB 기본 OFF (Infra) |
 | `APP_HOST` / HTTPS | Infra §31 |
+| `https://{APP_HOST}/.well-known/assetlinks.json` **서빙** | Infra (Pages `apps/web` public) · **내용·지문·패키지 SSOT=본 절 §24.3** |
 
-PWA Day-1이 의존하는 것: **CF Pages에 `apps/web` 배포** · **push-dispatcher Worker** · VAPID secrets — 구현 위치는 Infra 트리, 계약은 본 절 §23.5.
+PWA Day-1이 의존하는 것: **CF Pages에 `apps/web` 배포** · **push-dispatcher Worker** · VAPID secrets — 구현 위치는 Infra 트리, 계약은 본 절 §23.5.  
+Store Bridge가 의존하는 것: 동일 `APP_HOST` HTTPS + assetlinks 서빙 — **Uptodown/Play Console 절차는 Infra Owns 아님**.
 
 ### 24.1 PWA 관련 $0 계약 (pointer 요약 · Owns 아님)
 
 - Push: web-push + VAPID = $0  
 - Biometrics API = $0 (정책=Money)  
+- Uptodown Developers Console 등록·게시 = **$0** (Uptodown 문서) · Play 계정비는 Play 정책  
 - 상세 free-tier 표 = Infra Bootstrap
 
 ### 24.2 Production Scale
@@ -358,14 +367,61 @@ Infra Phase A→C pointer only.
 
 ### 24.3 Store Bridge — v2 (UI 재작성 0 · Day-1 게이트 제외)
 
+> **선행 잠금 (결함0):** §23·§26 Day-1 게이트(Lighthouse PWA·standalone·Install) **미완이면** `store-bridge-*` 착수 **금지**.  
+> **패키지 오차0:** Play 업로드 산출물 ≠ Uptodown 업로드 산출물 (아래 표).  
+> **UI 재작성 0:** `apps/web` 100% 재사용 · TWA/Capacitor는 셸만.
+
+#### 산출물 잠금 (오차0 · 중복0)
+
+| 채널 | 업로드 포맷 | 비고 |
+|------|-------------|------|
+| Google Play | **`.aab`** (Android App Bundle) | Play Console · Internal→Closed→Production |
+| Uptodown | **`.apk` 또는 `.xapk`** | Developers Console · **AAB 제출 금지**(지원 포맷 문서=APK/XAPK만) |
+| Apple | Capacitor shell (TestFlight) | M8b · Uptodown 무관 |
+
+**공유 SSOT (1파이프):** 동일 `applicationId`/package name · 동일 서명 키 체계 · 동일 TWA start URL=`APP_HOST` · 동일 Digital Asset Links.  
+PWABuilder/Bubblewrap로 TWA 생성 후 **AAB와 APK를 함께 산출**한다 (채널별 재구현 0).
+
 #### Google Play — TWA
 
 | Step | 작업 |
 |------|------|
-| 1 | `/.well-known/assetlinks.json` |
-| 2 | PWABuilder → `.aab` |
-| 3 | Digital Asset Links |
-| 4 | Play Console |
+| 1 | `/.well-known/assetlinks.json` (Play **App signing** SHA-256) |
+| 2 | PWABuilder/Bubblewrap → **`.aab`** |
+| 3 | Digital Asset Links 검증 (주소창 0 = TWA) |
+| 4 | Play Console (Organization·Financial 등은 Play 정책 · 본 절 Owns≠법령 본문) |
+
+#### Uptodown — APK (v7.22.49 · Day-1 게이트 제외)
+
+> **Owns=본 절.** Index/Money/Engine/Admin/Infra에 Uptodown 절차 장문 **금지**(pointer만).  
+> **근거 문서:** Uptodown Help — publish form · publication criteria · supported formats(APK/XAPK) · Developers Console $0.
+
+| Step | 작업 |
+|------|------|
+| 1 | §24.3 공유 TWA + `assetlinks.json` (서명 지문 일치) |
+| 2 | 동일 빌드 → **signed `.apk`**(또는 `.xapk`) · Play Store URL을 파일 URL로 제출 **금지** |
+| 3 | Developers Console 가입 → **Organization** (공개명·https Webpage·지원 Email·Nationality · Legal=§50.9 pointer) |
+| 4 | Apps → Add new app → OS=Android → 파일 첨부 → 메타 작성 → **Submit for review** |
+| 5 | Country Restriction · License 기본 Proprietary · Distribution Model(Free/Freemium 등) 표기 |
+| 6 | 실기기 스모크 + VirusTotal 유해 0 |
+
+##### 24.3b Uptodown listing · publication criteria (결함0)
+
+| 필드/기준 | 잠금 |
+|-----------|------|
+| Icon | 정사각 · PNG 권장 · **≥256×256** (거절 기준 하한 128×128·정사각) |
+| Feature image | **정확히 1024×500** · 배너+로고 권장 · Brand Kit만 |
+| Short description | **≤70자** · 카피 SSOT=UI §27.8a · 퍼뜩 · retired 브랜드 0 |
+| Full description | **≥50단어** · 쉬운 한글 · IT용어 0 (UI §27·§50) |
+| Name / Author | 퍼뜩 · Author=§50.9 Legal · 타사 상표 사칭 0 |
+| Official website | `https://{APP_HOST}` (또는 Legal https) |
+| **Low-quality webview** | 거절 사유 **명시** — 웹만 띄운 래퍼 금지 · Day-1 PWA standalone/SW/Install + TWA 주소창 0 + 앱 기능(기회·지갑)이 listing·스크린샷에 드러날 것 |
+| Malware / phishing | VirusTotal 유해·피싱·부정수집 **0** |
+| 배포권 | 제출자=제작자·배포권·허가 (§50.9) |
+| 리뷰 | 편집팀 재량 · **게시일 보장 0** · 파일 상태 Draft/Published/Rejected |
+| 업데이트 | package name 동일 · versionCode 증가 · 보통 ≤24h (Uptodown 문서) |
+
+**금지:** Uptodown 때문에 `apps/web` UI 이중 구현 · 신규 도메인 플랜 파일 · Money/Engine todo 재오픈.
 
 #### Apple — Capacitor Shell
 
@@ -385,9 +441,10 @@ apps/mobile-shell # Capacitor only (v2)
 
 | MS | 내용 |
 |----|------|
-| M8a | TWA `.aab` + internal track |
+| M8a | TWA · Play **`.aab`** + internal track · **동일 파이프 Uptodown `.apk`/`.xapk` 산출** |
 | M8b | Capacitor iOS TestFlight |
-| M8c | Store listing + 정책 문서 |
+| M8c | Store listing + 정책 문서 (Play + 공통 약관 URL) |
+| M8d | **Uptodown** Developers Console Organization + listing + Submit for review (§24.3b) |
 
 ---
 
@@ -402,12 +459,14 @@ apps/mobile-shell # Capacitor only (v2)
 6. Badge server unread  
 7. WebAuthn UX → Money §43 API  
 8. haptics/audio + settings + reduced-motion  
-9. (v2) TWA/Capacitor — §24.3
+9. (v2) TWA + assetlinks + **Play AAB + Uptodown APK** — §24.3 (`store-bridge-scaffold`)  
+10. (v2) Uptodown Console listing — §24.3b (`store-bridge-uptodown-listing`)
 
 ```
 apps/web/
 ├── public/
 │   ├── manifest.webmanifest
+│   ├── .well-known/assetlinks.json   # v2 Store · 내용 Owns=§24.3 · 서빙=Infra
 │   ├── icons/
 │   └── sfx/
 ├── app/
@@ -462,6 +521,15 @@ schemas/push-subscription.v1.json
 - [ ] manifest 1곳 · SW 1곳 · push-dispatcher 1곳
 - [ ] WebAuthn 정책 문구 Money §43만 · PWA 재정의 0
 - [ ] 호스팅/Compose 표 Infra만
+- [ ] Store Bridge 절차·포맷 표 **§24만** · Index/UI/Infra 장문 0
+
+### Store Bridge v2 (Day-1 게이트 제외 · §24)
+- [ ] Day-1 §26 위 항목 PASS 후만 scaffold 착수
+- [ ] `assetlinks.json` 유효 · TWA 주소창 0
+- [ ] Play 산출물=`.aab` · Uptodown 산출물=`.apk`|`.xapk` (혼용 제출 0)
+- [ ] package name·서명 파이프 1곳 · 채널별 UI 재작성 0
+- [ ] Uptodown listing §24.3b · low-quality webview 방어 · VT 클린
+- [ ] listing 카피 = UI §27.8a · Legal §50.9 · retired 브랜드 0
 
 ### 플랫폼 degrade
 - [ ] iOS no-vibrate → sound+visual
@@ -479,5 +547,8 @@ schemas/push-subscription.v1.json
 | `verify:pwa-phase0-bus` | Push emit 경로 NATS Day-1 **0** |
 | `verify:webauthn-fallback-pointer` | PWA가 OTP 정책 Owns 주장 0 · Money §43 |
 | lighthouse-pwa | CI ≥ 90 (local stub) |
+| `verify:assetlinks` | `/.well-known/assetlinks.json` · package↔SHA-256 · TWA ready (v2 · `store-bridge-scaffold`) |
+| `verify:store-bridge-artifacts` | Play 경로=`.aab` · Uptodown 경로=`.apk`\|`.xapk` · AAB를 Uptodown에 제출하는 문서/스크립트 **0** (v2) |
+| `verify:store-uptodown-listing` | §24.3b 필드·한도·webview/VT/배포권 체크리스트 · Console 절차 Owns=PWA (v2 · `store-bridge-uptodown-listing`) |
 
 ---

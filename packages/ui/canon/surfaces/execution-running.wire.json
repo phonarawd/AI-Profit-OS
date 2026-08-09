@@ -92,6 +92,14 @@
       "note": "스텝·로그 박자 · Fact only · 난수틱/가짜대기 0"
     },
     {
+      "id": "partnerLeg",
+      "role": "leg",
+      "component": "MarketPartnerLeg",
+      "copyKey": "T.trust.partners.legCaption",
+      "when": "stepKey=quote",
+      "note": "UI §38.10 · step2 active · 시세 불러오는 중... · LabelKo 동적 · logo status=ready only"
+    },
+    {
       "id": "steps",
       "role": "progress",
       "copyKey": "T.execution.steps",

@@ -1,10 +1,15 @@
 "use client";
 
+import { T } from "@aipo/ui/copy/ko";
+
+/** PART5c wallet history shell — virtualization when >30 rows (PART8) */
 export default function Page() {
   return (
-    <main className="p-6 text-lux-text">
-      <h1 className="text-xl font-semibold">입출금 내역</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">골격 · 본구현은 도메인 todo</p>
+    <main className="p-6 text-lux-text" data-testid="wallet-history">
+      <h1 className="text-xl font-semibold">{T.user.walletHistory.title}</h1>
+      <p className="mt-6 text-sm" role="status">
+        {T.user.empty.walletHistory}
+      </p>
     </main>
   );
 }

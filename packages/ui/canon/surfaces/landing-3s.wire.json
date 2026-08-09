@@ -3,14 +3,49 @@
   "route": "/l/[variant]",
   "aliases": ["/ads", "/ads/[variant]"],
   "brandRef": "packages/ui/brand",
-  "primaryCta": { "copyKey": "T.auth.kakaoStart", "action": "oauth_kakao" },
+  "primaryCta": {
+    "copyKey": "T.landing.ctaOpenPriceMap",
+    "action": "navigate",
+    "href": "/onboarding"
+  },
   "firstViewportMaxBlocks": 5,
   "blocks": [
     { "id": "brand", "role": "brand", "copyKey": "T.brand.consumer" },
-    { "id": "headline", "role": "heading", "copyKey": "T.landing.identityOneLiner" },
-    { "id": "reassure", "role": "body", "copyKey": "T.landing.expectedNotGuaranteed" },
-    { "id": "cta", "role": "primary", "copyKey": "T.auth.kakaoStart" },
-    { "id": "trust", "role": "footer", "copyKey": "T.landing.trustOneLiner" }
+    {
+      "id": "headline",
+      "role": "heading",
+      "copyKey": "T.landing.variants.[variant]",
+      "note": "utility-only · 시세·가격 비교 · 수익|투자|USDT|테더|보장|차익|괴리율 0 · §6.4c.1 v7.22.55"
+    },
+    {
+      "id": "reassure",
+      "role": "body",
+      "copyKey": "T.landing.utilityDisclaimer",
+      "note": "replaces expectedNotGuaranteed on landing variants"
+    },
+    {
+      "id": "cta",
+      "role": "primary",
+      "copyKey": "T.landing.ctaOpenPriceMap",
+      "disclaimerCopyKey": "T.landing.utilityDisclaimer",
+      "note": "CTA 직하 disclaimer repeat · text-xs text-lux-text-muted · opacity stack 0"
+    },
+    {
+      "id": "trust",
+      "role": "footer",
+      "copyKey": "T.trust.partners.stripHeadline",
+      "component": "MarketPartnerTrustStrip",
+      "note": "UI §38.10 · Tier-A · firstViewport · logo status=ready only"
+    }
+  ],
+  "scrollBlocks": [
+    {
+      "id": "operator-footer",
+      "role": "legal",
+      "component": "LandingOperatorFooter",
+      "schemaRef": "schemas/operator-entity.instance.json",
+      "note": "legalName·licenseNumber·supportEmail·jurisdiction · /me/legal 1 link"
+    }
   ],
   "forbidden": [
     "stat_strip",
@@ -21,6 +56,16 @@
     "gender_branch",
     "photo_pixel_match",
     "non_brand_logo",
-    "casino_sfx"
+    "casino_sfx",
+    "시세_참고용만_sole_trust",
+    "expectedNotGuaranteed_on_landing",
+    "kakao_oauth_primary_on_landing",
+    "landing_copy_수익",
+    "landing_copy_투자",
+    "landing_copy_USDT",
+    "landing_copy_테더",
+    "landing_copy_차익",
+    "landing_copy_괴리율",
+    "auto_pixel_sdk_on_landing"
   ]
 }

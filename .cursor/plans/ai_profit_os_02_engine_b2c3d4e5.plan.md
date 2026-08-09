@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Engine
-overview: v7.22.49 CLOSED(Pre-UI Runtime Gate · 가산 E-R1~E-R8 pending0) · 1~26 completed 불변 · MCP active≥1·available≥1 · verify 전수+신규3게이트 PASS · Money money-user-benefits-read completed · File-Serial 다음=03 UI ui-preflight-constitution. Index=00.
+overview: v7.22.51 Pre-UI CLOSED(E-R1~E-R8) + 가산 pending `engine-ebay-identity-match-ingest`(U15 · File-Serial 예외·03 UI 재차단 금지) · 1~26+E-R completed 불변 · UI PART0 PASS · File-Serial 실행=03 UI market-partner-trust-surfaces. Index=00.
 todos:
   - id: engine-preflight-constitution
     content: "[grok-4.5|256K] 착수전 BOOTSTRAP§0.4+CONST(44/45/46/46b/47/48/51)+DB58·mig18·함수4·Admin routes·override DDL↔schema 모순흡수 · 구현코드0 · 재검증2026-08-09"
@@ -104,6 +104,9 @@ todos:
   - id: engine-pre-ui-close
     content: "[grok-4.5|256K] §0.9 CLOSE 재검증: MCP 재실측(execution_policies active≥1·opportunities available≥1) + Engine verify 전수 + 신규 3게이트(user-opportunity-feed/participate-http/execute-rule-loop) PASS · Money money-user-benefits-read completed 확인 · Index 다음=03 UI ui-preflight-constitution 잠금"
     status: completed
+  - id: engine-ebay-identity-match-ingest
+    content: "[grok-4.5|256K] v7.22.51 POST-UI follow-up(U15) · watch-match/card-match/bag-match → AdaptersAdminService.ingest() 배선 · ebay-adapter `assetId:query:*` → Asset Master exact match 치환 · match시 imageSource=ebay+i.ebayimg.com persist · no-match=Admin review queue(silent drop 금지) · Day-1 ebay|admin 불변 · 1~26+E-R 재실행0 · File-Serial 예외(Index·03 UI 재차단 금지) · verify:asset-image-surface/listing-legs-day1/adapter-matching-kpi 회귀 + ebay identity ingest assert"
+    status: pending
 isProject: false
 ---
 
@@ -116,6 +119,7 @@ isProject: false
 > **File-Serial:** 01 Money **CLOSED** 후만 본 파일 · 파일 내 todos **위→아래  strictly** · 한 채팅=한 todo · 건너뛰기 금지  
 > **v7.22.44 CLOSE(불변):** todos 1~26 **completed 유지 · 재실행 금지**. 아래 todo 순서는 그 26개 안에서의 **이력**이다.  
 > **v7.22.48 REOPEN(가산 27~34 · §0.9):** `engine-runtime-preflight-gap` → `engine-execution-policy-bootstrap` → `engine-user-opportunity-feed` → `engine-participate-http` → `engine-execute-rule-loop` → `engine-catalog-runtime-seed` → `engine-user-membership-read` → `engine-pre-ui-close` · **완료 후만 File-Serial 다음=03 UI**  
+> **v7.22.51 POST-UI follow-up(가산 35 · §0.10 · U15):** `engine-ebay-identity-match-ingest` **pending** · Pre-UI Gate **CLOSED 유지** · **03 UI 재차단 금지**(Index File-Serial 예외 2건) · 구현=전용 채팅 · 본 절 SSOT  
 > **todo 순서 (v7.22.39b · 1~26 이력):** preflight·잠금(완료) → **market** → **overrideDDL** → adapters → tier/image → vertical → projection → balance-aware → Rule→strictness→membership → **KPI→simulation** → AI(**feature→twin→llm→coach**)  
 > **AI 이름:** **퍼뜩** (§47.12 · Brand Kit) · **타프로젝트 코치명(클라이 등) 유저 surface 금지** · P=플랫폼 Fact · G=일상 LLM · S=실행 금지  
 > **Phase0 버스:** **in-process** (NATS=Phase1+) · adapter 워커 **코드 Owns=본 파일 · deploy=Phase1+**  
@@ -138,6 +142,7 @@ isProject: false
 > **v7.22.41 (Founder lock):** **§0.0.1c Market Partner Registry** — eBay·Amazon·Yahoo! JAPAN Auction **공식 협력사** · UI §38.10 로고 표기 · v7.22.32 yahoo **adapter/표기** → Phase1+ **복원 todo** · Day-1 listing=ebay멀티\|admin **유지** · Amazon/Yahoo leg=adapter todo 후  
 > **v7.22.42:** **§48.13.4 Mission reward fanout 경계** — `settlement.completed`/`deposit.confirmed` 등 **이후** Nest `MissionRewardEvaluator` 비동기 · Rule/R1~R10·분개·Soft/Hard **불변** · accrual/ledger Owns=**Money §51.8a** · UI §5.9.5 · `match-success-rule-engine` 범위 **0**
 > **v7.22.48 (REOPEN · Pre-UI Runtime Gate · §0.9):** CLOSE(v7.22.44) 후 실측 재점검에서 **participate/execute HTTP 실행계층 + 유저 기회 피드 API가 코드 0**임을 확인 · `POST /opportunities/:id/participate` · `GET /trades/:id` · `GET /opportunities(+/:id)` · `GET /me/membership` · `execution_policies`/`opportunities` 활성 행 0 · 26개 completed todo는 **재실행 금지·SSOT 잠금 유지**(룰 로직·골든테스트·정책은 정확) · **가산 8 todo(E-R1~E-R8)**로만 REOPEN · 새 병렬 플랜 파일 생성 금지(중복0) · 흡수 SSOT=본 절
+> **v7.22.51 (POST-UI follow-up · §0.10 · U15):** 실 eBay 사진 DB 미도달 — `workers/ebay-adapter`가 `assetId:\`query:${query}\`` placeholder · `normalizeIngestListingsForPersist`가 `query:` **drop** · `watch-match`/`card-match`/`bag-match`는 존재하나 `AdaptersAdminService.ingest()` **미배선** · Pre-UI/E-R·1~26 **불변** · 가산 1 todo만 · UI ProductImage source-agnostic 유지 · File-Serial 예외(Index)
 > **v1 executionMode:** **`orchestrate` only** (ADR-009)  
 
 ## 0. 착수 전 실물 대조 기록 (v7.22.39 · 예측 0 · MCP+FS)
@@ -281,7 +286,7 @@ isProject: false
 | Brand/AI | Consumer/AI=**퍼뜩** · 클라이 등 타명 **0** | ✅ |
 | Engine verify | listing/soft-hard/pricing/fx/market-intel/adapters/tier/image/vertical×3/arbitrage/jargon/balance/override/match-rule/mission×3/g4/partner/strictness/membership×3/KPI/sim/ai-feature/shadow/twin/llm×2/coach×5/admin-routes **전수 PASS** | ✅ |
 
-**CLOSE 판정:** Engine = **CLOSED** · File-Serial 다음 = **03 UI** (`ui-preflight-constitution`). completed Engine todo 재실행 **금지**.
+**CLOSE 판정:** Engine = **CLOSED** · UI PART0 PASS(v7.22.50) · File-Serial 다음 = **03 UI** (`market-partner-trust-surfaces`). completed Engine todo 재실행 **금지**.
 
 ### 0.8.1 Founder local ops pointer (v7.22.45 · **Engine todo 재실행·상태변경 금지**)
 
@@ -485,7 +490,55 @@ tooling/verify/
 | Money `money-user-benefits-read` | `GET /api/v1/me/benefits(+summary)` · `BenefitsUserController` · `MissionModule.controllers` · `verify:benefit-hub-surfaces`(+credits/g4) | ✅ completed |
 | File-Serial 예외 | Engine E-R8 + Money benefits 둘 다 completed → 예외 **소멸** | ✅ |
 
-**CLOSE 판정:** Engine Pre-UI Gate = **CLOSED** · File-Serial 다음 = **03 UI** (`ui-preflight-constitution`). completed Engine/Money(가산 포함) todo 재실행 **금지**.
+**CLOSE 판정:** Engine Pre-UI Gate = **CLOSED** · UI PART0 PASS(v7.22.50) · File-Serial 다음 = **03 UI** (`market-partner-trust-surfaces`). completed Engine/Money(가산 포함) todo 재실행 **금지**.
+
+### 0.10 POST-UI follow-up — eBay identity-match ingest (v7.22.51 · U15 · 예측0 · 구현 대기)
+
+> **Owns:** 본 절 = Engine 가산 todo `engine-ebay-identity-match-ingest` SSOT.  
+> **발단:** UI preflight U15 / 마스터감사 — 실 eBay CDN 사진은 adapter가 fetch하나 DB 미도달.  
+> **Pre-UI Gate:** **CLOSED 유지**(E-R1~E-R8 재실행·재오픈 **금지**).  
+> **File-Serial:** 본 pending이 **03 UI 착수/진행을 재차단하지 않음**(Index「File-Serial 예외 2건」). UI PART3d=`ProductImage` source-agnostic만 · 데이터 수정=본 todo.  
+> **새 병렬 플랜 파일 생성 금지**(중복0).
+
+#### 0.10.1 실측 break (코드 경로 · 추측0)
+
+```mermaid
+flowchart TD
+  ebayApi["eBay Browse API i.ebayimg.com"] --> adapter["workers/ebay-adapter assetId=query:…"]
+  adapter --> ingestPost["POST /api/v1/internal/adapters/ingest"]
+  ingestPost --> ingestSvc["AdaptersAdminService.ingest()"]
+  ingestSvc --> persist["CatalogRuntimeSeedService.persistIngestListings"]
+  persist --> normalize["normalizeIngestListingsForPersist"]
+  normalize -->|"assetId.startsWith('query:') continue"| drop[["BREAK: listing+photo never persisted"]]
+  matchers["watch-match / card-match / bag-match"] -.->|"built · NOT wired"| ingestSvc
+```
+
+| 층 | 경로 | 사실 |
+|----|------|------|
+| Adapter | `workers/ebay-adapter/src/index.ts` ~L101/L116 | 매 결과에 `assetId: \`query:${query}\`` · title→identity parse **0** · matcher 호출 **0** |
+| Ingest | `services/api-nest/src/adapters/adapters.admin.service.ts` `ingest()` | listings → `persistIngestListings`만 · match resolve **0** |
+| Persist guard | `services/market-intelligence/src/catalog-runtime-seed.cjs` `normalizeIngestListingsForPersist` | `assetId.startsWith("query:")` → `continue` (FK 안전 drop · 의도된 preview 가드) |
+| Matchers (미배선) | `watch-match.cjs` / `card-match.cjs` / `bag-match.cjs` | exact brand+reference(+model/grade) · Admin evaluate·KPI 경로만 사용 |
+| 현재 opportunities | seed/`ensureMinCatalog` | `imageSource=admin_r2` 템플릿 · 합성 pricing · 실 eBay URL **0** |
+
+#### 0.10.2 가산 todo 상세 — `engine-ebay-identity-match-ingest`
+
+- **모델:** `[grok-4.5|256K]`
+- **범위(구현 채팅에서):**
+  1. ingest 직전(또는 persist 직전) listing title(+category) → `{brand, reference, model|grade…}` parse
+  2. category별 `evaluateWatchListingMatch` / `evaluateCardListingMatch` / `evaluateBagListingMatch` 호출
+  3. **exact match** → `assetId`=Asset Master id · `imageSource="ebay"` · `imageUrl`/`assetImageUrl`=실 `item.image.imageUrl`(host `i.ebayimg.com`)
+  4. **no match** → Admin review queue(또는 동등 Ops 표면) · **silent drop 금지**(query: placeholder를 그대로 persist하는 것도 금지)
+  5. `normalizeIngestListingsForPersist`의 `query:` skip은 **미해결 placeholder 잔존 시에만** 유지(가드 삭제≠본 todo 목표)
+  6. Day-1 listing CHECK(`ebay`\|`admin`) 불변 · amazon/yahoo INSERT 시도 0
+- **금지:** 1~26·E-R1~E-R8 completed 재실행 · UI에서 identity-match 우회 · Fuzzy-alone auto-publish · Math.random 매칭
+- **회귀 verify:** `asset-image-surface` · `listing-legs-day1` · `adapter-matching-kpi` · `catalog-runtime-seed` + **신설** ebay identity ingest assert(CATALOG 등록)
+- **Acceptance:** live `ebay-adapter` tick(실 credentials) → `public.opportunities`(또는 listings→opportunity hydrate) ≥1행 · `asset_image_source='ebay'` · URL host `i.ebayimg.com` · unmatched는 Admin queue에 가시
+
+#### 0.10.3 실행 시점
+
+- **문서/트래킹:** 본 절 + YAML `pending` = **완료(본 채팅 Owns=file/track only · 구현코드 0)**
+- **구현 채팅:** founder 스케줄 또는 UI가 실사진 필요 시 · **한 채팅=본 todo only** · 03 UI PART 순서 **재정렬 0**
 
 ## 0.0 시세 소스 잠금 (v7.13) — Signup-Ready + Margin UX + Capital Tiers
 

@@ -16,6 +16,7 @@ const live = [
   "listing-legs-day1.cjs",
   "signup-ready-adapters.cjs",
   "market-partner-adapters.cjs",
+  "market-partner-trust.cjs",
   "adapter-matching-kpi.cjs",
   "simulation-gate.cjs",
   "pricing-formula.cjs",
@@ -76,6 +77,36 @@ const live = [
   "benefit-hub-surfaces.cjs",
   // P0-1 — real JWT sign/verify/tamper/expiry round-trip (see jwt.core.cjs)
   "auth-jwt-runtime.cjs",
+  // PART1 korean-first-copy · mockup-governance · ux-design-system
+  "korean-ui.cjs",
+  "age-tone-surfaces.cjs",
+  "toast-emoji.cjs",
+  "cute-emoji-palette.cjs",
+  "no-it-jargon.cjs",
+  "mockup-governance.cjs",
+  "canon-surfaces.cjs",
+  "brand-logo-single.cjs",
+  "font-scale-three.cjs",
+  "ux-design-system.cjs",
+  // PART2 onboarding · auth · landing
+  "onboarding-experiential.cjs",
+  "auth-surfaces.cjs",
+  "landing-3s.cjs",
+  // PART3 ProductImage (audit §26/§37 · source-agnostic)
+  "product-image.cjs",
+  // PART4 useTradeExecution (Phase0 polling · Phase1+ SSE boundary)
+  "trade-execution-hook.cjs",
+  // PART5 ticker · shell · wallet · settings/legal · toast · plain-ko
+  "ticker-pii-0.cjs",
+  "legal-plain-ko.cjs",
+  "part5-shell-toast.cjs",
+  // Visual regression harness (Canon structure · multi-viewport · ADR-013)
+  "responsive.cjs",
+  // PART6 KYC · trust education · get-usdt
+  "kyc-surfaces.cjs",
+  "trust-copy.cjs",
+  "tax-disclaimer.cjs",
+  "objection4.cjs",
 ];
 
 let failed = false;

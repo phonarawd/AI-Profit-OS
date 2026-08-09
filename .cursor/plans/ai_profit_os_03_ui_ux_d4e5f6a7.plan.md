@@ -1,117 +1,135 @@
 ---
 name: AI Profit OS — UI & UX
-overview: "v7.22.42 Benefit Hub §5.9.5·§51.8a·Admin missions·Engine §48.13.4 fanout0. Index=00."
+overview: v7.22.55 §6.4c.1 5결정문 잠금(톤허용시점·괴리율금지+Infra동기·consent실행계약·완료verify·2c-pre §0.8.2승격)+§6.4 CTA supersede — v7.22.54 듀얼레이어 불변. File-Serial=2b→2c-pre→2c. PART0 PASS. Index=00. 다음=market-partner-trust-surfaces only(§0.8.3 · PART1a=갭-only).
 todos:
-  - id: yahoo-jp-copy-ban
-    content: "[grok-4.5|256K] v7.22.32→v7.22.41 supersede: §38.10 공식협력 Yahoo JP 로고·LabelKo 필수 · Engine §0.0.1c · verify:market-partner-trust"
-    status: pending
+  - id: ui-preflight-constitution
+    content: "[grok-4.5|256K] PART0 착수게이트 · **선행: Engine 02 Pre-UI Runtime Gate(§0.9 E-R1~E-R8) pending0 + Money money-user-benefits-read completed 필수(미충족 시 본 todo·이하 전부 착수 금지)** · BOOTSTRAP §0.6 실측기록(DB76/mig28/fn5·Canon·routes·Admin교차·verify live/pending) · **v7.22.50 감사 3정정 기록 흡수(§0.6 U13~U15·색토큰=lux-fintech·§29.6 Phase1+·eBay query: gap=Engine follow-up)** · File-Serial 재정렬 0 · 구현코드0 · 다음=market-partner-trust-surfaces"
+    status: completed
   - id: match-tension-ux-surfaces
     content: "[grok-4.5|256K] v7.22.30 §48.3b 긴장감 UX·등급≠대기 · Index §20.2 · verify:match-tension-surface"
     status: completed
   - id: sla-requeue-copy-lock
     content: "[grok-4.5|256K] v7.22.29 §48 Soft/Hard 카피3줄·MATCH_TIMEOUT safe_stop · Index §20.2 · Audit A4"
     status: completed
+  - id: admin-match-strictness-ui
+    content: "[grok-4.5|256K] ABSORBED→Admin admin-execution-policy · Canon admin-execution-policy.wire.json 유지 · apps/admin §48.6 구현=Admin File-Serial · UI 재실행 금지"
+    status: completed
+  - id: market-partner-trust-surfaces
+    content: "[grok-4.5|256K] PART1a §38.10 Brand markets SVG+manifest·MarketPartner*·Canon market-partner-trust·/me/guide/partners·routes잠금 · adapter≠표기(yahoo_jp Day1 adapter0·표기필수) · verify:market-partner-trust/brand-logo-single · Admin partners=pointer · 실측(v7.22.52 §0.8.3): Grid/Leg/Strip+brand/markets.ts+guide페이지 이미 실물 존재·verify live — 착수 즉시 `pnpm verify:market-partner-trust` 먼저 실행, PASS면 로고 SVG 자산 교체 갭만(전면 재작성 금지)"
+    status: pending
   - id: korean-first-copy
-    content: "[grok-4.5|256K] packages/ui/copy/ko + toneBand + 퍼뜩 + auth/onboarding/landing/kyc/toast keys · verify:korean-ui/brand-consumer/age-tone-surfaces"
+    content: "[grok-4.5|256K] PART1b §27+§27.10 copy/ko SSOT · toneBand · 퍼뜩voice·도움말·쉬운말·귀여운이모지(20~70·캡/팔레트) · auth/onboarding/landing/kyc/toast/empty/guide 키골격 · **landing utility namespace**(`utilityDisclaimer`·`transitionDisclosure`·`ctaOpenPriceMap`·`ctaStartUtility`·variant·금지어0) 키골격(본문깊이=PART2a/2c Owns·중복0) · retired브랜드0 · verify:korean-ui/brand-consumer/age-tone-surfaces/toast-emoji(+cute-emoji-palette CATALOG등록시)"
     status: pending
   - id: mockup-governance-adr013
-    content: "[grok-4.5|256K] §33.8 Canon wire 권위 · archive INTENT ONLY · verify:mockup-governance/canon-surfaces/brand-logo-single"
+    content: "[grok-4.5|256K] PART1c §33.8 Canon 권위·사진PNG0·archive INTENT ONLY · admin-execution-policy.wire=Admin Owns확인(UI앱구현0) · verify:mockup-governance/canon-surfaces/brand-logo-single"
     status: pending
   - id: ux-design-system
-    content: "[composer-2.5|200K] Lux tokens + fontScale 3단 + spacing/line-height senior · Canon wire + MotionCTA · reduced-motion"
+    content: "[grok-4.5|256K] PART1d Lux tokens + fontScale md/lg/xl + spacing/line-height senior · MotionCTA · reduced-motion · Light테마토글0 · verify:lux-theme-sync"
     status: pending
   - id: onboarding-experiential
-    content: "[composer-2.5|200K] §6.4 체험형 온보딩(identity·demo·practice) + Canon wires · verify:onboarding-experiential/canon-surfaces"
+    content: "[grok-4.5|256K] PART2a §6.4(+v7.22.55 supersede) 체험형 온보딩 · Guest/광고유입=utility 톤 · 첫화면 `T.landing.transitionDisclosure` 1줄(전환고지≠capital허가) · ACTION CTA=`시작하기`/`시세 맵 계속`(「수익 벌기」0) · 수익|투자|USDT|테더|보장|차익|괴리율 0 · Partner strip 1slide · Canon wires · verify:onboarding-experiential/canon-surfaces"
     status: pending
   - id: auth-login-signup-ui
-    content: "[composer-2.5|200K] Canon auth-login/auth-signup/complete-profile · Kakao primary · Stage A/B · verify:auth-surfaces"
+    content: "[grok-4.5|256K] PART2b Canon auth-login/signup/complete-profile · Kakao primary(login/signup **내부** · 랜딩 firstViewport 직행0) · Guest=utility 톤(§6.4c.1 F) · Stage A/B · 성별필드0 · verify:auth-surfaces · 선행pointer=Infra auth-kakao-oauth-runtime(Kakao.env=founder·callback미구현→UI mock/disabled가드)"
+    status: pending
+  - id: operator-entity-support-email
+    content: "[grok-4.5|256K] PART2c-pre §50.9 schemas/operator-entity.v1.json+instance.json `supportEmail`(format email·required) · examples 동기 · JSX 하드코딩0 · verify:operator-footer scaffold=supportEmail 존재+instance 일치 · LandingOperatorFooter 바인딩=landing-3s-ui Owns(중복0) · **§0.8.2 #5 승격(v7.22.55)** · 실측 supportEmail already→갭-only(전면 재작성 금지) · 구현=schema+instance only"
     status: pending
   - id: landing-3s-ui
-    content: "[composer-2.5|200K] Canon landing-3s · firstViewport≤5 · /l/*+/ads 동일 · Infra §31.2 pointer · verify:landing-3s"
-    status: pending
-  - id: capital-provider-match-ux
-    content: "[composer-2.5|200K] §5.3b/§48 CTA=수익 벌기·카드위계·면책배지·trader jargon0 · verify:cta-earn-profit/user-trader-jargon-0"
+    content: "[grok-4.5|256K] PART2c §6.4c+§6.4c.1(v7.22.55) 듀얼레이어 utility 랜딩 · Canon landing-3s · firstViewport≤5 · Tier-A MarketPartnerTrustStrip · GuestChrome(5탭0) · /l/*+/ads 동일 · **인수조건:** (1) LandingOperatorFooter=operator-entity→legalName+license+supportEmail+jurisdiction+`/me/legal`1 · (2) utilityDisclaimer CTA직하+footer직전 2중 · (3) 포지셔닝=시세·가격 비교 · 금지어 수익|투자|USDT|테더|보장|차익|괴리율|재테크|알바 0 · CTA=`실시간 시세 맵 열기`→/onboarding|/auth/login · (4) expectedNotGuaranteed 랜딩폐기 · (5) consent실행계약=Infra sdk · UI Lead emit only if consentMarketing===true · 미실장=emit0 · (6) 완료=`verify:landing-3s`+`verify:marketing-compliance`+`verify:operator-footer` PASS · copy↔Infra §31.4/§31.7 금지어 동기"
     status: pending
   - id: opportunity-scan-home-ux
-    content: "[composer-2.5|200K] §5.3b 홈3초·arbitrageTypeKo·기회스캔 위계 · MarketPartnerLeg(§38.10) · verify:opportunity-scan-surface (CTA는 capital-provider todo)"
+    content: "[grok-4.5|256K] PART3a §5.3b 홈3초·arbitrageTypeKo·기회스캔 위계·PartnerTrustStrip/Leg · CTA라벨 미구현(다음 todo) · verify:opportunity-scan-surface"
+    status: pending
+  - id: capital-provider-match-ux
+    content: "[grok-4.5|256K] PART3b §5.3b/§48 CTA=수익 벌기·상세=이 기회로 수익 벌기·면책배지·trader jargon0 · verify:cta-earn-profit/user-trader-jargon-0"
     status: pending
   - id: price-compare-margin-ux
-    content: "[composer-2.5|200K] PriceCompareMargin 4면 · 공식=Engine §0.0.4 pointer · compareReady 가드 · verify:margin-compare-surface"
+    content: "[grok-4.5|256K] PART3c PriceCompareMargin 4면 · 공식=Engine §0.0.4 pointer(재계산0) · compareReady 가드 · verify:margin-compare-surface · 실측(v7.22.52 §0.8.2 #3): 컴포넌트·verify스크립트·CATALOG등재 전부 0건(고아 참조였음) — 신규 구현 필수, 완료 조건에 `tooling/verify/margin-compare-surface.cjs` 신설+CATALOG.md 등재 포함(3종 세트)"
     status: pending
   - id: asset-image-execution-ux
-    content: "[composer-2.5|200K] §48.3a assetImageUrl 썸네일·steps active/done·필터 가방·Canon·verify:asset-image-surface/execution-surfaces"
+    content: "[grok-4.5|256K] PART3d §48.3a assetImageUrl 썸네일·필터 가방·Canon productThumb · verify:asset-image-surface"
     status: pending
   - id: balance-aware-home-ux
-    content: "[composer-2.5|200K] §5.3a affordable/nearMiss·입금 suggest CTA·카피·verify:balance-aware-feed"
+    content: "[grok-4.5|256K] PART3e §5.3a affordable/nearMiss·입금 suggest CTA·카피 · verify:balance-aware-feed"
     status: pending
   - id: ai-execution-ux
-    content: "[composer-2.5|200K] §48 진행실·성공·안전중단 + copy/ko/execution + verify:execution-surfaces"
+    content: "[grok-4.5|256K] PART4a §48 진행실·성공·안전중단 + copy/ko/execution + Soft/Hard카피3줄 배선 · verify:execution-surfaces · 실측(v7.22.52 §0.8.3): `useTradeExecution` polling훅=live이나 `AiProgressRoom`/`ExecutionSuccessReceipt`/`ExecutionSafeStop`/`ExecutionStepList` 컴포넌트 0건(현재 execute page는 2-state 임시텍스트) — 3면 신규 구현 필수(스킵 금지), PART3d `ProductThumb` 재사용"
     status: pending
   - id: ai-coach-ui
-    content: "[composer-2.5|200K] §6.4e A:copy/ko/peotteok.ts+Canon blocks B:/me/peotteok SSE·P칩·Gstream·S거절·degrade C:verify:canon-surfaces+ai-coach-* · 선행=Engine #24 ai-coach-runtime"
+    content: "[grok-4.5|256K] PART4b §6.4e/§6.4e.1+§27.10 voice copy/ko/peotteok+Canon · /me/peotteok SSE·P칩·Gstream·S거절·degrade·귀여운말투캡 · 선행=Engine ai-coach-runtime(completed) · verify:canon-surfaces+ai-coach-*+age-tone-surfaces"
     status: pending
-  - id: user-app-screens
-    content: "[composer-2.5|200K] apps/web 5탭 + §49 지갑 + §50 설정/약관 + CountUp + LivePayoutTicker(§33.2a·G4 mode 투영) · retired 브랜드 0"
+  - id: public-ticker-g4-surface
+    content: "[grok-4.5|256K] PART5a §33.2a LivePayoutTicker·CountUp(settlement.completed only) · ticker_mode/counter_mode 투영 · DayPulse merge0 · PII0 · Admin §35.4 pointer · verify:ticker-pii-0(또는 UI게이트)"
+    status: pending
+  - id: user-ia-shell-screens
+    content: "[grok-4.5|256K] PART5b apps/web 5탭 shell+USER_NESTED_ROUTES(/me/benefits·/me/guide/partners 포함) · /profits·/trades 골격 · retired브랜드0 · verify:ia-tabs/no-admin-in-web · ≠홈심화(PART3)"
+    status: pending
+  - id: wallet-surfaces-ui
+    content: "[grok-4.5|256K] PART5c §49 지갑홈·입금·출금(USDT/KRW)·내역 · DemoWalletBanner·NetworkPlainWarning · Canon wallet-* · Money pointer · verify:deposit-network-plain-ko+wallet Canon"
     status: pending
   - id: settings-legal-ko
-    content: "[composer-2.5|200K] §50.1 글자 보통/크게/더크게 + 충전기본표시 + 약관4종·DET · verify:legal-plain-ko/font-scale-three"
+    content: "[grok-4.5|256K] PART5d §50.1 fontScale3단+depositPref+약관4종·DET §50.9 · verify:legal-plain-ko/font-scale-three"
     status: pending
   - id: toast-notification
-    content: "[composer-2.5|200K] toast catalog §8.2(+KRW_REJECTED) + §48/§49/REFERRAL/CAMPAIGN + push dedup"
+    content: "[grok-4.5|256K] PART5e toast catalog §8.2(+KRW_REJECTED)+§48/§49/REFERRAL/CAMPAIGN/MISSION · §50.2+§27.10.3 팔레트 · push dedup · verify:toast-emoji"
     status: pending
   - id: plain-korean-surfaces
-    content: "[composer-2.5|200K] 유저·어드민 IT용어0 · 토스트 이모지1~2 · verify:no-it-jargon/toast-emoji"
+    content: "[grok-4.5|256K] PART5f 유저 surface IT용어0+§27.10 쉬운말/이모지캡 스캔(도움말·empty·힌트 포함 · 어드민 plain=Admin Owns) · verify:no-it-jargon/toast-emoji"
     status: pending
   - id: kyc-surfaces-ui
-    content: "[composer-2.5|200K] Canon kyc-guide/doc/confirm Lux 3면 · Money §42 pointer · RRN입력0 · verify:kyc-surfaces"
+    content: "[grok-4.5|256K] PART6a Canon kyc-guide/doc/confirm Lux3면 · Money §42 pointer · RRN입력0 · verify:kyc-surfaces"
     status: pending
   - id: trust-education-ux
-    content: "[composer-2.5|200K] §38+§38.10 MarketPartnerTrust 공식협력 로고·Objection4 + DepositWhyGate + 면책 CI · verify:trust-copy/tax-disclaimer/objection4/market-partner-trust"
+    content: "[grok-4.5|256K] PART6b §38 Objection4+DepositWhyGate+면책 CI · §38.10 로고는 market-partner todo Owns(중복구현0) · Admin growth?tab=content 면책잠금 pointer · verify:trust-copy/tax-disclaimer/objection4"
     status: pending
   - id: trust-get-usdt-guide
-    content: "[composer-2.5|200K] §38.8 /me/guide/get-usdt + 입금 네트워크 한글경고 · TRC20 화면0 · verify:deposit-network-plain-ko"
+    content: "[grok-4.5|256K] PART6c §38.8 /me/guide/get-usdt + 입금 네트워크 한글경고 · TRC20 화면0 · verify:deposit-network-plain-ko"
     status: pending
   - id: invite-explain-kr-2070
-    content: "[composer-2.5|200K] §5.9.1a 친구초대 설명·toneBand·Canon·verify:invite-explain-surfaces/age-tone"
+    content: "[grok-4.5|256K] PART7a §5.9.1a 친구초대 설명·toneBand·Canon invite-home · 횟수∞ · Money §51.5 pointer · verify:invite-explain-surfaces/age-tone-surfaces"
     status: pending
   - id: benefit-hub-surfaces
-    content: "[composer-2.5|200K] §5.9.5 혜택·미션 허브 Daily/One-Time/Weekly/Streak·Hero·캠페인캐러셀 · Money §51.8a pointer · Canon benefit-hub · verify:benefit-hub-surfaces/benefit-no-credits-currency"
-    status: pending
-  - id: admin-match-strictness-ui
-    content: "[composer-2.5|200K] §48.6 매칭성공조절 프리셋·관측KPI·난수UI0·Canon·verify:match-strictness/no-success-rate-percent"
+    content: "[grok-4.5|256K] PART7b §5.9.5 /me/benefits+routes · Daily/One-Time/Weekly/Streak·Hero·캐러셀 · Credits0 · Money §51.8a·Engine §48.13.4 pointer · Admin missions pointer · verify:benefit-hub-surfaces/benefit-no-credits-currency/benefit-g4-ledger-separation · 실측(v7.22.52 §0.8.2 #2 결함): 현 verify PASS=Money API(GET 2종)+copy파일 존재만 검사 · 실제 page.tsx=1줄 골격(Hero/Carousel/D·M·W·S 카드 0) — verify PASS를 완료 증빙으로 오독 금지, 딥 UI 전량 신규 구현이 완료 조건"
     status: pending
   - id: membership-grade-ux
-    content: "[composer-2.5|200K] §5.9.2c·§51.18a 등급표·AI해금·배지Brand SVG·100%아님·Canon·verify:membership-surfaces/membership-badge-assets"
+    content: "[grok-4.5|256K] PART7c §5.9.2c·§51.18a 등급표·AI해금·배지Brand SVG·100%아님 · Admin §9.8.10 pointer · verify:membership-surfaces/membership-badge-assets"
     status: pending
   - id: notify-prefs-inbox
-    content: "[composer-2.5|200K] §50.1n 알림prefs 가입시전부ON · §5.9.4 쪽지함 · toast MATCH/WITHDRAW_BLOCK · verify:notification-prefs-default-on/ops-inbox"
+    content: "[grok-4.5|256K] PART7d §50.1n 가입시 prefs 전부ON · §5.9.4 쪽지함 · toast MATCH/WITHDRAW_BLOCK · Admin 쪽지 pointer · verify:notification-prefs-default-on/ops-inbox"
     status: pending
   - id: loop-psychology-5124
-    content: "[grok-4.5|256K] §51.24 DayPulse·PreCTA·L1~L24 · verify:loop-psychology/day-pulse-live-only/preflight-may-stop"
+    content: "[grok-4.5|256K] PART8a §51.24 DayPulse·PreCTA·L1~L24 · G4 merge0 · verify:loop-psychology/day-pulse-live-only/preflight-may-stop"
     status: pending
   - id: trust-surfaces-v722
-    content: "[composer-2.5|200K] §51.16~19·§51.21·§51.24 Proof/SafeStop/Journey/AdapterHealth/DepositConsult/Loop"
+    content: "[grok-4.5|256K] PART8b §51.16~21(20 Weekly Market Briefing 포함·v7.22.52~53 고아게이트 Owns 재배정·verify PART8b 신설) Proof/SafeStop/Journey/AdapterHealth/WeeklyMarketBriefing/DepositConsult · /me/guide/market-weekly route+USER_NESTED_ROUTES등록+Canon(market-weekly-briefing.wire.json)+copy/ko/guide.ts+verify:market-briefing-no-investment-advice 신설(§51.20 · 현재 ghost) · Loop본문=loop-psychology Owns(중복0) · verify 해당 게이트"
     status: pending
   - id: responsive-device-tier
-    content: "[composer-2.5|200K] fluid+touch-target + device-tier S/A/B + Virtual · verify:responsive"
+    content: "[grok-4.5|256K] PART8c fluid+touch-target + device-tier S/A/B + Virtual · verify:responsive"
     status: pending
   - id: trust-age-spotcheck
-    content: "[grok-4.5|256K] §38.6b 20·40·60~70대 각3명 spot-check 프로토콜·체크리스트·결과스키마 · 성별중성"
+    content: "[grok-4.5|256K] PART8d §38.6b+§27.10 20·40·60~70대 각3명 · 도움말이모지길잡이·퍼뜩첫인사·면책이모지0 · 성별중성 · Admin ai-logs?tab=spotcheck pointer"
     status: pending
 isProject: false
 ---
-# AI Profit OS — UI & UX (v7.22.27)
+
+# AI Profit OS — UI & UX (v7.22.55 · §6.4c.1 5결정문 잠금 · v7.22.54 듀얼레이어 · §0.8 · 착수 잠금=Pre-UI Runtime Gate)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`  
 > **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
-> **todo 순서:** 카피/거버넌스/Lux → 온보딩·인증·랜딩 → 홈·마진·잔액·실행실·퍼뜩 → 5탭/설정/토스트/KYC/신뢰/초대/멤버십/루프/반응형/spot-check (File-Serial)  
+> **모델 잠금:** 전 todo = **`[grok-4.5|256K]`** · 한 채팅=한 todo · PART0→8 위→아래 (File-Serial)  
+> **todo 파트:** **0** preflight · **1** 신뢰로고/카피/Canon/Lux · **2** 온보딩·인증·**2c-pre schema**·랜딩 · **3** 홈·마진·이미지·잔액 · **4** 실행실·퍼뜩 · **5** 티커·5탭·지갑·설정·토스트 · **6** KYC·신뢰교육·테더가이드 · **7** 초대·혜택·멤버십·알림 · **8** 루프·Proof·반응형·spot-check  
+> **v7.22.55 (§6.4c.1 5결정문 · 코드+문서 SSOT · 오류0):** (1) 톤 허용 시점 SSOT=로그인 후·첫 capital surface(`/`,`/profits`,기회 CTA)부터 수익|투자|USDT 언어 허용 · Guest(`/l/*`→`/onboarding`·`/auth/*`)=utility 유지 + 온보딩 첫화면 `transitionDisclosure` 1줄(**전환 고지≠capital 톤 허가**) · §6.4 ACTION「수익 벌기」**supersede**=capital surface only · (2) 랜딩 포지셔닝=`시세·가격 비교`(괴리율·차익 **0**) · `copy/ko/landing` ↔ Infra §31.4 sanitizer ↔ `verify:marketing-compliance` **동시** 갱신이 완료 조건 · (3) GuestChrome consent Owns=Infra `packages/sdk/marketing` · UI=`consentMarketing===true`일 때만 Lead emit · 미실장=emit **0** · (4) 완료 정의=`verify:landing-3s`+`verify:marketing-compliance`+`verify:operator-footer` · (5) PART2c-pre를 §0.8.2 #5로 **같은 diff 승격**(File-Serial 위반≠·의존 삽입)  
+> **v7.22.54 (듀얼레이어 광고 Compliance · 오류0):** §6.4c.1 신설 — `/l/*`·`/ads/*`=**utility-only** · `LandingOperatorFooter` · `utilityDisclaimer` 2중 · CTA=`실시간 시세 맵 열기` · PART2c-pre · CAPI=Infra Owns · File-Serial=2b→**2c-pre**→2c  
+> **v7.22.53 (§0.8.2~3 패치):** 감사조치/구현시점 열 · verify 검사범위 1줄 · 실행밀도 · §51.20 wording — v7.22.52 불변  
+
 
 > **v7.22.20:** §48.3a `assetImageUrl` · `시세 불러오는 중...` · 필터 `가방`  
 > **v7.22.21:** §5.3a 잔액 인식 홈 · 사진 PNG 목업 **레포 0**  
 > **v7.22.22:** §5.9.1a 친구초대 **20~70 설명** · 초대횟수∞ 카피 · Money §51.5 pointer  
-> **v7.22.23:** §48.6 **매칭 성공 조절** · 난수 성공률 **0** · Engine §48.13.3  
+> **v7.22.23:** §48.6 **매칭 성공 조절** · 난수 성공률 **0** · Engine §48.13.3 · **apps/admin Owns=Admin** (UI Canon만)  
 > **v7.22.24:** §5.9.2c·§51.18a **멤버십 등급·AI 해금 설명·참고율·고액 희소** · Engine §0.0.7  
 > **v7.22.25:** §50.1n **알림 prefs 가입 기본 전부 ON** · §5.9.4 쪽지함 · §5.9.2c **등급 배지=Brand Kit 벡터** (사진목업 0)  
 > **v7.22.26:** **§5.3b** 기회스캔 홈·`arbitrageTypeKo` · Index §20.1 · Engine §4.2a  
@@ -120,17 +138,197 @@ isProject: false
 > **v7.22.29:** Soft60/Hard90 · REQUEUE·`MATCH_TIMEOUT` 유저 카피 **3줄** · Index §20.2 · Audit A4  
 > **v7.22.30:** **§48.3b** 매칭 긴장감(과정 Fact) · Soft/Hard **전 등급 동일** · 등급≠대기특권 · Index §20.2 · Audit A6  
 > **v7.22.31:** 시장 카피 **동적 LabelKo** · Day-1 listing Owns=Engine §0.0.1a (ebay멀티\|admin)  
-> **v7.22.32:** `yahoo_jp` **영구 배제** · 유저 「야후」·Yahoo 문자열 **0** · LabelKo만 · listing=ebay멀티\|admin only  
+> **v7.22.32:** `yahoo_jp` **adapter/ENV/listing Day-1 = 영구 FORBIDDEN** (철회 0) · **표기(로고+LabelKo)는 v7.22.41이 supersede**  
 > **v7.22.40:** **§33.2a** PublicTicker surface · G4 Organic Hybrid **pointer**=Admin §35.4 · PII0·DayPulse merge0  
-> **v7.22.41 (Founder lock):** **§38.10 Market Partner Trust** — eBay·Amazon·Yahoo! JAPAN Auction 등 **공식 협력사** · 회사 **로고+LabelKo** · 「시세 참고만」단독 톤 **폐기** → 「공식 협력 · 시세·데이터 연동」 · orchestrateTruth(직접 사지 않음) **유지** · v7.22.32 야후 **표기 금지** → **본 절로 supersede(표기)** · adapter=Engine §0.0.1c
+> **v7.22.41 (Founder lock):** **§38.10 Market Partner Trust** — eBay·Amazon·Yahoo! JAPAN Auction 등 **공식 협력사** · 회사 **로고+LabelKo** · 「시세 참고만」단독 톤 **폐기** → 「공식 협력 · 시세·데이터 연동」 · orchestrateTruth(직접 사지 않음) **유지** · v7.22.32 **표기 금지 supersede** · **adapter 금지(v7.22.32) 불변** · Engine §0.0.1c  
 > **v7.22.42:** **§5.9.5 혜택·미션 허브** `/me/benefits` — Daily/One-Time/Weekly/Streak·Hero·캠페인 캐러셀 · Credits 화폐 **0** · auto ledger=Money **§51.8a** · Engine **§48.13.4** fanout only · Admin `growth?tab=missions`  
+> **v7.22.43:** 퍼뜩 OpenAI/풀스택 pointer · Engine §47.15 completed · UI §6.4e.1 = `ai-coach-ui`  
+> **v7.22.46 (감사 흡수):** UI preflight §0.6 · Admin 교차 §0.7 · todo Grok256K PART0~8 · `yahoo-jp-copy-ban`→`market-partner-trust-surfaces` · `admin-match-strictness-ui`→Admin Owns · composer 혼재 제거 · routes 누락(`/me/benefits`·`/me/guide/partners`) 잠금  
+> **v7.22.47 (Founder 흡수):** **§27.10** — 유저 **도움말·쉬운말·퍼뜩 말투·빈화면·힌트** 전면 **한글친화 + 귀여운 이모지** · 한국 **20~70대** 공통 호감 · 표면별 캡/팔레트 · 「이모지 전부」=전 표면 적용(폭탄·카지노·면책과다 **0**) · Owns=`korean-first-copy` · 배선=`ai-coach-ui`·`plain-korean-surfaces`·`toast-notification`  
+> **v7.22.48 (Pre-UI Runtime Gate 흡수 · Engine §0.9 pointer):** 실측 재검증에서 `participate`/`execute`/유저 기회 피드 API가 **코드 0**임이 확인 → Engine `02`가 REOPEN(가산 `engine-runtime-preflight-gap`~`engine-pre-ui-close`) · Money `money-user-benefits-read` 가산 · **본 파일 전 todo 착수는 그 완료 후만**(§0.6 갱신) · `trade.execution.step`는 Phase0=**polling**(`execute-tick`) 채택(SSE 가정 폐기·Phase1+ 전환 시 응답채널만 교체) · 기존 stub 페이지 미배선 버튼(§0.6 실측 표) pointer 신설  
+> **v7.22.49:** **§27.8a** Store listing 한글 short/full 카피 Owns=UI · APK/AAB·Console 절차=PWA §24 **pointer only** · UI todo 가산 **0**  
+> **v7.22.50 (UI preflight 감사 흡수 · `ui-preflight-constitution` 기록):** 마스터감사 3정정만 SSOT에 반영 · **File-Serial/PART0→8 순서·todo 가산 0** · (1) §6.2/§33.1 색 hex 표 → shipped `lux-fintech.ts`(visual_kit_v1) 미러 · (2) §29.6 `realtime-service` = Phase1+ 인터페이스(Phase0=polling 훅 계약) · (3) eBay `assetId: query:*` ingest drop = Engine-owned backend gap 로그(§0.6·§48.3a pointer) · UI는 `ProductImage` source-agnostic만  
+> **v7.22.52 (종합 실물 재검증 · 5관점 감사 · `§0.8` 신설):** 유저 요청형 "DB·마이그레이션·함수·SQL·테이블·엔진·Supabase·폴더·기술스택·파일·헌법·기술코드 전수 확인" 감사 · Supabase MCP 재실측 + 레포 FS 전수 + 04 Admin/01 Money/05 PWA/06 Infra 전문 재확인 · **File-Serial/PART0→8 순서·모델배정 변경 0**(적합 판정) · 발견 5건: (1) migration 파일명 버전 drift(로컬≠원격) → **즉시 rename 해소** (2) `verify:benefit-hub-surfaces`="live" 표기가 Money API 존재만 검사·§5.9.5 딥 UI 미검증(실제 페이지=1줄 골격)인데 "완료"로 오독될 위험 → 문서+todo content 경고 (3) `verify:margin-compare-surface` 3개 플랜 인용·실물 스크립트/컴포넌트 0(고아 참조) → todo content에 신설요건 명시 (4) Engine §51.20 Weekly Market Briefing이 유저 라우트 요구하나 UI Owns 절·PART배정·route등록 0(고아 게이트) → PART8b 범위 확장+§51.20 신설 (5) PART1~PART8 다수가 YAML `pending`인데 레포엔 이미 우량 구현체 존재(우량 드리프트) → PART별 실측 착수가이드(§0.8.3) 신설로 중복구현 방지  
+> **v7.22.53 (`§0.8.2~3` 문서 패치 · 코드0):** §0.8.2 표에 **감사 세션 조치 / 구현 시점** 열 분리(동급 "해소" 혼동 제거) · §0.8.3 표에 **verify 검사 범위 1줄** 열 추가(스크립트 헤더+실측 대조) · **실행 밀도** 지침(1a~1d·5a~6c=갭-only·1채팅 목표 · 3c·4a·7b·8b=무거운 구현 · 4a·7b=유저 체감 최우선 부채 · File-Serial 순서 **유지**) · §51.20 "고아 게이트 해소"→**Owns 재배정·verify 미착수** wording 정정  
 
 > **Consumer + AI 이름:** **퍼뜩** (동일) · Engine §47 P/G/S · 5탭 고정  
-> **KR 유저 SSOT:** §38.9 toneBand · §50.1 fontScale 3단 · §38.8 테더준비 가이드 · **성별 UI 분기 금지**(중성 존댓말)  
+> **KR 유저 SSOT:** §27+**§27.10**(쉬운말·귀여운이모지·퍼뜩voice) · §38.9 toneBand · §50.1 fontScale 3단 · §38.8 테더준비 가이드 · **성별 UI 분기 금지**(중성 존댓말)  
 > **Loop/Preflight:** **§51.24** (Admin/Engine/CATALOG pointer 대상 · 유령 절 금지)  
 
 > **마진 공식:** Engine §0.0.4 Owns · UI=화면/카피만  
-> **모델:** copy/거버넌스=`grok-4.5` · 화면 슬라이스=`composer-2.5`
+> **선행 CLOSED(1~26/1~15 불변):** 01 Money 15/15+benefits · 02 Engine 26/26+E-R1~E-R8 · Pre-UI Gate **CLOSED(v7.22.49)** · **PART0 `ui-preflight-constitution` PASS(v7.22.50)** · 다음 채팅=`market-partner-trust-surfaces` only  
+
+## 0.6 UI 착수 전 실측 (v7.22.48 · `ui-preflight-constitution` · **PASS v7.22.50** · 예측0 · 감사 3정정 흡수)
+
+> **Owns:** 본 절 + BOOTSTRAP §0.6 동기 · **구현 코드 0** (기록·갭표만) · **CLOSE 후 다음=`market-partner-trust-surfaces`**  
+> **방법(2026-08-10 CLOSE 재실측):** 레포 FS(`CONSTITUTION/`29·Canon 28 wires·`apps/web`·`packages/ui`·ebay-adapter·catalog-runtime-seed·`lux-fintech.ts`) + Money/Engine YAML completed + Supabase MCP `list_tables`(public **76**) + CATALOG live 게이트 · `execute_sql`/`list_migrations`는 본 세션 MCP hook fail-closed로 차단 → mig/함수 수는 FS+§0.5.1 CLOSE 인용  
+> **선행(v7.22.49 충족 · 재확인):** Money CLOSED(15/15+`money-user-benefits-read` **completed**) · Engine CLOSED(26/26+E-R1~E-R8 **completed** · `engine-pre-ui-close` **completed**) · Pre-UI Runtime Gate **CLOSED**  
+> **v7.22.50 감사 기록(본 todo Owns · File-Serial 재정렬 0):** 색토큰 drift(U13) · realtime-service Phase0 reframe(U14) · eBay `query:` ingest gap(U15) — 아래 표·§0.6.2·본문 §6.2/§33.1/§29.6/§48.3a pointer에 **텍스트만** 반영 · **앱 구현코드 0**
+
+| 대상 | 실측 (2026-08-09 · **+2026-08-10 v7.22.50 CLOSE**) | UI 함의 |
+|------|-------------------|--------|
+| Supabase | ref=`mgsytcetsiecllmhcyox` · Seoul · PG **17.6** · ACTIVE_HEALTHY | 원격 only · Docker OFF |
+| `public` 테이블 | **76** · RLS ON (MCP `list_tables` 재실측) | mission_*/growth_*/execution_*/ai_* 존재 · Nest service_role |
+| migrations | **28** 로컬 SQL · 끝=`20260809144814_catalog_runtime_day1_fx_bootstrap`(v7.22.52 §0.8.2 #1에서 `144409`→`144814` rename 해소 · 원격 1:1) | UI DDL **0** (스키마 Owns≠UI) |
+| public 함수 | **5** (`ledger_*`3 + `users_stage_a_identity_ok` + `user_opportunity_overrides_pin_cap`) · §0.5.1 | Rule/RPC UI 호출 금지 · Nest API only |
+| Gate MCP rows | `execution_policies` rows**1** · `opportunities` rows**6** · `assets`**94** · `listings`**12** | UI 배선 대상 존재(시드 경로) |
+| mission SSOT | `mission_definitions`·`mission_accruals`·`mission_program_config` | UI=`/me/benefits` 표시 · accrual=Money §51.8a · **읽기 API=`GET /me/benefits(+summary)` live**(money-user-benefits-read completed) |
+| **Engine — Gate CLOSE 후 (v7.22.49→50 · 오차0)** | E-R1~E-R8 **completed** · FS: `OpportunitiesUserController`·`BenefitsUserController`·`trades/:id/execute-tick` **live** · CATALOG `user-opportunity-feed`/`participate-http`/`execute-rule-loop` **live** | PART3~4 배선 **허용**(대상 API 존재) · completed Engine/Money todo 재실행 **금지** |
+| **E-R1 이력 pointer (v7.22.48 · 해소됨)** | 당시 MCP 행0·유저 `@Controller` 코드0 → §0.9 가산으로 **해소**(위 Gate CLOSE 행) | 이력만 유지 · 「착수 금지」문구 **폐기** |
+| 실행실 실시간 채널 (**v7.22.50 U14 정정**) | `services/realtime-service` 폴더 **0**(Engine §0.9.2 동일) · Phase0=`POST /trades/:id/execute-tick` **polling live** | §29.6 = **Phase1+ 인터페이스 계약만**(지금 폴더/WS 가정 **금지**) · PART4a=`useTradeExecution` 훅이 Phase0 polling · Phase1+ SSE 교체 시 훅 내부만 · §48.3 SSE 전제 **보류 유지** |
+| **색 토큰 SSOT drift (v7.22.50 U13 · CONFLICT RESOLVED)** | 구 §6.2/§33.1 표=`#00FF87`/`#FF2E63`/`#F59E0B`/`#00D294`/`#1A56FF` · **shipped** `packages/ui/tokens/lux-fintech.ts`=`accent/profit:#3DDC97` · `principal:#7AA2FF` · `danger:#FF5C7A` · `warning:#F5C542` · Brand Kit(§5.9.2b)·Canon `tokenRef`와 일치 | 권위=§33.8.1 tokens>plan · **plan hex 표는 코드 미러로 정정**(아래 §6.2/§33.1) · PART1d `ux-design-system`은 이 hex를 재발명 **금지** |
+| **eBay 실사진 ingest gap (v7.22.50 U15 · Engine Owns · UI 수정0)** | `workers/ebay-adapter`가 `assetId:\`query:${query}\`` placeholder · `normalizeIngestListingsForPersist()`가 `query:` prefix **drop** · matchers(`watch/card/bag-match`)는 존재하나 ingest **미배선** · `public.opportunities` 현재 행=시드(~40–80 SKU)·`imageSource=admin_r2` 템플릿 URL · 실 eBay CDN URL은 fetch되나 **DB 미도달** | **UI 차단 아님** · PART3d=`ProductImage`/`assetImageUrl` source-agnostic(`ebay`\|`pokemontcg`\|`ygoprodeck`\|`admin_r2`) · 데이터 수정=Engine `engine-ebay-identity-match-ingest`(§0.10 · Index 예외2 · UI todo/File-Serial 재정렬 **0**) · §48.3a pointer |
+| 기존 stub 페이지 버튼 배선 (실측 · 이 게이트 범위 밖 pointer) | `/wallet/deposit`(주소복사·계속) · `/me/kyc`(시작하기) 버튼 `onClick` **미정의** · `/wallet/withdraw` 제출은 `onClick` 있으나 네트워크 호출 **0**(주석 처리) · `/me/support` wrong-chain 제출은 `setSubmitted(true)`만 실행하고 실제 `POST /api/v1/wallet/deposit-disputes` **미호출**(거짓 성공) | 버그로 확인·수정은 해당 PART todo(§5.7~5.8·§51.6) 배선 시 필수 · **본 todo에서 코드 수정 금지**(기록만) |
+| Brand | *(PART0 CLOSE 시점 `assets/markets/` 0 → §0.8.3·BOOTSTRAP §0.6.4 재실측: scaffold 실물 · SVG 7=blocked)* | PART1a=**로고 SVG 갭-only** · 전면 재작성 금지 |
+| Canon wires | *(PART0 CLOSE 시점 `market-partner-trust.wire.json` 0 → §0.8.3: wire+manifest 등록 실물)* | PART1a 갭=SVG only |
+| `apps/web/routes.ts` | *(PART0 CLOSE 시점 partners/benefits 0 → 현재 `/me/guide/partners`·`/me/benefits` **잠금됨**)* | PART1a route OK · benefits 딥 UI=PART7b |
+| `apps/web/app/me/benefits` | 페이지 골격 존재 · Hero/Carousel/D·M·W·S **0**(§0.8.2 #2) | benefit-hub-surfaces |
+| Admin routes | `growth?tab=missions|partners|ticker` + `ai-logs?tab=spotcheck|coach` **잠금됨** | deep UI=**Admin 플랜 todos** (본 플랜 pointer) |
+| Admin FS | growth legacy path pages(content/deposit/whale/ticker)만 · missions/partners **탭 deep 0** | Admin `admin-growth-*` todos Owns |
+| verify | `match-tension`·`benefit-hub-*`·`market-partner-adapters`·`market-partner-trust`·`canon-surfaces` **live**(scaffold PASS·SVG BLOCKER) · `verify:gate` 로컬은 build+stack-lock+stub 65종만(E2E 아님) | ghost verify 이름 **금지** · "verify PASS"≠"화면 작동" 오독 금지 · PART1a=§0.8.3 |
+| Kakao | founder `.env`만 · Infra `auth-kakao-oauth-runtime` **pending** | auth UI=가드/표면 · callback 구현≠UI |
+
+### 0.6.1 헌법·문서 읽기 체크 (UI Owns · preflight에서 ✓)
+
+| 파일 | 판정 |
+|------|------|
+| `CONSTITUTION/22_UX_AND_COPY_SSOT.md` | ✅ 5탭·레이아웃 |
+| `CONSTITUTION/25_KOREAN_FIRST_UX_POLICY.md` | ✅ ko·금지어 |
+| `CONSTITUTION/26_PERFORMANCE_AND_RESPONSIVE_UX.md` | ✅ fluid·tier |
+| `CONSTITUTION/28_LUX_FINTECH_DESIGN_AND_MOTION.md` | ✅ Lux·motion |
+| `CONSTITUTION/38_TRUST_EDUCATION_AND_REVENUE_TRANSPARENCY.md` | ✅ 신뢰·면책 |
+| `CONSTITUTION/48_AI_EXECUTION_ROOM_AND_POLICY.md` | ✅ 실행실 |
+| `CONSTITUTION/50_SETTINGS_LEGAL_AND_PLAIN_KOREAN.md` | ✅ 설정·약관·DET |
+| `docs/CONSTITUTION_BOOTSTRAP.md` | ✅ §0.5 Engine CLOSE · **§0.6 본 todo가 기록** |
+| Admin `ai_profit_os_04_admin_*.plan.md` §9.1.1·§35.4·§35.7 | ✅ 교차 계약 |
+| Money §51.8a · Engine §0.0.1c·§47.15·§48.13.4 | ✅ pointer only |
+
+### 0.6.2 흡수 모순 (본 버전에서 해소)
+
+| # | 발견 | 해소 |
+|---|------|------|
+| U1 | 첫 todo=`yahoo-jp-copy-ban`인데 본문은 표기 **필수**(§38.10) | → id=`market-partner-trust-surfaces` · adapter금지≠표기금지 분리 |
+| U2 | UI에 `admin-match-strictness-ui` + Admin `admin-execution-policy` 이중 Owns | → UI todo **ABSORBED** · apps/admin=Admin only |
+| U3 | composer-2.5 혼재 · mega todo(`user-app-screens`) | → 전량 grok-4.5\|256K · PART 분리 |
+| U4 | capital-provider가 opportunity-scan보다 선행 → 홈위계 전 CTA 혼선 | → PART3a 스캔 → PART3b CTA |
+| U5 | trust-education이 §38.10 로고 재구현 위험 | → 로고 Owns=`market-partner-*` · education=Objection4/면책 |
+| U6 | `/me/benefits`·`/me/guide/partners` routes 누락 | → PART1a/5b/7b 잠금 |
+| U7 | `assets/markets/`·`verify:market-partner-trust` 실물 0 | → PART1a deliverable |
+| U8 | §38.4 Admin 경로 `/admin/growth/content`·`/admin/content/trust` 유령 | → canonical `growth?tab=content`·`partners` |
+| U9 | Admin missions/partners/G4/coach deep todo 공백 | → Admin 플랜 §0.7 교차 + Admin YAML 흡수 |
+| U10 | BOOTSTRAP 다음=UI `yahoo-jp-copy-ban` stale | → `ui-preflight-constitution` |
+| U11 | 「귀여운 이모지 전부」해석이 폭탄/면책과다/Admin귀여움과 충돌 가능 | → **§27.10** = 유저 전 표면 **적용** + 표면별 **캡/팔레트** · toast수치=§50.2 · Admin=§27.5(귀여움0) · 면책·약관 본문 이모지0 |
+| U12 | Engine "todos 26/26 CLOSED"를 "participate/execute API 있음"으로 오독 → 03 UI가 대상 없는 API에 배선을 시도할 뻔함(실측: app.module.ts에 Trades/Execution/Participate 모듈 0) | → Engine `§0.9 Pre-UI Runtime Gate`(가산 E-R1~E-R8) + Money `money-user-benefits-read` 신설 · 본 파일 착수 선행조건에 추가(위 §0.6 선행) · 홈 미러 단독 플랜(`pre-ui_engine_gate_8f59a783.plan.md`) 전량 흡수 후 원본 삭제(중복0) |
+| U13 | §6.2/§33.1 색 hex 표(`#00FF87` 등) ≠ shipped `lux-fintech.ts`/`brand.manifest` visual_kit_v1(`#3DDC97`·`#7AA2FF`…) — 플랜 이중 SSOT | → **CONFLICT RESOLVED** · 권위=§33.8.1 tokens>plan · §6.2/§33.1 표를 코드 미러로 정정(v7.22.50) · 구 neon/coral/amber/actionNeon 표기 **폐기** |
+| U14 | §29.6이 `services/realtime-service`를 Phase0 도달 가능처럼 서술 · Engine §0.9.2는 폴더 **0**·Phase0=polling | → **CONFLICT RESOLVED** · §29.6 = Phase1+ 배치/티어 인터페이스 · Phase0=`useTradeExecution`/`useOpportunityFeed` polling이 동일 계약 준수 · 폴더 신설 전 WS/SSE 클라 가정 **금지** |
+| U15 | 실 eBay 사진이 유저 카드에 안 보이는 원인 미기록 · `assetId: query:*` → persist drop · matchers 미배선 | → **EXTEND(문서)** · §0.6 표 + §48.3a pointer · Owns=Engine todo `engine-ebay-identity-match-ingest`(§0.10 filed v7.22.51) · UI todo/File-Serial **가산·재정렬 0** · PART3d는 URL 소스 무관 렌더만 |
+
+**판정 (v7.22.50 · 2026-08-10):** `ui-preflight-constitution` = **PASS** · 헌법 8종+46b ✅ · Canon 28 · Brand markets/**0** · CLIME **0** · 사진목업 PNG **0**(ADR-013) · U13~U15 **흡수** · File-Serial 재정렬 **0** · 구현코드 **0**.  
+**다음 채팅:** **03 UI** `market-partner-trust-surfaces` only · completed Engine/Money/본 PART0 todo 재실행 **금지**.
+
+## 0.7 Admin 교차 계약 (UI surface → Admin Owns · 중복0)
+
+> **규칙:** UI 플랜은 `apps/admin/**` 구현 **금지**. 아래는 Admin 플랜이 **반드시** deep 구현할 계약(실측: routes 잠금·페이지 deep 일부 0).
+
+| UI surface / 기능 | Admin route | Admin todo (04 플랜) | 잠금 |
+|-------------------|-------------|----------------------|------|
+| LivePayoutTicker §33.2a | `growth?tab=ticker` | `admin-growth-ticker-organic` | Organic Hybrid · DayPulse merge0 |
+| Benefit Hub §5.9.5 | `growth?tab=missions` | `admin-growth-missions` | catalog·halt·queued_pool · **유저별 수동지급 0** |
+| Market Partner §38.10 | `growth?tab=partners` | `admin-growth-partners` | Tier-A ON/OFF·순서 · 로고=manifest only |
+| 면책/신뢰 카피 편집 | `growth?tab=content` | `admin-ops` shell + G1 필드 | 면책 블록 잠금 · 규모주장 1곳 |
+| 매칭 성공 조절 §48.6 | `/admin/execution-policy` | `admin-execution-policy` | 난수성공률 UI **0** |
+| 퍼뜩 Eval/trace | `ai-logs?tab=coach\|eval\|pick` | `admin-ai-peotteok-ops` | Engine §47.15 · override 0 |
+| spot-check 메모 §38.6b | `ai-logs?tab=spotcheck` | `admin-ai-peotteok-ops` | UI 프로토콜 결과 저장 |
+| 쪽지 발송 §5.9.4 | users 360 | `admin-user-block-notify` | 1인 쪽지 · fanout=PWA |
+| 멤버십 강제 | `users/:id?tab=membership` | `admin-user-membership-credentials` | Engine §0.0.7 |
+| 기회 override | `users/:id?tab=opportunities` | `admin-user-opportunity-override` | ledger 직접변경 0 |
+
+**Admin adapters KPI면:** `yahoo_jp` **Day-1 adapter 0**(v7.22.32) · **표기 ON/OFF는 partners 탭**(§38.10) — 「yahoo 0」을 로고 표기 금지로 오해 **금지**.
+
+## 0.8 종합 실물 재검증 (v7.22.52 · 5관점 감사 · 예측0 · 구현코드0)
+
+> **Owns:** 본 절 = 유저 요청형 "DB·마이그레이션·함수·SQL·테이블·엔진·Supabase·폴더·기술스택·파일·헌법·기술코드 전수 확인" 감사 기록(Index §0.7 방법론을 UI 플랜에 적용). **File-Serial·PART0→8 순서/모델배정 변경 0** — 발견된 드리프트·모순·공백만 최소 diff로 흡수(코드 신설 0 · 파일명 rename 1건만 실행).  
+> **방법(2026-08-10):** Supabase MCP(`list_projects`/`list_tables`/`list_migrations`/`list_extensions`/`execute_sql`/`get_advisors`) 실측 + 레포 FS 전수(`apps/web`·`apps/admin`·`packages/ui`·`packages/sdk`·`tooling/verify`·`supabase/migrations`) + `tooling/verify/CATALOG.md` 원문 대조 + **04 Admin·01 Money·05 PWA·06 Infra 전문 재확인**(발췌 아님) + `git status`/`git log` 실측.
+
+### 0.8.1 실측 표 (오차0)
+
+| 대상 | 실측 (2026-08-10) | 판정 |
+|------|------|------|
+| Supabase | ref=`mgsytcetsiecllmhcyox` · Seoul · PG **17.6.1** · ACTIVE_HEALTHY | ✅ §0.6 기재와 일치 |
+| `public` 테이블 | **76** (MCP `list_tables` 재실측) | ✅ §0.6 기재와 일치 |
+| migrations applied | **28** · MCP `list_migrations` 실측 | ⚠️→✅ **드리프트 발견·해소**(0.8.2 #1) |
+| public 함수 | **5**(`ledger_*`×3 + `users_stage_a_identity_ok` + `user_opportunity_overrides_pin_cap`) · 전수 `search_path=public` | ✅ |
+| security advisors | ERROR **0** · WARN **0** · INFO=`rls_enabled_no_policy`(deny-by-default 의도) 전수 | ✅ |
+| Gate rows | `execution_policies`1 · `opportunities`6 · `assets`94 · `listings`12 · `mission_definitions`2 | ✅ |
+| `apps/admin/routes.ts` | 12모듈+2b · `ADMIN_CHILD_ROUTES` 32행 · Growth legacy redirect 4종 | ✅ Admin §9.1.1과 1:1 실측 확인 |
+| `apps/admin/app/admin/growth/{content,deposit,whale,ticker}/page.tsx` | 개별 폴더 존재하나 **전부 `redirect("/admin/growth?tab=…")` 1줄만** · 실화면은 `growth/page.tsx`의 `?tab=` 분기 렌더 | ✅ 이중 IA 아님(§35.6 규칙 실물 준수 확인) |
+| `apps/web/routes.ts` | `USER_NESTED_ROUTES` 34행 · 5탭 불변 | ⚠️→기록 **§51.20 라우트 미등재**(0.8.2 #4) |
+| `packages/ui/components/execution/` | **`ProductThumb.tsx` 1개만** — `AiProgressRoom`·`ExecutionSuccessReceipt`·`ExecutionSafeStop`·`ExecutionStepList` **0건** | ⚠️→기록(0.8.3 PART4a) |
+| `packages/ui/components/{trust,toast,lux,auth,kyc,onboarding,legal,settings,shell,brand,product,landing}` | 다수 실물 컴포넌트 확인(우량) | ✅ |
+| `tooling/verify/*.cjs`(UI 신설분) + `CATALOG.md` | 신규 스크립트 다수 실존 + 다수 **"live"** 등재 | ⚠️→기록 **verify=live ≠ 화면완성 오독 위험 구체 사례**(0.8.2 #2) |
+| git 상태 | 위 신규 파일 대부분 **미커밋**(uncommitted) · YAML todo는 대부분 `pending` 유지 | 기록만 — **커밋 여부는 본 감사 범위 밖**(운영자 판단) |
+
+### 0.8.2 흡수 모순·결함 (발견 즉시 해소 또는 정확 기록 · 중복0)
+
+> **감사 vs 구현 분리(v7.22.53):** **감사 세션 조치** = v7.22.52~53 플랜·YAML·rename만(앱 코드 **0**) · **구현 시점** = 해당 PART 착수 시 코드·verify 스크립트 작성.
+
+| # | 발견 (실측) | 감사 세션 조치 (v7.22.52~53 · 코드0) | 구현 시점 (PART · 코드) |
+|---|------|---------------------------|----------------------|
+| 1 | `supabase/migrations/20260809144409_catalog_runtime_day1_fx_bootstrap.sql` 로컬 파일명 버전(`144409`) ≠ MCP `list_migrations` 실제 적용 버전(`144814`) — §3.2/BOOTSTRAP§9 "로컬 파일명=원격 1:1" 불변식 위반. Index §0.7.1 #2(`execution_policy_day1_bootstrap` 102초 drift)와 **동일 클래스의 재발** | **`git mv` rename 완료** → `20260809144814_catalog_runtime_day1_fx_bootstrap.sql` · SQL 무변경 · 원격 재적용 불필요 | **—** (메타만 · 추가 PART 없음) |
+| 2 | `verify:benefit-hub-surfaces`가 CATALOG에 "live" → **PART7b 완료로 오독 위험**. 스크립트는 Money API·copy·wire만 검사(Money §51.8a.7). `apps/web/app/me/benefits/page.tsx`는 **1줄 골격**(Hero/Carousel/D·M·W·S **0**) | §0.8.2 기록 + PART7b todo content 경고 + §0.8.3 **verify 검사 범위** 열(§0.8.2 #2 유형 표기) | **PART7b** — §5.9.5 딥 UI 전량 신규 구현 · (선택) verify 스크립트에 page/컴포넌트 검사 확장 |
+| 3 | `verify:margin-compare-surface`가 UI·Index·Engine 3플랜 **인용만** · `tooling/verify/*.cjs`·CATALOG **0** · `PriceCompareMargin` 컴포넌트 **0** | PART3c todo content에 **컴포넌트+스크립트+CATALOG 3종 세트** 명시 · §0.8.3 ghost 표기 | **PART3c** — `PriceCompareMargin` + `tooling/verify/margin-compare-surface.cjs` + CATALOG 등재 |
+| 4 | Engine §51.20 Weekly Market Briefing — UI Owns·PART·route·Canon·verify **0**(Index §19만 존재하는 **고아 게이트**) | §51.20 Owns 절 신설 + PART8b `§51.16~21` 확장 · wording **"해소"→"Owns 재배정·verify 미착수"** (v7.22.53) | **PART8b** — `/me/guide/market-weekly` + Canon + `verify:market-briefing-no-investment-advice` **신설**(현재 ghost · margin-compare와 동일 클래스) |
+| 5 | v7.22.54 PART2c-pre(`operator-entity-support-email`) 삽입이 changelog·§0.8.3만 · **§0.8.2 감사조치/구현시점 표 미승격** | **본 행 승격(v7.22.55)** · File-Serial=2c **하드 선행 의존** 삽입(순서 뒤집기·위반 **≠**) · 구현밀도=`v1+instance patch only` | **PART2c-pre** — schema+instance 갭-only(실측 `supportEmail` already → 전면 재작성 금지) · footer 바인딩=2c Owns |
+| 6 | §6.4c.1 구멍: 전환톤 미잠금 · 괴리율=차익 동의어인데 금지어 누락 · consent 실행계약 부재 · 완료정의에서 `verify:marketing-compliance` 누락 · copy↔Infra sanitizer 비동기 | **§6.4c.1 F~H + §6.4 CTA supersede + Infra §31.2/§31.4/§31.7 동기(v7.22.55)** · 대안 나열 **0**(결정문만) | **PART2a·2b·2c** — §6.4c.1 인수조건 전량 · Infra `marketing-compliance`/sanitizer **동시 PASS**가 UI 완료 조건 |
+
+**우선순위 메모(v7.22.53 · File-Serial 불변):** §0.8.4 운영자/유저 관점에서 **PART4a·7b=유저 체감 최우선 구현 부채** · PART3c·8b=신규 구현 부채 · **순서는 PART0→8 유지**(4a는 PART3d `ProductThumb` 선행 · 7b는 Money API=live). #2·#4의 **문서 SSOT 결손은 감사 세션에서 흡수 완료** — 남은 것은 위 **구현 시점** 열의 코드 작업뿐.
+
+### 0.8.3 PART별 실측 착수 가이드 (오류0 · 위→아래 실행 시 필수 선확인)
+
+> **판정 요지:** PART0~8 **구조·순서·모델배정(전량 grok-4.5|256K)은 유지**(변경 불필요) — 의존관계·범위분리가 이미 정확하다(아래 0.8.4 다관점 판정 근거). 다만 **레포 실물이 YAML 상태보다 앞서 있는 파트가 많아**, 다음 실행 에이전트는 "미구현으로 간주하고 새로 작성" 대신 **실물 우선 확인** 후 갭만 보완해야 결함·중복이 0이 된다.  
+> **verify 주의(v7.22.53):** `pnpm verify:*` PASS ≠ PART 완료. 아래 **verify 검사 범위** 열이 좁으면(예: benefit-hub=Money API만) **해당 행의 "필수 행동"이 verify보다 우선**한다.  
+> **실행 밀도(v7.22.53 · File-Serial 유지):** **1a~1d·5a~6c** = verify PASS 후 **갭-only·1채팅 목표**(전면 재작성 금지) · **3c·4a·7b·8b** = **무거운 신규 구현**(스킵 금지) · 그중 **4a·7b** = §0.8.4 **유저 체감 최우선 부채**(순서 앞당기기 **0** · 도달까지 중복 재작성 금지).  
+> 이 표는 완료 판정이 아니라 **착수 전 확인 순서**다.
+
+| PART | todo id | verify 검사 범위 (1줄 · `tooling/verify/*.cjs` 헤더+실측) | 실물 상태(2026-08-10 실측) | 다음 에이전트 필수 행동 |
+|------|---------|--------------------------------------------------------|---------------------------|----------------------|
+| 1a | market-partner-trust-surfaces | `market-partner-trust`: Canon+copy+route+MarketPartner*+guide **page** · 로고 SVG `blocked`=PASS | Grid/Leg/Strip+`brand/markets.ts`+Canon+`/me/guide/partners` 실물 · 로고 SVG만 Brand Kit `ready` 대기 | `pnpm verify:market-partner-trust` → PASS면 **로고 SVG 갭만** · 전면 재작성 금지 |
+| 1b | korean-first-copy | `korean-ui`/`toast-emoji`/`cute-emoji-palette`: copy/ko 필수 파일·voice·retired brand·EN leak (**페이지 UX 깊이 0**) | `copy/ko/*` 15+ · verify live | 누락 카피 키 diff만 · 파일 재생성 금지 |
+| 1c | mockup-governance-adr013 | `mockup-governance`/`canon-surfaces`/`brand-logo-single`: ADR-013·Canon manifest·단일 Brand Kit | 거버넌스·CI 정착 | 잔여 점검만 |
+| 1d | ux-design-system | `ux-design-system`: tokens/breakpoints/motion/font-scale/PPE **파일 존재** | tokens+`verify:ux-design-system` live | 누락 스타일·컴포넌트만 보완 |
+| 2a | onboarding-experiential | `onboarding-experiential`: Canon+OnboardingFlow+page · **v7.22.55:** Guest utility CTA(「수익 벌기」0)·transitionDisclosure | 각 페이지+verify live · **capital CTA drift 가능** | §6.4 supersede 전량 · Partner strip 1slide · mock 가드 |
+| 2b | auth-login-signup-ui | `auth-surfaces`: auth 3면+Kakao 가드 · Guest=utility(§6.4c.1 F) | 각 페이지+verify live | Infra Kakao callback 전 mock/disabled · 랜딩 직행 Kakao **0** |
+| 2c-pre | operator-entity-support-email | schema JSON Schema valid · instance `supportEmail` · **§0.8.2 #5** | v1 `required`+instance `support@hiptk.app` 실물 | 갭-only · footer=2c Owns · 전면 재작성 금지 |
+| 2c | landing-3s-ui | `landing-3s`+`marketing-compliance`+`operator-footer`: utility·footer·disclaimer·금지어(괴리율 포함)·consent emit 가드 | Landing3s+GuestChrome 골격 · **utility/footer/disclaimer/consent 갭** | §6.4c.1 A~H 전량 · 2c-pre 선행 · Infra 금지어 **동기 PASS** |
+| 3a | opportunity-scan-home-ux | `arbitrage-type-label` live · **`opportunity-scan-surface` 스크립트 0** · 홈 스캔 레이아웃 전량 검사 0 | `arbitrage-type-label` live | 홈 3초 위계 vs §5.3b 체크리스트 diff · PASS만으로 홈 완성 **아님** |
+| 3b | capital-provider-match-ux | `cta-earn-profit`: CTA 카피+Canon · `user-trader-jargon-0`: copy+select pages 금지어 스캔 | 둘 다 live | 회귀 스캔·갭 diff |
+| 3c | price-compare-margin-ux | **`margin-compare-surface` ghost** (스크립트·컴포넌트 0) | **0.8.2 #3** | **신규 구현 필수**(3종 세트 · 스킵 금지) |
+| 3d | asset-image-execution-ux | `asset-image-surface`/`product-image`: ProductImage·R2 가드·Canon4면 | live · `ProductThumb.tsx` 존재 | PART4a와 통합만 |
+| 3e | balance-aware-home-ux | `balance-aware-feed`: Engine classify+suggest **API·Nest wire** (홈 슬롯 배선 0) | Engine 측 live | UI 슬롯 vs §5.3a 체크리스트 diff |
+| 4a | ai-execution-ux | `trade-execution-hook`: `useTradeExecution`+polling+execute **page 배선** (**AiProgressRoom 등 4컴포넌트 0**) | 훅 live · execute=2-state 임시 텍스트 | **3면 컴포넌트 신규 구현 필수** · PART3d `ProductThumb` 재사용 |
+| 4b | ai-coach-ui | 전용 verify **0** | `/me/peotteok` 골격 스텁 | 신규 구현 필요 |
+| 5a~5f | ticker·shell·wallet·settings·toast·plain-ko | `part5-shell-toast`/`legal-plain-ko`/`font-scale-three`/`toast-emoji`/`deposit-network-plain-ko`/`no-it-jargon`: shell+routes+legal4+toast (**benefits page=존재만·딥 UI 0**) | BottomNav5/ToastHost/legal/settings 실물 | 각 §5.x vs 실물 diff · 전면 재작성 금지 |
+| 6a~6c | kyc·trust-education·get-usdt-guide | `kyc-surfaces`: KycFlow+page · `trust-copy`/`tax-disclaimer`/`objection4`: Q1~4 mount+금지어 · `deposit-network-plain-ko`: TRC20 plain | `KycFlow`/`ObjectionFourAccordion`/`GetUsdtGuide` 등 실물 | diff 보완 위주 |
+| 7a | invite-explain-kr-2070 | `invite-explain-surfaces`: CATALOG pointer · **스크립트 0** | verify "live" 미표기 | §5.9.1a vs 실물 diff 후 착수 |
+| 7b | benefit-hub-surfaces | **`benefit-hub-surfaces`: Money API+copy+wire만** (**page.tsx 딥 UI 0** · §0.8.2 #2) | Money API live · page=1줄 골격 | verify PASS **무관** · **딥 UI 전량 신규 구현** |
+| 7c | membership-grade-ux | `membership-surfaces`: CATALOG · Engine `membership-ladder`/`daily-cap` live | Engine live · UI 미확정 | `/me/membership` vs §5.9.2c diff |
+| 7d | notify-prefs-inbox | `ops-inbox`/`notification-prefs-default-on`/`push-channel-prefs`: CATALOG · 스크립트 혼재 | verify "live" 미표기 | 실물 우선 확인 |
+| 8a | loop-psychology-5124 | `loop-psychology`/`day-pulse-live-only`/`preflight-may-stop`: CATALOG §51.24 | verify "live" 미표기 | 실물 우선 확인 |
+| 8b | trust-surfaces-v722 | **`market-briefing-no-investment-advice` ghost** · 기타 Proof/SafeStop 등 PART8b 범위 | §51.20 Owns 재배정(verify 미착수) | 5+1종 **신규 구현** · §51.20 verify=PART8b 신설 |
+| 8c | responsive-device-tier | `verify:responsive`: Playwright multi-viewport **Canon structure** | harness live | 회귀만 |
+| 8d | trust-age-spotcheck | 자동화 **0** (사람 실사) | — | 실사 진행 |
+
+### 0.8.4 다관점 판정 (예측0 · 실측 근거만)
+
+| 관점 | 판정 |
+|------|------|
+| 세계 지존급 앱테크·핀테크 개발팀 | 원장·Rule·단일PG·PG사0 불변식은 여전히 무결(01/02 CLOSED 재확인). **실물이 todo 상태보다 앞서 있는 드리프트**(§0.8.3)가 유일한 실행 리스크 — 다음 에이전트가 "0부터 재작성"하면 중복 컴포넌트·중복 카피 파일이 생겨 오히려 결함이 된다. 본 절의 "실물 우선 확인" 규칙이 이를 차단한다. PART0~8 파트 분리·모델배정(전량 grok-4.5\|256K)·의존순서는 재검토 결과 **수정 불필요**로 판정. |
+| 운영자(나) | Admin↔UI 교차계약(§0.7)을 `apps/admin/routes.ts` 실물과 1:1 재대조한 결과 **공백 0**(누락된 어드민 화면 없음) — 12모듈+자식 tab이 이 플랜이 만드는 모든 유저 기능을 이미 관리 가능한 구조다. 다만 `/me/benefits` 딥 UI가 비어 있으면 "혜택·미션"을 아무리 홍보해도 유저가 빈 화면을 보게 된다 — **PART7b가 체감상 가장 시급**하다. |
+| 의심 많고 욕심 많고 단순한 것을 좋아하는 20~70대 한국 유저 | 신뢰 표면(§38.10 협력사 로고), 쉬운말(§27.10), USDT 안내(§38.8)는 이미 실물로 구현되어 "화면이 있다"는 인상은 준다. 그러나 **혜택 탭이 빈 화면**이고 **실행실이 임시 텍스트 2줄**이면 "이 앱 미완성 아니야?"라는 의심을 정확히 촉발한다 — 욕심(보상 확인) 많고 의심 많은 유저일수록 이 두 화면(PART4a·PART7b)의 완성도가 이탈 여부를 가른다. |
+| 세계 지존급 1위 감사관 | DB·보안 어드바이저·마이그레이션 정합성은 PASS(1건 드리프트는 발견 즉시 해소). **`verify:X=live` 라벨을 "완료 증빙"으로 오독할 수 있는 지점(0.8.2 #2)**이 감사 관점 최대 리스크였다 — CATALOG 표기 자체가 거짓은 아니다(스크립트는 실제로 그 좁은 범위에서 PASS한다). 그러나 범위가 좁아 오해를 유발하므로 **§0.8.3 verify 검사 범위 열 + todo content 범위 명시**가 감사 보완의 핵심이었고, v7.22.53 패치로 흡수했다. |
+| 세계 지존급 1위 분석관 | 이번 리스크의 본질은 v7.22.48 Pre-UI Runtime Gate 때(§0.6 U12)와 **동일 패턴**("완료 정의"의 해상도 부족)이 PART 단위에서 재발한 것이다 — 그때는 "Engine todo 26/26 completed"가 "유저 API 존재"를 의미하지 않았고, 지금은 "verify:X live"가 "화면 완성"을 의미하지 않는다. 재발 방지책은 §0.8.3처럼 **PART별 실측 스냅샷을 todo content에 직접 명시하는 것**(본문 어딘가에 적혀 있는 것만으로는 다음 에이전트가 놓칠 수 있음) — 아래 YAML 갱신에 반영했다. |
+
+**판정:** UI 플랜 §0.6/§0.7은 **오차0로 유지**(재검증 통과) · §0.8.2 4건 **감사 세션 문서 흡수 완료** · **구현 부채**=PART3c·4a·7b·8b(§0.8.2 **구현 시점** 열) · **PART0→8 구조·순서·모델배정 변경 없음**(적합 판정) · **다음 채팅 = `market-partner-trust-surfaces`만**(§0.8.3 · PART1a=갭-only·1채팅 목표 · completed todo 재실행 금지 불변).
 
 ## 0.1 Trust 잠금 정책 (v7.3)
 
@@ -486,10 +684,10 @@ T.feed = {
 | `ctaShare` | **친구에게 링크 보내기** (Primary) |
 | `ctaCode` | 코드 복사 · 직접 입력 안내 |
 
-**toneBand 변형 (문자열만 · 의미 동일):**
+**toneBand 변형 (문자열만 · 의미 동일 · 이모지 캡=§27.10):**
 - **young:** 짧은 bullet 3줄 · 이모지≤2  
-- **mid:** 위 표 문장 + 작은 FAQ 3문항  
-- **senior:** 한 문장씩 · 글자 크게(fontScale) · 「다음」으로 단계 읽기 허용 · 전문용어 0  
+- **mid:** 위 표 문장 + 작은 FAQ 3문항 · 제목 이모지≤1  
+- **senior:** 한 문장씩 · 글자 크게(fontScale) · 「다음」으로 단계 읽기 허용 · 전문용어 0 · 이모지≤1/문장(길잡이)  
 
 **FAQ 3 (mid/senior):**
 1. Q. 가입만 하면 돈이 들어오나요? → A. 아니요. 친구가 **충전**해야 혜택이 시작돼요.  
@@ -598,7 +796,8 @@ T.feed = {
 > **Owns:** 본 절 + Canon + `packages/ui/copy/ko/benefits.ts`  
 > **Money Owns:** accrual·idempotency·Pool·ledger·clawback = **§51.8a** · **Engine Owns:** domain event emit only · **§48.13.4** fanout 경계  
 > **≠** 친구 초대 본문(§5.9.1) · **≠** Credits 가상화폐 · **≠** Admin 유저별 수동 지급  
-> **5탭 IA 불변** · 6번째 탭 **0**
+> **5탭 IA 불변** · 6번째 탭 **0**  
+> **실측 경고(v7.22.52 §0.8.2 #2):** `verify:benefit-hub-surfaces`는 **Money API(`GET /me/benefits(+summary)`)·copy 파일 존재만 검사**한다 — PASS라도 아래 Hero/Carousel/Daily~Streak 카드가 구현됐다는 뜻이 **아니다**. 실제 `apps/web/app/me/benefits/page.tsx`는 현재 제목+빈 문구 1줄뿐인 골격이다(코드 주석 "deep Benefit Hub = PART7b Owns" 자기문서화). PART7b는 verify PASS 여부와 무관하게 **아래 전체 블록을 신규 구현**해야 완료다.
 
 ```
 🎯 혜택 · 미션
@@ -727,56 +926,62 @@ interface UserNotificationPrefs {
 ### 6.2 Lux-Fintech 색상 · 타이포 · 반응형 SSOT
 
 > **테마:** User App = **Lux Dark default** · Admin = **Ops Light default** (가독성)  
-> **SSOT:** `packages/ui/tokens/lux-fintech.ts` + `CONSTITUTION/28`
+> **SSOT:** `packages/ui/tokens/lux-fintech.ts` + `lux-theme.css` + `CONSTITUTION/28`  
+> **v7.22.50 (U13):** 아래 hex = **shipped 코드 미러** · 구 `#00FF87`/`#FF2E63`/`#F59E0B`/`#00D294`/`#1A56FF`/`#8B5CF6` 표기 **폐기**(plan≠code drift 해소)
 
-| 역할 | token | hex | 용도 |
+| 역할 | token (lux-fintech) | hex | 용도 |
 |------|-------|-----|------|
-| 배경 | `--bg-obsidian` | `#090A10` | Deep Obsidian (pure #000 ❌) |
-| 표면 | `--surface-elevated` | `#12131A` | 카드·시트 |
-| 수익 | `--profit-emerald` | `#00FF87` | Neon Profit Emerald |
-| FOMO/긴급 | `--flash-coral` | `#FF2E63` | **실제** 마감·잔여한도만 |
-| 프리미엄 | `--amber-gold` | `#F59E0B` | 명품·고수익 태그 |
-| USDT | `--mint-teal` | `#00D294` | 지갑·테더 |
-| Primary CTA | `--action-neon` | `#1A56FF` | Pulse glow base |
-| AI | `--ai-violet` | `#8B5CF6` | AI 매칭 적합도 |
-| 본문 | `--text-body` | clamp | fluid §29 |
+| 배경 | `color.bg` | `#090A10` | Deep Obsidian (pure #000 ❌) |
+| 표면 | `color.surface` | `#12141C` | 카드·시트 |
+| elevated | `color.elevated` | `#1A1D28` | 레이어 |
+| border | `color.border` | `#2A2F3D` | 구분선 |
+| 수익 / accent | `color.profit` = `color.accent` | `#3DDC97` | mint · Brand Kit lock |
+| accentMuted | `color.accentMuted` | `#2A9B6C` | mint 보조 |
+| 원금 / principal | `color.principal` | `#7AA2FF` | cool-blue · CTA·원금 강조 |
+| 위험 / FOMO | `color.danger` | `#FF5C7A` | **실제** 마감·잔여한도·에러만 |
+| 경고 / 프리미엄 | `color.warning` | `#F5C542` | 주의·고수익 태그 |
+| 본문 | `color.text` | `#F2F4F8` | body |
+| 보조 본문 | `color.textMuted` | `#9AA3B5` | caption·힌트 |
+| 본문 크기 | `--text-body` | clamp | fluid §29 |
 | 수익 숫자 | `--text-profit` | clamp | CountUp target |
 
-**금지:** 카지노 레드/골드 팔ETTE 별도 · pure black `#000` · 수익=빨강
+**금지:** 카지노 레드/골드 팔ETTE 별도 · pure black `#000` · 수익=빨강 · 플랜에 구 neon/violet hex **재도입** · purple-indigo “generic AI” 클리셰
 
 **상세 모션:** §33 · **성능 tier:** §29 (중복 정의 ❌)
 
 ### 6.3 UI 카피 (헌법 준수)
 - 영어·IT 전문용어 화면 노출 ❌ (§25)
-- **수익 확정 금지** — "예상 수익" + 리스크 tooltip (§35 G2는 **공지·랜딩·온보딩**만 예외)
+- **수익 확정 금지** — "예상 수익" + 리스크 tooltip (§35 G2=**공지·앱 capital surface**만 예외 · **랜딩·Guest onboarding/auth=수익 언어 0** · §6.4c.1 F)
 - 차트/호가 등 UX 금지 (§22 레이아웃 유지)
 
-### 6.4 온보딩 — 체험형 (SSOT · ≤15초 · §19 게이트 동일) — v7.22.11
+### 6.4 온보딩 — 체험형 (SSOT · ≤15초 · §19 게이트 동일) — v7.22.11 · **v7.22.55 CTA/톤 supersede**
 
 > **중복0:** Auth 필드=Infra §51.9 · 랜딩 3초 예산=Infra §31.2b · KYC 서류/상태=Money §42 · Canon wires=`packages/ui/canon/surfaces/onboarding-*.wire.json`  
-> **목표:** “읽고 넘기기”가 아니라 **한 번 눌러 체험** 후 홈 진입 · 가입 전·후 동일 톤
+> **목표:** “읽고 넘기기”가 아니라 **한 번 눌러 체험** 후 홈 진입  
+> **v7.22.55 톤 잠금(§6.4c.1 F · 결정문):** Guest/광고 유입(`/l/*`·`/ads/*`→본 surface)·`/auth/*` = **utility 톤** · 수익|투자|USDT|테더|보장|차익|괴리율 **0** · `T.landing.transitionDisclosure` 온보딩 **첫 화면 상단 1줄**(전환 고지 · **capital 톤 허가증 아님**) · 「수익 벌기」=**capital surface only**(§7.3·§20.2 · `/`·`/profits`·기회 카드)
 
 ```
 0 (≤2초·필수) toneBand 선택 또는 시드
    · UI: [짧게 볼게요] young · [비교로 볼게요] mid · [한 줄씩 볼게요] senior
    · 시드: attribution.landingVariant → §38.9 표 (Infra §31.2 pointer) · 유저 재선택 승
    · fontScale: senior 선택 시 기본=크게 (§50.1) · mid/young=보통
+   · **Disclosure(필수·광고유입/Guest):** `T.landing.transitionDisclosure` 1줄
 1 IDENTITY (Canon: onboarding-identity) ≤3초
-   · 브랜드 히어로=퍼뜩 · 한 줄 정체성 · PriceCompareMargin 미니 · 면책 1줄
-   · 금지: 통계 스트립·보장 CTA·성별 분기
+   · 브랜드 히어로=퍼뜩 · 한 줄 정체성(**utility** · 시세·가격 비교) · PriceCompareMargin 미니(**차익 라벨 0**) · utility 면책 1줄
+   · 금지: 통계 스트립·보장 CTA·성별 분기·수익/투자 CTA
 2 DEMO TAP (Canon: onboarding-demo-card) ≤5초
-   · 데모 기회 카드 1장 · 탭 → practice-only 참여 미리보기(원장 기록 0 또는 practice만)
-   · 배너: "연습·미리보기 · 출금 아님" (§51.7 pointer)
-3 USDT (기존 step2) 🪙 toneBand variant + [왜 USDT?] · [테더 없어요→§38.8]
-4 ACTION (기존 step3) 💰 CTA 라벨 SSOT=[수익 벌기]
-5 PAYOUT+GO (기존 4+5) 🎉 지갑 지급 · [시작하기] → depositPref (§50.1) 또는 `/`
+   · 데모 카드 1장 · 탭 → practice-only 미리보기(원장 기록 0 또는 practice만)
+   · 배너: "연습·미리보기 · 출금 아님" (§51.7 pointer) · 수익 확정 암시 0
+3 CHARGE PREP (기존 USDT step · **유틸리티 라벨**) 🪙 toneBand variant · 티커/테더 단어 **0**(§38.8 deep-link는 capital surface 이후)
+4 ACTION 💰 CTA 라벨 SSOT=[시작하기] 또는 [시세 맵 계속] · **「수익 벌기」금지**(v7.22.55 supersede)
+5 PAYOUT+GO 🎉 연습 준비 완료 · [시작하기] → depositPref (§50.1) 또는 `/` (홈 진입 후 capital 톤 허용)
 ```
 
 **가입 후 상태머신 (pointer · Auth=§51.9):**  
-`signed_up` → `onboarding_incomplete` → (step0~5) → `ready` · 중도이탈=재진입 resume · skip 허용 스텝=3(USDT)만(면책/정체성/데모 **필수**)
+`signed_up` → `onboarding_incomplete` → (step0~5) → `ready` · 중도이탈=재진입 resume · skip 허용 스텝=3(CHARGE PREP)만(면책/정체성/데모 **필수**)
 
-**온보딩 §38 톤 (중복0 · SSOT=§38.9):** young=짧은 bullet · mid=비교표 · senior=큰 글씨+한 줄씩+다음 버튼형  
-**금지:** 성별(남/여) 온보딩 분기 · 성별 전용 카피/테마 · 데모에서 실출금 유도
+**온보딩 §38 톤 (중복0 · 배선=§38.9 · 문장·이모지=§27.10):** young=짧은 bullet+이모지≤2 · mid=비교표+제목이모지≤1 · senior=큰 글씨+한 줄씩+길잡이이모지≤1+다음 버튼형  
+**금지:** 성별(남/여) 온보딩 분기 · 성별 전용 카피/테마 · 데모에서 실출금 유도 · 이모지 폭탄·카지노 이모지 · Guest 경로「수익 벌기」
 
 **CI:** `verify:onboarding-experiential` · `verify:canon-surfaces` (onboarding-identity · onboarding-demo-card 필수)
 
@@ -784,10 +989,11 @@ interface UserNotificationPrefs {
 
 | Canon | route | Primary | 비고 |
 |-------|-------|---------|------|
-| `auth-login` | `/auth/login` | Kakao | Google·Passkey secondary · Email tertiary |
+| `auth-login` | `/auth/login` | Kakao | Google·Passkey secondary · Email tertiary · **랜딩 firstViewport 직행 0**(§6.4c.1 B) |
 | `auth-signup` | `/auth/signup` | Kakao | Stage A 즉시 가입 · Stage B 프로필=§51.9.1 |
 | `auth-complete-profile` | `/auth/complete-profile` | 저장하고 계속 | Stage B · 출금/KYC 전 필수 · displayName·phone·birthDate·email* |
 
+**톤:** Guest=`utility`(§6.4c.1 F) · 수익|투자|USDT|테더|보장|차익|괴리율 **0**  
 **금지:** 히어로 통계·수익보장·주민번호 입력·성별 필드 · IT 용어
 
 **CI:** `verify:auth-surfaces`
@@ -800,30 +1006,123 @@ interface UserNotificationPrefs {
 
 블록: 브랜드 · 대화 로그(stream partial) · **P레인 Fact 칩**(입금/미션/출금안내/가이드) · 입력창 · (선택) lane 배지 비노출(유저 IT용어 0)  
 **동작:** 칩→P · 자유입력→Intent P|G|S · S면 “출금은 지갑에서 직접” 템플릿+deep-link · G stream · P는 숫자 Fact tools  
-**면책 1줄(고정):** “앱 숫자·상태는 원장 기준이에요. 일상 답은 참고용이에요.”  
+**말투·이모지:** **§27.10 Owns** (`T.peotteok.voice.*` · 중성 존댓말 · 귀여운 이모지 캡 · 20~70 toneBand)  
+**면책 1줄(고정):** “앱 숫자·상태는 원장 기준이에요. 일상 답은 참고용이에요.” (면책 줄 이모지 **0**)  
 **degrade:** G 쿼터/장애 시 채팅에 busy 템플릿 + toast `PEOTTEOK_LLM_BUSY` (§8.2) · P칩/Fact 안내는 유지  
-**금지:** 자율 출금 CTA · Twin 잔액 · 실체결 암시 · 성별 멘트 · “모든 질문 완벽” 카피  
+**금지:** 자율 출금 CTA · Twin 잔액 · 실체결 암시 · 성별 멘트 · “모든 질문 완벽” 카피 · 반말·이모지폭탄(≥3)·카지노 이모지  
 
-#### 6.4e.1 구현 체크 (v7.22.43 · Engine `#24` API contract 후)
+#### 6.4e.1 구현 체크 (v7.22.43 · Engine `#24` API contract 후 · v7.22.47 voice)
 
 | # | Deliverable | SSOT |
 |---|-------------|------|
-| 1 | `packages/ui/copy/ko/peotteok.ts` | `T.peotteok.chatTitle` · `laneDisclaimer` · `factChips` · `placeholder` · `llmBusy` · S-refuse · P-refresh |
+| 1 | `packages/ui/copy/ko/peotteok.ts` | `T.peotteok.chatTitle` · `laneDisclaimer` · `factChips` · `placeholder` · `llmBusy` · S-refuse · P-refresh · **`voice.*`(§27.10)** |
 | 2 | `apps/web/app/me/peotteok/page.tsx` | Canon `peotteok-chat.wire.json` blocks 100% |
 | 3 | SSE client | `POST /api/v1/me/peotteok/chat` partial stream · `GET .../chips` |
-| 4 | P chips | §47.12 제안 우선순위 · lane P 고정 |
-| 5 | S path | template + `/wallet/withdraw` deep-link · execute CTA 0 |
+| 4 | P chips | §47.12 제안 우선순위 · lane P 고정 · 칩 라벨 쉬운말+이모지≤1 |
+| 5 | S path | template + `/wallet/withdraw` deep-link · execute CTA 0 · `voice.refuseS` |
 | 6 | degrade | inline busy + toast `PEOTTEOK_LLM_BUSY` · P Fact 칩 유지 |
-| 7 | toneBand | `fontScale` from prefs API (read-only) · §38.9 |
+| 7 | toneBand | `fontScale` from prefs API (read-only) · §38.9 · pace=§27.10 young/mid/senior |
+| 8 | G system seed | Engine §47 pointer · UI는 §27.10 팔레트/캡을 prompt seed 키로 제공(중복 문장 Owns≠UI) |
 
 **선행:** Engine todo `ai-coach-runtime` (#24) SSE contract · **병행 금지**  
 **CI:** `verify:ai-coach-fact-only`(P) · `verify:ai-general-no-money-tools`(G UI path) · `verify:ai-coach-no-autonomy` · `verify:llm-quota-degrade` · `verify:canon-surfaces` · `verify:no-it-jargon` · `verify:age-tone-surfaces`
 
-### 6.4c 랜딩 첫화면 3초 예산 (UI owns wire · route SSOT=Infra §31.2)
+### 6.4c 랜딩 첫화면 3초 예산 (UI owns wire · route SSOT=Infra §31.2 · **듀얼레이어=§6.4c.1**)
 
-Canon `landing-3s` · `firstViewportMaxBlocks=5`: 브랜드 · 정체성 1줄 · 면책 1줄 · Primary CTA 1 · 신뢰 1줄  
-**금지:** 카드 다발·스케줄·stat strip·보장 수익 · 사진 픽셀 복제  
-**CI:** `verify:landing-3s`
+Canon `landing-3s` · `firstViewportMaxBlocks=5`: 브랜드 · 정체성 1줄 · **utility 면책 1줄** · Primary CTA 1 · Tier-A 신뢰 strip  
+**scroll (firstViewport 밖):** `LandingOperatorFooter` · CTA 직하 `utilityDisclaimer` 반복 1줄(§6.4c.1)  
+**금지:** 카드 다발·스케줄·stat strip·보장 수익 · 사진 픽셀 복제 · 랜딩 variant에 `수익|투자|USDT|테더|보장|차익|괴리율|재테크|알바`  
+**CI:** `verify:landing-3s` · `verify:marketing-compliance`(Infra · landing 금지어 · pointer) · `verify:operator-footer`
+
+### 6.4c.1 듀얼레이어 광고 랜딩 — Utility Compliance (v7.22.54 · **v7.22.55 5결정문** · PART2c 인수조건 SSOT)
+
+> **원칙:** `/l/*`·`/ads/*` = **시세·가격 비교 툴** 포지셔닝 only · 앱 capital surface(`/`, `/profits` …) = capital-provider 톤(§20.2) · **copy namespace 분리** · drift=결함0  
+> **GuestChrome:** 5탭 BottomNav **0** · Infra §31.2a alias와 **동일 surface**  
+> **CAPI/client pixel:** Infra §31.3c·§31.4 Owns · UI=허용 trigger만 emit(Lead·ViewContent) · **consent 실행계약=§6.4c.1 G**  
+> **유료 소재 카피 SSOT:** Infra **§31.2d** (Meta/TikTok/Google×10 · 20~70 중성 · Human Review) · 랜딩과 bait drift **0**
+
+#### A) Copy namespace (`packages/ui/copy/ko/landing.ts`)
+
+| 키 | 랜딩 `/l/*` · Guest onboarding/auth | 앱 capital surface |
+|----|-------------------------------------|-------------------|
+| `variants.{meta,tt,google}` | **시세·가격 비교** 톤 · 금지어 **0** | — |
+| `utilityDisclaimer` | 데이터 툴·권유/결과약속 0 (이모지 0 · 금지어 문자열 자체 0) | — |
+| `transitionDisclosure` | 온보딩 첫화면 상단 1줄 · 전환 고지(아래 F) | — |
+| `ctaOpenPriceMap` | `실시간 시세 맵 열기` | — |
+| `ctaStartUtility` / `ctaContinueUtility` | `시작하기` / `시세 맵 계속` | — |
+| `expectedNotGuaranteed` | **랜딩·Guest 경로 사용 금지**(구 카피=결함) | 앱 surface만(`T.trust.*`) |
+
+**금지어 (Human Review·bot · landing variant·utilityDisclaimer·transitionDisclosure·firstViewport·Guest onboarding/auth):**  
+`수익` · `투자` · `USDT` · `테더` · `보장` · `차익` · `괴리율` · `재테크` · `알바`  
+**허용 포지셔닝 문장(대체 SSOT):** `글로벌 시세·가격 비교` · `실시간 시세 맵` · `시세 모니터링·비교 툴` — **스프레드·수익·기회·괴리 암시 0**  
+**크로스플랜 동기(완료 조건 · 중복0):** 위 금지어·허용문 = Infra §31.2 표 · §31.4.0 landing sanitizer · `verify:marketing-compliance` 검사목록과 **1:1** (UI만 바꾸고 Infra 잔류=결함)
+
+#### B) Primary CTA · 퍼널
+
+| 항목 | 규칙 |
+|------|------|
+| Label | `T.landing.ctaOpenPriceMap` |
+| Action | `/onboarding` 또는 `/auth/login` (Kakao OAuth는 login/onboarding **내부** · 랜딩 firstViewport 직행 Kakao **폐기**) |
+| Pixel | `Lead` on click · **G) consent 실행계약 충족 시에만** · Infra manual publisher §31.3c |
+
+#### C) Utility disclaimer — 배치·타이포
+
+| # | 위치 | 스타일 |
+|---|------|--------|
+| 1 | Primary CTA **직하** | `text-xs text-lux-text-muted` · **opacity-* 중첩 0** (WCAG 이중 감쇠 금지) |
+| 2 | `LandingOperatorFooter` **직상** | 동일 카피 1줄 반복(숨김 아님 · 구조적 2중) |
+| 3 | Google variant (`senior`) | `text-caption` fluid token (min **12px** · §38.9) |
+
+**금지:** `<10px` · viewport 밖 배치 · opacity로 “법적 은폐” 인상
+
+#### D) `LandingOperatorFooter` (scroll 최하단 · PART2c-pre `supportEmail` 선행 · §0.8.2 #5)
+
+**SSOT import:** `schemas/operator-entity.instance.json` 단일 (JSX 하드코딩 0)
+
+| 필드 | 노출 |
+|------|------|
+| `legalName` | ✅ |
+| `licenseNumber` + DET pointer | ✅ |
+| `supportEmail` | ✅ mailto |
+| `jurisdiction` / primary address 1줄 | ✅ |
+| `/me/legal` | 링크 **1개** |
+| 약관 전문·장문 KYB | ❌ (과잉 방어 금지) |
+
+**컴포넌트:** `packages/ui/components/shell/LandingOperatorFooter.tsx` (신규) · `SiteFooter`와 drift 0 · `verify:operator-footer`
+
+#### E) Verify · Infra cross-pointer
+
+| verify | Owner | 검사 |
+|--------|-------|------|
+| `verify:landing-3s` | UI PART2c | wire blocks · firstViewport≤5 · GuestChrome · CTA navigate · utility keys |
+| `verify:marketing-compliance` | Infra §31.7 | landing 금지어(**괴리율 포함**) · auto pixel import 0 on `/l/*` |
+| `verify:operator-footer` | Infra+UI | schema↔footer↔legal 3면 · `supportEmail` |
+
+#### F) 톤 허용 시점 SSOT (v7.22.55 · 결정문 · 대안 나열 0)
+
+| 구간 | 톤 | 규칙 |
+|------|-----|------|
+| `/l/*` · `/ads/*` | **utility** | A) 금지어 0 · 시세·가격 비교 only |
+| `/onboarding` · `/auth/*` (Guest) | **utility** | 동일 금지어 0 · ACTION≠「수익 벌기」(§6.4 supersede) |
+| 온보딩 첫 화면 상단 | **Disclosure 1줄** | `T.landing.transitionDisclosure` = “시세·가격 비교 도구이며, 가입 후 기회 참여로 이어질 수 있어요.” · 투자권유·수익보장 **0** · **capital 톤 허가 아님**(전환 고지 only) |
+| 로그인 후 · 첫 capital surface(`/`·`/profits`·기회 카드 CTA 등) | **capital-provider** | 「수익 벌기」·§20.2 허용 |
+
+**NEVER:** Disclosure를 capital 톤 시작 신호로 해석 · §6.4만 읽고 온보딩에「수익 벌기」박기 · 랜딩 utility → 광고 소재 investment(bait)
+
+#### G) Consent 실행 계약 (v7.22.55 · Owns 분리 · 재설계 0)
+
+| 항목 | 규칙 |
+|------|------|
+| Consent UI Owns | Infra `packages/sdk/marketing` (`consent.ts` · CMP banner ko) · §31.3c |
+| UI 책임 | GuestChrome/랜딩에서 Lead·ViewContent **trigger emit만** |
+| 게이트 | `consentMarketing === true`일 때만 emit · **미실장·false·unknown = emit 0** |
+| Verify | `verify:marketing-compliance` = auto import 0 · **emit 가드는 PART2c 인수조건**(verify 범위 < 필수 행동 → 필수 행동 우선 · §0.8.3) |
+
+#### H) 완료 정의 (v7.22.55 · verify PASS ≠ 선택)
+
+위 **A~G 전부** + Canon `landing-3s.wire.json` 동기 +  
+`pnpm verify:landing-3s` PASS + `pnpm verify:marketing-compliance` PASS + `pnpm verify:operator-footer` PASS  
+(+ Infra §31.4.0 landing sanitizer 금지어 목록이 A)와 **동일**)
 
 ### 6.4d KYC surface (UI owns wire · 규칙 SSOT=Money §42)
 
@@ -1000,13 +1299,13 @@ Canon: `kyc-guide` → `kyc-doc-capture` → `kyc-confirm` · Lux 금융 톤 · 
 
 | 피드백 | 판정 | 플랜 반영 |
 |--------|------|-----------|
-| Deep Obsidian `#090A10` 배경 | ✅ 동의 | `--bg-obsidian` default |
-| Neon Profit Emerald `#00FF87` | ✅ 동의 | `--profit-emerald` |
-| Flash Coral FOMO red | ✅ **조건부** | **실제 staleAt/한도**만 |
-| Amber Gold 프리미엄 | ✅ 동의 | `--amber-gold` tags |
-| Mint Teal USDT | ✅ 동의 | `--mint-teal` wallet |
+| Deep Obsidian `#090A10` 배경 | ✅ 동의 | `color.bg` default |
+| Profit/accent mint `#3DDC97` (v7.22.50 · 구 `#00FF87` 폐기) | ✅ 동의 | `color.profit` = `color.accent` |
+| Principal cool-blue `#7AA2FF` | ✅ 동의 | `color.principal` · CTA/원금 |
+| Danger/FOMO `#FF5C7A` (구 flashCoral 대체) | ✅ **조건부** | **실제 staleAt/한도**만 · `color.danger` |
+| Warning/프리미엄 `#F5C542` (구 amberGold 대체) | ✅ 동의 | `color.warning` tags |
 | Count-Up 0.3s | ✅ 동의 | `CountUpNumber` tier-aware |
-| Pulse CTA 1.5s glow | ✅ 동의 | `MotionCTA` + reduced-motion off |
+| Pulse CTA 1.5s glow | ✅ 동의 | `MotionCTA` + reduced-motion off · glow=`principal`/`accent` |
 | S/A/B blur·particle 분기 | ✅ 동의 | §33.3 = §29 tier 연동 |
 | Sticky 대형 CTA | ✅ 동의 | §5.3 [G] |
 | Market Radar ping | ✅ 동의 | `/profits?view=radar` |
@@ -1019,20 +1318,28 @@ Canon: `kyc-guide` → `kyc-doc-capture` → `kyc-confirm` · Lux 금융 톤 · 
 | **고급 카지노 심리 연출** | ❌ **금지** | **명품관 Lux-Fintech** reframe |
 | **CONSTITUTION 23** | ❌ **충돌** | **`28`** (23=PWA) |
 | DopamineButton name | ⚠️ **rename** | **`MotionCTA`** (카지노 연상 ↓) |
+| 구 `#00FF87`/`#FF2E63`/`#1A56FF`/`#8B5CF6` plan 표 | ❌ **폐기(v7.22.50 U13)** | shipped `lux-fintech.ts` only |
 
-### 33.1 Visual Identity Lock (중복0)
+### 33.1 Visual Identity Lock (중복0 · v7.22.50 = shipped 코드 미러)
 
 ```typescript
-// packages/ui/tokens/lux-fintech.ts — SSOT
+// packages/ui/tokens/lux-fintech.ts — SSOT (visual_kit_v1 · 플랜 재발명 금지)
 export const luxFintech = {
-  bgObsidian: '#090A10',
-  surfaceElevated: '#12131A',
-  profitEmerald: '#00FF87',
-  flashCoral: '#FF2E63',
-  amberGold: '#F59E0B',
-  mintTeal: '#00D294',
-  actionNeon: '#1A56FF',
-  aiViolet: '#8B5CF6',
+  color: {
+    bg: '#090A10',
+    surface: '#12141C',
+    elevated: '#1A1D28',
+    border: '#2A2F3D',
+    text: '#F2F4F8',
+    textMuted: '#9AA3B5',
+    accent: '#3DDC97',
+    accentMuted: '#2A9B6C',
+    danger: '#FF5C7A',
+    warning: '#F5C542',
+    profit: '#3DDC97',
+    principal: '#7AA2FF',
+  },
+  // motion/radius = 파일 실물 그대로 · 여기 재정의 ❌
 } as const;
 ```
 
@@ -1126,11 +1433,12 @@ interface HomePayoutCounterProps {
 ### 33.5 Tailwind / Animation Tokens
 
 ```typescript
-// packages/ui/tokens/lux-theme.css (@theme · Tailwind v4)
+// packages/ui/tokens/lux-theme.css (@theme · Tailwind v4) — hex는 lux-fintech.ts 미러만
 extend: {
-  colors: { obsidian: '#090A10', profit: '#00FF87', ... },
+  colors: { obsidian: '#090A10', profit: '#3DDC97', principal: '#7AA2FF', danger: '#FF5C7A', warning: '#F5C542', ... },
   keyframes: {
-    'pulse-glow': { '0%,100%': { boxShadow: '0 0 0 0 rgba(0,255,135,0.4)' }, '50%': { boxShadow: '0 0 24px 4px rgba(0,255,135,0.6)' } },
+    // accent #3DDC97 → rgb(61,220,151)
+    'pulse-glow': { '0%,100%': { boxShadow: '0 0 0 0 rgba(61,220,151,0.4)' }, '50%': { boxShadow: '0 0 24px 4px rgba(61,220,151,0.6)' } },
     'count-roll': { /* opacity only on B */ },
   },
   animation: {
@@ -1264,6 +1572,7 @@ packages/ui/canon/
 | **세금=면책** | "세금 0" **금지** · "개인·상황별" + 세무사 상담 권장 **고정** |
 | **운영 수익=투명** | 플랫폼이 **어디서** 버는지 숫자·도식 공개 |
 | **연령 톤** | **§38.9 toneBand** — young/mid/senior (아래 SSOT) |
+| **쉬운말·이모지·퍼뜩** | **§27.10** — 한글친화 + 귀여운 이모지(캡) · 도움말/가이드 · 20~70 |
 | **성별** | **중성 존댓말만** · 남/여 UI·카피·테마 분기 **영구 금지** |
 
 ### 38.2 왜 USDT로 충전하나? — ko SSOT (`T.trust.usdt`)
@@ -1320,7 +1629,7 @@ flowchart LR
 **OpportunityCard footnote (작게):**
 > "예상 수익에는 플랫폼 운영 수수료(마진)가 반영된 금액이에요."
 
-**Admin:** `/admin/growth/content` 또는 `/admin/content/trust` — **비교·수익 설명** copy 편집 · **면책 블록만 잠금**
+**Admin:** canonical **`/admin/growth?tab=content`** (면책 블록 잠금 · 비교·수익 설명 copy) · 협력사 표기 ON/OFF=**`/admin/growth?tab=partners`** · 구 path `/admin/growth/content`·유령 `/admin/content/trust` = **금지(redirect/미사용)**
 
 ### 38.10 Market Partner Trust — 공식 협력사 표기 (v7.22.41 · Founder lock · Owns=UI)
 
@@ -1456,10 +1765,10 @@ export const trust = {
 
 - `verify:trust-copy` — 금지어 scan: 탈세 · 세금0 · 무조건 · 100% 안전
 - `verify:tax-disclaimer` — 입금·guide·온보딩에 면책 블록 **필수 존재**
-- `verify:age-tone-surfaces` — toneBand별 온보딩·Trust·퍼뜩(AI) variant 키 존재 · 성별 분기 문자열 0
+- `verify:age-tone-surfaces` — toneBand별 온보딩·Trust·퍼뜩(AI) variant·**`T.peotteok.voice.*` pace** 키 존재 · 성별 분기 문자열 0
 - `verify:deposit-network-plain-ko` — 입금 USDT 탭에 네트워크 한글 경고 100% · `TRC20` 렌더 0
 - `verify:font-scale-three` — 설정 글자 3단 + senior 기본≥크게
-- [ ] **§38.6b spot-check:** **20대 · 40대 · 60~70대** 각 **3명**(남녀 혼합·중성 과제 · 성별 UI 분기 0) — "USDT 왜?" · fontScale 읽기 · 입금 네트워크 한글 경고 · senior/xl 밝은 실내 가독성
+- [ ] **§38.6b spot-check:** **20대 · 40대 · 60~70대** 각 **3명**(남녀 혼합·중성 과제 · 성별 UI 분기 0) — "USDT 왜?" · fontScale 읽기 · 입금 네트워크 한글 경고 · senior/xl 밝은 실내 가독성 · **§27.10:** 도움말 이모지 길잡이 이해 · 퍼뜩 첫인사 부담 없음 · 면책 줄 장난 이모지 **0**
 - [ ] `/me/guide/revenue` — 마진 footnote ↔ Admin `platform_margin_pct` 일치
 - [ ] `verify:objection4` — 4반박 답변 surface(온보딩·입금게이트·FAQ·상세) 100%
 
@@ -1564,17 +1873,18 @@ export const objections = {
 **컴포넌트:** `GetUsdtGuide.tsx` · `NetworkPlainWarning.tsx` (입금 USDT 탭 상단 고정)  
 **CI:** `verify:deposit-network-plain-ko` · guide route 존재
 
-### 38.9 toneBand · 연령 톤 배선 (중복0 · v7.22.10)
+### 38.9 toneBand · 연령 톤 배선 (중복0 · v7.22.10 · v7.22.47 pointer)
 
 > **enum SSOT:** `schemas/user-ux-prefs.v1.json` → `toneBand: 'young'|'mid'|'senior'`  
 > **카피:** `T.*.{young|mid|senior}` 또는 shared + `senior` override · JSX 하드코딩 금지  
-> **성별:** 분기 **0** (중성 존댓말만)
+> **성별:** 분기 **0** (중성 존댓말만)  
+> **이모지·퍼뜩·도움말 문장형:** **§27.10 Owns** (본 절=배선·시드만 · 팔레트/캡 재정의 금지)
 
 | toneBand | 기본 매핑 | 카피 형태 | fontScale 기본 |
 |----------|-----------|-----------|----------------|
-| `young` | 랜딩 tt / 선택 “짧게” | 짧은 bullet · 이모지 허용 | `md`(보통) |
-| `mid` | 랜딩 meta / “비교로” | 비교표·2열 | `md` |
-| `senior` | 랜딩 google / “한 줄씩” | 한 문장+다음 · 단계 번호 | `lg`(크게) 이상 |
+| `young` | 랜딩 tt / 선택 “짧게” | 짧은 bullet · 이모지≤2/블록(§27.10) | `md`(보통) |
+| `mid` | 랜딩 meta / “비교로” | 비교표·2열 · 제목 이모지≤1 | `md` |
+| `senior` | 랜딩 google / “한 줄씩” | 한 문장+다음 · 길잡이 이모지≤1/문장 | `lg`(크게) 이상 |
 
 **시드 규칙 (오차0):**
 1. `UserAttribution.firstTouch.landingVariant` ∈ {`tt`→young, `meta`→mid, `google`→senior} (Infra §31.2)  
@@ -1751,18 +2061,23 @@ packages/ui/
 | 검수함 Virtual | >30건 virtualize |
 | 긴급 정지 | tier 무관 **100ms** |
 
-### 29.6 Realtime Batch Contract (중복0)
+### 29.6 Realtime Batch Contract (중복0 · **v7.22.50 U14 · Phase1+ 인터페이스**)
+
+> **잠금(Engine §0.9.2 정합):** `services/realtime-service` 폴더는 **Phase0에 없음**. 본 절 = **Phase1+** 도입 시 서버가 존중할 배치/티어 **인터페이스 계약**만.  
+> **Phase0:** `useTradeExecution` / `useOpportunityFeed`(및 티커 훅)가 **동일 ms 밴드**를 polling interval로 준수 · 응답채널만 Phase1+에서 SSE로 교체(호출부 재작성 0).  
+> **금지:** Phase0에서 WS/SSE/`realtime-service` import·다중 `EventSource`·폴더 존재를 가정한 UI 코드.
 
 ```typescript
-// services/realtime-service subscribe policy
+// Phase1+ realtime-service subscribe policy (폴더 신설 전 · 계약만)
+// Phase0 polling hooks MUST conform to the same StreamPolicy bands
 interface StreamPolicy {
   tier: DeviceTier;
-  opportunityFeedMs: 500 | 1000 | 3000;
+  opportunityFeedMs: 500 | 1000 | 3000; // S / A / B
   payoutTickerMs: 1000 | 3000 | 5000;
 }
 ```
 
-Client tier → query param or first WS message · server respects
+Client tier → Phase0=훅 interval · Phase1+=query param or first stream hello · server respects
 
 ### 29.7 CI Gates (§30)
 
@@ -1833,6 +2148,9 @@ packages/ui/copy/
 │   ├── operator.ts      # T.operator.* · T.legal.operator — §50.9 DET 푸터
 │   ├── principal-profit.ts
 │   ├── execution.ts
+│   ├── peotteok.ts      # T.peotteok.* + voice.* (§27.10)
+│   ├── invite.ts
+│   ├── benefits.ts
 │   └── glossary.ts      # G.status.* G.adminJob.* — enum→한글
 ├── use-copy.ts          # useCopy('user.wallet.title')
 └── index.ts
@@ -1884,6 +2202,7 @@ packages/ui/copy/
 - ✅ "예상 수익 **+45,000원**" + "실제 금액은 달라질 수 있어요"
 - ✅ 문장 짧게 · **중성 존댓말** · 초등~중학생도 이해 가능한 단어
 - ✅ 토스트·푸시: **한글 + 이모지 1~2개** (§50.2)
+- ✅ 도움말·쉬운말·퍼뜩·빈화면·힌트: **한글친화 + 귀여운 이모지** (**§27.10 Owns**)
 - ✅ 연령 표현 차이 = **toneBand만** (§38.9) · 성별 아님
 
 ### 27.4 화면 노출 예외 화이트리스트 (오차0)
@@ -1952,6 +2271,8 @@ problem.code (영어, 내부) → glossary.ts → toast/inline (한글)
 | Admin plain | `verify:admin-plain-language` | IT·개발·테스트 금지어 in admin.ts values |
 | No jargon | `verify:no-it-jargon` | 유저·어드민 렌더 트리 금지어 (§50.4) |
 | Toast emoji | `verify:toast-emoji` | 유저 toast 이모지 1~2 · 어드민 ≤1 |
+| Cute emoji palette | `verify:cute-emoji-palette` (CATALOG 등록 후) | §27.10 금지 이모지·면책본문 이모지·캡 초과 |
+| Age tone + voice | `verify:age-tone-surfaces` | toneBand + `T.peotteok.voice.*` pace 키 |
 | Legal plain | `verify:legal-plain-ko` | 약관4종 어려운말/영문IT 스캔 |
 | Operator footer | `verify:operator-footer` | schema ↔ footer ↔ legal operator block 일치 |
 | check:light | CI | 위 전부 GREEN |
@@ -1971,6 +2292,14 @@ problem.code (영어, 내부) → glossary.ts → toast/inline (한글)
 
 manifest `lang: ko-KR` · `description` 한국어 only · **theme/bg 색=Lux·PWA §23.1** (카피 절에서 hex 재정의 금지)  
 **Canon:** `install-ios` · `install-android` · `offline-banner` (PWA 구현 todo)
+
+### 27.8a Store listing 한글 (카피 Owns=UI · 절차 Owns=PWA §24 · v7.22.49)
+
+> **Owns:** Uptodown/Play **스토어 카드용** short/full 한글 문장 키 (`packages/ui/copy/ko/**` · 예: `T.store.uptodown.*` / `T.store.play.*`).  
+> **Pointer only (재정의 금지):** APK/AAB·assetlinks·Developers Console·Country Restriction·publication criteria = **PWA §24** · Legal 법인명·DET = **§50.9** · Brand 아이콘/1024×500 = Brand Kit.  
+> **한도 (오차0 · Uptodown 문서):** short **≤70자** · full **≥50단어** · 쉬운 한글 · IT용어 0 (§27) · retired `오늘수익`·`바로번다` **0** · 타사 상표 사칭 0.  
+> **금지:** UI 플랜에 TWA/APK 빌드 절차 장문 · Money/Engine Store todo.
+
 ### 27.9 Korean UX 어뷰징 · 오류
 
 | # | 시나리오 | 방어 |
@@ -1980,6 +2309,120 @@ manifest `lang: ko-KR` · `description` 한국어 only · **theme/bg 색=Lux·PW
 | K3 | Dynamic adapter name leak | adapter.displayNameKo 필수 필드 |
 | K4 | Copy drift (22 vs 25) | 22는 25 pointer only |
 | K5 | Hardcoded "Wallet" in new PR | ESLint fail |
+| K6 | 이모지 폭탄·카지노·면책 본문 이모지 | §27.10 캡/팔레트 + verify:toast-emoji |
+| K7 | 퍼뜩 반말·성별호칭·타코치명 | §27.10 voice + `verify:age-tone-surfaces` · brand-consumer |
+
+### 27.10 한글친화 · 귀여운 이모지 · 도움말·쉬운말·퍼뜩 말투 (v7.22.47 · 20~70 · 중복0)
+
+> **Owns:** 유저 surface의 **도움말 · FAQ · 가이드 설명 · 빈화면 · 인라인 힌트 · placeholder · 쉬운말 문장형 · 퍼뜩(AI) 말투 · 귀여운 이모지 팔레트/캡**  
+> **목표:** 한국 사람 **20대~70대**가 “쉽고 친근·부담 없음”으로 느끼게 · 오류0·결함0·오차0·중복0  
+> **해석 잠금:** 「이모지 전부」= **적용 표면 전부**(도움말·쉬운말·퍼뜩·토스트·빈화면·힌트) · **문장마다 무제한 나열 금지**  
+> **Pointer only (재정의 금지):** toast **본문 문장**=§8.2 · toast **1~2 필수 수치**=§50.2 · toneBand enum·시드=§38.9 · 퍼뜩 SSE/레인=Engine §47 · wire=§6.4e · 어드민 plain=§27.5(본 절 귀여움 **0**) · 멤버십 주배지 SVG=§5.9.2c  
+> **코드 SSOT:** `packages/ui/copy/ko/**` · `peotteok.ts`(`T.peotteok.voice.*`) · guide/help/empty 키 · todo Owns=`korean-first-copy` (배선=`ai-coach-ui`·`plain-korean-surfaces`·`toast-notification`)
+
+#### 27.10.1 원칙 (잠금)
+
+1. 화면 말 = **쉬운 한글 중성 존댓말** only (`해요`/`예요`/`할게요`) · 초등~중학 어휘 · 한자·영문 IT 0 (§27.3 금지어)  
+2. **귀여운 이모지** = 친근·길잡이 신호 · 20대도 부담 없게 · 70대도 “무슨 화면인지” 한눈에  
+3. 연령 차이 = **toneBand만** (young/mid/senior) · **성별 분기 0** · 반말·급식체·아재개그 **강요 0**  
+4. 금액·면책·세금·약관 **본문** = 이모지 **0** (제목만 0~1) · 신뢰 > 귀여움  
+5. Primary CTA 라벨(`수익 벌기` 등) = 이모지 강제 **0** (가독·오탭 방지) · 옆 보조 설명에만 허용  
+6. 어드민 = §27.5 · 웃긴/귀여운 톤 **금지**
+
+#### 27.10.2 표면별 이모지 캡 (오차0)
+
+| 표면 | 이모지 | 비고 |
+|------|--------|------|
+| toast / push / in-app 알림 | **1~2 필수** | 수치 Owns=§50.2 · 문장 Owns=§8.2 |
+| `/me/guide/*` · FAQ · Objection · DepositWhy · 도움말 카드 | 제목 **1** · 본문≤**2**/카드 | 카드마다 제목 이모지 권장 |
+| 빈화면 (empty state) | **1 필수** | `{이모지} 아직 ~가 없어요` + CTA 1 |
+| 인라인 힌트 · placeholder · 필드 도움말 | **1** | 차가운 영문 hint 0 |
+| 온보딩 · 초대 Explain | young≤2/블록 · mid 제목≤1 · senior≤1/문장 | §38.9 배선 |
+| 퍼뜩 UI 템플릿 버블 | 문장당 ≤**2** · 연속 3버블 중 ≥1개에 이모지 1 | Fact 숫자 **옆 장식 나열 0** |
+| 퍼뜩 G스트림 (LLM) | 권장 1 · ≤2/답변 · 카지노·도박 이모지 0 | Engine §47 system seed ← 본 팔레트 |
+| Soft/Hard · 실행 진행 힌트 | ≤1 | 긴장감 Fact 유지 · 장난 톤 0 |
+| 면책·세금·약관·DET 본문 | **0** | 제목 0~1만 |
+| 멤버십 **주** 배지 | **0** | Brand SVG only · 이모지=보조 라벨만 (§5.9.2c) |
+| Admin 전 표면 | ≤1 · 귀여움 0 | §27.5 |
+
+#### 27.10.3 허용 팔레트 · 금지 (귀여움 ∩ 금융 신뢰)
+
+**권장 (cute + clear):** ✨ 😊 🙌 💡 🪙 💰 💸 🎉 🛡️ 🔐 📡 🤖 🎁 ✅ 👋 💙 🌟 📱 🤝 📝 ⏱️ 🏠 ⭐  
+
+**금지:** 🎰 🃏 🎲(당첨·도박 암시) 🔞 💀 · FOMO 🔥 과다 · 피부톤/성별 강제 조합 · 「100%」「대박」「당첨」과 결합한 축하 과잉 · 이모지 **3개 이상** 연속
+
+#### 27.10.4 쉬운말 · 도움말 문장 형 (20~70 공통)
+
+| 패턴 | 잠금 예 |
+|------|---------|
+| 도움말 오프닝 | `{이모지} {쉬운 한 줄}` + (선택) `자세히` 접기 |
+| 빈화면 | `{이모지} 아직 보여줄 수익 기회가 없어요` + [충전하기] |
+| 어려운 말 1회 병기 | `시세(지금 가격)` · `정산(수익 반영)` |
+| 한 문장 한 뜻 | 복문·한자 나열 0 |
+| 호칭 | 호칭 생략 우선 · 「회원님」허용 · 「오빠/언니/유저님」금지 |
+| 금지 톤 | 반말 · 명령 위협 · 투자권유 · “무조건 벌어요” |
+
+**가이드 루트 (`/me/guide/*`) 적용:** usdt · get-usdt · revenue · faq · principal · partners — 제목·카드 리드에 §27.10.2 캡 필수.
+
+#### 27.10.5 퍼뜩 말투 SSOT (`T.peotteok.voice.*`)
+
+| 키 | 잠금 문장 (ko) |
+|----|----------------|
+| `persona` | 친근한 도우미 · 이름 **퍼뜩** · 성별·인간형 암시 0 |
+| `greeting` | `안녕하세요! 퍼뜩이에요 😊 무엇을 도와드릴까요?` |
+| `shortConfirm` | `네, 살펴볼게요 ✨` |
+| `moneyFactTail` | Fact 문장 끝 이모지 ≤1 · 보장/확정/수익률 약속 0 |
+| `refuseS` | `출금은 지갑에서 직접 해 주세요 🔐` (+ deep-link) |
+| `busy` | §8.2 `PEOTTEOK_LLM_BUSY` 문장 승 (재작성 금지) |
+| `helpNudge` | `💡 아래 안내를 눌러 보시면 더 쉬워요` |
+| `seniorPace` | 한 문장 + 확인 질문 1 · 긴 단락 0 · 이모지 ≤1 |
+| `youngPace` | 짧은 2문장 · 이모지 1~2 |
+| `midPace` | 설명 1 + 예시 1 · 이모지 1 |
+
+**퍼뜩 금지:** 반말 · 성별 호칭 · 타프로젝트 코치명 · 자율 출금 CTA · IT용어(P/G/S 레인명 화면 노출) · 이모지 ≥3 · 카지노 이모지 · “모든 질문 완벽”
+
+#### 27.10.6 toneBand × 귀여움 (의미 동일 · 표현만 · §38.9 배선)
+
+| band | 도움말·쉬운말 | 퍼뜩 |
+|------|---------------|------|
+| `young` | 짧은 bullet · 이모지 문장 앞 | 짧고 경쾌 · 이모지 1~2 |
+| `mid` | 비교·단계 번호 · 제목 이모지 | 설명+예시 · 이모지 1 |
+| `senior` | 한 줄씩 · 큰글 · **길잡이 이모지 문장 앞 1** · 장식 나열 0 | 천천히 · 확인 질문 · 이모지 ≤1 |
+
+#### 27.10.7 중복0 Owns 표
+
+| 주제 | Owns |
+|------|------|
+| 팔레트·캡·도움말 형·퍼뜩 `voice.*` · empty/hint | **§27.10** |
+| toast 문장 카탈로그 | §8.2 |
+| toast 1~2 필수 규칙 | §50.2 |
+| toneBand enum·시드 | §38.9 |
+| 퍼뜩 SSE·P/G/S 런타임 | Engine §47 |
+| 퍼뜩 Canon wire | §6.4e |
+| Admin 왕초보 한글 | §27.5 · §50.5 |
+| 금지어→표시어 표 | §27.3 |
+
+#### 27.10.8 파일 · CI
+
+```
+packages/ui/copy/ko/peotteok.ts    # T.peotteok.voice.* + chat 키
+packages/ui/copy/ko/trust.ts       # guide 리드·FAQ 제목 이모지
+packages/ui/copy/ko/user.ts        # empty/hint/placeholder
+packages/ui/copy/ko/toast.ts       # §8.2 mirror · 이모지 포함
+schemas/ui-copy-glossary.v1.json   # 금지어
+scripts/verify-toast-emoji.mjs     # 기존
+# 신설 시: scripts/verify-cute-emoji-palette.mjs → CATALOG 등록 후 verify:cute-emoji-palette
+```
+
+| Gate | Fail 조건 |
+|------|-----------|
+| `verify:korean-ui` | 화면 영어 누수 |
+| `verify:toast-emoji` | 유저 toast 이모지 0 또는 ≥3 · 어드민 >1 |
+| `verify:age-tone-surfaces` | young/mid/senior · voice pace 키 부재 · 성별 분기 문자열 |
+| `verify:no-it-jargon` | 도움말/퍼뜩/empty IT용어 |
+| `verify:cute-emoji-palette` (등록 후) | 금지 이모지 · 면책 본문 이모지 · 캡 초과 |
+
+**spot-check 연계 (§38.6b):** 20·40·60~70대 과제에 「도움말 이모지 길잡이 이해」「퍼뜩 첫인사 부담 없음」「면책 줄에 장난 이모지 0」 체크 포함.
 
 ---
 
@@ -1990,6 +2433,8 @@ manifest `lang: ko-KR` · `description` 한국어 only · **theme/bg 색=Lux·PW
 - [ ] `verify:admin-plain-language` PASS
 - [ ] `verify:no-it-jargon` PASS (유저+어드민)
 - [ ] `verify:toast-emoji` PASS
+- [ ] `verify:age-tone-surfaces` PASS (§27.10 voice·pace 키 포함)
+- [ ] `verify:cute-emoji-palette` PASS (CATALOG 등록 후 · 미등록이면 korean-first-copy에서 등록)
 - [ ] `verify:legal-plain-ko` PASS (§50 약관4종)
 - [ ] `verify:operator-footer` PASS (§50.9 DET 1135431 · PRE-OWNED WATCHES L.L.C)
 - [ ] 설정: 다크/밝은/시스템 토글 **없음** · 글자 크기 있음 (§50.1)
@@ -1997,6 +2442,8 @@ manifest `lang: ko-KR` · `description` 한국어 only · **theme/bg 색=Lux·PW
 - [ ] 스크린샷 회귀 — 영어 pixel 0 (브랜드·USDT·AI 예외만)
 - [ ] problem.code raw 노출 E2E 0건
 - [ ] 왕초보 운영자 워킹: 입출금 검수·긴급정지·회원찾기 **가이드 없이 완료**
+- [ ] 도움말·empty·퍼뜩 greeting에 귀여운 이모지 적용 · 면책/약관 본문 이모지 **0** (§27.10)
+- [ ] 20·40·60~70 spot-check에 §27.10 항목 포함 (§38.6b)
 
 ---
 
@@ -2121,20 +2568,21 @@ Soft=목표 60s · Hard=wall 90s · **전 등급 동일** · presentation 8~15s�
 | Secondary | **`그만두기`** → cancel orchestrate · 잔액 불변 |
 
 **컴포넌트:** `packages/ui/components/execution/AiProgressRoom.tsx`  
-**실시간:** SSE/WS `trade.execution.step` · B-tier는 1s 배치 (§29)
+**실시간 (v7.22.50 U14):** Phase0=`useTradeExecution` → `POST /trades/:id/execute-tick` **polling** · Phase1+ SSE `trade.execution.step`(realtime-service) 시 훅 내부만 교체 · B-tier 배치 ms=§29.6
 
 ### 48.3a 카테고리 상품 썸네일 (표시 Owns · 삭제 금지)
 
-> **중복0:** URL·hydrate·공개 가드 = **Engine §0.0.6** · 본 절 = 화면 슬롯·fallback·카피만.
+> **중복0:** URL·hydrate·공개 가드 = **Engine §0.0.6** · 본 절 = 화면 슬롯·fallback·카피만.  
+> **v7.22.50 U15 backend-gap pointer (UI 수정0):** 실 eBay CDN 사진은 adapter가 fetch하나 `assetId: query:*` → `normalizeIngestListingsForPersist` drop으로 **DB 미도달** · 현재 카드 이미지는 시드/`admin_r2` 경로 · **Owns=Engine `engine-ebay-identity-match-ingest`**(§0.10 · Index 예외2 · matcher→ingest 배선) · UI PART3d는 `imageSource` 무관 `ProductImage`만 · File-Serial 재정렬 0
 
 | 규칙 | 잠금 |
 |------|------|
-| 데이터 | `OpportunityCard.assetImageUrl` · `assetImageAltKo` · `category` · **SKU 1:1** (Engine §0.0.6) |
+| 데이터 | `OpportunityCard.assetImageUrl` · `assetImageAltKo` · `category` · **SKU 1:1** (Engine §0.0.6) · `imageSource`=`ebay`\|`pokemontcg`\|`ygoprodeck`\|`admin_r2` **동일 슬롯** |
 | 노출면 | 홈 카드 · 상세 · 확인 · **진행실** · **성공** · 안전중단 추천카드 — **동일 실물 이미지** |
 | 카테고리 | `watch`→**해당 레퍼런스** 시계 사진 · `trading_card`→**해당** 포켓몬/유희왕 카드 사진 · `luxury_bag`→**해당** 가방 사진 |
 | 필터 칩 | `전체` `시계` `카드` `가방` (Engine §0.0.5 pointer) |
 | 로드 실패 | Lux 플레이스홀더 + `assetIcon`(⌚/🃏/👜) · 깨진 URL 빈칸 **금지** |
-| 금지 | 사진 목업 픽셀 복제 · 교차 카테고리 이미지 · “판매 완료/내가 팜” 암시 · 성별 분기 |
+| 금지 | 사진 목업 픽셀 복제 · 교차 카테고리 이미지 · “판매 완료/내가 팜” 암시 · 성별 분기 · UI에서 eBay identity-match/ingest **수정 시도** |
 | 캡션 | **`공식 협력 · 시세·데이터 연동`** (`T.trust.partners.legCaption`) · §38.10 |
 
 **Canon:** `execution-running` · `execution-success` blocks에 `productThumb` 필수  
@@ -2180,6 +2628,8 @@ Soft=목표 60s · Hard=wall 90s · **전 등급 동일** · presentation 8~15s�
 **컴포넌트:** `ExecutionSafeStop.tsx`
 
 ### 48.6 화면 D — Admin 진행 정책 — Canon wire 100%
+
+> **Owns 분리(중복0 · 오독 방지):** 본 §48.6~§48.9는 **스펙 SSOT**(Canon wire·스키마·API 계약·카피)만 담는다 — **실제 코드 구현 위치는 `apps/admin`이며 Admin 플랜의 `admin-execution-policy` todo(File-Serial)가 담당**한다. `admin-match-strictness-ui`(UI 구 todo)는 **ABSORBED**되어 재실행 대상이 아니다(YAML 상단 참조). UI가 `apps/admin` 코드를 직접 작성하는 것은 **금지**.
 
 **Route:** `/admin/execution-policy` · Ops Light  
 **헤더:** breadcrumb `홈 / admin / 진행 정책` · **`저장`**  
@@ -2363,13 +2813,15 @@ export const T = {
 
 ### 48.10 컴포넌트 · 파일 트리
 
+> **실측(v7.22.52 §0.8.2 #2 유사·§0.8.3 PART4a):** `packages/ui/components/execution/`에 **`ProductThumb.tsx`만 실존** — 아래 4개(`AiProgressRoom`·`ExecutionSuccessReceipt`·`ExecutionSafeStop`·`ExecutionStepList`)는 **미생성**. `apps/web/app/trades/[id]/execute/page.tsx`는 현재 `useTradeExecution` 훅(polling·live)만 배선된 2-state(진행중/성공) 임시 텍스트이며, 코드 주석이 "Full AiProgressRoom / safe_stop UX = ai-execution-ux todo"로 자기문서화되어 있음(정직한 스텁 · 결함 아님). PART4a 착수 시 **아래 4개 컴포넌트 신규 구현이 필수**다.
+
 ```
 packages/ui/components/execution/
 ├── AiProgressRoom.tsx
 ├── ExecutionSuccessReceipt.tsx
 ├── ExecutionSafeStop.tsx
 ├── ExecutionStepList.tsx          # steps[].active|done
-├── ProductThumb.tsx               # §48.3a assetImageUrl + fallback icon
+├── ProductThumb.tsx               # §48.3a assetImageUrl + fallback icon (실존)
 └── index.ts
 packages/ui/components/opportunity/
 ├── OpportunityCard.tsx            # §5.3b 3단·arbitrageTypeKo · §48.3a 썸네일
@@ -2458,9 +2910,11 @@ CONSTITUTION/46b_ASSET_IMAGE_SSOT.md
 
 ### 50.2 유저 알림·토스트 (한글 친화 + 이모지)
 
+> **중복0:** 본 절 = toast/push **수치·톤 규칙** · 문장 카탈로그=§8.2 · **팔레트·전 표면 캡·퍼뜩/도움말**=§27.10 (여기 재정의 금지)
+
 **규칙 (오류0):**
 1. 유저 toast/push/in-app **본문은 쉬운 한글만**  
-2. **이모지 1~2개** 필수 (과다 금지 · 카지노 슬롯 이모지 금지)  
+2. **이모지 1~2개** 필수 (과다 금지 · 카지노 슬롯 이모지 금지 · 허용 집합=§27.10.3)  
 3. 문장 끝 부드러운 존댓말 (`해요`/`예요`)  
 4. **절대 금지:** problem.code, HTTP, null, Failed, Pending, API…  
 5. 어드민 toast: 이모지 ≤1 · **웃긴 톤 금지** · 평문 한글 (“입금 3건 검수 대기”)
@@ -2639,7 +3093,7 @@ scripts/verify-operator-footer.mjs
 
 > **목적:** AI Profit OS 앱·랜딩·약관·SEO에 **동일한 사업자 정보** 노출.  
 > **내부 KYB 참고:** `COMPANY_REGISTRATION_SUMMARY.md` (플랜 §50.9가 SSOT · 문서는 pointer만)  
-> **외부 사이트(preownedwatches.ae):** WordPress 푸터는 `FOOTER_LICENSE_COPY.md` (EN) — **앱 SSOT와 번호·법인명 일치 필수**
+> **플랫폼 도메인(hiptk.app):** consumer PWA·랜딩·푸터·JSON-LD canonical — **앱 SSOT와 번호·법인명·supportEmail 일치 필수**
 
 #### A) 운영 주체 (잠금 · owner-provided · DET PDF로 최종 확인)
 
@@ -2660,7 +3114,7 @@ scripts/verify-operator-footer.mjs
 | # | 허가 업종 (KO) | Activity (EN) | Likely DET Code | 플랫폼 매핑 |
 |---|----------------|---------------|-----------------|-------------|
 | 1 | 시계·시계 부품 소매·무역 | Watches & clocks & spare parts retail/trading | 4773.03 · 4773.13 | §0.0 watch vertical |
-| 2 | 중고 명품 시계·시계류 매매 | Pre-owned luxury watches trading | 4774.02 · 4774.94 | preownedwatches.ae · 시계 기회 |
+| 2 | 중고 명품 시계·시계류 매매 | Pre-owned luxury watches trading | 4774.02 · 4774.94 | hiptk.app · 시계 기회 |
 | 3 | 트레이딩 카드·수집품 소매·무역 | Trading cards & collectibles retail/trading | 4778.99 · 4690.01 | §0.0 trading_card vertical |
 | 3b | 명품 가방·가죽제품 소매·무역 *(DET 추가 확인)* | Luxury handbags & leather goods retail/trading | 4771.* *(PDF 확인)* | §0.0 `luxury_bag` · §0.0.6 이미지 |
 | 4 | 해외 시세 비교·국제 상품 중개 | Cross-border price comparison & trade brokerage | 4690.01 | 글로벌 시세 차익·기회 카드 |
@@ -2671,7 +3125,8 @@ scripts/verify-operator-footer.mjs
 
 | **Likely Activity Code (registered)** | 4773.03 / 4773.13 *(confirm on official Trade License PDF)* |
 | **Trading Brand** | Pre-Owned Watches / Pre-Owned Watches UAE |
-| **Related Website** | https://preownedwatches.ae *(별도 WordPress · 앱 도메인과 분리)* |
+| **Related Website** | https://hiptk.app *(consumer platform · ROOT_DOMAIN SSOT)* |
+| **Support Email** | support@hiptk.app |
 
 **주소 (웹사이트 공개 · Ejari/면허 PDF와 교차확인):**
 - Kia Flagship Office G05, Sheikh Zayed Road, Al Quoz 1, Dubai
@@ -2700,22 +3155,25 @@ interface OperatorEntityV1 {
     platformScope: "watch" | "trading_card" | "luxury_bag" | "platform" | "ecommerce" | "ai_service";
   }[];
   tradingBrand?: string;
-  relatedWebsite?: string; // preownedwatches.ae — optional cross-link
+  relatedWebsite?: string; // https://hiptk.app — platform consumer domain
+  supportEmail: string; // support@hiptk.app · Human Review 필수 · v7.22.54
   addresses: { label: string; lines: string[]; city: string; country: "AE" }[];
   verificationUrls: { label: string; url: string }[];
   verifiedAt?: ISO8601; // set after DET PDF on file
 }
 ```
 
-**소비처 (단일 import):** `SiteFooter` · `T.legal.operator.*` · `generateMetadata` · JSON-LD `@graph` · Admin audit footer *(ops only, not user SEO)*
+**소비처 (단일 import):** `SiteFooter` · **`LandingOperatorFooter`**(§6.4c.1) · `T.legal.operator.*` · `generateMetadata` · JSON-LD `@graph` · Admin audit footer *(ops only, not user SEO)*
 
-#### C) 유저 앱 푸터 — `packages/ui/components/SiteFooter.tsx`
+#### C) 유저 앱 푸터 — `SiteFooter` · **`LandingOperatorFooter`** (§6.4c.1)
 
 **노출 surface (MUST):**
-- `apps/web` 5탭 레이아웃 — BottomNav **위** 고정 1줄 (320px ellipsis OK)
-- `/me/legal/*` 4면 하단
-- `(landing)/l/*` 랜딩 최하단 (ko)
+- `apps/web` 5탭 레이아웃 — BottomNav **위** 고정 1줄 (320px ellipsis OK) → **`SiteFooter`**
+- `/me/legal/*` 4면 하단 → **`SiteFooter`**
+- `(landing)/l/*` · `/ads/*` scroll **최하단** → **`LandingOperatorFooter`** (legalName·license·**supportEmail**·jurisdiction·`/me/legal` 1링크 · §6.4c.1)
 - **숨김:** Admin · ops · in-app modal · toast
+
+**랜딩 footer 필수 필드 (Human Review · v7.22.54):** `legalName` · DET `licenseNumber` · **`supportEmail`** · 관할 1줄 · `/me/legal` 링크 1개 · **약관 전문 복붙 0**
 
 **카피 (ko · `T.operator.footer.line`):**
 ```
@@ -2726,11 +3184,11 @@ interface OperatorEntityV1 {
 
 **스타일:** `text-xs` · muted · Lux 다크 토큰 · 5탭·sticky CTA 가리지 않음 (§5.3)
 
-**외부 WordPress (preownedwatches.ae · EN · pointer):**
+**플랫폼 푸터 (hiptk.app · ko/en · pointer):**
 ```
-Licensed by the Dubai Department of Economy and Tourism (DET) | Trade License No. 1135431 | PRE-OWNED WATCHES L.L.C
+Licensed by the Dubai Department of Economy and Tourism (DET) | Trade License No. 1135431 | PRE-OWNED WATCHES L.L.C | support@hiptk.app
 ```
-→ 구현 SSOT는 앱 repo 밖 · **번호·법인명은 schema와 100% 일치**
+→ 구현 SSOT는 `operator-entity.instance.json` · **번호·법인명·이메일·도메인 100% 일치**
 
 #### D) 카피 키 — `packages/ui/copy/ko/operator.ts`
 
@@ -2760,7 +3218,7 @@ export const T = {
 - [ ] Invest in Dubai / DET 포털에서 면허 상태·만료일 확인
 - [ ] VAT TRN(해당 시) · §50.9.A-1 플랫폼 정렬 업종이 DET PDF에 포함 확인
 - [ ] `verify:operator-footer` PASS — schema ↔ footer ↔ legal 약관 3곳 일치
-- [ ] preownedwatches.ae 푸터(선택) 번호·법인명 동기화
+- [ ] hiptk.app 푸터·JSON-LD·operator-entity instance 동기화 (support@hiptk.app)
 
 #### F) 어뷰징·결함 방어
 
@@ -2855,6 +3313,26 @@ interface ParticipateProof {
 **컴포넌트:** `AdapterHealthChip.tsx` on OpportunityCard footer  
 **표시:** `시세 갱신 {relativeKo}` · `출처 {n}` · stale → `비교 준비중` + CTA lock reason (§0.0.4)  
 **데이터:** `staleAt` · `pricing.lastAdapterSyncAt` · **Admin health SSE**
+
+### 51.20 Weekly Market Briefing — User Surface (v7.22.52 흡수 · 고아 게이트 → UI Owns 재배정 · verify 미착수 · Owns=UI 신설)
+
+> **발견(§0.8.2 #4):** Engine `ai_profit_os_02_engine_*.plan.md` §51.20이 M0.5 시뮬레이션 산출물을 유저에게 "이번 주 시세 차이 분포" 형태로 안내하도록 정의하며 라우트 `/me/guide/market-weekly`(§38 guide 가족과 동일 패턴)까지 명시했으나, **UI 플랜에는 Owns 절·PART 배정·route 등록·Canon wire·CI가 전혀 없었다**(Index §19 게이트만 존재하는 **고아 게이트**). 본 절이 그 공백을 **UI Owns로 재배정**한다 — **"해소" 아님**: `verify:market-briefing-no-investment-advice`는 **PART8b 착수 시 신설**(v7.22.53 실측: `tooling/verify/*.cjs` **0** · `margin-compare-surface`와 동일 ghost 클래스).  
+> **중복0:** 산출 데이터(`spreadDistribution`)·주기·투자권유 금지 원칙 = **Engine §51.4/§51.20 Owns** · 본 절 = **화면·라우트·카피·CI**만.
+
+| 항목 | 잠금 |
+|------|------|
+| Route | `/me/guide/market-weekly` (guide 계열 · `USER_NESTED_ROUTES` 등록 필수) |
+| 소스 | Engine M0.5 `spreadDistribution`(주 1회 갱신) — **읽기만**, UI 재계산 금지 |
+| 목적 | **교육용** "이번 주 시세 차이가 왜 생겼는지" 요약 — 매수·매도 권유 **아님** |
+| 진입 | 주 1회 push/in-app(옵트인) · `/me/guide/*` 목록 · `/me/settings` 알림에서 opt-out |
+| 카피 톤 | §27.10 캡 적용(제목 이모지 1) · toneBand(§38.9) young=요약bullet·mid=비교표·senior=한 줄씩 |
+| 금지 | "지금 사세요/파세요" 등 투자 권유·매수매도 지시형 문장 · 확정 수익 암시 · 특정 SKU 매수 추천 |
+| Canon | `market-weekly-briefing.wire.json` (todo 신설) |
+| Push | `T.push.*`에 `market_weekly` 카테고리 추가(§8.3 pointer) |
+
+**카피 SSOT:** `packages/ui/copy/ko/guide.ts`에 `T.guide.marketWeekly.*` 추가 (신규 JSX 하드코딩 금지)  
+**검증:** `verify:market-briefing-no-investment-advice`(**PART8b에서 신설** · Index §19 인용 · v7.22.53 현재 ghost) · `verify:canon-surfaces` · `verify:ia-tabs`(nested route 등록 확인)  
+**Owns=PART8b** `trust-surfaces-v722`(§51.16~21 범위로 확장 · YAML 참조).
 
 ### 51.21 Personal AI — First Deposit 60s Consult
 

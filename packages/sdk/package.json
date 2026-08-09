@@ -5,6 +5,15 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./device-tier": "./src/device-tier.ts"
+    "./device-tier": "./src/device-tier.ts",
+    "./execution-stream": "./src/execution-stream/index.ts",
+    "./execution-stream/useTradeExecution": "./src/execution-stream/useTradeExecution.ts"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.9",
+    "react": "19.2.0"
   }
 }
