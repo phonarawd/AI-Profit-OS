@@ -4,13 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   CategoryFilterChips,
-  OpportunityCard,
+  VirtualOpportunityList,
   type CategoryFilterKey,
   type OpportunityCardModel,
 } from "@aipo/ui/components/opportunity";
 import { T } from "@aipo/ui/copy/ko";
 
-/** PART3 /profits — §5.3b 카드 위계 · 필터 가방 포함 */
+/** PART3 /profits — §5.3b 카드 위계 · PART8c VirtualOpportunityList */
 export default function Page() {
   const [category, setCategory] = useState<CategoryFilterKey>("all");
   const items: OpportunityCardModel[] = [];
@@ -27,13 +27,7 @@ export default function Page() {
 
       <CategoryFilterChips value={category} onChange={setCategory} />
 
-      <ul className="space-y-3" data-testid="opportunity-list">
-        {filtered.map((o) => (
-          <li key={o.id}>
-            <OpportunityCard opportunity={o} />
-          </li>
-        ))}
-      </ul>
+      <VirtualOpportunityList items={filtered} />
 
       {filtered.length === 0 ? (
         <>

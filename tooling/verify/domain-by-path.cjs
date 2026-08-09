@@ -140,6 +140,18 @@ const RULES = [
       "loop-psychology.cjs",
     ],
   },
+  {
+    test: (f) =>
+      /packages\/ui\/responsive\//.test(f) ||
+      /packages\/ui\/components\/lux\/(VirtualList|VirtualTicker|FluidCard|TouchButton|LivePayoutTicker)\./.test(
+        f,
+      ) ||
+      /packages\/ui\/components\/opportunity\/VirtualOpportunityList\./.test(f) ||
+      /packages\/sdk\/src\/device-tier\.ts/.test(f) ||
+      /apps\/web\/components\/DeviceTierApply\./.test(f) ||
+      /tooling\/verify\/responsive(\.cjs|\/)/.test(f),
+    scripts: ["responsive.cjs", "ux-design-system.cjs"],
+  },
 
   {
     test: (f) =>

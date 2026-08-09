@@ -17,7 +17,8 @@
 }
 
 html[data-tier="b"] .lux-motion-cta,
-html[data-tier="b"] .lux-glass {
+html[data-tier="b"] .lux-glass,
+html[data-tier="b"] .glass {
   animation: none;
   backdrop-filter: none;
 }

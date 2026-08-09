@@ -57,7 +57,7 @@ export function OpportunityCard({
       data-bucket={o.bucket || "none"}
       data-compare-ready={o.compareReady === true ? "1" : "0"}
       className={[
-        "rounded-lux-md border border-lux-border bg-lux-elevated p-4",
+        "opportunity-card rounded-lux-md border border-lux-border bg-lux-elevated p-4",
         className,
       ]
         .filter(Boolean)

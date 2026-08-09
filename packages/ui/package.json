@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "peerDependencies": {
+    "next": "^16.0.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "^16.0.0"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@types/react": "^19.1.9",
@@ -72,6 +72,9 @@
     "./components/lux/Skeleton": "./components/lux/Skeleton.tsx",
     "./components/lux/CountUpNumber": "./components/lux/CountUpNumber.tsx",
     "./components/lux/LivePayoutTicker": "./components/lux/LivePayoutTicker.tsx",
+    "./components/lux/VirtualList": "./components/lux/VirtualList.tsx",
+    "./components/lux/VirtualTicker": "./components/lux/VirtualTicker.tsx",
+    "./components/lux/FluidCard": "./components/lux/FluidCard.tsx",
     "./components/toast": "./components/toast/index.ts",
     "./components/shell": "./components/shell/index.ts",
     "./components/settings/SettingsPanel": "./components/settings/SettingsPanel.tsx",
@@ -133,6 +136,10 @@
     "./components/opportunity/OpportunityCard": "./components/opportunity/OpportunityCard.tsx",
     "./components/opportunity/PriceCompareMargin": "./components/opportunity/PriceCompareMargin.tsx",
     "./components/opportunity/BalanceAwareHome": "./components/opportunity/BalanceAwareHome.tsx",
-    "./components/opportunity/CategoryFilterChips": "./components/opportunity/CategoryFilterChips.tsx"
+    "./components/opportunity/CategoryFilterChips": "./components/opportunity/CategoryFilterChips.tsx",
+    "./components/opportunity/VirtualOpportunityList": "./components/opportunity/VirtualOpportunityList.tsx"
+  },
+  "dependencies": {
+    "@tanstack/react-virtual": "^3.14.9"
   }
 }

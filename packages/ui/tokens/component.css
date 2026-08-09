@@ -6,6 +6,8 @@
   --touch-min: 48px;
   --card-pad: var(--space-lux-md, 16px);
   --card-gap: var(--space-lux-sm, 8px);
+  --card-opportunity-estimate: 180px;
+  --ticker-row-estimate: 28px;
   --image-card-aspect: 1 / 1;
   --content-rail-max: 1440px;
   --body-max-ch: 65ch;

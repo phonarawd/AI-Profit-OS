@@ -2,6 +2,8 @@
 
 Playwright multi-viewport harness for Canon **structure**, not raw pixels (ADR-013 · audit §45).
 
+PART8c also locks: `fluid-type` · `touch-target` · `device-tier` S/A/B · TanStack `VirtualList` / `VirtualOpportunityList` / `VirtualTicker` · `DeviceTierApply`.
+
 ## Locked viewports
 
 `390 / 430 / 768 / 1024 / 1366 / 1440 / 1920 / 2560 / 3440 / 3840`

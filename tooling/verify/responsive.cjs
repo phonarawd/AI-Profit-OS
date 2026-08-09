@@ -171,6 +171,89 @@ for (const s of surfaces) {
   }
 }
 
+// --- PART8c: fluid · touch-target · device-tier · Virtual ---
+const part8cFiles = [
+  "packages/ui/responsive/fluid-type.css",
+  "packages/ui/responsive/touch-target.css",
+  "packages/ui/responsive/container.css",
+  "packages/sdk/src/device-tier.ts",
+  "packages/ui/components/lux/VirtualList.tsx",
+  "packages/ui/components/lux/VirtualTicker.tsx",
+  "packages/ui/components/lux/FluidCard.tsx",
+  "packages/ui/components/lux/TouchButton.tsx",
+  "packages/ui/components/opportunity/VirtualOpportunityList.tsx",
+  "apps/web/components/DeviceTierApply.tsx",
+];
+for (const f of part8cFiles) mustExist(f);
+
+const fluid = read("packages/ui/responsive/fluid-type.css");
+if (fluid && !fluid.includes("clamp(")) {
+  fails.push("fluid-type.css must use clamp() tokens");
+}
+if (fluid && !fluid.includes("--text-body")) {
+  fails.push("fluid-type.css must define --text-body");
+}
+
+const touch = read("packages/ui/responsive/touch-target.css");
+if (touch && !touch.includes("min-height: var(--touch-min")) {
+  fails.push("touch-target.css must enforce --touch-min (48px)");
+}
+if (touch && !touch.includes("flex-shrink: 0")) {
+  fails.push("touch-target.css must set flex-shrink: 0 on controls");
+}
+
+const tierSrc = read("packages/sdk/src/device-tier.ts");
+if (tierSrc && !tierSrc.includes('export type DeviceTier = "S" | "A" | "B"')) {
+  fails.push('device-tier must export DeviceTier "S"|"A"|"B"');
+}
+if (tierSrc && !tierSrc.includes("tierBatchMs")) {
+  fails.push("device-tier must export tierBatchMs");
+}
+
+const virtList = read("packages/ui/components/lux/VirtualList.tsx");
+if (virtList && !virtList.includes("@tanstack/react-virtual")) {
+  fails.push("VirtualList must use @tanstack/react-virtual");
+}
+if (virtList && !virtList.includes("overscan")) {
+  fails.push("VirtualList must expose overscan (default 3)");
+}
+
+const virtOpp = read("packages/ui/components/opportunity/VirtualOpportunityList.tsx");
+if (virtOpp && !virtOpp.includes("VIRTUAL_OPPORTUNITY_THRESHOLD")) {
+  fails.push("VirtualOpportunityList must define VIRTUAL_OPPORTUNITY_THRESHOLD");
+}
+if (virtOpp && !/=\s*20\b/.test(virtOpp) && !virtOpp.includes("20")) {
+  fails.push("VirtualOpportunityList threshold must be 20");
+}
+
+const virtTicker = read("packages/ui/components/lux/VirtualTicker.tsx");
+if (virtTicker && !virtTicker.includes("VIRTUAL_TICKER_THRESHOLD")) {
+  fails.push("VirtualTicker must define VIRTUAL_TICKER_THRESHOLD");
+}
+
+const layout = read("apps/web/app/layout.tsx");
+if (layout && !layout.includes("DeviceTierApply")) {
+  fails.push("apps/web layout must mount DeviceTierApply (data-tier)");
+}
+if (layout && !layout.includes("lux-app-main")) {
+  fails.push("apps/web layout must use lux-app-main content rail");
+}
+
+const profits = read("apps/web/app/profits/page.tsx");
+if (profits && !profits.includes("VirtualOpportunityList")) {
+  fails.push("/profits must use VirtualOpportunityList");
+}
+
+const uiPkg = read("packages/ui/package.json");
+if (uiPkg && !uiPkg.includes("@tanstack/react-virtual")) {
+  fails.push("packages/ui must depend on @tanstack/react-virtual");
+}
+
+const liveTicker = read("packages/ui/components/lux/LivePayoutTicker.tsx");
+if (liveTicker && !liveTicker.includes("VirtualTicker")) {
+  fails.push("LivePayoutTicker must mount VirtualTicker");
+}
+
 // package.json script + catalog pointer
 const pkg = read("package.json");
 if (pkg && !pkg.includes('"verify:responsive"')) {

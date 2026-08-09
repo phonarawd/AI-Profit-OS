@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — UI & UX
-overview: v7.22.55 §6.4c.1 5결정문 잠금(톤허용시점·괴리율금지+Infra동기·consent실행계약·완료verify·2c-pre §0.8.2승격)+§6.4 CTA supersede — v7.22.54 듀얼레이어 불변. File-Serial=2b→2c-pre→2c. PART0·PART1·PART2a·PART2b CLOSED. Index=00. 다음=operator-entity-support-email only.
+overview: v7.22.56 pending todo `[밀도:*]` 명시(§0.8.3) — v7.22.55 §6.4c.1 5결정문 잠금 불변. PART0~4 CLOSED. File-Serial 다음=PART5a public-ticker-g4-surface(pending·가벼움). Index=00.
 todos:
   - id: ui-preflight-constitution
     content: "[grok-4.5|256K] PART0 착수게이트 · **선행: Engine 02 Pre-UI Runtime Gate(§0.9 E-R1~E-R8) pending0 + Money money-user-benefits-read completed 필수(미충족 시 본 todo·이하 전부 착수 금지)** · BOOTSTRAP §0.6 실측기록(DB76/mig28/fn5·Canon·routes·Admin교차·verify live/pending) · **v7.22.50 감사 3정정 기록 흡수(§0.6 U13~U15·색토큰=lux-fintech·§29.6 Phase1+·eBay query: gap=Engine follow-up)** · File-Serial 재정렬 0 · 구현코드0 · 다음=market-partner-trust-surfaces"
@@ -40,87 +40,89 @@ todos:
     status: completed
   - id: opportunity-scan-home-ux
     content: "[grok-4.5|256K] PART3a §5.3b 홈3초·arbitrageTypeKo·기회스캔 위계·PartnerTrustStrip/Leg · CTA라벨 미구현(다음 todo) · verify:opportunity-scan-surface"
-    status: pending
+    status: completed
   - id: capital-provider-match-ux
     content: "[grok-4.5|256K] PART3b §5.3b/§48 CTA=수익 벌기·상세=이 기회로 수익 벌기·면책배지·trader jargon0 · verify:cta-earn-profit/user-trader-jargon-0"
-    status: pending
+    status: completed
   - id: price-compare-margin-ux
     content: "[grok-4.5|256K] PART3c PriceCompareMargin 4면 · 공식=Engine §0.0.4 pointer(재계산0) · compareReady 가드 · verify:margin-compare-surface · 실측(v7.22.52 §0.8.2 #3): 컴포넌트·verify스크립트·CATALOG등재 전부 0건(고아 참조였음) — 신규 구현 필수, 완료 조건에 `tooling/verify/margin-compare-surface.cjs` 신설+CATALOG.md 등재 포함(3종 세트)"
-    status: pending
+    status: completed
   - id: asset-image-execution-ux
     content: "[grok-4.5|256K] PART3d §48.3a assetImageUrl 썸네일·필터 가방·Canon productThumb · verify:asset-image-surface"
-    status: pending
+    status: completed
   - id: balance-aware-home-ux
     content: "[grok-4.5|256K] PART3e §5.3a affordable/nearMiss·입금 suggest CTA·카피 · verify:balance-aware-feed"
-    status: pending
+    status: completed
   - id: ai-execution-ux
     content: "[grok-4.5|256K] PART4a §48 진행실·성공·안전중단 + copy/ko/execution + Soft/Hard카피3줄 배선 · verify:execution-surfaces · 실측(v7.22.52 §0.8.3): `useTradeExecution` polling훅=live이나 `AiProgressRoom`/`ExecutionSuccessReceipt`/`ExecutionSafeStop`/`ExecutionStepList` 컴포넌트 0건(현재 execute page는 2-state 임시텍스트) — 3면 신규 구현 필수(스킵 금지), PART3d `ProductThumb` 재사용"
-    status: pending
+    status: completed
   - id: ai-coach-ui
     content: "[grok-4.5|256K] PART4b §6.4e/§6.4e.1+§27.10 voice copy/ko/peotteok+Canon · /me/peotteok SSE·P칩·Gstream·S거절·degrade·귀여운말투캡 · 선행=Engine ai-coach-runtime(completed) · verify:canon-surfaces+ai-coach-*+age-tone-surfaces"
-    status: pending
+    status: completed
   - id: public-ticker-g4-surface
-    content: "[grok-4.5|256K] PART5a §33.2a LivePayoutTicker·CountUp(settlement.completed only) · ticker_mode/counter_mode 투영 · DayPulse merge0 · PII0 · Admin §35.4 pointer · verify:ticker-pii-0(또는 UI게이트)"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:가벼움] PART5a §33.2a LivePayoutTicker·CountUp(settlement.completed only) · ticker_mode/counter_mode 투영 · DayPulse merge0 · PII0 · Admin §35.4 pointer · verify:ticker-pii-0(또는 UI게이트) · 실물 우선·갭-only · **2~3개 연속 묶기 OK**(5a~5f)"
+    status: completed
   - id: user-ia-shell-screens
-    content: "[grok-4.5|256K] PART5b apps/web 5탭 shell+USER_NESTED_ROUTES(/me/benefits·/me/guide/partners 포함) · /profits·/trades 골격 · retired브랜드0 · verify:ia-tabs/no-admin-in-web · ≠홈심화(PART3)"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:가벼움] PART5b apps/web 5탭 shell+USER_NESTED_ROUTES(/me/benefits·/me/guide/partners 포함) · /profits·/trades 골격 · retired브랜드0 · verify:ia-tabs/no-admin-in-web · ≠홈심화(PART3) · 실물 우선·갭-only · **2~3개 연속 묶기 OK**(5a~5f)"
+    status: completed
   - id: wallet-surfaces-ui
-    content: "[grok-4.5|256K] PART5c §49 지갑홈·입금·출금(USDT/KRW)·내역 · DemoWalletBanner·NetworkPlainWarning · Canon wallet-* · Money pointer · verify:deposit-network-plain-ko+wallet Canon"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:가벼움] PART5c §49 지갑홈·입금·출금(USDT/KRW)·내역 · DemoWalletBanner·NetworkPlainWarning · Canon wallet-* · Money pointer · verify:deposit-network-plain-ko+wallet Canon · 실물 우선·갭-only · **2~3개 연속 묶기 OK**(5a~5f)"
+    status: completed
   - id: settings-legal-ko
-    content: "[grok-4.5|256K] PART5d §50.1 fontScale3단+depositPref+약관4종·DET §50.9 · verify:legal-plain-ko/font-scale-three"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:가벼움] PART5d §50.1 fontScale3단+depositPref+약관4종·DET §50.9 · verify:legal-plain-ko/font-scale-three · 실물 우선·갭-only · **2~3개 연속 묶기 OK**(5a~5f)"
+    status: completed
   - id: toast-notification
-    content: "[grok-4.5|256K] PART5e toast catalog §8.2(+KRW_REJECTED)+§48/§49/REFERRAL/CAMPAIGN/MISSION · §50.2+§27.10.3 팔레트 · push dedup · verify:toast-emoji"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:가벼움] PART5e toast catalog §8.2(+KRW_REJECTED)+§48/§49/REFERRAL/CAMPAIGN/MISSION · §50.2+§27.10.3 팔레트 · push dedup · verify:toast-emoji · 실물 우선·갭-only · **2~3개 연속 묶기 OK**(5a~5f)"
+    status: completed
   - id: plain-korean-surfaces
-    content: "[grok-4.5|256K] PART5f 유저 surface IT용어0+§27.10 쉬운말/이모지캡 스캔(도움말·empty·힌트 포함 · 어드민 plain=Admin Owns) · verify:no-it-jargon/toast-emoji"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:가벼움] PART5f 유저 surface IT용어0+§27.10 쉬운말/이모지캡 스캔(도움말·empty·힌트 포함 · 어드민 plain=Admin Owns) · verify:no-it-jargon/toast-emoji · 실물 우선·갭-only · **2~3개 연속 묶기 OK**(5a~6c)"
+    status: completed
   - id: kyc-surfaces-ui
-    content: "[grok-4.5|256K] PART6a Canon kyc-guide/doc/confirm Lux3면 · Money §42 pointer · RRN입력0 · verify:kyc-surfaces"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:가벼움] PART6a Canon kyc-guide/doc/confirm Lux3면 · Money §42 pointer · RRN입력0 · verify:kyc-surfaces · 실물 우선·diff 보완 · **2~3개 연속 묶기 OK**(5a~6c)"
+    status: completed
   - id: trust-education-ux
-    content: "[grok-4.5|256K] PART6b §38 Objection4+DepositWhyGate+면책 CI · §38.10 로고는 market-partner todo Owns(중복구현0) · Admin growth?tab=content 면책잠금 pointer · verify:trust-copy/tax-disclaimer/objection4"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:가벼움] PART6b §38 Objection4+DepositWhyGate+면책 CI · §38.10 로고는 market-partner todo Owns(중복구현0) · Admin growth?tab=content 면책잠금 pointer · verify:trust-copy/tax-disclaimer/objection4 · 실물 우선·diff 보완 · **2~3개 연속 묶기 OK**(5a~6c)"
+    status: completed
   - id: trust-get-usdt-guide
-    content: "[grok-4.5|256K] PART6c §38.8 /me/guide/get-usdt + 입금 네트워크 한글경고 · TRC20 화면0 · verify:deposit-network-plain-ko"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:가벼움] PART6c §38.8 /me/guide/get-usdt + 입금 네트워크 한글경고 · TRC20 화면0 · verify:deposit-network-plain-ko · 실물 우선·diff 보완 · **2~3개 연속 묶기 OK**(5a~6c)"
+    status: completed
   - id: invite-explain-kr-2070
-    content: "[grok-4.5|256K] PART7a §5.9.1a 친구초대 설명·toneBand·Canon invite-home · 횟수∞ · Money §51.5 pointer · verify:invite-explain-surfaces/age-tone-surfaces"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:가벼움] PART7a §5.9.1a 친구초대 설명·toneBand·Canon invite-home · 횟수∞ · Money §51.5 pointer · verify:invite-explain-surfaces/age-tone-surfaces · 실물 diff 후 갭-only · **2~3개 연속 묶기 OK**(7a·7c·7d)"
+    status: completed
   - id: benefit-hub-surfaces
-    content: "[grok-4.5|256K] PART7b §5.9.5 /me/benefits+routes · Daily/One-Time/Weekly/Streak·Hero·캐러셀 · Credits0 · Money §51.8a·Engine §48.13.4 pointer · Admin missions pointer · verify:benefit-hub-surfaces/benefit-no-credits-currency/benefit-g4-ledger-separation · 실측(v7.22.52 §0.8.2 #2 결함): 현 verify PASS=Money API(GET 2종)+copy파일 존재만 검사 · 실제 page.tsx=1줄 골격(Hero/Carousel/D·M·W·S 카드 0) — verify PASS를 완료 증빙으로 오독 금지, 딥 UI 전량 신규 구현이 완료 조건"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:무거움·체감최우선] PART7b §5.9.5 /me/benefits+routes · Daily/One-Time/Weekly/Streak·Hero·캐러셀 · Credits0 · Money §51.8a·Engine §48.13.4 pointer · Admin missions pointer · verify:benefit-hub-surfaces/benefit-no-credits-currency/benefit-g4-ledger-separation · 실측(v7.22.52 §0.8.2 #2 결함): 현 verify PASS=Money API(GET 2종)+copy파일 존재만 검사 · 실제 page.tsx=1줄 골격(Hero/Carousel/D·M·W·S 카드 0) — verify PASS를 완료 증빙으로 오독 금지, 딥 UI 전량 신규 구현이 완료 조건 · **단독 세션 권장**(묶기≤1 가벼운 todo)"
+    status: completed
   - id: membership-grade-ux
-    content: "[grok-4.5|256K] PART7c §5.9.2c·§51.18a 등급표·AI해금·배지Brand SVG·100%아님 · Admin §9.8.10 pointer · verify:membership-surfaces/membership-badge-assets"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:가벼움] PART7c §5.9.2c·§51.18a 등급표·AI해금·배지Brand SVG·100%아님 · Admin §9.8.10 pointer · verify:membership-surfaces/membership-badge-assets · 실물 diff 후 갭-only · **2~3개 연속 묶기 OK**(7a·7c·7d)"
+    status: completed
   - id: notify-prefs-inbox
-    content: "[grok-4.5|256K] PART7d §50.1n 가입시 prefs 전부ON · §5.9.4 쪽지함 · toast MATCH/WITHDRAW_BLOCK · Admin 쪽지 pointer · verify:notification-prefs-default-on/ops-inbox"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:가벼움] PART7d §50.1n 가입시 prefs 전부ON · §5.9.4 쪽지함 · toast MATCH/WITHDRAW_BLOCK · Admin 쪽지 pointer · verify:notification-prefs-default-on/ops-inbox · 실물 우선 확인 · **2~3개 연속 묶기 OK**(7a·7c·7d)"
+    status: completed
   - id: loop-psychology-5124
-    content: "[grok-4.5|256K] PART8a §51.24 DayPulse·PreCTA·L1~L24 · G4 merge0 · verify:loop-psychology/day-pulse-live-only/preflight-may-stop"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:가벼움] PART8a §51.24 DayPulse·PreCTA·L1~L24 · G4 merge0 · verify:loop-psychology/day-pulse-live-only/preflight-may-stop · 실물 우선·갭-only · **2~3개 연속 묶기 OK**(8a·8c)"
+    status: completed
   - id: trust-surfaces-v722
-    content: "[grok-4.5|256K] PART8b §51.16~21(20 Weekly Market Briefing 포함·v7.22.52~53 고아게이트 Owns 재배정·verify PART8b 신설) Proof/SafeStop/Journey/AdapterHealth/WeeklyMarketBriefing/DepositConsult · /me/guide/market-weekly route+USER_NESTED_ROUTES등록+Canon(market-weekly-briefing.wire.json)+copy/ko/guide.ts+verify:market-briefing-no-investment-advice 신설(§51.20 · 현재 ghost) · Loop본문=loop-psychology Owns(중복0) · verify 해당 게이트"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:무거움] PART8b §51.16~21(20 Weekly Market Briefing 포함·v7.22.52~53 고아게이트 Owns 재배정·verify PART8b 신설) Proof/SafeStop/Journey/AdapterHealth/WeeklyMarketBriefing/DepositConsult · /me/guide/market-weekly route+USER_NESTED_ROUTES등록+Canon(market-weekly-briefing.wire.json)+copy/ko/guide.ts+verify:market-briefing-no-investment-advice 신설(§51.20 · 현재 ghost) · Loop본문=loop-psychology Owns(중복0) · verify 해당 게이트 · 5+1종 **신규 구현** · **단독 세션 권장**"
+    status: completed
   - id: responsive-device-tier
-    content: "[grok-4.5|256K] PART8c fluid+touch-target + device-tier S/A/B + Virtual · verify:responsive"
-    status: pending
+    content: "[grok-4.5|256K] [밀도:가벼움] PART8c fluid+touch-target + device-tier S/A/B + Virtual · verify:responsive · 회귀·harness live · **2~3개 연속 묶기 OK**(8a·8c)"
+    status: completed
   - id: trust-age-spotcheck
-    content: "[grok-4.5|256K] PART8d §38.6b+§27.10 20·40·60~70대 각3명 · 도움말이모지길잡이·퍼뜩첫인사·면책이모지0 · 성별중성 · Admin ai-logs?tab=spotcheck pointer"
+    content: "[grok-4.5|256K] [밀도:수동실사] PART8d §38.6b+§27.10 20·40·60~70대 각3명 · 도움말이모지길잡이·퍼뜩첫인사·면책이모지0 · 성별중성 · Admin ai-logs?tab=spotcheck pointer · 자동 verify **0** · **운영자 실사**(코드 세션과 분리)"
     status: pending
 isProject: false
 ---
 
-# AI Profit OS — UI & UX (v7.22.55 · §6.4c.1 5결정문 잠금 · v7.22.54 듀얼레이어 · §0.8 · 착수 잠금=Pre-UI Runtime Gate)
+# AI Profit OS — UI & UX (v7.22.56 · pending todo 밀도 태그 · v7.22.55 §6.4c.1 · §0.8 · 착수 잠금=Pre-UI Runtime Gate)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`  
 > **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
-> **모델 잠금:** 전 todo = **`[grok-4.5|256K]`** · 한 채팅=한 todo · PART0→8 위→아래 (File-Serial)  
+> **모델 잠금:** 전 todo = **`[grok-4.5|256K]`** · 한 채팅=한 todo(가벼움 2~3개 연속 묶기 OK) · PART0→8 위→아래 (File-Serial)  
+> **todo 밀도(v7.22.56 · pending YAML `[밀도:*]`):** **가벼움**=실물 우선·갭-only·2~3개 연속·1커밋 묶기 OK · **무거움**=신규 다면·verify ghost·단독 세션 · **무거움·체감최우선**=7b(혜택 허브 딥 UI) · **수동실사**=8d(사람 spot-check·코드 세션 분리)  
 > **todo 파트:** **0** preflight · **1** 신뢰로고/카피/Canon/Lux · **2** 온보딩·인증·**2c-pre schema**·랜딩 · **3** 홈·마진·이미지·잔액 · **4** 실행실·퍼뜩 · **5** 티커·5탭·지갑·설정·토스트 · **6** KYC·신뢰교육·테더가이드 · **7** 초대·혜택·멤버십·알림 · **8** 루프·Proof·반응형·spot-check  
+> **v7.22.56 (pending todo 밀도 · 코드0):** 미완료 YAML 17건에 `[밀도:가벼움|무거움|무거움·체감최우선|수동실사]` + 묶기 힌트 · §0.8.3 표 밀도 열 · completed todo 변경 **0**  
 > **v7.22.55 (§6.4c.1 5결정문 · 코드+문서 SSOT · 오류0):** (1) 톤 허용 시점 SSOT=로그인 후·첫 capital surface(`/`,`/profits`,기회 CTA)부터 수익|투자|USDT 언어 허용 · Guest(`/l/*`→`/onboarding`·`/auth/*`)=utility 유지 + 온보딩 첫화면 `transitionDisclosure` 1줄(**전환 고지≠capital 톤 허가**) · §6.4 ACTION「수익 벌기」**supersede**=capital surface only · (2) 랜딩 포지셔닝=`시세·가격 비교`(괴리율·차익 **0**) · `copy/ko/landing` ↔ Infra §31.4 sanitizer ↔ `verify:marketing-compliance` **동시** 갱신이 완료 조건 · (3) GuestChrome consent Owns=Infra `packages/sdk/marketing` · UI=`consentMarketing===true`일 때만 Lead emit · 미실장=emit **0** · (4) 완료 정의=`verify:landing-3s`+`verify:marketing-compliance`+`verify:operator-footer` · (5) PART2c-pre를 §0.8.2 #5로 **같은 diff 승격**(File-Serial 위반≠·의존 삽입)  
 > **v7.22.54 (듀얼레이어 광고 Compliance · 오류0):** §6.4c.1 신설 — `/l/*`·`/ads/*`=**utility-only** · `LandingOperatorFooter` · `utilityDisclaimer` 2중 · CTA=`실시간 시세 맵 열기` · PART2c-pre · CAPI=Infra Owns · File-Serial=2b→**2c-pre**→2c  
 > **v7.22.53 (§0.8.2~3 패치):** 감사조치/구현시점 열 · verify 검사범위 1줄 · 실행밀도 · §51.20 wording — v7.22.52 불변  
@@ -290,33 +292,40 @@ isProject: false
 > **실행 밀도(v7.22.53 · File-Serial 유지):** **1a~1d·5a~6c** = verify PASS 후 **갭-only·1채팅 목표**(전면 재작성 금지) · **3c·4a·7b·8b** = **무거운 신규 구현**(스킵 금지) · 그중 **4a·7b** = §0.8.4 **유저 체감 최우선 부채**(순서 앞당기기 **0** · 도달까지 중복 재작성 금지).  
 > 이 표는 완료 판정이 아니라 **착수 전 확인 순서**다.
 
-| PART | todo id | verify 검사 범위 (1줄 · `tooling/verify/*.cjs` 헤더+실측) | 실물 상태(2026-08-10 실측) | 다음 에이전트 필수 행동 |
-|------|---------|--------------------------------------------------------|---------------------------|----------------------|
-| 1a | market-partner-trust-surfaces | `market-partner-trust`: Canon+copy+route+MarketPartner*+guide **page** · 로고 SVG **7/7 ready** · BLOCKER **0** | Grid/Leg/Strip+`brand/markets.ts`+Canon+`/me/guide/partners`+7 SVG **CLOSED** | **COMPLETED** · `MARKET_PARTNER_LOGOS_REQUIRE_READY=1` PASS · 전면 재작성 금지 유지 |
-| 1b | korean-first-copy | `korean-ui`/`toast-emoji`/`cute-emoji-palette`: copy/ko 필수 파일·voice·retired brand·landing utility키·Guest금지어0 (**페이지 UX 깊이 0**) | `copy/ko/*` 15+ · verify live · auth Guest drift 해소 | **COMPLETED** · 파일 재생성 금지 유지 · 본문깊이=PART2a/2c |
-| 1c | mockup-governance-adr013 | `mockup-governance`/`canon-surfaces`/`brand-logo-single`: ADR-013·Canon manifest·단일 Brand Kit | 거버넌스·CI 정착 · Admin wire Owns 확인 | **COMPLETED** · 갭코드0 · 재작성 금지 |
-| 1d | ux-design-system | `lux-theme-sync`+`ux-design-system`+`font-scale-three`: tokens/breakpoints/motion/font-scale/PPE/MotionCTA | 전부 live · hex visual_kit_v1 일치 | **COMPLETED** · 갭코드0 · hex 재발명 금지 |
-| 2a | onboarding-experiential | `onboarding-experiential`: Canon+OnboardingFlow+page · Guest utility CTA0·transitionDisclosure·compareMiniUtility | live · capital drift **해소** | **COMPLETED** · wire/demo/practice 갭 닫음 |
-| 2b | auth-login-signup-ui | `auth-surfaces`: auth 3면+Kakao ENABLED가드 · Guest=utility(§6.4c.1 F) · landing Kakao0 | live · GuestChrome 3면 · tone=utility wire | **COMPLETED** · Infra callback 전 `NEXT_PUBLIC_OAUTH_KAKAO_ENABLED=0` |
-| 2c-pre | operator-entity-support-email | schema JSON Schema valid · instance `supportEmail` · **§0.8.2 #5** | v1 `required`+instance `support@hiptk.app` 실물 | 갭-only · footer=2c Owns · 전면 재작성 금지 |
-| 2c | landing-3s-ui | `landing-3s`+`marketing-compliance`+`operator-footer`: utility·footer·disclaimer·금지어(괴리율 포함)·consent emit 가드 | Landing3s+GuestChrome 골격 · **utility/footer/disclaimer/consent 갭** | §6.4c.1 A~H 전량 · 2c-pre 선행 · Infra 금지어 **동기 PASS** |
-| 3a | opportunity-scan-home-ux | `arbitrage-type-label` live · **`opportunity-scan-surface` 스크립트 0** · 홈 스캔 레이아웃 전량 검사 0 | `arbitrage-type-label` live | 홈 3초 위계 vs §5.3b 체크리스트 diff · PASS만으로 홈 완성 **아님** |
-| 3b | capital-provider-match-ux | `cta-earn-profit`: CTA 카피+Canon · `user-trader-jargon-0`: copy+select pages 금지어 스캔 | 둘 다 live | 회귀 스캔·갭 diff |
-| 3c | price-compare-margin-ux | **`margin-compare-surface` ghost** (스크립트·컴포넌트 0) | **0.8.2 #3** | **신규 구현 필수**(3종 세트 · 스킵 금지) |
-| 3d | asset-image-execution-ux | `asset-image-surface`/`product-image`: ProductImage·R2 가드·Canon4면 | live · `ProductThumb.tsx` 존재 | PART4a와 통합만 |
-| 3e | balance-aware-home-ux | `balance-aware-feed`: Engine classify+suggest **API·Nest wire** (홈 슬롯 배선 0) | Engine 측 live | UI 슬롯 vs §5.3a 체크리스트 diff |
-| 4a | ai-execution-ux | `trade-execution-hook`: `useTradeExecution`+polling+execute **page 배선** (**AiProgressRoom 등 4컴포넌트 0**) | 훅 live · execute=2-state 임시 텍스트 | **3면 컴포넌트 신규 구현 필수** · PART3d `ProductThumb` 재사용 |
-| 4b | ai-coach-ui | 전용 verify **0** | `/me/peotteok` 골격 스텁 | 신규 구현 필요 |
-| 5a~5f | ticker·shell·wallet·settings·toast·plain-ko | `part5-shell-toast`/`legal-plain-ko`/`font-scale-three`/`toast-emoji`/`deposit-network-plain-ko`/`no-it-jargon`: shell+routes+legal4+toast (**benefits page=존재만·딥 UI 0**) | BottomNav5/ToastHost/legal/settings 실물 | 각 §5.x vs 실물 diff · 전면 재작성 금지 |
-| 6a~6c | kyc·trust-education·get-usdt-guide | `kyc-surfaces`: KycFlow+page · `trust-copy`/`tax-disclaimer`/`objection4`: Q1~4 mount+금지어 · `deposit-network-plain-ko`: TRC20 plain | `KycFlow`/`ObjectionFourAccordion`/`GetUsdtGuide` 등 실물 | diff 보완 위주 |
-| 7a | invite-explain-kr-2070 | `invite-explain-surfaces`: CATALOG pointer · **스크립트 0** | verify "live" 미표기 | §5.9.1a vs 실물 diff 후 착수 |
-| 7b | benefit-hub-surfaces | **`benefit-hub-surfaces`: Money API+copy+wire만** (**page.tsx 딥 UI 0** · §0.8.2 #2) | Money API live · page=1줄 골격 | verify PASS **무관** · **딥 UI 전량 신규 구현** |
-| 7c | membership-grade-ux | `membership-surfaces`: CATALOG · Engine `membership-ladder`/`daily-cap` live | Engine live · UI 미확정 | `/me/membership` vs §5.9.2c diff |
-| 7d | notify-prefs-inbox | `ops-inbox`/`notification-prefs-default-on`/`push-channel-prefs`: CATALOG · 스크립트 혼재 | verify "live" 미표기 | 실물 우선 확인 |
-| 8a | loop-psychology-5124 | `loop-psychology`/`day-pulse-live-only`/`preflight-may-stop`: CATALOG §51.24 | verify "live" 미표기 | 실물 우선 확인 |
-| 8b | trust-surfaces-v722 | **`market-briefing-no-investment-advice` ghost** · 기타 Proof/SafeStop 등 PART8b 범위 | §51.20 Owns 재배정(verify 미착수) | 5+1종 **신규 구현** · §51.20 verify=PART8b 신설 |
-| 8c | responsive-device-tier | `verify:responsive`: Playwright multi-viewport **Canon structure** | harness live | 회귀만 |
-| 8d | trust-age-spotcheck | 자동화 **0** (사람 실사) | — | 실사 진행 |
+| PART | todo id | 밀도 | verify 검사 범위 (1줄 · `tooling/verify/*.cjs` 헤더+실측) | 실물 상태(2026-08-10 실측) | 다음 에이전트 필수 행동 |
+|------|---------|------|--------------------------------------------------------|---------------------------|----------------------|
+| 1a | market-partner-trust-surfaces | — | `market-partner-trust`: Canon+copy+route+MarketPartner*+guide **page** · 로고 SVG **7/7 ready** · BLOCKER **0** | Grid/Leg/Strip+`brand/markets.ts`+Canon+`/me/guide/partners`+7 SVG **CLOSED** | **COMPLETED** · `MARKET_PARTNER_LOGOS_REQUIRE_READY=1` PASS · 전면 재작성 금지 유지 |
+| 1b | korean-first-copy | — | `korean-ui`/`toast-emoji`/`cute-emoji-palette`: copy/ko 필수 파일·voice·retired brand·landing utility키·Guest금지어0 (**페이지 UX 깊이 0**) | `copy/ko/*` 15+ · verify live · auth Guest drift 해소 | **COMPLETED** · 파일 재생성 금지 유지 · 본문깊이=PART2a/2c |
+| 1c | mockup-governance-adr013 | — | `mockup-governance`/`canon-surfaces`/`brand-logo-single`: ADR-013·Canon manifest·단일 Brand Kit | 거버넌스·CI 정착 · Admin wire Owns 확인 | **COMPLETED** · 갭코드0 · 재작성 금지 |
+| 1d | ux-design-system | — | `lux-theme-sync`+`ux-design-system`+`font-scale-three`: tokens/breakpoints/motion/font-scale/PPE/MotionCTA | 전부 live · hex visual_kit_v1 일치 | **COMPLETED** · 갭코드0 · hex 재발명 금지 |
+| 2a | onboarding-experiential | — | `onboarding-experiential`: Canon+OnboardingFlow+page · Guest utility CTA0·transitionDisclosure·compareMiniUtility | live · capital drift **해소** | **COMPLETED** · wire/demo/practice 갭 닫음 |
+| 2b | auth-login-signup-ui | — | `auth-surfaces`: auth 3면+Kakao ENABLED가드 · Guest=utility(§6.4c.1 F) · landing Kakao0 | live · GuestChrome 3면 · tone=utility wire | **COMPLETED** · Infra callback 전 `NEXT_PUBLIC_OAUTH_KAKAO_ENABLED=0` |
+| 2c-pre | operator-entity-support-email | — | schema JSON Schema valid · instance `supportEmail` · **§0.8.2 #5** | v1 `required`+instance `support@hiptk.app` 실물 | **COMPLETED** · 갭-only |
+| 2c | landing-3s-ui | — | `landing-3s`+`marketing-compliance`+`operator-footer`: utility·footer·disclaimer·금지어(괴리율 포함)·consent emit 가드 | Landing3s+GuestChrome · utility/footer/disclaimer/consent | **COMPLETED** |
+| 3a | opportunity-scan-home-ux | — | `arbitrage-type-label` live · **`opportunity-scan-surface` 스크립트 0** · 홈 스캔 레이아웃 전량 검사 0 | `arbitrage-type-label` live | **COMPLETED** |
+| 3b | capital-provider-match-ux | — | `cta-earn-profit`: CTA 카피+Canon · `user-trader-jargon-0`: copy+select pages 금지어 스캔 | 둘 다 live | **COMPLETED** |
+| 3c | price-compare-margin-ux | 무거움 | **`margin-compare-surface` ghost** (스크립트·컴포넌트 0) | **0.8.2 #3** | **COMPLETED** · 3종 세트 |
+| 3d | asset-image-execution-ux | — | `asset-image-surface`/`product-image`: ProductImage·R2 가드·Canon4면 | live · `ProductThumb.tsx` 존재 | **COMPLETED** |
+| 3e | balance-aware-home-ux | — | `balance-aware-feed`: Engine classify+suggest **API·Nest wire** (홈 슬롯 배선 0) | Engine 측 live | **COMPLETED** |
+| 4a | ai-execution-ux | 무거움·체감최우선 | `trade-execution-hook`: `useTradeExecution`+polling+execute **page 배선** (**AiProgressRoom 등 4컴포넌트 0**) | 훅 live · execute=2-state 임시 텍스트 | **COMPLETED** · 3면 신규 |
+| 4b | ai-coach-ui | 무거움 | 전용 verify **0** | `/me/peotteok` 골격 스텁 | **COMPLETED** · 신규 구현 |
+| 5a | public-ticker-g4-surface | **가벼움** | `ticker-pii-0`: LivePayoutTicker·PII0 · settlement.completed only | ticker 실물 | 갭 diff · **5a~5f 묶기 OK** |
+| 5b | user-ia-shell-screens | **가벼움** | `ia-tabs`/`no-admin-in-web`: 5탭·USER_NESTED_ROUTES | BottomNav5·routes 실물 | 갭 diff · **5a~5f 묶기 OK** |
+| 5c | wallet-surfaces-ui | **가벼움** | `deposit-network-plain-ko`+wallet Canon | wallet 실물 | 갭 diff · **5a~5f 묶기 OK** |
+| 5d | settings-legal-ko | **가벼움** | `legal-plain-ko`/`font-scale-three` | legal/settings 실물 | 갭 diff · **5a~5f 묶기 OK** |
+| 5e | toast-notification | **가벼움** | `toast-emoji`/`part5-shell-toast` | ToastHost 실물 | 갭 diff · **5a~5f 묶기 OK** |
+| 5f | plain-korean-surfaces | **가벼움** | `no-it-jargon`/`toast-emoji` | copy 스캔 | 갭 diff · **5a~6c 묶기 OK** |
+| 6a | kyc-surfaces-ui | **가벼움** | `kyc-surfaces`: KycFlow+page | `KycFlow` 실물 | diff 보완 · **5a~6c 묶기 OK** |
+| 6b | trust-education-ux | **가벼움** | `trust-copy`/`tax-disclaimer`/`objection4` | ObjectionFourAccordion 등 | diff 보완 · **5a~6c 묶기 OK** |
+| 6c | trust-get-usdt-guide | **가벼움** | `deposit-network-plain-ko`: TRC20 plain | GetUsdtGuide 실물 | diff 보완 · **5a~6c 묶기 OK** |
+| 7a | invite-explain-kr-2070 | **가벼움** | `invite-explain-surfaces`: CATALOG pointer · **스크립트 0** | verify "live" 미표기 | diff 후 갭 · **7a·7c·7d 묶기 OK** |
+| 7b | benefit-hub-surfaces | **무거움·체감최우선** | **`benefit-hub-surfaces`: Money API+copy+wire만** (**page.tsx 딥 UI 0** · §0.8.2 #2) | Money API live · page=1줄 골격 | verify PASS **무관** · **딥 UI 전량 신규** · **단독 권장** |
+| 7c | membership-grade-ux | **가벼움** | `membership-surfaces`: CATALOG · Engine `membership-ladder`/`daily-cap` live | Engine live · UI 미확정 | diff · **7a·7c·7d 묶기 OK** |
+| 7d | notify-prefs-inbox | **가벼움** | `ops-inbox`/`notification-prefs-default-on`/`push-channel-prefs`: CATALOG · 스크립트 혼재 | verify "live" 미표기 | 실물 우선 · **7a·7c·7d 묶기 OK** |
+| 8a | loop-psychology-5124 | **가벼움** | `loop-psychology`/`day-pulse-live-only`/`preflight-may-stop`: CATALOG §51.24 | verify "live" 미표기 | 실물 우선 · **8a·8c 묶기 OK** |
+| 8b | trust-surfaces-v722 | **무거움** | **`market-briefing-no-investment-advice` ghost** · 기타 Proof/SafeStop 등 PART8b 범위 | §51.20 Owns 재배정(verify 미착수) | 5+1종 **신규 구현** · **단독 권장** |
+| 8c | responsive-device-tier | **가벼움** | `verify:responsive`: Playwright multi-viewport **Canon structure** | harness live | 회귀만 · **8a·8c 묶기 OK** |
+| 8d | trust-age-spotcheck | **수동실사** | 자동화 **0** (사람 실사) | — | 운영자 spot-check · **코드 세션 분리** |
 
 ### 0.8.4 다관점 판정 (예측0 · 실측 근거만)
 

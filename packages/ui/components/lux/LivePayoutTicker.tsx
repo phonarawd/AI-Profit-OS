@@ -1,6 +1,7 @@
 "use client";
 
 import { T } from "../../copy/ko";
+import { VirtualTicker, VIRTUAL_TICKER_THRESHOLD } from "./VirtualTicker";
 
 /** Admin §35.4 / schemas/public-ticker-event.v1 — client receives masked only */
 export type PublicTickerEvent = {
@@ -14,7 +15,8 @@ export type PublicTickerEvent = {
 export type LivePayoutTickerProps = {
   mode: "off" | "live" | "demo" | "hybrid";
   events: PublicTickerEvent[];
-  maxItems?: 50 | number;
+  /** Cap before virtualize; default allows >50 for VirtualTicker path */
+  maxItems?: number;
 };
 
 const TEMPLATE_KEY: Record<
@@ -54,12 +56,12 @@ function formatLine(ev: PublicTickerEvent): string | null {
 export function LivePayoutTicker({
   mode,
   events,
-  maxItems = 50,
+  maxItems = 200,
 }: LivePayoutTickerProps) {
   if (mode === "off") return null;
 
   const lines = events
-    .slice(0, Math.min(50, maxItems))
+    .slice(0, maxItems)
     .map((ev) => ({ id: ev.id, text: formatLine(ev) }))
     .filter((x): x is { id: string; text: string } => Boolean(x.text));
 
@@ -73,17 +75,7 @@ export function LivePayoutTicker({
       aria-label={T.ticker.regionAria}
       className="overflow-hidden border-b border-lux-border bg-lux-surface px-3 py-2"
     >
-      <ul className="flex max-h-24 flex-col gap-1 overflow-y-auto text-sm text-lux-text-muted">
-        {lines.map((row) => (
-          <li
-            key={row.id}
-            data-testid="ticker-row"
-            className="truncate lux-motion-any"
-          >
-            {row.text}
-          </li>
-        ))}
-      </ul>
+      <VirtualTicker rows={lines} threshold={VIRTUAL_TICKER_THRESHOLD} />
     </section>
   );
 }

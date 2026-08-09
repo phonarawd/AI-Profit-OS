@@ -31,6 +31,13 @@ export {
   BalanceAwareHome,
   type BalanceAwareHomeProps,
 } from "./BalanceAwareHome";
+export {
+  VirtualOpportunityList,
+  VirtualOpportunitySkeleton,
+  VIRTUAL_OPPORTUNITY_THRESHOLD,
+  OPPORTUNITY_CARD_ESTIMATE_PX,
+  type VirtualOpportunityListProps,
+} from "./VirtualOpportunityList";
 export type {
   OpportunityBucket,
   OpportunityCardModel,
