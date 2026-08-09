@@ -63,9 +63,7 @@ export function ExecutionSafeStop({
     ? T.execution.priceNearMiss
     : isTimeout
       ? T.execution.matchTimeout
-      : code === "PRICE_MOVED"
-        ? T.execution.safeBodyPrice
-        : T.execution.safeStopReason;
+      : T.execution.safeStopReason;
 
   const thumbSrc = asset?.assetImageUrl ?? state.asset.iconUrl ?? null;
   const thumbAlt =

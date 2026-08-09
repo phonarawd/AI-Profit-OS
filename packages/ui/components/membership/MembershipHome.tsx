@@ -183,7 +183,8 @@ export function MembershipHome({
                 >
                   <MembershipBadge grade={id} size="sm" showLabel />
                   <div className="text-xs text-lux-text-muted">
-                    {rung.dailyUserMatchCap != null ? (
+                    {"dailyUserMatchCap" in rung &&
+                    rung.dailyUserMatchCap != null ? (
                       <p>
                         {T.membership.dailyCapValue.replace(
                           "{n}",
@@ -191,7 +192,7 @@ export function MembershipHome({
                         )}
                       </p>
                     ) : null}
-                    {rung.maxCapitalBand ? (
+                    {"maxCapitalBand" in rung && rung.maxCapitalBand ? (
                       <p>
                         {T.membership.bandLabel}: {rung.maxCapitalBand}
                       </p>

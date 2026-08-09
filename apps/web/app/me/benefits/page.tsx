@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   BenefitHub,
   type BenefitCampaignSlide,
+  type BenefitHubProps,
   type BenefitMissionCardModel,
   type BenefitSummaryModel,
 } from "@aipo/ui/components/benefits";
@@ -31,9 +32,9 @@ type BenefitsSummaryResponse = BenefitSummaryModel & {
  */
 export default function Page() {
   const [summary, setSummary] = useState<BenefitSummaryModel | null>(null);
-  const [sections, setSections] = useState<BenefitsListResponse["sections"]>(
-    null,
-  );
+  const [sections, setSections] = useState<
+    BenefitHubProps["sections"]
+  >(null);
   const [campaigns, setCampaigns] = useState<BenefitCampaignSlide[] | null>(
     null,
   );
