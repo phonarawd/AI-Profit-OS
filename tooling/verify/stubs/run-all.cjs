@@ -92,6 +92,8 @@ const live = [
   "onboarding-experiential.cjs",
   "auth-surfaces.cjs",
   "landing-3s.cjs",
+  "operator-footer.cjs",
+  "marketing-compliance.cjs",
   // PART3 ProductImage (audit §26/§37 · source-agnostic)
   "product-image.cjs",
   // PART4 useTradeExecution (Phase0 polling · Phase1+ SSE boundary)

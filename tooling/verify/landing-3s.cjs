@@ -26,10 +26,13 @@ const files = [
   "packages/ui/canon/surfaces/landing-3s.wire.json",
   "packages/ui/copy/ko/landing.ts",
   "packages/ui/components/landing/Landing3s.tsx",
+  "packages/ui/components/landing/emitLandingLead.ts",
   "packages/ui/components/landing/index.ts",
+  "packages/ui/components/shell/LandingOperatorFooter.tsx",
   "apps/web/app/l/[variant]/page.tsx",
   "apps/web/app/ads/page.tsx",
   "apps/web/app/ads/[variant]/page.tsx",
+  "apps/web/app/components/GuestChrome.tsx",
 ];
 for (const f of files) mustExist(f);
 
@@ -83,6 +86,18 @@ if (wire) {
   if (wire.primaryCta?.copyKey !== "T.landing.ctaOpenPriceMap") {
     fails.push("landing primaryCta.copyKey must be T.landing.ctaOpenPriceMap");
   }
+  const scroll = wire.scrollBlocks || [];
+  const scrollIds = scroll.map((b) => b.id);
+  if (!scrollIds.includes("operator-footer")) {
+    fails.push("wire.scrollBlocks missing operator-footer");
+  }
+  if (!scrollIds.includes("pre-footer-disclaimer")) {
+    fails.push("wire.scrollBlocks missing pre-footer-disclaimer (footer 직상 2중)");
+  }
+  const cta = (wire.blocks || []).find((b) => b.id === "cta");
+  if (cta?.disclaimerCopyKey !== "T.landing.utilityDisclaimer") {
+    fails.push("wire cta.disclaimerCopyKey must be T.landing.utilityDisclaimer");
+  }
 }
 
 const landing = read("packages/ui/components/landing/Landing3s.tsx");
@@ -120,6 +135,21 @@ if (landing) {
   if (landing.includes("expectedNotGuaranteed")) {
     fails.push("Landing3s must not use expectedNotGuaranteed on landing");
   }
+  if (!landing.includes("LandingOperatorFooter")) {
+    fails.push("Landing3s must render LandingOperatorFooter");
+  }
+  if (!landing.includes('data-landing-disclaimer="cta"')) {
+    fails.push("Landing3s missing CTA직하 utilityDisclaimer");
+  }
+  if (!landing.includes('data-landing-disclaimer="pre-footer"')) {
+    fails.push("Landing3s missing footer직전 utilityDisclaimer");
+  }
+  if (!landing.includes("emitLandingLeadIfConsented")) {
+    fails.push("Landing3s must gate Lead via emitLandingLeadIfConsented");
+  }
+  if (/BottomNav5|data-testid=\"bottom-nav\"/.test(landing)) {
+    fails.push("Landing3s must not include 5-tab BottomNav (GuestChrome)");
+  }
 }
 
 const ads = read("apps/web/app/ads/page.tsx");
@@ -133,6 +163,34 @@ if (adsVar && !adsVar.includes("Landing3s")) {
 }
 if (lVar && !lVar.includes("Landing3s")) {
   fails.push("/l/[variant] must render Landing3s");
+}
+for (const [label, src] of [
+  ["/ads", ads],
+  ["/ads/[variant]", adsVar],
+  ["/l/[variant]", lVar],
+]) {
+  if (src && !src.includes("GuestChrome")) {
+    fails.push(`${label} must wrap Landing3s in GuestChrome (5탭 0)`);
+  }
+  if (src && /BottomNav5/.test(src)) {
+    fails.push(`${label} must not mount BottomNav5`);
+  }
+}
+
+const footer = read("packages/ui/components/shell/LandingOperatorFooter.tsx");
+if (footer) {
+  for (const needle of [
+    "operator-entity.instance.json",
+    "legalName",
+    "licenseNumber",
+    "supportEmail",
+    "jurisdiction",
+    "/me/legal",
+  ]) {
+    if (!footer.includes(needle)) {
+      fails.push(`LandingOperatorFooter missing ${needle}`);
+    }
+  }
 }
 
 const nextCfg = read("apps/web/next.config.ts");

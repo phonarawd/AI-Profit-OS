@@ -34,10 +34,10 @@ todos:
     status: completed
   - id: operator-entity-support-email
     content: "[grok-4.5|256K] PART2c-pre §50.9 schemas/operator-entity.v1.json+instance.json `supportEmail`(format email·required) · examples 동기 · JSX 하드코딩0 · verify:operator-footer scaffold=supportEmail 존재+instance 일치 · LandingOperatorFooter 바인딩=landing-3s-ui Owns(중복0) · **§0.8.2 #5 승격(v7.22.55)** · 실측 supportEmail already→갭-only(전면 재작성 금지) · 구현=schema+instance only"
-    status: pending
+    status: completed
   - id: landing-3s-ui
     content: "[grok-4.5|256K] PART2c §6.4c+§6.4c.1(v7.22.55) 듀얼레이어 utility 랜딩 · Canon landing-3s · firstViewport≤5 · Tier-A MarketPartnerTrustStrip · GuestChrome(5탭0) · /l/*+/ads 동일 · **인수조건:** (1) LandingOperatorFooter=operator-entity→legalName+license+supportEmail+jurisdiction+`/me/legal`1 · (2) utilityDisclaimer CTA직하+footer직전 2중 · (3) 포지셔닝=시세·가격 비교 · 금지어 수익|투자|USDT|테더|보장|차익|괴리율|재테크|알바 0 · CTA=`실시간 시세 맵 열기`→/onboarding|/auth/login · (4) expectedNotGuaranteed 랜딩폐기 · (5) consent실행계약=Infra sdk · UI Lead emit only if consentMarketing===true · 미실장=emit0 · (6) 완료=`verify:landing-3s`+`verify:marketing-compliance`+`verify:operator-footer` PASS · copy↔Infra §31.4/§31.7 금지어 동기"
-    status: pending
+    status: completed
   - id: opportunity-scan-home-ux
     content: "[grok-4.5|256K] PART3a §5.3b 홈3초·arbitrageTypeKo·기회스캔 위계·PartnerTrustStrip/Leg · CTA라벨 미구현(다음 todo) · verify:opportunity-scan-surface"
     status: pending

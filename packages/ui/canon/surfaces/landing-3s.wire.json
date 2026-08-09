@@ -40,6 +40,12 @@
   ],
   "scrollBlocks": [
     {
+      "id": "pre-footer-disclaimer",
+      "role": "disclaimer",
+      "copyKey": "T.landing.utilityDisclaimer",
+      "note": "§6.4c.1 C #2 LandingOperatorFooter 직상 · CTA직하와 2중"
+    },
+    {
       "id": "operator-footer",
       "role": "legal",
       "component": "LandingOperatorFooter",

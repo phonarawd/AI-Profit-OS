@@ -12,6 +12,9 @@ export const landing = {
   ctaStartUtility: "시작하기",
   ctaContinueUtility: "시세 맵 계속",
   ctaHint: "👋 시세 맵을 열어 보세요",
+  /** LandingOperatorFooter · /me/legal 1링크 (§6.4c.1 D) */
+  legalLink: "약관과 정보",
+  detLicensePrefix: "DET 면허",
   /** media tone variants — utility-only · §38.9 seed */
   variants: {
     meta: "✨ 글로벌 시세 모니터링·비교 툴",
