@@ -69,7 +69,7 @@
 | onboarding-experiential · auth-surfaces · landing-3s · kyc-surfaces | UI §6.4~6.4d · Infra §31.2a/b · Money §42 (v7.22.11) — **onboarding-experiential · auth-surfaces · landing-3s · kyc-surfaces live** (Canon Lux3면 · RRN0) |
 | trust-copy · tax-disclaimer · objection4 | UI §38 PART6b — **live** (금지어0 · 면책 입금/guide · Guest onboarding 면책0=v7.22.55 utility · Admin content 잠금 · Objection Q1~Q4 온보딩·입금게이트·FAQ·상세) |
 | auth-flows | Infra §51.9+§51.9.1 — Nest JWT only · Stage A/B · OAuth/Passkey · session · 탈퇴 · **live** |
-| ai-coach-fact-only · ai-coach-no-autonomy | Engine §47.12~15 — **P레인** Fact-only · 전레인 자율집행 0 · FactToolService+CoachOrchestrator+SSE — **live** |
+| ai-coach-fact-only · ai-coach-no-autonomy · ai-coach-ui | Engine §47.12~15 · UI §6.4e/§27.10 — **P레인** Fact-only · 전레인 자율집행 0 · FactToolService+CoachOrchestrator+SSE — **live** · **ai-coach-ui live** (`/me/peotteok` Canon · SSE client · P칩 · S거절 deep-link · degrade toast · voice pace) |
 | ai-general-no-money-tools · ai-lane-router · llm-adapter-contract | Engine §47.8·47.13~15 — G tools=[] · P/G/S router · **live** |
 | llm-quota-degrade | Engine §47.13 — 429→G busy·P Fact · 자동 failover 0 · toast `PEOTTEOK_LLM_BUSY` — **live** |
 | fact-freshness · answer-trace | Engine §47.4·47.5·47.15 — stale Fact refresh · lane+trace 100% · **live** |
@@ -83,7 +83,7 @@
 | attribution-chain · capi-consent · capi-config · capi-smoke · seo-schema | Infra §31.2c~§31.4 · UI §6.4c.1 (v7.22.55) — **planned** · D1~D3 dedup · consent=false send0 · capi-config/smoke · METRICS.md · Admin Worker health pointer |
 | marketing-compliance · operator-footer | Infra §31.4/§31.7 · UI §6.4c.1 (v7.22.55) — **live** · **marketing-compliance**=landing 금지어(수익·투자·USDT·테더·보장·차익·**괴리율**·재테크·알바 1:1)+`/l/*` auto fbq/ttq 0 · Lead emit=`consentMarketing===true` · **operator-footer**=schema↔instance **supportEmail**↔LandingOperatorFooter↔legal 3면 · UI PART2c 게이트 |
 | mockup-governance · canon-surfaces · brand-assets · brand-logo-single | UI ADR-013/011 — **live** (photo mockup 0 · Canon wire checklist · Admin owns execution-policy · single Brand Kit) |
-| asset-image-surface · execution-surfaces | Engine §0.0.6 · UI §48.3a — category thumb · `시세 불러오는 중...` (v7.22.20) — **asset-image-surface live** (hydrate·SKU1:1·공개가드·R2·Admin tab=assets · Canon4면) · execution-surfaces=UI todo |
+| asset-image-surface · execution-surfaces | Engine §0.0.6 · UI §48.3a — category thumb · `시세 불러오는 중...` (v7.22.20) — **asset-image-surface live** (hydrate·SKU1:1·공개가드·R2·Admin tab=assets · Canon4면) · **execution-surfaces live** (AiProgressRoom·SuccessReceipt·SafeStop·StepList · Soft/Hard3줄 · ProductThumb · execute page 3면) |
 | trade-execution-hook | UI §29.6/§30 · Engine §0.9.2 — `useTradeExecution` Phase0=`POST …/execute-tick` polling · Phase1+ SSE swap inside hook only · StreamPolicy `executionTickMs` · execute page wire — **live** |
 | product-image | UI audit §26/§37 · PART3 — source-agnostic `ProductImage` (`ebay`\|`pokemontcg`\|`ygoprodeck`\|`admin_r2`) · loading/loaded/error/missing · `sizes`/lazy/priority · `ProductThumb` · next remotePatterns — **live** |
 | trading-card-vertical | Engine §0.0 / §51.12 — trading_card 시드20~40 · pokemontcg/ygoprodeck 메타 · ebay 호가 · 등급매칭 · 소액 SKU · Admin gradeMismatch 배지 — **live** |

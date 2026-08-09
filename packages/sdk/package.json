@@ -7,7 +7,9 @@
     ".": "./src/index.ts",
     "./device-tier": "./src/device-tier.ts",
     "./execution-stream": "./src/execution-stream/index.ts",
-    "./execution-stream/useTradeExecution": "./src/execution-stream/useTradeExecution.ts"
+    "./execution-stream/useTradeExecution": "./src/execution-stream/useTradeExecution.ts",
+    "./peotteok": "./src/peotteok/index.ts",
+    "./peotteok/usePeotteokChat": "./src/peotteok/usePeotteokChat.ts"
   },
   "peerDependencies": {
     "react": "^19.0.0"

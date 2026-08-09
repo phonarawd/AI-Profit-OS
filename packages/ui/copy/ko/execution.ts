@@ -61,12 +61,22 @@ export const execution = {
   safeTitle: "이번엔 안전하게 멈췄어요",
   safeBody:
     "조건이 맞지 않아 매칭하지 않았어요. 손해 나지 않게 AI가 중단했습니다.",
+  safeBodyPrice:
+    "가격이 움직여서 매칭하지 않았어요. 손해 나지 않게 AI가 중단했습니다.",
   safeBalance: "잔액은 그대로예요",
   safeChip: "시세 변동 · 수익 미달 방지",
+  safeReasonPrice: "시세 변동",
+  safeReasonMin: "수익 미달 방지",
+  safeReasonTimeout: "시간 초과",
+  safeExpectedWas: "예상이었던 +{expected} USDT",
   safeExpectedNotPaid: "지급 안 됨",
   safePrimary: "비슷한 기회 보기",
   safeSecondary: "홈으로",
   safeRecommend: "AI 추천 기회",
+  badgeMatchStable: "매칭 안정",
+  safeMatchInterrupted: "매칭 중단",
+  safeRecommendProfit: "+{n} USDT 예상",
+  successSystemStatus: "두 시장 시세 반영 완료",
   /** Canon wire aliases */
   safeStopTitle: "이번엔 안전하게 멈췄어요",
   safeStopReason:

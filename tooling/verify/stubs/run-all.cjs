@@ -98,8 +98,14 @@ const live = [
   "opportunity-scan-surface.cjs",
   "margin-compare-surface.cjs",
   "product-image.cjs",
-  // PART4 useTradeExecution (Phase0 polling · Phase1+ SSE boundary)
+  // PART4 useTradeExecution (Phase0 polling · Phase1+ SSE boundary) + §48 surfaces
   "trade-execution-hook.cjs",
+  "execution-surfaces.cjs",
+  "match-tension-surface.cjs",
+  // PART4b peotteok coach UI
+  "ai-coach-ui.cjs",
+  "age-tone-surfaces.cjs",
+
   // PART5 ticker · shell · wallet · settings/legal · toast · plain-ko
   "ticker-pii-0.cjs",
   "legal-plain-ko.cjs",

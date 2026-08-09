@@ -25,3 +25,18 @@ export {
   type UseTradeExecutionOptions,
   type UseTradeExecutionResult,
 } from "./execution-stream";
+
+export {
+  fetchPeotteokChips,
+  streamPeotteokChat,
+  usePeotteokChat,
+  type PeotteokChatDone,
+  type PeotteokChatMeta,
+  type PeotteokChip,
+  type PeotteokChipsResponse,
+  type PeotteokLane,
+  type PeotteokMessage,
+  type PeotteokToneBand,
+  type UsePeotteokChatOptions,
+  type UsePeotteokChatResult,
+} from "./peotteok";

@@ -10,6 +10,7 @@ export const peotteok = {
   log: "대화",
   factChips: "추천 질문",
   placeholder: "잔액·미션·이용법, 또는 일상 질문을 적어 주세요",
+  send: "보내기",
   llmBusy: "지금은 잠시 바빠요. 조금 뒤 다시 물어봐 주세요.",
   sRefuse:
     "출금·지급은 제가 대신 실행할 수 없어요. 출금 화면에서 직접 진행해 주세요.",
