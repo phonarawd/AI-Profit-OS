@@ -112,6 +112,17 @@
       "copyKey": "T.execution.disclaimerResult"
     },
     {
+      "id": "adapterHealth",
+      "role": "footer",
+      "component": "AdapterHealthChip",
+      "fields": ["staleAt", "lastAdapterSyncAt", "compareReady", "sourceCount"],
+      "copyKeys": [
+        "T.trust.adapterHealth.syncRelative",
+        "T.trust.adapterHealth.comparePending"
+      ],
+      "note": "UI §51.19 · OpportunityCard footer"
+    },
+    {
       "id": "cta",
       "role": "primary",
       "copyKey": "T.execution.ctaEarn"

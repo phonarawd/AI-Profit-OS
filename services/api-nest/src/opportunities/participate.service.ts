@@ -14,6 +14,7 @@ import {
   ServiceUnavailableException,
   UnauthorizedException,
 } from "@nestjs/common";
+import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 import { join } from "node:path";
 import { InProcessEventBus } from "../events/in-process.bus";
@@ -62,6 +63,17 @@ export type ParticipateBody = {
   preflightToken?: string;
 };
 
+export type ParticipateProof = {
+  tradeId: string;
+  pricingVersion: number;
+  buyPriceUsdt: string;
+  sellPriceUsdt: string;
+  expectedProfitUsdt: string;
+  fxSnapshotId: string;
+  proofHash: string;
+  capturedAt: string;
+};
+
 export type ParticipateResult = {
   ok: true;
   participateRequestId: string;
@@ -74,6 +86,8 @@ export type ParticipateResult = {
   tradeStatus: "running";
   reused: boolean;
   priceSoftAccept: boolean;
+  /** §51.16 proof-at-participate · stored on trade asset */
+  proof?: ParticipateProof;
 };
 
 type OppRow = {
@@ -290,6 +304,17 @@ export class ParticipateService {
       });
     }
 
+    const buyPriceUsdt = String(
+      (pricing as Record<string, unknown>).buyPriceUsdt ??
+        (pricing as Record<string, unknown>).buy_usdt ??
+        "0",
+    );
+    const sellPriceUsdt = String(
+      (pricing as Record<string, unknown>).sellPriceUsdt ??
+        (pricing as Record<string, unknown>).sell_usdt ??
+        "0",
+    );
+
     try {
       return await this.insertAccepted({
         userId,
@@ -298,6 +323,8 @@ export class ParticipateService {
         minProfitUsdt: validated.minProfitUsdt,
         amountUsdt,
         expectedProfitUsdt,
+        buyPriceUsdt,
+        sellPriceUsdt,
         idempotencyKey: validated.idempotencyKey,
         priceSoftAccept: softAccept,
         asset: {
@@ -612,6 +639,28 @@ export class ParticipateService {
     };
   }
 
+  private buildParticipateProof(input: {
+    tradeId: string;
+    pricingVersion: number;
+    buyPriceUsdt: string;
+    sellPriceUsdt: string;
+    expectedProfitUsdt: string;
+    fxSnapshotId: string;
+    capturedAt: string;
+  }): ParticipateProof {
+    const canonical = JSON.stringify({
+      tradeId: input.tradeId,
+      pricingVersion: input.pricingVersion,
+      buyPriceUsdt: input.buyPriceUsdt,
+      sellPriceUsdt: input.sellPriceUsdt,
+      expectedProfitUsdt: input.expectedProfitUsdt,
+      fxSnapshotId: input.fxSnapshotId,
+      capturedAt: input.capturedAt,
+    });
+    const proofHash = createHash("sha256").update(canonical).digest("hex");
+    return { ...input, proofHash };
+  }
+
   private async insertAccepted(input: {
     userId: string;
     opportunityId: string;
@@ -619,6 +668,8 @@ export class ParticipateService {
     minProfitUsdt: string;
     amountUsdt: string;
     expectedProfitUsdt: string;
+    buyPriceUsdt: string;
+    sellPriceUsdt: string;
     idempotencyKey: string;
     priceSoftAccept: boolean;
     asset: {
@@ -652,6 +703,7 @@ export class ParticipateService {
     });
 
     const created = await this.db.withTransaction(async (client) => {
+      const capturedAt = new Date().toISOString();
       const tradeIns = await client.query<{ id: string }>(
         `INSERT INTO public.trade_executions (
            user_id, opportunity_id, pricing_version, status,
@@ -678,6 +730,26 @@ export class ParticipateService {
       );
       const tradeId = tradeIns.rows[0]?.id;
       if (!tradeId) throw new ConflictException("trade insert failed");
+
+      // §51.16 — every participate stores proof (SHA256 canonical JSON)
+      const proof = this.buildParticipateProof({
+        tradeId,
+        pricingVersion: input.pricingVersion,
+        buyPriceUsdt: input.buyPriceUsdt,
+        sellPriceUsdt: input.sellPriceUsdt,
+        expectedProfitUsdt: input.expectedProfitUsdt,
+        fxSnapshotId: input.asset.fxSnapshotId,
+        capturedAt,
+      });
+      await client.query(
+        `UPDATE public.trade_executions
+            SET asset = COALESCE(asset, '{}'::jsonb) || $2::jsonb
+          WHERE id = $1::uuid`,
+        [
+          tradeId,
+          JSON.stringify({ participateProof: proof, proofHash: proof.proofHash }),
+        ],
+      );
 
       const prIns = await client.query<{ id: string }>(
         `INSERT INTO public.participate_requests (
@@ -713,7 +785,7 @@ export class ParticipateService {
         );
       }
 
-      return { tradeId, participateRequestId };
+      return { tradeId, participateRequestId, proof };
     });
 
     if (!lockJournal.reused) {
@@ -741,6 +813,7 @@ export class ParticipateService {
       tradeStatus: "running",
       reused: Boolean(lockJournal.reused),
       priceSoftAccept: input.priceSoftAccept,
+      proof: created.proof,
     };
   }
 }

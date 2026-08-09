@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { DepositAmountPanel } from "@aipo/ui/components/wallet/DepositAmountPanel";
 import { NetworkPlainWarning } from "@aipo/ui/components/wallet/NetworkPlainWarning";
 import {
-  DepositWhyGate,
+  DepositConsult,
   TaxDisclaimerBlock,
   UsdtVsKrwCompareTable,
   WhyUsdtCard,
@@ -24,7 +24,7 @@ function parseSuggest(raw: string | null): number {
 /**
  * Money §49.2a — `/wallet/deposit?tab=usdt&suggest=&oppId=`
  * Money §41.6 — NetworkPlainWarning above address/QR on USDT tab.
- * UI §38 — WhyUsdt + compare + DepositWhyGate + tax disclaimer.
+ * UI §38 · §51.21 — WhyUsdt + compare + DepositConsult(template Q2/Q4) + tax.
  */
 function DepositContent() {
   const searchParams = useSearchParams();
@@ -54,7 +54,15 @@ function DepositContent() {
       data-deposit-suggest={suggestUsdt > 0 ? String(suggestUsdt) : undefined}
       data-classification-owner="engine:§0.0.5.1"
     >
-      <DepositWhyGate />
+      <DepositConsult
+        fact={{
+          balanceUsdt: "0",
+          opportunityPreviewCount: 0,
+          toneBand: "mid",
+          fontScale: "md",
+          depositPref: tab,
+        }}
+      />
 
       <h1 className="text-xl font-semibold">{T.deposit.pageTitle}</h1>
 

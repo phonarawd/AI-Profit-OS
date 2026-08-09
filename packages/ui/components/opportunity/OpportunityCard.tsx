@@ -5,6 +5,7 @@ import { T } from "../../copy/ko";
 import { Badge } from "../lux/Badge";
 import { MotionCTA } from "../lux/MotionCTA";
 import { ProductImage } from "../product/ProductImage";
+import { AdapterHealthChip } from "../trust/AdapterHealthChip";
 import { MarketPartnerLeg } from "../trust/MarketPartnerLeg";
 import { OpportunityScanBadge } from "./OpportunityScanBadge";
 import { PriceCompareMargin } from "./PriceCompareMargin";
@@ -143,6 +144,16 @@ export function OpportunityCard({
         sellPriceUsdt={o.sellPriceUsdt}
         expectedProfitUsdt={o.expectedProfitUsdt}
         platformMarginUsdt={o.platformMarginUsdt}
+      />
+
+      <AdapterHealthChip
+        health={{
+          staleAt: o.staleAt,
+          lastAdapterSyncAt: o.lastAdapterSyncAt,
+          compareReady: o.compareReady,
+          sourceCount: o.sourceCount,
+          ctaLockReasonKo: o.ctaLockReasonKo,
+        }}
       />
 
       <div className="mt-3 flex flex-wrap gap-1">

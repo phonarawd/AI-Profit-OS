@@ -22,6 +22,13 @@
     },
     { "id": "balance", "role": "note", "copyKey": "T.execution.balanceUnchanged" },
     {
+      "id": "participateProof",
+      "role": "proof",
+      "component": "ParticipateProofPanel",
+      "copyKey": "T.trust.proof.title",
+      "note": "UI §51.16 · 참여할 때 본 조건"
+    },
+    {
       "id": "recommend",
       "role": "list",
       "copyKey": "T.execution.recommendCards",

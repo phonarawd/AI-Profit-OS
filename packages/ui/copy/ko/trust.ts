@@ -82,6 +82,67 @@ export const trust = {
     title: "💡 자주 묻는 질문",
     lead: "쉬운 말로 정리해 두었어요",
   },
+  /** §51.16 Proof-at-Participate */
+  proof: {
+    title: "참여할 때 본 조건",
+    buy: "낮은 시세",
+    sell: "높은 시세",
+    expected: "예상 수익",
+    hash: "확인 코드",
+    copy: "복사",
+    copied: "복사됨",
+  },
+  /** §51.17 Safe Stop Trust Metric · 손해·패배 프레이밍 금지 */
+  safeStopCount: {
+    title: "안전 중단 기록",
+    line: "AI가 손해 없이 멈춘 횟수 {n}",
+    hint: "조건이 안 맞으면 잔액 그대로 멈춰요",
+  },
+  /** §51.18 Capital Band Journey */
+  journey: {
+    title: "자본대 여정",
+    lead: "정산 성공과 잔액에 따라 더 넓은 기회를 볼 수 있어요",
+    unlocked: "열림",
+    locked: "잠금",
+    progressNote: "입금만으로 막지 않아요. 소액부터 시작할 수 있어요.",
+    bands: {
+      micro: "아주 소액",
+      small: "소액",
+      mid: "중간",
+      high: "고액",
+      whale: "초대형",
+    },
+    unlock: {
+      micro: "기본 · 처음부터 열려 있어요",
+      small: "정산 성공 2회 또는 입금 100 이상",
+      mid: "정산 성공 5회 또는 입금 1,000 이상",
+      high: "입금·등급 조건 충족",
+      whale: "운영자 확인 또는 고액 조건",
+    },
+  },
+  /** §51.19 Adapter Health */
+  adapterHealth: {
+    syncRelative: "시세 갱신 {relative}",
+    syncUnknown: "시세 갱신 확인 중",
+    sources: "출처 {n}",
+    comparePending: "비교 준비중",
+    justNow: "방금",
+    minutesAgo: "{n}분 전",
+    hoursAgo: "{n}시간 전",
+    daysAgo: "{n}일 전",
+  },
+  /** §51.21 First Deposit 60s Consult · template Q2/Q4 */
+  depositConsult: {
+    title: "입금 전에 60초만 확인할까요?",
+    sixtySec: "약 60초 · 쉬운 말로 정리했어요",
+    factBalance: "지금 잔액 {n} USDT",
+    factPreview: "참여 가능한 기회 미리보기 {n}건",
+    ack: "위 내용을 이해했어요",
+    continue: "이해했어요",
+    next: "다음",
+    usdtPreferHint: "테더(USDT) 안내를 먼저 볼 수 있어요",
+    krwPreferHint: "원화 안내를 먼저 볼 수 있어요",
+  },
 } as const;
 
 export type TrustCopy = typeof trust;

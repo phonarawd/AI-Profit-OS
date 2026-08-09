@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { SafeStopTrustMetric } from "@aipo/ui/components/trust/SafeStopTrustMetric";
 import { BucketBreakdown } from "@aipo/ui/components/wallet/BucketBreakdown";
 import { DemoWalletBanner } from "@aipo/ui/components/wallet/DemoWalletBanner";
 import { T } from "@aipo/ui/copy/ko";
@@ -22,6 +23,7 @@ export default function Page() {
         practiceUsdt="0"
         liabilityUsdt="0"
       />
+      <SafeStopTrustMetric className="mt-4" count={0} />
       <div className="mt-6 flex flex-col gap-2">
         <Link
           href="/wallet/deposit?tab=usdt"

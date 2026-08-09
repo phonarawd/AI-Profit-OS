@@ -11,6 +11,17 @@
   "suggestOwner": "engine:§0.0.5.1",
   "blocks": [
     {
+      "id": "depositConsult",
+      "role": "gate",
+      "component": "DepositConsult",
+      "copyKeys": [
+        "T.trust.depositConsult.title",
+        "T.objections.q2",
+        "T.objections.q4"
+      ],
+      "note": "UI §51.21 · template Q2/Q4 · P레인 · LLM 0"
+    },
+    {
       "id": "title",
       "role": "title",
       "copyKey": "T.deposit.pageTitle"

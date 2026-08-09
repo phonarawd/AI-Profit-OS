@@ -24,6 +24,8 @@ export const user = {
     support: "고객센터",
     benefits: "혜택",
     guidePartners: "시세 파트너",
+    guideMarketWeekly: "이번 주 시세 안내",
+    capitalJourney: "자본대 여정",
   },
   profits: {
     title: "수익",

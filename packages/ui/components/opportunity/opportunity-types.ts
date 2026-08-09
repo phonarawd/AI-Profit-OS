@@ -30,4 +30,9 @@ export type OpportunityCardModel = {
   tags?: string[];
   bucket?: OpportunityBucket;
   suggestDepositUsdt?: string | null;
+  /** §51.19 Adapter Health */
+  staleAt?: string | null;
+  lastAdapterSyncAt?: string | null;
+  sourceCount?: number;
+  ctaLockReasonKo?: string | null;
 };

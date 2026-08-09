@@ -33,6 +33,8 @@ export const settings = {
     campaign: "이벤트 알림",
     opsMessage: "운영 쪽지 알림",
     strategyMatch: "내 전략 매치 알림",
+    /** §51.20 · Push 카테고리 market_weekly · 옵트인/옵트아웃 */
+    marketWeekly: "주간 시세 안내",
     /** §50.1n — 가입 기본 전부 ON · OFF=Push만 스킵 */
     defaultAllOn: true,
     offPushOnlyNote:

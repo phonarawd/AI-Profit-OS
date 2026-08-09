@@ -41,7 +41,11 @@ if (!dedup.includes("sourceEventId") || !dedup.includes("shouldShowToast")) {
 }
 
 const routes = read("apps/web/routes.ts");
-for (const r of ["/me/benefits", "/me/guide/partners"]) {
+for (const r of [
+  "/me/benefits",
+  "/me/guide/partners",
+  "/me/guide/market-weekly",
+]) {
   if (!routes.includes(`"${r}"`)) fails.push(`USER_NESTED_ROUTES missing ${r}`);
 }
 

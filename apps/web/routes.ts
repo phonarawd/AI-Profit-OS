@@ -40,6 +40,7 @@ export const USER_NESTED_ROUTES = [
   "/me/guide/faq",
   "/me/guide/principal",
   "/me/guide/partners",
+  "/me/guide/market-weekly",
   "/trades/[id]/execute",
   "/profits/[id]",
   "/onboarding",

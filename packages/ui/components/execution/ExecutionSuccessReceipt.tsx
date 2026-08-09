@@ -4,6 +4,8 @@ import { T } from "../../copy/ko";
 import { Badge } from "../lux/Badge";
 import { CountUpNumber } from "../lux/CountUpNumber";
 import { PriceCompareMargin } from "../opportunity/PriceCompareMargin";
+import { ParticipateProofPanel } from "../trust/ParticipateProofPanel";
+import type { ParticipateProofModel } from "../trust/trust-types";
 import {
   SuccessBucketCtas,
   type SuccessCtaEmphasis,
@@ -21,6 +23,7 @@ export type ExecutionSuccessReceiptProps = {
   compareReady?: boolean;
   buyLabel?: string;
   sellLabel?: string;
+  proof?: ParticipateProofModel | null;
   emphasis?: SuccessCtaEmphasis;
   onMerge?: () => void;
   onLater?: () => void;
@@ -40,6 +43,7 @@ export function ExecutionSuccessReceipt({
   compareReady = false,
   buyLabel = "",
   sellLabel = "",
+  proof = null,
   emphasis = "profit_withdraw",
   onMerge,
   onLater,
@@ -124,6 +128,10 @@ export function ExecutionSuccessReceipt({
       <p className="text-sm text-lux-text-muted" data-block="successLegLog">
         {legLog}
       </p>
+
+      <div data-block="participateProof">
+        <ParticipateProofPanel proof={proof} />
+      </div>
 
       <div className="rounded-lux-md border border-lux-accent/30 bg-lux-accent/10 p-3">
         <p className="text-sm font-medium">{T.execution.successBalance}</p>

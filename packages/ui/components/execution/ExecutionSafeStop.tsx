@@ -2,6 +2,8 @@
 
 import { T } from "../../copy/ko";
 import { Badge } from "../lux/Badge";
+import { ParticipateProofPanel } from "../trust/ParticipateProofPanel";
+import type { ParticipateProofModel } from "../trust/trust-types";
 import type { AiProgressRoomAsset } from "./AiProgressRoom";
 import type {
   ExecutionUiResultCode,
@@ -21,6 +23,7 @@ export type ExecutionSafeStopProps = {
   state: ExecutionUiState;
   asset?: AiProgressRoomAsset;
   recommend?: SafeStopRecommend | null;
+  proof?: ParticipateProofModel | null;
   className?: string;
 };
 
@@ -45,6 +48,7 @@ export function ExecutionSafeStop({
   state,
   asset,
   recommend,
+  proof = null,
   className = "",
 }: ExecutionSafeStopProps) {
   const code = state.resultCode;
@@ -130,6 +134,8 @@ export function ExecutionSafeStop({
         {expectedLine}{" "}
         <span className="text-lux-warning">({T.execution.safeExpectedNotPaid})</span>
       </p>
+
+      <ParticipateProofPanel proof={proof} />
 
       <a
         href={similarHref}

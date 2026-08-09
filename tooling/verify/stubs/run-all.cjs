@@ -119,6 +119,10 @@ const live = [
   "day-pulse-live-only.cjs",
   "preflight-may-stop.cjs",
   "loop-psychology.cjs",
+  // PART8b §51.16~21 trust surfaces · Weekly Market Briefing
+  "market-briefing-no-investment-advice.cjs",
+  "participate-proof.cjs",
+  "deposit-ai-template-path.cjs",
   // Visual regression harness (Canon structure · multi-viewport · ADR-013)
   "responsive.cjs",
   // PART6 KYC · trust education · get-usdt

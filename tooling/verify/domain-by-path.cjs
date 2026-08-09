@@ -71,12 +71,17 @@ const RULES = [
       /packages\/ui\/components\/trust\//.test(f) ||
       /packages\/ui\/copy\/ko\/(trust|objections|guide)\.ts/.test(f) ||
       /apps\/web\/app\/me\/guide\//.test(f) ||
-      /packages\/ui\/canon\/surfaces\/get-usdt-guide\.wire\.json/.test(f),
+      /packages\/ui\/canon\/surfaces\/(get-usdt-guide|market-weekly-briefing)\.wire\.json/.test(
+        f,
+      ),
     scripts: [
       "trust-copy.cjs",
       "tax-disclaimer.cjs",
       "objection4.cjs",
       "deposit-network-plain-ko.cjs",
+      "market-briefing-no-investment-advice.cjs",
+      "participate-proof.cjs",
+      "deposit-ai-template-path.cjs",
     ],
   },
   {

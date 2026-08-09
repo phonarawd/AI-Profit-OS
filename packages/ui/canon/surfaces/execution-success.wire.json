@@ -77,6 +77,23 @@
       "note": "UI §38.10 · {buyLabel} ↔ {sellLabel} 시세 반영 · 「○○ 판매 완료」금지"
     },
     {
+      "id": "participateProof",
+      "role": "proof",
+      "component": "ParticipateProofPanel",
+      "fields": [
+        "tradeId",
+        "pricingVersion",
+        "buyPriceUsdt",
+        "sellPriceUsdt",
+        "expectedProfitUsdt",
+        "fxSnapshotId",
+        "proofHash",
+        "capturedAt"
+      ],
+      "copyKey": "T.trust.proof.title",
+      "note": "UI §51.16 · collapsible · hash truncate + copy"
+    },
+    {
       "id": "share",
       "role": "secondary",
       "copyKey": "T.execution.shareBoast"

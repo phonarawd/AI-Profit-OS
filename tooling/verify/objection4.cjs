@@ -79,8 +79,11 @@ for (const needle of [
 }
 
 const deposit = read("apps/web/app/wallet/deposit/page.tsx");
-if (!deposit.includes("DepositWhyGate")) {
-  fails.push("deposit page must mount DepositWhyGate");
+if (
+  !deposit.includes("DepositWhyGate") &&
+  !deposit.includes("DepositConsult")
+) {
+  fails.push("deposit page must mount DepositWhyGate or DepositConsult");
 }
 
 const faqPage = read("apps/web/app/me/guide/faq/page.tsx");

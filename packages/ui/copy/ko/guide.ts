@@ -43,6 +43,24 @@ export const guide = {
     title: "🤝 공식 협력사",
     lead: "시세·데이터를 가져오는 공식 협력사예요",
   },
+  /** §51.20 Weekly Market Briefing · 투자권유 금지 */
+  marketWeekly: {
+    title: "📊 이번 주 시세 차이 안내",
+    lead: "교육용으로 이번 주 시세 차이 분포를 요약해요",
+    eduPurpose:
+      "왜 시세 차이가 생겼는지 이해하는 안내예요. 지금 사거나 팔라는 말이 아니에요.",
+    empty: "이번 주 요약이 아직 없어요. 다음에 다시 확인해 주세요.",
+    p10Label: "낮은 쪽(10%)",
+    p50Label: "가운데(50%)",
+    p90Label: "높은 쪽(90%)",
+    colBand: "구간",
+    colValue: "시세 차이",
+    bulletP50: "가운데 값은 {v} 근처였어요",
+    bulletRange: "대체로 {lo}~{hi} 사이에 있었어요",
+    bulletWhy: "시장마다 호가가 달라서 차이가 생겨요",
+    disclaimer:
+      "교육용 요약이에요. 매수·매도 지시가 아니며, 수익을 약속하지 않아요.",
+  },
 } as const;
 
 export type GuideCopy = typeof guide;

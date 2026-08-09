@@ -1,5 +1,5 @@
 {
-  "version": "1.3.9",
+  "version": "1.3.10",
   "adr": "ADR-013",
   "brandRef": "packages/ui/brand",
   "tokenRef": "packages/ui/tokens/lux-fintech.ts",
@@ -107,6 +107,12 @@
       "route": "/me/guide/get-usdt",
       "wire": "surfaces/get-usdt-guide.wire.json",
       "note": "UI §38.8 · NetworkPlainWarning shared · TRC20 user render 0"
+    },
+    {
+      "id": "market-weekly-briefing",
+      "route": "/me/guide/market-weekly",
+      "wire": "surfaces/market-weekly-briefing.wire.json",
+      "note": "UI §51.20 · Engine spreadDistribution read-only · 투자권유 0"
     },
     {
       "id": "membership-home",

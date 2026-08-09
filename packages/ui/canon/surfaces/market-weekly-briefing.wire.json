@@ -1,0 +1,67 @@
+{
+  "id": "market-weekly-briefing",
+  "route": "/me/guide/market-weekly",
+  "brandRef": "packages/ui/brand",
+  "schemaRef": "schemas/simulation-report.v1.json",
+  "enginePointer": "Engine §51.20 · spreadDistribution read-only",
+  "primaryCta": null,
+  "blocks": [
+    {
+      "id": "headline",
+      "role": "heading",
+      "copyKey": "T.guide.marketWeekly.title"
+    },
+    {
+      "id": "lead",
+      "role": "body",
+      "copyKey": "T.guide.marketWeekly.lead"
+    },
+    {
+      "id": "eduPurpose",
+      "role": "note",
+      "copyKey": "T.guide.marketWeekly.eduPurpose",
+      "note": "교육용 · 매수·매도 권유 아님"
+    },
+    {
+      "id": "spreadTable",
+      "role": "table",
+      "component": "WeeklyMarketBriefing",
+      "fields": ["p10", "p50", "p90"],
+      "toneBand": "mid",
+      "note": "Engine M0.5 spreadDistribution · UI 재계산 0"
+    },
+    {
+      "id": "spreadBullets",
+      "role": "list",
+      "toneBand": "young",
+      "copyKeys": [
+        "T.guide.marketWeekly.bulletP50",
+        "T.guide.marketWeekly.bulletRange",
+        "T.guide.marketWeekly.bulletWhy"
+      ]
+    },
+    {
+      "id": "spreadLines",
+      "role": "list",
+      "toneBand": "senior",
+      "note": "한 줄씩"
+    },
+    {
+      "id": "disclaimer",
+      "role": "legal",
+      "copyKey": "T.guide.marketWeekly.disclaimer"
+    }
+  ],
+  "pushCategory": "market_weekly",
+  "forbidden": [
+    "investment_advice",
+    "buy_now_cta",
+    "sell_now_cta",
+    "guaranteed_profit",
+    "sku_buy_recommend",
+    "ui_recompute_spread",
+    "gender_branch",
+    "photo_pixel_match",
+    "IT_jargon"
+  ]
+}
