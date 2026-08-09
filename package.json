@@ -105,6 +105,7 @@
     "verify:trust-copy": "node tooling/verify/trust-copy.cjs",
     "verify:tax-disclaimer": "node tooling/verify/tax-disclaimer.cjs",
     "verify:objection4": "node tooling/verify/objection4.cjs",
+    "verify:invite-explain-surfaces": "node tooling/verify/invite-explain-surfaces.cjs",
     "verify:referral-unlimited-invites": "node tooling/verify/referral-unlimited-invites.cjs",
     "verify:referral-pool-fifo": "node tooling/verify/referral-pool-fifo.cjs",
     "verify:referral-ledger": "node tooling/verify/referral-ledger.cjs",
@@ -168,7 +169,10 @@
     "cf:deploy:ops": "node tooling/deploy/cf-pages-ops.cjs preview",
     "cf:deploy:ops:prod": "node tooling/deploy/cf-pages-ops.cjs production",
     "cf:deploy:all": "node tooling/deploy/cf-deploy-all.cjs preview",
-    "cf:deploy:all:prod": "node tooling/deploy/cf-deploy-all.cjs production"
+    "cf:deploy:all:prod": "node tooling/deploy/cf-deploy-all.cjs production",
+    "cf:domain:bootstrap": "node tooling/deploy/cf-domain-bootstrap.cjs",
+    "cf:domain:bridge": "node tooling/deploy/cf-domain-bridge.cjs",
+    "verify:domain-bootstrap": "node tooling/verify/domain-bootstrap.cjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

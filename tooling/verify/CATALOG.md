@@ -24,6 +24,7 @@
 | workers-types | `verify:workers-types` | T1 | ✅ live |
 | phase0-bootstrap | `verify:phase0-bootstrap` | T1 | ✅ live |
 | root-domain-env | `verify:root-domain-env` | T1 | ✅ live |
+| domain-bootstrap | `verify:domain-bootstrap` | T1 | ✅ live |
 | next-major-pin | `verify:next-major-pin` | T1 | ✅ live |
 | tailwind-v4 | `verify:tailwind-v4` | T1 | ✅ live |
 | lux-theme-sync | `verify:lux-theme-sync` | T1 | ✅ live |
@@ -96,7 +97,7 @@
 | catalog-runtime-seed | Engine §0.9 E-R6 — **live** (Admin seed trading_card/luxury_bag/watch + ebay ingest-shaped listings→opportunities available≥1 · compareReady 일부 true · assetImageUrl 가드 · Day-1 ebay\|admin · amazon/yahoo INSERT 0 · `seed:catalog-runtime`) |
 | admin-user-opportunity-override | Admin §9.8.9 — 유저별 숨김/핀/마진 · ledger 불변 (v7.22.21) — **live** (DDL↔schema forceShow/pinOrder/marginPct/expectedProfit · Nest CRUD · merge · RBAC) |
 | referral-unlimited-invites · referral-pool-fifo · referral-ledger · referral-ladder · referral-idempotency · share-copy | Money §51.5 — **live** 월간초대캡0 · Pool FIFO · clawback · 0원 rewardsEnabled · Admin growth?tab=referral · UI§5.9.1a pointer (v7.22.22) |
-| invite-explain-surfaces | UI §5.9.1a — KR 20~70 설명·noCap·Canon invite-home (v7.22.22) |
+| invite-explain-surfaces | UI §5.9.1a — **live** (KR 20~70 설명·toneBand·noCap·Canon invite-home · Money §51.5 pointer) (v7.22.22) |
 | match-strictness · no-success-rate-percent | Engine §48.13.3 · §0.9 E-R2 · UI §48.6 — 엄격도 조절 · 난수 성공률 0 (v7.22.23) — **live** (preset→policy 맵 스냅샷 · Soft60/Hard90 · Admin GET/PUT `/api/v1/admin/execution-policy` + stats/today readOnly · active-row seed/ensure `matchStrictness=standard`+`feed.nearMissCapUsdt` · ensure insert-only≠Admin PUT · goldens tight/lenient · successRatePercent 0) |
 | membership-ladder · membership-daily-cap · no-fulfill-rate-as-rule | Engine §0.0.7 — 등급·일일캡 · fulfillRate≠Rule (v7.22.24) — **live** (ladder snapshot · 승급 max(입금,성공)·adminForce · overlay merge · participate 가드 · Admin `/users/:id` membership·match-policy · **GET `/api/v1/me/membership`** 유저 읽기(ladder·aiPerkFlags·fulfillRate 표시전용·Rule입력0) · fulfillRate 표시전용) |
 | membership-surfaces | UI §5.9.2c · Canon membership-home — 100%보장0 · 고액희소 (v7.22.24) |

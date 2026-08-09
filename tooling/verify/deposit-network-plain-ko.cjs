@@ -138,11 +138,33 @@ if (/\bTRC20\b/.test(withdrawUsdt)) {
 
 // --- guide + support ---
 const guide = read("apps/web/app/me/guide/get-usdt/page.tsx");
-if (!guide.includes("NetworkPlainWarning")) {
-  fails.push("/me/guide/get-usdt must reuse NetworkPlainWarning");
+if (!guide.includes("GetUsdtGuide") && !guide.includes("NetworkPlainWarning")) {
+  fails.push("/me/guide/get-usdt must mount GetUsdtGuide (or NetworkPlainWarning)");
 }
 if (/\bTRC20\b|\bERC20\b|\bBEP20\b/.test(guide)) {
   fails.push("get-usdt guide must not render TRC20/ERC20/BEP20");
+}
+const getUsdtGuide = read("packages/ui/components/trust/GetUsdtGuide.tsx");
+if (!getUsdtGuide.includes("NetworkPlainWarning")) {
+  fails.push("GetUsdtGuide must reuse NetworkPlainWarning");
+}
+if (/\bTRC20\b|\bERC20\b|\bBEP20\b/.test(getUsdtGuide)) {
+  fails.push("GetUsdtGuide must not render TRC20/ERC20/BEP20");
+}
+const getUsdtWire = path.join(
+  root,
+  "packages/ui/canon/surfaces/get-usdt-guide.wire.json",
+);
+if (!fs.existsSync(getUsdtWire)) {
+  fails.push("missing: packages/ui/canon/surfaces/get-usdt-guide.wire.json");
+} else {
+  const gw = JSON.parse(fs.readFileSync(getUsdtWire, "utf8"));
+  if (gw.route !== "/me/guide/get-usdt") {
+    fails.push("get-usdt-guide.wire route must be /me/guide/get-usdt");
+  }
+  if (!(gw.forbidden || []).includes("trc20_user_render")) {
+    fails.push("get-usdt-guide.wire must forbid trc20_user_render");
+  }
 }
 
 const support = read("apps/web/app/me/support/page.tsx");

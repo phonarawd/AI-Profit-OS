@@ -1,0 +1,36 @@
+{
+  "id": "get-usdt-guide",
+  "route": "/me/guide/get-usdt",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.wallet.guideCtaKrw", "action": "deposit_krw" },
+  "blocks": [
+    { "id": "title", "role": "heading", "copyKey": "T.guide.getUsdt.title" },
+    { "id": "chooseFirst", "role": "cta", "copyKey": "T.guide.getUsdt.chooseFirst" },
+    { "id": "whatIsUsdt", "role": "body", "copyKey": "T.guide.getUsdt.whatIsUsdt" },
+    { "id": "prepare", "role": "progress", "copyKey": "T.guide.getUsdt.prepareBody" },
+    {
+      "id": "networkWarning",
+      "role": "warning",
+      "component": "NetworkPlainWarning",
+      "copyKeys": ["T.wallet.networkWarning"]
+    },
+    { "id": "wrongChain", "role": "note", "copyKey": "T.guide.getUsdt.wrongChain" },
+    {
+      "id": "taxDisclaimer",
+      "role": "legal",
+      "component": "TaxDisclaimerBlock",
+      "copyKey": "T.trust.disclaimer"
+    }
+  ],
+  "forbidden": [
+    "trc20_user_render",
+    "erc20_user_render",
+    "bep20_user_render",
+    "exchange_mandatory_recommend",
+    "guaranteed_profit",
+    "tax_evasion_imply",
+    "gender_branch",
+    "photo_pixel_match",
+    "IT_jargon"
+  ]
+}

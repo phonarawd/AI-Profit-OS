@@ -90,6 +90,12 @@
       "wire": "surfaces/invite-home.wire.json"
     },
     {
+      "id": "get-usdt-guide",
+      "route": "/me/guide/get-usdt",
+      "wire": "surfaces/get-usdt-guide.wire.json",
+      "note": "UI §38.8 · NetworkPlainWarning shared · TRC20 user render 0"
+    },
+    {
       "id": "membership-home",
       "route": "/me/membership",
       "wire": "surfaces/membership-home.wire.json"

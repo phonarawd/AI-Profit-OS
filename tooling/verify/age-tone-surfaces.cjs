@@ -51,6 +51,16 @@ if (settings) {
   if (!settings.includes("fontScale:")) fails.push("settings.fontScale missing");
 }
 
+// UI §5.9.1a invite toneBand variants (young/mid/senior)
+const invite = read("packages/ui/copy/ko/invite.ts");
+if (invite) {
+  for (const band of ["young", "mid", "senior"]) {
+    if (!invite.includes(`${band}:`)) {
+      fails.push(`invite.ts missing toneBand block ${band}`);
+    }
+  }
+}
+
 // Gender UI branch strings
 const scan = ["packages/ui/copy/ko", "packages/ui/canon/surfaces"];
 for (const d of scan) {

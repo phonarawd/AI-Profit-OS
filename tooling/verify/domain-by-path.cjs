@@ -58,6 +58,39 @@ const RULES = [
       "age-tone-surfaces.cjs",
     ],
   },
+  {
+    test: (f) =>
+      /packages\/ui\/components\/kyc\//.test(f) ||
+      /packages\/ui\/copy\/ko\/kyc\.ts/.test(f) ||
+      /packages\/ui\/canon\/surfaces\/kyc-/.test(f) ||
+      /apps\/web\/app\/me\/kyc\//.test(f),
+    scripts: ["kyc-surfaces.cjs", "canon-surfaces.cjs"],
+  },
+  {
+    test: (f) =>
+      /packages\/ui\/components\/trust\//.test(f) ||
+      /packages\/ui\/copy\/ko\/(trust|objections|guide)\.ts/.test(f) ||
+      /apps\/web\/app\/me\/guide\//.test(f) ||
+      /packages\/ui\/canon\/surfaces\/get-usdt-guide\.wire\.json/.test(f),
+    scripts: [
+      "trust-copy.cjs",
+      "tax-disclaimer.cjs",
+      "objection4.cjs",
+      "deposit-network-plain-ko.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /packages\/ui\/components\/invite\//.test(f) ||
+      /packages\/ui\/copy\/ko\/invite\.ts/.test(f) ||
+      /packages\/ui\/canon\/surfaces\/invite-home\.wire\.json/.test(f) ||
+      /apps\/web\/app\/me\/invite\//.test(f),
+    scripts: [
+      "invite-explain-surfaces.cjs",
+      "age-tone-surfaces.cjs",
+      "referral-unlimited-invites.cjs",
+    ],
+  },
 
   {
     test: (f) =>
