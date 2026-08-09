@@ -8,6 +8,8 @@ const fails = [];
 const required = [
   ".cursor/mcp.json",
   "infra/hosts.manifest.json",
+  "infra/domain.manifest.json",
+  "tooling/deploy/cf-domain-bootstrap.cjs",
   "infra/web/wrangler.toml",
   "infra/ops/wrangler.toml",
   "infra/ops/access-policy.json",
@@ -16,6 +18,9 @@ const required = [
   "infra/r2/asset-images.toml",
   "infra/workers.manifest.json",
   "workers/push-dispatcher/wrangler.toml",
+  "workers/web-proxy/wrangler.toml",
+  "workers/ops-proxy/wrangler.toml",
+  "workers/api-stub/wrangler.toml",
   "workers/push-dispatcher/src/index.ts",
   "workers/marketing-capi-dispatcher/wrangler.toml",
   "tooling/deploy/cf-deploy-all.cjs",

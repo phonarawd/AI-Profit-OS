@@ -1,8 +1,10 @@
 # 퍼뜩 유저 PWA — Cloudflare Pages
 # Project: ai-profit-web · APP_HOST (app subdomain)
 # Deploy: pnpm cf:deploy:web
+# Domain SSOT: infra/domain.manifest.json · bootstrap: pnpm cf:domain:bootstrap
 
 name = "ai-profit-web"
+account_id = "190a1476a068cfe96dfe1029877587ef"
 compatibility_date = "2025-03-01"
 compatibility_flags = ["nodejs_compat"]
 

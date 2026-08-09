@@ -1,0 +1,8 @@
+{
+  "name": "hiptk-api-stub",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy --env production"
+  }
+}

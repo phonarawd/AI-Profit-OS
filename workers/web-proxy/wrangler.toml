@@ -1,0 +1,22 @@
+# Phase0 web proxy — app / apex / go → Pages preview until prod deploy
+# Deploy: pnpm cf:domain:bridge
+
+name = "hiptk-web-proxy"
+account_id = "190a1476a068cfe96dfe1029877587ef"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+
+[env.production]
+name = "hiptk-web-proxy"
+
+[[env.production.routes]]
+pattern = "app.hiptk.app"
+custom_domain = true
+
+[[env.production.routes]]
+pattern = "hiptk.app"
+custom_domain = true
+
+[[env.production.routes]]
+pattern = "go.hiptk.app"
+custom_domain = true

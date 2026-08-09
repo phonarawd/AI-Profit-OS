@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "rootDomain": "hiptk.app",
+  "cloudflare": {
+    "accountId": "190a1476a068cfe96dfe1029877587ef",
+    "zoneId": "a8f07448b300cf7f0215a3bbb9cf705e",
+    "zoneStatus": "active"
+  },
+  "env": {
+    "ROOT_DOMAIN": "hiptk.app",
+    "APP_HOST": "app.hiptk.app",
+    "OPS_HOST": "ops.hiptk.app",
+    "API_HOST": "api.hiptk.app",
+    "GO_HOST": "go.hiptk.app"
+  },
+  "pages": {
+    "web": {
+      "project": "ai-profit-web",
+      "pagesDev": "ai-profit-web.pages.dev",
+      "note": "공개 호스트는 web-proxy Worker가 프록시 · Pages custom domain 사용 안 함"
+    },
+    "ops": {
+      "project": "ai-profit-ops",
+      "pagesDev": "ai-profit-ops.pages.dev",
+      "note": "공개 호스트는 ops-proxy Worker가 프록시"
+    }
+  },
+  "bridgeWorkers": {
+    "web-proxy": {
+      "worker": "hiptk-web-proxy",
+      "path": "workers/web-proxy",
+      "hostnames": ["app.hiptk.app", "hiptk.app", "go.hiptk.app"],
+      "target": "https://ai-profit-web.pages.dev"
+    },
+    "ops-proxy": {
+      "worker": "hiptk-ops-proxy",
+      "path": "workers/ops-proxy",
+      "hostnames": ["ops.hiptk.app"],
+      "target": "https://ai-profit-ops.pages.dev"
+    },
+    "api-stub": {
+      "worker": "hiptk-api-stub",
+      "path": "workers/api-stub",
+      "hostnames": ["api.hiptk.app"],
+      "note": "Phase0 Nest stub · cloudflared/VPS 배포 후 교체"
+    }
+  },
+  "dns": {
+    "provision": "Workers custom_domain (auto · Zone:DNS:Edit 불필요)",
+    "deploy": "pnpm cf:domain:bridge"
+  },
+  "email": {
+    "support": "support@hiptk.app",
+    "fromDefault": "noreply@hiptk.app",
+    "provider": "resend",
+    "note": "Resend dashboard 도메인 검증 · RESEND_API_KEY + RESEND_FROM_EMAIL in .env"
+  },
+  "github": {
+    "repository": "phonarawd/AI-Profit-OS",
+    "environment": "production",
+    "secretKeys": [
+      "ROOT_DOMAIN",
+      "APP_HOST",
+      "OPS_HOST",
+      "API_HOST",
+      "CLOUDFLARE_API_TOKEN",
+      "CLOUDFLARE_ACCOUNT_ID"
+    ]
+  }
+}

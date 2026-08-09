@@ -22,6 +22,7 @@ const T1_PUSH = [
   "workers-types.cjs",
   "phase0-bootstrap.cjs",
   "root-domain-env.cjs",
+  "domain-bootstrap.cjs",
   "next-major-pin.cjs",
   "tailwind-v4.cjs",
   "lux-theme-sync.cjs",

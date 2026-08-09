@@ -1,5 +1,7 @@
 {
   "phase": 0,
+  "domainManifest": "infra/domain.manifest.json",
+  "rootDomain": "hiptk.app",
   "bus": "in-process",
   "forbiddenDay1": ["nats", "temporal", "eks", "vercel"],
   "compose": {

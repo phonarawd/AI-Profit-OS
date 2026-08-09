@@ -1,0 +1,5 @@
+{
+  "name": "hiptk-web-proxy",
+  "private": true,
+  "type": "module"
+}
