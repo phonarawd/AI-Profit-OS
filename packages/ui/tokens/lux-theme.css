@@ -2,7 +2,12 @@
  * Tailwind CSS v4 @theme mirror of lux-fintech.ts (ADR-015)
  * Import from apps/web & apps/admin globals — do not fork colors.
  */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
 @import "tailwindcss";
+
+/* Monorepo: scan shared UI components (paths relative to this file). */
+@source "../components";
 
 @theme {
   --color-lux-bg: #090a10;

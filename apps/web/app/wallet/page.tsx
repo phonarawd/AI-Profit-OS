@@ -11,7 +11,7 @@ import { T } from "@aipo/ui/copy/ko";
  */
 export default function Page() {
   return (
-    <main className="p-6 text-[var(--color-lux-text)]">
+    <main className="p-6 text-lux-text">
       <h1 className="text-xl font-semibold">{T.walletBuckets.pageTitle}</h1>
       {/* Live practiceUsdt from GET /wallet/buckets — hide when 0 via Banner props */}
       <DemoWalletBanner />
@@ -27,7 +27,7 @@ export default function Page() {
           href="/wallet/withdraw?mode=profit"
           data-testid="wallet-withdraw-profit"
           data-default-mode="profit"
-          className="rounded-[var(--radius-md)] bg-[var(--color-lux-accent)] px-4 py-3 text-center text-sm font-semibold text-[var(--color-lux-bg)]"
+          className="rounded-lux-md bg-lux-accent px-4 py-3 text-center text-sm font-semibold text-lux-bg"
         >
           {T.withdrawMode.ctaProfitWithdraw}
         </Link>
@@ -35,13 +35,13 @@ export default function Page() {
           href="/wallet/withdraw?mode=principal"
           data-testid="wallet-withdraw-principal"
           data-principal-reachable="true"
-          className="rounded-[var(--radius-md)] border border-[var(--color-lux-border)] px-4 py-3 text-center text-sm text-[var(--color-lux-text)]"
+          className="rounded-lux-md border border-lux-border px-4 py-3 text-center text-sm text-lux-text"
         >
           {T.withdrawMode.ctaOpenPrincipal}
         </Link>
         <Link
           href="/me/guide/principal"
-          className="text-center text-sm text-[var(--color-lux-text-muted)] underline"
+          className="text-center text-sm text-lux-text-muted underline"
         >
           {T.walletBuckets.guideLink}
         </Link>

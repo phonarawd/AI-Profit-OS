@@ -4,12 +4,13 @@ import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { T } from "@aipo/ui/copy/ko";
 import { useWithdrawKycGate } from "../../../../lib/use-withdraw-kyc-gate";
+import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 
 /**
  * KRW withdraw entry — default mode=profit (§49.1 E2).
  * Principal path stays linked (E3).
  */
-export default function Page() {
+function KrwWithdrawContent() {
   const searchParams = useSearchParams();
   const mode = useMemo(() => {
     const raw = searchParams.get("mode");
@@ -65,5 +66,13 @@ export default function Page() {
         {T.withdrawMode.ctaOpenPrincipal}
       </a>
     </main>
+  );
+}
+
+export default function Page() {
+  return (
+    <SearchParamsBoundary>
+      <KrwWithdrawContent />
+    </SearchParamsBoundary>
   );
 }

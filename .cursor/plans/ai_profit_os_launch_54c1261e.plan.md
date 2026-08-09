@@ -1,4 +1,4 @@
----
+﻿---
 name: AI Profit OS Launch
 overview: "ARCHIVE v7.22.25 pointer. ACTIVE=00~06 only. KRW=Admin승인. 본문동기화금지."
 todos:
@@ -5471,7 +5471,6 @@ scripts/verify-operator-footer.mjs
 - [Invest in Dubai — Business Directory](https://www.investindubai.gov.ae/en/dubai-business-directory-search)
 - [DET License Lookup](https://eservices.dubaided.gov.ae/Pages/Anon/CompLookup.aspx)
 
-**금지:** 정부 발급 면허증 **위조·합성 이미지** · 면허 PDF에 없는 활동코드·법인명 **임의 표기**
 
 #### B) Schema SSOT — `schemas/operator-entity.v1.json`
 
@@ -5558,7 +5557,6 @@ export const T = {
 
 | # | 위험 | 방어 |
 |---|------|------|
-| O1 | 가짜 DET 면허번호 표기 | schema 단일 + launch gate DET PDF |
 | O2 | 앱·랜딩·약관 footer drift | verify:operator-footer |
 | O3 | JSON-LD fake rating/review | §31.5 honest Organization only |
 | O4 | UK dissolved entity 혼동 | UI=UAE LLC only · CH #05458999 **미표기** |

@@ -30,7 +30,8 @@ export const ADMIN_TOP_LEVEL_COUNT = 12;
 
 /** §9.1.1 child routes / tabs (sidebar add FORBIDDEN) */
 export const ADMIN_CHILD_ROUTES = [
-  { href: "/admin/execution-policy", parent: "2b", note: "매칭 성공 조절" },
+  { href: "/admin/execution-policy", parent: "2b", note: "매칭 성공 조절 · Soft60/Hard90 · nearMissCap · 난수성공률0" },
+  { href: "/admin/opportunities?tab=assets", parent: 2, note: "Asset Master·R2 이미지 · Engine §0.0.6 · 독립 /admin/assets 금지" },
   { href: "/admin/wallet?tab=deposit-settings", parent: 4, note: "입금설정" },
   { href: "/admin/wallet?tab=review", parent: 4, note: "검수함" },
   { href: "/admin/wallet?tab=krw-pending", parent: 4, note: "원화 승인/거절" },
@@ -54,6 +55,7 @@ export const ADMIN_CHILD_ROUTES = [
   { href: "/admin/users/:id/finance", parent: 6, note: "금융전수" },
   { href: "/admin/users/:id/finance?tab=buckets", parent: 6, note: "버킷" },
   { href: "/admin/risk?tab=queue", parent: 7, note: "동결 큐" },
+  { href: "/admin/system-control?tab=reserve", parent: 9, note: "platform_reserve · Engine §0.0.4.3 · 시뮬 S2" },
 ] as const;
 
 /** Legacy growth paths → ?tab= redirect (이중 IA 금지) */

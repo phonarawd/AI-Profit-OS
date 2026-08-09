@@ -86,7 +86,7 @@ written.push(
     meta(
       "operator-entity.v1.json",
       "OperatorEntityV1",
-      "§50.9 legal/KYB SSOT · PRE-OWNED WATCHES L.L.C · DET 1135431 · footer/JSON-LD single import. NEVER: fake DET · UK CH# · unverified likelyDetCode as fact.",
+      "§50.9 legal/KYB SSOT · PRE-OWNED WATCHES L.L.C · DET 1135431 · footer/JSON-LD single import.",
       {
         type: "object",
         additionalProperties: false,

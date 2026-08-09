@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { DepositAmountPanel } from "@aipo/ui/components/wallet/DepositAmountPanel";
 import { NetworkPlainWarning } from "@aipo/ui/components/wallet/NetworkPlainWarning";
 import { T } from "@aipo/ui/copy/ko";
+import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 
 function parseSuggest(raw: string | null): number {
   if (!raw) return 0;
@@ -19,7 +20,7 @@ function parseSuggest(raw: string | null): number {
  * Money §41.6 — NetworkPlainWarning above address/QR on USDT tab.
  * suggestDepositUsdt formula = Engine §0.0.5.1 (prefill/chip only here).
  */
-export default function Page() {
+function DepositContent() {
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab") === "krw" ? "krw" : "usdt";
   const suggestUsdt = useMemo(
@@ -42,7 +43,7 @@ export default function Page() {
 
   return (
     <main
-      className="p-6 text-[var(--color-lux-text)]"
+      className="p-6 text-lux-text"
       data-testid="wallet-deposit-page"
       data-deposit-suggest={suggestUsdt > 0 ? String(suggestUsdt) : undefined}
       data-classification-owner="engine:§0.0.5.1"
@@ -60,7 +61,7 @@ export default function Page() {
           aria-selected={tab === "usdt"}
           data-tab="usdt"
           data-active={tab === "usdt" ? "true" : "false"}
-          className="rounded-[var(--radius-md)] border border-[var(--color-lux-border)] px-3 py-2 text-sm"
+          className="rounded-lux-md border border-lux-border px-3 py-2 text-sm"
         >
           {T.deposit.tabUsdt}
         </Link>
@@ -70,7 +71,7 @@ export default function Page() {
           aria-selected={tab === "krw"}
           data-tab="krw"
           data-active={tab === "krw" ? "true" : "false"}
-          className="rounded-[var(--radius-md)] border border-[var(--color-lux-border)] px-3 py-2 text-sm"
+          className="rounded-lux-md border border-lux-border px-3 py-2 text-sm"
         >
           {T.deposit.tabKrw}
         </Link>
@@ -85,9 +86,9 @@ export default function Page() {
           <div
             data-testid="deposit-address-panel"
             data-network-label={T.wallet.networkName}
-            className="rounded-[var(--radius-md)] border border-[var(--color-lux-border)] p-3"
+            className="rounded-lux-md border border-lux-border p-3"
           >
-            <p className="text-sm text-[var(--color-lux-text-muted)]">
+            <p className="text-sm text-lux-text-muted">
               {T.wallet.addressLabel}
             </p>
             <p
@@ -100,7 +101,7 @@ export default function Page() {
             <button
               type="button"
               data-testid="deposit-address-copy"
-              className="mt-2 text-sm text-[var(--color-lux-accent)]"
+              className="mt-2 text-sm text-lux-accent"
             >
               {T.wallet.addressCopy}
             </button>
@@ -118,10 +119,18 @@ export default function Page() {
         type="button"
         data-testid="deposit-continue"
         data-force-deposit="false"
-        className="mt-6 w-full rounded-[var(--radius-md)] bg-[var(--color-lux-accent)] px-4 py-3 text-sm font-semibold text-[var(--color-lux-bg)]"
+        className="mt-6 w-full rounded-lux-md bg-lux-accent px-4 py-3 text-sm font-semibold text-lux-bg"
       >
         {T.deposit.ctaContinue}
       </button>
     </main>
+  );
+}
+
+export default function Page() {
+  return (
+    <SearchParamsBoundary>
+      <DepositContent />
+    </SearchParamsBoundary>
   );
 }

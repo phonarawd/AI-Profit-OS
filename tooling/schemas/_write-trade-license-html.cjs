@@ -1,0 +1,64 @@
+const fs = require("fs");
+const path = require("path");
+
+const html = `<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trade License Summary — PRE-OWNED WATCHES L.L.C · 1135431</title>
+<style>
+:root{--navy:#0b1f3a;--gold:#c9a227;--gold-light:#f4ecd1;--text:#1a1a1a;--muted:#5c6470;--border:#d8dee8;--bg:#fff}
+*{box-sizing:border-box}body{margin:0;padding:24px;font-family:"Segoe UI","Noto Sans KR",Arial,sans-serif;color:var(--text);background:#eef1f5}
+.sheet{max-width:820px;margin:0 auto;background:var(--bg);border:2px solid var(--navy);box-shadow:0 8px 32px rgba(11,31,58,.12)}
+.header{background:linear-gradient(135deg,var(--navy) 0%,#16345f 100%);color:#fff;padding:28px 32px 24px;border-bottom:4px solid var(--gold)}
+.header-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.emblem{width:72px;height:72px;border:2px solid var(--gold);border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;letter-spacing:.08em;text-align:center;line-height:1.2;color:var(--gold-light);flex-shrink:0}
+.title-block h1{margin:0;font-size:24px;letter-spacing:.04em}.title-block .subtitle{margin:8px 0 0;font-size:14px;color:#c8d4e8}.title-block .subtitle-en{margin:4px 0 0;font-size:13px;color:#9fb0cc}
+.license-no{text-align:right;font-size:13px;line-height:1.6}.license-no strong{display:block;font-size:28px;color:var(--gold);letter-spacing:.06em}
+.notice{margin:0;padding:12px 32px;background:var(--gold-light);border-bottom:1px solid #e8d9a8;font-size:12px;color:#5a4a12;line-height:1.5}
+.body{padding:28px 32px 32px}.section{margin-bottom:24px}.section h2{margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--navy);border-bottom:1px solid var(--border);padding-bottom:6px}
+.grid{display:grid;grid-template-columns:180px 1fr;gap:8px 16px;font-size:14px}.grid dt{margin:0;color:var(--muted);font-weight:600}.grid dd{margin:0}
+.badge{display:inline-block;padding:2px 10px;border-radius:999px;background:#e8f5ee;color:#0f6b3a;font-size:12px;font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{border:1px solid var(--border);padding:10px 12px;text-align:left;vertical-align:top}th{background:#f7f9fc;color:var(--navy);font-size:12px;letter-spacing:.04em}
+.addresses{display:grid;gap:12px}.address-card{border:1px solid var(--border);padding:12px 14px;border-radius:8px;background:#fafbfc}.address-card .label{font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.footer{border-top:1px solid var(--border);padding:16px 32px 20px;font-size:11px;color:var(--muted);line-height:1.6}.footer a{color:var(--navy)}
+.actions{max-width:820px;margin:16px auto 0;text-align:center}.actions button{background:var(--navy);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:14px;cursor:pointer}
+@media print{body{padding:0;background:#fff}.sheet{box-shadow:none;border-width:1px}.actions{display:none}}
+</style>
+</head>
+<body>
+<div class="sheet">
+<header class="header"><div class="header-top"><div style="display:flex;gap:18px;align-items:center"><div class="emblem">DUBAI<br/>UAE</div><div class="title-block"><h1>상업 면허 정보 확인서</h1><p class="subtitle">Commercial Trade License Information Summary</p><p class="subtitle-en">Dubai Department of Economy and Tourism (DET)</p></div></div><div class="license-no">Trade License No.<strong>1135431</strong>Status: Active</div></div></header>
+<p class="notice">본 문서는 등록 사업자 정보를 바탕으로 작성된 <strong>내부·운영용 요약서</strong>입니다. 공식 면허증은 DET가 발급한 원본 PDF·포털 조회 결과가 최종 기준입니다. This is an informational summary — not a substitute for the official DET-issued trade license.</p>
+<div class="body">
+<section class="section"><h2>License Holder / 면허 소지자</h2><dl class="grid"><dt>Legal Name</dt><dd><strong>PRE-OWNED WATCHES L.L.C</strong></dd><dt>Legal Form</dt><dd>Limited Liability Company (LLC)</dd><dt>Trading Brand</dt><dd>Pre-Owned Watches</dd><dt>Related Website</dt><dd><a href="https://preownedwatches.ae">preownedwatches.ae</a></dd><dt>Primary Activity</dt><dd>Watches &amp; Clocks &amp; Spare Parts Retailing<br/>시계 및 예비 부품 소매업</dd><dt>License Status</dt><dd><span class="badge">ACTIVE · 유효</span></dd></dl></section>
+<section class="section"><h2>Issuing Authority / 발급 기관</h2><dl class="grid"><dt>Authority</dt><dd>Dubai Department of Economy and Tourism (DET)</dd><dt>Jurisdiction</dt><dd>Dubai Mainland, United Arab Emirates (AE-DU)</dd><dt>License Type</dt><dd>Commercial License</dd></dl></section>
+<section class="section"><h2>Licensed Activities / 허가 업종</h2><table><thead><tr><th>#</th><th>Activity (EN)</th><th>업종 (KO)</th><th>Scope</th></tr></thead><tbody>
+<tr><td>1</td><td>Watches &amp; Clocks &amp; Spare Parts Retailing</td><td>시계 및 예비 부품 소매업</td><td>watch</td></tr>
+<tr><td>2</td><td>Pre-owned luxury watches trading</td><td>중고 명품 시계·시계류 매매</td><td>watch</td></tr>
+<tr><td>3</td><td>Trading cards and collectibles trading</td><td>트레이딩 카드·수집품 거래</td><td>trading_card</td></tr>
+<tr><td>4</td><td>Luxury bag and accessories brokerage</td><td>명품 가방·액세서리 중개</td><td>luxury_bag</td></tr>
+<tr><td>5</td><td>Online ecommerce and app operation</td><td>온라인 전자상거래·앱 운영</td><td>ecommerce</td></tr>
+<tr><td>6</td><td>AI market opportunity guidance and trade support</td><td>AI 시세 기회 안내·거래 지원</td><td>ai_service</td></tr>
+<tr><td>7</td><td>Cross-border price compare and brokerage</td><td>해외 시세 비교·국제 중개</td><td>platform</td></tr>
+</tbody></table></section>
+<section class="section"><h2>Registered Addresses / 등록 주소</h2><div class="addresses"><div class="address-card"><div class="label">Showroom</div>Kia Flagship Office G05<br/>Sheikh Zayed Road, Al Quoz 1<br/>Dubai, United Arab Emirates</div><div class="address-card"><div class="label">Office</div>Office 322<br/>Blue Bay Tower<br/>Al Abraj Street, Business Bay<br/>Dubai, United Arab Emirates</div></div></section>
+<section class="section"><h2>Official Verification / 공식 확인</h2><ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.8"><li><a href="https://www.investindubai.gov.ae/en/dubai-business-directory-search">Invest in Dubai — Business Directory Search</a></li><li><a href="https://eservices.dubaided.gov.ae/Pages/Anon/CompLookup.aspx">DET License Lookup Portal</a></li></ul></section>
+</div>
+<footer class="footer">SSOT: schemas/operator-entity.v1.json · PRE-OWNED WATCHES L.L.C (DET 1135431). Platform: 퍼뜩 / AI Profit OS. Official DET PDF is the authoritative source.</footer>
+</div>
+<div class="actions"><button type="button" onclick="window.print()">인쇄 / PDF 저장</button></div>
+</body></html>`;
+
+const root = path.resolve(__dirname, "../..");
+const targets = [
+  path.join(root, "apps/web/public/kyb/trade-license-1135431.html"),
+  path.join(root, "docs/kyb/trade-license-1135431.html"),
+];
+
+for (const target of targets) {
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  fs.writeFileSync(target, html, "utf8");
+  console.log("written", target, fs.statSync(target).size);
+}

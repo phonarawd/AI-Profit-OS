@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { BucketBreakdown } from "@aipo/ui/components/wallet/BucketBreakdown";
 import { T } from "@aipo/ui/copy/ko";
+import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 
 const TABS = [
   "summary",
@@ -23,7 +24,7 @@ type FinanceTab = (typeof TABS)[number];
  * Buckets SoT = GET /api/v1/admin/users/:id/buckets
  */
 // route lock: finance?tab=buckets
-export default function Page() {
+function FinanceContent() {
   const params = useParams<{ id: string }>();
   const searchParams = useSearchParams();
   const tab = useMemo((): FinanceTab => {
@@ -39,7 +40,7 @@ export default function Page() {
 
   return (
     <main
-      className="p-6 text-[var(--color-lux-text)]"
+      className="p-6 text-lux-text"
       data-admin-finance-tab={tab}
       data-user-id={userId}
     >
@@ -55,8 +56,8 @@ export default function Page() {
             data-tab={t}
             className={
               tab === t
-                ? "rounded px-2 py-1 bg-[var(--color-lux-elevated)] text-[var(--color-lux-accent)]"
-                : "rounded px-2 py-1 text-[var(--color-lux-text-muted)]"
+                ? "rounded px-2 py-1 bg-lux-elevated text-lux-accent"
+                : "rounded px-2 py-1 text-lux-text-muted"
             }
           >
             {t === "buckets" ? "버킷" : t}
@@ -71,11 +72,11 @@ export default function Page() {
           data-buckets-api={bucketsApi}
           data-practice-visible="true"
         >
-          <p className="mt-1 text-sm text-[var(--color-lux-text-muted)]">
+          <p className="mt-1 text-sm text-lux-text-muted">
             {T.walletBuckets.defaultProfitHint}
           </p>
           <p
-            className="mt-1 text-sm text-[var(--color-lux-text-muted)]"
+            className="mt-1 text-sm text-lux-text-muted"
             data-testid="finance-practice-note"
           >
             {T.practice.adminNote}
@@ -91,10 +92,18 @@ export default function Page() {
           />
         </section>
       ) : (
-        <p className="mt-6 text-sm text-[var(--color-lux-text-muted)]">
+        <p className="mt-6 text-sm text-lux-text-muted">
           요약·입출금·시세차익 표는 후속 연결
         </p>
       )}
     </main>
+  );
+}
+
+export default function Page() {
+  return (
+    <SearchParamsBoundary>
+      <FinanceContent />
+    </SearchParamsBoundary>
   );
 }

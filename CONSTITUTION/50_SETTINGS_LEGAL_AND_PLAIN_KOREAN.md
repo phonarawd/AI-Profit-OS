@@ -1,4 +1,4 @@
-# §50 — Settings · Legal · Plain Korean · Operator DET
+﻿# §50 — Settings · Legal · Plain Korean · Operator DET
 
 > **Status:** ACTIVE · owns/pointer only · 구현코드 0  
 > **BOOTSTRAP:** `docs/CONSTITUTION_BOOTSTRAP.md` §2  
@@ -50,7 +50,7 @@
 ## Forbidden
 
 - Light/System 테마 토글 · 글자 2단만 제공 · 성별 토글
-- 약관·푸터·JSON-LD에 DET/법인명 drift · 가짜 면허번호
+- 약관·푸터·JSON-LD에 DET/법인명 drift
 - UK dissolved entity / 타국 법인 혼동 표기
 - 유저 화면에 API/DLQ/NATS 등 IT 용어
 - 확정수익·원금보장 허위 약관 문구

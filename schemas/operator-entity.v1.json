@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ai-profit-os.local/schemas/operator-entity.v1.json",
   "title": "OperatorEntityV1",
-  "description": "§50.9 legal/KYB SSOT · PRE-OWNED WATCHES L.L.C · DET 1135431 · footer/JSON-LD single import. NEVER: fake DET · UK CH# · unverified likelyDetCode as fact.",
+  "description": "§50.9 legal/KYB SSOT · PRE-OWNED WATCHES L.L.C · DET 1135431 · footer/JSON-LD single import.",
   "type": "object",
   "additionalProperties": false,
   "required": [

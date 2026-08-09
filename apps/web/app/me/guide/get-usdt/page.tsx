@@ -11,7 +11,7 @@ import { T } from "@aipo/ui/copy/ko";
 export default function Page() {
   return (
     <main
-      className="p-6 text-[var(--color-lux-text)]"
+      className="p-6 text-lux-text"
       data-testid="guide-get-usdt"
     >
       <h1 className="text-xl font-semibold">{T.wallet.guideGetUsdtTitle}</h1>
@@ -19,19 +19,19 @@ export default function Page() {
         <Link
           href="/wallet/deposit?tab=krw"
           data-testid="guide-cta-krw"
-          className="rounded-[var(--radius-md)] border border-[var(--color-lux-border)] px-3 py-2"
+          className="rounded-lux-md border border-lux-border px-3 py-2"
         >
           {T.wallet.guideCtaKrw}
         </Link>
         <Link
           href="/wallet/deposit?tab=usdt"
           data-testid="guide-cta-usdt"
-          className="rounded-[var(--radius-md)] border border-[var(--color-lux-border)] px-3 py-2"
+          className="rounded-lux-md border border-lux-border px-3 py-2"
         >
           {T.wallet.guideCtaUsdt}
         </Link>
       </div>
-      <p className="mt-4 text-sm text-[var(--color-lux-text-muted)]">
+      <p className="mt-4 text-sm text-lux-text-muted">
         {T.wallet.guideNetworkCheck}
       </p>
       <div className="mt-4">

@@ -35,23 +35,23 @@ export function PrincipalConfirmSheet({
       role="dialog"
       aria-modal="true"
       data-testid="principal-confirm-sheet"
-      className="fixed inset-x-0 bottom-0 z-50 rounded-t-[var(--radius-lg)] border border-[var(--color-lux-border)] bg-[var(--color-lux-surface)] p-6 shadow-lg"
+      className="fixed inset-x-0 bottom-0 z-50 rounded-t-lux-lg border border-lux-border bg-lux-surface p-6 shadow-lg"
     >
-      <h2 className="text-lg font-semibold text-[var(--color-lux-text)]">
+      <h2 className="text-lg font-semibold text-lux-text">
         {T.withdrawMode.confirmTitle}
       </h2>
-      <p className="mt-2 text-sm text-[var(--color-lux-text-muted)]">
+      <p className="mt-2 text-sm text-lux-text-muted">
         {T.withdrawMode.confirmBody}
       </p>
       {nearMissCount > 0 ? (
         <p
-          className="mt-2 text-sm text-[var(--color-lux-warning)]"
+          className="mt-2 text-sm text-lux-warning"
           data-testid="principal-near-miss"
         >
           {nearMissCount}
         </p>
       ) : null}
-      <p className="mt-3 text-sm text-[var(--color-lux-text)]">
+      <p className="mt-3 text-sm text-lux-text">
         {T.withdrawMode.confirmSelfOnly}
       </p>
       <div className="mt-6 flex flex-col gap-2">
@@ -59,7 +59,7 @@ export function PrincipalConfirmSheet({
           type="button"
           data-testid="cta-profit-only"
           onClick={onChooseProfitOnly}
-          className="rounded-[var(--radius-md)] bg-[var(--color-lux-accent)] px-4 py-3 text-sm font-semibold text-[var(--color-lux-bg)]"
+          className="rounded-lux-md bg-lux-accent px-4 py-3 text-sm font-semibold text-lux-bg"
         >
           {T.withdrawMode.ctaProfitOnly}
         </button>
@@ -68,7 +68,7 @@ export function PrincipalConfirmSheet({
           data-testid="cta-still-principal"
           data-principal-reachable="true"
           onClick={() => onConfirmPrincipal(makePrincipalConfirmToken())}
-          className="rounded-[var(--radius-md)] border border-[var(--color-lux-border)] px-4 py-3 text-sm text-[var(--color-lux-text)]"
+          className="rounded-lux-md border border-lux-border px-4 py-3 text-sm text-lux-text"
         >
           {T.withdrawMode.ctaStillPrincipal}
         </button>

@@ -21,7 +21,7 @@ const config = path.join(root, "infra/web/wrangler.toml");
 const envFlag = target === "production" || target === "prod" ? "production" : "preview";
 
 console.log("[cf:deploy:web] building apps/web …");
-const build = spawnSync("pnpm", ["--filter", "@ai-profit-os/web", "build"], {
+const build = spawnSync("pnpm", ["--filter", "@aipo/web", "build:cf"], {
   cwd: root,
   stdio: "inherit",
   shell: true,

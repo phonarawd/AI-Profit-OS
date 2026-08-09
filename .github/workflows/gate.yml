@@ -13,7 +13,7 @@ concurrency:
 jobs:
   verify-gate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -32,3 +32,9 @@ jobs:
         run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
       - name: verify:gate
         run: pnpm verify:gate
+      - name: OpenNext build:cf (Linux — deploy output SSOT)
+        run: |
+          pnpm --filter @aipo/web build:cf
+          pnpm --filter @aipo/admin build:cf
+          test -d apps/web/.open-next/cloudflare
+          test -d apps/admin/.open-next/cloudflare

@@ -32,16 +32,16 @@ export function WithdrawModeCards({
         data-testid="withdraw-mode-profit"
         aria-pressed={profitActive}
         onClick={() => onModeChange("profit")}
-        className={`rounded-[var(--radius-md)] border px-4 py-3 text-left ${
+        className={`rounded-lux-md border px-4 py-3 text-left ${
           profitActive
-            ? "border-[var(--color-lux-accent)] bg-[var(--color-lux-elevated)]"
-            : "border-[var(--color-lux-border)] bg-[var(--color-lux-surface)]"
+            ? "border-lux-accent bg-lux-elevated"
+            : "border-lux-border bg-lux-surface"
         }`}
       >
-        <span className="block text-sm font-semibold text-[var(--color-lux-text)]">
+        <span className="block text-sm font-semibold text-lux-text">
           {T.withdrawMode.modeProfit}
         </span>
-        <span className="mt-1 block text-xs text-[var(--color-lux-text-muted)]">
+        <span className="mt-1 block text-xs text-lux-text-muted">
           {T.withdrawMode.modeProfitHint}
         </span>
       </button>
@@ -53,16 +53,16 @@ export function WithdrawModeCards({
         data-principal-reachable="true"
         aria-pressed={principalActive}
         onClick={() => onModeChange("principal")}
-        className={`rounded-[var(--radius-md)] border px-4 py-3 text-left ${
+        className={`rounded-lux-md border px-4 py-3 text-left ${
           principalActive
-            ? "border-[var(--color-lux-principal)] bg-[var(--color-lux-elevated)]"
-            : "border-[var(--color-lux-border)] bg-[var(--color-lux-surface)]"
+            ? "border-lux-principal bg-lux-elevated"
+            : "border-lux-border bg-lux-surface"
         }`}
       >
-        <span className="block text-sm font-semibold text-[var(--color-lux-text)]">
+        <span className="block text-sm font-semibold text-lux-text">
           {T.withdrawMode.modePrincipal}
         </span>
-        <span className="mt-1 block text-xs text-[var(--color-lux-text-muted)]">
+        <span className="mt-1 block text-xs text-lux-text-muted">
           {T.withdrawMode.modePrincipalHint}
         </span>
       </button>

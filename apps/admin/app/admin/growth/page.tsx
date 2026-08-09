@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
+import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 
 const TABS = [
   "simulation",
@@ -34,7 +35,7 @@ const TAB_LABEL: Record<GrowthTab, string> = {
  * FORBIDDEN: 월간 초대 인원캡 입력칸 (capPerReferrerMonth)
  */
 // route lock: growth?tab=referral
-export default function Page() {
+function GrowthContent() {
   const searchParams = useSearchParams();
   const tab = useMemo((): GrowthTab => {
     const raw = searchParams.get("tab");
@@ -52,7 +53,7 @@ export default function Page() {
 
   return (
     <main
-      className="p-6 text-[var(--color-lux-text)]"
+      className="p-6 text-lux-text"
       data-admin-growth-tab={tab}
     >
       <h1 className="text-xl font-semibold">이벤트·프로모션</h1>
@@ -67,8 +68,8 @@ export default function Page() {
             data-tab={t}
             className={
               tab === t
-                ? "rounded px-2 py-1 bg-[var(--color-lux-elevated)] text-[var(--color-lux-accent)]"
-                : "rounded px-2 py-1 text-[var(--color-lux-text-muted)]"
+                ? "rounded px-2 py-1 bg-lux-elevated text-lux-accent"
+                : "rounded px-2 py-1 text-lux-text-muted"
             }
           >
             {TAB_LABEL[t]}
@@ -89,27 +90,35 @@ export default function Page() {
           data-invite-cap-ui="0"
           data-forbid-monthly-invite-cap="true"
         >
-          <p className="text-sm text-[var(--color-lux-text-muted)]">
+          <p className="text-sm text-lux-text-muted">
             §51.5 초대∞ · rewardsEnabled · Pool top-up · clawback · accrual
             halt · 인원캡 UI 0
           </p>
-          <ul className="text-xs text-[var(--color-lux-text-muted)] list-disc pl-5 space-y-1">
+          <ul className="text-xs text-lux-text-muted list-disc pl-5 space-y-1">
             <li>rewardsEnabled (0원 런칭 기본 OFF)</li>
             <li>Promo Pool top-up · FIFO · queued_pool</li>
             <li>보류 큐 release / clawback (reason≥10)</li>
             <li>공유 한도=스팸 방지 only · 초대 횟수 제한 없음</li>
           </ul>
-          <p className="text-xs text-[var(--color-lux-text-muted)]">
+          <p className="text-xs text-lux-text-muted">
             API: {programApi}
           </p>
         </section>
       ) : (
         <section className="mt-6" data-testid={`growth-${tab}-panel`}>
-          <p className="text-sm text-[var(--color-lux-text-muted)]">
+          <p className="text-sm text-lux-text-muted">
             Admin §35.6 골격 · 초대 계약은 referral 탭
           </p>
         </section>
       )}
     </main>
+  );
+}
+
+export default function Page() {
+  return (
+    <SearchParamsBoundary>
+      <GrowthContent />
+    </SearchParamsBoundary>
   );
 }

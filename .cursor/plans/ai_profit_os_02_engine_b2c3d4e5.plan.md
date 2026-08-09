@@ -1,33 +1,39 @@
 ---
 name: AI Profit OS — Engine
-overview: "v7.22.35 Engine·todo의존순(market→adapters→projection)·Day1 ebay멀티|admin·yahoo_jp 영구배제·Soft/Hard. Index=00."
+overview: "v7.22.39b Engine todo의존순잠금·preflight→market→overrideDDL→adapters→tier/image→vertical→projection→feed→Rule→KPI→sim→AI(feature→twin→llm→coach). Index=00."
 todos:
+  - id: engine-preflight-constitution
+    content: "[grok-4.5|256K] 착수전 BOOTSTRAP§0.4+CONST(44/45/46/46b/47/48/51)+DB58·mig18·함수4·Admin routes·override DDL↔schema 모순흡수 · 구현코드0 · 재검증2026-08-09"
+    status: completed
   - id: yahoo-jp-permanent-ban
-    content: "[grok-4.5|256K] v7.22.32 §0.0 yahoo_jp 영구 FORBIDDEN · Phase1+ 철회 · enum/워커/카피 0 · verify:listing-legs-day1"
+    content: "[grok-4.5|256K] v7.22.32 §0.0 yahoo_jp 영구 FORBIDDEN · Phase1+ 철회 · enum/워커/카피 0 · verify:listing-legs-day1 live"
     status: completed
   - id: listing-legs-no-jp-phone
-    content: "[grok-4.5|256K] v7.22.31 §0.0 Day1 ebay US×GB|admin · (v7.22.32: yahoo 영구배제) · verify:listing-legs-day1"
+    content: "[grok-4.5|256K] v7.22.31 §0.0 Day1 ebay US×GB|admin · (v7.22.32: yahoo 영구배제) · verify:listing-legs-day1 live"
     status: completed
   - id: soft-hard-requeue-timeout
-    content: "[grok-4.5|256K] v7.22.29 §48.13 Soft60/Hard90·REQUEUE가드·MATCH_TIMEOUT · Index §20.2 · Audit A4"
+    content: "[grok-4.5|256K] v7.22.29 Soft60/Hard90·REQUEUE·MATCH_TIMEOUT SSOT잠금(카피/Canon/스키마/DDL) · 구현=match-success-rule · verify:soft-hard-requeue-sla"
     status: completed
   - id: market-intel-engine
-    content: "[grok-4.5|256K] §0.0 Day1 ebay·카드·FX·admin · yahoo_jp 영구0 · Asset Master · 금지 adapter 0"
+    content: "[grok-4.5|256K] §0.0 A:Asset Master·pipeline·FORBIDDEN0 B:pricing/FX formula C:Admin opportunities계약 · yahoo_jp0 · verify:pricing-formula/fx-snapshot-formula"
+    status: pending
+  - id: engine-override-ddl-align
+    content: "[grok-4.5|256K] user_opportunity_overrides DDL↔schemas/user-opportunity-override.v1 (forceShow/pinOrder/marginPct/expectedProfit) · migration+apply · Admin §9.8.9 · balance-aware 선행"
     status: pending
   - id: signup-ready-adapters
-    content: "[composer-2.5|200K] ebay(멀티marketplaceId)+pokemontcg+ygoprodeck+coingecko+frankfurter · yahoo-jp 코드경로 0"
+    content: "[composer-2.5|200K] A:ebay 멀티marketplaceId B:pokemontcg+ygoprodeck C:coingecko+frankfurter · yahoo-jp경로0 · Phase1 deploy"
     status: pending
   - id: capital-tier-catalog
-    content: "[grok-4.5|256K] §0.0.5 micro/small/mid/whale 자본대·필터·시드 비율 잠금 SSOT"
+    content: "[grok-4.5|256K] §0.0.5 capitalBand enum·시드비율≥40%소액·필터칩 · CONSTITUTION/46 sync · Admin opportunities 밴드필터"
     status: pending
   - id: asset-image-pipeline
-    content: "[grok-4.5|256K] §0.0.6 assetImageUrl hydrate·SKU 1:1 실사진·공개가드·R2/Admin·verify:asset-image-surface"
+    content: "[grok-4.5|256K] §0.0.6 assetImageUrl hydrate·SKU1:1·공개가드·R2 · Admin opportunities?tab=assets · verify:asset-image-surface"
     status: pending
   - id: trading-card-vertical
-    content: "[composer-2.5|200K] trading_card 시드·Pokémon/YGO 메타+eBay 호가·등급매칭·소액 SKU 비중"
+    content: "[composer-2.5|200K] trading_card 시드·Pokémon/YGO 메타+ebay 호가·등급매칭·소액 SKU · Admin gradeMismatch 배지"
     status: pending
   - id: luxury-bag-vertical
-    content: "[composer-2.5|200K] luxury_bag 시드·Asset Master 이미지·ebay 멀티마켓|admin 호가·필터칩 가방"
+    content: "[composer-2.5|200K] luxury_bag 시드·Asset Master 이미지·ebay멀티|admin 호가·필터칩 가방"
     status: pending
   - id: ultra-watch-whale
     content: "[composer-2.5|200K] PP/AP/Rolex 시드 + whale≥100k 경로 (소액 카탈로그 공존)"
@@ -39,46 +45,48 @@ todos:
     content: "[grok-4.5|256K] §4.2b 내부필드↔유저표기·executionPlatforms유저0·대기Fact · verify:user-trader-jargon-0"
     status: pending
   - id: balance-aware-feed
-    content: "[grok-4.5|256K] §0.0.5.1 principal→affordable/nearMiss 피드·suggestDeposit·user override merge·verify:balance-aware-feed"
+    content: "[grok-4.5|256K] §0.0.5.1 A:affordable/nearMiss분류 B:suggestDeposit C:override merge · nearMissCap=execution-policy · verify:balance-aware-feed"
     status: pending
   - id: match-success-rule-engine
-    content: "[grok-4.5|256K] §48.13+§48.13.1~2 participate↔Rule·P0b matchBlocked·golden · verify:match-success-rule"
+    content: "[grok-4.5|256K] §48.13 A:settlement_rule.rs R1~R10 B:Soft60/Hard90/REQUEUE/MATCH_TIMEOUT C:golden6+P0b · verify:match-success-rule"
     status: pending
   - id: match-strictness-policy
-    content: "[grok-4.5|256K] §48.13.3 matchStrictness→policy 맵·난수0·밴드 오버레이·verify:match-strictness"
+    content: "[grok-4.5|256K] §48.13.3 matchStrictness→policy맵·난수0 · Admin execution-policy API · verify:match-strictness"
     status: pending
   - id: user-membership-engine
-    content: "[grok-4.5|256K] §0.0.7 membership 승급·일일한도·strictness오버레이·fulfillRate·verify:membership-*"
-    status: pending
-  - id: simulation-engine-m05
-    content: "[composer-2.5|200K] §51.4 simulation-engine + Admin growth?tab=simulation · Growth gate · §51.20 브리핑 · verify:simulation-gate"
+    content: "[grok-4.5|256K] §0.0.7 A:승급/일일캡 B:strictness오버레이 C:fulfillRate표시전용 · Admin §9.8.10 · verify:membership-*"
     status: pending
   - id: adapter-matching-kpi
-    content: "[composer-2.5|200K] §51.12+§51.15 등급매칭·SKU실패율 KPI · Admin /admin/adapters 알림"
+    content: "[composer-2.5|200K] §51.12+§51.15 등급매칭·SKU실패율 KPI · Admin /admin/adapters 알림·yahoo0 · simulation S4 선행"
+    status: pending
+  - id: simulation-engine-m05
+    content: "[composer-2.5|200K] §51.4 simulation-engine + Admin growth?tab=simulation · S1~S4(KPI입력) · platform_reserve(tab=reserve) · verify:simulation-gate"
     status: pending
   - id: ai-feature-platform
-    content: "[grok-4.5|256K] feature-platform + ai-platform L1/L2 + AI_LOG/Eval + Shadow Replay + AI PICK (자금집행 L3 0)"
+    content: "[grok-4.5|256K] A:feature-platform B:ai-platform L1/L2 C:AI_LOG/Eval+Shadow Replay+AI PICK (L3자금집행0)"
     status: pending
   - id: personal-ai-layer
-    content: "[grok-4.5|256K] §47 Twin+Memory+Fact+Guard+P/G/S · PG+Redis+pgvector · verify:twin-fact-separation"
-    status: pending
-  - id: ai-coach-runtime
-    content: "[grok-4.5|256K] §47.12~47.14 퍼뜩 P레인 Fact tools · G레인 Adapter · Admin coach · verify:ai-coach-*/ai-general-no-money-tools"
+    content: "[grok-4.5|256K] §47 A:Twin+Memory B:Fact+Guard C:P/G/S router · PG+Redis+pgvector · verify:twin-fact-separation"
     status: pending
   - id: llm-adapter-providers
-    content: "[composer-2.5|200K] §47.13 Day-1=gemini_free · quota→none degrade · GEMINI_* secrets · stream · 이후 openai 교체"
+    content: "[composer-2.5|200K] §47.13 Day-1=gemini_free · quota→none degrade · GEMINI_* secrets · stream · ai-coach G레인 선행"
+    status: pending
+  - id: ai-coach-runtime
+    content: "[grok-4.5|256K] §47.12~14 퍼뜩 P Fact전흡수(미션·입금·출금안내·초대·혜택·이벤트) · G=llm-adapter · Admin ai-logs?tab=coach · verify:ai-coach-*/ai-general-no-money-tools"
     status: pending
 isProject: false
 ---
-# AI Profit OS — Engine (v7.22.32 · Index pointer v7.22.35)
+# AI Profit OS — Engine (v7.22.39b · Owns 본문 + 실측감사 흡수 · todo의존순 잠금)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 > **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만 (에이전트 편집 SSOT)
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
-> **todo 순서 (v7.22.35):** market-intel → adapters → tier/image/vertical → scan/capital projection → balance-aware → Rule/strictness/membership → simulation/KPI → AI층 (File-Serial)  
-> **AI 이름:** **퍼뜩** (§47.12) · **P레인=플랫폼 Fact** · **G레인=일상 LLM** · **S=실행 금지**  
-> **Phase0 버스:** **in-process** (NATS=Phase1+) · Infra/Index pointer  
+> **File-Serial:** 01 Money **CLOSED** 후만 본 파일 · 파일 내 todos **위→아래  strictly** · 한 채팅=한 todo · 건너뛰기 금지  
+> **todo 순서 (v7.22.39b):** preflight·잠금(완료) → **market** → **overrideDDL** → adapters → tier/image → vertical → projection → balance-aware → Rule→strictness→membership → **KPI→simulation** → AI(**feature→twin→llm→coach**)  
+> **AI 이름:** **퍼뜩** (§47.12 · Brand Kit) · **타프로젝트 코치명(클라이 등) 유저 surface 금지** · P=플랫폼 Fact · G=일상 LLM · S=실행 금지  
+> **Phase0 버스:** **in-process** (NATS=Phase1+) · adapter 워커 **코드 Owns=본 파일 · deploy=Phase1+**  
+> **모델 잠금:** `[grok-4.5|256K]`=SSOT·Rule·AI·스키마/DDL · `[composer-2.5|200K]`=워커·시드 vertical·시뮬·KPI·LLM adapter · 각 todo content의 `A/B/C` = 256K/200K 한도 안 파트(한 채팅=한 todo·파트는 체크리스트)  
 
 > **v7.22.20:** §0.0.6 `assetImageUrl` · `luxury_bag`  
 > **v7.22.21:** §0.0.5.1 잔액 인식 피드 · SKU 1:1 · Admin §9.8.9  
@@ -92,8 +100,127 @@ isProject: false
 > **v7.22.30:** Soft/Hard **전 등급 동일** · 진행실 시세틱=pricing **Fact only**(난수 틱 0) · 긴장감 UX Owns=UI §48.3b · 등급 차별=§0.0.7 캡·기회(**≠대기 wall**)  
 > **v7.22.31:** Day-1 listing = **ebay 멀티 marketplaceId** 또는 **ebay×admin** · (yahoo는 당시 Phase1+)  
 > **v7.22.32:** `yahoo_jp` / Yahoo! JAPAN Auction **영구 배제**(FORBIDDEN) · Phase1+ 철회 · 코드·스키마·워커·카피·ENV **0** · listing = ebay 멀티\|admin only  
+> **v7.22.39:** 실측감사(DB58·mig18·함수4·override DDL↔schema·Admin 자식누락·nearMissCap·`/admin/assets`유령) · preflight·Admin계약·todo 재분할 흡수  
 > **v1 executionMode:** **`orchestrate` only** (ADR-009)  
-> **모델:** `[grok-4.5|256K]` 엔진/AI SSOT · `[composer-2.5|200K]` 워커·시뮬·Adapter 슬라이스
+
+## 0. 착수 전 실물 대조 기록 (v7.22.39 · 예측 0 · MCP+FS)
+
+> **Owns:** 본 절 = Engine 착수 게이트. 구현 todo는 `market-intel-engine`부터.  
+> **검증일:** 2026-08-09 · Supabase MCP `list_tables`/`list_migrations`/`execute_sql` + 레포 FS.  
+> **선행:** 01 Money **CLOSED** (todos 15/15 · Index v7.22.38).
+
+### 0.1 읽기 순서 (한 채팅 시작 시 · 이 표만)
+
+| 순 | 문서/경로 | 목적 |
+|----|-----------|------|
+| 1 | `docs/CONSTITUTION_BOOTSTRAP.md` §0·§0.4·§1·§6·§9 | 실물·Admin IA·다음 todo |
+| 2 | `CONSTITUTION/44` · `45` · `46` · `46b` · `47` · `48` · `51` | Engine Owns |
+| 3 | **본 플랜** 해당 todo 절만 (+ §0.4 Admin 계약) | 구현 SSOT |
+| 4 | `schemas/*` (opportunity·asset·execution·override·membership·ai-*) + `supabase/migrations/20260808205850*` · `20260808205853*` | 계약·DDL |
+| 5 | `apps/admin/routes.ts` + Admin §9.1.1 | Admin 화면 Owns≠Engine · **API/Rule 계약은 Engine** |
+| 6 | `services/engine-rust` · `workers/*-adapter` · `TOOLCHAIN.md` | 스택 잠금 |
+
+**금지:** launch ARCHIVE를 착수 SSOT · Money/UI 플랜 전문 대량 로드 · 사진 목업 · 타프로젝트 AI명 · yahoo_jp 재제안.
+
+### 0.2 실측 스냅샷 (오차0 · 2026-08-09)
+
+| 대상 | 실측 | Engine 함의 |
+|------|------|-------------|
+| Supabase ref | `mgsytcetsiecllmhcyox` · Seoul · PG **17.6** · ACTIVE_HEALTHY | 원격 only · Docker OFF |
+| `public` 테이블 | **58** · RLS ON | assets/opportunities/execution_policies/trade_executions/ai_* /user_membership 존재 |
+| migrations applied | **18** · 끝=`20260809010858_referral_pool_fifo_clawback` · 로컬 버전 **1:1** | Dashboard DDL 0 |
+| public 함수 | **4** (`ledger_*`3 + `users_stage_a_identity_ok`) | Rule/엔진 RPC **0** → Nest+`engine-rust` |
+| `vector` | **0.8.2** · `memory_embeddings` | §47 pgvector L1 |
+| `user_opportunity_overrides` 컬럼 | `hidden`·`pinned`·`margin_override_usdt` | **≠** schema `forceShow`/`pinOrder`/`marginPctOverride`/`expectedProfitUsdtOverride` → todo `engine-override-ddl-align` |
+| `services/engine-rust` | `settlement_rule.rs` = **SafeStop skeleton** | Soft60/Hard90 SSOT 잠금≠구현완료 · 구현=`match-success-rule-engine` |
+| `workers/*-adapter` | ebay·pokemontcg·ygoprodeck·coingecko·frankfurter 폴더 존재 · yahoo-jp **0** | 코드 Owns=Engine · **Phase1 deploy** |
+| `apps/admin/routes.ts` | TOP12 · Money 자식 전수 | Engine 자식 **누락분** §0.4로 흡수(본 턴 routes sync) |
+| Auth | Nest JWT · Supabase Auth **0** | AI/participate도 Nest |
+| PG사 | 코드경로 0 | Money 잠금 유지 |
+| Brand/AI | Consumer/AI=**퍼뜩** | 클라이 등 타명 **0** |
+
+### 0.3 v7.22.39에서 흡수한 모순·보완 (완료 · 구현코드 최소=routes/verify/BOOTSTRAP만)
+
+| # | 발견(실측) | 흡수 |
+|---|------------|------|
+| E1 | BOOTSTRAP/Index가 「다음=01 Money」잔존 | → BOOTSTRAP §0.4 Engine · 다음=`market-intel-engine` |
+| E2 | schema override ≠ DDL (`pinned` vs `pinOrder` 등) | → todo `engine-override-ddl-align` · merge 식은 schema SSOT |
+| E3 | `/admin/assets` 유령 path · routes **0** | → **`/admin/opportunities?tab=assets`** (sidebar 13 금지) |
+| E4 | `/admin/system-control?tab=reserve` routes **0** | → §0.0.4.3 + Admin §9.1.1 + routes 자식 추가 |
+| E5 | `nearMissCap` 위치가 execution-policy **또는** adapters/settings로 이중 표기 | → **전역 SSOT=`/admin/execution-policy` `feed.nearMissCapUsdt`만** · adapters=health/KPI |
+| E6 | Soft60 wall vs participate **P4 Soft**(가격 soft-accept) 용어 충돌 | → P4 라벨=`priceSoftAccept` (§48.13.1) · wall=Soft60/Hard90만 Soft/Hard |
+| E7 | Soft/Hard todo completed vs `settlement_rule` skeleton | → completed=**SSOT 잠금** · 코드 구현=`match-success-rule-engine` |
+| E8 | Admin Engine 계약 표 부재 | → **§0.4 Engine→Admin 계약 전수** |
+| E9 | 퍼뜩 Fact 흡수·제안 우선순위는 있으나 운영/감사 관점 체크 약함 | → §47.12 운영자·유저·감사 체크 + Admin coach |
+| E10 | todo 거대 슬라이스 · 모델 파트 불명 | → YAML `A/B/C` 파트 + 모델 접두사 재분할 |
+
+### 0.4 Engine→Admin 계약 전수 (UI Owns=Admin · Rule/시세/AI Owns=Engine)
+
+> 실물: `apps/admin/routes.ts` + Admin 플랜 §9.1/§9.1.1.  
+> Engine todo는 아래 **API·스키마·이벤트·KPI**를 제공해야 Admin deep이 막히지 않음.  
+> **sidebar 13번째 모듈 추가 금지** — 전부 기존 모듈의 **자식 tab**.
+
+| Admin surface (실route) | Engine 제공 계약 | Engine todo |
+|-------------------------|------------------|-------------|
+| `/admin/opportunities` | §36 pricing PATCH · compareReady · gradeMismatch · image_missing · capitalBand 필터 | `market-intel-engine` · verticals · `opportunity-scan-projection` |
+| `/admin/opportunities?tab=assets` | Asset Master CRUD · R2 이미지 · `imageSource` · SKU1:1 | `asset-image-pipeline` · `capital-tier-catalog` |
+| `/admin/execution-policy` | matchStrictness 프리셋맵 · Soft60/Hard90 표시 · **`feed.nearMissCapUsdt`** · 난수성공률 UI **0** · audit | `match-strictness-policy` · `balance-aware-feed` |
+| `/admin/adapters` | 5 adapter health · listing legs · SKU실패율 · yahoo **0** | `signup-ready-adapters` · `adapter-matching-kpi` |
+| `/admin/growth?tab=simulation` | M0.5 run/latest · S1~S4 · Growth ON 게이트 | `simulation-engine-m05` |
+| `/admin/system-control?tab=reserve` | `platform_reserve` 목표·audit · S2 입력 | `simulation-engine-m05` (§0.0.4.3) |
+| `/admin/ai-logs` · `?tab=coach` | answer-trace · P/G/S Eval · provider_id · degrade 카운트 | `ai-coach-runtime` · `llm-adapter-providers` |
+| `/admin/users/:id` §9.8.9 | override CRUD (schema 필드) · ledger 불변 | `engine-override-ddl-align` · `balance-aware-feed` |
+| `/admin/users/:id` §9.8.10 | membership force · matchStrictnessOverride | `user-membership-engine` |
+| `/admin/users/:id` §9.8.4a | `matchBlocked` → participate P0b | `match-success-rule-engine` |
+
+### 0.5 모델·파트 집행 규칙 (오류0 · 256K/200K)
+
+| 모델 | 담당 todo | 한 채팅 규칙 |
+|------|-----------|--------------|
+| **grok-4.5\|256K** | preflight(완료)·SSOT·pricing·override DDL·projection·Rule·membership·AI층 | content의 A→B→C 체크리스트 순서 · 파일 대량 로드 금지(§0.1만) |
+| **composer-2.5\|200K** | adapters·vertical 시드·simulation·KPI·llm-adapter | 워커/시드 슬라이스만 · 헌법/Money 재설계 금지 |
+
+**완료 정의:** 해당 todo `verify:*` PASS + (money면 해당 없음) + 세션 `pnpm cleanup:lowspec` PASS.
+
+### 0.6 completed todo 재검증 기록 (v7.22.39a · 2026-08-09 · 예측0)
+
+| todo | 범위 | 증거 | 판정 |
+|------|------|------|------|
+| `engine-preflight-constitution` | 착수 게이트·기록 only | BOOTSTRAP §0.4 · CONST 44/45/46/46b/47/48/51 존재 · Admin `assets`/`reserve` 자식 · DB58/mig18 | ✅ completed 유지 |
+| `yahoo-jp-permanent-ban` | SSOT+금지경로 잠금 | schema enum·mig CHECK·workers yahoo-jp **0**·copy 야후0 · **`verify:listing-legs-day1` live PASS** | ✅ (게이트 부재 결함→본 턴 신설) |
+| `listing-legs-no-jp-phone` | Day-1 legs=ebay멀티\|admin | marketId enum 5종 · ebay-adapter 폴더 · 동일 verify PASS | ✅ completed 유지 |
+| `soft-hard-requeue-timeout` | **SSOT 잠금** ≠ Rule 구현 | Canon softSec60/hardSec90 · copy 3줄 · schema/DDL `MATCH_TIMEOUT` · `verify:soft-hard-requeue-sla` PASS · `settlement_rule.rs` skeleton=의도(구현 todo 별도) | ✅ completed 유지 |
+
+**금지:** Soft/Hard completed를 Rule 구현 완료로 해석 · listing-legs verify 없는 채 completed 유지.
+
+### 0.7 YAML todo 위→아래 의존표 (v7.22.39b · 실행 SSOT · 건너뛰기 금지)
+
+| # | todo | 선행(바로 위까지) | 왜 이 자리 |
+|---|------|-------------------|------------|
+| 1~4 | preflight · yahoo · listing · soft-hard | — | ✅ completed · SSOT 잠금 |
+| 5 | `market-intel-engine` | 1~4 | Asset Master·pricing·Admin opportunities 계약 |
+| 6 | `engine-override-ddl-align` | 5 | schema↔DDL 먼저 · feed/Admin §9.8.9 깨짐 방지 |
+| 7 | `signup-ready-adapters` | 6 | 시세 수집 워커 (market 계약 후) |
+| 8 | `capital-tier-catalog` | 7 | 시드 밴드·비율 |
+| 9 | `asset-image-pipeline` | 8 | 이미지 가드 (시드 전 hydrate) |
+| 10~12 | trading_card → luxury_bag → ultra_watch | 9 | vertical 시드 (카드→가방→웨일시계) |
+| 13 | `opportunity-scan-projection` | 12 | §4.2a 카드 투영 |
+| 14 | `capital-provider-projection` | 13 | §4.2b 유저 표기 |
+| 15 | `balance-aware-feed` | 14 (+6) | override merge·nearMiss · **6 필수** |
+| 16 | `match-success-rule-engine` | 15 | Rule R1~R10 + Soft/Hard 구현 |
+| 17 | `match-strictness-policy` | 16 | 프리셋→policy 맵 (Rule 입력) |
+| 18 | `user-membership-engine` | 17 | membership 오버레이 (strictness 후) |
+| 19 | `adapter-matching-kpi` | 18 | SKU실패율 KPI (**sim S4 입력**) |
+| 20 | `simulation-engine-m05` | 19 | M0.5 · S4=KPI |
+| 21 | `ai-feature-platform` | 20 | feature/AI_LOG/PICK |
+| 22 | `personal-ai-layer` | 21 | Twin·Fact·P/G/S |
+| 23 | `llm-adapter-providers` | 22 | gemini_free (**coach G 선행**) |
+| 24 | `ai-coach-runtime` | 23 | 퍼뜩 런타임 · **마지막** |
+
+**v7.22.39b에서 고친 어긋남:**  
+(1) `overrideDDL`을 adapters **앞**으로 · (2) `adapter-matching-kpi` → `simulation` · (3) `llm-adapter` → `ai-coach`.
+
+**다음 실행:** `#5 market-intel-engine` only.
 
 ## 0.0 시세 소스 잠금 (v7.13) — Signup-Ready + Margin UX + Capital Tiers
 
@@ -328,7 +455,7 @@ expectedProfitUsdt  = grossSpreadUsdt − costBufferUsdt − platformMarginUsdt
 | `nearMiss` | `principalUsdt < requiredCapitalUsdt ≤ principalUsdt + nearMissCap` | **조금 더 넣으면 가능** |
 | `lockedHigh` | `requiredCapitalUsdt > principalUsdt + nearMissCap` | 목록 하단·접힘 (숨김 아님) |
 
-`nearMissCap` Day-1 기본 = **max(50, principalUsdt × 0.25)** · Admin `/admin/execution-policy` 또는 growth 아님 · **adapters/settings** `feed.nearMissCapUsdt` (전역)
+`nearMissCap` Day-1 기본 = **max(50, principalUsdt × 0.25)** · 전역 SSOT = Admin **`/admin/execution-policy`** 필드 `feed.nearMissCapUsdt` only · **`/admin/adapters`에 설정 UI 금지**(adapters=health/KPI) · growth 탭 아님
 
 **suggestDepositUsdt (기회 단위):**
 ```
@@ -346,12 +473,14 @@ suggestDepositUsdt = ceil_to_tick(requiredCapitalUsdt − principalUsdt)
 **유저별 override merge (Admin §9.8.9 → 카드 투영):**
 ```
 baseCard = OpportunityCard (전역 §36)
-userOv = user_opportunity_override[userId, opportunityId] | null
+userOv = user_opportunity_override[userId, opportunityId] | null  // schemas/user-opportunity-override.v1
 if userOv.hidden → 피드 제외
 if userOv.forceShow → 가드 통과 시 affordable/nearMiss에 재분류 가능(자본 부족이면 nearMiss+suggest)
+if userOv.pinOrder != null → 홈 정렬 최상단 (작을수록 앞 · 유저당 Day-1 max 10)
 if userOv.expectedProfitUsdtOverride → 표시·participate 가드에 사용 (ledger 잔액 변경 아님)
 if userOv.marginPctOverride → engine recalc expectedProfit (유저 세션만)
 ```
+> **DDL 잠금:** `public.user_opportunity_overrides`는 schema와 **1:1** (`force_show`·`pin_order`·`margin_pct_override`·`expected_profit_usdt_override`) · 구컬럼 `pinned`/`margin_override_usdt` = **마이그레이션으로 교체** (`engine-override-ddl-align`).  
 **금지:** override로 ledger credit/debit · 난수 성공 · compareReady 위조(false→true 강제 공개 금지; true→false 숨김은 허용)
 
 **퍼뜩 P Fact (예):** `지금 잔액으로 N건 · +{suggest}USDT면 M건 더`  
@@ -481,7 +610,7 @@ interface AssetMasterImage {
 
 #### Admin
 
-`/admin/opportunities` · `/admin/assets`: 이미지 URL·R2 업로드·`image_missing` 필터 · 미리보기는 유저 카드와 동일 `assetImageUrl`
+`/admin/opportunities` · **`/admin/opportunities?tab=assets`**: 이미지 URL·R2 업로드·`image_missing` 필터 · 미리보기는 유저 카드와 동일 `assetImageUrl` · **독립 `/admin/assets` route 금지**(sidebar 13 유발)
 
 **검증:** `verify:asset-image-surface` — available 기회 100% `assetImageUrl` · category↔icon 맵 · 홈/상세/진행/성공 4면 썸네일 슬롯
 
@@ -1054,14 +1183,17 @@ Model:  자체 ML 및/또는 LLM Adapter — 데이터 계층 불변
 
 ### 47.12 퍼뜩 (AI) — 유저 surface · Cursor 집행 아키텍처 (v7.22.16)
 
-> **유저 AI 이름:** **퍼뜩** (카피 SSOT) — **타프로젝트 코치 브랜드명 사용 금지**  
+> **유저 AI 이름:** **퍼뜩** (카피·Brand Kit SSOT) — **타프로젝트 코치명(클라이 등) · 영문 별칭 surface 금지**  
 > **엔진 본체:** §47.1~47.11 + §47.13~47.14 (교체·우회 금지)  
 > **제품 목표:**  
-> 1) **P레인** — 구현된 플랫폼 Fact로 미션→입금→출금안내→초대→이벤트→CS를 쉬운 한글로 제안.  
-> 2) **G레인** — 일상·일반 질문도 같은 `/me/peotteok`에서 LLM으로 대화 (무료 Adapter → OpenAI 교체).  
+> 1) **P레인** — 구현된 플랫폼 Fact **전흡수** 후 미션(기회)→투자(참여)→친구초대→혜택→이벤트→입금→출금안내→CS를 쉬운 한글로 **자연 제안**(환각 숫자 0).  
+> 2) **G레인** — 일상·일반 질문도 같은 `/me/peotteok`에서 LLM으로 대화 (Day-1=`gemini_free` → OpenAI 교체).  
 > 3) **S레인** — 출금/지급/한도 **실행 0** · 안내 템플릿만.  
 > **톤:** UI §38.9 `toneBand` · §50.1 `fontScale`/`depositPref` · **성별 분기 금지**  
-> **정직 카피:** “플랫폼 숫자는 원장 기준 · 일상 답은 참고” — GPT급 무오류 보장 카피 **0**.
+> **정직 카피:** “플랫폼 숫자는 원장 기준 · 일상 답은 참고” — GPT급 무오류 보장 카피 **0**.  
+> **운영자:** Admin `ai-logs?tab=coach`로 “왜 이 제안?” 1클릭 추적 · degrade/429 카운트.  
+> **유저(20~70·욕심·간단):** 한 문장+다음 버튼 · IT용어 0 · “알아서 다 알려주는 코치”= P Fact 칩 우선.  
+> **감사:** Fact tools 밖 숫자·S레인 mutate·Twin잔액 = CI FAIL.
 
 #### Fact 흡수 목록 (P레인 · 구현된 것만 · 환각 0)
 
@@ -1299,8 +1431,8 @@ function evaluateMatchSuccess(ctx: RuleContext): ExecutionResultCode {
 | P1 | R4 `compareReady` | 계속 | participate **차단** (trade 미생성) |
 | P2 | balance·circuit·user status | trade 생성 | `INSUFFICIENT_BALANCE` / `CIRCUIT_OPEN` / … |
 | P3 | body: `pricingVersion` + `minProfitUsdt` + `idempotency_key` | 계속 | `400` validation |
-| P4 Soft (§43) | `pricingVersion` 불일치여도 **재계산 expected ≥ minProfitUsdt** 이고 slippage bound 내 | trade OK · **R7 OR 분기** | `PRICE_STALE` / `PRICE_MOVED` |
-| P5 Hard | `staleAt` age > `priceStaleMaxSec`(기본 3s) | — | 엔진 진입 차단 `PRICE_STALE_DATA` |
+| P4 **priceSoftAccept** (§43 · ≠ Soft60 wall) | `pricingVersion` 불일치여도 **재계산 expected ≥ minProfitUsdt** 이고 slippage bound 내 | trade OK · **R7 OR 분기** | `PRICE_STALE` / `PRICE_MOVED` |
+| P5 **priceHardStale** (≠ Hard90 wall) | `staleAt` age > `priceStaleMaxSec`(기본 3s) | — | 엔진 진입 차단 `PRICE_STALE_DATA` |
 | P6 | execute loop | R1~R10 | §48.13 표 |
 | P7 | `MATCH_SUCCESS` | `settlement.completed` **즉시** | 연출 타이머와 **무관** |
 

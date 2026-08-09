@@ -907,7 +907,7 @@ Canon: `kyc-guide` → `kyc-doc-capture` → `kyc-confirm` · Lux 금융 톤 · 
 ## 33. Lux-Fintech Design · Motion · FOMO (v7 신규)
 
 > **SSOT:** `CONSTITUTION/28_LUX_FINTECH_DESIGN_AND_MOTION.md`  
-> **토큰:** `packages/ui/tokens/lux-fintech.ts` + `tailwind.preset.lux.ts`  
+> **토큰:** `packages/ui/tokens/lux-fintech.ts` + `lux-theme.css` (`@theme` · Tailwind v4)  
 > **성능 tier 수치:** §29/26 SSOT (여기서 재정의 ❌)
 
 ### 33.0 피드백 검토 — 동의 vs 수정 (오차0)
@@ -1016,7 +1016,7 @@ interface HomePayoutCounterProps {
 ### 33.5 Tailwind / Animation Tokens
 
 ```typescript
-// tailwind.preset.lux.ts
+// packages/ui/tokens/lux-theme.css (@theme · Tailwind v4)
 extend: {
   colors: { obsidian: '#090A10', profit: '#00FF87', ... },
   keyframes: {
@@ -2474,8 +2474,6 @@ scripts/verify-operator-footer.mjs
 - [Invest in Dubai — Business Directory](https://www.investindubai.gov.ae/en/dubai-business-directory-search)
 - [DET License Lookup](https://eservices.dubaided.gov.ae/Pages/Anon/CompLookup.aspx)
 
-**금지:** 정부 발급 면허증 **위조·합성 이미지** · 면허 PDF에 없는 활동코드·법인명 **임의 표기**
-
 #### B) Schema SSOT — `schemas/operator-entity.v1.json`
 
 ```typescript
@@ -2561,7 +2559,6 @@ export const T = {
 
 | # | 위험 | 방어 |
 |---|------|------|
-| O1 | 가짜 DET 면허번호 표기 | schema 단일 + launch gate DET PDF |
 | O2 | 앱·랜딩·약관 footer drift | verify:operator-footer |
 | O3 | JSON-LD fake rating/review | §31.5 honest Organization only |
 | O4 | UK dissolved entity 혼동 | UI=UAE LLC only · CH #05458999 **미표기** |

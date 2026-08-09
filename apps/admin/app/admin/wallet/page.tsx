@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
+import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 
 const TABS = [
   "deposit-settings",
@@ -24,7 +25,7 @@ const TAB_LABEL: Record<WalletTab, string> = {
  * Decide = POST .../credit | .../reject · audit required
  */
 // route lock: wallet?tab=disputes
-export default function Page() {
+function WalletContent() {
   const searchParams = useSearchParams();
   const tab = useMemo((): WalletTab => {
     const raw = searchParams.get("tab");
@@ -40,7 +41,7 @@ export default function Page() {
 
   return (
     <main
-      className="p-6 text-[var(--color-lux-text)]"
+      className="p-6 text-lux-text"
       data-admin-wallet-tab={tab}
       data-testid="admin-wallet-page"
     >
@@ -56,8 +57,8 @@ export default function Page() {
             data-tab={t}
             className={
               tab === t
-                ? "rounded px-2 py-1 bg-[var(--color-lux-elevated)] text-[var(--color-lux-accent)]"
-                : "rounded px-2 py-1 text-[var(--color-lux-text-muted)]"
+                ? "rounded px-2 py-1 bg-lux-elevated text-lux-accent"
+                : "rounded px-2 py-1 text-lux-text-muted"
             }
           >
             {TAB_LABEL[t]}
@@ -75,23 +76,31 @@ export default function Page() {
           data-kind="wrong_chain"
           data-audit-required="true"
         >
-          <p className="text-sm text-[var(--color-lux-text-muted)]">
+          <p className="text-sm text-lux-text-muted">
             오입금·다른 네트워크 분쟁 · 결정마다 감사 기록 · 잔액은 분개로만
           </p>
-          <p className="mt-2 text-xs text-[var(--color-lux-text-muted)]">
+          <p className="mt-2 text-xs text-lux-text-muted">
             API: {disputesApi}
           </p>
-          <p className="mt-1 text-xs text-[var(--color-lux-text-muted)]">
+          <p className="mt-1 text-xs text-lux-text-muted">
             network code (admin): TRC20 · 유저 화면 라벨: 트론
           </p>
         </section>
       ) : (
         <section className="mt-6" data-testid={`wallet-${tab}-panel`}>
-          <p className="text-sm text-[var(--color-lux-text-muted)]">
+          <p className="text-sm text-lux-text-muted">
             Admin §9.1.1 골격 · 탭={TAB_LABEL[tab]}
           </p>
         </section>
       )}
     </main>
+  );
+}
+
+export default function Page() {
+  return (
+    <SearchParamsBoundary>
+      <WalletContent />
+    </SearchParamsBoundary>
   );
 }

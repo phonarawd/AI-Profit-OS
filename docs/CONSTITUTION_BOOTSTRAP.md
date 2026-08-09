@@ -1,4 +1,4 @@
-# Constitution Bootstrap — Index CLOSE 실물 대조 기록 (v7.22.36)
+﻿# Constitution Bootstrap — Index CLOSE 실물 대조 기록 (v7.22.36)
 
 > **목적:** 구현 채팅 시작 전, 헌법·스키마·마이그레이션·어드민·브랜드·DB SSOT를 **예측 없이** 정리한다.  
 > **권위:** ACTIVE Index `ai_profit_os_00_index_a1b2c3d4.plan.md` > 도메인 01~06 > launch ARCHIVE.  
@@ -110,6 +110,53 @@
 
 **판정:** 규칙↔스키마↔헌법 Money Owns = **모순0** · 구현코드 **0** · `money-preflight-constitution` **PASS**.  
 **다음 채팅:** `money-double-entry` only.
+
+### 0.4 Engine 착수 전 실측 (v7.22.39 · `engine-preflight-constitution` · 2026-08-09)
+
+> **Owns:** Engine 착수 게이트 기록 · 구현코드 최소(Admin routes/verify sync만) · 다음 todo=`market-intel-engine`  
+> **방법:** Supabase MCP `list_tables`/`list_migrations`/`execute_sql` + 레포 FS · Admin routes 대조  
+> **선행:** 01 Money **CLOSED** (v7.22.38 · todos 15/15)
+
+| 대상 | 실측 | Engine 함의 |
+|------|------|-------------|
+| Supabase | ref=`mgsytcetsiecllmhcyox` · Seoul · PG **17.6** · ACTIVE_HEALTHY | 원격 only · Docker OFF |
+| `public` 테이블 | **58** · RLS ON 전수 | assets/opportunities/execution_policies/ai_*/user_membership 존재 |
+| migrations applied | **18** · 끝=`20260809010858_referral_pool_fifo_clawback` · 로컬 버전 1:1 | Dashboard DDL 0 |
+| public 함수 | **4** (ledger_*3 + users_stage_a_identity_ok) | Rule RPC 0 → Nest+engine-rust |
+| `vector` | **0.8.2** | memory_embeddings · §47 |
+| `user_opportunity_overrides` | 컬럼=`hidden,pinned,margin_override_usdt` | **≠** schema forceShow/pinOrder/… → Engine todo `engine-override-ddl-align` |
+| `services/engine-rust` | settlement_rule = SafeStop skeleton | Soft60/Hard90 SSOT 잠금 ≠ 구현완료 |
+| `workers/*-adapter` | ebay·pokemontcg·ygoprodeck·coingecko·frankfurter · yahoo-jp **0** | 코드 Owns=Engine · Phase1 deploy |
+| Admin 자식 | +`opportunities?tab=assets` · +`system-control?tab=reserve` | sidebar 13 금지 · Engine §0.4 |
+| AI 이름 | **퍼뜩** | 클라이 등 타명 surface **0** |
+
+#### 0.4.1 헌법 Engine Owns 읽기 확인 (44/45/46/46b/47/48/51)
+
+| 파일 | 판정 |
+|------|------|
+| `44_SIGNUP_READY_MARKET_SOURCES.md` | ✅ ebay멀티\|admin · yahoo FORBIDDEN |
+| `45_PRICE_COMPARE_MARGIN_UX.md` | ✅ PriceCompareMargin |
+| `46_CAPITAL_TIER_CATALOG.md` | ✅ capitalBand |
+| `46b_ASSET_IMAGE_SSOT.md` | ✅ assetImageUrl |
+| `47_PERSONAL_AI_USER_TWIN.md` | ✅ 퍼뜩 P/G/S |
+| `48_AI_EXECUTION_ROOM_AND_POLICY.md` | ✅ Soft60/Hard90 · Rule |
+| `51_PLATFORM_COMPLETENESS_AND_RULE_ENGINE.md` | ✅ Sim·KPI |
+
+#### 0.4.2 흡수 모순 (완료)
+
+| # | 발견 | 해소 |
+|---|------|------|
+| E1 | BOOTSTRAP 다음=01 Money 잔존 | → 다음=02 Engine `market-intel-engine` |
+| E2 | override DDL≠schema | → Engine `engine-override-ddl-align` |
+| E3 | `/admin/assets` 유령 | → `opportunities?tab=assets` |
+| E4 | reserve tab 누락 | → `system-control?tab=reserve` |
+| E5 | nearMissCap 이중 표기 | → execution-policy only |
+| E6 | Soft 용어 충돌 | → priceSoftAccept ≠ Soft60 wall |
+| E7 | Soft/Hard completed vs skeleton | → SSOT 잠금 vs 구현 todo 분리 |
+
+**판정:** Engine preflight **PASS** · File-Serial 다음 채팅=`market-intel-engine` only.
+
+---
 
 ## 1. 작업 전 읽기 순서 (한 채팅=한 todo)
 
@@ -505,7 +552,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 - [x] pnpm verify:brand-consumer PASS
 - [x] Admin IA 골격 = §6.1~6.2 / Admin §9.1.1 (`apps/admin/routes` lock · monorepo-skeleton completed)
 - [ ] `DATABASE_URL` · `REDIS_URL` 로컬 `.env` (git 0)
-- [x] Index pending **0** · 한 채팅 = 다음 도메인(**01 Money**) **한 todo**만
+- [x] Index pending **0** · 한 채팅 = 다음 도메인(**02 Engine**) **한 todo**만 (`market-intel-engine`)
 
 **done 정의:** 해당 todo의 `verify:*` PASS + `pnpm cleanup:lowspec` PASS.
 
@@ -515,7 +562,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 
 > **Owns:** 본 절 + Index「플랜 직렬 완료 규칙」.  
 > **운영자(Grok-4.5) 규칙:** YAML pending todo를 **위에서 아래로만** · 한 채팅=한 todo · 완료 잠금 todo 재실행 금지.  
-> **다음 채팅:** **01 Money** money-double-entry only (v7.22.37 `money-preflight-constitution` PASS) (Index completed 재실행 금지).
+> **다음 채팅:** **02 Engine** `market-intel-engine` only (v7.22.39 `engine-preflight-constitution` PASS) (Money completed 재실행 금지).
 
 | 순 | Index todo | 산출물 | 모델 | 상태 |
 |----|------------|--------|------|------|
@@ -528,7 +575,6 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | 6 | `copy-canon-cta-sla-lock` | copy/ko CTA·면책·Soft/Hard + Canon `primaryCta` | grok-4.5 | completed |
 | 7 | `auth-ssot` | Nest JWT · Stage A/B · Owns=Infra §51.9 · `verify:auth-flows` | grok-4.5 | completed |
 | 8 | `phase0-bootstrap-hosts` | CF+Supabase+Upstash · Owns=Infra §51.13 · `verify:phase0-bootstrap` | composer-2.5 | completed |
-| 9+ | 도메인 파일 | **01 Money**(money-double-entry) → 02 Engine → 03 UI → 04 Admin → 05 PWA → 06 Infra | 접두사 | File-Serial |
+| 9+ | 도메인 파일 | **01 Money CLOSED** → **02 Engine**(market-intel-engine) → 03 UI → 04 Admin → 05 PWA → 06 Infra | 접두사 | File-Serial |
 
 **금지:** 헌법/스키마 없이 apps 화면 · constitution∥monorepo 병렬 · Dashboard DDL · Supabase Auth SDK · launch를 착수 SSOT로 사용 · yahoo_jp 재제안 · Index pending>0인데 01 Money 착수 · Admin `admin-isolated-deploy`를 `admin-ops`보다 먼저 실행.
-

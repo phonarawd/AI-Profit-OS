@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Index
-overview: v7.22.38 Index CLOSED·01 Money CLOSED(15/15). 실측=DB58·mig18·Nest ledger/wallet/compliance/risk/referral·chain workers. File-Serial→02Engine. listing=ebay멀티|admin·yahoo영구FORBIDDEN·CTA수익벌기·Soft60/Hard90.
+overview: v7.22.39 Index CLOSED·01 Money CLOSED·02 Engine preflight PASS. 실측=DB58·mig18·Admin+assets/reserve. File-Serial→market-intel-engine. listing=ebay멀티|admin·yahoo영구FORBIDDEN·퍼뜩P/G/S.
 todos:
   - id: yahoo-jp-permanent-ban
     content: "[grok-4.5|256K] v7.22.32 yahoo_jp 영구 FORBIDDEN · Phase1+ 철회 · Engine/UI/ENV 0 · verify:listing-legs-day1"
@@ -132,7 +132,7 @@ isProject: false
 | **05** | PWA & Native | PWA pending **0** 후만 06 착수 |
 | **06** | Infra & Marketing | pending **0**(Marketing/CAPI + 후반 관측만 · Auth/Phase0 실행큐≠여기) = 전 플랜 직렬 완료 |
 
-**00 Index pending 큐:** **pending 0 · CLOSED (v7.22.36)**. **01 Money = CLOSED (v7.22.38 · todos 15/15)**. 다음 파일=**02 Engine** 첫 pending. *(Index completed: monorepo-skeleton · copy-canon-cta-sla-lock · auth-ssot · phase0-bootstrap-hosts)*
+**00 Index pending 큐:** **pending 0 · CLOSED (v7.22.36)**. **01 Money = CLOSED (v7.22.38 · todos 15/15)**. **02 Engine** = preflight·yahoo·listing·Soft/Hard SSOT **completed** · 다음 todo=**`market-intel-engine`**. *(Index completed: monorepo-skeleton · copy-canon-cta-sla-lock · auth-ssot · phase0-bootstrap-hosts)*
 
 ```mermaid
 flowchart TD
@@ -245,6 +245,7 @@ flowchart TD
 | **v7.22.36 Index CLOSE·실물재동기** | Index todos pending **0** · MCP 재실측 public **41**(+auth oauth/passkey/magic) · migrations **10**(로컬파일버전=`20260808224856`=원격) · apps `web`+`admin` · services `api-nest`/`engine-rust` · Phase0 hosts PASS · BOOTSTRAP §0 동기 · 다음=**01 Money** · Audit A11 |
 | **v7.22.37 Money 실측감사·todo재분할** | Money 플랜: DB41·mig10·함수4·Admin routes·스키마 대조 · `wallet-service`→`api-nest` · Phase0 in-process · Admin `compliance?tab=kyc` · deposit-config fee/minHolding · todo 전량 `[grok-4.5\|256K]` 파트분할 · 다음 pending=`money-double-entry` |
 | **v7.22.38 Money CLOSE·DB동기** | Money todos **15/15** · MCP 재실측 public **58** · migrations **18**(로컬버전=원격 1:1) · 누락 `deposit_disputes`·`referral_pool_fifo_clawback` apply · Money verify 전수 PASS · 다음=**02 Engine** |
+| **v7.22.39 Engine 실측감사·Admin자식** | Engine preflight PASS · DB58·mig18·함수4·override DDL≠schema·`/admin/assets`유령→`opportunities?tab=assets`·`system-control?tab=reserve`·nearMissCap=execution-policy only · Soft용어분리 · todo A/B/C·모델분할 · 퍼뜩≠클라이 · 다음=`market-intel-engine` |
 | **v7.22.34 File-Serial** | 실행 순서=**파일 N pending=0 전 N+1 금지** · git mv Engine↔Money 번호 스왑(해시 유지) → **01 Money · 02 Engine** · Infra `auth-ssot`/`phase0-bootstrap-hosts`→Index 실행큐 · Owns 본문=Infra 유지 · 파일 내 todos 의존순 재배열 · §18=설명용 종속 · 구번호 파일명 문자열 **0** |
 
 ### 점수판 (목표)

@@ -9,6 +9,7 @@ import {
 } from "@aipo/ui/components/wallet/WithdrawModeCards";
 import { T } from "@aipo/ui/copy/ko";
 import { useWithdrawKycGate } from "../../../lib/use-withdraw-kyc-gate";
+import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 
 function resolveMode(raw: string | null): WithdrawModeValue {
   if (raw === "principal" || raw === "combined") return raw;
@@ -19,7 +20,7 @@ function resolveMode(raw: string | null): WithdrawModeValue {
  * Money §49.4 — default mode=profit · PrincipalConfirmSheet for principal|combined.
  * §42 KYC gate on entry.
  */
-export default function Page() {
+function WithdrawContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const mode = useMemo(
@@ -118,5 +119,13 @@ export default function Page() {
         }}
       />
     </main>
+  );
+}
+
+export default function Page() {
+  return (
+    <SearchParamsBoundary>
+      <WithdrawContent />
+    </SearchParamsBoundary>
   );
 }

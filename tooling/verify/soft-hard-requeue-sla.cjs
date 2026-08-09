@@ -63,6 +63,47 @@ if (!fs.existsSync(safePath)) {
   }
 }
 
+// Schema + DDL: MATCH_TIMEOUT is a terminal result (SSOT lock; Rule impl = Engine todo)
+const tradeSchemaPath = path.join(root, "schemas/trade-execution-state.v1.json");
+if (!fs.existsSync(tradeSchemaPath)) {
+  fails.push("missing schemas/trade-execution-state.v1.json");
+} else {
+  const trade = JSON.parse(fs.readFileSync(tradeSchemaPath, "utf8"));
+  const codes =
+    trade.properties?.resultCode?.enum ||
+    trade.properties?.result_code?.enum ||
+    (() => {
+      const walk = (node, acc = []) => {
+        if (!node || typeof node !== "object") return acc;
+        if (Array.isArray(node.enum) && node.enum.includes("MATCH_TIMEOUT")) {
+          acc.push(node.enum);
+        }
+        for (const v of Object.values(node)) walk(v, acc);
+        return acc;
+      };
+      return walk(trade)[0];
+    })();
+  if (!codes || !codes.includes("MATCH_TIMEOUT")) {
+    fails.push("trade-execution-state must enum MATCH_TIMEOUT");
+  }
+}
+
+const migPath = path.join(
+  root,
+  "supabase/migrations/20260808205850_opportunities_pricing.sql",
+);
+if (!fs.existsSync(migPath)) {
+  fails.push("missing opportunities_pricing migration");
+} else {
+  const mig = fs.readFileSync(migPath, "utf8");
+  if (!/MATCH_TIMEOUT/.test(mig)) {
+    fails.push("trade_executions DDL must allow MATCH_TIMEOUT");
+  }
+  if (!/'requeue'/.test(mig) && !/requeue/.test(mig)) {
+    fails.push("trade_executions DDL must allow requeue status");
+  }
+}
+
 if (fails.length) {
   console.error("[verify:soft-hard-requeue-sla] FAIL\n- " + fails.join("\n- "));
   process.exit(1);

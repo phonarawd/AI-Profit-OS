@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
+import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 
 const TABS = ["queue", "overview"] as const;
 type RiskTab = (typeof TABS)[number];
@@ -11,7 +12,7 @@ type RiskTab = (typeof TABS)[number];
  * Queue SoT = GET /api/v1/admin/risk/queue · freeze = POST .../users/:id/freeze
  */
 // route lock: risk?tab=queue
-export default function Page() {
+function RiskContent() {
   const searchParams = useSearchParams();
   const tab = useMemo((): RiskTab => {
     const raw = searchParams.get("tab");
@@ -27,7 +28,7 @@ export default function Page() {
 
   return (
     <main
-      className="p-6 text-[var(--color-lux-text)]"
+      className="p-6 text-lux-text"
       data-admin-risk-tab={tab}
     >
       <h1 className="text-xl font-semibold">사기·이상 거래 방지</h1>
@@ -42,8 +43,8 @@ export default function Page() {
             data-tab={t}
             className={
               tab === t
-                ? "rounded px-2 py-1 bg-[var(--color-lux-elevated)] text-[var(--color-lux-accent)]"
-                : "rounded px-2 py-1 text-[var(--color-lux-text-muted)]"
+                ? "rounded px-2 py-1 bg-lux-elevated text-lux-accent"
+                : "rounded px-2 py-1 text-lux-text-muted"
             }
           >
             {t === "queue" ? "동결 큐" : "개요"}
@@ -60,20 +61,28 @@ export default function Page() {
           data-catalog-api={catalogApi}
           data-p49-rules="P1-P24,E1-E12"
         >
-          <p className="text-sm text-[var(--color-lux-text-muted)]">
+          <p className="text-sm text-lux-text-muted">
             §49.9 룰 신호 · freeze 연동 · bucket drift circuit
           </p>
-          <p className="mt-2 text-xs text-[var(--color-lux-text-muted)]">
+          <p className="mt-2 text-xs text-lux-text-muted">
             API: {queueApi}
           </p>
         </section>
       ) : (
         <section className="mt-6" data-testid="risk-overview-panel">
-          <p className="text-sm text-[var(--color-lux-text-muted)]">
+          <p className="text-sm text-lux-text-muted">
             Admin §9.1.1 골격 · 큐는 queue 탭
           </p>
         </section>
       )}
     </main>
+  );
+}
+
+export default function Page() {
+  return (
+    <SearchParamsBoundary>
+      <RiskContent />
+    </SearchParamsBoundary>
   );
 }

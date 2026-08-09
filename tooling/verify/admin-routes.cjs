@@ -40,6 +40,7 @@ if (!/ADMIN_TOP_LEVEL_COUNT\s*=\s*12/.test(src)) {
 }
 
 const childRequired = [
+  "/admin/opportunities?tab=assets",
   "/admin/wallet?tab=deposit-settings",
   "/admin/wallet?tab=review",
   "/admin/wallet?tab=krw-pending",
@@ -62,6 +63,7 @@ const childRequired = [
   "/admin/users/:id/finance",
   "/admin/users/:id/finance?tab=buckets",
   "/admin/risk?tab=queue",
+  "/admin/system-control?tab=reserve",
 ];
 
 for (const href of childRequired) {

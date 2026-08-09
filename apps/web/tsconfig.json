@@ -37,6 +37,9 @@
       ],
       "@aipo/schemas/*": [
         "../../packages/schemas/src/*"
+      ],
+      "@aipo/operator-entity": [
+        "../../schemas/operator-entity.instance.json"
       ]
     }
   },
@@ -45,7 +48,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    "../../schemas/operator-entity.instance.json"
   ],
   "exclude": [
     "node_modules"

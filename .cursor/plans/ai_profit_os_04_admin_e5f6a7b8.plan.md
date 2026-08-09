@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Admin & Ops
-overview: "v7.22.37 Admin·§9.1.1(+compliance?tab=kyc)·todo의존순(ops→기능→deploy)·Money계약동기. Index=00."
+overview: "v7.22.39 Admin·§9.1.1(+assets/reserve)·todo의존순(ops→기능→deploy)·Money+Engine계약동기. Index=00."
 todos:
   - id: admin-ia-child-routes-911
     content: "[grok-4.5|256K] v7.22.33 §9.1.1 자식 route/tab 전수 잠금 · sidebar13 0 · BOOTSTRAP §6 sync · monorepo routes 선행 SSOT"
@@ -92,11 +92,12 @@ isProject: false
 ### 9.1.1 자식 route / tab 전수 (sidebar 13 금지 · v7.22.33 · 중복0)
 
 > **Owns:** 본 절 · BOOTSTRAP §6 = 체크리스트 복사 · monorepo `apps/admin/routes.ts`가 본 표를 구현.  
-> **실물:** `apps/admin/routes.ts` + 12모듈 **shell** 존재 (v7.22.36+) · deep 탭 UI=Admin todos · Money API 계약=`01` §0.4.
+> **실물:** `apps/admin/routes.ts` + 12모듈 **shell** 존재 (v7.22.36+) · deep 탭 UI=Admin todos · Money API 계약=`01` §0.4 · Engine API 계약=`02` §0.4.
 
 | 자식 (코드 route) | 부모 | 기능 (ko) |
 |-------------------|------|-----------|
-| `/admin/execution-policy` | 2b | 매칭 성공 조절 · Soft60/Hard90 표시 · 난수성공률 UI **0** |
+| `/admin/execution-policy` | 2b | 매칭 성공 조절 · Soft60/Hard90 표시 · **`feed.nearMissCapUsdt`** · 난수성공률 UI **0** |
+| `/admin/opportunities?tab=assets` | 2 | Asset Master·R2 이미지·`image_missing` · Engine §0.0.6 · **독립 `/admin/assets` 금지** |
 | `/admin/wallet?tab=deposit-settings` | 4 | 원화 대표계좌 · TronGrid/watcher · **fee/minHolding/TRX stake/sweeper pause** (Money §11.1·§11.2·§43.2) |
 | `/admin/wallet?tab=review` | 4 | TOP1 검수함 (USDT예외·원화·고액출금) |
 | `/admin/wallet?tab=krw-pending` | 4 | 원화 **[승인]/[거절]** · CSV Day-1 비필수 |
@@ -121,8 +122,9 @@ isProject: false
 | `/admin/users/:id/finance?tab=buckets` | 6 | 원금/수익/잠금/연습 |
 | 유저상세 §9.8.4a / §9.8.8d / §9.8.9 / §9.8.10 | 6 | 매칭·출금차단 · 쪽지 · 기회override · 멤버십·PIN·엄격도 |
 | `/admin/risk?tab=queue` | 7 | TOP3 동결 큐 |
-| `/admin/adapters` KPI면 | 3 | 수집기 health · listing legs · 매칭실패율 · yahoo **0** |
+| `/admin/adapters` KPI면 | 3 | 수집기 health · listing legs · 매칭실패율 · yahoo **0** · **nearMissCap 설정 UI 금지**(execution-policy Owns) |
 | `/admin/system-control` `pushEnabled` | 9 | Web Push kill + audit |
+| `/admin/system-control?tab=reserve` | 9 | `platform_reserve` 목표·audit · Growth/시뮬 S2 (Engine §0.0.4.3) |
 
 **Growth 경로 잠금:** canonical = **`/admin/growth?tab=*`** · 구 path `/admin/growth/content|deposit|whale|ticker` = **tab으로 redirect** (이중 IA 금지).
 

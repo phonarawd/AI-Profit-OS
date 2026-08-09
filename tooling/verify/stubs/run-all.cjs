@@ -6,6 +6,7 @@ const root = path.resolve(__dirname, "../..");
 const live = [
   "cta-earn-profit.cjs",
   "soft-hard-requeue-sla.cjs",
+  "listing-legs-day1.cjs",
   "match-tension-surface.cjs",
   "auth-flows.cjs",
   "bucket-invariant.cjs",
@@ -51,5 +52,5 @@ for (const step of live) {
 
 if (failed) process.exit(1);
 console.log(
-  "[verify:stubs] PASS (cta-earn-profit · soft-hard-requeue-sla · match-tension-surface · auth-flows · bucket-invariant · withdraw-mode-default · principal-withdraw-reachable · withdraw-fee-ledger · min-holding-scope · krw-admin-decide · kyc-withdraw-only · kyc-r2-only · kyc-redirect · webauthn-fallback-pointer · email-provider-resend · deposit-confirm-stages · no-per-address-poll · sweeper-trx-guard · principal-profit-abuse · balance-aware-feed · deposit-network-plain-ko · referral-* · share-copy · practice-non-withdrawable live; other domain stubs pending)",
+  "[verify:stubs] PASS (cta-earn-profit · soft-hard-requeue-sla · listing-legs-day1 · match-tension-surface · auth-flows · bucket-invariant · withdraw-mode-default · principal-withdraw-reachable · withdraw-fee-ledger · min-holding-scope · krw-admin-decide · kyc-withdraw-only · kyc-r2-only · kyc-redirect · webauthn-fallback-pointer · email-provider-resend · deposit-confirm-stages · no-per-address-poll · sweeper-trx-guard · principal-profit-abuse · balance-aware-feed · deposit-network-plain-ko · referral-* · share-copy · practice-non-withdrawable live; other domain stubs pending)",
 );
