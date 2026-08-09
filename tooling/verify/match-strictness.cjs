@@ -1,7 +1,8 @@
 ﻿/**
- * verify:match-strictness — Engine §48.13.3
+ * verify:match-strictness — Engine §48.13.3 + §0.9 E-R2 bootstrap
  * preset→policy map snapshot · Admin execution-policy API · Soft60/Hard90
- * goldens g_strictness_* · random/successRatePercent 0 · observed KPI write 0
+ * active-row seed/ensure assert · goldens · random/successRatePercent 0
+ * observed KPI write 0 · Admin PUT conflict 0 (ensure insert-only)
  */
 const fs = require("fs");
 const path = require("path");
@@ -27,6 +28,7 @@ const files = [
   "services/api-nest/src/execution-policy/execution-policy.module.ts",
   "services/api-nest/src/execution-policy/execution-policy.mi.ts",
   "supabase/migrations/20260809100440_execution_policy_feed_audit.sql",
+  "supabase/migrations/20260809142108_execution_policy_day1_bootstrap.sql",
   "packages/ui/canon/surfaces/admin-execution-policy.wire.json",
   "apps/admin/app/admin/execution-policy/page.tsx",
   "services/engine-rust/testdata/golden/g_strictness_tight_below_min.json",
@@ -241,7 +243,7 @@ if (/Math\.random\s*\(/.test(svcCode)) {
   fails.push("forbidden Math.random in execution-policy.admin.service");
 }
 
-// --- Migration ---
+// --- Migration (feed/audit + Day-1 active-row seed) ---
 const mig = read(
   "supabase/migrations/20260809100440_execution_policy_feed_audit.sql",
 );
@@ -253,6 +255,81 @@ if (!mig.includes("nearMissCapUsdt")) {
 }
 if (/success_rate_percent|successRatePercent/i.test(mig) && !/FORBIDDEN/.test(mig)) {
   fails.push("migration must not add successRatePercent column");
+}
+
+const seedMig = read(
+  "supabase/migrations/20260809142108_execution_policy_day1_bootstrap.sql",
+);
+if (!/INSERT\s+INTO\s+public\.execution_policies/i.test(seedMig)) {
+  fails.push("bootstrap migration must INSERT execution_policies");
+}
+if (!/WHERE\s+NOT\s+EXISTS/i.test(seedMig)) {
+  fails.push("bootstrap migration must be idempotent (WHERE NOT EXISTS)");
+}
+if (!seedMig.includes("'standard'")) {
+  fails.push("bootstrap migration must seed match_strictness=standard");
+}
+if (!seedMig.includes("nearMissCapUsdt")) {
+  fails.push("bootstrap migration must seed feed.nearMissCapUsdt");
+}
+if (!seedMig.includes("durationSecMin")) {
+  fails.push("bootstrap migration must seed presentation");
+}
+if (!seedMig.includes("00000000-0000-0000-0000-000000000000")) {
+  fails.push("bootstrap migration must use nil UUID bootstrap admin");
+}
+if (/UPDATE\s+public\.execution_policies/i.test(seedMig)) {
+  fails.push("bootstrap migration must not UPDATE (Admin PUT conflict)");
+}
+
+// --- §0.9 active-row assert (seed shape + Nest ensure insert-only) ---
+if (ms.EXECUTION_POLICY_BOOTSTRAP_ADMIN_ID !== "00000000-0000-0000-0000-000000000000") {
+  fails.push("EXECUTION_POLICY_BOOTSTRAP_ADMIN_ID must be nil UUID");
+}
+try {
+  ms.assertDay1BootstrapShape(ms.day1ExecutionPolicyDefaults());
+} catch (e) {
+  fails.push(`assertDay1BootstrapShape: ${e.message || e}`);
+}
+const day1 = ms.day1ExecutionPolicyDefaults();
+if (day1.matchStrictness !== "standard") {
+  fails.push("day1 defaults matchStrictness must be standard");
+}
+if (day1.feed?.nearMissCapUsdt !== "50") {
+  fails.push("day1 defaults feed.nearMissCapUsdt must be 50");
+}
+if (!svc.includes("ensureActiveRow") || !svc.includes("OnModuleInit")) {
+  fails.push("ExecutionPolicyAdminService must ensureActiveRow on boot");
+}
+if (!svc.includes("WHERE NOT EXISTS")) {
+  fails.push("ensureActiveRow must use WHERE NOT EXISTS (insert-only)");
+}
+if (!svc.includes("EXECUTION_POLICY_BOOTSTRAP_ADMIN_ID")) {
+  fails.push("ensureActiveRow must use EXECUTION_POLICY_BOOTSTRAP_ADMIN_ID");
+}
+// ensure must not UPDATE existing active rows (Admin PUT conflict = 0)
+const ensureFnMatch = svc.match(
+  /async ensureActiveRow\([\s\S]*?\n  async get\(/,
+);
+const ensureSlice = ensureFnMatch ? ensureFnMatch[0] : "";
+if (!ensureSlice) {
+  fails.push("ensureActiveRow method not found before get()");
+} else {
+  if (/UPDATE\s+public\.execution_policies/i.test(ensureSlice)) {
+    fails.push("ensureActiveRow must not UPDATE execution_policies");
+  }
+  if (
+    ensureSlice.includes("EXECUTION_POLICY_EVENTS") ||
+    /admin\.execution_policy\.updated/.test(ensureSlice)
+  ) {
+    fails.push("ensureActiveRow must not emit admin.execution_policy.updated");
+  }
+  if (!ensureSlice.includes("assertDay1BootstrapShape")) {
+    fails.push("ensureActiveRow must assertDay1BootstrapShape before insert");
+  }
+  if (!/INSERT\s+INTO\s+public\.execution_policies/i.test(ensureSlice)) {
+    fails.push("ensureActiveRow must INSERT INTO execution_policies");
+  }
 }
 
 // --- Admin page + Canon ---
@@ -358,5 +435,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:match-strictness] PASS (preset map · Soft60/Hard90 · Admin API · goldens · rng0 · observed write0)",
+  "[verify:match-strictness] PASS (preset map · Soft60/Hard90 · Admin API · active-row bootstrap · goldens · rng0 · observed write0)",
 );

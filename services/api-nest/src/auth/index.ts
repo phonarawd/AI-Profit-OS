@@ -1,8 +1,12 @@
 export { AuthModule } from "./auth.module";
 export { AuthService } from "./auth.service";
+export { JwtAuthGuard, type SessionUser } from "./jwt-auth.guard";
 export {
   USER_JWT_ISSUER,
   ADMIN_JWT_ISSUER,
+  USER_JWT_AUDIENCE,
+  ADMIN_JWT_AUDIENCE,
+  ACCESS_TOKEN_TTL_SEC,
   OAUTH_PROVIDERS,
   OAUTH_PRIMARY,
   FORBIDDEN_USER_AUTH_FIELDS,

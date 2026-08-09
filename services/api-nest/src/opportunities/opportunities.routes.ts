@@ -18,6 +18,8 @@ export const OPPORTUNITY_ADMIN_ROUTES = {
   seedLuxuryBags: "opportunities/assets/seed/luxury-bag",
   /** Engine §0.0 watch vertical seed upsert (PP/AP/Rolex · whale≥100k) */
   seedWatches: "opportunities/assets/seed/watch",
+  /** Engine §0.9 E-R6 — remote min catalog ensure (assets+ebay listings+opportunities) */
+  catalogRuntimeSeed: "opportunities/catalog/runtime-seed",
   /** Engine §51.12 grade mismatch evaluate (Admin badge input) */
   evaluateGrade: "opportunities/evaluate-grade",
   /** Engine §0.0 luxury_bag brand+model match evaluate */

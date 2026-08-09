@@ -22,6 +22,8 @@ const files = [
   "services/api-nest/src/membership/membership.admin.service.ts",
   "services/api-nest/src/membership/membership.admin.controller.ts",
   "services/api-nest/src/membership/membership.routes.ts",
+  "services/api-nest/src/membership/membership.user.routes.ts",
+  "services/api-nest/src/membership/membership.user.controller.ts",
   "services/api-nest/src/membership/membership.module.ts",
   "services/api-nest/src/membership/membership.mi.ts",
   "supabase/migrations/20260809101114_user_membership_match_policy.sql",
@@ -151,6 +153,64 @@ if (!appMod.includes("MembershipModule")) {
 const routes = read("services/api-nest/src/membership/membership.routes.ts");
 if (!routes.includes('membership: "users/:id/membership"')) {
   fails.push("routes must expose users/:id/membership");
+}
+const userRoutes = read(
+  "services/api-nest/src/membership/membership.user.routes.ts",
+);
+if (!/export const MEMBERSHIP_USER_ROUTES\s*=\s*\{/.test(userRoutes)) {
+  fails.push("MEMBERSHIP_USER_ROUTES must be exported as const object");
+}
+if (!userRoutes.includes('get: "me/membership"')) {
+  fails.push('MEMBERSHIP_USER_ROUTES.get must be "me/membership"');
+}
+if (!/as const/.test(userRoutes)) {
+  fails.push("MEMBERSHIP_USER_ROUTES must use as const");
+}
+if (userRoutes.includes("MEMBERSHIP_ADMIN_ROUTES")) {
+  fails.push("user routes must not import/share MEMBERSHIP_ADMIN_ROUTES");
+}
+const userCtrl = read(
+  "services/api-nest/src/membership/membership.user.controller.ts",
+);
+if (!userCtrl.includes("export class MembershipUserController")) {
+  fails.push("MembershipUserController class missing");
+}
+if (!userCtrl.includes("@Get(MEMBERSHIP_USER_ROUTES.get)")) {
+  fails.push("GET me/membership must bind MEMBERSHIP_USER_ROUTES.get");
+}
+if (/@Controller\(\s*["']admin["']\s*\)/.test(userCtrl)) {
+  fails.push("MembershipUserController must not be under admin");
+}
+if (/@Query\(\s*["']userId["']\s*\)/.test(userCtrl)) {
+  fails.push("user controller must not take @Query('userId')");
+}
+if (/body\.userId|@Body\(/.test(userCtrl)) {
+  fails.push("GET me/membership must not take body userId");
+}
+if (!userCtrl.includes("sessionUserId") || !userCtrl.includes("req.user")) {
+  fails.push("user membership must resolve userId from JWT session");
+}
+if (!userCtrl.includes("UnauthorizedException")) {
+  fails.push("user membership must reject missing session");
+}
+for (const needle of [
+  "aiPerkFlags",
+  "fulfillRate7d",
+  "fulfillRateReadOnly",
+  "ruleInputExcluded",
+  "ladder",
+]) {
+  if (!userCtrl.includes(needle)) {
+    fails.push(`user membership response must include ${needle}`);
+  }
+}
+if (/evaluateMatchSuccess|mergeEffectivePolicy/.test(userCtrl) &&
+    !/NEVER|Rule|FORBIDDEN|Excluded/.test(userCtrl)) {
+  fails.push("user controller must not feed fulfillRate into Rule");
+}
+const mod = read("services/api-nest/src/membership/membership.module.ts");
+if (!mod.includes("MembershipUserController")) {
+  fails.push("MembershipModule must register MembershipUserController");
 }
 const ctrl = read(
   "services/api-nest/src/membership/membership.admin.controller.ts",

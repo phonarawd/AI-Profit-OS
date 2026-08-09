@@ -8,6 +8,7 @@ import {
   Put,
   Query,
 } from "@nestjs/common";
+import { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
 import { isCapitalBand } from "./opportunities.mi";
 import { OPPORTUNITY_ADMIN_ROUTES } from "./opportunities.routes";
@@ -24,7 +25,10 @@ import type {
  */
 @Controller("admin")
 export class OpportunitiesAdminController {
-  constructor(private readonly opportunities: OpportunitiesAdminService) {}
+  constructor(
+    private readonly opportunities: OpportunitiesAdminService,
+    private readonly catalogSeed: CatalogRuntimeSeedService,
+  ) {}
 
   @Get(OPPORTUNITY_ADMIN_ROUTES.assets)
   listAssets(
@@ -130,6 +134,11 @@ export class OpportunitiesAdminController {
   @Post(OPPORTUNITY_ADMIN_ROUTES.seedWatches)
   seedWatches() {
     return this.opportunities.seedWatchAssets();
+  }
+
+  @Post(OPPORTUNITY_ADMIN_ROUTES.catalogRuntimeSeed)
+  catalogRuntimeSeed() {
+    return this.catalogSeed.ensureMinCatalog();
   }
 
   @Post(OPPORTUNITY_ADMIN_ROUTES.evaluateGrade)

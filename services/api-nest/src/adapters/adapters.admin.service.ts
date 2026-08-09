@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Optional,
+  forwardRef,
+} from "@nestjs/common";
 import {
   DAY1_AUTO_PUBLISH_YAHOO_JP,
   DAY1_LEG_PAIRS,
@@ -16,6 +22,7 @@ import {
   simulationS4InputFromKpi,
 } from "./adapters.mi";
 import { InProcessEventBus } from "../events/in-process.bus";
+import { CatalogRuntimeSeedService } from "../opportunities/catalog-runtime-seed.service";
 import { ADAPTER_EVENTS } from "./adapters.events";
 import type {
   AdapterHealthRow,
@@ -77,7 +84,12 @@ export class AdaptersAdminService {
   private listings: StoredListing[] = [];
   private catalog: StoredCatalogItem[] = [];
 
-  constructor(private readonly bus: InProcessEventBus) {
+  constructor(
+    private readonly bus: InProcessEventBus,
+    @Optional()
+    @Inject(forwardRef(() => CatalogRuntimeSeedService))
+    private readonly catalogSeed?: CatalogRuntimeSeedService,
+  ) {
     for (const a of this.deployAdapters) {
       this.state.set(a.adapterId, {
         status: "unknown",
@@ -225,12 +237,13 @@ export class AdaptersAdminService {
     return { attempt, kpi: this.toKpiResponse(this.computeKpi()) };
   }
 
-  ingest(body: AdapterIngestBody): {
+  async ingest(body: AdapterIngestBody): Promise<{
     ok: true;
     adapterId: string;
     accepted: number;
     matchAttemptsAccepted: number;
-  } {
+    listingsPersisted?: number;
+  }> {
     const adapterId = String(body.adapterId ?? "");
     assertNotForbidden({ adapterId, source: adapterId });
     if (isForbiddenAdapterId(adapterId)) {
@@ -308,6 +321,21 @@ export class AdaptersAdminService {
       this.applyKpiToHealth(kpi);
     }
 
+    let listingsPersisted = 0;
+    if (
+      this.catalogSeed &&
+      Array.isArray(body.listings) &&
+      body.listings.length > 0 &&
+      (adapterId === "ebay" || adapterId === "admin") &&
+      !body.dryRun
+    ) {
+      const persisted = await this.catalogSeed.persistIngestListings(
+        body.listings,
+        adapterId,
+      );
+      listingsPersisted = persisted.upserted;
+    }
+
     const row = this.toRow(adapterId, this.computeKpi(adapterId));
     this.bus.emit(ADAPTER_EVENTS.healthChanged, row);
     this.bus.emit(ADAPTER_EVENTS.observationIngested, {
@@ -318,7 +346,13 @@ export class AdaptersAdminService {
       matchAttemptsAccepted,
     });
 
-    return { ok: true, adapterId, accepted, matchAttemptsAccepted };
+    return {
+      ok: true,
+      adapterId,
+      accepted,
+      matchAttemptsAccepted,
+      listingsPersisted,
+    };
   }
 
   private computeKpi(adapterId?: string) {

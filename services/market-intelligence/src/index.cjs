@@ -27,6 +27,7 @@ const balanceAwareFeed = require("./balance-aware-feed.cjs");
 const matchStrictness = require("./match-strictness.cjs");
 const membership = require("./membership.cjs");
 const adapterMatchingKpi = require("./adapter-matching-kpi.cjs");
+const catalogRuntimeSeed = require("./catalog-runtime-seed.cjs");
 
 module.exports = {
   ...money,
@@ -53,4 +54,5 @@ module.exports = {
   ...matchStrictness,
   ...membership,
   ...adapterMatchingKpi,
+  ...catalogRuntimeSeed,
 };

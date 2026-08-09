@@ -23,6 +23,7 @@ const live = [
   "market-intel-engine.cjs",
   "arbitrage-type-label.cjs",
   "capital-tier-catalog.cjs",
+  "catalog-runtime-seed.cjs",
   "asset-image-surface.cjs",
   "trading-card-vertical.cjs",
   "luxury-bag-vertical.cjs",
@@ -66,6 +67,15 @@ const live = [
   "ai-lane-router.cjs",
   "fact-freshness.cjs",
   "answer-trace.cjs",
+  // P0-2 (Engine Final Re-Verification Audit) — previously implemented but
+  // never enforced by verify:gate; wired in so a future regression fails CI.
+  "user-opportunity-feed.cjs",
+  "participate-http.cjs",
+  "execute-rule-loop.cjs",
+  "catalog-runtime-seed.cjs",
+  "benefit-hub-surfaces.cjs",
+  // P0-1 — real JWT sign/verify/tamper/expiry round-trip (see jwt.core.cjs)
+  "auth-jwt-runtime.cjs",
 ];
 
 let failed = false;
@@ -85,5 +95,5 @@ for (const step of live) {
 
 if (failed) process.exit(1);
 console.log(
-  "[verify:stubs] PASS (… · llm-adapter-contract · llm-quota-degrade · ai-coach-fact-only · ai-coach-no-autonomy · ai-general-no-money-tools · ai-lane-router · fact-freshness · answer-trace live; other domain stubs pending)",
+  "[verify:stubs] PASS (… · llm-adapter-contract · llm-quota-degrade · ai-coach-fact-only · ai-coach-no-autonomy · ai-general-no-money-tools · ai-lane-router · fact-freshness · answer-trace · user-opportunity-feed · participate-http · execute-rule-loop · catalog-runtime-seed · benefit-hub-surfaces · auth-jwt-runtime live; other domain stubs pending)",
 );

@@ -1,11 +1,15 @@
 export { OpportunitiesModule } from "./opportunities.module";
 export { OpportunitiesAdminService } from "./opportunities.admin.service";
+export { OpportunitiesUserService } from "./opportunities.user.service";
+export { ParticipateService } from "./participate.service";
+export { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
 export { UserOpportunityOverrideAdminService } from "./user-opportunity-override.admin.service";
 export { OPPORTUNITY_EVENTS } from "./opportunities.events";
 export {
   OPPORTUNITY_ADMIN_ROUTES,
   OPPORTUNITY_ADMIN_FILTERS,
 } from "./opportunities.routes";
+export { OPPORTUNITY_USER_ROUTES } from "./opportunities.user.routes";
 export {
   mergeUserOpportunityOverride,
   compareFeedPinOrder,

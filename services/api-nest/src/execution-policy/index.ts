@@ -4,9 +4,11 @@ export { EXECUTION_POLICY_ADMIN_ROUTES } from "./execution-policy.routes";
 export { EXECUTION_POLICY_EVENTS } from "./execution-policy.events";
 export {
   applyMatchStrictness,
+  assertDay1BootstrapShape,
   coerceStrictnessLabel,
   day1ExecutionPolicyDefaults,
   expandMatchStrictness,
+  EXECUTION_POLICY_BOOTSTRAP_ADMIN_ID,
   MATCH_STRICTNESS_PRESETS,
   softHardReadOnly,
   toRulePolicy,

@@ -25,6 +25,7 @@
 | ia-tabs | `verify:ia-tabs` | ✅ live (User 5탭) |
 | admin-routes | `verify:admin-routes` | ✅ live (Admin §9.1.1) |
 | plans-ssot | `verify:plans-ssot` | ✅ live (workspace `.cursor/plans` ↔ `%USERPROFILE%\.cursor\plans` hash) |
+| api-nest-build | `verify:api-nest-build` | ✅ live (Engine Final Re-Verification Audit P1-1 — `tsc -p services/api-nest/tsconfig.json`, catches broken imports/types pre-merge) |
 
 ## Domain gates (구현되면 hard · 현재 stub PASS + TODO)
 
@@ -47,17 +48,24 @@
 | push-dedup · pwa-phase0-bus | PWA §23.5 — source_event_id · Phase0 NATS 0 |
 | webauthn-fallback-pointer · email-provider-resend | Money §43.6 Owns · PWA §23.6 UX only · Resend SSOT — **live** |
 | lighthouse-pwa | PWA §26 — CI ≥90 · local 8GB stub OK |
+| assetlinks | PWA §24.3 — `/.well-known/assetlinks.json` · package↔SHA-256 · TWA ready (v7.22.49 · v2 `store-bridge-scaffold`) — **planned** |
+| store-bridge-artifacts | PWA §24.3 — Play=`.aab` · Uptodown=`.apk`\|`.xapk` · 혼용 제출 문서/스크립트 0 (v7.22.49 · v2) — **planned** |
+| store-uptodown-listing | PWA §24.3b — listing 한도·webview/VT/배포권 체크리스트 · Console Owns=PWA (v7.22.49 · v2 `store-bridge-uptodown-listing`) — **planned** |
 | mockup-governance · canon-surfaces · brand-assets | UI ADR-013/011 |
 | asset-image-surface · execution-surfaces | Engine §0.0.6 · UI §48.3a — category thumb · `시세 불러오는 중...` (v7.22.20) — **asset-image-surface live** (hydrate·SKU1:1·공개가드·R2·Admin tab=assets · Canon4면) · execution-surfaces=UI todo |
 | trading-card-vertical | Engine §0.0 / §51.12 — trading_card 시드20~40 · pokemontcg/ygoprodeck 메타 · ebay 호가 · 등급매칭 · 소액 SKU · Admin gradeMismatch 배지 — **live** |
 | luxury-bag-vertical | Engine §0.0 — luxury_bag 시드10~25 · Asset Master admin_r2 이미지 · ebay 멀티\|admin 호가 · brand+model 매칭 · 필터칩 `가방` — **live** |
 | ultra-watch-whale | Engine §0.0 — watch 시드40~80 · PP/AP/Rolex · whale≥100k Ultra 경로 · Day-1 카탈로그 소액공존(≥40%) · brand+reference 매칭 · 필터칩 `시계` — **live** |
 | balance-aware-feed | Engine §0.0.5.1 · Money §49.2a · UI §5.3a — **live** (Engine classify affordable/nearMiss/lockedHigh · suggestDeposit ceil_to_tick · nearMissCap=`execution-policy.feed.nearMissCapUsdt` · override hide 100% · Money suggest query·principal Fact·deposit prefill·feed invalidate) |
+| user-opportunity-feed | Engine §0.9 E-R3 — **live** (`GET /api/v1/opportunities(+/:id)` · `OpportunitiesUserController`≠admin · `OPPORTUNITY_USER_ROUTES` · `buildBalanceAwareFeedWithOverrides` · `executionPlatforms` 유저0 · `arbitrageTypeKo` DB pass-through · JWT session userId only) |
+| participate-http | Engine §0.9 E-R4 · §48.13.1 — **live** (`POST /api/v1/opportunities/:id/participate` · P0b~P5 · `participate_requests`+`trade_executions` · idempotency · KYC0 · practice/circuit/principal · JWT session userId only · external HTTP 0) |
+| execute-rule-loop | Engine §0.9 E-R5 · §48.13 — **live** (`GET/POST /api/v1/trades/:id(/execute-tick)` · Nest→`settlement_rule.cjs` · Soft60/Hard90/REQUEUE/MATCH_TIMEOUT · MATCH_SUCCESS→settlement journal · `SettlementCompletedFanout` 소비 · ticker/mission/demo Rule입력0 · FFI0 · Phase0 polling) |
+| catalog-runtime-seed | Engine §0.9 E-R6 — **live** (Admin seed trading_card/luxury_bag/watch + ebay ingest-shaped listings→opportunities available≥1 · compareReady 일부 true · assetImageUrl 가드 · Day-1 ebay\|admin · amazon/yahoo INSERT 0 · `seed:catalog-runtime`) |
 | admin-user-opportunity-override | Admin §9.8.9 — 유저별 숨김/핀/마진 · ledger 불변 (v7.22.21) — **live** (DDL↔schema forceShow/pinOrder/marginPct/expectedProfit · Nest CRUD · merge · RBAC) |
 | referral-unlimited-invites · referral-pool-fifo · referral-ledger · referral-ladder · referral-idempotency · share-copy | Money §51.5 — **live** 월간초대캡0 · Pool FIFO · clawback · 0원 rewardsEnabled · Admin growth?tab=referral · UI§5.9.1a pointer (v7.22.22) |
 | invite-explain-surfaces | UI §5.9.1a — KR 20~70 설명·noCap·Canon invite-home (v7.22.22) |
-| match-strictness · no-success-rate-percent | Engine §48.13.3 · UI §48.6 — 엄격도 조절 · 난수 성공률 0 (v7.22.23) — **live** (preset→policy 맵 스냅샷 · Soft60/Hard90 · Admin GET/PUT `/api/v1/admin/execution-policy` + stats/today readOnly · goldens tight/lenient · successRatePercent 0) |
-| membership-ladder · membership-daily-cap · no-fulfill-rate-as-rule | Engine §0.0.7 — 등급·일일캡 · fulfillRate≠Rule (v7.22.24) — **live** (ladder snapshot · 승급 max(입금,성공)·adminForce · overlay merge · participate 가드 · Admin `/users/:id` membership·match-policy · fulfillRate 표시전용) |
+| match-strictness · no-success-rate-percent | Engine §48.13.3 · §0.9 E-R2 · UI §48.6 — 엄격도 조절 · 난수 성공률 0 (v7.22.23) — **live** (preset→policy 맵 스냅샷 · Soft60/Hard90 · Admin GET/PUT `/api/v1/admin/execution-policy` + stats/today readOnly · active-row seed/ensure `matchStrictness=standard`+`feed.nearMissCapUsdt` · ensure insert-only≠Admin PUT · goldens tight/lenient · successRatePercent 0) |
+| membership-ladder · membership-daily-cap · no-fulfill-rate-as-rule | Engine §0.0.7 — 등급·일일캡 · fulfillRate≠Rule (v7.22.24) — **live** (ladder snapshot · 승급 max(입금,성공)·adminForce · overlay merge · participate 가드 · Admin `/users/:id` membership·match-policy · **GET `/api/v1/me/membership`** 유저 읽기(ladder·aiPerkFlags·fulfillRate 표시전용·Rule입력0) · fulfillRate 표시전용) |
 | membership-surfaces | UI §5.9.2c · Canon membership-home — 100%보장0 · 고액희소 (v7.22.24) |
 | admin-user-credentials · admin-user-ban · admin-user-match-override | Admin §9.8.10 — 비번/PIN·밴·유저별엄격도 (v7.22.24) |
 | admin-user-capability-block | Admin §9.8.4a — 매칭/출금신청 개별차단 (v7.22.25) |
@@ -85,5 +93,8 @@
 | market-partner-trust · market-partner-adapters | UI **§38.10** 공식협력 로고 · Engine **§0.0.1c** amazon/yahoo adapter Phase1+ (v7.22.41 Founder lock) — market-partner-adapters **live** · market-partner-trust=UI todo |
 | mission-auto-payout · mission-idempotency · mission-no-manual-grant · benefit-hub-surfaces · benefit-no-credits-currency · benefit-g4-ledger-separation | Money **§51.8a** · UI **§5.9.5** · Engine **§48.13.4** fanout0 · Admin **§35.7** (v7.22.42) — **live** SSOT |
 | peotteok-chat · auth-complete-profile (canon) | UI §6.4b/e · canon-surfaces |
+| auth-jwt-runtime | Infra §51.9 · ADR-006 — Engine Final Re-Verification Audit P0-1 (v7.22.50) — **live** (real HS256 sign/verify/tamper/expiry/issuer/audience round-trip against `jwt.core.cjs` + real Nest HTTP boot of `JwtAuthGuard` via `jwt-guard.selftest.ts` (no DB/Redis) + 6 session-protected controllers wired · AuthService fake-identity regression guard) |
+
+**P0-2 (v7.22.50):** `user-opportunity-feed` · `participate-http` · `execute-rule-loop` · `catalog-runtime-seed` · `benefit-hub-surfaces` were implemented but never enforced by `verify:gate` (only reachable via manual `pnpm verify:<id>`). Now wired into `tooling/verify/stubs/run-all.cjs`'s `live` array alongside `auth-jwt-runtime` — a future regression in any of the six now fails CI, not just a one-time manual claim.
 
 Stub = `tooling/verify/stubs/*.cjs` — 해당 코드 경로가 생기면 FAIL로 승격.

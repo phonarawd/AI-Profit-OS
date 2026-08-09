@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Engine
-overview: v7.22.44 Engine CLOSED · todos 26/26 · mig25 1:1 · DB76 · Rule+AI+adapters live · File-Serial 다음=03 UI. Index=00.
+overview: v7.22.49 CLOSED(Pre-UI Runtime Gate · 가산 E-R1~E-R8 pending0) · 1~26 completed 불변 · MCP active≥1·available≥1 · verify 전수+신규3게이트 PASS · Money money-user-benefits-read completed · File-Serial 다음=03 UI ui-preflight-constitution. Index=00.
 todos:
   - id: engine-preflight-constitution
     content: "[grok-4.5|256K] 착수전 BOOTSTRAP§0.4+CONST(44/45/46/46b/47/48/51)+DB58·mig18·함수4·Admin routes·override DDL↔schema 모순흡수 · 구현코드0 · 재검증2026-08-09"
@@ -80,17 +80,43 @@ todos:
   - id: ai-coach-runtime
     content: "[grok-4.5|256K] §47.12~15 A:FactToolService(14)+HelpRAG+CoachOrchestrator B:POST /me/peotteok/chat SSE+coach-prompt/templates C:eval 3종+Admin coach+verify:ai-coach-*+ai-lane-router+fact-freshness+answer-trace"
     status: completed
+  - id: engine-runtime-preflight-gap
+    content: "[grok-4.5|256K] v7.22.48 REOPEN §0.9 Pre-UI Runtime Gate 판정기록 · participate/execute-tick/user-feed API 공백 + execution_policies·opportunities 행0 실측(MCP+FS) · Index/UI/BOOTSTRAP §5h2 pointer만 · 구현코드0"
+    status: completed
+  - id: engine-execution-policy-bootstrap
+    content: "[grok-4.5|256K] §0.9 active execution_policies 1행 보장(matchStrictness=standard·Soft60/Hard90 presentation·feed.nearMissCapUsdt) · migration seed 또는 Nest ensure · Admin PUT 경로 충돌0 · verify:match-strictness 회귀 + active-row assert(CATALOG 등록)"
+    status: completed
+  - id: engine-user-opportunity-feed
+    content: "[grok-4.5|256K] §0.9 GET /api/v1/opportunities(+/:id) 유저 컨트롤러 신설(OpportunitiesUserController · admin 컨트롤러와 분리) · OPPORTUNITY_USER_ROUTES · buildBalanceAwareFeedWithOverrides 연결 · executionPlatforms 유저0 · arbitrageTypeKo pass-through · verify:user-opportunity-feed(신설)"
+    status: completed
+  - id: engine-participate-http
+    content: "[grok-4.5|256K] §48.13.1 POST /api/v1/opportunities/:id/participate P0b~P5(schemas/participate-request.v1.json) · participate_requests+trade_executions insert·idempotency_key · KYC불필요·practice/circuit/principal 기존가드 재사용 · 외부API호출0 · userId=JWT세션 only(body/query 신뢰0·WalletController 패턴 반복 금지) · verify:participate-http(신설)+jargon/cta 회귀"
+    status: completed
+  - id: engine-execute-rule-loop
+    content: "[grok-4.5|256K] §48.13 Nest가 settlement_rule.cjs 호출(Rust settlement_rule.rs SSOT 유지·신규FFI금지) · GET /api/v1/trades/:id + POST /api/v1/trades/:id/execute-tick(Phase0 in-process polling·SSE는 Phase1+ realtime-service 전환 시 응답채널만 교체) · Soft60/Hard90/REQUEUE/MATCH_TIMEOUT · MATCH_SUCCESS→Money settlement posting pointer→기존 settlement.completed fanout(SettlementCompletedFanout) 그대로 소비 · ticker/mission/demo 입력 금지 · verify:execute-rule-loop(신설)+match-success-rule 회귀"
+    status: completed
+  - id: engine-catalog-runtime-seed
+    content: "[composer-2.5|200K] §0.9 원격 DB 유저 배선 가능 최소 카탈로그: 기존 Admin seed(trading_card/luxury_bag/watch) + ebay ingest(preview E2E 기록 재사용)로 listings→opportunities available≥1·compareReady 일부true·assetImageUrl 가드 통과 · Day-1 CHECK(ebay|admin) 불변·amazon/yahoo INSERT 시도0 · MCP count 실측(opportunities/assets/listings≥1) · verify:capital-tier-catalog/asset-image-surface/listing-legs-day1 회귀"
+    status: completed
+  - id: engine-user-membership-read
+    content: "[grok-4.5|256K] §0.0.7 GET /api/v1/me/membership 유저 읽기(ladder·aiPerkFlags·fulfillRate 표시전용·Rule입력0) · verify:membership-ladder 회귀 + 유저라우트 존재 assert"
+    status: completed
+  - id: engine-pre-ui-close
+    content: "[grok-4.5|256K] §0.9 CLOSE 재검증: MCP 재실측(execution_policies active≥1·opportunities available≥1) + Engine verify 전수 + 신규 3게이트(user-opportunity-feed/participate-http/execute-rule-loop) PASS · Money money-user-benefits-read completed 확인 · Index 다음=03 UI ui-preflight-constitution 잠금"
+    status: completed
 isProject: false
 ---
 
-# AI Profit OS — Engine (v7.22.39b · Owns 본문 + 실측감사 흡수 · todo의존순 잠금)
+# AI Profit OS — Engine (v7.22.48 · REOPEN · Pre-UI Runtime Gate · Owns 본문 + 실측감사 흡수 · todo의존순 잠금)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 > **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만 (에이전트 편집 SSOT)
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
 > **File-Serial:** 01 Money **CLOSED** 후만 본 파일 · 파일 내 todos **위→아래  strictly** · 한 채팅=한 todo · 건너뛰기 금지  
-> **todo 순서 (v7.22.39b):** preflight·잠금(완료) → **market** → **overrideDDL** → adapters → tier/image → vertical → projection → balance-aware → Rule→strictness→membership → **KPI→simulation** → AI(**feature→twin→llm→coach**)  
+> **v7.22.44 CLOSE(불변):** todos 1~26 **completed 유지 · 재실행 금지**. 아래 todo 순서는 그 26개 안에서의 **이력**이다.  
+> **v7.22.48 REOPEN(가산 27~34 · §0.9):** `engine-runtime-preflight-gap` → `engine-execution-policy-bootstrap` → `engine-user-opportunity-feed` → `engine-participate-http` → `engine-execute-rule-loop` → `engine-catalog-runtime-seed` → `engine-user-membership-read` → `engine-pre-ui-close` · **완료 후만 File-Serial 다음=03 UI**  
+> **todo 순서 (v7.22.39b · 1~26 이력):** preflight·잠금(완료) → **market** → **overrideDDL** → adapters → tier/image → vertical → projection → balance-aware → Rule→strictness→membership → **KPI→simulation** → AI(**feature→twin→llm→coach**)  
 > **AI 이름:** **퍼뜩** (§47.12 · Brand Kit) · **타프로젝트 코치명(클라이 등) 유저 surface 금지** · P=플랫폼 Fact · G=일상 LLM · S=실행 금지  
 > **Phase0 버스:** **in-process** (NATS=Phase1+) · adapter 워커 **코드 Owns=본 파일 · deploy=Phase1+**  
 > **모델 잠금:** `[grok-4.5|256K]`=SSOT·Rule·AI·스키마/DDL · `[composer-2.5|200K]`=워커·시드 vertical·시뮬·KPI·LLM adapter · 각 todo content의 `A/B/C` = 256K/200K 한도 안 파트(한 채팅=한 todo·파트는 체크리스트)  
@@ -111,6 +137,7 @@ isProject: false
 > **v7.22.40:** §48.13 **G4 ticker fanout 경계** — `settlement.completed` 후 Nest 비동기 투영 · Rule/분개 불변 · ticker Owns=Admin §35.4 · `match-success-rule-engine` 범위 **0**  
 > **v7.22.41 (Founder lock):** **§0.0.1c Market Partner Registry** — eBay·Amazon·Yahoo! JAPAN Auction **공식 협력사** · UI §38.10 로고 표기 · v7.22.32 yahoo **adapter/표기** → Phase1+ **복원 todo** · Day-1 listing=ebay멀티\|admin **유지** · Amazon/Yahoo leg=adapter todo 후  
 > **v7.22.42:** **§48.13.4 Mission reward fanout 경계** — `settlement.completed`/`deposit.confirmed` 등 **이후** Nest `MissionRewardEvaluator` 비동기 · Rule/R1~R10·분개·Soft/Hard **불변** · accrual/ledger Owns=**Money §51.8a** · UI §5.9.5 · `match-success-rule-engine` 범위 **0**
+> **v7.22.48 (REOPEN · Pre-UI Runtime Gate · §0.9):** CLOSE(v7.22.44) 후 실측 재점검에서 **participate/execute HTTP 실행계층 + 유저 기회 피드 API가 코드 0**임을 확인 · `POST /opportunities/:id/participate` · `GET /trades/:id` · `GET /opportunities(+/:id)` · `GET /me/membership` · `execution_policies`/`opportunities` 활성 행 0 · 26개 completed todo는 **재실행 금지·SSOT 잠금 유지**(룰 로직·골든테스트·정책은 정확) · **가산 8 todo(E-R1~E-R8)**로만 REOPEN · 새 병렬 플랜 파일 생성 금지(중복0) · 흡수 SSOT=본 절
 > **v1 executionMode:** **`orchestrate` only** (ADR-009)  
 
 ## 0. 착수 전 실물 대조 기록 (v7.22.39 · 예측 0 · MCP+FS)
@@ -254,7 +281,211 @@ isProject: false
 | Brand/AI | Consumer/AI=**퍼뜩** · 클라이 등 타명 **0** | ✅ |
 | Engine verify | listing/soft-hard/pricing/fx/market-intel/adapters/tier/image/vertical×3/arbitrage/jargon/balance/override/match-rule/mission×3/g4/partner/strictness/membership×3/KPI/sim/ai-feature/shadow/twin/llm×2/coach×5/admin-routes **전수 PASS** | ✅ |
 
-**CLOSE 판정:** Engine = **CLOSED** · File-Serial 다음 = **03 UI** (`yahoo-jp-copy-ban`). completed Engine todo 재실행 **금지**.
+**CLOSE 판정:** Engine = **CLOSED** · File-Serial 다음 = **03 UI** (`ui-preflight-constitution`). completed Engine todo 재실행 **금지**.
+
+### 0.8.1 Founder local ops pointer (v7.22.45 · **Engine todo 재실행·상태변경 금지**)
+
+> **범위:** founder 로컬/프리뷰 검증만 기록 · **signup-ready-adapters 등 completed todo = 그대로** · 본 절은 Phase1 preview ingest 호스트·Kakao runtime **pending** 흡수용 pointer.
+
+| 항목 | 실측 (2026-08-09) | SSOT / pending |
+|------|-------------------|----------------|
+| eBay Production OAuth | PRD App/Cert · Browse API OK · Account Deletion exemption 적용 | `.env` · Worker secrets |
+| Day-1 leg | `EBAY_US` buy · `EBAY_GB` sell | §0.0.1a P0 (completed) |
+| `ebay-adapter` preview | `https://ebay-adapter-preview.ebay-adapter.workers.dev` · `/tick`→ingest batch **40** · `/health.ingestConfigured` | Infra `phase1-adapter-ingest-host-binding` |
+| Nest ingest | `POST /api/v1/internal/adapters/ingest` · header `x-adapter-token`=`ADAPTER_INGEST_TOKEN` · body ≤10MB | `adapters.ingest.controller.ts` · `.env.example` |
+| Dev reachability | `cloudflared tunnel --url http://127.0.0.1:4000` → wrangler `NEST_ADAPTER_INGEST_URL` (임시) | prod=`API_HOST` 고정 시 secret 재등록 |
+| E2E 1회 | tick `forwarded:1` · ~320 listings · Admin adapter health green | 재검증=Infra todo · Engine verify 재실행 **금지** |
+
+## 0.9 Pre-UI Runtime Gate (v7.22.48 · REOPEN · UI 03 착수 잠금 · 예측0)
+
+> **Owns:** 본 절 = Engine REOPEN 게이트. 1~26 completed todo **불변·재실행 금지** · 가산 27~34(`engine-runtime-preflight-gap`~`engine-pre-ui-close`)만 신규 실행 큐.  
+> **발단:** 홈 `@pre-ui_engine_gate_8f59a783.plan.md`(Cursor 홈 미러 단독 생성 · 워크스페이스 SSOT 부재) 실측 + 독립 재검증(레포 FS·`app.module.ts` 전수·DB migration grep) 교차 대조 · 새 병렬 플랜 파일 **생성 금지** 원칙에 따라 본 절로 전량 흡수·해당 mirror 파일 삭제.  
+> **검증일:** 2026-08-09 · Supabase MCP `list_tables`/`list_migrations`/`execute_sql` **재실측 완료**(BOOTSTRAP §0.5.1) + 레포 FS.
+
+### 0.9.1 판정 (실측 · 추측 0)
+
+| 층 | 상태 | 증거 |
+|----|------|------|
+| DB76·mig25 1:1·함수5·override 스키마·stack-lock·Engine verify 정적 게이트 | PASS | MCP public **76** · migrations **25**(로컬=원격 1:1 · 끝=`20260809103208_…`) · 함수 **5** · §0.8 CLOSE + BOOTSTRAP §0.5.1 |
+| `services/engine-rust` — `settlement_rule.rs` R1~R10/Soft60/Hard90/REQUEUE/MATCH_TIMEOUT | **로직 PASS · 배선 0** | `[lib]`-only crate(`Cargo.toml`) · bin/서버 **0** · 호출부=verify 스크립트뿐(`settlement_rule.cjs` JS mirror도 동일) — **어떤 실행 서비스도 이 룰을 호출하지 않음** |
+| `POST /api/v1/opportunities/:id/participate` · `GET /api/v1/opportunities(+/:id)` 유저 피드 · `GET/POST /api/v1/trades/:id(/execute-tick)` | **코드 0** | `services/api-nest/src/app.module.ts` 전수: `OpportunitiesModule`은 `OpportunitiesAdminController`+`UserOpportunityOverrideAdminController`만 export · **TradesModule/ExecutionModule/ParticipateModule 미등록** · 레포 전체 `@Controller("opportunities")`/`@Controller("trades")`(admin 제외) grep 0건 |
+| `execution_policies` / `opportunities`(available) | **행 0(MCP 실측)** | MCP `execute_sql` 2026-08-09: `execution_policies` total=0·active=0 · `opportunities` total=0·available=0 · `assets`/`listings`=0 · migrations INSERT seed **없음** → ensure/seed 경로 코드 0 |
+| `settlement.completed` 이벤트 | **리스너만 존재 · 발행부 0** | `SettlementCompletedFanout`은 `LEDGER_EVENTS.journalPosted`(journalType='settlement') 구독뿐 · 그 journal을 만드는 코드(참여→체결→정산 posting)가 없어 **평상시 발화 자체가 불가능** |
+| `GET /api/v1/me/benefits` · `GET /api/v1/me/membership` | **코드 0** | `missions/mission.module.ts`는 `controllers` 선언 자체가 없음(providers만 · MCP/FS 2026-08-09 재확인) · membership 유저 라우트 grep 0건 — Money §51.8a.7·Engine §0.0.7이 문서화한 API 계약이 컨트롤러로 미구현 |
+| UI 홈·퍼뜩·기회목록/상세·실행실 페이지 | 골격 stub | `apps/web/app/page.tsx` 등 다수가 `<h1>{제목}</h1><p>골격 · 본구현은 도메인 todo</p>` 리터럴 · `/me/benefits`·`/me/guide/partners` routes 미등록(`apps/web/routes.ts` `USER_NESTED_ROUTES`에 없음) |
+
+**모순:** [02 Engine](.cursor/plans/ai_profit_os_02_engine_b2c3d4e5.plan.md) §48.13.1이 Owns한 participate API·§48.13 execute 루프가 코드 0인데 todos 26/26 CLOSED로 표기되었고, Index가 다음=03 UI로 잠겨 있었음.  
+**해소 원칙:** completed todo(1~26) **재실행 금지**(Index File-Serial) · **가산 pending todo(27~34)**로만 REOPEN · 새 병렬 플랜 파일 생성 금지(중복0) · 본 절이 유일한 SSOT.
+
+### 0.9.2 §48.3 SSE 가정과의 정합 (오차0 · 결함 아님)
+
+> UI §48.3은 `trade.execution.step` **SSE/WS** 스트림을 전제로 진행실을 설계했다. 본 게이트 `engine-execute-rule-loop`(E-R5)는 Phase0 원칙(§2.0 in-process·NATS 0)에 맞춰 **`POST /trades/:id/execute-tick` polling**으로 Day-1을 구현한다.  
+> **잠금:** Phase0 = polling(클라 tick 또는 짧은 interval) · **Phase1+ realtime-service 도입 시 `trades.execution.service.ts`의 응답 채널만 SSE로 교체**(Rule 판정 로직·엔드포인트 계약 불변) · UI는 이 세션에서 polling 클라이언트로 구현(SSE 클라 재작성 방지를 위해 `useTradeExecution` 훅 내부만 교체 가능하게 스켈레톤).
+
+### 0.9.3 잠금 (세계 1위팀 = 이 레포 ADR 집행 · 스택 재설계 0)
+
+| 축 | 적용 |
+|----|------|
+| 스택 | Node22 · pnpm@10.14 · next@16 · Nest · Rust `settlement_rule` SSOT · CJS mirror([settlement_rule.cjs](services/engine-rust/settlement_rule.cjs)) Phase0 Nest 직접 `require` 호출 · Cloudflare only · Supabase Seoul DB · Nest JWT · PG사 0 · Docker OFF |
+| File-Serial | 한 채팅=한 todo · 위→아래 · 1~26 completed 손대지 않음 · 27~34만 실행 |
+| 모델 | `[grok-4.5|256K]`=SSOT·Nest 계약·Rule 배선 · `[composer-2.5|200K]`=E-R6 시드/ingest 슬라이스만 |
+| 네이밍 | Wallet 패턴 복제: `OPPORTUNITY_USER_ROUTES` · `ParticipateService` · `TradeExecutionService` · path=`opportunities` / `opportunities/:id` / `opportunities/:id/participate` / `trades/:id` / `trades/:id/execute-tick` · domain=`participate` · 유저 CTA 문자열 Owns=UI |
+| 보안(신규 하드닝) | 신규 유저 컨트롤러는 **JWT 세션에서 userId 도출만** · `WalletController`가 body/query `userId`를 그대로 신뢰하는 기존 패턴 **반복 금지**(Auth 가드는 Infra `auth-ssot` 산출물 재사용) |
+| 돈 | decimal **string** · float 금지 · ledger posting Owns=Money · Rule은 credit 결정만 |
+| 완료 | 도메인 `verify:*` PASS + `pnpm cleanup:lowspec` · push 시 `gh run watch` |
+| RAM | 프로세스 1 · 서브에이전트 병렬 0 · `NODE_OPTIONS=1536` |
+
+### 0.9.4 목표 아키텍처 (유저 클릭 1경로)
+
+```mermaid
+sequenceDiagram
+  participant Web as apps_web
+  participant Nest as api_nest
+  participant Feed as balanceAwareFeed
+  participant Rule as settlement_rule_cjs
+  participant Money as ledger_Money
+  participant PG as Supabase_PG
+
+  Web->>Nest: GET_opportunities_feed
+  Nest->>Feed: classify_merge_override
+  Feed->>PG: read_opportunities_principal
+  Nest-->>Web: OpportunityCard_DTO
+
+  Web->>Nest: POST_opportunities_id_participate
+  Nest->>PG: P0b_P5_guards_insert_participate_trade
+  Nest-->>Web: tradeId_running
+
+  loop Soft60_Hard90_polling_tick
+    Web->>Nest: POST_trades_id_execute_tick
+    Nest->>Rule: evaluate_execution
+    Rule-->>Nest: MATCH_SUCCESS_or_safe_stop
+    Nest->>PG: update_trade_executions
+  end
+
+  Nest->>Money: settlement_completed_posting
+  Money-->>Nest: journalId
+  Nest->>Nest: MissionReward_fanout_async
+```
+
+### 0.9.5 가산 todo 상세 (위→아래 · 건너뛰기 금지 · YAML `engine-*` id와 1:1)
+
+#### E-R1 `engine-runtime-preflight-gap`
+- **모델:** grok-4.5 · **범위:** 구현 0 · 본 절 §0.9.1 재기록 확정 · Index/UI/BOOTSTRAP(§5h2 stale yahoo 문구 등) pointer만
+- **완료:** 본 절 존재 + overview REOPEN 표기 · verify 없음(문서 게이트)
+
+#### E-R2 `engine-execution-policy-bootstrap`
+- **모델:** grok-4.5 · **범위:** active `execution_policies` 1행 보장(migration seed 또는 Nest `ensure()` on boot · `matchStrictness=standard` · Soft60/Hard90 presentation · `feed.nearMissCapUsdt`) · Admin PUT 경로와 충돌 0
+- **근거:** §0.9.1 · unique partial index `is_active`
+- **verify:** `verify:match-strictness` 회귀 + 신규 active-row assert(CATALOG 등록)
+
+#### E-R3 `engine-user-opportunity-feed`
+- **모델:** grok-4.5 · **범위:** Nest 유저 컨트롤러
+  - `GET /api/v1/opportunities`(feed) · `GET /api/v1/opportunities/:id`
+  - DTO=`schemas/opportunity-card.v1.json` · `buildBalanceAwareFeedWithOverrides` 연결 · `executionPlatforms` 유저 0 · `arbitrageTypeKo` pass-through
+- **파일:** `services/api-nest/src/opportunities/opportunities.user.controller.ts`(신설) · `OPPORTUNITY_USER_ROUTES` · **admin 컨트롤러와 분리**
+- **verify:** `verify:user-opportunity-feed`(신설·live)
+
+#### E-R4 `engine-participate-http`
+- **모델:** grok-4.5 · **범위:** `POST /api/v1/opportunities/:id/participate`
+  - body=`schemas/participate-request.v1.json` · P0b~P5(§48.13.1) · KYC 불필요 · practice/circuit/principal 기존 가드(Money/Risk) 재사용 · `participate_requests`+`trade_executions` insert · idempotency
+  - **외부 API 호출 0** · userId=JWT 세션(§0.9.3 보안 하드닝)
+- **verify:** `verify:participate-http`(신설) + 기존 jargon/cta 게이트 회귀
+
+#### E-R5 `engine-execute-rule-loop`
+- **모델:** grok-4.5 · **범위:** Nest가 `settlement_rule.cjs` 호출(Rust SSOT 유지 · 신규 FFI 금지)
+  - `GET /api/v1/trades/:id` · Phase0 tick: `POST /api/v1/trades/:id/execute-tick`(in-process · §0.9.2 polling)
+  - Soft60/Hard90/REQUEUE/MATCH_TIMEOUT · MATCH_SUCCESS → Money settlement posting pointer → 이후 기존 `settlement.completed` fanout(`SettlementCompletedFanout`) 그대로 소비(수정 금지)
+- **금지:** Rule에 ticker/mission/demo 입력
+- **verify:** `verify:execute-rule-loop`(신설) + `verify:match-success-rule` 회귀
+
+#### E-R6 `engine-catalog-runtime-seed` (composer)
+- **모델:** composer-2.5 · **범위:** 원격 DB에 UI 배선 가능한 최소 카탈로그
+  - 기존 Admin seed: trading_card / luxury_bag / watch
+  - ebay ingest 경로(§0.8.1 preview E2E 기록 재사용)로 listings→opportunities `available`≥N · `compareReady` 일부 true · `assetImageUrl` 가드
+  - Day-1 listing CHECK(ebay|admin) 불변 · amazon/yahoo INSERT 시도 0
+- **완료 실측:** MCP count `opportunities_available`≥1 · `assets`≥1 · `listings`≥1
+- **verify:** `verify:capital-tier-catalog`/`asset-image-surface`/`listing-legs-day1` 회귀
+
+#### E-R7 `engine-user-membership-read`
+- **모델:** grok-4.5 · **범위:** `GET /api/v1/me/membership`(표시용 ladder·aiPerkFlags·fulfillRate 표시전용 · Rule 입력 0)
+- **verify:** `verify:membership-ladder` 회귀 + 유저 라우트 존재 assert
+
+#### E-R8 `engine-pre-ui-close`
+- **모델:** grok-4.5 · **범위:** 구현 최소 · MCP 재실측 + Engine 관련 verify 전수 + 신규 3게이트 PASS · **Money `money-user-benefits-read` completed 확인**(§0.9.6 예외 참조) · overview 다시 CLOSED(가산분) · Index 다음=`ui-preflight-constitution`
+- **완료:** UI §0.6 체크리스트에 증거 행 기입 가능 상태
+
+### 0.9.6 Money 가산 todo (pointer · Owns=01 Money · Engine 구현 금지)
+
+> **1개·`money-user-benefits-read`** — Money §51.8a `GET /api/v1/me/benefits(+summary)` 유저 읽기 컨트롤러 신설. **선행=본 절 E-R5 completed**(정산 파이프라인이 있어야 표시할 accrual이 생김). accrual/ledger/idempotency 로직 **수정 금지**(이미 §51.8a에 구현됨 · 컨트롤러만 공백).  
+> **File-Serial 예외(1건 · 문서화 · Index §참조):** 01 Money가 이 1개 가산 todo로 재오픈되어도 **02 Engine(본 파일) 착수를 재차단하지 않음** — Engine이 이미 File-Serial 다음 파일로 진행 중이던 게이트 연속성을 보존하기 위함. 본 예외는 Engine `engine-pre-ui-close`(E-R8) + Money `money-user-benefits-read` 둘 다 completed 시 자동 소멸(Index §"플랜 직렬 완료 규칙" 참조).  
+> **구현 위치:** `01 Money` 플랜 YAML + 본문만. 본 파일(Engine)은 pointer만 유지(중복0).
+
+### 0.9.7 UI 03에 남기는 것 (이 게이트에서 구현 금지)
+
+- Canon/Brand/Lux/copy · `assets/markets` SVG · `market-partner-trust.wire`
+- 홈/실행실/퍼뜩 **화면** · routes에 `/me/benefits`·`/me/guide/partners` 잠금
+- 이미 존재하는 stub 페이지의 미배선 버튼(예: `/wallet/deposit` 주소복사·계속, `/me/kyc` 시작하기, `/wallet/withdraw` 제출, `/me/support` wrong-chain 제출이 로컬 state만 바꾸고 실제 POST 미호출) — **버그로 확인됨 · 본 게이트 범위 밖** · UI PART별 todo가 실제 배선 시 재검증 필수(UI §0.6에 pointer 기록)
+- `ui-preflight-constitution` — **E-R8 + `money-user-benefits-read` 완료 후** 첫 채팅만
+
+### 0.9.8 네이밍·코드 규칙 (신규 파일 강제)
+
+```
+services/api-nest/src/opportunities/
+  opportunities.user.routes.ts      # OPPORTUNITY_USER_ROUTES
+  opportunities.user.controller.ts
+  opportunities.user.service.ts      # feed + getById
+  participate.service.ts             # P0b~P5
+services/api-nest/src/trades/
+  trades.user.routes.ts
+  trades.user.controller.ts
+  trades.execution.service.ts        # require(settlement_rule.cjs)
+services/api-nest/src/membership/
+  membership.user.controller.ts      # GET /me/membership
+tooling/verify/
+  user-opportunity-feed.cjs
+  participate-http.cjs
+  execute-rule-loop.cjs
+```
+
+- 라우트 상수 = `as const` · Admin path와 문자열 공유 금지
+- 에러 코드 = 플랜 toast 키와 1:1(`INSUFFICIENT_BALANCE` · `MATCH_BLOCKED` · `PRICE_STALE` …)
+- 유저 DTO 필드 camelCase · DB snake_case 매퍼 한곳
+
+### 0.9.9 작업 방식 (매 todo 동일)
+
+1. BOOTSTRAP §해당 + 02 본 절(§0.9) + schema만 로드(launch/헌법 전문 대량 로드 금지)
+2. 구현 → 해당 `verify:*` → 회귀 최소 세트
+3. `pnpm cleanup:lowspec`
+4. 워크스페이스 플랜 YAML `status: completed` → `pnpm cursor:sync-plans`
+5. 커밋은 사용자 요청 시에만 · push 시 CI watch
+
+### 0.9.10 Done = UI 착수 허용 조건
+
+- Engine 가산 pending **0**(E-R1~E-R8) · Money `money-user-benefits-read` **completed**
+- MCP: `execution_policies` active≥1 · `opportunities` available≥1
+- `verify:user-opportunity-feed` · `participate-http` · `execute-rule-loop` PASS
+- 기존 Engine/Money/UI-pointer 게이트 회귀 PASS
+- Index overview: 다음=`03 UI` `ui-preflight-constitution` only
+
+**그 전까지 03 UI todo 착수 = File-Serial 위반.**
+
+### 0.9.11 CLOSE 재검증 (v7.22.49 · `engine-pre-ui-close` · 예측0)
+
+> **Owns:** Pre-UI Runtime Gate 종료. 가산 E-R1~E-R8 **pending 0** · 1~26 completed **불변**.  
+> **실측:** Supabase MCP `execute_sql`/`list_migrations` + FS + Engine `verify:*` 전수 + Money benefits 게이트.
+
+| 대상 | 종료 실측 | 판정 |
+|------|-----------|------|
+| `execution_policies` active | **1** · `matchStrictness=standard` | ✅ |
+| `opportunities` available | **3** · assets **94** · listings **12** | ✅ |
+| public 테이블 / 함수 | **76** / **5** | ✅ |
+| migrations applied | **28** · 끝=`20260809144814_catalog_runtime_day1_fx_bootstrap` (로컬 버전 1:1) | ✅ |
+| 신규 3게이트 | `user-opportunity-feed` · `participate-http` · `execute-rule-loop` | ✅ PASS |
+| Engine verify 전수 | listing/soft-hard/pricing/fx/market-intel/adapters/tier/image/vertical×3/arbitrage/jargon/balance/strictness/membership×2/KPI/sim/ai*/llm*/coach*/shadow/twin/cta/admin-routes/pg-module/stack-lock/catalog-runtime + mission×3 | ✅ PASS |
+| Money `money-user-benefits-read` | `GET /api/v1/me/benefits(+summary)` · `BenefitsUserController` · `MissionModule.controllers` · `verify:benefit-hub-surfaces`(+credits/g4) | ✅ completed |
+| File-Serial 예외 | Engine E-R8 + Money benefits 둘 다 completed → 예외 **소멸** | ✅ |
+
+**CLOSE 판정:** Engine Pre-UI Gate = **CLOSED** · File-Serial 다음 = **03 UI** (`ui-preflight-constitution`). completed Engine/Money(가산 포함) todo 재실행 **금지**.
 
 ## 0.0 시세 소스 잠금 (v7.13) — Signup-Ready + Margin UX + Capital Tiers
 

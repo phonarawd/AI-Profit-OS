@@ -764,6 +764,8 @@ export const DAY1_PRESENTATION: {
   steps: ReadonlyArray<string>;
 };
 export const DAY1_FEED: { nearMissCapUsdt: string };
+/** Nil UUID sentinel for execution_policies seed / Nest ensure */
+export const EXECUTION_POLICY_BOOTSTRAP_ADMIN_ID: "00000000-0000-0000-0000-000000000000";
 export type MatchStrictnessMappedFields = {
   minProfitUsdt: string;
   staleAllowanceSec: number;
@@ -798,6 +800,7 @@ export function coerceStrictnessLabel(fields: {
   dailyOppSlotsDefault?: number;
 }): "lenient" | "standard" | "tight" | "scarce" | "custom";
 export function day1ExecutionPolicyDefaults(updatedByAdminId?: string): object;
+export function assertDay1BootstrapShape(policy: object): true;
 export function softHardReadOnly(): {
   softSec: 60;
   hardSec: 90;
@@ -1024,3 +1027,77 @@ export function healthStatusFromKpi(
   kpi: ReturnType<typeof evaluateAdapterMatchingKpi>,
   adapterId?: string,
 ): "green" | "yellow" | "red" | "unknown";
+
+/** Engine §0.9 E-R6 catalog runtime seed · ebay ingest shape · Day-1 ebay|admin */
+export const DAY1_FX_SNAPSHOT_ID: "fx_day1_runtime_seed";
+export const DAY1_USDT_KRW: string;
+export const LISTING_STALE_SEC: number;
+export const FORBIDDEN_INGEST_ADAPTERS: ReadonlyArray<"amazon" | "yahoo_jp">;
+export const MARKETPLACE_BY_MARKET: Readonly<Record<string, string>>;
+export function day1FxSnapshot(capturedAt?: string): ReturnType<
+  typeof composeFxSnapshot
+>;
+export function listDay1AssetMasters(): Array<{
+  assetId: string;
+  category: "watch" | "trading_card" | "luxury_bag";
+  assetLabel: string;
+  imageUrl: string;
+  imageSource: string;
+  imageAltKo: string;
+  imageRightsNoteKo: string;
+  imageFetchedAt: string | null;
+  meta: Record<string, unknown>;
+}>;
+export function assertDay1ListingLeg(input: {
+  adapterId?: string;
+  marketId?: string;
+}): void;
+export function buildEbayIngestListing(input: {
+  assetId: string;
+  marketId: "ebay_us" | "ebay_gb" | "ebay_de" | "ebay_au";
+  priceUsdt: string;
+  title: string;
+  imageUrl?: string;
+  observedAt?: string;
+}): Record<string, unknown>;
+export function buildRuntimeSeedBundleForAsset(
+  asset: {
+    assetId: string;
+    category: string;
+    assetLabel: string;
+    imageUrl: string;
+    imageSource: string;
+    imageAltKo?: string;
+    meta?: { requiredCapitalUsdt?: string };
+  },
+  opts?: { compareReadyForceFalse?: boolean; observedAt?: string },
+): {
+  listings: Array<Record<string, unknown>>;
+  opportunity: Record<string, unknown>;
+  publishGuard: { canPublish: boolean; imageGuard: { ok: boolean; fails: string[] } };
+};
+export function buildMinCatalogRuntimeSeed(opts?: { observedAt?: string }): {
+  fx: ReturnType<typeof composeFxSnapshot>;
+  assets: ReturnType<typeof listDay1AssetMasters>;
+  bundles: Array<ReturnType<typeof buildRuntimeSeedBundleForAsset>>;
+  day1LegPair: { buy: string; sell: string };
+  forbiddenInsertAttempts: string[];
+};
+export function normalizeIngestListingsForPersist(
+  rawListings: unknown[],
+  adapterId: string,
+): Array<{
+  assetId: string;
+  marketId: string;
+  adapterId: string;
+  marketplaceId: string | null;
+  externalItemId: string | null;
+  title: string | null;
+  priceUsdt: string;
+  currency: string;
+  url: string | null;
+  imageUrl: string | null;
+  observedAt: string;
+  staleAt: string;
+  raw: Record<string, unknown>;
+}>;

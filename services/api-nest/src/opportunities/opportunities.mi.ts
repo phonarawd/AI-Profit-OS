@@ -73,6 +73,7 @@ export const {
   SELL_SUCCESS_WINDOW_DAYS_DEFAULT,
   FX_USES_OPPORTUNITY_CARD_SCHEMA,
   arbitrageTypeKo,
+  isV1FeedArbitrageType,
   projectOpportunityScanFields,
   withTimeSensitiveTag,
   shouldTagTimeSensitive,
@@ -102,6 +103,16 @@ export const {
   projectBalanceAwareCard,
   buildBalanceAwareFeed,
   nearMissCapFromExecutionPolicy,
+  DAY1_FX_SNAPSHOT_ID,
+  DAY1_USDT_KRW,
+  FORBIDDEN_INGEST_ADAPTERS,
+  day1FxSnapshot,
+  listDay1AssetMasters,
+  assertDay1ListingLeg,
+  buildEbayIngestListing,
+  buildRuntimeSeedBundleForAsset,
+  buildMinCatalogRuntimeSeed,
+  normalizeIngestListingsForPersist,
 } = mi;
 
 export type PricingResult = ReturnType<typeof computeOpportunityPricing>;

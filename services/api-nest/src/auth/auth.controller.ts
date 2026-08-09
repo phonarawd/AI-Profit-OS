@@ -1,10 +1,26 @@
-import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
 import { AUTH_ROUTES } from "./auth.routes";
 import { AuthService } from "./auth.service";
+import { JwtAuthGuard, type SessionUser } from "./jwt-auth.guard";
+
+type AuthedRequest = { user: SessionUser };
 
 /**
  * User Auth HTTP surface · Infra §51.9
  * Mounted at /api/v1/auth/* (global prefix in main.ts)
+ *
+ * signup/profile-start/oauth/passkey/magic-link routes stay PUBLIC — they are
+ * how a session is obtained in the first place. session/logout/refresh/
+ * delete-account require an already-issued JWT (P0-1 JwtAuthGuard).
  */
 @Controller("auth")
 export class AuthController {
@@ -16,24 +32,30 @@ export class AuthController {
   }
 
   @Patch(AUTH_ROUTES.profile)
-  profile(@Body() body: Record<string, unknown>) {
+  @UseGuards(JwtAuthGuard)
+  profile(@Body() body: Record<string, unknown>, @Req() req: AuthedRequest) {
     const emailAlreadyKnown = body?.emailAlreadyKnown === true;
-    return this.auth.patchProfileStageB(body ?? {}, { emailAlreadyKnown });
+    return this.auth.patchProfileStageB(req.user.userId, body ?? {}, {
+      emailAlreadyKnown,
+    });
   }
 
   @Get(AUTH_ROUTES.session)
-  session() {
-    return this.auth.session();
+  @UseGuards(JwtAuthGuard)
+  session(@Req() req: AuthedRequest) {
+    return this.auth.session(req.user);
   }
 
   @Post(AUTH_ROUTES.logout)
-  logout() {
-    return this.auth.logout();
+  @UseGuards(JwtAuthGuard)
+  logout(@Req() req: AuthedRequest) {
+    return this.auth.logout(req.user);
   }
 
   @Post(AUTH_ROUTES.refresh)
-  refresh() {
-    return this.auth.refresh();
+  @UseGuards(JwtAuthGuard)
+  refresh(@Req() req: AuthedRequest) {
+    return this.auth.refresh(req.user);
   }
 
   @Post(AUTH_ROUTES.oauthStart)
@@ -108,7 +130,11 @@ export class AuthController {
   }
 
   @Post(AUTH_ROUTES.deleteAccount)
-  deleteAccount(@Body() body: Record<string, unknown>) {
+  @UseGuards(JwtAuthGuard)
+  deleteAccount(
+    @Body() body: Record<string, unknown>,
+    @Req() req: AuthedRequest,
+  ) {
     // Ledger snapshot injected by Money module later — skeleton assumes empty
     const ledger = {
       lockedUsdt: Number(body?.lockedUsdt ?? 0),
@@ -117,6 +143,6 @@ export class AuthController {
       profitUsdt: Number(body?.profitUsdt ?? 0),
       practiceUsdt: Number(body?.practiceUsdt ?? 0),
     };
-    return this.auth.deleteAccount(body ?? {}, ledger);
+    return this.auth.deleteAccount(req.user.userId, body ?? {}, ledger);
   }
 }

@@ -8,12 +8,18 @@ import {
   Controller,
   Get,
   Post,
-  Query,
   Req,
   Res,
+  UnauthorizedException,
+  UseGuards,
 } from "@nestjs/common";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { CoachOrchestrator } from "./coach.orchestrator";
 import { COACH_USER_ROUTES } from "./coach.routes";
+
+type SessionReq = {
+  user?: { userId?: string; sub?: string };
+};
 
 type SseRes = {
   status: (code: number) => SseRes;
@@ -24,30 +30,24 @@ type SseRes = {
   json: (body: unknown) => unknown;
 };
 
+/** P0-1 fix — JwtAuthGuard populates req.user; body/query userId no longer trusted */
+@UseGuards(JwtAuthGuard)
 @Controller()
 export class CoachController {
   constructor(private readonly coach: CoachOrchestrator) {}
 
   @Get(COACH_USER_ROUTES.chips)
-  chips(
-    @Query("userId") userIdQ?: string,
-    @Req() req?: { user?: { userId?: string; sub?: string } },
-  ) {
-    const userId = String(
-      req?.user?.userId ?? req?.user?.sub ?? userIdQ ?? "",
-    );
-    return this.coach.chips(userId);
+  chips(@Req() req: SessionReq) {
+    return this.coach.chips(this.sessionUserId(req));
   }
 
   @Post(COACH_USER_ROUTES.chat)
   async chat(
     @Body() body: Record<string, unknown> = {},
-    @Req() req: { user?: { userId?: string; sub?: string } },
+    @Req() req: SessionReq,
     @Res() res: SseRes,
   ) {
-    const userId = String(
-      body.userId ?? req.user?.userId ?? req.user?.sub ?? "",
-    );
+    const userId = this.sessionUserId(req);
     const text = String(body.text ?? body.message ?? "");
     const stream = body.stream !== false;
     const llm = body.llm !== false;
@@ -78,5 +78,14 @@ export class CoachController {
       res.write(`data: ${JSON.stringify({ message })}\n\n`);
     }
     res.end();
+  }
+
+  /** §0.9.3 — never trust query/body userId */
+  private sessionUserId(req: SessionReq): string {
+    const userId = String(req.user?.userId ?? req.user?.sub ?? "");
+    if (!userId) {
+      throw new UnauthorizedException("AUTH_REQUIRED");
+    }
+    return userId;
   }
 }

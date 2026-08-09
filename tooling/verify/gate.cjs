@@ -23,6 +23,7 @@ const steps = [
   "plans-ssot.cjs",
   "next-build.cjs",
   "opennext-build.cjs",
+  "api-nest-build.cjs",
   "stubs/run-all.cjs",
 ];
 

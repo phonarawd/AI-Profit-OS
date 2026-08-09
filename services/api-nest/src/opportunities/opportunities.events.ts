@@ -10,4 +10,6 @@ export const OPPORTUNITY_EVENTS = {
   /** Admin §9.8.9 · feed invalidate · ledgerMutated=false */
   userOverrideUpserted: "admin.user.opportunity_override.upsert",
   userOverrideDeleted: "admin.user.opportunity_override.delete",
+  /** §48.13.1 / §48.13.4 — mission fanout trigger (Rule input 0) */
+  participateConfirmed: "participate.confirmed",
 } as const;

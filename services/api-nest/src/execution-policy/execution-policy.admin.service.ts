@@ -7,14 +7,18 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
+  OnModuleInit,
 } from "@nestjs/common";
 import { PostgresService } from "../db/postgres";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { EXECUTION_POLICY_EVENTS } from "./execution-policy.events";
 import {
   applyMatchStrictness,
+  assertDay1BootstrapShape,
   coerceStrictnessLabel,
   day1ExecutionPolicyDefaults,
+  EXECUTION_POLICY_BOOTSTRAP_ADMIN_ID,
   MATCH_STRICTNESS_PRESETS,
   softHardReadOnly,
 } from "./execution-policy.mi";
@@ -54,11 +58,93 @@ const PRESENTATION_STEPS: PresentationStep[] = [
 ];
 
 @Injectable()
-export class ExecutionPolicyAdminService {
+export class ExecutionPolicyAdminService implements OnModuleInit {
+  private readonly logger = new Logger(ExecutionPolicyAdminService.name);
+
   constructor(
     private readonly db: PostgresService,
     private readonly bus: InProcessEventBus,
   ) {}
+
+  /**
+   * §0.9 E-R2 — guarantee exactly one active row on boot.
+   * Insert-only · never UPDATE · never emit admin.execution_policy.updated
+   * (Admin PUT remains the sole mutation path for existing active rows).
+   */
+  async onModuleInit(): Promise<void> {
+    try {
+      await this.ensureActiveRow();
+    } catch (e) {
+      this.logger.warn(
+        `execution_policies ensureActiveRow skipped: ${
+          e instanceof Error ? e.message : String(e)
+        }`,
+      );
+    }
+  }
+
+  /**
+   * Idempotent active-row bootstrap. Conflict with Admin PUT = 0
+   * (no overwrite · unique partial index race → ignore 23505).
+   */
+  async ensureActiveRow(): Promise<{ inserted: boolean }> {
+    if (!this.db.configured()) return { inserted: false };
+
+    const existing = await this.fetchActive();
+    if (existing) return { inserted: false };
+
+    const next = day1ExecutionPolicyDefaults(
+      EXECUTION_POLICY_BOOTSTRAP_ADMIN_ID,
+    ) as ExecutionPolicyV1;
+    assertDay1BootstrapShape(next);
+
+    const feedJson = JSON.stringify(next.feed ?? { nearMissCapUsdt: "50" });
+    const presentationJson = JSON.stringify(next.presentation);
+
+    try {
+      // Insert-only · WHERE NOT EXISTS + unique(is_active) belt
+      const ins = await this.db.query(
+        `INSERT INTO public.execution_policies (
+           is_active, match_strictness, min_profit_usdt, stale_allowance_sec,
+           max_rematch_count, retry_wait_sec, slippage_bound_bps,
+           daily_user_match_cap, daily_opp_slots_default,
+           auto_cancel_on_shortfall, membership_band_overlay_enabled,
+           feed, presentation, updated_by_admin_id
+         )
+         SELECT
+           true, $1, $2::numeric, $3, $4, $5, $6, $7, $8, $9, $10,
+           $11::jsonb, $12::jsonb, $13::uuid
+         WHERE NOT EXISTS (
+           SELECT 1 FROM public.execution_policies WHERE is_active = true
+         )
+         RETURNING id::text`,
+        [
+          next.matchStrictness,
+          next.minProfitUsdt,
+          next.staleAllowanceSec,
+          next.maxRematchCount,
+          next.retryWaitSec,
+          next.slippageBoundBps,
+          next.dailyUserMatchCap,
+          next.dailyOppSlotsDefault,
+          next.autoCancelOnShortfall,
+          next.membershipBandOverlayEnabled === true,
+          feedJson,
+          presentationJson,
+          EXECUTION_POLICY_BOOTSTRAP_ADMIN_ID,
+        ],
+      );
+      return { inserted: Boolean(ins.rows[0]) };
+    } catch (e) {
+      const code =
+        e && typeof e === "object" && "code" in e
+          ? String((e as { code: unknown }).code)
+          : "";
+      // concurrent PUT/ensure won the unique partial index — OK
+      if (code === "23505") return { inserted: false };
+      throw e;
+    }
+  }
 
   async get(): Promise<ExecutionPolicyGetResponse> {
     const row = await this.fetchActive();

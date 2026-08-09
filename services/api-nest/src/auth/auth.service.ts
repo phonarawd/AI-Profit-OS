@@ -1,24 +1,47 @@
 /**
- * Nest Auth service skeleton — contract SSOT for §51.9.
- * Persistence/JWT signing land with Money M1.
- * OAuth client IDs/secrets = Phase0 host env (phase0-bootstrap-hosts).
- * This module must never import Supabase Auth clients.
+ * Nest Auth service — Infra §51.9 · ADR-006 (P0-1 fix).
+ * Real JWT issuance/verification (see jwt.core.cjs + jwt-auth.guard.ts) +
+ * DB-backed identity resolution against the existing users/auth_* SoT tables
+ * (supabase/migrations/20260808205844_identity_nest_auth.sql +
+ * .../20260808224856_auth_oauth_passkey_stage_a_b.sql — no new schema needed).
+ *
+ * Honesty note (kept intentionally out of scope, same tier as before):
+ * OAuth code→token exchange with Kakao/Google and WebAuthn attestation/
+ * assertion signature verification are NOT implemented here — both remain
+ * Phase1/adapter-level concerns. This service trusts a caller-supplied
+ * providerSubject/credentialId as the identity claim (same trust tier the
+ * skeleton already had) and focuses the fix on: real DB-backed user
+ * resolution + real JWT mint/verify so req.user is populated for every
+ * session-protected Engine route.
  */
 
-import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  ServiceUnavailableException,
+} from "@nestjs/common";
+import { randomUUID } from "node:crypto";
+import { createRequire } from "node:module";
+import { join } from "node:path";
 import {
   loadPhase0Env,
   oauthConfigured,
 } from "../config/phase0.env";
+import { PostgresService } from "../db/postgres";
 import { LedgerProvisionService } from "../ledger/ledger.provision.service";
 import { PracticeGrantService } from "../ledger/practice-grant.service";
 import {
+  ACCESS_TOKEN_TTL_SEC,
   ADMIN_JWT_ISSUER,
   DELETE_ACCOUNT_CONFIRM_PHRASE,
   OAUTH_PROVIDERS,
+  USER_JWT_AUDIENCE,
   USER_JWT_ISSUER,
   type OauthProvider,
+  type OnboardingStage,
 } from "./auth.constants";
+import type { SessionUser } from "./jwt-auth.guard";
 import {
   assertNoForbiddenAuthFields,
   evaluateDeleteAccountGuards,
@@ -29,6 +52,22 @@ import {
   type StageBProfileInput,
 } from "./auth.stage";
 
+const req = createRequire(__filename);
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const jwtCore = req(join(__dirname, "..", "..", "jwt.core.cjs")) as {
+  sign: (
+    payload: Record<string, unknown>,
+    secret: string,
+    opts: {
+      issuer: string;
+      audience: string;
+      expiresInSec: number;
+      nowMs?: number;
+      jti?: string;
+    },
+  ) => string;
+};
+
 export type AuthSessionView = {
   sessionId: string;
   userId: string;
@@ -36,12 +75,22 @@ export type AuthSessionView = {
   issuedAt: string;
   expiresAt: string;
   revoked: boolean;
-  onboardingStage: "A" | "B_incomplete" | "B_complete";
+  onboardingStage: OnboardingStage;
 };
+
+function isUniqueViolation(e: unknown): boolean {
+  return (
+    typeof e === "object" &&
+    e !== null &&
+    "code" in e &&
+    String((e as { code?: unknown }).code) === "23505"
+  );
+}
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly db: PostgresService,
     private readonly ledgerProvision: LedgerProvisionService,
     private readonly practiceGrant: PracticeGrantService,
   ) {}
@@ -73,40 +122,39 @@ export class AuthService {
     throw new BadRequestException("unsupported OAuth provider");
   }
 
-  signupStageA(body: Record<string, unknown>) {
+  async signupStageA(body: Record<string, unknown>) {
     const forbidden = assertNoForbiddenAuthFields(body);
     if (forbidden) throw new BadRequestException(forbidden);
 
     const input = body as unknown as StageASignupInput;
     const err = validateStageA(input);
     if (err) throw new BadRequestException(err);
+    this.assertDbConfigured();
 
-    // Skeleton response — DB write + JWT mint = M1 wiring.
-    // Persist path MUST call provisionLedgerBucketsForUser(userId)
-    // → SQL provision_user_bucket_accounts (Money §49).
-    const now = new Date();
-    const expires = new Date(now.getTime() + 15 * 60 * 1000);
-    const session: AuthSessionView = {
-      sessionId: "pending-session",
-      userId: "pending-user",
-      issuer: USER_JWT_ISSUER,
-      issuedAt: now.toISOString(),
-      expiresAt: expires.toISOString(),
-      revoked: false,
-      onboardingStage: "A",
-    };
+    const { userId, isNew } = await this.resolveIdentity(input);
+    if (isNew) {
+      await this.provisionLedgerBucketsForUser(userId);
+      await this.upsertStageAProfile(userId, input);
+    }
+
+    const { accessToken, session } = await this.mintSession(userId);
     return {
       ok: true as const,
       stage: "A" as const,
-      onboarding: "incomplete" as const,
+      onboarding:
+        session.onboardingStage === "B_complete"
+          ? ("complete" as const)
+          : ("incomplete" as const),
       session,
+      accessToken,
       issuer: USER_JWT_ISSUER,
       ledgerProvision: "provisionLedgerBucketsForUser" as const,
       practiceWelcome: "practice_grant_welcome" as const,
     };
   }
 
-  patchProfileStageB(
+  async patchProfileStageB(
+    userId: string,
     body: Record<string, unknown>,
     opts: { emailAlreadyKnown: boolean },
   ) {
@@ -116,6 +164,34 @@ export class AuthService {
     const input = body as unknown as StageBProfileInput;
     const err = validateStageB(input, opts);
     if (err) throw new BadRequestException(err);
+    this.assertDbConfigured();
+
+    await this.db.query(
+      `INSERT INTO public.user_profiles (
+         user_id, terms_accepted_at, privacy_accepted_at,
+         display_name, birth_date, onboarding_stage
+       ) VALUES ($1::uuid, now(), now(), $2, $3::date, 'B_complete')
+       ON CONFLICT (user_id) DO UPDATE
+         SET display_name = EXCLUDED.display_name,
+             birth_date = EXCLUDED.birth_date,
+             onboarding_stage = 'B_complete',
+             updated_at = now()`,
+      [userId, input.displayName, input.birthDate],
+    );
+    if (input.email && !opts.emailAlreadyKnown) {
+      await this.db.query(
+        `UPDATE public.users SET email = $2, updated_at = now()
+          WHERE id = $1::uuid AND email IS NULL`,
+        [userId, input.email],
+      );
+    }
+    if (input.phoneE164) {
+      await this.db.query(
+        `UPDATE public.users SET phone_e164 = $2, updated_at = now()
+          WHERE id = $1::uuid AND phone_e164 IS NULL`,
+        [userId, input.phoneE164],
+      );
+    }
 
     return {
       ok: true as const,
@@ -211,32 +287,53 @@ export class AuthService {
     };
   }
 
-  logout() {
-    return { ok: true as const, revoked: true as const };
-  }
-
-  refresh() {
-    return {
+  logout(sessionUser: SessionUser) {
+    return this.revokeSession(sessionUser).then(() => ({
       ok: true as const,
-      issuer: USER_JWT_ISSUER,
-      status: "skeleton" as const,
-    };
+      revoked: true as const,
+    }));
   }
 
-  session(): AuthSessionView {
-    const now = new Date();
+  async refresh(sessionUser: SessionUser): Promise<{
+    ok: true;
+    issuer: typeof USER_JWT_ISSUER;
+    accessToken: string;
+    session: AuthSessionView;
+  }> {
+    await this.revokeSession(sessionUser);
+    const minted = await this.mintSession(sessionUser.userId);
     return {
-      sessionId: "skeleton",
-      userId: "anonymous",
+      ok: true,
       issuer: USER_JWT_ISSUER,
-      issuedAt: now.toISOString(),
-      expiresAt: new Date(now.getTime() + 15 * 60 * 1000).toISOString(),
-      revoked: false,
-      onboardingStage: "A",
+      accessToken: minted.accessToken,
+      session: minted.session,
     };
   }
 
-  deleteAccount(
+  async session(sessionUser: SessionUser): Promise<AuthSessionView> {
+    let revoked = false;
+    if (this.db.configured() && sessionUser.sessionId) {
+      const r = await this.db.query<{ revoked: boolean }>(
+        `SELECT revoked FROM public.auth_sessions
+          WHERE user_id = $1::uuid AND refresh_jti = $2`,
+        [sessionUser.userId, sessionUser.sessionId],
+      );
+      revoked = r.rows[0]?.revoked === true;
+    }
+    const onboardingStage = await this.loadOnboardingStage(sessionUser.userId);
+    return {
+      sessionId: sessionUser.sessionId,
+      userId: sessionUser.userId,
+      issuer: USER_JWT_ISSUER,
+      issuedAt: sessionUser.issuedAt,
+      expiresAt: sessionUser.expiresAt,
+      revoked,
+      onboardingStage,
+    };
+  }
+
+  async deleteAccount(
+    userId: string,
     body: Record<string, unknown>,
     ledger: DeleteAccountGuardSnapshot,
   ) {
@@ -247,10 +344,288 @@ export class AuthService {
     }
     const gate = evaluateDeleteAccountGuards(ledger);
     if (!gate.ok) throw new ForbiddenException(gate.reason);
+
+    if (this.db.configured()) {
+      await this.db.query(
+        `UPDATE public.users
+            SET status = 'deleted',
+                anonymized_at = now(),
+                deleted_reason = 'user_requested',
+                email = NULL,
+                phone_e164 = NULL,
+                updated_at = now()
+          WHERE id = $1::uuid`,
+        [userId],
+      );
+      await this.revokeAllSessions(userId);
+    }
+
     return {
       ok: true as const,
       status: "anonymized" as const,
       kycRetention: "archive_r2" as const,
     };
+  }
+
+  // ── identity resolution (find-or-create against existing SoT tables) ──
+
+  private async resolveIdentity(
+    input: StageASignupInput,
+  ): Promise<{ userId: string; isNew: boolean }> {
+    if (input.method === "oauth_kakao" || input.method === "oauth_google") {
+      const provider: OauthProvider =
+        input.method === "oauth_kakao" ? "kakao" : "google";
+      const subject = input.oauth?.providerSubject;
+      if (!subject) {
+        throw new BadRequestException("oauth.providerSubject required");
+      }
+      return this.findOrCreateUserByOauth(
+        provider,
+        subject,
+        input.oauth?.email ?? input.email,
+      );
+    }
+    if (input.method === "email_magic") {
+      if (!input.email) {
+        throw new BadRequestException("email required for email_magic");
+      }
+      return this.findOrCreateUserByEmail(input.email);
+    }
+    if (input.method === "passkey") {
+      const credentialId = input.passkey?.credentialId;
+      if (!credentialId) {
+        throw new BadRequestException("passkey.credentialId required");
+      }
+      return this.findOrCreateUserByPasskey(credentialId);
+    }
+    throw new BadRequestException("unsupported Stage A method");
+  }
+
+  private async findOrCreateUserByOauth(
+    provider: "kakao" | "google",
+    providerSubject: string,
+    email?: string,
+  ): Promise<{ userId: string; isNew: boolean }> {
+    const existing = await this.db.query<{ user_id: string }>(
+      `SELECT user_id::text FROM public.auth_oauth_identities
+        WHERE provider = $1 AND provider_subject = $2 AND unlinked_at IS NULL`,
+      [provider, providerSubject],
+    );
+    if (existing.rows[0]) {
+      return { userId: existing.rows[0].user_id, isNew: false };
+    }
+
+    const userId = await this.insertBareUser();
+    try {
+      await this.db.query(
+        `INSERT INTO public.auth_oauth_identities (
+           user_id, provider, provider_subject, email_from_provider
+         ) VALUES ($1::uuid, $2, $3, $4)`,
+        [userId, provider, providerSubject, email ?? null],
+      );
+    } catch (e) {
+      if (isUniqueViolation(e)) {
+        const again = await this.db.query<{ user_id: string }>(
+          `SELECT user_id::text FROM public.auth_oauth_identities
+            WHERE provider = $1 AND provider_subject = $2`,
+          [provider, providerSubject],
+        );
+        if (again.rows[0]) {
+          return { userId: again.rows[0].user_id, isNew: false };
+        }
+      }
+      throw e;
+    }
+    return { userId, isNew: true };
+  }
+
+  private async findOrCreateUserByEmail(
+    email: string,
+  ): Promise<{ userId: string; isNew: boolean }> {
+    const existing = await this.db.query<{ id: string }>(
+      `SELECT id::text FROM public.users WHERE email = $1`,
+      [email],
+    );
+    if (existing.rows[0]) {
+      return { userId: existing.rows[0].id, isNew: false };
+    }
+    try {
+      const created = await this.db.query<{ id: string }>(
+        `INSERT INTO public.users (email) VALUES ($1) RETURNING id::text`,
+        [email],
+      );
+      const userId = created.rows[0]?.id;
+      if (!userId) throw new ServiceUnavailableException("user insert failed");
+      return { userId, isNew: true };
+    } catch (e) {
+      if (isUniqueViolation(e)) {
+        const again = await this.db.query<{ id: string }>(
+          `SELECT id::text FROM public.users WHERE email = $1`,
+          [email],
+        );
+        if (again.rows[0]) return { userId: again.rows[0].id, isNew: false };
+      }
+      throw e;
+    }
+  }
+
+  /**
+   * Phase0: WebAuthn attestation/assertion signature verification is NOT
+   * implemented — credential_id is used as an opaque bearer identity only
+   * (public_key stored empty). Real cryptographic verification is Phase1.
+   */
+  private async findOrCreateUserByPasskey(
+    credentialId: string,
+  ): Promise<{ userId: string; isNew: boolean }> {
+    const existing = await this.db.query<{ user_id: string }>(
+      `SELECT user_id::text FROM public.auth_passkeys
+        WHERE credential_id = $1 AND revoked_at IS NULL`,
+      [credentialId],
+    );
+    if (existing.rows[0]) {
+      return { userId: existing.rows[0].user_id, isNew: false };
+    }
+
+    const userId = await this.insertBareUser();
+    try {
+      await this.db.query(
+        `INSERT INTO public.auth_passkeys (user_id, credential_id, public_key)
+         VALUES ($1::uuid, $2, $3)`,
+        [userId, credentialId, Buffer.alloc(0)],
+      );
+    } catch (e) {
+      if (isUniqueViolation(e)) {
+        const again = await this.db.query<{ user_id: string }>(
+          `SELECT user_id::text FROM public.auth_passkeys WHERE credential_id = $1`,
+          [credentialId],
+        );
+        if (again.rows[0]) {
+          return { userId: again.rows[0].user_id, isNew: false };
+        }
+      }
+      throw e;
+    }
+    return { userId, isNew: true };
+  }
+
+  private async insertBareUser(): Promise<string> {
+    const created = await this.db.query<{ id: string }>(
+      `INSERT INTO public.users DEFAULT VALUES RETURNING id::text`,
+    );
+    const userId = created.rows[0]?.id;
+    if (!userId) throw new ServiceUnavailableException("user insert failed");
+    return userId;
+  }
+
+  private async upsertStageAProfile(
+    userId: string,
+    input: StageASignupInput,
+  ): Promise<void> {
+    await this.db.query(
+      `INSERT INTO public.user_profiles (
+         user_id, terms_accepted_at, privacy_accepted_at, marketing_consent
+       ) VALUES ($1::uuid, $2::timestamptz, $3::timestamptz, $4)
+       ON CONFLICT (user_id) DO NOTHING`,
+      [
+        userId,
+        input.termsAcceptedAt,
+        input.privacyAcceptedAt,
+        input.marketingConsent === true,
+      ],
+    );
+  }
+
+  // ── session mint/revoke (real HS256 JWT — see jwt.core.cjs) ──
+
+  private async mintSession(userId: string): Promise<{
+    accessToken: string;
+    session: AuthSessionView;
+  }> {
+    const env = loadPhase0Env();
+    if (!env.jwtUserSecret) {
+      throw new ServiceUnavailableException(
+        "JWT_USER_SECRET unset — cannot mint session (never fall back to a hardcoded secret)",
+      );
+    }
+    const jti = randomUUID();
+    const issuedAt = new Date();
+    const expiresAt = new Date(issuedAt.getTime() + ACCESS_TOKEN_TTL_SEC * 1000);
+    const accessToken = jwtCore.sign({ sub: userId }, env.jwtUserSecret, {
+      issuer: USER_JWT_ISSUER,
+      audience: USER_JWT_AUDIENCE,
+      expiresInSec: ACCESS_TOKEN_TTL_SEC,
+      jti,
+    });
+
+    if (this.db.configured()) {
+      await this.db.query(
+        `INSERT INTO public.auth_sessions (
+           user_id, issuer, refresh_jti, issued_at, expires_at
+         ) VALUES ($1::uuid, $2, $3, $4, $5)`,
+        [
+          userId,
+          USER_JWT_ISSUER,
+          jti,
+          issuedAt.toISOString(),
+          expiresAt.toISOString(),
+        ],
+      );
+    }
+
+    const onboardingStage = await this.loadOnboardingStage(userId);
+    return {
+      accessToken,
+      session: {
+        sessionId: jti,
+        userId,
+        issuer: USER_JWT_ISSUER,
+        issuedAt: issuedAt.toISOString(),
+        expiresAt: expiresAt.toISOString(),
+        revoked: false,
+        onboardingStage,
+      },
+    };
+  }
+
+  /**
+   * Access tokens are stateless (HS256, self-contained exp). Revoking here
+   * marks the auth_sessions row for audit/session-list purposes but does not
+   * force-invalidate an already-issued token before its (short, 15min) TTL
+   * elapses — an accepted Phase0 tradeoff; revisit with a refresh-token
+   * rotation + denylist if TTL grows or true instant revocation is required.
+   */
+  private async revokeSession(sessionUser: SessionUser): Promise<void> {
+    if (!this.db.configured() || !sessionUser.sessionId) return;
+    await this.db.query(
+      `UPDATE public.auth_sessions SET revoked = true, revoked_at = now()
+        WHERE user_id = $1::uuid AND refresh_jti = $2 AND revoked = false`,
+      [sessionUser.userId, sessionUser.sessionId],
+    );
+  }
+
+  private async revokeAllSessions(userId: string): Promise<void> {
+    if (!this.db.configured()) return;
+    await this.db.query(
+      `UPDATE public.auth_sessions SET revoked = true, revoked_at = now()
+        WHERE user_id = $1::uuid AND revoked = false`,
+      [userId],
+    );
+  }
+
+  private async loadOnboardingStage(userId: string): Promise<OnboardingStage> {
+    if (!this.db.configured()) return "A";
+    const r = await this.db.query<{ onboarding_stage: OnboardingStage }>(
+      `SELECT onboarding_stage FROM public.user_profiles WHERE user_id = $1::uuid`,
+      [userId],
+    );
+    return r.rows[0]?.onboarding_stage ?? "A";
+  }
+
+  private assertDbConfigured(): void {
+    if (!this.db.configured()) {
+      throw new ServiceUnavailableException(
+        "DATABASE_URL unset — cannot create/verify a real session",
+      );
+    }
   }
 }

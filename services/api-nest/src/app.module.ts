@@ -13,6 +13,7 @@ import { ReferralModule } from "./referral/referral.module";
 import { RiskModule } from "./risk/risk.module";
 import { SimulationModule } from "./simulation/simulation.module";
 import { AiModule } from "./ai/ai.module";
+import { TradesModule } from "./trades/trades.module";
 import { WalletModule } from "./wallet/wallet.module";
 
 @Module({
@@ -25,6 +26,7 @@ import { WalletModule } from "./wallet/wallet.module";
     ReferralModule,
     MissionModule,
     OpportunitiesModule,
+    TradesModule,
     ExecutionPolicyModule,
     MembershipModule,
     AdaptersModule,

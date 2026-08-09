@@ -1,4 +1,4 @@
-# Constitution Bootstrap — Index CLOSE 실물 대조 기록 (v7.22.36)
+﻿# Constitution Bootstrap — Index CLOSE 실물 대조 기록 (v7.22.36)
 
 > **목적:** 구현 채팅 시작 전, 헌법·스키마·마이그레이션·어드민·브랜드·DB SSOT를 **예측 없이** 정리한다.  
 > **권위:** ACTIVE Index `ai_profit_os_00_index_a1b2c3d4.plan.md` > 도메인 01~06 > launch ARCHIVE.  
@@ -134,7 +134,7 @@
 
 | 파일 | 판정 |
 |------|------|
-| `44_SIGNUP_READY_MARKET_SOURCES.md` | ✅ ebay멀티\|admin · yahoo FORBIDDEN |
+| `44_SIGNUP_READY_MARKET_SOURCES.md` | ✅ ebay멀티\|admin · yahoo Day-1 leg **0**(§5h2 supersede · v7.22.41 Partner·§38.10 표기) |
 | `45_PRICE_COMPARE_MARGIN_UX.md` | ✅ PriceCompareMargin |
 | `46_CAPITAL_TIER_CATALOG.md` | ✅ capitalBand |
 | `46b_ASSET_IMAGE_SSOT.md` | ✅ assetImageUrl |
@@ -171,7 +171,29 @@
 | adapters | Day-1 5종 + amazon/yahoo-jp Phase1+ | ✅ |
 | Engine verify | listing~coach/admin-routes/pg-module-scan **전수 PASS** | ✅ |
 
-**판정:** Engine = **CLOSED** · File-Serial 다음 채팅 = **03 UI** `yahoo-jp-copy-ban` only. completed Engine todo 재실행 **금지**.
+**판정(이력 · v7.22.44):** Engine todos 1~26 = **CLOSED** · completed 재실행 **금지**.
+**File-Serial 현재(v7.22.49 Gate CLOSED):** 다음 채팅 = **03 UI** `ui-preflight-constitution` only · Pre-UI Runtime Gate **CLOSED**(§0.5.1 · Engine §0.9.11).
+
+
+### 0.5.1 Pre-UI Runtime Gate (v7.22.48 착수 → **v7.22.49 CLOSE**)
+
+> **Owns:** Index A12 pointer + MCP 재실측 · E-R1~E-R8 + Money benefits.  
+> **흡수 SSOT:** Engine `§0.9` · 고아 홈 플랜 `pre-ui_engine_gate_8f59a783.plan.md` = **삭제됨**(중복0).
+
+| 대상 | CLOSE 실측 (v7.22.49) | 판정 |
+|------|----------------------|------|
+| Supabase | ref=`mgsytcetsiecllmhcyox` · Seoul · PG 17.6 · ACTIVE_HEALTHY | ✅ |
+| public 테이블 / 함수 | **76** / **5** | ✅ |
+| migrations | **28** 로컬=원격 1:1 · 끝=`20260809144814_catalog_runtime_day1_fx_bootstrap` | ✅ |
+| `execution_policies` active | **1** · `matchStrictness=standard` | ✅ |
+| `opportunities` available | **3** · assets **94** · listings **12** | ✅ |
+| 유저 feed/participate/trades HTTP | live · 신규 3게이트 PASS | ✅ |
+| `MissionModule` controllers | `BenefitsUserController` · GET `/me/benefits(+summary)` | ✅ |
+| `GET /me/membership` | live (E-R7) | ✅ |
+| Engine/Money 가산 | E-R1~E-R8 + `money-user-benefits-read` **completed** | ✅ |
+
+**판정:** Pre-UI Runtime Gate = **CLOSED** · File-Serial 다음 = **03 UI** `ui-preflight-constitution` only.  
+**금지:** Engine/Money(가산 포함) completed 재실행 · 고아 병렬 플랜 재생성.
 
 ---
 
@@ -359,17 +381,19 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | Canon | `execution-running`/`success` `productThumb` · manifest **1.3.2** |
 | 검증 | `verify:asset-image-surface` · `verify:execution-surfaces` |
 
-### 5h2. Listing legs · Yahoo 영구 배제 (v7.22.32 · 중복0)
+### 5h2. Listing legs · Yahoo Day-1 adapter 0 · Partner 표기 (v7.22.41 supersede · E-R1 pointer · 중복0)
+
+> **E-R1(v7.22.48):** v7.22.32 「영구 FORBIDDEN」문구는 **Day-1 listing leg/adapter/ENV=0** 의미로만 유효. v7.22.41 Founder lock이 supersede — Yahoo! JAPAN Auction=**공식 협력사** · UI §38.10 표기 **필수** · leg live=Phase1+ `market-partner-adapters-phase1`. Owns 상세=Engine §0.0.1a·§0.0.1c.
 
 | 항목 | SSOT |
 |------|------|
 | 자동 | `ebay` @ `EBAY_US` × `EBAY_GB`(또는 DE/AU) |
 | 반자동 | `ebay` × `admin` (운영자 기준가) |
-| `yahoo_jp` | **영구 FORBIDDEN** · Phase1+ 철회 · AppID·워커·stub **0** |
-| 유저 카피 | 「야후」·Yahoo 문자열 **0** · `buyMarketLabelKo`/`sellMarketLabelKo` |
-| 금지 | KR 중고앱 · Chrono24 · 스크래핑 · yahoo 재도입 제안 |
-| 검증 | `verify:listing-legs-day1` |
-| 사람 준비 | eBay 키(대기 후) · Yahoo **준비 안 함** · Pokémon/CoinGecko/Gemini/R2 |
+| `yahoo_jp` | **공식 협력사**(v7.22.41) · Day-1 listing leg **코드/ENV/워커/INSERT 0** · Phase1+ adapter todo · UI §38.10 Trust 표기 **필수**(표기≠leg live) |
+| 유저 카피 | Day-1 adapter/워커/ENV 경로 야후 **0** · LabelKo+로고=UI Brand · `buyMarketLabelKo`/`sellMarketLabelKo` |
+| 금지 | KR 중고앱 · Chrono24 · 스크래핑 · Day-1 yahoo INSERT/leg · 「영구 FORBIDDEN」으로 §38.10 표기까지 막는 오독 |
+| 검증 | `verify:listing-legs-day1` · `verify:market-partner-trust`(UI pointer) |
+| 사람 준비 | eBay 키 · Yahoo AppID=Phase1+ · 표기 자산=UI Brand · Pokémon/CoinGecko/Gemini/R2 |
 
 ### 5i. 잔액 인식 피드 · 유저별 매치 · 목업 0 (v7.22.21 · 중복0)
 
@@ -569,7 +593,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 - [x] pnpm verify:brand-consumer PASS
 - [x] Admin IA 골격 = §6.1~6.2 / Admin §9.1.1 (`apps/admin/routes` lock · monorepo-skeleton completed)
 - [ ] `DATABASE_URL` · `REDIS_URL` 로컬 `.env` (git 0)
-- [x] Index pending **0** · 한 채팅 = 다음 도메인(**02 Engine**) **한 todo**만 (`market-intel-engine`)
+- [x] Index pending **0** · 한 채팅 = 다음 도메인(**03 UI**) **한 todo**만 (`ui-preflight-constitution`)
 
 **done 정의:** 해당 todo의 `verify:*` PASS + `pnpm cleanup:lowspec` PASS.
 
@@ -579,7 +603,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 
 > **Owns:** 본 절 + Index「플랜 직렬 완료 규칙」.  
 > **운영자(Grok-4.5) 규칙:** YAML pending todo를 **위에서 아래로만** · 한 채팅=한 todo · 완료 잠금 todo 재실행 금지.  
-> **다음 채팅:** **03 UI** `yahoo-jp-copy-ban` only (v7.22.44 Engine CLOSED · Money/Engine completed 재실행 금지).
+> **다음 채팅:** **03 UI** `ui-preflight-constitution` only (v7.22.49 Pre-UI Gate CLOSED · Money/Engine 가산 completed 재실행 금지).
 
 | 순 | Index todo | 산출물 | 모델 | 상태 |
 |----|------------|--------|------|------|
@@ -592,6 +616,68 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | 6 | `copy-canon-cta-sla-lock` | copy/ko CTA·면책·Soft/Hard + Canon `primaryCta` | grok-4.5 | completed |
 | 7 | `auth-ssot` | Nest JWT · Stage A/B · Owns=Infra §51.9 · `verify:auth-flows` | grok-4.5 | completed |
 | 8 | `phase0-bootstrap-hosts` | CF+Supabase+Upstash · Owns=Infra §51.13 · `verify:phase0-bootstrap` | composer-2.5 | completed |
-| 9+ | 도메인 파일 | **01 Money CLOSED** → **02 Engine CLOSED** → **03 UI**(yahoo-jp-copy-ban) → 04 Admin → 05 PWA → 06 Infra | 접두사 | File-Serial |
+| 9+ | 도메인 파일 | **01 Money CLOSED** → **02 Engine CLOSED**(E-R1~E-R8) → **03 UI**(현재) → 04 Admin → 05 PWA → 06 Infra | 접두사 | File-Serial |
 
-**금지:** 헌법/스키마 없이 apps 화면 · constitution∥monorepo 병렬 · Dashboard DDL · Supabase Auth SDK · launch를 착수 SSOT로 사용 · yahoo_jp 재제안 · Index pending>0인데 01 Money 착수 · Admin `admin-isolated-deploy`를 `admin-ops`보다 먼저 실행.
+**금지:** 헌법/스키마 없이 apps 화면 · constitution∥monorepo 병렬 · Dashboard DDL · Supabase Auth SDK · launch를 착수 SSOT로 사용 · Day-1 yahoo INSERT/leg 코드 · Index pending>0인데 01 Money 착수 · Admin `admin-isolated-deploy`를 `admin-ops`보다 먼저 실행.
+
+### 0.6 UI 착수 전 실측 (v7.22.46 골격 · **v7.22.49 선행 충족** · `ui-preflight-constitution`)
+
+> **Owns:** UI 플랜 §0.6 = 상세 SSOT · 본 절 = BOOTSTRAP 동기 요약 · **구현코드 0**(preflight 채팅에서 기록) · 다음=`market-partner-trust-surfaces`  
+> **방법:** Supabase MCP + 레포 FS + Admin routes + Canon + CATALOG  
+> **선행(v7.22.49 충족):** 01 Money 가산 `money-user-benefits-read` **completed** + 02 Engine Pre-UI Gate(E-R1~E-R8) **pending 0**
+
+| 대상 | 실측 | UI 함의 |
+|------|------|--------|
+| Supabase | ref=`mgsytcetsiecllmhcyox` · Seoul · PG **17.6** · ACTIVE_HEALTHY | 원격 only |
+| `public` 테이블 | **76** · RLS ON | mission/growth/execution/ai 포함 |
+| migrations | **28** 로컬=원격 1:1 · 끝=`20260809144814_catalog_runtime_day1_fx_bootstrap` | UI DDL 0 |
+| public 함수 | **5** (+`user_opportunity_overrides_pin_cap`) | Nest API only |
+| Gate MCP | `execution_policies` active**1** · `opportunities` available**3** | UI 배선 대상 존재 |
+| Brand markets | `packages/ui/brand/assets/markets/` **0** | §38.10 PART1a 신설 |
+| Canon | benefit-hub 등 live · `market-partner-trust.wire.json` **0** | PART1a |
+| `apps/web/routes.ts` | `/me/benefits`·`/me/guide/partners` **0** | PART1a/5b/7b 잠금 |
+| Admin routes | missions/partners/ticker/coach/spotcheck **잠금** · deep 페이지 일부 0 | Admin PART5 todos |
+| Engine ai-coach-runtime | **completed** | UI ai-coach-ui 선행 충족 |
+| Kakao OAuth | founder .env · Infra runtime **pending** | auth UI 가드 |
+
+#### 0.6.1 흡수 모순 (UI/Admin · 완료 · 구현 0)
+
+| # | 발견 | 해소 |
+|---|------|------|
+| U1 | 구 todo `yahoo-jp-copy-ban` vs §38.10 표기필수 | → `market-partner-trust-surfaces` · adapter금지≠표기 |
+| U2 | UI·Admin §48.6 이중 Owns | → Admin `admin-execution-policy` only |
+| U3 | composer mega todo | → Grok 256K PART0~8 |
+| U4 | Admin missions/partners/G4/coach todo 공백 | → Admin YAML 4 todo 추가 |
+| U5 | BOOTSTRAP 다음 todo stale | → `ui-preflight-constitution` |
+
+**판정:** Pre-UI Runtime Gate **CLOSED** · UI preflight **착수 허용**.  
+**다음 채팅(현재):** **03 UI** `ui-preflight-constitution` only.
+
+### 0.7 종합 실물 감사 (v7.22.49 · 2026-08-09 · 유저 요청 전수 스캔 · 예측0)
+
+> **Owns:** 유저 요청형 "DB·마이그레이션·함수·SQL·테이블·엔진·Supabase·폴더·기술스택·파일·헌법·기술코드 전수 확인" 감사 기록. **File-Serial·todo 상태 변경 0** — 발견된 드리프트/하드닝 결함만 최소 diff로 즉시 해소.  
+> **방법:** Supabase MCP(`list_tables`/`list_migrations`/`list_extensions`/`get_advisors`/`execute_sql`) 전수 + 레포 FS(`CONSTITUTION/`29·`schemas/`·`supabase/migrations/`·`apps/`·`services/`·`workers/`·`packages/`·`tooling/verify/`) + `verify:*` **85개 개별 실행**(`next-build`/`opennext-build` 제외 — 실행 당시 `lowspec:status` 여유 RAM <1.5GB(0.43GB) 확인 후 안전상 스킵) + `cargo check`(engine-rust) + `tsc -p services/api-nest`.
+
+| 대상 | 실측 | 판정 |
+|------|------|------|
+| Supabase | ref=`mgsytcetsiecllmhcyox` · Seoul · PG 17.6 · ACTIVE_HEALTHY | ✅ |
+| `public` 테이블 | **76** (v7.22.44 CLOSE와 동일 개수 · row만 진행: `execution_policies`=1·`mission_definitions`=2 등) | ✅ 드리프트 0 |
+| migrations applied | **27** · 로컬 파일명 버전 = 원격 **1:1 재정렬 완료**(결함#2) | ✅ |
+| public 함수 | **5** · **전수 `search_path=public` 고정 완료**(결함#3) | ✅ |
+| advisors(security) | ERROR **0** · WARN **0** · INFO=`rls_enabled_no_policy`(Day-1 deny-by-default 의도)만 잔존 | ✅ |
+| `verify:*` (85/85 · gate17+stubs60+개별8) | 전수 **PASS** | ✅ |
+| `cargo check`(engine-rust) | PASS (의존성 0 · 2.4s) | ✅ |
+| `tsc -p services/api-nest` | PASS (에러 0) | ✅ |
+| File-Serial 실제 위치 | **03 UI `ui-preflight-constitution`**(Gate CLOSED v7.22.49) | ✅ |
+
+#### 0.7.1 결함 → 해소 (실행코드·정책·SSOT 문구 무변경 · 순수 드리프트/하드닝만)
+
+| # | 발견 | 원인 | 해소 |
+|---|------|------|------|
+| 1 | `.cursorignore`: `docs/`를 완전 제외한 뒤 `!docs/CONSTITUTION_BOOTSTRAP.md`로 예외 처리 시도 — **gitignore는 부모 디렉터리가 완전 제외되면 자식 negation을 적용하지 않음**(git 공식 동작) → 본 파일이 Read/Grep 도구에서 상시 `Permission denied`. AGENTS.md가 "착수 전 필독"으로 못박은 바로 그 파일이 에이전트 도구로는 열리지 않던 상태였음(Shell 우회로만 가능) | gitignore negation-after-parent-exclude 한계 미인지 | `docs/` → **`docs/*`**(직계 자식 단위 매칭이라 negation 정상 작동) · `CONSTITUTION/`·`docs/mockups/` 등 나머지 의도적 차단은 **불변** |
+| 2 | 신규 migration `execution_policy_day1_bootstrap` — 로컬 파일명 타임스탬프(`20260809142006`)가 `apply_migration` MCP 실제 부여 버전(`20260809142108`)과 **102초 drift** → "로컬 파일명 버전=원격 1:1" 불변식(§3.2·§9) 위반 | 파일 먼저 작성 후 별도 MCP apply로 두 타임스탬프가 독립 생성 | 로컬 파일명을 원격 실버전으로 **rename**(SQL 내용 무변경) |
+| 3 | `public.user_opportunity_overrides_pin_cap()` — Supabase 보안 어드바이저 `function_search_path_mutable` **WARN**. 동일 계열 5개 함수 중 4개(`ledger_forbid_mutation`·`ledger_require_posting_flag`·`provision_user_bucket_accounts`·`users_stage_a_identity_ok`)는 `search_path=public` 고정 · 이 함수만 누락 | `user_opportunity_overrides_schema_align`(20260809023713) 작성 시 컨벤션 누락 | 신규 migration `user_opportunity_overrides_pin_cap_search_path`(`20260809143754`)로 `ALTER FUNCTION … SET search_path = public` · 동작 변경 0 · advisor 재조회로 WARN 0 확인 |
+
+**판정:** 헌법·스키마·DB·verify 게이트 = **PASS**(위 3건은 발견 즉시 해소된 드리프트/하드닝). Pre-UI Gate = **CLOSED (v7.22.49)**.  
+**다음 채팅(불변):** **03 UI** `ui-preflight-constitution` only.
+

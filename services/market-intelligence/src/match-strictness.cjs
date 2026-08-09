@@ -82,6 +82,10 @@ const DAY1_PRESENTATION = Object.freeze({
 });
 const DAY1_FEED = Object.freeze({ nearMissCapUsdt: "50" });
 
+/** Nil UUID sentinel for migration seed / Nest ensure (≠ real admin actor) */
+const EXECUTION_POLICY_BOOTSTRAP_ADMIN_ID =
+  "00000000-0000-0000-0000-000000000000";
+
 function isPresetStrictness(v) {
   return (
     v === "lenient" || v === "standard" || v === "tight" || v === "scarce"
@@ -173,7 +177,9 @@ function coerceStrictnessLabel(fields) {
 }
 
 /** Day-1 standard policy (no admin row yet). */
-function day1ExecutionPolicyDefaults(updatedByAdminId = "system:bootstrap") {
+function day1ExecutionPolicyDefaults(
+  updatedByAdminId = EXECUTION_POLICY_BOOTSTRAP_ADMIN_ID,
+) {
   const mapped = expandMatchStrictness("standard");
   return {
     matchStrictness: "standard",
@@ -190,6 +196,51 @@ function day1ExecutionPolicyDefaults(updatedByAdminId = "system:bootstrap") {
     updatedAt: new Date(0).toISOString(),
     updatedByAdminId,
   };
+}
+
+/**
+ * Shape lock for §0.9 bootstrap seed/ensure (active row contents).
+ * Soft60/Hard90 live on softHardReadOnly — not stored as knobs on the row.
+ */
+function assertDay1BootstrapShape(policy) {
+  if (!policy || typeof policy !== "object") {
+    throw new Error("day1 bootstrap policy required");
+  }
+  if (policy.matchStrictness !== "standard") {
+    throw new Error("day1 bootstrap matchStrictness must be standard");
+  }
+  const want = MATCH_STRICTNESS_PRESETS.standard;
+  for (const [k, v] of Object.entries(want)) {
+    if (String(policy[k]) !== String(v)) {
+      throw new Error(`day1 bootstrap ${k} want ${v} got ${policy[k]}`);
+    }
+  }
+  if (Number(policy.retryWaitSec) !== DAY1_RETRY_WAIT_SEC) {
+    throw new Error("day1 bootstrap retryWaitSec drift");
+  }
+  if (String(policy.feed?.nearMissCapUsdt) !== DAY1_FEED.nearMissCapUsdt) {
+    throw new Error("day1 bootstrap feed.nearMissCapUsdt drift");
+  }
+  if (
+    Number(policy.presentation?.durationSecMin) !==
+      DAY1_PRESENTATION.durationSecMin ||
+    Number(policy.presentation?.durationSecMax) !==
+      DAY1_PRESENTATION.durationSecMax
+  ) {
+    throw new Error("day1 bootstrap presentation duration drift");
+  }
+  const steps = policy.presentation?.steps || [];
+  if (
+    steps.length !== DAY1_PRESENTATION.steps.length ||
+    DAY1_PRESENTATION.steps.some((s, i) => steps[i] !== s)
+  ) {
+    throw new Error("day1 bootstrap presentation.steps drift");
+  }
+  const sh = softHardReadOnly();
+  if (sh.softSec !== 60 || sh.hardSec !== 90 || sh.membershipUniform !== true) {
+    throw new Error("Soft60/Hard90 presentation meta drift");
+  }
+  return true;
 }
 
 /** Soft/Hard read-only meta for Admin (≠ success knobs). */
@@ -223,6 +274,7 @@ module.exports = {
   DAY1_RETRY_WAIT_SEC,
   DAY1_PRESENTATION,
   DAY1_FEED,
+  EXECUTION_POLICY_BOOTSTRAP_ADMIN_ID,
   isPresetStrictness,
   isMatchStrictness,
   presetSnapshotCanonical,
@@ -231,6 +283,7 @@ module.exports = {
   applyMatchStrictness,
   coerceStrictnessLabel,
   day1ExecutionPolicyDefaults,
+  assertDay1BootstrapShape,
   softHardReadOnly,
   toRulePolicy,
 };
