@@ -132,8 +132,13 @@ if (!withdrawPage.includes("WithdrawModeCards")) {
 }
 
 const execute = read("apps/web/app/trades/[id]/execute/page.tsx");
-if (!execute.includes("SuccessBucketCtas")) {
-  fails.push("execution success page must render SuccessBucketCtas");
+if (
+  !execute.includes("SuccessBucketCtas") &&
+  !execute.includes("ExecutionSuccessReceipt")
+) {
+  fails.push(
+    "execution success page must render SuccessBucketCtas (direct or via ExecutionSuccessReceipt)",
+  );
 }
 
 const finance = read("apps/admin/app/admin/users/[id]/finance/page.tsx");
