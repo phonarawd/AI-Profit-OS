@@ -17,7 +17,7 @@ loadDotEnv();
 mustExist("apps/web/package.json", "apps/web");
 
 const buildDir = path.join(root, "apps/web/.open-next/cloudflare");
-const config = path.join(root, "infra/web/wrangler.toml");
+const wranglerDir = path.join(root, "infra/web");
 const envFlag = target === "production" || target === "prod" ? "production" : "preview";
 
 function spawnEnv() {
@@ -48,10 +48,8 @@ const deploy = spawnSync(
     "pages",
     "deploy",
     buildDir,
-    "--project-name=ai-profit-web",
-    `--config=${config}`,
     `--env=${envFlag}`,
   ],
-  { cwd: root, stdio: "inherit", shell: true }
+  { cwd: wranglerDir, stdio: "inherit", shell: true, env: spawnEnv() }
 );
 process.exit(deploy.status || 0);

@@ -17,7 +17,7 @@ loadDotEnv();
 mustExist("apps/admin/package.json", "apps/admin");
 
 const buildDir = path.join(root, "apps/admin/.open-next/cloudflare");
-const config = path.join(root, "infra/ops/wrangler.toml");
+const wranglerDir = path.join(root, "infra/ops");
 const envFlag = target === "production" || target === "prod" ? "production" : "preview";
 
 console.log("[cf:deploy:ops] building apps/admin …");
@@ -36,10 +36,8 @@ const deploy = spawnSync(
     "pages",
     "deploy",
     buildDir,
-    "--project-name=ai-profit-ops",
-    `--config=${config}`,
     `--env=${envFlag}`,
   ],
-  { cwd: root, stdio: "inherit", shell: true }
+  { cwd: wranglerDir, stdio: "inherit", shell: true }
 );
 process.exit(deploy.status || 0);
