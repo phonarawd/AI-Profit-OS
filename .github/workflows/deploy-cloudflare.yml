@@ -30,7 +30,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    environment: ${{ inputs.target == 'production' && 'production' || 'preview' }}
+    # Secrets live in GitHub `production` environment (preview CF target still uses preview wrangler env).
+    environment: production
     steps:
       - uses: actions/checkout@v6
 
