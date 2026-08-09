@@ -126,7 +126,8 @@ if (fs.existsSync(adminRoot)) {
       const p = path.join(dir, name);
       const st = fs.statSync(p);
       if (st.isDirectory()) {
-        if (name === "node_modules" || name === ".next") continue;
+        if (name === "node_modules" || name === ".next" || name === ".open-next")
+          continue;
         walk(p);
       } else if (/\.(tsx?|jsx?)$/.test(name)) {
         const t = fs.readFileSync(p, "utf8");
