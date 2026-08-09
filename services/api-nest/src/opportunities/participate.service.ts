@@ -27,6 +27,7 @@ import {
 } from "../ledger/ledger.money";
 import { LedgerPostingService } from "../ledger/ledger.posting.service";
 import { PostgresService } from "../db/postgres";
+import { PreflightService } from "../loop/preflight.service";
 import { RiskService } from "../risk/risk.service";
 import {
   checkParticipateMembershipGuards,
@@ -57,6 +58,8 @@ export type ParticipateBody = {
   minProfitUsdt?: string;
   amountUsdt?: string;
   idempotencyKey?: string;
+  /** §51.24.2 / §48.13.1 P0 — Nest POST preflight 발급분만 유효 */
+  preflightToken?: string;
 };
 
 export type ParticipateResult = {
@@ -114,6 +117,7 @@ export class ParticipateService {
     private readonly risk: RiskService,
     private readonly executionPolicy: ExecutionPolicyAdminService,
     private readonly bus: InProcessEventBus,
+    private readonly preflight: PreflightService,
   ) {}
 
   async participate(
@@ -132,6 +136,13 @@ export class ParticipateService {
         statusCode: 400,
       });
     }
+
+    // P0 — UI §51.24 PreCTA · missing/invalid → 412 PREFLIGHT_REQUIRED
+    this.preflight.assertValid(
+      userId,
+      pathOpportunityId,
+      validated.preflightToken,
+    );
 
     const existing = await this.findByIdempotency(validated.idempotencyKey);
     if (existing) {
@@ -321,12 +332,14 @@ export class ParticipateService {
     minProfitUsdt: string;
     amountUsdt: string;
     idempotencyKey: string;
+    preflightToken: string;
   } {
     const opportunityId = String(body.opportunityId ?? "").trim();
     const pricingVersion = Number(body.pricingVersion);
     const minProfitUsdt = String(body.minProfitUsdt ?? "");
     const amountUsdt = String(body.amountUsdt ?? "");
     const idempotencyKey = String(body.idempotencyKey ?? "");
+    const preflightToken = String(body.preflightToken ?? "").trim();
 
     if (!opportunityId) {
       throw new BadRequestException("opportunityId required");
@@ -353,6 +366,7 @@ export class ParticipateService {
       minProfitUsdt: formatAmount(parseAmount(minProfitUsdt)),
       amountUsdt,
       idempotencyKey,
+      preflightToken,
     };
   }
 

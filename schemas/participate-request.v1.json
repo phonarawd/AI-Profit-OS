@@ -10,7 +10,8 @@
     "pricingVersion",
     "minProfitUsdt",
     "amountUsdt",
-    "idempotencyKey"
+    "idempotencyKey",
+    "preflightToken"
   ],
   "properties": {
     "opportunityId": {
@@ -34,6 +35,11 @@
     "idempotencyKey": {
       "type": "string",
       "minLength": 8
+    },
+    "preflightToken": {
+      "type": "string",
+      "minLength": 16,
+      "description": "UI §51.24.2 Nest POST /opportunities/:id/preflight · missing → 412 PREFLIGHT_REQUIRED"
     }
   }
 }

@@ -9,6 +9,8 @@ export const OPPORTUNITY_USER_ROUTES = {
   list: "opportunities",
   /** GET — single OpportunityCard */
   get: "opportunities/:id",
-  /** POST — §48.13.1 participate (P0b~P5) */
+  /** POST — §51.24.2 PreCTA completion token (P0) */
+  preflight: "opportunities/:id/preflight",
+  /** POST — §48.13.1 participate (P0→P0b~P5) */
   participate: "opportunities/:id/participate",
 } as const;

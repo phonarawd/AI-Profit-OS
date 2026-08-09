@@ -89,8 +89,17 @@ if (!home.includes("LivePayoutTicker")) {
 if (!home.includes("HomePayoutCounter")) {
   fails.push("home must mount HomePayoutCounter [F]");
 }
+// §51.24 — DayPulse [A2] OK · ticker 슬롯 안 merge만 금지
 if (home.includes("DayPulse")) {
-  fails.push("home must not merge DayPulse into ticker slot");
+  const tickerSlot = home.match(
+    /data-home-slot="ticker"[\s\S]*?<\/div>/,
+  );
+  if (tickerSlot && tickerSlot[0].includes("DayPulse")) {
+    fails.push("home must not merge DayPulse into ticker slot");
+  }
+  if (!home.includes('data-home-slot="day-pulse"')) {
+    fails.push("DayPulse must use separate data-home-slot=day-pulse [A2]");
+  }
 }
 
 const wire = read("packages/ui/canon/surfaces/public-ticker.wire.json");

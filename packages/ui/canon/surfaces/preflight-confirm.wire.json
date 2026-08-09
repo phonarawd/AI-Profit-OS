@@ -1,0 +1,40 @@
+{
+  "id": "preflight-confirm",
+  "route": "/profits/[id]",
+  "state": "preflight",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": "T.execution.ctaEarn", "action": "participate" },
+  "blocks": [
+    {
+      "id": "mayStop",
+      "role": "notice",
+      "copyKey": "T.loop.mayStop",
+      "required": true,
+      "note": "§51.24.2 L8 · A/B 삭제 금지"
+    },
+    {
+      "id": "preflightHint",
+      "role": "hint",
+      "copyKey": "T.loop.preflightHint"
+    },
+    {
+      "id": "cta",
+      "role": "primary",
+      "copyKey": "T.execution.ctaEarn",
+      "requiresPreflightToken": true
+    }
+  ],
+  "flags": ["preflight_token_required", "may_stop_required"],
+  "forbidden": [
+    "preflight_skip_deeplink",
+    "무조건_성공",
+    "무조건_수익",
+    "보장_수익",
+    "presentation_timer_equals_payout",
+    "ticker_merge",
+    "gender_branch",
+    "IT_jargon",
+    "photo_pixel_match",
+    "english_problem_code"
+  ]
+}

@@ -151,6 +151,19 @@
       "note": "UI §33.2a · Admin §35.4 mode projection · DayPulse merge 0"
     },
     {
+      "id": "day-pulse",
+      "route": "/",
+      "wire": "surfaces/day-pulse.wire.json",
+      "note": "UI §51.24.1 Home [A2] · live only · G4 merge 0"
+    },
+    {
+      "id": "preflight-confirm",
+      "route": "/profits/[id]",
+      "state": "preflight",
+      "wire": "surfaces/preflight-confirm.wire.json",
+      "note": "UI §51.24.2 PreCTA mayStop · Nest 412 PREFLIGHT_REQUIRED"
+    },
+    {
       "id": "wallet-home",
       "route": "/wallet",
       "wire": "surfaces/wallet-home.wire.json"

@@ -50,6 +50,7 @@ export const toast = {
   ACCOUNT_BANNED: "🚫 이용이 제한된 계정이에요",
   WITHDRAW_BLOCKED: "📤 출금이 일시 중지됐어요",
   MATCH_BLOCKED: "⏸️ 지금은 매칭을 진행할 수 없어요. 고객센터에 문의해 주세요",
+  PREFLIGHT_REQUIRED: "🛡️ 참여 전 안내를 확인한 뒤 다시 눌러 주세요",
   WITHDRAW_APPLY_BLOCKED:
     "📤 지금은 출금 신청을 받을 수 없어요. 고객센터에 문의해 주세요",
   PASSWORD_RESET_BY_OPS: "🔐 로그인 비밀번호가 재설정됐어요. 다시 로그인해 주세요",

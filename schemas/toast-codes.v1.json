@@ -246,6 +246,11 @@
         "trigger": "matchBlocked"
       },
       {
+        "code": "PREFLIGHT_REQUIRED",
+        "toastKo": "🛡️ 참여 전 안내를 확인한 뒤 다시 눌러 주세요",
+        "trigger": "§51.24.2 / §48.13.1 P0 missing preflightToken"
+      },
+      {
         "code": "WITHDRAW_APPLY_BLOCKED",
         "toastKo": "📤 지금은 출금 신청을 받을 수 없어요. 고객센터에 문의해 주세요",
         "trigger": "withdrawApplyBlocked"

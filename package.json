@@ -129,6 +129,9 @@
     "verify:cute-emoji-palette": "node tooling/verify/cute-emoji-palette.cjs",
     "verify:no-it-jargon": "node tooling/verify/no-it-jargon.cjs",
     "verify:ticker-pii-0": "node tooling/verify/ticker-pii-0.cjs",
+    "verify:day-pulse-live-only": "node tooling/verify/day-pulse-live-only.cjs",
+    "verify:preflight-may-stop": "node tooling/verify/preflight-may-stop.cjs",
+    "verify:loop-psychology": "node tooling/verify/loop-psychology.cjs",
     "verify:legal-plain-ko": "node tooling/verify/legal-plain-ko.cjs",
     "verify:part5-shell-toast": "node tooling/verify/part5-shell-toast.cjs",
 

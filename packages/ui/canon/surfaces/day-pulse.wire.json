@@ -1,0 +1,61 @@
+{
+  "id": "day-pulse",
+  "route": "/",
+  "slot": "A2",
+  "brandRef": "packages/ui/brand",
+  "blocks": [
+    {
+      "id": "title",
+      "role": "heading",
+      "copyKey": "T.loop.dayPulseTitle"
+    },
+    {
+      "id": "safeStopToday",
+      "role": "metric",
+      "field": "platformSafeStopToday",
+      "copyKey": "T.loop.safeStopToday",
+      "hideWhenZero": true,
+      "note": "§51.24.4 ledger safe_stop · live only"
+    },
+    {
+      "id": "settlementToday",
+      "role": "metric",
+      "field": "settlementCompletedToday",
+      "copyKey": "T.loop.settlementToday",
+      "hideWhenZero": true
+    },
+    {
+      "id": "emptyToday",
+      "role": "empty",
+      "copyKey": "T.loop.emptyToday"
+    },
+    {
+      "id": "presence",
+      "role": "presence",
+      "copyKey": "T.loop.presenceWatching",
+      "defaultOff": true,
+      "flag": "presence_live",
+      "note": "실측 세션만 · 시드/랜덤 0"
+    }
+  ],
+  "flags": [
+    "live_only",
+    "g4_merge_0",
+    "admin_edit_0",
+    "presence_default_off"
+  ],
+  "forbidden": [
+    "g4_demo_merge",
+    "g4_hybrid_merge",
+    "counter_mode_blended",
+    "admin_manual_edit",
+    "fake_presence_seed",
+    "fake_queue",
+    "ticker_slot_merge",
+    "보장_수익_badge",
+    "gender_branch",
+    "IT_jargon",
+    "photo_pixel_match",
+    "english_problem_code"
+  ]
+}

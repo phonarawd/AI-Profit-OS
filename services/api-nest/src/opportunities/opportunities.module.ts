@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { ExecutionPolicyModule } from "../execution-policy/execution-policy.module";
 import { LedgerModule } from "../ledger/ledger.module";
 import { EventsModule } from "../events/events.module";
+import { LoopModule } from "../loop/loop.module";
 import { RiskModule } from "../risk/risk.module";
 import { AssetImageR2Service } from "./asset-image-r2.service";
 import { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
@@ -14,7 +15,13 @@ import { UserOpportunityOverrideAdminController } from "./user-opportunity-overr
 import { UserOpportunityOverrideAdminService } from "./user-opportunity-override.admin.service";
 
 @Module({
-  imports: [EventsModule, LedgerModule, ExecutionPolicyModule, RiskModule],
+  imports: [
+    EventsModule,
+    LedgerModule,
+    ExecutionPolicyModule,
+    RiskModule,
+    LoopModule,
+  ],
   controllers: [
     OpportunitiesUserController,
     OpportunitiesAdminController,

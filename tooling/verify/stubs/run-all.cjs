@@ -115,6 +115,10 @@ const live = [
   "ticker-pii-0.cjs",
   "legal-plain-ko.cjs",
   "part5-shell-toast.cjs",
+  // PART8a §51.24 Loop Psychology · DayPulse · PreCTA
+  "day-pulse-live-only.cjs",
+  "preflight-may-stop.cjs",
+  "loop-psychology.cjs",
   // Visual regression harness (Canon structure · multi-viewport · ADR-013)
   "responsive.cjs",
   // PART6 KYC · trust education · get-usdt

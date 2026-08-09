@@ -17,6 +17,7 @@ import { invite } from "./invite";
 import { kyc } from "./kyc";
 import { landing } from "./landing";
 import { legal } from "./legal";
+import { loop } from "./loop";
 import { margin } from "./margin";
 import { membership } from "./membership";
 import { objections } from "./objections";
@@ -55,6 +56,7 @@ export const T = {
   kyc,
   landing,
   legal,
+  loop,
   margin,
   membership,
   objections,
@@ -95,6 +97,7 @@ export {
   kyc,
   landing,
   legal,
+  loop,
   margin,
   membership,
   objections,

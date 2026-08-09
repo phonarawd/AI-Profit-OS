@@ -15,6 +15,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { PreflightService } from "../loop/preflight.service";
 import { OPPORTUNITY_USER_ROUTES } from "./opportunities.user.routes";
 import { OpportunitiesUserService } from "./opportunities.user.service";
 import {
@@ -33,6 +34,7 @@ export class OpportunitiesUserController {
   constructor(
     private readonly opportunities: OpportunitiesUserService,
     private readonly participateSvc: ParticipateService,
+    private readonly preflight: PreflightService,
   ) {}
 
   @Get(OPPORTUNITY_USER_ROUTES.list)
@@ -43,6 +45,12 @@ export class OpportunitiesUserController {
   @Get(OPPORTUNITY_USER_ROUTES.get)
   get(@Param("id") id: string, @Req() req: SessionReq) {
     return this.opportunities.getById(this.sessionUserId(req), id);
+  }
+
+  /** §51.24.2 — mayStop 확인 후 토큰 발급 · 딥링크 스킵 0 */
+  @Post(OPPORTUNITY_USER_ROUTES.preflight)
+  issuePreflight(@Param("id") id: string, @Req() req: SessionReq) {
+    return this.preflight.issue(this.sessionUserId(req), id);
   }
 
   @Post(OPPORTUNITY_USER_ROUTES.participate)

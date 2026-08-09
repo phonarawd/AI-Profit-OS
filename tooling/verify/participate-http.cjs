@@ -169,10 +169,18 @@ for (const req of [
   "minProfitUsdt",
   "amountUsdt",
   "idempotencyKey",
+  "preflightToken",
 ]) {
   if (!(schema.required || []).includes(req)) {
     fails.push(`participate-request.v1 must require ${req}`);
   }
+}
+// §48.13.1 P0 / UI §51.24 — PreCTA token gate
+if (!svc.includes("preflight.assertValid") && !svc.includes("PREFLIGHT_REQUIRED")) {
+  fails.push("participate.service must enforce P0 preflight (PREFLIGHT_REQUIRED)");
+}
+if (!routes.includes('preflight: "opportunities/:id/preflight"')) {
+  fails.push("OPPORTUNITY_USER_ROUTES must expose preflight");
 }
 if (schema.additionalProperties !== false) {
   fails.push("participate-request.v1 must set additionalProperties:false");

@@ -37,9 +37,17 @@
       "copyKey": "T.execution.disclaimerResult"
     },
     {
+      "id": "precta",
+      "role": "preflight",
+      "component": "PreCTA",
+      "copyKey": "T.loop.mayStop",
+      "note": "UI §51.24.2 · mayStop 필수 · skip deeplink 0"
+    },
+    {
       "id": "cta",
       "role": "primary",
-      "copyKey": "T.execution.ctaEarn"
+      "copyKey": "T.execution.ctaEarn",
+      "requiresPreflightToken": true
     }
   ],
   "forbidden": [
@@ -50,6 +58,8 @@
     "expected_sell_days",
     "매입가",
     "판매가",
+    "preflight_skip_deeplink",
+    "무조건_성공",
     "gender_branch",
     "photo_pixel_match",
     "non_brand_logo"

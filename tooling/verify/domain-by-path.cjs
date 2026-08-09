@@ -119,6 +119,22 @@ const RULES = [
       "notification-prefs-default-on.cjs",
     ],
   },
+  {
+    test: (f) =>
+      /packages\/ui\/components\/loop\//.test(f) ||
+      /packages\/ui\/copy\/ko\/loop\.ts/.test(f) ||
+      /packages\/ui\/canon\/surfaces\/(day-pulse|preflight-confirm)\.wire\.json/.test(
+        f,
+      ) ||
+      /^services\/api-nest\/src\/loop\//.test(f) ||
+      /schemas\/day-opportunity-pulse\.v1\.json/.test(f) ||
+      (/apps\/web\/app\/page\.tsx/.test(f) && true),
+    scripts: [
+      "day-pulse-live-only.cjs",
+      "preflight-may-stop.cjs",
+      "loop-psychology.cjs",
+    ],
+  },
 
   {
     test: (f) =>

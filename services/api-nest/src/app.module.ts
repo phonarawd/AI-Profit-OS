@@ -8,6 +8,7 @@ import { AdaptersModule } from "./adapters/adapters.module";
 import { ExecutionPolicyModule } from "./execution-policy/execution-policy.module";
 import { MembershipModule } from "./membership/membership.module";
 import { InboxModule } from "./inbox/inbox.module";
+import { LoopModule } from "./loop/loop.module";
 import { OpportunitiesModule } from "./opportunities/opportunities.module";
 import { MissionModule } from "./missions/mission.module";
 import { ReferralModule } from "./referral/referral.module";
@@ -31,6 +32,7 @@ import { WalletModule } from "./wallet/wallet.module";
     ExecutionPolicyModule,
     MembershipModule,
     InboxModule,
+    LoopModule,
     AdaptersModule,
     SimulationModule,
     AiModule,
