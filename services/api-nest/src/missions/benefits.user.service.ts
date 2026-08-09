@@ -28,12 +28,14 @@ type DefinitionRow = {
   section: string;
   title_ko: string;
   body_ko: string;
+  icon: string | null;
   reward_kind: MissionRewardKind;
   reward_amount_usdt: string | null;
   auto_claim: boolean;
   growth_required: boolean;
   status: "draft" | "live" | "paused" | "ended";
   sort_order: number;
+  deep_route: string | null;
 };
 
 type AccrualRow = {
@@ -92,6 +94,8 @@ export class BenefitsUserService {
           sectionRaw: d.section,
           titleKo: d.title_ko,
           bodyKo: d.body_ko,
+          icon: d.icon,
+          deepRoute: d.deep_route,
           rewardKind: d.reward_kind,
           rewardAmountUsdt:
             d.reward_amount_usdt == null
@@ -238,9 +242,9 @@ export class BenefitsUserService {
   private async loadDefinitions(): Promise<DefinitionRow[]> {
     if (!this.db.configured()) return [];
     const r = await this.db.query<DefinitionRow>(
-      `SELECT id, section, title_ko, body_ko, reward_kind,
+      `SELECT id, section, title_ko, body_ko, icon, reward_kind,
               reward_amount_usdt::text, auto_claim, growth_required,
-              status, sort_order
+              status, sort_order, deep_route
          FROM public.mission_definitions
         WHERE status IN ('live', 'paused', 'ended')
         ORDER BY sort_order ASC, id ASC`,

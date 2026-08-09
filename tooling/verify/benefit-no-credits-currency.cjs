@@ -15,6 +15,21 @@ if (/credits_balance|creditsBalance|virtualCredits/i.test(copy)) {
   fails.push("benefits copy must not define Credits balance");
 }
 
+const uiDirs = [
+  path.join(root, "packages/ui/components/benefits"),
+  path.join(root, "apps/web/app/me/benefits"),
+];
+for (const dir of uiDirs) {
+  if (!fs.existsSync(dir)) continue;
+  for (const name of fs.readdirSync(dir)) {
+    if (!/\.(tsx|ts)$/.test(name)) continue;
+    const t = fs.readFileSync(path.join(dir, name), "utf8");
+    if (/credits_balance|creditsBalance|virtualCredits/i.test(t)) {
+      fails.push(`${path.relative(root, path.join(dir, name))} must not use Credits currency`);
+    }
+  }
+}
+
 function walk(dir, onFile) {
   if (!fs.existsSync(dir)) return;
   for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
