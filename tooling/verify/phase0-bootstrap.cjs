@@ -87,6 +87,18 @@ const webToml = read("infra/web/wrangler.toml");
 const opsToml = read("infra/ops/wrangler.toml");
 if (!webToml.includes("ai-profit-web")) fails.push("web wrangler missing ai-profit-web");
 if (!opsToml.includes("ai-profit-ops")) fails.push("ops wrangler missing ai-profit-ops");
+if (/^\s*pages_build_output_dir\s*=/m.test(webToml)) {
+  fails.push("web wrangler: pages_build_output_dir key forbidden (OpenNext → Workers)");
+}
+if (/^\s*pages_build_output_dir\s*=/m.test(opsToml)) {
+  fails.push("ops wrangler: pages_build_output_dir key forbidden (OpenNext → Workers)");
+}
+if (!webToml.includes(".open-next/worker.js") || !webToml.includes(".open-next/assets")) {
+  fails.push("web wrangler must point main+assets at apps/web/.open-next");
+}
+if (!opsToml.includes(".open-next/worker.js") || !opsToml.includes(".open-next/assets")) {
+  fails.push("ops wrangler must point main+assets at apps/admin/.open-next");
+}
 
 const r2 = read("infra/r2/kyc-docs.toml");
 if (!r2.includes('bucket_name = "kyc-docs"')) {

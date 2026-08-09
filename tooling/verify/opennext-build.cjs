@@ -1,10 +1,11 @@
 /**
- * verify:opennext-build — OpenNext → .open-next/cloudflare (deploy SSOT)
+ * verify:opennext-build — OpenNext → .open-next/worker.js + assets (Workers deploy SSOT)
  * Windows: SKIP (symlink EPERM · OpenNext docs recommend WSL/Linux).
  * CI gate.yml runs on ubuntu-latest → full build:cf enforced there.
  */
 const { spawnSync } = require("child_process");
 const path = require("path");
+const fs = require("fs");
 
 if (process.platform === "win32") {
   console.log(
@@ -33,12 +34,16 @@ for (const app of apps) {
     process.exit(1);
   }
   const rel = app === "@aipo/web" ? "apps/web" : "apps/admin";
-  const outDir = path.join(root, rel, ".open-next", "cloudflare");
-  const fs = require("fs");
-  if (!fs.existsSync(outDir)) {
-    console.error(`[verify:opennext-build] missing ${rel}/.open-next/cloudflare`);
+  const worker = path.join(root, rel, ".open-next", "worker.js");
+  const assets = path.join(root, rel, ".open-next", "assets");
+  if (!fs.existsSync(worker)) {
+    console.error(`[verify:opennext-build] missing ${rel}/.open-next/worker.js`);
+    process.exit(1);
+  }
+  if (!fs.existsSync(assets)) {
+    console.error(`[verify:opennext-build] missing ${rel}/.open-next/assets`);
     process.exit(1);
   }
 }
 
-console.log("[verify:opennext-build] PASS (web + admin · .open-next/cloudflare)");
+console.log("[verify:opennext-build] PASS (web + admin · worker.js + assets)");

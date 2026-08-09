@@ -34,7 +34,13 @@ for (const { file, filter, script } of checks) {
     fails.push(`${file}: must use pnpm filter ${filter}`);
   }
   if (!body.includes(script)) {
-    fails.push(`${file}: must invoke ${script} (OpenNext → .open-next/cloudflare)`);
+    fails.push(`${file}: must invoke ${script} (OpenNext → worker.js + assets)`);
+  }
+  if (!body.includes("opennextjs-cloudflare") || !body.includes("deploy")) {
+    fails.push(`${file}: must invoke opennextjs-cloudflare deploy (Workers)`);
+  }
+  if (body.includes("pages deploy") || body.includes("pages_build_output_dir")) {
+    fails.push(`${file}: Pages deploy forbidden — OpenNext targets Workers`);
   }
   if (body.includes("@ai-profit-os/")) {
     fails.push(`${file}: stale @ai-profit-os/* filter forbidden`);

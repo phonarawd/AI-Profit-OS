@@ -16,13 +16,15 @@
   "pages": {
     "web": {
       "project": "ai-profit-web",
+      "workersDev": "ai-profit-web.quick.workers.dev",
       "pagesDev": "ai-profit-web.pages.dev",
-      "note": "공개 호스트는 web-proxy Worker가 프록시 · Pages custom domain 사용 안 함"
+      "note": "OpenNext → Workers(ai-profit-web) · pages.dev는 레거시(404) · 공개 호스트는 web-proxy"
     },
     "ops": {
       "project": "ai-profit-ops",
+      "workersDev": "ai-profit-ops.quick.workers.dev",
       "pagesDev": "ai-profit-ops.pages.dev",
-      "note": "공개 호스트는 ops-proxy Worker가 프록시"
+      "note": "OpenNext → Workers(ai-profit-ops) · pages.dev 레거시 · 공개 호스트는 ops-proxy"
     }
   },
   "bridgeWorkers": {
@@ -30,13 +32,13 @@
       "worker": "hiptk-web-proxy",
       "path": "workers/web-proxy",
       "hostnames": ["app.hiptk.app", "hiptk.app", "go.hiptk.app"],
-      "target": "https://ai-profit-web.pages.dev"
+      "target": "https://ai-profit-web.quick.workers.dev"
     },
     "ops-proxy": {
       "worker": "hiptk-ops-proxy",
       "path": "workers/ops-proxy",
       "hostnames": ["ops.hiptk.app"],
-      "target": "https://ai-profit-ops.pages.dev"
+      "target": "https://ai-profit-ops.quick.workers.dev"
     },
     "api-stub": {
       "worker": "hiptk-api-stub",

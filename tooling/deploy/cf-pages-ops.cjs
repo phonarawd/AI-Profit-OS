@@ -1,5 +1,8 @@
 #!/usr/bin/env node
-/** Deploy Admin Ops → CF Pages ai-profit-ops */
+/**
+ * Deploy Admin Ops → CF Workers ai-profit-ops (OpenNext)
+ * 파일명 cf-pages-ops = 레거시 · 실제는 Workers deploy
+ */
 const { spawnSync } = require("child_process");
 const path = require("path");
 const {
@@ -16,10 +19,9 @@ requireCloudflareCreds();
 loadDotEnv();
 mustExist("apps/admin/package.json", "apps/admin");
 
-const buildDir = path.join(root, "apps/admin/.open-next/cloudflare");
-const wranglerDir = path.join(root, "infra/ops");
+const appDir = path.join(root, "apps/admin");
+const configPath = path.join(root, "infra/ops/wrangler.toml");
 const envFlag = target === "production" || target === "prod" ? "production" : "preview";
-const projectName = "ai-profit-ops";
 
 console.log("[cf:deploy:ops] building apps/admin …");
 const build = spawnSync("pnpm", ["--filter", "@aipo/admin", "build:cf"], {
@@ -29,21 +31,20 @@ const build = spawnSync("pnpm", ["--filter", "@aipo/admin", "build:cf"], {
 });
 if (build.status !== 0) process.exit(build.status || 1);
 
-const deployArgs = [
-  "exec",
-  "wrangler",
-  "pages",
-  "deploy",
-  buildDir,
-  `--project-name=${projectName}`,
-];
-if (envFlag === "preview") {
-  deployArgs.push("--branch=preview");
-}
-
-const deploy = spawnSync("pnpm", deployArgs, {
-  cwd: wranglerDir,
-  stdio: "inherit",
-  shell: true,
-});
+console.log(`[cf:deploy:ops] OpenNext Workers deploy · env=${envFlag} …`);
+const deploy = spawnSync(
+  "pnpm",
+  [
+    "exec",
+    "opennextjs-cloudflare",
+    "deploy",
+    `--config=${configPath}`,
+    `--env=${envFlag}`,
+  ],
+  {
+    cwd: appDir,
+    stdio: "inherit",
+    shell: true,
+  }
+);
 process.exit(deploy.status || 0);

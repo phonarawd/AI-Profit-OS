@@ -37,8 +37,19 @@ if (manifest) {
   if (!manifest.pages?.web?.project || !manifest.pages?.ops?.project) {
     fails.push("domain.manifest pages web/ops projects required");
   }
-  if (!manifest.bridgeWorkers?.["web-proxy"] || !manifest.bridgeWorkers?.["api-stub"]) {
+  if (!manifest.pages?.web?.workersDev || !manifest.pages?.ops?.workersDev) {
+    fails.push("domain.manifest pages web/ops workersDev required (OpenNext Workers)");
+  }
+  const webProxy = manifest.bridgeWorkers?.["web-proxy"];
+  const opsProxy = manifest.bridgeWorkers?.["ops-proxy"];
+  if (!webProxy || !manifest.bridgeWorkers?.["api-stub"]) {
     fails.push("domain.manifest bridgeWorkers web-proxy/api-stub required");
+  }
+  if (webProxy?.target && !String(webProxy.target).includes("workers.dev")) {
+    fails.push("domain.manifest web-proxy target must be workers.dev (not pages.dev)");
+  }
+  if (opsProxy?.target && !String(opsProxy.target).includes("workers.dev")) {
+    fails.push("domain.manifest ops-proxy target must be workers.dev (not pages.dev)");
   }
   for (const rel of [
     "workers/web-proxy/wrangler.toml",
@@ -83,4 +94,4 @@ if (fails.length) {
   process.exit(1);
 }
 
-console.log("[verify:domain-bootstrap] PASS (hiptk.app SSOT · Pages · DNS manifest)");
+console.log("[verify:domain-bootstrap] PASS (hiptk.app SSOT · Workers · DNS manifest)");

@@ -1,7 +1,9 @@
 /**
- * OPS_HOST → ai-profit-ops.pages.dev (Phase0 DNS bridge)
+ * OPS_HOST → ai-profit-ops.quick.workers.dev (Phase0 DNS bridge)
+ * OpenNext는 Workers 배포 · 구 pages.dev origin은 404.
  */
-const TARGET = "https://ai-profit-ops.pages.dev";
+const TARGET = "https://ai-profit-ops.quick.workers.dev";
+const TARGET_HOST = "ai-profit-ops.quick.workers.dev";
 
 const HOLDING_HTML = `<!DOCTYPE html>
 <html lang="ko">
@@ -19,7 +21,7 @@ export default {
       const incoming = new URL(request.url);
       const target = new URL(incoming.pathname + incoming.search, TARGET);
       const headers = new Headers(request.headers);
-      headers.set("host", "ai-profit-ops.pages.dev");
+      headers.set("host", TARGET_HOST);
       headers.set("x-forwarded-host", incoming.host);
       const res = await fetch(
         new Request(target.toString(), {

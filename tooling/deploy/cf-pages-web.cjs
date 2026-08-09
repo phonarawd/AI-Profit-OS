@@ -1,5 +1,8 @@
 #!/usr/bin/env node
-/** Deploy 유저 PWA → CF Pages ai-profit-web */
+/**
+ * Deploy 유저 PWA → CF Workers ai-profit-web (OpenNext)
+ * 파일명 cf-pages-web = 레거시 · 실제는 Workers deploy (pages.dev 404 원인 수정)
+ */
 const { spawnSync } = require("child_process");
 const path = require("path");
 const {
@@ -16,10 +19,9 @@ requireCloudflareCreds();
 loadDotEnv();
 mustExist("apps/web/package.json", "apps/web");
 
-const buildDir = path.join(root, "apps/web/.open-next/cloudflare");
-const wranglerDir = path.join(root, "infra/web");
+const appDir = path.join(root, "apps/web");
+const configPath = path.join(root, "infra/web/wrangler.toml");
 const envFlag = target === "production" || target === "prod" ? "production" : "preview";
-const projectName = "ai-profit-web";
 
 function spawnEnv() {
   const env = { ...process.env };
@@ -41,22 +43,21 @@ const build = spawnSync("pnpm", ["--filter", "@aipo/web", "build:cf"], {
 });
 if (build.status !== 0) process.exit(build.status || 1);
 
-const deployArgs = [
-  "exec",
-  "wrangler",
-  "pages",
-  "deploy",
-  buildDir,
-  `--project-name=${projectName}`,
-];
-if (envFlag === "preview") {
-  deployArgs.push("--branch=preview");
-}
-
-const deploy = spawnSync("pnpm", deployArgs, {
-  cwd: wranglerDir,
-  stdio: "inherit",
-  shell: true,
-  env: spawnEnv(),
-});
+console.log(`[cf:deploy:web] OpenNext Workers deploy · env=${envFlag} …`);
+const deploy = spawnSync(
+  "pnpm",
+  [
+    "exec",
+    "opennextjs-cloudflare",
+    "deploy",
+    `--config=${configPath}`,
+    `--env=${envFlag}`,
+  ],
+  {
+    cwd: appDir,
+    stdio: "inherit",
+    shell: true,
+    env: spawnEnv(),
+  }
+);
 process.exit(deploy.status || 0);

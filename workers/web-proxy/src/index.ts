@@ -1,8 +1,9 @@
 /**
- * APP_HOST / apex / go → ai-profit-web.pages.dev (Phase0 DNS bridge)
- * Pages 미배포 시 522 대신 Phase0 안내 HTML 반환.
+ * APP_HOST / apex / go → ai-profit-web.quick.workers.dev (Phase0 DNS bridge)
+ * OpenNext는 Workers 배포 · 구 pages.dev origin은 404.
  */
-const TARGET = "https://ai-profit-web.pages.dev";
+const TARGET = "https://ai-profit-web.quick.workers.dev";
+const TARGET_HOST = "ai-profit-web.quick.workers.dev";
 
 const HOLDING_HTML = `<!DOCTYPE html>
 <html lang="ko">
@@ -31,7 +32,7 @@ export default {
       const incoming = new URL(request.url);
       const target = new URL(incoming.pathname + incoming.search, TARGET);
       const headers = new Headers(request.headers);
-      headers.set("host", "ai-profit-web.pages.dev");
+      headers.set("host", TARGET_HOST);
       headers.set("x-forwarded-host", incoming.host);
       const res = await fetch(
         new Request(target.toString(), {
