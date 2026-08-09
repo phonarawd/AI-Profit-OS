@@ -19,6 +19,7 @@ mustExist("apps/admin/package.json", "apps/admin");
 const buildDir = path.join(root, "apps/admin/.open-next/cloudflare");
 const wranglerDir = path.join(root, "infra/ops");
 const envFlag = target === "production" || target === "prod" ? "production" : "preview";
+const projectName = "ai-profit-ops";
 
 console.log("[cf:deploy:ops] building apps/admin …");
 const build = spawnSync("pnpm", ["--filter", "@aipo/admin", "build:cf"], {
@@ -28,16 +29,21 @@ const build = spawnSync("pnpm", ["--filter", "@aipo/admin", "build:cf"], {
 });
 if (build.status !== 0) process.exit(build.status || 1);
 
-const deploy = spawnSync(
-  "pnpm",
-  [
-    "exec",
-    "wrangler",
-    "pages",
-    "deploy",
-    buildDir,
-    `--env=${envFlag}`,
-  ],
-  { cwd: wranglerDir, stdio: "inherit", shell: true }
-);
+const deployArgs = [
+  "exec",
+  "wrangler",
+  "pages",
+  "deploy",
+  buildDir,
+  `--project-name=${projectName}`,
+];
+if (envFlag === "preview") {
+  deployArgs.push("--branch=preview");
+}
+
+const deploy = spawnSync("pnpm", deployArgs, {
+  cwd: wranglerDir,
+  stdio: "inherit",
+  shell: true,
+});
 process.exit(deploy.status || 0);

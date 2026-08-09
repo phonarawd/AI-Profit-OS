@@ -19,6 +19,7 @@ mustExist("apps/web/package.json", "apps/web");
 const buildDir = path.join(root, "apps/web/.open-next/cloudflare");
 const wranglerDir = path.join(root, "infra/web");
 const envFlag = target === "production" || target === "prod" ? "production" : "preview";
+const projectName = "ai-profit-web";
 
 function spawnEnv() {
   const env = { ...process.env };
@@ -40,16 +41,22 @@ const build = spawnSync("pnpm", ["--filter", "@aipo/web", "build:cf"], {
 });
 if (build.status !== 0) process.exit(build.status || 1);
 
-const deploy = spawnSync(
-  "pnpm",
-  [
-    "exec",
-    "wrangler",
-    "pages",
-    "deploy",
-    buildDir,
-    `--env=${envFlag}`,
-  ],
-  { cwd: wranglerDir, stdio: "inherit", shell: true, env: spawnEnv() }
-);
+const deployArgs = [
+  "exec",
+  "wrangler",
+  "pages",
+  "deploy",
+  buildDir,
+  `--project-name=${projectName}`,
+];
+if (envFlag === "preview") {
+  deployArgs.push("--branch=preview");
+}
+
+const deploy = spawnSync("pnpm", deployArgs, {
+  cwd: wranglerDir,
+  stdio: "inherit",
+  shell: true,
+  env: spawnEnv(),
+});
 process.exit(deploy.status || 0);
