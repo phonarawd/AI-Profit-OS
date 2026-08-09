@@ -1,0 +1,28 @@
+/** UI §5.9.5 · Money §51.8a — Benefit Hub copy SSOT */
+export const T = {
+  benefits: {
+    title: "혜택 · 미션",
+    heroMonthly: "이번 달 받은 보너스",
+    heroClaimable: "받을 혜택",
+    heroPending: "확인 중",
+    dailyReset: "오늘 미션 · {time} 후 리셋",
+    sectionDaily: "오늘",
+    sectionOneTime: "처음 한 번",
+    sectionWeekly: "이번 주",
+    sectionStreak: "연속",
+    statusReleased: "받았어요",
+    statusStart: "시작하기",
+    statusInProgress: "진행 중",
+    statusPending: "확인 중…",
+    statusPoolWait: "보너스 준비 중",
+    statusExpired: "종료됐어요",
+    statusLocked: "준비 중",
+    practiceBadge: "연습",
+    profitBadge: "수익",
+    couponBadge: "수수료 할인",
+    footerInvite: "친구 초대는 여기",
+    footerEvents: "이벤트 더보기",
+    poolWaitNote: "보너스 준비 중이에요. 미션이 취소된 건 아니에요.",
+    noVirtualCurrencyNote: "보너스는 지갑 수익·연습·수수료 할인으로 들어와요.",
+  },
+} as const;

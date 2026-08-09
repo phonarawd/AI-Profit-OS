@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/mission-definition.v1.json",
+  "title": "MissionDefinitionV1",
+  "description": "Money §51.8a · Admin growth?tab=missions · UI §5.9.5 — autoClaim only · manual per-user grant FORBIDDEN",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "section",
+    "titleKo",
+    "bodyKo",
+    "trigger",
+    "reward",
+    "autoClaim",
+    "growthRequired",
+    "capPerUser",
+    "sortOrder",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^(D|M|W|S|MB|C)[0-9]{2,3}$",
+      "description": "Catalog id e.g. D03, M07, W01, S07, MB01"
+    },
+    "section": {
+      "type": "string",
+      "enum": ["daily", "one_time", "weekly", "streak", "membership", "campaign_inline"]
+    },
+    "titleKo": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "bodyKo": { "type": "string", "minLength": 1, "maxLength": 240 },
+    "icon": {
+      "type": "string",
+      "enum": ["bolt", "book", "wallet", "trade", "kyc", "pwa", "inbox", "membership", "campaign"]
+    },
+    "trigger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event"],
+      "properties": {
+        "event": {
+          "type": "string",
+          "description": "Domain event e.g. settlement.completed, deposit.confirmed, guide.usdt.completed"
+        },
+        "predicate": {
+          "type": "object",
+          "description": "Server-evaluated only · client completion FORBIDDEN for money missions"
+        },
+        "dwellSecMin": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Guide missions · server route token required"
+        }
+      }
+    },
+    "reward": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["none", "practice", "promo_profit", "fee_coupon"]
+        },
+        "amountUsdt": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]{1,8})?$"
+        }
+      }
+    },
+    "autoClaim": {
+      "type": "boolean",
+      "const": true,
+      "description": "Must be true · manual claim API without ledger path FORBIDDEN"
+    },
+    "growthRequired": {
+      "type": "boolean",
+      "description": "When true · rewardsEnabled=false → accrual creation 0"
+    },
+    "minDepositUsdt": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]{1,8})?$"
+    },
+    "budgetUsdt": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]{1,8})?$"
+    },
+    "releaseHoldHours": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 168,
+      "description": "Money missions default 24~72h wash guard · 0=immediate after checks"
+    },
+    "capPerUser": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1,
+      "description": "Per period enforced by idempotency · value usually 1"
+    },
+    "sortOrder": { "type": "integer", "minimum": 0 },
+    "deepRoute": {
+      "type": "string",
+      "description": "CTA allowlist route only · e.g. /wallet, /profits/{id}"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "live", "paused", "ended"]
+    },
+    "campaignId": {
+      "type": "string",
+      "description": "When section=campaign_inline · links Money §51.5b campaign"
+    }
+  }
+}

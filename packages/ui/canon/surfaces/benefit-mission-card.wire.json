@@ -1,0 +1,16 @@
+{
+  "id": "benefit-mission-card",
+  "version": "1.0.0",
+  "slots": ["icon", "title", "body", "rewardAmount", "statusLabel", "progressBar", "cta"],
+  "states": [
+    "locked",
+    "available",
+    "in_progress",
+    "pending_hold",
+    "released",
+    "queued_pool",
+    "expired"
+  ],
+  "rewardKinds": ["none", "practice", "promo_profit", "fee_coupon"],
+  "forbidden": ["Credits currency", "casino metaphor", "100% win copy"]
+}

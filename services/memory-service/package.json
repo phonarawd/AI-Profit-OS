@@ -1,0 +1,13 @@
+{
+  "name": "@aipo/memory-service",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Engine §47 Memory — session/long-term summaries + pgvector L1 search helpers",
+  "main": "./src/index.cjs",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": "./src/index.cjs",
+    "./memory": "./src/memory.cjs",
+    "./embed-search": "./src/embed-search.cjs"
+  }
+}

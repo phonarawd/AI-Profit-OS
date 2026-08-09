@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/adapter-matching-kpi.v1.json",
+  "title": "AdapterMatchingKpiV1",
+  "description": "Engine §51.12+§51.15 adapter matching failure KPI · Admin /admin/adapters · Simulation S4 adapterMatchFailureRate input · yahoo Day-1 auto-publish 0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "skuMatchFailureRate",
+    "compareReadyFalseRatio",
+    "adapterMatchFailureRate",
+    "alerts",
+    "reduceAutoPublish",
+    "day1AutoPublishYahooJp",
+    "windowHours",
+    "thresholds"
+  ],
+  "properties": {
+    "skuMatchFailureRate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "SKU match fail rate in rolling window · >0.15 → alert + reduce auto-publish"
+    },
+    "skuAttempts": { "type": "integer", "minimum": 0 },
+    "skuFailures": { "type": "integer", "minimum": 0 },
+    "gradeMismatchCount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "§51.12 grade mismatch subset of SKU failures"
+    },
+    "compareReadyFalseRatio": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": ">0.40 → seed review queue"
+    },
+    "compareReadyFalseCount": { "type": "integer", "minimum": 0 },
+    "catalogTotal": { "type": "integer", "minimum": 0 },
+    "adapterMatchFailureRate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "§51.4 SimulationReport field · S4 ≤0.15"
+    },
+    "windowHours": { "type": "integer", "const": 24 },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "skuMatchFailRateMax",
+        "compareReadyFalseRatioMax",
+        "windowHours",
+        "s4AdapterMatchFailureRateMax"
+      ],
+      "properties": {
+        "skuMatchFailRateMax": { "type": "number", "const": 0.15 },
+        "compareReadyFalseRatioMax": { "type": "number", "const": 0.4 },
+        "windowHours": { "type": "integer", "const": 24 },
+        "s4AdapterMatchFailureRateMax": { "type": "number", "const": 0.15 }
+      }
+    },
+    "alerts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "messageKo", "severity"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["sku_match_fail", "compare_ready_false", "stale_listing"]
+          },
+          "messageKo": { "type": "string", "minLength": 1 },
+          "severity": { "type": "string", "enum": ["yellow", "red"] },
+          "adapterId": { "type": "string" }
+        }
+      }
+    },
+    "reduceAutoPublish": { "type": "boolean" },
+    "seedReviewQueue": { "type": "boolean" },
+    "hideStaleOpps": { "type": "boolean" },
+    "top2Red": { "type": "boolean" },
+    "day1AutoPublishYahooJp": {
+      "type": "boolean",
+      "const": false,
+      "description": "Day-1 auto-publish yahoo_jp = 0"
+    },
+    "stale": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "staleCount": { "type": "integer", "minimum": 0 },
+        "byAdapter": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "staleListingIds": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "anyAdapterRed": { "type": "boolean" }
+      }
+    },
+    "s4": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pass", "threshold", "rate", "failAction"],
+      "properties": {
+        "pass": { "type": "boolean" },
+        "threshold": { "type": "number", "const": 0.15 },
+        "rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "failAction": { "type": "string", "const": "adapter_alert" }
+      }
+    }
+  }
+}

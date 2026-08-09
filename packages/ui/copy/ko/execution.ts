@@ -25,14 +25,18 @@ export const execution = {
 
   progressTitle: "AI가 기회를 찾는 중",
   progressHandsFree: "손댈 것 없음",
+  /** Engine §4.2b · factSource 있을 때만 슬롯 노출 */
   progressWaiters: "현재 대기자 {n}명",
   progressMatchable: "매칭 가능 기회 {n}개",
+  /** executionMode=orchestrate 유저 표기 (실체결/직접입찰 암시 0) */
+  executionModeHint: "AI 자동 처리",
+  executionModeBody: "AI가 조건을 맞춰 처리",
   imageRightsNote: "시세 참고용 · 기회 근거",
   logLine: "{time} {message}",
 
   steps: [
     { key: "confirm", active: "투입 금액 확인 중...", done: "투입 금액 확인" },
-    { key: "quote", active: "시세·조건 확인 중...", done: "시세·조건 확인" },
+    { key: "quote", active: "시세 불러오는 중...", done: "시세·조건 확인" },
     { key: "match", active: "AI 매칭 중...", done: "매칭 완료" },
     { key: "settle", active: "처리·정산 중...", done: "정산 준비" },
     { key: "credit", active: "지갑으로 지급 중...", done: "지갑 지급" },

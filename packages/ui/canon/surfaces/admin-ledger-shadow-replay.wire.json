@@ -1,0 +1,41 @@
+{
+  "id": "admin-ledger-shadow-replay",
+  "route": "/admin/ledger?tab=shadow-replay",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": null, "href": null },
+  "blocks": [
+    { "id": "sidebar", "role": "nav", "copyKey": "T.admin.twelveModules" },
+    {
+      "id": "ledger_tabs",
+      "role": "nav",
+      "copyKey": "T.admin.ledgerTabs",
+      "note": "journal · recon · shadow-replay"
+    },
+    {
+      "id": "shadow_replay_gate",
+      "role": "kpi",
+      "copyKey": "T.admin.shadowReplayGate",
+      "fields": ["driftPct", "pass", "failAction"],
+      "note": "maxDriftPct=0 · FAIL=block_settlement · 24h horizon"
+    },
+    {
+      "id": "shadow_replay_run",
+      "role": "form",
+      "copyKey": "T.admin.shadowReplayRun",
+      "note": "POST /api/v1/admin/shadow-replay/run · AI PICK goldens"
+    },
+    {
+      "id": "shadow_replay_latest",
+      "role": "info",
+      "copyKey": "T.admin.shadowReplayLatest",
+      "note": "GET /api/v1/admin/shadow-replay/latest"
+    }
+  ],
+  "forbidden": [
+    "nonzero_drift_pass",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "sidebar_not_twelve"
+  ]
+}

@@ -1,12 +1,12 @@
 ---
 name: AI Profit OS — Admin & Ops
-overview: "v7.22.39 Admin·§9.1.1(+assets/reserve)·todo의존순(ops→기능→deploy)·Money+Engine계약동기. Index=00."
+overview: "v7.22.40 Admin·§35.4 Organic Hybrid G4·§9.1.1·todo의존순(ops→기능→deploy)·Money+Engine계약동기. Index=00."
 todos:
   - id: admin-ia-child-routes-911
     content: "[grok-4.5|256K] v7.22.33 §9.1.1 자식 route/tab 전수 잠금 · sidebar13 0 · BOOTSTRAP §6 sync · monorepo routes 선행 SSOT"
     status: completed
   - id: admin-ops
-    content: "[composer-2.5|200K] apps/admin 왕초보한글·IT용어0 + 12모듈+2b shell + §9.1.1 routes + TOP5 + wallet(deposit/review/krw-pending/disputes) + growth탭shell + reports/financial shell · 유저360 deep≠여기"
+    content: "[composer-2.5|200K] apps/admin 왕초보한글·IT용어0 + 12모듈+2b shell + §9.1.1 routes + TOP5 + wallet(deposit/review/krw-pending/disputes) + growth탭shell(§35.4 ticker Organic Hybrid 필드 골격) + reports/financial shell · 유저360 deep≠여기"
     status: pending
   - id: admin-user-ops
     content: "[grok-4.5|256K] §37·§39·§9.8.7/8 유저360 + finance KPI(순유입) + referral/attribution/CS 링크 + export + RBAC · verify:admin-user-360"
@@ -57,7 +57,9 @@ isProject: false
 > **v7.22.29~32 pointer:** Soft60/Hard90 · 긴장감 · listing=ebay멀티\|admin · yahoo 영구FORBIDDEN (Owns=Index/Engine · Admin 표시만)  
 > **v7.22.33:** **§9.1.1** 자식 route 전수 · `growth?tab=simulation` · feature-platform 유령 제거 · BOOTSTRAP §6 sync  
 > **v7.22.36:** Index CLOSED · BOOTSTRAP §0 동기=DB**41**·mig**10** · `admin-ops`=shell/TOP5/wallet·growth·reports 골격 · deep=전용 todo · `admin-isolated-deploy` 마지막  
-> **v7.22.37:** Money 실측감사 동기 · `compliance?tab=kyc` 자식 route 잠금 · deposit-settings에 fee/minHolding/sweeper 필드 · Money §0.4 계약표 pointer
+> **v7.22.37:** Money 실측감사 동기 · `compliance?tab=kyc` 자식 route 잠금 · deposit-settings에 fee/minHolding/sweeper 필드 · Money §0.4 계약표 pointer  
+> **v7.22.40:** **§35.4** Organic Hybrid G4 — live우선·침묵메움·24h곡선·지터·실분포금액·마스킹코퍼스·규모레이어 · UI §33.2a · Engine §48.13 ticker fanout **경계만**(Rule 범위0) · DayPulse merge0
+> **v7.22.42:** **§35.7** `growth?tab=missions` · Money §51.8a accrual halt·queued_pool · **유저별 지급 0**
 
 ## 9. Admin — IA 및 구성 SSOT
 
@@ -110,12 +112,14 @@ isProject: false
 | `/admin/growth?tab=referral` | 11 | 초대 Pool·보류·clawback · 인원캡 UI **0** |
 | `/admin/growth?tab=notices` | 11 | 운영 공지 (보상문구 0) |
 | `/admin/growth?tab=campaigns` | 11 | 이벤트/캠페인 |
+| `/admin/growth?tab=missions` | 11 | §51.8a 혜택·미션 카탈로그 · accrual halt · queued_pool |
 | `/admin/growth?tab=share` | 11 | 공유 카드 템플릿 |
 | `/admin/growth?tab=content` | 11 | §35 G1 (기본 OFF) |
 | `/admin/growth?tab=deposit` | 11 | §35 G2 (기본 OFF) |
 | `/admin/growth?tab=whale` | 11 | §35 G3 (기본 OFF) |
 | `/admin/growth?tab=ticker` | 11 | §35 G4 (기본 OFF) |
-| `/admin/ai-logs?tab=coach` | 10 | 퍼뜩 P/G/S Eval·trace |
+| `/admin/growth?tab=partners` | 11 | §38.10 공식 협력사 |
+| `/admin/ai-logs?tab=coach` | 10 | 퍼뜩 P/G/S Eval·trace·degrade (Engine §47.15 · Admin §9.5.7) |
 | `/admin/ai-logs?tab=spotcheck` | 10 | §38.6b 이용성 점검 메모 |
 | `/admin/users/:id` | 6 | 유저360 (§9.8.8) |
 | `/admin/users/:id/finance` | 6 | 순유입·입출금·시세차익 (§9.8.7) |
@@ -142,6 +146,7 @@ isProject: false
 | **유저 입금·출금·시세차익·순유입** | `/admin/users/:id/finance` §39 · §9.8.7 |
 | **유저 360 (추천·유입·CS·등급·prefs)** | `/admin/users/:id` §9.8.8 |
 | 오늘 지급 ticker | `ticker_mode` + `counter_mode` §35 G4 · `/admin/growth?tab=ticker` |
+| **혜택·미션 허브** | `/admin/growth?tab=missions` · Money §51.8a |
 | AI 추천도 | `/admin/ai-logs` (+ Engine feature 계산 · **Admin 모듈 추가 금지**) |
 | Circuit toast | system-control |
 
@@ -240,6 +245,29 @@ isProject: false
 | CAPI 전송 성공률 | marketing-capi-dispatcher logs |
 
 **화면:** `/admin` 돈줄 전광판 하단 "광고에서 온 입금" — **12모듈 sidebar 변경 없음**
+
+#### 9.5.7 AI 분석 — 퍼뜩 Coach (`/admin/ai-logs?tab=coach` · v7.22.43)
+
+> **Owns:** Engine §47.15 (runtime) · 본 절=Admin read/eval UI · **13번째 모듈 추가 금지**
+
+| 블록 | 내용 |
+|------|------|
+| trace 목록 | `lane` P/G/S · `answer_path` · `provider_id` · `provider_effective` · `guard_result` |
+| degrade KPI | 429/rpm/rpd 초과 카운트 · `LLM_PROVIDER=none` 비율 |
+| drill-down | `userId` 필터 · facts_used · tools_called · memory_ids |
+| Eval 큐 | `eval/p_fact.jsonl` · `g_no_money.jsonl` · `s_refuse.jsonl` · Run → Gate PASS/FAIL |
+| OpenAI Prod | Eval PASS 후에만 `LLM_PROVIDER=openai` 권고 배너 · FAIL=Prod 금지 |
+
+**API (read-only · Engine 제공):**
+
+```
+GET /admin/api/v1/ai-logs?tab=coach&lane&provider_id&userId&page
+GET /admin/api/v1/ai-logs/eval/status
+POST /admin/api/v1/ai-logs/eval/run   # existing · eval 3종
+```
+
+**금지:** AI score override(A13) · 출금/지급 mutate CTA · PII export GitHub  
+**CI:** `verify:admin-routes` coach tab · Engine `verify:answer-trace`
 
 ### 9.6 Admin 가격·수익 실시간 연동 (§36)
 
@@ -884,39 +912,135 @@ active → flagged → restricted → frozen → banned
 
 ### 35.4 G4 — 실시간 ticker·counter (`/admin/growth?tab=ticker`)
 
+> **제품 목표 (v7.22.40):** 유저가 **연출(봇) 존재를 눈치채지 않게** 홈이 “전 세계가 쓰는 활기”로 보이게 한다.  
+> **수단:** `hybrid` = **live 뼈대 + 침묵 메움 demo** · 규모 숫자 배너 남발 ❌ · **활동 밀도**로 증명.  
+> **중복0:** 화면·카피·모션 = UI §33.2a · Rule/분개 = Engine §48.13(**ticker 구현 범위 0**) · DayPulse = UI §51.24(**merge 0**).
+
 | 설정 | 값 | UX |
 |------|-----|-----|
 | **`ticker_mode`** | off / live / demo / hybrid | 홈 [A] LivePayoutTicker |
 | **`counter_mode`** | off / ledger / demo / blended | 홈 [F] · Admin TOP4 전광판 |
-| **demo_queue** | CRUD rows | displayName · amount · intervalSec |
-| **blended_ratio** | 0~100% demo | hybrid ticker · blended counter |
-| **hourly_boost** | +N USDT/h | demo counter ramp (optional) |
+| **demo_queue / corpus** | CRUD · **마스킹 라벨만** | `displayNameMasked` · amount · templateKo · intervalSec(기준) |
+| **`blendedDemoPct`** | 0~100 | hybrid=**침묵 메움 예산** · “항상 N% demo” 고정 해석 **금지** |
+| **`hourly_boost`** | +N USDT/h | demo/blended **counter** ramp only (분 단위 UI) |
+| **`intensityCurve`** | 24h KST 프리셋 | 조용/보통/활발 · 피크·심야 비중 (아래 §35.4b) |
+| **`organicCaps`** | perMin / perHour | unbounded demo spam **0** (UI D1) |
 
 ```typescript
+/** 공개 유저 페이로드 — PII 최소 · 클라 마스킹 금지 · schema: public-ticker-event.v1 */
+interface PublicTickerEvent {
+  id: string;                       // settlement_id | demo:{uuid}
+  displayLabel: string;             // 이미 마스킹 ("김*수"|"A***"|"○○○")
+  amountKrwText: string;            // 표시용 · 라운드 남발 금지
+  templateKey: 'just_settled' | 'just_reflected' | 'participant_amt';
+  at: string;                       // ISO-8601
+  // FORBIDDEN in user DTO: email · legalName · userId · raw displayName · kind
+}
+
 interface DemoTickerEvent {
   id: string;
-  displayNameMasked: string;  // "김*수"
+  displayNameMasked: string;        // "김*수" — 원본 실명/이메일 저장 금지
   amountUsdt: Decimal;
   amountKrwProjection?: Decimal;
-  templateKo: string;         // "방금 {name}님이 +{krw}원"
+  templateKo?: string;              // optional override · 기본=templateKey 맵
+  templateKey?: PublicTickerEvent['templateKey'];
+  intervalSec: number;              // 기준 간격 · 실제 emit은 지터(§35.4b)
 }
 
 interface TickerCounterSettings {
   tickerMode: 'off' | 'live' | 'demo' | 'hybrid';
   counterMode: 'off' | 'ledger' | 'demo' | 'blended';
   demoQueue: DemoTickerEvent[];
-  blendedDemoPct: number;     // 0~100
+  displayCorpus: string[];          // 200~500 사전 마스킹 라벨 (한/영/기타)
+  blendedDemoPct: number;           // 0~100 · 침묵 메움 상한
   demoCounterBase: Decimal;
   demoCounterHourlyBoost?: Decimal;
+  intensityPreset: 'quiet' | 'normal' | 'lively';
+  intensityCurve?: number[];        // length 24 · 0~1 가중(KST hour) · 없으면 preset
+  organicCaps: { perMin: number; perHour: number };
+  amountSampleFromLiveDist: boolean; // true=최근7일 실정산 히스토그램 샘플
   enabled: boolean;
 }
 ```
 
-**운영 규칙:**
-- `live` = settlement SSE only (default 출시)
+**운영 규칙 (공통):**
+- Growth master OFF → 유저 ticker/campaign 노출 **0**
+- `live` = `settlement.completed` 투영 only (출시 기본 후보)
 - `demo`/`hybrid` ON → `audit.events` `admin.growth.ticker.enabled` · reason≥10
 - **ledger reconciliation** = ledger only (UI blend ≠ 장부)
-- empty demo queue + demo mode → hide ticker or show Admin placeholder
+- empty corpus/queue + `demo` → 티커 숨김 또는 Admin placeholder only
+- 유저 클라에 `kind=demo|live` **미노출**(운영 관측·audit만)
+- Admin 미리보기 = 유저 `LivePayoutTicker` **동일 컴포넌트**
+- 고정 경고(ko): `장부 숫자와 달라요 · 오늘 요약(DayPulse)에 합치지 않아요`
+
+#### 35.4a 신원·마스킹 SSOT (오차0)
+
+| 항목 | 잠금 |
+|------|------|
+| 프로필 호칭 필드 | **`displayName`** only · `nickname` 컬럼 **0** (Infra §51.9.1 · `user-profile.v1`) |
+| email | 가입/연락/Admin 검색 · **티커·리더보드 공개 0** |
+| legalName | KYC only · 티커 소스 **조인 금지** |
+| live 라벨 | Nest `maskDisplayLabel(displayName)` → `displayLabel` · 실패/`@`포함 → `○○○` |
+| demo 라벨 | corpus/`displayNameMasked` only · 실유저 테이블 샘플링 **금지**(privacy) |
+| 리더보드 | `leaderboardMasked` → **동일 mask 함수** · description의 nicknames=`displayName` 라벨 의미 |
+
+**mask 규칙 (서버 유틸 1곳):** 한글2=`가*` · 한글3+=`김*수` · 영문=`A***` · email형태=`○○○`
+
+#### 35.4b Organic Hybrid 스케줄러 (봇 티 0 목표)
+
+> Phase0 = Nest **in-process** DemoScheduler · 별도 봇 마이크로서비스 **0**
+
+| 규칙 | 잠금 |
+|------|------|
+| **Live 우선** | 최근 N초(기본 15~30)에 live emit 있으면 **demo 억제** |
+| **침묵 메움** | live 공백 > T초일 때만 demo 1건 · `blendedDemoPct`·`organicCaps` 내 |
+| **24h 곡선** | KST hour 가중 · 심야↓ · 점심/저녁 피크↑ · **24h 풀스로틀 금지** |
+| **지터** | `intervalSec` ±35~60% · 최근 10건 동일 template/금액대/라벨 **금지** |
+| **금액** | `amountSampleFromLiveDist=true`면 7일 실정산 버킷 샘플 · 예쁜 라운드(`100000`) 남발 금지 · whale급 티커 희소 |
+| **자기 효능** | 본인 `settlement.completed`는 마스킹 후 **live ring에 반드시** 포함 |
+| **탐지 방어** | 규칙 간격·동일문구·항상 큰 금액·티커↑+DayPulse 숫자 맞추기(merge) = **결함** |
+
+**출시 롤아웃 (권장 운영 순서 · 강제 게이트 아님):** W0 Growth OFF → W1 `hybrid`+낮은 메움+저녁피크 → W2 실정산↑시 demo↓ → W3 G1 규모 1문장 → W4 G2 랜딩 variant.
+
+#### 35.4c 글로벌 규모감 레이어 (슬롯 분리 · 중복0)
+
+| 층 | Owns surface | 잠금 |
+|----|--------------|------|
+| 1 활동 밀도 | G4 ticker hybrid | 매일 체감 주력 |
+| 2 시장 사실 | Engine listing LabelKo | “해외 시세” 증명 · FOMO 수치 아님 |
+| 3 World Pulse strip | UI 홈 옵션 · flag | 도시명 스크롤만 · **숫자 0** · 기본 OFF 가능 |
+| 4 입금 FOMO | G2 | 랜딩/온보딩 · 홈 상시 배너 ❌ |
+| 5 규모 문장 | G1 **또는** 랜딩 3s **1곳만** | `100만` 직접 주장 토글 · 티커 본문에 100만 문구 **0** |
+| 6 공유 OG | `growth?tab=share` | 외부 전파 |
+
+**금지:** 티커 줄에 `전 세계 100만` · 실행실 대기 N · DayPulse에 demo merge · 카지노 SFX · notice본문에 G1/G2 합침(ADR-012)
+
+#### 35.4d Admin ticker 탭 UI (왕초보 한글)
+
+| 컨트롤 | 라벨(ko) |
+|--------|----------|
+| mode | 끔 / 실제만 / 연출만 / 섞기 |
+| intensity | 활기: 조용 / 보통 / 활발 |
+| blendedDemoPct | 빈 시간 메움 상한 |
+| corpus/queue | 표시 이름(마스킹) · 금액 · 간격 · 미리보기 |
+| monitor | 최근 유저 화면 20줄 (라벨·금액·시각만) |
+
+**RBAC:** growth|marketing · finance 역할로 ledger 숫자 편집 **0**
+
+#### 35.4e 파이프·스키마·CI
+
+```text
+MATCH_SUCCESS → settlement.completed (ledger 즉시 · Engine §48.13)
+  → Nest PublicTickerEvent 투영(async · 실패해도 분개 불변)
+  → Redis ring(max 50) + SSE/WS batch(§29 tier)
+DemoScheduler → 동일 ring (user DTO에 kind 미포함)
+apps/web LivePayoutTicker ← UI §33.2a
+```
+
+| 산출 | 경로 |
+|------|------|
+| schema | `schemas/public-ticker-event.v1.json` (Admin/Infra schemas todo) |
+| CI | `verify:ticker-mode-audit` · `verify:ticker-pii-0` · `verify:ticker-organic-hybrid` · `verify:day-pulse-live-only` · `verify:admin-growth-tabs` |
 
 ### 35.5 Admin Growth 스키마 (통합)
 
@@ -943,14 +1067,16 @@ interface GrowthConversionSettings {
 | `content` | G1 FOMO · synthetic 연혁 | ON/OFF · seed · **notice와 분리** |
 | `notices` | **운영 공지 CRUD** (§51.5b) | draft→schedule→live · push · 금지어 CI |
 | `campaigns` | **이벤트/캠페인 마법사** | budget · reward kind · allowlist CTA · kill |
+| `missions` | **혜택·미션 카탈로그** (§51.8a) | D/M/W/S catalog CRUD · budget · releaseHold · accrualHalt · queued_pool 큐 · **유저별 지급 버튼 0** |
 | `deposit` | G2 FOMO | landing variants |
 | `whale` | G3 | VIP desk |
-| `ticker` | G4 | demo/hybrid · audit · **DayPulse 편집 UI 금지**(§51.24) |
+| `ticker` | G4 Organic Hybrid | mode·활기곡선·메움상한·corpus · audit · **DayPulse 편집 UI 금지**(§51.24 · §35.4) |
 | `referral` | Viral Ladder · 시즌 · 티어 | **rewardsEnabled** · %/캡 · Pool top-up · **보류·queued_pool 큐** · clawback · accrual halt · **월간초대캡 필드 0** |
 | `share` | OG/공유 카드 템플릿 | 4종 미리보기 · sharePerUserPerDay · 워터마크 · safeStopToday 개인화 **0** |
+| `partners` | **§38.10 공식 협력사** | Tier-A 순서·ON/OFF · 로고=Brand markets manifest only · audit |
 
 **TOP widgets (기존 TOP 영역 하위 링크 · 모듈 추가 금지):**  
-- 초대 보류 N · queued_pool N · 캠페인 예산 % · Promo Pool 잔액 · notice 예약 N
+- 초대 보류 N · queued_pool N · **미션 queued_pool N** · 캠페인 예산 % · Promo Pool 잔액 · notice 예약 N
 
 **보류 큐 (referral hold):**  
 `held_risk` · `queued_pool` edges · 1-click release/clawback · reason≥10 · RBAC=risk|finance  
@@ -959,7 +1085,23 @@ interface GrowthConversionSettings {
 
 **Admin toast (평문):** 「초대 보너스를 보류했어요」·「보너스 지급을 잠시 멈췄어요」·「캠페인 예산을 멈췄어요」·「공지를 올렸어요」
 
-**CI:** `verify:admin-growth-tabs` · `verify:notice-campaign-split` · `verify:referral-hold-queue` · `verify:referral-unlimited-invites`
+**CI:** `verify:admin-growth-tabs` · `verify:notice-campaign-split` · `verify:referral-hold-queue` · `verify:referral-unlimited-invites` · `verify:ticker-mode-audit` · `verify:ticker-pii-0` · `verify:ticker-organic-hybrid` · `verify:mission-no-manual-grant`
+
+### 35.7 Mission Hub Ops (v7.22.42 · Admin Owns · Money §51.8a pointer)
+
+> **Route:** `/admin/growth?tab=missions` · sidebar 13 **0**  
+> **≠** referral L2/L3 · **≠** campaign long-form(→`tab=campaigns`) · **≠** notice
+
+**화면 블록:**
+- 카탈로그 테이블: id · section · titleKo · reward · status · sortOrder
+- 미션 편집: trigger event · predicate JSON · amount · budget · releaseHoldHours · growthRequired · deepRoute allowlist
+- **accrual halt** 토글 (audit reason≥10) · Promo Pool 잔액 read-only
+- 큐: `pending_hold` · `queued_pool` · 1-click clawback (reason≥10 · RBAC risk|finance)
+- simulation dry-run hook (§51.4) — mission budget stress optional
+
+**금지 UI:** 「유저에게 보너스 지급」 per-user · Credits 잔액 · practice→profit toggle
+
+**Admin toast:** 「미션 보너스 지급을 잠시 멈췄어요」·「미션 예산이 마감됐어요」
 
 ---
 

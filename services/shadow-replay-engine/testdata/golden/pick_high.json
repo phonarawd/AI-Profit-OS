@@ -1,0 +1,37 @@
+{
+  "id": "pick_high",
+  "input": {
+    "now": "2026-08-09T12:00:00.000Z",
+    "user": {
+      "userId": "u1",
+      "preferredCapitalBand": "micro",
+      "categoryInterest": [
+        "watch"
+      ],
+      "aiPerkFlags": [
+        "ai_pick_boost"
+      ]
+    },
+    "market": {
+      "compareReady": true,
+      "staleAt": "2026-08-09T14:00:00.000Z",
+      "capitalBand": "micro",
+      "category": "watch",
+      "adapterFreshness01": 1
+    },
+    "opportunity": {
+      "opportunityId": "opp_high",
+      "expectedProfitUsdt": "30",
+      "minProfitUsdt": "5",
+      "capitalBand": "micro",
+      "compareReady": true
+    }
+  },
+  "expected": {
+    "aiConfidenceScore": 100,
+    "isAiPick": true,
+    "tags": [
+      "ai_pick"
+    ]
+  }
+}

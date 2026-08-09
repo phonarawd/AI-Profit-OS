@@ -52,7 +52,24 @@ const imageSource = {
 const marketId = {
   type: "string",
   enum: ["ebay_us", "ebay_gb", "ebay_de", "ebay_au", "admin"],
-  description: "yahoo_jp FORBIDDEN",
+  description: "Day-1 pricing enum · yahoo_jp/amazon Phase1+ partner registry (§0.0.1c)",
+};
+
+const listingMarketId = {
+  type: "string",
+  enum: [
+    "ebay_us",
+    "ebay_gb",
+    "ebay_de",
+    "ebay_au",
+    "admin",
+    "amazon_us",
+    "amazon_jp",
+    "amazon_de",
+    "yahoo_jp",
+  ],
+  description:
+    "Day-1 auto-publish ebay_*|admin · amazon_*/yahoo_jp Phase1+ partner (§0.0.1c)",
 };
 
 const kycStatus = {
@@ -897,6 +914,135 @@ written.push(
 
 written.push(
   write(
+    "listing.v1.json",
+    meta(
+      "listing.v1.json",
+      "ListingV1",
+      "Engine §0.0.1a listing leg · Day-1 auto-publish=ebay marketplaceId×N|admin · Phase1+ partner legs=amazon_*|yahoo_jp (§0.0.1c).",
+      {
+        type: "object",
+        additionalProperties: false,
+        required: [
+          "id",
+          "assetId",
+          "marketId",
+          "adapterId",
+          "priceUsdt",
+          "observedAt",
+          "staleAt",
+        ],
+        properties: {
+          id: uuidLike,
+          assetId: uuidLike,
+          marketId: listingMarketId,
+          adapterId: {
+            type: "string",
+            enum: ["ebay", "admin", "amazon", "yahoo_jp"],
+            description:
+              "Day-1 auto-publish ebay|admin · amazon/yahoo_jp Phase1+ official partners",
+          },
+          marketplaceId: {
+            type: "string",
+            enum: ["EBAY_US", "EBAY_GB", "EBAY_DE", "EBAY_AU"],
+          },
+          externalItemId: { type: "string" },
+          title: { type: "string" },
+          priceUsdt: decimal,
+          currency: { type: "string" },
+          url: { type: "string" },
+          imageUrl: { type: "string" },
+          observedAt: iso8601,
+          staleAt: iso8601,
+        },
+      }
+    )
+  )
+);
+
+written.push(
+  write(
+    "price-observation.v1.json",
+    meta(
+      "price-observation.v1.json",
+      "PriceObservationV1",
+      "Engine §0.0.1a PriceObservation.source · catalog refs allowed · Day-1 listing auto-publish requires ebay|admin legs · amazon/yahoo_jp Phase1+ partner (§0.0.1c).",
+      {
+        type: "object",
+        additionalProperties: false,
+        required: ["id", "assetId", "source", "observedAt"],
+        properties: {
+          id: uuidLike,
+          assetId: uuidLike,
+          source: {
+            type: "string",
+            enum: [
+              "ebay",
+              "admin",
+              "pokemontcg",
+              "ygoprodeck",
+              "coingecko",
+              "frankfurter",
+              "amazon",
+              "yahoo_jp",
+            ],
+            description:
+              "Day-1 auto-publish listing legs=ebay|admin · amazon/yahoo_jp=Phase1+ partner ingest",
+          },
+          marketplaceId: {
+            type: "string",
+            enum: ["EBAY_US", "EBAY_GB", "EBAY_DE", "EBAY_AU"],
+          },
+          priceUsdt: decimal,
+          currency: { type: "string" },
+          observedAt: iso8601,
+          meta: { type: "object" },
+        },
+      }
+    )
+  )
+);
+
+written.push(
+  write(
+    "fx-snapshot.v1.json",
+    meta(
+      "fx-snapshot.v1.json",
+      "FxSnapshotV1",
+      "Engine §0.0.4.2 FX snapshot · formulaId cg_usdt_krw | cg_usdt_usd__frank_usd_krw. NEVER: yahoo_jp · mixed-time rates.",
+      {
+        type: "object",
+        additionalProperties: false,
+        required: [
+          "fxSnapshotId",
+          "formulaId",
+          "sources",
+          "usdtKrw",
+          "capturedAt",
+        ],
+        properties: {
+          fxSnapshotId: uuidLike,
+          formulaId: {
+            type: "string",
+            enum: ["cg_usdt_krw", "cg_usdt_usd__frank_usd_krw"],
+          },
+          sources: {
+            type: "array",
+            minItems: 1,
+            items: { type: "string", enum: ["coingecko", "frankfurter"] },
+            description: "yahoo_jp FORBIDDEN",
+          },
+          usdtKrw: decimal,
+          usdtUsd: decimal,
+          usdKrwFrank: decimal,
+          capturedAt: iso8601,
+        },
+      }
+    )
+  )
+);
+
+written.push(
+  write(
     "opportunity-pricing.v1.json",
     meta(
       "opportunity-pricing.v1.json",
@@ -1211,6 +1357,21 @@ written.push(
           dailyOppSlotsDefault: { type: "integer", minimum: 0 },
           autoCancelOnShortfall: { type: "boolean" },
           membershipBandOverlayEnabled: { type: "boolean" },
+          feed: {
+            type: "object",
+            additionalProperties: false,
+            description:
+              "Engine §0.0.5.1 balance-aware feed · nearMissCap SSOT (adapters MUST NOT own this)",
+            required: ["nearMissCapUsdt"],
+            properties: {
+              nearMissCapUsdt: {
+                type: "string",
+                pattern: "^[0-9]+(\\.[0-9]+)?$",
+                description:
+                  "Absolute USDT near-miss window · Day-1 default resolve = max(50, principal×0.25) when policy absent",
+              },
+            },
+          },
           presentation: {
             type: "object",
             additionalProperties: false,
@@ -1556,6 +1717,87 @@ written.push(
           feasibility: {
             type: "array",
             items: { $ref: "#/$defs/SimulationFeasibility" },
+          },
+        },
+      }
+    )
+  )
+);
+
+written.push(
+  write(
+    "simulation-gate.v1.json",
+    meta(
+      "simulation-gate.v1.json",
+      "SimulationGateV1",
+      "Engine §51.4 M0.5 S1~S4 gate evaluation (+ Growth ON eligibility).",
+      {
+        type: "object",
+        additionalProperties: false,
+        required: ["s1", "s2", "s3", "s4", "overallPass", "thresholds"],
+        properties: {
+          s1: {
+            type: "object",
+            required: ["id", "pass", "failAction"],
+            properties: {
+              id: { const: "S1" },
+              pass: { type: "boolean" },
+              failAction: { const: "block_publish" },
+              totalMismatch: { type: "number" },
+              threshold: { type: "number" },
+            },
+          },
+          s2: {
+            type: "object",
+            required: ["id", "pass", "failAction"],
+            properties: {
+              id: { const: "S2" },
+              pass: { type: "boolean" },
+              failAction: { const: "admin_alert" },
+              reason: { type: "string" },
+              drainUsdt: decimal,
+              reserveUsdt: { type: ["string", "null"] },
+              maxAllowedUsdt: { type: ["string", "null"] },
+              thresholdPct: { const: "0.10" },
+            },
+          },
+          s3: {
+            type: "object",
+            required: ["id", "pass", "failAction", "threshold"],
+            properties: {
+              id: { const: "S3" },
+              pass: { type: "boolean" },
+              failAction: { const: "hide_feed" },
+              score: { type: ["number", "null"] },
+              threshold: { const: 0.85 },
+            },
+          },
+          s4: {
+            type: "object",
+            required: ["id", "pass", "failAction", "threshold"],
+            properties: {
+              id: { const: "S4" },
+              pass: { type: "boolean" },
+              failAction: { const: "adapter_alert" },
+              rate: { type: ["number", "null"] },
+              threshold: { const: 0.15 },
+            },
+          },
+          overallPass: { type: "boolean" },
+          thresholds: {
+            type: "object",
+            required: [
+              "s2ReserveDrainMaxPct",
+              "s3PayoutFeasibilityMin",
+              "s4AdapterMatchFailureRateMax",
+              "growthPassMaxAgeHours",
+            ],
+            properties: {
+              s2ReserveDrainMaxPct: { const: "0.10" },
+              s3PayoutFeasibilityMin: { const: 0.85 },
+              s4AdapterMatchFailureRateMax: { const: 0.15 },
+              growthPassMaxAgeHours: { const: 24 },
+            },
           },
         },
       }

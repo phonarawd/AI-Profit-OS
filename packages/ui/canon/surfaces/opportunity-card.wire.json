@@ -18,10 +18,24 @@
       "copyKey": "T.opportunity.badgeMatchable"
     },
     {
+      "id": "arbitrageTypeBadge",
+      "role": "badge",
+      "field": "arbitrageTypeKo",
+      "note": "Engine §4.2a 투영 · UI type→ko 맵 금지"
+    },
+    {
       "id": "corridor",
       "role": "heading",
       "copyKey": "T.opportunity.corridor",
       "note": "arbitrageTypeKo from Engine §4.2a · UI map 금지"
+    },
+    {
+      "id": "productThumb",
+      "role": "media",
+      "field": "assetImageUrl",
+      "fallbackIconField": "assetIcon",
+      "copyKey": "T.execution.imageRightsNote",
+      "note": "Engine §0.0.6 · UI §48.3a · SKU 1:1 실물 썸네일"
     },
     {
       "id": "assetLabel",
@@ -46,6 +60,20 @@
       "role": "metric",
       "copyKey": "T.opportunity.labelAiConfidence",
       "field": "aiConfidenceScore"
+    },
+    {
+      "id": "priceCompareLow",
+      "role": "compare",
+      "copyKey": "T.opportunity.labelPriceLow",
+      "field": "buyPriceUsdt",
+      "note": "Engine §4.2b · 저가 시세 · 매입가 금지"
+    },
+    {
+      "id": "priceCompareHigh",
+      "role": "compare",
+      "copyKey": "T.opportunity.labelPriceHigh",
+      "field": "sellPriceUsdt",
+      "note": "Engine §4.2b · 고가 시세 · 판매가 금지"
     },
     {
       "id": "badgeNoBuy",
@@ -86,6 +114,8 @@
     "gender_branch",
     "success_rate_percent",
     "sell_success_rate_user",
+    "매입가",
+    "판매가",
     "photo_pixel_match",
     "non_brand_logo"
   ]

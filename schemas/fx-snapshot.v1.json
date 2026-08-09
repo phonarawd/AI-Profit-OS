@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/fx-snapshot.v1.json",
+  "title": "FxSnapshotV1",
+  "description": "Engine §0.0.4.2 FX snapshot · formulaId cg_usdt_krw | cg_usdt_usd__frank_usd_krw. NEVER: yahoo_jp · mixed-time rates.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "fxSnapshotId",
+    "formulaId",
+    "sources",
+    "usdtKrw",
+    "capturedAt"
+  ],
+  "properties": {
+    "fxSnapshotId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "formulaId": {
+      "type": "string",
+      "enum": ["cg_usdt_krw", "cg_usdt_usd__frank_usd_krw"]
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["coingecko", "frankfurter"]
+      },
+      "description": "yahoo_jp FORBIDDEN"
+    },
+    "usdtKrw": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "usdtUsd": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "usdKrwFrank": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "capturedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

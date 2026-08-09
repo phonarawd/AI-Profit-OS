@@ -5,6 +5,7 @@ import { invite } from "./invite";
 import { kyc } from "./kyc";
 import { operator } from "./operator";
 import { opportunity } from "./opportunity";
+import { peotteok } from "./peotteok";
 import { practice } from "./practice";
 import {
   principalGuide,
@@ -24,6 +25,7 @@ export const T = {
   kyc,
   operator,
   opportunity,
+  peotteok,
   practice,
   wallet,
   walletBuckets,
@@ -42,6 +44,7 @@ export {
   kyc,
   operator,
   opportunity,
+  peotteok,
   practice,
   principalGuide,
   principalProfit,

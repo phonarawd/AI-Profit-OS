@@ -31,6 +31,8 @@
         "referral_clawback",
         "practice_grant",
         "practice_expire",
+        "mission_reward",
+        "mission_clawback",
         "fee",
         "other"
       ]

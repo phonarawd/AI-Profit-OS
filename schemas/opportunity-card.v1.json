@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ai-profit-os.local/schemas/opportunity-card.v1.json",
   "title": "OpportunityCardV1",
-  "description": "Engine §4.1 · available requires assetImageUrl+compareReady. NEVER: yahoo_jp · executionMode≠orchestrate · sellSuccessRate as Rule.",
+  "description": "Engine §4.1 · available requires assetImageUrl+compareReady. Day-1 listing ebay_*|admin · yahoo_jp/amazon Phase1+ partner (§0.0.1c) · executionMode≠orchestrate · sellSuccessRate as Rule.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -124,7 +124,7 @@
       "items": {
         "type": "string"
       },
-      "description": "INTERNAL · ebay_*|admin only · yahoo_jp FORBIDDEN · user UI 0"
+      "description": "INTERNAL · Day-1 ebay_*|admin only · yahoo_jp/amazon Phase1+ partner · user UI 0"
     },
     "category": {
       "type": "string",

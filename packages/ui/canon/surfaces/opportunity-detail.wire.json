@@ -17,6 +17,12 @@
       "copyKey": "T.opportunity.badgeMatchable"
     },
     {
+      "id": "arbitrageTypeBadge",
+      "role": "badge",
+      "field": "arbitrageTypeKo",
+      "note": "Engine §4.2a 투영 · UI type→ko 맵 금지"
+    },
+    {
       "id": "corridor",
       "role": "heading",
       "copyKey": "T.opportunity.corridor"
@@ -46,7 +52,28 @@
     {
       "id": "historical",
       "role": "note",
-      "copyKey": "T.opportunity.historicalMatchHint"
+      "copyKey": "T.opportunity.historicalMatchHint",
+      "note": "sellSuccessRate 표시 · 「판매 성공률」금지 · Engine §4.2b"
+    },
+    {
+      "id": "priceCompareLow",
+      "role": "compare",
+      "copyKey": "T.opportunity.labelPriceLow",
+      "field": "buyPriceUsdt",
+      "note": "Engine §4.2b · 저가 시세"
+    },
+    {
+      "id": "priceCompareHigh",
+      "role": "compare",
+      "copyKey": "T.opportunity.labelPriceHigh",
+      "field": "sellPriceUsdt",
+      "note": "Engine §4.2b · 고가 시세"
+    },
+    {
+      "id": "executionModeHint",
+      "role": "note",
+      "copyKey": "T.execution.executionModeHint",
+      "note": "executionMode=orchestrate 유저 표기"
     },
     {
       "id": "badgeNoBuy",
@@ -79,6 +106,7 @@
     "sell_cta",
     "bid_cta",
     "expected_sell_days",
+    "labelExpectedTurn_user_slot",
     "execution_platforms_user",
     "이_상품으로_수익_벌기",
     "구매하기",
@@ -86,6 +114,9 @@
     "매칭_참여_as_primary",
     "gender_branch",
     "success_rate_percent",
+    "sell_success_rate_user",
+    "매입가",
+    "판매가",
     "photo_pixel_match",
     "non_brand_logo"
   ]

@@ -1,0 +1,41 @@
+{
+  "id": "admin-system-control-reserve",
+  "route": "/admin/system-control?tab=reserve",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": null, "href": null },
+  "blocks": [
+    { "id": "sidebar", "role": "nav", "copyKey": "T.admin.twelveModules" },
+    {
+      "id": "system_tabs",
+      "role": "nav",
+      "copyKey": "T.admin.systemControlTabs",
+      "note": "circuit · reserve"
+    },
+    {
+      "id": "target_usdt",
+      "role": "form",
+      "copyKey": "T.admin.platformReserveTarget",
+      "field": "targetUsdt",
+      "note": "Engine §0.0.4.3 · ops.platform_reserve_usdt · PUT /admin/system-control/reserve"
+    },
+    {
+      "id": "s2_hint",
+      "role": "info",
+      "copyKey": "T.admin.platformReserveS2",
+      "note": "worstCasePlatformDrain ≤ target × 10% · unset → Growth ON 0 · S2 Fail"
+    },
+    {
+      "id": "audit",
+      "role": "list",
+      "copyKey": "T.admin.platformReserveAudit",
+      "note": "GET /admin/system-control/reserve/audit · changeReason≥4"
+    }
+  ],
+  "forbidden": [
+    "unset_reserve_growth_on",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "sidebar_not_twelve"
+  ]
+}

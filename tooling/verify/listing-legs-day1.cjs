@@ -1,8 +1,9 @@
 /**
- * verify:listing-legs-day1 — Engine §0.0.1a / §0.0.2 (v7.22.32)
- * Day-1 listing = ebay 멀티 marketplace | admin only
- * yahoo_jp / Yahoo / 야후 / YAHOO_* / yahoo-jp-adapter = FORBIDDEN
+ * verify:listing-legs-day1 — Engine §0.0.1a (v7.22.41)
+ * Day-1 auto-publish listing = ebay 멀티 marketplace | admin only
+ * amazon/yahoo_jp = official partners · Phase1+ adapters (verify:market-partner-adapters)
  * KR C2C / Chrono24 as listing adapters = FORBIDDEN
+ * User copy in packages/ui/copy + apps/web: Yahoo/야후 still gated until UI §38.10 todo
  */
 const fs = require("fs");
 const path = require("path");
@@ -24,7 +25,8 @@ function walkFiles(dir, exts, out = []) {
   for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, ent.name);
     if (ent.isDirectory()) {
-      if (ent.name === "node_modules" || ent.name === ".git" || ent.name === "dist") continue;
+      if (ent.name === "node_modules" || ent.name === ".git" || ent.name === "dist")
+        continue;
       walkFiles(full, exts, out);
     } else if (exts.some((e) => ent.name.endsWith(e))) {
       out.push(full);
@@ -33,11 +35,8 @@ function walkFiles(dir, exts, out = []) {
   return out;
 }
 
-// --- workers ---
+// --- workers: Day-1 signup-ready required · partner Phase1+ allowed ---
 const workersDir = path.join(root, "workers");
-if (fs.existsSync(path.join(workersDir, "yahoo-jp-adapter"))) {
-  fails.push("workers/yahoo-jp-adapter must not exist (FORBIDDEN)");
-}
 const requiredAdapters = [
   "ebay-adapter",
   "pokemontcg-adapter",
@@ -57,35 +56,34 @@ for (const banned of ["rolex-adapter", "chrono24-adapter", "tcgplayer-adapter"])
 }
 
 const workersReadme = read("workers/README.md");
-if (workersReadme && !/yahoo-jp-adapter/.test(workersReadme)) {
-  fails.push("workers/README.md must document yahoo-jp-adapter FORBIDDEN");
-}
-if (workersReadme && !/FORBIDDEN/.test(workersReadme)) {
-  fails.push("workers/README.md must mark yahoo-jp FORBIDDEN");
+if (workersReadme) {
+  if (!/amazon-adapter/.test(workersReadme) || !/yahoo-jp-adapter/.test(workersReadme)) {
+    fails.push("workers/README.md must document amazon-adapter + yahoo-jp-adapter Phase1+");
+  }
+  if (!/Day-1|ebay/.test(workersReadme)) {
+    fails.push("workers/README.md must keep Day-1 ebay listing note");
+  }
 }
 
-// --- .env.example: no YAHOO_* assignment slots ---
+// --- .env.example: Day-1 auto-publish ebay|admin · partner keys optional Phase1+ ---
 const envEx = read(".env.example");
 if (envEx) {
-  const assignLines = envEx
-    .split(/\r?\n/)
-    .filter((l) => /^\s*YAHOO_[A-Z0-9_]+\s*=/.test(l));
-  if (assignLines.length) {
-    fails.push(`.env.example must not define YAHOO_* keys: ${assignLines.join(" | ")}`);
+  if (!/Day-1|ebay/.test(envEx)) {
+    fails.push(".env.example must document Day-1 ebay listing");
   }
-  if (!/yahoo_jp\s*=\s*영구 FORBIDDEN|yahoo_jp.*FORBIDDEN/i.test(envEx)) {
-    fails.push(".env.example must document yahoo_jp FORBIDDEN");
+  if (!/amazon|yahoo_jp|Phase1\+/i.test(envEx)) {
+    fails.push(".env.example must document Phase1+ amazon/yahoo_jp partners");
   }
 }
 
-// --- schemas: marketId enum ---
+// --- schemas: Day-1 opportunity-pricing marketId enum ---
 const pricingPath = "schemas/opportunity-pricing.v1.json";
 const pricingRaw = read(pricingPath);
 if (pricingRaw) {
   let pricing;
   try {
     pricing = JSON.parse(pricingRaw);
-  } catch (e) {
+  } catch {
     fails.push(`${pricingPath} invalid JSON`);
     pricing = null;
   }
@@ -97,7 +95,12 @@ if (pricingRaw) {
         fails.push(`${pricingPath} ${key}.enum missing`);
         continue;
       }
-      if (en.includes("yahoo_jp")) fails.push(`${key} enum must not include yahoo_jp`);
+      if (en.includes("yahoo_jp")) {
+        fails.push(`${key} Day-1 enum must not include yahoo_jp`);
+      }
+      if (en.includes("amazon_us")) {
+        fails.push(`${key} Day-1 enum must not include amazon_*`);
+      }
       for (const id of allowed) {
         if (!en.includes(id)) fails.push(`${key} enum missing ${id}`);
       }
@@ -109,12 +112,13 @@ if (pricingRaw) {
 }
 
 const cardRaw = read("schemas/opportunity-card.v1.json");
-if (cardRaw && /yahoo_jp/.test(cardRaw) === false) {
-  // description SHOULD mention FORBIDDEN — soft require
-  fails.push("opportunity-card.v1.json must mention yahoo_jp FORBIDDEN in description");
+if (cardRaw && !/ebay_\*|admin|yahoo_jp/.test(cardRaw)) {
+  fails.push(
+    "opportunity-card.v1.json must mention ebay|admin listing / yahoo_jp phase note",
+  );
 }
 
-// --- migration guard ---
+// --- migration guard (Day-1 pricing table) ---
 const mig = read("supabase/migrations/20260808205850_opportunities_pricing.sql");
 if (mig) {
   if (!/yahoo_jp/.test(mig)) {
@@ -125,7 +129,7 @@ if (mig) {
   }
 }
 
-// --- user-facing copy: 야후 / Yahoo / yahoo_jp = 0 ---
+// --- user-facing copy: 야후 / Yahoo / yahoo_jp = 0 until UI §38.10 trust todo ---
 const copyRoot = path.join(root, "packages/ui/copy");
 const copyFiles = walkFiles(copyRoot, [".ts", ".tsx", ".json"]);
 const bannedCopy = [/야후/, /\bYahoo\b/, /yahoo_jp/i, /yahoo-jp/i];
@@ -133,12 +137,13 @@ for (const file of copyFiles) {
   const text = fs.readFileSync(file, "utf8");
   for (const re of bannedCopy) {
     if (re.test(text)) {
-      fails.push(`user copy FORBIDDEN match ${re} in ${path.relative(root, file)}`);
+      fails.push(
+        `user copy gated match ${re} in ${path.relative(root, file)} (UI §38.10 todo)`,
+      );
     }
   }
 }
 
-// --- apps/web surface strings (if any) ---
 const webRoot = path.join(root, "apps/web");
 if (fs.existsSync(webRoot)) {
   const webFiles = walkFiles(webRoot, [".ts", ".tsx"]);
@@ -146,13 +151,15 @@ if (fs.existsSync(webRoot)) {
     const text = fs.readFileSync(file, "utf8");
     for (const re of bannedCopy) {
       if (re.test(text)) {
-        fails.push(`apps/web FORBIDDEN match ${re} in ${path.relative(root, file)}`);
+        fails.push(
+          `apps/web gated match ${re} in ${path.relative(root, file)} (UI §38.10 todo)`,
+        );
       }
     }
   }
 }
 
-// --- Engine plan SSOT still locks ebay|admin listing (pointer integrity) ---
+// --- Engine plan SSOT: Day-1 ebay|admin + partner registry ---
 const enginePlan = path.join(
   root,
   ".cursor/plans/ai_profit_os_02_engine_b2c3d4e5.plan.md",
@@ -162,9 +169,28 @@ if (fs.existsSync(enginePlan)) {
   if (!/ebay_us/.test(plan) || !/ebay_gb/.test(plan)) {
     fails.push("Engine plan must lock ebay_us/ebay_gb market ids");
   }
-  if (!/영구 배제|FORBIDDEN/.test(plan) || !/yahoo_jp/.test(plan)) {
-    fails.push("Engine plan must keep yahoo_jp FORBIDDEN lock");
+  if (!/0\.0\.1c|Market Partner Registry/.test(plan)) {
+    fails.push("Engine plan must include §0.0.1c Market Partner Registry");
   }
+  if (!/Day-1 pricing leg|ebay 멀티|admin/.test(plan)) {
+    fails.push("Engine plan must keep Day-1 ebay|admin pricing leg lock");
+  }
+}
+
+// pipeline Day-1 auto-publish guard
+const pipeline = require(path.join(
+  root,
+  "services/market-intelligence/src/pipeline.cjs",
+));
+if (!pipeline.PUBLISH_GUARDS.yahooJpForbidden) {
+  fails.push("PUBLISH_GUARDS.yahooJpForbidden must be true for Day-1 auto-publish");
+}
+if (
+  !Array.isArray(pipeline.PUBLISH_GUARDS.listingLegsOnly) ||
+  !pipeline.PUBLISH_GUARDS.listingLegsOnly.includes("ebay") ||
+  !pipeline.PUBLISH_GUARDS.listingLegsOnly.includes("admin")
+) {
+  fails.push("PUBLISH_GUARDS.listingLegsOnly must be ebay|admin");
 }
 
 if (fails.length) {
@@ -172,5 +198,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:listing-legs-day1] PASS (ebay 멀티|admin · yahoo_jp FORBIDDEN · 야후/Yahoo copy 0)",
+  "[verify:listing-legs-day1] PASS (ebay 멀티|admin Day-1 · partner amazon/yahoo Phase1+ · UI copy gated)",
 );

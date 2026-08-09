@@ -1,0 +1,27 @@
+{
+  "id": "benefit-hub",
+  "route": "/me/benefits",
+  "version": "1.0.0",
+  "sections": [
+    "hero",
+    "campaignCarousel",
+    "daily",
+    "oneTime",
+    "weekly",
+    "streak",
+    "footerLinks"
+  ],
+  "copyKeys": [
+    "T.benefits.title",
+    "T.benefits.heroMonthly",
+    "T.benefits.heroClaimable",
+    "T.benefits.sectionDaily",
+    "T.benefits.sectionOneTime"
+  ],
+  "forbidden": [
+    "Credits balance",
+    "referral L2 L3 ladder body",
+    "manual claim required for auto missions",
+    "G4 demo amounts in hero"
+  ]
+}

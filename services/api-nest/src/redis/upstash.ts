@@ -44,6 +44,60 @@ export class UpstashRedisService implements OnModuleDestroy {
     }
   }
 
+  /** Hot Twin / session cache — no-op when REDIS_URL unset */
+  async get(key: string): Promise<string | null> {
+    const c = await this.ready();
+    if (!c) return null;
+    return c.get(key);
+  }
+
+  async set(
+    key: string,
+    value: string,
+    ttlSec?: number,
+  ): Promise<boolean> {
+    const c = await this.ready();
+    if (!c) return false;
+    if (ttlSec != null && Number.isFinite(ttlSec) && ttlSec > 0) {
+      await c.set(key, value, "EX", Math.floor(ttlSec));
+    } else {
+      await c.set(key, value);
+    }
+    return true;
+  }
+
+  async del(key: string): Promise<boolean> {
+    const c = await this.ready();
+    if (!c) return false;
+    await c.del(key);
+    return true;
+  }
+
+  async incr(key: string): Promise<number | null> {
+    const c = await this.ready();
+    if (!c) return null;
+    return c.incr(key);
+  }
+
+  async expire(key: string, ttlSec: number): Promise<boolean> {
+    const c = await this.ready();
+    if (!c) return false;
+    if (!Number.isFinite(ttlSec) || ttlSec <= 0) return false;
+    await c.expire(key, Math.floor(ttlSec));
+    return true;
+  }
+
+  private async ready(): Promise<Redis | null> {
+    const c = this.ensure();
+    if (!c) return null;
+    try {
+      if (c.status === "wait") await c.connect();
+      return c;
+    } catch {
+      return null;
+    }
+  }
+
   async onModuleDestroy() {
     if (this.client) {
       this.client.disconnect();

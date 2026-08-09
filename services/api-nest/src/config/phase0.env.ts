@@ -3,6 +3,13 @@
  * Secrets stay in process.env / .env — never hardcode.
  */
 
+export type LlmProviderId =
+  | "ollama"
+  | "groq"
+  | "gemini_free"
+  | "openai"
+  | "none";
+
 export type Phase0Env = {
   nodeEnv: string;
   port: number;
@@ -22,6 +29,8 @@ export type Phase0Env = {
   oauthGoogleClientId: string | null;
   oauthGoogleClientSecret: string | null;
   r2KycBucket: string;
+  r2AssetImagesBucket: string;
+  r2AssetImagesPublicBase: string | null;
   r2AccountId: string | null;
   r2AccessKeyId: string | null;
   r2SecretAccessKey: string | null;
@@ -29,6 +38,19 @@ export type Phase0Env = {
   /** Money §43.6 Day-1 SMTP SSOT = Resend */
   resendApiKey: string | null;
   resendFromEmail: string | null;
+  /** Engine §47.13 LLM Adapter — Nest only · NEXT_PUBLIC 0 */
+  llmProvider: LlmProviderId;
+  llmApiKey: string | null;
+  geminiApiKey: string | null;
+  geminiModel: string;
+  openaiModel: string;
+  groqModel: string;
+  ollamaModel: string;
+  llmBaseUrl: string | null;
+  llmQuotaSoftRpm: number;
+  llmQuotaSoftRpd: number;
+  /** Phase1 CF workers → Nest ingest (header x-adapter-token) */
+  adapterIngestToken: string | null;
   phase: 0;
   bus: "in-process";
 };
@@ -38,6 +60,28 @@ function read(key: string): string | null {
   if (v == null) return null;
   const t = v.trim();
   return t.length ? t : null;
+}
+
+function readInt(key: string, fallback: number): number {
+  const raw = read(key);
+  if (raw == null) return fallback;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 0 ? n : fallback;
+}
+
+const LLM_PROVIDERS = [
+  "ollama",
+  "groq",
+  "gemini_free",
+  "openai",
+  "none",
+] as const;
+
+function readLlmProvider(): LlmProviderId {
+  const raw = read("LLM_PROVIDER") ?? "none";
+  return (LLM_PROVIDERS as readonly string[]).includes(raw)
+    ? (raw as LlmProviderId)
+    : "none";
 }
 
 export function loadPhase0Env(): Phase0Env {
@@ -60,12 +104,25 @@ export function loadPhase0Env(): Phase0Env {
     oauthGoogleClientId: read("OAUTH_GOOGLE_CLIENT_ID"),
     oauthGoogleClientSecret: read("OAUTH_GOOGLE_CLIENT_SECRET"),
     r2KycBucket: read("R2_KYC_BUCKET") ?? "kyc-docs",
+    r2AssetImagesBucket: read("R2_ASSET_IMAGES_BUCKET") ?? "asset-images",
+    r2AssetImagesPublicBase: read("R2_ASSET_IMAGES_PUBLIC_BASE"),
     r2AccountId: read("R2_ACCOUNT_ID"),
     r2AccessKeyId: read("R2_ACCESS_KEY_ID"),
     r2SecretAccessKey: read("R2_SECRET_ACCESS_KEY"),
     r2KycEncryptionKey: read("R2_KYC_ENCRYPTION_KEY"),
     resendApiKey: read("RESEND_API_KEY"),
     resendFromEmail: read("RESEND_FROM_EMAIL"),
+    llmProvider: readLlmProvider(),
+    llmApiKey: read("LLM_API_KEY"),
+    geminiApiKey: read("GEMINI_API_KEY"),
+    geminiModel: read("GEMINI_MODEL") ?? "gemini-flash-lite-latest",
+    openaiModel: read("OPENAI_MODEL") ?? "gpt-4o-mini",
+    groqModel: read("GROQ_MODEL") ?? "llama-3.1-8b-instant",
+    ollamaModel: read("OLLAMA_MODEL") ?? "llama3.2",
+    llmBaseUrl: read("LLM_BASE_URL"),
+    llmQuotaSoftRpm: readInt("LLM_QUOTA_SOFT_RPM", 10),
+    llmQuotaSoftRpd: readInt("LLM_QUOTA_SOFT_RPD", 200),
+    adapterIngestToken: read("ADAPTER_INGEST_TOKEN"),
     phase: 0,
     bus: "in-process",
   };

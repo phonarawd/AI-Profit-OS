@@ -1,0 +1,4 @@
+{"id":"g_weather","lane":"G","input":"오늘 날씨 어때?","expectLane":"G","expectTools":[],"forbidPlatformMoneyTools":true}
+{"id":"g_chat","lane":"G","input":"재미있는 이야기 해줘","expectLane":"G","expectTools":[],"forbidPlatformMoneyTools":true}
+{"id":"g_general","lane":"G","input":"커피 맛있게 끓이는 법","expectLane":"G","expectTools":[],"forbidPlatformMoneyTools":true}
+{"id":"g_reroute","lane":"G","input":"내 잔액이랑 예상 수익 알려줘","expectLane":"P","note":"G text with platform money → reroute P","forbidMoneyHallucination":true}

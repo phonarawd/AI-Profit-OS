@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/listing.v1.json",
+  "title": "ListingV1",
+  "description": "Engine §0.0.1a listing leg · Day-1 auto-publish=ebay marketplaceId×N|admin · Phase1+ partner legs=amazon_*|yahoo_jp (§0.0.1c).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "assetId",
+    "marketId",
+    "adapterId",
+    "priceUsdt",
+    "observedAt",
+    "staleAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "assetId": { "type": "string", "minLength": 1 },
+    "marketId": {
+      "type": "string",
+      "enum": [
+        "ebay_us",
+        "ebay_gb",
+        "ebay_de",
+        "ebay_au",
+        "admin",
+        "amazon_us",
+        "amazon_jp",
+        "amazon_de",
+        "yahoo_jp"
+      ],
+      "description": "Day-1 auto-publish uses ebay_*|admin only · amazon_*/yahoo_jp=Phase1+ partner"
+    },
+    "adapterId": {
+      "type": "string",
+      "enum": ["ebay", "admin", "amazon", "yahoo_jp"],
+      "description": "Day-1 auto-publish ebay|admin · amazon/yahoo_jp Phase1+ official partners"
+    },
+    "marketplaceId": {
+      "type": "string",
+      "enum": ["EBAY_US", "EBAY_GB", "EBAY_DE", "EBAY_AU"]
+    },
+    "externalItemId": { "type": "string" },
+    "title": { "type": "string" },
+    "priceUsdt": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "currency": { "type": "string" },
+    "url": { "type": "string" },
+    "imageUrl": { "type": "string" },
+    "observedAt": { "type": "string", "format": "date-time" },
+    "staleAt": { "type": "string", "format": "date-time" }
+  }
+}

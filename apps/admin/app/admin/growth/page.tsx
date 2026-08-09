@@ -9,11 +9,13 @@ const TABS = [
   "referral",
   "notices",
   "campaigns",
+  "missions",
   "share",
   "content",
   "deposit",
   "whale",
   "ticker",
+  "partners",
 ] as const;
 type GrowthTab = (typeof TABS)[number];
 
@@ -22,19 +24,47 @@ const TAB_LABEL: Record<GrowthTab, string> = {
   referral: "초대",
   notices: "공지",
   campaigns: "캠페인",
+  missions: "혜택·미션",
   share: "공유 카드",
   content: "G1",
   deposit: "G2",
   whale: "G3",
   ticker: "G4",
+  partners: "공식 협력사",
 };
 
+const SIM_GATES = [
+  {
+    id: "S1",
+    label: "화면 표시 정확도",
+    rule: "uxDisplayAccuracy mismatch = 0",
+    fail: "공개 차단",
+  },
+  {
+    id: "S2",
+    label: "운영 준비금 한도",
+    rule: "worstCasePlatformDrain ≤ platform_reserve × 10%",
+    fail: "운영 알림",
+  },
+  {
+    id: "S3",
+    label: "지급 가능 점수",
+    rule: "payoutFeasibilityScore ≥ 0.85",
+    fail: "피드 숨김",
+  },
+  {
+    id: "S4",
+    label: "시세 매칭 실패율",
+    rule: "adapterMatchFailureRate ≤ 15%",
+    fail: "수집기 알림",
+  },
+] as const;
+
 /**
- * Admin §35.6 / Money §51.5 — `/admin/growth?tab=referral`
- * Program SoT = GET/PATCH /api/v1/admin/growth/referral/program
+ * Admin §35.6 / Engine §51.4 — `/admin/growth?tab=simulation`
+ * Money §51.5 — `/admin/growth?tab=referral`
  * FORBIDDEN: 월간 초대 인원캡 입력칸 (capPerReferrerMonth)
  */
-// route lock: growth?tab=referral
 function GrowthContent() {
   const searchParams = useSearchParams();
   const tab = useMemo((): GrowthTab => {
@@ -50,6 +80,11 @@ function GrowthContent() {
   const holdQueueApi = "/api/v1/admin/growth/referral/hold-queue";
   const topUpApi = "/api/v1/admin/growth/referral/pool/top-up";
   const accrualHaltApi = "/api/v1/admin/growth/referral/accrual-halt";
+
+  const simRunApi = "/api/v1/admin/simulation/run";
+  const simLatestApi = "/api/v1/admin/simulation/latest";
+  const simGrowthGateApi = "/api/v1/admin/simulation/growth-gate";
+  const growthEnabledApi = "/api/v1/admin/growth/enabled";
 
   return (
     <main
@@ -77,7 +112,78 @@ function GrowthContent() {
         ))}
       </nav>
 
-      {tab === "referral" ? (
+      {tab === "simulation" ? (
+        <section
+          className="mt-6 space-y-4"
+          data-testid="growth-simulation-panel"
+          data-surface="admin-growth-simulation"
+          data-run-api={simRunApi}
+          data-latest-api={simLatestApi}
+          data-growth-gate-api={simGrowthGateApi}
+          data-growth-enabled-api={growthEnabledApi}
+        >
+          <p className="text-sm text-lux-text-muted">
+            Engine §51.4 M0.5 · S1~S4 KPI 입력 · Growth ON은 최근 PASS 24시간 이내 +
+            운영 준비금 설정 필수
+          </p>
+
+          <div
+            className="rounded border border-lux-border p-3 space-y-2"
+            data-field="gates"
+          >
+            <p className="text-sm font-medium">통과 기준 (S1~S4)</p>
+            <ul className="space-y-2 text-sm">
+              {SIM_GATES.map((g) => (
+                <li
+                  key={g.id}
+                  data-gate={g.id}
+                  className="flex flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <span>
+                    {g.id} · {g.label}
+                  </span>
+                  <span className="text-xs text-lux-text-muted">
+                    {g.rule} · 실패 시 {g.fail}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div
+            className="rounded border border-lux-border p-3 text-sm space-y-1"
+            data-field="kpi-inputs"
+          >
+            <p className="font-medium">KPI 입력</p>
+            <ul className="text-xs text-lux-text-muted list-disc pl-5 space-y-1">
+              <li data-kpi="S1">S1 · uxDisplayAccuracy[] (mismatch 합=0)</li>
+              <li data-kpi="S2">
+                S2 · worstCasePlatformDrainUsdt + platform_reserve (tab=reserve)
+              </li>
+              <li data-kpi="S3">S3 · payoutFeasibilityScore (공개 기회 지급 가능)</li>
+              <li data-kpi="S4">
+                S4 · adapterMatchFailureRate (GET /admin/adapters/simulation-s4)
+              </li>
+            </ul>
+          </div>
+
+          <div
+            className="rounded border border-lux-border p-3 text-sm"
+            data-field="growth-enabled"
+            data-gate="admin.growth.enabled"
+          >
+            <p className="font-medium">성장 기능 켜기</p>
+            <p className="mt-1 text-xs text-lux-text-muted">
+              PATCH {growthEnabledApi} · 최근 시뮬레이션 PASS ≤24h · 준비금 설정
+              필수
+            </p>
+          </div>
+
+          <p className="text-xs text-lux-text-muted">
+            API: POST {simRunApi} · GET {simLatestApi}
+          </p>
+        </section>
+      ) : tab === "referral" ? (
         <section
           className="mt-6 space-y-3"
           data-testid="growth-referral-panel"
@@ -107,7 +213,7 @@ function GrowthContent() {
       ) : (
         <section className="mt-6" data-testid={`growth-${tab}-panel`}>
           <p className="text-sm text-lux-text-muted">
-            Admin §35.6 골격 · 초대 계약은 referral 탭
+            Admin §35.6 골격 · 시뮬레이션·초대 계약은 해당 탭
           </p>
         </section>
       )}

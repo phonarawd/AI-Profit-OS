@@ -1,0 +1,54 @@
+{
+  "id": "admin-ai-logs",
+  "route": "/admin/ai-logs",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": null, "href": null },
+  "blocks": [
+    { "id": "sidebar", "role": "nav", "copyKey": "T.admin.twelveModules" },
+    {
+      "id": "ai_logs_tabs",
+      "role": "nav",
+      "copyKey": "T.admin.aiLogsTabs",
+      "note": "traces · coach · spotcheck · pick · eval"
+    },
+    {
+      "id": "answer_traces",
+      "role": "list",
+      "copyKey": "T.admin.aiLogsTraces",
+      "fields": ["lane", "provider_id", "answer_path", "guard_result"],
+      "note": "GET /api/v1/admin/ai-logs · schemas/ai-answer-trace.v1"
+    },
+    {
+      "id": "ai_pick_readonly",
+      "role": "kpi",
+      "copyKey": "T.admin.aiPickScores",
+      "fields": ["aiConfidenceScore", "isAiPick", "featureVectorHash"],
+      "note": "Engine feature calc only · Admin override 0 · L3 money 0"
+    },
+    {
+      "id": "eval_gate",
+      "role": "info",
+      "copyKey": "T.admin.aiEvalGate",
+      "note": "autoLearningEnabled=false · PASS only → Registry→Prod"
+    },
+    {
+      "id": "coach",
+      "role": "info",
+      "copyKey": "T.admin.aiCoach",
+      "fields": ["lane", "provider_id", "factTools", "evalSets"],
+      "note": "GET /api/v1/admin/ai-logs/coach · Engine §47.15 · moneyHallucinationRate=0"
+    }
+  ],
+  "forbidden": [
+    "ai_score_admin_override",
+    "success_rate_percent_control",
+    "sell_success_rate_as_pick_input",
+    "l3_money_execute",
+    "auto_learning_on",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "sidebar_not_twelve",
+    "feature_platform_sidebar_module"
+  ]
+}

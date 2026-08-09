@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/market-partner.v1.json",
+  "title": "MarketPartnerRegistryV1",
+  "description": "Engine §0.0.1c Market Partner Registry (v7.22.41) · officialPartner · UI §38.10 logo pointer. Day-1 auto-publish listing legs remain ebay|admin; amazon_*/yahoo_jp = Phase1+ listingLegPhase.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "partners"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "partners": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "partnerId",
+          "adapterId",
+          "labelKo",
+          "tier",
+          "officialPartner",
+          "uiTrustStrip",
+          "listingLegPhase",
+          "logoAsset"
+        ],
+        "properties": {
+          "partnerId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "ebay_us|ebay_gb|ebay_de|ebay_au|amazon_us|amazon_jp|amazon_de|yahoo_jp|pokemontcg|ygoprodeck|coingecko|frankfurter"
+          },
+          "adapterId": {
+            "type": "string",
+            "enum": [
+              "ebay",
+              "amazon",
+              "yahoo_jp",
+              "pokemontcg",
+              "ygoprodeck",
+              "coingecko",
+              "frankfurter"
+            ]
+          },
+          "labelKo": { "type": "string", "minLength": 1 },
+          "tier": { "type": "string", "enum": ["A", "B", "C"] },
+          "officialPartner": { "type": "boolean", "const": true },
+          "uiTrustStrip": {
+            "type": "string",
+            "enum": ["always", "edu", "wallet"]
+          },
+          "listingLegPhase": {
+            "type": "string",
+            "enum": ["Day-1", "Phase1+", "catalog", "fx"]
+          },
+          "logoAsset": {
+            "type": "string",
+            "description": "packages/ui/brand/assets/markets/* path relative to markets/"
+          },
+          "marketIds": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "worker": { "type": "string" }
+        }
+      }
+    }
+  }
+}

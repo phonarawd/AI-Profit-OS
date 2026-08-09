@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "partners": [
+    {
+      "partnerId": "ebay_us",
+      "adapterId": "ebay",
+      "labelKo": "이베이(미국)",
+      "tier": "A",
+      "officialPartner": true,
+      "uiTrustStrip": "always",
+      "listingLegPhase": "Day-1",
+      "logoAsset": "ebay.svg",
+      "marketIds": ["ebay_us"],
+      "worker": "ebay-adapter"
+    },
+    {
+      "partnerId": "ebay_gb",
+      "adapterId": "ebay",
+      "labelKo": "이베이(영국)",
+      "tier": "A",
+      "officialPartner": true,
+      "uiTrustStrip": "always",
+      "listingLegPhase": "Day-1",
+      "logoAsset": "ebay.svg",
+      "marketIds": ["ebay_gb"],
+      "worker": "ebay-adapter"
+    },
+    {
+      "partnerId": "ebay_de",
+      "adapterId": "ebay",
+      "labelKo": "이베이(독일)",
+      "tier": "A",
+      "officialPartner": true,
+      "uiTrustStrip": "always",
+      "listingLegPhase": "Day-1",
+      "logoAsset": "ebay.svg",
+      "marketIds": ["ebay_de"],
+      "worker": "ebay-adapter"
+    },
+    {
+      "partnerId": "ebay_au",
+      "adapterId": "ebay",
+      "labelKo": "이베이(호주)",
+      "tier": "A",
+      "officialPartner": true,
+      "uiTrustStrip": "always",
+      "listingLegPhase": "Day-1",
+      "logoAsset": "ebay.svg",
+      "marketIds": ["ebay_au"],
+      "worker": "ebay-adapter"
+    },
+    {
+      "partnerId": "amazon_us",
+      "adapterId": "amazon",
+      "labelKo": "아마존(미국)",
+      "tier": "A",
+      "officialPartner": true,
+      "uiTrustStrip": "always",
+      "listingLegPhase": "Phase1+",
+      "logoAsset": "amazon.svg",
+      "marketIds": ["amazon_us"],
+      "worker": "amazon-adapter"
+    },
+    {
+      "partnerId": "amazon_jp",
+      "adapterId": "amazon",
+      "labelKo": "아마존(일본)",
+      "tier": "A",
+      "officialPartner": true,
+      "uiTrustStrip": "always",
+      "listingLegPhase": "Phase1+",
+      "logoAsset": "amazon.svg",
+      "marketIds": ["amazon_jp"],
+      "worker": "amazon-adapter"
+    },
+    {
+      "partnerId": "amazon_de",
+      "adapterId": "amazon",
+      "labelKo": "아마존(독일)",
+      "tier": "A",
+      "officialPartner": true,
+      "uiTrustStrip": "always",
+      "listingLegPhase": "Phase1+",
+      "logoAsset": "amazon.svg",
+      "marketIds": ["amazon_de"],
+      "worker": "amazon-adapter"
+    },
+    {
+      "partnerId": "yahoo_jp",
+      "adapterId": "yahoo_jp",
+      "labelKo": "Yahoo! JAPAN オークション",
+      "tier": "A",
+      "officialPartner": true,
+      "uiTrustStrip": "always",
+      "listingLegPhase": "Phase1+",
+      "logoAsset": "yahoo-jp.svg",
+      "marketIds": ["yahoo_jp"],
+      "worker": "yahoo-jp-adapter"
+    },
+    {
+      "partnerId": "pokemontcg",
+      "adapterId": "pokemontcg",
+      "labelKo": "포켓몬 TCG 공식 API",
+      "tier": "B",
+      "officialPartner": true,
+      "uiTrustStrip": "edu",
+      "listingLegPhase": "catalog",
+      "logoAsset": "pokemontcg.svg",
+      "marketIds": [],
+      "worker": "pokemontcg-adapter"
+    },
+    {
+      "partnerId": "ygoprodeck",
+      "adapterId": "ygoprodeck",
+      "labelKo": "유희왕 카드 DB",
+      "tier": "B",
+      "officialPartner": true,
+      "uiTrustStrip": "edu",
+      "listingLegPhase": "catalog",
+      "logoAsset": "ygoprodeck.svg",
+      "marketIds": [],
+      "worker": "ygoprodeck-adapter"
+    },
+    {
+      "partnerId": "coingecko",
+      "adapterId": "coingecko",
+      "labelKo": "CoinGecko",
+      "tier": "C",
+      "officialPartner": true,
+      "uiTrustStrip": "wallet",
+      "listingLegPhase": "fx",
+      "logoAsset": "coingecko.svg",
+      "marketIds": [],
+      "worker": "coingecko-adapter"
+    },
+    {
+      "partnerId": "frankfurter",
+      "adapterId": "frankfurter",
+      "labelKo": "Frankfurter",
+      "tier": "C",
+      "officialPartner": true,
+      "uiTrustStrip": "wallet",
+      "listingLegPhase": "fx",
+      "logoAsset": "frankfurter.svg",
+      "marketIds": [],
+      "worker": "frankfurter-adapter"
+    }
+  ]
+}

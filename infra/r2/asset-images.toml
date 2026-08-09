@@ -1,0 +1,18 @@
+# Cloudflare R2 — public Asset Master product images (Engine §0.0.6)
+# Bucket name locked: asset-images
+# Secrets (account id / API token) live in .env only — never commit.
+# Distinct from private kyc-docs (Money §42).
+
+bucket_name = "asset-images"
+purpose = "asset-images"
+# Public product thumbs for OpportunityCard.assetImageUrl (시세 참고용).
+public_access = true
+
+# Bind from Nest Admin upload path:
+# R2_ACCOUNT_ID / R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY
+# R2_ASSET_IMAGES_BUCKET=asset-images
+# R2_ASSET_IMAGES_PUBLIC_BASE=https://<custom-or-r2-public-host>
+
+[prefix]
+# Object key: assets/{category}/{assetId}.{ext}
+note = "SKU 1:1 · Admin upsert source=admin_r2 · user click-path fetch 0"

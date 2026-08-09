@@ -1,0 +1,28 @@
+{
+  "id": "g_strictness_lenient_ok",
+  "note": "§48.13.3 lenient preset minProfit=2 · profit 3 would fail standard but passes lenient",
+  "expect": "MATCH_SUCCESS",
+  "matchStrictness": "lenient",
+  "context": {
+    "nowMs": 1000000,
+    "participateAcceptedAtMs": 1000000,
+    "circuitStatus": "closed",
+    "userStatus": "active",
+    "opportunityStatus": "available",
+    "compareReady": true,
+    "staleAtMs": 999000,
+    "expectedProfitUsdt": "3",
+    "tradePricingVersion": 1,
+    "opportunityPricingVersion": 1,
+    "simulationPayoutFeasible": true,
+    "listingLegsFresh": true,
+    "rematchCount": 0,
+    "policy": {
+      "minProfitUsdt": "2",
+      "staleAllowanceSec": 5,
+      "maxRematchCount": 4,
+      "retryWaitSec": 4
+    },
+    "presentationDurationSec": 12
+  }
+}

@@ -1,3 +1,6 @@
+# Local tooling binaries (cloudflared etc.)
+.tools/
+
 # Dependencies
 node_modules/
 .pnpm-store/

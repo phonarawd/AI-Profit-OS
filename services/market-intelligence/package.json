@@ -1,0 +1,33 @@
+{
+  "name": "@aipo/market-intelligence",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Engine §0.0 — Asset Master · pricing/FX · partner registry §0.0.1c · Day-1 listing ebay|admin",
+  "main": "./src/index.cjs",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": "./src/index.cjs",
+    "./pricing-formula": "./src/pricing-formula.cjs",
+    "./fx-snapshot-formula": "./src/fx-snapshot-formula.cjs",
+    "./markets": "./src/markets.cjs",
+    "./forbidden": "./src/forbidden.cjs",
+    "./pipeline": "./src/pipeline.cjs",
+    "./asset-master": "./src/asset-master.cjs",
+    "./asset-image": "./src/asset-image.cjs",
+    "./capital-band": "./src/capital-band.cjs",
+    "./adapters": "./src/adapters.cjs",
+    "./market-partners": "./src/market-partners.cjs",
+    "./card-grade": "./src/card-grade.cjs",
+    "./card-match": "./src/card-match.cjs",
+    "./trading-card-seed": "./src/trading-card-seed.cjs",
+    "./bag-match": "./src/bag-match.cjs",
+    "./luxury-bag-seed": "./src/luxury-bag-seed.cjs",
+    "./opportunity-scan": "./src/opportunity-scan.cjs",
+    "./capital-provider-projection": "./src/capital-provider-projection.cjs",
+    "./balance-aware-feed": "./src/balance-aware-feed.cjs",
+    "./match-strictness": "./src/match-strictness.cjs",
+    "./membership": "./src/membership.cjs",
+    "./adapter-matching-kpi": "./src/adapter-matching-kpi.cjs",
+    "./money": "./src/money.cjs"
+  }
+}

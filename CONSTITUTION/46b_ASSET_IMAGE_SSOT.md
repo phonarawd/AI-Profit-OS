@@ -1,4 +1,4 @@
-# §46b — Asset Image SSOT
+﻿# §46b — Asset Image SSOT
 
 > **Status:** ACTIVE · owns/pointer only · 구현코드 0  
 > **BOOTSTRAP:** `docs/CONSTITUTION_BOOTSTRAP.md` §2  
@@ -21,7 +21,7 @@
 | Engine §0.0.6 | Engine `ai_profit_os_02_engine_b2c3d4e5.plan.md` §0.0.6 |
 | 진행 UI 썸네일 | UI §48.3a · Canon `execution-running`/`success` `productThumb` |
 | 스텝 active 카피 | `시세 불러오는 중...` |
-| Admin 업로드 | `/admin/opportunities` · `/admin/assets` |
+| Admin 업로드 | `/admin/opportunities?tab=assets` · R2 `asset-images` · 독립 `/admin/assets` **금지** |
 | schemas | `asset-master.v1` · `opportunity-card.v1` |
 | Mockup governance | ADR-013 · → `28` / Brand Kit |
 | CI | `verify:asset-image-surface` · `verify:execution-surfaces` |

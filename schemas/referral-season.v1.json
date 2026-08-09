@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ai-profit-os.local/schemas/referral-season.v1.json",
   "title": "ReferralSeasonV1",
-  "description": "Money §51.5.3 weekly season · Promo prize inside Pool · masked leaderboard · on/off.",
+  "description": "Money §51.5.3 weekly season · Promo prize inside Pool · masked leaderboard (displayName labels · nickname column 0) · on/off.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -36,7 +36,7 @@
     },
     "leaderboardMasked": {
       "type": "boolean",
-      "description": "true = mask nicknames on public board"
+      "description": "true = mask displayName labels on public board (same maskDisplayLabel as G4 ticker · Admin §35.4a)"
     },
     "titleKo": {
       "type": "string"

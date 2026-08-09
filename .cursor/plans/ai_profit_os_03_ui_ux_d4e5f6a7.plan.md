@@ -1,10 +1,10 @@
 ---
 name: AI Profit OS — UI & UX
-overview: "v7.22.32 UI(+Index.33 pointer)·시장LabelKo·야후0·긴장감§48.3b·CTA수익벌기·위계=기회→투입→수익→AI→수익벌기. Index=00."
+overview: "v7.22.42 Benefit Hub §5.9.5·§51.8a·Admin missions·Engine §48.13.4 fanout0. Index=00."
 todos:
   - id: yahoo-jp-copy-ban
-    content: "[grok-4.5|256K] v7.22.32 유저카피 야후/Yahoo/yahoo_jp 0 · LabelKo만 · Engine §0.0.2 · verify:listing-legs-day1"
-    status: completed
+    content: "[grok-4.5|256K] v7.22.32→v7.22.41 supersede: §38.10 공식협력 Yahoo JP 로고·LabelKo 필수 · Engine §0.0.1c · verify:market-partner-trust"
+    status: pending
   - id: match-tension-ux-surfaces
     content: "[grok-4.5|256K] v7.22.30 §48.3b 긴장감 UX·등급≠대기 · Index §20.2 · verify:match-tension-surface"
     status: completed
@@ -33,7 +33,7 @@ todos:
     content: "[composer-2.5|200K] §5.3b/§48 CTA=수익 벌기·카드위계·면책배지·trader jargon0 · verify:cta-earn-profit/user-trader-jargon-0"
     status: pending
   - id: opportunity-scan-home-ux
-    content: "[composer-2.5|200K] §5.3b 홈3초·arbitrageTypeKo·기회스캔 위계 · verify:opportunity-scan-surface (CTA는 capital-provider todo)"
+    content: "[composer-2.5|200K] §5.3b 홈3초·arbitrageTypeKo·기회스캔 위계 · MarketPartnerLeg(§38.10) · verify:opportunity-scan-surface (CTA는 capital-provider todo)"
     status: pending
   - id: price-compare-margin-ux
     content: "[composer-2.5|200K] PriceCompareMargin 4면 · 공식=Engine §0.0.4 pointer · compareReady 가드 · verify:margin-compare-surface"
@@ -48,10 +48,10 @@ todos:
     content: "[composer-2.5|200K] §48 진행실·성공·안전중단 + copy/ko/execution + verify:execution-surfaces"
     status: pending
   - id: ai-coach-ui
-    content: "[composer-2.5|200K] Canon peotteok-chat · stream · P칩+G입력 · Engine §47.12~14 · verify:ai-coach-*/ai-general-no-money-tools"
+    content: "[composer-2.5|200K] §6.4e A:copy/ko/peotteok.ts+Canon blocks B:/me/peotteok SSE·P칩·Gstream·S거절·degrade C:verify:canon-surfaces+ai-coach-* · 선행=Engine #24 ai-coach-runtime"
     status: pending
   - id: user-app-screens
-    content: "[composer-2.5|200K] apps/web 5탭 + §49 지갑 + §50 설정/약관 + CountUp · retired 브랜드 0"
+    content: "[composer-2.5|200K] apps/web 5탭 + §49 지갑 + §50 설정/약관 + CountUp + LivePayoutTicker(§33.2a·G4 mode 투영) · retired 브랜드 0"
     status: pending
   - id: settings-legal-ko
     content: "[composer-2.5|200K] §50.1 글자 보통/크게/더크게 + 충전기본표시 + 약관4종·DET · verify:legal-plain-ko/font-scale-three"
@@ -66,13 +66,16 @@ todos:
     content: "[composer-2.5|200K] Canon kyc-guide/doc/confirm Lux 3면 · Money §42 pointer · RRN입력0 · verify:kyc-surfaces"
     status: pending
   - id: trust-education-ux
-    content: "[composer-2.5|200K] §38+Objection4 + DepositWhyGate + 면책 CI · verify:trust-copy/tax-disclaimer/objection4"
+    content: "[composer-2.5|200K] §38+§38.10 MarketPartnerTrust 공식협력 로고·Objection4 + DepositWhyGate + 면책 CI · verify:trust-copy/tax-disclaimer/objection4/market-partner-trust"
     status: pending
   - id: trust-get-usdt-guide
     content: "[composer-2.5|200K] §38.8 /me/guide/get-usdt + 입금 네트워크 한글경고 · TRC20 화면0 · verify:deposit-network-plain-ko"
     status: pending
   - id: invite-explain-kr-2070
     content: "[composer-2.5|200K] §5.9.1a 친구초대 설명·toneBand·Canon·verify:invite-explain-surfaces/age-tone"
+    status: pending
+  - id: benefit-hub-surfaces
+    content: "[composer-2.5|200K] §5.9.5 혜택·미션 허브 Daily/One-Time/Weekly/Streak·Hero·캠페인캐러셀 · Money §51.8a pointer · Canon benefit-hub · verify:benefit-hub-surfaces/benefit-no-credits-currency"
     status: pending
   - id: admin-match-strictness-ui
     content: "[composer-2.5|200K] §48.6 매칭성공조절 프리셋·관측KPI·난수UI0·Canon·verify:match-strictness/no-success-rate-percent"
@@ -118,6 +121,9 @@ isProject: false
 > **v7.22.30:** **§48.3b** 매칭 긴장감(과정 Fact) · Soft/Hard **전 등급 동일** · 등급≠대기특권 · Index §20.2 · Audit A6  
 > **v7.22.31:** 시장 카피 **동적 LabelKo** · Day-1 listing Owns=Engine §0.0.1a (ebay멀티\|admin)  
 > **v7.22.32:** `yahoo_jp` **영구 배제** · 유저 「야후」·Yahoo 문자열 **0** · LabelKo만 · listing=ebay멀티\|admin only  
+> **v7.22.40:** **§33.2a** PublicTicker surface · G4 Organic Hybrid **pointer**=Admin §35.4 · PII0·DayPulse merge0  
+> **v7.22.41 (Founder lock):** **§38.10 Market Partner Trust** — eBay·Amazon·Yahoo! JAPAN Auction 등 **공식 협력사** · 회사 **로고+LabelKo** · 「시세 참고만」단독 톤 **폐기** → 「공식 협력 · 시세·데이터 연동」 · orchestrateTruth(직접 사지 않음) **유지** · v7.22.32 야후 **표기 금지** → **본 절로 supersede(표기)** · adapter=Engine §0.0.1c
+> **v7.22.42:** **§5.9.5 혜택·미션 허브** `/me/benefits` — Daily/One-Time/Weekly/Streak·Hero·캠페인 캐러셀 · Credits 화폐 **0** · auto ledger=Money **§51.8a** · Engine **§48.13.4** fanout only · Admin `growth?tab=missions`  
 
 > **Consumer + AI 이름:** **퍼뜩** (동일) · Engine §47 P/G/S · 5탭 고정  
 > **KR 유저 SSOT:** §38.9 toneBand · §50.1 fontScale 3단 · §38.8 테더준비 가이드 · **성별 UI 분기 금지**(중성 존댓말)  
@@ -130,25 +136,26 @@ isProject: false
 
 | 구분 | v7.3 |
 |------|------|
-| LivePayoutTicker [A] | **`ticker_mode`:** off / live / demo / hybrid (§35 G4) |
-| 오늘 지급 합계 [F] | **`counter_mode`:** off / ledger / demo / blended (§35 G4) |
-| CountUp (거래·정산 UI) | **`settlement.completed`만** (ledger truth) |
-| FOMO Coral | engine staleAt/잔여한도 · G4 ON 시 Admin boost |
+| LivePayoutTicker [A] | **`ticker_mode`:** off / live / demo / hybrid · Organic Hybrid=Admin **§35.4** · surface=**§33.2a** |
+| 오늘 지급 합계 [F] | **`counter_mode`:** off / ledger / demo / blended (§35 G4) · DayPulse와 슬롯·숫자 **분리** |
+| CountUp (거래·정산 UI) | **`settlement.completed`만** (ledger truth) · 티커 demo와 **무관** |
+| FOMO Coral | engine staleAt/잔여한도 · G4 ON 시 Admin boost · 티커와 색 경쟁 금지 |
 | 앱 카드 "수익 확정" | **금지** · "예상 수익" SSOT |
 | Product Identity 미주장 | **헌법 잠금 유지** (§1) · G1~G2 copy surface 예외 |
 | fake JSON-LD 별점 | **금지** · real reviews only |
-| 카지노 sfx / 슬롯 metaphor | **금지** · Lux chime only |
+| 카지노 sfx / 슬롯 metaphor | **금지** · Lux chime only (티커 기본 무음) |
+| 티커 PII | email·legalName·원본 displayName·userId **유저 DTO 0** · 라벨=서버 마스킹만 |
 
 ### §35 Growth Conversion (G1~G4 — Admin ON)
 
 | # | 영역 | Admin | 해지/기능 |
 |---|------|-------|-----------|
-| G1 | **가짜 연혁·공지** | `/admin/growth/content` | `published_at` 소급 · 5년 narrative · synthetic changelog |
-| G2 | **입금 유도 FOMO** | `/admin/growth/deposit` | 랜딩·공지·온보딩 과장 copy · social proof |
-| G3 | **고액 입금·웨일** | `/admin/growth/whale` | **≥100,000 USDT** VIP Desk · tier ladder · OTC/고액 AML · Ultra 시계 기회 우선 노출 |
-| G4 | **실시간 ticker·counter** | `/admin/growth/ticker` | fake/demo ticker · counter blend · demo queue CRUD |
+| G1 | **가짜 연혁·공지** | `/admin/growth?tab=content` | 연혁·누적 문구 · **규모(100만) 직접 주장=여기 또는 랜딩 1곳만** |
+| G2 | **입금 유도 FOMO** | `/admin/growth?tab=deposit` | 랜딩·온보딩 social proof · 홈 상시 배너 ❌ |
+| G3 | **고액 입금·웨일** | `/admin/growth?tab=whale` | **≥100,000 USDT** VIP Desk · tier ladder · OTC/고액 AML |
+| G4 | **Organic Hybrid ticker·counter** | `/admin/growth?tab=ticker` | **§35.4** live우선·침묵메움·곡선·지터·corpus · UI §33.2a |
 
-**Ledger 분리 (오차0):** UI demo/blend ≠ ledger SSOT · reconciliation은 **ledger만** · audit log 필수
+**Ledger 분리 (오차0):** UI demo/blend ≠ ledger SSOT · reconciliation은 **ledger만** · audit log 필수 · **G4≠DayPulse**(§51.24 L16)
 
 **유지 (기술·금융 무결성):** double-entry ledger, reconciliation, circuit breaker, KYC/AML, WebAuthn, API 보안.
 
@@ -418,8 +425,9 @@ T.feed = {
  ├─ 💬 퍼뜩에게 묻기          ← /me/peotteok · Canon peotteok-chat · Engine §47.12~14 P칩+G대화+S거절
  ├─ 🏅 내 등급                ← /me/membership (§5.9.2c · Engine §0.0.7)
  ├─ ✉️ 알림·쪽지              ← /me/inbox (§5.9.4 · Admin §9.8.8d)
+ ├─ 🎯 혜택 · 미션            ← /me/benefits (§5.9.5 · Money §51.8a)
  ├─ 👥 친구 초대              ← /me/invite (§51.5)
- ├─ 🎁 이벤트·공지            ← /me/events (notice|campaign · Growth OFF면 campaign 빈 안내)
+ ├─ 📢 이벤트·공지            ← /me/events (notice|campaign · Growth OFF면 campaign 빈 안내)
  ├─ 🔔 알림 설정              ← §50.1n (설정과 동일 prefs)
  ├─ 💾 내 전략                ← /me/strategies
  ├─ 📞 고객센터              ← §51.6 `/me/support` 티켓·FAQ·분쟁
@@ -585,6 +593,64 @@ T.feed = {
 **토스트 (차단):** `MATCH_BLOCKED` · `WITHDRAW_APPLY_BLOCKED` — 쉬운 한글 · “고객센터” CTA 선택  
 **CI:** `verify:ops-inbox`
 
+#### 5.9.5 혜택 · 미션 `/me/benefits` (v7.22.42 · 삭제 금지 · Reward Center형 · 중복0)
+
+> **Owns:** 본 절 + Canon + `packages/ui/copy/ko/benefits.ts`  
+> **Money Owns:** accrual·idempotency·Pool·ledger·clawback = **§51.8a** · **Engine Owns:** domain event emit only · **§48.13.4** fanout 경계  
+> **≠** 친구 초대 본문(§5.9.1) · **≠** Credits 가상화폐 · **≠** Admin 유저별 수동 지급  
+> **5탭 IA 불변** · 6번째 탭 **0**
+
+```
+🎯 혜택 · 미션
+ ├─ [Hero] 이번 달 받은 보너스 ≈₩X · 받을 혜택 N · 확인 중 M · KST 자정 카운트다운
+ ├─ [Carousel] 진행 중 이벤트 1~3 (Admin campaign live · Money §51.5b mirror)
+ ├─ ▼ 오늘 (Daily) — D01~D08 카드 그리드
+ ├─ ▼ 처음 한 번 (One-Time) — M01~M14
+ ├─ ▼ 이번 주 (Weekly) — W01~W05 progress bar
+ ├─ ▼ 연속 (Streak) — S03/S07/S14 · 출석 코인 화폐 0
+ ├─ 카드: icon · title · body · +N USDT 또는 ≈₩ · 상태 · CTA
+ └─ footer: 「친구 초대 → /me/invite」·「이벤트 더보기 → /me/events」 (한 줄 each)
+```
+
+**진입:** 내정보 · 홈 배지 `받을 혜택 N` · Push `benefit` · 정산 영수증 secondary · 퍼뜩 Fact 칩
+
+**카드 상태 (서버 권위):**
+
+| status | 라벨 | CTA |
+|--------|------|-----|
+| locked | 준비 중 | disabled |
+| available | 시작하기 | deepRoute |
+| in_progress | 진행 중 | 이어하기 |
+| pending_hold / posting | 확인 중… | — |
+| released | 받았어요 ✓ | — |
+| queued_pool | 보너스 준비 중 | FAQ |
+| expired | 종료됐어요 | — |
+
+**보상 표기 (Credits ❌):**
+
+| kind | UI |
+|------|-----|
+| none | 완료 뱃지만 |
+| practice | `연습 +N` · DemoWalletBanner 연동 §51.7 |
+| promo_profit | `수익 +N` · ⚡=보너스 아이콘(not currency) |
+| fee_coupon | `출금 수수료 -N` |
+
+**autoClaim:** 조건 충족 → Nest posting → 카드 `released` (기본 **받기 버튼 없음** · slow network 재동기화 optional)
+
+**Day-1 vs Growth ON:**
+
+| | rewardsEnabled=false | true |
+|---|---------------------|------|
+| Hero | 교육 미션 N개 | 받은 보너스 ≈₩ |
+| D03/W 금전 | 숨김 | live |
+| M05/M07 | 숨김 | live |
+
+**금지:** G4 ticker/demo 숫자 Hero 합산 · DayPulse merge · 카지노·룰렛·출석 코인 · 「100% 당첨」 · 레퍼럴 L2/L3 단계 UI 본문 · IT용어(Credits/accrual/L2)
+
+**카피 파일:** `packages/ui/copy/ko/benefits.ts` = `T.benefits.*`  
+**Canon:** `benefit-hub.wire.json` · `benefit-mission-card.wire.json`  
+**CI:** `verify:benefit-hub-surfaces` · `verify:benefit-no-credits-currency` · `verify:benefit-g4-ledger-separation`
+
 ### 5.10 설정 `/me/settings` — **§50.1 SSOT (v1)**
 
 ```
@@ -726,7 +792,7 @@ interface UserNotificationPrefs {
 
 **CI:** `verify:auth-surfaces`
 
-### 6.4e 퍼뜩 채팅 surface (UI owns wire · Runtime SSOT=Engine §47.12~47.14)
+### 6.4e 퍼뜩 채팅 surface (UI owns wire · Runtime SSOT=Engine §47.12~47.15)
 
 | Canon | route | Primary |
 |-------|-------|---------|
@@ -737,7 +803,21 @@ interface UserNotificationPrefs {
 **면책 1줄(고정):** “앱 숫자·상태는 원장 기준이에요. 일상 답은 참고용이에요.”  
 **degrade:** G 쿼터/장애 시 채팅에 busy 템플릿 + toast `PEOTTEOK_LLM_BUSY` (§8.2) · P칩/Fact 안내는 유지  
 **금지:** 자율 출금 CTA · Twin 잔액 · 실체결 암시 · 성별 멘트 · “모든 질문 완벽” 카피  
-**CI:** `verify:ai-coach-fact-only`(P) · `verify:ai-general-no-money-tools`(G UI path) · `verify:ai-coach-no-autonomy` · `verify:llm-quota-degrade`
+
+#### 6.4e.1 구현 체크 (v7.22.43 · Engine `#24` API contract 후)
+
+| # | Deliverable | SSOT |
+|---|-------------|------|
+| 1 | `packages/ui/copy/ko/peotteok.ts` | `T.peotteok.chatTitle` · `laneDisclaimer` · `factChips` · `placeholder` · `llmBusy` · S-refuse · P-refresh |
+| 2 | `apps/web/app/me/peotteok/page.tsx` | Canon `peotteok-chat.wire.json` blocks 100% |
+| 3 | SSE client | `POST /api/v1/me/peotteok/chat` partial stream · `GET .../chips` |
+| 4 | P chips | §47.12 제안 우선순위 · lane P 고정 |
+| 5 | S path | template + `/wallet/withdraw` deep-link · execute CTA 0 |
+| 6 | degrade | inline busy + toast `PEOTTEOK_LLM_BUSY` · P Fact 칩 유지 |
+| 7 | toneBand | `fontScale` from prefs API (read-only) · §38.9 |
+
+**선행:** Engine todo `ai-coach-runtime` (#24) SSE contract · **병행 금지**  
+**CI:** `verify:ai-coach-fact-only`(P) · `verify:ai-general-no-money-tools`(G UI path) · `verify:ai-coach-no-autonomy` · `verify:llm-quota-degrade` · `verify:canon-surfaces` · `verify:no-it-jargon` · `verify:age-tone-surfaces`
 
 ### 6.4c 랜딩 첫화면 3초 예산 (UI owns wire · route SSOT=Infra §31.2)
 
@@ -880,6 +960,11 @@ Canon: `kyc-guide` → `kyc-doc-capture` → `kyc-confirm` · Lux 금융 톤 · 
 | `CAMPAIGN_ENDED` | ⏰ 이 이벤트는 종료됐어요 | claim after end |
 | `CAMPAIGN_BUDGET` | 📭 이벤트 예산이 마감됐어요 | budget_exhausted |
 | `CAMPAIGN_DUP` | ✋ 이미 받은 보너스예요 | idempotent claim |
+| `MISSION_RELEASED` | 🎁 미션 보너스를 받았어요 | §51.8a released |
+| `MISSION_POOL_WAIT` | ⏳ 보너스 준비 중이에요 | queued_pool |
+| `MISSION_HOLD` | ⏳ 미션 보너스를 확인 중이에요 | pending_hold |
+| `MISSION_CLAWBACK` | ↩️ 부정 이용으로 미션 보너스가 회수됐어요 | clawback |
+| `STREAK_COUPON` | 🎫 연속 미션 수수료 쿠폰을 받았어요 | streak |
 | `NOTICE_PUSH` | 📢 새 공지가 있어요 | notice live+push |
 | `PEOTTEOK_LLM_BUSY` | 🤖 퍼뜩이 잠시 바빠요. 조금 뒤 다시 물어봐 주세요 | Engine §47.13 G레인 쿼터/429/degrade |
 
@@ -894,6 +979,7 @@ Canon: `kyc-guide` → `kyc-doc-capture` → `kyc-confirm` · Lux 금융 톤 · 
 | `promo` | 🎁 이벤트 (campaign live · Growth ON) | `/me/events?tab=campaign` |
 | `notice` | 📢 공지 | `/me/events?tab=notice` |
 | `referral` | 🤝 초대 보너스 / 보류 안내 | `/me/invite` |
+| `benefit` | 🎯 받을 혜택 / 미션 완료 | `/me/benefits` |
 
 ### 8.4 중복0 기술
 
@@ -958,18 +1044,42 @@ export const luxFintech = {
 
 | # | 장치 | 컴포넌트 | 데이터 소스 (mode) |
 |---|------|----------|-------------------|
-| 1 | **Count-Up** | `CountUpNumber` | **ledger only** (settlement.completed) |
-| 2 | **Live Ticker** | `LivePayoutTicker` | live=SSE · demo=Admin queue · hybrid=blend |
+| 1 | **Count-Up** | `CountUpNumber` | **ledger only** (settlement.completed) · 티커 demo **무관** |
+| 2 | **Live Ticker** | `LivePayoutTicker` | Admin **§35.4** Organic Hybrid · surface=**§33.2a** |
 | 3 | **Pulse CTA** | `MotionCTA` | CSS `@keyframes pulse-glow` |
 | 4 | **Tri-Sensation** | `MotionCTA` + `feedback.ts` | vibrate + lux chime + tier particle |
 
-**LivePayoutTicker ko 예:**
-> live: "방금 ○○○님이 +420,000원 정산" (`settlement_id`)  
-> demo: Admin 템플릿 · hybrid: live+demo interleave
+**홈 [F] counter:** `counter_mode` ledger / demo / blended — Admin `/admin/growth?tab=ticker` · **DayPulse[A2]와 숫자·카피 분리**
 
-**홈 [F] counter:** `counter_mode` ledger / demo / blended — Admin `/admin/growth/ticker`
+**FOMO Coral:** engine `urgency` · G4 ON 시 Admin intensity boost · 티커 줄과 동시 점멸 경쟁 **금지**
 
-**FOMO Coral:** engine `urgency` · G4 ON 시 Admin intensity boost
+#### 33.2a PublicTicker surface (v7.22.40 · Owns=UI 화면 · 스케줄=Admin §35.4)
+
+> **목표:** “전 세계가 쓰는 활기” · 유저가 **연출 존재를 알 수 없게** · Lux 명품관 톤(카지노❌).  
+> **중복0:** mode·곡선·corpus·마스킹·caps·audit = **Admin §35.4** · 본 절 = 슬롯·컴포넌트·카피·모션·PII 표시 가드만.
+
+| 잠금 | 내용 |
+|------|------|
+| 슬롯 | 홈 **[A]만** · 실행실·지갑·DayPulse·PreCTA에 티커 침투 **0** |
+| DTO | `PublicTickerEvent` — `displayLabel`·`amountKrwText`·`templateKey`·`at` only (Admin §35.4) |
+| 카피 SSOT | `T.ticker.justSettled` / `justReflected` / `participantAmt` — `{name}`=`displayLabel` |
+| 예시 | `방금 {name}님이 +{amount} 정산했어요` · 티커 본문에 `100만`/`대박`/`당첨` **0** |
+| 모션 | 한 줄 fade 150~220ms · S/A · B=교체만 · reduced-motion=즉시 · **가상리스트 max 50** |
+| 사운드 | 기본 **OFF** · Lux chime은 세션당 극희소(설정 ON 시에만) |
+| World Pulse | 옵션 strip · 도시명만 · 숫자0 · flag · G4와 슬롯 분리 |
+| 규모 문장 | G1 또는 랜딩 3s **1곳** (Admin/랜딩 Owns) · 홈 Hero에 상시 100만 배너 **금지** |
+| SSE batch | device-tier §29 — B 3s / A 1s / S 0.5s · 홈 전체 리렌더 금지 |
+
+```typescript
+// packages/ui — props (스케줄러 상태 클라 재구현 금지)
+interface LivePayoutTickerProps {
+  mode: 'off' | 'live' | 'demo' | 'hybrid'; // 서버/Admin 설정 투영
+  events: PublicTickerEvent[];              // 이미 마스킹된 라벨만
+  maxItems: 50;
+}
+```
+
+**CI (UI):** `verify:ticker-pii-0` · `verify:day-pulse-live-only` · `verify:no-it-jargon` · (스케줄 규칙=`verify:ticker-organic-hybrid` Admin/Nest)
 
 ### 33.3 Tier × Motion Matrix (§29 연동, 재표기 최소)
 
@@ -1000,10 +1110,10 @@ packages/ui/components/lux/
 
 **Props contract:**
 ```typescript
+// LivePayoutTicker — §33.2a (SettlementTickerEvent/demoQueue 클라 전달 폐기 · 서버 PublicTickerEvent만)
 interface LivePayoutTickerProps {
   mode: 'off' | 'live' | 'demo' | 'hybrid';
-  events?: SettlementTickerEvent[];
-  demoQueue?: DemoTickerEvent[];  // Admin CRUD §35 G4
+  events: PublicTickerEvent[];
   maxItems: 50;
 }
 interface HomePayoutCounterProps {
@@ -1033,17 +1143,23 @@ extend: {
 
 | # | 시나리오 | 방어 |
 |---|----------|------|
-| D1 | Unbounded demo ticker spam | Admin rate cap + max queue size |
+| D1 | Unbounded demo ticker spam | Admin `organicCaps` + max ring 50 (§35.4) |
 | D2 | Count-Up on expected not settled | CountUp only on `settlement.completed` |
 | D3 | FOMO red always on | server `urgency` or G4 flag |
 | D4 | B-tier GPU spike | tier class + CI perf budget |
 | D5 | Motion when reduced-motion | CSS media query hard off |
 | D6 | Demo mode without audit | `ticker_mode≠live` → audit log required |
+| D7 | 유저 DTO에 email/raw displayName | `verify:ticker-pii-0` · 서버 마스킹 only |
+| D8 | 티커 숫자를 DayPulse에 표시/합산 | §51.24 L16 · `verify:day-pulse-live-only` |
+| D9 | 티커 본문에 100만/당첨/대박 | copy CI · 규모 문장=G1/랜딩1곳만 |
+| D10 | 클라에서 demoQueue 스케줄 재구현 | 스케줄 Owns=Admin/Nest §35.4 |
 
 ### 33.7 CI Gates (§34)
 
 - `verify:lux-tokens` — no hardcoded hex outside lux-fintech.ts
 - `verify:ticker-mode-audit` — demo/hybrid modes emit audit events
+- `verify:ticker-pii-0` — public ticker payload PII 0
+- `verify:ticker-organic-hybrid` — live우선·caps·곡선 규칙 (Admin/Nest · pointer)
 - `verify:motion-tier` — B-tier screenshot: no backdrop-filter
 - `verify:cta-copy` — no "차익 수령"/"수익 확정" in **앱 카드·진행 중** (성공 화면 `확정 지급` 배지만 §48 허용)
 - `verify:mockup-governance` — ADR-013 · 사진목업 픽셀기준 0 · Canon checklist만
@@ -1206,6 +1322,93 @@ flowchart LR
 
 **Admin:** `/admin/growth/content` 또는 `/admin/content/trust` — **비교·수익 설명** copy 편집 · **면책 블록만 잠금**
 
+### 38.10 Market Partner Trust — 공식 협력사 표기 (v7.22.41 · Founder lock · Owns=UI)
+
+> **제품 잠금:** eBay·Amazon·Yahoo! JAPAN Auction 등은 **사칭·가짜 연출이 아닌 공식 협력사** · 유저 신뢰 surface에 **회사 로고+한글 라벨**을 **반드시** 노출.  
+> **중복0:** partner registry·adapter 계약=**Engine §0.0.1c** · 본 절=**어디에·어떻게** 보이게 할지 · Brand asset=**§38.10.3** · orchestrateTruth=§48·§50.3 **불변**(협력≠대리 구매).
+
+#### 38.10.1 공식 협력사 레지스트리 (표기 SSOT)
+
+| tier | partner_id | 유저 LabelKo | 로고 asset | listing leg Day-1 | 표기 |
+|------|------------|--------------|------------|-------------------|------|
+| **A** | `ebay_us` | 이베이(미국) | `markets/ebay.svg` | ✅ | **항상** |
+| **A** | `ebay_gb` | 이베이(영국) | `markets/ebay.svg` | ✅ | **항상** |
+| **A** | `ebay_de` | 이베이(독일) | `markets/ebay.svg` | ○ | **항상** |
+| **A** | `ebay_au` | 이베이(호주) | `markets/ebay.svg` | ○ | **항상** |
+| **A** | `amazon_us` | 아마존(미국) | `markets/amazon.svg` | Phase1+ leg | **항상** |
+| **A** | `amazon_jp` | 아마존(일본) | `markets/amazon.svg` | Phase1+ leg | **항상** |
+| **A** | `amazon_de` | 아마존(독일) | `markets/amazon.svg` | Phase1+ leg | **항상** |
+| **A** | `yahoo_jp` | Yahoo! JAPAN オークション | `markets/yahoo-jp.svg` | Phase1+ leg | **항상** · v7.22.32 표기금지 **supersede** |
+| **B** | `pokemontcg` | 포켓몬 TCG 공식 API | `markets/pokemontcg.svg` | catalog | 신뢰/edu |
+| **B** | `ygoprodeck` | 유희왕 카드 DB | `markets/ygoprodeck.svg` | catalog | 신뢰/edu |
+| **C** | `coingecko` | CoinGecko | `markets/coingecko.svg` | fx | 지갑/edu |
+| **C** | `frankfurter` | Frankfurter | `markets/frankfurter.svg` | fx | 지갑/edu |
+
+**카피 SSOT (`T.trust.partners.*`):**
+- stripHeadline: `공식 협력 · 글로벌 시세·데이터 연동`
+- stripSub: `대형 쇼핑몰·도소매 시장과 연동해 시세를 가져와요`
+- legCaption: `{buyLabel} ↔ {sellLabel}` · footnote: `공식 협력 · 시세·데이터 연동`
+- badgeOrchestrate: `직접 사지 않아요` / `직접 팔지 않아요` (**유지** · 협력과 양립)
+
+**금지 (결함0):** 「시세 참고용만」을 **유일** 신뢰 문구로 쓰기 · 미등록 몰 로고 · 퍼뜩 Brand Kit 자리에 타사 마크 · 「공식 대리 구매/판매」 · Growth G1 가짜 연혁에 협력사 위장
+
+#### 38.10.2 표기 surface (시선·IA)
+
+| surface | 블록 | 내용 |
+|---------|------|------|
+| **랜딩 3s** | 신뢰 1줄 (§6.4c) | Tier-A 로고 **4~6개** 가로 · `공식 협력` 1줄 · firstViewport≤5 유지 |
+| **홈 `/`** | PartnerTrustStrip | Hero 아래 얇은 strip · Tier-A 전체 · Lux monochrome · **G4 ticker와 슬롯 분리** |
+| **기회 카드·상세** | `MarketPartnerLeg` | **해당 opportunity leg만** 로고2+LabelKo+화살표 · PriceCompareMargin 위 |
+| **실행실** | step 2 active | leg 로고2 · `시세 불러오는 중...` · LabelKo 동적 |
+| **성공 영수증** | log row | `{buyLabel} ↔ {sellLabel} 시세 반영` · **「○○ 판매 완료」금지** |
+| **`/me/guide/partners`** | 전체 그리드 | Tier A/B/C · 2열 카드 · 로고+LabelKo+1줄 설명 |
+| **온보딩 DEMO** | 1 slide | Partner strip 3초 · orchestrateTruth 1줄 |
+| **SiteFooter** | compact | eBay·Amazon·Yahoo JP **로고 small** + `공식 협력` |
+
+**넣지 않음:** 지갑 입출금 CTA 옆(금융 혼선) · G4 LivePayoutTicker · Admin Brand wordmark 영역
+
+#### 38.10.3 Brand · 로고 asset (ADR-013)
+
+```
+packages/ui/brand/assets/markets/
+├── manifest.json          # partner_id · logo path · labelKo · tier · displayOrder
+├── ebay.svg
+├── amazon.svg
+├── yahoo-jp.svg
+├── pokemontcg.svg
+├── ygoprodeck.svg
+├── coingecko.svg
+└── frankfurter.svg
+```
+
+| 규칙 | 잠금 |
+|------|------|
+| 높이 | 카드 leg **20px** · strip **24px** · edu **32px** |
+| 변형 | Lux Dark = **monochrome/light** 공식 변형 only · 임의 리컬러 **금지** |
+| clear space | 각사 가이드 min · 겹침 **0** |
+| href | 유저 클릭 → **외부 쇼핑몰 딥링크 금지** · `/me/guide/partners` 또는 noop |
+| manifest | `status=ready`만 렌더 · CDN 무단 **0** |
+
+**컴포넌트:**
+```
+packages/ui/components/trust/
+├── MarketPartnerLeg.tsx       # buy/sell 2-logo row
+├── MarketPartnerTrustStrip.tsx
+├── MarketPartnerGrid.tsx      # /me/guide/partners
+└── index.ts
+```
+
+**Canon wire (todo):** `market-partner-trust.wire.json` · `opportunity-card`/`opportunity-detail`/`execution-running` leg 슬롯
+
+#### 38.10.4 Admin (표시만 · sidebar 13 금지)
+
+| route | 액션 |
+|-------|------|
+| `/admin/growth?tab=partners` | Tier-A 순서 · ON/OFF · **로고 교체 금지**(manifest only) · audit |
+| `/admin/opportunities` | leg별 partner_id — Engine Owns |
+
+**CI:** `verify:market-partner-trust` — registry manifest · Tier-A strip 4+ · leg 컴포넌트 · yahoo/amazon 로고 경로 · orchestrate 배지 공존 · `verify:brand-logo-single`(퍼뜩 단일) · `verify:mockup-governance`
+
 ### 38.4 UI 컴포넌트 · 라우트
 
 ```
@@ -1213,6 +1416,9 @@ packages/ui/components/trust/
 ├── WhyUsdtCard.tsx              # 입금·온보딩
 ├── UsdtVsKrwCompareTable.tsx
 ├── PlatformRevenueExplainer.tsx # /me/guide/revenue
+├── MarketPartnerLeg.tsx         # §38.10
+├── MarketPartnerTrustStrip.tsx
+├── MarketPartnerGrid.tsx
 ├── TrustFAQAccordion.tsx        # /me/guide/faq
 └── TaxDisclaimerBlock.tsx       # CI locked — Admin override ❌
 
@@ -1220,6 +1426,7 @@ apps/web/app/
 ├── wallet/deposit/page.tsx      # WhyUsdtCard + NetworkPlainWarning + tabs
 ├── me/guide/usdt/page.tsx
 ├── me/guide/get-usdt/page.tsx   # §38.8
+├── me/guide/partners/page.tsx   # §38.10
 ├── me/guide/revenue/page.tsx
 └── me/guide/faq/page.tsx
 ```
@@ -1928,7 +2135,7 @@ Soft=목표 60s · Hard=wall 90s · **전 등급 동일** · presentation 8~15s�
 | 필터 칩 | `전체` `시계` `카드` `가방` (Engine §0.0.5 pointer) |
 | 로드 실패 | Lux 플레이스홀더 + `assetIcon`(⌚/🃏/👜) · 깨진 URL 빈칸 **금지** |
 | 금지 | 사진 목업 픽셀 복제 · 교차 카테고리 이미지 · “판매 완료/내가 팜” 암시 · 성별 분기 |
-| 캡션 | 이미지 근처 작게 **`시세 참고용`** (`T.execution.imageRightsNote`) |
+| 캡션 | **`공식 협력 · 시세·데이터 연동`** (`T.trust.partners.legCaption`) · §38.10 |
 
 **Canon:** `execution-running` · `execution-success` blocks에 `productThumb` 필수  
 **검증:** `verify:asset-image-surface` · `verify:execution-surfaces`
@@ -2661,7 +2868,7 @@ interface ParticipateProof {
 
 > **SSOT:** 본 절 · `CONSTITUTION/51` Loop 절 pointer · `schemas/day-opportunity-pulse.v1.json`  
 > **참조자:** Engine §48.13.1 P0 · Admin §35 경계 · CATALOG `loop-psychology` / `day-pulse-live-only` / `preflight-may-stop`  
-> **중복0:** G4 ticker/counter = Admin §35 · **DayPulse/PreCTA 수치·문구는 Growth 스위치와 무관**
+> **중복0:** G4 ticker/counter = Admin **§35.4** Organic Hybrid · surface=UI **§33.2a** · **DayPulse/PreCTA 수치·문구는 Growth 스위치와 무관** · demo↔DayPulse merge **0**
 
 #### 51.24.1 DayPulse (홈 [A2])
 

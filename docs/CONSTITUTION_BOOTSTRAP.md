@@ -1,4 +1,4 @@
-﻿# Constitution Bootstrap — Index CLOSE 실물 대조 기록 (v7.22.36)
+# Constitution Bootstrap — Index CLOSE 실물 대조 기록 (v7.22.36)
 
 > **목적:** 구현 채팅 시작 전, 헌법·스키마·마이그레이션·어드민·브랜드·DB SSOT를 **예측 없이** 정리한다.  
 > **권위:** ACTIVE Index `ai_profit_os_00_index_a1b2c3d4.plan.md` > 도메인 01~06 > launch ARCHIVE.  
@@ -154,7 +154,24 @@
 | E6 | Soft 용어 충돌 | → priceSoftAccept ≠ Soft60 wall |
 | E7 | Soft/Hard completed vs skeleton | → SSOT 잠금 vs 구현 todo 분리 |
 
-**판정:** Engine preflight **PASS** · File-Serial 다음 채팅=`market-intel-engine` only.
+**판정:** Engine preflight **PASS** (이력 · v7.22.39). **CLOSE = §0.5 (v7.22.44).**
+### 0.5 Engine CLOSE 재검증 (v7.22.44 · 2026-08-09 · 예측0)
+
+> **Owns:** Engine 플랜 종료 게이트 기록 · todos **26/26 completed · pending 0**.
+> **실측:** Supabase MCP + FS + Engine `verify:*` 전수.
+
+| 대상 | 종료 실측 | 판정 |
+|------|-----------|------|
+| Supabase ref | `mgsytcetsiecllmhcyox` · Seoul · PG 17.6 · ACTIVE_HEALTHY | ✅ |
+| `public` 테이블 | **76** · RLS ON | ✅ |
+| migrations applied | **25** · 로컬 파일명 버전 **1:1** · 끝=`20260809103208_ai_feature_platform_pick_eval_shadow` | ✅ |
+| public 함수 | **5** (+`user_opportunity_overrides_pin_cap`) · Rule RPC 0 | ✅ |
+| override DDL | force_show/pin_order/margin_pct/expected_profit/capital_band_force · 구 pinned 0 | ✅ |
+| engine-rust | R1~R10 Soft60/Hard90 REQUEUE MATCH_TIMEOUT · golden live | ✅ |
+| adapters | Day-1 5종 + amazon/yahoo-jp Phase1+ | ✅ |
+| Engine verify | listing~coach/admin-routes/pg-module-scan **전수 PASS** | ✅ |
+
+**판정:** Engine = **CLOSED** · File-Serial 다음 채팅 = **03 UI** `yahoo-jp-copy-ban` only. completed Engine todo 재실행 **금지**.
 
 ---
 
@@ -562,7 +579,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 
 > **Owns:** 본 절 + Index「플랜 직렬 완료 규칙」.  
 > **운영자(Grok-4.5) 규칙:** YAML pending todo를 **위에서 아래로만** · 한 채팅=한 todo · 완료 잠금 todo 재실행 금지.  
-> **다음 채팅:** **02 Engine** `market-intel-engine` only (v7.22.39 `engine-preflight-constitution` PASS) (Money completed 재실행 금지).
+> **다음 채팅:** **03 UI** `yahoo-jp-copy-ban` only (v7.22.44 Engine CLOSED · Money/Engine completed 재실행 금지).
 
 | 순 | Index todo | 산출물 | 모델 | 상태 |
 |----|------------|--------|------|------|
@@ -575,6 +592,6 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | 6 | `copy-canon-cta-sla-lock` | copy/ko CTA·면책·Soft/Hard + Canon `primaryCta` | grok-4.5 | completed |
 | 7 | `auth-ssot` | Nest JWT · Stage A/B · Owns=Infra §51.9 · `verify:auth-flows` | grok-4.5 | completed |
 | 8 | `phase0-bootstrap-hosts` | CF+Supabase+Upstash · Owns=Infra §51.13 · `verify:phase0-bootstrap` | composer-2.5 | completed |
-| 9+ | 도메인 파일 | **01 Money CLOSED** → **02 Engine**(market-intel-engine) → 03 UI → 04 Admin → 05 PWA → 06 Infra | 접두사 | File-Serial |
+| 9+ | 도메인 파일 | **01 Money CLOSED** → **02 Engine CLOSED** → **03 UI**(yahoo-jp-copy-ban) → 04 Admin → 05 PWA → 06 Infra | 접두사 | File-Serial |
 
 **금지:** 헌법/스키마 없이 apps 화면 · constitution∥monorepo 병렬 · Dashboard DDL · Supabase Auth SDK · launch를 착수 SSOT로 사용 · yahoo_jp 재제안 · Index pending>0인데 01 Money 착수 · Admin `admin-isolated-deploy`를 `admin-ops`보다 먼저 실행.

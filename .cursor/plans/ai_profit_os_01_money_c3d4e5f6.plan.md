@@ -55,7 +55,7 @@ isProject: false
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
-> **퍼뜩(AI) Fact:** 버킷·입금·출금·레퍼럴·practice + depositPref · **principalUsdt** (§49.2a) · §47.12 (머니 엔진 비파괴)  
+> **퍼뜩(AI) Fact:** 버킷·입금·출금·레퍼럴·practice + depositPref · **principalUsdt** (§49.2a) · §47.12~15 FactTool loaders (머니 엔진 비파괴 · Coach=read-only)  
 > **유저 네트워크 카피:** §41.6 · 가이드 UI=§38.8 pointer  
 > **KRW Day-1:** Admin **승인/거절** · CSV Auto-Recon=**L2+만** (ARCHIVE/구문구·규칙 drift 무시)  
 > **todo 순서 (Grok-4.5|256K · 위→아래 · 한 채팅=한 todo):** preflight(완료) → 원장 → fee/holding → USDT+KRW지갑 → KYC → 출금auth/intent → watchers → sweeper → 출금UI → 남용방어 → suggest → 네트워크카피 → 초대 → practice  
@@ -1143,6 +1143,172 @@ interface SupportTicket {
 - 카피: 「위 금액 그대로 송금 (끝자리 가산 포함)」  
 - **금지:** 「신청액과 동일」단독 · payable 미표시  
 - CI: `verify:krw-payable-copy`
+
+### 51.8a Mission Auto-Accrual · Benefit Hub Ledger (v7.22.42 · 삭제 금지 · 중복0)
+
+> **IA:** 유저 `/me/benefits` · Admin `/admin/growth?tab=missions` · **≠** `/me/invite`(§51.5) · **≠** `/me/events`(§51.5b)  
+> **UI Owns:** 카피·카드·Hero·Canon = UI **§5.9.5** · **Engine Owns:** `settlement.completed` 등 **도메인 이벤트 발생만** · **본 절 Owns:** accrual·idempotency·Pool·ledger·clawback  
+> **Rule 경계:** §48.13 `MATCH_SUCCESS`→`settlement.completed` **이후** Nest `MissionRewardEvaluator` **비동기** · Rule/R1~R10·분개 순서 **변경 0** (Engine §48.13.4)  
+> **제로 목표:** 오지급 0 · 중복지급 0 · 미지급 silent 0 · Pool=0이면 **queued_pool**(실패 아님) · manual per-user grant **코드경로 0**
+
+#### 51.8a.0 헌법 (삭제 금지)
+
+| # | 잠금 |
+|---|------|
+| B0 | 가상 **Credits** 화폐·잔액 테이블 **0** — 표시=USDT/`≈₩` 보너스 only |
+| B1 | **`autoClaim: true` only** — Admin·Ops **유저별 「지급」버튼 0** (§37 adjust는 분쟁 예외만) |
+| B2 | Promo Pool ≠ principal · practice→profit **0** · G4/demo→ledger **0** |
+| B3 | 금전 미션 트리거 = **서버 domain event only** (guide=dwell token · settlement=ledger posted) |
+| B4 | `rewardsEnabled=false` → **금전 accrual 생성 0** · 교육 미션(reward none)만 |
+| B5 | `accrualHalt=true` → 신규 release **0** · 큐 유지 · OFF 후 batch FIFO |
+| B6 | amount = **`amountUsdtSnap` at accrual insert** — release 시 config 재조회로 증액 **0** |
+
+#### 51.8a.1 Idempotency (오지급·중복 0)
+
+| section | key pattern | PG |
+|---------|-------------|-----|
+| one_time | `mission:{userId}:{missionId}` | `UNIQUE(idempotency_key)` |
+| daily | `mission:{userId}:{missionId}:{yyyy-mm-dd}` | KST 00:00 boundary |
+| weekly | `mission:{userId}:{missionId}:{yyyy-'W'ww}` | KST ISO week |
+| streak milestone | `mission:{userId}:{streakId}:d{n}` | milestone day n |
+| campaign_inline | `mission:{userId}:campaign:{campaignId}` | + §51.5b claim key |
+
+**Insert:** `INSERT … ON CONFLICT (idempotency_key) DO NOTHING RETURNING id` — no row → **skip silently** (23505 race OK)  
+**source_event_id:** `UNIQUE(user_id, source_event_id) WHERE source_event_id IS NOT NULL` (§8.4 동일)
+
+#### 51.8a.2 상태머신 (accrual)
+
+```
+evaluate → pending | pending_hold → (Pool OK) posting → released
+                    ↘ queued_pool → FIFO release when Pool≥amount
+                    ↘ halted (accrualHalt)
+                    ↘ skipped (frozen/banned/growth off/budget 0)
+posting fail → retry outbox · max → dead_letter + alert · **released without journal 0**
+clawback → clawed_back + reverse journal
+```
+
+| status | ledger | 유저 UI |
+|--------|--------|---------|
+| `pending` | 0 | 진행 중 |
+| `pending_hold` | 0 | 확인 중 (wash window) |
+| `queued_pool` | 0 | 보너스 준비 중 |
+| `posting` | in-flight | 확인 중 |
+| `released` | **posted** | 받았어요 |
+| `clawed_back` | reversed | 회수 toast |
+| `halted` | 0 | 준비 중 (halt) |
+| `skipped` | 0 | (교육만 표시 or 숨김) |
+
+#### 51.8a.3 지급 파이프라인 (단일 트랜잭션 경계)
+
+```
+1. DomainEvent (Nest in-process · Phase0)
+2. MissionRewardEvaluator.match(definitions live + user predicates)
+3. Guards: user.status · rewardsEnabled · growthRequired · budget remaining · device/velocity (M-A*)
+4. INSERT accrual (idempotency) + amountUsdtSnap + rewardKindSnap
+5. if reward.kind=none → status=released · journal 0 · done
+6. if money + releaseHoldHours>0 → pending_hold · holdUntil=now+hours
+7. else → PayoutScheduler.enqueue
+8. On release: Promo Pool balance ≥ amountUsdtSnap ?
+     YES → ledger.post (practice|promo_profit|fee_coupon) · journal id → accrual.released
+     NO  → queued_pool (§51.5 Pool FIFO 동일 서비스 재사용)
+9. SSE benefits.updated + toast MISSION_* (§8.2)
+```
+
+**Ledger (중복0):**
+- `promo_profit`: `Debit Promo Pool / Credit User profit` (Pool 부족=`queued_pool`)
+- `practice`: `Debit Promo Pool / Credit User practice` · §51.7 expire 적용
+- `fee_coupon`: coupon ledger · 출금 시 차감
+- **금지:** principal · demo/G4 · practice→profit · **이중 journal**(accrual 1건 = journal 1건)
+
+#### 51.8a.4 Day-1 기본 카탈로그 (Admin missions · pointer UI §5.9.5)
+
+| id | section | trigger | reward | growthRequired |
+|----|---------|---------|--------|----------------|
+| D01~D02,D04~D08 | daily | session/guide/inbox/… | none | false |
+| D03 | daily | participate.confirmed | promo_profit (cap) | **true** |
+| M01~M04,M06,M08~M14 | one_time | profile/guide/… | none | false |
+| M05 | one_time | deposit.confirmed (first, ≥min) | promo_profit/practice | **true** |
+| M07 | one_time | settlement.completed (first) | promo_profit | **true** |
+| W01~W05 | weekly | counters server-side | configurable | **true** |
+| S03,S07,S14 | streak | D01 consecutive | none/coupon | mixed |
+
+**M07 트리거 잠금:** `journal_type=settlement` + `is_first_settlement=true` · Rule 연출·G4 **0**
+
+#### 51.8a.5 Day-1 금액 · hold · cap (Admin 편집 · 스키마 기본)
+
+| 파라미터 | Day-1 기본 | 비고 |
+|----------|------------|------|
+| `missionsRewardsEnabled` | `rewardsEnabled`와 **동일 스위치** | 분리 스위치 0 |
+| `m05MinDepositUsdt` | **20** | §51.5 min과 align |
+| `m07FirstSettlementUsdt` | **2** | promo_profit |
+| `d03DailyParticipateUsdt` | **0** (OFF) → Growth ON 후 Admin | system cap 별도 |
+| `releaseHoldHoursM05` | **48** | wash |
+| `releaseHoldHoursM07` | **24** | |
+| `systemMissionPayoutCapPerDayUsdt` | optional | Sybil D03 · **유저별 횟수 캡 ≠** |
+| `clawbackHoursMission` | **72** | deposit→bonus→withdraw wash |
+
+#### 51.8a.6 방어 M-A1~M-A18 · 보강 H1~H6 · 오류 ME1~ME8
+
+**M-A (어뷰징):**
+
+| id | 공격 | 방어 |
+|----|------|------|
+| M-A1 | One-Time 중복 | idempotency UNIQUE |
+| M-A2 | Daily 00:00 연타 | KST key + rate limit |
+| M-A3 | 다계정 M07 파밍 | device graph · velocity · KYC before profit withdraw (§42) |
+| M-A4 | 입금→보너스→즉시 출금 | min holding §11.2 + hold window |
+| M-A5 | practice 출금 | 403 §51.7 |
+| M-A6 | 소액 반복 M05 | first_deposit + min only |
+| M-A7 | 가짜 정산 | settlement journal only |
+| M-A8 | 가짜 guide | server dwell + route token |
+| M-A9 | 예산 털기 | budgetUsdt · exhausted→skipped |
+| M-A10 | Sybil Daily D03 | systemMissionPayoutCapPerDayUsdt |
+| M-A11 | G4/demo ledger | CI path 0 |
+| M-A12 | Admin 수동 지급 | grant API scan 0 |
+| M-A13 | frozen/banned | evaluate+release both 0 |
+| M-A14 | posting fail dup | outbox · posting OK 후 released only |
+| M-A15 | rewardsEnabled false | money accrual 0 |
+| M-A16 | ledger ≠ accrual | recon Fail → circuit halt missions |
+| M-A17 | campaign ended | 403 · ended status |
+| M-A18 | streak timezone cheat | KST server counters only |
+
+**H (hold/운영):** H1 releaseHoldHours · H2 KYC gate profit withdraw · H3 KST-only streak · H4 `POST /benefits/sync` rate limit · H5 campaign capPerUser+budget · H6 weekly counters server-only
+
+**ME (오류):**
+
+| id | 상황 | 대응 |
+|----|------|------|
+| ME1 | Pool=0 | queued_pool · top-up FIFO |
+| ME2 | posting fail | retry · dead letter |
+| ME3 | duplicate webhook | idempotency skip |
+| ME4 | campaign ended | 403 CAMPAIGN_ENDED |
+| ME5 | accrualHalt | queue only |
+| ME6 | budget exhausted | skipped + Admin alert |
+| ME7 | evaluator crash | outbox replay · **at-least-once safe via idempotency** |
+| ME8 | SSE fail | UI poll `/me/benefits` · ledger SoT unchanged |
+
+#### 51.8a.7 API (Nest · api-nest)
+
+```
+GET  /api/v1/me/benefits
+GET  /api/v1/me/benefits/summary
+POST /api/v1/me/benefits/sync          # rate limited · idempotent refresh
+SSE  benefits.updated
+```
+
+**Admin:**
+```
+GET/PATCH /admin/growth/missions
+GET       /admin/growth/missions/accruals?status=queued_pool|pending_hold
+POST      /admin/growth/missions/accrual-halt   # audit reason≥10
+```
+
+**FORBIDDEN routes:** `POST /admin/users/:id/mission-grant` · `PATCH …/manual-bonus` · any balance adjust disguised as mission
+
+#### 51.8a.8 CI · 스키마
+
+- `schemas/mission-definition.v1.json` · `schemas/mission-accrual.v1.json`
+- **CI:** `verify:mission-auto-payout` · `verify:mission-idempotency` · `verify:mission-no-manual-grant` · `verify:benefit-no-credits-currency` · `verify:benefit-g4-ledger-separation` · `verify:benefit-hub-surfaces` (UI pointer)
 
 ### 51.11 Dispute · Refund Playbook
 

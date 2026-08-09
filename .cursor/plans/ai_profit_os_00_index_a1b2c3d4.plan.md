@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Index
-overview: v7.22.39 Index CLOSED·01 Money CLOSED·02 Engine preflight PASS. 실측=DB58·mig18·Admin+assets/reserve. File-Serial→market-intel-engine. listing=ebay멀티|admin·yahoo영구FORBIDDEN·퍼뜩P/G/S.
+overview: v7.22.44 Index·01 Money CLOSED·02 Engine CLOSED(26/26)·File-Serial 다음=03 UI. listing Day1=ebay멀티|admin·협력사§38.10·퍼뜩P/G/S.
 todos:
   - id: yahoo-jp-permanent-ban
     content: "[grok-4.5|256K] v7.22.32 yahoo_jp 영구 FORBIDDEN · Phase1+ 철회 · Engine/UI/ENV 0 · verify:listing-legs-day1"
@@ -132,7 +132,7 @@ isProject: false
 | **05** | PWA & Native | PWA pending **0** 후만 06 착수 |
 | **06** | Infra & Marketing | pending **0**(Marketing/CAPI + 후반 관측만 · Auth/Phase0 실행큐≠여기) = 전 플랜 직렬 완료 |
 
-**00 Index pending 큐:** **pending 0 · CLOSED (v7.22.36)**. **01 Money = CLOSED (v7.22.38 · todos 15/15)**. **02 Engine** = preflight·yahoo·listing·Soft/Hard SSOT **completed** · 다음 todo=**`market-intel-engine`**. *(Index completed: monorepo-skeleton · copy-canon-cta-sla-lock · auth-ssot · phase0-bootstrap-hosts)*
+**00 Index pending 큐:** **pending 0 · CLOSED (v7.22.36)**. **01 Money = CLOSED (v7.22.38 · todos 15/15)**. **02 Engine = CLOSED (v7.22.44 · todos 26/26)**. File-Serial 다음=**03 UI** `yahoo-jp-copy-ban`. *(Index completed: monorepo-skeleton · copy-canon-cta-sla-lock · auth-ssot · phase0-bootstrap-hosts)*
 
 ```mermaid
 flowchart TD
@@ -246,6 +246,11 @@ flowchart TD
 | **v7.22.37 Money 실측감사·todo재분할** | Money 플랜: DB41·mig10·함수4·Admin routes·스키마 대조 · `wallet-service`→`api-nest` · Phase0 in-process · Admin `compliance?tab=kyc` · deposit-config fee/minHolding · todo 전량 `[grok-4.5\|256K]` 파트분할 · 다음 pending=`money-double-entry` |
 | **v7.22.38 Money CLOSE·DB동기** | Money todos **15/15** · MCP 재실측 public **58** · migrations **18**(로컬버전=원격 1:1) · 누락 `deposit_disputes`·`referral_pool_fifo_clawback` apply · Money verify 전수 PASS · 다음=**02 Engine** |
 | **v7.22.39 Engine 실측감사·Admin자식** | Engine preflight PASS · DB58·mig18·함수4·override DDL≠schema·`/admin/assets`유령→`opportunities?tab=assets`·`system-control?tab=reserve`·nearMissCap=execution-policy only · Soft용어분리 · todo A/B/C·모델분할 · 퍼뜩≠클라이 · 다음=`market-intel-engine` |
+| **v7.22.44 Engine CLOSE·DB동기** | Engine todos **26/26** · MCP 재실측 public **76** · migrations **25**(로컬버전=원격 1:1 · MCP drift rename) · 함수5(+pin_cap) · override schema1:1 · Rule R1~R10 live · Engine verify 전수 PASS · 다음=**03 UI** |
+| **v7.22.40 G4 Organic Hybrid FOMO** | Admin **§35.4** · UI **§33.2a** · Engine §48.13 fanout 경계0 · DayPulse merge0 |
+| **v7.22.41 Market Partner Trust (Founder lock)** | eBay·Amazon·Yahoo! JAPAN Auction **공식 협력사** · UI **§38.10** 로고+LabelKo · Engine **§0.0.1c** · Admin `growth?tab=partners` · v7.22.32 yahoo 표기금지 **supersede** · orchestrateTruth 유지 |
+| **v7.22.42 Benefit Hub · Mission Auto-Accrual** | UI **§5.9.5** `/me/benefits` · Money **§51.8a** idempotency·Pool·ledger·M-A/H/ME · Engine **§48.13.4** fanout0 · Admin **§35.7** `growth?tab=missions` · Credits0 · manual grant0 · verify:mission-* · benefit-hub-* |
+| **v7.22.43 퍼뜩 OpenAI 풀스택 흡수** | standalone 플랜→Engine **§47.15** · UI **§6.4e.1** · Admin **§9.5.7** · LLM Adapter 5종+Coach HTTP SSE+FactTool(14)+eval 3종 · OpenAI Prod=Eval PASS 후 ENV only · SSOT vs 구현 상태 Index E-AI-v7.22.43 분리 |
 | **v7.22.34 File-Serial** | 실행 순서=**파일 N pending=0 전 N+1 금지** · git mv Engine↔Money 번호 스왑(해시 유지) → **01 Money · 02 Engine** · Infra `auth-ssot`/`phase0-bootstrap-hosts`→Index 실행큐 · Owns 본문=Infra 유지 · 파일 내 todos 의존순 재배열 · §18=설명용 종속 · 구번호 파일명 문자열 **0** |
 
 ### 점수판 (목표)
@@ -302,7 +307,8 @@ flowchart TD
 | 거래 완료 CountUp | settlement amount | ledger only |
 | AI 점수 | AI 추천도 | label editable |
 | 오늘 지급 [F] | ledger aggregate | `counter_mode` demo/blended |
-| LiveTicker [A] | ledger SSE | `ticker_mode` demo/hybrid |
+| LiveTicker [A] | ledger SSE → 마스킹 `PublicTickerEvent` | `ticker_mode` demo/hybrid · Admin §35.4 · DayPulse merge **0** |
+| **Market Partner Trust** | leg 로고+LabelKo · Trust strip | **§38.10** · Tier-A eBay·Amazon·Yahoo JP **공식 협력** · Founder lock |
 
 ### 1.4 헌법 확장 (22~28)
 - `22` — 레이아웃·5탭·시선 순서
@@ -960,7 +966,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | KRW copy | §51.8 · §5.7 · §37 |
 | Brand | §51.1 ADR-002 · Consumer=**퍼뜩** · §31 JSON-LD · manifest · `verify:brand-consumer` |
 | DB | §51.1 ADR-001 · §47.9 · §21 폐기 목록 · **≠ PG사** |
-| 퍼뜩(AI) | Engine §47.12~14 · UI `/me/peotteok` · Admin `/admin/ai-logs?tab=coach` |
+| 퍼뜩(AI) | Engine §47.12~15 · UI `/me/peotteok` · Admin `/admin/ai-logs?tab=coach` |
 | KR toneBand·글자3단 | UI §38.9 · §50.1 · Infra §31.2 시드 |
 | 체험형 온보딩·auth/landing/kyc Canon | UI §6.4~6.4d |
 | Auth Stage A/B 필드 · `/ads` · 3초 예산 | Infra §51.9.1 · §31.2a/b |
@@ -1232,21 +1238,23 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | 플랜 이중본 해시 sync | `.cursor/plans` ↔ home · `pnpm cursor:sync-plans` · `verify:plans-ssot` · stale quarantine | [x] |
 | 구현 시 Lighthouse/CI · 실파일 | — | [ ] |
 
-### E-AI. v7.22.16 흡수 체크 (퍼뜩 P/G/S · 중복0)
+### E-AI. v7.22.16 흡수 체크 (퍼뜩 P/G/S · SSOT 잠금 · 중복0)
 
-| 항목 | Owns | 상태 |
-|------|------|------|
-| Intent → P/G/S 파이프라인 | Engine §47.2·47.14 | [x] |
-| Fact tools 카탈로그 + Help RAG | Engine §47.6·47.12 | [x] |
-| LLMAdapter Day-1=`gemini_free`→openai | Engine §47.13 | [x] |
-| 쿼터/429 → none degrade + soft RPM/RPD | Engine §47.13 | [x] |
-| ENV `GEMINI_*` + secrets 스캔(AIza) | `.env.example` · `verify:secrets` | [x] |
-| CI: fact-only=P · general-no-money · lane-router · quota-degrade | Engine §47.8·47.12~13 | [x] |
-| UI stream + 면책 + `PEOTTEOK_LLM_BUSY` + Canon 1.3 | UI §6.4e·§8.2 | [x] |
-| Admin coach Eval P/G/S 세트 pointer | Admin ai-logs?tab=coach | [x] |
-| 과장 “완벽답변” 카피 금지 | Index/UI/Engine | [x] |
-| **사람:** AI Studio 키 → 로컬 `.env`만 | BOOTSTRAP §5f-ops | [ ] |
-| 구현 시 Adapter+router+verify PASS | — | [ ] |
+| 항목 | Owns | SSOT | 구현 |
+|------|------|------|------|
+| Intent → P/G/S 파이프라인 | Engine §47.2·47.14 | [x] | [x] router+guard |
+| Fact tools 카탈로그 + Help RAG | Engine §47.6·47.12 | [x] | [ ] Nest loaders+RAG seed |
+| LLMAdapter 5종 · Day-1=`gemini_free` | Engine §47.13~15 | [x] | [x] todo `#23` |
+| OpenAI Prod · Eval PASS 후 ENV | Engine §47.15.6 | [x] | [ ] eval 3종 |
+| 쿼터/429 → none degrade | Engine §47.13 | [x] | [x] todo `#23` |
+| ENV `GEMINI_*`/`OPENAI_*` + secrets | `.env.example` | [x] | [x] `phase0.env.ts` |
+| CI verify coach/llm | Engine §47.8·47.15 | [x] | [ ] llm live · coach stub |
+| UI stream + 면책 + busy toast | UI §6.4e | [x] | [ ] todo `ai-coach-ui` |
+| Admin coach Eval/trace | Admin §9.5.7 | [x] | [ ] tab 구현 |
+| 과장 “완벽답변” 카피 금지 | Index/UI/Engine | [x] | [x] Canon forbidden |
+| **사람:** API 키 → 로컬 `.env`만 | BOOTSTRAP §5f-ops | — | [ ] |
+
+> **구현 SSOT:** Engine todo `#23 llm-adapter-providers` → `#24 ai-coach-runtime` → UI `ai-coach-ui` (File-Serial · 건너뛰기 금지)
 
 ### E-1. v7.22.14 흡수 체크 (Engine · 중복0)
 
@@ -1410,4 +1418,4 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 
 ### A11. 판정
 
-**Index = CLOSED.** **01 Money = CLOSED (v7.22.38).** File-Serial 다음 실행 파일 = **02 Engine**. completed Index/Money todo 재실행 **금지**.
+**Index = CLOSED.** **01 Money = CLOSED (v7.22.38).** **02 Engine = CLOSED (v7.22.44).** File-Serial 다음 실행 파일 = **03 UI**. completed Index/Money/Engine todo 재실행 **금지**.

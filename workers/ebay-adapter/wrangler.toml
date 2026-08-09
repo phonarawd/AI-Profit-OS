@@ -2,3 +2,20 @@ name = "ebay-adapter"
 main = "src/index.ts"
 compatibility_date = "2025-03-01"
 compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVICE = "ebay-adapter"
+PHASE = "1"
+EBAY_MARKETPLACES = "EBAY_US,EBAY_GB"
+
+# Phase1 cron — Browse multi-marketplace pull (not user-request path)
+[triggers]
+crons = ["*/15 * * * *"]
+
+[env.production]
+name = "ebay-adapter"
+vars = { SERVICE = "ebay-adapter", PHASE = "1", EBAY_MARKETPLACES = "EBAY_US,EBAY_GB" }
+
+[env.preview]
+name = "ebay-adapter-preview"
+vars = { SERVICE = "ebay-adapter", PHASE = "1", EBAY_MARKETPLACES = "EBAY_US,EBAY_GB" }

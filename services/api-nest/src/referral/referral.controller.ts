@@ -13,7 +13,7 @@ export class ReferralController {
   constructor(
     private readonly program: ReferralProgramService,
     private readonly edges: ReferralEdgeService,
-    private readonly share: ReferralShareService,
+    private readonly shareService: ReferralShareService,
   ) {}
 
   @Get(REFERRAL_USER_ROUTES.me)
@@ -60,6 +60,6 @@ export class ReferralController {
     const userId = String(
       body.userId ?? req.user?.userId ?? req.user?.sub ?? "",
     );
-    return this.share.recordShare(userId);
+    return this.shareService.recordShare(userId);
   }
 }

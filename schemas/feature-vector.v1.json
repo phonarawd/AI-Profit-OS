@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/feature-vector.v1.json",
+  "title": "FeatureVectorV1",
+  "description": "Engine feature-platform vector for AI PICK. NEVER: sellSuccessRate · successRatePercent · Twin money cache.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "formulaId",
+    "scalars",
+    "hash",
+    "capturedAt"
+  ],
+  "properties": {
+    "schema": { "const": "feature-vector.v1" },
+    "formulaId": { "const": "feat_ai_pick_v1" },
+    "opportunityId": { "type": ["string", "null"] },
+    "userId": { "type": ["string", "null"] },
+    "scalars": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "freshness01",
+        "adapterFreshness01",
+        "compareReady01",
+        "profitHeadroom01",
+        "capitalBandFit01",
+        "categoryFit01",
+        "aiPickBoost01"
+      ],
+      "properties": {
+        "freshness01": { "type": "number", "minimum": 0, "maximum": 1 },
+        "adapterFreshness01": { "type": "number", "minimum": 0, "maximum": 1 },
+        "compareReady01": { "type": "number", "minimum": 0, "maximum": 1 },
+        "profitHeadroom01": { "type": "number", "minimum": 0, "maximum": 1 },
+        "capitalBandFit01": { "type": "number", "minimum": 0, "maximum": 1 },
+        "categoryFit01": { "type": "number", "minimum": 0, "maximum": 1 },
+        "aiPickBoost01": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "not": {
+        "anyOf": [
+          { "required": ["sellSuccessRate"] },
+          { "required": ["successRatePercent"] },
+          { "required": ["adminOverride"] }
+        ]
+      }
+    },
+    "hash": { "type": "string", "minLength": 8 },
+    "capturedAt": { "type": "string", "format": "date-time" }
+  },
+  "not": {
+    "anyOf": [
+      { "required": ["sellSuccessRate"] },
+      { "required": ["successRatePercent"] },
+      { "required": ["adminOverride"] }
+    ]
+  }
+}

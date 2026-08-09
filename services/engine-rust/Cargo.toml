@@ -2,7 +2,7 @@
 name = "engine-rust"
 version = "0.0.0"
 edition = "2021"
-description = "AI Profit OS settlement / match engine (Phase0 skeleton)"
+description = "AI Profit OS settlement / MATCH_SUCCESS Rule Engine (§48.13)"
 publish = false
 
 [lib]

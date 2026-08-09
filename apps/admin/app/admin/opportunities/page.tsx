@@ -1,10 +1,343 @@
 "use client";
 
-export default function Page() {
+import { useMemo } from "react";
+import { useSearchParams } from "next/navigation";
+import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+
+/**
+ * Admin §9.1.1 / Engine §0.0 + §36 — opportunities contract surface.
+ * capitalBand filter chips = Engine §0.0.5 SSOT labels (mirror).
+ * Deep UI (inline edit grid) = Admin todo; filters/API contract Owns=Engine.
+ */
+
+/** Band chip labels mirror Engine §0.0.5 CAPITAL_BAND_LABEL_KO · verify:capital-tier-catalog */
+
+function OpportunitiesInner() {
+  const sp = useSearchParams();
+  const tab = sp.get("tab") === "assets" ? "assets" : "pricing";
+  const activeBand = sp.get("capitalBand") ?? "";
+  const activeCategory = sp.get("category") ?? "";
+
+  const filters = useMemo(
+    () => [
+      { key: "compareReady", label: "비교 준비" },
+      { key: "gradeMismatch", label: "등급 불일치" },
+      { key: "image_missing", label: "이미지 없음" },
+      { key: "capitalBand", label: "자본대" },
+      { key: "category", label: "카테고리" },
+    ],
+    [],
+  );
+
+  const bandHref = (band: string) => {
+    const q = new URLSearchParams();
+    if (tab === "assets") q.set("tab", "assets");
+    if (activeCategory) q.set("category", activeCategory);
+    if (band) q.set("capitalBand", band);
+    const s = q.toString();
+    return s ? `/admin/opportunities?${s}` : "/admin/opportunities";
+  };
+
+  const categoryHref = (category: string) => {
+    const q = new URLSearchParams();
+    if (tab === "assets") q.set("tab", "assets");
+    if (activeBand) q.set("capitalBand", activeBand);
+    if (category) q.set("category", category);
+    const s = q.toString();
+    return s ? `/admin/opportunities?${s}` : "/admin/opportunities";
+  };
+
   return (
     <main className="p-6 text-lux-text">
       <h1 className="text-xl font-semibold">수익 기회 관리</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">Admin §9.1.1 골격</p>
+      <p className="mt-2 text-sm text-lux-text-muted">
+        가격·마진 적용 · Asset Master · 필터 계약
+      </p>
+
+      <div className="mt-4 flex gap-3 text-sm">
+        <a
+          href="/admin/opportunities"
+          className={tab === "pricing" ? "font-semibold" : "text-lux-text-muted"}
+        >
+          가격·마진
+        </a>
+        <a
+          href="/admin/opportunities?tab=assets"
+          className={tab === "assets" ? "font-semibold" : "text-lux-text-muted"}
+        >
+          상품 마스터
+        </a>
+      </div>
+
+      <section className="mt-4" data-filter="category">
+        <h2 className="text-sm font-medium">카테고리 필터</h2>
+        <ul className="mt-2 flex flex-wrap gap-2 text-sm">
+          <li>
+            <a
+              href={categoryHref("")}
+              data-category="all"
+              className={
+                !activeCategory
+                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
+                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+              }
+            >
+              전체
+            </a>
+          </li>
+          <li>
+            <a
+              href={categoryHref("watch")}
+              data-category="watch"
+              className={
+                activeCategory === "watch"
+                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
+                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+              }
+            >
+              시계
+            </a>
+          </li>
+          <li>
+            <a
+              href={categoryHref("trading_card")}
+              data-category="trading_card"
+              className={
+                activeCategory === "trading_card"
+                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
+                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+              }
+            >
+              카드
+            </a>
+          </li>
+          <li>
+            <a
+              href={categoryHref("luxury_bag")}
+              data-category="luxury_bag"
+              className={
+                activeCategory === "luxury_bag"
+                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
+                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+              }
+            >
+              가방
+            </a>
+          </li>
+        </ul>
+        <p className="mt-2 text-xs text-lux-text-muted">
+          API: GET /admin/opportunities?category=watch|trading_card|luxury_bag ·
+          필터칩 가방 = luxury_bag
+        </p>
+      </section>
+
+      <section className="mt-4" data-filter="capitalBand">
+        <h2 className="text-sm font-medium">자본대 필터</h2>
+        <ul className="mt-2 flex flex-wrap gap-2 text-sm">
+          <li>
+            <a
+              href={bandHref("")}
+              data-capital-band="all"
+              className={
+                !activeBand
+                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
+                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+              }
+            >
+              전체
+            </a>
+          </li>
+          <li>
+            <a
+              href={bandHref("micro")}
+              data-capital-band="micro"
+              className={
+                activeBand === "micro"
+                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
+                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+              }
+            >
+              소액(10~)
+            </a>
+          </li>
+          <li>
+            <a
+              href={bandHref("small")}
+              data-capital-band="small"
+              className={
+                activeBand === "small"
+                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
+                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+              }
+            >
+              입문(100~)
+            </a>
+          </li>
+          <li>
+            <a
+              href={bandHref("mid")}
+              data-capital-band="mid"
+              className={
+                activeBand === "mid"
+                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
+                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+              }
+            >
+              중급(1천~)
+            </a>
+          </li>
+          <li>
+            <a
+              href={bandHref("high")}
+              data-capital-band="high"
+              className={
+                activeBand === "high"
+                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
+                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+              }
+            >
+              고액(1만~)
+            </a>
+          </li>
+          <li>
+            <a
+              href={bandHref("whale")}
+              data-capital-band="whale"
+              className={
+                activeBand === "whale"
+                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
+                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+              }
+            >
+              웨일(10만~)
+            </a>
+          </li>
+        </ul>
+        <p className="mt-2 text-xs text-lux-text-muted">
+          API: GET /admin/opportunities?capitalBand=micro|small|mid|high|whale
+        </p>
+      </section>
+
+      {tab === "pricing" ? (
+        <section className="mt-6 space-y-3">
+          <p className="text-sm text-lux-text-muted">
+            API: PATCH /admin/opportunities/:id/pricing · opportunity.price.updated
+          </p>
+          <ul className="flex flex-wrap gap-2 text-sm">
+            {filters.map((f) => (
+              <li
+                key={f.key}
+                data-filter={f.key}
+                className="rounded border border-lux-border px-2 py-1"
+              >
+                {f.label}
+                <span className="ml-1 text-lux-text-muted">({f.key})</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+            <span className="text-lux-text-muted">배지:</span>
+            <span
+              data-badge="gradeMismatch"
+              className="rounded bg-amber-100 px-2 py-0.5 text-amber-900"
+              title="listing grade ≠ asset.gradeDeclared · compareReady=false"
+            >
+              등급 불일치
+            </span>
+            <span
+              data-badge="compareReady"
+              className="rounded border border-lux-border px-2 py-0.5 text-lux-text-muted"
+            >
+              비교 준비
+            </span>
+            <span
+              data-badge="image_missing"
+              className="rounded border border-lux-border px-2 py-0.5 text-lux-text-muted"
+            >
+              이미지 없음
+            </span>
+          </div>
+          <p className="text-xs text-lux-text-muted">
+            trading_card · §51.12 PSA 파이프라인 · GET
+            /admin/opportunities?gradeMismatch=true&category=trading_card
+          </p>
+          <p className="text-xs text-lux-text-muted">
+            luxury_bag · brand+model(+size/color) · ebay 멀티|admin · GET
+            /admin/opportunities?category=luxury_bag · POST
+            /admin/opportunities/assets/seed/luxury-bag
+          </p>
+          <p className="text-xs text-lux-text-muted">
+            watch · Patek/AP/Rolex · brand+reference · whale≥100k Ultra · GET
+            /admin/opportunities?category=watch&capitalBand=whale · POST
+            /admin/opportunities/assets/seed/watch
+          </p>
+        </section>
+      ) : (
+        <section
+          className="mt-6 space-y-3 text-sm"
+          data-tab="assets"
+          data-surface="asset-master"
+        >
+          <h2 className="font-medium">상품 마스터 · 이미지</h2>
+          <p className="text-lux-text-muted">
+            Asset Master · R2 이미지 · imageSource · SKU 1:1 · Engine §0.0.6 ·
+            luxury_bag=admin_r2 · watch=admin_r2
+          </p>
+          <p className="text-lux-text-muted">
+            API: GET/PUT /admin/opportunities/assets · POST
+            /admin/opportunities/assets/:assetId/image · POST
+            /admin/opportunities/assets/seed/luxury-bag · POST
+            /admin/opportunities/assets/seed/watch
+          </p>
+          <ul className="flex flex-wrap gap-2">
+            <li
+              data-filter="image_missing"
+              className="rounded border border-lux-border px-2 py-1"
+            >
+              이미지 없음
+              <span className="ml-1 text-lux-text-muted">(image_missing)</span>
+            </li>
+            <li
+              data-field="imageUrl"
+              className="rounded border border-lux-border px-2 py-1"
+            >
+              이미지 URL
+            </li>
+            <li
+              data-field="imageSource"
+              className="rounded border border-lux-border px-2 py-1"
+            >
+              imageSource
+            </li>
+            <li
+              data-r2-upload="asset-images"
+              className="rounded border border-lux-border px-2 py-1"
+            >
+              R2 업로드 (asset-images)
+            </li>
+          </ul>
+          <div
+            data-preview="assetImageUrl"
+            className="rounded border border-dashed border-lux-border p-3 text-lux-text-muted"
+          >
+            미리보기 = 유저 카드와 동일 assetImageUrl · 시세 참고용
+          </div>
+          <p data-sku="1:1" className="text-xs text-lux-text-muted">
+            SKU 1:1 · assetId ↔ assetImageUrl 불변 · 교차 카테고리 금지
+          </p>
+          <p className="text-xs text-lux-text-muted">
+            독립 /admin/assets 경로 없음 · tab=assets 만
+          </p>
+        </section>
+      )}
     </main>
+  );
+}
+
+export default function Page() {
+  return (
+    <SearchParamsBoundary>
+      <OpportunitiesInner />
+    </SearchParamsBoundary>
   );
 }

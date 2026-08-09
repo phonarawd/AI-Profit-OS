@@ -1,0 +1,37 @@
+{
+  "id": "pick_threshold_edge",
+  "input": {
+    "now": "2026-08-09T12:00:00.000Z",
+    "user": {
+      "userId": "u2",
+      "preferredCapitalBand": "mid",
+      "categoryInterest": [
+        "trading_card"
+      ],
+      "aiPerkFlags": [
+        "ai_pick_boost"
+      ]
+    },
+    "market": {
+      "compareReady": true,
+      "staleAt": "2026-08-09T14:00:00.000Z",
+      "capitalBand": "mid",
+      "category": "trading_card",
+      "adapterFreshness01": 0.8
+    },
+    "opportunity": {
+      "opportunityId": "opp_edge",
+      "expectedProfitUsdt": "12",
+      "minProfitUsdt": "5",
+      "capitalBand": "mid",
+      "compareReady": true
+    }
+  },
+  "expected": {
+    "aiConfidenceScore": 94,
+    "isAiPick": true,
+    "tags": [
+      "ai_pick"
+    ]
+  }
+}

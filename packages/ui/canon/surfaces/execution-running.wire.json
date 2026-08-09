@@ -39,6 +39,28 @@
       "copyKey": "T.execution.progressHandsFree"
     },
     {
+      "id": "executionModeHint",
+      "role": "note",
+      "copyKey": "T.execution.executionModeHint",
+      "note": "Engine §4.2b · executionMode=orchestrate 유저 표기"
+    },
+    {
+      "id": "progressWaiters",
+      "role": "fact",
+      "field": "matchWaitersCount",
+      "copyKey": "T.execution.progressWaiters",
+      "when": "waitingFactSource=engine|admin",
+      "note": "Engine §4.2b 대기 Fact · 소스 없으면 숨김 · 가짜 숫자 금지"
+    },
+    {
+      "id": "progressMatchable",
+      "role": "fact",
+      "field": "matchableOpportunityCount",
+      "copyKey": "T.execution.progressMatchable",
+      "when": "waitingFactSource=engine|admin",
+      "note": "Engine §4.2b 대기 Fact · 소스 없으면 숨김"
+    },
+    {
       "id": "slaSoftHint",
       "role": "footnote",
       "copyKey": "T.execution.slaSoftHint",
@@ -93,7 +115,11 @@
     "sell_cta",
     "orderbook",
     "success_rate_percent",
+    "sell_success_rate_user",
+    "execution_platforms_user",
+    "expected_sell_days",
     "fake_match_waiters",
+    "unsourced_waiting_fact",
     "random_success_timer",
     "soft_hard_by_membership",
     "guarantee_one_minute",

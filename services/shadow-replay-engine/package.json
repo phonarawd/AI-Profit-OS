@@ -1,0 +1,17 @@
+{
+  "name": "@aipo/shadow-replay-engine",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Engine shadow-replay — 24h replay · drift 0.000% · block_settlement on fail",
+  "main": "./src/index.cjs",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": "./src/index.cjs",
+    "./replay": "./src/replay.cjs",
+    "./drift": "./src/drift.cjs"
+  },
+  "dependencies": {
+    "@aipo/ai-platform": "workspace:*",
+    "@aipo/feature-platform": "workspace:*"
+  }
+}

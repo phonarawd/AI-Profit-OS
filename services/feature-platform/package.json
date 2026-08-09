@@ -1,0 +1,13 @@
+{
+  "name": "@aipo/feature-platform",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Engine feature-platform — user/market/opportunity features for AI PICK (deterministic)",
+  "main": "./src/index.cjs",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": "./src/index.cjs",
+    "./features": "./src/features.cjs",
+    "./vector": "./src/vector.cjs"
+  }
+}

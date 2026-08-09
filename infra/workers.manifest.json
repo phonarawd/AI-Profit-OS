@@ -4,7 +4,14 @@
     "push-dispatcher",
     "marketing-capi-dispatcher",
     "chain-watchers",
-    "chain-sweeper"
+    "chain-sweeper",
+    "ebay-adapter",
+    "amazon-adapter",
+    "yahoo-jp-adapter",
+    "pokemontcg-adapter",
+    "ygoprodeck-adapter",
+    "coingecko-adapter",
+    "frankfurter-adapter"
   ],
-  "notes": "Phase0: Nest in-process → push-dispatcher stub · chain-watchers/chain-sweeper emit=Nest in-process (not CF) · NATS/Temporal/EKS 0. Phase1+: NATS bridge + adapters + chain-watchers/sweeper deploy. See infra/phase0-migration-playbook.md · infra/hosts.manifest.json"
+  "notes": "Phase0: Nest in-process → push-dispatcher stub · market adapters NOT in phase0 · NATS/Temporal/EKS 0. Phase1+: signup-ready (ebay·pokemontcg·ygoprodeck·coingecko·frankfurter) + partner listing (amazon·yahoo_jp §0.0.1c). Day-1 auto-publish listing=ebay|admin only."
 }

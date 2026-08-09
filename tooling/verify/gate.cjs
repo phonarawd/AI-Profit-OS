@@ -10,6 +10,7 @@ const steps = [
   "brand-consumer.cjs",
   "brand-assets.cjs",
   "cf-infra.cjs",
+  "workers-types.cjs",
   "phase0-bootstrap.cjs",
   "root-domain-env.cjs",
   "next-major-pin.cjs",

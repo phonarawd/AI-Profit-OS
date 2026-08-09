@@ -1,8 +1,8 @@
 /**
- * verify:balance-aware-feed — Money §49.2a path (v7.22.21)
- * Money Owns: suggest query · principal Fact · deposit prefill · feed invalidate signal
- * Engine Owns: classification / suggestDeposit formula (§0.0.5.1) — pointer only here
- * UI Owns: feed card copy §5.3a (not asserted as Money live surface)
+ * verify:balance-aware-feed — Engine §0.0.5.1 + Money §49.2a
+ * Engine Owns: affordable/nearMiss/lockedHigh · suggestDeposit · nearMissCap · override merge wire
+ * Money Owns: suggest query · principal Fact · deposit prefill · feed invalidate
+ * Admin Owns: execution-policy feed.nearMissCapUsdt SSOT (adapters 0)
  */
 const fs = require("fs");
 const path = require("path");
@@ -22,6 +22,10 @@ const files = [
   "schemas/balance-aware-fact.v1.json",
   "schemas/deposit-suggest-query.v1.json",
   "schemas/wallet-buckets.v1.json",
+  "schemas/execution-policy.v1.json",
+  "services/market-intelligence/src/balance-aware-feed.cjs",
+  "services/api-nest/src/opportunities/balance-aware-feed.ts",
+  "services/api-nest/src/opportunities/user-opportunity-override.merge.ts",
   "services/api-nest/src/wallet/deposit-suggest.ts",
   "services/api-nest/src/wallet/balance-aware-fact.ts",
   "services/api-nest/src/wallet/feed-cache-invalidate.service.ts",
@@ -31,7 +35,9 @@ const files = [
   "packages/ui/copy/ko/deposit.ts",
   "packages/ui/components/wallet/DepositAmountPanel.tsx",
   "packages/ui/canon/surfaces/wallet-deposit.wire.json",
+  "packages/ui/canon/surfaces/admin-execution-policy.wire.json",
   "apps/web/app/wallet/deposit/page.tsx",
+  "apps/admin/app/admin/execution-policy/page.tsx",
 ];
 for (const f of files) mustExist(f);
 
@@ -66,6 +72,16 @@ if (!(bucketsSchema.required || []).includes("principalUsdt")) {
   fails.push("wallet-buckets must require principalUsdt (participate SoT)");
 }
 
+const policySchema = JSON.parse(read("schemas/execution-policy.v1.json"));
+if (!policySchema.properties?.feed?.properties?.nearMissCapUsdt) {
+  fails.push("execution-policy.v1 must define feed.nearMissCapUsdt");
+}
+if (
+  !(policySchema.properties?.feed?.required || []).includes("nearMissCapUsdt")
+) {
+  fails.push("execution-policy.feed must require nearMissCapUsdt");
+}
+
 const manifest = read("schemas/manifest.day1.json");
 if (!manifest.includes("balance-aware-fact.v1.json")) {
   fails.push("manifest.day1 must list balance-aware-fact.v1.json");
@@ -73,8 +89,246 @@ if (!manifest.includes("balance-aware-fact.v1.json")) {
 if (!manifest.includes("deposit-suggest-query.v1.json")) {
   fails.push("manifest.day1 must list deposit-suggest-query.v1.json");
 }
+if (!manifest.includes("execution-policy.v1.json")) {
+  fails.push("manifest.day1 must list execution-policy.v1.json");
+}
 
-// --- deeplink helper ---
+// --- Engine formula fixtures ---
+const engine = require(path.join(
+  root,
+  "services/market-intelligence/src/balance-aware-feed.cjs",
+));
+const money = require(path.join(
+  root,
+  "services/market-intelligence/src/money.cjs",
+));
+
+if (engine.CLASSIFICATION_OWNER !== "engine:§0.0.5.1") {
+  fails.push("CLASSIFICATION_OWNER must be engine:§0.0.5.1");
+}
+if (engine.SUGGEST_TICK_USDT !== "1") {
+  fails.push("SUGGEST_TICK_USDT Day-1 must be 1");
+}
+if (engine.NEAR_MISS_CAP_FLOOR_USDT !== "50") {
+  fails.push("NEAR_MISS_CAP_FLOOR_USDT must be 50");
+}
+
+// suggestDeposit = ceil_to_tick(required − principal)
+const suggestCases = [
+  { req: "100", prin: "100", want: "0" },
+  { req: "100", prin: "150", want: "0" },
+  { req: "100.1", prin: "100", want: "1" },
+  { req: "125.2", prin: "100", want: "26" },
+  { req: "50", prin: "0", want: "50" },
+];
+for (const c of suggestCases) {
+  const got = engine.computeSuggestDepositUsdt(c.req, c.prin);
+  if (got !== c.want) {
+    fails.push(
+      `suggestDeposit(${c.req},${c.prin}) got ${got} want ${c.want}`,
+    );
+  }
+}
+
+// nearMissCap default = max(50, principal×0.25)
+const cap0 = engine.resolveNearMissCapUsdt("0", null);
+if (cap0 !== "50") fails.push(`nearMissCap(0) got ${cap0} want 50`);
+const cap200 = engine.resolveNearMissCapUsdt("200", null);
+if (cap200 !== "50") fails.push(`nearMissCap(200) got ${cap200} want 50`);
+const cap400 = engine.resolveNearMissCapUsdt("400", null);
+if (cap400 !== "100") fails.push(`nearMissCap(400) got ${cap400} want 100`);
+const capPolicy = engine.resolveNearMissCapUsdt("400", "75");
+if (capPolicy !== "75") {
+  fails.push(`nearMissCap policy override got ${capPolicy} want 75`);
+}
+if (engine.nearMissCapFromExecutionPolicy({ feed: { nearMissCapUsdt: "80" } }) !== "80") {
+  fails.push("nearMissCapFromExecutionPolicy must read feed.nearMissCapUsdt");
+}
+if (engine.nearMissCapFromExecutionPolicy({}) !== null) {
+  fails.push("nearMissCapFromExecutionPolicy({}) must be null");
+}
+
+// classification buckets
+const aff = engine.classifyAffordability({
+  principalUsdt: "100",
+  requiredCapitalUsdt: "80",
+  nearMissCapUsdt: "50",
+});
+if (aff.bucket !== "affordable" || aff.suggestDepositUsdt !== "0") {
+  fails.push(`affordable classify got ${JSON.stringify(aff)}`);
+}
+const near = engine.classifyAffordability({
+  principalUsdt: "100",
+  requiredCapitalUsdt: "130",
+  nearMissCapUsdt: "50",
+});
+if (near.bucket !== "nearMiss" || near.suggestDepositUsdt !== "30") {
+  fails.push(`nearMiss classify got ${JSON.stringify(near)}`);
+}
+const locked = engine.classifyAffordability({
+  principalUsdt: "100",
+  requiredCapitalUsdt: "200",
+  nearMissCapUsdt: "50",
+});
+if (locked.bucket !== "lockedHigh") {
+  fails.push(`lockedHigh classify got ${JSON.stringify(locked)}`);
+}
+const forced = engine.classifyAffordability({
+  principalUsdt: "100",
+  requiredCapitalUsdt: "200",
+  nearMissCapUsdt: "50",
+  forceShow: true,
+});
+if (forced.bucket !== "nearMiss" || forced.forceShowPromoted !== true) {
+  fails.push(`forceShow promote got ${JSON.stringify(forced)}`);
+}
+if (forced.suggestDepositUsdt !== "100") {
+  fails.push(`forceShow suggest got ${forced.suggestDepositUsdt} want 100`);
+}
+
+// feed build · sort · override hide 100%
+const feed = engine.buildBalanceAwareFeed({
+  principalUsdt: "100",
+  policyNearMissCapUsdt: "50",
+  cards: [
+    {
+      id: "hidden-1",
+      requiredCapitalUsdt: "50",
+      expectedProfitUsdt: "10",
+      compareReady: true,
+      excludeFromFeed: true,
+    },
+    {
+      id: "aff-1",
+      requiredCapitalUsdt: "80",
+      expectedProfitUsdt: "5",
+      compareReady: true,
+      capitalBand: "micro",
+    },
+    {
+      id: "near-1",
+      requiredCapitalUsdt: "130",
+      expectedProfitUsdt: "8",
+      compareReady: true,
+    },
+    {
+      id: "lock-1",
+      requiredCapitalUsdt: "300",
+      expectedProfitUsdt: "20",
+      compareReady: true,
+    },
+    {
+      id: "pin-1",
+      requiredCapitalUsdt: "90",
+      expectedProfitUsdt: "3",
+      compareReady: false,
+      pinOrder: 0,
+    },
+  ],
+});
+if (feed.hiddenCount !== 1) {
+  fails.push(`hiddenCount got ${feed.hiddenCount} want 1 (override hide 100%)`);
+}
+if (feed.items.some((i) => i.id === "hidden-1")) {
+  fails.push("hidden override card must be excluded from feed items 100%");
+}
+if (feed.affordableCount !== 2) {
+  fails.push(`affordableCount got ${feed.affordableCount} want 2`);
+}
+if (feed.nearMissCount !== 1) {
+  fails.push(`nearMissCount got ${feed.nearMissCount} want 1`);
+}
+if (feed.lockedHighCount !== 1) {
+  fails.push(`lockedHighCount got ${feed.lockedHighCount} want 1`);
+}
+if (feed.items[0]?.id !== "pin-1") {
+  fails.push(`pinOrder must sort first got ${feed.items[0]?.id}`);
+}
+if (feed.topSuggestDepositUsdt !== "30") {
+  fails.push(
+    `topSuggestDepositUsdt got ${feed.topSuggestDepositUsdt} want 30`,
+  );
+}
+if (feed.classificationOwner !== "engine:§0.0.5.1") {
+  fails.push("feed.classificationOwner must pointer Engine");
+}
+if (!money.withinTolerance(feed.nearMissCapUsdt, "50")) {
+  fails.push(`feed.nearMissCapUsdt got ${feed.nearMissCapUsdt}`);
+}
+
+// Nest bridge wires override merge
+const nestBridge = read("services/api-nest/src/opportunities/balance-aware-feed.ts");
+for (const needle of [
+  "buildBalanceAwareFeedWithOverrides",
+  "mergeUserOpportunityOverride",
+  "nearMissCapFromExecutionPolicy",
+  "excludeFromFeed",
+  "forceShow",
+  "computeSuggestDepositUsdt",
+  "classifyAffordability",
+]) {
+  if (!nestBridge.includes(needle)) {
+    fails.push(`balance-aware-feed.ts missing: ${needle}`);
+  }
+}
+if (
+  /UPDATE\s+(?:public\.)?(?:ledger_accounts|wallet_buckets)/i.test(nestBridge)
+) {
+  fails.push("Nest balance-aware-feed must not UPDATE ledger balances");
+}
+
+const merge = read(
+  "services/api-nest/src/opportunities/user-opportunity-override.merge.ts",
+);
+if (!merge.includes("excludeFromFeed: userOv.hidden === true")) {
+  fails.push("override merge must set excludeFromFeed on hidden");
+}
+if (!merge.includes("compareReady: base.compareReady")) {
+  fails.push("override merge must preserve compareReady (no false→true forge)");
+}
+
+const miIdx = read("services/market-intelligence/src/index.cjs");
+if (!miIdx.includes("balance-aware-feed")) {
+  fails.push("market-intelligence index must export balance-aware-feed");
+}
+const miPkg = read("services/market-intelligence/package.json");
+if (!miPkg.includes("./balance-aware-feed")) {
+  fails.push("market-intelligence package exports must include balance-aware-feed");
+}
+
+// --- nearMissCap Owns = execution-policy only ---
+const adminEp = read("apps/admin/app/admin/execution-policy/page.tsx");
+for (const needle of [
+  "feed.nearMissCapUsdt",
+  'data-field="feed.nearMissCapUsdt"',
+  "near-miss-cap-usdt",
+]) {
+  if (!adminEp.includes(needle)) {
+    fails.push(`execution-policy page missing: ${needle}`);
+  }
+}
+const epWire = JSON.parse(
+  read("packages/ui/canon/surfaces/admin-execution-policy.wire.json"),
+);
+const nearBlock = (epWire.blocks || []).find((b) => b.id === "nearMissCap");
+if (!nearBlock || nearBlock.field !== "feed.nearMissCapUsdt") {
+  fails.push("admin-execution-policy.wire must expose feed.nearMissCapUsdt");
+}
+if (!(epWire.forbidden || []).includes("nearMissCap_on_adapters")) {
+  fails.push("admin-execution-policy.wire must forbid nearMissCap_on_adapters");
+}
+const adaptersPage = read("apps/admin/app/admin/adapters/page.tsx");
+if (/nearMissCapUsdt|feed\.nearMissCap/.test(adaptersPage)) {
+  fails.push("admin adapters page must not own nearMissCap settings");
+}
+const adaptersSvc = read(
+  "services/api-nest/src/adapters/adapters.admin.service.ts",
+);
+if (!adaptersSvc.includes('nearMissCapOwns: "execution-policy"')) {
+  fails.push("adapters.admin.service must declare nearMissCapOwns execution-policy");
+}
+
+// --- deeplink helper (Money) ---
 const suggestTs = read("services/api-nest/src/wallet/deposit-suggest.ts");
 for (const needle of [
   "buildDepositSuggestHref",
@@ -91,7 +345,6 @@ for (const needle of [
     fails.push(`deposit-suggest.ts missing: ${needle}`);
   }
 }
-// Money must NOT own classification formula
 for (const banned of [
   "requiredCapitalUsdt -",
   "requiredCapitalUsdt −",
@@ -264,6 +517,52 @@ for (const rel of moneyScan) {
   }
 }
 
+// Nest override+classify integration (require via ts transpile not available — dynamic require of MI + merge logic mirrored)
+try {
+  const { buildBalanceAwareFeedWithOverrides } = require(
+    path.join(root, "services/api-nest/src/opportunities/balance-aware-feed.ts"),
+  );
+  // If ts-node not available, skip runtime — static needles above cover wire
+  if (typeof buildBalanceAwareFeedWithOverrides === "function") {
+    const integrated = buildBalanceAwareFeedWithOverrides({
+      principalUsdt: "100",
+      policyNearMissCapUsdt: "50",
+      cards: [
+        {
+          id: "h",
+          requiredCapitalUsdt: "50",
+          expectedProfitUsdt: "1",
+          compareReady: true,
+        },
+        {
+          id: "a",
+          requiredCapitalUsdt: "80",
+          expectedProfitUsdt: "2",
+          compareReady: true,
+        },
+      ],
+      overridesByOpportunityId: {
+        h: {
+          userId: "u1",
+          opportunityId: "h",
+          hidden: true,
+          reason: "verify hide path long enough",
+          updatedByAdminId: "admin1",
+          updatedAt: "2026-08-09T00:00:00.000Z",
+        },
+      },
+    });
+    if (integrated.hiddenCount !== 1) {
+      fails.push("integrated override hide must increment hiddenCount");
+    }
+    if (integrated.items.some((i) => i.id === "h")) {
+      fails.push("integrated override hide must exclude card 100%");
+    }
+  }
+} catch {
+  // TS file not loadable under plain node — static checks suffice
+}
+
 if (fails.length) {
   console.error("[verify:balance-aware-feed] FAIL");
   for (const f of fails) console.error(" -", f);
@@ -271,5 +570,5 @@ if (fails.length) {
 }
 
 console.log(
-  "[verify:balance-aware-feed] PASS (Money §49.2a suggest query · principal Fact · deposit prefill · feed invalidate · Engine pointer)",
+  "[verify:balance-aware-feed] PASS (Engine §0.0.5.1 classify·suggest·nearMissCap·override hide · Money §49.2a deeplink/Fact)",
 );

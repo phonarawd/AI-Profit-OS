@@ -1,0 +1,33 @@
+{
+  "id": "pick_below",
+  "input": {
+    "now": "2026-08-09T12:00:00.000Z",
+    "user": {
+      "userId": "u3",
+      "preferredCapitalBand": "whale",
+      "categoryInterest": [
+        "luxury_bag"
+      ],
+      "aiPerkFlags": []
+    },
+    "market": {
+      "compareReady": false,
+      "staleAt": "2026-08-09T12:01:00.000Z",
+      "capitalBand": "micro",
+      "category": "watch",
+      "adapterFreshness01": 0.1
+    },
+    "opportunity": {
+      "opportunityId": "opp_low",
+      "expectedProfitUsdt": "1",
+      "minProfitUsdt": "5",
+      "capitalBand": "micro",
+      "compareReady": false
+    }
+  },
+  "expected": {
+    "aiConfidenceScore": 6.3,
+    "isAiPick": false,
+    "tags": []
+  }
+}

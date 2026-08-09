@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/shadow-replay-report.v1.json",
+  "title": "ShadowReplayReportV1",
+  "description": "Engine shadow-replay 24h · drift 0.000% · FAIL=block_settlement.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "runId",
+    "asOf",
+    "horizonHours",
+    "kind",
+    "driftPct",
+    "maxDriftPct",
+    "pass"
+  ],
+  "properties": {
+    "schema": { "const": "shadow-replay-report.v1" },
+    "runId": { "type": "string", "minLength": 1 },
+    "asOf": { "type": "string", "format": "date-time" },
+    "horizonHours": { "const": 24 },
+    "kind": { "type": "string", "enum": ["ai_pick", "settlement_rule"] },
+    "traceCount": { "type": "integer", "minimum": 0 },
+    "results": { "type": "array" },
+    "driftPct": { "type": "number", "minimum": 0 },
+    "maxDriftPct": { "const": 0 },
+    "pass": { "type": "boolean" },
+    "failAction": {
+      "type": ["string", "null"],
+      "enum": ["block_settlement", null]
+    },
+    "mismatchCount": { "type": "integer", "minimum": 0 },
+    "mismatches": { "type": "array" }
+  }
+}

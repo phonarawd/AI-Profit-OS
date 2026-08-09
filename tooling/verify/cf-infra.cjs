@@ -13,6 +13,7 @@ const required = [
   "infra/ops/access-policy.json",
   "infra/api/runtime.json",
   "infra/r2/kyc-docs.toml",
+  "infra/r2/asset-images.toml",
   "infra/workers.manifest.json",
   "workers/push-dispatcher/wrangler.toml",
   "workers/push-dispatcher/src/index.ts",

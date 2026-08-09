@@ -4,8 +4,15 @@ import { ComplianceModule } from "./compliance/compliance.module";
 import { EventsModule } from "./events/events.module";
 import { HealthController } from "./health.controller";
 import { LedgerModule } from "./ledger/ledger.module";
+import { AdaptersModule } from "./adapters/adapters.module";
+import { ExecutionPolicyModule } from "./execution-policy/execution-policy.module";
+import { MembershipModule } from "./membership/membership.module";
+import { OpportunitiesModule } from "./opportunities/opportunities.module";
+import { MissionModule } from "./missions/mission.module";
 import { ReferralModule } from "./referral/referral.module";
 import { RiskModule } from "./risk/risk.module";
+import { SimulationModule } from "./simulation/simulation.module";
+import { AiModule } from "./ai/ai.module";
 import { WalletModule } from "./wallet/wallet.module";
 
 @Module({
@@ -16,6 +23,13 @@ import { WalletModule } from "./wallet/wallet.module";
     ComplianceModule,
     RiskModule,
     ReferralModule,
+    MissionModule,
+    OpportunitiesModule,
+    ExecutionPolicyModule,
+    MembershipModule,
+    AdaptersModule,
+    SimulationModule,
+    AiModule,
     AuthModule,
   ],
   controllers: [HealthController],

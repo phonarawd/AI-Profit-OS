@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Engine
-overview: "v7.22.39b Engine todo의존순잠금·preflight→market→overrideDDL→adapters→tier/image→vertical→projection→feed→Rule→KPI→sim→AI(feature→twin→llm→coach). Index=00."
+overview: v7.22.44 Engine CLOSED · todos 26/26 · mig25 1:1 · DB76 · Rule+AI+adapters live · File-Serial 다음=03 UI. Index=00.
 todos:
   - id: engine-preflight-constitution
     content: "[grok-4.5|256K] 착수전 BOOTSTRAP§0.4+CONST(44/45/46/46b/47/48/51)+DB58·mig18·함수4·Admin routes·override DDL↔schema 모순흡수 · 구현코드0 · 재검증2026-08-09"
@@ -16,66 +16,73 @@ todos:
     status: completed
   - id: market-intel-engine
     content: "[grok-4.5|256K] §0.0 A:Asset Master·pipeline·FORBIDDEN0 B:pricing/FX formula C:Admin opportunities계약 · yahoo_jp0 · verify:pricing-formula/fx-snapshot-formula"
-    status: pending
+    status: completed
   - id: engine-override-ddl-align
     content: "[grok-4.5|256K] user_opportunity_overrides DDL↔schemas/user-opportunity-override.v1 (forceShow/pinOrder/marginPct/expectedProfit) · migration+apply · Admin §9.8.9 · balance-aware 선행"
-    status: pending
+    status: completed
   - id: signup-ready-adapters
     content: "[composer-2.5|200K] A:ebay 멀티marketplaceId B:pokemontcg+ygoprodeck C:coingecko+frankfurter · yahoo-jp경로0 · Phase1 deploy"
-    status: pending
+    status: completed
   - id: capital-tier-catalog
     content: "[grok-4.5|256K] §0.0.5 capitalBand enum·시드비율≥40%소액·필터칩 · CONSTITUTION/46 sync · Admin opportunities 밴드필터"
-    status: pending
+    status: completed
   - id: asset-image-pipeline
     content: "[grok-4.5|256K] §0.0.6 assetImageUrl hydrate·SKU1:1·공개가드·R2 · Admin opportunities?tab=assets · verify:asset-image-surface"
-    status: pending
+    status: completed
   - id: trading-card-vertical
     content: "[composer-2.5|200K] trading_card 시드·Pokémon/YGO 메타+ebay 호가·등급매칭·소액 SKU · Admin gradeMismatch 배지"
-    status: pending
+    status: completed
   - id: luxury-bag-vertical
     content: "[composer-2.5|200K] luxury_bag 시드·Asset Master 이미지·ebay멀티|admin 호가·필터칩 가방"
-    status: pending
+    status: completed
   - id: ultra-watch-whale
     content: "[composer-2.5|200K] PP/AP/Rolex 시드 + whale≥100k 경로 (소액 카탈로그 공존)"
-    status: pending
+    status: completed
   - id: opportunity-scan-projection
     content: "[grok-4.5|256K] §4.2a arbitrageTypeKo·time_sensitive·sellSuccess meta·FX동일스키마 · verify:arbitrage-type-label"
-    status: pending
+    status: completed
   - id: capital-provider-projection
     content: "[grok-4.5|256K] §4.2b 내부필드↔유저표기·executionPlatforms유저0·대기Fact · verify:user-trader-jargon-0"
-    status: pending
+    status: completed
   - id: balance-aware-feed
     content: "[grok-4.5|256K] §0.0.5.1 A:affordable/nearMiss분류 B:suggestDeposit C:override merge · nearMissCap=execution-policy · verify:balance-aware-feed"
-    status: pending
+    status: completed
   - id: match-success-rule-engine
     content: "[grok-4.5|256K] §48.13 A:settlement_rule.rs R1~R10 B:Soft60/Hard90/REQUEUE/MATCH_TIMEOUT C:golden6+P0b · verify:match-success-rule"
-    status: pending
+    status: completed
+  - id: mission-reward-fanout-boundary
+    content: "[grok-4.5|256K] §48.13.4 Mission fanout 경계0 · settlement.completed→Nest MissionEvaluator async · Rule/ledger 불변 · Money §51.8a pointer · verify:mission-auto-payout/g4-ledger-separation"
+    status: completed
+  - id: market-partner-adapters-phase1
+    content: "[composer-2.5|200K] §0.0.1c A:amazon leg adapter B:yahoo_jp 공식협력 adapter C:partner registry schema · verify:market-partner-adapters"
+    status: completed
   - id: match-strictness-policy
     content: "[grok-4.5|256K] §48.13.3 matchStrictness→policy맵·난수0 · Admin execution-policy API · verify:match-strictness"
-    status: pending
+    status: completed
   - id: user-membership-engine
     content: "[grok-4.5|256K] §0.0.7 A:승급/일일캡 B:strictness오버레이 C:fulfillRate표시전용 · Admin §9.8.10 · verify:membership-*"
-    status: pending
+    status: completed
   - id: adapter-matching-kpi
     content: "[composer-2.5|200K] §51.12+§51.15 등급매칭·SKU실패율 KPI · Admin /admin/adapters 알림·yahoo0 · simulation S4 선행"
-    status: pending
+    status: completed
   - id: simulation-engine-m05
     content: "[composer-2.5|200K] §51.4 simulation-engine + Admin growth?tab=simulation · S1~S4(KPI입력) · platform_reserve(tab=reserve) · verify:simulation-gate"
-    status: pending
+    status: completed
   - id: ai-feature-platform
     content: "[grok-4.5|256K] A:feature-platform B:ai-platform L1/L2 C:AI_LOG/Eval+Shadow Replay+AI PICK (L3자금집행0)"
-    status: pending
+    status: completed
   - id: personal-ai-layer
     content: "[grok-4.5|256K] §47 A:Twin+Memory B:Fact+Guard C:P/G/S router · PG+Redis+pgvector · verify:twin-fact-separation"
-    status: pending
+    status: completed
   - id: llm-adapter-providers
-    content: "[composer-2.5|200K] §47.13 Day-1=gemini_free · quota→none degrade · GEMINI_* secrets · stream · ai-coach G레인 선행"
-    status: pending
+    content: "[composer-2.5|200K] §47.13~15 A:LLMAdapter(openai|gemini_free|groq|ollama|none)+phase0.env B:Redis quota rpm/rpd→degrade C:verify:llm-adapter-contract+llm-quota-degrade"
+    status: completed
   - id: ai-coach-runtime
-    content: "[grok-4.5|256K] §47.12~14 퍼뜩 P Fact전흡수(미션·입금·출금안내·초대·혜택·이벤트) · G=llm-adapter · Admin ai-logs?tab=coach · verify:ai-coach-*/ai-general-no-money-tools"
-    status: pending
+    content: "[grok-4.5|256K] §47.12~15 A:FactToolService(14)+HelpRAG+CoachOrchestrator B:POST /me/peotteok/chat SSE+coach-prompt/templates C:eval 3종+Admin coach+verify:ai-coach-*+ai-lane-router+fact-freshness+answer-trace"
+    status: completed
 isProject: false
 ---
+
 # AI Profit OS — Engine (v7.22.39b · Owns 본문 + 실측감사 흡수 · todo의존순 잠금)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
@@ -101,6 +108,9 @@ isProject: false
 > **v7.22.31:** Day-1 listing = **ebay 멀티 marketplaceId** 또는 **ebay×admin** · (yahoo는 당시 Phase1+)  
 > **v7.22.32:** `yahoo_jp` / Yahoo! JAPAN Auction **영구 배제**(FORBIDDEN) · Phase1+ 철회 · 코드·스키마·워커·카피·ENV **0** · listing = ebay 멀티\|admin only  
 > **v7.22.39:** 실측감사(DB58·mig18·함수4·override DDL↔schema·Admin 자식누락·nearMissCap·`/admin/assets`유령) · preflight·Admin계약·todo 재분할 흡수  
+> **v7.22.40:** §48.13 **G4 ticker fanout 경계** — `settlement.completed` 후 Nest 비동기 투영 · Rule/분개 불변 · ticker Owns=Admin §35.4 · `match-success-rule-engine` 범위 **0**  
+> **v7.22.41 (Founder lock):** **§0.0.1c Market Partner Registry** — eBay·Amazon·Yahoo! JAPAN Auction **공식 협력사** · UI §38.10 로고 표기 · v7.22.32 yahoo **adapter/표기** → Phase1+ **복원 todo** · Day-1 listing=ebay멀티\|admin **유지** · Amazon/Yahoo leg=adapter todo 후  
+> **v7.22.42:** **§48.13.4 Mission reward fanout 경계** — `settlement.completed`/`deposit.confirmed` 등 **이후** Nest `MissionRewardEvaluator` 비동기 · Rule/R1~R10·분개·Soft/Hard **불변** · accrual/ledger Owns=**Money §51.8a** · UI §5.9.5 · `match-success-rule-engine` 범위 **0**
 > **v1 executionMode:** **`orchestrate` only** (ADR-009)  
 
 ## 0. 착수 전 실물 대조 기록 (v7.22.39 · 예측 0 · MCP+FS)
@@ -168,7 +178,7 @@ isProject: false
 | `/admin/adapters` | 5 adapter health · listing legs · SKU실패율 · yahoo **0** | `signup-ready-adapters` · `adapter-matching-kpi` |
 | `/admin/growth?tab=simulation` | M0.5 run/latest · S1~S4 · Growth ON 게이트 | `simulation-engine-m05` |
 | `/admin/system-control?tab=reserve` | `platform_reserve` 목표·audit · S2 입력 | `simulation-engine-m05` (§0.0.4.3) |
-| `/admin/ai-logs` · `?tab=coach` | answer-trace · P/G/S Eval · provider_id · degrade 카운트 | `ai-coach-runtime` · `llm-adapter-providers` |
+| `/admin/ai-logs` · `?tab=coach` | answer-trace · P/G/S Eval · provider_id · degrade 카운트 | `ai-coach-runtime` · `llm-adapter-providers` · §47.15 |
 | `/admin/users/:id` §9.8.9 | override CRUD (schema 필드) · ledger 불변 | `engine-override-ddl-align` · `balance-aware-feed` |
 | `/admin/users/:id` §9.8.10 | membership force · matchStrictnessOverride | `user-membership-engine` |
 | `/admin/users/:id` §9.8.4a | `matchBlocked` → participate P0b | `match-success-rule-engine` |
@@ -208,19 +218,43 @@ isProject: false
 | 14 | `capital-provider-projection` | 13 | §4.2b 유저 표기 |
 | 15 | `balance-aware-feed` | 14 (+6) | override merge·nearMiss · **6 필수** |
 | 16 | `match-success-rule-engine` | 15 | Rule R1~R10 + Soft/Hard 구현 |
-| 17 | `match-strictness-policy` | 16 | 프리셋→policy 맵 (Rule 입력) |
-| 18 | `user-membership-engine` | 17 | membership 오버레이 (strictness 후) |
-| 19 | `adapter-matching-kpi` | 18 | SKU실패율 KPI (**sim S4 입력**) |
-| 20 | `simulation-engine-m05` | 19 | M0.5 · S4=KPI |
-| 21 | `ai-feature-platform` | 20 | feature/AI_LOG/PICK |
-| 22 | `personal-ai-layer` | 21 | Twin·Fact·P/G/S |
-| 23 | `llm-adapter-providers` | 22 | gemini_free (**coach G 선행**) |
-| 24 | `ai-coach-runtime` | 23 | 퍼뜩 런타임 · **마지막** |
+| 17 | `mission-reward-fanout-boundary` | 16 | §48.13.4 Nest async · Rule/ledger 불변 |
+| 18 | `market-partner-adapters-phase1` | 17 | amazon+yahoo_jp Phase1+ · registry §0.0.1c |
+| 19 | `match-strictness-policy` | 18 | 프리셋→policy 맵 (Rule 입력) |
+| 20 | `user-membership-engine` | 19 | membership 오버레이 (strictness 후) |
+| 21 | `adapter-matching-kpi` | 20 | SKU실패율 KPI (**sim S4 입력**) |
+| 22 | `simulation-engine-m05` | 21 | M0.5 · S4=KPI |
+| 23 | `ai-feature-platform` | 22 | feature/AI_LOG/PICK |
+| 24 | `personal-ai-layer` | 23 | Twin·Fact·P/G/S |
+| 25 | `llm-adapter-providers` | 24 | gemini_free (**coach G 선행**) |
+| 26 | `ai-coach-runtime` | 25 | 퍼뜩 런타임 · **마지막** |
 
 **v7.22.39b에서 고친 어긋남:**  
-(1) `overrideDDL`을 adapters **앞**으로 · (2) `adapter-matching-kpi` → `simulation` · (3) `llm-adapter` → `ai-coach`.
+(1) `overrideDDL`을 adapters **앞**으로 · (2) `adapter-matching-kpi` → `simulation` · (3) `llm-adapter` → `ai-coach`.  
+**v7.22.44 CLOSE:** YAML 전수 completed · §0.8 재검증 PASS · 본 파일 실행큐 **CLOSED**.
 
-**다음 실행:** `#5 market-intel-engine` only.
+### 0.8 CLOSE 재검증 (v7.22.44 · 2026-08-09 · 예측0)
+
+> **Owns:** Engine 플랜 종료 게이트. todos **26/26 completed · pending 0**.  
+> **실측:** Supabase MCP `list_tables`/`list_migrations`/`execute_sql`/`get_project` + FS + `pnpm verify:*` Engine 전수.
+
+| 대상 | 종료 실측 | 판정 |
+|------|-----------|------|
+| Supabase ref | `mgsytcetsiecllmhcyox` · `ap-northeast-2` Seoul · PG **17.6** · ACTIVE_HEALTHY | ✅ |
+| `public` 테이블 | **76** · RLS ON | ✅ (Engine+Money+AI 전수) |
+| migrations applied | **25** · 로컬 파일명 **버전 1:1** · 끝=`20260809103208_ai_feature_platform_pick_eval_shadow` | ✅ (본 턴 MCP apply 타임스탬프 drift rename 정렬) |
+| public 함수 | **5** (`ledger_forbid_mutation`·`ledger_require_posting_flag`·`provision_user_bucket_accounts`·`users_stage_a_identity_ok`·`user_opportunity_overrides_pin_cap`) · Rule RPC **0** | ✅ |
+| `vector` | **0.8.2** · `memory_embeddings` | ✅ |
+| `user_opportunity_overrides` | `force_show`·`pin_order`·`margin_pct_override`·`expected_profit_usdt_override`·`capital_band_force` (+`hidden`) · 구 `pinned`/`margin_override_usdt` **0** | ✅ schema 1:1 |
+| `services/engine-rust` | `settlement_rule.rs` R1~R10 · Soft60/Hard90 · REQUEUE/MATCH_TIMEOUT · golden **6+strictness2** | ✅ |
+| `services/market-intelligence` · `services/ai-platform` | live 패키지 | ✅ |
+| `workers/*-adapter` | Day-1: ebay·pokemontcg·ygoprodeck·coingecko·frankfurter · Phase1+: amazon·yahoo-jp · deploy=Phase1 | ✅ |
+| Admin routes §0.4 | opportunities(+assets)·execution-policy·adapters·growth?simulation·system-control?reserve·ai-logs(+coach/pick/eval)·users override/membership | ✅ |
+| PG사 | `verify:pg-module-scan` PASS | ✅ |
+| Brand/AI | Consumer/AI=**퍼뜩** · 클라이 등 타명 **0** | ✅ |
+| Engine verify | listing/soft-hard/pricing/fx/market-intel/adapters/tier/image/vertical×3/arbitrage/jargon/balance/override/match-rule/mission×3/g4/partner/strictness/membership×3/KPI/sim/ai-feature/shadow/twin/llm×2/coach×5/admin-routes **전수 PASS** | ✅ |
+
+**CLOSE 판정:** Engine = **CLOSED** · File-Serial 다음 = **03 UI** (`yahoo-jp-copy-ban`). completed Engine todo 재실행 **금지**.
 
 ## 0.0 시세 소스 잠금 (v7.13) — Signup-Ready + Margin UX + Capital Tiers
 
@@ -242,40 +276,62 @@ isProject: false
 | `frankfurter` | **가입 불필요** | 법정화폐 FX | fx | `api.frankfurter.dev` | 일 단위 고시 · 1h 캐시 |
 | `admin` | Ops | **수동 기준가 leg** (출처=`admin`) | 전 category | Admin `/admin/opportunities` override | 이미지 R2 필수(기본) |
 
-#### 0.0.1a Day-1 Listing legs (일본 번호 게이트 우회 · 오류0)
+#### 0.0.1a Day-1 Listing legs (v7.22.41 · 오류0)
 
-> **배경 (v7.22.32):** Yahoo! JAPAN은 일본 휴대폰 게이트로 **영구 미사용** → Phase1+도 **철회** · FORBIDDEN.  
-> **제품 서사:** “일본 야후” ❌ → **“두 시장 시세차”**(ebay 국가 간 또는 ebay×admin) · 라벨=`buyMarketLabelKo`/`sellMarketLabelKo` 동적.
+> **Founder lock (v7.22.41):** eBay·Amazon·Yahoo! JAPAN Auction = **공식 협력사** · 유저 표기=UI **§38.10** (로고+LabelKo).  
+> **Day-1 pricing leg (코드):** 아래 P0 표 **유지** · Amazon/Yahoo **leg 데이터** = todo `market-partner-adapters-phase1` (Phase1+).  
+> **v7.22.32 이력:** JP SMS 게이트로 yahoo **adapter 일시 배제** → v7.22.41 **협력사 확정·adapter 복원 todo**.
 
 | 우선 | buy leg | sell leg | 비고 |
 |------|---------|----------|------|
 | **P0 자동** | `ebay` @ `EBAY_US` | `ebay` @ `EBAY_GB` (또는 `EBAY_DE`/`EBAY_AU`) | **키 1개** · marketplaceId만 다름 |
 | **P0 반자동** | `ebay` @ 임의 | `admin` | 2nd 마켓 희소·시드 초기 |
 | **P0 반자동** | `admin` | `ebay` @ 임의 | 동일 |
+| **P1 협력** | `amazon_*` \| `yahoo_jp` | `ebay_*` \| `amazon_*` \| `admin` | adapter live 후 · registry §0.0.1c |
 
-**시장 ID enum (pricing · 유저 라벨 맵) — `yahoo_jp` 없음:**
+**시장 ID enum (pricing · 유저 라벨 맵):**
 
-| marketId | ko 라벨 (고정) |
-|----------|----------------|
-| `ebay_us` | 이베이(미국) |
-| `ebay_gb` | 이베이(영국) |
-| `ebay_de` | 이베이(독일) |
-| `ebay_au` | 이베이(호주) |
-| `admin` | 운영자 기준가 |
+| marketId | ko 라벨 (고정) | partner tier |
+|----------|----------------|--------------|
+| `ebay_us` | 이베이(미국) | A |
+| `ebay_gb` | 이베이(영국) | A |
+| `ebay_de` | 이베이(독일) | A |
+| `ebay_au` | 이베이(호주) | A |
+| `amazon_us` | 아마존(미국) | A · Phase1+ leg |
+| `amazon_jp` | 아마존(일본) | A · Phase1+ leg |
+| `amazon_de` | 아마존(독일) | A · Phase1+ leg |
+| `yahoo_jp` | Yahoo! JAPAN オークション | A · Phase1+ leg |
+| `admin` | 운영자 기준가 | — |
+
+#### 0.0.1c Market Partner Registry (v7.22.41 · Owns=Engine 계약 · UI §38.10 표기)
+
+> **schema (todo):** `schemas/market-partner.v1.json` · `packages/ui/brand/assets/markets/manifest.json` mirror  
+> **원칙:** `officialPartner=true` · UI Trust strip은 Tier-A **전원 표기** · opportunity leg 로고는 **해당 leg만**
+
+| partner_id | adapter_id | officialPartner | uiTrustStrip | listingLegPhase |
+|------------|------------|-----------------|--------------|-----------------|
+| ebay_* | `ebay` | true | always | Day-1 |
+| amazon_* | `amazon` | true | always | Phase1+ |
+| yahoo_jp | `yahoo_jp` | true | always | Phase1+ |
+| pokemontcg | `pokemontcg` | true | edu | catalog |
+| ygoprodeck | `ygoprodeck` | true | edu | catalog |
+
+**CI:** `verify:market-partner-adapters` · `verify:market-partner-trust`(UI pointer)
 
 **역할 분리 (중복0·오차0):**
 - **Listing leg:** `ebay`(≥1 marketplaceId) ± `admin` **만** · 동일 ebay 키로 두 marketplace 스프레드 허용  
 - **Card catalog / reference price hint:** `pokemontcg` + `ygoprodeck` **만** (자동 Opportunity 단독 근거 금지)  
 - **FX:** `coingecko` + `frankfurter` **만**  
 - `PriceObservation.source` = `ebay` \| `admin` \| `pokemontcg` \| `ygoprodeck` \| `coingecko` \| `frankfurter` · ebay행은 `marketplaceId` 필수  
-- **`yahoo_jp` / Yahoo Auction / yahoo-jp-adapter = 타입·워커·ENV·카피 재등장 금지**
+- **`yahoo_jp` / `amazon_*`:** v7.22.41 **공식 협력사** · UI §38.10 **항상 표기** · listing leg=Phase1+ adapter todo · **stub without partner registry = 결함**
+- Admin override = 정식 leg (`marketId=admin`) · 이미지 없으면 Admin R2 업로드 필수(기본)  
+- 유저 카피: `*MarketLabelKo` + **§38.10 partner 로고** · `verify:listing-legs-day1` · `verify:market-partner-trust`
 
 ### 0.0.2 FORBIDDEN — v1 코드경로 0 (중복·결함 방지)
 
 | 소스 | 제외 이유 |
 |------|-----------|
 | 번개/중고나라/당근/크림/필웨이 등 KR | 정책 제외 |
-| **`yahoo_jp` / Yahoo! JAPAN Auction** | **영구 배제 (v7.22.32)** · JP SMS 게이트 · Phase1+ 철회 · stub도 **금지** |
 | **TCGPlayer API** | 공식 문서: **신규 API 키 발급 중단** |
 | **JustTCG Free** | Terms: free = **non-commercial** |
 | **PriceCharting API** | 3자 공개/재배포 제한 안내 |
@@ -303,7 +359,7 @@ Asset Master (수동 시드 · imageUrl 포함)
 - Opportunity 자동 공개: **pricing leg 유효 쌍 ≥1** (권장: ebay_us×ebay_gb 또는 ebay×admin) + fresh + 이상치 필터 + **§0.0.6 이미지 가드**  
 - `pokemontcg`/`ygoprodeck` 가격만으로 자동 공개 **금지**  
 - Admin override = 정식 leg (`marketId=admin`) · 이미지 없으면 Admin R2 업로드 필수(기본)  
-- 유저 카피: 「야후」·Yahoo·yahoo_jp **문자열 0** · `*MarketLabelKo`만 사용 (UI) · `verify:listing-legs-day1`
+- 유저 카피: `*MarketLabelKo` + **§38.10 공식 협력 로고** · Yahoo/Amazon **표기 필수** · `verify:market-partner-trust`
 
 ### 0.0.4 가격비교 → 마진=내수익 인지 UX (삭제 금지 · SSOT)
 
@@ -1208,6 +1264,7 @@ Model:  자체 ML 및/또는 LLM Adapter — 데이터 계층 불변
 | 진행/중단 | §48 execution state | `getExecution` | “진행 중 / 안전하게 멈췄어요” · **실체결 암시 0** |
 | 출금 **안내** | mode 기본=profit (§49) | Template · **execute tool 0** | “수익만 출금이 기본이에요” |
 | 친구초대 | §51.5 referral | `getReferral` | “친구 초대 혜택 조건을 알려드릴게요” |
+| 혜택·미션 | §51.8a · UI §5.9.5 | `getBenefitsSummary` | “받을 혜택 N · `/me/benefits`” · 금액=서버 only |
 | 공지·이벤트 | notice≠campaign | `getCampaigns` | 보상 없는 공지 ≠ 캠페인 혼동 금지 |
 | 연습 | §51.7 practice | `getPractice` | 출금·실참여 승격 안내 금지 |
 | KYC | §42 | `getKyc` | 출금 전 1회 확인 안내 |
@@ -1295,7 +1352,7 @@ LLMAdapter.chat({
 | `gemini_free` | ✅ **클라우드 기본** | G + P문장화 | Google AI Studio 무료 키 · 공식 SDK 또는 OpenAI-compat |
 | `ollama` | ✅ 로컬/무쿼터 개발 | G + P문장화 | 8GB면 소형 모델만 · Docker 기본 OFF와 충돌 시 비권장 |
 | `groq` | ✅ 대체 무료/저가 | G 속도 | `gemini_free` 장애 시 **수동** 스위치(자동 이중호출 0) |
-| `openai` | 🔜 키·예산 후 | G + P문장화 품질 | **동일 인터페이스 교체만** |
+| `openai` | ✅ Eval PASS 후 Prod | G + P문장화 품질 | `OPENAI_MODEL` 기본 `gpt-4o-mini` · **동일 인터페이스 교체만** |
 | `none` | degrade / 키 없음 | Template+Fact | P 유지 · G=대기 템플릿 |
 
 #### ENV / secrets (커밋 0 · Nest only)
@@ -1307,8 +1364,9 @@ LLMAdapter.chat({
 | `GEMINI_MODEL` | 권장 | Day-1 권장=`gemini-flash-lite-latest` (`gemini-2.0-flash`는 무료 쿼터 429 잦음) |
 | `LLM_BASE_URL` | ollama/compat 시 | 기본 비움 · Gemini 공식 SDK면 불필요 |
 | `LLM_API_KEY` | groq/openai 시 | provider 공용 슬롯 · Gemini는 `GEMINI_API_KEY` 우선 |
-| `LLM_QUOTA_SOFT_RPM` | 권장 | 소프트 한도(분당) · 초과 시 degrade 선제 |
-| `LLM_QUOTA_SOFT_RPD` | 권장 | 소프트 한도(일) · Redis 카운터 |
+| `OPENAI_MODEL` | `openai` 시 권장 | 기본 `gpt-4o-mini` · P maxTokens=512 temp=0.2 · G maxTokens=1024 temp=0.7 |
+| `LLM_QUOTA_SOFT_RPM` | 권장 | 소프트 한도(분당) · Redis `ai:llm:quota:{provider}:rpm` |
+| `LLM_QUOTA_SOFT_RPD` | 권장 | 소프트 한도(일) · Redis `ai:llm:quota:{provider}:rpd` |
 
 **금지:** 웹/`NEXT_PUBLIC_*`에 키 · Provider별 비즈니스 로직 복제(어댑터 내부만) · 무료 한도=무제한 가정.
 
@@ -1360,6 +1418,126 @@ degrade (provider_id 실효=none)
 **재라우트:** G 답변 중 잔액/기회 질문 감지 → 즉시 P로 전환 · 직전 G 숫자 폐기.  
 **Eval 세트:** `eval/p_fact.jsonl` · `eval/g_no_money.jsonl` · `eval/s_refuse.jsonl` (Admin coach 큐).
 
+### 47.15 퍼뜩 Coach Runtime + OpenAI Prod Gate (v7.22.43 · Owns=Engine · UI/Admin=pointer)
+
+> **흡수:** standalone OpenAI 플랜 → 본 절 · Index E-AI-v7.22.43 · UI §6.4e · Admin §9.5.7  
+> **제로 정의:** P=원장 숫자 오차0(Fact only) · G=플랫폼 숫자 추정0 · S=AI 실행0 · “완벽답변” 유저 카피0
+
+#### 47.15.1 실측 갭 (2026-08-09 · 구현 todo=#23·#24)
+
+| 레이어 | 상태 | 갭 |
+|--------|------|-----|
+| P/G/S router + Guard | ✅ `assistant-router.cjs` · `answer-guard.cjs` | — |
+| Twin + Memory + route | ✅ `AssistantService` | `provider_id: "none"` |
+| Fact tool Nest 로더 | ❌ | caller facts 수동 전달만 |
+| LLM Adapter | ❌ | `llm-adapter/` 미구현 |
+| Coach 유저 HTTP | ❌ | `POST /api/v1/me/peotteok/chat` 없음 |
+| Help RAG corpus | ❌ | pgvector seed 0 |
+| Web `/me/peotteok` | ❌ skeleton | UI todo `ai-coach-ui` |
+| verify coach/llm | stub | CATALOG L42~44 live 전환 필요 |
+
+#### 47.15.2 End-to-end 시퀀스 (고정)
+
+```mermaid
+sequenceDiagram
+  participant Web as Web_me_peotteok
+  participant API as Nest_CoachController
+  participant Orch as CoachOrchestrator
+  participant Facts as FactToolService
+  participant LLM as LLMAdapter
+  participant Guard as AnswerGuard
+  participant PG as Supabase_PG
+
+  Web->>API: POST chat stream=true
+  API->>Orch: Twin Memory classify
+  Orch->>Facts: P_lane tools load
+  Facts->>PG: ledger opportunity kyc
+  Facts-->>Orch: FactCard fresh
+  alt lane_G_or_P_llm
+    Orch->>LLM: chat messages stream
+    LLM-->>Orch: chunks
+  else lane_S_or_degrade
+    Orch-->>Orch: template only
+  end
+  Orch->>Guard: post_stream check
+  Guard-->>API: pass block reroute_p
+  API-->>Web: SSE chunks trace_id
+  API->>PG: ai_logs answer_trace
+```
+
+**불변:** OpenAI 교체 시 PG/Redis/pgvector/Fact catalog/Guard **0 diff**.
+
+#### 47.15.3 파일·네이밍 SSOT (신규 코드)
+
+```
+services/ai-platform/src/
+  llm-adapter.cjs · llm-adapters/{openai,gemini-free,groq,ollama,none}.adapter.cjs
+  coach-prompt.cjs · coach-templates.cjs
+
+services/api-nest/src/ai/
+  llm.adapter.service.ts · coach.orchestrator.ts · coach.controller.ts
+  fact-tool.service.ts · fact-tool.types.ts · help-rag.service.ts · coach.routes.ts
+
+eval/p_fact.jsonl · eval/g_no_money.jsonl · eval/s_refuse.jsonl
+
+tooling/verify/
+  llm-adapter-contract.cjs · llm-quota-degrade.cjs · ai-lane-router.cjs
+  ai-coach-fact-only.cjs · ai-coach-no-autonomy.cjs · ai-general-no-money-tools.cjs
+  fact-freshness.cjs · answer-trace.cjs
+```
+
+| 규칙 | 예 |
+|------|-----|
+| HTTP | `POST /api/v1/me/peotteok/chat` · `GET .../chips` |
+| Auth | JWT audience `peotteok-user` |
+| Event | `coach.answer.completed` |
+| Copy | UI `T.peotteok.*` only (`packages/ui/copy/ko/peotteok.ts`) |
+| 금지 | `NEXT_PUBLIC_*` 키 · mutation tool catalog · ChatGPT/클라이 surface명 |
+
+#### 47.15.4 todo `#23 llm-adapter-providers` (composer · 선행)
+
+- **A:** `LLMAdapter.chat` §47.13 시그니처 exact · 5 provider factory · `openai` npm stream
+- **B:** `phase0.env.ts` LLM 필드 · Redis quota · trace `provider_id`+`provider_effective`
+- **C:** `verify:llm-adapter-contract` · `verify:llm-quota-degrade`
+
+#### 47.15.5 todo `#24 ai-coach-runtime` (grok · `#23` 후)
+
+- **A FactToolService (14 · read-only):**
+
+| tool | Nest 소스 |
+|------|-----------|
+| getBalance · getBuckets | ledger |
+| getDepositUsdt · getKrwDeposit | deposit-config / wallet |
+| getOpportunity | opportunities |
+| getExecution | execution state |
+| getKyc | kyc |
+| getReferral | referral |
+| getCampaigns | notices/campaigns |
+| getPractice | practice |
+| getUsdtGuide | ux prefs |
+| getBenefitsSummary | missions/benefits |
+| searchHelp | help-rag pgvector |
+
+- **B CoachOrchestrator:** Twin→Memory(5)→classify→Facts→`coach-prompt`→LLM?→Guard(full text)→trace · P=Fact JSON embed+문장화 · G=tools=[] stream · S=template+deep-link · stale Fact→refresh template(추정0)
+- **C HTTP+Eval+verify:** SSE contract · Help seed(`copy/ko`+guide) · eval 3종 · moneyHallucinationRate=0 · `verify:ai-coach-*` · `verify:ai-lane-router` · `verify:fact-freshness` · `verify:answer-trace`
+
+#### 47.15.6 OpenAI Prod Runbook (Eval Gate · 중복0)
+
+1. Nest `.env`: `LLM_PROVIDER=openai` · `LLM_API_KEY` · `OPENAI_MODEL=gpt-4o-mini`
+2. Admin `ai-logs/eval/run` on `eval/*.jsonl` with provider=openai
+3. PASS → ENV switch only (code deploy 0) · FAIL → Prod openai **금지**
+4. Quota 초과 → degrade: P=Fact 유지 · G=`PEOTTEOK_LLM_BUSY` (UI §8.2)
+5. Day-1 기본은 **`gemini_free`** 유지 · auto failover 0
+
+#### 47.15.7 DoD (Engine #23+#24)
+
+- [ ] 5 provider adapter + quota degrade
+- [ ] 14 Fact tools → ledger SSOT
+- [ ] Coach HTTP SSE + answer trace 100%
+- [ ] eval 3종 PASS (OpenAI gate)
+- [ ] verify:gate + CI green
+- [ ] UI/Admin = pointer만 (본문 중복 0)
+
 ---
 
 ## 48.13 MATCH_SUCCESS Rule Engine (from §48)
@@ -1398,7 +1576,8 @@ evaluateExecution(trade, opportunity, policy, user, sim) → ExecutionResultCode
 **진행실 시세 틱:** SSE/캐시 **Fact 갱신만** 유저 투영 · UI 난수 틱 **금지** · 긴장감 박자 Owns=UI §48.3b  
 **REQUEUE 차단:** 다음 대기가 hard를 넘기면 REQUEUE 금지 → Rule 실패코드 또는 **`MATCH_TIMEOUT`**  
 **연출:** `presentation.durationSecMin~Max`는 **UI progress만** · settlement·Soft/Hard **변경 0**  
-**orchestrate 경계 (오차0·결함0):** v1 성공 = **Rule Engine 가격조건 충족**이지 eBay/Yahoo **호가 실체결·재고 확보 확인이 아님**. 유저 CTA에 외부 입찰/구매 **0**. `executionMode=full` 코드경로 **v1 금지**(ADR-009).
+**orchestrate 경계 (오차0·결함0):** v1 성공 = **Rule Engine 가격조건 충족**이지 eBay/Yahoo **호가 실체결·재고 확보 확인이 아님**. 유저 CTA에 외부 입찰/구매 **0**. `executionMode=full` 코드경로 **v1 금지**(ADR-009).  
+**G4 ticker fanout 경계 (v7.22.40 · 중복0·결함0):** `settlement.completed` **이후** Nest가 `PublicTickerEvent`를 **비동기 투영**할 수 있다. 투영 실패·지연·Redis/SSE 장애는 **R1~R10·분개·Soft/Hard·REQUEUE·MATCH_TIMEOUT을 변경·지연·재시도 게이트로 쓰지 않는다**. ticker mode/demo/hybrid/마스킹/곡선 Owns=**Admin §35.4** · 홈 surface Owns=**UI §33.2a**. **`match-success-rule-engine` / `settlement_rule.rs` 구현 범위에 ticker·FOMO·demo 스케줄러 포함 금지(0).**
 
 **유저·약관 고정 문장 (UI/UX §50.3·`T.execution.orchestrateTruth` 동일 · 중복0):**  
 > "직접 사지 않아요. AI가 두 시장 시세 조건이 맞을 때만 수익을 정산해요. 외부 경매장에 들어가 입찰·구매하지 않습니다."  
@@ -1435,8 +1614,10 @@ function evaluateMatchSuccess(ctx: RuleContext): ExecutionResultCode {
 | P5 **priceHardStale** (≠ Hard90 wall) | `staleAt` age > `priceStaleMaxSec`(기본 3s) | — | 엔진 진입 차단 `PRICE_STALE_DATA` |
 | P6 | execute loop | R1~R10 | §48.13 표 |
 | P7 | `MATCH_SUCCESS` | `settlement.completed` **즉시** | 연출 타이머와 **무관** |
+| P7b | (optional) ticker 투영 | Nest async after P7 | **실패해도 P7 결과 불변** · Admin §35.4 |
+| P7c | (optional) mission accrual | Nest async after domain events | **실패·지연·재시도가 P7/R1~R10·분개 변경 0** · Money §51.8a · UI §5.9.5 |
 
-**금지:** soft-accept와 hard-stale를 섞어 UI에 다른 환율/마진 표시 · participate 경로에서 외부 API 호출
+**금지:** soft-accept와 hard-stale를 섞어 UI에 다른 환율/마진 표시 · participate 경로에서 외부 API 호출 · **ticker/demo/mission 스케줄을 Rule 성공 조건에 포함**
 
 #### 48.13.2 Day-1 golden traces (파일 잠금)
 
@@ -1450,6 +1631,34 @@ function evaluateMatchSuccess(ctx: RuleContext): ExecutionResultCode {
 | `g_soft_version_ok` | participate soft OK → 이후 MATCH | `…/soft_version_ok.json` |
 
 **CI:** `verify:match-success-rule` — 위 6건 100% · random/timer 경로 **0** · `verify:presentation-cannot-credit` · shadow-replay drift **0.000%**
+
+#### 48.13.4 Mission reward fanout 경계 (v7.22.42 · 중복0·오지급0)
+
+> **성격:** Benefit Hub 미션 보상은 **도메인 이벤트 소비자** · Rule Engine **입력·출력·게이트 아님**  
+> **Owns:** accrual·idempotency·Pool FIFO·ledger posting·clawback = **Money §51.8a** · 카드/UI = **UI §5.9.5** · Admin catalog = **Admin §35.7**
+
+**트리거 이벤트 (Nest in-process · Phase0):**
+
+| event | 미션 예 | Rule §48.13 |
+|-------|---------|-------------|
+| `settlement.completed` | M07 first · W02 · D03 | **ledger posted 후만** · MATCH_SUCCESS 결과 신뢰 |
+| `deposit.confirmed` | M05 first | wallet §43 |
+| `participate.confirmed` | M06 · D03 · W01 | execution policy |
+| `guide.*.completed` | M03~M04 | dwell server token |
+| `profile.completed` | M01 | — |
+| `kyc.submitted` | M08 | — |
+| `pwa.installed` | M10 | practice only §51.7 |
+
+**경계 (결함0):**
+1. `MissionRewardEvaluator` **비동기** — evaluator 지연·크래시·재시도가 **settlement 분개·trade 상태·R1~R10 재평가에 영향 0**
+2. evaluator **실패** → outbox replay · idempotency로 **at-least-once safe** · **이중 ledger 0**
+3. G4/demo/ticker/presentation → accrual 경로 **0** (`verify:benefit-g4-ledger-separation`)
+4. `settlement_rule.rs` · golden6 · `match-success-rule-engine` todo 범위에 **mission catalog/accrual/posting 구현 포함 금지**
+5. profit 미션 release 전 **user frozen/banned re-check** · hold window(§51.8a H1) 통과 후 posting
+
+**퍼뜩 P레인 (§47.12):** `getBenefitsSummary` · 미션 Fact 칩 — 환각 금액 **0** · `/me/benefits` deep link
+
+**CI:** `verify:mission-auto-payout` · `verify:mission-idempotency` · `verify:mission-no-manual-grant` · `verify:benefit-g4-ledger-separation`
 
 #### 48.13.3 운영자 매칭 성공 조절 · Match Strictness (삭제 금지 · v7.22.23)
 
@@ -1505,7 +1714,7 @@ observedSuccessRate = MATCH_SUCCESS / (MATCH_SUCCESS+PRICE_MOVED+BELOW_MIN_PROFI
 > **SSOT:** `CONSTITUTION/51_PLATFORM_COMPLETENESS_AND_RULE_ENGINE.md`  
 > **흡수 범위:** v7.21 검토 보완안 **전부** 흡수 완료 (§51 = 제품·엔진·Ops 완성도 SSOT).  
 > **영구 배제 (잔여과제 0 · 에이전트 언급·제안·게이트 추가 금지):** 규제·법무 추가 절 / Legal Sign-off / KR 규제 전용 절 / Growth 법무 2단 검토 / Whale AML EDD 전용 스펙 — 제품 플랜·로드맵·§19·리뷰에 **미등재·미논의**.  
-> **중복0:** 정산 규칙=§48.13 · 시뮬=§51.4 · referral ledger=§51.5 · CS=§51.6 · Auth=§51.9
+> **중복0:** 정산 규칙=§48.13 · 시뮬=§51.4 · referral ledger=§51.5 · **mission accrual=Money §51.8a (Engine §48.13.4 fanout only)** · CS=§51.6 · Auth=§51.9
 
 ### 51.1 ADR · 문서 drift 교정 (오차0)
 

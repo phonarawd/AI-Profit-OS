@@ -42,6 +42,7 @@ mustExist(".cursor/mcp.json");
 mustExist("infra/web/wrangler.toml");
 mustExist("infra/ops/wrangler.toml");
 mustExist("infra/workers.manifest.json");
+mustExist("workers/tsconfig.base.json");
 mustExist(".github/workflows/deploy-cloudflare.yml");
 
 const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));

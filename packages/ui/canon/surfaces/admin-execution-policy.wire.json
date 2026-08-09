@@ -3,6 +3,12 @@
   "route": "/admin/execution-policy",
   "brandRef": "packages/ui/brand",
   "primaryCta": { "copyKey": "T.admin.savePolicy", "href": null },
+  "softHard": {
+    "softSec": 60,
+    "hardSec": 90,
+    "membershipUniform": true,
+    "note": "Engine §48.13 Soft/Hard · display only · ≠ matchStrictness knobs"
+  },
   "blocks": [
     { "id": "sidebar", "role": "nav", "copyKey": "T.admin.twelveModules" },
     {
@@ -18,7 +24,20 @@
       "id": "observedSuccessKpi",
       "role": "kpi",
       "copyKey": "T.admin.observedSuccessRate",
-      "note": "read-only today MATCH_SUCCESS ratio"
+      "note": "read-only today MATCH_SUCCESS ratio · write path 0"
+    },
+    {
+      "id": "softHard",
+      "role": "info",
+      "copyKey": "T.execution.slaSoftHint",
+      "note": "Soft60/Hard90 membershipUniform · not a success knob"
+    },
+    {
+      "id": "nearMissCap",
+      "role": "form",
+      "copyKey": "T.admin.nearMissCapUsdt",
+      "field": "feed.nearMissCapUsdt",
+      "note": "Engine §0.0.5.1 SSOT · adapters MUST NOT own · Day-1 default max(50, principal×0.25)"
     },
     {
       "id": "forbidRng",
@@ -35,6 +54,8 @@
     "photo_pixel_match",
     "non_brand_logo",
     "presentation_changes_ledger",
-    "auto_tune_to_target_percent_day1"
+    "auto_tune_to_target_percent_day1",
+    "nearMissCap_on_adapters",
+    "observed_kpi_write"
   ]
 }

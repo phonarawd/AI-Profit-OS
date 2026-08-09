@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/simulation-gate.v1.json",
+  "title": "SimulationGateV1",
+  "description": "Engine §51.4 M0.5 S1~S4 gate evaluation (+ Growth ON eligibility).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["s1", "s2", "s3", "s4", "overallPass", "thresholds"],
+  "properties": {
+    "s1": {
+      "type": "object",
+      "required": ["id", "pass", "failAction"],
+      "properties": {
+        "id": { "const": "S1" },
+        "pass": { "type": "boolean" },
+        "failAction": { "const": "block_publish" },
+        "totalMismatch": { "type": "number" },
+        "threshold": { "type": "number" }
+      }
+    },
+    "s2": {
+      "type": "object",
+      "required": ["id", "pass", "failAction"],
+      "properties": {
+        "id": { "const": "S2" },
+        "pass": { "type": "boolean" },
+        "failAction": { "const": "admin_alert" },
+        "reason": { "type": "string" },
+        "drainUsdt": { "type": "string" },
+        "reserveUsdt": { "type": ["string", "null"] },
+        "maxAllowedUsdt": { "type": ["string", "null"] },
+        "thresholdPct": { "const": "0.10" }
+      }
+    },
+    "s3": {
+      "type": "object",
+      "required": ["id", "pass", "failAction", "threshold"],
+      "properties": {
+        "id": { "const": "S3" },
+        "pass": { "type": "boolean" },
+        "failAction": { "const": "hide_feed" },
+        "score": { "type": ["number", "null"] },
+        "threshold": { "const": 0.85 }
+      }
+    },
+    "s4": {
+      "type": "object",
+      "required": ["id", "pass", "failAction", "threshold"],
+      "properties": {
+        "id": { "const": "S4" },
+        "pass": { "type": "boolean" },
+        "failAction": { "const": "adapter_alert" },
+        "rate": { "type": ["number", "null"] },
+        "threshold": { "const": 0.15 }
+      }
+    },
+    "overallPass": { "type": "boolean" },
+    "thresholds": {
+      "type": "object",
+      "required": [
+        "s2ReserveDrainMaxPct",
+        "s3PayoutFeasibilityMin",
+        "s4AdapterMatchFailureRateMax",
+        "growthPassMaxAgeHours"
+      ],
+      "properties": {
+        "s2ReserveDrainMaxPct": { "const": "0.10" },
+        "s3PayoutFeasibilityMin": { "const": 0.85 },
+        "s4AdapterMatchFailureRateMax": { "const": 0.15 },
+        "growthPassMaxAgeHours": { "const": 24 }
+      }
+    }
+  }
+}

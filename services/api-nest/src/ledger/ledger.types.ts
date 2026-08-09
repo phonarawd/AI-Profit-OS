@@ -17,6 +17,8 @@ export const JOURNAL_TYPES = [
   "referral_clawback",
   "practice_grant",
   "practice_expire",
+  "mission_reward",
+  "mission_clawback",
   "fee",
   "other",
 ] as const;
@@ -25,6 +27,8 @@ export type JournalType = (typeof JOURNAL_TYPES)[number];
 export const SYSTEM_ACCOUNT_CODES = {
   OPPORTUNITY_POOL: "SYS:OPPORTUNITY_POOL",
   OPS_POOL: "SYS:OPS_POOL",
+  /** Engine §0.0.4.3 · S2 input · ops.platform_reserve_usdt */
+  PLATFORM_RESERVE: "ops.platform_reserve_usdt",
   PROMO_POOL: "SYS:PROMO_POOL",
   TREASURY: "SYS:TREASURY",
   FEE_REVENUE: "SYS:FEE_REVENUE",

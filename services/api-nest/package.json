@@ -9,6 +9,13 @@
     "start": "node dist/main.js"
   },
   "dependencies": {
+    "@aipo/ai-platform": "workspace:*",
+    "@aipo/feature-platform": "workspace:*",
+    "@aipo/market-intelligence": "workspace:*",
+    "@aipo/memory-service": "workspace:*",
+    "@aipo/shadow-replay-engine": "workspace:*",
+    "@aipo/simulation-engine": "workspace:*",
+    "@aipo/user-twin-service": "workspace:*",
     "@nestjs/common": "^11.1.5",
     "@nestjs/core": "^11.1.5",
     "@nestjs/platform-express": "^11.1.5",

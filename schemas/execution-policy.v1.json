@@ -65,6 +65,21 @@
     "membershipBandOverlayEnabled": {
       "type": "boolean"
     },
+    "feed": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Engine §0.0.5.1 balance-aware feed · nearMissCap SSOT (adapters MUST NOT own this)",
+      "required": [
+        "nearMissCapUsdt"
+      ],
+      "properties": {
+        "nearMissCapUsdt": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Absolute USDT near-miss window · Day-1 default resolve = max(50, principal×0.25) when policy absent"
+        }
+      }
+    },
     "presentation": {
       "type": "object",
       "additionalProperties": false,

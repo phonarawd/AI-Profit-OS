@@ -1,0 +1,88 @@
+/**
+ * Thin require bridges → feature/ai/twin/memory packages (CJS)
+ */
+
+/* eslint-disable @typescript-eslint/no-require-imports */
+const feature =
+  require("@aipo/feature-platform") as typeof import("@aipo/feature-platform");
+const ai = require("@aipo/ai-platform") as typeof import("@aipo/ai-platform");
+const shadow =
+  require("@aipo/shadow-replay-engine") as typeof import("@aipo/shadow-replay-engine");
+const twin =
+  require("@aipo/user-twin-service") as typeof import("@aipo/user-twin-service");
+const memory =
+  require("@aipo/memory-service") as typeof import("@aipo/memory-service");
+
+export const buildFeatureVector = feature.buildFeatureVector;
+export const FEATURE_FORMULA_ID = feature.FEATURE_FORMULA_ID;
+export const FORBIDDEN_FEATURE_KEYS = feature.FORBIDDEN_FEATURE_KEYS;
+
+export const scoreAiPick = ai.scoreAiPick;
+export const applyAiPickToCard = ai.applyAiPickToCard;
+export const AI_PICK_THRESHOLD = ai.AI_PICK_THRESHOLD;
+export const AI_PICK_FORMULA_ID = ai.AI_PICK_FORMULA_ID;
+export const buildAiLogRecord = ai.buildAiLogRecord;
+export const toAiLogsRow = ai.toAiLogsRow;
+export const evaluateModelCandidate = ai.evaluateModelCandidate;
+export const promoteToProd = ai.promoteToProd;
+export const AUTO_LEARNING_ENABLED = ai.AUTO_LEARNING_ENABLED;
+export const assertNoL3Money = ai.assertNoL3Money;
+export const FORBIDDEN_L3_MONEY_ACTIONS = ai.FORBIDDEN_L3_MONEY_ACTIONS;
+
+export const buildFactCard = ai.buildFactCard;
+export const isFactFresh = ai.isFactFresh;
+export const partitionFreshness = ai.partitionFreshness;
+export const assertFactsFreshOrThrow = ai.assertFactsFreshOrThrow;
+export const FACT_TOOLS = ai.FACT_TOOLS;
+export const FACT_CHIPS = ai.FACT_CHIPS;
+export const guardAnswer = ai.guardAnswer;
+export const classifyLane = ai.classifyLane;
+export const routeAssistant = ai.routeAssistant;
+export const toolsForLane = ai.toolsForLane;
+
+export const createLlmAdapter = ai.createLlmAdapter;
+export const llmAdapterChat = ai.llmAdapterChat;
+export const quotaKeyRpm = ai.quotaKeyRpm;
+export const quotaKeyRpd = ai.quotaKeyRpd;
+export const shouldDegradeForQuota = ai.shouldDegradeForQuota;
+export const degradeAnswerPath = ai.degradeAnswerPath;
+export const G_BUSY_TEMPLATE = ai.G_BUSY_TEMPLATE;
+
+export const buildCoachMessages = ai.buildCoachMessages;
+export const shouldCallLlm = ai.shouldCallLlm;
+export const S_REFUSE_TEMPLATE = ai.S_REFUSE_TEMPLATE;
+export const P_REFRESH_TEMPLATE = ai.P_REFRESH_TEMPLATE;
+export const CS_DEEP_LINK = ai.CS_DEEP_LINK;
+export const shapeByTone = ai.shapeByTone;
+export const renderFactAnswer = ai.renderFactAnswer;
+export const pickChips = ai.pickChips;
+export const isFactTool = ai.isFactTool;
+export const assertToolsAllowedForLane = ai.assertToolsAllowedForLane;
+export const buildHelpChunk = ai.buildHelpChunk;
+export const rankHelpChunks = ai.rankHelpChunks;
+
+export const runAiPickShadowReplay = shadow.runAiPickShadowReplay;
+export const MAX_DRIFT_PCT = shadow.MAX_DRIFT_PCT;
+export const FAIL_ACTION = shadow.FAIL_ACTION;
+export const HORIZON_HOURS = shadow.HORIZON_HOURS;
+
+export const FORBIDDEN_TWIN_MONEY_KEYS = twin.FORBIDDEN_TWIN_MONEY_KEYS;
+export const assertNoTwinMoneyKeys = twin.assertNoTwinMoneyKeys;
+export const buildTwin = twin.buildTwin;
+export const patchTwin = twin.patchTwin;
+export const twinRedisKey = twin.twinRedisKey;
+export const TWIN_REDIS_TTL_SEC = twin.TWIN_REDIS_TTL_SEC;
+export const toAiUserProfileRow = twin.toAiUserProfileRow;
+export const fromAiUserProfileRow = twin.fromAiUserProfileRow;
+export const resolveMoneyFromTwin = twin.resolveMoneyFromTwin;
+export const assertTwinNotUsedForMoneyAnswer =
+  twin.assertTwinNotUsedForMoneyAnswer;
+
+export const buildMemoryRecord = memory.buildMemoryRecord;
+export const assertNoMemoryMoneyKeys = memory.assertNoMemoryMoneyKeys;
+export const memoryRecentRedisKey = memory.memoryRecentRedisKey;
+export const assertEmbedding = memory.assertEmbedding;
+export const toPgVectorLiteral = memory.toPgVectorLiteral;
+export const EMBEDDING_DIM = memory.EMBEDDING_DIM;
+export const DEFAULT_MODEL_ID = memory.DEFAULT_MODEL_ID;
+export const rankByCosine = memory.rankByCosine;
