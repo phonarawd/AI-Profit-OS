@@ -5,7 +5,7 @@
 > **선행:** STEP1 Gap Analysis Founder 승인 · PART9 live fetch/SDK/Auth/Wallet **보존**  
 > **금지:** HomePageV2 신설 · PART9 재오픈 · PNG 픽셀 QA · 본 문서 승인 전 구현/ADR/Token 착수  
 
-**버전:** v1.2-final (STEP3 READY · Founder Lock 보강 완료)  
+**버전:** v1.3 (STEP4 Desktop Grid 재설계 · Founder ack 완료)  
 **범위:** `/` Home + App Shell (Sidebar/Header/Footer) · 탭 라벨 IA 잠금 포함 · 탭 외 화면 전면 리터치 제외  
 **STEP3 순서 (불변):** ADR → Canon Wire → Token SPEC → Implementation Mapping · **Token을 Wire보다 먼저 만들지 않음** · React/CSS/컴포넌트는 STEP4  
 
@@ -82,6 +82,20 @@
 | Main | flexible | 기회 발견 + 참여 (primary) |
 | Right Rail | **320–360px** | 신뢰·현황 보조 only |
 | Header | **~64px** | Status + identity |
+
+### 2.1a Main Content Internal Grid (v1.3 신설)
+
+> 기존 "Main: Flexible"에는 내부 규정이 없었음 — 본 절은 신규 조항이며 상위 §2.1 잠금(Sidebar 240 / Right Rail 320–360)을 변경하지 않는다.
+
+| 순서 | Block | 폭 규칙 |
+|---|---|---|
+| 1 | Hero | Main 100% |
+| 2 | Money row (Balance+Profit) | 2열 고정 |
+| 3 | Opportunity grid | 컨테이너 실제 렌더 폭 기준 1~3열 (auto-fit) |
+| 4 | Partner/trust strip | Main 100% |
+
+- 열 수는 **뷰포트가 아니라 Main 컨테이너의 실제 렌더 폭**(`container-type: inline-size` + `@container`)으로 결정한다 — Sidebar/Right Rail 유무로 Main 실제 폭이 달라지므로, 뷰포트 기준 하드코딩 열 수는 금지.
+- Content 전체 폭(Sidebar+Main+Rail 합)의 울트라와이드(≥1920px) 상한은 토큰 SSOT(`--content-rail-max`)를 따른다 — 무한 스트레치 금지(카드가 비정상적으로 커지는 것 방지), 초과분은 배경으로 처리.
 
 ### 2.2 Navigation IA Lock (Founder 확정 추천 · STEP3 `verify:ia-tabs` 반영)
 
@@ -170,11 +184,11 @@
 
 | Rule | Contract |
 |---|---|
-| Hero visual area | Illustration(+맵) 합쳐 **최대 ~35%** hero 영역 |
-| Desktop Hero height | **480–560px** 권장 |
-| Mobile Hero height | **320–420px** 권장 |
+| Hero visual area | Illustration(+맵) 합쳐 **최대 ~46%** hero 영역 (v1.3 상향 · Founder 승인) |
+| Desktop Hero height | **480–600px** 권장 (v1.3 상향) |
+| Mobile Hero height | **320–420px** 권장 (불변) |
 | Robot/Globe role | **장식(composition anchor)** · 정보 전달 영역 아님 |
-| Dominance | Illustration **never** dominates CTA |
+| Dominance | Illustration **never** dominates CTA — 면적이 아니라 **z-order/명도 대비**로 판단(흰색 CTA 버튼이 항상 최고 contrast 유지) |
 | Feel | 금융 신뢰 · 게임/카지노 캐릭터 과대 금지 |
 
 ### 3.4 Process timeline (유저 카피 · 고정)
@@ -193,9 +207,9 @@ Robot and Globe are **composition anchors**.
 
 | Do | Do not |
 |---|---|
-| Placeholder container matching **position · size · hierarchy · lighting · visual weight** | random illustration |
-| Brand approved asset when ready · lazy load | random AI-generated character |
-| Static image / CSS shape | random 3D model · Three.js / WebGL |
+| **(v1.3) Brand-approved high-fidelity static illustration** — AI 생성 → 목업/브랜드 가이드 기반 프롬프트 → 육안 검수(금지 항목 0건 확인) → Brand Kit 등재(status: ready) | 방향성 없는 random illustration |
+| Static AVIF/WebP asset · `fetchPriority="high"`(above-the-fold이므로 lazy 금지) | random AI-generated character (검수 절차 생략) |
+| Static image only — Canvas/WebGL/Three.js/런타임 3D **여전히 금지** | random 3D model · Three.js / WebGL |
 
 | Robot tone | friendly · trustworthy · not humanoid worker · not trading bot |
 | Globe meaning | global opportunity symbol · not market chart · not financial prediction |
@@ -401,7 +415,8 @@ Founder가 **v1.2** 승인 시 허용 순서:
 
 | | |
 |---|---|
-| Status | **v1.2-final — STEP3 COMPLETE** (ADR-017 · home-visual-v2 · peotteok-light SPEC · mapping) · STEP4 BLOCKED until Founder ack |
-| Prev | v1.2 |
-| Added final | Hero copy 허용/금지 · Hero height 480–560/320–420 · Money count-up·실시간증가·과장차트 금지 · STEP3 순서 Wire→Token |
+| Status | **v1.3 — STEP4 Desktop Grid 재설계** (Founder ack 완료 · PC 목업 desktop composition 반영) |
+| Prev | v1.2-final (STEP3 COMPLETE) |
+| Added v1.3 | §2.1a Main Content Internal Grid 신설 · Hero illustration 비중 35%→46% · Hero desktop height 480–560→480–600px · Robot/Globe placeholder→brand-approved high-fidelity static illustration(AI 생성+검수+Brand Kit 등재) 승격 · content-rail-max 토큰 참조 추가 |
+| Added final (v1.2) | Hero copy 허용/금지 · Hero height 480–560/320–420 · Money count-up·실시간증가·과장차트 금지 · STEP3 순서 Wire→Token |
 | Owner track | Home Visual Upgrade (not UI PART9) |

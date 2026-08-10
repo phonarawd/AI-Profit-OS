@@ -6,5 +6,5 @@
   "note": "Playwright multi-viewport matrix · diffs Canon block order / layout regions — never raw pixels",
   "widthsPx": [390, 430, 768, 1024, 1366, 1440, 1920, 2560, 3440, 3840],
   "heightPx": 900,
-  "contentRailMaxPx": 1440
+  "contentRailMaxPx": 1680
 }

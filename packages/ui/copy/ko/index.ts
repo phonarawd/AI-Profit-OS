@@ -12,6 +12,7 @@ import {
 import { execution } from "./execution";
 import { feed } from "./feed";
 import { guide } from "./guide";
+import { home } from "./home";
 import { inbox } from "./inbox";
 import { invite } from "./invite";
 import { kyc } from "./kyc";
@@ -51,6 +52,7 @@ export const T = {
   execution,
   feed,
   guide,
+  home,
   inbox,
   invite,
   kyc,
@@ -92,6 +94,7 @@ export {
   execution,
   feed,
   guide,
+  home,
   inbox,
   invite,
   kyc,

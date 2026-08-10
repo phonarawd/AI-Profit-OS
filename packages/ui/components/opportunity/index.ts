@@ -29,11 +29,15 @@ export {
 } from "./OpportunityReceiptMargin";
 export {
   BalanceAwareHome,
+  HomeOpportunity,
   type BalanceAwareHomeProps,
+  type HomeOpportunityProps,
 } from "./BalanceAwareHome";
 export {
   HomePrincipalRail,
+  HomeMoneySurface,
   type HomePrincipalRailProps,
+  type HomeMoneySurfaceProps,
 } from "./HomePrincipalRail";
 export {
   VirtualOpportunityList,

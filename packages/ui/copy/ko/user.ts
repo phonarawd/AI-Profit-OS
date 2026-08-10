@@ -5,8 +5,8 @@
 export const user = {
   tabs: {
     home: "홈",
-    profits: "수익",
-    trades: "내거래",
+    profits: "기회",
+    trades: "수익",
     wallet: "지갑",
     me: "내정보",
   },
@@ -28,12 +28,12 @@ export const user = {
     capitalJourney: "자본대 여정",
   },
   profits: {
-    title: "수익",
-    subtitle: "지금 참여할 수 있는 수익 기회를 모아 보여 드려요",
+    title: "기회",
+    subtitle: "지금 참여할 수 있는 기회를 모아 보여 드려요",
   },
   trades: {
-    title: "내거래",
-    subtitle: "오늘·이번 달 정산된 수익을 확인할 수 있어요",
+    title: "수익",
+    subtitle: "참여·진행·정산 결과를 확인할 수 있어요",
     todayLabel: "오늘 수익",
     monthLabel: "이번 달 수익",
   },

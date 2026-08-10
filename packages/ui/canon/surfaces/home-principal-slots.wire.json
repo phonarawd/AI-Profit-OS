@@ -4,7 +4,7 @@
   "slot": "B/D",
   "brandRef": "packages/ui/brand",
   "tokenRef": "packages/ui/tokens/lux-fintech.ts",
-  "layoutClass": "lux-feed-grid",
+  "layoutClass": "home-money-grid",
   "component": "HomePrincipalRail",
   "planRef": "UI §5.3 B/D · PART9d",
   "blocks": [

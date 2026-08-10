@@ -40,8 +40,8 @@ if (!luxTheme.includes("component.css")) {
 if (!luxTheme.includes("motion.css")) {
   fails.push("lux-theme.css must import motion.css");
 }
-if (!luxTheme.includes("#3ddc97") && !luxTheme.includes("#3DDC97")) {
-  fails.push("lux-theme accent must mirror #3DDC97");
+if (!luxTheme.includes("#6b3cff") && !luxTheme.includes("#6B3CFF")) {
+  fails.push("lux-theme accent must mirror peotteok-light #6B3CFF (ADR-017)");
 }
 
 const motion = fs.readFileSync(

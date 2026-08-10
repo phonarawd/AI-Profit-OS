@@ -45,7 +45,7 @@
 /* 2xl / ultrawide — content rail, no infinite card stretch */
 @media (min-width: 1920px) {
   .lux-app-main {
-    max-width: var(--content-rail-max, 1440px);
+    max-width: var(--content-rail-max, 1680px);
     margin-inline: auto;
   }
 }

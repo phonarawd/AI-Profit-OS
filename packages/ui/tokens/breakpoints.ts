@@ -14,9 +14,9 @@ export const BREAKPOINTS = {
 
 export type BreakpointName = keyof typeof BREAKPOINTS;
 
-/** Content rail — 4K / ultrawide (§23 extend) */
+/** Content rail — 4K / ultrawide (§23 extend · v1.3 ADR-017 Home Grid 1440→1680) */
 export const CONTENT_RAIL = {
-  maxWidthPx: 1440,
+  maxWidthPx: 1680,
   bodyMaxCh: 65,
 } as const;
 

@@ -3,7 +3,8 @@
   "adr": "ADR-013+ADR-017",
   "brandRef": "packages/ui/brand",
   "tokenRef": "packages/ui/tokens/lux-fintech.ts",
-  "tokenSpecPending": "packages/ui/tokens/peotteok-light.specification.md",
+  "tokenSpec": "packages/ui/tokens/peotteok-light.specification.md",
+  "themeMode": "peotteok-light",
   "marketsManifestRef": "packages/ui/brand/assets/markets/manifest.json",
   "surfaces": [
     {
@@ -167,7 +168,7 @@
       "id": "home-principal-slots",
       "route": "/",
       "wire": "surfaces/home-principal-slots.wire.json",
-      "note": "UI §5.3 B/D HomePrincipalRail · lux-feed-grid · PART9d · Money child of home-visual-v2"
+      "note": "UI §5.3 B/D HomePrincipalRail · home-money-grid(v1.3) · PART9d · Money child of home-visual-v2"
     },
     {
       "id": "home-visual-v2",

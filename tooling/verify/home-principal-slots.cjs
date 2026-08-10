@@ -54,8 +54,8 @@ try {
     fails.push("wire id must be home-principal-slots");
   }
   if (w.route !== "/") fails.push("wire route must be /");
-  if (w.layoutClass !== "lux-feed-grid") {
-    fails.push("wire layoutClass must be lux-feed-grid");
+  if (w.layoutClass !== "home-money-grid") {
+    fails.push("wire layoutClass must be home-money-grid (v1.3 · lux-feed-grid 공유 분리)");
   }
   if (!Array.isArray(w.blocks) || w.blocks.length < 2) {
     fails.push("wire blocks[] must include B/D metrics");
@@ -80,7 +80,7 @@ for (const needle of [
   "HomePrincipalRail",
   'data-home-slot="principal-balance"',
   'data-home-slot="today-possible-profit"',
-  "lux-feed-grid",
+  "home-money-grid",
   "principalUsdt",
   "todayPossibleProfitUsdt",
   "T.feed.balanceLabel",
@@ -115,9 +115,14 @@ if (!containerCss.includes(".lux-feed-grid")) {
   fails.push("container.css must define .lux-feed-grid");
 }
 
-// --- Home wire ---
-if (!clientSrc.includes("HomePrincipalRail")) {
-  fails.push("HomePageClient must mount HomePrincipalRail");
+// --- Home wire (HomeExperience presentation · PART9 data keep) ---
+const experienceSrc = read("packages/ui/components/home/HomeExperience.tsx");
+const mountsRail =
+  clientSrc.includes("HomePrincipalRail") ||
+  (clientSrc.includes("HomeExperience") &&
+    experienceSrc.includes("HomePrincipalRail"));
+if (!mountsRail) {
+  fails.push("Home must mount HomePrincipalRail (via HomePageClient or HomeExperience)");
 }
 if (!clientSrc.includes("principalUsdt")) {
   fails.push("HomePageClient must pass principalUsdt from feed");
@@ -126,9 +131,9 @@ if (!clientSrc.includes("todayPossibleProfitUsdt")) {
   fails.push("HomePageClient must pass todayPossibleProfitUsdt");
 }
 
-// opportunity list uses lux-feed-grid (PART9d)
-if (!balHome.includes("lux-feed-grid")) {
-  fails.push("BalanceAwareHome affordable list must use lux-feed-grid");
+// opportunity list uses home-opportunity-grid (PART9d · v1.3 lux-feed-grid 공유 분리)
+if (!balHome.includes("home-opportunity-grid")) {
+  fails.push("BalanceAwareHome affordable list must use home-opportunity-grid");
 }
 
 // anti-patterns
@@ -144,5 +149,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:home-principal-slots] PASS (HomePrincipalRail · Canon · lux-feed-grid)",
+  "[verify:home-principal-slots] PASS (HomePrincipalRail · Canon · home-money-grid)",
 );

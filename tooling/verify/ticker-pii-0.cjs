@@ -82,7 +82,10 @@ for (const k of ["justSettled", "justReflected", "participantAmt", "forbiddenPhr
   if (!copy.includes(k)) fails.push(`T.ticker missing ${k}`);
 }
 
-/** PART9c — ticker/counter/DayPulse may mount in HomePageClient */
+/**
+ * PART9c — ticker/counter/DayPulse may mount in HomePageClient (직접) 또는
+ * HomeExperience(ADR-017 v1.3, presentation layer 간접 mount) 경유
+ */
 let home = read("apps/web/app/page.tsx");
 for (const rel of [
   "apps/web/app/HomePageClient.tsx",
@@ -94,6 +97,7 @@ for (const rel of [
     break;
   }
 }
+home = `${home}\n${read("packages/ui/components/home/HomeExperience.tsx")}`;
 if (!home.includes("LivePayoutTicker")) {
   fails.push("home must mount LivePayoutTicker [A]");
 }

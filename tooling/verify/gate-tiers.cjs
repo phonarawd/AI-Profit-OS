@@ -27,6 +27,7 @@ const T1_PUSH = [
   "next-major-pin.cjs",
   "tailwind-v4.cjs",
   "lux-theme-sync.cjs",
+  "dark-leak-guard.cjs",
   "cf-deploy-packages.cjs",
   "no-admin-in-web.cjs",
   "ia-tabs.cjs",

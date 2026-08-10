@@ -22,7 +22,7 @@
 | Contract block | Proposed name | Notes |
 |---|---|---|
 | Header | `AppHeader` | scan chip · bell · avatar · tier |
-| Hero | `HomeHero` | copy · timeline · robot/globe **placeholders** · CTA 기회확인 |
+| Hero | `HomeHero` + `HomeHeroIllustration`(v1.3 신규) | copy · timeline · robot/globe **brand-approved static illustration**(AVIF+WebP, desktop/mobile 2 variant) · CTA 기회확인 |
 | Right rail | `HomeRightRail` | status counts · top · total Fact |
 | Invite strip | sidebar slot | reuse invite copy |
 

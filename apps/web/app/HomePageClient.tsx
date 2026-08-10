@@ -12,18 +12,13 @@ import {
   type DayPulseResponse,
   type OpportunityFeedResponse,
 } from "@aipo/sdk/user-feed";
-import { DayPulse, type DayPulseModel } from "@aipo/ui/components/loop";
+import { type DayPulseModel } from "@aipo/ui/components/loop";
+import { HomeExperience } from "@aipo/ui/components/home";
 import {
-  BalanceAwareHome,
-  HomePrincipalRail,
-  type OpportunityCardModel,
-} from "@aipo/ui/components/opportunity";
-import {
-  HomePayoutCounter,
-  LivePayoutTicker,
   type HomePayoutCounterMode,
   type PublicTickerEvent,
 } from "@aipo/ui/components/lux";
+import { type OpportunityCardModel } from "@aipo/ui/components/opportunity";
 import { T } from "@aipo/ui/copy/ko";
 import { toOpportunityCardModel } from "../lib/opportunity-card-map";
 
@@ -93,8 +88,8 @@ function feedToHomeState(feed: OpportunityFeedResponse): HomeFeedState {
 }
 
 /**
- * PART9c/9d/9h — 홈 live feed + DayPulse + B/D + growth ticker/counter
- * ticker/counter mode = server-driven only (default off)
+ * PART9 data orchestration keep · presentation = HomeExperience (ADR-017 STEP4)
+ * HomePageV2 금지 · SDK/Auth/Wallet 재작성 금지
  */
 export function HomePageClient() {
   const [feed, setFeed] = useState<HomeFeedState>({
@@ -168,48 +163,38 @@ export function HomePageClient() {
 
   const tickerEvents = growth.events as PublicTickerEvent[];
   const counterMode = growth.counterMode as HomePayoutCounterMode;
+  const todayPossibleProfitUsdt = sumAffordableExpectedProfitUsdt(feed.items);
 
   return (
     <main className="text-lux-text" data-testid="home-shell">
-      <div data-home-slot="ticker" data-canon-block="tickerSlot">
-        <LivePayoutTicker
-          mode={growth.tickerMode}
-          events={tickerEvents}
-          maxItems={50}
-        />
-      </div>
-      <div data-home-slot="day-pulse" data-canon-block="dayPulseSlot">
-        <DayPulse data={pulse} />
-      </div>
-      <div data-home-slot="counter" data-canon-block="counterSlot">
-        <HomePayoutCounter
-          mode={counterMode}
-          ledgerTotal={growth.ledgerTotal}
-        />
-      </div>
-      {sessionExpired ? (
-        <p
-          className="px-4 py-2 text-sm text-lux-text-muted"
-          role="status"
-          data-testid="home-session-expired"
-        >
-          <Link href="/auth/login" className="text-lux-accent underline">
-            {T.toast.SESSION_EXPIRED}
-          </Link>
-        </p>
-      ) : null}
-      <div className="px-4 pt-4">
-        <HomePrincipalRail
-          principalUsdt={feed.principalUsdt}
-          todayPossibleProfitUsdt={sumAffordableExpectedProfitUsdt(feed.items)}
-        />
-      </div>
-      <BalanceAwareHome
+      <HomeExperience
+        principalUsdt={feed.principalUsdt}
+        todayPossibleProfitUsdt={todayPossibleProfitUsdt}
         items={feed.items}
         affordableCount={feed.affordableCount}
         nearMissExtraCount={feed.nearMissExtraCount}
         topSuggestDepositUsdt={feed.topSuggestDepositUsdt}
-        asSection
+        pulse={pulse}
+        tickerMode={growth.tickerMode}
+        tickerEvents={tickerEvents}
+        counterMode={counterMode}
+        ledgerTotal={growth.ledgerTotal}
+        totalResultValue={
+          growth.ledgerTotal > 0 ? `${growth.ledgerTotal} USDT` : null
+        }
+        sessionExpiredSlot={
+          sessionExpired ? (
+            <p
+              className="px-4 py-2 text-sm text-lux-text-muted"
+              role="status"
+              data-testid="home-session-expired"
+            >
+              <Link href="/auth/login" className="text-lux-accent underline">
+                {T.toast.SESSION_EXPIRED}
+              </Link>
+            </p>
+          ) : null
+        }
       />
     </main>
   );

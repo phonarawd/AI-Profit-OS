@@ -61,8 +61,8 @@ if (vpJson) {
   if (vpJson.mode !== "canon_structure") {
     fails.push("viewports.json.mode must be canon_structure");
   }
-  if (vpJson.contentRailMaxPx !== 1440) {
-    fails.push("viewports.json.contentRailMaxPx must be 1440");
+  if (vpJson.contentRailMaxPx !== 1680) {
+    fails.push("viewports.json.contentRailMaxPx must be 1680 (v1.3 · ADR-017 Home Grid)");
   }
 }
 
@@ -231,10 +231,12 @@ if (virtTicker && !virtTicker.includes("VIRTUAL_TICKER_THRESHOLD")) {
   fails.push("VirtualTicker must define VIRTUAL_TICKER_THRESHOLD");
 }
 
-const layout = read("apps/web/app/layout.tsx");
+let layout = read("apps/web/app/layout.tsx");
 if (layout && !layout.includes("DeviceTierApply")) {
   fails.push("apps/web layout must mount DeviceTierApply (data-tier)");
 }
+// AppShellRoot(packages/ui, ADR-017 재사용 셸)이 lux-app-main content rail을 실제로 소유
+layout = `${layout}\n${read("packages/ui/components/shell/AppShellRoot.tsx")}`;
 if (layout && !layout.includes("lux-app-main")) {
   fails.push("apps/web layout must use lux-app-main content rail");
 }

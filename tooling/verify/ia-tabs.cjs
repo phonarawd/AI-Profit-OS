@@ -1,5 +1,7 @@
 /**
- * verify:ia-tabs — User 5탭 IA lock (UI §5.1)
+ * verify:ia-tabs — User 5탭 IA lock (ADR-017 · Contract §2.2)
+ * Labels: 홈 · 기회 · 수익 · 지갑 · 내정보
+ * Routes kept: / · /profits · /trades · /wallet · /me
  */
 const fs = require("fs");
 const path = require("path");
@@ -16,8 +18,8 @@ if (!fs.existsSync(routesPath)) {
 const src = fs.readFileSync(routesPath, "utf8");
 const expected = [
   { label: "홈", href: "/" },
-  { label: "수익", href: "/profits" },
-  { label: "내거래", href: "/trades" },
+  { label: "기회", href: "/profits" },
+  { label: "수익", href: "/trades" },
   { label: "지갑", href: "/wallet" },
   { label: "내정보", href: "/me" },
 ];
@@ -34,6 +36,9 @@ if (!tabBlock) {
     if (hrefs[i] !== e.href) fails.push(`tab[${i}] href want ${e.href} got ${hrefs[i]}`);
     if (labels[i] !== e.label) fails.push(`tab[${i}] label want ${e.label} got ${labels[i]}`);
   });
+  if (labels.includes("내거래")) {
+    fails.push("deprecated nav label 내거래 must not appear in USER_TABS (ADR-017)");
+  }
 }
 
 for (const href of ["/", "/profits", "/trades", "/wallet", "/me"]) {
@@ -48,4 +53,4 @@ if (fails.length) {
   console.error("[verify:ia-tabs] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
-console.log("[verify:ia-tabs] PASS (5 tabs locked)");
+console.log("[verify:ia-tabs] PASS (홈·기회·수익·지갑·내정보)");

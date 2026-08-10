@@ -117,8 +117,14 @@ for (const rel of [
     break;
   }
 }
-if (!page.includes("BalanceAwareHome")) {
-  fails.push("apps/web home must mount BalanceAwareHome");
+const experience = read("packages/ui/components/home/HomeExperience.tsx");
+const mountsHomeOpp =
+  page.includes("BalanceAwareHome") ||
+  (page.includes("HomeExperience") && experience.includes("BalanceAwareHome"));
+if (!mountsHomeOpp) {
+  fails.push(
+    "apps/web home must mount BalanceAwareHome (direct or via HomeExperience)",
+  );
 }
 
 const profits = read("apps/web/app/profits/page.tsx");

@@ -17,8 +17,14 @@ function read(rel) {
 }
 
 const layout = read("apps/web/app/layout.tsx");
-for (const needle of ["BottomNav5", "ToastHost", "SiteFooter", "theme-lux-dark"]) {
+const shellRoot = read("packages/ui/components/shell/AppShellRoot.tsx");
+for (const needle of ["ToastHost", "theme-peotteok-light", "AppShellRoot"]) {
   if (!layout.includes(needle)) fails.push(`layout missing ${needle}`);
+}
+for (const needle of ["BottomNav5", "SiteFooter", "AppHeader", "HomeChromeProvider"]) {
+  if (!shellRoot.includes(needle)) {
+    fails.push(`AppShellRoot missing ${needle}`);
+  }
 }
 
 const nav = read("packages/ui/components/shell/BottomNav5.tsx");

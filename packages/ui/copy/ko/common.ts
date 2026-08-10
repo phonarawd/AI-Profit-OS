@@ -6,6 +6,7 @@ export const common = {
   confirm: "확인",
   cancel: "취소",
   more: "자세히",
+  viewAll: "전체보기",
   back: "뒤로",
   home: "홈으로",
   errorGeneric: "😅 잠시 문제가 생겼어요. 다시 시도해 주세요",

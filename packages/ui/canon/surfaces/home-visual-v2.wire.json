@@ -12,7 +12,9 @@
       "rightRailPxMin": 320,
       "rightRailPxMax": 360,
       "headerPx": 64,
-      "heroHeightPx": [480, 560],
+      "heroHeightPx": [480, 600],
+      "heroIllustrationSharePct": 46,
+      "contentRailMaxPx": 1680,
       "columns": ["sidebar", "main", "rightRail"]
     },
     "mobile": {
@@ -45,7 +47,7 @@
     {
       "id": "hero",
       "role": "hero",
-      "note": "title · subtitle · timeline · robotAnchor · globeAnchor · cta 기회확인 · maxIllustrationPct 35 · New HomeHero"
+      "note": "title · subtitle · timeline · robotAnchor · globeAnchor · cta 기회확인 · maxIllustrationPct 46(v1.3) · brand-approved static illustration(AVIF+WebP, desktop/mobile 2 variant) · HomeHero"
     },
     {
       "id": "money",

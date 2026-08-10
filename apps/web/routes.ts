@@ -1,11 +1,12 @@
 /**
- * User IA lock — UI §5.1 (변경 금지)
+ * User IA lock — ADR-017 · peotteok-home-visual-contract §2.2
  * verify:ia-tabs reads this file.
+ * Routes kept for PART9 compatibility; labels replaced (내거래 → 수익).
  */
 export const USER_TABS = [
   { order: 1, icon: "🏠", label: "홈", href: "/" },
-  { order: 2, icon: "🔥", label: "수익", href: "/profits" },
-  { order: 3, icon: "💼", label: "내거래", href: "/trades" },
+  { order: 2, icon: "✨", label: "기회", href: "/profits" },
+  { order: 3, icon: "📈", label: "수익", href: "/trades" },
   { order: 4, icon: "💰", label: "지갑", href: "/wallet" },
   { order: 5, icon: "👤", label: "내정보", href: "/me" },
 ] as const;

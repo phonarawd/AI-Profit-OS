@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { T } from "../../copy/ko";
+import { formatUsdt } from "../../lib/format-usdt";
 
 export type HomePrincipalRailProps = {
   /** Money WalletBuckets.principalUsdt · listFeed Fact pass-through */
@@ -18,19 +19,9 @@ export type HomePrincipalRailProps = {
   className?: string;
 };
 
-function formatUsdt(raw: string): string {
-  const t = (raw || "0").trim() || "0";
-  const n = Number(t);
-  if (!Number.isFinite(n)) return t;
-  return n.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 6,
-  });
-}
-
 /**
- * §5.3 [B]/[D] HomePrincipalRail — 잔액 + 오늘 가능한 수익 합계
- * 분류/원장 Owns=Engine·Money · 슬롯·카피 Owns=UI
+ * HomePrincipalRail / HomeMoneySurface — peotteok-light presentation
+ * Data Truth 유지 · count-up 금지 · PART9 slots 유지
  */
 export function HomePrincipalRail({
   principalUsdt,
@@ -47,20 +38,21 @@ export function HomePrincipalRail({
 
   return (
     <section
-      className={["lux-feed-grid", className].filter(Boolean).join(" ")}
+      className={["home-money-grid", className].filter(Boolean).join(" ")}
       data-home-slot="principal-rail"
       data-testid="home-principal-rail"
       data-canon="home-principal-slots"
+      aria-label={T.home.money.aria}
     >
       <article
         data-home-slot="principal-balance"
         data-canon-block="principalBalance"
-        className="rounded-lux-lg border border-lux-border bg-lux-surface p-4"
+        className="home-money-card rounded-lux-xl border border-lux-border bg-lux-surface p-5"
       >
         <p className="text-sm text-lux-text-muted">{T.feed.balanceLabel}</p>
         {krw ? (
           <>
-            <p className="mt-1 text-2xl font-semibold tabular-nums text-lux-text">
+            <p className="mt-2 text-3xl font-semibold tabular-nums text-lux-text md:text-4xl">
               {T.feed.balanceKrwApprox.replace("{amount}", krw)}
             </p>
             <p className="mt-1 text-sm text-lux-text-muted tabular-nums">
@@ -68,13 +60,13 @@ export function HomePrincipalRail({
             </p>
           </>
         ) : (
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-lux-text">
+          <p className="mt-2 text-3xl font-semibold tabular-nums text-lux-text md:text-4xl">
             {T.feed.balanceUsdtPrimary.replace("{n}", usdt)}
           </p>
         )}
         <Link
           href="/wallet/deposit"
-          className="mt-3 inline-flex min-h-12 items-center rounded-lux-md bg-lux-principal px-4 py-2 text-sm font-semibold text-lux-bg"
+          className="mt-4 inline-flex min-h-12 items-center rounded-lux-md bg-lux-accent px-4 py-2 text-sm font-semibold text-lux-surface"
           data-cta="deposit"
         >
           {T.feed.ctaDeposit}
@@ -84,15 +76,19 @@ export function HomePrincipalRail({
       <article
         data-home-slot="today-possible-profit"
         data-canon-block="todayPossibleProfit"
-        className="rounded-lux-lg border border-lux-border bg-lux-surface p-4"
+        className="home-money-card rounded-lux-xl border border-lux-border bg-lux-surface p-5"
       >
         <p className="text-sm text-lux-text-muted">
           {T.feed.todayPossibleProfitLabel}
         </p>
-        <p className="mt-1 text-2xl font-semibold tabular-nums text-lux-profit">
+        <p className="mt-2 text-3xl font-semibold tabular-nums text-lux-profit md:text-4xl">
           {T.feed.todayPossibleProfitUsdt.replace("{n}", profit)}
         </p>
       </article>
     </section>
   );
 }
+
+/** Peotteok Home Experience 이름 — 동일 presentation */
+export const HomeMoneySurface = HomePrincipalRail;
+export type HomeMoneySurfaceProps = HomePrincipalRailProps;

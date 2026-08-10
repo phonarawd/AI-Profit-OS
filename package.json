@@ -26,6 +26,7 @@
     "verify:next-major-pin": "node tooling/verify/next-major-pin.cjs",
     "verify:tailwind-v4": "node tooling/verify/tailwind-v4.cjs",
     "verify:lux-theme-sync": "node tooling/verify/lux-theme-sync.cjs",
+    "verify:dark-leak-guard": "node tooling/verify/dark-leak-guard.cjs",
     "verify:cf-deploy-packages": "node tooling/verify/cf-deploy-packages.cjs",
     "verify:opennext-workers-origin": "node tooling/verify/opennext-workers-origin.cjs",
     "verify:next-build": "node tooling/verify/next-build.cjs",

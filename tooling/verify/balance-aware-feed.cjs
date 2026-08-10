@@ -545,7 +545,10 @@ for (const needle of [
   }
 }
 
-/** PART9c — BalanceAwareHome may mount in HomePageClient */
+/**
+ * PART9c — BalanceAwareHome may mount in HomePageClient (직접) 또는
+ * HomeExperience(ADR-017 v1.3, presentation layer 간접 mount) 경유
+ */
 let homePage = read("apps/web/app/page.tsx");
 for (const rel of [
   "apps/web/app/HomePageClient.tsx",
@@ -558,6 +561,7 @@ for (const rel of [
     break;
   }
 }
+homePage = `${homePage}\n${read("packages/ui/components/home/HomeExperience.tsx")}`;
 if (!homePage.includes("BalanceAwareHome")) {
   fails.push("apps/web home must mount BalanceAwareHome for §5.3a");
 }

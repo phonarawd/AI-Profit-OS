@@ -95,7 +95,7 @@ function fixtureHtml(surface) {
     html, body { margin: 0; background: #090a10; color: #f4f6fb; font-family: sans-serif; }
     .lux-app-main {
       width: 100%;
-      max-width: 1440px;
+      max-width: 1680px;
       margin-inline: auto;
       box-sizing: border-box;
       padding: 16px;

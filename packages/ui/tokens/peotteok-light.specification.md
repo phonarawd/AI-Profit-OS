@@ -1,10 +1,10 @@
 # Peotteok Light Token Specification (STEP3)
 
-> **Status:** SPEC only · **NOT applied** to runtime CSS/`lux-theme` yet (STEP4).  
+> **Status:** APPLIED (STEP4 Theme Cutover) · runtime SSOT = `lux-fintech.ts` + `lux-theme.css`.  
 > **Order lock:** Canon Wire (`home-visual-v2`) **before** this SPEC was authored.  
 > **ADR:** `packages/ui/canon/contracts/ADR-017-peotteok-home-light-theme.md`  
 > **Contract:** `packages/ui/canon/contracts/peotteok-home-visual-contract.v1.md`  
-> **Legacy:** `packages/ui/tokens/lux-fintech.ts` (`lux-dark`) = archive after STEP4 cutover.
+> **Legacy:** `luxFintechLegacyDark` / `luxDarkArchive` in `lux-fintech.ts` · dual theme Day-1 = 0.
 
 ## Mode
 
@@ -44,10 +44,12 @@
 | `spacing.lg` | `24px` |
 | `spacing.xl` | `32px` |
 | `layout.sidebar` | `240px` |
-| `layout.rightRail` | `320px`–`360px` |
+| `layout.rightRail` | `320px`–`360px` (기본값 352px) |
 | `layout.header` | `64px` |
-| `layout.heroDesktop` | `480px`–`560px` |
+| `layout.heroDesktop` | `480px`–`600px` (v1.3 상향) |
 | `layout.heroMobile` | `320px`–`420px` |
+| `layout.heroIllustrationSharePct` | `46%` (v1.3, 기존 35%) |
+| `layout.contentRailMax` | `1680px` (v1.3, 기존 1440px — §29.2 breakpoints.ts SSOT와 동기화) |
 
 ## Radius
 
@@ -85,13 +87,13 @@
 | `countUp` on balance/profit | **forbidden** on Home trust surfaces |
 | Particles / jackpot | **forbidden** |
 
-## STEP4 apply checklist (not done here)
+## STEP4 apply checklist
 
-- [ ] Port hex into `lux-fintech.ts` (or rename module)  
-- [ ] Mirror `lux-theme.css` / `@theme`  
-- [ ] `html` class → light theme  
-- [ ] `pnpm verify:lux-theme-sync` PASS  
-- [ ] Home surfaces consume tokens only · no ad-hoc hex in JSX  
+- [x] Port hex into `lux-fintech.ts` (shipping = peotteok-light · lux-dark archive export)  
+- [x] Mirror `lux-theme.css` / `@theme`  
+- [x] `html` class → `theme-peotteok-light`  
+- [x] `pnpm verify:lux-theme-sync` PASS  
+- [x] Home Experience surfaces consume tokens only · no ad-hoc hex in JSX (Phases 3–7)
 
 ## Forbidden at SPEC stage
 

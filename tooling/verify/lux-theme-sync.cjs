@@ -1,5 +1,6 @@
 /**
- * verify:lux-theme-sync — lux-fintech.ts ↔ lux-theme.css token mirror (ADR-015)
+ * verify:lux-theme-sync — lux-fintech.ts ↔ lux-theme.css token mirror (ADR-015 · ADR-017)
+ * Shipping theme = peotteok-light (parse only export const luxFintech block).
  */
 const fs = require("fs");
 const path = require("path");
@@ -7,7 +8,7 @@ const path = require("path");
 const root = path.resolve(__dirname, "../..");
 const fails = [];
 
-const ts = fs.readFileSync(
+const tsFull = fs.readFileSync(
   path.join(root, "packages/ui/tokens/lux-fintech.ts"),
   "utf8"
 );
@@ -15,6 +16,21 @@ const css = fs.readFileSync(
   path.join(root, "packages/ui/tokens/lux-theme.css"),
   "utf8"
 );
+
+const shippingMatch = tsFull.match(
+  /export const luxFintech = \{[\s\S]*?\n\} as const;/
+);
+if (!shippingMatch) {
+  fails.push("export const luxFintech = { ... } as const; not found");
+}
+const ts = shippingMatch ? shippingMatch[0] : "";
+
+if (!ts.includes('mode: "peotteok-light"')) {
+  fails.push('lux-fintech.theme.mode must be "peotteok-light" (ADR-017 shipping)');
+}
+if (!tsFull.includes("luxFintechLegacyDark") && !tsFull.includes("luxDarkArchive")) {
+  fails.push("lux-dark archive export missing (legacy keep · dual theme 0)");
+}
 
 const colorPairs = [
   ["bg", "lux-bg"],
@@ -74,4 +90,6 @@ if (fails.length) {
   process.exit(1);
 }
 
-console.log("[verify:lux-theme-sync] PASS (lux-fintech ↔ lux-theme · Pretendard)");
+console.log(
+  "[verify:lux-theme-sync] PASS (peotteok-light · lux-fintech ↔ lux-theme · Pretendard)"
+);

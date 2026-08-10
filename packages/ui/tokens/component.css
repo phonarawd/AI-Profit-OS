@@ -9,11 +9,19 @@
   --card-opportunity-estimate: 180px;
   --ticker-row-estimate: 28px;
   --image-card-aspect: 1 / 1;
-  --content-rail-max: 1440px;
+  --content-rail-max: 1680px;
   --body-max-ch: 65ch;
   --font-scale: 1;
   --line-height-boost: 0;
   --text-body-lh: calc(1.5 + var(--line-height-boost));
+  --layout-sidebar: var(--layout-lux-sidebar, 240px);
+  --layout-header: var(--layout-lux-header, 64px);
+  --layout-right-rail-min: var(--layout-lux-right-rail-min, 320px);
+  --layout-right-rail-max: var(--layout-lux-right-rail-max, 360px);
+  --layout-right-rail-default: 352px;
+  /* breakpoints.ts SSOT (§29.2) — raw CSS는 Tailwind lg:/xl: 대신 이 값을 직접 사용 (v1.3 근본 수정) */
+  --bp-desktop: 1280px;
+  --bp-ultrawide: 1920px;
 }
 
 html[data-font-scale="md"] {
@@ -55,4 +63,155 @@ html[data-font-scale="xl"] {
 
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+/* Home Experience — peotteok-light composition (ADR-017 · no ad-hoc hex in JSX) */
+.home-hero {
+  background: linear-gradient(
+    135deg,
+    var(--color-lux-hero-from) 0%,
+    var(--color-lux-accent) 48%,
+    var(--color-lux-hero-to) 100%
+  );
+  min-height: 320px;
+}
+
+@media (min-width: 768px) {
+  .home-hero {
+    /* Contract v1.3 §3.3 — 480-560 → 480-600 상향 */
+    min-height: 480px;
+    max-height: 600px;
+  }
+}
+
+.home-hero__glow {
+  background:
+    radial-gradient(
+      ellipse 60% 50% at 75% 40%,
+      color-mix(in srgb, var(--color-lux-surface) 22%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 40% 35% at 18% 82%,
+      color-mix(in srgb, var(--color-lux-accent-muted) 40%, transparent),
+      transparent 65%
+    );
+}
+
+/**
+ * Hero illustration frame (v1.3) — brand-approved static AVIF/WebP (HomeHeroIllustration).
+ * 반응형 aspect-ratio: mobile 1:1(정방형 구도) → desktop 2:3(가로형 구도, 768px+).
+ * 애니메이션은 transform만(GPU 합성) — layout 유발 속성 금지 원칙(Linear 사례 근거).
+ */
+.home-hero__illustration-frame {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  animation: home-hero-float 6s ease-in-out infinite;
+}
+
+@media (min-width: 768px) {
+  .home-hero__illustration-frame {
+    aspect-ratio: 2 / 3;
+  }
+}
+
+@keyframes home-hero-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__illustration-frame {
+    animation: none;
+  }
+}
+
+.home-money-card {
+  box-shadow: var(--shadow-lux-card);
+}
+
+/**
+ * Home Dashboard Grid (v1.3 · ADR-017 Desktop Grid 재설계)
+ * 매크로 레이아웃 = CSS Grid(raw @media, breakpoints.ts SSOT) · 마이크로 적응 = Container Query.
+ * Tailwind lg:/xl: 유틸 대신 raw 값을 직접 써서 브레이크포인트 불일치 재발을 원천 차단한다.
+ */
+.home-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(16px, 2vw, 24px);
+  width: 100%;
+  max-width: var(--content-rail-max);
+  margin-inline: auto;
+  padding-inline: clamp(16px, 2vw, 32px);
+  padding-block: clamp(16px, 2vw, 24px);
+}
+
+@media (min-width: 1280px) {
+  .home-dashboard-grid {
+    grid-template-columns: minmax(0, 1fr) var(--layout-right-rail-default);
+    align-items: start;
+  }
+}
+
+.home-dashboard-main {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 3vw, 24px);
+  min-width: 0;
+  /* Main 실제 렌더 폭(= 전체 - sidebar - rail) 기준 컨테이너 쿼리 — viewport 기준 하드코딩 열 수 금지 */
+  container-type: inline-size;
+  container-name: home-main;
+}
+
+.home-money-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-lux-md, 16px);
+}
+
+@container home-main (min-width: 420px) {
+  .home-money-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.home-opportunity-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-lux-md, 16px);
+}
+
+@container home-main (min-width: 560px) {
+  .home-opportunity-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container home-main (min-width: 860px) {
+  .home-opportunity-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.home-right-rail {
+  display: none;
+  width: 100%;
+  max-width: var(--layout-right-rail-max);
+}
+
+@media (min-width: 1280px) {
+  .home-right-rail {
+    display: block;
+    width: var(--layout-right-rail-default);
+    min-width: var(--layout-right-rail-min);
+    max-width: var(--layout-right-rail-max);
+    flex-shrink: 0;
+  }
 }

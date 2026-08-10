@@ -66,7 +66,7 @@ for (const surface of surfaces) {
         const maxW = await page
           .locator(".lux-app-main")
           .evaluate((el) => getComputedStyle(el).maxWidth);
-        expect(maxW).toBe("1440px");
+        expect(maxW).toBe("1680px");
       }
     });
   });
