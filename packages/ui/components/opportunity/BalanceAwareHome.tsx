@@ -25,7 +25,7 @@ export type BalanceAwareHomeProps = {
 };
 
 /**
- * BalanceAwareHome / HomeOpportunity — peotteok-light presentation
+ * BalanceAwareHome / HomeOpportunity — mobile polish
  * Data model · nearMissExtraCount · OpportunityCard 유지 · 구 Lux Dark layout 폐기
  */
 export function BalanceAwareHome({
@@ -65,6 +65,7 @@ export function BalanceAwareHome({
   const scanSub = T.feed.homeScanSub;
 
   const empty = affordable.length === 0 && nearMiss.length === 0;
+  const showFilters = items.length > 0;
 
   const body = (
     <>
@@ -85,18 +86,6 @@ export function BalanceAwareHome({
           </header>
         )}
 
-        <div data-home-slot="partnerTrust">
-          <MarketPartnerTrustStrip tier="A" />
-        </div>
-
-        <CategoryFilterChips value={category} onChange={setCategory} />
-
-        {hero ? (
-          <section data-home-slot="hero" data-bucket="affordable">
-            <OpportunityCard opportunity={hero} priority />
-          </section>
-        ) : null}
-
         <section data-home-slot="affordable" data-testid="section-affordable">
           <h2 className="text-base font-semibold text-lux-text">
             {T.home.opportunity.sectionTitle}
@@ -104,13 +93,31 @@ export function BalanceAwareHome({
           <p className="mt-1 text-sm text-lux-text-muted">
             {T.feed.sectionAffordableCount.replace("{n}", String(nAffordable))}
           </p>
-          <ul className="home-opportunity-grid mt-3">
-            {listAffordable.map((o) => (
-              <li key={o.id}>
-                <OpportunityCard opportunity={o} />
-              </li>
-            ))}
-          </ul>
+
+          {showFilters ? (
+            <CategoryFilterChips
+              className="mt-3"
+              value={category}
+              onChange={setCategory}
+            />
+          ) : null}
+
+          {hero ? (
+            <div data-home-slot="hero" data-bucket="affordable" className="mt-3">
+              <OpportunityCard opportunity={hero} priority />
+            </div>
+          ) : null}
+
+          {listAffordable.length > 0 ? (
+            <ul className="home-opportunity-grid mt-3">
+              {listAffordable.map((o) => (
+                <li key={o.id}>
+                  <OpportunityCard opportunity={o} />
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
           {empty ? (
             <div
               className="mt-4 space-y-3 rounded-lux-xl border border-lux-border bg-lux-surface p-5 home-money-card"
@@ -126,20 +133,14 @@ export function BalanceAwareHome({
               <p className="text-sm text-lux-text-muted">
                 {T.home.opportunity.emptyWhy}
               </p>
-              <div className="flex flex-wrap gap-2 pt-1">
+              {/* 단일 primary CTA · 자기참조 #home-opportunity 경쟁 링크 제거 */}
+              <div className="pt-1">
                 <a
                   href="/wallet/deposit"
                   data-testid="home-empty-cta-deposit"
-                  className="inline-flex min-h-12 items-center justify-center rounded-lux-md bg-lux-accent px-4 py-2 text-sm font-semibold text-lux-surface"
+                  className="inline-flex min-h-12 w-full items-center justify-center rounded-lux-md bg-lux-accent px-4 py-2 text-sm font-semibold text-lux-surface sm:w-auto"
                 >
                   {T.home.opportunity.emptyCtaDeposit}
-                </a>
-                <a
-                  href="#home-opportunity"
-                  data-testid="home-empty-cta-browse"
-                  className="inline-flex min-h-12 items-center justify-center rounded-lux-md border border-lux-border px-4 py-2 text-sm font-semibold text-lux-text"
-                >
-                  {T.home.opportunity.emptyCtaBrowse}
                 </a>
               </div>
             </div>
@@ -184,6 +185,11 @@ export function BalanceAwareHome({
             ))}
           </ul>
         </details>
+
+        {/* Contract §2.1a — Partner/trust strip after Opportunity grid · Owns 1곳 */}
+        <div data-home-slot="partnerTrust" className="pt-2">
+          <MarketPartnerTrustStrip tier="A" />
+        </div>
 
         <p
           data-home-slot="peotteok"

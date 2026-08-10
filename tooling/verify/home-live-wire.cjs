@@ -124,6 +124,32 @@ if (!wiredViaSdk && !wiredViaClient) {
   if (!graceful401) {
     fails.push("home live must handle 401 gracefully (PART9c · 9-pre2 session)");
   }
+
+  // C01 — ledgerTotal is settlement COUNT · never bind as USDT amount
+  if (
+    /ledgerTotal\s*>\s*0\s*\?\s*[`'"]\$\{[^}]*ledgerTotal[^}]*\}\s*USDT/.test(
+      liveSrc,
+    ) ||
+    /\$\{[^}]*ledgerTotal[^}]*\}\s*USDT/.test(liveSrc)
+  ) {
+    fails.push(
+      "C01: Home must not render ledgerTotal as USDT (count semantic only)",
+    );
+  }
+}
+
+const counterSrc = read("packages/ui/components/lux/HomePayoutCounter.tsx");
+if (
+  counterSrc &&
+  /T\.ticker\.usdtSuffix/.test(counterSrc) &&
+  /ledgerTotal/.test(counterSrc)
+) {
+  fails.push(
+    "C01: HomePayoutCounter must not suffix ledgerTotal with T.ticker.usdtSuffix",
+  );
+}
+if (counterSrc && !/data-ledger-unit="count"/.test(counterSrc)) {
+  fails.push('C01: HomePayoutCounter must declare data-ledger-unit="count"');
 }
 
 // stub-only lock (PART9c supersede)

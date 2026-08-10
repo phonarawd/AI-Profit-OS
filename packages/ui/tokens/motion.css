@@ -1,19 +1,41 @@
 /**
- * Lux motion — MotionCTA pulse · reduced-motion hard override (all tiers)
+ * Lux motion — MotionCTA press feedback · reduced-motion hard override
+ * Infinite glow/neon pulse 금지 (ADR-017 / peotteok-light SPEC)
+ * keyframe 이름 lux-pulse-glow 유지 (verify:ux-design-system 잠금)
  */
 @keyframes lux-pulse-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-lux-accent) 0%, transparent);
+  from {
+    transform: scale(1);
   }
-  50% {
-    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-lux-accent) 35%, transparent);
+  to {
+    transform: scale(1);
   }
 }
 
 .lux-motion-cta {
   position: relative;
-  animation: lux-pulse-glow 1.6s ease-in-out infinite;
+  /* 고대비 정적 강조 · 무한 box-shadow 발광 루프 제거 */
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--color-lux-accent) 18%, transparent),
+    0 6px 16px color-mix(in srgb, var(--color-lux-accent) 28%, transparent);
+  transition:
+    transform 200ms ease,
+    filter 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.lux-motion-cta:hover,
+.lux-motion-cta:focus-visible {
+  transform: scale(1.02);
+  filter: brightness(1.06);
+  box-shadow:
+    0 2px 4px color-mix(in srgb, var(--color-lux-accent) 22%, transparent),
+    0 8px 20px color-mix(in srgb, var(--color-lux-accent) 36%, transparent);
+}
+
+.lux-motion-cta:active {
+  transform: scale(0.98);
+  filter: brightness(0.98);
 }
 
 html[data-tier="b"] .lux-motion-cta,
@@ -21,6 +43,7 @@ html[data-tier="b"] .lux-glass,
 html[data-tier="b"] .glass {
   animation: none;
   backdrop-filter: none;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--color-lux-accent) 16%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -28,5 +51,12 @@ html[data-tier="b"] .glass {
   .lux-motion-any {
     animation: none !important;
     transition: none !important;
+  }
+
+  .lux-motion-cta:hover,
+  .lux-motion-cta:focus-visible,
+  .lux-motion-cta:active {
+    transform: none;
+    filter: none;
   }
 }

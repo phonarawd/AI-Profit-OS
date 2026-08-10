@@ -74,12 +74,20 @@ export function OpportunityCard({
       />
 
       <div className="p-4">
-        <div className="flex flex-wrap items-center gap-1">
-          <Badge tone="accent">{T.opportunity.badgeMatchable}</Badge>
-          <OpportunityScanBadge
-            arbitrageTypeKo={o.arbitrageTypeKo}
-            timeSensitive={timeSensitive}
-          />
+        {/* Mobile primary: 상품명 · 필요 금액 · 가능 수익 · CTA */}
+        <p className="truncate text-base font-semibold text-lux-text md:hidden">
+          {o.assetLabel}
+        </p>
+        <div className="mt-2 flex flex-wrap items-center gap-1">
+          <span className="hidden md:inline-flex">
+            <Badge tone="accent">{T.opportunity.badgeMatchable}</Badge>
+          </span>
+          <span className="hidden md:inline-flex">
+            <OpportunityScanBadge
+              arbitrageTypeKo={o.arbitrageTypeKo}
+              timeSensitive={timeSensitive}
+            />
+          </span>
           {lockBadge ? (
             <Badge
               tone="warning"
@@ -94,10 +102,12 @@ export function OpportunityCard({
           ) : null}
         </div>
 
-        <h2 className="mt-2 text-base font-semibold text-lux-text">
+        <h2 className="mt-2 hidden text-base font-semibold text-lux-text md:block">
           {corridorText(o)}
         </h2>
-        <p className="truncate text-xs text-lux-text-muted">{o.assetLabel}</p>
+        <p className="hidden truncate text-xs text-lux-text-muted md:block">
+          {o.assetLabel}
+        </p>
 
         <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
           <dt className="text-lux-text-muted">
@@ -118,53 +128,64 @@ export function OpportunityCard({
           >
             +{o.expectedProfitUsdt} USDT
           </dd>
-          <dt className="text-lux-text-muted">
+          <dt className="hidden text-lux-text-muted md:block">
             {T.opportunity.labelAiConfidence}
           </dt>
-          <dd data-field="aiConfidenceScore" className="text-right text-lux-text">
+          <dd
+            data-field="aiConfidenceScore"
+            className="hidden text-right text-lux-text md:block"
+          >
             {o.aiConfidenceScore}%
           </dd>
         </dl>
 
-        <MarketPartnerLeg
-          className="mt-3"
-          buyPartnerId={o.buyMarketId}
-          sellPartnerId={o.sellMarketId}
-          buyLabel={o.buyMarketLabelKo}
-          sellLabel={o.sellMarketLabelKo}
-        />
+        {/* Desktop / tablet secondary trust · mobile 후순위 숨김 */}
+        <div className="opportunity-card__secondary hidden md:block">
+          <MarketPartnerLeg
+            className="mt-3"
+            buyPartnerId={o.buyMarketId}
+            sellPartnerId={o.sellMarketId}
+            buyLabel={o.buyMarketLabelKo}
+            sellLabel={o.sellMarketLabelKo}
+          />
 
-        <PriceCompareMargin
-          className="mt-3"
-          variant="mini"
-          defaultCollapsed
-          compareReady={o.compareReady}
-          buyPriceUsdt={o.buyPriceUsdt}
-          sellPriceUsdt={o.sellPriceUsdt}
-          expectedProfitUsdt={o.expectedProfitUsdt}
-          platformMarginUsdt={o.platformMarginUsdt}
-        />
+          <PriceCompareMargin
+            className="mt-3"
+            variant="mini"
+            defaultCollapsed
+            compareReady={o.compareReady}
+            buyPriceUsdt={o.buyPriceUsdt}
+            sellPriceUsdt={o.sellPriceUsdt}
+            expectedProfitUsdt={o.expectedProfitUsdt}
+            platformMarginUsdt={o.platformMarginUsdt}
+          />
 
-        <AdapterHealthChip
-          health={{
-            staleAt: o.staleAt,
-            lastAdapterSyncAt: o.lastAdapterSyncAt,
-            compareReady: o.compareReady,
-            sourceCount: o.sourceCount,
-            ctaLockReasonKo: o.ctaLockReasonKo,
-          }}
-        />
+          <AdapterHealthChip
+            health={{
+              staleAt: o.staleAt,
+              lastAdapterSyncAt: o.lastAdapterSyncAt,
+              compareReady: o.compareReady,
+              sourceCount: o.sourceCount,
+              ctaLockReasonKo: o.ctaLockReasonKo,
+            }}
+          />
 
-        <div className="mt-3 flex flex-wrap gap-1">
+          <div className="mt-3 flex flex-wrap gap-1">
+            <Badge tone="muted">{T.execution.badgeNoBuy}</Badge>
+            <Badge tone="muted">{T.execution.badgeNoSell}</Badge>
+          </div>
+          <p className="mt-2 text-xs text-lux-text-muted">
+            {T.execution.disclaimerResult}
+          </p>
+          <p className="mt-1 text-xs text-lux-text-muted">
+            {T.execution.imageRightsNote}
+          </p>
+        </div>
+
+        <div className="mt-3 flex flex-wrap gap-1 md:hidden">
           <Badge tone="muted">{T.execution.badgeNoBuy}</Badge>
           <Badge tone="muted">{T.execution.badgeNoSell}</Badge>
         </div>
-        <p className="mt-2 text-xs text-lux-text-muted">
-          {T.execution.disclaimerResult}
-        </p>
-        <p className="mt-1 text-xs text-lux-text-muted">
-          {T.execution.imageRightsNote}
-        </p>
 
         {o.bucket === "nearMiss" && o.suggestDepositUsdt ? (
           <Link

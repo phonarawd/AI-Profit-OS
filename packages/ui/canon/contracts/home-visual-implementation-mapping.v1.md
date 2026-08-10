@@ -1,61 +1,82 @@
-# Home Visual Upgrade — Implementation Mapping v1
+# Home Visual Upgrade — Implementation Mapping v1.1
 
-> STEP3 산출물 #4 · **코드 작성 금지** (STEP4 큐)  
-> Contract · Wire · Token SPEC · ADR-017 선행 필수
+> STEP 4.1 / 4.4 산출 · **STEP 4 구간 코드 작성 금지**  
+> STEP 5는 [`peotteok-home-implementation-gate.v1.md`](./peotteok-home-implementation-gate.v1.md) Founder 승인 후만  
+> SSOT: Implementation Contract (STEP 3 ACK) · Visual Contract v1.4 · Wire · Token SPEC · ADR-017
+
+## Authority
+
+```text
+Backend Fact > Product Contract > IA > Implementation Contract > Visual Contract > PC Reference
+```
 
 ## Existing (Keep / Adapt)
 
 | Contract block | Component / path | Action |
 |---|---|---|
-| Live fetch | `apps/web/app/HomePageClient.tsx` | **Keep** orchestration · restyle children only |
+| Live fetch | `apps/web/app/HomePageClient.tsx` | **Keep** orchestration · **C01 binding만** 최소 수정 |
 | Page entry | `apps/web/app/page.tsx` | Keep → `HomePageClient` |
-| Money B/D | `HomePrincipalRail` | **Adapt** · light tokens · no count-up |
+| Experience | `HomeExperience.tsx` | Adapt RightRail settle-only · progress fake rows 제거 |
+| Money B/D | `HomePrincipalRail` | **Adapt** · principal + today possible · no split · no chart |
 | Opportunity | `BalanceAwareHome` · `OpportunityCard` · chips | **Adapt** |
-| Mapper | `apps/web/lib/opportunity-card-map.ts` | Keep |
-| SDK | `@aipo/sdk/user-feed` · `@aipo/sdk/growth` | Keep |
+| Mapper | `apps/web/lib/opportunity-card-map.ts` | 🔒 Keep |
+| SDK | `@aipo/sdk/user-feed` · `@aipo/sdk/growth` | 🔒 Keep |
 | Nav shell | `BottomNav5` · `USER_TABS` | **Adapt** labels §wire navLabels |
-| Footer | `SiteFooter` · `MarketPartnerTrustStrip` | Adapt |
-| DayPulse / Ticker / Counter | existing | **Adapt** — fold into Header/Hero Owns per Contract |
-
-## New (STEP4 only)
-
-| Contract block | Proposed name | Notes |
-|---|---|---|
-| Header | `AppHeader` | scan chip · bell · avatar · tier |
-| Hero | `HomeHero` + `HomeHeroIllustration`(v1.3 신규) | copy · timeline · robot/globe **brand-approved static illustration**(AVIF+WebP, desktop/mobile 2 variant) · CTA 기회확인 |
-| Right rail | `HomeRightRail` | status counts · top · total Fact |
-| Invite strip | sidebar slot | reuse invite copy |
+| Header | `AppHeader` | Adapt · DayPulse chip · no live FSM |
+| Hero | `HomeHero` · `HomeHeroIllustration` | Polish · Contract timeline/copy |
+| Right rail | `HomeRightRail` | Adapt · COUNT settle · no donut · no scan/confirm/progress |
+| Counter | `HomePayoutCounter` / lux | Adapt · **COUNT semantics** · never USDT |
+| Session | `HomeSessionBanner` | Keep/Adapt copy |
+| Footer | `SiteFooter` · `MarketPartnerTrustStrip` | Adapt · Brand ready only |
+| DayPulse / Ticker | existing slots | Keep verify slots · visual Owns → Header |
 
 ## Forbidden components / actions
 
 | Forbidden | Why |
 |---|---|
 | `HomePageV2` | Parallel home · PART9 break |
-| New design-system package | Use peotteok-light SPEC → existing token pipeline |
-| Full Tailwind rewrite | Token cutover only |
-| Pixel clone from PNG | ADR-017 |
+| Parallel data pipeline | LOCK C |
+| `ledgerTotal` as USDT | C01 semantic defect |
+| Mock number injection | LOCK A |
+| scan/confirm/progress UI without Fact | C04 |
+| 30d chart / growth% | C03 |
+| available/locked Home split | C02 |
+| PayPal without Brand | C09 |
+| New design-system package | peotteok-light only |
+| Pixel clone from PNG | Geometry Reference only |
 | Ad-hoc hex in JSX | Token SSOT |
 | Three.js / WebGL hero | Contract |
-| Mock opportunity filler | Empty State Lock |
-| Arbitrary animations | Animation Lock |
+| Mobile geometry final from PC shrink | §13 provisional |
 
-## STEP4 implementation queue (order)
+## STEP 5 implementation queue (order · Gate 승인 후)
 
-1. Apply Token SPEC → `lux-fintech` / theme CSS + `verify:lux-theme-sync`
-2. `USER_TABS` IA + `verify:ia-tabs`
-3. Shell: Sidebar/Header (`BottomNav5` Adapt + `AppHeader`)
-4. `HomeHero` (placeholders)
-5. Money Adapt (`HomePrincipalRail`)
-6. Opportunity Adapt + Empty 3-part
-7. `HomeRightRail`
-8. Motion CSS-only · perf check
-9. PART9 regression: `home-live-wire` · `home-principal-slots` · `no-it-jargon` · `canon-surfaces`
+| # | Slice | Focus |
+|---|---|---|
+| **0** | **C01 binding fix** | `ledgerTotal` → count-only OR hide · remove `` `${n} USDT` `` · counter/RightRail 정합 · regression |
+| 1 | Shell | Sidebar / Header / IA tabs |
+| 2 | Hero | copy · timeline · illustration · CTA |
+| 3 | Money | `HomePrincipalRail` Fact surface |
+| 4 | Opportunity | grid · empty 3-part · CTA |
+| 5 | RightRail | settle + today possible + TOP3 |
+| 6 | Partner / polish | Brand strip · motion CSS-only · perf |
+| 7 | PART9 regression | gates below |
 
-## Verify touchpoints (STEP4)
+**C01 미통과 시** Shell 이후 시각 슬라이스 착수 금지.
 
-- `verify:canon-surfaces` (wire already registered in STEP3)
-- `verify:lux-theme-sync`
+## Verify touchpoints (STEP 5)
+
+- `verify:home-live-wire`
+- `verify:home-principal-slots`
+- `verify:canon-surfaces`
 - `verify:ia-tabs`
-- `verify:home-live-wire` · `verify:home-principal-slots`
-- `verify:cta-earn-profit` (card CTA 수익 벌기)
+- `verify:no-it-jargon`
+- `verify:cta-earn-profit`
+- `verify:brand-consumer`
+- `verify:lux-theme-sync`
 - `verify:mockup-governance`
+- `verify:gate:fast` (T0)
+- **Manual C01:** no `ledgerTotal`+`USDT` string bind on Home
+
+## Frozen systems (전 슬라이스)
+
+`services/api-nest/**` · SDK packages · mapper · DB/Ledger/Engine · Auth/JWT · `apps/admin/**` · workers

@@ -127,8 +127,20 @@ if (!mountsHomeOpp) {
   );
 }
 
-const profits = read("apps/web/app/profits/page.tsx");
-if (!profits.includes("OpportunityCard") || !profits.includes("CategoryFilterChips")) {
+const profitsPage = read("apps/web/app/profits/page.tsx");
+const profitsClient = fs.existsSync(
+  path.join(root, "apps/web/app/profits/ProfitsPageClient.tsx"),
+)
+  ? read("apps/web/app/profits/ProfitsPageClient.tsx")
+  : "";
+const profits = `${profitsPage}\n${profitsClient}`;
+if (
+  !(
+    profits.includes("OpportunityCard") ||
+    profits.includes("VirtualOpportunityList")
+  ) ||
+  !profits.includes("CategoryFilterChips")
+) {
   fails.push("/profits must use OpportunityCard + CategoryFilterChips");
 }
 

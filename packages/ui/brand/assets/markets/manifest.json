@@ -1,6 +1,9 @@
 {
   "version": 1,
-  "adr": ["ADR-011", "ADR-013"],
+  "adr": [
+    "ADR-011",
+    "ADR-013"
+  ],
   "planRef": "UI §38.10.3",
   "basePath": "packages/ui/brand/assets/markets",
   "renderRule": "status=ready only · blocked must not render · no CDN hotlink",
@@ -22,77 +25,96 @@
       "file": "ebay.svg",
       "path": "assets/markets/ebay.svg",
       "status": "ready",
-      "partnerIds": ["ebay_us", "ebay_gb", "ebay_de", "ebay_au"],
+      "partnerIds": [
+        "ebay_us",
+        "ebay_gb",
+        "ebay_de",
+        "ebay_au"
+      ],
       "labelKo": "이베이",
       "tier": "A",
       "displayOrder": 1,
-      "variant": "official_monochrome_light"
+      "variant": "official_monochrome_dark"
     },
     {
       "id": "amazon",
       "file": "amazon.svg",
       "path": "assets/markets/amazon.svg",
       "status": "ready",
-      "partnerIds": ["amazon_us", "amazon_jp", "amazon_de"],
+      "partnerIds": [
+        "amazon_us",
+        "amazon_jp",
+        "amazon_de"
+      ],
       "labelKo": "아마존",
       "tier": "A",
       "displayOrder": 2,
-      "variant": "official_monochrome_light"
+      "variant": "official_monochrome_dark"
     },
     {
       "id": "yahoo-jp",
       "file": "yahoo-jp.svg",
       "path": "assets/markets/yahoo-jp.svg",
       "status": "ready",
-      "partnerIds": ["yahoo_jp"],
+      "partnerIds": [
+        "yahoo_jp"
+      ],
       "labelKo": "Yahoo! JAPAN オークション",
       "tier": "A",
       "displayOrder": 3,
-      "variant": "official_monochrome_light"
+      "variant": "official_monochrome_dark"
     },
     {
       "id": "pokemontcg",
       "file": "pokemontcg.svg",
       "path": "assets/markets/pokemontcg.svg",
       "status": "ready",
-      "partnerIds": ["pokemontcg"],
+      "partnerIds": [
+        "pokemontcg"
+      ],
       "labelKo": "포켓몬 TCG 공식 API",
       "tier": "B",
       "displayOrder": 4,
-      "variant": "official_monochrome_light"
+      "variant": "official_monochrome_dark"
     },
     {
       "id": "ygoprodeck",
       "file": "ygoprodeck.svg",
       "path": "assets/markets/ygoprodeck.svg",
       "status": "ready",
-      "partnerIds": ["ygoprodeck"],
+      "partnerIds": [
+        "ygoprodeck"
+      ],
       "labelKo": "유희왕 카드 DB",
       "tier": "B",
       "displayOrder": 5,
-      "variant": "official_monochrome_light"
+      "variant": "official_monochrome_dark"
     },
     {
       "id": "coingecko",
       "file": "coingecko.svg",
       "path": "assets/markets/coingecko.svg",
       "status": "ready",
-      "partnerIds": ["coingecko"],
+      "partnerIds": [
+        "coingecko"
+      ],
       "labelKo": "CoinGecko",
       "tier": "C",
       "displayOrder": 6,
-      "variant": "official_monochrome_light"
+      "variant": "official_monochrome_dark"
     },
     {
       "id": "frankfurter",
       "file": "frankfurter.svg",
       "path": "assets/markets/frankfurter.svg",
       "status": "ready",
-      "partnerIds": ["frankfurter"],
+      "partnerIds": [
+        "frankfurter"
+      ],
       "labelKo": "Frankfurter",
       "tier": "C",
       "displayOrder": 7,
-      "variant": "official_monochrome_light"
+      "variant": "official_monochrome_dark"
     }
   ]
 }

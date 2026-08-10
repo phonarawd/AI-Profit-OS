@@ -16,7 +16,7 @@
 
 - SSOT list = `manifest.json` (must stay in sync with `schemas/market-partner.registry.json` `logoAsset`)
 - Render only `status=ready` + file on disk
-- Lux Dark = official **monochrome/light** variant only (`#F2F4F8`) · arbitrary recolor **forbidden**
+- Shipping theme **peotteok-light** = official **monochrome/dark** marks (`#14121F` = `color.text`) · Lux Dark `#F2F4F8` archive · arbitrary ad-hoc recolor **forbidden**
 - CDN hotlink **0** · Brand Kit path only
 - `yahoo_jp` adapter Day-1 auto-publish = 0 does **not** mean label/logo OFF (표기 필수)
 

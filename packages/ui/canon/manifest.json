@@ -174,7 +174,7 @@
       "id": "home-visual-v2",
       "route": "/",
       "wire": "surfaces/home-visual-v2.wire.json",
-      "note": "ADR-017 · Home Visual Upgrade · Contract peotteok-home-visual-contract.v1 · PART9 Keep"
+      "note": "ADR-017 · Home Visual Upgrade · Visual Contract v1.4 · Implementation Contract STEP3 ACK · STEP4.2 wire · PART9 Keep · C01 ledgerTotal COUNT"
     },
     {
       "id": "preflight-confirm",

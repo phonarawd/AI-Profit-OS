@@ -21,9 +21,9 @@
       "mainOrder": ["hero", "money", "opportunity", "partnerStrip"]
     },
     "mobile": {
-      "status": "provisional_structural_only",
+      "status": "provisional_with_founder_captures",
       "visualGeometryFinal": false,
-      "note": "Reference B UNKNOWN · do not finalize by shrinking PC",
+      "note": "Founder captures 320–430 (iPhone 14 Pro Max) accepted as Mobile Reference · stack Header→Hero→Money→Opportunity→BottomNav · Hero 320–420 · Fact-only Money · do not finalize by shrinking PC mock Fact",
       "heroHeightPx": [320, 420],
       "stack": ["header", "hero", "money", "opportunity", "rightRailSecondary", "bottomNav"]
     }

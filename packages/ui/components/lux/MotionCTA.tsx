@@ -7,12 +7,13 @@ export type MotionCTAProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   /** Default = 수익 벌기 (Index §20.2) */
   label?: string;
   children?: ReactNode;
-  /** Pulse glow — off when reduced-motion / data-tier=b (CSS) */
+  /** Interaction emphasis — off when reduced-motion / data-tier=b (CSS) */
   pulse?: boolean;
 };
 
 /**
- * PART1d MotionCTA — Pulse CTA · casino-named DopamineButton forbidden
+ * PART1d MotionCTA — high-contrast press CTA
+ * Infinite glow/neon pulse 금지 · hover/focus/active ≤200–300ms
  * Sticky mobile only at call site · PC full-width sticky forbidden (§5.3)
  */
 export function MotionCTA({
@@ -35,6 +36,7 @@ export function MotionCTA({
         "px-4",
         "font-semibold",
         "text-lux-bg",
+        /* pulse prop = interaction emphasis class (infinite glow 아님) */
         pulse ? "lux-motion-cta lux-motion-any" : "",
         className,
       ]

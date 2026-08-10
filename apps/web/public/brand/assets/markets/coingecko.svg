@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 24" role="img" aria-label="CoinGecko">
-  <!-- Brand Kit monochrome/light mark · Lux Dark · §38.10.3 -->
-  <g fill="#F2F4F8">
+  <!-- Brand Kit monochrome/dark mark Â· peotteok-light Â· Â§38.10.3 -->
+  <g fill="#14121F">
     <circle cx="11" cy="12" r="8"/>
     <circle cx="8.2" cy="10.2" r="1.3" fill="#090A10"/>
     <path d="M14.5 9.2c1.6.4 2.7 1.6 2.7 3.3 0 2.1-1.6 3.5-3.8 3.5H9.8v-2h3.4c.9 0 1.5-.5 1.5-1.4 0-.8-.5-1.3-1.4-1.4l1.2-2z" fill="#090A10"/>

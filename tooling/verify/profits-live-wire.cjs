@@ -30,6 +30,12 @@ const files = [
 for (const f of files) mustExist(f);
 
 const listPage = read("apps/web/app/profits/page.tsx");
+const listClient = fs.existsSync(
+  path.join(root, "apps/web/app/profits/ProfitsPageClient.tsx"),
+)
+  ? read("apps/web/app/profits/ProfitsPageClient.tsx")
+  : "";
+const listSrc = `${listPage}\n${listClient}`;
 const detailPage = read("apps/web/app/profits/[id]/page.tsx");
 const feed = read("packages/sdk/src/user-feed/fetch.ts");
 const sdkPkg = read("packages/sdk/package.json");
@@ -52,12 +58,15 @@ function usesSdk(src, fn) {
   );
 }
 
-if (!usesSdk(listPage, "fetchOpportunityFeed")) {
+if (!usesSdk(listSrc, "fetchOpportunityFeed")) {
   fails.push(
     "/profits must live-wire fetchOpportunityFeed (@aipo/sdk/user-feed) · PART9e",
   );
 }
-if (/const items:\s*OpportunityCardModel\[\]\s*=\s*\[\]/.test(listPage)) {
+if (
+  /const items:\s*OpportunityCardModel\[\]\s*=\s*\[\]/.test(listSrc) &&
+  !usesSdk(listSrc, "fetchOpportunityFeed")
+) {
   fails.push("/profits still uses empty items stub — live feed required (PART9e)");
 }
 

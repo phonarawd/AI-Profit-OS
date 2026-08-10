@@ -22,7 +22,10 @@ STEP 4.1     ✅ ADR / Contract amendment
 STEP 4.2     ✅ Wire amendment
 STEP 4.3     ✅ Token amendment
 STEP 4.4     ✅ APPROVED — proceed STEP 5 Slice 0 (C01 only)
-STEP 5       ✅ Slice 0–3 CLOSED · next Slice 4 Opportunity
+STEP 5       ✅ Slice 0–2 CLOSED · Pre-Slice Hero Fix COMPLETE
+             · Slice 3 Money AMEND (mobile polish) COMPLETE
+             · Slice 4 Opportunity mobile polish COMPLETE
+             · next Slice 5 RightRail / Slice 6 Partner
 ```
 
 ---

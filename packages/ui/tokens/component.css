@@ -73,10 +73,15 @@ html[data-font-scale="xl"] {
     var(--color-lux-accent) 48%,
     var(--color-lux-hero-to) 100%
   );
-  /* Mobile provisional height · Reference B 전 최종 확정 금지 */
+  /**
+   * Mobile: content-driven height · Founder capture 320–430 geometry.
+   * PRE-SLICE: max-height:420 + overflow:hidden 이 illustration clip → none.
+   * Compact polish: title 2줄 · timeline 2×2 · CTA full · art 128–160.
+   * Desktop height lock(480–600) 유지 · Mobile 픽셀 FINAL 아님.
+   */
   min-height: 320px;
-  max-height: 420px;
-  padding: var(--space-lux-lg, 24px) var(--space-lux-md, 16px);
+  max-height: none;
+  padding: var(--space-lux-md, 16px);
 }
 
 @media (min-width: 768px) {
@@ -104,17 +109,21 @@ html[data-font-scale="xl"] {
 .home-hero__inner {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: var(--space-lux-lg, 24px);
-  min-height: inherit;
-  height: 100%;
+  justify-content: flex-start;
+  gap: var(--space-lux-md, 16px);
+  /* Mobile: content 높이 따라 성장 · fixed box에 욱여넣지 않음 */
+  min-height: 0;
+  height: auto;
 }
 
 @media (min-width: 768px) {
   .home-hero__inner {
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: var(--space-lux-xl, 32px);
+    min-height: inherit;
+    height: 100%;
   }
 }
 
@@ -125,7 +134,7 @@ html[data-font-scale="xl"] {
   flex: 1 1 auto;
   flex-direction: column;
   justify-content: center;
-  gap: var(--space-lux-md, 16px);
+  gap: var(--space-lux-sm, 8px);
 }
 
 @media (min-width: 768px) {
@@ -136,8 +145,11 @@ html[data-font-scale="xl"] {
 }
 
 .home-hero__title {
-  font-size: 1.875rem;
-  line-height: 1.2;
+  font-size: clamp(1.375rem, 5.2vw, 1.75rem);
+  line-height: 1.25;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  text-wrap: balance;
 }
 
 @media (min-width: 768px) {
@@ -154,28 +166,37 @@ html[data-font-scale="xl"] {
 
 .home-hero__subtitle {
   max-width: 36rem;
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 @media (min-width: 768px) {
   .home-hero__subtitle {
     font-size: 1.125rem;
+    line-height: 1.6;
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
   }
 }
 
-/* 유저 대면 4단 timeline · Reference 금지 용어 0 */
+/* Mobile: 4단 → 2×2 compact · Desktop: 가로 wrap */
 .home-hero__timeline {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-lux-sm, 8px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-lux-xs, 4px) var(--space-lux-sm, 8px);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .home-hero__timeline {
+    display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
@@ -187,27 +208,46 @@ html[data-font-scale="xl"] {
 .home-hero__timeline-item {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-lux-sm, 8px);
+  gap: 0.35rem;
+  min-width: 0;
   color: color-mix(in srgb, var(--color-lux-surface) 95%, transparent);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
+}
+
+@media (min-width: 768px) {
+  .home-hero__timeline-item {
+    gap: var(--space-lux-sm, 8px);
+    font-size: 0.875rem;
+  }
 }
 
 .home-hero__timeline-index {
   display: inline-flex;
-  min-width: 1.75rem;
-  height: 1.75rem;
+  flex-shrink: 0;
+  min-width: 1.5rem;
+  height: 1.5rem;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
   background: color-mix(in srgb, var(--color-lux-surface) 15%, transparent);
-  padding-inline: 0.5rem;
-  font-size: 0.75rem;
+  padding-inline: 0.35rem;
+  font-size: 0.6875rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 
+@media (min-width: 768px) {
+  .home-hero__timeline-index {
+    min-width: 1.75rem;
+    height: 1.75rem;
+    padding-inline: 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
 .home-hero__timeline-label {
   font-weight: 500;
+  word-break: keep-all;
 }
 
 .home-hero__timeline-arrow {
@@ -216,7 +256,7 @@ html[data-font-scale="xl"] {
   color: color-mix(in srgb, var(--color-lux-surface) 40%, transparent);
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .home-hero__timeline-arrow {
     display: inline;
   }
@@ -224,70 +264,112 @@ html[data-font-scale="xl"] {
 
 .home-hero__cta-wrap {
   margin-top: var(--space-lux-xs, 4px);
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .home-hero__cta-wrap {
+    width: auto;
+  }
 }
 
 .home-hero__cta {
   display: inline-flex;
+  width: 100%;
   min-height: var(--touch-min, 48px);
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-lux-md, 12px);
   background: var(--color-lux-surface);
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1.25rem;
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-lux-accent);
   box-shadow: var(--shadow-lux-card);
-  transition: transform 200ms ease;
+  transition: transform 200ms ease, filter 200ms ease;
 }
 
-.home-hero__cta:hover {
+@media (min-width: 768px) {
+  .home-hero__cta {
+    width: auto;
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+.home-hero__cta:hover,
+.home-hero__cta:focus-visible {
   transform: scale(1.02);
+  filter: brightness(1.03);
+}
+
+.home-hero__cta:active {
+  transform: scale(0.98);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .home-hero__cta {
     transition: none;
   }
-  .home-hero__cta:hover {
+  .home-hero__cta:hover,
+  .home-hero__cta:focus-visible,
+  .home-hero__cta:active {
     transform: none;
+    filter: none;
   }
 }
 
-/* Illustration ≤46% hero visual · CTA contrast를 압도하지 않음 */
+/* Illustration ≤46% · mobile compact 128–160 · desktop wrapper 확대 */
 .home-hero__visual {
   position: relative;
   z-index: 0;
   margin-inline: auto;
-  width: 100%;
-  max-width: 280px;
-  flex-shrink: 0;
+  width: min(160px, 42vw);
+  max-width: 160px;
+  flex: 0 0 auto;
   pointer-events: none;
+  padding-block: 2px;
 }
 
 @media (min-width: 768px) {
   .home-hero__visual {
     margin-inline: 0;
-    width: min(46%, 420px);
+    width: min(46%, 460px);
     max-width: 46%;
+    padding-block: 0;
   }
 }
 
 /**
  * Brand-approved static AVIF/WebP.
- * mobile 1:1 · desktop 3:2(가로형) — transform-only motion.
+ * mobile 1:1 compact · desktop 3:2 — transform-only motion.
+ * object-fit contain 유지 · cover로 잘림 금지 · 사각 경계는 크기 정합으로 완화.
  */
 .home-hero__illustration-frame {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 1 / 1;
+  overflow: visible;
+  border-radius: var(--radius-lux-lg, 16px);
   animation: home-hero-float 6s ease-in-out infinite;
+}
+
+.home-hero__illustration-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
 }
 
 @media (min-width: 768px) {
   .home-hero__illustration-frame {
     aspect-ratio: 3 / 2;
+    border-radius: var(--radius-lux-xl, 20px);
+  }
+
+  .home-hero__illustration-frame img {
+    object-position: center;
   }
 }
 
@@ -372,14 +454,14 @@ html[data-font-scale="xl"] {
 }
 
 /**
- * Money 2열 (STEP5 Slice3 · Contract §03.3 / §08) — Main 폭 기준.
+ * Money 2열 (STEP5 Slice3 amend · Contract §03.3 / §08) — Main 폭 기준.
  * Fact geometry only · count-up / chart / 사용가능·참여중 split 금지.
- * container-type 붕괴 회귀(v1.3.1) 회피: 순수 Grid만 사용.
+ * Mobile: 촘촘한 요약군 · Desktop: equal-height 2열.
  */
 .home-money-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-lux-md, 16px);
+  gap: var(--space-lux-sm, 8px);
   width: 100%;
   min-width: 0;
 }
@@ -388,6 +470,7 @@ html[data-font-scale="xl"] {
   .home-money-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: stretch;
+    gap: var(--space-lux-md, 16px);
   }
 }
 
@@ -416,17 +499,15 @@ html[data-font-scale="xl"] {
 @media (min-width: 1280px) {
   .home-money-grid .home-money-card {
     padding: var(--space-lux-lg, 24px);
-    min-height: 168px;
+    min-height: 148px;
   }
 }
 
-/* Balance = trust primary · principal accent hairline (glow/neon 금지) */
-.home-money-grid .home-money-card--balance {
-  border-top: 3px solid var(--color-lux-principal);
-}
-
-.home-money-grid .home-money-card--profit {
-  border-top: 3px solid var(--color-lux-profit);
+.home-money__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lux-sm, 8px);
 }
 
 .home-money__label {
@@ -449,17 +530,18 @@ html[data-font-scale="xl"] {
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.15;
-  font-size: clamp(1.75rem, 2.4vw, 2.25rem);
+  font-size: clamp(1.625rem, 2.2vw, 2.125rem);
 }
 
 @media (min-width: 1280px) {
   .home-money__value {
-    font-size: clamp(2rem, 1.6vw, 2.5rem);
+    font-size: clamp(1.875rem, 1.5vw, 2.375rem);
   }
 }
 
+/* Trust: balance = 본문색 · profit = 초록 (glow/neon 장식선 금지) */
 .home-money__value--balance {
-  color: var(--color-lux-principal);
+  color: var(--color-lux-text);
 }
 
 .home-money__value--profit {
@@ -477,28 +559,33 @@ html[data-font-scale="xl"] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  align-self: flex-start;
-  margin-top: var(--space-lux-md, 16px);
-  min-height: var(--touch-min, 48px);
-  padding: 0.5rem 1rem;
+  flex-shrink: 0;
+  min-height: 40px;
+  padding: 0.4rem 0.9rem;
   border-radius: var(--radius-lux-md, 12px);
   background: var(--color-lux-accent);
   color: var(--color-lux-surface);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   text-decoration: none;
-  transition: background-color 200ms ease, opacity 200ms ease;
+  transition: background-color 200ms ease, transform 200ms ease;
 }
 
-.home-money__cta:hover {
+.home-money__cta:hover,
+.home-money__cta:focus-visible {
   background: var(--color-lux-accent-muted, var(--color-lux-accent));
 }
 
-@media (min-width: 1280px) {
+.home-money__cta:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
   .home-money__cta {
-    margin-top: auto;
-    padding-top: 0.625rem;
-    padding-bottom: 0.625rem;
+    transition: background-color 200ms ease;
+  }
+  .home-money__cta:active {
+    transform: none;
   }
 }
 

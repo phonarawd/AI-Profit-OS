@@ -20,7 +20,7 @@ export type HomePrincipalRailProps = {
 };
 
 /**
- * HomePrincipalRail / HomeMoneySurface — STEP5 Slice3 Money presentation
+ * HomePrincipalRail / HomeMoneySurface — STEP5 Slice3 Money amend
  * Fact: principalUsdt + todayPossible only · C02/C03 · count-up/chart/split 금지
  */
 export function HomePrincipalRail({
@@ -49,7 +49,16 @@ export function HomePrincipalRail({
         data-canon-block="principalBalance"
         className="home-money-card home-money-card--balance"
       >
-        <p className="home-money__label">{T.feed.balanceLabel}</p>
+        <div className="home-money__header">
+          <p className="home-money__label">{T.feed.balanceLabel}</p>
+          <Link
+            href="/wallet/deposit"
+            className="home-money__cta"
+            data-cta="deposit"
+          >
+            {T.feed.ctaDeposit}
+          </Link>
+        </div>
         <div className="home-money__value-stack">
           {krw ? (
             <>
@@ -66,13 +75,6 @@ export function HomePrincipalRail({
             </p>
           )}
         </div>
-        <Link
-          href="/wallet/deposit"
-          className="home-money__cta"
-          data-cta="deposit"
-        >
-          {T.feed.ctaDeposit}
-        </Link>
       </article>
 
       <article

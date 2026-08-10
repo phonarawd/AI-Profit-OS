@@ -63,11 +63,25 @@ export function MarketPartnerLeg({
     >
       <div className="flex items-center gap-2" style={{ height: 20 }}>
         {buy?.path ? (
-          <img src={`/brand/${buy.path}`} alt={buy.labelKo} height={20} />
+          <img
+            src={`/brand/${buy.path}`}
+            alt={buy.labelKo}
+            height={20}
+            decoding="async"
+            className="w-auto max-w-[6rem] object-contain"
+            style={{ height: 20, width: "auto" }}
+          />
         ) : null}
         <span aria-hidden>↔</span>
         {sell?.path ? (
-          <img src={`/brand/${sell.path}`} alt={sell.labelKo} height={20} />
+          <img
+            src={`/brand/${sell.path}`}
+            alt={sell.labelKo}
+            height={20}
+            decoding="async"
+            className="w-auto max-w-[6rem] object-contain"
+            style={{ height: 20, width: "auto" }}
+          />
         ) : null}
       </div>
       <p data-testid="market-partner-leg-caption">{caption}</p>

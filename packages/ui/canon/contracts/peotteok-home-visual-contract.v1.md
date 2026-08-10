@@ -5,11 +5,12 @@
 > **선행:** STEP1 Gap Analysis Founder 승인 · PART9 live fetch/SDK/Auth/Wallet **보존**  
 > **금지:** HomePageV2 신설 · PART9 재오픈 · PNG 픽셀 QA · 본 문서 승인 전 구현/ADR/Token 착수  
 
-**버전:** v1.3 (STEP4 Desktop Grid 재설계 · Founder ack 완료)  
+**버전:** v1.4 (STEP 4.1 Fact / RightRail / Mobile provisional amend · STEP 3 Implementation Contract 승)  
 **범위:** `/` Home + App Shell (Sidebar/Header/Footer) · 탭 라벨 IA 잠금 포함 · 탭 외 화면 전면 리터치 제외  
-**STEP3 순서 (불변):** ADR → Canon Wire → Token SPEC → Implementation Mapping · **Token을 Wire보다 먼저 만들지 않음** · React/CSS/컴포넌트는 STEP4  
+**권위 충돌 시:** [`peotteok-home-visual-implementation-contract.v1.md`](./peotteok-home-visual-implementation-contract.v1.md) + STEP 2 Conflict Resolution **승**  
+**트랙 순서 (잠금):** STEP 4 ADR/Wire/Token amend → 4.4 Gate 승인 → **STEP 5** 코드 (C01 먼저) · 본 STEP 4에서 React/CSS **금지**
 
-**구현 에이전트 절대 규칙:** PNG는 참고 이미지다. **본 Contract가 절대 기준.** Contract 없는 UI 생성 금지. 「사진처럼 만들어」금지.
+**구현 에이전트 절대 규칙:** PNG = Geometry Reference only. **Fact = Backend SSOT.** Contract 없는 UI 생성 금지. 「사진처럼 만들어」금지.
 
 ---
 
@@ -243,17 +244,25 @@ Money surface is a **trust surface**.
 
 | Surface | Contract | Truth |
 |---|---|---|
-| Balance | 내 잔액 경험 | `principalUsdt` ledger |
+| Balance | 내 잔액 경험 | `principalUsdt` only (Home DTO) |
 | KRW | 크게 OK | ≈₩ display only · FX UI 재계산 0 |
 | Deposit | 입금 | `/wallet/deposit` |
-| Profit | 오늘 가능한 수익 경험 | Fact aggregate |
-| Chart | Optional CSS/SVG spark | Fact only · Canvas/WebGL **금지** |
+| Profit | 오늘 가능한 수익 경험 | affordable expectedProfit **derived** aggregate |
+| Chart | **Forbidden (현재)** | 30-day series / growth% Fact **ABSENT** (C03) |
+
+### 4.1 Money Fact surface (v1.4 · STEP 4.1)
+
+| Allow | Forbid |
+|---|---|
+| `principalUsdt` | 사용가능 / 참여중 이중 잔액 (Home에 Fact 없음 · buckets 임의 분할 금지) |
+| today possible profit (derived) | 누적 수익 USDT 슬롯 (전용 데이터 계약 전 미표시) |
+| Deposit CTA | 30일 차트 · `+N%` growth · mock 숫자 |
 
 **금지 (카지노/도파민 · Trust 강화):**
 
 - Balance 숫자 **count-up 애니메이션 금지**  
 - Profit **실시간 증가 연출 금지**  
-- Chart **성장 과장 그래프**(로켓형·도파민 곡선) 금지 · 차분한 Fact spark만  
+- Chart **성장 과장 그래프** · Fact 없는 spark 슬롯  
 - huge profit animation / jackpot / flashing green / particles / gambling patterns  
 
 **Reuse:** `HomePrincipalRail` Adapt.
@@ -295,22 +304,33 @@ Money surface is a **trust surface**.
 
 ### 6.1 Role
 
-Main = 기회+참여 · Right = 신뢰+현황 (Secondary).
+Main = 기회+참여 · Right = 신뢰+현황 (Secondary). Reference 정보량 억지 복제 금지 (C04).
 
-### 6.2 Allowed — **상태형** (추천 패턴)
+### 6.2 Allowed Fact surface (v1.4 · STEP 4.1)
 
-제목 예: **현재 진행 현황** (「매칭 성공률」금지)
+| Block | Fact | Display |
+|---|---|---|
+| Settlement / result | `settlementCompletedToday` and/or `ledgerTotal` | **COUNT only** · 건수 라벨 |
+| Today possible | derived (Money와 동일) | USDT ·「가능」 |
+| TOP3 | feed affordable slice ≤3 | 동일 CTA 규칙 |
 
+### 6.2a C01 — `ledgerTotal` semantic lock (P0)
+
+```text
+ledgerTotal = today successful trade execution COUNT
+           ≠ cumulative profit USDT
 ```
-스캔   {n}
-확인   {n}
-진행   {n}
-정산   {n}
-```
 
-- 숫자는 **실측 필드만** (없으면 숨김/0 솔직 표기 · 가짜 채움 0)  
-- Total / cumulative result (settlement Fact)  
-- Top opportunities (feed subset · 동일 CTA 규칙)  
+| Rule | |
+|---|---|
+| Presentation | count-only **또는** hide |
+| Forbidden | `` `${ledgerTotal} USDT` `` · 목업 `+8,745.32 USDT` 주입 |
+| Defect class | semantic data-binding defect (스타일 이슈 아님) |
+
+### 6.2b Removed pattern (supersedes v1.3 scan/confirm/progress rows)
+
+`스캔/확인/진행 {n}` 행 · 도넛「N 진행 중」— Fact ABSENT → **슬롯 제거/완전 숨김** (0으로 가짜 채우기 금지).  
+정산 건수(`settle` / `settlementCompletedToday`)만 허용.
 
 ### 6.3 Forbidden
 
@@ -318,6 +338,14 @@ Main = 기회+참여 · Right = 신뢰+현황 (Secondary).
 - 확정 수익처럼 보이는 예상 숫자  
 - 호가창·틱 트레이딩감  
 - 가짜 인원·가짜 체결  
+- `ledgerTotal` USDT 재해석 · mock 누적 수익  
+- scan / confirm / progress 숫자 · 도넛  
+
+---
+
+## 6.4 Growth / Counter Owns
+
+`HomePayoutCounter` / growth public-surface `ledgerTotal` = **COUNT semantics** (C01와 동일). USDT 접미사·금액 오인 금지.
 
 ---
 
@@ -331,16 +359,24 @@ Partner/trust strip · Brand markets ready only · `SiteFooter` · 면책 이모
 
 ### Desktop
 
-3 column: Sidebar 240 · Main flex · Right 320–360 · Header ~64
+3 column: Sidebar 240 · Main flex · Right 320–360 · Header ~64  
+PC Reference = **geometry SSOT** (밀도·비율·위계) · 목업 Fact 복제 금지.
 
-### Mobile (PWA 우선)
+### Mobile (provisional · Founder captures 320–430)
+
+> Mobile visual geometry **NOT FINAL** (픽셀 확정 금지).  
+> Founder iPhone 14 Pro Max / 320–430 실측 캡처 = **Mobile Reference geometry** · PC 목업 Fact 축소 확정 **금지**.
+
+**구조 스택 (잠금):**
 
 1. Header 축약  
-2. Hero  
-3. Balance / Profit  
-4. Opportunity  
+2. Hero (title 2줄 · timeline 2×2 · CTA full-width · illustration compact)  
+3. Balance / Profit (Fact-only · 사용가능/참여중·차트 금지)  
+4. Opportunity (제목 우선 · 빈 필터 숨김 · 단일 primary CTA)  
 5. Right-rail 내용(있으면) 하단 보조  
 6. Bottom nav 5 (§2.2 라벨)
+
+Hero mobile height **320–420px** · 무한 glow/neon/count-up 금지.
 
 ---
 
@@ -415,8 +451,10 @@ Founder가 **v1.2** 승인 시 허용 순서:
 
 | | |
 |---|---|
-| Status | **v1.3 — STEP4 Desktop Grid 재설계** (Founder ack 완료 · PC 목업 desktop composition 반영) |
-| Prev | v1.2-final (STEP3 COMPLETE) |
-| Added v1.3 | §2.1a Main Content Internal Grid 신설 · Hero illustration 비중 35%→46% · Hero desktop height 480–560→480–600px · Robot/Globe placeholder→brand-approved high-fidelity static illustration(AI 생성+검수+Brand Kit 등재) 승격 · content-rail-max 토큰 참조 추가 |
-| Added final (v1.2) | Hero copy 허용/금지 · Hero height 480–560/320–420 · Money count-up·실시간증가·과장차트 금지 · STEP3 순서 Wire→Token |
+| Status | **v1.4 — STEP 4.1 Fact / RightRail / Mobile provisional** (Implementation Contract STEP 3 ACK 정합) |
+| Prev | v1.3 (Desktop Grid) |
+| Added v1.4 | §4.1 Money Fact surface · §6.2 Fact allowlist · §6.2a C01 ledgerTotal COUNT lock · §6.2b scan/confirm/progress 폐기 · §6.4 Counter Owns · §8 Mobile provisional · Authority → Implementation Contract |
+| Added v1.3 | §2.1a Main Content Internal Grid · Hero illustration 46% · Hero desktop 480–600 · brand-approved illustration · content-rail-max |
+| Added final (v1.2) | Hero copy 허용/금지 · Money count-up 금지 · STEP3 Wire→Token |
 | Owner track | Home Visual Upgrade (not UI PART9) |
+| Code | STEP 4 구간 변경 **0** · STEP 5 = Implementation Gate 승인 후 · C01 첫 슬라이스 |

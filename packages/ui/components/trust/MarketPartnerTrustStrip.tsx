@@ -14,6 +14,7 @@ export type MarketPartnerTrustStripProps = {
 /**
  * UI §38.10 — PartnerTrustStrip (landing / home / onboarding / footer).
  * Tier-A target ≥4 ready logos; blocked logos never render.
+ * peotteok-light = Brand markets SVG fill `#14121F`(dark monochrome).
  */
 export function MarketPartnerTrustStrip({
   variant = "default",
@@ -51,13 +52,19 @@ export function MarketPartnerTrustStrip({
           {T.trust.partners.legFootnote}
         </p>
       ) : (
-        <ul className="flex flex-wrap items-center gap-3" style={{ minHeight: height }}>
+        <ul
+          className="flex flex-wrap items-center gap-4"
+          style={{ minHeight: height }}
+        >
           {logos.map((logo) => (
-            <li key={logo.id}>
+            <li key={logo.id} className="flex items-center">
               <img
                 src={`/brand/${logo.path}`}
                 alt={logo.labelKo}
                 height={height}
+                decoding="async"
+                className="w-auto max-w-[7.5rem] object-contain"
+                style={{ height, width: "auto" }}
               />
             </li>
           ))}

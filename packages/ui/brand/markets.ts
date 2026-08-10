@@ -30,7 +30,7 @@ export const MARKET_LOGOS: readonly MarketLogoEntry[] = [
     labelKo: "이베이",
     tier: "A",
     displayOrder: 1,
-    variant: "official_monochrome_light",
+    variant: "official_monochrome_dark",
   },
   {
     id: "amazon",
@@ -41,7 +41,7 @@ export const MARKET_LOGOS: readonly MarketLogoEntry[] = [
     labelKo: "아마존",
     tier: "A",
     displayOrder: 2,
-    variant: "official_monochrome_light",
+    variant: "official_monochrome_dark",
   },
   {
     id: "yahoo-jp",
@@ -52,7 +52,7 @@ export const MARKET_LOGOS: readonly MarketLogoEntry[] = [
     labelKo: "Yahoo! JAPAN オークション",
     tier: "A",
     displayOrder: 3,
-    variant: "official_monochrome_light",
+    variant: "official_monochrome_dark",
   },
   {
     id: "pokemontcg",
@@ -63,7 +63,7 @@ export const MARKET_LOGOS: readonly MarketLogoEntry[] = [
     labelKo: "포켓몬 TCG 공식 API",
     tier: "B",
     displayOrder: 4,
-    variant: "official_monochrome_light",
+    variant: "official_monochrome_dark",
   },
   {
     id: "ygoprodeck",
@@ -74,7 +74,7 @@ export const MARKET_LOGOS: readonly MarketLogoEntry[] = [
     labelKo: "유희왕 카드 DB",
     tier: "B",
     displayOrder: 5,
-    variant: "official_monochrome_light",
+    variant: "official_monochrome_dark",
   },
   {
     id: "coingecko",
@@ -85,7 +85,7 @@ export const MARKET_LOGOS: readonly MarketLogoEntry[] = [
     labelKo: "CoinGecko",
     tier: "C",
     displayOrder: 6,
-    variant: "official_monochrome_light",
+    variant: "official_monochrome_dark",
   },
   {
     id: "frankfurter",
@@ -96,7 +96,7 @@ export const MARKET_LOGOS: readonly MarketLogoEntry[] = [
     labelKo: "Frankfurter",
     tier: "C",
     displayOrder: 7,
-    variant: "official_monochrome_light",
+    variant: "official_monochrome_dark",
   },
 ] as const;
 

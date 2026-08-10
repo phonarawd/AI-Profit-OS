@@ -45,8 +45,9 @@ export const home = {
     emptyStatus: "아직 참여 가능한 기회를 찾는 중이에요",
     emptyNext: "입금 후 AI 분석이 시작됩니다",
     emptyWhy: "시장 데이터에 맞는 기회가 준비되면 바로 보여 드려요",
-    emptyCtaDeposit: "입금하기",
-    emptyCtaBrowse: "기회 확인",
+    /** Empty primary 단일 CTA · 경쟁 browse 자기참조 링크 폐기 */
+    emptyCtaDeposit: "입금하고 기회 열기",
+    emptyCtaBrowse: "다른 기회 확인하기",
   },
   rightRail: {
     aria: "진행 현황",
