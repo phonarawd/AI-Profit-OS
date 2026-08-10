@@ -3,6 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
+  fetchGrowthPublicSurface,
+  type GrowthPublicSurfaceResponse,
+} from "@aipo/sdk/growth";
+import {
   fetchDayPulse,
   fetchOpportunityFeed,
   type DayPulseResponse,
@@ -17,6 +21,8 @@ import {
 import {
   HomePayoutCounter,
   LivePayoutTicker,
+  type HomePayoutCounterMode,
+  type PublicTickerEvent,
 } from "@aipo/ui/components/lux";
 import { T } from "@aipo/ui/copy/ko";
 import { toOpportunityCardModel } from "../lib/opportunity-card-map";
@@ -87,8 +93,8 @@ function feedToHomeState(feed: OpportunityFeedResponse): HomeFeedState {
 }
 
 /**
- * PART9c/9d — 홈 live feed + DayPulse + §5.3 B/D HomePrincipalRail
- * SDK=@aipo/sdk/user-feed · 401 graceful · ticker/counter mode=off(9h Owns)
+ * PART9c/9d/9h — 홈 live feed + DayPulse + B/D + growth ticker/counter
+ * ticker/counter mode = server-driven only (default off)
  */
 export function HomePageClient() {
   const [feed, setFeed] = useState<HomeFeedState>({
@@ -97,15 +103,23 @@ export function HomePageClient() {
   });
   const [pulse, setPulse] = useState<DayPulseModel | null>(null);
   const [sessionExpired, setSessionExpired] = useState(false);
+  const [growth, setGrowth] = useState<GrowthPublicSurfaceResponse>({
+    tickerMode: "off",
+    counterMode: "off",
+    ledgerTotal: 0,
+    events: [],
+    asOf: "",
+  });
 
   useEffect(() => {
     const ac = new AbortController();
     let cancelled = false;
 
     async function load() {
-      const [feedResult, pulseResult] = await Promise.allSettled([
+      const [feedResult, pulseResult, growthResult] = await Promise.allSettled([
         fetchOpportunityFeed({ signal: ac.signal }),
         fetchDayPulse({ signal: ac.signal }),
+        fetchGrowthPublicSurface({ signal: ac.signal }),
       ]);
 
       if (cancelled) return;
@@ -130,6 +144,18 @@ export function HomePageClient() {
         setPulse(null);
       }
 
+      if (growthResult.status === "fulfilled") {
+        setGrowth(growthResult.value);
+      } else {
+        setGrowth({
+          tickerMode: "off",
+          counterMode: "off",
+          ledgerTotal: 0,
+          events: [],
+          asOf: "",
+        });
+      }
+
       setSessionExpired(unauthorized);
     }
 
@@ -140,16 +166,26 @@ export function HomePageClient() {
     };
   }, []);
 
+  const tickerEvents = growth.events as PublicTickerEvent[];
+  const counterMode = growth.counterMode as HomePayoutCounterMode;
+
   return (
     <main className="text-lux-text" data-testid="home-shell">
       <div data-home-slot="ticker" data-canon-block="tickerSlot">
-        <LivePayoutTicker mode="off" events={[]} maxItems={50} />
+        <LivePayoutTicker
+          mode={growth.tickerMode}
+          events={tickerEvents}
+          maxItems={50}
+        />
       </div>
       <div data-home-slot="day-pulse" data-canon-block="dayPulseSlot">
         <DayPulse data={pulse} />
       </div>
       <div data-home-slot="counter" data-canon-block="counterSlot">
-        <HomePayoutCounter mode="off" ledgerTotal={0} />
+        <HomePayoutCounter
+          mode={counterMode}
+          ledgerTotal={growth.ledgerTotal}
+        />
       </div>
       {sessionExpired ? (
         <p

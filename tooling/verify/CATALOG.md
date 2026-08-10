@@ -50,9 +50,10 @@
 | `packages/ui/**` · `apps/web/**` | no-it-jargon · mockup-governance · canon-surfaces |
 | `apps/admin/**` | no-admin-in-web · admin-routes |
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |
-| `apps/web/app/page.tsx` · `HomePageClient` · `packages/sdk/src/user-feed/**` · `HomePrincipalRail` · `home-principal-slots` | home-live-wire · sdk-user-feed · home-principal-slots |
+| `apps/web/app/page.tsx` · `HomePageClient` · `packages/sdk/src/user-feed/**` · `HomePrincipalRail` · `home-principal-slots` · sdk/api growth | home-live-wire · sdk-user-feed · home-principal-slots · growth-public-surface · ticker-pii-0 |
 | `apps/web/app/profits/**` | profits-live-wire · sdk-user-feed |
 | `apps/web/app/wallet/page.tsx` · `packages/sdk/src/wallet/**` | wallet-live-wire |
+| `apps/web/app/wallet/deposit/**` · `me/kyc` · `me/support` · `KycFlow` | stub-page-actions |
 | money api-nest | pg-module-scan · bucket-invariant |
 | engine-rust · trade/opportunity api | match-success-rule · participate-http · execute-rule-loop |
 | auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie |
@@ -82,6 +83,8 @@
 | profits-live-wire | UI PART9b/9e — `/profits`+`/profits/[id]` live SDK feed/detail — **live** |
 | wallet-live-wire | UI PART9b/9f — `/wallet` buckets + `@aipo/sdk/wallet` `fetchWalletBuckets` (출금≠9f2) — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |
+| growth-public-surface | UI PART9g — `growth_ticker_config` + GET `/growth/public-surface` · ledgerTotal=settlement.completed · Admin PATCH pointer — **live** |
+| stub-page-actions | UI PART9i — deposit `my-deposit-address`+copy · KYC multipart submit · support `deposit-disputes` POST+idempotencyKey — **live** |
 | ai-coach-fact-only · ai-coach-no-autonomy · ai-coach-ui | Engine §47.12~15 · UI §6.4e/§27.10 — **P레인** Fact-only · 전레인 자율집행 0 · FactToolService+CoachOrchestrator+SSE — **live** · **ai-coach-ui live** (`/me/peotteok` Canon · SSE client · P칩 · S거절 deep-link · degrade toast · voice pace) |
 | ai-general-no-money-tools · ai-lane-router · llm-adapter-contract | Engine §47.8·47.13~15 — G tools=[] · P/G/S router · **live** |
 | llm-quota-degrade | Engine §47.13 — 429→G busy·P Fact · 자동 failover 0 · toast `PEOTTEOK_LLM_BUSY` — **live** |

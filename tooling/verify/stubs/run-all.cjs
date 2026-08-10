@@ -126,6 +126,8 @@ const live = [
   "profits-live-wire.cjs",
   "wallet-live-wire.cjs",
   "withdraw-flow-wire.cjs",
+  "growth-public-surface.cjs",
+  "stub-page-actions.cjs",
   // PART8b §51.16~21 trust surfaces · Weekly Market Briefing
   "market-briefing-no-investment-advice.cjs",
   "participate-proof.cjs",

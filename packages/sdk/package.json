@@ -11,7 +11,8 @@
     "./peotteok": "./src/peotteok/index.ts",
     "./peotteok/usePeotteokChat": "./src/peotteok/usePeotteokChat.ts",
     "./user-feed": "./src/user-feed/index.ts",
-    "./wallet": "./src/wallet/index.ts"
+    "./wallet": "./src/wallet/index.ts",
+    "./growth": "./src/growth/index.ts"
   },
   "peerDependencies": {
     "react": "^19.0.0"

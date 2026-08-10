@@ -34,11 +34,15 @@ const RULES = [
       /^apps\/web\/components\/HomePageClient\.tsx$/.test(f) ||
       /^packages\/sdk\/src\/user-feed\//.test(f) ||
       /HomePrincipalRail/.test(f) ||
-      /home-principal-slots/.test(f),
+      /home-principal-slots/.test(f) ||
+      /^packages\/sdk\/src\/growth\//.test(f) ||
+      /^services\/api-nest\/src\/growth\//.test(f),
     scripts: [
       "home-live-wire.cjs",
       "sdk-user-feed.cjs",
       "home-principal-slots.cjs",
+      "growth-public-surface.cjs",
+      "ticker-pii-0.cjs",
     ],
   },
   {
@@ -60,6 +64,15 @@ const RULES = [
       /WithdrawStepUpPanel/.test(f) ||
       /withdraw-flow-wire/.test(f),
     scripts: ["withdraw-flow-wire.cjs", "wallet-live-wire.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/wallet\/deposit\//.test(f) ||
+      /^apps\/web\/app\/me\/kyc\//.test(f) ||
+      /^apps\/web\/app\/me\/support\//.test(f) ||
+      /stub-page-actions/.test(f) ||
+      (/packages\/ui\/components\/kyc\//.test(f) && /KycFlow/.test(f)),
+    scripts: ["stub-page-actions.cjs"],
   },
   {
     test: (f) => /^apps\/admin\//.test(f),

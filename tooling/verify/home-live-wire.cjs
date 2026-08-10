@@ -94,6 +94,21 @@ if (!wiredViaSdk && !wiredViaClient) {
   if (!liveSrc.includes("fetchDayPulse") && !liveSrc.includes("DayPulse")) {
     fails.push("home live must wire DayPulse (fetchDayPulse or DayPulse data)");
   }
+  // PART9h — ticker/counter server-driven (default off via API)
+  if (
+    !liveSrc.includes("fetchGrowthPublicSurface") &&
+    !liveSrc.includes("@aipo/sdk/growth")
+  ) {
+    fails.push(
+      "home must wire fetchGrowthPublicSurface (@aipo/sdk/growth) for ticker/counter · PART9h",
+    );
+  }
+  if (
+    /LivePayoutTicker\s+mode=["']off["']/.test(liveSrc) &&
+    !liveSrc.includes("fetchGrowthPublicSurface")
+  ) {
+    fails.push("home ticker mode must not stay hard-coded off without growth API");
+  }
   if (
     !liveSrc.includes("nearMissExtraCount") &&
     !page.includes("nearMissExtraCount")

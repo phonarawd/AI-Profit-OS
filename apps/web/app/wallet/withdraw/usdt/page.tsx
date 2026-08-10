@@ -33,6 +33,12 @@ function UsdtWithdrawContent() {
       data-testid="wallet-withdraw-usdt"
     >
       <h1 className="text-xl font-semibold">{T.withdrawMode.pageTitleUsdt}</h1>
+      <p
+        className="mt-2 text-sm text-lux-text-muted"
+        data-testid="withdraw-network-hint"
+      >
+        {T.wallet.withdrawNetworkHint}
+      </p>
       {gate.toastMessage ? (
         <p
           className="mt-3 text-sm"

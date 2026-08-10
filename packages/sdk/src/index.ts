@@ -67,3 +67,9 @@ export {
   type WithdrawStepUpMethod,
   type WithdrawStepUpVerifyResponse,
 } from "./wallet";
+
+export {
+  fetchGrowthPublicSurface,
+  type GrowthPublicSurfaceResponse,
+  type GrowthRequestOpts,
+} from "./growth";

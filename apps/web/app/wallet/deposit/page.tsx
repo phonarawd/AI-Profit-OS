@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { DepositAmountPanel } from "@aipo/ui/components/wallet/DepositAmountPanel";
 import { NetworkPlainWarning } from "@aipo/ui/components/wallet/NetworkPlainWarning";
@@ -34,6 +34,35 @@ function DepositContent() {
     [searchParams],
   );
   const oppId = searchParams.get("oppId");
+  const [depositAddress, setDepositAddress] = useState("");
+  const [copyDone, setCopyDone] = useState(false);
+
+  useEffect(() => {
+    if (tab !== "usdt") return;
+    const ac = new AbortController();
+    let cancelled = false;
+    async function load() {
+      try {
+        const res = await fetch("/api/v1/wallet/my-deposit-address", {
+          credentials: "include",
+          cache: "no-store",
+          signal: ac.signal,
+        });
+        if (!res.ok) return;
+        const json = (await res.json()) as { trc20Address?: string };
+        if (!cancelled && typeof json.trc20Address === "string") {
+          setDepositAddress(json.trc20Address);
+        }
+      } catch {
+        /* 401/network — leave empty */
+      }
+    }
+    void load();
+    return () => {
+      cancelled = true;
+      ac.abort();
+    };
+  }, [tab]);
 
   const usdtHref = useMemo(() => {
     const q = new URLSearchParams(searchParams.toString());
@@ -117,14 +146,21 @@ function DepositContent() {
               data-testid="deposit-address-value"
               data-qr-label={T.wallet.qrLabel}
             >
-              {/* filled by GET /api/v1/wallet/my-deposit-address */}
+              {depositAddress}
             </p>
             <button
               type="button"
               data-testid="deposit-address-copy"
               className="mt-2 text-sm text-lux-accent"
+              disabled={!depositAddress}
+              onClick={() => {
+                if (!depositAddress || !navigator.clipboard) return;
+                void navigator.clipboard.writeText(depositAddress).then(() => {
+                  setCopyDone(true);
+                });
+              }}
             >
-              {T.wallet.addressCopy}
+              {copyDone ? T.wallet.addressCopyDone : T.wallet.addressCopy}
             </button>
           </div>
         </section>

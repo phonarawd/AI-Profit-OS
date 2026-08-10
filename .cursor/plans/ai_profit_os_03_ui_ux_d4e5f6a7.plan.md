@@ -136,13 +136,13 @@ todos:
     status: completed
   - id: part9g-growth-public-api
     content: "[grok-4.5|256K] [밀도:무거움] PART9g §0.9 실측(growth_control≠ticker_mode · 백엔드 설정저장소 0) → 신규 singleton growth_ticker_config(ticker_mode/counter_mode default off·RLS ON) + Nest GET /api/v1/growth/public-surface(read-only·PII 마스킹 서버측·ledgerTotal=settlement.completed aggregate only) · Owns=growth config read · verify:growth-public-surface · **완료조건: Admin 04 §9.2 교차표 테이블명 pointer 동기**(admin-growth-ticker-organic=후속 PATCH+Organic Hybrid · apps/admin 코드0) · **단독 세션 권장**"
-    status: pending
+    status: completed
   - id: part9h-home-ticker-wire
     content: "[grok-4.5|256K] [밀도:가벼움] PART9h 홈 ticker/counter 9g API 투영 · mode=off server-driven only · verify:ticker-pii-0+home-live-wire · 선행=9g·9c · **2~3개 연속 묶기 OK**(9h·9i)"
-    status: pending
+    status: completed
   - id: part9i-stub-page-actions
     content: "[grok-4.5|256K] [밀도:가벼움] PART9i deposit 주소조회·복사 + kyc 제출(멀티파트) + support wrong-chain POST 배선(withdraw=9f2 Owns·본 todo 범위 아님) · §0.6 pointer 해소 · verify 해당 게이트 + no-it-jargon · 선행=9-pre2 · **2~3개 연속 묶기 OK**(9h·9i)"
-    status: pending
+    status: completed
   - id: trust-age-spotcheck
     content: "[grok-4.5|256K] [밀도:수동실사] PART8d §38.6b+§27.10 20·40·60~70대 각3명 · 도움말이모지길잡이·퍼뜩첫인사·면책이모지0 · 성별중성 · Admin ai-logs?tab=spotcheck pointer · 자동 verify **0** · **선행=PART9 전 todo completed** · **운영자 실사**(코드 세션과 분리) · File-Serial **마지막**"
     status: pending
@@ -373,9 +373,9 @@ isProject: false
 | 9e | part9e-profits-detail-wire | **가벼움** | `profits-live-wire`: /profits·/profits/[id] | 골격 위주 | **COMPLETED** · verify PASS · 재작성 금지 |
 | 9f | part9f-wallet-live-wire | **가벼움** | `wallet-live-wire`: buckets 조회+sdk/wallet | buckets 미배선 | **COMPLETED** · verify PASS · 재작성 금지 |
 | 9f2 | part9f2-withdraw-flow-wire | **무거움·신규화면** | `withdraw-flow-wire`: 금액·수수료·step-up·POST withdraw | 출금 3페이지 UI **0** | **COMPLETED** · verify PASS · 재작성 금지 |
-| 9g | part9g-growth-public-api | **무거움** | `growth-public-surface`: growth_ticker_config+GET public-surface | ticker 설정 저장소 **0**(`growth_control`≠mode) | DDL+Nest read · Admin §9.2 **pointer만** · **단독 권장** |
-| 9h | part9h-home-ticker-wire | **가벼움** | `ticker-pii-0`+home-live-wire 회귀 | ticker/counter `mode="off"` 하드코드 | 9g API 투영 · **9h·9i 묶기 OK** |
-| 9i | part9i-stub-page-actions | **가벼움** | deposit/kyc/support 해당 verify + `no-it-jargon` | stub 버튼·§0.6 pointer | withdraw≠본 todo(9f2) · **9h·9i 묶기 OK** |
+| 9g | part9g-growth-public-api | **무거움** | `growth-public-surface`: growth_ticker_config+GET public-surface | ticker 설정 저장소 **0**(`growth_control`≠mode) | **COMPLETED** · verify PASS · 재작성 금지 |
+| 9h | part9h-home-ticker-wire | **가벼움** | `ticker-pii-0`+home-live-wire 회귀 | ticker/counter `mode="off"` 하드코드 | **COMPLETED** · server-driven mode · 재작성 금지 |
+| 9i | part9i-stub-page-actions | **가벼움** | `stub-page-actions` + `no-it-jargon` | stub 버튼·§0.6 pointer | **COMPLETED** · verify PASS · 재작성 금지 |
 | 8d | trust-age-spotcheck | **수동실사** | 자동화 **0** (사람 실사) | — | **PART9 전 completed 후** · 운영자 spot-check · **코드 세션 분리** · File-Serial **마지막** |
 
 ### 0.8.4 다관점 판정 (예측0 · 실측 근거만)

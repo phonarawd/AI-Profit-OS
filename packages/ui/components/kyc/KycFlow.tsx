@@ -15,6 +15,9 @@ export type KycSubmitPayload = {
   /** Local file name only — R2 upload Owns=Money API */
   idDocFileName?: string;
   selfieFileName?: string;
+  /** PART9i multipart — browser File when available */
+  idDocFile?: File;
+  selfieFile?: File;
 };
 
 export type KycFlowProps = {
@@ -49,6 +52,8 @@ export function KycFlow({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [docFileName, setDocFileName] = useState<string | undefined>();
   const [selfieFileName, setSelfieFileName] = useState<string | undefined>();
+  const [idDocFile, setIdDocFile] = useState<File | undefined>();
+  const [selfieFile, setSelfieFile] = useState<File | undefined>();
   const [legalName, setLegalName] = useState("");
   const [phone, setPhone] = useState(initialPhone);
   const [birthDate, setBirthDate] = useState(initialBirthDate);
@@ -64,6 +69,7 @@ export function KycFlow({
   function onPickFile(file: File | undefined) {
     if (!file) return;
     setDocFileName(file.name);
+    setIdDocFile(file);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(URL.createObjectURL(file));
   }
@@ -72,6 +78,7 @@ export function KycFlow({
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(null);
     setDocFileName(undefined);
+    setIdDocFile(undefined);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -86,6 +93,8 @@ export function KycFlow({
         idDocType: docType,
         idDocFileName: docFileName,
         selfieFileName,
+        idDocFile,
+        selfieFile,
       });
       setSubmitted(true);
     } finally {
@@ -303,9 +312,11 @@ export function KycFlow({
                 accept="image/*"
                 capture="user"
                 data-testid="kyc-selfie-input"
-                onChange={(e) =>
-                  setSelfieFileName(e.target.files?.[0]?.name)
-                }
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  setSelfieFileName(f?.name);
+                  setSelfieFile(f);
+                }}
                 className="text-sm text-lux-text-muted"
               />
             </label>

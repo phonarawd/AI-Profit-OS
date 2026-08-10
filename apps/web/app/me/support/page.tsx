@@ -67,7 +67,29 @@ function SupportContent() {
             data-testid="wrong-chain-submit"
             data-create-api={createApi}
             className="w-full rounded-lux-md bg-lux-accent px-4 py-3 text-sm font-semibold text-lux-bg"
-            onClick={() => setSubmitted(true)}
+            onClick={() => {
+              void (async () => {
+                const idem =
+                  typeof crypto !== "undefined" && "randomUUID" in crypto
+                    ? `dd_${crypto.randomUUID().replace(/-/g, "")}`
+                    : `dd_${Date.now()}`;
+                try {
+                  const res = await fetch(createApi, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      kind: "wrong_chain",
+                      linkedTxHash: txHash.trim(),
+                      idempotencyKey: idem,
+                    }),
+                  });
+                  if (res.ok) setSubmitted(true);
+                } catch {
+                  /* keep form */
+                }
+              })();
+            }}
           >
             {T.wallet.supportSubmit}
           </button>

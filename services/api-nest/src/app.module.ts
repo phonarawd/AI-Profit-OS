@@ -17,12 +17,14 @@ import { SimulationModule } from "./simulation/simulation.module";
 import { AiModule } from "./ai/ai.module";
 import { TradesModule } from "./trades/trades.module";
 import { WalletModule } from "./wallet/wallet.module";
+import { GrowthModule } from "./growth/growth.module";
 
 @Module({
   imports: [
     EventsModule,
     LedgerModule,
     WalletModule,
+    GrowthModule,
     ComplianceModule,
     RiskModule,
     ReferralModule,
