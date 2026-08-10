@@ -44,7 +44,8 @@ export const home = {
   },
   rightRail: {
     aria: "진행 현황",
-    totalResult: "누적 결과",
+    /** C01 · ledgerTotal/settle = COUNT · 누적 USDT 수익 슬롯 아님 */
+    totalResult: "오늘 정산",
     topOpportunities: "관심 기회",
     progressTitle: "현재 진행 현황",
     statusScan: "스캔",
@@ -52,11 +53,20 @@ export const home = {
     statusProgress: "진행",
     statusSettle: "정산",
     topEmpty: "아직 표시할 기회가 없어요",
-    totalEmpty: "정산 결과가 쌓이면 여기에 보여요",
+    totalEmpty: "오늘 정산이 끝나면 여기에 건수로 보여요",
   },
   sidebar: {
     inviteCta: "친구 초대",
     navAria: "주요 메뉴",
+  },
+  /** 홈 세션 배너 · toast SESSION_EXPIRED와 분리(게스트≠만료) */
+  session: {
+    guestTitle: "로그인해 이어서 보기",
+    guestBody: "로그인하면 참여 가능한 기회와 오늘 요약을 볼 수 있어요",
+    guestCta: "로그인",
+    expiredTitle: "🔐 다시 로그인해 주세요",
+    expiredBody: "안전한 이용을 위해 다시 로그인해 주세요",
+    expiredCta: "로그인",
   },
 } as const;
 

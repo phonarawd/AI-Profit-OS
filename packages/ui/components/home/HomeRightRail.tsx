@@ -27,8 +27,9 @@ function nOrZero(n: number | null | undefined): number {
 }
 
 /**
- * HomeRightRail — Contract §6 (v1.3) · desktop always · 0 솔직 · 가짜 체결/성공률% 금지
- * 순서: 누적 결과(anchor, 확대) → Top3(이미지 포함) → 진행 현황(4-스탯, 도넛 아님)
+ * HomeRightRail — Contract §6 · desktop always · 0 솔직 · 가짜 체결/성공률% 금지
+ * C01: totalResultValue = settle COUNT 문자열(N건) · USDT 금액 슬롯 아님
+ * 순서: 오늘 정산(anchor) → Top3 → 진행 현황
  */
 export function HomeRightRail({
   totalResultLabel = null,
@@ -64,9 +65,7 @@ export function HomeRightRail({
       data-testid="home-right-rail"
       data-canon-block="rightRail"
       aria-label={T.home.rightRail.aria}
-      className={["home-right-rail space-y-4", className]
-        .filter(Boolean)
-        .join(" ")}
+      className={["home-right-rail", className].filter(Boolean).join(" ")}
     >
       <section
         data-testid="home-right-rail-total"
@@ -85,7 +84,11 @@ export function HomeRightRail({
           </a>
         </div>
         {total ? (
-          <p className="mt-2 text-3xl font-semibold tabular-nums text-lux-text md:text-4xl">
+          <p
+            className="mt-2 text-3xl font-semibold tabular-nums text-lux-text md:text-4xl"
+            data-ledger-unit="count"
+            data-testid="home-right-rail-total-value"
+          >
             {total}
           </p>
         ) : (

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import {
   fetchGrowthPublicSurface,
   type GrowthPublicSurfaceResponse,
@@ -13,13 +12,15 @@ import {
   type OpportunityFeedResponse,
 } from "@aipo/sdk/user-feed";
 import { type DayPulseModel } from "@aipo/ui/components/loop";
-import { HomeExperience } from "@aipo/ui/components/home";
+import {
+  HomeExperience,
+  HomeSessionBanner,
+} from "@aipo/ui/components/home";
 import {
   type HomePayoutCounterMode,
   type PublicTickerEvent,
 } from "@aipo/ui/components/lux";
 import { type OpportunityCardModel } from "@aipo/ui/components/opportunity";
-import { T } from "@aipo/ui/copy/ko";
 import { toOpportunityCardModel } from "../lib/opportunity-card-map";
 
 type HomeFeedState = {
@@ -29,6 +30,8 @@ type HomeFeedState = {
   nearMissExtraCount?: number;
   topSuggestDepositUsdt?: string | null;
 };
+
+type SessionBannerKind = "guest" | "expired" | null;
 
 function isUnauthorizedError(err: unknown): boolean {
   if (!(err instanceof Error)) return false;
@@ -87,17 +90,24 @@ function feedToHomeState(feed: OpportunityFeedResponse): HomeFeedState {
   };
 }
 
+export type HomePageClientProps = {
+  /** 서버 cookies() 판정 · 없으면 auth feed/pulse 호출 스킵(401 콘솔 0) */
+  hasSession?: boolean;
+};
+
 /**
  * PART9 data orchestration keep · presentation = HomeExperience (ADR-017 STEP4)
  * HomePageV2 금지 · SDK/Auth/Wallet 재작성 금지
  */
-export function HomePageClient() {
+export function HomePageClient({ hasSession = false }: HomePageClientProps) {
   const [feed, setFeed] = useState<HomeFeedState>({
     items: [],
     principalUsdt: "0",
   });
   const [pulse, setPulse] = useState<DayPulseModel | null>(null);
-  const [sessionExpired, setSessionExpired] = useState(false);
+  const [sessionBanner, setSessionBanner] = useState<SessionBannerKind>(
+    hasSession ? null : "guest",
+  );
   const [growth, setGrowth] = useState<GrowthPublicSurfaceResponse>({
     tickerMode: "off",
     counterMode: "off",
@@ -111,10 +121,32 @@ export function HomePageClient() {
     let cancelled = false;
 
     async function load() {
+      const growthPromise = fetchGrowthPublicSurface({ signal: ac.signal });
+
+      if (!hasSession) {
+        const growthResult = await Promise.allSettled([growthPromise]);
+        if (cancelled) return;
+        if (growthResult[0].status === "fulfilled") {
+          setGrowth(growthResult[0].value);
+        } else {
+          setGrowth({
+            tickerMode: "off",
+            counterMode: "off",
+            ledgerTotal: 0,
+            events: [],
+            asOf: "",
+          });
+        }
+        setFeed({ items: [], principalUsdt: "0" });
+        setPulse(null);
+        setSessionBanner("guest");
+        return;
+      }
+
       const [feedResult, pulseResult, growthResult] = await Promise.allSettled([
         fetchOpportunityFeed({ signal: ac.signal }),
         fetchDayPulse({ signal: ac.signal }),
-        fetchGrowthPublicSurface({ signal: ac.signal }),
+        growthPromise,
       ]);
 
       if (cancelled) return;
@@ -151,7 +183,7 @@ export function HomePageClient() {
         });
       }
 
-      setSessionExpired(unauthorized);
+      setSessionBanner(unauthorized ? "expired" : null);
     }
 
     void load();
@@ -159,7 +191,7 @@ export function HomePageClient() {
       cancelled = true;
       ac.abort();
     };
-  }, []);
+  }, [hasSession]);
 
   const tickerEvents = growth.events as PublicTickerEvent[];
   const counterMode = growth.counterMode as HomePayoutCounterMode;
@@ -180,20 +212,11 @@ export function HomePageClient() {
         counterMode={counterMode}
         ledgerTotal={growth.ledgerTotal}
         totalResultValue={
-          growth.ledgerTotal > 0 ? `${growth.ledgerTotal} USDT` : null
+          // C01 · ledgerTotal = settlement completed COUNT (currency suffix forbidden)
+          growth.ledgerTotal > 0 ? `${growth.ledgerTotal}건` : null
         }
         sessionExpiredSlot={
-          sessionExpired ? (
-            <p
-              className="px-4 py-2 text-sm text-lux-text-muted"
-              role="status"
-              data-testid="home-session-expired"
-            >
-              <Link href="/auth/login" className="text-lux-accent underline">
-                {T.toast.SESSION_EXPIRED}
-              </Link>
-            </p>
-          ) : null
+          sessionBanner ? <HomeSessionBanner kind={sessionBanner} /> : null
         }
       />
     </main>
