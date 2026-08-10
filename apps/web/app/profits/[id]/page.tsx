@@ -1,50 +1,102 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { fetchOpportunityDetail } from "@aipo/sdk/user-feed";
 import { OpportunityDetail } from "@aipo/ui/components/opportunity";
 import type { OpportunityCardModel } from "@aipo/ui/components/opportunity";
 import { T } from "@aipo/ui/copy/ko";
+import { toOpportunityCardModel } from "../../../lib/opportunity-card-map";
 
 /**
- * Opportunity detail — PART3b CTA=`이 기회로 수익 벌기`
- * Live card = GET /api/v1/opportunities/:id (arbitrageTypeKo Engine pass-through)
- * UI §38.7: Q1 mini + revenue guide link
+ * PART9e — Opportunity detail live GET /api/v1/opportunities/:id
+ * CTA=`이 기회로 수익 벌기` · arbitrageTypeKo Engine pass-through
  */
 export default function Page() {
   const params = useParams();
-  const id = typeof params?.id === "string" ? params.id : "preview";
+  const id = typeof params?.id === "string" ? params.id : "";
 
-  /**
-   * Session feed 미배선 시 placeholder — type→ko 맵/하드코딩 금지
-   * arbitrageTypeKo 는 빈 문자열(엔진 투영 전) · 라벨만 슬롯 유지
-   */
-  const opportunity: OpportunityCardModel = {
-    id,
-    arbitrageTypeKo: "",
-    assetLabel: T.opportunity.detailTitle,
-    assetImageUrl: "",
-    assetImageAltKo: T.opportunity.detailTitle,
-    assetImageSource: null,
-    category: "watch",
-    requiredCapitalUsdt: "0",
-    expectedProfitUsdt: "0",
-    aiConfidenceScore: 0,
-    compareReady: false,
-    bucket: "affordable",
-  };
+  const [opportunity, setOpportunity] = useState<OpportunityCardModel | null>(
+    null,
+  );
+  const [sessionExpired, setSessionExpired] = useState(false);
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    if (!id) {
+      setNotFound(true);
+      return;
+    }
+    const ac = new AbortController();
+    let cancelled = false;
+
+    async function load() {
+      try {
+        const res = await fetchOpportunityDetail(id, { signal: ac.signal });
+        if (cancelled) return;
+        const card = toOpportunityCardModel(res.item);
+        if (!card) {
+          setNotFound(true);
+          setOpportunity(null);
+          return;
+        }
+        setOpportunity(card);
+        setNotFound(false);
+        setSessionExpired(false);
+      } catch (err) {
+        if (cancelled) return;
+        const msg = err instanceof Error ? err.message : "";
+        if (
+          msg.includes("opportunity_detail_401") ||
+          /unauthorized/i.test(msg)
+        ) {
+          setSessionExpired(true);
+          setOpportunity(null);
+          return;
+        }
+        if (msg.includes("opportunity_detail_404")) {
+          setNotFound(true);
+          setOpportunity(null);
+          return;
+        }
+        setNotFound(true);
+        setOpportunity(null);
+      }
+    }
+
+    void load();
+    return () => {
+      cancelled = true;
+      ac.abort();
+    };
+  }, [id]);
 
   return (
     <main
       className="space-y-4 p-6 pb-28 text-lux-text"
       data-testid="opportunity-detail"
     >
-      <OpportunityDetail
-        opportunity={opportunity}
-        onEarn={(oppId) => {
-          window.location.href = `/trades/${oppId}/execute`;
-        }}
-      />
+      {sessionExpired ? (
+        <p className="text-sm text-lux-text-muted" role="status">
+          <Link href="/auth/login" className="text-lux-accent underline">
+            {T.toast.SESSION_EXPIRED}
+          </Link>
+        </p>
+      ) : null}
+      {notFound && !sessionExpired ? (
+        <p className="text-sm text-lux-text-muted" role="status">
+          {T.user.empty.opportunities}
+        </p>
+      ) : null}
+      {opportunity ? (
+        <OpportunityDetail
+          opportunity={opportunity}
+          onEarn={(oppId) => {
+            window.location.href = `/trades/${oppId}/execute`;
+          }}
+        />
+      ) : null}
       <aside
         data-testid="objection-q1-mini"
         className="rounded-lux-md border border-lux-border bg-lux-elevated p-3 text-sm"

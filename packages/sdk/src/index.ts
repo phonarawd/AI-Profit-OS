@@ -40,3 +40,22 @@ export {
   type UsePeotteokChatOptions,
   type UsePeotteokChatResult,
 } from "./peotteok";
+
+export {
+  fetchDayPulse,
+  fetchOpportunityDetail,
+  fetchOpportunityFeed,
+  mapNearMissExtraCount,
+  type DayPulseResponse,
+  type OpportunityDetailResponse,
+  type OpportunityFeedItem,
+  type OpportunityFeedResponse,
+  type UserFeedRequestOpts,
+} from "./user-feed";
+
+export {
+  fetchWalletBuckets,
+  normalizeWalletBuckets,
+  type WalletBucketsResponse,
+  type WalletRequestOpts,
+} from "./wallet";
