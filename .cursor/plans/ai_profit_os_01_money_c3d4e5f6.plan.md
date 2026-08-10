@@ -52,7 +52,7 @@ todos:
     status: completed
   - id: redesign-r1-money-read-contract
     content: "[grok-4.5|256K] Redesign R1 dependency · 기존 wallet buckets/ledger/settlement read 재사용 · schemas/home-money-read.v1.json + GET /api/v1/me/home-money-read · principalUsdt/settlementCompletedTodayCount/per-field asOf+source/state exact · todayPossibleProfitUsdt는 Engine R1 Owns · ambiguous availableUsdt/todayPossible 금지 · zero≠absent · mutation/DDL/분개 재작성0 · verify:home-money-read-contract 신설+CATALOG · 기존 Money 회귀+bucket-invariant+pg-module-scan PASS"
-    status: pending
+    status: completed
 isProject: false
 ---
 
