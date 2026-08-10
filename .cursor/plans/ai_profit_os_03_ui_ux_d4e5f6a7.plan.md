@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — UI & UX
-overview: v7.22.59 PART9 Live Wiring CLOSED(9-pre~9i)·PART0~8c CLOSED. File-Serial 다음=`trust-age-spotcheck` only(수동실사·코드0) · Index=00. 전 todo `[grok-4.5|256K]`.
+overview: v7.23.0 PART0~9 completed 불변 · 00 R0→01 Money R1→02 Engine R1 후 Redesign R1 Home→spotcheck→R2 Acquisition→R3 Wallet→R4 Core Loop→R5 Account Hub · ADR-017 Light+Purple·새 5탭 라벨·PART9 binding 보존.
 todos:
   - id: ui-preflight-constitution
     content: "[grok-4.5|256K] PART0 착수게이트 · **선행: Engine 02 Pre-UI Runtime Gate(§0.9 E-R1~E-R8) pending0 + Money money-user-benefits-read completed 필수(미충족 시 본 todo·이하 전부 착수 금지)** · BOOTSTRAP §0.6 실측기록(DB76/mig28/fn5·Canon·routes·Admin교차·verify live/pending) · **v7.22.50 감사 3정정 기록 흡수(§0.6 U13~U15·색토큰=lux-fintech·§29.6 Phase1+·eBay query: gap=Engine follow-up)** · File-Serial 재정렬 0 · 구현코드0 · 다음=market-partner-trust-surfaces"
@@ -143,22 +143,75 @@ todos:
   - id: part9i-stub-page-actions
     content: "[grok-4.5|256K] [밀도:가벼움] PART9i deposit 주소조회·복사 + kyc 제출(멀티파트) + support wrong-chain POST 배선(withdraw=9f2 Owns·본 todo 범위 아님) · §0.6 pointer 해소 · verify 해당 게이트 + no-it-jargon · 선행=9-pre2 · **2~3개 연속 묶기 OK**(9h·9i)"
     status: completed
+  - id: redesign-r1-home-truth-preflight
+    content: "[grok-4.5|256K] Redesign R1-1 · 02 HomeReadModelV1 선행 · HomePageClient/PART9 binding 보존 · guest/static scan claim·fake zero·ledgerTotal currency 오해·client sumAffordableExpectedProfitUsdt 제거(서버 derived 소비)·nearMiss 문맥·BottomNav 결과표시를 실제 state/Fact로 교정 · keep|adapt|new|remove mapping · HomePageV2/병렬 fetch0 · verify:home-state-truth/no-fake-zero-status/home-live-wire"
+    status: pending
+  - id: redesign-r1-home-brand-assets
+    content: "[grok-4.5|256K] Redesign R1-2 · Brand Kit+markets manifest provenance/hash/public mirror · third-party logo AI재현0 · 자체 Hero/avatar transparent master · blocked/ready lifecycle · 현재 ready 재사용 우선·중복에셋0 · verify:brand-assets/market-partner-trust + verify:brand-asset-provenance 신설+CATALOG"
+    status: pending
+  - id: redesign-r1-home-product-contract
+    content: "[grok-4.5|256K] Redesign R1-3 · packages/ui/canon/contracts/peotteok-home-product-contract.v1.md 신설 · Facts/types/units/source/asOf/states/actions/allowlist/forbidden/zero-vs-absent/guest-auth 명시 · R0 fact-state registry와 1:1 · Visual/Implementation 섞기0 · verify:home-product-contract 신설+CATALOG"
+    status: pending
+  - id: redesign-r1-home-contract-sync
+    content: "[grok-4.5|256K] Redesign R1-4 · Product→ADR-017→conflict-resolution→Implementation→Visual→wire→token SPEC→mapping→implementation-gate→manifest 전수 sync · semantic change면 v2 생성+before/after+affected gates, v1 in-place overwrite0 · 320~2560+ responsive/state truth/C01 COUNT lock · verify:canon-surfaces/home-product-contract/lux-theme-sync"
+    status: pending
+  - id: redesign-r1-home-implementation
+    content: "[grok-4.5|256K] Redesign R1-5 STEP5 · C01 semantic binding→Shell/Header/Nav→Hero→Money→Opportunity→RightRail→Partner/Footer 순서 · HomePageClient/HomePrincipalRail/BalanceAwareHome/OpportunityCard 등 기존 실물 gap-only · peotteok-light token only · HomePageV2·core fetch/SDK/Nest 재작성0 · responsive/a11y/reduced-motion/perf"
+    status: pending
   - id: trust-age-spotcheck
-    content: "[grok-4.5|256K] [밀도:수동실사] PART8d §38.6b+§27.10 20·40·60~70대 각3명 · 도움말이모지길잡이·퍼뜩첫인사·면책이모지0 · 성별중성 · Admin ai-logs?tab=spotcheck pointer · 자동 verify **0** · **선행=PART9 전 todo completed** · **운영자 실사**(코드 세션과 분리) · File-Serial **마지막**"
+    content: "[grok-4.5|256K] Redesign R1-6 수동실사 · R1 Home implementation 완료 후 20·40·60~70대 각3명 · peotteok-light 가독성/새 5탭/3초 질문/C01 count/도움말이모지/퍼뜩첫인사/면책이모지0/성별중성 · 결과 evidence+Admin ai-logs?tab=spotcheck pointer · 자동 verify0 · 코드 수정과 분리"
+    status: pending
+  - id: redesign-r1-home-certification
+    content: "[grok-4.5|256K] Redesign R1-7 · Product/Visual/Implementation/Canon/Token/Mapping/Brand/Fact/State/a11y/320~2560+/performance 전수 · 기존 home-live-wire/home-principal-slots/home-state-truth/no-fake-zero-status/brand-asset-provenance + 신규 bottom-nav-result-indicator/home-horizontal-overflow 스크립트+package+CATALOG · T0/T1/T2 · known P0~P3 defect0 · governance observation snapshot · 다음=R2"
+    status: pending
+  - id: redesign-r2-acquisition-contract
+    content: "[grok-4.5|256K] Redesign R2-1 · /l/[variant]·/ads*·/auth/login|signup|complete-profile·/onboarding Product/Visual/Implementation Contract+wire+copy/API mapping · utility→capital disclosure·Nest JWT/Kakao/Passkey·consent·recovery · existing PART2/Infra contracts keep|adapt · 새 route0"
+    status: pending
+  - id: redesign-r2-acquisition-implementation
+    content: "[grok-4.5|256K] Redesign R2-2 · R2 contracts 기준 Landing/Auth/Profile/Onboarding gap-only 구현 · existing GuestChrome/utility copy/consent/session-cookie/PART9 보존 · duplicate landing/auth component0 · 320~2560+/a11y/perf"
+    status: pending
+  - id: redesign-r2-acquisition-certification
+    content: "[grok-4.5|256K] Redesign R2-3 · onboarding-experiential/auth-surfaces/landing-3s/marketing-compliance/operator-footer/auth-session-cookie + verify:acquisition-release 신설+CATALOG · actual guest/auth/error/resume · known P0~P3 defect0"
+    status: pending
+  - id: redesign-r3-wallet-contract
+    content: "[grok-4.5|256K] Redesign R3-1 · /wallet·deposit·withdraw*·history·/me/kyc·get-usdt Product/Visual/Implementation Contract+wire · Money completed ledger/mutation API pointer only · principal/profit/locked/practice·1/19conf·KRW승인·KYC/step-up·error recovery"
+    status: pending
+  - id: redesign-r3-wallet-implementation
+    content: "[grok-4.5|256K] Redesign R3-2 · wallet/deposit/withdraw/history/KYC gap-only · PART9 wallet/withdraw/stub-action wire 보존 · balance UPDATE0·offline money queue0·duplicate mutation0 · peotteok-light/a11y/responsive"
+    status: pending
+  - id: redesign-r3-wallet-certification
+    content: "[grok-4.5|256K] Redesign R3-3 · wallet-live-wire/withdraw-flow-wire/bucket-invariant/withdraw-mode-default/kyc/deposit-confirm/plain-ko/webauthn + verify:wallet-release 신설+CATALOG · money/security 100% · known P0~P3 defect0"
+    status: pending
+  - id: redesign-r4-core-loop-contract
+    content: "[grok-4.5|256K] Redesign R4-1 · /profits·/profits/[id]·/trades·/trades/[id]/execute Product/Visual/Implementation Contract+wire · object identity·preflight·running/requeue/success/safe_stop·proof/freshness/recovery · Engine Rule 재정의0"
+    status: pending
+  - id: redesign-r4-core-loop-implementation
+    content: "[grok-4.5|256K] Redesign R4-2 · discovery→detail→preflight→participate→execution→receipt/safe-stop gap-only · existing SDK/feed/polling/PART9 보존 · trader semantics/random/fake progress0 · peotteok-light/a11y/responsive"
+    status: pending
+  - id: redesign-r4-core-loop-certification
+    content: "[grok-4.5|256K] Redesign R4-3 · profits-live-wire/execution-surfaces/match-success-rule/preflight-may-stop/participate-proof/cta/jargon/margin/image + verify:core-loop-release 신설+CATALOG · success/safe-stop 실제 E2E CI · known P0~P3 defect0"
+    status: pending
+  - id: redesign-r5-account-hub-contract
+    content: "[grok-4.5|256K] Redesign R5-1 · /me·settings·membership·invite·inbox·benefits·events·strategies·peotteok·support·guide·legal Product/Visual/Implementation Contract+wire matrix · 4그룹 profile/security/money/help · existing domain SSOT pointer"
+    status: pending
+  - id: redesign-r5-account-hub-implementation
+    content: "[grok-4.5|256K] Redesign R5-2 · Account Hub route 전수 gap-only 통합 · existing BenefitHub/Invite/Inbox/Membership/Peotteok/Guide/Legal 재사용 · duplicate hub/copy/fact path0 · peotteok-light/a11y/responsive"
+    status: pending
+  - id: redesign-r5-account-hub-certification
+    content: "[grok-4.5|256K] Redesign R5-3 · benefits/invite/membership/inbox/ai-coach/trust/legal/notification/support/market-weekly + verify:account-hub-release 신설+CATALOG · route-contract matrix 100% · known P0~P3 defect0 · 03 pending0 후 04 Admin"
     status: pending
 isProject: false
 ---
 
-# AI Profit OS — UI & UX (v7.22.58 착수전동기 · v7.22.57 PART9 · v7.22.56 밀도 · v7.22.55 §6.4c.1 · §0.8·§0.9)
+# AI Profit OS — UI & UX (v7.23.0 · Redesign R1~R5 additive)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`  
-> **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만 · **PART9 실행 큐=본 파일 YAML만**(홈 orphan `ui_live_wiring_part9_*` = ABSORBED·실행 금지)
+> **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만 · 외부 `플랫폼_전체_재설계_로드맵_d903eef7`=REFERENCE ONLY · 홈 orphan 플랜 실행 금지
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
-> **모델 잠금:** 전 todo = **`[grok-4.5|256K]`** · 한 채팅=한 todo(가벼움 2~3개 연속 묶기 OK) · PART0→8c→**9-pre…9i**→**8d** 위→아래 (File-Serial)  
-> **todo 밀도(v7.22.57 pending):** **가벼움**=9-pre·9a·9b·9e·9f·9h·9i · **보안·최우선·단독**=9-pre2 · **무거움·체감최우선**=9c · **무거움**=9d·9g · **무거움·신규화면**=9f2 · **수동실사**=8d(PART9 완료 후 마지막)  
-> **todo 파트:** **0**~**8c** CLOSED · **9** Live Wiring(pre→pre2→a…i) · **8d** spot-check **마지막**  
-> **다음 채팅:** `trust-age-spotcheck` only(수동실사) · PART9(9-pre~9i) completed 재실행 **금지**
+> **모델 잠금:** 신규 Redesign todo 전부 **`[grok-4.5|256K]`** · 한 채팅=한 todo · 묶기0 · 실물 gap-only
+> **completed 잠금:** PART0~8c+PART9 전부 불변·재실행 금지. v7.22 밀도/묶기 표는 완료 이력이다.
+> **현재 실행 권위:** 00 R0 → 01 R1 → 02 R1 뒤 본 파일. 본 파일 첫 pending=`redesign-r1-home-truth-preflight`.
 > **v7.22.59 (PART9 CLOSE):** 9-pre~9i verify PASS·T0 commit · Index/BOOTSTRAP 「다음」=`trust-age-spotcheck` · **v7.22.58 이력:** 착수전 포인터=`part9-pre-dev-api-proxy`
 > **v7.22.57 (PART9 Live Wiring 흡수 · 코드0 메타):** 홈감사 `ui_live_wiring_part9_a6643cf7` v2 → 본 파일 YAML 흡수(9-pre~9i 12건 + 8d 유지·중복0) · §0.9 실측 요약 · §0.8.3 PART9 행 · File-Serial=9 완료 후 8d · composer 태그 **0**  
 > **v7.22.56 (pending todo 밀도 · 코드0):** 미완료 YAML에 `[밀도:*]` + 묶기 힌트 · §0.8.3 표 밀도 열 · completed todo 변경 **0** · *(v7.22.57이 pending 큐를 PART9로 supersede)*  
@@ -197,11 +250,38 @@ isProject: false
 > **Loop/Preflight:** **§51.24** (Admin/Engine/CATALOG pointer 대상 · 유령 절 금지)  
 
 > **마진 공식:** Engine §0.0.4 Owns · UI=화면/카피만  
-> **선행 CLOSED(1~26/1~15 불변):** 01 Money 15/15+benefits · 02 Engine 26/26+E-R1~E-R8 · Pre-UI Gate **CLOSED(v7.22.49)** · **PART0~8c CLOSED** · **PART9 CLOSED(v7.22.59)** · 다음 채팅=`trust-age-spotcheck` only  
+> **선행 CLOSED(불변):** 01 Money 15/15+benefits · 02 Engine 26/26+E-R1~E-R8 · PART0~8c+PART9. 신규 R1은 00/01/02 가산 pending 0 후 시작한다.
+
+## v7.23.0 Redesign R1~R5 실행 계약
+
+### Authority
+
+- 출시 Consumer theme는 ADR-017 `peotteok-light` **Light+Purple 단일 테마**다. Lux Dark는 archive/legacy이며 dual toggle을 만들지 않는다.
+- 5탭 라벨은 **홈 · 기회 · 수익 · 지갑 · 내정보**다. href는 기존 `/`, `/profits`, `/trades`, `/wallet`, `/me`를 보존한다.
+- Backend Fact > Product Contract > IA > Implementation Contract > Visual Contract > Reference 순서다.
+- PART9 `HomePageClient`·SDK·session/auth·Nest/ledger binding은 보존한다. `HomePageV2`와 병렬 fetch/data mapper를 금지한다.
+- 각 R단계는 Contract → keep/adapt/new/remove mapping → implementation → certification 순서이며 이전 R단계 certification 전 다음 단계 착수를 금지한다.
+
+### R1 Home
+
+- Product Contract 신규 파일: `packages/ui/canon/contracts/peotteok-home-product-contract.v1.md`.
+- 동기 대상: ADR-017, conflict-resolution, Product, Implementation, Visual, `home-visual-v2.wire.json`, `peotteok-light.specification.md`, mapping, implementation-gate, Canon manifest.
+- 의미 변경은 새 major 문서 버전과 before/after diff를 요구한다. `.v1.md` 의미를 조용히 덮어쓰지 않는다.
+- 구현 순서: C01 `ledgerTotal=COUNT` → Shell/Nav → Hero → Money → Opportunity → RightRail → Partner/Footer.
+- 수동 `trust-age-spotcheck`은 구현 뒤, 자동 Home certification 직전에 수행한다.
+
+### R2~R5
+
+- R2 Acquisition: Landing/Auth/Profile/Onboarding. utility→capital 경계와 consent/Auth recovery를 보존한다.
+- R3 Wallet: Wallet/Deposit/Withdraw/History/KYC. Money ledger/mutation은 pointer이며 UI에서 재구현하지 않는다.
+- R4 Core Loop: Opportunities/Participate/Trades/Execution/Settlement. Rule·상태·object identity를 보존한다.
+- R5 Account Hub: Me/Settings/Membership/Invite/Inbox/Benefits/Events/Strategies/Peotteok/Support/Guide/Legal.
+- 모든 route는 R0 route-contract matrix의 Product/Visual/Implementation/Canon/Copy/API/Owner/Verify 열을 100% 채운다.
+- certification은 known P0/P1/P2/P3 defect 0, required a11y/responsive/performance 100%, 해당 domain verify+T0/T1/T2를 요구한다.
 
 ## 0.6 UI 착수 전 실측 (v7.22.48 · `ui-preflight-constitution` · **PASS v7.22.50** · 예측0 · 감사 3정정 흡수)
 
-> **Owns:** 본 절 + BOOTSTRAP §0.6 동기 · **구현 코드 0** (기록·갭표만) · **CLOSE 후 다음(이력)=`market-partner-trust-surfaces`→`part9-pre…9i`** · **현재 다음=`trust-age-spotcheck`**(v7.22.59)  
+> **Owns:** 본 절 + BOOTSTRAP §0.6 동기 · **구현 코드 0** (기록·갭표만) · v7.22 이력=`market-partner-trust-surfaces`→`part9-pre…9i`→`trust-age-spotcheck`; v7.23 현재는 00 R0부터다.
 > **방법(2026-08-10 CLOSE 재실측):** 레포 FS(`CONSTITUTION/`29·Canon 28 wires·`apps/web`·`packages/ui`·ebay-adapter·catalog-runtime-seed·`lux-fintech.ts`) + Money/Engine YAML completed + Supabase MCP `list_tables`(public **76**) + CATALOG live 게이트 · `execute_sql`/`list_migrations`는 본 세션 MCP hook fail-closed로 차단 → mig/함수 수는 FS+§0.5.1 CLOSE 인용  
 > **선행(v7.22.49 충족 · 재확인):** Money CLOSED(15/15+`money-user-benefits-read` **completed**) · Engine CLOSED(26/26+E-R1~E-R8 **completed** · `engine-pre-ui-close` **completed**) · Pre-UI Runtime Gate **CLOSED**  
 > **v7.22.50 감사 기록(본 todo Owns · File-Serial 재정렬 0):** 색토큰 drift(U13) · realtime-service Phase0 reframe(U14) · eBay `query:` ingest gap(U15) — 아래 표·§0.6.2·본문 §6.2/§33.1/§29.6/§48.3a pointer에 **텍스트만** 반영 · **앱 구현코드 0**
@@ -265,7 +345,7 @@ isProject: false
 | U15 | 실 eBay 사진이 유저 카드에 안 보이는 원인 미기록 · `assetId: query:*` → persist drop · matchers 미배선 | → **EXTEND(문서)** · §0.6 표 + §48.3a pointer · Owns=Engine todo `engine-ebay-identity-match-ingest`(§0.10 filed v7.22.51) · UI todo/File-Serial **가산·재정렬 0** · PART3d는 URL 소스 무관 렌더만 |
 
 **판정 (v7.22.50 · 2026-08-10):** `ui-preflight-constitution` = **PASS** · 헌법 8종+46b ✅ · Canon 28 · Brand markets/**0** · CLIME **0** · 사진목업 PNG **0**(ADR-013) · U13~U15 **흡수** · File-Serial 재정렬 **0** · 구현코드 **0**.  
-**다음 채팅:** **03 UI** `trust-age-spotcheck` only · completed Engine/Money/PART0~9 todo 재실행 **금지**.
+**v7.22 당시 다음:** **03 UI** `trust-age-spotcheck` only. v7.23은 00 R0가 supersede하며 completed Engine/Money/PART0~9 재실행 **금지**.
 
 ## 0.7 Admin 교차 계약 (UI surface → Admin Owns · 중복0)
 
@@ -388,11 +468,11 @@ isProject: false
 | 세계 지존급 1위 감사관 | DB·보안 어드바이저·마이그레이션 정합성은 PASS(1건 드리프트는 발견 즉시 해소). **`verify:X=live` 라벨을 "완료 증빙"으로 오독할 수 있는 지점(0.8.2 #2)**이 감사 관점 최대 리스크였다 — CATALOG 표기 자체가 거짓은 아니다(스크립트는 실제로 그 좁은 범위에서 PASS한다). 그러나 범위가 좁아 오해를 유발하므로 **§0.8.3 verify 검사 범위 열 + todo content 범위 명시**가 감사 보완의 핵심이었고, v7.22.53 패치로 흡수했다. |
 | 세계 지존급 1위 분석관 | 이번 리스크의 본질은 v7.22.48 Pre-UI Runtime Gate 때(§0.6 U12)와 **동일 패턴**("완료 정의"의 해상도 부족)이 PART 단위에서 재발한 것이다 — 그때는 "Engine todo 26/26 completed"가 "유저 API 존재"를 의미하지 않았고, 지금은 "verify:X live"가 "화면 완성"을 의미하지 않는다. 재발 방지책은 §0.8.3처럼 **PART별 실측 스냅샷을 todo content에 직접 명시하는 것**(본문 어딘가에 적혀 있는 것만으로는 다음 에이전트가 놓칠 수 있음) — 아래 YAML 갱신에 반영했다. |
 
-**판정:** UI 플랜 §0.6/§0.7은 **오차0로 유지**(재검증 통과) · §0.8.2 4건 **감사 세션 문서 흡수 완료** · **구현 부채(컴포넌트 PART)=CLOSED(PART0~8c)** · **PART9 Live Wiring=CLOSED(v7.22.59)** · **잔여=`trust-age-spotcheck`(수동실사)** · completed PART0~9 재실행 금지 불변.
+**v7.22 판정:** PART0~8c+PART9 CLOSED, 잔여=`trust-age-spotcheck`. **v7.23 판정:** completed는 불변이고 신규 R1~R5 queue가 앞에 추가되며 spot-check는 R1 구현 뒤 수행한다.
 
 ## 0.9 PART9 Live Wiring — 실측 감사 요약 (v7.22.57 · 예측0)
 
-> **SSOT 실행 큐:** 본 파일 YAML `part9-pre`…`part9i` → `trust-age-spotcheck`.  
+> **v7.22 실행 큐 이력:** `part9-pre`…`part9i` → `trust-age-spotcheck`. v7.23 실행 큐는 frontmatter 신규 `redesign-r1-*`부터다.
 > **감사 전문(참조 only·todo 실행 금지):** `%USERPROFILE%\.cursor\plans\ui_live_wiring_part9_a6643cf7.plan.md` = **ABSORBED** (중복 todo **0**).  
 > **Owns:** Nest 세션/Wallet·Kyc 가드·`growth_ticker_config` read API = UI PART9 범위(유저 surface 완성 선행) · Admin ticker PATCH/Organic Hybrid = **04 Admin pointer only**(`apps/admin` 코드 **0**).
 
@@ -449,8 +529,8 @@ isProject: false
 | 순서 | 아이콘 | 라벨 | route |
 |------|--------|------|-------|
 | 1 | 🏠 | 홈 | `/` |
-| 2 | 🔥 | 수익 | `/profits` |
-| 3 | 💼 | 내거래 | `/trades` |
+| 2 | ✨ | 기회 | `/profits` |
+| 3 | 📈 | 수익 | `/trades` |
 | 4 | 💰 | 지갑 | `/wallet` |
 | 5 | 👤 | 내정보 | `/me` |
 
@@ -461,7 +541,7 @@ isProject: false
 ### 5.3 홈 `/` — Lux 레이아웃 (5탭·IA 불변)
 
 ```
-🏠 홈 (Lux Dark)  — §5.3b 기회스캔 인지 필수
+🏠 홈 (ADR-017 Peotteok Light)  — §5.3b 기회스캔 인지 필수
  ├─ [A] LivePayoutTicker     `ticker_mode` §35 G4 (off/live/demo/hybrid) · **DayPulse와 슬롯 분리** (§51.24)
  ├─ [A2] DayPulse (live only)  오늘 실측 요약 · G4 demo 수치 merge **금지** (§51.24)
  ├─ [B] 내 USDT 잔액 (대형) + ≈원화  · 표시 우선은 prefs (아래)
@@ -579,10 +659,10 @@ T.feed = {
 
 → 알림: "당신 전략에 맞는 기회 3건"
 
-### 5.5 내거래 `/trades` — Lux Receipt
+### 5.5 수익 `/trades` — 정산·진행 이력
 
 ```
-💼 내거래
+📈 수익
  ├─ 상단: 오늘 +USDT / 이번달 +USDT (CountUp on load, tier-aware)
  ├─ ReceiptCard: 종이 출력 모션 (S/A) / instant (B) + TronScan 도장
  ├─ 진행 중 · 완료 · 거래 내역 · 월별 수익
@@ -797,7 +877,7 @@ T.feed = {
 #### 5.9.2b Brand Kit Surface (중복0 · ADR-011 · ADR-013 · visual_kit_v1)
 
 > **SSOT 경로:** `packages/ui/brand/` · `brand.manifest.json` · 소비자/AI 표기 **퍼뜩** · 코드명 AI Profit OS  
-> **Visual Kit v1 (잠금):** Deep Obsidian + mint`#3DDC97` + principal`#7AA2FF` · **플래시 통찰 마크** · 한글 워드마크 · AI=추상 아바타(성별·인간형 0)  
+> **Visual Kit (ADR-017):** Light `#F6F4FC` + Purple `#6B3CFF` + profit `#12B76A` · **플래시 통찰 마크** · 한글 워드마크 · AI=추상 아바타(성별·인간형 0)
 > **ready 에셋:** `assets/icons/app-icon-1024.png` · `maskable-source-1024.png` · `wordmark/wordmark-dark.png` · `ai/avatar-512.png` · `og/og-default.png`  
 > **삭제됨:** metal-hex·사진 목업 PNG — 재추가 금지 (ADR-013 · Brand ready 5종만)  
 > **파이프라인:** Brand assets → (apps/web 존재 시) `public/icons/*` 리사이즈 export → `verify:brand-assets` · `verify:brand-logo-single`  
@@ -1006,29 +1086,30 @@ interface UserNotificationPrefs {
 9. 📐 **기회 근거** PriceCompareMargin (저가/고가 시세 · §0.0.4) — 접힘 가능
 10. 📎 footnote (§38) · 상세 **과거 유사 매칭** + window/asOf (§51.3)
 
-### 6.2 Lux-Fintech 색상 · 타이포 · 반응형 SSOT
+### 6.2 Peotteok Light 색상 · 타이포 · 반응형 SSOT
 
-> **테마:** User App = **Lux Dark default** · Admin = **Ops Light default** (가독성)  
-> **SSOT:** `packages/ui/tokens/lux-fintech.ts` + `lux-theme.css` + `CONSTITUTION/28`  
-> **v7.22.50 (U13):** 아래 hex = **shipped 코드 미러** · 구 `#00FF87`/`#FF2E63`/`#F59E0B`/`#00D294`/`#1A56FF`/`#8B5CF6` 표기 **폐기**(plan≠code drift 해소)
+> **테마:** Consumer = **ADR-017 `peotteok-light` Light+Purple 단일 출시 테마** · Admin = **Ops Light**
+> **SSOT:** `packages/ui/tokens/peotteok-light.specification.md` → runtime `lux-fintech.ts` + `lux-theme.css`
+> **legacy:** 아래 v7.22 dark hex 표는 이력 설명이며 신규 Consumer 구현 입력이 아니다. 실행값은 Token SPEC만 사용한다.
 
 | 역할 | token (lux-fintech) | hex | 용도 |
 |------|-------|-----|------|
-| 배경 | `color.bg` | `#090A10` | Deep Obsidian (pure #000 ❌) |
-| 표면 | `color.surface` | `#12141C` | 카드·시트 |
-| elevated | `color.elevated` | `#1A1D28` | 레이어 |
-| border | `color.border` | `#2A2F3D` | 구분선 |
-| 수익 / accent | `color.profit` = `color.accent` | `#3DDC97` | mint · Brand Kit lock |
-| accentMuted | `color.accentMuted` | `#2A9B6C` | mint 보조 |
-| 원금 / principal | `color.principal` | `#7AA2FF` | cool-blue · CTA·원금 강조 |
-| 위험 / FOMO | `color.danger` | `#FF5C7A` | **실제** 마감·잔여한도·에러만 |
-| 경고 / 프리미엄 | `color.warning` | `#F5C542` | 주의·고수익 태그 |
-| 본문 | `color.text` | `#F2F4F8` | body |
-| 보조 본문 | `color.textMuted` | `#9AA3B5` | caption·힌트 |
+| 배경 | `color.bg` | `#F6F4FC` | App background |
+| 표면 | `color.surface` | `#FFFFFF` | 카드·시트 |
+| elevated | `color.elevated` | `#FFFFFF` | 레이어 |
+| border | `color.border` | `#E4E0F0` | 구분선 |
+| accent | `color.accent` | `#6B3CFF` | Purple CTA · active nav |
+| accentMuted | `color.accentMuted` | `#8B6CFF` | hover/soft fill |
+| 수익 | `color.profit` | `#12B76A` | positive only |
+| 원금 / principal | `color.principal` | `#6B3CFF` | CTA·원금 강조 |
+| 위험 | `color.danger` | `#F04438` | 실제 에러만 |
+| 경고 | `color.warning` | `#F79009` | 주의 태그 |
+| 본문 | `color.text` | `#14121F` | body |
+| 보조 본문 | `color.textMuted` | `#6B6680` | caption·힌트 |
 | 본문 크기 | `--text-body` | clamp | fluid §29 |
 | 수익 숫자 | `--text-profit` | clamp | CountUp target |
 
-**금지:** 카지노 레드/골드 팔ETTE 별도 · pure black `#000` · 수익=빨강 · 플랜에 구 neon/violet hex **재도입** · purple-indigo “generic AI” 클리셰
+**금지:** 카지노 레드/골드 팔레트 · pure black `#000` · 수익=빨강 · 구 neon hex 재도입 · Token SPEC 밖 보라색/그라데이션 추가
 
 **상세 모션:** §33 · **성능 tier:** §29 (중복 정의 ❌)
 
@@ -1372,7 +1453,7 @@ Canon: `kyc-guide` → `kyc-doc-capture` → `kyc-confirm` · Lux 금융 톤 · 
 
 ---
 
-## 33. Lux-Fintech Design · Motion · FOMO (v7 신규)
+## 33. Peotteok Light Design · Motion · FOMO
 
 > **SSOT:** `CONSTITUTION/28_LUX_FINTECH_DESIGN_AND_MOTION.md`  
 > **토큰:** `packages/ui/tokens/lux-fintech.ts` + `lux-theme.css` (`@theme` · Tailwind v4)  
@@ -1382,13 +1463,13 @@ Canon: `kyc-guide` → `kyc-doc-capture` → `kyc-confirm` · Lux 금융 톤 · 
 
 | 피드백 | 판정 | 플랜 반영 |
 |--------|------|-----------|
-| Deep Obsidian `#090A10` 배경 | ✅ 동의 | `color.bg` default |
-| Profit/accent mint `#3DDC97` (v7.22.50 · 구 `#00FF87` 폐기) | ✅ 동의 | `color.profit` = `color.accent` |
-| Principal cool-blue `#7AA2FF` | ✅ 동의 | `color.principal` · CTA/원금 |
-| Danger/FOMO `#FF5C7A` (구 flashCoral 대체) | ✅ **조건부** | **실제 staleAt/한도**만 · `color.danger` |
-| Warning/프리미엄 `#F5C542` (구 amberGold 대체) | ✅ 동의 | `color.warning` tags |
+| Peotteok Light `#F6F4FC` 배경 | ✅ ADR-017 | `color.bg` default |
+| Purple accent `#6B3CFF` | ✅ ADR-017 | CTA·active nav·principal |
+| Profit green `#12B76A` | ✅ ADR-017 | 실제 positive Fact만 |
+| Danger `#F04438` | ✅ 조건부 | 실제 error만 |
+| Warning `#F79009` | ✅ | 주의 태그 |
 | Count-Up 0.3s | ✅ 동의 | `CountUpNumber` tier-aware |
-| Pulse CTA 1.5s glow | ✅ 동의 | `MotionCTA` + reduced-motion off · glow=`principal`/`accent` |
+| Pulse CTA 무한 glow | ❌ ADR-017 | `MotionCTA`는 hover/press/one-shot transition만 · reduced-motion off |
 | S/A/B blur·particle 분기 | ✅ 동의 | §33.3 = §29 tier 연동 |
 | Sticky 대형 CTA | ✅ 동의 | §5.3 [G] |
 | Market Radar ping | ✅ 동의 | `/profits?view=radar` |
@@ -1403,31 +1484,31 @@ Canon: `kyc-guide` → `kyc-doc-capture` → `kyc-confirm` · Lux 금융 톤 · 
 | DopamineButton name | ⚠️ **rename** | **`MotionCTA`** (카지노 연상 ↓) |
 | 구 `#00FF87`/`#FF2E63`/`#1A56FF`/`#8B5CF6` plan 표 | ❌ **폐기(v7.22.50 U13)** | shipped `lux-fintech.ts` only |
 
-### 33.1 Visual Identity Lock (중복0 · v7.22.50 = shipped 코드 미러)
+### 33.1 Visual Identity Lock (중복0 · ADR-017)
 
 ```typescript
-// packages/ui/tokens/lux-fintech.ts — SSOT (visual_kit_v1 · 플랜 재발명 금지)
+// peotteok-light.specification.md → lux-fintech.ts runtime mirror
 export const luxFintech = {
   color: {
-    bg: '#090A10',
-    surface: '#12141C',
-    elevated: '#1A1D28',
-    border: '#2A2F3D',
-    text: '#F2F4F8',
-    textMuted: '#9AA3B5',
-    accent: '#3DDC97',
-    accentMuted: '#2A9B6C',
-    danger: '#FF5C7A',
-    warning: '#F5C542',
-    profit: '#3DDC97',
-    principal: '#7AA2FF',
+    bg: '#F6F4FC',
+    surface: '#FFFFFF',
+    elevated: '#FFFFFF',
+    border: '#E4E0F0',
+    text: '#14121F',
+    textMuted: '#6B6680',
+    accent: '#6B3CFF',
+    accentMuted: '#8B6CFF',
+    danger: '#F04438',
+    warning: '#F79009',
+    profit: '#12B76A',
+    principal: '#6B3CFF',
   },
-  // motion/radius = 파일 실물 그대로 · 여기 재정의 ❌
+  // 전체 SSOT는 peotteok-light.specification.md · 여기 임의 확장 금지
 } as const;
 ```
 
 **테마 적용:**
-- `apps/web` → `class="theme-lux-dark"` on `<html>`
+- `apps/web` → `class="theme-peotteok-light"` on `<html>`
 - `apps/admin` → `theme-ops-light` (운영 가독성, §9)
 
 ### 33.2 도파민 · FOMO 4대 모션 (G4 Admin-configurable)
@@ -1436,7 +1517,7 @@ export const luxFintech = {
 |---|------|----------|-------------------|
 | 1 | **Count-Up** | `CountUpNumber` | **ledger only** (settlement.completed) · 티커 demo **무관** |
 | 2 | **Live Ticker** | `LivePayoutTicker` | Admin **§35.4** Organic Hybrid · surface=**§33.2a** |
-| 3 | **Pulse CTA** | `MotionCTA` | CSS `@keyframes pulse-glow` |
+| 3 | **Motion CTA** | `MotionCTA` | CSS 200~300ms one-shot · 무한 glow 0 |
 | 4 | **Tri-Sensation** | `MotionCTA` + `feedback.ts` | vibrate + lux chime + tier particle |
 
 **홈 [F] counter:** `counter_mode` ledger / demo / blended — Admin `/admin/growth?tab=ticker` · **DayPulse[A2]와 숫자·카피 분리**
@@ -1478,7 +1559,7 @@ interface LivePayoutTickerProps {
 | Card bg | backdrop-blur-xl | rgba surface | opaque surface |
 | Settlement particle | canvas light burst | CSS spark | opacity flash only |
 | Count-Up duration | 300ms | 400ms | 150ms (minimal) |
-| Pulse CTA | ON | ON | static border (no glow) |
+| Motion CTA transition | one-shot | one-shot | static border |
 | Radar ping | ON | fade ping | OFF |
 | Price tick anim | spring 100ms | fade 500ms | number swap 1s |
 | Haptics+sound | full | full | visual only |
@@ -1518,14 +1599,13 @@ interface HomePayoutCounterProps {
 ```typescript
 // packages/ui/tokens/lux-theme.css (@theme · Tailwind v4) — hex는 lux-fintech.ts 미러만
 extend: {
-  colors: { obsidian: '#090A10', profit: '#3DDC97', principal: '#7AA2FF', danger: '#FF5C7A', warning: '#F5C542', ... },
+  colors: { background: '#F6F4FC', surface: '#FFFFFF', accent: '#6B3CFF', profit: '#12B76A', danger: '#F04438', warning: '#F79009', ... },
   keyframes: {
-    // accent #3DDC97 → rgb(61,220,151)
-    'pulse-glow': { '0%,100%': { boxShadow: '0 0 0 0 rgba(61,220,151,0.4)' }, '50%': { boxShadow: '0 0 24px 4px rgba(61,220,151,0.6)' } },
+    // ADR-017 Home trust surface에서는 glow/neon loop 금지
     'count-roll': { /* opacity only on B */ },
   },
   animation: {
-    'pulse-glow': 'pulse-glow 1.5s ease-in-out infinite',
+    'count-roll': 'count-roll 0.2s ease-out 1',
   },
 }
 ```
@@ -1626,9 +1706,9 @@ packages/ui/canon/
 
 ---
 
-## 34. Lux-Fintech 출시 게이트
+## 34. Consumer Theme 출시 게이트
 
-- [ ] User app Lux Dark theme applied
+- [ ] ADR-017 Peotteok Light applied · Lux Dark runtime path 0
 - [ ] CountUp fires only on real settlement E2E
 - [ ] `ticker_mode=live`: LivePayoutTicker = ledger only
 - [ ] `ticker_mode=demo`: Admin queue renders · audit logged
@@ -1776,7 +1856,7 @@ packages/ui/brand/assets/markets/
 | 규칙 | 잠금 |
 |------|------|
 | 높이 | 카드 leg **20px** · strip **24px** · edu **32px** |
-| 변형 | Lux Dark = **monochrome/light** 공식 변형 only · 임의 리컬러 **금지** |
+| 변형 | Peotteok Light 공식 원본/monochrome 변형 only · 임의 리컬러 **금지** |
 | clear space | 각사 가이드 min · 겹침 **0** |
 | href | 유저 클릭 → **외부 쇼핑몰 딥링크 금지** · `/me/guide/partners` 또는 noop |
 | manifest | `status=ready`만 렌더 · CDN 무단 **0** |
@@ -1975,7 +2055,7 @@ export const objections = {
 3. `fontScale=xl`(더 크게)로 바꾸면 toneBand를 senior로 **강제하지 않음**(독립) · 다만 온보딩 최초 senior 선택 시 fontScale≥lg  
 4. Twin/ prefs에 저장 · 퍼뜩(AI) Fact로 제공 (Engine §47.12)
 
-**다크 고정 보완 (Light 테마 금지 유지):** senior·xl에서 `--text-contrast`·줄간격↑ · spot-check에 “밝은 실내” 조건 포함 (§38.6b)
+**Light 단일 테마 보완:** senior·xl에서 `--text-contrast`·줄간격↑ · spot-check에 “밝은 실내” 조건 포함 (§38.6b) · dual theme 0
 
 **CI:** `verify:age-tone-surfaces` · `verify:font-scale-three`
 
@@ -2277,7 +2357,7 @@ packages/ui/copy/
 | Ledger / Double-entry | 장부 / 받을돈·줄돈 기록 |
 | Hot wallet / Sweep / Gas | 회사 금고 / 모으기 / 이체 수수료 |
 
-**5탭 라벨 (잠금):** 홈 · 수익 · 내거래 · 지갑 · 내정보
+**5탭 라벨 (잠금):** 홈 · 기회 · 수익 · 지갑 · 내정보
 
 **카피 톤 (유저 · 쉬운말 · 20~70대 · 남녀 공통):**
 - ❌ "지금 누르면 45,000원 **수익 확정**!" / 한자·영어·법률체 남발
@@ -2544,7 +2624,7 @@ scripts/verify-toast-emoji.mjs     # 기존
 | 사진목업에 보이는 현상 | 구현 잠금 (사진 무시) |
 |-----------|-----------|
 | 화면마다 로고·톤 다름 | **Brand Kit + Lux만** · 사진 로고/색 복제 금지 |
-| 성공 화면 하단 탭이 분석/상품/알림 등으로 보임 | **5탭 불변:** 홈·수익·내거래·지갑·내정보 · 성공 후 **지갑 탭 하이라이트**만 |
+| 성공 화면 하단 탭이 분석/상품/알림 등으로 보임 | **5탭 불변:** 홈·기회·수익·지갑·내정보 · 성공 후 **지갑 탭 하이라이트**만 |
 | 안전중단 영문 `MATCH FAILURE` | 유저 노출 **`매칭 중단`** (ko) · 블록 위계는 Canon wire |
 | 추천 카드 `AI 매칭 성공률 92%` | 필드는 **`aiConfidenceScore`** · 라벨 **`AI 매칭 적합도 92%`** (난수 당첨·판매성공률 아님) |
 | Admin 사이드바 단순화 | 톱레벨 **12모듈 유지** + **2b 진행 정책** 자식 링크 |
@@ -2631,7 +2711,7 @@ Soft=목표 60s · Hard=wall 90s · **전 등급 동일** · presentation 8~15s�
 ### 48.3 화면 A — AI 진행실 (`running`) — Canon wire 100%
 
 **Route:** `/trades/[id]/execute` · `status=running|requeue`  
-**테마:** Lux Dark (`#090A10`) · accent mint/emerald
+**테마:** ADR-017 Peotteok Light · accent purple · profit green
 
 | 영역 | 잠금 (ko) |
 |------|-----------|
@@ -2643,7 +2723,7 @@ Soft=목표 60s · Hard=wall 90s · **전 등급 동일** · presentation 8~15s�
 | 적합도 | 서버 `aiConfidenceScore` 표시 수렴 (§48.3b · 당첨 게이지 금지) |
 | 스텝 1 | done ✓ `상품 확인 완료` · active ● `상품 확인 중...` |
 | 스텝 2 | done ✓ `두 시장 시세 대조 완료` · **active ● `시세 불러오는 중...`** (시장명 하드코딩 금지 · LabelKo 동적 · v7.22.31) |
-| 스텝 3 | done ✓ `매칭 완료` · active ● `매칭 시도 중...` (active glow · S/A) |
+| 스텝 3 | done ✓ `매칭 완료` · active ● `매칭 시도 중...` (active border/fill · 무한 glow 0) |
 | 스텝 4 | done ✓ `정산 준비` · active ● `정산 준비 중...` |
 | 스텝 5 | done ✓ `내 잔액으로 송금` · active ● `내 잔액으로 송금 중...` |
 | 진행바 | 0~100% · Admin `presentation.durationSecMin~Max` 구간에 매핑 (연출 only) |
@@ -2964,7 +3044,7 @@ CONSTITUTION/46b_ASSET_IMAGE_SSOT.md
 | 구역 | v1 | 비고 |
 |------|----|------|
 | 글자 크기 **보통/크게/더 크게** | ✅ | `fontScale: md\|lg\|xl` · fluid 토큰 · **3단 필수** (§38.9) |
-| 화면 다크/밝은/시스템 | ❌ | **Lux 어두운 화면 고정** · 토글 UI 없음 · 가독성은 contrast/줄간격/글자크기 |
+| 화면 다크/밝은/시스템 | ❌ | **ADR-017 Light+Purple 단일 출시 테마** · 토글 UI 없음 · 가독성은 contrast/줄간격/글자크기 |
 | 읽기 톤 (toneBand) | ✅ | 짧게/비교로/한 줄씩 · §38.9 · 설정에서 변경 가능 |
 | 충전 화면 기본 탭 | ✅ | `depositPref: usdt\|krw` **표시 기본만** · 엔진·추천 USDT 정책 불변 |
 | 알림 세분화 | ✅ | 기회·충전출금·공지 |
@@ -2980,7 +3060,7 @@ CONSTITUTION/46b_ASSET_IMAGE_SSOT.md
 | `lg` 크게 | ≥1.15 | +0.05 |
 | `xl` 더 크게 | ≥1.30 | +0.10 |
 
-**결함:** 설정에 `Theme`/`System`/`Dark Mode` 영문 노출 · 미완성 Light 테마 · 글자 2단만 제공 · 성별 토글
+**결함:** 설정에 `Theme`/`System`/`Dark Mode` 영문 노출 · Lux Dark runtime 재활성 · 글자 2단만 제공 · 성별 토글
 
 ### 50.1b 본인 진행 확인 카피 (공유 기기 · 중복0)
 
@@ -3167,7 +3247,7 @@ scripts/verify-operator-footer.mjs
 | L2 | 유저 화면에 API 에러 영문 | glossary + toast resolver |
 | L3 | 어드민에 DLQ/NATS 노출 | verify:no-it-jargon |
 | L4 | 토스트 이모지 과다/없음 | verify:toast-emoji |
-| L5 | 설정에 미완성 Light 테마 | 토글 코드경로 v1 삭제 |
+| L5 | 설정에 dual theme/Lux Dark 재활성 | 토글 코드경로 v1 삭제 · ADR-017 단일 테마 |
 | L6 | 약관 영문 템플릿 복붙 | legal.ts ko only |
 | L7 | OSS 목록 누락 | NOTICE 생성 CI |
 | L8 | 운영사 면허번호·법인명 drift | operator-entity.v1 + verify:operator-footer |
@@ -3265,7 +3345,7 @@ interface OperatorEntityV1 {
 
 **선택 링크:** DET → Invest in Dubai (새 탭 · `rel=noopener`)
 
-**스타일:** `text-xs` · muted · Lux 다크 토큰 · 5탭·sticky CTA 가리지 않음 (§5.3)
+**스타일:** `text-xs` · muted · Peotteok Light semantic token · 5탭·sticky CTA 가리지 않음 (§5.3)
 
 **플랫폼 푸터 (hiptk.app · ko/en · pointer):**
 ```

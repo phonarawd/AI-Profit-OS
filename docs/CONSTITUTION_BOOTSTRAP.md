@@ -1,8 +1,18 @@
-﻿# Constitution Bootstrap — Index CLOSE 실물 대조 기록 (v7.22.36)
+﻿# Constitution Bootstrap — Platform Redesign R0 실물 대조 기록 (v7.23.0)
 
 > **목적:** 구현 채팅 시작 전, 헌법·스키마·마이그레이션·어드민·브랜드·DB SSOT를 **예측 없이** 정리한다.  
 > **권위:** ACTIVE Index `ai_profit_os_00_index_a1b2c3d4.plan.md` > 도메인 01~06 > launch ARCHIVE.  
-> **검증일:** 2026-08-09 (v7.22.36 Index CLOSE + v7.22.37 Money preflight 재스캔) · 레포 FS + Supabase MCP `list_tables`/`list_migrations`/`execute_sql`/`list_extensions`/`get_advisors` · Index **v7.22.36 CLOSED**.
+> **현재 권위:** Index v7.23.0 R0 REOPEN · 외부 `플랫폼_전체_재설계_로드맵_d903eef7`=REFERENCE ONLY · 기존 v7.22 스냅샷/「현재」「다음」문구는 이력.
+> **현재 다음:** 00 Index `platform-redesign-r0-inventory` only.
+
+## v7.23.0 현재 잠금
+
+- Runtime 단계는 `Runtime P0~P3`, 재설계 실행은 `Redesign R0~R8`로 구분한다.
+- File-Serial: 00 R0 → 01 Money R1 → 02 Engine R1 → 03 UI R1~R5 → 04 Admin R6 → 05 PWA → 06 R7/R8.
+- Consumer theme=ADR-017 `peotteok-light` Light+Purple 단일, 5탭=홈·기회·수익·지갑·내정보.
+- Web/Ops origin=`infra/domain.manifest.json openNext.*.workersDev`; OpenNext Workers only, Pages deploy/pages.dev origin 금지.
+- v7.22 completed todo는 불변이며 신규 가산 todo만 실행한다.
+- 아래 DB/파일 개수는 이력 스냅샷이다. R0 `baseline.v1.json`이 commit SHA·dirty paths·정규화 규칙과 함께 최신 수치를 확정한다.
 
 ---
 
@@ -15,10 +25,10 @@
 | `supabase/migrations/` | ✅ **10** SQL | 로컬 = 원격 applied **1:1** (버전 `20260808205842`~`20260808224856`) |
 | `apps/` | ✅ `web`+`admin` | next@16.3.0 · TW4 · monorepo-skeleton **completed** |
 | `services/` | ✅ | `api-nest`(Nest JWT Auth) · `engine-rust` · `marketing-attribution` |
-| `workers/` | ✅ Phase0+scaffold | Phase0=`push-dispatcher` only · adapters/chain = Phase1+ 골격 |
-| `infra/` | ✅ Phase0 hosts | `hosts.manifest.json` · web/ops wrangler · api runtime · R2 kyc · playbook |
+| `workers/` | ✅ Runtime P0+scaffold | Runtime P0=`push-dispatcher` only · adapters/chain = Runtime P1+ 골격 |
+| `infra/` | ✅ Runtime P0 hosts | OpenNext Workers · `domain.manifest.json`/`hosts.manifest.json` · api runtime · R2 kyc · playbook |
 | `packages/ui/brand/brand.manifest.json` | ✅ | Consumer/AI=**퍼뜩** · retired=`오늘수익`·`바로번다` |
-| `packages/ui/tokens/lux-fintech.ts` | ✅ | Lux 선잠금 |
+| `packages/ui/tokens/peotteok-light.specification.md` | ✅ | ADR-017 Light+Purple → runtime token mirror |
 | `packages/ui/canon/surfaces/*.wire.json` | ✅ | auth/onboarding/kyc/execution/peotteok/invite/membership 등 |
 | `packages/ui/copy/ko` | ✅ live | `execution.ts`·`opportunity.ts` · CTA/면책/Soft·Hard |
 | `AGENTS.md` · `TOOLCHAIN.md` · ADR-016 | ✅ | Node22 · pnpm@10.14 · next@16 · TW4 · PG사0 |
@@ -32,11 +42,11 @@
 | public 트리거 | ✅ ledger guards | balance_guard · entries/journals immutable |
 | Supabase Auth 앱 사용 | **0** | Nest JWT only · 시스템 `auth` ≠ Auth SoT |
 | GitHub | ✅ | `phonarawd/AI-Profit-OS` · 코드만 |
-| Index 플랜 | ✅ **CLOSED** | todos pending **0** · 다음=**01 Money** `money-double-entry` (preflight PASS) |
+| Index 플랜 | 🔄 **R0 REOPEN** | 기존 completed 불변 · 다음=`platform-redesign-r0-inventory` |
 | Advisor `rls_enabled_no_policy` | INFO 전수 | Day-1 **의도** · deny-by-default |
 
-**판정 (v7.22.36):** Index 실행큐 = **CLOSED** · 헌법·스키마·원격 PG·Auth·Phase0 hosts·apps 골격 = **PASS**.  
-**다음 채팅:** **01 Money** `money-double-entry` only (File-Serial · Index completed 재실행 금지).
+**v7.22.36 판정(이력):** Index 당시 CLOSED · 헌법·스키마·원격 PG·Auth·Runtime P0 hosts·apps 골격 PASS.
+**v7.23 현재:** 00 R0 `platform-redesign-r0-inventory` only.
 
 ### 0.1 public 테이블 전수 (41 · MCP 실측)
 
@@ -172,7 +182,7 @@
 | Engine verify | listing~coach/admin-routes/pg-module-scan **전수 PASS** | ✅ |
 
 **판정(이력 · v7.22.44):** Engine todos 1~26 = **CLOSED** · completed 재실행 **금지**.
-**File-Serial 현재(v7.22.59):** 다음 채팅 = **03 UI** `trust-age-spotcheck` only(수동실사) · PART0~8c+PART9 **CLOSED** · Pre-UI Runtime Gate **CLOSED**(§0.5.1).
+**File-Serial v7.22.59 이력:** 당시 다음=03 UI `trust-age-spotcheck`; v7.23 현재=00 R0 inventory. PART0~9와 Pre-UI Runtime Gate completed는 불변이다.
 
 
 ### 0.5.1 Pre-UI Runtime Gate (v7.22.48 착수 → **v7.22.49 CLOSE**)
@@ -583,7 +593,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 
 ---
 
-## 9. 착수 체크리스트 (Index CLOSED · v7.22.36)
+## 9. 착수 체크리스트 (v7.23 R0)
 
 - [x] 이 문서 재스캔 · Index **v7.22.36 CLOSE** 흡수 (DB41·migrations10·pgvector ON·헌법29·스키마38 · apps web+admin · Auth+Phase0 PASS)
 - [x] `CONSTITUTION/` §2 목록 파일 존재 (constitution-28*)
@@ -593,17 +603,17 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 - [x] pnpm verify:brand-consumer PASS
 - [x] Admin IA 골격 = §6.1~6.2 / Admin §9.1.1 (`apps/admin/routes` lock · monorepo-skeleton completed)
 - [ ] `DATABASE_URL` · `REDIS_URL` 로컬 `.env` (git 0)
-- [x] Index pending **0** · 한 채팅 = 다음 도메인(**03 UI**) **한 todo**만 (`trust-age-spotcheck`) · PART0~8c+PART9 **CLOSED**(v7.22.59)
+- [ ] Index R0 pending **4** · 한 채팅=다음 `platform-redesign-r0-inventory` only · 기존 PART0~9 completed 불변
 
 **done 정의:** 해당 todo의 `verify:*` PASS + `pnpm cleanup:lowspec` PASS.
 
 ---
 
-## 9.1 착수 순서 잠금 (Audit A5/A9/A10/A11 · Index File-Serial · 건너뛰기 금지)
+## 9.1 착수 순서 잠금 (v7.23 · Index File-Serial · 건너뛰기 금지)
 
 > **Owns:** 본 절 + Index「플랜 직렬 완료 규칙」.  
 > **운영자(Grok-4.5) 규칙:** YAML pending todo를 **위에서 아래로만** · 한 채팅=한 todo · 완료 잠금 todo 재실행 금지.  
-> **다음 채팅:** **03 UI** `trust-age-spotcheck` only (v7.22.59 · PART0~8c+PART9 **CLOSED** · Money/Engine/PART0~9 completed 재실행 금지).
+> **다음 채팅:** **00 Index** `platform-redesign-r0-inventory` only · v7.22 completed 재실행 금지.
 
 | 순 | Index todo | 산출물 | 모델 | 상태 |
 |----|------------|--------|------|------|
@@ -615,14 +625,15 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | 5 | `monorepo-skeleton` | apps/web·admin · services · packages · **Admin routes=§9.1.1** | composer-2.5 | completed |
 | 6 | `copy-canon-cta-sla-lock` | copy/ko CTA·면책·Soft/Hard + Canon `primaryCta` | grok-4.5 | completed |
 | 7 | `auth-ssot` | Nest JWT · Stage A/B · Owns=Infra §51.9 · `verify:auth-flows` | grok-4.5 | completed |
-| 8 | `phase0-bootstrap-hosts` | CF+Supabase+Upstash · Owns=Infra §51.13 · `verify:phase0-bootstrap` | composer-2.5 | completed |
-| 9+ | 도메인 파일 | **01 Money CLOSED** → **02 Engine CLOSED**(E-R1~E-R8) → **03 UI**(현재) → 04 Admin → 05 PWA → 06 Infra | 접두사 | File-Serial |
+| 8 | `phase0-bootstrap-hosts` | OpenNext Workers+Supabase+Upstash · Owns=Infra §51.13 · `verify:phase0-bootstrap` | composer-2.5 | completed |
+| 9 | R0 4 todo | baseline→fact/state→change-control→observation | grok-4.5 | **pending** |
+| 10+ | 도메인 파일 | 01 R1 → 02 R1 → 03 R1~R5 → 04 R6 → 05 PWA → 06 R7/R8 | 접두사 | File-Serial |
 
 **금지:** 헌법/스키마 없이 apps 화면 · constitution∥monorepo 병렬 · Dashboard DDL · Supabase Auth SDK · launch를 착수 SSOT로 사용 · Day-1 yahoo INSERT/leg 코드 · Index pending>0인데 01 Money 착수 · Admin `admin-isolated-deploy`를 `admin-ops`보다 먼저 실행.
 
 ### 0.6 UI 착수 전 실측 (v7.22.46 골격 · **v7.22.50 PASS** · `ui-preflight-constitution`)
 
-> **Owns:** UI 플랜 §0.6 = 상세 SSOT · 본 절 = BOOTSTRAP 동기 요약 · **구현코드 0** · **CLOSE 후 다음(이력)=`market-partner-trust-surfaces`→PART9** · **현재=`trust-age-spotcheck`**(v7.22.59)  
+> **Owns:** UI 플랜 §0.6 = v7.22 상세 이력 · `market-partner-trust-surfaces`→PART9→`trust-age-spotcheck` 포인터는 v7.23 R0가 supersede.
 > **방법(2026-08-10):** Supabase MCP `list_tables` + 레포 FS(CONSTITUTION 29·Canon 28·lux-fintech·ebay-adapter gap) + Money/Engine YAML + CATALOG  
 > **선행(v7.22.49 충족 · 재확인):** 01 Money `money-user-benefits-read` **completed** + 02 Engine Pre-UI Gate(E-R1~E-R8) **pending 0**
 
@@ -641,9 +652,9 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | Engine ai-coach-runtime | **completed** | UI ai-coach-ui 선행 충족 |
 | Kakao OAuth | founder .env · Infra runtime **pending** | auth UI 가드 |
 | CLIME / 사진목업 PNG | repo **0** / ADR-013 금지 경로 **0** | mockup-governance 유지 |
-| U13 색토큰 | shipped `lux-fintech.ts`=`#3DDC97`/`#7AA2FF`/… · plan §6.2/§33.1 미러 | CONFLICT RESOLVED |
+| U13 색토큰 | v7.22 dark token 이력 · v7.23 ADR-017=`#F6F4FC`/`#6B3CFF`/`#12B76A` | superseded |
 | U14 realtime | `services/realtime-service` **0** · Phase0=`execute-tick` polling | §29.6=Phase1+ only |
-| U15 eBay gap | `assetId: query:*` → persist drop · matchers 미배선 | Engine todo `engine-ebay-identity-match-ingest`(§0.10 · pending · File-Serial 예외2) · UI ProductImage only |
+| U15 eBay gap | `assetId: query:*` → persist drop · matchers 미배선 | Engine todo `engine-ebay-identity-match-ingest` · v7.22 예외2→v7.23 R1 blocking · UI ProductImage only |
 
 #### 0.6.1 흡수 모순 (UI/Admin · 완료 · 구현 0)
 
@@ -656,21 +667,21 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | U5 | BOOTSTRAP 다음 todo stale | → `ui-preflight-constitution`(본 CLOSE로 해소) |
 | U13 | §6.2/§33.1 hex ≠ `lux-fintech.ts` | → plan 표=코드 미러 · 구 neon 표 폐기 |
 | U14 | §29.6이 realtime-service Phase0 가정 | → Phase1+ 인터페이스 · Phase0=polling 훅 |
-| U15 | eBay 실사진 DB 미도달 미기록 | → Engine YAML `engine-ebay-identity-match-ingest` + §0.10 필링(v7.22.51) · UI todo/File-Serial 재정렬 **0** · 예외2 |
+| U15 | eBay 실사진 DB 미도달 미기록 | → Engine YAML `engine-ebay-identity-match-ingest` + §0.10 · v7.22 예외2 이력 · v7.23 R1 선행 |
 
 **판정:** Pre-UI Runtime Gate **CLOSED** · `ui-preflight-constitution` = **PASS (v7.22.50)** · PART0~8c+PART9 **CLOSED (v7.22.59)**.
-**다음 채팅(현재):** **03 UI** `trust-age-spotcheck` only.
+**v7.22 당시 다음:** **03 UI** `trust-age-spotcheck`. **v7.23 현재:** 00 R0 inventory.
 
 #### 0.6.3 UI 플랜 종합 실물 재검증 (v7.22.52 · pointer only · 상세=UI §0.8)
 
 > **발생:** 유저 요청형 "DB·마이그레이션·함수·SQL·테이블·엔진·Supabase·폴더·기술스택·파일·헌법·기술코드 전수 확인" 감사를 `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` **§0.8**에 상세 기록(중복 방지를 위해 본문은 여기 복제하지 않음).  
 > **해소 5건:** (1) `supabase/migrations` 파일명 버전 drift(`144409`→`144814`) 즉시 rename + `tooling/verify/catalog-runtime-seed.cjs` 하드코딩 경로 동반 수정(재검증 PASS 확인) (2) `verify:benefit-hub-surfaces`="live" 표기의 딥 UI 미검증 범위 명문화 (3) 고아 검증 `verify:margin-compare-surface` 신설요건 기록 (4) Engine §51.20 Weekly Market Briefing 고아 게이트를 UI §51.20으로 Owns 흡수 + PART8b 범위 확장 (5) PART1~8 다수가 YAML `pending`인데 레포엔 우량 구현체 다수 존재 — PART별 실측 착수가이드 신설.  
-> **판정(이력 · v7.22.52):** File-Serial·PART 순서·모델배정 변경 **0**(적합) · 신규 코드 작성 **0** · 당시 다음=`market-partner-trust-surfaces`(이후 PART1a~9 CLOSED → **현재=`trust-age-spotcheck`**).
+> **판정(이력 · v7.22.52):** 당시 다음=`market-partner-trust-surfaces`→PART1a~9→`trust-age-spotcheck`; v7.23 R0가 현재 포인터를 supersede.
 
 #### 0.6.4 착수 직전 재확인 (2026-08-10 · PART1a GO · **이력** · 구현코드 0)
 
 > **Owns(이력):** 당시 `market-partner-trust-surfaces` 채팅 직전 File-Serial/게이트/실물 재확인 · **PART0 재실행 금지** · todo status 변경 0.  
-> **현재 다음(v7.22.59):** `trust-age-spotcheck` — 아래 §0.6.5.  
+> **v7.22.59 당시 다음:** `trust-age-spotcheck` — 아래 §0.6.5.
 > **방법:** Supabase MCP `list_projects`/`list_migrations`/`execute_sql` + 레포 FS + `pnpm verify:stack-lock`/`plans-ssot`/`market-partner-trust`/`brand-logo-single`/`brand-assets`/`mockup-governance`/`canon-surfaces` + `pnpm cursor:sync-plans`.
 
 | 게이트 | 실측 | 판정 |
@@ -678,7 +689,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | 00 Index | pending **0** · CLOSED | ✅ |
 | 01 Money | 16/16 completed · `money-user-benefits-read` **completed** | ✅ |
 | 02 Engine Pre-UI | E-R1~E-R8 **completed** · Gate **CLOSED** | ✅ |
-| 02 Engine 가산 | `engine-ebay-identity-match-ingest` **pending**(U15) · Index **예외2** · UI 재차단 **금지** | ✅ 비차단 |
+| 02 Engine 가산 | `engine-ebay-identity-match-ingest` pending(U15) · v7.22 예외2 이력 · v7.23 R1 blocking | 🔄 |
 | 03 UI PART0 | `ui-preflight-constitution` **completed** | ✅ |
 | Supabase | ACTIVE_HEALTHY · Seoul · PG **17.6** · ref=`mgsytcetsiecllmhcyox` | ✅ |
 | migrations | 원격 **28** = 로컬 **28** · 끝=`20260809144814_catalog_runtime_day1_fx_bootstrap` | ✅ 1:1 |
@@ -692,23 +703,23 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | CLIME / 사진목업 PNG | **0** | ✅ ADR-013 |
 | Docker | OFF · DB=remote only | ✅ Phase0 RAM |
 
-**판정(이력 · PART1a GO):** File-Serial 선행 **전부 충족** · 당시 **GO** = `market-partner-trust-surfaces` only · **이후 PART1a~8c CLOSED** → 현재 실행 큐는 §0.6.5.
+**판정(이력 · PART1a GO):** 당시 GO=`market-partner-trust-surfaces`, 이후 PART1a~9 CLOSED. v7.23 현재 실행 큐는 문서 최상단 R0다.
 
-#### 0.6.5 PART9 CLOSE · 다음=spotcheck (v7.22.59)
+#### 0.6.5 PART9 CLOSE · 당시 다음=spotcheck (v7.22.59 이력)
 
 > **Owns:** Index A12 + UI overview + 본 절 「다음」일치 · **PART0~9 재실행 금지** · 8d=수동실사(코드0).  
-> **GO:** **03 UI** `trust-age-spotcheck` only — 연령대 실사 · Admin ai-logs?tab=spotcheck pointer · 자동 verify **0**.
+> **v7.22 GO:** 03 UI `trust-age-spotcheck` only. v7.23에서는 R1 Home 구현 뒤 같은 실사를 수행한다.
 
 | 게이트 | 실측/잠금 | 판정 |
 |--------|-----------|------|
 | 00 Index | CLOSED · overview/A12=`trust-age-spotcheck` | ✅ |
-| 01 Money / 02 Engine Pre-UI | CLOSED · 예외2 eBay ingest pending(비차단) | ✅ |
+| 01 Money / 02 Engine Pre-UI | 기존 completed 불변 · v7.23 R1 가산 pending 별도 | 🔄 |
 | 03 UI PART0~8c | YAML **completed** | ✅ |
 | 03 UI PART9 | 9-pre~9i **completed** · verify T0 | ✅ |
 | 03 UI 잔여 | `trust-age-spotcheck` only | ✅ 실행 큐 |
 | Admin/PWA/Infra | 03 pending>0 동안 deep 착수 **금지** | ✅ File-Serial |
 
-**판정:** PART9 메타 **PASS** · **다음 채팅=`trust-age-spotcheck` only**.
+**판정:** PART9 메타 PASS(불변) · 당시 다음=`trust-age-spotcheck`; 현재는 00 R0 inventory.
 
 ### 0.7 종합 실물 감사 (v7.22.49 · 2026-08-09 · 유저 요청 전수 스캔 · 예측0)
 
@@ -725,7 +736,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | `verify:*` (85/85 · gate17+stubs60+개별8) | 전수 **PASS** | ✅ |
 | `cargo check`(engine-rust) | PASS (의존성 0 · 2.4s) | ✅ |
 | `tsc -p services/api-nest` | PASS (에러 0) | ✅ |
-| File-Serial 실제 위치(감사 당시) | 당시 **03 UI `market-partner-trust-surfaces`** · **현재(v7.22.59)=`trust-age-spotcheck`** | ✅→갱신 |
+| File-Serial 실제 위치(감사 당시) | `market-partner-trust-surfaces`→v7.22.59 `trust-age-spotcheck` | 이력 |
 
 #### 0.7.1 결함 → 해소 (실행코드·정책·SSOT 문구 무변경 · 순수 드리프트/하드닝만)
 
@@ -736,5 +747,5 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | 3 | `public.user_opportunity_overrides_pin_cap()` — Supabase 보안 어드바이저 `function_search_path_mutable` **WARN**. 동일 계열 5개 함수 중 4개(`ledger_forbid_mutation`·`ledger_require_posting_flag`·`provision_user_bucket_accounts`·`users_stage_a_identity_ok`)는 `search_path=public` 고정 · 이 함수만 누락 | `user_opportunity_overrides_schema_align`(20260809023713) 작성 시 컨벤션 누락 | 신규 migration `user_opportunity_overrides_pin_cap_search_path`(`20260809143754`)로 `ALTER FUNCTION … SET search_path = public` · 동작 변경 0 · advisor 재조회로 WARN 0 확인 |
 
 **판정:** 헌법·스키마·DB·verify 게이트 = **PASS**(위 3건은 발견 즉시 해소된 드리프트/하드닝). Pre-UI Gate = **CLOSED (v7.22.49)**. UI PART0~8c+PART9 = **CLOSED (v7.22.59)**.  
-**다음 채팅(현재 · v7.22.59):** **03 UI** `trust-age-spotcheck` only.
+**v7.22.59 당시 다음:** 03 UI `trust-age-spotcheck`. **v7.23 현재:** 00 `platform-redesign-r0-inventory`.
 

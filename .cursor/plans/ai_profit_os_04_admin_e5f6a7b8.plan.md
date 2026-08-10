@@ -1,18 +1,18 @@
 ---
 name: AI Profit OS — Admin & Ops
-overview: "v7.22.46 Admin·UI교차(missions/partners/G4/coach)·Grok256K todo파트·§9.1.1. Index=00. UI pending0 후 착수."
+overview: "v7.23.0 기존 Admin pending15 전부 보존 · 03 R1~R5 pending0 후 R6 task-first 12모듈 실행 · LIVE/DRY_RUN/SIMULATION 3-mode + OpenNext Ops Worker + release certification."
 todos:
   - id: admin-ia-child-routes-911
     content: "[grok-4.5|256K] v7.22.33 §9.1.1 자식 route/tab 전수 잠금 · sidebar13 0 · BOOTSTRAP §6 sync · monorepo routes 선행 SSOT"
     status: completed
   - id: admin-ops
-    content: "[grok-4.5|256K] PART0 shell · 12모듈+2b · 왕초보한글·IT0 · TOP5 · wallet tabs shell · growth탭 shell(리다이렉트) · reports/financial shell · deep≠여기(missions/partners/ticker/coach=전용todo) · verify:admin-routes/admin-plain-language"
+    content: "[grok-4.5|256K] R6 PART0 task-first shell · 12모듈+2b · 첫화면=오늘처리/막힘/위험/최근변경 · 왕초보한글·IT0 · TOP5 · wallet/growth/reports shell · deep≠여기(missions/partners/ticker/coach=전용todo) · verify:admin-routes/admin-plain-language"
     status: pending
   - id: admin-user-ops
     content: "[grok-4.5|256K] PART1 §37·§39·§9.8.7/8 유저360 + finance KPI + referral/attribution/CS + OAuth Kakao표시 + Passkey + export + RBAC · verify:admin-user-360"
     status: pending
   - id: admin-price-sync
-    content: "[grok-4.5|256K] PART2 §36 가격·마진 UI + opportunity.price.updated Phase0 in-process + 유저 surface 반영 · verify 해당 게이트"
+    content: "[grok-4.5|256K] PART2 §36 가격·마진 UI + opportunity.price.updated Runtime P0 in-process + 유저 surface 반영 · verify 해당 게이트"
     status: pending
   - id: admin-execution-policy
     content: "[grok-4.5|256K] PART3 §48.6 매칭성공조절 프리셋·실조건·관측KPI·난수0·audit · Engine §48.13.3 · Canon admin-execution-policy · UI apps/admin Owns여기 · verify:match-strictness/no-success-rate-percent"
@@ -47,18 +47,24 @@ todos:
   - id: product-analytics
     content: "[grok-4.5|256K] PART8 §51.10 D1/D7·입금→2회·퍼널 OTel + Admin 리텐션 위젯"
     status: pending
+  - id: redesign-r6-admin-three-mode-ops
+    content: "[grok-4.5|256K] Redesign R6-3mode · policy/bulk mutation/execution rule/wallet operation/risk threshold에 LIVE|DRY_RUN|SIMULATION 명시 · preview→confirm→apply→result→rollback · mode별 권한/audit/idempotency/impact count · simulation이 live write0 · 쉬운한글 · verify:admin-operation-modes 신설+CATALOG"
+    status: pending
   - id: admin-isolated-deploy
-    content: "[grok-4.5|256K] PART9 §40 별도 CF Pages·ops도메인·Admin JWT·IP allowlist·유저앱 분리 (shell 이후·마지막)"
+    content: "[grok-4.5|256K] PART9 §40 별도 OpenNext Ops Worker·ops도메인·Admin JWT·IP allowlist·유저앱 분리 · origin=infra/domain.manifest.json openNext.ops · pages deploy/pages.dev origin0 (shell/기능/3-mode 이후)"
+    status: pending
+  - id: redesign-r6-admin-certification
+    content: "[grok-4.5|256K] Redesign R6 certification · 12모듈+2b/child route 전수·task-first·3-mode·RBAC/MFA/IP/audit/rollback·Money/Engine/UI field mapping·Ops Worker/noindex · admin-routes/plain-language/user360/growth/mission/partner/ticker/coach/support/analytics/no-admin-in-web/admin-operation-modes + T0/T1/T2 · known P0~P3 defect0"
     status: pending
 isProject: false
 ---
-# AI Profit OS — Admin & Ops (v7.22.46)
+# AI Profit OS — Admin & Ops (v7.23.0 · Redesign R6)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
 > **모델 잠금:** 전 todo = **`[grok-4.5|256K]`** · 한 채팅=한 todo  
-> **todo 파트:** §9.1.1(완료) → **0** shell → **1** 유저360 → **2** 가격 → **3** 실행정책 → **4** override/자격/차단 → **5** growth missions/partners/ticker + ai-logs → **6** abuse → **7** CS → **8** analytics → **9** 격리배포(마지막)  
+> **todo 파트:** §9.1.1(완료) → **0** shell → **1** 유저360 → **2** 가격 → **3** 실행정책 → **4** override/자격/차단 → **5** growth+ai-logs → **6** abuse → **7** CS → **8** analytics → **3-mode** → **9** 격리배포 → certification
 > **File-Serial:** **03 UI pending=0 전 본 플랜 착수 금지**  
 > **KRW Day-1:** TOP1 = Admin **승인/거절** · CSV Auto-Recon 라벨 **금지**(L2+)  
 > **v7.22.21:** §9.8.9 유저별 기회 매치·수익/마진 override · 피드 merge=Engine §0.0.5.1 · **ledger 직접 변경 금지**  
@@ -75,6 +81,19 @@ isProject: false
 > **v7.22.40:** **§35.4** Organic Hybrid G4 — todo=`admin-growth-ticker-organic`  
 > **v7.22.42:** **§35.7** missions — todo=`admin-growth-missions`  
 > **v7.22.46 (UI감사 흡수):** partners/missions/ticker/coach **전용 todo** · composer 제거 · UI §0.7 교차표 동기 · adapters KPI 「yahoo 0」=adapter only
+
+## v7.23.0 Redesign R6 실행 계약
+
+> **선행:** 03 UI R1~R5 pending 0. 기존 Admin pending 15개는 누락·흡수 삭제 없이 순서대로 실행한다.
+> **외부 로드맵 흡수:** “Admin 12모듈 재설계”를 새 단일 mega todo로 만들지 않고 기존 상세 todo 15개 + 3-mode + certification으로 실행한다.
+
+- Context view는 queue/summary, Focus view는 한 작업의 preview/confirm/apply/result/rollback에 사용한다.
+- `LIVE`, `DRY_RUN`, `SIMULATION`은 내부 enum이며 화면에는 `실제 적용`, `미리 확인`, `연습 실행`으로 표시한다.
+- 대상은 policy 변경, bulk mutation, execution rule, wallet operation, risk threshold다. 조회 화면과 단순 copy 수정에는 억지로 mode를 추가하지 않는다.
+- `SIMULATION`/`DRY_RUN`은 ledger·wallet·policy live row를 변경하지 않는다.
+- 모든 mutation은 actor/reason/before/after/idempotency/impact count/rollback 가능 여부를 기록한다.
+- Ops 배포는 OpenNext Cloudflare Worker only이며 `infra/domain.manifest.json openNext.ops`가 origin SSOT다.
+- R6 certification 전 known P0/P1/P2/P3 defect 0. 이후 05 PWA로 이동한다.
 
 ## 9. Admin — IA 및 구성 SSOT
 
@@ -842,7 +861,7 @@ GET/PUT  /admin/api/v1/users/:id/match-policy-override
 | B2 | 런타임 AI 아이콘 | 금지 · manifest만 | web |
 | B3 | 타사/Chrono24 로고 | CI 금지어·에셋 스캔 | ci |
 | B4 | wordmark drift (퍼뜩≠코드) | ADR-002 + brand manifest | marketing |
-| B5 | splash/manifest 색 불일치 | lux tokens + `#090A10` | pwa |
+| B5 | splash/manifest 색 불일치 | ADR-017 tokens `#F6F4FC`/`#6B3CFF` | pwa |
 | M2 | UTM injection / steal | signed attribution cookie + server validate | marketing-attribution |
 | M3 | Fake JSON-LD ratings | verify:seo-schema — no aggregateRating without source |
 | M4 | Consent-less CAPI | consent log required before dispatch | marketing + compliance |
@@ -1464,11 +1483,13 @@ flowchart LR
 
 | 레이어 | 유저 | Admin Ops |
 |--------|------|-----------|
-| CF Pages project | `ai-profit-web` | **`ai-profit-ops`** |
+| OpenNext Worker | `ai-profit-web` | **`ai-profit-ops`** |
 | Next.js app | `apps/web` | `apps/admin` |
 | Base path | `/` | `/admin` (internal) |
 | Env | `NEXT_PUBLIC_API=/api/v1` | `NEXT_PUBLIC_ADMIN_API=/admin/api/v1` |
 | CORS origin | `app.*` only | `ops.*` only |
+
+Origin SSOT는 `infra/domain.manifest.json openNext.web|ops.workersDev`다. `pages.dev`와 `wrangler pages deploy`는 금지한다.
 
 ### 40.3 보안 (필수)
 

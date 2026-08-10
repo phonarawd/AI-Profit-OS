@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Money & Chain
-overview: v7.22.49 CLOSED(15/15+가산 money-user-benefits-read) · GET /me/benefits(+summary) live · Pre-UI Gate 예외 소멸 · UI PART0~9 CLOSED · File-Serial 다음=03 UI `trust-age-spotcheck`. Admin계약잠금. Grok256K. Index=00.
+overview: v7.23.0 기존 15/15+benefits completed 불변 · R0 종료 후 R1 `redesign-r1-money-read-contract` only · mutation/ledger 재구현0 · Money-owned Home Fact=`principalUsdt`+`settlementCompletedTodayCount`+source/asOf/state.
 todos:
   - id: pg-gateway-ban
     content: "[grok-4.5|256K] §41 PG사0 · verify:pg-module-scan · 용어≠PostgreSQL · Auto-Recon≠Day-1"
@@ -50,10 +50,13 @@ todos:
   - id: money-user-benefits-read
     content: "[grok-4.5|256K] v7.22.39 Pre-UI Runtime Gate 가산 · §51.8a GET /api/v1/me/benefits(+summary) 유저 읽기 컨트롤러 신설(MissionModule에 controllers 0 → 추가) · Credits화폐0·수동grant0·accrual/ledger/idempotency 로직 수정금지(이미 구현됨·컨트롤러만 공백) · 선행=Engine `engine-execute-rule-loop` completed(File-Serial 예외·Index §참조·02 Engine 착수 재차단 금지) · verify:benefit-hub-surfaces API존재부분 + benefit-no-credits-currency/benefit-g4-ledger-separation 회귀"
     status: completed
+  - id: redesign-r1-money-read-contract
+    content: "[grok-4.5|256K] Redesign R1 dependency · 기존 wallet buckets/ledger/settlement read 재사용 · schemas/home-money-read.v1.json + GET /api/v1/me/home-money-read · principalUsdt/settlementCompletedTodayCount/per-field asOf+source/state exact · todayPossibleProfitUsdt는 Engine R1 Owns · ambiguous availableUsdt/todayPossible 금지 · zero≠absent · mutation/DDL/분개 재작성0 · verify:home-money-read-contract 신설+CATALOG · 기존 Money 회귀+bucket-invariant+pg-module-scan PASS"
+    status: pending
 isProject: false
 ---
 
-# AI Profit OS — Money & Chain (v7.22.37 · Owns 본문 + 실측감사 흡수)
+# AI Profit OS — Money & Chain (v7.23.0 · R1 Money Read additive)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 
@@ -70,6 +73,52 @@ isProject: false
 > **v7.22.37:** 실측감사( DB41·mig10·함수4·Admin routes·스키마·헌법) · Admin 계약 전수 · todo 재분할 · 모순 흡수  
 > **v7.22.38 CLOSE(불변):** todos 1~15 **completed 유지 · 재실행 금지**.  
 > **v7.22.39 (Pre-UI Runtime Gate 가산 · pointer=Engine §0.9):** `money-user-benefits-read` 1건 REOPEN · §51.8a 컨트롤러 공백(providers만·controllers 0)만 채움 · accrual/ledger 로직 **불변** · 선행=Engine `engine-execute-rule-loop` · **File-Serial 예외 1건**(Index「플랜 직렬 완료 규칙」참조 · 이 재오픈이 02 Engine 착수를 재차단하지 않음) · 새 병렬 플랜 파일 생성 금지(중복0 · 흡수원=구 `pre-ui_engine_gate_8f59a783.plan.md` 홈 미러 단독본)
+
+## v7.23.0 Redesign R1 — Home Money Read Contract
+
+> **선행:** 00 Index R0 pending 0. 기존 Money 15개+benefits todo와 모든 ledger/mutation은 completed 불변이며 재실행하지 않는다.
+> **목적:** ADR-017 Home이 실제 Money Fact만 읽도록 타입·단위·출처·상태를 고정한다. Wallet deposit/withdraw/KYC/reconciliation 재구현은 범위 밖이다.
+
+### Contract
+
+```typescript
+type HomeReadState =
+  | "loading"
+  | "ready_empty"
+  | "ready_data"
+  | "stale"
+  | "recoverable_error"
+  | "blocked"
+  | "unauthorized";
+
+interface HomeMoneyReadV1 {
+  principalUsdt: string;
+  settlementCompletedTodayCount: number;
+  asOf: {
+    principalUsdt: string;
+    settlementCompletedTodayCount: string;
+  };
+  source: {
+    principalUsdt: "ledger_projection";
+    settlementCompletedTodayCount: "settlement_projection";
+  };
+  state: Exclude<HomeReadState, "loading">;
+  reasonCode?: string;
+}
+```
+
+- `principalUsdt`는 참여 재원이며 `profitUsdt`·`lockedUsdt`와 합산하지 않는다.
+- `settlementCompletedTodayCount`는 **COUNT**다. `ledgerTotal`을 USDT로 렌더하는 경로는 결함이다.
+- `todayPossibleProfitUsdt`는 Engine/Opportunity R1 owner가 산출한다. Money endpoint에 복제하거나 UI에서 재계산하지 않는다.
+- `availableUsdt`와 단위 없는 `todayPossible`은 폐기한다. zero는 실제 집계 0일 때만, source 부재는 슬롯 숨김 또는 상태로 표현한다.
+- 기존 API 조합으로 위 계약을 충족할 수 있으면 adapter만 추가한다. 새 endpoint는 중복 호출·N+1이 없다는 증거가 있을 때만 허용한다.
+
+### Done
+
+- schema + SDK type + Nest mapper + owner/source/asOf 테스트가 1:1이다.
+- `verify:home-money-read-contract`를 스크립트·`package.json`·CATALOG에 함께 등록한다.
+- `verify:bucket-invariant` · `verify:pg-module-scan` · 기존 Money verify 회귀 PASS.
+- 완료 후 File-Serial 다음=`02 Engine` 첫 pending `engine-ebay-identity-match-ingest`.
 
 ---
 

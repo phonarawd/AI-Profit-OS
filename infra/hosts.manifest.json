@@ -12,12 +12,14 @@
   "hosts": {
     "web": {
       "project": "ai-profit-web",
+      "runtime": "opennext-workers",
       "app": "apps/web",
       "envHost": "APP_HOST",
       "wrangler": "infra/web/wrangler.toml"
     },
     "ops": {
       "project": "ai-profit-ops",
+      "runtime": "opennext-workers",
       "app": "apps/admin",
       "envHost": "OPS_HOST",
       "wrangler": "infra/ops/wrangler.toml",
@@ -49,5 +51,5 @@
     }
   },
   "workersPhase0": ["push-dispatcher"],
-  "notes": "Phase0=$0 path · CF Pages/Workers + Supabase Seoul + Upstash · NATS/Temporal/EKS=0"
+  "notes": "Runtime P0=$0 path · OpenNext Cloudflare Workers only(origin=domain.manifest openNext) + Supabase Seoul + Upstash · pages deploy/pages.dev origin/Vercel/NATS/Temporal/EKS=0"
 }

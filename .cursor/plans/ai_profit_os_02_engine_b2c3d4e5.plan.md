@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Engine
-overview: v7.22.51 Pre-UI CLOSED(E-R1~E-R8) + 가산 pending `engine-ebay-identity-match-ingest`(U15 · File-Serial 예외·03 UI 재차단 금지) · 1~26+E-R completed 불변 · UI PART0~9 CLOSED · File-Serial 실행=03 UI `trust-age-spotcheck`. Index=00.
+overview: v7.23.0 1~26+E-R completed 불변 · R0/01 Money R1 후 `engine-ebay-identity-match-ingest` → `redesign-r1-home-fact-state-contract` 직렬 · v7.22 예외2 종료·R1 Home 인증 선행으로 승격.
 todos:
   - id: engine-preflight-constitution
     content: "[grok-4.5|256K] 착수전 BOOTSTRAP§0.4+CONST(44/45/46/46b/47/48/51)+DB58·mig18·함수4·Admin routes·override DDL↔schema 모순흡수 · 구현코드0 · 재검증2026-08-09"
@@ -105,12 +105,15 @@ todos:
     content: "[grok-4.5|256K] §0.9 CLOSE 재검증: MCP 재실측(execution_policies active≥1·opportunities available≥1) + Engine verify 전수 + 신규 3게이트(user-opportunity-feed/participate-http/execute-rule-loop) PASS · Money money-user-benefits-read completed 확인 · Index 다음=03 UI ui-preflight-constitution 잠금"
     status: completed
   - id: engine-ebay-identity-match-ingest
-    content: "[grok-4.5|256K] v7.22.51 POST-UI follow-up(U15) · watch-match/card-match/bag-match → AdaptersAdminService.ingest() 배선 · ebay-adapter `assetId:query:*` → Asset Master exact match 치환 · match시 imageSource=ebay+i.ebayimg.com persist · no-match=Admin review queue(silent drop 금지) · Day-1 ebay|admin 불변 · 1~26+E-R 재실행0 · File-Serial 예외(Index·03 UI 재차단 금지) · verify:asset-image-surface/listing-legs-day1/adapter-matching-kpi 회귀 + ebay identity ingest assert"
+    content: "[grok-4.5|256K] Redesign R1 dependency(U15) · watch-match/card-match/bag-match → AdaptersAdminService.ingest() 배선 · ebay-adapter `assetId:query:*` → Asset Master exact match 치환 · match시 imageSource=ebay+i.ebayimg.com persist · no-match=Admin review queue(silent drop 금지) · Day-1 ebay|admin 불변 · 1~26+E-R 재실행0 · R1 Home asset 인증의 blocking 선행 · verify:asset-image-surface/listing-legs-day1/adapter-matching-kpi 회귀 + ebay identity ingest assert"
+    status: pending
+  - id: redesign-r1-home-fact-state-contract
+    content: "[grok-4.5|256K] Redesign R1 dependency · Money HomeMoneyRead(principal/count)+opportunity feed+growth public+session을 HomeReadModelV1 mapper 1곳으로 결합 · ledgerTotal=settlementCompletedTodayCount COUNT · todayPossibleProfitUsdt=Σ affordable expectedProfitUsdt(status=available∧compareReady) 서버 derived · loading|ready_empty|ready_data|stale|recoverable_error|blocked|unauthorized + domain FSM 분리 · reasonCode=domain.resource.reason · fake zero/static scan claim0 · schemas+SDK/API mapper · verify:home-state-truth/no-fake-zero-status 신설+CATALOG"
     status: pending
 isProject: false
 ---
 
-# AI Profit OS — Engine (v7.22.48 · REOPEN · Pre-UI Runtime Gate · Owns 본문 + 실측감사 흡수 · todo의존순 잠금)
+# AI Profit OS — Engine (v7.23.0 · R1 Home Fact/State additive)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 > **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만 (에이전트 편집 SSOT)
@@ -119,7 +122,7 @@ isProject: false
 > **File-Serial:** 01 Money **CLOSED** 후만 본 파일 · 파일 내 todos **위→아래  strictly** · 한 채팅=한 todo · 건너뛰기 금지  
 > **v7.22.44 CLOSE(불변):** todos 1~26 **completed 유지 · 재실행 금지**. 아래 todo 순서는 그 26개 안에서의 **이력**이다.  
 > **v7.22.48 REOPEN(가산 27~34 · §0.9):** `engine-runtime-preflight-gap` → `engine-execution-policy-bootstrap` → `engine-user-opportunity-feed` → `engine-participate-http` → `engine-execute-rule-loop` → `engine-catalog-runtime-seed` → `engine-user-membership-read` → `engine-pre-ui-close` · **완료 후만 File-Serial 다음=03 UI**  
-> **v7.22.51 POST-UI follow-up(가산 35 · §0.10 · U15):** `engine-ebay-identity-match-ingest` **pending** · Pre-UI Gate **CLOSED 유지** · **03 UI 재차단 금지**(Index File-Serial 예외 2건) · 구현=전용 채팅 · 본 절 SSOT  
+> **v7.22.51 이력:** `engine-ebay-identity-match-ingest` pending을 UI 비차단 예외로 추적했다. **v7.23:** 예외 종료 · 02 R1 blocking 선행으로 승격.
 > **todo 순서 (v7.22.39b · 1~26 이력):** preflight·잠금(완료) → **market** → **overrideDDL** → adapters → tier/image → vertical → projection → balance-aware → Rule→strictness→membership → **KPI→simulation** → AI(**feature→twin→llm→coach**)  
 > **AI 이름:** **퍼뜩** (§47.12 · Brand Kit) · **타프로젝트 코치명(클라이 등) 유저 surface 금지** · P=플랫폼 Fact · G=일상 LLM · S=실행 금지  
 > **Phase0 버스:** **in-process** (NATS=Phase1+) · adapter 워커 **코드 Owns=본 파일 · deploy=Phase1+**  
@@ -142,8 +145,36 @@ isProject: false
 > **v7.22.41 (Founder lock):** **§0.0.1c Market Partner Registry** — eBay·Amazon·Yahoo! JAPAN Auction **공식 협력사** · UI §38.10 로고 표기 · v7.22.32 yahoo **adapter/표기** → Phase1+ **복원 todo** · Day-1 listing=ebay멀티\|admin **유지** · Amazon/Yahoo leg=adapter todo 후  
 > **v7.22.42:** **§48.13.4 Mission reward fanout 경계** — `settlement.completed`/`deposit.confirmed` 등 **이후** Nest `MissionRewardEvaluator` 비동기 · Rule/R1~R10·분개·Soft/Hard **불변** · accrual/ledger Owns=**Money §51.8a** · UI §5.9.5 · `match-success-rule-engine` 범위 **0**
 > **v7.22.48 (REOPEN · Pre-UI Runtime Gate · §0.9):** CLOSE(v7.22.44) 후 실측 재점검에서 **participate/execute HTTP 실행계층 + 유저 기회 피드 API가 코드 0**임을 확인 · `POST /opportunities/:id/participate` · `GET /trades/:id` · `GET /opportunities(+/:id)` · `GET /me/membership` · `execution_policies`/`opportunities` 활성 행 0 · 26개 completed todo는 **재실행 금지·SSOT 잠금 유지**(룰 로직·골든테스트·정책은 정확) · **가산 8 todo(E-R1~E-R8)**로만 REOPEN · 새 병렬 플랜 파일 생성 금지(중복0) · 흡수 SSOT=본 절
-> **v7.22.51 (POST-UI follow-up · §0.10 · U15):** 실 eBay 사진 DB 미도달 — `workers/ebay-adapter`가 `assetId:\`query:${query}\`` placeholder · `normalizeIngestListingsForPersist`가 `query:` **drop** · `watch-match`/`card-match`/`bag-match`는 존재하나 `AdaptersAdminService.ingest()` **미배선** · Pre-UI/E-R·1~26 **불변** · 가산 1 todo만 · UI ProductImage source-agnostic 유지 · File-Serial 예외(Index)
+> **v7.22.51 (POST-UI follow-up · §0.10 · U15):** 실 eBay 사진 DB 미도달 — `workers/ebay-adapter`가 `assetId:\`query:${query}\`` placeholder · `normalizeIngestListingsForPersist`가 `query:` **drop** · matchers 미배선 · Pre-UI/E-R·1~26 불변 · 당시 File-Serial 예외로 추적, v7.23 R1 정식 선행으로 승격.
 > **v1 executionMode:** **`orchestrate` only** (ADR-009)  
+
+## v7.23.0 Redesign R1 — Engine dependency 승계
+
+> **선행:** 00 R0 pending 0 → 01 `redesign-r1-money-read-contract` completed.
+> **승계:** v7.22의 eBay 예외2는 R0 채택으로 종료한다. 이 todo를 과거 완료 작업 재개가 아닌 **확인된 미해결 U15**로 R1 Home asset 인증의 정식 선행에 편입한다.
+
+### 실행 순서
+
+1. `engine-ebay-identity-match-ingest`: exact identity match 후 실제 eBay image provenance를 저장하고 unmatched를 운영 큐에 남긴다.
+2. `redesign-r1-home-fact-state-contract`: 기존 read API를 한 mapper로 결합해 UI가 상태나 금액을 추정하지 않게 한다.
+3. 두 todo pending 0 후만 03 UI R1 Home 착수.
+
+### HomeReadModelV1 경계
+
+- Money 입력: `principalUsdt`, `settlementCompletedTodayCount`, per-field `asOf`/`source`, `state`.
+- Opportunity 입력: affordable/nearMiss/lockedHigh, `status`, compareReady, `expectedProfitUsdt`, `assetImageUrl`, source freshness. `bucket=affordable && status=available && compareReady=true` 행의 `expectedProfitUsdt` 합으로 `todayPossibleProfitUsdt`를 서버 산출한다.
+- Growth 입력: ticker/counter는 서버 mode와 실제 payload만; Home truth/DayPulse와 합산하지 않는다.
+- Session 입력: guest/authenticated/expired를 명시하며 unauthorized를 0값 데이터로 변환하지 않는다.
+- 공통 view state는 `loading|ready_empty|ready_data|stale|recoverable_error|blocked|unauthorized`이고 Engine의 `running|requeue|success|safe_stop` FSM은 별도 필드로 보존한다.
+- `reasonCode` 형식은 `domain.resource.reason`; underscore 별칭을 새로 만들지 않는다.
+- `ledgerTotal`은 오늘 완료 정산 **COUNT**다. currency formatter·profit color·USDT suffix 사용을 금지한다.
+
+### Done
+
+- schema/SDK/Nest mapper 한 경로, source/asOf/freshness 테스트, zero/absent fixture를 갖춘다.
+- `verify:home-state-truth`와 `verify:no-fake-zero-status`를 스크립트+package script+CATALOG에 동시 등록한다.
+- Engine 기존 verify + `asset-image-surface` + `listing-legs-day1` + `adapter-matching-kpi` 회귀 PASS.
+- 앱/React/CSS 변경 0.
 
 ## 0. 착수 전 실물 대조 기록 (v7.22.39 · 예측 0 · MCP+FS)
 
@@ -497,7 +528,7 @@ tooling/verify/
 > **Owns:** 본 절 = Engine 가산 todo `engine-ebay-identity-match-ingest` SSOT.  
 > **발단:** UI preflight U15 / 마스터감사 — 실 eBay CDN 사진은 adapter가 fetch하나 DB 미도달.  
 > **Pre-UI Gate:** **CLOSED 유지**(E-R1~E-R8 재실행·재오픈 **금지**).  
-> **File-Serial:** 본 pending이 **03 UI 착수/진행을 재차단하지 않음**(Index「File-Serial 예외 2건」). UI PART3d=`ProductImage` source-agnostic만 · 데이터 수정=본 todo.  
+> **File-Serial:** v7.22에서는 UI 비차단 예외였으나 v7.23에서는 01 Money R1 뒤 실행하며 완료 전 03 R1 착수 금지. UI `ProductImage`는 source-agnostic을 유지한다.
 > **새 병렬 플랜 파일 생성 금지**(중복0).
 
 #### 0.10.1 실측 break (코드 경로 · 추측0)
@@ -2010,7 +2041,7 @@ observedSuccessRate = MATCH_SUCCESS / (MATCH_SUCCESS+PRICE_MOVED+BELOW_MIN_PROFI
 | **ADR-004 Section order** | 본문 21→31 비순차 = appendix 의도 · 교차=§22 | 전면 재번호 v1 금지 |
 | **ADR-005 Legal out of plan** | 규제·법무 추가 절·게이트·보완안 = **영구 배제** · 잔여과제 취급 금지 | 에이전트가 “법무 보완” 등으로 **재제안·리뷰 지적 금지** |
 | **ADR-006 User Auth** | User Auth = **api-nest JWT + OAuth(Google/Kakao) + Passkey** · Money/Admin과 동일 Nest 경계 | **Supabase Auth 병행 금지** (PG는 Supabase-managed 가능 · Auth SoT≠Supabase Auth) |
-| **ADR-007 Drift lock** | CTA 유저=`수익 벌기` · domain=`participate` · Index §20.2·§51.1 · `expectedSellDays`유저0 · CTA후≈1분 · 온보딩/게이트 ≤15초 · B-tier WS=3s · cores≤4→tier B · manifest bg=`#090A10` · toast 본문=§8.2 · KRW=`payableAmountKrw` · whale=≥100k USDT · orchestrate≠실체결·≠유저직접거래 | `이 상품으로 수익 벌기` · 유저메인 `매칭 참여` · `구매하기`/`판매하기`/`마켓 둘러보기`/`거래하기` · 유저「판매 성공률」 · 거래 시작/동일 송금/PRICE_STALE 100%/1억+/§47.17/이중 m05 todo **재등장 금지** · (`이 기회로 수익 벌기`=UI 상세 허용) |
+| **ADR-007 Drift lock** | CTA 유저=`수익 벌기` · domain=`participate` · Index §20.2·§51.1 · `expectedSellDays`유저0 · CTA후≈1분 · 온보딩/게이트 ≤15초 · B-tier WS=3s · cores≤4→tier B · manifest bg=`#F6F4FC`/theme=`#6B3CFF`(ADR-017) · toast 본문=§8.2 · KRW=`payableAmountKrw` · whale=≥100k USDT · orchestrate≠실체결·≠유저직접거래 | `이 상품으로 수익 벌기` · 유저메인 `매칭 참여` · `구매하기`/`판매하기`/`마켓 둘러보기`/`거래하기` · 유저「판매 성공률」 · 거래 시작/동일 송금/PRICE_STALE 100%/1억+/§47.17/이중 m05 todo **재등장 금지** · (`이 기회로 수익 벌기`=UI 상세 허용) |
 | **ADR-008 Pricing+FX** | §0.0.4.1~4.3 수수료·버퍼·마진·FX formula·platform_reserve | 하드코딩 수수료 · snapshot 없는 ≈원화 |
 | **ADR-009 v1 modes** | v1 `executionMode=orchestrate` only · `info`/`full`/`limited` 코드경로 0 | 중고 비교 info · Nike limited partial |
 

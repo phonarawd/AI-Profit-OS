@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Infra & Marketing
-overview: "v7.22.56 §31.2d 광고소재 SSOT(Meta/TikTok/Google×10·금지어·20~70중성·utility only)+v7.22.55 §6.4c.1 5결정문 동기 불변 · CAPI 5층 불변 · Index=00."
+overview: "v7.23.0 기존 Marketing/Auth/adapter pending10 보존·의존순 재정렬 · OpenNext Workers only · R7 Backend/Data certification → R8 Observability/Release · 외부 d903eef7 누락 PWA/Marketing 복원."
 todos:
   - id: stack-lock-sync
     content: "[grok-4.5|256K] ADR-014/015/016 stack-lock·AGENTS·verify:stack-lock — Index cursor-stack-lock과 동기(완료)·재실행 금지"
@@ -24,20 +24,26 @@ todos:
     content: "[composer-2.5|200K] Admin §9.5.6 pointer · 기본=Worker 실시간만(meta_/tiktok_/google_*_events_accepted_rate·*_parameter_minimum_met_rate·click_id_present_rate·consent_marketing_rate·분모 SSOT=METRICS.md) · 48h 대조=접힌 섹션/별도 탭(동급 나란히 금지) · ROAS=user_attribution+spend import"
     status: pending
   - id: marketing-seo-sitemap-jsonld
-    content: "[composer-2.5|200K] sitemap.ts·robots.ts·JSON-LD=퍼뜩·/profits generateMetadata · IndexNow Phase0=in-process pointer · verify:seo-schema·verify:marketing-compliance(landing 금지어=§6.4c.1 A 1:1·괴리율 포함·/l/* auto pixel 0)·verify:operator-footer(supportEmail·LandingOperatorFooter) · UI landing-3s+§6.4c.1 pointer · /ads alias=§31.2a · **소재 Human Review=§31.2d 체크리스트**(업로드 전)"
-    status: pending
-  - id: infra-observability-late
-    content: "[composer-2.5|200K] 후반 EKS/OTel full trace · PWA E2E는 CI · Phase0 Bootstrap 실행큐=Index phase0-bootstrap-hosts(재실행 금지)"
+    content: "[composer-2.5|200K] sitemap.ts·robots.ts·JSON-LD=퍼뜩·/profits generateMetadata · IndexNow Runtime P0=in-process pointer · verify:seo-schema·verify:marketing-compliance(landing 금지어=§6.4c.1 A 1:1·괴리율 포함·/l/* auto pixel 0)·verify:operator-footer(supportEmail·LandingOperatorFooter) · UI landing-3s+§6.4c.1 pointer · /ads alias=§31.2a · **소재 Human Review=§31.2d 체크리스트**(업로드 전)"
     status: pending
   - id: auth-kakao-oauth-runtime
     content: "[composer-2.5|200K] §51.9 Kakao code→token→profile(scope profile_nickname) → auth_oauth_identities(raw_profile·linked_at) · GET /auth/oauth/kakao/callback · 성별0 · verify:auth-flows Kakao E2E"
     status: pending
   - id: phase1-adapter-ingest-host-binding
-    content: "[composer-2.5|200K] §51.13 NEST_ADAPTER_INGEST_URL=API_HOST/api/v1/internal/adapters/ingest · ADAPTER_INGEST_TOKEN wrangler+Nest SSOT · dev=cloudflared · prod secret 재등록 · ebay-adapter tick→ingest E2E"
+    content: "[composer-2.5|200K] Runtime P1 adapter host · §51.13 NEST_ADAPTER_INGEST_URL=API_HOST/api/v1/internal/adapters/ingest · ADAPTER_INGEST_TOKEN wrangler+Nest SSOT · dev=cloudflared · prod secret 재등록 · ebay-adapter tick→ingest E2E"
+    status: pending
+  - id: redesign-r7-backend-data-certification
+    content: "[grok-4.5|256K] Redesign R7 certification · R0 route-contract/fact-state baseline 기준 API·SDK·Nest AppModule imports·Engine FSM·local/remote migration head·indexes/RLS/idempotency/auth permission/money units/source/asOf/reasonCode 1:1 · UI Truth 역대조 · semantic conflict면 owner 가산 todo+version bump, adapter 은폐0 · verify:backend-data-alignment 신설+CATALOG · known P0~P3 defect0"
+    status: pending
+  - id: infra-observability-late
+    content: "[composer-2.5|200K] Redesign R8 implementation · OpenNext Workers static/dynamic cache inventory·R2 images·Web Vitals·browser/API/DB/engine correlation·PII redaction·gradual deploy·rollback·DR drill · Runtime P3 EKS/OTel full은 activation 조건 충족 시만 · PWA/E2E heavy=CI"
+    status: pending
+  - id: redesign-r8-infra-release-certification
+    content: "[grok-4.5|256K] Redesign R8 final · infra/domain.manifest openNext Workers origin·pages deploy0·web/ops/api host·cache/R2/Web Vitals/error/session/rollback/known-good · Marketing CAPI/SEO/Auth/adapter/PWA/Admin/User journeys + security/a11y/perf/money + T0/T1/T2 · route-contract matrix100% · governance observations closed · known P0~P3 defect0"
     status: pending
 isProject: false
 ---
-# AI Profit OS — Infra & Marketing (v7.22.56 · §31.2d 광고소재 SSOT · §6.4c.1 동기 불변 · Owns 본문)
+# AI Profit OS — Infra & Marketing (v7.23.0 · Redesign R7/R8)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`  
 > **Owns 범위:** §15~16·§31~32·§51.9/13 · Auth/Ads/호스팅 · **Money/KRW 운영 스토리 재정의 금지**(pointer only)  
@@ -55,7 +61,33 @@ isProject: false
 > **v7.22.54 (듀얼레이어 Compliance · 오류0):** §31.2c utility funnel · §31.3c client pixel **manual-only** on `/l/*` · §31.4 **payload bucket isolation**(landing≠ledger) · UI §6.4c.1 pointer · `verify:marketing-compliance` landing 금지어+auto pixel 0 · `verify:operator-footer` + `supportEmail`  
 > **v7.22.51 (Marketing CAPI 5층 흡수 · 오류0):** `marketing-seo-engine` **분해 7 todo** · File-Serial=**소급 불가 리스크 우선**(fixture D1~D3→sdk→hooks DB계약→metrics-spec→capi-wire→admin health→SEO) · OAuth **state=CSRF only** · verify **capi-config(always)/capi-smoke(staging)** · Admin **Worker default·48h 대조 분리** · `platform_match_rate` 통합명 **폐기**  
 > **v7.22.28 (pointer 정정 v7.22.54/55):** 랜딩 CTA=UI **`실시간 시세 맵 열기`**(§31.2c·§6.4c.1) · 앱 Primary=`수익 벌기`(§20.2 · **capital surface only**)  
-> **todo 순서:** stack-lock(완료) · **Marketing File-Serial §31.8** · Auth/Phase0 Bootstrap 실행큐=Index · 후반 관측(OTel/EKS)
+> **todo 순서:** stack-lock(완료) → Marketing 7 → Kakao Auth → Runtime P1 adapter host → R7 certification → R8 observability → final certification
+
+## v7.23.0 Redesign R7/R8 실행 계약
+
+> **선행:** 05 PWA pending 0. 기존 Marketing 7개, Kakao runtime, adapter host binding을 삭제·축약하지 않는다.
+
+### 순서
+
+1. Marketing File-Serial 7개: fixture → SDK → hooks → metrics → dispatcher → Admin health → SEO.
+2. Kakao OAuth runtime.
+3. Runtime P1 adapter ingest host binding.
+4. R7 Backend/Data certification.
+5. R8 Infra/Observability 구현.
+6. R8 final release certification.
+
+### Hosting
+
+- Web/Ops는 `@opennextjs/cloudflare` **Workers only**다.
+- origin SSOT=`infra/domain.manifest.json openNext.web|ops.workersDev`.
+- `wrangler pages deploy`, `pages_build_output_dir`, `.open-next/cloudflare` deploy root, `pages.dev` origin을 금지한다.
+- 기존 `cf:deploy:*` 스크립트 이름은 호환용이며 내부 동작은 OpenNext Workers deploy여야 한다.
+
+### R7/R8 경계
+
+- R7은 UI에서 발견한 semantic gap을 adapter로 숨기지 않는다. owner plan에 가산 todo와 Contract version bump를 등록하고 재인증한다.
+- R8은 Runtime P3를 자동 활성화하지 않는다. 현재 규모에서 Workers/R2/최소 관측으로 충족되면 EKS/OTel full을 deferred intent로 유지한다.
+- 최종 Release는 known P0/P1/P2/P3 defect 0, route-contract matrix 100%, T2 green, rollback/known-good artifact를 요구한다.
 ## 15. Infrastructure
 
 ### 15.0b Cursor Agent · Stack Lock (ADR-014/015 · monorepo **전** 필수)
@@ -72,9 +104,9 @@ isProject: false
 | Engine | Rust `engine-rust` (`rust-toolchain.toml`) | JS로 원장/정산 핵심 대체 |
 | DB | PostgreSQL **단일** · **Supabase Seoul 기본** (Compose 옵션·8GB OFF) | 두 번째 Postgres SoT · Docker 필수화 |
 | Hot | **Upstash Redis** 기본 · Compose Redis 옵션 | Twin/잔액 Redis-only SoT |
-| Edge | Cloudflare Pages + Workers + DO (+ OpenNext) | Vercel+CF 이중 호스트 · Vercel 연동 |
+| Edge | OpenNext Cloudflare Workers + DO | Pages deploy/pages.dev origin · Vercel 병행 |
 | Agent | **ADR-016** rules·hooks·Husky·`verify:gate`·cleanup | always 규칙 과다 · `--no-verify` |
-| Events | Phase0 **in-process** → Phase1 NATS → Phase2 Temporal | Day-1 NATS/Temporal 필수화 |
+| Events | Runtime P0 **in-process** → Runtime P1 NATS → Runtime P2 Temporal | Day-1 NATS/Temporal 필수화 |
 | 결제 | **PG사(결제대행) 0** · USDT TRC20 + KRW **Admin 승인/거절 Day-1** (CSV=L2+) | Toss/Nice/Inicis/PortOne · Day-1 Auto-Recon 필수화 |
 
 #### 필수 아티팩트
@@ -83,7 +115,7 @@ isProject: false
 |------|------|
 | `TOOLCHAIN.md` | 설치·검증 SSOT |
 | `.cursor/rules/stack-lock.mdc` | alwaysApply — ADR-015 핀 |
-| `.cursor/rules/phase-activation.mdc` | Phase0/1/2/3 |
+| `.cursor/rules/phase-activation.mdc` | Runtime P0/P1/P2/P3 |
 | `.cursor/rules/mockup-governance.mdc` | ADR-013 |
 | `AGENTS.md` | 읽기 순서 |
 | `docker-compose.dev.yml` | PG17 + Redis7 |
@@ -102,9 +134,9 @@ isProject: false
 | 도구 | 허용 | 금지 |
 |------|------|------|
 | Supabase MCP | **PostgreSQL** 스키마·쿼리 | Supabase Auth를 User Auth SoT로 사용 |
-| Cloudflare | Pages/Workers/R2/DO | Vercel을 두 번째 호스트 SSOT로 추가 |
+| Cloudflare | Workers/R2/DO | Pages/Vercel을 두 번째 origin SSOT로 추가 |
 
-**CI:** `verify:stack-lock` — Node22·pnpm10·next@16 핀·rules·Compose·Rust · Phase0 NATS 의존 0  
+**CI:** `verify:stack-lock` — Node22·pnpm10·next@16 핀·rules·Compose·Rust · Runtime P0 NATS 의존 0
 **선행:** `monorepo-skeleton` **전에** `pnpm verify:stack-lock` PASS
 
 ### 유저앱 vs Admin Ops **분리 배포 (§40 — 필수)**
@@ -113,7 +145,7 @@ isProject: false
 |---|-------------|---------------|
 | App | `apps/web` | `apps/admin` |
 | Domain | `app.{ROOT_DOMAIN}` | **`ops.{ROOT_DOMAIN}`** |
-| CF Pages | project `ai-profit-web` | project **`ai-profit-ops`** |
+| OpenNext Worker | `ai-profit-web` | **`ai-profit-ops`** |
 | Auth | user JWT / Passkey | **admin JWT** · MFA · RBAC |
 | Route | 5탭 only | 12모듈 · **/admin/** |
 | Public link | 마케팅·SEO | **비공개** · 검색엔진 차단 |
@@ -136,38 +168,38 @@ isProject: false
 
 | 항목 | Infra Owns | Pointer (재정의 금지) |
 |------|------------|----------------------|
-| `https://{APP_HOST}/.well-known/assetlinks.json` **서빙** | CF Pages `ai-profit-web` / `apps/web/public` | **내용·package·SHA-256·TWA 계약 = PWA §24.3** |
+| `https://{APP_HOST}/.well-known/assetlinks.json` **서빙** | OpenNext Web Worker assets / `apps/web/public` | **내용·package·SHA-256·TWA 계약 = PWA §24.3** |
 | Uptodown / Play Console 절차 · APK/AAB 산출 | **Owns 아님** | PWA §24 · todos `store-bridge-*` |
 
 **금지:** Infra에 Uptodown listing 장문 · Play Financial 선언 본문 · `apps/web`에 `/admin` route · 동일 도메인에 admin mount · 유저앱에서 ops URL 노출
 
 ```
 infra/
-├── web/          # wrangler/pages — APP_HOST
-├── ops/          # wrangler/pages — OPS_HOST  ← §40
-│   ├── pages.toml
+├── web/          # OpenNext Worker — APP_HOST
+├── ops/          # OpenNext Worker — OPS_HOST  ← §40
+│   ├── wrangler.toml
 │   └── access-policy.json   # IP allowlist / Zero Trust
 └── api/          # API_HOST
 ```
 
-### Bootstrap ($0) — **Phase 0 우선 (§51.13)**
+### Bootstrap ($0) — **Runtime P0 우선 (§51.13)**
 
 | Phase | 이벤트 버스 | 스택 | Milestone |
 |-------|-------------|------|-----------|
-| **0** | **in-process** (Nest 내부 emit · NATS **0**) | CF Pages + Nest + **PostgreSQL** + Redis + engine-rust · **PG사 0** | M1 deposit→participate→settlement |
-| **1** | **NATS JetStream** | + adapters · realtime-service · chain-watchers | M2 |
-| **2** | NATS + Temporal | + shadow-replay · sweeper 고도화 | M4 |
-| **3** | 동일 | EKS + full OTel | M7 |
+| **Runtime P0** | **in-process** (Nest 내부 emit · NATS **0**) | OpenNext Workers + Nest + **PostgreSQL** + Redis + engine-rust · **PG사 0** | M1 deposit→participate→settlement |
+| **Runtime P1** | **NATS JetStream** | + adapters · realtime-service · chain-watchers | M2 |
+| **Runtime P2** | NATS + Temporal | + shadow-replay · sweeper 고도화 | M4 |
+| **Runtime P3** | 동일 | EKS + full OTel | M7 |
 
 ```
-Cloudflare Pages: ai-profit-web → apps/web · ai-profit-ops → apps/admin
-Workers: push-dispatcher (Phase0=Nest **in-process**→Worker · Phase1+=NATS · PWA §23.5), marketing-capi-dispatcher (M1+) · chain-watchers (Phase1+)
+OpenNext Workers: ai-profit-web → apps/web · ai-profit-ops → apps/admin
+Workers: push-dispatcher (Runtime P0=Nest **in-process**→Worker · Runtime P1+=NATS · PWA §23.5), marketing-capi-dispatcher (M1+) · chain-watchers (Runtime P1+)
 Email: Resend free (§43.6)
 Upstash Redis · R2 kyc-docs
 → local Docker Compose (web:3000 · ops:3001 · api:4000)
 ```
 
-**오차0:** 아키텍처 mermaid의 NATS = **Phase1+ 목표 토폴로지**. Phase0에서 NATS 필수화 = 결함.
+**오차0:** 아키텍처 mermaid의 NATS = **Runtime P1+ 목표 토폴로지**. Runtime P0에서 NATS 필수화 = 결함.
 ### Production
 ```
 Docker Compose → Compose+Tilt → Stage(ECS/small K8s) → Prod(EKS)
@@ -227,8 +259,8 @@ AI_PROFIT_OS
 ├── data-contracts/
 ├── migrations/
 ├── infra/
-│   ├── web/                 # CF Pages — app
-│   ├── ops/                 # CF Pages — admin §40
+│   ├── web/                 # OpenNext Worker — app
+│   ├── ops/                 # OpenNext Worker — admin §40
 │   └── api/
 ├── docs/
 │   └── ux/
@@ -464,7 +496,7 @@ flowchart TB
 - [ ] 금액 Count-Up·통장·“하루 ○○” 0
 - [ ] 소재 약속 ⊆ 랜딩 약속 (bait 0)
 
-**CI pointer:** `verify:marketing-compliance` (랜딩·금지어) · 소재 자체는 Human Review(본 체크리스트) — 자동 소재 OCR은 Phase1+ optional
+**CI pointer:** `verify:marketing-compliance` (랜딩·금지어) · 소재 자체는 Human Review(본 체크리스트) — 자동 소재 OCR은 후속 승인 기능
 
 ### 31.3 Attribution Schema (단일 SSOT)
 
@@ -521,7 +553,7 @@ interface UserAttribution {
 |-------|------------|--------|
 | `/l/*` · `/ads/*` | **`landing-pixel-publisher.ts` manual only** · auto capture **OFF** | `Lead` · `ViewContent` · `CompleteRegistration` 화이트리스트 |
 | Guest Bridge | 동일 manual-only · consent 게이트 | ViewContent optional |
-| 앱 내부 | consent 후 full SDK (Phase1+) · **ledger custom_data 0** | app bucket §31.4 |
+| 앱 내부 | consent 후 full SDK (후속 승인) · **ledger custom_data 0** | app bucket §31.4 |
 
 **MUST:** `consentMarketing=false` → script inject **0** · `landingVariant` cookie 유지 through onboarding (SPA redirect 누수 방지)  
 **실행 계약 (UI §6.4c.1 G · 재설계 0):** Consent UI Owns=`packages/sdk/marketing/consent.ts` · UI=Lead/ViewContent **trigger emit만** · `consentMarketing===true`일 때만 emit · **미실장·false·unknown=emit 0**  
@@ -701,7 +733,7 @@ go.{ROOT_DOMAIN}/r/{code} → 302 APP_HOST/r/{code}
 #### Brand Assets CI (ADR-011)
 
 - SSOT: `packages/ui/brand/manifest.json` + 필수 파일 전수  
-- `verify:brand-assets` — checksum · sizes · no Chrono24 · splash=`#090A10`
+- `verify:brand-assets` — checksum · sizes · no Chrono24 · splash=`#F6F4FC` · theme=`#6B3CFF`
 
 ### 31.6 Landing 파일 트리
 
@@ -827,16 +859,16 @@ services/marketing-attribution/
 
 **CI:** `verify:auth-flows` · `verify:email-provider-resend` · `verify:auth-surfaces` (UI) · 1초 Kakao/Passkey signup E2E (§31)
 
-### 51.13 Bootstrap Phase 0 ($0 minimal path)
+### 51.13 Bootstrap Runtime P0 ($0 minimal path)
 
 | Phase | Stack | Milestone |
 |-------|-------|-----------|
-| **Phase 0** | CF Pages + **Nest + PostgreSQL + Redis** + engine-rust | **M1** E2E deposit→participate→settlement |
-| Phase 1 | + NATS + workers adapters | M2 |
-| Phase 2 | + Temporal + shadow-replay | M4 |
-| Phase 3 | EKS (§15 Production) | M7 |
+| **Runtime P0** | OpenNext Workers + **Nest + PostgreSQL + Redis** + engine-rust | **M1** E2E deposit→participate→settlement |
+| Runtime P1 | + NATS + workers adapters | M2 |
+| Runtime P2 | + Temporal + shadow-replay | M4 |
+| Runtime P3 | EKS (§15 Production) | M7 |
 
-**오차0:** Phase 0에서도 double-entry · §48.13 Rule · **NATS 없이** in-process events OK (migration playbook 필수)
+**오차0:** Runtime P0에서도 double-entry · §48.13 Rule · **NATS 없이** in-process events OK (migration playbook 필수)
 
 #### 51.13.1 Founder env · adapter ingest (v7.22.45 pointer · Index completed **변경 0**)
 

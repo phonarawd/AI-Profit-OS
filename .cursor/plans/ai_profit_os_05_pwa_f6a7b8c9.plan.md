@@ -1,12 +1,12 @@
 ---
 name: AI Profit OS — PWA & Native
-overview: "v7.22.49 PWA Store Bridge+=Uptodown APK·Shell→Push→자동fanout→WebAuthn→Store(v2). Index §20.2. Index=00."
+overview: "v7.23.0 기존 PWA pending6 전부 보존 · 04 R6 pending0 후 Shell→Push→fanout→WebAuthn→Store(v2)→PWA certification · ADR-017 Light manifest · OpenNext Web Worker."
 todos:
   - id: pwa-native-shell
-    content: "[composer-2.5|200K] manifest=퍼뜩·Lux색·Serwist·Install·standalone/safe-area·Brand icons·SW update UX·Canon wires"
+    content: "[composer-2.5|200K] manifest=퍼뜩·ADR-017 Peotteok Light색·Serwist·Install·standalone/safe-area·Brand icons·SW update UX·Canon wires"
     status: pending
   - id: pwa-push-badge
-    content: "[composer-2.5|200K] VAPID+Badge+sdk/push · Phase0 in-process→CF Worker · iOS installed-only · Admin push kill"
+    content: "[composer-2.5|200K] VAPID+Badge+sdk/push · Runtime P0 in-process→CF Worker · iOS installed-only · Admin push kill"
     status: pending
   - id: pwa-auto-fanout-prefs
     content: "[composer-2.5|200K] §23.5a notice/campaign/opportunity 자동Push · prefs채널필터 · verify:push-channel-prefs"
@@ -20,15 +20,18 @@ todos:
   - id: store-bridge-uptodown-listing
     content: "[composer-2.5|200K] v2 only §24.3b: Uptodown Developers Console Organization(§50.9 pointer)·listing(icon≥256·feature 1024×500·short≤70·full≥50단어)·Country Restriction·publication criteria(VT·webview부가가치·배포권)·Submit for review · verify:store-uptodown-listing · 선행=store-bridge-scaffold · Day-1 제외"
     status: pending
+  - id: redesign-pwa-certification
+    content: "[grok-4.5|256K] Redesign PWA certification · manifest/Serwist/install/offline/SW update/Push dedup+prefs/Badge/WebAuthn UX+Money fallback/reduced-motion/peotteok-light/OpenNext Worker · Store v2 AAB vs APK/XAPK·assetlinks·listing 분리 · pwa-*+push-*+assetlinks/store-*+Lighthouse CI · known P0~P3 defect0 · 다음=06 Infra"
+    status: pending
 isProject: false
 ---
-# AI Profit OS — PWA & Native (v7.22.49 Store Bridge Uptodown 흡수 · Owns 본문 유지)
+# AI Profit OS — PWA & Native (v7.23.0 · PWA preserved + certification)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
 > **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
-> **todo 순서:** App Shell/manifest → Push/Badge → §23.5a 자동 fanout → WebAuthn UX → Store Bridge scaffold → Uptodown listing (v2·Day-1 제외)  
+> **todo 순서:** App Shell/manifest → Push/Badge → §23.5a 자동 fanout → WebAuthn UX → Store Bridge scaffold → Uptodown listing → PWA certification
 > **v7.22.25:** §23.5a 공지·이벤트·매칭·쪽지 **자동 Push** · UI prefs 필터 · 가입 기본 ON  
 > **v7.22.26:** Index §20.1 기회스캔 표현 **pointer only** · PWA Owns **변경 0**  
 > **v7.22.28:** Index §20.2 · opp Push 카피=`수익 벌기`/자본참여자 톤 (UI §5.3b) · PWA Owns **변경 0**  
@@ -36,9 +39,19 @@ isProject: false
 
 
 > **manifest name/short_name:** **퍼뜩** · retired `오늘수익`·`바로번다` **0**  
-> **스택:** **next@16** · Serwist · CF Pages · Phase0 Push=**in-process** (NATS=Phase1+)  
-> **색:** Lux `packages/ui/tokens` only · `#1A56FF` 폐기  
+> **스택:** **next@16** · Serwist · OpenNext Cloudflare Web Worker · Runtime P0 Push=**in-process** (Runtime P1+=NATS)
+> **색:** ADR-017 `peotteok-light` Token SPEC only · background `#F6F4FC` · theme `#6B3CFF`
 > **모델:** 전 todo `[composer-2.5|200K]` · WebAuthn **정책**=Money(grok 슬라이스 가능)
+
+## v7.23.0 Redesign PWA 승계
+
+> **선행:** 04 Admin R6 pending 0. 외부 플랫폼 로드맵에서 빠졌던 PWA pending 6개를 모두 보존하며 새 mega todo로 대체하지 않는다.
+
+- Day-1: manifest, Serwist, install, offline/update, VAPID Push, badge, WebAuthn UX.
+- Store v2: TWA/Play AAB, Uptodown APK/XAPK, Capacitor, listing. Day-1 범위와 판정을 섞지 않는다.
+- Consumer theme는 ADR-017 Light+Purple 단일이며 manifest/splash/browser theme도 동일 Token SPEC을 따른다.
+- Web origin은 `infra/domain.manifest.json openNext.web.workersDev`; `pages.dev`와 Pages deploy를 금지한다.
+- 마지막 `redesign-pwa-certification`에서 Day-1과 Store v2 결과를 별도 표로 인증한 뒤 06으로 이동한다.
 
 ## Owns / Pointer (중복0)
 
@@ -75,7 +88,7 @@ isProject: false
 | 피드백 | 판정 | 플랜 반영 |
 |--------|------|-----------|
 | `display: standalone` | ✅ 동의 | manifest SSOT |
-| theme/background = 스플래시 | ✅ 동의 | **Lux 토큰만** · ADR-011/013 icons=`packages/ui/brand` → `public/icons/*` · 사진목업 아이콘 복제 금지 |
+| theme/background = 스플래시 | ✅ 동의 | **Peotteok Light 토큰만** · ADR-011/017 icons=`packages/ui/brand` → `public/icons/*` · 사진목업 아이콘 복제 금지 |
 | 전역 `user-select: none` | ⚠️ **부분 반대** | 금액·버튼·카드=none · **입금주소·TX·고객센터=selectable** |
 | `touch-action`로 새로고침 차단 | ⚠️ **부분 반대** | `overscroll-behavior-y: contain` · iOS 100% 불가 시 degrade |
 | `-webkit-touch-callout: none` | ✅ 동의 | 주소 필드 제외 |
@@ -89,12 +102,12 @@ isProject: false
 | next-pwa | ⚠️ **업그레이드** | **Serwist** `@serwist/next` · App Router |
 | Next.js | ✅ **ADR-015 잠금** | **`next@16` only** · next@15 문구 **폐기** |
 | Supabase PG | ✅ | DB SoT · Auth=Nest JWT only |
-| Vercel | ❌ | CF Pages SSOT (Infra) |
+| Vercel | ❌ | OpenNext Cloudflare Workers SSOT (Infra) |
 | TWA / Capacitor / Uptodown APK | ✅ v2 | Day-1 게이트 **제외** · §24.3 · Play≠Uptodown 산출물 분리 |
 
 ### 23.1 Manifest SSOT (`apps/web/public/manifest.webmanifest`)
 
-> **색 SSOT:** `background_color` = Lux `color.bg` (`#090A10`) · `theme_color` = Lux `color.principal` (`#7AA2FF`) · **하드코딩 임의 hex(`#1A56FF`) 금지** · 구현 시 토큰에서 생성/검증(`verify:pwa-manifest`).
+> **색 SSOT:** `background_color` = Peotteok Light `color.bg` (`#F6F4FC`) · `theme_color` = `color.accent` (`#6B3CFF`) · 임의 hex 금지 · 구현 시 토큰에서 생성/검증(`verify:pwa-manifest`).
 
 ```json
 {
@@ -107,8 +120,8 @@ isProject: false
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait-primary",
-  "theme_color": "#7AA2FF",
-  "background_color": "#090A10",
+  "theme_color": "#6B3CFF",
+  "background_color": "#F6F4FC",
   "lang": "ko-KR",
   "dir": "ltr",
   "categories": ["finance", "productivity"],
@@ -131,7 +144,7 @@ isProject: false
 **HTML head (필수):**
 ```html
 <link rel="manifest" href="/manifest.webmanifest" />
-<meta name="theme-color" content="#7AA2FF" />
+<meta name="theme-color" content="#6B3CFF" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-title" content="퍼뜩" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -232,7 +245,7 @@ flowchart TD
 | **1+** | `api-nest` → **NATS** `opportunity.hot` / `ai_pick` → 동일 dispatcher |
 
 ```
-api-nest → (Phase0 in-process | Phase1+ NATS)
+api-nest → (Runtime P0 in-process | Runtime P1+ NATS)
          → push-dispatcher (CF Worker, web-push + VAPID)
          → SW push event → OS notification
          → App Badge API (navigator.setAppBadge)
@@ -344,13 +357,13 @@ export function profitTapFeedback() {
 
 | 항목 | SSOT |
 |------|------|
-| CF Pages / Workers / Vercel 금지 | Infra |
-| Supabase PG · Upstash · Phase0 in-process | Infra · ADR-016 |
+| OpenNext Cloudflare Workers / Vercel 금지 | Infra |
+| Supabase PG · Upstash · Runtime P0 in-process | Infra · ADR-016 |
 | Docker Compose | **옵션** · 8GB 기본 OFF (Infra) |
 | `APP_HOST` / HTTPS | Infra §31 |
-| `https://{APP_HOST}/.well-known/assetlinks.json` **서빙** | Infra (Pages `apps/web` public) · **내용·지문·패키지 SSOT=본 절 §24.3** |
+| `https://{APP_HOST}/.well-known/assetlinks.json` **서빙** | Infra OpenNext Worker assets (`apps/web/public`) · **내용·지문·패키지 SSOT=본 절 §24.3** |
 
-PWA Day-1이 의존하는 것: **CF Pages에 `apps/web` 배포** · **push-dispatcher Worker** · VAPID secrets — 구현 위치는 Infra 트리, 계약은 본 절 §23.5.  
+PWA Day-1이 의존하는 것: **OpenNext Web Worker에 `apps/web` 배포** · **push-dispatcher Worker** · VAPID secrets — 구현 위치는 Infra 트리, 계약은 본 절 §23.5.
 Store Bridge가 의존하는 것: 동일 `APP_HOST` HTTPS + assetlinks 서빙 — **Uptodown/Play Console 절차는 Infra Owns 아님**.
 
 ### 24.1 PWA 관련 $0 계약 (pointer 요약 · Owns 아님)
@@ -452,7 +465,7 @@ apps/mobile-shell # Capacitor only (v2)
 
 **착수 순서 (오류0):**
 1. Brand icons → `public/icons/*` + apple-touch  
-2. manifest + layout meta (Lux 색 · 퍼뜩 · apple-title)  
+2. manifest + layout meta (Peotteok Light 색 · 퍼뜩 · apple-title)
 3. Serwist + OfflineBanner + SwUpdateToast · 머니 큐 0  
 4. InstallPrompt + Canon wires  
 5. VAPID + push_subscriptions + Worker + dedup  
@@ -515,7 +528,7 @@ schemas/push-subscription.v1.json
 - [ ] Push `source_event_id` dedup 100%
 - [ ] Badge = server unread
 - [ ] WebAuthn 출금 E2E + Money §43 fallback
-- [ ] Phase0 Push 경로에 NATS import **0**
+- [ ] Runtime P0 Push 경로에 NATS import **0**
 
 ### 중복0
 - [ ] manifest 1곳 · SW 1곳 · push-dispatcher 1곳
@@ -540,7 +553,7 @@ schemas/push-subscription.v1.json
 ### CI / verify (CATALOG)
 | id | 검사 |
 |----|------|
-| `verify:pwa-manifest` | name=퍼뜩 · Lux theme/bg · id/start_url · retired 브랜드 0 |
+| `verify:pwa-manifest` | name=퍼뜩 · Peotteok Light theme/bg · id/start_url · retired 브랜드 0 |
 | `verify:pwa-serwist-single` | SW 진입 1곳 · next@16 peer |
 | `verify:pwa-brand-icons` | icons ∈ Brand Kit 파이프라인 |
 | `verify:push-dedup` | source_event_id UNIQUE 경로 |

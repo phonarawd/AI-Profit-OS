@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Index
-overview: v7.22.59 Index CLOSED(불변)·Pre-UI Gate CLOSED·UI PART0~8c+PART9 CLOSED·잔여=`trust-age-spotcheck`(수동)·Engine 가산 `engine-ebay-identity-match-ingest` pending(U15·예외2·UI 재차단 금지)·File-Serial 실행=03 UI `trust-age-spotcheck` only·§38.10표기≠adapter금지(§5h2 supersede).
+overview: v7.23.0 플랫폼 재설계 리베이스 채택 · 외부 d903eef7=REFERENCE ONLY · 실행 SSOT=00~06 해시 플랜 · 현재=00 R0 `platform-redesign-r0-inventory` · Runtime Phase(P0~P3)와 Redesign Stage(R0~R8) 분리 · completed 불변 · ADR-017 Light+Purple/5탭 새 라벨/OpenNext Workers only.
 todos:
   - id: yahoo-jp-permanent-ban
     content: "[grok-4.5|256K] v7.22.32 yahoo_jp 영구 FORBIDDEN · Phase1+ 철회 · Engine/UI/ENV 0 · verify:listing-legs-day1"
@@ -65,10 +65,22 @@ todos:
   - id: phase0-bootstrap-hosts
     content: "[composer-2.5|200K] Phase0 Bootstrap $0(CF Pages/Workers+Supabase Seoul+Upstash) · Compose옵션 · Owns=Infra §51.13/§15 · NATS/Temporal/EKS 0"
     status: completed
+  - id: platform-redesign-r0-inventory
+    content: "[grok-4.5|256K] R0-1 문서전용 Forensic · git SHA/dirty paths+논리 route/물리 page+Canon wire/manifest surface+Admin12+Nest import+local/remote migration+asset/verify를 canonical path로 계수 · governance/platform-redesign/baseline.v1.json+route-contract-matrix.v1.json · defect|intentional|deferred|missing_fact만 분류 · 구현코드0 · verify:platform-redesign-inventory 신설+CATALOG"
+    status: pending
+  - id: platform-redesign-r0-fact-state
+    content: "[grok-4.5|256K] R0-2 baseline 기반 governance/platform-redesign/fact-state-registry.v1.json · Fact↔State 반복검증 · 공통 view state와 domain FSM 분리 · reasonCode=domain.resource.reason 단일 · source/asOf/freshness/owner/provenance 필수 · 구현코드0 · verify:platform-fact-state-registry 신설+CATALOG"
+    status: pending
+  - id: platform-redesign-r0-change-control
+    content: "[grok-4.5|256K] R0-3 governance/platform-redesign/change-control.v1.md · ADR-017 Light+Purple·IA 새 라벨·OpenNext Workers 전환 before/after+영향+rollback+승인 증거 · L1/L2/L3 절차와 version bump 규칙 · 외부 d903eef7 실행금지/흡수 crosswalk · 구현코드0 · verify:platform-change-control 신설+CATALOG"
+    status: pending
+  - id: platform-redesign-r0-observation-registry
+    content: "[grok-4.5|256K] R0-4 schemas/governance-observation.v1.json+governance/platform-redesign/governance-observations.v1.json · observed|deferred|promoted|rejected·현재발생여부·reviewTrigger 분리 · R0 신규 규칙 가상생성0 · verify:governance-observation-registry 신설+CATALOG · R0 신규 4게이트 PASS+BOOTSTRAP 다음=01 Money redesign-r1-money-read-contract · 구현코드0"
+    status: pending
 isProject: false
 ---
 
-# AI Profit OS — Index · Constitution · Gates (v7.22.36 · CLOSED)
+# AI Profit OS — Index · Constitution · Gates (v7.23.0 · PLATFORM REDESIGN REBASE)
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
 > **착수 전 SSOT:** [`docs/CONSTITUTION_BOOTSTRAP.md`](file:///c:/Users/PC/Desktop/AI_PROFIT_OS/docs/CONSTITUTION_BOOTSTRAP.md) — 헌법·스키마·마이그레이션·실물상태 기록  
@@ -88,6 +100,62 @@ isProject: false
 > **모델 배정:** todo 접두사 `[grok-4.5|256K]`=헌법·스키마·크로스 SSOT · `[composer-2.5|200K]`=확정 SSOT 후 단일 슬라이스 구현  
 > **File-Serial (절대):** 파일 N pending=0 전 파일 N+1 착수 금지 · 파일 내 todos 위→아래 · §18 Milestone=설명용 종속 · 아래「플랜 직렬 완료 규칙」Owns
 
+## v7.23.0 플랫폼 재설계 리베이스 — 실행 권위·단계·승계
+
+### 0. 권위 판정
+
+- `%USERPROFILE%\.cursor\plans\플랫폼_전체_재설계_로드맵_d903eef7.plan.md`는 **REFERENCE ONLY**다. 직접 편집·todo 실행·status 변경을 금지한다.
+- 외부 초안의 유효한 요구는 본 Index와 `01`~`06` ACTIVE 해시 플랜에 흡수했다. 실행 큐는 이 7개 frontmatter뿐이다.
+- completed todo의 구현·상태는 불변이다. 재설계는 신규 `platform-redesign-*` / `redesign-*` todo에서 실물 `keep|adapt|new|remove`를 판정하며 완료 작업을 다시 실행하지 않는다.
+- 외부 초안의 상대 링크와 수치 스냅샷은 실행 근거가 아니다. R0 baseline이 commit SHA·dirty paths·정규화 규칙과 함께 재측정한 값만 증거다.
+
+### 1. Phase 명칭 충돌 제거
+
+| 이름 | 의미 | 잠금 |
+|---|---|---|
+| **Runtime P0~P3** | P0 in-process · P1 NATS · P2 Temporal · P3 EKS/OTel | `.cursor/rules/phase-activation.mdc` |
+| **Redesign R0~R8** | Forensic/Governance → Home → Acquisition → Wallet → Core Loop → Account → Admin/PWA → Backend Certification → Infra/Release | 본 절 |
+
+`Phase 1 Home` 같은 혼합 표현을 실행 문서에서 금지한다. 반드시 `Redesign R1 Home` 또는 `Runtime P1 NATS`처럼 namespace를 적는다. Redesign 단계가 Runtime 스택 활성화를 자동 의미하지 않는다.
+
+### 2. 승인된 supersession
+
+| 축 | v7.23 실행값 | 폐기·보존 |
+|---|---|---|
+| Consumer theme | **ADR-017 `peotteok-light` Light+Purple 단일 출시 테마** | Lux Dark=archive/legacy · dual toggle 0 |
+| 5탭 라벨 | **홈 · 기회 · 수익 · 지갑 · 내정보** | href `/`, `/profits`, `/trades`, `/wallet`, `/me` 보존 · `내거래` 라벨 폐기 |
+| Web/Ops host | **OpenNext Cloudflare Workers only** | `infra/domain.manifest.json openNext` origin SSOT · `wrangler pages deploy`/pages.dev origin 금지 |
+| PART9 | fetch→SDK→Nest→DB/ledger/auth binding 보존 | `HomePageV2`·병렬 데이터 파이프라인 금지 |
+| Money/Engine | 기존 completed mutation·Rule·ledger 불변 | R1은 read contract/adaptor와 확인된 eBay ingest gap만 |
+
+### 3. 실행 큐
+
+1. **00 R0**: inventory → fact/state → change-control → observation registry.
+2. **01 R1 dependency**: `redesign-r1-money-read-contract`.
+3. **02 R1 dependency**: 기존 `engine-ebay-identity-match-ingest` → `redesign-r1-home-fact-state-contract`.
+4. **03 R1~R5 user experience**: Home → 기존 `trust-age-spotcheck` → Acquisition → Wallet → Core Loop → Account Hub.
+5. **04 R6 Admin**: 기존 pending 15개 → 3-mode ops → Admin certification.
+6. **05 R6/PWA**: 기존 pending 6개 → PWA/Store certification.
+7. **06 R7~R8**: Marketing/Auth/adapter binding → Backend/Data certification → Infra/Observability/Release certification.
+
+R0 종료 전 `01` 이하 착수 금지. 이후에도 파일 순서는 유지한다. dependency 작업의 “병렬 허용”은 폐기하며, 역방향 결함은 Change Control에 등록한 뒤 해당 owner 파일의 가산 todo로만 처리한다.
+
+### 4. R0 산출물·완료 정의
+
+- `baseline.v1.json`: `commitSha`, dirty paths, canonical `/` separator, 논리 route와 물리 page 분리, Canon physical wire와 manifest surface 분리, Admin top-level, `AppModule.imports`, local/remote migrations.
+- `route-contract-matrix.v1.json`: 모든 Web/Admin route의 Product/Visual/Implementation Contract·wire·copy·API·owner·verify 상태.
+- `fact-state-registry.v1.json`: `factId`, type/unit, source, owner, provenance, asOf/freshness, allowed states, domain FSM pointer. 공통 view state는 `idle|loading|ready_empty|ready_data|stale|recoverable_error|blocked|unauthorized`; domain `running|requeue|success|safe_stop` 등을 덮어쓰지 않는다.
+- `change-control.v1.md`: L1=domain review, L2=owner 승인+관련 gate, L3=founder+독립 reviewer 승인+evidence+rollback. 승인자가 없으면 blocked이며 우회 금지.
+- `governance-observations.v1.json`: registry 상태와 실제 현재 발생 여부를 별도 필드로 저장.
+- R0 신규 verify 4종은 스크립트+`package.json`+`tooling/verify/CATALOG.md`를 각 owner todo에서 함께 등록한다. ghost verify 이름만 적는 것을 금지한다.
+
+### 5. 오류0·결함0·오차0·중복0 정의
+
+- Development: known P0/P1 0, protected-boundary violation 0, fake Fact 0, baseline regression 0.
+- Certification/Release: **known P0/P1/P2/P3 defect 0**. 향후 아이디어는 defect가 아닌 `deferred intent`로만 분리할 수 있다.
+- Severity: P0=비가역 손실·손상/안전하지 않은 핵심 실행, P1=핵심 흐름 차단·안전한 우회 없음, P2=중요 정확성/UX 저하, P3=비핵심 polish. 접근성 흐름 차단은 영향에 따라 P1이며 비가역 손상/안전 위반 증거가 있을 때만 P0다.
+- event name grammar는 `domain[.subdomain].entity.action.vN`; `reasonCode`는 `domain.resource.reason`; TypeScript camelCase↔event payload snake_case 매퍼는 한 곳만 둔다.
+
 
 ---
 
@@ -95,13 +163,13 @@ isProject: false
 
 | # | 플랜 | 범위 | **실파일** |
 |---|------|------|------------|
-| 00 | Index · Constitution · Roadmap · Gates | §0·§1·§17~22(+§20.1·§20.2)·§51.1/22/23 · **v7.22.36 CLOSED** | `ai_profit_os_00_index_a1b2c3d4.plan.md` |
-| 01 | Money & Chain *(구 02)* | §11·§41~43·§49(+withdrawApplyBlocked)·§51.5~8/11 · **v7.22.35** pointer | `ai_profit_os_01_money_c3d4e5f6.plan.md` |
-| 02 | Engine *(구 01)* | §0.0(+§0.0.1a)·§2~4(+§4.2a·§4.2b)·§12~13·§47·§48.13 · **v7.22.32** (+Index .35 pointer · todo의존순) | `ai_profit_os_02_engine_b2c3d4e5.plan.md` |
-| 03 | UI & UX | §0.1·§5~8(+§5.3b)·§27~30·§33~34·§38(+38.8~9)·§48(+§48.3b)·§50(+50.1n)·§51.14/16~19/21/**24** · **v7.22.32** (+.35 pointer) | `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` |
-| 04 | Admin & Ops | §9~10(+**§9.1.1**)·§14·§35~37·§39~40·§51.6/10 · §9.8.4a/8d/8e · **v7.22.35** | `ai_profit_os_04_admin_e5f6a7b8.plan.md` |
-| 05 | PWA & Native | §23~26 (+§23.5a 자동Push) · **v7.22.49** Store+=Uptodown APK Owns | `ai_profit_os_05_pwa_f6a7b8c9.plan.md` |
-| 06 | Infra & Marketing | §15~16·§31~32·§51.9/13 Owns · **Marketing File-Serial §31.8** · Auth/Phase0=Index · **v7.22.51** | `ai_profit_os_06_infra_a7b8c9d0.plan.md` |
+| 00 | Index · Constitution · Roadmap · Gates | §0·§1·§17~22(+§20.1·§20.2)·§51.1/22/23 · **v7.23 R0 REOPEN** | `ai_profit_os_00_index_a1b2c3d4.plan.md` |
+| 01 | Money & Chain *(구 02)* | 기존 Money 불변 + **v7.23 R1 Home Money Read** | `ai_profit_os_01_money_c3d4e5f6.plan.md` |
+| 02 | Engine *(구 01)* | 기존 Engine 불변 + **v7.23 R1 eBay ingest/Home Fact-State** | `ai_profit_os_02_engine_b2c3d4e5.plan.md` |
+| 03 | UI & UX | 기존 PART0~9 불변 + **v7.23 R1~R5** | `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` |
+| 04 | Admin & Ops | 기존 pending 15 + **v7.23 R6 3-mode/certification** | `ai_profit_os_04_admin_e5f6a7b8.plan.md` |
+| 05 | PWA & Native | 기존 pending 6 + **v7.23 PWA/Store certification** | `ai_profit_os_05_pwa_f6a7b8c9.plan.md` |
+| 06 | Infra & Marketing | Marketing/Auth/adapter + **v7.23 R7/R8** | `ai_profit_os_06_infra_a7b8c9d0.plan.md` |
 
 > **원본 아카이브:** `ai_profit_os_launch_54c1261e.plan.md` (전체 통합본 — **편집 시 분리 플랜 우선**)  
 > **착수 전 기록:** `docs/CONSTITUTION_BOOTSTRAP.md`
@@ -124,15 +192,15 @@ isProject: false
 
 | # | 파일 | 끝내고 넘어가는 조건 |
 |---|------|----------------------|
-| **00** | Index | pending **0**(골격·카피잠금·**auth-ssot**·**phase0-bootstrap-hosts**) 후만 01 착수 |
-| **01** | Money *(구 02)* | Money pending **0**(원장→지갑→체인→출금→초대) 후만 02 착수 |
-| **02** | Engine *(구 01)* | Engine pending **0**(시세→Rule→시뮬→AI) 후만 03 착수 |
-| **03** | UI & UX | UI pending **0** 후만 04 착수 |
-| **04** | Admin & Ops | Admin pending **0** 후만 05 착수 |
-| **05** | PWA & Native | PWA pending **0** 후만 06 착수 |
-| **06** | Infra & Marketing | pending **0**(Marketing/CAPI + 후반 관측만 · Auth/Phase0 실행큐≠여기) = 전 플랜 직렬 완료 |
+| **00** | Index | 기존 completed 불변 + R0 4 todo pending **0** 후만 01 착수 |
+| **01** | Money *(구 02)* | 기존 completed 불변 + R1 Money Read pending **0** 후만 02 착수 |
+| **02** | Engine *(구 01)* | 기존 completed 불변 + eBay ingest/Home Fact-State pending **0** 후만 03 착수 |
+| **03** | UI & UX | R1~R5 + Home spot-check pending **0** 후만 04 착수 |
+| **04** | Admin & Ops | 기존 Admin queue + R6 certification pending **0** 후만 05 착수 |
+| **05** | PWA & Native | 기존 PWA/Store + certification pending **0** 후만 06 착수 |
+| **06** | Infra & Marketing | Marketing/Auth/adapter + R7/R8 pending **0** = 전 플랜 직렬 완료 |
 
-**00 Index pending 큐:** **pending 0 · CLOSED (v7.22.36)**. **01 Money = CLOSED (v7.22.49 · 15/15+가산 benefits)**. **02 Engine = Pre-UI CLOSED (v7.22.49 · 26/26+E-R1~E-R8) + 가산 `engine-ebay-identity-match-ingest` pending (v7.22.51 · §0.10 · 예외2)**. **03 UI PART0~8c+PART9 = CLOSED (v7.22.59)** · 잔여=`trust-age-spotcheck`. File-Serial 실행=**03 UI** `trust-age-spotcheck` only. *(Index completed: monorepo-skeleton · copy-canon-cta-sla-lock · auth-ssot · phase0-bootstrap-hosts)*
+**v7.23 현재 큐:** 기존 completed 전부 불변. **00 Index R0 REOPEN** · 다음=`platform-redesign-r0-inventory`. R0 pending 0 후 01 Money R1 → 02 Engine R1 → 03 UI R1~R5 → 04 → 05 → 06 순서다. v7.22.59의 `trust-age-spotcheck` 즉시 실행 포인터는 이력이며 R1 Home 구현 뒤 사람 인증 단계로 이동했다.
 
 ### v7.22.48→49 Pre-UI Runtime Gate — CLOSED (이력 · 흡수 SSOT=Engine §0.9 · E-R8 done)
 
@@ -143,7 +211,7 @@ isProject: false
 |------|------------|
 | **02 Engine** | 1~26 + E-R1~E-R8 **completed** · Pre-UI §0.9.11 CLOSED · **+** `engine-ebay-identity-match-ingest` **pending**(§0.10 · 예외2) |
 | **01 Money** | 1~15 + `money-user-benefits-read` **completed** · overview CLOSED |
-| **03 UI** | PART0~8c+PART9 CLOSED · **다음=`trust-age-spotcheck`** (수동실사) |
+| **03 UI** | PART0~8c+PART9 CLOSED · `trust-age-spotcheck`는 v7.23 R1 Home 구현 뒤 실행(수동실사) |
 
 #### File-Serial 예외 (문서화만 · ADR-004식 잠금 · 임의 일반화 금지)
 
@@ -153,12 +221,12 @@ isProject: false
 > **예외(이력):** Money 가산이 Engine 진행을 재차단하지 않도록 문서화.  
 > **소멸(v7.22.49):** Engine `engine-pre-ui-close` + Money `money-user-benefits-read` 둘 다 `completed` → 예외1 종료.
 
-##### 예외 2 — Engine eBay identity-match (v7.22.51 · **활성** · U15)
+##### 예외 2 — Engine eBay identity-match (v7.22 이력 · **v7.23 종료** · U15)
 
 > **절대 규칙 원문:** 동일(앞 파일 pending>0이면 뒤 파일 착수 금지).  
-> **예외:** Engine 가산 `engine-ebay-identity-match-ingest`(§0.10)가 **03 UI 진행/신규 PART todo 착수를 재차단하지 않음**.  
+> **v7.22 예외:** Engine 가산 `engine-ebay-identity-match-ingest`가 당시 UI 진행을 재차단하지 않았음.
 > **근거:** Pre-UI Gate 이미 CLOSED · UI `ProductImage`는 source-agnostic(실 eBay 사진≠UI 차단) · File-Serial PART0→8 **재정렬 0** · Owns=Engine adapter+ingest only.  
-> **소멸:** `engine-ebay-identity-match-ingest` → `completed` 시 자동.  
+> **v7.23 종료:** R0 리베이스가 해당 todo를 02 R1 정식 선행으로 승격했으므로 예외 적용을 중단한다.
 > **금지:** 04 Admin / 05 PWA / 06 Infra가 03 UI보다 먼저 pending을 갖는 것 · 예외 없는 추가 가산 · Pre-UI E-R1~E-R8 재실행.
 
 ```mermaid
@@ -185,7 +253,7 @@ flowchart TD
 > **정산 SSOT:** **§48.13 + §51.2** MATCH_SUCCESS Rule Engine (난수·연출타이머 금지)  
 > **잔액·출금 SSOT:** **§49** 원금 유지 · 수익 출금 기본 · 버킷 원장  
 > **화면 언어 SSOT:** **§50 + §27** — 유저·어드민 **쉬운 한글만** · 테스트/개발/IT/문서 용어 **화면 노출 0** · 유저 토스트 **한글+이모지**  
-> **설정·약관 SSOT:** **§50** Lux다크 고정 · 글자크기 · 약관/개인정보/오픈소스/라이선스 대본  
+> **설정·약관 SSOT:** **§50** ADR-017 Light+Purple 단일 출시 테마·dual toggle 0 · 글자크기 · 약관/개인정보/오픈소스/라이선스 대본
 > **운영사·사업자 SSOT:** **§50.9** PRE-OWNED WATCHES L.L.C · DET **1135431** · 푸터·약관·JSON-LD 단일 schema  
 > **브랜드 3층 SSOT:** **§51.1 ADR-002** Platform=AI Profit OS · Consumer app=**퍼뜩** · Legal=§50.9 · retired=`오늘수익`·`바로번다`  
 > **DB SSOT:** **§51.1 ADR-001** PostgreSQL **단일 인스턴스**(Supabase Seoul `mgsytcetsiecllmhcyox`) · 이중 Postgres SoT **금지**  
@@ -195,7 +263,7 @@ flowchart TD
 > **툴체인 SSOT:** **ADR-015** — Node22 · **pnpm only** · **next@16** · **Tailwind v4**+Lux `@theme` · Rust · Compose=옵션 · npm/bun install 금지  
 > **자동화 SSOT:** **ADR-016** — Docker-less 기본 · Vercel 금지 · 8GB Phase0 · `verify:gate`  
 > **Personal AI / 퍼뜩(AI) SSOT:** **§47 + §47.12~14** · P/G/S · Adapter · 유저 AI 이름=**퍼뜩**(앱명과 동일 · 타프로젝트 코치명 금지) · GitHub=코드만  
-> **PWA SSOT:** **§23~26** (`05` **v7.22.49**) · next@16·Serwist · Phase0 Push in-process · §23.5a 자동Push · Lux theme · WebAuthn 정책=Money §43 · Store=v2 · **Uptodown APK Owns=`05` §24** 
+> **PWA SSOT:** **§23~26** (`05`) · next@16·Serwist · Runtime P0 Push in-process · §23.5a 자동Push · ADR-017 Peotteok Light · WebAuthn 정책=Money §43 · Store=v2 · **Uptodown APK Owns=`05` §24**
 
 > **수직:** 하이엔드 시계 + 트레이딩 카드 + **명품 가방(`luxury_bag`)** · 카테고리별 `assetImageUrl` 썸네일(§0.0.6) · KR 마켓 0 · v1 미션= **자본참여자·수익 벌기**(§20.2 · domain=`participate` · orchestrate · 유저 직접 매매 0 · 부업 vertical Day-1 숨김)
 
@@ -208,7 +276,7 @@ flowchart TD
 | 영역 | 흡수 내용 |
 |------|-----------|
 | 제품 UX | 수익-first UI, 5탭 고정, USDT+≈원화, 거래 15초형 플로우, 전략 필터 |
-| IA | 홈/수익/내거래/지갑/내정보 — 모바일·PC 동일 |
+| IA | 홈/기회/수익/지갑/내정보 — 모바일·PC 동일 (`/profits`·`/trades` href 보존) |
 | 기회 모델 | Agnostic Opportunity Card (모든 vertical 동일 카드) |
 | 실행 점수 | 판매기간·성공률·자본·위험·AI신뢰도 = moat |
 | 어드민 | 12모듈 + **TOP5 원클릭 대시보드** (§9.5) |
@@ -216,7 +284,7 @@ flowchart TD
 | 방어 | 어뷰징·악성유저·오류 대응 매트릭스 100% |
 | PWA | standalone·SW·Push·Badge·WebAuthn·햅틱·3초 설치 |
 | Store Bridge | TWA(**Play AAB** + **Uptodown APK/XAPK**) + Capacitor(iOS) — v1 코드 재작성 0 · Owns=`05` §24 |
-| 무료 Bootstrap | Cloudflare Pages/Workers + Upstash — $0 착수 |
+| 무료 Bootstrap | Cloudflare OpenNext Workers + Upstash — $0 착수 |
 | **한글 UI** | 유저·어드민 화면 영어 노출 0% + ko copy SSOT |
 | **반응형·성능** | 320px~4K fluid CSS + Device S/A/B tier + 60fps **목표** |
 | **어드민 TOP5** | 원클릭 검수·마진·사기방지·돈줄·긴급정지 |
@@ -584,7 +652,7 @@ flowchart TD
 - **§48 AI 진행실 · 성공 영수증 · 안전 중단** (Canon 3면 · ADR-013) + Admin **진행 정책**
 - Primary CTA: **수익 벌기** (sticky 동일 · 상세=`이 기회로 수익 벌기`) · domain=`participate` · 흐름=`투입확인→AI자동매칭→처리→수익확정→정산·실금액지급` · **목표: CTA 후 ≈1분** (§20.2) · `expectedSellDays` 유저0
 - **§49** 지갑 버킷 · 출금 기본 **수익만** · 원금 출금 항상 가능 · 성공 후 3CTA
-- **§50** 설정(글자크기·다크고정) · 약관4종 · **§50.9 운영사 DET 푸터** · 전면 쉬운한글 · 토스트 이모지
+- **§50** 설정(글자크기·ADR-017 Light+Purple 단일 테마·dual toggle 0) · 약관4종 · **§50.9 운영사 DET 푸터** · 전면 쉬운한글 · 토스트 이모지
 - **§51** Proof-at-Participate · SafeStop Trust · Adapter Health · Capital Journey · CS 티켓 · Referral
 - **Admin Ops:** `ops.{domain}` only — **유저앱 admin UI/route 0** · **화면=왕초보 한글만**
 
@@ -652,16 +720,16 @@ flowchart TD
 > **제품 정의 (오차0):** Opportunity = **「사용자가 거래할 상품」이 아니라**  
 > **「플랫폼이 처리하는 수익 기회에 사용자가 자금을 배정·매칭받는 것」**.  
 > **Owns:** 본 절 = 역할·레이어·금지행위·**유저 CTA 라벨** · **내부 필드/투영 = Engine §4.2b** · **카드/진행실 = UI §5.3b·§48** · Money ledger 불변.  
-> **Audit A1/A2 흡수:** 실금액 정산 · Ops재원≠제품P0 · `내거래`=이력 KEEP · 유저 CTA=`수익 벌기` · domain=`participate`.
+> **Audit A1/A2 흡수:** 실금액 정산 · Ops재원≠제품P0 · `/trades`=수익·정산 이력 KEEP · 유저 CTA=`수익 벌기` · domain=`participate`.
 
 #### 유저 역할
 
 | 유저 | 아님 |
 |------|------|
 | **참여자 (capital provider)** | 거래자(trader)로 **행동**하는 사람 · 리셀러 · 호가 조작자 |
-| 하는 일: **입금 · 수익 벌기 · 진행 확인 · 정산 수령 · 출금 · 내거래(이력)** | 상품 구매·판매·입찰·판매처/구매처 선택·가격 협상·외부 플랫폼 이동 |
+| 하는 일: **입금 · 수익 벌기 · 진행 확인 · 정산 수령 · 출금 · 수익 내역 확인** | 상품 구매·판매·입찰·판매처/구매처 선택·가격 협상·외부 플랫폼 이동 |
 
-> **「거래」어휘:** 탭명 `내거래`·`거래내역` = **이력 조회 OK**. 금지=직접거래 **행동 CTA**.
+> **「거래」어휘:** `/trades` 내부 거래내역 설명은 허용하되 탭 라벨 `내거래`는 ADR-017로 폐기했다. 금지=직접거래 **행동 CTA**.
 
 #### CTA 층 분리 (v7.22.28 · 오차0 · 중복0)
 
@@ -781,7 +849,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 - packages/sdk feedback (haptics+audio)
 - TWA + Capacitor scaffold · **Uptodown APK/XAPK + Console listing (v7.22.49 · `05` §24)**
 - CONSTITUTION 23/24
-- Bootstrap $0 path (CF Pages)
+- Bootstrap $0 path (OpenNext Cloudflare Workers)
 - **CONSTITUTION 25 + ko copy**
 - **CONSTITUTION 26 + fluid CSS + device tier + TanStack Virtual**
 - **Admin TOP5 + TOP6 광고 성과 위젯**
@@ -806,7 +874,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 - **단일 balance 필드만으로 출금 분기** (버킷 무시)
 - **원금 출금 시 수익 몰수**
 - 유저·어드민 화면 **테스트/개발/IT/문서 용어** (API, Staging, DLQ, JSON, Mock, Beta…)
-- v1 **다크/밝은/시스템 테마 토글** (Lux 다크 고정 · §50.1)
+- v1 **다크/밝은/시스템 테마 토글** (ADR-017 Light+Purple 단일 출시 테마 · §50.1)
 - 유저 토스트 **이모지 0개** 또는 **3개 이상** / 영어 문장
 - 약관·안내에 **투자 원금 보장·확정 수익** 허위 문구
 - **전역 user-select:none** (입금주소·거래ID 복사 불가 = 결함)
@@ -828,7 +896,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 - **FinancialProduct 허위 스키마** (투자상품 오인 유발)
 - **IndexNow = 상위노출 보장** 주장 (크롤 알림만)
 - **"3초 차익 수령" / 수익 확정 CTA** (앱 카드·정산 UI)
-- **User App white background default** (Lux Dark SSOT)
+- **Token/Contract 없는 raw white background** (`peotteok-light` surface/token만 허용)
 
 **§35 Admin (기본 OFF):** G1~G4 — fake ticker · demo counter · 연혁 · 입금 FOMO · whale
 
@@ -860,7 +928,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | `packages/ui/components/admin/finance/` | UserFinanceKpi · tables · CSV |
 | `apps/admin/app/admin/users/[id]/finance/` | §39 화면 |
 | `apps/admin/app/admin/reports/financial/` | 일/월 금융 리포트 |
-| `infra/ops/` | CF Pages ops · access-policy · robots |
+| `infra/ops/` | OpenNext Ops Worker · access-policy · robots |
 | `verify:no-admin-in-web` | §40 apps/web admin route 0 |
 | `packages/ui/copy/ko/trust.ts` | T.trust.* SSOT |
 | `packages/ui/components/trust/` | WhyUsdt · RevenueExplainer · FAQ |
@@ -1064,7 +1132,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 ### D. v7.22.10 흡수 체크 (KR 20~70)
 
 - [x] toneBand SSOT + 온보딩 step0 + landing 시드  
-- [x] fontScale md/lg/xl · Light 테마 금지 유지  
+- [x] fontScale md/lg/xl · ADR-017 Light+Purple 단일 출시 테마 · dual toggle 0
 - [x] `/me/guide/get-usdt` + 네트워크 한글 경고  
 - [x] depositPref 표시 · 퍼뜩(AI) Fact  
 - [x] 본인진행 카피 · spot-check todo · 성별 분기 금지  
@@ -1181,7 +1249,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | `expectedSellDays` 유저 0 | Engine §4.2b · UI | [x] |
 | CTA 후 ≈1분 · 입금 체인 별도 | Index §20.2 | [x] |
 | Soft/Hard·REQUEUE | **E-SLA / v7.22.29** | → |
-| `내거래` KEEP(이력) · 직접거래 CTA 0 | UI | [x] |
+| `/trades` 수익·정산 이력 KEEP · 직접거래 CTA 0 | UI | [x] |
 | `platform_reserve`=Ops · 제품 P0 아님 | Index · Engine sim | [x] |
 | `verify:cta-earn-profit` (구 cta-match-participate 별칭 허용) | CATALOG | [x] live (copy/Canon) |
 
@@ -1266,7 +1334,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 |------|------|------|
 | next@16 · Serwist (next@15 폐기) | PWA §23.0 | [x] |
 | Push Phase0 in-process · Phase1 NATS | PWA §23.5 · Infra | [x] |
-| theme/bg = Lux (`#7AA2FF`/`#090A10`) · `#1A56FF` 0 | PWA §23.1 | [x] |
+| theme/bg = ADR-017 Peotteok Light (`#6B3CFF`/`#F6F4FC`) · legacy dark runtime 0 | PWA §23.1 | [x] |
 | §24 Store only · Infra pointer · Compose 비필수 | PWA §24 | [x] |
 | WebAuthn 정책=Money §43.6 · UX=PWA §23.6 | Money/PWA | [x] |
 | Admin `pushEnabled` kill | Admin system-control | [x] |
@@ -1458,7 +1526,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 
 ### A11. 판정
 
-**Index = CLOSED.** **01 Money = CLOSED (v7.22.38).** **02 Engine = CLOSED (v7.22.44).** *(이력)* 당시 다음=`ui-preflight-constitution` → PART0 PASS=`market-partner-trust-surfaces` → v7.22.58=`part9-pre-dev-api-proxy` → **A12+v7.22.59** 현재=`trust-age-spotcheck`. completed Index/Money/Engine/UI-PART0~9 todo 재실행 **금지**.
+**Index = CLOSED.** **01 Money = CLOSED (v7.22.38).** **02 Engine = CLOSED (v7.22.44).** *(v7.22 이력)* 당시 다음=`ui-preflight-constitution` → PART0 PASS=`market-partner-trust-surfaces` → v7.22.58=`part9-pre-dev-api-proxy` → v7.22.59=`trust-age-spotcheck`. completed Index/Money/Engine/UI-PART0~9 todo 재실행 **금지**.
 
 > **A11 이력 표시:** 아래 A12에서 REOPEN 흡수 · v7.22.50 PART0 PASS로 File-Serial 포인터 갱신. A11의 CLOSE 판정 자체(1~26/1~15 completed)는 **무효화되지 않음**.
 
@@ -1498,7 +1566,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 3. ~~**03 UI** `ui-preflight-constitution`~~ → **PASS (v7.22.50 · U13~U15 흡수)**
 4. ~~**03 UI** PART1a~8c~~ → **CLOSED (v7.22.57 · YAML completed)**
 5. ~~**03 UI** PART9 (9-pre~9i)~~ → **CLOSED (v7.22.59)**
-6. **현재:** **03 UI** `trust-age-spotcheck` only (수동실사·코드0 · Engine §0.10 U15는 예외2로 병행 트래킹만)
+6. **v7.22.59 당시:** **03 UI** `trust-age-spotcheck` only (수동실사·코드0 · v7.23 R0 리베이스가 supersede)
 
 
-**판정:** Index = **CLOSED(불변)**. Pre-UI Runtime Gate = **CLOSED**. UI PART0~8c+PART9 = **CLOSED**. Engine §0.10 `engine-ebay-identity-match-ingest` = **pending**(예외2 · UI 재차단 금지). File-Serial **실행 파일 = 03 UI** · 다음 todo = **`trust-age-spotcheck`**. completed Index/Money/Engine-Pre-UI/UI-PART0~9 todo 재실행 **금지**.
+**v7.23 판정:** 기존 Index/Money/Engine-Pre-UI/UI-PART0~9 completed는 불변이다. 플랫폼 재설계 R0 가산으로 Index만 명시적으로 REOPEN했으며 File-Serial **실행 파일=00 Index**, 다음 todo=`platform-redesign-r0-inventory`다. `trust-age-spotcheck`은 R1 Home 구현 후 수행한다.

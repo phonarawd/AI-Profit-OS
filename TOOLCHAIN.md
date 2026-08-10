@@ -14,8 +14,8 @@
 | Engine | Rust (`rust-toolchain.toml`) | JS 원장 핵심 |
 | DB | PostgreSQL **17** (Compose) / managed 단일 | 두 번째 Postgres · **PG사(결제대행)** |
 | Cache | Redis 7 | — |
-| Edge | Cloudflare Pages/Workers (+ OpenNext) | Vercel 병행 |
-| Events Phase0 | Nest in-process | NATS/Temporal 필수화 |
+| Edge | OpenNext Cloudflare Workers only | Pages deploy/pages.dev origin · Vercel 병행 |
+| Events Runtime P0 | Nest in-process | NATS/Temporal 필수화 |
 | Monorepo | pnpm workspaces | bun/npm workspaces SSOT |
 
 ## 1회 설치 (Windows)
@@ -37,7 +37,7 @@ winget install Rustlang.Rustup
 rustup show
 cargo -V
 
-# Docker Desktop — 옵션만 (8GB Phase0 기본 OFF · 원격 Supabase+Upstash 권장)
+# Docker Desktop — 옵션만 (8GB Runtime P0 기본 OFF · 원격 Supabase+Upstash 권장)
 # docker -v
 # pnpm docker:up   # RAM 여유 시에만 · ADR-016 Docker-less 기본
 
@@ -55,19 +55,21 @@ pnpm exec wrangler -v
 - Redis: **Upstash** URL을 `REDIS_URL`에 (Docker Redis 불필요)
 - 마이그레이션: `supabase/migrations` + MCP/`db push` · 대시보드 DDL 금지
 
-## Phase0 Bootstrap hosts (§51.13 · $0)
+## Runtime P0 Bootstrap hosts (§51.13 · $0)
 
 | Host | 경로 |
 |------|------|
-| User PWA | CF Pages `ai-profit-web` · `infra/web` · `pnpm cf:deploy:web` |
-| Admin Ops | CF Pages `ai-profit-ops` · `infra/ops` · `pnpm cf:deploy:ops` |
+| User PWA | OpenNext Worker `ai-profit-web` · `infra/web/wrangler.toml` · `pnpm cf:deploy:web` |
+| Admin Ops | OpenNext Worker `ai-profit-ops` · `infra/ops/wrangler.toml` · `pnpm cf:deploy:ops` |
 | API | Nest Node · `infra/api/runtime.json` · `API_HOST` :4000 · web `next.config` rewrites `/api/v1/:path*` → `API_HOST` (`/ads` 보존) |
 | DB | Supabase Seoul · `DATABASE_URL` |
 | Redis | Upstash · `REDIS_URL` |
 | KYC | R2 `kyc-docs` · `infra/r2/kyc-docs.toml` |
 | Bus | Nest **in-process** · NATS/Temporal/EKS **0** |
 
-- SSOT: `infra/hosts.manifest.json` · cutover: `infra/phase0-migration-playbook.md`
+- Origin SSOT: `infra/domain.manifest.json` `openNext.web|ops` · host inventory: `infra/hosts.manifest.json`
+- Deploy: `opennextjs-cloudflare deploy`; `wrangler pages deploy` · `pages_build_output_dir` · `.open-next/cloudflare` deploy root 금지
+- Cutover: `infra/phase0-migration-playbook.md`
 - Verify: `pnpm verify:phase0-bootstrap` (in `verify:gate`)
 - Compose=`pnpm docker:up` **옵션만** (8GB OFF)
 
@@ -107,7 +109,7 @@ apps/web       # Next@16 · User 5탭 · routes.ts lock
 apps/admin     # Next@16 · Admin §9.1+§9.1.1 · routes.ts lock
 packages/      # ui · sdk · schemas (JSON SSOT=/schemas)
 services/      # api-nest · engine-rust · marketing-attribution
-workers/       # push/capi + adapter stubs (Phase1+)
+workers/       # push/capi + adapter stubs (Runtime P1+)
 tooling/verify # CI gates (ia-tabs · admin-routes · next-major-pin)
 ```
 
