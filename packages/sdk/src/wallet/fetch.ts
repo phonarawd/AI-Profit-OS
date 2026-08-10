@@ -3,7 +3,14 @@
  * GET /api/v1/wallet/buckets
  */
 
-import type { WalletBucketsResponse, WalletRequestOpts } from "./types";
+import type {
+  CreateWithdrawInput,
+  WalletBucketsResponse,
+  WalletRequestOpts,
+  WithdrawStepUpChallengeResponse,
+  WithdrawStepUpMethod,
+  WithdrawStepUpVerifyResponse,
+} from "./types";
 
 function apiUrl(apiBase: string, path: string): string {
   const base = (apiBase || "").replace(/\/$/, "");
@@ -64,4 +71,101 @@ export async function fetchWalletBuckets(
   const raw = (await res.json()) as Partial<WalletBucketsResponse> &
     Record<string, unknown>;
   return normalizeWalletBuckets(raw);
+}
+
+async function postJson(
+  path: string,
+  body: Record<string, unknown>,
+  opts: WalletRequestOpts,
+  errorPrefix: string,
+): Promise<unknown> {
+  const headers = await authHeaders(opts);
+  headers["Content-Type"] = "application/json";
+  const res = await fetch(apiUrl(opts.apiBase ?? "", path), {
+    method: "POST",
+    headers,
+    credentials: "include",
+    cache: "no-store",
+    signal: opts.signal,
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    throw new Error(`${errorPrefix}_${res.status}`);
+  }
+  return res.json();
+}
+
+/** PART9f2 — POST /api/v1/wallet/withdraw/step-up/challenge */
+export async function createWithdrawStepUpChallenge(
+  input: { method: WithdrawStepUpMethod; origin?: string; email?: string },
+  opts: WalletRequestOpts = {},
+): Promise<WithdrawStepUpChallengeResponse> {
+  const origin =
+    input.origin ||
+    (typeof window !== "undefined" ? window.location.origin : "");
+  const raw = (await postJson(
+    "/api/v1/wallet/withdraw/step-up/challenge",
+    {
+      method: input.method,
+      origin,
+      email: input.email,
+    },
+    opts,
+    "withdraw_stepup_challenge",
+  )) as WithdrawStepUpChallengeResponse;
+  return raw;
+}
+
+/** PART9f2 — POST /api/v1/wallet/withdraw/step-up/verify */
+export async function verifyWithdrawStepUp(
+  input: {
+    challengeId: string;
+    method: WithdrawStepUpMethod;
+    proof: string;
+    origin?: string;
+  },
+  opts: WalletRequestOpts = {},
+): Promise<WithdrawStepUpVerifyResponse> {
+  const origin =
+    input.origin ||
+    (typeof window !== "undefined" ? window.location.origin : "");
+  return (await postJson(
+    "/api/v1/wallet/withdraw/step-up/verify",
+    {
+      challengeId: input.challengeId,
+      method: input.method,
+      proof: input.proof,
+      origin,
+    },
+    opts,
+    "withdraw_stepup_verify",
+  )) as WithdrawStepUpVerifyResponse;
+}
+
+/** PART9f2 — POST /api/v1/wallet/withdraw (idempotencyKey 필수) */
+export async function createWithdraw(
+  input: CreateWithdrawInput,
+  opts: WalletRequestOpts = {},
+): Promise<unknown> {
+  return postJson(
+    "/api/v1/wallet/withdraw",
+    {
+      mode: input.mode ?? "profit",
+      amountUsdt: input.amountUsdt,
+      asset: input.asset ?? "USDT",
+      destination: input.destination,
+      idempotencyKey: input.idempotencyKey,
+      stepUpToken: input.stepUpToken,
+      principalConfirmToken: input.principalConfirmToken,
+    },
+    opts,
+    "wallet_withdraw",
+  );
+}
+
+export function newWithdrawIdempotencyKey(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return `wd_${crypto.randomUUID().replace(/-/g, "")}`;
+  }
+  return `wd_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 }

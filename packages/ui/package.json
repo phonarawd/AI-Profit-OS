@@ -84,6 +84,8 @@
     "./components/wallet/PrincipalConfirmSheet": "./components/wallet/PrincipalConfirmSheet.tsx",
     "./components/wallet/SuccessBucketCtas": "./components/wallet/SuccessBucketCtas.tsx",
     "./components/wallet/DepositAmountPanel": "./components/wallet/DepositAmountPanel.tsx",
+    "./components/wallet/WithdrawAmountPanel": "./components/wallet/WithdrawAmountPanel.tsx",
+    "./components/wallet/WithdrawStepUpPanel": "./components/wallet/WithdrawStepUpPanel.tsx",
     "./components/wallet/NetworkPlainWarning": "./components/wallet/NetworkPlainWarning.tsx",
     "./components/wallet/DemoWalletBanner": "./components/wallet/DemoWalletBanner.tsx",
     "./components/trust": "./components/trust/index.ts",

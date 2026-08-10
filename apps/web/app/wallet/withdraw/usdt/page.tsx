@@ -3,12 +3,12 @@
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { T } from "@aipo/ui/copy/ko";
-import { useWithdrawKycGate } from "../../../../lib/use-withdraw-kyc-gate";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { WithdrawLiveForm } from "../../../../components/WithdrawLiveForm";
+import { useWithdrawKycGate } from "../../../../lib/use-withdraw-kyc-gate";
 
 /**
- * USDT withdraw entry — default mode=profit (§49.1 E2).
- * Principal path stays linked (E3).
+ * PART9f2 — USDT withdraw · WithdrawAmountPanel + step-up + POST withdraw
  */
 function UsdtWithdrawContent() {
   const searchParams = useSearchParams();
@@ -23,11 +23,14 @@ function UsdtWithdrawContent() {
     returnPath: "/wallet/withdraw/usdt",
   });
 
+  const requirePrincipalConfirm = mode === "principal" || mode === "combined";
+
   return (
     <main
       className="p-6 text-lux-text"
       data-withdraw-default-mode="profit"
       data-withdraw-mode={mode}
+      data-testid="wallet-withdraw-usdt"
     >
       <h1 className="text-xl font-semibold">{T.withdrawMode.pageTitleUsdt}</h1>
       {gate.toastMessage ? (
@@ -44,18 +47,12 @@ function UsdtWithdrawContent() {
           {T.kyc.pendingInline}
         </p>
       ) : null}
-      {gate.allowWithdrawForm ? (
-        <p className="mt-2 text-sm text-lux-text-muted">
-          {T.kyc.approved}
-        </p>
-      ) : null}
-      <p
-        className="mt-3 text-sm text-lux-text-muted"
-        data-testid="withdraw-network-hint"
-        data-network-label={T.wallet.networkName}
-      >
-        {T.wallet.withdrawNetworkHint}
-      </p>
+      <WithdrawLiveForm
+        asset="USDT"
+        mode={mode}
+        requirePrincipalConfirm={requirePrincipalConfirm}
+        allowForm={gate.allowWithdrawForm || !gate.toastMessage}
+      />
       <a
         href="/wallet/withdraw?mode=profit"
         data-testid="usdt-withdraw-profit"

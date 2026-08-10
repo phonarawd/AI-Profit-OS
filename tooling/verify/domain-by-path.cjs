@@ -53,6 +53,15 @@ const RULES = [
     scripts: ["wallet-live-wire.cjs"],
   },
   {
+    test: (f) =>
+      /^apps\/web\/app\/wallet\/withdraw\//.test(f) ||
+      /WithdrawLiveForm/.test(f) ||
+      /WithdrawAmountPanel/.test(f) ||
+      /WithdrawStepUpPanel/.test(f) ||
+      /withdraw-flow-wire/.test(f),
+    scripts: ["withdraw-flow-wire.cjs", "wallet-live-wire.cjs"],
+  },
+  {
     test: (f) => /^apps\/admin\//.test(f),
     scripts: ["no-admin-in-web.cjs", "admin-routes.cjs"],
   },

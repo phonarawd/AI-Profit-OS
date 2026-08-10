@@ -133,7 +133,7 @@ todos:
     status: completed
   - id: part9f2-withdraw-flow-wire
     content: "[grok-4.5|256K] [밀도:무거움·신규화면] PART9f2 §0.9 실측: /wallet/withdraw·/withdraw/usdt·/withdraw/krw 3페이지 금액입력·수수료·step-up UI 0 → WithdrawAmountPanel 신규 + step-up challenge/verify + POST /wallet/withdraw(idempotencyKey) · PrincipalConfirmSheet 토큰=클라랜덤(서버미검증) pointer(재설계=Money 후속·범위 밖) · verify:withdraw-flow-wire · 선행=9f·9-pre2 · **단독 세션 권장**"
-    status: pending
+    status: completed
   - id: part9g-growth-public-api
     content: "[grok-4.5|256K] [밀도:무거움] PART9g §0.9 실측(growth_control≠ticker_mode · 백엔드 설정저장소 0) → 신규 singleton growth_ticker_config(ticker_mode/counter_mode default off·RLS ON) + Nest GET /api/v1/growth/public-surface(read-only·PII 마스킹 서버측·ledgerTotal=settlement.completed aggregate only) · Owns=growth config read · verify:growth-public-surface · **완료조건: Admin 04 §9.2 교차표 테이블명 pointer 동기**(admin-growth-ticker-organic=후속 PATCH+Organic Hybrid · apps/admin 코드0) · **단독 세션 권장**"
     status: pending
@@ -372,7 +372,7 @@ isProject: false
 | 9d | part9d-home-principal-slots | **무거움** | `home-principal-slots`: HomePrincipalRail+Canon+lux-feed-grid | B/D 슬롯 **0** | **COMPLETED** · verify:home-principal-slots PASS · 재작성 금지 |
 | 9e | part9e-profits-detail-wire | **가벼움** | `profits-live-wire`: /profits·/profits/[id] | 골격 위주 | **COMPLETED** · verify PASS · 재작성 금지 |
 | 9f | part9f-wallet-live-wire | **가벼움** | `wallet-live-wire`: buckets 조회+sdk/wallet | buckets 미배선 | **COMPLETED** · verify PASS · 재작성 금지 |
-| 9f2 | part9f2-withdraw-flow-wire | **무거움·신규화면** | `withdraw-flow-wire`: 금액·수수료·step-up·POST withdraw | 출금 3페이지 UI **0** | WithdrawAmountPanel+step-up · **단독 권장** |
+| 9f2 | part9f2-withdraw-flow-wire | **무거움·신규화면** | `withdraw-flow-wire`: 금액·수수료·step-up·POST withdraw | 출금 3페이지 UI **0** | **COMPLETED** · verify PASS · 재작성 금지 |
 | 9g | part9g-growth-public-api | **무거움** | `growth-public-surface`: growth_ticker_config+GET public-surface | ticker 설정 저장소 **0**(`growth_control`≠mode) | DDL+Nest read · Admin §9.2 **pointer만** · **단독 권장** |
 | 9h | part9h-home-ticker-wire | **가벼움** | `ticker-pii-0`+home-live-wire 회귀 | ticker/counter `mode="off"` 하드코드 | 9g API 투영 · **9h·9i 묶기 OK** |
 | 9i | part9i-stub-page-actions | **가벼움** | deposit/kyc/support 해당 verify + `no-it-jargon` | stub 버튼·§0.6 pointer | withdraw≠본 todo(9f2) · **9h·9i 묶기 OK** |

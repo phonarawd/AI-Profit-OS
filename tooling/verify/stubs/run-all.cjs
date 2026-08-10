@@ -125,6 +125,7 @@ const live = [
   "home-principal-slots.cjs",
   "profits-live-wire.cjs",
   "wallet-live-wire.cjs",
+  "withdraw-flow-wire.cjs",
   // PART8b §51.16~21 trust surfaces · Weekly Market Briefing
   "market-briefing-no-investment-advice.cjs",
   "participate-proof.cjs",

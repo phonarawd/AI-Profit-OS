@@ -54,8 +54,16 @@ export {
 } from "./user-feed";
 
 export {
+  createWithdraw,
+  createWithdrawStepUpChallenge,
   fetchWalletBuckets,
+  newWithdrawIdempotencyKey,
   normalizeWalletBuckets,
+  verifyWithdrawStepUp,
+  type CreateWithdrawInput,
   type WalletBucketsResponse,
   type WalletRequestOpts,
+  type WithdrawStepUpChallengeResponse,
+  type WithdrawStepUpMethod,
+  type WithdrawStepUpVerifyResponse,
 } from "./wallet";

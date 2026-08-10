@@ -9,8 +9,9 @@ import {
   type WithdrawModeValue,
 } from "@aipo/ui/components/wallet/WithdrawModeCards";
 import { T } from "@aipo/ui/copy/ko";
-import { useWithdrawKycGate } from "../../../lib/use-withdraw-kyc-gate";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { WithdrawLiveForm } from "../../../components/WithdrawLiveForm";
+import { useWithdrawKycGate } from "../../../lib/use-withdraw-kyc-gate";
 
 function resolveMode(raw: string | null): WithdrawModeValue {
   if (raw === "principal" || raw === "combined") return raw;
@@ -99,32 +100,24 @@ function WithdrawContent() {
 
       <WithdrawModeCards mode={mode} onModeChange={setMode} />
 
-      <p className="mt-4 text-sm text-lux-text-muted">
-        {T.withdrawMode.amountLabel}
-      </p>
-      <p className="mt-1 text-xs text-lux-text-muted">
-        {T.withdrawMode.feeHint}
-      </p>
-
-      {gate.allowWithdrawForm || !gate.toastMessage ? (
+      {requirePrincipalConfirm && !principalConfirmToken ? (
         <button
           type="button"
-          data-testid="withdraw-primary-cta"
-          data-mode={mode}
-          className="mt-6 w-full rounded-lux-md bg-lux-accent px-4 py-3 text-sm font-semibold text-lux-bg"
-          onClick={() => {
-            if (requirePrincipalConfirm && !principalConfirmToken) {
-              setSheetOpen(true);
-              return;
-            }
-            // Intent submit = withdraw-auth wiring · mode+token locked here
-          }}
+          data-testid="withdraw-open-principal-sheet"
+          className="mt-4 w-full rounded-lux-md border border-lux-border px-4 py-3 text-sm text-lux-text"
+          onClick={() => setSheetOpen(true)}
         >
-          {mode === "profit"
-            ? T.withdrawMode.ctaProfitWithdraw
-            : T.withdrawMode.ctaStillPrincipal}
+          {T.withdrawMode.ctaOpenPrincipal}
         </button>
       ) : null}
+
+      <WithdrawLiveForm
+        asset="USDT"
+        mode={mode}
+        principalConfirmToken={principalConfirmToken}
+        requirePrincipalConfirm={requirePrincipalConfirm}
+        allowForm={gate.allowWithdrawForm || !gate.toastMessage}
+      />
 
       {principalConfirmToken ? (
         <p

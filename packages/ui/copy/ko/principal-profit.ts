@@ -40,6 +40,18 @@ export const withdrawMode = {
   ctaStillPrincipal: "그래도 원금 출금",
   amountLabel: "출금 금액",
   feeHint: "네트워크 수수료가 빠질 수 있어요",
+  feeLine: "예상 수수료 {fee} USDT",
+  destinationLabel: "받는 주소",
+  destinationPlaceholder: "테더(USDT) 주소",
+  stepUpTitle: "출금 확인",
+  stepUpHint: "본인 확인 후 출금이 진행돼요",
+  stepUpPinLabel: "출금 비밀번호",
+  stepUpCodeLabel: "확인 코드",
+  stepUpChallenge: "확인 요청",
+  stepUpVerify: "확인하기",
+  ctaSubmit: "출금 신청",
+  submitOk: "출금 신청을 접수했어요",
+  submitFail: "출금을 진행하지 못했어요. 잠시 후 다시 해 주세요",
 } as const;
 
 export const successBucketCta = {

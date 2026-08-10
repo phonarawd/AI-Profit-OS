@@ -3,12 +3,12 @@
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { T } from "@aipo/ui/copy/ko";
-import { useWithdrawKycGate } from "../../../../lib/use-withdraw-kyc-gate";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { WithdrawLiveForm } from "../../../../components/WithdrawLiveForm";
+import { useWithdrawKycGate } from "../../../../lib/use-withdraw-kyc-gate";
 
 /**
- * KRW withdraw entry — default mode=profit (§49.1 E2).
- * Principal path stays linked (E3).
+ * PART9f2 — KRW withdraw · WithdrawAmountPanel + step-up + POST withdraw
  */
 function KrwWithdrawContent() {
   const searchParams = useSearchParams();
@@ -23,11 +23,14 @@ function KrwWithdrawContent() {
     returnPath: "/wallet/withdraw/krw",
   });
 
+  const requirePrincipalConfirm = mode === "principal" || mode === "combined";
+
   return (
     <main
       className="p-6 text-lux-text"
       data-withdraw-default-mode="profit"
       data-withdraw-mode={mode}
+      data-testid="wallet-withdraw-krw"
     >
       <h1 className="text-xl font-semibold">{T.withdrawMode.pageTitleKrw}</h1>
       {gate.toastMessage ? (
@@ -44,11 +47,12 @@ function KrwWithdrawContent() {
           {T.kyc.pendingInline}
         </p>
       ) : null}
-      {gate.allowWithdrawForm ? (
-        <p className="mt-2 text-sm text-lux-text-muted">
-          {T.kyc.approved}
-        </p>
-      ) : null}
+      <WithdrawLiveForm
+        asset="KRW"
+        mode={mode}
+        requirePrincipalConfirm={requirePrincipalConfirm}
+        allowForm={gate.allowWithdrawForm || !gate.toastMessage}
+      />
       <a
         href="/wallet/withdraw?mode=profit"
         data-testid="krw-withdraw-profit"
