@@ -96,7 +96,7 @@ export function BottomNav5({ tabs }: { tabs: readonly BottomNavTab[] }) {
               data-tab-href={tab.href}
               data-active={active ? "true" : "false"}
               className={[
-                "touch-target flex flex-1 flex-col items-center gap-0.5 px-2 py-2 text-xs md:flex-row md:gap-3 md:rounded-lux-md md:px-3 md:py-3 md:text-sm",
+                "touch-target flex flex-1 flex-col items-center gap-0.5 px-2 py-2 text-xs md:flex-none md:flex-row md:gap-3 md:rounded-lux-md md:px-3 md:py-3 md:text-sm",
                 active
                   ? "text-lux-accent md:bg-lux-accent md:text-lux-surface"
                   : "text-lux-text-muted md:hover:bg-lux-bg md:hover:text-lux-text",

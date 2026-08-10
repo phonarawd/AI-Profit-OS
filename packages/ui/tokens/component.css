@@ -165,39 +165,25 @@ html[data-font-scale="xl"] {
   flex-direction: column;
   gap: clamp(20px, 3vw, 24px);
   min-width: 0;
-  /* Main 실제 렌더 폭(= 전체 - sidebar - rail) 기준 컨테이너 쿼리 — viewport 기준 하드코딩 열 수 금지 */
-  container-type: inline-size;
-  container-name: home-main;
+  width: 100%;
 }
 
+/**
+ * v1.3.1 수정 — container-type: inline-size + CSS Grid 1fr 트랙 조합에서
+ * 렌더링 엔진에 따라 폭이 min-content(한글 1글자)로 붕괴하는 실측 회귀 발견.
+ * 컨테이너 쿼리 대신 순수 Grid auto-fit/minmax로 교체 — 별도 컨테인먼트 컨텍스트 없이
+ * 그리드 자체 가용 폭만으로 열 수를 정하므로 이 버그 클래스를 원천 차단한다.
+ */
 .home-money-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: var(--space-lux-md, 16px);
-}
-
-@container home-main (min-width: 420px) {
-  .home-money-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 .home-opportunity-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: var(--space-lux-md, 16px);
-}
-
-@container home-main (min-width: 560px) {
-  .home-opportunity-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@container home-main (min-width: 860px) {
-  .home-opportunity-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 .home-right-rail {
