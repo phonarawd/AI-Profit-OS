@@ -1,0 +1,1828 @@
+{
+  "version": "1.0.0",
+  "schema": "governance.platform-redesign.route-contract-matrix.v1",
+  "redesignStage": "R0",
+  "todoId": "platform-redesign-r0-inventory",
+  "measuredAt": "2026-08-10T17:23:34.672Z",
+  "commitSha": "816696e0c100dc8af4745a0ff86c18a2230397b6",
+  "pathSeparator": "/",
+  "classificationEnum": [
+    "defect",
+    "intentional",
+    "deferred",
+    "missing_fact"
+  ],
+  "counts": {
+    "webRoutes": 41,
+    "adminRoutes": 22,
+    "total": 63,
+    "byClassification": {
+      "deferred": 22,
+      "missing_fact": 15,
+      "intentional": 26
+    }
+  },
+  "routes": [
+    {
+      "app": "admin",
+      "logicalRoute": "/",
+      "physicalPage": "apps/admin/app/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes"
+      ],
+      "classification": "intentional",
+      "note": "admin app root entry · Canon wire는 web `/` 와 공유하지 않음"
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin",
+      "physicalPage": "apps/admin/app/admin/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/adapters",
+      "physicalPage": "apps/admin/app/admin/adapters/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "admin-adapters"
+      ],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes",
+        "adapter-matching-kpi"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/ai-logs",
+      "physicalPage": "apps/admin/app/admin/ai-logs/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "admin-ai-logs"
+      ],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/audit",
+      "physicalPage": "apps/admin/app/admin/audit/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/compliance",
+      "physicalPage": "apps/admin/app/admin/compliance/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/execution-policy",
+      "physicalPage": "apps/admin/app/admin/execution-policy/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "admin-execution-policy"
+      ],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes",
+        "match-strictness"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/growth",
+      "physicalPage": "apps/admin/app/admin/growth/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "admin-growth-simulation"
+      ],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/growth/content",
+      "physicalPage": "apps/admin/app/admin/growth/content/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes"
+      ],
+      "classification": "intentional",
+      "note": "legacy redirect → ?tab=content"
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/growth/deposit",
+      "physicalPage": "apps/admin/app/admin/growth/deposit/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes"
+      ],
+      "classification": "intentional",
+      "note": "legacy redirect → ?tab=deposit"
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/growth/ticker",
+      "physicalPage": "apps/admin/app/admin/growth/ticker/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes"
+      ],
+      "classification": "intentional",
+      "note": "legacy redirect → ?tab=ticker"
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/growth/whale",
+      "physicalPage": "apps/admin/app/admin/growth/whale/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes"
+      ],
+      "classification": "intentional",
+      "note": "legacy redirect → ?tab=whale"
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/ledger",
+      "physicalPage": "apps/admin/app/admin/ledger/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "admin-ledger-shadow-replay"
+      ],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes",
+        "shadow-replay-drift"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/opportunities",
+      "physicalPage": "apps/admin/app/admin/opportunities/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes",
+        "asset-image-surface"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/reports/financial",
+      "physicalPage": "apps/admin/app/admin/reports/financial/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/risk",
+      "physicalPage": "apps/admin/app/admin/risk/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/support",
+      "physicalPage": "apps/admin/app/admin/support/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/system-control",
+      "physicalPage": "apps/admin/app/admin/system-control/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "admin-system-control-reserve"
+      ],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes",
+        "simulation-gate"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/users",
+      "physicalPage": "apps/admin/app/admin/users/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/users/[id]",
+      "physicalPage": "apps/admin/app/admin/users/[id]/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes",
+        "admin-user-opportunity-override"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/users/[id]/finance",
+      "physicalPage": "apps/admin/app/admin/users/[id]/finance/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes",
+        "bucket-invariant"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "admin",
+      "logicalRoute": "/admin/wallet",
+      "physicalPage": "apps/admin/app/admin/wallet/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [],
+      "apiHints": [],
+      "ownerPlan": "04-admin",
+      "verifyIds": [
+        "admin-routes",
+        "krw-admin-decide"
+      ],
+      "classification": "intentional",
+      "note": null
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/",
+      "physicalPage": "apps/web/app/page.tsx",
+      "productContract": {
+        "status": "present",
+        "path": "packages/ui/canon/contracts/peotteok-home-visual-contract.v1.md"
+      },
+      "visualContract": {
+        "status": "present",
+        "path": "packages/ui/canon/contracts/peotteok-home-visual-contract.v1.md"
+      },
+      "implementationContract": {
+        "status": "present",
+        "path": "packages/ui/canon/contracts/peotteok-home-visual-implementation-contract.v1.md"
+      },
+      "canonWires": [
+        "day-pulse",
+        "home-principal-slots",
+        "home-visual-v2",
+        "opportunity-card",
+        "public-ticker"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "GET /api/v1/me/day-pulse",
+        "GET /api/v1/opportunities",
+        "GET /api/v1/growth/public-surface"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "home-live-wire",
+        "home-principal-slots",
+        "growth-public-surface",
+        "ticker-pii-0",
+        "ia-tabs",
+        "canon-surfaces"
+      ],
+      "classification": "intentional"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/ads",
+      "physicalPage": "apps/web/app/ads/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "landing-3s"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "06-infra",
+      "verifyIds": [
+        "landing-3s",
+        "marketing-compliance"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/ads/[variant]",
+      "physicalPage": "apps/web/app/ads/[variant]/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "landing-3s"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "06-infra",
+      "verifyIds": [
+        "landing-3s",
+        "marketing-compliance"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/auth/complete-profile",
+      "physicalPage": "apps/web/app/auth/complete-profile/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "auth-complete-profile"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "auth-surfaces"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/auth/login",
+      "physicalPage": "apps/web/app/auth/login/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "auth-login"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "POST /api/v1/auth/*"
+      ],
+      "ownerPlan": "06-infra",
+      "verifyIds": [
+        "auth-surfaces",
+        "auth-flows",
+        "auth-jwt-runtime"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/auth/signup",
+      "physicalPage": "apps/web/app/auth/signup/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "auth-signup"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "POST /api/v1/auth/*"
+      ],
+      "ownerPlan": "06-infra",
+      "verifyIds": [
+        "auth-surfaces",
+        "auth-flows"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/l/[variant]",
+      "physicalPage": "apps/web/app/l/[variant]/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "landing-3s"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "06-infra",
+      "verifyIds": [
+        "landing-3s",
+        "marketing-compliance",
+        "operator-footer"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me",
+      "physicalPage": "apps/web/app/me/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "ia-tabs"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/benefits",
+      "physicalPage": "apps/web/app/me/benefits/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "benefit-hub",
+        "benefit-mission-card"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "GET /api/v1/me/benefits"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "benefit-hub-surfaces",
+        "benefit-no-credits-currency"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/events",
+      "physicalPage": "apps/web/app/me/events/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/guide/faq",
+      "physicalPage": "apps/web/app/me/guide/faq/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/guide/get-usdt",
+      "physicalPage": "apps/web/app/me/guide/get-usdt/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "get-usdt-guide"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "deposit-network-plain-ko"
+      ],
+      "classification": "intentional"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/guide/market-weekly",
+      "physicalPage": "apps/web/app/me/guide/market-weekly/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "market-weekly-briefing"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "market-briefing-no-investment-advice"
+      ],
+      "classification": "intentional"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/guide/partners",
+      "physicalPage": "apps/web/app/me/guide/partners/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "market-partner-trust"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "market-partner-trust"
+      ],
+      "classification": "intentional"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/guide/principal",
+      "physicalPage": "apps/web/app/me/guide/principal/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/guide/revenue",
+      "physicalPage": "apps/web/app/me/guide/revenue/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/guide/usdt",
+      "physicalPage": "apps/web/app/me/guide/usdt/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/inbox",
+      "physicalPage": "apps/web/app/me/inbox/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "ops-inbox"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "ops inbox APIs"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "ops-inbox",
+        "notification-prefs-default-on"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/invite",
+      "physicalPage": "apps/web/app/me/invite/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "invite-home"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "referral APIs"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "invite-explain-surfaces"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/kyc",
+      "physicalPage": "apps/web/app/me/kyc/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "kyc-confirm",
+        "kyc-doc-capture",
+        "kyc-guide"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "POST /api/v1/me/kyc"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "kyc-surfaces",
+        "stub-page-actions",
+        "kyc-withdraw-only"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/legal",
+      "physicalPage": "apps/web/app/me/legal/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/legal/license",
+      "physicalPage": "apps/web/app/me/legal/license/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/legal/oss",
+      "physicalPage": "apps/web/app/me/legal/oss/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/legal/privacy",
+      "physicalPage": "apps/web/app/me/legal/privacy/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/legal/terms",
+      "physicalPage": "apps/web/app/me/legal/terms/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/membership",
+      "physicalPage": "apps/web/app/me/membership/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "membership-home"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "GET /api/v1/me/membership"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "membership-surfaces",
+        "membership-badge-assets"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/peotteok",
+      "physicalPage": "apps/web/app/me/peotteok/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "peotteok-chat"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko/peotteok.ts"
+      ],
+      "apiHints": [
+        "SSE peotteok coach"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "ai-coach-ui",
+        "ai-coach-fact-only"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/settings",
+      "physicalPage": "apps/web/app/me/settings/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/strategies",
+      "physicalPage": "apps/web/app/me/strategies/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/me/support",
+      "physicalPage": "apps/web/app/me/support/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/onboarding",
+      "physicalPage": "apps/web/app/onboarding/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "onboarding-demo-card",
+        "onboarding-identity"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "onboarding-experiential"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/profits",
+      "physicalPage": "apps/web/app/profits/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "opportunity-card"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "GET /api/v1/opportunities"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "profits-live-wire",
+        "sdk-user-feed",
+        "balance-aware-feed"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/profits/[id]",
+      "physicalPage": "apps/web/app/profits/[id]/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "opportunity-confirm",
+        "opportunity-detail",
+        "preflight-confirm"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "GET /api/v1/opportunities/:id",
+        "POST /api/v1/opportunities/:id/participate"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "profits-live-wire",
+        "margin-compare-surface",
+        "preflight-may-stop",
+        "cta-earn-profit"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/trades",
+      "physicalPage": "apps/web/app/trades/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "GET /api/v1/trades"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "ia-tabs"
+      ],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/trades/[id]/execute",
+      "physicalPage": "apps/web/app/trades/[id]/execute/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "execution-running",
+        "execution-safe-stop",
+        "execution-success"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko/execution.ts"
+      ],
+      "apiHints": [
+        "GET /api/v1/trades/:id",
+        "POST /api/v1/trades/:id/execute-tick"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "execution-surfaces",
+        "trade-execution-hook",
+        "match-tension-surface"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/wallet",
+      "physicalPage": "apps/web/app/wallet/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "wallet-home"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "GET /api/v1/wallet/buckets"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "wallet-live-wire"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/wallet/deposit",
+      "physicalPage": "apps/web/app/wallet/deposit/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "wallet-deposit"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "GET /api/v1/wallet/my-deposit-address"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "stub-page-actions",
+        "deposit-network-plain-ko"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/wallet/history",
+      "physicalPage": "apps/web/app/wallet/history/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [],
+      "ownerPlan": "03-ui",
+      "verifyIds": [],
+      "classification": "missing_fact"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/wallet/withdraw",
+      "physicalPage": "apps/web/app/wallet/withdraw/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "withdraw-mode"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "POST /api/v1/wallet/withdraw"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "withdraw-flow-wire",
+        "withdraw-mode-default"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/wallet/withdraw/krw",
+      "physicalPage": "apps/web/app/wallet/withdraw/krw/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "POST /api/v1/wallet/withdraw"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "withdraw-flow-wire"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/wallet/withdraw/usdt",
+      "physicalPage": "apps/web/app/wallet/withdraw/usdt/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "POST /api/v1/wallet/withdraw"
+      ],
+      "ownerPlan": "03-ui",
+      "verifyIds": [
+        "withdraw-flow-wire"
+      ],
+      "classification": "deferred"
+    }
+  ],
+  "notes": [
+    "Product/Visual/Implementation Contract · wire · copy · API · owner · verify 상태 인벤토리",
+    "absent/null = 결함 단정이 아님 · defect|intentional|deferred|missing_fact 로만 분류",
+    "구현 수정 0 · R1+ owner 가산에서 matrix 채움"
+  ]
+}

@@ -152,6 +152,7 @@
     "verify:legal-plain-ko": "node tooling/verify/legal-plain-ko.cjs",
     "verify:part5-shell-toast": "node tooling/verify/part5-shell-toast.cjs",
 
+    "verify:platform-redesign-inventory": "node tooling/verify/platform-redesign-inventory.cjs",
     "verify:mockup-governance": "node tooling/verify/mockup-governance.cjs",
     "verify:canon-surfaces": "node tooling/verify/canon-surfaces.cjs",
     "verify:brand-logo-single": "node tooling/verify/brand-logo-single.cjs",

@@ -1,0 +1,1537 @@
+{
+  "version": "1.0.0",
+  "schema": "governance.platform-redesign.baseline.v1",
+  "redesignStage": "R0",
+  "todoId": "platform-redesign-r0-inventory",
+  "measuredAt": "2026-08-10T17:23:34.672Z",
+  "pathSeparator": "/",
+  "commitSha": "816696e0c100dc8af4745a0ff86c18a2230397b6",
+  "dirtyPaths": [
+    ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
+    "governance/platform-redesign/baseline.v1.json",
+    "governance/platform-redesign/route-contract-matrix.v1.json",
+    "package.json",
+    "tooling/verify/CATALOG.md",
+    "tooling/verify/domain-by-path.cjs",
+    "tooling/verify/lib/platform-redesign-measure.cjs",
+    "tooling/verify/platform-redesign-inventory.cjs"
+  ],
+  "counts": {
+    "webLogicalRoutes": 41,
+    "webPhysicalPages": 41,
+    "adminPhysicalPages": 22,
+    "adminTopLevel": 12,
+    "canonPhysicalWires": 38,
+    "canonManifestSurfaces": 33,
+    "wiresNotInManifest": 5,
+    "nestImports": 18,
+    "localMigrations": 30,
+    "remoteMigrations": 30,
+    "brandAssets": 23,
+    "publicBrandAssets": 17,
+    "verifyScripts": 157,
+    "verifyPackageIds": 155,
+    "contracts": 6
+  },
+  "web": {
+    "userTabs": [
+      "/",
+      "/profits",
+      "/trades",
+      "/wallet",
+      "/me"
+    ],
+    "logicalRoutes": [
+      "/",
+      "/ads",
+      "/ads/[variant]",
+      "/auth/complete-profile",
+      "/auth/login",
+      "/auth/signup",
+      "/l/[variant]",
+      "/me",
+      "/me/benefits",
+      "/me/events",
+      "/me/guide/faq",
+      "/me/guide/get-usdt",
+      "/me/guide/market-weekly",
+      "/me/guide/partners",
+      "/me/guide/principal",
+      "/me/guide/revenue",
+      "/me/guide/usdt",
+      "/me/inbox",
+      "/me/invite",
+      "/me/kyc",
+      "/me/legal",
+      "/me/legal/license",
+      "/me/legal/oss",
+      "/me/legal/privacy",
+      "/me/legal/terms",
+      "/me/membership",
+      "/me/peotteok",
+      "/me/settings",
+      "/me/strategies",
+      "/me/support",
+      "/onboarding",
+      "/profits",
+      "/profits/[id]",
+      "/trades",
+      "/trades/[id]/execute",
+      "/wallet",
+      "/wallet/deposit",
+      "/wallet/history",
+      "/wallet/withdraw",
+      "/wallet/withdraw/krw",
+      "/wallet/withdraw/usdt"
+    ],
+    "physicalPages": [
+      {
+        "logicalRoute": "/ads/[variant]",
+        "physicalPage": "apps/web/app/ads/[variant]/page.tsx"
+      },
+      {
+        "logicalRoute": "/ads",
+        "physicalPage": "apps/web/app/ads/page.tsx"
+      },
+      {
+        "logicalRoute": "/auth/complete-profile",
+        "physicalPage": "apps/web/app/auth/complete-profile/page.tsx"
+      },
+      {
+        "logicalRoute": "/auth/login",
+        "physicalPage": "apps/web/app/auth/login/page.tsx"
+      },
+      {
+        "logicalRoute": "/auth/signup",
+        "physicalPage": "apps/web/app/auth/signup/page.tsx"
+      },
+      {
+        "logicalRoute": "/l/[variant]",
+        "physicalPage": "apps/web/app/l/[variant]/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/benefits",
+        "physicalPage": "apps/web/app/me/benefits/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/events",
+        "physicalPage": "apps/web/app/me/events/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/guide/faq",
+        "physicalPage": "apps/web/app/me/guide/faq/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/guide/get-usdt",
+        "physicalPage": "apps/web/app/me/guide/get-usdt/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/guide/market-weekly",
+        "physicalPage": "apps/web/app/me/guide/market-weekly/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/guide/partners",
+        "physicalPage": "apps/web/app/me/guide/partners/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/guide/principal",
+        "physicalPage": "apps/web/app/me/guide/principal/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/guide/revenue",
+        "physicalPage": "apps/web/app/me/guide/revenue/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/guide/usdt",
+        "physicalPage": "apps/web/app/me/guide/usdt/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/inbox",
+        "physicalPage": "apps/web/app/me/inbox/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/invite",
+        "physicalPage": "apps/web/app/me/invite/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/kyc",
+        "physicalPage": "apps/web/app/me/kyc/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/legal/license",
+        "physicalPage": "apps/web/app/me/legal/license/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/legal/oss",
+        "physicalPage": "apps/web/app/me/legal/oss/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/legal",
+        "physicalPage": "apps/web/app/me/legal/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/legal/privacy",
+        "physicalPage": "apps/web/app/me/legal/privacy/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/legal/terms",
+        "physicalPage": "apps/web/app/me/legal/terms/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/membership",
+        "physicalPage": "apps/web/app/me/membership/page.tsx"
+      },
+      {
+        "logicalRoute": "/me",
+        "physicalPage": "apps/web/app/me/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/peotteok",
+        "physicalPage": "apps/web/app/me/peotteok/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/settings",
+        "physicalPage": "apps/web/app/me/settings/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/strategies",
+        "physicalPage": "apps/web/app/me/strategies/page.tsx"
+      },
+      {
+        "logicalRoute": "/me/support",
+        "physicalPage": "apps/web/app/me/support/page.tsx"
+      },
+      {
+        "logicalRoute": "/onboarding",
+        "physicalPage": "apps/web/app/onboarding/page.tsx"
+      },
+      {
+        "logicalRoute": "/",
+        "physicalPage": "apps/web/app/page.tsx"
+      },
+      {
+        "logicalRoute": "/profits/[id]",
+        "physicalPage": "apps/web/app/profits/[id]/page.tsx"
+      },
+      {
+        "logicalRoute": "/profits",
+        "physicalPage": "apps/web/app/profits/page.tsx"
+      },
+      {
+        "logicalRoute": "/trades/[id]/execute",
+        "physicalPage": "apps/web/app/trades/[id]/execute/page.tsx"
+      },
+      {
+        "logicalRoute": "/trades",
+        "physicalPage": "apps/web/app/trades/page.tsx"
+      },
+      {
+        "logicalRoute": "/wallet/deposit",
+        "physicalPage": "apps/web/app/wallet/deposit/page.tsx"
+      },
+      {
+        "logicalRoute": "/wallet/history",
+        "physicalPage": "apps/web/app/wallet/history/page.tsx"
+      },
+      {
+        "logicalRoute": "/wallet",
+        "physicalPage": "apps/web/app/wallet/page.tsx"
+      },
+      {
+        "logicalRoute": "/wallet/withdraw/krw",
+        "physicalPage": "apps/web/app/wallet/withdraw/krw/page.tsx"
+      },
+      {
+        "logicalRoute": "/wallet/withdraw",
+        "physicalPage": "apps/web/app/wallet/withdraw/page.tsx"
+      },
+      {
+        "logicalRoute": "/wallet/withdraw/usdt",
+        "physicalPage": "apps/web/app/wallet/withdraw/usdt/page.tsx"
+      }
+    ]
+  },
+  "admin": {
+    "topLevelCount": 12,
+    "topLevelHrefs": [
+      "/admin",
+      "/admin/opportunities",
+      "/admin/execution-policy",
+      "/admin/adapters",
+      "/admin/wallet",
+      "/admin/ledger",
+      "/admin/users",
+      "/admin/risk",
+      "/admin/compliance",
+      "/admin/system-control",
+      "/admin/ai-logs",
+      "/admin/growth",
+      "/admin/audit"
+    ],
+    "physicalPages": [
+      {
+        "logicalRoute": "/admin/adapters",
+        "physicalPage": "apps/admin/app/admin/adapters/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/ai-logs",
+        "physicalPage": "apps/admin/app/admin/ai-logs/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/audit",
+        "physicalPage": "apps/admin/app/admin/audit/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/compliance",
+        "physicalPage": "apps/admin/app/admin/compliance/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/execution-policy",
+        "physicalPage": "apps/admin/app/admin/execution-policy/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/growth/content",
+        "physicalPage": "apps/admin/app/admin/growth/content/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/growth/deposit",
+        "physicalPage": "apps/admin/app/admin/growth/deposit/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/growth",
+        "physicalPage": "apps/admin/app/admin/growth/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/growth/ticker",
+        "physicalPage": "apps/admin/app/admin/growth/ticker/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/growth/whale",
+        "physicalPage": "apps/admin/app/admin/growth/whale/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/ledger",
+        "physicalPage": "apps/admin/app/admin/ledger/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/opportunities",
+        "physicalPage": "apps/admin/app/admin/opportunities/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin",
+        "physicalPage": "apps/admin/app/admin/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/reports/financial",
+        "physicalPage": "apps/admin/app/admin/reports/financial/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/risk",
+        "physicalPage": "apps/admin/app/admin/risk/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/support",
+        "physicalPage": "apps/admin/app/admin/support/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/system-control",
+        "physicalPage": "apps/admin/app/admin/system-control/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/users/[id]/finance",
+        "physicalPage": "apps/admin/app/admin/users/[id]/finance/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/users/[id]",
+        "physicalPage": "apps/admin/app/admin/users/[id]/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/users",
+        "physicalPage": "apps/admin/app/admin/users/page.tsx"
+      },
+      {
+        "logicalRoute": "/admin/wallet",
+        "physicalPage": "apps/admin/app/admin/wallet/page.tsx"
+      },
+      {
+        "logicalRoute": "/",
+        "physicalPage": "apps/admin/app/page.tsx"
+      }
+    ]
+  },
+  "canon": {
+    "physicalWires": [
+      {
+        "path": "packages/ui/canon/surfaces/admin-adapters.wire.json",
+        "id": "admin-adapters",
+        "route": "/admin/adapters",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/admin-ai-logs.wire.json",
+        "id": "admin-ai-logs",
+        "route": "/admin/ai-logs",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/admin-execution-policy.wire.json",
+        "id": "admin-execution-policy",
+        "route": "/admin/execution-policy",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/admin-growth-simulation.wire.json",
+        "id": "admin-growth-simulation",
+        "route": "/admin/growth?tab=simulation",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/admin-ledger-shadow-replay.wire.json",
+        "id": "admin-ledger-shadow-replay",
+        "route": "/admin/ledger?tab=shadow-replay",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/admin-system-control-reserve.wire.json",
+        "id": "admin-system-control-reserve",
+        "route": "/admin/system-control?tab=reserve",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/auth-complete-profile.wire.json",
+        "id": "auth-complete-profile",
+        "route": "/auth/complete-profile",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/auth-login.wire.json",
+        "id": "auth-login",
+        "route": "/auth/login",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/auth-signup.wire.json",
+        "id": "auth-signup",
+        "route": "/auth/signup",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/benefit-hub.wire.json",
+        "id": "benefit-hub",
+        "route": "/me/benefits",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/benefit-mission-card.wire.json",
+        "id": "benefit-mission-card",
+        "route": "/me/benefits",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/day-pulse.wire.json",
+        "id": "day-pulse",
+        "route": "/",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/execution-running.wire.json",
+        "id": "execution-running",
+        "route": "/trades/[id]/execute",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/execution-safe-stop.wire.json",
+        "id": "execution-safe-stop",
+        "route": "/trades/[id]/execute",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/execution-success.wire.json",
+        "id": "execution-success",
+        "route": "/trades/[id]/execute",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/get-usdt-guide.wire.json",
+        "id": "get-usdt-guide",
+        "route": "/me/guide/get-usdt",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/home-principal-slots.wire.json",
+        "id": "home-principal-slots",
+        "route": "/",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/home-visual-v2.wire.json",
+        "id": "home-visual-v2",
+        "route": "/",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/invite-home.wire.json",
+        "id": "invite-home",
+        "route": "/me/invite",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/kyc-confirm.wire.json",
+        "id": "kyc-confirm",
+        "route": "/me/kyc",
+        "state": "confirm"
+      },
+      {
+        "path": "packages/ui/canon/surfaces/kyc-doc-capture.wire.json",
+        "id": "kyc-doc-capture",
+        "route": "/me/kyc",
+        "state": "doc"
+      },
+      {
+        "path": "packages/ui/canon/surfaces/kyc-guide.wire.json",
+        "id": "kyc-guide",
+        "route": "/me/kyc",
+        "state": "guide"
+      },
+      {
+        "path": "packages/ui/canon/surfaces/landing-3s.wire.json",
+        "id": "landing-3s",
+        "route": "/l/[variant]",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/market-partner-trust.wire.json",
+        "id": "market-partner-trust",
+        "route": "/me/guide/partners",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/market-weekly-briefing.wire.json",
+        "id": "market-weekly-briefing",
+        "route": "/me/guide/market-weekly",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/membership-home.wire.json",
+        "id": "membership-home",
+        "route": "/me/membership",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/onboarding-demo-card.wire.json",
+        "id": "onboarding-demo-card",
+        "route": "/onboarding",
+        "state": "demo_tap"
+      },
+      {
+        "path": "packages/ui/canon/surfaces/onboarding-identity.wire.json",
+        "id": "onboarding-identity",
+        "route": "/onboarding",
+        "state": "identity"
+      },
+      {
+        "path": "packages/ui/canon/surfaces/opportunity-card.wire.json",
+        "id": "opportunity-card",
+        "route": "/",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/opportunity-confirm.wire.json",
+        "id": "opportunity-confirm",
+        "route": "/profits/[id]",
+        "state": "confirm"
+      },
+      {
+        "path": "packages/ui/canon/surfaces/opportunity-detail.wire.json",
+        "id": "opportunity-detail",
+        "route": "/profits/[id]",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/ops-inbox.wire.json",
+        "id": "ops-inbox",
+        "route": "/me/inbox",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/peotteok-chat.wire.json",
+        "id": "peotteok-chat",
+        "route": "/me/peotteok",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/preflight-confirm.wire.json",
+        "id": "preflight-confirm",
+        "route": "/profits/[id]",
+        "state": "preflight"
+      },
+      {
+        "path": "packages/ui/canon/surfaces/public-ticker.wire.json",
+        "id": "public-ticker",
+        "route": "/",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/wallet-deposit.wire.json",
+        "id": "wallet-deposit",
+        "route": "/wallet/deposit",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/wallet-home.wire.json",
+        "id": "wallet-home",
+        "route": "/wallet",
+        "state": null
+      },
+      {
+        "path": "packages/ui/canon/surfaces/withdraw-mode.wire.json",
+        "id": "withdraw-mode",
+        "route": "/wallet/withdraw",
+        "state": null
+      }
+    ],
+    "manifestSurfaces": [
+      {
+        "id": "market-partner-trust",
+        "route": "/me/guide/partners",
+        "wire": "packages/ui/canon/surfaces/market-partner-trust.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "opportunity-card",
+        "route": "/",
+        "wire": "packages/ui/canon/surfaces/opportunity-card.wire.json",
+        "state": null,
+        "aliases": [
+          "/profits"
+        ]
+      },
+      {
+        "id": "opportunity-detail",
+        "route": "/profits/[id]",
+        "wire": "packages/ui/canon/surfaces/opportunity-detail.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "opportunity-confirm",
+        "route": "/profits/[id]",
+        "wire": "packages/ui/canon/surfaces/opportunity-confirm.wire.json",
+        "state": "confirm",
+        "aliases": []
+      },
+      {
+        "id": "execution-running",
+        "route": "/trades/[id]/execute",
+        "wire": "packages/ui/canon/surfaces/execution-running.wire.json",
+        "state": "running",
+        "aliases": []
+      },
+      {
+        "id": "execution-success",
+        "route": "/trades/[id]/execute",
+        "wire": "packages/ui/canon/surfaces/execution-success.wire.json",
+        "state": "success",
+        "aliases": []
+      },
+      {
+        "id": "execution-safe-stop",
+        "route": "/trades/[id]/execute",
+        "wire": "packages/ui/canon/surfaces/execution-safe-stop.wire.json",
+        "state": "safe_stop",
+        "aliases": []
+      },
+      {
+        "id": "admin-execution-policy",
+        "route": "/admin/execution-policy",
+        "wire": "packages/ui/canon/surfaces/admin-execution-policy.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "onboarding-identity",
+        "route": "/onboarding",
+        "wire": "packages/ui/canon/surfaces/onboarding-identity.wire.json",
+        "state": "identity",
+        "aliases": []
+      },
+      {
+        "id": "onboarding-demo-card",
+        "route": "/onboarding",
+        "wire": "packages/ui/canon/surfaces/onboarding-demo-card.wire.json",
+        "state": "demo_tap",
+        "aliases": []
+      },
+      {
+        "id": "auth-login",
+        "route": "/auth/login",
+        "wire": "packages/ui/canon/surfaces/auth-login.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "auth-signup",
+        "route": "/auth/signup",
+        "wire": "packages/ui/canon/surfaces/auth-signup.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "auth-complete-profile",
+        "route": "/auth/complete-profile",
+        "wire": "packages/ui/canon/surfaces/auth-complete-profile.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "peotteok-chat",
+        "route": "/me/peotteok",
+        "wire": "packages/ui/canon/surfaces/peotteok-chat.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "invite-home",
+        "route": "/me/invite",
+        "wire": "packages/ui/canon/surfaces/invite-home.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "benefit-hub",
+        "route": "/me/benefits",
+        "wire": "packages/ui/canon/surfaces/benefit-hub.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "benefit-mission-card",
+        "route": "/me/benefits",
+        "wire": "packages/ui/canon/surfaces/benefit-mission-card.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "get-usdt-guide",
+        "route": "/me/guide/get-usdt",
+        "wire": "packages/ui/canon/surfaces/get-usdt-guide.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "market-weekly-briefing",
+        "route": "/me/guide/market-weekly",
+        "wire": "packages/ui/canon/surfaces/market-weekly-briefing.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "membership-home",
+        "route": "/me/membership",
+        "wire": "packages/ui/canon/surfaces/membership-home.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "ops-inbox",
+        "route": "/me/inbox",
+        "wire": "packages/ui/canon/surfaces/ops-inbox.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "landing-3s",
+        "route": "/l/[variant]",
+        "wire": "packages/ui/canon/surfaces/landing-3s.wire.json",
+        "state": null,
+        "aliases": [
+          "/ads",
+          "/ads/[variant]"
+        ]
+      },
+      {
+        "id": "kyc-guide",
+        "route": "/me/kyc",
+        "wire": "packages/ui/canon/surfaces/kyc-guide.wire.json",
+        "state": "guide",
+        "aliases": []
+      },
+      {
+        "id": "kyc-doc-capture",
+        "route": "/me/kyc",
+        "wire": "packages/ui/canon/surfaces/kyc-doc-capture.wire.json",
+        "state": "doc",
+        "aliases": []
+      },
+      {
+        "id": "kyc-confirm",
+        "route": "/me/kyc",
+        "wire": "packages/ui/canon/surfaces/kyc-confirm.wire.json",
+        "state": "confirm",
+        "aliases": []
+      },
+      {
+        "id": "public-ticker",
+        "route": "/",
+        "wire": "packages/ui/canon/surfaces/public-ticker.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "day-pulse",
+        "route": "/",
+        "wire": "packages/ui/canon/surfaces/day-pulse.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "home-principal-slots",
+        "route": "/",
+        "wire": "packages/ui/canon/surfaces/home-principal-slots.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "home-visual-v2",
+        "route": "/",
+        "wire": "packages/ui/canon/surfaces/home-visual-v2.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "preflight-confirm",
+        "route": "/profits/[id]",
+        "wire": "packages/ui/canon/surfaces/preflight-confirm.wire.json",
+        "state": "preflight",
+        "aliases": []
+      },
+      {
+        "id": "wallet-home",
+        "route": "/wallet",
+        "wire": "packages/ui/canon/surfaces/wallet-home.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "wallet-deposit",
+        "route": "/wallet/deposit",
+        "wire": "packages/ui/canon/surfaces/wallet-deposit.wire.json",
+        "state": null,
+        "aliases": []
+      },
+      {
+        "id": "withdraw-mode",
+        "route": "/wallet/withdraw",
+        "wire": "packages/ui/canon/surfaces/withdraw-mode.wire.json",
+        "state": null,
+        "aliases": []
+      }
+    ],
+    "wiresNotInManifest": [
+      "packages/ui/canon/surfaces/admin-adapters.wire.json",
+      "packages/ui/canon/surfaces/admin-ai-logs.wire.json",
+      "packages/ui/canon/surfaces/admin-growth-simulation.wire.json",
+      "packages/ui/canon/surfaces/admin-ledger-shadow-replay.wire.json",
+      "packages/ui/canon/surfaces/admin-system-control-reserve.wire.json"
+    ],
+    "contracts": [
+      "packages/ui/canon/contracts/ADR-017-peotteok-home-light-theme.md",
+      "packages/ui/canon/contracts/home-visual-implementation-mapping.v1.md",
+      "packages/ui/canon/contracts/peotteok-home-conflict-resolution.v1.md",
+      "packages/ui/canon/contracts/peotteok-home-implementation-gate.v1.md",
+      "packages/ui/canon/contracts/peotteok-home-visual-contract.v1.md",
+      "packages/ui/canon/contracts/peotteok-home-visual-implementation-contract.v1.md"
+    ]
+  },
+  "nest": {
+    "appModulePath": "services/api-nest/src/app.module.ts",
+    "imports": [
+      "EventsModule",
+      "LedgerModule",
+      "WalletModule",
+      "GrowthModule",
+      "ComplianceModule",
+      "RiskModule",
+      "ReferralModule",
+      "MissionModule",
+      "OpportunitiesModule",
+      "TradesModule",
+      "ExecutionPolicyModule",
+      "MembershipModule",
+      "InboxModule",
+      "LoopModule",
+      "AdaptersModule",
+      "SimulationModule",
+      "AiModule",
+      "AuthModule"
+    ]
+  },
+  "migrations": {
+    "localPaths": [
+      "supabase/migrations/20260808205842_extensions_vector.sql",
+      "supabase/migrations/20260808205844_identity_nest_auth.sql",
+      "supabase/migrations/20260808205846_ledger_accounts_journals.sql",
+      "supabase/migrations/20260808205848_wallet_deposit_withdraw.sql",
+      "supabase/migrations/20260808205850_opportunities_pricing.sql",
+      "supabase/migrations/20260808205853_ai_twin_memory.sql",
+      "supabase/migrations/20260808205857_referral_support_attribution.sql",
+      "supabase/migrations/20260808205901_rls_ledger_guards.sql",
+      "supabase/migrations/20260808210600_rls_security_hardening.sql",
+      "supabase/migrations/20260808224856_auth_oauth_passkey_stage_a_b.sql",
+      "supabase/migrations/20260808234957_deposit_config_fee_min_holding.sql",
+      "supabase/migrations/20260809000351_kyc_decision_audit.sql",
+      "supabase/migrations/20260809001004_withdraw_stepup_auth.sql",
+      "supabase/migrations/20260809002330_chain_sweeper.sql",
+      "supabase/migrations/20260809003413_risk_p49_abuse.sql",
+      "supabase/migrations/20260809010541_practice_grants_onboarding.sql",
+      "supabase/migrations/20260809010849_deposit_disputes.sql",
+      "supabase/migrations/20260809010858_referral_pool_fifo_clawback.sql",
+      "supabase/migrations/20260809023230_market_intelligence.sql",
+      "supabase/migrations/20260809023713_user_opportunity_overrides_schema_align.sql",
+      "supabase/migrations/20260809042549_mission_auto_accrual_fanout.sql",
+      "supabase/migrations/20260809100440_execution_policy_feed_audit.sql",
+      "supabase/migrations/20260809101114_user_membership_match_policy.sql",
+      "supabase/migrations/20260809102109_simulation_engine_m05_platform_reserve.sql",
+      "supabase/migrations/20260809103208_ai_feature_platform_pick_eval_shadow.sql",
+      "supabase/migrations/20260809142108_execution_policy_day1_bootstrap.sql",
+      "supabase/migrations/20260809143754_user_opportunity_overrides_pin_cap_search_path.sql",
+      "supabase/migrations/20260809144814_catalog_runtime_day1_fx_bootstrap.sql",
+      "supabase/migrations/20260809222034_ops_inbox_hide_source_event.sql",
+      "supabase/migrations/20260810024643_growth_ticker_config.sql"
+    ],
+    "localVersions": [
+      "20260808205842",
+      "20260808205844",
+      "20260808205846",
+      "20260808205848",
+      "20260808205850",
+      "20260808205853",
+      "20260808205857",
+      "20260808205901",
+      "20260808210600",
+      "20260808224856",
+      "20260808234957",
+      "20260809000351",
+      "20260809001004",
+      "20260809002330",
+      "20260809003413",
+      "20260809010541",
+      "20260809010849",
+      "20260809010858",
+      "20260809023230",
+      "20260809023713",
+      "20260809042549",
+      "20260809100440",
+      "20260809101114",
+      "20260809102109",
+      "20260809103208",
+      "20260809142108",
+      "20260809143754",
+      "20260809144814",
+      "20260809222034",
+      "20260810024643"
+    ],
+    "remoteFixturePath": "tooling/verify/fixtures/migrations-applied.v1.json",
+    "remoteVersions": [
+      "20260808205842",
+      "20260808205844",
+      "20260808205846",
+      "20260808205848",
+      "20260808205850",
+      "20260808205853",
+      "20260808205857",
+      "20260808205901",
+      "20260808210600",
+      "20260808224856",
+      "20260808234957",
+      "20260809000351",
+      "20260809001004",
+      "20260809002330",
+      "20260809003413",
+      "20260809010541",
+      "20260809010849",
+      "20260809010858",
+      "20260809023230",
+      "20260809023713",
+      "20260809042549",
+      "20260809100440",
+      "20260809101114",
+      "20260809102109",
+      "20260809103208",
+      "20260809142108",
+      "20260809143754",
+      "20260809144814",
+      "20260809222034",
+      "20260810024643"
+    ]
+  },
+  "assets": {
+    "brandManifestPath": "packages/ui/brand/brand.manifest.json",
+    "brandAssetPaths": [
+      "packages/ui/brand/assets/ai/avatar-512.png",
+      "packages/ui/brand/assets/ai/hero-illustration-desktop.avif",
+      "packages/ui/brand/assets/ai/hero-illustration-desktop.webp",
+      "packages/ui/brand/assets/ai/hero-illustration-mobile.avif",
+      "packages/ui/brand/assets/ai/hero-illustration-mobile.webp",
+      "packages/ui/brand/assets/icons/app-icon-1024.png",
+      "packages/ui/brand/assets/icons/maskable-source-1024.png",
+      "packages/ui/brand/assets/markets/amazon.svg",
+      "packages/ui/brand/assets/markets/coingecko.svg",
+      "packages/ui/brand/assets/markets/ebay.svg",
+      "packages/ui/brand/assets/markets/frankfurter.svg",
+      "packages/ui/brand/assets/markets/manifest.json",
+      "packages/ui/brand/assets/markets/pokemontcg.svg",
+      "packages/ui/brand/assets/markets/yahoo-jp.svg",
+      "packages/ui/brand/assets/markets/ygoprodeck.svg",
+      "packages/ui/brand/assets/membership/core.svg",
+      "packages/ui/brand/assets/membership/entry.svg",
+      "packages/ui/brand/assets/membership/high.svg",
+      "packages/ui/brand/assets/membership/manifest.json",
+      "packages/ui/brand/assets/membership/sprout.svg",
+      "packages/ui/brand/assets/membership/vip.svg",
+      "packages/ui/brand/assets/og/og-default.png",
+      "packages/ui/brand/assets/wordmark/wordmark-dark.png"
+    ],
+    "publicBrandPaths": [
+      "apps/web/public/brand/assets/ai/avatar-512.png",
+      "apps/web/public/brand/assets/ai/hero-illustration-desktop.avif",
+      "apps/web/public/brand/assets/ai/hero-illustration-desktop.webp",
+      "apps/web/public/brand/assets/ai/hero-illustration-mobile.avif",
+      "apps/web/public/brand/assets/ai/hero-illustration-mobile.webp",
+      "apps/web/public/brand/assets/markets/amazon.svg",
+      "apps/web/public/brand/assets/markets/coingecko.svg",
+      "apps/web/public/brand/assets/markets/ebay.svg",
+      "apps/web/public/brand/assets/markets/frankfurter.svg",
+      "apps/web/public/brand/assets/markets/pokemontcg.svg",
+      "apps/web/public/brand/assets/markets/yahoo-jp.svg",
+      "apps/web/public/brand/assets/markets/ygoprodeck.svg",
+      "apps/web/public/brand/assets/membership/core.svg",
+      "apps/web/public/brand/assets/membership/entry.svg",
+      "apps/web/public/brand/assets/membership/high.svg",
+      "apps/web/public/brand/assets/membership/sprout.svg",
+      "apps/web/public/brand/assets/membership/vip.svg"
+    ]
+  },
+  "verify": {
+    "scriptPaths": [
+      "tooling/verify/adapter-matching-kpi.cjs",
+      "tooling/verify/admin-routes.cjs",
+      "tooling/verify/admin-user-opportunity-override.cjs",
+      "tooling/verify/age-tone-surfaces.cjs",
+      "tooling/verify/ai-coach-fact-only.cjs",
+      "tooling/verify/ai-coach-no-autonomy.cjs",
+      "tooling/verify/ai-coach-ui.cjs",
+      "tooling/verify/ai-feature-platform.cjs",
+      "tooling/verify/ai-general-no-money-tools.cjs",
+      "tooling/verify/ai-lane-router.cjs",
+      "tooling/verify/answer-trace.cjs",
+      "tooling/verify/api-nest-build.cjs",
+      "tooling/verify/arbitrage-type-label.cjs",
+      "tooling/verify/asset-image-surface.cjs",
+      "tooling/verify/auth-flows.cjs",
+      "tooling/verify/auth-jwt-runtime.cjs",
+      "tooling/verify/auth-session-cookie.cjs",
+      "tooling/verify/auth-surfaces.cjs",
+      "tooling/verify/balance-aware-feed.cjs",
+      "tooling/verify/benefit-g4-ledger-separation.cjs",
+      "tooling/verify/benefit-hub-surfaces.cjs",
+      "tooling/verify/benefit-no-credits-currency.cjs",
+      "tooling/verify/brand-assets.cjs",
+      "tooling/verify/brand-consumer.cjs",
+      "tooling/verify/brand-logo-single.cjs",
+      "tooling/verify/bucket-invariant.cjs",
+      "tooling/verify/canon-surfaces.cjs",
+      "tooling/verify/capital-tier-catalog.cjs",
+      "tooling/verify/catalog-runtime-seed.cjs",
+      "tooling/verify/cf-deploy-packages.cjs",
+      "tooling/verify/cf-infra.cjs",
+      "tooling/verify/cta-earn-profit.cjs",
+      "tooling/verify/cute-emoji-palette.cjs",
+      "tooling/verify/dark-leak-guard.cjs",
+      "tooling/verify/day-pulse-live-only.cjs",
+      "tooling/verify/deposit-ai-template-path.cjs",
+      "tooling/verify/deposit-confirm-stages.cjs",
+      "tooling/verify/deposit-network-plain-ko.cjs",
+      "tooling/verify/domain-bootstrap.cjs",
+      "tooling/verify/domain-by-path.cjs",
+      "tooling/verify/email-provider-resend.cjs",
+      "tooling/verify/execute-rule-loop.cjs",
+      "tooling/verify/execution-surfaces.cjs",
+      "tooling/verify/fact-freshness.cjs",
+      "tooling/verify/font-scale-three.cjs",
+      "tooling/verify/fx-snapshot-formula.cjs",
+      "tooling/verify/gate-fast.cjs",
+      "tooling/verify/gate-push.cjs",
+      "tooling/verify/gate-runner.cjs",
+      "tooling/verify/gate-tiers.cjs",
+      "tooling/verify/gate.cjs",
+      "tooling/verify/growth-public-surface.cjs",
+      "tooling/verify/home-live-wire.cjs",
+      "tooling/verify/home-principal-slots.cjs",
+      "tooling/verify/ia-tabs.cjs",
+      "tooling/verify/invite-explain-surfaces.cjs",
+      "tooling/verify/korean-ui.cjs",
+      "tooling/verify/krw-admin-decide.cjs",
+      "tooling/verify/kyc-r2-only.cjs",
+      "tooling/verify/kyc-redirect.cjs",
+      "tooling/verify/kyc-surfaces.cjs",
+      "tooling/verify/kyc-withdraw-only.cjs",
+      "tooling/verify/landing-3s.cjs",
+      "tooling/verify/legal-plain-ko.cjs",
+      "tooling/verify/listing-legs-day1.cjs",
+      "tooling/verify/llm-adapter-contract.cjs",
+      "tooling/verify/llm-quota-degrade.cjs",
+      "tooling/verify/loop-psychology.cjs",
+      "tooling/verify/lux-theme-sync.cjs",
+      "tooling/verify/luxury-bag-vertical.cjs",
+      "tooling/verify/margin-compare-surface.cjs",
+      "tooling/verify/market-briefing-no-investment-advice.cjs",
+      "tooling/verify/market-intel-engine.cjs",
+      "tooling/verify/market-partner-adapters.cjs",
+      "tooling/verify/market-partner-trust.cjs",
+      "tooling/verify/marketing-compliance.cjs",
+      "tooling/verify/match-strictness.cjs",
+      "tooling/verify/match-success-rule.cjs",
+      "tooling/verify/match-tension-surface.cjs",
+      "tooling/verify/membership-badge-assets.cjs",
+      "tooling/verify/membership-daily-cap.cjs",
+      "tooling/verify/membership-ladder.cjs",
+      "tooling/verify/membership-surfaces.cjs",
+      "tooling/verify/migrations-applied-parity.cjs",
+      "tooling/verify/min-holding-scope.cjs",
+      "tooling/verify/mission-auto-payout.cjs",
+      "tooling/verify/mission-idempotency.cjs",
+      "tooling/verify/mission-no-manual-grant.cjs",
+      "tooling/verify/mockup-governance.cjs",
+      "tooling/verify/next-build.cjs",
+      "tooling/verify/next-major-pin.cjs",
+      "tooling/verify/no-admin-in-web.cjs",
+      "tooling/verify/no-ai-data-in-git.cjs",
+      "tooling/verify/no-fulfill-rate-as-rule.cjs",
+      "tooling/verify/no-it-jargon.cjs",
+      "tooling/verify/no-per-address-poll.cjs",
+      "tooling/verify/no-success-rate-as-rule.cjs",
+      "tooling/verify/no-success-rate-percent.cjs",
+      "tooling/verify/notification-prefs-default-on.cjs",
+      "tooling/verify/objection4.cjs",
+      "tooling/verify/onboarding-experiential.cjs",
+      "tooling/verify/only-pnpm.cjs",
+      "tooling/verify/opennext-build.cjs",
+      "tooling/verify/opennext-workers-origin.cjs",
+      "tooling/verify/operator-footer.cjs",
+      "tooling/verify/opportunity-scan-surface.cjs",
+      "tooling/verify/ops-inbox.cjs",
+      "tooling/verify/part5-shell-toast.cjs",
+      "tooling/verify/participate-http.cjs",
+      "tooling/verify/participate-proof.cjs",
+      "tooling/verify/pg-module-scan.cjs",
+      "tooling/verify/phase0-bootstrap.cjs",
+      "tooling/verify/plans-ssot.cjs",
+      "tooling/verify/platform-redesign-inventory.cjs",
+      "tooling/verify/practice-non-withdrawable.cjs",
+      "tooling/verify/preflight-may-stop.cjs",
+      "tooling/verify/pricing-formula.cjs",
+      "tooling/verify/principal-profit-abuse.cjs",
+      "tooling/verify/principal-withdraw-reachable.cjs",
+      "tooling/verify/product-image.cjs",
+      "tooling/verify/profits-live-wire.cjs",
+      "tooling/verify/referral-idempotency.cjs",
+      "tooling/verify/referral-ladder.cjs",
+      "tooling/verify/referral-ledger.cjs",
+      "tooling/verify/referral-pool-fifo.cjs",
+      "tooling/verify/referral-unlimited-invites.cjs",
+      "tooling/verify/responsive.cjs",
+      "tooling/verify/root-domain-env.cjs",
+      "tooling/verify/sdk-user-feed.cjs",
+      "tooling/verify/secrets.cjs",
+      "tooling/verify/shadow-replay-drift.cjs",
+      "tooling/verify/share-copy.cjs",
+      "tooling/verify/signup-ready-adapters.cjs",
+      "tooling/verify/simulation-gate.cjs",
+      "tooling/verify/soft-hard-requeue-sla.cjs",
+      "tooling/verify/stack-lock.cjs",
+      "tooling/verify/stub-page-actions.cjs",
+      "tooling/verify/sweeper-trx-guard.cjs",
+      "tooling/verify/tailwind-v4.cjs",
+      "tooling/verify/tax-disclaimer.cjs",
+      "tooling/verify/ticker-pii-0.cjs",
+      "tooling/verify/toast-emoji.cjs",
+      "tooling/verify/trade-execution-hook.cjs",
+      "tooling/verify/trading-card-vertical.cjs",
+      "tooling/verify/trust-copy.cjs",
+      "tooling/verify/twin-fact-separation.cjs",
+      "tooling/verify/ultra-watch-whale.cjs",
+      "tooling/verify/user-opportunity-feed.cjs",
+      "tooling/verify/user-trader-jargon-0.cjs",
+      "tooling/verify/ux-design-system.cjs",
+      "tooling/verify/wallet-kyc-session-auth.cjs",
+      "tooling/verify/wallet-live-wire.cjs",
+      "tooling/verify/webauthn-fallback-pointer.cjs",
+      "tooling/verify/withdraw-fee-ledger.cjs",
+      "tooling/verify/withdraw-flow-wire.cjs",
+      "tooling/verify/withdraw-mode-default.cjs",
+      "tooling/verify/workers-types.cjs"
+    ],
+    "stubPaths": [
+      "tooling/verify/stubs/cta-earn-profit.cjs",
+      "tooling/verify/stubs/match-tension-surface.cjs",
+      "tooling/verify/stubs/run-all.cjs",
+      "tooling/verify/stubs/soft-hard-requeue-sla.cjs",
+      "tooling/verify/stubs/user-trader-jargon-0.cjs"
+    ],
+    "packageScriptIds": [
+      "verify:adapter-matching-kpi",
+      "verify:admin-routes",
+      "verify:admin-user-opportunity-override",
+      "verify:age-tone-surfaces",
+      "verify:ai-coach-fact-only",
+      "verify:ai-coach-no-autonomy",
+      "verify:ai-coach-ui",
+      "verify:ai-feature-platform",
+      "verify:ai-general-no-money-tools",
+      "verify:ai-lane-router",
+      "verify:answer-trace",
+      "verify:api-nest-build",
+      "verify:arbitrage-type-label",
+      "verify:asset-image-surface",
+      "verify:auth-flows",
+      "verify:auth-jwt-runtime",
+      "verify:auth-session-cookie",
+      "verify:auth-surfaces",
+      "verify:balance-aware-feed",
+      "verify:benefit-g4-ledger-separation",
+      "verify:benefit-hub-surfaces",
+      "verify:benefit-no-credits-currency",
+      "verify:brand-assets",
+      "verify:brand-consumer",
+      "verify:brand-logo-single",
+      "verify:bucket-invariant",
+      "verify:canon-surfaces",
+      "verify:capital-tier-catalog",
+      "verify:catalog-runtime-seed",
+      "verify:cf-deploy-packages",
+      "verify:cf-infra",
+      "verify:cta-earn-profit",
+      "verify:cta-match-participate",
+      "verify:cute-emoji-palette",
+      "verify:dark-leak-guard",
+      "verify:day-pulse-live-only",
+      "verify:deposit-ai-template-path",
+      "verify:deposit-confirm-stages",
+      "verify:deposit-network-plain-ko",
+      "verify:domain-bootstrap",
+      "verify:email-provider-resend",
+      "verify:execute-rule-loop",
+      "verify:execution-surfaces",
+      "verify:fact-freshness",
+      "verify:font-scale-three",
+      "verify:fx-snapshot-formula",
+      "verify:gate",
+      "verify:gate:fast",
+      "verify:gate:push",
+      "verify:growth-public-surface",
+      "verify:home-live-wire",
+      "verify:home-principal-slots",
+      "verify:ia-tabs",
+      "verify:invite-explain-surfaces",
+      "verify:korean-ui",
+      "verify:krw-admin-decide",
+      "verify:kyc-r2-only",
+      "verify:kyc-redirect",
+      "verify:kyc-surfaces",
+      "verify:kyc-withdraw-only",
+      "verify:landing-3s",
+      "verify:legal-plain-ko",
+      "verify:listing-legs-day1",
+      "verify:llm-adapter-contract",
+      "verify:llm-quota-degrade",
+      "verify:loop-psychology",
+      "verify:lux-theme-sync",
+      "verify:luxury-bag-vertical",
+      "verify:margin-compare-surface",
+      "verify:market-briefing-no-investment-advice",
+      "verify:market-intel-engine",
+      "verify:market-partner-adapters",
+      "verify:market-partner-trust",
+      "verify:marketing-compliance",
+      "verify:match-strictness",
+      "verify:match-success-rule",
+      "verify:match-tension-surface",
+      "verify:membership-badge-assets",
+      "verify:membership-daily-cap",
+      "verify:membership-ladder",
+      "verify:membership-surfaces",
+      "verify:migrations-applied-parity",
+      "verify:min-holding-scope",
+      "verify:mission-auto-payout",
+      "verify:mission-idempotency",
+      "verify:mission-no-manual-grant",
+      "verify:mockup-governance",
+      "verify:next-build",
+      "verify:next-major-pin",
+      "verify:no-admin-in-web",
+      "verify:no-ai-data-in-git",
+      "verify:no-fulfill-rate-as-rule",
+      "verify:no-it-jargon",
+      "verify:no-per-address-poll",
+      "verify:no-success-rate-as-rule",
+      "verify:no-success-rate-percent",
+      "verify:notification-prefs-default-on",
+      "verify:objection4",
+      "verify:onboarding-experiential",
+      "verify:opennext-build",
+      "verify:opennext-workers-origin",
+      "verify:operator-footer",
+      "verify:opportunity-scan-surface",
+      "verify:ops-inbox",
+      "verify:part5-shell-toast",
+      "verify:participate-http",
+      "verify:participate-proof",
+      "verify:pg-module-scan",
+      "verify:phase0-bootstrap",
+      "verify:plans-ssot",
+      "verify:platform-redesign-inventory",
+      "verify:practice-non-withdrawable",
+      "verify:preflight-may-stop",
+      "verify:pricing-formula",
+      "verify:principal-profit-abuse",
+      "verify:principal-withdraw-reachable",
+      "verify:product-image",
+      "verify:profits-live-wire",
+      "verify:referral-idempotency",
+      "verify:referral-ladder",
+      "verify:referral-ledger",
+      "verify:referral-pool-fifo",
+      "verify:referral-unlimited-invites",
+      "verify:responsive",
+      "verify:root-domain-env",
+      "verify:sdk-user-feed",
+      "verify:secrets",
+      "verify:shadow-replay-drift",
+      "verify:share-copy",
+      "verify:signup-ready-adapters",
+      "verify:simulation-gate",
+      "verify:soft-hard-requeue-sla",
+      "verify:stack-lock",
+      "verify:stub-page-actions",
+      "verify:sweeper-trx-guard",
+      "verify:tailwind-v4",
+      "verify:tax-disclaimer",
+      "verify:ticker-pii-0",
+      "verify:toast-emoji",
+      "verify:tooling",
+      "verify:trade-execution-hook",
+      "verify:trading-card-vertical",
+      "verify:trust-copy",
+      "verify:twin-fact-separation",
+      "verify:ultra-watch-whale",
+      "verify:user-opportunity-feed",
+      "verify:user-trader-jargon-0",
+      "verify:ux-design-system",
+      "verify:wallet-kyc-session-auth",
+      "verify:wallet-live-wire",
+      "verify:webauthn-fallback-pointer",
+      "verify:withdraw-fee-ledger",
+      "verify:withdraw-flow-wire",
+      "verify:withdraw-mode-default",
+      "verify:workers-types"
+    ]
+  },
+  "classifications": [
+    {
+      "id": "cls-external-canon-54-stale",
+      "kind": "intentional",
+      "subject": "external-ref d903eef7 Canon surface count=54",
+      "evidence": {
+        "measuredPhysicalWires": 38,
+        "measuredManifestSurfaces": 33
+      },
+      "note": "외부 초안 수치는 실행 근거가 아님. R0 baseline 실측(wire/manifest 분리)만 증거."
+    },
+    {
+      "id": "cls-external-nest-17-stale",
+      "kind": "intentional",
+      "subject": "external-ref Nest module count=17",
+      "evidence": {
+        "measuredNestImports": 18,
+        "imports": [
+          "EventsModule",
+          "LedgerModule",
+          "WalletModule",
+          "GrowthModule",
+          "ComplianceModule",
+          "RiskModule",
+          "ReferralModule",
+          "MissionModule",
+          "OpportunitiesModule",
+          "TradesModule",
+          "ExecutionPolicyModule",
+          "MembershipModule",
+          "InboxModule",
+          "LoopModule",
+          "AdaptersModule",
+          "SimulationModule",
+          "AiModule",
+          "AuthModule"
+        ]
+      },
+      "note": "AppModule.imports 실측 18 (EventsModule 포함). 외부 17은 stale snapshot."
+    },
+    {
+      "id": "cls-canon-wire-not-in-manifest",
+      "kind": "intentional",
+      "subject": "admin Canon wires absent from manifest.surfaces",
+      "evidence": {
+        "paths": [
+          "packages/ui/canon/surfaces/admin-adapters.wire.json",
+          "packages/ui/canon/surfaces/admin-ai-logs.wire.json",
+          "packages/ui/canon/surfaces/admin-growth-simulation.wire.json",
+          "packages/ui/canon/surfaces/admin-ledger-shadow-replay.wire.json",
+          "packages/ui/canon/surfaces/admin-system-control-reserve.wire.json"
+        ]
+      },
+      "note": "Admin owns 일부 wire는 packages/ui/canon 물리 파일만 존재·manifest 미등재. UI boundary 의도."
+    },
+    {
+      "id": "cls-admin-growth-legacy-pages",
+      "kind": "intentional",
+      "subject": "admin growth legacy physical pages",
+      "evidence": {
+        "paths": [
+          "apps/admin/app/admin/growth/content/page.tsx",
+          "apps/admin/app/admin/growth/deposit/page.tsx",
+          "apps/admin/app/admin/growth/ticker/page.tsx",
+          "apps/admin/app/admin/growth/whale/page.tsx"
+        ]
+      },
+      "note": "GROWTH_LEGACY_REDIRECTS → ?tab= · 이중 IA 금지 잠금. 제거는 Admin R6 deferred."
+    },
+    {
+      "id": "cls-admin-root-page",
+      "kind": "intentional",
+      "subject": "apps/admin/app/page.tsx logicalRoute=/",
+      "evidence": {
+        "physicalPage": "apps/admin/app/page.tsx"
+      },
+      "note": "Admin 앱 루트 엔트리(리다이렉트). 유저 `/`와 혼동 금지 · app=admin으로 분리 계수."
+    },
+    {
+      "id": "cls-public-brand-mirror-subset",
+      "kind": "deferred",
+      "subject": "apps/web/public/brand vs packages/ui/brand/assets",
+      "evidence": {
+        "brandAssets": 23,
+        "publicBrandAssets": 17
+      },
+      "note": "public mirror는 brand kit 부분집합. 동기화·ready 승격은 R1 Preflight Brand (구현 0·분류만)."
+    },
+    {
+      "id": "cls-web-routes-without-canon-wire",
+      "kind": "deferred",
+      "subject": "web logical routes lacking Canon wire binding",
+      "evidence": {
+        "routes": [
+          "/me",
+          "/me/events",
+          "/me/guide/faq",
+          "/me/guide/principal",
+          "/me/guide/revenue",
+          "/me/guide/usdt",
+          "/me/legal",
+          "/me/legal/license",
+          "/me/legal/oss",
+          "/me/legal/privacy",
+          "/me/legal/terms",
+          "/me/settings",
+          "/me/strategies",
+          "/me/support",
+          "/trades",
+          "/wallet/history",
+          "/wallet/withdraw/krw",
+          "/wallet/withdraw/usdt"
+        ]
+      },
+      "note": "Contract/wire 부재 route는 R1~R5 owner 가산에서 채움. R0는 분류만."
+    },
+    {
+      "id": "cls-home-product-visual-contracts-present",
+      "kind": "intentional",
+      "subject": "Home Product/Visual/Implementation contracts",
+      "evidence": {
+        "paths": [
+          "packages/ui/canon/contracts/ADR-017-peotteok-home-light-theme.md",
+          "packages/ui/canon/contracts/home-visual-implementation-mapping.v1.md",
+          "packages/ui/canon/contracts/peotteok-home-conflict-resolution.v1.md",
+          "packages/ui/canon/contracts/peotteok-home-implementation-gate.v1.md",
+          "packages/ui/canon/contracts/peotteok-home-visual-contract.v1.md",
+          "packages/ui/canon/contracts/peotteok-home-visual-implementation-contract.v1.md"
+        ]
+      },
+      "note": "ADR-017 Home 계약군만 완비. 타 route Contract 부재는 missing_fact/deferred로 분리."
+    },
+    {
+      "id": "cls-non-home-product-contract",
+      "kind": "missing_fact",
+      "subject": "Product Contract path for non-home web routes",
+      "evidence": {
+        "scope": "web logicalRoutes except /"
+      },
+      "note": "route-contract-matrix에 productContract=absent 기록. Fact/State registry(R0-2)에서 채울 여지."
+    },
+    {
+      "id": "cls-migration-parity-locked",
+      "kind": "intentional",
+      "subject": "local/remote migration version parity",
+      "evidence": {
+        "local": 30,
+        "remote": 30
+      },
+      "note": "30=30 · verify:migrations-applied-parity SSOT. 드리프트 0."
+    },
+    {
+      "id": "cls-admin12-locked",
+      "kind": "intentional",
+      "subject": "ADMIN_TOP_LEVEL_COUNT=12",
+      "evidence": {
+        "count": 12,
+        "hrefs": [
+          "/admin",
+          "/admin/opportunities",
+          "/admin/execution-policy",
+          "/admin/adapters",
+          "/admin/wallet",
+          "/admin/ledger",
+          "/admin/users",
+          "/admin/risk",
+          "/admin/compliance",
+          "/admin/system-control",
+          "/admin/ai-logs",
+          "/admin/growth",
+          "/admin/audit"
+        ]
+      },
+      "note": "sidebar 13th top-level FORBIDDEN · verify:admin-routes."
+    },
+    {
+      "id": "cls-ia-tabs-adr017",
+      "kind": "intentional",
+      "subject": "USER_TABS labels 홈·기회·수익·지갑·내정보",
+      "evidence": {
+        "hrefs": [
+          "/",
+          "/profits",
+          "/trades",
+          "/wallet",
+          "/me"
+        ]
+      },
+      "note": "내거래 라벨 폐기 · href 보존 · verify:ia-tabs."
+    }
+  ],
+  "notes": [
+    "문서전용 Forensic · 구현코드 수정 0",
+    "외부 d903eef7 = REFERENCE ONLY · 본 baseline 수치만 실행 증거",
+    "논리 route ≠ 물리 page · Canon physical wire ≠ manifest surface"
+  ]
+}

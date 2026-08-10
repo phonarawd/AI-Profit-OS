@@ -11,6 +11,13 @@ const root = path.resolve(__dirname, "../..");
 const RULES = [
   {
     test: (f) =>
+      /^governance\/platform-redesign\//.test(f) ||
+      /^tooling\/verify\/platform-redesign-inventory\.cjs$/.test(f) ||
+      /^tooling\/verify\/lib\/platform-redesign-measure\.cjs$/.test(f),
+    scripts: ["platform-redesign-inventory.cjs"],
+  },
+  {
+    test: (f) =>
       /^supabase\/migrations\//.test(f) ||
       /^tooling\/verify\/migrations-applied-parity\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/migrations-applied\.v1\.json$/.test(f),
