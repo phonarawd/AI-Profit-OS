@@ -48,7 +48,7 @@
 
 | 경로 패턴 | verify |
 |-----------|--------|
-| `governance/platform-redesign/**` · `tooling/verify/platform-redesign-inventory.cjs` · `tooling/verify/platform-fact-state-registry.cjs` · `tooling/verify/platform-change-control.cjs` · `tooling/verify/lib/platform-redesign-measure.cjs` | platform-redesign-inventory · platform-fact-state-registry · platform-change-control |
+| `governance/platform-redesign/**` · `schemas/governance-observation.v1.json` · `tooling/verify/platform-redesign-inventory.cjs` · `tooling/verify/platform-fact-state-registry.cjs` · `tooling/verify/platform-change-control.cjs` · `tooling/verify/governance-observation-registry.cjs` · `tooling/verify/lib/platform-redesign-measure.cjs` | platform-redesign-inventory · platform-fact-state-registry · platform-change-control · governance-observation-registry |
 | `packages/ui/**` · `apps/web/**` | no-it-jargon · mockup-governance · canon-surfaces |
 | `apps/admin/**` | no-admin-in-web · admin-routes |
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |
@@ -105,6 +105,7 @@
 | platform-redesign-inventory | Index v7.23 R0-1 — Forensic baseline+route-contract-matrix · `governance/platform-redesign/*.v1.json` · classification=`defect\|intentional\|deferred\|missing_fact` only · 구현코드0 · path-trigger — **live** |
 | platform-fact-state-registry | Index v7.23 R0-2 — `fact-state-registry.v1.json` · Fact↔State 반복검증 · commonViewStates⊥domain FSM · reasonCode=`domain.resource.reason` · source/asOf/freshness/owner/provenance 필수 · 구현코드0 · path-trigger — **live** |
 | platform-change-control | Index v7.23 R0-3 — `change-control.v1.md` · L1/L2/L3+version bump · ADR-017 Light+Purple·IA 새 라벨·OpenNext Workers before/after/영향/rollback/승인 증거 · d903eef7 REFERENCE ONLY 흡수 crosswalk · 구현코드0 · path-trigger — **live** |
+| governance-observation-registry | Index v7.23 R0-4 — `schemas/governance-observation.v1.json` + `governance-observations.v1.json` · status=`observed\|deferred\|promoted\|rejected` · currentlyOccurring⊥reviewTrigger · R0 신규 규칙 가상생성0 · handoff 6건 등록·materialize0 · 구현코드0 · path-trigger — **live** |
 | mockup-governance · canon-surfaces · brand-assets · brand-logo-single | UI ADR-013/011 — **live** (photo mockup 0 · Canon wire checklist · Admin owns execution-policy · single Brand Kit) |
 | asset-image-surface · execution-surfaces | Engine §0.0.6 · UI §48.3a — category thumb · `시세 불러오는 중...` (v7.22.20) — **asset-image-surface live** (hydrate·SKU1:1·공개가드·R2·Admin tab=assets · Canon4면) · **execution-surfaces live** (AiProgressRoom·SuccessReceipt·SafeStop·StepList · Soft/Hard3줄 · ProductThumb · execute page 3면) |
 | trade-execution-hook | UI §29.6/§30 · Engine §0.9.2 — `useTradeExecution` Phase0=`POST …/execute-tick` polling · Phase1+ SSE swap inside hook only · StreamPolicy `executionTickMs` · execute page wire — **live** |

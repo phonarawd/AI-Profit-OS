@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/governance-observation.v1.json",
+  "title": "GovernanceObservationV1",
+  "description": "Index v7.23 R0-4 — 외부 감사·실측 finding을 governance observation으로 등록. registry status(observed|deferred|promoted|rejected) · 현재발생여부(currentlyOccurring) · reviewTrigger는 서로 독립 필드. R0에서 신규 규칙 가상생성·todo materialize 금지.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "status",
+    "currentlyOccurring",
+    "reviewTrigger",
+    "invariant",
+    "evidence",
+    "ownerPlan",
+    "classification",
+    "severityNote"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "invariant 중심 kebab-id · solution 이름 금지"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["observed", "deferred", "promoted", "rejected"],
+      "description": "registry 수명주기 상태. currentlyOccurring·reviewTrigger와 혼용 금지"
+    },
+    "currentlyOccurring": {
+      "type": "boolean",
+      "description": "실제 현재 발생 여부(코드/증거 기준). status=deferred여도 true일 수 있음"
+    },
+    "reviewTrigger": {
+      "type": "string",
+      "minLength": 1,
+      "description": "재검토·promotion 판단 시점. currentlyOccurring과 별도 필드여야 함"
+    },
+    "invariant": {
+      "type": "string",
+      "minLength": 1,
+      "description": "무엇이 깨지면 안 되는가(solution 고정 금지)"
+    },
+    "evidence": {
+      "type": "string",
+      "minLength": 1,
+      "description": "경로·라인·게이트 등 실측 근거(canonical /)"
+    },
+    "ownerPlan": {
+      "type": "string",
+      "enum": ["00-index", "01-money", "02-engine", "03-ui", "04-admin", "05-pwa", "06-infra"],
+      "description": "remediation owner 플랜(File-Serial). certification owner와 다를 수 있음"
+    },
+    "classification": {
+      "type": "string",
+      "minLength": 1,
+      "description": "위반/갭 성격 서술. severity 숫자와 분리"
+    },
+    "severityNote": {
+      "type": "string",
+      "minLength": 1,
+      "description": "rubric 적용 메모. 숫자 severity를 먼저 고정하지 않음"
+    },
+    "remediationDirection": {
+      "type": "string",
+      "description": "해결 방향 힌트(solution 계약 고정 아님)"
+    },
+    "verifyIntent": {
+      "type": "string",
+      "description": "promotion 후 신설/강화할 verify 의도"
+    },
+    "certificationPointer": {
+      "type": "string",
+      "description": "전수 인증 축(예: R7 user-auth/machine-auth). N/A 허용"
+    },
+    "packagingHint": {
+      "type": "string",
+      "description": "todo 패키징 힌트(finding identity와 독립)"
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "handoff/canvas/감사 출처 포인터"
+    }
+  }
+}

@@ -257,7 +257,7 @@ change reason
 | route matrix | `governance/platform-redesign/route-contract-matrix.v1.json` |
 | Fact↔State | `governance/platform-redesign/fact-state-registry.v1.json` |
 | Change Control (본 문서) | `governance/platform-redesign/change-control.v1.md` |
-| Observation (R0-4) | `governance/platform-redesign/governance-observations.v1.json` (후속) |
+| Observation (R0-4) | `governance/platform-redesign/governance-observations.v1.json` · schema=`schemas/governance-observation.v1.json` · verify=`governance-observation-registry` |
 
 ---
 

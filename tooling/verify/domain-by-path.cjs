@@ -12,14 +12,17 @@ const RULES = [
   {
     test: (f) =>
       /^governance\/platform-redesign\//.test(f) ||
+      /^schemas\/governance-observation\.v1\.json$/.test(f) ||
       /^tooling\/verify\/platform-redesign-inventory\.cjs$/.test(f) ||
       /^tooling\/verify\/platform-fact-state-registry\.cjs$/.test(f) ||
       /^tooling\/verify\/platform-change-control\.cjs$/.test(f) ||
+      /^tooling\/verify\/governance-observation-registry\.cjs$/.test(f) ||
       /^tooling\/verify\/lib\/platform-redesign-measure\.cjs$/.test(f),
     scripts: [
       "platform-redesign-inventory.cjs",
       "platform-fact-state-registry.cjs",
       "platform-change-control.cjs",
+      "governance-observation-registry.cjs",
     ],
   },
   {

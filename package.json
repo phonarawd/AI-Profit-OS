@@ -155,6 +155,7 @@
     "verify:platform-redesign-inventory": "node tooling/verify/platform-redesign-inventory.cjs",
     "verify:platform-fact-state-registry": "node tooling/verify/platform-fact-state-registry.cjs",
     "verify:platform-change-control": "node tooling/verify/platform-change-control.cjs",
+    "verify:governance-observation-registry": "node tooling/verify/governance-observation-registry.cjs",
     "verify:mockup-governance": "node tooling/verify/mockup-governance.cjs",
     "verify:canon-surfaces": "node tooling/verify/canon-surfaces.cjs",
     "verify:brand-logo-single": "node tooling/verify/brand-logo-single.cjs",

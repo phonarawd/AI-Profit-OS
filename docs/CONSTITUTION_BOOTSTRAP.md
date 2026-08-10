@@ -2,8 +2,8 @@
 
 > **목적:** 구현 채팅 시작 전, 헌법·스키마·마이그레이션·어드민·브랜드·DB SSOT를 **예측 없이** 정리한다.  
 > **권위:** ACTIVE Index `ai_profit_os_00_index_a1b2c3d4.plan.md` > 도메인 01~06 > launch ARCHIVE.  
-> **현재 권위:** Index v7.23.0 R0 REOPEN · 외부 `플랫폼_전체_재설계_로드맵_d903eef7`=REFERENCE ONLY · 기존 v7.22 스냅샷/「현재」「다음」문구는 이력.
-> **현재 다음:** 00 Index `platform-redesign-r0-inventory` only.
+> **현재 권위:** Index v7.23.0 · R0 governance CLOSE(inventory→fact/state→change-control→observation) · 외부 `플랫폼_전체_재설계_로드맵_d903eef7`=REFERENCE ONLY · 기존 v7.22 스냅샷/「현재」「다음」문구는 이력.
+> **현재 다음:** 01 Money `redesign-r1-money-read-contract` only.
 
 ## v7.23.0 현재 잠금
 
@@ -42,11 +42,11 @@
 | public 트리거 | ✅ ledger guards | balance_guard · entries/journals immutable |
 | Supabase Auth 앱 사용 | **0** | Nest JWT only · 시스템 `auth` ≠ Auth SoT |
 | GitHub | ✅ | `phonarawd/AI-Profit-OS` · 코드만 |
-| Index 플랜 | 🔄 **R0 REOPEN** | 기존 completed 불변 · 다음=`platform-redesign-r0-inventory` |
+| Index 플랜 | ✅ **R0 CLOSE** | 기존 completed 불변 · R0 4게이트 live · 다음=`redesign-r1-money-read-contract` |
 | Advisor `rls_enabled_no_policy` | INFO 전수 | Day-1 **의도** · deny-by-default |
 
 **v7.22.36 판정(이력):** Index 당시 CLOSED · 헌법·스키마·원격 PG·Auth·Runtime P0 hosts·apps 골격 PASS.
-**v7.23 현재:** 00 R0 `platform-redesign-r0-inventory` only.
+**v7.23 현재:** R0 CLOSE · 다음=01 Money `redesign-r1-money-read-contract` only.
 
 ### 0.1 public 테이블 전수 (41 · MCP 실측)
 
@@ -182,7 +182,7 @@
 | Engine verify | listing~coach/admin-routes/pg-module-scan **전수 PASS** | ✅ |
 
 **판정(이력 · v7.22.44):** Engine todos 1~26 = **CLOSED** · completed 재실행 **금지**.
-**File-Serial v7.22.59 이력:** 당시 다음=03 UI `trust-age-spotcheck`; v7.23 현재=00 R0 inventory. PART0~9와 Pre-UI Runtime Gate completed는 불변이다.
+**File-Serial v7.22.59 이력:** 당시 다음=03 UI `trust-age-spotcheck`; R0 기간 포인터=00 inventory. **현재 다음:** 01 Money `redesign-r1-money-read-contract`. PART0~9와 Pre-UI Runtime Gate completed는 불변이다.
 
 
 ### 0.5.1 Pre-UI Runtime Gate (v7.22.48 착수 → **v7.22.49 CLOSE**)
@@ -603,7 +603,8 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 - [x] pnpm verify:brand-consumer PASS
 - [x] Admin IA 골격 = §6.1~6.2 / Admin §9.1.1 (`apps/admin/routes` lock · monorepo-skeleton completed)
 - [ ] `DATABASE_URL` · `REDIS_URL` 로컬 `.env` (git 0)
-- [ ] Index R0 pending **4** · 한 채팅=다음 `platform-redesign-r0-inventory` only · 기존 PART0~9 completed 불변
+- [x] Index R0 4게이트 live · observation registry 등록(가상규칙0·materialize0) · 다음=`redesign-r1-money-read-contract`
+- [ ] 한 채팅=다음 **01 Money** `redesign-r1-money-read-contract` only · 기존 PART0~9 completed 불변
 
 **done 정의:** 해당 todo의 `verify:*` PASS + `pnpm cleanup:lowspec` PASS.
 
@@ -613,7 +614,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 
 > **Owns:** 본 절 + Index「플랜 직렬 완료 규칙」.  
 > **운영자(Grok-4.5) 규칙:** YAML pending todo를 **위에서 아래로만** · 한 채팅=한 todo · 완료 잠금 todo 재실행 금지.  
-> **다음 채팅:** **00 Index** `platform-redesign-r0-inventory` only · v7.22 completed 재실행 금지.
+> **다음 채팅:** **01 Money** `redesign-r1-money-read-contract` only · v7.22 completed·R0 completed 재실행 금지.
 
 | 순 | Index todo | 산출물 | 모델 | 상태 |
 |----|------------|--------|------|------|
@@ -626,10 +627,10 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | 6 | `copy-canon-cta-sla-lock` | copy/ko CTA·면책·Soft/Hard + Canon `primaryCta` | grok-4.5 | completed |
 | 7 | `auth-ssot` | Nest JWT · Stage A/B · Owns=Infra §51.9 · `verify:auth-flows` | grok-4.5 | completed |
 | 8 | `phase0-bootstrap-hosts` | OpenNext Workers+Supabase+Upstash · Owns=Infra §51.13 · `verify:phase0-bootstrap` | composer-2.5 | completed |
-| 9 | R0 4 todo | baseline→fact/state→change-control→observation | grok-4.5 | **pending** |
-| 10+ | 도메인 파일 | 01 R1 → 02 R1 → 03 R1~R5 → 04 R6 → 05 PWA → 06 R7/R8 | 접두사 | File-Serial |
+| 9 | R0 4 todo | baseline→fact/state→change-control→observation · 4 verify live | grok-4.5 | **completed** |
+| 10+ | 도메인 파일 | 01 R1 → 02 R1 → 03 R1~R5 → 04 R6 → 05 PWA → 06 R7/R8 | 접두사 | File-Serial · **다음=01 Money** |
 
-**금지:** 헌법/스키마 없이 apps 화면 · constitution∥monorepo 병렬 · Dashboard DDL · Supabase Auth SDK · launch를 착수 SSOT로 사용 · Day-1 yahoo INSERT/leg 코드 · Index pending>0인데 01 Money 착수 · Admin `admin-isolated-deploy`를 `admin-ops`보다 먼저 실행.
+**금지:** 헌법/스키마 없이 apps 화면 · constitution∥monorepo 병렬 · Dashboard DDL · Supabase Auth SDK · launch를 착수 SSOT로 사용 · Day-1 yahoo INSERT/leg 코드 · R0 재실행 · Admin `admin-isolated-deploy`를 `admin-ops`보다 먼저 실행.
 
 ### 0.6 UI 착수 전 실측 (v7.22.46 골격 · **v7.22.50 PASS** · `ui-preflight-constitution`)
 
@@ -670,7 +671,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | U15 | eBay 실사진 DB 미도달 미기록 | → Engine YAML `engine-ebay-identity-match-ingest` + §0.10 · v7.22 예외2 이력 · v7.23 R1 선행 |
 
 **판정:** Pre-UI Runtime Gate **CLOSED** · `ui-preflight-constitution` = **PASS (v7.22.50)** · PART0~8c+PART9 **CLOSED (v7.22.59)**.
-**v7.22 당시 다음:** **03 UI** `trust-age-spotcheck`. **v7.23 현재:** 00 R0 inventory.
+**v7.22 당시 다음:** **03 UI** `trust-age-spotcheck`. **v7.23 현재:** 01 Money `redesign-r1-money-read-contract`.
 
 #### 0.6.3 UI 플랜 종합 실물 재검증 (v7.22.52 · pointer only · 상세=UI §0.8)
 
@@ -719,7 +720,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | 03 UI 잔여 | `trust-age-spotcheck` only | ✅ 실행 큐 |
 | Admin/PWA/Infra | 03 pending>0 동안 deep 착수 **금지** | ✅ File-Serial |
 
-**판정:** PART9 메타 PASS(불변) · 당시 다음=`trust-age-spotcheck`; 현재는 00 R0 inventory.
+**판정:** PART9 메타 PASS(불변) · 당시 다음=`trust-age-spotcheck`; 현재 다음=01 Money `redesign-r1-money-read-contract`.
 
 ### 0.7 종합 실물 감사 (v7.22.49 · 2026-08-09 · 유저 요청 전수 스캔 · 예측0)
 
@@ -747,5 +748,5 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | 3 | `public.user_opportunity_overrides_pin_cap()` — Supabase 보안 어드바이저 `function_search_path_mutable` **WARN**. 동일 계열 5개 함수 중 4개(`ledger_forbid_mutation`·`ledger_require_posting_flag`·`provision_user_bucket_accounts`·`users_stage_a_identity_ok`)는 `search_path=public` 고정 · 이 함수만 누락 | `user_opportunity_overrides_schema_align`(20260809023713) 작성 시 컨벤션 누락 | 신규 migration `user_opportunity_overrides_pin_cap_search_path`(`20260809143754`)로 `ALTER FUNCTION … SET search_path = public` · 동작 변경 0 · advisor 재조회로 WARN 0 확인 |
 
 **판정:** 헌법·스키마·DB·verify 게이트 = **PASS**(위 3건은 발견 즉시 해소된 드리프트/하드닝). Pre-UI Gate = **CLOSED (v7.22.49)**. UI PART0~8c+PART9 = **CLOSED (v7.22.59)**.  
-**v7.22.59 당시 다음:** 03 UI `trust-age-spotcheck`. **v7.23 현재:** 00 `platform-redesign-r0-inventory`.
+**v7.22.59 당시 다음:** 03 UI `trust-age-spotcheck`. **v7.23 현재:** 01 Money `redesign-r1-money-read-contract`.
 
