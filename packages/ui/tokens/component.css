@@ -65,7 +65,7 @@ html[data-font-scale="xl"] {
   font-variant-numeric: tabular-nums;
 }
 
-/* Home Experience — peotteok-light composition (ADR-017 · no ad-hoc hex in JSX) */
+/* Home Hero — STEP5 Slice2 (ADR-017 · Contract §3 / §07) · Shell geometry 비침범 */
 .home-hero {
   background: linear-gradient(
     135deg,
@@ -73,14 +73,17 @@ html[data-font-scale="xl"] {
     var(--color-lux-accent) 48%,
     var(--color-lux-hero-to) 100%
   );
+  /* Mobile provisional height · Reference B 전 최종 확정 금지 */
   min-height: 320px;
+  max-height: 420px;
+  padding: var(--space-lux-lg, 24px) var(--space-lux-md, 16px);
 }
 
 @media (min-width: 768px) {
   .home-hero {
-    /* Contract v1.3 §3.3 — 480-560 → 480-600 상향 */
     min-height: 480px;
     max-height: 600px;
+    padding: var(--space-lux-xl, 32px) var(--space-lux-xl, 32px);
   }
 }
 
@@ -98,10 +101,181 @@ html[data-font-scale="xl"] {
     );
 }
 
+.home-hero__inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-lux-lg, 24px);
+  min-height: inherit;
+  height: 100%;
+}
+
+@media (min-width: 768px) {
+  .home-hero__inner {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-lux-xl, 32px);
+  }
+}
+
+/* Text → timeline → CTA 위계 · illustration은 보조(≤46%) */
+.home-hero__copy {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-lux-md, 16px);
+}
+
+@media (min-width: 768px) {
+  .home-hero__copy {
+    max-width: 54%;
+    gap: var(--space-lux-lg, 24px);
+  }
+}
+
+.home-hero__title {
+  font-size: 1.875rem;
+  line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+  .home-hero__title {
+    font-size: 2.25rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .home-hero__title {
+    font-size: 2.75rem;
+  }
+}
+
+.home-hero__subtitle {
+  max-width: 36rem;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+  .home-hero__subtitle {
+    font-size: 1.125rem;
+  }
+}
+
+/* 유저 대면 4단 timeline · Reference 금지 용어 0 */
+.home-hero__timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lux-sm, 8px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .home-hero__timeline {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: var(--space-lux-sm, 8px);
+    row-gap: var(--space-lux-sm, 8px);
+  }
+}
+
+.home-hero__timeline-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-lux-sm, 8px);
+  color: color-mix(in srgb, var(--color-lux-surface) 95%, transparent);
+  font-size: 0.875rem;
+}
+
+.home-hero__timeline-index {
+  display: inline-flex;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-lux-surface) 15%, transparent);
+  padding-inline: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-hero__timeline-label {
+  font-weight: 500;
+}
+
+.home-hero__timeline-arrow {
+  display: none;
+  margin-inline: 0.15rem;
+  color: color-mix(in srgb, var(--color-lux-surface) 40%, transparent);
+}
+
+@media (min-width: 640px) {
+  .home-hero__timeline-arrow {
+    display: inline;
+  }
+}
+
+.home-hero__cta-wrap {
+  margin-top: var(--space-lux-xs, 4px);
+}
+
+.home-hero__cta {
+  display: inline-flex;
+  min-height: var(--touch-min, 48px);
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lux-md, 12px);
+  background: var(--color-lux-surface);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-lux-accent);
+  box-shadow: var(--shadow-lux-card);
+  transition: transform 200ms ease;
+}
+
+.home-hero__cta:hover {
+  transform: scale(1.02);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__cta {
+    transition: none;
+  }
+  .home-hero__cta:hover {
+    transform: none;
+  }
+}
+
+/* Illustration ≤46% hero visual · CTA contrast를 압도하지 않음 */
+.home-hero__visual {
+  position: relative;
+  z-index: 0;
+  margin-inline: auto;
+  width: 100%;
+  max-width: 280px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .home-hero__visual {
+    margin-inline: 0;
+    width: min(46%, 420px);
+    max-width: 46%;
+  }
+}
+
 /**
- * Hero illustration frame (v1.3) — brand-approved static AVIF/WebP (HomeHeroIllustration).
- * 반응형 aspect-ratio: mobile 1:1(정방형 구도) → desktop 2:3(가로형 구도, 768px+).
- * 애니메이션은 transform만(GPU 합성) — layout 유발 속성 금지 원칙(Linear 사례 근거).
+ * Brand-approved static AVIF/WebP.
+ * mobile 1:1 · desktop 3:2(가로형) — transform-only motion.
  */
 .home-hero__illustration-frame {
   display: block;
@@ -113,7 +287,7 @@ html[data-font-scale="xl"] {
 
 @media (min-width: 768px) {
   .home-hero__illustration-frame {
-    aspect-ratio: 2 / 3;
+    aspect-ratio: 3 / 2;
   }
 }
 
@@ -123,7 +297,7 @@ html[data-font-scale="xl"] {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-6px);
   }
 }
 
@@ -131,6 +305,11 @@ html[data-font-scale="xl"] {
   .home-hero__illustration-frame {
     animation: none;
   }
+}
+
+/* Hero CTA → opportunity 앵커 · sticky header 보정 */
+#home-opportunity {
+  scroll-margin-top: calc(var(--layout-header) + var(--space-lux-md, 16px));
 }
 
 .home-money-card {

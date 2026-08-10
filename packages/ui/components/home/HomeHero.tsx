@@ -10,54 +10,49 @@ export type HomeHeroProps = {
 };
 
 /**
- * HomeHero — Contract §3 (v1.3)
- * Desktop 480–600 · illustration ~46% · robot/globe = brand-approved static illustration
+ * HomeHero — STEP5 Slice2 · Contract §3 / Implementation §07
+ * Copy/timeline/CTA = T.home.hero SSOT · 4단 · Reference 금지용어 0 · Fact/data-flow 0
+ * Illustration ≤46% · Shell geometry(Slice1) 비침범
  */
 export function HomeHero({
   className = "",
-  ctaHref = "#home-opportunity",
+  ctaHref = T.home.hero.ctaHref,
 }: HomeHeroProps) {
+  const steps = T.home.hero.timeline;
+
   return (
     <section
       data-testid="home-hero"
       data-canon-block="hero"
-      className={[
-        "home-hero relative isolate overflow-hidden rounded-lux-xl px-6 py-8 md:px-10 md:py-12",
-        className,
-      ]
+      data-hero-timeline-steps={steps.length}
+      className={["home-hero relative isolate overflow-hidden rounded-lux-xl", className]
         .filter(Boolean)
         .join(" ")}
     >
       <div aria-hidden className="home-hero__glow pointer-events-none absolute inset-0" />
 
-      <div className="relative z-10 flex h-full min-h-[inherit] flex-col justify-center gap-8 md:flex-row md:items-center md:gap-10">
-        <div className="flex min-w-0 flex-1 flex-col justify-center gap-5 md:max-w-[54%]">
-          <h1 className="text-balance text-3xl font-semibold leading-tight tracking-tight text-lux-surface md:text-4xl lg:text-[2.75rem]">
+      <div className="home-hero__inner relative z-10">
+        <div className="home-hero__copy">
+          <h1 className="home-hero__title text-balance font-semibold tracking-tight text-lux-surface">
             {T.home.hero.title}
           </h1>
-          <p className="max-w-[36rem] text-pretty text-base leading-relaxed text-lux-surface/90 md:text-lg">
+          <p className="home-hero__subtitle text-pretty text-lux-surface/90">
             {T.home.hero.subtitle}
           </p>
 
           <ol
             aria-label={T.home.hero.timelineAria}
             data-testid="home-hero-timeline"
-            className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center"
+            className="home-hero__timeline"
           >
-            {T.home.hero.timeline.map((step, i) => (
-              <li
-                key={step}
-                className="flex items-center gap-2 text-sm text-lux-surface/95"
-              >
-                <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-lux-surface/15 px-2 text-xs font-semibold tabular-nums">
+            {steps.map((step, i) => (
+              <li key={step} className="home-hero__timeline-item">
+                <span className="home-hero__timeline-index" aria-hidden>
                   {i + 1}
                 </span>
-                <span className="font-medium">{step}</span>
-                {i < T.home.hero.timeline.length - 1 ? (
-                  <span
-                    aria-hidden
-                    className="mx-1 hidden text-lux-surface/40 sm:inline"
-                  >
+                <span className="home-hero__timeline-label">{step}</span>
+                {i < steps.length - 1 ? (
+                  <span className="home-hero__timeline-arrow" aria-hidden>
                     →
                   </span>
                 ) : null}
@@ -65,22 +60,19 @@ export function HomeHero({
             ))}
           </ol>
 
-          <div>
+          <div className="home-hero__cta-wrap">
             <Link
               href={ctaHref}
               data-testid="home-hero-cta"
               data-cta="opportunity-confirm"
-              className="inline-flex min-h-12 items-center justify-center rounded-lux-md bg-lux-surface px-6 py-3 text-base font-semibold text-lux-accent shadow-[var(--shadow-lux-card)] transition-transform duration-200 hover:scale-[1.02] motion-reduce:transition-none motion-reduce:hover:scale-100"
+              className="home-hero__cta"
             >
               {T.home.hero.cta}
             </Link>
           </div>
         </div>
 
-        <div
-          className="relative mx-auto w-full max-w-[280px] shrink-0 md:mx-0 md:w-[min(46%,420px)] md:max-w-[46%]"
-          data-testid="home-hero-visual-slots"
-        >
+        <div className="home-hero__visual" data-testid="home-hero-visual-slots">
           <HomeHeroIllustration />
         </div>
       </div>

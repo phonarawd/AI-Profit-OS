@@ -13,16 +13,21 @@ export const home = {
     tierAria: "멤버십",
   },
   hero: {
+    /** Visual Contract §3.2 · Implementation §07.2 — 목업 제목/「오늘 벌 수 있는 기회」단독 금지 */
     title: "AI가 찾은 오늘의 글로벌 기회",
     subtitle:
       "퍼뜩 AI가 전 세계 데이터를 살펴보고 참여 가능한 기회를 알려드립니다.",
+    /** §3.7 CTA Lock · 보기/탐색 primary · 수익 벌기 금지 */
     cta: "기회 확인하기",
     ctaHref: "#home-opportunity",
     timelineAria: "참여 흐름",
-    /** Contract §3.4 유저 대면 4단 */
+    /**
+     * Visual §3.4 유저 대면 4단 · STEP5 Slice2 Founder lock
+     * Reference 5단/금지 용어 복제 0 · Product copy 변경 아님
+     */
     timeline: ["AI 스캔", "기회 발견", "참여", "정산 확인"] as const,
-    robotSlotAria: "안내 일러스트",
-    globeSlotAria: "글로벌 기회",
+    robotSlotAria: "퍼뜩 AI 안내 일러스트",
+    globeSlotAria: "글로벌 기회 상징",
   },
   money: {
     aria: "내 잔액과 가능 수익",

@@ -4,8 +4,10 @@
   "brandRef": "packages/ui/brand",
   "tokenRef": "packages/ui/tokens/peotteok-light.specification.md",
   "contractRef": "packages/ui/canon/contracts/peotteok-home-visual-contract.v1.md",
+  "implementationContractRef": "packages/ui/canon/contracts/peotteok-home-visual-implementation-contract.v1.md",
   "adrRef": "packages/ui/canon/contracts/ADR-017-peotteok-home-light-theme.md",
-  "planRef": "Home Visual Upgrade · not PART9",
+  "gateRef": "packages/ui/canon/contracts/peotteok-home-implementation-gate.v1.md",
+  "planRef": "Home Visual Upgrade · not PART9 · STEP4.2 amend",
   "layout": {
     "desktop": {
       "sidebarPx": 240,
@@ -15,9 +17,13 @@
       "heroHeightPx": [480, 600],
       "heroIllustrationSharePct": 46,
       "contentRailMaxPx": 1680,
-      "columns": ["sidebar", "main", "rightRail"]
+      "columns": ["sidebar", "main", "rightRail"],
+      "mainOrder": ["hero", "money", "opportunity", "partnerStrip"]
     },
     "mobile": {
+      "status": "provisional_structural_only",
+      "visualGeometryFinal": false,
+      "note": "Reference B UNKNOWN · do not finalize by shrinking PC",
       "heroHeightPx": [320, 420],
       "stack": ["header", "hero", "money", "opportunity", "rightRailSecondary", "bottomNav"]
     }
@@ -25,8 +31,36 @@
   "navLabels": ["홈", "기회", "수익", "지갑", "내정보"],
   "navHrefs": ["/", "/profits", "/trades", "/wallet", "/me"],
   "deprecatedNavLabels": ["내거래"],
+  "heroTimeline": [
+    "AI 스캔",
+    "기회 발견",
+    "참여",
+    "정산 확인"
+  ],
+  "factSurface": {
+    "money": ["principalUsdt", "todayPossibleProfitUsdt"],
+    "rightRail": [
+      "settlementCompletedToday",
+      "ledgerTotal_as_count",
+      "todayPossibleProfitUsdt",
+      "topOpportunities"
+    ],
+    "header": ["dayPulse_settle_or_idle"],
+    "forbiddenWithoutContract": [
+      "cumulativeProfitUsdt",
+      "availableUsdt",
+      "lockedUsdt_home_split",
+      "series_30d",
+      "growth_percent",
+      "scan_count",
+      "confirm_count",
+      "progress_count",
+      "vip_without_tierLabel",
+      "live_ai_scan_fsm"
+    ]
+  },
   "primaryCta": {
-    "hero": { "copyIntent": "기회 확인", "note": "first-visit primary · STEP4 copy key" },
+    "hero": { "copyIntent": "기회 확인", "note": "first-visit primary · copy key T.home.hero.cta" },
     "opportunityCard": {
       "copyKey": "T.execution.ctaEarn",
       "label": "수익 벌기",
@@ -37,42 +71,54 @@
     {
       "id": "sidebar",
       "role": "shell",
-      "note": "logo · nav5 · inviteCard · BottomNav5 Adapt"
+      "note": "logo · nav5 IA lock · inviteCard · BottomNav5 Adapt · geometry from PC Reference"
     },
     {
       "id": "header",
       "role": "shell",
-      "note": "aiScanStatus · notification · avatar · tierBadge · New AppHeader"
+      "note": "DayPulse fact chip only · no live AI FSM claim · notification · avatar · tierBadge hide if null · AppHeader"
     },
     {
       "id": "hero",
       "role": "hero",
-      "note": "title · subtitle · timeline · robotAnchor · globeAnchor · cta 기회확인 · maxIllustrationPct 46(v1.3) · brand-approved static illustration(AVIF+WebP, desktop/mobile 2 variant) · HomeHero"
+      "note": "title Contract copy · timeline 4-step user-facing (§3.4) · cta 기회확인 · maxIllustrationPct 46 · brand-approved static illustration · HomeHero · no Reference forbidden timeline term"
     },
     {
       "id": "money",
       "role": "trust",
-      "note": "HomePrincipalRail Adapt · childWire home-principal-slots · no count_up"
+      "note": "HomePrincipalRail Adapt · principalUsdt + todayPossible only · no available/locked split · no 30d chart · no count_up · childWire home-principal-slots"
     },
     {
       "id": "opportunity",
       "role": "primary",
-      "note": "BalanceAwareHome Adapt · emptyRequires status+nextAction+whyWait"
+      "note": "BalanceAwareHome Adapt · @container 1-3 cols · emptyRequires status+nextAction+whyWait · CTA 수익 벌기"
     },
     {
       "id": "rightRail",
       "role": "secondary",
-      "note": "md+ · totalResult · topOpportunities · progressStatus 스캔/확인/진행/정산 · New HomeRightRail"
+      "note": "desktop column · settle COUNT + todayPossible + TOP3 only · ledgerTotal NEVER as USDT · no donut · no scan/confirm/progress rows · HomeRightRail"
     },
     {
       "id": "footerTrust",
       "role": "footer",
-      "note": "SiteFooter + MarketPartnerTrustStrip Adapt"
+      "note": "SiteFooter + MarketPartnerTrustStrip Adapt · Brand markets ready only · PayPal without brand forbid"
     }
   ],
   "forbidden": [
     "photo_pixel_match",
     "HomePageV2",
+    "parallel_data_pipeline",
+    "ledgerTotal_as_usdt",
+    "cumulative_profit_without_fact",
+    "mock_number_injection",
+    "scan_confirm_progress_without_fact",
+    "donut_in_progress_count",
+    "available_locked_home_split",
+    "chart_30d_without_series",
+    "growth_percent_without_fact",
+    "paypal_without_brand",
+    "vip_without_tierLabel",
+    "live_ai_scan_fsm_claim",
     "success_rate_percent",
     "count_up_balance",
     "realtime_profit_animation",
@@ -91,6 +137,8 @@
     "1분_수익_보장",
     "누구나_벌기_가능",
     "내거래_tab_label",
-    "mock_opportunity_fill_empty"
+    "실행_timeline_term",
+    "mock_opportunity_fill_empty",
+    "mobile_geometry_final_from_pc_shrink"
   ]
 }
