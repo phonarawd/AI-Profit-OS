@@ -1,10 +1,11 @@
 {
-  "version": 2,
+  "version": 3,
   "rootDomain": "hiptk.app",
   "cloudflare": {
     "accountId": "190a1476a068cfe96dfe1029877587ef",
     "zoneId": "a8f07448b300cf7f0215a3bbb9cf705e",
-    "zoneStatus": "active"
+    "zoneStatus": "active",
+    "workersDevSubdomain": "ebay-adapter"
   },
   "env": {
     "ROOT_DOMAIN": "hiptk.app",
@@ -13,18 +14,40 @@
     "API_HOST": "api.hiptk.app",
     "GO_HOST": "go.hiptk.app"
   },
+  "openNext": {
+    "runtime": "workers",
+    "forbiddenDeploy": [
+      "wrangler pages deploy",
+      "pages_build_output_dir",
+      ".open-next/cloudflare as deploy root"
+    ],
+    "requiredArtifacts": [".open-next/worker.js", ".open-next/assets"],
+    "web": {
+      "worker": "ai-profit-web",
+      "app": "apps/web",
+      "wrangler": "infra/web/wrangler.toml",
+      "workersDev": "ai-profit-web.ebay-adapter.workers.dev"
+    },
+    "ops": {
+      "worker": "ai-profit-ops",
+      "app": "apps/admin",
+      "wrangler": "infra/ops/wrangler.toml",
+      "workersDev": "ai-profit-ops.ebay-adapter.workers.dev"
+    },
+    "note": "OpenNext(@opennextjs/cloudflare) = Workers only. pages.dev 레거시 404 — 배포·프록시·스모크는 workersDev SSOT."
+  },
   "pages": {
     "web": {
       "project": "ai-profit-web",
       "workersDev": "ai-profit-web.ebay-adapter.workers.dev",
       "pagesDev": "ai-profit-web.pages.dev",
-      "note": "OpenNext → Workers(ai-profit-web) · pages.dev는 레거시(404) · 공개 호스트는 web-proxy"
+      "note": "project 이름 유지 · origin SSOT = openNext.web.workersDev · pages.dev 사용 금지"
     },
     "ops": {
       "project": "ai-profit-ops",
       "workersDev": "ai-profit-ops.ebay-adapter.workers.dev",
       "pagesDev": "ai-profit-ops.pages.dev",
-      "note": "OpenNext → Workers(ai-profit-ops) · pages.dev 레거시 · 공개 호스트는 ops-proxy"
+      "note": "project 이름 유지 · origin SSOT = openNext.ops.workersDev · pages.dev 사용 금지"
     }
   },
   "bridgeWorkers": {
@@ -55,7 +78,7 @@
     "support": "support@hiptk.app",
     "fromDefault": "noreply@hiptk.app",
     "provider": "resend",
-    "note": "Resend dashboard 도메인 검증 · RESEND_API_KEY + RESEND_FROM_EMAIL in .env"
+    "note": "Resend dashboard 도메인 검증 · RESEND_FROM_EMAIL + RESEND_API_KEY in .env"
   },
   "github": {
     "repository": "phonarawd/AI-Profit-OS",

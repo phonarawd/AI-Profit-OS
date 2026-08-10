@@ -1,9 +1,11 @@
 /**
- * OPS_HOST → ai-profit-ops.quick.workers.dev (Phase0 DNS bridge)
- * OpenNext는 Workers 배포 · 구 pages.dev origin은 404.
+ * OPS_HOST → OpenNext Workers origin (Phase0 DNS bridge)
+ * Origin SSOT: workers/_shared/opennext-origin.ts ↔ domain.manifest openNext
  */
-const TARGET = "https://ai-profit-ops.ebay-adapter.workers.dev";
-const TARGET_HOST = "ai-profit-ops.ebay-adapter.workers.dev";
+import { OPENNEXT_OPS_ORIGIN } from "../../_shared/opennext-origin";
+
+const TARGET = OPENNEXT_OPS_ORIGIN;
+const TARGET_HOST = new URL(OPENNEXT_OPS_ORIGIN).host;
 
 const HOLDING_HTML = `<!DOCTYPE html>
 <html lang="ko">

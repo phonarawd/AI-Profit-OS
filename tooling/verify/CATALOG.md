@@ -25,6 +25,7 @@
 | phase0-bootstrap | `verify:phase0-bootstrap` | T1 | ✅ live |
 | root-domain-env | `verify:root-domain-env` | T1 | ✅ live |
 | domain-bootstrap | `verify:domain-bootstrap` | T1 | ✅ live |
+| opennext-workers-origin | `verify:opennext-workers-origin` | T1 | ✅ live (Workers SSOT · pages deploy 0 · proxy/manifest lock · deploy smoke hook) |
 | next-major-pin | `verify:next-major-pin` | T1 | ✅ live |
 | tailwind-v4 | `verify:tailwind-v4` | T1 | ✅ live |
 | lux-theme-sync | `verify:lux-theme-sync` | T1 | ✅ live |

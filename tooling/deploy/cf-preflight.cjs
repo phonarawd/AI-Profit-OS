@@ -2,6 +2,7 @@
 /** Preflight before any Cloudflare deploy */
 const fs = require("fs");
 const path = require("path");
+const { spawnSync } = require("child_process");
 const {
   root,
   loadDotEnv,
@@ -22,6 +23,8 @@ const requiredInfra = [
   "infra/ops/wrangler.toml",
   "infra/ops/access-policy.json",
   "infra/workers.manifest.json",
+  "infra/domain.manifest.json",
+  "workers/_shared/opennext-origin.ts",
   ".cursor/mcp.json",
 ];
 
@@ -30,6 +33,16 @@ for (const rel of requiredInfra) {
     console.error(`[cf:preflight] FAIL: missing ${rel}`);
     process.exit(1);
   }
+}
+
+const originLock = spawnSync(
+  "node",
+  [path.join(root, "tooling/verify/opennext-workers-origin.cjs")],
+  { cwd: root, stdio: "inherit" }
+);
+if (originLock.status !== 0) {
+  console.error("[cf:preflight] FAIL: verify:opennext-workers-origin");
+  process.exit(originLock.status || 1);
 }
 
 if (surface === "web") {

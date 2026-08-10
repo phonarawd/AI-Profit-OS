@@ -10,6 +10,19 @@ const root = path.resolve(__dirname, "../..");
 /** @type {{ test: (file: string) => boolean, scripts: string[] }[]} */
 const RULES = [
   {
+    test: (f) =>
+      /^infra\/(web|ops)\//.test(f) ||
+      /^infra\/domain\.manifest\.json$/.test(f) ||
+      /^tooling\/deploy\/cf-(pages-web|pages-ops|preflight|origin-smoke)/.test(f) ||
+      /^workers\/(web-proxy|ops-proxy|_shared)\//.test(f) ||
+      /^tooling\/verify\/opennext-workers-origin\.cjs$/.test(f),
+    scripts: [
+      "opennext-workers-origin.cjs",
+      "domain-bootstrap.cjs",
+      "cf-deploy-packages.cjs",
+    ],
+  },
+  {
     test: (f) => /^(packages\/ui\/|apps\/web\/)/.test(f),
     scripts: ["no-it-jargon.cjs", "mockup-governance.cjs", "canon-surfaces.cjs"],
   },

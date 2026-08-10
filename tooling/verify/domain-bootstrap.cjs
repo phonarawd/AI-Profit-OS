@@ -34,11 +34,35 @@ if (manifest) {
       fails.push(`domain.manifest env.${key} must reference hiptk.app`);
     }
   }
+  if (!manifest.cloudflare?.workersDevSubdomain) {
+    fails.push("domain.manifest cloudflare.workersDevSubdomain required");
+  }
+  if (!manifest.openNext || manifest.openNext.runtime !== "workers") {
+    fails.push("domain.manifest openNext.runtime must be workers");
+  }
+  if (!manifest.openNext?.web?.workersDev || !manifest.openNext?.ops?.workersDev) {
+    fails.push("domain.manifest openNext web/ops workersDev required");
+  }
   if (!manifest.pages?.web?.project || !manifest.pages?.ops?.project) {
     fails.push("domain.manifest pages web/ops projects required");
   }
   if (!manifest.pages?.web?.workersDev || !manifest.pages?.ops?.workersDev) {
     fails.push("domain.manifest pages web/ops workersDev required (OpenNext Workers)");
+  }
+  if (
+    manifest.openNext?.web?.workersDev &&
+    manifest.pages?.web?.workersDev !== manifest.openNext.web.workersDev
+  ) {
+    fails.push("pages.web.workersDev must equal openNext.web.workersDev");
+  }
+  if (
+    manifest.openNext?.ops?.workersDev &&
+    manifest.pages?.ops?.workersDev !== manifest.openNext.ops.workersDev
+  ) {
+    fails.push("pages.ops.workersDev must equal openNext.ops.workersDev");
+  }
+  if (!fs.existsSync(path.join(root, "workers/_shared/opennext-origin.ts"))) {
+    fails.push("missing: workers/_shared/opennext-origin.ts");
   }
   const webProxy = manifest.bridgeWorkers?.["web-proxy"];
   const opsProxy = manifest.bridgeWorkers?.["ops-proxy"];

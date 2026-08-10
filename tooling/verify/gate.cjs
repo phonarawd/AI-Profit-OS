@@ -13,6 +13,8 @@ const steps = [
   "workers-types.cjs",
   "phase0-bootstrap.cjs",
   "root-domain-env.cjs",
+  "domain-bootstrap.cjs",
+  "opennext-workers-origin.cjs",
   "next-major-pin.cjs",
   "tailwind-v4.cjs",
   "lux-theme-sync.cjs",

@@ -64,4 +64,12 @@ const deploy = spawnSync("pnpm", deployArgs, {
   shell: true,
   env: spawnEnv(),
 });
-process.exit(deploy.status || 0);
+if (deploy.status !== 0) process.exit(deploy.status || 1);
+
+console.log("[cf:deploy:web] origin smoke …");
+const smoke = spawnSync(
+  "node",
+  [path.join(__dirname, "cf-origin-smoke.cjs"), "web"],
+  { cwd: root, stdio: "inherit", shell: true, env: spawnEnv() }
+);
+process.exit(smoke.status || 0);

@@ -49,4 +49,12 @@ const deploy = spawnSync("pnpm", deployArgs, {
   stdio: "inherit",
   shell: true,
 });
-process.exit(deploy.status || 0);
+if (deploy.status !== 0) process.exit(deploy.status || 1);
+
+console.log("[cf:deploy:ops] origin smoke …");
+const smoke = spawnSync(
+  "node",
+  [path.join(__dirname, "cf-origin-smoke.cjs"), "ops"],
+  { cwd: root, stdio: "inherit", shell: true }
+);
+process.exit(smoke.status || 0);

@@ -78,6 +78,10 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: node tooling/deploy/cf-workers.cjs ${{ inputs.target }} phase0
 
+      - name: Origin lock (OpenNext → Workers)
+        if: inputs.surface == 'web' || inputs.surface == 'ops' || inputs.surface == 'all'
+        run: pnpm verify:opennext-workers-origin
+
       - name: Deploy web (apps/web required)
         if: inputs.surface == 'web' || inputs.surface == 'all'
         env:
@@ -91,3 +95,12 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: node tooling/deploy/cf-preflight.cjs ${{ inputs.target }} ops && node tooling/deploy/cf-pages-ops.cjs ${{ inputs.target }}
+
+      - name: Origin smoke (workers.dev HTTP)
+        if: inputs.surface == 'web' || inputs.surface == 'ops' || inputs.surface == 'all'
+        run: |
+          case "${{ inputs.surface }}" in
+            web) node tooling/deploy/cf-origin-smoke.cjs web ;;
+            ops) node tooling/deploy/cf-origin-smoke.cjs ops ;;
+            *) node tooling/deploy/cf-origin-smoke.cjs all ;;
+          esac
