@@ -67,13 +67,13 @@ todos:
     status: completed
   - id: platform-redesign-r0-inventory
     content: "[grok-4.5|256K] R0-1 문서전용 Forensic · git SHA/dirty paths+논리 route/물리 page+Canon wire/manifest surface+Admin12+Nest import+local/remote migration+asset/verify를 canonical path로 계수 · governance/platform-redesign/baseline.v1.json+route-contract-matrix.v1.json · defect|intentional|deferred|missing_fact만 분류 · 구현코드0 · verify:platform-redesign-inventory 신설+CATALOG"
-    status: pending
+    status: completed
   - id: platform-redesign-r0-fact-state
     content: "[grok-4.5|256K] R0-2 baseline 기반 governance/platform-redesign/fact-state-registry.v1.json · Fact↔State 반복검증 · 공통 view state와 domain FSM 분리 · reasonCode=domain.resource.reason 단일 · source/asOf/freshness/owner/provenance 필수 · 구현코드0 · verify:platform-fact-state-registry 신설+CATALOG"
-    status: pending
+    status: completed
   - id: platform-redesign-r0-change-control
     content: "[grok-4.5|256K] R0-3 governance/platform-redesign/change-control.v1.md · ADR-017 Light+Purple·IA 새 라벨·OpenNext Workers 전환 before/after+영향+rollback+승인 증거 · L1/L2/L3 절차와 version bump 규칙 · 외부 d903eef7 실행금지/흡수 crosswalk · 구현코드0 · verify:platform-change-control 신설+CATALOG"
-    status: pending
+    status: completed
   - id: platform-redesign-r0-observation-registry
     content: "[grok-4.5|256K] R0-4 schemas/governance-observation.v1.json+governance/platform-redesign/governance-observations.v1.json · observed|deferred|promoted|rejected·현재발생여부·reviewTrigger 분리 · R0 신규 규칙 가상생성0 · verify:governance-observation-registry 신설+CATALOG · R0 신규 4게이트 PASS+BOOTSTRAP 다음=01 Money redesign-r1-money-read-contract · 구현코드0"
     status: pending
