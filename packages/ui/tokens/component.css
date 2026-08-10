@@ -138,52 +138,99 @@ html[data-font-scale="xl"] {
 }
 
 /**
- * Home Dashboard Grid (v1.3 · ADR-017 Desktop Grid 재설계)
- * 매크로 레이아웃 = CSS Grid(raw @media, breakpoints.ts SSOT) · 마이크로 적응 = Container Query.
- * Tailwind lg:/xl: 유틸 대신 raw 값을 직접 써서 브레이크포인트 불일치 재발을 원천 차단한다.
+ * Home Dashboard Grid (STEP 5 Slice 1 · Shell / Geometry)
+ * PC Reference: Sidebar 240 · Header 64 · RightRail 320–360(default 352) · content rail 1680.
+ * 매크로 = CSS Grid(raw @media, breakpoints.ts SSOT) · 마이크로 = Main 가용폭 auto-fit.
+ * Tailwind lg:/xl: 유틸 대신 raw 값 — 브레이크포인트 불일치 재발 차단.
  */
+.app-header {
+  height: var(--layout-header);
+  min-height: var(--layout-header);
+  padding-inline: clamp(
+    var(--space-lux-md, 16px),
+    2vw,
+    var(--space-lux-xl, 32px)
+  );
+}
+
+/* Sidebar 240px — md+ only (mobile = bottom nav · provisional) */
+@media (min-width: 768px) {
+  .app-sidebar {
+    width: var(--layout-sidebar);
+    min-width: var(--layout-sidebar);
+    max-width: var(--layout-sidebar);
+  }
+}
+
 .home-dashboard-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: clamp(16px, 2vw, 24px);
+  gap: var(--space-lux-lg, 24px);
   width: 100%;
   max-width: var(--content-rail-max);
   margin-inline: auto;
-  padding-inline: clamp(16px, 2vw, 32px);
-  padding-block: clamp(16px, 2vw, 24px);
+  padding-inline: clamp(
+    var(--space-lux-md, 16px),
+    2vw,
+    var(--space-lux-xl, 32px)
+  );
+  padding-block: var(--space-lux-lg, 24px);
 }
 
 @media (min-width: 1280px) {
   .home-dashboard-grid {
+    /* Main flex + RightRail 352 (계약 320–360) */
     grid-template-columns: minmax(0, 1fr) var(--layout-right-rail-default);
     align-items: start;
+    column-gap: var(--space-lux-lg, 24px);
+    row-gap: var(--space-lux-lg, 24px);
   }
 }
 
 .home-dashboard-main {
   display: flex;
   flex-direction: column;
-  gap: clamp(20px, 3vw, 24px);
+  /* § spacing.lg — Hero / Money / Opportunity vertical rhythm */
+  gap: var(--space-lux-lg, 24px);
   min-width: 0;
   width: 100%;
 }
 
 /**
- * v1.3.1 수정 — container-type: inline-size + CSS Grid 1fr 트랙 조합에서
- * 렌더링 엔진에 따라 폭이 min-content(한글 1글자)로 붕괴하는 실측 회귀 발견.
- * 컨테이너 쿼리 대신 순수 Grid auto-fit/minmax로 교체 — 별도 컨테인먼트 컨텍스트 없이
- * 그리드 자체 가용 폭만으로 열 수를 정하므로 이 버그 클래스를 원천 차단한다.
+ * Money 2열 (Contract §03.3) — Main 폭 기준.
+ * container-type 붕괴 회귀(v1.3.1) 회피: 순수 Grid만 사용.
  */
 .home-money-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-lux-md, 16px);
 }
 
+@media (min-width: 768px) {
+  .home-money-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/**
+ * Opportunity 1–3열 · Main 가용폭 밀도 (Contract §2.1a · max 3).
+ * track min = max(카드최소, (100% − 2×gap) / 3) → 4열 이상 금지.
+ */
 .home-opportunity-grid {
+  --home-opp-gap: var(--space-lux-md, 16px);
+  --home-opp-min: 260px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--space-lux-md, 16px);
+  gap: var(--home-opp-gap);
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(
+      max(
+        var(--home-opp-min),
+        calc((100% - 2 * var(--home-opp-gap)) / 3)
+      ),
+      1fr
+    )
+  );
 }
 
 .home-right-rail {
@@ -194,10 +241,17 @@ html[data-font-scale="xl"] {
 
 @media (min-width: 1280px) {
   .home-right-rail {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lux-lg, 24px);
     width: var(--layout-right-rail-default);
     min-width: var(--layout-right-rail-min);
     max-width: var(--layout-right-rail-max);
     flex-shrink: 0;
+    position: sticky;
+    top: calc(var(--layout-header) + var(--space-lux-md, 16px));
+    align-self: start;
+    max-height: calc(100dvh - var(--layout-header) - var(--space-lux-lg, 24px));
+    overflow-y: auto;
   }
 }

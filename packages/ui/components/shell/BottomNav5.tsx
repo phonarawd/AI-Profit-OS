@@ -60,7 +60,7 @@ export function BottomNav5({ tabs }: { tabs: readonly BottomNavTab[] }) {
   return (
     <aside
       data-testid="app-sidebar"
-      className="md:sticky md:top-0 md:flex md:h-dvh md:w-[var(--layout-sidebar)] md:shrink-0 md:flex-col md:border-r md:border-lux-border md:bg-lux-surface"
+      className="app-sidebar md:sticky md:top-0 md:flex md:h-dvh md:shrink-0 md:flex-col md:border-r md:border-lux-border md:bg-lux-surface"
     >
       <div className="hidden px-4 pb-3 pt-5 md:block">
         <Link

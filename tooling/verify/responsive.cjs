@@ -241,7 +241,13 @@ if (layout && !layout.includes("lux-app-main")) {
   fails.push("apps/web layout must use lux-app-main content rail");
 }
 
-const profits = read("apps/web/app/profits/page.tsx");
+// page.tsx = session gate · VirtualOpportunityList Owns = ProfitsPageClient
+const profits = [
+  read("apps/web/app/profits/page.tsx"),
+  read("apps/web/app/profits/ProfitsPageClient.tsx"),
+]
+  .filter(Boolean)
+  .join("\n");
 if (profits && !profits.includes("VirtualOpportunityList")) {
   fails.push("/profits must use VirtualOpportunityList");
 }

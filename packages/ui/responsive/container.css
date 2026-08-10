@@ -42,10 +42,11 @@
   }
 }
 
-/* 2xl / ultrawide — content rail, no infinite card stretch */
+/* Ultrawide — main column content rail (sidebar 밖 · 합 ≈ 1920 with 240 sidebar) */
 @media (min-width: 1920px) {
   .lux-app-main {
     max-width: var(--content-rail-max, 1680px);
+    width: 100%;
     margin-inline: auto;
   }
 }

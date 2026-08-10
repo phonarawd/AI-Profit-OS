@@ -39,7 +39,7 @@ export function AppHeader({
     <header
       data-testid="app-header"
       aria-label={T.home.header.aria}
-      className="sticky top-0 z-30 grid h-[var(--layout-header)] shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-lux-border bg-lux-surface/95 px-4 backdrop-blur-sm"
+      className="app-header sticky top-0 z-30 grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-lux-border bg-lux-surface/95 backdrop-blur-sm"
     >
       <div className="min-w-0" />
 
@@ -104,14 +104,16 @@ export function AppHeader({
           href={avatarHref}
           data-testid="app-header-avatar"
           aria-label={T.home.header.avatarAria}
-          className="touch-target inline-flex h-10 w-10 overflow-hidden rounded-full border border-lux-border bg-lux-bg"
+          className="touch-target inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-lux-border bg-lux-bg p-0.5"
         >
           <img
             src={avatarSrc}
             alt=""
-            width={40}
-            height={40}
-            className="h-full w-full object-cover"
+            width={36}
+            height={36}
+            decoding="async"
+            fetchPriority="low"
+            className="h-9 w-9 object-contain"
           />
         </Link>
       </div>
