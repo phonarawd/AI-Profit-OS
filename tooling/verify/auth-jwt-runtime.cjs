@@ -174,6 +174,7 @@ const guardedControllers = [
   "services/api-nest/src/inbox/inbox.user.controller.ts",
   "services/api-nest/src/referral/referral.controller.ts",
   "services/api-nest/src/ai/coach.controller.ts",
+  "services/api-nest/src/wallet/home-money-read.user.controller.ts",
 ];
 for (const rel of guardedControllers) {
   const t = read(rel);

@@ -12,6 +12,7 @@
     "notification-prefs.v1.json",
     "ops-inbox-message.v1.json",
     "wallet-buckets.v1.json",
+    "home-money-read.v1.json",
     "practice-grant.v1.json",
     "balance-aware-fact.v1.json",
     "deposit-suggest-query.v1.json",

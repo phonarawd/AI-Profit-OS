@@ -86,6 +86,7 @@
     "verify:auth-session-cookie": "node tooling/verify/auth-session-cookie.cjs",
     "verify:wallet-kyc-session-auth": "node tooling/verify/wallet-kyc-session-auth.cjs",
     "verify:bucket-invariant": "node tooling/verify/bucket-invariant.cjs",
+    "verify:home-money-read-contract": "node tooling/verify/home-money-read-contract.cjs",
     "verify:withdraw-mode-default": "node tooling/verify/withdraw-mode-default.cjs",
     "verify:principal-withdraw-reachable": "node tooling/verify/principal-withdraw-reachable.cjs",
     "verify:withdraw-fee-ledger": "node tooling/verify/withdraw-fee-ledger.cjs",

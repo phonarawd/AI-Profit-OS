@@ -245,6 +245,18 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^schemas\/home-money-read\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/home-money-read/.test(f) ||
+      /^packages\/sdk\/src\/home-money-read\//.test(f) ||
+      /^tooling\/verify\/home-money-read-contract\.cjs$/.test(f),
+    scripts: [
+      "home-money-read-contract.cjs",
+      "pg-module-scan.cjs",
+      "bucket-invariant.cjs",
+    ],
+  },
+  {
+    test: (f) =>
       /^services\/engine-rust\//.test(f) ||
       (/^services\/api-nest\//.test(f) &&
         /(opportunit|participat|settlement|trade|execution|membership|match)/i.test(f)),

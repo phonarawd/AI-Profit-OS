@@ -58,6 +58,7 @@
 | `apps/web/app/wallet/page.tsx` · `packages/sdk/src/wallet/**` | wallet-live-wire |
 | `apps/web/app/wallet/deposit/**` · `me/kyc` · `me/support` · `KycFlow` | stub-page-actions |
 | money api-nest | pg-module-scan · bucket-invariant |
+| `schemas/home-money-read.v1.json` · `wallet/home-money-read*` · `packages/sdk/src/home-money-read/**` | home-money-read-contract |
 | engine-rust · trade/opportunity api | match-success-rule · participate-http · execute-rule-loop |
 | auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie |
 | `api-nest` wallet · kyc.controller | wallet-kyc-session-auth |
@@ -67,6 +68,7 @@
 | id | 도메인 |
 |----|--------|
 | bucket-invariant · withdraw-mode-default · principal-withdraw-reachable · principal-profit-abuse · balance-aware-feed · practice-non-withdrawable | Money §49/§51.7 — **live** (posting·ASC FOR UPDATE·idempotency·provision·recon · default mode=profit · 원금 CTA·시트·3CTA · Admin finance?tab=buckets · §49.9 P1~P24/E1~E12 risk queue·freeze·circuit · §49.2a suggest deeplink·principal Fact·Engine pointer · practice welcome 1회·7d expire·Banner·403) |
+| home-money-read-contract | Money v7.23 R1 — **live** (`schemas/home-money-read.v1.json` · `GET /api/v1/me/home-money-read` · principalUsdt+settlementCompletedTodayCount · per-field asOf/source/state · Engine todayPossibleProfitUsdt 0 · availableUsdt/todayPossible 0 · zero≠absent · mutation/DDL 0) |
 | withdraw-fee-ledger · min-holding-scope | Money §11.1/§11.2 — **live** (deposit-config fee/minHolding · FEE_REVENUE · profit-only exempt) |
 | match-success-rule · simulation-gate | Engine §48/§51 — match-success-rule **live** · simulation-gate **live** (M0.5 S1~S4 · platform_reserve · Growth ON ≤24h · Admin growth?tab=simulation · system-control?tab=reserve) |
 | ai-feature-platform · shadow-replay-drift · no-success-rate-as-rule · no-ai-data-in-git | Engine ai-feature-platform — feature-platform + ai-platform L1/L2 · AI PICK · AI_LOG/Eval · L3 money0 · shadow-replay drift **0.000%** · sellSuccessRate≠Rule/PICK · GitHub AI data0 — **live** |
