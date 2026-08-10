@@ -76,7 +76,7 @@ todos:
     status: completed
   - id: platform-redesign-r0-observation-registry
     content: "[grok-4.5|256K] R0-4 schemas/governance-observation.v1.json+governance/platform-redesign/governance-observations.v1.json · observed|deferred|promoted|rejected·현재발생여부·reviewTrigger 분리 · R0 신규 규칙 가상생성0 · verify:governance-observation-registry 신설+CATALOG · R0 신규 4게이트 PASS+BOOTSTRAP 다음=01 Money redesign-r1-money-read-contract · 구현코드0"
-    status: pending
+    status: completed
 isProject: false
 ---
 

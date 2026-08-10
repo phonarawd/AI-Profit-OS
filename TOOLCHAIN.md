@@ -79,7 +79,7 @@ pnpm exec wrangler -v
 pnpm verify:gate:fast      # commit 전 (T0 · ~30s)
 pnpm verify:gate:push      # push 전 (T1 · infra+stubs)
 pnpm verify:gate           # CI / main (T2 · next+opennext 포함)
-pnpm cursor:sync-plans    # Plan SSOT → %USERPROFILE%\.cursor\plans 미러 (todo UI drift 방지)
+pnpm cursor:sync-plans    # Plan SSOT → %USERPROFILE%\.cursor\plans hardlink (todo UI drift 방지)
 pnpm cleanup:lowspec      # 작업 후 렉 방지
 pnpm lowspec:status       # RAM/Docker/Cursor 압력 확인 (이 PC=Celeron 2C/8GB)
 ```

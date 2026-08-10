@@ -23,9 +23,9 @@ alwaysApply: false
 | 위치 | 역할 |
 |------|------|
 | `.cursor/plans/ai_profit_os_*.plan.md` | **todo status 편집 유일 SSOT** |
-| `%USERPROFILE%\.cursor\plans\` | UI 미러 · **직접 편집 금지** |
+| `%USERPROFILE%\.cursor\plans\` | UI 경로 · workspace와 **hardlink**(동일 inode) |
 
-- sync: `pnpm cursor:sync-plans` · verify: `pnpm verify:plans-ssot`
+- sync: `pnpm cursor:sync-plans` (hardlink 우선) · verify: `pnpm verify:plans-ssot`
 - launch 플랜 = **ARCHIVE** — 실행 큐로 사용 금지
 
 ## 문서화 예외만 (임의 일반화 금지)
