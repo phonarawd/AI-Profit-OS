@@ -1,0 +1,94 @@
+{
+  "id": "home-visual-v2",
+  "route": "/",
+  "brandRef": "packages/ui/brand",
+  "tokenRef": "packages/ui/tokens/peotteok-light.specification.md",
+  "contractRef": "packages/ui/canon/contracts/peotteok-home-visual-contract.v1.md",
+  "adrRef": "packages/ui/canon/contracts/ADR-017-peotteok-home-light-theme.md",
+  "planRef": "Home Visual Upgrade · not PART9",
+  "layout": {
+    "desktop": {
+      "sidebarPx": 240,
+      "rightRailPxMin": 320,
+      "rightRailPxMax": 360,
+      "headerPx": 64,
+      "heroHeightPx": [480, 560],
+      "columns": ["sidebar", "main", "rightRail"]
+    },
+    "mobile": {
+      "heroHeightPx": [320, 420],
+      "stack": ["header", "hero", "money", "opportunity", "rightRailSecondary", "bottomNav"]
+    }
+  },
+  "navLabels": ["홈", "기회", "수익", "지갑", "내정보"],
+  "navHrefs": ["/", "/profits", "/trades", "/wallet", "/me"],
+  "deprecatedNavLabels": ["내거래"],
+  "primaryCta": {
+    "hero": { "copyIntent": "기회 확인", "note": "first-visit primary · STEP4 copy key" },
+    "opportunityCard": {
+      "copyKey": "T.execution.ctaEarn",
+      "label": "수익 벌기",
+      "note": "participate primary · product lock"
+    }
+  },
+  "blocks": [
+    {
+      "id": "sidebar",
+      "role": "shell",
+      "note": "logo · nav5 · inviteCard · BottomNav5 Adapt"
+    },
+    {
+      "id": "header",
+      "role": "shell",
+      "note": "aiScanStatus · notification · avatar · tierBadge · New AppHeader"
+    },
+    {
+      "id": "hero",
+      "role": "hero",
+      "note": "title · subtitle · timeline · robotAnchor · globeAnchor · cta 기회확인 · maxIllustrationPct 35 · New HomeHero"
+    },
+    {
+      "id": "money",
+      "role": "trust",
+      "note": "HomePrincipalRail Adapt · childWire home-principal-slots · no count_up"
+    },
+    {
+      "id": "opportunity",
+      "role": "primary",
+      "note": "BalanceAwareHome Adapt · emptyRequires status+nextAction+whyWait"
+    },
+    {
+      "id": "rightRail",
+      "role": "secondary",
+      "note": "md+ · totalResult · topOpportunities · progressStatus 스캔/확인/진행/정산 · New HomeRightRail"
+    },
+    {
+      "id": "footerTrust",
+      "role": "footer",
+      "note": "SiteFooter + MarketPartnerTrustStrip Adapt"
+    }
+  ],
+  "forbidden": [
+    "photo_pixel_match",
+    "HomePageV2",
+    "success_rate_percent",
+    "count_up_balance",
+    "realtime_profit_animation",
+    "exaggerated_growth_chart",
+    "webgl_hero",
+    "three_js_hero",
+    "ai_generated_runtime_mascot",
+    "gambling_dopamine",
+    "particle_rewards",
+    "fake_geo_performance",
+    "IT_jargon",
+    "보장_수익_badge",
+    "매일_돈_버는_기회",
+    "확정_수익",
+    "AI_자동_수익",
+    "1분_수익_보장",
+    "누구나_벌기_가능",
+    "내거래_tab_label",
+    "mock_opportunity_fill_empty"
+  ]
+}
