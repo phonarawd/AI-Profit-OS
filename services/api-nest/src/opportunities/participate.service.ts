@@ -26,6 +26,11 @@ import {
   formatAmount,
   parseAmount,
 } from "../ledger/ledger.money";
+import {
+  assertFingerprintMatch,
+  fingerprintPayload,
+  participateSemantic,
+} from "../ledger/idempotency-fingerprint";
 import { LedgerPostingService } from "../ledger/ledger.posting.service";
 import { PostgresService } from "../db/postgres";
 import { PreflightService } from "../loop/preflight.service";
@@ -113,6 +118,9 @@ type ExistingParticipate = {
   pricing_version: number;
   capital_usdt: string;
   opportunity_id: string;
+  user_id: string;
+  min_profit_usdt: string;
+  request_fingerprint: string | null;
 };
 
 type ExistingTrade = {
@@ -157,11 +165,6 @@ export class ParticipateService {
       pathOpportunityId,
       validated.preflightToken,
     );
-
-    const existing = await this.findByIdempotency(validated.idempotencyKey);
-    if (existing) {
-      return existing;
-    }
 
     const opp = await this.loadOpportunity(pathOpportunityId);
     if (!opp) throw new NotFoundException("opportunity not found");
@@ -270,6 +273,23 @@ export class ParticipateService {
       });
     }
 
+    const requestFingerprint = fingerprintPayload(
+      participateSemantic({
+        userId,
+        opportunityId: validated.opportunityId,
+        pricingVersion: validated.pricingVersion,
+        minProfitUsdt: validated.minProfitUsdt,
+        amountUsdt,
+      }),
+    );
+    const existing = await this.findByIdempotency(
+      validated.idempotencyKey,
+      requestFingerprint,
+    );
+    if (existing) {
+      return existing;
+    }
+
     const { policy } = await this.executionPolicy.get();
 
     // Membership daily/band guards (§0.0.7) — slots = real per-opportunity count (P2-1)
@@ -326,6 +346,7 @@ export class ParticipateService {
         buyPriceUsdt,
         sellPriceUsdt,
         idempotencyKey: validated.idempotencyKey,
+        requestFingerprint,
         priceSoftAccept: softAccept,
         asset: {
           assetId: opp.asset_id,
@@ -337,7 +358,10 @@ export class ParticipateService {
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : String(e);
       if (/idempotency_key|unique/i.test(msg)) {
-        const again = await this.findByIdempotency(validated.idempotencyKey);
+        const again = await this.findByIdempotency(
+          validated.idempotencyKey,
+          requestFingerprint,
+        );
         if (again) return again;
         throw new ConflictException("idempotency conflict");
       }
@@ -602,16 +626,31 @@ export class ParticipateService {
 
   private async findByIdempotency(
     idempotencyKey: string,
+    incomingFingerprint: string,
   ): Promise<ParticipateResult | null> {
     const pr = await this.db.query<ExistingParticipate>(
       `SELECT id::text, trade_id::text, status, pricing_version,
-              capital_usdt::text, opportunity_id::text
+              capital_usdt::text, opportunity_id::text,
+              user_id::text, min_profit_usdt::text, request_fingerprint
          FROM public.participate_requests
         WHERE idempotency_key = $1`,
       [idempotencyKey],
     );
     const row = pr.rows[0];
     if (!row || row.status !== "accepted" || !row.trade_id) return null;
+
+    const stored =
+      row.request_fingerprint?.trim() ||
+      fingerprintPayload(
+        participateSemantic({
+          userId: row.user_id,
+          opportunityId: row.opportunity_id,
+          pricingVersion: row.pricing_version,
+          minProfitUsdt: formatAmount(parseAmount(row.min_profit_usdt)),
+          amountUsdt: formatAmount(parseAmount(row.capital_usdt)),
+        }),
+      );
+    assertFingerprintMatch({ stored, incoming: incomingFingerprint });
 
     const tr = await this.db.query<ExistingTrade>(
       `SELECT id::text, status, expected_profit_usdt::text, pricing_version
@@ -671,6 +710,7 @@ export class ParticipateService {
     buyPriceUsdt: string;
     sellPriceUsdt: string;
     idempotencyKey: string;
+    requestFingerprint: string;
     priceSoftAccept: boolean;
     asset: {
       assetId: string;
@@ -754,10 +794,10 @@ export class ParticipateService {
       const prIns = await client.query<{ id: string }>(
         `INSERT INTO public.participate_requests (
            user_id, opportunity_id, pricing_version, min_profit_usdt,
-           capital_usdt, status, trade_id, idempotency_key
+           capital_usdt, status, trade_id, idempotency_key, request_fingerprint
          ) VALUES (
            $1::uuid, $2::uuid, $3, $4::numeric,
-           $5::numeric, 'accepted', $6::uuid, $7
+           $5::numeric, 'accepted', $6::uuid, $7, $8
          )
          RETURNING id::text`,
         [
@@ -768,6 +808,7 @@ export class ParticipateService {
           input.amountUsdt,
           tradeId,
           input.idempotencyKey,
+          input.requestFingerprint,
         ],
       );
       const participateRequestId = prIns.rows[0]?.id;

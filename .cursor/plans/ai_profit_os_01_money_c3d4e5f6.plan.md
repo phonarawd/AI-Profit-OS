@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Money & Chain
-overview: v7.23.0 기존 15/15+benefits completed 불변 · R0 종료 후 R1 `redesign-r1-money-read-contract` only · mutation/ledger 재구현0 · Money-owned Home Fact=`principalUsdt`+`settlementCompletedTodayCount`+source/asOf/state.
+overview: v7.23.0 Money+R1+post-r0 Money remediation wave1 completed · Engine observation promote 보류 · Home Fact SSOT 유지 · mutation/ledger 재설계0.
 todos:
   - id: pg-gateway-ban
     content: "[grok-4.5|256K] §41 PG사0 · verify:pg-module-scan · 용어≠PostgreSQL · Auto-Recon≠Day-1"
@@ -52,6 +52,15 @@ todos:
     status: completed
   - id: redesign-r1-money-read-contract
     content: "[grok-4.5|256K] Redesign R1 dependency · 기존 wallet buckets/ledger/settlement read 재사용 · schemas/home-money-read.v1.json + GET /api/v1/me/home-money-read · principalUsdt/settlementCompletedTodayCount/per-field asOf+source/state exact · todayPossibleProfitUsdt는 Engine R1 Owns · ambiguous availableUsdt/todayPossible 금지 · zero≠absent · mutation/DDL/분개 재작성0 · verify:home-money-read-contract 신설+CATALOG · 기존 Money 회귀+bucket-invariant+pg-module-scan PASS"
+    status: completed
+  - id: idempotency-conflict-detection-invariant-gap
+    content: "[grok-4.5|256K] post-r0 promote cc.money.r0-obs-promote-wave1 · same idempotencyKey+semantic-different payload MUST conflict · same key+same payload reuse OK · participate+ledger posting · 해시알고리즘≠계약 · verify:idempotency-conflict-detection 신설+CATALOG · bucket-invariant/pg-module-scan 회귀 · read-contract 재작성0"
+    status: completed
+  - id: committed-event-publication-durability-gap
+    content: "[grok-4.5|256K] post-r0 promote · ledger commit과 publication intent 동일 DB TX · crash 후 재발행 · emit()반환≠ack · Phase0 Postgres outbox 방향(NATS 필수0) · verify:committed-event-publication-durability 신설+CATALOG · bucket-invariant/pg-module-scan 회귀"
+    status: completed
+  - id: money-wallet-auth-remediation
+    content: "[grok-4.5|256K] post-r0 promote · Finding A+B 1todo·2clause · A: practiceWelcome=@UseGuards(Jwt)+sessionUserId(req)·body.userId무시 · B: practiceExpireTick fail-closed machine-auth(Adapters fail-open 복제금지) · verify:money-wallet-auth-remediation 신설+CATALOG · wallet-kyc-session-auth/practice-non-withdrawable 회귀"
     status: completed
 isProject: false
 ---

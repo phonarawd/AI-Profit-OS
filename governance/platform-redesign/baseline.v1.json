@@ -25,8 +25,8 @@
     "canonManifestSurfaces": 33,
     "wiresNotInManifest": 5,
     "nestImports": 18,
-    "localMigrations": 30,
-    "remoteMigrations": 30,
+    "localMigrations": 32,
+    "remoteMigrations": 32,
     "brandAssets": 23,
     "publicBrandAssets": 17,
     "verifyScripts": 157,
@@ -898,7 +898,9 @@
       "supabase/migrations/20260809143754_user_opportunity_overrides_pin_cap_search_path.sql",
       "supabase/migrations/20260809144814_catalog_runtime_day1_fx_bootstrap.sql",
       "supabase/migrations/20260809222034_ops_inbox_hide_source_event.sql",
-      "supabase/migrations/20260810024643_growth_ticker_config.sql"
+      "supabase/migrations/20260810024643_growth_ticker_config.sql",
+      "supabase/migrations/20260811062000_idempotency_request_fingerprint.sql",
+      "supabase/migrations/20260811062100_ledger_outbox_events.sql"
     ],
     "localVersions": [
       "20260808205842",
@@ -930,7 +932,9 @@
       "20260809143754",
       "20260809144814",
       "20260809222034",
-      "20260810024643"
+      "20260810024643",
+      "20260811062000",
+      "20260811062100"
     ],
     "remoteFixturePath": "tooling/verify/fixtures/migrations-applied.v1.json",
     "remoteVersions": [
@@ -963,7 +967,9 @@
       "20260809143754",
       "20260809144814",
       "20260809222034",
-      "20260810024643"
+      "20260810024643",
+      "20260811062000",
+      "20260811062100"
     ]
   },
   "assets": {
@@ -1484,10 +1490,10 @@
       "kind": "intentional",
       "subject": "local/remote migration version parity",
       "evidence": {
-        "local": 30,
-        "remote": 30
+        "local": 32,
+        "remote": 32
       },
-      "note": "30=30 · verify:migrations-applied-parity SSOT. 드리프트 0."
+      "note": "32=32 · verify:migrations-applied-parity SSOT. 드리프트 0. (+idempotency fingerprint · ledger outbox)"
     },
     {
       "id": "cls-admin12-locked",

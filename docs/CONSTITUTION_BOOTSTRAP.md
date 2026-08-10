@@ -3,7 +3,7 @@
 > **목적:** 구현 채팅 시작 전, 헌법·스키마·마이그레이션·어드민·브랜드·DB SSOT를 **예측 없이** 정리한다.  
 > **권위:** ACTIVE Index `ai_profit_os_00_index_a1b2c3d4.plan.md` > 도메인 01~06 > launch ARCHIVE.  
 > **현재 권위:** Index v7.23.0 · R0 governance CLOSE(inventory→fact/state→change-control→observation) · 외부 `플랫폼_전체_재설계_로드맵_d903eef7`=REFERENCE ONLY · 기존 v7.22 스냅샷/「현재」「다음」문구는 이력.
-> **현재 다음:** 01 Money `redesign-r1-money-read-contract` only.
+> **현재 다음:** 02 Engine `engine-ebay-identity-match-ingest` only (01 Money pending0 · Engine obs promote는 Engine pending 완료 후).
 
 ## v7.23.0 현재 잠금
 
@@ -42,11 +42,11 @@
 | public 트리거 | ✅ ledger guards | balance_guard · entries/journals immutable |
 | Supabase Auth 앱 사용 | **0** | Nest JWT only · 시스템 `auth` ≠ Auth SoT |
 | GitHub | ✅ | `phonarawd/AI-Profit-OS` · 코드만 |
-| Index 플랜 | ✅ **R0 CLOSE** | 기존 completed 불변 · R0 4게이트 live · 다음=`redesign-r1-money-read-contract` |
+| Index 플랜 | ✅ **R0 CLOSE** | 기존 completed 불변 · R0 4게이트 live · post-r0 Money obs promote wave1 |
 | Advisor `rls_enabled_no_policy` | INFO 전수 | Day-1 **의도** · deny-by-default |
 
 **v7.22.36 판정(이력):** Index 당시 CLOSED · 헌법·스키마·원격 PG·Auth·Runtime P0 hosts·apps 골격 PASS.
-**v7.23 현재:** R0 CLOSE · 다음=01 Money `redesign-r1-money-read-contract` only.
+**v7.23 현재:** R0 CLOSE · 01 Money pending0(R1+post-r0 remediation) · 다음=02 Engine `engine-ebay-identity-match-ingest` only.
 
 ### 0.1 public 테이블 전수 (41 · MCP 실측)
 
@@ -603,8 +603,11 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 - [x] pnpm verify:brand-consumer PASS
 - [x] Admin IA 골격 = §6.1~6.2 / Admin §9.1.1 (`apps/admin/routes` lock · monorepo-skeleton completed)
 - [ ] `DATABASE_URL` · `REDIS_URL` 로컬 `.env` (git 0)
-- [x] Index R0 4게이트 live · observation registry 등록(가상규칙0·materialize0) · 다음=`redesign-r1-money-read-contract`
-- [ ] 한 채팅=다음 **01 Money** `redesign-r1-money-read-contract` only · 기존 PART0~9 completed 불변
+- [x] Index R0 4게이트 live · observation registry 등록(가상규칙0·materialize0 at R0)
+- [x] 01 Money `redesign-r1-money-read-contract` completed
+- [x] post-r0 Money observation promote wave1 (`cc.money.r0-obs-promote-wave1`) · todo materialize 3 · Engine obs observed 유지
+- [x] post-r0 Money remediation 3todo completed (idempotency·durability·A+B)
+- [ ] 한 채팅=다음 **02 Engine** `engine-ebay-identity-match-ingest` only · Money/R0 completed 재실행 금지
 
 **done 정의:** 해당 todo의 `verify:*` PASS + `pnpm cleanup:lowspec` PASS.
 
@@ -614,7 +617,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 
 > **Owns:** 본 절 + Index「플랜 직렬 완료 규칙」.  
 > **운영자(Grok-4.5) 규칙:** YAML pending todo를 **위에서 아래로만** · 한 채팅=한 todo · 완료 잠금 todo 재실행 금지.  
-> **다음 채팅:** **01 Money** `redesign-r1-money-read-contract` only · v7.22 completed·R0 completed 재실행 금지.
+> **다음 채팅:** **02 Engine** `engine-ebay-identity-match-ingest` only · Money/R0 completed 재실행 금지 · Engine obs는 Engine pending 완료 후 promote.
 
 | 순 | Index todo | 산출물 | 모델 | 상태 |
 |----|------------|--------|------|------|

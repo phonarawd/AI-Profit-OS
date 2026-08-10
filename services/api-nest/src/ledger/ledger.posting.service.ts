@@ -1,7 +1,8 @@
 /**
  * Double-entry posting SoT (Money §11 · §43.5 · §49).
  * ONLY path that mutates ledger_accounts.balance_usdt (app.ledger_posting=on).
- * Lock order: account_id ASC FOR UPDATE · idempotency_key UNIQUE silent reuse.
+ * Lock order: account_id ASC FOR UPDATE · idempotency_key UNIQUE
+ * · same key + same fingerprint → reuse · different fingerprint → 409 conflict.
  */
 
 import {
@@ -11,9 +12,14 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import type { PoolClient } from "pg";
-import { InProcessEventBus } from "../events/in-process.bus";
 import { PostgresService } from "../db/postgres";
+import {
+  assertFingerprintMatch,
+  fingerprintPayload,
+  ledgerJournalSemantic,
+} from "./idempotency-fingerprint";
 import { LEDGER_EVENTS } from "./ledger.events";
+import { LedgerOutboxService } from "./ledger.outbox.service";
 import {
   addAmount,
   assertAmountUsdt,
@@ -48,11 +54,12 @@ type AccountRow = {
 export class LedgerPostingService {
   constructor(
     private readonly db: PostgresService,
-    private readonly bus: InProcessEventBus,
+    private readonly outbox: LedgerOutboxService,
   ) {}
 
   async postJournal(input: PostJournalInput): Promise<LedgerJournalRow> {
     this.validateInput(input);
+    const requestFingerprint = this.fingerprintForInput(input);
 
     let result: LedgerJournalRow;
     try {
@@ -64,7 +71,14 @@ export class LedgerPostingService {
           client,
           input.idempotencyKey,
         );
-        if (existing) return { ...existing, reused: true };
+        if (existing) {
+          await this.assertExistingFingerprint(
+            client,
+            existing.id,
+            requestFingerprint,
+          );
+          return { ...existing, reused: true };
+        }
 
         const resolved = await this.resolveLines(client, input.lines);
         this.assertPracticeIsolation(input.journalType, resolved);
@@ -106,8 +120,8 @@ export class LedgerPostingService {
         }>(
           `INSERT INTO public.ledger_journals (
              idempotency_key, journal_type, reference_type, reference_id,
-             memo, fx_snapshot_id, created_by
-           ) VALUES ($1,$2,$3,$4,$5,$6,$7)
+             memo, fx_snapshot_id, created_by, request_fingerprint
+           ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
            RETURNING id, idempotency_key, journal_type, reference_type, reference_id,
                      memo, fx_snapshot_id, created_by, created_at`,
           [
@@ -118,6 +132,7 @@ export class LedgerPostingService {
             input.memo ?? null,
             input.fxSnapshotId ?? null,
             input.createdBy ?? null,
+            requestFingerprint,
           ],
         );
 
@@ -160,6 +175,21 @@ export class LedgerPostingService {
           );
         }
 
+        // Clause1 — publication intent in same TX as ledger commit (emit≠여기)
+        await client.query(
+          `INSERT INTO public.ledger_outbox_events (journal_id, event_name, payload)
+           VALUES ($1, $2, $3::jsonb)`,
+          [
+            j.id,
+            LEDGER_EVENTS.journalPosted,
+            JSON.stringify({
+              journalId: j.id,
+              journalType: j.journal_type,
+              idempotencyKey: j.idempotency_key,
+            }),
+          ],
+        );
+
         return {
           id: j.id,
           idempotencyKey: j.idempotency_key,
@@ -184,6 +214,10 @@ export class LedgerPostingService {
       ) {
         const existing = await this.getByIdempotencyKey(input.idempotencyKey);
         if (existing) {
+          await this.assertExistingFingerprintById(
+            existing.id,
+            requestFingerprint,
+          );
           result = { ...existing, reused: true };
         } else {
           throw err;
@@ -194,11 +228,8 @@ export class LedgerPostingService {
     }
 
     if (!result.reused) {
-      this.bus.emit(LEDGER_EVENTS.journalPosted, {
-        journalId: result.id,
-        journalType: result.journalType,
-        idempotencyKey: result.idempotencyKey,
-      });
+      // Clause2/3 — crash-safe replay via outbox · emit() return ≠ ack
+      await this.outbox.drain(20);
     }
     return result;
   }
@@ -396,6 +427,50 @@ export class LedgerPostingService {
       throw new NotFoundException("one or more accounts missing under lock");
     }
     return r.rows;
+  }
+
+  private fingerprintForInput(input: PostJournalInput): string {
+    const lines = input.lines.map((l) => ({
+      accountCode: this.accountRefKey(l.account),
+      direction: l.direction,
+      amountUsdt: formatAmount(parseAmount(l.amountUsdt)),
+    }));
+    return fingerprintPayload(
+      ledgerJournalSemantic({
+        journalType: input.journalType,
+        lines,
+        referenceType: input.referenceType,
+        referenceId: input.referenceId,
+      }),
+    );
+  }
+
+  private accountRefKey(ref: AccountRef): string {
+    if ("accountId" in ref) return `id:${ref.accountId}`;
+    if ("systemCode" in ref) return `sys:${ref.systemCode}`;
+    return `user:${ref.userId}:${ref.bucket}`;
+  }
+
+  private async assertExistingFingerprint(
+    querier: { query: PostgresService["query"] } | PoolClient,
+    journalId: string,
+    incoming: string,
+  ): Promise<void> {
+    const r = await querier.query<{ request_fingerprint: string | null }>(
+      `SELECT request_fingerprint
+         FROM public.ledger_journals WHERE id = $1`,
+      [journalId],
+    );
+    const stored = r.rows[0]?.request_fingerprint;
+    // legacy(null): 이전 silent-reuse 유지 · fingerprint 있는 행만 conflict 강제
+    assertFingerprintMatch({ stored, incoming });
+  }
+
+  private async assertExistingFingerprintById(
+    journalId: string,
+    incoming: string,
+  ): Promise<void> {
+    await this.assertExistingFingerprint(this.db, journalId, incoming);
   }
 
   private async findByIdempotency(

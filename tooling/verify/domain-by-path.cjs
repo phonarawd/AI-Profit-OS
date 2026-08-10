@@ -257,6 +257,39 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/api-nest\/src\/ledger\/idempotency-fingerprint\.ts$/.test(f) ||
+      /^supabase\/migrations\/.*idempotency_request_fingerprint\.sql$/.test(f) ||
+      /^tooling\/verify\/idempotency-conflict-detection\.cjs$/.test(f),
+    scripts: [
+      "idempotency-conflict-detection.cjs",
+      "pg-module-scan.cjs",
+      "bucket-invariant.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/ledger\/ledger\.outbox/.test(f) ||
+      /^supabase\/migrations\/.*ledger_outbox_events\.sql$/.test(f) ||
+      /^tooling\/verify\/committed-event-publication-durability\.cjs$/.test(f),
+    scripts: [
+      "committed-event-publication-durability.cjs",
+      "pg-module-scan.cjs",
+      "bucket-invariant.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^tooling\/verify\/money-wallet-auth-remediation\.cjs$/.test(f) ||
+      (/^services\/api-nest\/src\/wallet\/wallet\.controller\.ts$/.test(f) &&
+        true),
+    scripts: [
+      "money-wallet-auth-remediation.cjs",
+      "wallet-kyc-session-auth.cjs",
+      "practice-non-withdrawable.cjs",
+    ],
+  },
+  {
+    test: (f) =>
       /^services\/engine-rust\//.test(f) ||
       (/^services\/api-nest\//.test(f) &&
         /(opportunit|participat|settlement|trade|execution|membership|match)/i.test(f)),

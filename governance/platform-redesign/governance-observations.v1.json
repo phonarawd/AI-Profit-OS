@@ -1,19 +1,21 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "schema": "governance.platform-redesign.observations.v1",
   "redesignStage": "R0",
+  "lifecyclePhase": "post-r0",
   "todoId": "platform-redesign-r0-observation-registry",
   "measuredAt": "2026-08-11T03:54:00.000Z",
+  "promotedAt": "2026-08-11T06:20:00.000Z",
   "pathSeparator": "/",
   "observationSchemaPath": "schemas/governance-observation.v1.json",
   "implementationCode": 0,
   "virtualRulesCreated": 0,
-  "materializedTodos": 0,
+  "materializedTodos": 3,
   "locks": {
     "virtualRuleCreationAtR0": 0,
     "promotionAtR0": 0,
     "materializeAtR0": 0,
-    "note": "R0-4는 observation 등록만. 신규 규칙 가상생성0 · promoted/materialize는 reviewTrigger 도달 후 Change Control(R0-3) 절차로만."
+    "note": "R0-4 등록 시점 잠금은 불변(전부 0). post-r0 promotion/materialize는 Change Control 절차로만 — R0 슬라이스에서 승격하지 않았음."
   },
   "basedOn": {
     "baselinePath": "governance/platform-redesign/baseline.v1.json",
@@ -33,7 +35,35 @@
   "nextAfterR0": {
     "fileSerial": "01",
     "plan": "ai_profit_os_01_money_c3d4e5f6.plan.md",
-    "todoId": "redesign-r1-money-read-contract"
+    "todoId": "redesign-r1-money-read-contract",
+    "note": "R0 CLOSE 출구 포인터(이력 불변). 실행 포인터는 nextExecutable."
+  },
+  "nextExecutable": {
+    "fileSerial": "02",
+    "plan": "ai_profit_os_02_engine_b2c3d4e5.plan.md",
+    "todoId": "engine-ebay-identity-match-ingest"
+  },
+  "postR0Promotion": {
+    "changeId": "cc.money.r0-obs-promote-wave1",
+    "level": "L2",
+    "ownerPlan": "01-money",
+    "reason": "01 Money redesign-r1-money-read-contract completed · Money-owned observation reviewTrigger 도달 · read-contract에 흡수 금지 · owner 플랜 끝 가산 todo로만 materialize",
+    "promotedObservationIds": [
+      "idempotency-conflict-detection-invariant-gap",
+      "committed-event-publication-durability-gap",
+      "user-mutation-subject-binding-violation",
+      "internal-trigger-machine-auth-gap"
+    ],
+    "materializedTodoIds": [
+      "idempotency-conflict-detection-invariant-gap",
+      "committed-event-publication-durability-gap",
+      "money-wallet-auth-remediation"
+    ],
+    "deferredObservationIds": [
+      "settlement-rule-parity-evidence-gap",
+      "adapters-ingest-fail-open-machine-auth"
+    ],
+    "deferredReason": "02 Engine 기존 pending 2개 완료 전 reviewTrigger 미도달 — observed 유지"
   },
   "r0VerifyGates": [
     "platform-redesign-inventory",
@@ -44,13 +74,13 @@
   "counts": {
     "observations": 6,
     "byStatus": {
-      "observed": 6,
+      "observed": 2,
       "deferred": 0,
-      "promoted": 0,
+      "promoted": 4,
       "rejected": 0
     },
-    "currentlyOccurringTrue": 6,
-    "currentlyOccurringFalse": 0
+    "currentlyOccurringTrue": 2,
+    "currentlyOccurringFalse": 4
   },
   "observations": [
     {
@@ -74,8 +104,8 @@
     },
     {
       "id": "idempotency-conflict-detection-invariant-gap",
-      "status": "observed",
-      "currentlyOccurring": true,
+      "status": "promoted",
+      "currentlyOccurring": false,
       "reviewTrigger": "01 Money redesign-r1-money-read-contract 완료 후 — read-contract에 흡수 금지 · 별도 Money remediation todo로 promotion 검토",
       "invariant": "동일 idempotencyKey + 의미적으로 다른 payload는 conflict로 처리돼야 한다. Same key + same payload는 동일 결과 반환. 해시 알고리즘/버전은 구현 선택.",
       "evidence": "services/api-nest participate.service.ts · ledger.posting.service.ts — 재사용만 있고 payload 대조 없음",
@@ -83,9 +113,11 @@
       "classification": "Write-path integrity invariant gap (단순 테스트 부족 아님)",
       "severityNote": "서버가 amount 등을 재검증하므로 확인된 재정 손실 경로는 없음. 침묵 오재사용 가능 — 숫자 severity 선확정 금지",
       "remediationDirection": "payload canonicalization+버전 규칙 정의 후 conflict 판정(해시를 지금 계약으로 고정하지 않음)",
-      "verifyIntent": "신규 verify 필요 · bucket-invariant는 necessary premise 아님",
+      "verifyIntent": "신규 verify:idempotency-conflict-detection · bucket-invariant는 necessary premise 아님",
       "certificationPointer": "N/A",
       "packagingHint": "Money remediation 단독 · read-contract와 atomic slice 합치기 금지",
+      "materializedTodoId": "idempotency-conflict-detection-invariant-gap",
+      "changeControlId": "cc.money.r0-obs-promote-wave1",
       "sourceRefs": [
         "canvases/peotteok-r0-handoff-packet.canvas.tsx#idempotency-conflict-detection-invariant-gap",
         "r0_흡수_반영_플랜_eaebafd6"
@@ -93,8 +125,8 @@
     },
     {
       "id": "committed-event-publication-durability-gap",
-      "status": "observed",
-      "currentlyOccurring": true,
+      "status": "promoted",
+      "currentlyOccurring": false,
       "reviewTrigger": "01 Money §43 Chain Settlement Hardening 다음 슬라이스에서 promotion 검토(Runtime Phase1/NATS 대기 불필요)",
       "invariant": "① commit atomicity: ledger state와 publication intent는 같은 DB TX에서 commit. ② delivery: 미발행 intent는 crash/restart 후 재발행 가능. ③ acknowledgement: downstream 처리 성공 전 영구 완료 금지 · 중복 수신은 안전하게 허용.",
       "evidence": "in-process.bus.ts(비영속 EventEmitter) · ledger.posting.service.ts(commit 후 emit) · settlement-completed.fanout.ts(1 hop re-read PASS · 이후 chain UNVERIFIED)",
@@ -102,9 +134,11 @@
       "classification": "Delivery durability gap — Phase0 Postgres-only로 닫을 수 있음",
       "severityNote": "Clause1 VIOLATED · Clause2 PASS · Clause3 PARTIALLY VERIFIED. Clause3 전체 PASS 표기 금지",
       "remediationDirection": "같은 TX outbox_events + in-process poller 재발행 방향(유력하나 유일한 확정 solution 아님) · at-least-once 전환 시 downstream consumer 점검 포함",
-      "verifyIntent": "emit() 반환값을 ack로 쓰지 않음 assert + at-least-once/재생 시나리오",
+      "verifyIntent": "신규 verify:committed-event-publication-durability · emit() 반환값을 ack로 쓰지 않음 assert",
       "certificationPointer": "N/A · Infra=transport 운영 dependency만",
       "packagingHint": "Money remediation 단독",
+      "materializedTodoId": "committed-event-publication-durability-gap",
+      "changeControlId": "cc.money.r0-obs-promote-wave1",
       "sourceRefs": [
         "canvases/peotteok-r0-handoff-packet.canvas.tsx#committed-event-publication-durability-gap",
         "r0_흡수_반영_플랜_eaebafd6"
@@ -112,8 +146,8 @@
     },
     {
       "id": "user-mutation-subject-binding-violation",
-      "status": "observed",
-      "currentlyOccurring": true,
+      "status": "promoted",
+      "currentlyOccurring": false,
       "reviewTrigger": "01 Money wallet 슬라이스에서 promotion 검토 · P0/P1 확정 시 File-Serial 예외 승격은 Change Control로만",
       "invariant": "User-scoped mutation의 authoritative subject는 authenticated principal에서 derive해야 하며, client-supplied identity로 대체될 수 없다.",
       "evidence": "services/api-nest/src/wallet/wallet.controller.ts practiceWelcome — @UseGuards 없음 · body.userId 신뢰 · 같은 파일 getBuckets/mergeProfit은 sessionUserId(req) 사용",
@@ -121,9 +155,11 @@
       "classification": "Confirmed authorization + subject-binding violation (Finding A)",
       "severityNote": "P0 배제(practice isolation이 withdraw/participate/settlement/merge 차단) · P1은 downstream corruption 추가증거 시 · 그 외 P2 영역 · 최종 숫자 미확정",
       "remediationDirection": "local regression restoration — sessionUserId(req) 재사용(신규 아키텍처 아님)",
-      "verifyIntent": "focused: 인증 필요 → subject=principal → body.userId 무시/거부",
+      "verifyIntent": "verify:money-wallet-auth-remediation — 인증 필요 → subject=principal → body.userId 무시/거부",
       "certificationPointer": "06 Infra redesign-r7-backend-data-certification · user-auth 축",
       "packagingHint": "Finding B와 1 Money todo·2 clause 패키징 가능(finding identity는 별개)",
+      "materializedTodoId": "money-wallet-auth-remediation",
+      "changeControlId": "cc.money.r0-obs-promote-wave1",
       "sourceRefs": [
         "canvases/peotteok-r0-handoff-packet.canvas.tsx#user-mutation-subject-binding-violation",
         "r0_흡수_반영_플랜_eaebafd6"
@@ -131,8 +167,8 @@
     },
     {
       "id": "internal-trigger-machine-auth-gap",
-      "status": "observed",
-      "currentlyOccurring": true,
+      "status": "promoted",
+      "currentlyOccurring": false,
       "reviewTrigger": "01 Money wallet 슬라이스 — Finding A와 패키징 검토 후 promotion(Change Control)",
       "invariant": "Internal-only system trigger는 authorized machine caller를 인증해야 하며 public API surface에서 익명 호출 불가.",
       "evidence": "services/api-nest/src/wallet/wallet.controller.ts practiceExpireTick — 인증 0 · userId 파라미터 없음(machine-auth 문제)",
@@ -140,9 +176,11 @@
       "classification": "Confirmed machine-auth trust-boundary gap (Finding B)",
       "severityNote": "낮은 blast radius(배치 재실행) 추정 · rubric 최종 확정 전",
       "remediationDirection": "fail-closed machine-auth. AdaptersIngestController의 fail-open 형태 복제 금지. HTTP status는 API contract 선택",
-      "verifyIntent": "focused: missing/invalid machine credential이면 protected operation 미실행(fail-closed)",
+      "verifyIntent": "verify:money-wallet-auth-remediation — missing/invalid machine credential이면 protected operation 미실행(fail-closed)",
       "certificationPointer": "06 Infra redesign-r7-backend-data-certification · machine-auth 축",
       "packagingHint": "Finding A와 1 todo·2 clause 가능 · Finding C와는 owner 달라 합치지 않음",
+      "materializedTodoId": "money-wallet-auth-remediation",
+      "changeControlId": "cc.money.r0-obs-promote-wave1",
       "sourceRefs": [
         "canvases/peotteok-r0-handoff-packet.canvas.tsx#internal-trigger-machine-auth-gap",
         "r0_흡수_반영_플랜_eaebafd6"
@@ -157,7 +195,7 @@
       "evidence": "adapters.ingest.controller.ts — if (token) { 검사 } · ADAPTER_INGEST_TOKEN 미설정 시 검사 스킵(완전 공개)",
       "ownerPlan": "02-engine",
       "classification": "Confirmed machine-auth fail-open — Finding B와 동일 invariant · 다른 owner (Finding C)",
-      "severityNote": "시세 ingest 오염/스푸핑 리스크 · rubric 재적용 필요 · 숫자 선확정 금지",
+      "severityNote": "시세 ingest 오염/스푸핑 리스크 · rubric 재적용 필요 · 숫자 severity 선확정 금지",
       "remediationDirection": "fail-closed 전환 — credential 미설정/불일치 시 protected operation 미실행",
       "verifyIntent": "focused: Finding B와 동일 invariant의 Engine측 실행형 assert",
       "certificationPointer": "06 Infra redesign-r7-backend-data-certification · machine-auth 축(실증 재발)",
@@ -170,8 +208,8 @@
   ],
   "notes": [
     "status · currentlyOccurring · reviewTrigger 3축 분리 잠금",
-    "R0 virtualRulesCreated=0 · materializedTodos=0 · implementationCode=0",
-    "promotion 후 owner 플랜 끝 todo materialize · R0에서 01/02 frontmatter 선행 기입 금지",
-    "File-Serial 다음=01 Money redesign-r1-money-read-contract"
+    "R0 locks(virtualRule/promotion/materialize AtR0)=0 이력 불변",
+    "post-r0 Money wave1: observation 4→promoted · todo materialize 3(A+B 패키징) · Engine 2는 observed 유지",
+    "File-Serial 다음 실행=nextExecutable.todoId"
   ]
 }

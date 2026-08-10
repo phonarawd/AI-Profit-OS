@@ -3,12 +3,12 @@
 | | |
 |---|---|
 | schema | `governance.platform-redesign.change-control.v1` |
-| version | `1.0.0` |
-| redesignStage | `R0` |
+| version | `1.1.0` |
+| redesignStage | `R0` (원본) · post-r0 promotion 기록 포함 |
 | todoId | `platform-redesign-r0-change-control` |
 | measuredAt | `2026-08-11` |
-| basedOn | `baseline.v1.json` · `route-contract-matrix.v1.json` · `fact-state-registry.v1.json` |
-| implementationCode | **0** (본 산출물 = governance 문서 + verify 배선만) |
+| basedOn | `baseline.v1.json` · `route-contract-matrix.v1.json` · `fact-state-registry.v1.json` · `governance-observations.v1.json` |
+| implementationCode | **0** at R0-3 · post-r0 Money remediation 구현은 별도 Money todo Owns |
 
 > **Change Control ≠ immutability.** 변경은 허용된다. 등급(L1/L2/L3)에 따라 검증·승인·rollback·증거만 증가한다.  
 > 구칭 “Architecture Freeze”는 **폐기**다. 애매하면 **상위 등급**으로 분류한다.  
@@ -217,6 +217,29 @@ change reason
 | rollback | previous known-good Worker 버전으로 Cloudflare rollback · proxy TARGET을 이전 `workersDev`로 복원 · **Pages origin으로의 롤백은 L3 재승인 없이 금지** (404 회귀) |
 | 승인 증거 | `infra/domain.manifest.json` `openNext.runtime=workers` · `.cursor/rules/opennext-workers-origin.mdc` · `stack-lock.mdc` Host=Cloudflare only · Index v7.23 §2 · `verify:opennext-workers-origin` live |
 | relatedVerify | `opennext-workers-origin` · `cf-deploy-packages` · `domain-bootstrap` · `opennext-build` |
+
+### 6.4 Money R0 observation promote wave1 (post-r0)
+
+| 필드 | 내용 |
+|---|---|
+| changeId | `cc.money.r0-obs-promote-wave1` |
+| level | **L2** (API boundary / write-path integrity / auth trust-boundary · money 경로) |
+| before | 6 observation 전부 `status=observed` · `materializedTodos=0` · Money 플랜 remediation todo 0 · `redesign-r1-money-read-contract` completed 후 reviewTrigger 도달 |
+| after | Money-owned 4 observation → `promoted` · Engine 2건은 `observed` 유지(reviewTrigger 미도달) · 01 Money frontmatter에 remediation todo **3** materialize(A+B=1 todo·2 clause) · `nextExecutable=idempotency-conflict-detection-invariant-gap` |
+| 영향 | `governance-observations.v1.json` v1.1.0 · `schemas/governance-observation.v1.json` optional `materializedTodoId`/`changeControlId` · `verify:governance-observation-registry` post-r0 모드 · Money 플랜 가산 todo 3 · BOOTSTRAP 다음 포인터 |
+| rollback | observation status를 `observed`로 되돌리고 Money frontmatter 가산 todo 3개 제거 · registry `lifecyclePhase`/`postR0Promotion` 제거 · verify를 R0 register-only로 복원 · **제품 코드 롤백은 각 remediation todo의 자체 rollback** |
+| 승인 증거 | reviewTrigger 도달 실측(01 Money pending=0 · `redesign-r1-money-read-contract` completed) · absorption map `r0_흡수_반영_플랜_eaebafd6` · Change Control §4.2 L2 순서 · owner=01 Money · R0 locks(`promotionAtR0`/`materializeAtR0`)=0 이력 불변 |
+| relatedVerify | `governance-observation-registry` · (실행 시) `idempotency-conflict-detection` · `committed-event-publication-durability` · `money-wallet-auth-remediation` · `bucket-invariant` · `pg-module-scan` |
+
+**Materialize map (중복0 · finding identity 보존):**
+
+| observation id | materialized todo id |
+|---|---|
+| `idempotency-conflict-detection-invariant-gap` | `idempotency-conflict-detection-invariant-gap` |
+| `committed-event-publication-durability-gap` | `committed-event-publication-durability-gap` |
+| `user-mutation-subject-binding-violation` + `internal-trigger-machine-auth-gap` | `money-wallet-auth-remediation` (1 todo · 2 clause) |
+
+**금지:** Engine observation을 Money 창구에서 promote · read-contract todo에 remediation 흡수 · R0 locks를 사후 1로 위조 · Adapters fail-open 패턴 복제.
 
 ---
 

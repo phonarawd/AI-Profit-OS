@@ -1,16 +1,8 @@
 /**
- * verify:governance-observation-registry — R0-4 Observation Registry
+ * verify:governance-observation-registry — R0-4 Observation Registry (+ post-r0)
  *
- * 검증:
- * 1) schemas/governance-observation.v1.json 존재·필수 필드/enum
- * 2) governance/platform-redesign/governance-observations.v1.json 존재·스키마
- * 3) status ∈ {observed,deferred,promoted,rejected}
- * 4) currentlyOccurring(boolean) ⊥ reviewTrigger(string) 분리
- * 5) R0 신규 규칙 가상생성0 · materialize0 · promoted0 · 구현코드0
- * 6) handoff 6 observation id 전수 등록
- * 7) R0 신규 4게이트 package.json+CATALOG 배선 (ghost verify 금지)
- * 8) BOOTSTRAP 다음=01 Money redesign-r1-money-read-contract
- * 9) prerequisites(R0-1~R0-3) 존재
+ * R0 register-only 잠금은 lifecyclePhase!=="post-r0"일 때 유지.
+ * post-r0: Money wave1 promote/materialize 허용 · Engine observed 유지 · R0 AtR0 locks=0 이력 불변.
  */
 const fs = require("fs");
 const path = require("path");
@@ -41,6 +33,21 @@ const REQUIRED_OBS_IDS = [
   "internal-trigger-machine-auth-gap",
   "adapters-ingest-fail-open-machine-auth",
 ];
+const MONEY_PROMOTED_IDS = [
+  "idempotency-conflict-detection-invariant-gap",
+  "committed-event-publication-durability-gap",
+  "user-mutation-subject-binding-violation",
+  "internal-trigger-machine-auth-gap",
+];
+const ENGINE_OBSERVED_IDS = [
+  "settlement-rule-parity-evidence-gap",
+  "adapters-ingest-fail-open-machine-auth",
+];
+const MONEY_TODO_IDS = [
+  "idempotency-conflict-detection-invariant-gap",
+  "committed-event-publication-durability-gap",
+  "money-wallet-auth-remediation",
+];
 const R0_GATES = [
   "platform-redesign-inventory",
   "platform-fact-state-registry",
@@ -58,6 +65,14 @@ const baselinePath = path.join(
   "governance/platform-redesign/baseline.v1.json",
 );
 const bootstrapPath = path.join(root, "docs/CONSTITUTION_BOOTSTRAP.md");
+const moneyPlanPath = path.join(
+  root,
+  ".cursor/plans/ai_profit_os_01_money_c3d4e5f6.plan.md",
+);
+const changeControlPath = path.join(
+  root,
+  "governance/platform-redesign/change-control.v1.md",
+);
 
 function fail(msg) {
   fails.push(msg);
@@ -128,7 +143,7 @@ if (schema) {
     fail("schema.title must be GovernanceObservationV1");
   }
   const st = schema.properties?.status?.enum;
-  if (!Array.isArray(st) || !ALLOWED_STATUS.size) {
+  if (!Array.isArray(st)) {
     fail("schema.status.enum required");
   } else {
     for (const s of ALLOWED_STATUS) {
@@ -155,38 +170,29 @@ if (schema) {
   if (schema.properties?.reviewTrigger?.type !== "string") {
     fail("schema.reviewTrigger must be string");
   }
-  // 분리 잠금: 동일 필드/alias 금지
-  if (schema.properties?.currentlyOccurring === schema.properties?.reviewTrigger) {
-    fail("currentlyOccurring and reviewTrigger must be distinct properties");
-  }
   if (schema.properties?.isCurrentlyOccurring || schema.properties?.currentOccurrence) {
     fail("forbidden alias for currentlyOccurring — use currentlyOccurring only");
   }
 }
 
+const postR0 = reg?.lifecyclePhase === "post-r0";
+
 if (reg) {
   if (reg.schema !== "governance.platform-redesign.observations.v1") {
     fail("registry.schema mismatch");
   }
-  if (reg.redesignStage !== "R0") fail("registry.redesignStage must be R0");
+  if (reg.redesignStage !== "R0") fail("registry.redesignStage must remain R0 (origin stage)");
   if (reg.todoId !== "platform-redesign-r0-observation-registry") {
     fail("registry.todoId mismatch");
   }
   if (reg.pathSeparator !== "/") fail("registry.pathSeparator must be /");
-  if (
-    reg.observationSchemaPath !== "schemas/governance-observation.v1.json"
-  ) {
+  if (reg.observationSchemaPath !== "schemas/governance-observation.v1.json") {
     fail("observationSchemaPath mismatch");
   }
-  if (reg.implementationCode !== 0) {
-    fail("implementationCode must be 0");
-  }
   if (reg.virtualRulesCreated !== 0) {
-    fail("virtualRulesCreated must be 0 (R0 신규 규칙 가상생성0)");
+    fail("virtualRulesCreated must be 0 (신규 규칙 가상생성0)");
   }
-  if (reg.materializedTodos !== 0) {
-    fail("materializedTodos must be 0 at R0");
-  }
+  // R0 시점 잠금은 이력 불변
   if (reg.locks?.virtualRuleCreationAtR0 !== 0) {
     fail("locks.virtualRuleCreationAtR0 must be 0");
   }
@@ -206,10 +212,7 @@ if (reg) {
     ) {
       fail("basedOn.baselinePath mismatch");
     }
-    if (
-      baseline &&
-      reg.basedOn.baselineCommitSha !== baseline.commitSha
-    ) {
+    if (baseline && reg.basedOn.baselineCommitSha !== baseline.commitSha) {
       fail(
         `basedOn.baselineCommitSha drift registry=${reg.basedOn.baselineCommitSha} baseline=${baseline.commitSha}`,
       );
@@ -226,11 +229,12 @@ if (reg) {
     }
   }
 
+  // R0 출구 포인터(이력)
   if (
     !reg.nextAfterR0 ||
     reg.nextAfterR0.todoId !== "redesign-r1-money-read-contract"
   ) {
-    fail("nextAfterR0.todoId must be redesign-r1-money-read-contract");
+    fail("nextAfterR0.todoId must remain redesign-r1-money-read-contract (R0 exit history)");
   }
   if (reg.nextAfterR0?.fileSerial !== "01") {
     fail("nextAfterR0.fileSerial must be 01");
@@ -255,11 +259,13 @@ if (reg) {
     promoted: 0,
     rejected: 0,
   };
+  const byId = new Map();
 
   for (const o of reg.observations || []) {
     if (!o.id) fail("observation.id required");
     if (seen.has(o.id)) fail(`duplicate observation.id ${o.id}`);
     seen.add(o.id);
+    byId.set(o.id, o);
 
     if (!ALLOWED_STATUS.has(o.status)) {
       fail(`forbidden status ${o.status} (id=${o.id})`);
@@ -274,7 +280,6 @@ if (reg) {
     if (typeof o.reviewTrigger !== "string" || !o.reviewTrigger.trim()) {
       fail(`${o.id}: reviewTrigger required string`);
     }
-    // 분리: reviewTrigger에 boolean 문자열만 두거나 currentlyOccurring 복제 금지
     if (
       o.reviewTrigger === String(o.currentlyOccurring) ||
       o.reviewTrigger === "true" ||
@@ -283,11 +288,6 @@ if (reg) {
       fail(
         `${o.id}: reviewTrigger must not be a boolean alias of currentlyOccurring`,
       );
-    }
-    if ("currentlyOccurring" in o && "reviewTrigger" in o) {
-      if (o.currentlyOccurring === o.reviewTrigger) {
-        fail(`${o.id}: currentlyOccurring and reviewTrigger must differ`);
-      }
     }
 
     for (const req of [
@@ -311,23 +311,133 @@ if (reg) {
     if (!seen.has(id)) fail(`missing required observation id: ${id}`);
   }
 
-  // R0: promoted/rejected/deferred 가상 승격 금지 — 전부 observed
-  if (statusCounts.promoted !== 0) {
-    fail("R0 promotionAtR0 lock: status=promoted count must be 0");
-  }
-  if (statusCounts.observed !== 6) {
-    fail("R0 register-only: all 6 observations must be status=observed");
+  if (!postR0) {
+    if (reg.implementationCode !== 0) {
+      fail("implementationCode must be 0 at R0");
+    }
+    if (reg.materializedTodos !== 0) {
+      fail("materializedTodos must be 0 at R0");
+    }
+    if (statusCounts.promoted !== 0) {
+      fail("R0 promotionAtR0 lock: status=promoted count must be 0");
+    }
+    if (statusCounts.observed !== 6) {
+      fail("R0 register-only: all 6 observations must be status=observed");
+    }
+    if (reg.counts?.byStatus?.promoted !== 0) {
+      fail("counts.byStatus.promoted must be 0");
+    }
+    if (reg.counts?.byStatus?.observed !== 6) {
+      fail("counts.byStatus.observed must be 6");
+    }
+  } else {
+    if (reg.postR0Promotion?.changeId !== "cc.money.r0-obs-promote-wave1") {
+      fail("postR0Promotion.changeId must be cc.money.r0-obs-promote-wave1");
+    }
+    if (reg.materializedTodos !== 3) {
+      fail(`materializedTodos must be 3 at Money wave1 (got ${reg.materializedTodos})`);
+    }
+    if (statusCounts.promoted !== 4) {
+      fail(`post-r0 Money wave1: promoted must be 4 (got ${statusCounts.promoted})`);
+    }
+    if (statusCounts.observed !== 2) {
+      fail(`post-r0 Money wave1: observed must be 2 Engine (got ${statusCounts.observed})`);
+    }
+    for (const id of MONEY_PROMOTED_IDS) {
+      const o = byId.get(id);
+      if (!o || o.status !== "promoted") {
+        fail(`${id} must be status=promoted`);
+      }
+      if (!o.materializedTodoId) {
+        fail(`${id}: materializedTodoId required when promoted`);
+      }
+      if (o.changeControlId !== "cc.money.r0-obs-promote-wave1") {
+        fail(`${id}: changeControlId must be cc.money.r0-obs-promote-wave1`);
+      }
+      if (o.ownerPlan !== "01-money") {
+        fail(`${id}: ownerPlan must be 01-money`);
+      }
+    }
+    for (const id of ENGINE_OBSERVED_IDS) {
+      const o = byId.get(id);
+      if (!o || o.status !== "observed") {
+        fail(`${id} must remain status=observed until Engine reviewTrigger`);
+      }
+      if (o.materializedTodoId) {
+        fail(`${id}: must not materialize before Engine pending complete`);
+      }
+    }
+    // A+B packaging
+    if (
+      byId.get("user-mutation-subject-binding-violation")?.materializedTodoId !==
+      "money-wallet-auth-remediation"
+    ) {
+      fail("Finding A must materialize as money-wallet-auth-remediation");
+    }
+    if (
+      byId.get("internal-trigger-machine-auth-gap")?.materializedTodoId !==
+      "money-wallet-auth-remediation"
+    ) {
+      fail("Finding B must materialize as money-wallet-auth-remediation");
+    }
+
+    // Money plan frontmatter must contain the 3 todos
+    let moneyFm = "";
+    if (!fs.existsSync(moneyPlanPath)) {
+      fail("missing 01 Money plan for materialize assert");
+    } else {
+      const money = fs.readFileSync(moneyPlanPath, "utf8");
+      moneyFm = money.split(/^---$/m)[1] || "";
+      for (const id of MONEY_TODO_IDS) {
+        if (!new RegExp(`id:\\s*${id}\\b`).test(moneyFm)) {
+          fail(`01 Money frontmatter missing materialized todo id=${id}`);
+        }
+      }
+    }
+
+    // nextExecutable: Money remediation pending이면 그 첫 todo · 아니면 Engine 첫 pending
+    const moneyPending = [];
+    for (const id of MONEY_TODO_IDS) {
+      const m = moneyFm.match(
+        new RegExp(`id:\\s*${id}\\b[\\s\\S]*?status:\\s*(\\w+)`, "m"),
+      );
+      if (m && m[1] === "pending") moneyPending.push(id);
+    }
+    const expectedNext =
+      moneyPending[0] || "engine-ebay-identity-match-ingest";
+    if (!reg.nextExecutable || reg.nextExecutable.todoId !== expectedNext) {
+      fail(
+        `nextExecutable.todoId must be ${expectedNext} (got ${reg.nextExecutable?.todoId})`,
+      );
+    }
+
+    // Change Control evidence
+    if (!fs.existsSync(changeControlPath)) {
+      fail("missing change-control.v1.md");
+    } else {
+      const cc = fs.readFileSync(changeControlPath, "utf8");
+      if (!cc.includes("cc.money.r0-obs-promote-wave1")) {
+        fail("change-control.v1.md missing cc.money.r0-obs-promote-wave1");
+      }
+      if (!cc.includes("6.4")) {
+        fail("change-control.v1.md missing §6.4 Money promote wave1");
+      }
+    }
   }
 
   if (reg.counts) {
     if (reg.counts.observations !== 6) {
       fail("counts.observations must be 6");
     }
-    if (reg.counts.byStatus?.promoted !== 0) {
-      fail("counts.byStatus.promoted must be 0");
+    if (reg.counts.byStatus?.promoted !== statusCounts.promoted) {
+      fail(
+        `counts.byStatus.promoted drift expected=${statusCounts.promoted} got=${reg.counts.byStatus?.promoted}`,
+      );
     }
-    if (reg.counts.byStatus?.observed !== 6) {
-      fail("counts.byStatus.observed must be 6");
+    if (reg.counts.byStatus?.observed !== statusCounts.observed) {
+      fail(
+        `counts.byStatus.observed drift expected=${statusCounts.observed} got=${reg.counts.byStatus?.observed}`,
+      );
     }
     if (reg.counts.currentlyOccurringTrue !== occurringTrue) {
       fail(
@@ -342,7 +452,6 @@ if (reg) {
   });
 }
 
-// package.json + CATALOG + domain-by-path (ghost verify 금지)
 const pkg = JSON.parse(
   fs.readFileSync(path.join(root, "package.json"), "utf8"),
 );
@@ -372,34 +481,43 @@ if (!/governance-observation\\.v1\\.json/.test(domainByPath)) {
   fail("domain-by-path.cjs missing governance-observation.v1.json path trigger");
 }
 
-// BOOTSTRAP 다음 포인터
 if (!fs.existsSync(bootstrapPath)) {
   fail("missing docs/CONSTITUTION_BOOTSTRAP.md");
 } else {
   const boot = fs.readFileSync(bootstrapPath, "utf8");
-  if (!boot.includes("redesign-r1-money-read-contract")) {
-    fail(
-      "BOOTSTRAP must point next to 01 Money redesign-r1-money-read-contract",
-    );
+  if (postR0) {
+    const nextId = reg?.nextExecutable?.todoId;
+    if (!nextId || !boot.includes(nextId)) {
+      fail(
+        `BOOTSTRAP 「현재 다음」 must include nextExecutable.todoId=${nextId}`,
+      );
+    }
+    if (
+      /현재 다음:\s*01 Money `redesign-r1-money-read-contract` only/.test(boot)
+    ) {
+      fail(
+        "BOOTSTRAP stale: 현재 다음 still redesign-r1-money-read-contract only",
+      );
+    }
+  } else {
+    if (!boot.includes("redesign-r1-money-read-contract")) {
+      fail(
+        "BOOTSTRAP must point next to 01 Money redesign-r1-money-read-contract",
+      );
+    }
+    if (!/다음[^\n]*redesign-r1-money-read-contract/.test(boot)) {
+      fail(
+        "BOOTSTRAP 「다음」 pointer must include redesign-r1-money-read-contract",
+      );
+    }
+    if (
+      /현재 다음:\s*00 Index `platform-redesign-r0-inventory` only/.test(boot)
+    ) {
+      fail(
+        "BOOTSTRAP stale: 현재 다음 still platform-redesign-r0-inventory only",
+      );
+    }
   }
-  if (!/다음[^\n]*redesign-r1-money-read-contract/.test(boot)) {
-    fail(
-      "BOOTSTRAP 「다음」 pointer must include redesign-r1-money-read-contract",
-    );
-  }
-  // stale R0-only next 금지 (현재 다음이 inventory만이면 FAIL)
-  if (
-    /현재 다음:\s*00 Index `platform-redesign-r0-inventory` only/.test(boot)
-  ) {
-    fail(
-      "BOOTSTRAP stale: 현재 다음 still platform-redesign-r0-inventory only",
-    );
-  }
-}
-
-// 구현코드0 — 본 게이트 산출물에 apps/services 제품 경로 기입 금지(증거 문자열의 기존 경로 설명은 허용)
-if (reg?.implementationCode !== 0) {
-  // already failed above
 }
 
 if (fails.length) {
@@ -408,6 +526,9 @@ if (fails.length) {
   process.exit(1);
 }
 
+const mode = postR0
+  ? `post-r0 Money wave1 promoted=${MONEY_PROMOTED_IDS.length} materialize=${MONEY_TODO_IDS.length} next=${reg.nextExecutable.todoId}`
+  : `R0 register-only observed×6 materialize=0 next=01/${reg.nextAfterR0.todoId}`;
 console.log(
-  `[verify:governance-observation-registry] PASS (observations=${REQUIRED_OBS_IDS.length} · status=observed×6 · virtualRules=0 · materialize=0 · next=01/${reg.nextAfterR0.todoId} · R0 gates×4 wired)`,
+  `[verify:governance-observation-registry] PASS (${mode} · R0 AtR0 locks=0 · gates×4 wired)`,
 );

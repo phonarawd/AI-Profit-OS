@@ -82,6 +82,18 @@
       "type": "array",
       "items": { "type": "string", "minLength": 1 },
       "description": "handoff/canvas/감사 출처 포인터"
+    },
+    "materializedTodoId": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "post-r0 promotion 후 owner 플랜 frontmatter todo id. status=promoted일 때 권장"
+    },
+    "changeControlId": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^cc\\.[a-z0-9.-]+$",
+      "description": "promotion을 기록한 Change Control changeId"
     }
   }
 }

@@ -51,6 +51,8 @@ export type Phase0Env = {
   llmQuotaSoftRpd: number;
   /** Phase1 CF workers → Nest ingest (header x-adapter-token) */
   adapterIngestToken: string | null;
+  /** Money practice expire tick · fail-closed machine-auth (header x-internal-wallet-token) */
+  internalWalletTickToken: string | null;
   phase: 0;
   bus: "in-process";
 };
@@ -123,6 +125,7 @@ export function loadPhase0Env(): Phase0Env {
     llmQuotaSoftRpm: readInt("LLM_QUOTA_SOFT_RPM", 10),
     llmQuotaSoftRpd: readInt("LLM_QUOTA_SOFT_RPD", 200),
     adapterIngestToken: read("ADAPTER_INGEST_TOKEN"),
+    internalWalletTickToken: read("INTERNAL_WALLET_TICK_TOKEN"),
     phase: 0,
     bus: "in-process",
   };

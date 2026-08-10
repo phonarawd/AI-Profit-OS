@@ -2,12 +2,14 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   Post,
   Req,
   UnauthorizedException,
   UseGuards,
 } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { loadPhase0Env } from "../config/phase0.env";
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
 import { PracticeGrantService } from "../ledger/practice-grant.service";
 import { ChainSweeperPhase0Service } from "./chain-sweeper.phase0.service";
@@ -33,7 +35,7 @@ type SessionReq = {
 
 /**
  * User wallet HTTP surface · /api/v1/wallet/*
- * PART9-pre2 — 유저 라우트 9개만 JwtAuthGuard + session userId (내부 7라우트 가드 미부착)
+ * 유저 라우트 = JwtAuthGuard + sessionUserId · practiceExpireTick = fail-closed machine-auth
  */
 @Controller("wallet")
 export class WalletController {
@@ -72,15 +74,23 @@ export class WalletController {
     });
   }
 
-  /** §51.7 welcome practice · idempotent 1회 · normally called from signup provision */
+  /** §51.7 welcome practice · subject=JWT principal only · body.userId 무시 */
+  @UseGuards(JwtAuthGuard)
   @Post(WALLET_USER_ROUTES.practiceWelcome)
-  practiceWelcome(@Body() body: Record<string, unknown>) {
-    return this.practiceGrant.grantWelcome(String(body.userId ?? ""));
+  practiceWelcome(@Req() req: SessionReq) {
+    return this.practiceGrant.grantWelcome(this.sessionUserId(req));
   }
 
-  /** §51.7 Phase0 in-process expire cron */
+  /**
+   * §51.7 Phase0 in-process expire cron · fail-closed machine-auth
+   * AdaptersIngest fail-open(if token) 패턴 복제 금지
+   */
   @Post(WALLET_USER_ROUTES.practiceExpireTick)
-  practiceExpireTick(@Body() body?: Record<string, unknown>) {
+  practiceExpireTick(
+    @Headers("x-internal-wallet-token") headerToken: string | undefined,
+    @Body() body?: Record<string, unknown>,
+  ) {
+    this.assertInternalWalletTickAuth(headerToken);
     return this.practiceGrant.expireDue({
       limit: typeof body?.limit === "number" ? body.limit : undefined,
     });
@@ -256,12 +266,23 @@ export class WalletController {
     });
   }
 
-  /** PART9-pre2 — never trust query/body userId on user routes */
+  /** never trust query/body userId on user routes */
   private sessionUserId(req: SessionReq): string {
     const userId = String(req.user?.userId ?? req.user?.sub ?? "");
     if (!userId) {
       throw new UnauthorizedException("AUTH_REQUIRED");
     }
     return userId;
+  }
+
+  /** fail-closed: token unset OR mismatch → Unauthorized · operation 미실행 */
+  private assertInternalWalletTickAuth(headerToken: string | undefined): void {
+    const expected = loadPhase0Env().internalWalletTickToken;
+    if (!expected) {
+      throw new UnauthorizedException("INTERNAL_WALLET_TICK_TOKEN_UNSET");
+    }
+    if (!headerToken || headerToken !== expected) {
+      throw new UnauthorizedException("INTERNAL_WALLET_TICK_TOKEN_INVALID");
+    }
   }
 }

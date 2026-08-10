@@ -1,7 +1,7 @@
 /**
  * verify:wallet-kyc-session-auth — PART9-pre2
- * Wallet 유저 9라우트 + Kyc 2라우트 JwtAuthGuard · session userId
- * 내부 7라우트는 가드 미부착 허용리스트
+ * Wallet 유저 10라우트(+practiceWelcome) + Kyc 2라우트 JwtAuthGuard · session userId
+ * 내부 라우트(JWT 미부착) 허용리스트 · practiceExpireTick=machine-auth(별도 verify)
  */
 const fs = require("fs");
 const path = require("path");
@@ -57,6 +57,7 @@ if (/@UseGuards\(JwtAuthGuard\)\s*\r?\n@Controller/.test(wallet)) {
 const userMethods = [
   "getBuckets",
   "mergeProfit",
+  "practiceWelcome",
   "myDepositAddress",
   "createKrwDeposit",
   "createDepositDispute",
@@ -76,9 +77,9 @@ for (const m of userMethods) {
 }
 
 const guardCount = (wallet.match(/@UseGuards\(JwtAuthGuard\)/g) || []).length;
-if (guardCount < 9) {
+if (guardCount < 10) {
   fails.push(
-    `wallet.controller.ts must apply @UseGuards(JwtAuthGuard) on ≥9 user routes (found ${guardCount})`,
+    `wallet.controller.ts must apply @UseGuards(JwtAuthGuard) on ≥10 user routes (found ${guardCount})`,
   );
 }
 
@@ -107,7 +108,6 @@ const internalMethods = [
   "chainWatcherStatus",
   "chainSweeperTick",
   "chainSweeperStatus",
-  "practiceWelcome",
   "practiceExpireTick",
 ];
 for (const m of internalMethods) {
@@ -120,6 +120,11 @@ for (const m of internalMethods) {
       `${m} is internal — must NOT have @UseGuards(JwtAuthGuard) (allowlist)`,
     );
   }
+}
+if (!wallet.includes("assertInternalWalletTickAuth")) {
+  fails.push(
+    "practiceExpireTick must use fail-closed assertInternalWalletTickAuth",
+  );
 }
 
 // Kyc 2라우트
