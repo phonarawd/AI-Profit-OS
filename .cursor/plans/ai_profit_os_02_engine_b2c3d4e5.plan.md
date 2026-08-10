@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Engine
-overview: v7.22.51 Pre-UI CLOSED(E-R1~E-R8) + 가산 pending `engine-ebay-identity-match-ingest`(U15 · File-Serial 예외·03 UI 재차단 금지) · 1~26+E-R completed 불변 · UI PART0 PASS · File-Serial 실행=03 UI market-partner-trust-surfaces. Index=00.
+overview: v7.22.51 Pre-UI CLOSED(E-R1~E-R8) + 가산 pending `engine-ebay-identity-match-ingest`(U15 · File-Serial 예외·03 UI 재차단 금지) · 1~26+E-R completed 불변 · UI PART0~9 CLOSED · File-Serial 실행=03 UI `trust-age-spotcheck`. Index=00.
 todos:
   - id: engine-preflight-constitution
     content: "[grok-4.5|256K] 착수전 BOOTSTRAP§0.4+CONST(44/45/46/46b/47/48/51)+DB58·mig18·함수4·Admin routes·override DDL↔schema 모순흡수 · 구현코드0 · 재검증2026-08-09"
@@ -286,7 +286,7 @@ isProject: false
 | Brand/AI | Consumer/AI=**퍼뜩** · 클라이 등 타명 **0** | ✅ |
 | Engine verify | listing/soft-hard/pricing/fx/market-intel/adapters/tier/image/vertical×3/arbitrage/jargon/balance/override/match-rule/mission×3/g4/partner/strictness/membership×3/KPI/sim/ai-feature/shadow/twin/llm×2/coach×5/admin-routes **전수 PASS** | ✅ |
 
-**CLOSE 판정:** Engine = **CLOSED** · UI PART0 PASS(v7.22.50) · File-Serial 다음 = **03 UI** (`market-partner-trust-surfaces`). completed Engine todo 재실행 **금지**.
+**CLOSE 판정:** Engine = **CLOSED** · UI PART0~9 CLOSED · File-Serial 다음 = **03 UI** (`trust-age-spotcheck`). completed Engine todo 재실행 **금지**.
 
 ### 0.8.1 Founder local ops pointer (v7.22.45 · **Engine todo 재실행·상태변경 금지**)
 
@@ -490,7 +490,7 @@ tooling/verify/
 | Money `money-user-benefits-read` | `GET /api/v1/me/benefits(+summary)` · `BenefitsUserController` · `MissionModule.controllers` · `verify:benefit-hub-surfaces`(+credits/g4) | ✅ completed |
 | File-Serial 예외 | Engine E-R8 + Money benefits 둘 다 completed → 예외 **소멸** | ✅ |
 
-**CLOSE 판정:** Engine Pre-UI Gate = **CLOSED** · UI PART0 PASS(v7.22.50) · File-Serial 다음 = **03 UI** (`market-partner-trust-surfaces`). completed Engine/Money(가산 포함) todo 재실행 **금지**.
+**CLOSE 판정:** Engine Pre-UI Gate = **CLOSED** · UI PART0~9 CLOSED · File-Serial 다음 = **03 UI** (`trust-age-spotcheck`). completed Engine/Money(가산 포함) todo 재실행 **금지**.
 
 ### 0.10 POST-UI follow-up — eBay identity-match ingest (v7.22.51 · U15 · 예측0 · 구현 대기)
 

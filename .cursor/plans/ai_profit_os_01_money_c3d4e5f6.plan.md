@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Money & Chain
-overview: v7.22.49 CLOSED(15/15+가산 money-user-benefits-read) · GET /me/benefits(+summary) live · Pre-UI Gate 예외 소멸 · UI PART0 PASS(v7.22.50) · File-Serial 다음=03 UI market-partner-trust-surfaces. Admin계약잠금. Grok256K. Index=00.
+overview: v7.22.49 CLOSED(15/15+가산 money-user-benefits-read) · GET /me/benefits(+summary) live · Pre-UI Gate 예외 소멸 · UI PART0~9 CLOSED · File-Serial 다음=03 UI `trust-age-spotcheck`. Admin계약잠금. Grok256K. Index=00.
 todos:
   - id: pg-gateway-ban
     content: "[grok-4.5|256K] §41 PG사0 · verify:pg-module-scan · 용어≠PostgreSQL · Auto-Recon≠Day-1"

@@ -33,7 +33,7 @@ todos:
     content: "[grok-4.5|256K] PART5b growth?tab=partners §38.10 Tier-A 순서·ON/OFF·audit · 로고교체금지(Brand markets manifest) · yahoo_jp adapter Day1=0≠표기OFF · UI MarketPartner* pointer · verify:market-partner-trust(Admin면)+admin-growth-tabs"
     status: pending
   - id: admin-growth-ticker-organic
-    content: "[grok-4.5|256K] PART5c §35.4 growth?tab=ticker Organic Hybrid · live우선·침묵메움·24h곡선·지터·corpus · DayPulse편집UI0 · UI §33.2a pointer · verify:ticker-organic-hybrid/ticker-pii-0/ticker-mode-audit"
+    content: "[grok-4.5|256K] PART5c §35.4 growth?tab=ticker Organic Hybrid · live우선·침묵메움·24h곡선·지터·corpus · DayPulse편집UI0 · UI §33.2a pointer · **선행 pointer: UI PART9g가 만든 `growth_ticker_config`(ticker_mode/counter_mode)에 PATCH+Organic Hybrid 연출 로직 추가**(테이블 신설≠본 todo·UI 9g Owns) · verify:ticker-organic-hybrid/ticker-pii-0/ticker-mode-audit"
     status: pending
   - id: admin-ai-peotteok-ops
     content: "[grok-4.5|256K] PART5d §9.5.7 ai-logs?tab=coach|eval|pick|spotcheck · P/G/S Eval·trace·degrade · AI PICK 읽기전용·Admin mutate0 · spotcheck=UI §38.6b · Engine §47.15 · verify:ai-coach-*/admin routes"
@@ -160,7 +160,7 @@ isProject: false
 | 회원 프로필·잔액·차단 | `/admin/users/:id` §37 |
 | **유저 입금·출금·시세차익·순유입** | `/admin/users/:id/finance` §39 · §9.8.7 |
 | **유저 360 (추천·유입·CS·등급·prefs)** | `/admin/users/:id` §9.8.8 |
-| 오늘 지급 ticker | `ticker_mode` + `counter_mode` §35 G4 · `/admin/growth?tab=ticker` · todo=`admin-growth-ticker-organic` |
+| 오늘 지급 ticker | `ticker_mode` + `counter_mode` §35 G4 · 테이블=`growth_ticker_config`(UI PART9g 신설·본 Admin=PATCH+Organic) · `/admin/growth?tab=ticker` · todo=`admin-growth-ticker-organic` |
 | **혜택·미션 허브** | `/admin/growth?tab=missions` · Money §51.8a · todo=`admin-growth-missions` · **유저별 수동지급 0** |
 | **공식 협력사 표기** | `/admin/growth?tab=partners` · UI §38.10 · todo=`admin-growth-partners` |
 | AI 추천도·퍼뜩 Eval | `/admin/ai-logs?tab=coach\|eval\|pick` · todo=`admin-ai-peotteok-ops` · **모듈 추가 금지** |

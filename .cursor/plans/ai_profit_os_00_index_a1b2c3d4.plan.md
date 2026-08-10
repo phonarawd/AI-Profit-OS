@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Index
-overview: v7.22.51 Index CLOSED(불변)·Pre-UI Gate CLOSED·UI PART0 PASS·Engine 가산 `engine-ebay-identity-match-ingest` pending(U15·File-Serial 예외2·UI 재차단 금지)·File-Serial 실행=03 UI market-partner-trust-surfaces only·§38.10표기≠adapter금지(§5h2 supersede).
+overview: v7.22.59 Index CLOSED(불변)·Pre-UI Gate CLOSED·UI PART0~8c+PART9 CLOSED·잔여=`trust-age-spotcheck`(수동)·Engine 가산 `engine-ebay-identity-match-ingest` pending(U15·예외2·UI 재차단 금지)·File-Serial 실행=03 UI `trust-age-spotcheck` only·§38.10표기≠adapter금지(§5h2 supersede).
 todos:
   - id: yahoo-jp-permanent-ban
     content: "[grok-4.5|256K] v7.22.32 yahoo_jp 영구 FORBIDDEN · Phase1+ 철회 · Engine/UI/ENV 0 · verify:listing-legs-day1"
@@ -132,7 +132,7 @@ isProject: false
 | **05** | PWA & Native | PWA pending **0** 후만 06 착수 |
 | **06** | Infra & Marketing | pending **0**(Marketing/CAPI + 후반 관측만 · Auth/Phase0 실행큐≠여기) = 전 플랜 직렬 완료 |
 
-**00 Index pending 큐:** **pending 0 · CLOSED (v7.22.36)**. **01 Money = CLOSED (v7.22.49 · 15/15+가산 benefits)**. **02 Engine = Pre-UI CLOSED (v7.22.49 · 26/26+E-R1~E-R8) + 가산 `engine-ebay-identity-match-ingest` pending (v7.22.51 · §0.10 · 예외2)**. **03 UI PART0 = PASS (v7.22.50)**. File-Serial 실행=**03 UI** `market-partner-trust-surfaces` only. *(Index completed: monorepo-skeleton · copy-canon-cta-sla-lock · auth-ssot · phase0-bootstrap-hosts)*
+**00 Index pending 큐:** **pending 0 · CLOSED (v7.22.36)**. **01 Money = CLOSED (v7.22.49 · 15/15+가산 benefits)**. **02 Engine = Pre-UI CLOSED (v7.22.49 · 26/26+E-R1~E-R8) + 가산 `engine-ebay-identity-match-ingest` pending (v7.22.51 · §0.10 · 예외2)**. **03 UI PART0~8c+PART9 = CLOSED (v7.22.59)** · 잔여=`trust-age-spotcheck`. File-Serial 실행=**03 UI** `trust-age-spotcheck` only. *(Index completed: monorepo-skeleton · copy-canon-cta-sla-lock · auth-ssot · phase0-bootstrap-hosts)*
 
 ### v7.22.48→49 Pre-UI Runtime Gate — CLOSED (이력 · 흡수 SSOT=Engine §0.9 · E-R8 done)
 
@@ -143,7 +143,7 @@ isProject: false
 |------|------------|
 | **02 Engine** | 1~26 + E-R1~E-R8 **completed** · Pre-UI §0.9.11 CLOSED · **+** `engine-ebay-identity-match-ingest` **pending**(§0.10 · 예외2) |
 | **01 Money** | 1~15 + `money-user-benefits-read` **completed** · overview CLOSED |
-| **03 UI** | PART0 PASS · **다음=`market-partner-trust-surfaces`** |
+| **03 UI** | PART0~8c+PART9 CLOSED · **다음=`trust-age-spotcheck`** (수동실사) |
 
 #### File-Serial 예외 (문서화만 · ADR-004식 잠금 · 임의 일반화 금지)
 
@@ -285,6 +285,8 @@ flowchart TD
 | **v7.22.54 듀얼레이어 광고 Compliance** | UI **§6.4c.1** utility landing · PART2c-pre `supportEmail` · Infra **§31.2c~§31.3c~§31.4.0** CAPI/pixel isolation · `verify:marketing-compliance`+`operator-footer` · 랜딩 CTA=`실시간 시세 맵 열기` ≠ 앱 `수익 벌기` |
 | **v7.22.55 §6.4c.1 5결정문 잠금** | UI **톤허용시점**(Guest utility+Disclosure=전환고지 · 「수익 벌기」=capital only · §6.4 supersede) · **괴리율 금지어**+시세·가격 비교 포지셔닝 · copy↔Infra §31.4/§31.7 **1:1** · consent 실행계약(G) · 완료=`landing-3s`+`marketing-compliance`+`operator-footer` · PART2c-pre §0.8.2 #5 승격 · Infra §31.2/2c/3c/4.0/7 동기 |
 | **v7.22.56 §31.2d 광고소재 SSOT** | Infra **Meta/TikTok/Google 각 10훅** · HARD 금지어(+부업·돈벌) · CTA=`실시간 시세 맵 열기` · 20~70 **중성**(성별 타깃0) · 소재=시세맵 UI≥80% · Human Review 체크리스트 · UI §6.4c.1 pointer |
+| **v7.22.58 File-Serial 포인터 동기** | UI PART0~8c CLOSED·PART9 흡수 후 Index/BOOTSTRAP 「다음」stale(`market-partner-trust-surfaces`)→**`part9-pre-dev-api-proxy`** · UI §0.8.3 PART5~8 COMPLETED 표기 동기 · 구현코드 **0** · completed 재실행 **금지** |
+| **v7.22.59 PART9 CLOSE** | UI 9-pre~9i live wire+verify T0 commit · Index/BOOTSTRAP 「다음」→**`trust-age-spotcheck`** · 코드 세션≠8d 수동실사 |
 | **v7.22.51 Marketing CAPI 5층 (Infra §31.8)** | `marketing-seo-engine`→**7 todo** · D1~D3 dedup fixture · OAuth state=CSRF only · verify **capi-config/smoke 2계층** · METRICS.md minimum vs score · Admin Worker default·48h 대조 분리 · `platform_match_rate` **폐기** · Admin §9.5.6 pointer |
 
 ### 점수판 (목표)
@@ -1456,7 +1458,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 
 ### A11. 판정
 
-**Index = CLOSED.** **01 Money = CLOSED (v7.22.38).** **02 Engine = CLOSED (v7.22.44).** *(이력)* 당시 다음=`ui-preflight-constitution` → **A12+v7.22.50**에서 PART0 PASS 후 다음=`market-partner-trust-surfaces`. completed Index/Money/Engine todo 재실행 **금지**.
+**Index = CLOSED.** **01 Money = CLOSED (v7.22.38).** **02 Engine = CLOSED (v7.22.44).** *(이력)* 당시 다음=`ui-preflight-constitution` → PART0 PASS=`market-partner-trust-surfaces` → v7.22.58=`part9-pre-dev-api-proxy` → **A12+v7.22.59** 현재=`trust-age-spotcheck`. completed Index/Money/Engine/UI-PART0~9 todo 재실행 **금지**.
 
 > **A11 이력 표시:** 아래 A12에서 REOPEN 흡수 · v7.22.50 PART0 PASS로 File-Serial 포인터 갱신. A11의 CLOSE 판정 자체(1~26/1~15 completed)는 **무효화되지 않음**.
 
@@ -1494,7 +1496,9 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 1. ~~**02 Engine** E-R1~E-R8~~ → **CLOSED (v7.22.49 · §0.9.11)**
 2. ~~**01 Money** `money-user-benefits-read`~~ → **completed**
 3. ~~**03 UI** `ui-preflight-constitution`~~ → **PASS (v7.22.50 · U13~U15 흡수)**
-4. **현재:** **03 UI** `market-partner-trust-surfaces` only (File-Serial 정상 · PART0 완료 · Engine §0.10 U15는 예외2로 병행 트래킹만)
+4. ~~**03 UI** PART1a~8c~~ → **CLOSED (v7.22.57 · YAML completed)**
+5. ~~**03 UI** PART9 (9-pre~9i)~~ → **CLOSED (v7.22.59)**
+6. **현재:** **03 UI** `trust-age-spotcheck` only (수동실사·코드0 · Engine §0.10 U15는 예외2로 병행 트래킹만)
 
 
-**판정:** Index = **CLOSED(불변)**. Pre-UI Runtime Gate = **CLOSED**. UI PART0 = **PASS**. Engine §0.10 `engine-ebay-identity-match-ingest` = **pending**(예외2 · UI 재차단 금지). File-Serial **실행 파일 = 03 UI** · 다음 todo = **`market-partner-trust-surfaces`**. completed Index/Money/Engine-Pre-UI/UI-PART0 todo 재실행 **금지**.
+**판정:** Index = **CLOSED(불변)**. Pre-UI Runtime Gate = **CLOSED**. UI PART0~8c+PART9 = **CLOSED**. Engine §0.10 `engine-ebay-identity-match-ingest` = **pending**(예외2 · UI 재차단 금지). File-Serial **실행 파일 = 03 UI** · 다음 todo = **`trust-age-spotcheck`**. completed Index/Money/Engine-Pre-UI/UI-PART0~9 todo 재실행 **금지**.

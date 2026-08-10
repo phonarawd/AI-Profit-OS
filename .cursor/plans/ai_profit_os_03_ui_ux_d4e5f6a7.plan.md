@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — UI & UX
-overview: v7.22.58 착수전 포인터동기(Index/BOOTSTRAP/§0.8.3)·v7.22.57 PART9 흡수 — PART0~8c CLOSED. File-Serial 다음=`part9-pre-dev-api-proxy` only · 8d=PART9 후 마지막. 전 todo `[grok-4.5|256K]`. Index=00.
+overview: v7.22.59 PART9 Live Wiring CLOSED(9-pre~9i)·PART0~8c CLOSED. File-Serial 다음=`trust-age-spotcheck` only(수동실사·코드0) · Index=00. 전 todo `[grok-4.5|256K]`.
 todos:
   - id: ui-preflight-constitution
     content: "[grok-4.5|256K] PART0 착수게이트 · **선행: Engine 02 Pre-UI Runtime Gate(§0.9 E-R1~E-R8) pending0 + Money money-user-benefits-read completed 필수(미충족 시 본 todo·이하 전부 착수 금지)** · BOOTSTRAP §0.6 실측기록(DB76/mig28/fn5·Canon·routes·Admin교차·verify live/pending) · **v7.22.50 감사 3정정 기록 흡수(§0.6 U13~U15·색토큰=lux-fintech·§29.6 Phase1+·eBay query: gap=Engine follow-up)** · File-Serial 재정렬 0 · 구현코드0 · 다음=market-partner-trust-surfaces"
@@ -158,8 +158,8 @@ isProject: false
 > **모델 잠금:** 전 todo = **`[grok-4.5|256K]`** · 한 채팅=한 todo(가벼움 2~3개 연속 묶기 OK) · PART0→8c→**9-pre…9i**→**8d** 위→아래 (File-Serial)  
 > **todo 밀도(v7.22.57 pending):** **가벼움**=9-pre·9a·9b·9e·9f·9h·9i · **보안·최우선·단독**=9-pre2 · **무거움·체감최우선**=9c · **무거움**=9d·9g · **무거움·신규화면**=9f2 · **수동실사**=8d(PART9 완료 후 마지막)  
 > **todo 파트:** **0**~**8c** CLOSED · **9** Live Wiring(pre→pre2→a…i) · **8d** spot-check **마지막**  
-> **다음 채팅:** `part9-pre-dev-api-proxy` only · completed PART0~8c 재실행 **금지**  
-> **v7.22.58 (착수 전 포인터 동기 · 코드0):** Index overview/A12 + BOOTSTRAP 「다음」· §0.8.3 PART5a~8b 행을 YAML `completed`와 일치(`COMPLETED · 재작성 금지`) · 실행 큐 불변=`part9-pre-dev-api-proxy` only  
+> **다음 채팅:** `trust-age-spotcheck` only(수동실사) · PART9(9-pre~9i) completed 재실행 **금지**
+> **v7.22.59 (PART9 CLOSE):** 9-pre~9i verify PASS·T0 commit · Index/BOOTSTRAP 「다음」=`trust-age-spotcheck` · **v7.22.58 이력:** 착수전 포인터=`part9-pre-dev-api-proxy`
 > **v7.22.57 (PART9 Live Wiring 흡수 · 코드0 메타):** 홈감사 `ui_live_wiring_part9_a6643cf7` v2 → 본 파일 YAML 흡수(9-pre~9i 12건 + 8d 유지·중복0) · §0.9 실측 요약 · §0.8.3 PART9 행 · File-Serial=9 완료 후 8d · composer 태그 **0**  
 > **v7.22.56 (pending todo 밀도 · 코드0):** 미완료 YAML에 `[밀도:*]` + 묶기 힌트 · §0.8.3 표 밀도 열 · completed todo 변경 **0** · *(v7.22.57이 pending 큐를 PART9로 supersede)*  
 > **v7.22.55 (§6.4c.1 5결정문 · 코드+문서 SSOT · 오류0):** (1) 톤 허용 시점 SSOT=로그인 후·첫 capital surface(`/`,`/profits`,기회 CTA)부터 수익|투자|USDT 언어 허용 · Guest(`/l/*`→`/onboarding`·`/auth/*`)=utility 유지 + 온보딩 첫화면 `transitionDisclosure` 1줄(**전환 고지≠capital 톤 허가**) · §6.4 ACTION「수익 벌기」**supersede**=capital surface only · (2) 랜딩 포지셔닝=`시세·가격 비교`(괴리율·차익 **0**) · `copy/ko/landing` ↔ Infra §31.4 sanitizer ↔ `verify:marketing-compliance` **동시** 갱신이 완료 조건 · (3) GuestChrome consent Owns=Infra `packages/sdk/marketing` · UI=`consentMarketing===true`일 때만 Lead emit · 미실장=emit **0** · (4) 완료 정의=`verify:landing-3s`+`verify:marketing-compliance`+`verify:operator-footer` · (5) PART2c-pre를 §0.8.2 #5로 **같은 diff 승격**(File-Serial 위반≠·의존 삽입)  
@@ -197,11 +197,11 @@ isProject: false
 > **Loop/Preflight:** **§51.24** (Admin/Engine/CATALOG pointer 대상 · 유령 절 금지)  
 
 > **마진 공식:** Engine §0.0.4 Owns · UI=화면/카피만  
-> **선행 CLOSED(1~26/1~15 불변):** 01 Money 15/15+benefits · 02 Engine 26/26+E-R1~E-R8 · Pre-UI Gate **CLOSED(v7.22.49)** · **PART0~8c CLOSED** · 다음 채팅=`part9-pre-dev-api-proxy` only  
+> **선행 CLOSED(1~26/1~15 불변):** 01 Money 15/15+benefits · 02 Engine 26/26+E-R1~E-R8 · Pre-UI Gate **CLOSED(v7.22.49)** · **PART0~8c CLOSED** · **PART9 CLOSED(v7.22.59)** · 다음 채팅=`trust-age-spotcheck` only  
 
 ## 0.6 UI 착수 전 실측 (v7.22.48 · `ui-preflight-constitution` · **PASS v7.22.50** · 예측0 · 감사 3정정 흡수)
 
-> **Owns:** 본 절 + BOOTSTRAP §0.6 동기 · **구현 코드 0** (기록·갭표만) · **CLOSE 후 다음(이력)=`market-partner-trust-surfaces`** · **현재 다음=`part9-pre-dev-api-proxy`**(v7.22.57~58)  
+> **Owns:** 본 절 + BOOTSTRAP §0.6 동기 · **구현 코드 0** (기록·갭표만) · **CLOSE 후 다음(이력)=`market-partner-trust-surfaces`→`part9-pre…9i`** · **현재 다음=`trust-age-spotcheck`**(v7.22.59)  
 > **방법(2026-08-10 CLOSE 재실측):** 레포 FS(`CONSTITUTION/`29·Canon 28 wires·`apps/web`·`packages/ui`·ebay-adapter·catalog-runtime-seed·`lux-fintech.ts`) + Money/Engine YAML completed + Supabase MCP `list_tables`(public **76**) + CATALOG live 게이트 · `execute_sql`/`list_migrations`는 본 세션 MCP hook fail-closed로 차단 → mig/함수 수는 FS+§0.5.1 CLOSE 인용  
 > **선행(v7.22.49 충족 · 재확인):** Money CLOSED(15/15+`money-user-benefits-read` **completed**) · Engine CLOSED(26/26+E-R1~E-R8 **completed** · `engine-pre-ui-close` **completed**) · Pre-UI Runtime Gate **CLOSED**  
 > **v7.22.50 감사 기록(본 todo Owns · File-Serial 재정렬 0):** 색토큰 drift(U13) · realtime-service Phase0 reframe(U14) · eBay `query:` ingest gap(U15) — 아래 표·§0.6.2·본문 §6.2/§33.1/§29.6/§48.3a pointer에 **텍스트만** 반영 · **앱 구현코드 0**
@@ -265,7 +265,7 @@ isProject: false
 | U15 | 실 eBay 사진이 유저 카드에 안 보이는 원인 미기록 · `assetId: query:*` → persist drop · matchers 미배선 | → **EXTEND(문서)** · §0.6 표 + §48.3a pointer · Owns=Engine todo `engine-ebay-identity-match-ingest`(§0.10 filed v7.22.51) · UI todo/File-Serial **가산·재정렬 0** · PART3d는 URL 소스 무관 렌더만 |
 
 **판정 (v7.22.50 · 2026-08-10):** `ui-preflight-constitution` = **PASS** · 헌법 8종+46b ✅ · Canon 28 · Brand markets/**0** · CLIME **0** · 사진목업 PNG **0**(ADR-013) · U13~U15 **흡수** · File-Serial 재정렬 **0** · 구현코드 **0**.  
-**다음 채팅:** **03 UI** `part9-pre-dev-api-proxy` only · completed Engine/Money/PART0~8c todo 재실행 **금지**.
+**다음 채팅:** **03 UI** `trust-age-spotcheck` only · completed Engine/Money/PART0~9 todo 재실행 **금지**.
 
 ## 0.7 Admin 교차 계약 (UI surface → Admin Owns · 중복0)
 
@@ -388,7 +388,7 @@ isProject: false
 | 세계 지존급 1위 감사관 | DB·보안 어드바이저·마이그레이션 정합성은 PASS(1건 드리프트는 발견 즉시 해소). **`verify:X=live` 라벨을 "완료 증빙"으로 오독할 수 있는 지점(0.8.2 #2)**이 감사 관점 최대 리스크였다 — CATALOG 표기 자체가 거짓은 아니다(스크립트는 실제로 그 좁은 범위에서 PASS한다). 그러나 범위가 좁아 오해를 유발하므로 **§0.8.3 verify 검사 범위 열 + todo content 범위 명시**가 감사 보완의 핵심이었고, v7.22.53 패치로 흡수했다. |
 | 세계 지존급 1위 분석관 | 이번 리스크의 본질은 v7.22.48 Pre-UI Runtime Gate 때(§0.6 U12)와 **동일 패턴**("완료 정의"의 해상도 부족)이 PART 단위에서 재발한 것이다 — 그때는 "Engine todo 26/26 completed"가 "유저 API 존재"를 의미하지 않았고, 지금은 "verify:X live"가 "화면 완성"을 의미하지 않는다. 재발 방지책은 §0.8.3처럼 **PART별 실측 스냅샷을 todo content에 직접 명시하는 것**(본문 어딘가에 적혀 있는 것만으로는 다음 에이전트가 놓칠 수 있음) — 아래 YAML 갱신에 반영했다. |
 
-**판정:** UI 플랜 §0.6/§0.7은 **오차0로 유지**(재검증 통과) · §0.8.2 4건 **감사 세션 문서 흡수 완료** · **구현 부채(컴포넌트 PART)=CLOSED(v7.22.57 시점 PART0~8c)** · **잔여 실행 큐=PART9 Live Wiring → 8d** · **다음 채팅 = `part9-pre-dev-api-proxy`만**(completed todo 재실행 금지 불변).
+**판정:** UI 플랜 §0.6/§0.7은 **오차0로 유지**(재검증 통과) · §0.8.2 4건 **감사 세션 문서 흡수 완료** · **구현 부채(컴포넌트 PART)=CLOSED(PART0~8c)** · **PART9 Live Wiring=CLOSED(v7.22.59)** · **잔여=`trust-age-spotcheck`(수동실사)** · completed PART0~9 재실행 금지 불변.
 
 ## 0.9 PART9 Live Wiring — 실측 감사 요약 (v7.22.57 · 예측0)
 
