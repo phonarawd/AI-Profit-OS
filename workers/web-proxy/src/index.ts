@@ -2,8 +2,8 @@
  * APP_HOST / apex / go → ai-profit-web.quick.workers.dev (Phase0 DNS bridge)
  * OpenNext는 Workers 배포 · 구 pages.dev origin은 404.
  */
-const TARGET = "https://ai-profit-web.quick.workers.dev";
-const TARGET_HOST = "ai-profit-web.quick.workers.dev";
+const TARGET = "https://ai-profit-web.ebay-adapter.workers.dev";
+const TARGET_HOST = "ai-profit-web.ebay-adapter.workers.dev";
 
 const HOLDING_HTML = `<!DOCTYPE html>
 <html lang="ko">

@@ -16,13 +16,13 @@
   "pages": {
     "web": {
       "project": "ai-profit-web",
-      "workersDev": "ai-profit-web.quick.workers.dev",
+      "workersDev": "ai-profit-web.ebay-adapter.workers.dev",
       "pagesDev": "ai-profit-web.pages.dev",
       "note": "OpenNext → Workers(ai-profit-web) · pages.dev는 레거시(404) · 공개 호스트는 web-proxy"
     },
     "ops": {
       "project": "ai-profit-ops",
-      "workersDev": "ai-profit-ops.quick.workers.dev",
+      "workersDev": "ai-profit-ops.ebay-adapter.workers.dev",
       "pagesDev": "ai-profit-ops.pages.dev",
       "note": "OpenNext → Workers(ai-profit-ops) · pages.dev 레거시 · 공개 호스트는 ops-proxy"
     }
@@ -32,13 +32,13 @@
       "worker": "hiptk-web-proxy",
       "path": "workers/web-proxy",
       "hostnames": ["app.hiptk.app", "hiptk.app", "go.hiptk.app"],
-      "target": "https://ai-profit-web.quick.workers.dev"
+      "target": "https://ai-profit-web.ebay-adapter.workers.dev"
     },
     "ops-proxy": {
       "worker": "hiptk-ops-proxy",
       "path": "workers/ops-proxy",
       "hostnames": ["ops.hiptk.app"],
-      "target": "https://ai-profit-ops.quick.workers.dev"
+      "target": "https://ai-profit-ops.ebay-adapter.workers.dev"
     },
     "api-stub": {
       "worker": "hiptk-api-stub",
