@@ -312,10 +312,6 @@ html[data-font-scale="xl"] {
   scroll-margin-top: calc(var(--layout-header) + var(--space-lux-md, 16px));
 }
 
-.home-money-card {
-  box-shadow: var(--shadow-lux-card);
-}
-
 /**
  * Home Dashboard Grid (STEP 5 Slice 1 · Shell / Geometry)
  * PC Reference: Sidebar 240 · Header 64 · RightRail 320–360(default 352) · content rail 1680.
@@ -376,18 +372,133 @@ html[data-font-scale="xl"] {
 }
 
 /**
- * Money 2열 (Contract §03.3) — Main 폭 기준.
+ * Money 2열 (STEP5 Slice3 · Contract §03.3 / §08) — Main 폭 기준.
+ * Fact geometry only · count-up / chart / 사용가능·참여중 split 금지.
  * container-type 붕괴 회귀(v1.3.1) 회피: 순수 Grid만 사용.
  */
 .home-money-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-lux-md, 16px);
+  width: 100%;
+  min-width: 0;
 }
 
 @media (min-width: 768px) {
   .home-money-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+}
+
+@media (min-width: 1280px) {
+  .home-money-grid {
+    gap: var(--space-lux-lg, 24px);
+  }
+}
+
+/* Shared card shadow (RightRail / near-miss 등) · composition은 Money grid만 */
+.home-money-card {
+  box-shadow: var(--shadow-lux-card);
+}
+
+.home-money-grid .home-money-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  padding: var(--space-lux-md, 16px);
+  border-radius: var(--radius-lux-xl, 20px);
+  border: 1px solid var(--color-lux-border);
+  background: var(--color-lux-surface);
+}
+
+@media (min-width: 1280px) {
+  .home-money-grid .home-money-card {
+    padding: var(--space-lux-lg, 24px);
+    min-height: 168px;
+  }
+}
+
+/* Balance = trust primary · principal accent hairline (glow/neon 금지) */
+.home-money-grid .home-money-card--balance {
+  border-top: 3px solid var(--color-lux-principal);
+}
+
+.home-money-grid .home-money-card--profit {
+  border-top: 3px solid var(--color-lux-profit);
+}
+
+.home-money__label {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  color: var(--color-lux-text-muted);
+}
+
+.home-money__value-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lux-xs, 4px);
+  margin-top: var(--space-lux-sm, 8px);
+  flex: 1 1 auto;
+}
+
+.home-money__value {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-size: clamp(1.75rem, 2.4vw, 2.25rem);
+}
+
+@media (min-width: 1280px) {
+  .home-money__value {
+    font-size: clamp(2rem, 1.6vw, 2.5rem);
+  }
+}
+
+.home-money__value--balance {
+  color: var(--color-lux-principal);
+}
+
+.home-money__value--profit {
+  color: var(--color-lux-profit);
+}
+
+.home-money__secondary {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--color-lux-text-muted);
+}
+
+.home-money__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  margin-top: var(--space-lux-md, 16px);
+  min-height: var(--touch-min, 48px);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-lux-md, 12px);
+  background: var(--color-lux-accent);
+  color: var(--color-lux-surface);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 200ms ease, opacity 200ms ease;
+}
+
+.home-money__cta:hover {
+  background: var(--color-lux-accent-muted, var(--color-lux-accent));
+}
+
+@media (min-width: 1280px) {
+  .home-money__cta {
+    margin-top: auto;
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
   }
 }
 

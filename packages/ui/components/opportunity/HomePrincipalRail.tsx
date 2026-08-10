@@ -20,8 +20,8 @@ export type HomePrincipalRailProps = {
 };
 
 /**
- * HomePrincipalRail / HomeMoneySurface — peotteok-light presentation
- * Data Truth 유지 · count-up 금지 · PART9 slots 유지
+ * HomePrincipalRail / HomeMoneySurface — STEP5 Slice3 Money presentation
+ * Fact: principalUsdt + todayPossible only · C02/C03 · count-up/chart/split 금지
  */
 export function HomePrincipalRail({
   principalUsdt,
@@ -47,26 +47,28 @@ export function HomePrincipalRail({
       <article
         data-home-slot="principal-balance"
         data-canon-block="principalBalance"
-        className="home-money-card rounded-lux-xl border border-lux-border bg-lux-surface p-5"
+        className="home-money-card home-money-card--balance"
       >
-        <p className="text-sm text-lux-text-muted">{T.feed.balanceLabel}</p>
-        {krw ? (
-          <>
-            <p className="mt-2 text-3xl font-semibold tabular-nums text-lux-text md:text-4xl">
-              {T.feed.balanceKrwApprox.replace("{amount}", krw)}
+        <p className="home-money__label">{T.feed.balanceLabel}</p>
+        <div className="home-money__value-stack">
+          {krw ? (
+            <>
+              <p className="home-money__value home-money__value--balance tabular-nums">
+                {T.feed.balanceKrwApprox.replace("{amount}", krw)}
+              </p>
+              <p className="home-money__secondary tabular-nums">
+                {T.feed.balanceUsdtSecondary.replace("{n}", usdt)}
+              </p>
+            </>
+          ) : (
+            <p className="home-money__value home-money__value--balance tabular-nums">
+              {T.feed.balanceUsdtPrimary.replace("{n}", usdt)}
             </p>
-            <p className="mt-1 text-sm text-lux-text-muted tabular-nums">
-              {T.feed.balanceUsdtSecondary.replace("{n}", usdt)}
-            </p>
-          </>
-        ) : (
-          <p className="mt-2 text-3xl font-semibold tabular-nums text-lux-text md:text-4xl">
-            {T.feed.balanceUsdtPrimary.replace("{n}", usdt)}
-          </p>
-        )}
+          )}
+        </div>
         <Link
           href="/wallet/deposit"
-          className="mt-4 inline-flex min-h-12 items-center rounded-lux-md bg-lux-accent px-4 py-2 text-sm font-semibold text-lux-surface"
+          className="home-money__cta"
           data-cta="deposit"
         >
           {T.feed.ctaDeposit}
@@ -76,14 +78,14 @@ export function HomePrincipalRail({
       <article
         data-home-slot="today-possible-profit"
         data-canon-block="todayPossibleProfit"
-        className="home-money-card rounded-lux-xl border border-lux-border bg-lux-surface p-5"
+        className="home-money-card home-money-card--profit"
       >
-        <p className="text-sm text-lux-text-muted">
-          {T.feed.todayPossibleProfitLabel}
-        </p>
-        <p className="mt-2 text-3xl font-semibold tabular-nums text-lux-profit md:text-4xl">
-          {T.feed.todayPossibleProfitUsdt.replace("{n}", profit)}
-        </p>
+        <p className="home-money__label">{T.feed.todayPossibleProfitLabel}</p>
+        <div className="home-money__value-stack">
+          <p className="home-money__value home-money__value--profit tabular-nums">
+            {T.feed.todayPossibleProfitUsdt.replace("{n}", profit)}
+          </p>
+        </div>
       </article>
     </section>
   );

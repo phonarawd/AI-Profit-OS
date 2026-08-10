@@ -22,7 +22,7 @@ STEP 4.1     ✅ ADR / Contract amendment
 STEP 4.2     ✅ Wire amendment
 STEP 4.3     ✅ Token amendment
 STEP 4.4     ✅ APPROVED — proceed STEP 5 Slice 0 (C01 only)
-STEP 5       ✅ Slice 0–2 CLOSED · next Slice 3 Money
+STEP 5       ✅ Slice 0–3 CLOSED · next Slice 4 Opportunity
 ```
 
 ---

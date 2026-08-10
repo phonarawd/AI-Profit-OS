@@ -31,7 +31,8 @@ export const home = {
   },
   money: {
     aria: "내 잔액과 가능 수익",
-    principalLabel: "원금",
+    /** C02 · Home Fact = principalUsdt only · 사용가능/참여중 분할 라벨 금지 */
+    principalLabel: "내 잔액",
     todayPossibleLabel: "오늘 가능 수익",
     usdtSuffix: "USDT",
     krwApproxPrefix: "≈",

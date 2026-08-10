@@ -12,7 +12,8 @@ export const feed = {
   balanceUsdtSecondary: "{n} USDT",
   ctaDeposit: "입금",
   /** §5.3 [D] */
-  todayPossibleProfitLabel: "오늘 가능한 수익 합계",
+  /** STEP5 Slice3 · density · 「가능」유지 · 실현/확정 금지 */
+  todayPossibleProfitLabel: "오늘 가능 수익",
   todayPossibleProfitUsdt: "+{n} USDT",
   sectionAffordable: "지금 참여 가능",
   sectionAffordableCount: "내 자본으로 가능한 기회 {n}개",
