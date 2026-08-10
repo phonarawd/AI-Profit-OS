@@ -206,6 +206,18 @@ if (!phaseRule.includes("NATS")) {
   fails.push("phase-activation.mdc must mention NATS phase boundary");
 }
 
+// PART9-pre needle — web /api/v1 → API_HOST · /ads rewrite 보존
+const webNextCfg = read("apps/web/next.config.ts");
+if (!webNextCfg.includes("/ads") || !webNextCfg.includes("/l/")) {
+  fails.push("apps/web/next.config.ts must preserve /ads → /l rewrites");
+}
+if (!webNextCfg.includes("/api/v1/:path*")) {
+  fails.push("apps/web/next.config.ts must rewrite /api/v1/:path* → API_HOST");
+}
+if (!webNextCfg.includes("API_HOST")) {
+  fails.push("apps/web/next.config.ts /api/v1 rewrite must use API_HOST");
+}
+
 if (fails.length) {
   console.error("[verify:phase0-bootstrap] FAIL\n- " + fails.join("\n- "));
   process.exit(1);

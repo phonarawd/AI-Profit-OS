@@ -130,7 +130,7 @@ if (resolve && !resolve.includes('"WITHDRAW_APPLY_BLOCKED"')) {
 }
 
 const migration = read(
-  "supabase/migrations/20260810073000_ops_inbox_hide_source_event.sql",
+  "supabase/migrations/20260809222034_ops_inbox_hide_source_event.sql",
 );
 if (migration && !migration.includes("hidden_at")) {
   fails.push("migration must add hidden_at");

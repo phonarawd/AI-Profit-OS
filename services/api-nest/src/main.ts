@@ -4,12 +4,16 @@ import "reflect-metadata";
 require("../../../tooling/deploy/lib/env.cjs").loadDotEnv();
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const cookieParser = require("cookie-parser");
 import { AppModule } from "./app.module";
 import { loadPhase0Env } from "./config/phase0.env";
 
 async function bootstrap() {
   const env = loadPhase0Env();
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // PART9-pre2 — httpOnly 세션쿠키 파싱 (JwtAuthGuard cookie fallback)
+  app.use(cookieParser());
   app.useBodyParser("json", { limit: "10mb" });
   app.setGlobalPrefix("api/v1");
 

@@ -10,6 +10,9 @@ export const ADMIN_JWT_ISSUER = "ai-profit-os-admin" as const;
 /** P0-1 fix — access token TTL · sliding session via POST /auth/refresh */
 export const ACCESS_TOKEN_TTL_SEC = 15 * 60;
 
+/** PART9-pre2 — httpOnly 세션쿠키명 · JwtAuthGuard cookie fallback SSOT */
+export const USER_SESSION_COOKIE_NAME = "aipo_session" as const;
+
 /** Never accept admin issuer on /auth/* user routes */
 export const USER_JWT_AUDIENCE = "peotteok-user" as const;
 export const ADMIN_JWT_AUDIENCE = "aipo-ops" as const;

@@ -7,10 +7,19 @@ const nextConfig: NextConfig = {
     remotePatterns: [...PRODUCT_IMAGE_REMOTE_PATTERNS],
   },
   /** Infra §31.2a — /ads aliases /l (identical landing-3s surface) */
+  /** PART9-pre — /api/v1 → API_HOST (dev proxy · /ads 규칙 보존) */
   async rewrites() {
+    const apiHost = process.env.API_HOST ?? "localhost:4000";
+    const apiBase = apiHost.startsWith("http")
+      ? apiHost.replace(/\/$/, "")
+      : `http://${apiHost}`;
     return [
       { source: "/ads", destination: "/l/meta" },
       { source: "/ads/:variant", destination: "/l/:variant" },
+      {
+        source: "/api/v1/:path*",
+        destination: `${apiBase}/api/v1/:path*`,
+      },
     ];
   },
 };

@@ -364,8 +364,8 @@ isProject: false
 | 8a | loop-psychology-5124 | — | `loop-psychology`/`day-pulse-live-only`/`preflight-may-stop` | DayPulse·PreCTA 실물 | **COMPLETED** · 재작성 금지 · home live=PART9c |
 | 8b | trust-surfaces-v722 | — | Proof/SafeStop/Journey/AdapterHealth/WeeklyBriefing/DepositConsult+`market-briefing-*` | 5+1종 실물 | **COMPLETED** · 재작성 금지 |
 | 8c | responsive-device-tier | — | `verify:responsive`: Playwright multi-viewport **Canon structure** | harness live | **COMPLETED** · 재작성 금지 |
-| 9-pre | part9-pre-dev-api-proxy | **가벼움** | `dev-api-proxy` 또는 phase0-bootstrap needle: `/api/v1` rewrite · `/ads` 보존 | `next.config.ts`에 `/ads` rewrite만 · `/api/v1` **0** | **다음 채팅 only** · rewrites **추가**(덮어쓰기 금지) |
-| 9-pre2 | part9-pre2-auth-session-hardening | **보안·최우선·단독** | `auth-session-cookie`+`wallet-kyc-session-auth`+회귀 `auth-flows`/`auth-jwt-runtime` | 세션쿠키 **0** · Wallet/Kyc JwtAuthGuard **0**(§0.9) | httpOnly Set-Cookie + cookie JWT + 유저라우트 session userId · **단독 세션** |
+| 9-pre | part9-pre-dev-api-proxy | **가벼움** | phase0-bootstrap needle: `/api/v1` rewrite · `/ads` 보존 | `next.config.ts`에 `/ads` rewrite만 · `/api/v1` **0** | **COMPLETED** · verify PASS · 재작성 금지 |
+| 9-pre2 | part9-pre2-auth-session-hardening | **보안·최우선·단독** | `auth-session-cookie`+`wallet-kyc-session-auth`+회귀 `auth-flows`/`auth-jwt-runtime` | 세션쿠키 **0** · Wallet/Kyc JwtAuthGuard **0**(§0.9) | **COMPLETED** · verify PASS · 재작성 금지 |
 | 9a | part9a-sdk-user-feed | **가벼움** | `sdk-user-feed`: exports+fetchOpportunity* · nearMissCount→nearMissExtraCount | `@aipo/sdk` peotteok/execution-stream만 | SDK 신설 · **9a·9b 묶기 OK** |
 | 9b | part9b-verify-live-wire | **가벼움** | home/profits/wallet-live-wire + 9-pre2 verify 2종 CATALOG/domain-by-path | live-wire verify **0** | CATALOG 등재 · **9a·9b 묶기 OK** |
 | 9c | part9c-home-live-wire | **무거움·체감최우선** | `home-live-wire`: page↔SDK↔DayPulse·401 graceful | `page.tsx` stub `items={[]}` | HomePageClient live · **단독 권장** |

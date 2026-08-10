@@ -61,7 +61,7 @@ pnpm exec wrangler -v
 |------|------|
 | User PWA | CF Pages `ai-profit-web` · `infra/web` · `pnpm cf:deploy:web` |
 | Admin Ops | CF Pages `ai-profit-ops` · `infra/ops` · `pnpm cf:deploy:ops` |
-| API | Nest Node · `infra/api/runtime.json` · `API_HOST` :4000 |
+| API | Nest Node · `infra/api/runtime.json` · `API_HOST` :4000 · web `next.config` rewrites `/api/v1/:path*` → `API_HOST` (`/ads` 보존) |
 | DB | Supabase Seoul · `DATABASE_URL` |
 | Redis | Upstash · `REDIS_URL` |
 | KYC | R2 `kyc-docs` · `infra/r2/kyc-docs.toml` |

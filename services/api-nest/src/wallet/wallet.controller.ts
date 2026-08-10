@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  UnauthorizedException,
+  UseGuards,
+} from "@nestjs/common";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
 import { PracticeGrantService } from "../ledger/practice-grant.service";
 import { ChainSweeperPhase0Service } from "./chain-sweeper.phase0.service";
@@ -18,9 +27,13 @@ import type {
   WithdrawMode,
 } from "./wallet.types";
 
+type SessionReq = {
+  user?: { userId?: string; sub?: string };
+};
+
 /**
  * User wallet HTTP surface · /api/v1/wallet/*
- * Auth guard lands with auth wiring — contracts locked here.
+ * PART9-pre2 — 유저 라우트 9개만 JwtAuthGuard + session userId (내부 7라우트 가드 미부착)
  */
 @Controller("wallet")
 export class WalletController {
@@ -42,16 +55,18 @@ export class WalletController {
    * §49.7 GET WalletBuckets · §49.2a principalUsdt SoT for participate preflight / P Fact.
    * Classification counts = Engine §0.0.5.1 (not computed here).
    */
+  @UseGuards(JwtAuthGuard)
   @Get(WALLET_USER_ROUTES.buckets)
-  getBuckets(@Query("userId") userId?: string) {
-    return this.buckets.getUserBuckets(String(userId ?? ""));
+  getBuckets(@Req() req: SessionReq) {
+    return this.buckets.getUserBuckets(this.sessionUserId(req));
   }
 
   /** §49.7 POST profit→principal merge */
+  @UseGuards(JwtAuthGuard)
   @Post(WALLET_USER_ROUTES.profitMerge)
-  mergeProfit(@Body() body: Record<string, unknown>) {
+  mergeProfit(@Body() body: Record<string, unknown>, @Req() req: SessionReq) {
     return this.profitMerge.merge({
-      userId: String(body.userId ?? ""),
+      userId: this.sessionUserId(req),
       amountUsdt: String(body.amountUsdt ?? ""),
       idempotencyKey: String(body.idempotencyKey ?? ""),
     });
@@ -71,9 +86,10 @@ export class WalletController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(WALLET_USER_ROUTES.myDepositAddress)
-  myDepositAddress(@Query("userId") userId?: string) {
-    return this.depositAddress.getOrCreate(String(userId ?? ""));
+  myDepositAddress(@Req() req: SessionReq) {
+    return this.depositAddress.getOrCreate(this.sessionUserId(req));
   }
 
   /** §43.1 observe Transfer — Phase0 tick / Phase1 worker ingest */
@@ -117,10 +133,14 @@ export class WalletController {
     return this.chainSweeper.describe();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(WALLET_USER_ROUTES.krwDepositRequests)
-  createKrwDeposit(@Body() body: Record<string, unknown>) {
+  createKrwDeposit(
+    @Body() body: Record<string, unknown>,
+    @Req() req: SessionReq,
+  ) {
     return this.krwDeposit.createRequest({
-      userId: String(body.userId ?? ""),
+      userId: this.sessionUserId(req),
       requestedAmountKrw: Number(body.requestedAmountKrw),
       depositorName: String(body.depositorName ?? ""),
       idempotencyKey: String(body.idempotencyKey ?? ""),
@@ -128,10 +148,14 @@ export class WalletController {
   }
 
   /** §41.6 · §51.11 wrong-chain CS → Admin wallet?tab=disputes */
+  @UseGuards(JwtAuthGuard)
   @Post(WALLET_USER_ROUTES.depositDisputes)
-  createDepositDispute(@Body() body: Record<string, unknown>) {
+  createDepositDispute(
+    @Body() body: Record<string, unknown>,
+    @Req() req: SessionReq,
+  ) {
     return this.depositDisputes.create({
-      userId: String(body.userId ?? ""),
+      userId: this.sessionUserId(req),
       kind: body.kind as DepositDisputeKind | undefined,
       linkedTxHash: String(body.linkedTxHash ?? body.txHash ?? ""),
       networkClaimedKo:
@@ -148,20 +172,25 @@ export class WalletController {
     return this.stepUp.policy();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(WALLET_USER_ROUTES.withdrawStepUpChallenge)
-  createStepUpChallenge(@Body() body: Record<string, unknown>) {
+  createStepUpChallenge(
+    @Body() body: Record<string, unknown>,
+    @Req() req: SessionReq,
+  ) {
     return this.stepUp.createChallenge({
-      userId: String(body.userId ?? ""),
+      userId: this.sessionUserId(req),
       method: String(body.method ?? "") as WithdrawStepUpMethod,
       origin: String(body.origin ?? ""),
       email: typeof body.email === "string" ? body.email : undefined,
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(WALLET_USER_ROUTES.withdrawStepUpVerify)
-  verifyStepUp(@Body() body: Record<string, unknown>) {
+  verifyStepUp(@Body() body: Record<string, unknown>, @Req() req: SessionReq) {
     return this.stepUp.verifyChallenge({
-      userId: String(body.userId ?? ""),
+      userId: this.sessionUserId(req),
       challengeId: String(body.challengeId ?? ""),
       method: String(body.method ?? "") as WithdrawStepUpMethod,
       proof: String(body.proof ?? body.code ?? body.pin ?? ""),
@@ -169,17 +198,25 @@ export class WalletController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(WALLET_USER_ROUTES.withdrawPinSet)
-  setWithdrawPin(@Body() body: Record<string, unknown>) {
+  setWithdrawPin(
+    @Body() body: Record<string, unknown>,
+    @Req() req: SessionReq,
+  ) {
     return this.stepUp.setPin({
-      userId: String(body.userId ?? ""),
+      userId: this.sessionUserId(req),
       pin: String(body.pin ?? ""),
     });
   }
 
   /** §49.3 POST withdraw · default mode=profit · guard#1 withdrawApplyBlocked */
+  @UseGuards(JwtAuthGuard)
   @Post(WALLET_USER_ROUTES.withdraw)
-  createWithdraw(@Body() body: Record<string, unknown>) {
+  createWithdraw(
+    @Body() body: Record<string, unknown>,
+    @Req() req: SessionReq,
+  ) {
     const practiceDebitAttempt =
       body.practiceDebitAttempt === true ||
       body.requestedBucket === "practice" ||
@@ -189,7 +226,7 @@ export class WalletController {
         body.debitPracticeUsdt !== "0.0" &&
         body.debitPracticeUsdt !== "0.00");
     return this.withdrawIntent.create({
-      userId: String(body.userId ?? ""),
+      userId: this.sessionUserId(req),
       mode: (body.mode as WithdrawMode | undefined) ?? "profit",
       amountUsdt: String(body.amountUsdt ?? ""),
       asset: String(body.asset ?? "USDT") as WithdrawAsset,
@@ -217,5 +254,14 @@ export class WalletController {
       destination:
         typeof body.destination === "string" ? body.destination : undefined,
     });
+  }
+
+  /** PART9-pre2 — never trust query/body userId on user routes */
+  private sessionUserId(req: SessionReq): string {
+    const userId = String(req.user?.userId ?? req.user?.sub ?? "");
+    if (!userId) {
+      throw new UnauthorizedException("AUTH_REQUIRED");
+    }
+    return userId;
   }
 }

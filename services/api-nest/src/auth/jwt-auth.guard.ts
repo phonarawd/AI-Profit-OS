@@ -14,7 +14,11 @@ import {
 import { createRequire } from "node:module";
 import { join } from "node:path";
 import { loadPhase0Env } from "../config/phase0.env";
-import { USER_JWT_AUDIENCE, USER_JWT_ISSUER } from "./auth.constants";
+import {
+  USER_JWT_AUDIENCE,
+  USER_JWT_ISSUER,
+  USER_SESSION_COOKIE_NAME,
+} from "./auth.constants";
 
 const req = createRequire(__filename);
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -37,6 +41,7 @@ export type SessionUser = {
 
 type RequestWithUser = {
   headers?: Record<string, string | string[] | undefined>;
+  cookies?: Record<string, string | undefined>;
   user?: SessionUser;
 };
 
@@ -56,9 +61,12 @@ function extractBearerToken(headerValue: unknown): string | null {
 export class JwtAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const httpReq = context.switchToHttp().getRequest<RequestWithUser>();
-    const token = extractBearerToken(
-      httpReq.headers?.authorization ?? httpReq.headers?.Authorization,
-    );
+    const token =
+      extractBearerToken(
+        httpReq.headers?.authorization ?? httpReq.headers?.Authorization,
+      ) ??
+      httpReq.cookies?.[USER_SESSION_COOKIE_NAME] ??
+      null;
     if (!token) {
       throw new UnauthorizedException("AUTH_REQUIRED");
     }

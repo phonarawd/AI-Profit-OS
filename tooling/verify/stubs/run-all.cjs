@@ -119,7 +119,9 @@ const live = [
   "day-pulse-live-only.cjs",
   "preflight-may-stop.cjs",
   "loop-psychology.cjs",
-  // PART9c/9d/9e/9f home · profits · wallet live
+  // PART9-pre2 session · PART9c/9d/9e/9f/9g/9i live
+  "auth-session-cookie.cjs",
+  "wallet-kyc-session-auth.cjs",
   "home-live-wire.cjs",
   "sdk-user-feed.cjs",
   "home-principal-slots.cjs",

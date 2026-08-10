@@ -3,30 +3,39 @@ import {
   Controller,
   Get,
   Post,
-  Query,
+  Req,
+  UnauthorizedException,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { COMPLIANCE_USER_ROUTES } from "./compliance.routes";
 import { KycService } from "./kyc.service";
 
 type UploadPart = { buffer?: Buffer };
 
+type SessionReq = {
+  user?: { userId?: string; sub?: string };
+};
+
 /**
  * User compliance KYC · /api/v1/compliance/*
- * Auth guard lands with auth wiring — contracts locked here.
+ * PART9-pre2 — status/submit JwtAuthGuard + session userId (IDOR 차단)
  * multipart idDoc/selfie · also accepts idDocBase64 for thin clients.
  */
 @Controller("compliance")
 export class KycController {
   constructor(private readonly kyc: KycService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get(COMPLIANCE_USER_ROUTES.kycStatus)
-  status(@Query("userId") userId?: string) {
-    return this.kyc.getStatus(String(userId ?? ""));
+  status(@Req() req: SessionReq) {
+    return this.kyc.getStatus(this.sessionUserId(req));
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(COMPLIANCE_USER_ROUTES.kycSubmit)
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -36,6 +45,7 @@ export class KycController {
   )
   submit(
     @Body() body: Record<string, unknown>,
+    @Req() req: SessionReq,
     @UploadedFiles()
     files?: {
       idDoc?: UploadPart[];
@@ -54,7 +64,7 @@ export class KycController {
         : undefined;
 
     return this.kyc.submit({
-      userId: String(body.userId ?? ""),
+      userId: this.sessionUserId(req),
       legalName: String(body.legalName ?? ""),
       phoneE164: String(body.phoneE164 ?? ""),
       birthDate: String(body.birthDate ?? ""),
@@ -62,5 +72,13 @@ export class KycController {
       idDocBytes: idFromFile ?? idFromB64 ?? Buffer.alloc(0),
       selfieBytes: selfieFromFile ?? selfieFromB64,
     });
+  }
+
+  private sessionUserId(req: SessionReq): string {
+    const userId = String(req.user?.userId ?? req.user?.sub ?? "");
+    if (!userId) {
+      throw new UnauthorizedException("AUTH_REQUIRED");
+    }
+    return userId;
   }
 }
