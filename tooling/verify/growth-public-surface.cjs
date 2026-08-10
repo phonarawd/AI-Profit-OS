@@ -21,12 +21,12 @@ function read(rel) {
   return fs.readFileSync(p, "utf8");
 }
 
-mustExist("supabase/migrations/20260810120000_growth_ticker_config.sql");
+mustExist("supabase/migrations/20260810024643_growth_ticker_config.sql");
 mustExist("services/api-nest/src/growth/growth.public.controller.ts");
 mustExist("services/api-nest/src/growth/growth-public.service.ts");
 mustExist("services/api-nest/src/growth/growth.module.ts");
 
-const mig = read("supabase/migrations/20260810120000_growth_ticker_config.sql");
+const mig = read("supabase/migrations/20260810024643_growth_ticker_config.sql");
 const ctl = read("services/api-nest/src/growth/growth.public.controller.ts");
 const svc = read("services/api-nest/src/growth/growth-public.service.ts");
 const mod = read("services/api-nest/src/app.module.ts");
