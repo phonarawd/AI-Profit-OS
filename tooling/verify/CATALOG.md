@@ -50,9 +50,13 @@
 | `packages/ui/**` · `apps/web/**` | no-it-jargon · mockup-governance · canon-surfaces |
 | `apps/admin/**` | no-admin-in-web · admin-routes |
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |
+| `apps/web/app/page.tsx` · `HomePageClient` · `packages/sdk/src/user-feed/**` · `HomePrincipalRail` · `home-principal-slots` | home-live-wire · sdk-user-feed · home-principal-slots |
+| `apps/web/app/profits/**` | profits-live-wire · sdk-user-feed |
+| `apps/web/app/wallet/page.tsx` · `packages/sdk/src/wallet/**` | wallet-live-wire |
 | money api-nest | pg-module-scan · bucket-invariant |
 | engine-rust · trade/opportunity api | match-success-rule · participate-http · execute-rule-loop |
-| auth/jwt | auth-jwt-runtime · auth-flows |
+| auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie |
+| `api-nest` wallet · kyc.controller | wallet-kyc-session-auth |
 
 ## Domain gates (T1 `stubs/run-all` · 구현되면 hard)
 
@@ -71,6 +75,12 @@
 | onboarding-experiential · auth-surfaces · landing-3s · kyc-surfaces | UI §6.4~6.4d · Infra §31.2a/b · Money §42 (v7.22.11) — **onboarding-experiential · auth-surfaces · landing-3s · kyc-surfaces live** (Canon Lux3면 · RRN0) |
 | trust-copy · tax-disclaimer · objection4 | UI §38 PART6b — **live** (금지어0 · 면책 입금/guide · Guest onboarding 면책0=v7.22.55 utility · Admin content 잠금 · Objection Q1~Q4 온보딩·입금게이트·FAQ·상세) |
 | auth-flows | Infra §51.9+§51.9.1 — Nest JWT only · Stage A/B · OAuth/Passkey · session · 탈퇴 · **live** |
+| auth-session-cookie | UI PART9-pre2 — httpOnly `aipo_session` Set-Cookie · cookie-parser · JwtAuthGuard cookie fallback · JSON accessToken 유지 — **live** |
+| wallet-kyc-session-auth | UI PART9-pre2 — Wallet/Kyc 유저 라우트 JwtAuthGuard + session userId (IDOR query/body userId 0) — **live** |
+| home-live-wire | UI PART9b/9c — `/` page↔`@aipo/sdk/user-feed`↔DayPulse · nearMissExtraCount · 401 graceful — **live** |
+| home-principal-slots | UI PART9d — §5.3 B/D `HomePrincipalRail` + Canon `home-principal-slots` + `lux-feed-grid` · principalUsdt/todayPossibleProfitUsdt — **live** |
+| profits-live-wire | UI PART9b/9e — `/profits`+`/profits/[id]` live SDK feed/detail — **planned** (PASS=PART9e) |
+| wallet-live-wire | UI PART9b/9f — `/wallet` buckets + `@aipo/sdk/wallet` `fetchWalletBuckets` (출금≠9f2) — **planned** (PASS=PART9f) |
 | ai-coach-fact-only · ai-coach-no-autonomy · ai-coach-ui | Engine §47.12~15 · UI §6.4e/§27.10 — **P레인** Fact-only · 전레인 자율집행 0 · FactToolService+CoachOrchestrator+SSE — **live** · **ai-coach-ui live** (`/me/peotteok` Canon · SSE client · P칩 · S거절 deep-link · degrade toast · voice pace) |
 | ai-general-no-money-tools · ai-lane-router · llm-adapter-contract | Engine §47.8·47.13~15 — G tools=[] · P/G/S router · **live** |
 | llm-quota-degrade | Engine §47.13 — 429→G busy·P Fact · 자동 failover 0 · toast `PEOTTEOK_LLM_BUSY` — **live** |

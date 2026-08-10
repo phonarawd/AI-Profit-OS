@@ -1,0 +1,54 @@
+{
+  "id": "home-principal-slots",
+  "route": "/",
+  "slot": "B/D",
+  "brandRef": "packages/ui/brand",
+  "tokenRef": "packages/ui/tokens/lux-fintech.ts",
+  "layoutClass": "lux-feed-grid",
+  "component": "HomePrincipalRail",
+  "planRef": "UI §5.3 B/D · PART9d",
+  "blocks": [
+    {
+      "id": "principalBalance",
+      "role": "metric",
+      "slot": "B",
+      "field": "principalUsdt",
+      "copyKey": "T.feed.balanceLabel",
+      "note": "Money WalletBuckets.principalUsdt · listFeed Fact · ≈₩는 표시 전용 prop"
+    },
+    {
+      "id": "balanceKrwOrUsdt",
+      "role": "metric",
+      "copyKeys": [
+        "T.feed.balanceKrwApprox",
+        "T.feed.balanceUsdtPrimary",
+        "T.feed.balanceUsdtSecondary"
+      ],
+      "note": "KR 런칭 ≈₩ 크게 + USDT 보조 · 환율 재계산 UI 0"
+    },
+    {
+      "id": "ctaDeposit",
+      "role": "secondary",
+      "copyKey": "T.feed.ctaDeposit",
+      "href": "/wallet/deposit"
+    },
+    {
+      "id": "todayPossibleProfit",
+      "role": "metric",
+      "slot": "D",
+      "field": "todayPossibleProfitUsdt",
+      "copyKey": "T.feed.todayPossibleProfitLabel",
+      "note": "affordable expectedProfitUsdt 합 · Engine 필드 합산만 · 가격식 재발명 0"
+    }
+  ],
+  "forbidden": [
+    "photo_pixel_match",
+    "gender_branch",
+    "IT_jargon",
+    "success_rate_percent",
+    "ledger_balance_UPDATE",
+    "fx_recalc_in_ui",
+    "fake_krw_rate",
+    "보장_수익_badge"
+  ]
+}

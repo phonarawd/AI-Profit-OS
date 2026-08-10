@@ -119,6 +119,10 @@ const live = [
   "day-pulse-live-only.cjs",
   "preflight-may-stop.cjs",
   "loop-psychology.cjs",
+  // PART9c/9d home live · principal B/D slots
+  "home-live-wire.cjs",
+  "sdk-user-feed.cjs",
+  "home-principal-slots.cjs",
   // PART8b §51.16~21 trust surfaces · Weekly Market Briefing
   "market-briefing-no-investment-advice.cjs",
   "participate-proof.cjs",

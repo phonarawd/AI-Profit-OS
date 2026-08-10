@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — UI & UX
-overview: v7.22.56 pending todo `[밀도:*]` 명시(§0.8.3) — v7.22.55 §6.4c.1 5결정문 잠금 불변. PART0~4 CLOSED. File-Serial 다음=PART5a public-ticker-g4-surface(pending·가벼움). Index=00.
+overview: v7.22.58 착수전 포인터동기(Index/BOOTSTRAP/§0.8.3)·v7.22.57 PART9 흡수 — PART0~8c CLOSED. File-Serial 다음=`part9-pre-dev-api-proxy` only · 8d=PART9 후 마지막. 전 todo `[grok-4.5|256K]`. Index=00.
 todos:
   - id: ui-preflight-constitution
     content: "[grok-4.5|256K] PART0 착수게이트 · **선행: Engine 02 Pre-UI Runtime Gate(§0.9 E-R1~E-R8) pending0 + Money money-user-benefits-read completed 필수(미충족 시 본 todo·이하 전부 착수 금지)** · BOOTSTRAP §0.6 실측기록(DB76/mig28/fn5·Canon·routes·Admin교차·verify live/pending) · **v7.22.50 감사 3정정 기록 흡수(§0.6 U13~U15·색토큰=lux-fintech·§29.6 Phase1+·eBay query: gap=Engine follow-up)** · File-Serial 재정렬 0 · 구현코드0 · 다음=market-partner-trust-surfaces"
@@ -107,22 +107,61 @@ todos:
   - id: responsive-device-tier
     content: "[grok-4.5|256K] [밀도:가벼움] PART8c fluid+touch-target + device-tier S/A/B + Virtual · verify:responsive · 회귀·harness live · **2~3개 연속 묶기 OK**(8a·8c)"
     status: completed
+  - id: part9-pre-dev-api-proxy
+    content: "[grok-4.5|256K] [밀도:가벼움] PART9-pre next.config.ts 기존 rewrites()에 /api/v1/:path* → API_HOST 항목 추가(/ads 규칙 보존·덮어쓰기 금지) + TOOLCHAIN 1줄 · verify:dev-api-proxy 또는 phase0-bootstrap needle · **File-Serial 다음 채팅=본 todo only**"
+    status: completed
+  - id: part9-pre2-auth-session-hardening
+    content: "[grok-4.5|256K] [밀도:보안·최우선·단독세션] PART9-pre2 §0.9 실측: 세션쿠키 발급 0(main.ts cookie-parser 미등록·AuthService Set-Cookie 0)+AuthLogin/AuthSignup 실제 제출핸들러 0(Kakao 리다이렉트 외 전부 disabled)+WalletController 유저라우트 9개·KycController 2개 JwtAuthGuard 0·query/body userId 신뢰(IDOR) → httpOnly 세션쿠키 발급(로그인 성공 경로 전부 Set-Cookie, JSON accessToken 응답 유지)+JwtAuthGuard cookie fallback+§0.9 표 지정 라우트만 session userId 전환(내부 7라우트=범위 밖·가드 미부착) · verify:auth-session-cookie+verify:wallet-kyc-session-auth · verify:auth-flows/auth-jwt-runtime 회귀 PASS(약화 금지) · 선행=9-pre"
+    status: completed
+  - id: part9a-sdk-user-feed
+    content: "[grok-4.5|256K] [밀도:가벼움] PART9a @aipo/sdk/user-feed (fetchOpportunityFeed/Detail/DayPulse) + package exports · listFeed 응답 nearMissCount → BalanceAwareHome prop nearMissExtraCount 매핑 필수 · 선행=9-pre2 · verify:sdk-user-feed · **2~3개 연속 묶기 OK**(9a·9b)"
+    status: completed
+  - id: part9b-verify-live-wire
+    content: "[grok-4.5|256K] [밀도:가벼움] PART9b verify home/profits/wallet-live-wire 3종 + CATALOG + domain-by-path 등재 + 9-pre2 신규 verify 2종(auth-session-cookie·wallet-kyc-session-auth) CATALOG 동시 등재 · **2~3개 연속 묶기 OK**(9a·9b)"
+    status: completed
+  - id: part9c-home-live-wire
+    content: "[grok-4.5|256K] [밀도:무거움·체감최우선] PART9c 홈 / live feed+DayPulse · HomePageClient · 401 graceful(9-pre2 세션쿠키 배선 선행 필수) · verify:home-live-wire PASS · 선행=9a·9b · **단독 세션 권장**"
+    status: completed
+  - id: part9d-home-principal-slots
+    content: "[grok-4.5|256K] [밀도:무거움] PART9d §5.3 B/D HomePrincipalRail + Canon wire + lux-feed-grid · verify:home-principal-slots · 선행=9c · **단독 세션 권장**"
+    status: completed
+  - id: part9e-profits-detail-wire
+    content: "[grok-4.5|256K] [밀도:가벼움] PART9e /profits + /profits/[id] live · verify:profits-live-wire PASS · 선행=9a · **2~3개 연속 묶기 OK**(9e·9f)"
+    status: pending
+  - id: part9f-wallet-live-wire
+    content: "[grok-4.5|256K] [밀도:가벼움] PART9f /wallet buckets 조회 화면 배선(순수 프론트 — Nest 인증전환=9-pre2 완료 전제) + @aipo/sdk/wallet fetchWalletBuckets · verify:wallet-live-wire · **2~3개 연속 묶기 OK**(9e·9f)"
+    status: pending
+  - id: part9f2-withdraw-flow-wire
+    content: "[grok-4.5|256K] [밀도:무거움·신규화면] PART9f2 §0.9 실측: /wallet/withdraw·/withdraw/usdt·/withdraw/krw 3페이지 금액입력·수수료·step-up UI 0 → WithdrawAmountPanel 신규 + step-up challenge/verify + POST /wallet/withdraw(idempotencyKey) · PrincipalConfirmSheet 토큰=클라랜덤(서버미검증) pointer(재설계=Money 후속·범위 밖) · verify:withdraw-flow-wire · 선행=9f·9-pre2 · **단독 세션 권장**"
+    status: pending
+  - id: part9g-growth-public-api
+    content: "[grok-4.5|256K] [밀도:무거움] PART9g §0.9 실측(growth_control≠ticker_mode · 백엔드 설정저장소 0) → 신규 singleton growth_ticker_config(ticker_mode/counter_mode default off·RLS ON) + Nest GET /api/v1/growth/public-surface(read-only·PII 마스킹 서버측·ledgerTotal=settlement.completed aggregate only) · Owns=growth config read · verify:growth-public-surface · **완료조건: Admin 04 §9.2 교차표 테이블명 pointer 동기**(admin-growth-ticker-organic=후속 PATCH+Organic Hybrid · apps/admin 코드0) · **단독 세션 권장**"
+    status: pending
+  - id: part9h-home-ticker-wire
+    content: "[grok-4.5|256K] [밀도:가벼움] PART9h 홈 ticker/counter 9g API 투영 · mode=off server-driven only · verify:ticker-pii-0+home-live-wire · 선행=9g·9c · **2~3개 연속 묶기 OK**(9h·9i)"
+    status: pending
+  - id: part9i-stub-page-actions
+    content: "[grok-4.5|256K] [밀도:가벼움] PART9i deposit 주소조회·복사 + kyc 제출(멀티파트) + support wrong-chain POST 배선(withdraw=9f2 Owns·본 todo 범위 아님) · §0.6 pointer 해소 · verify 해당 게이트 + no-it-jargon · 선행=9-pre2 · **2~3개 연속 묶기 OK**(9h·9i)"
+    status: pending
   - id: trust-age-spotcheck
-    content: "[grok-4.5|256K] [밀도:수동실사] PART8d §38.6b+§27.10 20·40·60~70대 각3명 · 도움말이모지길잡이·퍼뜩첫인사·면책이모지0 · 성별중성 · Admin ai-logs?tab=spotcheck pointer · 자동 verify **0** · **운영자 실사**(코드 세션과 분리)"
+    content: "[grok-4.5|256K] [밀도:수동실사] PART8d §38.6b+§27.10 20·40·60~70대 각3명 · 도움말이모지길잡이·퍼뜩첫인사·면책이모지0 · 성별중성 · Admin ai-logs?tab=spotcheck pointer · 자동 verify **0** · **선행=PART9 전 todo completed** · **운영자 실사**(코드 세션과 분리) · File-Serial **마지막**"
     status: pending
 isProject: false
 ---
 
-# AI Profit OS — UI & UX (v7.22.56 · pending todo 밀도 태그 · v7.22.55 §6.4c.1 · §0.8 · 착수 잠금=Pre-UI Runtime Gate)
+# AI Profit OS — UI & UX (v7.22.58 착수전동기 · v7.22.57 PART9 · v7.22.56 밀도 · v7.22.55 §6.4c.1 · §0.8·§0.9)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`  
-> **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만
+> **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만 · **PART9 실행 큐=본 파일 YAML만**(홈 orphan `ui_live_wiring_part9_*` = ABSORBED·실행 금지)
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  
-> **모델 잠금:** 전 todo = **`[grok-4.5|256K]`** · 한 채팅=한 todo(가벼움 2~3개 연속 묶기 OK) · PART0→8 위→아래 (File-Serial)  
-> **todo 밀도(v7.22.56 · pending YAML `[밀도:*]`):** **가벼움**=실물 우선·갭-only·2~3개 연속·1커밋 묶기 OK · **무거움**=신규 다면·verify ghost·단독 세션 · **무거움·체감최우선**=7b(혜택 허브 딥 UI) · **수동실사**=8d(사람 spot-check·코드 세션 분리)  
-> **todo 파트:** **0** preflight · **1** 신뢰로고/카피/Canon/Lux · **2** 온보딩·인증·**2c-pre schema**·랜딩 · **3** 홈·마진·이미지·잔액 · **4** 실행실·퍼뜩 · **5** 티커·5탭·지갑·설정·토스트 · **6** KYC·신뢰교육·테더가이드 · **7** 초대·혜택·멤버십·알림 · **8** 루프·Proof·반응형·spot-check  
-> **v7.22.56 (pending todo 밀도 · 코드0):** 미완료 YAML 17건에 `[밀도:가벼움|무거움|무거움·체감최우선|수동실사]` + 묶기 힌트 · §0.8.3 표 밀도 열 · completed todo 변경 **0**  
+> **모델 잠금:** 전 todo = **`[grok-4.5|256K]`** · 한 채팅=한 todo(가벼움 2~3개 연속 묶기 OK) · PART0→8c→**9-pre…9i**→**8d** 위→아래 (File-Serial)  
+> **todo 밀도(v7.22.57 pending):** **가벼움**=9-pre·9a·9b·9e·9f·9h·9i · **보안·최우선·단독**=9-pre2 · **무거움·체감최우선**=9c · **무거움**=9d·9g · **무거움·신규화면**=9f2 · **수동실사**=8d(PART9 완료 후 마지막)  
+> **todo 파트:** **0**~**8c** CLOSED · **9** Live Wiring(pre→pre2→a…i) · **8d** spot-check **마지막**  
+> **다음 채팅:** `part9-pre-dev-api-proxy` only · completed PART0~8c 재실행 **금지**  
+> **v7.22.58 (착수 전 포인터 동기 · 코드0):** Index overview/A12 + BOOTSTRAP 「다음」· §0.8.3 PART5a~8b 행을 YAML `completed`와 일치(`COMPLETED · 재작성 금지`) · 실행 큐 불변=`part9-pre-dev-api-proxy` only  
+> **v7.22.57 (PART9 Live Wiring 흡수 · 코드0 메타):** 홈감사 `ui_live_wiring_part9_a6643cf7` v2 → 본 파일 YAML 흡수(9-pre~9i 12건 + 8d 유지·중복0) · §0.9 실측 요약 · §0.8.3 PART9 행 · File-Serial=9 완료 후 8d · composer 태그 **0**  
+> **v7.22.56 (pending todo 밀도 · 코드0):** 미완료 YAML에 `[밀도:*]` + 묶기 힌트 · §0.8.3 표 밀도 열 · completed todo 변경 **0** · *(v7.22.57이 pending 큐를 PART9로 supersede)*  
 > **v7.22.55 (§6.4c.1 5결정문 · 코드+문서 SSOT · 오류0):** (1) 톤 허용 시점 SSOT=로그인 후·첫 capital surface(`/`,`/profits`,기회 CTA)부터 수익|투자|USDT 언어 허용 · Guest(`/l/*`→`/onboarding`·`/auth/*`)=utility 유지 + 온보딩 첫화면 `transitionDisclosure` 1줄(**전환 고지≠capital 톤 허가**) · §6.4 ACTION「수익 벌기」**supersede**=capital surface only · (2) 랜딩 포지셔닝=`시세·가격 비교`(괴리율·차익 **0**) · `copy/ko/landing` ↔ Infra §31.4 sanitizer ↔ `verify:marketing-compliance` **동시** 갱신이 완료 조건 · (3) GuestChrome consent Owns=Infra `packages/sdk/marketing` · UI=`consentMarketing===true`일 때만 Lead emit · 미실장=emit **0** · (4) 완료 정의=`verify:landing-3s`+`verify:marketing-compliance`+`verify:operator-footer` · (5) PART2c-pre를 §0.8.2 #5로 **같은 diff 승격**(File-Serial 위반≠·의존 삽입)  
 > **v7.22.54 (듀얼레이어 광고 Compliance · 오류0):** §6.4c.1 신설 — `/l/*`·`/ads/*`=**utility-only** · `LandingOperatorFooter` · `utilityDisclaimer` 2중 · CTA=`실시간 시세 맵 열기` · PART2c-pre · CAPI=Infra Owns · File-Serial=2b→**2c-pre**→2c  
 > **v7.22.53 (§0.8.2~3 패치):** 감사조치/구현시점 열 · verify 검사범위 1줄 · 실행밀도 · §51.20 wording — v7.22.52 불변  
@@ -158,11 +197,11 @@ isProject: false
 > **Loop/Preflight:** **§51.24** (Admin/Engine/CATALOG pointer 대상 · 유령 절 금지)  
 
 > **마진 공식:** Engine §0.0.4 Owns · UI=화면/카피만  
-> **선행 CLOSED(1~26/1~15 불변):** 01 Money 15/15+benefits · 02 Engine 26/26+E-R1~E-R8 · Pre-UI Gate **CLOSED(v7.22.49)** · **PART0·PART1·PART2a·PART2b CLOSED** · 다음 채팅=`operator-entity-support-email` only  
+> **선행 CLOSED(1~26/1~15 불변):** 01 Money 15/15+benefits · 02 Engine 26/26+E-R1~E-R8 · Pre-UI Gate **CLOSED(v7.22.49)** · **PART0~8c CLOSED** · 다음 채팅=`part9-pre-dev-api-proxy` only  
 
 ## 0.6 UI 착수 전 실측 (v7.22.48 · `ui-preflight-constitution` · **PASS v7.22.50** · 예측0 · 감사 3정정 흡수)
 
-> **Owns:** 본 절 + BOOTSTRAP §0.6 동기 · **구현 코드 0** (기록·갭표만) · **CLOSE 후 다음=`market-partner-trust-surfaces`**  
+> **Owns:** 본 절 + BOOTSTRAP §0.6 동기 · **구현 코드 0** (기록·갭표만) · **CLOSE 후 다음(이력)=`market-partner-trust-surfaces`** · **현재 다음=`part9-pre-dev-api-proxy`**(v7.22.57~58)  
 > **방법(2026-08-10 CLOSE 재실측):** 레포 FS(`CONSTITUTION/`29·Canon 28 wires·`apps/web`·`packages/ui`·ebay-adapter·catalog-runtime-seed·`lux-fintech.ts`) + Money/Engine YAML completed + Supabase MCP `list_tables`(public **76**) + CATALOG live 게이트 · `execute_sql`/`list_migrations`는 본 세션 MCP hook fail-closed로 차단 → mig/함수 수는 FS+§0.5.1 CLOSE 인용  
 > **선행(v7.22.49 충족 · 재확인):** Money CLOSED(15/15+`money-user-benefits-read` **completed**) · Engine CLOSED(26/26+E-R1~E-R8 **completed** · `engine-pre-ui-close` **completed**) · Pre-UI Runtime Gate **CLOSED**  
 > **v7.22.50 감사 기록(본 todo Owns · File-Serial 재정렬 0):** 색토큰 drift(U13) · realtime-service Phase0 reframe(U14) · eBay `query:` ingest gap(U15) — 아래 표·§0.6.2·본문 §6.2/§33.1/§29.6/§48.3a pointer에 **텍스트만** 반영 · **앱 구현코드 0**
@@ -226,7 +265,7 @@ isProject: false
 | U15 | 실 eBay 사진이 유저 카드에 안 보이는 원인 미기록 · `assetId: query:*` → persist drop · matchers 미배선 | → **EXTEND(문서)** · §0.6 표 + §48.3a pointer · Owns=Engine todo `engine-ebay-identity-match-ingest`(§0.10 filed v7.22.51) · UI todo/File-Serial **가산·재정렬 0** · PART3d는 URL 소스 무관 렌더만 |
 
 **판정 (v7.22.50 · 2026-08-10):** `ui-preflight-constitution` = **PASS** · 헌법 8종+46b ✅ · Canon 28 · Brand markets/**0** · CLIME **0** · 사진목업 PNG **0**(ADR-013) · U13~U15 **흡수** · File-Serial 재정렬 **0** · 구현코드 **0**.  
-**다음 채팅:** **03 UI** `operator-entity-support-email` only · completed Engine/Money/PART0·PART1·PART2a·PART2b todo 재실행 **금지**.
+**다음 채팅:** **03 UI** `part9-pre-dev-api-proxy` only · completed Engine/Money/PART0~8c todo 재실행 **금지**.
 
 ## 0.7 Admin 교차 계약 (UI surface → Admin Owns · 중복0)
 
@@ -309,23 +348,35 @@ isProject: false
 | 3e | balance-aware-home-ux | — | `balance-aware-feed`: Engine classify+suggest **API·Nest wire** (홈 슬롯 배선 0) | Engine 측 live | **COMPLETED** |
 | 4a | ai-execution-ux | 무거움·체감최우선 | `trade-execution-hook`: `useTradeExecution`+polling+execute **page 배선** (**AiProgressRoom 등 4컴포넌트 0**) | 훅 live · execute=2-state 임시 텍스트 | **COMPLETED** · 3면 신규 |
 | 4b | ai-coach-ui | 무거움 | 전용 verify **0** | `/me/peotteok` 골격 스텁 | **COMPLETED** · 신규 구현 |
-| 5a | public-ticker-g4-surface | **가벼움** | `ticker-pii-0`: LivePayoutTicker·PII0 · settlement.completed only | ticker 실물 | 갭 diff · **5a~5f 묶기 OK** |
-| 5b | user-ia-shell-screens | **가벼움** | `ia-tabs`/`no-admin-in-web`: 5탭·USER_NESTED_ROUTES | BottomNav5·routes 실물 | 갭 diff · **5a~5f 묶기 OK** |
-| 5c | wallet-surfaces-ui | **가벼움** | `deposit-network-plain-ko`+wallet Canon | wallet 실물 | 갭 diff · **5a~5f 묶기 OK** |
-| 5d | settings-legal-ko | **가벼움** | `legal-plain-ko`/`font-scale-three` | legal/settings 실물 | 갭 diff · **5a~5f 묶기 OK** |
-| 5e | toast-notification | **가벼움** | `toast-emoji`/`part5-shell-toast` | ToastHost 실물 | 갭 diff · **5a~5f 묶기 OK** |
-| 5f | plain-korean-surfaces | **가벼움** | `no-it-jargon`/`toast-emoji` | copy 스캔 | 갭 diff · **5a~6c 묶기 OK** |
-| 6a | kyc-surfaces-ui | **가벼움** | `kyc-surfaces`: KycFlow+page | `KycFlow` 실물 | diff 보완 · **5a~6c 묶기 OK** |
-| 6b | trust-education-ux | **가벼움** | `trust-copy`/`tax-disclaimer`/`objection4` | ObjectionFourAccordion 등 | diff 보완 · **5a~6c 묶기 OK** |
-| 6c | trust-get-usdt-guide | **가벼움** | `deposit-network-plain-ko`: TRC20 plain | GetUsdtGuide 실물 | diff 보완 · **5a~6c 묶기 OK** |
-| 7a | invite-explain-kr-2070 | **가벼움** | `invite-explain-surfaces`: CATALOG pointer · **스크립트 0** | verify "live" 미표기 | diff 후 갭 · **7a·7c·7d 묶기 OK** |
-| 7b | benefit-hub-surfaces | **무거움·체감최우선** | **`benefit-hub-surfaces`: Money API+copy+wire만** (**page.tsx 딥 UI 0** · §0.8.2 #2) | Money API live · page=1줄 골격 | verify PASS **무관** · **딥 UI 전량 신규** · **단독 권장** |
-| 7c | membership-grade-ux | **가벼움** | `membership-surfaces`: CATALOG · Engine `membership-ladder`/`daily-cap` live | Engine live · UI 미확정 | diff · **7a·7c·7d 묶기 OK** |
-| 7d | notify-prefs-inbox | **가벼움** | `ops-inbox`/`notification-prefs-default-on`/`push-channel-prefs`: CATALOG · 스크립트 혼재 | verify "live" 미표기 | 실물 우선 · **7a·7c·7d 묶기 OK** |
-| 8a | loop-psychology-5124 | **가벼움** | `loop-psychology`/`day-pulse-live-only`/`preflight-may-stop`: CATALOG §51.24 | verify "live" 미표기 | 실물 우선 · **8a·8c 묶기 OK** |
-| 8b | trust-surfaces-v722 | **무거움** | **`market-briefing-no-investment-advice` ghost** · 기타 Proof/SafeStop 등 PART8b 범위 | §51.20 Owns 재배정(verify 미착수) | 5+1종 **신규 구현** · **단독 권장** |
-| 8c | responsive-device-tier | **가벼움** | `verify:responsive`: Playwright multi-viewport **Canon structure** | harness live | 회귀만 · **8a·8c 묶기 OK** |
-| 8d | trust-age-spotcheck | **수동실사** | 자동화 **0** (사람 실사) | — | 운영자 spot-check · **코드 세션 분리** |
+| 5a | public-ticker-g4-surface | — | `ticker-pii-0`: LivePayoutTicker·PII0 · settlement.completed only | ticker 실물 | **COMPLETED** · 재작성 금지 |
+| 5b | user-ia-shell-screens | — | `ia-tabs`/`no-admin-in-web`: 5탭·USER_NESTED_ROUTES | BottomNav5·routes 실물 | **COMPLETED** · 재작성 금지 |
+| 5c | wallet-surfaces-ui | — | `deposit-network-plain-ko`+wallet Canon | wallet 실물 | **COMPLETED** · 재작성 금지 · live 배선=PART9f/f2/i |
+| 5d | settings-legal-ko | — | `legal-plain-ko`/`font-scale-three` | legal/settings 실물 | **COMPLETED** · 재작성 금지 |
+| 5e | toast-notification | — | `toast-emoji`/`part5-shell-toast` | ToastHost 실물 | **COMPLETED** · 재작성 금지 |
+| 5f | plain-korean-surfaces | — | `no-it-jargon`/`toast-emoji` | copy 스캔 | **COMPLETED** · 재작성 금지 |
+| 6a | kyc-surfaces-ui | — | `kyc-surfaces`: KycFlow+page | `KycFlow` 실물 | **COMPLETED** · 재작성 금지 · 제출 배선=PART9i |
+| 6b | trust-education-ux | — | `trust-copy`/`tax-disclaimer`/`objection4` | ObjectionFourAccordion 등 | **COMPLETED** · 재작성 금지 |
+| 6c | trust-get-usdt-guide | — | `deposit-network-plain-ko`: TRC20 plain | GetUsdtGuide 실물 | **COMPLETED** · 재작성 금지 |
+| 7a | invite-explain-kr-2070 | — | `invite-explain-surfaces` | invite 실물 | **COMPLETED** · 재작성 금지 |
+| 7b | benefit-hub-surfaces | — | `benefit-hub-surfaces`(+딥 UI) · §0.8.2 #2 이력 | `BenefitHub`+page live | **COMPLETED** · 재작성 금지 |
+| 7c | membership-grade-ux | — | `membership-surfaces`/`membership-badge-assets` | 등급·배지 실물 | **COMPLETED** · 재작성 금지 |
+| 7d | notify-prefs-inbox | — | `ops-inbox`/`notification-prefs-default-on` | prefs·쪽지 실물 | **COMPLETED** · 재작성 금지 |
+| 8a | loop-psychology-5124 | — | `loop-psychology`/`day-pulse-live-only`/`preflight-may-stop` | DayPulse·PreCTA 실물 | **COMPLETED** · 재작성 금지 · home live=PART9c |
+| 8b | trust-surfaces-v722 | — | Proof/SafeStop/Journey/AdapterHealth/WeeklyBriefing/DepositConsult+`market-briefing-*` | 5+1종 실물 | **COMPLETED** · 재작성 금지 |
+| 8c | responsive-device-tier | — | `verify:responsive`: Playwright multi-viewport **Canon structure** | harness live | **COMPLETED** · 재작성 금지 |
+| 9-pre | part9-pre-dev-api-proxy | **가벼움** | `dev-api-proxy` 또는 phase0-bootstrap needle: `/api/v1` rewrite · `/ads` 보존 | `next.config.ts`에 `/ads` rewrite만 · `/api/v1` **0** | **다음 채팅 only** · rewrites **추가**(덮어쓰기 금지) |
+| 9-pre2 | part9-pre2-auth-session-hardening | **보안·최우선·단독** | `auth-session-cookie`+`wallet-kyc-session-auth`+회귀 `auth-flows`/`auth-jwt-runtime` | 세션쿠키 **0** · Wallet/Kyc JwtAuthGuard **0**(§0.9) | httpOnly Set-Cookie + cookie JWT + 유저라우트 session userId · **단독 세션** |
+| 9a | part9a-sdk-user-feed | **가벼움** | `sdk-user-feed`: exports+fetchOpportunity* · nearMissCount→nearMissExtraCount | `@aipo/sdk` peotteok/execution-stream만 | SDK 신설 · **9a·9b 묶기 OK** |
+| 9b | part9b-verify-live-wire | **가벼움** | home/profits/wallet-live-wire + 9-pre2 verify 2종 CATALOG/domain-by-path | live-wire verify **0** | CATALOG 등재 · **9a·9b 묶기 OK** |
+| 9c | part9c-home-live-wire | **무거움·체감최우선** | `home-live-wire`: page↔SDK↔DayPulse·401 graceful | `page.tsx` stub `items={[]}` | HomePageClient live · **단독 권장** |
+| 9d | part9d-home-principal-slots | **무거움** | `home-principal-slots`: HomePrincipalRail+Canon+lux-feed-grid | B/D 슬롯 **0** | **COMPLETED** · verify:home-principal-slots PASS · 재작성 금지 |
+| 9e | part9e-profits-detail-wire | **가벼움** | `profits-live-wire`: /profits·/profits/[id] | 골격 위주 | live 배선 · **9e·9f 묶기 OK** |
+| 9f | part9f-wallet-live-wire | **가벼움** | `wallet-live-wire`: buckets 조회+sdk/wallet | buckets 미배선 | 조회 화면만(출금≠9f) · **9e·9f 묶기 OK** |
+| 9f2 | part9f2-withdraw-flow-wire | **무거움·신규화면** | `withdraw-flow-wire`: 금액·수수료·step-up·POST withdraw | 출금 3페이지 UI **0** | WithdrawAmountPanel+step-up · **단독 권장** |
+| 9g | part9g-growth-public-api | **무거움** | `growth-public-surface`: growth_ticker_config+GET public-surface | ticker 설정 저장소 **0**(`growth_control`≠mode) | DDL+Nest read · Admin §9.2 **pointer만** · **단독 권장** |
+| 9h | part9h-home-ticker-wire | **가벼움** | `ticker-pii-0`+home-live-wire 회귀 | ticker/counter `mode="off"` 하드코드 | 9g API 투영 · **9h·9i 묶기 OK** |
+| 9i | part9i-stub-page-actions | **가벼움** | deposit/kyc/support 해당 verify + `no-it-jargon` | stub 버튼·§0.6 pointer | withdraw≠본 todo(9f2) · **9h·9i 묶기 OK** |
+| 8d | trust-age-spotcheck | **수동실사** | 자동화 **0** (사람 실사) | — | **PART9 전 completed 후** · 운영자 spot-check · **코드 세션 분리** · File-Serial **마지막** |
 
 ### 0.8.4 다관점 판정 (예측0 · 실측 근거만)
 
@@ -337,7 +388,30 @@ isProject: false
 | 세계 지존급 1위 감사관 | DB·보안 어드바이저·마이그레이션 정합성은 PASS(1건 드리프트는 발견 즉시 해소). **`verify:X=live` 라벨을 "완료 증빙"으로 오독할 수 있는 지점(0.8.2 #2)**이 감사 관점 최대 리스크였다 — CATALOG 표기 자체가 거짓은 아니다(스크립트는 실제로 그 좁은 범위에서 PASS한다). 그러나 범위가 좁아 오해를 유발하므로 **§0.8.3 verify 검사 범위 열 + todo content 범위 명시**가 감사 보완의 핵심이었고, v7.22.53 패치로 흡수했다. |
 | 세계 지존급 1위 분석관 | 이번 리스크의 본질은 v7.22.48 Pre-UI Runtime Gate 때(§0.6 U12)와 **동일 패턴**("완료 정의"의 해상도 부족)이 PART 단위에서 재발한 것이다 — 그때는 "Engine todo 26/26 completed"가 "유저 API 존재"를 의미하지 않았고, 지금은 "verify:X live"가 "화면 완성"을 의미하지 않는다. 재발 방지책은 §0.8.3처럼 **PART별 실측 스냅샷을 todo content에 직접 명시하는 것**(본문 어딘가에 적혀 있는 것만으로는 다음 에이전트가 놓칠 수 있음) — 아래 YAML 갱신에 반영했다. |
 
-**판정:** UI 플랜 §0.6/§0.7은 **오차0로 유지**(재검증 통과) · §0.8.2 4건 **감사 세션 문서 흡수 완료** · **구현 부채**=PART3c·4a·7b·8b(§0.8.2 **구현 시점** 열) · **PART0→8 구조·순서·모델배정 변경 없음**(적합 판정) · **PART1·PART2a·PART2b CLOSED** · **다음 채팅 = `operator-entity-support-email`만**(completed todo 재실행 금지 불변).
+**판정:** UI 플랜 §0.6/§0.7은 **오차0로 유지**(재검증 통과) · §0.8.2 4건 **감사 세션 문서 흡수 완료** · **구현 부채(컴포넌트 PART)=CLOSED(v7.22.57 시점 PART0~8c)** · **잔여 실행 큐=PART9 Live Wiring → 8d** · **다음 채팅 = `part9-pre-dev-api-proxy`만**(completed todo 재실행 금지 불변).
+
+## 0.9 PART9 Live Wiring — 실측 감사 요약 (v7.22.57 · 예측0)
+
+> **SSOT 실행 큐:** 본 파일 YAML `part9-pre`…`part9i` → `trust-age-spotcheck`.  
+> **감사 전문(참조 only·todo 실행 금지):** `%USERPROFILE%\.cursor\plans\ui_live_wiring_part9_a6643cf7.plan.md` = **ABSORBED** (중복 todo **0**).  
+> **Owns:** Nest 세션/Wallet·Kyc 가드·`growth_ticker_config` read API = UI PART9 범위(유저 surface 완성 선행) · Admin ticker PATCH/Organic Hybrid = **04 Admin pointer only**(`apps/admin` 코드 **0**).
+
+| ID | 실측 결함 | 흡수 todo |
+|----|-----------|-----------|
+| P9-1 | 세션쿠키 발급 **0** (`cookie-parser` 미등록 · AuthService Set-Cookie **0**) · web Bearer/storage **0** | 9-pre2 |
+| P9-2 | AuthLogin/AuthSignup 실제 제출핸들러 **0**(Kakao redirect 외 disabled) | 9-pre2 |
+| P9-3 | `WalletController` 유저 라우트 9개 JwtAuthGuard **0** · query/body `userId` 신뢰(IDOR) · **내부 7라우트는 가드 미부착 유지** | 9-pre2 |
+| P9-4 | `KycController` 동일 패턴 | 9-pre2 |
+| P9-5 | 타 유저 컨트롤러는 JwtAuthGuard 이미 있음(대조) | 기록 |
+| P9-6 | ops-inbox migration 파일명 drift(로컬≠원격) | 메타 해소(rename) · 본 PART 코드 범위 밖 |
+| P9-7 | `growth_control`≠ticker_mode/counter_mode · 백엔드 ticker 설정 저장소 **0** | 9g |
+| P9-8 | PrincipalConfirmSheet 토큰=클라 랜덤(서버 미검증) | 9f2 pointer · Money 후속 |
+| P9-9 | 출금 3페이지 금액·수수료·step-up UI **0** | 9f2 |
+| P9-10 | Admin File-Serial: 03 UI 완료 전 Admin deep **금지** · 9g=최소 테이블+GET only | 9g |
+| P9-11 | PART9 초안 composer 태그 → **전량 grok-4.5\|256K** | YAML 잠금 |
+
+**File-Serial(위→아래 · 한 채팅=한 todo · 가벼움만 2~3 묶기):**  
+`9-pre` → `9-pre2`(단독) → `9a`↔`9b` → `9c`(단독) → `9d`(단독) → `9e`↔`9f` → `9f2`(단독) → `9g`(단독) → `9h`↔`9i` → `8d`(수동·마지막).
 
 ## 0.1 Trust 잠금 정책 (v7.3)
 

@@ -32,6 +32,10 @@ export {
   type BalanceAwareHomeProps,
 } from "./BalanceAwareHome";
 export {
+  HomePrincipalRail,
+  type HomePrincipalRailProps,
+} from "./HomePrincipalRail";
+export {
   VirtualOpportunityList,
   VirtualOpportunitySkeleton,
   VIRTUAL_OPPORTUNITY_THRESHOLD,

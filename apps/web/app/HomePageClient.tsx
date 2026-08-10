@@ -12,6 +12,7 @@ import {
 import { DayPulse, type DayPulseModel } from "@aipo/ui/components/loop";
 import {
   BalanceAwareHome,
+  HomePrincipalRail,
   type OpportunityCardModel,
 } from "@aipo/ui/components/opportunity";
 import {
@@ -22,6 +23,7 @@ import { T } from "@aipo/ui/copy/ko";
 
 type HomeFeedState = {
   items: OpportunityCardModel[];
+  principalUsdt: string;
   affordableCount?: number;
   nearMissExtraCount?: number;
   topSuggestDepositUsdt?: string | null;
@@ -152,11 +154,28 @@ function toDayPulseModel(res: DayPulseResponse): DayPulseModel {
   };
 }
 
+/** affordable expectedProfitUsdt 합 — Engine 필드 합산만 · 가격식 재발명 0 */
+function sumAffordableExpectedProfitUsdt(
+  items: OpportunityCardModel[],
+): string {
+  let sum = 0;
+  for (const item of items) {
+    if (item.bucket && item.bucket !== "affordable") continue;
+    const n = Number(item.expectedProfitUsdt);
+    if (Number.isFinite(n)) sum += n;
+  }
+  return sum.toFixed(2);
+}
+
 function feedToHomeState(feed: OpportunityFeedResponse): HomeFeedState {
   return {
     items: feed.items
       .map(toCardModel)
       .filter((x): x is OpportunityCardModel => x != null),
+    principalUsdt:
+      typeof feed.principalUsdt === "string" && feed.principalUsdt.trim()
+        ? feed.principalUsdt
+        : "0",
     affordableCount: feed.affordableCount,
     nearMissExtraCount: feed.nearMissExtraCount,
     topSuggestDepositUsdt: feed.topSuggestDepositUsdt ?? null,
@@ -164,11 +183,14 @@ function feedToHomeState(feed: OpportunityFeedResponse): HomeFeedState {
 }
 
 /**
- * PART9c — 홈 live feed + DayPulse
+ * PART9c/9d — 홈 live feed + DayPulse + §5.3 B/D HomePrincipalRail
  * SDK=@aipo/sdk/user-feed · 401 graceful · ticker/counter mode=off(9h Owns)
  */
 export function HomePageClient() {
-  const [feed, setFeed] = useState<HomeFeedState>({ items: [] });
+  const [feed, setFeed] = useState<HomeFeedState>({
+    items: [],
+    principalUsdt: "0",
+  });
   const [pulse, setPulse] = useState<DayPulseModel | null>(null);
   const [sessionExpired, setSessionExpired] = useState(false);
 
@@ -190,9 +212,9 @@ export function HomePageClient() {
         setFeed(feedToHomeState(feedResult.value));
       } else if (isUnauthorizedError(feedResult.reason)) {
         unauthorized = true;
-        setFeed({ items: [] });
+        setFeed({ items: [], principalUsdt: "0" });
       } else {
-        setFeed({ items: [] });
+        setFeed({ items: [], principalUsdt: "0" });
       }
 
       if (pulseResult.status === "fulfilled") {
@@ -236,6 +258,12 @@ export function HomePageClient() {
           </Link>
         </p>
       ) : null}
+      <div className="px-4 pt-4">
+        <HomePrincipalRail
+          principalUsdt={feed.principalUsdt}
+          todayPossibleProfitUsdt={sumAffordableExpectedProfitUsdt(feed.items)}
+        />
+      </div>
       <BalanceAwareHome
         items={feed.items}
         affordableCount={feed.affordableCount}

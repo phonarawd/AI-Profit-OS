@@ -136,6 +136,7 @@
     "./components/opportunity/OpportunityCard": "./components/opportunity/OpportunityCard.tsx",
     "./components/opportunity/PriceCompareMargin": "./components/opportunity/PriceCompareMargin.tsx",
     "./components/opportunity/BalanceAwareHome": "./components/opportunity/BalanceAwareHome.tsx",
+    "./components/opportunity/HomePrincipalRail": "./components/opportunity/HomePrincipalRail.tsx",
     "./components/opportunity/CategoryFilterChips": "./components/opportunity/CategoryFilterChips.tsx",
     "./components/opportunity/VirtualOpportunityList": "./components/opportunity/VirtualOpportunityList.tsx"
   },

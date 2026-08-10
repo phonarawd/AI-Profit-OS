@@ -27,6 +27,32 @@ const RULES = [
     scripts: ["no-it-jargon.cjs", "mockup-governance.cjs", "canon-surfaces.cjs"],
   },
   {
+    test: (f) =>
+      /^apps\/web\/app\/page\.tsx$/.test(f) ||
+      /^apps\/web\/app\/HomePageClient\.tsx$/.test(f) ||
+      /^apps\/web\/app\/_components\/HomePageClient\.tsx$/.test(f) ||
+      /^apps\/web\/components\/HomePageClient\.tsx$/.test(f) ||
+      /^packages\/sdk\/src\/user-feed\//.test(f) ||
+      /HomePrincipalRail/.test(f) ||
+      /home-principal-slots/.test(f),
+    scripts: [
+      "home-live-wire.cjs",
+      "sdk-user-feed.cjs",
+      "home-principal-slots.cjs",
+    ],
+  },
+  {
+    test: (f) => /^apps\/web\/app\/profits\//.test(f),
+    scripts: ["profits-live-wire.cjs", "sdk-user-feed.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/wallet\/page\.tsx$/.test(f) ||
+      /^packages\/sdk\/src\/wallet\//.test(f) ||
+      /^packages\/sdk\/src\/wallet\.ts$/.test(f),
+    scripts: ["wallet-live-wire.cjs"],
+  },
+  {
     test: (f) => /^apps\/admin\//.test(f),
     scripts: ["no-admin-in-web.cjs", "admin-routes.cjs"],
   },
@@ -183,7 +209,17 @@ const RULES = [
     test: (f) =>
       (/^services\/api-nest\//.test(f) && /auth/i.test(f)) ||
       /packages\/.*jwt/i.test(f),
-    scripts: ["auth-jwt-runtime.cjs", "auth-flows.cjs"],
+    scripts: [
+      "auth-jwt-runtime.cjs",
+      "auth-flows.cjs",
+      "auth-session-cookie.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/wallet\//.test(f) ||
+      /^services\/api-nest\/src\/compliance\/kyc\.controller\.ts$/.test(f),
+    scripts: ["wallet-kyc-session-auth.cjs"],
   },
   {
     test: (f) => /^tooling\/verify\//.test(f),

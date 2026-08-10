@@ -40,7 +40,18 @@ const precta = read("packages/ui/components/loop/PreCTA.tsx");
 const loopCopy = read("packages/ui/copy/ko/loop.ts");
 const daySvc = read("services/api-nest/src/loop/day-pulse.service.ts");
 const ticker = read("packages/ui/components/lux/LivePayoutTicker.tsx");
-const home = read("apps/web/app/page.tsx");
+/** PART9c — home slots may live in HomePageClient */
+let home = read("apps/web/app/page.tsx");
+for (const rel of [
+  "apps/web/app/HomePageClient.tsx",
+  "apps/web/app/_components/HomePageClient.tsx",
+  "apps/web/components/HomePageClient.tsx",
+]) {
+  if (fs.existsSync(path.join(root, rel))) {
+    home = `${home}\n${read(rel)}`;
+    break;
+  }
+}
 const dayWire = JSON.parse(
   read("packages/ui/canon/surfaces/day-pulse.wire.json") || "{}",
 );
@@ -61,7 +72,9 @@ for (const rel of [
   "packages/ui/components/loop/DayPulse.tsx",
   "packages/ui/components/loop/PreCTA.tsx",
   "apps/web/app/page.tsx",
+  "apps/web/app/HomePageClient.tsx",
 ]) {
+  if (!fs.existsSync(path.join(root, rel))) continue;
   const t = read(rel);
   if (/대기열|줄서기|queuePosition|fakeQueue/i.test(t)) {
     fails.push(`L4: fake queue UI forbidden in ${rel}`);

@@ -81,7 +81,7 @@ export function BalanceAwareHome({
           <p className="mt-1 text-sm text-lux-text-muted">
             {T.feed.sectionAffordableCount.replace("{n}", String(nAffordable))}
           </p>
-          <ul className="mt-3 space-y-3">
+          <ul className="lux-feed-grid mt-3">
             {listAffordable.map((o) => (
               <li key={o.id}>
                 <OpportunityCard opportunity={o} />

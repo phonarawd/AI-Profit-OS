@@ -545,7 +545,19 @@ for (const needle of [
   }
 }
 
-const homePage = read("apps/web/app/page.tsx");
+/** PART9c — BalanceAwareHome may mount in HomePageClient */
+let homePage = read("apps/web/app/page.tsx");
+for (const rel of [
+  "apps/web/app/HomePageClient.tsx",
+  "apps/web/app/_components/HomePageClient.tsx",
+  "apps/web/components/HomePageClient.tsx",
+]) {
+  const abs = path.join(root, rel);
+  if (fs.existsSync(abs)) {
+    homePage = `${homePage}\n${read(rel)}`;
+    break;
+  }
+}
 if (!homePage.includes("BalanceAwareHome")) {
   fails.push("apps/web home must mount BalanceAwareHome for §5.3a");
 }

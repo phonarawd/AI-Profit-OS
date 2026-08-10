@@ -82,7 +82,18 @@ for (const k of ["justSettled", "justReflected", "participantAmt", "forbiddenPhr
   if (!copy.includes(k)) fails.push(`T.ticker missing ${k}`);
 }
 
-const home = read("apps/web/app/page.tsx");
+/** PART9c — ticker/counter/DayPulse may mount in HomePageClient */
+let home = read("apps/web/app/page.tsx");
+for (const rel of [
+  "apps/web/app/HomePageClient.tsx",
+  "apps/web/app/_components/HomePageClient.tsx",
+  "apps/web/components/HomePageClient.tsx",
+]) {
+  if (fs.existsSync(path.join(root, rel))) {
+    home = `${home}\n${read(rel)}`;
+    break;
+  }
+}
 if (!home.includes("LivePayoutTicker")) {
   fails.push("home must mount LivePayoutTicker [A]");
 }

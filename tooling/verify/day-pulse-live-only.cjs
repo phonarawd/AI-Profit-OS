@@ -90,7 +90,18 @@ if (/counter_mode|ticker_mode|blended|demoTotal/i.test(ui)) {
   fails.push("DayPulse must not display G4 counter/ticker modes");
 }
 
-const home = read("apps/web/app/page.tsx");
+/** PART9c — DayPulse may live in HomePageClient (page.tsx thin entry) */
+let home = read("apps/web/app/page.tsx");
+for (const rel of [
+  "apps/web/app/HomePageClient.tsx",
+  "apps/web/app/_components/HomePageClient.tsx",
+  "apps/web/components/HomePageClient.tsx",
+]) {
+  if (fs.existsSync(path.join(root, rel))) {
+    home = `${home}\n${read(rel)}`;
+    break;
+  }
+}
 if (home && !home.includes("DayPulse")) {
   fails.push("home must mount DayPulse [A2]");
 }

@@ -5,6 +5,15 @@
 export const feed = {
   homeTitle: "오늘 벌 수 있는 기회",
   homeScanSub: "AI가 지금 시장을 스캔했어요",
+  /** §5.3 [B] HomePrincipalRail */
+  balanceLabel: "내 잔액",
+  balanceKrwApprox: "≈₩{amount}",
+  balanceUsdtPrimary: "{n} USDT",
+  balanceUsdtSecondary: "{n} USDT",
+  ctaDeposit: "입금",
+  /** §5.3 [D] */
+  todayPossibleProfitLabel: "오늘 가능한 수익 합계",
+  todayPossibleProfitUsdt: "+{n} USDT",
   sectionAffordable: "지금 참여 가능",
   sectionAffordableCount: "내 자본으로 가능한 기회 {n}개",
   sectionNearMiss: "조금 더 넣으면",
