@@ -11,6 +11,8 @@ export const ADAPTER_ADMIN_ROUTES = {
   matchingKpi: "adapters/matching-kpi",
   simulationS4: "adapters/simulation-s4",
   recordMatchAttempts: "adapters/match-attempts",
+  /** §0.10 U15 — unmatched ebay identity review queue (Ops-visible) */
+  identityReviewQueue: "adapters/identity-review-queue",
 } as const;
 
 export const ADAPTER_INGEST_ROUTES = {

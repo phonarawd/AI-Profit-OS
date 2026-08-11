@@ -153,8 +153,52 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
   }
 
   /**
+   * §0.10 — exact match 후 Asset Master / opportunity에 ebay image provenance 반영.
+   * host must be i.ebayimg.com · imageSource=ebay.
+   */
+  async applyEbayImageProvenance(input: {
+    assetId: string;
+    imageUrl: string;
+  }): Promise<{ ok: boolean; reason?: string }> {
+    if (!this.db.configured()) return { ok: false, reason: "DATABASE_URL unset" };
+    const assetId = String(input.assetId || "").trim();
+    const imageUrl = String(input.imageUrl || "").trim();
+    if (!assetId || assetId.startsWith("query:")) {
+      return { ok: false, reason: "invalid assetId" };
+    }
+    let host = "";
+    try {
+      host = new URL(imageUrl).hostname.toLowerCase();
+    } catch {
+      return { ok: false, reason: "invalid imageUrl" };
+    }
+    if (host !== "i.ebayimg.com" && !host.endsWith(".ebayimg.com")) {
+      return { ok: false, reason: "image host must be i.ebayimg.com" };
+    }
+
+    await this.db.query(
+      `UPDATE public.assets SET
+         image_url = $2,
+         image_source = 'ebay',
+         updated_at = now()
+       WHERE asset_id = $1`,
+      [assetId, imageUrl],
+    );
+    await this.db.query(
+      `UPDATE public.opportunities SET
+         asset_image_url = $2,
+         asset_image_source = 'ebay',
+         updated_at = now()
+       WHERE asset_id = $1`,
+      [assetId, imageUrl],
+    );
+    return { ok: true };
+  }
+
+  /**
    * Persist ebay|admin ingest listings to PG (preview E2E path reuse).
-   * amazon/yahoo → throw · query: asset placeholders skipped.
+   * amazon/yahoo → throw · query: placeholders must be resolved before call
+   * (identity match) — remaining query: rows are still skipped as safety guard.
    */
   async persistIngestListings(
     rawListings: unknown[],

@@ -47,6 +47,12 @@
       "copyKey": "T.admin.adaptersSimulationS4",
       "field": "adapterMatchFailureRate",
       "note": "§51.4 S4 ≤15% · GET /admin/adapters/simulation-s4"
+    },
+    {
+      "id": "identity_review_queue",
+      "role": "list",
+      "copyKey": null,
+      "note": "Engine §0.10 U15 · GET /admin/adapters/identity-review-queue · unmatched ebay identity · silent drop 0 · query: persist 0"
     }
   ],
   "forbidden": [
@@ -56,6 +62,8 @@
     "gender_branch",
     "photo_pixel_match",
     "non_brand_logo",
-    "sidebar_not_twelve"
+    "sidebar_not_twelve",
+    "query_placeholder_persist",
+    "unmatched_silent_drop"
   ]
 }

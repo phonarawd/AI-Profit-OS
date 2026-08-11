@@ -96,9 +96,13 @@ async function runTick(env: Env) {
       const marketId = MARKETPLACE_TO_MARKET_ID[marketplaceId];
       for (const item of result.items) {
         const id = `lst_ebay_${marketplaceId}_${item.itemId}`;
+        // assetId=query:* is a Nest-side identity hint only (§0.10).
+        // AdaptersAdminService.resolveEbayIngestListings substitutes real
+        // Asset Master ids (or enqueues unmatched). Never persist as-is.
         listings.push({
           id,
           assetId: `query:${query}`,
+          searchQuery: query,
           marketId,
           adapterId: ADAPTER_ID,
           marketplaceId,
@@ -114,6 +118,7 @@ async function runTick(env: Env) {
         observations.push({
           id: `obs_ebay_${marketplaceId}_${item.itemId}`,
           assetId: `query:${query}`,
+          searchQuery: query,
           source: ADAPTER_ID,
           marketplaceId,
           priceUsdt: item.priceValue,

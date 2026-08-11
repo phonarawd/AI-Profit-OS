@@ -312,7 +312,8 @@ function normalizeIngestListingsForPersist(rawListings, adapterId) {
     });
     const assetId = String(L.assetId ?? "");
     if (!assetId || assetId.startsWith("query:")) {
-      // preview E2E query placeholders — skip PG FK until Asset Master match
+      // Safety guard only — AdaptersAdminService must resolve via
+      // resolveEbayIngestListings first; unresolved query: never reaches PG.
       continue;
     }
     const price = L.priceUsdt != null ? String(L.priceUsdt) : null;

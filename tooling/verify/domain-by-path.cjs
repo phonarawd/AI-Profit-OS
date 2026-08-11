@@ -297,6 +297,24 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^workers\/ebay-adapter\//.test(f) ||
+      /^services\/market-intelligence\/src\/ebay-identity-match\.cjs$/.test(f) ||
+      /^services\/market-intelligence\/src\/(watch|card|bag)-match\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/adapters\//.test(f) ||
+      /^tooling\/verify\/ebay-identity-ingest\.cjs$/.test(f) ||
+      (/catalog-runtime-seed/.test(f) &&
+        (/services\/(market-intelligence|api-nest)\//.test(f) ||
+          /^tooling\/verify\//.test(f))),
+    scripts: [
+      "ebay-identity-ingest.cjs",
+      "adapter-matching-kpi.cjs",
+      "asset-image-surface.cjs",
+      "listing-legs-day1.cjs",
+      "catalog-runtime-seed.cjs",
+    ],
+  },
+  {
+    test: (f) =>
       (/^services\/api-nest\//.test(f) && /auth/i.test(f)) ||
       /packages\/.*jwt/i.test(f),
     scripts: [

@@ -56,6 +56,7 @@
     "verify:market-partner-adapters": "node tooling/verify/market-partner-adapters.cjs",
     "verify:market-partner-trust": "node tooling/verify/market-partner-trust.cjs",
     "verify:adapter-matching-kpi": "node tooling/verify/adapter-matching-kpi.cjs",
+    "verify:ebay-identity-ingest": "node tooling/verify/ebay-identity-ingest.cjs",
     "verify:simulation-gate": "node tooling/verify/simulation-gate.cjs",
     "verify:ai-feature-platform": "node tooling/verify/ai-feature-platform.cjs",
     "verify:shadow-replay-drift": "node tooling/verify/shadow-replay-drift.cjs",

@@ -40,6 +40,11 @@ export class AdaptersAdminController {
     });
   }
 
+  @Get(ADAPTER_ADMIN_ROUTES.identityReviewQueue)
+  identityReviewQueue() {
+    return this.adapters.identityReviewQueue();
+  }
+
   @Get(ADAPTER_ADMIN_ROUTES.list)
   list() {
     return this.adapters.listHealth();

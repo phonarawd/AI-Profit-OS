@@ -119,6 +119,26 @@ export default function Page() {
         </p>
       </section>
 
+      <section
+        className="mt-6 rounded-md border border-lux-border p-3"
+        data-testid="identity-review-queue"
+        data-surface="identity-review-queue"
+      >
+        <h2 className="text-sm font-medium">신원 미매칭 검토</h2>
+        <p className="mt-1 text-xs text-lux-text-muted">
+          Engine §0.10 · GET /api/v1/admin/adapters/identity-review-queue · eBay
+          listing이 Asset Master exact match에 실패하면 여기로 남깁니다 (조용히
+          버리지 않음 · query 자리표시자 저장 금지).
+        </p>
+        <p
+          className="mt-2 text-xs text-lux-text-muted"
+          data-field="identityReviewCount"
+          data-silent-drop="false"
+        >
+          검토 대기 항목은 Admin API identity-review-queue에서 확인합니다.
+        </p>
+      </section>
+
       <section className="mt-6">
         <h2 className="text-sm font-medium">수집기</h2>
         <ul className="mt-3 space-y-2">

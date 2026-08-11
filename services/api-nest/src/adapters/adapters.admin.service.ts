@@ -19,6 +19,8 @@ import {
   healthStatusFromKpi,
   isForbiddenAdapterId,
   isIngestableAdapterId,
+  resolveEbayIngestListings,
+  assertNoQueryAssetIds,
   simulationS4InputFromKpi,
 } from "./adapters.mi";
 import { InProcessEventBus } from "../events/in-process.bus";
@@ -75,6 +77,9 @@ type StoredCatalogItem = {
 const MAX_ATTEMPTS = 5000;
 const MAX_LISTINGS = 2000;
 const MAX_CATALOG = 2000;
+const MAX_IDENTITY_REVIEW = 2000;
+
+export type IdentityReviewQueueItem = Record<string, unknown>;
 
 @Injectable()
 export class AdaptersAdminService {
@@ -83,6 +88,8 @@ export class AdaptersAdminService {
   private attempts: StoredAttempt[] = [];
   private listings: StoredListing[] = [];
   private catalog: StoredCatalogItem[] = [];
+  /** §0.10 unmatched ebay identity — Ops-visible · silent drop 금지 */
+  private identityReview: IdentityReviewQueueItem[] = [];
 
   constructor(
     private readonly bus: InProcessEventBus,
@@ -237,12 +244,29 @@ export class AdaptersAdminService {
     return { attempt, kpi: this.toKpiResponse(this.computeKpi()) };
   }
 
+  /**
+   * §0.10 Admin/Ops surface — unmatched ebay identity review queue.
+   */
+  identityReviewQueue(): {
+    items: IdentityReviewQueueItem[];
+    count: number;
+    silentDrop: false;
+  } {
+    return {
+      items: [...this.identityReview],
+      count: this.identityReview.length,
+      silentDrop: false,
+    };
+  }
+
   async ingest(body: AdapterIngestBody): Promise<{
     ok: true;
     adapterId: string;
     accepted: number;
     matchAttemptsAccepted: number;
     listingsPersisted?: number;
+    identityMatched?: number;
+    identityUnmatchedQueued?: number;
   }> {
     const adapterId = String(body.adapterId ?? "");
     assertNotForbidden({ adapterId, source: adapterId });
@@ -311,6 +335,33 @@ export class AdaptersAdminService {
       this.trimCatalog();
     }
 
+    let listingsForPersist: unknown[] = Array.isArray(body.listings)
+      ? body.listings
+      : [];
+    let identityMatched = 0;
+    let identityUnmatchedQueued = 0;
+
+    // §0.10 — ebay ingest: resolve query:* → Asset Master exact id · unmatched → review queue
+    if (
+      adapterId === "ebay" &&
+      Array.isArray(body.listings) &&
+      body.listings.length > 0 &&
+      !body.dryRun
+    ) {
+      const resolved = resolveEbayIngestListings({
+        listings: body.listings,
+        now: observedAt,
+      });
+      assertNoQueryAssetIds(resolved.matched);
+      this.enqueueIdentityReview(resolved.unmatched);
+      identityMatched = resolved.matched.length;
+      identityUnmatchedQueued = resolved.unmatched.length;
+      listingsForPersist = resolved.matched;
+      if (resolved.matchAttempts.length > 0) {
+        this.recordMatchAttempts(resolved.matchAttempts, { adapterId: "ebay" });
+      }
+    }
+
     let matchAttemptsAccepted = 0;
     if (Array.isArray(body.matchAttempts) && body.matchAttempts.length > 0) {
       matchAttemptsAccepted = this.recordMatchAttempts(body.matchAttempts, {
@@ -324,16 +375,29 @@ export class AdaptersAdminService {
     let listingsPersisted = 0;
     if (
       this.catalogSeed &&
-      Array.isArray(body.listings) &&
-      body.listings.length > 0 &&
+      listingsForPersist.length > 0 &&
       (adapterId === "ebay" || adapterId === "admin") &&
       !body.dryRun
     ) {
       const persisted = await this.catalogSeed.persistIngestListings(
-        body.listings,
+        listingsForPersist,
         adapterId,
       );
       listingsPersisted = persisted.upserted;
+
+      if (adapterId === "ebay") {
+        for (const raw of listingsForPersist) {
+          if (!raw || typeof raw !== "object") continue;
+          const L = raw as Record<string, unknown>;
+          const assetId = typeof L.assetId === "string" ? L.assetId : "";
+          const imageUrl = typeof L.imageUrl === "string" ? L.imageUrl : "";
+          if (!assetId || assetId.startsWith("query:") || !imageUrl) continue;
+          await this.catalogSeed.applyEbayImageProvenance({
+            assetId,
+            imageUrl,
+          });
+        }
+      }
     }
 
     const row = this.toRow(adapterId, this.computeKpi(adapterId));
@@ -344,6 +408,8 @@ export class AdaptersAdminService {
       observedAt,
       dryRun: Boolean(body.dryRun),
       matchAttemptsAccepted,
+      identityMatched,
+      identityUnmatchedQueued,
     });
 
     return {
@@ -352,7 +418,30 @@ export class AdaptersAdminService {
       accepted,
       matchAttemptsAccepted,
       listingsPersisted,
+      identityMatched,
+      identityUnmatchedQueued,
     };
+  }
+
+  private enqueueIdentityReview(items: IdentityReviewQueueItem[]): void {
+    for (const item of items) {
+      const key = String(
+        item.externalItemId ?? item.listingId ?? item.id ?? "",
+      );
+      if (key) {
+        this.identityReview = this.identityReview.filter((x) => {
+          const xk = String(x.externalItemId ?? x.listingId ?? x.id ?? "");
+          return xk !== key;
+        });
+      }
+      this.identityReview.unshift({
+        ...item,
+        queuedAt: new Date().toISOString(),
+      });
+    }
+    if (this.identityReview.length > MAX_IDENTITY_REVIEW) {
+      this.identityReview = this.identityReview.slice(0, MAX_IDENTITY_REVIEW);
+    }
   }
 
   private computeKpi(adapterId?: string) {

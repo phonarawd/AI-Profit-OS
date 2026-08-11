@@ -1101,3 +1101,31 @@ export function normalizeIngestListingsForPersist(
   staleAt: string;
   raw: Record<string, unknown>;
 }>;
+
+/** Engine §0.10 — ebay identity match */
+export const EBAY_IMAGE_HOST: "i.ebayimg.com";
+export function isEbayImageHost(url: string | null | undefined): boolean;
+export function extractSearchQuery(listing: Record<string, unknown>): string;
+export function resolveEbayIngestListings(input: {
+  listings: unknown[];
+  masters?: unknown[];
+  now?: string;
+}): {
+  matched: Array<Record<string, unknown>>;
+  unmatched: Array<Record<string, unknown>>;
+  matchAttempts: Array<{
+    adapterId: string;
+    category?: string;
+    matched: boolean;
+    reason?: string;
+    gradeMismatch?: boolean;
+    at: string;
+  }>;
+  stats: { input: number; matched: number; unmatched: number };
+};
+export function assertNoQueryAssetIds(rows: unknown[]): true;
+export function buildUnmatchedEvidence(
+  listing: Record<string, unknown>,
+  reason: string,
+  extra?: Record<string, unknown>,
+): Record<string, unknown>;

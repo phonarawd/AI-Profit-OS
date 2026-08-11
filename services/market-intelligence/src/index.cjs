@@ -28,6 +28,7 @@ const matchStrictness = require("./match-strictness.cjs");
 const membership = require("./membership.cjs");
 const adapterMatchingKpi = require("./adapter-matching-kpi.cjs");
 const catalogRuntimeSeed = require("./catalog-runtime-seed.cjs");
+const ebayIdentityMatch = require("./ebay-identity-match.cjs");
 
 module.exports = {
   ...money,
@@ -55,4 +56,5 @@ module.exports = {
   ...membership,
   ...adapterMatchingKpi,
   ...catalogRuntimeSeed,
+  ...ebayIdentityMatch,
 };

@@ -106,7 +106,7 @@ todos:
     status: completed
   - id: engine-ebay-identity-match-ingest
     content: "[grok-4.5|256K] Redesign R1 dependency(U15) · watch-match/card-match/bag-match → AdaptersAdminService.ingest() 배선 · ebay-adapter `assetId:query:*` → Asset Master exact match 치환 · match시 imageSource=ebay+i.ebayimg.com persist · no-match=Admin review queue(silent drop 금지) · Day-1 ebay|admin 불변 · 1~26+E-R 재실행0 · R1 Home asset 인증의 blocking 선행 · verify:asset-image-surface/listing-legs-day1/adapter-matching-kpi 회귀 + ebay identity ingest assert"
-    status: pending
+    status: completed
   - id: redesign-r1-home-fact-state-contract
     content: "[grok-4.5|256K] Redesign R1 dependency · Money HomeMoneyRead(principal/count)+opportunity feed+growth public+session을 HomeReadModelV1 mapper 1곳으로 결합 · ledgerTotal=settlementCompletedTodayCount COUNT · todayPossibleProfitUsdt=Σ affordable expectedProfitUsdt(status=available∧compareReady) 서버 derived · loading|ready_empty|ready_data|stale|recoverable_error|blocked|unauthorized + domain FSM 분리 · reasonCode=domain.resource.reason · fake zero/static scan claim0 · schemas+SDK/API mapper · verify:home-state-truth/no-fake-zero-status 신설+CATALOG"
     status: pending
@@ -542,7 +542,7 @@ tooling/verify/
 
 **CLOSE 판정:** Engine Pre-UI Gate = **CLOSED** · UI PART0~9 CLOSED · File-Serial 다음 = **03 UI** (`trust-age-spotcheck`). completed Engine/Money(가산 포함) todo 재실행 **금지**.
 
-### 0.10 POST-UI follow-up — eBay identity-match ingest (v7.22.51 · U15 · 예측0 · 구현 대기)
+### 0.10 POST-UI follow-up — eBay identity-match ingest (v7.22.51 · U15 · CLOSED 2026-08-12)
 
 > **Owns:** 본 절 = Engine 가산 todo `engine-ebay-identity-match-ingest` SSOT.  
 > **발단:** UI preflight U15 / 마스터감사 — 실 eBay CDN 사진은 adapter가 fetch하나 DB 미도달.  
@@ -587,8 +587,8 @@ flowchart TD
 
 #### 0.10.3 실행 시점
 
-- **문서/트래킹:** 본 절 + YAML `pending` = **완료(본 채팅 Owns=file/track only · 구현코드 0)**
-- **구현 채팅:** founder 스케줄 또는 UI가 실사진 필요 시 · **한 채팅=본 todo only** · 03 UI PART 순서 **재정렬 0**
+- **CLOSED (2026-08-12):** `resolveEbayIngestListings` + Nest ingest 배선 + Admin `identity-review-queue` + `verify:ebay-identity-ingest` live · live Browse tick → `w_rolex_sub_126610ln` image_source=ebay · i.ebayimg.com listings≥3 · unmatched queue 가시(silent drop 0) · YAML `completed`
+- **다음 File-Serial:** `redesign-r1-home-fact-state-contract` only
 
 ## 0.0 시세 소스 잠금 (v7.13) — Signup-Ready + Margin UX + Capital Tiers
 

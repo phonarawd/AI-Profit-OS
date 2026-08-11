@@ -3,6 +3,26 @@
  */
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mi = require("@aipo/market-intelligence") as {
+  resolveEbayIngestListings: (input: {
+    listings: unknown[];
+    masters?: unknown[];
+    now?: string;
+  }) => {
+    matched: Array<Record<string, unknown>>;
+    unmatched: Array<Record<string, unknown>>;
+    matchAttempts: Array<{
+      adapterId: string;
+      category?: string;
+      matched: boolean;
+      reason?: string;
+      gradeMismatch?: boolean;
+      at: string;
+    }>;
+    stats: { input: number; matched: number; unmatched: number };
+  };
+  assertNoQueryAssetIds: (rows: unknown[]) => true;
+  isEbayImageHost: (url: string | null | undefined) => boolean;
+  EBAY_IMAGE_HOST: string;
   SIGNUP_READY_ADAPTERS: Array<{
     adapterId: string;
     worker: string;
@@ -151,3 +171,7 @@ export const evaluateSimulationS4 = mi.evaluateSimulationS4;
 export const simulationS4InputFromKpi = mi.simulationS4InputFromKpi;
 export const healthStatusFromKpi = mi.healthStatusFromKpi;
 export const evaluateSkuMatchAttempt = mi.evaluateSkuMatchAttempt;
+export const resolveEbayIngestListings = mi.resolveEbayIngestListings;
+export const assertNoQueryAssetIds = mi.assertNoQueryAssetIds;
+export const isEbayImageHost = mi.isEbayImageHost;
+export const EBAY_IMAGE_HOST = mi.EBAY_IMAGE_HOST;
