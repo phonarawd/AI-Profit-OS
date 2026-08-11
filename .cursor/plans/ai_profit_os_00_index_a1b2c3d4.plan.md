@@ -417,7 +417,7 @@ flowchart TD
 ### 1.4 헌법 확장 (22~28)
 - `22` — 레이아웃·5탭·시선 순서
 - `25` — ko copy·금지어
-- `26` — performance·device tier 수치
+- `26` — performance·device tier 수치 · **PO LOCK** = `.cursor/rules/peotteok-performance-target.mdc` (개발 PC ≠ 제품 baseline · GLOBAL AVERAGE→HIGH-END · 프리미엄 시각+생산 성능)
 - `27` — marketing·SEO
 - `28` — Lux-Fintech visual·motion (**G4 ticker/counter · §35**)
 

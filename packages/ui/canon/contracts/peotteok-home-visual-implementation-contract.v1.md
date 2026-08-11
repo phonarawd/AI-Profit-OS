@@ -256,8 +256,9 @@ AI 스캔 → 기회 발견 → 참여 매칭 → 진행 → 정산 완료
 
 | Do | Do not |
 |---|---|
-| Brand-approved static AVIF/WebP | WebGL / Three.js / 런타임 생성 마스코트 |
+| Brand-approved static AVIF/WebP (**기본·선호**) | Visual Master 없는 WebGL / Three.js · 런타임 생성 마스코트 |
 | `fetchPriority` above-fold 허용 | Illustration이 CTA contrast를 압도 |
+| 현재 Home Master = static LOCK | 기술명만으로 “영구 금지” 선언 후 Master를 싸보이게 재해석 (`peotteok-performance-target.mdc`) |
 
 ### 07.5 Visual weight
 
@@ -485,7 +486,7 @@ SSOT: `peotteok-light.specification.md` → runtime `lux-fintech.ts` + `lux-them
 | Radius | sm8 · md12 · lg16 · xl20 |
 | Shadow card | `0 1px 2px rgba(20,18,31,0.06), 0 4px 16px rgba(107,60,255,0.06)` |
 | Shadow soft | `0 1px 3px rgba(20,18,31,0.04)` |
-| Motion | CSS only · ≤200–300ms · count-up ❌ · particles ❌ |
+| Motion | CSS ≤200–300ms 기본 · count-up ❌ · gambling/jackpot particles ❌ · advanced motion은 예산+Master 조건부 |
 
 ---
 
@@ -543,8 +544,8 @@ SDK/Nest **호출 추가·변경 금지** (새 Fact 없으면 UI 숨김).
 3. Reference 숫자·차트·도넛·VIP·PayPal·「실행」·`내거래` 복원  
 4. `ledgerTotal` → USDT 표시  
 5. Fake Fact / mock opportunity empty fill  
-6. WebGL / Three.js Hero  
-7. Money count-up · dopamine particles  
+6. Visual Master 없는 WebGL / Three.js Hero (현재 Home LOCK = static · 변경=재승인+예산)  
+7. Money count-up · gambling dopamine / jackpot particles  
 8. IT jargon on user surface  
 9. Mobile geometry를 PC 축소로 최종 확정  
 10. PNG 픽셀 QA를 Truth로 사용  

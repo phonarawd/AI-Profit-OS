@@ -45,7 +45,7 @@ Backend Fact > Product Contract > IA > Implementation Contract > Visual Contract
 | New design-system package | peotteok-light only |
 | Pixel clone from PNG | Geometry Reference only |
 | Ad-hoc hex in JSX | Token SSOT |
-| Three.js / WebGL hero | Contract |
+| Three.js / WebGL hero | 현재 Home Master = static 선호·LOCK · 기술명 영구금지 아님 · `peotteok-performance-target.mdc` |
 | Mobile geometry final from PC shrink | §13 provisional |
 
 ## STEP 5 implementation queue (order · Gate 승인 후)

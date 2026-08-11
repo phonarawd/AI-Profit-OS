@@ -79,7 +79,7 @@
 |---|---|
 | `shadow.card` | `0 1px 2px rgba(20,18,31,0.06), 0 4px 16px rgba(107,60,255,0.06)` |
 | `shadow.soft` | `0 1px 3px rgba(20,18,31,0.04)` |
-| Glow / neon | **forbidden** |
+| Glow / neon | **uncontrolled neon aesthetic forbidden** · Approved Visual Master glow는 progressive enhancement + 예산으로만 (`peotteok-performance-target.mdc`) |
 
 ## Local visual states (Home)
 
@@ -105,9 +105,11 @@
 
 | Token | Value |
 |---|---|
-| Transitions | CSS only · ≤200–300ms typical |
-| `countUp` on balance/profit | **forbidden** on Home trust surfaces |
-| Particles / jackpot | **forbidden** |
+| Transitions | CSS ≤200–300ms typical (**기본**) · advanced motion = progressive enhancement |
+| `countUp` on balance/profit | **forbidden** on Home trust surfaces (윤리) |
+| Jackpot / gambling particles | **forbidden** (윤리) |
+| Decorative particles / WebGL / canvas | 기술명 영구금지 아님 · **static 선호** · Master+예산+§4 8조건 |
+| PO local slowness | `BLOCKED_LOCAL_*` — Visual Master 다운그레이드 사유 아님 |
 
 ## STEP 4.3 / STEP 5 notes
 

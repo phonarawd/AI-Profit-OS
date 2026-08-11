@@ -49,9 +49,18 @@ alwaysApply: true
 - Brand Kit 외 대체 마크·메탈헥스·아카이브 변형 재도입
 - `HomePageV2` 평행 홈 (PART9 `HomePageClient` 확장만)
 
+## Performance vs Visual (PO LOCK)
+
+- 제품 타깃 = **GLOBAL AVERAGE → HIGH-END** · PO 저사양 PC ≠ visual baseline  
+- Canon wire = Functional SSOT · Approved Visual Master = Visual SSOT — 성능 때문에 둘을 재작성·다운그레이드하지 않음  
+- 기본 전략 = static optimized artwork + 가벼운 구현 **선호** · WebGL/runtime 3D/canvas/blur/glow는 **기술명만으로 영구 금지하지 않음** (조건부 = `peotteok-performance-target.mdc` §4)  
+- 예산 충돌 = `VISUAL_PERFORMANCE_CONFLICT` 보고 후 PO 결정 · 일방 해소 금지  
+- 전문 = `.cursor/rules/peotteok-performance-target.mdc`
+
 ## UI 작업 시 필수
 
 1. Brand Kit + 토큰(출시=peotteok-light SPEC → STEP4 적용) 확인
 2. 해당 route Canon wire + Visual Contract 확인 (없으면 wire/contract 먼저)
 3. PNG는 Reference only · 레포 mockup 경로에 저장하지 않음(Approved Visual Master도 동일)
 4. 결함 = Canon/Contract/플랜/토큰 불일치만 (픽셀 불일치 ≠ 결함, 단 LOCK된 surface는 Visual Contract 불일치도 결함)
+5. 성능 이슈 시 Visual Master 품질을 먼저 깎지 말고 구현 최적화 · 로컬 OOM은 `BLOCKED_LOCAL_*`

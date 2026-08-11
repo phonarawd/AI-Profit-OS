@@ -1,6 +1,9 @@
 /**
  * Progressive Performance Escalation (PPE) ladder — audit §31–§36 / §47
- * Default = Level 0. Levels 3+ require measured bottleneck before use.
+ * Default = Level 0 (static HTML/CSS/SVG 선호 = 엔지니어링 최적화).
+ * Levels 3+ / Canvas / WebGL = 기술명만으로 영구 금지하지 않음.
+ * 조건: Approved Visual Master 실질 필요 + 측정 예산 + peotteok-performance-target.mdc §4.
+ * PO 저사양 PC ≠ 제품 baseline. Tier는 rendering path만 바꾸고 feature parity 유지.
  */
 
 export type PpeLevel = 0 | 1 | 2 | 3 | 4 | 5;
@@ -32,14 +35,18 @@ export const PPE_LEVELS = {
   4: {
     name: "canvas",
     default: false,
-    surfaces: "none Day-1 — dense sparkline / S-tier particle only",
-    requires: "semantic HTML fallback + reduced-motion path",
+    surfaces:
+      "dense viz when Visual Master needs it — prefer static/SVG first; gambling particles forever banned",
+    requires:
+      "semantic HTML fallback + reduced-motion + average-tier budget (peotteok-performance-target)",
   },
   5: {
     name: "webgl-webgpu",
     default: false,
-    surfaces: "none scoped — future high-density viz only",
-    trigger: "product decision + Canvas2D measured insufficient",
+    surfaces:
+      "not categorically forbidden — only when Visual Master cannot be met by static/optimized assets",
+    trigger:
+      "PO/product decision + measured Canvas2D insufficient + §4 eight conditions ALL true",
   },
 } as const;
 

@@ -209,8 +209,8 @@ Robot and Globe are **composition anchors**.
 | Do | Do not |
 |---|---|
 | **(v1.3) Brand-approved high-fidelity static illustration** — AI 생성 → 목업/브랜드 가이드 기반 프롬프트 → 육안 검수(금지 항목 0건 확인) → Brand Kit 등재(status: ready) | 방향성 없는 random illustration |
-| Static AVIF/WebP asset · `fetchPriority="high"`(above-the-fold이므로 lazy 금지) | random AI-generated character (검수 절차 생략) |
-| Static image only — Canvas/WebGL/Three.js/런타임 3D **여전히 금지** | random 3D model · Three.js / WebGL |
+| Static AVIF/WebP asset · `fetchPriority="high"`(above-the-fold이므로 lazy 금지) — **기본·선호 경로** | random AI-generated character (검수 절차 생략) |
+| **본 Home Visual Master(현재) = static composition** · WebGL/Three.js/런타임 3D는 기술명만으로 제품 영구 금지 아님(`peotteok-performance-target.mdc`) · **현재 surface LOCK에서는 static만 허용** (변경 = Visual Master 재승인 + 성능 예산 + §4 8조건) | random 3D model · 장식용 runtime 3D · Visual Master 없는 WebGL 도입 |
 
 | Robot tone | friendly · trustworthy · not humanoid worker · not trading bot |
 | Globe meaning | global opportunity symbol · not market chart · not financial prediction |
@@ -263,7 +263,7 @@ Money surface is a **trust surface**.
 - Balance 숫자 **count-up 애니메이션 금지**  
 - Profit **실시간 증가 연출 금지**  
 - Chart **성장 과장 그래프** · Fact 없는 spark 슬롯  
-- huge profit animation / jackpot / flashing green / particles / gambling patterns  
+- huge profit animation / jackpot / flashing green / **gambling dopamine particles** / gambling patterns  
 
 **Reuse:** `HomePrincipalRail` Adapt.
 
@@ -382,24 +382,29 @@ Hero mobile height **320–420px** · 무한 glow/neon/count-up 금지.
 
 ## 9. Home Performance Budget + Animation Lock (D)
 
+> PO LOCK: `.cursor/rules/peotteok-performance-target.mdc` — 개발 PC ≠ 제품 baseline · 프리미엄 시각 + 생산 성능.
+
 | 항목 | Budget |
 |---|---|
 | Desktop initial JS | Target **&lt; 300KB** (STEP4 측정) |
-| Hero | **Static asset only** · composition placeholder OK |
-| Chart | **Canvas / WebGL prohibited** · CSS/SVG spark OK |
-| Animation | **CSS transition only** |
+| Hero | **기본 = Brand-approved static asset** · composition placeholder OK · runtime 3D는 현재 Master 미허용 |
+| Chart | **기본 = CSS/SVG spark** · Canvas/WebGL은 기술명 영구금지 아님 · 본 Home에 series Fact 없으면 chart 자체 금지(C03) |
+| Animation | **기본 = CSS transition** · advanced motion은 progressive enhancement + 예산 |
 | Images | optimized · `ProductImage` lazy/priority |
-| Robot / Globe | **lazy loaded** · placeholder first |
+| Robot / Globe | **현재 = static optimized** · placeholder first |
 
-**Animation 금지:**
+**Animation / 연출 — 윤리 하드 금지 (기술 허용과 별개):**
 
 - money counting animation  
-- particle effects  
+- jackpot / gambling dopamine particle rewards  
 - flashing rewards  
-- gambling dopamine patterns  
-- Three.js / WebGL / 무거운 Lottie를 Hero에 기본 탑재  
 
-저사양(Phase0): web 1프로세스.
+**엔지니어링 선호 (절대 영구금지가 아님):**
+
+- Hero 기본 탑재로 Three.js / WebGL / 무거운 Lottie를 **먼저** 쓰지 말 것 — static으로 Master를 재현할 수 있으면 static  
+- 로컬 저사양 OOM만으로 Hero 품질을 깎지 말 것 (`BLOCKED_LOCAL_*`) · CI/대표 기기 측정 사용  
+
+Phase0 로컬: web 1프로세스 (`phase0-ram.mdc`) — 제품 Visual Master baseline과 무관.
 
 ---
 
@@ -424,7 +429,8 @@ Hero mobile height **320–420px** · 무한 glow/neon/count-up 금지.
 - PART9 API/SDK/세션 재구현  
 - HomePageV2  
 - PNG 레포 반입 · Pixel QA  
-- WebGL / 런타임 AI 생성 일러스트  
+- Visual Master 없는 WebGL/런타임 3D · 검수 없는 런타임 AI 생성 일러스트  
+- PO 저사양 PC 이유로 승인 Visual Master 다운그레이드  
 - 「내거래」라벨 유지  
 - 성공률% 도넛  
 - Admin/PWA/Infra 착수  

@@ -5,6 +5,11 @@ alwaysApply: true
 
 # Phase0 Low-Spec RAM (ADR-016)
 
+> **범위 = 이 워크스테이션의 로컬 개발 운영만.**  
+> 제품 시각/성능 baseline이 **아니다**.  
+> PO LOCK = `.cursor/rules/peotteok-performance-target.mdc`  
+> (`DEVELOPER MACHINE ≠ USER HARDWARE BASELINE` · 로컬 OOM/timeout = `BLOCKED_LOCAL_*` · Visual Master 다운그레이드 사유 아님)
+
 ## 머신 프로필 (이 워크스테이션)
 
 | 항목 | 실측 |

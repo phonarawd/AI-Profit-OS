@@ -32,6 +32,7 @@ Canon wire(3)과 Visual Contract(4)는 **분리 문서**다. 하나를 고쳐도
 2. 대상 컴포넌트 단위로 치수·색·타이포·spacing·상태를 측정해 `packages/ui/canon/contracts/<surface>.visual-contract.v1.md`로 추출한다.
 3. 원본 이미지 파일은 레포에 저장하지 않는다 — `docs/mockups/**` · `*mockup*.png` 금지는 불변(mockup-governance.mdc).
 4. Canon wire와 항목이 충돌하면 즉시 구현하지 말고 `VISUAL_FUNCTIONAL_CONTRACT_CONFLICT`로 분류해 그 컴포넌트만 보류하고, 나머지는 계속 진행한다.
+5. 승인 Visual Master가 평균 기기 성능 예산과 충돌하면 일방 단순화하지 말고 `VISUAL_PERFORMANCE_CONFLICT`로 증거·대안을 보고한다 (`peotteok-performance-target.mdc`). PO 저사양 로컬 실패만으로 Visual Master를 깎지 않는다 (`BLOCKED_LOCAL_*`).
 
 ## Component LOCK
 
@@ -75,3 +76,5 @@ Visual Master에 있는데 레포에 없는 자산 → Emoji·임의 아이콘·
 - 원본 Visual Master 이미지 파일 레포 커밋
 - 위 3건 이모지 결함을 아이콘 결정 없이 임의 라이브러리로 교체
 - Brand Kit `status:"ready"` 자산을 Visual Master 대조 없이 즉흥 배선(예: BrandMark 플레이스홀더 교체는 대상 자산 확인 후)
+- PO 개발 PC 느림만으로 승인 Visual Master 밀도·motion·artwork·hierarchy 다운그레이드
+- WebGL/runtime 3D/canvas를 기술명만으로 영구 금지 선언 후 Visual Master를 싸보이게 재해석 (조건부 허용 = `peotteok-performance-target.mdc` §4 · 도박형 particles/money count-up은 윤리 하드 금지 유지)

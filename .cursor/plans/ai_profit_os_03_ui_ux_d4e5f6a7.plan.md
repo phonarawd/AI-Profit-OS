@@ -2063,6 +2063,13 @@ export const objections = {
 
 ## 29. Performance · Responsive · Device-Tier (v5)
 
+> **PO LOCK (v7.22.x amend):** `.cursor/rules/peotteok-performance-target.mdc`  
+> 개발자 PC ≠ 제품 baseline · 타깃 = **GLOBAL AVERAGE → HIGH-END** · **PREMIUM VISUAL + PRODUCTION PERF**  
+> Canon wire = Functional SSOT · Visual Master = Visual SSOT — 성능으로 재작성·다운그레이드 금지  
+> WebGL/runtime 3D/canvas/blur/glow = 기술명 영구금지 아님 · **static optimized artwork 선호**(엔지니어링) · §4 8조건  
+> 로컬 OOM/timeout = `BLOCKED_LOCAL_*` · 예산 충돌 = `VISUAL_PERFORMANCE_CONFLICT` → PO  
+> Tier S/A/B = **rendering path only** (feature parity) · B-tier degrade ≠ “싸보이게 재설계”
+
 | 피드백 | 판정 | 플랜 반영 |
 |--------|------|-----------|
 | 320px~4K 반응형 | ✅ 동의 | breakpoint + container SSOT |

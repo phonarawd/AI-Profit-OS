@@ -1,0 +1,133 @@
+---
+description: ADR-013/016 확장 — PEOTTEOK PERFORMANCE TARGET PO LOCK. 개발 PC≠제품 기준 · 프리미엄 시각+생산 성능.
+alwaysApply: true
+---
+
+# PEOTTEOK PERFORMANCE TARGET — PO LOCK
+
+> **Status: `CLOSED`** — contradiction check PASS (active absolute tech-ban wording = 0).  
+> performance benchmark / device matrix 자동 착수 **금지** — 승인 Visual Master treatment 이후 PO 지시 시에만.
+
+> **개발자 머신 ≠ 유저 하드웨어 기준.**  
+> 제품 타깃 = **GLOBAL AVERAGE → HIGH-END**.  
+> **PREMIUM VISUAL QUALITY + PRODUCTION PERFORMANCE**를 함께 푼다.  
+> PO 저사양 PC에 맞춰 제품을 싸보이게 만들지 않는다.
+
+전문 SSOT = 본 규칙 · 구현 사다리 = `packages/ui/performance/` · 로컬 개발 제약 = `phase0-ram.mdc`(제품 시각 기준과 **분리**).
+
+## 0. 경계 (퍼뜩 특화)
+
+퍼뜩은 Product UI·Canon wire·Visual Master가 이미 살아 있다.
+
+| 보호 | 의미 |
+|---|---|
+| Canon wire | **FUNCTIONAL SSOT** — 성능 때문에 기능/계약 재작성 금지 |
+| Approved Visual Master / Visual Contract | **VISUAL SSOT** — 성능 때문에 승인 시각을 조용히 다운그레이드 금지 |
+| 로컬 OOM·timeout·느린 Storybook | **개발환경 증거** — 자동으로 제품 결함·시각 다운그레이드 사유 아님 |
+
+성능 최적화로 **발명·재작성 금지:** API/SDK/DB 필드 · settlement/ledger · provider · AI 권위 · wallet 의미 · partner 관계.
+
+시각 목표가 첫 구현에서 비싸면: **구현을 먼저 최적화**. Visual Master를 일방 재설계하지 않는다.  
+평균 기기 예산을 진짜로 못 맞추면 `VISUAL_PERFORMANCE_CONFLICT`로 증거·대안을 보고하고 **PO 결정**을 기다린다.
+
+## 1. TARGET USER HARDWARE
+
+Primary production target: **GLOBAL AVERAGE → HIGH-END**
+
+지원 범위: Windows PC/laptop · macOS · Android · iPhone · 일반 디스플레이 밀도 · 일반 refresh-rate class.
+
+**PO 현재 개발 PC를 visual-design / product-performance baseline으로 쓰지 않는다.**
+
+## 2. 로컬 개발 한계 분류
+
+다음이 로컬에서만 재현되면 제품 결함으로 자동 승격하지 않는다:
+
+- OOM · timeout · slow build · slow Storybook/dev server  
+- analyzer failure · local screenshot slowness · local rendering instability  
+
+표시:
+
+| 코드 | 언제 |
+|---|---|
+| `BLOCKED_LOCAL_ENVIRONMENT` | 저사양/로컬 환경으로 측정·빌드 불가 |
+| `BLOCKED_LOCAL_OOM` | 로컬 메모리 고갈 |
+
+이들은 **자동으로** 제품 결함 · Visual Master 품질 하락 사유 · 승인 artwork 제거 사유 · 저사양 하드웨어용 재설계 사유가 **아니다**.
+
+신뢰 가능한 성능 증거가 로컬에서 안 나오면 **CI / production-like browser** 측정을 사용한다.
+
+## 3. PERFORMANCE PHILOSOPHY
+
+목표 = **프리미엄 시각 품질 + 생산 성능**.
+
+승인된 시각 품질을 지워서 성능을 “해결”하지 않는다. **엔지니어링 최적화 우선:**
+
+- optimized static assets · responsive image · modern compressed formats · correct sizing  
+- lazy loading (적절할 때) · route/code splitting · 불필요 JS/DOM 최소화  
+- controlled animation lifecycle · transform/opacity motion  
+- 불필요 re-render 감소 · GPU-conscious effects · caching  
+- progressive enhancement · graceful degradation  
+
+## 4. HEAVY VISUAL TECHNOLOGY (절대 금지 → 조건부)
+
+다음을 **기술 이름만으로 영구 금지하지 않는다** (PO 저사양 PC 때문이 아님):
+
+- WebGL · runtime 3D · canvas · blur · glow · advanced motion · richer effects  
+
+**기본 전략:** static optimized artwork + 가벼운 구현을 **선호**한다.  
+이 선호는 **엔지니어링 최적화 규칙**이지, visual-quality 다운그레이드 규칙이 아니다.
+
+고비용 효과는 **아래 ALL이 참일 때만**:
+
+1. APPROVED Visual Master를 실질적으로 개선한다  
+2. 장식용 엔지니어링 과시가 아니다  
+3. 전 세계 평균급 타깃에서 응답성이 유지된다  
+4. 핵심 내비·머니 정보가 빠르다  
+5. 접근성이 유지된다  
+6. 모바일 발열/배터리 영향이 허용 범위다  
+7. 실패/저하 시에도 핵심 UX가 깨지지 않는다  
+8. 더 단순한 static/optimized asset으로 동일 제품 가치를 못 낸다  
+
+**제품 윤리 하드 금지는 유지** (기술 허용과 별개):
+
+- money count-up · jackpot/gambling dopamine · flashing rewards  
+- fake realtime / guaranteed profit / geo performance claim  
+
+## 5. DEVICE-TIER PRINCIPLE
+
+**CORE UX / INFORMATION / FUNCTION**은 평균 타깃 티어에서도 완전·정확해야 한다:
+
+Home · Opportunities · Profit/settlement · Wallet · Auth · KYC/profile · AI Coach(퍼뜩) · money states · errors/warnings/loading.
+
+고사양만 **비필수** progressive enhancement 가능 (더 풍부한 motion · 고해상 장식 에셋 · lighting/depth · 고 refresh 애니메이션).
+
+고사양 capability가 **절대 바꾸면 안 되는 것:**
+
+product truth · money values · AI authority · functional availability · navigation · required warnings · transaction semantics.
+
+Tiering = **rendering path만** 변경 (`ppe-ladder.ts` `TIER_FEATURE_PARITY`).
+
+## 6. PERFORMANCE BASELINE RULE
+
+“average device”를 PO 머신에서 정의하지 않는다.
+
+정식 성능 예산·테스트 매트릭스는 **performance-baseline phase**에서 글로벌 기기/브라우저 현실을 조사해 PO 승인한다. Visual Master 작업 중 모델을 발명하지 않는다.
+
+대표 클래스(모델 확정은 후속): average Windows · average macOS · average Android · upper-mid/high Android · average iPhone · high-end iPhone.
+
+## 7. FINAL GOVERNING PRINCIPLES
+
+1. **DEVELOPER MACHINE ≠ USER HARDWARE BASELINE**  
+2. **GLOBAL AVERAGE → HIGH-END = PRODUCT TARGET RANGE**  
+3. **PREMIUM VISUAL QUALITY + PRODUCTION PERFORMANCE** 동시 해결  
+4. PO 현재 PC에 제품을 맞추지 않는다  
+5. 핵심 UX에 고사양을 요구하지 않는다  
+6. 측정 증거 + PO 승인 없이 승인 시각 품질을 깎지 않는다  
+
+## 에이전트 금지
+
+- 로컬 느림/OOM만으로 Visual Master·밀도·motion·artwork를 다운그레이드  
+- functional canon/백엔드 변경으로 “렌더 성능” 해결  
+- WebGL/3D/canvas/blur/glow를 기술명만으로 영구 금지 선언(§4 하드 윤리 제외)  
+- `VISUAL_PERFORMANCE_CONFLICT`를 PO 없이 일방 해소  
+- Phase0 로컬 제약을 제품 시각 baseline으로 혼동  
