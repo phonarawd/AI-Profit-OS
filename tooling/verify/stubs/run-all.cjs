@@ -71,6 +71,8 @@ const live = [
   "ai-lane-router.cjs",
   "fact-freshness.cjs",
   "answer-trace.cjs",
+  "conversation-state-bounded.cjs",
+  "reference-resolution.cjs",
   // P0-2 (Engine Final Re-Verification Audit) — previously implemented but
   // never enforced by verify:gate; wired in so a future regression fails CI.
   "user-opportunity-feed.cjs",

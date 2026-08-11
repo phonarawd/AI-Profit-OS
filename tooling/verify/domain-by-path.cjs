@@ -144,6 +144,27 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/ai-platform\/src\/(reference-resolver|conversation-state|coach-prompt)\.cjs$/.test(
+        f,
+      ) ||
+      /^services\/memory-service\/src\/(preference-memory|memory)\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/ai\/(coach\.orchestrator|fact-tool\.service|conversation-state\.service|memory\.service|ai\.engine)\.ts$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/(reference-resolution|conversation-state-bounded)\.cjs$/.test(
+        f,
+      ),
+    scripts: [
+      "reference-resolution.cjs",
+      "conversation-state-bounded.cjs",
+      "ai-coach-fact-only.cjs",
+      "ai-coach-no-autonomy.cjs",
+      "ai-general-no-money-tools.cjs",
+      "age-tone-surfaces.cjs",
+    ],
+  },
+  {
+    test: (f) =>
       /packages\/ui\/components\/kyc\//.test(f) ||
       /packages\/ui\/copy\/ko\/kyc\.ts/.test(f) ||
       /packages\/ui\/canon\/surfaces\/kyc-/.test(f) ||

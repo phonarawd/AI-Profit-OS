@@ -9,6 +9,7 @@ const MEMORY_KINDS = Object.freeze([
   "session_summary",
   "long_term",
   "help_chunk",
+  "preference",
   "other",
 ]);
 

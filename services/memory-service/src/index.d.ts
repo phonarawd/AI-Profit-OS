@@ -4,6 +4,7 @@ export const MEMORY_KINDS: readonly [
   "session_summary",
   "long_term",
   "help_chunk",
+  "preference",
   "other",
 ];
 export const FORBIDDEN_MEMORY_MONEY_KEYS: readonly [
@@ -30,6 +31,31 @@ export function assertNoMemoryMoneyKeys(
 ): void;
 export function buildMemoryRecord(input?: object): MemoryRecord;
 export function memoryRecentRedisKey(userId: string): string;
+
+export const PREFERENCE_KEY_WHITELIST: Readonly<
+  Record<string, readonly string[]>
+>;
+export function isAllowedPreference(
+  preferenceKey: string,
+  value: string,
+): boolean;
+export function matchNormalizedPreference(userText: string): {
+  readonly preferenceKey: string;
+  readonly value: string;
+  readonly content: string;
+} | null;
+export function buildPreferenceAppendInput(match: {
+  preferenceKey: string;
+  value: string;
+  content: string;
+}): {
+  readonly kind: "preference";
+  readonly content: string;
+  readonly metadata: Readonly<Record<string, unknown>>;
+};
+export function assertPreferenceMetadata(
+  metadata: Record<string, unknown>,
+): void;
 export function assertEmbedding(vec: unknown): number[];
 export function cosineSimilarity(a: number[], b: number[]): number;
 export function rankByCosine(

@@ -9,16 +9,22 @@ import { AiLogsAdminService } from "./ai-logs.admin.service";
 import {
   assertNoTwinMoneyKeys,
   buildCoachMessages,
+  buildPreferenceAppendInput,
   classifyLane,
+  extractResultRefFromFacts,
   guardAnswer,
   G_BUSY_TEMPLATE,
+  matchNormalizedPreference,
   pickChips,
   P_REFRESH_TEMPLATE,
+  referencePromptBlock,
   renderFactAnswer,
+  resolveResultReference,
   routeAssistant,
   S_REFUSE_TEMPLATE,
   shouldCallLlm,
   shapeByTone,
+  type ResultReferenceResolution,
 } from "./ai.engine";
 import { AI_EVENTS } from "./ai.events";
 import { ConversationStateService } from "./conversation-state.service";
@@ -26,6 +32,11 @@ import { FactToolService } from "./fact-tool.service";
 import { LlmAdapterService } from "./llm.adapter.service";
 import { MemoryService } from "./memory.service";
 import { UserTwinService } from "./user-twin.service";
+
+const REF_CLARIFY_TEMPLATE =
+  "어떤 항목을 말씀하시는지 확실하지 않아요. 목록에서 번호를 알려 주세요.";
+const REF_UNAVAILABLE_TEMPLATE =
+  "지금 대화에서 참조할 수 있는 이전 결과가 없어요. 다시 조회해 주세요.";
 
 export type CoachChatInput = {
   text: string;
@@ -109,11 +120,19 @@ export class CoachOrchestrator {
       .map((m) => m.id)
       .filter((id): id is string => Boolean(id));
 
-    const { state: convState } = await this.convState.createOrLoad(
+    let { state: convState } = await this.convState.createOrLoad(
       userId,
       input.conversationId,
     );
     const history = this.convState.historyMessages(convState);
+
+    // Engine §47.16.2 reference-resolution — deterministic, hint-only.
+    // resultRef ids are NEVER treated as authorization.
+    const referenceResolution = resolveResultReference({
+      text,
+      resultRefs: convState.resultRefs || [],
+    }) as ResultReferenceResolution;
+    const referenceLine = referencePromptBlock(referenceResolution)?.line ?? null;
 
     let route = routeAssistant({
       text,
@@ -140,8 +159,14 @@ export class CoachOrchestrator {
         answer_path: answerPath,
         tools_called: toolsCalled,
         conversation_id: convState.conversationId,
+        reference_status: referenceResolution.status,
       },
     };
+
+    const unresolvedRef =
+      referenceResolution.status === "ambiguous" ||
+      referenceResolution.status === "not_found" ||
+      referenceResolution.status === "unavailable";
 
     if (lane === "S") {
       answerText = shapeByTone(twin?.toneBand, S_REFUSE_TEMPLATE.text);
@@ -150,12 +175,36 @@ export class CoachOrchestrator {
       providerId = "none";
       providerEffective = "none";
       toolsCalled = [];
+    } else if (unresolvedRef && referenceResolution.status !== "none") {
+      // Do not let the model guess a candidate when resolution failed.
+      answerText =
+        referenceResolution.status === "unavailable"
+          ? REF_UNAVAILABLE_TEMPLATE
+          : REF_CLARIFY_TEMPLATE;
+      answerPath = "template";
+      providerId = "none";
+      providerEffective = "none";
+      toolsCalled = [];
+      lane = lane === "S" ? "S" : "P";
     } else if (lane === "P") {
-      const loaded = await this.facts.loadTools(userId, toolsCalled, {
+      const executionId =
+        referenceResolution.status === "resolved" &&
+        referenceResolution.type === "executions" &&
+        referenceResolution.id
+          ? referenceResolution.id
+          : null;
+      let toolsForLoad = [...toolsCalled];
+      if (executionId && !toolsForLoad.includes("getExecution")) {
+        toolsForLoad = [...toolsForLoad, "getExecution"];
+      }
+      // Ownership re-verified inside FactToolService (user_id + id).
+      const loaded = await this.facts.loadTools(userId, toolsForLoad, {
         query: text,
+        executionId,
       });
       factsUsed = loaded.facts;
       toolsCalled = loaded.toolsCalled;
+      convState = await this.persistResultRefsFromFacts(convState, factsUsed);
 
       route = routeAssistant({
         text,
@@ -179,6 +228,8 @@ export class CoachOrchestrator {
           facts: factsUsed,
           memories,
           history,
+          referenceResolution,
+          referencePromptLine: referenceLine,
         });
         const llmOut = await this.llm.chat({
           messages: [...messages],
@@ -216,6 +267,8 @@ export class CoachOrchestrator {
         facts: [],
         memories,
         history,
+        referenceResolution,
+        referencePromptLine: referenceLine,
       });
       const llmOut = await this.llm.chat({
         messages: [...messages],
@@ -254,6 +307,7 @@ export class CoachOrchestrator {
       );
       factsUsed = loaded.facts;
       toolsCalled = loaded.toolsCalled;
+      convState = await this.persistResultRefsFromFacts(convState, factsUsed);
       answerText = loaded.stale
         ? P_REFRESH_TEMPLATE.text
         : renderFactAnswer(factsUsed, { toneBand: twin?.toneBand });
@@ -294,10 +348,11 @@ export class CoachOrchestrator {
       yield { event: "chunk", data: { text: answerText } };
     }
 
-    // Engine §47.16.2 — session-scoped working state only (Redis). This is
-    // NOT durable memory: no ai_memory write happens here, and structured
-    // deictic-reference resolution ("그중 첫 번째는") is intentionally out of
-    // scope for this slice (tracked separately as the next queued todo).
+    // Engine §47.16.2 — durable preference promotion (narrow allowlist only).
+    // Raw utterance is never stored; content is a server template.
+    await this.maybeAppendNormalizedPreference(userId, text);
+
+    // Session-scoped working state (Redis) — turns + hint-only resultRefs.
     await this.convState.appendTurns(convState, [
       { role: "user", text, lane },
       { role: "assistant", text: answerText, lane },
@@ -350,6 +405,53 @@ export class CoachOrchestrator {
       if (ev.event === "done") done = ev.data;
     }
     return { answer_text: text, ...(done || {}) };
+  }
+
+  /**
+   * Save hint-only resultRef snapshots from Fact payloads (not authorization).
+   */
+  private async persistResultRefsFromFacts(
+    state: Awaited<
+      ReturnType<ConversationStateService["createOrLoad"]>
+    >["state"],
+    facts: object[],
+  ) {
+    let next = state;
+    const execRef = extractResultRefFromFacts(facts, "executions");
+    if (execRef) {
+      next = await this.convState.rememberResultRef(next, {
+        type: execRef.type,
+        ids: [...execRef.ids],
+        aliases: { ...execRef.aliases },
+      });
+    }
+    const oppRef = extractResultRefFromFacts(facts, "opportunities");
+    if (oppRef) {
+      next = await this.convState.rememberResultRef(next, {
+        type: oppRef.type,
+        ids: [...oppRef.ids],
+        aliases: { ...oppRef.aliases },
+      });
+    }
+    return next;
+  }
+
+  private async maybeAppendNormalizedPreference(
+    userId: string,
+    userText: string,
+  ) {
+    const match = matchNormalizedPreference(userText);
+    if (!match) return;
+    try {
+      const payload = buildPreferenceAppendInput(match);
+      await this.memory.append(userId, {
+        kind: payload.kind,
+        content: payload.content,
+        metadata: { ...payload.metadata },
+      });
+    } catch {
+      /* preference append must never fail the coach turn */
+    }
   }
 }
 

@@ -9,6 +9,7 @@ import { UpstashRedisService } from "../redis/upstash";
 import {
   assertEmbedding,
   assertNoMemoryMoneyKeys,
+  assertPreferenceMetadata,
   buildMemoryRecord,
   DEFAULT_MODEL_ID,
   EMBEDDING_DIM,
@@ -37,6 +38,11 @@ export class MemoryService {
     let rec;
     try {
       if (input.metadata) assertNoMemoryMoneyKeys(input.metadata);
+      if (input.kind === "preference") {
+        assertPreferenceMetadata(
+          (input.metadata || {}) as Record<string, unknown>,
+        );
+      }
       rec = buildMemoryRecord({
         userId,
         kind: input.kind,

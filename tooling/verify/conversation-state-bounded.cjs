@@ -182,19 +182,19 @@ if (!hook.includes("conversationId")) {
   fails.push("usePeotteokChat.ts must track and forward conversationId");
 }
 
-// --- Scope guard: this slice must NOT pull forward later §47.16 slices ---
-if (/resultRef/i.test(svc) || /resultRef/i.test(orch)) {
-  fails.push("conv-state slice must not implement resultRef (belongs to reference-resolution slice)");
-}
-if (/this\.memory\.append/.test(orch)) {
-  fails.push("conv-state slice must not wire durable memory.append (belongs to reference-resolution slice)");
+// --- Scope guard: routing/scope/numeric remain later File-Serial slices ---
+// resultRef + preference memory.append are owned by reference-resolution
+// (wired in CoachOrchestrator). ConversationStateService itself must stay
+// free of durable memory writes.
+if (/this\.memory\.append/.test(svc) || /MemoryService/.test(svc)) {
+  fails.push("ConversationStateService must not own durable memory.append");
 }
 const routerSrc = read("services/ai-platform/src/assistant-router.cjs");
 if (/EXECUTION_PATTERNS|OFF_TOPIC_PATTERNS/.test(routerSrc)) {
-  fails.push("conv-state slice must not pull forward routing-coverage/scope-guard patterns");
+  fails.push("conversation-state verify must not pull forward routing-coverage/scope-guard patterns");
 }
 if (fs.existsSync(path.join(root, "services/ai-platform/src/numeric-grounding.cjs"))) {
-  fails.push("conv-state slice must not pull forward the numeric-grounding module");
+  fails.push("conversation-state verify must not pull forward the numeric-grounding module");
 }
 
 const pkg = read("package.json");

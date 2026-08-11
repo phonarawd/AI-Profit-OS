@@ -1,7 +1,9 @@
 /**
  * ConversationStateService — Engine §47.16.2
- * Redis-only working state · session-scoped · NEVER promoted to durable
- * ai_memory here (reference-resolution slice's job, not this one).
+ * Redis-only working state · session-scoped.
+ * resultRefs are hint-only snapshots (authorization NEVER).
+ * Durable ai_memory preference append is owned by CoachOrchestrator
+ * (reference-resolution), not this service.
  *
  * Security contract (PO-locked 2026-08-12):
  * - Redis key binds userId + conversationId — a conversationId alone can
@@ -25,12 +27,19 @@ import {
   effectiveTtlSec,
   isWithinAbsoluteLifetime,
   newConversationId,
+  rememberResultRef,
+  type ConversationResultRef,
   type ConversationState,
   type ConversationTurn,
   type ConversationTurnInput,
 } from "./ai.engine";
 
-export type { ConversationState, ConversationTurn, ConversationTurnInput };
+export type {
+  ConversationResultRef,
+  ConversationState,
+  ConversationTurn,
+  ConversationTurnInput,
+};
 
 @Injectable()
 export class ConversationStateService {
@@ -141,5 +150,17 @@ export class ConversationStateService {
       role: string;
       content: string;
     }>;
+  }
+
+  /**
+   * Persist hint-only resultRef snapshot into working-state (not authorization).
+   */
+  async rememberResultRef(
+    state: ConversationState,
+    ref: { type: string; ids: string[]; aliases?: Record<string, string> },
+  ): Promise<ConversationState> {
+    const next = rememberResultRef(state, ref) as ConversationState;
+    await this.save(next);
+    return next;
   }
 }

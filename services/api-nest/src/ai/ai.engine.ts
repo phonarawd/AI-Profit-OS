@@ -80,6 +80,11 @@ export const assertTwinNotUsedForMoneyAnswer =
 
 export const buildMemoryRecord = memory.buildMemoryRecord;
 export const assertNoMemoryMoneyKeys = memory.assertNoMemoryMoneyKeys;
+export const matchNormalizedPreference = memory.matchNormalizedPreference;
+export const buildPreferenceAppendInput = memory.buildPreferenceAppendInput;
+export const assertPreferenceMetadata = memory.assertPreferenceMetadata;
+export const isAllowedPreference = memory.isAllowedPreference;
+export const PREFERENCE_KEY_WHITELIST = memory.PREFERENCE_KEY_WHITELIST;
 export const memoryRecentRedisKey = memory.memoryRecentRedisKey;
 export const assertEmbedding = memory.assertEmbedding;
 export const toPgVectorLiteral = memory.toPgVectorLiteral;
@@ -92,11 +97,20 @@ export type ConversationTurn = import("@aipo/ai-platform").ConversationTurn;
 export type ConversationTurnInput =
   import("@aipo/ai-platform").ConversationTurnInput;
 export type ConversationState = import("@aipo/ai-platform").ConversationState;
+export type ConversationResultRef =
+  import("@aipo/ai-platform").ConversationResultRef;
+export type ResultReferenceResolution =
+  import("@aipo/ai-platform").ResultReferenceResolution;
 export const newConversationId = ai.newConversationId;
 export const conversationStateRedisKey = ai.conversationStateRedisKey;
 export const buildConversationState = ai.buildConversationState;
 export const appendTurn = ai.appendTurn;
+export const rememberResultRef = ai.rememberResultRef;
 export const assertStateOwnership = ai.assertStateOwnership;
 export const isWithinAbsoluteLifetime = ai.isWithinAbsoluteLifetime;
 export const effectiveTtlSec = ai.effectiveTtlSec;
 export const buildHistoryMessages = ai.buildHistoryMessages;
+export const resolveResultReference = ai.resolveResultReference;
+export const referencePromptBlock = ai.referencePromptBlock;
+export const extractResultRefFromFacts = ai.extractResultRefFromFacts;
+export const normalizeResultRefs = ai.normalizeResultRefs;

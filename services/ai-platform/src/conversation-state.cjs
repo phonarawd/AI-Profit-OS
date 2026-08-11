@@ -1,13 +1,19 @@
 /**
  * Conversation working-state — Engine §47.16.2
- * Session-scoped only · Redis-backed(Nest) · NEVER promoted to durable
- * ai_memory here (that is reference-resolution slice's job).
+ * Session-scoped only · Redis-backed(Nest).
+ * resultRefs = hint-only snapshots (authorization NEVER).
+ * Durable ai_memory preference promotion is orchestrator-owned
+ * (reference-resolution), not performed inside this module.
  * Pure functions only — Nest owns Redis I/O + config values.
  */
 
 "use strict";
 
 const crypto = require("crypto");
+const {
+  normalizeResultRefs,
+  upsertResultRef,
+} = require("./reference-resolver.cjs");
 
 /** Sliding window cap — oldest turns drop first */
 const MAX_TURNS = 8;
@@ -67,6 +73,7 @@ function normalizeTurns(turns) {
  * @param {string} [input.createdAt]
  * @param {string} [input.lastTurnAt]
  * @param {object[]} [input.turns]
+ * @param {object[]} [input.resultRefs]
  */
 function buildConversationState(input = {}) {
   const userId = String(input.userId || "").trim();
@@ -81,6 +88,7 @@ function buildConversationState(input = {}) {
     createdAt,
     lastTurnAt: input.lastTurnAt || createdAt,
     turns: normalizeTurns(input.turns),
+    resultRefs: normalizeResultRefs(input.resultRefs),
   });
 }
 
@@ -104,6 +112,23 @@ function appendTurn(state, turn) {
     createdAt: state?.createdAt,
     lastTurnAt: now,
     turns: nextTurns,
+    resultRefs: state?.resultRefs,
+  });
+}
+
+/**
+ * Persist a hint-only resultRef snapshot (does not authorize tool access).
+ * @param {object} state
+ * @param {{type:string, ids:string[], aliases?:Record<string,string>}} ref
+ */
+function rememberResultRef(state, ref) {
+  return buildConversationState({
+    userId: state?.userId,
+    conversationId: state?.conversationId,
+    createdAt: state?.createdAt,
+    lastTurnAt: state?.lastTurnAt,
+    turns: state?.turns,
+    resultRefs: upsertResultRef(state?.resultRefs, ref),
   });
 }
 
@@ -185,6 +210,7 @@ module.exports = {
   conversationStateRedisKey,
   buildConversationState,
   appendTurn,
+  rememberResultRef,
   assertStateOwnership,
   isWithinAbsoluteLifetime,
   effectiveTtlSec,

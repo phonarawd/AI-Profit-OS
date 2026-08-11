@@ -49,7 +49,7 @@ export class FactToolService {
   async loadTools(
     userId: string,
     tools: string[],
-    opts: { query?: string } = {},
+    opts: { query?: string; executionId?: string | null } = {},
   ): Promise<{
     facts: ReturnType<typeof buildFactCard>[];
     toolsCalled: FactToolName[];
@@ -64,7 +64,7 @@ export class FactToolService {
     const toolsCalled: FactToolName[] = [];
 
     for (const tool of list) {
-      const loaded = await this.loadOne(userId, tool, opts.query);
+      const loaded = await this.loadOne(userId, tool, opts);
       toolsCalled.push(loaded.tool);
       for (const raw of loaded.facts) {
         facts.push(buildFactCard(raw));
@@ -82,8 +82,12 @@ export class FactToolService {
   async loadOne(
     userId: string,
     tool: FactToolName,
-    query?: string,
+    opts: { query?: string; executionId?: string | null } | string = {},
   ): Promise<FactToolLoadResult> {
+    // Backward-compatible: older callers passed query as a bare string.
+    const options =
+      typeof opts === "string" ? { query: opts } : opts || {};
+    const query = options.query;
     switch (tool) {
       case "getBalance":
       case "getBuckets":
@@ -95,7 +99,7 @@ export class FactToolService {
       case "getOpportunity":
         return this.loadOpportunity(userId);
       case "getExecution":
-        return this.loadExecution(userId);
+        return this.loadExecution(userId, options.executionId);
       case "getKyc":
         return this.loadKyc(userId);
       case "getReferral":
@@ -242,7 +246,11 @@ export class FactToolService {
             source: "opportunity",
             ttlSec: TTL_OPP_SEC,
             confidence: 0.5,
-            payload: { count: 0, summary: "지금 볼 수 있는 미션을 불러오는 중이에요." },
+            payload: {
+              count: 0,
+              opportunityIds: [],
+              summary: "지금 볼 수 있는 미션을 불러오는 중이에요.",
+            },
           },
         ],
       };
@@ -264,6 +272,7 @@ export class FactToolService {
       );
       const count = r.rows.length;
       const top = r.rows[0];
+      const opportunityIds = r.rows.map((row) => row.id);
       return {
         tool: "getOpportunity",
         facts: [
@@ -274,6 +283,7 @@ export class FactToolService {
             payload: {
               count,
               opportunityId: top?.id ?? null,
+              opportunityIds,
               expectedProfitUsdt: top?.expected_profit_usdt ?? null,
               summary:
                 count > 0
@@ -293,48 +303,100 @@ export class FactToolService {
             source: "opportunity",
             ttlSec: TTL_OPP_SEC,
             confidence: 0.5,
-            payload: { count: 0, summary: "미션 목록을 잠시 불러오지 못했어요." },
+            payload: {
+              count: 0,
+              opportunityIds: [],
+              summary: "미션 목록을 잠시 불러오지 못했어요.",
+            },
           },
         ],
       };
     }
   }
 
-  private async loadExecution(userId: string): Promise<FactToolLoadResult> {
+  /**
+   * Engine §47.16.2 — resultRef ids are hints only.
+   * When `executionId` is supplied, ownership is re-verified with
+   * `WHERE user_id=$1 AND id=$2` (never trust a bare resultRef id).
+   */
+  private async loadExecution(
+    userId: string,
+    executionId?: string | null,
+  ): Promise<FactToolLoadResult> {
     let executionStatus = "none";
     let resultCode: string | null = null;
+    let resolvedId: string | null = null;
+    let executionIds: string[] = [];
+    let ownershipVerified = false;
+    let found = false;
+
+    const wantedId = executionId ? String(executionId).trim() : "";
+
     if (this.db.configured() && userId) {
       try {
-        const r = await this.db.query<{
-          status: string;
-          result_code: string | null;
-        }>(
-          `SELECT status, result_code
-             FROM public.trade_executions
-            WHERE user_id = $1::uuid
-            ORDER BY updated_at DESC
-            LIMIT 1`,
-          [userId],
-        );
-        if (r.rows[0]) {
-          executionStatus = r.rows[0].status;
-          resultCode = r.rows[0].result_code;
+        if (wantedId) {
+          const r = await this.db.query<{
+            id: string;
+            status: string;
+            result_code: string | null;
+          }>(
+            `SELECT id::text, status, result_code
+               FROM public.trade_executions
+              WHERE user_id = $1::uuid
+                AND id = $2::uuid
+              LIMIT 1`,
+            [userId, wantedId],
+          );
+          ownershipVerified = true;
+          if (r.rows[0]) {
+            found = true;
+            resolvedId = r.rows[0].id;
+            executionStatus = r.rows[0].status;
+            resultCode = r.rows[0].result_code;
+            executionIds = [r.rows[0].id];
+          }
+        } else {
+          const r = await this.db.query<{
+            id: string;
+            status: string;
+            result_code: string | null;
+          }>(
+            `SELECT id::text, status, result_code
+               FROM public.trade_executions
+              WHERE user_id = $1::uuid
+              ORDER BY updated_at DESC
+              LIMIT 5`,
+            [userId],
+          );
+          ownershipVerified = true;
+          executionIds = r.rows.map((row) => row.id);
+          if (r.rows[0]) {
+            found = true;
+            resolvedId = r.rows[0].id;
+            executionStatus = r.rows[0].status;
+            resultCode = r.rows[0].result_code;
+          }
         }
       } catch {
         /* ignore */
       }
     }
+
     return {
       tool: "getExecution",
       facts: [
         {
           source: "other",
           ttlSec: TTL_OPP_SEC,
-          confidence: 1,
+          confidence: wantedId && !found ? 0.5 : 1,
           payload: {
             kind: "execution",
-            executionStatus,
-            resultCode,
+            executionId: resolvedId,
+            executionIds,
+            executionStatus: wantedId && !found ? "not_found" : executionStatus,
+            resultCode: wantedId && !found ? null : resultCode,
+            ownershipVerified,
+            requestedExecutionId: wantedId || null,
             /** §48.13 — no marketplace fill claim */
             orchestrateTruth: true,
           },

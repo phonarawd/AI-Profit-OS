@@ -5,6 +5,8 @@
 
 "use strict";
 
+const { referencePromptBlock } = require("./reference-resolver.cjs");
+
 const SYSTEM_BASE = [
   "당신은 퍼뜩입니다. 앱 이름은 퍼뜩입니다.",
   "타프로젝트 코치명·ChatGPT·클라이 등 다른 AI 이름을 쓰지 마세요.",
@@ -26,6 +28,11 @@ const SYSTEM_BASE = [
  * @param {{role:string, content:string}[]} [input.history] — bounded prior
  *   turns of THIS conversation (Engine §47.16.2 working-state, session-scoped
  *   only). Caller is responsible for bounding; this function does not grow it.
+ * @param {object|null} [input.referenceResolution] — deterministic resolver
+ *   output. Only `resolved` is injected as REFERENCE_JSON; unresolved statuses
+ *   are REFERENCE_STATUS and must never be treated as Fact.
+ * @param {string|null} [input.referencePromptLine] — prebuilt line from
+ *   referencePromptBlock (optional override).
  */
 function buildCoachMessages(input = {}) {
   const lane = String(input.lane || "G");
@@ -56,6 +63,29 @@ function buildCoachMessages(input = {}) {
     systemParts.push("tools=[] 강제.");
   } else {
     systemParts.push("레인=S. LLM 호출 금지. 거절 템플릿만.");
+  }
+
+  const refLine =
+    typeof input.referencePromptLine === "string" && input.referencePromptLine
+      ? input.referencePromptLine
+      : null;
+  if (refLine) {
+    systemParts.push(refLine);
+    if (refLine.startsWith("REFERENCE_STATUS=")) {
+      systemParts.push(
+        "참조가 모호하거나 없으면 추측하지 말고 어떤 항목인지 짧게 다시 물어보세요.",
+      );
+    }
+  } else if (input.referenceResolution && input.referenceResolution.status) {
+    const block = referencePromptBlock(input.referenceResolution);
+    if (block) {
+      systemParts.push(block.line);
+      if (block.kind === "unresolved") {
+        systemParts.push(
+          "참조가 모호하거나 없으면 추측하지 말고 어떤 항목인지 짧게 다시 물어보세요.",
+        );
+      }
+    }
   }
 
   if (memories.length) {

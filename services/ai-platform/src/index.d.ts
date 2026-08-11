@@ -259,6 +259,13 @@ export type ConversationTurnInput = {
   lane?: string | null;
 };
 
+export type ConversationResultRef = {
+  readonly type: "executions" | "opportunities";
+  readonly ids: readonly string[];
+  readonly aliases: Readonly<Record<string, string>>;
+  readonly savedAt: string;
+};
+
 export type ConversationState = {
   readonly schema: "conversation-state.v1";
   readonly conversationId: string;
@@ -266,6 +273,22 @@ export type ConversationState = {
   readonly createdAt: string;
   readonly lastTurnAt: string;
   readonly turns: readonly ConversationTurn[];
+  readonly resultRefs: readonly ConversationResultRef[];
+};
+
+export type ResultReferenceResolution = {
+  readonly status:
+    | "none"
+    | "resolved"
+    | "ambiguous"
+    | "not_found"
+    | "unavailable";
+  readonly type: string | null;
+  readonly id: string | null;
+  readonly ordinal: number | null;
+  readonly reason: string | null;
+  readonly candidates: readonly string[];
+  readonly hintOnly: true;
 };
 
 export function newConversationId(): string;
@@ -279,11 +302,34 @@ export function buildConversationState(input?: {
   createdAt?: string;
   lastTurnAt?: string;
   turns?: object[];
+  resultRefs?: object[];
 }): ConversationState;
 export function appendTurn(
   state: ConversationState | null | undefined,
   turn: ConversationTurnInput,
 ): ConversationState;
+export function rememberResultRef(
+  state: ConversationState | null | undefined,
+  ref: { type: string; ids: string[]; aliases?: Record<string, string> },
+): ConversationState;
+export function resolveResultReference(input?: {
+  text?: string;
+  resultRefs?: object[];
+}): ResultReferenceResolution;
+export function referencePromptBlock(
+  resolution: ResultReferenceResolution | null | undefined,
+): { readonly kind: "resolved" | "unresolved"; readonly line: string } | null;
+export function extractResultRefFromFacts(
+  facts: object[],
+  type: "executions" | "opportunities",
+): ConversationResultRef | null;
+export function normalizeResultRefs(
+  list?: object[] | null,
+): readonly ConversationResultRef[];
+export const RESULT_REF_TYPES: readonly string[];
+export const RESOLUTION_STATUSES: readonly string[];
+export const MAX_RESULT_REF_SETS: number;
+export const MAX_IDS_PER_REF: number;
 export function assertStateOwnership(
   state: ConversationState | null | undefined,
   userId: string,

@@ -115,7 +115,7 @@ todos:
     status: completed
   - id: reference-resolution
     content: "[grok-4.5|256K] §47.16.2 A:resultRef 구조적 참조 해석기(reference-resolver.cjs·authorization 아닌 hint only) B:getExecution(id) 재조회 시 FactToolService WHERE user_id=$1 AND id=$2 소유권 재검증(resultRef id를 그대로 신뢰하지 않음) C:durable memory 승격=정규화된 preferenceKey/value fact만(raw 발화 비저장·서버 템플릿 content)·assertNoMemoryMoneyKeys 재적용+preferenceKey 화이트리스트 · ai_memory.append 최초 연결"
-    status: pending
+    status: completed
   - id: routing-coverage
     content: "[composer-2.5|200K] §47.16.3 P_PATTERNS에 /지갑/ + 신규 EXECUTION_PATTERNS(진행상태·안전중단·매칭상태·거래상태·체결 등) 추가 · defaultToolsForText에 getExecution 도달 분기 추가(현재 0건→추가) · eval/p_fact.jsonl 3케이스 추가 + tools_called 실검증(레인만 P 맞고 tool은 안 바뀌는 회귀 차단) · verify:ai-lane-router 회귀 PASS 유지"
     status: pending
@@ -200,7 +200,15 @@ isProject: false
 - `schemas/home-read-model.v1.json` + `GET /api/v1/me/home-read` + `@aipo/sdk/home-read-model` + `mapHomeReadModelV1` live
 - `todayPossibleProfitUsdt` = server_derived Σ(affordable∧available∧compareReady) · `ledgerTotal` = Money settlement COUNT
 - unauthorized/guest/expired → Fact null (fake zero coerce 0) · App/React/CSS 변경 0 · YAML `completed`
-- **다음 File-Serial:** `reference-resolution` only (hardening 체인 · ebay/home R1 CLOSED)
+- **다음 File-Serial (이력):** 당시 `reference-resolution` · **현재 다음=`routing-coverage`**
+
+### CLOSED — reference-resolution (2026-08-12)
+
+- `reference-resolver.cjs` + working-state `resultRefs` (hint only) · statuses `resolved|ambiguous|not_found|unavailable`
+- `getExecution` ownership re-verify `WHERE user_id=$1 AND id=$2` · list path exposes `executionIds` for snapshots
+- normalized preference → `MemoryService.append` (kind=`preference` · server template · whitelist) · raw utterance 0
+- `verify:reference-resolution` live · YAML `completed`
+- **다음 File-Serial:** `routing-coverage` only
 
 ## 0. 착수 전 실물 대조 기록 (v7.22.39 · 예측 0 · MCP+FS)
 
@@ -595,7 +603,7 @@ flowchart TD
 #### 0.10.3 실행 시점
 
 - **CLOSED (2026-08-12):** `resolveEbayIngestListings` + Nest ingest 배선 + Admin `identity-review-queue` + `verify:ebay-identity-ingest` live · live Browse tick → `w_rolex_sub_126610ln` image_source=ebay · i.ebayimg.com listings≥3 · unmatched queue 가시(silent drop 0) · YAML `completed`
-- **다음 File-Serial (이력):** 당시 `redesign-r1-home-fact-state-contract` · **현재 다음=`reference-resolution`**
+- **다음 File-Serial (이력):** 당시 `redesign-r1-home-fact-state-contract` → `reference-resolution` CLOSED · **현재 다음=`routing-coverage`**
 
 ## 0.0 시세 소스 잠금 (v7.13) — Signup-Ready + Margin UX + Capital Tiers
 
@@ -1975,7 +1983,7 @@ schemas/conversation-state.v1.json(후보)
 #### 47.16.8 DoD (Engine #37~#42)
 
 - [x] `conv-state`: Redis working-state + ownership 재검증 + conversationId 계약 + F14 — closure proof 완료(서버 2-turn continuity, 클라이언트 SDK/hook continuity, absolute-lifetime TTL 축소/소멸, 현재 tip AI verify 14/14 PASS), commit 대기 중
-- [ ] `reference-resolution`: resultRef 해석기 + 소유권 재검증 + 정규화 preference 승격
+- [x] `reference-resolution`: resultRef 해석기 + 소유권 재검증 + 정규화 preference 승격 — `verify:reference-resolution` PASS
 - [ ] `routing-coverage`: 패턴 보강 + `getExecution` 도달 + eval `tools_called` 실검증
 - [ ] `scope-guard`: 입력 필터 + 출력 잔차 가드 + residual risk 명시 + eval 신설
 - [ ] `numeric-grounding`: date-aware 그라운딩 모듈 + guard 통합 + fallback + eval
