@@ -1,6 +1,12 @@
 /**
- * Shadow replay — AI PICK goldens + optional settlement_rule goldens
- * Horizon 24h · drift 0.000% · FAIL → block_settlement
+ * Offline deterministic shadow-replay — AI PICK goldens (+ optional
+ * settlement_rule goldens helper). Horizon 24h · drift 0.000%.
+ *
+ * Semantics (§47.16.6):
+ * - Offline fixture replay (not live user answer path)
+ * - No production mutation / settlement gate wiring
+ * - failAction="block_settlement" is persisted label; contractLabel /
+ *   driftAdvisoryOnly mark it advisory-only until PO settlement track
  */
 
 "use strict";
@@ -11,6 +17,8 @@ const { scoreAiPick } = require("@aipo/ai-platform");
 const {
   MAX_DRIFT_PCT,
   FAIL_ACTION,
+  ADVISORY_LABEL,
+  DRIFT_ADVISORY_ONLY,
   HORIZON_HOURS,
   evaluateDrift,
 } = require("./drift.cjs");
@@ -106,6 +114,8 @@ function runAiPickShadowReplay(opts = {}) {
     asOf,
     horizonHours: HORIZON_HOURS,
     kind: "ai_pick",
+    /** Offline golden fixture replay — not live user-visible coach path */
+    executionMode: "offline_replay",
     traceCount: goldens.length,
     results: Object.freeze(results.map((r) =>
       Object.freeze({
@@ -120,6 +130,8 @@ function runAiPickShadowReplay(opts = {}) {
     maxDriftPct: MAX_DRIFT_PCT,
     pass: drift.pass,
     failAction: drift.failAction,
+    driftAdvisoryOnly: DRIFT_ADVISORY_ONLY,
+    contractLabel: ADVISORY_LABEL,
     mismatchCount: drift.mismatchCount,
     mismatches: drift.mismatches,
   });
@@ -134,8 +146,11 @@ function replaySettlementGoldens(goldenDir, ruleModule) {
   if (!fs.existsSync(goldenDir)) {
     return Object.freeze({
       kind: "settlement_rule",
+      executionMode: "offline_replay",
       pass: false,
       failAction: FAIL_ACTION,
+      driftAdvisoryOnly: DRIFT_ADVISORY_ONLY,
+      contractLabel: ADVISORY_LABEL,
       reason: "golden_dir_missing",
       driftPct: Number.POSITIVE_INFINITY,
     });
@@ -169,9 +184,12 @@ function replaySettlementGoldens(goldenDir, ruleModule) {
   const drift = evaluateDrift(rows);
   return Object.freeze({
     kind: "settlement_rule",
+    executionMode: "offline_replay",
     pass: drift.pass,
     driftPct: drift.pass ? 0 : drift.driftPct,
     failAction: drift.failAction,
+    driftAdvisoryOnly: DRIFT_ADVISORY_ONLY,
+    contractLabel: ADVISORY_LABEL,
     mismatchCount: drift.mismatchCount,
     traceCount: rows.length,
   });

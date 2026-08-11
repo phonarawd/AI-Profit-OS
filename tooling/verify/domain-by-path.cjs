@@ -219,6 +219,23 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/shadow-replay-engine\//.test(f) ||
+      /^services\/api-nest\/src\/ai\/shadow-replay\.admin\.service\.ts$/.test(f) ||
+      /^schemas\/shadow-replay-report\.v1\.json$/.test(f) ||
+      /^supabase\/migrations\/\d+_shadow_replay_advisory_label\.sql$/.test(f) ||
+      /^packages\/ui\/canon\/surfaces\/admin-ledger-shadow-replay\.wire\.json$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/shadow-replay-drift\.cjs$/.test(f),
+    scripts: [
+      "shadow-replay-drift.cjs",
+      "migrations-applied-parity.cjs",
+      "ai-feature-platform.cjs",
+      "canon-surfaces.cjs",
+    ],
+  },
+  {
+    test: (f) =>
       /packages\/ui\/components\/kyc\//.test(f) ||
       /packages\/ui\/copy\/ko\/kyc\.ts/.test(f) ||
       /packages\/ui\/canon\/surfaces\/kyc-/.test(f) ||

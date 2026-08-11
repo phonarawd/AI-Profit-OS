@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ai-profit-os.local/schemas/shadow-replay-report.v1.json",
   "title": "ShadowReplayReportV1",
-  "description": "Engine shadow-replay 24h · drift 0.000% · FAIL=block_settlement.",
+  "description": "Engine offline shadow-replay 24h · drift 0.000% · failAction=block_settlement (persisted) · contractLabel=drift_advisory_only (settlement NOT gated).",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -21,6 +21,11 @@
     "asOf": { "type": "string", "format": "date-time" },
     "horizonHours": { "const": 24 },
     "kind": { "type": "string", "enum": ["ai_pick", "settlement_rule"] },
+    "executionMode": {
+      "type": "string",
+      "const": "offline_replay",
+      "description": "Offline golden fixture replay — not live user-visible coach path"
+    },
     "traceCount": { "type": "integer", "minimum": 0 },
     "results": { "type": "array" },
     "driftPct": { "type": "number", "minimum": 0 },
@@ -28,7 +33,17 @@
     "pass": { "type": "boolean" },
     "failAction": {
       "type": ["string", "null"],
-      "enum": ["block_settlement", null]
+      "enum": ["block_settlement", null],
+      "description": "Persisted compat enum — not a live settlement gate"
+    },
+    "driftAdvisoryOnly": {
+      "type": "boolean",
+      "const": true,
+      "description": "§47.16.6 — fail is advisory until settlement PO track wires a real gate"
+    },
+    "contractLabel": {
+      "type": "string",
+      "const": "drift_advisory_only"
     },
     "mismatchCount": { "type": "integer", "minimum": 0 },
     "mismatches": { "type": "array" }

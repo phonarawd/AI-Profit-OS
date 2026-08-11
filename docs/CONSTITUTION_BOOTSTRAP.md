@@ -3,7 +3,7 @@
 > **목적:** 구현 채팅 시작 전, 헌법·스키마·마이그레이션·어드민·브랜드·DB SSOT를 **예측 없이** 정리한다.  
 > **권위:** ACTIVE Index `ai_profit_os_00_index_a1b2c3d4.plan.md` > 도메인 01~06 > launch ARCHIVE.  
 > **현재 권위:** Index v7.23.0 · R0 governance CLOSE(inventory→fact/state→change-control→observation) · 외부 `플랫폼_전체_재설계_로드맵_d903eef7`=REFERENCE ONLY · 기존 v7.22 스냅샷/「현재」「다음」문구는 이력.
-> **현재 다음:** 02 Engine `shadow-replay-naming` only (Money/ebay/home-fact/reference-resolution/routing-coverage/scope-guard/numeric-grounding CLOSED · hardening 체인).
+> **현재 다음:** 03 UI `redesign-r1-home-truth-preflight` only (02 Engine pending0 · hardening 6todo CLOSED · epic CI green 잔여).
 
 ## v7.23.0 현재 잠금
 
@@ -46,7 +46,7 @@
 | Advisor `rls_enabled_no_policy` | INFO 전수 | Day-1 **의도** · deny-by-default |
 
 **v7.22.36 판정(이력):** Index 당시 CLOSED · 헌법·스키마·원격 PG·Auth·Runtime P0 hosts·apps 골격 PASS.
-**v7.23 현재:** R0 CLOSE · 01 Money pending0 · ebay+home-fact+reference-resolution+routing-coverage+scope-guard+numeric-grounding CLOSED · 다음=02 Engine `shadow-replay-naming` only.
+**v7.23 현재:** R0 CLOSE · 01 Money pending0 · 02 Engine pending0 (hardening 6todo CLOSED · §47.16.8 CI green 잔여) · 다음=03 UI `redesign-r1-home-truth-preflight` only.
 
 ### 0.1 public 테이블 전수 (41 · MCP 실측)
 
@@ -613,7 +613,8 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 - [x] 02 Engine `routing-coverage` CLOSED (wallet/EXECUTION_PATTERNS→P · getExecution tools_called)
 - [x] 02 Engine `scope-guard` CLOSED (OFF_TOPIC→scope_redirect · meta residual · eval§H)
 - [x] 02 Engine `numeric-grounding` CLOSED (date-aware grounding · ungrounded→fact fallback · verify:numeric-grounding)
-- [ ] 한 채팅=다음 **02 Engine** `shadow-replay-naming` only · Money/R0/ebay/home-fact/reference-resolution/routing-coverage/scope-guard/numeric-grounding completed 재실행 금지
+- [x] 02 Engine `shadow-replay-naming` CLOSED (ADVISORY_LABEL additive · FAIL_ACTION 불변 · verify:shadow-replay-drift)
+- [ ] 한 채팅=다음 **03 UI** `redesign-r1-home-truth-preflight` only · Money/R0/Engine hardening completed 재실행 금지
 
 **done 정의:** 해당 todo의 `verify:*` PASS + `pnpm cleanup:lowspec` PASS.
 
@@ -623,7 +624,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 
 > **Owns:** 본 절 + Index「플랜 직렬 완료 규칙」.  
 > **운영자(Grok-4.5) 규칙:** YAML pending todo를 **위에서 아래로만** · 한 채팅=한 todo · 완료 잠금 todo 재실행 금지.  
-> **다음 채팅:** **02 Engine** `shadow-replay-naming` only · Money/R0/ebay/home-fact/reference-resolution/routing-coverage/scope-guard/numeric-grounding completed 재실행 금지 · Engine obs는 Engine pending 완료 후 promote.
+> **다음 채팅:** **03 UI** `redesign-r1-home-truth-preflight` only · Money/R0/Engine hardening completed 재실행 금지 · Engine obs promote는 별도 PO 트랙.
 
 | 순 | Index todo | 산출물 | 모델 | 상태 |
 |----|------------|--------|------|------|
@@ -699,7 +700,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | 00 Index | pending **0** · CLOSED | ✅ |
 | 01 Money | 16/16 completed · `money-user-benefits-read` **completed** | ✅ |
 | 02 Engine Pre-UI | E-R1~E-R8 **completed** · Gate **CLOSED** | ✅ |
-| 02 Engine 가산 | ebay+home-fact+reference-resolution+routing-coverage+scope-guard+numeric-grounding **CLOSED** · 다음=`shadow-replay-naming` | 🔄 |
+| 02 Engine 가산 | hardening 6todo **CLOSED** · pending **0** · §47.16.8 CI green 잔여 · 다음 파일=03 UI `redesign-r1-home-truth-preflight` | ✅/🔄 |
 | 03 UI PART0 | `ui-preflight-constitution` **completed** | ✅ |
 | Supabase | ACTIVE_HEALTHY · Seoul · PG **17.6** · ref=`mgsytcetsiecllmhcyox` | ✅ |
 | migrations | 원격 **28** = 로컬 **28** · 끝=`20260809144814_catalog_runtime_day1_fx_bootstrap` | ✅ 1:1 |

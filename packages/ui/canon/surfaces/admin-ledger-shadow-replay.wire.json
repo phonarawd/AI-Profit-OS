@@ -15,8 +15,8 @@
       "id": "shadow_replay_gate",
       "role": "kpi",
       "copyKey": "T.admin.shadowReplayGate",
-      "fields": ["driftPct", "pass", "failAction"],
-      "note": "maxDriftPct=0 · FAIL=block_settlement · 24h horizon"
+      "fields": ["driftPct", "pass", "failAction", "driftAdvisoryOnly", "contractLabel"],
+      "note": "maxDriftPct=0 · failAction=block_settlement (persisted compat) · contractLabel=drift_advisory_only · driftAdvisoryOnly=true · 24h · Admin copy surface=04 Admin pointer"
     },
     {
       "id": "shadow_replay_run",

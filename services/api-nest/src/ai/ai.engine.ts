@@ -64,6 +64,8 @@ export const rankHelpChunks = ai.rankHelpChunks;
 export const runAiPickShadowReplay = shadow.runAiPickShadowReplay;
 export const MAX_DRIFT_PCT = shadow.MAX_DRIFT_PCT;
 export const FAIL_ACTION = shadow.FAIL_ACTION;
+export const ADVISORY_LABEL = shadow.ADVISORY_LABEL;
+export const DRIFT_ADVISORY_ONLY = shadow.DRIFT_ADVISORY_ONLY;
 export const HORIZON_HOURS = shadow.HORIZON_HOURS;
 
 export const FORBIDDEN_TWIN_MONEY_KEYS = twin.FORBIDDEN_TWIN_MONEY_KEYS;

@@ -127,7 +127,7 @@ todos:
     status: completed
   - id: shadow-replay-naming
     content: "[composer-2.5|200K] §47.16.6 backend breaking rename 금지(additive only 원칙) · shadow-replay-engine/drift.cjs에 신규 ADVISORY_LABEL 상수 추가(기존 FAIL_ACTION=block_settlement 값·상수 불변) · shadow-replay.admin.service.ts에 driftAdvisoryOnly/contractLabel 필드 additive 추가(기존 settlementBlocked 필드 유지) · DB 신규 컬럼 additive migration(기존 fail_action CHECK 제약 불변·backfill 불필요) · verify:shadow-replay-drift.cjs는 기존 assertion 유지+신규 assertion만 추가 · Admin 표면 문구는 04 Admin pointer만(강제 데드라인 없음)"
-    status: pending
+    status: completed
 isProject: false
 ---
 
@@ -215,7 +215,7 @@ isProject: false
 - `P_PATTERNS`+=`/지갑/` · `EXECUTION_PATTERNS` → P · `defaultToolsForText`→`["getExecution"]` before opportunity fallback
 - `eval/p_fact.jsonl` +3 (`expectToolsAny:["getExecution"]`) · `verify:ai-lane-router` tools_called 실검증 · `verify:routing-coverage` live
 - YAML `completed` · S/G/no-autonomy 불변 · scope-guard/numeric 비침범
-- **다음 File-Serial (이력):** 당시 `scope-guard` → `numeric-grounding` CLOSED · **현재 다음=`shadow-replay-naming`**
+- **다음 File-Serial (이력):** 당시 `scope-guard` → … → `shadow-replay-naming` CLOSED · **Engine pending=0 → 03 UI**
 
 ### CLOSED — scope-guard (2026-08-12)
 
@@ -223,14 +223,23 @@ isProject: false
 - `META_EXPOSURE_MARKERS` residual output guard · G프롬프트 1줄 · `decideScope` inspectable
 - assurance 3단계 명시(`complete_NOT_PROVEN` = documented residual · 완전차단 선언 0)
 - `eval/g_scope_escape.jsonl` §H 7 · `verify:ai-scope-guard` live · YAML `completed`
-- **다음 File-Serial (이력):** 당시 `numeric-grounding` · **현재 다음=`shadow-replay-naming`**
+- **다음 File-Serial (이력):** 당시 `numeric-grounding` → `shadow-replay-naming` CLOSED · **Engine pending=0 → 03 UI**
 
 ### CLOSED — numeric-grounding (2026-08-12)
 
 - `numeric-grounding.cjs` · currency/percent/unit-quantity 강제 · ordinal/bare exclude · platform date unsupported-when-absent
 - `serverDerivedAllowlist` (`todayPossible`·`ledgerTotal` COUNT) · `GROUNDED_NUMERIC_JSON` prompt · `ungrounded` guard(P·llm_p)
 - CoachOrchestrator ungrounded → `renderFactAnswer` fallback · `verify:numeric-grounding` live · YAML `completed`
-- **다음 File-Serial:** `shadow-replay-naming` only
+- **다음 File-Serial (이력):** 당시 `shadow-replay-naming` · **Engine pending=0 후 다음 파일=03 UI**
+
+### CLOSED — shadow-replay-naming (2026-08-12)
+
+- `ADVISORY_LABEL=drift_advisory_only` additive · `FAIL_ACTION=block_settlement` 값/상수 **불변**
+- Admin payload `driftAdvisoryOnly`/`contractLabel` additive · `settlementBlocked` 유지
+- DB columns additive (`drift_advisory_only`·`contract_label`) · fail_action CHECK 불변 · remote apply `20260811194832`
+- report `executionMode=offline_replay` · `verify:shadow-replay-drift` + advisory assertions · YAML `completed`
+- Admin 표면 문구 전환 = **04 Admin pointer only** (본 슬라이스 미구현)
+- **다음 File-Serial:** Engine hardening todos pending **0** → **03 UI** 첫 pending (본 채팅 미착수)
 
 ## 0. 착수 전 실물 대조 기록 (v7.22.39 · 예측 0 · MCP+FS)
 
@@ -625,7 +634,7 @@ flowchart TD
 #### 0.10.3 실행 시점
 
 - **CLOSED (2026-08-12):** `resolveEbayIngestListings` + Nest ingest 배선 + Admin `identity-review-queue` + `verify:ebay-identity-ingest` live · live Browse tick → `w_rolex_sub_126610ln` image_source=ebay · i.ebayimg.com listings≥3 · unmatched queue 가시(silent drop 0) · YAML `completed`
-- **다음 File-Serial (이력):** 당시 `routing-coverage` → `scope-guard` → `numeric-grounding` CLOSED · **현재 다음=`shadow-replay-naming`**
+- **다음 File-Serial (이력):** hardening 6todo CLOSED · **Engine pending=0 → 03 UI** `redesign-r1-home-truth-preflight`
 
 ## 0.0 시세 소스 잠금 (v7.13) — Signup-Ready + Margin UX + Capital Tiers
 
@@ -2009,9 +2018,9 @@ schemas/conversation-state.v1.json(후보)
 - [x] `routing-coverage`: 패턴 보강 + `getExecution` 도달 + eval `tools_called` 실검증 — `verify:routing-coverage`/`ai-lane-router` PASS
 - [x] `scope-guard`: 입력 필터 + 출력 잔차 가드 + residual risk 명시 + eval 신설 — `verify:ai-scope-guard` PASS
 - [x] `numeric-grounding`: date-aware 그라운딩 모듈 + guard 통합 + fallback + eval — `verify:numeric-grounding` PASS
-- [ ] `shadow-replay-naming`: additive 라벨/필드/컬럼 + verify 추가(breaking 0)
-- [ ] verify:gate + CI green (전체 슬라이스 완료 후)
-- [ ] UI/Admin = pointer만(본문 중복 0)
+- [x] `shadow-replay-naming`: additive 라벨/필드/컬럼 + verify 추가(breaking 0) — `verify:shadow-replay-drift` PASS · FAIL_ACTION 불변
+- [ ] verify:gate + CI green (전체 슬라이스 완료 후 · **push/CI 미실행 → epic NOT CLOSED**)
+- [x] UI/Admin = pointer만(본문 중복 0) — Canon wire note additive · Admin copy 전환=04 Admin track
 
 ---
 

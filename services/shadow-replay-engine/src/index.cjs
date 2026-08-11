@@ -8,6 +8,8 @@
 const {
   MAX_DRIFT_PCT,
   FAIL_ACTION,
+  ADVISORY_LABEL,
+  DRIFT_ADVISORY_ONLY,
   HORIZON_HOURS,
   driftPct,
   evaluateDrift,
@@ -23,6 +25,8 @@ const {
 module.exports = {
   MAX_DRIFT_PCT,
   FAIL_ACTION,
+  ADVISORY_LABEL,
+  DRIFT_ADVISORY_ONLY,
   HORIZON_HOURS,
   driftPct,
   evaluateDrift,

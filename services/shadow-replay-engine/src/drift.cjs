@@ -1,12 +1,25 @@
 /**
  * Drift gate — 0.000% only (오차0)
+ *
+ * Engine §47.16.6 — FAIL_ACTION value is persisted/compat locked as
+ * "block_settlement", but runtime meaning is advisory only (settlement
+ * engine is NOT wired). ADVISORY_LABEL documents that contract without
+ * breaking rename.
  */
 
 "use strict";
 
 /** Locked — any nonzero drift fails */
 const MAX_DRIFT_PCT = 0;
+/** Persisted fail_action enum value — DO NOT rename (compat). */
 const FAIL_ACTION = "block_settlement";
+/**
+ * Contract label: drift fail is advisory for Admin/ops visibility.
+ * Does NOT gate settlement / money mutation (PO track separate).
+ */
+const ADVISORY_LABEL = "drift_advisory_only";
+/** Always true until settlement gate is explicitly wired (out of this slice). */
+const DRIFT_ADVISORY_ONLY = true;
 const HORIZON_HOURS = 24;
 
 /**
@@ -52,6 +65,10 @@ function evaluateDrift(rows) {
     driftPct: pass ? 0 : max,
     maxDriftPct: MAX_DRIFT_PCT,
     failAction: pass ? null : FAIL_ACTION,
+    /** §47.16.6 additive — clarifies FAIL_ACTION is not a settlement gate */
+    advisoryLabel: ADVISORY_LABEL,
+    driftAdvisoryOnly: DRIFT_ADVISORY_ONLY,
+    contractLabel: ADVISORY_LABEL,
     mismatchCount: mismatches.length,
     mismatches: Object.freeze(mismatches),
   });
@@ -60,6 +77,8 @@ function evaluateDrift(rows) {
 module.exports = {
   MAX_DRIFT_PCT,
   FAIL_ACTION,
+  ADVISORY_LABEL,
+  DRIFT_ADVISORY_ONLY,
   HORIZON_HOURS,
   driftPct,
   evaluateDrift,
