@@ -13,6 +13,7 @@
     "./user-feed": "./src/user-feed/index.ts",
     "./wallet": "./src/wallet/index.ts",
     "./home-money-read": "./src/home-money-read/index.ts",
+    "./home-read-model": "./src/home-read-model/index.ts",
     "./growth": "./src/growth/index.ts"
   },
   "peerDependencies": {

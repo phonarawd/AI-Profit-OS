@@ -33,6 +33,8 @@ const live = [
   "auth-flows.cjs",
   "bucket-invariant.cjs",
   "home-money-read-contract.cjs",
+  "home-state-truth.cjs",
+  "no-fake-zero-status.cjs",
   "withdraw-mode-default.cjs",
   "principal-withdraw-reachable.cjs",
   "withdraw-fee-ledger.cjs",

@@ -69,6 +69,8 @@
 |----|--------|
 | bucket-invariant · withdraw-mode-default · principal-withdraw-reachable · principal-profit-abuse · balance-aware-feed · practice-non-withdrawable | Money §49/§51.7 — **live** (posting·ASC FOR UPDATE·idempotency·provision·recon · default mode=profit · 원금 CTA·시트·3CTA · Admin finance?tab=buckets · §49.9 P1~P24/E1~E12 risk queue·freeze·circuit · §49.2a suggest deeplink·principal Fact·Engine pointer · practice welcome 1회·7d expire·Banner·403) |
 | home-money-read-contract | Money v7.23 R1 — **live** (`schemas/home-money-read.v1.json` · `GET /api/v1/me/home-money-read` · principalUsdt+settlementCompletedTodayCount · per-field asOf/source/state · Engine todayPossibleProfitUsdt 0 · availableUsdt/todayPossible 0 · zero≠absent · mutation/DDL 0) |
+| home-state-truth | Engine v7.23 R1 — **live** (`schemas/home-read-model.v1.json` · `GET /api/v1/me/home-read` · Money+opportunity+growth+session mapper · todayPossible=server_derived affordable∧available∧compareReady · ledgerTotal=settlement COUNT · viewState · domainFsm null · App/React/CSS 0) |
+| no-fake-zero-status | Engine v7.23 R1 — **live** (unauthorized/guest/expired → Fact null · ready_data requires authenticated · deny availableUsdt/staticScanClaim · recoverable_error not coerced to ready_*) |
 | idempotency-conflict-detection | Money post-r0 — **live** (same key+different payload → 409 · fingerprint · ledger+participate · mig request_fingerprint) |
 | committed-event-publication-durability | Money post-r0 — **live** (ledger TX outbox intent · emit≠ack · poller replay · Phase0 Postgres) |
 | money-wallet-auth-remediation | Money post-r0 Finding A+B — **live** (practiceWelcome JWT+sessionUserId · practiceExpireTick fail-closed machine-auth · Adapters fail-open 복제0) |

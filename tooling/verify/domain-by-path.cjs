@@ -257,6 +257,23 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^schemas\/home-read-model\.v1\.json$/.test(f) ||
+      /^services\/market-intelligence\/src\/home-read-model\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/home-read\//.test(f) ||
+      /^packages\/sdk\/src\/home-read-model\//.test(f) ||
+      /^tooling\/verify\/home-state-truth\.cjs$/.test(f) ||
+      /^tooling\/verify\/no-fake-zero-status\.cjs$/.test(f),
+    scripts: [
+      "home-state-truth.cjs",
+      "no-fake-zero-status.cjs",
+      "home-money-read-contract.cjs",
+      "asset-image-surface.cjs",
+      "listing-legs-day1.cjs",
+      "adapter-matching-kpi.cjs",
+    ],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/ledger\/idempotency-fingerprint\.ts$/.test(f) ||
       /^supabase\/migrations\/.*idempotency_request_fingerprint\.sql$/.test(f) ||
       /^tooling\/verify\/idempotency-conflict-detection\.cjs$/.test(f),

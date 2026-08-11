@@ -18,6 +18,7 @@ import { AiModule } from "./ai/ai.module";
 import { TradesModule } from "./trades/trades.module";
 import { WalletModule } from "./wallet/wallet.module";
 import { GrowthModule } from "./growth/growth.module";
+import { HomeReadModule } from "./home-read/home-read.module";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { GrowthModule } from "./growth/growth.module";
     LedgerModule,
     WalletModule,
     GrowthModule,
+    HomeReadModule,
     ComplianceModule,
     RiskModule,
     ReferralModule,

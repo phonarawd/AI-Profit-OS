@@ -109,7 +109,7 @@ todos:
     status: completed
   - id: redesign-r1-home-fact-state-contract
     content: "[grok-4.5|256K] Redesign R1 dependency · Money HomeMoneyRead(principal/count)+opportunity feed+growth public+session을 HomeReadModelV1 mapper 1곳으로 결합 · ledgerTotal=settlementCompletedTodayCount COUNT · todayPossibleProfitUsdt=Σ affordable expectedProfitUsdt(status=available∧compareReady) 서버 derived · loading|ready_empty|ready_data|stale|recoverable_error|blocked|unauthorized + domain FSM 분리 · reasonCode=domain.resource.reason · fake zero/static scan claim0 · schemas+SDK/API mapper · verify:home-state-truth/no-fake-zero-status 신설+CATALOG"
-    status: pending
+    status: completed
   - id: conv-state
     content: "[grok-4.5|256K] §47.16.2 A:Redis conversation working-state(key=ai:conv:${userId}:${conversationId}·TTL aiConvStateTtlSec=3600·absoluteLifetimeSec=43200 12h·createdAt+12h 초과 연장금지) B:conversationId API/SDK 계약(additive)+bounded history를 buildCoachMessages 주입 C:chat-sse.ts credentials:include 정합화(F14) · load시 state.userId≠req.user.userId면 fail-closed(에러 미노출) · verify:conversation-state-bounded(신설)"
     status: completed
@@ -194,6 +194,13 @@ isProject: false
 - `verify:home-state-truth`와 `verify:no-fake-zero-status`를 스크립트+package script+CATALOG에 동시 등록한다.
 - Engine 기존 verify + `asset-image-surface` + `listing-legs-day1` + `adapter-matching-kpi` 회귀 PASS.
 - 앱/React/CSS 변경 0.
+
+### CLOSED (2026-08-12)
+
+- `schemas/home-read-model.v1.json` + `GET /api/v1/me/home-read` + `@aipo/sdk/home-read-model` + `mapHomeReadModelV1` live
+- `todayPossibleProfitUsdt` = server_derived Σ(affordable∧available∧compareReady) · `ledgerTotal` = Money settlement COUNT
+- unauthorized/guest/expired → Fact null (fake zero coerce 0) · App/React/CSS 변경 0 · YAML `completed`
+- **다음 File-Serial:** `reference-resolution` only (hardening 체인 · ebay/home R1 CLOSED)
 
 ## 0. 착수 전 실물 대조 기록 (v7.22.39 · 예측 0 · MCP+FS)
 
@@ -588,7 +595,7 @@ flowchart TD
 #### 0.10.3 실행 시점
 
 - **CLOSED (2026-08-12):** `resolveEbayIngestListings` + Nest ingest 배선 + Admin `identity-review-queue` + `verify:ebay-identity-ingest` live · live Browse tick → `w_rolex_sub_126610ln` image_source=ebay · i.ebayimg.com listings≥3 · unmatched queue 가시(silent drop 0) · YAML `completed`
-- **다음 File-Serial:** `redesign-r1-home-fact-state-contract` only
+- **다음 File-Serial (이력):** 당시 `redesign-r1-home-fact-state-contract` · **현재 다음=`reference-resolution`**
 
 ## 0.0 시세 소스 잠금 (v7.13) — Signup-Ready + Margin UX + Capital Tiers
 

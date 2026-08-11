@@ -89,6 +89,8 @@
     "verify:wallet-kyc-session-auth": "node tooling/verify/wallet-kyc-session-auth.cjs",
     "verify:bucket-invariant": "node tooling/verify/bucket-invariant.cjs",
     "verify:home-money-read-contract": "node tooling/verify/home-money-read-contract.cjs",
+    "verify:home-state-truth": "node tooling/verify/home-state-truth.cjs",
+    "verify:no-fake-zero-status": "node tooling/verify/no-fake-zero-status.cjs",
     "verify:idempotency-conflict-detection": "node tooling/verify/idempotency-conflict-detection.cjs",
     "verify:committed-event-publication-durability": "node tooling/verify/committed-event-publication-durability.cjs",
     "verify:money-wallet-auth-remediation": "node tooling/verify/money-wallet-auth-remediation.cjs",

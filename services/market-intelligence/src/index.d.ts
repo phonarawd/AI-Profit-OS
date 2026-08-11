@@ -1129,3 +1129,15 @@ export function buildUnmatchedEvidence(
   reason: string,
   extra?: Record<string, unknown>,
 ): Record<string, unknown>;
+
+/** Engine v7.23 R1 — HomeReadModelV1 */
+export const HOME_VIEW_STATES: readonly string[];
+export const HOME_VIEW_STATES_SERVER: readonly string[];
+export const TODAY_POSSIBLE_DERIVATION_ID: string;
+export const FORBIDDEN_FAKE_KEYS: readonly string[];
+export function deriveTodayPossibleProfitUsdt(items: unknown[]): string;
+export function composeViewState(parts: string[]): string;
+export function mapHomeReadModelV1(
+  input: Record<string, unknown>,
+): Record<string, unknown>;
+export function assertNoFakeZeroHomeRead(dto: Record<string, unknown>): true;
