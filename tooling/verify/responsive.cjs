@@ -14,6 +14,8 @@ const {
   HARNESS_VIEWPORTS,
   loadViewportsJson,
   loadHarnessManifest,
+  loadVisualLocks,
+  lockedSurfaceIds,
   listHarnessSurfaces,
   expectedStructure,
   fixtureHtml,
@@ -46,8 +48,35 @@ const harnessFiles = [
   "tooling/verify/responsive/playwright.config.cjs",
   "tooling/verify/responsive/tests/canon-structure.spec.cjs",
   "tooling/verify/responsive/run-playwright.cjs",
+  "packages/ui/canon/visual-locks.v1.json",
+  ".cursor/rules/visual-master-intake.mdc",
 ];
 for (const f of harnessFiles) mustExist(f);
+
+// --- Visual Master LOCK registry (visual-master-intake.mdc · ADR-013 exception) ---
+let visualLocksDoc;
+try {
+  visualLocksDoc = loadVisualLocks(root);
+} catch (e) {
+  fails.push(`visual-locks.v1.json unreadable: ${e.message}`);
+  visualLocksDoc = { locks: [] };
+}
+for (const lock of visualLocksDoc.locks || []) {
+  if (!lock || !lock.surfaceId) {
+    fails.push("visual-locks.v1.json: lock entry missing surfaceId");
+    continue;
+  }
+  if (lock.status === "locked") {
+    if (!lock.visualContractPath) {
+      fails.push(`visual-locks ${lock.surfaceId}: locked entry missing visualContractPath`);
+    } else if (!fs.existsSync(path.join(root, lock.visualContractPath))) {
+      fails.push(
+        `visual-locks ${lock.surfaceId}: visualContractPath not found on disk (${lock.visualContractPath})`,
+      );
+    }
+  }
+}
+const lockedIds = lockedSurfaceIds(root);
 
 // --- viewport matrix lock ---
 let vpJson;
@@ -166,8 +195,14 @@ for (const s of surfaces) {
       `${s.id}: fixture block order ${JSON.stringify(got)} ≠ wire ${JSON.stringify(expected.blocks)}`,
     );
   }
-  if (!(s.forbidden || []).includes("photo_pixel_match")) {
-    fails.push(`${s.id}: wire.forbidden must include photo_pixel_match`);
+  // ADR-013 default: every surface's Canon wire must forbid photo_pixel_match.
+  // Exception: Owner-approved Visual Master → Visual Contract → visual-locks.v1.json
+  // status=locked (visual-master-intake.mdc). Registry empty today = no exception applies.
+  if (
+    !lockedIds.has(s.id) &&
+    !(s.forbidden || []).includes("photo_pixel_match")
+  ) {
+    fails.push(`${s.id}: wire.forbidden must include photo_pixel_match (unlocked surface)`);
   }
 }
 

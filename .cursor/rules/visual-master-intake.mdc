@@ -1,0 +1,77 @@
+---
+description: ADR-013 확장 — Owner 승인 Visual Master → Visual Contract → 픽셀 LOCK. Toast emoji 예외.
+globs: "apps/web/**,apps/admin/**,packages/ui/**,tooling/verify/responsive/**"
+alwaysApply: false
+---
+
+# Visual Master Intake & Component Lock (ADR-013 확장 · 오류0)
+
+## 역할 잠금 (Visual Master가 있는 화면/컴포넌트에 한함)
+
+Cursor는 **디자이너가 아니라 Pixel-Accurate Implementation Engineer**다.
+
+- 금지: 재해석 · 재설계 · 단순화 · 미화 · "더 낫다"는 이유의 임의 변경(색·spacing·radius·shadow·아이콘·카드 크기·레이아웃·계층·이모지)
+- "더 모던함/깔끔함/일관성"은 Reference 이탈 사유가 **아니다**
+- 임의 아이콘 라이브러리(Lucide 등) 도입 · Emoji 대체 · 새 일러스트 창작 **금지**
+
+## 5-Layer 권위 (mockup-governance.mdc 권위 사다리 확장 · 충돌 시 상위 승)
+
+| # | 레이어 | 답하는 질문 |
+|---|---|---|
+| 1 | `packages/ui/tokens` · Lux · `packages/ui/brand` | 값(색·타입·spacing) |
+| 2 | `packages/ui` 컴포넌트 · 5탭 IA · toast/copy SSOT | 재사용 단위 |
+| 3 | 플랜 절 + Canon wire(`packages/ui/canon/**/*.wire.json`) | **무엇이 있어야 하는가** (Functional/Behavioral SSOT) |
+| 4 | Visual Contract(`packages/ui/canon/contracts/*.v1.md`) | **어떻게 보여야 하는가** (Visual SSOT · 측정 가능 값만) |
+| 5 | Approved Visual Master(Owner 지정 원본 이미지) | Visual Contract의 입력일 뿐 — **그 자체는 SSOT 아님**, 레포 파일로 저장 안 함 |
+
+Canon wire(3)과 Visual Contract(4)는 **분리 문서**다. 하나를 고쳐도 다른 하나가 자동으로 맞는다고 가정하지 않는다.
+
+## Intake 절차
+
+1. Owner가 이미지를 **"APPROVED VISUAL MASTER"로 명시 지정**해야 입력으로 인정한다(단순 참고 첨부와 구분).
+2. 대상 컴포넌트 단위로 치수·색·타이포·spacing·상태를 측정해 `packages/ui/canon/contracts/<surface>.visual-contract.v1.md`로 추출한다.
+3. 원본 이미지 파일은 레포에 저장하지 않는다 — `docs/mockups/**` · `*mockup*.png` 금지는 불변(mockup-governance.mdc).
+4. Canon wire와 항목이 충돌하면 즉시 구현하지 말고 `VISUAL_FUNCTIONAL_CONTRACT_CONFLICT`로 분류해 그 컴포넌트만 보류하고, 나머지는 계속 진행한다.
+
+## Component LOCK
+
+순서: Visual Contract → implementation → screenshot → reference 비교 → 수정 → **LOCK**.
+
+- LOCK 등록: `packages/ui/canon/visual-locks.v1.json`에 `surfaceId` + 실존하는 `visualContractPath` + 승인 메타데이터 기록. 이 조건을 만족할 때만 `verify:responsive`가 해당 surface의 Canon wire `forbidden: photo_pixel_match` 요구를 예외 처리한다.
+- LOCK 전에는 기존 픽셀 금지가 100% 그대로 유지된다(기본값 불변 · 레지스트리 비어있으면 전면 금지).
+- LOCK된 컴포넌트는 **다른 작업의 부수효과로 재변경 금지**. 재작업하려면 새 Visual Master 승인 + 잠금 해제 절차가 필요하다.
+- 63개 라우트 Visual Contract 선제 대량 생성 금지 — 컴포넌트 단위로 하나씩 승인·구현·LOCK.
+
+## Screenshot 정책 (verify:responsive 재조정)
+
+```
+미승인 reference 기반 픽셀 테스트            → 금지 (기본값 · ADR-013 유지)
+Approved Visual Master + Visual Contract 대상 → screenshot 비교 허용 (LOCK 등록 후)
+Visual regression                             → 승인 + LOCK된 surface만
+```
+
+실제 Playwright 픽셀 스펙 작성은 해당 surface가 LOCK될 때(구현 파이프라인의 "screenshot" 단계) 진행한다 — 지금 미리 빈 스펙을 만들지 않는다.
+
+## Missing Asset
+
+Visual Master에 있는데 레포에 없는 자산 → Emoji·임의 아이콘·새 일러스트 대체 **금지**. `MISSING_VISUAL_ASSET`로 마킹하고 레이아웃 공간만 보존한 뒤 해소를 기다린다.
+
+## Emoji
+
+- 영구 Product UI(내비·카드·배지·상태·성공/빈 화면·버튼·에셋 대체) = Unicode Emoji **금지**.
+- **Toast/snackbar/일시 알림 예외**: `packages/ui/copy/ko/emoji.ts`(`CUTE_EMOJI_ALLOWED`/`EMOJI_CAPS`) + `packages/ui/copy/ko/toast.ts` + `verify:toast-emoji`/`verify:cute-emoji-palette` 범위 내 1~2개만 허용. Cursor가 이모지 종류·개수·위치를 임의로 추가·변경하지 않는다.
+- 기존 결함 — 아이콘 시스템 승인 전까지 **등록만, 수정 보류**:
+
+| 파일 | 상태 |
+|---|---|
+| `packages/ui/components/benefits/BenefitMissionCard.tsx` (`ICON_MAP` · 리워드 배지) | `KNOWN_VISUAL_DEFECT` |
+| `packages/ui/components/inbox/OpsInbox.tsx` (채널 아이콘) | `KNOWN_VISUAL_DEFECT` |
+| `packages/ui/components/product/image-hosts.ts` (`ASSET_ICON_BY_CATEGORY`) | `KNOWN_VISUAL_DEFECT` |
+
+## 금지
+
+- Visual Master 없이 "예쁘게 다시 만들기" · Home 임의 재구현
+- LOCK된 컴포넌트를 다른 todo의 부수효과로 재수정
+- 원본 Visual Master 이미지 파일 레포 커밋
+- 위 3건 이모지 결함을 아이콘 결정 없이 임의 라이브러리로 교체
+- Brand Kit `status:"ready"` 자산을 Visual Master 대조 없이 즉흥 배선(예: BrandMark 플레이스홀더 교체는 대상 자산 확인 후)

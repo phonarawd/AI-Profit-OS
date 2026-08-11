@@ -25,6 +25,7 @@
     "ADR-013: never reintroduce mockup pixel matching via screenshot diffs",
     "Expected structure = Canon wire blocks[].id order",
     "DOM markers: data-canon + data-canon-block (preferred); data-landing-block accepted as alias",
-    "8GB Phase0: default verify path is Node structure (no browser); Playwright browsers = CI / RESPONSIVE_PW=1"
+    "8GB Phase0: default verify path is Node structure (no browser); Playwright browsers = CI / RESPONSIVE_PW=1",
+    "Locked-surface exception: packages/ui/canon/visual-locks.v1.json (status=locked + existing visualContractPath) exempts that surfaceId only from the per-surface photo_pixel_match ban — see .cursor/rules/visual-master-intake.mdc. Registry empty by default = no exception."
   ]
 }

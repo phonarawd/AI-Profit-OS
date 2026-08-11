@@ -44,7 +44,36 @@ walk(root, (p) => {
 });
 
 const rule = path.join(root, ".cursor/rules/mockup-governance.mdc");
-if (!fs.existsSync(rule)) fails.push("missing .cursor/rules/mockup-governance.mdc");
+if (!fs.existsSync(rule)) {
+  fails.push("missing .cursor/rules/mockup-governance.mdc");
+} else {
+  const ruleSrc = fs.readFileSync(rule, "utf8");
+  if (!ruleSrc.includes("Visual Contract")) {
+    fails.push("mockup-governance.mdc must document the Visual Contract layer");
+  }
+  if (!/APPROVED VISUAL MASTER/i.test(ruleSrc)) {
+    fails.push("mockup-governance.mdc must document the Approved Visual Master exception");
+  }
+}
+
+const intakeRule = path.join(root, ".cursor/rules/visual-master-intake.mdc");
+if (!fs.existsSync(intakeRule)) {
+  fails.push("missing .cursor/rules/visual-master-intake.mdc");
+}
+
+const visualLocks = path.join(root, "packages/ui/canon/visual-locks.v1.json");
+if (!fs.existsSync(visualLocks)) {
+  fails.push("missing packages/ui/canon/visual-locks.v1.json");
+} else {
+  try {
+    const parsed = JSON.parse(fs.readFileSync(visualLocks, "utf8"));
+    if (!Array.isArray(parsed.locks)) {
+      fails.push("visual-locks.v1.json must declare a locks[] array");
+    }
+  } catch (e) {
+    fails.push(`visual-locks.v1.json invalid JSON: ${e.message}`);
+  }
+}
 
 const canonMan = path.join(root, "packages/ui/canon/manifest.json");
 if (!fs.existsSync(canonMan)) {

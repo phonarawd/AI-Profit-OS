@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "schema": "packages.ui.canon.visual-locks.v1",
+  "governedBy": [
+    ".cursor/rules/visual-master-intake.mdc",
+    ".cursor/rules/mockup-governance.mdc"
+  ],
+  "policy": {
+    "default": "photo_pixel_match forbidden for every surface (ADR-013)",
+    "exception": "surfaceId listed below with status=locked AND an existing visualContractPath is exempted from the Canon wire photo_pixel_match requirement in verify:responsive only"
+  },
+  "notes": [
+    "빈 locks[] = 기본 상태 = 전체 surface 픽셀 diff 금지(ADR-013) 그대로 유지.",
+    "등록만으로 스크린샷 테스트가 자동 생성되지 않는다 — 실제 Playwright 픽셀 스펙 작성은 해당 surface가 LOCK될 때 별도 구현한다.",
+    "Approved Visual Master 원본 이미지 파일은 이 레포에 저장하지 않는다(ADR-017) — 여기 기록되는 것은 텍스트 경로/승인 메타데이터뿐이다.",
+    "locks[].visualContractPath가 디스크에 실존하지 않으면 verify:responsive가 FAIL한다."
+  ],
+  "locks": []
+}

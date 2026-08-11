@@ -42,6 +42,32 @@ function loadCanonManifest(root = repoRoot()) {
   return JSON.parse(fs.readFileSync(p, "utf8"));
 }
 
+/**
+ * Visual Master → Visual Contract → LOCK registry (visual-master-intake.mdc).
+ * Missing file = empty registry = ADR-013 default (all surfaces pixel-forbidden).
+ */
+function loadVisualLocks(root = repoRoot()) {
+  const p = path.join(root, "packages/ui/canon/visual-locks.v1.json");
+  if (!fs.existsSync(p)) return { locks: [] };
+  const parsed = JSON.parse(fs.readFileSync(p, "utf8"));
+  if (!Array.isArray(parsed.locks)) return { ...parsed, locks: [] };
+  return parsed;
+}
+
+/** surfaceId → true only if status=locked AND visualContractPath exists on disk. */
+function lockedSurfaceIds(root = repoRoot()) {
+  const { locks } = loadVisualLocks(root);
+  const ids = new Set();
+  for (const lock of locks || []) {
+    if (!lock || lock.status !== "locked" || !lock.surfaceId) continue;
+    const contractPath = lock.visualContractPath
+      ? path.join(root, lock.visualContractPath)
+      : null;
+    if (contractPath && fs.existsSync(contractPath)) ids.add(lock.surfaceId);
+  }
+  return ids;
+}
+
 function loadWire(root, wireRel) {
   const p = path.join(root, "packages/ui/canon", wireRel);
   return JSON.parse(fs.readFileSync(p, "utf8"));
@@ -162,6 +188,8 @@ module.exports = {
   loadViewportsJson,
   loadHarnessManifest,
   loadCanonManifest,
+  loadVisualLocks,
+  lockedSurfaceIds,
   listHarnessSurfaces,
   expectedStructure,
   fixtureHtml,
