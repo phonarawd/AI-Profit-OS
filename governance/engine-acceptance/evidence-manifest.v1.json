@@ -1,0 +1,89 @@
+{
+  "schema": "governance.engine-acceptance.evidence-manifest.v1",
+  "version": "1.0.0",
+  "qa_phase": "QA-0",
+  "baseline_id": "ea-baseline-52cebdb9bae3-cb4530b02ecf",
+  "verdict": "ENGINE_QA_INCOMPLETE",
+  "verdict_reason": "QA-0 freeze only — mandatory suites QA1..QA8 not executed; ENGINE_ACCEPTED_FOR_UI forbidden at this phase",
+  "evidence_integrity": "VALID",
+  "next": "QA1_DETERMINISTIC_TRUTH",
+  "artifact_policy": {
+    "raw_traces": "github_actions_artifact",
+    "retention_days_min": 90,
+    "repo_keeps": ["summary", "evidence-manifest.v1.json", "baseline.v1.json", "ENGINE_ACCEPTANCE_REPORT.md"]
+  },
+  "suites": [
+    {
+      "suite_id": "QA0",
+      "run_id": "qa0-baseline-freeze",
+      "baseline_id": "ea-baseline-52cebdb9bae3-cb4530b02ecf",
+      "checksum": "cb4530b02ecfd0b721c3dbd7884ee649e91430aadb8c713f69517f31318a9c5e",
+      "completion_status": "COMPLETE"
+    },
+    {
+      "suite_id": "QA1",
+      "run_id": null,
+      "baseline_id": "ea-baseline-52cebdb9bae3-cb4530b02ecf",
+      "checksum": null,
+      "completion_status": "NOT_STARTED"
+    },
+    {
+      "suite_id": "QA2",
+      "run_id": null,
+      "baseline_id": "ea-baseline-52cebdb9bae3-cb4530b02ecf",
+      "checksum": null,
+      "completion_status": "NOT_STARTED"
+    },
+    {
+      "suite_id": "QA3",
+      "run_id": null,
+      "baseline_id": "ea-baseline-52cebdb9bae3-cb4530b02ecf",
+      "checksum": null,
+      "completion_status": "NOT_STARTED"
+    },
+    {
+      "suite_id": "QA4",
+      "run_id": null,
+      "baseline_id": "ea-baseline-52cebdb9bae3-cb4530b02ecf",
+      "checksum": null,
+      "completion_status": "NOT_STARTED"
+    },
+    {
+      "suite_id": "QA5",
+      "run_id": null,
+      "baseline_id": "ea-baseline-52cebdb9bae3-cb4530b02ecf",
+      "checksum": null,
+      "completion_status": "NOT_STARTED"
+    },
+    {
+      "suite_id": "QA6",
+      "run_id": null,
+      "baseline_id": "ea-baseline-52cebdb9bae3-cb4530b02ecf",
+      "checksum": null,
+      "completion_status": "NOT_STARTED"
+    },
+    {
+      "suite_id": "QA7",
+      "run_id": null,
+      "baseline_id": "ea-baseline-52cebdb9bae3-cb4530b02ecf",
+      "checksum": null,
+      "completion_status": "NOT_STARTED"
+    },
+    {
+      "suite_id": "QA8",
+      "run_id": null,
+      "baseline_id": "ea-baseline-52cebdb9bae3-cb4530b02ecf",
+      "checksum": null,
+      "completion_status": "NOT_STARTED"
+    }
+  ],
+  "kill_switch": {
+    "verified_before_smoke": true,
+    "production_like_aborts": true
+  },
+  "dual_dirty": {
+    "working_tree_clean": false,
+    "protected_scope_clean": true,
+    "forced_clean_forbidden": true
+  }
+}

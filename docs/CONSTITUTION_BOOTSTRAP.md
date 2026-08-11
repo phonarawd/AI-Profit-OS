@@ -3,12 +3,13 @@
 > **목적:** 구현 채팅 시작 전, 헌법·스키마·마이그레이션·어드민·브랜드·DB SSOT를 **예측 없이** 정리한다.  
 > **권위:** ACTIVE Index `ai_profit_os_00_index_a1b2c3d4.plan.md` > 도메인 01~06 > launch ARCHIVE.  
 > **현재 권위:** Index v7.23.0 · R0 governance CLOSE(inventory→fact/state→change-control→observation) · 외부 `플랫폼_전체_재설계_로드맵_d903eef7`=REFERENCE ONLY · 기존 v7.22 스냅샷/「현재」「다음」문구는 이력.
-> **현재 다음:** 03 UI `redesign-r1-home-truth-preflight` only (02 Engine pending0 · hardening 6todo CLOSED · epic CI green 잔여).
+> **현재 다음:** 02.5 Engine Acceptance QA · 첫 pending=`qa1-deterministic-truth` (QA-0 `qa0-baseline-freeze` CLOSED · verdict≠ACCEPTED · 03 UI **BLOCKED** until `ENGINE_ACCEPTED_FOR_UI`).
 
 ## v7.23.0 현재 잠금
 
 - Runtime 단계는 `Runtime P0~P3`, 재설계 실행은 `Redesign R0~R8`로 구분한다.
-- File-Serial: 00 R0 → 01 Money R1 → 02 Engine R1 → 03 UI R1~R5 → 04 Admin R6 → 05 PWA → 06 R7/R8.
+- File-Serial: 00 R0 → 01 Money R1 → 02 Engine R1 → **02.5 Engine Acceptance QA** → 03 UI R1~R5 → 04 Admin R6 → 05 PWA → 06 R7/R8.
+- 03 UI 착수 선행: `VERDICT == ENGINE_ACCEPTED_FOR_UI` **and** `acceptance_scope.unchanged` (`governance/engine-acceptance/`).
 - Consumer theme=ADR-017 `peotteok-light` Light+Purple 단일, 5탭=홈·기회·수익·지갑·내정보.
 - Web/Ops origin=`infra/domain.manifest.json openNext.*.workersDev`; OpenNext Workers only, Pages deploy/pages.dev origin 금지.
 - v7.22 completed todo는 불변이며 신규 가산 todo만 실행한다.
@@ -46,7 +47,7 @@
 | Advisor `rls_enabled_no_policy` | INFO 전수 | Day-1 **의도** · deny-by-default |
 
 **v7.22.36 판정(이력):** Index 당시 CLOSED · 헌법·스키마·원격 PG·Auth·Runtime P0 hosts·apps 골격 PASS.
-**v7.23 현재:** R0 CLOSE · 01 Money pending0 · 02 Engine pending0 (hardening 6todo CLOSED · §47.16.8 CI green 잔여) · 다음=03 UI `redesign-r1-home-truth-preflight` only.
+**v7.23 현재:** R0 CLOSE · 01 Money pending0 · 02 Engine pending0 · **02.5 QA-0 baseline FROZEN** · 다음=02.5 `qa1-deterministic-truth` · 03 UI는 `ENGINE_ACCEPTED_FOR_UI` 전 **BLOCKED**.
 
 ### 0.1 public 테이블 전수 (41 · MCP 실측)
 

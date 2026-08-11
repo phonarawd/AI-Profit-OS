@@ -1,0 +1,42 @@
+{
+  "schema": "governance.engine-acceptance.journeys.v1",
+  "version": "1.0.0",
+  "status": "qa0_locked_skeleton",
+  "notes": [
+    "케이스 개수는 KPI 아님. Dirty Path 비중 > Happy Path.",
+    "실행(QA-1+): UI 없이 Nest HTTP lifecycle."
+  ],
+  "journeys": [
+    {
+      "id": "J-HAPPY-01",
+      "kind": "happy",
+      "steps": [
+        "signup",
+        "profile",
+        "feed",
+        "participate",
+        "execute-tick*",
+        "peotteok",
+        "save",
+        "reconnect",
+        "mutate",
+        "delete-account"
+      ]
+    },
+    {
+      "id": "J-DIRTY-RETRY-01",
+      "kind": "dirty",
+      "steps": ["participate", "timeout", "retry-same-idempotency-key"]
+    },
+    {
+      "id": "J-DIRTY-ISOLATION-01",
+      "kind": "dirty",
+      "steps": ["userA-action", "userB-interleave", "token-cross", "object-id-swap"]
+    },
+    {
+      "id": "J-DIRTY-CONFLICT-01",
+      "kind": "dirty",
+      "steps": ["same-key", "conflicting-payload", "expect-explicit-reject"]
+    }
+  ]
+}

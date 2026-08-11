@@ -1,0 +1,114 @@
+# 02.5 Engine Acceptance QA — dedicated workflow (NOT part of verify:gate T2 heavy suites)
+name: engine-acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      qa_phase:
+        description: "QA phase to run (qa0 scaffold / later suites)"
+        required: true
+        default: "qa0"
+        type: choice
+        options:
+          - qa0
+          - qa1
+          - full
+  pull_request:
+    paths:
+      - "governance/engine-acceptance/**"
+      - "tooling/engine-acceptance/**"
+      - "tooling/verify/engine-acceptance.cjs"
+      - ".github/workflows/engine-acceptance.yml"
+  push:
+    branches: [main]
+    paths:
+      - "governance/engine-acceptance/**"
+      - "tooling/engine-acceptance/**"
+      - "tooling/verify/engine-acceptance.cjs"
+      - ".github/workflows/engine-acceptance.yml"
+
+# 동일 QA 환경 동시 파괴 방지
+concurrency:
+  group: engine-acceptance-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  qa0-baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Kill-switch before smoke
+        env:
+          AIPO_QA_TARGET_ENV: ci
+          AIPO_QA_HOSTNAME: localhost
+          AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+        run: node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+      - name: Tiny smoke (post kill-switch)
+        env:
+          AIPO_QA_TARGET_ENV: ci
+          AIPO_QA_HOSTNAME: localhost
+          AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+        run: node tooling/engine-acceptance/tiny-smoke.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+      - name: verify:engine-acceptance (QA-0)
+        run: pnpm verify:engine-acceptance
+
+  # Heavy suites (QA1+) — scaffold only; fail-fast false · aggregator always()
+  matrix-placeholder:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase != 'qa0' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [QA1, QA2, QA3, QA4, QA5, QA6, QA7, QA8]
+    steps:
+      - uses: actions/checkout@v6
+      - name: Suite placeholder
+        run: |
+          echo "suite=${{ matrix.suite }} — full run not enabled at QA-0 scaffold"
+          exit 0
+
+  aggregator:
+    needs: [qa0-baseline, matrix-placeholder]
+    # 선행 job 실패/스킵 후에도 최종 증거 집계 (전수 조사 철학)
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Aggregate evidence (always)
+        run: |
+          mkdir -p _tmp_engine_acceptance_evidence
+          cp governance/engine-acceptance/evidence-manifest.v1.json _tmp_engine_acceptance_evidence/ || true
+          cp governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md _tmp_engine_acceptance_evidence/ || true
+          cp governance/engine-acceptance/baseline.v1.json _tmp_engine_acceptance_evidence/ || true
+          echo "aggregator_status=ran" > _tmp_engine_acceptance_evidence/aggregator.txt
+          echo "qa0_result=${{ needs.qa0-baseline.result }}" >> _tmp_engine_acceptance_evidence/aggregator.txt
+          echo "matrix_result=${{ needs.matrix-placeholder.result }}" >> _tmp_engine_acceptance_evidence/aggregator.txt
+          pnpm verify:engine-acceptance
+      - name: Upload acceptance evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-acceptance-evidence
+          path: _tmp_engine_acceptance_evidence/
+          retention-days: 90

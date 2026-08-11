@@ -16,7 +16,9 @@ alwaysApply: false
 
 ## 직렬 순서
 
-`00 Index` → `01 Money` → `02 Engine` → `03 UI` → `04 Admin` → `05 PWA` → `06 Infra`
+`00 Index` → `01 Money` → `02 Engine` → `02.5 Engine Acceptance QA` → `03 UI` → `04 Admin` → `05 PWA` → `06 Infra`
+
+03 UI 착수 = verdict `ENGINE_ACCEPTED_FOR_UI` + `acceptance_scope.unchanged` only.
 
 ## 편집 SSOT
 

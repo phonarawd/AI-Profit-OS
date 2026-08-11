@@ -1,0 +1,19 @@
+{
+  "schema": "governance.engine-acceptance.personas.v1",
+  "version": "1.0.0",
+  "status": "qa0_locked_skeleton",
+  "personas": [
+    { "id": "KR-01", "label": "신규 가입 직후", "state": "registered_no_deposit" },
+    { "id": "KR-02", "label": "입금 대기", "state": "deposit_pending" },
+    { "id": "KR-03", "label": "소액 실잔액", "state": "funded_small" },
+    { "id": "KR-04", "label": "연습금 유저", "state": "practice_only" },
+    { "id": "KR-05", "label": "참여 진행 중", "state": "participate_active" },
+    { "id": "KR-06", "label": "정산 완료 이력", "state": "settlement_history" },
+    { "id": "KR-07", "label": "출금 게이트 전", "state": "pre_kyc_withdraw" },
+    { "id": "KR-08", "label": "KYC 완료", "state": "kyc_complete" },
+    { "id": "KR-09", "label": "타임아웃 재시도", "state": "retry_after_timeout" },
+    { "id": "KR-10", "label": "퍼뜩 세션 활성", "state": "peotteok_active" },
+    { "id": "KR-11", "label": "동시성 충돌 후보", "state": "concurrency_candidate" },
+    { "id": "KR-12", "label": "탈퇴 직전", "state": "pre_delete_account" }
+  ]
+}

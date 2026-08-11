@@ -9,7 +9,7 @@ Cursor는 **플랜 집행기**다. 스택을 ADR 없이 바꾸지 않는다.
 3. ACTIVE Index: `.cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md` (논리명 `*_ssot` = STALE stub)
 4. **Plan SSOT:** 편집·todo `status` = 워크스페이스 `.cursor/plans/ai_profit_os_*.plan.md` **만** · `%USERPROFILE%\.cursor\plans` = hardlink 미러(자동 sync) · 드리프트 시 `pnpm cursor:sync-plans` · `verify:plans-ssot`
 5. 도메인 `01`~`06` **해시 파일만** · **File-Serial:** 한 파일 todos 전부 완료 후 다음 번호 · 한 채팅=한 todo · 접두사 `[grok-4.5|256K]` / `[composer-2.5|200K]`
-6. 직렬 번호: **01 Money** · **02 Engine** · 03 UI · 04 Admin · 05 PWA · 06 Infra
+6. 직렬 번호: **01 Money** · **02 Engine** · **02.5 Engine Acceptance QA** · 03 UI · 04 Admin · 05 PWA · 06 Infra · 03=`ENGINE_ACCEPTED_FOR_UI` 전 BLOCKED
 7. launch = **ARCHIVE** (`ai_profit_os_launch_54c1261e.plan.md`)
 8. UI → Canon + Brand + Lux · AI 이름=**퍼뜩** (앱명과 동일 · §47 Personal AI · 타프로젝트 코치명 금지)
 

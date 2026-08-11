@@ -105,7 +105,7 @@ isProject: false
 ### 0. 권위 판정
 
 - `%USERPROFILE%\.cursor\plans\플랫폼_전체_재설계_로드맵_d903eef7.plan.md`는 **REFERENCE ONLY**다. 직접 편집·todo 실행·status 변경을 금지한다.
-- 외부 초안의 유효한 요구는 본 Index와 `01`~`06` ACTIVE 해시 플랜에 흡수했다. 실행 큐는 이 7개 frontmatter뿐이다.
+- 외부 초안의 유효한 요구는 본 Index와 `01`~`06` + **`02.5`** ACTIVE 해시 플랜에 흡수했다. 실행 큐는 이 8개 frontmatter뿐이다.
 - completed todo의 구현·상태는 불변이다. 재설계는 신규 `platform-redesign-*` / `redesign-*` todo에서 실물 `keep|adapt|new|remove`를 판정하며 완료 작업을 다시 실행하지 않는다.
 - 외부 초안의 상대 링크와 수치 스냅샷은 실행 근거가 아니다. R0 baseline이 commit SHA·dirty paths·정규화 규칙과 함께 재측정한 값만 증거다.
 
@@ -166,7 +166,8 @@ R0 종료 전 `01` 이하 착수 금지. 이후에도 파일 순서는 유지한
 | 00 | Index · Constitution · Roadmap · Gates | §0·§1·§17~22(+§20.1·§20.2)·§51.1/22/23 · **v7.23 R0 REOPEN** | `ai_profit_os_00_index_a1b2c3d4.plan.md` |
 | 01 | Money & Chain *(구 02)* | 기존 Money 불변 + **v7.23 R1 Home Money Read** | `ai_profit_os_01_money_c3d4e5f6.plan.md` |
 | 02 | Engine *(구 01)* | 기존 Engine 불변 + **v7.23 R1 eBay ingest/Home Fact-State** | `ai_profit_os_02_engine_b2c3d4e5.plan.md` |
-| 03 | UI & UX | 기존 PART0~9 불변 + **v7.23 R1~R5** | `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` |
+| **02.5** | **Engine Acceptance QA** | PRE-UI 진실 acceptance · 3-state verdict · Dual Dirty baseline · 제품수정0 | `ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md` |
+| 03 | UI & UX | 기존 PART0~9 불변 + **v7.23 R1~R5** · **선행=`ENGINE_ACCEPTED_FOR_UI`** | `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` |
 | 04 | Admin & Ops | 기존 pending 15 + **v7.23 R6 3-mode/certification** | `ai_profit_os_04_admin_e5f6a7b8.plan.md` |
 | 05 | PWA & Native | 기존 pending 6 + **v7.23 PWA/Store certification** | `ai_profit_os_05_pwa_f6a7b8c9.plan.md` |
 | 06 | Infra & Marketing | Marketing/Auth/adapter + **v7.23 R7/R8** | `ai_profit_os_06_infra_a7b8c9d0.plan.md` |
@@ -194,13 +195,14 @@ R0 종료 전 `01` 이하 착수 금지. 이후에도 파일 순서는 유지한
 |---|------|----------------------|
 | **00** | Index | 기존 completed 불변 + R0 4 todo pending **0** 후만 01 착수 |
 | **01** | Money *(구 02)* | 기존 completed 불변 + R1 Money Read pending **0** 후만 02 착수 |
-| **02** | Engine *(구 01)* | 기존 completed 불변 + eBay ingest/Home Fact-State pending **0** 후만 03 착수 |
+| **02** | Engine *(구 01)* | 기존 completed 불변 + eBay ingest/Home Fact-State pending **0** 후만 **02.5** 착수 |
+| **02.5** | Engine Acceptance QA | QA-0..QA9 pending **0** + verdict=`ENGINE_ACCEPTED_FOR_UI` + `acceptance_scope.unchanged` 후만 03 착수 |
 | **03** | UI & UX | R1~R5 + Home spot-check pending **0** 후만 04 착수 |
 | **04** | Admin & Ops | 기존 Admin queue + R6 certification pending **0** 후만 05 착수 |
 | **05** | PWA & Native | 기존 PWA/Store + certification pending **0** 후만 06 착수 |
 | **06** | Infra & Marketing | Marketing/Auth/adapter + R7/R8 pending **0** = 전 플랜 직렬 완료 |
 
-**v7.23 현재 큐:** 기존 completed 전부 불변. **00 Index R0 REOPEN** · 다음=`platform-redesign-r0-inventory`. R0 pending 0 후 01 Money R1 → 02 Engine R1 → 03 UI R1~R5 → 04 → 05 → 06 순서다. v7.22.59의 `trust-age-spotcheck` 즉시 실행 포인터는 이력이며 R1 Home 구현 뒤 사람 인증 단계로 이동했다.
+**v7.23 현재 큐:** 01/02 pending0 · **실행 파일=02.5** · QA-0 `qa0-baseline-freeze` CLOSED · 다음=`qa1-deterministic-truth`. 03 UI는 `ENGINE_ACCEPTED_FOR_UI` 전 **BLOCKED**. Pre-UI Runtime Gate(E-R1~E-R8)=CLOSED(역할 중복0 · 02.5=진실 acceptance).
 
 ### v7.22.48→49 Pre-UI Runtime Gate — CLOSED (이력 · 흡수 SSOT=Engine §0.9 · E-R8 done)
 
@@ -234,14 +236,15 @@ flowchart TD
   f00[00_Index_all_todos]
   f01[01_Money_all_todos]
   f02[02_Engine_all_todos]
+  f025[02_5_Engine_Acceptance_QA]
   f03[03_UI_all_todos]
   f04[04_Admin_all_todos]
   f05[05_PWA_all_todos]
   f06[06_Infra_Marketing_all_todos]
-  f00 --> f01 --> f02 --> f03 --> f04 --> f05 --> f06
+  f00 --> f01 --> f02 --> f025 --> f03 --> f04 --> f05 --> f06
 ```
 
-**금지:** 앞 파일 pending>0인데 뒤 파일 todo 착수 · §18 Milestone만 보고 도메인 교차 병행 · completed 재실행 · launch ARCHIVE를 실행 큐로 사용 · **위 문서화된 예외(1=소멸·2=활성)를 넘어선 임의 File-Serial 이탈**.
+**금지:** 앞 파일 pending>0인데 뒤 파일 todo 착수 · §18 Milestone만 보고 도메인 교차 병행 · completed 재실행 · launch ARCHIVE를 실행 큐로 사용 · **위 문서화된 예외(1=소멸·2=활성)를 넘어선 임의 File-Serial 이탈** · 02.5 verdict≠`ENGINE_ACCEPTED_FOR_UI`인데 03 착수.
 
 ---
 

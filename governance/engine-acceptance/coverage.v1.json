@@ -1,0 +1,80 @@
+{
+  "schema": "governance.engine-acceptance.coverage.v1",
+  "version": "1.0.0",
+  "status": "qa0_locked_skeleton",
+  "mandatorySuites": ["QA1", "QA2", "QA3", "QA4", "QA5", "QA6", "QA7", "QA8"],
+  "mappings": [
+    {
+      "id": "COV-001",
+      "persona_id": "KR-09",
+      "journey_id": "J-DIRTY-RETRY-01",
+      "invariant_id": "INV-IDEMPOTENCY-01",
+      "critical": true,
+      "suite_ids": ["QA1", "QA2"]
+    },
+    {
+      "id": "COV-002",
+      "persona_id": "KR-09",
+      "journey_id": "J-DIRTY-CONFLICT-01",
+      "invariant_id": "INV-IDEMPOTENCY-03",
+      "critical": true,
+      "suite_ids": ["QA1"]
+    },
+    {
+      "id": "COV-003",
+      "persona_id": "KR-11",
+      "journey_id": "J-DIRTY-ISOLATION-01",
+      "invariant_id": "INV-ISOLATION-01",
+      "critical": true,
+      "suite_ids": ["QA2", "QA8"]
+    },
+    {
+      "id": "COV-004",
+      "persona_id": "KR-05",
+      "journey_id": "J-HAPPY-01",
+      "invariant_id": "INV-LIFECYCLE-01",
+      "critical": true,
+      "suite_ids": ["QA1", "QA2", "QA4"]
+    },
+    {
+      "id": "COV-005",
+      "persona_id": "KR-03",
+      "journey_id": "J-HAPPY-01",
+      "invariant_id": "INV-LEDGER-01",
+      "critical": true,
+      "suite_ids": ["QA1", "QA5"]
+    },
+    {
+      "id": "COV-006",
+      "persona_id": "KR-10",
+      "journey_id": "J-HAPPY-01",
+      "invariant_id": "INV-FEED-AI-01",
+      "critical": true,
+      "suite_ids": ["QA5", "QA7"]
+    },
+    {
+      "id": "COV-007",
+      "persona_id": "KR-06",
+      "journey_id": "J-HAPPY-01",
+      "invariant_id": "INV-TIME-01",
+      "critical": true,
+      "suite_ids": ["QA4"]
+    },
+    {
+      "id": "COV-008",
+      "persona_id": "KR-12",
+      "journey_id": "J-HAPPY-01",
+      "invariant_id": "INV-PRIVACY-01",
+      "critical": true,
+      "suite_ids": ["QA8"]
+    },
+    {
+      "id": "COV-009",
+      "persona_id": "KR-10",
+      "journey_id": "J-HAPPY-01",
+      "invariant_id": "INV-AI-01",
+      "critical": true,
+      "suite_ids": ["QA7"]
+    }
+  ]
+}

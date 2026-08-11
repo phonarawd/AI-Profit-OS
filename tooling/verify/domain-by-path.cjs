@@ -27,6 +27,14 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/engine-acceptance\//.test(f) ||
+      /^tooling\/engine-acceptance\//.test(f) ||
+      /^tooling\/verify\/engine-acceptance\.cjs$/.test(f) ||
+      /^\.github\/workflows\/engine-acceptance\.yml$/.test(f),
+    scripts: ["engine-acceptance.cjs"],
+  },
+  {
+    test: (f) =>
       /^supabase\/migrations\//.test(f) ||
       /^tooling\/verify\/migrations-applied-parity\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/migrations-applied\.v1\.json$/.test(f),
