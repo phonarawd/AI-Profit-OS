@@ -23,6 +23,9 @@ const SYSTEM_BASE = [
  * @param {object[]} [input.facts]
  * @param {object[]} [input.memories]
  * @param {object[]} [input.helpChunks]
+ * @param {{role:string, content:string}[]} [input.history] — bounded prior
+ *   turns of THIS conversation (Engine §47.16.2 working-state, session-scoped
+ *   only). Caller is responsible for bounding; this function does not grow it.
  */
 function buildCoachMessages(input = {}) {
   const lane = String(input.lane || "G");
@@ -32,6 +35,7 @@ function buildCoachMessages(input = {}) {
   const facts = Array.isArray(input.facts) ? input.facts : [];
   const memories = Array.isArray(input.memories) ? input.memories : [];
   const help = Array.isArray(input.helpChunks) ? input.helpChunks : [];
+  const history = Array.isArray(input.history) ? input.history : [];
 
   const systemParts = [SYSTEM_BASE];
   if (lane === "P") {
@@ -61,8 +65,16 @@ function buildCoachMessages(input = {}) {
     systemParts.push(`RECENT_MEMORY=${JSON.stringify(memPreview)}`);
   }
 
+  const historyMessages = history.map((h) =>
+    Object.freeze({
+      role: h?.role === "assistant" ? "assistant" : "user",
+      content: String(h?.content || ""),
+    }),
+  );
+
   return Object.freeze([
     Object.freeze({ role: "system", content: systemParts.join("\n") }),
+    ...historyMessages,
     Object.freeze({ role: "user", content: userText }),
   ]);
 }

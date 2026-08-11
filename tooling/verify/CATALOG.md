@@ -98,6 +98,7 @@
 | ai-general-no-money-tools · ai-lane-router · llm-adapter-contract | Engine §47.8·47.13~15 — G tools=[] · P/G/S router · **live** |
 | llm-quota-degrade | Engine §47.13 — 429→G busy·P Fact · 자동 failover 0 · toast `PEOTTEOK_LLM_BUSY` — **live** |
 | fact-freshness · answer-trace | Engine §47.4·47.5·47.15 — stale Fact refresh · lane+trace 100% · **live** |
+| conversation-state-bounded | Engine §47.16.2 (HARDENING V1 conv-state slice) — Redis working-state userId+conversationId 바인딩 · ownership fail-closed · TTL config-driven(`aiConvStateTtlSec`=3600·`aiConvStateAbsoluteLifetimeSec`=43200 12h) · bounded turns/history · F14 credentials 정합 · reference-resolution/routing/scope-guard/numeric-grounding 비침범 가드 — **live** |
 | pwa-manifest · pwa-serwist-single · pwa-brand-icons | PWA §23.1·25·26 — 퍼뜩·Lux theme · SW 1곳 · Brand icons (v7.22.17) |
 | push-dedup · pwa-phase0-bus | PWA §23.5 — source_event_id · Phase0 NATS 0 |
 | webauthn-fallback-pointer · email-provider-resend | Money §43.6 Owns · PWA §23.6 UX only · Resend SSOT — **live** |

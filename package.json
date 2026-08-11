@@ -71,6 +71,7 @@
     "verify:ai-lane-router": "node tooling/verify/ai-lane-router.cjs",
     "verify:fact-freshness": "node tooling/verify/fact-freshness.cjs",
     "verify:answer-trace": "node tooling/verify/answer-trace.cjs",
+    "verify:conversation-state-bounded": "node tooling/verify/conversation-state-bounded.cjs",
     "verify:pricing-formula": "node tooling/verify/pricing-formula.cjs",
     "verify:fx-snapshot-formula": "node tooling/verify/fx-snapshot-formula.cjs",
     "verify:market-intel-engine": "node tooling/verify/market-intel-engine.cjs",

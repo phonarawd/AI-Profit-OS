@@ -49,6 +49,9 @@ export type Phase0Env = {
   llmBaseUrl: string | null;
   llmQuotaSoftRpm: number;
   llmQuotaSoftRpd: number;
+  /** Engine §47.16.2 — Coach conversation working-state (Redis) · PO-locked 2026-08-12 */
+  aiConvStateTtlSec: number;
+  aiConvStateAbsoluteLifetimeSec: number;
   /** Phase1 CF workers → Nest ingest (header x-adapter-token) */
   adapterIngestToken: string | null;
   /** Money practice expire tick · fail-closed machine-auth (header x-internal-wallet-token) */
@@ -124,6 +127,12 @@ export function loadPhase0Env(): Phase0Env {
     llmBaseUrl: read("LLM_BASE_URL"),
     llmQuotaSoftRpm: readInt("LLM_QUOTA_SOFT_RPM", 10),
     llmQuotaSoftRpd: readInt("LLM_QUOTA_SOFT_RPD", 200),
+    // PO-locked 2026-08-12 (HARDENING V1 §47.16.2) — do not change without new PO decision
+    aiConvStateTtlSec: readInt("AI_CONV_STATE_TTL_SEC", 3600),
+    aiConvStateAbsoluteLifetimeSec: readInt(
+      "AI_CONV_STATE_ABSOLUTE_LIFETIME_SEC",
+      43200,
+    ),
     adapterIngestToken: read("ADAPTER_INGEST_TOKEN"),
     internalWalletTickToken: read("INTERNAL_WALLET_TICK_TOKEN"),
     phase: 0,

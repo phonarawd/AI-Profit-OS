@@ -86,3 +86,17 @@ export const toPgVectorLiteral = memory.toPgVectorLiteral;
 export const EMBEDDING_DIM = memory.EMBEDDING_DIM;
 export const DEFAULT_MODEL_ID = memory.DEFAULT_MODEL_ID;
 export const rankByCosine = memory.rankByCosine;
+
+// Engine §47.16.2 — conversation working-state (session-scoped, Redis-backed)
+export type ConversationTurn = import("@aipo/ai-platform").ConversationTurn;
+export type ConversationTurnInput =
+  import("@aipo/ai-platform").ConversationTurnInput;
+export type ConversationState = import("@aipo/ai-platform").ConversationState;
+export const newConversationId = ai.newConversationId;
+export const conversationStateRedisKey = ai.conversationStateRedisKey;
+export const buildConversationState = ai.buildConversationState;
+export const appendTurn = ai.appendTurn;
+export const assertStateOwnership = ai.assertStateOwnership;
+export const isWithinAbsoluteLifetime = ai.isWithinAbsoluteLifetime;
+export const effectiveTtlSec = ai.effectiveTtlSec;
+export const buildHistoryMessages = ai.buildHistoryMessages;

@@ -51,9 +51,17 @@ export class CoachController {
     const text = String(body.text ?? body.message ?? "");
     const stream = body.stream !== false;
     const llm = body.llm !== false;
+    // Engine §47.16.2 — additive/optional; omit to start a new conversation
+    const conversationId =
+      body.conversationId != null ? String(body.conversationId) : undefined;
 
     if (!stream) {
-      const out = await this.coach.chatOnce(userId, { text, stream: false, llm });
+      const out = await this.coach.chatOnce(userId, {
+        text,
+        stream: false,
+        llm,
+        conversationId,
+      });
       return res.status(200).json(out);
     }
 
@@ -68,6 +76,7 @@ export class CoachController {
         text,
         stream: true,
         llm,
+        conversationId,
       })) {
         res.write(`event: ${ev.event}\n`);
         res.write(`data: ${JSON.stringify(ev.data)}\n\n`);

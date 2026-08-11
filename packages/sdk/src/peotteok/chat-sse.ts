@@ -34,7 +34,7 @@ export async function fetchPeotteokChips(opts: {
 
   const res = await fetch(
     apiUrl(opts.apiBase ?? "", "/api/v1/me/peotteok/chips"),
-    { headers },
+    { headers, credentials: "include" },
   );
   if (!res.ok) {
     throw new Error(`peotteok_chips_${res.status}`);
@@ -50,6 +50,8 @@ export function streamPeotteokChat(opts: {
   apiBase?: string;
   getAccessToken: () => string | null | Promise<string | null>;
   signal?: AbortSignal;
+  /** Engine §47.16.2 — omit to start a new conversation */
+  conversationId?: string;
 } & PeotteokChatStreamHandlers): () => void {
   const ac = new AbortController();
   const signal = opts.signal ?? ac.signal;
@@ -68,7 +70,12 @@ export function streamPeotteokChat(opts: {
         {
           method: "POST",
           headers,
-          body: JSON.stringify({ text: opts.text, stream: true }),
+          credentials: "include",
+          body: JSON.stringify({
+            text: opts.text,
+            stream: true,
+            conversationId: opts.conversationId,
+          }),
           signal,
         },
       );

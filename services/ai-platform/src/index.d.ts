@@ -239,3 +239,67 @@ export const FACT_CHIPS: readonly object[];
 export function shapeByTone(toneBand: string | null | undefined, body: string): string;
 export function renderFactAnswer(facts: object[], opts?: object): string;
 export function pickChips(opts?: object): readonly object[];
+
+/** Engine §47.16.2 — conversation working-state (session-scoped, Redis-backed by Nest) */
+export const MAX_TURNS: 8;
+export const MAX_TURN_TEXT_LEN: 300;
+
+export type ConversationTurn = {
+  readonly role: "user" | "assistant";
+  readonly text: string;
+  readonly lane: string | null;
+  readonly at: string;
+};
+
+/** Caller-supplied shape for `appendTurn`/`appendTurns` — `at` is always
+ * server-generated inside `appendTurn`, never accepted from the caller. */
+export type ConversationTurnInput = {
+  role: "user" | "assistant";
+  text: string;
+  lane?: string | null;
+};
+
+export type ConversationState = {
+  readonly schema: "conversation-state.v1";
+  readonly conversationId: string;
+  readonly userId: string;
+  readonly createdAt: string;
+  readonly lastTurnAt: string;
+  readonly turns: readonly ConversationTurn[];
+};
+
+export function newConversationId(): string;
+export function conversationStateRedisKey(
+  userId: string,
+  conversationId: string,
+): string;
+export function buildConversationState(input?: {
+  userId?: string;
+  conversationId?: string;
+  createdAt?: string;
+  lastTurnAt?: string;
+  turns?: object[];
+}): ConversationState;
+export function appendTurn(
+  state: ConversationState | null | undefined,
+  turn: ConversationTurnInput,
+): ConversationState;
+export function assertStateOwnership(
+  state: ConversationState | null | undefined,
+  userId: string,
+): void;
+export function isWithinAbsoluteLifetime(
+  state: ConversationState,
+  nowMs: number,
+  absoluteLifetimeSec: number,
+): boolean;
+export function effectiveTtlSec(
+  state: ConversationState,
+  nowMs: number,
+  slidingTtlSec: number,
+  absoluteLifetimeSec: number,
+): number;
+export function buildHistoryMessages(
+  state: ConversationState | null | undefined,
+  maxChars?: number,
+): readonly { readonly role: string; readonly content: string }[];

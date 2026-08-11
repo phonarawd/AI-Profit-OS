@@ -21,6 +21,7 @@ import {
   shapeByTone,
 } from "./ai.engine";
 import { AI_EVENTS } from "./ai.events";
+import { ConversationStateService } from "./conversation-state.service";
 import { FactToolService } from "./fact-tool.service";
 import { LlmAdapterService } from "./llm.adapter.service";
 import { MemoryService } from "./memory.service";
@@ -30,6 +31,8 @@ export type CoachChatInput = {
   text: string;
   stream?: boolean;
   llm?: boolean;
+  /** Engine §47.16.2 — omit to start a new conversation (additive, backward-compatible) */
+  conversationId?: string;
 };
 
 export type CoachSseEvent =
@@ -47,6 +50,7 @@ export class CoachOrchestrator {
     private readonly llm: LlmAdapterService,
     private readonly logs: AiLogsAdminService,
     private readonly bus: InProcessEventBus,
+    private readonly convState: ConversationStateService,
   ) {}
 
   async chips(userId: string) {
@@ -105,6 +109,12 @@ export class CoachOrchestrator {
       .map((m) => m.id)
       .filter((id): id is string => Boolean(id));
 
+    const { state: convState } = await this.convState.createOrLoad(
+      userId,
+      input.conversationId,
+    );
+    const history = this.convState.historyMessages(convState);
+
     let route = routeAssistant({
       text,
       twin,
@@ -129,6 +139,7 @@ export class CoachOrchestrator {
         intent: route.intent,
         answer_path: answerPath,
         tools_called: toolsCalled,
+        conversation_id: convState.conversationId,
       },
     };
 
@@ -167,6 +178,7 @@ export class CoachOrchestrator {
           twin,
           facts: factsUsed,
           memories,
+          history,
         });
         const llmOut = await this.llm.chat({
           messages: [...messages],
@@ -203,6 +215,7 @@ export class CoachOrchestrator {
         twin,
         facts: [],
         memories,
+        history,
       });
       const llmOut = await this.llm.chat({
         messages: [...messages],
@@ -281,6 +294,15 @@ export class CoachOrchestrator {
       yield { event: "chunk", data: { text: answerText } };
     }
 
+    // Engine §47.16.2 — session-scoped working state only (Redis). This is
+    // NOT durable memory: no ai_memory write happens here, and structured
+    // deictic-reference resolution ("그중 첫 번째는") is intentionally out of
+    // scope for this slice (tracked separately as the next queued todo).
+    await this.convState.appendTurns(convState, [
+      { role: "user", text, lane },
+      { role: "assistant", text: answerText, lane },
+    ]);
+
     const trace = await this.logs.append(
       {
         intent: route.intent || classifyLane(text),
@@ -299,6 +321,7 @@ export class CoachOrchestrator {
 
     const done = {
       trace_id: trace.id,
+      conversation_id: convState.conversationId,
       lane,
       answer_path: answerPath,
       provider_id: providerId,

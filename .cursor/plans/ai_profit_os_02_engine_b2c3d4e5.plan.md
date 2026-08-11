@@ -112,7 +112,7 @@ todos:
     status: pending
   - id: conv-state
     content: "[grok-4.5|256K] §47.16.2 A:Redis conversation working-state(key=ai:conv:${userId}:${conversationId}·TTL aiConvStateTtlSec=3600·absoluteLifetimeSec=43200 12h·createdAt+12h 초과 연장금지) B:conversationId API/SDK 계약(additive)+bounded history를 buildCoachMessages 주입 C:chat-sse.ts credentials:include 정합화(F14) · load시 state.userId≠req.user.userId면 fail-closed(에러 미노출) · verify:conversation-state-bounded(신설)"
-    status: pending
+    status: completed
   - id: reference-resolution
     content: "[grok-4.5|256K] §47.16.2 A:resultRef 구조적 참조 해석기(reference-resolver.cjs·authorization 아닌 hint only) B:getExecution(id) 재조회 시 FactToolService WHERE user_id=$1 AND id=$2 소유권 재검증(resultRef id를 그대로 신뢰하지 않음) C:durable memory 승격=정규화된 preferenceKey/value fact만(raw 발화 비저장·서버 템플릿 content)·assertNoMemoryMoneyKeys 재적용+preferenceKey 화이트리스트 · ai_memory.append 최초 연결"
     status: pending
@@ -1965,9 +1965,9 @@ schemas/conversation-state.v1.json(후보)
 | 신규 guard status | `ungrounded` |
 | 금지 | backend breaking rename(F5) · provider 계약 변경 · 새 ML 분류기 · raw 발화 durable 저장 |
 
-#### 47.16.8 DoD (Engine #37~#42 · 전부 미체크 — 이번 도킹은 구현착수 아님)
+#### 47.16.8 DoD (Engine #37~#42)
 
-- [ ] `conv-state`: Redis working-state + ownership 재검증 + conversationId 계약 + F14
+- [x] `conv-state`: Redis working-state + ownership 재검증 + conversationId 계약 + F14 — closure proof 완료(서버 2-turn continuity, 클라이언트 SDK/hook continuity, absolute-lifetime TTL 축소/소멸, 현재 tip AI verify 14/14 PASS), commit 대기 중
 - [ ] `reference-resolution`: resultRef 해석기 + 소유권 재검증 + 정규화 preference 승격
 - [ ] `routing-coverage`: 패턴 보강 + `getExecution` 도달 + eval `tools_called` 실검증
 - [ ] `scope-guard`: 입력 필터 + 출력 잔차 가드 + residual risk 명시 + eval 신설

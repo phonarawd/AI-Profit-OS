@@ -57,6 +57,10 @@ export function usePeotteokChat(
   const getTokenRef = useRef(getAccessToken);
   getTokenRef.current = getAccessToken;
   const stopRef = useRef<(() => void) | null>(null);
+  /** Engine §47.16.2 — kept in a ref (not state) so mid-stream updates from
+   * `onMeta` don't need a re-render, and the next `send()` always reads the
+   * latest value even while a previous stream is still closing. */
+  const conversationIdRef = useRef<string | undefined>(undefined);
 
   const refreshChips = useCallback(async () => {
     if (!enabled) return;
@@ -115,11 +119,15 @@ export function usePeotteokChat(
       stopRef.current = streamPeotteokChat({
         text,
         apiBase,
+        conversationId: conversationIdRef.current,
         getAccessToken: () => getTokenRef.current(),
         onMeta: (meta) => {
           if (meta.lane === "P" || meta.lane === "G" || meta.lane === "S") {
             lane = meta.lane;
             setLastLane(meta.lane);
+          }
+          if (meta.conversation_id) {
+            conversationIdRef.current = meta.conversation_id;
           }
         },
         onChunk: (chunk) => {
@@ -133,6 +141,9 @@ export function usePeotteokChat(
         },
         onDone: (done) => {
           setLastDone(done);
+          if (done.conversation_id) {
+            conversationIdRef.current = done.conversation_id;
+          }
           if (done.lane === "P" || done.lane === "G" || done.lane === "S") {
             setLastLane(done.lane);
             lane = done.lane;

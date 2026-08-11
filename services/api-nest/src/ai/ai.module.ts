@@ -12,6 +12,7 @@ import { AiPickAdminService } from "./ai-pick.admin.service";
 import { AssistantService } from "./assistant.service";
 import { CoachController } from "./coach.controller";
 import { CoachOrchestrator } from "./coach.orchestrator";
+import { ConversationStateService } from "./conversation-state.service";
 import { FactToolService } from "./fact-tool.service";
 import { HelpRagService } from "./help-rag.service";
 import { LlmAdapterService } from "./llm.adapter.service";
@@ -50,6 +51,7 @@ import { UserTwinService } from "./user-twin.service";
     LlmAdapterService,
     HelpRagService,
     FactToolService,
+    ConversationStateService,
     CoachOrchestrator,
   ],
   exports: [
@@ -62,6 +64,7 @@ import { UserTwinService } from "./user-twin.service";
     LlmAdapterService,
     HelpRagService,
     FactToolService,
+    ConversationStateService,
     CoachOrchestrator,
   ],
 })

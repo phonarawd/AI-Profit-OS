@@ -23,10 +23,14 @@ export type PeotteokChatMeta = {
   intent?: string;
   answer_path?: string;
   tools_called?: string[];
+  /** Engine §47.16.2 — echoes the conversation's id (server-issued if omitted on request) */
+  conversation_id?: string;
 };
 
 export type PeotteokChatDone = {
   trace_id?: string;
+  /** Engine §47.16.2 — pass back on the next request body to keep bounded recent history */
+  conversation_id?: string;
   lane?: PeotteokLane;
   answer_path?: string;
   deep_link?: string | null;

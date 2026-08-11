@@ -92,6 +92,18 @@ const {
   renderFactAnswer,
   pickChips,
 } = require("./coach-templates.cjs");
+const {
+  MAX_TURNS,
+  MAX_TURN_TEXT_LEN,
+  newConversationId,
+  conversationStateRedisKey,
+  buildConversationState,
+  appendTurn,
+  assertStateOwnership,
+  isWithinAbsoluteLifetime,
+  effectiveTtlSec,
+  buildHistoryMessages,
+} = require("./conversation-state.cjs");
 
 module.exports = {
   AI_LEVELS,
@@ -154,4 +166,14 @@ module.exports = {
   shapeByTone,
   renderFactAnswer,
   pickChips,
+  MAX_TURNS,
+  MAX_TURN_TEXT_LEN,
+  newConversationId,
+  conversationStateRedisKey,
+  buildConversationState,
+  appendTurn,
+  assertStateOwnership,
+  isWithinAbsoluteLifetime,
+  effectiveTtlSec,
+  buildHistoryMessages,
 };

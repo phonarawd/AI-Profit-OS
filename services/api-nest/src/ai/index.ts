@@ -12,4 +12,5 @@ export { AssistantService } from "./assistant.service";
 export { LlmAdapterService } from "./llm.adapter.service";
 export { FactToolService } from "./fact-tool.service";
 export { HelpRagService } from "./help-rag.service";
+export { ConversationStateService } from "./conversation-state.service";
 export { CoachOrchestrator } from "./coach.orchestrator";
