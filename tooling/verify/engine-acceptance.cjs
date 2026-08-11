@@ -1,13 +1,14 @@
 /**
- * verify:engine-acceptance — QA-0 범위 only (full suite/ACCEPTED 판정 금지)
+ * verify:engine-acceptance — QA-0 locks + QA-1 scope (full ACCEPTED 판정 금지)
  *
  * 검증:
  * 1) Acceptance Contract L1~L6 산출물 실재
  * 2) severity-policy 선고정 문서
  * 3) protected-scope hash 규칙 deterministic
  * 4) baseline Dual Dirty + required fields · valid↔protected_scope_clean
- * 5) kill-switch가 tiny smoke보다 먼저 작동
- * 6) evidence-manifest · REPORT · verdict ≠ ENGINE_ACCEPTED_FOR_UI · next=QA1
+ * 5) kill-switch가 tiny smoke / QA1보다 먼저 작동
+ * 6) evidence-manifest · REPORT · verdict ≠ ENGINE_ACCEPTED_FOR_UI
+ * 7) QA-1: suite COMPLETE · Functional/Contract report · idempotency 분리 · next=QA2
  */
 "use strict";
 
@@ -44,9 +45,14 @@ const REQUIRED_FILES = [
   `${GOV}/defects.v1.json`,
   `${GOV}/evidence-manifest.v1.json`,
   `${GOV}/ENGINE_ACCEPTANCE_REPORT.md`,
+  `${GOV}/qa1-result.v1.json`,
   "tooling/engine-acceptance/kill-switch.cjs",
   "tooling/engine-acceptance/tiny-smoke.cjs",
   "tooling/engine-acceptance/freeze-baseline.cjs",
+  "tooling/engine-acceptance/run-qa1.cjs",
+  "tooling/engine-acceptance/checks/schemas-routes-contract.cjs",
+  "tooling/engine-acceptance/checks/db-consistency.cjs",
+  "tooling/engine-acceptance/checks/idempotency-split.cjs",
   ".github/workflows/engine-acceptance.yml",
 ];
 
@@ -97,7 +103,7 @@ if (scope) {
   }
 }
 
-// --- baseline ---
+// --- baseline (frozen at QA-0 — do not advance qa_phase) ---
 let baseline;
 try {
   baseline = readJson(`${GOV}/baseline.v1.json`);
@@ -133,9 +139,8 @@ if (baseline && scope) {
   if (!/^[0-9a-f]{40}$/i.test(baseline.tree_sha || "")) {
     fail("baseline.tree_sha must be 40-char hex");
   }
-  if (baseline.qa_phase !== "QA-0") fail("baseline.qa_phase must be QA-0");
-  if (baseline.next !== "QA1_DETERMINISTIC_TRUTH") {
-    fail("baseline.next must be QA1_DETERMINISTIC_TRUTH");
+  if (baseline.qa_phase !== "QA-0") {
+    fail("baseline.qa_phase must remain QA-0 (freeze point)");
   }
   if (typeof baseline.working_tree_clean !== "boolean") {
     fail("working_tree_clean must be boolean");
@@ -146,7 +151,6 @@ if (baseline && scope) {
   if (baseline.valid !== true && baseline.valid !== false) {
     fail("baseline.valid must be boolean");
   }
-  // Dual Dirty 일관성: valid는 protected_scope_clean에만 종속 (전체 dirty로 세탁 금지)
   if (baseline.valid !== baseline.protected_scope_clean) {
     fail("baseline.valid must equal protected_scope_clean (no laundry via working_tree)");
   }
@@ -164,8 +168,6 @@ if (baseline && scope) {
       `baseline.protected_scope_clean stale (baseline=${baseline.protected_scope_clean} live=${liveDirty.protected_scope_clean})`,
     );
   }
-  // working_tree_clean은 사실 기록 — 생성 후 무관 WIP가 늘 수 있음 → soft check: 타입만
-  // scope manifest 재계산 일치
   const liveManifest = buildManifest(scope);
   if (
     !baseline.protected_scope_manifest ||
@@ -177,7 +179,6 @@ if (baseline && scope) {
     fail("protected_scope_manifest.pathCount drift");
   }
 
-  // aggregate hashes recompute
   for (const [key, paths] of Object.entries(scope.aggregateHashes || {})) {
     const live = hashPathList(paths, scope);
     if (baseline[key] !== live) {
@@ -193,7 +194,7 @@ if (baseline && scope) {
   }
 
   if (baseline.valid !== true) {
-    fail("QA-0 requires baseline.valid=true (protected scope must be clean)");
+    fail("requires baseline.valid=true (protected scope must be clean)");
   }
 }
 
@@ -234,16 +235,75 @@ if (evidence) {
   if (evidence.schema !== "governance.engine-acceptance.evidence-manifest.v1") {
     fail("evidence-manifest.schema mismatch");
   }
-  if (evidence.qa_phase !== "QA-0") fail("evidence-manifest.qa_phase must be QA-0");
+  if (evidence.qa_phase !== "QA-1") {
+    fail("evidence-manifest.qa_phase must be QA-1 after qa1-deterministic-truth");
+  }
   if (!evidence.baseline_id) fail("evidence-manifest.baseline_id required");
   if (baseline && evidence.baseline_id !== baseline.id) {
     fail("evidence-manifest.baseline_id must match baseline.id");
   }
   if (evidence.verdict === "ENGINE_ACCEPTED_FOR_UI") {
-    fail("QA-0 must not issue ENGINE_ACCEPTED_FOR_UI");
+    fail("must not issue ENGINE_ACCEPTED_FOR_UI before QA1..QA8 complete");
   }
-  if (evidence.next !== "QA1_DETERMINISTIC_TRUTH") {
-    fail("evidence-manifest.next must be QA1_DETERMINISTIC_TRUTH");
+  if (evidence.next !== "QA2_SYNTHETIC_PERSONAS") {
+    fail("evidence-manifest.next must be QA2_SYNTHETIC_PERSONAS");
+  }
+  if (evidence.evidence_integrity !== "VALID") {
+    fail("evidence_integrity must be VALID");
+  }
+  if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa1 !== true) {
+    fail("evidence.kill_switch.verified_before_qa1 must be true");
+  }
+
+  const qa0 = (evidence.suites || []).find((s) => s.suite_id === "QA0");
+  const qa1 = (evidence.suites || []).find((s) => s.suite_id === "QA1");
+  if (!qa0 || qa0.completion_status !== "COMPLETE") {
+    fail("QA0 suite must remain COMPLETE");
+  }
+  if (!qa1 || qa1.completion_status !== "COMPLETE") {
+    fail("QA1 suite must be COMPLETE");
+  }
+  if (!qa1.run_id || !qa1.checksum) {
+    fail("QA1 suite must have run_id + checksum");
+  }
+}
+
+let qa1Result;
+try {
+  qa1Result = readJson(`${GOV}/qa1-result.v1.json`);
+} catch {
+  fail("qa1-result.v1.json invalid JSON");
+}
+if (qa1Result) {
+  if (qa1Result.schema !== "governance.engine-acceptance.qa1-result.v1") {
+    fail("qa1-result.schema mismatch");
+  }
+  if (qa1Result.completion_status !== "COMPLETE") {
+    fail("qa1-result.completion_status must be COMPLETE");
+  }
+  if (qa1Result.suite_id !== "QA1") fail("qa1-result.suite_id must be QA1");
+  if (baseline && qa1Result.baseline_id !== baseline.id) {
+    fail("qa1-result.baseline_id must match baseline.id");
+  }
+  if (!qa1Result.kill_switch || qa1Result.kill_switch.verified_before_checks !== true) {
+    fail("qa1-result must record kill_switch.verified_before_checks");
+  }
+  const checks = qa1Result.checks || {};
+  for (const key of ["schemas_routes", "db_consistency", "idempotency_split"]) {
+    if (!checks[key]) fail(`qa1-result.checks.${key} required`);
+  }
+  if (checks.idempotency_split) {
+    const axes = checks.idempotency_split.axes || [];
+    const ids = axes.map((a) => a.invariant_id);
+    if (!ids.includes("INV-IDEMPOTENCY-01") || !ids.includes("INV-IDEMPOTENCY-03")) {
+      fail("qa1 idempotency must cover INV-IDEMPOTENCY-01 and INV-IDEMPOTENCY-03 separately");
+    }
+  }
+  if (evidence) {
+    const qa1 = (evidence.suites || []).find((s) => s.suite_id === "QA1");
+    if (qa1 && qa1.checksum !== qa1Result.checksum) {
+      fail("evidence QA1.checksum must match qa1-result.checksum");
+    }
   }
 }
 
@@ -252,13 +312,19 @@ const report = fs.existsSync(path.join(ROOT, `${GOV}/ENGINE_ACCEPTANCE_REPORT.md
   : "";
 if (report) {
   if (/verdict\s*[:=]\s*`?ENGINE_ACCEPTED_FOR_UI/i.test(report)) {
-    fail("REPORT must not claim ENGINE_ACCEPTED_FOR_UI at QA-0");
+    fail("REPORT must not claim ENGINE_ACCEPTED_FOR_UI before full suites");
   }
-  if (!report.includes("QA1_DETERMINISTIC_TRUTH")) {
-    fail("REPORT must declare NEXT=QA1_DETERMINISTIC_TRUTH");
+  if (!report.includes("QA2_SYNTHETIC_PERSONAS")) {
+    fail("REPORT must declare NEXT=QA2_SYNTHETIC_PERSONAS");
   }
-  if (!report.includes("ENGINE_QA_INCOMPLETE") && !report.includes("BASELINE = FROZEN")) {
-    fail("REPORT must record QA-0 freeze / incomplete state");
+  if (!report.includes("## Contract") || !report.includes("## Functional")) {
+    fail("REPORT must include Functional and Contract sections");
+  }
+  if (!report.includes("QA1 = COMPLETE")) {
+    fail("REPORT banner must include QA1 = COMPLETE");
+  }
+  if (!report.includes("INV-IDEMPOTENCY-01") || !report.includes("INV-IDEMPOTENCY-03")) {
+    fail("REPORT Functional must mention both idempotency invariants");
   }
 }
 
@@ -273,6 +339,7 @@ if (fs.existsSync(wfPath)) {
     fail("workflow aggregator must use if: always()");
   }
   if (!/retention-days:\s*90/.test(wf)) fail("workflow artifact retention-days must be ≥90");
+  if (!/run-qa1\.cjs/.test(wf)) fail("workflow must invoke run-qa1.cjs for QA1");
 }
 
 // --- L6 kill-switch before smoke ---
@@ -324,28 +391,39 @@ try {
 }
 if (!smokeOk) fail("tiny-smoke safe path must return SMOKE_OK after kill-switch");
 
+// QA1 module must abort on kill-switch before checks
+const { runQa1 } = require("../engine-acceptance/run-qa1.cjs");
+let qa1Blocked = false;
+try {
+  runQa1({
+    target_env: "production",
+    hostname: "localhost",
+    synthetic_account_namespace: "qa-synth-x",
+  });
+} catch (e) {
+  qa1Blocked = e && e.code === "AIPO_QA_KILL_SWITCH";
+}
+if (!qa1Blocked) {
+  fail("run-qa1 must abort via kill-switch before checks when unsafe");
+}
+
 // workflow hash in baseline matches file
-if (baseline && fs.existsSync(wfPath)) {
-  const liveWf = hashFileBytes(wfPath);
-  // acceptance_workflow_hash is aggregate of listed paths — recompute via scope
-  if (scope) {
-    const live = hashPathList(scope.aggregateHashes.acceptance_workflow_hash, scope);
-    if (baseline.acceptance_workflow_hash !== live) {
-      fail("acceptance_workflow_hash drift");
-    }
-  } else if (baseline.acceptance_workflow_hash !== liveWf) {
-    fail("acceptance_workflow_hash drift (file)");
+if (baseline && fs.existsSync(wfPath) && scope) {
+  const live = hashPathList(scope.aggregateHashes.acceptance_workflow_hash, scope);
+  if (baseline.acceptance_workflow_hash !== live) {
+    fail("acceptance_workflow_hash drift");
   }
 }
 
 if (fails.length) {
-  console.error("[verify:engine-acceptance] FAIL (QA-0)");
+  console.error("[verify:engine-acceptance] FAIL (QA-0+QA-1)");
   for (const f of fails) console.error(`  - ${f}`);
   process.exit(1);
 }
 
-console.log("[verify:engine-acceptance] PASS (QA-0 scope)");
+console.log("[verify:engine-acceptance] PASS (QA-0+QA-1 scope)");
 console.log("  ACCEPTANCE CONTRACT = LOCKED");
 console.log("  BASELINE = FROZEN");
+console.log("  QA1 = COMPLETE");
 console.log("  QA HARNESS TARGET = SAFE");
-console.log("  NEXT = QA1_DETERMINISTIC_TRUTH");
+console.log("  NEXT = QA2_SYNTHETIC_PERSONAS");

@@ -7,7 +7,7 @@ todos:
     status: completed
   - id: qa1-deterministic-truth
     content: "[composer-2.5|200K] tooling/engine-acceptance scaffold + kill-switch(allowlist) · QA1 COMPLETE 증거 · schemas+routes contract · DB consistency · idempotency same-key/same vs conflict 분리 연결 · report Functional/Contract"
-    status: pending
+    status: completed
   - id: qa2-synthetic-personas
     content: "[composer-2.5|200K] personas×journeys×coverage 매핑 runner · Dirty Path · user-isolation interleave/token교차/IDOR면 · seed+RNG+clock+request seq evidence · 로컬 tiny smoke · KPI 숫자 금지"
     status: pending
@@ -44,8 +44,9 @@ isProject: false
 ```text
 02.5 PRE-UI ENGINE ACCEPTANCE QA
 DESIGN: READY_TO_EXECUTE
-CURRENT TODO: qa1-deterministic-truth
+CURRENT TODO: qa2-synthetic-personas
 QA0: COMPLETE · CONTRACT LOCKED · BASELINE FROZEN · HARNESS SAFE
+QA1: COMPLETE · schemas+routes · DB consistency · idempotency split · Functional/Contract
 PRODUCT MUTATION: 0
 03 UI: BLOCKED
 ```

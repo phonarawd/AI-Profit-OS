@@ -1,7 +1,7 @@
 {
   "schema": "governance.engine-acceptance.defects.v1",
   "version": "1.0.0",
-  "status": "qa0_empty_locked",
+  "status": "qa1_empty",
   "requiredLinkFields": [
     "severity",
     "invariant_id",
