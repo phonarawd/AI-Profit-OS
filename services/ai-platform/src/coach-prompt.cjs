@@ -6,6 +6,7 @@
 "use strict";
 
 const { referencePromptBlock } = require("./reference-resolver.cjs");
+const { buildGroundedNumericContext } = require("./numeric-grounding.cjs");
 
 const SYSTEM_BASE = [
   "당신은 퍼뜩입니다. 앱 이름은 퍼뜩입니다.",
@@ -49,8 +50,13 @@ function buildCoachMessages(input = {}) {
     systemParts.push(
       "레인=P(플랫폼 Fact). Fact JSON 밖 숫자를 만들지 마세요. 문장화만 하세요.",
     );
+    systemParts.push(
+      "금액·비율·개수·날짜는 GROUNDED_NUMERIC_JSON에 있는 값만 말하세요. 근거 없으면 숫자를 말하지 마세요. 수익률·ROI를 새로 계산하지 마세요. null/unknown을 0으로 바꾸지 마세요. 다른 통화끼리 더하지 마세요.",
+    );
     systemParts.push(`toneBand=${toneBand}`);
     systemParts.push(`FACTS_JSON=${JSON.stringify(facts.map(compactFact))}`);
+    const grounded = buildGroundedNumericContext(facts);
+    systemParts.push(`GROUNDED_NUMERIC_JSON=${JSON.stringify(grounded)}`);
     if (help.length) {
       systemParts.push(
         `HELP_SNIPPETS=${JSON.stringify(help.map((h) => h.text || h).slice(0, 3))}`,

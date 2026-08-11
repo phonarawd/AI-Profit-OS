@@ -124,7 +124,7 @@ todos:
     status: completed
   - id: numeric-grounding
     content: "[grok-4.5|256K] §47.16.5 신규 numeric-grounding.cjs(currency/percent/quantity/date/ordinal/id_like 분류 · platform-relevant date는 factsUsed 날짜필드 존재시 grounding 대상·없으면 unsupported · bare unitless quantity는 제외 유지 · serverDerivedAllowlist는 {value,provenance:server_derived,derivationId} 필수태그) · answer-guard.cjs GUARD_STATUSES에 ungrounded 추가(P·llm_p만 검사) · CoachOrchestrator ungrounded시 renderFactAnswer 결정론적 폴백 · verify:numeric-grounding(신설, 날짜 회귀케이스 포함)"
-    status: pending
+    status: completed
   - id: shadow-replay-naming
     content: "[composer-2.5|200K] §47.16.6 backend breaking rename 금지(additive only 원칙) · shadow-replay-engine/drift.cjs에 신규 ADVISORY_LABEL 상수 추가(기존 FAIL_ACTION=block_settlement 값·상수 불변) · shadow-replay.admin.service.ts에 driftAdvisoryOnly/contractLabel 필드 additive 추가(기존 settlementBlocked 필드 유지) · DB 신규 컬럼 additive migration(기존 fail_action CHECK 제약 불변·backfill 불필요) · verify:shadow-replay-drift.cjs는 기존 assertion 유지+신규 assertion만 추가 · Admin 표면 문구는 04 Admin pointer만(강제 데드라인 없음)"
     status: pending
@@ -215,7 +215,7 @@ isProject: false
 - `P_PATTERNS`+=`/지갑/` · `EXECUTION_PATTERNS` → P · `defaultToolsForText`→`["getExecution"]` before opportunity fallback
 - `eval/p_fact.jsonl` +3 (`expectToolsAny:["getExecution"]`) · `verify:ai-lane-router` tools_called 실검증 · `verify:routing-coverage` live
 - YAML `completed` · S/G/no-autonomy 불변 · scope-guard/numeric 비침범
-- **다음 File-Serial (이력):** 당시 `scope-guard` · **현재 다음=`numeric-grounding`**
+- **다음 File-Serial (이력):** 당시 `scope-guard` → `numeric-grounding` CLOSED · **현재 다음=`shadow-replay-naming`**
 
 ### CLOSED — scope-guard (2026-08-12)
 
@@ -223,7 +223,14 @@ isProject: false
 - `META_EXPOSURE_MARKERS` residual output guard · G프롬프트 1줄 · `decideScope` inspectable
 - assurance 3단계 명시(`complete_NOT_PROVEN` = documented residual · 완전차단 선언 0)
 - `eval/g_scope_escape.jsonl` §H 7 · `verify:ai-scope-guard` live · YAML `completed`
-- **다음 File-Serial:** `numeric-grounding` only
+- **다음 File-Serial (이력):** 당시 `numeric-grounding` · **현재 다음=`shadow-replay-naming`**
+
+### CLOSED — numeric-grounding (2026-08-12)
+
+- `numeric-grounding.cjs` · currency/percent/unit-quantity 강제 · ordinal/bare exclude · platform date unsupported-when-absent
+- `serverDerivedAllowlist` (`todayPossible`·`ledgerTotal` COUNT) · `GROUNDED_NUMERIC_JSON` prompt · `ungrounded` guard(P·llm_p)
+- CoachOrchestrator ungrounded → `renderFactAnswer` fallback · `verify:numeric-grounding` live · YAML `completed`
+- **다음 File-Serial:** `shadow-replay-naming` only
 
 ## 0. 착수 전 실물 대조 기록 (v7.22.39 · 예측 0 · MCP+FS)
 
@@ -618,7 +625,7 @@ flowchart TD
 #### 0.10.3 실행 시점
 
 - **CLOSED (2026-08-12):** `resolveEbayIngestListings` + Nest ingest 배선 + Admin `identity-review-queue` + `verify:ebay-identity-ingest` live · live Browse tick → `w_rolex_sub_126610ln` image_source=ebay · i.ebayimg.com listings≥3 · unmatched queue 가시(silent drop 0) · YAML `completed`
-- **다음 File-Serial (이력):** 당시 `routing-coverage` → `scope-guard` CLOSED · **현재 다음=`numeric-grounding`**
+- **다음 File-Serial (이력):** 당시 `routing-coverage` → `scope-guard` → `numeric-grounding` CLOSED · **현재 다음=`shadow-replay-naming`**
 
 ## 0.0 시세 소스 잠금 (v7.13) — Signup-Ready + Margin UX + Capital Tiers
 
@@ -2001,7 +2008,7 @@ schemas/conversation-state.v1.json(후보)
 - [x] `reference-resolution`: resultRef 해석기 + 소유권 재검증 + 정규화 preference 승격 — `verify:reference-resolution` PASS
 - [x] `routing-coverage`: 패턴 보강 + `getExecution` 도달 + eval `tools_called` 실검증 — `verify:routing-coverage`/`ai-lane-router` PASS
 - [x] `scope-guard`: 입력 필터 + 출력 잔차 가드 + residual risk 명시 + eval 신설 — `verify:ai-scope-guard` PASS
-- [ ] `numeric-grounding`: date-aware 그라운딩 모듈 + guard 통합 + fallback + eval
+- [x] `numeric-grounding`: date-aware 그라운딩 모듈 + guard 통합 + fallback + eval — `verify:numeric-grounding` PASS
 - [ ] `shadow-replay-naming`: additive 라벨/필드/컬럼 + verify 추가(breaking 0)
 - [ ] verify:gate + CI green (전체 슬라이스 완료 후)
 - [ ] UI/Admin = pointer만(본문 중복 0)

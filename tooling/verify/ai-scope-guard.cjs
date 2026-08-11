@@ -263,9 +263,10 @@ if (ai.FACT_TOOLS.includes("execute_withdraw")) {
   fails.push("FACT_TOOLS must not gain mutate tools");
 }
 
-// must not pull numeric-grounding forward
-if (fs.existsSync(path.join(root, "services/ai-platform/src/numeric-grounding.cjs"))) {
-  fails.push("scope-guard must not pull forward numeric-grounding module");
+// numeric-grounding may exist (later File-Serial); scope-guard must not own it
+const ngSrc = read("services/ai-platform/src/assistant-router.cjs");
+if (/groundAnswerNumerics|GROUNDED_NUMERIC_JSON/.test(ngSrc)) {
+  fails.push("scope-guard router must not absorb numeric-grounding duties");
 }
 
 // complete classification never claimed as runtime enforced

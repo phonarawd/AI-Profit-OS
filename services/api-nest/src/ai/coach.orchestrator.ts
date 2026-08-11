@@ -304,6 +304,7 @@ export class CoachOrchestrator {
       twin,
       userText: text,
       answerText,
+      answerPath,
       usedTwinForMoney: false,
     });
 
@@ -330,6 +331,7 @@ export class CoachOrchestrator {
         twin,
         userText: text,
         answerText,
+        answerPath,
         usedTwinForMoney: false,
       });
     }
@@ -337,6 +339,26 @@ export class CoachOrchestrator {
     if (guard.status === "refresh") {
       answerText = P_REFRESH_TEMPLATE.text;
       answerPath = "fact";
+    }
+
+    // Engine §47.16.5 — ungrounded llm_p → deterministic Fact template fallback
+    if (guard.status === "ungrounded") {
+      answerText = renderFactAnswer(factsUsed, {
+        toneBand: twin?.toneBand,
+      });
+      answerPath = "fact";
+      providerId = "none";
+      providerEffective = "none";
+      guard = guardAnswer({
+        lane: "P",
+        toolsCalled,
+        factsUsed,
+        twin,
+        userText: text,
+        answerText,
+        answerPath: "fact",
+        usedTwinForMoney: false,
+      });
     }
 
     if (guard.status === "block") {

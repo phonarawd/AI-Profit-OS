@@ -30,6 +30,7 @@ const GUARD_STATUSES = Object.freeze([
   "refresh",
   "block",
   "reroute_p",
+  "ungrounded",
 ]);
 
 /**

@@ -233,9 +233,9 @@ if (ai.FACT_TOOLS.includes("execute_withdraw")) {
   fails.push("FACT_TOOLS must not gain mutate tools for coverage");
 }
 
-// numeric-grounding remains a later File-Serial slice
-if (fs.existsSync(path.join(root, "services/ai-platform/src/numeric-grounding.cjs"))) {
-  fails.push("routing-coverage must not pull forward numeric-grounding module");
+// numeric-grounding may exist; routing must not absorb grounding duties
+if (/groundAnswerNumerics|GROUNDED_NUMERIC_JSON|collectGroundedNumerics/.test(routerSrc)) {
+  fails.push("routing-coverage must not absorb numeric-grounding duties");
 }
 
 const pkg = read("package.json");

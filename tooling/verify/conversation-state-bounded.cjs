@@ -189,9 +189,10 @@ if (!hook.includes("conversationId")) {
 if (/this\.memory\.append/.test(svc) || /MemoryService/.test(svc)) {
   fails.push("ConversationStateService must not own durable memory.append");
 }
-// numeric-grounding remains a later File-Serial slice
-if (fs.existsSync(path.join(root, "services/ai-platform/src/numeric-grounding.cjs"))) {
-  fails.push("conversation-state verify must not pull forward the numeric-grounding module");
+// numeric-grounding may exist; conversation-state must not absorb its duties
+const convMod = read("services/ai-platform/src/conversation-state.cjs");
+if (/groundAnswerNumerics|GROUNDED_NUMERIC_JSON|serverDerivedAllowlist/.test(convMod)) {
+  fails.push("conversation-state must not absorb numeric-grounding duties");
 }
 
 const pkg = read("package.json");

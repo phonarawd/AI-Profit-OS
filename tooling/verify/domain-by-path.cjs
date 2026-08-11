@@ -190,6 +190,7 @@ const RULES = [
       /^services\/api-nest\/src\/ai\/coach\.orchestrator\.ts$/.test(f),
     scripts: [
       "ai-scope-guard.cjs",
+      "numeric-grounding.cjs",
       "routing-coverage.cjs",
       "ai-lane-router.cjs",
       "ai-coach-fact-only.cjs",
@@ -198,6 +199,22 @@ const RULES = [
       "reference-resolution.cjs",
       "conversation-state-bounded.cjs",
       "age-tone-surfaces.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^services\/ai-platform\/src\/numeric-grounding\.cjs$/.test(f) ||
+      /^tooling\/verify\/numeric-grounding\.cjs$/.test(f),
+    scripts: [
+      "numeric-grounding.cjs",
+      "ai-scope-guard.cjs",
+      "answer-trace.cjs",
+      "ai-coach-fact-only.cjs",
+      "ai-coach-no-autonomy.cjs",
+      "ai-general-no-money-tools.cjs",
+      "fact-freshness.cjs",
+      "home-state-truth.cjs",
+      "no-fake-zero-status.cjs",
     ],
   },
   {

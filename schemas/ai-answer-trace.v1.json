@@ -84,7 +84,8 @@
             "pass",
             "refresh",
             "block",
-            "reroute_p"
+            "reroute_p",
+            "ungrounded"
           ]
         },
         "reason": {

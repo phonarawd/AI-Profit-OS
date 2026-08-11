@@ -386,3 +386,60 @@ export function buildHistoryMessages(
   state: ConversationState | null | undefined,
   maxChars?: number,
 ): readonly { readonly role: string; readonly content: string }[];
+
+/** Engine §47.16.5 — P-lane numeric grounding */
+export const SERVER_DERIVED_ALLOWLIST: Readonly<
+  Record<
+    string,
+    {
+      readonly derivationId: string;
+      readonly kind: string;
+      readonly unit: string;
+      readonly currency: string | null;
+    }
+  >
+>;
+export const ALLOWED_DERIVATION_IDS: ReadonlySet<string>;
+export const NUMERIC_KINDS: readonly string[];
+export const AVAILABILITIES: readonly string[];
+export const CURRENCY_FIELDS: readonly string[];
+export const QUANTITY_FIELDS: readonly string[];
+export const PERCENT_FIELDS: readonly string[];
+export const DATE_FIELDS: readonly string[];
+export function tagServerDerived(
+  value: unknown,
+  derivationId: string,
+): {
+  readonly value: string | null;
+  readonly provenance: "server_derived";
+  readonly derivationId: string;
+  readonly availability: string;
+};
+export function assertServerDerivedAllowlist(entry: object): true;
+export function collectGroundedNumerics(
+  facts: object[],
+  opts?: object,
+): readonly object[];
+export function buildGroundedNumericContext(
+  facts: object[],
+  opts?: object,
+): {
+  readonly schema: "grounded-numeric-context.v1";
+  readonly unauthorized: boolean;
+  readonly items: readonly object[];
+};
+export function extractNumericClaims(answerText: string): readonly object[];
+export function classifyNumericClaim(claim: object): string;
+export function groundAnswerNumerics(input?: object): {
+  readonly status: string;
+  readonly pass: boolean;
+  readonly reason?: string;
+  readonly claims: readonly object[];
+  readonly grounded: readonly object[];
+  readonly decision: string;
+  readonly violations?: readonly object[];
+};
+export function isForbiddenDerivedRoi(
+  answerText: string,
+  factsUsed: object[],
+): boolean;

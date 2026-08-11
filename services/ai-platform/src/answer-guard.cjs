@@ -1,6 +1,7 @@
 /**
- * Answer Guard — Engine §47.2 / §47.4
+ * Answer Guard — Engine §47.2 / §47.4 / §47.16.5
  * forbidden + freshness(P) + no-money-tools(G) + lane match + Twin≠money
+ * + P/llm_p numeric grounding (ungrounded)
  */
 
 "use strict";
@@ -12,6 +13,7 @@ const {
 } = require("./fact-card-loader.cjs");
 const { isForbiddenMoneyAction } = require("./levels.cjs");
 const { GUARD_STATUSES } = require("./ai-log.cjs");
+const { groundAnswerNumerics } = require("./numeric-grounding.cjs");
 
 const FORBIDDEN_TWIN_MONEY_KEYS = Object.freeze([
   "balanceUsdt",
@@ -39,6 +41,7 @@ const META_EXPOSURE_MARKERS = Object.freeze([
   /FACTS_JSON/,
   /RECENT_MEMORY/,
   /REFERENCE_JSON/,
+  /GROUNDED_NUMERIC_JSON/,
   /tools_called/i,
   /answer_path\s*=/i,
   /ignore\s+previous\s+instructions/i,
@@ -54,6 +57,7 @@ const META_EXPOSURE_MARKERS = Object.freeze([
  * @param {object[]} [input.factsUsed]
  * @param {object|null} [input.twin]
  * @param {string} [input.answerText]
+ * @param {string} [input.answerPath] — Engine §47.16.5 numeric grounding (P·llm_p)
  * @param {string|Date|number} [input.now]
  * @param {boolean} [input.usedTwinForMoney]
  */
@@ -135,9 +139,24 @@ function guardAnswer(input = {}) {
         }
       }
     }
+
+    // Engine §47.16.5 — P · llm_p only; ungrounded → orchestrator fact fallback
+    const answerPath = String(input.answerPath || input.answer_path || "");
+    if (answerPath === "llm_p") {
+      const ng = groundAnswerNumerics({
+        lane: "P",
+        answerPath: "llm_p",
+        answerText,
+        factsUsed: facts,
+        now: input.now,
+      });
+      if (!ng.pass) {
+        return fail("ungrounded", ng.reason || "ungrounded_numeric");
+      }
+    }
   }
 
-  if (!GUARD_STATUSES.includes("pass")) {
+  if (!GUARD_STATUSES.includes("pass") || !GUARD_STATUSES.includes("ungrounded")) {
     /* lock import */
   }
   return ok("pass");

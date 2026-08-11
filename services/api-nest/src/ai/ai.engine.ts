@@ -119,3 +119,12 @@ export const OFF_TOPIC_PATTERNS = ai.OFF_TOPIC_PATTERNS;
 export const SCOPE_ASSURANCE = ai.SCOPE_ASSURANCE;
 export const decideScope = ai.decideScope;
 export const matchesOffTopic = ai.matchesOffTopic;
+
+// Engine §47.16.5 — P-lane numeric grounding
+export const groundAnswerNumerics = ai.groundAnswerNumerics;
+export const buildGroundedNumericContext = ai.buildGroundedNumericContext;
+export const collectGroundedNumerics = ai.collectGroundedNumerics;
+export const tagServerDerived = ai.tagServerDerived;
+export const assertServerDerivedAllowlist = ai.assertServerDerivedAllowlist;
+export const SERVER_DERIVED_ALLOWLIST = ai.SERVER_DERIVED_ALLOWLIST;
+export const ALLOWED_DERIVATION_IDS = ai.ALLOWED_DERIVATION_IDS;
