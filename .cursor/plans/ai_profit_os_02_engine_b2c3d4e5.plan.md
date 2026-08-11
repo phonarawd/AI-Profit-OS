@@ -110,6 +110,24 @@ todos:
   - id: redesign-r1-home-fact-state-contract
     content: "[grok-4.5|256K] Redesign R1 dependency · Money HomeMoneyRead(principal/count)+opportunity feed+growth public+session을 HomeReadModelV1 mapper 1곳으로 결합 · ledgerTotal=settlementCompletedTodayCount COUNT · todayPossibleProfitUsdt=Σ affordable expectedProfitUsdt(status=available∧compareReady) 서버 derived · loading|ready_empty|ready_data|stale|recoverable_error|blocked|unauthorized + domain FSM 분리 · reasonCode=domain.resource.reason · fake zero/static scan claim0 · schemas+SDK/API mapper · verify:home-state-truth/no-fake-zero-status 신설+CATALOG"
     status: pending
+  - id: conv-state
+    content: "[grok-4.5|256K] §47.16.2 A:Redis conversation working-state(key=ai:conv:${userId}:${conversationId}·TTL aiConvStateTtlSec=3600·absoluteLifetimeSec=43200 12h·createdAt+12h 초과 연장금지) B:conversationId API/SDK 계약(additive)+bounded history를 buildCoachMessages 주입 C:chat-sse.ts credentials:include 정합화(F14) · load시 state.userId≠req.user.userId면 fail-closed(에러 미노출) · verify:conversation-state-bounded(신설)"
+    status: pending
+  - id: reference-resolution
+    content: "[grok-4.5|256K] §47.16.2 A:resultRef 구조적 참조 해석기(reference-resolver.cjs·authorization 아닌 hint only) B:getExecution(id) 재조회 시 FactToolService WHERE user_id=$1 AND id=$2 소유권 재검증(resultRef id를 그대로 신뢰하지 않음) C:durable memory 승격=정규화된 preferenceKey/value fact만(raw 발화 비저장·서버 템플릿 content)·assertNoMemoryMoneyKeys 재적용+preferenceKey 화이트리스트 · ai_memory.append 최초 연결"
+    status: pending
+  - id: routing-coverage
+    content: "[composer-2.5|200K] §47.16.3 P_PATTERNS에 /지갑/ + 신규 EXECUTION_PATTERNS(진행상태·안전중단·매칭상태·거래상태·체결 등) 추가 · defaultToolsForText에 getExecution 도달 분기 추가(현재 0건→추가) · eval/p_fact.jsonl 3케이스 추가 + tools_called 실검증(레인만 P 맞고 tool은 안 바뀌는 회귀 차단) · verify:ai-lane-router 회귀 PASS 유지"
+    status: pending
+  - id: scope-guard
+    content: "[composer-2.5|200K] §47.16.4 assistant-router.cjs OFF_TOPIC_PATTERNS(코딩/창작/스포츠/연애상담/지시무시/시스템프롬프트 노출요청) → answer_path=scope_redirect(신규·LLM 미호출) · answer-guard.cjs에 출력 잔차 가드(메타노출 마커 탐지) 추가 · G레인 프롬프트 1줄(무관요청 리다이렉트·지시변경 거부) · eval/g_scope_escape.jsonl 신설(감사 §H 7예문) · 보증범위 3단계 명시(known=code-enforced/ambiguous=policy+residual/complete=NOT_PROVEN, 완전차단 선언 금지) · verify:ai-scope-guard(신설)"
+    status: pending
+  - id: numeric-grounding
+    content: "[grok-4.5|256K] §47.16.5 신규 numeric-grounding.cjs(currency/percent/quantity/date/ordinal/id_like 분류 · platform-relevant date는 factsUsed 날짜필드 존재시 grounding 대상·없으면 unsupported · bare unitless quantity는 제외 유지 · serverDerivedAllowlist는 {value,provenance:server_derived,derivationId} 필수태그) · answer-guard.cjs GUARD_STATUSES에 ungrounded 추가(P·llm_p만 검사) · CoachOrchestrator ungrounded시 renderFactAnswer 결정론적 폴백 · verify:numeric-grounding(신설, 날짜 회귀케이스 포함)"
+    status: pending
+  - id: shadow-replay-naming
+    content: "[composer-2.5|200K] §47.16.6 backend breaking rename 금지(additive only 원칙) · shadow-replay-engine/drift.cjs에 신규 ADVISORY_LABEL 상수 추가(기존 FAIL_ACTION=block_settlement 값·상수 불변) · shadow-replay.admin.service.ts에 driftAdvisoryOnly/contractLabel 필드 additive 추가(기존 settlementBlocked 필드 유지) · DB 신규 컬럼 additive migration(기존 fail_action CHECK 제약 불변·backfill 불필요) · verify:shadow-replay-drift.cjs는 기존 assertion 유지+신규 assertion만 추가 · Admin 표면 문구는 04 Admin pointer만(강제 데드라인 없음)"
+    status: pending
 isProject: false
 ---
 
@@ -123,6 +141,7 @@ isProject: false
 > **v7.22.44 CLOSE(불변):** todos 1~26 **completed 유지 · 재실행 금지**. 아래 todo 순서는 그 26개 안에서의 **이력**이다.  
 > **v7.22.48 REOPEN(가산 27~34 · §0.9):** `engine-runtime-preflight-gap` → `engine-execution-policy-bootstrap` → `engine-user-opportunity-feed` → `engine-participate-http` → `engine-execute-rule-loop` → `engine-catalog-runtime-seed` → `engine-user-membership-read` → `engine-pre-ui-close` · **완료 후만 File-Serial 다음=03 UI**  
 > **v7.22.51 이력:** `engine-ebay-identity-match-ingest` pending을 UI 비차단 예외로 추적했다. **v7.23:** 예외 종료 · 02 R1 blocking 선행으로 승격.
+> **v7.23.1 (HARDENING V1 도킹 · 2026-08-12):** §47.16 Peotteok Conversation/Scope/Grounding Hardening 추가. PO 잠금 5개(ownership+TTL contract · durable memory 정규화 · numeric date grounding · scope residual risk 명시 · Shadow Replay backend/Admin 호환성) 반영 완료 후 도킹. 신규 todo 6개(`conv-state`→`reference-resolution`→`routing-coverage`→`scope-guard`→`numeric-grounding`→`shadow-replay-naming`)는 기존 pending 2개(`engine-ebay-identity-match-ingest`→`redesign-r1-home-fact-state-contract`) **뒤**에 File-Serial 순서로만 추가 — queue jump 없음. **이 도킹 자체는 구현착수가 아니다** — §47.16.8 DoD 전부 미체크, conv-state는 앞의 2개가 완료되거나 PO가 명시적으로 우선순위를 재지정할 때 착수.
 > **todo 순서 (v7.22.39b · 1~26 이력):** preflight·잠금(완료) → **market** → **overrideDDL** → adapters → tier/image → vertical → projection → balance-aware → Rule→strictness→membership → **KPI→simulation** → AI(**feature→twin→llm→coach**)  
 > **AI 이름:** **퍼뜩** (§47.12 · Brand Kit) · **타프로젝트 코치명(클라이 등) 유저 surface 금지** · P=플랫폼 Fact · G=일상 LLM · S=실행 금지  
 > **Phase0 버스:** **in-process** (NATS=Phase1+) · adapter 워커 **코드 Owns=본 파일 · deploy=Phase1+**  
@@ -1852,6 +1871,110 @@ tooling/verify/
 - [ ] eval 3종 PASS (OpenAI gate)
 - [ ] verify:gate + CI green
 - [ ] UI/Admin = pointer만 (본문 중복 0)
+
+---
+
+## 47.16 Peotteok Conversation / Scope / Grounding Hardening V1 (v7.23.1 · Owns=Engine · UI/Admin=pointer)
+
+> **성격:** 포렌식 감사(2026-08-11) 결과 P/G/S 레인·5-provider adapter·Fact Tool read-only·Twin-Money 분리·Settlement 격리는 **GOOD_AS_IS·재설계 금지**. launch blocker는 대화 상태·라우팅 커버리지·G레인 스코프·숫자 그라운딩의 **배선 부족**이었다.
+> **제로 정의:** conversationId는 **additive**(기존 클라이언트 breaking 0) · Provider 계약 변경 0 · P/G/S 골격 재설계 0 · Shadow Replay backend breaking rename 0.
+> **PO 잠금 5개(2026-08-12, 구현 전 확정):** ① conversation state ownership(userId+conversationId 바인딩·fail-closed)+TTL(`aiConvStateTtlSec=3600`·`aiConvStateAbsoluteLifetimeSec=43200` 12h) ② durable memory=정규화 preference fact만(raw 발화 비저장) ③ numeric grounding=platform-relevant date도 검증대상(categorical exclude 금지)+bare quantity 오탐방지 ④ scope guard residual risk 명시(완전차단 선언 금지) ⑤ Shadow Replay backend/Admin 호환성(additive only·breaking rename 금지).
+
+#### 47.16.1 실측 갭 (2026-08-11 포렌식 감사 · 구현 todo=#37~#42)
+
+| 결함 | 근거 | 담당 todo |
+|---|---|---|
+| 대화 stateless(conversationId·history 없음, `memory.append` 미호출) | `coach-prompt.cjs` buildCoachMessages가 항상 `[system,user]` 2개만 반환 | `conv-state`·`reference-resolution` |
+| P_PATTERNS가 "지갑"·"진행 상태"·"안전중단" 미매칭 → G레인 오분류 | `assistant-router.cjs` 정규식 직접 대조 | `routing-coverage` |
+| `getExecution`이 `defaultToolsForText`의 어떤 분기에도 없어 자동 라우팅 도달 불가 | 동 파일 전수 확인 | `routing-coverage` |
+| G레인에 주제 스코프 code-level 가드 0 | `coach-prompt.cjs`/`answer-guard.cjs`에 주제 검사 없음 | `scope-guard` |
+| `llm_p` 답변 숫자와 `factsUsed` 불일치를 서버가 검증 안 함 | `answer-guard.cjs`가 금지문구 6개 블록리스트만 검사 | `numeric-grounding` |
+| Shadow Replay `fail_action="block_settlement"`가 실제 정산엔진에 미배선 | `trades/**`·`engine-rust/**`에 `shadow_replay` 참조 0건, `replaySettlementGoldens()` 미호출 | `shadow-replay-naming` |
+
+#### 47.16.2 Conversation State — Ownership/TTL/Working-vs-Durable (todo `conv-state`, `reference-resolution`)
+
+```mermaid
+sequenceDiagram
+  participant Web as WebPeotteok
+  participant API as CoachController
+  participant Orch as CoachOrchestrator
+  participant ConvState as ConversationStateService
+  participant Facts as FactToolService
+
+  Web->>API: "POST chat turn1 no conversationId"
+  API->>Orch: "text turn1, req.user.userId from JWT"
+  Orch->>ConvState: "create key ai:conv:userId:cid1 TTL 3600 cap createdAt+12h"
+  Orch->>Facts: "getExecution WHERE user_id=userId"
+  Facts-->>Orch: "executions A B C"
+  Orch->>ConvState: "save resultRef type=executions ids=A,B,C"
+  Orch-->>Web: "done conversation_id=cid1"
+
+  Web->>API: "POST chat turn2 conversationId=cid1 text=그중 첫번째는 언제 끝나"
+  API->>Orch: "text turn2 plus cid1, req.user.userId from JWT"
+  Orch->>ConvState: "load key ai:conv:userId:cid1"
+  ConvState-->>Orch: "state.userId must equal req.user.userId else fail closed"
+  Orch->>Facts: "getExecution WHERE user_id=userId AND id=A"
+  Facts-->>Orch: "executionA detail, ownership reverified"
+  Orch-->>Web: "done answer about A"
+```
+
+- **Working state(Redis, 세션)**: key=`ai:conv:${userId}:${conversationId}`(userId는 항상 JWT 유도, 클라이언트 미신뢰) · TTL=`aiConvStateTtlSec`(기본 **3600초**, sliding 갱신) · **absolute lifetime cap=`aiConvStateAbsoluteLifetimeSec`(43200초=12h)를 sliding 갱신이 있어도 초과 불가**(`createdAt+12h` 하드 상한) · `turns`(최근 6~8개, 각 300자 truncate) + `resultRefs`(hint only, authorization 아님).
+- **Ownership 재검증(필수)**: load 시 `state.userId !== req.user.userId`면 fail-closed(새 conversation 취급, 원인 미노출). resultRef로 얻은 id로 `getExecution(id)` 호출 시에도 `FactToolService`의 기존 `WHERE user_id=$1` 스코프에 `AND id=$2`를 더해 재검증 — id 파라미터 추가가 소유권 검증을 약화시키지 않음.
+- **Durable memory(PG `ai_memory`, 영구)**: 모든 턴 append 금지. "짧게/쉽게/다음에도 이렇게" 류 좁은 allowlist 매칭 시에도 **원문이 아니라 정규화된 `preferenceKey`/`value` enum**(예: `explanation_length=short`)만 저장, `content`는 서버 템플릿 생성. `assertNoMemoryMoneyKeys()` 재적용 + preferenceKey 화이트리스트로 원문 오염 차단.
+- **buildCoachMessages 확장**: `history?: Array<{role,content}>` 파라미터로 `[system, ...history(캡 있음), user]` 조립, 캡 초과 시 오래된 턴부터 드롭(무한성장 금지).
+- F14 bundle: `chat-sse.ts` 두 `fetch()`에 `credentials:"include"` 추가(sibling SDK 모듈 관례 정합).
+
+#### 47.16.3 Domain Routing Coverage (todo `routing-coverage`)
+
+`P_PATTERNS`에 `/지갑/` + 신규 `EXECUTION_PATTERNS`(`/진행\s*상태/`·`/안전\s*중단/`·`/중단\s*(된|됐)/`·`/매칭\s*상태/`·`/거래\s*상태/`·`/체결/`) 추가 → `classifyLane`에서 P 판정. `defaultToolsForText()`에 매칭 시 `["getExecution"]` 반환 분기(마지막 fallback `getOpportunity` 이전) 추가. `eval/p_fact.jsonl`에 3케이스 추가하되 `expectToolsAny:["getExecution"]`을 `route.tools_called` 기준으로 실검증(레인만 맞고 tool이 안 바뀌는 회귀 차단).
+
+#### 47.16.4 G-lane Scope Guard (todo `scope-guard`)
+
+`OFF_TOPIC_PATTERNS`(코딩/창작/스포츠/연애상담/"지시 무시"/"시스템 프롬프트 보여줘"/"일반 Gemini처럼 행동해") 매칭 시 `answer_path="scope_redirect"`(신규, LLM 미호출, 템플릿+P칩). 통과한 애매한 응답은 `answer-guard.cjs`의 메타노출 마커 탐지로 2차 방어. G프롬프트에 리다이렉트 지침 1줄 추가. **보증범위 3단계 — 완전 차단 선언 금지**: known off-topic/injection class=code-enforced redirect · ambiguous 일반대화=restricted policy+output residual guard · complete domain classification=**NOT_PROVEN**(새 ML 분류기 없이 provider alignment에 일부 의존하는 residual risk 존재).
+
+#### 47.16.5 P-lane Numeric Grounding (todo `numeric-grounding`)
+
+**원칙:** *Post-hoc validation targets platform factual numeric claims, not every numeral appearing in prose.* 신규 `numeric-grounding.cjs`: `currency`/`percent`/단위결합 `quantity`는 항상 대상, `ordinal`·unitless `generic quantity`는 제외, **`date`/`time`은 categorical exclude 금지** — 해당 턴 `factsUsed`에 날짜 필드가 있으면 그 값과 대조, 없는데 답변이 날짜를 언급하면 `unsupported`("8월 19일에 끝나요" 창작 방지). `serverDerivedAllowlist`는 `{value, provenance:"server_derived", derivationId}` 태그 필수(화이트리스트 `derivationId`만 허용). `answer-guard.cjs` `GUARD_STATUSES`에 `"ungrounded"` 추가(P·`llm_p`만 검사) → `CoachOrchestrator`가 `renderFactAnswer(factsUsed)` 결정론적 템플릿으로 폴백(기존 `stale`/`refresh` idiom 재사용).
+
+#### 47.16.6 Shadow Replay 호환성 계약 (todo `shadow-replay-naming`)
+
+Offline eval 유지(실제 settlement gate 배선은 별도 PO 트랙, 이번 범위 외). **Backend breaking rename 금지** — "Admin pointer only"와 "필드 rename"은 동시 성립 불가하므로 additive-only: `drift.cjs`에 신규 `ADVISORY_LABEL` 상수 **추가**(기존 `FAIL_ACTION="block_settlement"` 불변) · `shadow-replay.admin.service.ts`에 `driftAdvisoryOnly`/`contractLabel` 필드 **추가**(기존 `settlementBlocked` 유지) · DB는 신규 컬럼만 additive migration(기존 CHECK 제약·값 불변, backfill 불필요) · `verify:shadow-replay-drift.cjs`는 기존 assertion 유지 + 신규 assertion만 추가. Admin 표면 문구 전환은 04 Admin 트랙, 강제 데드라인 없음(필드가 additive라 준비되면 채택).
+
+#### 47.16.7 파일·네이밍 SSOT (신규 코드)
+
+```
+services/ai-platform/src/
+  numeric-grounding.cjs · reference-resolver.cjs
+
+services/api-nest/src/ai/
+  conversation-state.service.ts
+
+eval/p_fact.jsonl(확장) · eval/g_scope_escape.jsonl(신설)
+
+tooling/verify/
+  conversation-state-bounded.cjs · ai-scope-guard.cjs · numeric-grounding.cjs
+
+schemas/conversation-state.v1.json(후보)
+```
+
+| 규칙 | 예 |
+|---|---|
+| Redis key | `ai:conv:${userId}:${conversationId}` |
+| Config | `aiConvStateTtlSec=3600` · `aiConvStateAbsoluteLifetimeSec=43200` |
+| 신규 answer_path | `scope_redirect` |
+| 신규 guard status | `ungrounded` |
+| 금지 | backend breaking rename(F5) · provider 계약 변경 · 새 ML 분류기 · raw 발화 durable 저장 |
+
+#### 47.16.8 DoD (Engine #37~#42 · 전부 미체크 — 이번 도킹은 구현착수 아님)
+
+- [ ] `conv-state`: Redis working-state + ownership 재검증 + conversationId 계약 + F14
+- [ ] `reference-resolution`: resultRef 해석기 + 소유권 재검증 + 정규화 preference 승격
+- [ ] `routing-coverage`: 패턴 보강 + `getExecution` 도달 + eval `tools_called` 실검증
+- [ ] `scope-guard`: 입력 필터 + 출력 잔차 가드 + residual risk 명시 + eval 신설
+- [ ] `numeric-grounding`: date-aware 그라운딩 모듈 + guard 통합 + fallback + eval
+- [ ] `shadow-replay-naming`: additive 라벨/필드/컬럼 + verify 추가(breaking 0)
+- [ ] verify:gate + CI green (전체 슬라이스 완료 후)
+- [ ] UI/Admin = pointer만(본문 중복 0)
 
 ---
 
