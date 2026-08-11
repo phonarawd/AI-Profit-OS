@@ -27,6 +27,31 @@ const S_PATTERNS = Object.freeze([
 ]);
 
 /**
+ * Engine §47.16.4 — known off-topic / injection class (code-enforced).
+ * Match → answer_path=scope_redirect · tools=[] · LLM 미호출.
+ * Complete domain classification = NOT_PROVEN (documented residual).
+ */
+const OFF_TOPIC_PATTERNS = Object.freeze([
+  /코드\s*(짜|작성)|코딩\s*(해|좀)|프로그래밍|파이썬\s*코드|자바스크립트\s*코드|함수\s*만들어/i,
+  /소설\s*써|시\s*(좀\s*)?써|작문|창작\s*해|짧은\s*이야기\s*써/,
+  /축구|야구|농구|스포츠\s*경기|오늘\s*경기/,
+  /연애\s*상담|썸\s*타는|남자친구|여자친구\s*사귀/,
+  /지시\s*무시|이전\s*(규칙|지시|프롬프트)\s*무시|ignore\s+(all\s+)?(previous|prior)\s+instructions?/i,
+  /시스템\s*프롬프트\s*(보여|출력|알려)|숨겨진\s*정책|system\s*prompt/i,
+  /일반\s*Gemini처럼|ChatGPT처럼\s*행동|클로드처럼\s*행동|jailbreak/i,
+]);
+
+/**
+ * Assurance tiers — Engine §47.16.4 (완전 차단 선언 금지)
+ * complete_NOT_PROVEN is documented residual risk, never a runtime "guaranteed" claim.
+ */
+const SCOPE_ASSURANCE = Object.freeze({
+  KNOWN_CODE_ENFORCED: "known_code_enforced",
+  AMBIGUOUS_POLICY_RESIDUAL: "ambiguous_policy_residual",
+  COMPLETE_NOT_PROVEN: "complete_NOT_PROVEN",
+});
+
+/**
  * Execution-state Fact intents — Engine §47.16.3
  * Must classify as P and reach getExecution (not opportunity fallback).
  */
@@ -96,11 +121,68 @@ function matchesExecutionIntent(text) {
 }
 
 /**
+ * @param {string} text
+ */
+function matchesOffTopic(text) {
+  const t = String(text || "");
+  return OFF_TOPIC_PATTERNS.some((re) => re.test(t));
+}
+
+/**
+ * Structured scope decision — inspectable by orch/verify (§47.16.4).
+ * Precedence: S refuse > off-topic redirect > P in-scope > G general_safe.
+ * Does not rewrite S/P/G classification taxonomy; gates tools/path.
+ * @param {string} text
+ * @param {"P"|"G"|"S"} lane
+ */
+function decideScope(text, lane) {
+  if (lane === "S") {
+    return Object.freeze({
+      decision: "refuse_s",
+      assurance: SCOPE_ASSURANCE.KNOWN_CODE_ENFORCED,
+      reason: "sensitive_execute",
+      toolsAllowed: Object.freeze([]),
+      allowFacts: false,
+      allowLlm: false,
+    });
+  }
+  if (matchesOffTopic(text)) {
+    return Object.freeze({
+      decision: "scope_redirect",
+      assurance: SCOPE_ASSURANCE.KNOWN_CODE_ENFORCED,
+      reason: "off_topic_or_injection",
+      toolsAllowed: Object.freeze([]),
+      allowFacts: false,
+      allowLlm: false,
+    });
+  }
+  if (lane === "P") {
+    return Object.freeze({
+      decision: "in_scope",
+      assurance: SCOPE_ASSURANCE.KNOWN_CODE_ENFORCED,
+      reason: "platform_fact",
+      toolsAllowed: null,
+      allowFacts: true,
+      allowLlm: true,
+    });
+  }
+  return Object.freeze({
+    decision: "general_safe",
+    assurance: SCOPE_ASSURANCE.AMBIGUOUS_POLICY_RESIDUAL,
+    reason: "general_chat",
+    toolsAllowed: Object.freeze([]),
+    allowFacts: false,
+    allowLlm: true,
+  });
+}
+
+/**
  * @param {"P"|"G"|"S"} lane
  * @param {object} [opts]
  */
 function answerPathForLane(lane, opts = {}) {
   if (lane === "S") return "refuse_s";
+  if (opts.scopeRedirect === true) return "scope_redirect";
   if (lane === "G") return "llm_g";
   if (opts.template === true) return "template";
   if (opts.rag === true) return "rag";
@@ -132,6 +214,35 @@ function routeAssistant(input = {}) {
 
   if (!LANES.includes(lane)) {
     throw new Error(`ROUTER_INVALID_LANE:${lane}`);
+  }
+
+  // Scope guard sits on top of lane taxonomy (does not invent mutate tools).
+  const scope = decideScope(text, lane);
+  if (scope.decision === "scope_redirect") {
+    lane = "G";
+    const guard = guardAnswer({
+      lane: "G",
+      toolsCalled: [],
+      factsUsed: [],
+      twin: input.twin || null,
+      userText: text,
+      answerText: "",
+      usedTwinForMoney: false,
+      now: input.now,
+    });
+    return Object.freeze({
+      schema: "assistant-route.v1",
+      intent: "scope_redirect",
+      lane: "G",
+      rerouted,
+      answer_path: "scope_redirect",
+      tools_called: Object.freeze([]),
+      tools_available: toolsForLane("G"),
+      guard_result: guard,
+      scope,
+      twin_snapshot_id:
+        input.twin?.twinSnapshotId || input.twin?.twin_snapshot_id || null,
+    });
   }
 
   const tools =
@@ -179,6 +290,7 @@ function routeAssistant(input = {}) {
     tools_called: Object.freeze([...tools]),
     tools_available: toolsForLane(lane),
     guard_result: guard,
+    scope,
     twin_snapshot_id:
       input.twin?.twinSnapshotId || input.twin?.twin_snapshot_id || null,
   });
@@ -220,9 +332,13 @@ module.exports = {
   S_PATTERNS,
   P_PATTERNS,
   EXECUTION_PATTERNS,
+  OFF_TOPIC_PATTERNS,
+  SCOPE_ASSURANCE,
   classifyLane,
   answerPathForLane,
   routeAssistant,
   defaultToolsForText,
   matchesExecutionIntent,
+  matchesOffTopic,
+  decideScope,
 };

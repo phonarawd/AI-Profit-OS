@@ -30,6 +30,24 @@ const FORBIDDEN_ANSWER_PATTERNS = Object.freeze([
 ]);
 
 /**
+ * Engine §47.16.4 — output residual guard (meta / policy exposure).
+ * 2nd defense after OFF_TOPIC input redirect; does not claim complete coverage.
+ */
+const META_EXPOSURE_MARKERS = Object.freeze([
+  /시스템\s*프롬프트/i,
+  /SYSTEM_BASE/,
+  /FACTS_JSON/,
+  /RECENT_MEMORY/,
+  /REFERENCE_JSON/,
+  /tools_called/i,
+  /answer_path\s*=/i,
+  /ignore\s+previous\s+instructions/i,
+  /you are (chatgpt|claude|gemini)/i,
+  /숨겨진\s*정책/,
+  /\[SYSTEM\]/i,
+]);
+
+/**
  * @param {object} input
  * @param {"P"|"G"|"S"} input.lane
  * @param {string[]} [input.toolsCalled]
@@ -78,6 +96,11 @@ function guardAnswer(input = {}) {
   for (const re of FORBIDDEN_ANSWER_PATTERNS) {
     if (re.test(answerText)) {
       return fail("block", `forbidden_answer_pattern:${re}`);
+    }
+  }
+  for (const re of META_EXPOSURE_MARKERS) {
+    if (re.test(answerText)) {
+      return fail("block", `meta_exposure:${re}`);
     }
   }
 
@@ -140,5 +163,6 @@ function fail(status, reason) {
 module.exports = {
   FORBIDDEN_TWIN_MONEY_KEYS,
   FORBIDDEN_ANSWER_PATTERNS,
+  META_EXPOSURE_MARKERS,
   guardAnswer,
 };

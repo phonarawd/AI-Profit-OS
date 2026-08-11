@@ -97,6 +97,14 @@ export type AssistantRoute = {
   readonly tools_called: readonly string[];
   readonly tools_available: readonly string[];
   readonly guard_result: { status: string; pass: boolean; reason?: string };
+  readonly scope?: {
+    readonly decision: string;
+    readonly assurance: string;
+    readonly reason: string;
+    readonly toolsAllowed: readonly string[] | null;
+    readonly allowFacts: boolean;
+    readonly allowLlm: boolean;
+  };
   readonly twin_snapshot_id: string | null;
 };
 
@@ -167,8 +175,26 @@ export function routeAssistant(input?: object): AssistantRoute;
 export const S_PATTERNS: readonly RegExp[];
 export const P_PATTERNS: readonly RegExp[];
 export const EXECUTION_PATTERNS: readonly RegExp[];
+export const OFF_TOPIC_PATTERNS: readonly RegExp[];
+export const SCOPE_ASSURANCE: {
+  readonly KNOWN_CODE_ENFORCED: "known_code_enforced";
+  readonly AMBIGUOUS_POLICY_RESIDUAL: "ambiguous_policy_residual";
+  readonly COMPLETE_NOT_PROVEN: "complete_NOT_PROVEN";
+};
 export function defaultToolsForText(text: string): string[];
 export function matchesExecutionIntent(text: string): boolean;
+export function matchesOffTopic(text: string): boolean;
+export function decideScope(
+  text: string,
+  lane: "P" | "G" | "S",
+): {
+  readonly decision: string;
+  readonly assurance: string;
+  readonly reason: string;
+  readonly toolsAllowed: readonly string[] | null;
+  readonly allowFacts: boolean;
+  readonly allowLlm: boolean;
+};
 export function buildHelpChunk(input?: object): object;
 export function rankHelpChunks(
   query: string,
@@ -236,6 +262,12 @@ export const P_REFRESH_TEMPLATE: {
   readonly text: string;
   readonly copyKey: string;
 };
+export const SCOPE_REDIRECT_TEMPLATE: {
+  readonly text: string;
+  readonly copyKey: string;
+  readonly suggestChips: boolean;
+};
+export const META_EXPOSURE_MARKERS: readonly RegExp[];
 export const CS_DEEP_LINK: {
   readonly href: string;
   readonly copyKey: string;

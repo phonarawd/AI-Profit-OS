@@ -21,6 +21,7 @@ import {
   renderFactAnswer,
   resolveResultReference,
   routeAssistant,
+  SCOPE_REDIRECT_TEMPLATE,
   S_REFUSE_TEMPLATE,
   shouldCallLlm,
   shapeByTone,
@@ -175,6 +176,14 @@ export class CoachOrchestrator {
       providerId = "none";
       providerEffective = "none";
       toolsCalled = [];
+    } else if (answerPath === "scope_redirect") {
+      // Engine §47.16.4 — known off-topic/injection: no LLM · tools=[] · P칩 유도
+      answerText = shapeByTone(twin?.toneBand, SCOPE_REDIRECT_TEMPLATE.text);
+      answerPath = "scope_redirect";
+      providerId = "none";
+      providerEffective = "none";
+      toolsCalled = [];
+      deepLink = null;
     } else if (unresolvedRef && referenceResolution.status !== "none") {
       // Do not let the model guess a candidate when resolution failed.
       answerText =
@@ -331,11 +340,22 @@ export class CoachOrchestrator {
     }
 
     if (guard.status === "block") {
-      answerText =
-        lane === "S"
-          ? S_REFUSE_TEMPLATE.text
-          : "지금 그 답은 안전하게 안내할 수 없어요. 다른 질문을 해 주세요.";
-      answerPath = lane === "S" ? "refuse_s" : "template";
+      const metaHit = String(guard.reason || "").startsWith("meta_exposure");
+      if (lane === "S") {
+        answerText = S_REFUSE_TEMPLATE.text;
+        answerPath = "refuse_s";
+      } else if (metaHit) {
+        // §47.16.4 residual output guard → scope redirect template (no leak)
+        answerText = SCOPE_REDIRECT_TEMPLATE.text;
+        answerPath = "scope_redirect";
+        toolsCalled = [];
+        providerId = "none";
+        providerEffective = "none";
+      } else {
+        answerText =
+          "지금 그 답은 안전하게 안내할 수 없어요. 다른 질문을 해 주세요.";
+        answerPath = "template";
+      }
     }
 
     // Stream chunks (simple word-ish split for SSE contract)

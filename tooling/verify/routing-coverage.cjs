@@ -108,8 +108,16 @@ const matrix = [
   },
   {
     id: "unsupported_general",
+    input: "커피 맛있게 끓이는 법",
+    expectLane: "G",
+    expectToolsExact: [],
+    forbidTools: ["getExecution", "getBalance", "getOpportunity"],
+  },
+  {
+    id: "scope_redirect_sports",
     input: "오늘 축구 경기 결과",
     expectLane: "G",
+    expectPath: "scope_redirect",
     expectToolsExact: [],
     forbidTools: ["getExecution", "getBalance", "getOpportunity"],
   },
@@ -126,6 +134,11 @@ for (const row of matrix) {
   const route = ai.routeAssistant({ text: row.input });
   if (route.lane !== row.expectLane) {
     fails.push(`${row.id}: expect lane ${row.expectLane} got ${route.lane}`);
+  }
+  if (row.expectPath && route.answer_path !== row.expectPath) {
+    fails.push(
+      `${row.id}: expect path ${row.expectPath} got ${route.answer_path}`,
+    );
   }
   if (Array.isArray(row.expectToolsExact)) {
     if (JSON.stringify(route.tools_called) !== JSON.stringify(row.expectToolsExact)) {
@@ -220,10 +233,7 @@ if (ai.FACT_TOOLS.includes("execute_withdraw")) {
   fails.push("FACT_TOOLS must not gain mutate tools for coverage");
 }
 
-// scope-guard must not be pulled forward
-if (/OFF_TOPIC_PATTERNS/.test(routerSrc)) {
-  fails.push("routing-coverage must not pull forward scope-guard OFF_TOPIC_PATTERNS");
-}
+// numeric-grounding remains a later File-Serial slice
 if (fs.existsSync(path.join(root, "services/ai-platform/src/numeric-grounding.cjs"))) {
   fails.push("routing-coverage must not pull forward numeric-grounding module");
 }

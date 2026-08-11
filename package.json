@@ -71,6 +71,7 @@
     "verify:ai-general-no-money-tools": "node tooling/verify/ai-general-no-money-tools.cjs",
     "verify:ai-lane-router": "node tooling/verify/ai-lane-router.cjs",
     "verify:routing-coverage": "node tooling/verify/routing-coverage.cjs",
+    "verify:ai-scope-guard": "node tooling/verify/ai-scope-guard.cjs",
     "verify:fact-freshness": "node tooling/verify/fact-freshness.cjs",
     "verify:answer-trace": "node tooling/verify/answer-trace.cjs",
     "verify:conversation-state-bounded": "node tooling/verify/conversation-state-bounded.cjs",

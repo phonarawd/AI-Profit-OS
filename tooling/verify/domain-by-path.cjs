@@ -171,10 +171,32 @@ const RULES = [
     scripts: [
       "routing-coverage.cjs",
       "ai-lane-router.cjs",
+      "ai-scope-guard.cjs",
       "ai-coach-fact-only.cjs",
       "ai-coach-no-autonomy.cjs",
       "ai-general-no-money-tools.cjs",
       "reference-resolution.cjs",
+      "age-tone-surfaces.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^services\/ai-platform\/src\/(answer-guard|coach-prompt|coach-templates|ai-log)\.cjs$/.test(
+        f,
+      ) ||
+      /^eval\/g_scope_escape\.jsonl$/.test(f) ||
+      /^schemas\/ai-answer-trace\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/ai-scope-guard\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/ai\/coach\.orchestrator\.ts$/.test(f),
+    scripts: [
+      "ai-scope-guard.cjs",
+      "routing-coverage.cjs",
+      "ai-lane-router.cjs",
+      "ai-coach-fact-only.cjs",
+      "ai-coach-no-autonomy.cjs",
+      "ai-general-no-money-tools.cjs",
+      "reference-resolution.cjs",
+      "conversation-state-bounded.cjs",
       "age-tone-surfaces.cjs",
     ],
   },

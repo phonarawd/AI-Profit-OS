@@ -23,6 +23,7 @@ const ANSWER_PATHS = Object.freeze([
   "llm_p",
   "llm_g",
   "refuse_s",
+  "scope_redirect",
 ]);
 const GUARD_STATUSES = Object.freeze([
   "pass",

@@ -70,6 +70,7 @@ const live = [
   "ai-general-no-money-tools.cjs",
   "ai-lane-router.cjs",
   "routing-coverage.cjs",
+  "ai-scope-guard.cjs",
   "fact-freshness.cjs",
   "answer-trace.cjs",
   "conversation-state-bounded.cjs",

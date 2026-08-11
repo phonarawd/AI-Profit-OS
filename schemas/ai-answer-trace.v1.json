@@ -67,7 +67,8 @@
         "rag",
         "llm_p",
         "llm_g",
-        "refuse_s"
+        "refuse_s",
+        "scope_redirect"
       ]
     },
     "guard_result": {

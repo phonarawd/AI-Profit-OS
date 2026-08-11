@@ -21,6 +21,15 @@ const P_REFRESH_TEMPLATE = Object.freeze({
   copyKey: "T.peotteok.pRefresh",
 });
 
+/**
+ * Engine §47.16.4 — known off-topic / injection → no LLM · tools=[] · P칩 유도
+ */
+const SCOPE_REDIRECT_TEMPLATE = Object.freeze({
+  text: "그건 퍼뜩에서 도와드릴 수 있는 범위가 아니에요. 잔액·미션·이용법처럼 앱 관련 질문을 해 주세요.",
+  copyKey: "T.peotteok.scopeRedirect",
+  suggestChips: true,
+});
+
 /** CS deep-link when user is stuck */
 const CS_DEEP_LINK = Object.freeze({
   href: "/me/support",
@@ -199,6 +208,7 @@ function pickChips(opts = {}) {
 module.exports = {
   S_REFUSE_TEMPLATE,
   P_REFRESH_TEMPLATE,
+  SCOPE_REDIRECT_TEMPLATE,
   CS_DEEP_LINK,
   FACT_CHIPS,
   G_BUSY_TEMPLATE,

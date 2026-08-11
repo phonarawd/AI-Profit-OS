@@ -53,6 +53,7 @@ const {
 const {
   FORBIDDEN_TWIN_MONEY_KEYS,
   FORBIDDEN_ANSWER_PATTERNS,
+  META_EXPOSURE_MARKERS,
   guardAnswer,
 } = require("./answer-guard.cjs");
 const {
@@ -62,8 +63,12 @@ const {
   S_PATTERNS,
   P_PATTERNS,
   EXECUTION_PATTERNS,
+  OFF_TOPIC_PATTERNS,
+  SCOPE_ASSURANCE,
   defaultToolsForText,
   matchesExecutionIntent,
+  matchesOffTopic,
+  decideScope,
 } = require("./assistant-router.cjs");
 const {
   HELP_CHUNK_KINDS,
@@ -91,6 +96,7 @@ const {
 const {
   S_REFUSE_TEMPLATE,
   P_REFRESH_TEMPLATE,
+  SCOPE_REDIRECT_TEMPLATE,
   CS_DEEP_LINK,
   FACT_CHIPS,
   shapeByTone,
@@ -159,6 +165,7 @@ module.exports = {
   assertFactsFreshOrThrow,
   FORBIDDEN_TWIN_MONEY_KEYS,
   FORBIDDEN_ANSWER_PATTERNS,
+  META_EXPOSURE_MARKERS,
   guardAnswer,
   classifyLane,
   answerPathForLane,
@@ -166,8 +173,12 @@ module.exports = {
   S_PATTERNS,
   P_PATTERNS,
   EXECUTION_PATTERNS,
+  OFF_TOPIC_PATTERNS,
+  SCOPE_ASSURANCE,
   defaultToolsForText,
   matchesExecutionIntent,
+  matchesOffTopic,
+  decideScope,
   HELP_CHUNK_KINDS,
   buildHelpChunk,
   rankHelpChunks,
@@ -185,6 +196,7 @@ module.exports = {
   shouldCallLlm,
   S_REFUSE_TEMPLATE,
   P_REFRESH_TEMPLATE,
+  SCOPE_REDIRECT_TEMPLATE,
   CS_DEEP_LINK,
   FACT_CHIPS,
   shapeByTone,

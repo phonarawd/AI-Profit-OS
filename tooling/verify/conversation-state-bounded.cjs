@@ -189,12 +189,7 @@ if (!hook.includes("conversationId")) {
 if (/this\.memory\.append/.test(svc) || /MemoryService/.test(svc)) {
   fails.push("ConversationStateService must not own durable memory.append");
 }
-const routerSrc = read("services/ai-platform/src/assistant-router.cjs");
-// EXECUTION_PATTERNS belongs to routing-coverage (may be present).
-// OFF_TOPIC_PATTERNS belongs to later scope-guard — still forbidden here.
-if (/OFF_TOPIC_PATTERNS/.test(routerSrc)) {
-  fails.push("conversation-state verify must not pull forward scope-guard OFF_TOPIC_PATTERNS");
-}
+// numeric-grounding remains a later File-Serial slice
 if (fs.existsSync(path.join(root, "services/ai-platform/src/numeric-grounding.cjs"))) {
   fails.push("conversation-state verify must not pull forward the numeric-grounding module");
 }

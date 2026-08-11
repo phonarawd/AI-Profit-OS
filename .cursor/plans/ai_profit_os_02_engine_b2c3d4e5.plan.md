@@ -121,7 +121,7 @@ todos:
     status: completed
   - id: scope-guard
     content: "[composer-2.5|200K] §47.16.4 assistant-router.cjs OFF_TOPIC_PATTERNS(코딩/창작/스포츠/연애상담/지시무시/시스템프롬프트 노출요청) → answer_path=scope_redirect(신규·LLM 미호출) · answer-guard.cjs에 출력 잔차 가드(메타노출 마커 탐지) 추가 · G레인 프롬프트 1줄(무관요청 리다이렉트·지시변경 거부) · eval/g_scope_escape.jsonl 신설(감사 §H 7예문) · 보증범위 3단계 명시(known=code-enforced/ambiguous=policy+residual/complete=NOT_PROVEN, 완전차단 선언 금지) · verify:ai-scope-guard(신설)"
-    status: pending
+    status: completed
   - id: numeric-grounding
     content: "[grok-4.5|256K] §47.16.5 신규 numeric-grounding.cjs(currency/percent/quantity/date/ordinal/id_like 분류 · platform-relevant date는 factsUsed 날짜필드 존재시 grounding 대상·없으면 unsupported · bare unitless quantity는 제외 유지 · serverDerivedAllowlist는 {value,provenance:server_derived,derivationId} 필수태그) · answer-guard.cjs GUARD_STATUSES에 ungrounded 추가(P·llm_p만 검사) · CoachOrchestrator ungrounded시 renderFactAnswer 결정론적 폴백 · verify:numeric-grounding(신설, 날짜 회귀케이스 포함)"
     status: pending
@@ -215,7 +215,15 @@ isProject: false
 - `P_PATTERNS`+=`/지갑/` · `EXECUTION_PATTERNS` → P · `defaultToolsForText`→`["getExecution"]` before opportunity fallback
 - `eval/p_fact.jsonl` +3 (`expectToolsAny:["getExecution"]`) · `verify:ai-lane-router` tools_called 실검증 · `verify:routing-coverage` live
 - YAML `completed` · S/G/no-autonomy 불변 · scope-guard/numeric 비침범
-- **다음 File-Serial:** `scope-guard` only
+- **다음 File-Serial (이력):** 당시 `scope-guard` · **현재 다음=`numeric-grounding`**
+
+### CLOSED — scope-guard (2026-08-12)
+
+- `OFF_TOPIC_PATTERNS` → `answer_path=scope_redirect` · tools=[] · LLM 미호출 · `SCOPE_REDIRECT_TEMPLATE`
+- `META_EXPOSURE_MARKERS` residual output guard · G프롬프트 1줄 · `decideScope` inspectable
+- assurance 3단계 명시(`complete_NOT_PROVEN` = documented residual · 완전차단 선언 0)
+- `eval/g_scope_escape.jsonl` §H 7 · `verify:ai-scope-guard` live · YAML `completed`
+- **다음 File-Serial:** `numeric-grounding` only
 
 ## 0. 착수 전 실물 대조 기록 (v7.22.39 · 예측 0 · MCP+FS)
 
@@ -610,7 +618,7 @@ flowchart TD
 #### 0.10.3 실행 시점
 
 - **CLOSED (2026-08-12):** `resolveEbayIngestListings` + Nest ingest 배선 + Admin `identity-review-queue` + `verify:ebay-identity-ingest` live · live Browse tick → `w_rolex_sub_126610ln` image_source=ebay · i.ebayimg.com listings≥3 · unmatched queue 가시(silent drop 0) · YAML `completed`
-- **다음 File-Serial (이력):** 당시 `reference-resolution` → `routing-coverage` CLOSED · **현재 다음=`scope-guard`**
+- **다음 File-Serial (이력):** 당시 `routing-coverage` → `scope-guard` CLOSED · **현재 다음=`numeric-grounding`**
 
 ## 0.0 시세 소스 잠금 (v7.13) — Signup-Ready + Margin UX + Capital Tiers
 
@@ -1992,7 +2000,7 @@ schemas/conversation-state.v1.json(후보)
 - [x] `conv-state`: Redis working-state + ownership 재검증 + conversationId 계약 + F14 — closure proof 완료(서버 2-turn continuity, 클라이언트 SDK/hook continuity, absolute-lifetime TTL 축소/소멸, 현재 tip AI verify 14/14 PASS), commit 대기 중
 - [x] `reference-resolution`: resultRef 해석기 + 소유권 재검증 + 정규화 preference 승격 — `verify:reference-resolution` PASS
 - [x] `routing-coverage`: 패턴 보강 + `getExecution` 도달 + eval `tools_called` 실검증 — `verify:routing-coverage`/`ai-lane-router` PASS
-- [ ] `scope-guard`: 입력 필터 + 출력 잔차 가드 + residual risk 명시 + eval 신설
+- [x] `scope-guard`: 입력 필터 + 출력 잔차 가드 + residual risk 명시 + eval 신설 — `verify:ai-scope-guard` PASS
 - [ ] `numeric-grounding`: date-aware 그라운딩 모듈 + guard 통합 + fallback + eval
 - [ ] `shadow-replay-naming`: additive 라벨/필드/컬럼 + verify 추가(breaking 0)
 - [ ] verify:gate + CI green (전체 슬라이스 완료 후)
