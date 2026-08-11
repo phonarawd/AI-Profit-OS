@@ -164,6 +164,11 @@ export function answerPathForLane(
   opts?: object,
 ): string;
 export function routeAssistant(input?: object): AssistantRoute;
+export const S_PATTERNS: readonly RegExp[];
+export const P_PATTERNS: readonly RegExp[];
+export const EXECUTION_PATTERNS: readonly RegExp[];
+export function defaultToolsForText(text: string): string[];
+export function matchesExecutionIntent(text: string): boolean;
 export function buildHelpChunk(input?: object): object;
 export function rankHelpChunks(
   query: string,

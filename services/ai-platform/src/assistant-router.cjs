@@ -26,10 +26,24 @@ const S_PATTERNS = Object.freeze([
   /\bpayout\b/i,
 ]);
 
+/**
+ * Execution-state Fact intents — Engine §47.16.3
+ * Must classify as P and reach getExecution (not opportunity fallback).
+ */
+const EXECUTION_PATTERNS = Object.freeze([
+  /진행\s*상태/,
+  /안전\s*중단/,
+  /중단\s*(된|됐)/,
+  /매칭\s*상태/,
+  /거래\s*상태/,
+  /체결/,
+]);
+
 /** Platform Fact intents */
 const P_PATTERNS = Object.freeze([
   /잔액/,
   /버킷/,
+  /지갑/,
   /얼마/,
   /입금/,
   /충전/,
@@ -47,6 +61,7 @@ const P_PATTERNS = Object.freeze([
   /테더|USDT|유에스디티/,
   /이용\s*법|약관|도움말|FAQ|어떻게\s*쓰/,
   /진행\s*중|매칭/,
+  ...EXECUTION_PATTERNS,
   /\bbalance\b/i,
   /\bdeposit\b/i,
   /\bopportunity\b/i,
@@ -60,6 +75,7 @@ const P_PATTERNS = Object.freeze([
 function classifyLane(text) {
   const t = String(text || "").trim();
   if (!t) return "G";
+  // S before P — execute/mutation requests must never fall into Fact tools
   for (const re of S_PATTERNS) {
     if (re.test(t)) return "S";
   }
@@ -67,6 +83,16 @@ function classifyLane(text) {
     if (re.test(t)) return "P";
   }
   return "G";
+}
+
+/**
+ * @param {string} text
+ */
+function matchesExecutionIntent(text) {
+  const t = String(text || "");
+  if (EXECUTION_PATTERNS.some((re) => re.test(t))) return true;
+  // Existing P cue "진행 중" must also reach getExecution (§47 tools table)
+  return /진행\s*중/.test(t);
 }
 
 /**
@@ -160,8 +186,11 @@ function routeAssistant(input = {}) {
 
 function defaultToolsForText(text) {
   const t = String(text);
-  if (/잔액|버킷|얼마|balance/i.test(t)) return ["getBalance", "getBuckets"];
+  // Deterministic precedence: balance/wallet → deposit → execution → opportunity…
+  // getExecution MUST be reachable before the getOpportunity fallback (§47.16.3).
+  if (/잔액|버킷|지갑|얼마|balance/i.test(t)) return ["getBalance", "getBuckets"];
   if (/입금|충전|deposit/i.test(t)) return ["getDepositUsdt", "getKrwDeposit"];
+  if (matchesExecutionIntent(t)) return ["getExecution"];
   if (/기회|미션|예상\s*수익|opportunity/i.test(t)) return ["getOpportunity"];
   if (/KYC|본인|신원/i.test(t)) return ["getKyc"];
   if (/초대|친구|referral/i.test(t)) return ["getReferral"];
@@ -177,9 +206,10 @@ function defaultToolsForText(text) {
 function summarizeIntent(text, lane) {
   if (lane === "S") return "sensitive_execute";
   if (lane === "G") return "general_chat";
-  if (/잔액|balance/i.test(text)) return "balance";
+  if (/잔액|지갑|balance/i.test(text)) return "balance";
   if (/입금|deposit/i.test(text)) return "deposit";
   if (/출금/i.test(text)) return "withdraw_guide";
+  if (matchesExecutionIntent(text)) return "execution";
   if (/기회|미션|opportunity/i.test(text)) return "opportunity";
   if (/초대|referral/i.test(text)) return "referral";
   if (/혜택/i.test(text)) return "benefits";
@@ -189,7 +219,10 @@ function summarizeIntent(text, lane) {
 module.exports = {
   S_PATTERNS,
   P_PATTERNS,
+  EXECUTION_PATTERNS,
   classifyLane,
   answerPathForLane,
   routeAssistant,
+  defaultToolsForText,
+  matchesExecutionIntent,
 };

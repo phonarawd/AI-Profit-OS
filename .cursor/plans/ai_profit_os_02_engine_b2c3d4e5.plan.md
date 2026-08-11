@@ -118,7 +118,7 @@ todos:
     status: completed
   - id: routing-coverage
     content: "[composer-2.5|200K] §47.16.3 P_PATTERNS에 /지갑/ + 신규 EXECUTION_PATTERNS(진행상태·안전중단·매칭상태·거래상태·체결 등) 추가 · defaultToolsForText에 getExecution 도달 분기 추가(현재 0건→추가) · eval/p_fact.jsonl 3케이스 추가 + tools_called 실검증(레인만 P 맞고 tool은 안 바뀌는 회귀 차단) · verify:ai-lane-router 회귀 PASS 유지"
-    status: pending
+    status: completed
   - id: scope-guard
     content: "[composer-2.5|200K] §47.16.4 assistant-router.cjs OFF_TOPIC_PATTERNS(코딩/창작/스포츠/연애상담/지시무시/시스템프롬프트 노출요청) → answer_path=scope_redirect(신규·LLM 미호출) · answer-guard.cjs에 출력 잔차 가드(메타노출 마커 탐지) 추가 · G레인 프롬프트 1줄(무관요청 리다이렉트·지시변경 거부) · eval/g_scope_escape.jsonl 신설(감사 §H 7예문) · 보증범위 3단계 명시(known=code-enforced/ambiguous=policy+residual/complete=NOT_PROVEN, 완전차단 선언 금지) · verify:ai-scope-guard(신설)"
     status: pending
@@ -208,7 +208,14 @@ isProject: false
 - `getExecution` ownership re-verify `WHERE user_id=$1 AND id=$2` · list path exposes `executionIds` for snapshots
 - normalized preference → `MemoryService.append` (kind=`preference` · server template · whitelist) · raw utterance 0
 - `verify:reference-resolution` live · YAML `completed`
-- **다음 File-Serial:** `routing-coverage` only
+- **다음 File-Serial (이력):** 당시 `routing-coverage` · **현재 다음=`scope-guard`**
+
+### CLOSED — routing-coverage (2026-08-12)
+
+- `P_PATTERNS`+=`/지갑/` · `EXECUTION_PATTERNS` → P · `defaultToolsForText`→`["getExecution"]` before opportunity fallback
+- `eval/p_fact.jsonl` +3 (`expectToolsAny:["getExecution"]`) · `verify:ai-lane-router` tools_called 실검증 · `verify:routing-coverage` live
+- YAML `completed` · S/G/no-autonomy 불변 · scope-guard/numeric 비침범
+- **다음 File-Serial:** `scope-guard` only
 
 ## 0. 착수 전 실물 대조 기록 (v7.22.39 · 예측 0 · MCP+FS)
 
@@ -603,7 +610,7 @@ flowchart TD
 #### 0.10.3 실행 시점
 
 - **CLOSED (2026-08-12):** `resolveEbayIngestListings` + Nest ingest 배선 + Admin `identity-review-queue` + `verify:ebay-identity-ingest` live · live Browse tick → `w_rolex_sub_126610ln` image_source=ebay · i.ebayimg.com listings≥3 · unmatched queue 가시(silent drop 0) · YAML `completed`
-- **다음 File-Serial (이력):** 당시 `redesign-r1-home-fact-state-contract` → `reference-resolution` CLOSED · **현재 다음=`routing-coverage`**
+- **다음 File-Serial (이력):** 당시 `reference-resolution` → `routing-coverage` CLOSED · **현재 다음=`scope-guard`**
 
 ## 0.0 시세 소스 잠금 (v7.13) — Signup-Ready + Margin UX + Capital Tiers
 
@@ -1984,7 +1991,7 @@ schemas/conversation-state.v1.json(후보)
 
 - [x] `conv-state`: Redis working-state + ownership 재검증 + conversationId 계약 + F14 — closure proof 완료(서버 2-turn continuity, 클라이언트 SDK/hook continuity, absolute-lifetime TTL 축소/소멸, 현재 tip AI verify 14/14 PASS), commit 대기 중
 - [x] `reference-resolution`: resultRef 해석기 + 소유권 재검증 + 정규화 preference 승격 — `verify:reference-resolution` PASS
-- [ ] `routing-coverage`: 패턴 보강 + `getExecution` 도달 + eval `tools_called` 실검증
+- [x] `routing-coverage`: 패턴 보강 + `getExecution` 도달 + eval `tools_called` 실검증 — `verify:routing-coverage`/`ai-lane-router` PASS
 - [ ] `scope-guard`: 입력 필터 + 출력 잔차 가드 + residual risk 명시 + eval 신설
 - [ ] `numeric-grounding`: date-aware 그라운딩 모듈 + guard 통합 + fallback + eval
 - [ ] `shadow-replay-naming`: additive 라벨/필드/컬럼 + verify 추가(breaking 0)

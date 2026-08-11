@@ -165,6 +165,21 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/ai-platform\/src\/assistant-router\.cjs$/.test(f) ||
+      /^eval\/p_fact\.jsonl$/.test(f) ||
+      /^tooling\/verify\/(routing-coverage|ai-lane-router)\.cjs$/.test(f),
+    scripts: [
+      "routing-coverage.cjs",
+      "ai-lane-router.cjs",
+      "ai-coach-fact-only.cjs",
+      "ai-coach-no-autonomy.cjs",
+      "ai-general-no-money-tools.cjs",
+      "reference-resolution.cjs",
+      "age-tone-surfaces.cjs",
+    ],
+  },
+  {
+    test: (f) =>
       /packages\/ui\/components\/kyc\//.test(f) ||
       /packages\/ui\/copy\/ko\/kyc\.ts/.test(f) ||
       /packages\/ui\/canon\/surfaces\/kyc-/.test(f) ||

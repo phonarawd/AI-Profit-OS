@@ -59,6 +59,11 @@ const {
   classifyLane,
   answerPathForLane,
   routeAssistant,
+  S_PATTERNS,
+  P_PATTERNS,
+  EXECUTION_PATTERNS,
+  defaultToolsForText,
+  matchesExecutionIntent,
 } = require("./assistant-router.cjs");
 const {
   HELP_CHUNK_KINDS,
@@ -158,6 +163,11 @@ module.exports = {
   classifyLane,
   answerPathForLane,
   routeAssistant,
+  S_PATTERNS,
+  P_PATTERNS,
+  EXECUTION_PATTERNS,
+  defaultToolsForText,
+  matchesExecutionIntent,
   HELP_CHUNK_KINDS,
   buildHelpChunk,
   rankHelpChunks,
