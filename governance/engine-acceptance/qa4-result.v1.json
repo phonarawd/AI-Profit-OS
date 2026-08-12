@@ -4,8 +4,8 @@
   "suite_id": "QA4",
   "run_id": "qa4-stateful-time-20260812",
   "todoId": "qa4-stateful-time",
-  "measuredAt": "2026-08-12T11:43:29.058Z",
-  "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+  "measuredAt": "2026-08-12T23:37:52.595Z",
+  "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
   "mode": "tiny",
   "kill_switch": {
     "verified_before_checks": true,
@@ -24,7 +24,7 @@
       "check_id": "QA4_STATEFUL_TIME_LIFECYCLE",
       "status": "BLOCKED",
       "mode": "tiny",
-      "measuredAt": "2026-08-12T11:43:29.058Z",
+      "measuredAt": "2026-08-12T23:37:52.595Z",
       "seed": 20260812,
       "clock_hook": {
         "available": false,
@@ -95,7 +95,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+            "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "6937b57c6f58cdf48112ea76725f6a92e875f5867c8ec30e43c228ea9bd4050a",
             "invariant_id": "INV-TIME-01",
@@ -148,7 +148,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+            "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "6937b57c6f58cdf48112ea76725f6a92e875f5867c8ec30e43c228ea9bd4050a",
             "invariant_id": "INV-TIME-01",
@@ -201,7 +201,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+            "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "725b42e2d905dae81348a7638fae20d5137cdee100cb080c170a2a456e1b63c9",
             "invariant_id": "INV-LIFECYCLE-01",
@@ -297,5 +297,5 @@
     "critical INV-TIME-01 BLOCKED → ENGINE_QA_INCOMPLETE (ACCEPTED 불가).",
     "Does not issue ENGINE_ACCEPTED_FOR_UI."
   ],
-  "checksum": "8712503dc860a661008be6dd11ed7e1f8d9200798267af12427e1818751f88de"
+  "checksum": "99b29659f9d05e90d97c0fc52e252cd9371281b02afe1ab05306cf30d92e12bd"
 }

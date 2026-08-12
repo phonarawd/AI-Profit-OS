@@ -4,8 +4,8 @@
   "suite_id": "QA6",
   "run_id": "qa6-performance-world-20260812",
   "todoId": "qa6-performance-world",
-  "measuredAt": "2026-08-12T11:59:12.517Z",
-  "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+  "measuredAt": "2026-08-12T23:39:15.299Z",
+  "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
   "mode": "tiny",
   "kill_switch": {
     "verified_before_checks": true,
@@ -24,7 +24,7 @@
       "check_id": "QA6_PERFORMANCE_WORLD",
       "status": "UNSPECIFIED_PERF_BUDGET",
       "mode": "tiny",
-      "measuredAt": "2026-08-12T11:59:12.517Z",
+      "measuredAt": "2026-08-12T23:39:15.299Z",
       "seed": 20260812,
       "perf_oracle": {
         "available": false,
@@ -101,7 +101,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-12T11:59:12.517Z",
+            "clock_as_of": "2026-08-12T23:39:15.299Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -131,7 +131,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+            "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "e01e0ef3c5c6005af83907d3870c38313e4c9b7c5d591dbe10c7eef32f54fd61",
             "invariant_id": "INV-PERF-01",
@@ -166,7 +166,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-12T11:59:12.517Z",
+            "clock_as_of": "2026-08-12T23:39:15.299Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -196,7 +196,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+            "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "542b5bc6d265eae386a8bde0478acd2b4f27e3f5bcb22b9a485780a77c6925ad",
             "invariant_id": "INV-PERF-01",
@@ -303,5 +303,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "CI aggregator uses if: always(); artifact retention ≥ 90 days."
   ],
-  "checksum": "2ba56763635d81b45201a980a64e8322149a980ca585c7d032a17473fad7c635"
+  "checksum": "285c8c763d34756781ef78900ee9f9ef86060268da9e7ce0bd1ab52ea90590bf"
 }

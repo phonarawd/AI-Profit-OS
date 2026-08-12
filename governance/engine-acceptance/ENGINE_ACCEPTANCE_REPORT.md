@@ -1,46 +1,76 @@
 # ENGINE ACCEPTANCE REPORT
 
-> **QA phase:** QA-0 `ENGINE_ACCEPTANCE_REBASE_V1`  
-> **Measured:** 2026-08-12T23:19:05.523Z  
+> **QA phase:** QA-6 `qa6-performance-world`  
+> **Measured:** 2026-08-12T23:39:15.299Z  
 > **baseline_id:** `ea-baseline-c3828adb7ac5-dfa803530b9d`  
-> **predecessor_baseline_id:** `ea-baseline-13b7a5138ebe-cb4530b02ecf`  
-> **rebase_id:** `ea-rebase-a280b21fc7b5-dfa803530b9d`
+> **qa6_run_id:** `qa6-performance-world-20260812`  
+> **qa6_result_checksum:** `285c8c763d34756781ef78900ee9f9ef86060268da9e7ce0bd1ab52ea90590bf`  
+> **mode:** `tiny`
 
 ## Status banner
 
 ```text
 ACCEPTANCE CONTRACT = LOCKED
-DECISION = ENGINE_ACCEPTANCE_REBASE_V1
-BASELINE = NEW_EPOCH
-PREDECESSOR = ea-baseline-13b7a5138ebe-cb4530b02ecf
-QA0 = COMPLETE (new epoch freeze)
-QA1 = STALE_FOR_CURRENT_EPOCH
-QA2 = STALE_FOR_CURRENT_EPOCH
-QA3 = STALE_FOR_CURRENT_EPOCH
-QA4 = STALE_FOR_CURRENT_EPOCH
-QA5 = STALE_FOR_CURRENT_EPOCH
-QA6 = STALE_FOR_CURRENT_EPOCH
-QA7 = NOT_STARTED
-NEXT = QA1_DETERMINISTIC_TRUTH
-BASELINE WASHING = FORBIDDEN
+BASELINE = FROZEN
+QA0 = COMPLETE
+QA1 = COMPLETE
+QA2 = COMPLETE
+QA3 = COMPLETE
+QA4 = COMPLETE
+QA5 = COMPLETE
+QA6 = COMPLETE
+QA HARNESS TARGET = SAFE
+NEXT = QA7_AI_EVAL
+PRODUCT MUTATION = 0
 03 UI = BLOCKED
 ```
 
-## Verdict (after product rebase)
+## Verdict (after QA-6)
 
 | Field | Value |
 |---|---|
 | verdict | `ENGINE_QA_INCOMPLETE` |
-| reason | ENGINE_ACCEPTANCE_REBASE_V1 · predecessor QA1-QA6 are historical COMPLETE / current-epoch STALE · required rerun QA1-QA6 then QA7 · QA7 not claimed complete |
+| reason | QA6 COMPLETE · critical_invariant.blocked=5 (incl. UNSPECIFIED_PERF_BUDGET/BLOCKED_MISSING_ORACLE + prior BLOCKED_*) · P0/P1=0 · ACCEPTED 불가 · QA7..QA8 not executed |
 | evidence_integrity | `VALID` |
 | baseline.valid | `true` |
 | working_tree_clean | `false` (fact only — not forced clean) |
 | protected_scope_clean | `true` |
-| prompt_hash | live pinned (`3471a3bc2712cbeb85414ec848987996dac0d1a2ddab9fed3de968c6a8bc6079`) |
-| eval_dataset_hash | MATCH predecessor (`83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088`) |
-| acceptance_workflow_hash | MATCH current approved (`7895541fa754124e1b00a4b6b8bf293e69ee1e4cc9c156c50af4760c02466786`) |
+| defects.P0 / P1 | 0 / 0 |
+| critical_invariant.blocked (cumulative) | 5 |
+| critical_invariant.skipped | 0 |
+| critical_invariant.uncovered | 0 |
+| mandatory suites COMPLETE | QA0..QA6 only · QA7..QA8 NOT_STARTED |
 
-**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued**. Predecessor QA1-QA6 results were **not** rewritten as current-epoch COMPLETE.
+**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (critical BLOCKED/UNSPECIFIED and/or QA7..QA8 incomplete).
+
+## Performance World (k6 · CI only heavy)
+
+| Field | Value |
+|---|---|
+| suite status | `UNSPECIFIED_PERF_BUDGET` |
+| budget_status | `UNSPECIFIED_PERF_BUDGET` |
+| threshold_mechanism.locked | `true` |
+| threshold_mechanism.engine | `k6` |
+| threshold_mechanism.binding | `tag` |
+| k6_script | `tooling/engine-acceptance/k6/scenario-mix.js` present=`true` |
+| scenarios blocked/unspecified/failed/passed | 2 / 2 / 0 / 0 |
+| numeric invention | **forbidden** |
+| heavy k6 | **CI only** |
+| mock PASS | **forbidden** |
+| product mutation | `0` |
+| artifact retention | acceptance evidence ≥ **90** days (Actions artifact) |
+| aggregator | `if: always()` (선행 job 실패 후에도 집계) |
+
+| Scenario | Tag | Invariant | Status | Budget | Blocked code |
+|---|---|---|---|---|---|
+| `PERF-FEED-READ` | `feed_read` | `INV-PERF-01` | `BLOCKED` | `UNSPECIFIED_PERF_BUDGET` | `BLOCKED_MISSING_ORACLE` |
+| `PERF-PARTICIPATE` | `participate` | `INV-PERF-01` | `BLOCKED` | `UNSPECIFIED_PERF_BUDGET` | `BLOCKED_MISSING_ORACLE` |
+
+### UNSPECIFIED_PERF_BUDGET
+
+- Formal suite/budget status when product SLO/contract numeric budgets are absent.
+- `BLOCKED_MISSING_ORACLE` on critical `INV-PERF-01` → `ENGINE_QA_INCOMPLETE` (ACCEPTED 불가).
+- Invented p95 / error_rate = **금지**.
 
 ## Dual Dirty
 
@@ -50,4 +80,4 @@ BASELINE WASHING = FORBIDDEN
 
 ## Next
 
-`QA1_DETERMINISTIC_TRUTH` only. Full ACCEPTED · product mutation to chase green · 03 UI — **금지**.
+`QA7_AI_EVAL` only. Full ACCEPTED · product mutation · 03 UI — **금지**.

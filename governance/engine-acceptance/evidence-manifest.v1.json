@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-0",
+  "qa_phase": "QA-6",
   "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
   "verdict": "ENGINE_QA_INCOMPLETE",
-  "verdict_reason": "ENGINE_ACCEPTANCE_REBASE_V1 · predecessor QA1-QA6 historical COMPLETE / current-epoch STALE · required rerun QA1-QA6 then QA7 · QA7 not complete",
+  "verdict_reason": "QA6 COMPLETE · critical_invariant.blocked=5 (incl. UNSPECIFIED_PERF_BUDGET/BLOCKED_MISSING_ORACLE + prior BLOCKED_*) · P0/P1=0 · ACCEPTED 불가 · QA7..QA8 not executed",
   "evidence_integrity": "VALID",
-  "next": "QA1_DETERMINISTIC_TRUTH",
+  "next": "QA7_AI_EVAL",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -31,102 +31,66 @@
     },
     {
       "suite_id": "QA1",
-      "run_id": null,
+      "run_id": "qa1-deterministic-truth-20260812",
       "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
-      "historical_run_id": "qa1-deterministic-truth-20260811",
-      "historical_checksum": "e0e0378dd2977c84379c1ef28e0e9b3c05ce7bab390d5d73e1d725ac6ac380f6",
-      "result_ref": "governance/engine-acceptance/qa1-result.v1.json",
-      "predecessor_result_preserved": true
+      "checksum": "61c4ffa5e370fb58d1c06025fc5fb82e375854beabbea33a3575f9adc2edc141",
+      "completion_status": "COMPLETE",
+      "result_ref": "governance/engine-acceptance/qa1-result.v1.json"
     },
     {
       "suite_id": "QA2",
-      "run_id": null,
+      "run_id": "qa2-synthetic-personas-20260812",
       "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
-      "historical_run_id": "qa2-synthetic-personas-20260812",
-      "historical_checksum": "c8fbe6a347e0bcb19757e1e572fe7b22bcbf62a2da7860a3299e722e90dd4bd3",
+      "checksum": "839c9155c90a68f61eacb03b74900cd7670850d0c32ddd079e51bf4e8e82de85",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa2-result.v1.json",
-      "predecessor_result_preserved": true,
-      "historical_mode": "tiny"
+      "mode": "tiny"
     },
     {
       "suite_id": "QA3",
-      "run_id": null,
+      "run_id": "qa3-generative-fuzz-20260812",
       "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
-      "historical_run_id": "qa3-generative-fuzz-20260812",
-      "historical_checksum": "015facfd5b10b5102a1e1e8cbe4aeba8fef675efc0c7fb03f137ccd735f8ffe7",
+      "checksum": "ed6c9ac394df286929c1eb110683236106f72ae969d1f85c3566aa1f37468817",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa3-result.v1.json",
-      "predecessor_result_preserved": true,
-      "historical_mode": "tiny"
+      "mode": "tiny"
     },
     {
       "suite_id": "QA4",
-      "run_id": null,
+      "run_id": "qa4-stateful-time-20260812",
       "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
-      "historical_run_id": "qa4-stateful-time-20260812",
-      "historical_checksum": "8712503dc860a661008be6dd11ed7e1f8d9200798267af12427e1818751f88de",
+      "checksum": "99b29659f9d05e90d97c0fc52e252cd9371281b02afe1ab05306cf30d92e12bd",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa4-result.v1.json",
-      "predecessor_result_preserved": true,
-      "historical_mode": "tiny",
-      "historical_blocked_codes": [
+      "mode": "tiny",
+      "blocked_codes": [
         "BLOCKED_NO_CLOCK_HOOK"
       ]
     },
     {
       "suite_id": "QA5",
-      "run_id": null,
+      "run_id": "qa5-failure-world-20260812",
       "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
-      "historical_run_id": "qa5-failure-world-20260812",
-      "historical_checksum": "637ea4ed7a54569206d1bf11b839e3e1a7111ba58b9b872b30531ded7c7f4ac9",
+      "checksum": "d46ffc2e7519c121c6b4d7c47c4a73bab4b448b0bb5101f926263b9179c99624",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa5-result.v1.json",
-      "predecessor_result_preserved": true,
-      "historical_mode": "tiny",
-      "historical_blocked_codes": [
+      "mode": "tiny",
+      "blocked_codes": [
         "BLOCKED_NO_FAULT_HOOK"
       ]
     },
     {
       "suite_id": "QA6",
-      "run_id": null,
+      "run_id": "qa6-performance-world-20260812",
       "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
-      "historical_run_id": "qa6-performance-world-20260812",
-      "historical_checksum": "2ba56763635d81b45201a980a64e8322149a980ca585c7d032a17473fad7c635",
+      "checksum": "285c8c763d34756781ef78900ee9f9ef86060268da9e7ce0bd1ab52ea90590bf",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa6-result.v1.json",
-      "predecessor_result_preserved": true,
-      "historical_mode": "tiny",
-      "historical_blocked_codes": [
+      "mode": "tiny",
+      "budget_status": "UNSPECIFIED_PERF_BUDGET",
+      "blocked_codes": [
         "BLOCKED_MISSING_ORACLE"
-      ],
-      "historical_budget_status": "UNSPECIFIED_PERF_BUDGET"
+      ]
     },
     {
       "suite_id": "QA7",
@@ -147,14 +111,13 @@
   ],
   "kill_switch": {
     "verified_before_smoke": true,
-    "verified_before_qa1": false,
-    "verified_before_qa2": false,
-    "verified_before_qa3": false,
-    "verified_before_qa4": false,
-    "verified_before_qa5": false,
-    "verified_before_qa6": false,
+    "verified_before_qa1": true,
     "production_like_aborts": true,
-    "predecessor_epoch_had_kill_switch": true
+    "verified_before_qa2": true,
+    "verified_before_qa3": true,
+    "verified_before_qa4": true,
+    "verified_before_qa5": true,
+    "verified_before_qa6": true
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -162,11 +125,9 @@
     "forced_clean_forbidden": true
   },
   "critical_invariant": {
-    "blocked": null,
-    "skipped": null,
-    "uncovered": null,
-    "epoch_status": "PENDING_CURRENT_EPOCH_RERUN",
-    "predecessor_blocked": 5
+    "blocked": 5,
+    "skipped": 0,
+    "uncovered": 0
   },
   "current_epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
