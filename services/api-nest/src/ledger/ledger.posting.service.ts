@@ -452,15 +452,25 @@ export class LedgerPostingService {
   }
 
   private async assertExistingFingerprint(
-    querier: { query: PostgresService["query"] } | PoolClient,
+    querier: PostgresService | PoolClient,
     journalId: string,
     incoming: string,
   ): Promise<void> {
-    const r = await querier.query<{ request_fingerprint: string | null }>(
-      `SELECT request_fingerprint
-         FROM public.ledger_journals WHERE id = $1`,
-      [journalId],
-    );
+    const text = `SELECT request_fingerprint
+         FROM public.ledger_journals WHERE id = $1`;
+    const params = [journalId];
+    // PoolClient.query와 PostgresService.query는 오버로드가 달라 유니온에서 직접 호출 불가.
+    // release 유무로 좁혀 각 시그니처를 그대로 호출한다(쿼리 의미는 동일).
+    const r =
+      "release" in querier
+        ? await querier.query<{ request_fingerprint: string | null }>(
+            text,
+            params,
+          )
+        : await querier.query<{ request_fingerprint: string | null }>(
+            text,
+            params,
+          );
     const stored = r.rows[0]?.request_fingerprint;
     // legacy(null): 이전 silent-reuse 유지 · fingerprint 있는 행만 conflict 강제
     assertFingerprintMatch({ stored, incoming });

@@ -25,7 +25,6 @@ import {
   S_REFUSE_TEMPLATE,
   shouldCallLlm,
   shapeByTone,
-  type ResultReferenceResolution,
 } from "./ai.engine";
 import { AI_EVENTS } from "./ai.events";
 import { ConversationStateService } from "./conversation-state.service";
@@ -132,7 +131,7 @@ export class CoachOrchestrator {
     const referenceResolution = resolveResultReference({
       text,
       resultRefs: convState.resultRefs || [],
-    }) as ResultReferenceResolution;
+    });
     const referenceLine = referencePromptBlock(referenceResolution)?.line ?? null;
 
     let route = routeAssistant({
@@ -184,8 +183,10 @@ export class CoachOrchestrator {
       providerEffective = "none";
       toolsCalled = [];
       deepLink = null;
-    } else if (unresolvedRef && referenceResolution.status !== "none") {
+    } else if (unresolvedRef) {
       // Do not let the model guess a candidate when resolution failed.
+      // unresolvedRef already excludes status "none"/"resolved".
+      // S lane is handled in the first branch; remaining lanes stay on P.
       answerText =
         referenceResolution.status === "unavailable"
           ? REF_UNAVAILABLE_TEMPLATE
@@ -194,7 +195,7 @@ export class CoachOrchestrator {
       providerId = "none";
       providerEffective = "none";
       toolsCalled = [];
-      lane = lane === "S" ? "S" : "P";
+      lane = "P";
     } else if (lane === "P") {
       const executionId =
         referenceResolution.status === "resolved" &&

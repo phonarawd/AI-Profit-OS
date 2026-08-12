@@ -351,7 +351,7 @@ export function rememberResultRef(
 ): ConversationState;
 export function resolveResultReference(input?: {
   text?: string;
-  resultRefs?: object[];
+  resultRefs?: readonly object[];
 }): ResultReferenceResolution;
 export function referencePromptBlock(
   resolution: ResultReferenceResolution | null | undefined,
