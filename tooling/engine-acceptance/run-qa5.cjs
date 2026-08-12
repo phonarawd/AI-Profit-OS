@@ -15,6 +15,10 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 const { assertKillSwitch } = require("./kill-switch.cjs");
 const { ROOT, readJson, dualDirty, hashPathList } = require("./lib/hash-scope.cjs");
+const {
+  assertAcceptanceWorkflowHashMatch,
+  syncLockfileHashOnly,
+} = require("./lib/workflow-amendment.cjs");
 const { runFailureWorld } = require("./checks/failure-world.cjs");
 
 const RESULT_REL = "governance/engine-acceptance/qa5-result.v1.json";
@@ -35,17 +39,9 @@ function writeJson(rel, obj) {
 }
 
 function syncAggregateHashes(baseline, scope) {
-  let changed = false;
-  for (const key of ["acceptance_workflow_hash", "lockfile_hash"]) {
-    const paths = scope.aggregateHashes[key];
-    if (!paths) continue;
-    const live = hashPathList(paths, scope);
-    if (baseline[key] !== live) {
-      baseline[key] = live;
-      changed = true;
-    }
-  }
-  if (changed) writeJson(BASELINE_REL, baseline);
+  // POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 — workflow hash auto-sync forbidden
+  assertAcceptanceWorkflowHashMatch(baseline, scope);
+  syncLockfileHashOnly(baseline, scope, (b) => writeJson(BASELINE_REL, b));
 }
 
 function countBySeverity(defects) {

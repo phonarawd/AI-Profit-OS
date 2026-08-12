@@ -222,7 +222,9 @@
     "cf:deploy:all:prod": "node tooling/deploy/cf-deploy-all.cjs production",
     "cf:domain:bootstrap": "node tooling/deploy/cf-domain-bootstrap.cjs",
     "cf:domain:bridge": "node tooling/deploy/cf-domain-bridge.cjs",
-    "verify:domain-bootstrap": "node tooling/verify/domain-bootstrap.cjs"
+    "verify:domain-bootstrap": "node tooling/verify/domain-bootstrap.cjs",
+    "engine-acceptance:amend-workflow-hash": "node tooling/engine-acceptance/amend-acceptance-workflow-hash.cjs",
+    "engine-acceptance:selftest-workflow-amendment": "node tooling/engine-acceptance/selftest-workflow-amendment.cjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

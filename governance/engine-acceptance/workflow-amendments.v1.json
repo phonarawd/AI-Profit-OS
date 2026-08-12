@@ -1,0 +1,22 @@
+{
+  "schema": "governance.engine-acceptance.workflow-amendments.v1",
+  "version": "1.0.0",
+  "decision_id": "POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1",
+  "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+  "frozen_at_qa0": {
+    "acceptance_workflow_hash": "4f6e6f99ec4642cae7fd8593cd9c6d11f453d746733f4c0caeb7e09ffaa347fa",
+    "prompt_hash": "4648ec224820627088fa6519e224b000f8781efe6fd27750f1112b952c42ec07",
+    "eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088"
+  },
+  "policies": {
+    "baseline_id": "STABLE",
+    "prompt_hash": "IMMUTABLE",
+    "eval_dataset_hash": "IMMUTABLE",
+    "acceptance_workflow_hash": "CONTROLLED_AMENDMENT_ONLY",
+    "qa0_qa6_validity": "RETAIN_IF_EXACT_DIFF_PROVES_NO_SEMANTICS_CHANGE_ELSE_BLOCKED",
+    "legacy_runner_auto_sync": "FORBIDDEN_FOR_ACCEPTANCE_WORKFLOW_HASH",
+    "qa7_in_flight_amendment": "FORBIDDEN",
+    "baseline_hash_mutation_path": "tooling/engine-acceptance/amend-acceptance-workflow-hash.cjs ONLY"
+  },
+  "amendments": []
+}

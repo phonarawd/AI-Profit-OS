@@ -31,6 +31,15 @@ const {
   hashPathList,
 } = require("../engine-acceptance/lib/hash-scope.cjs");
 
+const {
+  DECISION_ID,
+  LEDGER_REL,
+  loadLedger,
+  verifyGovernanceAgainstBaseline,
+  assertRunnersForbidSilentWorkflowSync,
+} = require("../engine-acceptance/lib/workflow-amendment.cjs");
+const { run: selftestWorkflowAmendment } = require("../engine-acceptance/selftest-workflow-amendment.cjs");
+
 const fails = [];
 function fail(msg) {
   fails.push(msg);
@@ -43,6 +52,7 @@ const REQUIRED_FILES = [
   `${GOV}/invariants.v1.md`,
   `${GOV}/protected-scope.v1.json`,
   `${GOV}/baseline.v1.json`,
+  `${GOV}/workflow-amendments.v1.json`,
   `${GOV}/personas.v1.json`,
   `${GOV}/journeys.v1.json`,
   `${GOV}/coverage.v1.json`,
@@ -59,6 +69,9 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/kill-switch.cjs",
   "tooling/engine-acceptance/tiny-smoke.cjs",
   "tooling/engine-acceptance/freeze-baseline.cjs",
+  "tooling/engine-acceptance/amend-acceptance-workflow-hash.cjs",
+  "tooling/engine-acceptance/selftest-workflow-amendment.cjs",
+  "tooling/engine-acceptance/lib/workflow-amendment.cjs",
   "tooling/engine-acceptance/run-qa1.cjs",
   "tooling/engine-acceptance/run-qa2.cjs",
   "tooling/engine-acceptance/run-qa3.cjs",
@@ -110,6 +123,9 @@ for (const token of [
   "BLOCKED_NO_FAULT_HOOK",
   "fail-fast: false",
   "kill-switch",
+  "POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1",
+  "CONTROLLED_AMENDMENT_ONLY",
+  "workflow-amendments.v1.json",
 ]) {
   if (!contract.includes(token)) fail(`acceptance-contract missing: ${token}`);
 }
@@ -1186,6 +1202,38 @@ if (!qa6Blocked) {
   fail("run-qa6 must abort via kill-switch before checks when unsafe");
 }
 
+// POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 governance
+let amendmentLedger;
+try {
+  amendmentLedger = loadLedger(LEDGER_REL);
+} catch {
+  fail("workflow-amendments.v1.json invalid JSON");
+}
+if (baseline && amendmentLedger) {
+  let evidenceForAmend = null;
+  try {
+    evidenceForAmend = readJson(`${GOV}/evidence-manifest.v1.json`);
+  } catch {
+    evidenceForAmend = null;
+  }
+  verifyGovernanceAgainstBaseline(
+    baseline,
+    scope,
+    amendmentLedger,
+    evidenceForAmend,
+    fails,
+  );
+}
+assertRunnersForbidSilentWorkflowSync(fails);
+try {
+  selftestWorkflowAmendment();
+} catch (e) {
+  fail(`workflow-amendment selftest threw: ${e && e.message ? e.message : e}`);
+}
+if (amendmentLedger && amendmentLedger.decision_id !== DECISION_ID) {
+  fail(`decision_id must be ${DECISION_ID}`);
+}
+
 // workflow hash in baseline matches file
 if (baseline && fs.existsSync(wfPath) && scope) {
   const live = hashPathList(scope.aggregateHashes.acceptance_workflow_hash, scope);
@@ -1203,6 +1251,9 @@ if (fails.length) {
 console.log("[verify:engine-acceptance] PASS (QA-0..QA-6 scope)");
 console.log("  ACCEPTANCE CONTRACT = LOCKED");
 console.log("  BASELINE = FROZEN");
+console.log("  GOVERNANCE_DECISION = POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1");
+console.log("  WORKFLOW_HASH_POLICY = CONTROLLED_AMENDMENT_ONLY");
+console.log("  LEGACY_AUTO_SYNC_STATUS = MUST_BE_GATED");
 console.log("  QA1 = COMPLETE");
 console.log("  QA2 = COMPLETE");
 console.log("  QA3 = COMPLETE");

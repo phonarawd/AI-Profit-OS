@@ -14,6 +14,10 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 const { assertKillSwitch } = require("./kill-switch.cjs");
 const { ROOT, readJson, dualDirty, hashPathList } = require("./lib/hash-scope.cjs");
+const {
+  assertAcceptanceWorkflowHashMatch,
+  syncLockfileHashOnly,
+} = require("./lib/workflow-amendment.cjs");
 const { runCoverageMapping } = require("./checks/coverage-mapping.cjs");
 const { runDirtyPathBias } = require("./checks/dirty-path-bias.cjs");
 const { runUserIsolationSurfaces } = require("./checks/user-isolation-surfaces.cjs");
@@ -36,12 +40,8 @@ function writeJson(rel, obj) {
 }
 
 function syncWorkflowHash(baseline, scope) {
-  const live = hashPathList(scope.aggregateHashes.acceptance_workflow_hash, scope);
-  if (baseline.acceptance_workflow_hash !== live) {
-    baseline.acceptance_workflow_hash = live;
-    writeJson(BASELINE_REL, baseline);
-  }
-  return live;
+  // POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 — silent baseline mutation forbidden
+  return assertAcceptanceWorkflowHashMatch(baseline, scope);
 }
 
 function collectDefects(checks, baselineId, measuredAt) {

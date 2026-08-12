@@ -109,3 +109,41 @@ Destructive QA 전 필수 검사:
 
 하나라도 production-like → **즉시 abort**. 제품 코드 변경 없음.  
 **순서 잠금:** kill-switch 검증이 tiny smoke보다 **먼저**.
+
+## L7 — Post-QA0 Controlled Workflow Amendment
+
+> **Decision ID:** `POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1`  
+> **SSOT ledger:** `workflow-amendments.v1.json`  
+> **Apply path only:** `tooling/engine-acceptance/amend-acceptance-workflow-hash.cjs`
+
+QA-0 baseline freeze 이후에도 **workflow-only orchestration** 변경은 명시적 Human/PO ACK가 있는 controlled amendment로 허용한다.
+
+| 대상 | 정책 |
+|---|---|
+| `baseline.id` (`baseline_id`) | **STABLE** — amendment로 변경 금지 |
+| `prompt_hash` | **IMMUTABLE** — amendment로도 변경 금지 |
+| `eval_dataset_hash` | **IMMUTABLE** — amendment로도 변경 금지 |
+| `acceptance_workflow_hash` | **CONTROLLED_AMENDMENT_ONLY** — 승인된 provenance로만 전이 |
+
+### 금지
+
+1. suite runner(`run-qa2`..`run-qa6`)의 `syncWorkflowHash` / `syncAggregateHashes`가 `acceptance_workflow_hash`를 암묵 sync하는 것
+2. amendment 없는 workflow hash drift를 PASS로 세탁하는 것
+3. QA7 body execution 진행 중(`RUNNING`/`IN_PROGRESS`/`STARTED`) baseline workflow amendment
+4. full REFREEZE를 본 decision의 대체 경로로 쓰는 것 (`NO_REFREEZE_GOVERNANCE` 유지)
+
+### Amendment provenance (최소 필드)
+
+`amendment_id` · `reason` · `human_po_ack` · `old_acceptance_workflow_hash` · `new_acceptance_workflow_hash` · `workflow_diff_scope` (exact diff + QA0–QA6 semantics checks) · `affected_qa_suites` · `unaffected_completed_suites` · `baseline_id` · `commit_sha_or_pending` · `timestamp`
+
+### QA0–QA6 validity
+
+QA7-only wiring처럼 QA0–QA6 실행 semantics를 변경하지 않음이 **exact diff로 증명**되면 QA0–QA6 COMPLETE evidence를 재실행 없이 유지할 수 있다.
+
+다음 중 하나라도 true/불확실이면 amendment **FAIL/BLOCKED** (별도 governance 판정 필요):
+
+- QA0–QA6 command 변경
+- artifact/upload semantics 변경
+- env/permission 변경
+- PASS/FAIL logic 변경
+- `workflow_diff_scope.qa0_qa6_semantics_changed != false`
