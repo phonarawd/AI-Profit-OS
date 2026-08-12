@@ -217,7 +217,7 @@ expect(
   JSON.stringify(reps)
 );
 
-// Husky T0 authority still present (bypass guard)
+// Husky T0/T1 authority still present (bypass guard)
 {
   const preCommit = path.join(ROOT, ".husky", "pre-commit");
   const body = fs.existsSync(preCommit)
@@ -227,6 +227,42 @@ expect(
     "husky pre-commit still runs verify:gate:fast",
     /verify:gate:fast/.test(body),
     body.trim().slice(0, 80)
+  );
+}
+
+{
+  const prePush = path.join(ROOT, ".husky", "pre-push");
+  const body = fs.existsSync(prePush) ? fs.readFileSync(prePush, "utf8") : "";
+  expect(
+    "husky pre-push still runs verify:gate:push",
+    /verify:gate:push/.test(body),
+    body.trim().slice(0, 80)
+  );
+}
+
+// --- J. local git push decision ALLOW (no T1 in Cursor hook) ---
+{
+  const r = runGitGate({
+    command: "git push origin HEAD",
+    cwd: ROOT,
+  });
+  expect(
+    "J local git push decision ALLOW",
+    r.status === 0 && r.permission === "allow",
+    "status=" + r.status + " perm=" + r.permission + " ms=" + r.ms
+  );
+}
+
+// --- K. git push --no-verify => DENY ---
+{
+  const r = runGitGate({
+    command: "git push --no-verify origin HEAD",
+    cwd: ROOT,
+  });
+  expect(
+    "K git push --no-verify DENY",
+    r.status === 0 && r.permission === "deny",
+    "status=" + r.status + " perm=" + r.permission
   );
 }
 
@@ -243,6 +279,7 @@ const report = {
   temp_dir_unused: os.tmpdir(),
   failClosed: true,
   heavy_t0_location: ".husky/pre-commit → pnpm verify:gate:fast",
+  heavy_t1_location: ".husky/pre-push → pnpm verify:gate:push",
 };
 
 process.stdout.write(JSON.stringify(report, null, 2) + "\n");

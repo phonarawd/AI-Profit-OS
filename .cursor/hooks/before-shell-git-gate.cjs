@@ -10,15 +10,16 @@
  *   - malformed stdin → deny (failClosed)
  *   - local git commit → allow (heavy T0 = Husky pre-commit)
  *
- * Heavy verification (not in commit critical path):
+ * Heavy verification (not in Cursor spawn budget):
  *   - T0 verify:gate:fast → .husky/pre-commit
- *   - T1 verify:gate:push → kept here (no Husky pre-push yet)
+ *   - T1 verify:gate:push → .husky/pre-push
+ * Cursor git-gate = permission only (foreign / --no-verify / secrets).
+ * T1 exceeds the 120s beforeShellExecution budget, so it must not run here.
  */
 "use strict";
 
 const fs = require("fs");
 const path = require("path");
-const { execSync } = require("child_process");
 const {
   evaluateShellCommand,
   WORKSPACE_ROOT: BOUNDARY_ROOT,
@@ -228,27 +229,11 @@ if (touchesEnv(cmd) || forceAddSecrets(cmd)) {
   );
 }
 
-// Local commit: permission only. Heavy T0 = .husky/pre-commit → pnpm verify:gate:fast
-if (isGitCommit(cmd)) {
+// Local commit/push: permission only.
+// Heavy T0 = .husky/pre-commit → pnpm verify:gate:fast
+// Heavy T1 = .husky/pre-push → pnpm verify:gate:push
+if (isGitCommit(cmd) || isGitPush(cmd)) {
   allow();
-}
-
-// Push: keep existing T1 gate in this hook (no .husky/pre-push authority yet)
-if (isGitPush(cmd)) {
-  try {
-    execSync("pnpm verify:gate:push", {
-      cwd: executionRoot,
-      stdio: ["ignore", "pipe", "pipe"],
-      env: process.env,
-      timeout: 300000,
-    });
-  } catch (e) {
-    const err = (e.stdout || e.stderr || e.message || "").toString().slice(0, 1500);
-    deny(
-      "Blocked: verify:gate:push failed — fix before push.",
-      "verify:gate:push FAIL:\n" + err
-    );
-  }
 }
 
 allow();
