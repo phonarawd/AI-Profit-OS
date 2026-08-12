@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       qa_phase:
-        description: "QA phase to run (qa0 / qa1 / qa2 / qa3 / qa4 / qa5 / qa6 / later suites)"
+        description: "QA phase to run (qa0 / qa1 / qa2 / qa3 / qa4 / qa5 / qa6 / qa7 / later suites)"
         required: true
         default: "qa6"
         type: choice
@@ -17,6 +17,7 @@ on:
           - qa4
           - qa5
           - qa6
+          - qa7
           - full
   pull_request:
     paths:
@@ -131,7 +132,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        suite: [QA3, QA4, QA5, QA6, QA7, QA8]
+        suite: [QA3, QA4, QA5, QA6, QA8]
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -196,6 +197,82 @@ jobs:
           # acceptance evidence retention ≥ 90 days (L5)
           retention-days: 90
           if-no-files-found: ignore
+
+  # QA7 AI eval — workflow_dispatch only (qa7 | full) · pull_request/push 자동 실행 금지
+  qa7-ai-eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: ${{ github.event_name == 'workflow_dispatch' && (inputs.qa_phase == 'qa7' || inputs.qa_phase == 'full') }}
+    env:
+      TMPDIR: /tmp
+      PORT: 4000
+      LLM_PROVIDER: gemini_free
+      DATABASE_URL: ${{ secrets.QA7_DATABASE_URL }}
+      JWT_USER_SECRET: ${{ secrets.QA7_JWT_USER_SECRET }}
+      GEMINI_API_KEY: ${{ secrets.QA7_GEMINI_API_KEY }}
+      QA7_LOCAL_HTTP: "1"
+      AIPO_QA_TARGET_ENV: ci
+      AIPO_QA_HOSTNAME: localhost
+      AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Build @aipo/api-nest
+        run: |
+          set -euo pipefail
+          pnpm --filter @aipo/api-nest build
+          test -f services/api-nest/dist/main.js
+      - name: Start api-nest
+        run: |
+          set -euo pipefail
+          nohup node services/api-nest/dist/main.js > /tmp/aipo-qa7-api.log 2>&1 &
+          echo $! > /tmp/aipo-qa7-api.pid
+      - name: Wait for api-nest health
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:4000/api/v1/health >/dev/null; then
+              echo "api-nest ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "api-nest health timeout"
+          exit 1
+      - name: Run QA7 AI eval
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/run-qa7.cjs \
+            --mode full \
+            --target-env ci \
+            --hostname localhost \
+            --synthetic-ns qa-synth-ci
+      - name: Upload QA7 raw traces
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-acceptance-QA7-raw-traces
+          path: /tmp/aipo-qa7-traces/
+          retention-days: 90
+          if-no-files-found: error
+      - name: Stop api-nest
+        if: ${{ always() }}
+        run: |
+          if [ -f /tmp/aipo-qa7-api.pid ]; then
+            pid="$(cat /tmp/aipo-qa7-api.pid)"
+            case "$pid" in
+              ''|*[!0-9]*) ;;
+              *) kill "$pid" || true ;;
+            esac
+          fi
 
   # 선행 job 실패/스킵 후에도 최종 증거 집계 (전수 조사 철학 · if: always())
   aggregator:
