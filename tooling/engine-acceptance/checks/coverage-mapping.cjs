@@ -58,21 +58,23 @@ function runCoverageMapping(suiteId = "QA2") {
     });
   }
 
-  // isolation 공격면 최소 집합 (interleave / token_cross / object_id_swap)
-  const isolationFaces = new Set(
-    resolved
-      .filter((r) => r.invariant_id === "INV-ISOLATION-01")
-      .map((r) => r.attack_face)
-      .filter(Boolean),
-  );
-  for (const face of ["interleave", "token_cross", "object_id_swap"]) {
-    if (!isolationFaces.has(face)) {
-      findings.push(`QA2 INV-ISOLATION-01 missing attack_face mapping: ${face}`);
+  // isolation 공격면 최소 집합 — QA2 synthetic personas 전용
+  if (suiteId === "QA2") {
+    const isolationFaces = new Set(
+      resolved
+        .filter((r) => r.invariant_id === "INV-ISOLATION-01")
+        .map((r) => r.attack_face)
+        .filter(Boolean),
+    );
+    for (const face of ["interleave", "token_cross", "object_id_swap"]) {
+      if (!isolationFaces.has(face)) {
+        findings.push(`QA2 INV-ISOLATION-01 missing attack_face mapping: ${face}`);
+      }
     }
   }
 
   return {
-    check_id: "QA2_COVERAGE_MAPPING",
+    check_id: `${suiteId}_COVERAGE_MAPPING`,
     status: findings.length ? "FAIL" : "PASS",
     suite_id: suiteId,
     mappingCount: resolved.length,

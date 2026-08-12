@@ -5,14 +5,15 @@ on:
   workflow_dispatch:
     inputs:
       qa_phase:
-        description: "QA phase to run (qa0 / qa1 / qa2 / later suites)"
+        description: "QA phase to run (qa0 / qa1 / qa2 / qa3 / later suites)"
         required: true
-        default: "qa2"
+        default: "qa3"
         type: choice
         options:
           - qa0
           - qa1
           - qa2
+          - qa3
           - full
   pull_request:
     paths:
@@ -64,7 +65,7 @@ jobs:
   qa1-deterministic:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa1' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'full' || inputs.qa_phase == 'qa0' }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa1' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'full' || inputs.qa_phase == 'qa0' }}
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -93,7 +94,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [qa1-deterministic]
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'full' }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'full' }}
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -117,27 +118,66 @@ jobs:
           AIPO_QA_HOSTNAME: localhost
           AIPO_QA_SYNTHETIC_NS: qa-synth-ci
         run: node tooling/engine-acceptance/run-qa2.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
-      - name: verify:engine-acceptance (QA-0+QA-1+QA-2)
-        run: pnpm verify:engine-acceptance
 
-  # Heavy suites (QA3+) — scaffold only; fail-fast false · aggregator always()
-  matrix-placeholder:
-    if: ${{ github.event_name == 'workflow_dispatch' && (inputs.qa_phase == 'full') }}
+  # QA3+ matrix — fail-fast:false (전수 조사 · 조기 취소 금지)
+  qa-matrix:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 30
+    needs: [qa2-synthetic-personas]
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'full' }}
     strategy:
       fail-fast: false
       matrix:
         suite: [QA3, QA4, QA5, QA6, QA7, QA8]
     steps:
       - uses: actions/checkout@v6
-      - name: Suite placeholder
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Kill-switch before matrix suite
+        env:
+          AIPO_QA_TARGET_ENV: ci
+          AIPO_QA_HOSTNAME: localhost
+          AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+        run: node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+      - name: Run matrix suite
+        env:
+          AIPO_QA_TARGET_ENV: ci
+          AIPO_QA_HOSTNAME: localhost
+          AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+          MATRIX_SUITE: ${{ matrix.suite }}
         run: |
-          echo "suite=${{ matrix.suite }} — full run not enabled at QA-2"
-          exit 0
+          set -euo pipefail
+          case "${MATRIX_SUITE}" in
+            QA3)
+              node tooling/engine-acceptance/run-qa3.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+              pnpm verify:engine-acceptance
+              ;;
+            *)
+              echo "suite=${MATRIX_SUITE} — not enabled yet at QA-3 (placeholder COMPLETE=0)"
+              exit 0
+              ;;
+          esac
+      - name: Upload suite evidence
+        if: ${{ always() && matrix.suite == 'QA3' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-acceptance-${{ matrix.suite }}
+          path: |
+            governance/engine-acceptance/qa3-result.v1.json
+            governance/engine-acceptance/defects.v1.json
+            governance/engine-acceptance/evidence-manifest.v1.json
+            governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
+          retention-days: 90
 
   aggregator:
-    needs: [qa0-baseline, qa1-deterministic, qa2-synthetic-personas, matrix-placeholder]
+    needs: [qa0-baseline, qa1-deterministic, qa2-synthetic-personas, qa-matrix]
     # 선행 job 실패/스킵 후에도 최종 증거 집계 (전수 조사 철학)
     if: ${{ always() }}
     runs-on: ubuntu-latest
@@ -161,11 +201,15 @@ jobs:
           cp governance/engine-acceptance/baseline.v1.json _tmp_engine_acceptance_evidence/ || true
           cp governance/engine-acceptance/qa1-result.v1.json _tmp_engine_acceptance_evidence/ || true
           cp governance/engine-acceptance/qa2-result.v1.json _tmp_engine_acceptance_evidence/ || true
+          cp governance/engine-acceptance/qa3-result.v1.json _tmp_engine_acceptance_evidence/ || true
+          cp governance/engine-acceptance/defects.v1.json _tmp_engine_acceptance_evidence/ || true
           echo "aggregator_status=ran" > _tmp_engine_acceptance_evidence/aggregator.txt
           echo "qa0_result=${{ needs.qa0-baseline.result }}" >> _tmp_engine_acceptance_evidence/aggregator.txt
           echo "qa1_result=${{ needs.qa1-deterministic.result }}" >> _tmp_engine_acceptance_evidence/aggregator.txt
           echo "qa2_result=${{ needs.qa2-synthetic-personas.result }}" >> _tmp_engine_acceptance_evidence/aggregator.txt
-          echo "matrix_result=${{ needs.matrix-placeholder.result }}" >> _tmp_engine_acceptance_evidence/aggregator.txt
+          echo "matrix_result=${{ needs.qa-matrix.result }}" >> _tmp_engine_acceptance_evidence/aggregator.txt
+          echo "strategy_fail_fast=false" >> _tmp_engine_acceptance_evidence/aggregator.txt
+          echo "concurrency_group=engine-acceptance-${{ github.ref }}" >> _tmp_engine_acceptance_evidence/aggregator.txt
       - name: Upload acceptance evidence
         if: ${{ always() }}
         uses: actions/upload-artifact@v4

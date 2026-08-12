@@ -163,7 +163,6 @@
     "verify:loop-psychology": "node tooling/verify/loop-psychology.cjs",
     "verify:legal-plain-ko": "node tooling/verify/legal-plain-ko.cjs",
     "verify:part5-shell-toast": "node tooling/verify/part5-shell-toast.cjs",
-
     "verify:platform-redesign-inventory": "node tooling/verify/platform-redesign-inventory.cjs",
     "verify:platform-fact-state-registry": "node tooling/verify/platform-fact-state-registry.cjs",
     "verify:platform-change-control": "node tooling/verify/platform-change-control.cjs",
@@ -174,6 +173,7 @@
     "engine-acceptance:tiny-smoke": "node tooling/engine-acceptance/tiny-smoke.cjs",
     "engine-acceptance:qa1": "node tooling/engine-acceptance/run-qa1.cjs",
     "engine-acceptance:qa2": "node tooling/engine-acceptance/run-qa2.cjs",
+    "engine-acceptance:qa3": "node tooling/engine-acceptance/run-qa3.cjs",
     "verify:mockup-governance": "node tooling/verify/mockup-governance.cjs",
     "verify:canon-surfaces": "node tooling/verify/canon-surfaces.cjs",
     "verify:brand-logo-single": "node tooling/verify/brand-logo-single.cjs",
@@ -202,7 +202,6 @@
     "dev:admin": "node tooling/dev/ensure-node.cjs && pnpm --filter @aipo/admin dev",
     "dev:api": "node tooling/dev/ensure-node.cjs && node tooling/dev/start-api.cjs",
     "dev:setup-fnm": "powershell -NoProfile -ExecutionPolicy Bypass -File tooling/dev/setup-fnm-profile.ps1",
-
     "docker:up": "docker compose -f docker-compose.dev.yml up -d",
     "docker:down": "docker compose -f docker-compose.dev.yml down",
     "docker:ps": "docker compose -f docker-compose.dev.yml ps",
@@ -229,6 +228,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260809.1",
+    "fast-check": "^4.9.0",
     "husky": "^9.1.7",
     "typescript": "^5.9.2",
     "wrangler": "^4.120.0"

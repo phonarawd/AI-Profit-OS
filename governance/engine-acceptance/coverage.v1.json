@@ -1,10 +1,11 @@
 {
   "schema": "governance.engine-acceptance.coverage.v1",
   "version": "1.0.0",
-  "status": "qa2_active",
+  "status": "qa3_active",
   "notes": [
     "persona × journey × invariant 매핑. 맵 개수 ≠ KPI.",
-    "QA-2 Dirty Path 비중 > Happy Path (suite_ids에 QA2 포함 매핑 기준)."
+    "QA-2 Dirty Path 비중 > Happy Path (suite_ids에 QA2 포함 매핑 기준).",
+    "QA-3 generative fuzz = fast-check properties (suite_ids에 QA3)."
   ],
   "mandatorySuites": ["QA1", "QA2", "QA3", "QA4", "QA5", "QA6", "QA7", "QA8"],
   "kpi_forbidden": true,
@@ -15,7 +16,7 @@
       "journey_id": "J-DIRTY-RETRY-01",
       "invariant_id": "INV-IDEMPOTENCY-01",
       "critical": true,
-      "suite_ids": ["QA1", "QA2"]
+      "suite_ids": ["QA1", "QA2", "QA3"]
     },
     {
       "id": "COV-002",
@@ -23,7 +24,7 @@
       "journey_id": "J-DIRTY-CONFLICT-01",
       "invariant_id": "INV-IDEMPOTENCY-03",
       "critical": true,
-      "suite_ids": ["QA1"]
+      "suite_ids": ["QA1", "QA3"]
     },
     {
       "id": "COV-003",
@@ -32,7 +33,7 @@
       "invariant_id": "INV-ISOLATION-01",
       "critical": true,
       "attack_face": "interleave",
-      "suite_ids": ["QA2", "QA8"]
+      "suite_ids": ["QA2", "QA3", "QA8"]
     },
     {
       "id": "COV-003b",
@@ -58,7 +59,7 @@
       "journey_id": "J-HAPPY-01",
       "invariant_id": "INV-LIFECYCLE-01",
       "critical": true,
-      "suite_ids": ["QA1", "QA2", "QA4"]
+      "suite_ids": ["QA1", "QA2", "QA3", "QA4"]
     },
     {
       "id": "COV-005",
@@ -66,7 +67,7 @@
       "journey_id": "J-HAPPY-01",
       "invariant_id": "INV-LEDGER-01",
       "critical": true,
-      "suite_ids": ["QA1", "QA5"]
+      "suite_ids": ["QA1", "QA3", "QA5"]
     },
     {
       "id": "COV-006",
