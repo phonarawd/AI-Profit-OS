@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-5",
+  "qa_phase": "QA-6",
   "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
   "verdict": "ENGINE_QA_INCOMPLETE",
-  "verdict_reason": "QA5 COMPLETE · critical_invariant.blocked=4 (incl. BLOCKED_NO_FAULT_HOOK / prior BLOCKED_NO_CLOCK_HOOK) · P0/P1=0 · ACCEPTED 불가 · QA6..QA8 not executed",
+  "verdict_reason": "QA6 COMPLETE · critical_invariant.blocked=5 (incl. UNSPECIFIED_PERF_BUDGET/BLOCKED_MISSING_ORACLE + prior BLOCKED_*) · P0/P1=0 · ACCEPTED 불가 · QA7..QA8 not executed",
   "evidence_integrity": "VALID",
-  "next": "QA6_PERFORMANCE",
+  "next": "QA7_AI_EVAL",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -15,7 +15,8 @@
       "evidence-manifest.v1.json",
       "baseline.v1.json",
       "ENGINE_ACCEPTANCE_REPORT.md",
-      "qa5-result.v1.json"
+      "qa6-result.v1.json",
+      "perf-budget.v1.json"
     ]
   },
   "suites": [
@@ -78,10 +79,16 @@
     },
     {
       "suite_id": "QA6",
-      "run_id": null,
+      "run_id": "qa6-performance-world-20260812",
       "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
-      "checksum": null,
-      "completion_status": "NOT_STARTED"
+      "checksum": "2ba56763635d81b45201a980a64e8322149a980ca585c7d032a17473fad7c635",
+      "completion_status": "COMPLETE",
+      "result_ref": "governance/engine-acceptance/qa6-result.v1.json",
+      "mode": "tiny",
+      "budget_status": "UNSPECIFIED_PERF_BUDGET",
+      "blocked_codes": [
+        "BLOCKED_MISSING_ORACLE"
+      ]
     },
     {
       "suite_id": "QA7",
@@ -105,7 +112,8 @@
     "verified_before_qa2": true,
     "verified_before_qa3": true,
     "verified_before_qa4": true,
-    "verified_before_qa5": true
+    "verified_before_qa5": true,
+    "verified_before_qa6": true
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -113,7 +121,7 @@
     "forced_clean_forbidden": true
   },
   "critical_invariant": {
-    "blocked": 4,
+    "blocked": 5,
     "skipped": 0,
     "uncovered": 0
   }

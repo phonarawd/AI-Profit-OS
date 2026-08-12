@@ -1,10 +1,10 @@
 # ENGINE ACCEPTANCE REPORT
 
-> **QA phase:** QA-5 `qa5-failure-world`  
-> **Measured:** 2026-08-12T11:49:55.088Z  
+> **QA phase:** QA-6 `qa6-performance-world`  
+> **Measured:** 2026-08-12T11:59:12.517Z  
 > **baseline_id:** `ea-baseline-13b7a5138ebe-cb4530b02ecf`  
-> **qa5_run_id:** `qa5-failure-world-20260812`  
-> **qa5_result_checksum:** `637ea4ed7a54569206d1bf11b839e3e1a7111ba58b9b872b30531ded7c7f4ac9`  
+> **qa6_run_id:** `qa6-performance-world-20260812`  
+> **qa6_result_checksum:** `2ba56763635d81b45201a980a64e8322149a980ca585c7d032a17473fad7c635`  
 > **mode:** `tiny`
 
 ## Status banner
@@ -18,55 +18,59 @@ QA2 = COMPLETE
 QA3 = COMPLETE
 QA4 = COMPLETE
 QA5 = COMPLETE
+QA6 = COMPLETE
 QA HARNESS TARGET = SAFE
-NEXT = QA6_PERFORMANCE
+NEXT = QA7_AI_EVAL
 PRODUCT MUTATION = 0
 03 UI = BLOCKED
 ```
 
-## Verdict (after QA-5)
+## Verdict (after QA-6)
 
 | Field | Value |
 |---|---|
 | verdict | `ENGINE_QA_INCOMPLETE` |
-| reason | QA5 COMPLETE · critical_invariant.blocked=4 (incl. BLOCKED_NO_FAULT_HOOK / prior BLOCKED_NO_CLOCK_HOOK) · P0/P1=0 · ACCEPTED 불가 · QA6..QA8 not executed |
+| reason | QA6 COMPLETE · critical_invariant.blocked=5 (incl. UNSPECIFIED_PERF_BUDGET/BLOCKED_MISSING_ORACLE + prior BLOCKED_*) · P0/P1=0 · ACCEPTED 불가 · QA7..QA8 not executed |
 | evidence_integrity | `VALID` |
 | baseline.valid | `true` |
 | working_tree_clean | `false` (fact only — not forced clean) |
 | protected_scope_clean | `true` |
 | defects.P0 / P1 | 0 / 0 |
-| critical_invariant.blocked (cumulative QA4+QA5) | 4 |
+| critical_invariant.blocked (cumulative) | 5 |
 | critical_invariant.skipped | 0 |
 | critical_invariant.uncovered | 0 |
-| mandatory suites COMPLETE | QA0..QA5 only · QA6..QA8 NOT_STARTED |
+| mandatory suites COMPLETE | QA0..QA6 only · QA7..QA8 NOT_STARTED |
 
-**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (critical BLOCKED and/or QA6..QA8 incomplete).
+**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (critical BLOCKED/UNSPECIFIED and/or QA7..QA8 incomplete).
 
-## Failure World (CI fault · two axes)
+## Performance World (k6 · CI only heavy)
 
 | Field | Value |
 |---|---|
-| suite status | `BLOCKED` |
-| fault_hook.available | `false` |
-| fault_hook.blocked_code | `BLOCKED_NO_FAULT_HOOK` |
-| scenarios blocked/failed/passed | 2 / 0 / 0 |
-| axis1 (degradation/fallback) | `BLOCKED` · n=1 |
-| axis2 (post-recovery invariant) | `BLOCKED` · n=1 |
+| suite status | `UNSPECIFIED_PERF_BUDGET` |
+| budget_status | `UNSPECIFIED_PERF_BUDGET` |
+| threshold_mechanism.locked | `true` |
+| threshold_mechanism.engine | `k6` |
+| threshold_mechanism.binding | `tag` |
+| k6_script | `tooling/engine-acceptance/k6/scenario-mix.js` present=`true` |
+| scenarios blocked/unspecified/failed/passed | 2 / 2 / 0 / 0 |
+| numeric invention | **forbidden** |
+| heavy k6 | **CI only** |
 | mock PASS | **forbidden** |
 | product mutation | `0` |
 | artifact retention | acceptance evidence ≥ **90** days (Actions artifact) |
 | aggregator | `if: always()` (선행 job 실패 후에도 집계) |
 
-| Scenario | Axis | Invariant | Status | Blocked code |
-|---|---|---|---|---|
-| `FAULT-AI-429-DEGRADE` | axis1 | `INV-FEED-AI-01` | `BLOCKED` | `BLOCKED_NO_FAULT_HOOK` |
-| `FAULT-RECOVERY-LEDGER-SCAN` | axis2 | `INV-LEDGER-01` | `BLOCKED` | `BLOCKED_NO_FAULT_HOOK` |
+| Scenario | Tag | Invariant | Status | Budget | Blocked code |
+|---|---|---|---|---|---|
+| `PERF-FEED-READ` | `feed_read` | `INV-PERF-01` | `BLOCKED` | `UNSPECIFIED_PERF_BUDGET` | `BLOCKED_MISSING_ORACLE` |
+| `PERF-PARTICIPATE` | `participate` | `INV-PERF-01` | `BLOCKED` | `UNSPECIFIED_PERF_BUDGET` | `BLOCKED_MISSING_ORACLE` |
 
-### BLOCKED_NO_FAULT_HOOK
+### UNSPECIFIED_PERF_BUDGET
 
-- Formal L3 result type (≠ defect).
-- `INV-FEED-AI-01` / `INV-LEDGER-01` are **critical** → `critical_invariant.blocked > 0` → `ENGINE_QA_INCOMPLETE` (ACCEPTED 불가).
-- Invented mock fault = **금지**.
+- Formal suite/budget status when product SLO/contract numeric budgets are absent.
+- `BLOCKED_MISSING_ORACLE` on critical `INV-PERF-01` → `ENGINE_QA_INCOMPLETE` (ACCEPTED 불가).
+- Invented p95 / error_rate = **금지**.
 
 ## Dual Dirty
 
@@ -76,4 +80,4 @@ PRODUCT MUTATION = 0
 
 ## Next
 
-`QA6_PERFORMANCE` only. Full ACCEPTED · product mutation · 03 UI — **금지**.
+`QA7_AI_EVAL` only. Full ACCEPTED · product mutation · 03 UI — **금지**.

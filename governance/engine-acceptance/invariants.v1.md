@@ -14,6 +14,7 @@
 | INV-TIME-01 | yes | time (KST 경계) 상태 진실 |
 | INV-PRIVACY-01 | yes | privacy delete-account 후 잔존/교차 0 |
 | INV-AI-01 | yes | AI grounding / autonomy0 / fail-safe |
+| INV-PERF-01 | yes | k6 scenario mix · tag threshold 메커니즘 · 수치 SLO는 제품 계약에서만 (창작 금지) |
 
 ## BLOCKED 연결
 
@@ -23,6 +24,6 @@
 | INV-FEED-AI-01 (QA5 axis1) | `BLOCKED_NO_FAULT_HOOK` |
 | INV-LEDGER-01 (QA5 axis2 recovery scan) | `BLOCKED_NO_FAULT_HOOK` |
 | (other fault suites) | `BLOCKED_NO_FAULT_HOOK` |
-| perf budgets | `BLOCKED_MISSING_ORACLE` 또는 suite `UNSPECIFIED_PERF_BUDGET` |
+| INV-PERF-01 (QA6) | `BLOCKED_MISSING_ORACLE` 또는 suite `UNSPECIFIED_PERF_BUDGET` |
 
 critical + BLOCKED/SKIPPED/UNCOVERED → `ENGINE_QA_INCOMPLETE` (ACCEPTED 불가).

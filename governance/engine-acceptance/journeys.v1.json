@@ -1,12 +1,13 @@
 {
   "schema": "governance.engine-acceptance.journeys.v1",
   "version": "1.0.0",
-  "status": "qa5_active",
+  "status": "qa6_active",
   "notes": [
     "케이스 개수는 KPI 아님. Dirty Path 비중 > Happy Path.",
     "실행: UI 없이 Nest HTTP lifecycle 합성 시퀀스 (제품 mutation 0 · 로컬 tiny smoke).",
     "QA-4: J-TIME-MULTIDAY-01 requires clock injection · absent → BLOCKED_NO_CLOCK_HOOK.",
-    "QA-5: J-FAULT-DEGRADE-01 / J-FAULT-RECOVERY-01 require fault injection · absent → BLOCKED_NO_FAULT_HOOK."
+    "QA-5: J-FAULT-DEGRADE-01 / J-FAULT-RECOVERY-01 require fault injection · absent → BLOCKED_NO_FAULT_HOOK.",
+    "QA-6: J-PERF-MIX-01 = k6 tagged scenario mix · numeric SLO absent → UNSPECIFIED_PERF_BUDGET (CI heavy only)."
   ],
   "journeys": [
     {
@@ -101,6 +102,22 @@
       "axis": 2,
       "requires_fault_hook": true,
       "blocked_code_if_no_hook": "BLOCKED_NO_FAULT_HOOK"
+    },
+    {
+      "id": "J-PERF-MIX-01",
+      "kind": "dirty",
+      "steps": [
+        "k6-scenario-mix-feed_read",
+        "k6-scenario-mix-participate",
+        "k6-scenario-mix-wallet_read",
+        "k6-scenario-mix-auth_profile",
+        "apply-tag-thresholds-from-product-slo-only",
+        "record-UNSPECIFIED_PERF_BUDGET-if-no-slo"
+      ],
+      "requires_perf_oracle": true,
+      "ci_only_heavy": true,
+      "blocked_code_if_no_oracle": "BLOCKED_MISSING_ORACLE",
+      "budget_status_if_unspecified": "UNSPECIFIED_PERF_BUDGET"
     }
   ]
 }

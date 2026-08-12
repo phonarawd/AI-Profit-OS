@@ -1,13 +1,14 @@
 {
   "schema": "governance.engine-acceptance.coverage.v1",
   "version": "1.0.0",
-  "status": "qa5_active",
+  "status": "qa6_active",
   "notes": [
     "persona × journey × invariant 매핑. 맵 개수 ≠ KPI.",
     "QA-2 Dirty Path 비중 > Happy Path (suite_ids에 QA2 포함 매핑 기준).",
     "QA-3 generative fuzz = fast-check properties (suite_ids에 QA3).",
     "QA-4 stateful time = KST multi-day · BLOCKED_NO_CLOCK_HOOK when hook absent (suite_ids에 QA4).",
-    "QA-5 Failure World = axis1 degradation/fallback · axis2 post-recovery · BLOCKED_NO_FAULT_HOOK when hook absent (suite_ids에 QA5)."
+    "QA-5 Failure World = axis1 degradation/fallback · axis2 post-recovery · BLOCKED_NO_FAULT_HOOK when hook absent (suite_ids에 QA5).",
+    "QA-6 Performance World = k6 scenario mix + tag threshold mechanism · UNSPECIFIED_PERF_BUDGET when no product SLO (suite_ids에 QA6)."
   ],
   "mandatorySuites": [
     "QA1",
@@ -172,6 +173,19 @@
       "suite_ids": [
         "QA7"
       ]
+    },
+    {
+      "id": "COV-010",
+      "persona_id": "KR-05",
+      "journey_id": "J-PERF-MIX-01",
+      "invariant_id": "INV-PERF-01",
+      "critical": true,
+      "suite_ids": [
+        "QA6"
+      ],
+      "blocked_code_if_no_oracle": "BLOCKED_MISSING_ORACLE",
+      "budget_status_if_unspecified": "UNSPECIFIED_PERF_BUDGET",
+      "ci_only_heavy": true
     }
   ]
 }

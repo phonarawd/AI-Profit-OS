@@ -176,6 +176,7 @@
     "engine-acceptance:qa3": "node tooling/engine-acceptance/run-qa3.cjs",
     "engine-acceptance:qa4": "node tooling/engine-acceptance/run-qa4.cjs",
     "engine-acceptance:qa5": "node tooling/engine-acceptance/run-qa5.cjs",
+    "engine-acceptance:qa6": "node tooling/engine-acceptance/run-qa6.cjs",
     "verify:mockup-governance": "node tooling/verify/mockup-governance.cjs",
     "verify:canon-surfaces": "node tooling/verify/canon-surfaces.cjs",
     "verify:brand-logo-single": "node tooling/verify/brand-logo-single.cjs",

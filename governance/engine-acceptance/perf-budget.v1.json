@@ -1,0 +1,90 @@
+{
+  "schema": "governance.engine-acceptance.perf-budget.v1",
+  "version": "1.0.0",
+  "status": "UNSPECIFIED_PERF_BUDGET",
+  "numeric_invention_forbidden": true,
+  "ci_only_heavy": true,
+  "threshold_mechanism": {
+    "locked": true,
+    "engine": "k6",
+    "binding": "tag",
+    "metrics": ["http_req_duration", "http_req_failed"],
+    "description": "tag별 workload threshold 바인딩 메커니즘만 잠금. p95/error_rate 수치는 기존 제품 SLO/contract/측정 baseline에서만 채움. 없으면 UNSPECIFIED_PERF_BUDGET (창작 PASS 금지)."
+  },
+  "scenario_mix": [
+    {
+      "scenario_id": "PERF-FEED-READ",
+      "tag": "feed_read",
+      "weight": 40,
+      "journey_id": "J-PERF-MIX-01",
+      "persona_id": "KR-10",
+      "invariant_id": "INV-PERF-01",
+      "title": "feed/home 읽기 부하"
+    },
+    {
+      "scenario_id": "PERF-PARTICIPATE",
+      "tag": "participate",
+      "weight": 25,
+      "journey_id": "J-PERF-MIX-01",
+      "persona_id": "KR-05",
+      "invariant_id": "INV-PERF-01",
+      "title": "participate / execute-tick 부하"
+    },
+    {
+      "scenario_id": "PERF-WALLET-READ",
+      "tag": "wallet_read",
+      "weight": 20,
+      "journey_id": "J-PERF-MIX-01",
+      "persona_id": "KR-03",
+      "invariant_id": "INV-PERF-01",
+      "title": "wallet/settlement 읽기 부하"
+    },
+    {
+      "scenario_id": "PERF-AUTH-PROFILE",
+      "tag": "auth_profile",
+      "weight": 15,
+      "journey_id": "J-PERF-MIX-01",
+      "persona_id": "KR-01",
+      "invariant_id": "INV-PERF-01",
+      "title": "auth/profile 부하"
+    }
+  ],
+  "thresholds_by_tag": {
+    "feed_read": {
+      "p95_ms": null,
+      "error_rate": null,
+      "source": null,
+      "status": "UNSPECIFIED_PERF_BUDGET"
+    },
+    "participate": {
+      "p95_ms": null,
+      "error_rate": null,
+      "source": null,
+      "status": "UNSPECIFIED_PERF_BUDGET"
+    },
+    "wallet_read": {
+      "p95_ms": null,
+      "error_rate": null,
+      "source": null,
+      "status": "UNSPECIFIED_PERF_BUDGET"
+    },
+    "auth_profile": {
+      "p95_ms": null,
+      "error_rate": null,
+      "source": null,
+      "status": "UNSPECIFIED_PERF_BUDGET"
+    }
+  },
+  "product_slo_probe_paths": [
+    "governance/engine-acceptance/perf-budget.v1.json",
+    "governance/slo",
+    "services/api-nest/docs/slo",
+    "services/api-nest/slo",
+    "docs/slo"
+  ],
+  "notes": [
+    "Weights = scenario mix proportions only (not SLO numbers).",
+    "Do not invent p95_ms / error_rate to force PASS.",
+    "Heavy k6 execution = CI only (local = mechanism tiny smoke)."
+  ]
+}

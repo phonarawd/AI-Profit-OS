@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
     inputs:
       qa_phase:
-        description: "QA phase to run (qa0 / qa1 / qa2 / qa3 / qa4 / qa5 / later suites)"
+        description: "QA phase to run (qa0 / qa1 / qa2 / qa3 / qa4 / qa5 / qa6 / later suites)"
         required: true
-        default: "qa5"
+        default: "qa6"
         type: choice
         options:
           - qa0
@@ -16,6 +16,7 @@ on:
           - qa3
           - qa4
           - qa5
+          - qa6
           - full
   pull_request:
     paths:
@@ -67,7 +68,7 @@ jobs:
   qa1-deterministic:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa1' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'full' || inputs.qa_phase == 'qa0' }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa1' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full' || inputs.qa_phase == 'qa0' }}
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -96,7 +97,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [qa1-deterministic]
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'full' }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full' }}
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -126,7 +127,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [qa2-synthetic-personas]
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'full' }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full' }}
     strategy:
       fail-fast: false
       matrix:
@@ -166,16 +167,20 @@ jobs:
             QA5)
               # CI fault · axis1 degradation/fallback · axis2 post-recovery
               node tooling/engine-acceptance/run-qa5.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+              ;;
+            QA6)
+              # CI only heavy · k6 scenario mix · UNSPECIFIED_PERF_BUDGET if no product SLO
+              node tooling/engine-acceptance/run-qa6.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
               pnpm verify:engine-acceptance
               ;;
             *)
-              echo "suite=${MATRIX_SUITE} — not enabled yet at QA-5 (placeholder COMPLETE=0)"
+              echo "suite=${MATRIX_SUITE} — not enabled yet at QA-6 (placeholder COMPLETE=0)"
               exit 0
               ;;
           esac
       # Raw traces/logs = Actions artifact · acceptance evidence retention ≥ 90 days
       - name: Upload suite evidence
-        if: ${{ always() && (matrix.suite == 'QA3' || matrix.suite == 'QA4' || matrix.suite == 'QA5') }}
+        if: ${{ always() && (matrix.suite == 'QA3' || matrix.suite == 'QA4' || matrix.suite == 'QA5' || matrix.suite == 'QA6') }}
         uses: actions/upload-artifact@v4
         with:
           name: engine-acceptance-${{ matrix.suite }}
@@ -183,6 +188,8 @@ jobs:
             governance/engine-acceptance/qa3-result.v1.json
             governance/engine-acceptance/qa4-result.v1.json
             governance/engine-acceptance/qa5-result.v1.json
+            governance/engine-acceptance/qa6-result.v1.json
+            governance/engine-acceptance/perf-budget.v1.json
             governance/engine-acceptance/defects.v1.json
             governance/engine-acceptance/evidence-manifest.v1.json
             governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
@@ -218,6 +225,8 @@ jobs:
           cp governance/engine-acceptance/qa3-result.v1.json _tmp_engine_acceptance_evidence/ || true
           cp governance/engine-acceptance/qa4-result.v1.json _tmp_engine_acceptance_evidence/ || true
           cp governance/engine-acceptance/qa5-result.v1.json _tmp_engine_acceptance_evidence/ || true
+          cp governance/engine-acceptance/qa6-result.v1.json _tmp_engine_acceptance_evidence/ || true
+          cp governance/engine-acceptance/perf-budget.v1.json _tmp_engine_acceptance_evidence/ || true
           cp governance/engine-acceptance/defects.v1.json _tmp_engine_acceptance_evidence/ || true
           echo "aggregator_status=ran" > _tmp_engine_acceptance_evidence/aggregator.txt
           echo "aggregator_if=always()" >> _tmp_engine_acceptance_evidence/aggregator.txt
@@ -228,6 +237,7 @@ jobs:
           echo "matrix_result=${{ needs.qa-matrix.result }}" >> _tmp_engine_acceptance_evidence/aggregator.txt
           echo "strategy_fail_fast=false" >> _tmp_engine_acceptance_evidence/aggregator.txt
           echo "concurrency_group=engine-acceptance-${{ github.ref }}" >> _tmp_engine_acceptance_evidence/aggregator.txt
+          echo "qa6_ci_only_heavy=true" >> _tmp_engine_acceptance_evidence/aggregator.txt
       - name: Upload acceptance evidence
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
