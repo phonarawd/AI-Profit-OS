@@ -1,10 +1,11 @@
 {
   "schema": "governance.engine-acceptance.journeys.v1",
   "version": "1.0.0",
-  "status": "qa2_active",
+  "status": "qa4_active",
   "notes": [
     "케이스 개수는 KPI 아님. Dirty Path 비중 > Happy Path.",
-    "실행: UI 없이 Nest HTTP lifecycle 합성 시퀀스 (제품 mutation 0 · 로컬 tiny smoke)."
+    "실행: UI 없이 Nest HTTP lifecycle 합성 시퀀스 (제품 mutation 0 · 로컬 tiny smoke).",
+    "QA-4: J-TIME-MULTIDAY-01 requires clock injection · absent → BLOCKED_NO_CLOCK_HOOK."
   ],
   "journeys": [
     {
@@ -50,6 +51,24 @@
       "id": "J-DIRTY-CONFLICT-01",
       "kind": "dirty",
       "steps": ["same-key", "conflicting-payload", "expect-explicit-reject"]
+    },
+    {
+      "id": "J-TIME-MULTIDAY-01",
+      "kind": "dirty",
+      "steps": [
+        "signup",
+        "participate",
+        "clock-advance-kst-day-boundary",
+        "clock-advance-month-end",
+        "clock-advance-year-end",
+        "clock-advance-plus-30d",
+        "clock-advance-plus-365d",
+        "assert-state-truth",
+        "execute-tick*",
+        "settle-read"
+      ],
+      "requires_clock_hook": true,
+      "blocked_code_if_no_hook": "BLOCKED_NO_CLOCK_HOOK"
     }
   ]
 }

@@ -1,10 +1,10 @@
 # ENGINE ACCEPTANCE REPORT
 
-> **QA phase:** QA-3 `qa3-generative-fuzz`  
-> **Measured:** 2026-08-12T11:29:11.731Z  
+> **QA phase:** QA-4 `qa4-stateful-time`  
+> **Measured:** 2026-08-12T11:43:29.058Z  
 > **baseline_id:** `ea-baseline-13b7a5138ebe-cb4530b02ecf`  
-> **qa3_run_id:** `qa3-generative-fuzz-20260812`  
-> **qa3_result_checksum:** `015facfd5b10b5102a1e1e8cbe4aeba8fef675efc0c7fb03f137ccd735f8ffe7`  
+> **qa4_run_id:** `qa4-stateful-time-20260812`  
+> **qa4_result_checksum:** `8712503dc860a661008be6dd11ed7e1f8d9200798267af12427e1818751f88de`  
 > **mode:** `tiny`
 
 ## Status banner
@@ -16,51 +16,53 @@ QA0 = COMPLETE
 QA1 = COMPLETE
 QA2 = COMPLETE
 QA3 = COMPLETE
+QA4 = COMPLETE
 QA HARNESS TARGET = SAFE
-NEXT = QA4_STATEFUL_TIME
+NEXT = QA5_FAILURE_WORLD
 PRODUCT MUTATION = 0
 03 UI = BLOCKED
 ```
 
-## Verdict (after QA-3)
+## Verdict (after QA-4)
 
 | Field | Value |
 |---|---|
 | verdict | `ENGINE_QA_INCOMPLETE` |
-| reason | QA3 COMPLETE · P0/P1=0 · mandatory suites QA4..QA8 not executed · ENGINE_ACCEPTED_FOR_UI forbidden |
+| reason | QA4 COMPLETE · critical_invariant.blocked=2 (BLOCKED_NO_CLOCK_HOOK) · P0/P1=0 · ACCEPTED 불가 · QA5..QA8 not executed |
 | evidence_integrity | `VALID` |
 | baseline.valid | `true` |
 | working_tree_clean | `false` (fact only — not forced clean) |
 | protected_scope_clean | `true` |
 | defects.P0 / P1 | 0 / 0 |
-| mandatory suites COMPLETE | QA0..QA3 only · QA4..QA8 NOT_STARTED |
+| critical_invariant.blocked | 2 |
+| critical_invariant.skipped | 0 |
+| critical_invariant.uncovered | 0 |
+| mandatory suites COMPLETE | QA0..QA4 only · QA5..QA8 NOT_STARTED |
 
-**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (QA4..QA8 incomplete).
+**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (critical BLOCKED and/or QA5..QA8 incomplete).
 
-## Generative fuzz (fast-check)
+## Stateful time (KST + multi-day)
 
 | Field | Value |
 |---|---|
-| suite status | `PASS` |
-| fast-check | `4.9.0` |
-| numRuns | 40 (observational · not KPI) |
-| properties passed/failed | 7 / 0 |
-| fingerprint source lock | `PASS` |
-| product mutation on fail | `0` (defects + rich evidence only) |
+| suite status | `BLOCKED` |
+| clock_hook.available | `false` |
+| clock_hook.blocked_code | `BLOCKED_NO_CLOCK_HOOK` |
+| scenarios blocked/failed/passed | 3 / 0 / 0 |
+| mock PASS | **forbidden** |
+| product mutation | `0` |
 
-| Property | Invariant | Status | Seed |
-|---|---|---|---|
-| `PROP-SETTLEMENT-DETERMINISM` | `INV-LIFECYCLE-01` | `PASS` | seed=172154881 |
-| `PROP-SETTLEMENT-HARD-TIMEOUT` | `INV-LIFECYCLE-01` | `PASS` | seed=172154882 |
-| `PROP-SETTLEMENT-NO-RANDOM` | `INV-LIFECYCLE-01` | `PASS` | seed=172154883 |
-| `PROP-IDEMPOTENCY-FP-DETERMINISM` | `INV-IDEMPOTENCY-01` | `PASS` | seed=168747009 |
-| `PROP-IDEMPOTENCY-CONFLICT` | `INV-IDEMPOTENCY-03` | `PASS` | seed=168747011 |
-| `PROP-ISOLATION-OWNERSHIP` | `INV-ISOLATION-01` | `PASS` | seed=168165377 |
-| `PROP-LEDGER-USDT-GE-REFLEXIVE` | `INV-LEDGER-01` | `PASS` | seed=168677377 |
+| Scenario | Invariant | Status | Blocked code | KST label |
+|---|---|---|---|---|
+| `TIME-KST-DAY-BOUNDARY` | `INV-TIME-01` | `BLOCKED` | `BLOCKED_NO_CLOCK_HOOK` | 2026-03-15T00:00:00+09:00 |
+| `TIME-PLUS-30D` | `INV-TIME-01` | `BLOCKED` | `BLOCKED_NO_CLOCK_HOOK` | +30d from 2026-03-15T12:00:00+09:00 |
+| `TIME-MULTI-DAY-LIFECYCLE` | `INV-LIFECYCLE-01` | `BLOCKED` | `BLOCKED_NO_CLOCK_HOOK` | multi-day lifecycle +3d |
 
-## Failure evidence contract
+### BLOCKED_NO_CLOCK_HOOK
 
-On FAIL: `seed` · `rng_version` · `clock_as_of` · `request_sequence` · sanitized I/O · `baseline_id` · `configuration_fingerprint` — seed alone forbidden.
+- Formal L3 result type (≠ defect).
+- `INV-TIME-01` is **critical** → `critical_invariant.blocked > 0` → `ENGINE_QA_INCOMPLETE` (ACCEPTED 불가).
+- Wall-clock-only / invented mock clock = **금지**.
 
 ## Dual Dirty
 
@@ -70,4 +72,4 @@ On FAIL: `seed` · `rng_version` · `clock_as_of` · `request_sequence` · sanit
 
 ## Next
 
-`QA4_STATEFUL_TIME` only. Full ACCEPTED · product mutation · 03 UI — **금지**.
+`QA5_FAILURE_WORLD` only. Full ACCEPTED · product mutation · 03 UI — **금지**.

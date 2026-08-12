@@ -5,15 +5,16 @@ on:
   workflow_dispatch:
     inputs:
       qa_phase:
-        description: "QA phase to run (qa0 / qa1 / qa2 / qa3 / later suites)"
+        description: "QA phase to run (qa0 / qa1 / qa2 / qa3 / qa4 / later suites)"
         required: true
-        default: "qa3"
+        default: "qa4"
         type: choice
         options:
           - qa0
           - qa1
           - qa2
           - qa3
+          - qa4
           - full
   pull_request:
     paths:
@@ -65,7 +66,7 @@ jobs:
   qa1-deterministic:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa1' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'full' || inputs.qa_phase == 'qa0' }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa1' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'full' || inputs.qa_phase == 'qa0' }}
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -94,7 +95,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [qa1-deterministic]
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'full' }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'full' }}
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -124,7 +125,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [qa2-synthetic-personas]
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'full' }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'full' }}
     strategy:
       fail-fast: false
       matrix:
@@ -157,24 +158,29 @@ jobs:
           case "${MATRIX_SUITE}" in
             QA3)
               node tooling/engine-acceptance/run-qa3.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+              ;;
+            QA4)
+              node tooling/engine-acceptance/run-qa4.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
               pnpm verify:engine-acceptance
               ;;
             *)
-              echo "suite=${MATRIX_SUITE} — not enabled yet at QA-3 (placeholder COMPLETE=0)"
+              echo "suite=${MATRIX_SUITE} — not enabled yet at QA-4 (placeholder COMPLETE=0)"
               exit 0
               ;;
           esac
       - name: Upload suite evidence
-        if: ${{ always() && matrix.suite == 'QA3' }}
+        if: ${{ always() && (matrix.suite == 'QA3' || matrix.suite == 'QA4') }}
         uses: actions/upload-artifact@v4
         with:
           name: engine-acceptance-${{ matrix.suite }}
           path: |
             governance/engine-acceptance/qa3-result.v1.json
+            governance/engine-acceptance/qa4-result.v1.json
             governance/engine-acceptance/defects.v1.json
             governance/engine-acceptance/evidence-manifest.v1.json
             governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
           retention-days: 90
+          if-no-files-found: ignore
 
   aggregator:
     needs: [qa0-baseline, qa1-deterministic, qa2-synthetic-personas, qa-matrix]
@@ -202,6 +208,7 @@ jobs:
           cp governance/engine-acceptance/qa1-result.v1.json _tmp_engine_acceptance_evidence/ || true
           cp governance/engine-acceptance/qa2-result.v1.json _tmp_engine_acceptance_evidence/ || true
           cp governance/engine-acceptance/qa3-result.v1.json _tmp_engine_acceptance_evidence/ || true
+          cp governance/engine-acceptance/qa4-result.v1.json _tmp_engine_acceptance_evidence/ || true
           cp governance/engine-acceptance/defects.v1.json _tmp_engine_acceptance_evidence/ || true
           echo "aggregator_status=ran" > _tmp_engine_acceptance_evidence/aggregator.txt
           echo "qa0_result=${{ needs.qa0-baseline.result }}" >> _tmp_engine_acceptance_evidence/aggregator.txt

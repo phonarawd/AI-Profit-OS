@@ -1,16 +1,17 @@
 /**
- * verify:engine-acceptance — QA-0..QA-3 scope (full ACCEPTED 판정 금지)
+ * verify:engine-acceptance — QA-0..QA-4 scope (full ACCEPTED 판정 금지)
  *
  * 검증:
  * 1) Acceptance Contract L1~L6 산출물 실재
  * 2) severity-policy 선고정 문서
  * 3) protected-scope hash 규칙 deterministic
  * 4) baseline Dual Dirty + required fields · valid↔protected_scope_clean
- * 5) kill-switch가 tiny smoke / QA1 / QA2 / QA3보다 먼저 작동
+ * 5) kill-switch가 tiny smoke / QA1..QA4보다 먼저 작동
  * 6) evidence-manifest · REPORT · verdict ≠ ENGINE_ACCEPTED_FOR_UI
- * 7) QA-1/QA-2 COMPLETE 유지
- * 8) QA-3: fast-check properties · CI fail-fast:false · concurrency ·
- *    실패=rich evidence+defects · next=QA4 · product mutation 0
+ * 7) QA-1..QA-3 COMPLETE 유지
+ * 8) QA-3: fast-check properties · CI fail-fast:false · concurrency
+ * 9) QA-4: multi-day + KST · BLOCKED_NO_CLOCK_HOOK 정식 · critical → ACCEPTED 불가 ·
+ *    next=QA5 · product mutation 0
  */
 "use strict";
 
@@ -49,12 +50,14 @@ const REQUIRED_FILES = [
   `${GOV}/qa1-result.v1.json`,
   `${GOV}/qa2-result.v1.json`,
   `${GOV}/qa3-result.v1.json`,
+  `${GOV}/qa4-result.v1.json`,
   "tooling/engine-acceptance/kill-switch.cjs",
   "tooling/engine-acceptance/tiny-smoke.cjs",
   "tooling/engine-acceptance/freeze-baseline.cjs",
   "tooling/engine-acceptance/run-qa1.cjs",
   "tooling/engine-acceptance/run-qa2.cjs",
   "tooling/engine-acceptance/run-qa3.cjs",
+  "tooling/engine-acceptance/run-qa4.cjs",
   "tooling/engine-acceptance/checks/schemas-routes-contract.cjs",
   "tooling/engine-acceptance/checks/db-consistency.cjs",
   "tooling/engine-acceptance/checks/idempotency-split.cjs",
@@ -63,9 +66,11 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/checks/user-isolation-surfaces.cjs",
   "tooling/engine-acceptance/checks/synthetic-journey-evidence.cjs",
   "tooling/engine-acceptance/checks/fast-check-properties.cjs",
+  "tooling/engine-acceptance/checks/stateful-time-lifecycle.cjs",
   "tooling/engine-acceptance/lib/seeded-rng.cjs",
   "tooling/engine-acceptance/lib/fingerprint-oracle.cjs",
   "tooling/engine-acceptance/lib/rich-failure-evidence.cjs",
+  "tooling/engine-acceptance/lib/clock-hook.cjs",
   ".github/workflows/engine-acceptance.yml",
 ];
 
@@ -270,6 +275,24 @@ if (coverage) {
   ]) {
     if (!qa3Invs.has(inv)) fail(`coverage QA3 missing invariant mapping: ${inv}`);
   }
+  const qa4Maps = (coverage.mappings || []).filter((m) =>
+    (m.suite_ids || []).includes("QA4"),
+  );
+  if (qa4Maps.length < 1) fail("coverage must include at least one QA4 mapping");
+  const qa4Invs = new Set(qa4Maps.map((m) => m.invariant_id));
+  if (!qa4Invs.has("INV-TIME-01")) {
+    fail("coverage QA4 missing INV-TIME-01 mapping");
+  }
+  const timeMap = qa4Maps.find((m) => m.invariant_id === "INV-TIME-01");
+  if (!timeMap || timeMap.critical !== true) {
+    fail("coverage INV-TIME-01 must be critical for QA4");
+  }
+  if (timeMap.blocked_code_if_no_hook !== "BLOCKED_NO_CLOCK_HOOK") {
+    fail("coverage INV-TIME-01 must declare blocked_code_if_no_hook=BLOCKED_NO_CLOCK_HOOK");
+  }
+}
+if (journeys && !(journeys.journeys || []).some((j) => j.id === "J-TIME-MULTIDAY-01")) {
+  fail("journeys must include J-TIME-MULTIDAY-01 for QA4");
 }
 
 // --- defects schema ---
@@ -309,8 +332,8 @@ if (evidence) {
   if (evidence.schema !== "governance.engine-acceptance.evidence-manifest.v1") {
     fail("evidence-manifest.schema mismatch");
   }
-  if (evidence.qa_phase !== "QA-3") {
-    fail("evidence-manifest.qa_phase must be QA-3 after qa3-generative-fuzz");
+  if (evidence.qa_phase !== "QA-4") {
+    fail("evidence-manifest.qa_phase must be QA-4 after qa4-stateful-time");
   }
   if (!evidence.baseline_id) fail("evidence-manifest.baseline_id required");
   if (baseline && evidence.baseline_id !== baseline.id) {
@@ -319,8 +342,8 @@ if (evidence) {
   if (evidence.verdict === "ENGINE_ACCEPTED_FOR_UI") {
     fail("must not issue ENGINE_ACCEPTED_FOR_UI before QA1..QA8 complete");
   }
-  if (evidence.next !== "QA4_STATEFUL_TIME") {
-    fail("evidence-manifest.next must be QA4_STATEFUL_TIME");
+  if (evidence.next !== "QA5_FAILURE_WORLD") {
+    fail("evidence-manifest.next must be QA5_FAILURE_WORLD");
   }
   if (evidence.evidence_integrity !== "VALID") {
     fail("evidence_integrity must be VALID");
@@ -328,11 +351,15 @@ if (evidence) {
   if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa3 !== true) {
     fail("evidence.kill_switch.verified_before_qa3 must be true");
   }
+  if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa4 !== true) {
+    fail("evidence.kill_switch.verified_before_qa4 must be true");
+  }
 
   const qa0 = (evidence.suites || []).find((s) => s.suite_id === "QA0");
   const qa1 = (evidence.suites || []).find((s) => s.suite_id === "QA1");
   const qa2 = (evidence.suites || []).find((s) => s.suite_id === "QA2");
   const qa3 = (evidence.suites || []).find((s) => s.suite_id === "QA3");
+  const qa4 = (evidence.suites || []).find((s) => s.suite_id === "QA4");
   if (!qa0 || qa0.completion_status !== "COMPLETE") {
     fail("QA0 suite must remain COMPLETE");
   }
@@ -349,10 +376,16 @@ if (evidence) {
     fail("QA2 suite must have run_id + checksum");
   }
   if (!qa3 || qa3.completion_status !== "COMPLETE") {
-    fail("QA3 suite must be COMPLETE");
+    fail("QA3 suite must remain COMPLETE");
   }
   if (!qa3.run_id || !qa3.checksum) {
     fail("QA3 suite must have run_id + checksum");
+  }
+  if (!qa4 || qa4.completion_status !== "COMPLETE") {
+    fail("QA4 suite must be COMPLETE");
+  }
+  if (!qa4.run_id || !qa4.checksum) {
+    fail("QA4 suite must have run_id + checksum");
   }
 }
 
@@ -461,6 +494,125 @@ if (qa3Result) {
   }
 }
 
+let qa4Result;
+try {
+  qa4Result = readJson(`${GOV}/qa4-result.v1.json`);
+} catch {
+  fail("qa4-result.v1.json invalid JSON");
+}
+if (qa4Result) {
+  if (qa4Result.schema !== "governance.engine-acceptance.qa4-result.v1") {
+    fail("qa4-result.schema mismatch");
+  }
+  if (qa4Result.completion_status !== "COMPLETE") {
+    fail("qa4-result.completion_status must be COMPLETE");
+  }
+  if (qa4Result.suite_id !== "QA4") fail("qa4-result.suite_id must be QA4");
+  if (baseline && qa4Result.baseline_id !== baseline.id) {
+    fail("qa4-result.baseline_id must match baseline.id");
+  }
+  if (!qa4Result.kill_switch || qa4Result.kill_switch.verified_before_checks !== true) {
+    fail("qa4-result must record kill_switch.verified_before_checks");
+  }
+  if (qa4Result.kpi_forbidden !== true) {
+    fail("qa4-result.kpi_forbidden must be true");
+  }
+  if (qa4Result.product_mutation !== 0) {
+    fail("qa4-result.product_mutation must be 0");
+  }
+  if (!["tiny", "full"].includes(qa4Result.mode)) {
+    fail("qa4-result.mode must be tiny|full");
+  }
+  if (qa4Result.next !== "QA5_FAILURE_WORLD") {
+    fail("qa4-result.next must be QA5_FAILURE_WORLD");
+  }
+  const checks4 = qa4Result.checks || {};
+  if (!checks4.stateful_time) fail("qa4-result.checks.stateful_time required");
+  if (checks4.stateful_time) {
+    const st = checks4.stateful_time;
+    if (!st.clock_hook) fail("qa4 stateful_time.clock_hook required");
+    if (!Array.isArray(st.scenarios) || st.scenarios.length < 1) {
+      fail("qa4 stateful_time.scenarios must be non-empty");
+    }
+    const kinds = new Set(st.scenarios.map((s) => s.kind));
+    // tiny may omit some; require at least day boundary or plus_30d representation
+    if (
+      !kinds.has("kst_day_boundary") &&
+      !kinds.has("plus_30d") &&
+      !kinds.has("multi_day_lifecycle")
+    ) {
+      fail("qa4 scenarios must include KST/multi-day kinds");
+    }
+    if (st.clock_hook.available !== true) {
+      if (st.clock_hook.blocked_code !== "BLOCKED_NO_CLOCK_HOOK") {
+        fail("absent clock hook must set blocked_code=BLOCKED_NO_CLOCK_HOOK");
+      }
+      if (st.status !== "BLOCKED") {
+        fail("absent clock hook must yield stateful_time.status=BLOCKED (no mock PASS)");
+      }
+      const blockedScenarios = st.scenarios.filter((s) => s.status === "BLOCKED");
+      if (blockedScenarios.length < 1) {
+        fail("absent clock hook must BLOCK at least one scenario");
+      }
+      for (const s of blockedScenarios) {
+        if (s.blocked_code !== "BLOCKED_NO_CLOCK_HOOK") {
+          fail(`scenario ${s.scenario_id} missing BLOCKED_NO_CLOCK_HOOK`);
+        }
+      }
+      if (
+        !qa4Result.critical_invariant ||
+        !(qa4Result.critical_invariant.blocked > 0)
+      ) {
+        fail("critical INV-TIME-01 BLOCKED must set critical_invariant.blocked > 0");
+      }
+      if (qa4Result.verdict_contribution === "ENGINE_ACCEPTED_FOR_UI") {
+        fail("critical BLOCKED must not contribute ENGINE_ACCEPTED_FOR_UI");
+      }
+      if (evidence && evidence.verdict === "ENGINE_ACCEPTED_FOR_UI") {
+        fail("evidence verdict must not be ACCEPTED when critical clock hook BLOCKED");
+      }
+      if (
+        !Array.isArray(qa4Result.blocked_codes_observed) ||
+        !qa4Result.blocked_codes_observed.includes("BLOCKED_NO_CLOCK_HOOK")
+      ) {
+        fail("qa4-result.blocked_codes_observed must include BLOCKED_NO_CLOCK_HOOK");
+      }
+      // BLOCKED ≠ defect
+      const bogus = (defects.defects || []).filter(
+        (d) =>
+          d.suite_id === "QA4" &&
+          String(d.title || "").includes("BLOCKED_NO_CLOCK_HOOK") &&
+          d.repro_status !== "blocked",
+      );
+      if (bogus.length) {
+        fail("BLOCKED_NO_CLOCK_HOOK must not be laundered as ordinary defect FAIL");
+      }
+    }
+  }
+  if (qa4Result.ci) {
+    if (qa4Result.ci.strategy_fail_fast !== false) {
+      fail("qa4-result.ci.strategy_fail_fast must be false");
+    }
+    if (!String(qa4Result.ci.concurrency_group || "").includes("engine-acceptance")) {
+      fail("qa4-result.ci.concurrency_group must reference engine-acceptance");
+    }
+  } else {
+    fail("qa4-result.ci lock required");
+  }
+  if (evidence) {
+    const qa4 = (evidence.suites || []).find((s) => s.suite_id === "QA4");
+    if (qa4 && qa4.checksum !== qa4Result.checksum) {
+      fail("evidence QA4.checksum must match qa4-result.checksum");
+    }
+    if (
+      !evidence.critical_invariant ||
+      typeof evidence.critical_invariant.blocked !== "number"
+    ) {
+      fail("evidence-manifest.critical_invariant.blocked required after QA4");
+    }
+  }
+}
+
 const report = fs.existsSync(path.join(ROOT, `${GOV}/ENGINE_ACCEPTANCE_REPORT.md`))
   ? fs.readFileSync(path.join(ROOT, `${GOV}/ENGINE_ACCEPTANCE_REPORT.md`), "utf8")
   : "";
@@ -468,17 +620,17 @@ if (report) {
   if (/verdict\s*[:=]\s*`?ENGINE_ACCEPTED_FOR_UI/i.test(report)) {
     fail("REPORT must not claim ENGINE_ACCEPTED_FOR_UI before full suites");
   }
-  if (!report.includes("QA4_STATEFUL_TIME")) {
-    fail("REPORT must declare NEXT=QA4_STATEFUL_TIME");
+  if (!report.includes("QA5_FAILURE_WORLD")) {
+    fail("REPORT must declare NEXT=QA5_FAILURE_WORLD");
   }
-  if (!report.includes("QA3 = COMPLETE")) {
-    fail("REPORT banner must include QA3 = COMPLETE");
+  if (!report.includes("QA4 = COMPLETE")) {
+    fail("REPORT banner must include QA4 = COMPLETE");
   }
-  if (!report.includes("fast-check")) {
-    fail("REPORT must mention fast-check");
+  if (!report.includes("BLOCKED_NO_CLOCK_HOOK")) {
+    fail("REPORT must mention BLOCKED_NO_CLOCK_HOOK");
   }
-  if (!report.includes("rich evidence") && !report.includes("request_sequence")) {
-    fail("REPORT must cover rich failure evidence contract");
+  if (!report.includes("KST") && !report.includes("Asia/Seoul")) {
+    fail("REPORT must mention KST clock");
   }
   if (!report.includes("PRODUCT MUTATION = 0") && !report.includes("product mutation")) {
     fail("REPORT must state product mutation 0");
@@ -502,6 +654,7 @@ if (fs.existsSync(wfPath)) {
   if (!/run-qa1\.cjs/.test(wf)) fail("workflow must invoke run-qa1.cjs for QA1");
   if (!/run-qa2\.cjs/.test(wf)) fail("workflow must invoke run-qa2.cjs for QA2");
   if (!/run-qa3\.cjs/.test(wf)) fail("workflow must invoke run-qa3.cjs for QA3");
+  if (!/run-qa4\.cjs/.test(wf)) fail("workflow must invoke run-qa4.cjs for QA4");
   if (!/qa-matrix:/.test(wf) && !/matrix:/.test(wf)) {
     fail("workflow must define CI matrix for generative suites");
   }
@@ -603,6 +756,22 @@ if (!qa3Blocked) {
   fail("run-qa3 must abort via kill-switch before checks when unsafe");
 }
 
+const { runQa4 } = require("../engine-acceptance/run-qa4.cjs");
+let qa4Blocked = false;
+try {
+  runQa4({
+    target_env: "production",
+    hostname: "localhost",
+    synthetic_account_namespace: "qa-synth-x",
+    mode: "tiny",
+  });
+} catch (e) {
+  qa4Blocked = e && e.code === "AIPO_QA_KILL_SWITCH";
+}
+if (!qa4Blocked) {
+  fail("run-qa4 must abort via kill-switch before checks when unsafe");
+}
+
 // workflow hash in baseline matches file
 if (baseline && fs.existsSync(wfPath) && scope) {
   const live = hashPathList(scope.aggregateHashes.acceptance_workflow_hash, scope);
@@ -612,16 +781,17 @@ if (baseline && fs.existsSync(wfPath) && scope) {
 }
 
 if (fails.length) {
-  console.error("[verify:engine-acceptance] FAIL (QA-0..QA-3)");
+  console.error("[verify:engine-acceptance] FAIL (QA-0..QA-4)");
   for (const f of fails) console.error(`  - ${f}`);
   process.exit(1);
 }
 
-console.log("[verify:engine-acceptance] PASS (QA-0..QA-3 scope)");
+console.log("[verify:engine-acceptance] PASS (QA-0..QA-4 scope)");
 console.log("  ACCEPTANCE CONTRACT = LOCKED");
 console.log("  BASELINE = FROZEN");
 console.log("  QA1 = COMPLETE");
 console.log("  QA2 = COMPLETE");
 console.log("  QA3 = COMPLETE");
+console.log("  QA4 = COMPLETE");
 console.log("  QA HARNESS TARGET = SAFE");
-console.log("  NEXT = QA4_STATEFUL_TIME");
+console.log("  NEXT = QA5_FAILURE_WORLD");

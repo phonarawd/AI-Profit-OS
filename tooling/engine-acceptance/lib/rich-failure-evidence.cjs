@@ -49,6 +49,7 @@ function buildRichFailureEvidence(opts) {
   const request_sequence = Array.isArray(opts.request_sequence)
     ? opts.request_sequence
     : [];
+  const suite_id = opts.suite_id || "QA3";
   const cfg = {
     property_id: opts.property_id,
     invariant_id: opts.invariant_id,
@@ -56,6 +57,11 @@ function buildRichFailureEvidence(opts) {
     mode: opts.mode,
     fast_check_version: opts.fast_check_version || null,
     product_mutation: 0,
+    suite_id,
+    ...(opts.configuration_fingerprint &&
+    typeof opts.configuration_fingerprint === "object"
+      ? opts.configuration_fingerprint
+      : {}),
   };
   return {
     seed: opts.seed ?? null,
@@ -71,7 +77,7 @@ function buildRichFailureEvidence(opts) {
     configuration_fingerprint: configurationFingerprint(cfg),
     property_id: opts.property_id,
     invariant_id: opts.invariant_id,
-    suite_id: "QA3",
+    suite_id,
     live_http: false,
   };
 }

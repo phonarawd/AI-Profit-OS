@@ -1,7 +1,7 @@
 {
   "schema": "governance.engine-acceptance.defects.v1",
   "version": "1.0.0",
-  "status": "qa3_empty",
+  "status": "qa4_empty",
   "requiredLinkFields": [
     "severity",
     "invariant_id",
@@ -20,5 +20,8 @@
     "P2": 0,
     "P3": 0
   },
-  "defects": []
+  "defects": [],
+  "notes": [
+    "BLOCKED_NO_CLOCK_HOOK is recorded on suite/invariant results, not as a defect row."
+  ]
 }
