@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-4",
+  "qa_phase": "QA-5",
   "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
   "verdict": "ENGINE_QA_INCOMPLETE",
-  "verdict_reason": "QA4 COMPLETE · critical_invariant.blocked=2 (BLOCKED_NO_CLOCK_HOOK) · P0/P1=0 · ACCEPTED 불가 · QA5..QA8 not executed",
+  "verdict_reason": "QA5 COMPLETE · critical_invariant.blocked=4 (incl. BLOCKED_NO_FAULT_HOOK / prior BLOCKED_NO_CLOCK_HOOK) · P0/P1=0 · ACCEPTED 불가 · QA6..QA8 not executed",
   "evidence_integrity": "VALID",
-  "next": "QA5_FAILURE_WORLD",
+  "next": "QA6_PERFORMANCE",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -14,7 +14,8 @@
       "summary",
       "evidence-manifest.v1.json",
       "baseline.v1.json",
-      "ENGINE_ACCEPTANCE_REPORT.md"
+      "ENGINE_ACCEPTANCE_REPORT.md",
+      "qa5-result.v1.json"
     ]
   },
   "suites": [
@@ -65,10 +66,15 @@
     },
     {
       "suite_id": "QA5",
-      "run_id": null,
+      "run_id": "qa5-failure-world-20260812",
       "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
-      "checksum": null,
-      "completion_status": "NOT_STARTED"
+      "checksum": "637ea4ed7a54569206d1bf11b839e3e1a7111ba58b9b872b30531ded7c7f4ac9",
+      "completion_status": "COMPLETE",
+      "result_ref": "governance/engine-acceptance/qa5-result.v1.json",
+      "mode": "tiny",
+      "blocked_codes": [
+        "BLOCKED_NO_FAULT_HOOK"
+      ]
     },
     {
       "suite_id": "QA6",
@@ -98,7 +104,8 @@
     "production_like_aborts": true,
     "verified_before_qa2": true,
     "verified_before_qa3": true,
-    "verified_before_qa4": true
+    "verified_before_qa4": true,
+    "verified_before_qa5": true
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -106,7 +113,7 @@
     "forced_clean_forbidden": true
   },
   "critical_invariant": {
-    "blocked": 2,
+    "blocked": 4,
     "skipped": 0,
     "uncovered": 0
   }

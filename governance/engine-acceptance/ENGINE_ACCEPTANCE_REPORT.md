@@ -1,10 +1,10 @@
 # ENGINE ACCEPTANCE REPORT
 
-> **QA phase:** QA-4 `qa4-stateful-time`  
-> **Measured:** 2026-08-12T11:43:29.058Z  
+> **QA phase:** QA-5 `qa5-failure-world`  
+> **Measured:** 2026-08-12T11:49:55.088Z  
 > **baseline_id:** `ea-baseline-13b7a5138ebe-cb4530b02ecf`  
-> **qa4_run_id:** `qa4-stateful-time-20260812`  
-> **qa4_result_checksum:** `8712503dc860a661008be6dd11ed7e1f8d9200798267af12427e1818751f88de`  
+> **qa5_run_id:** `qa5-failure-world-20260812`  
+> **qa5_result_checksum:** `637ea4ed7a54569206d1bf11b839e3e1a7111ba58b9b872b30531ded7c7f4ac9`  
 > **mode:** `tiny`
 
 ## Status banner
@@ -17,52 +17,56 @@ QA1 = COMPLETE
 QA2 = COMPLETE
 QA3 = COMPLETE
 QA4 = COMPLETE
+QA5 = COMPLETE
 QA HARNESS TARGET = SAFE
-NEXT = QA5_FAILURE_WORLD
+NEXT = QA6_PERFORMANCE
 PRODUCT MUTATION = 0
 03 UI = BLOCKED
 ```
 
-## Verdict (after QA-4)
+## Verdict (after QA-5)
 
 | Field | Value |
 |---|---|
 | verdict | `ENGINE_QA_INCOMPLETE` |
-| reason | QA4 COMPLETE · critical_invariant.blocked=2 (BLOCKED_NO_CLOCK_HOOK) · P0/P1=0 · ACCEPTED 불가 · QA5..QA8 not executed |
+| reason | QA5 COMPLETE · critical_invariant.blocked=4 (incl. BLOCKED_NO_FAULT_HOOK / prior BLOCKED_NO_CLOCK_HOOK) · P0/P1=0 · ACCEPTED 불가 · QA6..QA8 not executed |
 | evidence_integrity | `VALID` |
 | baseline.valid | `true` |
 | working_tree_clean | `false` (fact only — not forced clean) |
 | protected_scope_clean | `true` |
 | defects.P0 / P1 | 0 / 0 |
-| critical_invariant.blocked | 2 |
+| critical_invariant.blocked (cumulative QA4+QA5) | 4 |
 | critical_invariant.skipped | 0 |
 | critical_invariant.uncovered | 0 |
-| mandatory suites COMPLETE | QA0..QA4 only · QA5..QA8 NOT_STARTED |
+| mandatory suites COMPLETE | QA0..QA5 only · QA6..QA8 NOT_STARTED |
 
-**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (critical BLOCKED and/or QA5..QA8 incomplete).
+**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (critical BLOCKED and/or QA6..QA8 incomplete).
 
-## Stateful time (KST + multi-day)
+## Failure World (CI fault · two axes)
 
 | Field | Value |
 |---|---|
 | suite status | `BLOCKED` |
-| clock_hook.available | `false` |
-| clock_hook.blocked_code | `BLOCKED_NO_CLOCK_HOOK` |
-| scenarios blocked/failed/passed | 3 / 0 / 0 |
+| fault_hook.available | `false` |
+| fault_hook.blocked_code | `BLOCKED_NO_FAULT_HOOK` |
+| scenarios blocked/failed/passed | 2 / 0 / 0 |
+| axis1 (degradation/fallback) | `BLOCKED` · n=1 |
+| axis2 (post-recovery invariant) | `BLOCKED` · n=1 |
 | mock PASS | **forbidden** |
 | product mutation | `0` |
+| artifact retention | acceptance evidence ≥ **90** days (Actions artifact) |
+| aggregator | `if: always()` (선행 job 실패 후에도 집계) |
 
-| Scenario | Invariant | Status | Blocked code | KST label |
+| Scenario | Axis | Invariant | Status | Blocked code |
 |---|---|---|---|---|
-| `TIME-KST-DAY-BOUNDARY` | `INV-TIME-01` | `BLOCKED` | `BLOCKED_NO_CLOCK_HOOK` | 2026-03-15T00:00:00+09:00 |
-| `TIME-PLUS-30D` | `INV-TIME-01` | `BLOCKED` | `BLOCKED_NO_CLOCK_HOOK` | +30d from 2026-03-15T12:00:00+09:00 |
-| `TIME-MULTI-DAY-LIFECYCLE` | `INV-LIFECYCLE-01` | `BLOCKED` | `BLOCKED_NO_CLOCK_HOOK` | multi-day lifecycle +3d |
+| `FAULT-AI-429-DEGRADE` | axis1 | `INV-FEED-AI-01` | `BLOCKED` | `BLOCKED_NO_FAULT_HOOK` |
+| `FAULT-RECOVERY-LEDGER-SCAN` | axis2 | `INV-LEDGER-01` | `BLOCKED` | `BLOCKED_NO_FAULT_HOOK` |
 
-### BLOCKED_NO_CLOCK_HOOK
+### BLOCKED_NO_FAULT_HOOK
 
 - Formal L3 result type (≠ defect).
-- `INV-TIME-01` is **critical** → `critical_invariant.blocked > 0` → `ENGINE_QA_INCOMPLETE` (ACCEPTED 불가).
-- Wall-clock-only / invented mock clock = **금지**.
+- `INV-FEED-AI-01` / `INV-LEDGER-01` are **critical** → `critical_invariant.blocked > 0` → `ENGINE_QA_INCOMPLETE` (ACCEPTED 불가).
+- Invented mock fault = **금지**.
 
 ## Dual Dirty
 
@@ -72,4 +76,4 @@ PRODUCT MUTATION = 0
 
 ## Next
 
-`QA5_FAILURE_WORLD` only. Full ACCEPTED · product mutation · 03 UI — **금지**.
+`QA6_PERFORMANCE` only. Full ACCEPTED · product mutation · 03 UI — **금지**.

@@ -1,12 +1,13 @@
 {
   "schema": "governance.engine-acceptance.coverage.v1",
   "version": "1.0.0",
-  "status": "qa4_active",
+  "status": "qa5_active",
   "notes": [
     "persona × journey × invariant 매핑. 맵 개수 ≠ KPI.",
     "QA-2 Dirty Path 비중 > Happy Path (suite_ids에 QA2 포함 매핑 기준).",
     "QA-3 generative fuzz = fast-check properties (suite_ids에 QA3).",
-    "QA-4 stateful time = KST multi-day · BLOCKED_NO_CLOCK_HOOK when hook absent (suite_ids에 QA4)."
+    "QA-4 stateful time = KST multi-day · BLOCKED_NO_CLOCK_HOOK when hook absent (suite_ids에 QA4).",
+    "QA-5 Failure World = axis1 degradation/fallback · axis2 post-recovery · BLOCKED_NO_FAULT_HOOK when hook absent (suite_ids에 QA5)."
   ],
   "mandatorySuites": [
     "QA1",
@@ -106,15 +107,29 @@
       ]
     },
     {
+      "id": "COV-005b",
+      "persona_id": "KR-03",
+      "journey_id": "J-FAULT-RECOVERY-01",
+      "invariant_id": "INV-LEDGER-01",
+      "critical": true,
+      "axis": 2,
+      "suite_ids": [
+        "QA5"
+      ],
+      "blocked_code_if_no_hook": "BLOCKED_NO_FAULT_HOOK"
+    },
+    {
       "id": "COV-006",
       "persona_id": "KR-10",
-      "journey_id": "J-HAPPY-01",
+      "journey_id": "J-FAULT-DEGRADE-01",
       "invariant_id": "INV-FEED-AI-01",
       "critical": true,
+      "axis": 1,
       "suite_ids": [
         "QA5",
         "QA7"
-      ]
+      ],
+      "blocked_code_if_no_hook": "BLOCKED_NO_FAULT_HOOK"
     },
     {
       "id": "COV-007",

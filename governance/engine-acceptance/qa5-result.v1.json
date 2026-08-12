@@ -1,0 +1,328 @@
+{
+  "schema": "governance.engine-acceptance.qa5-result.v1",
+  "version": "1.0.0",
+  "suite_id": "QA5",
+  "run_id": "qa5-failure-world-20260812",
+  "todoId": "qa5-failure-world",
+  "measuredAt": "2026-08-12T11:49:55.088Z",
+  "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+  "mode": "tiny",
+  "kill_switch": {
+    "verified_before_checks": true,
+    "target_env": "local",
+    "hostname": "localhost",
+    "synthetic_account_namespace": "qa-synth-local"
+  },
+  "dual_dirty": {
+    "working_tree_clean": false,
+    "protected_scope_clean": true,
+    "forced_clean_forbidden": true
+  },
+  "completion_status": "COMPLETE",
+  "checks": {
+    "failure_world": {
+      "check_id": "QA5_FAILURE_WORLD",
+      "status": "BLOCKED",
+      "mode": "tiny",
+      "measuredAt": "2026-08-12T11:49:55.088Z",
+      "seed": 20260812,
+      "fault_hook": {
+        "available": false,
+        "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+        "probed_paths": [
+          "services/api-nest/src/common/fault.ts",
+          "services/api-nest/src/common/fault.js",
+          "services/api-nest/src/common/fault.cjs",
+          "services/api-nest/src/testing/fault-hook.ts",
+          "services/api-nest/src/testing/fault-hook.cjs",
+          "services/api-nest/src/testing/fault-injector.ts",
+          "services/api-nest/src/resilience/fault-injector.ts",
+          "tooling/engine-acceptance/hooks/fault-hook.adapter.cjs"
+        ],
+        "findings": [
+          "no candidate fault-hook module under api-nest/common|testing|resilience"
+        ],
+        "env_hooks_present": [],
+        "adapter_rel": null
+      },
+      "axes": {
+        "axis1_expected_degradation_fallback": {
+          "scenario_count": 1,
+          "blocked": 1,
+          "failed": 0,
+          "passed": 0,
+          "status": "BLOCKED"
+        },
+        "axis2_post_recovery_invariant": {
+          "scenario_count": 1,
+          "blocked": 1,
+          "failed": 0,
+          "passed": 0,
+          "status": "BLOCKED"
+        }
+      },
+      "scenarioCount": 2,
+      "passed": 0,
+      "failed": 0,
+      "blocked": 2,
+      "scenarios": [
+        {
+          "scenario_id": "FAULT-AI-429-DEGRADE",
+          "axis": 1,
+          "axis_label": "expected_degradation_fallback",
+          "invariant_id": "INV-FEED-AI-01",
+          "journey_id": "J-FAULT-DEGRADE-01",
+          "persona_id": "KR-10",
+          "title": "AI 429 → HTTP/응답 계약 degradation · ledger 비침범",
+          "fault": {
+            "kind": "ai_http",
+            "status": 429,
+            "target": "peotteok_ai"
+          },
+          "expected": {
+            "degradation": true,
+            "ledger_untouched": true,
+            "mock_pass_forbidden": true
+          },
+          "kind": "ai_429_degrade",
+          "status": "BLOCKED",
+          "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+          "findings": [
+            "Fault injection hook absent — scenario not executed (no mock PASS).",
+            "no candidate fault-hook module under api-nest/common|testing|resilience"
+          ],
+          "rich_evidence": {
+            "seed": 20260812,
+            "rng_version": "aipo-ea-rng-v1",
+            "clock_as_of": "2026-08-12T11:49:55.088Z",
+            "request_sequence": [
+              {
+                "step": "probe_fault_hook",
+                "result": "absent",
+                "blocked_code": "BLOCKED_NO_FAULT_HOOK"
+              },
+              {
+                "step": "scenario_planned",
+                "scenario_id": "FAULT-AI-429-DEGRADE",
+                "axis": 1,
+                "axis_label": "expected_degradation_fallback",
+                "fault": {
+                  "kind": "ai_http",
+                  "status": 429,
+                  "target": "peotteok_ai"
+                },
+                "executed": false
+              }
+            ],
+            "sanitized_request": {
+              "scenario_id": "FAULT-AI-429-DEGRADE",
+              "kind": "ai_429_degrade",
+              "fault": {
+                "kind": "ai_http",
+                "status": 429,
+                "target": "peotteok_ai"
+              },
+              "expected": {
+                "degradation": true,
+                "ledger_untouched": true,
+                "mock_pass_forbidden": true
+              }
+            },
+            "sanitized_response": {
+              "status": "BLOCKED",
+              "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+              "mock_pass_forbidden": true
+            },
+            "counterexample": null,
+            "error_message": null,
+            "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+            "model_identifier": "harness-static-oracle",
+            "configuration_fingerprint": "060fe4c37a590bd7c0867fcc4d60f412c12305b68dcfc03909e965defef31802",
+            "invariant_id": "INV-FEED-AI-01",
+            "suite_id": "QA5",
+            "live_http": false
+          }
+        },
+        {
+          "scenario_id": "FAULT-RECOVERY-LEDGER-SCAN",
+          "axis": 2,
+          "axis_label": "post_recovery_invariant",
+          "invariant_id": "INV-LEDGER-01",
+          "journey_id": "J-FAULT-RECOVERY-01",
+          "persona_id": "KR-03",
+          "title": "fault clear 후 ledger/bucket invariant scan",
+          "fault": {
+            "kind": "transient_db_blip",
+            "then": "clear"
+          },
+          "expected": {
+            "post_recovery_scan": [
+              "INV-LEDGER-01"
+            ]
+          },
+          "kind": "recovery_ledger",
+          "status": "BLOCKED",
+          "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+          "findings": [
+            "Fault injection hook absent — scenario not executed (no mock PASS).",
+            "no candidate fault-hook module under api-nest/common|testing|resilience"
+          ],
+          "rich_evidence": {
+            "seed": 20260812,
+            "rng_version": "aipo-ea-rng-v1",
+            "clock_as_of": "2026-08-12T11:49:55.088Z",
+            "request_sequence": [
+              {
+                "step": "probe_fault_hook",
+                "result": "absent",
+                "blocked_code": "BLOCKED_NO_FAULT_HOOK"
+              },
+              {
+                "step": "scenario_planned",
+                "scenario_id": "FAULT-RECOVERY-LEDGER-SCAN",
+                "axis": 2,
+                "axis_label": "post_recovery_invariant",
+                "fault": {
+                  "kind": "transient_db_blip",
+                  "then": "clear"
+                },
+                "executed": false
+              }
+            ],
+            "sanitized_request": {
+              "scenario_id": "FAULT-RECOVERY-LEDGER-SCAN",
+              "kind": "recovery_ledger",
+              "fault": {
+                "kind": "transient_db_blip",
+                "then": "clear"
+              },
+              "expected": {
+                "post_recovery_scan": [
+                  "INV-LEDGER-01"
+                ]
+              }
+            },
+            "sanitized_response": {
+              "status": "BLOCKED",
+              "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+              "mock_pass_forbidden": true
+            },
+            "counterexample": null,
+            "error_message": null,
+            "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+            "model_identifier": "harness-static-oracle",
+            "configuration_fingerprint": "61b90f1e4bc6cff96f5c524006348fb0ec5542dbc8de3b0283e3940cfc1d0561",
+            "invariant_id": "INV-LEDGER-01",
+            "suite_id": "QA5",
+            "live_http": false
+          }
+        }
+      ],
+      "critical_invariant": {
+        "blocked": 2,
+        "skipped": 0,
+        "uncovered": 0,
+        "failed": 0,
+        "details": [
+          {
+            "invariant_id": "INV-FEED-AI-01",
+            "critical": true,
+            "status": "BLOCKED",
+            "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+            "scenario_ids": [
+              "FAULT-AI-429-DEGRADE"
+            ]
+          },
+          {
+            "invariant_id": "INV-LEDGER-01",
+            "critical": true,
+            "status": "BLOCKED",
+            "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+            "scenario_ids": [
+              "FAULT-RECOVERY-LEDGER-SCAN"
+            ]
+          }
+        ]
+      },
+      "mock_pass_forbidden": true,
+      "notes": [
+        "Axis1 = fault → expected degradation/fallback (no ledger corruption).",
+        "Axis2 = recovery → post-recovery invariant scan.",
+        "BLOCKED ≠ defect · critical BLOCKED → ENGINE_QA_INCOMPLETE.",
+        "Product mutation 0 — no fault hook invented in services/**."
+      ]
+    }
+  },
+  "critical_invariant": {
+    "blocked": 2,
+    "skipped": 0,
+    "uncovered": 0,
+    "failed": 0,
+    "details": [
+      {
+        "invariant_id": "INV-FEED-AI-01",
+        "critical": true,
+        "status": "BLOCKED",
+        "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+        "scenario_ids": [
+          "FAULT-AI-429-DEGRADE"
+        ]
+      },
+      {
+        "invariant_id": "INV-LEDGER-01",
+        "critical": true,
+        "status": "BLOCKED",
+        "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+        "scenario_ids": [
+          "FAULT-RECOVERY-LEDGER-SCAN"
+        ]
+      }
+    ]
+  },
+  "critical_invariant_cumulative": {
+    "blocked": 4,
+    "skipped": 0,
+    "uncovered": 0,
+    "sources": {
+      "QA4": {
+        "blocked": 2,
+        "skipped": 0,
+        "uncovered": 0
+      },
+      "QA5": {
+        "blocked": 2,
+        "skipped": 0,
+        "uncovered": 0
+      }
+    }
+  },
+  "all_checks_pass": false,
+  "defects_found": 0,
+  "defects_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0,
+    "P3": 0
+  },
+  "verdict_contribution": "ENGINE_QA_INCOMPLETE",
+  "next": "QA6_PERFORMANCE",
+  "product_mutation": 0,
+  "kpi_forbidden": true,
+  "blocked_codes_observed": [
+    "BLOCKED_NO_FAULT_HOOK"
+  ],
+  "ci": {
+    "strategy_fail_fast": false,
+    "concurrency_group": "engine-acceptance-${{ github.ref }}",
+    "aggregator_if_always": true,
+    "artifact_retention_days": 90
+  },
+  "notes": [
+    "Axis1 expected degradation/fallback + Axis2 post-recovery invariant.",
+    "BLOCKED_NO_FAULT_HOOK is a formal result (≠ defect).",
+    "critical INV-FEED-AI-01 / INV-LEDGER-01 BLOCKED → ENGINE_QA_INCOMPLETE (ACCEPTED 불가).",
+    "Does not issue ENGINE_ACCEPTED_FOR_UI.",
+    "CI aggregator uses if: always(); artifact retention ≥ 90 days."
+  ],
+  "checksum": "637ea4ed7a54569206d1bf11b839e3e1a7111ba58b9b872b30531ded7c7f4ac9"
+}

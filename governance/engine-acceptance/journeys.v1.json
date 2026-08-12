@@ -1,11 +1,12 @@
 {
   "schema": "governance.engine-acceptance.journeys.v1",
   "version": "1.0.0",
-  "status": "qa4_active",
+  "status": "qa5_active",
   "notes": [
     "케이스 개수는 KPI 아님. Dirty Path 비중 > Happy Path.",
     "실행: UI 없이 Nest HTTP lifecycle 합성 시퀀스 (제품 mutation 0 · 로컬 tiny smoke).",
-    "QA-4: J-TIME-MULTIDAY-01 requires clock injection · absent → BLOCKED_NO_CLOCK_HOOK."
+    "QA-4: J-TIME-MULTIDAY-01 requires clock injection · absent → BLOCKED_NO_CLOCK_HOOK.",
+    "QA-5: J-FAULT-DEGRADE-01 / J-FAULT-RECOVERY-01 require fault injection · absent → BLOCKED_NO_FAULT_HOOK."
   ],
   "journeys": [
     {
@@ -69,6 +70,37 @@
       ],
       "requires_clock_hook": true,
       "blocked_code_if_no_hook": "BLOCKED_NO_CLOCK_HOOK"
+    },
+    {
+      "id": "J-FAULT-DEGRADE-01",
+      "kind": "dirty",
+      "steps": [
+        "signup",
+        "feed",
+        "inject-fault-ai-429",
+        "assert-degradation-contract",
+        "assert-ledger-untouched",
+        "clear-fault"
+      ],
+      "axis": 1,
+      "requires_fault_hook": true,
+      "blocked_code_if_no_hook": "BLOCKED_NO_FAULT_HOOK"
+    },
+    {
+      "id": "J-FAULT-RECOVERY-01",
+      "kind": "dirty",
+      "steps": [
+        "signup",
+        "participate",
+        "inject-transient-fault",
+        "clear-fault",
+        "post-recovery-ledger-scan",
+        "post-recovery-idempotency-scan",
+        "post-recovery-user-state-scan"
+      ],
+      "axis": 2,
+      "requires_fault_hook": true,
+      "blocked_code_if_no_hook": "BLOCKED_NO_FAULT_HOOK"
     }
   ]
 }

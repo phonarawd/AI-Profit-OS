@@ -1,17 +1,18 @@
 /**
- * verify:engine-acceptance — QA-0..QA-4 scope (full ACCEPTED 판정 금지)
+ * verify:engine-acceptance — QA-0..QA-5 scope (full ACCEPTED 판정 금지)
  *
  * 검증:
  * 1) Acceptance Contract L1~L6 산출물 실재
  * 2) severity-policy 선고정 문서
  * 3) protected-scope hash 규칙 deterministic
  * 4) baseline Dual Dirty + required fields · valid↔protected_scope_clean
- * 5) kill-switch가 tiny smoke / QA1..QA4보다 먼저 작동
+ * 5) kill-switch가 tiny smoke / QA1..QA5보다 먼저 작동
  * 6) evidence-manifest · REPORT · verdict ≠ ENGINE_ACCEPTED_FOR_UI
- * 7) QA-1..QA-3 COMPLETE 유지
+ * 7) QA-1..QA-4 COMPLETE 유지
  * 8) QA-3: fast-check properties · CI fail-fast:false · concurrency
- * 9) QA-4: multi-day + KST · BLOCKED_NO_CLOCK_HOOK 정식 · critical → ACCEPTED 불가 ·
- *    next=QA5 · product mutation 0
+ * 9) QA-4: multi-day + KST · BLOCKED_NO_CLOCK_HOOK 정식 · critical → ACCEPTED 불가
+ * 10) QA-5: Failure World 축1/축2 · BLOCKED_NO_FAULT_HOOK · always() aggregator ·
+ *     artifact retention ≥90 · next=QA6 · product mutation 0
  */
 "use strict";
 
@@ -51,6 +52,7 @@ const REQUIRED_FILES = [
   `${GOV}/qa2-result.v1.json`,
   `${GOV}/qa3-result.v1.json`,
   `${GOV}/qa4-result.v1.json`,
+  `${GOV}/qa5-result.v1.json`,
   "tooling/engine-acceptance/kill-switch.cjs",
   "tooling/engine-acceptance/tiny-smoke.cjs",
   "tooling/engine-acceptance/freeze-baseline.cjs",
@@ -58,6 +60,7 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/run-qa2.cjs",
   "tooling/engine-acceptance/run-qa3.cjs",
   "tooling/engine-acceptance/run-qa4.cjs",
+  "tooling/engine-acceptance/run-qa5.cjs",
   "tooling/engine-acceptance/checks/schemas-routes-contract.cjs",
   "tooling/engine-acceptance/checks/db-consistency.cjs",
   "tooling/engine-acceptance/checks/idempotency-split.cjs",
@@ -67,10 +70,12 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/checks/synthetic-journey-evidence.cjs",
   "tooling/engine-acceptance/checks/fast-check-properties.cjs",
   "tooling/engine-acceptance/checks/stateful-time-lifecycle.cjs",
+  "tooling/engine-acceptance/checks/failure-world.cjs",
   "tooling/engine-acceptance/lib/seeded-rng.cjs",
   "tooling/engine-acceptance/lib/fingerprint-oracle.cjs",
   "tooling/engine-acceptance/lib/rich-failure-evidence.cjs",
   "tooling/engine-acceptance/lib/clock-hook.cjs",
+  "tooling/engine-acceptance/lib/fault-hook.cjs",
   ".github/workflows/engine-acceptance.yml",
 ];
 
@@ -95,6 +100,7 @@ for (const token of [
   "working_tree_clean",
   "protected_scope_clean",
   "BLOCKED_NO_CLOCK_HOOK",
+  "BLOCKED_NO_FAULT_HOOK",
   "fail-fast: false",
   "kill-switch",
 ]) {
@@ -294,6 +300,12 @@ if (coverage) {
 if (journeys && !(journeys.journeys || []).some((j) => j.id === "J-TIME-MULTIDAY-01")) {
   fail("journeys must include J-TIME-MULTIDAY-01 for QA4");
 }
+if (journeys && !(journeys.journeys || []).some((j) => j.id === "J-FAULT-DEGRADE-01")) {
+  fail("journeys must include J-FAULT-DEGRADE-01 for QA5 axis1");
+}
+if (journeys && !(journeys.journeys || []).some((j) => j.id === "J-FAULT-RECOVERY-01")) {
+  fail("journeys must include J-FAULT-RECOVERY-01 for QA5 axis2");
+}
 
 // --- defects schema ---
 let defects;
@@ -332,8 +344,8 @@ if (evidence) {
   if (evidence.schema !== "governance.engine-acceptance.evidence-manifest.v1") {
     fail("evidence-manifest.schema mismatch");
   }
-  if (evidence.qa_phase !== "QA-4") {
-    fail("evidence-manifest.qa_phase must be QA-4 after qa4-stateful-time");
+  if (evidence.qa_phase !== "QA-5") {
+    fail("evidence-manifest.qa_phase must be QA-5 after qa5-failure-world");
   }
   if (!evidence.baseline_id) fail("evidence-manifest.baseline_id required");
   if (baseline && evidence.baseline_id !== baseline.id) {
@@ -342,8 +354,8 @@ if (evidence) {
   if (evidence.verdict === "ENGINE_ACCEPTED_FOR_UI") {
     fail("must not issue ENGINE_ACCEPTED_FOR_UI before QA1..QA8 complete");
   }
-  if (evidence.next !== "QA5_FAILURE_WORLD") {
-    fail("evidence-manifest.next must be QA5_FAILURE_WORLD");
+  if (evidence.next !== "QA6_PERFORMANCE") {
+    fail("evidence-manifest.next must be QA6_PERFORMANCE");
   }
   if (evidence.evidence_integrity !== "VALID") {
     fail("evidence_integrity must be VALID");
@@ -354,12 +366,22 @@ if (evidence) {
   if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa4 !== true) {
     fail("evidence.kill_switch.verified_before_qa4 must be true");
   }
+  if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa5 !== true) {
+    fail("evidence.kill_switch.verified_before_qa5 must be true");
+  }
+  if (
+    !evidence.artifact_policy ||
+    !(evidence.artifact_policy.retention_days_min >= 90)
+  ) {
+    fail("evidence.artifact_policy.retention_days_min must be ≥90");
+  }
 
   const qa0 = (evidence.suites || []).find((s) => s.suite_id === "QA0");
   const qa1 = (evidence.suites || []).find((s) => s.suite_id === "QA1");
   const qa2 = (evidence.suites || []).find((s) => s.suite_id === "QA2");
   const qa3 = (evidence.suites || []).find((s) => s.suite_id === "QA3");
   const qa4 = (evidence.suites || []).find((s) => s.suite_id === "QA4");
+  const qa5 = (evidence.suites || []).find((s) => s.suite_id === "QA5");
   if (!qa0 || qa0.completion_status !== "COMPLETE") {
     fail("QA0 suite must remain COMPLETE");
   }
@@ -382,10 +404,16 @@ if (evidence) {
     fail("QA3 suite must have run_id + checksum");
   }
   if (!qa4 || qa4.completion_status !== "COMPLETE") {
-    fail("QA4 suite must be COMPLETE");
+    fail("QA4 suite must remain COMPLETE");
   }
   if (!qa4.run_id || !qa4.checksum) {
     fail("QA4 suite must have run_id + checksum");
+  }
+  if (!qa5 || qa5.completion_status !== "COMPLETE") {
+    fail("QA5 suite must be COMPLETE");
+  }
+  if (!qa5.run_id || !qa5.checksum) {
+    fail("QA5 suite must have run_id + checksum");
   }
 }
 
@@ -604,11 +632,131 @@ if (qa4Result) {
     if (qa4 && qa4.checksum !== qa4Result.checksum) {
       fail("evidence QA4.checksum must match qa4-result.checksum");
     }
+  }
+}
+
+let qa5Result;
+try {
+  qa5Result = readJson(`${GOV}/qa5-result.v1.json`);
+} catch {
+  fail("qa5-result.v1.json invalid JSON");
+}
+if (qa5Result) {
+  if (qa5Result.schema !== "governance.engine-acceptance.qa5-result.v1") {
+    fail("qa5-result.schema mismatch");
+  }
+  if (qa5Result.completion_status !== "COMPLETE") {
+    fail("qa5-result.completion_status must be COMPLETE");
+  }
+  if (qa5Result.suite_id !== "QA5") fail("qa5-result.suite_id must be QA5");
+  if (baseline && qa5Result.baseline_id !== baseline.id) {
+    fail("qa5-result.baseline_id must match baseline.id");
+  }
+  if (!qa5Result.kill_switch || qa5Result.kill_switch.verified_before_checks !== true) {
+    fail("qa5-result must record kill_switch.verified_before_checks");
+  }
+  if (qa5Result.kpi_forbidden !== true) {
+    fail("qa5-result.kpi_forbidden must be true");
+  }
+  if (qa5Result.product_mutation !== 0) {
+    fail("qa5-result.product_mutation must be 0");
+  }
+  if (!["tiny", "full"].includes(qa5Result.mode)) {
+    fail("qa5-result.mode must be tiny|full");
+  }
+  if (qa5Result.next !== "QA6_PERFORMANCE") {
+    fail("qa5-result.next must be QA6_PERFORMANCE");
+  }
+  const checks5 = qa5Result.checks || {};
+  if (!checks5.failure_world) fail("qa5-result.checks.failure_world required");
+  if (checks5.failure_world) {
+    const fw = checks5.failure_world;
+    if (!fw.fault_hook) fail("qa5 failure_world.fault_hook required");
+    if (!fw.axes) fail("qa5 failure_world.axes required");
+    if (!fw.axes.axis1_expected_degradation_fallback) {
+      fail("qa5 must record axis1_expected_degradation_fallback");
+    }
+    if (!fw.axes.axis2_post_recovery_invariant) {
+      fail("qa5 must record axis2_post_recovery_invariant");
+    }
+    if (!Array.isArray(fw.scenarios) || fw.scenarios.length < 1) {
+      fail("qa5 failure_world.scenarios must be non-empty");
+    }
+    const axesPresent = new Set(fw.scenarios.map((s) => s.axis));
+    if (!axesPresent.has(1) || !axesPresent.has(2)) {
+      fail("qa5 scenarios must cover both axis1 and axis2");
+    }
+    if (fw.fault_hook.available !== true) {
+      if (fw.fault_hook.blocked_code !== "BLOCKED_NO_FAULT_HOOK") {
+        fail("absent fault hook must set blocked_code=BLOCKED_NO_FAULT_HOOK");
+      }
+      if (fw.status !== "BLOCKED") {
+        fail("absent fault hook must yield failure_world.status=BLOCKED (no mock PASS)");
+      }
+      const blockedScenarios = fw.scenarios.filter((s) => s.status === "BLOCKED");
+      if (blockedScenarios.length < 1) {
+        fail("absent fault hook must BLOCK at least one scenario");
+      }
+      for (const s of blockedScenarios) {
+        if (s.blocked_code !== "BLOCKED_NO_FAULT_HOOK") {
+          fail(`scenario ${s.scenario_id} missing BLOCKED_NO_FAULT_HOOK`);
+        }
+      }
+      if (
+        !qa5Result.critical_invariant ||
+        !(qa5Result.critical_invariant.blocked > 0)
+      ) {
+        fail("critical fault-axis BLOCKED must set critical_invariant.blocked > 0");
+      }
+      if (qa5Result.verdict_contribution === "ENGINE_ACCEPTED_FOR_UI") {
+        fail("critical BLOCKED must not contribute ENGINE_ACCEPTED_FOR_UI");
+      }
+      if (evidence && evidence.verdict === "ENGINE_ACCEPTED_FOR_UI") {
+        fail("evidence verdict must not be ACCEPTED when critical fault hook BLOCKED");
+      }
+      if (
+        !Array.isArray(qa5Result.blocked_codes_observed) ||
+        !qa5Result.blocked_codes_observed.includes("BLOCKED_NO_FAULT_HOOK")
+      ) {
+        fail("qa5-result.blocked_codes_observed must include BLOCKED_NO_FAULT_HOOK");
+      }
+      const bogus = (defects.defects || []).filter(
+        (d) =>
+          d.suite_id === "QA5" &&
+          String(d.title || "").includes("BLOCKED_NO_FAULT_HOOK") &&
+          d.repro_status !== "blocked",
+      );
+      if (bogus.length) {
+        fail("BLOCKED_NO_FAULT_HOOK must not be laundered as ordinary defect FAIL");
+      }
+    }
+  }
+  if (qa5Result.ci) {
+    if (qa5Result.ci.strategy_fail_fast !== false) {
+      fail("qa5-result.ci.strategy_fail_fast must be false");
+    }
+    if (!String(qa5Result.ci.concurrency_group || "").includes("engine-acceptance")) {
+      fail("qa5-result.ci.concurrency_group must reference engine-acceptance");
+    }
+    if (qa5Result.ci.aggregator_if_always !== true) {
+      fail("qa5-result.ci.aggregator_if_always must be true");
+    }
+    if (!(qa5Result.ci.artifact_retention_days >= 90)) {
+      fail("qa5-result.ci.artifact_retention_days must be ≥90");
+    }
+  } else {
+    fail("qa5-result.ci lock required");
+  }
+  if (evidence) {
+    const qa5 = (evidence.suites || []).find((s) => s.suite_id === "QA5");
+    if (qa5 && qa5.checksum !== qa5Result.checksum) {
+      fail("evidence QA5.checksum must match qa5-result.checksum");
+    }
     if (
       !evidence.critical_invariant ||
       typeof evidence.critical_invariant.blocked !== "number"
     ) {
-      fail("evidence-manifest.critical_invariant.blocked required after QA4");
+      fail("evidence-manifest.critical_invariant.blocked required after QA5");
     }
   }
 }
@@ -620,17 +768,26 @@ if (report) {
   if (/verdict\s*[:=]\s*`?ENGINE_ACCEPTED_FOR_UI/i.test(report)) {
     fail("REPORT must not claim ENGINE_ACCEPTED_FOR_UI before full suites");
   }
-  if (!report.includes("QA5_FAILURE_WORLD")) {
-    fail("REPORT must declare NEXT=QA5_FAILURE_WORLD");
+  if (!report.includes("QA6_PERFORMANCE")) {
+    fail("REPORT must declare NEXT=QA6_PERFORMANCE");
   }
-  if (!report.includes("QA4 = COMPLETE")) {
-    fail("REPORT banner must include QA4 = COMPLETE");
+  if (!report.includes("QA5 = COMPLETE")) {
+    fail("REPORT banner must include QA5 = COMPLETE");
   }
-  if (!report.includes("BLOCKED_NO_CLOCK_HOOK")) {
-    fail("REPORT must mention BLOCKED_NO_CLOCK_HOOK");
+  if (!report.includes("BLOCKED_NO_FAULT_HOOK")) {
+    fail("REPORT must mention BLOCKED_NO_FAULT_HOOK");
   }
-  if (!report.includes("KST") && !report.includes("Asia/Seoul")) {
-    fail("REPORT must mention KST clock");
+  if (!report.includes("axis1") && !report.includes("Axis1") && !report.includes("degradation")) {
+    fail("REPORT must mention Failure World axis1 degradation");
+  }
+  if (!report.includes("post-recovery") && !report.includes("post_recovery")) {
+    fail("REPORT must mention post-recovery axis");
+  }
+  if (!report.includes("retention") && !report.includes("90")) {
+    fail("REPORT must mention artifact retention ≥90");
+  }
+  if (!report.includes("always()")) {
+    fail("REPORT must mention aggregator if: always()");
   }
   if (!report.includes("PRODUCT MUTATION = 0") && !report.includes("product mutation")) {
     fail("REPORT must state product mutation 0");
@@ -655,8 +812,14 @@ if (fs.existsSync(wfPath)) {
   if (!/run-qa2\.cjs/.test(wf)) fail("workflow must invoke run-qa2.cjs for QA2");
   if (!/run-qa3\.cjs/.test(wf)) fail("workflow must invoke run-qa3.cjs for QA3");
   if (!/run-qa4\.cjs/.test(wf)) fail("workflow must invoke run-qa4.cjs for QA4");
+  if (!/run-qa5\.cjs/.test(wf)) fail("workflow must invoke run-qa5.cjs for QA5");
   if (!/qa-matrix:/.test(wf) && !/matrix:/.test(wf)) {
     fail("workflow must define CI matrix for generative suites");
+  }
+  // aggregator always() already checked; retention ≥90 already checked
+  const alwaysCount = (wf.match(/if:\s*\$\{\{\s*always\(\)\s*\}\}/g) || []).length;
+  if (alwaysCount < 2) {
+    fail("workflow must use if: always() on aggregator and artifact upload steps");
   }
 }
 
@@ -772,6 +935,22 @@ if (!qa4Blocked) {
   fail("run-qa4 must abort via kill-switch before checks when unsafe");
 }
 
+const { runQa5 } = require("../engine-acceptance/run-qa5.cjs");
+let qa5Blocked = false;
+try {
+  runQa5({
+    target_env: "production",
+    hostname: "localhost",
+    synthetic_account_namespace: "qa-synth-x",
+    mode: "tiny",
+  });
+} catch (e) {
+  qa5Blocked = e && e.code === "AIPO_QA_KILL_SWITCH";
+}
+if (!qa5Blocked) {
+  fail("run-qa5 must abort via kill-switch before checks when unsafe");
+}
+
 // workflow hash in baseline matches file
 if (baseline && fs.existsSync(wfPath) && scope) {
   const live = hashPathList(scope.aggregateHashes.acceptance_workflow_hash, scope);
@@ -781,17 +960,18 @@ if (baseline && fs.existsSync(wfPath) && scope) {
 }
 
 if (fails.length) {
-  console.error("[verify:engine-acceptance] FAIL (QA-0..QA-4)");
+  console.error("[verify:engine-acceptance] FAIL (QA-0..QA-5)");
   for (const f of fails) console.error(`  - ${f}`);
   process.exit(1);
 }
 
-console.log("[verify:engine-acceptance] PASS (QA-0..QA-4 scope)");
+console.log("[verify:engine-acceptance] PASS (QA-0..QA-5 scope)");
 console.log("  ACCEPTANCE CONTRACT = LOCKED");
 console.log("  BASELINE = FROZEN");
 console.log("  QA1 = COMPLETE");
 console.log("  QA2 = COMPLETE");
 console.log("  QA3 = COMPLETE");
 console.log("  QA4 = COMPLETE");
+console.log("  QA5 = COMPLETE");
 console.log("  QA HARNESS TARGET = SAFE");
-console.log("  NEXT = QA5_FAILURE_WORLD");
+console.log("  NEXT = QA6_PERFORMANCE");

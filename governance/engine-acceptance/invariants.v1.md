@@ -20,7 +20,9 @@
 | invariant | hook 부재 시 |
 |---|---|
 | INV-TIME-01 | `BLOCKED_NO_CLOCK_HOOK` |
-| (fault suites) | `BLOCKED_NO_FAULT_HOOK` |
+| INV-FEED-AI-01 (QA5 axis1) | `BLOCKED_NO_FAULT_HOOK` |
+| INV-LEDGER-01 (QA5 axis2 recovery scan) | `BLOCKED_NO_FAULT_HOOK` |
+| (other fault suites) | `BLOCKED_NO_FAULT_HOOK` |
 | perf budgets | `BLOCKED_MISSING_ORACLE` 또는 suite `UNSPECIFIED_PERF_BUDGET` |
 
 critical + BLOCKED/SKIPPED/UNCOVERED → `ENGINE_QA_INCOMPLETE` (ACCEPTED 불가).

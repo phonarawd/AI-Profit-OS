@@ -3,7 +3,7 @@
 > **목적:** 구현 채팅 시작 전, 헌법·스키마·마이그레이션·어드민·브랜드·DB SSOT를 **예측 없이** 정리한다.  
 > **권위:** ACTIVE Index `ai_profit_os_00_index_a1b2c3d4.plan.md` > 도메인 01~06 > launch ARCHIVE.  
 > **현재 권위:** Index v7.23.0 · R0 governance CLOSE(inventory→fact/state→change-control→observation) · 외부 `플랫폼_전체_재설계_로드맵_d903eef7`=REFERENCE ONLY · 기존 v7.22 스냅샷/「현재」「다음」문구는 이력.
-> **현재 다음:** 02.5 Engine Acceptance QA · 첫 pending=`qa5-failure-world` (QA-0..QA-4 CLOSED · QA4 COMPLETE · `BLOCKED_NO_CLOCK_HOOK` on critical INV-TIME-01 → verdict=`ENGINE_QA_INCOMPLETE` · 03 UI **BLOCKED** until `ENGINE_ACCEPTED_FOR_UI`).
+> **현재 다음:** 02.5 Engine Acceptance QA · 첫 pending=`qa6-performance` (QA-0..QA-5 CLOSED · QA5 COMPLETE · `BLOCKED_NO_FAULT_HOOK` on critical INV-FEED-AI-01/INV-LEDGER-01 + prior `BLOCKED_NO_CLOCK_HOOK` → verdict=`ENGINE_QA_INCOMPLETE` · 03 UI **BLOCKED** until `ENGINE_ACCEPTED_FOR_UI`).
 
 ## v7.23.0 현재 잠금
 
@@ -47,7 +47,7 @@
 | Advisor `rls_enabled_no_policy` | INFO 전수 | Day-1 **의도** · deny-by-default |
 
 **v7.22.36 판정(이력):** Index 당시 CLOSED · 헌법·스키마·원격 PG·Auth·Runtime P0 hosts·apps 골격 PASS.
-**v7.23 현재:** R0 CLOSE · 01 Money pending0 · 02 Engine pending0 · **02.5 QA-0 FROZEN + QA-1..QA-4 COMPLETE** · QA4=`BLOCKED_NO_CLOCK_HOOK`(critical) · 다음=02.5 `qa5-failure-world` · 03 UI는 `ENGINE_ACCEPTED_FOR_UI` 전 **BLOCKED**.
+**v7.23 현재:** R0 CLOSE · 01 Money pending0 · 02 Engine pending0 · **02.5 QA-0 FROZEN + QA-1..QA-5 COMPLETE** · QA5=`BLOCKED_NO_FAULT_HOOK`(critical) · QA4=`BLOCKED_NO_CLOCK_HOOK`(critical) · 다음=02.5 `qa6-performance` · 03 UI는 `ENGINE_ACCEPTED_FOR_UI` 전 **BLOCKED**.
 
 ### 0.1 public 테이블 전수 (41 · MCP 실측)
 
