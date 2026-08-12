@@ -11,6 +11,16 @@ const root = path.resolve(__dirname, "../..");
 const RULES = [
   {
     test: (f) =>
+      /^\.cursor\/hooks(\/|$)/.test(f) ||
+      /^\.cursor\/hooks\.json$/.test(f) ||
+      /^\.cursor\/rules\/project-isolation/.test(f) ||
+      /^scripts\/verify-project-boundary\.mjs$/.test(f) ||
+      /^tooling\/verify\/project-boundary\.cjs$/.test(f) ||
+      /^docs\/ops\/project-isolation-boundary-checklist\.md$/.test(f),
+    scripts: ["project-boundary.cjs"],
+  },
+  {
+    test: (f) =>
       /^governance\/platform-redesign\//.test(f) ||
       /^schemas\/governance-observation\.v1\.json$/.test(f) ||
       /^tooling\/verify\/platform-redesign-inventory\.cjs$/.test(f) ||

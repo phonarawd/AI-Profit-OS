@@ -1,22 +1,26 @@
 ---
-description: AI_PROFIT_OS isolation — deny clime-gb / foreign GitHub·Supabase
+description: AI_PROFIT_OS isolation — deny foreign GitHub/Supabase/FS
 alwaysApply: true
 ---
 
 # Project Isolation
 
+> Detail SSOT = project-isolation-boundary.mdc (Wave PROJECT_ISOLATION_MIRROR).
+
 ## Allow
 
-- Root: `C:\Users\PC\Desktop\AI_PROFIT_OS`
-- GitHub: `phonarawd/AI-Profit-OS` only
-- Supabase: `mgsytcetsiecllmhcyox` only (project-scoped MCP `supabase`)
-- Cloudflare MCP: docs / bindings / builds
+- Root: C:\\Users\\PC\\Desktop\\AI_PROFIT_OS
+- GitHub: phonarawd/AI-Profit-OS only
+- Supabase: mgsytcetsiecllmhcyox only
+- Plan SSOT: repo .cursor/plans/ only
 
 ## Deny
 
-- `clime-gb` paths · `phonarawd/clime-gb`
-- Supabase refs other than `mgsytcetsiecllmhcyox`
-- Account-wide `plugin-supabase-supabase` / `supabase projects list`
-- Workspace-outside read/write/cwd / `git -C <outside>`
+- Foreign Desktop project folder / phonarawd foreign repo
+- Supabase refs other than mgsytcetsiecllmhcyox
+- Account-wide Supabase plugin / account-wide list CLIs
+- Workspace-outside read/write/cwd
+- Global Cursor plans · repo clime_*.plan.md markers
 
-Hooks enforce this with `failClosed: true`. Do not open foreign project contents to verify isolation.
+Hooks: .cursor/hooks/project-boundary.mjs · failClosed: true.
+Do not open foreign project contents to verify isolation (fixture strings only).

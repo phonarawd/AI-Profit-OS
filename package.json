@@ -14,6 +14,7 @@
     "cursor:ensure-plans-markdownlint": "node tooling/cursor/ensure-plans-markdownlint.cjs",
     "cursor:sync-plans": "node tooling/cursor/sync-plans-ssot.cjs",
     "verify:plans-ssot": "node tooling/verify/plans-ssot.cjs",
+    "verify:project-boundary": "node scripts/verify-project-boundary.mjs",
     "verify:stack-lock": "node tooling/verify/stack-lock.cjs",
     "verify:secrets": "node tooling/verify/secrets.cjs",
     "verify:pg-module-scan": "node tooling/verify/pg-module-scan.cjs",
