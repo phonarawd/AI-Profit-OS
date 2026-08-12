@@ -1,13 +1,22 @@
 #!/usr/bin/env node
 "use strict";
+process.on("uncaughtException", (e) => {
+  try {
+    require("fs").writeSync(
+      1,
+      JSON.stringify({
+        continue: true,
+        permission: "deny",
+        userMessage: "Blocked: mcp-boundary uncaught",
+        agentMessage: String(e && e.message ? e.message : e),
+      })
+    );
+  } catch (_) {}
+  process.exit(0);
+});
 const fs = require("fs");
 const { finishHook } = require("./lib/hook-io.cjs");
 const { evaluateMcpCall, deny } = require("./lib/project-boundary.cjs");
-
-function finish(d) {
-  finishHook(d);
-}
-
 try {
   let raw = "";
   try {
@@ -16,7 +25,6 @@ try {
     raw = "";
   }
   raw = String(raw || "").replace(/^\uFEFF/, "");
-
   let payload = {};
   try {
     payload = JSON.parse(raw.trim() || "{}");
@@ -31,40 +39,17 @@ try {
       }
     }
   }
-
   if (!Object.keys(payload || {}).length && !raw.trim()) {
-    finish(
+    finishHook(
       deny(
         "Blocked: mcp-gate empty input (fail-closed).",
         "Cannot evaluate MCP without payload."
       )
     );
   }
-
-  const rawLc = String(raw).toLowerCase();
-  if (rawLc.indexOf("clime-gb") !== -1) {
-    finish(
-      deny(
-        "Blocked: MCP references foreign project.",
-        "phonarawd/AI-Profit-OS only."
-      )
-    );
-  }
-  if (
-    rawLc.indexOf("qrvanbyjgflaugdaslqh") !== -1 ||
-    rawLc.indexOf("yocjhjsdwoijfdrehzoq") !== -1
-  ) {
-    finish(
-      deny(
-        "Blocked: foreign Supabase project_ref.",
-        "Allowed: mgsytcetsiecllmhcyox only."
-      )
-    );
-  }
-
-  finish(evaluateMcpCall(payload));
+  finishHook(evaluateMcpCall(payload));
 } catch (e) {
-  finish(
+  finishHook(
     deny(
       "Blocked: mcp-boundary error",
       String(e && e.message ? e.message : e)

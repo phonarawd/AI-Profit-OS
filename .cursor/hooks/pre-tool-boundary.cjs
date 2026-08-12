@@ -1,27 +1,25 @@
 #!/usr/bin/env node
 "use strict";
-/**
- * Sync stdin + BOM strip. failClosed: decision via JSON permission; always exit 0.
- */
+process.on("uncaughtException", (e) => {
+  try {
+    require("fs").writeSync(
+      1,
+      JSON.stringify({
+        continue: true,
+        permission: "deny",
+        userMessage: "Blocked: pre-tool-boundary uncaught",
+        agentMessage: String(e && e.message ? e.message : e),
+      })
+    );
+  } catch (_) {}
+  process.exit(0);
+});
 const fs = require("fs");
-const path = require("path");
 const { finishHook } = require("./lib/hook-io.cjs");
 const {
   evaluateToolUse,
-  extractShellCommand,
   deny,
 } = require("./lib/project-boundary.cjs");
-
-function diag(line) {
-  try {
-    fs.appendFileSync(path.join(__dirname, "hook-diag.log"), line + "\n", "utf8");
-  } catch (_) {}
-}
-
-function finish(d) {
-  finishHook(d);
-}
-
 try {
   let raw = "";
   try {
@@ -30,7 +28,6 @@ try {
     raw = "";
   }
   raw = String(raw || "").replace(/^\uFEFF/, "");
-
   let payload = {};
   try {
     payload = JSON.parse(raw.trim() || "{}");
@@ -45,37 +42,12 @@ try {
       }
     }
   }
-
-  const tool = String((payload && (payload.tool_name || payload.toolName)) || "");
-  const cmd = String(extractShellCommand(payload) || "").slice(0, 120);
-  diag(
-    new Date().toISOString() +
-      " preToolUseSync tool=" +
-      tool +
-      " keys=" +
-      Object.keys(payload || {}).length +
-      " cmd=" +
-      JSON.stringify(cmd) +
-      " rawLen=" +
-      String(raw.length)
-  );
-
   if (!Object.keys(payload || {}).length && !raw.trim()) {
-    finish(deny("Blocked: empty hook input (fail-closed).", "stdin empty"));
+    finishHook(deny("Blocked: empty hook input (fail-closed).", "stdin empty"));
   }
-
-  if (tool === "Shell" && cmd.toLowerCase().indexOf("clime-gb") !== -1) {
-    finish(
-      deny(
-        "Blocked: shell references foreign project.",
-        "AI_PROFIT_OS isolation."
-      )
-    );
-  }
-
-  finish(evaluateToolUse(payload));
+  finishHook(evaluateToolUse(payload));
 } catch (e) {
-  finish({
+  finishHook({
     continue: true,
     permission: "deny",
     userMessage: "Blocked: pre-tool-boundary error",

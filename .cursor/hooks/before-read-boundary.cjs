@@ -1,24 +1,26 @@
 #!/usr/bin/env node
 "use strict";
+process.on("uncaughtException", (e) => {
+  try {
+    require("fs").writeSync(
+      1,
+      JSON.stringify({
+        continue: true,
+        permission: "deny",
+        userMessage: "Blocked: read-boundary uncaught",
+        agentMessage: String(e && e.message ? e.message : e),
+      })
+    );
+  } catch (_) {}
+  process.exit(0);
+});
 const fs = require("fs");
-const path = require("path");
 const { finishHook } = require("./lib/hook-io.cjs");
 const {
   evaluatePathAccess,
   extractReadPath,
   deny,
 } = require("./lib/project-boundary.cjs");
-
-function diag(line) {
-  try {
-    fs.appendFileSync(path.join(__dirname, "hook-diag.log"), line + "\n", "utf8");
-  } catch (_) {}
-}
-
-function finish(d) {
-  finishHook(d);
-}
-
 try {
   let raw = "";
   try {
@@ -27,7 +29,6 @@ try {
     raw = "";
   }
   raw = String(raw || "").replace(/^\uFEFF/, "");
-
   let payload = {};
   try {
     payload = JSON.parse(raw.trim() || "{}");
@@ -42,49 +43,30 @@ try {
       }
     }
   }
-
   const filePath = extractReadPath(payload);
-  diag(
-    new Date().toISOString() +
-      " beforeReadSync keys=" +
-      Object.keys(payload || {}).length +
-      " path=" +
-      JSON.stringify(String(filePath).slice(0, 160)) +
-      " rawLen=" +
-      String(raw.length)
-  );
-
   if (!Object.keys(payload || {}).length && !raw.trim()) {
-    finish(
+    finishHook(
       deny(
         "Blocked: read-boundary empty input (fail-closed).",
         "Cannot evaluate read without payload."
       )
     );
   }
-
-  if (String(raw).toLowerCase().indexOf("clime-gb") !== -1) {
-    finish(
-      deny("Blocked: foreign project path.", "Stay inside AI_PROFIT_OS only.")
-    );
-  }
-
   if (Array.isArray(payload.attachments)) {
     for (let i = 0; i < payload.attachments.length; i++) {
       const a = payload.attachments[i];
       if (a && a.file_path) {
         const r = evaluatePathAccess(a.file_path);
-        if (r.permission === "deny") finish(r);
+        if (r.permission === "deny") finishHook(r);
       }
     }
   }
-
   if (filePath) {
-    finish(evaluatePathAccess(filePath));
+    finishHook(evaluatePathAccess(filePath));
   }
-  finish({ continue: true, permission: "allow" });
+  finishHook({ continue: true, permission: "allow" });
 } catch (e) {
-  finish(
+  finishHook(
     deny(
       "Blocked: read-boundary error",
       String(e && e.message ? e.message : e)
