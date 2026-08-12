@@ -1,41 +1,136 @@
 #!/usr/bin/env node
 /**
- * beforeShellExecution — 3-tier gate (ADR-016)
- * commit → verify:gate:fast (T0)
- * push   → verify:gate:push (T1)
- * permission: deny is the reliable Cursor gate (ask is unreliable).
+ * beforeShellExecution — git permission gate (ADR-016)
+ *
+ * Critical-path (fast, deterministic):
+ *   - foreign cwd / git -C foreign / foreign ref markers → deny
+ *   - --no-verify / --no-gpg-sign → deny
+ *   - secret/.env stage-commit patterns → deny
+ *   - local repo identity check
+ *   - malformed stdin → deny (failClosed)
+ *   - local git commit → allow (heavy T0 = Husky pre-commit)
+ *
+ * Heavy verification (not in commit critical path):
+ *   - T0 verify:gate:fast → .husky/pre-commit
+ *   - T1 verify:gate:push → kept here (no Husky pre-push yet)
  */
+"use strict";
+
 const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
+const {
+  evaluateShellCommand,
+  WORKSPACE_ROOT: BOUNDARY_ROOT,
+} = require("./lib/project-boundary.cjs");
 
-let input = "";
-try {
-  input = fs.readFileSync(0, "utf8");
-} catch {
-  input = "{}";
-}
-input = String(input || "").replace(/^\uFEFF/, "");
-
-let payload = {};
-try {
-  payload = JSON.parse(input.trim() || "{}");
-} catch {
-  payload = {};
-}
-
-const cmd = String(payload.command || "");
-const root = process.cwd();
+const HOOK_DERIVED_ROOT = path.resolve(__dirname, "..", "..");
 
 function out(obj) {
-  // sync stdout — buffered write + exit races under failClosed on Windows
   const line = JSON.stringify(obj);
   try {
     fs.writeSync(1, line);
   } catch (_) {
-    process.stdout.write(line);
+    try {
+      process.stdout.write(line);
+    } catch (_) {}
   }
   process.exit(0);
+}
+
+function deny(userMessage, agentMessage) {
+  out({
+    continue: true,
+    permission: "deny",
+    userMessage,
+    user_message: userMessage,
+    agentMessage: agentMessage || userMessage,
+    agent_message: agentMessage || userMessage,
+  });
+}
+
+function allow() {
+  out({ continue: true, permission: "allow" });
+}
+
+function stripBom(s) {
+  return String(s || "").replace(/^\uFEFF/, "");
+}
+
+function norm(p) {
+  if (!p) return "";
+  try {
+    return path.resolve(String(p));
+  } catch {
+    return String(p);
+  }
+}
+
+function lower(p) {
+  return String(p || "").toLowerCase();
+}
+
+function isUnder(absPath, root) {
+  const a = lower(norm(absPath));
+  const r = lower(norm(root));
+  if (!a || !r) return false;
+  return (
+    a === r ||
+    a.startsWith(r + path.sep.toLowerCase()) ||
+    a.startsWith(r + "\\") ||
+    a.startsWith(r + "/")
+  );
+}
+
+function looksForeign(blob) {
+  const s = String(blob || "");
+  if (!s) return false;
+  if (/clime-gb/i.test(s)) return true;
+  if (/phonarawd\/clime-gb/i.test(s)) return true;
+  if (/qrvanbyjgflaugdaslqh/i.test(s)) return true;
+  return false;
+}
+
+/**
+ * executionRoot: where heavy local verify may run (never overwritten by foreign cwd)
+ * Priority: validated CURSOR_PROJECT_DIR → hook-derived → boundary helper root
+ */
+function resolveExecutionRoot() {
+  const candidates = [];
+  const envRoot = process.env.CURSOR_PROJECT_DIR;
+  if (envRoot && String(envRoot).trim()) candidates.push(norm(envRoot));
+  candidates.push(HOOK_DERIVED_ROOT);
+  if (BOUNDARY_ROOT) candidates.push(norm(BOUNDARY_ROOT));
+
+  for (const c of candidates) {
+    if (!c || looksForeign(c)) continue;
+    // Must match known AI_PROFIT_OS roots (hook-derived / boundary)
+    if (
+      isUnder(c, HOOK_DERIVED_ROOT) ||
+      isUnder(HOOK_DERIVED_ROOT, c) ||
+      (BOUNDARY_ROOT &&
+        (isUnder(c, BOUNDARY_ROOT) || isUnder(BOUNDARY_ROOT, c)))
+    ) {
+      // Prefer exact repo root when CURSOR_PROJECT_DIR points at workspace
+      if (
+        lower(c) === lower(HOOK_DERIVED_ROOT) ||
+        lower(c) === lower(BOUNDARY_ROOT)
+      ) {
+        return c;
+      }
+    }
+  }
+  return HOOK_DERIVED_ROOT;
+}
+
+function requestedCwd(payload) {
+  return (
+    (payload && payload.cwd) ||
+    (payload &&
+      payload.tool_input &&
+      (payload.tool_input.working_directory || payload.tool_input.cwd)) ||
+    ""
+  );
 }
 
 function isGitCommit(c) {
@@ -56,7 +151,6 @@ function touchesEnv(c) {
     (/\bgit\s+add\s+(-[A-Za-z]*f[A-Za-z]*|--force)\b/.test(c) && /\.env\b/.test(c))
   );
 }
-
 function forceAddSecrets(c) {
   return (
     /\bgit\s+add\b/.test(c) &&
@@ -66,60 +160,95 @@ function forceAddSecrets(c) {
   );
 }
 
-if (hasNoVerify(cmd)) {
-  out({
-    continue: true,
-    permission: "deny",
-    userMessage: "Blocked: --no-verify / --no-gpg-sign forbidden (ADR-016).",
-    agentMessage: "Remove --no-verify. commit=T0 fast · push=T1 push tier before push.",
-  });
+let raw = "";
+try {
+  raw = stripBom(fs.readFileSync(0, "utf8"));
+} catch {
+  raw = "";
 }
 
-if (touchesEnv(cmd) || forceAddSecrets(cmd)) {
-  out({
-    continue: true,
-    permission: "deny",
-    userMessage: "Blocked: .env / secret files must not be staged/committed.",
-    agentMessage: "Unstage secrets. .env stays local only (ADR-016).",
-  });
+if (!String(raw || "").trim()) {
+  allow();
 }
 
-if (isGitCommit(cmd)) {
-  try {
-    execSync("pnpm verify:gate:fast", {
-      cwd: root,
-      stdio: ["ignore", "pipe", "pipe"],
-      env: process.env,
-      timeout: 120000,
-    });
-  } catch (e) {
-    const err = (e.stdout || e.stderr || e.message || "").toString().slice(0, 1500);
-    out({
-      continue: true,
-      permission: "deny",
-      userMessage: "Blocked: verify:gate:fast failed — fix before commit.",
-      agentMessage: `verify:gate:fast FAIL:\n${err}`,
-    });
+let payload = null;
+try {
+  payload = JSON.parse(String(raw).trim());
+} catch {
+  deny(
+    "Blocked: malformed hook input.",
+    "Non-empty stdin failed JSON parse — deny (failClosed)."
+  );
+}
+
+if (!payload || typeof payload !== "object") {
+  deny(
+    "Blocked: malformed hook input.",
+    "Hook payload must be a JSON object — deny (failClosed)."
+  );
+}
+
+const cmd = String(payload.command || "");
+const cwd = String(requestedCwd(payload) || "");
+const executionRoot = resolveExecutionRoot();
+
+// Local repository identity / foreign rejection (defense-in-depth; boundary hook also runs)
+if (cwd) {
+  if (looksForeign(cwd) || !isUnder(cwd, executionRoot)) {
+    deny(
+      "Blocked: shell cwd outside AI_PROFIT_OS.",
+      "cwd must stay under " + executionRoot
+    );
   }
 }
 
+if (looksForeign(cmd)) {
+  deny(
+    "Blocked: shell targets clime-gb / foreign FS path.",
+    "AI_PROFIT_OS isolation."
+  );
+}
+
+const boundaryShell = evaluateShellCommand(cmd, cwd || executionRoot, null);
+if (boundaryShell && boundaryShell.permission === "deny") {
+  out(boundaryShell);
+}
+
+if (hasNoVerify(cmd)) {
+  deny(
+    "Blocked: --no-verify / --no-gpg-sign forbidden (ADR-016).",
+    "Remove --no-verify. commit=T0 via Husky pre-commit · push=T1 gate before push."
+  );
+}
+
+if (touchesEnv(cmd) || forceAddSecrets(cmd)) {
+  deny(
+    "Blocked: .env / secret files must not be staged/committed.",
+    "Unstage secrets. .env stays local only (ADR-016)."
+  );
+}
+
+// Local commit: permission only. Heavy T0 = .husky/pre-commit → pnpm verify:gate:fast
+if (isGitCommit(cmd)) {
+  allow();
+}
+
+// Push: keep existing T1 gate in this hook (no .husky/pre-push authority yet)
 if (isGitPush(cmd)) {
   try {
     execSync("pnpm verify:gate:push", {
-      cwd: root,
+      cwd: executionRoot,
       stdio: ["ignore", "pipe", "pipe"],
       env: process.env,
       timeout: 300000,
     });
   } catch (e) {
     const err = (e.stdout || e.stderr || e.message || "").toString().slice(0, 1500);
-    out({
-      continue: true,
-      permission: "deny",
-      userMessage: "Blocked: verify:gate:push failed — fix before push.",
-      agentMessage: `verify:gate:push FAIL:\n${err}`,
-    });
+    deny(
+      "Blocked: verify:gate:push failed — fix before push.",
+      "verify:gate:push FAIL:\n" + err
+    );
   }
 }
 
-out({ continue: true, permission: "allow" });
+allow();
