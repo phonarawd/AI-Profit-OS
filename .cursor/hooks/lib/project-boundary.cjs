@@ -119,14 +119,10 @@ function extractReadPath(payload) {
   return "";
 }
 
-function evaluateShellCommand(command, cwd, fullPayload) {
+function evaluateShellCommand(command, cwd, _fullPayload) {
+  // Command + cwd only — never scan full payload body (self-lock / false DENY).
   const cmd = String(command || "");
-  const blob =
-    cmd +
-    "\n" +
-    String(cwd || "") +
-    "\n" +
-    (fullPayload ? JSON.stringify(fullPayload) : "");
+  const blob = cmd + "\n" + String(cwd || "");
 
   if (blobLooksDenied(blob)) {
     return deny(

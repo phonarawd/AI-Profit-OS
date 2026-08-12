@@ -1,53 +1,65 @@
 /**
- * Cursor hook I/O — sync stdout + exit 0 for decisions (CJS).
- * EMPTY → allow · NON-EMPTY malformed / policy / internal failure → deny.
- * UNKNOWN / BROKEN / INTERNAL != ALLOW.
+ * Shared Cursor hook I/O contract (ESM).
+ * - stdin once, UTF-8 BOM strip, parse never throws
+ * - sync stdout (fs.writeSync) — avoid Windows buffered write+exit race
+ * - EMPTY → allow (harmless lifecycle / self-lock prevention)
+ * - NON-EMPTY malformed → deny
+ * - policy / internal / uncaught failure → deny (UNKNOWN != ALLOW)
+ * - Decision via permission field; policy decisions exit 0
  */
-"use strict";
+import fs from "node:fs";
 
-const fs = require("fs");
-
-function stripBom(s) {
+export function stripBom(s) {
   return String(s || "").replace(/^\uFEFF/, "");
 }
 
-function readStdinSync() {
+/** Read stdin once (fd 0). Never throws. */
+export function readStdinSync() {
   try {
     return stripBom(fs.readFileSync(0, "utf8"));
-  } catch (_) {
+  } catch {
     return "";
   }
 }
 
-function parsePayloadResult(raw) {
+/**
+ * Parse hook JSON.
+ * @returns {{ ok: true, payload: object } | { ok: false, empty: boolean }}
+ */
+export function parsePayloadResult(raw) {
   const text = stripBom(raw).trim();
   if (!text) return { ok: false, empty: true };
   try {
     const v = JSON.parse(text);
     if (v && typeof v === "object") return { ok: true, payload: v };
     return { ok: false, empty: false };
-  } catch (_) {}
+  } catch {
+    /* fall through */
+  }
   const start = text.indexOf("{");
   const end = text.lastIndexOf("}");
   if (start >= 0 && end > start) {
     try {
       const v = JSON.parse(text.slice(start, end + 1));
       if (v && typeof v === "object") return { ok: true, payload: v };
-    } catch (_) {}
+    } catch {
+      /* malformed */
+    }
   }
   return { ok: false, empty: false };
 }
 
-function parsePayload(raw) {
+/** @deprecated prefer parsePayloadResult — empty/malformed both null historically */
+export function parsePayload(raw) {
   const r = parsePayloadResult(raw);
   return r.ok ? r.payload : null;
 }
 
-function allowResponse() {
+export function allowResponse() {
   return { continue: true, permission: "allow" };
 }
 
-function denyResponse(code, userMessage, agentMessage) {
+export function denyResponse(code, userMessage, agentMessage) {
   const msg = userMessage || code || "Blocked: hook deny";
   return {
     continue: true,
@@ -60,7 +72,8 @@ function denyResponse(code, userMessage, agentMessage) {
   };
 }
 
-function writeHookResponse(obj) {
+export function writeHookResponse(obj) {
+  // Missing/invalid response object → deny (never invent ALLOW)
   const x =
     obj && typeof obj === "object" && obj.permission
       ? obj
@@ -72,68 +85,80 @@ function writeHookResponse(obj) {
   const line = JSON.stringify(x);
   try {
     fs.writeSync(1, line);
-  } catch (_) {
+  } catch {
     try {
       process.stdout.write(line);
-    } catch (_) {}
+    } catch {
+      /* ignore */
+    }
   }
   return x;
 }
 
-function finishHook(obj) {
+export function finishHook(obj) {
   writeHookResponse(obj);
   process.exit(0);
 }
 
-function finishAllow() {
+export function finishAllow() {
   finishHook(allowResponse());
 }
 
-function finishDeny(code, userMessage, agentMessage) {
+export function finishDeny(code, userMessage, agentMessage) {
   finishHook(denyResponse(code, userMessage, agentMessage));
 }
 
 function logErr(kind, err) {
   try {
     const msg =
-      err && err.message ? String(err.message) : err ? String(err) : "";
-    fs.writeSync(
-      2,
-      "[project-boundary-hook] " + kind + (msg ? ": " + msg : "") + "\n"
-    );
-  } catch (_) {}
+      err && err.message
+        ? String(err.message)
+        : err
+          ? String(err)
+          : "";
+    fs.writeSync(2, "[project-boundary-hook] " + kind + (msg ? ": " + msg : "") + "\n");
+  } catch {
+    /* ignore */
+  }
 }
 
-function installCrashGuards() {
-  const safe = function (kind) {
-    return function (err) {
+/** Crash / rejection → DENY + exit 0; if stdout fail → exit 1 (failClosed). */
+export function installCrashGuards() {
+  const safe = (kind) => (err) => {
+    try {
+      logErr(kind, err);
+      finishDeny(
+        kind,
+        "Blocked: hook internal failure.",
+        "Internal hook failure — deny (UNKNOWN POLICY STATE != ALLOW)."
+      );
+    } catch {
       try {
-        logErr(kind, err);
-        finishDeny(
-          kind,
-          "Blocked: hook internal failure.",
-          "Internal hook failure — deny (UNKNOWN POLICY STATE != ALLOW)."
-        );
-      } catch (_) {
-        try {
-          process.exit(1);
-        } catch (_) {}
+        process.exit(1);
+      } catch {
+        /* ignore */
       }
-    };
+    }
   };
   process.on("uncaughtException", safe("HOOK_UNCAUGHT"));
   process.on("unhandledRejection", safe("HOOK_UNHANDLED_REJECTION"));
 }
 
-function runBoundaryHook(decideFn) {
+/**
+ * Standard boundary-hook main: read → parse → decide → finish.
+ * @param {(payload: object) => object} decideFn
+ */
+export function runBoundaryHook(decideFn) {
   installCrashGuards();
   try {
     const raw = readStdinSync();
     if (!String(raw || "").trim()) {
+      // EMPTY = harmless lifecycle → ALLOW (self-lock prevention)
       finishAllow();
     }
     const parsed = parsePayloadResult(raw);
     if (!parsed.ok) {
+      // NON-EMPTY malformed → DENY
       finishDeny(
         "HOOK_MALFORMED_INPUT",
         "Blocked: malformed hook input.",
@@ -158,6 +183,7 @@ function runBoundaryHook(decideFn) {
     ) {
       finishHook(decision);
     }
+    // Unsupported / invalid decision shape → DENY (not ALLOW)
     finishDeny(
       "HOOK_INVALID_DECISION",
       "Blocked: invalid policy decision.",
@@ -172,18 +198,3 @@ function runBoundaryHook(decideFn) {
     );
   }
 }
-
-module.exports = {
-  stripBom: stripBom,
-  readStdinSync: readStdinSync,
-  parsePayload: parsePayload,
-  parsePayloadResult: parsePayloadResult,
-  writeHookResponse: writeHookResponse,
-  finishHook: finishHook,
-  finishAllow: finishAllow,
-  finishDeny: finishDeny,
-  allowResponse: allowResponse,
-  denyResponse: denyResponse,
-  installCrashGuards: installCrashGuards,
-  runBoundaryHook: runBoundaryHook,
-};

@@ -184,6 +184,16 @@ expect(
   }).permission === "deny"
 );
 expect(
+  "ALLOW Grep hooks dir with foreign marker pattern (self-lock)",
+  policy.decidePreToolUse({
+    tool_name: "Grep",
+    tool_input: {
+      pattern: "clime-gb",
+      path: path.join(ROOT, ".cursor", "hooks"),
+    },
+  }).permission === "allow"
+);
+expect(
   "DENY Glob clime-gb path",
   policy.decidePreToolUse({
     tool_name: "Glob",
@@ -223,7 +233,7 @@ expect(
   }).permission === "allow"
 );
 
-// --- hook process: empty / malformed → allow, exit 0 ---
+// --- hook process: empty → allow; non-empty malformed → deny; exit 0 ---
 const empty = runHook("");
 expect(
   "hook empty stdin ALLOW exit 0",
@@ -232,8 +242,8 @@ expect(
 );
 const malformed = runHook("not-json{{{");
 expect(
-  "hook non-JSON ALLOW exit 0",
-  malformed.status === 0 && malformed.permission === "allow",
+  "hook non-JSON DENY exit 0",
+  malformed.status === 0 && malformed.permission === "deny",
   "status=" + malformed.status + " perm=" + malformed.permission
 );
 

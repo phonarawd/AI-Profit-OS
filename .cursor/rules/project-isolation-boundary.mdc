@@ -29,7 +29,7 @@ alwaysApply: true
 
 1. 클라이 디스크·GitHub·Supabase·전역 plans를 열어 “확인”하지 않는다.
 2. DENY 검증은 hook fixture(경로 문자열)만 — 실경로 Read/Shell 금지.
-3. failClosed 훅: 빈 stdin/비JSON → allow · 항상 exit 0 · 차단은 `permission:deny`만 · 정책=순수함수.
+3. failClosed 훅: EMPTY stdin → allow · NON-EMPTY malformed/policy/internal fail → deny · 정상 결정은 항상 exit 0 · import load fail → process failure(failClosed) · 차단은 `permission:deny` · 정책=순수함수 · UNKNOWN/BROKEN/INTERNAL ≠ ALLOW.
 4. account-wide GitHub/Supabase CLI라도 외국(클라이) 타깃은 DENY.
 5. 클라이 소스/플랜을 읽어 베끼지 않는다.
 

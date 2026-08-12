@@ -1,4 +1,4 @@
-{
+﻿{
   "version": 1,
   "hooks": {
     "sessionStart": [
@@ -10,28 +10,28 @@
     "beforeReadFile": [
       {
         "command": "node .cursor/hooks/project-boundary.mjs",
-        "timeout": 30,
+        "timeout": 45,
         "failClosed": true
       }
     ],
     "beforeTabFileRead": [
       {
         "command": "node .cursor/hooks/project-boundary.mjs",
-        "timeout": 30,
+        "timeout": 45,
         "failClosed": true
       }
     ],
     "preToolUse": [
       {
         "command": "node .cursor/hooks/project-boundary.mjs",
-        "timeout": 30,
+        "timeout": 45,
         "failClosed": true
       }
     ],
     "beforeShellExecution": [
       {
         "command": "node .cursor/hooks/project-boundary.mjs",
-        "timeout": 30,
+        "timeout": 45,
         "failClosed": true
       },
       {
@@ -43,7 +43,7 @@
     "beforeMCPExecution": [
       {
         "command": "node .cursor/hooks/project-boundary.mjs",
-        "timeout": 30,
+        "timeout": 45,
         "failClosed": true
       }
     ],

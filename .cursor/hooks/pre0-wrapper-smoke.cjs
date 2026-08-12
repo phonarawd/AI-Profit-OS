@@ -91,19 +91,18 @@ cases.push(
 const malformed = runHook("pre-tool-boundary.cjs", "not-json{{{");
 cases.push(
   expect(
-    "malformed stdin fail-closed (deny or allow-empty-keys path stable exit 0)",
-    malformed.status === 0 &&
-      (malformed.permission === "deny" || malformed.permission === "allow"),
+    "malformed non-empty stdin DENY exit 0",
+    malformed.status === 0 && malformed.permission === "deny",
     "status=" + malformed.status + " perm=" + malformed.permission
   )
 );
 
-// empty → deny (fail-closed)
+// empty → allow (failClosed lock prevention; deny only via permission on valid policy)
 const empty = runHook("pre-tool-boundary.cjs", "");
 cases.push(
   expect(
-    "empty stdin DENY exit 0",
-    empty.status === 0 && empty.permission === "deny",
+    "empty stdin ALLOW exit 0",
+    empty.status === 0 && empty.permission === "allow",
     "status=" + empty.status + " perm=" + empty.permission
   )
 );

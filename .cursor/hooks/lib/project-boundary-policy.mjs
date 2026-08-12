@@ -531,6 +531,36 @@ export function createPolicy(opts = {}) {
     return allow();
   }
 
+  function mcpTargetFields(input) {
+    /** Path / ref / repo targets only — not query body / SQL / full args dump. */
+    const out = [];
+    if (!input || typeof input !== "object") {
+      if (typeof input === "string") return [input];
+      return out;
+    }
+    const keys = [
+      "path",
+      "file_path",
+      "uri",
+      "cwd",
+      "working_directory",
+      "target_directory",
+      "project_id",
+      "project_ref",
+      "owner",
+      "repo",
+      "repository",
+      "full_name",
+    ];
+    for (const k of keys) {
+      if (input[k] != null && input[k] !== "") out.push(String(input[k]));
+    }
+    if (input.owner && input.repo) {
+      out.push(String(input.owner) + "/" + String(input.repo));
+    }
+    return out;
+  }
+
   function decideMcp(payload) {
     const server = String(
       (payload && (payload.server || payload.url || payload.command)) || ""
@@ -543,45 +573,10 @@ export function createPolicy(opts = {}) {
       (payload &&
         (payload.tool_input || payload.arguments || payload.toolInput)) ||
       {};
-    const blob = JSON.stringify({
-      server,
-      tool,
-      input,
-    }).toLowerCase();
-
-    if (looksLikeGlobalPlansString(blob)) {
-      return deny(
-        "GLOBAL_CURSOR_PLANS",
-        "Blocked: MCP references global Cursor plans.",
-        "Plan SSOT is repo .cursor/plans only."
-      );
-    }
-
-    if (hasForeignFsMarker(blob) || blob.includes(FOREIGN_GITHUB)) {
-      if (blob.includes(FOREIGN_SUPABASE_REF)) {
-        return deny(
-          "FOREIGN_SUPABASE",
-          "Blocked: MCP references foreign Supabase project.",
-          "Allowed: " + ALLOWED_SUPABASE_REF
-        );
-      }
-      if (blob.includes("clime-gb") || blob.includes(FOREIGN_GITHUB)) {
-        return deny(
-          "FOREIGN_GITHUB",
-          "Blocked: MCP references phonarawd/clime-gb.",
-          "Allowed: phonarawd/AI-Profit-OS only."
-        );
-      }
-      return deny(
-        "FOREIGN_FS",
-        "Blocked: MCP call references foreign project.",
-        "Only " + ALLOWED_SUPABASE_REF + " / phonarawd/AI-Profit-OS."
-      );
-    }
 
     if (
       /plugin-supabase/i.test(server) ||
-      /plugin-supabase-supabase/i.test(blob)
+      /plugin-supabase-supabase/i.test(server)
     ) {
       return deny(
         "FOREIGN_SUPABASE",
@@ -603,44 +598,84 @@ export function createPolicy(opts = {}) {
       );
     }
 
-    const inputStr = typeof input === "string" ? input : JSON.stringify(input);
-    if (inputStr.toLowerCase().includes(FOREIGN_SUPABASE_REF)) {
-      return deny(
-        "FOREIGN_SUPABASE",
-        "Blocked: foreign Supabase project_id.",
-        "Allowed: " + ALLOWED_SUPABASE_REF + " only."
-      );
-    }
-
-    const explicit =
-      inputStr.match(/"(?:project_id|project_ref)"\s*:\s*"([^"]+)"/i) ||
-      inputStr.match(/project[_-]?(?:id|ref)["'\s:=]+([a-z0-9]{20})/i);
-    if (explicit && explicit[1].toLowerCase() !== ALLOWED_SUPABASE_REF) {
-      return deny(
-        "FOREIGN_SUPABASE",
-        "Blocked: Supabase project not in allowlist.",
-        "Allowed project_ref: " + ALLOWED_SUPABASE_REF
-      );
-    }
-
-    if (/plugin-github|github/i.test(server)) {
-      if (/clime-gb/i.test(inputStr)) {
+    const targets = mcpTargetFields(input);
+    for (const t of targets) {
+      if (looksLikeGlobalPlansString(t)) {
         return deny(
-          "FOREIGN_GITHUB",
-          "Blocked: GitHub MCP targeting clime-gb.",
-          "Allowed: phonarawd/AI-Profit-OS only."
+          "GLOBAL_CURSOR_PLANS",
+          "Blocked: MCP references global Cursor plans.",
+          "Plan SSOT is repo .cursor/plans only."
         );
       }
-      const repo = inputStr.match(
-        /"owner"\s*:\s*"([^"]+)"[\s\S]*?"repo"\s*:\s*"([^"]+)"/i
-      );
-      if (repo) {
-        const slug = (repo[1] + "/" + repo[2]).toLowerCase();
+      const tl = t.toLowerCase();
+      if (tl.includes(FOREIGN_SUPABASE_REF)) {
+        return deny(
+          "FOREIGN_SUPABASE",
+          "Blocked: MCP references foreign Supabase project.",
+          "Allowed: " + ALLOWED_SUPABASE_REF
+        );
+      }
+      if (tl.includes(FOREIGN_GITHUB) || /clime-gb/i.test(t)) {
+        if (/github|repo|owner|full_name|repository/i.test(server + tool + t)) {
+          return deny(
+            "FOREIGN_GITHUB",
+            "Blocked: MCP references phonarawd/clime-gb.",
+            "Allowed: phonarawd/AI-Profit-OS only."
+          );
+        }
+        const pathHit = classifyPath(t);
+        if (pathHit.permission === "deny") return pathHit;
+      }
+      if (
+        path.isAbsolute(t) ||
+        /^[A-Za-z]:[\\/]/.test(t) ||
+        t.startsWith("\\\\")
+      ) {
+        const pathHit = classifyPath(t);
+        if (pathHit.permission === "deny") return pathHit;
+      }
+    }
+
+    let projectRef = "";
+    if (input && typeof input === "object") {
+      projectRef = String(input.project_id || input.project_ref || "");
+    } else if (typeof input === "string") {
+      const m =
+        input.match(/"(?:project_id|project_ref)"\s*:\s*"([^"]+)"/i) ||
+        input.match(/project[_-]?(?:id|ref)["'\s:=]+([a-z0-9]{20})/i);
+      if (m) projectRef = m[1];
+    }
+    if (projectRef) {
+      const ref = projectRef.toLowerCase();
+      if (ref !== ALLOWED_SUPABASE_REF) {
+        return deny(
+          "FOREIGN_SUPABASE",
+          "Blocked: Supabase project not in allowlist.",
+          "Allowed project_ref: " + ALLOWED_SUPABASE_REF
+        );
+      }
+    }
+
+    if (/plugin-github|github/i.test(server) && input && typeof input === "object") {
+      const owner = input.owner != null ? String(input.owner) : "";
+      const repo = input.repo != null ? String(input.repo) : "";
+      if (owner && repo) {
+        const slug = (owner + "/" + repo).toLowerCase();
         if (slug !== ALLOWED_GITHUB) {
           return deny(
             "FOREIGN_GITHUB",
-            "Blocked: GitHub MCP repo " + repo[1] + "/" + repo[2] + ".",
+            "Blocked: GitHub MCP repo " + owner + "/" + repo + ".",
             "Allowed repository: phonarawd/AI-Profit-OS only."
+          );
+        }
+      }
+      const full = String(input.full_name || input.repository || "");
+      if (full && full.toLowerCase() !== ALLOWED_GITHUB) {
+        if (/clime-gb/i.test(full) || full.includes("/")) {
+          return deny(
+            "FOREIGN_GITHUB",
+            "Blocked: GitHub MCP targeting " + full + ".",
+            "Allowed: phonarawd/AI-Profit-OS only."
           );
         }
       }
@@ -715,21 +750,8 @@ export function createPolicy(opts = {}) {
       tool === "Glob" ||
       tool === "Task"
     ) {
-      const blob = JSON.stringify(input || {});
-      if (looksLikeGlobalPlansString(blob)) {
-        return deny(
-          "GLOBAL_CURSOR_PLANS",
-          "Blocked: Grep/Glob/Task targets global Cursor plans.",
-          "Plan SSOT is repo .cursor/plans only."
-        );
-      }
-      if (hasForeignFsMarker(blob)) {
-        return deny(
-          "FOREIGN_FS",
-          "Blocked: Grep/Glob/Task targets foreign (clime) path.",
-          "Do not search or compare clime-gb."
-        );
-      }
+      // Path/cwd targets only — never scan pattern/query/body for foreign markers
+      // (self-lock when grepping isolation docs / hook sources).
       const pathKeys = [
         "path",
         "target_directory",
@@ -737,6 +759,7 @@ export function createPolicy(opts = {}) {
         "cwd",
         "root",
         "file_path",
+        "uri",
       ];
       for (const k of pathKeys) {
         if (input && input[k]) {
@@ -744,6 +767,7 @@ export function createPolicy(opts = {}) {
           if (r.permission === "deny") return r;
         }
       }
+      return allow();
     }
 
     return decideEdit({ ...payload, tool_input: input });
