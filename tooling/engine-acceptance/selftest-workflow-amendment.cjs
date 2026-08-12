@@ -82,6 +82,17 @@ function run() {
   const liveScope = JSON.parse(
     fs.readFileSync(path.join(ROOT, "governance/engine-acceptance/protected-scope.v1.json"), "utf8"),
   );
+  let liveRebaseTip = null;
+  try {
+    const rb = JSON.parse(
+      fs.readFileSync(path.join(ROOT, "governance/engine-acceptance/product-rebases.v1.json"), "utf8"),
+    );
+    if (Array.isArray(rb.rebases) && rb.rebases.length) {
+      liveRebaseTip = rb.rebases[rb.rebases.length - 1];
+    }
+  } catch {
+    liveRebaseTip = null;
+  }
   const shapeFails = [];
   validateLedgerShape(liveLedger, shapeFails);
   check("ledger_shape", shapeFails.length === 0, shapeFails.join("; "));
@@ -91,21 +102,44 @@ function run() {
     liveBaseline.acceptance_workflow_hash === expectedWorkflowHash(liveLedger),
     "baseline tip mismatch",
   );
-  check(
-    "baseline_id_stable_pin",
-    liveBaseline.id === liveLedger.baseline_id,
-    `${liveBaseline.id} vs ${liveLedger.baseline_id}`,
-  );
-  check(
-    "prompt_immutable_pin",
-    liveBaseline.prompt_hash === liveLedger.frozen_at_qa0.prompt_hash,
-    "prompt drift vs frozen",
-  );
-  check(
-    "eval_immutable_pin",
-    liveBaseline.eval_dataset_hash === liveLedger.frozen_at_qa0.eval_dataset_hash,
-    "eval drift vs frozen",
-  );
+  if (liveRebaseTip && liveRebaseTip.new_baseline_id === liveBaseline.id) {
+    check(
+      "baseline_id_stable_pin",
+      liveBaseline.id === liveRebaseTip.new_baseline_id,
+      `${liveBaseline.id} vs ${liveRebaseTip.new_baseline_id}`,
+    );
+    check(
+      "prompt_immutable_pin",
+      liveBaseline.prompt_hash === liveRebaseTip.new_prompt_hash,
+      "prompt drift vs current epoch",
+    );
+    check(
+      "eval_immutable_pin",
+      liveBaseline.eval_dataset_hash === liveRebaseTip.eval_dataset_hash,
+      "eval drift vs current epoch",
+    );
+    check(
+      "predecessor_amendment_ledger_preserved",
+      liveLedger.baseline_id === liveRebaseTip.predecessor_baseline_id,
+      "historical workflow-amendments.baseline_id must remain predecessor",
+    );
+  } else {
+    check(
+      "baseline_id_stable_pin",
+      liveBaseline.id === liveLedger.baseline_id,
+      `${liveBaseline.id} vs ${liveLedger.baseline_id}`,
+    );
+    check(
+      "prompt_immutable_pin",
+      liveBaseline.prompt_hash === liveLedger.frozen_at_qa0.prompt_hash,
+      "prompt drift vs frozen",
+    );
+    check(
+      "eval_immutable_pin",
+      liveBaseline.eval_dataset_hash === liveLedger.frozen_at_qa0.eval_dataset_hash,
+      "eval drift vs frozen",
+    );
+  }
 
   // fixture sandbox (no tracked file writes)
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "aipo-wf-amend-"));

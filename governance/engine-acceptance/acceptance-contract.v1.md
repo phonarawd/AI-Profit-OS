@@ -147,3 +147,36 @@ QA7-only wiring처럼 QA0–QA6 실행 semantics를 변경하지 않음이 **exa
 - env/permission 변경
 - PASS/FAIL logic 변경
 - `workflow_diff_scope.qa0_qa6_semantics_changed != false`
+
+L7 STABLE / IMMUTABLE 핀은 **같은 acceptance epoch 안**에서만 성립한다. 보호 제품 바이트가 QA0 이후 바뀌면 L8 rebase가 새 epoch를 만든다. Amendment로 `prompt_hash`를 제자리 수정하는 것은 계속 금지.
+
+## L8 — Product Acceptance Rebase (new epoch)
+
+> **Decision ID:** `ENGINE_ACCEPTANCE_REBASE_V1`  
+> **SSOT ledger:** `product-rebases.v1.json`  
+> **Apply path only:** `tooling/engine-acceptance/rebase-acceptance-baseline.cjs`  
+> **Predecessor archive:** `governance/engine-acceptance/baselines/<predecessor_id>.json`
+
+QA0 freeze 이후 **protected product mutation**은 새 acceptance epoch를 만든다. 옛 baseline의 `prompt_hash` / `id`를 제자리 고쳐 MATCH를 만드는 것(**baseline washing**)은 금지.
+
+| 규칙 | 정책 |
+|---|---|
+| 새 epoch | 새 `baseline.id` · live accepted product bytes pin |
+| predecessor | 옛 baseline은 이력 · 해시 제자리 재작성 금지 |
+| QA1–QA6 | predecessor COMPLETE는 역사 · **current epoch = STALE** · 재실행 필수 |
+| QA7 | current-epoch QA1–QA6 재구축 후에만 |
+| eval dataset | product-only rebase 동안 **unchanged / MATCH** |
+| workflow hash | 바이트가 안 바뀌면 현 승인 해시 **MATCH** · 바뀌면 L7 amendment |
+| `acceptance_scope.unchanged` | **NEW epoch baseline**과 비교 |
+| Human/PO ACK | rebase 필수 |
+| `freeze-baseline.cjs` | 초기 QA0 이후 무단 재실행 금지 (L8 경로만) |
+
+### 금지
+
+1. 옛 baseline id를 유지한 채 `prompt_hash`만 교체
+2. predecessor QA1–QA6 결과를 current COMPLETE로 재사용
+3. protected 변경 파일을 scope에서 빼서 MATCH 제조
+4. product-only rebase 중 eval dataset 변경
+5. workflow hash 암묵 변경
+6. invalidation ledger 없이 새 baseline 생성
+7. ACK 없는 rebase

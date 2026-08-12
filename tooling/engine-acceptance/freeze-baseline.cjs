@@ -22,6 +22,29 @@ const OUT = path.join(ROOT, "governance/engine-acceptance/baseline.v1.json");
 const SCOPE_REL = "governance/engine-acceptance/protected-scope.v1.json";
 
 function main() {
+  if (fs.existsSync(OUT)) {
+    let existingId = "";
+    try {
+      const existing = JSON.parse(fs.readFileSync(OUT, "utf8"));
+      existingId = existing && existing.id ? String(existing.id) : "";
+    } catch {
+      existingId = "(unreadable)";
+    }
+    if (existingId) {
+      console.error(
+        "[engine-acceptance:freeze-baseline] FAIL — baseline already frozen " +
+          `(id=${existingId}). In-place rewrite forbidden.`,
+      );
+      console.error(
+        "  After QA0, protected product mutation requires ENGINE_ACCEPTANCE_REBASE_V1:",
+      );
+      console.error(
+        "  node tooling/engine-acceptance/rebase-acceptance-baseline.cjs --apply ...",
+      );
+      process.exit(1);
+    }
+  }
+
   const scope = readJson(SCOPE_REL);
   const dirty = dualDirty(scope);
   const manifest = buildManifest(scope);

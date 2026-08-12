@@ -59,5 +59,22 @@
       "timestamp": "2026-08-12T21:53:05.762Z",
       "applied_at": "2026-08-12T21:53:49.330Z"
     }
-  ]
+  ],
+  "epoch_bindings": [
+    {
+      "kind": "historical_predecessor",
+      "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+      "rebase_id": null,
+      "note": "amendments[] provenance remains bound to this predecessor epoch; not rewritten as current-epoch events"
+    },
+    {
+      "kind": "current",
+      "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
+      "rebase_id": "ea-rebase-a280b21fc7b5-dfa803530b9d",
+      "predecessor_baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+      "bound_at": "2026-08-12T23:19:05.523Z",
+      "note": "current acceptance_scope.unchanged compares against this epoch; historical amendments were NOT created under this id"
+    }
+  ],
+  "current_epoch_baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d"
 }

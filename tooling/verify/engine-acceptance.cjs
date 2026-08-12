@@ -8,7 +8,7 @@
  * 4) baseline Dual Dirty + required fields · valid↔protected_scope_clean
  * 5) kill-switch가 tiny smoke / QA1..QA6보다 먼저 작동
  * 6) evidence-manifest · REPORT · verdict ≠ ENGINE_ACCEPTED_FOR_UI
- * 7) QA-1..QA-5 COMPLETE 유지
+ * 7) QA-1..QA-6 COMPLETE 유지 — 단 ENGINE_ACCEPTANCE_REBASE_V1 pending rerun이면 STALE 허용
  * 8) QA-3: fast-check properties · CI fail-fast:false · concurrency
  * 9) QA-4: multi-day + KST · BLOCKED_NO_CLOCK_HOOK 정식 · critical → ACCEPTED 불가
  * 10) QA-5: Failure World 축1/축2 · BLOCKED_NO_FAULT_HOOK · always() aggregator
@@ -39,6 +39,16 @@ const {
   assertRunnersForbidSilentWorkflowSync,
 } = require("../engine-acceptance/lib/workflow-amendment.cjs");
 const { run: selftestWorkflowAmendment } = require("../engine-acceptance/selftest-workflow-amendment.cjs");
+const {
+  DECISION_ID: REBASE_DECISION_ID,
+  LEDGER_REL: REBASE_LEDGER_REL,
+  loadRebaseLedger,
+  isPendingRerun,
+  verifyPendingRerunEpoch,
+  verifyRebaseLedgerAgainstBaseline,
+  assertNoInPlaceHashRewrite,
+} = require("../engine-acceptance/lib/product-rebase.cjs");
+const { run: selftestProductRebase } = require("../engine-acceptance/selftest-product-rebase.cjs");
 
 const fails = [];
 function fail(msg) {
@@ -53,6 +63,7 @@ const REQUIRED_FILES = [
   `${GOV}/protected-scope.v1.json`,
   `${GOV}/baseline.v1.json`,
   `${GOV}/workflow-amendments.v1.json`,
+  `${GOV}/product-rebases.v1.json`,
   `${GOV}/personas.v1.json`,
   `${GOV}/journeys.v1.json`,
   `${GOV}/coverage.v1.json`,
@@ -72,6 +83,9 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/amend-acceptance-workflow-hash.cjs",
   "tooling/engine-acceptance/selftest-workflow-amendment.cjs",
   "tooling/engine-acceptance/lib/workflow-amendment.cjs",
+  "tooling/engine-acceptance/rebase-acceptance-baseline.cjs",
+  "tooling/engine-acceptance/selftest-product-rebase.cjs",
+  "tooling/engine-acceptance/lib/product-rebase.cjs",
   "tooling/engine-acceptance/run-qa1.cjs",
   "tooling/engine-acceptance/run-qa2.cjs",
   "tooling/engine-acceptance/run-qa3.cjs",
@@ -126,6 +140,9 @@ for (const token of [
   "POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1",
   "CONTROLLED_AMENDMENT_ONLY",
   "workflow-amendments.v1.json",
+  "ENGINE_ACCEPTANCE_REBASE_V1",
+  "product-rebases.v1.json",
+  "baseline washing",
 ]) {
   if (!contract.includes(token)) fail(`acceptance-contract missing: ${token}`);
 }
@@ -375,19 +392,40 @@ if (defects) {
   }
 }
 
-// --- evidence + report ---
+// --- rebase ledger + evidence ---
+let rebaseLedger = null;
+try {
+  rebaseLedger = loadRebaseLedger(REBASE_LEDGER_REL);
+} catch {
+  fail("product-rebases.v1.json invalid JSON");
+}
+
 let evidence;
 try {
   evidence = readJson(`${GOV}/evidence-manifest.v1.json`);
 } catch {
   fail("evidence-manifest.v1.json invalid JSON");
 }
+
+const pendingRerun = isPendingRerun(baseline, evidence, rebaseLedger);
+if (baseline && rebaseLedger) {
+  verifyRebaseLedgerAgainstBaseline(baseline, rebaseLedger, evidence, fails);
+}
+if (baseline) {
+  let amendmentForInPlace = null;
+  try {
+    amendmentForInPlace = readJson(`${GOV}/workflow-amendments.v1.json`);
+  } catch {
+    amendmentForInPlace = null;
+  }
+  if (amendmentForInPlace) {
+    assertNoInPlaceHashRewrite(baseline, amendmentForInPlace, rebaseLedger, fails);
+  }
+}
+
 if (evidence) {
   if (evidence.schema !== "governance.engine-acceptance.evidence-manifest.v1") {
     fail("evidence-manifest.schema mismatch");
-  }
-  if (evidence.qa_phase !== "QA-6") {
-    fail("evidence-manifest.qa_phase must be QA-6 after qa6-performance-world");
   }
   if (!evidence.baseline_id) fail("evidence-manifest.baseline_id required");
   if (baseline && evidence.baseline_id !== baseline.id) {
@@ -396,23 +434,8 @@ if (evidence) {
   if (evidence.verdict === "ENGINE_ACCEPTED_FOR_UI") {
     fail("must not issue ENGINE_ACCEPTED_FOR_UI before QA1..QA8 complete");
   }
-  if (evidence.next !== "QA7_AI_EVAL") {
-    fail("evidence-manifest.next must be QA7_AI_EVAL");
-  }
   if (evidence.evidence_integrity !== "VALID") {
     fail("evidence_integrity must be VALID");
-  }
-  if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa3 !== true) {
-    fail("evidence.kill_switch.verified_before_qa3 must be true");
-  }
-  if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa4 !== true) {
-    fail("evidence.kill_switch.verified_before_qa4 must be true");
-  }
-  if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa5 !== true) {
-    fail("evidence.kill_switch.verified_before_qa5 must be true");
-  }
-  if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa6 !== true) {
-    fail("evidence.kill_switch.verified_before_qa6 must be true");
   }
   if (
     !evidence.artifact_policy ||
@@ -421,51 +444,74 @@ if (evidence) {
     fail("evidence.artifact_policy.retention_days_min must be ≥90");
   }
 
-  const qa0 = (evidence.suites || []).find((s) => s.suite_id === "QA0");
-  const qa1 = (evidence.suites || []).find((s) => s.suite_id === "QA1");
-  const qa2 = (evidence.suites || []).find((s) => s.suite_id === "QA2");
-  const qa3 = (evidence.suites || []).find((s) => s.suite_id === "QA3");
-  const qa4 = (evidence.suites || []).find((s) => s.suite_id === "QA4");
-  const qa5 = (evidence.suites || []).find((s) => s.suite_id === "QA5");
-  const qa6 = (evidence.suites || []).find((s) => s.suite_id === "QA6");
-  if (!qa0 || qa0.completion_status !== "COMPLETE") {
-    fail("QA0 suite must remain COMPLETE");
-  }
-  if (!qa1 || qa1.completion_status !== "COMPLETE") {
-    fail("QA1 suite must remain COMPLETE");
-  }
-  if (!qa1.run_id || !qa1.checksum) {
-    fail("QA1 suite must have run_id + checksum");
-  }
-  if (!qa2 || qa2.completion_status !== "COMPLETE") {
-    fail("QA2 suite must remain COMPLETE");
-  }
-  if (!qa2.run_id || !qa2.checksum) {
-    fail("QA2 suite must have run_id + checksum");
-  }
-  if (!qa3 || qa3.completion_status !== "COMPLETE") {
-    fail("QA3 suite must remain COMPLETE");
-  }
-  if (!qa3.run_id || !qa3.checksum) {
-    fail("QA3 suite must have run_id + checksum");
-  }
-  if (!qa4 || qa4.completion_status !== "COMPLETE") {
-    fail("QA4 suite must remain COMPLETE");
-  }
-  if (!qa4.run_id || !qa4.checksum) {
-    fail("QA4 suite must have run_id + checksum");
-  }
-  if (!qa5 || qa5.completion_status !== "COMPLETE") {
-    fail("QA5 suite must remain COMPLETE");
-  }
-  if (!qa5.run_id || !qa5.checksum) {
-    fail("QA5 suite must have run_id + checksum");
-  }
-  if (!qa6 || qa6.completion_status !== "COMPLETE") {
-    fail("QA6 suite must be COMPLETE");
-  }
-  if (!qa6.run_id || !qa6.checksum) {
-    fail("QA6 suite must have run_id + checksum");
+  if (pendingRerun) {
+    verifyPendingRerunEpoch(baseline, evidence, rebaseLedger, fails);
+  } else {
+    if (evidence.qa_phase !== "QA-6") {
+      fail("evidence-manifest.qa_phase must be QA-6 after qa6-performance-world");
+    }
+    if (evidence.next !== "QA7_AI_EVAL") {
+      fail("evidence-manifest.next must be QA7_AI_EVAL");
+    }
+    if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa3 !== true) {
+      fail("evidence.kill_switch.verified_before_qa3 must be true");
+    }
+    if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa4 !== true) {
+      fail("evidence.kill_switch.verified_before_qa4 must be true");
+    }
+    if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa5 !== true) {
+      fail("evidence.kill_switch.verified_before_qa5 must be true");
+    }
+    if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa6 !== true) {
+      fail("evidence.kill_switch.verified_before_qa6 must be true");
+    }
+
+    const qa0 = (evidence.suites || []).find((s) => s.suite_id === "QA0");
+    const qa1 = (evidence.suites || []).find((s) => s.suite_id === "QA1");
+    const qa2 = (evidence.suites || []).find((s) => s.suite_id === "QA2");
+    const qa3 = (evidence.suites || []).find((s) => s.suite_id === "QA3");
+    const qa4 = (evidence.suites || []).find((s) => s.suite_id === "QA4");
+    const qa5 = (evidence.suites || []).find((s) => s.suite_id === "QA5");
+    const qa6 = (evidence.suites || []).find((s) => s.suite_id === "QA6");
+    if (!qa0 || qa0.completion_status !== "COMPLETE") {
+      fail("QA0 suite must remain COMPLETE");
+    }
+    if (!qa1 || qa1.completion_status !== "COMPLETE") {
+      fail("QA1 suite must remain COMPLETE");
+    }
+    if (!qa1.run_id || !qa1.checksum) {
+      fail("QA1 suite must have run_id + checksum");
+    }
+    if (!qa2 || qa2.completion_status !== "COMPLETE") {
+      fail("QA2 suite must remain COMPLETE");
+    }
+    if (!qa2.run_id || !qa2.checksum) {
+      fail("QA2 suite must have run_id + checksum");
+    }
+    if (!qa3 || qa3.completion_status !== "COMPLETE") {
+      fail("QA3 suite must remain COMPLETE");
+    }
+    if (!qa3.run_id || !qa3.checksum) {
+      fail("QA3 suite must have run_id + checksum");
+    }
+    if (!qa4 || qa4.completion_status !== "COMPLETE") {
+      fail("QA4 suite must remain COMPLETE");
+    }
+    if (!qa4.run_id || !qa4.checksum) {
+      fail("QA4 suite must have run_id + checksum");
+    }
+    if (!qa5 || qa5.completion_status !== "COMPLETE") {
+      fail("QA5 suite must remain COMPLETE");
+    }
+    if (!qa5.run_id || !qa5.checksum) {
+      fail("QA5 suite must have run_id + checksum");
+    }
+    if (!qa6 || qa6.completion_status !== "COMPLETE") {
+      fail("QA6 suite must be COMPLETE");
+    }
+    if (!qa6.run_id || !qa6.checksum) {
+      fail("QA6 suite must have run_id + checksum");
+    }
   }
 }
 
@@ -476,10 +522,12 @@ try {
   fail("qa1-result.v1.json invalid JSON");
 }
 if (qa1Result) {
-  if (qa1Result.completion_status !== "COMPLETE") {
-    fail("qa1-result.completion_status must be COMPLETE");
-  }
   if (qa1Result.suite_id !== "QA1") fail("qa1-result.suite_id must be QA1");
+  if (!pendingRerun) {
+    if (qa1Result.completion_status !== "COMPLETE") {
+      fail("qa1-result.completion_status must be COMPLETE");
+    }
+  }
 }
 
 let qa2Result;
@@ -489,10 +537,12 @@ try {
   fail("qa2-result.v1.json invalid JSON");
 }
 if (qa2Result) {
-  if (qa2Result.completion_status !== "COMPLETE") {
-    fail("qa2-result.completion_status must be COMPLETE");
-  }
   if (qa2Result.suite_id !== "QA2") fail("qa2-result.suite_id must be QA2");
+  if (!pendingRerun) {
+    if (qa2Result.completion_status !== "COMPLETE") {
+      fail("qa2-result.completion_status must be COMPLETE");
+    }
+  }
 }
 
 let qa3Result;
@@ -505,13 +555,14 @@ if (qa3Result) {
   if (qa3Result.schema !== "governance.engine-acceptance.qa3-result.v1") {
     fail("qa3-result.schema mismatch");
   }
-  if (qa3Result.completion_status !== "COMPLETE") {
-    fail("qa3-result.completion_status must be COMPLETE");
-  }
   if (qa3Result.suite_id !== "QA3") fail("qa3-result.suite_id must be QA3");
-  if (baseline && qa3Result.baseline_id !== baseline.id) {
-    fail("qa3-result.baseline_id must match baseline.id");
-  }
+  if (!pendingRerun) {
+    if (qa3Result.completion_status !== "COMPLETE") {
+      fail("qa3-result.completion_status must be COMPLETE");
+    }
+    if (baseline && qa3Result.baseline_id !== baseline.id) {
+      fail("qa3-result.baseline_id must match baseline.id");
+    }
   if (!qa3Result.kill_switch || qa3Result.kill_switch.verified_before_checks !== true) {
     fail("qa3-result must record kill_switch.verified_before_checks");
   }
@@ -572,6 +623,7 @@ if (qa3Result) {
       fail("evidence QA3.checksum must match qa3-result.checksum");
     }
   }
+  }
 }
 
 let qa4Result;
@@ -584,13 +636,14 @@ if (qa4Result) {
   if (qa4Result.schema !== "governance.engine-acceptance.qa4-result.v1") {
     fail("qa4-result.schema mismatch");
   }
-  if (qa4Result.completion_status !== "COMPLETE") {
-    fail("qa4-result.completion_status must be COMPLETE");
-  }
   if (qa4Result.suite_id !== "QA4") fail("qa4-result.suite_id must be QA4");
-  if (baseline && qa4Result.baseline_id !== baseline.id) {
-    fail("qa4-result.baseline_id must match baseline.id");
-  }
+  if (!pendingRerun) {
+    if (qa4Result.completion_status !== "COMPLETE") {
+      fail("qa4-result.completion_status must be COMPLETE");
+    }
+    if (baseline && qa4Result.baseline_id !== baseline.id) {
+      fail("qa4-result.baseline_id must match baseline.id");
+    }
   if (!qa4Result.kill_switch || qa4Result.kill_switch.verified_before_checks !== true) {
     fail("qa4-result must record kill_switch.verified_before_checks");
   }
@@ -685,6 +738,7 @@ if (qa4Result) {
       fail("evidence QA4.checksum must match qa4-result.checksum");
     }
   }
+  }
 }
 
 let qa5Result;
@@ -697,13 +751,14 @@ if (qa5Result) {
   if (qa5Result.schema !== "governance.engine-acceptance.qa5-result.v1") {
     fail("qa5-result.schema mismatch");
   }
-  if (qa5Result.completion_status !== "COMPLETE") {
-    fail("qa5-result.completion_status must be COMPLETE");
-  }
   if (qa5Result.suite_id !== "QA5") fail("qa5-result.suite_id must be QA5");
-  if (baseline && qa5Result.baseline_id !== baseline.id) {
-    fail("qa5-result.baseline_id must match baseline.id");
-  }
+  if (!pendingRerun) {
+    if (qa5Result.completion_status !== "COMPLETE") {
+      fail("qa5-result.completion_status must be COMPLETE");
+    }
+    if (baseline && qa5Result.baseline_id !== baseline.id) {
+      fail("qa5-result.baseline_id must match baseline.id");
+    }
   if (!qa5Result.kill_switch || qa5Result.kill_switch.verified_before_checks !== true) {
     fail("qa5-result must record kill_switch.verified_before_checks");
   }
@@ -811,6 +866,7 @@ if (qa5Result) {
       fail("evidence-manifest.critical_invariant.blocked required after QA5");
     }
   }
+  }
 }
 
 // --- perf-budget mechanism lock ---
@@ -861,13 +917,14 @@ if (qa6Result) {
   if (qa6Result.schema !== "governance.engine-acceptance.qa6-result.v1") {
     fail("qa6-result.schema mismatch");
   }
-  if (qa6Result.completion_status !== "COMPLETE") {
-    fail("qa6-result.completion_status must be COMPLETE");
-  }
   if (qa6Result.suite_id !== "QA6") fail("qa6-result.suite_id must be QA6");
-  if (baseline && qa6Result.baseline_id !== baseline.id) {
-    fail("qa6-result.baseline_id must match baseline.id");
-  }
+  if (!pendingRerun) {
+    if (qa6Result.completion_status !== "COMPLETE") {
+      fail("qa6-result.completion_status must be COMPLETE");
+    }
+    if (baseline && qa6Result.baseline_id !== baseline.id) {
+      fail("qa6-result.baseline_id must match baseline.id");
+    }
   if (!qa6Result.kill_switch || qa6Result.kill_switch.verified_before_checks !== true) {
     fail("qa6-result must record kill_switch.verified_before_checks");
   }
@@ -987,6 +1044,7 @@ if (qa6Result) {
       fail("evidence-manifest.critical_invariant.blocked required after QA6");
     }
   }
+  }
 }
 
 const report = fs.existsSync(path.join(ROOT, `${GOV}/ENGINE_ACCEPTANCE_REPORT.md`))
@@ -996,29 +1054,41 @@ if (report) {
   if (/verdict\s*[:=]\s*`?ENGINE_ACCEPTED_FOR_UI/i.test(report)) {
     fail("REPORT must not claim ENGINE_ACCEPTED_FOR_UI before full suites");
   }
-  if (!report.includes("QA7_AI_EVAL")) {
-    fail("REPORT must declare NEXT=QA7_AI_EVAL");
-  }
-  if (!report.includes("QA6 = COMPLETE")) {
-    fail("REPORT banner must include QA6 = COMPLETE");
-  }
-  if (!report.includes("UNSPECIFIED_PERF_BUDGET")) {
-    fail("REPORT must mention UNSPECIFIED_PERF_BUDGET");
-  }
-  if (!report.includes("threshold") && !report.includes("Threshold")) {
-    fail("REPORT must mention threshold mechanism");
-  }
-  if (!report.includes("CI only") && !report.includes("ci only") && !report.includes("CI-only")) {
-    fail("REPORT must mention CI only heavy k6");
-  }
-  if (!report.includes("retention") && !report.includes("90")) {
-    fail("REPORT must mention artifact retention ≥90");
-  }
-  if (!report.includes("always()")) {
-    fail("REPORT must mention aggregator if: always()");
-  }
-  if (!report.includes("PRODUCT MUTATION = 0") && !report.includes("product mutation")) {
-    fail("REPORT must state product mutation 0");
+  if (pendingRerun) {
+    if (!report.includes("ENGINE_ACCEPTANCE_REBASE_V1")) {
+      fail("REPORT must name ENGINE_ACCEPTANCE_REBASE_V1 after product rebase");
+    }
+    if (!report.includes("STALE")) {
+      fail("REPORT must declare QA1-QA6 STALE for current epoch");
+    }
+    if (!report.includes("QA1_DETERMINISTIC_TRUTH")) {
+      fail("REPORT must declare NEXT=QA1_DETERMINISTIC_TRUTH after rebase");
+    }
+  } else {
+    if (!report.includes("QA7_AI_EVAL")) {
+      fail("REPORT must declare NEXT=QA7_AI_EVAL");
+    }
+    if (!report.includes("QA6 = COMPLETE")) {
+      fail("REPORT banner must include QA6 = COMPLETE");
+    }
+    if (!report.includes("UNSPECIFIED_PERF_BUDGET")) {
+      fail("REPORT must mention UNSPECIFIED_PERF_BUDGET");
+    }
+    if (!report.includes("threshold") && !report.includes("Threshold")) {
+      fail("REPORT must mention threshold mechanism");
+    }
+    if (!report.includes("CI only") && !report.includes("ci only") && !report.includes("CI-only")) {
+      fail("REPORT must mention CI only heavy k6");
+    }
+    if (!report.includes("retention") && !report.includes("90")) {
+      fail("REPORT must mention artifact retention ≥90");
+    }
+    if (!report.includes("always()")) {
+      fail("REPORT must mention aggregator if: always()");
+    }
+    if (!report.includes("PRODUCT MUTATION = 0") && !report.includes("product mutation")) {
+      fail("REPORT must state product mutation 0");
+    }
   }
 }
 
@@ -1222,6 +1292,7 @@ if (baseline && amendmentLedger) {
     amendmentLedger,
     evidenceForAmend,
     fails,
+    rebaseLedger,
   );
 }
 assertRunnersForbidSilentWorkflowSync(fails);
@@ -1229,6 +1300,11 @@ try {
   selftestWorkflowAmendment();
 } catch (e) {
   fail(`workflow-amendment selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
+  selftestProductRebase();
+} catch (e) {
+  fail(`product-rebase selftest threw: ${e && e.message ? e.message : e}`);
 }
 if (amendmentLedger && amendmentLedger.decision_id !== DECISION_ID) {
   fail(`decision_id must be ${DECISION_ID}`);
@@ -1250,15 +1326,21 @@ if (fails.length) {
 
 console.log("[verify:engine-acceptance] PASS (QA-0..QA-6 scope)");
 console.log("  ACCEPTANCE CONTRACT = LOCKED");
-console.log("  BASELINE = FROZEN");
+console.log(pendingRerun ? "  BASELINE = NEW_EPOCH (REBASE PENDING RERUN)" : "  BASELINE = FROZEN");
 console.log("  GOVERNANCE_DECISION = POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1");
+console.log(`  REBASE_DECISION = ${REBASE_DECISION_ID}`);
 console.log("  WORKFLOW_HASH_POLICY = CONTROLLED_AMENDMENT_ONLY");
 console.log("  LEGACY_AUTO_SYNC_STATUS = MUST_BE_GATED");
-console.log("  QA1 = COMPLETE");
-console.log("  QA2 = COMPLETE");
-console.log("  QA3 = COMPLETE");
-console.log("  QA4 = COMPLETE");
-console.log("  QA5 = COMPLETE");
-console.log("  QA6 = COMPLETE");
+if (pendingRerun) {
+  console.log("  QA1-QA6 = STALE_FOR_CURRENT_EPOCH");
+  console.log("  NEXT = QA1_DETERMINISTIC_TRUTH");
+} else {
+  console.log("  QA1 = COMPLETE");
+  console.log("  QA2 = COMPLETE");
+  console.log("  QA3 = COMPLETE");
+  console.log("  QA4 = COMPLETE");
+  console.log("  QA5 = COMPLETE");
+  console.log("  QA6 = COMPLETE");
+  console.log("  NEXT = QA7_AI_EVAL");
+}
 console.log("  QA HARNESS TARGET = SAFE");
-console.log("  NEXT = QA7_AI_EVAL");

@@ -30,6 +30,10 @@ const {
   assertQa7NotInFlight,
   writeJson,
 } = require("./lib/workflow-amendment.cjs");
+const {
+  LEDGER_REL: REBASE_LEDGER_REL,
+  latestRebase,
+} = require("./lib/product-rebase.cjs");
 
 function parseArgs(argv) {
   const out = { proposal: null, apply: false, dryRun: true };
@@ -65,12 +69,21 @@ function main() {
   const scope = readJson(SCOPE_REL);
   const ledger = loadLedger(LEDGER_REL);
   const evidence = readJson(EVIDENCE_REL);
+  let rebaseTip = null;
+  try {
+    rebaseTip = latestRebase(readJson(REBASE_LEDGER_REL));
+  } catch {
+    rebaseTip = null;
+  }
+  const currentEpochId = rebaseTip ? rebaseTip.new_baseline_id : ledger.baseline_id;
+  const epochPrompt = rebaseTip ? rebaseTip.new_prompt_hash : ledger.frozen_at_qa0.prompt_hash;
+  const epochEval = rebaseTip ? rebaseTip.eval_dataset_hash : ledger.frozen_at_qa0.eval_dataset_hash;
 
   if (ledger.decision_id !== DECISION_ID) {
     console.error("[amend-acceptance-workflow-hash] FAIL: ledger decision_id mismatch");
     process.exit(1);
   }
-  if (baseline.id !== ledger.baseline_id) {
+  if (baseline.id !== currentEpochId) {
     console.error("[amend-acceptance-workflow-hash] FAIL: baseline_id STABLE violation");
     process.exit(1);
   }
@@ -97,12 +110,12 @@ function main() {
     process.exit(1);
   }
 
-  // immutable fields must remain untouched in baseline
-  if (baseline.prompt_hash !== ledger.frozen_at_qa0.prompt_hash) {
+  // immutable fields must remain untouched within the current epoch
+  if (baseline.prompt_hash !== epochPrompt) {
     console.error("[amend-acceptance-workflow-hash] FAIL: prompt_hash already drifted (immutable)");
     process.exit(1);
   }
-  if (baseline.eval_dataset_hash !== ledger.frozen_at_qa0.eval_dataset_hash) {
+  if (baseline.eval_dataset_hash !== epochEval) {
     console.error(
       "[amend-acceptance-workflow-hash] FAIL: eval_dataset_hash already drifted (immutable)",
     );

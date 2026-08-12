@@ -224,7 +224,9 @@
     "cf:domain:bridge": "node tooling/deploy/cf-domain-bridge.cjs",
     "verify:domain-bootstrap": "node tooling/verify/domain-bootstrap.cjs",
     "engine-acceptance:amend-workflow-hash": "node tooling/engine-acceptance/amend-acceptance-workflow-hash.cjs",
-    "engine-acceptance:selftest-workflow-amendment": "node tooling/engine-acceptance/selftest-workflow-amendment.cjs"
+    "engine-acceptance:rebase-baseline": "node tooling/engine-acceptance/rebase-acceptance-baseline.cjs",
+    "engine-acceptance:selftest-workflow-amendment": "node tooling/engine-acceptance/selftest-workflow-amendment.cjs",
+    "engine-acceptance:selftest-product-rebase": "node tooling/engine-acceptance/selftest-product-rebase.cjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

@@ -214,28 +214,39 @@ function syncLockfileHashOnly(baseline, scope, writeBaseline) {
   return baseline;
 }
 
-function verifyGovernanceAgainstBaseline(baseline, scope, ledger, evidence, fails) {
+function verifyGovernanceAgainstBaseline(baseline, scope, ledger, evidence, fails, rebaseLedger) {
   validateLedgerShape(ledger, fails);
   if (fails.length) return;
 
-  if (ledger.baseline_id !== baseline.id) {
+  const rebaseTip =
+    rebaseLedger && Array.isArray(rebaseLedger.rebases) && rebaseLedger.rebases.length
+      ? rebaseLedger.rebases[rebaseLedger.rebases.length - 1]
+      : null;
+  const expectedId = rebaseTip ? rebaseTip.new_baseline_id : ledger.baseline_id;
+  const expectedPrompt = rebaseTip ? rebaseTip.new_prompt_hash : ledger.frozen_at_qa0.prompt_hash;
+  const expectedEval = rebaseTip ? rebaseTip.eval_dataset_hash : ledger.frozen_at_qa0.eval_dataset_hash;
+
+  if (baseline.id !== expectedId) {
     fails.push(
-      `baseline.id drift vs workflow-amendments.baseline_id (STABLE policy): baseline=${baseline.id} ledger=${ledger.baseline_id}`,
+      `baseline.id drift vs workflow-amendments.baseline_id (STABLE policy): baseline=${baseline.id} expected=${expectedId}`,
     );
   }
-  if (baseline.prompt_hash !== ledger.frozen_at_qa0.prompt_hash) {
+  if (baseline.prompt_hash !== expectedPrompt) {
     fails.push("prompt_hash immutable: baseline ≠ frozen_at_qa0 (amendment cannot change prompt_hash)");
   }
-  if (baseline.eval_dataset_hash !== ledger.frozen_at_qa0.eval_dataset_hash) {
+  if (baseline.eval_dataset_hash !== expectedEval) {
     fails.push(
       "eval_dataset_hash immutable: baseline ≠ frozen_at_qa0 (amendment cannot change eval_dataset_hash)",
     );
   }
 
+  const allowedBaselineIds = new Set([ledger.baseline_id]);
+  if (rebaseTip && rebaseTip.new_baseline_id) allowedBaselineIds.add(rebaseTip.new_baseline_id);
+
   const amends = ledger.amendments || [];
   for (let i = 0; i < amends.length; i++) {
     validateAmendmentEntry(amends[i], i, fails);
-    if (amends[i].baseline_id && amends[i].baseline_id !== ledger.baseline_id) {
+    if (amends[i].baseline_id && !allowedBaselineIds.has(amends[i].baseline_id)) {
       fails.push(`amendments[${i}].baseline_id must equal ledger.baseline_id`);
     }
     const impact = qa0Qa6ImpactBlocked(amends[i]);

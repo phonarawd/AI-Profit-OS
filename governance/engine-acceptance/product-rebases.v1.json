@@ -1,0 +1,69 @@
+{
+  "schema": "governance.engine-acceptance.product-rebases.v1",
+  "version": "1.0.0",
+  "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+  "policies": {
+    "in_place_hash_rewrite": "FORBIDDEN",
+    "baseline_washing": "FORBIDDEN",
+    "eval_dataset_mutation_during_product_rebase": "FORBIDDEN",
+    "silent_workflow_hash_change": "FORBIDDEN",
+    "ungoverned_freeze_baseline_after_qa0": "FORBIDDEN",
+    "qa1_qa6_predecessor_as_current_complete": "FORBIDDEN"
+  },
+  "rebases": [
+    {
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+      "rebase_id": "ea-rebase-a280b21fc7b5-dfa803530b9d",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-12T23:19:05.523Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: new epoch from predecessor ea-baseline-13b7a5138ebe-cb4530b02ecf; invalidate QA1-QA6; rerun QA1-QA6 then QA7; do not rewrite hashes inside the old baseline."
+      },
+      "predecessor_baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+      "new_baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
+      "reason": "Protected product mutation after QA0 (api-nest TypeScript build fix) creates a new acceptance epoch. Predecessor hashes are history; QA1-QA6 must rerun.",
+      "product_commit": "a280b21fc7b5fe631bee88d1ac2a1d0341f0018b",
+      "changed_protected_paths": [
+        "services/api-nest/src/ai/coach.orchestrator.ts",
+        "services/api-nest/src/ledger/ledger.posting.service.ts"
+      ],
+      "changed_nonprotected_support_paths": [
+        "services/ai-platform/src/index.d.ts"
+      ],
+      "old_prompt_hash": "4648ec224820627088fa6519e224b000f8781efe6fd27750f1112b952c42ec07",
+      "new_prompt_hash": "3471a3bc2712cbeb85414ec848987996dac0d1a2ddab9fed3de968c6a8bc6079",
+      "old_protected_manifest_hash": "cb4530b02ecfd0b721c3dbd7884ee649e91430aadb8c713f69517f31318a9c5e",
+      "new_protected_manifest_hash": "dfa803530b9d61376cdb8ff2a86e9dbf14b1400bd8ff773be05b5dbabe5bc35f",
+      "eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088",
+      "acceptance_workflow_hash": "7895541fa754124e1b00a4b6b8bf293e69ee1e4cc9c156c50af4760c02466786",
+      "invalidated_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6"
+      ],
+      "required_rerun_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7"
+      ],
+      "predecessor_suite_checksums": {
+        "QA1": "e0e0378dd2977c84379c1ef28e0e9b3c05ce7bab390d5d73e1d725ac6ac380f6",
+        "QA2": "c8fbe6a347e0bcb19757e1e572fe7b22bcbf62a2da7860a3299e722e90dd4bd3",
+        "QA3": "015facfd5b10b5102a1e1e8cbe4aeba8fef675efc0c7fb03f137ccd735f8ffe7",
+        "QA4": "8712503dc860a661008be6dd11ed7e1f8d9200798267af12427e1818751f88de",
+        "QA5": "637ea4ed7a54569206d1bf11b839e3e1a7111ba58b9b872b30531ded7c7f4ac9",
+        "QA6": "2ba56763635d81b45201a980a64e8322149a980ca585c7d032a17473fad7c635"
+      },
+      "timestamp": "2026-08-12T23:19:05.523Z",
+      "commit_sha_or_pending": "c3828adb7ac508159c3d2541c3bf6bc11acaa45a",
+      "qa7_complete": false
+    }
+  ]
+}

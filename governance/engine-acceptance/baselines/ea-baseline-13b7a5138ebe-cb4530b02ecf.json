@@ -1,33 +1,29 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
-  "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-08-12T23:19:05.523Z",
-  "commit_sha": "c3828adb7ac508159c3d2541c3bf6bc11acaa45a",
-  "tree_sha": "0e60fbac4590309f2ff6fcdf934742d67cfc7252",
+  "id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+  "todoId": "qa0-baseline-freeze",
+  "measuredAt": "2026-08-11T22:29:19.132Z",
+  "commit_sha": "13b7a5138ebe1fb8e77fce259b386b51accc04d3",
+  "tree_sha": "deed758104c09ac64df031e2bceba977f663efa5",
   "working_tree_clean": false,
   "protected_scope_clean": true,
   "dirty_paths_all": [
+    ".cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md",
+    ".github/workflows/engine-acceptance.yml",
     "apps/web/next-env.d.ts",
-    "governance/engine-acceptance/acceptance-contract.v1.md",
     "package.json",
     "packages/ui/canon/contracts/peotteok-home-visual-implementation-contract.v1.md",
-    "tooling/engine-acceptance/amend-acceptance-workflow-hash.cjs",
-    "tooling/engine-acceptance/freeze-baseline.cjs",
-    "tooling/engine-acceptance/lib/workflow-amendment.cjs",
-    "tooling/engine-acceptance/selftest-workflow-amendment.cjs",
+    "tooling/verify/CATALOG.md",
     "tooling/verify/engine-acceptance.cjs",
-    ".cursor/hooks.json.bak-isolation",
-    ".cursor/hooks.json.bak-wave-isolation",
-    "tooling/engine-acceptance/lib/product-rebase.cjs",
-    "tooling/engine-acceptance/rebase-acceptance-baseline.cjs",
-    "tooling/engine-acceptance/selftest-product-rebase.cjs"
+    "tooling/engine-acceptance/checks/",
+    "tooling/engine-acceptance/lib/spawn-verify.cjs",
+    "tooling/engine-acceptance/run-qa1.cjs"
   ],
   "dirty_paths_protected": [],
   "lockfile_hash": "3e4b2632d7e0e11afe179502ba50bdb2a47b67c7ca5838bb511d38ad854f70a1",
   "schema_migration_hash": "c0bc3c27b2233b8a620936a674e0afe3fdf12079bb1956bcf717bbc1a63cd7d6",
-  "prompt_hash": "3471a3bc2712cbeb85414ec848987996dac0d1a2ddab9fed3de968c6a8bc6079",
+  "prompt_hash": "4648ec224820627088fa6519e224b000f8781efe6fd27750f1112b952c42ec07",
   "eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088",
   "acceptance_workflow_hash": "7895541fa754124e1b00a4b6b8bf293e69ee1e4cc9c156c50af4760c02466786",
   "node_version": "v22.14.0",
@@ -36,7 +32,7 @@
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "dfa803530b9d61376cdb8ff2a86e9dbf14b1400bd8ff773be05b5dbabe5bc35f",
+    "aggregate": "cb4530b02ecfd0b721c3dbd7884ee649e91430aadb8c713f69517f31318a9c5e",
     "pathCount": 352,
     "entries": [
       {
@@ -429,7 +425,7 @@
       },
       {
         "path": "services/api-nest/src/ai/coach.orchestrator.ts",
-        "sha256": "4fc111df77c0ee560efec9a1fd9b2e3817dbb3f203499e22fae6b9d85e2d9839"
+        "sha256": "90cee8ab6ce29996abf506240f30fe377a77fb426267fb69b60ea7678403cc02"
       },
       {
         "path": "services/api-nest/src/ai/coach.routes.ts",
@@ -717,7 +713,7 @@
       },
       {
         "path": "services/api-nest/src/ledger/ledger.posting.service.ts",
-        "sha256": "83bc2d13cc09b074e22a398d468422638cafd27029f62794879b1e5286ed28d7"
+        "sha256": "04b17957289ecb4157dfd91d4d170adeb87e737358aef2d82c707a298d8ca729"
       },
       {
         "path": "services/api-nest/src/ledger/ledger.provision.service.ts",
@@ -1452,11 +1448,5 @@
   "valid": true,
   "valid_reason": "protected_scope_clean",
   "qa_phase": "QA-0",
-  "next": "QA1_DETERMINISTIC_TRUTH",
-  "epoch": {
-    "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-a280b21fc7b5-dfa803530b9d",
-    "predecessor_baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
-    "kind": "product_rebase"
-  }
+  "next": "QA1_DETERMINISTIC_TRUTH"
 }
