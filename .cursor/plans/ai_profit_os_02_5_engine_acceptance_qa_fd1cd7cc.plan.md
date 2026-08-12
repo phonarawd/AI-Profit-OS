@@ -10,7 +10,7 @@ todos:
     status: completed
   - id: qa2-synthetic-personas
     content: "[composer-2.5|200K] personas×journeys×coverage 매핑 runner · Dirty Path · user-isolation interleave/token교차/IDOR면 · seed+RNG+clock+request seq evidence · 로컬 tiny smoke · KPI 숫자 금지"
-    status: pending
+    status: completed
   - id: qa3-generative-fuzz
     content: "[composer-2.5|200K] fast-check property suite · CI matrix strategy.fail-fast:false · concurrency group · 실패=rich evidence+defects(수정0)"
     status: pending
@@ -44,9 +44,10 @@ isProject: false
 ```text
 02.5 PRE-UI ENGINE ACCEPTANCE QA
 DESIGN: READY_TO_EXECUTE
-CURRENT TODO: qa2-synthetic-personas
+CURRENT TODO: qa3-generative-fuzz
 QA0: COMPLETE · CONTRACT LOCKED · BASELINE FROZEN · HARNESS SAFE
 QA1: COMPLETE · schemas+routes · DB consistency · idempotency split · Functional/Contract
+QA2: COMPLETE · personas×journeys×coverage · Dirty>Happy · isolation faces · seed evidence
 PRODUCT MUTATION: 0
 03 UI: BLOCKED
 ```

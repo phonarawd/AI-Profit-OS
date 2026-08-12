@@ -1,8 +1,13 @@
 {
   "schema": "governance.engine-acceptance.coverage.v1",
   "version": "1.0.0",
-  "status": "qa0_locked_skeleton",
+  "status": "qa2_active",
+  "notes": [
+    "persona × journey × invariant 매핑. 맵 개수 ≠ KPI.",
+    "QA-2 Dirty Path 비중 > Happy Path (suite_ids에 QA2 포함 매핑 기준)."
+  ],
   "mandatorySuites": ["QA1", "QA2", "QA3", "QA4", "QA5", "QA6", "QA7", "QA8"],
+  "kpi_forbidden": true,
   "mappings": [
     {
       "id": "COV-001",
@@ -26,6 +31,25 @@
       "journey_id": "J-DIRTY-ISOLATION-01",
       "invariant_id": "INV-ISOLATION-01",
       "critical": true,
+      "attack_face": "interleave",
+      "suite_ids": ["QA2", "QA8"]
+    },
+    {
+      "id": "COV-003b",
+      "persona_id": "KR-11",
+      "journey_id": "J-DIRTY-TOKEN-CROSS-01",
+      "invariant_id": "INV-ISOLATION-01",
+      "critical": true,
+      "attack_face": "token_cross",
+      "suite_ids": ["QA2", "QA8"]
+    },
+    {
+      "id": "COV-003c",
+      "persona_id": "KR-11",
+      "journey_id": "J-DIRTY-IDOR-01",
+      "invariant_id": "INV-ISOLATION-01",
+      "critical": true,
+      "attack_face": "object_id_swap",
       "suite_ids": ["QA2", "QA8"]
     },
     {

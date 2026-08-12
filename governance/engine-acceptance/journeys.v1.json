@@ -1,10 +1,10 @@
 {
   "schema": "governance.engine-acceptance.journeys.v1",
   "version": "1.0.0",
-  "status": "qa0_locked_skeleton",
+  "status": "qa2_active",
   "notes": [
     "케이스 개수는 KPI 아님. Dirty Path 비중 > Happy Path.",
-    "실행(QA-1+): UI 없이 Nest HTTP lifecycle."
+    "실행: UI 없이 Nest HTTP lifecycle 합성 시퀀스 (제품 mutation 0 · 로컬 tiny smoke)."
   ],
   "journeys": [
     {
@@ -31,7 +31,20 @@
     {
       "id": "J-DIRTY-ISOLATION-01",
       "kind": "dirty",
-      "steps": ["userA-action", "userB-interleave", "token-cross", "object-id-swap"]
+      "steps": ["userA-action", "userB-interleave", "token-cross", "object-id-swap"],
+      "attack_faces": ["interleave", "token_cross", "object_id_swap"]
+    },
+    {
+      "id": "J-DIRTY-TOKEN-CROSS-01",
+      "kind": "dirty",
+      "steps": ["userA-auth", "userB-auth", "use-A-token-on-B-resource", "expect-deny"],
+      "attack_faces": ["token_cross"]
+    },
+    {
+      "id": "J-DIRTY-IDOR-01",
+      "kind": "dirty",
+      "steps": ["userA-object", "userB-swap-object-id", "expect-deny"],
+      "attack_faces": ["object_id_swap"]
     },
     {
       "id": "J-DIRTY-CONFLICT-01",

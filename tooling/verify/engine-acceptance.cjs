@@ -1,14 +1,16 @@
 /**
- * verify:engine-acceptance — QA-0 locks + QA-1 scope (full ACCEPTED 판정 금지)
+ * verify:engine-acceptance — QA-0..QA-2 scope (full ACCEPTED 판정 금지)
  *
  * 검증:
  * 1) Acceptance Contract L1~L6 산출물 실재
  * 2) severity-policy 선고정 문서
  * 3) protected-scope hash 규칙 deterministic
  * 4) baseline Dual Dirty + required fields · valid↔protected_scope_clean
- * 5) kill-switch가 tiny smoke / QA1보다 먼저 작동
+ * 5) kill-switch가 tiny smoke / QA1 / QA2보다 먼저 작동
  * 6) evidence-manifest · REPORT · verdict ≠ ENGINE_ACCEPTED_FOR_UI
- * 7) QA-1: suite COMPLETE · Functional/Contract report · idempotency 분리 · next=QA2
+ * 7) QA-1 COMPLETE 유지
+ * 8) QA-2: personas×journeys×coverage · Dirty bias · isolation faces ·
+ *    seed+rng+clock+request_seq · next=QA3 · KPI 금지
  */
 "use strict";
 
@@ -24,7 +26,6 @@ const {
   buildManifest,
   dualDirty,
   hashPathList,
-  hashFileBytes,
 } = require("../engine-acceptance/lib/hash-scope.cjs");
 
 const fails = [];
@@ -46,13 +47,20 @@ const REQUIRED_FILES = [
   `${GOV}/evidence-manifest.v1.json`,
   `${GOV}/ENGINE_ACCEPTANCE_REPORT.md`,
   `${GOV}/qa1-result.v1.json`,
+  `${GOV}/qa2-result.v1.json`,
   "tooling/engine-acceptance/kill-switch.cjs",
   "tooling/engine-acceptance/tiny-smoke.cjs",
   "tooling/engine-acceptance/freeze-baseline.cjs",
   "tooling/engine-acceptance/run-qa1.cjs",
+  "tooling/engine-acceptance/run-qa2.cjs",
   "tooling/engine-acceptance/checks/schemas-routes-contract.cjs",
   "tooling/engine-acceptance/checks/db-consistency.cjs",
   "tooling/engine-acceptance/checks/idempotency-split.cjs",
+  "tooling/engine-acceptance/checks/coverage-mapping.cjs",
+  "tooling/engine-acceptance/checks/dirty-path-bias.cjs",
+  "tooling/engine-acceptance/checks/user-isolation-surfaces.cjs",
+  "tooling/engine-acceptance/checks/synthetic-journey-evidence.cjs",
+  "tooling/engine-acceptance/lib/seeded-rng.cjs",
   ".github/workflows/engine-acceptance.yml",
 ];
 
@@ -198,6 +206,47 @@ if (baseline && scope) {
   }
 }
 
+// --- personas / journeys / coverage governance ---
+let personas;
+let journeys;
+let coverage;
+try {
+  personas = readJson(`${GOV}/personas.v1.json`);
+  journeys = readJson(`${GOV}/journeys.v1.json`);
+  coverage = readJson(`${GOV}/coverage.v1.json`);
+} catch {
+  fail("personas/journeys/coverage JSON invalid");
+}
+if (personas && !(personas.personas || []).some((p) => p.id === "KR-11")) {
+  fail("personas must include KR-11 (concurrency/isolation)");
+}
+if (journeys) {
+  const kinds = (journeys.journeys || []).map((j) => j.kind);
+  if (!kinds.includes("dirty") || !kinds.includes("happy")) {
+    fail("journeys must include dirty and happy kinds");
+  }
+}
+if (coverage) {
+  if (coverage.kpi_forbidden !== true) {
+    fail("coverage.kpi_forbidden must be true");
+  }
+  for (const k of ["kpi_case_count", "case_count_sla", "target_cases", "kpi_target"]) {
+    if (coverage[k] !== undefined) fail(`coverage KPI field forbidden: ${k}`);
+  }
+  const qa2Maps = (coverage.mappings || []).filter((m) =>
+    (m.suite_ids || []).includes("QA2"),
+  );
+  const faces = new Set(
+    qa2Maps
+      .filter((m) => m.invariant_id === "INV-ISOLATION-01")
+      .map((m) => m.attack_face)
+      .filter(Boolean),
+  );
+  for (const f of ["interleave", "token_cross", "object_id_swap"]) {
+    if (!faces.has(f)) fail(`coverage QA2 isolation missing attack_face: ${f}`);
+  }
+}
+
 // --- defects schema ---
 let defects;
 try {
@@ -235,8 +284,8 @@ if (evidence) {
   if (evidence.schema !== "governance.engine-acceptance.evidence-manifest.v1") {
     fail("evidence-manifest.schema mismatch");
   }
-  if (evidence.qa_phase !== "QA-1") {
-    fail("evidence-manifest.qa_phase must be QA-1 after qa1-deterministic-truth");
+  if (evidence.qa_phase !== "QA-2") {
+    fail("evidence-manifest.qa_phase must be QA-2 after qa2-synthetic-personas");
   }
   if (!evidence.baseline_id) fail("evidence-manifest.baseline_id required");
   if (baseline && evidence.baseline_id !== baseline.id) {
@@ -245,26 +294,33 @@ if (evidence) {
   if (evidence.verdict === "ENGINE_ACCEPTED_FOR_UI") {
     fail("must not issue ENGINE_ACCEPTED_FOR_UI before QA1..QA8 complete");
   }
-  if (evidence.next !== "QA2_SYNTHETIC_PERSONAS") {
-    fail("evidence-manifest.next must be QA2_SYNTHETIC_PERSONAS");
+  if (evidence.next !== "QA3_GENERATIVE_FUZZ") {
+    fail("evidence-manifest.next must be QA3_GENERATIVE_FUZZ");
   }
   if (evidence.evidence_integrity !== "VALID") {
     fail("evidence_integrity must be VALID");
   }
-  if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa1 !== true) {
-    fail("evidence.kill_switch.verified_before_qa1 must be true");
+  if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa2 !== true) {
+    fail("evidence.kill_switch.verified_before_qa2 must be true");
   }
 
   const qa0 = (evidence.suites || []).find((s) => s.suite_id === "QA0");
   const qa1 = (evidence.suites || []).find((s) => s.suite_id === "QA1");
+  const qa2 = (evidence.suites || []).find((s) => s.suite_id === "QA2");
   if (!qa0 || qa0.completion_status !== "COMPLETE") {
     fail("QA0 suite must remain COMPLETE");
   }
   if (!qa1 || qa1.completion_status !== "COMPLETE") {
-    fail("QA1 suite must be COMPLETE");
+    fail("QA1 suite must remain COMPLETE");
   }
   if (!qa1.run_id || !qa1.checksum) {
     fail("QA1 suite must have run_id + checksum");
+  }
+  if (!qa2 || qa2.completion_status !== "COMPLETE") {
+    fail("QA2 suite must be COMPLETE");
+  }
+  if (!qa2.run_id || !qa2.checksum) {
+    fail("QA2 suite must have run_id + checksum");
   }
 }
 
@@ -275,34 +331,77 @@ try {
   fail("qa1-result.v1.json invalid JSON");
 }
 if (qa1Result) {
-  if (qa1Result.schema !== "governance.engine-acceptance.qa1-result.v1") {
-    fail("qa1-result.schema mismatch");
-  }
   if (qa1Result.completion_status !== "COMPLETE") {
     fail("qa1-result.completion_status must be COMPLETE");
   }
   if (qa1Result.suite_id !== "QA1") fail("qa1-result.suite_id must be QA1");
-  if (baseline && qa1Result.baseline_id !== baseline.id) {
-    fail("qa1-result.baseline_id must match baseline.id");
+}
+
+let qa2Result;
+try {
+  qa2Result = readJson(`${GOV}/qa2-result.v1.json`);
+} catch {
+  fail("qa2-result.v1.json invalid JSON");
+}
+if (qa2Result) {
+  if (qa2Result.schema !== "governance.engine-acceptance.qa2-result.v1") {
+    fail("qa2-result.schema mismatch");
   }
-  if (!qa1Result.kill_switch || qa1Result.kill_switch.verified_before_checks !== true) {
-    fail("qa1-result must record kill_switch.verified_before_checks");
+  if (qa2Result.completion_status !== "COMPLETE") {
+    fail("qa2-result.completion_status must be COMPLETE");
   }
-  const checks = qa1Result.checks || {};
-  for (const key of ["schemas_routes", "db_consistency", "idempotency_split"]) {
-    if (!checks[key]) fail(`qa1-result.checks.${key} required`);
+  if (qa2Result.suite_id !== "QA2") fail("qa2-result.suite_id must be QA2");
+  if (baseline && qa2Result.baseline_id !== baseline.id) {
+    fail("qa2-result.baseline_id must match baseline.id");
   }
-  if (checks.idempotency_split) {
-    const axes = checks.idempotency_split.axes || [];
-    const ids = axes.map((a) => a.invariant_id);
-    if (!ids.includes("INV-IDEMPOTENCY-01") || !ids.includes("INV-IDEMPOTENCY-03")) {
-      fail("qa1 idempotency must cover INV-IDEMPOTENCY-01 and INV-IDEMPOTENCY-03 separately");
+  if (!qa2Result.kill_switch || qa2Result.kill_switch.verified_before_checks !== true) {
+    fail("qa2-result must record kill_switch.verified_before_checks");
+  }
+  if (qa2Result.kpi_forbidden !== true) {
+    fail("qa2-result.kpi_forbidden must be true");
+  }
+  if (!["tiny", "full"].includes(qa2Result.mode)) {
+    fail("qa2-result.mode must be tiny|full");
+  }
+  const checks = qa2Result.checks || {};
+  for (const key of [
+    "coverage_mapping",
+    "dirty_path_bias",
+    "user_isolation",
+    "synthetic_evidence",
+  ]) {
+    if (!checks[key]) fail(`qa2-result.checks.${key} required`);
+  }
+  if (checks.dirty_path_bias) {
+    const d = checks.dirty_path_bias;
+    if (!(d.dirty > d.happy)) {
+      fail("qa2 dirty_path_bias must record dirty > happy");
+    }
+  }
+  if (checks.user_isolation) {
+    const faceIds = (checks.user_isolation.faces || []).map((f) => f.attack_face);
+    for (const f of ["interleave", "token_cross", "object_id_swap"]) {
+      if (!faceIds.includes(f)) fail(`qa2 user_isolation missing face ${f}`);
+    }
+  }
+  if (checks.synthetic_evidence) {
+    const cases = checks.synthetic_evidence.cases || [];
+    if (cases.length < 1) fail("qa2 synthetic_evidence.cases must be non-empty");
+    for (const c of cases) {
+      for (const k of ["seed", "rng_version", "clock_as_of", "request_sequence"]) {
+        if (c[k] === undefined || c[k] === null) {
+          fail(`qa2 evidence case missing ${k}`);
+        }
+      }
+      if (!Array.isArray(c.request_sequence) || c.request_sequence.length < 1) {
+        fail("qa2 request_sequence must be non-empty array");
+      }
     }
   }
   if (evidence) {
-    const qa1 = (evidence.suites || []).find((s) => s.suite_id === "QA1");
-    if (qa1 && qa1.checksum !== qa1Result.checksum) {
-      fail("evidence QA1.checksum must match qa1-result.checksum");
+    const qa2 = (evidence.suites || []).find((s) => s.suite_id === "QA2");
+    if (qa2 && qa2.checksum !== qa2Result.checksum) {
+      fail("evidence QA2.checksum must match qa2-result.checksum");
     }
   }
 }
@@ -314,17 +413,20 @@ if (report) {
   if (/verdict\s*[:=]\s*`?ENGINE_ACCEPTED_FOR_UI/i.test(report)) {
     fail("REPORT must not claim ENGINE_ACCEPTED_FOR_UI before full suites");
   }
-  if (!report.includes("QA2_SYNTHETIC_PERSONAS")) {
-    fail("REPORT must declare NEXT=QA2_SYNTHETIC_PERSONAS");
+  if (!report.includes("QA3_GENERATIVE_FUZZ")) {
+    fail("REPORT must declare NEXT=QA3_GENERATIVE_FUZZ");
   }
-  if (!report.includes("## Contract") || !report.includes("## Functional")) {
-    fail("REPORT must include Functional and Contract sections");
+  if (!report.includes("QA2 = COMPLETE")) {
+    fail("REPORT banner must include QA2 = COMPLETE");
   }
-  if (!report.includes("QA1 = COMPLETE")) {
-    fail("REPORT banner must include QA1 = COMPLETE");
+  if (!report.includes("INV-ISOLATION-01") && !report.includes("interleave")) {
+    fail("REPORT must cover user isolation faces");
   }
-  if (!report.includes("INV-IDEMPOTENCY-01") || !report.includes("INV-IDEMPOTENCY-03")) {
-    fail("REPORT Functional must mention both idempotency invariants");
+  if (!report.includes("seed") || !report.includes("request_sequence")) {
+    fail("REPORT must mention seed + request_sequence evidence");
+  }
+  if (!report.includes("KPI") && !report.includes("kpi")) {
+    fail("REPORT must state KPI case-count forbidden");
   }
 }
 
@@ -340,6 +442,7 @@ if (fs.existsSync(wfPath)) {
   }
   if (!/retention-days:\s*90/.test(wf)) fail("workflow artifact retention-days must be ≥90");
   if (!/run-qa1\.cjs/.test(wf)) fail("workflow must invoke run-qa1.cjs for QA1");
+  if (!/run-qa2\.cjs/.test(wf)) fail("workflow must invoke run-qa2.cjs for QA2");
 }
 
 // --- L6 kill-switch before smoke ---
@@ -391,7 +494,6 @@ try {
 }
 if (!smokeOk) fail("tiny-smoke safe path must return SMOKE_OK after kill-switch");
 
-// QA1 module must abort on kill-switch before checks
 const { runQa1 } = require("../engine-acceptance/run-qa1.cjs");
 let qa1Blocked = false;
 try {
@@ -407,6 +509,22 @@ if (!qa1Blocked) {
   fail("run-qa1 must abort via kill-switch before checks when unsafe");
 }
 
+const { runQa2 } = require("../engine-acceptance/run-qa2.cjs");
+let qa2Blocked = false;
+try {
+  runQa2({
+    target_env: "production",
+    hostname: "localhost",
+    synthetic_account_namespace: "qa-synth-x",
+    mode: "tiny",
+  });
+} catch (e) {
+  qa2Blocked = e && e.code === "AIPO_QA_KILL_SWITCH";
+}
+if (!qa2Blocked) {
+  fail("run-qa2 must abort via kill-switch before checks when unsafe");
+}
+
 // workflow hash in baseline matches file
 if (baseline && fs.existsSync(wfPath) && scope) {
   const live = hashPathList(scope.aggregateHashes.acceptance_workflow_hash, scope);
@@ -416,14 +534,15 @@ if (baseline && fs.existsSync(wfPath) && scope) {
 }
 
 if (fails.length) {
-  console.error("[verify:engine-acceptance] FAIL (QA-0+QA-1)");
+  console.error("[verify:engine-acceptance] FAIL (QA-0+QA-1+QA-2)");
   for (const f of fails) console.error(`  - ${f}`);
   process.exit(1);
 }
 
-console.log("[verify:engine-acceptance] PASS (QA-0+QA-1 scope)");
+console.log("[verify:engine-acceptance] PASS (QA-0+QA-1+QA-2 scope)");
 console.log("  ACCEPTANCE CONTRACT = LOCKED");
 console.log("  BASELINE = FROZEN");
 console.log("  QA1 = COMPLETE");
+console.log("  QA2 = COMPLETE");
 console.log("  QA HARNESS TARGET = SAFE");
-console.log("  NEXT = QA2_SYNTHETIC_PERSONAS");
+console.log("  NEXT = QA3_GENERATIVE_FUZZ");

@@ -1,7 +1,11 @@
 {
   "schema": "governance.engine-acceptance.personas.v1",
   "version": "1.0.0",
-  "status": "qa0_locked_skeleton",
+  "status": "qa2_active",
+  "notes": [
+    "상태·목적만 정의. 케이스 개수는 KPI 아님.",
+    "QA-2 runner가 coverage 매핑으로 선택적으로 소비."
+  ],
   "personas": [
     { "id": "KR-01", "label": "신규 가입 직후", "state": "registered_no_deposit" },
     { "id": "KR-02", "label": "입금 대기", "state": "deposit_pending" },
