@@ -1,41 +1,73 @@
 #!/usr/bin/env node
-/** beforeMCPExecution — block Supabase Auth SoT misuse patterns in tool args */
+"use strict";
 const fs = require("fs");
+const { finishHook } = require("./lib/hook-io.cjs");
+const { evaluateMcpCall, deny } = require("./lib/project-boundary.cjs");
 
-let input = "";
-try {
-  input = fs.readFileSync(0, "utf8");
-} catch {
-  input = "{}";
+function finish(d) {
+  finishHook(d);
 }
 
-let payload = {};
 try {
-  payload = JSON.parse(input || "{}");
-} catch {
-  payload = {};
-}
-
-const blob = JSON.stringify(payload).toLowerCase();
-const tool = String(payload.toolName || payload.tool || "");
-
-const denyAuth =
-  /supabase.*auth|auth\.users|sign_up|sign_in_with|create_user|gotrue/.test(blob) &&
-  /plugin-supabase|supabase/i.test(String(payload.server || tool || blob));
-
-if (denyAuth && /auth/.test(blob)) {
-  // Allow pure SQL on public/ledger; deny clear Auth SoT setup
-  if (/enable.*supabase auth|auth\.uid\(\).*session sot|create policy.*auth\.users/.test(blob)) {
-    process.stdout.write(
-      JSON.stringify({
-        continue: true,
-        permission: "deny",
-        userMessage: "Blocked: Supabase Auth SoT forbidden (ADR-006).",
-        agentMessage: "Use Nest JWT. Supabase MCP = DB/migrations only.",
-      })
-    );
-    process.exit(0);
+  let raw = "";
+  try {
+    raw = fs.readFileSync(0, "utf8");
+  } catch (_) {
+    raw = "";
   }
-}
+  raw = String(raw || "").replace(/^\uFEFF/, "");
 
-process.stdout.write(JSON.stringify({ continue: true, permission: "allow" }));
+  let payload = {};
+  try {
+    payload = JSON.parse(raw.trim() || "{}");
+  } catch (_) {
+    const start = raw.indexOf("{");
+    const end = raw.lastIndexOf("}");
+    if (start >= 0 && end > start) {
+      try {
+        payload = JSON.parse(raw.slice(start, end + 1));
+      } catch (_) {
+        payload = {};
+      }
+    }
+  }
+
+  if (!Object.keys(payload || {}).length && !raw.trim()) {
+    finish(
+      deny(
+        "Blocked: mcp-gate empty input (fail-closed).",
+        "Cannot evaluate MCP without payload."
+      )
+    );
+  }
+
+  const rawLc = String(raw).toLowerCase();
+  if (rawLc.indexOf("clime-gb") !== -1) {
+    finish(
+      deny(
+        "Blocked: MCP references foreign project.",
+        "phonarawd/AI-Profit-OS only."
+      )
+    );
+  }
+  if (
+    rawLc.indexOf("qrvanbyjgflaugdaslqh") !== -1 ||
+    rawLc.indexOf("yocjhjsdwoijfdrehzoq") !== -1
+  ) {
+    finish(
+      deny(
+        "Blocked: foreign Supabase project_ref.",
+        "Allowed: mgsytcetsiecllmhcyox only."
+      )
+    );
+  }
+
+  finish(evaluateMcpCall(payload));
+} catch (e) {
+  finish(
+    deny(
+      "Blocked: mcp-boundary error",
+      String(e && e.message ? e.message : e)
+    )
+  );
+}

@@ -15,10 +15,11 @@ try {
 } catch {
   input = "{}";
 }
+input = String(input || "").replace(/^\uFEFF/, "");
 
 let payload = {};
 try {
-  payload = JSON.parse(input || "{}");
+  payload = JSON.parse(input.trim() || "{}");
 } catch {
   payload = {};
 }
@@ -27,7 +28,13 @@ const cmd = String(payload.command || "");
 const root = process.cwd();
 
 function out(obj) {
-  process.stdout.write(JSON.stringify(obj));
+  // sync stdout — buffered write + exit races under failClosed on Windows
+  const line = JSON.stringify(obj);
+  try {
+    fs.writeSync(1, line);
+  } catch (_) {
+    process.stdout.write(line);
+  }
   process.exit(0);
 }
 

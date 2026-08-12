@@ -9,6 +9,9 @@
     "cloudflare-builds": {
       "url": "https://builds.mcp.cloudflare.com/mcp"
     },
+    "supabase": {
+      "url": "https://mcp.supabase.com/mcp?project_ref=mgsytcetsiecllmhcyox"
+    },
     "heygen": {
       "url": "https://mcp.heygen.com/mcp/v1/"
     }

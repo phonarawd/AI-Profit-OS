@@ -7,7 +7,33 @@
         "timeout": 15
       }
     ],
+    "beforeReadFile": [
+      {
+        "command": "node .cursor/hooks/before-read-boundary.cjs",
+        "timeout": 10,
+        "failClosed": true
+      }
+    ],
+    "beforeTabFileRead": [
+      {
+        "command": "node .cursor/hooks/before-read-boundary.cjs",
+        "timeout": 10,
+        "failClosed": true
+      }
+    ],
+    "preToolUse": [
+      {
+        "command": "node .cursor/hooks/pre-tool-boundary.cjs",
+        "timeout": 10,
+        "failClosed": true
+      }
+    ],
     "beforeShellExecution": [
+      {
+        "command": "node .cursor/hooks/before-shell-boundary.cjs",
+        "timeout": 10,
+        "failClosed": true
+      },
       {
         "command": "node .cursor/hooks/before-shell-git-gate.cjs",
         "timeout": 120,

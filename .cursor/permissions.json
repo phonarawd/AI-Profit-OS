@@ -1,0 +1,37 @@
+{
+  "approvalMode": "unrestricted",
+  "mcpAllowlist": [
+    "supabase:*",
+    "plugin-github-github:*",
+    "project-0-AI_PROFIT_OS-cloudflare-docs:*",
+    "project-0-AI_PROFIT_OS-cloudflare-bindings:*",
+    "project-0-AI_PROFIT_OS-cloudflare-builds:*"
+  ],
+  "autoReview": {
+    "allow_instructions": [
+      "Approve readonly git and diagnostics inside AI_PROFIT_OS.",
+      "Approve Supabase MCP only on project_ref mgsytcetsiecllmhcyox.",
+      "Approve GitHub MCP/CLI only for phonarawd/AI-Profit-OS.",
+      "Approve Cloudflare MCP for AI_PROFIT_OS."
+    ],
+    "block_instructions": [
+      "Block clime-gb path, phonarawd/clime-gb, Supabase ref qrvanbyjgflaugdaslqh.",
+      "Block workspace-outside file read/write and cwd changes.",
+      "Block account-wide supabase projects list and plugin-supabase-supabase.",
+      "Block .env read/write."
+    ]
+  },
+  "autoRun": {
+    "allow_instructions": [
+      "Run AI_PROFIT_OS verify gates inside this repo when required by project rules.",
+      "Use Supabase MCP on mgsytcetsiecllmhcyox only.",
+      "Use GitHub tools only for phonarawd/AI-Profit-OS."
+    ],
+    "block_instructions": [
+      "Block clime-gb / phonarawd/clime-gb / foreign Supabase projects.",
+      "Block reading or writing .env (not .env.example).",
+      "Block git push --force to main or master without explicit operator approval.",
+      "Block Supabase MCP on any project other than mgsytcetsiecllmhcyox."
+    ]
+  }
+}

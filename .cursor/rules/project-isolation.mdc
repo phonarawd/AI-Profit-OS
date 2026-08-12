@@ -1,0 +1,22 @@
+---
+description: AI_PROFIT_OS isolation — deny clime-gb / foreign GitHub·Supabase
+alwaysApply: true
+---
+
+# Project Isolation
+
+## Allow
+
+- Root: `C:\Users\PC\Desktop\AI_PROFIT_OS`
+- GitHub: `phonarawd/AI-Profit-OS` only
+- Supabase: `mgsytcetsiecllmhcyox` only (project-scoped MCP `supabase`)
+- Cloudflare MCP: docs / bindings / builds
+
+## Deny
+
+- `clime-gb` paths · `phonarawd/clime-gb`
+- Supabase refs other than `mgsytcetsiecllmhcyox`
+- Account-wide `plugin-supabase-supabase` / `supabase projects list`
+- Workspace-outside read/write/cwd / `git -C <outside>`
+
+Hooks enforce this with `failClosed: true`. Do not open foreign project contents to verify isolation.
