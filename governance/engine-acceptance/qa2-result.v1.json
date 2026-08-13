@@ -4,8 +4,8 @@
   "suite_id": "QA2",
   "run_id": "qa2-synthetic-personas-20260813",
   "todoId": "qa2-synthetic-personas",
-  "measuredAt": "2026-08-13T02:28:28.236Z",
-  "baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
+  "measuredAt": "2026-08-13T03:08:57.794Z",
+  "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
   "mode": "tiny",
   "kill_switch": {
     "verified_before_checks": true,
@@ -192,9 +192,9 @@
           "journey_id": "J-DIRTY-RETRY-01",
           "invariant_id": "INV-IDEMPOTENCY-01",
           "attack_face": null,
-          "seed": 3307324995,
+          "seed": 1795291238,
           "rng_version": "aipo-ea-rng-v1",
-          "clock_as_of": "2026-08-13T02:28:28.236Z",
+          "clock_as_of": "2026-08-13T03:08:57.794Z",
           "clock_source": "wall_clock_iso",
           "request_sequence": [
             {
@@ -235,14 +235,14 @@
               "note": "same Idempotency-Key",
               "sanitized": {
                 "authorization": "[REDACTED]",
-                "idempotencyKey": "qa-synth-key-998494773",
+                "idempotencyKey": "qa-synth-key-570026004",
                 "body": null
               }
             }
           ],
-          "baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
+          "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
           "model_identifier": null,
-          "configuration_fingerprint": "19b09d80d93405849660bde8f085c0d8",
+          "configuration_fingerprint": "e599120ebf09510377522e61773b3688",
           "live_http": false,
           "product_mutation": 0
         },
@@ -252,9 +252,9 @@
           "journey_id": "J-DIRTY-ISOLATION-01",
           "invariant_id": "INV-ISOLATION-01",
           "attack_face": "interleave",
-          "seed": 2427993074,
+          "seed": 3331373395,
           "rng_version": "aipo-ea-rng-v1",
-          "clock_as_of": "2026-08-13T02:28:28.236Z",
+          "clock_as_of": "2026-08-13T03:08:57.794Z",
           "clock_source": "wall_clock_iso",
           "request_sequence": [
             {
@@ -314,9 +314,9 @@
               }
             }
           ],
-          "baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
+          "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
           "model_identifier": null,
-          "configuration_fingerprint": "2b7866e4995a5f3f66b79df83c894bb0",
+          "configuration_fingerprint": "bd6aa66324b2324ca57c90c85d20b1b5",
           "live_http": false,
           "product_mutation": 0
         },
@@ -326,9 +326,9 @@
           "journey_id": "J-DIRTY-TOKEN-CROSS-01",
           "invariant_id": "INV-ISOLATION-01",
           "attack_face": "token_cross",
-          "seed": 3789609413,
+          "seed": 2256768616,
           "rng_version": "aipo-ea-rng-v1",
-          "clock_as_of": "2026-08-13T02:28:28.236Z",
+          "clock_as_of": "2026-08-13T03:08:57.794Z",
           "clock_source": "wall_clock_iso",
           "request_sequence": [
             {
@@ -388,9 +388,9 @@
               }
             }
           ],
-          "baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
+          "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
           "model_identifier": null,
-          "configuration_fingerprint": "640b18af44a62337c9fa0800ccbd86eb",
+          "configuration_fingerprint": "5b4c2a358d757aec059af8aeead6753d",
           "live_http": false,
           "product_mutation": 0
         },
@@ -400,9 +400,9 @@
           "journey_id": "J-HAPPY-01",
           "invariant_id": "INV-LIFECYCLE-01",
           "attack_face": null,
-          "seed": 1415481334,
+          "seed": 3830574087,
           "rng_version": "aipo-ea-rng-v1",
-          "clock_as_of": "2026-08-13T02:28:28.236Z",
+          "clock_as_of": "2026-08-13T03:08:57.794Z",
           "clock_source": "wall_clock_iso",
           "request_sequence": [
             {
@@ -546,9 +546,9 @@
               }
             }
           ],
-          "baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
+          "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
           "model_identifier": null,
-          "configuration_fingerprint": "30c02fc1c7b81ed6b09178b3bbd359c4",
+          "configuration_fingerprint": "07b27e6b9f073e42fd41394b98857b59",
           "live_http": false,
           "product_mutation": 0
         }
@@ -575,5 +575,5 @@
     "Local default mode=tiny smoke. Case counts are not KPIs.",
     "Does not issue ENGINE_ACCEPTED_FOR_UI."
   ],
-  "checksum": "9405f3ac9ae762a3c2929da70cdc9655afec72a1af4fbe4a39a1a617f3dbeaf4"
+  "checksum": "e3f5f2b99e3335fe3115c3e1c439a783e5958e5bdece30089ab1d66408e4ae86"
 }
