@@ -396,11 +396,15 @@ function run() {
     );
     // qa9-result is the current-epoch verdict SSOT. evidence-manifest.verdict may be
     // rewritten ephemerally by run-qa6.cjs in CI (ENGINE_QA_INCOMPLETE) without a new epoch.
+    // Snapshot pin, not a policy: QA9 was actually rerun for the current epoch
+    // as part of this wave's QA1-QA9 rerun (still ENGINE_NOT_ACCEPTED —
+    // defects.P1=5 from QA4/QA5's own honestly-recorded harness-executor
+    // limitation findings — engine_accepted_for_ui stays NOT_ISSUED either way).
     check(
       "live_verdict_unchanged",
       qa9.verdict === "ENGINE_NOT_ACCEPTED" &&
         qa9.engine_accepted_for_ui === "NOT_ISSUED" &&
-        qa9.baseline_id === "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+        qa9.baseline_id === "ea-baseline-fdf692cb8a02-d532a6d7958b",
       qa9.verdict,
     );
     check(

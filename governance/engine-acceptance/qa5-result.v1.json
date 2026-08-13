@@ -4,8 +4,8 @@
   "suite_id": "QA5",
   "run_id": "qa5-failure-world-20260813",
   "todoId": "qa5-failure-world",
-  "measuredAt": "2026-08-13T03:09:02.927Z",
-  "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+  "measuredAt": "2026-08-13T21:15:16.888Z",
+  "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
   "mode": "tiny",
   "kill_switch": {
     "verified_before_checks": true,
@@ -22,14 +22,17 @@
   "checks": {
     "failure_world": {
       "check_id": "QA5_FAILURE_WORLD",
-      "status": "BLOCKED",
+      "status": "FAIL",
       "mode": "tiny",
-      "measuredAt": "2026-08-13T03:09:02.927Z",
+      "measuredAt": "2026-08-13T21:15:16.888Z",
       "seed": 20260812,
       "fault_hook": {
-        "available": false,
-        "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+        "available": true,
+        "blocked_code": null,
         "probed_paths": [
+          "tooling/engine-acceptance/harness/fault-orchestrator.cjs",
+          "tooling/engine-acceptance/run-qa5-fault.cjs",
+          "tooling/engine-acceptance/harness/fault-orchestrator.cjs",
           "services/api-nest/src/common/fault.ts",
           "services/api-nest/src/common/fault.js",
           "services/api-nest/src/common/fault.cjs",
@@ -40,31 +43,31 @@
           "tooling/engine-acceptance/hooks/fault-hook.adapter.cjs"
         ],
         "findings": [
-          "no candidate fault-hook module under api-nest/common|testing|resilience"
+          "executable harness fault orchestrator (LLM HTTP server + DB docker strategy) wired from run-qa5-fault.cjs"
         ],
         "env_hooks_present": [],
-        "adapter_rel": null
+        "adapter_rel": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
       },
       "axes": {
         "axis1_expected_degradation_fallback": {
           "scenario_count": 1,
-          "blocked": 1,
-          "failed": 0,
+          "blocked": 0,
+          "failed": 1,
           "passed": 0,
-          "status": "BLOCKED"
+          "status": "FAIL"
         },
         "axis2_post_recovery_invariant": {
           "scenario_count": 1,
-          "blocked": 1,
-          "failed": 0,
+          "blocked": 0,
+          "failed": 1,
           "passed": 0,
-          "status": "BLOCKED"
+          "status": "FAIL"
         }
       },
       "scenarioCount": 2,
       "passed": 0,
-      "failed": 0,
-      "blocked": 2,
+      "failed": 2,
+      "blocked": 0,
       "scenarios": [
         {
           "scenario_id": "FAULT-AI-429-DEGRADE",
@@ -85,59 +88,34 @@
             "mock_pass_forbidden": true
           },
           "kind": "ai_429_degrade",
-          "status": "BLOCKED",
-          "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+          "status": "FAIL",
+          "blocked_code": null,
           "findings": [
-            "Fault injection hook absent — scenario not executed (no mock PASS).",
-            "no candidate fault-hook module under api-nest/common|testing|resilience"
+            "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
           ],
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-13T03:09:02.927Z",
+            "clock_as_of": "2026-08-13T21:15:16.888Z",
             "request_sequence": [
               {
                 "step": "probe_fault_hook",
-                "result": "absent",
-                "blocked_code": "BLOCKED_NO_FAULT_HOOK"
+                "result": "present",
+                "adapter": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
               },
               {
-                "step": "scenario_planned",
-                "scenario_id": "FAULT-AI-429-DEGRADE",
-                "axis": 1,
-                "axis_label": "expected_degradation_fallback",
-                "fault": {
-                  "kind": "ai_http",
-                  "status": 429,
-                  "target": "peotteok_ai"
-                },
-                "executed": false
+                "step": "execute_scenario",
+                "result": "not_wired",
+                "axis": 1
               }
             ],
-            "sanitized_request": {
-              "scenario_id": "FAULT-AI-429-DEGRADE",
-              "kind": "ai_429_degrade",
-              "fault": {
-                "kind": "ai_http",
-                "status": 429,
-                "target": "peotteok_ai"
-              },
-              "expected": {
-                "degradation": true,
-                "ledger_untouched": true,
-                "mock_pass_forbidden": true
-              }
-            },
-            "sanitized_response": {
-              "status": "BLOCKED",
-              "blocked_code": "BLOCKED_NO_FAULT_HOOK",
-              "mock_pass_forbidden": true
-            },
+            "sanitized_request": null,
+            "sanitized_response": null,
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+            "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "060fe4c37a590bd7c0867fcc4d60f412c12305b68dcfc03909e965defef31802",
+            "configuration_fingerprint": "97ac2b5d39e57617ee95925b87bd50adf18a3034250e12cc5074616e11262bc3",
             "invariant_id": "INV-FEED-AI-01",
             "suite_id": "QA5",
             "live_http": false
@@ -161,57 +139,34 @@
             ]
           },
           "kind": "recovery_ledger",
-          "status": "BLOCKED",
-          "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+          "status": "FAIL",
+          "blocked_code": null,
           "findings": [
-            "Fault injection hook absent — scenario not executed (no mock PASS).",
-            "no candidate fault-hook module under api-nest/common|testing|resilience"
+            "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
           ],
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-13T03:09:02.927Z",
+            "clock_as_of": "2026-08-13T21:15:16.888Z",
             "request_sequence": [
               {
                 "step": "probe_fault_hook",
-                "result": "absent",
-                "blocked_code": "BLOCKED_NO_FAULT_HOOK"
+                "result": "present",
+                "adapter": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
               },
               {
-                "step": "scenario_planned",
-                "scenario_id": "FAULT-RECOVERY-LEDGER-SCAN",
-                "axis": 2,
-                "axis_label": "post_recovery_invariant",
-                "fault": {
-                  "kind": "transient_db_blip",
-                  "then": "clear"
-                },
-                "executed": false
+                "step": "execute_scenario",
+                "result": "not_wired",
+                "axis": 2
               }
             ],
-            "sanitized_request": {
-              "scenario_id": "FAULT-RECOVERY-LEDGER-SCAN",
-              "kind": "recovery_ledger",
-              "fault": {
-                "kind": "transient_db_blip",
-                "then": "clear"
-              },
-              "expected": {
-                "post_recovery_scan": [
-                  "INV-LEDGER-01"
-                ]
-              }
-            },
-            "sanitized_response": {
-              "status": "BLOCKED",
-              "blocked_code": "BLOCKED_NO_FAULT_HOOK",
-              "mock_pass_forbidden": true
-            },
+            "sanitized_request": null,
+            "sanitized_response": null,
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+            "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "61b90f1e4bc6cff96f5c524006348fb0ec5542dbc8de3b0283e3940cfc1d0561",
+            "configuration_fingerprint": "462913374bd4359d19364c7b8cf68b7b57940aff46856d0b00776a24e8a3654e",
             "invariant_id": "INV-LEDGER-01",
             "suite_id": "QA5",
             "live_http": false
@@ -219,16 +174,16 @@
         }
       ],
       "critical_invariant": {
-        "blocked": 2,
+        "blocked": 0,
         "skipped": 0,
         "uncovered": 0,
-        "failed": 0,
+        "failed": 2,
         "details": [
           {
             "invariant_id": "INV-FEED-AI-01",
             "critical": true,
-            "status": "BLOCKED",
-            "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+            "status": "FAIL",
+            "blocked_code": null,
             "scenario_ids": [
               "FAULT-AI-429-DEGRADE"
             ]
@@ -236,8 +191,8 @@
           {
             "invariant_id": "INV-LEDGER-01",
             "critical": true,
-            "status": "BLOCKED",
-            "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+            "status": "FAIL",
+            "blocked_code": null,
             "scenario_ids": [
               "FAULT-RECOVERY-LEDGER-SCAN"
             ]
@@ -254,16 +209,16 @@
     }
   },
   "critical_invariant": {
-    "blocked": 2,
+    "blocked": 0,
     "skipped": 0,
     "uncovered": 0,
-    "failed": 0,
+    "failed": 2,
     "details": [
       {
         "invariant_id": "INV-FEED-AI-01",
         "critical": true,
-        "status": "BLOCKED",
-        "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+        "status": "FAIL",
+        "blocked_code": null,
         "scenario_ids": [
           "FAULT-AI-429-DEGRADE"
         ]
@@ -271,8 +226,8 @@
       {
         "invariant_id": "INV-LEDGER-01",
         "critical": true,
-        "status": "BLOCKED",
-        "blocked_code": "BLOCKED_NO_FAULT_HOOK",
+        "status": "FAIL",
+        "blocked_code": null,
         "scenario_ids": [
           "FAULT-RECOVERY-LEDGER-SCAN"
         ]
@@ -280,37 +235,35 @@
     ]
   },
   "critical_invariant_cumulative": {
-    "blocked": 4,
+    "blocked": 0,
     "skipped": 0,
     "uncovered": 0,
     "sources": {
       "QA4": {
-        "blocked": 2,
+        "blocked": 0,
         "skipped": 0,
         "uncovered": 0
       },
       "QA5": {
-        "blocked": 2,
+        "blocked": 0,
         "skipped": 0,
         "uncovered": 0
       }
     }
   },
   "all_checks_pass": false,
-  "defects_found": 0,
+  "defects_found": 2,
   "defects_counts": {
     "P0": 0,
-    "P1": 0,
+    "P1": 2,
     "P2": 0,
     "P3": 0
   },
-  "verdict_contribution": "ENGINE_QA_INCOMPLETE",
+  "verdict_contribution": "ENGINE_NOT_ACCEPTED",
   "next": "QA6_PERFORMANCE",
   "product_mutation": 0,
   "kpi_forbidden": true,
-  "blocked_codes_observed": [
-    "BLOCKED_NO_FAULT_HOOK"
-  ],
+  "blocked_codes_observed": [],
   "ci": {
     "strategy_fail_fast": false,
     "concurrency_group": "engine-acceptance-${{ github.ref }}",
@@ -324,5 +277,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "CI aggregator uses if: always(); artifact retention ≥ 90 days."
   ],
-  "checksum": "c4ac94532083d9be5908f07ac9b42144453ba2eac1601b61005f83fa9a390453"
+  "checksum": "fbcaf2ca14a4b7bcb0ea19b4cbabc89cd5e3f1cd0cc491c28f441c2e5b1ca782"
 }

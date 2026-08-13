@@ -4,8 +4,8 @@
   "suite_id": "QA1",
   "run_id": "qa1-deterministic-truth-20260813",
   "todoId": "qa1-deterministic-truth",
-  "measuredAt": "2026-08-13T03:08:55.367Z",
-  "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+  "measuredAt": "2026-08-13T21:12:23.290Z",
+  "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
   "kill_switch": {
     "verified_before_checks": true,
     "target_env": "local",
@@ -100,7 +100,7 @@
       "check_id": "QA1_DB_CONSISTENCY",
       "status": "PASS",
       "invariant_id": "INV-LEDGER-01",
-      "migrationCount": 34,
+      "migrationCount": 35,
       "migrations": [
         "20260808205842_extensions_vector.sql",
         "20260808205844_identity_nest_auth.sql",
@@ -135,7 +135,8 @@
         "20260811062000_idempotency_request_fingerprint.sql",
         "20260811062100_ledger_outbox_events.sql",
         "20260811194832_shadow_replay_advisory_label.sql",
-        "20260813025116_ai_logs_answer_path_scope_redirect.sql"
+        "20260813025116_ai_logs_answer_path_scope_redirect.sql",
+        "20260813202305_privacy_purge_anonymize_indexes.sql"
       ],
       "live_db_probe": {
         "status": "NOT_RUN",
@@ -202,5 +203,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "Idempotency INV-01 and INV-03 kept separate."
   ],
-  "checksum": "ed28ae09e2baa795a2d43e8a1c31d6d37a648543bd06ef3c9f86b2bd57ddde89"
+  "checksum": "f8019b30f0290511b76b98ff0d7c7207fb409cec9460847baf8fd61ba04aaf54"
 }

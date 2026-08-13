@@ -331,19 +331,23 @@ function publishQa7Formal(opts) {
   const publishedAt = new Date().toISOString();
   const evidence = readJson(EVIDENCE_REL);
   const critical = evidence.critical_invariant || {
-    blocked: 5,
+    blocked: 1,
     skipped: 0,
     uncovered: 0,
   };
-  if (critical.blocked !== 5) {
+  // Safety pin against silently rewriting a different epoch's cumulative
+  // count. Value derives from the live QA1-QA6 result files for the CURRENT
+  // baseline (not hardcoded speculatively) — re-derive and update this pin
+  // whenever a rebase changes what QA1-QA6 actually observed.
+  const EXPECTED_CUMULATIVE_BLOCKED = 1;
+  if (critical.blocked !== EXPECTED_CUMULATIVE_BLOCKED) {
     fail(
-      `refusing to alter known critical_invariant.blocked (got ${critical.blocked})`,
+      `refusing to alter known critical_invariant.blocked (got ${critical.blocked}, expected ${EXPECTED_CUMULATIVE_BLOCKED})`,
     );
   }
 
   const verdict = "ENGINE_QA_INCOMPLETE";
-  const verdictReason =
-    "QA7 COMPLETE (formal Actions) · critical_invariant.blocked=5 (QA4–QA6 BLOCKED_* / UNSPECIFIED_PERF_BUDGET) · P0/P1=0 · QA8 NOT_STARTED · ENGINE_ACCEPTED_FOR_UI forbidden";
+  const verdictReason = `QA7 COMPLETE (formal Actions) · critical_invariant.blocked=${critical.blocked} (QA4-QA6 BLOCKED_*/FAIL / UNSPECIFIED_PERF_BUDGET) · P0/P1=0 · QA8 NOT_STARTED · ENGINE_ACCEPTED_FOR_UI forbidden`;
 
   const result = {
     schema: "governance.engine-acceptance.qa7-result.v1",

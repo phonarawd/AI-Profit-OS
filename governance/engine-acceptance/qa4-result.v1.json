@@ -4,8 +4,8 @@
   "suite_id": "QA4",
   "run_id": "qa4-stateful-time-20260813",
   "todoId": "qa4-stateful-time",
-  "measuredAt": "2026-08-13T03:09:01.309Z",
-  "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+  "measuredAt": "2026-08-13T21:13:05.503Z",
+  "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
   "mode": "tiny",
   "kill_switch": {
     "verified_before_checks": true,
@@ -22,33 +22,26 @@
   "checks": {
     "stateful_time": {
       "check_id": "QA4_STATEFUL_TIME_LIFECYCLE",
-      "status": "BLOCKED",
+      "status": "FAIL",
       "mode": "tiny",
-      "measuredAt": "2026-08-13T03:09:01.309Z",
+      "measuredAt": "2026-08-13T21:13:05.503Z",
       "seed": 20260812,
       "clock_hook": {
-        "available": false,
-        "blocked_code": "BLOCKED_NO_CLOCK_HOOK",
+        "available": true,
+        "blocked_code": null,
         "probed_paths": [
-          "services/api-nest/src/common/clock.ts",
-          "services/api-nest/src/common/clock.js",
-          "services/api-nest/src/common/clock.cjs",
-          "services/api-nest/src/time/clock-provider.ts",
-          "services/api-nest/src/time/clock.provider.ts",
-          "services/api-nest/src/testing/clock-hook.ts",
-          "services/api-nest/src/testing/clock-hook.cjs",
-          "tooling/engine-acceptance/hooks/clock-hook.adapter.cjs"
+          "services/api-nest/src/common/clock.ts"
         ],
         "findings": [
-          "no candidate clock-hook module under api-nest/common|time|testing"
+          "injectable clock export found at services/api-nest/src/common/clock.ts"
         ],
         "env_hooks_present": [],
-        "adapter_rel": null
+        "adapter_rel": "services/api-nest/src/common/clock.ts"
       },
       "scenarioCount": 3,
       "passed": 0,
-      "failed": 0,
-      "blocked": 3,
+      "failed": 3,
+      "blocked": 0,
       "scenarios": [
         {
           "scenario_id": "TIME-KST-DAY-BOUNDARY",
@@ -59,11 +52,10 @@
           "clock_as_of": "2026-03-14T15:00:00.000Z",
           "kst_label": "2026-03-15T00:00:00+09:00",
           "kind": "kst_day_boundary",
-          "status": "BLOCKED",
-          "blocked_code": "BLOCKED_NO_CLOCK_HOOK",
+          "status": "FAIL",
+          "blocked_code": null,
           "findings": [
-            "Clock injection hook absent — scenario not executed (no mock PASS).",
-            "no candidate clock-hook module under api-nest/common|time|testing"
+            "Clock hook module present but harness multi-day executor not wired in this slice — record as FAIL (not laundry PASS)."
           ],
           "rich_evidence": {
             "seed": 20260812,
@@ -72,34 +64,22 @@
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
-                "result": "absent",
-                "blocked_code": "BLOCKED_NO_CLOCK_HOOK"
+                "result": "present",
+                "adapter": "services/api-nest/src/common/clock.ts"
               },
               {
-                "step": "scenario_planned",
-                "scenario_id": "TIME-KST-DAY-BOUNDARY",
-                "clock_as_of": "2026-03-14T15:00:00.000Z",
-                "kst_label": "2026-03-15T00:00:00+09:00",
-                "executed": false
+                "step": "execute_scenario",
+                "result": "not_wired"
               }
             ],
-            "sanitized_request": {
-              "scenario_id": "TIME-KST-DAY-BOUNDARY",
-              "kind": "kst_day_boundary",
-              "kst_label": "2026-03-15T00:00:00+09:00"
-            },
-            "sanitized_response": {
-              "status": "BLOCKED",
-              "blocked_code": "BLOCKED_NO_CLOCK_HOOK",
-              "mock_pass_forbidden": true
-            },
+            "sanitized_request": null,
+            "sanitized_response": null,
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+            "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "6937b57c6f58cdf48112ea76725f6a92e875f5867c8ec30e43c228ea9bd4050a",
-            "invariant_id": "INV-TIME-01",
-            "suite_id": "QA4",
+            "configuration_fingerprint": "83f6b742e64d7349f3e5c7997830aa3b7973d07a76d2cc7d9a7aec10a0b9cee1",
+            "suite_id": "QA3",
             "live_http": false
           }
         },
@@ -112,11 +92,10 @@
           "clock_as_of": "2026-04-14T03:00:00.000Z",
           "kst_label": "+30d from 2026-03-15T12:00:00+09:00",
           "kind": "plus_30d",
-          "status": "BLOCKED",
-          "blocked_code": "BLOCKED_NO_CLOCK_HOOK",
+          "status": "FAIL",
+          "blocked_code": null,
           "findings": [
-            "Clock injection hook absent — scenario not executed (no mock PASS).",
-            "no candidate clock-hook module under api-nest/common|time|testing"
+            "Clock hook module present but harness multi-day executor not wired in this slice — record as FAIL (not laundry PASS)."
           ],
           "rich_evidence": {
             "seed": 20260812,
@@ -125,34 +104,22 @@
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
-                "result": "absent",
-                "blocked_code": "BLOCKED_NO_CLOCK_HOOK"
+                "result": "present",
+                "adapter": "services/api-nest/src/common/clock.ts"
               },
               {
-                "step": "scenario_planned",
-                "scenario_id": "TIME-PLUS-30D",
-                "clock_as_of": "2026-04-14T03:00:00.000Z",
-                "kst_label": "+30d from 2026-03-15T12:00:00+09:00",
-                "executed": false
+                "step": "execute_scenario",
+                "result": "not_wired"
               }
             ],
-            "sanitized_request": {
-              "scenario_id": "TIME-PLUS-30D",
-              "kind": "plus_30d",
-              "kst_label": "+30d from 2026-03-15T12:00:00+09:00"
-            },
-            "sanitized_response": {
-              "status": "BLOCKED",
-              "blocked_code": "BLOCKED_NO_CLOCK_HOOK",
-              "mock_pass_forbidden": true
-            },
+            "sanitized_request": null,
+            "sanitized_response": null,
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+            "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "6937b57c6f58cdf48112ea76725f6a92e875f5867c8ec30e43c228ea9bd4050a",
-            "invariant_id": "INV-TIME-01",
-            "suite_id": "QA4",
+            "configuration_fingerprint": "83f6b742e64d7349f3e5c7997830aa3b7973d07a76d2cc7d9a7aec10a0b9cee1",
+            "suite_id": "QA3",
             "live_http": false
           }
         },
@@ -165,11 +132,10 @@
           "clock_as_of": "2026-03-18T03:00:00.000Z",
           "kst_label": "multi-day lifecycle +3d",
           "kind": "multi_day_lifecycle",
-          "status": "BLOCKED",
-          "blocked_code": "BLOCKED_NO_CLOCK_HOOK",
+          "status": "FAIL",
+          "blocked_code": null,
           "findings": [
-            "Clock injection hook absent — scenario not executed (no mock PASS).",
-            "no candidate clock-hook module under api-nest/common|time|testing"
+            "Clock hook module present but harness multi-day executor not wired in this slice — record as FAIL (not laundry PASS)."
           ],
           "rich_evidence": {
             "seed": 20260812,
@@ -178,49 +144,37 @@
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
-                "result": "absent",
-                "blocked_code": "BLOCKED_NO_CLOCK_HOOK"
+                "result": "present",
+                "adapter": "services/api-nest/src/common/clock.ts"
               },
               {
-                "step": "scenario_planned",
-                "scenario_id": "TIME-MULTI-DAY-LIFECYCLE",
-                "clock_as_of": "2026-03-18T03:00:00.000Z",
-                "kst_label": "multi-day lifecycle +3d",
-                "executed": false
+                "step": "execute_scenario",
+                "result": "not_wired"
               }
             ],
-            "sanitized_request": {
-              "scenario_id": "TIME-MULTI-DAY-LIFECYCLE",
-              "kind": "multi_day_lifecycle",
-              "kst_label": "multi-day lifecycle +3d"
-            },
-            "sanitized_response": {
-              "status": "BLOCKED",
-              "blocked_code": "BLOCKED_NO_CLOCK_HOOK",
-              "mock_pass_forbidden": true
-            },
+            "sanitized_request": null,
+            "sanitized_response": null,
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+            "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "725b42e2d905dae81348a7638fae20d5137cdee100cb080c170a2a456e1b63c9",
-            "invariant_id": "INV-LIFECYCLE-01",
-            "suite_id": "QA4",
+            "configuration_fingerprint": "83f6b742e64d7349f3e5c7997830aa3b7973d07a76d2cc7d9a7aec10a0b9cee1",
+            "suite_id": "QA3",
             "live_http": false
           }
         }
       ],
       "critical_invariant": {
-        "blocked": 2,
+        "blocked": 0,
         "skipped": 0,
         "uncovered": 0,
-        "failed": 0,
+        "failed": 2,
         "details": [
           {
             "invariant_id": "INV-TIME-01",
             "critical": true,
-            "status": "BLOCKED",
-            "blocked_code": "BLOCKED_NO_CLOCK_HOOK",
+            "status": "FAIL",
+            "blocked_code": null,
             "scenario_ids": [
               "TIME-KST-DAY-BOUNDARY",
               "TIME-PLUS-30D"
@@ -229,8 +183,8 @@
           {
             "invariant_id": "INV-LIFECYCLE-01",
             "critical": true,
-            "status": "BLOCKED",
-            "blocked_code": "BLOCKED_NO_CLOCK_HOOK",
+            "status": "FAIL",
+            "blocked_code": null,
             "scenario_ids": [
               "TIME-MULTI-DAY-LIFECYCLE"
             ]
@@ -246,16 +200,16 @@
     }
   },
   "critical_invariant": {
-    "blocked": 2,
+    "blocked": 0,
     "skipped": 0,
     "uncovered": 0,
-    "failed": 0,
+    "failed": 2,
     "details": [
       {
         "invariant_id": "INV-TIME-01",
         "critical": true,
-        "status": "BLOCKED",
-        "blocked_code": "BLOCKED_NO_CLOCK_HOOK",
+        "status": "FAIL",
+        "blocked_code": null,
         "scenario_ids": [
           "TIME-KST-DAY-BOUNDARY",
           "TIME-PLUS-30D"
@@ -264,8 +218,8 @@
       {
         "invariant_id": "INV-LIFECYCLE-01",
         "critical": true,
-        "status": "BLOCKED",
-        "blocked_code": "BLOCKED_NO_CLOCK_HOOK",
+        "status": "FAIL",
+        "blocked_code": null,
         "scenario_ids": [
           "TIME-MULTI-DAY-LIFECYCLE"
         ]
@@ -273,20 +227,18 @@
     ]
   },
   "all_checks_pass": false,
-  "defects_found": 0,
+  "defects_found": 3,
   "defects_counts": {
     "P0": 0,
-    "P1": 0,
+    "P1": 3,
     "P2": 0,
     "P3": 0
   },
-  "verdict_contribution": "ENGINE_QA_INCOMPLETE",
+  "verdict_contribution": "ENGINE_NOT_ACCEPTED",
   "next": "QA5_FAILURE_WORLD",
   "product_mutation": 0,
   "kpi_forbidden": true,
-  "blocked_codes_observed": [
-    "BLOCKED_NO_CLOCK_HOOK"
-  ],
+  "blocked_codes_observed": [],
   "ci": {
     "strategy_fail_fast": false,
     "concurrency_group": "engine-acceptance-${{ github.ref }}"
@@ -297,5 +249,5 @@
     "critical INV-TIME-01 BLOCKED → ENGINE_QA_INCOMPLETE (ACCEPTED 불가).",
     "Does not issue ENGINE_ACCEPTED_FOR_UI."
   ],
-  "checksum": "00050cc82c457eae23f13fb361f8b8061915b4465455fb653864770fd756a57e"
+  "checksum": "697cee917b13f0d5ff569572b5c547f1c1873871d45388ba09eac64a75355814"
 }

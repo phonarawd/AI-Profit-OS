@@ -203,6 +203,9 @@ function checkJwtTokenValidation() {
  */
 function checkPrivacyDeleteAccount() {
   const authService = read("services/api-nest/src/auth/auth.service.ts");
+  const privacyService = read(
+    "services/api-nest/src/auth/privacy-account.service.ts",
+  );
   const findings = [];
   const evidence = {};
 
@@ -211,13 +214,34 @@ function checkPrivacyDeleteAccount() {
   );
   const deleteBody = deleteMatch ? deleteMatch[0] : "";
   evidence.delete_account_method_found = Boolean(deleteMatch);
+  evidence.privacy_service_found = privacyService.length > 0;
+  evidence.delegates_to_privacy_service = /this\.privacy\.purgeAccount\(/.test(
+    deleteBody,
+  );
 
-  const isHardDelete = /DELETE\s+FROM\s+public\.users/i.test(deleteBody);
-  const isSoftUpdate = /UPDATE\s+public\.users/i.test(deleteBody);
-  evidence.delete_mode = isHardDelete ? "hard_delete" : isSoftUpdate ? "soft_update" : "unknown";
-  evidence.email_nulled = /email\s*=\s*NULL/i.test(deleteBody);
-  evidence.phone_nulled = /phone_e164\s*=\s*NULL/i.test(deleteBody);
-  evidence.sessions_revoked = /revokeAllSessions/.test(deleteBody);
+  // The file is small and single-purpose (guard snapshot + one purge
+  // transaction) — scanning the whole file for these markers is simpler and
+  // less brittle than trying to regex-bound the purgeAccount method body.
+  evidence.purge_method_found = /async purgeAccount\(/.test(privacyService);
+  const purgeBody = privacyService;
+  evidence.single_transaction = /withTransaction\(/.test(purgeBody);
+
+  const purgeTableCount = (
+    privacyService.match(/^\s*\["[a-z_]+",\s*"[a-z_]+"\],?$/gm) || []
+  ).length;
+  const anonymizeTableCount = (
+    privacyService.match(/^\s*"[a-z_]+",?$/gm) || []
+  ).length;
+  evidence.purge_table_count = purgeTableCount;
+  evidence.anonymize_table_count_hint = anonymizeTableCount;
+  evidence.sessions_purged = /"auth_sessions"/.test(privacyService);
+  evidence.email_nulled = /email\s*=\s*NULL/i.test(purgeBody);
+  evidence.phone_nulled = /phone_e164\s*=\s*NULL/i.test(purgeBody);
+  evidence.password_nulled = /password_hash\s*=\s*NULL/i.test(purgeBody);
+  evidence.tombstoned = /status\s*=\s*'deleted'/i.test(purgeBody);
+  evidence.retained_kyc_ledger_audit = /RETAIN[\s\S]{0,400}kyc[\s\S]{0,400}ledger/i.test(
+    privacyService,
+  );
   evidence.kyc_retention_years = (() => {
     const m = read("services/api-nest/src/compliance/compliance.types.ts").match(
       /KYC_RETENTION_YEARS_DEFAULT\s*=\s*(\d+)/,
@@ -225,30 +249,51 @@ function checkPrivacyDeleteAccount() {
     return m ? Number(m[1]) : null;
   })();
 
+  const isSoftUpdateOnly =
+    !evidence.privacy_service_found &&
+    /UPDATE\s+public\.users/i.test(deleteBody);
+  evidence.delete_mode = evidence.privacy_service_found
+    ? "purge_and_tombstone"
+    : isSoftUpdateOnly
+      ? "soft_update"
+      : "unknown";
+
   if (!evidence.delete_account_method_found) {
     findings.push("auth.service.ts#deleteAccount not found by static pattern - cannot assess");
-  } else if (evidence.delete_mode === "soft_update") {
+  }
+  if (!evidence.privacy_service_found || !evidence.purge_method_found) {
     findings.push(
-      "delete-account performs UPDATE (soft-delete) on public.users, not a hard DELETE. " +
-        "Schema-defined ON DELETE CASCADE/SET NULL foreign keys (ai_twin_memory, " +
-        "notification_prefs, referral edges, deposit/withdraw records, mission accrual, " +
-        "kyc_decision_audit, the sessions row itself, etc.) never fire because the parent row " +
-        "is never removed. Only users.email/phone_e164 are nulled plus sessions revoked. " +
-        "KYC document retention (5y, compliance.types.ts KYC_RETENTION_YEARS_DEFAULT, " +
-        "section 42.2.1) is explicit documented policy and is NOT counted as a finding here.",
+      "auth/privacy-account.service.ts#purgeAccount not found - cannot verify non-retention purge",
+    );
+  } else if (!evidence.delegates_to_privacy_service) {
+    findings.push(
+      "deleteAccount does not delegate to PrivacyAccountService.purgeAccount - purge logic location unverified",
     );
   }
-  if (!evidence.email_nulled || !evidence.phone_nulled) {
-    findings.push("delete-account must null both email and phone_e164 on public.users");
+  if (evidence.purge_method_found && !evidence.single_transaction) {
+    findings.push(
+      "purgeAccount does not wrap its mutations in a single transaction - partial-delete risk",
+    );
   }
-  if (!evidence.sessions_revoked) {
-    findings.push("delete-account must revoke all sessions");
+  if (evidence.purge_method_found && purgeTableCount < 20) {
+    findings.push(
+      `purgeAccount PURGE_TABLES looks too small (parsed ${purgeTableCount}) - non-retention purge may be incomplete`,
+    );
+  }
+  if (evidence.purge_method_found && !evidence.sessions_purged) {
+    findings.push("purgeAccount must purge auth_sessions rows (not merely revoke)");
+  }
+  if (evidence.purge_method_found && (!evidence.email_nulled || !evidence.phone_nulled)) {
+    findings.push("purgeAccount must null both email and phone_e164 on the users tombstone");
+  }
+  if (evidence.purge_method_found && !evidence.tombstoned) {
+    findings.push("purgeAccount must set users.status = 'deleted' (tombstone)");
   }
 
   // Confirm the specific non-financial PII-adjacent tables this affects (real schema evidence).
   const twinMemory = read("supabase/migrations/20260808205853_ai_twin_memory.sql");
   evidence.ai_twin_memory_cascade_defined = /ON DELETE CASCADE/.test(twinMemory);
-  evidence.ai_twin_memory_would_cascade_on_hard_delete_only = true;
+  evidence.ai_twin_memory_would_cascade_on_hard_delete_only = !evidence.privacy_service_found;
 
   const residualTables =
     evidence.delete_mode === "soft_update"

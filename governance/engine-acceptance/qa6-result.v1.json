@@ -4,8 +4,8 @@
   "suite_id": "QA6",
   "run_id": "qa6-performance-world-20260813",
   "todoId": "qa6-performance-world",
-  "measuredAt": "2026-08-13T03:09:04.602Z",
-  "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+  "measuredAt": "2026-08-13T21:35:17.238Z",
+  "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
   "mode": "tiny",
   "kill_switch": {
     "verified_before_checks": true,
@@ -22,17 +22,17 @@
   "checks": {
     "performance_world": {
       "check_id": "QA6_PERFORMANCE_WORLD",
-      "status": "UNSPECIFIED_PERF_BUDGET",
+      "status": "BLOCKED",
       "mode": "tiny",
-      "measuredAt": "2026-08-13T03:09:04.602Z",
+      "measuredAt": "2026-08-13T21:35:17.238Z",
       "seed": 20260812,
       "perf_oracle": {
-        "available": false,
-        "blocked_code": "BLOCKED_MISSING_ORACLE",
-        "budget_status": "UNSPECIFIED_PERF_BUDGET",
+        "available": true,
+        "blocked_code": null,
+        "budget_status": "SPECIFIED",
         "numeric_invention_forbidden": true,
-        "specified_tag_count": 0,
-        "unspecified_tag_count": 4,
+        "specified_tag_count": 4,
+        "unspecified_tag_count": 0,
         "probed_paths": [
           "governance/engine-acceptance/perf-budget.v1.json",
           "governance/slo",
@@ -44,8 +44,7 @@
           "no product SLO path: governance/slo",
           "no product SLO path: services/api-nest/docs/slo",
           "no product SLO path: services/api-nest/slo",
-          "no product SLO path: docs/slo",
-          "no product SLO/contract numeric budgets found — recording UNSPECIFIED_PERF_BUDGET (no invented p95/error_rate)"
+          "no product SLO path: docs/slo"
         ],
         "ci_only_heavy": true
       },
@@ -72,7 +71,7 @@
       "passed": 0,
       "failed": 0,
       "blocked": 2,
-      "unspecified": 2,
+      "unspecified": 0,
       "scenarios": [
         {
           "scenario_id": "PERF-FEED-READ",
@@ -84,56 +83,40 @@
           "title": "feed/home 읽기 부하",
           "kind": "k6_tagged_workload",
           "status": "BLOCKED",
-          "blocked_code": "BLOCKED_MISSING_ORACLE",
-          "budget_status": "UNSPECIFIED_PERF_BUDGET",
+          "blocked_code": "BLOCKED_ENV_CAPABILITY",
+          "budget_status": "SPECIFIED",
           "threshold": {
-            "p95_ms": null,
-            "error_rate": null,
-            "source": null,
-            "status": "UNSPECIFIED_PERF_BUDGET"
+            "p95_ms": 30,
+            "error_rate": 0.01,
+            "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo",
+            "status": "SPECIFIED"
           },
           "findings": [
-            "No product SLO/contract numeric budget — recorded UNSPECIFIED_PERF_BUDGET (no invented thresholds).",
-            "no product SLO path: governance/slo",
-            "no product SLO path: services/api-nest/docs/slo",
-            "no product SLO path: services/api-nest/slo"
+            "Heavy k6 execution is CI-only — local tiny records mechanism + budget binding without run."
           ],
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-13T03:09:04.602Z",
+            "clock_as_of": "2026-08-13T21:35:17.238Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
-                "result": "unspecified",
-                "blocked_code": "BLOCKED_MISSING_ORACLE",
-                "budget_status": "UNSPECIFIED_PERF_BUDGET"
+                "result": "specified",
+                "tag": "feed_read"
               },
               {
-                "step": "scenario_planned",
-                "scenario_id": "PERF-FEED-READ",
-                "tag": "feed_read",
-                "weight": 40,
-                "k6_executed": false,
-                "reason": "UNSPECIFIED_PERF_BUDGET"
+                "step": "k6_deferred",
+                "reason": "ci_only_heavy",
+                "mode": "tiny"
               }
             ],
-            "sanitized_request": {
-              "scenario_id": "PERF-FEED-READ",
-              "tag": "feed_read",
-              "weight": 40
-            },
-            "sanitized_response": {
-              "status": "BLOCKED",
-              "blocked_code": "BLOCKED_MISSING_ORACLE",
-              "budget_status": "UNSPECIFIED_PERF_BUDGET",
-              "mock_pass_forbidden": true
-            },
+            "sanitized_request": null,
+            "sanitized_response": null,
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+            "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "e01e0ef3c5c6005af83907d3870c38313e4c9b7c5d591dbe10c7eef32f54fd61",
+            "configuration_fingerprint": "6f17886ecc287645bba304db3d4337ea4350c3a874f36bf5306bdfd19fe8df9a",
             "invariant_id": "INV-PERF-01",
             "suite_id": "QA6",
             "live_http": false
@@ -149,56 +132,40 @@
           "title": "participate / execute-tick 부하",
           "kind": "k6_tagged_workload",
           "status": "BLOCKED",
-          "blocked_code": "BLOCKED_MISSING_ORACLE",
-          "budget_status": "UNSPECIFIED_PERF_BUDGET",
+          "blocked_code": "BLOCKED_ENV_CAPABILITY",
+          "budget_status": "SPECIFIED",
           "threshold": {
-            "p95_ms": null,
-            "error_rate": null,
-            "source": null,
-            "status": "UNSPECIFIED_PERF_BUDGET"
+            "p95_ms": 30,
+            "error_rate": 0.01,
+            "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo",
+            "status": "SPECIFIED"
           },
           "findings": [
-            "No product SLO/contract numeric budget — recorded UNSPECIFIED_PERF_BUDGET (no invented thresholds).",
-            "no product SLO path: governance/slo",
-            "no product SLO path: services/api-nest/docs/slo",
-            "no product SLO path: services/api-nest/slo"
+            "Heavy k6 execution is CI-only — local tiny records mechanism + budget binding without run."
           ],
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-13T03:09:04.602Z",
+            "clock_as_of": "2026-08-13T21:35:17.238Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
-                "result": "unspecified",
-                "blocked_code": "BLOCKED_MISSING_ORACLE",
-                "budget_status": "UNSPECIFIED_PERF_BUDGET"
+                "result": "specified",
+                "tag": "participate"
               },
               {
-                "step": "scenario_planned",
-                "scenario_id": "PERF-PARTICIPATE",
-                "tag": "participate",
-                "weight": 25,
-                "k6_executed": false,
-                "reason": "UNSPECIFIED_PERF_BUDGET"
+                "step": "k6_deferred",
+                "reason": "ci_only_heavy",
+                "mode": "tiny"
               }
             ],
-            "sanitized_request": {
-              "scenario_id": "PERF-PARTICIPATE",
-              "tag": "participate",
-              "weight": 25
-            },
-            "sanitized_response": {
-              "status": "BLOCKED",
-              "blocked_code": "BLOCKED_MISSING_ORACLE",
-              "budget_status": "UNSPECIFIED_PERF_BUDGET",
-              "mock_pass_forbidden": true
-            },
+            "sanitized_request": null,
+            "sanitized_response": null,
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+            "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "542b5bc6d265eae386a8bde0478acd2b4f27e3f5bcb22b9a485780a77c6925ad",
+            "configuration_fingerprint": "1afa01d9513268ba269ecc7ac00269d0682dd992d3d291472005d1b24bfd0668",
             "invariant_id": "INV-PERF-01",
             "suite_id": "QA6",
             "live_http": false
@@ -215,8 +182,8 @@
             "invariant_id": "INV-PERF-01",
             "critical": true,
             "status": "BLOCKED",
-            "blocked_code": "BLOCKED_MISSING_ORACLE",
-            "budget_status": "UNSPECIFIED_PERF_BUDGET",
+            "blocked_code": "BLOCKED_ENV_CAPABILITY",
+            "budget_status": "SPECIFIED",
             "scenario_ids": [
               "PERF-FEED-READ",
               "PERF-PARTICIPATE"
@@ -245,8 +212,8 @@
         "invariant_id": "INV-PERF-01",
         "critical": true,
         "status": "BLOCKED",
-        "blocked_code": "BLOCKED_MISSING_ORACLE",
-        "budget_status": "UNSPECIFIED_PERF_BUDGET",
+        "blocked_code": "BLOCKED_ENV_CAPABILITY",
+        "budget_status": "SPECIFIED",
         "scenario_ids": [
           "PERF-FEED-READ",
           "PERF-PARTICIPATE"
@@ -255,12 +222,12 @@
     ]
   },
   "critical_invariant_cumulative": {
-    "blocked": 5,
+    "blocked": 1,
     "skipped": 0,
     "uncovered": 0,
     "sources": {
       "QA5_cumulative": {
-        "blocked": 4,
+        "blocked": 0,
         "skipped": 0,
         "uncovered": 0
       },
@@ -285,9 +252,9 @@
   "kpi_forbidden": true,
   "numeric_invention_forbidden": true,
   "ci_only_heavy": true,
-  "budget_status": "UNSPECIFIED_PERF_BUDGET",
+  "budget_status": "SPECIFIED",
   "blocked_codes_observed": [
-    "BLOCKED_MISSING_ORACLE"
+    "BLOCKED_ENV_CAPABILITY"
   ],
   "ci": {
     "strategy_fail_fast": false,
@@ -303,5 +270,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "CI aggregator uses if: always(); artifact retention ≥ 90 days."
   ],
-  "checksum": "6dcd672cb5593fe6d403cb969e23be14df7318e3d676efe51007768bef6859bd"
+  "checksum": "07a20bc0f76ef16fd0bd2cd74ca707dfed8a53b3c93eb97fb7dea1265598f01f"
 }

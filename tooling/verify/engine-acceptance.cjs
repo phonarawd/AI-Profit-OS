@@ -750,17 +750,21 @@ if (evidence) {
     if (ephemeralQa6RewriteNow) {
       // run-qa6.cjs recomputes its own cumulative from QA5's on-disk result
       // only — it has no knowledge of QA8 in this ephemeral CI recompute.
+      // Pin re-derived from the live QA4-QA6 result files for the CURRENT
+      // baseline (not hardcoded speculatively): QA4/QA5 now record honest
+      // FAIL (harness executor not wired) rather than BLOCKED, so only QA6's
+      // own UNSPECIFIED_PERF_BUDGET/BLOCKED_ENV_CAPABILITY contributes.
       if (
         !evidence.critical_invariant ||
-        evidence.critical_invariant.blocked !== 5
+        evidence.critical_invariant.blocked !== 1
       ) {
-        fail("ephemeral QA6 rewrite must keep critical_invariant.blocked=5 (QA4-QA6 cumulative)");
+        fail("ephemeral QA6 rewrite must keep critical_invariant.blocked=1 (QA4-QA6 cumulative)");
       }
     } else if (
       !evidence.critical_invariant ||
-      evidence.critical_invariant.blocked !== 6
+      evidence.critical_invariant.blocked !== 2
     ) {
-      fail("critical_invariant.blocked must be 6 after QA8 completion (QA4-QA6 five plus QA8 dynamic-pentest BLOCKED_ENV_CAPABILITY)");
+      fail("critical_invariant.blocked must be 2 after QA8 completion (QA4-QA6 one plus QA8 dynamic-pentest BLOCKED_ENV_CAPABILITY)");
     }
   }
 }
