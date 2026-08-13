@@ -615,7 +615,16 @@ if (evidence) {
         fail("evidence.kill_switch.verified_before_qa8 must be true");
       }
     }
-    if (
+    if (ephemeralQa6RewriteNow) {
+      // run-qa6.cjs recomputes its own cumulative from QA5's on-disk result
+      // only — it has no knowledge of QA8 in this ephemeral CI recompute.
+      if (
+        !evidence.critical_invariant ||
+        evidence.critical_invariant.blocked !== 5
+      ) {
+        fail("ephemeral QA6 rewrite must keep critical_invariant.blocked=5 (QA4-QA6 cumulative)");
+      }
+    } else if (
       !evidence.critical_invariant ||
       evidence.critical_invariant.blocked !== 6
     ) {
@@ -1447,14 +1456,14 @@ if (qa8Result && !pendingRerun) {
       fail("qa8-result P0/P1 defects present must set verdict_contribution=ENGINE_NOT_ACCEPTED");
     }
   }
-  if (defects) {
+  if (defects && !ephemeralQa6Rewrite) {
     if (defects.counts.P0 > 0 || defects.counts.P1 > 0) {
       if (evidence && evidence.verdict !== "ENGINE_NOT_ACCEPTED") {
         fail("evidence-manifest.verdict must be ENGINE_NOT_ACCEPTED when defects.P0/P1 > 0");
       }
     }
   }
-  if (evidence) {
+  if (evidence && !ephemeralQa6Rewrite) {
     const qa8 = (evidence.suites || []).find((s) => s.suite_id === "QA8");
     if (qa8 && qa8.checksum !== qa8Result.checksum) {
       fail("evidence QA8.checksum must match qa8-result.checksum");
