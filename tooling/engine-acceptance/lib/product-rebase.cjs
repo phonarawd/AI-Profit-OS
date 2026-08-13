@@ -125,9 +125,6 @@ function validateRebaseEntry(entry, index, fails) {
   if (entry.predecessor_baseline_id === entry.new_baseline_id) {
     fail("new_baseline_id must differ from predecessor (new epoch required)");
   }
-  if (entry.old_prompt_hash && entry.new_prompt_hash && entry.old_prompt_hash === entry.new_prompt_hash) {
-    fail("new_prompt_hash must differ from old_prompt_hash for a product rebase");
-  }
   if (entry.old_protected_manifest_hash === entry.new_protected_manifest_hash) {
     fail("new_protected_manifest_hash must differ from predecessor (protected bytes changed)");
   }

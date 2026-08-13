@@ -253,6 +253,20 @@ function run() {
 
   {
     const f = [];
+    validateRebaseEntry(
+      makeValidEntry({
+        old_prompt_hash: "11".repeat(32),
+        new_prompt_hash: "11".repeat(32),
+        changed_protected_paths: ["supabase/migrations/x.sql"],
+      }),
+      null,
+      f,
+    );
+    check("schema_only_rebase_prompt_match_ok", f.length === 0, f.join("; "));
+  }
+
+  {
+    const f = [];
     evaluateRebaseInvariants(
       makeValidEntry(),
       {
