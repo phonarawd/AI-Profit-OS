@@ -619,22 +619,31 @@ function verifyPendingRerunEpoch(baseline, evidence, rebaseLedger, fails) {
 
 /**
  * A rebase entry pins acceptance_workflow_hash AS OF the rebase timestamp.
- * A later POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 entry (same baseline_id)
- * may legitimately move the CURRENT baseline hash beyond that pinned value —
- * this is the whole point of the controlled-amendment mechanism. Divergence
- * is only accepted when a ledger entry exactly bridges tip -> baseline.
+ * Later POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 entries (same baseline_id)
+ * may move the CURRENT baseline hash beyond that pinned value, including
+ * through a sequential chain (each amendment.old = previous.new).
+ * Divergence is accepted when that chain walks tipHash → baseline hash.
  */
 function findBridgingAmendment(amendmentLedger, baseline, tipHash) {
   const amends =
     amendmentLedger && Array.isArray(amendmentLedger.amendments)
       ? amendmentLedger.amendments
       : [];
-  return amends.find(
-    (a) =>
-      a.baseline_id === baseline.id &&
-      a.old_acceptance_workflow_hash === tipHash &&
-      a.new_acceptance_workflow_hash === baseline.acceptance_workflow_hash,
-  );
+  if (!baseline || !baseline.acceptance_workflow_hash) return null;
+  const target = baseline.acceptance_workflow_hash;
+  const sameId = amends.filter((a) => a.baseline_id === baseline.id);
+  let current = tipHash;
+  const seen = new Set();
+  let last = null;
+  while (current !== target) {
+    if (seen.has(current)) return null;
+    seen.add(current);
+    const next = sameId.find((a) => a.old_acceptance_workflow_hash === current);
+    if (!next) return null;
+    last = next;
+    current = next.new_acceptance_workflow_hash;
+  }
+  return last;
 }
 
 function verifyRebaseLedgerAgainstBaseline(baseline, rebaseLedger, evidence, fails, amendmentLedger) {
@@ -674,7 +683,7 @@ function verifyRebaseLedgerAgainstBaseline(baseline, rebaseLedger, evidence, fai
       if (!bridge) {
         fails.push(
           "current epoch acceptance_workflow_hash must equal rebase ledger, or be bridged by a " +
-            "POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 entry (old=rebase tip, new=baseline, same baseline_id)",
+            "POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 chain (old=rebase tip … new=baseline, same baseline_id)",
         );
       }
     }

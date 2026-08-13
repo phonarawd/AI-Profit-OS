@@ -186,6 +186,19 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/checks/failure-world.cjs",
   "tooling/engine-acceptance/checks/performance-world.cjs",
   "tooling/engine-acceptance/k6/scenario-mix.js",
+  "tooling/engine-acceptance/k6/route-catalog.cjs",
+  "tooling/engine-acceptance/lib/synthetic-identity.cjs",
+  "tooling/engine-acceptance/harness/ci-postgres.cjs",
+  "tooling/engine-acceptance/harness/ci-nest-boot.cjs",
+  "tooling/engine-acceptance/harness/llm-fault-server.cjs",
+  "tooling/engine-acceptance/harness/db-fault.cjs",
+  "tooling/engine-acceptance/harness/fault-orchestrator.cjs",
+  "tooling/engine-acceptance/run-qa5-fault.cjs",
+  "tooling/engine-acceptance/run-qa6-measure.cjs",
+  "tooling/engine-acceptance/run-qa8-adversarial.cjs",
+  "tooling/engine-acceptance/qa8/admin-route-inventory.cjs",
+  "tooling/engine-acceptance/qa8/adversarial-cases.cjs",
+  "tooling/engine-acceptance/selftest-pre-rebase-harness.cjs",
   "tooling/engine-acceptance/lib/seeded-rng.cjs",
   "tooling/engine-acceptance/lib/fingerprint-oracle.cjs",
   "tooling/engine-acceptance/lib/rich-failure-evidence.cjs",
@@ -2132,6 +2145,15 @@ try {
   selftestQa7();
 } catch (e) {
   fail(`qa7 selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
+  const harnessSelf = require("../engine-acceptance/selftest-pre-rebase-harness.cjs");
+  const out = harnessSelf.run();
+  if (out && Array.isArray(out.fails) && out.fails.length) {
+    for (const f of out.fails) fail(`pre-rebase harness: ${f}`);
+  }
+} catch (e) {
+  fail(`pre-rebase harness selftest threw: ${e && e.message ? e.message : e}`);
 }
 if (amendmentLedger && amendmentLedger.decision_id !== DECISION_ID) {
   fail(`decision_id must be ${DECISION_ID}`);

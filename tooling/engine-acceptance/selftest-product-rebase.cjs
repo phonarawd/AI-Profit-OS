@@ -24,6 +24,7 @@ const {
   verifyWashing,
   verifyPendingRerunEpoch,
   verifyRebaseLedgerAgainstBaseline,
+  findBridgingAmendment,
   detectProtectedScopeWash,
   mapSuitesForRebase,
   stampCurrentPolicyOnEntry,
@@ -422,6 +423,33 @@ function run() {
     const ledgerFails = [];
     verifyRebaseLedgerAgainstBaseline(liveBaseline, liveLedger, liveEvidence, ledgerFails);
     check("live_ledger_verifies_under_versioned_policy", ledgerFails.length === 0, ledgerFails.join("; "));
+
+    const twoHopLedger = {
+      amendments: [
+        {
+          baseline_id: liveBaseline.id,
+          old_acceptance_workflow_hash: "aaa",
+          new_acceptance_workflow_hash: "bbb",
+        },
+        {
+          baseline_id: liveBaseline.id,
+          old_acceptance_workflow_hash: "bbb",
+          new_acceptance_workflow_hash: "ccc",
+        },
+      ],
+    };
+    const twoHopBaseline = { id: liveBaseline.id, acceptance_workflow_hash: "ccc" };
+    check(
+      "bridging_amendment_walks_hash_chain",
+      Boolean(findBridgingAmendment(twoHopLedger, twoHopBaseline, "aaa")),
+      "two-hop amendment chain must bridge rebase tip to current baseline hash",
+    );
+    check(
+      "bridging_amendment_rejects_broken_chain",
+      findBridgingAmendment(twoHopLedger, { id: liveBaseline.id, acceptance_workflow_hash: "zzz" }, "aaa") ==
+        null,
+      "broken chain must not bridge",
+    );
   }
 
   {

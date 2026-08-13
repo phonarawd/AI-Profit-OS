@@ -1,8 +1,8 @@
 /**
- * QA-5 fault injection probe — harness only · 제품 mutation 0
+ * QA-5 fault seam probe — harness only · 제품 mutation 0
  *
- * fault injection 훅이 제품/harness에 실재하는지 탐지한다.
- * 없으면 BLOCKED_NO_FAULT_HOOK (mock PASS 금지).
+ * 권위 = 실행 가능한 실의존성 fault orchestrator
+ * (파일명만 있고 injectFault 스텁인 placeholder 는 PASS 불가).
  */
 "use strict";
 
@@ -10,8 +10,13 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { ROOT } = require("./hash-scope.cjs");
 
-/** 명시 후보 경로 (존재 + injectable export 필요) */
+const HARNESS_ORCHESTRATOR_REL =
+  "tooling/engine-acceptance/harness/fault-orchestrator.cjs";
+const HARNESS_RUNNER_REL = "tooling/engine-acceptance/run-qa5-fault.cjs";
+
+/** 제품 seam 후보 (미래 Admin/Clock 웨이브). 파일명만으로는 부족. */
 const CANDIDATE_RELS = [
+  HARNESS_ORCHESTRATOR_REL,
   "services/api-nest/src/common/fault.ts",
   "services/api-nest/src/common/fault.js",
   "services/api-nest/src/common/fault.cjs",
@@ -22,104 +27,137 @@ const CANDIDATE_RELS = [
   "tooling/engine-acceptance/hooks/fault-hook.adapter.cjs",
 ];
 
-/** 런타임 env 훅 이름 — 설정돼도 제품 주입면이 없으면 불충분 */
 const ENV_HOOK_KEYS = [
   "AIPO_QA_FAULT",
   "AIPO_QA_INJECT_FAULT",
   "AIPO_INJECT_FAULT",
   "AIPO_FAULT_HOOK",
+  "AIPO_QA5_EXECUTE_FAULTS",
 ];
 
-const INJECTABLE_EXPORT_RE =
-  /\b(export\s+(async\s+)?function\s+(injectFault|withFault|setFault|clearFault|createFaultInjector)|exports\.(injectFault|withFault|setFault|clearFault|createFaultInjector)\s*=|module\.exports\s*=\s*\{[^}]*(injectFault|withFault|setFault|clearFault|createFaultInjector))/;
+const REQUIRED_KIND = "harness_real_dependency_fault";
 
 /**
- * @returns {{
- *   available: boolean,
- *   blocked_code: null | "BLOCKED_NO_FAULT_HOOK",
- *   findings: string[],
- *   probed_paths: string[],
- *   env_hooks_present: string[],
- *   adapter_rel: string | null,
- * }}
+ * placeholder 가 통과하지 못하게 하는 권위 검사.
+ * @param {object|null} mod
+ * @param {string} src
+ * @param {{ runnerSrc?: string }} [extra]
  */
-function probeFaultHook() {
+function assertHarnessOrchestratorAuthority(mod, src, extra = {}) {
+  const fails = [];
+  if (!mod || typeof mod !== "object") fails.push("module not an object");
+  if (!mod || mod.ORCHESTRATOR_KIND !== REQUIRED_KIND) {
+    fails.push("ORCHESTRATOR_KIND must be harness_real_dependency_fault");
+  }
+  for (const fn of ["injectFault", "clearFault", "executeLlmFault", "executeDbFault"]) {
+    if (!mod || typeof mod[fn] !== "function") fails.push(`missing function ${fn}`);
+  }
+  const combined = `${src}\n${extra.companionSrc || ""}`;
+  if (!/createServer\s*\(/.test(combined) && !/http\.createServer/.test(combined)) {
+    fails.push("source must actually create an HTTP server (listen/createServer)");
+  }
+  if (!/docker/.test(combined) || !/stop/.test(combined)) {
+    fails.push("source must include a docker stop/start DB fault strategy");
+  }
+  const runnerSrc = extra.runnerSrc;
+  if (typeof runnerSrc === "string") {
+    if (!/fault-orchestrator/.test(runnerSrc) || !/executeLlmFault|executeDbFault/.test(runnerSrc)) {
+      fails.push("QA5 runner must require and invoke the orchestrator");
+    }
+  }
+  return { ok: fails.length === 0, fails };
+}
+
+function readRel(rel) {
+  const abs = path.join(ROOT, rel);
+  if (!fs.existsSync(abs)) return null;
+  try {
+    return fs.readFileSync(abs, "utf8");
+  } catch {
+    return null;
+  }
+}
+
+function probeHarnessOrchestrator() {
   const findings = [];
-  const probed_paths = [];
-  const existing = [];
+  const probed_paths = [HARNESS_ORCHESTRATOR_REL, HARNESS_RUNNER_REL];
+  const src = readRel(HARNESS_ORCHESTRATOR_REL);
+  if (!src) {
+    return {
+      available: false,
+      findings: ["harness orchestrator missing"],
+      probed_paths,
+    };
+  }
+  let mod = null;
+  try {
+    delete require.cache[require.resolve(path.join(ROOT, HARNESS_ORCHESTRATOR_REL))];
+    mod = require(path.join(ROOT, HARNESS_ORCHESTRATOR_REL));
+  } catch (e) {
+    return {
+      available: false,
+      findings: [`orchestrator require failed: ${e.message}`],
+      probed_paths,
+    };
+  }
+  const runnerSrc = readRel(HARNESS_RUNNER_REL) || "";
+  const companionSrc = [
+    readRel("tooling/engine-acceptance/harness/llm-fault-server.cjs") || "",
+    readRel("tooling/engine-acceptance/harness/db-fault.cjs") || "",
+  ].join("\n");
+  const auth = assertHarnessOrchestratorAuthority(mod, src, { runnerSrc, companionSrc });
+  if (!auth.ok) {
+    findings.push(...auth.fails.map((f) => `orchestrator authority: ${f}`));
+    return { available: false, findings, probed_paths };
+  }
+  if (!runnerSrc) {
+    return {
+      available: false,
+      findings: ["run-qa5-fault.cjs missing — orchestrator unused"],
+      probed_paths,
+    };
+  }
+  return {
+    available: true,
+    findings: [
+      "executable harness fault orchestrator (LLM HTTP server + DB docker strategy) wired from run-qa5-fault.cjs",
+    ],
+    probed_paths,
+    adapter_rel: HARNESS_ORCHESTRATOR_REL,
+  };
+}
+
+function probeFaultHook() {
+  const harness = probeHarnessOrchestrator();
+  const env_hooks_present = ENV_HOOK_KEYS.filter((k) => Boolean(process.env[k]));
+  if (harness.available) {
+    return {
+      available: true,
+      blocked_code: null,
+      findings: harness.findings,
+      probed_paths: harness.probed_paths.concat(CANDIDATE_RELS),
+      env_hooks_present,
+      adapter_rel: harness.adapter_rel,
+      authority: REQUIRED_KIND,
+    };
+  }
+
+  const findings = [...(harness.findings || [])];
+  const probed_paths = [...(harness.probed_paths || [])];
 
   for (const rel of CANDIDATE_RELS) {
+    if (rel === HARNESS_ORCHESTRATOR_REL) continue;
     const abs = path.join(ROOT, rel);
     probed_paths.push(rel);
     if (!fs.existsSync(abs)) continue;
-    existing.push(rel);
-    let body = "";
-    try {
-      body = fs.readFileSync(abs, "utf8");
-    } catch (e) {
-      findings.push(`${rel}: unreadable (${e.message})`);
-      continue;
-    }
-    if (INJECTABLE_EXPORT_RE.test(body)) {
-      return {
-        available: true,
-        blocked_code: null,
-        findings: [`injectable fault export found at ${rel}`],
-        probed_paths,
-        env_hooks_present: ENV_HOOK_KEYS.filter((k) => Boolean(process.env[k])),
-        adapter_rel: rel,
-      };
-    }
     findings.push(
-      `${rel}: exists but no injectable export (injectFault/withFault/setFault/…)`,
+      `${rel}: product/legacy candidate present but harness orchestrator authority not satisfied`,
     );
   }
 
-  const scanRoots = [
-    "services/api-nest/src/common",
-    "services/api-nest/src/testing",
-    "services/api-nest/src/resilience",
-  ];
-  for (const rootRel of scanRoots) {
-    const absRoot = path.join(ROOT, rootRel);
-    if (!fs.existsSync(absRoot)) continue;
-    let entries = [];
-    try {
-      entries = fs.readdirSync(absRoot, { withFileTypes: true });
-    } catch {
-      continue;
-    }
-    for (const ent of entries) {
-      if (!ent.isFile()) continue;
-      if (!/^fault/i.test(ent.name)) continue;
-      if (!/\.(ts|js|cjs|mts|cts)$/.test(ent.name)) continue;
-      const rel = `${rootRel}/${ent.name}`.replace(/\\/g, "/");
-      if (probed_paths.includes(rel)) continue;
-      probed_paths.push(rel);
-      const body = fs.readFileSync(path.join(ROOT, rel), "utf8");
-      if (INJECTABLE_EXPORT_RE.test(body)) {
-        return {
-          available: true,
-          blocked_code: null,
-          findings: [`injectable fault export found at ${rel}`],
-          probed_paths,
-          env_hooks_present: ENV_HOOK_KEYS.filter((k) => Boolean(process.env[k])),
-          adapter_rel: rel,
-        };
-      }
-      findings.push(`${rel}: fault-named file without injectable export`);
-    }
-  }
-
-  const env_hooks_present = ENV_HOOK_KEYS.filter((k) => Boolean(process.env[k]));
   if (env_hooks_present.length) {
     findings.push(
-      `env present (${env_hooks_present.join(",")}) but no product/harness injectable surface`,
-    );
-  }
-  if (existing.length === 0) {
-    findings.push(
-      "no candidate fault-hook module under api-nest/common|testing|resilience",
+      `env present (${env_hooks_present.join(",")}) but no executable real-dependency fault seam`,
     );
   }
 
@@ -130,11 +168,17 @@ function probeFaultHook() {
     probed_paths,
     env_hooks_present,
     adapter_rel: null,
+    authority: null,
   };
 }
 
 module.exports = {
   probeFaultHook,
+  probeHarnessOrchestrator,
+  assertHarnessOrchestratorAuthority,
   CANDIDATE_RELS,
   ENV_HOOK_KEYS,
+  HARNESS_ORCHESTRATOR_REL,
+  HARNESS_RUNNER_REL,
+  REQUIRED_KIND,
 };
