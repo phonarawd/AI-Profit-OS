@@ -25,9 +25,27 @@ function expect(name, cond, detail) {
   cases.push({ name: name, pass: !!cond, detail: detail || "" });
 }
 
+function asPreToolShell(stdinObj) {
+  if (typeof stdinObj === "string") return stdinObj;
+  if (stdinObj && stdinObj.tool_name) return stdinObj;
+  if (stdinObj && (stdinObj.command || stdinObj.cwd)) {
+    return {
+      hook_event_name: "preToolUse",
+      tool_name: "Shell",
+      tool_input: {
+        command: stdinObj.command || "",
+        working_directory: stdinObj.cwd || ROOT,
+      },
+      cwd: stdinObj.cwd || ROOT,
+    };
+  }
+  return stdinObj;
+}
+
 function runGitGate(stdinObj, opts) {
+  const shaped = asPreToolShell(stdinObj);
   const stdin =
-    typeof stdinObj === "string" ? stdinObj : JSON.stringify(stdinObj || {});
+    typeof shaped === "string" ? shaped : JSON.stringify(shaped || {});
   const started = Date.now();
   const r = spawnSync(process.execPath, [HOOK], {
     cwd: (opts && opts.cwd) || ROOT,

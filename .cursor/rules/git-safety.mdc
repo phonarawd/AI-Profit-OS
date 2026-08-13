@@ -49,4 +49,4 @@ PR면 `gh pr checks --watch` 동등.
 
 ## 이중 문
 
-Cursor `beforeShellExecution` + Husky pre-commit/pre-push + GitHub Actions `gate.yml` + **push 후 `gh run watch`**
+Cursor `preToolUse` + Husky pre-commit/pre-push + GitHub Actions `gate.yml` + **push 후 `gh run watch`**

@@ -37,5 +37,5 @@ alwaysApply: true
 
 - 정책: `.cursor/hooks/lib/project-boundary-policy.mjs` (슬러그: drive/`_` → `-`)
 - 엔트리: `.cursor/hooks/project-boundary.mjs` · stdin SSOT `lib/hook-io.cjs`
-- 배선: `.cursor/hooks.json` (`failClosed: true` · beforeShellExecution 1개)
+- 배선: `.cursor/hooks.json` (`failClosed: true` · `preToolUse` 1개 + `beforeTabFileRead` 1개)
 - 검증: `pnpm verify:project-boundary` (fixture only)

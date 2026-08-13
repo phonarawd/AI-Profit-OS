@@ -658,11 +658,11 @@ export function createPolicy(opts = {}) {
       );
     }
 
+    const toolBare = String(tool).replace(/^MCP:/i, "");
     if (
-      /list_projects|list_organizations|create_project|pause_project|restore_project|get_cost|confirm_cost/i.test(
-        tool
-      ) &&
-      /supabase/i.test(server + tool)
+      /^(list_projects|list_organizations|create_project|pause_project|restore_project|get_cost|confirm_cost)$/i.test(
+        toolBare
+      )
     ) {
       return deny(
         "FOREIGN_SUPABASE",
@@ -757,6 +757,61 @@ export function createPolicy(opts = {}) {
     return allow();
   }
 
+  function isMcpLike(tool, payload, input) {
+    if (/^MCP:/i.test(tool)) return true;
+    if (/^(CallMcpTool|FetchMcpResource)$/i.test(tool)) return true;
+    if (payload && (payload.server || payload.url)) return true;
+    if (input && typeof input === "object" && (input.server || input.toolName)) {
+      return true;
+    }
+    return false;
+  }
+
+  function normalizeMcpFromPreTool(payload, tool, input) {
+    const obj = input && typeof input === "object" ? input : {};
+    const mcpTool = /^MCP:/i.test(tool)
+      ? tool.replace(/^MCP:/i, "")
+      : String(obj.toolName || obj.tool_name || tool || "");
+    const server = String(
+      (payload && (payload.server || payload.url)) || obj.server || ""
+    );
+    const args =
+      obj.arguments && typeof obj.arguments === "object" ? obj.arguments : obj;
+    return {
+      ...payload,
+      server,
+      tool_name: mcpTool,
+      tool_input: args,
+      arguments: args,
+    };
+  }
+
+  function decideWebFetch(input) {
+    const url = String((input && (input.url || input.uri)) || "");
+    if (!url) return allow();
+    if (/^https?:\/\//i.test(url)) return allow();
+    let target = url;
+    if (/^file:/i.test(url)) {
+      try {
+        target = decodeURIComponent(
+          url.replace(/^file:\/\//i, "").replace(/^\/([A-Za-z]:)/, "$1")
+        );
+      } catch {
+        target = url;
+      }
+    }
+    if (
+      path.isAbsolute(target) ||
+      /^[A-Za-z]:[\\/]/.test(target) ||
+      target.startsWith("\\\\") ||
+      hasForeignFsMarker(target) ||
+      looksLikeGlobalPlansString(target)
+    ) {
+      return classifyPath(target);
+    }
+    return allow();
+  }
+
   function decidePreToolUse(payload) {
     const tool = String(
       (payload && (payload.tool_name || payload.toolName)) || ""
@@ -792,7 +847,7 @@ export function createPolicy(opts = {}) {
       });
     }
 
-    if (shellCmd && !/^read|write|strreplace|grep|glob|edit|task/i.test(tool)) {
+    if (shellCmd && !/^read|write|strreplace|grep|glob|edit|task|mcp|callmcp|fetchmcp|webfetch/i.test(tool)) {
       return decideShell({
         ...payload,
         command: shellCmd,
@@ -801,6 +856,14 @@ export function createPolicy(opts = {}) {
           payload.cwd ||
           "",
       });
+    }
+
+    if (isMcpLike(tool, payload, input)) {
+      return decideMcp(normalizeMcpFromPreTool(payload, tool, input));
+    }
+
+    if (/^WebFetch$/i.test(tool)) {
+      return decideWebFetch(input);
     }
 
     if (/^read$/i.test(tool) || tool === "Read") {
@@ -818,7 +881,7 @@ export function createPolicy(opts = {}) {
     }
 
     if (
-      /^(grep|glob|task|fetchmcpresource)$/i.test(tool) ||
+      /^(grep|glob|task)$/i.test(tool) ||
       tool === "Grep" ||
       tool === "Glob" ||
       tool === "Task"
@@ -856,27 +919,23 @@ export function createPolicy(opts = {}) {
         ""
     );
 
-    if (/beforeRead|TabFileRead|read_file/i.test(event)) {
+    if (/TabFileRead|beforeTab/i.test(event)) {
       return decideRead(payload);
-    }
-    if (/beforeShell|shell/i.test(event) && !/preTool/i.test(event)) {
-      return decideShell(payload);
-    }
-    if (/beforeMCP|mcp/i.test(event)) {
-      return decideMcp(payload);
     }
     if (/preToolUse|pre_tool/i.test(event)) {
       return decidePreToolUse(payload);
     }
 
-    if (payload.server || payload.toolName || payload.tool_name) {
-      const t = String(payload.tool_name || payload.toolName || "");
-      if (payload.server || /mcp/i.test(t)) return decideMcp(payload);
-      return decidePreToolUse(payload);
+    if (
+      payload.server ||
+      /^MCP:/i.test(String(payload.tool_name || payload.toolName || ""))
+    ) {
+      return decideMcp(payload);
     }
     if (payload.command || payload.cmd) return decideShell(payload);
     if (payload.file_path || payload.filePath) return decideRead(payload);
     if (payload.path && !payload.tool_input) return decideRead(payload);
+    if (payload.tool_name || payload.toolName) return decidePreToolUse(payload);
     return decidePreToolUse(payload);
   }
 

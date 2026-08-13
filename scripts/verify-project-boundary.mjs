@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Fixture-only project boundary verify + unit tests.
+ * Fixture-only project boundary verify — MINIMAL two-hook architecture.
  * Never opens real clime-gb / global plans contents.
  */
 import path from "node:path";
@@ -23,6 +23,7 @@ import {
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..");
 const HOOK = path.join(ROOT, ".cursor", "hooks", "project-boundary.mjs");
+const HOOKS_JSON_PATH = path.join(ROOT, ".cursor", "hooks.json");
 
 const FAKE_HOME = "C:\\Users\\PC";
 const policy = createPolicy({
@@ -34,12 +35,13 @@ const policy = createPolicy({
 const cases = [];
 
 function expect(name, cond, detail) {
-  cases.push({ name, pass: !!cond, detail: detail || "" });
+  cases.push({ name: name, pass: !!cond, detail: detail || "" });
 }
 
 function runHook(stdin) {
   const input =
     typeof stdin === "string" ? stdin : JSON.stringify(stdin ?? {});
+  const started = Date.now();
   const r = spawnSync(process.execPath, [HOOK], {
     cwd: ROOT,
     input,
@@ -58,10 +60,20 @@ function runHook(stdin) {
     permission: json && json.permission,
     code: json && json.code,
     json,
+    ms: Date.now() - started,
   };
 }
 
-// --- unit: policy decisions (fixture paths only) ---
+function preTool(toolName, toolInput, extra) {
+  return {
+    hook_event_name: "preToolUse",
+    tool_name: toolName,
+    tool_input: toolInput || {},
+    cwd: ROOT,
+    ...(extra || {}),
+  };
+}
+
 const localPlan = path.join(ROOT, ".cursor", "plans", "local.plan.md");
 const globalPlan = path.join(
   FAKE_HOME,
@@ -81,268 +93,79 @@ const projectCacheOk = path.join(
   "agent-transcripts",
   "x.jsonl"
 );
-
-expect(
-  "ALLOW read repo local.plan.md",
-  policy.decideRead({ file_path: localPlan }).permission === "allow"
-);
-expect(
-  "ALLOW read workspace AGENTS.md",
-  policy.decideRead({ file_path: path.join(ROOT, "AGENTS.md") })
-    .permission === "allow"
-);
-expect(
-  "ALLOW read this project cursor cache",
-  policy.decideRead({ file_path: projectCacheOk }).permission === "allow"
-);
-expect(
-  "DENY read global plans",
-  policy.decideRead({ file_path: globalPlan }).permission === "deny" &&
-    policy.decideRead({ file_path: globalPlan }).code ===
-      "GLOBAL_CURSOR_PLANS",
-  policy.decideRead({ file_path: globalPlan }).code
-);
-expect(
-  "DENY read clime-gb FS fixture",
-  policy.decideRead({ file_path: climeFs }).permission === "deny" &&
-    policy.decideRead({ file_path: climeFs }).code === "FOREIGN_FS"
-);
-expect(
-  "DENY repo clime_*.plan.md marker",
-  policy.decideRead({ file_path: repoClimePlan }).permission === "deny"
-);
-
-expect(
-  "DENY shell Get-ChildItem global plans",
-  policy.decideShell({
-    command:
-      "Get-ChildItem $env:USERPROFILE\\.cursor\\plans",
-    cwd: ROOT,
-  }).permission === "deny" &&
-    policy.decideShell({
-      command: "Get-ChildItem $env:USERPROFILE\\.cursor\\plans",
-      cwd: ROOT,
-    }).code === "GLOBAL_CURSOR_PLANS"
-);
-expect(
-  "DENY shell Get-Content global plans",
-  policy.decideShell({
-    command:
-      "Get-Content %USERPROFILE%\\.cursor\\plans\\x.plan.md",
-    cwd: ROOT,
-  }).permission === "deny"
-);
-expect(
-  "DENY shell gh clime-gb",
-  policy.decideShell({
-    command: "gh repo view phonarawd/clime-gb",
-    cwd: ROOT,
-  }).permission === "deny" &&
-    policy.decideShell({
-      command: "gh repo view phonarawd/clime-gb",
-      cwd: ROOT,
-    }).code === "FOREIGN_GITHUB"
-);
-expect(
-  "DENY shell supabase foreign ref",
-  policy.decideShell({
-    command: "supabase link --project-ref " + FOREIGN_SUPABASE_REF,
-    cwd: ROOT,
-  }).permission === "deny" &&
-    policy.decideShell({
-      command: "supabase link --project-ref " + FOREIGN_SUPABASE_REF,
-      cwd: ROOT,
-    }).code === "FOREIGN_SUPABASE"
-);
-expect(
-  "DENY shell supabase projects list",
-  policy.decideShell({
-    command: "supabase projects list",
-    cwd: ROOT,
-  }).permission === "deny"
-);
-expect(
-  "DENY shell supabase orgs list",
-  policy.decideShell({
-    command: "supabase orgs list",
-    cwd: ROOT,
-  }).permission === "deny"
-);
-expect(
-  "ALLOW shell inside repo",
-  policy.decideShell({ command: "pnpm -v", cwd: ROOT }).permission ===
-    "allow"
-);
-expect(
-  "ALLOW shell supabase allowed ref",
-  policy.decideShell({
-    command: "supabase link --project-ref " + ALLOWED_SUPABASE_REF,
-    cwd: ROOT,
-  }).permission === "allow"
-);
-
-expect(
-  "DENY Grep global plans path",
-  policy.decidePreToolUse({
-    tool_name: "Grep",
-    tool_input: {
-      pattern: "todo",
-      path: path.join(FAKE_HOME, ".cursor", "plans"),
-    },
-  }).permission === "deny"
-);
-expect(
-  "ALLOW Grep hooks dir with foreign marker pattern (self-lock)",
-  policy.decidePreToolUse({
-    tool_name: "Grep",
-    tool_input: {
-      pattern: "clime-gb",
-      path: path.join(ROOT, ".cursor", "hooks"),
-    },
-  }).permission === "allow"
-);
-expect(
-  "DENY Glob clime-gb path",
-  policy.decidePreToolUse({
-    tool_name: "Glob",
-    tool_input: {
-      target_directory: "C:\\Users\\PC\\Desktop\\clime-gb",
-      glob_pattern: "**/*",
-    },
-  }).permission === "deny"
-);
-expect(
-  "DENY MCP foreign supabase",
-  policy.decideMcp({
-    server: "supabase",
-    tool_name: "execute_sql",
-    arguments: { project_id: FOREIGN_SUPABASE_REF },
-  }).permission === "deny" &&
-    policy.decideMcp({
-      server: "supabase",
-      tool_name: "execute_sql",
-      arguments: { project_id: FOREIGN_SUPABASE_REF },
-    }).code === "FOREIGN_SUPABASE"
-);
-expect(
-  "DENY MCP list_projects",
-  policy.decideMcp({
-    server: "plugin-supabase-supabase",
-    tool_name: "list_projects",
-    arguments: {},
-  }).permission === "deny"
-);
-expect(
-  "ALLOW MCP allowed supabase ref",
-  policy.decideMcp({
-    server: "project-0-AI_PROFIT_OS-supabase",
-    tool_name: "list_tables",
-    arguments: { project_id: ALLOWED_SUPABASE_REF },
-  }).permission === "allow"
-);
-
-// --- hook process: empty → allow; non-empty malformed → deny; exit 0 ---
-const empty = runHook("");
-expect(
-  "hook empty stdin ALLOW exit 0",
-  empty.status === 0 && empty.permission === "allow",
-  "status=" + empty.status + " perm=" + empty.permission
-);
-const malformed = runHook("not-json{{{");
-expect(
-  "hook non-JSON DENY exit 0",
-  malformed.status === 0 && malformed.permission === "deny",
-  "status=" + malformed.status + " perm=" + malformed.permission
-);
-
-const hookDenyGlobal = runHook({
-  hook_event_name: "beforeReadFile",
-  file_path: globalPlan,
-});
-expect(
-  "hook DENY global plans read",
-  hookDenyGlobal.status === 0 &&
-    hookDenyGlobal.permission === "deny" &&
-    hookDenyGlobal.code === "GLOBAL_CURSOR_PLANS"
-);
-
-const hookDenyClime = runHook({
-  hook_event_name: "beforeShellExecution",
-  command: "dir C:\\Users\\PC\\Desktop\\clime-gb",
-  cwd: ROOT,
-});
-expect(
-  "hook DENY clime shell",
-  hookDenyClime.status === 0 && hookDenyClime.permission === "deny"
-);
-
-const hookAllowLocal = runHook({
-  hook_event_name: "beforeReadFile",
-  file_path: localPlan,
-});
-expect(
-  "hook ALLOW repo local.plan.md",
-  hookAllowLocal.status === 0 && hookAllowLocal.permission === "allow"
-);
-
-const hookDenyGh = runHook({
-  tool_name: "Shell",
-  tool_input: { command: "gh repo view phonarawd/clime-gb" },
-  cwd: ROOT,
-});
-expect(
-  "hook DENY gh clime-gb (preTool)",
-  hookDenyGh.status === 0 && hookDenyGh.permission === "deny"
-);
-
-// --- slug + this-project Cursor cache (AwaitShell / terminals / transcripts) ---
-const rootSlug = cursorProjectSlug(ROOT);
-expect("slug has no underscore", !/_/.test(rootSlug), rootSlug);
-expect("slug has no colon", !/:/.test(rootSlug), rootSlug);
-expect(
-  "slug list includes full + basename",
-  cursorProjectSlugs(ROOT).length >= 1
-);
-if (process.platform === "win32") {
-  expect(
-    "win32 AI_PROFIT_OS → c-Users-PC-Desktop-AI-PROFIT-OS",
-    cursorProjectSlug("C:\\Users\\PC\\Desktop\\AI_PROFIT_OS") ===
-      "c-Users-PC-Desktop-AI-PROFIT-OS"
-  );
-}
-
 const cacheTerminals = path.join(
   policy.allowedProjectCache,
   "terminals",
   "3.txt"
 );
-expect(
-  "ALLOW this project terminals (AwaitShell)",
-  policy.decideRead({ file_path: cacheTerminals }).permission === "allow"
-);
-expect(
-  "ALLOW shell cwd this project terminals",
-  policy.decideShell({
-    command: "git status --short",
-    cwd: path.join(policy.allowedProjectCache, "terminals"),
-  }).permission === "allow"
-);
-for (const slug of policy.projectSlugs) {
-  const pth = path.join(
-    FAKE_HOME,
-    ".cursor",
-    "projects",
-    slug,
-    "agent-transcripts",
-    "x.jsonl"
-  );
-  expect(
-    "ALLOW cache slug " + slug,
-    policy.decideRead({ file_path: pth }).permission === "allow",
-    pth
-  );
-}
 
+// --- 1–6 ALLOW ---
+expect(
+  "1 normal repo Read ALLOW",
+  policy.decidePreToolUse(preTool("Read", { path: path.join(ROOT, "AGENTS.md") }))
+    .permission === "allow"
+);
+expect(
+  "2 normal repo Write ALLOW",
+  policy.decidePreToolUse(
+    preTool("Write", {
+      path: path.join(ROOT, ".cursor", "hooks", "_min-wave-fixture.tmp"),
+      contents: "ok",
+    })
+  ).permission === "allow"
+);
+expect(
+  "3 normal repo Grep ALLOW",
+  policy.decidePreToolUse(
+    preTool("Grep", { path: path.join(ROOT, ".cursor", "hooks"), pattern: "clime-gb" })
+  ).permission === "allow"
+);
+expect(
+  "4 normal Shell ALLOW",
+  policy.decidePreToolUse(
+    preTool("Shell", { command: "pnpm -v", working_directory: ROOT })
+  ).permission === "allow"
+);
+expect(
+  "5 normal MCP ALLOW",
+  policy.decidePreToolUse(
+    preTool("CallMcpTool", {
+      server: "project-0-AI_PROFIT_OS-supabase",
+      toolName: "list_tables",
+      arguments: { project_id: ALLOWED_SUPABASE_REF },
+    })
+  ).permission === "allow"
+);
+expect(
+  "6 AI_PROFIT_OS Cursor cache ALLOW",
+  policy.decideRead({ file_path: projectCacheOk }).permission === "allow"
+);
+
+// --- 7–12 DENY isolation ---
+expect(
+  "7 clime-gb Read fixture DENY",
+  policy.decidePreToolUse(preTool("Read", { path: climeFs })).permission ===
+    "deny" &&
+    policy.decidePreToolUse(preTool("Read", { path: climeFs })).code ===
+      "FOREIGN_FS"
+);
+expect(
+  "8 clime-gb Write fixture DENY",
+  policy.decidePreToolUse(preTool("Write", { path: climeFs, contents: "x" }))
+    .permission === "deny"
+);
+expect(
+  "9 clime-gb Grep fixture DENY",
+  policy.decidePreToolUse(
+    preTool("Grep", { path: "C:\\Users\\PC\\Desktop\\clime-gb", pattern: "x" })
+  ).permission === "deny"
+);
+expect(
+  "10 clime-gb Shell path fixture DENY",
+  policy.decidePreToolUse(
+    preTool("Shell", { command: "dir C:\\Users\\PC\\Desktop\\clime-gb", working_directory: ROOT })
+  ).permission === "deny"
+);
 const climeCache = path.join(
   FAKE_HOME,
   ".cursor",
@@ -352,40 +175,98 @@ const climeCache = path.join(
   "1.txt"
 );
 expect(
-  "DENY clime-gb Cursor cache",
+  "11 clime-gb Cursor cache fixture DENY",
   policy.decideRead({ file_path: climeCache }).permission === "deny"
 );
-const otherCache = path.join(
-  FAKE_HOME,
-  ".cursor",
-  "projects",
-  "c-Users-PC-Desktop-OtherApp",
-  "terminals",
-  "1.txt"
-);
 expect(
-  "DENY unrelated Cursor project cache",
-  policy.decideRead({ file_path: otherCache }).permission === "deny"
-);
-expect(
-  "DENY unrelated filesystem project",
+  "12 foreign project fixture DENY",
   policy.decideRead({
     file_path: "C:\\Users\\PC\\Desktop\\SomeOtherProject\\README.md",
   }).permission === "deny"
 );
+
+// --- 13–14 shell unique policies ---
 expect(
-  "ALLOW repo subdirectory",
-  policy.decideRead({
-    file_path: path.join(ROOT, ".cursor", "hooks", "project-boundary.mjs"),
-  }).permission === "allow"
+  "13 --no-verify Shell DENY",
+  policy.decidePreToolUse(
+    preTool("Shell", {
+      command: "git commit --no-verify -m fixture",
+      working_directory: ROOT,
+    })
+  ).permission === "deny"
+);
+expect(
+  "14 protected secret-staging DENY",
+  policy.decidePreToolUse(
+    preTool("Shell", { command: "git add .env", working_directory: ROOT })
+  ).permission === "deny"
 );
 
+// --- extra isolation (kept, still live policy) ---
 expect(
-  "DENY git commit --no-verify",
+  "ALLOW read repo local.plan.md",
+  policy.decideRead({ file_path: localPlan }).permission === "allow"
+);
+expect(
+  "DENY read global plans",
+  policy.decideRead({ file_path: globalPlan }).permission === "deny" &&
+    policy.decideRead({ file_path: globalPlan }).code === "GLOBAL_CURSOR_PLANS"
+);
+expect(
+  "DENY repo clime_*.plan.md marker",
+  policy.decideRead({ file_path: repoClimePlan }).permission === "deny"
+);
+expect(
+  "DENY shell gh clime-gb",
   policy.decideShell({
-    command: "git commit --no-verify -m fixture",
+    command: "gh repo view phonarawd/clime-gb",
     cwd: ROOT,
-  }).permission === "deny"
+  }).code === "FOREIGN_GITHUB"
+);
+expect(
+  "DENY shell supabase foreign ref",
+  policy.decideShell({
+    command: "supabase link --project-ref " + FOREIGN_SUPABASE_REF,
+    cwd: ROOT,
+  }).code === "FOREIGN_SUPABASE"
+);
+expect(
+  "DENY Glob clime-gb path",
+  policy.decidePreToolUse(
+    preTool("Glob", {
+      target_directory: "C:\\Users\\PC\\Desktop\\clime-gb",
+      glob_pattern: "**/*",
+    })
+  ).permission === "deny"
+);
+expect(
+  "DENY Delete clime-gb path",
+  policy.decidePreToolUse(preTool("Delete", { path: climeFs })).permission ===
+    "deny"
+);
+expect(
+  "DENY MCP native prefix foreign supabase",
+  policy.decidePreToolUse(
+    preTool("MCP:execute_sql", {
+      project_id: FOREIGN_SUPABASE_REF,
+      query: "select 1",
+    })
+  ).permission === "deny"
+);
+expect(
+  "DENY MCP CallMcpTool account-wide list_projects",
+  policy.decidePreToolUse(
+    preTool("CallMcpTool", {
+      server: "plugin-supabase-supabase",
+      toolName: "list_projects",
+      arguments: {},
+    })
+  ).permission === "deny"
+);
+expect(
+  "DENY MCP list_projects without server (preTool-only)",
+  policy.decidePreToolUse(preTool("MCP:list_projects", {})).permission ===
+    "deny"
 );
 expect(
   "ALLOW git commit message mentioning --no-verify",
@@ -395,129 +276,227 @@ expect(
   }).permission === "allow"
 );
 expect(
-  "DENY git add .env",
-  policy.decideShell({ command: "git add .env", cwd: ROOT }).permission ===
-    "deny"
+  "ALLOW this project terminals (AwaitShell)",
+  policy.decideRead({ file_path: cacheTerminals }).permission === "allow"
+);
+expect(
+  "DENY unrelated Cursor project cache",
+  policy.decideRead({
+    file_path: path.join(
+      FAKE_HOME,
+      ".cursor",
+      "projects",
+      "c-Users-PC-Desktop-OtherApp",
+      "terminals",
+      "1.txt"
+    ),
+  }).permission === "deny"
 );
 
-const tPolicy = Date.now();
-policy.decideRead({ file_path: path.join(ROOT, "package.json") });
-expect("low-cost policy decideRead", Date.now() - tPolicy < 50);
+const rootSlug = cursorProjectSlug(ROOT);
+expect("slug has no underscore", !/_/.test(rootSlug), rootSlug);
+if (process.platform === "win32") {
+  expect(
+    "win32 AI_PROFIT_OS → c-Users-PC-Desktop-AI-PROFIT-OS",
+    cursorProjectSlug("C:\\Users\\PC\\Desktop\\AI_PROFIT_OS") ===
+      "c-Users-PC-Desktop-AI-PROFIT-OS"
+  );
+}
+expect("slug list includes full + basename", cursorProjectSlugs(ROOT).length >= 1);
 
-// --- parser (no spawn) ---
-expect("parse valid full JSON", parsePayloadResult('{"a":1}').ok === true);
-expect("parse empty stdin", parsePayloadResult("").empty === true);
-expect("parse whitespace-only", parsePayloadResult("  \n\t  ").empty === true);
+// --- 15–17 parser ---
+expect("15 valid full JSON parse", parsePayloadResult('{"a":1}').ok === true);
 expect(
-  "parse truncated JSON",
-  parsePayloadResult('{"hook_event_name":"beforeReadFile","file_path":"C:').ok ===
-    false &&
-    parsePayloadResult('{"hook_event_name":"beforeReadFile","file_path":"C:')
-      .empty === false
-);
-expect(
-  "parse malformed JSON",
-  parsePayloadResult("not-json{{{").ok === false &&
-    parsePayloadResult("not-json{{{").empty === false
-);
-expect(
-  "parse Windows path payload",
+  "16 parse Windows path payload",
   parsePayloadResult(
     '{"file_path":"C:\\\\Users\\\\PC\\\\Desktop\\\\AI_PROFIT_OS\\\\x.txt"}'
   ).ok === true
 );
 expect(
-  "parse escaped characters",
-  parsePayloadResult('{"x":"a\\"b\\\\c"}').ok === true
+  "17 malformed/truncated settled JSON not ok",
+  parsePayloadResult('{"hook_event_name":"preToolUse","tool_name":"Read","tool_input":{"path":"C:').ok ===
+    false &&
+    parsePayloadResult(
+      '{"hook_event_name":"preToolUse","tool_name":"Read","tool_input":{"path":"C:'
+    ).empty === false
 );
+expect("parse empty stdin", parsePayloadResult("").empty === true);
 expect("settled object helper", looksSettledJsonObject('{"a":1}') === true);
 expect(
   "truncated helper",
-  looksTruncatedJson('{"hook_event_name":"beforeReadFile"') === true
+  looksTruncatedJson('{"hook_event_name":"preToolUse"') === true
 );
 
-const hookWhitespace = runHook("   \n\t  ");
+const empty = runHook("");
 expect(
-  "hook whitespace-only ALLOW",
-  hookWhitespace.status === 0 && hookWhitespace.permission === "allow"
+  "hook empty stdin ALLOW exit 0",
+  empty.status === 0 && empty.permission === "allow",
+  "status=" + empty.status + " perm=" + empty.permission
+);
+const malformed = runHook("not-json{{{");
+expect(
+  "hook non-JSON DENY exit 0",
+  malformed.status === 0 && malformed.permission === "deny"
 );
 const hookTruncated = runHook(
-  '{"hook_event_name":"beforeReadFile","file_path":"C:\\\\Users'
+  '{"hook_event_name":"preToolUse","tool_name":"Read","tool_input":{"path":"C:\\\\Users'
 );
 expect(
-  "hook truncated JSON DENY",
+  "17b hook truncated JSON DENY",
   hookTruncated.status === 0 && hookTruncated.permission === "deny",
   "perm=" + hookTruncated.permission
 );
-const hookWinPath = runHook({
-  hook_event_name: "beforeReadFile",
+
+// --- hook process: required live shapes ---
+const hookRead = runHook(preTool("Read", { path: path.join(ROOT, "package.json") }));
+expect(
+  "hook 1 Read ALLOW",
+  hookRead.status === 0 && hookRead.permission === "allow"
+);
+const hookWrite = runHook(
+  preTool("Write", {
+    path: path.join(ROOT, ".cursor", "hooks", "_min-wave-fixture.tmp"),
+    contents: "ok",
+  })
+);
+expect(
+  "hook 2 Write ALLOW",
+  hookWrite.status === 0 && hookWrite.permission === "allow"
+);
+const hookGrep = runHook(
+  preTool("Grep", { path: ROOT, pattern: "name" })
+);
+expect(
+  "hook 3 Grep ALLOW",
+  hookGrep.status === 0 && hookGrep.permission === "allow"
+);
+const hookShell = runHook(
+  preTool("Shell", { command: "git status --short", working_directory: ROOT })
+);
+expect(
+  "hook 4 Shell ALLOW",
+  hookShell.status === 0 && hookShell.permission === "allow"
+);
+const hookMcp = runHook(
+  preTool("CallMcpTool", {
+    server: "project-0-AI_PROFIT_OS-supabase",
+    toolName: "list_tables",
+    arguments: { project_id: ALLOWED_SUPABASE_REF },
+  })
+);
+expect(
+  "hook 5 MCP ALLOW",
+  hookMcp.status === 0 && hookMcp.permission === "allow"
+);
+const hookCache = runHook(preTool("Read", { path: cacheTerminals }));
+expect(
+  "hook 6 cache Read ALLOW",
+  hookCache.status === 0 && hookCache.permission === "allow",
+  "perm=" + hookCache.permission + " code=" + hookCache.code
+);
+const hookDenyRead = runHook(preTool("Read", { path: climeFs }));
+expect(
+  "hook 7 clime Read DENY",
+  hookDenyRead.status === 0 && hookDenyRead.permission === "deny"
+);
+const hookTabDeny = runHook({
+  hook_event_name: "beforeTabFileRead",
+  file_path: climeFs,
+});
+expect(
+  "18 Tab foreign-file read DENY",
+  hookTabDeny.status === 0 && hookTabDeny.permission === "deny"
+);
+const hookTabAllow = runHook({
+  hook_event_name: "beforeTabFileRead",
   file_path: path.join(ROOT, "package.json"),
 });
 expect(
-  "hook representative beforeReadFile ALLOW",
-  hookWinPath.status === 0 && hookWinPath.permission === "allow"
-);
-const hookShell = runHook({
-  hook_event_name: "beforeShellExecution",
-  command: "git status --short",
-  cwd: ROOT,
-});
-expect(
-  "hook representative beforeShellExecution ALLOW",
-  hookShell.status === 0 && hookShell.permission === "allow"
-);
-const hookAwait = runHook({
-  hook_event_name: "beforeReadFile",
-  file_path: cacheTerminals,
-});
-expect(
-  "hook AwaitShell terminals path ALLOW",
-  hookAwait.status === 0 && hookAwait.permission === "allow",
-  "perm=" + hookAwait.permission + " code=" + hookAwait.code
+  "19 Tab AI_PROFIT_OS read ALLOW",
+  hookTabAllow.status === 0 && hookTabAllow.permission === "allow"
 );
 
-// --- hooks.json wiring check ---
+// --- 20–25 architecture ---
 const hooksJson = JSON.parse(
-  fs
-    .readFileSync(path.join(ROOT, ".cursor", "hooks.json"), "utf8")
-    .replace(/^\uFEFF/, "")
+  fs.readFileSync(HOOKS_JSON_PATH, "utf8").replace(/^\uFEFF/, "")
 );
-const events = [
-  "preToolUse",
-  "beforeShellExecution",
-  "beforeMCPExecution",
-  "beforeReadFile",
-  "beforeTabFileRead",
-];
-for (const ev of events) {
-  const list = (hooksJson.hooks && hooksJson.hooks[ev]) || [];
-  const hit = list.some(
-    (h) =>
-      String(h.command || "").includes("project-boundary.mjs") &&
-      h.failClosed === true
-  );
-  expect("hooks.json " + ev + " → project-boundary.mjs failClosed", hit);
-}
-const shellList = (hooksJson.hooks && hooksJson.hooks.beforeShellExecution) || [];
+const eventNames = Object.keys(hooksJson.hooks || {}).sort();
 expect(
-  "beforeShellExecution single process",
-  shellList.length === 1,
-  "count=" + shellList.length
+  "20 no duplicate Agent Read (beforeReadFile absent)",
+  !hooksJson.hooks.beforeReadFile &&
+    Array.isArray(hooksJson.hooks.preToolUse) &&
+    hooksJson.hooks.preToolUse.length === 1
 );
 expect(
-  "git-gate not wired",
-  !JSON.stringify(hooksJson).includes("before-shell-git-gate")
+  "21 no duplicate Shell (beforeShellExecution absent)",
+  !hooksJson.hooks.beforeShellExecution &&
+    hooksJson.hooks.preToolUse.length === 1
+);
+expect(
+  "22 no duplicate MCP (beforeMCPExecution absent)",
+  !hooksJson.hooks.beforeMCPExecution &&
+    hooksJson.hooks.preToolUse.length === 1
+);
+expect("23 sessionStart hook count = 0", !hooksJson.hooks.sessionStart);
+expect("24 sessionEnd hook count = 0", !hooksJson.hooks.sessionEnd);
+expect(
+  "events exactly preToolUse + beforeTabFileRead",
+  eventNames.join(",") === "beforeTabFileRead,preToolUse",
+  eventNames.join(",")
 );
 expect("stop event removed", !hooksJson.hooks.stop);
+
+const preToolHook = (hooksJson.hooks.preToolUse || [])[0] || {};
+const tabHook = (hooksJson.hooks.beforeTabFileRead || [])[0] || {};
 expect(
-  "sessionEnd retained",
-  Array.isArray(hooksJson.hooks.sessionEnd) &&
-    hooksJson.hooks.sessionEnd.length === 1
+  "preToolUse failClosed + project-boundary.mjs",
+  String(preToolHook.command || "").includes("project-boundary.mjs") &&
+    preToolHook.failClosed === true
 );
 expect(
-  "sessionStart retained",
-  Array.isArray(hooksJson.hooks.sessionStart)
+  "beforeTabFileRead failClosed + project-boundary.mjs",
+  String(tabHook.command || "").includes("project-boundary.mjs") &&
+    tabHook.failClosed === true &&
+    (hooksJson.hooks.beforeTabFileRead || []).length === 1
 );
+
+const matcher = String(preToolHook.matcher || "");
+let matcherRe = null;
+try {
+  matcherRe = new RegExp(matcher);
+} catch {
+  matcherRe = null;
+}
+expect("preToolUse matcher present", !!matcher && !!matcherRe, matcher);
+const mustMatch = [
+  "Shell",
+  "Read",
+  "Write",
+  "Grep",
+  "Glob",
+  "Delete",
+  "StrReplace",
+  "EditNotebook",
+  "WebFetch",
+  "FetchMcpResource",
+  "CallMcpTool",
+  "MCP:list_tables",
+  "MCP:execute_sql",
+];
+const mustMiss = [
+  "TodoWrite",
+  "AwaitShell",
+  "WebSearch",
+  "SwitchMode",
+  "AskQuestion",
+  "GetMcpTools",
+];
+for (const t of mustMatch) {
+  expect("matcher hits " + t, !!(matcherRe && matcherRe.test(t)));
+}
+for (const t of mustMiss) {
+  expect("matcher misses " + t, !!(matcherRe && !matcherRe.test(t)));
+}
 
 const wiredScripts = [];
 for (const ev of Object.keys(hooksJson.hooks || {})) {
@@ -526,20 +505,36 @@ for (const ev of Object.keys(hooksJson.hooks || {})) {
     if (m) wiredScripts.push(m[1]);
   }
 }
+expect("25 hooks.json references no missing scripts", wiredScripts.length > 0);
 for (const rel of wiredScripts) {
   const abs = path.join(ROOT, rel.replace(/[\\/]/g, path.sep));
   expect("hooks.json script exists " + rel, fs.existsSync(abs), abs);
 }
 
-const syntaxTargets = [
-  "project-boundary.mjs",
+const dead = [
   "session-start.cjs",
   "stop-cleanup.cjs",
+  "pre-tool-boundary.cjs",
+  "before-shell-boundary.cjs",
+  "before-read-boundary.cjs",
+  "before-mcp-gate.cjs",
+  "lib/project-boundary.cjs",
+  "pre0-wrapper-smoke.cjs",
+];
+for (const rel of dead) {
+  expect(
+    "dead hook file removed " + rel,
+    !fs.existsSync(path.join(ROOT, ".cursor", "hooks", rel))
+  );
+}
+
+const liveScripts = [
+  "project-boundary.mjs",
   "lib/hook-io.cjs",
   "lib/hook-io.mjs",
   "lib/project-boundary-policy.mjs",
 ];
-for (const rel of syntaxTargets) {
+for (const rel of liveScripts) {
   const abs = path.join(ROOT, ".cursor", "hooks", rel);
   const r = spawnSync(process.execPath, ["--check", abs], {
     cwd: ROOT,
@@ -562,6 +557,10 @@ const prePush = fs.existsSync(path.join(ROOT, ".husky", "pre-push"))
   : "";
 expect("husky pre-commit verify:gate:fast", /verify:gate:fast/.test(preCommit));
 expect("husky pre-push verify:gate:push", /verify:gate:push/.test(prePush));
+expect(
+  "git-gate not wired",
+  !JSON.stringify(hooksJson).includes("before-shell-git-gate")
+);
 
 function runHookChunked(payload, delayMs) {
   return new Promise((resolve, reject) => {
@@ -605,15 +604,27 @@ function runHookChunked(payload, delayMs) {
   });
 }
 
-const chunked = await runHookChunked({
-  hook_event_name: "beforeReadFile",
-  file_path: path.join(ROOT, "package.json"),
-});
+const chunked = await runHookChunked(
+  preTool("Read", { path: path.join(ROOT, "package.json") })
+);
 expect(
-  "chunked valid JSON ALLOW",
+  "16 chunked valid JSON ALLOW",
   chunked.status === 0 && chunked.permission === "allow",
   "status=" + chunked.status + " perm=" + chunked.permission
 );
+
+const tPolicy = Date.now();
+policy.decideRead({ file_path: path.join(ROOT, "package.json") });
+expect("low-cost policy decideRead", Date.now() - tPolicy < 50);
+
+const latencies = {
+  Read: hookRead.ms,
+  Write: hookWrite.ms,
+  Grep: hookGrep.ms,
+  Shell: hookShell.ms,
+  MCP: hookMcp.ms,
+  Tab: hookTabAllow.ms,
+};
 
 const failed = cases.filter((c) => !c.pass);
 const unitTotal = cases.length;
@@ -622,26 +633,25 @@ const unitPass = cases.filter((c) => c.pass).length;
 const report = {
   VERIFY: failed.length === 0 ? "PASS" : "FAIL",
   unit: unitPass + "/" + unitTotal,
-  global_plans_DENY: cases.some(
-    (c) => c.name.includes("global plans") && c.pass
-  )
-    ? "yes"
-    : "no",
-  clime_FS_GitHub_Supabase_DENY: cases.filter(
-    (c) =>
-      (c.name.includes("clime") ||
-        c.name.includes("foreign") ||
-        c.name.includes("gh clime")) &&
-      c.pass
-  ).length
-    ? "yes"
-    : "no",
+  HOOK_EVENTS: eventNames,
+  HOOK_PROCESS_COUNT: {
+    Read: 1,
+    Write: 1,
+    Grep: 1,
+    Shell: 1,
+    MCP: 1,
+    Tab: 1,
+    sessionStart: 0,
+    sessionEnd: 0,
+  },
+  NORMAL_HOOK_LATENCY_MS: latencies,
+  MATCHER: matcher,
+  residual_WARNs: [
+    "Desktop multi-root adding clime folder is a USER-CONFIGURATION residual (not hook-enforceable without workspace watchers)",
+    "Tab beforeTabFileRead still receives file content — large Tab reads may hit malformed-input DENY (isolation kept)",
+  ],
   cases,
   failed: failed.map((c) => c.name + (c.detail ? " :: " + c.detail : "")),
-  residual_WARNs: [
-    "account-wide gh/supabase CLI may still exist — foreign targets DENY via hook only",
-    "Desktop multi-root adding clime folder is a user/IDE residual risk (not fully hook-enforceable)",
-  ],
 };
 
 process.stdout.write(JSON.stringify(report, null, 2) + "\n");

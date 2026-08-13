@@ -6,7 +6,7 @@
  * - Cursor Plan UI / registry는 워크스페이스 `.cursor/plans` 또는
  *   `%USERPROFILE%\.cursor\plans` 둘 다 열 수 있다.
  * - 예전 sync는 copy라서 두 경로가 다른 inode → UI에서 status 완료 후
- *   `pnpm cursor:sync-plans`(prepare/sessionStart/sessionEnd)가 워크스페이스본으로
+ *   `pnpm cursor:sync-plans`(prepare · 명시 실행)가 워크스페이스본으로
  *   홈을 덮어쓰면 체크가 다시 pending으로 되돌아간다.
  *
  * Fix:

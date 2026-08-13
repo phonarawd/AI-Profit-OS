@@ -19,12 +19,14 @@ const REAL_HOOK = path.join(ROOT, ".cursor", "hooks", "project-boundary.mjs");
 const marker = ["clime", "gb"].join("-");
 const FOREIGN_FS = "C:\\Users\\PC\\Desktop\\" + marker + "\\README.md";
 const foreign = {
-  hook_event_name: "beforeReadFile",
-  file_path: FOREIGN_FS,
+  hook_event_name: "preToolUse",
+  tool_name: "Read",
+  tool_input: { path: FOREIGN_FS },
 };
 const local = {
-  hook_event_name: "beforeReadFile",
-  file_path: path.join(ROOT, "package.json"),
+  hook_event_name: "preToolUse",
+  tool_name: "Read",
+  tool_input: { path: path.join(ROOT, "package.json") },
 };
 
 function toFileUrl(p) {
