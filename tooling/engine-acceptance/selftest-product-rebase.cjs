@@ -375,6 +375,7 @@ function run() {
     const liveLedger = readGov("product-rebases.v1.json");
     const liveBaseline = readGov("baseline.v1.json");
     const liveEvidence = readGov("evidence-manifest.v1.json");
+    const qa9 = readGov("qa9-result.v1.json");
     const policyFails = [];
     validateLedgerPolicy(liveLedger, policyFails);
     check("live_ledger_policy_block", policyFails.length === 0, policyFails.join("; "));
@@ -385,9 +386,18 @@ function run() {
       liveBaseline.id === "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
       liveBaseline.id,
     );
+    // qa9-result is the current-epoch verdict SSOT. evidence-manifest.verdict may be
+    // rewritten ephemerally by run-qa6.cjs in CI (ENGINE_QA_INCOMPLETE) without a new epoch.
     check(
       "live_verdict_unchanged",
-      liveEvidence.verdict === "ENGINE_NOT_ACCEPTED",
+      qa9.verdict === "ENGINE_NOT_ACCEPTED" &&
+        qa9.engine_accepted_for_ui === "NOT_ISSUED" &&
+        qa9.baseline_id === "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      qa9.verdict,
+    );
+    check(
+      "evidence_verdict_not_accepted",
+      liveEvidence.verdict !== "ENGINE_ACCEPTED_FOR_UI",
       liveEvidence.verdict,
     );
 
