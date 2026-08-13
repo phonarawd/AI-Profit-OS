@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-8",
+  "qa_phase": "QA-9",
   "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
   "verdict": "ENGINE_NOT_ACCEPTED",
-  "verdict_reason": "QA8 COMPLETE (ASVS 5.0.0 subset) - found P0=1 P1=0 (admin-boundary zero-guard, real evidence) - 03 blocked - product mutation 0 - not repaired this wave",
+  "verdict_reason": "QA9 COMPLETE (final aggregation of QA0-QA8 evidence per acceptance-contract.v1.md L1) - defects.P0=1 defects.P1=0 (QA8_ADMIN_BOUNDARY unauthenticated admin surface, real evidence) force ENGINE_NOT_ACCEPTED regardless of critical_invariant.blocked=6 - 03 UI remains BLOCKED - ENGINE_ACCEPTED_FOR_UI NOT_ISSUED - repair round required (see REPAIR_ENTRY_POINT / RECOMMENDED_REPAIR_BATCH in ENGINE_ACCEPTANCE_REPORT.md) - product mutation 0 this wave",
   "evidence_integrity": "VALID",
-  "next": "QA9_ACCEPTANCE_REPORT",
+  "next": "03_blocked_fix_round",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -116,6 +116,15 @@
       "blocked_codes": [
         "BLOCKED_ENV_CAPABILITY"
       ]
+    },
+    {
+      "suite_id": "QA9",
+      "run_id": "qa9-acceptance-report-20260813",
+      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "checksum": "d27aef5da32621d0b57199445d4fb1ee0726b87a1a7b0fcf36351d7b11d326a8",
+      "completion_status": "COMPLETE",
+      "result_ref": "governance/engine-acceptance/qa9-result.v1.json",
+      "aggregation_only": true
     }
   ],
   "kill_switch": {
@@ -128,7 +137,8 @@
     "verified_before_qa5": true,
     "verified_before_qa6": true,
     "verified_before_qa7": true,
-    "verified_before_qa8": true
+    "verified_before_qa8": true,
+    "verified_before_qa9": true
   },
   "dual_dirty": {
     "working_tree_clean": false,

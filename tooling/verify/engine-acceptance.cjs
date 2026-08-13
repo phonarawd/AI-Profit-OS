@@ -96,7 +96,39 @@ function isEphemeralQa6Rewrite(evidenceObj, qa7File) {
   return head !== live;
 }
 
+/**
+ * QA8's own CI matrix job runs run-qa8.cjs then verify:engine-acceptance in
+ * the same isolated job workspace. run-qa8.cjs's evidence.suites mapping
+ * PRESERVES any suite entry it does not own (unlike run-qa6.cjs's generic
+ * fallthrough, which resets unknown entries to NOT_STARTED) - but it always
+ * hardcodes evidence.qa_phase="QA-8" / evidence.next="QA9_ACCEPTANCE_REPORT"
+ * and regenerates ENGINE_ACCEPTANCE_REPORT.md in the QA8-era shape, because
+ * it predates QA9 and has no knowledge of it. Detect this generically (any
+ * QA<N> runner that predates a later-committed QA9) by comparing live vs the
+ * last real commit: if HEAD already reached qa_phase=QA-9 but the just
+ * rewritten live copy regressed, this is that ephemeral rewrite, not real
+ * drift - qa9-result.v1.json itself (never touched by run-qa8.cjs) still
+ * proves QA9 COMPLETE.
+ */
+function isEphemeralPreQa9Rewrite(evidenceObj, qa9File) {
+  if (!qa9File || qa9File.completion_status !== "COMPLETE") return false;
+  if (evidenceObj.qa_phase === "QA-9") return false;
+  const rel = `${GOV}/evidence-manifest.v1.json`;
+  const head = gitShowHead(rel);
+  const live = liveFileText(rel);
+  if (head == null || live == null || head === live) return false;
+  let headObj = null;
+  try {
+    headObj = JSON.parse(head);
+  } catch {
+    return false;
+  }
+  return headObj.qa_phase === "QA-9";
+}
+
 const GOV = "governance/engine-acceptance";
+/** acceptance-contract.v1.md §L1 — mandatory_suite.QA1..QA8 (QA9 itself is the aggregator, not a formula input). */
+const MANDATORY_SUITE_IDS = ["QA1", "QA2", "QA3", "QA4", "QA5", "QA6", "QA7", "QA8"];
 const REQUIRED_FILES = [
   `${GOV}/acceptance-contract.v1.md`,
   `${GOV}/severity-policy.v1.md`,
@@ -119,6 +151,7 @@ const REQUIRED_FILES = [
   `${GOV}/qa6-result.v1.json`,
   `${GOV}/qa7-result.v1.json`,
   `${GOV}/qa8-result.v1.json`,
+  `${GOV}/qa9-result.v1.json`,
   `${GOV}/perf-budget.v1.json`,
   `${GOV}/asvs-mapping.v1.json`,
   "tooling/engine-acceptance/kill-switch.cjs",
@@ -139,6 +172,7 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/run-qa7.cjs",
   "tooling/engine-acceptance/publish-qa7-formal.cjs",
   "tooling/engine-acceptance/run-qa8.cjs",
+  "tooling/engine-acceptance/run-qa9.cjs",
   "tooling/engine-acceptance/checks/security-privacy-world.cjs",
   "tooling/engine-acceptance/checks/schemas-routes-contract.cjs",
   "tooling/engine-acceptance/checks/db-consistency.cjs",
@@ -456,6 +490,7 @@ try {
 }
 
 let ephemeralQa6Rewrite = false;
+let ephemeralPreQa9Rewrite = false;
 
 const pendingRerun = isPendingRerun(baseline, evidence, rebaseLedger);
 if (baseline && rebaseLedger) {
@@ -481,9 +516,11 @@ if (evidence) {
   if (baseline && evidence.baseline_id !== baseline.id) {
     fail("evidence-manifest.baseline_id must match baseline.id");
   }
-  if (evidence.verdict === "ENGINE_ACCEPTED_FOR_UI") {
-    fail("must not issue ENGINE_ACCEPTED_FOR_UI before QA1..QA8 complete");
-  }
+  // QA9 applies the acceptance-contract.v1.md §L1 formula and issues the
+  // verdict. A precise, formula-based cross-check of evidence.verdict is
+  // added further below (once the ephemeral-CI-rewrite flags are known) -
+  // see "independently re-derive the L1 formula" - rather than the old
+  // blanket "never ACCEPTED" rule this replaces.
   if (evidence.evidence_integrity !== "VALID") {
     fail("evidence_integrity must be VALID");
   }
@@ -500,9 +537,62 @@ if (evidence) {
   } catch {
     qa7Peek = null;
   }
+  let qa9Peek = null;
+  try {
+    qa9Peek = readJson(`${GOV}/qa9-result.v1.json`);
+  } catch {
+    qa9Peek = null;
+  }
   const ephemeralQa6RewriteNow =
     !pendingRerun && isEphemeralQa6Rewrite(evidence, qa7Peek);
   ephemeralQa6Rewrite = ephemeralQa6RewriteNow;
+  const ephemeralPreQa9RewriteNow =
+    !pendingRerun && !ephemeralQa6RewriteNow && isEphemeralPreQa9Rewrite(evidence, qa9Peek);
+  ephemeralPreQa9Rewrite = ephemeralPreQa9RewriteNow;
+
+  // Independently re-derive the L1 formula and require evidence.verdict to
+  // match exactly - stronger than (and a superset of) a blanket "never
+  // ACCEPTED" rule: it also catches an incorrectly-optimistic NOT_ACCEPTED/
+  // INCOMPLETE claim. Skipped during ephemeralQa6RewriteNow: run-qa6.cjs's
+  // own in-memory verdict decision only considers QA1-5's on-disk defects at
+  // the moment it runs (it merges LATER suites' defects into the written
+  // defects.v1.json for preservation, but does not re-derive its own verdict
+  // from that merge) - a pre-existing characteristic of that already-CI-green
+  // suite, not something QA9 changes. qa9-result.v1.json's own formula_inputs
+  // (checked separately below) still gets the fully-correct cross-suite
+  // cross-check regardless.
+  if (defects && !pendingRerun && !ephemeralQa6RewriteNow) {
+    const p0p1 = (defects.counts && defects.counts.P0 ? defects.counts.P0 : 0) +
+      (defects.counts && defects.counts.P1 ? defects.counts.P1 : 0);
+    if (p0p1 > 0 && evidence.verdict !== "ENGINE_NOT_ACCEPTED") {
+      fail(
+        `evidence.verdict must be ENGINE_NOT_ACCEPTED while defects.P0+P1=${p0p1} > 0 (got ${evidence.verdict})`,
+      );
+    }
+    if (p0p1 === 0 && evidence.verdict === "ENGINE_ACCEPTED_FOR_UI") {
+      const ci = evidence.critical_invariant || {};
+      const criticalClean =
+        (ci.blocked || 0) === 0 && (ci.skipped || 0) === 0 && (ci.uncovered || 0) === 0;
+      const mandatoryComplete = MANDATORY_SUITE_IDS.every((id) => {
+        const s = (evidence.suites || []).find((x) => x.suite_id === id);
+        return s && s.completion_status === "COMPLETE";
+      });
+      if (!criticalClean || !mandatoryComplete || evidence.evidence_integrity !== "VALID") {
+        fail(
+          "evidence.verdict=ENGINE_ACCEPTED_FOR_UI but formula conditions are not all met " +
+            "(critical_invariant clean / mandatory_suite.QA1..QA8 complete / evidence_integrity VALID)",
+        );
+      }
+      if (!baseline || baseline.valid !== true) {
+        fail("evidence.verdict=ENGINE_ACCEPTED_FOR_UI requires baseline.valid=true");
+      }
+    }
+  }
+  // ENGINE_ACCEPTED_FOR_UI is never legal to see mid-rewrite or before QA9 -
+  // this part of the guard stays unconditional regardless of ephemeral state.
+  if (evidence.verdict === "ENGINE_ACCEPTED_FOR_UI" && (pendingRerun || ephemeralQa6RewriteNow)) {
+    fail("must not issue ENGINE_ACCEPTED_FOR_UI during a pending rebase rerun or ephemeral QA6 rewrite");
+  }
 
   if (pendingRerun) {
     verifyPendingRerunEpoch(baseline, evidence, rebaseLedger, fails);
@@ -514,12 +604,29 @@ if (evidence) {
       if (evidence.next !== "QA7_AI_EVAL") {
         fail("ephemeral QA6 rewrite must keep evidence-manifest.next QA7_AI_EVAL");
       }
-    } else {
+    } else if (ephemeralPreQa9RewriteNow) {
+      // run-qa8.cjs (the only other runner besides run-qa6.cjs that rewrites
+      // evidence-manifest in a CI matrix job) predates QA9 and always
+      // hardcodes these two values - qa9-result.v1.json + evidence.suites[QA9]
+      // (preserved by run-qa8.cjs's passthrough map) are checked below instead.
       if (evidence.qa_phase !== "QA-8") {
-        fail("evidence-manifest.qa_phase must be QA-8 after qa8-security-privacy completion");
+        fail("ephemeral pre-QA9 rewrite must keep evidence-manifest.qa_phase QA-8");
       }
       if (evidence.next !== "QA9_ACCEPTANCE_REPORT") {
-        fail("evidence-manifest.next must be QA9_ACCEPTANCE_REPORT");
+        fail("ephemeral pre-QA9 rewrite must keep evidence-manifest.next QA9_ACCEPTANCE_REPORT");
+      }
+    } else {
+      if (evidence.qa_phase !== "QA-9") {
+        fail("evidence-manifest.qa_phase must be QA-9 after qa9-acceptance-report completion");
+      }
+      if (
+        !["03_blocked_fix_round", "03_blocked_incomplete", "03_ui_entry_unlocked"].includes(
+          evidence.next,
+        )
+      ) {
+        fail(
+          "evidence-manifest.next must be one of 03_blocked_fix_round|03_blocked_incomplete|03_ui_entry_unlocked after QA9",
+        );
       }
     }
     if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa3 !== true) {
@@ -613,6 +720,18 @@ if (evidence) {
       }
       if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa8 !== true) {
         fail("evidence.kill_switch.verified_before_qa8 must be true");
+      }
+      // QA9 suite entry: genuinely COMPLETE in both the clean branch and the
+      // ephemeral-pre-QA9-rewrite branch (run-qa8.cjs's passthrough map
+      // preserves any suite entry it does not own, including QA9's).
+      const qa9 = (evidence.suites || []).find((s) => s.suite_id === "QA9");
+      if (!qa9 || qa9.completion_status !== "COMPLETE") {
+        fail("QA9 suite must be COMPLETE (final acceptance aggregation)");
+      } else if (!qa9.run_id || !qa9.checksum) {
+        fail("QA9 suite must have run_id + checksum");
+      }
+      if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa9 !== true) {
+        fail("evidence.kill_switch.verified_before_qa9 must be true");
       }
     }
     if (ephemeralQa6RewriteNow) {
@@ -1474,6 +1593,115 @@ if (qa8Result && !pendingRerun) {
   }
 }
 
+// --- QA-9 acceptance report (final aggregation / verdict issuance — not a discovery suite) ---
+let qa9Result;
+try {
+  qa9Result = readJson(`${GOV}/qa9-result.v1.json`);
+} catch {
+  fail("qa9-result.v1.json invalid JSON");
+}
+if (qa9Result && !pendingRerun) {
+  if (qa9Result.schema !== "governance.engine-acceptance.qa9-result.v1") {
+    fail("qa9-result.schema mismatch");
+  }
+  if (qa9Result.suite_id !== "QA9") fail("qa9-result.suite_id must be QA9");
+  if (qa9Result.completion_status !== "COMPLETE") {
+    fail("qa9-result.completion_status must be COMPLETE");
+  }
+  if (qa9Result.aggregation_only !== true) {
+    fail("qa9-result.aggregation_only must be true (QA9 is not a discovery suite)");
+  }
+  if (qa9Result.discovery_suite !== false) {
+    fail("qa9-result.discovery_suite must be false");
+  }
+  if (baseline && qa9Result.baseline_id !== baseline.id) {
+    fail("qa9-result.baseline_id must match current baseline.id");
+  }
+  if (!qa9Result.kill_switch || qa9Result.kill_switch.verified_before_checks !== true) {
+    fail("qa9-result must record kill_switch.verified_before_checks");
+  }
+  if (qa9Result.product_mutation !== 0) fail("qa9-result.product_mutation must be 0");
+  if (qa9Result.kpi_forbidden !== true) fail("qa9-result.kpi_forbidden must be true");
+  if (qa9Result.mock_pass_forbidden !== true) {
+    fail("qa9-result.mock_pass_forbidden must be true");
+  }
+  if (qa9Result.engine_accepted_for_ui === "ISSUED" && qa9Result.verdict !== "ENGINE_ACCEPTED_FOR_UI") {
+    fail("qa9-result.engine_accepted_for_ui=ISSUED requires verdict=ENGINE_ACCEPTED_FOR_UI");
+  }
+  if (!["ENGINE_ACCEPTED_FOR_UI", "ENGINE_NOT_ACCEPTED", "ENGINE_QA_INCOMPLETE"].includes(qa9Result.verdict)) {
+    fail("qa9-result.verdict must be one of the locked 3-state values");
+  }
+  // Independently re-derive the L1 formula from qa9-result's own recorded
+  // formula_inputs and require its self-reported verdict to match — QA9 must
+  // not hand-wave a verdict inconsistent with the inputs it itself recorded.
+  const fi = qa9Result.formula_inputs;
+  if (!fi) {
+    fail("qa9-result.formula_inputs required");
+  } else {
+    const p0p1 = (fi.defects_P0 || 0) + (fi.defects_P1 || 0);
+    let expected;
+    if (p0p1 > 0) {
+      expected = "ENGINE_NOT_ACCEPTED";
+    } else if (
+      !fi.mandatory_suite_complete ||
+      (fi.critical_invariant_blocked || 0) > 0 ||
+      (fi.critical_invariant_skipped || 0) > 0 ||
+      (fi.critical_invariant_uncovered || 0) > 0 ||
+      !fi.baseline_valid ||
+      !fi.acceptance_scope_unchanged ||
+      !fi.report_baseline_id_match ||
+      !fi.evidence_integrity_valid
+    ) {
+      expected = "ENGINE_QA_INCOMPLETE";
+    } else {
+      expected = "ENGINE_ACCEPTED_FOR_UI";
+    }
+    if (qa9Result.verdict !== expected) {
+      fail(
+        `qa9-result.verdict=${qa9Result.verdict} does not match its own formula_inputs (expected ${expected})`,
+      );
+    }
+    if (defects) {
+      if ((fi.defects_P0 || 0) !== (defects.counts.P0 || 0)) {
+        fail("qa9-result.formula_inputs.defects_P0 must match live defects.v1.json counts.P0");
+      }
+      if ((fi.defects_P1 || 0) !== (defects.counts.P1 || 0)) {
+        fail("qa9-result.formula_inputs.defects_P1 must match live defects.v1.json counts.P1");
+      }
+    }
+  }
+  if (Array.isArray(qa9Result.p0_security_findings)) {
+    const hasAdminBoundary = qa9Result.p0_security_findings.some(
+      (f) => f.trace_id === "qa8:QA8_ADMIN_BOUNDARY",
+    );
+    if ((defects && defects.counts.P0 > 0) && !hasAdminBoundary) {
+      fail("qa9-result.p0_security_findings must keep QA8_ADMIN_BOUNDARY visible while defects.P0>0");
+    }
+  } else {
+    fail("qa9-result.p0_security_findings must be an array (P0 must stay visible, not buried)");
+  }
+  if (qa9Result.verdict === "ENGINE_NOT_ACCEPTED" || qa9Result.verdict === "ENGINE_QA_INCOMPLETE") {
+    if (qa9Result.engine_accepted_for_ui !== "NOT_ISSUED") {
+      fail("qa9-result.engine_accepted_for_ui must be NOT_ISSUED when verdict is not ACCEPTED");
+    }
+    if (qa9Result.ui_ux_entry_gate !== "CLOSED") {
+      fail("qa9-result.ui_ux_entry_gate must be CLOSED when verdict is not ACCEPTED");
+    }
+  }
+  if (evidence && !ephemeralQa6Rewrite) {
+    const qa9 = (evidence.suites || []).find((s) => s.suite_id === "QA9");
+    if (qa9 && qa9.checksum !== qa9Result.checksum) {
+      fail("evidence QA9.checksum must match qa9-result.checksum");
+    }
+    if (qa9 && String(qa9.run_id) !== String(qa9Result.run_id)) {
+      fail("evidence QA9.run_id must match qa9-result.run_id");
+    }
+    if (evidence.verdict !== qa9Result.verdict) {
+      fail("evidence-manifest.verdict must match qa9-result.verdict");
+    }
+  }
+}
+
 const report = fs.existsSync(path.join(ROOT, `${GOV}/ENGINE_ACCEPTANCE_REPORT.md`))
   ? fs.readFileSync(path.join(ROOT, `${GOV}/ENGINE_ACCEPTANCE_REPORT.md`), "utf8")
   : "";
@@ -1516,9 +1744,11 @@ if (report) {
     if (!report.includes("PRODUCT MUTATION = 0") && !report.includes("product mutation")) {
       fail("REPORT must state product mutation 0");
     }
-  } else {
+  } else if (ephemeralPreQa9Rewrite) {
+    // Live REPORT.md was just regenerated by run-qa8.cjs (predates QA9) in
+    // the QA8-era shape - require exactly what that regeneration produces.
     if (!report.includes("QA9_ACCEPTANCE_REPORT")) {
-      fail("REPORT must declare NEXT=QA9_ACCEPTANCE_REPORT");
+      fail("ephemeral pre-QA9 rewrite REPORT must declare NEXT=QA9_ACCEPTANCE_REPORT");
     }
     if (!report.includes("QA7 = COMPLETE")) {
       fail("REPORT banner must include QA7 = COMPLETE");
@@ -1558,6 +1788,72 @@ if (report) {
     }
     if (!report.includes("ENGINE_NOT_ACCEPTED") && !report.includes("ENGINE_QA_INCOMPLETE")) {
       fail("REPORT verdict must be ENGINE_NOT_ACCEPTED or ENGINE_QA_INCOMPLETE (never ACCEPTED)");
+    }
+  } else {
+    if (!report.includes("QA9 = COMPLETE")) {
+      fail("REPORT banner must include QA9 = COMPLETE");
+    }
+    if (
+      !report.includes("03_blocked_fix_round") &&
+      !report.includes("03_blocked_incomplete") &&
+      !report.includes("03_ui_entry_unlocked")
+    ) {
+      fail(
+        "REPORT must declare a QA9 NEXT state (03_blocked_fix_round|03_blocked_incomplete|03_ui_entry_unlocked)",
+      );
+    }
+    if (!report.includes("QA7 = COMPLETE")) {
+      fail("REPORT banner must include QA7 = COMPLETE");
+    }
+    if (!report.includes("QA8 = COMPLETE")) {
+      fail("REPORT banner must include QA8 = COMPLETE");
+    }
+    if (!report.includes("QA6 = COMPLETE")) {
+      fail("REPORT banner must include QA6 = COMPLETE");
+    }
+    if (!report.includes("UNSPECIFIED_PERF_BUDGET")) {
+      fail("REPORT must mention UNSPECIFIED_PERF_BUDGET (QA6 record retained)");
+    }
+    if (!report.includes("threshold") && !report.includes("Threshold")) {
+      fail("REPORT must mention threshold mechanism");
+    }
+    if (!report.includes("CI only") && !report.includes("ci only") && !report.includes("CI-only")) {
+      fail("REPORT must mention CI only heavy k6");
+    }
+    if (!report.includes("retention") && !report.includes("90")) {
+      fail("REPORT must mention artifact retention ≥90");
+    }
+    if (!report.includes("always()")) {
+      fail("REPORT must mention aggregator if: always()");
+    }
+    if (!report.includes("PRODUCT MUTATION = 0") && !report.includes("product mutation")) {
+      fail("REPORT must state product mutation 0");
+    }
+    if (!report.includes("ASVS") || !report.includes("5.0.0")) {
+      fail("REPORT must cite ASVS 5.0.0 (QA8 subset)");
+    }
+    if (!/BLOCKED_ENV_CAPABILITY/.test(report)) {
+      fail("REPORT must record QA8 dynamic-scenario BLOCKED_ENV_CAPABILITY (no mock PASS)");
+    }
+    if (!/not repaired|Not repaired|discovery only/i.test(report)) {
+      fail("REPORT must state findings are not repaired this wave (discovery/aggregation only)");
+    }
+    if (!report.includes("ENGINE_NOT_ACCEPTED") && !report.includes("ENGINE_QA_INCOMPLETE")) {
+      fail("REPORT verdict must be ENGINE_NOT_ACCEPTED or ENGINE_QA_INCOMPLETE (never ACCEPTED)");
+    }
+    // QA9-specific: the P0 admin-boundary finding must remain prominently
+    // visible in the final report, not buried only in defects.v1.json.
+    if (!/QA8_ADMIN_BOUNDARY/.test(report)) {
+      fail("REPORT must keep the P0 admin-boundary finding (QA8_ADMIN_BOUNDARY) visible");
+    }
+    if (!/P0_SECURITY_FINDINGS/i.test(report) && !/P0\b.*(finding|security)/i.test(report)) {
+      fail("REPORT must include a P0 security findings section");
+    }
+    if (!/REPAIR_ENTRY_POINT/i.test(report)) {
+      fail("REPORT must include a REPAIR_ENTRY_POINT section");
+    }
+    if (!/HUMAN_PO_APPROVAL_REQUIRED/i.test(report)) {
+      fail("REPORT must record HUMAN_PO_APPROVAL_REQUIRED items (rebase governance gap) rather than silently resolving them");
     }
   }
 }
@@ -1766,6 +2062,21 @@ if (!qa8Blocked) {
   fail("run-qa8 must abort via kill-switch before checks when unsafe");
 }
 
+const { runQa9 } = require("../engine-acceptance/run-qa9.cjs");
+let qa9Blocked = false;
+try {
+  runQa9({
+    target_env: "production",
+    hostname: "localhost",
+    synthetic_account_namespace: "qa-synth-x",
+  });
+} catch (e) {
+  qa9Blocked = e && e.code === "AIPO_QA_KILL_SWITCH";
+}
+if (!qa9Blocked) {
+  fail("run-qa9 must abort via kill-switch before checks when unsafe");
+}
+
 // POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 governance
 let amendmentLedger;
 try {
@@ -1819,12 +2130,12 @@ if (baseline && fs.existsSync(wfPath) && scope) {
 }
 
 if (fails.length) {
-  console.error("[verify:engine-acceptance] FAIL (QA-0..QA-7)");
+  console.error("[verify:engine-acceptance] FAIL (QA-0..QA-9)");
   for (const f of fails) console.error(`  - ${f}`);
   process.exit(1);
 }
 
-console.log("[verify:engine-acceptance] PASS (QA-0..QA-8 scope)");
+console.log("[verify:engine-acceptance] PASS (QA-0..QA-9 scope)");
 console.log("  ACCEPTANCE CONTRACT = LOCKED");
 console.log(pendingRerun ? "  BASELINE = NEW_EPOCH (REBASE PENDING RERUN)" : "  BASELINE = FROZEN");
 console.log("  GOVERNANCE_DECISION = POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1");
@@ -1834,6 +2145,12 @@ console.log("  LEGACY_AUTO_SYNC_STATUS = MUST_BE_GATED");
 if (pendingRerun) {
   console.log("  QA1-QA6 = STALE_FOR_CURRENT_EPOCH");
   console.log("  NEXT = QA1_DETERMINISTIC_TRUTH");
+} else if (ephemeralQa6Rewrite) {
+  console.log("  QA1-QA5 = COMPLETE (ephemeral QA6 CI rewrite in this job workspace)");
+  console.log("  NEXT = QA7_AI_EVAL");
+} else if (ephemeralPreQa9Rewrite) {
+  console.log("  QA1-QA8 = COMPLETE (ephemeral QA8 CI rewrite predates QA9 in this job workspace)");
+  console.log("  NEXT = QA9_ACCEPTANCE_REPORT");
 } else {
   console.log("  QA1 = COMPLETE");
   console.log("  QA2 = COMPLETE");
@@ -1843,7 +2160,14 @@ if (pendingRerun) {
   console.log("  QA6 = COMPLETE");
   console.log("  QA7 = COMPLETE");
   console.log("  QA8 = COMPLETE");
-  console.log("  NEXT = QA9_ACCEPTANCE_REPORT");
-  console.log("  ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED");
+  console.log("  QA9 = COMPLETE");
+  const finalVerdict = (evidence && evidence.verdict) || "UNKNOWN";
+  console.log(`  VERDICT = ${finalVerdict}`);
+  console.log(
+    `  ENGINE_ACCEPTED_FOR_UI = ${finalVerdict === "ENGINE_ACCEPTED_FOR_UI" ? "ISSUED" : "NOT_ISSUED"}`,
+  );
+  console.log(
+    `  UI_UX_ENTRY_GATE = ${finalVerdict === "ENGINE_ACCEPTED_FOR_UI" ? "OPEN" : "CLOSED"}`,
+  );
 }
 console.log("  QA HARNESS TARGET = SAFE");

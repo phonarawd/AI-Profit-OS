@@ -1,0 +1,111 @@
+{
+  "schema": "governance.engine-acceptance.qa9-result.v1",
+  "version": "1.0.0",
+  "suite_id": "QA9",
+  "run_id": "qa9-acceptance-report-20260813",
+  "todoId": "qa9-acceptance-report",
+  "measuredAt": "2026-08-13T12:47:18.067Z",
+  "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+  "kill_switch": {
+    "verified_before_checks": true,
+    "target_env": "local",
+    "hostname": "localhost",
+    "synthetic_account_namespace": "qa-synth-local"
+  },
+  "dual_dirty": {
+    "working_tree_clean": false,
+    "protected_scope_clean": true,
+    "forced_clean_forbidden": true
+  },
+  "completion_status": "COMPLETE",
+  "aggregation_only": true,
+  "discovery_suite": false,
+  "invents_no_scenarios": true,
+  "formula_inputs": {
+    "mandatory_suite_complete": true,
+    "mandatory_suite_status": [
+      {
+        "suite_id": "QA1",
+        "completion_status": "COMPLETE"
+      },
+      {
+        "suite_id": "QA2",
+        "completion_status": "COMPLETE"
+      },
+      {
+        "suite_id": "QA3",
+        "completion_status": "COMPLETE"
+      },
+      {
+        "suite_id": "QA4",
+        "completion_status": "COMPLETE"
+      },
+      {
+        "suite_id": "QA5",
+        "completion_status": "COMPLETE"
+      },
+      {
+        "suite_id": "QA6",
+        "completion_status": "COMPLETE"
+      },
+      {
+        "suite_id": "QA7",
+        "completion_status": "COMPLETE"
+      },
+      {
+        "suite_id": "QA8",
+        "completion_status": "COMPLETE"
+      }
+    ],
+    "critical_invariant_blocked": 6,
+    "critical_invariant_skipped": 0,
+    "critical_invariant_uncovered": 0,
+    "defects_P0": 1,
+    "defects_P1": 0,
+    "defects_P2": 1,
+    "defects_P3": 0,
+    "baseline_valid": true,
+    "acceptance_scope_unchanged": true,
+    "report_baseline_id_match": true,
+    "evidence_integrity_valid": true,
+    "verdict_reason_code": "DEFECTS_P0_P1_PRESENT",
+    "next": "03_blocked_fix_round"
+  },
+  "verdict": "ENGINE_NOT_ACCEPTED",
+  "verdict_reason_code": "DEFECTS_P0_P1_PRESENT",
+  "verdict_reason": "QA9 COMPLETE (final aggregation of QA0-QA8 evidence per acceptance-contract.v1.md L1) - defects.P0=1 defects.P1=0 (QA8_ADMIN_BOUNDARY unauthenticated admin surface, real evidence) force ENGINE_NOT_ACCEPTED regardless of critical_invariant.blocked=6 - 03 UI remains BLOCKED - ENGINE_ACCEPTED_FOR_UI NOT_ISSUED - repair round required (see REPAIR_ENTRY_POINT / RECOMMENDED_REPAIR_BATCH in ENGINE_ACCEPTANCE_REPORT.md) - product mutation 0 this wave",
+  "p0_security_findings": [
+    {
+      "trace_id": "qa8:QA8_ADMIN_BOUNDARY",
+      "suite_id": "QA8",
+      "invariant_id": "INV-ISOLATION-01",
+      "title": "security-privacy-world FAIL: QA8_ADMIN_BOUNDARY",
+      "asvs_ids": [
+        "v5.0.0-8.2.1",
+        "v5.0.0-8.4.2"
+      ]
+    }
+  ],
+  "other_defects": [
+    {
+      "severity": "P2",
+      "trace_id": "qa8:QA8_PRIVACY_DELETE_ACCOUNT",
+      "suite_id": "QA8",
+      "invariant_id": "INV-PRIVACY-01",
+      "title": "security-privacy-world FAIL: QA8_PRIVACY_DELETE_ACCOUNT"
+    }
+  ],
+  "remaining_blocked_count": 6,
+  "engine_accepted_for_ui": "NOT_ISSUED",
+  "ui_ux_entry_gate": "CLOSED",
+  "product_mutation": 0,
+  "kpi_forbidden": true,
+  "mock_pass_forbidden": true,
+  "next": "03_blocked_fix_round",
+  "notes": [
+    "QA9 is a deterministic aggregation/verdict-issuance wave, not a discovery suite.",
+    "Consumes QA0-QA8 evidence exactly as recorded - repairs nothing.",
+    "Does not issue ENGINE_ACCEPTED_FOR_UI while defects.P0/P1 > 0."
+  ],
+  "checksum": "d27aef5da32621d0b57199445d4fb1ee0726b87a1a7b0fcf36351d7b11d326a8"
+}

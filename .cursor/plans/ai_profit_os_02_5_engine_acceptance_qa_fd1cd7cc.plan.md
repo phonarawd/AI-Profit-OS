@@ -1,6 +1,6 @@
 ---
 name: 02.5 Engine Acceptance QA
-overview: READY_TO_EXECUTE. APPROVE_WITH_REQUIRED_LOCKS 잠금 완료. 착수 시 qa0-baseline-freeze만 · QA-0=Contract LOCKED+Baseline FROZEN+Harness SAFE · 최종 ACCEPTED 발급 금지.
+overview: QA0-QA9 전체 COMPLETE. verdict=ENGINE_NOT_ACCEPTED(defects.P0=1 QA8_ADMIN_BOUNDARY) · ENGINE_ACCEPTED_FOR_UI=NOT_ISSUED · UI_UX_ENTRY_GATE=CLOSED. 03 UI는 repair round(L8 ENGINE_ACCEPTANCE_REBASE_V1) 후 재판정 전까지 차단.
 todos:
   - id: qa0-baseline-freeze
     content: "[grok-4.5|256K] QA-0 only · Index/BOOTSTRAP 직렬화 → Contract L1~L6 materialize → severity 선고정 → kill-switch(스모크보다 선검증) → protected manifest/baseline(전체 dirty≠강제 clean·scope오염 별도기록) → verify:engine-acceptance QA-0범위 PASS → 증거 · NEXT=QA1 · full suite/ACCEPTED/제품수정 금지"
@@ -13,16 +13,16 @@ todos:
     status: completed
   - id: qa3-generative-fuzz
     content: "[composer-2.5|200K] fast-check property suite · CI matrix strategy.fail-fast:false · concurrency group · 실패=rich evidence+defects(수정0)"
-    status: pending
+    status: completed
   - id: qa4-stateful-time
     content: "[composer-2.5|200K] multi-day lifecycle + KST clock · BLOCKED_NO_CLOCK_HOOK 정식 결과 · critical이면 ACCEPTED 불가 · evidence-manifest 갱신"
-    status: pending
+    status: completed
   - id: qa5-failure-world
     content: "[composer-2.5|200K] CI fault · 축1 expected degradation/fallback · 축2 post-recovery invariant · BLOCKED_NO_FAULT_HOOK · jobs always() aggregator · artifact retention 명시"
-    status: pending
+    status: completed
   - id: qa6-performance-world
     content: "[composer-2.5|200K] k6 scenario mix + threshold 원칙 · 수치 SLO 없으면 UNSPECIFIED_PERF_BUDGET(창작 금지) · CI only · aggregator까지 증거 유지"
-    status: pending
+    status: completed
   - id: qa7-ai-eval
     content: "[composer-2.5|200K] eval JSONL+dataset/grader hash를 baseline 묶음 · code grader 1차 oracle · quality grader 보조만 · Evals UI 종속0 · end-to-end trace evidence"
     status: completed
@@ -31,7 +31,7 @@ todos:
     status: completed
   - id: qa9-acceptance-report
     content: "[grok-4.5|256K] evidence-manifest+REPORT · 3-state verdict 식 적용 · verify:engine-acceptance(protected_scope+verdict) · ACCEPTED만 03 해제 · NOT/INCOMPLETE 모두 03 차단"
-    status: pending
+    status: completed
 isProject: false
 ---
 
@@ -44,7 +44,7 @@ isProject: false
 ```text
 02.5 PRE-UI ENGINE ACCEPTANCE QA
 DESIGN: READY_TO_EXECUTE
-CURRENT TODO: qa9-acceptance-report
+CURRENT TODO: (none — all 9 todos COMPLETE)
 QA0: COMPLETE · CONTRACT LOCKED · BASELINE FROZEN · HARNESS SAFE
 QA1: COMPLETE · schemas+routes · DB consistency · idempotency split · Functional/Contract
 QA2: COMPLETE · personas×journeys×coverage · Dirty>Happy · isolation faces · seed evidence
@@ -54,9 +54,10 @@ QA5: COMPLETE · BLOCKED_NO_FAULT_HOOK (critical)
 QA6: COMPLETE · UNSPECIFIED_PERF_BUDGET/BLOCKED_MISSING_ORACLE (critical)
 QA7: COMPLETE · formal Actions 24/24 PASS
 QA8: COMPLETE · ASVS 5.0.0 subset · P0(admin-boundary)+P2(privacy-retention) 발견·미수정 · critical_invariant.blocked=6
-VERDICT: ENGINE_NOT_ACCEPTED (defects.P0>0) · ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
+QA9: COMPLETE · final aggregation/verdict issuance · 3-state formula 적용 · verify:engine-acceptance(QA-0..QA-9) PASS
+VERDICT: ENGINE_NOT_ACCEPTED (defects.P0=1: QA8_ADMIN_BOUNDARY) · ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED · UI_UX_ENTRY_GATE = CLOSED
 PRODUCT MUTATION: 0
-03 UI: BLOCKED
+03 UI: BLOCKED — 해제 조건은 repair round(L8 ENGINE_ACCEPTANCE_REBASE_V1) 후 재판정뿐. 02.5 자체는 QA0-QA9 pending 0으로 여기서 끝난다.
 ```
 
 ## QA-0 `qa0-baseline-freeze` — DoD / 금지 / 순서 (잠금)
