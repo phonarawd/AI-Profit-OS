@@ -23,6 +23,11 @@ const {
   syncLockfileHashOnly,
 } = require("./lib/workflow-amendment.cjs");
 const { runSecurityPrivacyWorld } = require("./checks/security-privacy-world.cjs");
+const {
+  LEDGER_REL: REBASE_LEDGER_REL,
+  loadRebaseLedger,
+  isPendingRerun,
+} = require("./lib/product-rebase.cjs");
 
 const RESULT_REL = "governance/engine-acceptance/qa8-result.v1.json";
 const EVIDENCE_REL = "governance/engine-acceptance/evidence-manifest.v1.json";
@@ -45,6 +50,14 @@ function syncAggregateHashes(baseline, scope) {
   // POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 - silent workflow-hash sync forbidden.
   assertAcceptanceWorkflowHashMatch(baseline, scope);
   syncLockfileHashOnly(baseline, scope, (b) => writeJson(BASELINE_REL, b));
+}
+
+function loadRebaseLedgerSafe() {
+  try {
+    return loadRebaseLedger(REBASE_LEDGER_REL);
+  } catch {
+    return null;
+  }
 }
 
 function countBySeverity(defects) {
@@ -153,6 +166,7 @@ function buildReport({
   dual,
   mode,
   criticalMerged,
+  pendingRerun,
 }) {
   const checkRows = secResult.checks
     .map(
@@ -161,20 +175,25 @@ function buildReport({
     )
     .join("\n");
 
-  return `# ENGINE ACCEPTANCE REPORT
-
-> **QA phase:** QA-8 \`qa8-security-privacy\`
-> **Measured:** ${measuredAt}
-> **baseline_id:** \`${baseline.id}\`
-> **qa8_run_id:** \`${runId}\`
-> **qa8_result_checksum:** \`${resultChecksum}\`
-> **mode:** \`${mode}\`
-> **asvs_version:** \`5.0.0\` (subset - exhaustive_certification_claim=false)
-
-## Status banner
-
-\`\`\`text
-ACCEPTANCE CONTRACT = LOCKED
+  // A rebase can land between full sequential QA0-QA8 runs (e.g. this suite
+  // ran on an isolated CI job before an earlier suite in the same epoch has).
+  // Reporting QA1-QA8 as COMPLETE / NEXT=QA9 in that case would silently
+  // erase the "rebase pending rerun" signal.
+  const statusBanner = pendingRerun
+    ? `ACCEPTANCE CONTRACT = LOCKED
+DECISION = ENGINE_ACCEPTANCE_REBASE_V1
+BASELINE = NEW_EPOCH (REBASE PENDING RERUN)
+QA0 = COMPLETE (new epoch freeze)
+QA1..QA7 = STALE_FOR_CURRENT_EPOCH or NOT_STARTED (pending rerun)
+QA8 = COMPLETE (this run) - pending epoch not yet fully rebuilt
+QA HARNESS TARGET = SAFE
+NEXT = QA1_DETERMINISTIC_TRUTH
+PRODUCT MUTATION = 0
+EVAL_MUTATION = 0
+GRADER_MUTATION = 0
+03 UI = BLOCKED
+ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED`
+    : `ACCEPTANCE CONTRACT = LOCKED
 BASELINE = FROZEN
 QA0 = COMPLETE
 QA1 = COMPLETE
@@ -191,7 +210,27 @@ PRODUCT MUTATION = 0
 EVAL_MUTATION = 0
 GRADER_MUTATION = 0
 03 UI = BLOCKED
-ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
+ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED`;
+  const nextLine = pendingRerun
+    ? `\`QA1_DETERMINISTIC_TRUTH\` - this epoch's QA1-QA7 must still complete before QA8 counts toward NEXT=QA9_ACCEPTANCE_REPORT. This wave does not start QA9, does not repair the P0/P2 findings above, and does not issue \`ENGINE_ACCEPTED_FOR_UI\`.`
+    : `\`QA9_ACCEPTANCE_REPORT\` per the 02.5 plan file-serial order. This wave does not start
+QA9, does not repair the P0/P2 findings above, and does not issue
+\`ENGINE_ACCEPTED_FOR_UI\`.`;
+
+  return `# ENGINE ACCEPTANCE REPORT
+
+> **QA phase:** QA-8 \`qa8-security-privacy\`
+> **Measured:** ${measuredAt}
+> **baseline_id:** \`${baseline.id}\`
+> **qa8_run_id:** \`${runId}\`
+> **qa8_result_checksum:** \`${resultChecksum}\`
+> **mode:** \`${mode}\`
+> **asvs_version:** \`5.0.0\` (subset - exhaustive_certification_claim=false)
+
+## Status banner
+
+\`\`\`text
+${statusBanner}
 \`\`\`
 
 ## Verdict (after QA-8)
@@ -273,9 +312,7 @@ mechanism locked - numeric invention forbidden - heavy k6 CI only - artifact ret
 
 ## Next
 
-\`QA9_ACCEPTANCE_REPORT\` per the 02.5 plan file-serial order. This wave does not start
-QA9, does not repair the P0/P2 findings above, and does not issue
-\`ENGINE_ACCEPTED_FOR_UI\`.
+${nextLine}
 `;
 }
 
@@ -427,12 +464,10 @@ function runQa8(opts = {}) {
   });
 
   const evidence = readJson(EVIDENCE_REL);
-  evidence.qa_phase = "QA-8";
   evidence.baseline_id = baseline.id;
   evidence.verdict = verdict;
   evidence.verdict_reason = verdictReason;
   evidence.evidence_integrity = "VALID";
-  evidence.next = "QA9_ACCEPTANCE_REPORT";
   evidence.critical_invariant = {
     blocked: criticalMerged.blocked || 0,
     skipped: criticalMerged.skipped || 0,
@@ -463,6 +498,15 @@ function runQa8(opts = {}) {
     }
     return { ...s, baseline_id: baseline.id };
   });
+
+  // Whether QA1-QA7 (this epoch) are actually done yet — computed AFTER
+  // writing this suite's own QA8 slot above, so a rebase landing between
+  // isolated CI jobs can never look like "QA1-QA8 all COMPLETE" just because
+  // QA8 itself finished. See buildReport()'s pendingRerun branch.
+  const rebaseLedger = loadRebaseLedgerSafe();
+  const pendingRerun = isPendingRerun(baseline, evidence, rebaseLedger);
+  evidence.qa_phase = pendingRerun ? "QA-0" : "QA-8";
+  evidence.next = pendingRerun ? "QA1_DETERMINISTIC_TRUTH" : "QA9_ACCEPTANCE_REPORT";
   writeJson(EVIDENCE_REL, evidence);
 
   const report = buildReport({
@@ -477,6 +521,7 @@ function runQa8(opts = {}) {
     dual,
     mode,
     criticalMerged,
+    pendingRerun,
   });
   fs.writeFileSync(path.join(ROOT, REPORT_REL), report, "utf8");
 
@@ -491,7 +536,8 @@ function runQa8(opts = {}) {
     critical_invariant: secResult.critical_invariant,
     critical_invariant_cumulative: criticalMerged,
     blocked_codes_observed: blockedCodes,
-    next: "QA9_ACCEPTANCE_REPORT",
+    next: pendingRerun ? "QA1_DETERMINISTIC_TRUTH" : "QA9_ACCEPTANCE_REPORT",
+    pending_rerun: pendingRerun,
   };
 }
 

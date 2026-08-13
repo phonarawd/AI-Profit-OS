@@ -20,6 +20,11 @@ const {
   syncLockfileHashOnly,
 } = require("./lib/workflow-amendment.cjs");
 const { runPerformanceWorld } = require("./checks/performance-world.cjs");
+const {
+  LEDGER_REL: REBASE_LEDGER_REL,
+  loadRebaseLedger,
+  isPendingRerun,
+} = require("./lib/product-rebase.cjs");
 
 const RESULT_REL = "governance/engine-acceptance/qa6-result.v1.json";
 const EVIDENCE_REL = "governance/engine-acceptance/evidence-manifest.v1.json";
@@ -42,6 +47,14 @@ function syncAggregateHashes(baseline, scope) {
   // POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 — workflow hash auto-sync forbidden
   assertAcceptanceWorkflowHashMatch(baseline, scope);
   syncLockfileHashOnly(baseline, scope, (b) => writeJson(BASELINE_REL, b));
+}
+
+function loadRebaseLedgerSafe() {
+  try {
+    return loadRebaseLedger(REBASE_LEDGER_REL);
+  } catch {
+    return null;
+  }
 }
 
 function countBySeverity(defects) {
@@ -114,6 +127,7 @@ function buildReport({
   dual,
   mode,
   criticalMerged,
+  pendingRerun,
 }) {
   const pw = checks.performance_world;
   const scenarioRows = (pw.scenarios || [])
@@ -125,6 +139,39 @@ function buildReport({
   const ci = criticalMerged || pw.critical_invariant || {};
   const mech = pw.threshold_mechanism || {};
   const oracle = pw.perf_oracle || {};
+
+  // A rebase can land between full sequential QA0-QA6 runs (e.g. this suite
+  // ran on an isolated CI job before an earlier suite in the same epoch has).
+  // Reporting QA1-QA6 as COMPLETE / NEXT=QA7 in that case would silently
+  // erase the "rebase pending rerun" signal — pendingRerun keeps the banner
+  // (and evidence-manifest.qa_phase/next, set by the caller) honest.
+  const statusBanner = pendingRerun
+    ? `ACCEPTANCE CONTRACT = LOCKED
+DECISION = ENGINE_ACCEPTANCE_REBASE_V1
+BASELINE = NEW_EPOCH (REBASE PENDING RERUN)
+QA0 = COMPLETE (new epoch freeze)
+QA1..QA5 = STALE_FOR_CURRENT_EPOCH or NOT_STARTED (pending rerun)
+QA6 = COMPLETE (this run) · pending epoch not yet fully rebuilt
+QA HARNESS TARGET = SAFE
+NEXT = QA1_DETERMINISTIC_TRUTH
+PRODUCT MUTATION = 0
+03 UI = BLOCKED`
+    : `ACCEPTANCE CONTRACT = LOCKED
+BASELINE = FROZEN
+QA0 = COMPLETE
+QA1 = COMPLETE
+QA2 = COMPLETE
+QA3 = COMPLETE
+QA4 = COMPLETE
+QA5 = COMPLETE
+QA6 = COMPLETE
+QA HARNESS TARGET = SAFE
+NEXT = QA7_AI_EVAL
+PRODUCT MUTATION = 0
+03 UI = BLOCKED`;
+  const nextLine = pendingRerun
+    ? "`QA1_DETERMINISTIC_TRUTH` — this epoch's QA1-QA5 must still complete before QA6 counts toward NEXT=QA7_AI_EVAL. Full ACCEPTED · product mutation · 03 UI — **금지**."
+    : "`QA7_AI_EVAL` only. Full ACCEPTED · product mutation · 03 UI — **금지**.";
 
   return `# ENGINE ACCEPTANCE REPORT
 
@@ -138,19 +185,7 @@ function buildReport({
 ## Status banner
 
 \`\`\`text
-ACCEPTANCE CONTRACT = LOCKED
-BASELINE = FROZEN
-QA0 = COMPLETE
-QA1 = COMPLETE
-QA2 = COMPLETE
-QA3 = COMPLETE
-QA4 = COMPLETE
-QA5 = COMPLETE
-QA6 = COMPLETE
-QA HARNESS TARGET = SAFE
-NEXT = QA7_AI_EVAL
-PRODUCT MUTATION = 0
-03 UI = BLOCKED
+${statusBanner}
 \`\`\`
 
 ## Verdict (after QA-6)
@@ -207,7 +242,7 @@ ${scenarioRows}
 
 ## Next
 
-\`QA7_AI_EVAL\` only. Full ACCEPTED · product mutation · 03 UI — **금지**.
+${nextLine}
 `;
 }
 
@@ -381,12 +416,10 @@ function runQa6(opts = {}) {
   });
 
   const evidence = readJson(EVIDENCE_REL);
-  evidence.qa_phase = "QA-6";
   evidence.baseline_id = baseline.id;
   evidence.verdict = verdict;
   evidence.verdict_reason = verdictReason;
   evidence.evidence_integrity = "VALID";
-  evidence.next = "QA7_AI_EVAL";
   evidence.critical_invariant = {
     blocked: criticalMerged.blocked || 0,
     skipped: criticalMerged.skipped || 0,
@@ -452,6 +485,15 @@ function runQa6(opts = {}) {
       completion_status: "NOT_STARTED",
     };
   });
+
+  // Whether QA1-QA5 (this epoch) are actually done yet — computed AFTER
+  // writing this suite's own QA6 slot above, so a rebase landing between
+  // isolated CI jobs can never look like "QA1-QA6 all COMPLETE" just because
+  // QA6 itself finished. See buildReport()'s pendingRerun branch.
+  const rebaseLedger = loadRebaseLedgerSafe();
+  const pendingRerun = isPendingRerun(baseline, evidence, rebaseLedger);
+  evidence.qa_phase = pendingRerun ? "QA-0" : "QA-6";
+  evidence.next = pendingRerun ? "QA1_DETERMINISTIC_TRUTH" : "QA7_AI_EVAL";
   writeJson(EVIDENCE_REL, evidence);
 
   const report = buildReport({
@@ -466,6 +508,7 @@ function runQa6(opts = {}) {
     dual,
     mode,
     criticalMerged,
+    pendingRerun,
   });
   fs.writeFileSync(path.join(ROOT, REPORT_REL), report, "utf8");
 
@@ -481,7 +524,8 @@ function runQa6(opts = {}) {
     critical_invariant_cumulative: criticalMerged,
     budget_status: result.budget_status,
     blocked_codes_observed: result.blocked_codes_observed,
-    next: "QA7_AI_EVAL",
+    next: pendingRerun ? "QA1_DETERMINISTIC_TRUTH" : "QA7_AI_EVAL",
+    pending_rerun: pendingRerun,
   };
 }
 
