@@ -2,10 +2,10 @@
   "schema": "governance.engine-acceptance.qa1-result.v1",
   "version": "1.0.0",
   "suite_id": "QA1",
-  "run_id": "qa1-deterministic-truth-20260812",
+  "run_id": "qa1-deterministic-truth-20260813",
   "todoId": "qa1-deterministic-truth",
-  "measuredAt": "2026-08-12T23:36:45.528Z",
-  "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
+  "measuredAt": "2026-08-13T02:27:52.387Z",
+  "baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
   "kill_switch": {
     "verified_before_checks": true,
     "target_env": "local",
@@ -201,5 +201,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "Idempotency INV-01 and INV-03 kept separate."
   ],
-  "checksum": "61c4ffa5e370fb58d1c06025fc5fb82e375854beabbea33a3575f9adc2edc141"
+  "checksum": "cf3ca8bb6315e2bf99278ff8fe4273f5e0f254a9d7957e321ecdbf5eccf59c40"
 }
