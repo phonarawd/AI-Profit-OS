@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-9",
-  "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
-  "verdict": "ENGINE_NOT_ACCEPTED",
-  "verdict_reason": "QA9 COMPLETE (final aggregation of QA0-QA8 evidence per acceptance-contract.v1.md L1) - defects.P0=1 defects.P1=0 (QA8_ADMIN_BOUNDARY unauthenticated admin surface, real evidence) force ENGINE_NOT_ACCEPTED regardless of critical_invariant.blocked=6 - 03 UI remains BLOCKED - ENGINE_ACCEPTED_FOR_UI NOT_ISSUED - repair round required (see REPAIR_ENTRY_POINT / RECOMMENDED_REPAIR_BATCH in ENGINE_ACCEPTANCE_REPORT.md) - product mutation 0 this wave",
+  "qa_phase": "QA-0",
+  "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+  "verdict": "ENGINE_QA_INCOMPLETE",
+  "verdict_reason": "ENGINE_ACCEPTANCE_REBASE_V1 · ENGINE_ACCEPTANCE_REBASE_POLICY_V2 · predecessor discovery historical COMPLETE / current-epoch STALE · required rerun QA1-QA8 then QA9 aggregation · QA9 verdict not fabricated",
   "evidence_integrity": "VALID",
-  "next": "03_blocked_fix_round",
+  "next": "QA1_DETERMINISTIC_TRUTH",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -23,122 +23,173 @@
   "suites": [
     {
       "suite_id": "QA0",
-      "run_id": "ea-rebase-2c7b9cffd323-1e2ce00bd6a1",
-      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
-      "checksum": "1e2ce00bd6a1338d7cf3ee94c21639bdaa3d691e2aabe6ab3c2c24dcf2c4a34e",
+      "run_id": "ea-rebase-fdf692cb8a02-d532a6d7958b",
+      "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "checksum": "d532a6d7958b64729f74ab0de99ce8f816ca2cae20d8c7c6f9619af5ff992f76",
       "completion_status": "COMPLETE",
       "epoch": "current",
-      "predecessor_baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9"
+      "predecessor_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1"
     },
     {
       "suite_id": "QA1",
-      "run_id": "qa1-deterministic-truth-20260813",
-      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
-      "checksum": "ed28ae09e2baa795a2d43e8a1c31d6d37a648543bd06ef3c9f86b2bd57ddde89",
-      "completion_status": "COMPLETE",
-      "result_ref": "governance/engine-acceptance/qa1-result.v1.json"
+      "run_id": null,
+      "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "checksum": null,
+      "completion_status": "STALE",
+      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
+      "historical_completion_status": "COMPLETE",
+      "historical_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "historical_run_id": "qa1-deterministic-truth-20260813",
+      "historical_checksum": "ed28ae09e2baa795a2d43e8a1c31d6d37a648543bd06ef3c9f86b2bd57ddde89",
+      "result_ref": "governance/engine-acceptance/qa1-result.v1.json",
+      "predecessor_result_preserved": true
     },
     {
       "suite_id": "QA2",
-      "run_id": "qa2-synthetic-personas-20260813",
-      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
-      "checksum": "e3f5f2b99e3335fe3115c3e1c439a783e5958e5bdece30089ab1d66408e4ae86",
-      "completion_status": "COMPLETE",
+      "run_id": null,
+      "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "checksum": null,
+      "completion_status": "STALE",
+      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
+      "historical_completion_status": "COMPLETE",
+      "historical_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "historical_run_id": "qa2-synthetic-personas-20260813",
+      "historical_checksum": "e3f5f2b99e3335fe3115c3e1c439a783e5958e5bdece30089ab1d66408e4ae86",
       "result_ref": "governance/engine-acceptance/qa2-result.v1.json",
-      "mode": "tiny"
+      "predecessor_result_preserved": true,
+      "historical_mode": "tiny"
     },
     {
       "suite_id": "QA3",
-      "run_id": "qa3-generative-fuzz-20260813",
-      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
-      "checksum": "4cc3fef1063c81d5831efafd663c62be2c9bd1b5012458729874c5d43a87827c",
-      "completion_status": "COMPLETE",
+      "run_id": null,
+      "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "checksum": null,
+      "completion_status": "STALE",
+      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
+      "historical_completion_status": "COMPLETE",
+      "historical_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "historical_run_id": "qa3-generative-fuzz-20260813",
+      "historical_checksum": "4cc3fef1063c81d5831efafd663c62be2c9bd1b5012458729874c5d43a87827c",
       "result_ref": "governance/engine-acceptance/qa3-result.v1.json",
-      "mode": "tiny"
+      "predecessor_result_preserved": true,
+      "historical_mode": "tiny"
     },
     {
       "suite_id": "QA4",
-      "run_id": "qa4-stateful-time-20260813",
-      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
-      "checksum": "00050cc82c457eae23f13fb361f8b8061915b4465455fb653864770fd756a57e",
-      "completion_status": "COMPLETE",
+      "run_id": null,
+      "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "checksum": null,
+      "completion_status": "STALE",
+      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
+      "historical_completion_status": "COMPLETE",
+      "historical_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "historical_run_id": "qa4-stateful-time-20260813",
+      "historical_checksum": "00050cc82c457eae23f13fb361f8b8061915b4465455fb653864770fd756a57e",
       "result_ref": "governance/engine-acceptance/qa4-result.v1.json",
-      "mode": "tiny",
-      "blocked_codes": [
+      "predecessor_result_preserved": true,
+      "historical_mode": "tiny",
+      "historical_blocked_codes": [
         "BLOCKED_NO_CLOCK_HOOK"
       ]
     },
     {
       "suite_id": "QA5",
-      "run_id": "qa5-failure-world-20260813",
-      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
-      "checksum": "c4ac94532083d9be5908f07ac9b42144453ba2eac1601b61005f83fa9a390453",
-      "completion_status": "COMPLETE",
+      "run_id": null,
+      "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "checksum": null,
+      "completion_status": "STALE",
+      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
+      "historical_completion_status": "COMPLETE",
+      "historical_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "historical_run_id": "qa5-failure-world-20260813",
+      "historical_checksum": "c4ac94532083d9be5908f07ac9b42144453ba2eac1601b61005f83fa9a390453",
       "result_ref": "governance/engine-acceptance/qa5-result.v1.json",
-      "mode": "tiny",
-      "blocked_codes": [
+      "predecessor_result_preserved": true,
+      "historical_mode": "tiny",
+      "historical_blocked_codes": [
         "BLOCKED_NO_FAULT_HOOK"
       ]
     },
     {
       "suite_id": "QA6",
-      "run_id": "qa6-performance-world-20260813",
-      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
-      "checksum": "6dcd672cb5593fe6d403cb969e23be14df7318e3d676efe51007768bef6859bd",
-      "completion_status": "COMPLETE",
+      "run_id": null,
+      "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "checksum": null,
+      "completion_status": "STALE",
+      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
+      "historical_completion_status": "COMPLETE",
+      "historical_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "historical_run_id": "qa6-performance-world-20260813",
+      "historical_checksum": "6dcd672cb5593fe6d403cb969e23be14df7318e3d676efe51007768bef6859bd",
       "result_ref": "governance/engine-acceptance/qa6-result.v1.json",
-      "mode": "tiny",
-      "budget_status": "UNSPECIFIED_PERF_BUDGET",
-      "blocked_codes": [
+      "predecessor_result_preserved": true,
+      "historical_mode": "tiny",
+      "historical_blocked_codes": [
         "BLOCKED_MISSING_ORACLE"
-      ]
+      ],
+      "historical_budget_status": "UNSPECIFIED_PERF_BUDGET"
     },
     {
       "suite_id": "QA7",
-      "run_id": "31664299560",
-      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
-      "checksum": "8fd355698a754202f3113927c7a157657b9e077da3ac7717d80258a32def204b",
-      "completion_status": "COMPLETE",
+      "run_id": null,
+      "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "checksum": null,
+      "completion_status": "NOT_STARTED",
       "result_ref": "governance/engine-acceptance/qa7-result.v1.json",
       "mode": "full",
       "formal_actions_evidence": true,
-      "artifact": "engine-acceptance-QA7-raw-traces"
+      "artifact": "engine-acceptance-QA7-raw-traces",
+      "predecessor_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1"
     },
     {
       "suite_id": "QA8",
-      "run_id": "qa8-security-privacy-20260813",
-      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
-      "checksum": "0d2b88fa67f6ca42f08cc34c733a1bedc4f00e049d98e7be23fcd420cb547260",
-      "completion_status": "COMPLETE",
+      "run_id": null,
+      "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "checksum": null,
+      "completion_status": "STALE",
+      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
+      "historical_completion_status": "COMPLETE",
+      "historical_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "historical_run_id": "qa8-security-privacy-20260813",
+      "historical_checksum": "0d2b88fa67f6ca42f08cc34c733a1bedc4f00e049d98e7be23fcd420cb547260",
       "result_ref": "governance/engine-acceptance/qa8-result.v1.json",
-      "mode": "tiny",
-      "asvs_version": "5.0.0",
-      "blocked_codes": [
+      "predecessor_result_preserved": true,
+      "historical_mode": "tiny",
+      "historical_blocked_codes": [
         "BLOCKED_ENV_CAPABILITY"
-      ]
+      ],
+      "historical_asvs_version": "5.0.0"
     },
     {
       "suite_id": "QA9",
-      "run_id": "qa9-acceptance-report-20260813",
-      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
-      "checksum": "d27aef5da32621d0b57199445d4fb1ee0726b87a1a7b0fcf36351d7b11d326a8",
-      "completion_status": "COMPLETE",
+      "run_id": null,
+      "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "checksum": null,
+      "completion_status": "STALE",
+      "epoch_status": "STALE_AGGREGATION_FOR_CURRENT_EPOCH",
+      "aggregation_only": true,
+      "discovery_suite": false,
+      "current_epoch_authoritative": false,
+      "historical_completion_status": "COMPLETE",
+      "historical_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "historical_run_id": "qa9-acceptance-report-20260813",
+      "historical_checksum": "d27aef5da32621d0b57199445d4fb1ee0726b87a1a7b0fcf36351d7b11d326a8",
+      "historical_verdict": "ENGINE_NOT_ACCEPTED",
       "result_ref": "governance/engine-acceptance/qa9-result.v1.json",
-      "aggregation_only": true
+      "predecessor_result_preserved": true,
+      "rerun_after_current_epoch_discovery": true
     }
   ],
   "kill_switch": {
     "verified_before_smoke": true,
-    "verified_before_qa1": true,
+    "verified_before_qa1": false,
+    "verified_before_qa2": false,
+    "verified_before_qa3": false,
+    "verified_before_qa4": false,
+    "verified_before_qa5": false,
+    "verified_before_qa6": false,
     "production_like_aborts": true,
-    "verified_before_qa2": true,
-    "verified_before_qa3": true,
-    "verified_before_qa4": true,
-    "verified_before_qa5": true,
-    "verified_before_qa6": true,
-    "verified_before_qa7": true,
-    "verified_before_qa8": true,
-    "verified_before_qa9": true
+    "predecessor_epoch_had_kill_switch": true
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -146,19 +197,24 @@
     "forced_clean_forbidden": true
   },
   "critical_invariant": {
-    "blocked": 6,
-    "skipped": 0,
-    "uncovered": 0
+    "blocked": null,
+    "skipped": null,
+    "uncovered": null,
+    "epoch_status": "PENDING_CURRENT_EPOCH_RERUN",
+    "predecessor_blocked": 6
   },
   "current_epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-2c7b9cffd323-1e2ce00bd6a1",
-    "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
-    "predecessor_baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
-    "qa1_qa6_status": "COMPLETE"
+    "rebase_id": "ea-rebase-fdf692cb8a02-d532a6d7958b",
+    "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+    "predecessor_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+    "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
+    "qa1_qa6_status": "STALE_PENDING_RERUN",
+    "qa8_status": "STALE_PENDING_RERUN",
+    "qa9_status": "STALE_AGGREGATION_PENDING_DISCOVERY"
   },
   "predecessor_epoch": {
-    "baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
+    "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
     "historical_status": "COMPLETE_UNDER_PREDECESSOR",
     "current_epoch_status": "STALE"
   }

@@ -1,24 +1,36 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+  "id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
   "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-08-13T20:28:48.168Z",
-  "commit_sha": "fdf692cb8a02de01821f126f5ed7f09788c9eec5",
-  "tree_sha": "97e04664e52cf835e2bcc624e2f0457ab77b1dd8",
+  "measuredAt": "2026-08-13T03:04:37.142Z",
+  "commit_sha": "2c7b9cffd3234d2deee9fd14254413bc4b751c37",
+  "tree_sha": "579cd4db05fe13fc1feb6dcf5eaf1a6efb262855",
   "working_tree_clean": false,
   "protected_scope_clean": true,
   "dirty_paths_all": [
     "apps/web/next-env.d.ts",
     "packages/ui/canon/contracts/peotteok-home-visual-implementation-contract.v1.md",
+    "tooling/engine-acceptance/lib/product-rebase.cjs",
+    "tooling/engine-acceptance/selftest-product-rebase.cjs",
     ".cursor/hooks.json.bak-isolation",
     ".cursor/hooks.json.bak-wave-isolation",
-    "_tmp_harness_ci/"
+    "_tmp_patch_executor.cjs",
+    "_tmp_qa7_formal_31653870422/",
+    "_tmp_qa7_formal_31661815342/",
+    "_tmp_qa7_formal_31662258047/",
+    "_tmp_qa7_grade_log.cjs",
+    "_tmp_qa7_product_log.txt",
+    "_tmp_qa7_product_summary.json",
+    "_tmp_qa7_product_validate.cjs",
+    "_tmp_qa7_smoke2.cjs",
+    "_tmp_qa7_smoke_scope.cjs",
+    "_tmp_rebase_mig.cjs"
   ],
   "dirty_paths_protected": [],
   "lockfile_hash": "3e4b2632d7e0e11afe179502ba50bdb2a47b67c7ca5838bb511d38ad854f70a1",
-  "schema_migration_hash": "13d8478fe3fa46671bc245e943db59e97cc23c7fd6ac887914d15bd9ac14167e",
-  "prompt_hash": "4b8b46a36a97e7b7553ff709ee46d377edac47cada38325e3eab5ae00f78c189",
+  "schema_migration_hash": "6ffb296f46d154cbc78cc3825e4835e77bce50947c3dc52ec508d0ddca321f7f",
+  "prompt_hash": "7bed3fd180be97f04beb5a59cd16a9543f17e93c57b1c23ce47930e7b6e20ffc",
   "eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088",
   "acceptance_workflow_hash": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
   "node_version": "v22.14.0",
@@ -27,8 +39,8 @@
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "d532a6d7958b64729f74ab0de99ce8f816ca2cae20d8c7c6f9619af5ff992f76",
-    "pathCount": 366,
+    "aggregate": "1e2ce00bd6a1338d7cf3ee94c21639bdaa3d691e2aabe6ab3c2c24dcf2c4a34e",
+    "pathCount": 353,
     "entries": [
       {
         "path": "eval/g_no_money.jsonl",
@@ -331,10 +343,6 @@
         "sha256": "e4c660ac28767895dbe837a43484ef4be51f9a56eae72b19a20b106af2ab4e21"
       },
       {
-        "path": "services/api-nest/clock.core.cjs",
-        "sha256": "1198e3a78c2809dae93ad100d94503b179946414d61dbca1eac9f02e57bc161f"
-      },
-      {
         "path": "services/api-nest/jwt.core.cjs",
         "sha256": "8acb8782b4b7ac17df061408548a4d338336a07efeff09969726f3392f1ed591"
       },
@@ -344,7 +352,7 @@
       },
       {
         "path": "services/api-nest/src/adapters/adapters.admin.controller.ts",
-        "sha256": "aafd31615813404c620def83c2770641b11a29098f564f2394c2a7afd4aa5126"
+        "sha256": "f81c21b1820b95fc08192ffdcf0d84cf31e3c805478a72273890116c847a5cf8"
       },
       {
         "path": "services/api-nest/src/adapters/adapters.admin.service.ts",
@@ -380,7 +388,7 @@
       },
       {
         "path": "services/api-nest/src/ai/ai-logs.admin.controller.ts",
-        "sha256": "95bcf87978af1ee1a5f0127c71b5083125503ee961b7e33cff3427393e7b6102"
+        "sha256": "686644c9887e6b7c46ad9863c350f4f021c982f5fb95625c1e9bc1b8b095831c"
       },
       {
         "path": "services/api-nest/src/ai/ai-logs.admin.service.ts",
@@ -388,7 +396,7 @@
       },
       {
         "path": "services/api-nest/src/ai/ai-pick.admin.controller.ts",
-        "sha256": "2d54b747660fc83157d0e80742405438dc9f7d1b08d9031c87090f9f7ce58a4f"
+        "sha256": "00fbd3952337060fd3083a898904490ff445b4ace44e611b2d2e7f64c941f580"
       },
       {
         "path": "services/api-nest/src/ai/ai-pick.admin.service.ts",
@@ -460,7 +468,7 @@
       },
       {
         "path": "services/api-nest/src/ai/shadow-replay.admin.controller.ts",
-        "sha256": "d4d36da5c4814c9d48df0cf9a6948188a4d3e4a5b59b27d2a27c85a584dcd426"
+        "sha256": "eddaf92488e029146d0fc6c63af5e1635290d971088525c4208bf18882bedc7e"
       },
       {
         "path": "services/api-nest/src/ai/shadow-replay.admin.service.ts",
@@ -472,7 +480,7 @@
       },
       {
         "path": "services/api-nest/src/app.module.ts",
-        "sha256": "20a398cc3ead521a69f93cd01ee8576f226800ab378011c1fc2831866a60fed8"
+        "sha256": "36e458ed4fd384364e8877a261558433ac4cc69bb2039a1017013aab41a659da"
       },
       {
         "path": "services/api-nest/src/auth/auth.constants.ts",
@@ -480,11 +488,11 @@
       },
       {
         "path": "services/api-nest/src/auth/auth.controller.ts",
-        "sha256": "6b8e7fe9b178988b0b8e512045842e83ab16d7756b302fd98751cc243fcc934a"
+        "sha256": "cfff9992118d5ab14f01cd72dcf7e40cf1c46042df9732eeee361abe10869d81"
       },
       {
         "path": "services/api-nest/src/auth/auth.module.ts",
-        "sha256": "a406e00df8e8163b8a41bad74f28fce5bea65154d16cbc95335cecbf190479ef"
+        "sha256": "65bd69fa6dffe621e33ebad840c341b6298ed84dc6ef3df8f849bf4c6e4f862a"
       },
       {
         "path": "services/api-nest/src/auth/auth.routes.ts",
@@ -492,7 +500,7 @@
       },
       {
         "path": "services/api-nest/src/auth/auth.service.ts",
-        "sha256": "60e31b2f59b10e35475a0d72be22c2bdd0c11c5e24fa55092bfdc79ec59ff465"
+        "sha256": "81e3fdecd043a73f548a5b01c33fb221433eea2a68d3d5afad69601063cc90f8"
       },
       {
         "path": "services/api-nest/src/auth/auth.stage.ts",
@@ -509,46 +517,6 @@
       {
         "path": "services/api-nest/src/auth/jwt-guard.selftest.ts",
         "sha256": "feb32404a583f11771392f49daadd873d84649d6357fa1d47f6576141165e098"
-      },
-      {
-        "path": "services/api-nest/src/auth/privacy-account.service.ts",
-        "sha256": "a83946b34d4de5d8be426ad5df3aebe3c097ee3c1a7d796acaf875b0db87626e"
-      },
-      {
-        "path": "services/api-nest/src/common/admin-capabilities.ts",
-        "sha256": "7a7bd76974b6af2c3d1047643041c23ad116af3c067a48517637244e75080eef"
-      },
-      {
-        "path": "services/api-nest/src/common/admin-guard.selftest.ts",
-        "sha256": "93c760dffb188c3c123834d146b3eed3d9a4ad23b992d003c57f94895aaeded9"
-      },
-      {
-        "path": "services/api-nest/src/common/admin-operator.decorator.ts",
-        "sha256": "90463a02353ed51f5578eb988310379e2583dbca1c06a12743896e4ca52b80bf"
-      },
-      {
-        "path": "services/api-nest/src/common/admin-rbac.policy.ts",
-        "sha256": "b57bf418e1fce3f69d9ae47ab4b96944f654494eb012cde2360678e854d89ab1"
-      },
-      {
-        "path": "services/api-nest/src/common/admin-token.ts",
-        "sha256": "2a4fcbb7d9cb80a851f491d71505af5a27e41e7619615c08b1c789ffd8f2f047"
-      },
-      {
-        "path": "services/api-nest/src/common/admin.guard.ts",
-        "sha256": "d905d3a1a7f70c5f564e7ea51051786c7ee5a927d6521bfb4a051e5dcd600eed"
-      },
-      {
-        "path": "services/api-nest/src/common/clock.ts",
-        "sha256": "408054a24efccc0644002d53e41f9452335805c6d9e03fba711e0e06b55c4e1a"
-      },
-      {
-        "path": "services/api-nest/src/common/common.module.ts",
-        "sha256": "2d9ad6bbed9c6d4035b882df7f34c117c267c4a76c80e9627257ed4e56ac75a2"
-      },
-      {
-        "path": "services/api-nest/src/common/index.ts",
-        "sha256": "a7bdd427cdd094a91bab66127817953517bc455237cb6bf01dc8796e1e881ec8"
       },
       {
         "path": "services/api-nest/src/compliance/compliance.events.ts",
@@ -580,7 +548,7 @@
       },
       {
         "path": "services/api-nest/src/compliance/kyc.admin.controller.ts",
-        "sha256": "c7cdab59557448cbb8d4e62afad1aae497841d16cda1233659959f239aebbbfd"
+        "sha256": "bab8d80a37980bb534c7906fb0ffa8d081f252f316e6274ab7c123403d3dd7dc"
       },
       {
         "path": "services/api-nest/src/compliance/kyc.controller.ts",
@@ -595,12 +563,8 @@
         "sha256": "fde2915fb0d9181f288b4c84db7e5be6758c6ad692a809f474ab3c50c3a6efca"
       },
       {
-        "path": "services/api-nest/src/db/postgres-recovery.selftest.ts",
-        "sha256": "a049b0cdf2976c9787ce7815c90df7248e215ee9a53d2253c257b204e2869011"
-      },
-      {
         "path": "services/api-nest/src/db/postgres.ts",
-        "sha256": "ef74e066cd3d0ccfc60455c35f20e34c840bab9cb4af00817a840459ef9b1c48"
+        "sha256": "aa1221a305a6bbaec41acaec4e323f53de11016448bf713e0f0a913bd5216707"
       },
       {
         "path": "services/api-nest/src/events/events.module.ts",
@@ -612,7 +576,7 @@
       },
       {
         "path": "services/api-nest/src/execution-policy/execution-policy.admin.controller.ts",
-        "sha256": "dc184944dbbcd9255c6b6c26ebbfa9c90b4ad89658c1b2149cda0dd00d3a8249"
+        "sha256": "5d2c1f381b043774af81ed03a8f35731b6ecbb9c8b82dcb0c380dc78c8196b5f"
       },
       {
         "path": "services/api-nest/src/execution-policy/execution-policy.admin.service.ts",
@@ -712,7 +676,7 @@
       },
       {
         "path": "services/api-nest/src/inbox/ops-inbox.admin.controller.ts",
-        "sha256": "3cb7b6d1962c2eeb232e8974f25ef4c34d2e579fbd4d1e4ed9cf778c73c0b90f"
+        "sha256": "aef07aa911c60017faac7f0d0b5de49a56c8c943506bbbc1c68972df52760e23"
       },
       {
         "path": "services/api-nest/src/inbox/ops-inbox.service.ts",
@@ -728,7 +692,7 @@
       },
       {
         "path": "services/api-nest/src/ledger/ledger.admin.controller.ts",
-        "sha256": "a1745bcd42191111254a3d4aa77477143dfb79459a29fdc3b1df825ef1d88d8e"
+        "sha256": "a54a7bb0ff75fbf2838b1be18c1dee802bdee37ceec1daabab47ffe85d459ca4"
       },
       {
         "path": "services/api-nest/src/ledger/ledger.admin.service.ts",
@@ -780,7 +744,7 @@
       },
       {
         "path": "services/api-nest/src/loop/day-pulse.service.ts",
-        "sha256": "aef4f39adaf1c6cf9a436f80f38abdef88c03d0f29271cd473869847c6011e6b"
+        "sha256": "fd484921b18801585309680315c39c5551262dbc629744f4153e98a3d7c66bb9"
       },
       {
         "path": "services/api-nest/src/loop/day-pulse.user.controller.ts",
@@ -812,7 +776,7 @@
       },
       {
         "path": "services/api-nest/src/membership/membership.admin.controller.ts",
-        "sha256": "70daf7d6259d2786986bf34f64d3e3f163956f60f0e72734e6bae14cbf76ee99"
+        "sha256": "76f7886d726662df20aff67f112f530b3fcdc4e2b0d2833cf2356001ccff4e07"
       },
       {
         "path": "services/api-nest/src/membership/membership.admin.service.ts",
@@ -868,7 +832,7 @@
       },
       {
         "path": "services/api-nest/src/missions/mission.accrual.service.ts",
-        "sha256": "bbc93c9b8f0243c3a4beb6f18c6e9aa0f0becafa669d7cc1f1d815380cfadaec"
+        "sha256": "57b05d9e53c5701df618442fa6e6821a84fa1566ad93e8cda42f4b64452a6f9e"
       },
       {
         "path": "services/api-nest/src/missions/mission.events.ts",
@@ -908,7 +872,7 @@
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
-        "sha256": "e41485bf8fde1b681c78c9e579dba39af4574bcb1a8eb21981b5fa4df02a3fac"
+        "sha256": "e8bca62a42de037dbac5966712a7359b54bc9683c1fc67e8d4d9674e28adf244"
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.admin.service.ts",
@@ -948,11 +912,11 @@
       },
       {
         "path": "services/api-nest/src/opportunities/participate.service.ts",
-        "sha256": "6f81062ddd2ada889f16921465caabb101213fd9398f17dcbdcd5b90bfe008d1"
+        "sha256": "e3d6d5f3476714b0c2ce13bb6a044ceda01e7a72101014033879af130d139e92"
       },
       {
         "path": "services/api-nest/src/opportunities/user-opportunity-override.admin.controller.ts",
-        "sha256": "becdf5e84875a434f6d7dde834c7696352a2c701ea59ee272c938a8c0aa30752"
+        "sha256": "52f908f9ee8158deed4693e9c913eb7dcf5781f51b8248ea4d5e28934832f0b1"
       },
       {
         "path": "services/api-nest/src/opportunities/user-opportunity-override.admin.service.ts",
@@ -972,7 +936,7 @@
       },
       {
         "path": "services/api-nest/src/referral/referral.admin.controller.ts",
-        "sha256": "ee07adc6daf2e0f277d41fdb96ed74ac2c5937454a804aaf859b34f645475e0c"
+        "sha256": "36f41d6828418327cd3370d42d8d6bc36a4677c3be42a92dda31813ba841b07e"
       },
       {
         "path": "services/api-nest/src/referral/referral.bonus.ts",
@@ -1020,7 +984,7 @@
       },
       {
         "path": "services/api-nest/src/referral/referral.share.service.ts",
-        "sha256": "97ffb87cbf7d921b0e4fb576e6d2dd32d3b1a795b8f05ef4e06087a0a8b63fde"
+        "sha256": "de920adfa293e91e3b0a3f110896d1a3731387988d087ffb607288a83b2cc21d"
       },
       {
         "path": "services/api-nest/src/referral/referral.types.ts",
@@ -1036,7 +1000,7 @@
       },
       {
         "path": "services/api-nest/src/risk/risk.admin.controller.ts",
-        "sha256": "b3f7295ed57710aecdcdeba02a0709011980e07d1e0efd492e00a949a9e3d95c"
+        "sha256": "68a4f460cb1b377d86364e0e5a82ab16b070b58a84afe44057b6578b8755aa60"
       },
       {
         "path": "services/api-nest/src/risk/risk.events.ts",
@@ -1088,7 +1052,7 @@
       },
       {
         "path": "services/api-nest/src/simulation/platform-reserve.admin.controller.ts",
-        "sha256": "42b6ff399648c6f82a67c5d62cfb507d79c94a9e2f71c0ddf117ee14f23065e6"
+        "sha256": "67f3347cb7c3848724e7a901e19fab3f932a2563c9d0a83e0c5fd62e17a249d2"
       },
       {
         "path": "services/api-nest/src/simulation/platform-reserve.admin.service.ts",
@@ -1096,7 +1060,7 @@
       },
       {
         "path": "services/api-nest/src/simulation/simulation.admin.controller.ts",
-        "sha256": "95da8dd7ac082c7fa84951efc070c2cd4819e882264b2887ab395640c4d24ce7"
+        "sha256": "e63011acaa318e230577eca00ccf46d6543222dbe01d2943dd81f23f57e4e8a0"
       },
       {
         "path": "services/api-nest/src/simulation/simulation.admin.service.ts",
@@ -1128,7 +1092,7 @@
       },
       {
         "path": "services/api-nest/src/trades/trades.execution.service.ts",
-        "sha256": "3b2abe0dfb348773fad20b114b0bc9d613d7bdfeae432407730acb8e9407146c"
+        "sha256": "b2997842e03dd5c2e94745604f05b826aadfb2e5f44790a7ec3565874ec590f7"
       },
       {
         "path": "services/api-nest/src/trades/trades.module.ts",
@@ -1168,7 +1132,7 @@
       },
       {
         "path": "services/api-nest/src/wallet/deposit-config.admin.controller.ts",
-        "sha256": "7f72058cf84ff30089023539b04cf14b2dbb3619056dade67bc95886556945aa"
+        "sha256": "ed6daf837821387690a53e64cc0bf443d3fe0b178f714455f91616a32dcbb8d3"
       },
       {
         "path": "services/api-nest/src/wallet/deposit-config.service.ts",
@@ -1176,7 +1140,7 @@
       },
       {
         "path": "services/api-nest/src/wallet/deposit-dispute.admin.controller.ts",
-        "sha256": "bcecd63be56633744fcedaa44f38b23ecfeb0bdfa0cb7a5499597404d9383c1c"
+        "sha256": "4ae5ad3f069e03c0201db534b398aedc291f7023e4b47d5b300d7d2d399d26d2"
       },
       {
         "path": "services/api-nest/src/wallet/deposit-dispute.service.ts",
@@ -1216,7 +1180,7 @@
       },
       {
         "path": "services/api-nest/src/wallet/krw-deposit.admin.controller.ts",
-        "sha256": "36a57933b845dc894c5b620be9106fa10ff6300e23bcae16fa3706994b214b2f"
+        "sha256": "a9cb60529d44b46d62e1c1169c612bbf90480f9c0fb783e564534f58f75409ed"
       },
       {
         "path": "services/api-nest/src/wallet/krw-deposit.service.ts",
@@ -1272,7 +1236,7 @@
       },
       {
         "path": "services/api-nest/src/wallet/withdraw-credentials.admin.controller.ts",
-        "sha256": "32f8fb359c2d9d6efa709681ce20b959537012f7f4079d0002d733870ddabd15"
+        "sha256": "5b0df3ff6e6c2cdecb8e1a803b56515782596469e87a891fb6794514c1089882"
       },
       {
         "path": "services/api-nest/src/wallet/withdraw-credentials.admin.service.ts",
@@ -1489,10 +1453,6 @@
       {
         "path": "supabase/migrations/20260813025116_ai_logs_answer_path_scope_redirect.sql",
         "sha256": "05cd4923355b3baa52dd715e6a0113a1e70f8df2ad725698f0bccbc2700ee54b"
-      },
-      {
-        "path": "supabase/migrations/20260813202305_privacy_purge_anonymize_indexes.sql",
-        "sha256": "0c59a94adc4e45ff3e7bdb67e6e6b78b9335dbe68a88af53f1b35adddeaebc67"
       }
     ]
   },
@@ -1502,8 +1462,8 @@
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-fdf692cb8a02-d532a6d7958b",
-    "predecessor_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+    "rebase_id": "ea-rebase-2c7b9cffd323-1e2ce00bd6a1",
+    "predecessor_baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
     "kind": "product_rebase"
   }
 }

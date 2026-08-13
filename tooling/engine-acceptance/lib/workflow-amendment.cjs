@@ -240,8 +240,20 @@ function verifyGovernanceAgainstBaseline(baseline, scope, ledger, evidence, fail
     );
   }
 
+  // An amendment's baseline_id records the epoch it actually happened under.
+  // Once more than one rebase has occurred, that epoch is a predecessor, not
+  // the tip — it must stay allowed (history, not "current"), or every L7
+  // amendment made before the most recent L8 rebase would wrongly start
+  // failing the moment a later rebase lands. Every id that ever appeared as a
+  // predecessor_baseline_id/new_baseline_id in the rebase chain is legitimate.
   const allowedBaselineIds = new Set([ledger.baseline_id]);
   if (rebaseTip && rebaseTip.new_baseline_id) allowedBaselineIds.add(rebaseTip.new_baseline_id);
+  if (rebaseLedger && Array.isArray(rebaseLedger.rebases)) {
+    for (const r of rebaseLedger.rebases) {
+      if (r && r.predecessor_baseline_id) allowedBaselineIds.add(r.predecessor_baseline_id);
+      if (r && r.new_baseline_id) allowedBaselineIds.add(r.new_baseline_id);
+    }
+  }
 
   const amends = ledger.amendments || [];
   for (let i = 0; i < amends.length; i++) {

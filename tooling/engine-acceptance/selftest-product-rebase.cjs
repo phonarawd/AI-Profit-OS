@@ -381,10 +381,17 @@ function run() {
     validateLedgerPolicy(liveLedger, policyFails);
     check("live_ledger_policy_block", policyFails.length === 0, policyFails.join("; "));
 
-    check("no_new_epoch_created", liveLedger.rebases.length === 3, `rebases=${liveLedger.rebases.length}`);
+    // Regression snapshot of the live ledger/baseline at the time this file was
+    // written, NOT a policy that forbids a rebase — the real policy is enforced
+    // by validateRebaseEntry/verifyRebaseLedgerAgainstBaseline/verifyWashing
+    // above and below. Updated once, in step with the single approved
+    // ENGINE_ACCEPTANCE_REBASE_POLICY_V2 L8 rebase (protected repair wave:
+    // admin boundary/RBAC, admin operator identity, clock seam, privacy
+    // purge, postgres pool recovery, narrow privacy index migration).
+    check("no_new_epoch_created", liveLedger.rebases.length === 4, `rebases=${liveLedger.rebases.length}`);
     check(
       "live_baseline_unchanged",
-      liveBaseline.id === "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      liveBaseline.id === "ea-baseline-fdf692cb8a02-d532a6d7958b",
       liveBaseline.id,
     );
     // qa9-result is the current-epoch verdict SSOT. evidence-manifest.verdict may be
