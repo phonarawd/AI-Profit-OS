@@ -223,14 +223,8 @@ export class AuthController {
     @Body() body: Record<string, unknown>,
     @Req() req: AuthedRequest,
   ) {
-    // Ledger snapshot injected by Money module later — skeleton assumes empty
-    const ledger = {
-      lockedUsdt: Number(body?.lockedUsdt ?? 0),
-      pendingWithdrawCount: Number(body?.pendingWithdrawCount ?? 0),
-      principalUsdt: Number(body?.principalUsdt ?? 0),
-      profitUsdt: Number(body?.profitUsdt ?? 0),
-      practiceUsdt: Number(body?.practiceUsdt ?? 0),
-    };
-    return this.auth.deleteAccount(req.user.userId, body ?? {}, ledger);
+    // Guard balances/pending-withdraw come from the ledger inside AuthService
+    // (PrivacyAccountService.loadGuardSnapshot) — never from this request body.
+    return this.auth.deleteAccount(req.user.userId, body ?? {});
   }
 }

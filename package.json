@@ -165,6 +165,7 @@
     "verify:day-pulse-live-only": "node tooling/verify/day-pulse-live-only.cjs",
     "verify:db-recovery": "node tooling/verify/db-recovery.cjs",
     "verify:preflight-may-stop": "node tooling/verify/preflight-may-stop.cjs",
+    "verify:privacy-purge": "node tooling/verify/privacy-purge.cjs",
     "verify:loop-psychology": "node tooling/verify/loop-psychology.cjs",
     "verify:legal-plain-ko": "node tooling/verify/legal-plain-ko.cjs",
     "verify:part5-shell-toast": "node tooling/verify/part5-shell-toast.cjs",

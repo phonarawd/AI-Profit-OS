@@ -43,6 +43,7 @@ import {
   type OnboardingStage,
 } from "./auth.constants";
 import type { SessionUser } from "./jwt-auth.guard";
+import { PrivacyAccountService } from "./privacy-account.service";
 import {
   assertNoForbiddenAuthFields,
   evaluateDeleteAccountGuards,
@@ -95,6 +96,7 @@ export class AuthService {
     private readonly ledgerProvision: LedgerProvisionService,
     private readonly practiceGrant: PracticeGrantService,
     private readonly notificationPrefs: NotificationPrefsService,
+    private readonly privacy: PrivacyAccountService,
   ) {}
 
   /**
@@ -304,6 +306,12 @@ export class AuthService {
     accessToken: string;
     session: AuthSessionView;
   }> {
+    // A deleted account's still-valid (short-TTL) access token must not be
+    // able to mint a fresh one — refresh is the one session-authority path
+    // that already round-trips the DB, so this is the minimal enforcement
+    // point (no new blacklist architecture; reuses the existing users.status
+    // tombstone this same wave introduces).
+    await this.assertAccountActive(sessionUser.userId);
     await this.revokeSession(sessionUser);
     const minted = await this.mintSession(sessionUser.userId);
     return {
@@ -314,6 +322,17 @@ export class AuthService {
     };
   }
 
+  private async assertAccountActive(userId: string): Promise<void> {
+    if (!this.db.configured()) return;
+    const r = await this.db.query<{ status: string }>(
+      `SELECT status FROM public.users WHERE id = $1::uuid`,
+      [userId],
+    );
+    if (r.rows[0]?.status === "deleted") {
+      throw new ForbiddenException("ACCOUNT_DELETED");
+    }
+  }
+
   async session(sessionUser: SessionUser): Promise<AuthSessionView> {
     let revoked = false;
     if (this.db.configured() && sessionUser.sessionId) {
@@ -322,7 +341,10 @@ export class AuthService {
           WHERE user_id = $1::uuid AND refresh_jti = $2`,
         [sessionUser.userId, sessionUser.sessionId],
       );
-      revoked = r.rows[0]?.revoked === true;
+      // No row is not "not revoked" — the session was revoked/purged (delete-
+      // account hard-deletes auth_sessions rows) or never existed; either way
+      // this must read as revoked, not as a healthy active session.
+      revoked = r.rows[0] ? r.rows[0].revoked === true : true;
     }
     const onboardingStage = await this.loadOnboardingStage(sessionUser.userId);
     return {
@@ -336,38 +358,36 @@ export class AuthService {
     };
   }
 
-  async deleteAccount(
-    userId: string,
-    body: Record<string, unknown>,
-    ledger: DeleteAccountGuardSnapshot,
-  ) {
+  async deleteAccount(userId: string, body: Record<string, unknown>) {
     const confirm1 = body.confirmPhrase === DELETE_ACCOUNT_CONFIRM_PHRASE;
     const confirm2 = body.confirmAgain === true || body.confirmTwice === true;
     if (!confirm1 || !confirm2) {
       throw new BadRequestException("delete-account requires confirm×2");
     }
+    if (!this.db.configured()) {
+      // Nothing to purge against — same "no DB, no mutation" contract as before.
+      return {
+        ok: true as const,
+        status: "anonymized" as const,
+        kycRetention: "archive_r2" as const,
+      };
+    }
+
+    // Real server-side balances/pending-withdraws — never trust a client body
+    // for a guard that exists specifically to stop a client from bypassing it.
+    const ledger: DeleteAccountGuardSnapshot = await this.privacy.loadGuardSnapshot(
+      userId,
+    );
     const gate = evaluateDeleteAccountGuards(ledger);
     if (!gate.ok) throw new ForbiddenException(gate.reason);
 
-    if (this.db.configured()) {
-      await this.db.query(
-        `UPDATE public.users
-            SET status = 'deleted',
-                anonymized_at = now(),
-                deleted_reason = 'user_requested',
-                email = NULL,
-                phone_e164 = NULL,
-                updated_at = now()
-          WHERE id = $1::uuid`,
-        [userId],
-      );
-      await this.revokeAllSessions(userId);
-    }
-
+    const result = await this.privacy.purgeAccount(userId);
     return {
       ok: true as const,
       status: "anonymized" as const,
       kycRetention: "archive_r2" as const,
+      purged: result.purged,
+      anonymized: result.anonymized,
     };
   }
 

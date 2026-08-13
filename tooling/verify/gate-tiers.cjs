@@ -35,6 +35,7 @@ const T1_PUSH = [
   "admin-boundary.cjs",
   "domain-clock.cjs",
   "db-recovery.cjs",
+  "privacy-purge.cjs",
   "api-nest-build.cjs",
   "stubs/run-all.cjs",
 ];

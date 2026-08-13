@@ -146,6 +146,14 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/api-nest\/src\/auth\/(privacy-account\.service|auth\.service|auth\.controller|auth\.stage)\.ts$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/privacy-purge\.cjs$/.test(f),
+    scripts: ["privacy-purge.cjs", "auth-flows.cjs", "auth-jwt-runtime.cjs"],
+  },
+  {
+    test: (f) =>
       /packages\/ui\/components\/opportunity/.test(f) ||
       /packages\/ui\/copy\/ko\/(feed|margin)/.test(f) ||
       /packages\/ui\/canon\/surfaces\/opportunity/.test(f),
