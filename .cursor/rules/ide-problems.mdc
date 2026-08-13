@@ -46,6 +46,6 @@ Problems에 수백 개가 뜨는 주원인 = `davidanson.vscode-markdownlint`가
 | `%USERPROFILE%\.cursor\plans\` | Cursor UI 경로 · **hardlink(동일 inode)** 또는 동등 바이트 미러 |
 | `*_ssot` · 구번호 논리명 | **STALE** · `_archive/ai_profit_os_stale/` |
 
-- sync: `pnpm cursor:sync-plans` (prepare · sessionStart · stop 훅 자동) — copy가 아니라 **hardlink 우선** (UI 완료 체크가 sync에 의해 pending으로 되돌아가는 것 방지)
+- sync: `pnpm cursor:sync-plans` (prepare · sessionStart · sessionEnd 훅 자동) — copy가 아니라 **hardlink 우선** (UI 완료 체크가 sync에 의해 pending으로 되돌아가는 것 방지)
 - verify: `pnpm verify:plans-ssot` (`verify:gate` 포함)
 - 에이전트: 워크스페이스 YAML `status: completed`만 편집 · TodoWrite만으로 Plan UI 체크를 대체하지 말 것

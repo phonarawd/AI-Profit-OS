@@ -85,7 +85,7 @@ pnpm lowspec:status       # RAM/Docker/Cursor 압력 확인 (이 PC=Celeron 2C/8
 ```
 
 - 이 PC: `NODE_OPTIONS=--max-old-space-size=1536` · Docker OFF · 프로세스 1개
-- Cursor hooks: `.cursor/hooks.json` (git permission only · **sessionStart/stop plan sync** · cleanup · RAM warn)
+- Cursor hooks: `.cursor/hooks.json` (project isolation · **sessionStart/sessionEnd plan sync** · cleanup · RAM warn)
 - Plan SSOT: 워크스페이스 `.cursor/plans` only · `verify:plans-ssot` in T0 · stale home aliases quarantine
 - Husky: pre-commit → `verify:gate:fast` · pre-push → `verify:gate:push`
 - CI: `.github/workflows/gate.yml` → T2 `verify:gate`

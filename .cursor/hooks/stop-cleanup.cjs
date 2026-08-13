@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** stop / sessionEnd — sync plan SSOT to Cursor home · lowspec cleanup · remind verify */
+/** sessionEnd only — sync plan SSOT to Cursor home · lowspec cleanup · remind verify */
 const { execSync, spawnSync } = require("child_process");
 const path = require("path");
 

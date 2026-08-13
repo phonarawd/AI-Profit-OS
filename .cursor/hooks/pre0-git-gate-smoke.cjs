@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * PRE-0 git-gate + hooks.json BOM regression (fixture only).
- * Does not create commits · does not mutate governance staged index.
+ * PRE-0 git permission regression via unified project-boundary hook.
+ * --no-verify is Cursor-only (Husky never sees it). T0/T1 stay in Husky.
  */
 "use strict";
 
@@ -11,11 +11,11 @@ const os = require("os");
 const { spawnSync } = require("child_process");
 
 const ROOT = path.resolve(__dirname, "..", "..");
-const HOOK = path.join(ROOT, ".cursor", "hooks", "before-shell-git-gate.cjs");
+const HOOK = path.join(ROOT, ".cursor", "hooks", "project-boundary.mjs");
 const HOOKS_JSON = path.join(ROOT, ".cursor", "hooks.json");
 const FOREIGN_DIR = "C:\\Users\\PC\\Desktop\\clime-gb";
 
-/** Contract: under Cursor hook spawn budgets (pre0=8s · boundary=45s · git-gate=120s). */
+/** Contract: under Cursor hook spawn budgets (boundary=20s). */
 const COMMIT_DECISION_MAX_MS = 2000;
 const HOOK_SPAWN_TIMEOUT_MS = 8000;
 

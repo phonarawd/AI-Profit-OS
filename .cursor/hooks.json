@@ -10,47 +10,36 @@
     "beforeReadFile": [
       {
         "command": "node .cursor/hooks/project-boundary.mjs",
-        "timeout": 45,
+        "timeout": 20,
         "failClosed": true
       }
     ],
     "beforeTabFileRead": [
       {
         "command": "node .cursor/hooks/project-boundary.mjs",
-        "timeout": 45,
+        "timeout": 20,
         "failClosed": true
       }
     ],
     "preToolUse": [
       {
         "command": "node .cursor/hooks/project-boundary.mjs",
-        "timeout": 45,
+        "timeout": 20,
         "failClosed": true
       }
     ],
     "beforeShellExecution": [
       {
         "command": "node .cursor/hooks/project-boundary.mjs",
-        "timeout": 45,
-        "failClosed": true
-      },
-      {
-        "command": "node .cursor/hooks/before-shell-git-gate.cjs",
-        "timeout": 120,
+        "timeout": 20,
         "failClosed": true
       }
     ],
     "beforeMCPExecution": [
       {
         "command": "node .cursor/hooks/project-boundary.mjs",
-        "timeout": 45,
+        "timeout": 20,
         "failClosed": true
-      }
-    ],
-    "stop": [
-      {
-        "command": "node .cursor/hooks/stop-cleanup.cjs",
-        "timeout": 60
       }
     ],
     "sessionEnd": [

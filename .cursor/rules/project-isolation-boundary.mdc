@@ -12,7 +12,7 @@ alwaysApply: true
 | Workspace root | `C:\Users\PC\Desktop\AI_PROFIT_OS` (실제 루트 절대경로만) |
 | GitHub | `phonarawd/AI-Profit-OS` only |
 | Supabase | `mgsytcetsiecllmhcyox` only |
-| Cursor project cache | `~/.cursor/projects/<이프로젝트>` only |
+| Cursor project cache | `~/.cursor/projects/<normalized-slug>` only (`AI_PROFIT_OS` → `AI-PROFIT-OS`) |
 | Plan SSOT | 레포 `.cursor/plans/` only |
 
 ## DENY (읽·수정·비교·목록·Shell/Grep/MCP 금지)
@@ -35,7 +35,7 @@ alwaysApply: true
 
 ## 훅 SSOT
 
-- 정책: `.cursor/hooks/lib/project-boundary-policy.mjs`
-- 엔트리: `.cursor/hooks/project-boundary.mjs`
-- 배선: `.cursor/hooks.json` (`failClosed: true`)
+- 정책: `.cursor/hooks/lib/project-boundary-policy.mjs` (슬러그: drive/`_` → `-`)
+- 엔트리: `.cursor/hooks/project-boundary.mjs` · stdin SSOT `lib/hook-io.cjs`
+- 배선: `.cursor/hooks.json` (`failClosed: true` · beforeShellExecution 1개)
 - 검증: `pnpm verify:project-boundary` (fixture only)

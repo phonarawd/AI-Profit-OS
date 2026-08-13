@@ -345,6 +345,10 @@ for (const ev of events) {
   );
   if (!hit) failClosedOk = false;
 }
+const shellList = (hooksJson.hooks && hooksJson.hooks.beforeShellExecution) || [];
+const singleShellHook =
+  shellList.length === 1 &&
+  !JSON.stringify(hooksJson).includes("before-shell-git-gate");
 
 const policy = createPolicy({ workspaceRoot: ROOT, homeDir: "C:\\Users\\PC" });
 const selfGrep = policy.decidePreToolUse({
@@ -363,6 +367,7 @@ const HOOK_STABILITY =
   counts.allow_fail === 0 &&
   counts.deny_fail === 0 &&
   failClosedOk &&
+  singleShellHook &&
   selfGrep.permission === "allow"
     ? "PASS"
     : "FAIL";
@@ -370,6 +375,7 @@ const HOOK_STABILITY =
 const report = {
   HOOK_STABILITY,
   FAILCLOSED: failClosedOk,
+  SINGLE_SHELL_HOOK: singleShellHook,
   ALLOW_STRESS:
     counts.allow_fail === 0 && counts.allow_ok > 0 ? "PASS" : "FAIL",
   DENY_STRESS: counts.deny_fail === 0 && counts.deny_ok > 0 ? "PASS" : "FAIL",

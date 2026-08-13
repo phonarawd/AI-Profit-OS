@@ -48,12 +48,70 @@ function homeDir(opts) {
   );
 }
 
+/**
+ * Cursor project cache slug for this workspace.
+ * Cursor stores caches as ~/.cursor/projects/<slug>/ where the absolute
+ * path is slugified: drive colon + separators + underscores become '-'.
+ * Example: C:\Users\PC\Desktop\AI_PROFIT_OS → c-Users-PC-Desktop-AI-PROFIT-OS
+ */
 export function cursorProjectSlug(workspaceRoot) {
   const abs = path.resolve(String(workspaceRoot || ""));
-  return abs
+  return String(abs)
     .replace(/^([A-Za-z]):/, (_, d) => d.toLowerCase())
-    .replace(/^[\\/]+/, "")
-    .replace(/[\\/]+/g, "-");
+    .replace(/[^A-Za-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** Full-path slug plus basename slug (AI_PROFIT_OS → AI-PROFIT-OS). */
+export function cursorProjectSlugs(workspaceRoot) {
+  const abs = path.resolve(String(workspaceRoot || ""));
+  const slugs = new Set();
+  const full = cursorProjectSlug(abs);
+  if (full) slugs.add(full);
+  const base = path.basename(abs);
+  if (base) {
+    const baseSlug = String(base)
+      .replace(/[^A-Za-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    if (baseSlug) slugs.add(baseSlug);
+  }
+  return [...slugs];
+}
+
+/** Strip quoted segments so commit messages cannot trip git flag checks. */
+function stripQuoted(s) {
+  return String(s || "")
+    .replace(/"[^"]*"/g, '""')
+    .replace(/'[^']*'/g, "''");
+}
+
+function hasNoVerify(cmd) {
+  const stripped = stripQuoted(cmd);
+  return /\s--no-verify\b|\s--no-gpg-sign\b/.test(" " + stripped);
+}
+
+function touchesEnv(cmd) {
+  if (!/\bgit\s+(add|commit|rm|update-index)\b/.test(cmd)) return false;
+  const stripped = stripQuoted(cmd);
+  if (/\.env\.example\b/.test(stripped) && !/\.env(?!\.example)\b/.test(stripped)) {
+    return false;
+  }
+  return (
+    /(^|[\s"'])\.env\b/.test(stripped) ||
+    /\.env\.(local|production|development|test|rc)\b/.test(stripped)
+  );
+}
+
+function forceAddSecrets(cmd) {
+  const stripped = stripQuoted(cmd);
+  return (
+    /\bgit\s+add\b/.test(cmd) &&
+    /(-[A-Za-z]*f[A-Za-z]*|--force)/.test(stripped) &&
+    /(\.env\b|\.pem\b|\.key\b|credentials\.json|service_account\.json)/.test(
+      stripped
+    ) &&
+    !/\.env\.example\b/.test(stripped)
+  );
 }
 
 function normPath(p) {
@@ -142,14 +200,13 @@ export function createPolicy(opts = {}) {
   const globalPlansRoot = home
     ? path.resolve(home, ".cursor", "plans")
     : "";
-  const allowedProjectCache = home
-    ? path.resolve(
-        home,
-        ".cursor",
-        "projects",
-        cursorProjectSlug(workspaceRoot)
+  const projectSlugs = cursorProjectSlugs(workspaceRoot);
+  const allowedProjectCaches = home
+    ? projectSlugs.map((slug) =>
+        path.resolve(home, ".cursor", "projects", slug)
       )
-    : "";
+    : [];
+  const allowedProjectCache = allowedProjectCaches[0] || "";
   const repoPlansRoot = path.resolve(workspaceRoot, ".cursor", "plans");
 
   function isGlobalCursorPlans(filePath) {
@@ -184,8 +241,8 @@ export function createPolicy(opts = {}) {
   function isAllowedFs(filePath) {
     if (!filePath) return false;
     if (isUnder(filePath, workspaceRoot)) return true;
-    if (allowedProjectCache && isUnder(filePath, allowedProjectCache)) {
-      return true;
+    for (let i = 0; i < allowedProjectCaches.length; i++) {
+      if (isUnder(filePath, allowedProjectCaches[i])) return true;
     }
     return false;
   }
@@ -229,7 +286,7 @@ export function createPolicy(opts = {}) {
         return deny(
           "FOREIGN_FS",
           "Blocked: path outside AI_PROFIT_OS allowlist.",
-          "Allowed: workspace root, this project ~/.cursor/projects/<slug>, repo .cursor/plans."
+          "Allowed: workspace root, this project ~/.cursor/projects/<normalized-slug>, repo .cursor/plans."
         );
       }
       if (isDeniedPlanInRepo(raw)) {
@@ -413,6 +470,22 @@ export function createPolicy(opts = {}) {
 
     if (!cmd.trim()) {
       return allow();
+    }
+
+    // Unique Cursor pre-exec (Husky never sees --no-verify).
+    if (hasNoVerify(cmd)) {
+      return deny(
+        "GIT_NO_VERIFY",
+        "Blocked: --no-verify / --no-gpg-sign forbidden (ADR-016).",
+        "Remove --no-verify. commit=T0 via Husky pre-commit · push=T1 via Husky pre-push."
+      );
+    }
+    if (touchesEnv(cmd) || forceAddSecrets(cmd)) {
+      return deny(
+        "GIT_SECRETS",
+        "Blocked: .env / secret files must not be staged/committed.",
+        "Unstage secrets. .env stays local only (ADR-016)."
+      );
     }
 
     if (cwd && !isAllowedFs(cwd) && !isUnder(cwd, workspaceRoot)) {
@@ -811,6 +884,8 @@ export function createPolicy(opts = {}) {
     workspaceRoot,
     globalPlansRoot,
     allowedProjectCache,
+    allowedProjectCaches,
+    projectSlugs,
     repoPlansRoot,
     classifyPath,
     extractShellCommand,
