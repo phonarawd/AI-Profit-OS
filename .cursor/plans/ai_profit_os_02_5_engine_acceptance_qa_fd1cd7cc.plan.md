@@ -25,7 +25,7 @@ todos:
     status: pending
   - id: qa7-ai-eval
     content: "[composer-2.5|200K] eval JSONL+dataset/grader hash를 baseline 묶음 · code grader 1차 oracle · quality grader 보조만 · Evals UI 종속0 · end-to-end trace evidence"
-    status: pending
+    status: completed
   - id: qa8-security-privacy
     content: "[composer-2.5|200K] ASVS 5.0.0 versioned requirement IDs subset · IDOR/authz/PII/delete-account · isolation invariant 공유 mapping · 전수인증 주장0"
     status: pending

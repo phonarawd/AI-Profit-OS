@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-6",
+  "qa_phase": "QA-7",
   "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
   "verdict": "ENGINE_QA_INCOMPLETE",
-  "verdict_reason": "QA6 COMPLETE · critical_invariant.blocked=5 (incl. UNSPECIFIED_PERF_BUDGET/BLOCKED_MISSING_ORACLE + prior BLOCKED_*) · P0/P1=0 · ACCEPTED 불가 · QA7..QA8 not executed",
+  "verdict_reason": "QA7 COMPLETE (formal Actions) · critical_invariant.blocked=5 (QA4–QA6 BLOCKED_* / UNSPECIFIED_PERF_BUDGET) · P0/P1=0 · QA8 NOT_STARTED · ENGINE_ACCEPTED_FOR_UI forbidden",
   "evidence_integrity": "VALID",
-  "next": "QA7_AI_EVAL",
+  "next": "QA8_SECURITY_PRIVACY",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -16,6 +16,7 @@
       "baseline.v1.json",
       "ENGINE_ACCEPTANCE_REPORT.md",
       "qa6-result.v1.json",
+      "qa7-result.v1.json",
       "perf-budget.v1.json"
     ]
   },
@@ -94,11 +95,14 @@
     },
     {
       "suite_id": "QA7",
-      "run_id": null,
+      "run_id": "31664299560",
       "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
-      "checksum": null,
-      "completion_status": "NOT_STARTED",
-      "predecessor_baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9"
+      "checksum": "8fd355698a754202f3113927c7a157657b9e077da3ac7717d80258a32def204b",
+      "completion_status": "COMPLETE",
+      "result_ref": "governance/engine-acceptance/qa7-result.v1.json",
+      "mode": "full",
+      "formal_actions_evidence": true,
+      "artifact": "engine-acceptance-QA7-raw-traces"
     },
     {
       "suite_id": "QA8",
@@ -117,7 +121,8 @@
     "verified_before_qa3": true,
     "verified_before_qa4": true,
     "verified_before_qa5": true,
-    "verified_before_qa6": true
+    "verified_before_qa6": true,
+    "verified_before_qa7": true
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -134,7 +139,7 @@
     "rebase_id": "ea-rebase-2c7b9cffd323-1e2ce00bd6a1",
     "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
     "predecessor_baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
-    "qa1_qa6_status": "STALE_PENDING_RERUN"
+    "qa1_qa6_status": "COMPLETE"
   },
   "predecessor_epoch": {
     "baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",

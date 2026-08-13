@@ -1,5 +1,5 @@
 /**
- * verify:engine-acceptance — QA-0..QA-6 scope (full ACCEPTED 판정 금지)
+ * verify:engine-acceptance — QA-0..QA-7 scope (full ACCEPTED 판정 금지)
  *
  * 검증:
  * 1) Acceptance Contract L1~L6 산출물 실재
@@ -13,7 +13,8 @@
  * 9) QA-4: multi-day + KST · BLOCKED_NO_CLOCK_HOOK 정식 · critical → ACCEPTED 불가
  * 10) QA-5: Failure World 축1/축2 · BLOCKED_NO_FAULT_HOOK · always() aggregator
  * 11) QA-6: k6 scenario mix + threshold 메커니즘 · UNSPECIFIED_PERF_BUDGET ·
- *     CI only heavy · aggregator 증거 · next=QA7 · product mutation 0
+ *     CI only heavy · aggregator 증거 · product mutation 0
+ * 12) QA-7: formal Actions evidence · qa7-result.v1.json · next=QA8 · QA8 NOT_STARTED
  */
 "use strict";
 
@@ -76,6 +77,7 @@ const REQUIRED_FILES = [
   `${GOV}/qa4-result.v1.json`,
   `${GOV}/qa5-result.v1.json`,
   `${GOV}/qa6-result.v1.json`,
+  `${GOV}/qa7-result.v1.json`,
   `${GOV}/perf-budget.v1.json`,
   "tooling/engine-acceptance/kill-switch.cjs",
   "tooling/engine-acceptance/tiny-smoke.cjs",
@@ -92,6 +94,8 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/run-qa4.cjs",
   "tooling/engine-acceptance/run-qa5.cjs",
   "tooling/engine-acceptance/run-qa6.cjs",
+  "tooling/engine-acceptance/run-qa7.cjs",
+  "tooling/engine-acceptance/publish-qa7-formal.cjs",
   "tooling/engine-acceptance/checks/schemas-routes-contract.cjs",
   "tooling/engine-acceptance/checks/db-consistency.cjs",
   "tooling/engine-acceptance/checks/idempotency-split.cjs",
@@ -447,11 +451,11 @@ if (evidence) {
   if (pendingRerun) {
     verifyPendingRerunEpoch(baseline, evidence, rebaseLedger, fails);
   } else {
-    if (evidence.qa_phase !== "QA-6") {
-      fail("evidence-manifest.qa_phase must be QA-6 after qa6-performance-world");
+    if (evidence.qa_phase !== "QA-7") {
+      fail("evidence-manifest.qa_phase must be QA-7 after qa7-ai-eval publication");
     }
-    if (evidence.next !== "QA7_AI_EVAL") {
-      fail("evidence-manifest.next must be QA7_AI_EVAL");
+    if (evidence.next !== "QA8_SECURITY_PRIVACY") {
+      fail("evidence-manifest.next must be QA8_SECURITY_PRIVACY");
     }
     if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa3 !== true) {
       fail("evidence.kill_switch.verified_before_qa3 must be true");
@@ -511,6 +515,30 @@ if (evidence) {
     }
     if (!qa6.run_id || !qa6.checksum) {
       fail("QA6 suite must have run_id + checksum");
+    }
+    const qa7 = (evidence.suites || []).find((s) => s.suite_id === "QA7");
+    const qa8 = (evidence.suites || []).find((s) => s.suite_id === "QA8");
+    if (!qa7 || qa7.completion_status !== "COMPLETE") {
+      fail("QA7 suite must be COMPLETE after formal Actions publication");
+    } else {
+      if (!qa7.run_id || !qa7.checksum) {
+        fail("QA7 suite must have run_id + checksum");
+      }
+      if (qa7.formal_actions_evidence !== true) {
+        fail("QA7 suite.formal_actions_evidence must be true");
+      }
+    }
+    if (!qa8 || qa8.completion_status !== "NOT_STARTED") {
+      fail("QA8 suite must remain NOT_STARTED");
+    }
+    if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa7 !== true) {
+      fail("evidence.kill_switch.verified_before_qa7 must be true");
+    }
+    if (
+      !evidence.critical_invariant ||
+      evidence.critical_invariant.blocked !== 5
+    ) {
+      fail("critical_invariant.blocked must remain 5 after QA7 publication");
     }
   }
 }
@@ -1047,6 +1075,171 @@ if (qa6Result) {
   }
 }
 
+let qa7Result;
+try {
+  qa7Result = readJson(`${GOV}/qa7-result.v1.json`);
+} catch {
+  fail("qa7-result.v1.json invalid JSON");
+}
+if (qa7Result && !pendingRerun) {
+  if (qa7Result.schema !== "governance.engine-acceptance.qa7-result.v1") {
+    fail("qa7-result.schema mismatch");
+  }
+  if (qa7Result.suite_id !== "QA7") fail("qa7-result.suite_id must be QA7");
+  if (qa7Result.completion_status !== "COMPLETE") {
+    fail("qa7-result.completion_status must be COMPLETE");
+  }
+  if (qa7Result.qa7_completion_status !== "COMPLETE") {
+    fail("qa7-result.qa7_completion_status must be COMPLETE");
+  }
+  if (qa7Result.formal_actions_evidence !== true) {
+    fail("qa7-result.formal_actions_evidence must be true");
+  }
+  if (qa7Result.local_validation_only !== false) {
+    fail("qa7-result.local_validation_only must be false");
+  }
+  if (qa7Result.engine_accepted_for_ui !== "NOT_ISSUED") {
+    fail("qa7-result must not issue ENGINE_ACCEPTED_FOR_UI");
+  }
+  if (qa7Result.ui_ux_entry_gate !== "CLOSED") {
+    fail("qa7-result.ui_ux_entry_gate must be CLOSED");
+  }
+  if (qa7Result.next !== "QA8_SECURITY_PRIVACY") {
+    fail("qa7-result.next must be QA8_SECURITY_PRIVACY");
+  }
+  if (qa7Result.verdict_contribution === "ENGINE_ACCEPTED_FOR_UI") {
+    fail("qa7-result must not contribute ENGINE_ACCEPTED_FOR_UI");
+  }
+  if (!/^[0-9]+$/.test(String(qa7Result.run_id || ""))) {
+    fail("qa7-result.run_id must be numeric GitHub Actions run id");
+  }
+  if (!qa7Result.actions || qa7Result.actions.run_id !== qa7Result.run_id) {
+    fail("qa7-result.actions.run_id must match run_id");
+  }
+  if (qa7Result.actions.workflow !== "engine-acceptance") {
+    fail("qa7-result.actions.workflow must be engine-acceptance");
+  }
+  if (qa7Result.actions.event !== "workflow_dispatch") {
+    fail("qa7-result.actions.event must be workflow_dispatch");
+  }
+  if (qa7Result.actions.qa_phase !== "qa7") {
+    fail("qa7-result.actions.qa_phase must be qa7");
+  }
+  if (qa7Result.actions.conclusion !== "success") {
+    fail("qa7-result.actions.conclusion must be success");
+  }
+  if (baseline && qa7Result.baseline_id !== baseline.id) {
+    fail("qa7-result.baseline_id must match current baseline.id");
+  }
+  const c = qa7Result.counts || {};
+  if (c.total !== 24 || c.pass !== 24 || c.fail !== 0 || c.blocked !== 0) {
+    fail("qa7-result.counts must be 24/24/0/0");
+  }
+  if (qa7Result.suite_status !== "PASS") fail("qa7-result.suite_status must be PASS");
+  if (qa7Result.trace_id_provenance !== "RUNTIME") {
+    fail("qa7-result.trace_id_provenance must be RUNTIME");
+  }
+  if (qa7Result.no_expectation_leakage !== true) {
+    fail("qa7-result.no_expectation_leakage must be true");
+  }
+  if (qa7Result.no_fake_trace !== true) fail("qa7-result.no_fake_trace must be true");
+  if (qa7Result.secret_exposure !== "NONE") {
+    fail("qa7-result.secret_exposure must be NONE");
+  }
+  if (qa7Result.eval_mutation !== 0) fail("qa7-result.eval_mutation must be 0");
+  if (qa7Result.grader_mutation !== 0) fail("qa7-result.grader_mutation must be 0");
+  if (qa7Result.product_mutation !== 0) fail("qa7-result.product_mutation must be 0");
+  if (!qa7Result.artifact || qa7Result.artifact.name !== "engine-acceptance-QA7-raw-traces") {
+    fail("qa7-result.artifact.name must be engine-acceptance-QA7-raw-traces");
+  }
+  if (qa7Result.artifact.retention_days !== 90) {
+    fail("qa7-result.artifact.retention_days must be 90");
+  }
+  if (qa7Result.artifact.raw_in_repo !== false) {
+    fail("qa7-result must not store raw traces in repo");
+  }
+  if (!qa7Result.deterministic_grader || qa7Result.deterministic_grader.sole_oracle !== true) {
+    fail("qa7-result deterministic grader must be sole oracle");
+  }
+  if (!qa7Result.quality_grader || qa7Result.quality_grader.status !== "NOT_USED") {
+    fail("qa7-result quality grader must be NOT_USED");
+  }
+  if (qa7Result.quality_grader.sole_oracle !== false) {
+    fail("qa7-result quality grader must not be sole oracle");
+  }
+  const obs = qa7Result.observations || [];
+  if (obs.length !== 24) fail("qa7-result.observations must have 24 cases");
+  const seenTid = new Set();
+  const expectKeys = [
+    "expectLane",
+    "expectTools",
+    "expectToolsExact",
+    "expectToolsAny",
+    "expectPath",
+    "expectAnswerPath",
+    "expectFacts",
+    "expectScope",
+    "expectGuard",
+  ];
+  const uuidRe =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  for (const o of obs) {
+    if (o.status !== "PASS") fail(`qa7 observation ${o.case_id} must remain PASS`);
+    if (o.canonical_trace !== true) fail(`qa7 observation ${o.case_id} must be canonical`);
+    if (o.fixture_only === true) fail(`qa7 observation ${o.case_id} fixture_only forbidden`);
+    if (o.trace_id_provenance !== "RUNTIME") {
+      fail(`qa7 observation ${o.case_id} provenance must be RUNTIME`);
+    }
+    if (!uuidRe.test(String(o.trace_id || ""))) {
+      fail(`qa7 observation ${o.case_id} must have runtime UUID trace_id`);
+    }
+    if (String(o.trace_id).startsWith("qa7:")) {
+      fail(`qa7 observation ${o.case_id} tooling qa7: id forbidden`);
+    }
+    if (seenTid.has(o.trace_id)) fail("qa7-result duplicate trace_id");
+    seenTid.add(o.trace_id);
+    for (const k of expectKeys) {
+      if (Object.prototype.hasOwnProperty.call(o, k)) {
+        fail(`qa7 observation ${o.case_id} leaked expectation key ${k}`);
+      }
+    }
+  }
+  if (qa7Result.hashes) {
+    if (qa7Result.hashes.prompt_hash !== "MATCH") fail("qa7-result prompt_hash must be MATCH");
+    if (qa7Result.hashes.eval_dataset_hash !== "MATCH") {
+      fail("qa7-result eval_dataset_hash must be MATCH");
+    }
+    if (qa7Result.hashes.acceptance_workflow_hash !== "MATCH") {
+      fail("qa7-result acceptance_workflow_hash must be MATCH");
+    }
+    if (baseline && qa7Result.hashes.pinned) {
+      if (qa7Result.hashes.pinned.prompt_hash !== baseline.prompt_hash) {
+        fail("qa7-result pinned prompt_hash must match baseline");
+      }
+      if (qa7Result.hashes.pinned.eval_dataset_hash !== baseline.eval_dataset_hash) {
+        fail("qa7-result pinned eval_dataset_hash must match baseline");
+      }
+      if (
+        qa7Result.hashes.pinned.acceptance_workflow_hash !==
+        baseline.acceptance_workflow_hash
+      ) {
+        fail("qa7-result pinned acceptance_workflow_hash must match baseline");
+      }
+    }
+  } else {
+    fail("qa7-result.hashes required");
+  }
+  if (evidence) {
+    const qa7 = (evidence.suites || []).find((s) => s.suite_id === "QA7");
+    if (qa7 && qa7.checksum !== qa7Result.checksum) {
+      fail("evidence QA7.checksum must match qa7-result.checksum");
+    }
+    if (qa7 && String(qa7.run_id) !== String(qa7Result.run_id)) {
+      fail("evidence QA7.run_id must match qa7-result.run_id");
+    }
+  }
+}
+
 const report = fs.existsSync(path.join(ROOT, `${GOV}/ENGINE_ACCEPTANCE_REPORT.md`))
   ? fs.readFileSync(path.join(ROOT, `${GOV}/ENGINE_ACCEPTANCE_REPORT.md`), "utf8")
   : "";
@@ -1065,8 +1258,14 @@ if (report) {
       fail("REPORT must declare NEXT=QA1_DETERMINISTIC_TRUTH after rebase");
     }
   } else {
-    if (!report.includes("QA7_AI_EVAL")) {
-      fail("REPORT must declare NEXT=QA7_AI_EVAL");
+    if (!report.includes("QA8_SECURITY_PRIVACY")) {
+      fail("REPORT must declare NEXT=QA8_SECURITY_PRIVACY");
+    }
+    if (!report.includes("QA7 = COMPLETE")) {
+      fail("REPORT banner must include QA7 = COMPLETE");
+    }
+    if (!report.includes("QA8 = NOT_STARTED")) {
+      fail("REPORT banner must include QA8 = NOT_STARTED");
     }
     if (!report.includes("QA6 = COMPLETE")) {
       fail("REPORT banner must include QA6 = COMPLETE");
@@ -1112,6 +1311,10 @@ if (fs.existsSync(wfPath)) {
   if (!/run-qa4\.cjs/.test(wf)) fail("workflow must invoke run-qa4.cjs for QA4");
   if (!/run-qa5\.cjs/.test(wf)) fail("workflow must invoke run-qa5.cjs for QA5");
   if (!/run-qa6\.cjs/.test(wf)) fail("workflow must invoke run-qa6.cjs for QA6");
+  if (!/run-qa7\.cjs/.test(wf)) fail("workflow must invoke run-qa7.cjs for QA7");
+  if (!/engine-acceptance-QA7-raw-traces/.test(wf)) {
+    fail("workflow must upload engine-acceptance-QA7-raw-traces");
+  }
   if (!/qa6-result\.v1\.json/.test(wf)) {
     fail("workflow aggregator/artifacts must include qa6-result.v1.json");
   }
@@ -1306,6 +1509,12 @@ try {
 } catch (e) {
   fail(`product-rebase selftest threw: ${e && e.message ? e.message : e}`);
 }
+try {
+  const { run: selftestQa7 } = require("../engine-acceptance/selftest-qa7.cjs");
+  selftestQa7();
+} catch (e) {
+  fail(`qa7 selftest threw: ${e && e.message ? e.message : e}`);
+}
 if (amendmentLedger && amendmentLedger.decision_id !== DECISION_ID) {
   fail(`decision_id must be ${DECISION_ID}`);
 }
@@ -1319,12 +1528,12 @@ if (baseline && fs.existsSync(wfPath) && scope) {
 }
 
 if (fails.length) {
-  console.error("[verify:engine-acceptance] FAIL (QA-0..QA-6)");
+  console.error("[verify:engine-acceptance] FAIL (QA-0..QA-7)");
   for (const f of fails) console.error(`  - ${f}`);
   process.exit(1);
 }
 
-console.log("[verify:engine-acceptance] PASS (QA-0..QA-6 scope)");
+console.log("[verify:engine-acceptance] PASS (QA-0..QA-7 scope)");
 console.log("  ACCEPTANCE CONTRACT = LOCKED");
 console.log(pendingRerun ? "  BASELINE = NEW_EPOCH (REBASE PENDING RERUN)" : "  BASELINE = FROZEN");
 console.log("  GOVERNANCE_DECISION = POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1");
@@ -1341,6 +1550,9 @@ if (pendingRerun) {
   console.log("  QA4 = COMPLETE");
   console.log("  QA5 = COMPLETE");
   console.log("  QA6 = COMPLETE");
-  console.log("  NEXT = QA7_AI_EVAL");
+  console.log("  QA7 = COMPLETE");
+  console.log("  QA8 = NOT_STARTED");
+  console.log("  NEXT = QA8_SECURITY_PRIVACY");
+  console.log("  ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED");
 }
 console.log("  QA HARNESS TARGET = SAFE");
