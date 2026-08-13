@@ -1,15 +1,18 @@
 {
   "schema": "governance.engine-acceptance.perf-budget.v1",
-  "version": "1.0.0",
-  "status": "UNSPECIFIED_PERF_BUDGET",
+  "version": "1.1.0",
+  "status": "SPECIFIED",
   "numeric_invention_forbidden": true,
   "ci_only_heavy": true,
   "threshold_mechanism": {
     "locked": true,
     "engine": "k6",
     "binding": "tag",
-    "metrics": ["http_req_duration", "http_req_failed"],
-    "description": "tag별 workload threshold 바인딩 메커니즘만 잠금. p95/error_rate 수치는 기존 제품 SLO/contract/측정 baseline에서만 채움. 없으면 UNSPECIFIED_PERF_BUDGET (창작 PASS 금지)."
+    "metrics": [
+      "http_req_duration",
+      "http_req_failed"
+    ],
+    "description": "tag별 workload threshold 바인딩 메커니즘 잠금. p95/error_rate 수치는 Human/PO ACK + CI 측정 baseline에서만 채움. 창작 PASS 금지."
   },
   "scenario_mix": [
     {
@@ -51,28 +54,28 @@
   ],
   "thresholds_by_tag": {
     "feed_read": {
-      "p95_ms": null,
-      "error_rate": null,
-      "source": null,
-      "status": "UNSPECIFIED_PERF_BUDGET"
+      "p95_ms": 30,
+      "error_rate": 0.01,
+      "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo",
+      "status": "SPECIFIED"
     },
     "participate": {
-      "p95_ms": null,
-      "error_rate": null,
-      "source": null,
-      "status": "UNSPECIFIED_PERF_BUDGET"
+      "p95_ms": 30,
+      "error_rate": 0.01,
+      "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo",
+      "status": "SPECIFIED"
     },
     "wallet_read": {
-      "p95_ms": null,
-      "error_rate": null,
-      "source": null,
-      "status": "UNSPECIFIED_PERF_BUDGET"
+      "p95_ms": 30,
+      "error_rate": 0.01,
+      "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo",
+      "status": "SPECIFIED"
     },
     "auth_profile": {
-      "p95_ms": null,
-      "error_rate": null,
-      "source": null,
-      "status": "UNSPECIFIED_PERF_BUDGET"
+      "p95_ms": 30,
+      "error_rate": 0.01,
+      "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo",
+      "status": "SPECIFIED"
     }
   },
   "product_slo_probe_paths": [
@@ -84,7 +87,31 @@
   ],
   "notes": [
     "Weights = scenario mix proportions only (not SLO numbers).",
-    "Do not invent p95_ms / error_rate to force PASS.",
-    "Heavy k6 execution = CI only (local = mechanism tiny smoke)."
-  ]
+    "V1 numbers = Human/PO YES on 2026-08-14 from three comparable CI measurement runs. Not a production SLO.",
+    "Do not invent additional p95_ms / error_rate to force PASS.",
+    "Heavy k6 execution = CI only (local = mechanism tiny smoke).",
+    "Canonical qa6-result is not laundry-PASS from this file alone. Live thresholded k6 against canonical QA6 remains unwired; additive qa6-measure is NON_VERDICT."
+  ],
+  "budget_version": "V1",
+  "human_po_ack": {
+    "decision_id": "QA6_PERF_BUDGET_HUMAN_PO_ACK",
+    "answer": "YES",
+    "at": "2026-08-14T03:41:00+09:00",
+    "scope": "ci_harness_localhost_not_production_slo",
+    "approved": {
+      "p95_ms": 30,
+      "error_rate": 0.01,
+      "apply_p95_and_error_rate_to_all_four_tags": true
+    },
+    "recorded_not_in_tag_schema": {
+      "p50_ms": 15,
+      "p99_ms": 50
+    },
+    "measurement_commit": "89247daa2270fad5a74f05692b58953b70697c7e",
+    "measurement_runs": [
+      "31730924060",
+      "31731231199",
+      "31731236727"
+    ]
+  }
 }

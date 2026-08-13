@@ -1,7 +1,8 @@
 /**
  * QA6 measurement-only — 실제 k6 + booted Nest.
  * canonical perf-budget / qa6-result 를 PASS 로 바꾸지 않는다.
- * NON-VERDICT · UNSPECIFIED_PERF_BUDGET 유지.
+ * NON-VERDICT. Official V1 budget may exist; this runner still must not
+ * write canonical qa6-result PASS. Measurement k6 keeps empty thresholds.
  */
 "use strict";
 
@@ -201,7 +202,8 @@ async function runQa6Measure(opts = {}) {
     verdict_class: "NON_VERDICT",
     acceptance_verdict: "NOT_A_QA6_PASS",
     cannot_be_canonical_qa6_pass: true,
-    budget_status: "UNSPECIFIED_PERF_BUDGET",
+    budget_status: "MEASUREMENT_ONLY",
+    official_budget_status: oracle.budget_status,
     numeric_invention_forbidden: true,
     thresholds_applied: false,
     harness_status: k6.ran ? (k6.summary_present ? "PASS" : "HARNESS_FAILURE") : "BLOCKED_ENVIRONMENT",
@@ -219,7 +221,7 @@ async function runQa6Measure(opts = {}) {
     secrets: { committed: false, redacted_auth: redactAuthorization(`Bearer ${userToken}`) },
     notes: [
       "MEASUREMENT EVIDENCE != ACCEPTANCE VERDICT",
-      "Do not copy p95/error_rate into perf-budget.v1.json without Human/PO numeric approval.",
+      "Human/PO approved V1 numbers into perf-budget.v1.json. This runner remains NON_VERDICT and must not write canonical qa6-result PASS.",
     ],
   };
 

@@ -74,7 +74,9 @@ function run() {
     assert.ok(src.includes("AIPO_QA_MEASUREMENT_ONLY"));
     assert.ok(src.includes("thresholds: {}"));
     const oracle = probePerfOracle();
-    assert.equal(oracle.budget_status, "UNSPECIFIED_PERF_BUDGET");
+    assert.equal(oracle.budget_status, "SPECIFIED");
+    assert.equal(oracle.available, true);
+    assert.ok(oracle.specified_tag_count >= 4);
   });
 
   check("synthetic_user_token_no_static_secret", () => {
@@ -295,17 +297,22 @@ function run() {
       "utf8",
     );
     assert.ok(src.includes("NON_VERDICT"));
-    assert.ok(src.includes("UNSPECIFIED_PERF_BUDGET"));
     assert.ok(src.includes("cannot_be_canonical_qa6_pass"));
+    assert.ok(src.includes("AIPO_QA_MEASUREMENT_ONLY"));
     const budget = JSON.parse(
       fs.readFileSync(
         path.join(ROOT, "governance/engine-acceptance/perf-budget.v1.json"),
         "utf8",
       ),
     );
-    assert.equal(budget.status, "UNSPECIFIED_PERF_BUDGET");
+    assert.equal(budget.status, "SPECIFIED");
+    assert.equal(budget.human_po_ack && budget.human_po_ack.answer, "YES");
     for (const t of Object.values(budget.thresholds_by_tag || {})) {
-      assert.equal(t.p95_ms, null);
+      assert.equal(t.p95_ms, 30);
+      assert.equal(t.error_rate, 0.01);
+      assert.equal(typeof t.source, "string");
+      assert.ok(t.source.includes("human-po-ack"));
+      assert.notEqual(t.status, "UNSPECIFIED_PERF_BUDGET");
     }
   });
 

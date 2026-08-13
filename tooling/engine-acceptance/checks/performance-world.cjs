@@ -230,16 +230,18 @@ function runPerformanceWorld(opts) {
       continue;
     }
 
-    // Full CI path with specified budget: harness executor not wired to live target → FAIL (not laundry PASS)
-    failed += 1;
+    // Official V1 budget is recorded, but canonical run-qa6 still does not
+    // execute live k6 (that lives in the additive qa6-measure job, NON_VERDICT).
+    // Record BLOCKED_ENV_CAPABILITY — not laundry PASS, not a fake product FAIL.
+    blocked += 1;
     scenarios.push({
       ...def,
-      status: "FAIL",
-      blocked_code: null,
+      status: "BLOCKED",
+      blocked_code: "BLOCKED_ENV_CAPABILITY",
       budget_status: "SPECIFIED",
       threshold: tagBudget,
       findings: [
-        "Product SLO present but live k6 executor against acceptance target not wired in this slice — record FAIL (not laundry PASS).",
+        "Official V1 budget recorded (Human/PO ACK). Canonical run-qa6 does not execute live thresholded k6 in this slice — BLOCKED_ENV_CAPABILITY (not laundry PASS). Additive qa6-measure remains NON_VERDICT.",
       ],
       rich_evidence: buildRichFailureEvidence({
         seed,
@@ -250,13 +252,18 @@ function runPerformanceWorld(opts) {
         mode,
         request_sequence: [
           { step: "probe_perf_oracle", result: "specified", tag: def.tag },
-          { step: "execute_k6", result: "not_wired", script: K6_SCRIPT_REL },
+          {
+            step: "k6_deferred",
+            reason: "canonical_executor_unwired_measure_job_is_non_verdict",
+            script: K6_SCRIPT_REL,
+          },
         ],
         configuration_fingerprint: {
           suite: "QA6",
           mode,
           tag: def.tag,
           k6_script_present,
+          ci_only_heavy: true,
         },
       }),
     });

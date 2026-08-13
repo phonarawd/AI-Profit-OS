@@ -1154,6 +1154,24 @@ if (perfBudget) {
         fail(`perf-budget tag=${tag} must not invent numeric thresholds while UNSPECIFIED`);
       }
     }
+  } else {
+    const requiredTags = ["feed_read", "participate", "wallet_read", "auth_profile"];
+    for (const tag of requiredTags) {
+      const t = (perfBudget.thresholds_by_tag || {})[tag];
+      if (!t) {
+        fail(`perf-budget specified V1 missing tag=${tag}`);
+        continue;
+      }
+      if (typeof t.p95_ms !== "number" || typeof t.error_rate !== "number") {
+        fail(`perf-budget tag=${tag} specified V1 requires numeric p95_ms and error_rate`);
+      }
+      if (!t.source || typeof t.source !== "string") {
+        fail(`perf-budget tag=${tag} numeric threshold requires source (invention forbidden)`);
+      }
+      if (t.status === "UNSPECIFIED_PERF_BUDGET") {
+        fail(`perf-budget tag=${tag} must not remain UNSPECIFIED while file status is specified`);
+      }
+    }
   }
 }
 
