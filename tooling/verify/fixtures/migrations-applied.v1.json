@@ -1,6 +1,6 @@
 {
   "projectRef": "mgsytcetsiecllmhcyox",
-  "asOf": "2026-08-12",
+  "asOf": "2026-08-13",
   "source": "Supabase MCP list_migrations",
   "note": "로컬 supabase/migrations/*.sql 버전 접두사와 원격 applied 1:1. 원격 apply 후 이 목록을 갱신한다.",
   "versions": [
@@ -36,6 +36,7 @@
     "20260810024643",
     "20260811062000",
     "20260811062100",
-    "20260811194832"
+    "20260811194832",
+    "20260813025116"
   ]
 }

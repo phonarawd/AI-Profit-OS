@@ -44,6 +44,16 @@ if (!Array.isArray(ai.OFF_TOPIC_PATTERNS) || ai.OFF_TOPIC_PATTERNS.length < 5) {
 if (!ai.ANSWER_PATHS.includes("scope_redirect")) {
   fails.push("ANSWER_PATHS must include scope_redirect");
 }
+const migHasScopeRedirect = fs
+  .readdirSync(path.join(root, "supabase/migrations"))
+  .filter((f) => f.endsWith(".sql"))
+  .some((f) => {
+    const t = fs.readFileSync(path.join(root, "supabase/migrations", f), "utf8");
+    return /ai_logs_answer_path_check/.test(t) && /scope_redirect/.test(t);
+  });
+if (!migHasScopeRedirect) {
+  fails.push("ai_logs.answer_path CHECK must allow scope_redirect");
+}
 if (!ai.SCOPE_REDIRECT_TEMPLATE?.text) {
   fails.push("SCOPE_REDIRECT_TEMPLATE missing");
 }
