@@ -6,9 +6,11 @@
 import {
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
 } from "@nestjs/common";
 import { InProcessEventBus } from "../events/in-process.bus";
+import { CLOCK, utcDayKey, type Clock } from "../common/clock";
 import { PostgresService } from "../db/postgres";
 import { REFERRAL_EVENTS } from "./referral.events";
 import { ReferralProgramService } from "./referral.program.service";
@@ -19,6 +21,7 @@ export class ReferralShareService {
     private readonly db: PostgresService,
     private readonly bus: InProcessEventBus,
     private readonly program: ReferralProgramService,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async recordShare(userId: string): Promise<{
@@ -28,7 +31,7 @@ export class ReferralShareService {
   }> {
     const cfg = await this.program.get();
     const limit = cfg.sharePerUserPerDay;
-    const dayUtc = new Date().toISOString().slice(0, 10);
+    const dayUtc = utcDayKey(this.clock.nowMs());
 
     const r = await this.db.query<{ share_count: number }>(
       `INSERT INTO public.referral_share_daily (user_id, day_utc, share_count)

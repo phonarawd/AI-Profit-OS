@@ -130,6 +130,16 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/api-nest\/clock\.core\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/common\/clock\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/(opportunities\/participate|trades\/trades\.execution|referral\/referral\.share|missions\/mission\.accrual|loop\/day-pulse)\.service\.ts$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/domain-clock\.cjs$/.test(f),
+    scripts: ["domain-clock.cjs"],
+  },
+  {
+    test: (f) =>
       /packages\/ui\/components\/opportunity/.test(f) ||
       /packages\/ui\/copy\/ko\/(feed|margin)/.test(f) ||
       /packages\/ui\/canon\/surfaces\/opportunity/.test(f),

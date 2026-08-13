@@ -4,7 +4,8 @@
  * Presentation/demo fanout → ledger path 0 (M-A11).
  */
 
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
+import { CLOCK, type Clock } from "../common/clock";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { PostgresService } from "../db/postgres";
 import {
@@ -45,6 +46,7 @@ export class MissionAccrualService {
     private readonly provision: LedgerProvisionService,
     private readonly program: MissionProgramService,
     private readonly bus: InProcessEventBus,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   idempotencyKey(userId: string, missionId: string, periodKey?: string): string {
@@ -80,7 +82,7 @@ export class MissionAccrualService {
       status = "released";
     } else if (input.holdHours > 0) {
       status = "pending_hold";
-      holdUntil = new Date(Date.now() + input.holdHours * 3600_000);
+      holdUntil = new Date(this.clock.nowMs() + input.holdHours * 3600_000);
     } else {
       status = "pending";
     }
@@ -170,7 +172,7 @@ export class MissionAccrualService {
   }> {
     if (!this.db.configured()) return { released: 0, queued: 0 };
     const limit = Math.min(Math.max(opts?.limit ?? 50, 1), 200);
-    const now = new Date();
+    const now = new Date(this.clock.nowMs());
     const r = await this.db.query<{ id: string }>(
       `SELECT id::text
          FROM public.mission_accruals
@@ -215,7 +217,7 @@ export class MissionAccrualService {
     ) {
       return "noop";
     }
-    if (row.hold_until && row.hold_until.getTime() > Date.now()) {
+    if (row.hold_until && row.hold_until.getTime() > this.clock.nowMs()) {
       return "noop";
     }
 

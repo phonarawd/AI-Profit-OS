@@ -33,6 +33,7 @@ const T1_PUSH = [
   "ia-tabs.cjs",
   "admin-routes.cjs",
   "admin-boundary.cjs",
+  "domain-clock.cjs",
   "api-nest-build.cjs",
   "stubs/run-all.cjs",
 ];

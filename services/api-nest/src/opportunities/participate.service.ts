@@ -9,6 +9,7 @@ import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
   ServiceUnavailableException,
@@ -17,6 +18,7 @@ import {
 import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 import { join } from "node:path";
+import { CLOCK, type Clock } from "../common/clock";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { ExecutionPolicyAdminService } from "../execution-policy/execution-policy.admin.service";
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
@@ -140,6 +142,7 @@ export class ParticipateService {
     private readonly executionPolicy: ExecutionPolicyAdminService,
     private readonly bus: InProcessEventBus,
     private readonly preflight: PreflightService,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async participate(
@@ -191,7 +194,7 @@ export class ParticipateService {
     // P1 + P5 — compareReady · priceHardStale (no external API)
     const pricing = opp.pricing || {};
     const compareReady = Boolean(pricing.compareReady);
-    const nowMs = Date.now();
+    const nowMs = this.clock.nowMs();
     const staleAtMs = new Date(opp.stale_at).getTime();
     const guard = settlementRule.guardParticipate({
       matchBlocked,

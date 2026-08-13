@@ -6,12 +6,14 @@
  */
 
 import {
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { createRequire } from "node:module";
 import { join } from "node:path";
+import { CLOCK, type Clock } from "../common/clock";
 import { ExecutionPolicyAdminService } from "../execution-policy/execution-policy.admin.service";
 import {
   cmpAmount,
@@ -131,6 +133,7 @@ export class TradeExecutionService {
     private readonly circuit: MoneyCircuitService,
     private readonly executionPolicy: ExecutionPolicyAdminService,
     private readonly simulation: SimulationAdminService,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async get(userId: string, tradeId: string): Promise<TradeExecutionState> {
@@ -156,7 +159,7 @@ export class TradeExecutionService {
       return this.toState(trade);
     }
 
-    const nowMs = Date.now();
+    const nowMs = this.clock.nowMs();
     const acceptedAtMs = new Date(trade.created_at).getTime();
     const rematchCount = Number(trade.asset?.rematchCount ?? 0) || 0;
 

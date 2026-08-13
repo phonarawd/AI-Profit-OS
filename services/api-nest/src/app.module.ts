@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
 import { AdminGuard } from "./common/admin.guard";
+import { CommonModule } from "./common/common.module";
 import { AuthModule } from "./auth/auth.module";
 import { ComplianceModule } from "./compliance/compliance.module";
 import { EventsModule } from "./events/events.module";
@@ -24,6 +25,7 @@ import { HomeReadModule } from "./home-read/home-read.module";
 
 @Module({
   imports: [
+    CommonModule,
     EventsModule,
     LedgerModule,
     WalletModule,
