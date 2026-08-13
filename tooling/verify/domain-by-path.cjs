@@ -140,6 +140,12 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/api-nest\/src\/db\//.test(f) ||
+      /^tooling\/verify\/db-recovery\.cjs$/.test(f),
+    scripts: ["db-recovery.cjs", "pg-module-scan.cjs"],
+  },
+  {
+    test: (f) =>
       /packages\/ui\/components\/opportunity/.test(f) ||
       /packages\/ui\/copy\/ko\/(feed|margin)/.test(f) ||
       /packages\/ui\/canon\/surfaces\/opportunity/.test(f),

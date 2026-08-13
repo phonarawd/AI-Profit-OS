@@ -163,6 +163,7 @@
     "verify:no-it-jargon": "node tooling/verify/no-it-jargon.cjs",
     "verify:ticker-pii-0": "node tooling/verify/ticker-pii-0.cjs",
     "verify:day-pulse-live-only": "node tooling/verify/day-pulse-live-only.cjs",
+    "verify:db-recovery": "node tooling/verify/db-recovery.cjs",
     "verify:preflight-may-stop": "node tooling/verify/preflight-may-stop.cjs",
     "verify:loop-psychology": "node tooling/verify/loop-psychology.cjs",
     "verify:legal-plain-ko": "node tooling/verify/legal-plain-ko.cjs",

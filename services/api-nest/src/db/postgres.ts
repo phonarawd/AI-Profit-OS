@@ -14,22 +14,83 @@ export type DbQuerier = {
   ): Promise<{ rows: T[]; rowCount: number | null }>;
 };
 
+export type PoolErrorRecord = {
+  at: string;
+  code: string | null;
+  message: string;
+};
+
+export type PoolHealth = {
+  poolCreated: boolean;
+  errorListenerCount: number;
+  backgroundErrorCount: number;
+  lastBackgroundError: PoolErrorRecord | null;
+};
+
+/** Strip `//user:password@` credentials from anything we are about to log. */
+function redactCredentials(text: string): string {
+  return String(text).replace(/\/\/[^\s/@]*:[^\s/@]*@/g, "//[redacted]@");
+}
+
 @Injectable()
 export class PostgresService implements OnModuleDestroy {
   private pool: Pool | null = null;
+  private backgroundErrorCount = 0;
+  private lastBackgroundError: PoolErrorRecord | null = null;
 
   private ensurePool(): Pool | null {
     if (this.pool) return this.pool;
     const url = loadPhase0Env().databaseUrl;
     if (!url) return null;
-    this.pool = new Pool({
+    const pool = new Pool({
       connectionString: url,
       max: 3,
       idleTimeoutMillis: 10_000,
       connectionTimeoutMillis: 5_000,
       ssl: url.includes("supabase.co") ? { rejectUnauthorized: false } : undefined,
     });
-    return this.pool;
+    // node-postgres emits 'error' on idle/background clients. Without a listener
+    // that is an unhandled EventEmitter error and Node terminates the whole API
+    // process whenever Postgres briefly disappears. Registered once per Pool.
+    pool.on("error", (err) => this.recordBackgroundError(err));
+    this.pool = pool;
+    return pool;
+  }
+
+  /**
+   * Observes a background connection failure. It must never mark an in-flight
+   * request as succeeded — callers still receive the rejection from their own
+   * query — and the pool stays usable, so the next `query()` acquires a fresh
+   * connection once Postgres is back.
+   */
+  private recordBackgroundError(err: unknown): void {
+    this.backgroundErrorCount += 1;
+    const message = redactCredentials(
+      err instanceof Error ? err.message : String(err),
+    );
+    const code =
+      err && typeof err === "object" && typeof (err as { code?: unknown }).code === "string"
+        ? (err as { code: string }).code
+        : null;
+    this.lastBackgroundError = {
+      at: new Date().toISOString(),
+      code,
+      message,
+    };
+    // eslint-disable-next-line no-console
+    console.error(
+      `[postgres] background client error — pool retained, process alive (code=${code ?? "none"}): ${message}`,
+    );
+  }
+
+  /** Operational read-out — no connection string, no credentials. */
+  poolHealth(): PoolHealth {
+    return {
+      poolCreated: this.pool !== null,
+      errorListenerCount: this.pool ? this.pool.listenerCount("error") : 0,
+      backgroundErrorCount: this.backgroundErrorCount,
+      lastBackgroundError: this.lastBackgroundError,
+    };
   }
 
   configured(): boolean {
@@ -85,8 +146,15 @@ export class PostgresService implements OnModuleDestroy {
 
   async onModuleDestroy() {
     if (this.pool) {
-      await this.pool.end();
+      const pool = this.pool;
+      // Drop the reference first so a late background error during shutdown
+      // cannot resurrect a half-ended pool, then detach the listener.
       this.pool = null;
+      try {
+        await pool.end();
+      } finally {
+        pool.removeAllListeners("error");
+      }
     }
   }
 }
