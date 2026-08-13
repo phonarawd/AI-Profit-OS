@@ -8,7 +8,27 @@
     "eval_dataset_mutation_during_product_rebase": "FORBIDDEN",
     "silent_workflow_hash_change": "FORBIDDEN",
     "ungoverned_freeze_baseline_after_qa0": "FORBIDDEN",
-    "qa1_qa6_predecessor_as_current_complete": "FORBIDDEN"
+    "qa1_qa6_predecessor_as_current_complete": "FORBIDDEN",
+    "qa8_predecessor_as_current_complete": "FORBIDDEN",
+    "qa9_predecessor_verdict_as_current_authoritative": "FORBIDDEN"
+  },
+  "rebase_policy": {
+    "current_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
+    "historical_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V1",
+    "amendment_id": "rebase-policy-qa8-qa9-topology-20260814",
+    "effective_for": "future_rebases_only",
+    "creates_acceptance_epoch": false,
+    "invalidates_current_evidence": false,
+    "historical_rebase_ids": [
+      "ea-rebase-a280b21fc7b5-dfa803530b9d",
+      "ea-rebase-ca476b4698a6-c1d90fceefe9",
+      "ea-rebase-2c7b9cffd323-1e2ce00bd6a1"
+    ],
+    "human_po_ack": {
+      "by": "Human/PO",
+      "at": "2026-08-13T15:28:00.000Z",
+      "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: version product rebase policy for QA8 discovery invalidation/rerun and QA9 aggregation staleness; historical rebase approvals remain valid under ENGINE_ACCEPTANCE_REBASE_POLICY_V1; future protected-product rebases must use ENGINE_ACCEPTANCE_REBASE_POLICY_V2; no product mutation; no new acceptance epoch; do not rewrite historical approval payloads."
+    }
   },
   "rebases": [
     {

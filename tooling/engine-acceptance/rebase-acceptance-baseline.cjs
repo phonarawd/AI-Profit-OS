@@ -31,14 +31,15 @@ const {
   REPORT_REL,
   SCHEMA,
   PREDECESSOR_DIR_REL,
-  INVALIDATED_SUITES,
-  REQUIRED_RERUN_SUITES,
+  CURRENT_REBASE_POLICY_ID,
   emptyLedger,
   validateRebaseEntry,
   evaluateRebaseInvariants,
   predecessorArchiveRel,
   collectPredecessorChecksums,
-  buildStaleSuite,
+  mapSuitesForRebase,
+  stampCurrentPolicyOnEntry,
+  currentPolicy,
   buildRebaseReport,
   writeJson,
 } = require("./lib/product-rebase.cjs");
@@ -143,7 +144,7 @@ function main() {
     predecessor_baseline_id: predecessor.id,
     new_baseline_id: newId,
     reason:
-      "Protected product mutation after QA0 (api-nest TypeScript build fix) creates a new acceptance epoch. Predecessor hashes are history; QA1-QA6 must rerun.",
+      "Protected product mutation creates a new acceptance epoch. Predecessor hashes are history; discovery suites QA1-QA8 must rerun; QA9 aggregation is stale and must rerun only after current-epoch discovery evidence exists. Do not fabricate a verdict at rebase time.",
     product_commit: args.productCommit,
     changed_protected_paths: changedProtected,
     changed_nonprotected_support_paths: supportPaths,
@@ -153,16 +154,14 @@ function main() {
     new_protected_manifest_hash: manifest.aggregate,
     eval_dataset_hash: aggregates.eval_dataset_hash,
     acceptance_workflow_hash: aggregates.acceptance_workflow_hash,
-    invalidated_suites: INVALIDATED_SUITES.slice(),
-    required_rerun_suites: REQUIRED_RERUN_SUITES.slice(),
-    predecessor_suite_checksums: collectPredecessorChecksums(evidence),
+    predecessor_suite_checksums: collectPredecessorChecksums(evidence, currentPolicy()),
     timestamp: measuredAt,
     commit_sha_or_pending: commit_sha,
-    qa7_complete: false,
   };
+  stampCurrentPolicyOnEntry(entry);
 
   const fails = [];
-  validateRebaseEntry(entry, null, fails);
+  validateRebaseEntry(entry, null, fails, { requireCurrentPolicy: true });
   evaluateRebaseInvariants(
     entry,
     {
@@ -184,6 +183,7 @@ function main() {
   }
 
   console.log(`[rebase-acceptance-baseline] decision=${DECISION_ID}`);
+  console.log(`  rebase_policy_version=${CURRENT_REBASE_POLICY_ID}`);
   console.log(`  predecessor=${predecessor.id}`);
   console.log(`  new_baseline_id=${newId}`);
   console.log(`  rebase_id=${rebaseId}`);
@@ -264,29 +264,12 @@ function main() {
   ledger.rebases.push(entry);
   writeJson(LEDGER_REL, ledger);
 
-  const staleSuites = (evidence.suites || []).map((s) => {
-    if (s.suite_id === "QA0") {
-      return {
-        suite_id: "QA0",
-        run_id: rebaseId,
-        baseline_id: newId,
-        checksum: manifest.aggregate,
-        completion_status: "COMPLETE",
-        epoch: "current",
-        predecessor_baseline_id: predecessor.id,
-      };
-    }
-    if (INVALIDATED_SUITES.includes(s.suite_id)) {
-      return buildStaleSuite(s, newId, predecessor.id);
-    }
-    return {
-      ...s,
-      baseline_id: newId,
-      run_id: null,
-      checksum: null,
-      completion_status: "NOT_STARTED",
-      predecessor_baseline_id: predecessor.id,
-    };
+  const staleSuites = mapSuitesForRebase(evidence.suites || [], currentPolicy(), {
+    newBaselineId: newId,
+    predecessorId: predecessor.id,
+    rebaseId,
+    qa0Checksum: manifest.aggregate,
+    predecessorVerdict: evidence.verdict,
   });
 
   const newEvidence = {
@@ -294,7 +277,7 @@ function main() {
     qa_phase: "QA-0",
     baseline_id: newId,
     verdict: "ENGINE_QA_INCOMPLETE",
-    verdict_reason: `${DECISION_ID} · predecessor QA1-QA6 historical COMPLETE / current-epoch STALE · required rerun QA1-QA6 then QA7 · QA7 not complete`,
+    verdict_reason: `${DECISION_ID} · ${CURRENT_REBASE_POLICY_ID} · predecessor discovery historical COMPLETE / current-epoch STALE · required rerun QA1-QA8 then QA9 aggregation · QA9 verdict not fabricated`,
     evidence_integrity: "VALID",
     next: "QA1_DETERMINISTIC_TRUTH",
     current_epoch: {
@@ -302,7 +285,10 @@ function main() {
       rebase_id: rebaseId,
       baseline_id: newId,
       predecessor_baseline_id: predecessor.id,
+      rebase_policy_version: CURRENT_REBASE_POLICY_ID,
       qa1_qa6_status: "STALE_PENDING_RERUN",
+      qa8_status: "STALE_PENDING_RERUN",
+      qa9_status: "STALE_AGGREGATION_PENDING_DISCOVERY",
     },
     predecessor_epoch: {
       baseline_id: predecessor.id,
@@ -364,7 +350,9 @@ function main() {
   console.log(`  archived ${archiveRel}`);
   console.log(`  wrote ${BASELINE_REL}`);
   console.log(`  wrote ${LEDGER_REL}`);
-  console.log(`  wrote ${EVIDENCE_REL} (QA1-QA6 STALE; historical results preserved)`);
+  console.log(
+    `  wrote ${EVIDENCE_REL} (QA1-QA6+QA8 STALE; QA9 STALE_AGGREGATION; historical results preserved)`,
+  );
   console.log(`  wrote ${AMEND_LEDGER_REL} (epoch_bindings only; amendments[] untouched)`);
   console.log(`  wrote ${REPORT_REL}`);
 }

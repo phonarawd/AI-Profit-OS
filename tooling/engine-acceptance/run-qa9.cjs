@@ -311,87 +311,50 @@ round" runner/workflow job. What exists:
    the QA8 P2 hard-delete fix, or adding a QA4/QA5 injectable clock/fault seam — all three
    necessarily edit files under \`services/api-nest/src/**\` (protected scope).
 
-**Governance gap identified (not fixed this wave — see below):** the L8 rebase tool's
-\`INVALIDATED_SUITES\`/\`REQUIRED_RERUN_SUITES\` constants
-(\`tooling/engine-acceptance/lib/product-rebase.cjs\`) predate QA8/QA9 and do not list them.
+**Governance gap (QA9 contemporaneous record, subsequently repaired):** QA9 identified that L8
+\`INVALIDATED_SUITES\`/\`REQUIRED_RERUN_SUITES\` predated QA8/QA9 and used a single exact-match
+constant against historical approvals. That finding was recorded as
+\`HUMAN_PO_APPROVAL_REQUIRED\` and was **not** applied during QA9.
 
-## REBASE_GOVERNANCE_GAP — \`HUMAN_PO_APPROVAL_REQUIRED\`
+## REBASE_GOVERNANCE_GAP — repaired as \`ENGINE_ACCEPTANCE_REBASE_POLICY_V2\`
 
-Verified against current source (not the historical ledger text, which only proves what
-was true when QA7 was the newest suite):
+Human/PO ACK APPROVED the policy-versioned repair (\`amendment_id=rebase-policy-qa8-qa9-topology-20260814\`).
+Historical V1 approvals remain valid; future rebases use V2:
 
-- \`tooling/engine-acceptance/lib/product-rebase.cjs\`: \`INVALIDATED_SUITES = ["QA1".."QA6"]\`,
-  \`REQUIRED_RERUN_SUITES = ["QA1".."QA6","QA7"]\`. Both are validated for **exact** array
-  equality (\`validateRebaseEntry\` -> \`sameStringArray\`) against every ledger entry,
-  including the 3 already-approved historical ones.
-- \`rebase-acceptance-baseline.cjs\`'s \`staleSuites\` mapping: any suite not in
-  \`INVALIDATED_SUITES\` and not \`QA0\` (i.e. QA7, QA8, and now QA9) falls through to a
-  generic branch that force-resets it to \`completion_status: "NOT_STARTED"\` (not the richer
-  \`STALE\` shape with \`historical_*\` provenance that QA1-QA6 get via \`buildStaleSuite\`).
-- **Net effect today:** a future rebase would NOT silently keep QA8 "COMPLETE" (NOT_STARTED
-  still forces \`mandatory_suite.QA1..QA8.status == COMPLETE\` to fail, so
-  \`ENGINE_ACCEPTED_FOR_UI\` stays blocked) — so this is not a false-ACCEPTED risk today.
-  But it IS a real completeness/defense-in-depth gap: (a) \`verifyWashing\`'s anti-washing
-  loop only iterates \`INVALIDATED_SUITES\`, so it never checks QA8/QA9 for washing; (b) the
-  rebase tool cannot be told to correctly declare "QA8 must also rerun" without failing its
-  own exact-array-equality validation against history; (c) QA9 itself (being a pure
-  aggregation over QA1-QA8) is automatically stale the instant QA8 reruns, and nothing
-  encodes that dependency either.
-- **Why this is not fixed in this wave:** changing \`INVALIDATED_SUITES\`/
-  \`REQUIRED_RERUN_SUITES\` is an acceptance-POLICY change (which suites a future epoch must
-  re-prove), not a mechanical bug fix, and the current validator re-checks the **same**
-  constant against the 3 already-Human/PO-approved historical ledger entries — widening the
-  constant today would immediately fail those historical entries' exact-match check unless
-  history is also rewritten, which \`policies.baseline_washing/in_place_hash_rewrite:
-  FORBIDDEN\` and this wave's own "do not modify grader/expected values" instruction both
-  forbid doing unilaterally.
+- discovery invalidate/rerun includes **QA8** (STALE + historical provenance + washing)
+- **QA9** is aggregation-only: \`stale_aggregation_phases\`, not a discovery suite; predecessor
+  QA9 verdict/report is not current-authoritative; aggregation reruns only after current-epoch
+  discovery evidence exists
+- V1 shape cannot authorize a new rebase
+- this repair created **no** new acceptance epoch and did **not** invalidate current evidence
 
-**Exact proposal for Human/PO approval (not applied):**
-
-\`\`\`text
-tooling/engine-acceptance/lib/product-rebase.cjs
-- INVALIDATED_SUITES stays ["QA1","QA2","QA3","QA4","QA5","QA6"] (unchanged; QA8/QA9 are not
-  fast-forward-style regenerable the same way QA1-QA6 are meant to be) OR is extended to
-  include "QA8" — Human/PO to decide the intended semantics.
-- REQUIRED_RERUN_SUITES: ["QA1",...,"QA6","QA7"] -> ["QA1",...,"QA6","QA7","QA8"] going
-  forward, versioned per-epoch (e.g. keyed by decision_id + a schema version bump) so
-  historical entries keep validating against the array shape that was true when they were
-  approved, rather than the single mutable "current" constant.
-- Add an explicit QA9-staleness rule: any rebase (or any QA8 rerun) must reset QA9's
-  evidence.suites entry to NOT_STARTED/STALE too (QA9 is derived from QA1-QA8; it cannot
-  stay COMPLETE once its own inputs change).
-\`\`\`
-
-This wave reports \`HUMAN_PO_APPROVAL_REQUIRED\` for the above and does not apply it.
-
-## RECOMMENDED_REPAIR_BATCH (planning only — not executed)
+## RECOMMENDED_REPAIR_BATCH (planning only — product items not executed by QA9)
 
 Grouped in lowest-rerun-cost order (harness/governance-only first, protected-product last,
-since every protected-product change forces a full QA1-QA6+QA7(+QA8, per the gap above)
-rebase rerun):
+since every protected-product change forces a full QA1-QA8 then QA9 aggregation rebase rerun):
 
 1. **QA6 performance budget — Human/PO approval only.** Supply real numeric SLOs; update
    \`perf-budget.v1.json\` (governance-only, no rebase) once approved.
 2. **QA8 dynamic adversarial harness — harness-only.** Build the actual
    \`SEC-DYNAMIC-ADVERSARIAL-01\` live-pentest runner under \`tooling/engine-acceptance/**\`
    (no product bytes touched; no rebase needed).
-3. **Rebase governance gap — governance/tooling-only, but policy-shaped (Human/PO ACK
-   required per above)** before any of #4-#6 execute, so QA8/QA9 are not silently
-   under-invalidated by the next rebase.
+3. **Rebase governance gap — COMPLETE** under \`ENGINE_ACCEPTANCE_REBASE_POLICY_V2\`
+   (governance/tooling-only; no product mutation; no new epoch).
 4. **QA4/QA5 clock+fault injection seam — protected product mutation.** Add an injectable
    clock/fault provider under \`services/api-nest/src/common|time|testing\` (new files, plus
    wiring existing time/fault-dependent call sites to consult it). Triggers L8 rebase.
 5. **QA8 P0 admin AdminGuard — protected product mutation (highest priority, blocks
    everything).** Implement \`AdminGuard\` (schemas/admin-rbac.v1.json role matrix,
    ai_profit_os_04_admin plan §9.9) and wire \`@UseGuards(AdminGuard)\` onto all 19
-   \`*.admin.controller.ts\` files. Triggers L8 rebase; full QA1-QA6(+QA7+QA8 per the gap
-   above) rerun required before any new verdict.
+   \`*.admin.controller.ts\` files. Triggers L8 rebase; full QA1-QA8 then QA9 aggregation
+   rerun required before any new verdict.
 6. **QA8 P2 delete-account retention — protected product mutation.** Change
    \`auth.service.ts#deleteAccount\` to a real hard-\`DELETE\` (or explicit per-table
    nulling/deletion) for the residual non-KYC tables. Can ride in the SAME rebase epoch as
    #5 (same PR/commit window) to avoid a second full rerun.
 
-None of items 1-6 are executed in this wave.
+QA9 aggregation does not execute protected-product items 1,2,4,5,6. Item 3 is the
+policy-versioned rebase repair.
 
 ## Dual Dirty
 

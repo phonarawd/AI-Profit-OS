@@ -1852,8 +1852,24 @@ if (report) {
     if (!/REPAIR_ENTRY_POINT/i.test(report)) {
       fail("REPORT must include a REPAIR_ENTRY_POINT section");
     }
-    if (!/HUMAN_PO_APPROVAL_REQUIRED/i.test(report)) {
-      fail("REPORT must record HUMAN_PO_APPROVAL_REQUIRED items (rebase governance gap) rather than silently resolving them");
+    const policyV2 =
+      rebaseLedger &&
+      rebaseLedger.rebase_policy &&
+      rebaseLedger.rebase_policy.current_version === "ENGINE_ACCEPTANCE_REBASE_POLICY_V2";
+    if (!policyV2) {
+      if (!/HUMAN_PO_APPROVAL_REQUIRED/i.test(report)) {
+        fail("REPORT must record HUMAN_PO_APPROVAL_REQUIRED items (rebase governance gap) rather than silently resolving them");
+      }
+    } else {
+      if (!/ENGINE_ACCEPTANCE_REBASE_POLICY_V2/.test(report)) {
+        fail("REPORT must record applied ENGINE_ACCEPTANCE_REBASE_POLICY_V2 rebase topology repair");
+      }
+      if (!/HUMAN_PO_APPROVAL_REQUIRED/i.test(report) && !/REBASE_GOVERNANCE_GAP/.test(report)) {
+        fail("REPORT must keep the rebase governance gap history visible after policy V2 repair");
+      }
+      if (!/L8_REBASE_GOVERNANCE_GAP_REPAIR/i.test(report) && !/rebase-policy-qa8-qa9-topology/.test(report)) {
+        fail("REPORT must name the L8 rebase governance gap repair amendment");
+      }
     }
   }
 }

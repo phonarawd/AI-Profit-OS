@@ -257,3 +257,31 @@ None of items 1-6 are executed in this wave.
 for any protected-product item, NOT a resumption of `02.5` discovery (QA0-QA9 are all
 COMPLETE) and NOT `03 UI` (blocked until a genuinely earned
 `ENGINE_ACCEPTED_FOR_UI` + `acceptance_scope.unchanged`).
+
+## L8_REBASE_GOVERNANCE_GAP_REPAIR — `ENGINE_ACCEPTANCE_REBASE_POLICY_V2` (additive; not a new epoch)
+
+QA9 recorded `HUMAN_PO_APPROVAL_REQUIRED` for the rebase topology gap. Human/PO subsequently
+ACK APPROVED a **governance/tooling-only** repair (this addendum). Historical QA9 text above
+is preserved as contemporaneous evidence. This repair does **not** change
+`FINAL_ACCEPTANCE_VERDICT`, does **not** create a new acceptance epoch, and does **not**
+invalidate current QA0–QA9 evidence.
+
+| Field | Value |
+|---|---|
+| amendment_id | `rebase-policy-qa8-qa9-topology-20260814` |
+| current_policy | `ENGINE_ACCEPTANCE_REBASE_POLICY_V2` |
+| historical_policy | `ENGINE_ACCEPTANCE_REBASE_POLICY_V1` (3 frozen rebase ids unchanged) |
+| ACCEPTANCE_EPOCH_CREATED | `NO` |
+| BASELINE_CHANGED | `NO` |
+| PROTECTED_PRODUCT_MUTATION | `NONE` |
+| CURRENT_ENGINE_VERDICT | `ENGINE_NOT_ACCEPTED` (unchanged) |
+| ENGINE_ACCEPTED_FOR_UI | `NOT_ISSUED` |
+| UI_UX_ENTRY_GATE | `CLOSED` |
+
+Future protected-product rebase semantics under V2:
+
+- invalidate/rerun discovery QA1–QA8 (QA8 gets STALE + historical provenance + washing checks)
+- QA9 is **not** a discovery suite: mark aggregation STALE / not current-authoritative; rerun only after current-epoch discovery evidence exists
+- do not fabricate a verdict at rebase time
+- V1 historical approvals remain valid; V1 shape cannot authorize a new rebase
+

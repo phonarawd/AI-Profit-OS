@@ -2,7 +2,12 @@
  * ENGINE_ACCEPTANCE_REBASE_V1 — 제품 보호범위 변경 시 새 acceptance epoch
  *
  * 금지: 옛 baseline 안에서 prompt_hash/id를 제자리 수정(washing)
- * 허용: Human/PO ACK + predecessor 보존 + QA1-QA6 무효화 + 새 baseline.id
+ * 허용: Human/PO ACK + predecessor 보존 + 정책 버전별 discovery 무효화 + 새 baseline.id
+ *
+ * 정책 버전:
+ *   V1 = QA7-era topology (역사적 승인 3건) — QA1-QA6 invalidate, QA1-QA7 rerun
+ *   V2 = QA8 discovery + QA9 aggregation topology — 미래 rebase 전용
+ * 역사적 승인 payload는 재작성하지 않는다. 현재 상수로 과거 항목을 exact-match하지 않는다.
  */
 "use strict";
 
@@ -20,8 +25,84 @@ const REPORT_REL = "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md";
 const SCHEMA = "governance.engine-acceptance.product-rebases.v1";
 const PREDECESSOR_DIR_REL = "governance/engine-acceptance/baselines";
 
-const INVALIDATED_SUITES = ["QA1", "QA2", "QA3", "QA4", "QA5", "QA6"];
-const REQUIRED_RERUN_SUITES = ["QA1", "QA2", "QA3", "QA4", "QA5", "QA6", "QA7"];
+const POLICY_V1_ID = "ENGINE_ACCEPTANCE_REBASE_POLICY_V1";
+const POLICY_V2_ID = "ENGINE_ACCEPTANCE_REBASE_POLICY_V2";
+const CURRENT_REBASE_POLICY_ID = POLICY_V2_ID;
+
+/** 역사적 승인 rebase_id — payload 재작성 금지 · V1 exact-match 전용 */
+const FROZEN_HISTORICAL_V1_REBASE_IDS = Object.freeze([
+  "ea-rebase-a280b21fc7b5-dfa803530b9d",
+  "ea-rebase-ca476b4698a6-c1d90fceefe9",
+  "ea-rebase-2c7b9cffd323-1e2ce00bd6a1",
+]);
+
+const QA1_QA6 = Object.freeze(["QA1", "QA2", "QA3", "QA4", "QA5", "QA6"]);
+
+const REBASE_POLICIES = Object.freeze({
+  [POLICY_V1_ID]: Object.freeze({
+    id: POLICY_V1_ID,
+    // QA1-QA6 재구축이 끝나기 전까지 pending rerun (qa_phase=QA-0 상태기계)
+    pending_rebuild_suites: QA1_QA6,
+    // STALE + historical_* provenance
+    invalidated_suites: QA1_QA6,
+    required_rerun_suites: Object.freeze(["QA1", "QA2", "QA3", "QA4", "QA5", "QA6", "QA7"]),
+    stale_aggregation_phases: Object.freeze([]),
+    washing_suites: QA1_QA6,
+  }),
+  [POLICY_V2_ID]: Object.freeze({
+    id: POLICY_V2_ID,
+    pending_rebuild_suites: QA1_QA6,
+    // QA8 = discovery. QA9는 aggregation이라 invalidated_suites에 넣지 않는다.
+    invalidated_suites: Object.freeze(["QA1", "QA2", "QA3", "QA4", "QA5", "QA6", "QA8"]),
+    required_rerun_suites: Object.freeze([
+      "QA1",
+      "QA2",
+      "QA3",
+      "QA4",
+      "QA5",
+      "QA6",
+      "QA7",
+      "QA8",
+    ]),
+    stale_aggregation_phases: Object.freeze(["QA9"]),
+    washing_suites: Object.freeze(["QA1", "QA2", "QA3", "QA4", "QA5", "QA6", "QA8", "QA9"]),
+  }),
+});
+
+function currentPolicy() {
+  return REBASE_POLICIES[CURRENT_REBASE_POLICY_ID];
+}
+
+function policyById(id) {
+  return REBASE_POLICIES[id] || null;
+}
+
+function isFrozenHistoricalRebaseId(id) {
+  return FROZEN_HISTORICAL_V1_REBASE_IDS.includes(id);
+}
+
+/**
+ * 역사적 승인 = frozen rebase_id → 항상 V1 (필드 추가로 의미를 바꾸지 않음).
+ * 그 외 = 명시한 version, 없으면 현재 정책(V2). V1 shape으로는 새 epoch를 인가할 수 없다.
+ */
+function resolvePolicyId(entry) {
+  if (entry && isFrozenHistoricalRebaseId(entry.rebase_id)) {
+    return POLICY_V1_ID;
+  }
+  if (entry && entry.rebase_policy_version) {
+    return entry.rebase_policy_version;
+  }
+  return CURRENT_REBASE_POLICY_ID;
+}
+
+function resolvePolicyForEntry(entry) {
+  return policyById(resolvePolicyId(entry));
+}
+
+// 현재 정책 alias — 미래 apply 경로가 이 배열을 기록한다.
+const INVALIDATED_SUITES = currentPolicy().invalidated_suites;
+const REQUIRED_RERUN_SUITES = currentPolicy().required_rerun_suites;
+const STALE_AGGREGATION_PHASES = currentPolicy().stale_aggregation_phases;
 
 const REQUIRED_REBASE_FIELDS = [
   "decision_id",
@@ -52,6 +133,9 @@ const RESULT_RELS = {
   QA4: "governance/engine-acceptance/qa4-result.v1.json",
   QA5: "governance/engine-acceptance/qa5-result.v1.json",
   QA6: "governance/engine-acceptance/qa6-result.v1.json",
+  QA7: "governance/engine-acceptance/qa7-result.v1.json",
+  QA8: "governance/engine-acceptance/qa8-result.v1.json",
+  QA9: "governance/engine-acceptance/qa9-result.v1.json",
 };
 
 function writeJson(rel, obj) {
@@ -74,6 +158,17 @@ function emptyLedger() {
       silent_workflow_hash_change: "FORBIDDEN",
       ungoverned_freeze_baseline_after_qa0: "FORBIDDEN",
       qa1_qa6_predecessor_as_current_complete: "FORBIDDEN",
+      qa8_predecessor_as_current_complete: "FORBIDDEN",
+      qa9_predecessor_verdict_as_current_authoritative: "FORBIDDEN",
+    },
+    rebase_policy: {
+      current_version: CURRENT_REBASE_POLICY_ID,
+      historical_version: POLICY_V1_ID,
+      amendment_id: "rebase-policy-qa8-qa9-topology-20260814",
+      effective_for: "future_rebases_only",
+      creates_acceptance_epoch: false,
+      invalidates_current_evidence: false,
+      historical_rebase_ids: FROZEN_HISTORICAL_V1_REBASE_IDS.slice(),
     },
     rebases: [],
   };
@@ -108,7 +203,52 @@ function validateAck(ack, fails, prefix = "human_po_ack") {
   }
 }
 
-function validateRebaseEntry(entry, index, fails) {
+function validateLedgerPolicy(ledger, fails) {
+  if (!ledger) return;
+  const rp = ledger.rebase_policy;
+  if (!rp || typeof rp !== "object") {
+    fails.push("product-rebases.rebase_policy required (ENGINE_ACCEPTANCE_REBASE_POLICY_V2)");
+    return;
+  }
+  if (rp.current_version !== CURRENT_REBASE_POLICY_ID) {
+    fails.push(`rebase_policy.current_version must be ${CURRENT_REBASE_POLICY_ID}`);
+  }
+  if (rp.historical_version !== POLICY_V1_ID) {
+    fails.push(`rebase_policy.historical_version must be ${POLICY_V1_ID}`);
+  }
+  if (rp.effective_for !== "future_rebases_only") {
+    fails.push("rebase_policy.effective_for must be future_rebases_only");
+  }
+  if (rp.creates_acceptance_epoch === true) {
+    fails.push("rebase_policy amendment must not create an acceptance epoch");
+  }
+  if (rp.invalidates_current_evidence === true) {
+    fails.push("rebase_policy amendment must not invalidate current-epoch evidence");
+  }
+  if (!sameStringArray(rp.historical_rebase_ids, FROZEN_HISTORICAL_V1_REBASE_IDS)) {
+    fails.push(
+      "rebase_policy.historical_rebase_ids must equal frozen V1 rebase ids (history rewrite forbidden)",
+    );
+  }
+  if (rp.human_po_ack) {
+    validateAck(rp.human_po_ack, fails, "rebase_policy.human_po_ack");
+  } else {
+    fails.push("rebase_policy.human_po_ack required");
+  }
+  if (ledger.policies) {
+    if (ledger.policies.baseline_washing !== "FORBIDDEN") {
+      fails.push("policies.baseline_washing must remain FORBIDDEN");
+    }
+    if (ledger.policies.in_place_hash_rewrite !== "FORBIDDEN") {
+      fails.push("policies.in_place_hash_rewrite must remain FORBIDDEN");
+    }
+  }
+}
+
+/**
+ * opts.requireCurrentPolicy — 미래 새 epoch apply. V1 shape으로는 인가 불가.
+ */
+function validateRebaseEntry(entry, index, fails, opts = {}) {
   const fail = (m) => fails.push(index == null ? m : `rebases[${index}]: ${m}`);
   if (!entry || typeof entry !== "object") {
     fail("must be object");
@@ -134,16 +274,78 @@ function validateRebaseEntry(entry, index, fails) {
   if (!Array.isArray(entry.changed_nonprotected_support_paths)) {
     fail("changed_nonprotected_support_paths must be array");
   }
+
+  if (isFrozenHistoricalRebaseId(entry.rebase_id) && entry.rebase_policy_version) {
+    fail("historical rebase payload must not be rewritten with rebase_policy_version");
+  }
+
+  if (opts.requireCurrentPolicy) {
+    if (entry.rebase_policy_version !== CURRENT_REBASE_POLICY_ID) {
+      fail(`new rebase must pin rebase_policy_version to ${CURRENT_REBASE_POLICY_ID}`);
+    }
+    if (isFrozenHistoricalRebaseId(entry.rebase_id)) {
+      fail("frozen historical rebase_id cannot be reused for a new epoch");
+    }
+  }
+
+  const policyId = opts.requireCurrentPolicy ? CURRENT_REBASE_POLICY_ID : resolvePolicyId(entry);
+  const policy = policyById(policyId);
+  if (!policy) {
+    fail(`unknown rebase_policy_version ${policyId}`);
+    return;
+  }
+
+  if (
+    policyId === POLICY_V1_ID &&
+    entry.rebase_id &&
+    !isFrozenHistoricalRebaseId(entry.rebase_id) &&
+    !opts.allowHistoricalFixture
+  ) {
+    fail(
+      `${POLICY_V1_ID} cannot authorize a new rebase; current policy is ${CURRENT_REBASE_POLICY_ID}`,
+    );
+  }
+
   if (!Array.isArray(entry.invalidated_suites)) fail("invalidated_suites must be array");
-  else if (!sameStringArray(entry.invalidated_suites, INVALIDATED_SUITES)) {
-    fail(`invalidated_suites must be [${INVALIDATED_SUITES.join(", ")}]`);
+  else if (!sameStringArray(entry.invalidated_suites, policy.invalidated_suites)) {
+    fail(`invalidated_suites must be [${policy.invalidated_suites.join(", ")}] under ${policy.id}`);
   }
   if (!Array.isArray(entry.required_rerun_suites)) fail("required_rerun_suites must be array");
-  else if (!sameStringArray(entry.required_rerun_suites, REQUIRED_RERUN_SUITES)) {
-    fail(`required_rerun_suites must be [${REQUIRED_RERUN_SUITES.join(", ")}]`);
+  else if (!sameStringArray(entry.required_rerun_suites, policy.required_rerun_suites)) {
+    fail(
+      `required_rerun_suites must be [${policy.required_rerun_suites.join(", ")}] under ${policy.id}`,
+    );
   }
+
+  if (policy.stale_aggregation_phases.length > 0) {
+    if (!Array.isArray(entry.stale_aggregation_phases)) {
+      fail(`stale_aggregation_phases must be [${policy.stale_aggregation_phases.join(", ")}] under ${policy.id}`);
+    } else if (!sameStringArray(entry.stale_aggregation_phases, policy.stale_aggregation_phases)) {
+      fail(
+        `stale_aggregation_phases must be [${policy.stale_aggregation_phases.join(", ")}] under ${policy.id} (QA9 is aggregation, not a discovery suite)`,
+      );
+    } else if (entry.stale_aggregation_phases.includes("QA9") === false) {
+      fail("current policy must mark QA9 aggregation stale (not a discovery invalidate)");
+    }
+    if ((entry.invalidated_suites || []).includes("QA9")) {
+      fail("QA9 must not be listed in invalidated_suites (aggregation, not discovery)");
+    }
+    if ((entry.required_rerun_suites || []).includes("QA9")) {
+      fail("QA9 must not be listed in required_rerun_suites (rerun aggregation only after discovery evidence)");
+    }
+  }
+
   if (entry.qa7_complete === true || entry.qa7_status === "COMPLETE") {
     fail("must not claim QA7 complete");
+  }
+  if (entry.qa8_complete === true || entry.qa8_status === "COMPLETE") {
+    fail("must not claim QA8 complete at rebase time");
+  }
+  if (entry.qa9_complete === true || entry.qa9_status === "COMPLETE") {
+    fail("must not claim QA9 complete at rebase time");
+  }
+  if (entry.qa9_verdict_issued === true) {
+    fail("must not fabricate a QA9 verdict at rebase time");
   }
 }
 
@@ -238,8 +440,19 @@ function assertNoInPlaceHashRewrite(baseline, amendmentLedger, rebaseLedger, fai
       fails.push(
         `new baseline id unbound to rebase ledger (baseline=${baseline.id} tip=${tip.new_baseline_id})`,
       );
-    } else if (!sameStringArray(tip.invalidated_suites, INVALIDATED_SUITES)) {
-      fails.push("new baseline created without QA1-QA6 invalidation ledger");
+    } else {
+      const policy = resolvePolicyForEntry(tip);
+      if (!policy || !sameStringArray(tip.invalidated_suites, policy.invalidated_suites)) {
+        fails.push("new baseline created without required invalidation ledger");
+      }
+      if (
+        !isFrozenHistoricalRebaseId(tip.rebase_id) &&
+        resolvePolicyId(tip) !== CURRENT_REBASE_POLICY_ID
+      ) {
+        fails.push(
+          `new baseline must be bound to ${CURRENT_REBASE_POLICY_ID} (old policy cannot authorize a new rebase)`,
+        );
+      }
     }
   }
 }
@@ -247,8 +460,10 @@ function assertNoInPlaceHashRewrite(baseline, amendmentLedger, rebaseLedger, fai
 function isPendingRerun(baseline, evidence, rebaseLedger) {
   const tip = latestRebase(rebaseLedger);
   if (!tip || !baseline || tip.new_baseline_id !== baseline.id) return false;
+  const policy = resolvePolicyForEntry(tip) || currentPolicy();
   const suites = (evidence && evidence.suites) || [];
-  return INVALIDATED_SUITES.some((id) => {
+  // QA8/QA9는 pending_rebuild(QA1-QA6) 상태기계를 확장하지 않는다 (qa_phase=QA-0 계약 유지).
+  return (policy.pending_rebuild_suites || []).some((id) => {
     const s = suites.find((x) => x.suite_id === id);
     if (!s) return true;
     if (s.completion_status === "STALE" || s.completion_status === "NOT_STARTED") return true;
@@ -260,9 +475,10 @@ function isPendingRerun(baseline, evidence, rebaseLedger) {
 function verifyWashing(baseline, evidence, rebaseLedger, readResult, fails) {
   const tip = latestRebase(rebaseLedger);
   if (!baseline || !evidence) return;
+  const policy = (tip && resolvePolicyForEntry(tip)) || currentPolicy();
   const suites = evidence.suites || [];
   const predChecksums = (tip && tip.predecessor_suite_checksums) || {};
-  for (const id of INVALIDATED_SUITES) {
+  for (const id of policy.washing_suites || []) {
     const s = suites.find((x) => x.suite_id === id);
     if (!s) continue;
     let result = null;
@@ -283,6 +499,11 @@ function verifyWashing(baseline, evidence, rebaseLedger, readResult, fails) {
       if (predChecksums[id] && s.checksum && s.checksum === predChecksums[id]) {
         fails.push(`${id} current COMPLETE reuses predecessor checksum (evidence washing)`);
       }
+      if (id === "QA9" && s.current_epoch_authoritative !== false && result && result.verdict) {
+        if (s.historical_checksum && s.checksum === s.historical_checksum) {
+          fails.push("predecessor QA9 verdict treated as current-authoritative (aggregation washing)");
+        }
+      }
     }
     if (s.completion_status === "STALE" && result && result.baseline_id === baseline.id) {
       fails.push(
@@ -302,6 +523,7 @@ function verifyPendingRerunEpoch(baseline, evidence, rebaseLedger, fails) {
     fails.push("evidence-manifest required");
     return;
   }
+  const policy = resolvePolicyForEntry(tip) || currentPolicy();
   if (evidence.baseline_id !== baseline.id) {
     fails.push("evidence-manifest.baseline_id must match current epoch baseline.id");
   }
@@ -314,15 +536,21 @@ function verifyPendingRerunEpoch(baseline, evidence, rebaseLedger, fails) {
   if (evidence.verdict === "ENGINE_ACCEPTED_FOR_UI") {
     fails.push("must not issue ENGINE_ACCEPTED_FOR_UI during rebase pending rerun");
   }
+  if ((policy.stale_aggregation_phases || []).length > 0) {
+    if (evidence.verdict !== "ENGINE_QA_INCOMPLETE") {
+      fails.push(
+        "predecessor QA9 verdict cannot remain current-authoritative; verdict must be ENGINE_QA_INCOMPLETE until current-epoch aggregation reruns",
+      );
+    }
+  }
   const suites = evidence.suites || [];
-  for (const id of INVALIDATED_SUITES) {
+  for (const id of policy.pending_rebuild_suites || []) {
     const s = suites.find((x) => x.suite_id === id);
     if (!s) {
       fails.push(`missing suite slot ${id} after rebase`);
       continue;
     }
     if (s.completion_status === "COMPLETE" && s.baseline_id === baseline.id) {
-      // mixed: this suite already rerun — washing check handles checksum
       continue;
     }
     if (s.completion_status !== "STALE" && s.completion_status !== "NOT_STARTED") {
@@ -332,6 +560,50 @@ function verifyPendingRerunEpoch(baseline, evidence, rebaseLedger, fails) {
       fails.push(`${id} historical_baseline_id must remain predecessor, not current epoch`);
     }
   }
+
+  const extraInvalidated = (policy.invalidated_suites || []).filter(
+    (id) => !(policy.pending_rebuild_suites || []).includes(id),
+  );
+  for (const id of extraInvalidated) {
+    const s = suites.find((x) => x.suite_id === id);
+    if (!s) {
+      fails.push(`missing suite slot ${id} after rebase`);
+      continue;
+    }
+    if (s.completion_status === "COMPLETE" && s.baseline_id === baseline.id) {
+      continue;
+    }
+    if (s.completion_status !== "STALE" && s.completion_status !== "NOT_STARTED") {
+      fails.push(
+        `${id} current-epoch status must be STALE or NOT_STARTED until discovery rerun (got ${s.completion_status})`,
+      );
+    }
+    if (s.historical_baseline_id && s.historical_baseline_id === baseline.id) {
+      fails.push(`${id} historical_baseline_id must remain predecessor, not current epoch`);
+    }
+  }
+
+  for (const id of policy.stale_aggregation_phases || []) {
+    const s = suites.find((x) => x.suite_id === id);
+    if (!s) {
+      fails.push(`missing aggregation slot ${id} after rebase`);
+      continue;
+    }
+    if (s.completion_status === "COMPLETE") {
+      fails.push(
+        `predecessor ${id} result/report cannot remain current-authoritative; aggregation must be STALE until current-epoch discovery evidence exists`,
+      );
+    } else if (s.completion_status !== "STALE" && s.completion_status !== "NOT_STARTED") {
+      fails.push(`${id} aggregation must be STALE or NOT_STARTED until rerun (got ${s.completion_status})`);
+    }
+    if (s.current_epoch_authoritative === true) {
+      fails.push(`${id} must not be current-epoch authoritative after rebase`);
+    }
+    if (s.historical_baseline_id && s.historical_baseline_id === baseline.id) {
+      fails.push(`${id} historical_baseline_id must remain predecessor, not current epoch`);
+    }
+  }
+
   const qa0 = suites.find((s) => s.suite_id === "QA0");
   if (!qa0 || qa0.completion_status !== "COMPLETE") {
     fails.push("QA0 (new epoch freeze) must be COMPLETE");
@@ -377,6 +649,7 @@ function verifyRebaseLedgerAgainstBaseline(baseline, rebaseLedger, evidence, fai
     fails.push("product-rebases.rebases must be array");
     return;
   }
+  validateLedgerPolicy(rebaseLedger, fails);
   for (let i = 0; i < rebaseLedger.rebases.length; i++) {
     validateRebaseEntry(rebaseLedger.rebases[i], i, fails);
   }
@@ -418,9 +691,10 @@ function predecessorArchiveRel(predecessorId) {
   return `${PREDECESSOR_DIR_REL}/${predecessorId}.json`;
 }
 
-function collectPredecessorChecksums(evidence) {
+function collectPredecessorChecksums(evidence, policy) {
+  const ids = (policy && policy.washing_suites) || currentPolicy().washing_suites;
   const out = {};
-  for (const id of INVALIDATED_SUITES) {
+  for (const id of ids) {
     const s = ((evidence && evidence.suites) || []).find((x) => x.suite_id === id);
     if (s && s.checksum) out[id] = s.checksum;
   }
@@ -444,17 +718,116 @@ function buildStaleSuite(prev, newBaselineId, predecessorId) {
     ...(prev.mode ? { historical_mode: prev.mode } : {}),
     ...(prev.blocked_codes ? { historical_blocked_codes: prev.blocked_codes } : {}),
     ...(prev.budget_status ? { historical_budget_status: prev.budget_status } : {}),
+    ...(prev.asvs_version ? { historical_asvs_version: prev.asvs_version } : {}),
   };
 }
 
+function buildStaleAggregationPhase(prev, newBaselineId, predecessorId, predecessorVerdict) {
+  return {
+    suite_id: prev.suite_id || "QA9",
+    run_id: null,
+    baseline_id: newBaselineId,
+    checksum: null,
+    completion_status: "STALE",
+    epoch_status: "STALE_AGGREGATION_FOR_CURRENT_EPOCH",
+    aggregation_only: true,
+    discovery_suite: false,
+    current_epoch_authoritative: false,
+    historical_completion_status: prev.completion_status || "COMPLETE",
+    historical_baseline_id: predecessorId,
+    historical_run_id: prev.run_id || null,
+    historical_checksum: prev.checksum || null,
+    historical_verdict: predecessorVerdict || null,
+    result_ref: prev.result_ref || RESULT_RELS.QA9,
+    predecessor_result_preserved: true,
+    rerun_after_current_epoch_discovery: true,
+  };
+}
+
+function mapSuitesForRebase(suites, policy, ctx) {
+  const newBaselineId = ctx.newBaselineId;
+  const predecessorId = ctx.predecessorId;
+  const rebaseId = ctx.rebaseId;
+  const qa0Checksum = ctx.qa0Checksum;
+  const predecessorVerdict = ctx.predecessorVerdict;
+  const mapped = (suites || []).map((s) => {
+    if (s.suite_id === "QA0") {
+      return {
+        suite_id: "QA0",
+        run_id: rebaseId,
+        baseline_id: newBaselineId,
+        checksum: qa0Checksum,
+        completion_status: "COMPLETE",
+        epoch: "current",
+        predecessor_baseline_id: predecessorId,
+      };
+    }
+    if ((policy.invalidated_suites || []).includes(s.suite_id)) {
+      return buildStaleSuite(s, newBaselineId, predecessorId);
+    }
+    if ((policy.stale_aggregation_phases || []).includes(s.suite_id)) {
+      return buildStaleAggregationPhase(s, newBaselineId, predecessorId, predecessorVerdict);
+    }
+    return {
+      ...s,
+      baseline_id: newBaselineId,
+      run_id: null,
+      checksum: null,
+      completion_status: "NOT_STARTED",
+      predecessor_baseline_id: predecessorId,
+    };
+  });
+  const have = new Set(mapped.map((s) => s.suite_id));
+  for (const id of policy.invalidated_suites || []) {
+    if (!have.has(id)) {
+      mapped.push(buildStaleSuite({ suite_id: id, completion_status: "NOT_STARTED" }, newBaselineId, predecessorId));
+      have.add(id);
+    }
+  }
+  for (const id of policy.stale_aggregation_phases || []) {
+    if (!have.has(id)) {
+      mapped.push(
+        buildStaleAggregationPhase({ suite_id: id }, newBaselineId, predecessorId, predecessorVerdict),
+      );
+      have.add(id);
+    }
+  }
+  return mapped;
+}
+
+function stampCurrentPolicyOnEntry(entry) {
+  const policy = currentPolicy();
+  entry.rebase_policy_version = CURRENT_REBASE_POLICY_ID;
+  entry.invalidated_suites = policy.invalidated_suites.slice();
+  entry.required_rerun_suites = policy.required_rerun_suites.slice();
+  entry.stale_aggregation_phases = policy.stale_aggregation_phases.slice();
+  entry.qa7_complete = false;
+  entry.qa8_complete = false;
+  entry.qa9_complete = false;
+  entry.qa9_verdict_issued = false;
+  return entry;
+}
+
 function buildRebaseReport({ baseline, tip, measuredAt }) {
+  const policy = resolvePolicyForEntry(tip) || currentPolicy();
+  const qa8Line =
+    (policy.invalidated_suites || []).includes("QA8") ? "QA8 = STALE_FOR_CURRENT_EPOCH\n" : "";
+  const qa9Line =
+    (policy.stale_aggregation_phases || []).includes("QA9")
+      ? "QA9 = STALE_AGGREGATION (not current-authoritative)\n"
+      : "";
+  const reason =
+    (policy.stale_aggregation_phases || []).includes("QA9")
+      ? `${DECISION_ID} · predecessor discovery is historical COMPLETE / current-epoch STALE · required rerun QA1-QA8 then QA9 aggregation · do not fabricate a verdict at rebase time`
+      : `${DECISION_ID} · predecessor QA1-QA6 are historical COMPLETE / current-epoch STALE · required rerun QA1-QA6 then QA7 · QA7 not claimed complete`;
   return `# ENGINE ACCEPTANCE REPORT
 
 > **QA phase:** QA-0 \`ENGINE_ACCEPTANCE_REBASE_V1\`  
 > **Measured:** ${measuredAt}  
 > **baseline_id:** \`${baseline.id}\`  
 > **predecessor_baseline_id:** \`${tip.predecessor_baseline_id}\`  
-> **rebase_id:** \`${tip.rebase_id}\`
+> **rebase_id:** \`${tip.rebase_id}\`  
+> **rebase_policy_version:** \`${policy.id}\`
 
 ## Status banner
 
@@ -471,9 +844,10 @@ QA4 = STALE_FOR_CURRENT_EPOCH
 QA5 = STALE_FOR_CURRENT_EPOCH
 QA6 = STALE_FOR_CURRENT_EPOCH
 QA7 = NOT_STARTED
-NEXT = QA1_DETERMINISTIC_TRUTH
+${qa8Line}${qa9Line}NEXT = QA1_DETERMINISTIC_TRUTH
 BASELINE WASHING = FORBIDDEN
 03 UI = BLOCKED
+ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
 \`\`\`
 
 ## Verdict (after product rebase)
@@ -481,7 +855,7 @@ BASELINE WASHING = FORBIDDEN
 | Field | Value |
 |---|---|
 | verdict | \`ENGINE_QA_INCOMPLETE\` |
-| reason | ${DECISION_ID} · predecessor QA1-QA6 are historical COMPLETE / current-epoch STALE · required rerun QA1-QA6 then QA7 · QA7 not claimed complete |
+| reason | ${reason} |
 | evidence_integrity | \`VALID\` |
 | baseline.valid | \`${baseline.valid}\` |
 | working_tree_clean | \`${baseline.working_tree_clean}\` (fact only — not forced clean) |
@@ -490,7 +864,7 @@ BASELINE WASHING = FORBIDDEN
 | eval_dataset_hash | MATCH predecessor (\`${baseline.eval_dataset_hash}\`) |
 | acceptance_workflow_hash | MATCH current approved (\`${baseline.acceptance_workflow_hash}\`) |
 
-**금지 확인:** \`ENGINE_ACCEPTED_FOR_UI\` **not issued**. Predecessor QA1-QA6 results were **not** rewritten as current-epoch COMPLETE.
+**금지 확인:** \`ENGINE_ACCEPTED_FOR_UI\` **not issued**. Predecessor discovery/aggregation results were **not** rewritten as current-epoch COMPLETE. Predecessor QA9 verdict is **not** current-authoritative.
 
 ## Dual Dirty
 
@@ -514,8 +888,14 @@ module.exports = {
   REPORT_REL,
   SCHEMA,
   PREDECESSOR_DIR_REL,
+  POLICY_V1_ID,
+  POLICY_V2_ID,
+  CURRENT_REBASE_POLICY_ID,
+  FROZEN_HISTORICAL_V1_REBASE_IDS,
+  REBASE_POLICIES,
   INVALIDATED_SUITES,
   REQUIRED_RERUN_SUITES,
+  STALE_AGGREGATION_PHASES,
   REQUIRED_REBASE_FIELDS,
   RESULT_RELS,
   writeJson,
@@ -523,6 +903,7 @@ module.exports = {
   emptyLedger,
   latestRebase,
   validateAck,
+  validateLedgerPolicy,
   validateRebaseEntry,
   evaluateRebaseInvariants,
   detectProtectedScopeWash,
@@ -535,5 +916,13 @@ module.exports = {
   predecessorArchiveRel,
   collectPredecessorChecksums,
   buildStaleSuite,
+  buildStaleAggregationPhase,
+  mapSuitesForRebase,
+  stampCurrentPolicyOnEntry,
+  currentPolicy,
+  policyById,
+  resolvePolicyId,
+  resolvePolicyForEntry,
+  isFrozenHistoricalRebaseId,
   buildRebaseReport,
 };

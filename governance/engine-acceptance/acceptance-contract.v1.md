@@ -165,6 +165,8 @@ QA0 freeze 이후 **protected product mutation**은 새 acceptance epoch를 만�
 | predecessor | 옛 baseline은 이력 · 해시 제자리 재작성 금지 |
 | QA1–QA6 | predecessor COMPLETE는 역사 · **current epoch = STALE** · 재실행 필수 |
 | QA7 | current-epoch QA1–QA6 재구축 후에만 |
+| QA8 | **discovery suite** (mandatory_suite.QA1..QA8). V2부터 predecessor COMPLETE는 역사 · **current epoch = STALE** · 재실행 필수. P0/P2 발견은 새 epoch 실행이 대체할 때까지 predecessor evidence/history로 남긴다. 결함을 rebase가 지우지 않는다. |
+| QA9 | **aggregation / verdict phase** (discovery 아님). V2부터 predecessor QA9 verdict/report는 current-authoritative가 아니다. 새 epoch discovery evidence가 생긴 뒤에만 aggregation을 재실행한다. rebase 시점에 새 verdict를 만들지 않는다. |
 | eval dataset | product-only rebase 동안 **unchanged / MATCH** |
 | workflow hash | 바이트가 안 바뀌면 현 승인 해시 **MATCH** · 바뀌면 L7 amendment |
 | `acceptance_scope.unchanged` | **NEW epoch baseline**과 비교 |
@@ -180,3 +182,18 @@ QA0 freeze 이후 **protected product mutation**은 새 acceptance epoch를 만�
 5. workflow hash 암묵 변경
 6. invalidation ledger 없이 새 baseline 생성
 7. ACK 없는 rebase
+8. predecessor QA8 결과를 current COMPLETE로 재사용 (V2)
+9. predecessor QA9 verdict/report를 새 epoch의 current-authoritative 판정으로 유지하거나 rebase 시점에 새 verdict를 날조
+
+### Rebase policy versioning
+
+역사적 승인 rebase는 **승인 당시 topology**로만 검증한다. 현재 정책 상수로 과거 payload를 exact-match하지 않는다.
+
+| 정책 | 적용 | invalidated (discovery STALE) | required rerun (discovery) | aggregation stale |
+|---|---|---|---|---|
+| `ENGINE_ACCEPTANCE_REBASE_POLICY_V1` | 역사적 승인 3건 (`product-rebases.v1.json` frozen ids) | QA1–QA6 | QA1–QA7 | (없음 — QA8/QA9 이전) |
+| `ENGINE_ACCEPTANCE_REBASE_POLICY_V2` | **미래** protected-product rebase 전용 | QA1–QA6 + **QA8** | QA1–QA8 | **QA9** (discovery 배열에 넣지 않음) |
+
+V1 shape은 새 epoch를 인가할 수 없다. 정책 amendment는 새 acceptance epoch를 만들지 않고 현재 evidence를 무효화하지 않는다.
+
+SSOT: `product-rebases.v1.json` `rebase_policy` + `tooling/engine-acceptance/lib/product-rebase.cjs`.
