@@ -109,15 +109,47 @@ async function runQa5Fault(opts = {}) {
   const dbEvidence = await orch.executeDbFault({
     productBaseUrl,
     databaseUrl,
+    nestPid: started ? started.pid : opts.nestPid,
+    authorization: userBearer,
   });
 
   const llmObserved = llmEvidence.some((e) => e.observed_failure);
   const dbBlocked = dbEvidence.strategy && dbEvidence.strategy.executable === false;
+  const layers = dbEvidence.recovery_layers || {};
+  const depRecovered =
+    layers.CONTAINER_RECOVERED === true &&
+    layers.POSTGRES_READY === true &&
+    layers.DIRECT_CLIENT_RECOVERED === true;
+
+  let classification = "UNCLASSIFIED";
+  if (dbBlocked) classification = "ENVIRONMENT_BLOCKER";
+  else if (!dbEvidence.fault_induced || !dbEvidence.product_observed_failure) {
+    classification = "HARNESS_RECOVERY_DEFECT";
+  } else if (!depRecovered) {
+    const startFailed = dbEvidence.restore && dbEvidence.restore.reason === "docker_start_failed";
+    classification = startFailed ? "ENVIRONMENT_BLOCKER" : "HARNESS_RECOVERY_DEFECT";
+  } else if (!dbEvidence.product_recovered || !dbEvidence.same_nest_process) {
+    classification = "PRODUCT_RECOVERY_DEFECT";
+  } else {
+    /* 원 결함은 중지 컨테이너를 running-only 로 재탐색한 하네스. 이번 실행에서 복구 증명. */
+    classification = "HARNESS_RECOVERY_DEFECT";
+  }
+
+  const proofPass =
+    classification !== "ENVIRONMENT_BLOCKER" &&
+    dbEvidence.fault_induced &&
+    dbEvidence.product_observed_failure &&
+    depRecovered &&
+    dbEvidence.product_recovered === true &&
+    dbEvidence.same_nest_process === true;
+
   let harness_status = "PASS";
   if (!llmObserved) harness_status = "HARNESS_FAILURE";
   if (dbBlocked) {
     /* LLM 축은 성공 가능 · DB 는 환경 차단 */
   } else if (!dbEvidence.fault_induced || !dbEvidence.product_observed_failure) {
+    harness_status = "HARNESS_FAILURE";
+  } else if (!depRecovered) {
     harness_status = "HARNESS_FAILURE";
   }
 
@@ -126,9 +158,14 @@ async function runQa5Fault(opts = {}) {
     suite_id: "QA5_FAULT_ORCH",
     measuredAt: new Date().toISOString(),
     baseline_id: opts.baseline_id || null,
+    github_run_id: process.env.GITHUB_RUN_ID || null,
+    commit_sha: process.env.GITHUB_SHA || null,
     harness_status,
     product_result_status: "OBSERVED",
     verdict_class: harness_status === "PASS" ? "HARNESS_VALIDATION" : "HARNESS_FAILURE",
+    QA5_DB_RECOVERY_PROOF: proofPass ? "PASS" : "FAIL",
+    QA5_DB_RECOVERY_CLASSIFICATION: classification,
+    NEW_PROTECTED_REPAIR_CANDIDATE: classification === "PRODUCT_RECOVERY_DEFECT",
     non_canonical: true,
     does_not_replace_qa5_result: true,
     mock: false,
@@ -151,10 +188,18 @@ async function runQa5Fault(opts = {}) {
       observed_any_failure: llmObserved,
     },
     db: dbEvidence,
+    nest_log_excerpt: started
+      ? String(nest.collectLogs({ workDir: started.paths.dir }) || "")
+          .slice(-4000)
+          .replace(/Bearer\s+[A-Za-z0-9._-]+/g, "Bearer [redacted]")
+          .replace(/postgres:[^@\s]+@/gi, "postgres:[redacted]@")
+      : null,
     secrets: { committed: false, redacted_auth: redactAuthorization(userBearer) },
     notes: [
       "MEASUREMENT/HARNESS evidence only — not canonical QA5 PASS.",
       "No product fault API. LLM_BASE_URL pointed at local fault server.",
+      "Recovery layers are independent: container → pg_isready → fresh client → same Nest DB path.",
+      "Nest is not restarted to fake recovery.",
     ],
   };
 
@@ -189,7 +234,18 @@ function main() {
   })
     .then((out) => {
       console.log("[run-qa5-fault] HARNESS_VALIDATION", out.harness_status);
-      console.log(JSON.stringify({ harness_status: out.harness_status, llm: out.llm.observed_any_failure }, null, 2));
+      console.log(
+        JSON.stringify(
+          {
+            harness_status: out.harness_status,
+            QA5_DB_RECOVERY_PROOF: out.QA5_DB_RECOVERY_PROOF,
+            QA5_DB_RECOVERY_CLASSIFICATION: out.QA5_DB_RECOVERY_CLASSIFICATION,
+            llm: out.llm.observed_any_failure,
+          },
+          null,
+          2,
+        ),
+      );
     })
     .catch((e) => {
       try {

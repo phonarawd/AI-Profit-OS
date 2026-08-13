@@ -176,6 +176,57 @@ function run() {
     assert.ok(["docker_stop_start", "unavailable"].includes(plan.strategy));
   });
 
+  check("db_fault_restore_finds_stopped_container", () => {
+    const dbFault = require("./harness/db-fault.cjs");
+    const stopped = dbFault.parseDockerPsLines(
+      [
+        "abc123\t1634dc53_pgvectorpgvectorpg16_ac9c0c\tpgvector/pgvector:pg16\tExited (0) 2 seconds ago\t",
+      ].join("\n"),
+    );
+    assert.equal(
+      dbFault.pickPostgresContainer(stopped),
+      "1634dc53_pgvectorpgvectorpg16_ac9c0c",
+    );
+    const runningOnlyEmpty = dbFault.parseDockerPsLines("");
+    assert.equal(dbFault.pickPostgresContainer(runningOnlyEmpty), null);
+    const src = fs.readFileSync(path.join(ROOT, "tooling/engine-acceptance/harness/db-fault.cjs"), "utf8");
+    assert.ok(src.includes("includeStopped"));
+    assert.ok(src.includes('docker", ["ps"]') || src.includes("ps -a") || src.includes('"-a"'));
+    assert.ok(src.includes("containerName"));
+  });
+
+  check("qa5_recovery_layers_not_or_ping", () => {
+    const orchSrc = fs.readFileSync(
+      path.join(ROOT, "tooling/engine-acceptance/harness/fault-orchestrator.cjs"),
+      "utf8",
+    );
+    assert.ok(orchSrc.includes("CONTAINER_RECOVERED"));
+    assert.ok(orchSrc.includes("POSTGRES_READY"));
+    assert.ok(orchSrc.includes("DIRECT_CLIENT_RECOVERED"));
+    assert.ok(orchSrc.includes("PRODUCT_DB_PATH_RECOVERED"));
+    assert.ok(orchSrc.includes("same_nest"));
+    assert.ok(orchSrc.includes("containerName"));
+    assert.equal(orchSrc.includes("afterPing && afterPing.ok) || healthIndicatesDb"), false);
+    const runnerSrc = fs.readFileSync(
+      path.join(ROOT, "tooling/engine-acceptance/run-qa5-fault.cjs"),
+      "utf8",
+    );
+    assert.ok(runnerSrc.includes("QA5_DB_RECOVERY_PROOF"));
+    assert.ok(runnerSrc.includes("does_not_replace_qa5_result"));
+    assert.ok(runnerSrc.includes("nestPid"));
+  });
+
+  check("qa6_measure_requests_p99_trend_stats", () => {
+    const src = fs.readFileSync(
+      path.join(ROOT, "tooling/engine-acceptance/run-qa6-measure.cjs"),
+      "utf8",
+    );
+    assert.ok(src.includes("p(99)"));
+    assert.ok(src.includes("summary-trend-stats"));
+    assert.ok(src.includes("http_req_failed_rate"));
+    assert.ok(src.includes("GITHUB_RUN_ID"));
+  });
+
   check("detector_rejects_inert_placeholder", () => {
     const fake = {
       injectFault() {

@@ -7,6 +7,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const crypto = require("node:crypto");
 const { spawnSync } = require("node:child_process");
 const { assertKillSwitch, assertDbTarget, resolveHarnessDatabaseUrl } = require("./kill-switch.cjs");
 const { ROOT } = require("./lib/hash-scope.cjs");
@@ -56,16 +57,41 @@ function extractSummaryMetrics(summary) {
     };
   };
   const failed = metrics.http_req_failed;
-  const errorRate =
-    failed && failed.values
-      ? failed.values.rate
-      : failed && typeof failed.rate === "number"
-        ? failed.rate
-        : null;
+  let errorRate = null;
+  if (failed) {
+    if (failed.values && typeof failed.values.rate === "number") errorRate = failed.values.rate;
+    else if (typeof failed.rate === "number") errorRate = failed.rate;
+    else if (typeof failed.value === "number") errorRate = failed.value;
+  }
+  const reqs = metrics.http_reqs || {};
+  const reqCount = reqs.count ?? (reqs.values && reqs.values.count) ?? null;
+  const reqRate = reqs.rate ?? (reqs.values && reqs.values.rate) ?? null;
+  const tagged = {};
+  for (const [key, val] of Object.entries(metrics)) {
+    const m = key.match(/^http_req_duration\{scenario:([^}]+)\}$/);
+    if (!m) continue;
+    const values = val.values || val;
+    tagged[m[1]] = {
+      p50: values["p(50)"] ?? values.med ?? null,
+      p95: values["p(95)"] ?? null,
+      p99: values["p(99)"] ?? null,
+    };
+  }
+  const checks = summary && summary.root_group && summary.root_group.checks
+    ? Object.fromEntries(
+        Object.entries(summary.root_group.checks).map(([k, v]) => [
+          k,
+          { passes: v.passes, fails: v.fails },
+        ]),
+      )
+    : null;
   return {
     http_req_duration: pick("http_req_duration"),
     http_req_failed_rate: errorRate,
+    http_reqs: { count: reqCount, rate: reqRate },
     iterations: metrics.iterations || null,
+    by_scenario: Object.keys(tagged).length ? tagged : null,
+    checks,
   };
 }
 
@@ -128,7 +154,14 @@ async function runQa6Measure(opts = {}) {
     };
     const spawned = spawnSync(
       k6bin,
-      ["run", "--summary-export", summaryPath, K6_SCRIPT],
+      [
+        "run",
+        "--summary-export",
+        summaryPath,
+        "--summary-trend-stats",
+        "avg,min,med,max,p(50),p(90),p(95),p(99)",
+        K6_SCRIPT,
+      ],
       { encoding: "utf8", env, cwd: ROOT, timeout: 120_000 },
     );
     let summary = null;
@@ -145,6 +178,10 @@ async function runQa6Measure(opts = {}) {
       stderr: String(spawned.stderr || "").slice(0, 4000),
       metrics: extractSummaryMetrics(summary),
       summary_present: Boolean(summary),
+      summary_sha256: fs.existsSync(summaryPath)
+        ? crypto.createHash("sha256").update(fs.readFileSync(summaryPath)).digest("hex")
+        : null,
+      trend_stats: "avg,min,med,max,p(50),p(90),p(95),p(99)",
     };
   }
 
@@ -156,8 +193,11 @@ async function runQa6Measure(opts = {}) {
   const result = {
     schema: "harness.qa6-measure.v1",
     suite_id: "QA6_MEASURE",
-    measuredAt: new Date().toISOString(),
-    mode: "MEASUREMENT_ONLY",
+    github_run_id: process.env.GITHUB_RUN_ID || null,
+    github_run_attempt: process.env.GITHUB_RUN_ATTEMPT || null,
+    commit_sha: process.env.GITHUB_SHA || null,
+    runner_arch: process.env.RUNNER_ARCH || null,
+    runner_os: process.env.RUNNER_OS || null,
     verdict_class: "NON_VERDICT",
     acceptance_verdict: "NOT_A_QA6_PASS",
     cannot_be_canonical_qa6_pass: true,

@@ -12,7 +12,9 @@ const {
   selectDbFaultStrategy,
   induceDbFault,
   restoreDb,
+  inspectContainer,
 } = require("./db-fault.cjs");
+const { isPidAlive } = require("./ci-nest-boot.cjs");
 
 const ORCHESTRATOR_KIND = "harness_real_dependency_fault";
 
@@ -167,38 +169,205 @@ async function executeLlmFault(opts = {}) {
   };
 }
 
+function snapshotNest(pid) {
+  if (pid == null || pid === "") {
+    return { pid: null, alive: null, checked: false };
+  }
+  const n = Number(pid);
+  return { pid: n, alive: isPidAlive(n), checked: true };
+}
+
+function productHealthView(res) {
+  return {
+    status: res.status,
+    error: res.error || null,
+    db_ok: healthIndicatesDb(res.body),
+    db_down: healthIndicatesDbDown(res.body),
+    excerpt: sanitizeExcerpt(res.body),
+  };
+}
+
+/**
+ * 같은 Nest 프로세스의 DB 경로가 다시 살아나는지 bounded poll.
+ * Nest 재시작 금지. 첫 실패 후 풀이 stale connection 을 버리는 경우는 허용.
+ */
+async function waitForProductDbPath(opts) {
+  const {
+    healthUrl,
+    productUrl,
+    headers,
+    nestPid,
+    attempts = 15,
+    delayMs = 1000,
+  } = opts;
+  const tries = [];
+  for (let i = 0; i < attempts; i++) {
+    const nest = snapshotNest(nestPid);
+    const health = await httpJson("GET", healthUrl, null, {}, 8_000);
+    let product = null;
+    if (productUrl) {
+      product = await httpJson("GET", productUrl, null, headers || {}, 8_000);
+    }
+    const healthOk = healthIndicatesDb(health.body);
+    const sameProcess = nest.checked ? nest.alive === true : null;
+    tries.push({
+      attempt: i + 1,
+      nest,
+      health: productHealthView(health),
+      product: product
+        ? { status: product.status, error: product.error || null, excerpt: sanitizeExcerpt(product.body) }
+        : null,
+    });
+    if (sameProcess === false) {
+      return {
+        recovered: false,
+        same_nest_alive: false,
+        attempts_used: i + 1,
+        first_attempt: tries[0],
+        last_attempt: tries[tries.length - 1],
+        tries,
+        reason: "nest_process_dead",
+      };
+    }
+    if (healthOk && sameProcess !== false) {
+      return {
+        recovered: true,
+        same_nest_alive: sameProcess,
+        attempts_used: i + 1,
+        first_attempt: tries[0],
+        last_attempt: tries[tries.length - 1],
+        tries,
+      };
+    }
+    await new Promise((r) => setTimeout(r, delayMs));
+  }
+  const last = tries[tries.length - 1];
+  return {
+    recovered: false,
+    same_nest_alive: last && last.nest ? last.nest.alive : null,
+    attempts_used: tries.length,
+    first_attempt: tries[0] || null,
+    last_attempt: last || null,
+    tries,
+    reason: "product_db_path_timeout",
+  };
+}
+
 async function executeDbFault(opts = {}) {
   const base = opts.productBaseUrl || process.env.AIPO_QA_BASE_URL || "http://127.0.0.1:4000";
   const healthUrl = `${base}/api/v1/health`;
+  const productPath = opts.productDbPath || "/api/v1/wallet/buckets";
+  const productUrl = `${base}${productPath}`;
   const databaseUrl = opts.databaseUrl || process.env.DATABASE_URL;
+  const nestPid = opts.nestPid;
+  const authHeaders = opts.authorization ? { authorization: opts.authorization } : {};
 
+  const beforeNest = snapshotNest(nestPid);
   const beforeHealth = await httpJson("GET", healthUrl, null, {}, 8_000);
+  const beforeProduct = await httpJson("GET", productUrl, null, authHeaders, 8_000);
   const beforePing = databaseUrl ? await require("./ci-postgres.cjs").pingPostgres(databaseUrl) : null;
-  const dbWorked = healthIndicatesDb(beforeHealth.body) || (beforePing && beforePing.ok);
+  const dbWorked = healthIndicatesDb(beforeHealth.body);
 
   const induced = await induceDbFault(opts);
+  const duringNest = snapshotNest(nestPid);
   const duringHealth = await httpJson("GET", healthUrl, null, {}, 8_000);
   const duringPing = databaseUrl ? await require("./ci-postgres.cjs").pingPostgres(databaseUrl) : null;
   const productSawFailure =
-    (duringPing && duringPing.ok === false) ||
     healthIndicatesDbDown(duringHealth.body) ||
-    duringHealth.status === 0;
+    duringHealth.status === 0 ||
+    duringHealth.status >= 500;
 
-  const restored = await restoreDb(opts);
-  const afterHealth = await httpJson("GET", healthUrl, null, {}, 8_000);
-  const afterPing = databaseUrl ? await require("./ci-postgres.cjs").pingPostgres(databaseUrl) : null;
-  const recovered = (afterPing && afterPing.ok) || healthIndicatesDb(afterHealth.body);
+  const containerName =
+    induced.container || (induced.plan && induced.plan.container) || null;
+  const restored = await restoreDb({
+    ...opts,
+    containerName,
+    databaseUrl,
+  });
+
+  const layers = {
+    CONTAINER_RECOVERED: Boolean(restored.layers && restored.layers.CONTAINER_RECOVERED),
+    POSTGRES_READY: Boolean(restored.layers && restored.layers.POSTGRES_READY),
+    DIRECT_CLIENT_RECOVERED: Boolean(restored.layers && restored.layers.DIRECT_CLIENT_RECOVERED),
+    PRODUCT_DB_PATH_RECOVERED: false,
+  };
+
+  let productWait = null;
+  if (layers.CONTAINER_RECOVERED && layers.POSTGRES_READY && layers.DIRECT_CLIENT_RECOVERED) {
+    productWait = await waitForProductDbPath({
+      healthUrl,
+      productUrl,
+      headers: authHeaders,
+      nestPid,
+    });
+    layers.PRODUCT_DB_PATH_RECOVERED = Boolean(
+      productWait.recovered && productWait.same_nest_alive !== false,
+    );
+  } else {
+    const afterHealth = await httpJson("GET", healthUrl, null, {}, 8_000);
+    productWait = {
+      recovered: false,
+      same_nest_alive: snapshotNest(nestPid).alive,
+      skipped: "dependency_layers_not_ready",
+      last_attempt: { health: productHealthView(afterHealth), nest: snapshotNest(nestPid) },
+    };
+  }
+
+  const afterNest = snapshotNest(nestPid);
+  const sameNest =
+    beforeNest.checked &&
+    afterNest.checked &&
+    beforeNest.pid === afterNest.pid &&
+    afterNest.alive === true;
 
   return {
     strategy: induced.plan || selectDbFaultStrategy(opts),
+    container: containerName,
+    inspect_after_restore: containerName ? inspectContainer(containerName) : null,
     db_worked: Boolean(dbWorked),
     fault_induced: Boolean(induced.induced),
     product_observed_failure: Boolean(productSawFailure),
     db_recovered: Boolean(restored.restored),
-    product_recovered: Boolean(recovered),
-    before: { health_status: beforeHealth.status, ping: beforePing },
-    during: { health_status: duringHealth.status, ping: duringPing, health_excerpt: sanitizeExcerpt(duringHealth.body) },
-    after: { health_status: afterHealth.status, ping: afterPing },
+    product_recovered: Boolean(layers.PRODUCT_DB_PATH_RECOVERED),
+    same_nest_process: Boolean(sameNest),
+    nest_restarted: false,
+    recovery_layers: layers,
+    restore: {
+      status: restored.status,
+      reason: restored.reason || null,
+      start: restored.start || null,
+      attempts: restored.attempts || null,
+      pg_isready: restored.pg_isready || null,
+      ping: restored.ping || null,
+      inspectBeforeStart: restored.inspectBeforeStart || null,
+      inspectAfterStart: restored.inspectAfterStart || null,
+      logs_excerpt: restored.logs ? sanitizeExcerpt(restored.logs.text) : null,
+    },
+    induce: {
+      status: induced.status,
+      stop: induced.stop || null,
+      inspectBefore: induced.inspectBefore || null,
+      inspectAfterStop: induced.inspectAfterStop || null,
+    },
+    before: {
+      nest: beforeNest,
+      health: productHealthView(beforeHealth),
+      product: {
+        path: productPath,
+        status: beforeProduct.status,
+        error: beforeProduct.error || null,
+      },
+      ping: beforePing,
+    },
+    during: {
+      nest: duringNest,
+      health: productHealthView(duringHealth),
+      ping: duringPing,
+    },
+    after: {
+      nest: afterNest,
+      product_wait: productWait,
+    },
     mock: false,
   };
 }

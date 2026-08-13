@@ -113,6 +113,17 @@ async function waitForHealth(opts = {}) {
   throw err;
 }
 
+function isPidAlive(pid) {
+  const n = Number(pid);
+  if (!n || !Number.isFinite(n)) return false;
+  try {
+    process.kill(n, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function stopNest(opts = {}) {
   const paths = defaultPaths(opts);
   let pid = opts.pid;
@@ -184,6 +195,7 @@ module.exports = {
   startNest,
   waitForHealth,
   stopNest,
+  isPidAlive,
   collectLogs,
   httpGet,
   defaultPaths,
