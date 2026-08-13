@@ -5,7 +5,9 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { LedgerAdminService } from "./ledger.admin.service";
 import { LedgerPostingService } from "./ledger.posting.service";
 import { LEDGER_ADMIN_ROUTES } from "./ledger.routes";
@@ -13,8 +15,9 @@ import type { AdminAdjustInput, UserBucket } from "./ledger.types";
 
 /**
  * Admin Money HTTP surface · /api/v1/admin/*
- * Auth/RBAC guard lands with Admin todos — contracts locked here.
+ * Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
  */
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class LedgerAdminController {
   constructor(

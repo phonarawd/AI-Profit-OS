@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { MoneyCircuitService } from "./money-circuit.service";
 import { RISK_ADMIN_ROUTES } from "./risk.routes";
 import { RiskService } from "./risk.service";
@@ -8,6 +9,7 @@ import type { RiskStatus } from "./risk.types";
  * Admin /admin/risk?tab=queue HTTP surface · /api/v1/admin/risk/*
  * UI tab mapping Owns=Admin shell · API+signals Owns=Money §49.9
  */
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class RiskAdminController {
   constructor(

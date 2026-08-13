@@ -7,7 +7,9 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { ReferralClawbackService } from "./referral.clawback.service";
 import { ReferralEdgeService } from "./referral.edge.service";
 import { ReferralLadderService } from "./referral.ladder.service";
@@ -20,6 +22,7 @@ import type { ReferralProgramPatchInput } from "./referral.types";
  * Admin /admin/growth?tab=referral HTTP · /api/v1/admin/growth/referral/*
  * FORBIDDEN UI contract: monthly invite-count cap field (verify:referral-unlimited-invites)
  */
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class ReferralAdminController {
   constructor(

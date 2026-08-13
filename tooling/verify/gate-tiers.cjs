@@ -32,6 +32,7 @@ const T1_PUSH = [
   "no-admin-in-web.cjs",
   "ia-tabs.cjs",
   "admin-routes.cjs",
+  "admin-boundary.cjs",
   "api-nest-build.cjs",
   "stubs/run-all.cjs",
 ];

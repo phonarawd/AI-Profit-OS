@@ -1,12 +1,14 @@
-import { Body, Controller, Get, Patch, Query } from "@nestjs/common";
+import { Body, Controller, Get, Patch, Query, UseGuards } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { DepositConfigService } from "./deposit-config.service";
 import { WALLET_ADMIN_ROUTES } from "./wallet.routes";
 import type { DepositConfigPatchInput } from "./wallet.types";
 
 /**
  * Admin deposit-settings HTTP surface · /api/v1/admin/wallet/deposit-config
- * Auth/RBAC guard lands with Admin todos — contracts locked here.
+ * Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
  */
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class DepositConfigAdminController {
   constructor(private readonly depositConfig: DepositConfigService) {}

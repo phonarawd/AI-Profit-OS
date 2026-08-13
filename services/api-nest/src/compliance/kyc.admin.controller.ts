@@ -5,15 +5,18 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { COMPLIANCE_ADMIN_ROUTES } from "./compliance.routes";
 import { KycService } from "./kyc.service";
 
 /**
  * Admin compliance?tab=kyc HTTP surface · /api/v1/admin/compliance/kyc/*
- * UI tab = /admin/compliance?tab=kyc · Auth/RBAC = Admin todos (준법·최고).
+ * UI tab = /admin/compliance?tab=kyc · Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json) · kyc capability.
  * Money Owns: approve/reject API + R2 signed URL ≤5m.
  */
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class KycAdminController {
   constructor(private readonly kyc: KycService) {}

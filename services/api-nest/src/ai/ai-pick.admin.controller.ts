@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { AiPickAdminService } from "./ai-pick.admin.service";
 import { AI_PICK_ADMIN_ROUTES } from "./ai.routes";
 import type { AiPickScoreRequest } from "./ai.types";
 
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class AiPickAdminController {
   constructor(private readonly pick: AiPickAdminService) {}

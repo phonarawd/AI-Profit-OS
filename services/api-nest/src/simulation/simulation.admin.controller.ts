@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Get, Patch, Post, UseGuards } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { SimulationAdminService } from "./simulation.admin.service";
 import { SIMULATION_ADMIN_ROUTES } from "./simulation.routes";
 import type {
@@ -8,8 +9,9 @@ import type {
 
 /**
  * Admin /admin/growth?tab=simulation · /api/v1/admin/simulation/*
- * Auth/RBAC guard lands with Admin todos — contracts locked here.
+ * Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
  */
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class SimulationAdminController {
   constructor(private readonly simulation: SimulationAdminService) {}

@@ -1,12 +1,14 @@
-import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { AiLogsAdminService } from "./ai-logs.admin.service";
 import { AI_LOGS_ADMIN_ROUTES } from "./ai.routes";
 import type { AiEvalRunRequest } from "./ai.types";
 
 /**
  * Admin /admin/ai-logs · /api/v1/admin/ai-logs/*
- * Auth/RBAC lands with Admin todos — contracts locked here.
+ * Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
  */
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class AiLogsAdminController {
   constructor(private readonly logs: AiLogsAdminService) {}

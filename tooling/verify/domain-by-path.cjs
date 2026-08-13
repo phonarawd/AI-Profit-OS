@@ -121,6 +121,15 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/api-nest\/src\/common\//.test(f) ||
+      /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||
+      /^schemas\/admin-rbac\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/admin-boundary\.cjs$/.test(f),
+    scripts: ["admin-boundary.cjs"],
+  },
+  {
+    test: (f) =>
       /packages\/ui\/components\/opportunity/.test(f) ||
       /packages\/ui\/copy\/ko\/(feed|margin)/.test(f) ||
       /packages\/ui\/canon\/surfaces\/opportunity/.test(f),

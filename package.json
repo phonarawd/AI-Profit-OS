@@ -36,6 +36,7 @@
     "cf:origin-smoke": "node tooling/deploy/cf-origin-smoke.cjs all",
     "verify:no-admin-in-web": "node tooling/verify/no-admin-in-web.cjs",
     "verify:ia-tabs": "node tooling/verify/ia-tabs.cjs",
+    "verify:admin-boundary": "node tooling/verify/admin-boundary.cjs",
     "verify:admin-routes": "node tooling/verify/admin-routes.cjs",
     "verify:cta-earn-profit": "node tooling/verify/cta-earn-profit.cjs",
     "verify:cta-match-participate": "node tooling/verify/cta-earn-profit.cjs",

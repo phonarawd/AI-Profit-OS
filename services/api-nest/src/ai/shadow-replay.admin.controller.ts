@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { ShadowReplayAdminService } from "./shadow-replay.admin.service";
 import { SHADOW_REPLAY_ADMIN_ROUTES } from "./ai.routes";
 import type { ShadowReplayRunRequest } from "./ai.types";
 
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class ShadowReplayAdminController {
   constructor(private readonly shadow: ShadowReplayAdminService) {}

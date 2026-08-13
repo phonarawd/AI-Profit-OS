@@ -9,10 +9,13 @@ import {
   Get,
   Param,
   Post,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { OPS_INBOX_ADMIN_ROUTES } from "./inbox.user.routes";
 import { OpsInboxService } from "./ops-inbox.service";
 
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class OpsInboxAdminController {
   constructor(private readonly inbox: OpsInboxService) {}

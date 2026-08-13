@@ -1,4 +1,6 @@
 import { Module } from "@nestjs/common";
+import { APP_GUARD } from "@nestjs/core";
+import { AdminGuard } from "./common/admin.guard";
 import { AuthModule } from "./auth/auth.module";
 import { ComplianceModule } from "./compliance/compliance.module";
 import { EventsModule } from "./events/events.module";
@@ -43,5 +45,8 @@ import { HomeReadModule } from "./home-read/home-read.module";
     AuthModule,
   ],
   controllers: [HealthController],
+  // Global admin boundary — an admin controller added without @UseGuards is
+  // still deny-by-default (§9.9). Non-admin routes pass straight through.
+  providers: [{ provide: APP_GUARD, useClass: AdminGuard }],
 })
 export class AppModule {}

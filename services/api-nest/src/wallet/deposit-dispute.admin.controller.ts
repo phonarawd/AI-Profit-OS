@@ -5,16 +5,19 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { DepositDisputeService } from "./deposit-dispute.service";
 import { WALLET_ADMIN_ROUTES } from "./wallet.routes";
 import type { DepositDisputeStatus } from "./wallet.types";
 
 /**
  * Admin disputes HTTP · /api/v1/admin/wallet/deposit-disputes/*
- * UI tab = /admin/wallet?tab=disputes · Auth/RBAC = Admin todos.
+ * UI tab = /admin/wallet?tab=disputes · Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
  * Credit → admin_adjust · reject → journal 0 · audit every decide.
  */
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class DepositDisputeAdminController {
   constructor(private readonly disputes: DepositDisputeService) {}

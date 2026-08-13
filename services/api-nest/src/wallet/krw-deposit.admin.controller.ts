@@ -5,16 +5,19 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { KrwDepositService } from "./krw-deposit.service";
 import { WALLET_ADMIN_ROUTES } from "./wallet.routes";
 import type { KrwDepositStatus } from "./wallet.types";
 
 /**
  * Admin krw-pending HTTP surface · /api/v1/admin/wallet/krw-deposits/*
- * UI tab = /admin/wallet?tab=krw-pending · Auth/RBAC = Admin todos.
+ * UI tab = /admin/wallet?tab=krw-pending · Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
  * Day-1 = 승인/거절 only · CSV Auto-Recon = L2+ (endpoint 0).
  */
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class KrwDepositAdminController {
   constructor(private readonly krwDeposit: KrwDepositService) {}

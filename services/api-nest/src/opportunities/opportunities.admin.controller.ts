@@ -7,7 +7,9 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
 import { isCapitalBand } from "./opportunities.mi";
@@ -20,9 +22,10 @@ import type {
 
 /**
  * Admin opportunities · /api/v1/admin/opportunities/*
- * UI = /admin/opportunities · ?tab=assets · Auth/RBAC = Admin todos.
+ * UI = /admin/opportunities · ?tab=assets · Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
  * Independent /admin/assets route FORBIDDEN (sidebar 13).
  */
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class OpportunitiesAdminController {
   constructor(

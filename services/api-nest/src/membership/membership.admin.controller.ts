@@ -6,7 +6,9 @@ import {
   Param,
   Put,
   Query,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { MembershipAdminService } from "./membership.admin.service";
 import { MEMBERSHIP_ADMIN_ROUTES } from "./membership.routes";
 import type {
@@ -17,9 +19,10 @@ import type {
 
 /**
  * Admin §9.8.10 HTTP · /api/v1/admin/users/:id/membership*
- * UI = /admin/users/:id?tab=membership · Auth/RBAC = Admin todos.
+ * UI = /admin/users/:id?tab=membership · Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
  * fulfillRate = read-only · successRatePercent FORBIDDEN
  */
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class MembershipAdminController {
   constructor(private readonly membership: MembershipAdminService) {}

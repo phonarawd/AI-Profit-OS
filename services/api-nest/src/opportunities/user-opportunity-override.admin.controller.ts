@@ -5,16 +5,19 @@ import {
   Get,
   Param,
   Put,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { OPPORTUNITY_ADMIN_ROUTES } from "./opportunities.routes";
 import type { CapitalBand } from "./opportunities.types";
 import { UserOpportunityOverrideAdminService } from "./user-opportunity-override.admin.service";
 
 /**
  * Admin §9.8.9 HTTP · /api/v1/admin/users/:id/opportunity-overrides/*
- * UI = /admin/users/:id?tab=opportunities · Auth/RBAC = Admin todos.
+ * UI = /admin/users/:id?tab=opportunities · Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
  * ledgerMutated always false.
  */
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class UserOpportunityOverrideAdminController {
   constructor(

@@ -5,7 +5,9 @@ import {
   Get,
   Put,
   Query,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { ExecutionPolicyAdminService } from "./execution-policy.admin.service";
 import { EXECUTION_POLICY_ADMIN_ROUTES } from "./execution-policy.routes";
 import type {
@@ -16,8 +18,9 @@ import type {
 /**
  * Admin /admin/execution-policy · /api/v1/admin/execution-policy*
  * UI Owns=Admin §48.6 · map/Rule Owns=Engine §48.13.3
- * Auth/RBAC guard lands with Admin todos — contracts locked here.
+ * Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
  */
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class ExecutionPolicyAdminController {
   constructor(private readonly policy: ExecutionPolicyAdminService) {}

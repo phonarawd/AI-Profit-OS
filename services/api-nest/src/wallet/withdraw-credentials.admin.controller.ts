@@ -1,4 +1,5 @@
-import { Body, Controller, Param, Post } from "@nestjs/common";
+import { Body, Controller, Param, Post, UseGuards } from "@nestjs/common";
+import { AdminGuard } from "../common/admin.guard";
 import { WALLET_ADMIN_ROUTES } from "./wallet.routes";
 import { WithdrawCredentialsAdminService } from "./withdraw-credentials.admin.service";
 
@@ -7,6 +8,7 @@ import { WithdrawCredentialsAdminService } from "./withdraw-credentials.admin.se
  * Paths: /api/v1/admin/users/:id/withdraw-pin/reset · .../webauthn/revoke
  * UI/RBAC Owns=Admin · plaintext PIN FORBIDDEN · ledger 불변.
  */
+@UseGuards(AdminGuard)
 @Controller("admin")
 export class WithdrawCredentialsAdminController {
   constructor(private readonly credentials: WithdrawCredentialsAdminService) {}
