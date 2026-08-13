@@ -212,6 +212,14 @@ function main() {
       console.log("[run-qa6-measure] NON_VERDICT", out.harness_status);
     })
     .catch((e) => {
+      try {
+        writeJson(path.join(outDir(), "harness-failure.v1.json"), {
+          code: e.code || "FAIL",
+          message: e.message,
+        });
+      } catch {
+        /* upload path still needs a file when wait fails early */
+      }
       console.error(`[run-qa6-measure] ${e.code || "FAIL"} — ${e.message}`);
       process.exit(e.code === "AIPO_QA_KILL_SWITCH" || e.code === "AIPO_QA_HARNESS_FAILURE" ? 2 : 1);
     });

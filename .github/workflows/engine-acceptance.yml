@@ -308,7 +308,7 @@ jobs:
     env:
       TMPDIR: /tmp
       PORT: 4000
-      AIPO_QA_PGHOST: postgres
+      AIPO_QA_PGHOST: 127.0.0.1
       AIPO_QA_PGUSER: postgres
       AIPO_QA_PGPASSWORD: postgres
       AIPO_QA_PGDATABASE: aipo_qa_synth
@@ -375,7 +375,7 @@ jobs:
     env:
       TMPDIR: /tmp
       PORT: 4000
-      AIPO_QA_PGHOST: postgres
+      AIPO_QA_PGHOST: 127.0.0.1
       AIPO_QA_PGUSER: postgres
       AIPO_QA_PGPASSWORD: postgres
       AIPO_QA_PGDATABASE: aipo_qa_synth
@@ -449,7 +449,7 @@ jobs:
     env:
       TMPDIR: /tmp
       PORT: 4000
-      AIPO_QA_PGHOST: postgres
+      AIPO_QA_PGHOST: 127.0.0.1
       AIPO_QA_PGUSER: postgres
       AIPO_QA_PGPASSWORD: postgres
       AIPO_QA_PGDATABASE: aipo_qa_synth

@@ -272,6 +272,7 @@ function run() {
     assert.ok(wf.includes("run-qa5.cjs"));
     assert.ok(wf.includes("UNSPECIFIED_PERF_BUDGET"));
     assert.ok(wf.includes("AIPO_QA_PGHOST"));
+    assert.ok(wf.includes("127.0.0.1"));
     assert.equal(wf.includes(["postgresql://", "postgres", ":", "postgres", "@"].join("")), false);
     const qa5Case = wf.match(/QA5\)[\s\S]*?;;/);
     assert.ok(qa5Case && qa5Case[0].includes("run-qa5.cjs"));

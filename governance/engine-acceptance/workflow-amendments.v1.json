@@ -143,6 +143,50 @@
       "commit_sha_or_pending": "pending",
       "timestamp": "2026-08-14T02:00:00.000Z",
       "applied_at": "2026-08-13T17:30:28.157Z"
+    },
+    {
+      "amendment_id": "pre-rebase-harness-gha-pghost-127-20260814",
+      "reason": "GitHub-hosted jobs run on the VM, not in a job container: isolated Postgres service is reachable at 127.0.0.1:5432, not hostname postgres (EAI_AGAIN). Additive job semantics unchanged. No protected product mutation. No new acceptance epoch.",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-14T02:00:00.000Z",
+        "statement": "ACK APPROVED implementing the planned pre-rebase harness/CI preparation wave, including the narrow controlled L7 workflow amendment required to add the approved pre-rebase QA jobs (qa5-fault, qa6-measure, qa8-adversarial). POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1. Do not perform V2 L8 rebase. Do not create a new acceptance epoch. Do not change protected product behavior."
+      },
+      "old_acceptance_workflow_hash": "d2c20b464a771029298a12f28cff74045360fab5f0cc3637a459d1c82b88969a",
+      "new_acceptance_workflow_hash": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
+      "workflow_diff_scope": {
+        "files": [
+          ".github/workflows/engine-acceptance.yml"
+        ],
+        "exact_diff_summary": "AIPO_QA_PGHOST on additive jobs qa5-fault, qa6-measure, qa8-adversarial changed from service DNS name postgres to 127.0.0.1 because these jobs run on ubuntu-latest (not a job container). Service image, ports, healthcheck, kill-switch, runners, artifacts, and QA0-QA6 matrix bodies are unchanged.",
+        "qa0_qa6_semantics_changed": false,
+        "checks": {
+          "command_changes": false,
+          "artifact_upload_changes": false,
+          "env_permission_changes": false,
+          "pass_fail_semantics_changes": false
+        }
+      },
+      "affected_qa_suites": [
+        "QA5_FAULT_ORCH",
+        "QA6_MEASURE",
+        "QA8_ADVERSARIAL"
+      ],
+      "unaffected_completed_suites": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7",
+        "QA8"
+      ],
+      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "commit_sha_or_pending": "pending",
+      "timestamp": "2026-08-14T03:10:00.000Z",
+      "applied_at": "2026-08-13T18:03:27.240Z"
     }
   ],
   "epoch_bindings": [

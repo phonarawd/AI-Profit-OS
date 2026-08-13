@@ -6,6 +6,7 @@
 
 const { execFileSync } = require("node:child_process");
 const { pingPostgres } = require("./ci-postgres.cjs");
+const { resolveHarnessDatabaseUrl } = require("../kill-switch.cjs");
 
 function sh(cmd, args, opts = {}) {
   try {
@@ -119,7 +120,7 @@ async function restoreDb(opts = {}) {
   if (!start.ok) {
     return { status: "HARNESS_FAILURE", restored: false, plan, start };
   }
-  const databaseUrl = opts.databaseUrl || process.env.DATABASE_URL;
+  const databaseUrl = opts.databaseUrl || resolveHarnessDatabaseUrl();
   if (databaseUrl) {
     for (let i = 0; i < 20; i++) {
       const ping = await pingPostgres(databaseUrl);
