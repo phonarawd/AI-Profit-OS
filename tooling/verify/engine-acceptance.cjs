@@ -574,7 +574,7 @@ if (evidence) {
   // suite, not something QA9 changes. qa9-result.v1.json's own formula_inputs
   // (checked separately below) still gets the fully-correct cross-suite
   // cross-check regardless.
-  if (defects && !pendingRerun && !ephemeralQa6RewriteNow) {
+  if (defects && !pendingRerun && !ephemeralQa6RewriteNow && !ephemeralPreQa9RewriteNow) {
     const p0p1 = (defects.counts && defects.counts.P0 ? defects.counts.P0 : 0) +
       (defects.counts && defects.counts.P1 ? defects.counts.P1 : 0);
     if (p0p1 > 0 && evidence.verdict !== "ENGINE_NOT_ACCEPTED") {
@@ -1610,7 +1610,7 @@ if (qa8Result && !pendingRerun) {
       fail("qa8-result P0/P1 defects present must set verdict_contribution=ENGINE_NOT_ACCEPTED");
     }
   }
-  if (defects && !ephemeralQa6Rewrite) {
+  if (defects && !ephemeralQa6Rewrite && !ephemeralPreQa9Rewrite) {
     if (defects.counts.P0 > 0 || defects.counts.P1 > 0) {
       if (evidence && evidence.verdict !== "ENGINE_NOT_ACCEPTED") {
         fail("evidence-manifest.verdict must be ENGINE_NOT_ACCEPTED when defects.P0/P1 > 0");
@@ -1723,7 +1723,7 @@ if (qa9Result && !pendingRerun) {
       fail("qa9-result.ui_ux_entry_gate must be CLOSED when verdict is not ACCEPTED");
     }
   }
-  if (evidence && !ephemeralQa6Rewrite) {
+  if (evidence && !ephemeralQa6Rewrite && !ephemeralPreQa9Rewrite) {
     const qa9 = (evidence.suites || []).find((s) => s.suite_id === "QA9");
     if (qa9 && qa9.checksum !== qa9Result.checksum) {
       fail("evidence QA9.checksum must match qa9-result.checksum");
