@@ -36,6 +36,10 @@ export const assertFactsFreshOrThrow = ai.assertFactsFreshOrThrow;
 export const FACT_TOOLS = ai.FACT_TOOLS;
 export const FACT_CHIPS = ai.FACT_CHIPS;
 export const guardAnswer = ai.guardAnswer;
+export const userIntentAuthorizesPlatformMoney =
+  ai.userIntentAuthorizesPlatformMoney;
+export const isTerminalScopeRedirect = ai.isTerminalScopeRedirect;
+export const mayEscalateToPlatformFacts = ai.mayEscalateToPlatformFacts;
 export const classifyLane = ai.classifyLane;
 export const routeAssistant = ai.routeAssistant;
 export const toolsForLane = ai.toolsForLane;

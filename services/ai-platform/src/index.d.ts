@@ -166,6 +166,9 @@ export function guardAnswer(input?: object): {
   pass: boolean;
   reason?: string;
 };
+export function userIntentAuthorizesPlatformMoney(userText?: string): boolean;
+export function isTerminalScopeRedirect(input?: object): boolean;
+export function mayEscalateToPlatformFacts(input?: object): boolean;
 export function classifyLane(text: string): "P" | "G" | "S";
 export function answerPathForLane(
   lane: "P" | "G" | "S",

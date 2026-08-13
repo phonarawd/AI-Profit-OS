@@ -10,6 +10,7 @@ import {
   buildFactCard,
   classifyLane,
   guardAnswer,
+  mayEscalateToPlatformFacts,
   routeAssistant,
 } from "./ai.engine";
 import { MemoryService } from "./memory.service";
@@ -86,18 +87,27 @@ export class AssistantService {
       factsUsed: facts,
       twin,
       userText: text,
+      answerText: "",
+      answerPath: route.answer_path,
+      scopeDecision: route.scope?.decision,
       usedTwinForMoney: false,
+    });
+
+    const escalate = mayEscalateToPlatformFacts({
+      answerPath: route.answer_path,
+      scopeDecision: route.scope?.decision,
+      guardStatus: guard.status,
+      lane: route.lane,
     });
 
     const answerPath =
       route.lane === "S"
         ? "refuse_s"
-        : guard.status === "reroute_p"
+        : escalate
           ? "fact"
           : route.answer_path;
 
-    const lane =
-      guard.status === "reroute_p" ? "P" : route.lane;
+    const lane = escalate ? "P" : route.lane;
 
     const result = {
       ...route,

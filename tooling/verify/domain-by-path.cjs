@@ -205,9 +205,11 @@ const RULES = [
       /^eval\/g_scope_escape\.jsonl$/.test(f) ||
       /^schemas\/ai-answer-trace\.v1\.json$/.test(f) ||
       /^tooling\/verify\/ai-scope-guard\.cjs$/.test(f) ||
+      /^tooling\/verify\/ai-guard-authority\.cjs$/.test(f) ||
       /^services\/api-nest\/src\/ai\/coach\.orchestrator\.ts$/.test(f),
     scripts: [
       "ai-scope-guard.cjs",
+      "ai-guard-authority.cjs",
       "numeric-grounding.cjs",
       "routing-coverage.cjs",
       "ai-lane-router.cjs",

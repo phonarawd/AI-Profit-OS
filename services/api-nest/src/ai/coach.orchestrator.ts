@@ -25,6 +25,7 @@ import {
   S_REFUSE_TEMPLATE,
   shouldCallLlm,
   shapeByTone,
+  mayEscalateToPlatformFacts,
 } from "./ai.engine";
 import { AI_EVENTS } from "./ai.events";
 import { ConversationStateService } from "./conversation-state.service";
@@ -306,10 +307,19 @@ export class CoachOrchestrator {
       userText: text,
       answerText,
       answerPath,
+      scopeDecision: route.scope?.decision,
       usedTwinForMoney: false,
     });
 
-    if (guard.status === "reroute_p") {
+    if (
+      guard.status === "reroute_p" &&
+      mayEscalateToPlatformFacts({
+        answerPath,
+        scopeDecision: route.scope?.decision,
+        guardStatus: guard.status,
+        lane,
+      })
+    ) {
       lane = "P";
       const loaded = await this.facts.loadTools(
         userId,

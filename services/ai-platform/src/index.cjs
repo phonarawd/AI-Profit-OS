@@ -55,6 +55,9 @@ const {
   FORBIDDEN_ANSWER_PATTERNS,
   META_EXPOSURE_MARKERS,
   guardAnswer,
+  userIntentAuthorizesPlatformMoney,
+  isTerminalScopeRedirect,
+  mayEscalateToPlatformFacts,
 } = require("./answer-guard.cjs");
 const {
   classifyLane,
@@ -185,6 +188,9 @@ module.exports = {
   FORBIDDEN_ANSWER_PATTERNS,
   META_EXPOSURE_MARKERS,
   guardAnswer,
+  userIntentAuthorizesPlatformMoney,
+  isTerminalScopeRedirect,
+  mayEscalateToPlatformFacts,
   classifyLane,
   answerPathForLane,
   routeAssistant,

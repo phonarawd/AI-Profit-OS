@@ -101,6 +101,7 @@
 | ai-general-no-money-tools · ai-lane-router · llm-adapter-contract | Engine §47.8·47.13~15 — G tools=[] · P/G/S router · **live** · ai-lane-router는 `expectToolsAny`→`tools_called` 실검증 |
 | routing-coverage | Engine §47.16.3 — `/지갑/`+`EXECUTION_PATTERNS`→P · `defaultToolsForText`→`getExecution` 도달(opportunity fallback 전) · eval/p_fact getExecution 3케이스 · S/G safe fallback · numeric 비침범 — **live** |
 | ai-scope-guard | Engine §47.16.4 — `OFF_TOPIC_PATTERNS`→`scope_redirect`(LLM0·tools=[]) · meta residual guard · G프롬프트 1줄 · eval/g_scope_escape §H 7 · assurance 3단계(complete=NOT_PROVEN) — **live** |
+| ai-guard-authority | Engine §47.16.4/§47.8 — post-generation authority lock · terminal `scope_redirect` no P-tool escalate · G output money cue != P tools · user-intent G->P kept — **live** |
 | numeric-grounding | Engine §47.16.5 — `numeric-grounding.cjs` currency/percent/quantity/date(platform) · ordinal/bare exclude · serverDerivedAllowlist · `ungrounded` guard(P·llm_p) · CoachOrchestrator `renderFactAnswer` fallback · GROUNDED_NUMERIC_JSON prompt · date 회귀 — **live** |
 | llm-quota-degrade | Engine §47.13 — 429→G busy·P Fact · 자동 failover 0 · toast `PEOTTEOK_LLM_BUSY` — **live** |
 | fact-freshness · answer-trace | Engine §47.4·47.5·47.15 — stale Fact refresh · lane+trace 100% · **live** |

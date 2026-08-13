@@ -109,8 +109,11 @@ function guardAnswer(input = {}) {
   }
 
   // G mentions platform money → reroute P
-  if (lane === "G" && needsPlatformMoneyReroute(answerText, input.userText)) {
-    return fail("reroute_p", "g_mentions_platform_money");
+  if (!isTerminalScopeRedirect(input) && lane === "G") {
+    // USER INTENT only — generated/template output must not grant P tools.
+    if (userIntentAuthorizesPlatformMoney(input.userText)) {
+      return fail("reroute_p", "g_mentions_platform_money");
+    }
   }
 
   if (lane === "S") {
@@ -162,11 +165,31 @@ function guardAnswer(input = {}) {
   return ok("pass");
 }
 
-function needsPlatformMoneyReroute(answerText, userText) {
-  const t = `${answerText}\n${userText || ""}`;
-  return /잔액|출금\s*가능|예상\s*수익|balanceUsdt|expectedProfitUsdt|호가|시세/i.test(
-    t,
-  );
+const PLATFORM_MONEY_CUE =
+  /잔액|출금\s*가능|예상\s*수익|balanceUsdt|expectedProfitUsdt|호가|시세/i;
+
+function userIntentAuthorizesPlatformMoney(userText) {
+  return PLATFORM_MONEY_CUE.test(String(userText || ""));
+}
+
+function isTerminalScopeRedirect(input = {}) {
+  const answerPath = String(input.answerPath || input.answer_path || "");
+  const decision = String(input.scopeDecision || input.scope_decision || "");
+  return answerPath === "scope_redirect" || decision === "scope_redirect";
+}
+
+/**
+ * Post-generation guard must never expand tool/data authority from model output.
+ * User-intent G->P may still load P facts. Terminal scope_redirect / S never escalate.
+ * @param {object} input
+ * @returns {boolean}
+ */
+function mayEscalateToPlatformFacts(input = {}) {
+  if (isTerminalScopeRedirect(input)) return false;
+  const answerPath = String(input.answerPath || input.answer_path || "");
+  if (answerPath === "refuse_s") return false;
+  if (String(input.lane || "") === "S") return false;
+  return String(input.guardStatus || input.guard_status || "") === "reroute_p";
 }
 
 function ok(status, reason) {
@@ -184,4 +207,7 @@ module.exports = {
   FORBIDDEN_ANSWER_PATTERNS,
   META_EXPOSURE_MARKERS,
   guardAnswer,
+  userIntentAuthorizesPlatformMoney,
+  isTerminalScopeRedirect,
+  mayEscalateToPlatformFacts,
 };
