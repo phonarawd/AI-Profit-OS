@@ -345,7 +345,27 @@ function verifyPendingRerunEpoch(baseline, evidence, rebaseLedger, fails) {
   }
 }
 
-function verifyRebaseLedgerAgainstBaseline(baseline, rebaseLedger, evidence, fails) {
+/**
+ * A rebase entry pins acceptance_workflow_hash AS OF the rebase timestamp.
+ * A later POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 entry (same baseline_id)
+ * may legitimately move the CURRENT baseline hash beyond that pinned value —
+ * this is the whole point of the controlled-amendment mechanism. Divergence
+ * is only accepted when a ledger entry exactly bridges tip -> baseline.
+ */
+function findBridgingAmendment(amendmentLedger, baseline, tipHash) {
+  const amends =
+    amendmentLedger && Array.isArray(amendmentLedger.amendments)
+      ? amendmentLedger.amendments
+      : [];
+  return amends.find(
+    (a) =>
+      a.baseline_id === baseline.id &&
+      a.old_acceptance_workflow_hash === tipHash &&
+      a.new_acceptance_workflow_hash === baseline.acceptance_workflow_hash,
+  );
+}
+
+function verifyRebaseLedgerAgainstBaseline(baseline, rebaseLedger, evidence, fails, amendmentLedger) {
   if (!rebaseLedger) return;
   if (rebaseLedger.schema !== SCHEMA) {
     fails.push(`product-rebases.schema must be ${SCHEMA}`);
@@ -369,7 +389,21 @@ function verifyRebaseLedgerAgainstBaseline(baseline, rebaseLedger, evidence, fai
       fails.push("current epoch eval_dataset_hash must equal rebase ledger eval_dataset_hash");
     }
     if (baseline.acceptance_workflow_hash !== tip.acceptance_workflow_hash) {
-      fails.push("current epoch acceptance_workflow_hash must equal rebase ledger (workflow bytes unchanged)");
+      let amendLedger = amendmentLedger;
+      if (amendLedger === undefined) {
+        try {
+          amendLedger = readJson(AMEND_LEDGER_REL);
+        } catch {
+          amendLedger = null;
+        }
+      }
+      const bridge = findBridgingAmendment(amendLedger, baseline, tip.acceptance_workflow_hash);
+      if (!bridge) {
+        fails.push(
+          "current epoch acceptance_workflow_hash must equal rebase ledger, or be bridged by a " +
+            "POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 entry (old=rebase tip, new=baseline, same baseline_id)",
+        );
+      }
     }
     if (baseline.protected_scope_manifest.aggregate !== tip.new_protected_manifest_hash) {
       fails.push("current epoch protected manifest must equal rebase ledger new_protected_manifest_hash");
@@ -497,6 +531,7 @@ module.exports = {
   verifyWashing,
   verifyPendingRerunEpoch,
   verifyRebaseLedgerAgainstBaseline,
+  findBridgingAmendment,
   predecessorArchiveRel,
   collectPredecessorChecksums,
   buildStaleSuite,

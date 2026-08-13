@@ -1,0 +1,139 @@
+{
+  "schema": "governance.engine-acceptance.asvs-mapping.v1",
+  "version": "1.0.0",
+  "qa_phase": "QA-8",
+  "asvs_version": "5.0.0",
+  "id_format": "v5.0.0-<chapter>.<section>.<requirement>",
+  "source": [
+    "https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x17-V8-Authorization.md",
+    "https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x18-V9-Self-contained-Tokens.md",
+    "https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x23-V14-Data-Protection.md",
+    "https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md"
+  ],
+  "exhaustive_certification_claim": false,
+  "notes": [
+    "Subset only — 전수인증 주장 0. 아래 목록은 QA8이 실제로 실행한 requirement ID만 포함한다.",
+    "requirement text는 공식 ASVS 5.0.0 문서에서 축약 인용 — 원문 wording 변형/재정의 금지.",
+    "isolation invariant(INV-ISOLATION-01)는 QA2(user-surface)와 QA8(admin/system-surface)가 coverage.v1.json에서 매핑을 공유한다."
+  ],
+  "requirements": [
+    {
+      "id": "v5.0.0-8.2.1",
+      "chapter": "V8 Authorization",
+      "section": "V8.2 General Authorization Design",
+      "summary": "function-level access is restricted to consumers with explicit permissions",
+      "level": 1,
+      "area": "authz",
+      "invariant_id": "INV-ISOLATION-01",
+      "attack_face": "admin_boundary",
+      "target_surface": "services/api-nest/src/**/*.admin.controller.ts"
+    },
+    {
+      "id": "v5.0.0-8.2.2",
+      "chapter": "V8 Authorization",
+      "section": "V8.2 General Authorization Design",
+      "summary": "data-specific access restricted to consumers with explicit permissions to specific data items — mitigates IDOR/BOLA",
+      "level": 1,
+      "area": "idor",
+      "invariant_id": "INV-ISOLATION-01",
+      "attack_face": "object_id_swap",
+      "target_surface": "services/api-nest/src/wallet/*.controller.ts, services/api-nest/src/compliance/kyc.controller.ts, services/api-nest/src/ledger/ledger.admin.controller.ts"
+    },
+    {
+      "id": "v5.0.0-8.3.1",
+      "chapter": "V8 Authorization",
+      "section": "V8.3 Operation Level Authorization",
+      "summary": "authorization rules enforced at a trusted service layer, not client-manipulable controls",
+      "level": 1,
+      "area": "authz",
+      "invariant_id": "INV-ISOLATION-01",
+      "attack_face": "token_cross",
+      "target_surface": "services/api-nest/src/auth/jwt-auth.guard.ts"
+    },
+    {
+      "id": "v5.0.0-8.4.2",
+      "chapter": "V8 Authorization",
+      "section": "V8.4 Other Authorization Considerations",
+      "summary": "administrative interfaces incorporate multiple layers of security, not relying solely on network location/trusted endpoints",
+      "level": 3,
+      "area": "admin_boundary",
+      "invariant_id": "INV-ISOLATION-01",
+      "attack_face": "admin_boundary",
+      "target_surface": "services/api-nest/src/**/*.admin.controller.ts"
+    },
+    {
+      "id": "v5.0.0-9.1.1",
+      "chapter": "V9 Self-contained Tokens",
+      "section": "V9.1 Token source and integrity",
+      "summary": "self-contained tokens validated via signature/MAC before accepting contents",
+      "level": 1,
+      "area": "jwt",
+      "invariant_id": "INV-ISOLATION-01",
+      "attack_face": "token_cross",
+      "target_surface": "services/api-nest/jwt.core.cjs"
+    },
+    {
+      "id": "v5.0.0-9.1.2",
+      "chapter": "V9 Self-contained Tokens",
+      "section": "V9.1 Token source and integrity",
+      "summary": "only allowlisted algorithms accepted; 'None' algorithm forbidden",
+      "level": 1,
+      "area": "jwt",
+      "invariant_id": "INV-ISOLATION-01",
+      "attack_face": "token_cross",
+      "target_surface": "services/api-nest/jwt.core.cjs"
+    },
+    {
+      "id": "v5.0.0-9.2.1",
+      "chapter": "V9 Self-contained Tokens",
+      "section": "V9.2 Token content",
+      "summary": "token validity time span (exp) verified",
+      "level": 1,
+      "area": "jwt",
+      "invariant_id": "INV-ISOLATION-01",
+      "attack_face": "token_cross",
+      "target_surface": "services/api-nest/jwt.core.cjs"
+    },
+    {
+      "id": "v5.0.0-9.2.3",
+      "chapter": "V9 Self-contained Tokens",
+      "section": "V9.2 Token content",
+      "summary": "service only accepts tokens intended for it (audience validated)",
+      "level": 2,
+      "area": "jwt",
+      "invariant_id": "INV-ISOLATION-01",
+      "attack_face": "token_cross",
+      "target_surface": "services/api-nest/src/auth/jwt-auth.guard.ts"
+    },
+    {
+      "id": "v5.0.0-14.2.7",
+      "chapter": "V14 Data Protection",
+      "section": "V14.2 General Data Protection",
+      "summary": "sensitive information subject to data retention classification — outdated/unnecessary data deleted",
+      "level": 3,
+      "area": "privacy_retention",
+      "invariant_id": "INV-PRIVACY-01",
+      "target_surface": "services/api-nest/src/auth/auth.service.ts#deleteAccount"
+    },
+    {
+      "id": "v5.0.0-16.5.1",
+      "chapter": "V16 Security Logging and Error Handling",
+      "section": "V16.5 Error Handling",
+      "summary": "generic error message returned on unexpected/security-sensitive error — no stack traces/secrets/tokens exposed",
+      "level": 2,
+      "area": "error_disclosure",
+      "invariant_id": "INV-PRIVACY-01",
+      "target_surface": "services/api-nest/src/main.ts"
+    },
+    {
+      "id": "v5.0.0-16.2.5",
+      "chapter": "V16 Security Logging and Error Handling",
+      "section": "V16.2 General Logging",
+      "summary": "logging of sensitive data enforced per protection level — credentials/secrets never logged, tokens masked",
+      "level": 2,
+      "area": "pii_in_logs",
+      "invariant_id": "INV-PRIVACY-01",
+      "target_surface": "services/api-nest/src/**"
+    }
+  ]
+}

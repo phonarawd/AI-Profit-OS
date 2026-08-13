@@ -28,7 +28,7 @@ todos:
     status: completed
   - id: qa8-security-privacy
     content: "[composer-2.5|200K] ASVS 5.0.0 versioned requirement IDs subset · IDOR/authz/PII/delete-account · isolation invariant 공유 mapping · 전수인증 주장0"
-    status: pending
+    status: completed
   - id: qa9-acceptance-report
     content: "[grok-4.5|256K] evidence-manifest+REPORT · 3-state verdict 식 적용 · verify:engine-acceptance(protected_scope+verdict) · ACCEPTED만 03 해제 · NOT/INCOMPLETE 모두 03 차단"
     status: pending
@@ -44,10 +44,17 @@ isProject: false
 ```text
 02.5 PRE-UI ENGINE ACCEPTANCE QA
 DESIGN: READY_TO_EXECUTE
-CURRENT TODO: qa3-generative-fuzz
+CURRENT TODO: qa9-acceptance-report
 QA0: COMPLETE · CONTRACT LOCKED · BASELINE FROZEN · HARNESS SAFE
 QA1: COMPLETE · schemas+routes · DB consistency · idempotency split · Functional/Contract
 QA2: COMPLETE · personas×journeys×coverage · Dirty>Happy · isolation faces · seed evidence
+QA3: COMPLETE · fast-check properties · CI fail-fast:false
+QA4: COMPLETE · BLOCKED_NO_CLOCK_HOOK (critical)
+QA5: COMPLETE · BLOCKED_NO_FAULT_HOOK (critical)
+QA6: COMPLETE · UNSPECIFIED_PERF_BUDGET/BLOCKED_MISSING_ORACLE (critical)
+QA7: COMPLETE · formal Actions 24/24 PASS
+QA8: COMPLETE · ASVS 5.0.0 subset · P0(admin-boundary)+P2(privacy-retention) 발견·미수정 · critical_invariant.blocked=6
+VERDICT: ENGINE_NOT_ACCEPTED (defects.P0>0) · ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
 PRODUCT MUTATION: 0
 03 UI: BLOCKED
 ```

@@ -58,6 +58,47 @@
       "commit_sha_or_pending": "pending",
       "timestamp": "2026-08-12T21:53:05.762Z",
       "applied_at": "2026-08-12T21:53:49.330Z"
+    },
+    {
+      "amendment_id": "qa8-security-privacy-workflow-v1-20260813",
+      "reason": "Human/PO-directed QA8 security-privacy acceptance wave: wire the existing QA8 matrix placeholder to a real run-qa8.cjs invocation (ASVS 5.0.0 subset check runner), mirroring the QA6 pattern (run + verify:engine-acceptance). QA0-QA6 commands/artifacts/env/pass-fail unchanged.",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-13T06:20:00.000Z",
+        "statement": "ACK APPROVED QA8 workflow wiring proposal v1. Session directive explicitly authorizes executing the canonical QA8 security/privacy acceptance slice, including publishing canonical QA8 evidence per repository governance where required. POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1."
+      },
+      "old_acceptance_workflow_hash": "7895541fa754124e1b00a4b6b8bf293e69ee1e4cc9c156c50af4760c02466786",
+      "new_acceptance_workflow_hash": "32da24b2178a242cb3fc158545fbb61cd4503cc159f0f91b84a8c632519785bb",
+      "workflow_diff_scope": {
+        "files": [
+          ".github/workflows/engine-acceptance.yml"
+        ],
+        "exact_diff_summary": "A) workflow_dispatch.inputs.qa_phase.options += qa8 (description text only). B) qa-matrix job if-condition += inputs.qa_phase == 'qa8' (so a qa8-only dispatch still runs the matrix job; QA3/QA4/QA5/QA6/full conditions unchanged). C) case statement: QA8 placeholder branch (previously falling into the default 'not enabled yet' echo/exit 0) replaced with a real invocation: node tooling/engine-acceptance/run-qa8.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci; then pnpm verify:engine-acceptance (same two-line pattern already used for the QA6 case). QA3/QA4/QA5/QA6 case bodies byte-for-byte unchanged; the default '*)' branch text updated from 'not enabled yet at QA-6' to 'not enabled yet at QA-8' (comment only, still echo + exit 0 for any future suite). D) 'Upload suite evidence' step if-condition += matrix.suite == 'QA8'; path list += governance/engine-acceptance/qa8-result.v1.json and governance/engine-acceptance/asvs-mapping.v1.json (existing QA3/QA4/QA5/QA6 path lines unchanged). E) aggregator step += two cp lines for qa8-result.v1.json and asvs-mapping.v1.json (existing cp lines for QA1-QA6/perf-budget/defects unchanged). No env, secrets, permissions, timeout, concurrency, or trigger (on:) changes. No changes to qa0-baseline, qa1-deterministic, qa2-synthetic-personas, or qa7-ai-eval jobs.",
+        "qa0_qa6_semantics_changed": false,
+        "checks": {
+          "command_changes": false,
+          "artifact_upload_changes": false,
+          "env_permission_changes": false,
+          "pass_fail_semantics_changes": false
+        }
+      },
+      "affected_qa_suites": [
+        "QA8"
+      ],
+      "unaffected_completed_suites": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7"
+      ],
+      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "commit_sha_or_pending": "pending",
+      "timestamp": "2026-08-13T06:20:00.000Z",
+      "applied_at": "2026-08-13T06:17:01.122Z"
     }
   ],
   "epoch_bindings": [

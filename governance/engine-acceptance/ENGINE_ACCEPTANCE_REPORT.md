@@ -1,13 +1,12 @@
 # ENGINE ACCEPTANCE REPORT
 
-> **QA phase:** QA-7 `qa7-ai-eval`
-> **Measured:** 2026-08-13T03:34:21.654Z
-> **Published:** 2026-08-13T04:14:55.749Z
+> **QA phase:** QA-8 `qa8-security-privacy`
+> **Measured:** 2026-08-13T06:17:34.097Z
 > **baseline_id:** `ea-baseline-2c7b9cffd323-1e2ce00bd6a1`
-> **qa7_run_id:** `31664299560`
-> **qa7_harness_run_id:** `qa7-local-full-20260813-5bb319`
-> **qa7_result_checksum:** `8fd355698a754202f3113927c7a157657b9e077da3ac7717d80258a32def204b`
-> **mode:** `full`
+> **qa8_run_id:** `qa8-security-privacy-20260813`
+> **qa8_result_checksum:** `0d2b88fa67f6ca42f08cc34c733a1bedc4f00e049d98e7be23fcd420cb547260`
+> **mode:** `tiny`
+> **asvs_version:** `5.0.0` (subset - exhaustive_certification_claim=false)
 
 ## Status banner
 
@@ -22,9 +21,9 @@ QA4 = COMPLETE
 QA5 = COMPLETE
 QA6 = COMPLETE
 QA7 = COMPLETE
-QA8 = NOT_STARTED
+QA8 = COMPLETE
 QA HARNESS TARGET = SAFE
-NEXT = QA8_SECURITY_PRIVACY
+NEXT = QA9_ACCEPTANCE_REPORT
 PRODUCT MUTATION = 0
 EVAL_MUTATION = 0
 GRADER_MUTATION = 0
@@ -32,68 +31,89 @@ GRADER_MUTATION = 0
 ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
 ```
 
-## Verdict (after QA-7 formal Actions publication)
+## Verdict (after QA-8)
 
 | Field | Value |
 |---|---|
-| verdict | `ENGINE_QA_INCOMPLETE` |
-| reason | QA7 COMPLETE (formal Actions) · critical_invariant.blocked=5 (QA4–QA6 BLOCKED_* / UNSPECIFIED_PERF_BUDGET) · P0/P1=0 · QA8 NOT_STARTED · ENGINE_ACCEPTED_FOR_UI forbidden |
+| verdict | `ENGINE_NOT_ACCEPTED` |
+| reason | QA8 COMPLETE (ASVS 5.0.0 subset) - found P0=1 P1=0 (admin-boundary zero-guard, real evidence) - 03 blocked - product mutation 0 - not repaired this wave |
 | evidence_integrity | `VALID` |
 | baseline.valid | `true` |
-| working_tree_clean | `false` (fact only — not forced clean) |
+| working_tree_clean | `false` (fact only, not forced clean) |
 | protected_scope_clean | `true` |
-| defects.P0 / P1 | 0 / 0 |
-| critical_invariant.blocked (cumulative) | 5 |
+| defects.P0 / P1 / P2 / P3 | 1 / 0 / 1 / 0 |
+| critical_invariant.blocked (cumulative, QA4-QA6 + QA8) | 6 |
 | critical_invariant.skipped | 0 |
 | critical_invariant.uncovered | 0 |
-| mandatory suites COMPLETE | QA0..QA7 · QA8 NOT_STARTED |
+| mandatory suites COMPLETE | QA0..QA8 |
 
-**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (critical BLOCKED/UNSPECIFIED and/or QA8 incomplete).
+**Prohibited state confirmed:** `ENGINE_ACCEPTED_FOR_UI` is **not issued** (P0 defect present and/or critical BLOCKED > 0).
 
-## QA7 AI Eval (formal GitHub Actions)
+## QA8 Security and Privacy World (ASVS 5.0.0 subset)
 
-| Field | Value |
-|---|---|
-| formal_actions_evidence | `true` |
-| local_validation_only | `false` |
-| actions.run_id | `31664299560` |
-| workflow | `engine-acceptance` |
-| event | `workflow_dispatch` |
-| qa_phase | `qa7` |
-| head_sha | `0cb6a87184c43410b1eee9b3bdab842c038886e5` |
-| conclusion | `success` |
-| CASES / PASS / FAIL / BLOCKED | 24 / 24 / 0 / 0 |
-| suite_status | `PASS` |
-| trace_id_provenance | `RUNTIME` |
-| no_expectation_leakage | `true` |
-| no_fake_trace | `true` |
-| secret_exposure | `NONE` |
-| artifact | `engine-acceptance-QA7-raw-traces` retention=90d raw_in_repo=false |
-| deterministic_grader | sole oracle · `PASS` |
-| quality_grader | NOT_USED (sole oracle 금지) |
-| prompt/eval/workflow hashes | MATCH |
+| check_id | ASVS IDs | invariant | status |
+|---|---|---|---|
+| `QA8_ADMIN_BOUNDARY` | v5.0.0-8.2.1, v5.0.0-8.4.2 | `INV-ISOLATION-01` | `FAIL` |
+| `QA8_USER_ISOLATION_SHARED_WITH_QA2` | v5.0.0-8.2.2, v5.0.0-8.3.1 | `INV-ISOLATION-01` | `PASS` |
+| `QA8_JWT_TOKEN_VALIDATION` | v5.0.0-9.1.1, v5.0.0-9.1.2, v5.0.0-9.2.1, v5.0.0-9.2.3 | `INV-ISOLATION-01` | `PASS` |
+| `QA8_PRIVACY_DELETE_ACCOUNT` | v5.0.0-14.2.7 | `INV-PRIVACY-01` | `FAIL` |
+| `QA8_ERROR_DISCLOSURE_AND_LOGGING` | v5.0.0-16.5.1, v5.0.0-16.2.5 | `INV-PRIVACY-01` | `PASS` |
 
-## Performance World (k6 · CI only heavy)
+### Critical finding - QA8_ADMIN_BOUNDARY (P0)
 
-QA6 기록 유지. suite status `UNSPECIFIED_PERF_BUDGET` · threshold mechanism locked · numeric invention **forbidden** · heavy k6 **CI only** · artifact retention ≥ **90** days · aggregator `if: always()`.
+Every `*.admin.controller.ts` route in `services/api-nest/src/**` (ledger balance-adjust,
+withdraw-credentials, KYC decisions, deposit-config, risk rules, membership, referral,
+ai-logs, and more) carries `@Controller("admin")` with **zero** `@UseGuards`. No global
+`APP_GUARD`/middleware compensates in `app.module.ts`/`main.ts`. This is a live,
+unauthenticated path to cross-user financial reads and unauthenticated balance
+adjustment - recorded per ASVS v5.0.0-8.2.1 / v5.0.0-8.4.2. Root cause is a
+self-documented, already-planned gap (`ledger.admin.controller.ts` comment: "Auth/RBAC
+guard lands with Admin todos"; `schemas/admin-rbac.v1.json` + Admin plan section 9.9
+AdminGuard are specified but not yet wired). **Not repaired in this wave.**
 
-| Scenario | Tag | Invariant | Status | Budget | Blocked code |
-|---|---|---|---|---|---|
-| `PERF-FEED-READ` | `feed_read` | `INV-PERF-01` | `BLOCKED` | `UNSPECIFIED_PERF_BUDGET` | `BLOCKED_MISSING_ORACLE` |
-| `PERF-PARTICIPATE` | `participate` | `INV-PERF-01` | `BLOCKED` | `UNSPECIFIED_PERF_BUDGET` | `BLOCKED_MISSING_ORACLE` |
+### Finding - QA8_PRIVACY_DELETE_ACCOUNT (P2)
+
+`auth.service.ts#deleteAccount` performs an `UPDATE` (soft-delete) on `public.users`
+(email/phone nulled, sessions revoked), not a hard `DELETE`. Schema `ON DELETE
+CASCADE`/`SET NULL` foreign keys therefore never fire, so `ai_twin_memory`,
+`notification_prefs`, `referral_edge`, and other user_id-linked rows persist after
+account deletion. KYC 5-year retention is explicit documented policy (section 42.2.1)
+and is not counted as part of this finding. ASVS v5.0.0-14.2.7. **Not repaired in this
+wave.**
+
+### PASS - QA8_USER_ISOLATION_SHARED_WITH_QA2, QA8_JWT_TOKEN_VALIDATION
+
+User-facing IDOR/token-cross/interleave surfaces (shared oracle with QA2) and JWT
+integrity/algorithm-allowlist/validity/audience (reusing
+`tooling/verify/auth-jwt-runtime.cjs`) both pass.
+
+### BLOCKED - SEC-DYNAMIC-ADVERSARIAL-01
+
+Live adversarial HTTP testing against a booted api-nest instance is
+`BLOCKED_ENV_CAPABILITY` on this Phase0 2C/~8GB machine (same axis already flagged by
+`checks/user-isolation-surfaces.cjs`). Not mock-PASSed; deferred to the CI heavy matrix.
+
+## Performance World (k6, CI only heavy) - QA6 record retained
+
+QA6 record retained unchanged. suite status `UNSPECIFIED_PERF_BUDGET` - threshold
+mechanism locked - numeric invention forbidden - heavy k6 CI only - artifact retention
+>= 90 days - aggregator if: always().
 
 ### UNSPECIFIED_PERF_BUDGET
 
 - Formal suite/budget status when product SLO/contract numeric budgets are absent.
-- `BLOCKED_MISSING_ORACLE` on critical `INV-PERF-01` → `ENGINE_QA_INCOMPLETE` (ACCEPTED 불가).
-- Invented p95 / error_rate = **금지**.
+- `BLOCKED_MISSING_ORACLE` on critical `INV-PERF-01` contributes to the cumulative
+  critical_invariant.blocked count (ACCEPTED forbidden).
+- Invented p95 / error_rate values are forbidden.
 
 ## Dual Dirty
 
 - working_tree_clean=`false`
 - protected_scope_clean=`true`
-- forced clean / stash laundry = **forbidden**
+- forced clean / stash laundry = forbidden
 
 ## Next
 
-`QA8_SECURITY_PRIVACY` only. QA7_AI_EVAL formal evidence is published. Full ACCEPTED · product mutation · 03 UI — **금지**. Remaining critical BLOCKED=5 (QA4–QA6) still blocks `ENGINE_ACCEPTED_FOR_UI`.
+`QA9_ACCEPTANCE_REPORT` per the 02.5 plan file-serial order. This wave does not start
+QA9, does not repair the P0/P2 findings above, and does not issue
+`ENGINE_ACCEPTED_FOR_UI`.

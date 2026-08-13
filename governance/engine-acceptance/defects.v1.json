@@ -1,7 +1,7 @@
 {
   "schema": "governance.engine-acceptance.defects.v1",
   "version": "1.0.0",
-  "status": "qa6_empty",
+  "status": "qa8_recorded",
   "requiredLinkFields": [
     "severity",
     "invariant_id",
@@ -15,13 +15,341 @@
     "repro_status"
   ],
   "counts": {
-    "P0": 0,
+    "P0": 1,
     "P1": 0,
-    "P2": 0,
+    "P2": 1,
     "P3": 0
   },
-  "defects": [],
+  "defects": [
+    {
+      "severity": "P0",
+      "invariant_id": "INV-ISOLATION-01",
+      "suite_id": "QA8",
+      "persona_id": "KR-11",
+      "journey_id": "J-DIRTY-ADMIN-BOUNDARY-01",
+      "seed": 20260813,
+      "trace_id": "qa8:QA8_ADMIN_BOUNDARY",
+      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "first_observed_at": "2026-08-13T06:17:34.097Z",
+      "repro_status": "repro_confirmed",
+      "title": "security-privacy-world FAIL: QA8_ADMIN_BOUNDARY",
+      "asvs_ids": [
+        "v5.0.0-8.2.1",
+        "v5.0.0-8.4.2"
+      ],
+      "findings": [
+        "services/api-nest/src/adapters/adapters.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/ai/ai-logs.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/ai/ai-pick.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/ai/shadow-replay.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/compliance/kyc.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route (unauthenticated KYC decision/PII surface)",
+        "services/api-nest/src/execution-policy/execution-policy.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/inbox/ops-inbox.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/ledger/ledger.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route (unauthenticated money balance adjustment; unauthenticated cross-user financial read; unauthenticated cross-user ledger read)",
+        "services/api-nest/src/membership/membership.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/opportunities/opportunities.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/opportunities/user-opportunity-override.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/referral/referral.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/risk/risk.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/simulation/platform-reserve.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/simulation/simulation.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/wallet/deposit-config.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/wallet/deposit-dispute.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/wallet/krw-deposit.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route",
+        "services/api-nest/src/wallet/withdraw-credentials.admin.controller.ts: no @UseGuards on @Controller(\"admin\") route (withdrawal credential exposure)"
+      ],
+      "rich_evidence": {
+        "seed": 20260813,
+        "rng_version": "aipo-ea-rng-v1",
+        "clock_as_of": "2026-08-13T06:17:34.097Z",
+        "request_sequence": [
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/adapters/adapters.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/ai/ai-logs.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/ai/ai-pick.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/ai/shadow-replay.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/compliance/kyc.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/execution-policy/execution-policy.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/inbox/ops-inbox.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/ledger/ledger.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/membership/membership.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/opportunities/user-opportunity-override.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/referral/referral.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/risk/risk.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/simulation/platform-reserve.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/simulation/simulation.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/wallet/deposit-config.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/wallet/deposit-dispute.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/wallet/krw-deposit.admin.controller.ts",
+            "has_use_guards": false
+          },
+          {
+            "step": "static_scan_controller",
+            "controller": "services/api-nest/src/wallet/withdraw-credentials.admin.controller.ts",
+            "has_use_guards": false
+          }
+        ],
+        "sanitized_request": {
+          "scan": "grep(@UseGuards) over *.admin.controller.ts"
+        },
+        "sanitized_response": {
+          "unguarded_count": 19,
+          "unguarded": [
+            {
+              "controller": "services/api-nest/src/adapters/adapters.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/ai/ai-logs.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/ai/ai-pick.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/ai/shadow-replay.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/compliance/kyc.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": [
+                "unauthenticated KYC decision/PII surface"
+              ]
+            },
+            {
+              "controller": "services/api-nest/src/execution-policy/execution-policy.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/inbox/ops-inbox.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/ledger/ledger.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": [
+                "unauthenticated money balance adjustment",
+                "unauthenticated cross-user financial read",
+                "unauthenticated cross-user ledger read"
+              ]
+            },
+            {
+              "controller": "services/api-nest/src/membership/membership.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/opportunities/user-opportunity-override.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/referral/referral.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/risk/risk.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/simulation/platform-reserve.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/simulation/simulation.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/wallet/deposit-config.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/wallet/deposit-dispute.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/wallet/krw-deposit.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": []
+            },
+            {
+              "controller": "services/api-nest/src/wallet/withdraw-credentials.admin.controller.ts",
+              "has_use_guards": false,
+              "high_impact_risks": [
+                "withdrawal credential exposure"
+              ]
+            }
+          ]
+        },
+        "counterexample": null,
+        "error_message": "19/19 admin controllers have zero authorization guard",
+        "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+        "model_identifier": "harness-static-oracle",
+        "configuration_fingerprint": "4aab9a6c359906ea2ec397c75b584fae497f824aaa9045a6b9fa8e1a8046a120",
+        "invariant_id": "INV-ISOLATION-01",
+        "suite_id": "QA8",
+        "live_http": false
+      },
+      "root_cause_note": "services/api-nest/src/ledger/ledger.admin.controller.ts self-documents: \"Auth/RBAC guard lands with Admin todos\". schemas/admin-rbac.v1.json (role x capability) and the ai_profit_os_04_admin plan section 9.9 AdminGuard are specified but not yet wired into any *.admin.controller.ts. No global APP_GUARD/middleware found in app.module.ts or main.ts that would compensate.",
+      "protected_product_impact": false,
+      "product_mutation_in_this_wave": 0
+    },
+    {
+      "severity": "P2",
+      "invariant_id": "INV-PRIVACY-01",
+      "suite_id": "QA8",
+      "persona_id": "KR-12",
+      "journey_id": "J-HAPPY-01",
+      "seed": 20260813,
+      "trace_id": "qa8:QA8_PRIVACY_DELETE_ACCOUNT",
+      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "first_observed_at": "2026-08-13T06:17:34.097Z",
+      "repro_status": "repro_confirmed",
+      "title": "security-privacy-world FAIL: QA8_PRIVACY_DELETE_ACCOUNT",
+      "asvs_ids": [
+        "v5.0.0-14.2.7"
+      ],
+      "findings": [
+        "delete-account performs UPDATE (soft-delete) on public.users, not a hard DELETE. Schema-defined ON DELETE CASCADE/SET NULL foreign keys (ai_twin_memory, notification_prefs, referral edges, deposit/withdraw records, mission accrual, kyc_decision_audit, the sessions row itself, etc.) never fire because the parent row is never removed. Only users.email/phone_e164 are nulled plus sessions revoked. KYC document retention (5y, compliance.types.ts KYC_RETENTION_YEARS_DEFAULT, section 42.2.1) is explicit documented policy and is NOT counted as a finding here."
+      ],
+      "rich_evidence": {
+        "seed": null,
+        "rng_version": "aipo-ea-rng-v1",
+        "clock_as_of": "2026-08-13T06:17:43.254Z",
+        "request_sequence": [
+          {
+            "step": "static_read",
+            "file": "services/api-nest/src/auth/auth.service.ts",
+            "found": "deleteAccount"
+          },
+          {
+            "step": "classify_delete_mode",
+            "result": "soft_update"
+          }
+        ],
+        "sanitized_request": {
+          "method": "deleteAccount"
+        },
+        "sanitized_response": {
+          "delete_account_method_found": true,
+          "delete_mode": "soft_update",
+          "email_nulled": true,
+          "phone_nulled": true,
+          "sessions_revoked": true,
+          "kyc_retention_years": 5,
+          "ai_twin_memory_cascade_defined": true,
+          "ai_twin_memory_would_cascade_on_hard_delete_only": true,
+          "residual_tables_after_delete": [
+            "ai_twin_memory (conversation/tendency profile - may contain freeform user-typed PII)",
+            "notification_prefs (push token / contact-linked prefs)",
+            "referral_edge (referrer/referee relationship persists)",
+            "wallet deposit/withdraw + mission_accrual + kyc_decision_audit (financial audit trail - retention likely intentional, but not documented as such for the non-financial rows above)"
+          ]
+        },
+        "counterexample": null,
+        "error_message": "delete-account performs UPDATE (soft-delete) on public.users, not a hard DELETE. Schema-defined ON DELETE CASCADE/SET NULL foreign keys (ai_twin_memory, notification_prefs, referral edges, deposit/withdraw records, mission accrual, kyc_decision_audit, the sessions row itself, etc.) never fire because the parent row is never removed. Only users.email/phone_e164 are nulled plus sessions revoked. KYC document retention (5y, compliance.types.ts KYC_RETENTION_YEARS_DEFAULT, section 42.2.1) is explicit documented policy and is NOT counted as a finding here.",
+        "model_identifier": "harness-static-oracle",
+        "configuration_fingerprint": "1b5265e854e799cf609330a880f5991abc1e9bb1ac1113df3a3cf8d710836104",
+        "invariant_id": "INV-PRIVACY-01",
+        "suite_id": "QA8",
+        "live_http": false
+      },
+      "root_cause_note": null,
+      "protected_product_impact": false,
+      "product_mutation_in_this_wave": 0
+    }
+  ],
   "notes": [
-    "UNSPECIFIED_PERF_BUDGET / BLOCKED_MISSING_ORACLE are suite/invariant results, not defect rows."
+    "BLOCKED_ENV_CAPABILITY (SEC-DYNAMIC-ADVERSARIAL-01) is a suite/invariant result, not a defect row.",
+    "QA8 FAIL rows are recorded for the dedicated repair wave - not fixed here (discovery only)."
   ]
 }

@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       qa_phase:
-        description: "QA phase to run (qa0 / qa1 / qa2 / qa3 / qa4 / qa5 / qa6 / qa7 / later suites)"
+        description: "QA phase to run (qa0 / qa1 / qa2 / qa3 / qa4 / qa5 / qa6 / qa7 / qa8 / later suites)"
         required: true
         default: "qa6"
         type: choice
@@ -18,6 +18,7 @@ on:
           - qa5
           - qa6
           - qa7
+          - qa8
           - full
   pull_request:
     paths:
@@ -128,7 +129,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [qa2-synthetic-personas]
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full' }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'qa8' || inputs.qa_phase == 'full' }}
     strategy:
       fail-fast: false
       matrix:
@@ -174,14 +175,19 @@ jobs:
               node tooling/engine-acceptance/run-qa6.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
               pnpm verify:engine-acceptance
               ;;
+            QA8)
+              # ASVS 5.0.0 subset · IDOR/authz/PII/delete-account · static + child-verify oracle
+              node tooling/engine-acceptance/run-qa8.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+              pnpm verify:engine-acceptance
+              ;;
             *)
-              echo "suite=${MATRIX_SUITE} — not enabled yet at QA-6 (placeholder COMPLETE=0)"
+              echo "suite=${MATRIX_SUITE} — not enabled yet at QA-8 (placeholder COMPLETE=0)"
               exit 0
               ;;
           esac
       # Raw traces/logs = Actions artifact · acceptance evidence retention ≥ 90 days
       - name: Upload suite evidence
-        if: ${{ always() && (matrix.suite == 'QA3' || matrix.suite == 'QA4' || matrix.suite == 'QA5' || matrix.suite == 'QA6') }}
+        if: ${{ always() && (matrix.suite == 'QA3' || matrix.suite == 'QA4' || matrix.suite == 'QA5' || matrix.suite == 'QA6' || matrix.suite == 'QA8') }}
         uses: actions/upload-artifact@v4
         with:
           name: engine-acceptance-${{ matrix.suite }}
@@ -190,7 +196,9 @@ jobs:
             governance/engine-acceptance/qa4-result.v1.json
             governance/engine-acceptance/qa5-result.v1.json
             governance/engine-acceptance/qa6-result.v1.json
+            governance/engine-acceptance/qa8-result.v1.json
             governance/engine-acceptance/perf-budget.v1.json
+            governance/engine-acceptance/asvs-mapping.v1.json
             governance/engine-acceptance/defects.v1.json
             governance/engine-acceptance/evidence-manifest.v1.json
             governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
@@ -303,7 +311,9 @@ jobs:
           cp governance/engine-acceptance/qa4-result.v1.json _tmp_engine_acceptance_evidence/ || true
           cp governance/engine-acceptance/qa5-result.v1.json _tmp_engine_acceptance_evidence/ || true
           cp governance/engine-acceptance/qa6-result.v1.json _tmp_engine_acceptance_evidence/ || true
+          cp governance/engine-acceptance/qa8-result.v1.json _tmp_engine_acceptance_evidence/ || true
           cp governance/engine-acceptance/perf-budget.v1.json _tmp_engine_acceptance_evidence/ || true
+          cp governance/engine-acceptance/asvs-mapping.v1.json _tmp_engine_acceptance_evidence/ || true
           cp governance/engine-acceptance/defects.v1.json _tmp_engine_acceptance_evidence/ || true
           echo "aggregator_status=ran" > _tmp_engine_acceptance_evidence/aggregator.txt
           echo "aggregator_if=always()" >> _tmp_engine_acceptance_evidence/aggregator.txt

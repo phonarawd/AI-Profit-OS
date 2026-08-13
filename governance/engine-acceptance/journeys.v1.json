@@ -50,6 +50,19 @@
       "attack_faces": ["object_id_swap"]
     },
     {
+      "id": "J-DIRTY-ADMIN-BOUNDARY-01",
+      "kind": "dirty",
+      "steps": [
+        "anonymous-no-token",
+        "call-admin-controller-route",
+        "expect-deny-or-guard",
+        "supply-arbitrary-userId-param",
+        "expect-deny-cross-user-read"
+      ],
+      "attack_faces": ["admin_boundary"],
+      "asvs_ids": ["v5.0.0-8.2.1", "v5.0.0-8.4.2"]
+    },
+    {
       "id": "J-DIRTY-CONFLICT-01",
       "kind": "dirty",
       "steps": ["same-key", "conflicting-payload", "expect-explicit-reject"]

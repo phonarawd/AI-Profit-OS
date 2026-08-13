@@ -1,14 +1,15 @@
 {
   "schema": "governance.engine-acceptance.coverage.v1",
   "version": "1.0.0",
-  "status": "qa6_active",
+  "status": "qa8_active",
   "notes": [
     "persona × journey × invariant 매핑. 맵 개수 ≠ KPI.",
     "QA-2 Dirty Path 비중 > Happy Path (suite_ids에 QA2 포함 매핑 기준).",
     "QA-3 generative fuzz = fast-check properties (suite_ids에 QA3).",
     "QA-4 stateful time = KST multi-day · BLOCKED_NO_CLOCK_HOOK when hook absent (suite_ids에 QA4).",
     "QA-5 Failure World = axis1 degradation/fallback · axis2 post-recovery · BLOCKED_NO_FAULT_HOOK when hook absent (suite_ids에 QA5).",
-    "QA-6 Performance World = k6 scenario mix + tag threshold mechanism · UNSPECIFIED_PERF_BUDGET when no product SLO (suite_ids에 QA6)."
+    "QA-6 Performance World = k6 scenario mix + tag threshold mechanism · UNSPECIFIED_PERF_BUDGET when no product SLO (suite_ids에 QA6).",
+    "QA-8 Security and Privacy World = ASVS 5.0.0 subset; admin-surface + JWT + delete-account retention (suite_ids QA8)."
   ],
   "mandatorySuites": [
     "QA1",
@@ -79,6 +80,22 @@
       "attack_face": "object_id_swap",
       "suite_ids": [
         "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "id": "COV-003d",
+      "persona_id": "KR-11",
+      "journey_id": "J-DIRTY-ADMIN-BOUNDARY-01",
+      "invariant_id": "INV-ISOLATION-01",
+      "critical": true,
+      "attack_face": "admin_boundary",
+      "asvs_ids": [
+        "v5.0.0-8.2.1",
+        "v5.0.0-8.4.2"
+      ],
+      "notes": "QA8-only surface — QA2 user-isolation-surfaces.cjs checked user controllers only, never *.admin.controller.ts",
+      "suite_ids": [
         "QA8"
       ]
     },
@@ -160,6 +177,9 @@
       "journey_id": "J-HAPPY-01",
       "invariant_id": "INV-PRIVACY-01",
       "critical": true,
+      "asvs_ids": [
+        "v5.0.0-14.2.7"
+      ],
       "suite_ids": [
         "QA8"
       ]

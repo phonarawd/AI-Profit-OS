@@ -1,12 +1,12 @@
 /**
- * verify:engine-acceptance — QA-0..QA-7 scope (full ACCEPTED 판정 금지)
+ * verify:engine-acceptance — QA-0..QA-8 scope (full ACCEPTED 판정 금지)
  *
  * 검증:
  * 1) Acceptance Contract L1~L6 산출물 실재
  * 2) severity-policy 선고정 문서
  * 3) protected-scope hash 규칙 deterministic
  * 4) baseline Dual Dirty + required fields · valid↔protected_scope_clean
- * 5) kill-switch가 tiny smoke / QA1..QA6보다 먼저 작동
+ * 5) kill-switch가 tiny smoke / QA1..QA8보다 먼저 작동
  * 6) evidence-manifest · REPORT · verdict ≠ ENGINE_ACCEPTED_FOR_UI
  * 7) QA-1..QA-6 COMPLETE 유지 — 단 ENGINE_ACCEPTANCE_REBASE_V1 pending rerun이면 STALE 허용
  * 8) QA-3: fast-check properties · CI fail-fast:false · concurrency
@@ -14,7 +14,9 @@
  * 10) QA-5: Failure World 축1/축2 · BLOCKED_NO_FAULT_HOOK · always() aggregator
  * 11) QA-6: k6 scenario mix + threshold 메커니즘 · UNSPECIFIED_PERF_BUDGET ·
  *     CI only heavy · aggregator 증거 · product mutation 0
- * 12) QA-7: formal Actions evidence · qa7-result.v1.json · next=QA8 · QA8 NOT_STARTED
+ * 12) QA-7: formal Actions evidence · qa7-result.v1.json · next=QA8
+ * 13) QA-8: ASVS 5.0.0 subset · qa8-result.v1.json · admin-boundary/privacy
+ *     defects recorded (not repaired) · next=QA9 · ENGINE_ACCEPTED_FOR_UI 발급 금지
  */
 "use strict";
 
@@ -49,6 +51,7 @@ const {
   verifyPendingRerunEpoch,
   verifyRebaseLedgerAgainstBaseline,
   assertNoInPlaceHashRewrite,
+  findBridgingAmendment,
 } = require("../engine-acceptance/lib/product-rebase.cjs");
 const { run: selftestProductRebase } = require("../engine-acceptance/selftest-product-rebase.cjs");
 
@@ -115,7 +118,9 @@ const REQUIRED_FILES = [
   `${GOV}/qa5-result.v1.json`,
   `${GOV}/qa6-result.v1.json`,
   `${GOV}/qa7-result.v1.json`,
+  `${GOV}/qa8-result.v1.json`,
   `${GOV}/perf-budget.v1.json`,
+  `${GOV}/asvs-mapping.v1.json`,
   "tooling/engine-acceptance/kill-switch.cjs",
   "tooling/engine-acceptance/tiny-smoke.cjs",
   "tooling/engine-acceptance/freeze-baseline.cjs",
@@ -133,6 +138,8 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/run-qa6.cjs",
   "tooling/engine-acceptance/run-qa7.cjs",
   "tooling/engine-acceptance/publish-qa7-formal.cjs",
+  "tooling/engine-acceptance/run-qa8.cjs",
+  "tooling/engine-acceptance/checks/security-privacy-world.cjs",
   "tooling/engine-acceptance/checks/schemas-routes-contract.cjs",
   "tooling/engine-acceptance/checks/db-consistency.cjs",
   "tooling/engine-acceptance/checks/idempotency-split.cjs",
@@ -508,11 +515,11 @@ if (evidence) {
         fail("ephemeral QA6 rewrite must keep evidence-manifest.next QA7_AI_EVAL");
       }
     } else {
-      if (evidence.qa_phase !== "QA-7") {
-        fail("evidence-manifest.qa_phase must be QA-7 after qa7-ai-eval publication");
+      if (evidence.qa_phase !== "QA-8") {
+        fail("evidence-manifest.qa_phase must be QA-8 after qa8-security-privacy completion");
       }
-      if (evidence.next !== "QA8_SECURITY_PRIVACY") {
-        fail("evidence-manifest.next must be QA8_SECURITY_PRIVACY");
+      if (evidence.next !== "QA9_ACCEPTANCE_REPORT") {
+        fail("evidence-manifest.next must be QA9_ACCEPTANCE_REPORT");
       }
     }
     if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa3 !== true) {
@@ -591,18 +598,28 @@ if (evidence) {
           fail("QA7 suite.formal_actions_evidence must be true");
         }
       }
-      if (!qa8 || qa8.completion_status !== "NOT_STARTED") {
-        fail("QA8 suite must remain NOT_STARTED");
+      if (!qa8 || qa8.completion_status !== "COMPLETE") {
+        fail("QA8 suite must be COMPLETE");
+      } else {
+        if (!qa8.run_id || !qa8.checksum) {
+          fail("QA8 suite must have run_id + checksum");
+        }
+        if (qa8.asvs_version !== "5.0.0") {
+          fail("QA8 suite.asvs_version must be 5.0.0");
+        }
       }
       if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa7 !== true) {
         fail("evidence.kill_switch.verified_before_qa7 must be true");
       }
+      if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa8 !== true) {
+        fail("evidence.kill_switch.verified_before_qa8 must be true");
+      }
     }
     if (
       !evidence.critical_invariant ||
-      evidence.critical_invariant.blocked !== 5
+      evidence.critical_invariant.blocked !== 6
     ) {
-      fail("critical_invariant.blocked must remain 5 after QA7 publication");
+      fail("critical_invariant.blocked must be 6 after QA8 completion (QA4-QA6 five plus QA8 dynamic-pentest BLOCKED_ENV_CAPABILITY)");
     }
   }
 }
@@ -1287,7 +1304,31 @@ if (qa7Result && !pendingRerun) {
         qa7Result.hashes.pinned.acceptance_workflow_hash !==
         baseline.acceptance_workflow_hash
       ) {
-        fail("qa7-result pinned acceptance_workflow_hash must match baseline");
+        // A later POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 entry (same
+        // baseline_id) may legitimately move the workflow hash beyond what
+        // was pinned when QA7 ran, as long as it proves QA7 semantics were
+        // unaffected. Silent/unbridged drift still fails.
+        let amendLedgerForQa7 = null;
+        try {
+          amendLedgerForQa7 = readJson(LEDGER_REL);
+        } catch {
+          amendLedgerForQa7 = null;
+        }
+        const bridge = findBridgingAmendment(
+          amendLedgerForQa7,
+          baseline,
+          qa7Result.hashes.pinned.acceptance_workflow_hash,
+        );
+        const qa7Unaffected =
+          bridge &&
+          Array.isArray(bridge.unaffected_completed_suites) &&
+          bridge.unaffected_completed_suites.includes("QA7");
+        if (!qa7Unaffected) {
+          fail(
+            "qa7-result pinned acceptance_workflow_hash must match baseline, or be bridged by " +
+              "a controlled amendment that lists QA7 as unaffected",
+          );
+        }
       }
     }
   } else {
@@ -1300,6 +1341,126 @@ if (qa7Result && !pendingRerun) {
     }
     if (qa7 && String(qa7.run_id) !== String(qa7Result.run_id)) {
       fail("evidence QA7.run_id must match qa7-result.run_id");
+    }
+  }
+}
+
+// --- QA-8 security/privacy result (ASVS 5.0.0 subset · discovery only) ---
+let qa8Result;
+try {
+  qa8Result = readJson(`${GOV}/qa8-result.v1.json`);
+} catch {
+  fail("qa8-result.v1.json invalid JSON");
+}
+if (qa8Result && !pendingRerun) {
+  if (qa8Result.schema !== "governance.engine-acceptance.qa8-result.v1") {
+    fail("qa8-result.schema mismatch");
+  }
+  if (qa8Result.suite_id !== "QA8") fail("qa8-result.suite_id must be QA8");
+  if (qa8Result.completion_status !== "COMPLETE") {
+    fail("qa8-result.completion_status must be COMPLETE");
+  }
+  if (qa8Result.asvs_version !== "5.0.0") fail("qa8-result.asvs_version must be 5.0.0");
+  if (qa8Result.exhaustive_certification_claim !== false) {
+    fail("qa8-result.exhaustive_certification_claim must be false — no full ASVS cert claim");
+  }
+  if (baseline && qa8Result.baseline_id !== baseline.id) {
+    fail("qa8-result.baseline_id must match current baseline.id");
+  }
+  if (!qa8Result.kill_switch || qa8Result.kill_switch.verified_before_checks !== true) {
+    fail("qa8-result must record kill_switch.verified_before_checks");
+  }
+  if (qa8Result.product_mutation !== 0) fail("qa8-result.product_mutation must be 0");
+  if (qa8Result.kpi_forbidden !== true) fail("qa8-result.kpi_forbidden must be true");
+  if (qa8Result.mock_pass_forbidden !== true) {
+    fail("qa8-result.mock_pass_forbidden must be true");
+  }
+  if (!["tiny", "full"].includes(qa8Result.mode)) {
+    fail("qa8-result.mode must be tiny|full");
+  }
+  if (qa8Result.next !== "QA9_ACCEPTANCE_REPORT") {
+    fail("qa8-result.next must be QA9_ACCEPTANCE_REPORT");
+  }
+  const secWorld = (qa8Result.checks || {}).security_privacy_world;
+  if (!secWorld) {
+    fail("qa8-result.checks.security_privacy_world required");
+  } else {
+    if (!Array.isArray(secWorld.checks) || secWorld.checks.length < 5) {
+      fail("qa8-result security_privacy_world.checks must cover >=5 areas");
+    }
+    const byId = new Map((secWorld.checks || []).map((c) => [c.check_id, c]));
+    for (const id of [
+      "QA8_ADMIN_BOUNDARY",
+      "QA8_USER_ISOLATION_SHARED_WITH_QA2",
+      "QA8_JWT_TOKEN_VALIDATION",
+      "QA8_PRIVACY_DELETE_ACCOUNT",
+      "QA8_ERROR_DISCLOSURE_AND_LOGGING",
+    ]) {
+      if (!byId.has(id)) fail(`qa8-result missing check_id ${id}`);
+    }
+    const adminCheck = byId.get("QA8_ADMIN_BOUNDARY");
+    if (adminCheck) {
+      // Honest discovery — do not require PASS. Only require the check ran
+      // with real evidence and did not silently launder a FAIL as PASS.
+      if (!Array.isArray(adminCheck.asvs_ids) || !adminCheck.asvs_ids.includes("v5.0.0-8.2.1")) {
+        fail("qa8 admin-boundary check must cite ASVS v5.0.0-8.2.1");
+      }
+      if (typeof adminCheck.controllers_scanned !== "number" || adminCheck.controllers_scanned < 1) {
+        fail("qa8 admin-boundary check must record controllers_scanned > 0 (real evidence)");
+      }
+      if (adminCheck.status === "FAIL" && !adminCheck.rich_evidence) {
+        fail("qa8 admin-boundary FAIL must carry rich_evidence");
+      }
+    }
+    const dyn = (secWorld.dynamic_scenarios || [])[0];
+    if (!dyn || dyn.blocked_code !== "BLOCKED_ENV_CAPABILITY") {
+      fail("qa8-result must record dynamic adversarial scenario as BLOCKED_ENV_CAPABILITY (no mock PASS)");
+    }
+  }
+  if (
+    !qa8Result.critical_invariant_cumulative ||
+    typeof qa8Result.critical_invariant_cumulative.blocked !== "number"
+  ) {
+    fail("qa8-result.critical_invariant_cumulative.blocked required");
+  }
+  if (
+    !Array.isArray(qa8Result.blocked_codes_observed) ||
+    !qa8Result.blocked_codes_observed.includes("BLOCKED_ENV_CAPABILITY")
+  ) {
+    fail("qa8-result.blocked_codes_observed must include BLOCKED_ENV_CAPABILITY");
+  }
+  // FAIL findings must be linked in defects.v1.json (record, do not repair).
+  const qa8Fails = ((qa8Result.checks || {}).security_privacy_world?.checks || []).filter(
+    (c) => c.status === "FAIL",
+  );
+  for (const f of qa8Fails) {
+    const linked = (defects.defects || []).some(
+      (d) => d.suite_id === "QA8" && d.trace_id === `qa8:${f.check_id}`,
+    );
+    if (!linked) {
+      fail(`qa8 FAIL ${f.check_id} must be recorded in defects.v1.json`);
+    }
+  }
+  if (qa8Result.defects_counts) {
+    const p0p1 = (qa8Result.defects_counts.P0 || 0) + (qa8Result.defects_counts.P1 || 0);
+    if (p0p1 > 0 && qa8Result.verdict_contribution !== "ENGINE_NOT_ACCEPTED") {
+      fail("qa8-result P0/P1 defects present must set verdict_contribution=ENGINE_NOT_ACCEPTED");
+    }
+  }
+  if (defects) {
+    if (defects.counts.P0 > 0 || defects.counts.P1 > 0) {
+      if (evidence && evidence.verdict !== "ENGINE_NOT_ACCEPTED") {
+        fail("evidence-manifest.verdict must be ENGINE_NOT_ACCEPTED when defects.P0/P1 > 0");
+      }
+    }
+  }
+  if (evidence) {
+    const qa8 = (evidence.suites || []).find((s) => s.suite_id === "QA8");
+    if (qa8 && qa8.checksum !== qa8Result.checksum) {
+      fail("evidence QA8.checksum must match qa8-result.checksum");
+    }
+    if (qa8 && String(qa8.run_id) !== String(qa8Result.run_id)) {
+      fail("evidence QA8.run_id must match qa8-result.run_id");
     }
   }
 }
@@ -1347,20 +1508,20 @@ if (report) {
       fail("REPORT must state product mutation 0");
     }
   } else {
-    if (!report.includes("QA8_SECURITY_PRIVACY")) {
-      fail("REPORT must declare NEXT=QA8_SECURITY_PRIVACY");
+    if (!report.includes("QA9_ACCEPTANCE_REPORT")) {
+      fail("REPORT must declare NEXT=QA9_ACCEPTANCE_REPORT");
     }
     if (!report.includes("QA7 = COMPLETE")) {
       fail("REPORT banner must include QA7 = COMPLETE");
     }
-    if (!report.includes("QA8 = NOT_STARTED")) {
-      fail("REPORT banner must include QA8 = NOT_STARTED");
+    if (!report.includes("QA8 = COMPLETE")) {
+      fail("REPORT banner must include QA8 = COMPLETE");
     }
     if (!report.includes("QA6 = COMPLETE")) {
       fail("REPORT banner must include QA6 = COMPLETE");
     }
     if (!report.includes("UNSPECIFIED_PERF_BUDGET")) {
-      fail("REPORT must mention UNSPECIFIED_PERF_BUDGET");
+      fail("REPORT must mention UNSPECIFIED_PERF_BUDGET (QA6 record retained)");
     }
     if (!report.includes("threshold") && !report.includes("Threshold")) {
       fail("REPORT must mention threshold mechanism");
@@ -1376,6 +1537,18 @@ if (report) {
     }
     if (!report.includes("PRODUCT MUTATION = 0") && !report.includes("product mutation")) {
       fail("REPORT must state product mutation 0");
+    }
+    if (!report.includes("ASVS") || !report.includes("5.0.0")) {
+      fail("REPORT must cite ASVS 5.0.0 (QA8 subset)");
+    }
+    if (!/BLOCKED_ENV_CAPABILITY/.test(report)) {
+      fail("REPORT must record QA8 dynamic-scenario BLOCKED_ENV_CAPABILITY (no mock PASS)");
+    }
+    if (!/not repaired|Not repaired|discovery only/i.test(report)) {
+      fail("REPORT must state QA8 findings are not repaired this wave (discovery only)");
+    }
+    if (!report.includes("ENGINE_NOT_ACCEPTED") && !report.includes("ENGINE_QA_INCOMPLETE")) {
+      fail("REPORT verdict must be ENGINE_NOT_ACCEPTED or ENGINE_QA_INCOMPLETE (never ACCEPTED)");
     }
   }
 }
@@ -1401,11 +1574,15 @@ if (fs.existsSync(wfPath)) {
   if (!/run-qa5\.cjs/.test(wf)) fail("workflow must invoke run-qa5.cjs for QA5");
   if (!/run-qa6\.cjs/.test(wf)) fail("workflow must invoke run-qa6.cjs for QA6");
   if (!/run-qa7\.cjs/.test(wf)) fail("workflow must invoke run-qa7.cjs for QA7");
+  if (!/run-qa8\.cjs/.test(wf)) fail("workflow must invoke run-qa8.cjs for QA8");
   if (!/engine-acceptance-QA7-raw-traces/.test(wf)) {
     fail("workflow must upload engine-acceptance-QA7-raw-traces");
   }
   if (!/qa6-result\.v1\.json/.test(wf)) {
     fail("workflow aggregator/artifacts must include qa6-result.v1.json");
+  }
+  if (!/qa8-result\.v1\.json/.test(wf)) {
+    fail("workflow aggregator/artifacts must include qa8-result.v1.json");
   }
   if (!/perf-budget\.v1\.json/.test(wf)) {
     fail("workflow aggregator/artifacts must include perf-budget.v1.json");
@@ -1564,6 +1741,22 @@ if (!qa6Blocked) {
   fail("run-qa6 must abort via kill-switch before checks when unsafe");
 }
 
+const { runQa8 } = require("../engine-acceptance/run-qa8.cjs");
+let qa8Blocked = false;
+try {
+  runQa8({
+    target_env: "production",
+    hostname: "localhost",
+    synthetic_account_namespace: "qa-synth-x",
+    mode: "tiny",
+  });
+} catch (e) {
+  qa8Blocked = e && e.code === "AIPO_QA_KILL_SWITCH";
+}
+if (!qa8Blocked) {
+  fail("run-qa8 must abort via kill-switch before checks when unsafe");
+}
+
 // POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 governance
 let amendmentLedger;
 try {
@@ -1622,7 +1815,7 @@ if (fails.length) {
   process.exit(1);
 }
 
-console.log("[verify:engine-acceptance] PASS (QA-0..QA-7 scope)");
+console.log("[verify:engine-acceptance] PASS (QA-0..QA-8 scope)");
 console.log("  ACCEPTANCE CONTRACT = LOCKED");
 console.log(pendingRerun ? "  BASELINE = NEW_EPOCH (REBASE PENDING RERUN)" : "  BASELINE = FROZEN");
 console.log("  GOVERNANCE_DECISION = POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1");
@@ -1640,8 +1833,8 @@ if (pendingRerun) {
   console.log("  QA5 = COMPLETE");
   console.log("  QA6 = COMPLETE");
   console.log("  QA7 = COMPLETE");
-  console.log("  QA8 = NOT_STARTED");
-  console.log("  NEXT = QA8_SECURITY_PRIVACY");
+  console.log("  QA8 = COMPLETE");
+  console.log("  NEXT = QA9_ACCEPTANCE_REPORT");
   console.log("  ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED");
 }
 console.log("  QA HARNESS TARGET = SAFE");
