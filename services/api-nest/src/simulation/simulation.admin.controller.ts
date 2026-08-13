@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Patch, Post, UseGuards } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
+import { AdminOperator } from "../common/admin-operator.decorator";
 import { SimulationAdminService } from "./simulation.admin.service";
 import { SIMULATION_ADMIN_ROUTES } from "./simulation.routes";
 import type {
@@ -9,7 +10,7 @@ import type {
 
 /**
  * Admin /admin/growth?tab=simulation · /api/v1/admin/simulation/*
- * Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
+ * Auth/RBAC = AdminGuard (admin-rbac.v1).
  */
 @UseGuards(AdminGuard)
 @Controller("admin")
@@ -17,7 +18,10 @@ export class SimulationAdminController {
   constructor(private readonly simulation: SimulationAdminService) {}
 
   @Post(SIMULATION_ADMIN_ROUTES.run)
-  run(@Body() body: Record<string, unknown> = {}) {
+  run(
+    @Body() body: Record<string, unknown> = {},
+    @AdminOperator() operatorId: string,
+  ) {
     const input: SimulationRunRequest = {
       opportunityPublishRate:
         typeof body.opportunityPublishRate === "number"
@@ -40,10 +44,7 @@ export class SimulationAdminController {
           : undefined,
       feasibility: body.feasibility as SimulationRunRequest["feasibility"],
       opportunities: body.opportunities as SimulationRunRequest["opportunities"],
-      createdByAdminId:
-        body.createdByAdminId != null
-          ? String(body.createdByAdminId)
-          : undefined,
+      createdByAdminId: operatorId,
     };
     return this.simulation.run(input);
   }
@@ -64,10 +65,13 @@ export class SimulationAdminController {
   }
 
   @Patch(SIMULATION_ADMIN_ROUTES.growthEnabled)
-  putGrowthEnabled(@Body() body: Record<string, unknown>) {
+  putGrowthEnabled(
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     const input: GrowthEnabledPutInput = {
       enabled: body.enabled === true,
-      updatedByAdminId: String(body.updatedByAdminId ?? ""),
+      updatedByAdminId: operatorId,
       changeReason: String(body.changeReason ?? ""),
     };
     return this.simulation.putGrowthEnabled(input);

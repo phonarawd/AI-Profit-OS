@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
+import { AdminOperator } from "../common/admin-operator.decorator";
 import { MoneyCircuitService } from "./money-circuit.service";
 import { RISK_ADMIN_ROUTES } from "./risk.routes";
 import { RiskService } from "./risk.service";
@@ -39,9 +40,12 @@ export class RiskAdminController {
   }
 
   @Post(RISK_ADMIN_ROUTES.circuitClose)
-  circuitClose(@Body() body: Record<string, unknown>) {
+  circuitClose(
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     return this.circuit.close({
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       reason: String(body.reason ?? ""),
       idempotencyKey: String(body.idempotencyKey ?? ""),
     });
@@ -53,12 +57,16 @@ export class RiskAdminController {
   }
 
   @Post(RISK_ADMIN_ROUTES.userFreeze)
-  freeze(@Param("userId") userId: string, @Body() body: Record<string, unknown>) {
+  freeze(
+    @Param("userId") userId: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     return this.risk.setUserStatus({
       userId,
       status: "frozen",
       reason: String(body.reason ?? ""),
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       idempotencyKey: String(body.idempotencyKey ?? ""),
       signalId:
         typeof body.signalId === "string" ? body.signalId : undefined,
@@ -69,12 +77,13 @@ export class RiskAdminController {
   unfreeze(
     @Param("userId") userId: string,
     @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
   ) {
     return this.risk.setUserStatus({
       userId,
       status: "active",
       reason: String(body.reason ?? "unfreeze after review"),
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       idempotencyKey: String(body.idempotencyKey ?? ""),
       signalId:
         typeof body.signalId === "string" ? body.signalId : undefined,
@@ -85,41 +94,54 @@ export class RiskAdminController {
   restrict(
     @Param("userId") userId: string,
     @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
   ) {
     return this.risk.setUserStatus({
       userId,
       status: "restricted" satisfies RiskStatus,
       reason: String(body.reason ?? ""),
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       idempotencyKey: String(body.idempotencyKey ?? ""),
     });
   }
 
   @Post(RISK_ADMIN_ROUTES.userFlag)
-  flag(@Param("userId") userId: string, @Body() body: Record<string, unknown>) {
+  flag(
+    @Param("userId") userId: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     return this.risk.setUserStatus({
       userId,
       status: "flagged",
       reason: String(body.reason ?? ""),
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       idempotencyKey: String(body.idempotencyKey ?? ""),
     });
   }
 
   @Post(RISK_ADMIN_ROUTES.signalAck)
-  ack(@Param("id") id: string, @Body() body: Record<string, unknown>) {
+  ack(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     return this.risk.ackSignal({
       signalId: id,
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       idempotencyKey: String(body.idempotencyKey ?? ""),
     });
   }
 
   @Post(RISK_ADMIN_ROUTES.signalResolve)
-  resolve(@Param("id") id: string, @Body() body: Record<string, unknown>) {
+  resolve(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     return this.risk.resolveSignal({
       signalId: id,
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       idempotencyKey: String(body.idempotencyKey ?? ""),
       reason: String(body.reason ?? ""),
     });

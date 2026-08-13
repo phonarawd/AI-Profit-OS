@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
+import { AdminOperator } from "../common/admin-operator.decorator";
 import { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
 import { isCapitalBand } from "./opportunities.mi";
@@ -22,7 +23,7 @@ import type {
 
 /**
  * Admin opportunities · /api/v1/admin/opportunities/*
- * UI = /admin/opportunities · ?tab=assets · Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
+ * UI = /admin/opportunities · ?tab=assets · Auth/RBAC = AdminGuard (admin-rbac.v1).
  * Independent /admin/assets route FORBIDDEN (sidebar 13).
  */
 @UseGuards(AdminGuard)
@@ -100,6 +101,7 @@ export class OpportunitiesAdminController {
   patchPricing(
     @Param("id") id: string,
     @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
   ) {
     const req: UpdateOpportunityPricingRequest = {
       adminBuyUsdt: body.adminBuyUsdt != null ? String(body.adminBuyUsdt) : undefined,
@@ -112,9 +114,7 @@ export class OpportunitiesAdminController {
       buyMarketId: body.buyMarketId as UpdateOpportunityPricingRequest["buyMarketId"],
       sellMarketId:
         body.sellMarketId as UpdateOpportunityPricingRequest["sellMarketId"],
-      updatedByAdminId: String(
-        body.updatedByAdminId ?? body.adminId ?? "",
-      ),
+      updatedByAdminId: operatorId,
     };
     return this.opportunities.patchPricing(id, req);
   }

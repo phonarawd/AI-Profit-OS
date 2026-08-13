@@ -1,5 +1,6 @@
 import { Body, Controller, Param, Post, UseGuards } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
+import { AdminOperator } from "../common/admin-operator.decorator";
 import { WALLET_ADMIN_ROUTES } from "./wallet.routes";
 import { WithdrawCredentialsAdminService } from "./withdraw-credentials.admin.service";
 
@@ -14,10 +15,14 @@ export class WithdrawCredentialsAdminController {
   constructor(private readonly credentials: WithdrawCredentialsAdminService) {}
 
   @Post(WALLET_ADMIN_ROUTES.withdrawPinReset)
-  resetPin(@Param("id") id: string, @Body() body: Record<string, unknown>) {
+  resetPin(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     return this.credentials.resetWithdrawPin({
       userId: id,
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       idempotencyKey: String(body.idempotencyKey ?? ""),
       reason: typeof body.reason === "string" ? body.reason : undefined,
     });
@@ -27,10 +32,11 @@ export class WithdrawCredentialsAdminController {
   revokeWebauthn(
     @Param("id") id: string,
     @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
   ) {
     return this.credentials.revokeWebauthn({
       userId: id,
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       idempotencyKey: String(body.idempotencyKey ?? ""),
       reason: typeof body.reason === "string" ? body.reason : undefined,
     });

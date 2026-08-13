@@ -12,6 +12,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
+import { AdminOperator } from "../common/admin-operator.decorator";
 import { OPS_INBOX_ADMIN_ROUTES } from "./inbox.user.routes";
 import { OpsInboxService } from "./ops-inbox.service";
 
@@ -21,15 +22,17 @@ export class OpsInboxAdminController {
   constructor(private readonly inbox: OpsInboxService) {}
 
   @Post(OPS_INBOX_ADMIN_ROUTES.send)
-  send(@Param("id") id: string, @Body() body: Record<string, unknown>) {
+  send(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     return this.inbox.sendToUser(id, {
       template: String(body.template ?? ""),
       titleKo: String(body.titleKo ?? ""),
       bodyKo: String(body.bodyKo ?? ""),
       href: body.href != null ? String(body.href) : undefined,
-      createdByAdminId: String(
-        body.createdByAdminId ?? body.adminId ?? "",
-      ),
+      createdByAdminId: operatorId,
       sourceEventId:
         body.sourceEventId != null ? String(body.sourceEventId) : undefined,
     });

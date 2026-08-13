@@ -8,13 +8,14 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
+import { AdminOperator } from "../common/admin-operator.decorator";
 import { KrwDepositService } from "./krw-deposit.service";
 import { WALLET_ADMIN_ROUTES } from "./wallet.routes";
 import type { KrwDepositStatus } from "./wallet.types";
 
 /**
  * Admin krw-pending HTTP surface · /api/v1/admin/wallet/krw-deposits/*
- * UI tab = /admin/wallet?tab=krw-pending · Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
+ * UI tab = /admin/wallet?tab=krw-pending · Auth/RBAC = AdminGuard (admin-rbac.v1).
  * Day-1 = 승인/거절 only · CSV Auto-Recon = L2+ (endpoint 0).
  */
 @UseGuards(AdminGuard)
@@ -35,10 +36,14 @@ export class KrwDepositAdminController {
   }
 
   @Post(WALLET_ADMIN_ROUTES.krwDepositApprove)
-  approve(@Param("id") id: string, @Body() body: Record<string, unknown>) {
+  approve(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     return this.krwDeposit.approve({
       id,
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       idempotencyKey: String(body.idempotencyKey ?? ""),
       fxSnapshotId: body.fxSnapshotId
         ? String(body.fxSnapshotId)
@@ -47,10 +52,14 @@ export class KrwDepositAdminController {
   }
 
   @Post(WALLET_ADMIN_ROUTES.krwDepositReject)
-  reject(@Param("id") id: string, @Body() body: Record<string, unknown>) {
+  reject(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     return this.krwDeposit.reject({
       id,
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       idempotencyKey: String(body.idempotencyKey ?? ""),
       reason: String(body.reason ?? body.adminNote ?? ""),
     });

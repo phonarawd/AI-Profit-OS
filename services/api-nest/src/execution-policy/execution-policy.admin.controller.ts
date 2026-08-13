@@ -8,6 +8,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
+import { AdminOperator } from "../common/admin-operator.decorator";
 import { ExecutionPolicyAdminService } from "./execution-policy.admin.service";
 import { EXECUTION_POLICY_ADMIN_ROUTES } from "./execution-policy.routes";
 import type {
@@ -18,7 +19,7 @@ import type {
 /**
  * Admin /admin/execution-policy · /api/v1/admin/execution-policy*
  * UI Owns=Admin §48.6 · map/Rule Owns=Engine §48.13.3
- * Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
+ * Auth/RBAC = AdminGuard (admin-rbac.v1).
  */
 @UseGuards(AdminGuard)
 @Controller("admin")
@@ -31,7 +32,10 @@ export class ExecutionPolicyAdminController {
   }
 
   @Put(EXECUTION_POLICY_ADMIN_ROUTES.put)
-  put(@Body() body: Record<string, unknown>) {
+  put(
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     if (
       body &&
       typeof body === "object" &&
@@ -76,7 +80,7 @@ export class ExecutionPolicyAdminController {
       feed: body.feed as ExecutionPolicyPutInput["feed"],
       presentation:
         body.presentation as ExecutionPolicyPutInput["presentation"],
-      updatedByAdminId: String(body.updatedByAdminId ?? ""),
+      updatedByAdminId: operatorId,
       changeReason: String(body.changeReason ?? ""),
     };
     return this.policy.put(input);

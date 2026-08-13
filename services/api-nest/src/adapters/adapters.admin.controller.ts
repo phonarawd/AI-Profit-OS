@@ -6,7 +6,7 @@ import type { AdapterMatchAttemptBody } from "./adapters.types";
 
 /**
  * Admin adapters · /api/v1/admin/adapters/*
- * UI = /admin/adapters · Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
+ * UI = /admin/adapters · Auth/RBAC = AdminGuard (admin-rbac.v1).
  * §51.15 matching KPI · yahoo0 · Simulation S4 선행
  */
 @UseGuards(AdminGuard)

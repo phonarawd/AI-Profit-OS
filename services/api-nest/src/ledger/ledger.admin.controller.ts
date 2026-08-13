@@ -8,6 +8,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
+import { AdminOperator } from "../common/admin-operator.decorator";
 import { LedgerAdminService } from "./ledger.admin.service";
 import { LedgerPostingService } from "./ledger.posting.service";
 import { LEDGER_ADMIN_ROUTES } from "./ledger.routes";
@@ -15,7 +16,7 @@ import type { AdminAdjustInput, UserBucket } from "./ledger.types";
 
 /**
  * Admin Money HTTP surface · /api/v1/admin/*
- * Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
+ * Auth/RBAC = AdminGuard (admin-rbac.v1).
  */
 @UseGuards(AdminGuard)
 @Controller("admin")
@@ -68,6 +69,7 @@ export class LedgerAdminController {
   balanceAdjust(
     @Param("userId") userId: string,
     @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
   ) {
     const input: AdminAdjustInput = {
       userId,
@@ -76,7 +78,7 @@ export class LedgerAdminController {
       amountUsdt: String(body.amountUsdt ?? ""),
       reason: String(body.reason ?? ""),
       idempotencyKey: String(body.idempotencyKey ?? ""),
-      createdBy: String(body.createdBy ?? ""),
+      createdBy: operatorId,
       secondApproverId: body.secondApproverId
         ? String(body.secondApproverId)
         : undefined,

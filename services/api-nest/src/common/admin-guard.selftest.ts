@@ -325,14 +325,30 @@ async function main(): Promise<void> {
       "POST",
       PIN_RESET_PATH,
       signAdmin(SELFTEST_ADMIN_SECRET, "cs"),
-      { idempotencyKey: "k1", adminId: SPOOFED_ADMIN_ID },
+      {
+        idempotencyKey: "k1",
+        adminId: SPOOFED_ADMIN_ID,
+        updatedByAdminId: SPOOFED_ADMIN_ID,
+        createdByAdminId: SPOOFED_ADMIN_ID,
+      },
     );
     record(
       "authorized admin (cs · withdrawPinReset:write) -> 201",
       allowed.status === 201,
       `status=${allowed.status} body=${allowed.body}`,
     );
+    record(
+      "operator recorded == verified token sub (body adminId ignored)",
+      operatorSpy.adminId === PROBE_ADMIN_ID,
+      `recorded=${operatorSpy.adminId ?? "null"} spoofAttempt=${SPOOFED_ADMIN_ID}`,
+    );
+    record(
+      "client-supplied operator id never reaches the audit record",
+      operatorSpy.adminId !== SPOOFED_ADMIN_ID,
+      `recorded=${operatorSpy.adminId ?? "null"}`,
+    );
 
+    operatorSpy.adminId = null;
     const superAllowed = await call(
       port,
       "POST",
@@ -344,6 +360,11 @@ async function main(): Promise<void> {
       "authorized admin (super · all:write) -> 201",
       superAllowed.status === 201,
       `status=${superAllowed.status}`,
+    );
+    record(
+      "second operator recorded from its own token, not the previous request",
+      operatorSpy.adminId === PROBE_ADMIN_ID,
+      `recorded=${operatorSpy.adminId ?? "null"}`,
     );
 
     // ── global containment of an admin controller with no local guard ──

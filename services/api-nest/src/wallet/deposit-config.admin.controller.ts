@@ -1,12 +1,13 @@
 import { Body, Controller, Get, Patch, Query, UseGuards } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
+import { AdminOperator } from "../common/admin-operator.decorator";
 import { DepositConfigService } from "./deposit-config.service";
 import { WALLET_ADMIN_ROUTES } from "./wallet.routes";
 import type { DepositConfigPatchInput } from "./wallet.types";
 
 /**
  * Admin deposit-settings HTTP surface · /api/v1/admin/wallet/deposit-config
- * Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
+ * Auth/RBAC = AdminGuard (admin-rbac.v1).
  */
 @UseGuards(AdminGuard)
 @Controller("admin")
@@ -19,9 +20,12 @@ export class DepositConfigAdminController {
   }
 
   @Patch(WALLET_ADMIN_ROUTES.depositConfig)
-  patch(@Body() body: Record<string, unknown>) {
+  patch(
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     const input: DepositConfigPatchInput = {
-      updatedByAdminId: String(body.updatedByAdminId ?? ""),
+      updatedByAdminId: operatorId,
       changeReason: String(body.changeReason ?? ""),
       krw: body.krw as DepositConfigPatchInput["krw"],
       usdtOnchain: body.usdtOnchain as DepositConfigPatchInput["usdtOnchain"],

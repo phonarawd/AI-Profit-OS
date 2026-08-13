@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
+import { AdminOperator } from "../common/admin-operator.decorator";
 import { MembershipAdminService } from "./membership.admin.service";
 import { MEMBERSHIP_ADMIN_ROUTES } from "./membership.routes";
 import type {
@@ -19,7 +20,7 @@ import type {
 
 /**
  * Admin §9.8.10 HTTP · /api/v1/admin/users/:id/membership*
- * UI = /admin/users/:id?tab=membership · Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
+ * UI = /admin/users/:id?tab=membership · Auth/RBAC = AdminGuard (admin-rbac.v1).
  * fulfillRate = read-only · successRatePercent FORBIDDEN
  */
 @UseGuards(AdminGuard)
@@ -33,7 +34,11 @@ export class MembershipAdminController {
   }
 
   @Put(MEMBERSHIP_ADMIN_ROUTES.membership)
-  force(@Param("id") id: string, @Body() body: Record<string, unknown>) {
+  force(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     if (body && typeof body === "object" && "successRatePercent" in body) {
       throw new BadRequestException("successRatePercent FORBIDDEN");
     }
@@ -45,9 +50,7 @@ export class MembershipAdminController {
     const input: ForceMembershipRequest = {
       membership: String(body.membership ?? "") as MembershipId,
       reason: String(body.reason ?? ""),
-      updatedByAdminId: String(
-        body.updatedByAdminId ?? body.adminId ?? "",
-      ),
+      updatedByAdminId: operatorId,
       clearForce: body.clearForce === true,
     };
     return this.membership.forceMembership(id, input);
@@ -59,7 +62,11 @@ export class MembershipAdminController {
   }
 
   @Put(MEMBERSHIP_ADMIN_ROUTES.matchPolicyOverride)
-  putMatchPolicy(@Param("id") id: string, @Body() body: Record<string, unknown>) {
+  putMatchPolicy(
+    @Param("id") id: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     if (body && typeof body === "object" && "successRatePercent" in body) {
       throw new BadRequestException("successRatePercent FORBIDDEN");
     }
@@ -87,9 +94,7 @@ export class MembershipAdminController {
           ? Number(body.dailyUserMatchCap)
           : undefined,
       reason: String(body.reason ?? ""),
-      updatedByAdminId: String(
-        body.updatedByAdminId ?? body.adminId ?? "",
-      ),
+      updatedByAdminId: operatorId,
       clear: body.clear === true,
     };
     return this.membership.putMatchPolicyOverride(id, input);

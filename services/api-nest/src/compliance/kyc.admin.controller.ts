@@ -8,12 +8,13 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
+import { AdminOperator } from "../common/admin-operator.decorator";
 import { COMPLIANCE_ADMIN_ROUTES } from "./compliance.routes";
 import { KycService } from "./kyc.service";
 
 /**
  * Admin compliance?tab=kyc HTTP surface · /api/v1/admin/compliance/kyc/*
- * UI tab = /admin/compliance?tab=kyc · Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json) · kyc capability.
+ * UI tab = /admin/compliance?tab=kyc · Auth/RBAC = AdminGuard (admin-rbac.v1) · kyc capability.
  * Money Owns: approve/reject API + R2 signed URL ≤5m.
  */
 @UseGuards(AdminGuard)
@@ -37,19 +38,27 @@ export class KycAdminController {
   }
 
   @Post(COMPLIANCE_ADMIN_ROUTES.kycApprove)
-  approve(@Param("userId") userId: string, @Body() body: Record<string, unknown>) {
+  approve(
+    @Param("userId") userId: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     return this.kyc.approve({
       userId,
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       idempotencyKey: String(body.idempotencyKey ?? ""),
     });
   }
 
   @Post(COMPLIANCE_ADMIN_ROUTES.kycReject)
-  reject(@Param("userId") userId: string, @Body() body: Record<string, unknown>) {
+  reject(
+    @Param("userId") userId: string,
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     return this.kyc.reject({
       userId,
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       idempotencyKey: String(body.idempotencyKey ?? ""),
       reason: String(body.reason ?? body.rejectReason ?? ""),
     });

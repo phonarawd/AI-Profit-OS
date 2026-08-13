@@ -71,6 +71,15 @@ for (const rel of controllers) {
   if (!/from\s+"\.\.\/common\/admin\.guard"/.test(text)) {
     fails.push(`${rel}: AdminGuard not imported from common/admin.guard`);
   }
+  // Operator identity must come from the verified token, never the request body.
+  const spoofable = text.match(
+    /body\.(adminId|updatedByAdminId|createdByAdminId|createdBy|decidedByAdminId)\b/g,
+  );
+  if (spoofable) {
+    fails.push(
+      `${rel}: reads operator identity from the request body (${[...new Set(spoofable)].join(", ")}) — use @AdminOperator()`,
+    );
+  }
   const cls = (text.match(/export class (\w+)/) || [])[1];
   if (!cls) {
     fails.push(`${rel}: cannot resolve controller class name`);

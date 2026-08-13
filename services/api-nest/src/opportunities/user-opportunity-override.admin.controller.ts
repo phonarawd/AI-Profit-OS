@@ -8,13 +8,14 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
+import { AdminOperator } from "../common/admin-operator.decorator";
 import { OPPORTUNITY_ADMIN_ROUTES } from "./opportunities.routes";
 import type { CapitalBand } from "./opportunities.types";
 import { UserOpportunityOverrideAdminService } from "./user-opportunity-override.admin.service";
 
 /**
  * Admin §9.8.9 HTTP · /api/v1/admin/users/:id/opportunity-overrides/*
- * UI = /admin/users/:id?tab=opportunities · Auth/RBAC = AdminGuard (deny-by-default · schemas/admin-rbac.v1.json).
+ * UI = /admin/users/:id?tab=opportunities · Auth/RBAC = AdminGuard (admin-rbac.v1).
  * ledgerMutated always false.
  */
 @UseGuards(AdminGuard)
@@ -34,6 +35,7 @@ export class UserOpportunityOverrideAdminController {
     @Param("id") id: string,
     @Param("opportunityId") opportunityId: string,
     @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
   ) {
     return this.overrides.upsert(id, opportunityId, {
       hidden: body.hidden === true,
@@ -55,9 +57,7 @@ export class UserOpportunityOverrideAdminController {
           ? (String(body.capitalBandForce) as CapitalBand)
           : null,
       reason: String(body.reason ?? ""),
-      updatedByAdminId: String(
-        body.updatedByAdminId ?? body.adminId ?? "",
-      ),
+      updatedByAdminId: operatorId,
     });
   }
 
@@ -66,12 +66,11 @@ export class UserOpportunityOverrideAdminController {
     @Param("id") id: string,
     @Param("opportunityId") opportunityId: string,
     @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
   ) {
     return this.overrides.remove(id, opportunityId, {
       reason: String(body.reason ?? ""),
-      updatedByAdminId: String(
-        body.updatedByAdminId ?? body.adminId ?? "",
-      ),
+      updatedByAdminId: operatorId,
     });
   }
 }

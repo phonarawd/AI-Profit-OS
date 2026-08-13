@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Put, Query, UseGuards } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
+import { AdminOperator } from "../common/admin-operator.decorator";
 import { PlatformReserveAdminService } from "./platform-reserve.admin.service";
 import { PLATFORM_RESERVE_ADMIN_ROUTES } from "./simulation.routes";
 import type { PlatformReservePutInput } from "./simulation.types";
@@ -19,10 +20,13 @@ export class PlatformReserveAdminController {
   }
 
   @Put(PLATFORM_RESERVE_ADMIN_ROUTES.put)
-  put(@Body() body: Record<string, unknown>) {
+  put(
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     const input: PlatformReservePutInput = {
       targetUsdt: String(body.targetUsdt ?? ""),
-      updatedByAdminId: String(body.updatedByAdminId ?? ""),
+      updatedByAdminId: operatorId,
       changeReason: String(body.changeReason ?? ""),
     };
     return this.reserve.put(input);

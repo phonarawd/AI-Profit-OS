@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
+import { AdminOperator } from "../common/admin-operator.decorator";
 import { ReferralClawbackService } from "./referral.clawback.service";
 import { ReferralEdgeService } from "./referral.edge.service";
 import { ReferralLadderService } from "./referral.ladder.service";
@@ -39,7 +40,10 @@ export class ReferralAdminController {
   }
 
   @Patch(REFERRAL_ADMIN_ROUTES.program)
-  patchProgram(@Body() body: Record<string, unknown>) {
+  patchProgram(
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     // Explicitly reject invite-count cap if client sends it
     if ("capPerReferrerMonth" in body) {
       throw new BadRequestException(
@@ -47,7 +51,7 @@ export class ReferralAdminController {
       );
     }
     const input: ReferralProgramPatchInput = {
-      updatedByAdminId: String(body.updatedByAdminId ?? ""),
+      updatedByAdminId: operatorId,
       changeReason: String(body.changeReason ?? ""),
       enabled: typeof body.enabled === "boolean" ? body.enabled : undefined,
       rewardsEnabled:
@@ -106,10 +110,13 @@ export class ReferralAdminController {
   }
 
   @Post(REFERRAL_ADMIN_ROUTES.poolTopUp)
-  poolTopUp(@Body() body: Record<string, unknown>) {
+  poolTopUp(
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     return this.pool.topUp({
       amountUsdt: String(body.amountUsdt ?? ""),
-      updatedByAdminId: String(body.updatedByAdminId ?? body.adminId ?? ""),
+      updatedByAdminId: operatorId,
       changeReason: String(body.changeReason ?? body.reason ?? ""),
       idempotencyKey: String(body.idempotencyKey ?? ""),
     });
@@ -126,10 +133,11 @@ export class ReferralAdminController {
   release(
     @Param("edgeId") edgeId: string,
     @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
   ) {
     return this.ladder.adminRelease({
       edgeId,
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       reason: String(body.reason ?? ""),
       idempotencyKey: String(body.idempotencyKey ?? ""),
     });
@@ -139,20 +147,24 @@ export class ReferralAdminController {
   clawbackEdge(
     @Param("edgeId") edgeId: string,
     @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
   ) {
     return this.clawback.clawback({
       edgeId,
-      adminId: String(body.adminId ?? body.updatedByAdminId ?? ""),
+      adminId: operatorId,
       reason: String(body.reason ?? ""),
       idempotencyKey: String(body.idempotencyKey ?? ""),
     });
   }
 
   @Post(REFERRAL_ADMIN_ROUTES.accrualHalt)
-  accrualHalt(@Body() body: Record<string, unknown>) {
+  accrualHalt(
+    @Body() body: Record<string, unknown>,
+    @AdminOperator() operatorId: string,
+  ) {
     return this.program.setAccrualHalt({
       halted: Boolean(body.halted ?? body.accrualHalted ?? true),
-      updatedByAdminId: String(body.updatedByAdminId ?? body.adminId ?? ""),
+      updatedByAdminId: operatorId,
       changeReason: String(body.changeReason ?? body.reason ?? ""),
     });
   }
