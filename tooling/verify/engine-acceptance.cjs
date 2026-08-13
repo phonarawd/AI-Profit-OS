@@ -30,6 +30,7 @@ const {
   buildManifest,
   dualDirty,
   hashPathList,
+  git,
 } = require("../engine-acceptance/lib/hash-scope.cjs");
 
 const {
@@ -54,6 +55,42 @@ const { run: selftestProductRebase } = require("../engine-acceptance/selftest-pr
 const fails = [];
 function fail(msg) {
   fails.push(msg);
+}
+
+function gitShowHead(rel) {
+  try {
+    return git(`git show HEAD:${rel}`).replace(/\r\n/g, "\n").trim();
+  } catch {
+    return null;
+  }
+}
+
+function liveFileText(rel) {
+  const abs = path.join(ROOT, rel);
+  if (!fs.existsSync(abs)) return null;
+  return fs.readFileSync(abs, "utf8").replace(/\r\n/g, "\n").trim();
+}
+
+/**
+ * CI QA6 job runs run-qa6.cjs then verify. run-qa6 rewrites evidence/REPORT
+ * in the runner workspace only. Committed QA7 publication must still be
+ * required when the working tree matches HEAD.
+ */
+function isEphemeralQa6Rewrite(evidenceObj, qa7File) {
+  if (
+    !qa7File ||
+    qa7File.formal_actions_evidence !== true ||
+    qa7File.completion_status !== "COMPLETE"
+  ) {
+    return false;
+  }
+  const qa7 = (evidenceObj.suites || []).find((s) => s.suite_id === "QA7");
+  if (qa7 && qa7.completion_status === "COMPLETE") return false;
+  const rel = `${GOV}/evidence-manifest.v1.json`;
+  const head = gitShowHead(rel);
+  const live = liveFileText(rel);
+  if (head == null || live == null) return false;
+  return head !== live;
 }
 
 const GOV = "governance/engine-acceptance";
@@ -411,6 +448,8 @@ try {
   fail("evidence-manifest.v1.json invalid JSON");
 }
 
+let ephemeralQa6Rewrite = false;
+
 const pendingRerun = isPendingRerun(baseline, evidence, rebaseLedger);
 if (baseline && rebaseLedger) {
   verifyRebaseLedgerAgainstBaseline(baseline, rebaseLedger, evidence, fails);
@@ -448,14 +487,33 @@ if (evidence) {
     fail("evidence.artifact_policy.retention_days_min must be ≥90");
   }
 
+  let qa7Peek = null;
+  try {
+    qa7Peek = readJson(`${GOV}/qa7-result.v1.json`);
+  } catch {
+    qa7Peek = null;
+  }
+  const ephemeralQa6RewriteNow =
+    !pendingRerun && isEphemeralQa6Rewrite(evidence, qa7Peek);
+  ephemeralQa6Rewrite = ephemeralQa6RewriteNow;
+
   if (pendingRerun) {
     verifyPendingRerunEpoch(baseline, evidence, rebaseLedger, fails);
   } else {
-    if (evidence.qa_phase !== "QA-7") {
-      fail("evidence-manifest.qa_phase must be QA-7 after qa7-ai-eval publication");
-    }
-    if (evidence.next !== "QA8_SECURITY_PRIVACY") {
-      fail("evidence-manifest.next must be QA8_SECURITY_PRIVACY");
+    if (ephemeralQa6RewriteNow) {
+      if (evidence.qa_phase !== "QA-6") {
+        fail("ephemeral QA6 rewrite must keep evidence-manifest.qa_phase QA-6");
+      }
+      if (evidence.next !== "QA7_AI_EVAL") {
+        fail("ephemeral QA6 rewrite must keep evidence-manifest.next QA7_AI_EVAL");
+      }
+    } else {
+      if (evidence.qa_phase !== "QA-7") {
+        fail("evidence-manifest.qa_phase must be QA-7 after qa7-ai-eval publication");
+      }
+      if (evidence.next !== "QA8_SECURITY_PRIVACY") {
+        fail("evidence-manifest.next must be QA8_SECURITY_PRIVACY");
+      }
     }
     if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa3 !== true) {
       fail("evidence.kill_switch.verified_before_qa3 must be true");
@@ -518,21 +576,27 @@ if (evidence) {
     }
     const qa7 = (evidence.suites || []).find((s) => s.suite_id === "QA7");
     const qa8 = (evidence.suites || []).find((s) => s.suite_id === "QA8");
-    if (!qa7 || qa7.completion_status !== "COMPLETE") {
-      fail("QA7 suite must be COMPLETE after formal Actions publication");
+    if (ephemeralQa6RewriteNow) {
+      if (!qa7Peek || qa7Peek.formal_actions_evidence !== true) {
+        fail("ephemeral QA6 rewrite must keep qa7-result formal_actions_evidence");
+      }
     } else {
-      if (!qa7.run_id || !qa7.checksum) {
-        fail("QA7 suite must have run_id + checksum");
+      if (!qa7 || qa7.completion_status !== "COMPLETE") {
+        fail("QA7 suite must be COMPLETE after formal Actions publication");
+      } else {
+        if (!qa7.run_id || !qa7.checksum) {
+          fail("QA7 suite must have run_id + checksum");
+        }
+        if (qa7.formal_actions_evidence !== true) {
+          fail("QA7 suite.formal_actions_evidence must be true");
+        }
       }
-      if (qa7.formal_actions_evidence !== true) {
-        fail("QA7 suite.formal_actions_evidence must be true");
+      if (!qa8 || qa8.completion_status !== "NOT_STARTED") {
+        fail("QA8 suite must remain NOT_STARTED");
       }
-    }
-    if (!qa8 || qa8.completion_status !== "NOT_STARTED") {
-      fail("QA8 suite must remain NOT_STARTED");
-    }
-    if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa7 !== true) {
-      fail("evidence.kill_switch.verified_before_qa7 must be true");
+      if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa7 !== true) {
+        fail("evidence.kill_switch.verified_before_qa7 must be true");
+      }
     }
     if (
       !evidence.critical_invariant ||
@@ -1229,7 +1293,7 @@ if (qa7Result && !pendingRerun) {
   } else {
     fail("qa7-result.hashes required");
   }
-  if (evidence) {
+  if (evidence && !ephemeralQa6Rewrite) {
     const qa7 = (evidence.suites || []).find((s) => s.suite_id === "QA7");
     if (qa7 && qa7.checksum !== qa7Result.checksum) {
       fail("evidence QA7.checksum must match qa7-result.checksum");
@@ -1256,6 +1320,31 @@ if (report) {
     }
     if (!report.includes("QA1_DETERMINISTIC_TRUTH")) {
       fail("REPORT must declare NEXT=QA1_DETERMINISTIC_TRUTH after rebase");
+    }
+  } else if (ephemeralQa6Rewrite) {
+    if (!report.includes("QA7_AI_EVAL")) {
+      fail("ephemeral QA6 REPORT must declare NEXT=QA7_AI_EVAL");
+    }
+    if (!report.includes("QA6 = COMPLETE")) {
+      fail("REPORT banner must include QA6 = COMPLETE");
+    }
+    if (!report.includes("UNSPECIFIED_PERF_BUDGET")) {
+      fail("REPORT must mention UNSPECIFIED_PERF_BUDGET");
+    }
+    if (!report.includes("threshold") && !report.includes("Threshold")) {
+      fail("REPORT must mention threshold mechanism");
+    }
+    if (!report.includes("CI only") && !report.includes("ci only") && !report.includes("CI-only")) {
+      fail("REPORT must mention CI only heavy k6");
+    }
+    if (!report.includes("retention") && !report.includes("90")) {
+      fail("REPORT must mention artifact retention ≥90");
+    }
+    if (!report.includes("always()")) {
+      fail("REPORT must mention aggregator if: always()");
+    }
+    if (!report.includes("PRODUCT MUTATION = 0") && !report.includes("product mutation")) {
+      fail("REPORT must state product mutation 0");
     }
   } else {
     if (!report.includes("QA8_SECURITY_PRIVACY")) {
