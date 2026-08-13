@@ -68,13 +68,21 @@
       "note": "amendments[] provenance remains bound to this predecessor epoch; not rewritten as current-epoch events"
     },
     {
-      "kind": "current",
+      "kind": "historical_predecessor",
       "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
       "rebase_id": "ea-rebase-a280b21fc7b5-dfa803530b9d",
       "predecessor_baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
       "bound_at": "2026-08-12T23:19:05.523Z",
+      "note": "superseded current epoch; historical amendments were NOT created under this id"
+    },
+    {
+      "kind": "current",
+      "baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
+      "rebase_id": "ea-rebase-ca476b4698a6-c1d90fceefe9",
+      "predecessor_baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
+      "bound_at": "2026-08-13T02:07:54.755Z",
       "note": "current acceptance_scope.unchanged compares against this epoch; historical amendments were NOT created under this id"
     }
   ],
-  "current_epoch_baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d"
+  "current_epoch_baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9"
 }

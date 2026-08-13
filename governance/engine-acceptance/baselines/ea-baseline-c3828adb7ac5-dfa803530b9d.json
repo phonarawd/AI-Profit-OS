@@ -1,30 +1,33 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
+  "id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
   "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-08-13T02:07:54.755Z",
-  "commit_sha": "ca476b4698a6f1ffdad88f814254bdc0449545f8",
-  "tree_sha": "3f984cf0b332d5ae0c1d43ed9f2e77325d7d3eb3",
+  "measuredAt": "2026-08-12T23:19:05.523Z",
+  "commit_sha": "c3828adb7ac508159c3d2541c3bf6bc11acaa45a",
+  "tree_sha": "0e60fbac4590309f2ff6fcdf934742d67cfc7252",
   "working_tree_clean": false,
   "protected_scope_clean": true,
   "dirty_paths_all": [
     "apps/web/next-env.d.ts",
+    "governance/engine-acceptance/acceptance-contract.v1.md",
+    "package.json",
     "packages/ui/canon/contracts/peotteok-home-visual-implementation-contract.v1.md",
+    "tooling/engine-acceptance/amend-acceptance-workflow-hash.cjs",
+    "tooling/engine-acceptance/freeze-baseline.cjs",
+    "tooling/engine-acceptance/lib/workflow-amendment.cjs",
+    "tooling/engine-acceptance/selftest-workflow-amendment.cjs",
+    "tooling/verify/engine-acceptance.cjs",
     ".cursor/hooks.json.bak-isolation",
     ".cursor/hooks.json.bak-wave-isolation",
-    "_tmp_qa7_formal_31653870422/",
-    "_tmp_qa7_grade_log.cjs",
-    "_tmp_qa7_product_log.txt",
-    "_tmp_qa7_product_summary.json",
-    "_tmp_qa7_product_validate.cjs",
-    "_tmp_qa7_smoke2.cjs",
-    "_tmp_qa7_smoke_scope.cjs"
+    "tooling/engine-acceptance/lib/product-rebase.cjs",
+    "tooling/engine-acceptance/rebase-acceptance-baseline.cjs",
+    "tooling/engine-acceptance/selftest-product-rebase.cjs"
   ],
   "dirty_paths_protected": [],
   "lockfile_hash": "3e4b2632d7e0e11afe179502ba50bdb2a47b67c7ca5838bb511d38ad854f70a1",
   "schema_migration_hash": "c0bc3c27b2233b8a620936a674e0afe3fdf12079bb1956bcf717bbc1a63cd7d6",
-  "prompt_hash": "7bed3fd180be97f04beb5a59cd16a9543f17e93c57b1c23ce47930e7b6e20ffc",
+  "prompt_hash": "3471a3bc2712cbeb85414ec848987996dac0d1a2ddab9fed3de968c6a8bc6079",
   "eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088",
   "acceptance_workflow_hash": "7895541fa754124e1b00a4b6b8bf293e69ee1e4cc9c156c50af4760c02466786",
   "node_version": "v22.14.0",
@@ -33,7 +36,7 @@
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "c1d90fceefe9cae728e1e447eea85335c181ad85049cf5f97cd673abd5b9d5c2",
+    "aggregate": "dfa803530b9d61376cdb8ff2a86e9dbf14b1400bd8ff773be05b5dbabe5bc35f",
     "pathCount": 352,
     "entries": [
       {
@@ -398,7 +401,7 @@
       },
       {
         "path": "services/api-nest/src/ai/ai.engine.ts",
-        "sha256": "21e0912bf0b50bb5b786515d9d9cb33d9e8de5fdca693d93ff808fcc8859df8d"
+        "sha256": "51efd8dc6e606bfca5301c428d528556ae18f23d5c3fb03ca8f35cd98c4f9fa1"
       },
       {
         "path": "services/api-nest/src/ai/ai.events.ts",
@@ -418,7 +421,7 @@
       },
       {
         "path": "services/api-nest/src/ai/assistant.service.ts",
-        "sha256": "1c679839f4ebd21d04a09e32e5f7b7d32d73b28c8addea504c0a360a8ab1e4f1"
+        "sha256": "91d305ae550f2f6ee9c21124a7a63371df2e750da32507cf92f529cf74f9f138"
       },
       {
         "path": "services/api-nest/src/ai/coach.controller.ts",
@@ -426,7 +429,7 @@
       },
       {
         "path": "services/api-nest/src/ai/coach.orchestrator.ts",
-        "sha256": "af28ab2c2535ed77039831837eec99f48a84678c83ab8702590294c41fa24663"
+        "sha256": "4fc111df77c0ee560efec9a1fd9b2e3817dbb3f203499e22fae6b9d85e2d9839"
       },
       {
         "path": "services/api-nest/src/ai/coach.routes.ts",
@@ -1452,8 +1455,8 @@
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-ca476b4698a6-c1d90fceefe9",
-    "predecessor_baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
+    "rebase_id": "ea-rebase-a280b21fc7b5-dfa803530b9d",
+    "predecessor_baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
     "kind": "product_rebase"
   }
 }

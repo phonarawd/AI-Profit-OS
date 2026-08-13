@@ -305,11 +305,20 @@ async function executeViaAiPlatform(row, ctx) {
     answerText,
     answerPath,
     usedTwinForMoney: false,
+    scopeDecision: route.scope && route.scope.decision,
   });
 
   // Honest product mirror (CoachOrchestrator): reroute_p → P facts.
   // NO expectation lock — if scope_redirect becomes fact, preserve that FAIL.
-  if (guard.status === "reroute_p") {
+  if (
+    guard.status === "reroute_p" &&
+    ai.mayEscalateToPlatformFacts({
+      answerPath,
+      scopeDecision: route.scope && route.scope.decision,
+      guardStatus: guard.status,
+      lane,
+    })
+  ) {
     lane = "P";
     toolsCalled = ["getBalance", "getBuckets", "getOpportunity"];
     factsUsed = syntheticFactsForTools(toolsCalled);

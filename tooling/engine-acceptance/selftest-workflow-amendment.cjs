@@ -120,8 +120,8 @@ function run() {
     );
     check(
       "predecessor_amendment_ledger_preserved",
-      liveLedger.baseline_id === liveRebaseTip.predecessor_baseline_id,
-      "historical workflow-amendments.baseline_id must remain predecessor",
+      liveLedger.baseline_id !== liveRebaseTip.new_baseline_id,
+      "historical workflow-amendments.baseline_id must not be rewritten to current epoch",
     );
   } else {
     check(

@@ -64,6 +64,65 @@
       "timestamp": "2026-08-12T23:19:05.523Z",
       "commit_sha_or_pending": "c3828adb7ac508159c3d2541c3bf6bc11acaa45a",
       "qa7_complete": false
+    },
+    {
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+      "rebase_id": "ea-rebase-ca476b4698a6-c1d90fceefe9",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-13T02:07:54.755Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: new epoch from predecessor ea-baseline-c3828adb7ac5-dfa803530b9d; invalidate QA1-QA6; rerun QA1-QA6 then QA7; do not rewrite hashes inside the old baseline."
+      },
+      "predecessor_baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
+      "new_baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
+      "reason": "Protected product mutation after QA7 product repair (terminal scope_redirect and G-output must not grant P money tools) creates a new acceptance epoch. Predecessor hashes are history; QA1-QA6 must rerun.",
+      "product_commit": "ca476b4698a6f1ffdad88f814254bdc0449545f8",
+      "changed_protected_paths": [
+        "services/api-nest/src/ai/ai.engine.ts",
+        "services/api-nest/src/ai/assistant.service.ts",
+        "services/api-nest/src/ai/coach.orchestrator.ts"
+      ],
+      "changed_nonprotected_support_paths": [
+        "services/ai-platform/src/answer-guard.cjs",
+        "services/ai-platform/src/index.cjs",
+        "services/ai-platform/src/index.d.ts",
+        "tooling/verify/ai-guard-authority.cjs",
+        "tooling/engine-acceptance/lib/qa7-coach-executor.cjs"
+      ],
+      "old_prompt_hash": "3471a3bc2712cbeb85414ec848987996dac0d1a2ddab9fed3de968c6a8bc6079",
+      "new_prompt_hash": "7bed3fd180be97f04beb5a59cd16a9543f17e93c57b1c23ce47930e7b6e20ffc",
+      "old_protected_manifest_hash": "dfa803530b9d61376cdb8ff2a86e9dbf14b1400bd8ff773be05b5dbabe5bc35f",
+      "new_protected_manifest_hash": "c1d90fceefe9cae728e1e447eea85335c181ad85049cf5f97cd673abd5b9d5c2",
+      "eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088",
+      "acceptance_workflow_hash": "7895541fa754124e1b00a4b6b8bf293e69ee1e4cc9c156c50af4760c02466786",
+      "invalidated_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6"
+      ],
+      "required_rerun_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7"
+      ],
+      "predecessor_suite_checksums": {
+        "QA1": "61c4ffa5e370fb58d1c06025fc5fb82e375854beabbea33a3575f9adc2edc141",
+        "QA2": "839c9155c90a68f61eacb03b74900cd7670850d0c32ddd079e51bf4e8e82de85",
+        "QA3": "ed6c9ac394df286929c1eb110683236106f72ae969d1f85c3566aa1f37468817",
+        "QA4": "99b29659f9d05e90d97c0fc52e252cd9371281b02afe1ab05306cf30d92e12bd",
+        "QA5": "d46ffc2e7519c121c6b4d7c47c4a73bab4b448b0bb5101f926263b9179c99624",
+        "QA6": "285c8c763d34756781ef78900ee9f9ef86060268da9e7ce0bd1ab52ea90590bf"
+      },
+      "timestamp": "2026-08-13T02:07:54.755Z",
+      "commit_sha_or_pending": "ca476b4698a6f1ffdad88f814254bdc0449545f8",
+      "qa7_complete": false
     }
   ]
 }
