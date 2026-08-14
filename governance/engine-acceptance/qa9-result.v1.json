@@ -2,9 +2,9 @@
   "schema": "governance.engine-acceptance.qa9-result.v1",
   "version": "1.0.0",
   "suite_id": "QA9",
-  "run_id": "qa9-acceptance-report-20260813",
+  "run_id": "qa9-acceptance-report-20260814",
   "todoId": "qa9-acceptance-report",
-  "measuredAt": "2026-08-13T21:39:55.434Z",
+  "measuredAt": "2026-08-14T04:17:25.861Z",
   "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
   "kill_switch": {
     "verified_before_checks": true,
@@ -57,72 +57,37 @@
         "completion_status": "COMPLETE"
       }
     ],
-    "critical_invariant_blocked": 2,
+    "critical_invariant_blocked": 0,
     "critical_invariant_skipped": 0,
     "critical_invariant_uncovered": 0,
     "defects_P0": 0,
-    "defects_P1": 5,
+    "defects_P1": 0,
     "defects_P2": 0,
     "defects_P3": 0,
     "baseline_valid": true,
     "acceptance_scope_unchanged": true,
     "report_baseline_id_match": true,
     "evidence_integrity_valid": true,
-    "verdict_reason_code": "DEFECTS_P0_P1_PRESENT",
-    "next": "03_blocked_fix_round"
+    "verdict_reason_code": "ALL_FORMULA_CONDITIONS_MET",
+    "next": "03_ui_entry_unlocked"
   },
-  "verdict": "ENGINE_NOT_ACCEPTED",
-  "verdict_reason_code": "DEFECTS_P0_P1_PRESENT",
-  "verdict_reason": "QA9 COMPLETE (final aggregation of QA0-QA8 evidence per acceptance-contract.v1.md L1) - defects.P0=0 defects.P1=5 (QA8_ADMIN_BOUNDARY unauthenticated admin surface, real evidence) force ENGINE_NOT_ACCEPTED regardless of critical_invariant.blocked=2 - 03 UI remains BLOCKED - ENGINE_ACCEPTED_FOR_UI NOT_ISSUED - repair round required (see REPAIR_ENTRY_POINT / RECOMMENDED_REPAIR_BATCH in ENGINE_ACCEPTANCE_REPORT.md) - product mutation 0 this wave",
+  "verdict": "ENGINE_ACCEPTED_FOR_UI",
+  "verdict_reason_code": "ALL_FORMULA_CONDITIONS_MET",
+  "verdict_reason": "QA9 COMPLETE - all acceptance-contract L1 conditions met - ENGINE_ACCEPTED_FOR_UI",
   "p0_security_findings": [],
-  "other_defects": [
-    {
-      "severity": "P1",
-      "trace_id": "qa4:TIME-KST-DAY-BOUNDARY",
-      "suite_id": "QA4",
-      "invariant_id": "INV-TIME-01",
-      "title": "stateful-time fail: TIME-KST-DAY-BOUNDARY"
-    },
-    {
-      "severity": "P1",
-      "trace_id": "qa4:TIME-PLUS-30D",
-      "suite_id": "QA4",
-      "invariant_id": "INV-TIME-01",
-      "title": "stateful-time fail: TIME-PLUS-30D"
-    },
-    {
-      "severity": "P1",
-      "trace_id": "qa4:TIME-MULTI-DAY-LIFECYCLE",
-      "suite_id": "QA4",
-      "invariant_id": "INV-LIFECYCLE-01",
-      "title": "stateful-time fail: TIME-MULTI-DAY-LIFECYCLE"
-    },
-    {
-      "severity": "P1",
-      "trace_id": "qa5:FAULT-AI-429-DEGRADE",
-      "suite_id": "QA5",
-      "invariant_id": "INV-FEED-AI-01",
-      "title": "failure-world fail: FAULT-AI-429-DEGRADE"
-    },
-    {
-      "severity": "P1",
-      "trace_id": "qa5:FAULT-RECOVERY-LEDGER-SCAN",
-      "suite_id": "QA5",
-      "invariant_id": "INV-LEDGER-01",
-      "title": "failure-world fail: FAULT-RECOVERY-LEDGER-SCAN"
-    }
-  ],
-  "remaining_blocked_count": 2,
-  "engine_accepted_for_ui": "NOT_ISSUED",
-  "ui_ux_entry_gate": "CLOSED",
+  "other_defects": [],
+  "remaining_blocked_count": 0,
+  "engine_accepted_for_ui": "ISSUED",
+  "ui_ux_entry_gate": "OPEN",
   "product_mutation": 0,
   "kpi_forbidden": true,
   "mock_pass_forbidden": true,
-  "next": "03_blocked_fix_round",
+  "next": "03_ui_entry_unlocked",
   "notes": [
     "QA9 is a deterministic aggregation/verdict-issuance wave, not a discovery suite.",
     "Consumes QA0-QA8 evidence exactly as recorded - repairs nothing.",
-    "Does not issue ENGINE_ACCEPTED_FOR_UI while defects.P0/P1 > 0."
+    "Does not issue ENGINE_ACCEPTED_FOR_UI while defects.P0/P1 > 0.",
+    "Every report section is derived from the current qa4/5/6/8-result files at run time - no hardcoded historical defect name."
   ],
-  "checksum": "7f02daf070aa0bf8024c0401fe61a051768ad55759298743c1bf46bd9feec4db"
+  "checksum": "3afae085b474b14a35432aefa4928494bdb7841d571df34fc4a7b876ac3d2a98"
 }

@@ -2,16 +2,16 @@
   "schema": "governance.engine-acceptance.qa6-result.v1",
   "version": "1.0.0",
   "suite_id": "QA6",
-  "run_id": "qa6-performance-world-20260813",
+  "run_id": "qa6-performance-world-20260814",
   "todoId": "qa6-performance-world",
-  "measuredAt": "2026-08-13T21:35:17.238Z",
+  "measuredAt": "2026-08-14T03:50:52.946Z",
   "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
-  "mode": "tiny",
+  "mode": "full",
   "kill_switch": {
     "verified_before_checks": true,
-    "target_env": "local",
+    "target_env": "ci",
     "hostname": "localhost",
-    "synthetic_account_namespace": "qa-synth-local"
+    "synthetic_account_namespace": "qa-synth-ci"
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -22,9 +22,9 @@
   "checks": {
     "performance_world": {
       "check_id": "QA6_PERFORMANCE_WORLD",
-      "status": "BLOCKED",
-      "mode": "tiny",
-      "measuredAt": "2026-08-13T21:35:17.238Z",
+      "status": "PASS",
+      "mode": "full",
+      "measuredAt": "2026-08-14T03:50:52.946Z",
       "seed": 20260812,
       "perf_oracle": {
         "available": true,
@@ -48,6 +48,11 @@
         ],
         "ci_only_heavy": true
       },
+      "harness_probe": {
+        "available": true,
+        "probed_path": "../../../../../tmp/aipo-harness/qa6-threshold/qa6-threshold.v1.json",
+        "reason": null
+      },
       "threshold_mechanism": {
         "locked": true,
         "engine": "k6",
@@ -60,17 +65,19 @@
         "k6_script_present": true
       },
       "scenario_mix": {
-        "scenario_count": 2,
-        "weight_sum": 65,
+        "scenario_count": 4,
+        "weight_sum": 100,
         "tags": [
           "feed_read",
-          "participate"
+          "participate",
+          "wallet_read",
+          "auth_profile"
         ]
       },
-      "scenarioCount": 2,
-      "passed": 0,
+      "scenarioCount": 4,
+      "passed": 4,
       "failed": 0,
-      "blocked": 2,
+      "blocked": 0,
       "unspecified": 0,
       "scenarios": [
         {
@@ -82,22 +89,30 @@
           "persona_id": "KR-10",
           "title": "feed/home 읽기 부하",
           "kind": "k6_tagged_workload",
-          "status": "BLOCKED",
-          "blocked_code": "BLOCKED_ENV_CAPABILITY",
+          "status": "PASS",
+          "blocked_code": null,
           "budget_status": "SPECIFIED",
           "threshold": {
             "p95_ms": 30,
             "error_rate": 0.01,
-            "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo",
-            "status": "SPECIFIED"
+            "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo"
+          },
+          "observed": {
+            "percentiles": {
+              "p50": 4.812519,
+              "p95": 6.4803517500000005,
+              "p99": 8.459086850000089,
+              "avg": 5.078304892857142
+            },
+            "error_rate": 0
           },
           "findings": [
-            "Heavy k6 execution is CI-only — local tiny records mechanism + budget binding without run."
+            "Real k6 threshold execution via run-qa6-threshold.cjs (isolated CI Postgres + booted Nest) — not a static/fixture result."
           ],
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-13T21:35:17.238Z",
+            "clock_as_of": "2026-08-14T03:50:52.844Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -105,18 +120,49 @@
                 "tag": "feed_read"
               },
               {
-                "step": "k6_deferred",
-                "reason": "ci_only_heavy",
-                "mode": "tiny"
+                "step": "k6_real_execution",
+                "result": "PASS",
+                "tag": "feed_read",
+                "source": "run-qa6-threshold.cjs"
               }
             ],
             "sanitized_request": null,
-            "sanitized_response": null,
+            "sanitized_response": {
+              "threshold": {
+                "p95_ms": 30,
+                "error_rate": 0.01,
+                "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo"
+              },
+              "observed": {
+                "percentiles": {
+                  "p50": 4.812519,
+                  "p95": 6.4803517500000005,
+                  "p99": 8.459086850000089,
+                  "avg": 5.078304892857142
+                },
+                "error_rate": 0
+              },
+              "p95_threshold": {
+                "present": true,
+                "ok": true,
+                "detail": {
+                  "p(95)<30": true
+                }
+              },
+              "error_rate_threshold": {
+                "present": true,
+                "ok": true,
+                "detail": {
+                  "rate<0.01": true
+                }
+              },
+              "verdict": "PASS"
+            },
             "counterexample": null,
             "error_message": null,
             "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "6f17886ecc287645bba304db3d4337ea4350c3a874f36bf5306bdfd19fe8df9a",
+            "configuration_fingerprint": "09067cecfda7e58408f05bcc559348721770ffd844fbb659e5612e3799a62114",
             "invariant_id": "INV-PERF-01",
             "suite_id": "QA6",
             "live_http": false
@@ -131,22 +177,30 @@
           "persona_id": "KR-05",
           "title": "participate / execute-tick 부하",
           "kind": "k6_tagged_workload",
-          "status": "BLOCKED",
-          "blocked_code": "BLOCKED_ENV_CAPABILITY",
+          "status": "PASS",
+          "blocked_code": null,
           "budget_status": "SPECIFIED",
           "threshold": {
             "p95_ms": 30,
             "error_rate": 0.01,
-            "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo",
-            "status": "SPECIFIED"
+            "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo"
+          },
+          "observed": {
+            "percentiles": {
+              "p50": 2.9565905,
+              "p95": 4.15099575,
+              "p99": 9.632443649999939,
+              "avg": 3.300956454545454
+            },
+            "error_rate": 0
           },
           "findings": [
-            "Heavy k6 execution is CI-only — local tiny records mechanism + budget binding without run."
+            "Real k6 threshold execution via run-qa6-threshold.cjs (isolated CI Postgres + booted Nest) — not a static/fixture result."
           ],
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-13T21:35:17.238Z",
+            "clock_as_of": "2026-08-14T03:50:52.844Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -154,18 +208,225 @@
                 "tag": "participate"
               },
               {
-                "step": "k6_deferred",
-                "reason": "ci_only_heavy",
-                "mode": "tiny"
+                "step": "k6_real_execution",
+                "result": "PASS",
+                "tag": "participate",
+                "source": "run-qa6-threshold.cjs"
               }
             ],
             "sanitized_request": null,
-            "sanitized_response": null,
+            "sanitized_response": {
+              "threshold": {
+                "p95_ms": 30,
+                "error_rate": 0.01,
+                "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo"
+              },
+              "observed": {
+                "percentiles": {
+                  "p50": 2.9565905,
+                  "p95": 4.15099575,
+                  "p99": 9.632443649999939,
+                  "avg": 3.300956454545454
+                },
+                "error_rate": 0
+              },
+              "p95_threshold": {
+                "present": true,
+                "ok": true,
+                "detail": {
+                  "p(95)<30": true
+                }
+              },
+              "error_rate_threshold": {
+                "present": true,
+                "ok": true,
+                "detail": {
+                  "rate<0.01": true
+                }
+              },
+              "verdict": "PASS"
+            },
             "counterexample": null,
             "error_message": null,
             "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "1afa01d9513268ba269ecc7ac00269d0682dd992d3d291472005d1b24bfd0668",
+            "configuration_fingerprint": "98101ee617d2c2c12c8a80906d836573a0d78b6ba56225663d13496e42a6f4b0",
+            "invariant_id": "INV-PERF-01",
+            "suite_id": "QA6",
+            "live_http": false
+          }
+        },
+        {
+          "scenario_id": "PERF-WALLET-READ",
+          "tag": "wallet_read",
+          "weight": 20,
+          "invariant_id": "INV-PERF-01",
+          "journey_id": "J-PERF-MIX-01",
+          "persona_id": "KR-03",
+          "title": "wallet/settlement 읽기 부하",
+          "kind": "k6_tagged_workload",
+          "status": "PASS",
+          "blocked_code": null,
+          "budget_status": "SPECIFIED",
+          "threshold": {
+            "p95_ms": 30,
+            "error_rate": 0.01,
+            "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo"
+          },
+          "observed": {
+            "percentiles": {
+              "p50": 1.601688,
+              "p95": 3.0410819999999994,
+              "p99": 7.031941539999981,
+              "avg": 1.9213140707070713
+            },
+            "error_rate": 0
+          },
+          "findings": [
+            "Real k6 threshold execution via run-qa6-threshold.cjs (isolated CI Postgres + booted Nest) — not a static/fixture result."
+          ],
+          "rich_evidence": {
+            "seed": 20260812,
+            "rng_version": "aipo-ea-rng-v1",
+            "clock_as_of": "2026-08-14T03:50:52.844Z",
+            "request_sequence": [
+              {
+                "step": "probe_perf_oracle",
+                "result": "specified",
+                "tag": "wallet_read"
+              },
+              {
+                "step": "k6_real_execution",
+                "result": "PASS",
+                "tag": "wallet_read",
+                "source": "run-qa6-threshold.cjs"
+              }
+            ],
+            "sanitized_request": null,
+            "sanitized_response": {
+              "threshold": {
+                "p95_ms": 30,
+                "error_rate": 0.01,
+                "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo"
+              },
+              "observed": {
+                "percentiles": {
+                  "p50": 1.601688,
+                  "p95": 3.0410819999999994,
+                  "p99": 7.031941539999981,
+                  "avg": 1.9213140707070713
+                },
+                "error_rate": 0
+              },
+              "p95_threshold": {
+                "present": true,
+                "ok": true,
+                "detail": {
+                  "p(95)<30": true
+                }
+              },
+              "error_rate_threshold": {
+                "present": true,
+                "ok": true,
+                "detail": {
+                  "rate<0.01": true
+                }
+              },
+              "verdict": "PASS"
+            },
+            "counterexample": null,
+            "error_message": null,
+            "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+            "model_identifier": "harness-static-oracle",
+            "configuration_fingerprint": "15b6ea799edccaa59e56b2b7c3734ff60ca5b699cc0039f055838213416a677f",
+            "invariant_id": "INV-PERF-01",
+            "suite_id": "QA6",
+            "live_http": false
+          }
+        },
+        {
+          "scenario_id": "PERF-AUTH-PROFILE",
+          "tag": "auth_profile",
+          "weight": 15,
+          "invariant_id": "INV-PERF-01",
+          "journey_id": "J-PERF-MIX-01",
+          "persona_id": "KR-01",
+          "title": "auth/profile 부하",
+          "kind": "k6_tagged_workload",
+          "status": "PASS",
+          "blocked_code": null,
+          "budget_status": "SPECIFIED",
+          "threshold": {
+            "p95_ms": 30,
+            "error_rate": 0.01,
+            "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo"
+          },
+          "observed": {
+            "percentiles": {
+              "p50": 1.368241,
+              "p95": 2.3408838999999997,
+              "p99": 3.3178863399999603,
+              "avg": 1.6024668181818182
+            },
+            "error_rate": 0
+          },
+          "findings": [
+            "Real k6 threshold execution via run-qa6-threshold.cjs (isolated CI Postgres + booted Nest) — not a static/fixture result."
+          ],
+          "rich_evidence": {
+            "seed": 20260812,
+            "rng_version": "aipo-ea-rng-v1",
+            "clock_as_of": "2026-08-14T03:50:52.844Z",
+            "request_sequence": [
+              {
+                "step": "probe_perf_oracle",
+                "result": "specified",
+                "tag": "auth_profile"
+              },
+              {
+                "step": "k6_real_execution",
+                "result": "PASS",
+                "tag": "auth_profile",
+                "source": "run-qa6-threshold.cjs"
+              }
+            ],
+            "sanitized_request": null,
+            "sanitized_response": {
+              "threshold": {
+                "p95_ms": 30,
+                "error_rate": 0.01,
+                "source": "human-po-ack:QA6_PERF_BUDGET_HUMAN_PO_ACK:2026-08-14:YES:commit=89247daa2270fad5a74f05692b58953b70697c7e:runs=31730924060,31731231199,31731236727:scope=ci-harness-localhost-not-production-slo"
+              },
+              "observed": {
+                "percentiles": {
+                  "p50": 1.368241,
+                  "p95": 2.3408838999999997,
+                  "p99": 3.3178863399999603,
+                  "avg": 1.6024668181818182
+                },
+                "error_rate": 0
+              },
+              "p95_threshold": {
+                "present": true,
+                "ok": true,
+                "detail": {
+                  "p(95)<30": true
+                }
+              },
+              "error_rate_threshold": {
+                "present": true,
+                "ok": true,
+                "detail": {
+                  "rate<0.01": true
+                }
+              },
+              "verdict": "PASS"
+            },
+            "counterexample": null,
+            "error_message": null,
+            "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+            "model_identifier": "harness-static-oracle",
+            "configuration_fingerprint": "46f24e679dcca8e62ee864299a617afadd002f652133c3a49bcad3904493feec",
             "invariant_id": "INV-PERF-01",
             "suite_id": "QA6",
             "live_http": false
@@ -173,7 +434,7 @@
         }
       ],
       "critical_invariant": {
-        "blocked": 1,
+        "blocked": 0,
         "skipped": 0,
         "uncovered": 0,
         "failed": 0,
@@ -181,12 +442,14 @@
           {
             "invariant_id": "INV-PERF-01",
             "critical": true,
-            "status": "BLOCKED",
-            "blocked_code": "BLOCKED_ENV_CAPABILITY",
+            "status": "PASS",
+            "blocked_code": null,
             "budget_status": "SPECIFIED",
             "scenario_ids": [
               "PERF-FEED-READ",
-              "PERF-PARTICIPATE"
+              "PERF-PARTICIPATE",
+              "PERF-WALLET-READ",
+              "PERF-AUTH-PROFILE"
             ]
           }
         ]
@@ -203,7 +466,7 @@
     }
   },
   "critical_invariant": {
-    "blocked": 1,
+    "blocked": 0,
     "skipped": 0,
     "uncovered": 0,
     "failed": 0,
@@ -211,18 +474,20 @@
       {
         "invariant_id": "INV-PERF-01",
         "critical": true,
-        "status": "BLOCKED",
-        "blocked_code": "BLOCKED_ENV_CAPABILITY",
+        "status": "PASS",
+        "blocked_code": null,
         "budget_status": "SPECIFIED",
         "scenario_ids": [
           "PERF-FEED-READ",
-          "PERF-PARTICIPATE"
+          "PERF-PARTICIPATE",
+          "PERF-WALLET-READ",
+          "PERF-AUTH-PROFILE"
         ]
       }
     ]
   },
   "critical_invariant_cumulative": {
-    "blocked": 1,
+    "blocked": 0,
     "skipped": 0,
     "uncovered": 0,
     "sources": {
@@ -232,13 +497,13 @@
         "uncovered": 0
       },
       "QA6": {
-        "blocked": 1,
+        "blocked": 0,
         "skipped": 0,
         "uncovered": 0
       }
     }
   },
-  "all_checks_pass": false,
+  "all_checks_pass": true,
   "defects_found": 0,
   "defects_counts": {
     "P0": 0,
@@ -253,9 +518,7 @@
   "numeric_invention_forbidden": true,
   "ci_only_heavy": true,
   "budget_status": "SPECIFIED",
-  "blocked_codes_observed": [
-    "BLOCKED_ENV_CAPABILITY"
-  ],
+  "blocked_codes_observed": [],
   "ci": {
     "strategy_fail_fast": false,
     "concurrency_group": "engine-acceptance-${{ github.ref }}",
@@ -270,5 +533,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "CI aggregator uses if: always(); artifact retention ≥ 90 days."
   ],
-  "checksum": "07a20bc0f76ef16fd0bd2cd74ca707dfed8a53b3c93eb97fb7dea1265598f01f"
+  "checksum": "a06fdee79e6b7bdb2148914b35f91afbee14413c67426b8e4a78cb7321482861"
 }

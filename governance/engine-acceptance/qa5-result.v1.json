@@ -2,16 +2,16 @@
   "schema": "governance.engine-acceptance.qa5-result.v1",
   "version": "1.0.0",
   "suite_id": "QA5",
-  "run_id": "qa5-failure-world-20260813",
+  "run_id": "qa5-failure-world-20260814",
   "todoId": "qa5-failure-world",
-  "measuredAt": "2026-08-13T21:15:16.888Z",
+  "measuredAt": "2026-08-14T03:49:32.579Z",
   "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
   "mode": "tiny",
   "kill_switch": {
     "verified_before_checks": true,
-    "target_env": "local",
+    "target_env": "ci",
     "hostname": "localhost",
-    "synthetic_account_namespace": "qa-synth-local"
+    "synthetic_account_namespace": "qa-synth-ci"
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -22,9 +22,9 @@
   "checks": {
     "failure_world": {
       "check_id": "QA5_FAILURE_WORLD",
-      "status": "FAIL",
+      "status": "PASS",
       "mode": "tiny",
-      "measuredAt": "2026-08-13T21:15:16.888Z",
+      "measuredAt": "2026-08-14T03:49:32.579Z",
       "seed": 20260812,
       "fault_hook": {
         "available": true,
@@ -48,25 +48,30 @@
         "env_hooks_present": [],
         "adapter_rel": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
       },
+      "harness_probe": {
+        "available": true,
+        "probed_path": "../../../../../tmp/aipo-harness/qa5-fault/qa5-fault-harness.v1.json",
+        "reason": null
+      },
       "axes": {
         "axis1_expected_degradation_fallback": {
           "scenario_count": 1,
           "blocked": 0,
-          "failed": 1,
-          "passed": 0,
-          "status": "FAIL"
+          "failed": 0,
+          "passed": 1,
+          "status": "PASS"
         },
         "axis2_post_recovery_invariant": {
           "scenario_count": 1,
           "blocked": 0,
-          "failed": 1,
-          "passed": 0,
-          "status": "FAIL"
+          "failed": 0,
+          "passed": 1,
+          "status": "PASS"
         }
       },
       "scenarioCount": 2,
-      "passed": 0,
-      "failed": 2,
+      "passed": 2,
+      "failed": 0,
       "blocked": 0,
       "scenarios": [
         {
@@ -88,15 +93,15 @@
             "mock_pass_forbidden": true
           },
           "kind": "ai_429_degrade",
-          "status": "FAIL",
+          "status": "PASS",
           "blocked_code": null,
           "findings": [
-            "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
+            "Real execution via run-qa5-fault.cjs (isolated CI Postgres + booted Nest + LLM fault server)."
           ],
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-13T21:15:16.888Z",
+            "clock_as_of": "2026-08-14T03:49:28.438Z",
             "request_sequence": [
               {
                 "step": "probe_fault_hook",
@@ -105,17 +110,25 @@
               },
               {
                 "step": "execute_scenario",
-                "result": "not_wired",
-                "axis": 1
+                "result": "real_execution",
+                "axis": 1,
+                "source": "run-qa5-fault.cjs"
               }
             ],
             "sanitized_request": null,
-            "sanitized_response": null,
+            "sanitized_response": {
+              "verdict": "PASS",
+              "observed_failure": true,
+              "response_body_class": "busy_or_degraded",
+              "ledger_journal_count_before": 0,
+              "ledger_journal_count_after": 0,
+              "ledger_untouched": true
+            },
             "counterexample": null,
             "error_message": null,
             "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "97ac2b5d39e57617ee95925b87bd50adf18a3034250e12cc5074616e11262bc3",
+            "configuration_fingerprint": "c08a69977c60981ee373f918c87c57235492a3fcf8a2c0e082db57bb6291faf9",
             "invariant_id": "INV-FEED-AI-01",
             "suite_id": "QA5",
             "live_http": false
@@ -139,15 +152,15 @@
             ]
           },
           "kind": "recovery_ledger",
-          "status": "FAIL",
+          "status": "PASS",
           "blocked_code": null,
           "findings": [
-            "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
+            "Real execution via run-qa5-fault.cjs (isolated CI Postgres + booted Nest + LLM fault server)."
           ],
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-13T21:15:16.888Z",
+            "clock_as_of": "2026-08-14T03:49:28.438Z",
             "request_sequence": [
               {
                 "step": "probe_fault_hook",
@@ -156,17 +169,28 @@
               },
               {
                 "step": "execute_scenario",
-                "result": "not_wired",
-                "axis": 2
+                "result": "real_execution",
+                "axis": 2,
+                "source": "run-qa5-fault.cjs"
               }
             ],
             "sanitized_request": null,
-            "sanitized_response": null,
+            "sanitized_response": {
+              "verdict": "PASS",
+              "scan": {
+                "http_status": 200,
+                "ok": true,
+                "mismatches": 0,
+                "journalsChecked": 0
+              },
+              "same_nest_process": true,
+              "nest_restarted": false
+            },
             "counterexample": null,
             "error_message": null,
             "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "462913374bd4359d19364c7b8cf68b7b57940aff46856d0b00776a24e8a3654e",
+            "configuration_fingerprint": "511f28cbfe44c5720feb2e280ad9c60f63ddef5ab33238ffa048bb1c4bc7ed53",
             "invariant_id": "INV-LEDGER-01",
             "suite_id": "QA5",
             "live_http": false
@@ -177,12 +201,12 @@
         "blocked": 0,
         "skipped": 0,
         "uncovered": 0,
-        "failed": 2,
+        "failed": 0,
         "details": [
           {
             "invariant_id": "INV-FEED-AI-01",
             "critical": true,
-            "status": "FAIL",
+            "status": "PASS",
             "blocked_code": null,
             "scenario_ids": [
               "FAULT-AI-429-DEGRADE"
@@ -191,7 +215,7 @@
           {
             "invariant_id": "INV-LEDGER-01",
             "critical": true,
-            "status": "FAIL",
+            "status": "PASS",
             "blocked_code": null,
             "scenario_ids": [
               "FAULT-RECOVERY-LEDGER-SCAN"
@@ -212,12 +236,12 @@
     "blocked": 0,
     "skipped": 0,
     "uncovered": 0,
-    "failed": 2,
+    "failed": 0,
     "details": [
       {
         "invariant_id": "INV-FEED-AI-01",
         "critical": true,
-        "status": "FAIL",
+        "status": "PASS",
         "blocked_code": null,
         "scenario_ids": [
           "FAULT-AI-429-DEGRADE"
@@ -226,7 +250,7 @@
       {
         "invariant_id": "INV-LEDGER-01",
         "critical": true,
-        "status": "FAIL",
+        "status": "PASS",
         "blocked_code": null,
         "scenario_ids": [
           "FAULT-RECOVERY-LEDGER-SCAN"
@@ -251,15 +275,15 @@
       }
     }
   },
-  "all_checks_pass": false,
-  "defects_found": 2,
+  "all_checks_pass": true,
+  "defects_found": 0,
   "defects_counts": {
     "P0": 0,
-    "P1": 2,
+    "P1": 0,
     "P2": 0,
     "P3": 0
   },
-  "verdict_contribution": "ENGINE_NOT_ACCEPTED",
+  "verdict_contribution": "ENGINE_QA_INCOMPLETE",
   "next": "QA6_PERFORMANCE",
   "product_mutation": 0,
   "kpi_forbidden": true,
@@ -277,5 +301,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "CI aggregator uses if: always(); artifact retention ≥ 90 days."
   ],
-  "checksum": "fbcaf2ca14a4b7bcb0ea19b4cbabc89cd5e3f1cd0cc491c28f441c2e5b1ca782"
+  "checksum": "08eee6997c13bb4e88302f1446f909dda0c9b3c7a614c0d5c3ca1b04a34bb759"
 }

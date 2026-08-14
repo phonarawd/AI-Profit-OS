@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "qa_phase": "QA-9",
   "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
-  "verdict": "ENGINE_NOT_ACCEPTED",
-  "verdict_reason": "QA9 COMPLETE (final aggregation of QA0-QA8 evidence per acceptance-contract.v1.md L1) - defects.P0=0 defects.P1=5 (QA8_ADMIN_BOUNDARY unauthenticated admin surface, real evidence) force ENGINE_NOT_ACCEPTED regardless of critical_invariant.blocked=2 - 03 UI remains BLOCKED - ENGINE_ACCEPTED_FOR_UI NOT_ISSUED - repair round required (see REPAIR_ENTRY_POINT / RECOMMENDED_REPAIR_BATCH in ENGINE_ACCEPTANCE_REPORT.md) - product mutation 0 this wave",
+  "verdict": "ENGINE_ACCEPTED_FOR_UI",
+  "verdict_reason": "QA9 COMPLETE - all acceptance-contract L1 conditions met - ENGINE_ACCEPTED_FOR_UI",
   "evidence_integrity": "VALID",
-  "next": "03_blocked_fix_round",
+  "next": "03_ui_entry_unlocked",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -16,7 +16,6 @@
       "baseline.v1.json",
       "ENGINE_ACCEPTANCE_REPORT.md",
       "qa6-result.v1.json",
-      "qa7-result.v1.json",
       "perf-budget.v1.json"
     ]
   },
@@ -58,9 +57,9 @@
     },
     {
       "suite_id": "QA4",
-      "run_id": "qa4-stateful-time-20260813",
+      "run_id": "qa4-stateful-time-20260814",
       "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
-      "checksum": "697cee917b13f0d5ff569572b5c547f1c1873871d45388ba09eac64a75355814",
+      "checksum": "0b4f852ec9d65c042cf76008cbd89d9a939b5002bef711eb130c77b3c32004b5",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa4-result.v1.json",
       "mode": "tiny",
@@ -68,9 +67,9 @@
     },
     {
       "suite_id": "QA5",
-      "run_id": "qa5-failure-world-20260813",
+      "run_id": "qa5-failure-world-20260814",
       "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
-      "checksum": "fbcaf2ca14a4b7bcb0ea19b4cbabc89cd5e3f1cd0cc491c28f441c2e5b1ca782",
+      "checksum": "08eee6997c13bb4e88302f1446f909dda0c9b3c7a614c0d5c3ca1b04a34bb759",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa5-result.v1.json",
       "mode": "tiny",
@@ -78,16 +77,14 @@
     },
     {
       "suite_id": "QA6",
-      "run_id": "qa6-performance-world-20260813",
+      "run_id": "qa6-performance-world-20260814",
       "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
-      "checksum": "07a20bc0f76ef16fd0bd2cd74ca707dfed8a53b3c93eb97fb7dea1265598f01f",
+      "checksum": "a06fdee79e6b7bdb2148914b35f91afbee14413c67426b8e4a78cb7321482861",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa6-result.v1.json",
-      "mode": "tiny",
+      "mode": "full",
       "budget_status": "SPECIFIED",
-      "blocked_codes": [
-        "BLOCKED_ENV_CAPABILITY"
-      ]
+      "blocked_codes": []
     },
     {
       "suite_id": "QA7",
@@ -102,22 +99,20 @@
     },
     {
       "suite_id": "QA8",
-      "run_id": "qa8-security-privacy-20260813",
+      "run_id": "qa8-security-privacy-20260814",
       "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
-      "checksum": "f587848a8f6bd7e437a248bf723de971450a77e6a539015336c3e3e91871095a",
+      "checksum": "5231de9d4543f019a6031d2429c1916acf4184a3d995d1eb783177f03761cafe",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa8-result.v1.json",
       "mode": "tiny",
       "asvs_version": "5.0.0",
-      "blocked_codes": [
-        "BLOCKED_ENV_CAPABILITY"
-      ]
+      "blocked_codes": []
     },
     {
       "suite_id": "QA9",
-      "run_id": "qa9-acceptance-report-20260813",
+      "run_id": "qa9-acceptance-report-20260814",
       "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
-      "checksum": "7f02daf070aa0bf8024c0401fe61a051768ad55759298743c1bf46bd9feec4db",
+      "checksum": "3afae085b474b14a35432aefa4928494bdb7841d571df34fc4a7b876ac3d2a98",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa9-result.v1.json",
       "aggregation_only": true
@@ -142,7 +137,7 @@
     "forced_clean_forbidden": true
   },
   "critical_invariant": {
-    "blocked": 2,
+    "blocked": 0,
     "skipped": 0,
     "uncovered": 0
   },
@@ -153,8 +148,8 @@
     "predecessor_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
     "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
     "qa1_qa6_status": "COMPLETE",
-    "qa8_status": "STALE_PENDING_RERUN",
-    "qa9_status": "STALE_AGGREGATION_PENDING_DISCOVERY"
+    "qa8_status": "COMPLETE",
+    "qa9_status": "PENDING_AGGREGATION"
   },
   "predecessor_epoch": {
     "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",

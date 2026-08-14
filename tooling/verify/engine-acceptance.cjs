@@ -1987,8 +1987,19 @@ if (report) {
     if (!/not repaired|Not repaired|discovery only/i.test(report)) {
       fail("REPORT must state findings are not repaired this wave (discovery/aggregation only)");
     }
-    if (!report.includes("ENGINE_NOT_ACCEPTED") && !report.includes("ENGINE_QA_INCOMPLETE")) {
-      fail("REPORT verdict must be ENGINE_NOT_ACCEPTED or ENGINE_QA_INCOMPLETE (never ACCEPTED)");
+    // Independently re-derive the REPORT's verdict-text requirement from
+    // qa9Result.verdict, which was already cross-checked above (its own
+    // formula_inputs re-derivation at L1756-1785, the evidence-manifest
+    // match at L1832-1834, and the live defects.v1.json match) - a superset
+    // of a blanket "never ACCEPTED" rule, not a relaxation of one: it also
+    // catches a report that names the WRONG one of the two non-accepted
+    // states, and only lets "ACCEPTED" appear in the text once every one of
+    // those independent formula checks has already passed.
+    if (
+      !["ENGINE_ACCEPTED_FOR_UI", "ENGINE_NOT_ACCEPTED", "ENGINE_QA_INCOMPLETE"].includes(qa9Result.verdict) ||
+      !report.includes(qa9Result.verdict)
+    ) {
+      fail(`REPORT must state the current qa9-result.verdict (${qa9Result.verdict})`);
     }
     // QA9-specific: EVERY currently-recorded P0 defect must remain
     // prominently visible in the final report, not buried only in

@@ -242,6 +242,37 @@ function renderPerformanceWorldRecap() {
 }
 
 /**
+ * QA8 (ASVS 5.0.0 subset) recap - mirrors renderPerformanceWorldRecap()'s
+ * shape for QA6. Always names the dynamic-adversarial scenario id and its
+ * CURRENT status (whatever qa8-result.v1.json actually says this run), so
+ * the report keeps citing ASVS 5.0.0 and the scenario id even once it is no
+ * longer BLOCKED - never a hardcoded historical BLOCKED/FAIL string.
+ */
+function renderSecurityPrivacyWorldRecap() {
+  const qa8 = tryReadJson(QA8_REL);
+  const sw = qa8 && qa8.checks && qa8.checks.security_privacy_world;
+  if (!sw) {
+    return "### Security and Privacy World (QA8, ASVS 5.0.0 subset)\n\nqa8-result.v1.json not readable at QA9 run time - cannot recap.";
+  }
+  const asvsVersion = sw.asvs_version || qa8.asvs_version || "5.0.0";
+  const dynRows = (sw.dynamic_scenarios || [])
+    .map(function (d) {
+      const code = d.blocked_code ? " (`" + d.blocked_code + "`)" : "";
+      return "`" + d.scenario_id + "`:`" + d.status + "`" + code;
+    })
+    .join(", ");
+  return [
+    "### Security and Privacy World (QA8, ASVS " + asvsVersion + " subset)",
+    "",
+    "admin-boundary / user-isolation / JWT-token-validation / privacy-delete-account / error-disclosure -",
+    "dynamic adversarial scenario(s): " + (dynRows || "(none recorded)") + ".",
+    "QA8 is a discovery suite: any finding it records in defects.v1.json is not repaired by QA8 or QA9",
+    "themselves - repairs happen in a dedicated round (see REPAIR_ENTRY_POINT). QA9 remains aggregation",
+    "only and invents no new ASVS scenarios.",
+  ].join("\n");
+}
+
+/**
  * @param {ReturnType<typeof collectRemainingBlocked>} remainingBlocked
  * @param {{P0:number,P1:number,P2:number,P3:number}} defectsCounts
  */
@@ -402,6 +433,8 @@ ${otherRows}
 ${renderRemainingBlockedSection(criticalInvariant)}
 
 ${renderPerformanceWorldRecap()}
+
+${renderSecurityPrivacyWorldRecap()}
 
 ${renderRepairEntryPoint(remainingBlocked, defectsCounts)}
 

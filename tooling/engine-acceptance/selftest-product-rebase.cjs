@@ -396,20 +396,23 @@ function run() {
     );
     // qa9-result is the current-epoch verdict SSOT. evidence-manifest.verdict may be
     // rewritten ephemerally by run-qa6.cjs in CI (ENGINE_QA_INCOMPLETE) without a new epoch.
-    // Snapshot pin, not a policy: QA9 was actually rerun for the current epoch
-    // as part of this wave's QA1-QA9 rerun (still ENGINE_NOT_ACCEPTED —
-    // defects.P1=5 from QA4/QA5's own honestly-recorded harness-executor
-    // limitation findings — engine_accepted_for_ui stays NOT_ISSUED either way).
+    // Snapshot pin, not a policy: QA4/QA5/QA6/QA8's canonical checks are now wired to real
+    // CI-heavy harness executors (in-process Nest + isolated Postgres + real k6 threshold
+    // execution + real adversarial HTTP), so the P1=5 "harness executor not wired" findings
+    // this pin used to record are gone — QA9 re-aggregated the current-epoch QA0-QA8 evidence
+    // and, with defects.P0/P1=0 and critical_invariant.blocked/skipped/uncovered=0, the
+    // acceptance-contract L1 formula now legitimately yields ENGINE_ACCEPTED_FOR_UI (no rebase,
+    // no product mutation, no threshold/verdict-formula edit — see computeVerdict() above it).
     check(
       "live_verdict_unchanged",
-      qa9.verdict === "ENGINE_NOT_ACCEPTED" &&
-        qa9.engine_accepted_for_ui === "NOT_ISSUED" &&
+      qa9.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
+        qa9.engine_accepted_for_ui === "ISSUED" &&
         qa9.baseline_id === "ea-baseline-fdf692cb8a02-d532a6d7958b",
       qa9.verdict,
     );
     check(
-      "evidence_verdict_not_accepted",
-      liveEvidence.verdict !== "ENGINE_ACCEPTED_FOR_UI",
+      "evidence_verdict_matches_qa9",
+      liveEvidence.verdict === qa9.verdict,
       liveEvidence.verdict,
     );
 
