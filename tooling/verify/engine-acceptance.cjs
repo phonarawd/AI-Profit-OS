@@ -750,15 +750,26 @@ if (evidence) {
     if (ephemeralQa6RewriteNow) {
       // run-qa6.cjs recomputes its own cumulative from QA5's on-disk result
       // only — it has no knowledge of QA8 in this ephemeral CI recompute.
-      // Pin re-derived from the live QA4-QA6 result files for the CURRENT
-      // baseline (not hardcoded speculatively): QA4/QA5 now record honest
-      // FAIL (harness executor not wired) rather than BLOCKED, so only QA6's
-      // own UNSPECIFIED_PERF_BUDGET/BLOCKED_ENV_CAPABILITY contributes.
-      if (
-        !evidence.critical_invariant ||
-        evidence.critical_invariant.blocked !== 1
-      ) {
-        fail("ephemeral QA6 rewrite must keep critical_invariant.blocked=1 (QA4-QA6 cumulative)");
+      // Authoritative expected total = QA6's own self-computed cumulative
+      // (critical_invariant_cumulative.blocked) — re-derived here rather
+      // than a hardcoded literal, so real CI-heavy evidence that legitimately
+      // drives QA4/QA5/QA6 to 0 is not mistaken for drift.
+      let qa6Peek2 = null;
+      try {
+        qa6Peek2 = readJson(`${GOV}/qa6-result.v1.json`);
+      } catch {
+        qa6Peek2 = null;
+      }
+      const expectedQa6Blocked =
+        qa6Peek2 && qa6Peek2.critical_invariant_cumulative
+          ? qa6Peek2.critical_invariant_cumulative.blocked
+          : null;
+      if (expectedQa6Blocked === null) {
+        fail("cannot re-derive expected critical_invariant.blocked (qa6-result.critical_invariant_cumulative missing)");
+      } else if (!evidence.critical_invariant || evidence.critical_invariant.blocked !== expectedQa6Blocked) {
+        fail(
+          `ephemeral QA6 rewrite critical_invariant.blocked must equal qa6-result.critical_invariant_cumulative.blocked=${expectedQa6Blocked} (got ${evidence.critical_invariant && evidence.critical_invariant.blocked})`,
+        );
       }
     } else {
       // Authoritative expected total = QA8's own self-computed cumulative
