@@ -146,11 +146,24 @@ export function setup() {
   return { ok: true };
 }
 
+// Diagnostic-only, throttled to one log line per tag per process — never
+// affects the threshold verdict, only helps root-cause a real failure.
+const loggedFailureForTag = {};
+function logFirstFailure(tag, res) {
+  if (res.status >= 200 && res.status < 400) return;
+  if (loggedFailureForTag[tag]) return;
+  loggedFailureForTag[tag] = true;
+  console.log(
+    `[scenario-mix] first non-2xx for ${tag}: status=${res.status} body=${String(res.body || "").slice(0, 300)}`,
+  );
+}
+
 export function feedRead() {
   const res = http.get(`${BASE}${ROUTES.feed_read}`, {
     tags: { scenario: "feed_read" },
     headers: authHeaders(),
   });
+  logFirstFailure("feed_read", res);
   check(res, { "feed status handled": (r) => r.status > 0 });
   sleep(0.2);
 }
@@ -160,6 +173,7 @@ export function opportunitiesRead() {
     tags: { scenario: "participate" },
     headers: authHeaders(),
   });
+  logFirstFailure("participate", res);
   check(res, { "opportunities read status handled": (r) => r.status > 0 });
   sleep(0.3);
 }
@@ -174,6 +188,7 @@ export function walletRead() {
     tags: { scenario: "wallet_read" },
     headers: authHeaders(),
   });
+  logFirstFailure("wallet_read", res);
   check(res, { "wallet status handled": (r) => r.status > 0 });
   sleep(0.2);
 }
@@ -183,6 +198,7 @@ export function authProfile() {
     tags: { scenario: "auth_profile" },
     headers: authHeaders(),
   });
+  logFirstFailure("auth_profile", res);
   check(res, { "auth status handled": (r) => r.status > 0 });
   sleep(0.2);
 }

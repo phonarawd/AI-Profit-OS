@@ -227,6 +227,10 @@ async function runQa6Threshold(opts = {}) {
     { encoding: "utf8", env, cwd: ROOT, timeout: 180_000 },
   );
 
+  if (spawned.stdout) {
+    console.log(`[run-qa6-threshold] k6 stdout tail:\n${String(spawned.stdout).slice(-3000)}`);
+  }
+
   let summary = null;
   if (fs.existsSync(summaryPath)) {
     try {
@@ -280,6 +284,7 @@ async function runQa6Threshold(opts = {}) {
       exit_code: spawned.status,
       exit_ok: k6ExitOk,
       stderr_excerpt: String(spawned.stderr || "").slice(0, 4000),
+      stdout_excerpt: String(spawned.stdout || "").slice(0, 4000),
       summary_present: Boolean(summary),
       summary_sha256: fs.existsSync(summaryPath)
         ? crypto.createHash("sha256").update(fs.readFileSync(summaryPath)).digest("hex")
