@@ -227,8 +227,20 @@ async function runQa6Threshold(opts = {}) {
     { encoding: "utf8", env, cwd: ROOT, timeout: 180_000 },
   );
 
-  if (spawned.stdout) {
-    console.log(`[run-qa6-threshold] k6 stdout tail:\n${String(spawned.stdout).slice(-3000)}`);
+  const diagnosticLines = String(spawned.stdout || "")
+    .split("\n")
+    .filter((l) => l.includes("[scenario-mix]"))
+    .concat(
+      String(spawned.stderr || "")
+        .split("\n")
+        .filter((l) => l.includes("[scenario-mix]")),
+    );
+  if (diagnosticLines.length) {
+    console.log(`[run-qa6-threshold] k6 diagnostic lines:\n${diagnosticLines.join("\n")}`);
+  } else {
+    console.log(
+      `[run-qa6-threshold] no [scenario-mix] diagnostic lines found in k6 output (stdout_len=${String(spawned.stdout || "").length} stderr_len=${String(spawned.stderr || "").length})`,
+    );
   }
 
   let summary = null;
@@ -283,8 +295,11 @@ async function runQa6Threshold(opts = {}) {
     k6: {
       exit_code: spawned.status,
       exit_ok: k6ExitOk,
-      stderr_excerpt: String(spawned.stderr || "").slice(0, 4000),
-      stdout_excerpt: String(spawned.stdout || "").slice(0, 4000),
+      stderr_excerpt: String(spawned.stderr || "").slice(-4000),
+      stdout_excerpt: String(spawned.stdout || "").slice(-4000),
+      stdout_len: String(spawned.stdout || "").length,
+      stderr_len: String(spawned.stderr || "").length,
+      diagnostic_lines: diagnosticLines,
       summary_present: Boolean(summary),
       summary_sha256: fs.existsSync(summaryPath)
         ? crypto.createHash("sha256").update(fs.readFileSync(summaryPath)).digest("hex")
