@@ -1,0 +1,22 @@
+// PTF-00C-R1 §7 — plain-Node CJS build of this worker's TS sources, used
+// ONLY by tooling/verify/ebay-resilience.cjs to run the fault-injection
+// selftest with a mocked global.fetch (no live eBay call). Deployed Worker
+// bundling is unaffected — that still goes through wrangler/esbuild using
+// tsconfig.json's Bundler resolution + noEmit.
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node10",
+    "lib": ["ES2022", "DOM"],
+    "outDir": "dist-selftest",
+    "rootDir": "src",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": false,
+    "declaration": false
+  },
+  "include": ["src/**/*.ts", "src/**/*.cts"]
+}

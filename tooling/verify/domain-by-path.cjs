@@ -464,6 +464,9 @@ const RULES = [
       /^services\/market-intelligence\/src\/(watch|card|bag)-match\.cjs$/.test(f) ||
       /^services\/api-nest\/src\/adapters\//.test(f) ||
       /^tooling\/verify\/ebay-identity-ingest\.cjs$/.test(f) ||
+      /^tooling\/ebay-resilience\//.test(f) ||
+      /^\.github\/workflows\/ebay-fault-injection\.yml$/.test(f) ||
+      /^supabase\/migrations\/.*provider.*\.sql$/.test(f) ||
       (/catalog-runtime-seed/.test(f) &&
         (/services\/(market-intelligence|api-nest)\//.test(f) ||
           /^tooling\/verify\//.test(f))),

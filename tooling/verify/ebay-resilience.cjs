@@ -4,7 +4,16 @@
  * durable CLOSED/OPEN circuit + HEALTHY/DEGRADED/STALE/BLOCKED (provider-health.cjs)
  * always-heartbeat + per-marketplace isolation + nativeAmount contract (worker source)
  * "eBay down != Peotteok down": one full-outage tick must never crash/discard others.
+ *
+ * PTF-00C-R1 closure additions:
+ * - §2 heartbeat idempotency (provider_tick_ledger + providerTickId thread-through)
+ * - §3 nested retry elimination (single per-tick token preflight)
+ * - §4/§6 deterministic tick runtime budget (TICK_BUDGET_MS/deadline)
+ * - §5 circuit-breaker honesty (upstreamGating always "NONE" this wave)
+ * - §7 REAL runtime fault-injection selftests (mocked fetch / fake DB, not
+ *   static regex) for both the worker tick logic and Nest's durable dedup.
  */
+const { spawnSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
@@ -28,10 +37,15 @@ const files = [
   "workers/ebay-adapter/src/retry-policy.d.cts",
   "workers/ebay-adapter/src/browse-api.ts",
   "workers/ebay-adapter/src/index.ts",
+  "workers/ebay-adapter/src/constants.ts",
+  "workers/ebay-adapter/src/fault-injection.selftest.ts",
+  "workers/ebay-adapter/tsconfig.selftest.json",
   "services/market-intelligence/src/provider-health.cjs",
   "services/api-nest/src/adapters/provider-health.service.ts",
+  "services/api-nest/src/adapters/provider-health.selftest.ts",
   "services/api-nest/src/adapters/adapters.admin.service.ts",
   "supabase/migrations/20260814130100_ptf00c_provider_runtime_health.sql",
+  "supabase/migrations/20260814140000_ptf00c_r1_provider_tick_ledger.sql",
 ];
 for (const f of files) mustExist(f);
 if (fails.length) {
@@ -245,6 +259,64 @@ const adaptersSvc = read("services/api-nest/src/adapters/adapters.admin.service.
 for (const needle of ["recordEbayProviderHeartbeat", "recordFxIngest", "worstTint"]) {
   if (!adaptersSvc.includes(needle)) fails.push(`adapters.admin.service missing ${needle}`);
 }
+if (!adaptersSvc.includes("body.providerTickId")) {
+  fails.push(
+    "PTF-00C-R1 §2 regression: adapters.admin.service must thread body.providerTickId into recordTick() calls",
+  );
+}
+
+// --- PTF-00C-R1 §2 heartbeat idempotency structural checks ---
+const constantsTs = read("workers/ebay-adapter/src/constants.ts");
+for (const needle of ["TICK_BUDGET_MS", "MIN_CALL_BUDGET_MS", "TICK_CONCURRENCY"]) {
+  if (!constantsTs.includes(needle)) fails.push(`constants.ts missing ${needle}`);
+}
+if (!workerIdx.includes("providerTickId")) {
+  fails.push("PTF-00C-R1 §2 regression: ebay-adapter index.ts must generate/send providerTickId");
+}
+if (!/const providerTickId = randomTickId\(\);/.test(workerIdx)) {
+  fails.push("PTF-00C-R1 §2 regression: providerTickId must be generated ONCE per runTick, not per batch");
+}
+if (!workerIdx.includes("tickIncomplete")) {
+  fails.push("PTF-00C-R1 §4/§6 regression: ebay-adapter index.ts must surface explicit tickIncomplete evidence");
+}
+if (!providerHealthSvc.includes("provider_tick_ledger")) {
+  fails.push("PTF-00C-R1 §2 regression: ProviderHealthService must claim provider_tick_ledger before applying a tick");
+}
+if (!providerHealthSvc.includes("upstreamGating")) {
+  fails.push("PTF-00C-R1 §5 regression: ProviderHealthService must expose the honest upstreamGating=NONE signal");
+}
+
+// --- PTF-00C-R1 §3 nested-retry-amplification regression guard ---
+// searchOnce (the Browse fetch) must never itself acquire/retry a token —
+// that would reintroduce the outer(searchItemSummary) x inner(getAppToken)
+// multiplication this closure removed. getAppToken must be called from
+// index.ts's runTick exactly once (the preflight), never from browse-api.ts
+// itself anymore.
+{
+  const searchOnceBody = (browseApi.match(/async function searchOnce\([\s\S]*?\n\}/) || [""])[0];
+  if (!searchOnceBody) {
+    fails.push("browse-api.ts: could not locate searchOnce() body for the nested-retry regression guard");
+  } else if (/getAppToken\(/.test(searchOnceBody)) {
+    fails.push(
+      "PTF-00C-R1 §3 regression: searchOnce() must never call getAppToken() — token retry must not nest inside the per-query Browse retry",
+    );
+  }
+  if (browseApi.includes("clientId") && /async function searchOnce/.test(browseApi)) {
+    // searchOnce/searchItemSummary must take an already-resolved token, not
+    // raw credentials (which is what let it call getAppToken itself before).
+    const searchItemSummaryBody = (
+      browseApi.match(/export async function searchItemSummary\([\s\S]*?\n\}/) || [""]
+    )[0];
+    if (/clientId|clientSecret/.test(searchItemSummaryBody)) {
+      fails.push(
+        "PTF-00C-R1 §3 regression: searchItemSummary() must take a resolved `token`, not clientId/clientSecret",
+      );
+    }
+  }
+  if (!browseApi.includes("deadlineAtMs")) {
+    fails.push("PTF-00C-R1 §4/§6 regression: browse-api.ts must thread deadlineAtMs through withRetry/fetchWithTimeout");
+  }
+}
 
 // --- §11 user critical-path isolation: Nest must never call OUT to eBay ---
 // (ebay-adapter is a standalone Cloudflare Worker that PUSHes into Nest via
@@ -301,10 +373,93 @@ if (pkg.indexOf('"verify:ebay-resilience"') === -1) {
   fails.push("package.json missing verify:ebay-resilience script");
 }
 
+// --- PTF-00C-R1 §7 REAL runtime fault-injection selftests ---
+// Both run the ACTUAL compiled TypeScript control flow (mocked
+// fetch / fake in-memory DB), never a static regex-only claim.
+if (fails.length === 0) {
+  const tscBin = require.resolve("typescript/bin/tsc");
+  const workerBuild = spawnSync(
+    process.execPath,
+    [tscBin, "-p", path.join(root, "workers/ebay-adapter/tsconfig.selftest.json")],
+    { cwd: root, encoding: "utf8" },
+  );
+  process.stdout.write(workerBuild.stdout || "");
+  process.stderr.write(workerBuild.stderr || "");
+  if (workerBuild.status !== 0) {
+    fails.push(
+      "workers/ebay-adapter tsconfig.selftest.json build failed — cannot run fault-injection.selftest",
+    );
+  } else {
+    const distSelftest = path.join(root, "workers/ebay-adapter/dist-selftest");
+    try {
+      fs.copyFileSync(
+        path.join(root, "workers/ebay-adapter/src/retry-policy.cjs"),
+        path.join(distSelftest, "retry-policy.cjs"),
+      );
+    } catch (e) {
+      fails.push(`could not stage retry-policy.cjs into dist-selftest: ${e.message}`);
+    }
+    const selftestJs = path.join(distSelftest, "fault-injection.selftest.js");
+    if (fails.length === 0) {
+      if (!fs.existsSync(selftestJs)) {
+        fails.push(`missing compiled selftest: ${selftestJs}`);
+      } else {
+        const run = spawnSync(process.execPath, [selftestJs], {
+          cwd: root,
+          encoding: "utf8",
+          timeout: 60_000,
+        });
+        process.stdout.write(run.stdout || "");
+        process.stderr.write(run.stderr || "");
+        if (run.status !== 0 || !(run.stdout || "").includes("ALL PASS")) {
+          fails.push(
+            "fault-injection.selftest did not report ALL PASS (worker tick fault-injection failed — see stdout above)",
+          );
+        }
+      }
+    }
+  }
+}
+
+if (fails.length === 0) {
+  const tscBin = require.resolve("typescript/bin/tsc");
+  const nestBuild = spawnSync(
+    process.execPath,
+    [tscBin, "-p", path.join(root, "services/api-nest/tsconfig.json")],
+    { cwd: root, encoding: "utf8" },
+  );
+  process.stdout.write(nestBuild.stdout || "");
+  process.stderr.write(nestBuild.stderr || "");
+  if (nestBuild.status !== 0) {
+    fails.push("services/api-nest tsc build failed — cannot run provider-health.selftest");
+  } else {
+    const selftestJs = path.join(
+      root,
+      "services/api-nest/dist/adapters/provider-health.selftest.js",
+    );
+    if (!fs.existsSync(selftestJs)) {
+      fails.push(`missing compiled selftest: ${selftestJs}`);
+    } else {
+      const run = spawnSync(process.execPath, [selftestJs], {
+        cwd: root,
+        encoding: "utf8",
+        timeout: 30_000,
+      });
+      process.stdout.write(run.stdout || "");
+      process.stderr.write(run.stderr || "");
+      if (run.status !== 0 || !(run.stdout || "").includes("ALL PASS")) {
+        fails.push(
+          "provider-health.selftest did not report ALL PASS (heartbeat idempotency contract failed — see stdout above)",
+        );
+      }
+    }
+  }
+}
+
 if (fails.length) {
   console.error("[verify:ebay-resilience] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
 console.log(
-  "[verify:ebay-resilience] PASS (timeout/bounded-retry/backoff+jitter · CLOSED/OPEN/HALF_OPEN · HEALTHY/DEGRADED/STALE/BLOCKED · always-heartbeat · nativeAmount contract · money-independent)",
+  "[verify:ebay-resilience] PASS (timeout/bounded-retry/backoff+jitter · CLOSED/OPEN/HALF_OPEN · HEALTHY/DEGRADED/STALE/BLOCKED · always-heartbeat · nativeAmount contract · money-independent · PTF-00C-R1: tick idempotency ledger · nested-retry eliminated · tick deadline bounded · circuit honesty · real fault-injection selftests)",
 );

@@ -2,7 +2,7 @@
   "projectRef": "mgsytcetsiecllmhcyox",
   "asOf": "2026-08-14",
   "source": "Supabase MCP list_migrations",
-  "note": "로컬 supabase/migrations/*.sql 버전 접두사와 원격 applied 1:1. 원격 apply 후 이 목록을 갱신한다. PTF-00C: +20260814130000, +20260814130100.",
+  "note": "로컬 supabase/migrations/*.sql 버전 접두사와 원격 applied 1:1. 원격 apply 후 이 목록을 갱신한다. PTF-00C: +20260814130000, +20260814130100, +20260814130200. PTF-00C-R1: +20260814140000 (provider_tick_ledger; remote list_migrations assigns its own apply-time version — this fixture (and verify:migrations-applied-parity) tracks the LOCAL filename prefix 1:1, matching the pre-existing PTF-00C precedent, not the raw remote version number).",
   "versions": [
     "20260808205842",
     "20260808205844",
@@ -41,6 +41,7 @@
     "20260813202305",
     "20260814130000",
     "20260814130100",
-    "20260814130200"
+    "20260814130200",
+    "20260814140000"
   ]
 }

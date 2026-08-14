@@ -61,6 +61,7 @@
     "verify:adapter-matching-kpi": "node tooling/verify/adapter-matching-kpi.cjs",
     "verify:ebay-identity-ingest": "node tooling/verify/ebay-identity-ingest.cjs",
     "verify:ebay-resilience": "node tooling/verify/ebay-resilience.cjs",
+    "ebay-resilience:fault-injection": "node tooling/ebay-resilience/run-fault-injection.cjs",
     "verify:price-denomination-contract": "node tooling/verify/price-denomination-contract.cjs",
     "verify:simulation-gate": "node tooling/verify/simulation-gate.cjs",
     "verify:ai-feature-platform": "node tooling/verify/ai-feature-platform.cjs",

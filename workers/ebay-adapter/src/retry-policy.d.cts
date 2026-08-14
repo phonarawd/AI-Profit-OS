@@ -6,6 +6,8 @@ export type EbayErrorClass =
   | "timeout"
   | "network_error"
   | "malformed_response"
+  /** PTF-00C-R1 §4/§6 — tick budget exhausted; call was never attempted. */
+  | "deadline_exceeded"
   | "unknown";
 
 export const DEFAULT_MAX_ATTEMPTS: number;

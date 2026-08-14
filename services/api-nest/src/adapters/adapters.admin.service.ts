@@ -467,6 +467,13 @@ export class AdaptersAdminService {
    * PTF-00C §8 — per-marketplace heartbeat when the worker supplies one;
    * else a single provider-level tick derived from the legacy fields so
    * every ingest (old or new worker contract) still updates durable health.
+   *
+   * PTF-00C-R1 §2 — `body.providerTickId` (one id per real scheduled worker
+   * run, shared by every batch of that run) is threaded into every
+   * `recordTick()` call below. `ProviderHealthService.recordTick()` owns
+   * the actual durable dedup (claims `provider_tick_ledger`); this method
+   * stays a thin pass-through so a batch replay of the SAME tick is a
+   * no-op there instead of double-adding to attempted/success/failure.
    */
   private async recordEbayProviderHeartbeat(
     body: AdapterIngestBody,
@@ -477,6 +484,7 @@ export class AdaptersAdminService {
     )
       ? body.marketplaceHealth
       : [];
+    const providerTickId = body.providerTickId ?? null;
 
     if (heartbeats.length > 0) {
       let attemptedTotal = 0;
@@ -500,6 +508,7 @@ export class AdaptersAdminService {
           failureCount,
           errorClass: h.errorClass ?? null,
           observedAt,
+          providerTickId,
         });
       }
       await this.providerHealth.recordTick({
@@ -509,6 +518,7 @@ export class AdaptersAdminService {
         failureCount: failureTotal,
         errorClass: lastErrorClass,
         observedAt,
+        providerTickId,
       });
       return;
     }
@@ -526,6 +536,7 @@ export class AdaptersAdminService {
       failureCount: failed ? attempted : 0,
       errorClass: failed ? "legacy_unclassified" : null,
       observedAt,
+      providerTickId,
     });
   }
 
@@ -725,6 +736,7 @@ export class AdaptersAdminService {
         lastSuccessAt: m.lastSuccessAt,
         lastFailureAt: m.lastFailureAt,
         lastErrorClass: m.lastErrorClass,
+        upstreamGating: m.upstreamGating,
       })),
     };
   }

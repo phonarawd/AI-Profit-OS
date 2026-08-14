@@ -12,7 +12,37 @@
  *
  * "eBay down != Peotteok down": BLOCKED here must only ever gate new
  * auto-publish (adapters.mi/day1Auto), never mutate settled ledger/money.
+ *
+ * PTF-00C-R1 §2 (heartbeat idempotency) — a single real scheduled worker
+ * tick can arrive here more than once: the worker splits listings into
+ * batches and (pre-R1) repeated the SAME `marketplaceHealth` evidence on
+ * every batch, network retry can redeliver the same ingest POST, and a
+ * duplicate/manual ingest call can replay an already-recorded tick. Every
+ * `recordTick()` call now claims a durable, uniqueness-checked row in
+ * `provider_tick_ledger` keyed on (providerId, marketplaceId,
+ * providerTickId) BEFORE it is allowed to touch the cumulative
+ * attempted/success/failure counters or the circuit-state transition. A
+ * conflict on that claim means this exact tick's evidence for this exact
+ * marketplace was already durably recorded — the call becomes a pure no-op
+ * (current snapshot returned unchanged, no double counting, no spurious
+ * extra circuit transition). Callers that omit `providerTickId` (older/
+ * manual callers) get a fresh random id per call, i.e. unchanged pre-R1
+ * behavior (always applied, no dedup possible without a caller-supplied id).
+ *
+ * PTF-00C-R1 §5 (circuit breaker honesty) — CLOSED/OPEN/HALF_OPEN here is
+ * durable OUTAGE/HEALTH EVIDENCE ONLY. The ebay-adapter worker does NOT
+ * consult this state before calling eBay — it never has, and this closure
+ * does not wire that up (Option B of PTF-00C-R1 §5). OPEN must never be
+ * read as "the worker will skip its scheduled upstream calls while this is
+ * OPEN" — see `upstreamGating` below, which is always `"NONE"` in this
+ * wave. Upstream call volume during an outage is bounded by a completely
+ * separate mechanism: retry-policy.cjs's bounded attempts + the worker's
+ * own tick deadline/budget (constants.ts TICK_BUDGET_MS) — not by this
+ * breaker. If the product later wants OPEN to actually gate upstream calls,
+ * that is a new, explicit change (PTF-R1+), not an implicit side effect of
+ * this state machine's existence.
  */
+import { randomUUID } from "node:crypto";
 import { Injectable } from "@nestjs/common";
 import { PostgresService } from "../db/postgres";
 import {
@@ -59,6 +89,12 @@ export type ProviderHealthSnapshot = {
   lastFailureAt: string | null;
   lastErrorClass: string | null;
   lastTickAt: string | null;
+  /**
+   * PTF-00C-R1 §5 — always `"NONE"` in this wave: `circuitState`/
+   * `displayCircuitState` are durable evidence only and never gate/skip the
+   * worker's scheduled upstream eBay calls. See class docstring.
+   */
+  upstreamGating: "NONE";
 };
 
 export type RecordTickInput = {
@@ -70,6 +106,14 @@ export type RecordTickInput = {
   failureCount: number;
   errorClass?: string | null;
   observedAt: string;
+  /**
+   * PTF-00C-R1 §2 — durable idempotency key for the ONE real scheduled tick
+   * this evidence came from. Every listing batch/retry/duplicate delivery
+   * of the SAME tick must carry the SAME id so this call becomes a no-op
+   * after the first. Omitted (older/manual callers) = always applied, same
+   * as pre-R1 behavior — no dedup is attempted without a caller-supplied id.
+   */
+  providerTickId?: string | null;
 };
 
 @Injectable()
@@ -88,6 +132,23 @@ export class ProviderHealthService {
 
     if (!this.db.configured()) {
       return this.unknownSnapshot(input.providerId, input.marketplaceId ?? null);
+    }
+
+    // PTF-00C-R1 §2 — claim this exact (provider, marketplace, tick) triple
+    // BEFORE touching any cumulative counter or circuit transition. A
+    // caller with no providerTickId gets a fresh random one (always claims
+    // successfully = always applied, matching pre-R1 behavior exactly).
+    const providerTickId = this.normalizeTickId(input.providerTickId);
+    const claimed = await this.claimTick(input.providerId, marketplaceId, providerTickId);
+    if (!claimed) {
+      // Duplicate delivery of already-recorded evidence for this tick — a
+      // pure no-op. Never re-add to attempted/success/failure, never run
+      // the circuit transition again (§2 "no false circuit trip from
+      // duplicate delivery"). Return the CURRENT durable state unchanged.
+      const existing = await this.loadRow(input.providerId, marketplaceId);
+      return existing
+        ? this.toSnapshot(input.providerId, input.marketplaceId ?? null, existing, Date.now())
+        : this.unknownSnapshot(input.providerId, input.marketplaceId ?? null);
     }
 
     const prev = await this.loadRow(input.providerId, marketplaceId);
@@ -212,6 +273,33 @@ export class ProviderHealthService {
     return worstTint(tints.length ? tints : ["unknown"]);
   }
 
+  /** Missing/blank id = no dedup requested → always-unique → always applied. */
+  private normalizeTickId(raw: string | null | undefined): string {
+    const trimmed = typeof raw === "string" ? raw.trim() : "";
+    return trimmed.length > 0 ? trimmed : randomUUID();
+  }
+
+  /**
+   * PTF-00C-R1 §2 — durable, race-safe claim via INSERT .. ON CONFLICT DO
+   * NOTHING. Returns true exactly once per (providerId, marketplaceId,
+   * providerTickId) triple, ever — every later call with the same triple
+   * (any batch/retry/duplicate/arrival order) returns false.
+   */
+  private async claimTick(
+    providerId: string,
+    marketplaceId: string,
+    providerTickId: string,
+  ): Promise<boolean> {
+    const { rowCount } = await this.db.query(
+      `INSERT INTO public.provider_tick_ledger (provider_id, marketplace_id, provider_tick_id)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (provider_id, marketplace_id, provider_tick_id) DO NOTHING
+       RETURNING 1`,
+      [providerId, marketplaceId, providerTickId],
+    );
+    return (rowCount ?? 0) > 0;
+  }
+
   private async loadRow(
     providerId: string,
     marketplaceId: string,
@@ -259,6 +347,7 @@ export class ProviderHealthService {
       lastFailureAt: row.last_failure_at ? row.last_failure_at.toISOString() : null,
       lastErrorClass: row.last_error_class,
       lastTickAt: row.last_tick_at ? row.last_tick_at.toISOString() : null,
+      upstreamGating: "NONE",
     };
   }
 
@@ -281,6 +370,7 @@ export class ProviderHealthService {
       lastFailureAt: null,
       lastErrorClass: null,
       lastTickAt: null,
+      upstreamGating: "NONE",
     };
   }
 

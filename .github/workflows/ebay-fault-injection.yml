@@ -1,0 +1,98 @@
+# PTF-00C-R1 §7/§8 — dedicated eBay provider-resilience fault-injection CI.
+# Heavy (real isolated Postgres + real booted Nest) — kept OUT of gate.yml's
+# T2, same convention as engine-acceptance.yml's heavy QA suites.
+name: ebay-fault-injection
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      - "workers/ebay-adapter/**"
+      - "services/api-nest/src/adapters/**"
+      - "services/market-intelligence/src/provider-health.cjs"
+      - "supabase/migrations/*ptf00c*"
+      - "tooling/ebay-resilience/**"
+      - "tooling/verify/ebay-resilience.cjs"
+      - ".github/workflows/ebay-fault-injection.yml"
+  push:
+    branches: [main]
+    paths:
+      - "workers/ebay-adapter/**"
+      - "services/api-nest/src/adapters/**"
+      - "services/market-intelligence/src/provider-health.cjs"
+      - "supabase/migrations/*ptf00c*"
+      - "tooling/ebay-resilience/**"
+      - "tooling/verify/ebay-resilience.cjs"
+      - ".github/workflows/ebay-fault-injection.yml"
+
+concurrency:
+  group: ebay-fault-injection-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ebay-fault-injection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: aipo_qa_synth
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d aipo_qa_synth"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      TMPDIR: /tmp
+      PORT: 4000
+      AIPO_QA_PGHOST: 127.0.0.1
+      AIPO_QA_PGUSER: postgres
+      AIPO_QA_PGPASSWORD: postgres
+      AIPO_QA_PGDATABASE: aipo_qa_synth
+      AIPO_QA_PGPORT: "5432"
+      AIPO_QA_TARGET_ENV: ci
+      AIPO_QA_HOSTNAME: localhost
+      AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+      AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/ebay-fault-injection
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Kill-switch + isolated DB target
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+      - name: Fast domain verify (structural + real fault-injection selftests)
+        run: pnpm verify:ebay-resilience
+      - name: Build @aipo/api-nest
+        run: |
+          set -euo pipefail
+          pnpm --filter @aipo/api-nest build
+          test -f services/api-nest/dist/main.js
+      - name: Run live eBay fault-injection (real Postgres + real Nest, no live eBay call)
+        run: |
+          set -euo pipefail
+          node tooling/ebay-resilience/run-fault-injection.cjs \
+            --target-env ci \
+            --hostname localhost \
+            --synthetic-ns qa-synth-ci
+      - name: Upload eBay fault-injection evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ebay-fault-injection-evidence
+          path: /tmp/aipo-harness/ebay-fault-injection/
+          retention-days: 90
+          if-no-files-found: error

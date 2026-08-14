@@ -80,6 +80,8 @@ export interface AdapterHealthRow {
     lastSuccessAt: string | null;
     lastFailureAt: string | null;
     lastErrorClass: string | null;
+    /** PTF-00C-R1 §5 — always "NONE"; see ProviderHealthSnapshot docstring. */
+    upstreamGating?: "NONE";
   }>;
 }
 
@@ -133,6 +135,21 @@ export interface AdapterIngestBody {
   matchAttempts?: AdapterMatchAttemptBody[];
   /** PTF-00C §8 — per-marketplace heartbeat, present even when listings=0/dryRun=false */
   marketplaceHealth?: AdapterMarketplaceHeartbeat[];
+  /**
+   * PTF-00C-R1 §2 — one id per real scheduled provider tick, shared by
+   * EVERY listing batch/ingest call that tick produces. Nest durably
+   * claims (providerId, marketplaceId, providerTickId) exactly once so
+   * repeated batches/retries/duplicate delivery never double-count health
+   * evidence. Omitted = no dedup requested (always applied).
+   */
+  providerTickId?: string;
+  /**
+   * PTF-00C-R1 §4/§6 — true when the worker's own tick deadline/budget was
+   * exhausted before every configured marketplace×query unit could be
+   * attempted. Never silently dropped — surfaces as explicit incomplete
+   * evidence rather than a clean success.
+   */
+  tickIncomplete?: boolean;
 }
 
 export interface ListingLegsSummary {
