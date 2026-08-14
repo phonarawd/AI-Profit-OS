@@ -714,6 +714,36 @@ if (evidence) {
       if (!qa7Peek || qa7Peek.formal_actions_evidence !== true) {
         fail("ephemeral QA6 rewrite must keep qa7-result formal_actions_evidence");
       }
+    } else if (ephemeralPreQa9RewriteNow) {
+      // A real CI-heavy chain (QA4 -> QA5 -> QA6 -> [QA7] -> QA8, each
+      // consuming the prior suite's on-disk result) legitimately resets QA7
+      // (and QA9) to NOT_STARTED via QA6's generic suite-list fallthrough
+      // before QA8 ever gets a chance to run - unlike an ISOLATED QA8-only
+      // rerun from a fresh checkout (the scenario this tolerance branch was
+      // originally written for, where QA7 stays untouched). QA8 itself,
+      // being the suite that just ran, must still be genuinely COMPLETE;
+      // QA7/QA9 are only validated WHEN present+complete, never required.
+      if (qa7 && qa7.completion_status === "COMPLETE") {
+        if (!qa7.run_id || !qa7.checksum) {
+          fail("QA7 suite must have run_id + checksum");
+        }
+        if (qa7.formal_actions_evidence !== true) {
+          fail("QA7 suite.formal_actions_evidence must be true");
+        }
+      }
+      if (!qa8 || qa8.completion_status !== "COMPLETE") {
+        fail("QA8 suite must be COMPLETE");
+      } else {
+        if (!qa8.run_id || !qa8.checksum) {
+          fail("QA8 suite must have run_id + checksum");
+        }
+        if (qa8.asvs_version !== "5.0.0") {
+          fail("QA8 suite.asvs_version must be 5.0.0");
+        }
+      }
+      if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa8 !== true) {
+        fail("evidence.kill_switch.verified_before_qa8 must be true");
+      }
     } else {
       if (!qa7 || qa7.completion_status !== "COMPLETE") {
         fail("QA7 suite must be COMPLETE after formal Actions publication");
@@ -1532,7 +1562,10 @@ if (qa7Result && !pendingRerun) {
   } else {
     fail("qa7-result.hashes required");
   }
-  if (evidence && !ephemeralQa6Rewrite) {
+  // A real CI-heavy QA4->QA5->QA6->QA8 chain resets QA7's evidence entry to
+  // NOT_STARTED (via QA6's generic fallthrough) before QA8 ever runs, same
+  // as the QA9 entry - tolerate it the same way in this state.
+  if (evidence && !ephemeralQa6Rewrite && !ephemeralPreQa9Rewrite) {
     const qa7 = (evidence.suites || []).find((s) => s.suite_id === "QA7");
     if (qa7 && qa7.checksum !== qa7Result.checksum) {
       fail("evidence QA7.checksum must match qa7-result.checksum");
