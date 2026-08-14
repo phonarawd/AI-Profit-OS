@@ -269,7 +269,9 @@ async function runEbayFaultInjection(opts = {}) {
     providerTickId: outageTickId,
     batchesSent: outageIngestResponses.length,
     responses: outageIngestResponses,
-    pass: outageIngestResponses.every((r) => r.status === 200 && r.ok),
+    // Nest's default POST response code is 201 Created (no @HttpCode override
+    // on AdaptersIngestController.ingest) — accept any 2xx, not literally 200.
+    pass: outageIngestResponses.every((r) => r.status >= 200 && r.status < 300 && r.ok),
   };
 
   // --- B — bounded runtime at the integration boundary ---
@@ -377,7 +379,8 @@ async function runEbayFaultInjection(opts = {}) {
     row: healthAfterRecovery,
     ledgerJournalsAfterRecovery: ledgerAfterRecovery,
     pass: Boolean(
-      recoveryRes.status === 200 &&
+      recoveryRes.status >= 200 &&
+        recoveryRes.status < 300 &&
         healthAfterRecovery &&
         healthAfterRecovery.circuit_state === "CLOSED" &&
         healthAfterRecovery.consecutive_failures === 0 &&
