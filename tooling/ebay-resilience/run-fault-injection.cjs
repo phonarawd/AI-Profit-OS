@@ -117,9 +117,12 @@ async function seedStaleEbayOpportunity(databaseUrl) {
        ON CONFLICT (asset_id) DO NOTHING`,
       [assetId],
     );
+    // formula_id is NOT NULL + CHECKed IN ('cg_usdt_krw', 'cg_usdt_usd__frank_usd_krw')
+    // (services/market-intelligence market-intel-engine formula SSOT) — sources
+    // is NOT NULL text[] CHECKed to never contain 'yahoo_jp'.
     await client.query(
-      `INSERT INTO public.fx_snapshots (id, usd_krw, source, captured_at)
-       VALUES ('qa-synth-fx-ebay-fault', 1350.00, 'qa-synth', now())
+      `INSERT INTO public.fx_snapshots (id, usd_krw, source, captured_at, formula_id, sources)
+       VALUES ('qa-synth-fx-ebay-fault', 1350.00, 'qa-synth', now(), 'cg_usdt_krw', ARRAY['qa-synth']::text[])
        ON CONFLICT (id) DO NOTHING`,
     );
     const r = await client.query(
