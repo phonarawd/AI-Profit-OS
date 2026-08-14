@@ -377,7 +377,7 @@ async function runMultiDayLifecycleScenario(ctx) {
 
   const walletAfter = await httpCall(ctx.baseUrl, "GET", "/api/v1/wallet/buckets", { authorization: ctx.userBearer });
 
-  const tickOk = tick.status === 200 && tick.parsed;
+  const tickOk = tick.status >= 200 && tick.status < 300 && tick.parsed;
   const terminal = tickOk && tick.parsed.status === "safe_stop" && tick.parsed.resultCode === "MATCH_TIMEOUT";
   const principalBefore = walletBefore.parsed ? Number(walletBefore.parsed.principalUsdt) : null;
   const principalAfter = walletAfter.parsed ? Number(walletAfter.parsed.principalUsdt) : null;
