@@ -1,21 +1,23 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+  "id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
   "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-08-14T16:41:33.127Z",
-  "commit_sha": "64b0f8a6d984765a6b9a1533d4e6dd94ba8720c5",
-  "tree_sha": "d41b6ed7074a2105fc4cf35ac9114ef3ca85472e",
+  "measuredAt": "2026-08-13T20:28:48.168Z",
+  "commit_sha": "fdf692cb8a02de01821f126f5ed7f09788c9eec5",
+  "tree_sha": "97e04664e52cf835e2bcc624e2f0457ab77b1dd8",
   "working_tree_clean": false,
   "protected_scope_clean": true,
   "dirty_paths_all": [
     "apps/web/next-env.d.ts",
     "packages/ui/canon/contracts/peotteok-home-visual-implementation-contract.v1.md",
-    "_tmp_qa_fail_log.txt"
+    ".cursor/hooks.json.bak-isolation",
+    ".cursor/hooks.json.bak-wave-isolation",
+    "_tmp_harness_ci/"
   ],
   "dirty_paths_protected": [],
   "lockfile_hash": "3e4b2632d7e0e11afe179502ba50bdb2a47b67c7ca5838bb511d38ad854f70a1",
-  "schema_migration_hash": "a15f3a6ffdb1aaeb663285a86cbe5ce6004b95b8f5cd5351c5d251cb2ee41e71",
+  "schema_migration_hash": "13d8478fe3fa46671bc245e943db59e97cc23c7fd6ac887914d15bd9ac14167e",
   "prompt_hash": "4b8b46a36a97e7b7553ff709ee46d377edac47cada38325e3eab5ae00f78c189",
   "eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088",
   "acceptance_workflow_hash": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
@@ -25,8 +27,8 @@
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "3657543f36b5370c1054ff84656e2e3b317f77101c2638beb1d4063e6a2954e2",
-    "pathCount": 374,
+    "aggregate": "d532a6d7958b64729f74ab0de99ce8f816ca2cae20d8c7c6f9619af5ff992f76",
+    "pathCount": 366,
     "entries": [
       {
         "path": "eval/g_no_money.jsonl",
@@ -110,7 +112,7 @@
       },
       {
         "path": "schemas/fx-snapshot.v1.json",
-        "sha256": "165bc58df8f713622d3a89702afa00c6c46ee4f0d0508c7185bb19c3bda25615"
+        "sha256": "6eff821e8d63f81d3d9ba24e52397bd4e500e330f07b68535c8f293bed426960"
       },
       {
         "path": "schemas/governance-observation.v1.json",
@@ -150,7 +152,7 @@
       },
       {
         "path": "schemas/listing.v1.json",
-        "sha256": "e527d11b81b949e73f47ebed1c10f764a0f5bb4fc482ac892fc16a3f975b754b"
+        "sha256": "3dfe1e541b07878c2d2d6f18027e9c2d7a877fe1d88b221a51550f46892ee8bd"
       },
       {
         "path": "schemas/manifest.day1.json",
@@ -210,7 +212,7 @@
       },
       {
         "path": "schemas/price-observation.v1.json",
-        "sha256": "7653ffe987965af71388bcf9e3777d6d37c90f7b2f4bb4bfa9515b0356c82f10"
+        "sha256": "fd1e02a52381420ad3870b048f57fc27e22a46c98a766e05064a62f98423d970"
       },
       {
         "path": "schemas/public-ticker-event.v1.json",
@@ -346,7 +348,7 @@
       },
       {
         "path": "services/api-nest/src/adapters/adapters.admin.service.ts",
-        "sha256": "1f5af3284616791e7ae47c9f5bd8d44cf469e87f20d29383db68de201745158d"
+        "sha256": "24dd49cd580e9e36745c064b1b374c0888bffe4a4a15d68ae1ac6fc752228dd0"
       },
       {
         "path": "services/api-nest/src/adapters/adapters.events.ts",
@@ -358,11 +360,11 @@
       },
       {
         "path": "services/api-nest/src/adapters/adapters.mi.ts",
-        "sha256": "68da9d264ebaf6b7b968a34fcc099b06369fb45eb6c4063f647099cdbbbdd715"
+        "sha256": "10ea06294d8347f6e6c4a23bf4efff0e474e4a335344fb8a50f44f377c402748"
       },
       {
         "path": "services/api-nest/src/adapters/adapters.module.ts",
-        "sha256": "513bd00616d6fe8e972d6d995ccda2bda3e214d4c1425c12a33cdf500df4fa7f"
+        "sha256": "44e0fa4b5f073ee5ca9a6571868b2d5592162b1babd6c7f961ffc0f7899aa3cd"
       },
       {
         "path": "services/api-nest/src/adapters/adapters.routes.ts",
@@ -370,19 +372,11 @@
       },
       {
         "path": "services/api-nest/src/adapters/adapters.types.ts",
-        "sha256": "15f9770903cada916cd9bc01b84c07b7573d1092bc1a4023768494d911281a44"
+        "sha256": "bb7fa09d59a14254ed916eebeb90568e4987d3ec85f241815d766a99aa4f756e"
       },
       {
         "path": "services/api-nest/src/adapters/index.ts",
         "sha256": "cb24d5b96f5125dfa32969b7c0301df0612769559625a3455cccf2bfbb9e097f"
-      },
-      {
-        "path": "services/api-nest/src/adapters/provider-health.selftest.ts",
-        "sha256": "bbb278b8c55b3232415cd6922e1ee138b9339011095d3065e77d7e9f0b111c14"
-      },
-      {
-        "path": "services/api-nest/src/adapters/provider-health.service.ts",
-        "sha256": "2be85ae77e2ad73d15e63556e8f927210255954128b5abc6f582b0ed63e99e0c"
       },
       {
         "path": "services/api-nest/src/ai/ai-logs.admin.controller.ts",
@@ -906,11 +900,7 @@
       },
       {
         "path": "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
-        "sha256": "ded5c5358d8444d5878b7ebfaef157ddbf019ae143b9757cc9efc91468bc6627"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/fx-snapshot.service.ts",
-        "sha256": "47a0de62767533ccd3b2b04fb798095e23513af59c7ce8bab5268872b51b430b"
+        "sha256": "2f425cb0f7ad9d0d5c76d927a8607338458c1867c03f4dedaa49c268f996c2bb"
       },
       {
         "path": "services/api-nest/src/opportunities/index.ts",
@@ -930,11 +920,11 @@
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.mi.ts",
-        "sha256": "c86e2d5d356f692339e880284337f24ff0188ecade87142b259e4be56e3c33f5"
+        "sha256": "e41658e81bf06e6d4a27edbfce11d04cd1e7caf411395c92c527960ffec3a2d1"
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.module.ts",
-        "sha256": "cfd61c2f10640447a8881e548875e47e3a6a22ae02465314ff1da09f7ec170a1"
+        "sha256": "4f66e82a9243f184e7def08d45bf2b7c0e8a96855e66f34b6b054cb13a87a266"
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.routes.ts",
@@ -954,7 +944,7 @@
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.user.service.ts",
-        "sha256": "00b41347b5e87f48136fbb3ac27f681d52e4e9fbb3ed3ab529382814a1afdf46"
+        "sha256": "3a470e9e9c69ea6aa47e13a2e55cac7b5a40dbb8cc0c56d6ecb2aa86232bd148"
       },
       {
         "path": "services/api-nest/src/opportunities/participate.service.ts",
@@ -1153,10 +1143,6 @@
         "sha256": "71bb0c1d44381617e7e00e9499571c615b96ffe713b88480b59fc9ebbc287bbc"
       },
       {
-        "path": "services/api-nest/src/types/market-intelligence-ptf-00c.d.ts",
-        "sha256": "77da8d9aaecf88285c14a545cbfa90baff9badf9c5535284a22b36e1feea7426"
-      },
-      {
         "path": "services/api-nest/src/wallet/balance-aware-fact.ts",
         "sha256": "2bc34d8571cd4e2c7f1bb9a55bb1c3d52c70238e635d13d6d4bb95ef93fb56f7"
       },
@@ -1326,7 +1312,7 @@
       },
       {
         "path": "services/engine-rust/settlement_rule.cjs",
-        "sha256": "e9e900b8f9502a118c93be7ab2f0987739b63fdc12f9b1329bda57f5f74e7861"
+        "sha256": "b6c9de9c3aa81f4f25ddf27ecd8b525ff16cf6430be65efbb56e5f0e8d968f0b"
       },
       {
         "path": "services/engine-rust/src/lib.rs",
@@ -1507,22 +1493,6 @@
       {
         "path": "supabase/migrations/20260813202305_privacy_purge_anonymize_indexes.sql",
         "sha256": "0c59a94adc4e45ff3e7bdb67e6e6b78b9335dbe68a88af53f1b35adddeaebc67"
-      },
-      {
-        "path": "supabase/migrations/20260814130000_ptf00c_fx_marketplace_normalization.sql",
-        "sha256": "ed4cfcd2feadead51b18266bc5183c78443819a3128b164d6433b41f961a3f75"
-      },
-      {
-        "path": "supabase/migrations/20260814130100_ptf00c_provider_runtime_health.sql",
-        "sha256": "c40c2b0c09038101a8fd2a570b3e58884b7d513e5a4e1a842c3692bc42a768c7"
-      },
-      {
-        "path": "supabase/migrations/20260814130200_ptf00c_provider_health_last_tick_partial.sql",
-        "sha256": "0ee4ea7ace2c29e2b5c60cd7bef857399c41522a03acc987427b71a49d8aa374"
-      },
-      {
-        "path": "supabase/migrations/20260814140000_ptf00c_r1_provider_tick_ledger.sql",
-        "sha256": "dfb697807bb4aae03acbef2273bbe168c2bfec349fc7a706dbf79e00cf7f7c3d"
       }
     ]
   },
@@ -1532,8 +1502,8 @@
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-64b0f8a6d984-3657543f36b5",
-    "predecessor_baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+    "rebase_id": "ea-rebase-fdf692cb8a02-d532a6d7958b",
+    "predecessor_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
     "kind": "product_rebase"
   }
 }

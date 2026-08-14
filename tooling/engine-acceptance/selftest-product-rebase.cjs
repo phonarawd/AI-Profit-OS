@@ -384,14 +384,14 @@ function run() {
     // Regression snapshot of the live ledger/baseline at the time this file was
     // written, NOT a policy that forbids a rebase — the real policy is enforced
     // by validateRebaseEntry/verifyRebaseLedgerAgainstBaseline/verifyWashing
-    // above and below. Updated once, in step with the single approved
-    // ENGINE_ACCEPTANCE_REBASE_POLICY_V2 L8 rebase (protected repair wave:
-    // admin boundary/RBAC, admin operator identity, clock seam, privacy
-    // purge, postgres pool recovery, narrow privacy index migration).
-    check("no_new_epoch_created", liveLedger.rebases.length === 4, `rebases=${liveLedger.rebases.length}`);
+    // above and below. Updated again, in step with the PTF-00C-R1 provider
+    // resilience closure L9 rebase (heartbeat idempotency ledger, nested-retry
+    // elimination, tick runtime budget, circuit-breaker honesty; retains the
+    // prior L8 protected repair wave as history).
+    check("no_new_epoch_created", liveLedger.rebases.length === 5, `rebases=${liveLedger.rebases.length}`);
     check(
       "live_baseline_unchanged",
-      liveBaseline.id === "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      liveBaseline.id === "ea-baseline-64b0f8a6d984-3657543f36b5",
       liveBaseline.id,
     );
     // qa9-result is the current-epoch verdict SSOT and is only ever written by

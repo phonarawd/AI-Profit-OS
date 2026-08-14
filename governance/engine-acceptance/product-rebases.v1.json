@@ -311,6 +311,89 @@
       "qa8_complete": false,
       "qa9_complete": false,
       "qa9_verdict_issued": false
+    },
+    {
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+      "rebase_id": "ea-rebase-64b0f8a6d984-3657543f36b5",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-14T16:41:33.127Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: PTF-00C-R1 provider resilience closure (heartbeat idempotency ledger, nested-retry elimination, tick runtime budget, circuit-breaker honesty, real fault-injection harnesses) plus retained PTF-00C price-denomination/FX/eBay-resilience repairs constitute protected product mutation since predecessor baseline. New epoch required; QA1-QA8 must rerun; QA9 aggregation stale until current-epoch discovery evidence exists. Directed by PO closure mandate PTF-00C-R1."
+      },
+      "predecessor_baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "new_baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+      "reason": "Protected product mutation creates a new acceptance epoch. Predecessor hashes are history; discovery suites QA1-QA8 must rerun; QA9 aggregation is stale and must rerun only after current-epoch discovery evidence exists. Do not fabricate a verdict at rebase time.",
+      "product_commit": "64b0f8a6d984765a6b9a1533d4e6dd94ba8720c5",
+      "changed_protected_paths": [
+        "schemas/fx-snapshot.v1.json",
+        "schemas/listing.v1.json",
+        "schemas/price-observation.v1.json",
+        "services/api-nest/src/adapters/adapters.admin.service.ts",
+        "services/api-nest/src/adapters/adapters.mi.ts",
+        "services/api-nest/src/adapters/adapters.module.ts",
+        "services/api-nest/src/adapters/adapters.types.ts",
+        "services/api-nest/src/adapters/provider-health.selftest.ts",
+        "services/api-nest/src/adapters/provider-health.service.ts",
+        "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+        "services/api-nest/src/opportunities/fx-snapshot.service.ts",
+        "services/api-nest/src/opportunities/opportunities.mi.ts",
+        "services/api-nest/src/opportunities/opportunities.module.ts",
+        "services/api-nest/src/opportunities/opportunities.user.service.ts",
+        "services/api-nest/src/types/market-intelligence-ptf-00c.d.ts",
+        "services/engine-rust/settlement_rule.cjs",
+        "supabase/migrations/20260814130000_ptf00c_fx_marketplace_normalization.sql",
+        "supabase/migrations/20260814130100_ptf00c_provider_runtime_health.sql",
+        "supabase/migrations/20260814130200_ptf00c_provider_health_last_tick_partial.sql",
+        "supabase/migrations/20260814140000_ptf00c_r1_provider_tick_ledger.sql"
+      ],
+      "changed_nonprotected_support_paths": [
+        "services/ai-platform/src/index.d.ts"
+      ],
+      "old_prompt_hash": "4b8b46a36a97e7b7553ff709ee46d377edac47cada38325e3eab5ae00f78c189",
+      "new_prompt_hash": "4b8b46a36a97e7b7553ff709ee46d377edac47cada38325e3eab5ae00f78c189",
+      "old_protected_manifest_hash": "d532a6d7958b64729f74ab0de99ce8f816ca2cae20d8c7c6f9619af5ff992f76",
+      "new_protected_manifest_hash": "3657543f36b5370c1054ff84656e2e3b317f77101c2638beb1d4063e6a2954e2",
+      "eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088",
+      "acceptance_workflow_hash": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
+      "predecessor_suite_checksums": {
+        "QA1": "f8019b30f0290511b76b98ff0d7c7207fb409cec9460847baf8fd61ba04aaf54",
+        "QA2": "bf0c98b070e208116c05f1a787a157f319931582bc59400a8fb13f517ffa0dd3",
+        "QA3": "682df388d2978cb09561f5ad1bd19200a41f1a98c82bc54bb5e3743b2ee9a7ae",
+        "QA4": "0b4f852ec9d65c042cf76008cbd89d9a939b5002bef711eb130c77b3c32004b5",
+        "QA5": "08eee6997c13bb4e88302f1446f909dda0c9b3c7a614c0d5c3ca1b04a34bb759",
+        "QA6": "a06fdee79e6b7bdb2148914b35f91afbee14413c67426b8e4a78cb7321482861",
+        "QA8": "5231de9d4543f019a6031d2429c1916acf4184a3d995d1eb783177f03761cafe",
+        "QA9": "3afae085b474b14a35432aefa4928494bdb7841d571df34fc4a7b876ac3d2a98"
+      },
+      "timestamp": "2026-08-14T16:41:33.127Z",
+      "commit_sha_or_pending": "64b0f8a6d984765a6b9a1533d4e6dd94ba8720c5",
+      "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
+      "invalidated_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA8"
+      ],
+      "required_rerun_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7",
+        "QA8"
+      ],
+      "stale_aggregation_phases": [
+        "QA9"
+      ],
+      "qa7_complete": false,
+      "qa8_complete": false,
+      "qa9_complete": false,
+      "qa9_verdict_issued": false
     }
   ]
 }
