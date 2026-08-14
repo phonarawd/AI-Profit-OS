@@ -436,12 +436,28 @@ function runQa8(opts = {}) {
   const defects = collectDefects(secResult, baseline.id, measuredAt);
   const defectsCounts = countBySeverity(defects);
 
+  // run-qa7.cjs never persists a file (it only prints a local-validation
+  // preview to stdout - confirmed by grep: zero writeFileSync/writeJson
+  // calls in that script), so qa7-result.v1.json's critical_invariant_unchanged
+  // field is never refreshed and can go stale relative to QA6's own,
+  // freshly-computed cumulative. Prefer QA6's real number; only fall back to
+  // QA7's copy if QA6's result is unreadable for some reason.
   let priorCi = { blocked: 0, skipped: 0, uncovered: 0 };
   try {
-    const qa7 = readJson(QA7_REL);
-    priorCi = qa7.critical_invariant_unchanged || priorCi;
+    const qa6 = readJson(QA6_REL);
+    if (qa6.critical_invariant_cumulative) {
+      priorCi = qa6.critical_invariant_cumulative;
+    } else {
+      const qa7 = readJson(QA7_REL);
+      priorCi = qa7.critical_invariant_unchanged || priorCi;
+    }
   } catch {
-    /* optional */
+    try {
+      const qa7 = readJson(QA7_REL);
+      priorCi = qa7.critical_invariant_unchanged || priorCi;
+    } catch {
+      /* optional */
+    }
   }
   const criticalMerged = mergeCriticalInvariant(priorCi, secResult.critical_invariant);
 
