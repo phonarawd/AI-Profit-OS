@@ -1750,7 +1750,14 @@ if (qa9Result && !pendingRerun) {
         `qa9-result.verdict=${qa9Result.verdict} does not match its own formula_inputs (expected ${expected})`,
       );
     }
-    if (defects) {
+    // While an earlier suite (QA4-QA8) has JUST been re-run in this same job
+    // but QA9 has not yet been re-aggregated (ephemeralQa6Rewrite /
+    // ephemeralPreQa9Rewrite), the committed qa9-result.v1.json is EXPECTED
+    // to be momentarily behind live defects.v1.json - that is exactly what
+    // "pending re-aggregation" means, not a staleness violation. Once QA9
+    // itself re-runs it will either match or the run fails on its own
+    // internal-consistency check above.
+    if (defects && !ephemeralQa6Rewrite && !ephemeralPreQa9Rewrite) {
       if ((fi.defects_P0 || 0) !== (defects.counts.P0 || 0)) {
         fail("qa9-result.formula_inputs.defects_P0 must match live defects.v1.json counts.P0");
       }
