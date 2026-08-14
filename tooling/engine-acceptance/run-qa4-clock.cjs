@@ -287,15 +287,27 @@ async function runMultiDayLifecycleScenario(ctx) {
   );
 
   // Real product balance credit via the admin money API (same double-entry
-  // path production uses) — not a raw balance UPDATE.
+  // path production uses) — not a raw balance UPDATE. required_capital_usdt
+  // can legitimately exceed ADMIN_ADJUST_DUAL_CONFIRM_USDT (1000), which
+  // requires a secondApproverId distinct from the acting admin — always
+  // supply one so this setup step works regardless of the seeded
+  // opportunity's capital tier.
   const adminBearer = `Bearer ${mintAdminToken(ctx.secrets.jwtAdminSecret, SYNTH_ADMIN, { role: ADMIN_ROLE_SUPER })}`;
+  const secondApproverId = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
   const creditKey = `qa4-lifecycle-credit-${crypto.randomUUID()}`;
   const credit = await httpCall(
     ctx.baseUrl,
     "POST",
     `${ADMIN_API_PREFIX}/users/${SYNTH_USER_A}/balance-adjust`,
     { authorization: adminBearer },
-    { bucket: "principal", kind: "credit", amountUsdt: opp.required_capital_usdt, reason: "qa4-lifecycle-fixture", idempotencyKey: creditKey },
+    {
+      bucket: "principal",
+      kind: "credit",
+      amountUsdt: opp.required_capital_usdt,
+      reason: "qa4-lifecycle-fixture",
+      idempotencyKey: creditKey,
+      secondApproverId,
+    },
   );
   if (!(credit.status >= 200 && credit.status < 300)) {
     findings.push(`principal credit setup FAIL: status=${credit.status}`);
