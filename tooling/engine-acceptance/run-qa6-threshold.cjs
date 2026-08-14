@@ -252,6 +252,16 @@ async function runQa6Threshold(opts = {}) {
     }
   }
 
+  const statusCodeChecks = {};
+  if (summary && summary.root_group && summary.root_group.checks) {
+    for (const [name, c] of Object.entries(summary.root_group.checks)) {
+      if (/_status_\d+$/.test(name)) {
+        statusCodeChecks[name] = { passes: c.passes, fails: c.fails };
+      }
+    }
+  }
+  console.log(`[run-qa6-threshold] observed status codes per tag: ${JSON.stringify(statusCodeChecks)}`);
+
   const perTag = {};
   for (const tag of REQUIRED_TAGS) {
     const durKey = `http_req_duration{scenario:${tag}}`;
@@ -310,6 +320,7 @@ async function runQa6Threshold(opts = {}) {
     all_tags_pass: allTagsPass,
     verdict_class: harness_status === "PASS" ? "HARNESS_VALIDATION" : "HARNESS_FAILURE",
     preflight_smoke_check: preflight,
+    observed_status_code_checks: statusCodeChecks,
     postgres: pgPrep ? { classification: pgPrep.classification, host: pgPrep.host } : { skipped: skipBoot },
     secrets: { committed: false, redacted_auth: redactAuthorization(`Bearer ${userToken}`) },
     oracle_probe: { available: oracle.available, budget_status: oracle.budget_status },

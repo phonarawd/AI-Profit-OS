@@ -146,16 +146,13 @@ export function setup() {
   return { ok: true };
 }
 
-// Diagnostic-only, throttled to one log line per tag per process — never
-// affects the threshold verdict, only helps root-cause a real failure.
-const loggedFailureForTag = {};
+// Diagnostic-only: a dynamically-named check per (tag, status code) turns
+// into a real, always-exported check entry in the k6 summary JSON
+// (root_group.checks) — reliable even when console.log output does not
+// survive a non-interactive/piped k6 run. Never affects the threshold
+// verdict; only observed here, never asserted on.
 function logFirstFailure(tag, res) {
-  if (res.status >= 200 && res.status < 400) return;
-  if (loggedFailureForTag[tag]) return;
-  loggedFailureForTag[tag] = true;
-  console.log(
-    `[scenario-mix] first non-2xx for ${tag}: status=${res.status} body=${String(res.body || "").slice(0, 300)}`,
-  );
+  check(res, { [`${tag}_status_${res.status}`]: () => true });
 }
 
 export function feedRead() {
