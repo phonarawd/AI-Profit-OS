@@ -110,8 +110,18 @@ function metricThresholdsOk(summary, metricKey) {
   if (!m || !m.thresholds) return { present: false, ok: null, detail: null };
   const entries = Object.entries(m.thresholds);
   if (entries.length === 0) return { present: false, ok: null, detail: null };
-  const ok = entries.every(([, v]) => v && v.ok === true);
-  return { present: true, ok, detail: Object.fromEntries(entries.map(([k, v]) => [k, Boolean(v && v.ok)])) };
+  // k6 --summary-export represents each threshold as a BARE boolean (not
+  // {ok: boolean}) meaning "has this threshold been breached" - true =
+  // BREACHED/FAILED, false = NOT breached/PASSED. Confirmed against real CI
+  // evidence: p95=8.29ms with threshold "p(95)<30" exported as `false` (i.e.
+  // not breached), while a naive `v.ok === true` read always evaluated to
+  // false regardless of the real result (v is a boolean, not an object).
+  const ok = entries.every(([, breached]) => breached === false);
+  return {
+    present: true,
+    ok,
+    detail: Object.fromEntries(entries.map(([k, breached]) => [k, breached === false])),
+  };
 }
 
 function extractPercentiles(summary, metricKey) {
@@ -130,6 +140,9 @@ function extractErrorRate(summary, metricKey) {
   const m = summary && summary.metrics ? summary.metrics[metricKey] : null;
   if (!m) return null;
   const values = m.values || m;
+  // k6 --summary-export names the Rate metric's actual 0..1 rate `value`,
+  // not `rate` (that field does not exist in this export shape).
+  if (typeof values.value === "number") return values.value;
   if (typeof values.rate === "number") return values.rate;
   return null;
 }
