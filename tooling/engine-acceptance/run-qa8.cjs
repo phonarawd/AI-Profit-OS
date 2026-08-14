@@ -37,6 +37,7 @@ const SCOPE_REL = "governance/engine-acceptance/protected-scope.v1.json";
 const BASELINE_REL = "governance/engine-acceptance/baseline.v1.json";
 const COVERAGE_REL = "governance/engine-acceptance/coverage.v1.json";
 const QA7_REL = "governance/engine-acceptance/qa7-result.v1.json";
+const QA6_REL = "governance/engine-acceptance/qa6-result.v1.json";
 
 function sha256Json(obj) {
   return crypto.createHash("sha256").update(`${JSON.stringify(obj)}\n`, "utf8").digest("hex");
@@ -154,6 +155,128 @@ function mergeCriticalInvariant(prior, current) {
   };
 }
 
+/** Renders every check_id's finding block from its OWN current status/findings — never a fixed narrative. */
+function renderCheckFindingBlocks(secResult) {
+  const byId = new Map(secResult.checks.map((c) => [c.check_id, c]));
+  const sections = [];
+
+  const admin = byId.get("QA8_ADMIN_BOUNDARY");
+  if (admin) {
+    if (admin.status === "FAIL") {
+      sections.push(
+        `### Critical finding - QA8_ADMIN_BOUNDARY (P0)\n\n` +
+          `${admin.controllers_scanned} admin controllers scanned, ${admin.unguarded_count} unguarded. ` +
+          `${(admin.findings || []).join(" ")}`,
+      );
+    } else {
+      sections.push(
+        `### PASS - QA8_ADMIN_BOUNDARY\n\n` +
+          `${admin.controllers_scanned} admin controllers scanned, 0 unguarded (static @UseGuards scan). ` +
+          (admin.dynamic_child_verify
+            ? `Dynamic Nest+HTTP adversarial round-trip (${admin.dynamic_child_verify.script}) ` +
+              `${admin.dynamic_child_verify.ok ? "PASS" : "FAIL"}: ${admin.dynamic_child_verify.summary}`
+            : "Dynamic round-trip not recorded on this run."),
+      );
+    }
+  }
+
+  const privacy = byId.get("QA8_PRIVACY_DELETE_ACCOUNT");
+  if (privacy) {
+    if (privacy.status === "FAIL") {
+      sections.push(
+        `### Finding - QA8_PRIVACY_DELETE_ACCOUNT (P2)\n\n${(privacy.findings || []).join(" ")}`,
+      );
+    } else {
+      const dyn = privacy.dynamic_evidence;
+      sections.push(
+        `### PASS - QA8_PRIVACY_DELETE_ACCOUNT\n\n` +
+          `delete_mode=${privacy.evidence.delete_mode}; purge_table_count=${privacy.evidence.purge_table_count}; ` +
+          `sessions_purged=${privacy.evidence.sessions_purged}; KYC retention (§42.2.1) excluded from this finding. ` +
+          (dyn && dyn.verdict === "PASS"
+            ? `Dynamic proof (${dyn.source}): tombstone=${dyn.target_user_tombstoned} purge=${dyn.purge_table_confirmed} ` +
+              `retain=${dyn.retain_table_confirmed} control_user_unaffected=${dyn.control_user_unaffected} ` +
+              `invalid_confirm_no_mutation=${dyn.invalid_confirm_rejected_no_mutation}.`
+            : "Dynamic row-level proof (real delete against an isolated Postgres) not available on this run — static source evidence only."),
+      );
+    }
+  }
+
+  const otherPass = secResult.checks.filter(
+    (c) => c.status === "PASS" && c.check_id !== "QA8_ADMIN_BOUNDARY" && c.check_id !== "QA8_PRIVACY_DELETE_ACCOUNT",
+  );
+  if (otherPass.length) {
+    sections.push(`### PASS - ${otherPass.map((c) => c.check_id).join(", ")}`);
+  }
+  const otherFail = secResult.checks.filter(
+    (c) => c.status === "FAIL" && c.check_id !== "QA8_ADMIN_BOUNDARY" && c.check_id !== "QA8_PRIVACY_DELETE_ACCOUNT",
+  );
+  for (const c of otherFail) {
+    sections.push(`### FAIL - ${c.check_id}\n\n${(c.findings || []).join(" ")}`);
+  }
+
+  const dyn = (secResult.dynamic_scenarios || [])[0];
+  if (dyn) {
+    if (dyn.status === "BLOCKED") {
+      sections.push(
+        `### BLOCKED - ${dyn.scenario_id}\n\n${(dyn.findings || []).join(" ")}`,
+      );
+    } else {
+      sections.push(
+        `### ${dyn.status} - ${dyn.scenario_id}\n\n` +
+          `Real adversarial HTTP evidence against a booted api-nest instance (isolated CI Postgres). ` +
+          `${(dyn.findings || []).join(" ") || "No findings."}`,
+      );
+    }
+  }
+
+  return sections.join("\n\n");
+}
+
+/** Renders the QA6 recap purely from qa6-result.v1.json's own recorded status. */
+function renderPerformanceWorldSection(qa6Result) {
+  const pw = qa6Result && qa6Result.checks && qa6Result.checks.performance_world;
+  if (!pw) return "## Performance World (k6, CI only heavy)\n\nqa6-result.v1.json not readable at QA8 run time.";
+  if (pw.status === "UNSPECIFIED_PERF_BUDGET") {
+    return buildLegacyUnspecifiedPerfSection();
+  }
+  return buildSpecifiedPerfSection(pw);
+}
+
+function buildLegacyUnspecifiedPerfSection() {
+  return [
+    "## Performance World (k6, CI only heavy) - QA6 record retained",
+    "",
+    "QA6 record retained unchanged. suite status `UNSPECIFIED_PERF_BUDGET` - threshold",
+    "mechanism locked - numeric invention forbidden - heavy k6 CI only - artifact retention",
+    ">= 90 days - aggregator if: always().",
+    "",
+    "### UNSPECIFIED_PERF_BUDGET",
+    "",
+    "- Formal suite/budget status when product SLO/contract numeric budgets are absent.",
+    "- `BLOCKED_MISSING_ORACLE` on critical `INV-PERF-01` contributes to the cumulative",
+    "  critical_invariant.blocked count (ACCEPTED forbidden).",
+    "- Invented p95 / error_rate values are forbidden.",
+  ].join("\n");
+}
+
+function buildSpecifiedPerfSection(pw) {
+  const tagsLine = ((pw.scenario_mix && pw.scenario_mix.tags) || []).map((t) => `\`${t}\``).join(", ");
+  const perTagLines = (pw.scenarios || [])
+    .map((s) => `| \`${s.tag}\` | \`${s.status}\` | \`${s.blocked_code || "-"}\` |`)
+    .join("\n");
+  return [
+    "## Performance World (k6, CI only heavy) - QA6 record retained",
+    "",
+    `QA6 record retained unchanged. suite status \`${pw.status}\` - budget SPECIFIED (Human/PO ACK) -`,
+    `tags evaluated: ${tagsLine || "(none)"} - threshold mechanism locked - numeric invention forbidden -`,
+    "heavy k6 CI only - artifact retention >= 90 days - aggregator if: always().",
+    "",
+    "| tag | status | blocked_code |",
+    "|---|---|---|",
+    perTagLines,
+  ].join("\n");
+}
+
 function buildReport({
   baseline,
   measuredAt,
@@ -167,6 +290,7 @@ function buildReport({
   mode,
   criticalMerged,
   pendingRerun,
+  qa6Result,
 }) {
   const checkRows = secResult.checks
     .map(
@@ -174,6 +298,7 @@ function buildReport({
         `| \`${c.check_id}\` | ${(c.asvs_ids || []).join(", ")} | \`${c.invariant_id}\` | \`${c.status}\` |`,
     )
     .join("\n");
+  const findingBlocks = renderCheckFindingBlocks(secResult);
 
   // A rebase can land between full sequential QA0-QA8 runs (e.g. this suite
   // ran on an isolated CI job before an earlier suite in the same epoch has).
@@ -257,52 +382,11 @@ ${statusBanner}
 |---|---|---|---|
 ${checkRows}
 
-### Critical finding - QA8_ADMIN_BOUNDARY (P0)
+${findingBlocks}
 
-Every \`*.admin.controller.ts\` route in \`services/api-nest/src/**\` (ledger balance-adjust,
-withdraw-credentials, KYC decisions, deposit-config, risk rules, membership, referral,
-ai-logs, and more) carries \`@Controller("admin")\` with **zero** \`@UseGuards\`. No global
-\`APP_GUARD\`/middleware compensates in \`app.module.ts\`/\`main.ts\`. This is a live,
-unauthenticated path to cross-user financial reads and unauthenticated balance
-adjustment - recorded per ASVS v5.0.0-8.2.1 / v5.0.0-8.4.2. Root cause is a
-self-documented, already-planned gap (\`ledger.admin.controller.ts\` comment: "Auth/RBAC
-guard lands with Admin todos"; \`schemas/admin-rbac.v1.json\` + Admin plan section 9.9
-AdminGuard are specified but not yet wired). **Not repaired in this wave.**
+This QA8 run is discovery/aggregation only - any current or future FAIL finding is recorded honestly and is not repaired in this wave.
 
-### Finding - QA8_PRIVACY_DELETE_ACCOUNT (P2)
-
-\`auth.service.ts#deleteAccount\` performs an \`UPDATE\` (soft-delete) on \`public.users\`
-(email/phone nulled, sessions revoked), not a hard \`DELETE\`. Schema \`ON DELETE
-CASCADE\`/\`SET NULL\` foreign keys therefore never fire, so \`ai_twin_memory\`,
-\`notification_prefs\`, \`referral_edge\`, and other user_id-linked rows persist after
-account deletion. KYC 5-year retention is explicit documented policy (section 42.2.1)
-and is not counted as part of this finding. ASVS v5.0.0-14.2.7. **Not repaired in this
-wave.**
-
-### PASS - QA8_USER_ISOLATION_SHARED_WITH_QA2, QA8_JWT_TOKEN_VALIDATION
-
-User-facing IDOR/token-cross/interleave surfaces (shared oracle with QA2) and JWT
-integrity/algorithm-allowlist/validity/audience (reusing
-\`tooling/verify/auth-jwt-runtime.cjs\`) both pass.
-
-### BLOCKED - SEC-DYNAMIC-ADVERSARIAL-01
-
-Live adversarial HTTP testing against a booted api-nest instance is
-\`BLOCKED_ENV_CAPABILITY\` on this Phase0 2C/~8GB machine (same axis already flagged by
-\`checks/user-isolation-surfaces.cjs\`). Not mock-PASSed; deferred to the CI heavy matrix.
-
-## Performance World (k6, CI only heavy) - QA6 record retained
-
-QA6 record retained unchanged. suite status \`UNSPECIFIED_PERF_BUDGET\` - threshold
-mechanism locked - numeric invention forbidden - heavy k6 CI only - artifact retention
->= 90 days - aggregator if: always().
-
-### UNSPECIFIED_PERF_BUDGET
-
-- Formal suite/budget status when product SLO/contract numeric budgets are absent.
-- \`BLOCKED_MISSING_ORACLE\` on critical \`INV-PERF-01\` contributes to the cumulative
-  critical_invariant.blocked count (ACCEPTED forbidden).
-- Invented p95 / error_rate values are forbidden.
+${renderPerformanceWorldSection(qa6Result)}
 
 ## Dual Dirty
 
@@ -365,7 +449,11 @@ function runQa8(opts = {}) {
   let verdictReason;
   if (defectsCounts.P0 > 0 || defectsCounts.P1 > 0) {
     verdict = "ENGINE_NOT_ACCEPTED";
-    verdictReason = `QA8 COMPLETE (ASVS 5.0.0 subset) - found P0=${defectsCounts.P0} P1=${defectsCounts.P1} (admin-boundary zero-guard, real evidence) - 03 blocked - product mutation 0 - not repaired this wave`;
+    const namedDefects = defects
+      .filter((d) => d.severity === "P0" || d.severity === "P1")
+      .map((d) => d.check_id || (d.trace_id || "").replace(/^qa8:/, ""))
+      .join(", ");
+    verdictReason = `QA8 COMPLETE (ASVS 5.0.0 subset) - found P0=${defectsCounts.P0} P1=${defectsCounts.P1} (${namedDefects || "see defects.v1.json"}, real evidence) - 03 blocked - product mutation 0 - not repaired this wave`;
   } else if (
     (criticalMerged.blocked || 0) > 0 ||
     (criticalMerged.skipped || 0) > 0 ||
@@ -378,7 +466,14 @@ function runQa8(opts = {}) {
     verdictReason = "QA8 COMPLETE - P0/P1=0 - mandatory suite QA9 report not yet issued";
   }
 
-  const blockedCodes = ["BLOCKED_ENV_CAPABILITY"];
+  const blockedCodes = [
+    ...new Set(
+      [
+        ...secResult.checks.map((c) => c.blocked_code).filter(Boolean),
+        ...(secResult.dynamic_scenarios || []).map((d) => d.blocked_code).filter(Boolean),
+      ],
+    ),
+  ];
 
   const result = {
     schema: "governance.engine-acceptance.qa8-result.v1",
@@ -509,6 +604,13 @@ function runQa8(opts = {}) {
   evidence.next = pendingRerun ? "QA1_DETERMINISTIC_TRUTH" : "QA9_ACCEPTANCE_REPORT";
   writeJson(EVIDENCE_REL, evidence);
 
+  let qa6ResultForReport = null;
+  try {
+    qa6ResultForReport = readJson(QA6_REL);
+  } catch {
+    qa6ResultForReport = null;
+  }
+
   const report = buildReport({
     baseline,
     measuredAt,
@@ -522,6 +624,7 @@ function runQa8(opts = {}) {
     mode,
     criticalMerged,
     pendingRerun,
+    qa6Result: qa6ResultForReport,
   });
   fs.writeFileSync(path.join(ROOT, REPORT_REL), report, "utf8");
 

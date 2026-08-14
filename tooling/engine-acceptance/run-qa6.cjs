@@ -173,6 +173,22 @@ PRODUCT MUTATION = 0
     ? "`QA1_DETERMINISTIC_TRUTH` — this epoch's QA1-QA5 must still complete before QA6 counts toward NEXT=QA7_AI_EVAL. Full ACCEPTED · product mutation · 03 UI — **금지**."
     : "`QA7_AI_EVAL` only. Full ACCEPTED · product mutation · 03 UI — **금지**.";
 
+  const perfBudgetStatusSection = pw.status === "UNSPECIFIED_PERF_BUDGET"
+    ? [
+        "### UNSPECIFIED_PERF_BUDGET",
+        "",
+        "- Formal suite/budget status when product SLO/contract numeric budgets are absent.",
+        "- `BLOCKED_MISSING_ORACLE` on critical `INV-PERF-01` -> `ENGINE_QA_INCOMPLETE` (ACCEPTED forbidden).",
+        "- Invented p95 / error_rate = forbidden.",
+      ].join("\n")
+    : [
+        "### SPECIFIED (Human/PO ACK)",
+        "",
+        "- perf-budget.v1.json budget_version=V1, p95<=30ms, error_rate<=0.01, four tags (feed_read/participate/wallet_read/auth_profile).",
+        "- Numbers are Human/PO-ACK sourced, never invented by the harness.",
+        "- Real threshold PASS/FAIL is only reflected here when run-qa6-threshold.cjs (real k6 + booted Nest + isolated Postgres) produced fresh evidence in this same job.",
+      ].join("\n");
+
   return `# ENGINE ACCEPTANCE REPORT
 
 > **QA phase:** QA-6 \`qa6-performance-world\`  
@@ -228,11 +244,7 @@ ${statusBanner}
 |---|---|---|---|---|---|
 ${scenarioRows}
 
-### UNSPECIFIED_PERF_BUDGET
-
-- Formal suite/budget status when product SLO/contract numeric budgets are absent.
-- \`BLOCKED_MISSING_ORACLE\` on critical \`INV-PERF-01\` → \`ENGINE_QA_INCOMPLETE\` (ACCEPTED 불가).
-- Invented p95 / error_rate = **금지**.
+${perfBudgetStatusSection}
 
 ## Dual Dirty
 
@@ -309,7 +321,8 @@ function runQa6(opts = {}) {
     (criticalMerged.uncovered || 0) > 0
   ) {
     verdict = "ENGINE_QA_INCOMPLETE";
-    verdictReason = `QA6 COMPLETE · critical_invariant.blocked=${criticalMerged.blocked} (incl. UNSPECIFIED_PERF_BUDGET/BLOCKED_MISSING_ORACLE + prior BLOCKED_*) · P0/P1=0 · ACCEPTED 불가 · QA7..QA8 not executed`;
+    const qa6BlockedCodes = [...new Set((performance_world.scenarios || []).map((s) => s.blocked_code).filter(Boolean))];
+    verdictReason = `QA6 COMPLETE · critical_invariant.blocked=${criticalMerged.blocked} (this suite: ${qa6BlockedCodes.join(",") || "none"} + prior BLOCKED_*) · P0/P1=0 · ACCEPTED 불가 · QA7..QA8 not executed`;
   } else {
     verdict = "ENGINE_QA_INCOMPLETE";
     verdictReason =

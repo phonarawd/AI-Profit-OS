@@ -760,11 +760,28 @@ if (evidence) {
       ) {
         fail("ephemeral QA6 rewrite must keep critical_invariant.blocked=1 (QA4-QA6 cumulative)");
       }
-    } else if (
-      !evidence.critical_invariant ||
-      evidence.critical_invariant.blocked !== 2
-    ) {
-      fail("critical_invariant.blocked must be 2 after QA8 completion (QA4-QA6 one plus QA8 dynamic-pentest BLOCKED_ENV_CAPABILITY)");
+    } else {
+      // Authoritative expected total = QA8's own self-computed cumulative
+      // (QA4-QA6 blocked + QA8's new dynamic-pentest blocked) - read fresh
+      // here rather than hardcoding a literal, so a real harness wiring that
+      // legitimately drives some of these to 0 is not mistaken for drift.
+      let qa8Peek2 = null;
+      try {
+        qa8Peek2 = readJson(`${GOV}/qa8-result.v1.json`);
+      } catch {
+        qa8Peek2 = null;
+      }
+      const expectedBlocked =
+        qa8Peek2 && qa8Peek2.critical_invariant_cumulative
+          ? qa8Peek2.critical_invariant_cumulative.blocked
+          : null;
+      if (expectedBlocked === null) {
+        fail("cannot re-derive expected critical_invariant.blocked (qa8-result.critical_invariant_cumulative missing)");
+      } else if (!evidence.critical_invariant || evidence.critical_invariant.blocked !== expectedBlocked) {
+        fail(
+          `critical_invariant.blocked must equal qa8-result.critical_invariant_cumulative.blocked=${expectedBlocked} after QA8 completion (got ${evidence.critical_invariant && evidence.critical_invariant.blocked})`,
+        );
+      }
     }
   }
 }
@@ -1576,8 +1593,22 @@ if (qa8Result && !pendingRerun) {
       }
     }
     const dyn = (secWorld.dynamic_scenarios || [])[0];
-    if (!dyn || dyn.blocked_code !== "BLOCKED_ENV_CAPABILITY") {
-      fail("qa8-result must record dynamic adversarial scenario as BLOCKED_ENV_CAPABILITY (no mock PASS)");
+    if (!dyn) {
+      fail("qa8-result must record a dynamic adversarial scenario");
+    } else if (dyn.blocked_code === "BLOCKED_ENV_CAPABILITY") {
+      // Legitimate when the CI-heavy qa8-adversarial harness has not run in
+      // this job — unchanged from the original lock.
+    } else if (dyn.status === "PASS" || dyn.status === "FAIL") {
+      // Only legal once real run-qa8-adversarial.cjs evidence was actually
+      // consumed (harness_probe.available proves it, not an invented PASS).
+      if (!dyn.harness_probe || dyn.harness_probe.available !== true) {
+        fail("qa8-result dynamic scenario PASS/FAIL must be backed by a fresh, available harness_probe (no mock PASS)");
+      }
+      if (dyn.status === "FAIL" && !(dyn.findings && dyn.findings.length)) {
+        fail("qa8-result dynamic scenario FAIL must carry findings");
+      }
+    } else {
+      fail(`qa8-result dynamic adversarial scenario has an unrecognized status/blocked_code combination: status=${dyn.status} blocked_code=${dyn.blocked_code}`);
     }
   }
   if (
@@ -1586,11 +1617,16 @@ if (qa8Result && !pendingRerun) {
   ) {
     fail("qa8-result.critical_invariant_cumulative.blocked required");
   }
-  if (
-    !Array.isArray(qa8Result.blocked_codes_observed) ||
-    !qa8Result.blocked_codes_observed.includes("BLOCKED_ENV_CAPABILITY")
-  ) {
-    fail("qa8-result.blocked_codes_observed must include BLOCKED_ENV_CAPABILITY");
+  {
+    const qa8Dyn = ((qa8Result.checks || {}).security_privacy_world || {}).dynamic_scenarios || [];
+    const qa8DynBlocked = qa8Dyn.some((d) => d.blocked_code === "BLOCKED_ENV_CAPABILITY");
+    if (!Array.isArray(qa8Result.blocked_codes_observed)) {
+      fail("qa8-result.blocked_codes_observed must be an array");
+    } else if (qa8DynBlocked && !qa8Result.blocked_codes_observed.includes("BLOCKED_ENV_CAPABILITY")) {
+      fail("qa8-result.blocked_codes_observed must include BLOCKED_ENV_CAPABILITY while the dynamic scenario is still blocked");
+    } else if (!qa8DynBlocked && qa8Result.blocked_codes_observed.includes("BLOCKED_ENV_CAPABILITY")) {
+      fail("qa8-result.blocked_codes_observed claims BLOCKED_ENV_CAPABILITY but no check/dynamic_scenario currently reports it");
+    }
   }
   // FAIL findings must be linked in defects.v1.json (record, do not repair).
   const qa8Fails = ((qa8Result.checks || {}).security_privacy_world?.checks || []).filter(
@@ -1706,11 +1742,15 @@ if (qa9Result && !pendingRerun) {
     }
   }
   if (Array.isArray(qa9Result.p0_security_findings)) {
-    const hasAdminBoundary = qa9Result.p0_security_findings.some(
-      (f) => f.trace_id === "qa8:QA8_ADMIN_BOUNDARY",
-    );
-    if ((defects && defects.counts.P0 > 0) && !hasAdminBoundary) {
-      fail("qa9-result.p0_security_findings must keep QA8_ADMIN_BOUNDARY visible while defects.P0>0");
+    // Generic, evidence-derived requirement: EVERY currently-recorded P0
+    // defect (whichever check it actually is, not a single hardcoded name)
+    // must be visible in p0_security_findings - a specific historical
+    // defect id must never be hardcoded as the only thing that counts.
+    const currentP0TraceIds = (defects ? defects.defects : []).filter((d) => d.severity === "P0").map((d) => d.trace_id);
+    const visibleTraceIds = new Set(qa9Result.p0_security_findings.map((f) => f.trace_id));
+    const missingP0 = currentP0TraceIds.filter((tid) => !visibleTraceIds.has(tid));
+    if (missingP0.length > 0) {
+      fail(`qa9-result.p0_security_findings must keep every current P0 defect visible - missing: ${missingP0.join(", ")}`);
     }
   } else {
     fail("qa9-result.p0_security_findings must be an array (P0 must stay visible, not buried)");
@@ -1740,6 +1780,16 @@ if (qa9Result && !pendingRerun) {
 const report = fs.existsSync(path.join(ROOT, `${GOV}/ENGINE_ACCEPTANCE_REPORT.md`))
   ? fs.readFileSync(path.join(ROOT, `${GOV}/ENGINE_ACCEPTANCE_REPORT.md`), "utf8")
   : "";
+// QA6 budget may now be SPECIFIED (Human/PO ACK) instead of UNSPECIFIED_PERF_BUDGET —
+// the REPORT must mention whichever is the CURRENT qa6-result.v1.json status, not a
+// permanently-fixed string from before the V1 budget was approved.
+const qa6PerfWorld = qa6Result && qa6Result.checks && qa6Result.checks.performance_world;
+const qa6BudgetSpecified = Boolean(qa6PerfWorld && qa6PerfWorld.status !== "UNSPECIFIED_PERF_BUDGET");
+// Same idea for QA8's dynamic adversarial scenario: BLOCKED_ENV_CAPABILITY is
+// only the CURRENT truth while no CI-heavy harness evidence was consumed.
+const qa8SecWorld = qa8Result && qa8Result.checks && qa8Result.checks.security_privacy_world;
+const qa8DynScenario = qa8SecWorld && (qa8SecWorld.dynamic_scenarios || [])[0];
+const qa8DynamicBlocked = Boolean(qa8DynScenario && qa8DynScenario.blocked_code === "BLOCKED_ENV_CAPABILITY");
 if (report) {
   if (/verdict\s*[:=]\s*`?ENGINE_ACCEPTED_FOR_UI/i.test(report)) {
     fail("REPORT must not claim ENGINE_ACCEPTED_FOR_UI before full suites");
@@ -1761,8 +1811,8 @@ if (report) {
     if (!report.includes("QA6 = COMPLETE")) {
       fail("REPORT banner must include QA6 = COMPLETE");
     }
-    if (!report.includes("UNSPECIFIED_PERF_BUDGET")) {
-      fail("REPORT must mention UNSPECIFIED_PERF_BUDGET");
+    if (qa6BudgetSpecified ? !report.includes("SPECIFIED") : !report.includes("UNSPECIFIED_PERF_BUDGET")) {
+      fail(`REPORT must mention QA6's current budget status (${qa6BudgetSpecified ? "SPECIFIED" : "UNSPECIFIED_PERF_BUDGET"})`);
     }
     if (!report.includes("threshold") && !report.includes("Threshold")) {
       fail("REPORT must mention threshold mechanism");
@@ -1794,8 +1844,8 @@ if (report) {
     if (!report.includes("QA6 = COMPLETE")) {
       fail("REPORT banner must include QA6 = COMPLETE");
     }
-    if (!report.includes("UNSPECIFIED_PERF_BUDGET")) {
-      fail("REPORT must mention UNSPECIFIED_PERF_BUDGET (QA6 record retained)");
+    if (qa6BudgetSpecified ? !report.includes("SPECIFIED") : !report.includes("UNSPECIFIED_PERF_BUDGET")) {
+      fail(`REPORT must mention QA6's current budget status (${qa6BudgetSpecified ? "SPECIFIED" : "UNSPECIFIED_PERF_BUDGET"}, QA6 record retained)`);
     }
     if (!report.includes("threshold") && !report.includes("Threshold")) {
       fail("REPORT must mention threshold mechanism");
@@ -1815,8 +1865,11 @@ if (report) {
     if (!report.includes("ASVS") || !report.includes("5.0.0")) {
       fail("REPORT must cite ASVS 5.0.0 (QA8 subset)");
     }
-    if (!/BLOCKED_ENV_CAPABILITY/.test(report)) {
-      fail("REPORT must record QA8 dynamic-scenario BLOCKED_ENV_CAPABILITY (no mock PASS)");
+    if (qa8DynamicBlocked && !/BLOCKED_ENV_CAPABILITY/.test(report)) {
+      fail("REPORT must record QA8 dynamic-scenario BLOCKED_ENV_CAPABILITY while it is still blocked (no mock PASS)");
+    }
+    if (!qa8DynamicBlocked && !/SEC-DYNAMIC-ADVERSARIAL-01/.test(report)) {
+      fail("REPORT must still name the QA8 dynamic-adversarial scenario even once it is no longer BLOCKED");
     }
     if (!/not repaired|Not repaired|discovery only/i.test(report)) {
       fail("REPORT must state QA8 findings are not repaired this wave (discovery only)");
@@ -1846,8 +1899,8 @@ if (report) {
     if (!report.includes("QA6 = COMPLETE")) {
       fail("REPORT banner must include QA6 = COMPLETE");
     }
-    if (!report.includes("UNSPECIFIED_PERF_BUDGET")) {
-      fail("REPORT must mention UNSPECIFIED_PERF_BUDGET (QA6 record retained)");
+    if (qa6BudgetSpecified ? !report.includes("SPECIFIED") : !report.includes("UNSPECIFIED_PERF_BUDGET")) {
+      fail(`REPORT must mention QA6's current budget status (${qa6BudgetSpecified ? "SPECIFIED" : "UNSPECIFIED_PERF_BUDGET"}, QA6 record retained)`);
     }
     if (!report.includes("threshold") && !report.includes("Threshold")) {
       fail("REPORT must mention threshold mechanism");
@@ -1867,8 +1920,11 @@ if (report) {
     if (!report.includes("ASVS") || !report.includes("5.0.0")) {
       fail("REPORT must cite ASVS 5.0.0 (QA8 subset)");
     }
-    if (!/BLOCKED_ENV_CAPABILITY/.test(report)) {
-      fail("REPORT must record QA8 dynamic-scenario BLOCKED_ENV_CAPABILITY (no mock PASS)");
+    if (qa8DynamicBlocked && !/BLOCKED_ENV_CAPABILITY/.test(report)) {
+      fail("REPORT must record QA8 dynamic-scenario BLOCKED_ENV_CAPABILITY while it is still blocked (no mock PASS)");
+    }
+    if (!qa8DynamicBlocked && !/SEC-DYNAMIC-ADVERSARIAL-01/.test(report)) {
+      fail("REPORT must still name the QA8 dynamic-adversarial scenario even once it is no longer BLOCKED");
     }
     if (!/not repaired|Not repaired|discovery only/i.test(report)) {
       fail("REPORT must state findings are not repaired this wave (discovery/aggregation only)");
@@ -1876,10 +1932,16 @@ if (report) {
     if (!report.includes("ENGINE_NOT_ACCEPTED") && !report.includes("ENGINE_QA_INCOMPLETE")) {
       fail("REPORT verdict must be ENGINE_NOT_ACCEPTED or ENGINE_QA_INCOMPLETE (never ACCEPTED)");
     }
-    // QA9-specific: the P0 admin-boundary finding must remain prominently
-    // visible in the final report, not buried only in defects.v1.json.
-    if (!/QA8_ADMIN_BOUNDARY/.test(report)) {
-      fail("REPORT must keep the P0 admin-boundary finding (QA8_ADMIN_BOUNDARY) visible");
+    // QA9-specific: EVERY currently-recorded P0 defect must remain
+    // prominently visible in the final report, not buried only in
+    // defects.v1.json - generic over whichever check(s) are actually P0
+    // right now, never a single hardcoded historical defect name.
+    const reportMissingP0 = (defects ? defects.defects : [])
+      .filter((d) => d.severity === "P0")
+      .map((d) => d.trace_id)
+      .filter((tid) => !report.includes(tid) && !report.includes(String(tid).replace(/^qa\d+:/, "")));
+    if (reportMissingP0.length > 0) {
+      fail(`REPORT must keep every current P0 finding visible - missing: ${reportMissingP0.join(", ")}`);
     }
     if (!/P0_SECURITY_FINDINGS/i.test(report) && !/P0\b.*(finding|security)/i.test(report)) {
       fail("REPORT must include a P0 security findings section");

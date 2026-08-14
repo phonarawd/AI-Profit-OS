@@ -21,6 +21,11 @@
  * run-qaN.cjs does), even though QA9 performs no destructive/live action —
  * it only reads committed governance JSON + git status.
  *
+ * Every narrative section below is derived from the CURRENT qa4/5/6/8-result
+ * files and defects.v1.json at run time - never a fixed historical defect
+ * name. A defect that gets repaired (real evidence, real check re-run) must
+ * stop appearing here on the next QA9 run without anyone editing this file.
+ *
  * Product mutation = 0. Does not repair P0/P2. Does not issue
  * ENGINE_ACCEPTED_FOR_UI while defects.P0/P1 > 0.
  */
@@ -44,6 +49,10 @@ const DEFECTS_REL = `${GOV}/defects.v1.json`;
 const SCOPE_REL = `${GOV}/protected-scope.v1.json`;
 const BASELINE_REL = `${GOV}/baseline.v1.json`;
 const COVERAGE_REL = `${GOV}/coverage.v1.json`;
+const QA4_REL = `${GOV}/qa4-result.v1.json`;
+const QA5_REL = `${GOV}/qa5-result.v1.json`;
+const QA6_REL = `${GOV}/qa6-result.v1.json`;
+const QA8_REL = `${GOV}/qa8-result.v1.json`;
 
 /** Post-QA9 state when verdict != ACCEPTED — reuses the plan's own mermaid vocabulary
  * (`.cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md`
@@ -58,6 +67,14 @@ function sha256Json(obj) {
 
 function writeJson(rel, obj) {
   fs.writeFileSync(path.join(ROOT, rel), `${JSON.stringify(obj, null, 2)}\n`, "utf8");
+}
+
+function tryReadJson(rel) {
+  try {
+    return readJson(rel);
+  } catch {
+    return null;
+  }
 }
 
 function syncAggregateHashes(baseline, scope) {
@@ -117,6 +134,155 @@ function computeVerdict(inputs) {
   };
 }
 
+/**
+ * Every currently-BLOCKED critical_invariant detail across QA4/QA5/QA6/QA8,
+ * plus QA8's dynamic-adversarial scenario (a sibling field, not inside
+ * critical_invariant.details). Purely derived from each suite's own
+ * already-written result file - this function invents no numbers, no
+ * scenario names, and no counts. A repaired suite that no longer reports
+ * BLOCKED simply stops contributing rows on the next run.
+ */
+function collectRemainingBlocked() {
+  const rows = [];
+  const sources = [
+    { rel: QA4_REL, suite: "QA4" },
+    { rel: QA5_REL, suite: "QA5" },
+    { rel: QA6_REL, suite: "QA6" },
+    { rel: QA8_REL, suite: "QA8" },
+  ];
+  for (const s of sources) {
+    const data = tryReadJson(s.rel);
+    if (!data) continue;
+    const details = (data.critical_invariant && data.critical_invariant.details) || [];
+    for (const d of details) {
+      if (d.status === "BLOCKED") {
+        rows.push({
+          suite: s.suite,
+          invariant_id: d.invariant_id,
+          blocked_code: d.blocked_code || null,
+          scenario_ids: d.scenario_ids || [],
+        });
+      }
+    }
+    if (s.suite === "QA8") {
+      const dyn = ((data.checks || {}).security_privacy_world || {}).dynamic_scenarios || [];
+      for (const d of dyn) {
+        if (d.status === "BLOCKED") {
+          rows.push({
+            suite: "QA8",
+            invariant_id: d.invariant_id,
+            blocked_code: d.blocked_code || null,
+            scenario_ids: [d.scenario_id],
+          });
+        }
+      }
+    }
+  }
+  return rows;
+}
+
+function renderRemainingBlockedSection(criticalInvariant) {
+  const rows = collectRemainingBlocked();
+  const total = criticalInvariant.blocked || 0;
+  if (rows.length === 0) {
+    return [
+      `## REMAINING_BLOCKED (critical_invariant.blocked cumulative = ${total})`,
+      "",
+      total === 0
+        ? "No BLOCKED critical_invariant entries currently recorded across QA4/QA5/QA6/QA8."
+        : `critical_invariant.blocked=${total} but no per-suite BLOCKED detail rows were found in qa4/5/6/8-result.v1.json - re-run the affected suite(s) before trusting this total.`,
+    ].join("\n");
+  }
+  const tableRows = rows
+    .map(
+      (r, i) =>
+        `| ${i + 1} | \`${r.blocked_code || "-"}\` | ${r.suite} | ${r.invariant_id} | ${r.scenario_ids.join(", ") || "-"} |`,
+    )
+    .join("\n");
+  const matches = rows.length === total;
+  return [
+    `## REMAINING_BLOCKED (critical_invariant.blocked cumulative = ${total})`,
+    "",
+    "| # | code | suite | invariant | scenario(s) |",
+    "|---|---|---|---|---|",
+    tableRows,
+    "",
+    matches
+      ? `Row count (${rows.length}) matches evidence-manifest.v1.json critical_invariant.blocked=${total}. None of these were converted to FAIL/PASS/SKIPPED to manufacture a cleaner verdict (mock-PASS and BLOCKED-laundering are both forbidden by acceptance-contract §L3).`
+      : `Row count (${rows.length}) does NOT match the recorded cumulative total (${total}) - one or more suite result files are stale relative to evidence-manifest.v1.json; re-run the affected suites before trusting either number.`,
+  ].join("\n");
+}
+
+function renderPerformanceWorldRecap() {
+  const qa6 = tryReadJson(QA6_REL);
+  const pw = qa6 && qa6.checks && qa6.checks.performance_world;
+  if (!pw) {
+    return "### Performance World (k6, CI only heavy)\n\nqa6-result.v1.json not readable at QA9 run time - cannot recap.";
+  }
+  if (pw.status === "UNSPECIFIED_PERF_BUDGET") {
+    return [
+      "### Performance World (k6, CI only heavy) — QA6 record retained",
+      "",
+      "QA6 record retained unchanged through QA7/QA8/QA9. suite status `UNSPECIFIED_PERF_BUDGET`",
+      "— k6 scenario-mix + tag threshold mechanism locked — numeric SLO invention forbidden — heavy",
+      "k6 remains CI only — artifact retention >= 90 days — aggregator `if: always()`. Resolving",
+      "this BLOCKED_MISSING_ORACLE requires Human/PO to supply real numeric p95/error-rate budgets;",
+      "the harness will not invent one.",
+    ].join("\n");
+  }
+  const tagRows = (pw.scenarios || []).map((s) => `\`${s.tag}\`:\`${s.status}\``).join(", ");
+  return [
+    "### Performance World (k6, CI only heavy) — QA6 record retained",
+    "",
+    `QA6 record retained unchanged through QA7/QA8/QA9. suite status \`${pw.status}\` — budget`,
+    "SPECIFIED (Human/PO ACK, perf-budget.v1.json V1) — k6 scenario-mix + tag threshold mechanism",
+    `locked — numeric SLO invention forbidden — tags: ${tagRows || "(none)"} — heavy k6 remains CI`,
+    "only — artifact retention >= 90 days — aggregator `if: always()`.",
+  ].join("\n");
+}
+
+/**
+ * @param {ReturnType<typeof collectRemainingBlocked>} remainingBlocked
+ * @param {{P0:number,P1:number,P2:number,P3:number}} defectsCounts
+ */
+function renderRepairEntryPoint(remainingBlocked, defectsCounts) {
+  const outstanding = [];
+  if (defectsCounts.P0 > 0) outstanding.push(`${defectsCounts.P0} P0 defect(s)`);
+  if (defectsCounts.P1 > 0) outstanding.push(`${defectsCounts.P1} P1 defect(s)`);
+  if (remainingBlocked.length > 0) outstanding.push(`${remainingBlocked.length} BLOCKED critical_invariant row(s)`);
+
+  const header = [
+    "## REPAIR_ENTRY_POINT (governance state)",
+    "",
+    outstanding.length === 0
+      ? "No outstanding P0/P1 defects and no BLOCKED critical_invariant rows are currently recorded."
+      : `Outstanding right now: ${outstanding.join(", ")}. What exists to repair them:`,
+    "",
+  ];
+
+  const mechanisms = [
+    "1. **Protected product repair** (touches `services/api-nest/src/**` or other",
+    "   `protected-scope.v1.json` roots) uses the already-governed pattern: change protected",
+    "   bytes as an ordinary commit, then trigger `ENGINE_ACCEPTANCE_REBASE_V1`",
+    "   (`tooling/engine-acceptance/rebase-acceptance-baseline.cjs`, Human/PO ACK required) to",
+    "   open a new acceptance epoch, then re-run QA1-QA8 then QA9.",
+    "2. **Harness-only repair** = `tooling/engine-acceptance/**` changes with zero product-byte",
+    "   impact. Uses normal T0/T1 commit gates; no rebase needed since protected scope is",
+    "   untouched.",
+    "3. **Governance-only repair** = `governance/engine-acceptance/**` bookkeeping.",
+    "4. **Workflow L7 amendment** = `.github/workflows/engine-acceptance.yml` change under",
+    "   `POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1` (Human/PO ACK, exact-diff QA0-QA6",
+    "   semantics-unchanged proof).",
+    "5. **Performance budget Human/PO approval** = QA6's numeric p95/error-rate budget can only",
+    "   exist once Human/PO supplies it; `perf-budget.v1.json`'s `numeric_invention_forbidden`",
+    "   lock means the harness cannot self-supply these.",
+    "6. **L8 `ENGINE_ACCEPTANCE_REBASE_V1`** = required for any protected-product mutation",
+    "   (`services/api-nest/src/**`) needed to clear a remaining P0/P1/BLOCKED item.",
+  ];
+
+  return [...header, ...mechanisms].join("\n");
+}
+
 function buildReport({
   baseline,
   measuredAt,
@@ -143,7 +309,7 @@ function buildReport({
             `- \`${d.trace_id}\` (suite \`${d.suite_id}\`, invariant \`${d.invariant_id}\`) — ${d.title}`,
         )
         .join("\n")
-    : "- (none)";
+    : "- (none currently recorded)";
 
   const otherRows = otherDefects.length
     ? otherDefects
@@ -152,7 +318,9 @@ function buildReport({
             `- \`${d.severity}\` \`${d.trace_id}\` (suite \`${d.suite_id}\`, invariant \`${d.invariant_id}\`) — ${d.title}`,
         )
         .join("\n")
-    : "- (none)";
+    : "- (none currently recorded)";
+
+  const remainingBlocked = collectRemainingBlocked();
 
   return `# ENGINE ACCEPTANCE REPORT
 
@@ -181,9 +349,9 @@ QA9 = COMPLETE
 QA HARNESS TARGET = SAFE
 NEXT = ${formulaInputs.next}
 PRODUCT MUTATION = 0
-03 UI = BLOCKED
-ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
-UI_UX_ENTRY_GATE = CLOSED
+03 UI = ${verdict === "ENGINE_ACCEPTED_FOR_UI" ? "UNLOCKED" : "BLOCKED"}
+ENGINE_ACCEPTED_FOR_UI = ${verdict === "ENGINE_ACCEPTED_FOR_UI" ? "ISSUED" : "NOT_ISSUED"}
+UI_UX_ENTRY_GATE = ${verdict === "ENGINE_ACCEPTED_FOR_UI" ? "OPEN" : "CLOSED"}
 \`\`\`
 
 ## FINAL_ACCEPTANCE_VERDICT
@@ -198,7 +366,7 @@ UI_UX_ENTRY_GATE = CLOSED
 | protected_scope_clean | \`${dual.protected_scope_clean}\` |
 | acceptance_scope.unchanged | \`${formulaInputs.acceptance_scope_unchanged}\` |
 
-**Prohibited state confirmed:** \`ENGINE_ACCEPTED_FOR_UI\` is **not issued**. \`UI_UX_ENTRY_GATE = CLOSED\`.
+**Prohibited-state check:** \`ENGINE_ACCEPTED_FOR_UI\` is \`${verdict === "ENGINE_ACCEPTED_FOR_UI" ? "ISSUED" : "NOT_ISSUED"}\`. \`UI_UX_ENTRY_GATE = ${verdict === "ENGINE_ACCEPTED_FOR_UI" ? "OPEN" : "CLOSED"}\`.
 
 ## ACCEPTANCE_FORMULA_INPUTS
 
@@ -225,101 +393,22 @@ ${suiteRows}
 
 ## P0_SECURITY_FINDINGS (must remain visible — not buried in defects.v1.json only)
 
-### QA8_ADMIN_BOUNDARY — P0 — INV-ISOLATION-01 — repair NOT executed this wave
-
-Every \`*.admin.controller.ts\` route in \`services/api-nest/src/**\` (19 controllers scanned,
-19 unguarded, 0 guarded) — ledger balance-adjust, withdraw-credentials, KYC decisions,
-deposit-config, risk rules, membership, referral, ai-logs, opportunities override,
-platform-reserve, simulation, adapters, execution-policy, ops-inbox — carries
-\`@Controller("admin")\` with **zero** \`@UseGuards\`. No global \`APP_GUARD\`/middleware in
-\`app.module.ts\`/\`main.ts\` compensates. This is a live, unauthenticated path to cross-user
-financial reads and unauthenticated balance adjustment (ASVS v5.0.0-8.2.1 / v5.0.0-8.4.2).
-Highest-impact surfaces: \`ledger.admin.controller.ts\` (unauthenticated money balance
-adjustment; cross-user financial/ledger read), \`withdraw-credentials.admin.controller.ts\`
-(withdrawal credential exposure), \`kyc.admin.controller.ts\` (unauthenticated KYC
-decision/PII surface). Root cause: \`AdminGuard\` is specified
-(\`schemas/admin-rbac.v1.json\`, \`ai_profit_os_04_admin_e5f6a7b8.plan.md\` §9.9) but has
-**zero** implementation under \`services/api-nest/src/**\` and is wired onto **zero**
-controllers. **This single P0 forces \`ENGINE_NOT_ACCEPTED\` regardless of any other
-input.** Not repaired in QA9 (aggregation/reporting wave only).
-
 ${p0Rows}
 
 ## OTHER_DEFECTS
 
-### QA8_PRIVACY_DELETE_ACCOUNT — P2 — INV-PRIVACY-01 — repair NOT executed this wave
-
-\`auth.service.ts#deleteAccount\` performs an \`UPDATE\` (soft-delete) on \`public.users\`, not a
-hard \`DELETE\`. Schema \`ON DELETE CASCADE\`/\`SET NULL\` foreign keys never fire, so
-\`ai_twin_memory\`, \`notification_prefs\`, \`referral_edge\`, and other user_id-linked rows
-persist after account deletion (ASVS v5.0.0-14.2.7). KYC 5-year retention is documented
-policy (§42.2.1) and is explicitly NOT counted in this finding.
-
 ${otherRows}
 
-## REMAINING_BLOCKED (critical_invariant.blocked cumulative = ${criticalInvariant.blocked ?? 0})
+${renderRemainingBlockedSection(criticalInvariant)}
 
-| # | code | suite | invariant | note |
-|---|---|---|---|---|
-| 1 | \`BLOCKED_NO_CLOCK_HOOK\` | QA4 | INV-TIME-01 | no injectable clock seam under \`services/api-nest/src/{common,time,testing}\` |
-| 2 | \`BLOCKED_NO_FAULT_HOOK\` | QA5 (axis1) | INV-FEED-AI-01 | no injectable fault seam |
-| 3 | \`BLOCKED_NO_FAULT_HOOK\` | QA5 (axis2) | INV-LEDGER-01 | post-recovery scan depends on same fault seam |
-| 4 | \`BLOCKED_MISSING_ORACLE\` | QA6 | INV-PERF-01 | \`UNSPECIFIED_PERF_BUDGET\` — no product SLO/contract numeric budget to test against |
-| 5 | (QA4/5/6 cumulative subtotal) | — | — | 5 (carried unchanged since QA6, per \`critical_invariant_cumulative.sources.QA4_QA6_cumulative\`) |
-| 6 | \`BLOCKED_ENV_CAPABILITY\` | QA8 | INV-ISOLATION-01 | \`SEC-DYNAMIC-ADVERSARIAL-01\` — live adversarial HTTP pentest harness against a booted Nest+DB instance does not exist yet (not Phase0-RAM-only; the runner itself is unbuilt even for CI heavy mode — \`checks/security-privacy-world.cjs\` hardcodes this scenario \`status: "BLOCKED"\` independent of \`mode\`) |
+${renderPerformanceWorldRecap()}
 
-Total = **6**, matching \`evidence-manifest.v1.json critical_invariant.blocked\` and
-\`qa8-result.v1.json critical_invariant_cumulative.blocked\`. None of the 6 were converted
-to FAIL/PASS/SKIPPED to manufacture a cleaner verdict (mock-PASS and BLOCKED-laundering are
-both forbidden by acceptance-contract §L3).
-
-### Performance World (k6, CI only heavy) — QA6 record retained
-
-QA6 record retained unchanged through QA7/QA8/QA9. suite status \`UNSPECIFIED_PERF_BUDGET\`
-— k6 scenario-mix + tag threshold mechanism locked — numeric SLO invention forbidden — heavy
-k6 remains CI only — artifact retention >= 90 days — aggregator \`if: always()\`. Resolving
-this BLOCKED_MISSING_ORACLE requires Human/PO to supply real numeric p95/error-rate budgets
-(see RECOMMENDED_REPAIR_BATCH item 1); the harness will not invent one.
-
-## REPAIR_ENTRY_POINT (governance state — planning only, not executed)
-
-The repository does **not** yet define a dedicated, separately-coded "post-QA9 repair
-round" runner/workflow job. What exists:
-
-1. **Protected product repair** (touches \`services/api-nest/src/**\` or other
-   \`protected-scope.v1.json\` roots) is an **already-used, already-governed pattern** —
-   three prior repairs during 02.5 (\`ca476b4\`, \`2c7b9cf\`, and the api-nest TS build fix at
-   \`a280b21\`) each (a) changed protected bytes as an ordinary commit, then (b) triggered
-   \`ENGINE_ACCEPTANCE_REBASE_V1\` (\`tooling/engine-acceptance/rebase-acceptance-baseline.cjs\`,
-   Human/PO ACK required) to open a new acceptance epoch, then (c) re-ran QA1-QA6 then QA7.
-   The QA8 P0/P2 repairs would follow this **same** mechanism — there is no separate "repair
-   plan" file to author first.
-2. **Harness-only repair** = \`tooling/engine-acceptance/**\` changes with zero product-byte
-   impact (e.g. building the actual \`SEC-DYNAMIC-ADVERSARIAL-01\` live-pentest runner). Uses
-   normal T0/T1 commit gates; no rebase needed since protected scope is untouched.
-3. **Governance-only repair** = \`governance/engine-acceptance/**\` bookkeeping (this wave's
-   own category).
-4. **Workflow L7 amendment** = \`.github/workflows/engine-acceptance.yml\` change under
-   \`POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1\` (Human/PO ACK, exact-diff QA0-QA6
-   semantics-unchanged proof). Not required for QA9 itself (no workflow file touched this
-   wave).
-5. **Performance budget Human/PO approval** = QA6's \`UNSPECIFIED_PERF_BUDGET\` can only
-   become a real PASS/FAIL once Human/PO supplies actual numeric p95/error-rate budgets;
-   \`perf-budget.v1.json\`'s \`numeric_invention_forbidden\` lock means the harness cannot
-   self-supply these.
-6. **L8 \`ENGINE_ACCEPTANCE_REBASE_V1\`** = required for ANY of: the QA8 P0 AdminGuard wiring,
-   the QA8 P2 hard-delete fix, or adding a QA4/QA5 injectable clock/fault seam — all three
-   necessarily edit files under \`services/api-nest/src/**\` (protected scope).
-
-**Governance gap (QA9 contemporaneous record, subsequently repaired):** QA9 identified that L8
-\`INVALIDATED_SUITES\`/\`REQUIRED_RERUN_SUITES\` predated QA8/QA9 and used a single exact-match
-constant against historical approvals. That finding was recorded as
-\`HUMAN_PO_APPROVAL_REQUIRED\` and was **not** applied during QA9.
+${renderRepairEntryPoint(remainingBlocked, defectsCounts)}
 
 ## REBASE_GOVERNANCE_GAP — repaired as \`ENGINE_ACCEPTANCE_REBASE_POLICY_V2\`
 
-Human/PO ACK APPROVED the policy-versioned repair (\`amendment_id=rebase-policy-qa8-qa9-topology-20260814\`).
-Historical V1 approvals remain valid; future rebases use V2:
+Human/PO ACK APPROVED the policy-versioned repair (\`amendment_id=rebase-policy-qa8-qa9-topology-20260814\`,
+codename \`L8_REBASE_GOVERNANCE_GAP_REPAIR\`). Historical V1 approvals remain valid; future rebases use V2:
 
 - discovery invalidate/rerun includes **QA8** (STALE + historical provenance + washing)
 - **QA9** is aggregation-only: \`stale_aggregation_phases\`, not a discovery suite; predecessor
@@ -330,31 +419,27 @@ Historical V1 approvals remain valid; future rebases use V2:
 
 ## RECOMMENDED_REPAIR_BATCH (planning only — product items not executed by QA9)
 
-Grouped in lowest-rerun-cost order (harness/governance-only first, protected-product last,
-since every protected-product change forces a full QA1-QA8 then QA9 aggregation rebase rerun):
-
-1. **QA6 performance budget — Human/PO approval only.** Supply real numeric SLOs; update
-   \`perf-budget.v1.json\` (governance-only, no rebase) once approved.
-2. **QA8 dynamic adversarial harness — harness-only.** Build the actual
-   \`SEC-DYNAMIC-ADVERSARIAL-01\` live-pentest runner under \`tooling/engine-acceptance/**\`
-   (no product bytes touched; no rebase needed).
-3. **Rebase governance gap — COMPLETE** under \`ENGINE_ACCEPTANCE_REBASE_POLICY_V2\`
-   (governance/tooling-only; no product mutation; no new epoch).
-4. **QA4/QA5 clock+fault injection seam — protected product mutation.** Add an injectable
-   clock/fault provider under \`services/api-nest/src/common|time|testing\` (new files, plus
-   wiring existing time/fault-dependent call sites to consult it). Triggers L8 rebase.
-5. **QA8 P0 admin AdminGuard — protected product mutation (highest priority, blocks
-   everything).** Implement \`AdminGuard\` (schemas/admin-rbac.v1.json role matrix,
-   ai_profit_os_04_admin plan §9.9) and wire \`@UseGuards(AdminGuard)\` onto all 19
-   \`*.admin.controller.ts\` files. Triggers L8 rebase; full QA1-QA8 then QA9 aggregation
-   rerun required before any new verdict.
-6. **QA8 P2 delete-account retention — protected product mutation.** Change
-   \`auth.service.ts#deleteAccount\` to a real hard-\`DELETE\` (or explicit per-table
-   nulling/deletion) for the residual non-KYC tables. Can ride in the SAME rebase epoch as
-   #5 (same PR/commit window) to avoid a second full rerun.
-
-QA9 aggregation does not execute protected-product items 1,2,4,5,6. Item 3 is the
-policy-versioned rebase repair.
+${
+  p0Defects.length === 0 && otherDefects.length === 0 && remainingBlocked.length === 0
+    ? "No outstanding defects or BLOCKED critical_invariant rows are currently recorded — nothing queued here."
+    : [
+        "Grouped in lowest-rerun-cost order (harness/governance-only first, protected-product last,",
+        "since every protected-product change forces a full QA1-QA8 then QA9 aggregation rebase rerun):",
+        "",
+        ...p0Defects.map(
+          (d, i) =>
+            `${i + 1}. **${d.trace_id}** (P0, suite ${d.suite_id}, invariant ${d.invariant_id}) — ${d.title}`,
+        ),
+        ...otherDefects.map(
+          (d, i) =>
+            `${p0Defects.length + i + 1}. **${d.trace_id}** (${d.severity}, suite ${d.suite_id}, invariant ${d.invariant_id}) — ${d.title}`,
+        ),
+        ...remainingBlocked.map(
+          (r, i) =>
+            `${p0Defects.length + otherDefects.length + i + 1}. **${r.suite} ${r.invariant_id}** — \`${r.blocked_code}\` (${r.scenario_ids.join(", ") || "no scenario ids"})`,
+        ),
+      ].join("\n")
+}
 
 ## Dual Dirty
 
@@ -364,11 +449,11 @@ policy-versioned rebase repair.
 
 ## NEXT_CANONICAL_WAVE
 
-\`${formulaInputs.next}\` — verdict \`${verdict}\` blocks 03 UI. The next canonical wave is a
-**repair round** (see RECOMMENDED_REPAIR_BATCH), governed by \`ENGINE_ACCEPTANCE_REBASE_V1\`
-for any protected-product item, NOT a resumption of \`02.5\` discovery (QA0-QA9 are all
-COMPLETE) and NOT \`03 UI\` (blocked until a genuinely earned
-\`ENGINE_ACCEPTED_FOR_UI\` + \`acceptance_scope.unchanged\`).
+\`${formulaInputs.next}\` — verdict \`${verdict}\` ${verdict === "ENGINE_ACCEPTED_FOR_UI" ? "unlocks" : "blocks"} 03 UI. ${
+    verdict === "ENGINE_ACCEPTED_FOR_UI"
+      ? "All acceptance-contract L1 conditions are met on this evidence."
+      : "The next canonical wave is a **repair round** (see RECOMMENDED_REPAIR_BATCH), governed by `ENGINE_ACCEPTANCE_REBASE_V1` for any protected-product item, NOT a resumption of `02.5` discovery (QA0-QA9 are all COMPLETE) and NOT `03 UI` (blocked until a genuinely earned `ENGINE_ACCEPTED_FOR_UI` + `acceptance_scope.unchanged`)."
+  }
 `;
 }
 
@@ -427,9 +512,17 @@ function runQa9(opts = {}) {
   });
 
   const verdict = formula.verdict;
+  const p0Defects = (defects.defects || []).filter((d) => d.severity === "P0");
+  const otherDefects = (defects.defects || []).filter((d) => d.severity !== "P0");
+
   const verdictReason =
     verdict === "ENGINE_NOT_ACCEPTED"
-      ? `QA9 COMPLETE (final aggregation of QA0-QA8 evidence per acceptance-contract.v1.md L1) - defects.P0=${defectsCounts.P0 || 0} defects.P1=${defectsCounts.P1 || 0} (QA8_ADMIN_BOUNDARY unauthenticated admin surface, real evidence) force ENGINE_NOT_ACCEPTED regardless of critical_invariant.blocked=${criticalInvariant.blocked || 0} - 03 UI remains BLOCKED - ENGINE_ACCEPTED_FOR_UI NOT_ISSUED - repair round required (see REPAIR_ENTRY_POINT / RECOMMENDED_REPAIR_BATCH in ENGINE_ACCEPTANCE_REPORT.md) - product mutation 0 this wave`
+      ? `QA9 COMPLETE (final aggregation of QA0-QA8 evidence per acceptance-contract.v1.md L1) - defects.P0=${defectsCounts.P0 || 0} defects.P1=${defectsCounts.P1 || 0} (${
+          p0Defects
+            .concat(otherDefects.filter((d) => d.severity === "P1"))
+            .map((d) => d.trace_id)
+            .join(", ") || "see defects.v1.json"
+        }, real evidence) force ENGINE_NOT_ACCEPTED regardless of critical_invariant.blocked=${criticalInvariant.blocked || 0} - 03 UI remains BLOCKED - ENGINE_ACCEPTED_FOR_UI NOT_ISSUED - repair round required (see REPAIR_ENTRY_POINT / RECOMMENDED_REPAIR_BATCH in ENGINE_ACCEPTANCE_REPORT.md) - product mutation 0 this wave`
       : verdict === "ENGINE_QA_INCOMPLETE"
         ? `QA9 COMPLETE - defects.P0/P1=0 but formula input(s) failed: ${formula.reason_code} - ACCEPTED forbidden`
         : `QA9 COMPLETE - all acceptance-contract L1 conditions met - ENGINE_ACCEPTED_FOR_UI`;
@@ -451,9 +544,6 @@ function runQa9(opts = {}) {
     verdict_reason_code: formula.reason_code,
     next: formula.next,
   };
-
-  const p0Defects = (defects.defects || []).filter((d) => d.severity === "P0");
-  const otherDefects = (defects.defects || []).filter((d) => d.severity !== "P0");
 
   const result = {
     schema: "governance.engine-acceptance.qa9-result.v1",
@@ -510,6 +600,7 @@ function runQa9(opts = {}) {
       "QA9 is a deterministic aggregation/verdict-issuance wave, not a discovery suite.",
       "Consumes QA0-QA8 evidence exactly as recorded - repairs nothing.",
       "Does not issue ENGINE_ACCEPTED_FOR_UI while defects.P0/P1 > 0.",
+      "Every report section is derived from the current qa4/5/6/8-result files at run time - no hardcoded historical defect name.",
     ],
   };
 
@@ -603,4 +694,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { runQa9, computeVerdict, NEXT_FIX_ROUND, NEXT_INCOMPLETE, NEXT_UI_UNLOCKED };
+module.exports = { runQa9, computeVerdict, collectRemainingBlocked, NEXT_FIX_ROUND, NEXT_INCOMPLETE, NEXT_UI_UNLOCKED };
