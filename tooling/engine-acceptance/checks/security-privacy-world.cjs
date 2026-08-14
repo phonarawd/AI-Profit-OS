@@ -543,7 +543,7 @@ function buildDynamicAdversarialScenario(harnessProbe) {
     blocked_code: null,
     asvs_ids,
     invariant_id,
-    harness_probe: { probed_path: harnessProbe.probed_path, age_ms: harnessProbe.age_ms },
+    harness_probe: { available: true, probed_path: harnessProbe.probed_path, age_ms: harnessProbe.age_ms },
     evidence: {
       source: "run-qa8-adversarial.cjs (isolated CI Postgres + booted Nest, real HTTP)",
       measuredAt: data.measuredAt,

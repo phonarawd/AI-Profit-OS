@@ -17,6 +17,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const http = require("node:http");
 const crypto = require("node:crypto");
 const { spawnSync } = require("node:child_process");
 const { assertKillSwitch, assertDbTarget, resolveHarnessDatabaseUrl } = require("./kill-switch.cjs");
@@ -55,6 +56,49 @@ function writeJson(abs, obj) {
 function findK6() {
   const r = spawnSync("k6", ["version"], { encoding: "utf8" });
   return r.status === 0 ? "k6" : null;
+}
+
+function httpGetOnce(baseUrl, pth, bearer, timeoutMs = 8_000) {
+  return new Promise((resolve) => {
+    const u = new URL(pth, baseUrl);
+    const req = http.request(
+      {
+        protocol: u.protocol,
+        hostname: u.hostname,
+        port: u.port,
+        path: u.pathname + u.search,
+        method: "GET",
+        timeout: timeoutMs,
+        headers: bearer ? { authorization: bearer } : {},
+      },
+      (res) => {
+        let data = "";
+        res.on("data", (c) => (data += c));
+        res.on("end", () => resolve({ status: res.statusCode || 0, body: String(data).slice(0, 300) }));
+      },
+    );
+    req.on("error", (e) => resolve({ status: 0, body: `` , error: e.message }));
+    req.on("timeout", () => {
+      req.destroy();
+      resolve({ status: 0, body: "", error: "timeout" });
+    });
+    req.end();
+  });
+}
+
+/** Diagnostic-only pre-flight — one real request per route, logged for post-mortem. Never affects the k6 verdict. */
+async function preflightSmokeCheck(baseUrl, bearer) {
+  const routes = {
+    feed_read: "/api/v1/me/home-read",
+    participate: "/api/v1/opportunities",
+    wallet_read: "/api/v1/wallet/buckets",
+    auth_profile: "/api/v1/auth/session",
+  };
+  const out = {};
+  for (const [tag, pth] of Object.entries(routes)) {
+    out[tag] = await httpGetOnce(baseUrl, pth, bearer);
+  }
+  return out;
 }
 
 /**
@@ -165,6 +209,11 @@ async function runQa6Threshold(opts = {}) {
     env[`AIPO_QA_THRESH_${envName}_ERROR_RATE`] = String(th.error_rate);
   }
 
+  const preflight = skipBoot ? null : await preflightSmokeCheck(baseUrl, env.AIPO_QA_USER_BEARER);
+  if (preflight) {
+    console.log(`[run-qa6-threshold] preflight ${JSON.stringify(preflight)}`);
+  }
+
   const spawned = spawnSync(
     k6bin,
     [
@@ -240,9 +289,16 @@ async function runQa6Threshold(opts = {}) {
     all_tags_evaluated: allTagsEvaluated,
     all_tags_pass: allTagsPass,
     verdict_class: harness_status === "PASS" ? "HARNESS_VALIDATION" : "HARNESS_FAILURE",
+    preflight_smoke_check: preflight,
     postgres: pgPrep ? { classification: pgPrep.classification, host: pgPrep.host } : { skipped: skipBoot },
     secrets: { committed: false, redacted_auth: redactAuthorization(`Bearer ${userToken}`) },
     oracle_probe: { available: oracle.available, budget_status: oracle.budget_status },
+    nest_log_excerpt: started
+      ? String(nest.collectLogs({ workDir: started.paths.dir }) || "")
+          .slice(-4000)
+          .replace(/Bearer\s+[A-Za-z0-9._-]+/g, "Bearer [redacted]")
+          .replace(/postgres:[^@\s]+@/gi, "postgres:[redacted]@")
+      : null,
     notes: [
       "Real k6 threshold execution against a booted Nest + isolated Postgres.",
       "Thresholds are read from perf-budget.v1.json only — never invented here.",
@@ -278,7 +334,8 @@ function main() {
     .then((out) => {
       console.log(
         `[run-qa6-threshold] harness=${out.harness_status} all_tags_pass=${out.all_tags_pass} ` +
-          REQUIRED_TAGS.map((t) => `${t}=${out.tags[t].verdict}`).join(" "),
+          REQUIRED_TAGS.map((t) => `${t}=${out.tags[t].verdict}`).join(" ") +
+          ` preflight=${JSON.stringify(out.preflight_smoke_check)}`,
       );
     })
     .catch((e) => {

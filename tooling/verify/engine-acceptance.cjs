@@ -80,6 +80,13 @@ function liveFileText(rel) {
  * required when the working tree matches HEAD.
  */
 function isEphemeralQa6Rewrite(evidenceObj, qa7File) {
+  // Scoped to an ACTUAL QA6 rewrite (qa_phase set by run-qa6.cjs itself) —
+  // without this, any earlier suite's rewrite that also resets QA7 to
+  // NOT_STARTED (e.g. a real QA4/QA5/QA8 CI-heavy rerun) would be
+  // misclassified as "QA6" just because it shares the same QA7-reset
+  // symptom, and would then be checked against QA6-specific expectations
+  // (qa_phase=QA-6, next=QA7_AI_EVAL) that do not apply to it.
+  if (evidenceObj.qa_phase !== "QA-6") return false;
   if (
     !qa7File ||
     qa7File.formal_actions_evidence !== true ||
