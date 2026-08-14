@@ -4,16 +4,16 @@
   "suite_id": "QA8",
   "run_id": "qa8-security-privacy-20260814",
   "todoId": "qa8-security-privacy",
-  "measuredAt": "2026-08-14T03:53:19.450Z",
-  "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+  "measuredAt": "2026-08-14T19:09:45.313Z",
+  "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
   "mode": "tiny",
   "asvs_version": "5.0.0",
   "exhaustive_certification_claim": false,
   "kill_switch": {
     "verified_before_checks": true,
-    "target_env": "ci",
+    "target_env": "local",
     "hostname": "localhost",
-    "synthetic_account_namespace": "qa-synth-ci"
+    "synthetic_account_namespace": "qa-synth-local"
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -26,7 +26,7 @@
       "check_id": "QA8_SECURITY_PRIVACY_WORLD",
       "status": "PASS",
       "mode": "tiny",
-      "measuredAt": "2026-08-14T03:53:19.450Z",
+      "measuredAt": "2026-08-14T19:09:45.313Z",
       "seed": 20260813,
       "asvs_version": "5.0.0",
       "exhaustive_certification_claim": false,
@@ -227,12 +227,12 @@
           "invariant_id": "INV-ISOLATION-01",
           "harness_probe": {
             "available": true,
-            "probed_path": "../../../../../tmp/aipo-harness/qa8-adversarial/qa8-adversarial.v1.json",
-            "age_ms": 97
+            "probed_path": "_tmp_qa_harness/qa8-adversarial/qa8-adversarial.v1.json",
+            "age_ms": 1476978
           },
           "evidence": {
             "source": "run-qa8-adversarial.cjs (isolated CI Postgres + booted Nest, real HTTP)",
-            "measuredAt": "2026-08-14T03:53:19.354Z",
+            "measuredAt": "2026-08-14T18:45:08.341Z",
             "case_count": 35,
             "product_security_verdict": "PASS",
             "unknown_product_failures": 0,
@@ -334,5 +334,5 @@
     "Real defects recorded in defects.v1.json - discovery only, not repaired this wave.",
     "Does not issue ENGINE_ACCEPTED_FOR_UI. Does not start QA9."
   ],
-  "checksum": "5231de9d4543f019a6031d2429c1916acf4184a3d995d1eb783177f03761cafe"
+  "checksum": "feeecc632dbaf09be37c0cadcd61c4ed5d44e049e5963c267c300750901d719e"
 }

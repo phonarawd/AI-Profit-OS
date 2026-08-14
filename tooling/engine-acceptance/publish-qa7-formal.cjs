@@ -21,6 +21,7 @@ const RESULT_REL = "governance/engine-acceptance/qa7-result.v1.json";
 const EVIDENCE_REL = "governance/engine-acceptance/evidence-manifest.v1.json";
 const REPORT_REL = "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md";
 const SCOPE_REL = "governance/engine-acceptance/protected-scope.v1.json";
+const QA6_REL = "governance/engine-acceptance/qa6-result.v1.json";
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const EXPECT_KEYS = Object.freeze([
@@ -115,6 +116,60 @@ function observationFrom(artifact, grade) {
   };
 }
 
+/**
+ * Renders QA6's ACTUAL current record (SPECIFIED/PASS or
+ * UNSPECIFIED_PERF_BUDGET/BLOCKED) instead of a fixed historical string —
+ * this report must reflect whichever budget_status qa6-result.v1.json
+ * carries at publish time, since a Human/PO-approved budget can turn
+ * UNSPECIFIED into SPECIFIED between epochs.
+ */
+function renderPerformanceWorldSection() {
+  let qa6 = null;
+  try {
+    qa6 = readJson(QA6_REL);
+  } catch {
+    qa6 = null;
+  }
+  const pw = qa6 && qa6.checks && qa6.checks.performance_world;
+  if (!pw) {
+    return [
+      "## Performance World (k6 · CI only heavy)",
+      "",
+      "qa6-result.v1.json not readable at QA7 publish time — cannot recap.",
+    ].join("\n");
+  }
+  if (pw.status === "UNSPECIFIED_PERF_BUDGET") {
+    return [
+      "## Performance World (k6 · CI only heavy)",
+      "",
+      "QA6 기록 유지. suite status `UNSPECIFIED_PERF_BUDGET` · threshold mechanism locked · numeric invention **forbidden** · heavy k6 **CI only** · artifact retention ≥ **90** days · aggregator `if: always()`.",
+      "",
+      "| Scenario | Tag | Invariant | Status | Budget | Blocked code |",
+      "|---|---|---|---|---|---|",
+      "| `PERF-FEED-READ` | `feed_read` | `INV-PERF-01` | `BLOCKED` | `UNSPECIFIED_PERF_BUDGET` | `BLOCKED_MISSING_ORACLE` |",
+      "| `PERF-PARTICIPATE` | `participate` | `INV-PERF-01` | `BLOCKED` | `UNSPECIFIED_PERF_BUDGET` | `BLOCKED_MISSING_ORACLE` |",
+      "",
+      "### UNSPECIFIED_PERF_BUDGET",
+      "",
+      "- Formal suite/budget status when product SLO/contract numeric budgets are absent.",
+      "- `BLOCKED_MISSING_ORACLE` on critical `INV-PERF-01` → `ENGINE_QA_INCOMPLETE` (ACCEPTED 불가).",
+      "- Invented p95 / error_rate = **금지**.",
+    ].join("\n");
+  }
+  const rows = (pw.scenarios || [])
+    .map((s) => `| \`${s.scenario_id}\` | \`${s.tag}\` | \`${s.invariant_id || "INV-PERF-01"}\` | \`${s.status}\` | \`${pw.status}\` | \`${s.blocked_code || "-"}\` |`)
+    .join("\n");
+  return [
+    "## Performance World (k6 · CI only heavy)",
+    "",
+    `QA6 기록 유지. suite status \`${pw.status}\` — budget SPECIFIED (Human/PO ACK, perf-budget.v1.json V1) · threshold mechanism locked · numeric invention **forbidden** · heavy k6 **CI only** · artifact retention ≥ **90** days · aggregator \`if: always()\`.`,
+    "",
+    "| Scenario | Tag | Invariant | Status | Budget | Blocked code |",
+    "|---|---|---|---|---|---|",
+    rows || "| (no scenarios recorded) | - | - | - | - | - |",
+  ].join("\n");
+}
+
 function buildReport({
   baseline,
   result,
@@ -198,20 +253,7 @@ ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
 | quality_grader | NOT_USED (sole oracle 금지) |
 | prompt/eval/workflow hashes | MATCH |
 
-## Performance World (k6 · CI only heavy)
-
-QA6 기록 유지. suite status \`UNSPECIFIED_PERF_BUDGET\` · threshold mechanism locked · numeric invention **forbidden** · heavy k6 **CI only** · artifact retention ≥ **90** days · aggregator \`if: always()\`.
-
-| Scenario | Tag | Invariant | Status | Budget | Blocked code |
-|---|---|---|---|---|---|
-| \`PERF-FEED-READ\` | \`feed_read\` | \`INV-PERF-01\` | \`BLOCKED\` | \`UNSPECIFIED_PERF_BUDGET\` | \`BLOCKED_MISSING_ORACLE\` |
-| \`PERF-PARTICIPATE\` | \`participate\` | \`INV-PERF-01\` | \`BLOCKED\` | \`UNSPECIFIED_PERF_BUDGET\` | \`BLOCKED_MISSING_ORACLE\` |
-
-### UNSPECIFIED_PERF_BUDGET
-
-- Formal suite/budget status when product SLO/contract numeric budgets are absent.
-- \`BLOCKED_MISSING_ORACLE\` on critical \`INV-PERF-01\` → \`ENGINE_QA_INCOMPLETE\` (ACCEPTED 불가).
-- Invented p95 / error_rate = **금지**.
+${renderPerformanceWorldSection()}
 
 ## Dual Dirty
 
@@ -221,7 +263,7 @@ QA6 기록 유지. suite status \`UNSPECIFIED_PERF_BUDGET\` · threshold mechani
 
 ## Next
 
-\`QA8_SECURITY_PRIVACY\` only. QA7_AI_EVAL formal evidence is published. Full ACCEPTED · product mutation · 03 UI — **금지**. Remaining critical BLOCKED=${critical.blocked} (QA4–QA6) still blocks \`ENGINE_ACCEPTED_FOR_UI\`.
+\`QA8_SECURITY_PRIVACY\` only. QA7_AI_EVAL formal evidence is published. Full ACCEPTED · product mutation · 03 UI — **금지**. ${critical.blocked > 0 ? `Remaining critical BLOCKED=${critical.blocked} (QA4–QA6) still blocks` : "QA4–QA6 carry forward critical_invariant.blocked=0 (clean) but QA8 (mandatory suite) has not run yet — still blocks"} \`ENGINE_ACCEPTED_FOR_UI\`.
 `;
 }
 
@@ -335,19 +377,26 @@ function publishQa7Formal(opts) {
     skipped: 0,
     uncovered: 0,
   };
-  // Safety pin against silently rewriting a different epoch's cumulative
-  // count. Value derives from the live QA1-QA6 result files for the CURRENT
-  // baseline (not hardcoded speculatively) — re-derive and update this pin
-  // whenever a rebase changes what QA1-QA6 actually observed.
-  const EXPECTED_CUMULATIVE_BLOCKED = 1;
-  if (critical.blocked !== EXPECTED_CUMULATIVE_BLOCKED) {
+  // Safety check against silently carrying forward a different epoch's
+  // cumulative count. Re-derived from the CURRENT evidence-manifest (QA4-QA6
+  // bound + COMPLETE for this baseline) rather than a hardcoded historical
+  // BLOCKED number — a fixed magic number would go stale on the very next
+  // epoch where QA4-QA6 genuinely observe a different (e.g. 0) count.
+  const qa456CompleteForBaseline = ["QA4", "QA5", "QA6"].every((id) => {
+    const s = (evidence.suites || []).find((x) => x.suite_id === id);
+    return Boolean(s && s.completion_status === "COMPLETE" && s.baseline_id === baseline.id);
+  });
+  if (!qa456CompleteForBaseline) {
     fail(
-      `refusing to alter known critical_invariant.blocked (got ${critical.blocked}, expected ${EXPECTED_CUMULATIVE_BLOCKED})`,
+      "refusing to publish QA7 formal evidence — QA4-QA6 are not COMPLETE for the current baseline (critical_invariant would be stale)",
     );
   }
 
   const verdict = "ENGINE_QA_INCOMPLETE";
-  const verdictReason = `QA7 COMPLETE (formal Actions) · critical_invariant.blocked=${critical.blocked} (QA4-QA6 BLOCKED_*/FAIL / UNSPECIFIED_PERF_BUDGET) · P0/P1=0 · QA8 NOT_STARTED · ENGINE_ACCEPTED_FOR_UI forbidden`;
+  const verdictReason =
+    critical.blocked > 0
+      ? `QA7 COMPLETE (formal Actions) · critical_invariant.blocked=${critical.blocked} (QA4-QA6 carry-forward BLOCKED_*/FAIL/UNSPECIFIED_PERF_BUDGET) · P0/P1=0 · QA8 NOT_STARTED · ENGINE_ACCEPTED_FOR_UI forbidden`
+      : `QA7 COMPLETE (formal Actions) · critical_invariant.blocked=0 (QA4-QA6 clean for current epoch) · P0/P1=0 · QA8 NOT_STARTED (mandatory suite incomplete) · ENGINE_ACCEPTED_FOR_UI forbidden`;
 
   const result = {
     schema: "governance.engine-acceptance.qa7-result.v1",
@@ -359,7 +408,7 @@ function publishQa7Formal(opts) {
     measuredAt: summary.measured_at,
     publishedAt,
     baseline_id: baseline.id,
-    rebase_id: "ea-rebase-2c7b9cffd323-1e2ce00bd6a1",
+    rebase_id: (baseline.epoch && baseline.epoch.rebase_id) || null,
     mode: "full",
     completion_status: "COMPLETE",
     formal_actions_evidence: true,

@@ -4,17 +4,17 @@
   "suite_id": "QA4",
   "run_id": "qa4-stateful-time-20260814",
   "todoId": "qa4-stateful-time",
-  "measuredAt": "2026-08-14T03:47:52.563Z",
-  "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+  "measuredAt": "2026-08-14T19:05:00.208Z",
+  "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
   "mode": "tiny",
   "kill_switch": {
     "verified_before_checks": true,
-    "target_env": "ci",
+    "target_env": "local",
     "hostname": "localhost",
-    "synthetic_account_namespace": "qa-synth-ci"
+    "synthetic_account_namespace": "qa-synth-local"
   },
   "dual_dirty": {
-    "working_tree_clean": true,
+    "working_tree_clean": false,
     "protected_scope_clean": true,
     "forced_clean_forbidden": true
   },
@@ -24,7 +24,7 @@
       "check_id": "QA4_STATEFUL_TIME_LIFECYCLE",
       "status": "PASS",
       "mode": "tiny",
-      "measuredAt": "2026-08-14T03:47:52.563Z",
+      "measuredAt": "2026-08-14T19:05:00.208Z",
       "seed": 20260812,
       "clock_hook": {
         "available": true,
@@ -40,7 +40,7 @@
       },
       "harness_probe": {
         "available": true,
-        "probed_path": "../../../../../tmp/aipo-harness/qa4-clock/qa4-clock-harness.v1.json",
+        "probed_path": "_tmp_qa_harness/qa4-clock/qa4-clock-harness.v1.json",
         "reason": null
       },
       "scenarioCount": 3,
@@ -65,7 +65,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-14T03:47:52.415Z",
+            "clock_as_of": "2026-08-14T18:41:07.615Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -82,15 +82,15 @@
             "sanitized_response": {
               "scenario_id": "TIME-KST-DAY-BOUNDARY",
               "status": "PASS",
-              "kst_midnight_ms": 1786719600000,
-              "kst_midnight_iso": "2026-08-14T15:00:00.000Z",
+              "kst_midnight_ms": 1786806000000,
+              "kst_midnight_iso": "2026-08-15T15:00:00.000Z",
               "before": {
-                "clock_ms": 1786719598000,
+                "clock_ms": 1786805998000,
                 "http_status": 200,
                 "settlementCompletedToday": 1
               },
               "after": {
-                "clock_ms": 1786719602000,
+                "clock_ms": 1786806002000,
                 "http_status": 200,
                 "settlementCompletedToday": 0
               },
@@ -100,7 +100,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+            "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "b3a274f4a207e7848229fc6d19595262f6b7437264823d1b7b20084d369edfae",
             "invariant_id": "INV-TIME-01",
@@ -125,7 +125,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-14T03:47:52.415Z",
+            "clock_as_of": "2026-08-14T18:41:07.615Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -142,10 +142,10 @@
             "sanitized_response": {
               "scenario_id": "TIME-PLUS-30D",
               "status": "PASS",
-              "anchor_ms": 1786679272294,
-              "plus30d_ms": 1789271272294,
-              "kst_anchor_day": "2026-08-14",
-              "kst_plus30d_day": "2026-09-13",
+              "anchor_ms": 1786732867524,
+              "plus30d_ms": 1789324867524,
+              "kst_anchor_day": "2026-08-15",
+              "kst_plus30d_day": "2026-09-14",
               "anchor": {
                 "http_status": 200,
                 "platformSafeStopToday": 1
@@ -161,7 +161,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+            "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "b3a274f4a207e7848229fc6d19595262f6b7437264823d1b7b20084d369edfae",
             "invariant_id": "INV-TIME-01",
@@ -186,7 +186,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-14T03:47:52.415Z",
+            "clock_as_of": "2026-08-14T18:41:07.615Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -203,10 +203,10 @@
             "sanitized_response": {
               "scenario_id": "TIME-MULTI-DAY-LIFECYCLE",
               "status": "PASS",
-              "opportunity_id": "3e9b295a-2e10-4a48-bbe5-5bb7ba102b57",
-              "trade_id": "59b0e151-7fa2-48c4-8882-1417857675b2",
-              "accepted_at_ms": 1786679272378,
-              "clock_at_tick_ms": 1786938472378,
+              "opportunity_id": "9e44108f-f19c-4934-a978-1ee9c8888be0",
+              "trade_id": "0e6fa1b8-da01-4bf7-bf42-63d0a17958d9",
+              "accepted_at_ms": 1786732867589,
+              "clock_at_tick_ms": 1786992067589,
               "tick_response": {
                 "status": "safe_stop",
                 "resultCode": "MATCH_TIMEOUT"
@@ -225,7 +225,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+            "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "8852dbad4630c701940d1caa402262b37cf6eba516fd1642ab4224048ad9beab",
             "invariant_id": "INV-LIFECYCLE-01",
@@ -319,5 +319,5 @@
     "critical INV-TIME-01 BLOCKED → ENGINE_QA_INCOMPLETE (ACCEPTED 불가).",
     "Does not issue ENGINE_ACCEPTED_FOR_UI."
   ],
-  "checksum": "0b4f852ec9d65c042cf76008cbd89d9a939b5002bef711eb130c77b3c32004b5"
+  "checksum": "16d4943d37e4c52ee12a864a98ef7032704c2d4c89a98355a64be92dcb6071ec"
 }
