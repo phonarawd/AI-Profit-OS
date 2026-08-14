@@ -259,9 +259,15 @@ async function runMultiDayLifecycleScenario(ctx) {
   const findings = [];
 
   const opp = await withPgClient(ctx.databaseUrl, async (client) => {
+    // A fresh synthetic user defaults to membership=sprout / max_capital_band=
+    // micro (identity_nest_auth.sql) - only a 'micro' (or unset) capital_band
+    // opportunity is reachable without a separate membership-upgrade step.
     const r = await client.query(
       `SELECT id::text, pricing_version, required_capital_usdt::text, expected_profit_usdt::text
-         FROM public.opportunities WHERE status = 'available' AND execution_mode = 'orchestrate' LIMIT 1`,
+         FROM public.opportunities
+        WHERE status = 'available' AND execution_mode = 'orchestrate'
+          AND (capital_band = 'micro' OR capital_band IS NULL)
+        LIMIT 1`,
     );
     return r.rows[0] || null;
   });
@@ -270,7 +276,9 @@ async function runMultiDayLifecycleScenario(ctx) {
       scenario_id: "TIME-MULTI-DAY-LIFECYCLE",
       status: "BLOCKED",
       blocked_code: "BLOCKED_ENV_CAPABILITY",
-      findings: ["no available/orchestrate opportunity exists (CatalogRuntimeSeedService did not seed one)"],
+      findings: [
+        "no available/orchestrate opportunity with capital_band micro/null exists (CatalogRuntimeSeedService did not seed one reachable by a default sprout-membership synthetic user)",
+      ],
     };
   }
 
