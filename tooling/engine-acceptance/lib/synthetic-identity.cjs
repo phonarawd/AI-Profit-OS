@@ -23,6 +23,8 @@ const IDENTITY_CLASSES = Object.freeze([
   "user_b",
   "ordinary_user",
   "admin",
+  "admin_super",
+  "admin_insufficient",
   "none",
   "malformed",
   "invalid_signature",
@@ -32,6 +34,10 @@ const IDENTITY_CLASSES = Object.freeze([
   "wrong_audience",
   "role_escalation_user_as_admin",
 ]);
+
+/** Known admin-rbac.v1.json roles usable in dynamic adversarial harnesses. */
+const ADMIN_ROLE_SUPER = "super";
+const ADMIN_ROLE_INSUFFICIENT = "marketing";
 
 function loadJwtCore() {
   return require(path.join(ROOT, "services/api-nest/jwt.core.cjs"));
@@ -97,6 +103,12 @@ function buildIdentityMatrix(secrets) {
   const userB = mintUserToken(secrets.jwtUserSecret, SYNTH_USER_B);
   const ordinary = mintUserToken(secrets.jwtUserSecret, SYNTH_USER_ORDINARY);
   const admin = mintAdminToken(secrets.jwtAdminSecret, SYNTH_ADMIN);
+  const adminSuper = mintAdminToken(secrets.jwtAdminSecret, SYNTH_ADMIN, {
+    role: ADMIN_ROLE_SUPER,
+  });
+  const adminInsufficient = mintAdminToken(secrets.jwtAdminSecret, SYNTH_ADMIN, {
+    role: ADMIN_ROLE_INSUFFICIENT,
+  });
   const expired = mintUserToken(secrets.jwtUserSecret, SYNTH_USER_A, {
     expiresInSec: 1,
     nowMs: Date.now() - 120_000,
@@ -136,6 +148,18 @@ function buildIdentityMatrix(secrets) {
       class: "admin",
       userId: SYNTH_ADMIN,
       authorization: `Bearer ${admin}`,
+    },
+    admin_super: {
+      class: "admin_super",
+      userId: SYNTH_ADMIN,
+      role: ADMIN_ROLE_SUPER,
+      authorization: `Bearer ${adminSuper}`,
+    },
+    admin_insufficient: {
+      class: "admin_insufficient",
+      userId: SYNTH_ADMIN,
+      role: ADMIN_ROLE_INSUFFICIENT,
+      authorization: `Bearer ${adminInsufficient}`,
     },
     none: { class: "none", userId: null, authorization: null },
     malformed: {
@@ -213,6 +237,8 @@ module.exports = {
   SYNTH_USER_B,
   SYNTH_USER_ORDINARY,
   SYNTH_ADMIN,
+  ADMIN_ROLE_SUPER,
+  ADMIN_ROLE_INSUFFICIENT,
   IDENTITY_CLASSES,
   generateEphemeralSecret,
   createEphemeralSecrets,

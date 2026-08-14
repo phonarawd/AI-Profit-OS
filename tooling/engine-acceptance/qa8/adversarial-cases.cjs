@@ -184,35 +184,27 @@ const CASES = Object.freeze([
     assertion: "user B session is B not A",
   },
   {
-    id: "ADV-ADMIN-VALID-ADMIN-DEFERRED",
+    id: "ADV-ADMIN-VALID-SUPER-ALLOW",
     method: "GET",
     path: LEDGER_JOURNALS,
-    identity: "admin",
+    identity: "admin_super",
     surface: "admin",
-    expect_after_repair: { status: 200 },
-    expected_current: "deferred_until_admin_guard",
-    assertion: "valid admin permitted after AdminGuard repair",
+    expected_current: "admin_allow",
+    assertion: "valid admin (super · all:write) permitted through AdminGuard + RBAC",
   },
   {
-    id: "ADV-ADMIN-WRONG-CAPABILITY-DEFERRED",
+    id: "ADV-ADMIN-INSUFFICIENT-CAPABILITY-DENY",
     method: "POST",
     path: BALANCE_ADJUST_B,
-    identity: "admin",
+    identity: "admin_insufficient",
     surface: "admin",
-    expect_after_repair: { status: 403 },
-    expected_current: "deferred_until_admin_guard",
-    assertion: "valid admin wrong capability -> 403 after RBAC",
+    body: { bucket: "profit", kind: "credit", amountUsdt: "1", reason: "qa-synth", idempotencyKey: "qa-synth-insuf" },
+    expected_current: "admin_forbidden",
+    assertion: "valid admin (marketing · balanceAdjust:none) -> 403 (insufficient capability)",
   },
-  {
-    id: "ADV-ADMIN-OPERATOR-FROM-TOKEN-DEFERRED",
-    method: "POST",
-    path: BALANCE_ADJUST_B,
-    identity: "admin",
-    surface: "admin",
-    expect_after_repair: { operator_from: "token" },
-    expected_current: "deferred_until_admin_guard",
-    assertion: "audit operator identity equals token, not body",
-  },
+  // ADV-ADMIN-OPERATOR-FROM-TOKEN proof runs as a dedicated harness step
+  // (run-qa8-adversarial.cjs) because it must re-query the DB-persisted
+  // ledger_journals.created_by afterward, not just the HTTP status code.
 ]);
 
 function casesForInventoryCoverage() {

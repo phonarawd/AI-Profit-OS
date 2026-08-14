@@ -8,11 +8,14 @@ const fs = require("node:fs");
 const path = require("node:path");
 const http = require("node:http");
 const { spawn } = require("node:child_process");
+const { createRequire } = require("node:module");
 const { ROOT } = require("../lib/hash-scope.cjs");
 const { createEphemeralSecrets } = require("../lib/synthetic-identity.cjs");
 const { resolveHarnessDatabaseUrl } = require("../kill-switch.cjs");
 
 const DIST_MAIN = path.join(ROOT, "services/api-nest/dist/main.js");
+const DIST_APP_MODULE = path.join(ROOT, "services/api-nest/dist/app.module.js");
+const nestRequire = createRequire(path.join(ROOT, "services/api-nest/package.json"));
 
 function defaultPaths(opts = {}) {
   const dir = opts.workDir || process.env.RUNNER_TEMP || path.join(ROOT, "_tmp_qa_harness");
@@ -145,6 +148,54 @@ function collectLogs(opts = {}) {
   return fs.readFileSync(paths.logPath, "utf8").slice(-64_000);
 }
 
+function assertDistAppModulePresent() {
+  if (!fs.existsSync(DIST_APP_MODULE)) {
+    const err = new Error(
+      "api-nest dist/app.module.js missing — run pnpm --filter @aipo/api-nest build",
+    );
+    err.code = "AIPO_QA_HARNESS_FAILURE";
+    throw err;
+  }
+}
+
+/**
+ * In-process boot (no child process) — required for the QA4 clock harness:
+ * the SAME Node process that installs a synthetic clock via
+ * services/api-nest/clock.core.cjs must be the process the booted Nest app
+ * runs in, or the domain services would keep reading real system time from a
+ * separate process's module cache. HTTP is real (app.listen); only the OS
+ * process boundary is removed relative to startNest()/main.js.
+ *
+ * @param {{ port?: number, env?: Record<string,string> }} [opts]
+ */
+async function startNestInProcess(opts = {}) {
+  assertDistAppModulePresent();
+  const port = Number(opts.port || process.env.PORT || 4000);
+  Object.assign(process.env, {
+    PORT: String(port),
+    NODE_ENV: process.env.NODE_ENV || "test",
+    ...(opts.env || {}),
+  });
+
+  const { NestFactory } = nestRequire("@nestjs/core");
+  const cookieParser = nestRequire("cookie-parser");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { AppModule } = require(DIST_APP_MODULE);
+
+  const app = await NestFactory.create(AppModule, { logger: false });
+  app.use(cookieParser());
+  app.useBodyParser("json", { limit: "10mb" });
+  app.setGlobalPrefix("api/v1");
+  await app.listen(port);
+  return { app, port };
+}
+
+async function stopNestInProcess(app) {
+  if (app && typeof app.close === "function") {
+    await app.close();
+  }
+}
+
 function main() {
   const args = process.argv.slice(2);
   const cmd = args[0];
@@ -191,8 +242,12 @@ if (require.main === module) {
 
 module.exports = {
   DIST_MAIN,
+  DIST_APP_MODULE,
   assertDistPresent,
+  assertDistAppModulePresent,
   startNest,
+  startNestInProcess,
+  stopNestInProcess,
   waitForHealth,
   stopNest,
   isPidAlive,

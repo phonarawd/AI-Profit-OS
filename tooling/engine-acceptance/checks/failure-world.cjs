@@ -11,6 +11,38 @@
 
 const { probeFaultHook } = require("../lib/fault-hook.cjs");
 const { buildRichFailureEvidence } = require("../lib/rich-failure-evidence.cjs");
+const { probeQa5FaultHarness } = require("../lib/qa5-fault-evidence.cjs");
+
+/**
+ * Maps to the matching canonical scenario_id ONLY when run-qa5-fault.cjs
+ * (real booted Nest + isolated Postgres + LLM fault server) just produced
+ * fresh evidence in this same job. Every other scenario is left untouched
+ * by this function - nothing unexecuted is ever promoted to PASS.
+ * @param {string} scenarioId
+ * @param {any} harnessData
+ */
+function dynamicOutcomeFor(scenarioId, harnessData) {
+  if (!harnessData) return null;
+  if (scenarioId === "FAULT-AI-429-DEGRADE") {
+    const a = harnessData.axis1_429_degrade;
+    if (!a) return null;
+    return {
+      status: a.verdict === "PASS" ? "PASS" : "FAIL",
+      findings: a.verdict === "PASS" ? [] : ["real AI-429 degrade proof FAIL: " + JSON.stringify(a)],
+      rich: a,
+    };
+  }
+  if (scenarioId === "FAULT-RECOVERY-LEDGER-SCAN") {
+    const a = harnessData.axis2_post_recovery_ledger_scan;
+    if (!a) return null;
+    return {
+      status: a.verdict === "PASS" ? "PASS" : "FAIL",
+      findings: a.verdict === "PASS" ? [] : ["real post-recovery ledger scan FAIL: " + JSON.stringify(a)],
+      rich: a,
+    };
+  }
+  return null;
+}
 
 /**
  * @param {{ mode?: "tiny"|"full" }} opts
@@ -129,6 +161,9 @@ function runFailureWorld(opts) {
   const probe = probeFaultHook();
   const scenariosDef = buildFaultScenarios({ mode });
 
+  const harnessProbe = probeQa5FaultHarness();
+  const harnessData = harnessProbe.available ? harnessProbe.data : null;
+
   /** @type {any[]} */
   const scenarios = [];
   let blocked = 0;
@@ -136,6 +171,34 @@ function runFailureWorld(opts) {
   let failed = 0;
 
   for (const def of scenariosDef) {
+    const dynamic = dynamicOutcomeFor(def.scenario_id, harnessData);
+    if (dynamic) {
+      if (dynamic.status === "PASS") passed += 1;
+      else failed += 1;
+      scenarios.push({
+        ...def,
+        status: dynamic.status,
+        blocked_code: null,
+        findings: dynamic.status === "PASS" ? ["Real execution via run-qa5-fault.cjs (isolated CI Postgres + booted Nest + LLM fault server)."] : dynamic.findings,
+        rich_evidence: buildRichFailureEvidence({
+          seed,
+          suite_id: "QA5",
+          invariant_id: def.invariant_id,
+          clock_as_of: harnessData.measuredAt || measuredAt,
+          baseline_id: opts.baseline_id,
+          mode,
+          request_sequence: [
+            { step: "probe_fault_hook", result: "present", adapter: probe.adapter_rel },
+            { step: "execute_scenario", result: "real_execution", axis: def.axis, source: "run-qa5-fault.cjs" },
+          ],
+          configuration_fingerprint: { suite: "QA5", mode, fault_hook_available: true, adapter_rel: probe.adapter_rel, axis: def.axis, dynamic: true },
+          sanitized_response: dynamic.rich,
+          error_message: dynamic.status === "FAIL" ? dynamic.findings.join(" | ") : null,
+        }),
+      });
+      continue;
+    }
+
     if (!probe.available) {
       blocked += 1;
       const rich_evidence = buildRichFailureEvidence({
@@ -321,6 +384,11 @@ function runFailureWorld(opts) {
       env_hooks_present: probe.env_hooks_present,
       adapter_rel: probe.adapter_rel,
     },
+    harness_probe: {
+      available: harnessProbe.available,
+      probed_path: harnessProbe.probed_path,
+      reason: harnessProbe.reason || null,
+    },
     axes,
     scenarioCount: scenarios.length,
     passed,
@@ -341,4 +409,5 @@ function runFailureWorld(opts) {
 module.exports = {
   runFailureWorld,
   buildFaultScenarios,
+  dynamicOutcomeFor,
 };

@@ -14,11 +14,18 @@ const {
   createEphemeralSecrets,
   buildIdentityMatrix,
   redactAuthorization,
+  mintUserToken,
+  SYNTH_ADMIN,
 } = require("./lib/synthetic-identity.cjs");
 const { inventoryAdminRoutes, coverageDrift } = require("./qa8/admin-route-inventory.cjs");
 const { CASES, casesForInventoryCoverage } = require("./qa8/adversarial-cases.cjs");
 const { prepareIsolatedPostgres } = require("./harness/ci-postgres.cjs");
 const nest = require("./harness/ci-nest-boot.cjs");
+const {
+  provisionPrivacyTestUser,
+  snapshotPrivacyUser,
+  queryLedgerCreatedBy,
+} = require("./harness/qa8-privacy-probe.cjs");
 
 function outDir() {
   const d =
@@ -111,6 +118,22 @@ function evaluateCase(c, response) {
       expected_current_product_failure: false,
     };
   }
+  if (c.expected_current === "admin_allow") {
+    const ok = response.status >= 200 && response.status < 300;
+    return {
+      assertion_result: ok ? "PASS" : "FAIL",
+      product_failure: !ok,
+      expected_current_product_failure: false,
+    };
+  }
+  if (c.expected_current === "admin_forbidden") {
+    const ok = response.status === 403;
+    return {
+      assertion_result: ok ? "PASS" : "FAIL",
+      product_failure: !ok,
+      expected_current_product_failure: false,
+    };
+  }
   if (c.expect_after_repair && c.expect_after_repair.status) {
     const ok = response.status === c.expect_after_repair.status;
     return {
@@ -124,6 +147,203 @@ function evaluateCase(c, response) {
     product_failure: false,
     expected_current_product_failure: false,
     body_class: cls,
+  };
+}
+
+const ADMIN_API_PREFIX = require("./qa8/admin-route-inventory.cjs").API_PREFIX;
+/** Mirrors services/api-nest/src/auth/auth.constants.ts DELETE_ACCOUNT_CONFIRM_PHRASE (harness fixture, not a secret). */
+const DELETE_ACCOUNT_CONFIRM_PHRASE = "\ud0c8\ud1f4\ud558\uaca0\uc2b5\ub2c8\ub2e4";
+
+/**
+ * Admin operator spoofing (Mission 4) — a body-supplied adminId must never
+ * reach the audit record. Real HTTP call against a real admin_balance_adjust
+ * journal, then a real DB re-query of the value that was actually persisted.
+ */
+async function proveOperatorIdentityFromToken(baseUrl, matrix, databaseUrl) {
+  const targetUserId = "33333333-3333-4333-8333-333333333333"; // SYNTH_USER_ORDINARY — untouched by other admin cases
+  const spoofedAdminId = "deadbeef-dead-4eef-8eef-deadbeefdead";
+  const idempotencyKey = `qa-synth-operator-proof-${Date.now()}`;
+  const ident = matrix.admin_super;
+  const response = await httpCall(
+    baseUrl,
+    "POST",
+    `${ADMIN_API_PREFIX}/users/${targetUserId}/balance-adjust`,
+    { authorization: ident.authorization },
+    {
+      bucket: "profit",
+      kind: "credit",
+      amountUsdt: "1",
+      reason: "qa-synth-operator-identity-proof",
+      idempotencyKey,
+      // Spoofing attempt — the controller must never read these.
+      adminId: spoofedAdminId,
+      updatedByAdminId: spoofedAdminId,
+      createdByAdminId: spoofedAdminId,
+      operatorId: spoofedAdminId,
+    },
+  );
+  const httpOk = response.status >= 200 && response.status < 300;
+  let recordedCreatedBy = null;
+  let dbError = null;
+  if (httpOk) {
+    try {
+      recordedCreatedBy = await queryLedgerCreatedBy(databaseUrl, targetUserId);
+    } catch (e) {
+      dbError = e instanceof Error ? e.message : String(e);
+    }
+  }
+  const boundToToken = recordedCreatedBy === SYNTH_ADMIN;
+  const spoofReachedAudit = recordedCreatedBy === spoofedAdminId;
+  const verdict = httpOk && boundToToken && !spoofReachedAudit ? "PASS" : "FAIL";
+  return {
+    verdict,
+    http_status: response.status,
+    recorded_created_by_matches_token_sub: boundToToken,
+    spoofed_admin_id_reached_audit: spoofReachedAudit,
+    db_error: dbError,
+    findings:
+      verdict === "PASS"
+        ? []
+        : [
+            `operator-identity proof FAIL: http_status=${response.status} recorded_created_by=${
+              recordedCreatedBy ?? "(none)"
+            } expected_token_sub=${SYNTH_ADMIN} spoofed_id=${spoofedAdminId}`,
+          ],
+  };
+}
+
+/**
+ * Concurrent/interleave (Mission 4) — fire alternating GET /auth/session
+ * calls for two different real users concurrently and confirm every response
+ * is scoped to its OWN bearer token, never the other caller's.
+ */
+async function proveConcurrentInterleaveIsolation(baseUrl, matrix) {
+  const pairs = [];
+  for (let i = 0; i < 6; i++) {
+    pairs.push({ who: "user_a", ident: matrix.user_a });
+    pairs.push({ who: "user_b", ident: matrix.user_b });
+  }
+  const responses = await Promise.all(
+    pairs.map((p) =>
+      httpCall(baseUrl, "GET", "/api/v1/auth/session", { authorization: p.ident.authorization }, null).then(
+        (r) => ({ ...p, response: r }),
+      ),
+    ),
+  );
+  const findings = [];
+  for (const r of responses) {
+    let parsed = null;
+    try {
+      parsed = JSON.parse(r.response.body);
+    } catch {
+      /* recorded as failure below */
+    }
+    const expectedUserId = r.ident.userId;
+    const seenUserId = parsed && (parsed.userId || parsed.sub);
+    if (r.response.status !== 200 || seenUserId !== expectedUserId) {
+      findings.push(
+        `interleave leak: who=${r.who} expected=${expectedUserId} saw=${seenUserId ?? "(none)"} status=${r.response.status}`,
+      );
+    }
+  }
+  return {
+    verdict: findings.length ? "FAIL" : "PASS",
+    request_count: responses.length,
+    findings,
+  };
+}
+
+/**
+ * Privacy delete-account (Mission 4) — real HTTP delete against an isolated
+ * Postgres, then direct row-level verification: purge-table row gone, a
+ * RETAIN-classified table (kyc_status) untouched, tombstone fields null, and
+ * a second synthetic account is completely unaffected. Also proves a
+ * rejected (wrong confirm-phrase) attempt mutates nothing.
+ */
+async function provePrivacyDeleteAccount(baseUrl, secrets, databaseUrl) {
+  const findings = [];
+  const target = await provisionPrivacyTestUser(databaseUrl, {});
+  const control = await provisionPrivacyTestUser(databaseUrl, {});
+  const targetToken = mintUserToken(secrets.jwtUserSecret, target.userId);
+  const controlToken = mintUserToken(secrets.jwtUserSecret, control.userId);
+
+  const before = await snapshotPrivacyUser(databaseUrl, target.userId);
+
+  // Negative case first: wrong confirm phrase must be rejected AND mutate nothing.
+  const rejected = await httpCall(
+    baseUrl,
+    "POST",
+    "/api/v1/auth/delete-account",
+    { authorization: `Bearer ${controlToken}` },
+    { confirmPhrase: "wrong-phrase", confirmAgain: true },
+  );
+  const controlAfterReject = await snapshotPrivacyUser(databaseUrl, control.userId);
+  const rejectOk =
+    rejected.status >= 400 &&
+    rejected.status < 500 &&
+    controlAfterReject.user &&
+    controlAfterReject.user.status !== "deleted" &&
+    controlAfterReject.notification_prefs_count === before.notification_prefs_count;
+  if (!rejectOk) {
+    findings.push(
+      `invalid-confirm rejection proof FAIL: status=${rejected.status} control_status=${controlAfterReject.user && controlAfterReject.user.status}`,
+    );
+  }
+
+  // Happy path: real delete against the target.
+  const deleted = await httpCall(
+    baseUrl,
+    "POST",
+    "/api/v1/auth/delete-account",
+    { authorization: `Bearer ${targetToken}` },
+    { confirmPhrase: DELETE_ACCOUNT_CONFIRM_PHRASE, confirmAgain: true },
+  );
+  const httpOk = deleted.status >= 200 && deleted.status < 300;
+  if (!httpOk) {
+    findings.push(`delete-account HTTP FAIL: status=${deleted.status} body=${sanitizeExcerpt(deleted.body)}`);
+  }
+
+  const after = await snapshotPrivacyUser(databaseUrl, target.userId);
+  const controlAfterDelete = await snapshotPrivacyUser(databaseUrl, control.userId);
+
+  const tombstoned =
+    after.user &&
+    after.user.status === "deleted" &&
+    after.user.email == null &&
+    after.user.phone_e164 == null &&
+    after.user.password_hash == null;
+  const purgeConfirmed = after.notification_prefs_count === 0;
+  const retainConfirmed = after.kyc_status_count === 1;
+  const sessionsPurged = after.auth_sessions_count === 0;
+  const controlUnaffected =
+    controlAfterDelete.user &&
+    controlAfterDelete.user.status !== "deleted" &&
+    controlAfterDelete.notification_prefs_count === 1 &&
+    controlAfterDelete.kyc_status_count === 1;
+
+  if (!tombstoned) findings.push(`tombstone proof FAIL: ${JSON.stringify(after.user)}`);
+  if (!purgeConfirmed) {
+    findings.push(`purge-table proof FAIL: notification_prefs_count=${after.notification_prefs_count}`);
+  }
+  if (!retainConfirmed) findings.push(`retain-table proof FAIL: kyc_status_count=${after.kyc_status_count}`);
+  if (!sessionsPurged) findings.push(`session-purge proof FAIL: auth_sessions_count=${after.auth_sessions_count}`);
+  if (!controlUnaffected) {
+    findings.push(`control-user isolation proof FAIL: ${JSON.stringify(controlAfterDelete)}`);
+  }
+
+  const verdict =
+    httpOk && rejectOk && tombstoned && purgeConfirmed && retainConfirmed && controlUnaffected ? "PASS" : "FAIL";
+
+  return {
+    verdict,
+    target_user_tombstoned: Boolean(tombstoned),
+    purge_table_confirmed: Boolean(purgeConfirmed),
+    retain_table_confirmed: Boolean(retainConfirmed),
+    sessions_purged: Boolean(sessionsPurged),
+    control_user_unaffected: Boolean(controlUnaffected),
+    invalid_confirm_rejected_no_mutation: Boolean(rejectOk),
+    http_status: deleted.status,
+    findings,
   };
 }
 
@@ -233,7 +453,20 @@ async function runQa8Adversarial(opts = {}) {
     });
   }
 
-  const unknownProductFails = productFails - expectedP0;
+  // Mission-4 dynamic proofs beyond the static CASES matrix — only when a
+  // real Nest+Postgres is actually up (skip-boot mode has neither).
+  let operatorIdentityProof = null;
+  let concurrentIsolationProof = null;
+  let privacyDelete = null;
+  if (!skipBoot) {
+    operatorIdentityProof = await proveOperatorIdentityFromToken(baseUrl, matrix, databaseUrl);
+    concurrentIsolationProof = await proveConcurrentInterleaveIsolation(baseUrl, matrix);
+    privacyDelete = await provePrivacyDeleteAccount(baseUrl, secrets, databaseUrl);
+  }
+  const extraProofs = [operatorIdentityProof, concurrentIsolationProof, privacyDelete].filter(Boolean);
+  const extraProofFails = extraProofs.filter((p) => p.verdict !== "PASS");
+
+  const unknownProductFails = productFails - expectedP0 + extraProofFails.length;
   let harness_status = "PASS";
   if (harnessTransportFails > 0 && rows.every((r) => r.status_code === 0 || r.assertion_result === "DEFERRED")) {
     harness_status = "HARNESS_FAILURE";
@@ -250,7 +483,7 @@ async function runQa8Adversarial(opts = {}) {
     suite_id: "QA8_ADVERSARIAL",
     measuredAt: new Date().toISOString(),
     harness_status,
-    product_security_verdict: adminOpen ? "FAIL" : "PASS",
+    product_security_verdict: adminOpen || extraProofFails.length > 0 ? "FAIL" : "PASS",
     expected_current_product_failure: adminOpen ? "QA8_ADMIN_BOUNDARY" : null,
     unknown_product_failures: Math.max(0, unknownProductFails),
     verdict_class: harness_status === "HARNESS_FAILURE" ? "HARNESS_FAILURE" : "HARNESS_VALIDATION",
@@ -264,11 +497,17 @@ async function runQa8Adversarial(opts = {}) {
       controllers_without_case: drift.controllers_without_case,
     },
     cases: rows,
+    operator_identity_proof: operatorIdentityProof,
+    concurrent_isolation_proof: concurrentIsolationProof,
+    privacy_delete: privacyDelete,
     postgres: pgPrep ? { classification: pgPrep.classification, host: pgPrep.host } : { skipped: skipBoot },
     secrets: { committed: false },
     notes: [
       "CURRENT_PRODUCT_SECURITY_VERDICT is independent of harness_status.",
-      "AdminGuard is not implemented yet — open admin is EXPECTED_CURRENT_PRODUCT_FAILURE.",
+      "Admin boundary CASES now expect AdminGuard to be active (product_open_admin == violation).",
+      "operator_identity_proof / concurrent_isolation_proof / privacy_delete are Mission-4 dynamic proofs " +
+        "against the SAME booted Nest + isolated Postgres — any FAIL here is a genuinely new, unclassified " +
+        "product defect (not laundered, not silently retried).",
     ],
   };
 
@@ -306,7 +545,10 @@ function main() {
   })
     .then((out) => {
       console.log(
-        `[run-qa8-adversarial] harness=${out.harness_status} product=${out.product_security_verdict} expected=${out.expected_current_product_failure}`,
+        `[run-qa8-adversarial] harness=${out.harness_status} product=${out.product_security_verdict} expected=${out.expected_current_product_failure} ` +
+          `operator_identity=${out.operator_identity_proof && out.operator_identity_proof.verdict} ` +
+          `concurrent_isolation=${out.concurrent_isolation_proof && out.concurrent_isolation_proof.verdict} ` +
+          `privacy_delete=${out.privacy_delete && out.privacy_delete.verdict}`,
       );
     })
     .catch((e) => {

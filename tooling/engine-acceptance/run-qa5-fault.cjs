@@ -6,18 +6,24 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const http = require("node:http");
+const { createRequire } = require("node:module");
 const { assertKillSwitch, assertDbTarget, resolveHarnessDatabaseUrl } = require("./kill-switch.cjs");
 const { ROOT } = require("./lib/hash-scope.cjs");
 const { probeFaultHook } = require("./lib/fault-hook.cjs");
 const {
   createEphemeralSecrets,
   mintUserToken,
+  mintAdminToken,
   SYNTH_USER_A,
+  ADMIN_ROLE_SUPER,
   redactAuthorization,
 } = require("./lib/synthetic-identity.cjs");
 const orch = require("./harness/fault-orchestrator.cjs");
 const { prepareIsolatedPostgres } = require("./harness/ci-postgres.cjs");
 const nest = require("./harness/ci-nest-boot.cjs");
+
+const nestRequire = createRequire(path.join(ROOT, "services/api-nest/package.json"));
 
 function outDir() {
   const d =
@@ -29,6 +35,52 @@ function outDir() {
 
 function writeJson(abs, obj) {
   fs.writeFileSync(abs, `${JSON.stringify(obj, null, 2)}\n`, "utf8");
+}
+
+async function withPgClient(databaseUrl, fn) {
+  const { Client } = nestRequire("pg");
+  const client = new Client({ connectionString: databaseUrl, connectionTimeoutMillis: 8_000 });
+  await client.connect();
+  try {
+    return await fn(client);
+  } finally {
+    await client.end().catch(() => {});
+  }
+}
+
+async function countLedgerJournals(databaseUrl) {
+  return withPgClient(databaseUrl, async (client) => {
+    const r = await client.query("SELECT count(*)::int AS n FROM public.ledger_journals");
+    return r.rows[0] ? r.rows[0].n : null;
+  });
+}
+
+function httpJsonGet(baseUrl, pth, headers, timeoutMs = 12_000) {
+  return new Promise((resolve) => {
+    const u = new URL(pth, baseUrl);
+    const req = http.request(
+      { protocol: u.protocol, hostname: u.hostname, port: u.port, path: u.pathname + u.search, method: "GET", timeout: timeoutMs, headers: headers || {} },
+      (res) => {
+        let data = "";
+        res.on("data", (c) => (data += c));
+        res.on("end", () => {
+          let parsed = null;
+          try {
+            parsed = JSON.parse(data);
+          } catch {
+            parsed = null;
+          }
+          resolve({ status: res.statusCode || 0, body: data, parsed });
+        });
+      },
+    );
+    req.on("error", (e) => resolve({ status: 0, body: "", parsed: null, error: e.message }));
+    req.on("timeout", () => {
+      req.destroy();
+      resolve({ status: 0, body: "", parsed: null, error: "timeout" });
+    });
+    req.end();
+  });
 }
 
 async function runQa5Fault(opts = {}) {
@@ -88,6 +140,11 @@ async function runQa5Fault(opts = {}) {
     await nest.waitForHealth({ port });
   }
 
+  // Axis1 (Mission 2 Scenario A) — ledger must stay untouched by an AI-only
+  // fault. Journal count is a real DB read, not an assumption.
+  const ledgerCountBeforeLlmFault =
+    !skipBoot && databaseUrl ? await countLedgerJournals(databaseUrl).catch(() => null) : null;
+
   const llmScenarios = ["http_429", "http_500", "http_503", "timeout", "invalid_json", "truncated"];
   const llmEvidence = [];
   for (const scenario of llmScenarios) {
@@ -106,12 +163,35 @@ async function runQa5Fault(opts = {}) {
   llmEvidence.push(refuse);
   await orch.startLlmFaultServer({ scenario: "healthy" });
 
+  const ledgerCountAfterLlmFault =
+    !skipBoot && databaseUrl ? await countLedgerJournals(databaseUrl).catch(() => null) : null;
+  const ledgerUntouchedByAiFault =
+    ledgerCountBeforeLlmFault !== null &&
+    ledgerCountAfterLlmFault !== null &&
+    ledgerCountBeforeLlmFault === ledgerCountAfterLlmFault;
+
   const dbEvidence = await orch.executeDbFault({
     productBaseUrl,
     databaseUrl,
     nestPid: started ? started.pid : opts.nestPid,
     authorization: userBearer,
   });
+
+  // Axis2 (Mission 2 Scenario B) — post-recovery ledger/bucket invariant
+  // scan, real admin HTTP call against the SAME recovered Nest process.
+  let postRecoveryReconScan = null;
+  if (!skipBoot && dbEvidence.product_recovered === true) {
+    const adminBearer = `Bearer ${mintAdminToken(secrets.jwtAdminSecret, "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", { role: ADMIN_ROLE_SUPER })}`;
+    const recon = await httpJsonGet(productBaseUrl, "/api/v1/admin/ledger/recon", {
+      authorization: adminBearer,
+    });
+    postRecoveryReconScan = {
+      http_status: recon.status,
+      ok: Boolean(recon.parsed && recon.parsed.ok === true),
+      mismatches: recon.parsed && Array.isArray(recon.parsed.mismatches) ? recon.parsed.mismatches.length : null,
+      journalsChecked: recon.parsed ? recon.parsed.journalsChecked : null,
+    };
+  }
 
   const llmObserved = llmEvidence.some((e) => e.observed_failure);
   const dbBlocked = dbEvidence.strategy && dbEvidence.strategy.executable === false;
@@ -135,13 +215,27 @@ async function runQa5Fault(opts = {}) {
     classification = "HARNESS_RECOVERY_DEFECT";
   }
 
+  const reconScanPass = postRecoveryReconScan ? postRecoveryReconScan.ok === true : false;
+
   const proofPass =
     classification !== "ENVIRONMENT_BLOCKER" &&
     dbEvidence.fault_induced &&
     dbEvidence.product_observed_failure &&
     depRecovered &&
     dbEvidence.product_recovered === true &&
-    dbEvidence.same_nest_process === true;
+    dbEvidence.same_nest_process === true &&
+    reconScanPass;
+
+  // Mission-2 Scenario A axis1 verdict: real fault observed, product did not
+  // fake success, ledger stayed untouched by an AI-only dependency fault.
+  const axis1429 = llmEvidence.find((e) => e.scenario === "http_429");
+  const axis1Pass = Boolean(
+    axis1429 &&
+      axis1429.observed_failure === true &&
+      axis1429.response &&
+      axis1429.response.body_class !== "ok_text" &&
+      ledgerUntouchedByAiFault,
+  );
 
   let harness_status = "PASS";
   if (!llmObserved) harness_status = "HARNESS_FAILURE";
@@ -166,6 +260,21 @@ async function runQa5Fault(opts = {}) {
     QA5_DB_RECOVERY_PROOF: proofPass ? "PASS" : "FAIL",
     QA5_DB_RECOVERY_CLASSIFICATION: classification,
     NEW_PROTECTED_REPAIR_CANDIDATE: classification === "PRODUCT_RECOVERY_DEFECT",
+    QA5_AXIS1_429_DEGRADE_PROOF: axis1Pass ? "PASS" : "FAIL",
+    axis1_429_degrade: {
+      verdict: axis1Pass ? "PASS" : "FAIL",
+      observed_failure: Boolean(axis1429 && axis1429.observed_failure),
+      response_body_class: axis1429 && axis1429.response ? axis1429.response.body_class : null,
+      ledger_journal_count_before: ledgerCountBeforeLlmFault,
+      ledger_journal_count_after: ledgerCountAfterLlmFault,
+      ledger_untouched: ledgerUntouchedByAiFault,
+    },
+    axis2_post_recovery_ledger_scan: {
+      verdict: reconScanPass ? "PASS" : "FAIL",
+      scan: postRecoveryReconScan,
+      same_nest_process: dbEvidence.same_nest_process === true,
+      nest_restarted: false,
+    },
     non_canonical: true,
     does_not_replace_qa5_result: true,
     mock: false,
@@ -240,6 +349,7 @@ function main() {
             harness_status: out.harness_status,
             QA5_DB_RECOVERY_PROOF: out.QA5_DB_RECOVERY_PROOF,
             QA5_DB_RECOVERY_CLASSIFICATION: out.QA5_DB_RECOVERY_CLASSIFICATION,
+            QA5_AXIS1_429_DEGRADE_PROOF: out.QA5_AXIS1_429_DEGRADE_PROOF,
             llm: out.llm.observed_any_failure,
           },
           null,

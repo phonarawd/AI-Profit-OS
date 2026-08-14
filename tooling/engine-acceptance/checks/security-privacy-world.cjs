@@ -24,6 +24,7 @@ const { ROOT } = require("../lib/hash-scope.cjs");
 const { spawnVerify } = require("../lib/spawn-verify.cjs");
 const { buildRichFailureEvidence } = require("../lib/rich-failure-evidence.cjs");
 const { runUserIsolationSurfaces } = require("./user-isolation-surfaces.cjs");
+const { probeQa8AdversarialHarness } = require("../lib/qa8-adversarial-evidence.cjs");
 
 function read(rel) {
   const p = path.join(ROOT, rel);
@@ -63,6 +64,17 @@ const HIGH_IMPACT_ADMIN_HINTS = [
  * v5.0.0-8.2.1 (function-level access) and v5.0.0-8.4.2 (admin interface
  * layered security). attack_face = admin_boundary, invariant_id =
  * INV-ISOLATION-01 (shared invariant, QA8-only surface).
+ *
+ * Static scan (drift detector, always runs) PLUS a real dynamic Nest+HTTP
+ * adversarial round-trip (tooling/verify/admin-boundary.cjs ->
+ * services/api-nest/src/common/admin-guard.selftest.ts): no token / malformed
+ * / invalid signature / expired / alg=none / wrong issuer / wrong audience /
+ * user-JWT-on-admin / unknown role / insufficient capability / valid admin
+ * allow / missing JWT_ADMIN_SECRET fail-closed / unclassified route
+ * fail-closed / operator identity bound to the verified token (never the
+ * request body). Both must agree before this check can report PASS - a
+ * clean static scan alone is no longer sufficient (static-only was the QA8
+ * dynamic-adversarial gap this wave closes for the admin-boundary axis).
  */
 function checkAdminBoundary(opts) {
   const controllers = findAdminControllers();
@@ -79,12 +91,32 @@ function checkAdminBoundary(opts) {
     else unguarded.push(entry);
   }
 
-  const status = unguarded.length ? "FAIL" : controllers.length ? "PASS" : "UNCOVERED";
+  const staticFail = unguarded.length > 0;
+
+  // Dynamic round-trip: real Nest HTTP server, real AdminGuard, real forged
+  // tokens. Same child-verify pattern already used by checkJwtTokenValidation
+  // below (tooling/verify/auth-jwt-runtime.cjs) - no duplicate SSOT, no OOM
+  // risk beyond what that established pattern already proved safe locally.
+  const dynamicChild = spawnVerify("tooling/verify/admin-boundary.cjs", {
+    timeoutMs: 180_000,
+  });
+  const dynamicPass = dynamicChild.ok;
+
+  const status = controllers.length === 0
+    ? "UNCOVERED"
+    : staticFail || !dynamicPass
+      ? "FAIL"
+      : "PASS";
   const findings = unguarded.map(
     (u) =>
       `${u.controller}: no @UseGuards on @Controller("admin") route` +
       (u.high_impact_risks.length ? ` (${u.high_impact_risks.join("; ")})` : ""),
   );
+  if (!dynamicPass) {
+    findings.push(
+      `dynamic admin-boundary round-trip FAIL (tooling/verify/admin-boundary.cjs exit=${dynamicChild.exitCode}): ${dynamicChild.summary}`,
+    );
+  }
 
   return {
     check_id: "QA8_ADMIN_BOUNDARY",
@@ -98,12 +130,44 @@ function checkAdminBoundary(opts) {
     guarded_count: guarded.length,
     unguarded,
     findings,
-    root_cause_note:
-      'services/api-nest/src/ledger/ledger.admin.controller.ts self-documents: ' +
-      '"Auth/RBAC guard lands with Admin todos". schemas/admin-rbac.v1.json (role x capability) ' +
-      "and the ai_profit_os_04_admin plan section 9.9 AdminGuard are specified but not yet wired " +
-      "into any *.admin.controller.ts. No global APP_GUARD/middleware found in app.module.ts or " +
-      "main.ts that would compensate.",
+    dynamic_child_verify: {
+      script: dynamicChild.script,
+      ok: dynamicChild.ok,
+      exitCode: dynamicChild.exitCode,
+      summary: dynamicChild.summary,
+      cases_covered: [
+        "no_token",
+        "malformed_token",
+        "invalid_signature",
+        "expired_admin_token",
+        "alg_none_forgery",
+        "wrong_issuer",
+        "wrong_audience",
+        "role_tampering_foreign_key",
+        "user_jwt_on_admin_route",
+        "unknown_role",
+        "missing_role_claim",
+        "insufficient_capability",
+        "authorized_admin_allow",
+        "operator_identity_bound_to_token_not_body",
+        "unclassified_admin_route_fail_closed",
+        "handler_level_admin_path",
+        "non_admin_surface_unaffected",
+        "missing_admin_signing_secret_fail_closed",
+      ],
+    },
+    root_cause_note: staticFail
+      ? 'services/api-nest/src/ledger/ledger.admin.controller.ts self-documents: ' +
+        '"Auth/RBAC guard lands with Admin todos". schemas/admin-rbac.v1.json (role x capability) ' +
+        "and the ai_profit_os_04_admin plan section 9.9 AdminGuard are specified but not yet wired " +
+        "into any *.admin.controller.ts. No global APP_GUARD/middleware found in app.module.ts or " +
+        "main.ts that would compensate."
+      : dynamicPass
+        ? "AdminGuard is wired on every *.admin.controller.ts AND registered as a global APP_GUARD " +
+          "(services/api-nest/src/app.module.ts); the real Nest+HTTP adversarial round-trip in " +
+          "admin-guard.selftest.ts confirms deny-by-default behaviour end to end, not just by grep."
+        : "static @UseGuards scan is clean, but the dynamic Nest+HTTP adversarial round-trip " +
+          "(admin-guard.selftest.ts) reported a real regression - see findings.",
     rich_evidence:
       status === "FAIL"
         ? buildRichFailureEvidence({
@@ -113,19 +177,37 @@ function checkAdminBoundary(opts) {
             clock_as_of: opts.measuredAt,
             baseline_id: opts.baseline_id,
             mode: opts.mode,
-            request_sequence: unguarded.map((u) => ({
-              step: "static_scan_controller",
-              controller: u.controller,
-              has_use_guards: false,
-            })),
+            request_sequence: [
+              ...unguarded.map((u) => ({
+                step: "static_scan_controller",
+                controller: u.controller,
+                has_use_guards: false,
+              })),
+              {
+                step: "dynamic_admin_guard_selftest",
+                script: dynamicChild.script,
+                ok: dynamicChild.ok,
+                exitCode: dynamicChild.exitCode,
+              },
+            ],
             configuration_fingerprint: {
               suite: "QA8",
               check: "admin_boundary",
               controllers_scanned: controllers.length,
+              dynamic_ok: dynamicPass,
             },
-            sanitized_request: { scan: "grep(@UseGuards) over *.admin.controller.ts" },
-            sanitized_response: { unguarded_count: unguarded.length, unguarded: unguarded },
-            error_message: `${unguarded.length}/${controllers.length} admin controllers have zero authorization guard`,
+            sanitized_request: {
+              scan: "grep(@UseGuards) over *.admin.controller.ts",
+              dynamic: "real Nest HTTP round-trip via admin-guard.selftest.ts",
+            },
+            sanitized_response: {
+              unguarded_count: unguarded.length,
+              unguarded,
+              dynamic_summary: dynamicChild.summary,
+            },
+            error_message: staticFail
+              ? `${unguarded.length}/${controllers.length} admin controllers have zero authorization guard`
+              : `dynamic admin-boundary round-trip failed: ${dynamicChild.summary}`,
           })
         : null,
   };
@@ -200,8 +282,16 @@ function checkJwtTokenValidation() {
  * KYC 5-year retention (compliance.types.ts KYC_RETENTION_YEARS_DEFAULT,
  * section 42.2.1) is an explicit documented policy and is NOT counted as a
  * finding.
+ *
+ * Static source inspection PLUS (when the CI heavy harness ran in this same
+ * job) real dynamic evidence: a synthetic account is created against an
+ * isolated Postgres, deleted through the real HTTP delete-account endpoint,
+ * then the database is queried directly to confirm purge/anonymize/retain
+ * per-table and that a second, untouched synthetic account is unaffected
+ * (run-qa8-adversarial.cjs's privacy_delete block). Static-only stays the
+ * fallback when that harness evidence is absent/stale (never laundered).
  */
-function checkPrivacyDeleteAccount() {
+function checkPrivacyDeleteAccount(harnessProbe) {
   const authService = read("services/api-nest/src/auth/auth.service.ts");
   const privacyService = read(
     "services/api-nest/src/auth/privacy-account.service.ts",
@@ -306,7 +396,20 @@ function checkPrivacyDeleteAccount() {
       : [];
   evidence.residual_tables_after_delete = residualTables;
 
-  const status = findings.length ? "FAIL" : "PASS";
+  // Dynamic complement — only consulted when a fresh, non-canonical CI-heavy
+  // run actually exercised the real endpoint against an isolated Postgres.
+  const dynamic = harnessProbe && harnessProbe.available ? harnessProbe.data.privacy_delete : null;
+  const dynamicFindings = [];
+  if (dynamic) {
+    if (dynamic.verdict !== "PASS") {
+      dynamicFindings.push(
+        `dynamic privacy-delete harness verdict=${dynamic.verdict}: ${(dynamic.findings || []).join("; ")}`,
+      );
+    }
+  }
+  const allFindings = [...findings, ...dynamicFindings];
+
+  const status = allFindings.length ? "FAIL" : "PASS";
   return {
     check_id: "QA8_PRIVACY_DELETE_ACCOUNT",
     asvs_ids: ["v5.0.0-14.2.7"],
@@ -314,7 +417,27 @@ function checkPrivacyDeleteAccount() {
     critical: true,
     status,
     evidence,
-    findings,
+    findings: allFindings,
+    dynamic_evidence: dynamic
+      ? {
+          source: "run-qa8-adversarial.cjs privacy_delete (isolated CI Postgres + booted Nest)",
+          verdict: dynamic.verdict,
+          target_user_tombstoned: dynamic.target_user_tombstoned,
+          purge_table_confirmed: dynamic.purge_table_confirmed,
+          retain_table_confirmed: dynamic.retain_table_confirmed,
+          control_user_unaffected: dynamic.control_user_unaffected,
+          invalid_confirm_rejected_no_mutation: dynamic.invalid_confirm_rejected_no_mutation,
+          findings: dynamic.findings || [],
+        }
+      : {
+          source: null,
+          verdict: "NOT_RUN",
+          notes: [
+            "Live dynamic delete-account proof (real HTTP + isolated Postgres row-level verification) " +
+              "requires the CI-heavy qa8-adversarial harness; not available in this run (local/no-heavy-capability). " +
+              "Static source evidence above is not weakened or replaced by this absence.",
+          ],
+        },
     rich_evidence:
       status === "FAIL"
         ? buildRichFailureEvidence({
@@ -328,7 +451,7 @@ function checkPrivacyDeleteAccount() {
             configuration_fingerprint: { suite: "QA8", check: "privacy_delete_account" },
             sanitized_request: { method: "deleteAccount" },
             sanitized_response: evidence,
-            error_message: findings.join(" | "),
+            error_message: allFindings.join(" | "),
           })
         : null,
   };
@@ -372,6 +495,76 @@ function checkErrorDisclosureAndLogging() {
 }
 
 /**
+ * SEC-DYNAMIC-ADVERSARIAL-01 — live adversarial HTTP testing against a
+ * booted api-nest instance (tampered JWTs beyond the lightweight selftest,
+ * cross-user object-id probing at runtime, operator-spoofing attempts) under
+ * a real, isolated Postgres. `run-qa8-adversarial.cjs` is the CI-heavy
+ * runner; this function only reads its already-written, non-canonical
+ * evidence — it never re-derives or re-executes anything itself.
+ *
+ * @param {ReturnType<typeof probeQa8AdversarialHarness>} harnessProbe
+ */
+function buildDynamicAdversarialScenario(harnessProbe) {
+  const asvs_ids = ["v5.0.0-8.2.1", "v5.0.0-8.2.2", "v5.0.0-8.3.1"];
+  const invariant_id = "INV-ISOLATION-01";
+
+  if (!harnessProbe || !harnessProbe.available) {
+    return {
+      scenario_id: "SEC-DYNAMIC-ADVERSARIAL-01",
+      status: "BLOCKED",
+      blocked_code: "BLOCKED_ENV_CAPABILITY",
+      asvs_ids,
+      invariant_id,
+      harness_probe: harnessProbe
+        ? { probed_path: harnessProbe.probed_path, reason: harnessProbe.reason }
+        : null,
+      findings: [
+        "Live adversarial HTTP testing against a booted api-nest instance (tampered JWTs, " +
+          "cross-user object-id probing at runtime, concurrent interleave under a real DB, " +
+          "operator-identity spoofing attempts) requires an isolated CI Postgres + booted Nest " +
+          "(run-qa8-adversarial.cjs). Not available in this run " +
+          `(${(harnessProbe && harnessProbe.reason) || "no harness evidence file"}); ` +
+          "not run locally to avoid OOM on this Phase0 2C/8GB machine; mock-PASS is forbidden " +
+          "by acceptance-contract L3 - recorded BLOCKED, not PASS.",
+      ],
+    };
+  }
+
+  const data = harnessProbe.data;
+  const rows = Array.isArray(data.cases) ? data.cases : [];
+  const failingRows = rows.filter((r) => r.assertion_result === "FAIL");
+  const unknownFailures = Number(data.unknown_product_failures || 0);
+  const productVerdict = data.product_security_verdict;
+  const pass = productVerdict === "PASS" && unknownFailures === 0 && failingRows.length === 0;
+
+  return {
+    scenario_id: "SEC-DYNAMIC-ADVERSARIAL-01",
+    status: pass ? "PASS" : "FAIL",
+    blocked_code: null,
+    asvs_ids,
+    invariant_id,
+    harness_probe: { probed_path: harnessProbe.probed_path, age_ms: harnessProbe.age_ms },
+    evidence: {
+      source: "run-qa8-adversarial.cjs (isolated CI Postgres + booted Nest, real HTTP)",
+      measuredAt: data.measuredAt,
+      case_count: rows.length,
+      product_security_verdict: productVerdict,
+      unknown_product_failures: unknownFailures,
+      inventory: data.inventory || null,
+    },
+    findings: pass
+      ? []
+      : [
+          ...failingRows.map(
+            (r) => `${r.id} (${r.method} ${r.route}) assertion FAIL — status=${r.status_code} body_class=${r.body_class}`,
+          ),
+          ...(productVerdict !== "PASS" ? [`product_security_verdict=${productVerdict}`] : []),
+          ...(unknownFailures > 0 ? [`unknown_product_failures=${unknownFailures}`] : []),
+        ],
+  };
+}
+
+/**
  * @param {{ mode?: "tiny"|"full", baseline_id: string, measuredAt?: string, seed?: number }} opts
  */
 function runSecurityPrivacyWorld(opts = {}) {
@@ -380,51 +573,50 @@ function runSecurityPrivacyWorld(opts = {}) {
   const seed = opts.seed ?? 20260813;
   const ctx = { mode, measuredAt, seed, baseline_id: opts.baseline_id };
 
+  // run-qa8-adversarial.cjs (CI-heavy: isolated Postgres + booted Nest) may
+  // have just produced fresh, non-canonical evidence in this same job. When
+  // it did, the dynamic scenario below consumes REAL results instead of the
+  // static-only placeholder. When it did not (local/no-heavy-capability),
+  // nothing here changes: BLOCKED_ENV_CAPABILITY stays exactly as before —
+  // fixture/absence is never promoted to PASS.
+  const harnessProbe = probeQa8AdversarialHarness();
+
   // Static checks are equally complete in tiny/full - no meaningful "heavier"
   // variant exists for read-only source/schema inspection (documented design
-  // decision, not a shortcut). Live dynamic pentest (the one thing that WOULD
-  // differ by mode) is BLOCKED_ENV_CAPABILITY either way on this machine.
+  // decision, not a shortcut).
   const checks = [
     checkAdminBoundary(ctx),
     checkUserIsolationShared(),
     checkJwtTokenValidation(),
-    checkPrivacyDeleteAccount(),
+    checkPrivacyDeleteAccount(harnessProbe),
     checkErrorDisclosureAndLogging(),
   ];
 
-  const dynamicPentestScenario = {
-    scenario_id: "SEC-DYNAMIC-ADVERSARIAL-01",
-    status: "BLOCKED",
-    blocked_code: "BLOCKED_ENV_CAPABILITY",
-    asvs_ids: ["v5.0.0-8.2.1", "v5.0.0-8.2.2", "v5.0.0-8.3.1"],
-    invariant_id: "INV-ISOLATION-01",
-    findings: [
-      "Live adversarial HTTP testing against a booted api-nest instance (tampered JWTs, " +
-        "cross-user object-id probing at runtime, concurrent interleave under a real DB) " +
-        "requires a booted Nest process plus DB connection. The Phase0 local machine is " +
-        "2C/~8GB and this exact concern is already flagged in " +
-        "checks/user-isolation-surfaces.cjs (Nest boot runtime verify is a CI/QA8 axis). " +
-        "Not run locally to avoid OOM; mock-PASS is forbidden by acceptance-contract L3 - " +
-        "recorded BLOCKED, not PASS.",
-    ],
-  };
+  const dynamicPentestScenario = buildDynamicAdversarialScenario(harnessProbe);
 
-  const failCount = checks.filter((c) => c.status === "FAIL").length;
+  const failCount =
+    checks.filter((c) => c.status === "FAIL").length +
+    (dynamicPentestScenario.status === "FAIL" ? 1 : 0);
   const blockedCount =
-    checks.filter((c) => c.status === "BLOCKED").length + 1; // + dynamicPentestScenario
-  const passCount = checks.filter((c) => c.status === "PASS").length;
+    checks.filter((c) => c.status === "BLOCKED").length +
+    (dynamicPentestScenario.status === "BLOCKED" ? 1 : 0);
+  const passCount =
+    checks.filter((c) => c.status === "PASS").length +
+    (dynamicPentestScenario.status === "PASS" ? 1 : 0);
 
   const criticalChecks = checks.filter((c) => c.critical);
-  const criticalFail = criticalChecks.filter((c) => c.status === "FAIL").length;
+  const criticalFail =
+    criticalChecks.filter((c) => c.status === "FAIL").length +
+    (dynamicPentestScenario.status === "FAIL" ? 1 : 0);
   const criticalBlocked =
     criticalChecks.filter((c) => c.status === "BLOCKED").length +
-    (dynamicPentestScenario.invariant_id === "INV-ISOLATION-01" ? 1 : 0);
+    (dynamicPentestScenario.status === "BLOCKED" ? 1 : 0);
 
-  const status = failCount > 0 ? "FAIL" : "BLOCKED_PARTIAL";
-  // BLOCKED_PARTIAL is informational (dynamic scenario always blocked locally);
-  // suite-level completion_status is COMPLETE regardless - BLOCKED != NOT_STARTED,
-  // and mock-PASS is forbidden, so an honest partial-block label is used instead
-  // of silently reporting PASS.
+  const status = failCount > 0 ? "FAIL" : blockedCount > 0 ? "BLOCKED_PARTIAL" : "PASS";
+  // BLOCKED_PARTIAL is informational (dynamic scenario blocked when the CI
+  // heavy harness has not run); suite-level completion_status is COMPLETE
+  // regardless - BLOCKED != NOT_STARTED, and mock-PASS is forbidden, so an
+  // honest partial-block label is used instead of silently reporting PASS.
 
   return {
     check_id: "QA8_SECURITY_PRIVACY_WORLD",
@@ -461,4 +653,5 @@ module.exports = {
   checkJwtTokenValidation,
   checkPrivacyDeleteAccount,
   checkErrorDisclosureAndLogging,
+  buildDynamicAdversarialScenario,
 };

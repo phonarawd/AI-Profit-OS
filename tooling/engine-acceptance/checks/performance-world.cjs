@@ -13,6 +13,7 @@ const path = require("node:path");
 const { ROOT } = require("../lib/hash-scope.cjs");
 const { probePerfOracle } = require("../lib/perf-oracle.cjs");
 const { buildRichFailureEvidence } = require("../lib/rich-failure-evidence.cjs");
+const { probeQa6ThresholdHarness } = require("../lib/qa6-threshold-evidence.cjs");
 
 const K6_SCRIPT_REL = "tooling/engine-acceptance/k6/scenario-mix.js";
 
@@ -74,7 +75,58 @@ function runPerformanceWorld(opts) {
     mechanism.engine === "k6" &&
     mechanism.binding === "tag";
 
+  // run-qa6-threshold.cjs (CI-heavy: isolated Postgres + booted Nest + real
+  // k6) may have just produced fresh, non-canonical evidence for all four
+  // approved tags in this same job. Absence/staleness changes nothing below
+  // (fixture never promoted to runtime PASS).
+  const harnessProbe = probeQa6ThresholdHarness();
+  const harnessData = harnessProbe.available ? harnessProbe.data : null;
+
   for (const def of scenariosDef) {
+    const dynamicTag = harnessData ? harnessData.tags[def.tag] : null;
+    if (dynamicTag) {
+      const dynStatus = dynamicTag.verdict === "PASS" ? "PASS" : "FAIL";
+      if (dynStatus === "PASS") passed += 1;
+      else failed += 1;
+      scenarios.push({
+        ...def,
+        status: dynStatus,
+        blocked_code: null,
+        budget_status: "SPECIFIED",
+        threshold: dynamicTag.threshold,
+        observed: dynamicTag.observed,
+        findings:
+          dynStatus === "PASS"
+            ? [
+                "Real k6 threshold execution via run-qa6-threshold.cjs (isolated CI Postgres + booted Nest) — not a static/fixture result.",
+              ]
+            : [
+                `real threshold FAIL: p95_threshold_ok=${dynamicTag.p95_threshold.ok} error_rate_threshold_ok=${dynamicTag.error_rate_threshold.ok} observed=${JSON.stringify(dynamicTag.observed)}`,
+              ],
+        rich_evidence: buildRichFailureEvidence({
+          seed,
+          suite_id: "QA6",
+          invariant_id: def.invariant_id,
+          clock_as_of: harnessData.measuredAt || measuredAt,
+          baseline_id: opts.baseline_id,
+          mode,
+          request_sequence: [
+            { step: "probe_perf_oracle", result: "specified", tag: def.tag },
+            { step: "k6_real_execution", result: dynStatus, tag: def.tag, source: "run-qa6-threshold.cjs" },
+          ],
+          configuration_fingerprint: {
+            suite: "QA6",
+            mode,
+            tag: def.tag,
+            dynamic: true,
+            k6_script: K6_SCRIPT_REL,
+          },
+          sanitized_response: dynamicTag,
+        }),
+      });
+      continue;
+    }
+
     const tagBudget = (oracle.thresholds_by_tag || {})[def.tag] || {
       p95_ms: null,
       error_rate: null,
@@ -328,6 +380,11 @@ function runPerformanceWorld(opts) {
       probed_paths: oracle.probed_paths,
       findings: oracle.findings,
       ci_only_heavy: oracle.ci_only_heavy !== false,
+    },
+    harness_probe: {
+      available: harnessProbe.available,
+      probed_path: harnessProbe.probed_path,
+      reason: harnessProbe.reason || null,
     },
     threshold_mechanism: {
       locked: mechanism_ok,

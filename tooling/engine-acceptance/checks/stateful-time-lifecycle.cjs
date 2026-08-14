@@ -9,6 +9,7 @@
 
 const { probeClockHook } = require("../lib/clock-hook.cjs");
 const { buildRichFailureEvidence } = require("../lib/rich-failure-evidence.cjs");
+const { probeQa4ClockHarness } = require("../lib/qa4-clock-evidence.cjs");
 
 /** Asia/Seoul fixed offset +09:00 (DST 없음) */
 const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
@@ -141,6 +142,16 @@ function runStatefulTimeLifecycle(opts) {
   const probe = probeClockHook();
   const scenariosDef = buildTimeScenarios({ mode });
 
+  // run-qa4-clock.cjs (in-process booted Nest + isolated Postgres) may have
+  // just produced fresh, non-canonical real-execution evidence for all
+  // three canonical scenarios in this same job. Absence/staleness changes
+  // nothing below (fixture never promoted to runtime PASS).
+  const harnessProbe = probeQa4ClockHarness();
+  const harnessData = harnessProbe.available ? harnessProbe.data : null;
+  const harnessScenarioById = new Map(
+    harnessData ? harnessData.scenarios.map((s) => [s.scenario_id, s]) : [],
+  );
+
   /** @type {any[]} */
   const scenarios = [];
   let blocked = 0;
@@ -148,6 +159,45 @@ function runStatefulTimeLifecycle(opts) {
   let failed = 0;
 
   for (const def of scenariosDef) {
+    const dynamic = harnessScenarioById.get(def.scenario_id);
+    if (dynamic && (dynamic.status === "PASS" || dynamic.status === "FAIL")) {
+      if (dynamic.status === "PASS") passed += 1;
+      else failed += 1;
+      scenarios.push({
+        ...def,
+        status: dynamic.status,
+        blocked_code: null,
+        findings:
+          dynamic.status === "PASS"
+            ? [
+                "Real execution via run-qa4-clock.cjs (in-process booted Nest + isolated Postgres, real domain services) — not a static/fixture result.",
+              ]
+            : dynamic.findings || [],
+        rich_evidence: buildRichFailureEvidence({
+          seed,
+          suite_id: "QA4",
+          invariant_id: def.invariant_id,
+          clock_as_of: harnessData.measuredAt || measuredAt,
+          baseline_id: opts.baseline_id,
+          mode,
+          request_sequence: [
+            { step: "probe_clock_hook", result: "present", adapter: probe.adapter_rel },
+            { step: "execute_scenario", result: "real_execution", source: "run-qa4-clock.cjs" },
+          ],
+          configuration_fingerprint: {
+            suite: "QA4",
+            mode,
+            clock_hook_available: true,
+            adapter_rel: probe.adapter_rel,
+            dynamic: true,
+          },
+          sanitized_response: dynamic,
+          error_message: dynamic.status === "FAIL" ? (dynamic.findings || []).join(" | ") : null,
+        }),
+      });
+      continue;
+    }
+
     if (!probe.available) {
       blocked += 1;
       const rich_evidence = buildRichFailureEvidence({
@@ -291,6 +341,11 @@ function runStatefulTimeLifecycle(opts) {
       findings: probe.findings,
       env_hooks_present: probe.env_hooks_present,
       adapter_rel: probe.adapter_rel,
+    },
+    harness_probe: {
+      available: harnessProbe.available,
+      probed_path: harnessProbe.probed_path,
+      reason: harnessProbe.reason || null,
     },
     scenarioCount: scenarios.length,
     passed,
