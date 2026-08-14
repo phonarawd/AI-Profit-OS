@@ -182,10 +182,19 @@ if (!stubs.includes("no-fake-zero-status.cjs")) {
   fails.push("stubs/run-all.cjs must include no-fake-zero-status.cjs");
 }
 
+const homeClient = read("apps/web/app/HomePageClient.tsx");
+if (/principalUsdt:\s*"0"/.test(homeClient)) {
+  fails.push("HomePageClient must not invent principalUsdt 0");
+}
+const experience = read("packages/ui/components/home/HomeExperience.tsx");
+if (/if \(!pulse\) return T\.home\.header\.scanIdle/.test(experience)) {
+  fails.push("HomeExperience must not claim scanIdle without DayPulse Fact");
+}
+
 if (fails.length) {
   console.error("[verify:no-fake-zero-status] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
 console.log(
-  "[verify:no-fake-zero-status] PASS (unauthorized≠Fact zero · ready_data auth-only · deny-list)",
+  "[verify:no-fake-zero-status] PASS (unauthorized\u2260Fact zero · ready_data auth-only · deny-list)",
 );

@@ -15,21 +15,24 @@ export type HomeRightRailProgress = {
 export type HomeRightRailProps = {
   totalResultLabel?: string | null;
   totalResultValue?: string | null;
-  /** 오늘 가능한 수익 보조 라인 (기존 Fact 재사용 · "실현" 아닌 "가능" 표현 유지) */
   todayPossibleProfitUsdt?: string | null;
   topOpportunities?: OpportunityCardModel[];
   progress?: HomeRightRailProgress | null;
   className?: string;
 };
 
-function nOrZero(n: number | null | undefined): number {
-  return typeof n === "number" && Number.isFinite(n) ? n : 0;
+function countCell(n: number | null | undefined): {
+  ready: boolean;
+  text: string;
+} {
+  if (typeof n === "number" && Number.isFinite(n)) {
+    return { ready: true, text: String(n) };
+  }
+  return { ready: false, text: T.home.rightRail.countAbsent };
 }
 
 /**
- * HomeRightRail — Contract §6 · desktop always · 0 솔직 · 가짜 체결/성공률% 금지
- * C01: totalResultValue = settle COUNT 문자열(N건) · USDT 금액 슬롯 아님
- * 순서: 오늘 정산(anchor) → Top3 → 진행 현황
+ * HomeRightRail — Contract §6 · C01 COUNT · absent != 0
  */
 export function HomeRightRail({
   totalResultLabel = null,
@@ -54,10 +57,10 @@ export function HomeRightRail({
     : [];
   const p = progress ?? {};
   const statusRows = [
-    [T.home.rightRail.statusScan, nOrZero(p.scan)],
-    [T.home.rightRail.statusConfirm, nOrZero(p.confirm)],
-    [T.home.rightRail.statusProgress, nOrZero(p.progress)],
-    [T.home.rightRail.statusSettle, nOrZero(p.settle)],
+    [T.home.rightRail.statusScan, countCell(p.scan)],
+    [T.home.rightRail.statusConfirm, countCell(p.confirm)],
+    [T.home.rightRail.statusProgress, countCell(p.progress)],
+    [T.home.rightRail.statusSettle, countCell(p.settle)],
   ] as const;
 
   return (
@@ -98,7 +101,7 @@ export function HomeRightRail({
         )}
         {todayPossible ? (
           <p className="mt-2 text-sm tabular-nums text-lux-profit">
-            {T.home.money.todayPossibleLabel} +{todayPossible} USDT
+            {T.feed.todayPossibleProfitUsdt.replace("{n}", todayPossible)}
           </p>
         ) : null}
       </section>
@@ -131,7 +134,10 @@ export function HomeRightRail({
                     {o.assetLabel}
                   </p>
                   <p className="tabular-nums text-xs text-lux-profit">
-                    +{o.expectedProfitUsdt} USDT
+                    {T.feed.todayPossibleProfitUsdt.replace(
+                      "{n}",
+                      o.expectedProfitUsdt,
+                    )}
                   </p>
                 </div>
               </li>
@@ -152,14 +158,20 @@ export function HomeRightRail({
           {T.home.rightRail.progressTitle}
         </p>
         <ul className="mt-3 grid grid-cols-2 gap-2">
-          {statusRows.map(([label, n]) => (
+          {statusRows.map(([label, cell]) => (
             <li
               key={label}
               className="rounded-lux-md bg-lux-bg px-3 py-3 text-center"
+              data-fact-state={cell.ready ? "ready" : "absent"}
             >
               <p className="text-xs text-lux-text-muted">{label}</p>
-              <p className="mt-1 text-xl font-semibold tabular-nums text-lux-text">
-                {n}
+              <p
+                className={[
+                  "mt-1 text-xl font-semibold tabular-nums",
+                  cell.ready ? "text-lux-text" : "text-lux-text-muted",
+                ].join(" ")}
+              >
+                {cell.text}
               </p>
             </li>
           ))}

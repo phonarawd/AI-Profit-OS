@@ -276,6 +276,12 @@ const homeClient = read("apps/web/app/HomePageClient.tsx");
 if (!homeClient.includes("HomeExperience")) {
   fails.push("HomePageClient HomeExperience must remain (React rewrite 0)");
 }
+if (!homeClient.includes("fetchHomeReadModel")) {
+  fails.push("HomePageClient must consume fetchHomeReadModel");
+}
+if (homeClient.includes("sumAffordableExpectedProfitUsdt")) {
+  fails.push("HomePageClient must not client-sum todayPossibleProfitUsdt");
+}
 
 if (fails.length) {
   console.error("[verify:home-state-truth] FAIL\n- " + fails.join("\n- "));

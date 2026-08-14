@@ -36,6 +36,9 @@ export const home = {
     todayPossibleLabel: "오늘 가능 수익",
     usdtSuffix: "USDT",
     krwApproxPrefix: "≈",
+    loading: "불러오는 중",
+    unavailable: "아직 확인할 수 없어요",
+    guestHint: "로그인하면 보여요",
     krwSuffix: "원",
   },
   opportunity: {
@@ -47,6 +50,9 @@ export const home = {
     emptyWhy: "시장 데이터에 맞는 기회가 준비되면 바로 보여 드려요",
     /** Empty primary 단일 CTA · 경쟁 browse 자기참조 링크 폐기 */
     emptyCtaDeposit: "입금하고 기회 열기",
+    guestStatus: "로그인하면 참여 가능한 기회를 볼 수 있어요",
+    loadingStatus: "기회를 불러오는 중이에요",
+    errorStatus: "기회를 불러오지 못했어요",
     emptyCtaBrowse: "다른 기회 확인하기",
   },
   rightRail: {
@@ -60,6 +66,7 @@ export const home = {
     statusProgress: "진행",
     statusSettle: "정산",
     topEmpty: "아직 표시할 기회가 없어요",
+    countAbsent: "아직 없음",
     totalEmpty: "오늘 정산이 끝나면 여기에 건수로 보여요",
   },
   sidebar: {

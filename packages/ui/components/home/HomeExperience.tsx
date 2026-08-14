@@ -18,31 +18,45 @@ import { T } from "../../copy/ko";
 import { HomeHero } from "./HomeHero";
 import { HomeRightRail, type HomeRightRailProgress } from "./HomeRightRail";
 
+export type HomeExperienceViewState =
+  | "loading"
+  | "ready_empty"
+  | "ready_data"
+  | "stale"
+  | "recoverable_error"
+  | "blocked"
+  | "unauthorized";
+
+export type HomeExperienceSessionStatus = "guest" | "authenticated" | "expired";
+
 export type HomeExperienceProps = {
-  principalUsdt: string;
+  principalUsdt: string | null;
   principalKrwApprox?: string | null;
-  todayPossibleProfitUsdt: string;
+  todayPossibleProfitUsdt: string | null;
   items: OpportunityCardModel[];
-  affordableCount?: number;
-  nearMissExtraCount?: number;
+  affordableCount?: number | null;
+  nearMissExtraCount?: number | null;
   topSuggestDepositUsdt?: string | null;
   pulse: DayPulseModel | null;
   tickerMode: "off" | "live" | "demo" | "hybrid";
   tickerEvents: PublicTickerEvent[];
   counterMode: HomePayoutCounterMode;
-  ledgerTotal: number;
+  ledgerTotal: number | null;
   sessionExpiredSlot?: ReactNode;
   totalResultValue?: string | null;
   progress?: HomeRightRailProgress | null;
+  viewState?: HomeExperienceViewState;
+  sessionStatus?: HomeExperienceSessionStatus;
 };
 
-function scanLabelFromPulse(pulse: DayPulseModel | null): string {
-  if (!pulse) return T.home.header.scanIdle;
-  const settled = pulse.settlementCompletedToday ?? 0;
-  if (settled > 0) {
-    return T.home.header.scanSettled.replace("{n}", String(settled));
+function scanLabelFromPulse(pulse: DayPulseModel | null): string | null {
+  if (!pulse || typeof pulse.settlementCompletedToday !== "number") {
+    return null;
   }
-  return T.home.header.scanIdle;
+  return T.home.header.scanSettled.replace(
+    "{n}",
+    String(pulse.settlementCompletedToday),
+  );
 }
 
 /**
@@ -65,22 +79,23 @@ export function HomeExperience({
   sessionExpiredSlot = null,
   totalResultValue = null,
   progress = null,
+  viewState = "ready_data",
+  sessionStatus = "authenticated",
 }: HomeExperienceProps) {
   const { setScanStatus } = useHomeChrome();
   const topOpportunities = items
-    .filter((i) => !i.bucket || i.bucket === "affordable")
+    .filter((i) => i.bucket === "affordable")
     .slice(0, 3);
 
   const settleCount =
     pulse && typeof pulse.settlementCompletedToday === "number"
       ? pulse.settlementCompletedToday
-      : 0;
+      : null;
 
-  /** Fact only — 없으면 0 솔직 표기 · 가짜 스캔/매칭 수 금지 */
   const railProgress: HomeRightRailProgress = progress ?? {
-    scan: 0,
-    confirm: 0,
-    progress: 0,
+    scan: null,
+    confirm: null,
+    progress: null,
     settle: settleCount,
   };
 
@@ -90,7 +105,12 @@ export function HomeExperience({
   }, [pulse, setScanStatus]);
 
   return (
-    <div data-testid="home-experience" className="text-lux-text">
+    <div
+      data-testid="home-experience"
+      data-view-state={viewState}
+      data-session-status={sessionStatus}
+      className="text-lux-text"
+    >
       <div data-home-slot="ticker" data-canon-block="tickerSlot">
         <LivePayoutTicker
           mode={tickerMode}
@@ -98,7 +118,6 @@ export function HomeExperience({
           maxItems={50}
         />
       </div>
-      {/* PART9 slot keep · visual Owns moved to AppHeader scan chip */}
       <div
         data-home-slot="day-pulse"
         data-canon-block="dayPulseSlot"
@@ -119,12 +138,16 @@ export function HomeExperience({
             principalUsdt={principalUsdt}
             principalKrwApprox={principalKrwApprox}
             todayPossibleProfitUsdt={todayPossibleProfitUsdt}
+            viewState={viewState}
+            sessionStatus={sessionStatus}
           />
           <BalanceAwareHome
             items={items}
             affordableCount={affordableCount}
             nearMissExtraCount={nearMissExtraCount}
             topSuggestDepositUsdt={topSuggestDepositUsdt}
+            viewState={viewState}
+            sessionStatus={sessionStatus}
             asSection
             hideScanHero
           />

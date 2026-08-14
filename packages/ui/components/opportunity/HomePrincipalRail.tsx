@@ -4,35 +4,78 @@ import Link from "next/link";
 import { T } from "../../copy/ko";
 import { formatUsdt } from "../../lib/format-usdt";
 
+export type HomePrincipalRailViewState =
+  | "loading"
+  | "ready_empty"
+  | "ready_data"
+  | "stale"
+  | "recoverable_error"
+  | "blocked"
+  | "unauthorized";
+
+export type HomePrincipalRailSessionStatus =
+  | "guest"
+  | "authenticated"
+  | "expired";
+
 export type HomePrincipalRailProps = {
-  /** Money WalletBuckets.principalUsdt · listFeed Fact pass-through */
-  principalUsdt: string;
-  /**
-   * 표시용 ≈₩ (선택) · 없으면 USDT를 크게 · 환율 재계산 금지
-   */
+  /** Money WalletBuckets.principalUsdt · HomeReadModel money Fact */
+  principalUsdt: string | null;
   principalKrwApprox?: string | null;
-  /**
-   * affordable 카드 expectedProfitUsdt 합 · 페이지가 Engine 필드만 합산해 전달
-   * (UI 가격 재계산 금지)
-   */
-  todayPossibleProfitUsdt: string;
+  /** HomeReadModel todayPossibleProfitUsdt · server_derived only */
+  todayPossibleProfitUsdt: string | null;
+  viewState?: HomePrincipalRailViewState;
+  sessionStatus?: HomePrincipalRailSessionStatus;
   className?: string;
 };
 
+function moneyDisplay(
+  value: string | null,
+  viewState: HomePrincipalRailViewState,
+  sessionStatus: HomePrincipalRailSessionStatus,
+): { ready: boolean; text: string; factState: string } {
+  if (viewState === "loading") {
+    return { ready: false, text: T.home.money.loading, factState: "loading" };
+  }
+  if (
+    sessionStatus === "guest" ||
+    sessionStatus === "expired" ||
+    viewState === "unauthorized"
+  ) {
+    return { ready: false, text: T.home.money.guestHint, factState: "guest" };
+  }
+  if (value == null) {
+    return {
+      ready: false,
+      text: T.home.money.unavailable,
+      factState: "absent",
+    };
+  }
+  return { ready: true, text: formatUsdt(value), factState: "ready" };
+}
+
 /**
- * HomePrincipalRail / HomeMoneySurface — STEP5 Slice3 Money amend
- * Fact: principalUsdt + todayPossible only · C02/C03 · count-up/chart/split 금지
+ * HomePrincipalRail / HomeMoneySurface
+ * Fact: principalUsdt + todayPossible only · C02/C03 · absent != 0
  */
 export function HomePrincipalRail({
   principalUsdt,
   principalKrwApprox,
   todayPossibleProfitUsdt,
+  viewState = "ready_data",
+  sessionStatus = "authenticated",
   className = "",
 }: HomePrincipalRailProps) {
-  const usdt = formatUsdt(principalUsdt);
-  const profit = formatUsdt(todayPossibleProfitUsdt);
+  const principal = moneyDisplay(principalUsdt, viewState, sessionStatus);
+  const profit = moneyDisplay(
+    todayPossibleProfitUsdt,
+    viewState,
+    sessionStatus,
+  );
   const krw =
-    typeof principalKrwApprox === "string" && principalKrwApprox.trim()
+    principal.ready &&
+    typeof principalKrwApprox === "string" &&
+    principalKrwApprox.trim()
       ? principalKrwApprox.trim()
       : null;
 
@@ -47,6 +90,7 @@ export function HomePrincipalRail({
       <article
         data-home-slot="principal-balance"
         data-canon-block="principalBalance"
+        data-fact-state={principal.factState}
         className="home-money-card home-money-card--balance"
       >
         <div className="home-money__header">
@@ -60,18 +104,25 @@ export function HomePrincipalRail({
           </Link>
         </div>
         <div className="home-money__value-stack">
-          {krw ? (
+          {principal.ready && krw ? (
             <>
               <p className="home-money__value home-money__value--balance tabular-nums">
                 {T.feed.balanceKrwApprox.replace("{amount}", krw)}
               </p>
               <p className="home-money__secondary tabular-nums">
-                {T.feed.balanceUsdtSecondary.replace("{n}", usdt)}
+                {T.feed.balanceUsdtSecondary.replace("{n}", principal.text)}
               </p>
             </>
-          ) : (
+          ) : principal.ready ? (
             <p className="home-money__value home-money__value--balance tabular-nums">
-              {T.feed.balanceUsdtPrimary.replace("{n}", usdt)}
+              {T.feed.balanceUsdtPrimary.replace("{n}", principal.text)}
+            </p>
+          ) : (
+            <p
+              className="home-money__value home-money__value--balance text-lux-text-muted"
+              data-testid="home-principal-absent"
+            >
+              {principal.text}
             </p>
           )}
         </div>
@@ -80,19 +131,28 @@ export function HomePrincipalRail({
       <article
         data-home-slot="today-possible-profit"
         data-canon-block="todayPossibleProfit"
+        data-fact-state={profit.factState}
         className="home-money-card home-money-card--profit"
       >
         <p className="home-money__label">{T.feed.todayPossibleProfitLabel}</p>
         <div className="home-money__value-stack">
-          <p className="home-money__value home-money__value--profit tabular-nums">
-            {T.feed.todayPossibleProfitUsdt.replace("{n}", profit)}
-          </p>
+          {profit.ready ? (
+            <p className="home-money__value home-money__value--profit tabular-nums">
+              {T.feed.todayPossibleProfitUsdt.replace("{n}", profit.text)}
+            </p>
+          ) : (
+            <p
+              className="home-money__value home-money__value--profit text-lux-text-muted"
+              data-testid="home-today-possible-absent"
+            >
+              {profit.text}
+            </p>
+          )}
         </div>
       </article>
     </section>
   );
 }
 
-/** Peotteok Home Experience 이름 — 동일 presentation */
 export const HomeMoneySurface = HomePrincipalRail;
 export type HomeMoneySurfaceProps = HomePrincipalRailProps;

@@ -8,64 +8,114 @@ import { CategoryFilterChips, type CategoryFilterKey } from "./CategoryFilterChi
 import { OpportunityCard } from "./OpportunityCard";
 import type { OpportunityCardModel } from "./opportunity-types";
 
+export type BalanceAwareHomeViewState =
+  | "loading"
+  | "ready_empty"
+  | "ready_data"
+  | "stale"
+  | "recoverable_error"
+  | "blocked"
+  | "unauthorized";
+
+export type BalanceAwareHomeSessionStatus =
+  | "guest"
+  | "authenticated"
+  | "expired";
+
 export type BalanceAwareHomeProps = {
   items?: OpportunityCardModel[];
-  /** principal Fact 요약 (Engine classify 결과) */
-  affordableCount?: number;
-  nearMissExtraCount?: number;
+  affordableCount?: number | null;
+  nearMissExtraCount?: number | null;
   topSuggestDepositUsdt?: string | null;
+  viewState?: BalanceAwareHomeViewState;
+  sessionStatus?: BalanceAwareHomeSessionStatus;
   className?: string;
-  /** true면 outer `<main>` 없이 섹션만 (홈 page가 ticker+main 소유) */
   asSection?: boolean;
-  /**
-   * HomeHero가 title을 담당할 때 구 scanHero 헤더 숨김
-   * (소스에 T.feed.homeTitle / homeScanSub 유지 · PART9 verify)
-   */
   hideScanHero?: boolean;
 };
 
+function hasPersonalFacts(
+  viewState: BalanceAwareHomeViewState,
+  sessionStatus: BalanceAwareHomeSessionStatus,
+): boolean {
+  if (sessionStatus === "guest" || sessionStatus === "expired") return false;
+  if (
+    viewState === "unauthorized" ||
+    viewState === "loading" ||
+    viewState === "recoverable_error" ||
+    viewState === "blocked"
+  ) {
+    return false;
+  }
+  return true;
+}
+
 /**
- * BalanceAwareHome / HomeOpportunity — mobile polish
- * Data model · nearMissExtraCount · OpportunityCard 유지 · 구 Lux Dark layout 폐기
+ * BalanceAwareHome / HomeOpportunity
+ * nearMiss = capital short within nearMissCap · not compare/stale/auth collapse
  */
 export function BalanceAwareHome({
   items = [],
   affordableCount,
   nearMissExtraCount,
   topSuggestDepositUsdt,
+  viewState = "ready_data",
+  sessionStatus = "authenticated",
   className = "",
   asSection = false,
   hideScanHero = false,
 }: BalanceAwareHomeProps) {
   const [category, setCategory] = useState<CategoryFilterKey>("all");
+  const personal = hasPersonalFacts(viewState, sessionStatus);
 
   const filtered = useMemo(() => {
     if (category === "all") return items;
     return items.filter((i) => i.category === category);
   }, [items, category]);
 
-  const affordable = filtered.filter(
-    (i) => !i.bucket || i.bucket === "affordable",
-  );
+  const affordable = filtered.filter((i) => i.bucket === "affordable");
   const nearMiss = filtered.filter((i) => i.bucket === "nearMiss");
   const lockedHigh = filtered.filter((i) => i.bucket === "lockedHigh");
 
-  const hero = affordable[0] ?? null;
-  const listAffordable = affordable.slice(hero ? 1 : 0);
-  const nAffordable = affordableCount ?? affordable.length;
-  const nExtra = nearMissExtraCount ?? nearMiss.length;
-  const suggest = topSuggestDepositUsdt ?? nearMiss[0]?.suggestDepositUsdt ?? null;
+  const hero = personal ? affordable[0] ?? null : null;
+  const listAffordable = personal ? affordable.slice(hero ? 1 : 0) : [];
+  const nAffordable =
+    typeof affordableCount === "number" ? affordableCount : affordable.length;
+  const nExtra =
+    typeof nearMissExtraCount === "number"
+      ? nearMissExtraCount
+      : nearMiss.length;
+  const suggest =
+    topSuggestDepositUsdt ?? nearMiss[0]?.suggestDepositUsdt ?? null;
 
-  const peotteok = T.feed.peotteokLine
-    .replace("{n}", String(nAffordable))
-    .replace("{s}", suggest || "0")
-    .replace("{m}", String(nExtra));
+  const peotteok =
+    personal && typeof affordableCount === "number"
+      ? suggest != null && nExtra > 0
+        ? T.feed.peotteokLine
+            .replace("{n}", String(nAffordable))
+            .replace("{s}", suggest)
+            .replace("{m}", String(nExtra))
+        : T.feed.peotteokLineCountOnly.replace("{n}", String(nAffordable))
+      : null;
 
   const scanTitle = T.feed.homeTitle;
   const scanSub = T.feed.homeScanSub;
 
-  const empty = affordable.length === 0 && nearMiss.length === 0;
-  const showFilters = items.length > 0;
+  const empty = personal && affordable.length === 0 && nearMiss.length === 0;
+  const showFilters = personal && items.length > 0;
+
+  const emptyCopy =
+    viewState === "loading"
+      ? { title: T.home.opportunity.loadingStatus, next: null, why: null }
+      : viewState === "recoverable_error" || viewState === "blocked"
+        ? { title: T.home.opportunity.errorStatus, next: null, why: null }
+        : !personal
+          ? { title: T.home.opportunity.guestStatus, next: null, why: null }
+          : {
+              title: T.home.opportunity.emptyStatus,
+              next: T.home.opportunity.emptyNext,
+              why: T.home.opportunity.emptyWhy,
+            };
 
   const body = (
     <>
@@ -73,6 +123,7 @@ export function BalanceAwareHome({
         id="home-opportunity"
         className={`space-y-4 ${asSection ? className : ""}`.trim()}
         aria-label={T.home.opportunity.aria}
+        data-personal-facts={personal ? "true" : "false"}
       >
         {!hideScanHero ? (
           <header data-home-slot="scanHero">
@@ -90,9 +141,11 @@ export function BalanceAwareHome({
           <h2 className="text-base font-semibold text-lux-text">
             {T.home.opportunity.sectionTitle}
           </h2>
-          <p className="mt-1 text-sm text-lux-text-muted">
-            {T.feed.sectionAffordableCount.replace("{n}", String(nAffordable))}
-          </p>
+          {personal ? (
+            <p className="mt-1 text-sm text-lux-text-muted">
+              {T.feed.sectionAffordableCount.replace("{n}", String(nAffordable))}
+            </p>
+          ) : null}
 
           {showFilters ? (
             <CategoryFilterChips
@@ -118,36 +171,38 @@ export function BalanceAwareHome({
             </ul>
           ) : null}
 
-          {empty ? (
+          {empty || !personal ? (
             <div
               className="mt-4 space-y-3 rounded-lux-xl border border-lux-border bg-lux-surface p-5 home-money-card"
               role="status"
               data-testid="home-opportunity-empty"
+              data-empty-kind={!personal ? "guest-or-absent" : "ready-empty"}
             >
               <p className="text-base font-semibold text-lux-text">
-                {T.home.opportunity.emptyStatus}
+                {emptyCopy.title}
               </p>
-              <p className="text-sm text-lux-text-muted">
-                {T.home.opportunity.emptyNext}
-              </p>
-              <p className="text-sm text-lux-text-muted">
-                {T.home.opportunity.emptyWhy}
-              </p>
-              {/* 단일 primary CTA · 자기참조 #home-opportunity 경쟁 링크 제거 */}
-              <div className="pt-1">
-                <a
-                  href="/wallet/deposit"
-                  data-testid="home-empty-cta-deposit"
-                  className="inline-flex min-h-12 w-full items-center justify-center rounded-lux-md bg-lux-accent px-4 py-2 text-sm font-semibold text-lux-surface sm:w-auto"
-                >
-                  {T.home.opportunity.emptyCtaDeposit}
-                </a>
-              </div>
+              {emptyCopy.next ? (
+                <p className="text-sm text-lux-text-muted">{emptyCopy.next}</p>
+              ) : null}
+              {emptyCopy.why ? (
+                <p className="text-sm text-lux-text-muted">{emptyCopy.why}</p>
+              ) : null}
+              {personal ? (
+                <div className="pt-1">
+                  <a
+                    href="/wallet/deposit"
+                    data-testid="home-empty-cta-deposit"
+                    className="inline-flex min-h-12 w-full items-center justify-center rounded-lux-md bg-lux-accent px-4 py-2 text-sm font-semibold text-lux-surface sm:w-auto"
+                  >
+                    {T.home.opportunity.emptyCtaDeposit}
+                  </a>
+                </div>
+              ) : null}
             </div>
           ) : null}
         </section>
 
-        {nearMiss.length > 0 ? (
+        {personal && nearMiss.length > 0 ? (
           <section data-home-slot="nearMiss" data-testid="section-near-miss">
             <h2 className="text-base font-semibold text-lux-text">
               {T.feed.sectionNearMiss}
@@ -171,33 +226,42 @@ export function BalanceAwareHome({
         >
           <summary className="cursor-pointer text-sm font-medium text-lux-text">
             {T.feed.sectionLockedHigh}
-            {lockedHigh[0] ? (
+            {personal && lockedHigh[0] ? (
               <span className="ml-2 text-lux-text-muted">
                 · {lockedHigh[0].assetLabel}
               </span>
             ) : null}
           </summary>
-          <ul className="mt-3 space-y-3">
-            {lockedHigh.map((o) => (
-              <li key={o.id}>
-                <OpportunityCard opportunity={o} />
-              </li>
-            ))}
-          </ul>
+          {personal ? (
+            <ul className="mt-3 space-y-3">
+              {lockedHigh.map((o) => (
+                <li key={o.id}>
+                  <OpportunityCard opportunity={o} />
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </details>
 
-        {/* Contract §2.1a — Partner/trust strip after Opportunity grid · Owns 1곳 */}
         <div data-home-slot="partnerTrust" className="pt-2">
           <MarketPartnerTrustStrip tier="A" />
         </div>
 
-        <p
-          data-home-slot="peotteok"
-          data-testid="peotteok-balance-line"
-          className="text-sm text-lux-text"
-        >
-          {peotteok}
-        </p>
+        {peotteok ? (
+          <p
+            data-home-slot="peotteok"
+            data-testid="peotteok-balance-line"
+            className="text-sm text-lux-text"
+          >
+            {peotteok}
+          </p>
+        ) : (
+          <p
+            data-home-slot="peotteok"
+            data-testid="peotteok-balance-line"
+            className="hidden"
+          />
+        )}
       </div>
 
       {hero ? (
@@ -239,6 +303,5 @@ export function BalanceAwareHome({
   );
 }
 
-/** Peotteok Home Experience 이름 */
 export const HomeOpportunity = BalanceAwareHome;
 export type HomeOpportunityProps = BalanceAwareHomeProps;

@@ -145,7 +145,7 @@ todos:
     status: completed
   - id: redesign-r1-home-truth-preflight
     content: "[grok-4.5|256K] Redesign R1-1 · 02 HomeReadModelV1 선행 · HomePageClient/PART9 binding 보존 · guest/static scan claim·fake zero·ledgerTotal currency 오해·client sumAffordableExpectedProfitUsdt 제거(서버 derived 소비)·nearMiss 문맥·BottomNav 결과표시를 실제 state/Fact로 교정 · keep|adapt|new|remove mapping · HomePageV2/병렬 fetch0 · verify:home-state-truth/no-fake-zero-status/home-live-wire"
-    status: pending
+    status: completed
   - id: redesign-r1-home-brand-assets
     content: "[grok-4.5|256K] Redesign R1-2 · Brand Kit+markets manifest provenance/hash/public mirror · third-party logo AI재현0 · 자체 Hero/avatar transparent master · blocked/ready lifecycle · 현재 ready 재사용 우선·중복에셋0 · verify:brand-assets/market-partner-trust + verify:brand-asset-provenance 신설+CATALOG"
     status: pending

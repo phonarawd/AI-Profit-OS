@@ -6,6 +6,12 @@ import {
   type GrowthPublicSurfaceResponse,
 } from "@aipo/sdk/growth";
 import {
+  fetchHomeReadModel,
+  type HomeReadModelResponse,
+  type HomeSessionStatus,
+  type HomeViewState,
+} from "@aipo/sdk/home-read-model";
+import {
   fetchDayPulse,
   fetchOpportunityFeed,
   type DayPulseResponse,
@@ -21,23 +27,41 @@ import {
   type PublicTickerEvent,
 } from "@aipo/ui/components/lux";
 import { type OpportunityCardModel } from "@aipo/ui/components/opportunity";
+import { T } from "@aipo/ui/copy/ko";
 import { toOpportunityCardModel } from "../lib/opportunity-card-map";
 
-type HomeFeedState = {
+type SessionBannerKind = "guest" | "expired" | null;
+export type HomeClientViewState = HomeViewState | "loading";
+
+type HomePageTruth = {
+  viewState: HomeClientViewState;
+  sessionStatus: HomeSessionStatus;
   items: OpportunityCardModel[];
-  principalUsdt: string;
-  affordableCount?: number;
-  nearMissExtraCount?: number;
-  topSuggestDepositUsdt?: string | null;
+  principalUsdt: string | null;
+  todayPossibleProfitUsdt: string | null;
+  ledgerTotal: number | null;
+  affordableCount: number | null;
+  nearMissExtraCount: number | null;
+  topSuggestDepositUsdt: string | null;
+  pulse: DayPulseModel | null;
+  tickerMode: GrowthPublicSurfaceResponse["tickerMode"];
+  tickerEvents: PublicTickerEvent[];
+  counterMode: HomePayoutCounterMode;
+  sessionBanner: SessionBannerKind;
 };
 
-type SessionBannerKind = "guest" | "expired" | null;
+const GROWTH_HIDDEN = {
+  tickerMode: "off" as const,
+  tickerEvents: [] as PublicTickerEvent[],
+  counterMode: "off" as HomePayoutCounterMode,
+};
 
 function isUnauthorizedError(err: unknown): boolean {
   if (!(err instanceof Error)) return false;
   return (
     err.message.includes("opportunity_feed_401") ||
     err.message.includes("day_pulse_401") ||
+    err.message.includes("home_read_model_401") ||
     /_401\b/.test(err.message) ||
     /unauthorized/i.test(err.message)
   );
@@ -62,59 +86,93 @@ function toDayPulseModel(res: DayPulseResponse): DayPulseModel {
   };
 }
 
-/** affordable expectedProfitUsdt 합 — Engine 필드 합산만 · 가격식 재발명 0 */
-function sumAffordableExpectedProfitUsdt(
-  items: OpportunityCardModel[],
-): string {
-  let sum = 0;
-  for (const item of items) {
-    if (item.bucket && item.bucket !== "affordable") continue;
-    const n = Number(item.expectedProfitUsdt);
-    if (Number.isFinite(n)) sum += n;
-  }
-  return sum.toFixed(2);
+function itemsFromFeed(feed: OpportunityFeedResponse): OpportunityCardModel[] {
+  return feed.items
+    .map(toOpportunityCardModel)
+    .filter((x): x is OpportunityCardModel => x != null);
 }
 
-function feedToHomeState(feed: OpportunityFeedResponse): HomeFeedState {
+function moneyStateAllowsValue(state: string): boolean {
+  return state === "ready_data" || state === "ready_empty" || state === "stale";
+}
+
+function principalFromHome(home: HomeReadModelResponse): string | null {
+  const money = home.money;
+  if (!money || !moneyStateAllowsValue(money.state)) return null;
+  if (typeof money.principalUsdt === "string" && money.principalUsdt.trim()) {
+    return money.principalUsdt;
+  }
+  return null;
+}
+
+function applyGrowth(growth: GrowthPublicSurfaceResponse): Pick<
+  HomePageTruth,
+  "tickerMode" | "tickerEvents" | "counterMode"
+> {
   return {
-    items: feed.items
-      .map(toOpportunityCardModel)
-      .filter((x): x is OpportunityCardModel => x != null),
-    principalUsdt:
-      typeof feed.principalUsdt === "string" && feed.principalUsdt.trim()
-        ? feed.principalUsdt
-        : "0",
-    affordableCount: feed.affordableCount,
-    nearMissExtraCount: feed.nearMissExtraCount,
-    topSuggestDepositUsdt: feed.topSuggestDepositUsdt ?? null,
+    tickerMode: growth.tickerMode,
+    tickerEvents: growth.events as PublicTickerEvent[],
+    counterMode: growth.counterMode as HomePayoutCounterMode,
+  };
+}
+
+function unauthorizedTruth(input: {
+  sessionStatus: HomeSessionStatus;
+  sessionBanner: SessionBannerKind;
+  growth?: GrowthPublicSurfaceResponse;
+}): HomePageTruth {
+  const g = input.growth ? applyGrowth(input.growth) : GROWTH_HIDDEN;
+  return {
+    viewState: "unauthorized",
+    sessionStatus: input.sessionStatus,
+    items: [],
+    principalUsdt: null,
+    todayPossibleProfitUsdt: null,
+    ledgerTotal:
+      input.growth && typeof input.growth.ledgerTotal === "number"
+        ? input.growth.ledgerTotal
+        : null,
+    affordableCount: null,
+    nearMissExtraCount: null,
+    topSuggestDepositUsdt: null,
+    pulse: null,
+    tickerMode: g.tickerMode,
+    tickerEvents: g.tickerEvents,
+    counterMode: g.counterMode,
+    sessionBanner: input.sessionBanner,
+  };
+}
+
+function initialTruth(hasSession: boolean): HomePageTruth {
+  return {
+    viewState: "loading",
+    sessionStatus: hasSession ? "authenticated" : "guest",
+    items: [],
+    principalUsdt: null,
+    todayPossibleProfitUsdt: null,
+    ledgerTotal: null,
+    affordableCount: null,
+    nearMissExtraCount: null,
+    topSuggestDepositUsdt: null,
+    pulse: null,
+    ...GROWTH_HIDDEN,
+    sessionBanner: hasSession ? null : "guest",
   };
 }
 
 export type HomePageClientProps = {
-  /** 서버 cookies() 판정 · 없으면 auth feed/pulse 호출 스킵(401 콘솔 0) */
+  /** cookies() session flag — skip auth fetches when false */
   hasSession?: boolean;
 };
 
 /**
- * PART9 data orchestration keep · presentation = HomeExperience (ADR-017 STEP4)
- * HomePageV2 금지 · SDK/Auth/Wallet 재작성 금지
+ * PART9 data orchestration keep · presentation = HomeExperience
+ * Home Fact authority = fetchHomeReadModel · no HomePageV2 · no client sum
  */
 export function HomePageClient({ hasSession = false }: HomePageClientProps) {
-  const [feed, setFeed] = useState<HomeFeedState>({
-    items: [],
-    principalUsdt: "0",
-  });
-  const [pulse, setPulse] = useState<DayPulseModel | null>(null);
-  const [sessionBanner, setSessionBanner] = useState<SessionBannerKind>(
-    hasSession ? null : "guest",
+  const [truth, setTruth] = useState<HomePageTruth>(() =>
+    initialTruth(hasSession),
   );
-  const [growth, setGrowth] = useState<GrowthPublicSurfaceResponse>({
-    tickerMode: "off",
-    counterMode: "off",
-    ledgerTotal: 0,
-    events: [],
-    asOf: "",
-  });
 
   useEffect(() => {
     const ac = new AbortController();
@@ -126,64 +184,98 @@ export function HomePageClient({ hasSession = false }: HomePageClientProps) {
       if (!hasSession) {
         const growthResult = await Promise.allSettled([growthPromise]);
         if (cancelled) return;
-        if (growthResult[0].status === "fulfilled") {
-          setGrowth(growthResult[0].value);
-        } else {
-          setGrowth({
-            tickerMode: "off",
-            counterMode: "off",
-            ledgerTotal: 0,
-            events: [],
-            asOf: "",
-          });
-        }
-        setFeed({ items: [], principalUsdt: "0" });
-        setPulse(null);
-        setSessionBanner("guest");
+        setTruth(
+          unauthorizedTruth({
+            sessionStatus: "guest",
+            sessionBanner: "guest",
+            growth:
+              growthResult[0].status === "fulfilled"
+                ? growthResult[0].value
+                : undefined,
+          }),
+        );
         return;
       }
 
-      const [feedResult, pulseResult, growthResult] = await Promise.allSettled([
-        fetchOpportunityFeed({ signal: ac.signal }),
-        fetchDayPulse({ signal: ac.signal }),
-        growthPromise,
-      ]);
+      const [homeResult, feedResult, pulseResult, growthResult] =
+        await Promise.allSettled([
+          fetchHomeReadModel({ signal: ac.signal }),
+          fetchOpportunityFeed({ signal: ac.signal }),
+          fetchDayPulse({ signal: ac.signal }),
+          growthPromise,
+        ]);
 
       if (cancelled) return;
 
-      let unauthorized = false;
+      const home =
+        homeResult.status === "fulfilled" ? homeResult.value : null;
+      const feed =
+        feedResult.status === "fulfilled" ? feedResult.value : null;
+      const pulse =
+        pulseResult.status === "fulfilled"
+          ? toDayPulseModel(pulseResult.value)
+          : null;
+      const growth =
+        growthResult.status === "fulfilled" ? growthResult.value : undefined;
 
-      if (feedResult.status === "fulfilled") {
-        setFeed(feedToHomeState(feedResult.value));
-      } else if (isUnauthorizedError(feedResult.reason)) {
-        unauthorized = true;
-        setFeed({ items: [], principalUsdt: "0" });
-      } else {
-        setFeed({ items: [], principalUsdt: "0" });
+      const unauthorized =
+        home?.viewState === "unauthorized" ||
+        (home != null && home.session.status !== "authenticated") ||
+        (homeResult.status === "rejected" &&
+          isUnauthorizedError(homeResult.reason)) ||
+        (feedResult.status === "rejected" &&
+          isUnauthorizedError(feedResult.reason)) ||
+        (pulseResult.status === "rejected" &&
+          isUnauthorizedError(pulseResult.reason));
+
+      if (unauthorized) {
+        setTruth(
+          unauthorizedTruth({
+            sessionStatus: "expired",
+            sessionBanner: "expired",
+            growth,
+          }),
+        );
+        return;
       }
 
-      if (pulseResult.status === "fulfilled") {
-        setPulse(toDayPulseModel(pulseResult.value));
-      } else if (isUnauthorizedError(pulseResult.reason)) {
-        unauthorized = true;
-        setPulse(null);
-      } else {
-        setPulse(null);
-      }
+      const g = growth ? applyGrowth(growth) : GROWTH_HIDDEN;
+      const opportunity = home?.opportunity ?? null;
+      const ledgerFromHome =
+        home && typeof home.ledgerTotal === "number" ? home.ledgerTotal : null;
+      const ledgerFromGrowth =
+        growth && typeof growth.ledgerTotal === "number"
+          ? growth.ledgerTotal
+          : null;
 
-      if (growthResult.status === "fulfilled") {
-        setGrowth(growthResult.value);
-      } else {
-        setGrowth({
-          tickerMode: "off",
-          counterMode: "off",
-          ledgerTotal: 0,
-          events: [],
-          asOf: "",
-        });
-      }
-
-      setSessionBanner(unauthorized ? "expired" : null);
+      setTruth({
+        viewState: home?.viewState ?? "recoverable_error",
+        sessionStatus: "authenticated",
+        items: feed ? itemsFromFeed(feed) : [],
+        principalUsdt: home ? principalFromHome(home) : null,
+        todayPossibleProfitUsdt:
+          home && typeof home.todayPossibleProfitUsdt === "string"
+            ? home.todayPossibleProfitUsdt
+            : null,
+        ledgerTotal: ledgerFromHome ?? ledgerFromGrowth,
+        affordableCount:
+          opportunity && typeof opportunity.affordableCount === "number"
+            ? opportunity.affordableCount
+            : null,
+        nearMissExtraCount:
+          opportunity && typeof opportunity.nearMissCount === "number"
+            ? opportunity.nearMissCount
+            : null,
+        topSuggestDepositUsdt:
+          opportunity && opportunity.topSuggestDepositUsdt != null
+            ? opportunity.topSuggestDepositUsdt
+            : null,
+        pulse,
+        tickerMode: g.tickerMode,
+        tickerEvents: g.tickerEvents,
+        counterMode: g.counterMode,
+        sessionBanner: null,
+      });
     }
 
     void load();
@@ -193,30 +285,32 @@ export function HomePageClient({ hasSession = false }: HomePageClientProps) {
     };
   }, [hasSession]);
 
-  const tickerEvents = growth.events as PublicTickerEvent[];
-  const counterMode = growth.counterMode as HomePayoutCounterMode;
-  const todayPossibleProfitUsdt = sumAffordableExpectedProfitUsdt(feed.items);
+  const totalResultValue =
+    typeof truth.ledgerTotal === "number" && Number.isFinite(truth.ledgerTotal)
+      ? `${truth.ledgerTotal}${T.ticker.settleCountSuffix}`
+      : null;
 
   return (
     <main className="text-lux-text" data-testid="home-shell">
       <HomeExperience
-        principalUsdt={feed.principalUsdt}
-        todayPossibleProfitUsdt={todayPossibleProfitUsdt}
-        items={feed.items}
-        affordableCount={feed.affordableCount}
-        nearMissExtraCount={feed.nearMissExtraCount}
-        topSuggestDepositUsdt={feed.topSuggestDepositUsdt}
-        pulse={pulse}
-        tickerMode={growth.tickerMode}
-        tickerEvents={tickerEvents}
-        counterMode={counterMode}
-        ledgerTotal={growth.ledgerTotal}
-        totalResultValue={
-          // C01 · ledgerTotal = settlement completed COUNT (currency suffix forbidden)
-          growth.ledgerTotal > 0 ? `${growth.ledgerTotal}건` : null
-        }
+        viewState={truth.viewState}
+        sessionStatus={truth.sessionStatus}
+        principalUsdt={truth.principalUsdt}
+        todayPossibleProfitUsdt={truth.todayPossibleProfitUsdt}
+        items={truth.items}
+        affordableCount={truth.affordableCount}
+        nearMissExtraCount={truth.nearMissExtraCount}
+        topSuggestDepositUsdt={truth.topSuggestDepositUsdt}
+        pulse={truth.pulse}
+        tickerMode={truth.tickerMode}
+        tickerEvents={truth.tickerEvents}
+        counterMode={truth.counterMode}
+        ledgerTotal={truth.ledgerTotal}
+        totalResultValue={totalResultValue}
         sessionExpiredSlot={
-          sessionBanner ? <HomeSessionBanner kind={sessionBanner} /> : null
+          truth.sessionBanner ? (
+            <HomeSessionBanner kind={truth.sessionBanner} />
+          ) : null
         }
       />
     </main>

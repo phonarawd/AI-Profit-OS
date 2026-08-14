@@ -82,6 +82,7 @@ export function BottomNav5({ tabs }: { tabs: readonly BottomNavTab[] }) {
         aria-label={T.home.sidebar.navAria}
         data-testid="bottom-nav-5"
         data-tab-count={tabs.length}
+        data-result-indicator="absent"
         className="fixed inset-x-0 bottom-0 z-40 flex border-t border-lux-border bg-lux-surface md:static md:flex-1 md:flex-col md:gap-1 md:border-t-0 md:px-3 md:py-2"
       >
         {tabs.map((tab) => {

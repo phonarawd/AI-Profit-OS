@@ -23,6 +23,7 @@ export const feed = {
   badgeNearMiss: "입금하면 가능",
   badgeLocked: "자본 부족",
   peotteokLine: "지금 잔액으로 {n}건 · +{s}USDT면 {m}건 더",
+  peotteokLineCountOnly: "지금 잔액으로 {n}건",
   /** P1 · tag time_sensitive · Day-1 칩 OFF 허용 */
   chipTimeSensitive: "마감 임박",
 } as const;
