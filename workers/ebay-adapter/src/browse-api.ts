@@ -1,8 +1,24 @@
 /**
  * eBay Browse API client — item_summary/search per marketplaceId.
  * Dry-run when credentials missing (Phase1 deploy health still ok).
+ *
+ * PTF-00C P0-C/§7 repair: explicit per-request timeout, bounded retry with
+ * exponential backoff + jitter (transient classes only), error
+ * classification (auth/rate-limit/5xx/timeout/network/malformed), and
+ * per-marketplace/per-query result isolation — one failing call must never
+ * discard another marketplace's/query's healthy result or crash the tick.
  */
 
+import {
+  applyFullJitter,
+  backoffDelayMs,
+  classifyHttpStatus,
+  classifyThrown,
+  DEFAULT_MAX_ATTEMPTS,
+  DEFAULT_TIMEOUT_MS,
+  shouldRetry,
+  type EbayErrorClass,
+} from "./retry-policy.cjs";
 import {
   BROWSE_BASE,
   IDENTITY_BASE,
@@ -25,11 +41,85 @@ export interface BrowseSearchResult {
   items: BrowseSearchItem[];
   dryRun: boolean;
   error?: string;
+  /** PTF-00C — always present on failure so Nest/heartbeat can classify without parsing free text. */
+  errorClass?: EbayErrorClass;
+  attempts: number;
 }
 
 let cachedToken: { value: string; expMs: number } | null = null;
 
-export async function getAppToken(
+/** Fetch with an explicit abort timeout — never let one call hang the tick. */
+async function fetchWithTimeout(
+  input: string,
+  init: RequestInit,
+  timeoutMs: number,
+): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/** Sleep helper — only ever invoked between bounded retry attempts. */
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+type RetryOutcome<T> =
+  | { ok: true; value: T; attempts: number }
+  | { ok: false; error: string; errorClass: EbayErrorClass; attempts: number };
+
+/**
+ * Bounded retry wrapper — transient classes (rate_limited/server_error/
+ * timeout/network_error) retry with exponential backoff + full jitter;
+ * auth_failed/client_error/malformed_response never retry (§7 "authentication
+ * failure classification" / "malformed response classification").
+ */
+async function withRetry<T>(
+  attemptFn: () => Promise<T>,
+  classifyError: (err: unknown) => { message: string; errorClass: EbayErrorClass },
+  opts: { maxAttempts?: number; timeoutMs?: number } = {},
+): Promise<RetryOutcome<T>> {
+  const maxAttempts = opts.maxAttempts ?? DEFAULT_MAX_ATTEMPTS;
+  let lastMessage = "unknown_failure";
+  let lastErrorClass: EbayErrorClass = "unknown";
+  for (let attemptIndex = 0; attemptIndex < maxAttempts; attemptIndex += 1) {
+    try {
+      const value = await attemptFn();
+      return { ok: true, value, attempts: attemptIndex + 1 };
+    } catch (e) {
+      const { message, errorClass } = classifyError(e);
+      lastMessage = message;
+      lastErrorClass = errorClass;
+      if (!shouldRetry({ attemptIndex, errorClass, maxAttempts })) {
+        return { ok: false, error: message, errorClass, attempts: attemptIndex + 1 };
+      }
+      const delay = applyFullJitter(backoffDelayMs(attemptIndex));
+      await sleep(delay);
+    }
+  }
+  return { ok: false, error: lastMessage, errorClass: lastErrorClass, attempts: maxAttempts };
+}
+
+class ClassifiedError extends Error {
+  errorClass: EbayErrorClass;
+  constructor(message: string, errorClass: EbayErrorClass) {
+    super(message);
+    this.errorClass = errorClass;
+  }
+}
+
+function classifyCaught(e: unknown): { message: string; errorClass: EbayErrorClass } {
+  if (e instanceof ClassifiedError) return { message: e.message, errorClass: e.errorClass };
+  const errorClass = classifyThrown(e);
+  const message = e instanceof Error ? e.message : "browse_failed";
+  return { message, errorClass };
+}
+
+async function fetchAppTokenOnce(
   clientId: string,
   clientSecret: string,
 ): Promise<string> {
@@ -42,16 +132,20 @@ export async function getAppToken(
     grant_type: "client_credentials",
     scope: OAUTH_SCOPE,
   });
-  const res = await fetch(`${IDENTITY_BASE}/oauth2/token`, {
-    method: "POST",
-    headers: {
-      authorization: `Basic ${basic}`,
-      "content-type": "application/x-www-form-urlencoded",
+  const res = await fetchWithTimeout(
+    `${IDENTITY_BASE}/oauth2/token`,
+    {
+      method: "POST",
+      headers: {
+        authorization: `Basic ${basic}`,
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      body,
     },
-    body,
-  });
+    DEFAULT_TIMEOUT_MS,
+  );
   if (!res.ok) {
-    throw new Error(`ebay oauth ${res.status}`);
+    throw new ClassifiedError(`ebay oauth ${res.status}`, classifyHttpStatus(res.status));
   }
   const json = (await res.json()) as {
     access_token: string;
@@ -64,6 +158,74 @@ export async function getAppToken(
   return cachedToken.value;
 }
 
+export async function getAppToken(
+  clientId: string,
+  clientSecret: string,
+): Promise<string> {
+  const outcome = await withRetry(
+    () => fetchAppTokenOnce(clientId, clientSecret),
+    classifyCaught,
+  );
+  if (!outcome.ok) {
+    throw new ClassifiedError(outcome.error, outcome.errorClass);
+  }
+  return outcome.value;
+}
+
+async function searchOnce(opts: {
+  marketplaceId: EbayMarketplaceId;
+  query: string;
+  clientId: string;
+  clientSecret: string;
+  limit?: number;
+}): Promise<BrowseSearchItem[]> {
+  const token = await getAppToken(opts.clientId, opts.clientSecret);
+  const url = new URL(`${BROWSE_BASE}/item_summary/search`);
+  url.searchParams.set("q", opts.query);
+  url.searchParams.set("limit", String(opts.limit ?? 10));
+  const res = await fetchWithTimeout(
+    url.toString(),
+    {
+      headers: {
+        authorization: `Bearer ${token}`,
+        "X-EBAY-C-MARKETPLACE-ID": opts.marketplaceId,
+        accept: "application/json",
+      },
+    },
+    DEFAULT_TIMEOUT_MS,
+  );
+  if (!res.ok) {
+    throw new ClassifiedError(`browse ${res.status}`, classifyHttpStatus(res.status));
+  }
+  let json: {
+    itemSummaries?: Array<{
+      itemId?: string;
+      title?: string;
+      price?: { value?: string; currency?: string };
+      image?: { imageUrl?: string };
+      itemWebUrl?: string;
+    }>;
+  };
+  try {
+    json = (await res.json()) as typeof json;
+  } catch (e) {
+    throw new ClassifiedError(
+      e instanceof Error ? e.message : "malformed_json",
+      "malformed_response",
+    );
+  }
+  return (json.itemSummaries ?? [])
+    .filter((it) => it.itemId && it.price?.value)
+    .map((it) => ({
+      itemId: String(it.itemId),
+      title: String(it.title ?? ""),
+      priceValue: String(it.price!.value),
+      currency: String(it.price!.currency ?? "USD"),
+      imageUrl: it.image?.imageUrl,
+      itemWebUrl: it.itemWebUrl,
+    }));
+}
+
 export async function searchItemSummary(opts: {
   marketplaceId: EbayMarketplaceId;
   query: string;
@@ -73,56 +235,35 @@ export async function searchItemSummary(opts: {
 }): Promise<BrowseSearchResult> {
   const { marketplaceId, query } = opts;
   if (!opts.clientId || !opts.clientSecret) {
-    return { marketplaceId, query, items: [], dryRun: true };
+    return { marketplaceId, query, items: [], dryRun: true, attempts: 0 };
   }
-  try {
-    const token = await getAppToken(opts.clientId, opts.clientSecret);
-    const url = new URL(`${BROWSE_BASE}/item_summary/search`);
-    url.searchParams.set("q", query);
-    url.searchParams.set("limit", String(opts.limit ?? 10));
-    const res = await fetch(url.toString(), {
-      headers: {
-        authorization: `Bearer ${token}`,
-        "X-EBAY-C-MARKETPLACE-ID": marketplaceId,
-        accept: "application/json",
-      },
-    });
-    if (!res.ok) {
-      return {
+  const outcome = await withRetry(
+    () =>
+      searchOnce({
         marketplaceId,
         query,
-        items: [],
-        dryRun: false,
-        error: `browse ${res.status}`,
-      };
-    }
-    const json = (await res.json()) as {
-      itemSummaries?: Array<{
-        itemId?: string;
-        title?: string;
-        price?: { value?: string; currency?: string };
-        image?: { imageUrl?: string };
-        itemWebUrl?: string;
-      }>;
-    };
-    const items: BrowseSearchItem[] = (json.itemSummaries ?? [])
-      .filter((it) => it.itemId && it.price?.value)
-      .map((it) => ({
-        itemId: String(it.itemId),
-        title: String(it.title ?? ""),
-        priceValue: String(it.price!.value),
-        currency: String(it.price!.currency ?? "USD"),
-        imageUrl: it.image?.imageUrl,
-        itemWebUrl: it.itemWebUrl,
-      }));
-    return { marketplaceId, query, items, dryRun: false };
-  } catch (e) {
+        clientId: opts.clientId!,
+        clientSecret: opts.clientSecret!,
+        limit: opts.limit,
+      }),
+    classifyCaught,
+  );
+  if (!outcome.ok) {
     return {
       marketplaceId,
       query,
       items: [],
       dryRun: false,
-      error: e instanceof Error ? e.message : "browse_failed",
+      error: outcome.error,
+      errorClass: outcome.errorClass,
+      attempts: outcome.attempts,
     };
   }
+  return {
+    marketplaceId,
+    query,
+    items: outcome.value,
+    dryRun: false,
+    attempts: outcome.attempts,
+  };
 }

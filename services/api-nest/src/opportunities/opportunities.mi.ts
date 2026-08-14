@@ -113,7 +113,14 @@ export const {
   buildRuntimeSeedBundleForAsset,
   buildMinCatalogRuntimeSeed,
   normalizeIngestListingsForPersist,
+  SUPPORTED_MARKETPLACE_FIAT_CURRENCIES,
+  SUPPORTED_NATIVE_CURRENCIES,
+  FIAT_USD_RATE_FIELD,
+  deriveMarketplaceLegs,
+  normalizeNativeToUsdt,
 } = mi;
 
 export type PricingResult = ReturnType<typeof computeOpportunityPricing>;
 export type FxSnapshotResult = ReturnType<typeof composeFxSnapshot>;
+export type FxMarketplaceLegs = ReturnType<typeof deriveMarketplaceLegs>;
+export type FxNormalizeResult = ReturnType<typeof normalizeNativeToUsdt>;

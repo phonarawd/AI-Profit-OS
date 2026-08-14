@@ -113,6 +113,11 @@ const DOMAIN_SITES = [
     marker: "kstDayStartMs(nowMs)",
     what: "day pulse KST day boundary",
   },
+  {
+    rel: "services/api-nest/src/opportunities/opportunities.user.service.ts",
+    marker: "nowMs: this.clock.nowMs()",
+    what: "PTF-00C P0-E/C-01 feed/getById read-time freshness",
+  },
 ];
 
 for (const site of DOMAIN_SITES) {

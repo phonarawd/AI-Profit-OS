@@ -2,7 +2,7 @@
   "projectRef": "mgsytcetsiecllmhcyox",
   "asOf": "2026-08-14",
   "source": "Supabase MCP list_migrations",
-  "note": "로컬 supabase/migrations/*.sql 버전 접두사와 원격 applied 1:1. 원격 apply 후 이 목록을 갱신한다.",
+  "note": "로컬 supabase/migrations/*.sql 버전 접두사와 원격 applied 1:1. 원격 apply 후 이 목록을 갱신한다. PTF-00C: +20260814130000, +20260814130100.",
   "versions": [
     "20260808205842",
     "20260808205844",
@@ -38,6 +38,9 @@
     "20260811062100",
     "20260811194832",
     "20260813025116",
-    "20260813202305"
+    "20260813202305",
+    "20260814130000",
+    "20260814130100",
+    "20260814130200"
   ]
 }

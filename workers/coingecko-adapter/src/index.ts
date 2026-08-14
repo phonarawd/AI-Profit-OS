@@ -58,8 +58,9 @@ async function runTick(env: Env) {
       id: `obs_coingecko_usdt_krw_${observedAt}`,
       assetId: "fx:usdt_krw",
       source: ADAPTER_ID,
-      priceUsdt: quote.usdtKrw,
-      currency: "KRW",
+      // PTF-00C P0-A — native reading (USDT priced in KRW), not priceUsdt.
+      nativeAmount: quote.usdtKrw,
+      nativeCurrency: "KRW",
       observedAt,
       meta: { pair: "USDT/KRW", formulaRole: "primary" },
     });
@@ -69,8 +70,8 @@ async function runTick(env: Env) {
       id: `obs_coingecko_usdt_usd_${observedAt}`,
       assetId: "fx:usdt_usd",
       source: ADAPTER_ID,
-      priceUsdt: quote.usdtUsd,
-      currency: "USD",
+      nativeAmount: quote.usdtUsd,
+      nativeCurrency: "USD",
       observedAt,
       meta: { pair: "USDT/USD", formulaRole: "fallback_leg" },
     });

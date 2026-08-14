@@ -134,7 +134,7 @@ try {
 if (!yahooThrew) fails.push("yahoo_jp ingest persist must throw");
 
 // preview query: placeholders skipped (no FK blow-up)
-const skipped = mi.normalizeIngestListingsForPersist(
+const { rows: skippedRows } = mi.normalizeIngestListingsForPersist(
   [
     {
       assetId: "query:rolex",
@@ -145,7 +145,7 @@ const skipped = mi.normalizeIngestListingsForPersist(
   ],
   "ebay",
 );
-if (skipped.length !== 0) {
+if (skippedRows.length !== 0) {
   fails.push("query: asset placeholders must be skipped for PG persist");
 }
 

@@ -25,6 +25,19 @@ export interface AdapterMatchAttemptBody {
   at?: string;
 }
 
+/**
+ * PTF-00C §8/§9 — always-report heartbeat evidence per marketplace, even on
+ * total failure/zero-listing ticks. `errorClass` never carries upstream
+ * credentials/response bodies — classification labels only.
+ */
+export interface AdapterMarketplaceHeartbeat {
+  marketplaceId: string;
+  attempted: number;
+  successCount: number;
+  failureCount: number;
+  errorClass?: string | null;
+}
+
 export interface AdapterHealthRow {
   adapterId: string;
   worker: string;
@@ -50,6 +63,24 @@ export interface AdapterHealthRow {
   reduceAutoPublish: boolean;
   cacheHintSec: number;
   labelKo: string;
+  /**
+   * PTF-00C §9/§10 — durable circuit/health signal (provider_runtime_health).
+   * Additive: `status` (green/yellow/red/unknown) stays the compat tint and
+   * already folds this in (worst-wins) — these are the unambiguous detail.
+   */
+  circuitState?: "CLOSED" | "OPEN" | "HALF_OPEN";
+  healthStatus?: "HEALTHY" | "DEGRADED" | "STALE" | "BLOCKED";
+  marketplaceHealth?: Array<{
+    marketplaceId: string;
+    circuitState: "CLOSED" | "OPEN" | "HALF_OPEN";
+    healthStatus: "HEALTHY" | "DEGRADED" | "STALE" | "BLOCKED";
+    attemptedCount: number;
+    successCount: number;
+    failureCount: number;
+    lastSuccessAt: string | null;
+    lastFailureAt: string | null;
+    lastErrorClass: string | null;
+  }>;
 }
 
 export interface AdapterMatchingKpiResponse {
@@ -100,6 +131,8 @@ export interface AdapterIngestBody {
   error?: string;
   /** §51.15 match attempt samples (optional) */
   matchAttempts?: AdapterMatchAttemptBody[];
+  /** PTF-00C §8 — per-marketplace heartbeat, present even when listings=0/dryRun=false */
+  marketplaceHealth?: AdapterMarketplaceHeartbeat[];
 }
 
 export interface ListingLegsSummary {

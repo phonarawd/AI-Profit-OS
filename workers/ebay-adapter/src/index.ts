@@ -4,6 +4,15 @@
  *
  * Phase1 CF deploy (cron/fetch) → POST listings to Nest ingest.
  * yahoo_jp / Yahoo Auction path = FORBIDDEN (0).
+ *
+ * PTF-00C P0-A/P0-C/P0-D repair:
+ * - Native marketplace amount/currency are sent as nativeAmount/nativeCurrency
+ *   (never as priceUsdt) — Nest owns the only authoritative FX normalization
+ *   (§2/§3). This worker performs zero FX math.
+ * - Every scheduled tick POSTs a heartbeat to Nest — even zero listings/full
+ *   failure/dryRun — carrying per-marketplace attempted/success/failure +
+ *   errorClass evidence (§8). One failed marketplace/query can never discard
+ *   another's healthy result or abort the tick (§7).
  */
 
 import { searchItemSummary } from "./browse-api";
@@ -29,6 +38,14 @@ export interface Env {
   NEST_ADAPTER_INGEST_URL?: string;
   ADAPTER_INGEST_TOKEN?: string;
 }
+
+type MarketplaceTally = {
+  marketplaceId: EbayMarketplaceId;
+  attempted: number;
+  successCount: number;
+  failureCount: number;
+  errorClass?: string | null;
+};
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -82,57 +99,104 @@ async function runTick(env: Env) {
   const observations: Array<Record<string, unknown>> = [];
   let dryRun = false;
   const errors: string[] = [];
+  const tallyByMarketplace = new Map<EbayMarketplaceId, MarketplaceTally>();
+  const tallyFor = (marketplaceId: EbayMarketplaceId): MarketplaceTally => {
+    let t = tallyByMarketplace.get(marketplaceId);
+    if (!t) {
+      t = { marketplaceId, attempted: 0, successCount: 0, failureCount: 0 };
+      tallyByMarketplace.set(marketplaceId, t);
+    }
+    return t;
+  };
 
   for (const marketplaceId of marketplaces) {
+    const tally = tallyFor(marketplaceId);
     for (const query of queries) {
-      const result = await searchItemSummary({
-        marketplaceId,
-        query,
-        clientId: env.EBAY_CLIENT_ID,
-        clientSecret: env.EBAY_CLIENT_SECRET,
-      });
-      if (result.dryRun) dryRun = true;
-      if (result.error) errors.push(`${marketplaceId}:${result.error}`);
-      const marketId = MARKETPLACE_TO_MARKET_ID[marketplaceId];
-      for (const item of result.items) {
-        const id = `lst_ebay_${marketplaceId}_${item.itemId}`;
-        // assetId=query:* is a Nest-side identity hint only (§0.10).
-        // AdaptersAdminService.resolveEbayIngestListings substitutes real
-        // Asset Master ids (or enqueues unmatched). Never persist as-is.
-        listings.push({
-          id,
-          assetId: `query:${query}`,
-          searchQuery: query,
-          marketId,
-          adapterId: ADAPTER_ID,
+      tally.attempted += 1;
+      // §7 per-marketplace/per-query isolation — one throw here must never
+      // abort the remaining marketplaces/queries in this tick.
+      try {
+        const result = await searchItemSummary({
           marketplaceId,
-          externalItemId: item.itemId,
-          title: item.title,
-          priceUsdt: item.priceValue,
-          currency: item.currency,
-          url: item.itemWebUrl,
-          imageUrl: item.imageUrl,
-          observedAt,
-          staleAt: new Date(Date.now() + CACHE_HINT_SEC * 1000).toISOString(),
+          query,
+          clientId: env.EBAY_CLIENT_ID,
+          clientSecret: env.EBAY_CLIENT_SECRET,
         });
-        observations.push({
-          id: `obs_ebay_${marketplaceId}_${item.itemId}`,
-          assetId: `query:${query}`,
-          searchQuery: query,
-          source: ADAPTER_ID,
-          marketplaceId,
-          priceUsdt: item.priceValue,
-          currency: item.currency,
-          observedAt,
-          meta: { title: item.title, externalItemId: item.itemId },
-        });
+        if (result.dryRun) dryRun = true;
+        if (result.error) {
+          tally.failureCount += 1;
+          tally.errorClass = result.errorClass ?? "unknown";
+          errors.push(`${marketplaceId}:${result.error}`);
+          continue;
+        }
+        tally.successCount += 1;
+        const marketId = MARKETPLACE_TO_MARKET_ID[marketplaceId];
+        for (const item of result.items) {
+          const id = `lst_ebay_${marketplaceId}_${item.itemId}`;
+          // assetId=query:* is a Nest-side identity hint only (§0.10).
+          // AdaptersAdminService.resolveEbayIngestListings substitutes real
+          // Asset Master ids (or enqueues unmatched). Never persist as-is.
+          listings.push({
+            id,
+            assetId: `query:${query}`,
+            searchQuery: query,
+            marketId,
+            adapterId: ADAPTER_ID,
+            marketplaceId,
+            externalItemId: item.itemId,
+            title: item.title,
+            // PTF-00C P0-A — native marketplace reading only. priceUsdt is
+            // NEVER set here; Nest owns the only authoritative USD/EUR/GBP/
+            // AUD -> USDT conversion (never assume 1 USD == 1 USDT either).
+            nativeAmount: item.priceValue,
+            nativeCurrency: item.currency,
+            url: item.itemWebUrl,
+            imageUrl: item.imageUrl,
+            observedAt,
+            staleAt: new Date(Date.now() + CACHE_HINT_SEC * 1000).toISOString(),
+          });
+          observations.push({
+            id: `obs_ebay_${marketplaceId}_${item.itemId}`,
+            assetId: `query:${query}`,
+            searchQuery: query,
+            source: ADAPTER_ID,
+            marketplaceId,
+            nativeAmount: item.priceValue,
+            nativeCurrency: item.currency,
+            observedAt,
+            meta: { title: item.title, externalItemId: item.itemId },
+          });
+        }
+      } catch (e) {
+        tally.failureCount += 1;
+        tally.errorClass = "unknown";
+        errors.push(
+          e instanceof Error
+            ? `${marketplaceId}:tick_exception:${e.message}`
+            : `${marketplaceId}:tick_exception`,
+        );
       }
     }
   }
 
+  const marketplaceHealth = marketplaces.map((m) => {
+    const t = tallyFor(m);
+    return {
+      marketplaceId: t.marketplaceId,
+      attempted: t.attempted,
+      successCount: t.successCount,
+      failureCount: t.failureCount,
+      errorClass: t.errorClass ?? null,
+    };
+  });
+
+  // PTF-00C P0-D — ALWAYS attempt the ingest/heartbeat POST. Previously this
+  // was gated on `listings.length > 0 || dryRun`, so a real-credentials tick
+  // that found zero listings (all queries failed, or a genuinely empty
+  // result) sent nothing at all — a full outage was invisible to Nest.
   let forwarded = 0;
   const ingestUrl = env.NEST_ADAPTER_INGEST_URL;
-  if (ingestUrl && (listings.length > 0 || dryRun)) {
+  if (ingestUrl) {
     const batchSize = 40;
     let batchesOk = 0;
     let batchesTotal = 0;
@@ -158,6 +222,9 @@ async function runTick(env: Env) {
             marketplaceIds: marketplaces,
             listings: batchListings,
             observations: batchObservations,
+            // §8 heartbeat evidence — sent even when batchListings is empty.
+            marketplaceHealth,
+            error: errors.length > 0 ? errors.slice(0, 5).join("; ") : undefined,
           }),
         });
         if (res.ok) {
@@ -186,6 +253,7 @@ async function runTick(env: Env) {
     dryRun,
     forwarded,
     errors,
+    marketplaceHealth,
     yahooJp: false,
   };
 }

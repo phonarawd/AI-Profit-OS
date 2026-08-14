@@ -115,10 +115,130 @@ for (const needle of [
   if (!mig.includes(needle)) fails.push(`migration missing ${needle}`);
 }
 
+// --- PTF-00C P0-A/P0-B: marketplace normalization migration ---
+const ptfMigPath = path.join(
+  root,
+  "supabase/migrations/20260814130000_ptf00c_fx_marketplace_normalization.sql",
+);
+if (!fs.existsSync(ptfMigPath)) {
+  fails.push("missing PTF-00C fx marketplace normalization migration");
+} else {
+  const ptfMig = fs.readFileSync(ptfMigPath, "utf8");
+  for (const needle of [
+    "gbp_usd",
+    "eur_usd",
+    "aud_usd",
+    "usdt_per_usd",
+    "native_amount",
+    "native_currency",
+    "price_denomination_status",
+    "legacy_unverified",
+  ]) {
+    if (!ptfMig.includes(needle)) {
+      fails.push(`PTF-00C migration missing ${needle}`);
+    }
+  }
+}
+
+// --- PTF-00C §21 test matrix: deriveMarketplaceLegs + normalizeNativeToUsdt ---
+const legs = fx.deriveMarketplaceLegs({
+  usdtUsd: "0.999",
+  usdGbp: "0.7856",
+  usdEur: "0.8670",
+  usdAud: "1.5348",
+});
+if (!legs.usdtPerUsd) {
+  fails.push("deriveMarketplaceLegs must resolve usdtPerUsd from usdtUsd");
+}
+if (!legs.gbpUsd || !legs.eurUsd || !legs.audUsd) {
+  fails.push("deriveMarketplaceLegs must resolve gbpUsd/eurUsd/audUsd from raw inputs");
+}
+
+const snap = { gbpUsd: legs.gbpUsd, eurUsd: legs.eurUsd, audUsd: legs.audUsd, usdtPerUsd: legs.usdtPerUsd };
+
+// USD native -> USDT normalized (never assumes 1 USD == 1 USDT)
+const usdCase = fx.normalizeNativeToUsdt({ nativeAmount: "100", nativeCurrency: "USD", snapshot: snap });
+if (usdCase.normalizedUsdt === "100") {
+  fails.push("USD->USDT must not silently equal identity (1 USD != 1 USDT assumption forbidden)");
+}
+if (usdCase.chain !== "usd_usdt") fails.push(`USD chain want usd_usdt got ${usdCase.chain}`);
+
+// GBP/EUR/AUD native -> USDT
+for (const cur of ["GBP", "EUR", "AUD"]) {
+  const r = fx.normalizeNativeToUsdt({ nativeAmount: "100", nativeCurrency: cur, snapshot: snap });
+  if (r.chain !== "fiat_usd_usdt") fails.push(`${cur} chain want fiat_usd_usdt got ${r.chain}`);
+  if (!(Number(r.normalizedUsdt) > 0)) fails.push(`${cur}->USDT must be > 0`);
+}
+
+// USDT identity — never converts, never fabricates a rate
+const usdtCase = fx.normalizeNativeToUsdt({ nativeAmount: "42.5", nativeCurrency: "USDT", snapshot: {} });
+if (usdtCase.normalizedUsdt !== "42.5" || usdtCase.chain !== "identity") {
+  fails.push("USDT native must be pure identity, even with an empty snapshot");
+}
+
+// unsupported currency fails closed
+{
+  let threw = false;
+  try {
+    fx.normalizeNativeToUsdt({ nativeAmount: "1", nativeCurrency: "JPY", snapshot: snap });
+  } catch {
+    threw = true;
+  }
+  if (!threw) fails.push("unsupported nativeCurrency must throw (fail-closed)");
+}
+
+// missing/malformed FX leg fails closed — never fabricates
+{
+  let threw = false;
+  try {
+    fx.normalizeNativeToUsdt({
+      nativeAmount: "1",
+      nativeCurrency: "GBP",
+      snapshot: { usdtPerUsd: "1.001" },
+    });
+  } catch {
+    threw = true;
+  }
+  if (!threw) fails.push("missing gbpUsd leg must throw (fail-closed), not fabricate a rate");
+}
+{
+  let threw = false;
+  try {
+    fx.normalizeNativeToUsdt({ nativeAmount: "1", nativeCurrency: "USD", snapshot: {} });
+  } catch {
+    threw = true;
+  }
+  if (!threw) fails.push("missing usdtPerUsd leg must throw (fail-closed)");
+}
+
+// decimal precision / rounding boundary — no JS float
+{
+  const r = fx.normalizeNativeToUsdt({
+    nativeAmount: "0.000000000000000001",
+    nativeCurrency: "USD",
+    snapshot: { usdtPerUsd: "1.000000000000000001" },
+  });
+  if (!/^\d+(\.\d+)?$/.test(r.normalizedUsdt)) {
+    fails.push("normalizeNativeToUsdt must return a plain decimal string at tiny scale");
+  }
+}
+
+// composeFxSnapshot marketplaceRaw stays purely additive (legacy shape unchanged)
+{
+  const legacy = fx.composeFxSnapshot({
+    fxSnapshotId: "legacy_shape_check",
+    primary: { usdtKrw: "1400" },
+    capturedAt: "2026-01-01T00:00:00.000Z",
+  });
+  if ("gbpUsd" in legacy || "eurUsd" in legacy || "audUsd" in legacy || "usdtPerUsd" in legacy) {
+    fails.push("composeFxSnapshot without marketplaceRaw must not add marketplace keys");
+  }
+}
+
 if (fails.length) {
   console.error("[verify:fx-snapshot-formula] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
 console.log(
-  "[verify:fx-snapshot-formula] PASS (primary/fallback formulaId · sources[] · mig)",
+  "[verify:fx-snapshot-formula] PASS (primary/fallback formulaId · sources[] · mig · PTF-00C marketplace normalization USD/GBP/EUR/AUD->USDT fail-closed)",
 );

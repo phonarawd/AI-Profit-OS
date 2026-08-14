@@ -246,8 +246,20 @@ function buildUnmatchedEvidence(listing, reason, extra = {}) {
     marketId: listing.marketId != null ? String(listing.marketId) : null,
     marketplaceId:
       listing.marketplaceId != null ? String(listing.marketplaceId) : null,
-    priceUsdt: listing.priceUsdt != null ? String(listing.priceUsdt) : null,
-    currency: listing.currency != null ? String(listing.currency) : null,
+    // PTF-00C P0-A — evidence shows the honest native reading, never a
+    // priceUsdt field name asserting a conversion that has not happened.
+    nativeAmount:
+      listing.nativeAmount != null
+        ? String(listing.nativeAmount)
+        : listing.priceUsdt != null
+          ? String(listing.priceUsdt)
+          : null,
+    nativeCurrency:
+      listing.nativeCurrency != null
+        ? String(listing.nativeCurrency)
+        : listing.currency != null
+          ? String(listing.currency)
+          : null,
     url: listing.url != null ? String(listing.url) : null,
     imageUrl: listing.imageUrl != null ? String(listing.imageUrl) : null,
     observedAt:

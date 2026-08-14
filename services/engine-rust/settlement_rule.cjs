@@ -49,15 +49,27 @@ function isRetryable(code) {
 }
 
 /**
+ * PTF-00C P0-E/C-01 — the SAME staleness math guardParticipate uses for its
+ * PRICE_STALE_DATA branch, extracted so the user feed (read-time freshness)
+ * and participate (final-authority freshness) can never drift into two
+ * different thresholds/formulas ("no duplicate magic TTL").
+ * @param {{ nowMs: number, staleAtMs: number, priceStaleMaxSec?: number }} ctx
+ * @returns {boolean}
+ */
+function isPriceFresh(ctx) {
+  const maxSec = ctx.priceStaleMaxSec ?? DEFAULT_PRICE_STALE_MAX_SEC;
+  const ageSec = Math.max(0, Math.floor((ctx.nowMs - ctx.staleAtMs) / 1000));
+  return ageSec <= maxSec;
+}
+
+/**
  * §48.13.1 P0b / P1 / P5 — trade not created on failure.
  * @returns {"OK"|"MATCH_BLOCKED"|"COMPARE_NOT_READY"|"PRICE_STALE_DATA"}
  */
 function guardParticipate(ctx) {
   if (ctx.matchBlocked === true) return "MATCH_BLOCKED";
   if (ctx.compareReady !== true) return "COMPARE_NOT_READY";
-  const maxSec = ctx.priceStaleMaxSec ?? DEFAULT_PRICE_STALE_MAX_SEC;
-  const ageSec = Math.max(0, Math.floor((ctx.nowMs - ctx.staleAtMs) / 1000));
-  if (ageSec > maxSec) return "PRICE_STALE_DATA";
+  if (!isPriceFresh(ctx)) return "PRICE_STALE_DATA";
   return "OK";
 }
 
@@ -126,6 +138,7 @@ module.exports = {
   DEFAULT_PRICE_STALE_MAX_SEC,
   softDeadlineMs,
   hardDeadlineMs,
+  isPriceFresh,
   guardParticipate,
   evaluateExecution,
   evaluateMatchSuccess,

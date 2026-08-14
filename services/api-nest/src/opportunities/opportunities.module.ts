@@ -6,6 +6,7 @@ import { LoopModule } from "../loop/loop.module";
 import { RiskModule } from "../risk/risk.module";
 import { AssetImageR2Service } from "./asset-image-r2.service";
 import { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
+import { FxSnapshotService } from "./fx-snapshot.service";
 import { OpportunitiesAdminController } from "./opportunities.admin.controller";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
 import { OpportunitiesUserController } from "./opportunities.user.controller";
@@ -34,6 +35,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
     ParticipateService,
     UserOpportunityOverrideAdminService,
     CatalogRuntimeSeedService,
+    FxSnapshotService,
   ],
   exports: [
     AssetImageR2Service,
@@ -42,6 +44,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
     ParticipateService,
     UserOpportunityOverrideAdminService,
     CatalogRuntimeSeedService,
+    FxSnapshotService,
   ],
 })
 export class OpportunitiesModule {}

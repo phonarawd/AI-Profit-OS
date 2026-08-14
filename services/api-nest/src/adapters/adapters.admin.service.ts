@@ -22,19 +22,26 @@ import {
   resolveEbayIngestListings,
   assertNoQueryAssetIds,
   simulationS4InputFromKpi,
+  worstTint,
 } from "./adapters.mi";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { CatalogRuntimeSeedService } from "../opportunities/catalog-runtime-seed.service";
+import { FxSnapshotService } from "../opportunities/fx-snapshot.service";
 import { ADAPTER_EVENTS } from "./adapters.events";
+import { ProviderHealthService } from "./provider-health.service";
 import type {
   AdapterHealthRow,
   AdapterHealthStatus,
   AdapterIngestBody,
   AdapterKpiAlert,
+  AdapterMarketplaceHeartbeat,
   AdapterMatchAttemptBody,
   AdapterMatchingKpiResponse,
   ListingLegsSummary,
 } from "./adapters.types";
+
+/** PTF-00C §6 — provider/failure-domain id shared by every eBay marketplaceId. */
+const EBAY_PROVIDER_ID = "ebay";
 
 const LABEL_KO: Record<string, string> = {
   ebay: "이베이 시세",
@@ -93,9 +100,13 @@ export class AdaptersAdminService {
 
   constructor(
     private readonly bus: InProcessEventBus,
+    private readonly providerHealth: ProviderHealthService,
     @Optional()
     @Inject(forwardRef(() => CatalogRuntimeSeedService))
     private readonly catalogSeed?: CatalogRuntimeSeedService,
+    @Optional()
+    @Inject(forwardRef(() => FxSnapshotService))
+    private readonly fxSnapshots?: FxSnapshotService,
   ) {
     for (const a of this.deployAdapters) {
       this.state.set(a.adapterId, {
@@ -115,16 +126,19 @@ export class AdaptersAdminService {
     }
   }
 
-  listHealth(): {
+  async listHealth(): Promise<{
     items: AdapterHealthRow[];
     day1AutoPublishYahooJp: false;
     phase1Partners: string[];
     nearMissCapOwns: "execution-policy";
     matchingKpi: Omit<AdapterMatchingKpiResponse, "items">;
-  } {
+  }> {
     const kpi = this.computeKpi();
+    const items = await Promise.all(
+      this.deployAdapters.map((a) => this.toRowWithDurableHealth(a.adapterId, kpi)),
+    );
     return {
-      items: this.deployAdapters.map((a) => this.toRow(a.adapterId, kpi)),
+      items,
       day1AutoPublishYahooJp: DAY1_AUTO_PUBLISH_YAHOO_JP,
       phase1Partners: PARTNER_LISTING_ADAPTERS.map((a) => a.adapterId),
       nearMissCapOwns: "execution-policy",
@@ -132,7 +146,7 @@ export class AdaptersAdminService {
     };
   }
 
-  getHealth(adapterId: string): AdapterHealthRow {
+  async getHealth(adapterId: string): Promise<AdapterHealthRow> {
     assertNotForbidden({ adapterId });
     if (isForbiddenAdapterId(adapterId)) {
       throw new BadRequestException(`FORBIDDEN adapter: ${adapterId}`);
@@ -141,14 +155,17 @@ export class AdaptersAdminService {
     if (!known) {
       throw new BadRequestException(`unknown adapter: ${adapterId}`);
     }
-    return this.toRow(adapterId, this.computeKpi(adapterId));
+    return this.toRowWithDurableHealth(adapterId, this.computeKpi(adapterId));
   }
 
-  matchingKpi(): AdapterMatchingKpiResponse {
+  async matchingKpi(): Promise<AdapterMatchingKpiResponse> {
     const kpi = this.computeKpi();
+    const items = await Promise.all(
+      this.deployAdapters.map((a) => this.toRowWithDurableHealth(a.adapterId, kpi)),
+    );
     return {
       ...this.toKpiResponse(kpi),
-      items: this.deployAdapters.map((a) => this.toRow(a.adapterId, kpi)),
+      items,
     };
   }
 
@@ -267,6 +284,8 @@ export class AdaptersAdminService {
     listingsPersisted?: number;
     identityMatched?: number;
     identityUnmatchedQueued?: number;
+    fxSnapshotId?: string | null;
+    fxNormalizationFailed?: number;
   }> {
     const adapterId = String(body.adapterId ?? "");
     assertNotForbidden({ adapterId, source: adapterId });
@@ -373,6 +392,7 @@ export class AdaptersAdminService {
     }
 
     let listingsPersisted = 0;
+    let fxNormalizationFailed = 0;
     if (
       this.catalogSeed &&
       listingsForPersist.length > 0 &&
@@ -384,6 +404,7 @@ export class AdaptersAdminService {
         adapterId,
       );
       listingsPersisted = persisted.upserted;
+      fxNormalizationFailed = persisted.fxNormalizationFailed;
 
       if (adapterId === "ebay") {
         for (const raw of listingsForPersist) {
@@ -398,6 +419,23 @@ export class AdaptersAdminService {
           });
         }
       }
+    }
+
+    // PTF-00C §4/§4-P0-B — durably persist real-time FX (previously ignored).
+    let fxSnapshotId: string | null = null;
+    if ((adapterId === "coingecko" || adapterId === "frankfurter") && this.fxSnapshots) {
+      const fxResult = await this.fxSnapshots.recordFxIngest({
+        adapterId,
+        fx: body.fx,
+        observedAt,
+      });
+      fxSnapshotId = fxResult.snapshotId;
+    }
+
+    // PTF-00C §8/§9 — always-report heartbeat, even on total/zero-listing
+    // failure. Durable (survives Nest restart) — see ProviderHealthService.
+    if (adapterId === "ebay") {
+      await this.recordEbayProviderHeartbeat(body, observedAt);
     }
 
     const row = this.toRow(adapterId, this.computeKpi(adapterId));
@@ -420,7 +458,75 @@ export class AdaptersAdminService {
       listingsPersisted,
       identityMatched,
       identityUnmatchedQueued,
+      fxSnapshotId,
+      fxNormalizationFailed,
     };
+  }
+
+  /**
+   * PTF-00C §8 — per-marketplace heartbeat when the worker supplies one;
+   * else a single provider-level tick derived from the legacy fields so
+   * every ingest (old or new worker contract) still updates durable health.
+   */
+  private async recordEbayProviderHeartbeat(
+    body: AdapterIngestBody,
+    observedAt: string,
+  ): Promise<void> {
+    const heartbeats: AdapterMarketplaceHeartbeat[] = Array.isArray(
+      body.marketplaceHealth,
+    )
+      ? body.marketplaceHealth
+      : [];
+
+    if (heartbeats.length > 0) {
+      let attemptedTotal = 0;
+      let successTotal = 0;
+      let failureTotal = 0;
+      let lastErrorClass: string | null = null;
+      for (const h of heartbeats) {
+        if (!h || typeof h.marketplaceId !== "string") continue;
+        const attempted = Math.max(0, Number(h.attempted) || 0);
+        const successCount = Math.max(0, Number(h.successCount) || 0);
+        const failureCount = Math.max(0, Number(h.failureCount) || 0);
+        attemptedTotal += attempted;
+        successTotal += successCount;
+        failureTotal += failureCount;
+        if (failureCount > 0 && h.errorClass) lastErrorClass = h.errorClass;
+        await this.providerHealth.recordTick({
+          providerId: EBAY_PROVIDER_ID,
+          marketplaceId: h.marketplaceId,
+          attempted,
+          successCount,
+          failureCount,
+          errorClass: h.errorClass ?? null,
+          observedAt,
+        });
+      }
+      await this.providerHealth.recordTick({
+        providerId: EBAY_PROVIDER_ID,
+        attempted: attemptedTotal,
+        successCount: successTotal,
+        failureCount: failureTotal,
+        errorClass: lastErrorClass,
+        observedAt,
+      });
+      return;
+    }
+
+    // Legacy/manual ingest without marketplaceHealth — still record SOMETHING
+    // durable rather than leaving the provider-level row stale (P0-D intent).
+    const marketplaceIds =
+      body.marketplaceIds ?? body.marketIds ?? [...EBAY_MARKETPLACE_IDS];
+    const attempted = Math.max(1, marketplaceIds.length);
+    const failed = Boolean(body.error);
+    await this.providerHealth.recordTick({
+      providerId: EBAY_PROVIDER_ID,
+      attempted,
+      successCount: failed ? 0 : attempted,
+      failureCount: failed ? attempted : 0,
+      errorClass: failed ? "legacy_unclassified" : null,
+      observedAt,
+    });
   }
 
   private enqueueIdentityReview(items: IdentityReviewQueueItem[]): void {
@@ -575,6 +681,51 @@ export class AdaptersAdminService {
       reduceAutoPublish: adapterKpi.reduceAutoPublish,
       cacheHintSec: meta.cacheHintSec,
       labelKo: LABEL_KO[adapterId] ?? adapterId,
+    };
+  }
+
+  /**
+   * PTF-00C §9/§10 — enrich the sync in-process row with the durable
+   * provider_runtime_health signal (eBay only for now — the only adapter
+   * with a circuit breaker in this wave). Worst-wins with the existing
+   * ingest/KPI tint so a partial failure can never render fully green, and
+   * BLOCKED forces day1AutoPublish=false (new auto-publish gate only — never
+   * touches already-persisted opportunities/settlement).
+   */
+  private async toRowWithDurableHealth(
+    adapterId: string,
+    kpi: ReturnType<typeof evaluateAdapterMatchingKpi>,
+  ): Promise<AdapterHealthRow> {
+    const row = this.toRow(adapterId, kpi);
+    if (adapterId !== "ebay") return row;
+
+    const [provider, marketplaces] = await Promise.all([
+      this.providerHealth.getHealth("ebay", null),
+      this.providerHealth.listMarketplaceHealth("ebay"),
+    ]);
+    if (!provider && marketplaces.length === 0) return row;
+
+    const durableTint = provider?.legacyTint ?? "unknown";
+    const blocked =
+      provider?.healthStatus === "BLOCKED" ||
+      marketplaces.every((m) => m.healthStatus === "BLOCKED");
+    return {
+      ...row,
+      status: worstTint([row.status, durableTint]),
+      day1AutoPublish: row.day1AutoPublish && !blocked,
+      circuitState: provider?.displayCircuitState,
+      healthStatus: provider?.healthStatus,
+      marketplaceHealth: marketplaces.map((m) => ({
+        marketplaceId: m.marketplaceId ?? "",
+        circuitState: m.displayCircuitState,
+        healthStatus: m.healthStatus,
+        attemptedCount: m.attemptedCount,
+        successCount: m.successCount,
+        failureCount: m.failureCount,
+        lastSuccessAt: m.lastSuccessAt,
+        lastFailureAt: m.lastFailureAt,
+        lastErrorClass: m.lastErrorClass,
+      })),
     };
   }
 

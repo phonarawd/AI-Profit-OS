@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ai-profit-os.local/schemas/price-observation.v1.json",
   "title": "PriceObservationV1",
-  "description": "Engine §0.0.1a PriceObservation.source · catalog refs allowed · Day-1 listing auto-publish requires ebay|admin legs · amazon/yahoo_jp Phase1+ partner (§0.0.1c).",
+  "description": "Engine §0.0.1a PriceObservation.source · catalog refs allowed · Day-1 listing auto-publish requires ebay|admin legs · amazon/yahoo_jp Phase1+ partner (§0.0.1c). PTF-00C P0-A: same nativeAmount/nativeCurrency contract as listing.v1.json.",
   "type": "object",
   "additionalProperties": false,
   "required": ["id", "assetId", "source", "observedAt"],
@@ -31,7 +31,20 @@
       "type": "string",
       "pattern": "^[0-9]+(\\.[0-9]+)?$"
     },
-    "currency": { "type": "string" },
+    "currency": { "const": "USDT" },
+    "nativeAmount": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "nativeCurrency": {
+      "type": "string",
+      "enum": ["USD", "GBP", "EUR", "AUD", "USDT"]
+    },
+    "fxSnapshotId": { "type": ["string", "null"] },
+    "priceDenominationStatus": {
+      "type": "string",
+      "enum": ["normalized", "legacy_unverified"]
+    },
     "observedAt": { "type": "string", "format": "date-time" },
     "meta": { "type": "object" }
   }

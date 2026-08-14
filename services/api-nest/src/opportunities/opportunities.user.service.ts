@@ -11,6 +11,9 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
+import { createRequire } from "node:module";
+import { join } from "node:path";
+import { CLOCK, Inject, type Clock } from "../common/clock";
 import { ExecutionPolicyAdminService } from "../execution-policy/execution-policy.admin.service";
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
 import { PostgresService } from "../db/postgres";
@@ -23,6 +26,19 @@ import {
   withTimeSensitiveTag,
 } from "./opportunities.mi";
 import type { UserOpportunityOverrideV1 } from "./user-opportunity-override.merge";
+
+const req = createRequire(__filename);
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const settlementRule = req(
+  join(__dirname, "..", "..", "..", "engine-rust", "settlement_rule.cjs"),
+) as {
+  isPriceFresh: (ctx: {
+    nowMs: number;
+    staleAtMs: number;
+    priceStaleMaxSec?: number;
+  }) => boolean;
+  DEFAULT_PRICE_STALE_MAX_SEC: number;
+};
 
 type OppUserRow = {
   id: string;
@@ -91,13 +107,30 @@ export class OpportunitiesUserService {
     private readonly db: PostgresService,
     private readonly buckets: LedgerBucketsService,
     private readonly executionPolicy: ExecutionPolicyAdminService,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
+
+  /**
+   * PTF-00C P0-E/C-01 — same canonical Clock seam + same canonical
+   * DEFAULT_PRICE_STALE_MAX_SEC threshold participate uses. No duplicate
+   * magic TTL. Participate remains the FINAL authority (a row read as fresh
+   * here can still go stale between read and click) — this only stops an
+   * *already*-stale row from ever entering the feed/detail response.
+   */
+  private isRowFresh(staleAt: Date): boolean {
+    return settlementRule.isPriceFresh({
+      nowMs: this.clock.nowMs(),
+      staleAtMs: new Date(staleAt).getTime(),
+      priceStaleMaxSec: settlementRule.DEFAULT_PRICE_STALE_MAX_SEC,
+    });
+  }
 
   async listFeed(userId: string) {
     this.assertSessionUserId(userId);
     const principalUsdt = await this.readPrincipalUsdt(userId);
     const { policy } = await this.executionPolicy.get();
-    const rows = await this.loadFeedCandidateRows();
+    const allRows = await this.loadFeedCandidateRows();
+    const rows = allRows.filter((r) => this.isRowFresh(r.stale_at));
     const overridesByOpportunityId = await this.loadOverridesMap(userId);
 
     const feed = buildBalanceAwareFeedWithOverrides({
@@ -142,6 +175,12 @@ export class OpportunitiesUserService {
     const { policy } = await this.executionPolicy.get();
     const row = await this.loadRowById(opportunityId);
     if (!row) throw new NotFoundException("opportunity not found");
+    // PTF-00C P0-E/C-01 — getById follows the same freshness authority as
+    // the feed (§12): an already-stale row is treated as not-found, exactly
+    // like a hidden override, rather than silently showing stale money data.
+    if (!this.isRowFresh(row.stale_at)) {
+      throw new NotFoundException("opportunity not found");
+    }
 
     const overridesByOpportunityId = await this.loadOverridesMap(userId, [
       opportunityId,

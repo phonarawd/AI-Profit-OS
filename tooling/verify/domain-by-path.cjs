@@ -473,7 +473,30 @@ const RULES = [
       "asset-image-surface.cjs",
       "listing-legs-day1.cjs",
       "catalog-runtime-seed.cjs",
+      "ebay-resilience.cjs",
+      "price-denomination-contract.cjs",
     ],
+  },
+  {
+    // PTF-00C — shared Engine §0.0 pure-logic package. No prior rule covered
+    // this whole directory (only 3 narrow file-specific matches above),
+    // which is exactly how the P0-A/P0-B fx-snapshot-formula.cjs/money.cjs
+    // edits shipped without a T0 domain check ever firing on them.
+    test: (f) => /^services\/market-intelligence\/src\//.test(f),
+    scripts: [
+      "pricing-formula.cjs",
+      "fx-snapshot-formula.cjs",
+      "market-intel-engine.cjs",
+      "balance-aware-feed.cjs",
+      "price-denomination-contract.cjs",
+      "ebay-resilience.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^workers\/(frankfurter|coingecko)-adapter\//.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/fx-snapshot\.service\.ts$/.test(f),
+    scripts: ["fx-snapshot-formula.cjs", "price-denomination-contract.cjs"],
   },
   {
     test: (f) =>

@@ -69,9 +69,19 @@ async function upsertAsset(client, asset) {
 }
 
 async function upsertListing(client, L) {
-  const rows = mi.normalizeIngestListingsForPersist([L], "ebay");
+  // PTF-00C P0-A — this seed script only ever ingests buildEbayIngestListing
+  // output (nativeCurrency=USDT identity, no FX lookup needed/possible from
+  // a Nest-less one-shot script). A non-USDT row here would be a bug in the
+  // seed builders, not something this script can safely FX-normalize.
+  const { rows } = mi.normalizeIngestListingsForPersist([L], "ebay");
   const row = rows[0];
   if (!row) return false;
+  if (row.nativeCurrency !== "USDT") {
+    throw new Error(
+      `seed:catalog-runtime only supports USDT-denominated seed listings, got ${row.nativeCurrency}`,
+    );
+  }
+  const priceUsdt = row.nativeAmount;
   const existing = await client.query(
     `SELECT id::text FROM public.listings
       WHERE asset_id = $1 AND market_id = $2
@@ -82,14 +92,16 @@ async function upsertListing(client, L) {
   if (existing.rows[0]) {
     await client.query(
       `UPDATE public.listings SET
-         price_usdt = $2::numeric, currency = $3, title = $4, url = $5,
-         image_url = $6, observed_at = $7::timestamptz, stale_at = $8::timestamptz,
-         marketplace_id = $9, adapter_id = $10, raw = $11::jsonb, updated_at = now()
+         price_usdt = $2::numeric, currency = 'USDT',
+         native_amount = $2::numeric, native_currency = 'USDT',
+         fx_snapshot_id = NULL, price_denomination_status = 'normalized',
+         title = $3, url = $4,
+         image_url = $5, observed_at = $6::timestamptz, stale_at = $7::timestamptz,
+         marketplace_id = $8, adapter_id = $9, raw = $10::jsonb, updated_at = now()
        WHERE id = $1::uuid`,
       [
         existing.rows[0].id,
-        row.priceUsdt,
-        row.currency,
+        priceUsdt,
         row.title,
         row.url,
         row.imageUrl,
@@ -104,11 +116,13 @@ async function upsertListing(client, L) {
     await client.query(
       `INSERT INTO public.listings (
          asset_id, market_id, adapter_id, marketplace_id, external_item_id,
-         title, price_usdt, currency, url, image_url,
+         title, price_usdt, currency, native_amount, native_currency,
+         fx_snapshot_id, price_denomination_status, url, image_url,
          observed_at, stale_at, raw
        ) VALUES (
-         $1,$2,$3,$4,$5,$6,$7::numeric,$8,$9,$10,
-         $11::timestamptz,$12::timestamptz,$13::jsonb
+         $1,$2,$3,$4,$5,$6,$7::numeric,'USDT',$7::numeric,'USDT',
+         NULL,'normalized',$8,$9,
+         $10::timestamptz,$11::timestamptz,$12::jsonb
        )`,
       [
         row.assetId,
@@ -117,8 +131,7 @@ async function upsertListing(client, L) {
         row.marketplaceId,
         row.externalItemId,
         row.title,
-        row.priceUsdt,
-        row.currency,
+        priceUsdt,
         row.url,
         row.imageUrl,
         row.observedAt,

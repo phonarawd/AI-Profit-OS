@@ -10,7 +10,11 @@ const {
 const { luxuryBagSeedsAsAssetMasters } = require("./luxury-bag-seed.cjs");
 const { watchSeedsAsAssetMasters } = require("./watch-seed.cjs");
 const { computeOpportunityPricing } = require("./pricing-formula.cjs");
-const { composeFxSnapshot, approxKrwFromSnapshot } = require("./fx-snapshot-formula.cjs");
+const {
+  composeFxSnapshot,
+  approxKrwFromSnapshot,
+  SUPPORTED_NATIVE_CURRENCIES,
+} = require("./fx-snapshot-formula.cjs");
 const {
   canAutoPublishAvailable,
   assertPublishImageGuard,
@@ -101,6 +105,7 @@ function buildEbayIngestListing(input) {
   assertDay1ListingLeg({ adapterId: "ebay", marketId });
   const observedAt = input.observedAt || new Date().toISOString();
   const externalItemId = `runtime_seed_${input.assetId}_${marketId}`;
+  const priceUsdt = assertAmount(String(input.priceUsdt), "priceUsdt");
   return {
     id: `lst_ebay_${marketplaceId}_${externalItemId}`,
     assetId: input.assetId,
@@ -109,7 +114,10 @@ function buildEbayIngestListing(input) {
     marketplaceId,
     externalItemId,
     title: input.title,
-    priceUsdt: assertAmount(String(input.priceUsdt), "priceUsdt"),
+    /** PTF-00C — seed bundles are synthesized directly in USDT (identity, no FX). */
+    nativeAmount: priceUsdt,
+    nativeCurrency: "USDT",
+    priceUsdt,
     currency: "USDT",
     url: `https://www.ebay.com/itm/${encodeURIComponent(externalItemId)}`,
     imageUrl: input.imageUrl || null,
@@ -288,10 +296,53 @@ function buildMinCatalogRuntimeSeed(opts = {}) {
 }
 
 /**
+ * Extract the marketplace-native price reading from a raw ingest listing.
+ * PTF-00C P0-A — never infer "already USDT" from the legacy priceUsdt field
+ * name alone; nativeAmount/nativeCurrency (new contract) win when present.
+ * @param {Record<string, unknown>} L
+ * @returns {{ nativeAmount: string, nativeCurrency: string } | null}
+ */
+function extractNativePrice(L) {
+  if (L.nativeAmount != null && L.nativeCurrency != null) {
+    return {
+      nativeAmount: String(L.nativeAmount),
+      nativeCurrency: String(L.nativeCurrency).trim().toUpperCase(),
+    };
+  }
+  if (L.priceUsdt != null) {
+    // Legacy shape (Day-1 seed builder + any not-yet-migrated caller).
+    // Trusting `currency` (not the priceUsdt field name) for denomination —
+    // this is exactly the P0-A guard: the field NAME never asserts USDT.
+    return {
+      nativeAmount: String(L.priceUsdt),
+      nativeCurrency:
+        L.currency != null ? String(L.currency).trim().toUpperCase() : "USDT",
+    };
+  }
+  return null;
+}
+
+/**
  * Normalize ingest listing payloads for PG persist (ebay|admin only).
  * amazon/yahoo → throw (시도 카운트는 호출부에서 집계).
+ *
+ * PTF-00C P0-A — pure function, no DB access, so it cannot itself convert a
+ * foreign-currency native amount to USDT (that requires an authoritative FX
+ * snapshot — see CatalogRuntimeSeedService.persistIngestListings). This step
+ * only extracts+validates nativeAmount/nativeCurrency; price_usdt/fxSnapshotId
+ * are resolved by the caller per-row so failures stay per-row, never batch-wide.
  * @param {unknown[]} rawListings
  * @param {string} adapterId
+ * @returns {{
+ *   rows: Array<{
+ *     assetId: string, marketId: string, adapterId: string,
+ *     marketplaceId: string|null, externalItemId: string|null, title: string|null,
+ *     nativeAmount: string, nativeCurrency: string,
+ *     url: string|null, imageUrl: string|null, observedAt: string, staleAt: string,
+ *     raw: Record<string, unknown>,
+ *   }>,
+ *   skipped: Array<{ reason: string, externalItemId: string|null, nativeCurrency?: string }>,
+ * }}
  */
 function normalizeIngestListingsForPersist(rawListings, adapterId) {
   const aid = String(adapterId || "");
@@ -301,7 +352,8 @@ function normalizeIngestListingsForPersist(rawListings, adapterId) {
   if (aid !== "ebay" && aid !== "admin") {
     throw new Error(`persist listings adapter must be ebay|admin got ${aid}`);
   }
-  const out = [];
+  const rows = [];
+  const skipped = [];
   for (const raw of Array.isArray(rawListings) ? rawListings : []) {
     if (!raw || typeof raw !== "object") continue;
     const L = /** @type {Record<string, unknown>} */ (raw);
@@ -310,14 +362,34 @@ function normalizeIngestListingsForPersist(rawListings, adapterId) {
       adapterId: String(L.adapterId ?? aid),
       marketId,
     });
+    const externalItemId =
+      L.externalItemId != null
+        ? String(L.externalItemId)
+        : typeof L.id === "string"
+          ? String(L.id)
+          : null;
     const assetId = String(L.assetId ?? "");
     if (!assetId || assetId.startsWith("query:")) {
       // Safety guard only — AdaptersAdminService must resolve via
       // resolveEbayIngestListings first; unresolved query: never reaches PG.
+      skipped.push({ reason: "unresolved_query_asset_id", externalItemId });
       continue;
     }
-    const price = L.priceUsdt != null ? String(L.priceUsdt) : null;
-    if (price == null) continue;
+    const nativePrice = extractNativePrice(L);
+    if (nativePrice == null) {
+      skipped.push({ reason: "missing_price", externalItemId });
+      continue;
+    }
+    if (!SUPPORTED_NATIVE_CURRENCIES.includes(nativePrice.nativeCurrency)) {
+      // Fail-closed — an unsupported/malformed currency must never silently
+      // pass through pretending to be convertible.
+      skipped.push({
+        reason: "unsupported_native_currency",
+        externalItemId,
+        nativeCurrency: nativePrice.nativeCurrency,
+      });
+      continue;
+    }
     const observedAt =
       typeof L.observedAt === "string"
         ? L.observedAt
@@ -326,21 +398,16 @@ function normalizeIngestListingsForPersist(rawListings, adapterId) {
       typeof L.staleAt === "string"
         ? L.staleAt
         : new Date(Date.now() + LISTING_STALE_SEC * 1000).toISOString();
-    out.push({
+    rows.push({
       assetId,
       marketId,
       adapterId: String(L.adapterId ?? aid),
       marketplaceId:
         L.marketplaceId != null ? String(L.marketplaceId) : null,
-      externalItemId:
-        L.externalItemId != null
-          ? String(L.externalItemId)
-          : typeof L.id === "string"
-            ? String(L.id)
-            : null,
+      externalItemId,
       title: L.title != null ? String(L.title) : null,
-      priceUsdt: assertAmount(price, "priceUsdt"),
-      currency: L.currency != null ? String(L.currency) : "USDT",
+      nativeAmount: assertAmount(nativePrice.nativeAmount, "nativeAmount"),
+      nativeCurrency: nativePrice.nativeCurrency,
       url: L.url != null ? String(L.url) : null,
       imageUrl: L.imageUrl != null ? String(L.imageUrl) : null,
       observedAt,
@@ -348,7 +415,7 @@ function normalizeIngestListingsForPersist(rawListings, adapterId) {
       raw: L,
     });
   }
-  return out;
+  return { rows, skipped };
 }
 
 module.exports = {

@@ -103,7 +103,7 @@ try {
 } catch (e) {
   fails.push(`assertNoQueryAssetIds on matched failed: ${e.message}`);
 }
-const persistRows = catalog.normalizeIngestListingsForPersist(
+const { rows: persistRows } = catalog.normalizeIngestListingsForPersist(
   [
     {
       assetId: "query:should_never_persist",

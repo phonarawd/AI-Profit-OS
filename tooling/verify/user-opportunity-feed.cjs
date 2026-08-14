@@ -179,6 +179,50 @@ if (!catalog.includes("user-opportunity-feed")) {
   fails.push("CATALOG.md must list user-opportunity-feed");
 }
 
+// --- PTF-00C P0-E/C-01: feed/getById read-time freshness (§12/§21) ---
+if (!svc.includes("@Inject(CLOCK)")) {
+  fails.push("C-01: OpportunitiesUserService must inject the canonical CLOCK seam");
+}
+if (!svc.includes("settlement_rule.cjs")) {
+  fails.push("C-01: must reuse settlement_rule.cjs (same canonical threshold as participate — no duplicate magic TTL)");
+}
+if (!/DEFAULT_PRICE_STALE_MAX_SEC/.test(svc)) {
+  fails.push("C-01: must reuse DEFAULT_PRICE_STALE_MAX_SEC, not a locally hardcoded seconds constant");
+}
+if (!/isRowFresh/.test(svc) || !/\.filter\(\(r\) => this\.isRowFresh/.test(svc)) {
+  fails.push("C-01: listFeed must filter rows through isRowFresh before classification (exclude already-stale)");
+}
+if (!/getById[\s\S]{0,400}isRowFresh/.test(svc)) {
+  fails.push("C-01: getById must apply the same freshness authority as the feed");
+}
+{
+  const svcCode = svc.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+  if (/Date\.now\(\)/.test(svcCode)) {
+    fails.push("C-01: opportunities.user.service.ts must not bypass the Clock seam with Date.now()");
+  }
+}
+
+// --- C-01 behavioral: fresh / exact boundary / just-stale (no wall-clock flake) ---
+const settlementRule = require(path.join(root, "services/engine-rust/settlement_rule.cjs"));
+{
+  const staleAtMs = 1_700_000_000_000;
+  const maxSec = settlementRule.DEFAULT_PRICE_STALE_MAX_SEC;
+  const fresh = settlementRule.isPriceFresh({ nowMs: staleAtMs, staleAtMs, priceStaleMaxSec: maxSec });
+  const atBoundary = settlementRule.isPriceFresh({
+    nowMs: staleAtMs + maxSec * 1000,
+    staleAtMs,
+    priceStaleMaxSec: maxSec,
+  });
+  const justStale = settlementRule.isPriceFresh({
+    nowMs: staleAtMs + (maxSec + 1) * 1000 + 1,
+    staleAtMs,
+    priceStaleMaxSec: maxSec,
+  });
+  if (!fresh) fails.push("C-01: nowMs==staleAtMs must be fresh");
+  if (!atBoundary) fails.push("C-01: exact boundary (age==maxSec) must still be fresh (matches participate's guard)");
+  if (justStale) fails.push("C-01: age > maxSec by more than a second must be stale");
+}
+
 // --- MI strip invariant (runtime) ---
 const mi = require(path.join(
   root,

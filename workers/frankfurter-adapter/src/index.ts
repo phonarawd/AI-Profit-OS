@@ -1,10 +1,14 @@
 /**
  * frankfurter-adapter — Engine §0.0 ACTIVE
- * Fiat FX (USD→KRW) · no signup · Phase1 CF deploy
+ * Fiat FX (USD→KRW/GBP/EUR/AUD) · no signup · Phase1 CF deploy
  * Composes with coingecko for fallback USDT/KRW formula.
+ *
+ * PTF-00C P0-B: also relays raw USD->GBP/EUR/AUD quotes (Day-1 eBay
+ * marketplace currencies) so Nest can durably compose the marketplace
+ * normalization legs. This worker performs zero FX math itself.
  */
 
-import { fetchUsdKrw } from "./client";
+import { fetchUsdRates } from "./client";
 import { ADAPTER_ID, CACHE_HINT_SEC, SERVICE } from "./constants";
 
 export interface Env {
@@ -49,15 +53,16 @@ export default {
 
 async function runTick(env: Env) {
   const observedAt = new Date().toISOString();
-  const quote = await fetchUsdKrw();
+  const quote = await fetchUsdRates();
   const observations: Array<Record<string, unknown>> = [];
   if (quote.usdKrw) {
     observations.push({
       id: `obs_frankfurter_usd_krw_${observedAt}`,
       assetId: "fx:usd_krw",
       source: ADAPTER_ID,
-      priceUsdt: quote.usdKrw,
-      currency: "KRW",
+      // PTF-00C P0-A — native reading, not an assertion of USDT.
+      nativeAmount: quote.usdKrw,
+      nativeCurrency: "KRW",
       observedAt,
       meta: {
         pair: "USD/KRW",
@@ -82,7 +87,14 @@ async function runTick(env: Env) {
         worker: SERVICE,
         observedAt,
         role: "fx",
-        fx: { usdKrw: quote.usdKrw ?? null, date: quote.date ?? null },
+        // Raw provider quotes only (X per 1 USD) — Nest inverts/derives.
+        fx: {
+          usdKrw: quote.usdKrw ?? null,
+          usdGbp: quote.usdGbp ?? null,
+          usdEur: quote.usdEur ?? null,
+          usdAud: quote.usdAud ?? null,
+          date: quote.date ?? null,
+        },
         observations,
       }),
     });
@@ -93,6 +105,9 @@ async function runTick(env: Env) {
     ok: !quote.error,
     adapterId: ADAPTER_ID,
     usdKrw: quote.usdKrw ?? null,
+    usdGbp: quote.usdGbp ?? null,
+    usdEur: quote.usdEur ?? null,
+    usdAud: quote.usdAud ?? null,
     date: quote.date ?? null,
     observations: observations.length,
     forwarded,

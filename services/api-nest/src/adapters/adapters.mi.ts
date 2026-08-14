@@ -152,7 +152,46 @@ const mi = require("@aipo/market-intelligence") as {
     at: string;
     canAutoPublish: boolean;
   };
+  // --- provider-health.cjs (PTF-00C P0-C/P0-D/§9/§10) ---
+  DEFAULT_FAILURE_THRESHOLD: number;
+  DEFAULT_COOLDOWN_MS: number;
+  DEFAULT_STALE_AFTER_MS: number;
+  initialCircuitState: () => ProviderCircuitRecord;
+  nextCircuitState: (input: {
+    prev?: ProviderCircuitRecord | null;
+    tickSuccess: boolean;
+    nowMs: number;
+    failureThreshold?: number;
+    cooldownMs?: number;
+  }) => ProviderCircuitRecord;
+  deriveDisplayCircuitState: (input: {
+    state: "CLOSED" | "OPEN";
+    openedAtMs: number | null;
+    nowMs: number;
+    cooldownMs?: number;
+  }) => "CLOSED" | "OPEN" | "HALF_OPEN";
+  deriveHealthStatus: (input: {
+    displayCircuitState: "CLOSED" | "OPEN" | "HALF_OPEN";
+    lastSuccessAtMs: number | null;
+    nowMs: number;
+    staleAfterMs?: number;
+    lastTickFailureCount?: number;
+  }) => "HEALTHY" | "DEGRADED" | "STALE" | "BLOCKED";
+  healthStatusToLegacyTint: (
+    status: "HEALTHY" | "DEGRADED" | "STALE" | "BLOCKED" | null | undefined,
+  ) => "green" | "yellow" | "red" | "unknown";
+  worstTint: (
+    tints: Array<"green" | "yellow" | "red" | "unknown">,
+  ) => "green" | "yellow" | "red" | "unknown";
 };
+
+export type ProviderCircuitRecord = {
+  state: "CLOSED" | "OPEN";
+  consecutiveFailures: number;
+  openedAtMs: number | null;
+};
+
+export type LegacyHealthTint = "green" | "yellow" | "red" | "unknown";
 
 export const SIGNUP_READY_ADAPTERS = mi.SIGNUP_READY_ADAPTERS;
 export const SIGNUP_READY_ADAPTER_IDS = mi.SIGNUP_READY_ADAPTER_IDS;
@@ -175,3 +214,12 @@ export const resolveEbayIngestListings = mi.resolveEbayIngestListings;
 export const assertNoQueryAssetIds = mi.assertNoQueryAssetIds;
 export const isEbayImageHost = mi.isEbayImageHost;
 export const EBAY_IMAGE_HOST = mi.EBAY_IMAGE_HOST;
+export const DEFAULT_FAILURE_THRESHOLD = mi.DEFAULT_FAILURE_THRESHOLD;
+export const DEFAULT_COOLDOWN_MS = mi.DEFAULT_COOLDOWN_MS;
+export const DEFAULT_STALE_AFTER_MS = mi.DEFAULT_STALE_AFTER_MS;
+export const initialCircuitState = mi.initialCircuitState;
+export const nextCircuitState = mi.nextCircuitState;
+export const deriveDisplayCircuitState = mi.deriveDisplayCircuitState;
+export const deriveHealthStatus = mi.deriveHealthStatus;
+export const healthStatusToLegacyTint = mi.healthStatusToLegacyTint;
+export const worstTint = mi.worstTint;

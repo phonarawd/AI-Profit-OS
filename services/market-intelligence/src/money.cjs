@@ -75,6 +75,28 @@ function mulAmount(a, rate) {
   return formatAmount(rounded);
 }
 
+/**
+ * a / b — decimal string division, round-half-up at SCALE (18dp), same
+ * rounding convention as mulAmount. Required for FX rate inversion
+ * (e.g. USDT/USD from USD/USDT) — never use JS float division for money.
+ * @param {string} a
+ * @param {string} b
+ * @throws when b === 0
+ */
+function divAmount(a, b) {
+  const aN = parseAmount(a);
+  const bN = parseAmount(b);
+  if (bN === 0n) throw new Error("divAmount: division by zero");
+  // aN/1e18 ÷ bN/1e18 = (aN×1e18)/bN → already at target scale
+  const numerator = aN * SCALE_FACTOR;
+  const neg = (numerator < 0n) !== (bN < 0n);
+  const absNum = numerator < 0n ? -numerator : numerator;
+  const absDen = bN < 0n ? -bN : bN;
+  const half = absDen / 2n;
+  const rounded = (absNum + half) / absDen;
+  return formatAmount(neg ? -rounded : rounded);
+}
+
 function isNonNegAmount(raw) {
   return AMOUNT_RE.test(raw) && parseAmount(raw) >= 0n;
 }
@@ -100,6 +122,7 @@ module.exports = {
   cmpAmount,
   maxAmount,
   mulAmount,
+  divAmount,
   isNonNegAmount,
   absDiff,
   withinTolerance,

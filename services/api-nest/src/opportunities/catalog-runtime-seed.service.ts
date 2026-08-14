@@ -6,12 +6,14 @@
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { PostgresService } from "../db/postgres";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
+import { FxSnapshotService } from "./fx-snapshot.service";
 import {
   buildMinCatalogRuntimeSeed,
   DAY1_FX_SNAPSHOT_ID,
   day1FxSnapshot,
   FORBIDDEN_INGEST_ADAPTERS,
   normalizeIngestListingsForPersist,
+  normalizeNativeToUsdt,
 } from "./opportunities.mi";
 
 export type CatalogRuntimeSeedResult = {
@@ -35,6 +37,7 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
   constructor(
     private readonly db: PostgresService,
     private readonly opportunities: OpportunitiesAdminService,
+    private readonly fxSnapshots: FxSnapshotService,
   ) {}
 
   async onModuleInit(): Promise<void> {
@@ -199,12 +202,20 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
    * Persist ebay|admin ingest listings to PG (preview E2E path reuse).
    * amazon/yahoo → throw · query: placeholders must be resolved before call
    * (identity match) — remaining query: rows are still skipped as safety guard.
+   *
+   * PTF-00C P0-A — price_usdt is only ever written after genuine native→USDT
+   * normalization (or identity, when nativeCurrency=USDT). A row whose FX
+   * normalization fails is skipped (never inserted with a fabricated/raw
+   * value) and counted separately so the failure stays observable — one bad
+   * row must not discard the rest of the batch.
    */
   async persistIngestListings(
     rawListings: unknown[],
     adapterId: string,
-  ): Promise<{ upserted: number; skipped: number }> {
-    if (!this.db.configured()) return { upserted: 0, skipped: 0 };
+  ): Promise<{ upserted: number; skipped: number; fxNormalizationFailed: number }> {
+    if (!this.db.configured()) {
+      return { upserted: 0, skipped: 0, fxNormalizationFailed: 0 };
+    }
     if (
       FORBIDDEN_INGEST_ADAPTERS.includes(
         adapterId as (typeof FORBIDDEN_INGEST_ADAPTERS)[number],
@@ -213,9 +224,17 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
       throw new Error(`Day-1 FORBIDDEN adapter INSERT: ${adapterId}`);
     }
 
-    const rows = normalizeIngestListingsForPersist(rawListings, adapterId);
+    const { rows, skipped: normalizeSkipped } = normalizeIngestListingsForPersist(
+      rawListings,
+      adapterId,
+    );
     let upserted = 0;
-    let skipped = 0;
+    let skipped = normalizeSkipped.length;
+    let fxNormalizationFailed = 0;
+    const fxSnapshot =
+      rows.some((r) => r.nativeCurrency !== "USDT") &&
+      (await this.fxSnapshots.getLatestUsableSnapshot());
+
     for (const row of rows) {
       const assetOk = await this.db.query<{ ok: number }>(
         `SELECT 1 AS ok FROM public.assets WHERE asset_id = $1 LIMIT 1`,
@@ -224,6 +243,33 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
       if (!assetOk.rows[0]) {
         skipped += 1;
         continue;
+      }
+
+      let priceUsdt: string;
+      let fxSnapshotId: string | null;
+      let denominationStatus: "normalized" = "normalized";
+      if (row.nativeCurrency === "USDT") {
+        priceUsdt = row.nativeAmount;
+        fxSnapshotId = null;
+      } else {
+        try {
+          if (!fxSnapshot) throw new Error("FX_MISSING: no usable snapshot");
+          const normalized = normalizeNativeToUsdt({
+            nativeAmount: row.nativeAmount,
+            nativeCurrency: row.nativeCurrency,
+            snapshot: fxSnapshot,
+          });
+          priceUsdt = normalized.normalizedUsdt;
+          fxSnapshotId = fxSnapshot.id;
+        } catch (e) {
+          this.logger.warn(
+            `FX normalization failed — skip listing (fail-closed): asset=${row.assetId} currency=${row.nativeCurrency} err=${
+              e instanceof Error ? e.message : String(e)
+            }`,
+          );
+          fxNormalizationFailed += 1;
+          continue;
+        }
       }
 
       const existing = await this.db.query<{ id: string }>(
@@ -236,23 +282,32 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
 
       if (existing.rows[0]) {
         await this.db.query(
+          // currency always tracks price_usdt's true denomination (USDT) —
+          // native_currency is the separate, honest native-reading pairing.
           `UPDATE public.listings SET
              price_usdt = $2::numeric,
-             currency = $3,
-             title = $4,
-             url = $5,
-             image_url = $6,
-             observed_at = $7::timestamptz,
-             stale_at = $8::timestamptz,
-             marketplace_id = $9,
-             adapter_id = $10,
-             raw = $11::jsonb,
+             currency = 'USDT',
+             native_amount = $3::numeric,
+             native_currency = $4,
+             fx_snapshot_id = $5,
+             price_denomination_status = $6,
+             title = $7,
+             url = $8,
+             image_url = $9,
+             observed_at = $10::timestamptz,
+             stale_at = $11::timestamptz,
+             marketplace_id = $12,
+             adapter_id = $13,
+             raw = $14::jsonb,
              updated_at = now()
            WHERE id = $1::uuid`,
           [
             existing.rows[0].id,
-            row.priceUsdt,
-            row.currency,
+            priceUsdt,
+            row.nativeAmount,
+            row.nativeCurrency,
+            fxSnapshotId,
+            denominationStatus,
             row.title,
             row.url,
             row.imageUrl,
@@ -267,11 +322,13 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
         await this.db.query(
           `INSERT INTO public.listings (
              asset_id, market_id, adapter_id, marketplace_id, external_item_id,
-             title, price_usdt, currency, url, image_url,
+             title, price_usdt, currency, native_amount, native_currency,
+             fx_snapshot_id, price_denomination_status, url, image_url,
              observed_at, stale_at, raw
            ) VALUES (
-             $1,$2,$3,$4,$5,$6,$7::numeric,$8,$9,$10,
-             $11::timestamptz,$12::timestamptz,$13::jsonb
+             $1,$2,$3,$4,$5,$6,$7::numeric,'USDT',$8::numeric,$9,
+             $10,$11,$12,$13,
+             $14::timestamptz,$15::timestamptz,$16::jsonb
            )`,
           [
             row.assetId,
@@ -280,8 +337,11 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
             row.marketplaceId,
             row.externalItemId,
             row.title,
-            row.priceUsdt,
-            row.currency,
+            priceUsdt,
+            row.nativeAmount,
+            row.nativeCurrency,
+            fxSnapshotId,
+            denominationStatus,
             row.url,
             row.imageUrl,
             row.observedAt,
@@ -292,7 +352,7 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
       }
       upserted += 1;
     }
-    return { upserted, skipped };
+    return { upserted, skipped, fxNormalizationFailed };
   }
 
   private async ensureFxSnapshot(): Promise<void> {

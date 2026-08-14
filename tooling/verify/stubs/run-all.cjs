@@ -149,6 +149,10 @@ const live = [
   "trust-copy.cjs",
   "tax-disclaimer.cjs",
   "objection4.cjs",
+  // PTF-00C P0-A/P0-B/P0-C/P0-D — price denomination + ebay resilience,
+  // enforced from day 1 (not left manual-only like the P0-2 precedent above).
+  "price-denomination-contract.cjs",
+  "ebay-resilience.cjs",
 ];
 
 let failed = false;

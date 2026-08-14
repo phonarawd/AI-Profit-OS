@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ai-profit-os.local/schemas/listing.v1.json",
   "title": "ListingV1",
-  "description": "Engine §0.0.1a listing leg · Day-1 auto-publish=ebay marketplaceId×N|admin · Phase1+ partner legs=amazon_*|yahoo_jp (§0.0.1c).",
+  "description": "Engine §0.0.1a listing leg · Day-1 auto-publish=ebay marketplaceId×N|admin · Phase1+ partner legs=amazon_*|yahoo_jp (§0.0.1c). PTF-00C P0-A: nativeAmount/nativeCurrency are the honest as-observed reading; priceUsdt is only authoritative once genuinely normalized (identity when nativeCurrency=USDT, else via fxSnapshotId — never fabricated, never inferred from the field name alone).",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -11,6 +11,9 @@
     "marketId",
     "adapterId",
     "priceUsdt",
+    "nativeAmount",
+    "nativeCurrency",
+    "priceDenominationStatus",
     "observedAt",
     "staleAt"
   ],
@@ -47,7 +50,29 @@
       "type": "string",
       "pattern": "^[0-9]+(\\.[0-9]+)?$"
     },
-    "currency": { "type": "string" },
+    "currency": {
+      "const": "USDT",
+      "description": "Always USDT — tracks priceUsdt's true denomination, never the native currency."
+    },
+    "nativeAmount": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$",
+      "description": "PTF-00C P0-A — marketplace-native amount exactly as observed (decimal string)."
+    },
+    "nativeCurrency": {
+      "type": "string",
+      "enum": ["USD", "GBP", "EUR", "AUD", "USDT"],
+      "description": "Marketplace-native currency actually observed."
+    },
+    "fxSnapshotId": {
+      "type": ["string", "null"],
+      "description": "fx_snapshots row used to normalize native->USDT — null only when nativeCurrency=USDT."
+    },
+    "priceDenominationStatus": {
+      "type": "string",
+      "enum": ["normalized", "legacy_unverified"],
+      "description": "normalized = priceUsdt verified authoritative. legacy_unverified = pre-PTF-00C-repair row, priceUsdt not trustworthy as normalized."
+    },
     "url": { "type": "string" },
     "imageUrl": { "type": "string" },
     "observedAt": { "type": "string", "format": "date-time" },
