@@ -16,7 +16,7 @@ import {
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..");
 const HOOK = path.join(ROOT, ".cursor", "hooks", "project-boundary.mjs");
-const HOOK_TIMEOUT_MS = 8000;
+const HOOK_TIMEOUT_MS = 15000;
 
 const FOREIGN_FS = "C:\\Users\\PC\\Desktop\\clime-gb\\README.md";
 const FOREIGN_GH = "phonarawd/clime-gb";

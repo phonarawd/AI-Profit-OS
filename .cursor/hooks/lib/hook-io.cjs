@@ -12,9 +12,16 @@
 
 const fs = require("fs");
 
-/** Live-path budget: wait for end, then one short extend if JSON is truncated. */
-const STDIN_TIMEOUT_MS = 1200;
-const STDIN_EXTEND_MS = 400;
+/**
+ * Live-path budget: wait for end, then one extend if JSON is truncated.
+ * Low-spec dev machine (Celeron 2C/~8GB) can take several seconds just to
+ * spawn `node` under load/AV-scan contention, so this budget must stay well
+ * under hooks.json `timeout` (seconds) while tolerating a slow/loaded box —
+ * a premature timeout here reads as a truncated/empty payload and fails
+ * closed (deny) even though no real policy violation occurred.
+ */
+const STDIN_TIMEOUT_MS = 5000;
+const STDIN_EXTEND_MS = 2500;
 
 function stripBom(s) {
   return String(s || "").replace(/^\uFEFF/, "");

@@ -5,14 +5,14 @@
       {
         "command": "node .cursor/hooks/project-boundary.mjs",
         "matcher": "^(Shell|Read|Write|Grep|Glob|Delete|StrReplace|EditNotebook|WebFetch|FetchMcpResource|CallMcpTool|MCP:)",
-        "timeout": 20,
+        "timeout": 45,
         "failClosed": true
       }
     ],
     "beforeTabFileRead": [
       {
         "command": "node .cursor/hooks/project-boundary.mjs",
-        "timeout": 20,
+        "timeout": 45,
         "failClosed": true
       }
     ]
