@@ -1,0 +1,254 @@
+{
+  "version": 1,
+  "adr": ["ADR-011", "ADR-013", "ADR-018"],
+  "planRef": "redesign-r1-home-visual-asset-production",
+  "reportRef": "packages/ui/canon/contracts/peotteok-home-asset-production-part-b.v2.md",
+  "authority": {
+    "DESKTOP_HOME_VISUAL_MASTER_V2": {
+      "role": "PRIMARY",
+      "sha256": "a5c0f19114003b7856cc2ecbc1f730d2cc962a807561ddc12ef391dce32c7cab"
+    },
+    "DESKTOP_OPPORTUNITY_REFERENCE": {
+      "role": "SECONDARY_REFERENCE_ONLY",
+      "sha256": "5689ccec5ae40b6cce2ed70cd47c90827c9d4968782dbd095ab16256e8acd88e",
+      "notAuthorityFor": [
+        "full_layout",
+        "hero_geometry",
+        "right_rail",
+        "total_asset_sum",
+        "global_market_stats",
+        "fx_literal",
+        "deprecated_nav_내거래"
+      ]
+    },
+    "MOBILE_HOME_VISUAL_MASTER_V2": {
+      "role": "PRIMARY_MOBILE",
+      "sha256": "f8b1568e5c512bfb013ef2488c10dcf5485fb51e14d300e18f1c96ce98c6e07f"
+    }
+  },
+  "basePath": "packages/ui/brand/assets/ai/home-v2",
+  "publicMirror": "apps/web/public/brand/assets/ai/home-v2",
+  "renderRule": "status=ready only · NO PLACEHOLDER RUNTIME · Visual Master 원본 3장 레포 저장 0",
+  "legacyUntouched": [
+    {
+      "id": "ai-avatar-512",
+      "path": "assets/ai/avatar-512.png",
+      "classification": "LEGACY VISUAL CANDIDATE — NOT NEW MASTER AUTHORITY",
+      "sha256": "510e756b06b5b87c6ad367d1ce4ab753581e22896d5d096f959faea757c9288f",
+      "action": "NONE"
+    },
+    {
+      "id": "hero-illustration-desktop-webp",
+      "path": "assets/ai/hero-illustration-desktop.webp",
+      "classification": "LEGACY VISUAL CANDIDATE — NOT NEW MASTER AUTHORITY",
+      "sha256": "c1ec723c280de29956b1b968c04edbde48215befd03f1faf0a969f42dc806d41",
+      "action": "NONE"
+    },
+    {
+      "id": "hero-illustration-desktop-avif",
+      "path": "assets/ai/hero-illustration-desktop.avif",
+      "classification": "LEGACY VISUAL CANDIDATE — NOT NEW MASTER AUTHORITY",
+      "sha256": "7ec9ad77f88f793116a982740f722d3e71b1d51393e02774ba82ea47abbae9ea",
+      "action": "NONE"
+    },
+    {
+      "id": "hero-illustration-mobile-webp",
+      "path": "assets/ai/hero-illustration-mobile.webp",
+      "classification": "LEGACY VISUAL CANDIDATE — NOT NEW MASTER AUTHORITY",
+      "sha256": "222edb046ae8e468a76fa2931673297a98c5a149ca9573a3a88158b1d40ebb69",
+      "action": "NONE"
+    },
+    {
+      "id": "hero-illustration-mobile-avif",
+      "path": "assets/ai/hero-illustration-mobile.avif",
+      "classification": "LEGACY VISUAL CANDIDATE — NOT NEW MASTER AUTHORITY",
+      "sha256": "cc05cbb5cda80843728edc81c79d676d50ef41dacd6799096a99122ceece7035",
+      "action": "NONE"
+    }
+  ],
+  "assets": [
+    {
+      "id": "peotteok-ai-robot-home-summary-v1-desktop",
+      "slot": "peotteok-ai-robot-home-summary-v1",
+      "file": "peotteok-ai-robot-home-summary-v1-desktop.png",
+      "path": "assets/ai/home-v2/peotteok-ai-robot-home-summary-v1-desktop.png",
+      "status": "ready",
+      "verdict": "NEW_ASSET_PRODUCED",
+      "device": "desktop",
+      "encoding": "PNG-RGBA",
+      "dimensions": { "width": 1024, "height": 1024 },
+      "transparent": true,
+      "sha256": "43cb002c0107489dae44ccd2ec4af89b3860445c84000b399ed845a3c13d142c",
+      "authority": "DESKTOP_HOME_VISUAL_MASTER_V2",
+      "derivedFrom": "peotteok-ai-identity(legacy-hero-illustration-mobile.webp as character DNA only · not promoted)",
+      "usageSlot": "HomeAiSummary desktop 3-stat companion · arms-open helper pose",
+      "forbiddenUsage": [
+        "mobile_ai_summary_magnifier_slot",
+        "app_header_avatar_fallback",
+        "product_image",
+        "legacy_hero_replacement_by_overwrite"
+      ]
+    },
+    {
+      "id": "peotteok-ai-robot-home-summary-v1-mobile",
+      "slot": "peotteok-ai-robot-home-summary-v1",
+      "file": "peotteok-ai-robot-home-summary-v1-mobile.png",
+      "path": "assets/ai/home-v2/peotteok-ai-robot-home-summary-v1-mobile.png",
+      "status": "ready",
+      "verdict": "NEW_ASSET_PRODUCED",
+      "device": "mobile",
+      "encoding": "PNG-RGBA",
+      "dimensions": { "width": 1024, "height": 1024 },
+      "transparent": true,
+      "sha256": "f083ef64be22ae71f2f6680c513f5999451905f4a5b7d83f048ce2ad52c572a9",
+      "authority": "MOBILE_HOME_VISUAL_MASTER_V2",
+      "derivedFrom": "peotteok-ai-identity(legacy-hero-illustration-mobile.webp as character DNA only · not promoted)",
+      "usageSlot": "HomeAiSummary mobile itemCount companion · robot+magnifier pose",
+      "forbiddenUsage": [
+        "desktop_ai_summary_arms_open_slot",
+        "app_header_avatar_fallback",
+        "product_image",
+        "desktop_mobile_geometry_synthesis"
+      ]
+    },
+    {
+      "id": "peotteok-ai-robot-home-cta-v1",
+      "slot": "peotteok-ai-robot-home-cta-v1",
+      "file": "peotteok-ai-robot-home-cta-v1.png",
+      "path": "assets/ai/home-v2/peotteok-ai-robot-home-cta-v1.png",
+      "status": "ready",
+      "verdict": "NEW_ASSET_PRODUCED",
+      "device": "desktop_primary_shared_if_needed",
+      "encoding": "PNG-RGBA",
+      "dimensions": { "width": 1024, "height": 1024 },
+      "transparent": true,
+      "sha256": "90d0ec5a1c7b095d32d6c028b0c9ec77ab611870de99783a06051a2e24c56c09",
+      "authority": "DESKTOP_HOME_VISUAL_MASTER_V2",
+      "derivedFrom": "peotteok-ai-identity(legacy-hero-illustration-mobile.webp as character DNA only · not promoted)",
+      "usageSlot": "HomeOpportunityDiscovery teaser robot · inviting present pose",
+      "forbiddenUsage": [
+        "app_header_avatar_fallback",
+        "product_image",
+        "mobile_featured_carousel_product_slot"
+      ]
+    },
+    {
+      "id": "peotteok-home-hero-support-graphic-v1",
+      "slot": "peotteok-home-hero-support-graphic-v1",
+      "file": "peotteok-home-hero-support-graphic-v1.png",
+      "path": "assets/ai/home-v2/peotteok-home-hero-support-graphic-v1.png",
+      "status": "ready",
+      "verdict": "NEW_ASSET_PRODUCED",
+      "device": "desktop",
+      "encoding": "PNG-RGBA",
+      "dimensions": { "width": 1536, "height": 1024 },
+      "transparent": true,
+      "sha256": "63fca164ebb80daeedf83c8a9f08d48c71453b42c146b5dc7a1c02937cd14207",
+      "authority": "DESKTOP_HOME_VISUAL_MASTER_V2",
+      "derivedFrom": "V2 desktop AI-summary decorative chart language · no Visual Master pixels stored",
+      "usageSlot": "HomeAiSummary desktop line-chart + donut support graphic",
+      "forbiddenUsage": [
+        "mobile_ai_summary",
+        "actual_profit_or_average_return_binding",
+        "hardcoded_percent_or_money_in_bitmap",
+        "trading_terminal_skin"
+      ]
+    },
+    {
+      "id": "peotteok-home-ai-summary-icon-search-v1",
+      "slot": "peotteok-home-ai-summary-icons-v1",
+      "file": "peotteok-home-ai-summary-icon-search-v1.svg",
+      "path": "assets/ai/home-v2/peotteok-home-ai-summary-icon-search-v1.svg",
+      "status": "ready",
+      "verdict": "NEW_ASSET_PRODUCED",
+      "device": "desktop",
+      "encoding": "SVG",
+      "dimensions": { "width": 64, "height": 64 },
+      "transparent": true,
+      "sha256": "5fd37239e50b434359287e9b18e349ed4fefc979de82894b695243c72a6ce67d",
+      "authority": "DESKTOP_HOME_VISUAL_MASTER_V2",
+      "derivedFrom": "original Brand Kit geometry after Brand Kit reuse scan = 0 match",
+      "usageSlot": "Desktop AI summary 3-stat · 발견한 기회 icon",
+      "forbiddenUsage": ["flag_emoji_substitute", "lucide_runtime_import"]
+    },
+    {
+      "id": "peotteok-home-ai-summary-icon-chart-v1",
+      "slot": "peotteok-home-ai-summary-icons-v1",
+      "file": "peotteok-home-ai-summary-icon-chart-v1.svg",
+      "path": "assets/ai/home-v2/peotteok-home-ai-summary-icon-chart-v1.svg",
+      "status": "ready",
+      "verdict": "NEW_ASSET_PRODUCED",
+      "device": "desktop",
+      "encoding": "SVG",
+      "dimensions": { "width": 64, "height": 64 },
+      "transparent": true,
+      "sha256": "c3f5f8560012eb4ae66b1162ec139f3a7644eddbf91ca327595d725badc0c965",
+      "authority": "DESKTOP_HOME_VISUAL_MASTER_V2",
+      "derivedFrom": "original Brand Kit geometry after Brand Kit reuse scan = 0 match",
+      "usageSlot": "Desktop AI summary 3-stat · 예상 평균 수익률 icon (number itself is H7 blocker)",
+      "forbiddenUsage": ["hardcoded_percent", "lucide_runtime_import"]
+    },
+    {
+      "id": "peotteok-home-ai-summary-icon-clock-v1",
+      "slot": "peotteok-home-ai-summary-icons-v1",
+      "file": "peotteok-home-ai-summary-icon-clock-v1.svg",
+      "path": "assets/ai/home-v2/peotteok-home-ai-summary-icon-clock-v1.svg",
+      "status": "ready",
+      "verdict": "NEW_ASSET_PRODUCED",
+      "device": "desktop",
+      "encoding": "SVG",
+      "dimensions": { "width": 64, "height": 64 },
+      "transparent": true,
+      "sha256": "2ad859cea368ca11a966c9137026bc866260129b9fd35bb4151eb68739a64380",
+      "authority": "DESKTOP_HOME_VISUAL_MASTER_V2",
+      "derivedFrom": "original Brand Kit geometry after Brand Kit reuse scan = 0 match",
+      "usageSlot": "Desktop AI summary 3-stat · 평균 처리 시간 icon",
+      "forbiddenUsage": ["hardcoded_duration_literal", "lucide_runtime_import"]
+    }
+  ],
+  "matrix": [
+    {
+      "row": "peotteok-ai-robot-home-summary-v1",
+      "requirement": "MODIFY_REQUIREMENT",
+      "verdict": "NEW_ASSET_PRODUCED"
+    },
+    {
+      "row": "peotteok-ai-robot-home-cta-v1",
+      "requirement": "MODIFY_REQUIREMENT",
+      "verdict": "NEW_ASSET_PRODUCED"
+    },
+    {
+      "row": "peotteok-home-hero-support-graphic-v1",
+      "requirement": "MODIFY_REQUIREMENT",
+      "verdict": "NEW_ASSET_PRODUCED"
+    },
+    {
+      "row": "featured-opportunity-product-image",
+      "requirement": "KEEP_REQUIREMENT",
+      "verdict": "APPROVED_EXISTING_ASSET_REUSED",
+      "reuse": "ProductImage / assetImageUrl adapter"
+    },
+    {
+      "row": "trust-support-illustration",
+      "requirement": "KEEP_REQUIREMENT",
+      "verdict": "NO_ASSET_REQUIRED"
+    },
+    {
+      "row": "insight-globe-icon",
+      "requirement": "KEEP_REQUIREMENT",
+      "verdict": "NO_ASSET_REQUIRED",
+      "reason": "Brand Kit standalone globe vector 0 · legacy hero globe is not reusable · H6 text-only H7 complete"
+    },
+    {
+      "row": "country-flag-route-icon",
+      "requirement": "NEW_REQUIREMENT_INVESTIGATE",
+      "verdict": "NO_ASSET_REQUIRED",
+      "reason": "keep existing text corridor · flag emoji forbidden · no Brand Kit flag assets"
+    },
+    {
+      "row": "ai-summary-icons-search-chart-clock",
+      "requirement": "NEW_REQUIREMENT_INVESTIGATE",
+      "verdict": "NEW_ASSET_PRODUCED"
+    }
+  ]
+}

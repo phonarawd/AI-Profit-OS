@@ -41,6 +41,7 @@
 | Maskable source | `assets/icons/maskable-source-1024.png` |
 | Wordmark (dark) | `assets/wordmark/wordmark-dark.png` |
 | AI avatar | `assets/ai/avatar-512.png` |
+| Home V2 surface assets | `assets/ai/home-v2/*` + `assets/ai/home-v2/manifest.json` (Part B · 레거시 avatar/hero 대체 아님) |
 | OG | `assets/og/og-default.png` |
 | Market partners (§38.10) | `assets/markets/*.svg` + `assets/markets/manifest.json` |
 

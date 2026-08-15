@@ -113,6 +113,14 @@
     "planRef": "UI §5.9.2c",
     "note": "Brand SVG B안 5종 · emoji=aria only · photo mockup 0 · Admin/유저 동일 에셋"
   },
+  "homeVisualV2": {
+    "manifest": "assets/ai/home-v2/manifest.json",
+    "role": "home_v2_surface_assets",
+    "status": "ready",
+    "planRef": "redesign-r1-home-visual-asset-production",
+    "reportRef": "packages/ui/canon/contracts/peotteok-home-asset-production-part-b.v2.md",
+    "note": "Part B V2 Home surface assets. Does not replace aiAvatar or heroIllustration — those stay LEGACY VISUAL CANDIDATE / NOT NEW MASTER AUTHORITY."
+  },
   "exportPipeline": {
     "from": "packages/ui/brand/assets",
     "toPwa": "apps/web/public/icons (when apps/web exists)",

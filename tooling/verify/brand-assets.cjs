@@ -104,6 +104,28 @@ if (!fs.existsSync(marketsManifestPath)) {
   }
 }
 
+const homeV2ManifestPath = path.join(brandRoot, "assets/ai/home-v2/manifest.json");
+if (!m.homeVisualV2?.manifest) {
+  fails.push("brand.manifest.json missing homeVisualV2.manifest pointer");
+} else if (!fs.existsSync(homeV2ManifestPath)) {
+  fails.push("missing assets/ai/home-v2/manifest.json");
+} else {
+  let homeV2;
+  try {
+    homeV2 = JSON.parse(fs.readFileSync(homeV2ManifestPath, "utf8"));
+  } catch {
+    fails.push("assets/ai/home-v2/manifest.json invalid JSON");
+  }
+  if (homeV2) {
+    for (const a of homeV2.assets || []) {
+      if (a.status !== "ready") continue;
+      const abs = path.join(brandRoot, a.path || `assets/ai/home-v2/${a.file}`);
+      if (!fs.existsSync(abs)) fails.push(`home-v2 ready but missing file: ${a.file || a.id}`);
+      else if (fs.statSync(abs).size < 200) fails.push(`home-v2 file too small: ${a.file || a.id}`);
+    }
+  }
+}
+
 if (fails.length) {
   console.error("[verify:brand-assets] FAIL\n- " + fails.join("\n- "));
   process.exit(1);

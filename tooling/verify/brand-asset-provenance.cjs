@@ -13,7 +13,7 @@
  *    linkage를 매 실행마다 재확인 — 본 스크립트가 그 자체로 승격시키지 않음)
  *
  * 이 스크립트는 Home 화면의 새 Visual Master authority를 결정하지 않는다(별도 축).
- * PART B(Home Hero 신규 생성·avatar 신규 시각 확정 등)는 본 스크립트의 범위가 아니다.
+ * PART B V2(`assets/ai/home-v2`)는 원장/미러/레거시 hash lock만 검사한다 — 승격·삭제는 하지 않는다.
  */
 const fs = require("fs");
 const path = require("path");
@@ -34,8 +34,13 @@ function pngDimensions(absPath) {
   try {
     const buf = fs.readFileSync(absPath);
     const sig = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
-    if (buf.length < 24 || !buf.subarray(0, 8).equals(sig)) return null;
-    return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+    if (buf.length < 26 || !buf.subarray(0, 8).equals(sig)) return null;
+    return {
+      width: buf.readUInt32BE(16),
+      height: buf.readUInt32BE(20),
+      bitDepth: buf[24],
+      colorType: buf[25],
+    };
   } catch {
     return null;
   }
@@ -186,17 +191,90 @@ if (fs.existsSync(membershipManPath)) {
 }
 
 // ---------------------------------------------------------------------------
+// 3b. Home Visual Master V2 Part B ledger
+// ---------------------------------------------------------------------------
+const homeV2ManPath = path.join(brandRoot, "assets/ai/home-v2/manifest.json");
+if (!fs.existsSync(homeV2ManPath)) {
+  fails.push("missing assets/ai/home-v2/manifest.json (Part B V2 ledger)");
+} else {
+  const homeV2Man = readJson(homeV2ManPath);
+  const homeAssets = homeV2Man.assets || [];
+  const homeIdSeen = new Set();
+  const forbiddenBitmap = /[₩%]|\bUSDT\b|\bKRW\b|2\.8%|1,370|오늘 오후/;
+  for (const a of homeAssets) {
+    if (homeIdSeen.has(a.id)) fails.push(`home-v2 manifest duplicate id: ${a.id}`);
+    homeIdSeen.add(a.id);
+    if (a.status !== "ready") {
+      fails.push(`home-v2 asset ${a.id} status must be ready (got ${a.status})`);
+      continue;
+    }
+    const entry = registerAsset(`home-v2:${a.id}`, a.path, { group: "home-v2" });
+    if (!entry.exists) continue;
+    if (a.sha256 && entry.sha256 !== a.sha256) {
+      fails.push(`home-v2 hash drift ${a.id}: file=${entry.sha256} manifest=${a.sha256}`);
+    }
+    if (/\.png$/i.test(a.path)) {
+      if (!entry.dims) fails.push(`home-v2 PNG not decodable: ${a.id}`);
+      else {
+        if (a.dimensions && (entry.dims.width !== a.dimensions.width || entry.dims.height !== a.dimensions.height)) {
+          fails.push(
+            `home-v2 PNG dims mismatch ${a.id}: file=${entry.dims.width}x${entry.dims.height} manifest=${a.dimensions.width}x${a.dimensions.height}`,
+          );
+        }
+        if (entry.dims.colorType !== 6) {
+          fails.push(`home-v2 PNG must be RGBA colorType=6 (${a.id} got ${entry.dims.colorType})`);
+        }
+      }
+    }
+    if (/\.svg$/i.test(a.path)) {
+      const svg = fs.readFileSync(path.join(brandRoot, a.path), "utf8");
+      if (forbiddenBitmap.test(svg)) {
+        fails.push(`home-v2 SVG contains forbidden money/percent literal: ${a.id}`);
+      }
+      if (!svg.includes("<svg")) fails.push(`home-v2 SVG missing <svg>: ${a.id}`);
+    }
+  }
+  for (const legacy of homeV2Man.legacyUntouched || []) {
+    const abs = path.join(brandRoot, legacy.path);
+    if (!fs.existsSync(abs)) {
+      fails.push(`legacyUntouched missing (deletion not allowed): ${legacy.path}`);
+      continue;
+    }
+    const actual = sha256(abs);
+    if (legacy.sha256 && actual !== legacy.sha256) {
+      fails.push(`legacyUntouched hash changed (overwrite not allowed): ${legacy.path}`);
+    }
+    if (legacy.action && legacy.action !== "NONE") {
+      fails.push(`legacyUntouched.action must be NONE: ${legacy.id}`);
+    }
+  }
+  const matrix = homeV2Man.matrix || [];
+  if (matrix.length !== 8) fails.push(`home-v2 matrix must have 8 rows (got ${matrix.length})`);
+  const allowedVerdicts = new Set([
+    "NEW_ASSET_PRODUCED",
+    "APPROVED_EXISTING_ASSET_REUSED",
+    "NO_ASSET_REQUIRED",
+    "FOUNDER_REVIEW_REQUIRED",
+  ]);
+  for (const row of matrix) {
+    if (!allowedVerdicts.has(row.verdict)) {
+      fails.push(`home-v2 matrix row ${row.row} has non-final verdict: ${row.verdict}`);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
 // 4. Public mirror consistency — canonical bytes must equal public mirror bytes
 //    (1:1 mirror targets only; resized PWA icon exports are handled in §PWA_ICON below)
 // ---------------------------------------------------------------------------
-const mirrorGroups = new Set(["markets", "membership", "brand-core-legacy-hero"]);
+const mirrorGroups = new Set(["markets", "membership", "brand-core-legacy-hero", "home-v2"]);
 let mirrorChecked = 0;
 let mirrorMissing = 0;
 for (const entry of ledger) {
   if (!entry.exists || !mirrorGroups.has(entry.group)) continue;
   if (entry.id === "brand:heroIllustration:desktop-webp" || entry.id === "brand:heroIllustration:desktop-avif" ||
       entry.id === "brand:heroIllustration:mobile-webp" || entry.id === "brand:heroIllustration:mobile-avif" ||
-      entry.group === "markets" || entry.group === "membership") {
+      entry.group === "markets" || entry.group === "membership" || entry.group === "home-v2") {
     // aiAvatar is registered under group brand-core (not mirrorGroups) — handled separately below.
   }
   const publicAbs = path.join(root, "apps/web/public/brand", entry.relFromBrandRoot);
