@@ -128,6 +128,9 @@ todos:
   - id: shadow-replay-naming
     content: "[composer-2.5|200K] §47.16.6 backend breaking rename 금지(additive only 원칙) · shadow-replay-engine/drift.cjs에 신규 ADVISORY_LABEL 상수 추가(기존 FAIL_ACTION=block_settlement 값·상수 불변) · shadow-replay.admin.service.ts에 driftAdvisoryOnly/contractLabel 필드 additive 추가(기존 settlementBlocked 필드 유지) · DB 신규 컬럼 additive migration(기존 fail_action CHECK 제약 불변·backfill 불필요) · verify:shadow-replay-drift.cjs는 기존 assertion 유지+신규 assertion만 추가 · Admin 표면 문구는 04 Admin pointer만(강제 데드라인 없음)"
     status: completed
+  - id: global-parser-implementation-contract
+    content: "[grok-4.5|256K] §0.0.2c Parser Implementation Contract · SOURCE_OBSERVATION≠LISTING_LEG · runtime/FX/Money/03/04/Home 0 · Vestiaire image=BLOCKED · Bunjang 대표이미지 LOCKED · KRW/FX owner 판정 · verify:listing-legs-day1/plans-ssot/gate:fast"
+    status: completed
 isProject: false
 ---
 
@@ -847,6 +850,34 @@ KREAM/번개/Chrono24/TCGPlayer/Cardmarket/HTML 스크래핑을 listing adapter�
 - Yahoo leftover 삭제 금지(별도 dependency audit).
 
 **다음 실행:** eBay + 위 PASS 9개만 Parser Implementation Contract 작성 가능. REFERENCE_ONLY는 reference-data 계약 전 Opportunity current-price 금지. DROP 구현 금지. runtime parser 착수 금지. todo 추가=File-Serial 점프=금지.
+
+### 0.0.2c PARSER IMPLEMENTATION CONTRACT (2026-08-16 · Founder L3 addendum)
+
+> **Owns:** 계약 문서만. **runtime parser/crawler/Playwright/Puppeteer/scheduler/queue/DB/FX/Money/Admin/Home/03 UI 0.**  
+> **권위:** `SOURCE_OBSERVATION != LISTING_LEG` · Day-1 `PUBLISH_GUARDS.listingLegsOnly=["ebay","admin"]` 불변.  
+> **03 Home File-Serial:** H6.5/H7 순서 **변경 0** · Index/03/04/06 본 세션 미수정.  
+> **SSOT:** `governance/global-product/parser-implementation-contract.v1.md` · `governance/global-product/parser-contract-matrices.v1.json`
+
+**Verdict:** `GLOBAL_PARSER_IMPLEMENTATION_CONTRACT = PASS`
+
+| Gate | 판정 |
+|---|---|
+| eBay existing connector | KEEP · 웹 재수집 금지 |
+| API-free 9 source contracts | 정의됨 · Vestiaire만 implementation **BLOCKED** |
+| Yahoo | PERMANENTLY_FORBIDDEN · 재조사 0 |
+| DROP / REFERENCE_ONLY | current-price parser 0 |
+| native currency | 보존 · 억지 USD 0 |
+| KRW owner | Normalizer (`approxKrwFromSnapshot`) · Parser 계산 0 |
+| FX authority | `fx-snapshot-formula.cjs` · JPY/KRW persist **BLOCKED** |
+| client guessed FX | 0 |
+| Vestiaire image | **BLOCKED** (Photo 1 확인 · 1st-party URL 미잠금 · 억지 PASS 0) |
+| Bunjang image | **LOCKED** (`/products/{pid}` → `media.bunjang.co.kr/product/{pid}_1_*` 추출 · URL 조립 금지) |
+| matching | watch/bag/card-match REUSE · parser 최종판정 0 |
+| failure isolation | provider-health REUSE |
+
+**구현 순서 (repo audit):** FASHIONPHILE → Chrono24 → TCGplayer → Mercari JP → KREAM → StockX → GOAT → Bunjang → Vestiaire(재개 전 0).
+
+**다음 Global Data 단계:** runtime parser **아님**. 선행 = (1) JPY/KRW additive FX 계약(별도 Money/Engine) (2) Vestiaire 1st-party image lock (3) Founder가 observation persist/runtime을 별도 todo로 인가. listing-leg 승격은 또 다른 L3.
 
 ### 0.0.3 파이프라인 (오류0 · v7.22.32)
 
