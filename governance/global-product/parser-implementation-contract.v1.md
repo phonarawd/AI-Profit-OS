@@ -7,6 +7,7 @@
 | measuredAt | `2026-08-16` |
 | owner | Engine §0.0.2c |
 | matrices | `governance/global-product/parser-contract-matrices.v1.json` |
+| fx additive | `governance/global-product/jpy-krw-additive-fx-contract.v1.md` (§0.0.2d PASS · runtime 0) |
 | runtime | **0** |
 | listing-leg authorization | **NO** |
 | Home / 03 / 04 | **DO NOT MODIFY** |
@@ -119,23 +120,25 @@ eBay persist 실물 (`workers/ebay-adapter`): `externalItemId`←Browse `itemId`
 
 ---
 
-## 4. KRW / FX ownership (이번 세션 runtime 0)
+## 4. KRW / FX ownership
+
+> **SUPERSEDE (2026-08-16 · §0.0.2d):** JPY/KRW **계약**은 `governance/global-product/jpy-krw-additive-fx-contract.v1.md`가 닫았다.  
+> **Runtime은 여전히 0.** 아래 READY = 기존 USD/EUR/GBP/AUD 경로. JPY/KRW = 계약 PASS · 구현 전.
 
 ### 4.1 판정
 
 | Q | Answer |
 |---|---|
-| A. Parser는 nativeAmount/nativeCurrency만? | **YES** |
-| B. Normalization이 KRW를 따로 만드는가? | **YES** — `approxKrwFromSnapshot(normalizedUsdt, { usdtKrw })` · 같은 `fxSnapshotId`만 |
-| C. JPY→KRW owner? | **NONE READY** · `FX_UNSUPPORTED_CURRENCY: JPY` (`verify:fx-snapshot-formula` · `verify:price-denomination-contract`) |
+| A. Parser는 nativeAmount/nativeCurrency만? | **YES** (불변) |
+| B. Normalization이 KRW를 따로 만드는가? | **YES** — `approxKrwFromSnapshot` · 같은 `fxSnapshotId`만 · KRW native는 identity |
+| C. JPY→KRW owner? | **CONTRACTED** · 향후 `jpyUsd` + 기존 `fiat_usd_usdt` · runtime 전엔 `FX_UNSUPPORTED_CURRENCY: JPY` |
 | D. USD→KRW owner? | **READY** · USD→USDT(`usdtPerUsd`)→KRW(`usdtKrw`) |
 | E. EUR→KRW owner? | **READY** · `eurUsd` + `usdtPerUsd` → USDT → KRW |
 | F. 기타 locale? | snapshot leg 없으면 **fail-closed** · 억지 USD 금지 |
+| G. KRW→USDT secondary? | **CONTRACTED** · `divAmount(nativeAmount, usdtKrw)` · primary identity · runtime 0 |
 
-`listing.v1` `nativeCurrency` enum = `USD|GBP|EUR|AUD|USDT`  
-JPY/KRW persist = `BUT_NORMALIZATION_BLOCKED_BY_CURRENCY_CONTRACT`  
-Frankfurter JPY leg = **미배선**. KRW native→USDT = **미구현**.  
-KRW-native(KREAM/Bunjang) 표시 항등식도 listing persist 전 **별도 additive 계약**이 필요하다.
+`listing.v1` `nativeCurrency` enum **현재** = `USD|GBP|EUR|AUD|USDT`  
+JPY/KRW persist = 향후 additive enum/CHECK · listing-leg 승격 아님.
 
 ### 4.2 Consumer currency (03 구현 0 · handoff)
 

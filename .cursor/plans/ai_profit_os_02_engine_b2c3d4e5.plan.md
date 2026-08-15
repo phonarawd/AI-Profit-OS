@@ -131,6 +131,9 @@ todos:
   - id: global-parser-implementation-contract
     content: "[grok-4.5|256K] §0.0.2c Parser Implementation Contract · SOURCE_OBSERVATION≠LISTING_LEG · runtime/FX/Money/03/04/Home 0 · Vestiaire image=BLOCKED · Bunjang 대표이미지 LOCKED · KRW/FX owner 판정 · verify:listing-legs-day1/plans-ssot/gate:fast"
     status: completed
+  - id: jpy-krw-additive-fx-contract
+    content: "[grok-4.5|256K] §0.0.2d JPY/KRW Additive FX Contract · same fxSnapshotId · JPY=fiat_usd_usdt via jpyUsd · KRW identity primary · KRW→USDT=divAmount(usdtKrw) · runtime/parser/Money/03/04/Home 0 · verify:fx-snapshot-formula/listing-legs-day1/plans-ssot/gate:fast"
+    status: completed
 isProject: false
 ---
 
@@ -868,7 +871,7 @@ KREAM/번개/Chrono24/TCGPlayer/Cardmarket/HTML 스크래핑을 listing adapter�
 | DROP / REFERENCE_ONLY | current-price parser 0 |
 | native currency | 보존 · 억지 USD 0 |
 | KRW owner | Normalizer (`approxKrwFromSnapshot`) · Parser 계산 0 |
-| FX authority | `fx-snapshot-formula.cjs` · JPY/KRW persist **BLOCKED** |
+| FX authority | `fx-snapshot-formula.cjs` · JPY/KRW **계약=§0.0.2d PASS** · persist/runtime **BLOCKED** |
 | client guessed FX | 0 |
 | Vestiaire image | **BLOCKED** (Photo 1 확인 · 1st-party URL 미잠금 · 억지 PASS 0) |
 | Bunjang image | **LOCKED** (`/products/{pid}` → `media.bunjang.co.kr/product/{pid}_1_*` 추출 · URL 조립 금지) |
@@ -877,7 +880,32 @@ KREAM/번개/Chrono24/TCGPlayer/Cardmarket/HTML 스크래핑을 listing adapter�
 
 **구현 순서 (repo audit):** FASHIONPHILE → Chrono24 → TCGplayer → Mercari JP → KREAM → StockX → GOAT → Bunjang → Vestiaire(재개 전 0).
 
-**다음 Global Data 단계:** runtime parser **아님**. 선행 = (1) JPY/KRW additive FX 계약(별도 Money/Engine) (2) Vestiaire 1st-party image lock (3) Founder가 observation persist/runtime을 별도 todo로 인가. listing-leg 승격은 또 다른 L3.
+**다음 Global Data 단계:** runtime parser **아님**. 선행 (1) JPY/KRW additive FX 계약 = **§0.0.2d PASS** · (2) Vestiaire 1st-party image lock · (3) Founder가 observation persist/runtime을 별도 todo로 인가. listing-leg 승격은 또 다른 L3. JPY FX **runtime** 착수 금지(계약만 닫힘).
+
+### 0.0.2d JPY / KRW ADDITIVE FX CONTRACT (2026-08-16 · Founder L3 addendum)
+
+> **Owns:** FX 계약만. **runtime FX/DB/enum/parser/crawler/Money ledger/Admin/Home/03 UI 0.**  
+> **권위:** 기존 `fx-snapshot-formula.cjs` 가산 · 새 FX service **0** · `SOURCE_OBSERVATION != LISTING_LEG` · Day-1 `ebay|admin` 불변.  
+> **03 Home File-Serial:** H6.5/H7 순서 **변경 0** · Index/03/04/06 본 세션 미수정.  
+> **SSOT:** `governance/global-product/jpy-krw-additive-fx-contract.v1.md` · `governance/global-product/jpy-krw-additive-fx-matrices.v1.json`
+
+**Verdict:** `JPY_KRW_ADDITIVE_FX_CONTRACT = PASS`
+
+| Gate | 판정 |
+|---|---|
+| JPY native preservation | 정의 · `nativeAmount`/`nativeCurrency=JPY` 유지 |
+| JPY→KRW owner | 향후 `jpyUsd` + 기존 `normalizeNativeToUsdt` `fiat_usd_usdt` + `approxKrwFromSnapshot` · 같은 `fxSnapshotId` |
+| KRW native identity | `nativeAmount` = Consumer KRW primary · 재환산 금지 |
+| KRW→USDT secondary | `divAmount(nativeAmount, usdtKrw)` · Money `krwToUsdt` 비재사용 |
+| USD/EUR/GBP/AUD | 기존 경로 보존 · additive 0 |
+| unsupported locale | `FX_UNSUPPORTED_CURRENCY` · 억지 USD 0 |
+| client guessed FX | 0 |
+| second FX truth | 0 |
+| parser responsibility | 불변 · extraction 재작성 0 |
+| Money/ledger | 불변 |
+| runtime change | 0 |
+
+**다음 Global Data 단계:** Vestiaire 1st-party image URL lock. JPY FX runtime / parser runtime **지금 시작 금지**.
 
 ### 0.0.3 파이프라인 (오류0 · v7.22.32)
 

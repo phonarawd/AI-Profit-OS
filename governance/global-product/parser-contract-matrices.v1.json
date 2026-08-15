@@ -72,11 +72,11 @@
       "pricePath": "DOM 즉시구매가",
       "nativeCurrency": "KRW",
       "priceKind": "buy_now",
-      "krwNormalizeOwner": "BLOCKED_CURRENCY_CONTRACT",
+      "krwNormalizeOwner": "CONTRACTED_KRW_IDENTITY · runtime 0",
       "browserRequired": true,
       "contractReady": true,
       "persistToListingLeg": false,
-      "notes": "extract YES · listing persist NO until JPY/KRW additive FX"
+      "notes": "extract YES · listing persist NO · JPY/KRW FX contract PASS · FX runtime 0"
     },
     {
       "source": "bunjang",
@@ -89,7 +89,7 @@
       "pricePath": "DOM {n}원 · shippingFee excluded",
       "nativeCurrency": "KRW",
       "priceKind": "listing_sale",
-      "krwNormalizeOwner": "BLOCKED_CURRENCY_CONTRACT",
+      "krwNormalizeOwner": "CONTRACTED_KRW_IDENTITY · runtime 0",
       "browserRequired": true,
       "contractReady": true,
       "persistToListingLeg": false,
@@ -106,11 +106,11 @@
       "pricePath": "product:price:amount",
       "nativeCurrency": "JPY",
       "priceKind": "listing_sale",
-      "krwNormalizeOwner": "BLOCKED_CURRENCY_CONTRACT",
+      "krwNormalizeOwner": "CONTRACTED_JPY_FIAT_USD_USDT · runtime 0",
       "browserRequired": false,
       "contractReady": true,
       "persistToListingLeg": false,
-      "notes": "detail meta path · sold/deleted not fresh"
+      "notes": "detail meta path · sold/deleted not fresh · JPY FX contract PASS · FX runtime 0"
     },
     {
       "source": "stockx",
@@ -219,8 +219,9 @@
       "preserveNative": true,
       "krwNeeded": false,
       "usdtSecondary": true,
-      "fxContractReady": false,
-      "blocker": "listing.v1 nativeCurrency enum + KRW→USDT missing"
+      "fxContractReady": true,
+      "fxRuntimeReady": false,
+      "blocker": "KRW identity + KRW→USDT secondary runtime not implemented"
     },
     {
       "source": "bunjang",
@@ -228,8 +229,9 @@
       "preserveNative": true,
       "krwNeeded": false,
       "usdtSecondary": true,
-      "fxContractReady": false,
-      "blocker": "listing.v1 nativeCurrency enum + KRW→USDT missing"
+      "fxContractReady": true,
+      "fxRuntimeReady": false,
+      "blocker": "KRW identity + KRW→USDT secondary runtime not implemented"
     },
     {
       "source": "mercari_jp",
@@ -237,8 +239,9 @@
       "preserveNative": true,
       "krwNeeded": true,
       "usdtSecondary": true,
-      "fxContractReady": false,
-      "blocker": "FX_UNSUPPORTED_CURRENCY JPY · Frankfurter JPY leg unwired"
+      "fxContractReady": true,
+      "fxRuntimeReady": false,
+      "blocker": "JPY runtime: Frankfurter usdJpy + jpyUsd leg + enum/CHECK"
     },
     {
       "source": "stockx",
@@ -305,8 +308,10 @@
     "blockedNativeNow": ["JPY", "KRW"],
     "usdToKrw": "READY",
     "eurToKrw": "READY",
-    "jpyToKrw": "BLOCKED",
-    "krwIdentityDisplay": "BLOCKED_UNTIL_ENUM_ADDITIVE",
+    "jpyToKrw": "CONTRACTED_RUNTIME_0",
+    "krwIdentityDisplay": "CONTRACTED_RUNTIME_0",
+    "krwToUsdtSecondary": "CONTRACTED_divAmount_usdtKrw_RUNTIME_0",
+    "additiveFxContract": "governance/global-product/jpy-krw-additive-fx-contract.v1.md",
     "clientFx": "FORBIDDEN"
   }
 }

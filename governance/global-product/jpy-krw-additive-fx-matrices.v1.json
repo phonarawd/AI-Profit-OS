@@ -1,0 +1,220 @@
+{
+  "$id": "https://ai-profit-os.local/governance/global-product/jpy-krw-additive-fx-matrices.v1.json",
+  "schema": "governance.global-product.jpy-krw-additive-fx-matrices.v1",
+  "version": "1.0.0",
+  "measuredAt": "2026-08-16",
+  "contractPath": "governance/global-product/jpy-krw-additive-fx-contract.v1.md",
+  "owner": "Engine §0.0.2d",
+  "verdict": "JPY_KRW_ADDITIVE_FX_CONTRACT=PASS",
+  "runtimeImplementation": 0,
+  "secondFxTruth": 0,
+  "clientGuessedFx": 0,
+  "parserResponsibilityUnchanged": true,
+  "moneyLedgerUnchanged": true,
+  "listingLegAuthorization": false,
+  "yahooJapan": "PERMANENTLY_FORBIDDEN",
+  "formulaReuse": {
+    "normalizeNativeToUsdt": "USD|GBP|EUR|AUD|USDT READY",
+    "approxKrwFromSnapshot": "READY",
+    "jpyPath": "ADDITIVE fiat_usd_usdt via jpyUsd = 1/usdJpy",
+    "krwPrimary": "identity nativeAmount",
+    "krwSecondaryUsdt": "divAmount(nativeAmount, usdtKrw)",
+    "roundTripPrimary": "FORBIDDEN"
+  },
+  "currencySupportMatrix": [
+    {
+      "currency": "KRW",
+      "currentSupport": "PARTIAL",
+      "nativePersist": "NO_ENUM",
+      "krwNormalize": "identity_required",
+      "usdtSecondary": "NOT_READY",
+      "requiredFutureChange": "enum+CHECK += KRW · normalizeNativeToUsdt chain=krw_usdt via existing usdtKrw · primary identity",
+      "owner": "Engine §0.0.4.2 additive",
+      "runtimeNeededLater": true
+    },
+    {
+      "currency": "JPY",
+      "currentSupport": "NO",
+      "nativePersist": "NO_ENUM",
+      "krwNormalize": "NOT_READY",
+      "usdtSecondary": "NOT_READY",
+      "requiredFutureChange": "Frankfurter usdJpy · jpy_usd column · FIAT_USD_RATE_FIELD.JPY · enum+CHECK += JPY",
+      "owner": "Engine §0.0.4.2 additive",
+      "runtimeNeededLater": true
+    },
+    {
+      "currency": "USD",
+      "currentSupport": "YES",
+      "nativePersist": "YES",
+      "krwNormalize": "YES",
+      "usdtSecondary": "YES",
+      "requiredFutureChange": "—",
+      "owner": "Engine §0.0.4.2 existing",
+      "runtimeNeededLater": false
+    },
+    {
+      "currency": "EUR",
+      "currentSupport": "YES",
+      "nativePersist": "YES",
+      "krwNormalize": "YES",
+      "usdtSecondary": "YES",
+      "requiredFutureChange": "—",
+      "owner": "Engine §0.0.4.2 existing",
+      "runtimeNeededLater": false
+    },
+    {
+      "currency": "GBP",
+      "currentSupport": "YES",
+      "nativePersist": "YES",
+      "krwNormalize": "YES",
+      "usdtSecondary": "YES",
+      "requiredFutureChange": "—",
+      "owner": "Engine §0.0.4.2 existing",
+      "runtimeNeededLater": false
+    },
+    {
+      "currency": "AUD",
+      "currentSupport": "YES",
+      "nativePersist": "YES",
+      "krwNormalize": "YES",
+      "usdtSecondary": "YES",
+      "requiredFutureChange": "—",
+      "owner": "Engine §0.0.4.2 existing",
+      "runtimeNeededLater": false
+    },
+    {
+      "currency": "USDT",
+      "currentSupport": "YES",
+      "nativePersist": "YES",
+      "krwNormalize": "YES",
+      "usdtSecondary": "identity",
+      "requiredFutureChange": "—",
+      "owner": "Engine §0.0.4.2 existing",
+      "runtimeNeededLater": false
+    },
+    {
+      "currency": "Other locale",
+      "currentSupport": "FAIL_CLOSED",
+      "nativePersist": "as_observed_only",
+      "krwNormalize": "BLOCKED_UNSUPPORTED_CURRENCY",
+      "usdtSecondary": "BLOCKED_UNSUPPORTED_CURRENCY",
+      "requiredFutureChange": "no guessing · do not add SGD/etc this contract",
+      "owner": "Engine normalizeNativeToUsdt",
+      "runtimeNeededLater": false
+    }
+  ],
+  "sourceCurrencyMatrix": [
+    {
+      "source": "ebay",
+      "nativeCurrency": "as_observed",
+      "parserReady": "YES_EXISTING_API",
+      "normalizationReady": "YES_IF_USD_GBP_EUR_AUD_USDT",
+      "consumerKrwReady": "YES_IF_SUPPORTED_NATIVE",
+      "parserExtractionReady": "YES",
+      "fxNormalizationReady": "CONDITIONAL_SUPPORTED_FIAT",
+      "runtimeStartReady": "YES_DAY1_LISTING_LEG",
+      "blocker": null
+    },
+    {
+      "source": "fashionphile",
+      "nativeCurrency": "USD_typical_page_actual",
+      "parserReady": "CONTRACT_YES_RUNTIME_NO",
+      "normalizationReady": "YES_IF_USD",
+      "consumerKrwReady": "YES_IF_USD",
+      "parserExtractionReady": "YES_CONTRACT",
+      "fxNormalizationReady": "YES_IF_PAGE_USD",
+      "runtimeStartReady": "NO",
+      "blocker": "parser runtime + Founder persist authorization · FX not the blocker when page=USD"
+    },
+    {
+      "source": "kream",
+      "nativeCurrency": "KRW",
+      "parserReady": "CONTRACT_YES_RUNTIME_NO",
+      "normalizationReady": "NO",
+      "consumerKrwReady": "NO_UNTIL_KRW_IDENTITY_RUNTIME",
+      "parserExtractionReady": "YES_CONTRACT",
+      "fxNormalizationReady": "NO",
+      "runtimeStartReady": "NO",
+      "blocker": "KRW enum + KRW identity primary + KRW→USDT secondary runtime"
+    },
+    {
+      "source": "bunjang",
+      "nativeCurrency": "KRW",
+      "parserReady": "CONTRACT_YES_RUNTIME_NO",
+      "normalizationReady": "NO",
+      "consumerKrwReady": "NO_UNTIL_KRW_IDENTITY_RUNTIME",
+      "parserExtractionReady": "YES_CONTRACT",
+      "fxNormalizationReady": "NO",
+      "runtimeStartReady": "NO",
+      "blocker": "KRW enum + KRW identity primary + KRW→USDT secondary runtime"
+    },
+    {
+      "source": "mercari_jp",
+      "nativeCurrency": "JPY",
+      "parserReady": "CONTRACT_YES_RUNTIME_NO",
+      "normalizationReady": "NO",
+      "consumerKrwReady": "NO",
+      "parserExtractionReady": "YES_CONTRACT",
+      "fxNormalizationReady": "NO",
+      "runtimeStartReady": "NO",
+      "blocker": "FX_UNSUPPORTED_CURRENCY JPY · Frankfurter JPY leg unwired"
+    },
+    {
+      "source": "stockx",
+      "nativeCurrency": "page_actual",
+      "parserReady": "CONTRACT_YES_RUNTIME_NO",
+      "normalizationReady": "CONDITIONAL_SUPPORTED_FIAT",
+      "consumerKrwReady": "CONDITIONAL_SUPPORTED_FIAT",
+      "parserExtractionReady": "YES_CONTRACT",
+      "fxNormalizationReady": "CONDITIONAL_SUPPORTED_FIAT",
+      "runtimeStartReady": "NO",
+      "blocker": "unsupported locale currency fail-closed · parser runtime unauthorized"
+    },
+    {
+      "source": "goat",
+      "nativeCurrency": "page_actual",
+      "parserReady": "CONTRACT_YES_RUNTIME_NO",
+      "normalizationReady": "CONDITIONAL_SUPPORTED_FIAT",
+      "consumerKrwReady": "CONDITIONAL_SUPPORTED_FIAT",
+      "parserExtractionReady": "YES_CONTRACT",
+      "fxNormalizationReady": "CONDITIONAL_SUPPORTED_FIAT",
+      "runtimeStartReady": "NO",
+      "blocker": "unsupported locale (historically SGD) fail-closed · parser runtime unauthorized"
+    },
+    {
+      "source": "chrono24",
+      "nativeCurrency": "page_actual",
+      "parserReady": "CONTRACT_YES_RUNTIME_NO",
+      "normalizationReady": "CONDITIONAL_SUPPORTED_FIAT",
+      "consumerKrwReady": "CONDITIONAL_SUPPORTED_FIAT",
+      "parserExtractionReady": "YES_CONTRACT",
+      "fxNormalizationReady": "CONDITIONAL_SUPPORTED_FIAT",
+      "runtimeStartReady": "NO",
+      "blocker": "unsupported locale currency fail-closed · parser runtime unauthorized"
+    },
+    {
+      "source": "tcgplayer",
+      "nativeCurrency": "USD",
+      "parserReady": "CONTRACT_YES_RUNTIME_NO",
+      "normalizationReady": "YES",
+      "consumerKrwReady": "YES",
+      "parserExtractionReady": "YES_CONTRACT",
+      "fxNormalizationReady": "YES",
+      "runtimeStartReady": "NO",
+      "blocker": "parser runtime + Founder persist authorization · FX not the blocker"
+    },
+    {
+      "source": "vestiaire",
+      "nativeCurrency": "page_actual",
+      "parserReady": "NO",
+      "normalizationReady": "CONDITIONAL_SUPPORTED_FIAT",
+      "consumerKrwReady": "CONDITIONAL_SUPPORTED_FIAT",
+      "parserExtractionReady": "NO",
+      "fxNormalizationReady": "CONDITIONAL_SUPPORTED_FIAT",
+      "runtimeStartReady": "NO",
+      "blocker": "VESTIAIRE_IMAGE_GATE=BLOCKED precedes FX"
+    }
+  ],
+  "nextGlobalDataStep": "vestiaire-1st-party-image-url-lock",
+  "fileSerial03Untouched": "redesign-r1-home-visual-asset-production"
+}
