@@ -721,6 +721,29 @@ flowchart TD
 | **PSA** | 시세 없음(cert 검증만) → 시세 adapter 아님 (출시 후 옵션) |
 | HTML 전수 스크래핑 Day-1 | 안정·약관·쿼터 결함 |
 
+### 0.0.2a SOURCE OBSERVATION ≠ LISTING LEG (2026-08-16 · research record · todo 0)
+
+> **Owns:** 본 절 = 조사 기록만. **신규 frontmatter todo 0** · completed 1~26+E-R **재실행 0** · Day-1 listing lock **불변**.  
+> **연구일:** 2026-08-16 · Session B (GLOBAL PRODUCT DATA) · 03 UI/Home **미수정**.  
+> **실행 권한:** 본 절은 16-source connector/scraper/listing-leg **인가가 아니다.**
+
+**층 분리 (기존 실물과 정렬 · 중복 진실 0):**
+
+| 층 | 기존 SSOT | 역할 |
+|---|---|---|
+| SOURCE_TRUTH | `listing.v1` `nativeAmount`/`nativeCurrency`/`observedAt`/`externalItemId` · `price-observation.v1` | 관측 원본. Admin이 in-place 덮어쓰기 금지 |
+| OPERATOR_COMMERCIAL_POLICY | `opportunity-pricing.v1` `adminBuyUsdt`/`adminSellUsdt`/`adminMarginPct`/`useAdminOverride`/`pricingSource` | 운영 상업값 |
+| EFFECTIVE_CONSUMER_OPPORTUNITY | §0.0.5.1 override merge · `user-opportunity-override.v1` | 이 유저에게 보이는 기회 |
+| MONEY_LEDGER_SETTLEMENT_TRUTH | Money §49 · Rule R1~R10 | 원장. override=`NOT ledger credit` |
+
+**잠금:** §0.0.2 FORBIDDEN · `forbidden.cjs` · `verify:listing-legs-day1` · `PUBLISH_GUARDS.listingLegsOnly=["ebay","admin"]` 을 본 조사가 **supersede하지 않는다.**  
+KREAM/번개/Chrono24/TCGPlayer/Cardmarket/HTML 스크래핑을 listing adapter로 넣는 것은 **Founder L3 Change Control 전 금지.**  
+`nativeCurrency` 현행 enum=`USD|GBP|EUR|AUD|USDT` · JPY/KRW는 FX fail-closed (`verify:fx-snapshot-formula`). KR/JP 관측을 listing에 넣으려면 **별도 additive 계약**이 필요하다.
+
+**16-source 조사 결론 (구현 0):** 공식 공개 개발자 API로 이미지+현재가를 바로 쓸 수 있는 후보는 **eBay Browse(이미 Day-1)** 가 유일하다. FASHIONPHILE은 공식 `agents.md` + 공개 Shopify `products.json`(id/image/price)이 확인됐으나 **listing leg가 아니다.** 나머지 14는 파트너/셀러 API·키 중단·공개 API 없음·또는 시세 집계기(카드픽/포카허브)다. POKARD 공식 마켓 신원은 **확인 불가.**
+
+**다음 실행:** File-Serial상 03 pending=0 후 · Founder가 SOURCE_OBSERVATION 층을 명시 L3 승인할 때만 Engine **가산 todo 1개**로 최소 계약. 지금 todo 추가=File-Serial 점프=금지.
+
 ### 0.0.3 파이프라인 (오류0 · v7.22.32)
 
 ```
