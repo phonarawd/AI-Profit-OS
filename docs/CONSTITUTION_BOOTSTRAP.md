@@ -3,7 +3,7 @@
 > **목적:** 구현 채팅 시작 전, 헌법·스키마·마이그레이션·어드민·브랜드·DB SSOT를 **예측 없이** 정리한다.  
 > **권위:** ACTIVE Index `ai_profit_os_00_index_a1b2c3d4.plan.md` > 도메인 01~06 > launch ARCHIVE.  
 > **현재 권위:** Index v7.23.0 · R0 governance CLOSE(inventory→fact/state→change-control→observation) · 외부 `플랫폼_전체_재설계_로드맵_d903eef7`=REFERENCE ONLY · 기존 v7.22 스냅샷/「현재」「다음」문구는 이력.
-> **현재 다음:** 02.5 Engine Acceptance QA · 첫 pending=`qa6-performance` (QA-0..QA-5 CLOSED · QA5 COMPLETE · `BLOCKED_NO_FAULT_HOOK` on critical INV-FEED-AI-01/INV-LEDGER-01 + prior `BLOCKED_NO_CLOCK_HOOK` → verdict=`ENGINE_QA_INCOMPLETE` · 03 UI **BLOCKED** until `ENGINE_ACCEPTED_FOR_UI`).
+> **현재 다음:** 03 UI & UX(Redesign R1 Home 등) — **02.5 Engine Acceptance QA는 QA-0..QA-9 전부 `completed`로 종료**되었고 **verdict=`ENGINE_ACCEPTED_FOR_UI`(ISSUED) · `UI_UX_ENTRY_GATE=OPEN`**이다(baseline `ea-baseline-64b0f8a6d984-3657543f36b5` · `governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md` · `pnpm verify:engine-acceptance` 라이브 재확인, 2026-08-16 resync). *(이력: QA4/QA5는 각각 `BLOCKED_NO_CLOCK_HOOK`/`BLOCKED_NO_FAULT_HOOK`(critical)를 최초 관측했고 QA9 최초 판정은 `QA8_ADMIN_BOUNDARY` P0(admin 라우트 19개 전부 미인증)로 `ENGINE_QA_INCOMPLETE`/`ENGINE_NOT_ACCEPTED`였다 — 이후 CI clock/fault 하네스 및 admin 인증·RBAC repair가 완료되고 QA1-8 재실행+QA9 재판정으로 위 현재 상태에 도달했다.)* 03 UI 실제 runtime 착수는 03 plan 자체의 ADR-018 Visual Master/Visual Contract/Implementation Contract 선행조건을 이 gate와 별개로 그대로 따른다.
 
 ## v7.23.0 현재 잠금
 
@@ -47,7 +47,7 @@
 | Advisor `rls_enabled_no_policy` | INFO 전수 | Day-1 **의도** · deny-by-default |
 
 **v7.22.36 판정(이력):** Index 당시 CLOSED · 헌법·스키마·원격 PG·Auth·Runtime P0 hosts·apps 골격 PASS.
-**v7.23 현재:** R0 CLOSE · 01 Money pending0 · 02 Engine pending0 · **02.5 QA-0 FROZEN + QA-1..QA-5 COMPLETE** · QA5=`BLOCKED_NO_FAULT_HOOK`(critical) · QA4=`BLOCKED_NO_CLOCK_HOOK`(critical) · 다음=02.5 `qa6-performance` · 03 UI는 `ENGINE_ACCEPTED_FOR_UI` 전 **BLOCKED**.
+**v7.23 현재:** R0 CLOSE · 01 Money pending0 · 02 Engine pending0 · **02.5 QA-0..QA-9 전부 COMPLETE**(이력: QA4=`BLOCKED_NO_CLOCK_HOOK`·QA5=`BLOCKED_NO_FAULT_HOOK`·QA8 최초판정=`QA8_ADMIN_BOUNDARY` P0 전부 이후 CI 하네스 보강 및 admin 인증/RBAC repair로 해소·재검증 PASS) · **verdict=`ENGINE_ACCEPTED_FOR_UI`(ISSUED) · `UI_UX_ENTRY_GATE=OPEN`**(baseline `ea-baseline-64b0f8a6d984-3657543f36b5`) · **다음=03 UI**(자체 ADR-018 Visual Master 선행조건 별도 적용 · Engine gate가 이를 대체하지 않음).
 
 ### 0.1 public 테이블 전수 (41 · MCP 실측)
 

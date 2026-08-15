@@ -77,6 +77,9 @@ todos:
   - id: platform-redesign-r0-observation-registry
     content: "[grok-4.5|256K] R0-4 schemas/governance-observation.v1.json+governance/platform-redesign/governance-observations.v1.json · observed|deferred|promoted|rejected·현재발생여부·reviewTrigger 분리 · R0 신규 규칙 가상생성0 · verify:governance-observation-registry 신설+CATALOG · R0 신규 4게이트 PASS+BOOTSTRAP 다음=01 Money redesign-r1-money-read-contract · 구현코드0"
     status: completed
+  - id: engine-acceptance-gate-status-resync
+    content: "[grok-4.5|256K] governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md(baseline ea-baseline-64b0f8a6d984-3657543f36b5)의 이미 발급된 verdict=ENGINE_ACCEPTED_FOR_UI(ISSUED)·UI_UX_ENTRY_GATE=OPEN을 02_5/00_index/CONSTITUTION_BOOTSTRAP/03_ui_ux 4개 문서의 current-state prose와 동기화(historical 서술은 보존) · QA0~QA9 reopen 0 · runtime/AdminGuard/RBAC/Auth 코드 변경 0 · ENGINE_ACCEPTANCE_REBASE_V1 재실행 0 · 완료조건=4개 문서 동기화 후 verify:plans-ssot+verify:engine-acceptance+verify:gate:fast 전부 PASS"
+    status: completed
 isProject: false
 ---
 
@@ -215,7 +218,7 @@ R0 종료 전 `01` 이하 착수 금지. 이후에도 파일 순서는 유지한
 | **05** | PWA & Native | 기존 PWA/Store + certification pending **0** 후만 06 착수 |
 | **06** | Infra & Marketing | Marketing/Auth/adapter + R7/R8 pending **0** = 전 플랜 직렬 완료 |
 
-**v7.23 현재 큐:** 01/02 pending0 · **실행 파일=02.5** · QA-0 `qa0-baseline-freeze` CLOSED · 다음=`qa1-deterministic-truth`. 03 UI는 `ENGINE_ACCEPTED_FOR_UI` 전 **BLOCKED**. Pre-UI Runtime Gate(E-R1~E-R8)=CLOSED(역할 중복0 · 02.5=진실 acceptance).
+**v7.23 현재 큐:** 01/02/02.5 pending0 · **02.5 acceptance completed**(QA-0..QA-9 전부 `completed` — 이력: QA-0 `qa0-baseline-freeze` CLOSED로 시작해 QA1~9까지 순서대로 완료) · **verdict=`ENGINE_ACCEPTED_FOR_UI`(ISSUED) · `UI_UX_ENTRY_GATE=OPEN`**(baseline `ea-baseline-64b0f8a6d984-3657543f36b5` · `governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md` · `pnpm verify:engine-acceptance` 라이브 재확인, 2026-08-16 resync) · **실행 파일=03 UI**(03 자체의 ADR-018 Visual Master/Visual Contract/Implementation Contract 선행조건은 이 gate와 별개로 계속 적용됨 — Visual Master 없이 실제 runtime 착수 불가). Pre-UI Runtime Gate(E-R1~E-R8)=CLOSED(역할 중복0 · 02.5=진실 acceptance).
 
 ### v7.22.48→49 Pre-UI Runtime Gate — CLOSED (이력 · 흡수 SSOT=Engine §0.9 · E-R8 done)
 

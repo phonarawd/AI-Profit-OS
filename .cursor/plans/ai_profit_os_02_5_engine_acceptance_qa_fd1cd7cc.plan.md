@@ -1,6 +1,6 @@
 ---
 name: 02.5 Engine Acceptance QA
-overview: QA0-QA9 전체 COMPLETE. verdict=ENGINE_NOT_ACCEPTED(defects.P0=1 QA8_ADMIN_BOUNDARY) · ENGINE_ACCEPTED_FOR_UI=NOT_ISSUED · UI_UX_ENTRY_GATE=CLOSED. 03 UI는 repair round(L8 ENGINE_ACCEPTANCE_REBASE_V1) 후 재판정 전까지 차단.
+overview: QA0-QA9 전체 COMPLETE. verdict=ENGINE_ACCEPTED_FOR_UI(ISSUED) · UI_UX_ENTRY_GATE=OPEN · baseline=ea-baseline-64b0f8a6d984-3657543f36b5(governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md · pnpm verify:engine-acceptance 라이브 재확인). 이력(2026-08-16 resync 이전): 최초 QA9 판정은 verdict=ENGINE_NOT_ACCEPTED(defects.P0=1 QA8_ADMIN_BOUNDARY — admin 라우트 19개 전부 미인증)였고 03 UI를 repair round(L8 ENGINE_ACCEPTANCE_REBASE_V1) 후 재판정 전까지 차단했다. admin 인증/RBAC 배선 repair 완료 후 QA1-8 재실행 → QA9 재판정으로 현재 verdict에 도달했다(ENGINE_ACCEPTANCE_REBASE_V1 rebase_id ea-rebase-fdf692cb8a02-*, ea-rebase-64b0f8a6d984-* · product-rebases.v1.json). 03 UI는 이제 착수 가능(03 자체 ADR-018 Visual Master 게이트는 별도 적용).
 todos:
   - id: qa0-baseline-freeze
     content: "[grok-4.5|256K] QA-0 only · Index/BOOTSTRAP 직렬화 → Contract L1~L6 materialize → severity 선고정 → kill-switch(스모크보다 선검증) → protected manifest/baseline(전체 dirty≠강제 clean·scope오염 별도기록) → verify:engine-acceptance QA-0범위 PASS → 증거 · NEXT=QA1 · full suite/ACCEPTED/제품수정 금지"
@@ -49,15 +49,17 @@ QA0: COMPLETE · CONTRACT LOCKED · BASELINE FROZEN · HARNESS SAFE
 QA1: COMPLETE · schemas+routes · DB consistency · idempotency split · Functional/Contract
 QA2: COMPLETE · personas×journeys×coverage · Dirty>Happy · isolation faces · seed evidence
 QA3: COMPLETE · fast-check properties · CI fail-fast:false
-QA4: COMPLETE · BLOCKED_NO_CLOCK_HOOK (critical)
-QA5: COMPLETE · BLOCKED_NO_FAULT_HOOK (critical)
-QA6: COMPLETE · UNSPECIFIED_PERF_BUDGET/BLOCKED_MISSING_ORACLE (critical)
+QA4: COMPLETE · (이력) BLOCKED_NO_CLOCK_HOOK 최초 관측 → 이후 CI clock-hook 하네스 보강으로 critical_invariant.blocked=0 재확인
+QA5: COMPLETE · (이력) BLOCKED_NO_FAULT_HOOK 최초 관측 → 이후 CI fault-injection 하네스 보강으로 critical_invariant.blocked=0 재확인
+QA6: COMPLETE · UNSPECIFIED_PERF_BUDGET(Human/PO V1 perf-budget 승인) · k6 scenario-mix PASS
 QA7: COMPLETE · formal Actions 24/24 PASS
-QA8: COMPLETE · ASVS 5.0.0 subset · P0(admin-boundary)+P2(privacy-retention) 발견·미수정 · critical_invariant.blocked=6
+QA8: COMPLETE · ASVS 5.0.0 subset · (이력) 최초 판정 시 P0(QA8_ADMIN_BOUNDARY — 19/19 admin controller 무방비: 미인증 KYC결정/잔액조정/타유저원장열람/출금크리덴셜노출)+P2(privacy-retention) 발견 → admin 인증/RBAC 배선(services/api-nest/src/common/admin.guard.ts 등 신설) + privacy purge/anonymize/tombstone repair 완료 후 재실행 → **PASS**(controllers_scanned=19 · unguarded_count=0 · findings=[]) · critical_invariant.blocked=0
 QA9: COMPLETE · final aggregation/verdict issuance · 3-state formula 적용 · verify:engine-acceptance(QA-0..QA-9) PASS
-VERDICT: ENGINE_NOT_ACCEPTED (defects.P0=1: QA8_ADMIN_BOUNDARY) · ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED · UI_UX_ENTRY_GATE = CLOSED
-PRODUCT MUTATION: 0
-03 UI: BLOCKED — 해제 조건은 repair round(L8 ENGINE_ACCEPTANCE_REBASE_V1) 후 재판정뿐. 02.5 자체는 QA0-QA9 pending 0으로 여기서 끝난다.
+VERDICT: ENGINE_ACCEPTED_FOR_UI (ISSUED) · defects.P0=0 · defects.P1=0 · UI_UX_ENTRY_GATE = OPEN
+BASELINE: ea-baseline-64b0f8a6d984-3657543f36b5 (governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md · baseline.v1.json · product-rebases.v1.json)
+PRODUCT MUTATION (본 02.5 세션 자체): 0
+03 UI: UNLOCKED — Engine acceptance 선행조건(verdict=ENGINE_ACCEPTED_FOR_UI · acceptance_scope.unchanged) 충족 확인됨(2026-08-16 resync). 03 plan 자체의 ADR-018 Visual Master/Visual Contract/Implementation Contract 선행조건은 이 gate와 별개로 계속 적용된다. 02.5 자체는 QA0-QA9 pending 0으로 여기서 끝난다.
+이력(2026-08-16 resync 이전 최초 판정): VERDICT: ENGINE_NOT_ACCEPTED (defects.P0=1: QA8_ADMIN_BOUNDARY) · ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED · UI_UX_ENTRY_GATE = CLOSED · 03 UI: BLOCKED(해제 조건=repair round L8 ENGINE_ACCEPTANCE_REBASE_V1 후 재판정). repair(admin 인증/RBAC)+QA1-8 재실행+QA9 재판정을 거쳐 위 현재 상태로 전환됨.
 ```
 
 ## QA-0 `qa0-baseline-freeze` — DoD / 금지 / 순서 (잠금)
