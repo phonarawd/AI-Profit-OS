@@ -13,6 +13,15 @@
 
 ---
 
+> **2026-08-16 SUPERSEDED BY V2 · HISTORICAL FOR GEOMETRY/COMPOSITION · NON-AUTHORITATIVE FOR NEW VISUAL IMPLEMENTATION.**
+> Founder가 Home visual direction을 업그레이드하여 새 Desktop/Mobile Visual Master(V2)를 제공했다. 이 결정은 당시에는 유효했지만,
+> 새 Visual Master V2 Rebase에 의해 시각 authority(geometry·구성·px 가정)가 superseded되었다.
+> 승계 authority: [`peotteok-home-visual-master-intake.v2.md`](./peotteok-home-visual-master-intake.v2.md).
+> 본 문서의 **비시각 지식**(§6 Money Semantics Lock·§7 Processing-Time Semantics Lock·§8 AI Role Lock·§9 Functional Conflict Matrix의
+> 코드 실측 결과)은 V2에서도 동일하게 재확인되어 계속 유효하다(V2 §7/§8/§9가 명시적으로 재확인) — 본문 내용은 삭제·수정하지 않는다.
+
+---
+
 ## 0. Founder Approval Declaration
 
 Founder가 본 세션에서 첨부한 이미지 2장을 다음과 같이 명시적으로 승인 지정했다:
