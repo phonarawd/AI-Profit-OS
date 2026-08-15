@@ -22,6 +22,7 @@
     "verify:brand-consumer": "node tooling/verify/brand-consumer.cjs",
     "verify:brand-assets": "node tooling/verify/brand-assets.cjs",
     "verify:brand-asset-provenance": "node tooling/verify/brand-asset-provenance.cjs",
+    "verify:home-product-contract": "node tooling/verify/home-product-contract.cjs",
     "verify:root-domain-env": "node tooling/verify/root-domain-env.cjs",
     "verify:cf-infra": "node tooling/verify/cf-infra.cjs",
     "verify:workers-types": "node tooling/verify/workers-types.cjs",
