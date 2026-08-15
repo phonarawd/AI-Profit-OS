@@ -3,7 +3,8 @@
  * (`redesign-r1-home-brand-assets` SPLIT A/B · `.cursor/plans/ai_profit_os_03_ui_ux_d4e5f6a7.plan.md`)
  *
  * Brand Kit + markets(+membership) manifest 자산의 provenance 원장:
- *  - SHA-256 + size + (PNG only) pixel dimensions을 파일에서 직접 계산(매니페스트에 재저장하지 않음)
+ *  - SHA-256 + size + (PNG only) pixel dimensions + (home-v2 SVG) root width/height/viewBox를
+ *    파일에서 직접 계산해 manifest dimensions와 비교(매니페스트에 재저장하지 않음)
  *  - canonical(`packages/ui/brand/assets/**`) ↔ public mirror(`apps/web/public/brand/assets/**`)
  *    byte-identical 여부(1:1 미러 대상만 — 리사이즈 export 파이프라인은 §PWA_ICON_EXPORTS에서 advisory만)
  *  - 동일 id/file/path 중복 등록 · partnerId 교차 중복 스캔
@@ -28,6 +29,16 @@ const ledger = [];
 
 function sha256(absPath) {
   return crypto.createHash("sha256").update(fs.readFileSync(absPath)).digest("hex");
+}
+
+function svgRootBox(svgText) {
+  const open = svgText.match(/<svg\b[^>]*>/i);
+  if (!open) return null;
+  const tag = open[0];
+  const width = (tag.match(/\bwidth\s*=\s*"([^"]+)"/i) || [])[1];
+  const height = (tag.match(/\bheight\s*=\s*"([^"]+)"/i) || [])[1];
+  const viewBox = (tag.match(/\bviewBox\s*=\s*"([^"]+)"/i) || [])[1];
+  return { width, height, viewBox };
 }
 
 function pngDimensions(absPath) {
@@ -232,6 +243,24 @@ if (!fs.existsSync(homeV2ManPath)) {
         fails.push(`home-v2 SVG contains forbidden money/percent literal: ${a.id}`);
       }
       if (!svg.includes("<svg")) fails.push(`home-v2 SVG missing <svg>: ${a.id}`);
+      const box = svgRootBox(svg);
+      if (!box || box.width == null || box.height == null || !box.viewBox) {
+        fails.push(`home-v2 SVG root missing width/height/viewBox: ${a.id}`);
+      } else {
+        const w = Number(box.width);
+        const h = Number(box.height);
+        if (a.dimensions && (w !== a.dimensions.width || h !== a.dimensions.height)) {
+          fails.push(
+            `home-v2 SVG dims mismatch ${a.id}: root=${w}x${h} manifest=${a.dimensions.width}x${a.dimensions.height}`,
+          );
+        }
+        const expectedVb = `0 0 ${a.dimensions.width} ${a.dimensions.height}`;
+        if (a.dimensions && box.viewBox.trim() !== expectedVb) {
+          fails.push(
+            `home-v2 SVG viewBox mismatch ${a.id}: root="${box.viewBox}" expected="${expectedVb}"`,
+          );
+        }
+      }
     }
   }
   for (const legacy of homeV2Man.legacyUntouched || []) {

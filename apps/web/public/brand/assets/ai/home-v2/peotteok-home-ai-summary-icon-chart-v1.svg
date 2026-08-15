@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="chart">
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="chart">
   <rect x="2" y="2" width="60" height="60" rx="16" fill="#F3EEFF"/>
   <polyline points="14,44 24,34 32,38 44,20 50,24" fill="none" stroke="#6B3CFF" stroke-width="3.25" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

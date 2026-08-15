@@ -87,13 +87,15 @@ TBD / placeholder / 임시 재사용 = 0
 | `peotteok-ai-robot-home-summary-v1-mobile.png` | `f083ef64be22ae71f2f6680c513f5999451905f4a5b7d83f048ce2ad52c572a9` | 1024×1024 | PNG-RGBA | Mobile Primary | AI summary Mobile |
 | `peotteok-ai-robot-home-cta-v1.png` | `90d0ec5a1c7b095d32d6c028b0c9ec77ab611870de99783a06051a2e24c56c09` | 1024×1024 | PNG-RGBA | Desktop Primary | Discovery CTA |
 | `peotteok-home-hero-support-graphic-v1.png` | `63fca164ebb80daeedf83c8a9f08d48c71453b42c146b5dc7a1c02937cd14207` | 1536×1024 | PNG-RGBA | Desktop Primary | AI summary 보조 그래픽 |
-| `peotteok-home-ai-summary-icon-search-v1.svg` | `5fd37239e50b434359287e9b18e349ed4fefc979de82894b695243c72a6ce67d` | 64×64 | SVG | Desktop Primary | 3-stat 검색 |
-| `peotteok-home-ai-summary-icon-chart-v1.svg` | `c3f5f8560012eb4ae66b1162ec139f3a7644eddbf91ca327595d725badc0c965` | 64×64 | SVG | Desktop Primary | 3-stat 그래프 |
-| `peotteok-home-ai-summary-icon-clock-v1.svg` | `2ad859cea368ca11a966c9137026bc866260129b9fd35bb4151eb68739a64380` | 64×64 | SVG | Desktop Primary | 3-stat 시간 |
+| `peotteok-home-ai-summary-icon-search-v1.svg` | `6db9648d4cee688639c3f3bb38aa4951ee81af71eed64be652aec10397682740` | 64×64 | SVG | Desktop Primary | 3-stat 검색 |
+| `peotteok-home-ai-summary-icon-chart-v1.svg` | `64772e6058279b64e55e129d46056481fa08cfb61b8e8288141f43b72ead7935` | 64×64 | SVG | Desktop Primary | 3-stat 그래프 |
+| `peotteok-home-ai-summary-icon-clock-v1.svg` | `e666b86365913f9a70a71b82336129758b15edfcf5c38f111439aaab7e6698b1` | 64×64 | SVG | Desktop Primary | 3-stat 시간 |
 
 래스터 공통: 투명 배경(코너 alpha=0) · 비트맵 텍스트/가격/수익률/건수/환율 0 · chroma-key 잔여 마젠타 가시 픽셀 0.
 
 `source`: 캐릭터 DNA = 기존 퍼뜩 로봇 identity(레거시 Hero를 **참고만**, 파일 승격 0) → GenerateImage 포즈 생성 → ffmpeg colorkey → PNG-RGBA 정리. 아이콘 = Brand Kit 조사 후 원본 SVG.
+
+**SSOT align (2026-08-16 · PNG 재생성 0 · 내부 path/geometry 0):** SVG 3종 root를 `width="64" height="64" viewBox="0 0 64 64"`로 명시해 manifest/본 보고서 64×64 선언과 정합. 이전 SHA(`5fd37239…` / `c3f5f856…` / `2ad859ce…`)는 root 치수 미명시 바이트. 신규 SHA는 위 표.
 
 ---
 
@@ -143,6 +145,7 @@ Desktop과 Mobile authority를 서로 합성하지 않는다.
 ```text
 ASSET_PART_B_V2_COMPLETE = YES
 H7_RUNTIME_START_ALLOWED = YES
+H7_STARTED = NO
 H7_STARTED_BY_THIS_DOCUMENT = NO
 FOUNDER_REVIEW_REQUIRED = NO
 ```
