@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — UI & UX
-overview: v7.23.0 PART0~9 completed 불변 · 00 R0→01 Money R1→02 Engine R1 후 Redesign R1 Home→spotcheck→R2 Acquisition→R3 Wallet→R4 Core Loop→R5 Account Hub · ADR-017 Light+Purple·새 5탭 라벨·PART9 binding 보존 · v7.24.0(2026-08-16) ADR-018 Peotteok Visual Master Reset — R1 Home 시각(geometry) authority가 ADR-017→ADR-018로 승계, STEP5 Slice5/6(RightRail/Partner) SUPERSEDED/STOPPED, Founder Home Visual Master intake 대기(구현코드0).
+overview: v7.23.0 PART0~9 completed 불변 · 00 R0→01 Money R1→02 Engine R1→02.5 QA(ENGINE_NOT_ACCEPTED·UI_UX_ENTRY_GATE=CLOSED) 후 Redesign R1 Home→spotcheck→R2 Acquisition→R3 Wallet→R4 Core Loop→R5 Account Hub · ADR-017 Light+Purple·새 5탭 라벨·PART9 binding 보존 · v7.24.0(2026-08-16) ADR-018 Peotteok Visual Master Reset — R1 Home 시각(geometry) authority가 ADR-017→ADR-018로 승계, STEP5 Slice5/6(RightRail/Partner) SUPERSEDED/STOPPED, Founder Home Visual Master intake 대기(구현코드0) · v7.24.1(2026-08-16) ADR-018 PENDING TODO REBASE — H1/H5/H6 신규 todo(Visual Master intake/Visual Contract/Implementation Contract) 삽입, H0~H11 실행 큐 SSOT 명시, Legacy Replacement Safety Gate 신설, R2~R5 하이브리드 상태모델, §33.8 ADR-013/018 정합, 02.5 UI_UX_ENTRY_GATE=CLOSED 기록(구현코드0 · completed 이력 불변).
 todos:
   - id: ui-preflight-constitution
     content: "[grok-4.5|256K] PART0 착수게이트 · **선행: Engine 02 Pre-UI Runtime Gate(§0.9 E-R1~E-R8) pending0 + Money money-user-benefits-read completed 필수(미충족 시 본 todo·이하 전부 착수 금지)** · BOOTSTRAP §0.6 실측기록(DB76/mig28/fn5·Canon·routes·Admin교차·verify live/pending) · **v7.22.50 감사 3정정 기록 흡수(§0.6 U13~U15·색토큰=lux-fintech·§29.6 Phase1+·eBay query: gap=Engine follow-up)** · File-Serial 재정렬 0 · 구현코드0 · 다음=market-partner-trust-surfaces"
@@ -146,23 +146,32 @@ todos:
   - id: redesign-r1-home-truth-preflight
     content: "[grok-4.5|256K] Redesign R1-1 · 02 HomeReadModelV1 선행 · HomePageClient/PART9 binding 보존 · guest/static scan claim·fake zero·ledgerTotal currency 오해·client sumAffordableExpectedProfitUsdt 제거(서버 derived 소비)·nearMiss 문맥·BottomNav 결과표시를 실제 state/Fact로 교정 · keep|adapt|new|remove mapping · HomePageV2/병렬 fetch0 · verify:home-state-truth/no-fake-zero-status/home-live-wire"
     status: completed
+  - id: redesign-r1-home-visual-master-intake
+    content: "[grok-4.5|256K] Redesign R1 · ADR-018 §9 H1 · Founder-provided Home Visual Master intake 등록 — 절차: candidate(원본 이미지 파일 레포 저장 0·세션 참고만) → functional conflict check(Canon `factSurface`/`forbidden`·legal·a11y·security 스캔 · 충돌 시 `VISUAL_FUNCTIONAL_CONTRACT_CONFLICT`) → Founder가 'APPROVED VISUAL MASTER'로 명시 지정(confirmation) → 해당 화면 Visual Authority(ADR-018 §3) 최상단 registration(텍스트 pointer만 · 이미지 파일 커밋 0) · **Desktop/Mobile 별도 authority**(ADR-018 §10 · 한쪽만 제공 시 나머지는 register/LOCK 없이 구조적 provisional만 유지) · 일반 미승인 mockup과 Founder-approved Visual Master 구분(ADR-013 mockup 규칙은 미승인 이미지에만 적용) · **Founder 이미지가 실제 제공되기 전에는 본 todo status=pending 유지 · geometry/색/spacing/hero 추측 절대 금지** · 절차 SSOT=`.cursor/rules/visual-master-intake.mdc` · 완료조건=등록된 Visual Authority pointer+conflict check 기록(이미지 파일 0) · 다음=H5 New Visual Contract"
+    status: pending
   - id: redesign-r1-home-brand-assets
-    content: "[grok-4.5|256K] Redesign R1-2 · Brand Kit+markets manifest provenance/hash/public mirror · third-party logo AI재현0 · 자체 Hero/avatar transparent master · blocked/ready lifecycle · 현재 ready 재사용 우선·중복에셋0 · verify:brand-assets/market-partner-trust + verify:brand-asset-provenance 신설+CATALOG"
+    content: "[grok-4.5|256K] Redesign R1-2 · SPLIT(2026-08-16 ADR-018): (A) 착수 가능 — Brand Kit+markets manifest provenance/hash/public mirror · third-party logo AI재현0 · blocked/ready lifecycle · partner logo validation · 현재 ready 재사용 우선·중복에셋0 · verify:brand-assets/market-partner-trust + verify:brand-asset-provenance 신설+CATALOG · (B) 착수 금지(H5 New Visual Contract·H6 New Implementation Contract 이전) — Home Hero 신규 생성 · avatar 신규 시각 확정 · Home illustration 선택 · Home 배치용 시각 자산 확정 · 기존 robot+globe hero illustration/`wordmark-dark`/`BrandMark ✦`/legacy dark tokens(`lux-dark`)는 `LEGACY VISUAL CANDIDATE — NOT NEW MASTER AUTHORITY`로 취급(ADR-018 §13 개념 · 삭제·교체 금지·새 Master 근거 없는 재사용 금지)"
     status: pending
   - id: redesign-r1-home-product-contract
-    content: "[grok-4.5|256K] Redesign R1-3 · packages/ui/canon/contracts/peotteok-home-product-contract.v1.md 신설 · Facts/types/units/source/asOf/states/actions/allowlist/forbidden/zero-vs-absent/guest-auth 명시 · R0 fact-state registry와 1:1 · Visual/Implementation 섞기0 · verify:home-product-contract 신설+CATALOG · 2026-08-16 ADR-018: 본 Product Contract는 Functional Authority(ADR-018 §3)이며 시각 authority(Visual Master)와 여전히 분리 — 착수 시점 변경 없음"
+    content: "[grok-4.5|256K] Redesign R1-3 · packages/ui/canon/contracts/peotteok-home-product-contract.v1.md 신설 · Facts/types/units/source/asOf/states/actions/allowlist/forbidden/zero-vs-absent/guest-auth 명시 · R0 fact-state registry와 1:1 · Visual/Implementation 섞기0 · verify:home-product-contract 신설+CATALOG · 2026-08-16 ADR-018: 본 Product Contract는 Functional Authority(ADR-018 §3)이며 시각 authority(Visual Master)와 여전히 분리 — 착수 시점 변경 없음 · **H-mapping:** H2(Home screen forensic)+H3(functional truth check)는 completed `redesign-r1-home-truth-preflight`가 이미 충족(재실행 금지) · 본 todo=**H4** · Visual Master의 geometry/색/spacing/hero는 결정하지 않음(H5 Owns) · 다음=H5 New Visual Contract(신규 todo)"
+    status: pending
+  - id: redesign-r1-home-visual-contract
+    content: "[grok-4.5|256K] Redesign R1 · ADR-018 H5 · New Home Visual Contract — 승인된 Home Visual Master(H1 completed)에서만 시각 계약(geometry·색·타이포·spacing·상태)을 파생 · **선행: H1 completed + Home Product Contract(H4) available** · **금지:** ADR-017 geometry 복사 · 기존 card proportions 자동 재사용 · 기존 Hero 자동 재사용 · old RightRail/Sidebar dimensions 자동 재사용 · 기존 hex를 새 Master와 무관하게 기본값으로 복사(ADR-018 §1.2/§6) · 산출물=`packages/ui/canon/contracts/<surface>.visual-contract.v1.md`(surfaceId desktop/mobile 분리 · ADR-018 §10) · Canon wire functional 필드(route/state/factSurface/forbidden)는 참조만(재정의 금지) · Home Visual Master 미등록 상태에서 착수 금지 · 다음=H6 New Implementation Contract"
+    status: pending
+  - id: redesign-r1-home-implementation-contract
+    content: "[grok-4.5|256K] Redesign R1 · ADR-018 H6 · New Home Implementation Contract — 새 Visual Contract(H5)와 기존 Functional/Product Contract(H4)를 실제 코드 구조에 매핑 · **선행: H5 completed** · **작성 전 의무(Legacy Replacement Safety Gate Safety-A):** 기존 Home 화면 component/hook/handler 전수를 `KEEP`/`REWIRE`/`REMOVE_FROM_RUNTIME`/`REPLACE`/`INVESTIGATE` 5분류(구 `keep|adapt|new|remove` 데이터 forensic=H2/H3와는 별개 축·혼동 금지) · 분류 없이 새 컴포넌트 추가 금지 · 이 단계에서만 keep/adapt/replace/remove(정확히는 위 5분류) 최종 결정 · Home Visual Master intake(H1) 완료 전 착수 금지(geometry/색/spacing/hero 추측 금지) · 다음=H6.5 contract sync"
     status: pending
   - id: redesign-r1-home-contract-sync
-    content: "[grok-4.5|256K] Redesign R1-4 · Product→ADR-017→conflict-resolution→Implementation→Visual→wire→token SPEC→mapping→implementation-gate→manifest 전수 sync · semantic change면 v2 생성+before/after+affected gates, v1 in-place overwrite0 · 320~2560+ responsive/state truth/C01 COUNT lock · verify:canon-surfaces/home-product-contract/lux-theme-sync · 2026-08-16 ADR-018 SUPERSEDE: sync 대상에서 ADR-017/conflict-resolution/Visual/mapping/implementation-gate(구 시각 체인)는 HISTORICAL로 제외하고 대신 ADR-018 §9 intake로 생성될 신규 Visual Contract/Implementation Contract를 sync 대상으로 삼는다 · Product Contract→Canon wire functional 필드(route/state/factSurface/forbidden)→manifest 동기는 유지 · Visual Master intake(ADR-018 §9) 완료 전 착수 금지"
+    content: "[grok-4.5|256K] Redesign R1-4 · Product→ADR-017→conflict-resolution→Implementation→Visual→wire→token SPEC→mapping→implementation-gate→manifest 전수 sync · semantic change면 v2 생성+before/after+affected gates, v1 in-place overwrite0 · 320~2560+ responsive/state truth/C01 COUNT lock · verify:canon-surfaces/home-product-contract/lux-theme-sync · 2026-08-16 ADR-018 SUPERSEDE: sync 대상에서 ADR-017/conflict-resolution/Visual/mapping/implementation-gate(구 시각 체인)는 HISTORICAL로 제외하고 대신 ADR-018 §9 intake로 생성될 신규 Visual Contract/Implementation Contract를 sync 대상으로 삼는다 · Product Contract→Canon wire functional 필드(route/state/factSurface/forbidden)→manifest 동기는 유지 · **선행조건(2026-08-16 정정): H5 New Visual Contract completed + H6 New Implementation Contract completed 둘 다 충족 전 착수 금지**(H1 intake만으로는 착수 불가) · 본 todo=**H6.5**"
     status: pending
   - id: redesign-r1-home-implementation
-    content: "[grok-4.5|256K] Redesign R1-5 STEP5 · C01 semantic binding→Shell/Header/Nav→Hero→Money→Opportunity→RightRail→Partner/Footer 순서 · HomePageClient/HomePrincipalRail/BalanceAwareHome/OpportunityCard 등 기존 실물 gap-only · peotteok-light token only · HomePageV2·core fetch/SDK/Nest 재작성0 · responsive/a11y/reduced-motion/perf · 2026-08-16 ADR-018 VISUAL RESET: 본 STEP5 트랙(Slice 0–4 CLOSED · Slice 5 RightRail/Slice 6 Partner 착수 대기)은 시각 구현 관점에서 SUPERSEDED/STOPPED — C01 등 이미 반영된 비시각 semantic fix는 유지하되 Slice 5 이후 시각 작업은 Founder Home Visual Master intake(ADR-018 §9) → 새 Visual Contract → 새 Implementation Contract 없이 재개 금지 · 재개 시 Slice 번호를 그대로 이어받지 않고 새 Implementation Gate가 새 큐를 정의한다"
+    content: "[grok-4.5|256K] Redesign R1 · ADR-018 H7 presentation implementation · **SUPERSEDED ORDERING(더 이상 사용 금지):** ~~C01 semantic binding→Shell/Header/Nav→Hero→Money→Opportunity→RightRail→Partner/Footer 순서~~ · ~~STEP5 Slice 0~6 번호체계~~ · ~~ADR-017 시각 가정(구 peotteok-light geometry/Hero/RightRail/Sidebar 비율)~~ — 위 3항목은 새 구현의 근거로 재사용하지 않는다(ADR-018 §1.2/§6) · **새 정의:** Founder-approved Home Visual Master + New Visual Contract(H5) + New Implementation Contract(H6) 기반 **presentation replacement**(ADDITION 아님 · Legacy Replacement Safety Gate 전수 준수 · Safety-A KEEP/REWIRE/REMOVE_FROM_RUNTIME/REPLACE/INVESTIGATE 분류 없이 컴포넌트 추가 금지 · Safety-B runtime/interaction/data uniqueness=0 · Safety-C old+new 동시 렌더 금지) · 기존 functional runtime(HomePageClient fetch/세션/401 처리·SDK·Nest·ledger binding·C01 `ledgerTotal`=COUNT semantic fix)은 보존 · HomePageV2·병렬 fetch/SDK/Nest 재작성 0 · peotteok-light token은 새 Visual Contract가 재확정하기 전까지 임시 참고만(자동 상속 금지) · responsive/a11y/reduced-motion/perf · **선행:** H1 completed + H5 completed + H6 completed + H6.5 completed · **게이트:** 본 todo의 실제 runtime 변경 착수는 `UI_UX_ENTRY_GATE=OPEN`(02.5 verdict=`ENGINE_ACCEPTED_FOR_UI`) 이후에만 가능 — **현재 UI_UX_ENTRY_GATE=CLOSED**(02.5 verdict=ENGINE_NOT_ACCEPTED · P0=QA8_ADMIN_BOUNDARY · 본 patch가 수정하는 문제 아님)"
     status: pending
   - id: trust-age-spotcheck
-    content: "[grok-4.5|256K] Redesign R1-6 수동실사 · R1 Home implementation 완료 후 20·40·60~70대 각3명 · peotteok-light 가독성/새 5탭/3초 질문/C01 count/도움말이모지/퍼뜩첫인사/면책이모지0/성별중성 · 결과 evidence+Admin ai-logs?tab=spotcheck pointer · 자동 verify0 · 코드 수정과 분리"
+    content: "[grok-4.5|256K] Redesign R1-6 수동실사 · **위치: H9(Founder review) 이후 · H11(certification) 이전**(ADR-018 H0~H11 실행 큐 SSOT) · R1 Home H7 implementation 완료 후 20·40·60~70대 각3명 · **Founder-approved new Home Visual Master 기반 화면** 가독성/새 5탭/3초 질문/C01 count/도움말이모지/퍼뜩첫인사/면책이모지0/성별중성 · 결과 evidence+Admin ai-logs?tab=spotcheck pointer · 자동 verify0 · 코드 수정과 분리"
     status: pending
   - id: redesign-r1-home-certification
-    content: "[grok-4.5|256K] Redesign R1-7 · Product/Visual/Implementation/Canon/Token/Mapping/Brand/Fact/State/a11y/320~2560+/performance 전수 · 기존 home-live-wire/home-principal-slots/home-state-truth/no-fake-zero-status/brand-asset-provenance + 신규 bottom-nav-result-indicator/home-horizontal-overflow 스크립트+package+CATALOG · T0/T1/T2 · known P0~P3 defect0 · governance observation snapshot · 다음=R2"
+    content: "[grok-4.5|256K] Redesign R1-7 · ADR-018 H11 certification · **인증 authority = New Visual Contract(H5) + New Implementation Contract(H6)** — historical `home-visual-implementation-mapping.v1.md`는 인증 근거로 재사용 금지(ADR-018 §4) · 필수 항목: New Visual Contract 충족+New Implementation Contract 충족+functional verification+responsive verification(320~2560+)+accessibility+Founder review(H9 증거)+visual lock 등록(H10 · `visual-locks.v1.json`)+Legacy Replacement Safety Gate 전수(Runtime/Interaction/Data uniqueness=0) · 기존 home-live-wire/home-principal-slots/home-state-truth/no-fake-zero-status/brand-asset-provenance + 신규 bottom-nav-result-indicator/home-horizontal-overflow 스크립트+package+CATALOG · T0/T1/T2 · known P0~P3 defect0 · governance observation snapshot · **선행: UI_UX_ENTRY_GATE=OPEN 필수(현재 CLOSED)** · 다음=R2"
     status: pending
   - id: redesign-r2-acquisition-contract
     content: "[grok-4.5|256K] Redesign R2-1 · /l/[variant]·/ads*·/auth/login|signup|complete-profile·/onboarding Product/Visual/Implementation Contract+wire+copy/API mapping · utility→capital disclosure·Nest JWT/Kakao/Passkey·consent·recovery · existing PART2/Infra contracts keep|adapt · 새 route0"
@@ -203,7 +212,7 @@ todos:
 isProject: false
 ---
 
-# AI Profit OS — UI & UX (v7.23.0 · Redesign R1~R5 additive)
+# AI Profit OS — UI & UX (v7.24.1 · ADR-018 Visual Master Reset + Redesign R1~R5 hybrid)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`  
 > **단일 편집본:** 워크스페이스 `.cursor/plans` 해시 파일만 · 외부 `플랫폼_전체_재설계_로드맵_d903eef7`=REFERENCE ONLY · 홈 orphan 플랜 실행 금지
@@ -296,15 +305,88 @@ isProject: false
 > Change Control: `governance/platform-redesign/change-control.v1.md` §6.5 `cc.adr018.peotteok-visual-master-reset`(L3).
 > **다음 허용 단계 = Founder-provided Home Visual Master intake.** 이 세션에서 Home 코드를 새로 구현하지 않는다.
 
+> **v7.24.1 (2026-08-16 · ADR-018 PENDING TODO REBASE — 직전 `03_UI_UX ADR-018 PENDING TODO REBASE AUDIT REPORT` 기준 · governance/plan patch only · 구현코드0):**
+>
+> 아래 표가 R1 Home의 **H0~H11 실행 큐 단일 권위(SSOT)**다. v7.24.0의 "새 진행 순서(1~10)"를 대체하지 않고 H-번호 + todo id로 정밀화한다.
+>
+> | H | 단계 | todo id / 상태 |
+> |---|------|------|
+> | H0 | Founder Home Visual Master 제공 | 외부 이벤트(전제조건) · **아직 미제공** |
+> | H1 | Visual Master intake | `redesign-r1-home-visual-master-intake` **(신규)** · pending |
+> | H2 | Home screen forensic | `redesign-r1-home-truth-preflight` **completed**가 이미 충족(`keep\|adapt\|new\|remove` 데이터 mapping) — 재실행 금지 |
+> | H3 | functional truth check | 위와 동일(`redesign-r1-home-truth-preflight` **completed**) — 재실행 금지 |
+> | H4 | Product Contract | `redesign-r1-home-product-contract` · pending · Functional Authority |
+> | H5 | New Visual Contract | `redesign-r1-home-visual-contract` **(신규)** · pending · 선행=H1 |
+> | H6 | New Implementation Contract | `redesign-r1-home-implementation-contract` **(신규)** · pending · 선행=H4+H5 · KEEP/REWIRE/REMOVE_FROM_RUNTIME/REPLACE/INVESTIGATE forensic 포함 |
+> | H6.5 | contract sync | `redesign-r1-home-contract-sync` · pending · 선행=H5+H6 |
+> | H7 | presentation implementation | `redesign-r1-home-implementation` · pending · 선행=H6.5 · **UI_UX_ENTRY_GATE=OPEN 필수(현재 CLOSED)** |
+> | H8 | verification | 별도 todo 없음 — H7 완료조건 내 domain verify(T0/T1/T2)로 수행 |
+> | H9 | Founder review | 별도 todo 없음 — H11 착수 전 승인, 증거는 H11 certification에 기록 |
+> | — | `trust-age-spotcheck` | pending · **H9 이후 · H11 이전** 위치(고정) |
+> | H10 | Visual Lock | `packages/ui/canon/visual-locks.v1.json` 등록 — H11 certification 내 수행 |
+> | H11 | certification | `redesign-r1-home-certification` · pending · 선행=H7+H9+H10 |
+>
+> **02.5 UI_UX_ENTRY_GATE 분리** (`.cursor/plans/ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md` pointer · **본 patch는 02.5 자체를 수정하지 않음**): 02.5는 QA0~QA9 todo **전부 completed**이나 **verdict=`ENGINE_NOT_ACCEPTED`**(defects.P0=1 · `QA8_ADMIN_BOUNDARY`) · `ENGINE_ACCEPTED_FOR_UI=NOT_ISSUED` · **`UI_UX_ENTRY_GATE=CLOSED`**다. 해제 조건은 repair round(L8 `ENGINE_ACCEPTANCE_REBASE_V1`) 후 재판정뿐(`plan-file-serial.mdc` "03 착수 = verdict `ENGINE_ACCEPTED_FOR_UI` + `acceptance_scope.unchanged` only"와 동일 잠금).
+>
+> **분리 원칙:** H1 intake·H5 Visual Contract·H6 Implementation Contract·H6.5 contract sync 및 본 patch류 governance/문서 작업(구현 코드 0)은 `UI_UX_ENTRY_GATE` 상태와 무관하게 진행 가능하다. 그러나 **H7 presentation implementation의 실제 runtime 변경, H8 verification의 실제 build/E2E, H9 Founder review의 "실제 화면" 확인, H10 Visual Lock 등록, H11 certification의 실제 인증은 `UI_UX_ENTRY_GATE=OPEN`(02.5 verdict=`ENGINE_ACCEPTED_FOR_UI`) 이후에만 착수한다.** R2~R5의 각 `-implementation`/`-certification` todo도 동일 게이트가 적용된다(아래 R2~R5 절).
+>
+> **status 처리:** 본 patch는 governance 구조 변경만이다. 기존 `completed` 변경 **0** · 기존 `pending` 임의 complete 처리 **0** · 신규 H1/H5/H6 = `pending`(Founder 이미지 제공 전 H1 complete 금지).
+
 ### R1 Home
 
-- Product Contract 신규 파일: `packages/ui/canon/contracts/peotteok-home-product-contract.v1.md`. *(변경 없음 — 여전히 필요한 다음 파일)*
+- Product Contract 신규 파일: `packages/ui/canon/contracts/peotteok-home-product-contract.v1.md`. *(변경 없음 — 여전히 필요한 다음 파일 · H4)*
 - ~~동기 대상: ADR-017, conflict-resolution, Product, Implementation, Visual, `home-visual-v2.wire.json`, `peotteok-light.specification.md`, mapping, implementation-gate, Canon manifest.~~ **(SUPERSEDED 2026-08-16 — 위 ADR-018 note 참고)**
 - **동기 대상(신규 · 2026-08-16):** ADR-018, Product Contract(신규 작성), 화면별 New Visual Contract, 화면별 New Implementation Contract, 새 Canon wire(functional 필드만 승계·geometry는 신규 추출), Canon manifest, Change Control §6.5.
 - 의미 변경은 새 major 문서 버전과 before/after diff를 요구한다. `.v1.md` 의미를 조용히 덮어쓰지 않는다.
-- ~~구현 순서: C01 `ledgerTotal=COUNT` → Shell/Nav → Hero → Money → Opportunity → RightRail → Partner/Footer.~~ **(STEP5 Slice 순서 — SUPERSEDED/STOPPED, 위 note 참고. C01 semantic fix 자체는 롤백 대상 아님.)**
-- **구현 순서(신규 · ADR-018 §9 intake 완료 후에만):** 위 v7.24.0 note의 10단계 Screen-by-Screen 순서를 따른다.
-- 수동 `trust-age-spotcheck`은 (신규 순서 기준) Home certification 직전, Founder review(9단계) 이후에 수행한다.
+- ~~구현 순서: C01 `ledgerTotal=COUNT` → Shell/Nav → Hero → Money → Opportunity → RightRail → Partner/Footer.~~ **(STEP5 Slice 순서 · old peotteok-light geometry 가정 — SUPERSEDED/STOPPED, 새 구현의 근거로 재사용 금지. C01 semantic fix 자체는 롤백 대상 아님.)**
+- **구현 순서(신규 · SSOT):** 위 v7.24.1 콜아웃의 **H0~H11 표** — `redesign-r1-home-visual-master-intake`(H1) → `redesign-r1-home-visual-contract`(H5) → `redesign-r1-home-implementation-contract`(H6) → `redesign-r1-home-contract-sync`(H6.5) → `redesign-r1-home-implementation`(H7, **UI_UX_ENTRY_GATE=OPEN 필수**) → `trust-age-spotcheck` → `redesign-r1-home-certification`(H11).
+- 수동 `trust-age-spotcheck`은 **H9(Founder review) 이후 · H11(certification) 이전**에 위치한다(고정 · 재정렬 금지).
+
+### Legacy Replacement Safety Gate (ADR-018 신규 · 전 R-stage 공통 · 2026-08-16)
+
+> 새 UI를 기존 UI **위에 추가**하는 방식은 금지한다. 화면 구현은 **ADDITION이 아니라 REPLACEMENT**다. 아래 3개 축은 R1~R5 전 화면의 Implementation Contract 작성·presentation implementation·certification에서 공통으로 적용한다(R1 Home 기준 = H6/H7/H11).
+
+#### Safety-A. KEEP / REWIRE / REMOVE_FROM_RUNTIME / REPLACE / INVESTIGATE forensic
+
+New Implementation Contract 작성 전, 기존 화면의 component/hook/handler를 전수 분류한다 — **분류 없이 새 컴포넌트를 추가하지 않는다.**
+
+| 분류 | 의미 |
+|------|------|
+| `KEEP` | 기능/데이터/보안 로직 — 그대로 보존 |
+| `REWIRE` | 기능은 보존하되 새 presentation에 연결 |
+| `REMOVE_FROM_RUNTIME` | 기존 presentation이 새 Master와 충돌 — **runtime import에서 제거**(history/legacy source 파일 삭제는 별개이며 무조건 삭제 금지) |
+| `REPLACE` | 새 Visual Master 기반 component로 대체 |
+| `INVESTIGATE` | presentation과 business logic이 혼재 — 분리 필요 대상으로 등록만(본 단계에서 분리 완료를 요구하지 않음) |
+
+> 이 5분류는 **presentation-component forensic**이다. `redesign-r1-home-truth-preflight`가 이미 수행한 `keep\|adapt\|new\|remove`(데이터/functional forensic, H2/H3)와는 **별개 축**이며 서로 대체하지 않는다.
+
+#### Safety-B. Runtime / Interaction / Data uniqueness (certification 필수 검사)
+
+교체 완료 화면은 아래 항목 전부 = **0**(중복 없음)이어야 certification PASS:
+
+- **Runtime uniqueness:** old presentation runtime reference=0 · new presentation runtime=1 · duplicate page shell=0 · duplicate sidebar=0 · duplicate header=0 · duplicate bottom navigation=0 · duplicate sticky CTA=0 · duplicate modal/sheet=0
+- **Interaction uniqueness:** duplicate Primary CTA=0 · duplicate onClick action=0 · duplicate form submit=0 · duplicate mutation=0 · duplicate participate request=0 · duplicate withdraw request=0 · duplicate toast trigger=0
+- **Data uniqueness:** old/new presentation으로 인한 duplicate API fetch=0 · duplicate polling loop=0 · duplicate subscription/listener=0 · duplicated local business logic=0
+
+기존 presentation component가 더 이상 쓰이지 않으면 **runtime import에서 제거**한다(Safety-A `REMOVE_FROM_RUNTIME`). 단 history 파일·legacy source 자체를 무조건 삭제하는 것은 금지한다.
+
+#### Safety-C. No dual render
+
+어떤 화면에서도 최종 교체 시 다음 구조는 **금지**:
+
+```text
+OLD PRESENTATION + NEW PRESENTATION
+```
+
+정상 구조만 허용:
+
+```text
+PRESERVED DATA / ACTION / BUSINESS LOGIC
+                ↓
+       NEW PRESENTATION ONLY
+```
+
+feature flag·임시 비교가 필요해도 별도 승인 없이 production route에서 old/new를 동시 렌더하지 않는다.
 
 ### R2~R5
 
@@ -314,6 +396,22 @@ isProject: false
 - R5 Account Hub: Me/Settings/Membership/Invite/Inbox/Benefits/Events/Strategies/Peotteok/Support/Guide/Legal.
 - 모든 route는 R0 route-contract matrix의 Product/Visual/Implementation/Canon/Copy/API/Owner/Verify 열을 100% 채운다.
 - certification은 known P0/P1/P2/P3 defect 0, required a11y/responsive/performance 100%, 해당 domain verify+T0/T1/T2를 요구한다.
+
+> **R2~R5 Hybrid Rebase (2026-08-16 · ADR-018 · 구현코드0):** 위 4단계의 "Product/Visual/Implementation Contract"는 **하이브리드**로 실행한다 — **Functional Contract는 R-stage 단위 유지**(4개 `-contract` todo가 Product Contract·API·copy·route mapping을 R-stage 그룹으로 계속 작성) 하되 **Visual은 screen(route)-specific ADR-018 Visual Master authority**를 따른다(R-stage 단위로 뭉쳐서 시각을 확정하지 않음). 각 화면은 아래 상태 중 하나를 갖는다:
+>
+> ```text
+> WAITING_FOR_MASTER        ← 기본값(Visual Master 미제공)
+> MASTER_INTAKE             ← candidate intake 진행 중(ADR-018 §9)
+> VISUAL_CONTRACT           ← Visual Contract 작성 중/완료
+> IMPLEMENTATION_CONTRACT   ← Implementation Contract 작성 중/완료
+> IMPLEMENTING              ← presentation replacement 진행 중(Legacy Replacement Safety Gate 적용)
+> VERIFYING                 ← 도메인 verify + T0/T1/T2
+> FOUNDER_REVIEW            ← Founder 승인 대기/진행
+> VISUAL_LOCKED             ← visual-locks.v1.json 등록 완료
+> LEGACY_VISUAL_UNCHANGED   ← Visual Master 없음 · 기존 화면 시각 유지(임의 재설계 금지)
+> ```
+>
+> **현재:** R2~R5의 모든 화면 = `WAITING_FOR_MASTER`(R1 Home 외 어떤 화면에도 아직 Visual Master가 제공되지 않았다). Visual Master가 없는 화면은 **임의 재설계 금지** — `LEGACY_VISUAL_UNCHANGED`로 유지하며 해당 `-implementation` todo는 그 화면에 대해 **기능 gap-only**만 수행한다(시각 변경 0). 위 12개(R2~R5 `-contract`×4·`-implementation`×4·`-certification`×4) todo YAML content의 "Product/Visual/Implementation Contract" 문구는 본 hybrid 모델의 적용을 받는다 — 문구 자체는 축약 표기로 유지하고 본 절이 override한다(개별 재편집·중복 서술 금지). Legacy Replacement Safety Gate(위)는 R2~R5 어떤 화면이 `IMPLEMENTING`으로 전환되어도 동일하게 적용되며, 각 `-implementation`/`-certification` todo의 실제 runtime 착수도 R1과 동일하게 **`UI_UX_ENTRY_GATE=OPEN` 이후에만** 가능하다.
 
 ## 0.6 UI 착수 전 실측 (v7.22.48 · `ui-preflight-constitution` · **PASS v7.22.50** · 예측0 · 감사 3정정 흡수)
 
@@ -575,6 +673,8 @@ isProject: false
 - **우측 메인:** 카드 3~4열 그리드, 홈=추천+피드+지급현황
 
 ### 5.3 홈 `/` — Lux 레이아웃 (5탭·IA 불변)
+
+> **ADR-018 pointer(2026-08-16):** 아래 ASCII는 **현재 runtime 레이아웃의 기록**(슬롯 A~G의 존재·데이터 바인딩=Functional Authority·불변)이다. 슬롯의 **정확한 geometry·비중·Hero 크기 등 시각 값**은 새 Home Visual Contract(ADR-018 H5)의 **자동 입력값이 아니다** — Founder Visual Master 등록 후 재추출한다(H1→H5). 슬롯 존재 자체는 Product Contract(H4) Owns로 계속 유효.
 
 ```
 🏠 홈 (ADR-017 Peotteok Light)  — §5.3b 기회스캔 인지 필수
@@ -912,6 +1012,8 @@ T.feed = {
 
 #### 5.9.2b Brand Kit Surface (중복0 · ADR-011 · ADR-013 · visual_kit_v1)
 
+> **ADR-018 pointer(2026-08-16):** 아래 `ready` 에셋·Visual Kit 색은 **현재 runtime 미러로 계속 유효**(코드 미변경)하나, **Home 화면 배치용 신규 확정**(Hero 재생성·avatar 신규 시각·illustration 선택)은 Home Visual Master + New Implementation Contract(H1/H5/H6) 이전 금지 — `redesign-r1-home-brand-assets` SPLIT(A/B) 참고. robot+globe hero illustration 등 legacy 자산은 `LEGACY VISUAL CANDIDATE — NOT NEW MASTER AUTHORITY`.
+
 > **SSOT 경로:** `packages/ui/brand/` · `brand.manifest.json` · 소비자/AI 표기 **퍼뜩** · 코드명 AI Profit OS  
 > **Visual Kit (ADR-017):** Light `#F6F4FC` + Purple `#6B3CFF` + profit `#12B76A` · **플래시 통찰 마크** · 한글 워드마크 · AI=추상 아바타(성별·인간형 0)
 > **ready 에셋:** `assets/icons/app-icon-1024.png` · `maskable-source-1024.png` · `wordmark/wordmark-dark.png` · `ai/avatar-512.png` · `og/og-default.png`  
@@ -1127,6 +1229,7 @@ interface UserNotificationPrefs {
 > **테마:** Consumer = **ADR-017 `peotteok-light` Light+Purple 단일 출시 테마** · Admin = **Ops Light**
 > **SSOT:** `packages/ui/tokens/peotteok-light.specification.md` → runtime `lux-fintech.ts` + `lux-theme.css`
 > **legacy:** 아래 v7.22 dark hex 표는 이력 설명이며 신규 Consumer 구현 입력이 아니다. 실행값은 Token SPEC만 사용한다.
+> **ADR-018 pointer(2026-08-16):** 위 실행값(Token SPEC/`lux-fintech.ts`)은 **현재 runtime 색 미러로 계속 유효**하나, Home 등 ADR-018 §9 신규 Visual Master가 등록되는 화면에는 **자동 입력값이 아니다** — 방향(Light+Purple)은 유지되어도 정확한 hex 적용 규칙은 새 Home Visual Contract(H5)가 Master에서 재확정한다(ADR-018 §6·§14).
 
 | 역할 | token (lux-fintech) | hex | 용도 |
 |------|-------|-----|------|
@@ -1493,7 +1596,8 @@ Canon: `kyc-guide` → `kyc-doc-capture` → `kyc-confirm` · Lux 금융 톤 · 
 
 > **SSOT:** `CONSTITUTION/28_LUX_FINTECH_DESIGN_AND_MOTION.md`  
 > **토큰:** `packages/ui/tokens/lux-fintech.ts` + `lux-theme.css` (`@theme` · Tailwind v4)  
-> **성능 tier 수치:** §29/26 SSOT (여기서 재정의 ❌)
+> **성능 tier 수치:** §29/26 SSOT (여기서 재정의 ❌)  
+> **ADR-018 pointer(2026-08-16 · §33 전체 적용):** 본 §33(33.0~33.8)의 hex·모션·컴포넌트 수치는 **현재 runtime 코드의 기록**이며 코드는 미변경이다. 그러나 Home 등 ADR-018 §9로 새 Visual Master가 등록되는 화면에게는 이 절의 값이 **자동 입력값이 아니다** — 새 화면은 Visual Master → Visual Contract(H5) → Implementation Contract(H6)에서 값을 재추출한다(§33.1/§33.5 개별 pointer 참고 · Motion 방향성(§33.2~33.4 절대 윤리 금지 항목)은 계속 유효, 정확한 수치만 재확인 대상).
 
 ### 33.0 피드백 검토 — 동의 vs 수정 (오차0)
 
@@ -1520,7 +1624,9 @@ Canon: `kyc-guide` → `kyc-doc-capture` → `kyc-confirm` · Lux 금융 톤 · 
 | DopamineButton name | ⚠️ **rename** | **`MotionCTA`** (카지노 연상 ↓) |
 | 구 `#00FF87`/`#FF2E63`/`#1A56FF`/`#8B5CF6` plan 표 | ❌ **폐기(v7.22.50 U13)** | shipped `lux-fintech.ts` only |
 
-### 33.1 Visual Identity Lock (중복0 · ADR-017)
+### 33.1 Visual Identity Lock (중복0 · ADR-017 · **2026-08-16 ADR-018 pointer**)
+
+> **ADR-018:** 아래 `luxFintech.color` 값은 **현재 runtime 코드 미러로 계속 유효**(코드 미변경)하나, Home 등 새 Visual Master가 등록되는 화면의 **자동 기본값이 아니다**(ADR-018 §1.2 "old color treatment 자동 채택 금지"). 새 Home Visual Contract(H5)는 이 표를 그대로 복사하지 않고 Master에서 재추출한다.
 
 ```typescript
 // peotteok-light.specification.md → lux-fintech.ts runtime mirror
@@ -1632,6 +1738,8 @@ interface HomePayoutCounterProps {
 
 ### 33.5 Tailwind / Animation Tokens
 
+> **ADR-018 pointer(2026-08-16):** 아래 token mirror는 **현재 runtime 코드**로 계속 유효하나, 새 Home Visual Contract(H5)가 이 값을 자동으로 상속하지 않는다 — Visual Master에서 재확인 후 필요 시 새 token 확장을 별도 L2 변경으로 추가한다(임의 확장은 여전히 금지).
+
 ```typescript
 // packages/ui/tokens/lux-theme.css (@theme · Tailwind v4) — hex는 lux-fintech.ts 미러만
 extend: {
@@ -1678,7 +1786,9 @@ extend: {
 > **헌법:** 사진/PNG 목업은 로고·톤·여백이 **서로 다름**. 픽셀 SSOT로 쓰면 화면이 깨지거나 화면마다 다른 앱이 된다.  
 > **잠금:** 구현·에이전트는 **시각 복제 금지**. 구조·플로우 의도만 허용.
 
-#### 33.8.1 권위 사다리 (오차0 · 상위 승)
+#### 33.8.1 권위 사다리 (오차0 · 상위 승 · **일반 미승인 mockup 전용** — 2026-08-16 ADR-018 분리)
+
+> **적용 범위:** 아래 사다리는 **일반 미승인 mockup/reference 이미지**(ADR-013 기본값)에 적용된다. Owner가 "APPROVED VISUAL MASTER"로 명시 지정하고 ADR-018 §9 intake를 거쳐 등록한 **Founder-approved Visual Master** 화면은 이 사다리 대신 **ADR-018 §3 Visual Authority hierarchy**(Visual Master → Visual Contract → Implementation Contract → tokens/컴포넌트 → runtime)를 따른다. 두 사다리를 섞지 않는다.
 
 | 순위 | SSOT | 용도 |
 |------|------|------|
@@ -1687,11 +1797,14 @@ extend: {
 | 3 | 본 플랜 절(§5/§7/§48…) + Canon wire | 화면 위계·필수 블록·CTA |
 | — | ~~사진 PNG 목업~~ | **레포 삭제됨** · 재추가 금지 · 인덱싱 제외 |
 
-**충돌 시:** 1>2>3만. 외부 사진·기억 속 목업과 다르면 **무시**.
+**충돌 시(일반 미승인 mockup):** 1>2>3만. 외부 사진·기억 속 목업과 다르면 **무시**.  
+**Founder-approved Visual Master 화면:** ADR-018 §3 사다리 적용 — Visual Master/Visual Contract가 이 표보다 우선한다(Functional Authority는 별도 사다리로 계속 유효, ADR-018 §3 하단).
 
-#### 33.8.2 사진 목업 — 강제 무시 목록 (결함0)
+#### 33.8.2 사진 목업 — 강제 무시 목록 (결함0 · **UNAPPROVED / REFERENCE MOCKUP ONLY** — Founder-approved Visual Master 예외)
 
-에이전트/구현이 사진에서 **절대 가져오면 안 되는 것:**
+> 본 절은 **미승인·참고용(reference) mockup**에만 적용된다. Owner가 "APPROVED VISUAL MASTER"로 명시 지정하고 ADR-018 §9 intake를 거쳐 등록된 화면은 아래 무시 목록에서 **제외**되며, 그 화면은 대신 해당 Visual Contract(측정값)를 따른다.
+
+에이전트/구현이 사진에서 **절대 가져오면 안 되는 것 (미승인 mockup 기준):**
 
 - 로고·워드마크·파비콘·스플래시 (→ Brand Kit만)
 - 색 헥스·그라데이션·그림자·블러 (→ Lux tokens)
@@ -1702,7 +1815,9 @@ extend: {
 
 **허용 (구조 의도만):** 블록 순서 · Primary 1개 · 정보 위계(제목>금액>CTA) · 화면 목적(진행/성공/중단)
 
-#### 33.8.3 Canon Surfaces (진짜 시각 SSOT)
+#### 33.8.3 Canon Surfaces (Functional / Structural Truth — **2026-08-16 ADR-018 정정: 시각 SSOT 아님**)
+
+> **정정(ADR-018):** Canon은 **기능/구조적 truth**(어떤 블록·필드·CTA·`forbidden`이 있어야 하는가)다. **정확한 visual authority**는 Canon이 아니라 `Founder-approved Visual Master → Visual Contract → Implementation Contract`(ADR-018 §3)다. 아래 "Canon wire 필수 필드"는 계속 유효하지만 geometry·색·spacing 등 시각 값의 SSOT는 아니다.
 
 ```
 packages/ui/canon/
@@ -1733,16 +1848,21 @@ packages/ui/canon/
 | MUP7 | Canon 없이 화면 추가 | `verify:canon-surfaces` Fail |
 | MUP8 | 성공률/영문 헤더 목업 잔재 | §48.0 + copy CI |
 
+> **예외(2026-08-16 ADR-018):** 위 MUP1~MUP8 및 아래 33.8.5의 절대 규칙은 **Founder-approved / ADR-018 §9 registered / `visual-locks.v1.json` LOCK된 Visual Master surface**에는 그대로 적용되지 않는다 — 그 화면은 pixel-accurate 구현이 **의무**다(`.cursor/rules/visual-master-intake.mdc` 역할 잠금). 일반 미승인 mockup 규칙(픽셀 diff 금지·"목업이랑 똑같이" 거부·사진 불일치=비결함)은 **그 외 모든 화면**에서 계속 100% 유효하다.
+
 #### 33.8.5 에이전트 운영 규칙 (중복0)
 
 1. UI 작업 시 **사진 목업을 열지 않음** (기본). 열어도 구조 의도만.  
 2. 구현 전 Canon wire + Brand + Lux 확인.  
 3. “목업이랑 똑같이” 요청 → **Canon/토큰 기준으로 재해석** 후 구현 (픽셀 맞추기 거부).  
-4. 리뷰 지적에 사진-픽셀 불일치 = **비결함** (ADR-013). Canon/플랜 불일치만 결함.
+4. 리뷰 지적에 사진-픽셀 불일치 = **비결함** (ADR-013). Canon/플랜 불일치만 결함.  
+5. **예외(ADR-018):** 대상 화면이 Founder-approved Visual Master로 등록되어 있으면 위 1~4가 아니라 `visual-master-intake.mdc`의 pixel-accurate 구현 규칙을 따른다 — 그 화면의 Visual Contract 불일치는 **결함**이다.
 
 ---
 
 ## 34. Consumer Theme 출시 게이트
+
+> **ADR-018 pointer(2026-08-16):** 아래 체크리스트는 **현재 runtime의 ADR-017 `peotteok-light` 이력**이며, ADR-018 §9로 새 Visual Master가 등록되는 화면(Home 등)의 **자동 입력값이 아니다**. 값 자체는 코드 미변경으로 계속 유효하되, 새 Home Visual Contract는 이 표를 복사하지 않고 Master에서 재추출한다(ADR-018 §6). 신규 등록 화면은 이 표와 별개로 자신의 Visual Contract 게이트를 추가로 통과해야 한다.
 
 - [ ] ADR-017 Peotteok Light applied · Lux Dark runtime path 0
 - [ ] CountUp fires only on real settlement E2E
