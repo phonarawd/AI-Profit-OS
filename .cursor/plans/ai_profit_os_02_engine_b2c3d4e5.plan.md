@@ -660,7 +660,8 @@ flowchart TD
 
 > **Founder lock (v7.22.41):** eBay·Amazon·Yahoo! JAPAN Auction = **공식 협력사** · 유저 표기=UI **§38.10** (로고+LabelKo).  
 > **Day-1 pricing leg (코드):** 아래 P0 표 **유지** · Amazon/Yahoo **leg 데이터** = todo `market-partner-adapters-phase1` (Phase1+).  
-> **v7.22.32 이력:** JP SMS 게이트로 yahoo **adapter 일시 배제** → v7.22.41 **협력사 확정·adapter 복원 todo**.
+> **v7.22.32 이력:** JP SMS 게이트로 yahoo **adapter 일시 배제** → v7.22.41 **협력사 확정·adapter 복원 todo**.  
+> **CURRENT FOUNDER AUTHORITY (2026-08-16 FINAL · §0.0.2b):** `yahoo_jp` / Yahoo! JAPAN Auction = **PERMANENTLY_FORBIDDEN**. 위 v7.22.41 Yahoo 협력·Phase1+ restore 문구는 **HISTORICAL ONLY · NO CURRENT OR FUTURE AUTHORITY**. 데이터/관측/listing/connector/future candidate **0**. eBay = **KEEP_EXISTING_API**. Amazon Phase1+는 본 절 범위 밖(신규 추가 아님).
 
 | 우선 | buy leg | sell leg | 비고 |
 |------|---------|----------|------|
@@ -692,7 +693,7 @@ flowchart TD
 |------------|------------|-----------------|--------------|-----------------|
 | ebay_* | `ebay` | true | always | Day-1 |
 | amazon_* | `amazon` | true | always | Phase1+ |
-| yahoo_jp | `yahoo_jp` | true | always | Phase1+ |
+| yahoo_jp | `yahoo_jp` | true | always | Phase1+ · **HISTORICAL ONLY · PERMANENTLY FORBIDDEN BY CURRENT FOUNDER AUTHORITY (2026-08-16)** |
 | pokemontcg | `pokemontcg` | true | edu | catalog |
 | ygoprodeck | `ygoprodeck` | true | edu | catalog |
 
@@ -703,7 +704,8 @@ flowchart TD
 - **Card catalog / reference price hint:** `pokemontcg` + `ygoprodeck` **만** (자동 Opportunity 단독 근거 금지)  
 - **FX:** `coingecko` + `frankfurter` **만**  
 - `PriceObservation.source` = `ebay` \| `admin` \| `pokemontcg` \| `ygoprodeck` \| `coingecko` \| `frankfurter` · ebay행은 `marketplaceId` 필수  
-- **`yahoo_jp` / `amazon_*`:** v7.22.41 **공식 협력사** · UI §38.10 **항상 표기** · listing leg=Phase1+ adapter todo · **stub without partner registry = 결함**
+- **`yahoo_jp`:** v7.22.41 협력/Phase1+ 문구 = **HISTORICAL ONLY** · **CURRENT = PERMANENTLY_FORBIDDEN** (SOURCE_OBSERVATION/LISTING_LEG/CONNECTOR/FUTURE_CANDIDATE = NO)  
+- **`amazon_*`:** v7.22.41 **공식 협력사** · UI §38.10 **항상 표기** · listing leg=Phase1+ adapter todo · **stub without partner registry = 결함** · 본 재정렬에서 신규 웹파서 소스로 추가하지 않음
 - Admin override = 정식 leg (`marketId=admin`) · 이미지 없으면 Admin R2 업로드 필수(기본)  
 - 유저 카피: `*MarketLabelKo` + **§38.10 partner 로고** · `verify:listing-legs-day1` · `verify:market-partner-trust`
 
@@ -740,9 +742,60 @@ flowchart TD
 KREAM/번개/Chrono24/TCGPlayer/Cardmarket/HTML 스크래핑을 listing adapter로 넣는 것은 **Founder L3 Change Control 전 금지.**  
 `nativeCurrency` 현행 enum=`USD|GBP|EUR|AUD|USDT` · JPY/KRW는 FX fail-closed (`verify:fx-snapshot-formula`). KR/JP 관측을 listing에 넣으려면 **별도 additive 계약**이 필요하다.
 
-**16-source 조사 결론 (구현 0):** 공식 공개 개발자 API로 이미지+현재가를 바로 쓸 수 있는 후보는 **eBay Browse(이미 Day-1)** 가 유일하다. FASHIONPHILE은 공식 `agents.md` + 공개 Shopify `products.json`(id/image/price)이 확인됐으나 **listing leg가 아니다.** 나머지 14는 파트너/셀러 API·키 중단·공개 API 없음·또는 시세 집계기(카드픽/포카허브)다. POKARD 공식 마켓 신원은 **확인 불가.**
+**16-source 조사 결론 (구현 0 · Session B · API 기준):** 공식 공개 개발자 API로 이미지+현재가를 바로 쓸 수 있는 후보는 **eBay Browse(이미 Day-1)** 가 유일하다. FASHIONPHILE은 공식 `agents.md` + 공개 Shopify `products.json`(id/image/price)이 확인됐으나 **listing leg가 아니다.** 나머지 14는 파트너/셀러 API·키 중단·공개 API 없음·또는 시세 집계기(카드픽/포카허브)다. POKARD 공식 마켓 신원은 **확인 불가.**
+
+> **SUPERSEDE (2026-08-16 FINAL · §0.0.2b):** 「공개 API 없음 → HOLD」는 Founder 수집 원칙과 불일치. Session B의 API-HOLD는 **관측 층 판정 권위가 아니다.** 층 분리·Day-1 listing lock·todo 0은 유지.
 
 **다음 실행:** File-Serial상 03 pending=0 후 · Founder가 SOURCE_OBSERVATION 층을 명시 L3 승인할 때만 Engine **가산 todo 1개**로 최소 계약. 지금 todo 추가=File-Serial 점프=금지.
+
+### 0.0.2b GLOBAL PUBLIC WEB DATA REBASE (2026-08-16 FINAL · research record · todo 0)
+
+> **Owns:** 본 절 = Founder 최종 수집 원칙 재정렬 기록만. **신규 frontmatter todo 0** · completed 재실행 0 · 03 UI/Home **미수정** · runtime parser/scraper/crawler/DB/Money/Admin **0**.  
+> **권위:** eBay = `KEEP_EXISTING_API_CONNECTOR` · Yahoo Japan = `PERMANENTLY_FORBIDDEN` · 그 외 = **API 유무가 아니라** 공개 상품 페이지에서 대표 이미지+현재 가격+식별값을 우회 없이 읽을 수 있는가.  
+> **실행 권한:** 본 절은 listing-leg 인가가 아니다. `SOURCE_OBSERVATION != LISTING_LEG`.
+
+**판정 기준 (PASS 전부 AND):** `PUBLIC_WEB_ACCESS` · `IMAGE_PARSE_WITHOUT_API` · `CURRENT_PRICE_PARSE_WITHOUT_API` · `STABLE_PRODUCT_ID_OR_URL` · `NO_ACCESS_CONTROL_BYPASS`.  
+**DROP:** API/로그인/CAPTCHA/private token/seller·partner credential이 필수 · 가격 의미 불명 · 대표 이미지 식별 불가.  
+**금지:** 로그인/CAPTCHA/Cloudflare/anti-bot/rate-limit/IP rotation/fingerprint 우회 · 설명/리뷰/셀러 프로필 수집 확대.
+
+**공통 관측 계약 (신 필드 신설 전 기존 재사용):** `source` · `externalItemId` · `productUrl`(`listing.v1.url`) · `imageUrl` · `nativeAmount` · `nativeCurrency` · `priceKind`(가산 후보) · `observedAt` · `staleAt`. matching hint만 `title`/`brand`/`model`/`category`.  
+`priceKind` 미확인 = `PRICE_SEMANTICS_UNVERIFIED` · 억지 PASS 금지. last sale≠현재 구매가 · bid≠ask · shipping/coupon/할부≠상품가.
+
+**사이트별 장애 격리:** KREAM DEGRADED ≠ Mercari/FASHIONPHILE/eBay 정지. 기존 `provider-health` `HEALTHY|DEGRADED|STALE|BLOCKED` + display `unknown` **REUSE**. 가산 metric 후보: items discovered · image/price/currency success · missing stable ID · zero result · price anomaly · last successful observation · schema drift.
+
+**JPY/KRW:** `listing.v1` `nativeCurrency` enum=`USD|GBP|EUR|AUD|USDT` · `normalizeNativeToUsdt(JPY)` fail-closed (`verify:fx-snapshot-formula`). 수집 가능 ≠ Engine 정규화 가능. 표기: `WEB_PARSING_POSSIBLE` / `BUT_NORMALIZATION_BLOCKED_BY_CURRENCY_CONTRACT`. **본 세션 Money/FX runtime 수정 0.**
+
+**Matching:** Collection ≠ matching. 기존 `watch-match`/`bag-match`/`card-match` **REUSE**. 이미지 유사도 단독 금지.
+
+**최종 Source Matrix (연구일 2026-08-16 · 직접 확인 못한 칸=확인 불가 · 제3자 scraper 문서는 PASS 근거 아님):**
+
+| Source | Public w/o login | Image w/o API | Price w/o API | Stable ID | Price Kind | List/paging | Rendering | API required? | Final Decision | Evidence |
+|---|---|---|---|---|---|---|---|---|---|---|
+| eBay | n/a (API keep) | Browse image | Browse price | `itemId` | listing_sale | API offset/limit | API JSON | YES — **keep existing** | **KEEP_EXISTING_API** | 재조사 제외 · `workers/ebay-adapter` 재사용 |
+| Yahoo Japan | — | — | — | — | — | — | — | — | **PERMANENTLY_FORBIDDEN** | 판정 대상 아님 · HISTORICAL ONLY |
+| KREAM | YES (indexed public `/products/{id}`) | YES `kream-phinf.pstatic.net` | YES 즉시구매가 | `/products/{n}` | lowest_ask / buy_now · 최근거래가≠현재가 · 발매가=retail · 배송 3,000원≠상품가 | LIST 확인 불가(본 세션 HTML 미수령) | JS 추정 · hydration 확인 불가 | NO | **API_FREE_WEB_CONDITIONAL** | WEB indexed `kream.co.kr/products/25623`·`51547` · WebFetch timeout |
+| Bunjang | YES 홈 추천+가격 | LIST 이미지 확인 불가 · CDN `media.bunjang.co.kr`는 문서 | YES 홈 `원` listing | `pid` `/products/{pid}` | listing_sale · shippingFee≠price | 홈 다건 · 상세 본 세션 404 | 확인 불가 | NO for public view | **API_FREE_WEB_CONDITIONAL** | OFFICIAL_SITE 홈 실측 · 상세 404 · 파트너 API는 별개 |
+| POKARD | 확인 불가 | 확인 불가 | 확인 불가 | 확인 불가 | 확인 불가 | 확인 불가 | 확인 불가 | 확인 불가 | **DROP_API_REQUIRED_OR_INACCESSIBLE** | 공식 마켓 신원 **확인 불가** · IDENTITY_UNVERIFIED |
+| 카드픽 | YES `/cards/{slug}` · `/facts/{slug}` | 카탈로그(pokemontcg.io) · listing 사진 아님 | YES 공개 JSON `price.krw` | slug | **reference_price** (TCGplayer market→KRW) · 국내 실거래/구매가 아님 | search/hot | 공개 JSON | NO | **API_FREE_WEB_CONDITIONAL** | `cardpick.kr/facts/mew-ex-232` 실측 · 1차 마켓 아님 |
+| 포카허브 | YES 카드 상세 | pokemontcg.io 카탈로그 | YES 추정/시장가 표 · 등급·한일영 비교는 로그인 | `/{lang}/cards/{set}/{n}` | reference / last_sale median / 추정 · 현재 구매가 아님 | 카드 목록 | 확인 불가 | NO for public estimate | **API_FREE_WEB_CONDITIONAL** | `pokahub.com/ko/cards/sv8/2` 실측 · 집계기 |
+| Mercari JP | YES 공개 `/item/m{id}` (indexed) | 확인 불가(본 세션 404) | indexed 일부 `¥` · 본 세션 live 404 | `m`+digits | listing_sale · 送料込み≠상품가 혼동 주의 · 가격미설정 매물 존재 | 확인 불가 | JS 앱 추정 | C2C 공개 API 없음 · Shops≠C2C | **API_FREE_WEB_CONDITIONAL** | WEB indexed `jp.mercari.com/item/m44107125255` · fetch 404 |
+| SNKRDUNK | YES 상세 셸 | 본 세션 HTML에 상품 이미지 **없음** | 본 세션 HTML에 가격 **없음** | SKU `/sneakers/{SKU}` | 확인 불가(최저 ask 추정 금지) | 확인 불가 | **BROWSER_RENDER_REQUIRED** 추정 | NO | **API_FREE_WEB_CONDITIONAL** | `snkrdunk.com/en/sneakers/CD2563-101` 실측=크롬만 |
+| StockX | YES 리스트 indexed Lowest Ask | indexed `images.stockx.com` | indexed Lowest Ask · last sale≠ask | url_key | lowest_ask · bid/last_sale 혼동 | 리스트 다건 | HTTP=JS bundle only · **BROWSER_RENDER_REQUIRED** | 공개 시세 API 아님 | **API_FREE_WEB_CONDITIONAL** | WEB indexed `stockx.com/air-jordan-1-high-og-black-white` · 직접 fetch=webpack chunk · 제3자 scraper 문서는 근거 제외 |
+| GOAT | YES 리스트 indexed `$` | 확인 불가 | indexed 리스트/상세 `$` · New/Used/Offer 혼재 | slug+SKU | lowest listing / buy_now · bid=Make Offer | 리스트 다건 | 본 세션 timeout | 공개 개발자 API 없음 | **API_FREE_WEB_CONDITIONAL** | WEB indexed `goat.com/sneakers` · WebFetch timeout |
+| Vestiaire | YES indexed 상세 | 「N product photos」 | YES `$` listing · 할인/쿠폰 별도 | numeric Reference | listing_sale | 확인 불가 | 본 세션 timeout | Seller API≠공개 카탈로그 | **API_FREE_WEB_CONDITIONAL** | WEB indexed `…/constance-…-35537771.shtml` · WebFetch timeout |
+| The RealReal | YES 리스트 indexed | 확인 불가 | YES 리스트 `$` · Est. Retail≠판매가 | product slug | listing_sale / retail 구분 필요 | 카테고리 리스트 | 본 세션 timeout | Vendor API≠공개 카탈로그 | **API_FREE_WEB_CONDITIONAL** | WEB indexed designer 리스트 · WebFetch timeout |
+| FASHIONPHILE | YES | YES Shopify CDN | YES `variants[].price` + 페이지 `$1,425` | Shopify id + handle + SKU `1957753` | listing_sale · Est. Retail $2,690≠판매가 · shipping 별도 | `products.json` 30건/페이지 | JSON storefront | NO | **API_FREE_WEB_PASS** | `products.json` 실측 id/image/price=1425.00 · `/products/{handle}` `$1,425` |
+| Chrono24 | YES 리스트 indexed | YES `img.chrono24.com` | YES listing `$` · shipping 별도 | listing URL + ref | listing_sale · list/reference≠개별 호가 | `showpage` | JS/cookie wall · **BROWSER_RENDER_REQUIRED** | 공개 수집 API 없음 | **API_FREE_WEB_CONDITIONAL** | WEB indexed `chrono24.com/rolex/ref-126500.htm` · 직접 fetch=JS/cookie |
+| TCGplayer | YES | 본 세션 이미지 URL **미확인** | YES As low as / Market Price / Most Recent Sale / 개별 listing | `product/{id}` | **혼재** listing_sale vs market_price vs last_sale · shipping≠상품가 | 10/25/50 · 페이지 숫자 | 공개 HTML 실측 | 신규 키 중단(무관) | **API_FREE_WEB_CONDITIONAL** | `tcgplayer.com/product/113669` 실측 · 이미지 위치 미확인 |
+| Cardmarket | YES indexed From € / offers | 확인 불가 | YES From / Trend / 7·30d avg / 개별 오퍼 | path slug | lowest offer vs trend vs average | 오퍼 목록 | 자동화 HTTP=Cloudflare **blocked** | 신규 API 신청 중단(무관) | **API_FREE_WEB_CONDITIONAL** | WEB indexed `…/Rayquaza-V-V3` · 직접 fetch=CF block · 우회 금지 |
+
+**레포에 이미 있는 추가 소스 (신규 추가 아님):** Amazon `workers/amazon-adapter` Phase1+ PA-API · pokemontcg/ygoprodeck catalog · admin leg. 본 재정렬의 웹파서 후보에 임의 편입 금지.
+
+**Yahoo leftover (본 세션 runtime 수정 0):** `workers/yahoo-jp-adapter` · `listing.v1`/`price-observation.v1` enum · `market-partner.registry.json` `yahoo_jp` · `verify:listing-legs-day1` Phase1+ 문구. 현재 권한처럼 읽히면 **HISTORICAL ONLY**. 삭제/재구현은 별도 L3.
+
+**Repo reuse:** ebay-adapter/ingest/`externalItemId`/`nativeAmount`/`observedAt`/`staleAt`/`assetImageUrl`/`provider-health`/watch·bag·card-match = **REUSE**. `priceKind` = **EXTEND_LATER**. JPY/KRW native enum = **EXTEND_LATER**(Money/FX 이번 세션 금지). 새 parser framework = **NOT_NEEDED**. 새 listing-leg 권한 = **NOT_NEEDED**.
+
+**다음 실행:** `API_FREE_WEB_PASS`로 확정된 source만 Parser Implementation Contract 작성 가능. 아직 runtime 구현 시작 금지. 지금 todo 추가=File-Serial 점프=금지.
 
 ### 0.0.3 파이프라인 (오류0 · v7.22.32)
 
