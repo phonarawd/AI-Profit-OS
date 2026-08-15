@@ -797,6 +797,57 @@ KREAM/번개/Chrono24/TCGPlayer/Cardmarket/HTML 스크래핑을 listing adapter�
 
 **다음 실행:** `API_FREE_WEB_PASS`로 확정된 source만 Parser Implementation Contract 작성 가능. 아직 runtime 구현 시작 금지. 지금 todo 추가=File-Serial 점프=금지.
 
+> **SUPERSEDE (2026-08-16 CONDITIONAL FINAL · §0.0.2b-1):** 위 표의 `API_FREE_WEB_CONDITIONAL` 13칸은 **HISTORICAL**. 최종 판정 권위 = 아래 0.0.2b-1. eBay / Yahoo / FASHIONPHILE / POKARD 불변.
+
+### 0.0.2b-1 CONDITIONAL SOURCE FINAL VERIFICATION (2026-08-16 · research record · todo 0)
+
+> **Owns:** CONDITIONAL 13개 최종 분류만. **신규 frontmatter todo 0** · runtime parser/scraper/Playwright/DB/Money/Home/Admin/03 UI **0** · Yahoo leftover 삭제 **0**.  
+> **권위:** eBay=`KEEP_EXISTING_API` · Yahoo=`PERMANENTLY_FORBIDDEN` · FASHIONPHILE=`API_FREE_WEB_PASS`(재검증 0) · POKARD=`DROP`(재검증 0).  
+> **실행 권한:** `SOURCE_OBSERVATION != LISTING_LEG`. 파싱 성공 ≠ Opportunity publish.
+
+**판정 3종만:** `API_FREE_WEB_PASS` · `REFERENCE_ONLY` · `DROP`. (`BLOCKED_UNVERIFIED` = 본 세션 0.)
+
+| Source | Public Access | Image Path | Price Path | Stable ID | Price Kind | List Discovery | Browser Required | Bypass Required | Final Decision | Exact Blocker/Evidence |
+|---|---|---|---|---|---|---|---|---|---|---|
+| KREAM | YES 로그인 없이 `/products/{n}` | `kream-phinf.pstatic.net` `대표이미지#1` (로고/배너와 구분) | 렌더 DOM `즉시구매가` | `/products/{n}` | **buy_now / lowest_ask** · 최근거래가≠현재가 · 발매가=retail · 배송≠상품가 | `/brands/{Brand}` + 상세「이 브랜드의 다른 상품」 | YES (HTTP timeout · 검색 렌더로 상세 수령) | NO | **API_FREE_WEB_PASS** | 실측 `products/187715`·`245969`·`102477`·`279358`·`526847` 즉시구매가+대표이미지 URL |
+| Bunjang | YES 로그인 없이 `/products/{pid}` | 1st-party `media.bunjang.co.kr` (HTML preconnect + 「상품 이미지 CDN」주석) · `static.bunjang.co.kr/web/ui/og-image.webp`=로고 제외 | 렌더 DOM `## {n}원` | `pid` `/products/{pid}` | **listing_sale** · 배송비/무료배송≠상품가 | `/search/products?q=` 51,114건+가격 · 상세 유사상품 다건 | YES (raw HTML=`#root` 셸 · 상품데이터 0) | NO · 파트너 API 불필요 | **API_FREE_WEB_PASS** | 실측 `m.bunjang.co.kr/products/418735658` 510,000원 · 검색 목록 가격 다건 · robots `noimageindex` |
+| 카드픽 | YES `/cards/{slug}` · `/facts/{slug}` | 카탈로그(pokemontcg.io) · listing 사진 아님 · og=`/og.jpg` 사이트 이미지 | 공개 JSON `price.krw` | slug | **reference_price** · `clean_30d_median_krw` · TCGplayer market→KRW · disclaimer=해외 참고가 | search/hot · facts JSON | NO (facts JSON) | NO | **REFERENCE_ONLY** | `cardpick.kr/facts/mew-ex-232` 실측 · 「국내 거래는 다를 수 있습니다」 · 현재 구매 listing 아님 |
+| 포카허브 | YES `/{lang}/cards/{set}/{n}` | pokemontcg.io 카탈로그 | 페이지「적정가/추정가」· Market Price=90일 호가·체결 종합 | `/{lang}/cards/{set}/{n}` | **reference / estimate / last_sale median** · 등급·한일영 비교=로그인 | 홈 급등/급락/세트 목록 | 일부 | NO for public estimate | **REFERENCE_ONLY** | `pokahub.com/ko/cards/sv8/2` 「호가·추정을 종합한 참고가」 · 홈「시세·중앙값·트렌드」 · 현재 구매 listing 아님 |
+| Mercari JP | YES 로그인 없이 `/item/m{id}` · 구매절차 공개 | HTML `og:image` `static.mercdn.net/item/detail/orig/photos/m{id}_1.jpg` | HTML `product:price:amount` + `product:price:currency=JPY` · 페이지 `¥` 税込 | `m`+digits | **listing_sale** · 税込 · `送料込み` 라벨 별도 · 가격미설정/품절 스킵 | `/search?keyword=` 판매중 다건+¥ | NO for detail meta | NO | **API_FREE_WEB_PASS** | 실측 live `jp.mercari.com/item/m68113775278` amount=29280 · 검색 nike 다건 · 구 URL 404는 품절이지 사이트 폐쇄 아님 |
+| SNKRDUNK | YES 상세 셸 공개 | HTML `og:image` `cdn.snkrdunk.com/upload_bg_removed/...` (로고=`en-assets`/`brand-logo` 제외) | raw HTML 가격 **없음** · 검색 렌더 1건만 `US $69~ Buy Now` | SKU `/sneakers/{SKU}` | 미확정 (1건 추정 금지) | `/en/sneakers?type=hottest` 렌더=내비 셸 · 상품카드 0 | YES | 우회는 불필요하나 가격 경로 없음 | **DROP** | `PRICE_NOT_RELIABLY_AVAILABLE` + `NO_REPEATABLE_COLLECTION_PATH` · `DZ2538-300` HTML 101KB에 가격 0 · hottest 목록 공허 |
+| StockX | YES 로그인 없이 상품/관련상품 | 렌더 `images.stockx.com` · placeholder `stockx-assets...Product-Placeholder` 제외 | 렌더 `Lowest Ask` + `Buy Now` `$` | `url_key` + style code | **lowest_ask** (=Buy Now 현재 구매가) · Last Sale≠현재가 · Bid≠Ask · retail≠ask | 관련상품 `Lowest Ask` 다건 · 검색 | YES (HTTP 403/JS bundle) | NO (일반 Chrome·검색 렌더로 상세 수령 · 우회 구현 금지) | **API_FREE_WEB_PASS** | 렌더 실측 `air-jordan-3-retro-tinker-hatfield` $219 · related Lowest Ask · `air-jordan-1-low-lemonade-w` images.stockx.com + Buy Now |
+| GOAT | YES 로그인 없이 상세 | 렌더 `image.goat.com/transform/v1/attachments/product_template_pictures/...` | 렌더 `Buy New` `$`/`S$` | slug + SKU 테이블 | **lowest listing / buy_now** · Buy Used 별도 · Make Offer=bid≠현재가 · 가 없는 상품 스킵 | `/sneakers/brand/{brand}` + 상세 다건 URL | YES (HTTP 403/timeout) | NO | **API_FREE_WEB_PASS** | 렌더 실측 `...-ir1996-001` image.goat.com + Buy New S$408.24 + SKU `IR1996 001` · 브랜드 리스트는 카피만(가격 그리드 미수령)이나 상세 URL 반복 가능 |
+| Vestiaire | YES buyer-facing 상세 | 렌더「Photo 1 … N product photos」갤러리 (로고≠상품) · HTTP 403으로 CDN URL 미캡처 | 렌더 listing `$` · 취소선=할인 전 · `Sold at`≠현재가 | numeric `Reference` + `.shtml` | **listing_sale** (seller suggested) · 쿠폰/WELCOMEVC≠상품가 · 휴가 셀러는 현재 구매 불가면 스킵 | `/women-bags/handbags/{designer}/` + 상세 다건 | YES (HTTP 403) | NO · Seller API 무시 | **API_FREE_WEB_PASS** | 렌더 실측 `...-62875551.shtml` $6,719 Add to Bag · Reference `62875551` · `...-42242981` $42,512 · 구 `35537771`는 카테고리 SEO로 강등 |
+| The RealReal | 일반 Chrome 추정 YES · 자동화 fetch=DataDome | 본 세션 상품 이미지 URL **미확인** | 검색 렌더 `$32,950.00` · Est. Retail≠판매가 | slug + `Item # HER818893` | listing_sale 후보 | 디자이너/카테고리 리스트 | YES | **YES** DataDome 「Press & Hold to confirm you are a human」 | **DROP** | `ANTI_BOT_BYPASS_REQUIRED` · WebFetch 카테고리=챌린지 · HTTP 403 · 우회 금지 |
+| Chrono24 | YES 로그인 없이 listing | 렌더 `img.chrono24.com/images/uhren/{id}-{hash}-Square70.jpg` (로고 `static.chrono24.com` 제외) | 렌더 listing `$` + Basic Info `Price` | `--id{n}.htm` + `Listing code` | **listing_sale** · shipping 별도 · 모델 평균/ref 페이지≠개별 호가 · negotiable 표시 구분 | `/rolex/ref-{ref}.htm` 다건+$ · `showpage` | YES (HTTP 403 · JS/cookie interstitial) | NO (쿠키 동의≠우회 · 일반 렌더로 listing 전문 수령) | **API_FREE_WEB_PASS** | 렌더 실측 `--id34211461.htm` $34,900 · Listing code `KD9QD0` · ref-126500 리스트 다건 호가 |
+| TCGplayer | YES 로그인 없이 `/product/{id}` | 브라우저 렌더 상품 히어로 · 1st-party host `product-images.tcgplayer.com` / `tcgplayer-cdn.tcgplayer.com` (CSP img-src) · raw HTML 셸에는 URL 없음 | 렌더 `As low as` + 개별 listing `$` · **Market Price≠현재 구매가** · **Most Recent Sale≠현재 구매가** | `/product/{id}` | **listing_sale** = As low as / 오퍼 행 가격 · shipping 별도 | 검색 grid · 10/25/50 · 페이지 숫자 · Customers Also | YES (raw 41KB 셸) | NO | **API_FREE_WEB_PASS** | 렌더 실측 `product/113669` 66 listings · As low as $8.00 · 개별 $7.99+$0.99 ship · Market $27.03 · Recent Sale $36.47 |
+| Cardmarket | 일반 Chrome 추정 YES · 자동화 HTTP=403 | 본 세션 이미지 URL 미확인 | 검색 렌더 `From €` + 개별 오퍼 · Trend/7·30d avg≠현재 오퍼 | path slug | lowest offer 후보 vs trend/average | 오퍼 목록+필터 | YES | **YES** Cloudflare 403 | **DROP** | `CLOUDFLARE_BYPASS_REQUIRED` · 본 세션 HTTP 403 · 이전 세션 CF block · 우회 구현 금지 |
+
+**COUNTS (전 소스 포함):** `KEEP_EXISTING_API`=1 · `API_FREE_WEB_PASS`=9 (FASHIONPHILE+위 8) · `REFERENCE_ONLY`=2 · `DROP`=4 (POKARD+SNKRDUNK+The RealReal+Cardmarket) · `BLOCKED_UNVERIFIED`=0 · `PERMANENTLY_FORBIDDEN`=1.
+
+**PARSER EXTRACTION MAP (PASS only · 구현 0):**
+
+| source | list discovery | product ID | image | price | currency | priceKind | browser |
+|---|---|---|---|---|---|---|---|
+| FASHIONPHILE | `/products.json` page=30 | Shopify id + handle + SKU | Shopify CDN `variants`/featured | `variants[].price` + 페이지 `$` | USD | listing_sale | NO |
+| KREAM | `/brands/{Brand}` · 상세 추천 | `/products/{n}` | `kream-phinf.pstatic.net` 대표이미지#1 | DOM `즉시구매가` | KRW | buy_now / lowest_ask | YES |
+| Bunjang | `/search/products?q=` | `/products/{pid}` | 렌더 갤러리 `media.bunjang.co.kr` | DOM `{n}원` | KRW | listing_sale | YES |
+| Mercari JP | `/search?keyword=` 판매중 | `/item/m{id}` | `og:image` `static.mercdn.net/.../m{id}_1.jpg` | `product:price:amount` | JPY | listing_sale | NO (detail meta) |
+| StockX | 검색 · 관련상품 Lowest Ask | `url_key` | `images.stockx.com` (placeholder 제외) | DOM Lowest Ask / Buy Now | USD | lowest_ask | YES |
+| GOAT | `/sneakers/brand/{brand}` · 상세 URL 순회 | slug + SKU | `image.goat.com/.../product_template_pictures` | DOM `Buy New` (가 없으면 스킵) | USD (로케일 통화 혼재) | lowest listing / buy_now | YES |
+| Vestiaire | `/women-bags/handbags/{designer}/` | numeric Reference | 렌더 Photo 1…N 갤러리 | DOM listing `$` (`Sold at` 스킵) | USD (로케일 혼재) | listing_sale | YES |
+| Chrono24 | `/brand/ref-{ref}.htm` | `--id{n}.htm` + Listing code | `img.chrono24.com/images/uhren/` | DOM Price / Buy | USD (로케일 혼재) | listing_sale | YES |
+| TCGplayer | `/search/{line}/product` · 10/25/50 | `/product/{id}` | 렌더 히어로 · `product-images.tcgplayer.com` | DOM `As low as` / 오퍼 행 (Market/Last Sale 금지) | USD | listing_sale | YES |
+
+**BLOCKERS (계약 gap · 이번 세션 수정 0):**
+- KREAM / Bunjang = KRW · Mercari JP = JPY → `WEB_PARSING_POSSIBLE` / `BUT_NORMALIZATION_BLOCKED_BY_CURRENCY_CONTRACT` (`listing.v1` native enum에 JPY/KRW 없음).
+- `priceKind` 필드 미존재 → EXTEND_LATER. StockX는 Lowest Ask만 · TCGplayer는 As low as만 · GOAT는 Buy New만 허용.
+- GOAT/Vestiaire/Chrono24 로케일 통화 혼재 → 관측 시 `nativeCurrency` 페이지 표기 그대로. 억지 USD 환산 금지.
+- Vestiaire 이미지 CDN URL은 본 세션 HTTP 403으로 미캡처 → Contract에서 렌더 갤러리 `img` 1st-party host allowlist를 먼저 고정.
+- Yahoo leftover 삭제 금지(별도 dependency audit).
+
+**다음 실행:** eBay + 위 PASS 9개만 Parser Implementation Contract 작성 가능. REFERENCE_ONLY는 reference-data 계약 전 Opportunity current-price 금지. DROP 구현 금지. runtime parser 착수 금지. todo 추가=File-Serial 점프=금지.
+
 ### 0.0.3 파이프라인 (오류0 · v7.22.32)
 
 ```
