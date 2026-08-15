@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — UI & UX
-overview: v7.23.0 PART0~9 completed 불변 · 00 R0→01 Money R1→02 Engine R1 후 Redesign R1 Home→spotcheck→R2 Acquisition→R3 Wallet→R4 Core Loop→R5 Account Hub · ADR-017 Light+Purple·새 5탭 라벨·PART9 binding 보존.
+overview: v7.23.0 PART0~9 completed 불변 · 00 R0→01 Money R1→02 Engine R1 후 Redesign R1 Home→spotcheck→R2 Acquisition→R3 Wallet→R4 Core Loop→R5 Account Hub · ADR-017 Light+Purple·새 5탭 라벨·PART9 binding 보존 · v7.24.0(2026-08-16) ADR-018 Peotteok Visual Master Reset — R1 Home 시각(geometry) authority가 ADR-017→ADR-018로 승계, STEP5 Slice5/6(RightRail/Partner) SUPERSEDED/STOPPED, Founder Home Visual Master intake 대기(구현코드0).
 todos:
   - id: ui-preflight-constitution
     content: "[grok-4.5|256K] PART0 착수게이트 · **선행: Engine 02 Pre-UI Runtime Gate(§0.9 E-R1~E-R8) pending0 + Money money-user-benefits-read completed 필수(미충족 시 본 todo·이하 전부 착수 금지)** · BOOTSTRAP §0.6 실측기록(DB76/mig28/fn5·Canon·routes·Admin교차·verify live/pending) · **v7.22.50 감사 3정정 기록 흡수(§0.6 U13~U15·색토큰=lux-fintech·§29.6 Phase1+·eBay query: gap=Engine follow-up)** · File-Serial 재정렬 0 · 구현코드0 · 다음=market-partner-trust-surfaces"
@@ -150,13 +150,13 @@ todos:
     content: "[grok-4.5|256K] Redesign R1-2 · Brand Kit+markets manifest provenance/hash/public mirror · third-party logo AI재현0 · 자체 Hero/avatar transparent master · blocked/ready lifecycle · 현재 ready 재사용 우선·중복에셋0 · verify:brand-assets/market-partner-trust + verify:brand-asset-provenance 신설+CATALOG"
     status: pending
   - id: redesign-r1-home-product-contract
-    content: "[grok-4.5|256K] Redesign R1-3 · packages/ui/canon/contracts/peotteok-home-product-contract.v1.md 신설 · Facts/types/units/source/asOf/states/actions/allowlist/forbidden/zero-vs-absent/guest-auth 명시 · R0 fact-state registry와 1:1 · Visual/Implementation 섞기0 · verify:home-product-contract 신설+CATALOG"
+    content: "[grok-4.5|256K] Redesign R1-3 · packages/ui/canon/contracts/peotteok-home-product-contract.v1.md 신설 · Facts/types/units/source/asOf/states/actions/allowlist/forbidden/zero-vs-absent/guest-auth 명시 · R0 fact-state registry와 1:1 · Visual/Implementation 섞기0 · verify:home-product-contract 신설+CATALOG · 2026-08-16 ADR-018: 본 Product Contract는 Functional Authority(ADR-018 §3)이며 시각 authority(Visual Master)와 여전히 분리 — 착수 시점 변경 없음"
     status: pending
   - id: redesign-r1-home-contract-sync
-    content: "[grok-4.5|256K] Redesign R1-4 · Product→ADR-017→conflict-resolution→Implementation→Visual→wire→token SPEC→mapping→implementation-gate→manifest 전수 sync · semantic change면 v2 생성+before/after+affected gates, v1 in-place overwrite0 · 320~2560+ responsive/state truth/C01 COUNT lock · verify:canon-surfaces/home-product-contract/lux-theme-sync"
+    content: "[grok-4.5|256K] Redesign R1-4 · Product→ADR-017→conflict-resolution→Implementation→Visual→wire→token SPEC→mapping→implementation-gate→manifest 전수 sync · semantic change면 v2 생성+before/after+affected gates, v1 in-place overwrite0 · 320~2560+ responsive/state truth/C01 COUNT lock · verify:canon-surfaces/home-product-contract/lux-theme-sync · 2026-08-16 ADR-018 SUPERSEDE: sync 대상에서 ADR-017/conflict-resolution/Visual/mapping/implementation-gate(구 시각 체인)는 HISTORICAL로 제외하고 대신 ADR-018 §9 intake로 생성될 신규 Visual Contract/Implementation Contract를 sync 대상으로 삼는다 · Product Contract→Canon wire functional 필드(route/state/factSurface/forbidden)→manifest 동기는 유지 · Visual Master intake(ADR-018 §9) 완료 전 착수 금지"
     status: pending
   - id: redesign-r1-home-implementation
-    content: "[grok-4.5|256K] Redesign R1-5 STEP5 · C01 semantic binding→Shell/Header/Nav→Hero→Money→Opportunity→RightRail→Partner/Footer 순서 · HomePageClient/HomePrincipalRail/BalanceAwareHome/OpportunityCard 등 기존 실물 gap-only · peotteok-light token only · HomePageV2·core fetch/SDK/Nest 재작성0 · responsive/a11y/reduced-motion/perf"
+    content: "[grok-4.5|256K] Redesign R1-5 STEP5 · C01 semantic binding→Shell/Header/Nav→Hero→Money→Opportunity→RightRail→Partner/Footer 순서 · HomePageClient/HomePrincipalRail/BalanceAwareHome/OpportunityCard 등 기존 실물 gap-only · peotteok-light token only · HomePageV2·core fetch/SDK/Nest 재작성0 · responsive/a11y/reduced-motion/perf · 2026-08-16 ADR-018 VISUAL RESET: 본 STEP5 트랙(Slice 0–4 CLOSED · Slice 5 RightRail/Slice 6 Partner 착수 대기)은 시각 구현 관점에서 SUPERSEDED/STOPPED — C01 등 이미 반영된 비시각 semantic fix는 유지하되 Slice 5 이후 시각 작업은 Founder Home Visual Master intake(ADR-018 §9) → 새 Visual Contract → 새 Implementation Contract 없이 재개 금지 · 재개 시 Slice 번호를 그대로 이어받지 않고 새 Implementation Gate가 새 큐를 정의한다"
     status: pending
   - id: trust-age-spotcheck
     content: "[grok-4.5|256K] Redesign R1-6 수동실사 · R1 Home implementation 완료 후 20·40·60~70대 각3명 · peotteok-light 가독성/새 5탭/3초 질문/C01 count/도움말이모지/퍼뜩첫인사/면책이모지0/성별중성 · 결과 evidence+Admin ai-logs?tab=spotcheck pointer · 자동 verify0 · 코드 수정과 분리"
@@ -256,19 +256,55 @@ isProject: false
 
 ### Authority
 
-- 출시 Consumer theme는 ADR-017 `peotteok-light` **Light+Purple 단일 테마**다. Lux Dark는 archive/legacy이며 dual toggle을 만들지 않는다.
-- 5탭 라벨은 **홈 · 기회 · 수익 · 지갑 · 내정보**다. href는 기존 `/`, `/profits`, `/trades`, `/wallet`, `/me`를 보존한다.
-- Backend Fact > Product Contract > IA > Implementation Contract > Visual Contract > Reference 순서다.
+- 출시 Consumer theme는 ADR-017 `peotteok-light` **Light+Purple 단일 테마**다. Lux Dark는 archive/legacy이며 dual toggle을 만들지 않는다. *(theme mode 방향 자체는 유지 · 정확한 시각 값은 아래 2026-08-16 ADR-018 참고)*
+- 5탭 라벨은 **홈 · 기회 · 수익 · 지갑 · 내정보**다. href는 기존 `/`, `/profits`, `/trades`, `/wallet`, `/me`를 보존한다. *(IA/Functional authority — ADR-018 대상 아님)*
+- Backend Fact > Product Contract > IA > Implementation Contract > Visual Contract > Reference 순서다. *(2026-08-16부터: "Implementation Contract > Visual Contract > Reference" 구간은 화면별로 ADR-018 §3의 Visual Authority 사다리로 대체되며, 앞의 "Backend Fact > Product Contract > IA" 구간은 ADR-018 §3 Functional Authority 사다리로 계속 유효 — 두 사다리를 섞지 않는다.)*
 - PART9 `HomePageClient`·SDK·session/auth·Nest/ledger binding은 보존한다. `HomePageV2`와 병렬 fetch/data mapper를 금지한다.
 - 각 R단계는 Contract → keep/adapt/new/remove mapping → implementation → certification 순서이며 이전 R단계 certification 전 다음 단계 착수를 금지한다.
 
+> **v7.24.0 (2026-08-16 · ADR-018 Peotteok Visual Master Reset — Founder 승인 · 구현코드0):**
+>
+> **Old:** ADR-017 기반 Redesign R1 실행(Home Visual/Implementation Contract chain → STEP4 amend → STEP5 Slice 구현).
+> **New:** **ADR-018 Visual Master Reset 기반 Screen-by-Screen Redesign.**
+>
+> ADR-017의 **시각 디자인 권위**(geometry·spacing·Hero composition·RightRail/Sidebar 비율·색 적용 등)는 종료되어
+> [`ADR-018-peotteok-visual-master-reset.md`](../../packages/ui/canon/contracts/ADR-018-peotteok-visual-master-reset.md)로
+> 승계되었다. ADR-017 문서·Founder ACK·conflict resolution history·비시각 데이터 바인딩 지식(C01 `ledgerTotal`=COUNT 등)·
+> 접근성 원칙·API/state/routing은 historical evidence/functional truth로 보존한다(삭제 0).
+>
+> **새 진행 순서(화면 1개당 · 반복):**
+>
+> ```text
+> 1. Visual Master intake
+> 2. screen forensic
+> 3. functional truth check
+> 4. Visual Contract
+> 5. Implementation Contract
+> 6. implementation
+> 7. verification
+> 8. Founder review
+> 9. Visual Lock
+> 10. next screen
+> ```
+>
+> `redesign-r1-home-implementation`(STEP5, 현재 위치 = Slice 4 CLOSED → Slice 5 RightRail/Slice 6 Partner 착수 대기)은
+> 이 시점부로 **시각 구현 관점에서 SUPERSEDED / STOPPED BY ADR-018 VISUAL RESET**이다. 새 Home Visual Master가
+> intake(위 1단계)되고 새 Visual Contract(4)·Implementation Contract(5)가 나오기 전까지 재개하지 않는다.
+> `redesign-r1-home-product-contract`(R1-3)·`redesign-r1-home-contract-sync`(R1-4)의 "동기 대상"도 ADR-017 체인이
+> 아니라 ADR-018 체인을 가리키도록 아래 todo content에서 갱신했다(YAML `status`는 변경하지 않음 — 여전히 `pending`).
+>
+> Change Control: `governance/platform-redesign/change-control.v1.md` §6.5 `cc.adr018.peotteok-visual-master-reset`(L3).
+> **다음 허용 단계 = Founder-provided Home Visual Master intake.** 이 세션에서 Home 코드를 새로 구현하지 않는다.
+
 ### R1 Home
 
-- Product Contract 신규 파일: `packages/ui/canon/contracts/peotteok-home-product-contract.v1.md`.
-- 동기 대상: ADR-017, conflict-resolution, Product, Implementation, Visual, `home-visual-v2.wire.json`, `peotteok-light.specification.md`, mapping, implementation-gate, Canon manifest.
+- Product Contract 신규 파일: `packages/ui/canon/contracts/peotteok-home-product-contract.v1.md`. *(변경 없음 — 여전히 필요한 다음 파일)*
+- ~~동기 대상: ADR-017, conflict-resolution, Product, Implementation, Visual, `home-visual-v2.wire.json`, `peotteok-light.specification.md`, mapping, implementation-gate, Canon manifest.~~ **(SUPERSEDED 2026-08-16 — 위 ADR-018 note 참고)**
+- **동기 대상(신규 · 2026-08-16):** ADR-018, Product Contract(신규 작성), 화면별 New Visual Contract, 화면별 New Implementation Contract, 새 Canon wire(functional 필드만 승계·geometry는 신규 추출), Canon manifest, Change Control §6.5.
 - 의미 변경은 새 major 문서 버전과 before/after diff를 요구한다. `.v1.md` 의미를 조용히 덮어쓰지 않는다.
-- 구현 순서: C01 `ledgerTotal=COUNT` → Shell/Nav → Hero → Money → Opportunity → RightRail → Partner/Footer.
-- 수동 `trust-age-spotcheck`은 구현 뒤, 자동 Home certification 직전에 수행한다.
+- ~~구현 순서: C01 `ledgerTotal=COUNT` → Shell/Nav → Hero → Money → Opportunity → RightRail → Partner/Footer.~~ **(STEP5 Slice 순서 — SUPERSEDED/STOPPED, 위 note 참고. C01 semantic fix 자체는 롤백 대상 아님.)**
+- **구현 순서(신규 · ADR-018 §9 intake 완료 후에만):** 위 v7.24.0 note의 10단계 Screen-by-Screen 순서를 따른다.
+- 수동 `trust-age-spotcheck`은 (신규 순서 기준) Home certification 직전, Founder review(9단계) 이후에 수행한다.
 
 ### R2~R5
 

@@ -1,5 +1,15 @@
 # Peotteok Light Token Specification (STEP 4.3 amend)
 
+> ⚠️ **PARTIAL SUPERSEDE (VISUAL AUTHORITY) — 2026-08-16**
+> **[`ADR-018-peotteok-visual-master-reset.md`](../canon/contracts/ADR-018-peotteok-visual-master-reset.md)** 가
+> ADR-017 Home Visual 시각 권위를 종료·승계했다. 본 SPEC 중 **Home-geometry 값**(Hero 480–600px·illustration ≤46%·
+> sidebar 240px·rightRail 320–360px 등, §"Hero proportions"·`layout.*`)은 **NON-AUTHORITATIVE for new visual
+> implementation**이며 새 Home Visual Master에서 다시 추출해야 한다(ADR-018 §6).
+> 반면 **Color 표(§Color)는 현재 런타임 미러(`lux-fintech.ts`)로 계속 작동 중**이다 — 이번 마이그레이션은 실행 코드를
+> 바꾸지 않으므로 색 hex는 그대로 shipping 상태다. 새 Visual Master가 새 색을 확정하기 전까지 색 표는 "현재 shipping
+> 값"으로만 참고하고, Home 화면 시각 기준(권위)으로는 인용하지 않는다. 이 결정은 당시에는 유효했지만, 새 Visual
+> Master Reset(ADR-018)에 의해 시각 권위가 **superseded**되었다.
+
 > **Status:** APPLIED runtime + **STEP 4.3 contract amend** (코드 변경 0 · SPEC 정합만).  
 > **Runtime SSOT:** `lux-fintech.ts` + `lux-theme.css`.  
 > **Order lock:** Canon Wire (`home-visual-v2`) ↔ Implementation Contract (STEP 3 ACK).  

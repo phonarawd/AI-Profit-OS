@@ -1,5 +1,12 @@
 # STEP 2 — Peotteok Home Conflict Resolution v1
 
+> ⚠️ **SUPERSEDED (VISUAL AUTHORITY) · HISTORICAL · NON-AUTHORITATIVE FOR NEW VISUAL IMPLEMENTATION**
+> **2026-08-16 — [`ADR-018-peotteok-visual-master-reset.md`](./ADR-018-peotteok-visual-master-reset.md)** 가 본 문서가
+> 뒷받침하던 시각 구현 권위를 종료·승계했다. 이 결정은 당시에는 유효했지만, 새 Visual Master Reset(ADR-018)에 의해
+> 시각 권위가 **superseded**되었다. C01–C10 decision matrix 자체(어떤 목업 요소가 Fact와 충돌했는지의 **사례집**)는
+> 삭제하지 않고 보존한다 — 새 Visual Contract 작성 시 "Reference vs Fact" 판단 참고 자료로만 쓰되, 권위로 인용하지 않는다.
+> C01(`ledgerTotal`=COUNT) 등 **Fact 계약 자체**는 시각이 아니므로 ADR-018 §8을 통해 계속 유효하다.
+
 > **트랙:** Peotteok Home Upgrade / Home Experience Layer (**PART9 아님**)  
 > **권위:** 본 문서 = **채택/폐기 의사결정 SSOT** · Gap 목록 재작성 금지 · Reference ≠ Fact  
 > **선행:** STEP 0 Current Forensic ✅ · STEP 1 Reference Gap (PC) ✅ · STEP 0.5 Backend Fact ✅  

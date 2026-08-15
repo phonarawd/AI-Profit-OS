@@ -1,10 +1,14 @@
 ---
-description: ADR-013 확장 — Owner 승인 Visual Master → Visual Contract → 픽셀 LOCK. Toast emoji 예외.
+description: ADR-013 확장 · ADR-018 실행 SSOT — Owner 승인 Visual Master → Visual Contract → 픽셀 LOCK. Toast emoji 예외.
 globs: "apps/web/**,apps/admin/**,packages/ui/**,tooling/verify/responsive/**"
 alwaysApply: false
 ---
 
-# Visual Master Intake & Component Lock (ADR-013 확장 · 오류0)
+# Visual Master Intake & Component Lock (ADR-013 확장 · ADR-018 실행 SSOT · 오류0)
+
+> **권위 pointer (2026-08-16):** 본 규칙은 `packages/ui/canon/contracts/ADR-018-peotteok-visual-master-reset.md` §9의
+> 실행 SSOT다. ADR-018이 "무엇을/왜"(Visual Authority hierarchy·Home 시각 권위 종료)를 정하고, 본 규칙이
+> "어떻게"(candidate → intake → contract → LOCK 실행 절차)를 정한다. 둘을 중복 정의하지 않는다.
 
 ## 역할 잠금 (Visual Master가 있는 화면/컴포넌트에 한함)
 
@@ -28,11 +32,37 @@ Canon wire(3)과 Visual Contract(4)는 **분리 문서**다. 하나를 고쳐도
 
 ## Intake 절차
 
-1. Owner가 이미지를 **"APPROVED VISUAL MASTER"로 명시 지정**해야 입력으로 인정한다(단순 참고 첨부와 구분).
-2. 대상 컴포넌트 단위로 치수·색·타이포·spacing·상태를 측정해 `packages/ui/canon/contracts/<surface>.visual-contract.v1.md`로 추출한다.
-3. 원본 이미지 파일은 레포에 저장하지 않는다 — `docs/mockups/**` · `*mockup*.png` 금지는 불변(mockup-governance.mdc).
-4. Canon wire와 항목이 충돌하면 즉시 구현하지 말고 `VISUAL_FUNCTIONAL_CONTRACT_CONFLICT`로 분류해 그 컴포넌트만 보류하고, 나머지는 계속 진행한다.
-5. 승인 Visual Master가 평균 기기 성능 예산과 충돌하면 일방 단순화하지 말고 `VISUAL_PERFORMANCE_CONFLICT`로 증거·대안을 보고한다 (`peotteok-performance-target.mdc`). PO 저사양 로컬 실패만으로 Visual Master를 깎지 않는다 (`BLOCKED_LOCAL_*`).
+```text
+Founder image
+  → 0. Master candidate (원본 파일 레포 저장 0 · 채팅/세션 참고만 · 아직 authority 아님)
+  → 1. functional conflict check (데이터 계약·legal·a11y·security 스캔)
+  → 2. Founder confirms Master ("APPROVED VISUAL MASTER" 명시 지정)
+  → 3. register authority (해당 screen의 Visual Authority 상단에 등록)
+  → 4. derive contract (Visual Contract → Implementation Contract)
+  → 5. implement (Implementation Gate 승인 후에만)
+```
+
+0. **Candidate 단계:** Founder가 채팅/세션에 이미지를 올린 시점에는 **Master candidate**일 뿐이며 아직 Visual
+   Authority가 아니다. 이 단계에서 레포 파일로 저장하지 않는다(참고 분석만).
+1. **Functional conflict check:** candidate를 화면에 적용했을 때 기존 데이터 계약(Canon wire `factSurface`/
+   `forbidden`)·legal·접근성·security 요구와 충돌하는지 먼저 스캔한다. 충돌이 있으면 §Intake 4의
+   `VISUAL_FUNCTIONAL_CONTRACT_CONFLICT`로 분류해 Founder 판단을 요청한다 — 이 시점에 구현을 시작하지 않는다.
+2. Owner/Founder가 이미지를 **"APPROVED VISUAL MASTER"로 명시 지정**해야 candidate가 입력으로 인정된다(단순
+   참고 첨부와 구분). 지정 전까지는 몇 번을 봐도 candidate 상태를 벗어나지 않는다.
+3. **Register authority:** 지정된 화면의 Visual Authority 사다리(ADR-018 §3) 최상단에 등록한다 — 별도
+   원본 이미지 파일 커밋은 하지 않고, 등록은 해당 screen의 새 Visual Contract 헤더에서 텍스트로 pointer한다.
+4. 대상 컴포넌트 단위로 치수·색·타이포·spacing·상태를 측정해 `packages/ui/canon/contracts/<surface>.visual-contract.v1.md`로 추출한다.
+5. 원본 이미지 파일은 레포에 저장하지 않는다 — `docs/mockups/**` · `*mockup*.png` 금지는 불변(mockup-governance.mdc).
+6. Canon wire와 항목이 충돌하면 즉시 구현하지 말고 `VISUAL_FUNCTIONAL_CONTRACT_CONFLICT`로 분류해 그 컴포넌트만 보류하고, 나머지는 계속 진행한다.
+7. 승인 Visual Master가 평균 기기 성능 예산과 충돌하면 일방 단순화하지 말고 `VISUAL_PERFORMANCE_CONFLICT`로 증거·대안을 보고한다 (`peotteok-performance-target.mdc`). PO 저사양 로컬 실패만으로 Visual Master를 깎지 않는다 (`BLOCKED_LOCAL_*`).
+
+## PC / Mobile 분리 (ADR-018 §10)
+
+- Desktop과 Mobile은 **별도 Visual Master·별도 authority**로 취급한다. Desktop candidate를 Mobile에 단순 축소
+  적용해 "확정"하지 않는다.
+- 한쪽만 candidate가 제공된 경우, 나머지 플랫폼은 register/LOCK 없이 구조적 provisional 상태만 유지한다.
+- 각 플랫폼은 자기 자신의 Visual Contract·Implementation Contract·LOCK 항목을 독립적으로 갖는다(같은 화면이라도
+  `surfaceId`를 desktop/mobile로 구분).
 
 ## Component LOCK
 

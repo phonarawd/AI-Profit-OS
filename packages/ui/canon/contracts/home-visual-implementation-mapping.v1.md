@@ -1,5 +1,11 @@
 # Home Visual Upgrade — Implementation Mapping v1.1
 
+> ⚠️ **SUPERSEDED (VISUAL AUTHORITY) · HISTORICAL · NON-AUTHORITATIVE FOR NEW VISUAL IMPLEMENTATION**
+> **2026-08-16 — [`ADR-018-peotteok-visual-master-reset.md`](./ADR-018-peotteok-visual-master-reset.md)** 가 본 문서의
+> 시각 구현 매핑 권위를 종료·승계했다. 이 결정은 당시에는 유효했지만, 새 Visual Master Reset(ADR-018)에 의해 시각
+> 권위가 **superseded**되었다. Keep/Adapt 컴포넌트 목록(`HomePageClient` fetch 보존 등 PART9 경계)은 비시각
+> 보호 경계로서 ADR-018 §7로 승계되어 계속 유효하다 — 새 mapping 작성 시 이 문서를 사례 참고만 할 것.
+
 > STEP 4.1 / 4.4 산출 · **STEP 4 구간 코드 작성 금지**  
 > STEP 5는 [`peotteok-home-implementation-gate.v1.md`](./peotteok-home-implementation-gate.v1.md) Founder 승인 후만  
 > SSOT: Implementation Contract (STEP 3 ACK) · Visual Contract v1.4 · Wire · Token SPEC · ADR-017

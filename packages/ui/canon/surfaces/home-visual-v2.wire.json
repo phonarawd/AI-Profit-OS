@@ -8,6 +8,9 @@
   "adrRef": "packages/ui/canon/contracts/ADR-017-peotteok-home-light-theme.md",
   "gateRef": "packages/ui/canon/contracts/peotteok-home-implementation-gate.v1.md",
   "planRef": "Home Visual Upgrade · not PART9 · STEP4.2 amend",
+  "visualAuthorityStatus": "SUPERSEDED_FOR_GEOMETRY_BY_ADR018",
+  "supersededBy": "packages/ui/canon/contracts/ADR-018-peotteok-visual-master-reset.md",
+  "historicalNotice": "2026-08-16 · ADR-017 chain(adrRef/contractRef/implementationContractRef/gateRef/tokenRef) is SUPERSEDED/HISTORICAL/NON-AUTHORITATIVE for new visual implementation. layout.* (px geometry) must be re-derived from a new Founder-approved Visual Master (ADR-018 §6/§9), not copied from this file. navLabels/navHrefs/deprecatedNavLabels/heroTimeline/factSurface/forbidden remain valid functional truth (ADR-018 §8) and are NOT reset by this notice.",
   "layout": {
     "desktop": {
       "sidebarPx": 240,

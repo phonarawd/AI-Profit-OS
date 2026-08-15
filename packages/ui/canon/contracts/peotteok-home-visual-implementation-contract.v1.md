@@ -1,5 +1,12 @@
 # STEP 3 — Peotteok Home Visual Implementation Contract v1
 
+> ⚠️ **SUPERSEDED (VISUAL AUTHORITY) · HISTORICAL · NON-AUTHORITATIVE FOR NEW VISUAL IMPLEMENTATION**
+> **2026-08-16 — [`ADR-018-peotteok-visual-master-reset.md`](./ADR-018-peotteok-visual-master-reset.md)** 가 본 문서의
+> 시각 구현 권위(Desktop Canvas geometry·Shell/Hero/Money/Opportunity/RightRail 치수)를 종료·승계했다. 이 결정은
+> 당시에는 유효했지만, 새 Visual Master Reset(ADR-018)에 의해 시각 권위가 **superseded**되었다. LOCK A(Data SSOT)와
+> LOCK C(PART9 Protected Boundary)의 **비시각 원칙**은 ADR-018 §7/§8로 승계되어 계속 유효하다(PART9 fetch/SDK/mapper/
+> Auth/Ledger 경계는 그대로 보존). 새 Home 화면 구현은 새 Implementation Contract(ADR-018 §9 intake 이후)를 따른다.
+
 > **트랙:** Peotteok Home Upgrade / Home Experience Layer (**PART9 아님**)  
 > **권위:** 본 문서 = **Cursor 구현 직전 SSOT** · PNG ≠ 픽셀 복사 대상 · Fact ≠ Reference  
 > **선행:** STEP 0 ✅ · STEP 1 (PC) ✅ · STEP 0.5 Backend Fact ✅ · STEP 2 Conflict Resolution ✅ Founder ACK  
@@ -9,7 +16,7 @@
 **버전:** v1.1 (APPROVE WITH 3 LOCKS)  
 **일자:** 2026-08-10  
 **판정:** **APPROVED / LOCKED** · Founder ACK **2026-08-10** · 3 LOCKS 유지  
- 
+
 **범위:** `/` Home + App Shell (Sidebar / Header / Footer / BottomNav)  
 **관계 문서:**
 

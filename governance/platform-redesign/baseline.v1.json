@@ -24,14 +24,14 @@
     "canonPhysicalWires": 38,
     "canonManifestSurfaces": 33,
     "wiresNotInManifest": 5,
-    "nestImports": 18,
-    "localMigrations": 32,
-    "remoteMigrations": 32,
+    "nestImports": 20,
+    "localMigrations": 39,
+    "remoteMigrations": 39,
     "brandAssets": 23,
     "publicBrandAssets": 17,
     "verifyScripts": 157,
     "verifyPackageIds": 155,
-    "contracts": 6
+    "contracts": 7
   },
   "web": {
     "userTabs": [
@@ -837,6 +837,7 @@
     ],
     "contracts": [
       "packages/ui/canon/contracts/ADR-017-peotteok-home-light-theme.md",
+      "packages/ui/canon/contracts/ADR-018-peotteok-visual-master-reset.md",
       "packages/ui/canon/contracts/home-visual-implementation-mapping.v1.md",
       "packages/ui/canon/contracts/peotteok-home-conflict-resolution.v1.md",
       "packages/ui/canon/contracts/peotteok-home-implementation-gate.v1.md",
@@ -847,10 +848,12 @@
   "nest": {
     "appModulePath": "services/api-nest/src/app.module.ts",
     "imports": [
+      "CommonModule",
       "EventsModule",
       "LedgerModule",
       "WalletModule",
       "GrowthModule",
+      "HomeReadModule",
       "ComplianceModule",
       "RiskModule",
       "ReferralModule",
@@ -900,7 +903,14 @@
       "supabase/migrations/20260809222034_ops_inbox_hide_source_event.sql",
       "supabase/migrations/20260810024643_growth_ticker_config.sql",
       "supabase/migrations/20260811062000_idempotency_request_fingerprint.sql",
-      "supabase/migrations/20260811062100_ledger_outbox_events.sql"
+      "supabase/migrations/20260811062100_ledger_outbox_events.sql",
+      "supabase/migrations/20260811194832_shadow_replay_advisory_label.sql",
+      "supabase/migrations/20260813025116_ai_logs_answer_path_scope_redirect.sql",
+      "supabase/migrations/20260813202305_privacy_purge_anonymize_indexes.sql",
+      "supabase/migrations/20260814130000_ptf00c_fx_marketplace_normalization.sql",
+      "supabase/migrations/20260814130100_ptf00c_provider_runtime_health.sql",
+      "supabase/migrations/20260814130200_ptf00c_provider_health_last_tick_partial.sql",
+      "supabase/migrations/20260814140000_ptf00c_r1_provider_tick_ledger.sql"
     ],
     "localVersions": [
       "20260808205842",
@@ -934,7 +944,14 @@
       "20260809222034",
       "20260810024643",
       "20260811062000",
-      "20260811062100"
+      "20260811062100",
+      "20260811194832",
+      "20260813025116",
+      "20260813202305",
+      "20260814130000",
+      "20260814130100",
+      "20260814130200",
+      "20260814140000"
     ],
     "remoteFixturePath": "tooling/verify/fixtures/migrations-applied.v1.json",
     "remoteVersions": [
@@ -969,7 +986,14 @@
       "20260809222034",
       "20260810024643",
       "20260811062000",
-      "20260811062100"
+      "20260811062100",
+      "20260811194832",
+      "20260813025116",
+      "20260813202305",
+      "20260814130000",
+      "20260814130100",
+      "20260814130200",
+      "20260814140000"
     ]
   },
   "assets": {

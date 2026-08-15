@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | schema | `governance.platform-redesign.change-control.v1` |
-| version | `1.1.0` |
+| version | `1.2.0` |
 | redesignStage | `R0` (원본) · post-r0 promotion 기록 포함 |
 | todoId | `platform-redesign-r0-change-control` |
 | measuredAt | `2026-08-11` |
@@ -240,6 +240,31 @@ change reason
 | `user-mutation-subject-binding-violation` + `internal-trigger-machine-auth-gap` | `money-wallet-auth-remediation` (1 todo · 2 clause) |
 
 **금지:** Engine observation을 Money 창구에서 promote · read-contract todo에 remediation 흡수 · R0 locks를 사후 1로 위조 · Adapters fail-open 패턴 복제.
+
+---
+
+### 6.5 ADR-018 — Peotteok Visual Master Reset (post-r0 · Consumer UI 시각 authority)
+
+| 필드 | 내용 |
+|---|---|
+| changeId | `cc.adr018.peotteok-visual-master-reset` |
+| level | **L3** (ADR supersession · protected boundary 인접 governance 변경) |
+| type | L3 visual authority replacement |
+| scope | Consumer UI **visual system**만(Home 시각 geometry/구현 권위) — money/auth/DB/backend 비대상 |
+| previous authority | ADR-017 (`packages/ui/canon/contracts/ADR-017-peotteok-home-light-theme.md`) — Home Visual Contract·Implementation Contract·Conflict Resolution·Implementation Gate·Mapping·`home-visual-v2.wire.json` layout·`peotteok-light.specification.md` Home geometry 절 |
+| new authority | ADR-018 (`packages/ui/canon/contracts/ADR-018-peotteok-visual-master-reset.md`) — Founder-approved Visual Master 중심 신규 Visual Authority hierarchy(§3) |
+| before | ADR-017이 Home 시각 구현의 ACTIVE authority · STEP 5 Slice 0–4 CLOSED · Slice 5(RightRail)/Slice 6(Partner) 착수 대기 상태로 진행 중 |
+| after | ADR-017 **시각 권위 종료**(비시각 의사결정 이력·Fact 계약·PART9 경계는 보존) · ADR-018이 신규 ACTIVE Visual Authority · STEP 5 Slice 5/6 이후 진행 **SUPERSEDED / STOPPED** · 레거시 계약 8개 파일 SUPERSEDED/HISTORICAL 배너 전환(삭제 0) · `packages/ui/canon/VISUAL_AUTHORITY_RESET.v1.md`/`packages/ui/tokens/peotteok-visual-foundation.v0.md` 비공식 draft → ADR-018 흡수 표시 · `visual-locks.v1.json` `locks:[]` 불변 유지 |
+| 영향 | `packages/ui/canon/contracts/ADR-017*.md`+5개 관련 Home 계약 md · `packages/ui/canon/surfaces/home-visual-v2.wire.json`(메타데이터만 추가, `factSurface`/`forbidden`/`navLabels` 등 functional 필드 불변) · `packages/ui/tokens/peotteok-light.specification.md`(Home geometry 절만 non-authoritative 표시, 런타임 색 미러는 코드 변경 없이 유지) · `.cursor/rules/visual-master-intake.mdc`(candidate 단계+PC/Mobile 분리 추가) · `packages/ui/brand/README.md`(Dark Obsidian 절 deprecated) · Plan SSOT(`00_index`/`03_ui_ux`) Home 관련 todo 3건 content 갱신(status 변경 없음) · **구현 코드 0 · 런타임 UI 0** |
+| rollback | ADR-018 자체를 되돌리려면 새 L3 재승인(founder + 독립 reviewer) 필요 · 되돌린다 해도 ADR-017 시각 권위가 자동 복원되지 않는다(재승인 문서에 명시 필요) · known-good = 본 변경 직전 commit(ADR-017 Accepted 상태) · 8개 레거시 파일은 배너만 추가되었으므로 배너 문단 제거로 즉시 원복 가능(내용 삭제 0) |
+| 승인 증거 | Founder 지시(본 세션 원문 "PEOTTEOK VISUAL AUTHORITY RESET — FORMAL MIGRATION PROMPT") · `ADR-018-peotteok-visual-master-reset.md` Status=ACCEPTED/ACTIVE · 본 §6.5 기록 |
+| non-visual preserved | API·SDK·DB·ledger·wallet accounting·session·auth·KYC·membership·withdrawal·opportunity FSM·backend validation·routes·state management·existing business logic·security rules — **변경 0**(ADR-018 §7) |
+| runtime approval requirement | 이후 모든 화면의 시각 구현은 **screen-level Visual Master intake(ADR-018 §9) + Implementation Gate 승인**을 개별로 통과해야 한다 — R1 Home 일괄 승인을 다른 화면에 전이하지 않는다 |
+| relatedVerify | `platform-change-control` · `mockup-governance` · `canon-surfaces` · `plans-ssot` |
+
+**Materialize map:** 본 changeId는 신규 코드 todo를 materialize하지 않는다(§17 NEXT AUTHORIZED STEP = Visual Master intake만, 구현 todo는 intake 완료 후 별도 L2 변경으로 추가).
+
+**금지:** ADR-017 geometry 값을 새 Visual Contract 기본값으로 재사용 · `visual-locks.v1.json` 즉흥 등록 · draft 문서(`VISUAL_AUTHORITY_RESET.v1.md`/`peotteok-visual-foundation.v0.md`)를 ADR-018과 동급 인용 · 본 changeId를 근거로 Canon functional wire(route/state/factSurface/forbidden) 삭제.
 
 ---
 

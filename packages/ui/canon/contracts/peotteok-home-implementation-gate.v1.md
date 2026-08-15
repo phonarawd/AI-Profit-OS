@@ -1,5 +1,12 @@
 # STEP 4.4 — Peotteok Home Implementation Gate v1
 
+> ⚠️ **SUPERSEDED (VISUAL AUTHORITY) · STOPPED · HISTORICAL**
+> **2026-08-16 — [`ADR-018-peotteok-visual-master-reset.md`](./ADR-018-peotteok-visual-master-reset.md)** 가 본 Gate의
+> 시각 구현 권위를 종료·승계했다. §Track Status의 **STEP 5 Slice 5(RightRail)/Slice 6(Partner) 이후 진행은
+> SUPERSEDED / STOPPED BY ADR-018 VISUAL RESET**이다 — 새 Home Visual Master intake(ADR-018 §9) 없이 재개하지 않는다.
+> Slice 0–4에 반영된 비시각 semantic defect fix(C01 등)는 롤백 대상이 아니다. 이 결정은 당시에는 유효했지만,
+> 새 Visual Master Reset(ADR-018)에 의해 시각 권위가 **superseded**되었다.
+
 > **역할:** STEP 5 코드 착수 **전** 최종 검증 체크리스트 + Founder 승인 게이트  
 > **코드:** 본 문서 승인 전까지 `apps/web` / `packages/ui/components` **변경 0**  
 > **트랙:** Home Visual Upgrade · PART9 아님 · 타 시스템 영역 **동결**
@@ -25,7 +32,9 @@ STEP 4.4     ✅ APPROVED — proceed STEP 5 Slice 0 (C01 only)
 STEP 5       ✅ Slice 0–2 CLOSED · Pre-Slice Hero Fix COMPLETE
              · Slice 3 Money AMEND (mobile polish) COMPLETE
              · Slice 4 Opportunity mobile polish COMPLETE
-             · next Slice 5 RightRail / Slice 6 Partner
+             · Slice 5 RightRail / Slice 6 Partner
+               → ❌ SUPERSEDED / STOPPED BY ADR-018 VISUAL RESET (2026-08-16)
+                  재개 조건 = Founder Home Visual Master intake → 새 Visual/Implementation Contract
 ```
 
 ---

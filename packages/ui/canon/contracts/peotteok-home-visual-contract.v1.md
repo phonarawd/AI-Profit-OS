@@ -1,5 +1,12 @@
 # Peotteok Home Visual Contract v1
 
+> ⚠️ **SUPERSEDED (VISUAL AUTHORITY) · HISTORICAL · NON-AUTHORITATIVE FOR NEW VISUAL IMPLEMENTATION**
+> **2026-08-16 — [`ADR-018-peotteok-visual-master-reset.md`](./ADR-018-peotteok-visual-master-reset.md)** 가 본 문서의
+> 시각 권위(레이아웃/밀도/비율/Hero/RightRail/색 적용)를 종료·승계했다. 이 결정은 당시에는 유효했지만,
+> 새 Visual Master Reset(ADR-018)에 의해 시각 권위가 **superseded**되었다. Fact allowlist 지식(§4.1/§6.2 계열)은
+> 비시각 데이터 계약으로서 ADR-018 §8로 승계되며, `home-visual-v2.wire.json`의 `factSurface`/`forbidden` semantic
+> 항목을 통해 계속 유효하다. 새 Home 화면 구현은 본 문서 대신 새 Visual Contract(ADR-018 §9 intake 이후)를 따른다.
+
 > **트랙:** Peotteok Home Visual Upgrade / Home Experience Layer (PART9 아님)  
 > **권위:** 본 문서 = Visual Contract SSOT · PNG = Visual Reference only · Wire/Token/코드는 후속 STEP  
 > **선행:** STEP1 Gap Analysis Founder 승인 · PART9 live fetch/SDK/Auth/Wallet **보존**  

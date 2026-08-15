@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Index
-overview: v7.23.0 플랫폼 재설계 리베이스 채택 · 외부 d903eef7=REFERENCE ONLY · 실행 SSOT=00~06 해시 플랜 · 현재=00 R0 `platform-redesign-r0-inventory` · Runtime Phase(P0~P3)와 Redesign Stage(R0~R8) 분리 · completed 불변 · ADR-017 Light+Purple/5탭 새 라벨/OpenNext Workers only.
+overview: v7.23.0 플랫폼 재설계 리베이스 채택 · 외부 d903eef7=REFERENCE ONLY · 실행 SSOT=00~06 해시 플랜 · 현재=00 R0 `platform-redesign-r0-inventory` · Runtime Phase(P0~P3)와 Redesign Stage(R0~R8) 분리 · completed 불변 · ADR-017 Light+Purple/5탭 새 라벨/OpenNext Workers only · v7.23.1(2026-08-16) ADR-018 Peotteok Visual Master Reset이 ADR-017 Home 시각(geometry) authority 승계·03 STEP5 Slice5/6 SUPERSEDED/STOPPED·Home Visual Master intake 대기(구현코드0).
 todos:
   - id: yahoo-jp-permanent-ban
     content: "[grok-4.5|256K] v7.22.32 yahoo_jp 영구 FORBIDDEN · Phase1+ 철회 · Engine/UI/ENV 0 · verify:listing-legs-day1"
@@ -127,6 +127,19 @@ isProject: false
 | Web/Ops host | **OpenNext Cloudflare Workers only** | `infra/domain.manifest.json openNext` origin SSOT · `wrangler pages deploy`/pages.dev origin 금지 |
 | PART9 | fetch→SDK→Nest→DB/ledger/auth binding 보존 | `HomePageV2`·병렬 데이터 파이프라인 금지 |
 | Money/Engine | 기존 completed mutation·Rule·ledger 불변 | R1은 read contract/adaptor와 확인된 eBay ingest gap만 |
+| **Home 시각 구현 authority** *(2.1 신규)* | **ADR-018 Peotteok Visual Master Reset**(Founder-approved Visual Master 중심) | ADR-017 Home 시각 권위(geometry/Hero/RightRail/Sidebar/색 적용)=SUPERSEDED/HISTORICAL · 테마 모드 문구(Light+Purple 단일 출시) 자체는 방향으로 유지되나 정확한 값은 ADR-018 §9 intake 후 재확정 |
+
+### 2.1 ADR-018 Visual Master Reset (신규 · 시각 authority만 · 구현코드0)
+
+> **결정(2026-08-16 · Founder 승인):** [`packages/ui/canon/contracts/ADR-018-peotteok-visual-master-reset.md`](../../packages/ui/canon/contracts/ADR-018-peotteok-visual-master-reset.md)가 ADR-017의 **시각 디자인 권위**(geometry·spacing·Hero composition·RightRail/Sidebar 비율·색 적용·shadow/radius·반응형 시각 기하)를 종료하고 유일한 신규 Visual Authority로 승격되었다.
+
+- **보존:** ADR-017의 비시각 기록(Founder ACK·conflict resolution history·rollback history) · `ledgerTotal`=COUNT 등 데이터 바인딩 지식 · 접근성 원칙 · API/state/routing · PART9 fetch/SDK/mapper/Auth/Ledger 경계 · Canon functional wire(route/state/factSurface/forbidden).
+- **종료:** ADR-017 산하에서 확정된 시각 결정(px geometry·Hero 480–600px·sidebar 240px·rightRail 320–360px 등)을 새 Home 구현의 기준으로 자동 채택하는 것.
+- **03 UI `redesign-r1-home-implementation`(STEP5)** 진행 상태 — Slice 0–4 CLOSED, Slice 5(RightRail)/Slice 6(Partner) 착수 대기 — 는 **SUPERSEDED / STOPPED BY ADR-018**. 새 Home Visual Master intake 전 재개하지 않는다(§ 03 plan Authority 절 참고).
+- **visual-locks.v1.json** `locks:[]` 불변 유지 — ADR-017 lock 복원·자동 등록 금지.
+- **다음 허용 단계:** Founder-provided Home Visual Master intake (ADR-018 §9) — 이 전에 새 Home UI 구현 착수 금지.
+- **Change Control:** `governance/platform-redesign/change-control.v1.md` §6.5 `cc.adr018.peotteok-visual-master-reset` (L3).
+- **본 절 구현코드 0** — Governance/문서 정리만.
 
 ### 3. 실행 큐
 

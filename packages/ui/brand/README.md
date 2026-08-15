@@ -1,5 +1,10 @@
 # Brand Kit SSOT (ADR-002 · ADR-011 · ADR-013)
 
+> PHASE 0 VISUAL RESET (2026-08-15 draft → formalized as ADR-018 on 2026-08-16): ready assets stay for runtime/PWA.
+> They are not the new Visual Master. Consumer name Peotteok stays.
+> Do not delete while referenced. Audit: packages/ui/tokens/VISUAL_RESET_REPORT.md
+> Formal authority: `packages/ui/canon/contracts/ADR-018-peotteok-visual-master-reset.md`
+
 | 층 | 이름 | 노출 |
 |----|------|------|
 | Platform | AI Profit OS | 코드·레포·내부 |
@@ -11,13 +16,22 @@
 타프로젝트 코치 브랜드·**성별 UI/에셋 분기** **금지**.  
 연령 표현 = 앱 `toneBand` only — Brand Kit에 성별 에셋 없음.
 
-## Visual Kit v1 (방향 잠금)
+## Visual Kit v1 (방향 잠금) — ⚠️ DEPRECATED / HISTORICAL (dark direction)
 
-- **배경:** Lux Deep Obsidian `#090A10`
-- **강조:** mint `#3DDC97` · principal blue `#7AA2FF`
-- **마크:** 순간 통찰(퍼뜩) **플래시 지오메트리** — 코인/메달리온·사람 얼굴·성별 캐릭터 금지
-- **워드마크:** 한글 **퍼뜩** only (영문 서브 비필수)
-- **AI 아바타:** 추상 마크 (인간형/애니메 금지)
+> 아래 배경/강조 색은 **ADR-017 이전(pre-Light+Purple) dark 방향**이며, 현재 shipping 테마
+> (`peotteok-light` · bg `#F6F4FC` · accent `#6B3CFF` · ADR-017)와 충돌한다. ADR-017이 Lux Dark를
+> archive/legacy로 이미 지정했고, 이제 [`ADR-018-peotteok-visual-master-reset.md`](../canon/contracts/ADR-018-peotteok-visual-master-reset.md)가
+> 시각 권위 전체를 승계했으므로 본 절의 색 지정은 **historical legacy direction**으로만 읽는다 — ACTIVE LOCK
+> 아님. 새 brand token 값은 아직 확정되지 않았으므로 여기서 새 HEX를 임의로 만들지 않는다. 마크/워드마크/AI
+> 아바타의 **금지 목록**(사람 얼굴·성별 캐릭터·인간형/애니메 금지)은 시각 스타일이 아니라 제품 윤리 하드 금지이므로
+> 계속 유효하다(ADR-018 §14).
+
+- ~~**배경:** Lux Deep Obsidian `#090A10`~~ (deprecated · dark 방향 이력)
+- ~~**강조:** mint `#3DDC97` · principal blue `#7AA2FF`~~ (deprecated · dark 방향 이력)
+- **마크:** 순간 통찰(퍼뜩) **플래시 지오메트리** — 코인/메달리온·사람 얼굴·성별 캐릭터 금지 (금지 목록은 계속 유효)
+- **워드마크:** 한글 **퍼뜩** only (영문 서브 비필수) (계속 유효)
+- **AI 아바타:** 추상 마크 (인간형/애니메 금지) (계속 유효)
+- **현재 shipping 방향:** Light + Purple (`peotteok-light` · ADR-017 테마 모드) — 정확한 새 시각 authority는 ADR-018 §9 Visual Master intake 이후 확정
 
 ## 에셋 경로
 
