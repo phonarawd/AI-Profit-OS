@@ -11,6 +11,7 @@ export const feed = {
   balanceUsdtPrimary: "{n} USDT",
   balanceUsdtSecondary: "{n} USDT",
   ctaDeposit: "입금",
+  ctaWithdraw: "출금",
   /** §5.3 [D] */
   /** STEP5 Slice3 · density · 「가능」유지 · 실현/확정 금지 */
   todayPossibleProfitLabel: "오늘 가능 수익",
