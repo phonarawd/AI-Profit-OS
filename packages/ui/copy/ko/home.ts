@@ -29,6 +29,39 @@ export const home = {
     robotSlotAria: "퍼뜩 AI 안내 일러스트",
     globeSlotAria: "글로벌 기회 상징",
   },
+  aiSummary: {
+    foundLabel: "발견한 기회",
+    foundCount: "{n}건",
+    averageReturnLabel: "예상 평균 수익률",
+    averageDurationLabel: "평균 처리 시간",
+    robotAlt: "퍼뜩 AI",
+  },
+  discovery: {
+    aria: "참여 기회 안내",
+  },
+  featured: {
+    aria: "오늘의 추천 기회",
+    title: "오늘의 추천 기회",
+    durationLabel: "예상 시간",
+  },
+  categoryVisual: {
+    watchTitle: "Watches",
+    watchSub: "프리미엄 시계",
+    cardTitle: "Trading Cards",
+    cardSub: "트레이딩 카드",
+    bagTitle: "Luxury Bags",
+    bagSub: "프리미엄 가방",
+    expectedLabel: "예상 수익",
+  },
+  update: {
+    nextBody: "새로운 기회가 업데이트될 예정이에요.",
+  },
+  trustList: {
+    principal: "연결된 원금 상태를 확인할 수 있어요.",
+  },
+  insight: {
+    body: "시장의 흐름과 플랫폼 소식을 간편하게 확인하세요.",
+  },
   money: {
     aria: "내 잔액과 가능 수익",
     /** C02 · Home Fact = principalUsdt only · 사용가능/참여중 분할 라벨 금지 */
@@ -68,10 +101,16 @@ export const home = {
     topEmpty: "아직 표시할 기회가 없어요",
     countAbsent: "아직 없음",
     totalEmpty: "오늘 정산이 끝나면 여기에 건수로 보여요",
+    progressEmpty: "아직 진행 중인 참여가 없어요",
   },
   sidebar: {
     inviteCta: "친구 초대",
     navAria: "주요 메뉴",
+    supportTitle: "고객센터",
+    supportHours: "평일 09:00 - 18:00",
+    supportAria: "고객센터 열기",
+    aiLine1: "퍼뜩 AI가",
+    aiLine2: "당신의 기회를 찾아드려요!",
   },
   /** 홈 세션 배너 · toast SESSION_EXPIRED와 분리(게스트≠만료) */
   session: {

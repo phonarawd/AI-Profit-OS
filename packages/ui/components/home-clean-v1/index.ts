@@ -11,6 +11,7 @@ export type {
   HomeCleanTabSource,
   HomeCleanFixtureViewModel,
   HomeCleanLiveViewModel,
+  HomeCleanProductFamily,
   HomeCleanProductView,
   HomeCleanSessionBannerKind,
   HomeCleanSessionStatus,
