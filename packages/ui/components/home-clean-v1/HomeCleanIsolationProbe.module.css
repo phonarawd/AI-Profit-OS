@@ -1,0 +1,34 @@
+.section {
+  margin: 0;
+  padding: var(--hc-space-md, 16px);
+}
+
+.slot {
+  margin: var(--hc-space-md, 16px) 0 0;
+  padding: var(--hc-space-md, 16px) 0;
+}
+
+.title {
+  margin: 0 0 var(--hc-space-sm, 8px);
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+
+.body {
+  margin: 0 0 var(--hc-space-md, 16px);
+  line-height: 1.5;
+}
+
+.action {
+  margin: 0 var(--hc-space-sm, 8px) 0 0;
+}
+
+.link {
+  color: inherit;
+}
+
+.figure {
+  display: block;
+  width: 1px;
+  height: 1px;
+}

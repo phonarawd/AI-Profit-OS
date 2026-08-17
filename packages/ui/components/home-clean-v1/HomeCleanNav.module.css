@@ -1,0 +1,228 @@
+/**
+ * HomeCleanV1 nav presentation.
+ * Desktop sidebar + mobile bottom. Tailwind lg: 0.
+ * USER_TABS label/href 복제 0. app-sidebar 0.
+ */
+
+.sidebar {
+  display: none;
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: visible;
+  padding: var(--hc-space-md) var(--hc-space-sm);
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--hc-surface);
+    padding: 16px 10px 12px;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--hc-space-sm);
+  margin: 0;
+  min-height: var(--hc-touch);
+  color: var(--hc-text);
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.brandMark {
+  display: block;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  object-fit: contain;
+  object-position: center;
+}
+
+.desktopNav {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--hc-space-xs);
+  min-width: 0;
+}
+
+.desktopItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: var(--hc-touch);
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 12px;
+  color: var(--hc-text);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.desktopItem[aria-current="page"] {
+  color: var(--hc-elevated);
+  background: var(--hc-accent);
+}
+
+.sidebarFoot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hc-space-sm);
+  margin-top: auto;
+  min-width: 0;
+}
+
+.aiCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  min-height: 0;
+  padding: 10px 10px 12px;
+  overflow: hidden;
+  border-radius: var(--hc-radius-lg);
+  border: 1px solid color-mix(in srgb, #fff 16%, transparent);
+  background:
+    radial-gradient(
+      ellipse 70% 60% at 70% 20%,
+      var(--hc-ai-orb),
+      transparent 70%
+    ),
+    linear-gradient(160deg, var(--hc-ai-from) 0%, var(--hc-ai-mid) 48%, var(--hc-ai-to) 100%);
+  color: var(--hc-elevated);
+  box-shadow: var(--hc-shadow-card);
+}
+
+.aiRobot {
+  display: block;
+  width: 100%;
+  height: var(--hc-sidebar-ai-robot-h);
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.aiCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.aiLine {
+  margin: 0;
+  color: var(--hc-elevated);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  opacity: 0.92;
+}
+
+.aiCta {
+  margin: 0;
+  color: var(--hc-elevated);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.support {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--hc-touch);
+  padding: var(--hc-space-sm);
+  border-radius: var(--hc-radius-md);
+  border: 1px solid var(--hc-border);
+  background: var(--hc-elevated);
+  color: var(--hc-text-muted);
+  text-decoration: none;
+}
+
+.supportTitle,
+.supportHours {
+  margin: 0;
+}
+
+.supportTitle {
+  color: var(--hc-text);
+  font-weight: 600;
+}
+
+.mobileNav {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: calc(var(--hc-nav-h) + env(safe-area-inset-bottom, 0px));
+  padding-top: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  overflow-x: hidden;
+  zoom: calc(1 / var(--hc-page-zoom, 1));
+  background: var(--hc-surface);
+  border-top: 1px solid var(--hc-border);
+  box-shadow: var(--hc-shadow-soft);
+}
+
+@media (min-width: 768px) {
+  .mobileNav {
+    display: none;
+  }
+}
+
+.mobileItem {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  gap: 2px;
+  width: 0;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 1px;
+  color: var(--hc-text-muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.mobileItem svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.mobileItem span {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobileItem[aria-current="page"] {
+  color: var(--hc-accent);
+  font-weight: 700;
+}

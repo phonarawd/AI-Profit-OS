@@ -1,0 +1,127 @@
+/**
+ * HomeCleanV1 Shell / grid.
+ * document scroll 1회. rail/sidebar 자체 vertical scroll 0. top:650px 0.
+ * geometry = --hc-bp-* (768/1024/1440/1920/3840). Tailwind lg: 0.
+ */
+
+.root {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 100dvh;
+  margin: 0;
+  background: var(--hc-bg);
+  color: var(--hc-text);
+  font-family: var(--hc-font);
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+@media (min-width: 768px) {
+  .root {
+    grid-template-columns: var(--hc-sidebar-w) minmax(0, 1fr);
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-bottom: calc(
+    var(--hc-nav-h) + env(safe-area-inset-bottom, 0px) + var(--hc-nav-clearance)
+  );
+}
+
+@media (min-width: 768px) {
+  .column {
+    padding-bottom: 0;
+  }
+}
+
+.header {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hc-space-md);
+  min-width: 0;
+  min-height: var(--hc-header-h);
+  padding: var(--hc-space-sm) var(--hc-space-md);
+}
+
+.greeting {
+  margin: 0;
+  min-width: 0;
+}
+
+.headerActions {
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--hc-space-sm);
+}
+
+.headerAction {
+  display: inline-block;
+  width: var(--hc-touch);
+  height: var(--hc-touch);
+  min-width: var(--hc-touch);
+  min-height: var(--hc-touch);
+}
+
+.main {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--hc-max);
+  min-width: 0;
+  margin-inline: auto;
+  padding-top: var(--hc-main-pad-top);
+  overflow: visible;
+}
+
+@media (min-width: 1440px) {
+  .main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(var(--hc-rail-min), var(--hc-rail-max));
+    align-items: start;
+    column-gap: var(--hc-space-sm);
+    max-width: var(--hc-max);
+  }
+}
+
+.primary {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: visible;
+}
+
+.assetAudit {
+  display: none;
+}
+
+.assetAuditImg {
+  display: block;
+  box-sizing: border-box;
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  object-position: center;
+  flex-shrink: 0;
+}
+
+.region {
+  min-width: 0;
+}
+
+.rail {
+  min-width: 0;
+  overflow: visible;
+}
+
+@media (max-width: 767px) {
+  .rail {
+    overflow: visible;
+  }
+}

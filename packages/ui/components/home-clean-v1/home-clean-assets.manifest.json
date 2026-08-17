@@ -1,0 +1,183 @@
+{
+  "id": "home-clean-v1-assets",
+  "version": 1,
+  "authority": "HOME_CLEAN_ASSET_SET_APPROVED",
+  "zipSha256": "d4fdb977f2e6a51d92f22ccdc9e2a3caf806858771cfb978523a843291a22d56",
+  "zipBytes": 16170061,
+  "publicRoot": "/assets/home-clean-v1",
+  "installRoot": "apps/web/public/assets/home-clean-v1",
+  "brandKitOverwrite": false,
+  "homeV3Import": false,
+  "avatarFallbackIncluded": true,
+  "render": {
+    "objectFit": "contain",
+    "crop": false,
+    "aspectDistort": false
+  },
+  "notInstalled": [
+    "README.md",
+    "SHA256SUMS.txt",
+    "asset-manifest.json",
+    "vector/BrandLockup.reference.tsx",
+    "vector/DynamicUserIdentity.reference.tsx",
+    "vector/Identity.reference.module.css",
+    "preview/robots-contact-sheet.png",
+    "preview/products-contact-sheet.png"
+  ],
+  "assets": [
+    {
+      "id": "robotMaster",
+      "role": "peotteok-ai-master",
+      "purpose": "퍼뜩 AI 기준 identity · 일반 안내·빈 상태",
+      "userProfile": false,
+      "publicUrl": "/assets/home-clean-v1/robots/robot-master.png",
+      "installPath": "apps/web/public/assets/home-clean-v1/robots/robot-master.png",
+      "zipPath": "raster/robots/robot-master.png",
+      "bytes": 1488274,
+      "sha256": "8e0c0ae6d2ea8b8f0355b381e56c4e533184326eed9f2dbd4f26de94a5210cb6"
+    },
+    {
+      "id": "robotAiSummaryDesktop",
+      "role": "ai-summary-desktop",
+      "purpose": "Desktop AI Summary",
+      "userProfile": false,
+      "publicUrl": "/assets/home-clean-v1/robots/robot-ai-summary-desktop.png",
+      "installPath": "apps/web/public/assets/home-clean-v1/robots/robot-ai-summary-desktop.png",
+      "zipPath": "raster/robots/robot-ai-summary-desktop.png",
+      "bytes": 1437182,
+      "sha256": "2210d0d425bae39412f32e75f4be332dcc700cab2a1c92a08254de30b2fe57de"
+    },
+    {
+      "id": "robotAiSummaryMobile",
+      "role": "ai-summary-mobile",
+      "purpose": "Mobile AI Summary",
+      "userProfile": false,
+      "publicUrl": "/assets/home-clean-v1/robots/robot-ai-summary-mobile.png",
+      "installPath": "apps/web/public/assets/home-clean-v1/robots/robot-ai-summary-mobile.png",
+      "zipPath": "raster/robots/robot-ai-summary-mobile.png",
+      "bytes": 1606217,
+      "sha256": "b4fb1ad0090f1ffa8b3cece51929eb0da0aa6823356432e261bc1b66b85a524b"
+    },
+    {
+      "id": "robotDiscoveryChart",
+      "role": "discovery-chart",
+      "purpose": "Discovery/기회 차트",
+      "userProfile": false,
+      "publicUrl": "/assets/home-clean-v1/robots/robot-discovery-chart.png",
+      "installPath": "apps/web/public/assets/home-clean-v1/robots/robot-discovery-chart.png",
+      "zipPath": "raster/robots/robot-discovery-chart.png",
+      "bytes": 1461234,
+      "sha256": "3962fd9b08d8693f34732c5a6d6bc313c93d88c53d842190d53680eb7e90e6b7"
+    },
+    {
+      "id": "robotSidebarOpenHands",
+      "role": "sidebar-ai",
+      "purpose": "Desktop Sidebar AI",
+      "userProfile": false,
+      "publicUrl": "/assets/home-clean-v1/robots/robot-sidebar-open-hands.png",
+      "installPath": "apps/web/public/assets/home-clean-v1/robots/robot-sidebar-open-hands.png",
+      "zipPath": "raster/robots/robot-sidebar-open-hands.png",
+      "bytes": 1360675,
+      "sha256": "83a0bc1793c07698e4366c47974daca2b98402b5c32a92d763b7ac2c3bb6e10f"
+    },
+    {
+      "id": "robotAvatarAiOnly",
+      "role": "peotteok-ai-avatar",
+      "purpose": "퍼뜩 AI 전용 아바타. 사용자 프로필 금지",
+      "userProfile": false,
+      "publicUrl": "/assets/home-clean-v1/robots/robot-avatar-ai-only.png",
+      "installPath": "apps/web/public/assets/home-clean-v1/robots/robot-avatar-ai-only.png",
+      "zipPath": "raster/robots/robot-avatar-ai-only.png",
+      "bytes": 1388440,
+      "sha256": "aed6a190abdc800ddd997cc6da68a91e75173b51e6ddb1500a6fe1551d678ea0"
+    },
+    {
+      "id": "productWatch",
+      "role": "product-fixture",
+      "purpose": "시계 상품 visual fixture",
+      "userProfile": false,
+      "publicUrl": "/assets/home-clean-v1/products/product-watch.png",
+      "installPath": "apps/web/public/assets/home-clean-v1/products/product-watch.png",
+      "zipPath": "raster/products/product-watch.png",
+      "bytes": 1229675,
+      "sha256": "1c01cd1f6d01a67f13602a71bf91577e3f477151cb55a49755a74708d3abf1b6"
+    },
+    {
+      "id": "productCollectibleCard",
+      "role": "product-fixture",
+      "purpose": "카드 상품 visual fixture",
+      "userProfile": false,
+      "publicUrl": "/assets/home-clean-v1/products/product-collectible-card.png",
+      "installPath": "apps/web/public/assets/home-clean-v1/products/product-collectible-card.png",
+      "zipPath": "raster/products/product-collectible-card.png",
+      "bytes": 1672093,
+      "sha256": "3481bfd91a878bda00b05ef41f618939499ffcffabbd4ffea031031b66197a66"
+    },
+    {
+      "id": "productHandbag",
+      "role": "product-fixture",
+      "purpose": "가방 상품 visual fixture",
+      "userProfile": false,
+      "publicUrl": "/assets/home-clean-v1/products/product-handbag.png",
+      "installPath": "apps/web/public/assets/home-clean-v1/products/product-handbag.png",
+      "zipPath": "raster/products/product-handbag.png",
+      "bytes": 1950267,
+      "sha256": "2f13d42f93e01532e4d8a777b9c87580c22097087e7ed82ddfc8d6c4225e4660"
+    },
+    {
+      "id": "brandSymbol",
+      "role": "logo-symbol",
+      "purpose": "Logo symbol only. 한글 wordmark 아님",
+      "userProfile": false,
+      "publicUrl": "/assets/home-clean-v1/brand-symbol.svg",
+      "installPath": "apps/web/public/assets/home-clean-v1/brand-symbol.svg",
+      "zipPath": "vector/brand-symbol.svg",
+      "bytes": 911,
+      "sha256": "07b34a5412cf7881bf1266479fc155f86d2f6f80fe095916ff17581ca3d58996"
+    },
+    {
+      "id": "metricSearch",
+      "role": "metric-icon",
+      "purpose": "Search icon",
+      "userProfile": false,
+      "publicUrl": "/assets/home-clean-v1/metric-search.svg",
+      "installPath": "apps/web/public/assets/home-clean-v1/metric-search.svg",
+      "zipPath": "vector/metric-search.svg",
+      "bytes": 422,
+      "sha256": "b6683d961ed3ec4690f0fa55078420d4dc289e8d8a6716ec3f23a689574bc6bf"
+    },
+    {
+      "id": "metricOpportunity",
+      "role": "metric-icon",
+      "purpose": "Opportunity/chart icon",
+      "userProfile": false,
+      "publicUrl": "/assets/home-clean-v1/metric-opportunity.svg",
+      "installPath": "apps/web/public/assets/home-clean-v1/metric-opportunity.svg",
+      "zipPath": "vector/metric-opportunity.svg",
+      "bytes": 709,
+      "sha256": "16fee056efe9703d4c5ffd6e300c3430d10a68e6273956badc346befd000304e"
+    },
+    {
+      "id": "metricTime",
+      "role": "metric-icon",
+      "purpose": "Time icon",
+      "userProfile": false,
+      "publicUrl": "/assets/home-clean-v1/metric-time.svg",
+      "installPath": "apps/web/public/assets/home-clean-v1/metric-time.svg",
+      "zipPath": "vector/metric-time.svg",
+      "bytes": 442,
+      "sha256": "4711f0696e3adeea63f2a9415af3e5e8d38fbceeafeb37b250bf7ee5b179310d"
+    },
+    {
+      "id": "avatarFallback",
+      "role": "viewer-absent-fallback",
+      "purpose": "guest/loading/정보부재 only",
+      "userProfile": false,
+      "publicUrl": "/assets/home-clean-v1/avatar-fallback.svg",
+      "installPath": "apps/web/public/assets/home-clean-v1/avatar-fallback.svg",
+      "zipPath": "vector/avatar-fallback.svg",
+      "bytes": 787,
+      "sha256": "2ea3109905dc32f2b2cb17c177c0fa1493f5e459f027e01f86f12622bc7a2da9"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-labelledby="title">
+  <title id="title">AI 검색 지표</title>
+  <circle cx="28" cy="28" r="15" stroke="#6B3CFF" stroke-width="5"/>
+  <path d="m39.5 39.5 11 11" stroke="#6B3CFF" stroke-width="5" stroke-linecap="round"/>
+  <path d="M22 26.5c1.7-4.2 6.6-6.1 10.7-4.2" stroke="#A48BFF" stroke-width="3" stroke-linecap="round"/>
+</svg>
