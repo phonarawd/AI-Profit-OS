@@ -54,3 +54,8 @@ If no approved Figma exists:
 do not recover a legacy design.
 Use only minimal development placeholder.
 Do not invent Auth/Wallet forms or tab IA.
+
+Process SSOT (how to work, not what it looks like):
+`docs/product/PUTDUK_PRODUCT_DESIGN_ENGINEERING_OPERATING_SYSTEM.md`
+Founder-intent index:
+`docs/reference/founder-intent/`

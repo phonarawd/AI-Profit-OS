@@ -6,12 +6,15 @@ alwaysApply: false
 
 # UI / Admin Boundary (03 UI §0.7)
 
+03/04 레거시 플랜 `AUTO_EXECUTION = DISABLED`. Consumer presentation은
+APPROVED_FIGMA_ONLY + 미래 UX Architecture. 03 pending으로 web을 구현하지 않는다.
+
 ## Owns
 
 | 영역 | 담당 |
 |------|------|
-| `apps/web/**` · `packages/ui/**` (유저 surface) | **03 UI** 플랜 |
-| `apps/admin/**` · Admin API deep UI | **04 Admin** 플랜 |
+| `apps/web/**` · `packages/ui/**` (유저 surface) | 미래 CURRENT ACTIVE Consumer 플랜 (레거시 03 = reference) |
+| `apps/admin/**` · Admin API deep UI | Admin runtime 보존 · 레거시 04 = intent reference |
 
 ## 금지 (UI todo / web·ui 작업 시)
 
@@ -23,7 +26,7 @@ alwaysApply: false
 
 - Admin이 구현할 **계약·pointer**만 UI 플랜/Canon/copy에 기록
 - `packages/ui/canon/**` wire — Admin surface **스펙 SSOT** (Admin 앱 코드 ≠ 여기)
-- `verify:*` 실행 · Admin 플랜/경로 **읽기** (구현은 Admin File-Serial)
+- `verify:*` 실행 · Admin 플랜/경로 **읽기** (레거시 04 auto-execution 0 · Admin 런타임 보존)
 
 ## 충돌 시
 

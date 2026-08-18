@@ -35,6 +35,19 @@ todos:
 isProject: false
 ---
 
+> **PHASE 2 PLAN AUTHORITY (2026-08-18)**
+>
+> ```text
+> classification = HISTORICAL_ACCEPTANCE_EVIDENCE
+> CURRENT_RUNTIME_ACCEPTANCE_NOT_IMPLIED
+> AUTO_EXECUTION = DISABLED
+> CONSUMER_PRESENTATION_AUTHORITY = NO
+> ENGINE_ACCEPTED_FOR_UI / UI_UX_ENTRY_GATE = HISTORICAL EVIDENCE ONLY
+> ```
+>
+> History preserved. `status` not rewritten. Not current Consumer presentation authority.
+> SSOT: `docs/reference/founder-intent/PLAN_AUTHORITY_MATRIX.md`
+
 # 02.5 PRE-UI Engine Acceptance QA
 
 > **PO 판정:** `APPROVE_WITH_REQUIRED_LOCKS` → 설계 **`READY_TO_EXECUTE`** (2026-08-12)  

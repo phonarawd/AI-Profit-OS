@@ -17,6 +17,7 @@
 | stack-lock | `verify:stack-lock` | T0 | ✅ live |
 | secrets | `verify:secrets` | T0 | ✅ live |
 | plans-ssot | `verify:plans-ssot` | T0 | ✅ live |
+| legacy-plan-authority | `verify:legacy-plan-authority` | T0 | ✅ live (레거시 9플랜 auto-exec 0 · 헌법 Consumer presentation 0 · 미래 플랜 시스템 보존) |
 | brand-consumer | `verify:brand-consumer` | T0 | ✅ live |
 | pg-module-scan | `verify:pg-module-scan` | T1 | ✅ live |
 | brand-assets | `verify:brand-assets` | — | retired T0/T1/T2 (Greenfield · old Brand Kit/logo/favicon not required · standalone historical · market-partner-adapters는 stubs 유지) |

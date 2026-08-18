@@ -35,4 +35,4 @@ npm/bun install SSOT · Vercel · 이중 Postgres · PG사 SDK · Day-1 NATS/Tem
 
 ## 읽기
 
-`AGENTS.md` → Index `00` → 도메인 `01~06` → ARCHIVE launch → Canon/Lux
+`AGENTS.md` → `docs/reference/founder-intent/` → `docs/product/PUTDUK_PRODUCT_DESIGN_ENGINEERING_OPERATING_SYSTEM.md` → 레거시 Index/01~06/launch = REFERENCE only (auto-execution 0) · Canon/Lux 읽기 ≠ presentation authority

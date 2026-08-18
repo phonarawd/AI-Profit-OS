@@ -32,6 +32,20 @@ todos:
 isProject: false
 ---
 
+> **PHASE 2 PLAN AUTHORITY (2026-08-18)**
+>
+> ```text
+> classification = ARCHIVE_ONLY
+> AUTO_EXECUTION = DISABLED
+> CONSUMER_PRESENTATION_AUTHORITY = NO
+> LEGACY_LAUNCH_EXECUTION = 0
+> ACTIVE=00~06 claim = SUPERSEDED
+> pending = historical (do not mark completed)
+> ```
+>
+> History preserved. `status` not rewritten. Not current Consumer presentation authority.
+> SSOT: `docs/reference/founder-intent/PLAN_AUTHORITY_MATRIX.md`
+
 # AI Profit OS — 통합 아카이브 (v7.22.25 ARCHIVE pointer)
 
 > ⚠️ **ARCHIVE.** 일상 작업·구현·todo 실행은 ACTIVE `00`~`06` 해시 플랜만.

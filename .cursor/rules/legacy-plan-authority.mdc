@@ -1,0 +1,20 @@
+---
+description: 레거시 00~06+launch 자동실행 0 · 미래 CURRENT ACTIVE만 File-Serial
+alwaysApply: true
+---
+
+# Legacy Plan Authority (Phase 2)
+
+```text
+LEGACY_00_06_FILE_SERIAL_AUTO_EXECUTION = 0
+LEGACY_LAUNCH_PLAN_AUTO_EXECUTION = 0
+FUTURE_ACTIVE_PLAN_SYSTEM = PRESERVED
+```
+
+해시 9파일은 실행 큐가 아니다. `pending`은 이력이다. completed로 위조하지 않는다.
+
+Consumer presentation 권위 = 0. 구 Visual Master / Canon / Lux / 5탭 / Home으로 구현하지 않는다.
+
+미래 실행: Founder 승인 + 새 플랜 파일에 `CURRENT_ACTIVE_PLAN = YES`.
+
+SSOT: `docs/reference/founder-intent/` · process = `docs/product/PUTDUK_PRODUCT_DESIGN_ENGINEERING_OPERATING_SYSTEM.md`

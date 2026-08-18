@@ -5,12 +5,12 @@ Cursor는 **플랜 집행기**다. 스택을 ADR 없이 바꾸지 않는다.
 ## 읽기 순서
 
 1. `TOOLCHAIN.md` + `.cursor/rules/*` (always) + 해당 glob rules
-2. 착수 전: `docs/CONSTITUTION_BOOTSTRAP.md` (실물·헌법·모델배정)
-3. ACTIVE Index: `.cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md` (논리명 `*_ssot` = STALE stub)
+2. 착수 전: `docs/CONSTITUTION_BOOTSTRAP.md` (실물·헌법·모델배정) · 헌법 Consumer presentation 권위 0
+3. **Authority:** `docs/reference/founder-intent/` · **Process:** `docs/product/PUTDUK_PRODUCT_DESIGN_ENGINEERING_OPERATING_SYSTEM.md` · Index 00 = `FOUNDER_INTENT_INDEX` (실행 SSOT 아님)
 4. **Plan SSOT:** 편집·todo `status` = 워크스페이스 `.cursor/plans/ai_profit_os_*.plan.md` **만** · `%USERPROFILE%\.cursor\plans` = hardlink 미러(자동 sync) · 드리프트 시 `pnpm cursor:sync-plans` · `verify:plans-ssot`
-5. 도메인 `01`~`06` **해시 파일만** · **File-Serial:** 한 파일 todos 전부 완료 후 다음 번호 · 한 채팅=한 todo · 접두사 `[grok-4.5|256K]` / `[composer-2.5|200K]`
-6. 직렬 번호: **01 Money** · **02 Engine** · **02.5 Engine Acceptance QA** · 03 UI · 04 Admin · 05 PWA · 06 Infra · 03=`ENGINE_ACCEPTED_FOR_UI` 전 BLOCKED
-7. launch = **ARCHIVE** (`ai_profit_os_launch_54c1261e.plan.md`)
+5. 레거시 `00`~`06`+launch **해시 9파일** = REFERENCE · `LEGACY_00_06_FILE_SERIAL_AUTO_EXECUTION = 0` · `LEGACY_LAUNCH_PLAN_AUTO_EXECUTION = 0` · pending=이력 · Consumer presentation 권위 0
+6. **미래 CURRENT ACTIVE 플랜만** File-Serial (`CURRENT_ACTIVE_PLAN = YES` · 위 9파일 아님) · `FUTURE_ACTIVE_PLAN_SYSTEM = PRESERVED` · 한 채팅=한 todo · 접두사 `[grok-4.5|256K]` / `[composer-2.5|200K]`
+7. launch = **ARCHIVE_ONLY** (`ai_profit_os_launch_54c1261e.plan.md`) · 자동 실행 0
 8. Consumer UI → `.cursor/rules/greenfield-ui.mdc` (VISUAL_TRUTH=APPROVED_FIGMA_ONLY · 레거시 Home/Canon/Visual Master 복구 금지) · AI 이름=**퍼뜩**
 
 ## 연동 SSOT (ADR-016)
@@ -55,6 +55,6 @@ Cursor는 **플랜 집행기**다. 스택을 ADR 없이 바꾸지 않는다.
 - Founder Dashboard UX = 04 `admin-ops` (`/admin` 흡수 · sidebar 13 금지)
 - Standing Authorization / Budget Guardrail enforce = 06 `ads-budget-standing-authorization` (deterministic · prompt-only 금지)
 - Ads Orchestrator ≠ CAPI. CAPI Owns = 기존 Marketing 7
-- **지금** Skill/Agent/Automation/Cloud/Bugbot/MCP/provider 연결 **금지** — File-Serial이 해당 06 todo에 도달할 때만
+- **지금** Skill/Agent/Automation/Cloud/Bugbot/MCP/provider 연결 **금지** — 06 레거시 플랜 auto-execution DISABLED · enablement는 CURRENT ACTIVE 플랜이 명시할 때까지 0
 - production deploy = 기존 `.github/workflows/deploy-cloudflare.yml` `workflow_dispatch` HUMAN · Agent가 production deploy token 보유 0
 - 「퍼뜩의 최종 자동운영 출시 준비 완료」 판정 = 06 `ads-autonomous-ops-release-certification` PASS만 · R8 Core Infra PASS로 대체 금지 (v7.24.7)

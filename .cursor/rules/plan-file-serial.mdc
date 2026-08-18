@@ -6,7 +6,21 @@ alwaysApply: false
 
 # Plan File-Serial (Index §111 · AGENTS §5)
 
-## 절대 규칙
+```text
+LEGACY_00_06_FILE_SERIAL_AUTO_EXECUTION = 0
+LEGACY_LAUNCH_PLAN_AUTO_EXECUTION = 0
+FUTURE_ACTIVE_PLAN_SYSTEM = PRESERVED
+```
+
+레거시 해시 9파일(`.cursor/plans/ai_profit_os_{00,01,02,02_5,03,04,05,06,launch}_*.plan.md`)은
+`LEGACY_REFERENCE` / `SUPERSEDED` / `ARCHIVE`다.
+`pending`은 **이력**이다. 자동 실행하지 않는다.
+Consumer presentation 권위 = 0.
+
+미래 File-Serial은 Founder가 승인한 **CURRENT ACTIVE** 플랜에만 적용한다
+(파일에 `CURRENT_ACTIVE_PLAN = YES` · 위 9파일이 아님).
+
+## 절대 규칙 (CURRENT ACTIVE만)
 
 1. **한 파일** frontmatter `todos` = **위 → 아래**만 실행
 2. **파일 N** todos 전부 `completed`(pending=0) 전 **파일 N+1 착수 금지**
@@ -14,11 +28,11 @@ alwaysApply: false
 4. `status: completed` todo **재실행·재오픈 금지** — 다음은 **첫 pending**부터
 5. todo `completed` + domain verify PASS → **T0 commit** · push는 **세션 stop / “푸시해”** (`git-auto-commit-push.mdc`)
 
-## 직렬 순서
+## 직렬 순서 (HISTORICAL — 레거시 9파일 자동 큐 아님)
 
 `00 Index` → `01 Money` → `02 Engine` → `02.5 Engine Acceptance QA` → `03 UI` → `04 Admin` → `05 PWA` → `06 Infra`
 
-03 UI 착수 = verdict `ENGINE_ACCEPTED_FOR_UI` + `acceptance_scope.unchanged` only.
+03 UI 레거시 pending 착수 근거로 `ENGINE_ACCEPTED_FOR_UI`를 쓰지 않는다 (이력 증거만).
 
 ## 편집 SSOT
 
@@ -35,13 +49,11 @@ alwaysApply: false
 - **예외1** Money 가산 — **소멸**(v7.22.49)
 - **예외2** `engine-ebay-identity-match-ingest` — **활성** · 03 UI 재차단 **금지** · Engine §0.10 U15
 
-## UI 프레젠테이션 (todo 재오픈 아님)
+## UI (GREENFIELD)
 
-`status: completed` UI implementation todo(예: H7)를 **재오픈하지 않는다.**
-그러나 해당 화면이 Founder-approved Visual Master를 갖고 `visual-locks` LOCK 전이면,
-Visual Master 불일치는 시각 결함이며 프레젠테이션 코드 수정이 허용된다.
-이 수정은 todo 재실행이 아니라 PRESENTATION IMPLEMENTATION 교정이다
-(`.cursor/rules/ui-authority-governance.mdc`).
+`status: completed` UI todo를 **재오픈·레거시 복구하지 않는다.**
+Consumer Visual = APPROVED_FIGMA_ONLY (`.cursor/rules/greenfield-ui.mdc`).
+승인 Figma 없으면 `PendingFigma` placeholder만. Home/Canon/Visual Master 복구 금지.
 Money·Engine·Auth·API 의미는 이 절의 대상이 아니다.
 
 ## 금지

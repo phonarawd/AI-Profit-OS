@@ -87,6 +87,19 @@ todos:
 isProject: false
 ---
 
+> **PHASE 2 PLAN AUTHORITY (2026-08-18)**
+>
+> ```text
+> classification = FOUNDER_INTENT_INDEX
+> CURRENT_PRESENTATION_AUTHORITY = NO
+> AUTO_EXECUTION = DISABLED
+> CONSUMER_PRESENTATION_AUTHORITY = NO
+> 00~06 execution SSOT / Light+Purple / fixed 5-tab / Visual Master / old Home = SUPERSEDED
+> ```
+>
+> History preserved. `status` not rewritten. Not current Consumer presentation authority.
+> SSOT: `docs/reference/founder-intent/PLAN_AUTHORITY_MATRIX.md`
+
 # AI Profit OS — Index · Constitution · Gates (v7.23.0 · PLATFORM REDESIGN REBASE)
 
 > **제로 목표:** 오류0 · 결함0 · 오차0 · 중복0  

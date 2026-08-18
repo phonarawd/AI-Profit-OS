@@ -12,6 +12,7 @@ const T0_ALWAYS = [
   "secrets.cjs",
   "plans-ssot.cjs",
   "brand-consumer.cjs",
+  "legacy-plan-authority.cjs",
 ];
 
 /** @type {string[]} */

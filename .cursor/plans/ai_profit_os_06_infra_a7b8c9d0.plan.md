@@ -58,6 +58,18 @@ todos:
     status: pending
 isProject: false
 ---
+
+> **PHASE 2 PLAN AUTHORITY (2026-08-18)**
+>
+> ```text
+> classification = INFRA_GROWTH_REFERENCE
+> CURRENT_RUNTIME_REVALIDATION_REQUIRED
+> AUTO_EXECUTION = DISABLED
+> CONSUMER_PRESENTATION_AUTHORITY = NO
+> ```
+>
+> History preserved. `status` not rewritten. Not current Consumer presentation authority.
+> SSOT: `docs/reference/founder-intent/PLAN_AUTHORITY_MATRIX.md`
 # AI Profit OS — Infra & Marketing (v7.23.0 · Redesign R7/R8)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`  
