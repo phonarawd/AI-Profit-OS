@@ -5,12 +5,30 @@
 > **현재 권위:** Index v7.23.0 · R0 governance CLOSE(inventory→fact/state→change-control→observation) · 외부 `플랫폼_전체_재설계_로드맵_d903eef7`=REFERENCE ONLY · 기존 v7.22 스냅샷/「현재」「다음」문구는 이력.
 > **현재 다음:** 03 UI & UX(Redesign R1 Home 등) — **02.5 Engine Acceptance QA는 QA-0..QA-9 전부 `completed`로 종료**되었고 **verdict=`ENGINE_ACCEPTED_FOR_UI`(ISSUED) · `UI_UX_ENTRY_GATE=OPEN`**이다(baseline `ea-baseline-64b0f8a6d984-3657543f36b5` · `governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md` · `pnpm verify:engine-acceptance` 라이브 재확인, 2026-08-16 resync). *(이력: QA4/QA5는 각각 `BLOCKED_NO_CLOCK_HOOK`/`BLOCKED_NO_FAULT_HOOK`(critical)를 최초 관측했고 QA9 최초 판정은 `QA8_ADMIN_BOUNDARY` P0(admin 라우트 19개 전부 미인증)로 `ENGINE_QA_INCOMPLETE`/`ENGINE_NOT_ACCEPTED`였다 — 이후 CI clock/fault 하네스 및 admin 인증·RBAC repair가 완료되고 QA1-8 재실행+QA9 재판정으로 위 현재 상태에 도달했다.)* NEW CONSUMER PRESENTATION은 NEW APPROVED FIGMA가 있을 때만 착수한다(`.cursor/rules/greenfield-ui.mdc`). Approved Figma 없음 → production Consumer presentation 구현 0. ADR-018 Visual Master / Canon / Visual Contract = historical/reference only · 실행 권위 0. 구 Visual Master/Canon/Contract/Git UI fallback 금지. Money/Engine/Auth/API 의미는 본 주로 열리지 않음.
 
+## LEGACY CONSTITUTION SCOPE RULE (GREENFIELD 2026-08-18)
+
+`CONSTITUTION/**` 29개 파일의 `Status: ACTIVE`와 본 문서 §2 목록은
+Business / Engine / Money / Security / Operational intent 보존을 뜻한다.
+Consumer Visual / Brand / Layout / IA / visual copy geometry를
+현재 실행 권위로 승격하지 않는다. 29개 본문 rewrite 없음.
+
+- Business / Engine / Money / Security / Operational intent: **PRESERVED**, subject to current runtime truth.
+- Official partnership facts explicitly Founder-locked (eBay · Amazon · Yahoo! JAPAN Auction): **PRESERVED**.
+- Consumer Visual / Brand / Layout / IA / visual copy geometry: **SUPERSEDED**.
+- Current Consumer Presentation authority: **NEW APPROVED FIGMA ONLY**.
+- No Approved Figma: no legacy visual fallback.
+- Old Lux / Canon / Visual Master / Visual Contract / fixed 5-tab: not Consumer presentation authority.
+- Production synthetic/demo/hybrid user activity: not authorized.
+- Yahoo official partnership: preserved.
+- Yahoo API / adapter / data-source integration: forbidden.
+- API/adapter ban does not disable official partner presentation.
+
 ## v7.23.0 현재 잠금
 
 - Runtime 단계는 `Runtime P0~P3`, 재설계 실행은 `Redesign R0~R8`로 구분한다.
 - File-Serial: 00 R0 → 01 Money R1 → 02 Engine R1 → **02.5 Engine Acceptance QA** → 03 UI R1~R5 → 04 Admin R6 → 05 PWA → 06 R7/R8.
-- 03 UI 착수 선행: `VERDICT == ENGINE_ACCEPTED_FOR_UI` **and** `acceptance_scope.unchanged` (`governance/engine-acceptance/`).
-- Consumer theme=ADR-017 `peotteok-light` Light+Purple 단일, 5탭=홈·기회·수익·지갑·내정보.
+- 03 UI 착수 선행: `VERDICT == ENGINE_ACCEPTED_FOR_UI` **and** `acceptance_scope.unchanged` (`governance/engine-acceptance/`). Engine acceptance ≠ legacy Consumer presentation 승인.
+- Consumer theme / 5탭(ADR-017 `peotteok-light` Light+Purple · 홈·기회·수익·지갑·내정보) = **HISTORICAL / SUPERSEDED** presentation. Current = NEW APPROVED FIGMA ONLY (위 LEGACY CONSTITUTION SCOPE RULE). 승인 Figma 없음 → 레거시 테마·5탭 fallback 금지.
 - Web/Ops origin=`infra/domain.manifest.json openNext.*.workersDev`; OpenNext Workers only, Pages deploy/pages.dev origin 금지.
 - v7.22 completed todo는 불변이며 신규 가산 todo만 실행한다.
 - 아래 DB/파일 개수는 이력 스냅샷이다. R0 `baseline.v1.json`이 commit SHA·dirty paths·정규화 규칙과 함께 최신 수치를 확정한다.
