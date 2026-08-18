@@ -26,7 +26,7 @@ CURRENT_WEB = PendingFigma (all consumer pages)
 | Funding | deposit routes | OWNER_FOUND address + KRW | OWNER_FOUND KRW + buckets | n/a | OWNER_FOUND | WEB_WIRING_MISSING | PARTIAL | shortfall | no returnTo |
 | Participate | none web | OWNER_FOUND POST participate | OWNER_MISSING | guards + lock | lock principal | WEB_WIRING_MISSING | PARTIAL | core | P1 SDK |
 | Matching | `/trades/[id]/execute` | OWNER_FOUND GET/POST trades | OWNER_FOUND execution-stream | OWNER_FOUND settlement_rule | lock/unlock | WEB_WIRING_MISSING | PARTIAL | Matching | progressPct timer |
-| Cancel | none | OWNER_MISSING user | n/a | resultCode exists | unlock on terminal | WEB_WIRING_MISSING | MISSING | D-05 | — |
+| Cancel | none | OWNER_MISSING user | n/a | resultCode exists | unlock on terminal | WEB_WIRING_MISSING | MISSING | D-05 HIDE | — |
 | Settlement | via trade success | OWNER_FOUND journal settlement | settledProfit field | MATCH_SUCCESS path | OWNER_FOUND | WEB_WIRING_MISSING | VERIFIED (API) | Result | — |
 | Earnings | `/trades` compat | OWNER_FOUND profitUsdt + count | buckets / home-money | count | OWNER_FOUND | WEB_WIRING_MISSING | PARTIAL | embed | no list |
 | Wallet | `/wallet` | OWNER_FOUND | OWNER_FOUND | n/a | OWNER_FOUND | WEB_WIRING_MISSING | PARTIAL | primary | — |
@@ -40,12 +40,12 @@ CURRENT_WEB = PendingFigma (all consumer pages)
 | Referral | `/me/invite` | OWNER_FOUND referral | OWNER_MISSING | L3 on success | OWNER_FOUND | WEB_WIRING_MISSING | PARTIAL | Retention | no % on user DTO |
 | Notifications | `/me/inbox` | OWNER_FOUND inbox+prefs | OWNER_MISSING | n/a | n/a | WEB_WIRING_MISSING | PARTIAL | Retention | fanout UNKNOWN |
 | AI insight | `/me/peotteok` | OWNER_FOUND coach | OWNER_FOUND peotteok | OWNER_FOUND P/G/S | Fact only | WEB_WIRING_MISSING | PARTIAL | Home embed | — |
-| Partners | `/me/guide/partners` | OWNER_MISSING display API | n/a | listing ebay Day-1 · yahoo FORBIDDEN | n/a | WEB_WIRING_MISSING | PARTIAL | Trust | catalog AMBIGUOUS |
+| Partners | `/me/guide/partners` | OWNER_MISSING display API | n/a | listing ebay Day-1 · yahoo FORBIDDEN | n/a | WEB_WIRING_MISSING | PARTIAL | Trust | partnership SINGLE (Founder) · adapter catalog separate |
 | Profile | `/me` | OWNER_FOUND session/profile | OWNER_MISSING | n/a | n/a | WEB_WIRING_MISSING | PARTIAL | Account | — |
 | Settings | `/me/settings` | OWNER_FOUND prefs + delete | OWNER_MISSING | n/a | n/a | WEB_WIRING_MISSING | PARTIAL | Account | — |
 | Support | `/me/support` | OWNER_FOUND disputes | OWNER_MISSING | n/a | disputes | WEB_WIRING_MISSING | PARTIAL | Account | — |
 | Legal | `/me/legal*` | OWNER_FOUND copy | n/a | n/a | n/a | WEB_WIRING_MISSING | PARTIAL | Account | placeholder pages |
-| FX | n/a | OWNER_FOUND CurrentFxApprox | OWNER_FOUND current-fx | n/a | snapshot | WEB_WIRING_MISSING | VERIFIED (API) | KRW reference | dual path P2 |
+| FX | n/a | OWNER_FOUND CurrentFxApprox | OWNER_FOUND current-fx | n/a | snapshot | WEB_WIRING_MISSING | VERIFIED (API) | KRW reference | SINGLE owner. card 0 = GAP not owner |
 
 ---
 

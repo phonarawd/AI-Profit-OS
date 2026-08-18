@@ -1,9 +1,21 @@
 # CONSUMER ROUTE / CTA MATRIX
 
-> Phase 3 · `DEAD_CTA_IN_ARCHITECTURE = 0` · `UNMAPPED_CRITICAL_CTA = 0`  
-> action type: `VALID_ROUTE` · `VALID_ACTION` · `INTENTIONALLY_DISABLED` · `FUTURE_CAPABILITY`
+> Phase 3 · `DEAD_CTA_IN_ARCHITECTURE = 0` · `UNCLASSIFIED_CRITICAL_CTA = 0`  
+> 분류(행당 정확히 1개): `VALID_ROUTE` · `VALID_ACTION` · `INTENTIONALLY_DISABLED` · `FUTURE_CAPABILITY` · `DEAD`
 
 현재 web CTA 구현 = 0 (`PendingFigma`). 아래는 **아키텍처 매핑**이다.
+
+불변식:
+
+```text
+TOTAL_CRITICAL_CTA
+=
+VALID_ROUTE
++ VALID_ACTION
++ INTENTIONALLY_DISABLED
++ FUTURE_CAPABILITY
++ DEAD
+```
 
 ---
 
@@ -40,6 +52,8 @@
 | MatchingResult | 지갑 보기 | success | VALID_ROUTE | Wallet | `/wallet` | KEEP | — | Wallet | — | mapped |
 | MatchingResult | 다른 기회 | safe_stop/failed | VALID_ROUTE | Home | `/` | KEEP | — | Home | — | mapped |
 | MatchingResult | 고객지원 | failed | VALID_ROUTE | Support | `/me/support` | KEEP | — | Support | — | mapped |
+| SettlementDetail | 지갑 보기 | settled | VALID_ROUTE | Wallet | `/wallet` | KEEP | GET `/trades/:id` | Wallet | 404 Home | mapped |
+| SettlementDetail | Home | always | VALID_ROUTE | Home | `/` | KEEP | — | Home | — | mapped |
 | Wallet | 테더 입금 | auth | VALID_ROUTE | UsdtDeposit | `/wallet/deposit` | `/wallet/deposit/usdt` | — | UsdtDeposit | — | mapped |
 | Wallet | 원화 입금 | auth | VALID_ROUTE | KrwDeposit | `/wallet/deposit` | `/wallet/deposit/krw` | — | KrwDeposit | — | mapped |
 | Wallet | 테더 출금 | auth | VALID_ROUTE | UsdtWithdraw | `/wallet/withdraw/usdt` | KEEP | — | UsdtWithdraw | — | mapped |
@@ -78,8 +92,8 @@
 | Primary nav | Home | always | VALID_ROUTE | Home/Landing | `/` | KEEP | — | Home | — | mapped |
 | Primary nav | Wallet | auth else Login | VALID_ROUTE | Wallet or Login | `/wallet` | KEEP | — | Wallet | Login | mapped |
 | Primary nav | My | auth else Login | VALID_ROUTE | Profile or Login | `/me` | KEEP | — | Profile | Login | mapped |
-| Compatibility | /profits | any | COMPATIBILITY | OpportunityList meaning | `/profits` | alias or retire later | feed | List | — | mapped |
-| Compatibility | /trades | any | COMPATIBILITY | not Earnings tab | `/trades` | retire as tab | — | redirect Home/Wallet | — | mapped |
+| Compatibility | /profits | any | VALID_ROUTE | OpportunityList meaning | `/profits` | alias or retire later | feed | List | — | mapped |
+| Compatibility | /trades | any | VALID_ROUTE | Home or Wallet (not Earnings tab) | `/trades` | retire as tab | — | redirect Home/Wallet | — | mapped |
 | Events 등 | 열기 | primary journey | INTENTIONALLY_DISABLED | — | `/me/events` etc | COMPATIBILITY | — | — | not primary | mapped |
 
 ---
@@ -102,13 +116,22 @@
 
 ## Counts
 
+N-01 재집계: 이전 표는 **70행**. `Matching 취소`를 mapped와 future에 겹쳐 세면 71이 되고, 주장 총 72와 1이 비었다. 표에서 빠진 것은 SettlementDetail(KEEP AS SCREEN) CTA 2개 — `지갑 보기` · `Home`. Compatibility `/profits`·`/trades`는 별 타입이 아니라 `VALID_ROUTE`(호환 경로). 죽은 CTA로 세지 않는다.
+
 ```text
-critical CTA count = 72
-mapped = 70
-dead = 0
-future = 1
-intentionally_disabled_primary = 1 (profit merge) + removed-journey + opportunity-unavailable
+TOTAL_CRITICAL_CTA = 72
+VALID_ROUTE = 45
+VALID_ACTION = 23
+INTENTIONALLY_DISABLED = 3
+FUTURE_CAPABILITY = 1
+DEAD = 0
+UNCLASSIFIED_CRITICAL_CTA = 0
+DEAD_CRITICAL_CTA = 0
 UNMAPPED_CRITICAL_CTA = 0
+dead = 0
+accounting exact = 45+23+3+1+0 = 72
 ```
 
-Cancel matching = `FUTURE_CAPABILITY` (D-05). 죽은 버튼으로 그리지 않는다.
+INTENTIONALLY_DISABLED = OpportunityDetail 참여 불가 · Wallet 수익→원금 (D-06 HIDE) · Events 등 primary journey 제거.
+
+Cancel matching = `FUTURE_CAPABILITY` (D-05 HIDE). 죽은 버튼으로 그리지 않는다.

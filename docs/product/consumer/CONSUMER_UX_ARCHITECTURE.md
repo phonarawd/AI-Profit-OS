@@ -2,26 +2,37 @@
 
 > **문서 종류:** PRODUCT_TRUTH — Phase 3 NEW CONSUMER UX ARCHITECTURE  
 > **일자:** 2026-08-18  
-> **상태:** PROPOSED — Founder 승인 대기  
+> **상태:** FOUNDER APPROVED PRODUCT DECISIONS — presentation 대기  
 > **시각 권위:** APPROVED FIGMA = NONE  
 > **구현:** 본 문서는 프로덕션 UI가 아니다.
 
 ```text
 BUSINESS_TRUTH        = CURRENT DOMAIN / SERVER / ENGINE / MONEY / LEDGER
-PRODUCT_TRUTH         = THIS FOLDER (Founder 승인 후)
+PRODUCT_TRUTH         = THIS FOLDER (D-01~D-07 Founder 승인)
 PRESENTATION_TRUTH    = NEW APPROVED FIGMA ONLY
 IMPLEMENTATION_TRUTH  = CURRENT VERIFIED CODE
 PLAYWRIGHT            = VERIFICATION EVIDENCE
 
 OLD_5TAB_AUTHORITY = NO
+OLD_5TAB_AUTHORITY = 0
 LUX_AUTHORITY = NO
+OLD_LUX_AUTHORITY = 0
 CANON_AUTHORITY = NO
+OLD_CANON_AUTHORITY = 0
 VISUAL_MASTER_AUTHORITY = NO
+OLD_VISUAL_MASTER_AUTHORITY = 0
 FAKE_STEPPER = 0
 FAKE_STEPPER = FORBIDDEN
 FAKE_FINANCIAL_TRUTH = 0
 FAKE_PRODUCT_STATE = 0
+FAKE_MATCHING_PROGRESS = 0
 DEAD_CTA_IN_ARCHITECTURE = 0
+OPEN_FOUNDER_DECISIONS_PHASE3 = 0
+FX_TRUTH = SINGLE_OWNER
+FX_DUPLICATE_ACTIVE_OWNER = 0
+PARTNER_DUPLICATE_ACTIVE_OWNER = 0
+KNOWN_DUPLICATE_CRITICAL_TRUTH_OWNER = 0
+KNOWN_AMBIGUOUS_CRITICAL_TRUTH_OWNER = 0
 ```
 
 관련:
@@ -48,7 +59,8 @@ DEAD_CTA_IN_ARCHITECTURE = 0
 4. **3초 이해:** 무엇을 하는지 · 어떤 기회인지 · 필요 자본 · 기대 결과 · 권위 있는 소요 시간 · 다음 행동.
 5. **Required Capital**이 핵심 개념이다. 참여 전에 얼마가 필요한지 알 수 있어야 한다.
 6. USDT = 원장 기준. KRW = 참고 표시. 클라이언트 FX 발명 0.
-7. Engine / Money 상태만 보여 준다. `0` ≠ UNAVAILABLE.
+   FX_TRUTH_OWNER = `CurrentFxApprox` (`POST /me/current-fx/approx`). 카드 KRW `0` fallback은 두 번째 owner가 아니라 INVALID_IMPLEMENTATION_FALLBACK(GAP).
+7. Engine / Money 상태만 보여 준다. `0` ≠ UNAVAILABLE. FX 참고 불가 = null / UNAVAILABLE / STALE / PENDING. 0 fallback 금지.
 8. AI(퍼뜩)는 요약·설명·다음 행동 제안만. 잔액·수익·FX·자격·매칭·정산을 창작하지 않는다.
 9. 공식 파트너(eBay · Amazon · Yahoo! JAPAN Auction)는 신뢰 맥락이다. Yahoo API/adapter/data-source = FORBIDDEN.
 10. 합성 활동 · 가짜 진행률 · 가짜 대기 인원 · 가짜 희소성 = FORBIDDEN.
@@ -101,26 +113,48 @@ Opportunity (GET /opportunities)
 
 ## Recommended IA
 
-### 후보 비교
+D-01 승인 후 **LOCKED = IA-A.**
+
+```text
+PRIMARY NAV DESTINATIONS = 3
+Home
+Wallet
+My
+```
+
+3 destinations approved ≠ bottom tab bar approved. 시각 내비게이션 패턴은 Approved Figma 전까지 미결정.
+
+### 후보 비교 (이력)
 
 | ID | Primary destinations | 장점 | 단점 | 판정 |
 |----|----------------------|------|------|------|
-| IA-A | Home · Wallet · My | 인지 부하 최소. 매칭/기회는 작업 연속. 레거시 5탭과 무관 | 기회 목록이 커지면 Home이 답답해질 수 있음 | **RECOMMENDED** |
-| IA-B | Home · Opportunity · Wallet · My | 피드가 길어질 때 탐색이 분명 | 기회와 Home이 중복되기 쉬움 | 대안 |
+| IA-A | Home · Wallet · My | 인지 부하 최소. 매칭/기회는 작업 연속. 레거시 5탭과 무관 | 기회 목록이 커지면 Home이 답답해질 수 있음 | **LOCKED (D-01)** |
+| IA-B | Home · Opportunity · Wallet · My | 피드가 길어질 때 탐색이 분명 | 기회와 Home이 중복되기 쉬움 | superseded |
 | IA-C | Home · Matching · Wallet · My | 진행 중 작업을 탭으로 고정 | 매칭은 에피소드. 빈 탭이 됨 | REJECT |
 
 레거시 고정 5탭(홈·기회·수익·지갑·내정보)은 **권위 없음**. 개수를 5에 맞추지 않는다.
-
-**권고 = IA-A.**
 
 이유:
 
 - 3초 규칙의 답은 Home 한 곳이면 충분하다.
 - 매칭·정산은 **목적지**가 아니라 **작업 상태**다.
-- 수익(Earnings)은 별 탭이 아니라 Wallet/Home의 정산 결과다.
-- `/profits`·`/trades`는 호환 경로일 뿐 IA가 아니다. 현재 placeholder 제목도 서로 뒤바뀌어 있다.
+- 수익(Earnings)은 별 primary destination이 아니다. Home + Wallet + 정산/내역 맥락.
+- Opportunity discovery는 **Home-first**. 전체 목록은 필요할 때 맥락적으로만.
+- `/profits`·`/trades`는 호환 경로일 뿐 IA가 아니다.
 
-Founder가 피드 탐색을 항상 1뎁스로 원하면 IA-B로 바꿀 수 있다. `D-01`.
+### Contextual model
+
+```text
+Home
+→ Opportunity Detail
+→ Participate Confirmation
+→ Funding if needed
+→ Matching
+→ Settlement/Result
+→ Home or Wallet
+```
+
+Account/contextual (primary nav 아님): Referral · Notifications · AI / 퍼뜩 · KYC · Settings · Support · Guides · Legal · Partner/Trust education.
 
 ---
 
@@ -160,7 +194,8 @@ Account / trust
 | Wallet | 넣고 · 빼고 · 잔액 · 내역 | `/wallet` | `/wallet` |
 | My | 나 · 초대 · 알림 · 퍼뜩 · 설정 · 신뢰 | `/me` | `/me` |
 
-탭 수 · 아이콘 · 하단/상단 배치는 **시각 결정이 아니다.** 여기 적힌 것은 destination job만.
+탭 수 · 아이콘 · 하단/상단 배치는 **시각 결정이 아니다.** 여기 적힌 것은 destination job만.  
+`3 destinations approved` ≠ `bottom tab bar design approved`.
 
 ---
 
@@ -293,6 +328,7 @@ Quote 단계는 별도 상품 화면이 아니다. Detail의 pricing + `POST ...
 
 ```text
 FAKE_STEPPER = 0
+FAKE_MATCHING_PROGRESS = 0
 ```
 
 `stepIndex` · `progressPct` 는 서버가 Soft 타이머 비율로 채우는 **presentation 필드**다 (`presentationProgress`). Consumer는 측정 가능한 진행으로 쓰지 않는다. 매칭 중 = **indeterminate**.
@@ -385,16 +421,36 @@ Surface = `/me/peotteok` 호환 + Home 임베드 가능.
 
 ## Partner/trust UX
 
-| Partner | Partnership | Data source |
-|---------|-------------|-------------|
+Partnership과 adapter availability는 **다른 도메인**이다. 섞지 않는다.
+
+```text
+PARTNERSHIP_TRUTH_OWNER = Founder Lock
+ADAPTER_AVAILABILITY_OWNER = current runtime / MI adapter catalog
+PARTNERSHIP_STATUS ≠ ADAPTER_AVAILABILITY
+PartnerStatus = SINGLE_OWNER
+AdapterAvailability = SINGLE_OWNER
+PARTNER_DUPLICATE_ACTIVE_OWNER = 0
+```
+
+| Partner | Partnership (Founder) | Adapter / data-source (technical) |
+|---------|----------------------|-------------------------------------|
 | eBay | OFFICIAL | Day-1 listing 가능 (INTERNAL). 유저에게 거래소 조작을 가르치지 않음 |
 | Amazon | OFFICIAL | 현재 Consumer 데이터 소스로 쓰지 않음 |
-| Yahoo! JAPAN Auction | OFFICIAL | API = FORBIDDEN · adapter = FORBIDDEN · data-source = FORBIDDEN |
+| Yahoo! JAPAN Auction | OFFICIAL | Yahoo API = FORBIDDEN · Yahoo adapter = FORBIDDEN · Yahoo data-source = FORBIDDEN |
+
+```text
+Yahoo adapter unavailable
+DOES NOT mean
+Yahoo partnership unavailable
+
+API ban
+DOES NOT disable official partner presentation
+```
 
 배치 후보(시각 확정 아님): Opportunity 맥락 · Onboarding · Guides · Home 보조.  
 로고 스트립 강제는 하지 않는다.
 
-런타임 `market-intelligence`에 Phase1+ adapter catalog가 남아 있다. Founder lock과 **AMBIGUOUS**. 구현 갭으로 기록. UX는 Founder lock을 따른다.
+런타임 `market-intelligence` adapter catalog는 **AdapterAvailability** owner다. Founder partnership lock의 두 번째 진실이 아니다. Yahoo 항목이 catalog에 남아 있어도 Consumer는 Founder lock + API/adapter/data-source FORBIDDEN을 따른다. 구현 정리는 갭(G-P1-09)이지 owner 모호성이 아니다.
 
 ---
 
@@ -455,13 +511,20 @@ HomeRead `viewState`: `ready_empty` · `ready_data` · `stale` · `recoverable_e
 
 ## CTA philosophy
 
-모든 CTA는 다음 중 하나:
+모든 CTA는 다음 중 정확히 하나:
 
 ```text
 VALID_ROUTE
 VALID_ACTION
 INTENTIONALLY_DISABLED
 FUTURE_CAPABILITY
+DEAD
+```
+
+```text
+UNCLASSIFIED_CRITICAL_CTA = 0
+DEAD_CRITICAL_CTA = 0
+CTA_ACCOUNTING = 100%
 ```
 
 죽은 버튼 0. 조건 불만족 시 disabled reason을 갖는다.
@@ -525,7 +588,7 @@ Premium = 명확함이지 이펙트가 아니다.
 
 시맨틱 후보: `OpportunityCard` · `RequiredCapital` · `MatchingStatus` · `BalanceSummary` · `TransactionRow` · `PartnerBadge` · `AIInsight` · `DepositMethod`.
 
-첫 디자인 타깃 = **Home** (Desktop + Mobile). Phase 3 승인 전 착수 0.
+첫 디자인 타깃 = **Home** (Desktop + Mobile). Brand / Mockup / Figma 착수는 Founder explicit GO 전 0.
 
 ---
 
@@ -539,16 +602,37 @@ Brand/Figma를 막는 비즈니스 발명 요구는 없다. Home mockup은 **own
 
 ---
 
+## Founder approved product decisions
+
+```text
+OPEN_FOUNDER_DECISIONS_PHASE3 = 0
+D01_APPROVED = YES
+D02_APPROVED = YES
+D03_APPROVED = YES
+D04_APPROVED = YES
+D05_APPROVED = YES
+D06_APPROVED = YES
+D07_APPROVED = YES
+```
+
+구현하지 않는다. 아키텍처 Product Truth만.
+
+| Decision ID | Approved product truth |
+|-------------|------------------------|
+| D-01 | Primary destinations = **Home · Wallet · My** (3). Opportunity는 영구 primary nav가 아니다. 구 고정 5탭 권위 0. 시각 탭 바는 미결정. |
+| D-02 | Root = **`/`**. Guest → Landing/acquisition. Authenticated → Consumer Home. 같은 경로, session-aware. |
+| D-03 | Earnings / Profit = **별 primary nav 아님**. Home + Wallet + 정산/내역 맥락. |
+| D-04 | Opportunity discovery = **Home-first**. 전체 목록은 필요할 때 맥락적으로만. |
+| D-05 | Matching cancel CTA = **HIDE** until authoritative user cancel capability/API exists and is verified. FUTURE_CAPABILITY. 죽은 Cancel 금지. |
+| D-06 | Profit → Principal transfer = **HIDE** until authoritative current runtime capability is verified. 헌법/플랜 이력으로 추론하지 않음. |
+| D-07 | Referral = **NO HARDCODED REWARD % · NO HARDCODED REWARD AMOUNT**. 개념·자격/상태만 (authoritative일 때). 이력 %/캡 복사 금지. |
+
 ## Open product decisions
 
-| Decision ID | Question | Option A | Option B | Option C | Recommended | Why | Founder decision required? |
-|-------------|----------|----------|----------|----------|-------------|-----|------------------------------|
-| D-01 | Primary nav | Home·Wallet·My | Home·Opportunity·Wallet·My | 레거시 5탭 | A | 3초+작업연속. 5탭 권위 0 | YES |
-| D-02 | Guest vs Home | `/`가 세션에 따라 Landing/Home | Landing 별 경로 | — | A | 호환 `/` 유지. 의미는 session이 가름 | YES |
-| D-03 | Earnings | Wallet/Home 섹션 | 독립 탭 | — | A | 정산 결과는 돈 맥락 | YES |
-| D-04 | OpportunityList | Home 섹션+overflow 화면 | 항상 독립 1뎁스 | — | A (IA-B면 B) | D-01과 묶임 | YES |
-| D-05 | 매칭 중 유저 취소 | 노출(API 필요) | 숨김(엔진 코드만) | — | B until API | 죽은 CTA 금지 | YES |
-| D-06 | profit→principal merge | Wallet 고급 | 유저 표면 0 | — | B 기본, 고급은 나중 | 초간편 우선 | YES |
-| D-07 | 추천 보상 숫자 | 서버 config만 표시 | `rewardsEnabled=false`면 정성 카피 | — | B then A | 하드코드 % 금지 | YES |
+없음.
+
+```text
+OPEN_FOUNDER_DECISIONS_PHASE3 = 0
+```
 
 기술 질문(레포가 답함)은 여기 두지 않는다.

@@ -52,7 +52,7 @@ Overflow: OpportunityList는 Home 임베드 + 필요 시 KEEP 전체 화면.
 | Desktop enhancement | 신뢰 문단 |
 | classification | KEEP AS SCREEN |
 | current route | `/` |
-| future route decision | `/` guest variant (D-02) |
+| future route decision | `/` guest variant (D-02 APPROVED) |
 | future Figma required | YES |
 
 ### Signup
@@ -208,7 +208,7 @@ Overflow: OpportunityList는 Home 임베드 + 필요 시 KEEP 전체 화면.
 | Desktop enhancement | 더 많은 카드 |
 | classification | EMBED AS SECTION + overflow KEEP |
 | current route | `/profits` COMPATIBILITY |
-| future route decision | `/opportunities` 또는 Home only (D-04) |
+| future route decision | `/opportunities` 또는 Home only (D-04 APPROVED Home-first) |
 | future Figma required | YES if overflow |
 
 ### OpportunityDetail
@@ -271,7 +271,7 @@ Overflow: OpportunityList는 Home 임베드 + 필요 시 KEEP 전체 화면.
 | User goal | 실제 매칭 상태 |
 | Primary question answered | 지금 맞춰지고 있나? |
 | Primary CTA | 없음 또는 Home (indeterminate) |
-| Secondary CTA | Cancel = FUTURE (D-05) |
+| Secondary CTA | Cancel = FUTURE_CAPABILITY (D-05 APPROVED HIDE) |
 | Entry points | Participate success |
 | Exit points | MatchingResult |
 | Required data | TradeExecutionState minus progress-as-truth |
@@ -338,7 +338,7 @@ Overflow: OpportunityList는 Home 임베드 + 필요 시 KEEP 전체 화면.
 | Desktop enhancement | 섹션 |
 | classification | EMBED AS SECTION |
 | current route | `/trades` COMPATIBILITY (제목 혼란) |
-| future route decision | not a tab (D-03) |
+| future route decision | not a tab (D-03 APPROVED) |
 | future Figma required | as Wallet/Home part |
 
 ### SettlementDetail

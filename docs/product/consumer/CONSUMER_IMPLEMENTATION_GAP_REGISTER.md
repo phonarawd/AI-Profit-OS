@@ -13,7 +13,7 @@ Phase 3 does not fix these.
 
 | ID | capability | expected UX | current implementation evidence | gap | severity | blocks Figma? | blocks implementation? | blocks E2E? | recommended owner |
 |----|------------|-------------|---------------------------------|-----|----------|---------------|------------------------|-------------|-------------------|
-| G-P0-01 | Money display fallback | 결측 = UNAVAILABLE | `packages/sdk/src/wallet/fetch.ts` `asAmount` → `"0"` · `user-feed/fetch.ts` `principalUsdt` default `"0"` · opportunities `expectedProfitKrwApprox` null→`0` | ZERO used as missing | P0 | NO if Figma annotates UNAVAILABLE | YES before money UI | YES money E2E | SDK + Nest opportunities |
+| G-P0-01 | Money display fallback | 결측 = UNAVAILABLE | `packages/sdk/src/wallet/fetch.ts` `asAmount` → `"0"` · `user-feed/fetch.ts` `principalUsdt` default `"0"` · opportunities `expectedProfitKrwApprox` null→`0` | ZERO used as missing. **CARD_KRW_ZERO_FALLBACK = INVALID_IMPLEMENTATION_FALLBACK = NOT FX AUTHORITY** | P0 | NO if Figma annotates UNAVAILABLE | YES before money UI | YES money E2E | SDK + Nest opportunities |
 | G-P0-02 | Matching progress | indeterminate | `trades.execution.service.ts` `presentationProgress` writes `progressPct`/`stepIndex` from Soft timer | 표시하면 FAKE_STEPPER | P0 | NO if Figma has no % bar | YES if UI binds progressPct | YES if E2E asserts % | Nest presentation + future UI |
 
 ---
@@ -27,10 +27,10 @@ Phase 3 does not fix these.
 | G-P1-03 | Auth SDK | signup/login/session client | no auth module in `packages/sdk` | SDK MISSING | P1 | NO | YES auth screens | YES | SDK |
 | G-P1-04 | User history | 입출금/정산 목록 | ledger journals = Admin only. User KRW request list only | OWNER_PARTIAL | P1 | History empty/unavailable OK | YES full history | YES history E2E | Money API |
 | G-P1-05 | User trade list | 진행/지난 매칭 목록 | `GET /trades/:id` only. no listByUser | OWNER_MISSING list | P1 | Home can use known tradeId | YES revisit matching | YES | Nest trades |
-| G-P1-06 | User cancel | D-05 if exposed | `CANCELLED_BY_USER` enum. no user POST cancel found | OWNER_MISSING | P1 | NO if CTA not drawn | if D-05=A | if D-05=A | Nest trades |
+| G-P1-06 | User cancel | D-05 APPROVED HIDE | `CANCELLED_BY_USER` enum. no user POST cancel found | OWNER_MISSING · FUTURE_CAPABILITY until API verified | P1 | NO — CTA not drawn | if cancel later exposed | if cancel later exposed | Nest trades |
 | G-P1-07 | KRW deposit route | 독립 레일 | web `/wallet/deposit` only (placeholder) | route MIXED | P1 | NO | YES IA rails | partial | Web routes |
 | G-P1-08 | Return after funding | 기회 복귀 | no returnTo contract in API | UX contract only | P1 | NO | YES funding loop | YES | Web + optional API |
-| G-P1-09 | Partner catalog vs Founder | Yahoo API forbidden | `market-intelligence` Phase1 adapter catalog includes yahoo_jp | AMBIGUOUS | P1 | NO (UX follows Founder) | NO for display | NO | Engine/adapters policy |
+| G-P1-09 | Yahoo adapter vs partnership | partnership OFFICIAL; adapter FORBIDDEN | `market-intelligence` Phase1 adapter catalog may include yahoo_jp | **not owner ambiguity**. AdapterAvailability GAP vs Founder PartnerStatus. Cross-domain conflation = NO | P1 | NO (UX follows Founder partnership) | NO for partner presentation | NO | Engine/adapters policy |
 
 ---
 
@@ -39,7 +39,7 @@ Phase 3 does not fix these.
 | ID | capability | expected UX | current implementation evidence | gap | severity | blocks Figma? | blocks implementation? | blocks E2E? | recommended owner |
 |----|------------|-------------|---------------------------------|-----|----------|---------------|------------------------|-------------|-------------------|
 | G-P2-01 | Opportunity SDK typing | typed OpportunityCard | `OpportunityFeedItem = Record<string, unknown>` | PARTIAL | P2 | NO | quality | weak | SDK |
-| G-P2-02 | FX dual path | 단일 KRW 참고 | CurrentFx null-safe vs card KRW number | AMBIGUOUS | P2 | use CurrentFx only | YES consistency | YES | Nest+SDK |
+| G-P2-02 | FX card KRW zero fallback | CurrentFxApprox only; unavailable = null/UNAVAILABLE/STALE/PENDING | CurrentFx null-safe vs card `expectedProfitKrwApprox` may emit `0` | **NOT a second FX owner**. INVALID_IMPLEMENTATION_FALLBACK (see G-P0-01). FX_DUPLICATE_ACTIVE_OWNER = 0 | P2 | use CurrentFx only | YES consistency | YES | Nest+SDK |
 | G-P2-03 | Transaction detail generic | journal by id user | Admin journals only | MISSING | P2 | UNAVAILABLE | YES | YES | Money |
 | G-P2-04 | Inbox fanout | 상태 변화 알림 | inbox + prefs exist. auto fanout 범위 미검증 | UNKNOWN | P2 | generic list OK | later | later | Inbox/events |
 | G-P2-05 | Referral amounts on user API | 조건/상태 | `referral/me` no % fields (good) but no user-facing reward summary DTO | PARTIAL | P2 | qualitative OK | if rewards on | if rewards on | Money |
@@ -68,6 +68,7 @@ P0 = 2
 P1 = 9
 P2 = 10
 P3 = 3
+FX_ZERO_FALLBACK_REGISTERED_AS_GAP = YES
 ```
 
 ### Brand / Figma blockers

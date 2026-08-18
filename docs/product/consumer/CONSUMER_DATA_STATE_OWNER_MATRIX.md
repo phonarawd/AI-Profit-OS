@@ -29,8 +29,8 @@ ZERO_NE_UNAVAILABLE = YES
 | SettlementStatus | journal + trade success | Money+Engine | `ledger_journals` type settlement · trade success | `settledProfitUsdt` | trade GET | YES | YES | NO | YES | not Settled | — |
 | Profit (settled) | `settledProfitUsdt` | Money post | trade + journal | TradeExecutionState | same | YES | YES | NO | YES | hide | — |
 | ExpectedProfit | `expectedProfitUsdt` | Engine pricing | opportunity / trade | card + trade | opportunities · trades | YES | YES | NO | YES | UNAVAILABLE | 보장 카피 금지 |
-| FXReference | KRW approx | Money/FX snapshot | `fx_snapshots` via CurrentFxApprox | `CurrentFxApproxResponse` | `POST /api/v1/me/current-fx/approx` | no | YES display only | NO | YES | **null → hide KRW** | UNAVAILABLE/STALE via capturedAt |
-| OpportunityKrwApprox | `expectedProfitKrwApprox` | opportunity row (DB) | `expected_profit_krw_approx` | card number | opportunities | snapshot at price | YES | NO | YES | **API may emit 0 if null — GAP** | prefer CurrentFx or hide |
+| FXReference | KRW approx | Money/FX snapshot · **SINGLE OWNER** | `fx_snapshots` via CurrentFxApprox | `CurrentFxApproxResponse` | `POST /api/v1/me/current-fx/approx` | no | YES display only | NO | YES | **null → UNAVAILABLE/STALE/PENDING. never 0** | snapshot 없음 = KRW 참고 없음 |
+| OpportunityKrwApprox | `expectedProfitKrwApprox` | **NOT AN OWNER** · invalid card fallback | `expected_profit_krw_approx` | card number | opportunities | snapshot at price | YES | NO | YES | **API may emit 0 if null — GAP G-P0-01/G-P2-02. NOT authority** | Consumer는 CurrentFxApprox만. 0 fallback 금지 |
 | DepositStatus USDT | `usdt_deposit_events.status` | Money | events | none user list SDK | observe = not user UI | chain | YES | NO | map | pending 설명 | 1conf ≠ credited |
 | DepositStatus KRW | `KrwDepositStatus` | Money | `krw_deposit_requests` | `KrwDepositRequest` | `GET/POST /wallet/krw-deposit-requests` | no | YES | NO | map | UNAVAILABLE | — |
 | PayableKrw | requested+suffix | Money | create request | same | POST krw | no | YES | NO | explain suffix | n/a | — |
@@ -38,7 +38,8 @@ ZERO_NE_UNAVAILABLE = YES
 | WithdrawStepUp | step-up | Auth/Money | challenge/verify | SDK types | `/wallet/withdraw/step-up/*` | no | NO | NO | — | retry | — |
 | KycStatus | `kyc_status` | Money compliance | kyc | none dedicated SDK | `GET /compliance/kyc/status` | no | gate | NO | map | UNAVAILABLE | block withdraw |
 | ReferralRewardStatus | edge/payout status | Money | `referral_edges` | none SDK | `GET /referral/me` | L3 on MATCH_SUCCESS | YES | NO | map Korean, no L1/L2/L3 label | hide % | rewardsEnabled=false |
-| PartnerStatus | Founder lock | Product | founder-intent | n/a | n/a | adapter ≠ display | NO | NO | official names | no fake partner | Yahoo API 0 |
+| PartnerStatus | Founder lock | Product · **SINGLE OWNER** | founder-intent | n/a | n/a | adapter ≠ partnership | NO | NO | official names | no fake partner | Yahoo partnership remains OFFICIAL |
+| AdapterAvailability | MI adapter catalog | Engine/runtime · **SINGLE OWNER** | market-intelligence catalog | n/a | n/a | listing ingest only | NO | NO | INTERNAL | never imply partnership | Yahoo API/adapter/data-source FORBIDDEN |
 | HomeViewState | HomeReadModel | Engine mapper | HomeReadService | `HomeReadModelResponse` | `GET /me/home-read` | feed+money+growth | YES | NO | label | unauthorized Fact null | — |
 | HomePrincipal | principal on Home | Money | home-money-read | `HomeMoneyReadResponse` | `GET /me/home-money-read` | no | YES | NO | YES | state≠ready → null | — |
 | SettlementCountToday | count not USDT | Money projection | DayPulse/settlement | HomeMoneyRead | same | YES count | COUNT only | NO as money | NO currency | hide | — |
@@ -55,21 +56,45 @@ ZERO_NE_UNAVAILABLE = YES
 
 ## Duplicate truth audit
 
+Invalid implementation fallback ≠ second Truth owner. GAP으로만 기록한다.
+
+```text
+FX_TRUTH_OWNER = CurrentFxApprox / POST /me/current-fx/approx
+FX_TRUTH = SINGLE_OWNER
+FX_INVALID_ZERO_FALLBACK = REGISTERED_GAP
+FX_ZERO_FALLBACK_IS_AUTHORITY = NO
+FX_DUPLICATE_ACTIVE_OWNER = 0
+CARD_KRW_ZERO_FALLBACK = INVALID_IMPLEMENTATION_FALLBACK = GAP = MUST NOT BE USED FOR NEW CONSUMER UX
+
+authoritative 0 ≠ UNAVAILABLE
+FX unavailable → null / UNAVAILABLE / STALE / PENDING
+never 0 fallback
+```
+
+```text
+PARTNERSHIP_TRUTH_OWNER = Founder Lock
+ADAPTER_AVAILABILITY_OWNER = MI adapter catalog / runtime
+PARTNER_ADAPTER_CONCEPT_CONFLATED = NO
+PARTNER_DUPLICATE_ACTIVE_OWNER = 0
+```
+
 | Fact | verdict | notes |
 |------|---------|-------|
 | Balance / principal | SINGLE_OWNER | `wallet_buckets` · 여러 read API는 동일 투영 |
 | Profit bucket | SINGLE_OWNER | `profitUsdt` |
-| FX display | AMBIGUOUS | `POST /me/current-fx/approx` (null-safe) vs card `expectedProfitKrwApprox` (null→0 위험) |
+| FX display | SINGLE_OWNER | owner = CurrentFxApprox. card KRW `0` = INVALID_IMPLEMENTATION_FALLBACK (G-P0-01 / G-P2-02), not a second owner |
 | RequiredCapital | SINGLE_OWNER | opportunity row · participate equality |
 | Eligibility | SINGLE_OWNER | MI classification · participate final |
 | Matching | SINGLE_OWNER | `trade_executions` + settlement_rule |
 | Settlement | SINGLE_OWNER | settlement journal + trade success |
 | Deposit/Withdraw | SINGLE_OWNER | Nest wallet |
-| Partner | AMBIGUOUS | Founder API ban vs MI Phase1 adapter catalog |
+| PartnerStatus | SINGLE_OWNER | Founder lock: eBay/Amazon/Yahoo! JAPAN Auction = OFFICIAL |
+| AdapterAvailability | SINGLE_OWNER | runtime/MI catalog. Yahoo adapter FORBIDDEN ≠ partnership OFF |
 | Home principal vs feed principal | SINGLE_OWNER | both ledger principal |
 
 ```text
-KNOWN_DUPLICATE_CRITICAL_TRUTH_OWNER = 2 AMBIGUOUS (FX display path · Partner catalog)
+KNOWN_DUPLICATE_CRITICAL_TRUTH_OWNER = 0
+KNOWN_AMBIGUOUS_CRITICAL_TRUTH_OWNER = 0
 ```
 
 구현 리팩터는 Phase 3에서 하지 않는다.

@@ -95,7 +95,7 @@ FAKE_ACTIVITY = FORBIDDEN
 | entry | participate success `tradeId` |
 | user goal | 실제 매칭 상태 이해 |
 | system truth | `GET /api/v1/trades/:id` · Phase0 `POST .../execute-tick` · Rule = `settlement_rule.cjs` |
-| CTA | 대기(indeterminate). 취소 = FUTURE until API |
+| CTA | 대기(indeterminate). 취소 = FUTURE_CAPABILITY · D-05 APPROVED HIDE |
 | next state | success → Settlement. safe_stop/failed → Home. requeue → 계속 대기 |
 | failure recovery | 네트워크 → 재시도 poll. trade 없음 → Home. 가짜 % 복구 없음(표시 금지) |
 | screens | Matching |
@@ -188,6 +188,6 @@ Membership
 Benefits
 Ads variants
 practice grant as earnings
-profit→principal merge (D-06)
-user cancel matching (until API · D-05)
+profit→principal merge (D-06 APPROVED HIDE)
+user cancel matching (until API · D-05 APPROVED HIDE)
 ```
