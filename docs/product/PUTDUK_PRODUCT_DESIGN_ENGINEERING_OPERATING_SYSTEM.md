@@ -1,10 +1,11 @@
 # PUTDUK Product Design & Engineering Operating System
 
 > **문서 종류:** PROCESS AUTHORITY — **어떻게** 일하는가.  
-> **일자:** 2026-08-18 · Phase 2  
-> **상태:** CREATED  
+> **일자:** 2026-08-18 · Phase 3 pointer  
+> **상태:** PROCESS ACTIVE  
 > **시각 디자인 사전 고정:** NO  
-> **실행:** 이 문서는 Phase 3+를 지금 착수하지 않는다.
+> **Phase 3 PRODUCT_TRUTH 산출물:** `docs/product/consumer/`  
+> **실행:** 본 문서는 프로세스만 정의한다. Consumer UX Architecture SSOT = `docs/product/consumer/CONSUMER_UX_ARCHITECTURE.md`. Brand / Mockup / Figma / Home 구현은 Founder 승인 전 착수 0.
 
 ```text
 defines process = YES

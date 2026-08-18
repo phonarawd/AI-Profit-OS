@@ -11,6 +11,15 @@ const root = path.resolve(__dirname, "../..");
 const RULES = [
   {
     test: (f) =>
+      /^docs\/product\/consumer\//.test(f) ||
+      /^docs\/product\/PUTDUK_PRODUCT_DESIGN_ENGINEERING_OPERATING_SYSTEM\.md$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/consumer-ux-architecture\.cjs$/.test(f),
+    scripts: ["consumer-ux-architecture.cjs"],
+  },
+  {
+    test: (f) =>
       /^\.cursor\/hooks(\/|$)/.test(f) ||
       /^\.cursor\/hooks\.json$/.test(f) ||
       /^\.cursor\/rules\/project-isolation/.test(f) ||

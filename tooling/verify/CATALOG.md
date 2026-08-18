@@ -49,6 +49,7 @@
 
 | 경로 패턴 | verify |
 |-----------|--------|
+| `docs/product/consumer/**` · `docs/product/PUTDUK_PRODUCT_DESIGN_ENGINEERING_OPERATING_SYSTEM.md` · `tooling/verify/consumer-ux-architecture.cjs` | consumer-ux-architecture (Phase 3 UX Architecture consistency) |
 | `governance/platform-redesign/**` · `schemas/governance-observation.v1.json` · `tooling/verify/platform-redesign-inventory.cjs` · `tooling/verify/platform-fact-state-registry.cjs` · `tooling/verify/platform-change-control.cjs` · `tooling/verify/governance-observation-registry.cjs` · `tooling/verify/lib/platform-redesign-measure.cjs` | platform-redesign-inventory · platform-fact-state-registry · platform-change-control · governance-observation-registry |
 | `governance/engine-acceptance/**` · `tooling/engine-acceptance/**` · `tooling/verify/engine-acceptance.cjs` · `.github/workflows/engine-acceptance.yml` | engine-acceptance |
 | `packages/ui/**` · `apps/web/**` | no-it-jargon (legacy visual: mockup-governance · canon-surfaces retired) |
