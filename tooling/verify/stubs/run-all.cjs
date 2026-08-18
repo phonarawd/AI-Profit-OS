@@ -1,6 +1,10 @@
 /** Domain stubs — harden when apps/services land; copy/Canon locks run live */
 const { spawnSync } = require("child_process");
 const path = require("path");
+const {
+  isGreenfieldConsumerUi,
+  CONSUMER_UI_SURFACE_SCRIPTS,
+} = require("../lib/greenfield-consumer.cjs");
 
 const root = path.resolve(__dirname, "../..");
 const live = [
@@ -155,8 +159,17 @@ const live = [
   "ebay-resilience.cjs",
 ];
 
+const steps = isGreenfieldConsumerUi()
+  ? live.filter((s) => !CONSUMER_UI_SURFACE_SCRIPTS.has(s))
+  : live;
+if (isGreenfieldConsumerUi()) {
+  console.log(
+    `[verify:stubs] greenfield Consumer UI — skipped ${live.length - steps.length} visual/IA surface check(s)`,
+  );
+}
+
 let failed = false;
-for (const step of live) {
+for (const step of steps) {
   const r = spawnSync(process.execPath, [path.join(__dirname, "..", step)], {
     cwd: root,
     encoding: "utf8",

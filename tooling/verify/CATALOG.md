@@ -19,7 +19,7 @@
 | plans-ssot | `verify:plans-ssot` | T0 | ✅ live |
 | brand-consumer | `verify:brand-consumer` | T0 | ✅ live |
 | pg-module-scan | `verify:pg-module-scan` | T1 | ✅ live |
-| brand-assets | `verify:brand-assets` | T1 | ✅ live (visual_kit_v1) |
+| brand-assets | `verify:brand-assets` | — | retired T0/T1/T2 (Greenfield · old Brand Kit/logo/favicon not required · standalone historical · market-partner-adapters는 stubs 유지) |
 | cf-infra | `verify:cf-infra` | T1 | ✅ live |
 | workers-types | `verify:workers-types` | T1 | ✅ live |
 | phase0-bootstrap | `verify:phase0-bootstrap` | T1 | ✅ live |
@@ -27,12 +27,12 @@
 | domain-bootstrap | `verify:domain-bootstrap` | T1 | ✅ live |
 | opennext-workers-origin | `verify:opennext-workers-origin` | T1 | ✅ live (Workers SSOT · pages deploy 0 · proxy/manifest lock · deploy smoke hook) |
 | next-major-pin | `verify:next-major-pin` | T1 | ✅ live |
-| tailwind-v4 | `verify:tailwind-v4` | T1 | ✅ live |
-| lux-theme-sync | `verify:lux-theme-sync` | T1 | ✅ live |
+| tailwind-v4 | `verify:tailwind-v4` | T1 | ✅ live (v4 pin · Admin lux-theme import 유지 · Consumer web Lux import = greenfield skip) |
+| lux-theme-sync | `verify:lux-theme-sync` | — | retired T0/T1/T2 (Consumer Lux presentation superseded · Admin `lux-theme.css` import는 next-build가 커버 · standalone historical) |
 | dark-leak-guard | `verify:dark-leak-guard` | T1 | ✅ live (peotteok-light 단일 출시 · prefers-color-scheme 0 · lux-dark archive 활성참조 0) |
 | cf-deploy-packages | `verify:cf-deploy-packages` | T1 | ✅ live |
 | no-admin-in-web | `verify:no-admin-in-web` | T1 | ✅ live |
-| ia-tabs | `verify:ia-tabs` | T1 | ✅ live |
+| ia-tabs | `verify:ia-tabs` | — | retired T0/T1/T2 (fixed 5-tab IA superseded · `USER_TABS` 재생성 금지 · standalone historical) |
 | admin-routes | `verify:admin-routes` | T1 | ✅ live |
 | api-nest-build | `verify:api-nest-build` | T1 | ✅ live |
 | stubs/run-all | domain stubs | T1 | ✅ live (legacy `mockup-governance` / `canon-surfaces` / `responsive` Visual Master rule-chain = **retired**) |
@@ -123,7 +123,7 @@
 | platform-change-control | Index v7.23 R0-3 — `change-control.v1.md` · L1/L2/L3+version bump · ADR-017 Light+Purple·IA 새 라벨·OpenNext Workers before/after/영향/rollback/승인 증거 · d903eef7 REFERENCE ONLY 흡수 crosswalk · 구현코드0 · path-trigger — **live** |
 | governance-observation-registry | Index v7.23 R0-4 + post-r0 — schema+registry · status enum · currentlyOccurring⊥reviewTrigger · R0 AtR0 locks=0 불변 · post-r0 Money wave1 promote4/materialize3 · Engine observed2 · Change Control `cc.money.r0-obs-promote-wave1` · path-trigger — **live** |
 | engine-acceptance | 02.5 PRE-UI Engine Acceptance QA — QA-0..QA-6 **live** (`governance/engine-acceptance/**` · Dual Dirty baseline · severity 선고정 · kill-switch before tiny-smoke/QA1..QA6 · schemas+routes · DB consistency · idempotency INV-01/03 분리 · personas×journeys×coverage · Dirty>Happy · isolation interleave/token_cross/IDOR · seed+rng+clock+request_seq evidence · QA3 fast-check · QA4 multi-day+KST · `BLOCKED_NO_CLOCK_HOOK` · QA5 Failure World 축1 degradation/fallback + 축2 post-recovery · `BLOCKED_NO_FAULT_HOOK` · QA6 k6 scenario mix + tag threshold 메커니즘 · `UNSPECIFIED_PERF_BUDGET`(수치 SLO 창작 금지) · CI-only heavy · aggregator `if: always()` · artifact retention ≥90d · 실패=rich evidence+defects(제품수정0) · KPI 케이스수 금지 · REPORT · `ENGINE_ACCEPTED_FOR_UI` 발급 금지 until QA1..QA8) · heavy suites = `.github/workflows/engine-acceptance.yml` only (T2 gate 편입 금지) · path-trigger |
-| mockup-governance · canon-surfaces · brand-assets · brand-logo-single | UI ADR-013/011 — **mockup-governance · canon-surfaces = retired 2026-08-18** (deleted rules `mockup-governance.mdc` / `visual-master-intake.mdc` / `ui-authority-governance.mdc` 재요구 금지 · Visual Master/Contract/Canon = historical/reference only · T1 `stubs/run-all` 미포함). brand-assets · brand-logo-single = Brand Kit 유지(별축). VISUAL_TRUTH=APPROVED_FIGMA_ONLY · Canon PASS ≠ 시각 승인 · Approved Figma 없음 → Consumer 시각 완료 0 |
+| mockup-governance · canon-surfaces · brand-assets · brand-logo-single | UI ADR-013/011 — **mockup-governance · canon-surfaces = retired 2026-08-18** (deleted rules `mockup-governance.mdc` / `visual-master-intake.mdc` / `ui-authority-governance.mdc` 재요구 금지 · Visual Master/Contract/Canon = historical/reference only · T1 `stubs/run-all` 미포함). **brand-assets · brand-logo-single = retired T0/T1/T2** (Greenfield · old Brand Kit/logo 재요구 금지 · `CONSUMER_UI_SURFACE_SCRIPTS` skip). VISUAL_TRUTH=APPROVED_FIGMA_ONLY · Canon PASS ≠ 시각 승인 · Approved Figma 없음 → Consumer 시각 완료 0 |
 | asset-image-surface · execution-surfaces | Engine §0.0.6 · UI §48.3a — category thumb · `시세 불러오는 중...` (v7.22.20) — **asset-image-surface live** (hydrate·SKU1:1·공개가드·R2·Admin tab=assets · Canon4면) · **execution-surfaces live** (AiProgressRoom·SuccessReceipt·SafeStop·StepList · Soft/Hard3줄 · ProductThumb · execute page 3면) |
 | trade-execution-hook | UI §29.6/§30 · Engine §0.9.2 — `useTradeExecution` Phase0=`POST …/execute-tick` polling · Phase1+ SSE swap inside hook only · StreamPolicy `executionTickMs` · execute page wire — **live** |
 | product-image | UI audit §26/§37 · PART3 — source-agnostic `ProductImage` (`ebay`\|`pokemontcg`\|`ygoprodeck`\|`admin_r2`) · loading/loaded/error/missing · `sizes`/lazy/priority · `ProductThumb` · next remotePatterns — **live** |

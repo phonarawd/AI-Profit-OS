@@ -1,12 +1,16 @@
 /**
- * verify:tailwind-v4 — Tailwind CSS v4 + PostCSS + Lux @theme SSOT (ADR-015)
+ * verify:tailwind-v4 — Tailwind CSS v4 + PostCSS pin (ADR-015)
+ * Consumer Lux @theme import = retired when PendingFigma greenfield.
+ * Admin keeps lux-theme.css import (Admin keep-set).
  */
 const fs = require("fs");
 const path = require("path");
+const { isGreenfieldConsumerUi } = require("./lib/greenfield-consumer.cjs");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
 const apps = ["apps/web", "apps/admin"];
+const greenfield = isGreenfieldConsumerUi();
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -53,7 +57,8 @@ for (const app of apps) {
     continue;
   }
   const globals = read(globalsPath);
-  if (!globals.includes("@aipo/ui/tokens/lux-theme.css")) {
+  const hasLux = globals.includes("@aipo/ui/tokens/lux-theme.css");
+  if (!hasLux && !(app === "apps/web" && greenfield)) {
     fails.push(`${globalsPath}: must import @aipo/ui/tokens/lux-theme.css`);
   }
 }
@@ -72,7 +77,10 @@ if (!fs.existsSync(path.join(root, luxThemePath))) {
   if (!luxTheme.includes('@source "../components"')) {
     fails.push(`${luxThemePath}: must @source "../components" for monorepo UI scan`);
   }
-  if (!luxTheme.includes("pretendardvariable-dynamic-subset.min.css")) {
+  if (
+    !greenfield &&
+    !luxTheme.includes("pretendardvariable-dynamic-subset.min.css")
+  ) {
     fails.push(`${luxThemePath}: must load Pretendard webfont`);
   }
 }
