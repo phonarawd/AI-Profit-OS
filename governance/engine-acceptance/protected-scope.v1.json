@@ -1,0 +1,44 @@
+{
+  "schema": "governance.engine-acceptance.protected-scope.v1",
+  "version": "1.0.0",
+  "hashAlgorithm": "sha256",
+  "pathSeparator": "/",
+  "normalization": {
+    "lineEndings": "lf",
+    "encoding": "utf8",
+    "emptyFileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sortPaths": "asc-byte"
+  },
+  "roots": [
+    "services/api-nest",
+    "services/engine-rust",
+    "schemas",
+    "eval",
+    "supabase/migrations"
+  ],
+  "excludeGlobs": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/coverage/**",
+    "**/target/**",
+    "**/.next/**",
+    "**/*.log",
+    "**/_tmp*"
+  ],
+  "aggregateHashes": {
+    "lockfile_hash": ["pnpm-lock.yaml"],
+    "schema_migration_hash": ["supabase/migrations"],
+    "prompt_hash": [
+      "services/api-nest/src/ai",
+      "eval"
+    ],
+    "eval_dataset_hash": ["eval"],
+    "acceptance_workflow_hash": [".github/workflows/engine-acceptance.yml"]
+  },
+  "notes": [
+    "Hash = SHA-256 of LF-normalized file bytes for each tracked path under roots (minus excludeGlobs).",
+    "Directory aggregate = SHA-256 of sorted lines 'relpath\\0hexdigest\\n'.",
+    "working_tree_clean = entire repo dirty fact; protected_scope_clean = roots only.",
+    "Do not stash/WIP-clean unrelated dirty paths to force PASS."
+  ]
+}

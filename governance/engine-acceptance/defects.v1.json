@@ -1,0 +1,28 @@
+{
+  "schema": "governance.engine-acceptance.defects.v1",
+  "version": "1.0.0",
+  "status": "qa8_empty",
+  "requiredLinkFields": [
+    "severity",
+    "invariant_id",
+    "suite_id",
+    "persona_id",
+    "journey_id",
+    "seed",
+    "trace_id",
+    "baseline_id",
+    "first_observed_at",
+    "repro_status"
+  ],
+  "counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0,
+    "P3": 0
+  },
+  "defects": [],
+  "notes": [
+    "BLOCKED_ENV_CAPABILITY (SEC-DYNAMIC-ADVERSARIAL-01) is a suite/invariant result, not a defect row.",
+    "QA8 FAIL rows are recorded for the dedicated repair wave - not fixed here (discovery only)."
+  ]
+}

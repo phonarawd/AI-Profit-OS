@@ -1,0 +1,38 @@
+---
+description: ADR-014/015/016 — 집행기·Next16·TW4·pnpm·CF only·PG사0·퍼뜩·시크릿0.
+alwaysApply: true
+---
+
+# Stack Lock (ADR-014 · ADR-015 · ADR-016)
+
+Cursor = **플랜 집행기**. ADR 없는 스택 재설계 금지.
+
+## 용어
+
+| 말 | 뜻 |
+|----|-----|
+| PostgreSQL / ADR-001 | 단일 DB SoT |
+| PG사 0 | 결제대행 연동 0 |
+| 혼용 | 금지 |
+
+## 브랜드 (ADR-002)
+
+- Consumer = **퍼뜩** · Platform = **AI Profit OS** · Legal = §50.9
+- 구 `오늘수익` · `바로번다` 유저 surface 재등장 금지
+
+## 잠금
+
+- Node22 · pnpm@10.14 · **next@16** · **Tailwind v4** · Nest · Rust engine
+- Host = **Cloudflare only** (Vercel 병행 금지)
+- OpenNext web/ops = **Workers only** (`opennextjs-cloudflare deploy` · `pages deploy` / `.open-next/cloudflare` 업로드 **금지** · origin SSOT = `infra/domain.manifest.json` `openNext`)
+- DB = Supabase-managed PostgreSQL **서울** 권장 · Docker 옵션(이 PC=Celeron/8GB → 원격만)
+- Auth = Nest JWT only (**Supabase Auth 금지**)
+- Phase0 in-process · PG사 0 · GH=코드만
+
+## 금지
+
+npm/bun install SSOT · Vercel · 이중 Postgres · PG사 SDK · Day-1 NATS/Temporal/EKS · `.env` 커밋 · launch만으로 구현
+
+## 읽기
+
+`AGENTS.md` → Index `00` → 도메인 `01~06` → ARCHIVE launch → Canon/Lux

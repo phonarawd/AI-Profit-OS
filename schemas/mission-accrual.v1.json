@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/mission-accrual.v1.json",
+  "title": "MissionAccrualV1",
+  "description": "Money §51.8a accrual row · ledger SoT via posting · idempotency UNIQUE",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "userId",
+    "missionId",
+    "idempotencyKey",
+    "rewardKindSnap",
+    "amountUsdtSnap",
+    "status",
+    "sourceEventId",
+    "createdAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "format": "uuid" },
+    "userId": { "type": "string", "format": "uuid" },
+    "missionId": { "type": "string" },
+    "idempotencyKey": {
+      "type": "string",
+      "description": "mission:{userId}:{missionId} | :{yyyy-mm-dd} | :{yyyy-Www}"
+    },
+    "rewardKindSnap": {
+      "type": "string",
+      "enum": ["none", "practice", "promo_profit", "fee_coupon"]
+    },
+    "amountUsdtSnap": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]{1,8})?$",
+      "description": "Frozen at accrual create · release must not re-read live config"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "pending_hold",
+        "queued_pool",
+        "posting",
+        "released",
+        "clawed_back",
+        "halted",
+        "skipped"
+      ]
+    },
+    "sourceEventId": {
+      "type": "string",
+      "description": "Domain event id · UNIQUE partial index with user"
+    },
+    "ledgerJournalId": {
+      "type": "string",
+      "description": "Set only after posting OK"
+    },
+    "holdUntil": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "releasedAt": { "type": "string", "format": "date-time" },
+    "clawbackAt": { "type": "string", "format": "date-time" },
+    "failureReason": { "type": "string" },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}

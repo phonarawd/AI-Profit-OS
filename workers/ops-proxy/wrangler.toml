@@ -1,0 +1,14 @@
+# Phase0 ops proxy — OPS_HOST → Pages until prod deploy + Access
+# Deploy: pnpm cf:domain:bridge
+
+name = "hiptk-ops-proxy"
+account_id = "190a1476a068cfe96dfe1029877587ef"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+
+[env.production]
+name = "hiptk-ops-proxy"
+
+[[env.production.routes]]
+pattern = "ops.hiptk.app"
+custom_domain = true

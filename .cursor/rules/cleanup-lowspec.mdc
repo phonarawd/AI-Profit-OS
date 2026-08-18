@@ -1,0 +1,9 @@
+---
+description: ADR-016 cleanup — phase0-ram에 통합. 검색용 별칭만 유지.
+alwaysApply: false
+---
+
+# Cleanup Low-Spec
+
+운영 SSOT는 `phase0-ram.mdc`다. 세션 끝·stop hook = `pnpm cleanup:lowspec`.
+상태 = `pnpm lowspec:status`.

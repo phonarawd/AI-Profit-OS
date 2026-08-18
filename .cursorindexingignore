@@ -1,0 +1,21 @@
+# ADR-016 — index skip only. Write/Read/StrReplace는 막지 않는다.
+# 접근 차단이 필요하면 .cursorignore 에 둔다 (CONSTITUTION/ · docs/mockups/ · .env).
+
+**/pnpm-store/**
+**/.pnpm-store/**
+node_modules/
+.next/
+dist/
+target/
+.turbo/
+.wrangler/
+.open-next/
+coverage/
+
+# ARCHIVE / audit bulk — 인덱싱만 skip
+.cursor/plans/ai_profit_os_launch_*.plan.md
+PRE_IMPLEMENTATION_MASTER_AUDIT.md
+COMPANY_REGISTRATION_SUMMARY.md
+FOOTER_LICENSE_COPY.md
+docs/*
+!docs/CONSTITUTION_BOOTSTRAP.md

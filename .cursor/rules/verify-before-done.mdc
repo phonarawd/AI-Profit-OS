@@ -1,0 +1,30 @@
+---
+description: ADR-016 — 슬라이스 done vs 세션 done · 3-tier gate.
+alwaysApply: true
+---
+
+# Verify Before Done (ADR-016 · 3-tier)
+
+## 슬라이스 done (todo 1개)
+
+1. 해당 도메인 `verify:*` PASS (`tooling/verify/CATALOG.md`)
+2. money면 `bucket-invariant` · `pg-module-scan` (해당 시)
+3. UI면 `no-it-jargon` · canon/mockup 게이트 (해당 시). Canon/mockup PASS는 도메인·구조 증거일 뿐 **시각 승인이 아니다**. 승인 Visual Master 화면의 시각 완료는 동일 viewport 캡처·overlay/diff·bbox·자산·타이포·Founder 확인이 필요하다.
+4. `pnpm verify:gate:fast` PASS → **commit (T0)**
+5. **push 하지 않음** (세션 stop / “푸시해”까지 보류)
+
+## 세션 stop 전
+
+0. green 변경 잔여 있으면 `git-auto-commit-push.mdc` — **commit(T0)** → **push(T1)** → CI watch (보류 명령 없을 때)
+1. `pnpm cleanup:lowspec` · 여유 RAM 의심 시 `pnpm lowspec:status`
+2. push 했으면 GitHub `gate` CI **green**까지 (`gh run watch` · FAIL=즉시 수정·재푸시 · `git-safety.mdc`)
+
+## done 판정
+
+| | 조건 |
+|---|------|
+| **슬라이스 done** | domain verify PASS + T0 commit |
+| **세션 done** | cleanup PASS + (push 했으면) CI green |
+| **main ready** | CI T2 (`pnpm verify:gate`) green |
+
+한쪽 FAIL이면 해당 단계 미완료.

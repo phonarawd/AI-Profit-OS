@@ -1,0 +1,19 @@
+name = "frankfurter-adapter"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVICE = "frankfurter-adapter"
+PHASE = "1"
+
+[triggers]
+crons = ["0 * * * *"]
+
+[env.production]
+name = "frankfurter-adapter"
+vars = { SERVICE = "frankfurter-adapter", PHASE = "1" }
+
+[env.preview]
+name = "frankfurter-adapter-preview"
+vars = { SERVICE = "frankfurter-adapter", PHASE = "1" }

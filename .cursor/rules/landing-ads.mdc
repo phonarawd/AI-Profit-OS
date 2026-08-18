@@ -1,0 +1,18 @@
+---
+description: /ads /l/* 수정 시 marketing-compliance·dual-layer·cloaking 0
+globs: "apps/web/app/ads/**,apps/web/app/l/**,packages/ui/components/landing/**,packages/ui/components/shell/LandingOperatorFooter.tsx"
+alwaysApply: false
+---
+
+# LANDING_RULE (v7.24.5)
+
+`/ads` · `/l/*` 수정 시.
+
+- 기존 surface 유지. Admin route로 변경 금지.
+- `verify:marketing-compliance` 필수 (L1+L2+L3+ad↔landing consistency).
+- dual-layer = Public Ad Product Surface vs Authenticated Product Core. Reviewer vs Real User 분기 금지.
+- User-Agent / IP / AdsBot용 다른 히어로·카피·destination 금지 (cloaking 0).
+- CTA 잠금: `실시간 시세 맵 열기` → `/onboarding` | `/auth/login`. 「시세 맵」=비교 화면 라벨. 지리맵 발명 0.
+- legal SSOT 내용 수정 금지. 가짜 심사용 legal 금지. 공개 gap은 기존 `/me/legal` read-only alias 검토만.
+- `landing-3s-ui` completed 재오픈 금지. 후속 갭은 UI R2 Acquisition todo.
+- 자동 광고 ACTIVE = Infra Standing Authorization Gate (06). 랜딩 route가 ACTIVE를 허가하지 않음.

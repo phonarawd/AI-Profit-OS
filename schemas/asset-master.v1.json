@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/asset-master.v1.json",
+  "title": "AssetMasterV1",
+  "description": "Engine §0.0.6 · imageUrl SKU 1:1. Cross-category image = FAIL.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "assetId",
+    "category",
+    "assetLabel",
+    "imageUrl",
+    "imageSource",
+    "imageAltKo",
+    "imageRightsNoteKo"
+  ],
+  "properties": {
+    "assetId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "watch",
+        "trading_card",
+        "luxury_bag"
+      ]
+    },
+    "assetLabel": {
+      "type": "string",
+      "minLength": 1
+    },
+    "imageUrl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "imageSource": {
+      "type": "string",
+      "enum": [
+        "ebay",
+        "pokemontcg",
+        "ygoprodeck",
+        "admin_r2"
+      ]
+    },
+    "imageAltKo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "imageRightsNoteKo": {
+      "const": "시세 참고용"
+    },
+    "imageFetchedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "meta": {
+      "type": "object",
+      "description": "trading_card: game,set,number,lang,finish,gradeDeclared,catalogSource,ebayQuery · luxury_bag: brand,model,size,color,ebayQuery · watch: brand,reference,model,brandTier,ebayQuery",
+      "properties": {
+        "game": {
+          "type": "string",
+          "enum": ["pokemon", "yugioh"]
+        },
+        "set": { "type": "string" },
+        "setName": { "type": "string" },
+        "number": { "type": "string" },
+        "lang": { "type": "string" },
+        "finish": { "type": "string" },
+        "gradeDeclared": {
+          "type": "string",
+          "description": "PSA10|BGS9.5|raw · §51.12"
+        },
+        "catalogId": { "type": "string" },
+        "catalogSource": {
+          "type": "string",
+          "enum": ["pokemontcg", "ygoprodeck"]
+        },
+        "brand": {
+          "type": "string",
+          "description": "luxury_bag / watch match key"
+        },
+        "model": {
+          "type": "string",
+          "description": "luxury_bag match key · watch optional label"
+        },
+        "reference": {
+          "type": "string",
+          "description": "watch match key (ref number)"
+        },
+        "brandTier": {
+          "type": "string",
+          "enum": ["ultra", "core", "strong"],
+          "description": "watch brand tier · Ultra=PP/AP · Core=Rolex/Cartier · Strong=Omega/Tudor"
+        },
+        "size": {
+          "type": ["string", "null"],
+          "description": "luxury_bag optional match key"
+        },
+        "color": {
+          "type": ["string", "null"],
+          "description": "luxury_bag optional match key"
+        },
+        "ebayQuery": {
+          "type": "string",
+          "description": "Browse search for ebay listing legs"
+        },
+        "listingLegs": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["ebay", "admin"] }
+        },
+        "quoteMarkets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["ebay_us", "ebay_gb", "ebay_de", "ebay_au", "admin"]
+          }
+        },
+        "requiredCapitalUsdt": { "type": "string" },
+        "capitalBand": {
+          "type": "string",
+          "enum": ["micro", "small", "mid", "high", "whale"]
+        }
+      }
+    }
+  }
+}

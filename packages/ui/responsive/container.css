@@ -1,0 +1,52 @@
+/**
+ * §29.2 breakpoints + tablet/desktop/large-screen layout hooks (PART1d)
+ * Named: xs/sm/md/lg/xl/2xl · test points = VIEWPORT_TEST_POINTS
+ */
+:root {
+  --bp-xs: 320px;
+  --bp-sm: 390px;
+  --bp-md: 768px;
+  --bp-lg: 1280px;
+  --bp-xl: 1920px;
+  --bp-2xl: 3840px;
+}
+
+/* Mobile-first shell: bottom nav; md+ sidebar promotion (audit §21) */
+.lux-app-shell {
+  min-height: 100dvh;
+  min-height: 100svh;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.lux-feed-grid {
+  display: grid;
+  gap: var(--space-lux-md, 16px);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .lux-feed-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .lux-feed-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1920px) {
+  .lux-feed-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Ultrawide — main column content rail (sidebar 밖 · 합 ≈ 1920 with 240 sidebar) */
+@media (min-width: 1920px) {
+  .lux-app-main {
+    max-width: var(--content-rail-max, 1680px);
+    width: 100%;
+    margin-inline: auto;
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/webauthn-challenge.v1.json",
+  "title": "WebauthnChallengeV1",
+  "description": "Money §43.6 step-up challenge · TTL 60s · origin=APP_HOST. NEVER: PWA redefine OTP/PIN/recovery policy · SMS Day-1 required.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "challengeId",
+    "userId",
+    "method",
+    "expiresAt",
+    "origin"
+  ],
+  "properties": {
+    "challengeId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "method": {
+      "type": "string",
+      "enum": [
+        "webauthn",
+        "email_otp",
+        "pin",
+        "recovery"
+      ],
+      "description": "§43.6 priority order: webauthn → email_otp → pin → recovery"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 · Nest TTL 60s from create"
+    },
+    "origin": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Must match APP_HOST allowlist"
+    },
+    "rpId": {
+      "type": "string",
+      "description": "WebAuthn RP ID = APP_HOST host only · UX package Owns=PWA §23.6"
+    },
+    "publicKeyOptions": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Pass-through for @simplewebauthn/browser (PWA UX)"
+    }
+  }
+}

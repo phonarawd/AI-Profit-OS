@@ -1,0 +1,21 @@
+name = "amazon-adapter"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVICE = "amazon-adapter"
+PHASE = "1"
+AMAZON_MARKETPLACES = "amazon_us,amazon_jp,amazon_de"
+
+# Phase1+ cron — PA-API pull (official partner · not Day-1 auto-publish)
+[triggers]
+crons = ["*/20 * * * *"]
+
+[env.production]
+name = "amazon-adapter"
+vars = { SERVICE = "amazon-adapter", PHASE = "1", AMAZON_MARKETPLACES = "amazon_us,amazon_jp,amazon_de" }
+
+[env.preview]
+name = "amazon-adapter-preview"
+vars = { SERVICE = "amazon-adapter", PHASE = "1", AMAZON_MARKETPLACES = "amazon_us,amazon_jp,amazon_de" }

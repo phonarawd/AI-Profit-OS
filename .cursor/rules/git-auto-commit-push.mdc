@@ -1,0 +1,83 @@
+---
+description: ADR-016 — 3-tier gate · 슬라이스=commit(T0) · push=stop/명시 · CI=full(T2).
+alwaysApply: true
+---
+
+# Git Auto Commit/Push (ADR-016 · 3-tier)
+
+**에이전트가 커밋/푸시 시점을 스스로 판단·실행한다.**  
+유저에게 “커밋할까요?” **묻지 않는다** (아래 **보류** 예외만).
+
+게이트·CI·secrets = `git-safety.mdc` · 세션 종료 = `verify-before-done.mdc`.
+
+## 3-tier gate
+
+| tier | 명령 | 시점 | 내용 |
+|------|------|------|------|
+| **T0** | `pnpm verify:gate:fast` | **commit** | stack-lock · secrets · plans-ssot · brand-consumer · **변경 경로 도메인 verify** |
+| **T1** | `pnpm verify:gate:push` | **push** | T0 + infra + api-nest-build + domain stubs (`stubs/run-all`) |
+| **T2** | `pnpm verify:gate` | **CI / main** | T1 + next-build + opennext-build |
+
+로컬 commit ≠ full build. **main 합격 = CI T2 green**.
+
+## 커밋 단위 (todo ≠ commit)
+
+| 기준 | 판정 |
+|------|------|
+| **1 커밋 = 1 의도** | revert 한 번으로 되돌릴 수 있는 논리 단위 |
+| todo 1개 = copy 2줄 | **다음 관련 todo와 묶기** (별도 커밋 불필요) |
+| todo 1개 = 기능·wire·verify 한 덩어리 | **커밋 1개** |
+| 한 todo에 관심사 2개+ | **커밋 분할** 후 각각 커밋 |
+
+## 트리거 (commit vs push 분리)
+
+| 이벤트 | commit (T0) | push (T1) | CI watch |
+|--------|-------------|-----------|----------|
+| 작업 중 WIP | ❌ | ❌ | ❌ |
+| **슬라이스 완료** (todo 1개 + domain verify PASS) | ✅ | ❌ | ❌ |
+| **유저 “커밋해”** | ✅ | ❌ | ❌ |
+| **유저 “푸시해”** 또는 **세션 stop** | (있으면 skip) | ✅ | ✅ 같은 턴 |
+| **“커밋하지 마” / “push hold” / “WIP만”** | ❌ | ❌ | ❌ |
+
+슬라이스 완료 보고 1줄: `commit <hash> (T0) · push 보류 · domain verify PASS`
+
+## 자동 커밋 — **즉시 실행** (AND)
+
+1. 플랜 todo `status: completed` + `pnpm cursor:sync-plans`
+2. 해당 도메인 `verify:*` PASS (`tooling/verify/CATALOG.md`)
+3. `pnpm verify:gate:fast` PASS
+4. working tree가 **atomic** · secrets staged **0**
+5. 커밋 메시지 = **why** 1~2문장
+
+**순서:** domain verify → T0 fast → `git add`(관련만) → commit.
+
+## 자동 푸시 — **stop 또는 명시만**
+
+다음 **하나라도** 해당하면 push (`git-safety.mdc` CI watch 필수):
+
+1. **유저 “푸시해”** 명시
+2. **세션 stop** — green인데 uncommitted/unpushed 잔여 **0** 목표
+
+**todo 1개 완료만으로 push 하지 않음** (T0 commit 후 push 보류).
+
+push 전: `pnpm verify:gate:push` (T1) → push → **같은 턴** `gh run watch`.
+
+## 자동 커밋/푸시 **금지**
+
+- gate/도메인 verify FAIL · WIP · 반쪽 구현
+- `.env` · 키 · `--no-verify`
+- 유저 **명시 보류**
+- **무관 대규모** diff atomic 불가 → 먼저 분리
+
+## 저사양 (Phase0)
+
+- gate 비용 큼 → **같은 슬라이스 todo 2~3개 묶어 1커밋** 허용
+- push는 **세션 stop / 명시 푸시**에 집중 (todo마다 push+CI watch 금지)
+
+## done 정의
+
+| 단계 | 조건 |
+|------|------|
+| **슬라이스 done** | todo completed + domain verify PASS + T0 commit |
+| **세션 done** | cleanup:lowspec + (push 했으면) CI green |
+| **main ready** | PR/checks T2 green |

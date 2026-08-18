@@ -1,0 +1,380 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/toast-codes.v1.json",
+  "title": "ToastCodesCatalogV1",
+  "description": "UI §8.2 toast code catalog · body SSOT with copy/ko. NEVER: raw English code on user toast.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "codes"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "codes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "toastKo",
+          "trigger"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]+$"
+          },
+          "toastKo": {
+            "type": "string",
+            "minLength": 1
+          },
+          "trigger": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  },
+  "default": {
+    "version": 1,
+    "codes": [
+      {
+        "code": "INSUFFICIENT_BALANCE",
+        "toastKo": "😅 USDT가 부족해요. 입금 후 다시 시도해 주세요",
+        "trigger": "participate"
+      },
+      {
+        "code": "KYC_WITHDRAW_REQUIRED",
+        "toastKo": "🔐 출금하려면 본인 확인이 필요해요! 1번만 하면 돼요 😊",
+        "trigger": "withdraw tap → /me/kyc"
+      },
+      {
+        "code": "KYC_PENDING",
+        "toastKo": "⏳ 본인 확인을 검토 중이에요. 잠시만 기다려 주세요 🙏",
+        "trigger": "kyc submitted"
+      },
+      {
+        "code": "KYC_REJECTED",
+        "toastKo": "😔 본인 확인이 반려됐어요. 다시 신청해 주세요",
+        "trigger": "kyc rejected"
+      },
+      {
+        "code": "KYC_APPROVED",
+        "toastKo": "✅ 본인 확인 완료! 이제 출금할 수 있어요 🎉",
+        "trigger": "admin approve"
+      },
+      {
+        "code": "CIRCUIT_OPEN",
+        "toastKo": "⏸️ 잠시 거래를 멈췄어요. 곧 다시 열릴게요",
+        "trigger": "any money"
+      },
+      {
+        "code": "BUCKET_INVARIANT_FAIL",
+        "toastKo": "⏸️ 잔액 확인이 필요해서 잠시 멈췄어요. 곧 안내드릴게요",
+        "trigger": "§49.9 E1/P24 recon mismatch"
+      },
+      {
+        "code": "RATE_LIMITED",
+        "toastKo": "🐢 잠깐만요! 너무 빠르게 눌렀어요",
+        "trigger": "click spam"
+      },
+      {
+        "code": "OPPORTUNITY_EXPIRED",
+        "toastKo": "⏰ 이 기회는 방금 마감됐어요",
+        "trigger": "stale participate"
+      },
+      {
+        "code": "EXEC_SAFE_STOP_PRICE",
+        "toastKo": "🛡️ 가격이 움직여서 이번엔 안전하게 멈췄어요",
+        "trigger": "PRICE_MOVED"
+      },
+      {
+        "code": "EXEC_SAFE_STOP_MIN",
+        "toastKo": "🛡️ 예상보다 적어져서 진행하지 않았어요 (잔액 그대로)",
+        "trigger": "BELOW_MIN_PROFIT"
+      },
+      {
+        "code": "EXEC_SUCCESS",
+        "toastKo": "🎉 수익이 들어왔어요",
+        "trigger": "settlement.completed"
+      },
+      {
+        "code": "EXEC_CANCELLED",
+        "toastKo": "🛑 중단했어요. 잔액은 그대로예요",
+        "trigger": "user cancel"
+      },
+      {
+        "code": "WITHDRAW_PROFIT_OK",
+        "toastKo": "🎉 수익 출금을 신청했어요",
+        "trigger": "profit withdraw"
+      },
+      {
+        "code": "WITHDRAW_PRINCIPAL_WARN",
+        "toastKo": "💡 원금을 빼면 다음 기회 참여가 줄어들 수 있어요",
+        "trigger": "principal confirm"
+      },
+      {
+        "code": "INSUFFICIENT_PROFIT",
+        "toastKo": "😅 출금 가능한 수익이 부족해요",
+        "trigger": "profit mode"
+      },
+      {
+        "code": "INSUFFICIENT_PRINCIPAL",
+        "toastKo": "😅 근무 중 원금이 부족해요. 충전 후 참여해 주세요",
+        "trigger": "participate"
+      },
+      {
+        "code": "PRACTICE_NOT_WITHDRAWABLE",
+        "toastKo": "🎁 연습 잔액은 출금할 수 없어요",
+        "trigger": "practice"
+      },
+      {
+        "code": "PRACTICE_GRANTED",
+        "toastKo": "🎁 연습 잔액이 생겼어요. 출금은 안 돼요",
+        "trigger": "§51.7 welcome / referee practice"
+      },
+      {
+        "code": "PRACTICE_EXPIRED",
+        "toastKo": "⏰ 연습 잔액이 만료됐어요",
+        "trigger": "§51.7 practice expire cron"
+      },
+      {
+        "code": "MERGE_PROFIT_OK",
+        "toastKo": "✨ 수익을 원금에 합쳤어요. 다음 기회에 바로 쓸 수 있어요",
+        "trigger": "merge"
+      },
+      {
+        "code": "DEPOSIT_DETECTED",
+        "toastKo": "👀 USDT {amount} 입금 감지! 확정까지 잠시만요",
+        "trigger": "§43 1 conf"
+      },
+      {
+        "code": "DEPOSIT_CONFIRMED",
+        "toastKo": "🎉 USDT {amount} 입금 확정! 바로 거래할 수 있어요",
+        "trigger": "§43 19 conf + ledger"
+      },
+      {
+        "code": "SWEEPER_TRX_LOW",
+        "toastKo": "🔴 Treasury TRX stake 부족 · 집금 일시 중지 (유저 잔액 유지)",
+        "trigger": "§43.2.1 Admin alert · user surface 0"
+      },
+      {
+        "code": "KRW_DEPOSIT_SUBMITTED",
+        "toastKo": "📝 원화 입금 신청 접수! 송금 후 확인해 드릴게요",
+        "trigger": "krw request"
+      },
+      {
+        "code": "KRW_DEPOSIT_APPROVED",
+        "toastKo": "✅ 원화 입금이 확인됐어요. 잔액에 반영됐어요 🎉",
+        "trigger": "admin approve"
+      },
+      {
+        "code": "KRW_DEPOSIT_REJECTED",
+        "toastKo": "😔 원화 입금을 확인할 수 없어요. 내역에서 이유를 확인해 주세요",
+        "trigger": "admin reject"
+      },
+      {
+        "code": "KRW_REJECTED",
+        "toastKo": "😔 원화 입금을 확인할 수 없어요. 내역에서 이유를 확인해 주세요",
+        "trigger": "admin reject · §8.2 short alias of KRW_DEPOSIT_REJECTED"
+      },
+      {
+        "code": "KRW_DEPOSIT_EXPIRED",
+        "toastKo": "⏰ 입금 신청이 만료됐어요. 다시 신청해 주세요",
+        "trigger": "TTL expire"
+      },
+      {
+        "code": "DEPOSIT_DISPUTE_SUBMITTED",
+        "toastKo": "📝 문의를 접수했어요. 확인 후 안내드릴게요",
+        "trigger": "§41.6 wrong-chain CS"
+      },
+      {
+        "code": "DEPOSIT_DISPUTE_CREDITED",
+        "toastKo": "✅ 확인했어요. 잔액에 반영됐어요 🎉",
+        "trigger": "admin wallet?tab=disputes credit"
+      },
+      {
+        "code": "DEPOSIT_DISPUTE_REJECTED",
+        "toastKo": "😔 이번 건은 반영하기 어려워요. 내역에서 이유를 확인해 주세요",
+        "trigger": "admin wallet?tab=disputes reject"
+      },
+      {
+        "code": "WITHDRAW_SUBMITTED",
+        "toastKo": "📤 출금 요청을 받았어요",
+        "trigger": "withdraw"
+      },
+      {
+        "code": "TRADE_COMPLETE",
+        "toastKo": "🎉 +{amount} USDT 지급 완료!",
+        "trigger": "settlement"
+      },
+      {
+        "code": "NETWORK_ERROR",
+        "toastKo": "📡 연결이 불안정해요. 다시 시도해 주세요",
+        "trigger": "fetch fail"
+      },
+      {
+        "code": "SESSION_EXPIRED",
+        "toastKo": "🔐 다시 로그인해 주세요",
+        "trigger": "401"
+      },
+      {
+        "code": "ACCOUNT_FROZEN",
+        "toastKo": "⏸️ 계정이 일시 정지됐어요. 고객센터에 문의해 주세요",
+        "trigger": "admin freeze"
+      },
+      {
+        "code": "ACCOUNT_BANNED",
+        "toastKo": "🚫 이용이 제한된 계정이에요",
+        "trigger": "admin ban"
+      },
+      {
+        "code": "WITHDRAW_BLOCKED",
+        "toastKo": "📤 출금이 일시 중지됐어요",
+        "trigger": "admin restrict"
+      },
+      {
+        "code": "MATCH_BLOCKED",
+        "toastKo": "⏸️ 지금은 매칭을 진행할 수 없어요. 고객센터에 문의해 주세요",
+        "trigger": "matchBlocked"
+      },
+      {
+        "code": "PREFLIGHT_REQUIRED",
+        "toastKo": "🛡️ 참여 전 안내를 확인한 뒤 다시 눌러 주세요",
+        "trigger": "§51.24.2 / §48.13.1 P0 missing preflightToken"
+      },
+      {
+        "code": "WITHDRAW_APPLY_BLOCKED",
+        "toastKo": "📤 지금은 출금 신청을 받을 수 없어요. 고객센터에 문의해 주세요",
+        "trigger": "withdrawApplyBlocked"
+      },
+      {
+        "code": "PASSWORD_RESET_BY_OPS",
+        "toastKo": "🔐 로그인 비밀번호가 재설정됐어요. 다시 로그인해 주세요",
+        "trigger": "admin password reset"
+      },
+      {
+        "code": "WITHDRAW_PIN_RESET",
+        "toastKo": "🔑 출금 비밀번호가 초기화됐어요. 다음 출금 때 다시 등록해 주세요",
+        "trigger": "admin PIN reset"
+      },
+      {
+        "code": "WITHDRAW_STEP_UP_REQUIRED",
+        "toastKo": "🔐 출금하려면 본인 확인이 한 번 더 필요해요",
+        "trigger": "§43.6 step-up missing"
+      },
+      {
+        "code": "PIN_REQUIRED",
+        "toastKo": "🔑 출금 비밀번호를 다시 등록해 주세요",
+        "trigger": "PIN wipe or unset"
+      },
+      {
+        "code": "WEBAUTHN_REVOKED",
+        "toastKo": "🔐 패스키가 해제됐어요. 이메일·비밀번호로 본인 확인해 주세요",
+        "trigger": "admin webauthn revoke"
+      },
+      {
+        "code": "STEP_UP_CHALLENGE_EXPIRED",
+        "toastKo": "⏱️ 확인 시간이 지났어요. 다시 시도해 주세요",
+        "trigger": "§43.6 challenge TTL 60s"
+      },
+      {
+        "code": "BALANCE_ADJUSTED",
+        "toastKo": "💰 잔액이 조정됐어요",
+        "trigger": "admin ledger adjust"
+      },
+      {
+        "code": "DEPOSIT_CONFIG_UPDATED",
+        "toastKo": "🔄 입금 정보가 업데이트됐어요",
+        "trigger": "SSE optional"
+      },
+      {
+        "code": "MIN_HOLDING",
+        "toastKo": "⏳ 원금은 충전 후 {hours}시간이 지나야 출금할 수 있어요",
+        "trigger": "§11.2"
+      },
+      {
+        "code": "WITHDRAW_FEE_HINT",
+        "toastKo": "💸 이체 수수료 {fee} USDT가 빠져요",
+        "trigger": "withdraw confirm"
+      },
+      {
+        "code": "REFERRAL_BOUND",
+        "toastKo": "🤝 초대가 연결됐어요!",
+        "trigger": "code bind L1"
+      },
+      {
+        "code": "REFERRAL_L2_PENDING",
+        "toastKo": "⏳ 친구 첫충전 보너스를 확인 중이에요",
+        "trigger": "L2 hold"
+      },
+      {
+        "code": "REFERRAL_L2_RELEASED",
+        "toastKo": "🎉 초대 보너스가 수익에 들어왔어요",
+        "trigger": "L2 release"
+      },
+      {
+        "code": "REFERRAL_CLAWBACK",
+        "toastKo": "↩️ 어뷰징으로 초대 보너스가 회수됐어요",
+        "trigger": "clawback"
+      },
+      {
+        "code": "REFERRAL_HELD",
+        "toastKo": "⏸️ 초대 보너스가 잠시 보류됐어요",
+        "trigger": "risk hold"
+      },
+      {
+        "code": "REFERRAL_CAP",
+        "toastKo": "📊 오늘 공유 보내기 한도에 도달했어요",
+        "trigger": "share/day"
+      },
+      {
+        "code": "REFERRAL_POOL_WAIT",
+        "toastKo": "⏳ 보너스를 준비 중이에요. 초대는 유지돼요",
+        "trigger": "queued_pool"
+      },
+      {
+        "code": "REFERRAL_SHARE_LIMIT",
+        "toastKo": "🐢 공유는 하루 {n}번까지예요",
+        "trigger": "share rate"
+      },
+      {
+        "code": "CAMPAIGN_CLAIM_OK",
+        "toastKo": "🎁 이벤트 보너스를 받았어요",
+        "trigger": "campaign claim"
+      },
+      {
+        "code": "CAMPAIGN_ENDED",
+        "toastKo": "⏰ 이 이벤트는 종료됐어요",
+        "trigger": "claim after end"
+      },
+      {
+        "code": "CAMPAIGN_BUDGET",
+        "toastKo": "📭 이벤트 예산이 마감됐어요",
+        "trigger": "budget_exhausted"
+      },
+      {
+        "code": "CAMPAIGN_DUP",
+        "toastKo": "✋ 이미 받은 보너스예요",
+        "trigger": "idempotent claim"
+      },
+      {
+        "code": "NOTICE_PUSH",
+        "toastKo": "📢 새 공지가 있어요",
+        "trigger": "notice live+push"
+      },
+      {
+        "code": "PEOTTEOK_LLM_BUSY",
+        "toastKo": "🤖 퍼뜩이 잠시 바빠요. 조금 뒤 다시 물어봐 주세요",
+        "trigger": "§47.13 G degrade"
+      }
+    ]
+  }
+}

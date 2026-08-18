@@ -1,0 +1,7 @@
+{
+  "name": "퍼뜩",
+  "short_name": "퍼뜩",
+  "lang": "ko",
+  "display": "standalone",
+  "start_url": "/"
+}

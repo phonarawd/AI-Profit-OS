@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/kyc-submission.v1.json",
+  "title": "KycSubmissionV1",
+  "description": "Money §42.2.2 field lock · R2 keys only. NEVER: rrnFull · gender · publicUrl.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "submissionId",
+    "userId",
+    "legalName",
+    "phoneE164",
+    "birthDate",
+    "idDocType",
+    "idDocR2Key",
+    "status",
+    "createdAt"
+  ],
+  "properties": {
+    "submissionId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "legalName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "phoneE164": {
+      "type": "string",
+      "pattern": "^\\+[1-9][0-9]{7,14}$"
+    },
+    "birthDate": {
+      "type": "string",
+      "format": "date",
+      "description": "YYYY-MM-DD · age 19+"
+    },
+    "idDocType": {
+      "type": "string",
+      "enum": [
+        "kr_id",
+        "driver",
+        "passport"
+      ]
+    },
+    "idDocR2Key": {
+      "type": "string",
+      "pattern": "^kyc/",
+      "description": "R2 object key · never public URL"
+    },
+    "selfieR2Key": {
+      "type": "string",
+      "pattern": "^kyc/"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "pending",
+        "approved",
+        "rejected"
+      ]
+    },
+    "rejectReason": {
+      "type": "string",
+      "minLength": 10
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "decidedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    }
+  },
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "rrnFull"
+        ]
+      },
+      {
+        "required": [
+          "gender"
+        ]
+      },
+      {
+        "required": [
+          "publicUrl"
+        ]
+      }
+    ]
+  }
+}

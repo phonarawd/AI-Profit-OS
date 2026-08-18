@@ -1,0 +1,29 @@
+{
+  "name": "@aipo/ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "peerDependencies": {
+    "next": "^16.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
+    "next": "16.3.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "typescript": "^5.9.2"
+  },
+  "exports": {
+    "./tokens/lux-theme.css": "./tokens/lux-theme.css",
+    "./tokens/component.css": "./tokens/component.css",
+    "./tokens/motion.css": "./tokens/motion.css",
+    "./copy/ko": "./copy/ko/index.ts",
+    "./components/SearchParamsBoundary": "./components/SearchParamsBoundary.tsx",
+    "./components/trust": "./components/trust/index.ts",
+    "./components/wallet/BucketBreakdown": "./components/wallet/BucketBreakdown.tsx",
+    "./brand/brand.manifest.json": "./brand/brand.manifest.json"
+  }
+}

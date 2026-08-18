@@ -1,0 +1,27 @@
+{
+  "name": "@aipo/ai-platform",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Engine ai-platform L1/L2 — AI PICK · AI_LOG · Eval · Personal AI P/G/S · L3 money 0",
+  "main": "./src/index.cjs",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": "./src/index.cjs",
+    "./ai-pick": "./src/ai-pick.cjs",
+    "./ai-log": "./src/ai-log.cjs",
+    "./eval-gate": "./src/eval-gate.cjs",
+    "./levels": "./src/levels.cjs",
+    "./fact-tools": "./src/fact-tools.cjs",
+    "./fact-card-loader": "./src/fact-card-loader.cjs",
+    "./answer-guard": "./src/answer-guard.cjs",
+    "./assistant-router": "./src/assistant-router.cjs",
+    "./help-rag": "./src/help-rag.cjs",
+    "./llm-adapter": "./src/llm-adapter.cjs",
+    "./llm-quota": "./src/llm-quota.cjs",
+    "./coach-prompt": "./src/coach-prompt.cjs",
+    "./coach-templates": "./src/coach-templates.cjs"
+  },
+  "dependencies": {
+    "@aipo/feature-platform": "workspace:*"
+  }
+}

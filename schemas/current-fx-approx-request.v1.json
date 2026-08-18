@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/current-fx-approx-request.v1.json",
+  "title": "CurrentFxApproxRequestV1",
+  "description": "DISPLAY_ONLY_INPUT=YES · MONEY_AUTHORITY=NO · LEDGER_AUTHORITY=NO · DEPOSIT_AUTHORITY=NO · TRADE_AUTHORITY=NO. HomeClean displayed USDT slots only. Not principal/ledger/deposit/trade truth. NEVER persist or reuse as financial fact.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "principalUsdt",
+    "withdrawableProfitUsdt",
+    "expectedProfitUsdt"
+  ],
+  "properties": {
+    "principalUsdt": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Display-only conversion input for 운용 원금. Exact displayed HomeRead.money.principalUsdt canonical when kind=value. null=unavailable. MONEY_AUTHORITY=NO."
+    },
+    "withdrawableProfitUsdt": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Display-only conversion input for 출금 가능 수익. Exact displayed WalletBuckets.profitUsdt canonical when kind=value. null=unavailable. LEDGER_AUTHORITY=NO."
+    },
+    "expectedProfitUsdt": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Display-only conversion input for 예상 수익. Exact displayed todayPossibleProfitUsdt canonical when kind=value. null=unavailable. TRADE_AUTHORITY=NO."
+    }
+  }
+}

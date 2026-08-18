@@ -1,0 +1,30 @@
+# Admin Ops — Cloudflare Workers (OpenNext · 별도 배포 · §40)
+# Worker: ai-profit-ops · OPS_HOST (ops subdomain via ops-proxy)
+# Deploy: pnpm cf:deploy:ops
+# WAF: IP allowlist + optional CF Access (infra/ops/access-policy.json)
+# Domain SSOT: infra/domain.manifest.json · bootstrap: pnpm cf:domain:bootstrap
+#
+# @opennextjs/cloudflare 산출물 = Workers (main + assets). Pages 출력 디렉터리 키 사용 금지.
+
+name = "ai-profit-ops"
+account_id = "190a1476a068cfe96dfe1029877587ef"
+main = "../../apps/admin/.open-next/worker.js"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+workers_dev = true
+
+[assets]
+directory = "../../apps/admin/.open-next/assets"
+binding = "ASSETS"
+
+[vars]
+APP_NAME = "AI Profit OS Ops"
+ROBOTS = "noindex, nofollow"
+
+[env.preview]
+name = "ai-profit-ops-preview"
+workers_dev = true
+
+[env.production]
+name = "ai-profit-ops"
+workers_dev = true

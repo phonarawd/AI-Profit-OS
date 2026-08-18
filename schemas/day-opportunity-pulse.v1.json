@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/day-opportunity-pulse.v1.json",
+  "title": "DayOpportunityPulseV1",
+  "description": "UI §51.24 DayPulse · ledger/settlement live aggregates only · G4 demo/hybrid/blended merge FORBIDDEN",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "asOf",
+    "tz",
+    "source",
+    "g4Merge",
+    "platformSafeStopToday",
+    "settlementCompletedToday",
+    "presence",
+    "scope"
+  ],
+  "properties": {
+    "asOf": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tz": {
+      "type": "string",
+      "const": "Asia/Seoul"
+    },
+    "source": {
+      "type": "string",
+      "const": "live",
+      "description": "live API only · seed/demo/admin-edit FORBIDDEN"
+    },
+    "g4Merge": {
+      "type": "boolean",
+      "const": false
+    },
+    "platformSafeStopToday": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "trade_executions status=safe_stop count · Seoul day"
+    },
+    "settlementCompletedToday": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "trade_executions status=success count · Seoul day"
+    },
+    "scope": {
+      "type": "string",
+      "enum": ["platform"],
+      "description": "제품 설정 키 1개 · Day-1 = platform"
+    },
+    "presence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "liveSessionCount"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "default OFF · ON only with presence_live flag + real sessions"
+        },
+        "liveSessionCount": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "description": "null when enabled=false · never random/seed"
+        }
+      }
+    }
+  }
+}

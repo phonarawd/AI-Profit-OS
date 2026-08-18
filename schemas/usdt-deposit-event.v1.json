@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/usdt-deposit-event.v1.json",
+  "title": "UsdtDepositEventV1",
+  "description": "Money §41 · §43.1 — USDT TRC20 deposit observation. 1conf=ui_confirmed (no ledger) · 19conf=ledger_credited.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "userId",
+    "txHash",
+    "toAddress",
+    "amountUsdt",
+    "confirmations",
+    "status",
+    "idempotencyKey",
+    "observedAt",
+    "createdAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "format": "uuid" },
+    "userId": { "type": "string", "format": "uuid" },
+    "txHash": { "type": "string", "minLength": 8 },
+    "toAddress": { "type": "string", "minLength": 30 },
+    "amountUsdt": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "confirmations": { "type": "integer", "minimum": 0 },
+    "status": {
+      "type": "string",
+      "enum": ["seen", "ui_confirmed", "ledger_credited", "swept", "ignored"]
+    },
+    "ledgerJournalId": { "type": "string", "format": "uuid" },
+    "idempotencyKey": { "type": "string", "minLength": 8 },
+    "observedAt": { "type": "string", "format": "date-time" },
+    "creditedAt": { "type": "string", "format": "date-time" },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}

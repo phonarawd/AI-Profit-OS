@@ -1,0 +1,93 @@
+{
+  "schema": "governance.engine-acceptance.qa9-result.v1",
+  "version": "1.0.0",
+  "suite_id": "QA9",
+  "run_id": "qa9-acceptance-report-20260814",
+  "todoId": "qa9-acceptance-report",
+  "measuredAt": "2026-08-14T19:11:43.651Z",
+  "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+  "kill_switch": {
+    "verified_before_checks": true,
+    "target_env": "local",
+    "hostname": "localhost",
+    "synthetic_account_namespace": "qa-synth-local"
+  },
+  "dual_dirty": {
+    "working_tree_clean": false,
+    "protected_scope_clean": true,
+    "forced_clean_forbidden": true
+  },
+  "completion_status": "COMPLETE",
+  "aggregation_only": true,
+  "discovery_suite": false,
+  "invents_no_scenarios": true,
+  "formula_inputs": {
+    "mandatory_suite_complete": true,
+    "mandatory_suite_status": [
+      {
+        "suite_id": "QA1",
+        "completion_status": "COMPLETE"
+      },
+      {
+        "suite_id": "QA2",
+        "completion_status": "COMPLETE"
+      },
+      {
+        "suite_id": "QA3",
+        "completion_status": "COMPLETE"
+      },
+      {
+        "suite_id": "QA4",
+        "completion_status": "COMPLETE"
+      },
+      {
+        "suite_id": "QA5",
+        "completion_status": "COMPLETE"
+      },
+      {
+        "suite_id": "QA6",
+        "completion_status": "COMPLETE"
+      },
+      {
+        "suite_id": "QA7",
+        "completion_status": "COMPLETE"
+      },
+      {
+        "suite_id": "QA8",
+        "completion_status": "COMPLETE"
+      }
+    ],
+    "critical_invariant_blocked": 0,
+    "critical_invariant_skipped": 0,
+    "critical_invariant_uncovered": 0,
+    "defects_P0": 0,
+    "defects_P1": 0,
+    "defects_P2": 0,
+    "defects_P3": 0,
+    "baseline_valid": true,
+    "acceptance_scope_unchanged": true,
+    "report_baseline_id_match": true,
+    "evidence_integrity_valid": true,
+    "verdict_reason_code": "ALL_FORMULA_CONDITIONS_MET",
+    "next": "03_ui_entry_unlocked"
+  },
+  "verdict": "ENGINE_ACCEPTED_FOR_UI",
+  "verdict_reason_code": "ALL_FORMULA_CONDITIONS_MET",
+  "verdict_reason": "QA9 COMPLETE - all acceptance-contract L1 conditions met - ENGINE_ACCEPTED_FOR_UI",
+  "p0_security_findings": [],
+  "other_defects": [],
+  "remaining_blocked_count": 0,
+  "engine_accepted_for_ui": "ISSUED",
+  "ui_ux_entry_gate": "OPEN",
+  "product_mutation": 0,
+  "kpi_forbidden": true,
+  "mock_pass_forbidden": true,
+  "next": "03_ui_entry_unlocked",
+  "notes": [
+    "QA9 is a deterministic aggregation/verdict-issuance wave, not a discovery suite.",
+    "Consumes QA0-QA8 evidence exactly as recorded - repairs nothing.",
+    "Does not issue ENGINE_ACCEPTED_FOR_UI while defects.P0/P1 > 0.",
+    "Every report section is derived from the current qa4/5/6/8-result files at run time - no hardcoded historical defect name."
+  ],
+  "checksum": "8c2f75be89cac0bb645e8249f143f9c95500846e07a0728d5b99484058d76552"
+}

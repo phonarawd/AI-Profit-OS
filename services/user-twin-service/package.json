@@ -1,0 +1,12 @@
+{
+  "name": "@aipo/user-twin-service",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Engine §47 User Twin — slow prefs/behavior · Redis hot + PG · money Fact cache FORBIDDEN",
+  "main": "./src/index.cjs",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": "./src/index.cjs",
+    "./twin": "./src/twin.cjs"
+  }
+}

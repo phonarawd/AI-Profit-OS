@@ -1,0 +1,34 @@
+---
+description: 새 conversion은 canonical→outbox→consent→attribution→adapter→delivery
+globs: "workers/marketing-capi-dispatcher/**,packages/sdk/marketing/**,services/marketing-attribution/**"
+alwaysApply: false
+---
+
+# EVENT_RULE (v7.24.5)
+
+새 advertising conversion을 추가·수정할 때 **기존 CAPI 설계를 교체하지 않고** 아래를 모두 고려한다.
+
+```text
+Domain Fact
+  → Canonical Event
+  → Transactional Durable Outbox (가능하면 domain TX와 동일 boundary)
+  → Stable event_id (발생 시 1회 영속 · dispatcher timestamp 신규 id 0)
+  → Consent FAIL_CLOSED
+  → Attribution
+  → Channel Mapping
+  → Provider Adapter
+  → Provider별 Delivery State
+  → Retry / Diagnostics
+```
+
+- Meta `Purchase` / TikTok event / Google conversion action을 domain fact와 직접 동일시 금지.
+- `GoogleConversionAdapter` — 구현 시점 공식 ingestion API. 임의 HTTPS 하드코딩 금지.
+- Delivery log에 PII payload 저장 금지.
+- `verify:capi-smoke` = staging/test only. PR에서 production 광고 API 호출 금지.
+- ads-only durable dedup table 신설 강제 금지 (Infra §31.3b.1 `NOT_REQUIRED_V1`).
+
+## v7.24.6 Boundary (CAPI ≠ Orchestrator)
+
+CAPI / Attribution = 광고 **성과 측정**. Ads Campaign Orchestrator = 광고 **생성/집행/최적화**.
+Orchestrator는 CAPI health를 읽을 수 있으나 **CAPI schema를 소유·변경하지 않는다**.
+합치기 금지. 상세 = `.cursor/rules/ads-orchestrator.mdc` · Infra §31.9.

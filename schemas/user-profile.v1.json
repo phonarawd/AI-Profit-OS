@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/user-profile.v1.json",
+  "title": "UserProfileV1",
+  "description": "Infra §51.9.1 Stage A/B. NEVER: RRN · gender · Day-1 required address.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "userId",
+    "termsAcceptedAt",
+    "privacyAcceptedAt"
+  ],
+  "properties": {
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "termsAcceptedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "privacyAcceptedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "marketingConsent": {
+      "type": "boolean"
+    },
+    "referralCode": {
+      "type": "string"
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 40
+    },
+    "phoneE164": {
+      "type": "string",
+      "pattern": "^\\+[1-9][0-9]{7,14}$"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "birthDate": {
+      "type": "string",
+      "format": "date",
+      "description": "Age 19+ · no gender field"
+    },
+    "onboardingStage": {
+      "type": "string",
+      "enum": [
+        "A",
+        "B_incomplete",
+        "B_complete"
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    }
+  },
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "rrnFull"
+        ]
+      },
+      {
+        "required": [
+          "gender"
+        ]
+      },
+      {
+        "required": [
+          "addressRequired"
+        ]
+      }
+    ]
+  }
+}

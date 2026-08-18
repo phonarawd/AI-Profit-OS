@@ -1,0 +1,29 @@
+# 퍼뜩 유저 PWA — Cloudflare Workers (OpenNext)
+# Worker: ai-profit-web · APP_HOST (app subdomain via web-proxy)
+# Deploy: pnpm cf:deploy:web
+# Domain SSOT: infra/domain.manifest.json · bootstrap: pnpm cf:domain:bootstrap
+#
+# @opennextjs/cloudflare 산출물 = Workers (main + assets). Pages 출력 디렉터리 키 사용 금지.
+
+name = "ai-profit-web"
+account_id = "190a1476a068cfe96dfe1029877587ef"
+main = "../../apps/web/.open-next/worker.js"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+workers_dev = true
+
+[assets]
+directory = "../../apps/web/.open-next/assets"
+binding = "ASSETS"
+
+[vars]
+APP_NAME = "퍼뜩"
+PLATFORM_NAME = "AI Profit OS"
+
+[env.preview]
+name = "ai-profit-web-preview"
+workers_dev = true
+
+[env.production]
+name = "ai-profit-web"
+workers_dev = true

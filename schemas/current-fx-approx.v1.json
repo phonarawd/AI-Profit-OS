@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/current-fx-approx.v1.json",
+  "title": "CurrentFxApproxV1",
+  "description": "Server-precomputed current FX presentation approximation. Not a KRW wallet balance. usdtKrw/formulaId/sources omitted — UI must not multiply.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "fxSnapshotId",
+    "capturedAt",
+    "principalKrwApprox",
+    "withdrawableProfitKrwApprox",
+    "expectedProfitKrwApprox"
+  ],
+  "properties": {
+    "fxSnapshotId": {
+      "type": ["string", "null"],
+      "minLength": 1
+    },
+    "capturedAt": {
+      "type": ["string", "null"]
+    },
+    "principalKrwApprox": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "approxKrwFromSnapshot result. UI display only. Not KRW wallet balance."
+    },
+    "withdrawableProfitKrwApprox": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+    },
+    "expectedProfitKrwApprox": {
+      "type": ["string", "null"],
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+    }
+  }
+}

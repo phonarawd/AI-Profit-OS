@@ -1,0 +1,48 @@
+{
+  "id": "admin-growth-simulation",
+  "route": "/admin/growth?tab=simulation",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": null, "href": null },
+  "blocks": [
+    { "id": "sidebar", "role": "nav", "copyKey": "T.admin.twelveModules" },
+    {
+      "id": "growth_tabs",
+      "role": "nav",
+      "copyKey": "T.admin.growthTabs",
+      "note": "simulation · referral · notices · campaigns · missions · share · G1~G4 · partners"
+    },
+    {
+      "id": "gates_s1_s4",
+      "role": "kpi",
+      "copyKey": "T.admin.simulationGates",
+      "fields": ["S1", "S2", "S3", "S4"],
+      "note": "Engine §51.4 · mismatch0 · reserve×10% · score≥0.85 · failRate≤15%"
+    },
+    {
+      "id": "kpi_inputs",
+      "role": "form",
+      "copyKey": "T.admin.simulationKpiInputs",
+      "note": "POST /admin/simulation/run · S4 from adapters/simulation-s4"
+    },
+    {
+      "id": "growth_enabled",
+      "role": "toggle",
+      "copyKey": "T.admin.growthEnabled",
+      "note": "admin.growth.enabled · latest PASS ≤24h + platform_reserve is_set"
+    },
+    {
+      "id": "latest_report",
+      "role": "info",
+      "copyKey": "T.admin.simulationLatest",
+      "note": "GET /admin/simulation/latest · event simulation.completed"
+    }
+  ],
+  "forbidden": [
+    "growth_on_without_pass",
+    "growth_on_without_reserve",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "sidebar_not_twelve"
+  ]
+}

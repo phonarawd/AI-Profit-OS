@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/fx-snapshot.v1.json",
+  "title": "FxSnapshotV1",
+  "description": "Engine §0.0.4.2 FX snapshot · formulaId cg_usdt_krw | cg_usdt_usd__frank_usd_krw. NEVER: yahoo_jp · mixed-time rates. PTF-00C P0-B: gbpUsd/eurUsd/audUsd/usdtPerUsd are the marketplace-normalization legs — null when that leg was never resolved (fail-closed, never fabricated).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "fxSnapshotId",
+    "formulaId",
+    "sources",
+    "usdtKrw",
+    "capturedAt"
+  ],
+  "properties": {
+    "fxSnapshotId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "formulaId": {
+      "type": "string",
+      "enum": ["cg_usdt_krw", "cg_usdt_usd__frank_usd_krw"]
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["coingecko", "frankfurter"]
+      },
+      "description": "yahoo_jp FORBIDDEN"
+    },
+    "usdtKrw": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "usdtUsd": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "usdKrwFrank": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "gbpUsd": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$",
+      "description": "USD per 1 GBP — Frankfurter inverted server-side. Null = leg unavailable (fail-closed)."
+    },
+    "eurUsd": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "audUsd": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "usdtPerUsd": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9]+(\\.[0-9]+)?$",
+      "description": "USDT per 1 USD — CoinGecko usdtUsd inverted. 1 USD != 1 USDT."
+    },
+    "capturedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

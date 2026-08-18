@@ -1,0 +1,32 @@
+---
+description: §41 PG사(결제대행) 0 — Toss/PortOne 등 wallet path 금지.
+globs: "**/wallet/**,**/deposit/**,**/withdraw/**,services/**/wallet*/**,apps/**/wallet/**"
+alwaysApply: false
+---
+
+# PG Gateway Ban (§41)
+
+## 용어 (Postgres ≠ PG사)
+
+| 표기 | 의미 |
+|------|------|
+| PostgreSQL / Postgres / ADR-001 | Ledger+AI **단일 DB** — ✅ 필수 |
+| PG사 / PG 0 / PG-free | **결제대행(Payment Gateway) 연동 0** — ✅ 필수(금지=연동) |
+
+혼용·오해로 Postgres 드라이버를 금지하거나 PG사 SDK를 허용하지 말 것.
+
+## 금지 (wallet / deposit / withdraw path)
+
+- **결제대행 0**: Toss · Nice · KG Inicis · PortOne · iamport · Stripe Checkout · PayPal · 국내카드 PG
+- SDK · webhook · 결제창 · virtual-account PG API · “PG 붙이면 편하다” 재제안
+
+## 입금 Day-1 SSOT (이 둘만)
+
+1. **USDT TRC20** — 유저별 주소 · chain-watchers
+2. **원화** — 입금신청 → 운영자 통장 확인 후 **Admin 승인/거절** → 승인 시 USDT credit
+
+- CSV Auto-Recon / 은행 OpenAPI = **L2+만** (Day-1 필수·기본 경로 **아님**)
+
+## CI
+
+`pnpm verify:pg-module-scan` — 결제대행 import/SDK **0** (PostgreSQL 드라이버 허용)

@@ -1,0 +1,28 @@
+{
+  "id": "g_strictness_tight_below_min",
+  "note": "§48.13.3 tight preset minProfit=8 · profit 6 would pass standard but fails tight",
+  "expect": "BELOW_MIN_PROFIT",
+  "matchStrictness": "tight",
+  "context": {
+    "nowMs": 1000000,
+    "participateAcceptedAtMs": 1000000,
+    "circuitStatus": "closed",
+    "userStatus": "active",
+    "opportunityStatus": "available",
+    "compareReady": true,
+    "staleAtMs": 999000,
+    "expectedProfitUsdt": "6",
+    "tradePricingVersion": 1,
+    "opportunityPricingVersion": 1,
+    "simulationPayoutFeasible": true,
+    "listingLegsFresh": true,
+    "rematchCount": 0,
+    "policy": {
+      "minProfitUsdt": "8",
+      "staleAllowanceSec": 2,
+      "maxRematchCount": 1,
+      "retryWaitSec": 4
+    },
+    "presentationDurationSec": 12
+  }
+}

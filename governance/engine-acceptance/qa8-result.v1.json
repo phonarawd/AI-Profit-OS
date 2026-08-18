@@ -1,0 +1,338 @@
+{
+  "schema": "governance.engine-acceptance.qa8-result.v1",
+  "version": "1.0.0",
+  "suite_id": "QA8",
+  "run_id": "qa8-security-privacy-20260814",
+  "todoId": "qa8-security-privacy",
+  "measuredAt": "2026-08-14T19:09:45.313Z",
+  "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+  "mode": "tiny",
+  "asvs_version": "5.0.0",
+  "exhaustive_certification_claim": false,
+  "kill_switch": {
+    "verified_before_checks": true,
+    "target_env": "local",
+    "hostname": "localhost",
+    "synthetic_account_namespace": "qa-synth-local"
+  },
+  "dual_dirty": {
+    "working_tree_clean": false,
+    "protected_scope_clean": true,
+    "forced_clean_forbidden": true
+  },
+  "completion_status": "COMPLETE",
+  "checks": {
+    "security_privacy_world": {
+      "check_id": "QA8_SECURITY_PRIVACY_WORLD",
+      "status": "PASS",
+      "mode": "tiny",
+      "measuredAt": "2026-08-14T19:09:45.313Z",
+      "seed": 20260813,
+      "asvs_version": "5.0.0",
+      "exhaustive_certification_claim": false,
+      "checks": [
+        {
+          "check_id": "QA8_ADMIN_BOUNDARY",
+          "asvs_ids": [
+            "v5.0.0-8.2.1",
+            "v5.0.0-8.4.2"
+          ],
+          "invariant_id": "INV-ISOLATION-01",
+          "attack_face": "admin_boundary",
+          "critical": true,
+          "status": "PASS",
+          "controllers_scanned": 19,
+          "unguarded_count": 0,
+          "guarded_count": 19,
+          "unguarded": [],
+          "findings": [],
+          "dynamic_child_verify": {
+            "script": "tooling/verify/admin-boundary.cjs",
+            "ok": true,
+            "exitCode": 0,
+            "summary": "PASS - missing admin signing secret -> 401 (admin routes stay closed) (status=401) | [admin-guard.selftest] ALL PASS — real Nest HTTP admin boundary verified (25 checks) | [verify:admin-boundary] PASS (19 admin controllers · 93 routes classified · global APP_GUARD · real Nest HTTP adversarial round-trip)",
+            "cases_covered": [
+              "no_token",
+              "malformed_token",
+              "invalid_signature",
+              "expired_admin_token",
+              "alg_none_forgery",
+              "wrong_issuer",
+              "wrong_audience",
+              "role_tampering_foreign_key",
+              "user_jwt_on_admin_route",
+              "unknown_role",
+              "missing_role_claim",
+              "insufficient_capability",
+              "authorized_admin_allow",
+              "operator_identity_bound_to_token_not_body",
+              "unclassified_admin_route_fail_closed",
+              "handler_level_admin_path",
+              "non_admin_surface_unaffected",
+              "missing_admin_signing_secret_fail_closed"
+            ]
+          },
+          "root_cause_note": "AdminGuard is wired on every *.admin.controller.ts AND registered as a global APP_GUARD (services/api-nest/src/app.module.ts); the real Nest+HTTP adversarial round-trip in admin-guard.selftest.ts confirms deny-by-default behaviour end to end, not just by grep.",
+          "rich_evidence": null
+        },
+        {
+          "check_id": "QA8_USER_ISOLATION_SHARED_WITH_QA2",
+          "asvs_ids": [
+            "v5.0.0-8.2.2",
+            "v5.0.0-8.3.1"
+          ],
+          "invariant_id": "INV-ISOLATION-01",
+          "critical": true,
+          "status": "PASS",
+          "shared_with_suite": "QA2",
+          "shared_check_id": "QA2_USER_ISOLATION_SURFACES",
+          "faces": [
+            {
+              "attack_face": "interleave",
+              "invariant_id": "INV-ISOLATION-01",
+              "status": "PASS",
+              "findings": []
+            },
+            {
+              "attack_face": "token_cross",
+              "invariant_id": "INV-ISOLATION-01",
+              "status": "PASS",
+              "findings": [],
+              "child_verifies": []
+            },
+            {
+              "attack_face": "object_id_swap",
+              "invariant_id": "INV-ISOLATION-01",
+              "status": "PASS",
+              "findings": [],
+              "child_verifies": [
+                {
+                  "script": "tooling/verify/wallet-kyc-session-auth.cjs",
+                  "exitCode": 0,
+                  "signal": null,
+                  "ok": true,
+                  "stdout": "[verify:wallet-kyc-session-auth] PASS\n",
+                  "stderr": "",
+                  "summary": "[verify:wallet-kyc-session-auth] PASS"
+                },
+                {
+                  "script": "tooling/verify/home-money-read-contract.cjs",
+                  "exitCode": 0,
+                  "signal": null,
+                  "ok": true,
+                  "stdout": "[verify:home-money-read-contract] PASS — schema+GET /me/home-money-read+SDK+source/asOf/state · Engine todayPossible 0\n",
+                  "stderr": "",
+                  "summary": "[verify:home-money-read-contract] PASS — schema+GET /me/home-money-read+SDK+source/asOf/state · Engine todayPossible 0"
+                }
+              ]
+            }
+          ],
+          "findings": []
+        },
+        {
+          "check_id": "QA8_JWT_TOKEN_VALIDATION",
+          "asvs_ids": [
+            "v5.0.0-9.1.1",
+            "v5.0.0-9.1.2",
+            "v5.0.0-9.2.1",
+            "v5.0.0-9.2.3"
+          ],
+          "invariant_id": "INV-ISOLATION-01",
+          "attack_face": "token_cross",
+          "critical": true,
+          "status": "PASS",
+          "child_verify": {
+            "script": "tooling/verify/auth-jwt-runtime.cjs",
+            "ok": true,
+            "exitCode": 0,
+            "summary": "PASS - malformed token -> 401 (status=401) | [jwt-guard.selftest] ALL PASS — real Nest HTTP server + JwtAuthGuard round-trip verified | [verify:auth-jwt-runtime] PASS (real HS256 sign/verify/tamper/expiry/issuer/audience + real Nest HTTP guard round-trip + 6 controllers wired)"
+          },
+          "static_findings": [],
+          "findings": []
+        },
+        {
+          "check_id": "QA8_PRIVACY_DELETE_ACCOUNT",
+          "asvs_ids": [
+            "v5.0.0-14.2.7"
+          ],
+          "invariant_id": "INV-PRIVACY-01",
+          "critical": true,
+          "status": "PASS",
+          "evidence": {
+            "delete_account_method_found": true,
+            "privacy_service_found": true,
+            "delegates_to_privacy_service": true,
+            "purge_method_found": true,
+            "single_transaction": true,
+            "purge_table_count": 25,
+            "anonymize_table_count_hint": 7,
+            "sessions_purged": true,
+            "email_nulled": true,
+            "phone_nulled": true,
+            "password_nulled": true,
+            "tombstoned": true,
+            "retained_kyc_ledger_audit": true,
+            "kyc_retention_years": 5,
+            "delete_mode": "purge_and_tombstone",
+            "ai_twin_memory_cascade_defined": true,
+            "ai_twin_memory_would_cascade_on_hard_delete_only": false,
+            "residual_tables_after_delete": []
+          },
+          "findings": [],
+          "dynamic_evidence": {
+            "source": "run-qa8-adversarial.cjs privacy_delete (isolated CI Postgres + booted Nest)",
+            "verdict": "PASS",
+            "target_user_tombstoned": true,
+            "purge_table_confirmed": true,
+            "retain_table_confirmed": true,
+            "control_user_unaffected": true,
+            "invalid_confirm_rejected_no_mutation": true,
+            "findings": []
+          },
+          "rich_evidence": null
+        },
+        {
+          "check_id": "QA8_ERROR_DISCLOSURE_AND_LOGGING",
+          "asvs_ids": [
+            "v5.0.0-16.5.1",
+            "v5.0.0-16.2.5"
+          ],
+          "invariant_id": "INV-PRIVACY-01",
+          "critical": false,
+          "status": "PASS",
+          "blocked_code": null,
+          "evidence": {
+            "custom_exception_filter_found": false,
+            "relies_on_nest_default_filter": true,
+            "console_log_of_secret_like_names_found": false,
+            "scope": "static_only - no live server, no dynamic log capture in this slice"
+          },
+          "findings": [],
+          "notes": [
+            "NestJS default ExceptionFilter returns {statusCode,message} without stack traces for uncaught errors when no custom filter overrides it.",
+            "Full dynamic verification (trigger real errors against a booted instance, inspect actual HTTP response + log sink) is BLOCKED_ENV_CAPABILITY on this Phase0 2C/8GB machine, deferred to the CI heavy matrix, not laundered as PASS."
+          ]
+        }
+      ],
+      "dynamic_scenarios": [
+        {
+          "scenario_id": "SEC-DYNAMIC-ADVERSARIAL-01",
+          "status": "PASS",
+          "blocked_code": null,
+          "asvs_ids": [
+            "v5.0.0-8.2.1",
+            "v5.0.0-8.2.2",
+            "v5.0.0-8.3.1"
+          ],
+          "invariant_id": "INV-ISOLATION-01",
+          "harness_probe": {
+            "available": true,
+            "probed_path": "_tmp_qa_harness/qa8-adversarial/qa8-adversarial.v1.json",
+            "age_ms": 1476978
+          },
+          "evidence": {
+            "source": "run-qa8-adversarial.cjs (isolated CI Postgres + booted Nest, real HTTP)",
+            "measuredAt": "2026-08-14T18:45:08.341Z",
+            "case_count": 35,
+            "product_security_verdict": "PASS",
+            "unknown_product_failures": 0,
+            "inventory": {
+              "controller_count": 19,
+              "route_count": 93,
+              "controllers": [
+                "services/api-nest/src/adapters/adapters.admin.controller.ts",
+                "services/api-nest/src/ai/ai-logs.admin.controller.ts",
+                "services/api-nest/src/ai/ai-pick.admin.controller.ts",
+                "services/api-nest/src/ai/shadow-replay.admin.controller.ts",
+                "services/api-nest/src/compliance/kyc.admin.controller.ts",
+                "services/api-nest/src/execution-policy/execution-policy.admin.controller.ts",
+                "services/api-nest/src/inbox/ops-inbox.admin.controller.ts",
+                "services/api-nest/src/ledger/ledger.admin.controller.ts",
+                "services/api-nest/src/membership/membership.admin.controller.ts",
+                "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
+                "services/api-nest/src/opportunities/user-opportunity-override.admin.controller.ts",
+                "services/api-nest/src/referral/referral.admin.controller.ts",
+                "services/api-nest/src/risk/risk.admin.controller.ts",
+                "services/api-nest/src/simulation/platform-reserve.admin.controller.ts",
+                "services/api-nest/src/simulation/simulation.admin.controller.ts",
+                "services/api-nest/src/wallet/deposit-config.admin.controller.ts",
+                "services/api-nest/src/wallet/deposit-dispute.admin.controller.ts",
+                "services/api-nest/src/wallet/krw-deposit.admin.controller.ts",
+                "services/api-nest/src/wallet/withdraw-credentials.admin.controller.ts"
+              ],
+              "drift": false,
+              "controllers_without_case": []
+            }
+          },
+          "findings": []
+        }
+      ],
+      "counts": {
+        "pass": 6,
+        "fail": 0,
+        "blocked": 0,
+        "total": 6
+      },
+      "critical_invariant": {
+        "failed": 0,
+        "blocked": 0,
+        "skipped": 0,
+        "uncovered": 0
+      },
+      "mock_pass_forbidden": true,
+      "product_mutation": 0,
+      "notes": [
+        "IDOR/authz/PII/delete-account per plan qa8-security-privacy scope.",
+        "INV-ISOLATION-01 coverage mapping shared with QA2 (coverage.v1.json COV-003/003b/003c/003d).",
+        "Real defects recorded in defects.v1.json - this wave does not repair them (discovery only)."
+      ]
+    }
+  },
+  "critical_invariant": {
+    "failed": 0,
+    "blocked": 0,
+    "skipped": 0,
+    "uncovered": 0
+  },
+  "critical_invariant_cumulative": {
+    "blocked": 0,
+    "skipped": 0,
+    "uncovered": 0,
+    "sources": {
+      "QA4_QA6_cumulative": {
+        "blocked": 0,
+        "skipped": 0,
+        "uncovered": 0
+      },
+      "QA8_new": {
+        "blocked": 0,
+        "skipped": 0,
+        "uncovered": 0
+      }
+    }
+  },
+  "all_checks_pass": true,
+  "defects_found": 0,
+  "defects_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0,
+    "P3": 0
+  },
+  "verdict_contribution": "ENGINE_QA_INCOMPLETE",
+  "next": "QA9_ACCEPTANCE_REPORT",
+  "product_mutation": 0,
+  "kpi_forbidden": true,
+  "mock_pass_forbidden": true,
+  "ci": {
+    "strategy_fail_fast": false,
+    "concurrency_group": "engine-acceptance-${{ github.ref }}"
+  },
+  "blocked_codes_observed": [],
+  "notes": [
+    "ASVS 5.0.0 subset - IDOR/authz/PII/delete-account - isolation invariant mapping shared with QA2.",
+    "Real defects recorded in defects.v1.json - discovery only, not repaired this wave.",
+    "Does not issue ENGINE_ACCEPTED_FOR_UI. Does not start QA9."
+  ],
+  "checksum": "feeecc632dbaf09be37c0cadcd61c4ed5d44e049e5963c267c300750901d719e"
+}

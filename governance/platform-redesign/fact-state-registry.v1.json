@@ -1,0 +1,1088 @@
+{
+  "version": "1.0.0",
+  "schema": "governance.platform-redesign.fact-state-registry.v1",
+  "redesignStage": "R0",
+  "todoId": "platform-redesign-r0-fact-state",
+  "measuredAt": "2026-08-10T18:30:00.000Z",
+  "pathSeparator": "/",
+  "basedOn": {
+    "baselinePath": "governance/platform-redesign/baseline.v1.json",
+    "routeContractMatrixPath": "governance/platform-redesign/route-contract-matrix.v1.json",
+    "baselineCommitSha": "816696e0c100dc8af4745a0ff86c18a2230397b6",
+    "baselineTodoId": "platform-redesign-r0-inventory"
+  },
+  "commonViewStates": [
+    "idle",
+    "loading",
+    "ready_empty",
+    "ready_data",
+    "stale",
+    "recoverable_error",
+    "blocked",
+    "unauthorized"
+  ],
+  "domainFsm": [
+    {
+      "fsmId": "engine.trade_execution",
+      "ownerPlan": "02-engine",
+      "states": [
+        "running",
+        "requeue",
+        "success",
+        "safe_stop"
+      ],
+      "terminalHints": {
+        "success": "MATCH_SUCCESS → settlement journal",
+        "safe_stop": "Soft60/Hard90/MATCH_TIMEOUT · recovery ≠ blocked view"
+      },
+      "separationRule": "commonViewStates에 합치지 않음 · UI는 viewState + domainFsm.status 이중 필드"
+    },
+    {
+      "fsmId": "auth.session",
+      "ownerPlan": "06-infra",
+      "states": [
+        "guest",
+        "authenticated",
+        "expired"
+      ],
+      "separationRule": "expired→view unauthorized · guest 0값 Fact 위장 금지"
+    }
+  ],
+  "reasonCode": {
+    "grammar": "domain.resource.reason",
+    "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$",
+    "vocabularyStatus": "deferred_to_domain_phases",
+    "note": "R0는 schema/grammar만 고정. blocked_policy 등 vocabulary는 Money/Engine domain Phase에서 registry 확정.",
+    "examplesSchemaOnly": [
+      "money.principal.insufficient",
+      "money.kyc.required",
+      "auth.session.expired",
+      "engine.opportunity.compare_not_ready",
+      "engine.opportunity.price_stale",
+      "engine.trade.match_blocked"
+    ],
+    "forbidden": [
+      "underscore_flat_alias",
+      "camelCase",
+      "view_state_as_reason",
+      "domain_fsm_state_as_reason"
+    ]
+  },
+  "requiredFactMeta": [
+    "source",
+    "asOf",
+    "freshness",
+    "owner",
+    "provenance"
+  ],
+  "semanticConflictProtection": [
+    "provenance",
+    "source",
+    "freshness",
+    "asOf",
+    "state",
+    "money_meaning",
+    "auth_boundary",
+    "engine_transition"
+  ],
+  "iterativeValidation": {
+    "method": "Fact↔State mutual cross-check (non-linear · not Fact-first-100%)",
+    "loop": [
+      "Observe",
+      "Classify",
+      "Fact",
+      "State",
+      "Contract(deferred)"
+    ],
+    "rounds": [
+      {
+        "round": 1,
+        "focus": "baseline_home_money_opportunity_growth",
+        "factIdsTouched": [
+          "money.wallet.principalUsdt",
+          "money.home.settlementCompletedTodayCount",
+          "engine.home.todayPossibleProfitUsdt",
+          "growth.public.ledgerTotal",
+          "engine.opportunity.expectedProfitUsdt"
+        ],
+        "stateFindings": [
+          "Home fetch lifecycle이 commonViewStates로 노출되지 않음(loading/ready_* 혼선) → missing_fact/deferred",
+          "guest/null pulse 고정 claim은 Fact가 아님 → defect 분류는 baseline·R1 owner"
+        ],
+        "result": "Money amount vs COUNT 단위 분리 잠금 · ledgerTotal=COUNT"
+      },
+      {
+        "round": 2,
+        "focus": "view_state_vs_domain_fsm_separation",
+        "factIdsTouched": [
+          "engine.trade.executionStatus",
+          "auth.session.status"
+        ],
+        "stateFindings": [
+          "running|requeue|success|safe_stop ∈ engine.trade_execution only",
+          "commonViewStates ∩ domainFsm.states = ∅ 검증",
+          "safe_stop ≠ blocked(view) — recovery path 상이"
+        ],
+        "result": "이중 필드 규칙 고정 · reasonCode grammar만 R0 잠금"
+      },
+      {
+        "round": 3,
+        "focus": "cross_check_coverage",
+        "factIdsTouched": [
+          "engine.opportunity.assetImageUrl",
+          "engine.opportunity.compareReady",
+          "brand.mark.consumer",
+          "money.wallet.profitUsdt"
+        ],
+        "stateFindings": [
+          "모든 commonViewState가 ≥1 fact.allowedViewStates 또는 surfaceStateBindings에 소비됨",
+          "모든 fact가 allowedViewStates⊆commonViewStates · domainFsmPointer 유효",
+          "asOf/freshness/source/owner/provenance 5종 필수 충족"
+        ],
+        "result": "R0 registry freeze · Contract 작성은 R1 Product Contract owner"
+      }
+    ]
+  },
+  "facts": [
+    {
+      "factId": "money.wallet.principalUsdt",
+      "type": "decimal_string",
+      "unit": "USDT",
+      "source": {
+        "kind": "ledger_projection",
+        "path": "GET /api/v1/wallet/buckets → principalUsdt",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "asOfLedgerEntryId",
+        "status": "present",
+        "note": "entry id SoT · per-field ISO asOf는 R1 HomeMoneyRead로 승격"
+      },
+      "freshness": {
+        "policy": "ledger_head",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "01-money",
+        "section": "§49"
+      },
+      "provenance": {
+        "soT": "ledger postings → bucket projection",
+        "forbidden": [
+          "UI zero fallback as Fact",
+          "LLM estimate",
+          "balance column UPDATE"
+        ]
+      },
+      "allowedViewStates": [
+        "idle",
+        "loading",
+        "ready_empty",
+        "ready_data",
+        "stale",
+        "recoverable_error",
+        "blocked",
+        "unauthorized"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/",
+        "web:/wallet",
+        "web:/profits"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "ready_empty=authenticated∧principal 집계0 · unauthorized=guest · fake zero coerce는 R1 defect owner"
+    },
+    {
+      "factId": "money.wallet.profitUsdt",
+      "type": "decimal_string",
+      "unit": "USDT",
+      "source": {
+        "kind": "ledger_projection",
+        "path": "GET /api/v1/wallet/buckets → profitUsdt",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "asOfLedgerEntryId",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "ledger_head",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "01-money",
+        "section": "§49"
+      },
+      "provenance": {
+        "soT": "ledger postings → bucket projection",
+        "forbidden": [
+          "sum with principalUsdt for Home hero",
+          "practice→profit promotion"
+        ]
+      },
+      "allowedViewStates": [
+        "loading",
+        "ready_empty",
+        "ready_data",
+        "stale",
+        "recoverable_error",
+        "unauthorized"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/wallet"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "출금 기본 mode=profit · Home principal과 합산 금지"
+    },
+    {
+      "factId": "money.wallet.lockedUsdt",
+      "type": "decimal_string",
+      "unit": "USDT",
+      "source": {
+        "kind": "ledger_projection",
+        "path": "GET /api/v1/wallet/buckets → lockedUsdt",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "asOfLedgerEntryId",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "ledger_head",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "01-money",
+        "section": "§49"
+      },
+      "provenance": {
+        "soT": "ledger postings → bucket projection",
+        "forbidden": [
+          "UI unlock without ledger"
+        ]
+      },
+      "allowedViewStates": [
+        "loading",
+        "ready_empty",
+        "ready_data",
+        "stale",
+        "blocked",
+        "unauthorized"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/wallet"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "safe_stop 후 locked 해제는 Money/Engine owner · view blocked≠FSM"
+    },
+    {
+      "factId": "money.wallet.practiceUsdt",
+      "type": "decimal_string",
+      "unit": "USDT",
+      "source": {
+        "kind": "ledger_projection",
+        "path": "GET /api/v1/wallet/buckets → practiceUsdt",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "asOfLedgerEntryId",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "ledger_head",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "01-money",
+        "section": "§51.7"
+      },
+      "provenance": {
+        "soT": "practice provision · non-withdrawable",
+        "forbidden": [
+          "practice→profit/withdraw"
+        ]
+      },
+      "allowedViewStates": [
+        "loading",
+        "ready_empty",
+        "ready_data",
+        "stale",
+        "unauthorized"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/wallet"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "practice welcome/expire는 view blocked 가능 · FSM 아님"
+    },
+    {
+      "factId": "money.home.settlementCompletedTodayCount",
+      "type": "integer",
+      "unit": "count",
+      "source": {
+        "kind": "settlement_projection",
+        "path": "DayPulse.settlementCompletedToday · growth.ledgerTotal(COUNT alias)",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "DayPulse.asOf | GrowthPublicSurface.asOf",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "pulse_window_seoul",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "01-money",
+        "section": "v7.23 HomeMoneyRead"
+      },
+      "provenance": {
+        "soT": "settlement.completed COUNT (오늘·Asia/Seoul)",
+        "forbidden": [
+          "USDT currency formatter",
+          "profit color",
+          "amount suffix"
+        ]
+      },
+      "allowedViewStates": [
+        "idle",
+        "loading",
+        "ready_empty",
+        "ready_data",
+        "stale",
+        "recoverable_error",
+        "unauthorized"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "COUNT≠amount · R1 schema 필드명 settlementCompletedTodayCount로 정규화"
+    },
+    {
+      "factId": "engine.home.todayPossibleProfitUsdt",
+      "type": "decimal_string",
+      "unit": "USDT",
+      "source": {
+        "kind": "server_derived",
+        "path": "Σ affordable.expectedProfitUsdt where status=available ∧ compareReady",
+        "status": "missing_mapper"
+      },
+      "asOf": {
+        "field": "feed/items pricing asOf (R1 HomeReadModel)",
+        "status": "missing_fact"
+      },
+      "freshness": {
+        "policy": "opportunity_price_freshness",
+        "status": "deferred",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "02-engine",
+        "section": "redesign-r1-home-fact-state-contract"
+      },
+      "provenance": {
+        "soT": "Engine opportunity feed derived aggregate (server only)",
+        "forbidden": [
+          "UI client sum as Truth",
+          "static scan claim",
+          "Money endpoint duplicate"
+        ]
+      },
+      "allowedViewStates": [
+        "loading",
+        "ready_empty",
+        "ready_data",
+        "stale",
+        "recoverable_error",
+        "blocked",
+        "unauthorized"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/"
+      ],
+      "classification": "missing_fact",
+      "stateCrossCheck": "현재 HomePageClient client sum → R1 server mapper 전 missing_fact"
+    },
+    {
+      "factId": "engine.opportunity.expectedProfitUsdt",
+      "type": "decimal_string",
+      "unit": "USDT",
+      "source": {
+        "kind": "opportunity_row",
+        "path": "GET /api/v1/opportunities → items[].expectedProfitUsdt",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "listing/price snapshot time (row)",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "price_stale_guard",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "02-engine",
+        "section": "§0.0.5.1"
+      },
+      "provenance": {
+        "soT": "Engine pricing/projection",
+        "forbidden": [
+          "UI recompute margin"
+        ]
+      },
+      "allowedViewStates": [
+        "loading",
+        "ready_empty",
+        "ready_data",
+        "stale",
+        "recoverable_error",
+        "blocked",
+        "unauthorized"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/",
+        "web:/profits",
+        "web:/profits/[id]"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "absent slot ≠ zero Fact"
+    },
+    {
+      "factId": "engine.opportunity.affordableCount",
+      "type": "integer",
+      "unit": "count",
+      "source": {
+        "kind": "balance_aware_classification",
+        "path": "GET /api/v1/opportunities → affordableCount",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "feed response time / principal asOf",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "tied_to_principal_and_catalog",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "02-engine",
+        "section": "§0.0.5.1"
+      },
+      "provenance": {
+        "soT": "Engine classify · Money pass-through only",
+        "forbidden": [
+          "Money classification math"
+        ]
+      },
+      "allowedViewStates": [
+        "loading",
+        "ready_empty",
+        "ready_data",
+        "stale",
+        "unauthorized"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "ready_empty when count=0 ∧ authenticated"
+    },
+    {
+      "factId": "engine.opportunity.nearMissCount",
+      "type": "integer",
+      "unit": "count",
+      "source": {
+        "kind": "balance_aware_classification",
+        "path": "GET /api/v1/opportunities → nearMissCount",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "feed response time / principal asOf",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "tied_to_principal_and_catalog",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "02-engine",
+        "section": "§0.0.5.1"
+      },
+      "provenance": {
+        "soT": "Engine classify · SDK maps to nearMissExtraCount",
+        "forbidden": [
+          "UI recount"
+        ]
+      },
+      "allowedViewStates": [
+        "loading",
+        "ready_empty",
+        "ready_data",
+        "stale",
+        "unauthorized"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "nearMissCapUsdt policy bound"
+    },
+    {
+      "factId": "engine.opportunity.compareReady",
+      "type": "boolean",
+      "unit": "none",
+      "source": {
+        "kind": "opportunity_row",
+        "path": "opportunities.compareReady",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "row compare evaluation time",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "compare_legs_fresh",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "02-engine",
+        "section": "§0.9"
+      },
+      "provenance": {
+        "soT": "listing legs Day-1 ebay|admin",
+        "forbidden": [
+          "participate when false"
+        ]
+      },
+      "allowedViewStates": [
+        "ready_data",
+        "stale",
+        "blocked",
+        "recoverable_error"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/profits/[id]",
+        "web:/trades/[id]/execute"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "false→blocked + reasonCode engine.opportunity.compare_not_ready (vocab domain)"
+    },
+    {
+      "factId": "engine.opportunity.assetImageUrl",
+      "type": "url_string",
+      "unit": "none",
+      "source": {
+        "kind": "asset_master_or_ebay",
+        "path": "assets/listings → assetImageUrl",
+        "status": "partial"
+      },
+      "asOf": {
+        "field": "image persist time",
+        "status": "deferred"
+      },
+      "freshness": {
+        "policy": "image_source_bound",
+        "status": "deferred",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "02-engine",
+        "section": "§0.0.6 · engine-ebay-identity-match-ingest"
+      },
+      "provenance": {
+        "soT": "imageSource=ebay|admin_r2 · i.ebayimg.com after identity match",
+        "forbidden": [
+          "AI-regenerated third-party logo",
+          "silent drop on no-match"
+        ]
+      },
+      "allowedViewStates": [
+        "loading",
+        "ready_empty",
+        "ready_data",
+        "recoverable_error"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/",
+        "web:/profits",
+        "web:/profits/[id]",
+        "web:/trades/[id]/execute"
+      ],
+      "classification": "deferred",
+      "stateCrossCheck": "missing image=ready_empty/slot hide · U15 ingest pending"
+    },
+    {
+      "factId": "engine.day_pulse.settlementCompletedToday",
+      "type": "integer",
+      "unit": "count",
+      "source": {
+        "kind": "live_pulse",
+        "path": "DayPulseService.getToday → settlementCompletedToday",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "DayPulse.asOf",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "source=live only",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "02-engine",
+        "section": "§51.24"
+      },
+      "provenance": {
+        "soT": "live projection · g4Merge=false",
+        "forbidden": [
+          "demo filler as live"
+        ]
+      },
+      "allowedViewStates": [
+        "idle",
+        "loading",
+        "ready_empty",
+        "ready_data",
+        "stale",
+        "recoverable_error"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "aliases money.home.settlementCompletedTodayCount · unit=count"
+    },
+    {
+      "factId": "engine.day_pulse.platformSafeStopToday",
+      "type": "integer",
+      "unit": "count",
+      "source": {
+        "kind": "live_pulse",
+        "path": "DayPulseService.getToday → platformSafeStopToday",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "DayPulse.asOf",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "source=live only",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "02-engine",
+        "section": "§51.24"
+      },
+      "provenance": {
+        "soT": "platform-scope safe_stop COUNT",
+        "forbidden": [
+          "map to view blocked"
+        ]
+      },
+      "allowedViewStates": [
+        "loading",
+        "ready_empty",
+        "ready_data",
+        "stale"
+      ],
+      "domainFsmPointer": "engine.trade_execution",
+      "surfaces": [
+        "web:/"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "COUNT of domain FSM safe_stop · view state는 별도"
+    },
+    {
+      "factId": "engine.trade.executionStatus",
+      "type": "enum",
+      "unit": "none",
+      "source": {
+        "kind": "trade_execution_row",
+        "path": "GET/POST /api/v1/trades/:id(/execute-tick) → status",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "tick / transition timestamp",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "tick_polling_phase0",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "02-engine",
+        "section": "§48.13"
+      },
+      "provenance": {
+        "soT": "trade_executions.status ∈ domain FSM",
+        "forbidden": [
+          "collapse running→success and running→safe_stop into one view blocked"
+        ]
+      },
+      "allowedViewStates": [
+        "idle",
+        "loading",
+        "ready_data",
+        "stale",
+        "recoverable_error",
+        "blocked",
+        "unauthorized"
+      ],
+      "domainFsmPointer": "engine.trade_execution",
+      "surfaces": [
+        "web:/trades/[id]/execute"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "viewState ∥ domainFsm.status · reasonCode on blocked only"
+    },
+    {
+      "factId": "growth.public.ledgerTotal",
+      "type": "integer",
+      "unit": "count",
+      "source": {
+        "kind": "growth_public_surface",
+        "path": "GET /growth/public-surface → ledgerTotal",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "GrowthPublicSurface.asOf",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "server_mode_bound",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "04-admin",
+        "section": "§35.4 ticker · UI PART9g"
+      },
+      "provenance": {
+        "soT": "settlement.completed COUNT (server mode live|demo|…)",
+        "forbidden": [
+          "Home truth/DayPulse arithmetic merge",
+          "USDT render"
+        ]
+      },
+      "allowedViewStates": [
+        "idle",
+        "loading",
+        "ready_empty",
+        "ready_data",
+        "stale",
+        "recoverable_error"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "name legacy · semantic=COUNT · R1 rename pointer=settlementCompletedTodayCount"
+    },
+    {
+      "factId": "growth.public.tickerMode",
+      "type": "enum",
+      "unit": "none",
+      "source": {
+        "kind": "growth_ticker_config",
+        "path": "GET /growth/public-surface → tickerMode",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "GrowthPublicSurface.asOf",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "config_asOf",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "04-admin",
+        "section": "growth_ticker_config"
+      },
+      "provenance": {
+        "soT": "Admin config · off|live|demo|hybrid",
+        "forbidden": [
+          "client invent mode"
+        ]
+      },
+      "allowedViewStates": [
+        "idle",
+        "loading",
+        "ready_data",
+        "ready_empty"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "off→ready_empty ticker slot"
+    },
+    {
+      "factId": "auth.session.status",
+      "type": "enum",
+      "unit": "none",
+      "source": {
+        "kind": "nest_jwt_session",
+        "path": "httpOnly aipo_session · JwtAuthGuard",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "token iat/exp",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "session_expiry",
+        "status": "present",
+        "staleImpliesViewState": "unauthorized"
+      },
+      "owner": {
+        "plan": "06-infra",
+        "section": "§51.9"
+      },
+      "provenance": {
+        "soT": "Nest JWT only · Supabase Auth 0",
+        "forbidden": [
+          "unauthorized→zero Fact coerce"
+        ]
+      },
+      "allowedViewStates": [
+        "idle",
+        "loading",
+        "ready_data",
+        "unauthorized"
+      ],
+      "domainFsmPointer": "auth.session",
+      "surfaces": [
+        "web:/",
+        "web:/wallet",
+        "web:/auth/login",
+        "web:/me"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "domain guest|authenticated|expired → view unauthorized on expired"
+    },
+    {
+      "factId": "money.kyc.status",
+      "type": "enum",
+      "unit": "none",
+      "source": {
+        "kind": "compliance_kyc",
+        "path": "KYC Nest routes · withdraw gate",
+        "status": "present"
+      },
+      "asOf": {
+        "field": "kyc decision timestamp",
+        "status": "present"
+      },
+      "freshness": {
+        "policy": "decision_bound",
+        "status": "present",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "01-money",
+        "section": "§42"
+      },
+      "provenance": {
+        "soT": "compliance records · R2 docs",
+        "forbidden": [
+          "RRN in client"
+        ]
+      },
+      "allowedViewStates": [
+        "idle",
+        "loading",
+        "ready_empty",
+        "ready_data",
+        "blocked",
+        "unauthorized"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/me/kyc",
+        "web:/wallet/withdraw"
+      ],
+      "classification": "intentional",
+      "stateCrossCheck": "withdraw blocked + reasonCode money.kyc.required (vocab domain)"
+    },
+    {
+      "factId": "brand.mark.consumer",
+      "type": "asset_ref",
+      "unit": "none",
+      "source": {
+        "kind": "brand_manifest",
+        "path": "packages/ui/brand/brand.manifest.json · assets/** status=ready",
+        "status": "partial"
+      },
+      "asOf": {
+        "field": "manifest asset hash/mtime",
+        "status": "deferred"
+      },
+      "freshness": {
+        "policy": "manifest_ready",
+        "status": "deferred",
+        "staleImpliesViewState": "stale"
+      },
+      "owner": {
+        "plan": "03-ui",
+        "section": "ADR-011/017 Brand Kit"
+      },
+      "provenance": {
+        "soT": "Brand Kit single mark · public mirror subset",
+        "forbidden": [
+          "AI recolor as new mark",
+          "photo mockup as logo SSOT"
+        ]
+      },
+      "allowedViewStates": [
+        "idle",
+        "loading",
+        "ready_data",
+        "ready_empty"
+      ],
+      "domainFsmPointer": null,
+      "surfaces": [
+        "web:/",
+        "web:/l/[variant]",
+        "web:/onboarding"
+      ],
+      "classification": "deferred",
+      "stateCrossCheck": "baseline cls-public-brand-mirror-subset · R1 preflight brand"
+    }
+  ],
+  "surfaceStateBindings": [
+    {
+      "surface": "web:/",
+      "viewStateOwner": "common",
+      "domainFsmPointers": [],
+      "primaryFactIds": [
+        "money.wallet.principalUsdt",
+        "money.home.settlementCompletedTodayCount",
+        "engine.home.todayPossibleProfitUsdt",
+        "engine.opportunity.affordableCount",
+        "engine.opportunity.nearMissCount",
+        "growth.public.ledgerTotal",
+        "auth.session.status"
+      ],
+      "note": "R1 HomeReadModelV1 mapper가 viewState 단일 산출 · 구현 0"
+    },
+    {
+      "surface": "web:/wallet",
+      "viewStateOwner": "common",
+      "domainFsmPointers": [],
+      "primaryFactIds": [
+        "money.wallet.principalUsdt",
+        "money.wallet.profitUsdt",
+        "money.wallet.lockedUsdt",
+        "money.wallet.practiceUsdt",
+        "auth.session.status"
+      ]
+    },
+    {
+      "surface": "web:/trades/[id]/execute",
+      "viewStateOwner": "common",
+      "domainFsmPointers": [
+        "engine.trade_execution"
+      ],
+      "primaryFactIds": [
+        "engine.trade.executionStatus",
+        "engine.opportunity.compareReady",
+        "engine.opportunity.assetImageUrl",
+        "auth.session.status"
+      ],
+      "note": "viewState와 engine.trade_execution.status 병행 표시"
+    },
+    {
+      "surface": "web:/profits",
+      "viewStateOwner": "common",
+      "domainFsmPointers": [],
+      "primaryFactIds": [
+        "engine.opportunity.expectedProfitUsdt",
+        "engine.opportunity.assetImageUrl",
+        "money.wallet.principalUsdt",
+        "auth.session.status"
+      ]
+    },
+    {
+      "surface": "web:/me/kyc",
+      "viewStateOwner": "common",
+      "domainFsmPointers": [],
+      "primaryFactIds": [
+        "money.kyc.status",
+        "auth.session.status"
+      ]
+    }
+  ],
+  "classifications": [
+    {
+      "id": "cls-fs-view-fsm-disjoint",
+      "kind": "intentional",
+      "subject": "commonViewStates ∩ domainFsm.states = ∅",
+      "note": "R0 잠금 · verify:platform-fact-state-registry 강제"
+    },
+    {
+      "id": "cls-fs-reasoncode-grammar-only",
+      "kind": "intentional",
+      "subject": "reasonCode=domain.resource.reason",
+      "note": "vocabulary deferred · underscore flat alias 신설 금지"
+    },
+    {
+      "id": "cls-fs-today-possible-client-sum",
+      "kind": "missing_fact",
+      "subject": "engine.home.todayPossibleProfitUsdt server mapper",
+      "note": "HomePageClient client Σ → R1 Engine redesign-r1-home-fact-state-contract"
+    },
+    {
+      "id": "cls-fs-home-viewstate-lifecycle",
+      "kind": "deferred",
+      "subject": "Home commonViewStates explicit wiring",
+      "note": "fetch lifecycle↔state 연결은 R1 · R0 분류만"
+    },
+    {
+      "id": "cls-fs-asset-image-provenance",
+      "kind": "deferred",
+      "subject": "engine.opportunity.assetImageUrl ebay identity",
+      "note": "U15 engine-ebay-identity-match-ingest · silent drop 금지"
+    },
+    {
+      "id": "cls-fs-brand-provenance",
+      "kind": "deferred",
+      "subject": "brand.mark.consumer provenance/hash/mirror",
+      "note": "baseline public mirror subset · R1 brand preflight"
+    }
+  ],
+  "notes": [
+    "문서전용 Fact↔State registry · 앱/Nest/Engine 구현코드 수정 0",
+    "baseline.v1.json + route-contract-matrix.v1.json 기반 · 외부 d903eef7 REFERENCE ONLY",
+    "신규 Fact는 provenance·owner 확정 후 본 registry 편입 · Fact 100% 확정 후 State 금지(반복 루프)",
+    "R1 Contract(Money/Engine/UI)가 vocabulary·mapper·verify:home-* 를 소유"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "hiptk-ops-proxy",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --config wrangler.toml",
+    "deploy": "wrangler deploy --config wrangler.toml",
+    "deploy:prod": "wrangler deploy --config wrangler.toml --env production"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260809.1",
+    "typescript": "^5.9.2",
+    "wrangler": "^4.120.0"
+  }
+}

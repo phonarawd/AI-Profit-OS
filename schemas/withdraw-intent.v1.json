@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/withdraw-intent.v1.json",
+  "title": "WithdrawIntentV1",
+  "description": "Money §49.3 · default mode=profit. NEVER: create when withdrawApplyBlocked · spend practice/locked · hide principal path.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mode",
+    "amountUsdt",
+    "asset",
+    "debitProfitUsdt",
+    "debitPrincipalUsdt",
+    "requirePrincipalConfirm",
+    "idempotencyKey"
+  ],
+  "properties": {
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "profit",
+        "principal",
+        "combined"
+      ]
+    },
+    "amountUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "asset": {
+      "type": "string",
+      "enum": [
+        "USDT",
+        "KRW"
+      ]
+    },
+    "debitProfitUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "debitPrincipalUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "requirePrincipalConfirm": {
+      "type": "boolean"
+    },
+    "principalConfirmToken": {
+      "type": "string",
+      "description": "Required when mode is principal|combined"
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "minLength": 8
+    },
+    "withdrawFeeUsdt": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$",
+      "description": "Money §11.1 · quoted from deposit-config.usdtOnchain.usdtWithdrawNetworkFeeUsdt · confirm UX must show WITHDRAW_FEE_HINT"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    }
+  }
+}

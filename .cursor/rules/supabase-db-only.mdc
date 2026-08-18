@@ -1,0 +1,14 @@
+---
+description: ADR-001/006 — Supabase=DB·migration only. Auth·대시보드 DDL·service_role 클라 금지.
+globs: "supabase/**,**/migrations/**"
+alwaysApply: false
+---
+
+# Supabase DB Only
+
+- SoT = 단일 Postgres (project `mgsytcetsiecllmhcyox` · Seoul)
+- 스키마 변경 = `supabase migration new` → SQL 파일 → apply (대시보드 클릭 DDL 금지)
+- done = advisors + 검증 SELECT
+- `public` 테이블 RLS ON · ledger 잔액 앱롤 direct UPDATE 0
+- **Supabase Auth UI/세션 금지** · service_role 클라/NEXT_PUBLIC 금지
+- Docker 없이 원격 apply OK (ADR-016)

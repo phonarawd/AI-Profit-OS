@@ -1,0 +1,33 @@
+node_modules/
+.next/
+dist/
+build/
+target/
+.turbo/
+.wrangler/
+.open-next/
+coverage/
+playwright-report/
+test-results/
+blob-report/
+pnpm-lock.yaml
+*.log
+*.tsbuildinfo
+.env
+.git/
+
+# ADR-016 — keep agent index thin on 8GB
+**/pnpm-store/**
+**/.pnpm-store/**
+
+# Intentional access deny (BOOTSTRAP 불변)
+# Write 차단이 필요한 경로만 둔다. docs/* 전체 차단 금지 — 인덱싱 제외는 .cursorindexingignore.
+CONSTITUTION/
+
+# ADR-013 — photo mockups must not be indexed / reintroduced
+docs/mockups/
+**/mockup*.png
+**/mockup*.jpg
+assets/ai-profit-os-*.png
+**/*-metal-hex*
+

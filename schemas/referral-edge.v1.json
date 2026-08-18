@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/referral-edge.v1.json",
+  "title": "ReferralEdgeV1",
+  "description": "Money §51.5 edge · status includes queued_pool · levelsAchieved L1|L2|L3.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "referrerUserId",
+    "refereeUserId",
+    "code",
+    "boundAt",
+    "levelsAchieved",
+    "status",
+    "idempotencyKeys"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "referrerUserId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "refereeUserId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "code": {
+      "type": "string",
+      "minLength": 1
+    },
+    "boundAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "levelsAchieved": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "L1",
+          "L2",
+          "L3"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "bound",
+        "l1_done",
+        "l2_pending_hold",
+        "l2_released",
+        "l3_done",
+        "held_risk",
+        "clawed_back",
+        "queued_pool"
+      ]
+    },
+    "qualifyingDepositUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "computedL2ReferrerUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "idempotencyKeys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

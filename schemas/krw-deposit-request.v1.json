@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/krw-deposit-request.v1.json",
+  "title": "KrwDepositRequestV1",
+  "description": "§41+§43 PG-free unique payableAmount + TTL. NEVER: PG사 SDK.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "userId",
+    "requestedAmountKrw",
+    "payableAmountKrw",
+    "uniqueSuffixKrw",
+    "payableSuffixRole",
+    "depositCode",
+    "depositorName",
+    "status",
+    "expiresAt",
+    "quote",
+    "final",
+    "idempotencyKey",
+    "createdAt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requestedAmountKrw": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "payableAmountKrw": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Actual payment amount = requestedAmountKrw + uniqueSuffixKrw. Quote and credited USDT both convert this amount. UNIQUE among active requests"
+    },
+    "uniqueSuffixKrw": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Bank-transfer identification amount. fee=NO · spread=NO · platform revenue=NO"
+    },
+    "payableSuffixRole": {
+      "type": "string",
+      "const": "bank_transfer_identification"
+    },
+    "depositCode": {
+      "type": "string",
+      "minLength": 4
+    },
+    "depositorName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "matched",
+        "approved",
+        "expired",
+        "rejected",
+        "manual_review"
+      ]
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "adminNote": {
+      "type": "string"
+    },
+    "ledgerEntryId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ledgerJournalId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "estimatedUsdt": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$",
+      "description": "Server-computed request-time estimate. Client must not recalculate. NULL/omitted before quote or when unavailable — never fake 0"
+    },
+    "quote": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["fxSnapshotId", "usdtKrw", "estimatedUsdt"],
+      "description": "Request-time estimate context. NOT a locked final rate",
+      "properties": {
+        "fxSnapshotId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "usdtKrw": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "KRW per 1 USDT at request time (fx_snapshots.usd_krw)"
+        },
+        "estimatedUsdt": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+)?$"
+        },
+        "formulaId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "capturedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "final": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["appliedFxSnapshotId", "appliedUsdtKrw", "creditedUsdt"],
+      "description": "Approval-time financial facts. null when pending/rejected/expired. creditedUsdt never fake 0",
+      "properties": {
+        "appliedFxSnapshotId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "appliedUsdtKrw": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "KRW per 1 USDT actually applied at approval"
+        },
+        "creditedUsdt": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+)?$"
+        },
+        "appliedFormulaId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "appliedFxCapturedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "decidedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ledgerJournalId": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "minLength": 8
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "decidedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "decidedByAdminId": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

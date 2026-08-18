@@ -1,0 +1,55 @@
+{
+  "id": "g_requeue_then_success",
+  "steps": [
+    {
+      "expect": "REQUEUE",
+      "context": {
+        "nowMs": 1000000,
+        "participateAcceptedAtMs": 1000000,
+        "circuitStatus": "closed",
+        "userStatus": "active",
+        "opportunityStatus": "available",
+        "compareReady": true,
+        "staleAtMs": 999000,
+        "expectedProfitUsdt": "10",
+        "tradePricingVersion": 1,
+        "opportunityPricingVersion": 1,
+        "simulationPayoutFeasible": true,
+        "listingLegsFresh": false,
+        "rematchCount": 0,
+        "policy": {
+          "minProfitUsdt": "5",
+          "staleAllowanceSec": 3,
+          "maxRematchCount": 2,
+          "retryWaitSec": 4
+        },
+        "presentationDurationSec": 12
+      }
+    },
+    {
+      "expect": "MATCH_SUCCESS",
+      "context": {
+        "nowMs": 1004000,
+        "participateAcceptedAtMs": 1000000,
+        "circuitStatus": "closed",
+        "userStatus": "active",
+        "opportunityStatus": "available",
+        "compareReady": true,
+        "staleAtMs": 1003000,
+        "expectedProfitUsdt": "10",
+        "tradePricingVersion": 1,
+        "opportunityPricingVersion": 1,
+        "simulationPayoutFeasible": true,
+        "listingLegsFresh": true,
+        "rematchCount": 1,
+        "policy": {
+          "minProfitUsdt": "5",
+          "staleAllowanceSec": 3,
+          "maxRematchCount": 2,
+          "retryWaitSec": 4
+        },
+        "presentationDurationSec": 12
+      }
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "schema": "governance.engine-acceptance.journeys.v1",
+  "version": "1.0.0",
+  "status": "qa6_active",
+  "notes": [
+    "케이스 개수는 KPI 아님. Dirty Path 비중 > Happy Path.",
+    "실행: UI 없이 Nest HTTP lifecycle 합성 시퀀스 (제품 mutation 0 · 로컬 tiny smoke).",
+    "QA-4: J-TIME-MULTIDAY-01 requires clock injection · absent → BLOCKED_NO_CLOCK_HOOK.",
+    "QA-5: J-FAULT-DEGRADE-01 / J-FAULT-RECOVERY-01 require fault injection · absent → BLOCKED_NO_FAULT_HOOK.",
+    "QA-6: J-PERF-MIX-01 = k6 tagged scenario mix · numeric SLO absent → UNSPECIFIED_PERF_BUDGET (CI heavy only)."
+  ],
+  "journeys": [
+    {
+      "id": "J-HAPPY-01",
+      "kind": "happy",
+      "steps": [
+        "signup",
+        "profile",
+        "feed",
+        "participate",
+        "execute-tick*",
+        "peotteok",
+        "save",
+        "reconnect",
+        "mutate",
+        "delete-account"
+      ]
+    },
+    {
+      "id": "J-DIRTY-RETRY-01",
+      "kind": "dirty",
+      "steps": ["participate", "timeout", "retry-same-idempotency-key"]
+    },
+    {
+      "id": "J-DIRTY-ISOLATION-01",
+      "kind": "dirty",
+      "steps": ["userA-action", "userB-interleave", "token-cross", "object-id-swap"],
+      "attack_faces": ["interleave", "token_cross", "object_id_swap"]
+    },
+    {
+      "id": "J-DIRTY-TOKEN-CROSS-01",
+      "kind": "dirty",
+      "steps": ["userA-auth", "userB-auth", "use-A-token-on-B-resource", "expect-deny"],
+      "attack_faces": ["token_cross"]
+    },
+    {
+      "id": "J-DIRTY-IDOR-01",
+      "kind": "dirty",
+      "steps": ["userA-object", "userB-swap-object-id", "expect-deny"],
+      "attack_faces": ["object_id_swap"]
+    },
+    {
+      "id": "J-DIRTY-ADMIN-BOUNDARY-01",
+      "kind": "dirty",
+      "steps": [
+        "anonymous-no-token",
+        "call-admin-controller-route",
+        "expect-deny-or-guard",
+        "supply-arbitrary-userId-param",
+        "expect-deny-cross-user-read"
+      ],
+      "attack_faces": ["admin_boundary"],
+      "asvs_ids": ["v5.0.0-8.2.1", "v5.0.0-8.4.2"]
+    },
+    {
+      "id": "J-DIRTY-CONFLICT-01",
+      "kind": "dirty",
+      "steps": ["same-key", "conflicting-payload", "expect-explicit-reject"]
+    },
+    {
+      "id": "J-TIME-MULTIDAY-01",
+      "kind": "dirty",
+      "steps": [
+        "signup",
+        "participate",
+        "clock-advance-kst-day-boundary",
+        "clock-advance-month-end",
+        "clock-advance-year-end",
+        "clock-advance-plus-30d",
+        "clock-advance-plus-365d",
+        "assert-state-truth",
+        "execute-tick*",
+        "settle-read"
+      ],
+      "requires_clock_hook": true,
+      "blocked_code_if_no_hook": "BLOCKED_NO_CLOCK_HOOK"
+    },
+    {
+      "id": "J-FAULT-DEGRADE-01",
+      "kind": "dirty",
+      "steps": [
+        "signup",
+        "feed",
+        "inject-fault-ai-429",
+        "assert-degradation-contract",
+        "assert-ledger-untouched",
+        "clear-fault"
+      ],
+      "axis": 1,
+      "requires_fault_hook": true,
+      "blocked_code_if_no_hook": "BLOCKED_NO_FAULT_HOOK"
+    },
+    {
+      "id": "J-FAULT-RECOVERY-01",
+      "kind": "dirty",
+      "steps": [
+        "signup",
+        "participate",
+        "inject-transient-fault",
+        "clear-fault",
+        "post-recovery-ledger-scan",
+        "post-recovery-idempotency-scan",
+        "post-recovery-user-state-scan"
+      ],
+      "axis": 2,
+      "requires_fault_hook": true,
+      "blocked_code_if_no_hook": "BLOCKED_NO_FAULT_HOOK"
+    },
+    {
+      "id": "J-PERF-MIX-01",
+      "kind": "dirty",
+      "steps": [
+        "k6-scenario-mix-feed_read",
+        "k6-scenario-mix-participate",
+        "k6-scenario-mix-wallet_read",
+        "k6-scenario-mix-auth_profile",
+        "apply-tag-thresholds-from-product-slo-only",
+        "record-UNSPECIFIED_PERF_BUDGET-if-no-slo"
+      ],
+      "requires_perf_oracle": true,
+      "ci_only_heavy": true,
+      "blocked_code_if_no_oracle": "BLOCKED_MISSING_ORACLE",
+      "budget_status_if_unspecified": "UNSPECIFIED_PERF_BUDGET"
+    }
+  ]
+}

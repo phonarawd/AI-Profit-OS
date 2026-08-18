@@ -1,0 +1,19 @@
+{
+  "description": "Admin Ops access — ops host · prod 전 IP/CIDR 교체 필수",
+  "decision": "allow",
+  "include": [
+    {
+      "ip": {
+        "ip": "203.0.113.0/24",
+        "comment": "REPLACE: owner office or VPN CIDR before prod launch"
+      }
+    }
+  ],
+  "exclude": [],
+  "require": [],
+  "notes": [
+    "Apply via Cloudflare Zero Trust → Access → Applications",
+    "Pair with WAF custom rule: ops host IP allowlist",
+    "Never mount /admin on apps/web — ops is isolated (§40)"
+  ]
+}

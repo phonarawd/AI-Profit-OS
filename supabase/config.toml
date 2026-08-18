@@ -1,0 +1,10 @@
+# Supabase CLI — project linked to 퍼뜩 / AI Profit OS (ADR-001 · Consumer=퍼뜩)
+# Auth SoT remains Nest (ADR-006). This folder = migrations + DB only.
+
+project_id = "mgsytcetsiecllmhcyox"
+
+[db]
+major_version = 17
+
+[api]
+enabled = true

@@ -1,0 +1,28 @@
+---
+description: §47 Personal AI — P/G/S 레인 · Fact-only · money mutate 0 · 퍼뜩
+globs: "services/**/ai/**,apps/web/**/peotteok/**,packages/ui/copy/**/coach/**,packages/ui/copy/**/peotteok/**"
+alwaysApply: false
+---
+
+# Engine Personal AI — 퍼뜩 (§47)
+
+## 이름 · 브랜드
+
+- Consumer AI = **퍼뜩** (앱명과 동일) · 타프로젝트 코치명 유저 surface **금지**
+
+## 레인 (P / G / S)
+
+| 레인 | 역할 | 금지 |
+|------|------|------|
+| **P** | 플랫폼 Fact · 등록 Fact/tool만 | 미등록 Fact로 잔액·상태·수익 **날조 0** |
+| **G** | 일상 LLM · `tools=[]` | wallet/ledger/participate/withdraw **호출 0** |
+| **S** | 실행 조언 surface | 출금·지급·participate **자율 mutate 0** |
+
+## LLM · degrade
+
+- Provider = Adapter only (§47.13) · 429/쿼터 → G=busy · P=Fact 유지 · **자동 failover 0**
+- Twin≠money Fact · Memory+pgvector · Answer Guard · stale Fact refresh
+
+## CI (done 전)
+
+`verify:ai-coach-fact-only` · `verify:ai-coach-no-autonomy` · `verify:ai-general-no-money-tools` · `verify:ai-lane-router` · `verify:llm-adapter-contract` · `verify:llm-quota-degrade` · `verify:fact-freshness` · `verify:answer-trace`

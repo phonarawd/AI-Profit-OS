@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/home-money-read.v1.json",
+  "title": "HomeMoneyReadV1",
+  "description": "Money v7.23 R1 · Home-owned Money Fact only. principalUsdt=WalletBuckets participate capital · settlementCompletedTodayCount=settlement.completed COUNT (Asia/Seoul). NEVER: availableUsdt · unitless todayPossible · todayPossibleProfitUsdt (Engine R1 Owns) · profit/locked sum into Home · USDT format on COUNT · mutation/DDL.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "principalUsdt",
+    "settlementCompletedTodayCount",
+    "asOf",
+    "source",
+    "state"
+  ],
+  "properties": {
+    "principalUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "WalletBuckets.principalUsdt only · never sum with profitUsdt/lockedUsdt · zero only when ledger projection is 0"
+    },
+    "settlementCompletedTodayCount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "COUNT of settlement.completed today (Asia/Seoul) · NEVER USDT amount · NEVER ledgerTotal currency render"
+    },
+    "asOf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["principalUsdt", "settlementCompletedTodayCount"],
+      "properties": {
+        "principalUsdt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp of ledger head / projection read"
+        },
+        "settlementCompletedTodayCount": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp of settlement projection (DayPulse.asOf)"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["principalUsdt", "settlementCompletedTodayCount"],
+      "properties": {
+        "principalUsdt": {
+          "type": "string",
+          "const": "ledger_projection"
+        },
+        "settlementCompletedTodayCount": {
+          "type": "string",
+          "const": "settlement_projection"
+        }
+      }
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "ready_empty",
+        "ready_data",
+        "stale",
+        "recoverable_error",
+        "blocked",
+        "unauthorized"
+      ],
+      "description": "Exclude loading (client-only). ready_empty=authenticated∧principal 집계0 · zero≠absent · unauthorized normally HTTP 401 via JwtAuthGuard"
+    },
+    "reasonCode": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z]+(\\.[a-z0-9_]+)+$",
+      "description": "domain.resource.reason · only when state needs explanation"
+    }
+  }
+}

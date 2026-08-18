@@ -1,0 +1,56 @@
+---
+description: Greenfield Consumer UI Boundary
+alwaysApply: true
+---
+
+# GREENFIELD UI BOUNDARY
+
+VISUAL_TRUTH = APPROVED_FIGMA_ONLY.
+
+BUSINESS_TRUTH = PRESERVED_DOMAIN_ENGINE.
+
+LEGACY_UI_REFERENCE = FORBIDDEN.
+
+LEGACY_UX_REFERENCE = FORBIDDEN.
+
+LEGACY_VISUAL_REFERENCE = FORBIDDEN.
+
+LEGACY_BRAND_REFERENCE = FORBIDDEN.
+
+LEGACY_ASSET_REFERENCE = FORBIDDEN.
+
+LEGACY_GIT_UI_REFERENCE = FORBIDDEN.
+
+Never recover or reuse pre-reset UI/UX from Git history.
+
+Never use old Home, CSS, layout, component, visual token,
+brand asset, screenshot, mockup, Figma export,
+Visual Contract, Visual Master, Canon or old design
+as implementation input.
+
+New UI may originate only from:
+
+1. Approved post-reset Figma
+2. Post-reset design system
+3. Preserved Business / Engine contracts
+
+UI must never reimplement:
+
+Money
+FX
+Wallet
+Matching
+Ledger
+Settlement
+Auth Truth
+
+If Figma and code differ on presentation:
+FIGMA WINS.
+
+If Figma and UI assumption differ from engine truth:
+ENGINE WINS FOR BUSINESS LOGIC.
+
+If no approved Figma exists:
+do not recover a legacy design.
+Use only minimal development placeholder.
+Do not invent Auth/Wallet forms or tab IA.

@@ -1,0 +1,15 @@
+---
+description: ADR-014/016 · §51.13 — Phase0~3. Day-1 NATS·Temporal·EKS 금지. Docker off 기본.
+alwaysApply: true
+---
+
+# Phase Activation
+
+| Phase | 버스 | 스택 |
+|-------|------|------|
+| **0** | in-process · NATS **0** | Nest + **원격 Supabase PG** + Redis(Upstash) + engine-rust · next@16 · **PG사 0** · Docker **기본 OFF** |
+| **1** | NATS | + adapters · realtime · chain-watchers |
+| **2** | + Temporal | shadow-replay · sweeper |
+| **3** | 동일 | EKS + OTel |
+
+`pnpm verify:stack-lock` PASS 전 앱 코드 착수 금지.

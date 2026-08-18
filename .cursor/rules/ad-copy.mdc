@@ -1,0 +1,28 @@
+---
+description: 광고용 copy 수정 시 기능 기반·수익 약속 금지·3층 compliance·Human Review
+globs: "packages/ui/copy/ko/landing.ts,packages/ui/copy/ko/onboarding.ts,packages/ui/copy/ko/auth.ts,packages/ui/canon/surfaces/landing-3s.wire.json"
+alwaysApply: false
+---
+
+# AD_COPY_RULE (v7.24.5)
+
+Cursor가 **광고/게스트 surface copy**를 수정할 때.
+
+1. 실제 product capability만 (시세·가격 비교). 없는 기능 발명 금지.
+2. financial-outcome promise 금지 (확정/보장/자동 수익, 시간+금액).
+3. time+money claim 금지.
+4. effortless-money claim 금지.
+5. guaranteed outcome 금지.
+6. ad/landing consistency — 광고 의미 = `/ads` `/l/*` 히어로/CTA/실기능.
+7. semantic compliance — 단어만 바꿔 같은 주장이면 FAIL.
+8. Human Review — Infra §31.2d. 자동 생성 후 즉시 송출 금지.
+
+## Lexicon
+
+Level 1 = `INTERNAL_HIGH_RISK_AD_COPY_LEXICON` (UI §6.4c.1 A + Infra §31.2d HARD).  
+**Meta/Google/TikTok 공식 금지어라고 부르지 않음.** 승인 보장 주장 금지.
+
+허용 축: `PRICE_COMPARISON` · `MARKET_DISCOVERY` · `TIME_SAVING`.  
+AI/알림은 공개 광고 플로우에 실UI가 있을 때만.
+
+legal/core copy를 이 규칙으로 삭제하지 않음. `product-drift-lock.mdc`와 병행.

@@ -1,0 +1,450 @@
+# Engine Acceptance — HEAVY canonical chain (separate file, ADDITIVE only)
+#
+# Why a separate file instead of editing engine-acceptance.yml:
+# .github/workflows/engine-acceptance.yml's QA0-QA6 job bodies are frozen
+# under POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 (acceptance_workflow_hash
+# pinned in baseline.v1.json; any body edit needs an explicit L7 amendment
+# with Human/PO ACK + exact-diff proof). This file is new, so it changes
+# nothing that hash covers.
+#
+# What this does that engine-acceptance.yml's additive jobs (qa5-fault,
+# qa6-measure, qa8-adversarial) do not: it runs the CI-heavy harness AND the
+# CANONICAL run-qa4/5/6/8.cjs in the SAME job, immediately after, so
+# checks/*.cjs's freshness-windowed harness-evidence probes
+# (lib/qa4-clock-evidence.cjs, lib/qa5-fault-evidence.cjs,
+# lib/qa6-threshold-evidence.cjs, lib/qa8-adversarial-evidence.cjs) find real
+# evidence and the canonical qa4/5/6/8-result.v1.json can legitimately record
+# PASS/FAIL instead of BLOCKED_ENV_CAPABILITY/not_wired. Jobs are chained via
+# needs: + artifact carry-forward (not parallel) because each canonical
+# run-qaN.cjs recomputes critical_invariant_cumulative from the PRIOR suite's
+# on-disk result — QA5 must see QA4's fresh output, QA6 must see QA5's, etc.
+#
+# Still true here, unchanged from the rest of this suite family:
+# - product mutation = 0 (only ephemeral synthetic rows in an isolated CI
+#   Postgres service container; kill-switch + assertDbTarget fail-closed).
+# - mock-PASS forbidden; absence of fresh evidence always falls back to the
+#   pre-existing BLOCKED/FAIL behaviour, never an invented PASS.
+# - this workflow does NOT commit anything — it only uploads evidence
+#   artifacts (>= 90 days retention) for a human/agent to download and
+#   commit deliberately.
+name: engine-acceptance-heavy
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_qa7:
+        description: "Also run QA7 AI eval (needs QA7_* secrets configured)"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "true"
+          - "false"
+
+concurrency:
+  group: engine-acceptance-heavy-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  AIPO_QA_TARGET_ENV: ci
+  AIPO_QA_HOSTNAME: localhost
+  AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+  TMPDIR: /tmp
+  PORT: 4000
+
+jobs:
+  qa4-heavy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: aipo_qa_synth
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d aipo_qa_synth"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      AIPO_QA_PGHOST: 127.0.0.1
+      AIPO_QA_PGUSER: postgres
+      AIPO_QA_PGPASSWORD: postgres
+      AIPO_QA_PGDATABASE: aipo_qa_synth
+      AIPO_QA_PGPORT: "5432"
+      AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa4-clock
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Kill-switch + isolated DB target
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+      - name: Build @aipo/api-nest
+        run: |
+          set -euo pipefail
+          pnpm --filter @aipo/api-nest build
+          test -f services/api-nest/dist/app.module.js
+      - name: Run QA4 real clock executor (in-process boot)
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/run-qa4-clock.cjs \
+            --target-env ci \
+            --hostname localhost \
+            --synthetic-ns qa-synth-ci
+      - name: Run canonical QA4 (consumes fresh harness evidence)
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/run-qa4.cjs --mode tiny --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+        # verify:engine-acceptance intentionally NOT run here — matches the
+        # existing qa-matrix job's own convention (only QA6/QA8 call it
+        # in-job; its ephemeral-rewrite tolerance is keyed to those two
+        # suites' exact report shape, not QA4's).
+      - name: Upload QA4 clock harness raw evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-acceptance-heavy-QA4-clock-harness
+          path: /tmp/aipo-harness/qa4-clock/
+          retention-days: 90
+          if-no-files-found: warn
+      - name: Upload cumulative governance evidence (after QA4)
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: heavy-evidence-after-qa4
+          path: governance/engine-acceptance/
+          retention-days: 90
+          if-no-files-found: error
+
+  qa5-heavy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [qa4-heavy]
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: aipo_qa_synth
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d aipo_qa_synth"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      AIPO_QA_PGHOST: 127.0.0.1
+      AIPO_QA_PGUSER: postgres
+      AIPO_QA_PGPASSWORD: postgres
+      AIPO_QA_PGDATABASE: aipo_qa_synth
+      AIPO_QA_PGPORT: "5432"
+      AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa5-fault
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Download QA4 cumulative evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: heavy-evidence-after-qa4
+          path: governance/engine-acceptance/
+      - name: Kill-switch + isolated DB target
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+      - name: Build @aipo/api-nest
+        run: |
+          set -euo pipefail
+          pnpm --filter @aipo/api-nest build
+          test -f services/api-nest/dist/main.js
+      - name: Run QA5 live fault orchestration
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/run-qa5-fault.cjs \
+            --target-env ci \
+            --hostname localhost \
+            --synthetic-ns qa-synth-ci
+      - name: Run canonical QA5 (consumes fresh harness evidence)
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/run-qa5.cjs --mode tiny --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+        # verify:engine-acceptance intentionally NOT run here — same reason as QA4 above.
+      - name: Upload QA5 fault harness raw evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-acceptance-heavy-QA5-fault-harness
+          path: /tmp/aipo-harness/qa5-fault/
+          retention-days: 90
+          if-no-files-found: warn
+      - name: Upload cumulative governance evidence (after QA5)
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: heavy-evidence-after-qa5
+          path: governance/engine-acceptance/
+          retention-days: 90
+          if-no-files-found: error
+
+  qa6-heavy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [qa5-heavy]
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: aipo_qa_synth
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d aipo_qa_synth"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      AIPO_QA_PGHOST: 127.0.0.1
+      AIPO_QA_PGUSER: postgres
+      AIPO_QA_PGPASSWORD: postgres
+      AIPO_QA_PGDATABASE: aipo_qa_synth
+      AIPO_QA_PGPORT: "5432"
+      AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa6-threshold
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Download QA5 cumulative evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: heavy-evidence-after-qa5
+          path: governance/engine-acceptance/
+      - name: Install k6
+        run: |
+          set -euo pipefail
+          curl -fsSL https://github.com/grafana/k6/releases/download/v0.54.0/k6-v0.54.0-linux-amd64.tar.gz | tar -xz
+          sudo mv k6-v0.54.0-linux-amd64/k6 /usr/local/bin/k6
+          k6 version
+      - name: Kill-switch + isolated DB target
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+      - name: Build @aipo/api-nest
+        run: |
+          set -euo pipefail
+          pnpm --filter @aipo/api-nest build
+          test -f services/api-nest/dist/main.js
+      - name: Run QA6 real k6 threshold execution
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/run-qa6-threshold.cjs \
+            --target-env ci \
+            --hostname localhost \
+            --synthetic-ns qa-synth-ci
+      - name: Run canonical QA6 (consumes fresh harness evidence, all 4 tags)
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/run-qa6.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          pnpm verify:engine-acceptance
+      - name: Upload QA6 threshold harness raw evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-acceptance-heavy-QA6-threshold-harness
+          path: /tmp/aipo-harness/qa6-threshold/
+          retention-days: 90
+          if-no-files-found: warn
+      - name: Upload cumulative governance evidence (after QA6)
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: heavy-evidence-after-qa6
+          path: governance/engine-acceptance/
+          retention-days: 90
+          if-no-files-found: error
+
+  qa7-heavy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [qa6-heavy]
+    if: ${{ inputs.run_qa7 == 'true' }}
+    env:
+      LLM_PROVIDER: gemini_free
+      DATABASE_URL: ${{ secrets.QA7_DATABASE_URL }}
+      JWT_USER_SECRET: ${{ secrets.QA7_JWT_USER_SECRET }}
+      GEMINI_API_KEY: ${{ secrets.QA7_GEMINI_API_KEY }}
+      QA7_LOCAL_HTTP: "1"
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Download QA6 cumulative evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: heavy-evidence-after-qa6
+          path: governance/engine-acceptance/
+      - name: Build @aipo/api-nest
+        run: |
+          set -euo pipefail
+          pnpm --filter @aipo/api-nest build
+          test -f services/api-nest/dist/main.js
+      - name: Start api-nest
+        run: |
+          set -euo pipefail
+          nohup node services/api-nest/dist/main.js > /tmp/aipo-qa7-api.log 2>&1 &
+          echo $! > /tmp/aipo-qa7-api.pid
+      - name: Wait for api-nest health
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:4000/api/v1/health >/dev/null; then
+              echo "api-nest ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "api-nest health timeout"
+          exit 1
+      - name: Run QA7 AI eval
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/run-qa7.cjs \
+            --mode full \
+            --target-env ci \
+            --hostname localhost \
+            --synthetic-ns qa-synth-ci
+      - name: Stop api-nest
+        if: ${{ always() }}
+        run: |
+          if [ -f /tmp/aipo-qa7-api.pid ]; then
+            pid="$(cat /tmp/aipo-qa7-api.pid)"
+            case "$pid" in
+              ''|*[!0-9]*) ;;
+              *) kill "$pid" || true ;;
+            esac
+          fi
+      - name: Upload cumulative governance evidence (after QA7)
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: heavy-evidence-after-qa7
+          path: governance/engine-acceptance/
+          retention-days: 90
+          if-no-files-found: error
+
+  qa8-heavy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [qa6-heavy, qa7-heavy]
+    if: ${{ always() && needs.qa6-heavy.result == 'success' && (needs.qa7-heavy.result == 'success' || needs.qa7-heavy.result == 'skipped') }}
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: aipo_qa_synth
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d aipo_qa_synth"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      AIPO_QA_PGHOST: 127.0.0.1
+      AIPO_QA_PGUSER: postgres
+      AIPO_QA_PGPASSWORD: postgres
+      AIPO_QA_PGDATABASE: aipo_qa_synth
+      AIPO_QA_PGPORT: "5432"
+      AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa8-adversarial
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Download prior cumulative evidence (QA7 if it ran, else QA6)
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.qa7-heavy.result == 'success' && 'heavy-evidence-after-qa7' || 'heavy-evidence-after-qa6' }}
+          path: governance/engine-acceptance/
+      - name: Kill-switch + isolated DB target
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+      - name: Build @aipo/api-nest
+        run: |
+          set -euo pipefail
+          pnpm --filter @aipo/api-nest build
+          test -f services/api-nest/dist/main.js
+      - name: Run QA8 booted-Nest adversarial HTTP (admin/operator/user-isolation/privacy-delete)
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/run-qa8-adversarial.cjs \
+            --target-env ci \
+            --hostname localhost \
+            --synthetic-ns qa-synth-ci
+      - name: Run canonical QA8 (consumes fresh harness evidence)
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/run-qa8.cjs --mode tiny --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          pnpm verify:engine-acceptance
+      - name: Upload QA8 adversarial harness raw evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-acceptance-heavy-QA8-adversarial-harness
+          path: /tmp/aipo-harness/qa8-adversarial/
+          retention-days: 90
+          if-no-files-found: warn
+      - name: Upload cumulative governance evidence (after QA8, FINAL)
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: heavy-evidence-final
+          path: governance/engine-acceptance/
+          retention-days: 90
+          if-no-files-found: error

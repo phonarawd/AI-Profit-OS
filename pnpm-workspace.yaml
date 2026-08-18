@@ -1,0 +1,7 @@
+# ADR-015 · monorepo SSOT (apps/services 구현은 monorepo-skeleton 단계에서 채움)
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "services/*"
+  - "workers/*"
+  - "tooling/*"

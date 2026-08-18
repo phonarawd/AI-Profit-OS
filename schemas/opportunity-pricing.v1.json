@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/opportunity-pricing.v1.json",
+  "title": "OpportunityPricingV1",
+  "description": "§36 Admin price SSOT · §0.0.4 compare. Day-1 enum ebay_*|admin only · amazon_*/yahoo_jp Phase1+ partner registry (§0.0.1c) · legacy duplicate price keys 0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "buyMarketId",
+    "buyMarketLabelKo",
+    "buyPriceUsdt",
+    "sellMarketId",
+    "sellMarketLabelKo",
+    "sellPriceUsdt",
+    "grossSpreadUsdt",
+    "costBufferUsdt",
+    "platformMarginUsdt",
+    "expectedProfitUsdt",
+    "compareReady",
+    "capitalBand",
+    "useAdminOverride",
+    "pricingSource"
+  ],
+  "properties": {
+    "buyMarketId": {
+      "type": "string",
+      "enum": [
+        "ebay_us",
+        "ebay_gb",
+        "ebay_de",
+        "ebay_au",
+        "admin"
+      ],
+      "description": "Day-1 pricing enum · yahoo_jp/amazon Phase1+ not yet"
+    },
+    "buyMarketLabelKo": {
+      "type": "string"
+    },
+    "buyPriceUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "sellMarketId": {
+      "type": "string",
+      "enum": [
+        "ebay_us",
+        "ebay_gb",
+        "ebay_de",
+        "ebay_au",
+        "admin"
+      ],
+      "description": "Day-1 pricing enum · yahoo_jp/amazon Phase1+ not yet"
+    },
+    "sellMarketLabelKo": {
+      "type": "string"
+    },
+    "sellPriceUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "grossSpreadUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "costBufferUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "platformMarginUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "expectedProfitUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "compareReady": {
+      "type": "boolean"
+    },
+    "gradeMismatch": {
+      "type": "boolean",
+      "description": "§51.12 trading_card · true ⇒ compareReady false · Admin badge"
+    },
+    "imageMissing": {
+      "type": "boolean",
+      "description": "§0.0.6 · true ⇒ compareReady false"
+    },
+    "capitalBand": {
+      "type": "string",
+      "enum": [
+        "micro",
+        "small",
+        "mid",
+        "high",
+        "whale"
+      ]
+    },
+    "adminBuyUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "adminSellUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "adminMarginPct": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal as string (no float money)"
+    },
+    "useAdminOverride": {
+      "type": "boolean"
+    },
+    "pricingSource": {
+      "type": "string",
+      "enum": [
+        "adapter",
+        "admin",
+        "blended"
+      ]
+    },
+    "lastAdapterSyncAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "lastAdminEditBy": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

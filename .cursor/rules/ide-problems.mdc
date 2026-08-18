@@ -1,0 +1,51 @@
+---
+description: IDE Problems 패널 노이즈 금지 — markdownlint/ESLint는 제품 코드만
+alwaysApply: true
+---
+
+# IDE Problems Hygiene (ADR-016)
+
+## 원인 (고정)
+
+Problems에 수백 개가 뜨는 주원인 = `davidanson.vscode-markdownlint`가
+`.cursor/plans/**` · 감사 MD · 긴 표/한국어 SSOT에 **스타일 규칙**(MD013 80자, MD060 표정렬 등)을 건 것.
+코드/타입 오류가 아니다. Worker `tsc`·`verify:gate`와 무관하다.
+
+## 잠금 설정 (이미 레포에 있음 · 되돌리지 말 것)
+
+| 파일 | 역할 |
+|------|------|
+| `.markdownlint.json` | 스타일 규칙 OFF (MD013/MD060 등) |
+| `.markdownlintignore` · `.markdownlint-cli2.jsonc` | plans/rules/감사/docs ignore |
+| `%USERPROFILE%\.cursor\plans\.markdownlint.json` | **전역 Cursor plan** ENOENT 방지 · `default:false` · `pnpm cursor:ensure-plans-markdownlint` |
+| `.vscode/settings.json` | markdownlint `appliesTo=workspaceFiles` + lintWorkspaceGlobs · `.markdownlintignore` · ESLint OFF · TS server 1GB cap · RA `initializeStopped` · MD formatOnSave OFF |
+| Cursor User `settings.json` | markdownlint `appliesTo=workspaceFiles` · lintWorkspaceGlobs (plans/CONSTITUTION 제외) |
+
+## 에이전트 금지
+
+- 플랜/감사/ADR/AGENTS/TOOLCHAIN의 markdownlint “고치기” 대량 편집 **금지**
+- Problems 숫자를 내리려고 SSOT 표·절을 Prettier/줄바꿈으로 재포맷 **금지**
+- `eslint.enable`을 config 없이 true로 켜기 **금지** (ESLint 9는 `eslint.config.*` 필수)
+- `**/node_modules/**` 를 Problems 대상으로 다시 열기 **금지**
+
+## 허용 Problems (진짜 부채)
+
+- `workers/**` · 향후 `apps/**` · `packages/**` 의 **TypeScript/ESLint(설정 후)** 진단
+- `pnpm verify:*` FAIL
+
+## 새 MD를 쓸 때
+
+- 제품 카피(`packages/ui/copy/**`)만 markdownlint 대상 후보
+- 플랜·규칙·감사는 ignore 목록에 두고, 스타일 빚으로 취급하지 않음
+
+## Plan 이중본 (todo 미완료 UI 버그 방지)
+
+| 위치 | 역할 |
+|---|---|
+| 워크스페이스 `.cursor/plans/ai_profit_os_*.plan.md` | **편집 SSOT** · todo `status` 여기만 |
+| `%USERPROFILE%\.cursor\plans\` | Cursor UI 경로 · **hardlink(동일 inode)** 또는 동등 바이트 미러 |
+| `*_ssot` · 구번호 논리명 | **STALE** · `_archive/ai_profit_os_stale/` |
+
+- sync: `pnpm cursor:sync-plans` (prepare · 명시 실행) — copy가 아니라 **hardlink 우선** (UI 완료 체크가 sync에 의해 pending으로 되돌아가는 것 방지)
+- verify: `pnpm verify:plans-ssot` (`verify:gate` 포함)
+- 에이전트: 워크스페이스 YAML `status: completed`만 편집 · TodoWrite만으로 Plan UI 체크를 대체하지 말 것

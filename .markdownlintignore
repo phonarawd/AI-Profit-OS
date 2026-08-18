@@ -1,0 +1,27 @@
+# Agent/commit scratch copies (not SSOT — delete via cleanup:lowspec)
+_tmp*.md
+**/_tmp*.md
+
+# Dependencies / VCS
+node_modules
+**/node_modules/**
+.git
+**/.git/**
+
+# Cursor SSOT — plans & agent rules are not product prose (ADR-016)
+.cursor/plans/**
+.cursor/rules/**
+**/*.plan.md
+**/*.mdc
+
+# Repo governance / audit docs (long tables · Korean SSOT)
+docs/**
+CONSTITUTION/**
+PRE_IMPLEMENTATION_MASTER_AUDIT.md
+COMPANY_REGISTRATION_SUMMARY.md
+FOOTER_LICENSE_COPY.md
+AGENTS.md
+TOOLCHAIN.md
+**/CATALOG.md
+**/CONSTITUTION_BOOTSTRAP.md
+**/ADR-*.md

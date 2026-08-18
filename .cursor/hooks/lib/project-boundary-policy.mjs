@@ -1,0 +1,974 @@
+/**
+ * AI_PROFIT_OS project isolation — pure policy (no I/O).
+ * Wave: PROJECT_ISOLATION_MIRROR
+ *
+ * DENY codes: FOREIGN_FS | FOREIGN_GITHUB | FOREIGN_SUPABASE | GLOBAL_CURSOR_PLANS
+ * Fixture/path-string only — never open foreign project contents.
+ */
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const DEFAULT_WORKSPACE_ROOT = path.resolve(HERE, "..", "..", "..");
+
+export const ALLOWED_GITHUB = "phonarawd/ai-profit-os";
+export const ALLOWED_SUPABASE_REF = "mgsytcetsiecllmhcyox";
+export const FOREIGN_GITHUB = "phonarawd/clime-gb";
+export const FOREIGN_SUPABASE_REF = "qrvanbyjgflaugdaslqh";
+
+const FOREIGN_FS_MARKERS = [
+  /clime-gb/i,
+  /(^|[/\\])clime_/i,
+  /[/\\]clime[/\\]/i,
+];
+
+export function deny(code, userMessage, agentMessage) {
+  const msg = userMessage || code;
+  return {
+    continue: true,
+    permission: "deny",
+    code,
+    user_message: msg,
+    userMessage: msg,
+    agent_message: agentMessage || msg,
+    agentMessage: agentMessage || msg,
+  };
+}
+
+export function allow() {
+  return { continue: true, permission: "allow" };
+}
+
+function homeDir(opts) {
+  return (
+    (opts && opts.homeDir) ||
+    process.env.USERPROFILE ||
+    process.env.HOME ||
+    ""
+  );
+}
+
+/**
+ * Cursor project cache slug for this workspace.
+ * Cursor stores caches as ~/.cursor/projects/<slug>/ where the absolute
+ * path is slugified: drive colon + separators + underscores become '-'.
+ * Example: C:\Users\PC\Desktop\AI_PROFIT_OS → c-Users-PC-Desktop-AI-PROFIT-OS
+ */
+export function cursorProjectSlug(workspaceRoot) {
+  const abs = path.resolve(String(workspaceRoot || ""));
+  return String(abs)
+    .replace(/^([A-Za-z]):/, (_, d) => d.toLowerCase())
+    .replace(/[^A-Za-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** Full-path slug plus basename slug (AI_PROFIT_OS → AI-PROFIT-OS). */
+export function cursorProjectSlugs(workspaceRoot) {
+  const abs = path.resolve(String(workspaceRoot || ""));
+  const slugs = new Set();
+  const full = cursorProjectSlug(abs);
+  if (full) slugs.add(full);
+  const base = path.basename(abs);
+  if (base) {
+    const baseSlug = String(base)
+      .replace(/[^A-Za-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    if (baseSlug) slugs.add(baseSlug);
+  }
+  return [...slugs];
+}
+
+/** Strip quoted segments so commit messages cannot trip git flag checks. */
+function stripQuoted(s) {
+  return String(s || "")
+    .replace(/"[^"]*"/g, '""')
+    .replace(/'[^']*'/g, "''");
+}
+
+function hasNoVerify(cmd) {
+  const stripped = stripQuoted(cmd);
+  return /\s--no-verify\b|\s--no-gpg-sign\b/.test(" " + stripped);
+}
+
+function touchesEnv(cmd) {
+  if (!/\bgit\s+(add|commit|rm|update-index)\b/.test(cmd)) return false;
+  const stripped = stripQuoted(cmd);
+  if (/\.env\.example\b/.test(stripped) && !/\.env(?!\.example)\b/.test(stripped)) {
+    return false;
+  }
+  return (
+    /(^|[\s"'])\.env\b/.test(stripped) ||
+    /\.env\.(local|production|development|test|rc)\b/.test(stripped)
+  );
+}
+
+function forceAddSecrets(cmd) {
+  const stripped = stripQuoted(cmd);
+  return (
+    /\bgit\s+add\b/.test(cmd) &&
+    /(-[A-Za-z]*f[A-Za-z]*|--force)/.test(stripped) &&
+    /(\.env\b|\.pem\b|\.key\b|credentials\.json|service_account\.json)/.test(
+      stripped
+    ) &&
+    !/\.env\.example\b/.test(stripped)
+  );
+}
+
+function normPath(p) {
+  if (!p) return "";
+  try {
+    return path.resolve(String(p));
+  } catch {
+    return String(p);
+  }
+}
+
+function lower(p) {
+  return String(p || "").toLowerCase();
+}
+
+function isUnder(absPath, root) {
+  const a = lower(normPath(absPath));
+  const r = lower(normPath(root));
+  if (!a || !r) return false;
+  return (
+    a === r ||
+    a.startsWith(r + path.sep.toLowerCase()) ||
+    a.startsWith(r + "\\") ||
+    a.startsWith(r + "/")
+  );
+}
+
+function looksLikeGlobalPlansString(blob) {
+  const s = String(blob || "");
+  if (!s) return false;
+  if (/\$env:USERPROFILE\s*[\\/]?\.cursor[\\/]plans/i.test(s)) return true;
+  if (/%USERPROFILE%[/\\]\.cursor[/\\]plans/i.test(s)) return true;
+  if (/[~][/\\]\.cursor[/\\]plans/i.test(s)) return true;
+  if (/[/\\]\.cursor[/\\]plans\b/i.test(s)) return true;
+  return false;
+}
+
+function hasForeignFsMarker(blob) {
+  const s = String(blob || "");
+  if (!s) return false;
+  if (s.toLowerCase().includes(FOREIGN_SUPABASE_REF)) return true;
+  for (const re of FOREIGN_FS_MARKERS) {
+    if (re.test(s)) return true;
+  }
+  if (/phonarawd\/clime-gb/i.test(s)) return true;
+  return false;
+}
+
+/** Shell: deny path/access to foreign FS — not mere mention in heredoc/docs. */
+function shellTargetsForeignFs(cmd, cwd) {
+  const s = String(cmd || "");
+  const c = String(cwd || "");
+  if (hasForeignFsMarker(c)) return true;
+  // Absolute / Desktop path to clime-gb
+  if (/[A-Za-z]:\\(?:Users\\[^\\]+\\)?Desktop\\clime-gb\b/i.test(s)) return true;
+  if (/[/\\]clime-gb(?:[/\\]|$)/i.test(s) &&
+      /\b(cd|Set-Location|Push-Location|Get-ChildItem|Get-Content|Get-Item|dir|ls|cat|type|gc|git\s+-C|Remove-Item|ri|rm|del|code|cursor)\b/i.test(s)) {
+    return true;
+  }
+  if (/\bgit\s+-C\s+["']?[^"'\n]*clime-gb/i.test(s)) return true;
+  return false;
+}
+
+function isDeniedPlanInRepo(filePath) {
+  const full = String(filePath || "").replace(/\\/g, "/");
+  const base = path.basename(full);
+  const baseL = base.toLowerCase();
+  const fullL = full.toLowerCase();
+  if (/^clime_.*\.plan\.md$/i.test(base)) return true;
+  if (baseL.includes("clime-gb") && /\.plan\.md$/i.test(baseL)) return true;
+  if (fullL.includes("clime-gb") && /\.plan\.md$/i.test(fullL)) return true;
+  if (fullL.includes("/.cursor/plans/") && /clime[_-]/i.test(baseL)) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * @param {{ workspaceRoot?: string, homeDir?: string }} [opts]
+ */
+export function createPolicy(opts = {}) {
+  const workspaceRoot = path.resolve(
+    opts.workspaceRoot || DEFAULT_WORKSPACE_ROOT
+  );
+  const home = homeDir(opts);
+  const globalPlansRoot = home
+    ? path.resolve(home, ".cursor", "plans")
+    : "";
+  const projectSlugs = cursorProjectSlugs(workspaceRoot);
+  const allowedProjectCaches = home
+    ? projectSlugs.map((slug) =>
+        path.resolve(home, ".cursor", "projects", slug)
+      )
+    : [];
+  const allowedProjectCache = allowedProjectCaches[0] || "";
+  const repoPlansRoot = path.resolve(workspaceRoot, ".cursor", "plans");
+
+  function isGlobalCursorPlans(filePath) {
+    if (!filePath) return false;
+    const raw = String(filePath);
+    // Env / home-qualified forms → always global
+    if (/\$env:USERPROFILE/i.test(raw) && /\.cursor[/\\]plans/i.test(raw)) {
+      return true;
+    }
+    if (/%USERPROFILE%/i.test(raw) && /\.cursor[/\\]plans/i.test(raw)) {
+      return true;
+    }
+    if (/[~][/\\]\.cursor[/\\]plans/i.test(raw)) return true;
+    // Absolute under %USERPROFILE%\.cursor\plans
+    if (globalPlansRoot && isUnder(raw, globalPlansRoot)) return true;
+    // Any .cursor/plans path: deny only if outside this workspace
+    if (/[/\\]\.cursor[/\\]plans\b/i.test(raw) || /^\.cursor[/\\]plans\b/i.test(raw)) {
+      try {
+        const abs =
+          path.isAbsolute(raw) || /^[A-Za-z]:[\\/]/.test(raw)
+            ? normPath(raw)
+            : normPath(path.resolve(workspaceRoot, raw));
+        if (isUnder(abs, workspaceRoot)) return false;
+        return true;
+      } catch {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function isAllowedFs(filePath) {
+    if (!filePath) return false;
+    if (isUnder(filePath, workspaceRoot)) return true;
+    for (let i = 0; i < allowedProjectCaches.length; i++) {
+      if (isUnder(filePath, allowedProjectCaches[i])) return true;
+    }
+    return false;
+  }
+
+  function classifyPath(filePath, { requirePath = false } = {}) {
+    if (!filePath) {
+      if (requirePath) {
+        return deny(
+          "FOREIGN_FS",
+          "Blocked: path missing from hook payload.",
+          "Isolation requires a path to evaluate."
+        );
+      }
+      return allow();
+    }
+
+    const raw = String(filePath);
+
+    if (isGlobalCursorPlans(raw)) {
+      return deny(
+        "GLOBAL_CURSOR_PLANS",
+        "Blocked: global Cursor plans (~/.cursor/plans).",
+        "Plan SSOT is repo .cursor/plans only."
+      );
+    }
+
+    if (hasForeignFsMarker(raw) || isDeniedPlanInRepo(raw)) {
+      return deny(
+        "FOREIGN_FS",
+        "Blocked: foreign project path (clime-gb / clime plan marker).",
+        "Stay inside AI_PROFIT_OS only. Do not open clime paths."
+      );
+    }
+
+    if (
+      path.isAbsolute(raw) ||
+      /^[A-Za-z]:[\\/]/.test(raw) ||
+      raw.startsWith("\\\\")
+    ) {
+      if (!isAllowedFs(raw)) {
+        return deny(
+          "FOREIGN_FS",
+          "Blocked: path outside AI_PROFIT_OS allowlist.",
+          "Allowed: workspace root, this project ~/.cursor/projects/<normalized-slug>, repo .cursor/plans."
+        );
+      }
+      if (isDeniedPlanInRepo(raw)) {
+        return deny(
+          "FOREIGN_FS",
+          "Blocked: clime plan marker inside workspace.",
+          "clime_*.plan.md / *clime-gb* plans are forbidden."
+        );
+      }
+      return allow();
+    }
+
+    if (hasForeignFsMarker(raw) || isDeniedPlanInRepo(raw)) {
+      return deny(
+        "FOREIGN_FS",
+        "Blocked: relative path targets foreign project.",
+        "Stay inside AI_PROFIT_OS only."
+      );
+    }
+    if (looksLikeGlobalPlansString(raw)) {
+      return deny(
+        "GLOBAL_CURSOR_PLANS",
+        "Blocked: global Cursor plans reference.",
+        "Plan SSOT is repo .cursor/plans only."
+      );
+    }
+    return allow();
+  }
+
+  function extractShellCommand(payload) {
+    if (!payload || typeof payload !== "object") return "";
+    if (payload.command) return String(payload.command);
+    if (payload.cmd) return String(payload.cmd);
+    const ti =
+      payload.tool_input ||
+      payload.toolInput ||
+      payload.arguments ||
+      payload.input;
+    if (typeof ti === "string") {
+      try {
+        const parsed = JSON.parse(ti);
+        if (parsed && parsed.command) return String(parsed.command);
+      } catch {
+        return ti;
+      }
+    }
+    if (ti && typeof ti === "object") {
+      if (ti.command) return String(ti.command);
+      if (ti.cmd) return String(ti.cmd);
+    }
+    return "";
+  }
+
+  function extractReadPath(payload) {
+    if (!payload || typeof payload !== "object") return "";
+    if (payload.file_path) return String(payload.file_path);
+    if (payload.path) return String(payload.path);
+    if (payload.filePath) return String(payload.filePath);
+    const ti =
+      payload.tool_input ||
+      payload.toolInput ||
+      payload.arguments ||
+      payload.input;
+    if (ti && typeof ti === "object") {
+      if (ti.path) return String(ti.path);
+      if (ti.file_path) return String(ti.file_path);
+      if (ti.target_directory) return String(ti.target_directory);
+      if (ti.target_notebook) return String(ti.target_notebook);
+    }
+    if (Array.isArray(payload.attachments) && payload.attachments[0]) {
+      const a = payload.attachments[0];
+      if (a && a.file_path) return String(a.file_path);
+    }
+    return "";
+  }
+
+  function decideRead(payload) {
+    if (Array.isArray(payload && payload.attachments)) {
+      for (const a of payload.attachments) {
+        if (a && a.file_path) {
+          const r = classifyPath(a.file_path, { requirePath: true });
+          if (r.permission === "deny") return r;
+        }
+      }
+    }
+    const filePath = extractReadPath(payload);
+    return classifyPath(filePath, { requirePath: Boolean(filePath) });
+  }
+
+  function decideEdit(payload) {
+    const ti =
+      (payload &&
+        (payload.tool_input ||
+          payload.toolInput ||
+          payload.arguments ||
+          payload.input)) ||
+      {};
+    const input =
+      typeof ti === "string"
+        ? (() => {
+            try {
+              return JSON.parse(ti);
+            } catch {
+              return {};
+            }
+          })()
+        : ti;
+    const keys = [
+      "path",
+      "file_path",
+      "target_directory",
+      "target_notebook",
+      "working_directory",
+    ];
+    if (input && typeof input === "object") {
+      for (const k of keys) {
+        if (!input[k]) continue;
+        const r = classifyPath(String(input[k]));
+        if (r.permission === "deny") return r;
+      }
+    }
+    const top = extractReadPath(payload);
+    if (top) return classifyPath(top);
+    return allow();
+  }
+
+  function decideShell(payload) {
+    const cmd = extractShellCommand(payload);
+    const cwd =
+      (payload && payload.cwd) ||
+      (payload &&
+        payload.tool_input &&
+        (payload.tool_input.working_directory || payload.tool_input.cwd)) ||
+      "";
+    const blob = [cmd, cwd].join("\n");
+
+    // Global plans: deny FS access commands only (not heredoc/docs that mention the path).
+    if (isGlobalCursorPlans(cwd)) {
+      return deny(
+        "GLOBAL_CURSOR_PLANS",
+        "Blocked: shell cwd is global ~/.cursor/plans.",
+        "Plan SSOT is repo .cursor/plans only."
+      );
+    }
+    if (
+      /\b(Get-ChildItem|Get-Content|Get-Item|gc|dir|ls|type|cat|cd|Set-Location|Push-Location|Remove-Item|ri|rm|del)\b/i.test(
+        cmd
+      ) &&
+      looksLikeGlobalPlansString(cmd)
+    ) {
+      return deny(
+        "GLOBAL_CURSOR_PLANS",
+        "Blocked: listing/reading/cd into global Cursor plans via shell.",
+        "Do not access %USERPROFILE%\\.cursor\\plans."
+      );
+    }
+    // Bare path argument to common readers (no verb) still DENY.
+    if (
+      /^\s*(?:["']).*[/\\]\.cursor[/\\]plans(?:[/\\][^"']*)?["']\s*$/i.test(
+        cmd.trim()
+      ) ||
+      /^\s*[A-Za-z]:\\Users\\[^\\]+\\\.cursor\\plans(?:\\[^\s]+)?\s*$/i.test(
+        cmd.trim()
+      )
+    ) {
+      return deny(
+        "GLOBAL_CURSOR_PLANS",
+        "Blocked: shell targets global Cursor plans path.",
+        "Plan SSOT is repo .cursor/plans only."
+      );
+    }
+
+    // Foreign FS: path-shaped / access-shaped only (docs mentioning markers OK).
+    if (shellTargetsForeignFs(cmd, cwd)) {
+      return deny(
+        "FOREIGN_FS",
+        "Blocked: shell targets clime-gb / foreign FS path.",
+        "AI_PROFIT_OS isolation — fixture strings only for DENY checks."
+      );
+    }
+
+    if (!cmd.trim()) {
+      return allow();
+    }
+
+    // Unique Cursor pre-exec (Husky never sees --no-verify).
+    if (hasNoVerify(cmd)) {
+      return deny(
+        "GIT_NO_VERIFY",
+        "Blocked: --no-verify / --no-gpg-sign forbidden (ADR-016).",
+        "Remove --no-verify. commit=T0 via Husky pre-commit · push=T1 via Husky pre-push."
+      );
+    }
+    if (touchesEnv(cmd) || forceAddSecrets(cmd)) {
+      return deny(
+        "GIT_SECRETS",
+        "Blocked: .env / secret files must not be staged/committed.",
+        "Unstage secrets. .env stays local only (ADR-016)."
+      );
+    }
+
+    if (cwd && !isAllowedFs(cwd) && !isUnder(cwd, workspaceRoot)) {
+      if (isGlobalCursorPlans(cwd)) {
+        return deny(
+          "GLOBAL_CURSOR_PLANS",
+          "Blocked: shell cwd is global plans.",
+          "cwd must stay under AI_PROFIT_OS."
+        );
+      }
+      return deny(
+        "FOREIGN_FS",
+        "Blocked: shell cwd outside AI_PROFIT_OS allowlist.",
+        "cwd must stay under " + workspaceRoot
+      );
+    }
+
+    const cdMatch = cmd.match(/(?:^|[;&|\n])\s*cd\s+([^\n;&|]+)/i);
+    if (cdMatch) {
+      const raw = cdMatch[1].trim().replace(/^['"]|['"]$/g, "");
+      let target;
+      try {
+        target = path.isAbsolute(raw)
+          ? path.resolve(raw)
+          : path.resolve(cwd || workspaceRoot, raw);
+      } catch {
+        target = raw;
+      }
+      const r = classifyPath(target);
+      if (r.permission === "deny") {
+        return deny(
+          r.code || "FOREIGN_FS",
+          "Blocked: cd outside AI_PROFIT_OS / into denied path.",
+          "Keep shell inside AI_PROFIT_OS."
+        );
+      }
+    }
+
+    const gitC = cmd.match(/\bgit\s+-C\s+("[^"]+"|'[^']+'|\S+)/i);
+    if (gitC) {
+      const p = gitC[1].replace(/^['"]|['"]$/g, "");
+      const abs = path.isAbsolute(p)
+        ? p
+        : path.resolve(cwd || workspaceRoot, p);
+      const r = classifyPath(abs);
+      if (r.permission === "deny") {
+        return deny(
+          r.code || "FOREIGN_FS",
+          "Blocked: git -C outside AI_PROFIT_OS.",
+          "git -C must target AI_PROFIT_OS only."
+        );
+      }
+    }
+
+    if (/\bgh\s+/i.test(cmd)) {
+      if (/clime-gb/i.test(cmd) || /phonarawd\/clime-gb/i.test(cmd)) {
+        return deny(
+          "FOREIGN_GITHUB",
+          "Blocked: gh access to phonarawd/clime-gb.",
+          "Allowed GitHub: phonarawd/AI-Profit-OS only."
+        );
+      }
+      const repoFlag = cmd.match(/-R\s+([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+)/);
+      const repoPos = cmd.match(
+        /\bgh\s+repo\s+(?:view|clone|sync|fork)\s+([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+)/i
+      );
+      const slug = (repoFlag && repoFlag[1]) || (repoPos && repoPos[1]);
+      if (slug && slug.toLowerCase() !== ALLOWED_GITHUB) {
+        return deny(
+          "FOREIGN_GITHUB",
+          "Blocked: gh target " + slug + " is not AI-Profit-OS.",
+          "Allowed GitHub repository: phonarawd/AI-Profit-OS only."
+        );
+      }
+    }
+
+    if (/\bsupabase\b/i.test(cmd)) {
+      // CLI shape only: `supabase projects list` / `supabase orgs list`
+      if (
+        /\bsupabase\b(?:\s+\S+)*\s+projects\s+list\b/i.test(cmd) ||
+        /\bsupabase\b(?:\s+\S+)*\s+orgs\s+list\b/i.test(cmd)
+      ) {
+        return deny(
+          "FOREIGN_SUPABASE",
+          "Blocked: supabase account-wide projects/orgs list.",
+          "Use linked project " + ALLOWED_SUPABASE_REF + " only."
+        );
+      }
+      const refM = cmd.match(/--project-ref\s+(\S+)/i);
+      if (refM) {
+        const ref = refM[1].toLowerCase();
+        if (ref === FOREIGN_SUPABASE_REF) {
+          return deny(
+            "FOREIGN_SUPABASE",
+            "Blocked: supabase --project-ref foreign (clime).",
+            "Allowed project_ref: " + ALLOWED_SUPABASE_REF
+          );
+        }
+        if (ref !== ALLOWED_SUPABASE_REF) {
+          return deny(
+            "FOREIGN_SUPABASE",
+            "Blocked: supabase --project-ref not AI_PROFIT_OS.",
+            "Allowed project_ref: " + ALLOWED_SUPABASE_REF
+          );
+        }
+      }
+      if (cmd.toLowerCase().includes(FOREIGN_SUPABASE_REF)) {
+        return deny(
+          "FOREIGN_SUPABASE",
+          "Blocked: foreign Supabase project_ref in shell.",
+          "Allowed: " + ALLOWED_SUPABASE_REF
+        );
+      }
+    }
+
+    return allow();
+  }
+
+  function mcpTargetFields(input) {
+    /** Path / ref / repo targets only — not query body / SQL / full args dump. */
+    const out = [];
+    if (!input || typeof input !== "object") {
+      if (typeof input === "string") return [input];
+      return out;
+    }
+    const keys = [
+      "path",
+      "file_path",
+      "uri",
+      "cwd",
+      "working_directory",
+      "target_directory",
+      "project_id",
+      "project_ref",
+      "owner",
+      "repo",
+      "repository",
+      "full_name",
+    ];
+    for (const k of keys) {
+      if (input[k] != null && input[k] !== "") out.push(String(input[k]));
+    }
+    if (input.owner && input.repo) {
+      out.push(String(input.owner) + "/" + String(input.repo));
+    }
+    return out;
+  }
+
+  function decideMcp(payload) {
+    const server = String(
+      (payload && (payload.server || payload.url || payload.command)) || ""
+    );
+    const tool = String(
+      (payload && (payload.tool_name || payload.toolName || payload.tool)) ||
+        ""
+    );
+    const input =
+      (payload &&
+        (payload.tool_input || payload.arguments || payload.toolInput)) ||
+      {};
+
+    if (
+      /plugin-supabase/i.test(server) ||
+      /plugin-supabase-supabase/i.test(server)
+    ) {
+      return deny(
+        "FOREIGN_SUPABASE",
+        "Blocked: account-wide Supabase Plugin MCP.",
+        "Use project-scoped MCP supabase (" + ALLOWED_SUPABASE_REF + ")."
+      );
+    }
+
+    const toolBare = String(tool).replace(/^MCP:/i, "");
+    if (
+      /^(list_projects|list_organizations|create_project|pause_project|restore_project|get_cost|confirm_cost)$/i.test(
+        toolBare
+      )
+    ) {
+      return deny(
+        "FOREIGN_SUPABASE",
+        "Blocked: account-wide Supabase MCP tool.",
+        "Project-scoped mode only (" + ALLOWED_SUPABASE_REF + ")."
+      );
+    }
+
+    const targets = mcpTargetFields(input);
+    for (const t of targets) {
+      if (looksLikeGlobalPlansString(t)) {
+        return deny(
+          "GLOBAL_CURSOR_PLANS",
+          "Blocked: MCP references global Cursor plans.",
+          "Plan SSOT is repo .cursor/plans only."
+        );
+      }
+      const tl = t.toLowerCase();
+      if (tl.includes(FOREIGN_SUPABASE_REF)) {
+        return deny(
+          "FOREIGN_SUPABASE",
+          "Blocked: MCP references foreign Supabase project.",
+          "Allowed: " + ALLOWED_SUPABASE_REF
+        );
+      }
+      if (tl.includes(FOREIGN_GITHUB) || /clime-gb/i.test(t)) {
+        if (/github|repo|owner|full_name|repository/i.test(server + tool + t)) {
+          return deny(
+            "FOREIGN_GITHUB",
+            "Blocked: MCP references phonarawd/clime-gb.",
+            "Allowed: phonarawd/AI-Profit-OS only."
+          );
+        }
+        const pathHit = classifyPath(t);
+        if (pathHit.permission === "deny") return pathHit;
+      }
+      if (
+        path.isAbsolute(t) ||
+        /^[A-Za-z]:[\\/]/.test(t) ||
+        t.startsWith("\\\\")
+      ) {
+        const pathHit = classifyPath(t);
+        if (pathHit.permission === "deny") return pathHit;
+      }
+    }
+
+    let projectRef = "";
+    if (input && typeof input === "object") {
+      projectRef = String(input.project_id || input.project_ref || "");
+    } else if (typeof input === "string") {
+      const m =
+        input.match(/"(?:project_id|project_ref)"\s*:\s*"([^"]+)"/i) ||
+        input.match(/project[_-]?(?:id|ref)["'\s:=]+([a-z0-9]{20})/i);
+      if (m) projectRef = m[1];
+    }
+    if (projectRef) {
+      const ref = projectRef.toLowerCase();
+      if (ref !== ALLOWED_SUPABASE_REF) {
+        return deny(
+          "FOREIGN_SUPABASE",
+          "Blocked: Supabase project not in allowlist.",
+          "Allowed project_ref: " + ALLOWED_SUPABASE_REF
+        );
+      }
+    }
+
+    if (/plugin-github|github/i.test(server) && input && typeof input === "object") {
+      const owner = input.owner != null ? String(input.owner) : "";
+      const repo = input.repo != null ? String(input.repo) : "";
+      if (owner && repo) {
+        const slug = (owner + "/" + repo).toLowerCase();
+        if (slug !== ALLOWED_GITHUB) {
+          return deny(
+            "FOREIGN_GITHUB",
+            "Blocked: GitHub MCP repo " + owner + "/" + repo + ".",
+            "Allowed repository: phonarawd/AI-Profit-OS only."
+          );
+        }
+      }
+      const full = String(input.full_name || input.repository || "");
+      if (full && full.toLowerCase() !== ALLOWED_GITHUB) {
+        if (/clime-gb/i.test(full) || full.includes("/")) {
+          return deny(
+            "FOREIGN_GITHUB",
+            "Blocked: GitHub MCP targeting " + full + ".",
+            "Allowed: phonarawd/AI-Profit-OS only."
+          );
+        }
+      }
+    }
+
+    return allow();
+  }
+
+  function isMcpLike(tool, payload, input) {
+    if (/^MCP:/i.test(tool)) return true;
+    if (/^(CallMcpTool|FetchMcpResource)$/i.test(tool)) return true;
+    if (payload && (payload.server || payload.url)) return true;
+    if (input && typeof input === "object" && (input.server || input.toolName)) {
+      return true;
+    }
+    return false;
+  }
+
+  function normalizeMcpFromPreTool(payload, tool, input) {
+    const obj = input && typeof input === "object" ? input : {};
+    const mcpTool = /^MCP:/i.test(tool)
+      ? tool.replace(/^MCP:/i, "")
+      : String(obj.toolName || obj.tool_name || tool || "");
+    const server = String(
+      (payload && (payload.server || payload.url)) || obj.server || ""
+    );
+    const args =
+      obj.arguments && typeof obj.arguments === "object" ? obj.arguments : obj;
+    return {
+      ...payload,
+      server,
+      tool_name: mcpTool,
+      tool_input: args,
+      arguments: args,
+    };
+  }
+
+  function decideWebFetch(input) {
+    const url = String((input && (input.url || input.uri)) || "");
+    if (!url) return allow();
+    if (/^https?:\/\//i.test(url)) return allow();
+    let target = url;
+    if (/^file:/i.test(url)) {
+      try {
+        target = decodeURIComponent(
+          url.replace(/^file:\/\//i, "").replace(/^\/([A-Za-z]:)/, "$1")
+        );
+      } catch {
+        target = url;
+      }
+    }
+    if (
+      path.isAbsolute(target) ||
+      /^[A-Za-z]:[\\/]/.test(target) ||
+      target.startsWith("\\\\") ||
+      hasForeignFsMarker(target) ||
+      looksLikeGlobalPlansString(target)
+    ) {
+      return classifyPath(target);
+    }
+    return allow();
+  }
+
+  function decidePreToolUse(payload) {
+    const tool = String(
+      (payload && (payload.tool_name || payload.toolName)) || ""
+    );
+    let input =
+      (payload &&
+        (payload.tool_input || payload.arguments || payload.toolInput)) ||
+      {};
+    if (typeof input === "string") {
+      try {
+        input = JSON.parse(input);
+      } catch {
+        input = { command: input };
+      }
+    }
+
+    const shellCmd =
+      extractShellCommand(payload) || String((input && input.command) || "");
+    if (
+      tool === "Shell" ||
+      /^shell$/i.test(tool) ||
+      /^bash$/i.test(tool) ||
+      (/shell/i.test(tool) && shellCmd) ||
+      (shellCmd && (tool === "" || /terminal|command|exec/i.test(tool)))
+    ) {
+      return decideShell({
+        ...payload,
+        command: shellCmd,
+        cwd:
+          (input && (input.working_directory || input.cwd)) ||
+          payload.cwd ||
+          "",
+      });
+    }
+
+    if (shellCmd && !/^read|write|strreplace|grep|glob|edit|task|mcp|callmcp|fetchmcp|webfetch/i.test(tool)) {
+      return decideShell({
+        ...payload,
+        command: shellCmd,
+        cwd:
+          (input && (input.working_directory || input.cwd)) ||
+          payload.cwd ||
+          "",
+      });
+    }
+
+    if (isMcpLike(tool, payload, input)) {
+      return decideMcp(normalizeMcpFromPreTool(payload, tool, input));
+    }
+
+    if (/^WebFetch$/i.test(tool)) {
+      return decideWebFetch(input);
+    }
+
+    if (/^read$/i.test(tool) || tool === "Read") {
+      return decideRead({ ...payload, tool_input: input });
+    }
+
+    if (
+      /^(write|strreplace|editnotebook|delete)$/i.test(tool) ||
+      tool === "Write" ||
+      tool === "StrReplace" ||
+      tool === "Delete" ||
+      tool === "EditNotebook"
+    ) {
+      return decideEdit({ ...payload, tool_input: input });
+    }
+
+    if (
+      /^(grep|glob|task)$/i.test(tool) ||
+      tool === "Grep" ||
+      tool === "Glob" ||
+      tool === "Task"
+    ) {
+      // Path/cwd targets only — never scan pattern/query/body for foreign markers
+      // (self-lock when grepping isolation docs / hook sources).
+      const pathKeys = [
+        "path",
+        "target_directory",
+        "working_directory",
+        "cwd",
+        "root",
+        "file_path",
+        "uri",
+      ];
+      for (const k of pathKeys) {
+        if (input && input[k]) {
+          const r = classifyPath(String(input[k]));
+          if (r.permission === "deny") return r;
+        }
+      }
+      return allow();
+    }
+
+    return decideEdit({ ...payload, tool_input: input });
+  }
+
+  function decideFromPayload(payload) {
+    if (!payload || typeof payload !== "object") return allow();
+    const event = String(
+      payload.hook_event_name ||
+        payload.hookEventName ||
+        payload.event ||
+        payload.event_name ||
+        ""
+    );
+
+    if (/TabFileRead|beforeTab/i.test(event)) {
+      return decideRead(payload);
+    }
+    if (/preToolUse|pre_tool/i.test(event)) {
+      return decidePreToolUse(payload);
+    }
+
+    if (
+      payload.server ||
+      /^MCP:/i.test(String(payload.tool_name || payload.toolName || ""))
+    ) {
+      return decideMcp(payload);
+    }
+    if (payload.command || payload.cmd) return decideShell(payload);
+    if (payload.file_path || payload.filePath) return decideRead(payload);
+    if (payload.path && !payload.tool_input) return decideRead(payload);
+    if (payload.tool_name || payload.toolName) return decidePreToolUse(payload);
+    return decidePreToolUse(payload);
+  }
+
+  return {
+    workspaceRoot,
+    globalPlansRoot,
+    allowedProjectCache,
+    allowedProjectCaches,
+    projectSlugs,
+    repoPlansRoot,
+    classifyPath,
+    extractShellCommand,
+    extractReadPath,
+    decideRead,
+    decideEdit,
+    decideShell,
+    decideMcp,
+    decidePreToolUse,
+    decideFromPayload,
+    isGlobalCursorPlans,
+    isAllowedFs,
+  };
+}
+
+const defaultPolicy = createPolicy();
+
+export const WORKSPACE_ROOT = defaultPolicy.workspaceRoot;
+export const decideRead = (p) => defaultPolicy.decideRead(p);
+export const decideEdit = (p) => defaultPolicy.decideEdit(p);
+export const decideShell = (p) => defaultPolicy.decideShell(p);
+export const decideMcp = (p) => defaultPolicy.decideMcp(p);
+export const decidePreToolUse = (p) => defaultPolicy.decidePreToolUse(p);
+export const decideFromPayload = (p) => defaultPolicy.decideFromPayload(p);
+export const extractShellCommand = (p) =>
+  defaultPolicy.extractShellCommand(p);
+export const extractReadPath = (p) => defaultPolicy.extractReadPath(p);

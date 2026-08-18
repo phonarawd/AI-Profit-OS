@@ -1,0 +1,17 @@
+{
+  "phase0": ["push-dispatcher"],
+  "phase1": [
+    "push-dispatcher",
+    "marketing-capi-dispatcher",
+    "chain-watchers",
+    "chain-sweeper",
+    "ebay-adapter",
+    "amazon-adapter",
+    "yahoo-jp-adapter",
+    "pokemontcg-adapter",
+    "ygoprodeck-adapter",
+    "coingecko-adapter",
+    "frankfurter-adapter"
+  ],
+  "notes": "Phase0: Nest in-process → push-dispatcher stub · market adapters NOT in phase0 · NATS/Temporal/EKS 0. Phase1+: signup-ready (ebay·pokemontcg·ygoprodeck·coingecko·frankfurter) + partner listing (amazon·yahoo_jp §0.0.1c). Day-1 auto-publish listing=ebay|admin only."
+}

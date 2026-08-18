@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/balance-aware-fact.v1.json",
+  "title": "BalanceAwareFactV1",
+  "description": "Money §49.2a 퍼뜩 P Fact. principalUsdt=WalletBuckets SoT. affordableCount/nearMissCount/topSuggestDepositUsdt=Engine §0.0.5.1 pass-through ONLY. NEVER: LLM estimate · balance UPDATE · classification math in Money.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "principalUsdt",
+    "classificationOwner"
+  ],
+  "properties": {
+    "principalUsdt": {
+      "type": "string",
+      "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+      "description": "Money WalletBuckets.principalUsdt (participate capital SoT)"
+    },
+    "affordableCount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Engine §0.0.5.1 pass-through · Money must not compute"
+    },
+    "nearMissCount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Engine §0.0.5.1 pass-through · Money must not compute"
+    },
+    "topSuggestDepositUsdt": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$",
+      "description": "Engine §0.0.5.1 pass-through · optional top nearMiss suggest"
+    },
+    "classificationOwner": {
+      "type": "string",
+      "const": "engine:§0.0.5.1",
+      "description": "분류·suggestDeposit 공식 Owns = Engine only"
+    }
+  }
+}

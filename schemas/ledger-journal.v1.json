@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/ledger-journal.v1.json",
+  "title": "LedgerJournalV1",
+  "description": "Money §11·§43.5 double-entry journal. NEVER: balance+= · mutate entries · skip idempotency_key · unordered locks.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "idempotencyKey",
+    "journalType",
+    "entries",
+    "createdAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "idempotencyKey": { "type": "string", "minLength": 8 },
+    "journalType": {
+      "type": "string",
+      "enum": [
+        "deposit_usdt",
+        "deposit_krw",
+        "withdraw",
+        "withdraw_refund",
+        "participate_lock",
+        "participate_unlock",
+        "settlement",
+        "merge_profit_to_principal",
+        "admin_adjust",
+        "referral_reward",
+        "referral_clawback",
+        "practice_grant",
+        "practice_expire",
+        "mission_reward",
+        "mission_clawback",
+        "fee",
+        "other"
+      ]
+    },
+    "referenceType": { "type": ["string", "null"] },
+    "referenceId": { "type": ["string", "null"] },
+    "memo": { "type": ["string", "null"] },
+    "fxSnapshotId": { "type": ["string", "null"] },
+    "createdBy": { "type": ["string", "null"] },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "reused": { "type": "boolean" },
+    "entries": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "journalId", "accountId", "direction", "amountUsdt"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "journalId": { "type": "string", "minLength": 1 },
+          "accountId": { "type": "string", "minLength": 1 },
+          "direction": { "type": "string", "enum": ["debit", "credit"] },
+          "amountUsdt": {
+            "type": "string",
+            "pattern": "^[0-9]+(\\.[0-9]+)?$"
+          },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}

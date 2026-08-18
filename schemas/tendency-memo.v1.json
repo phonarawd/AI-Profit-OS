@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/tendency-memo.v1.json",
+  "title": "TendencyMemoV1",
+  "description": "Admin §9.8.10 · user-nonvisible. NEVER: expose to user surface / push / 퍼뜩 Fact.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "userId",
+    "bodyKo",
+    "tags",
+    "createdByAdminId",
+    "createdAt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "bodyKo": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "risk",
+          "vip_care",
+          "churn",
+          "deposit_hesitant",
+          "high_volume",
+          "other"
+        ]
+      }
+    },
+    "createdByAdminId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    }
+  }
+}

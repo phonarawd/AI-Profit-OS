@@ -1,0 +1,18 @@
+{
+  "name": "@aipo/simulation-engine",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Engine §51.4 M0.5 simulation-engine · S1~S4 gates · Growth ON · platform_reserve S2",
+  "main": "./src/index.cjs",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": "./src/index.cjs",
+    "./gates": "./src/gates.cjs",
+    "./report": "./src/report.cjs",
+    "./feasibility": "./src/feasibility.cjs",
+    "./growth-gate": "./src/growth-gate.cjs"
+  },
+  "dependencies": {
+    "@aipo/market-intelligence": "workspace:*"
+  }
+}

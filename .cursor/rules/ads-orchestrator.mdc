@@ -1,0 +1,57 @@
+---
+description: 광고 생성/집행/최적화는 CAPI와 분리된 Ads Campaign Orchestrator만 · Agent는 provider secret 0
+globs: ".cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md,workers/marketing-capi-dispatcher/**,services/marketing-attribution/**,services/ads-*/**,workers/ads-*/**"
+alwaysApply: false
+---
+
+# ADS_ORCHESTRATOR_RULE (v7.24.6)
+
+> **지금 campaign/budget/OAuth/MCP 연결 금지.** File-Serial이 06 `ads-campaign-orchestrator`에 도달하기 전 runtime 0.
+> SSOT 본문 = Infra §31.9.
+
+## 분리 (합치기 금지)
+
+| 층 | 역할 | Owns |
+|----|------|------|
+| CAPI / Attribution | 광고 **성과 측정** | 기존 Marketing 7 (`marketing-capi-dispatcher-wire` 등) |
+| Ads Campaign Orchestrator | 광고 **생성/집행/최적화** | `ads-campaign-orchestrator` |
+
+Orchestrator는 CAPI **health를 읽을 수 있다**. CAPI schema를 소유·변경하지 않는다.
+
+## Agent 경로
+
+```text
+Cursor Agent → "Campaign B +10% 추천" → Internal Ads Orchestrator API
+  → Standing Authorization → Budget Guardrail → Compliance/Health
+  → ALLOW → Provider Adapter
+```
+
+Agent가 Meta/TikTok/Google production token을 직접 들고 임의 mutation하는 구조 **금지**.
+
+## Provider write SoT
+
+| 채널 | write SoT | Agent facade |
+|------|-----------|--------------|
+| Meta | official Marketing API | official Ads MCP/CLI는 **확인된 지원 범위만** |
+| TikTok | official Business / Marketing API | 공식 tool capability가 **실제 확인된 것만** · 미확인 목록 추측 0 |
+| Google | official Google Ads API | official MCP가 read-only면 **조회/분석만** · MCP mutation 0 · Cursor Skills=구현 가이드 only |
+
+자동 create 시 provider가 paused를 지원하면 **PAUSED 우선**. ACTIVE는 Standing Authorization Gate.
+
+raw Meta/TikTok/Google 상태를 core에 노출하지 않는다. adapter가 정규화한다.
+
+## Lifecycle
+
+Candidate → Compliance → Landing Consistency → Creative Pool Verification → Budget Guardrail → Provider Capability → Create as PAUSED/DRAFT(when required) → Provider Validation → Standing Authorization Gate → ACTIVE → Performance Monitoring → Allowed Optimization.
+
+허용 action: `HOLD` · `PAUSE` · `SCALE_UP_WITHIN_LIMIT` · `SCALE_DOWN_WITHIN_LIMIT` · `ROTATE_APPROVED_CREATIVE` · `CREATE_FROM_APPROVED_TEMPLATE` · `ACTIVATE_WITHIN_STANDING_AUTHORIZATION`.
+새 message axis 생성 금지.
+
+## Emergency stop (광고비 지출만)
+
+3사 active pause + new activation block + optimization mutation block. CAPI/analytics/diagnostics는 중단하지 않는다. HIGH/HUMAN.
+
+## Audit
+
+actor · agent_run_id · operation · before · after · reason · evidence · policy/guardrail version · standing_authorization_version · approval state · provider result · timestamp.
+Founder 화면=요약 · Advanced=raw evidence.

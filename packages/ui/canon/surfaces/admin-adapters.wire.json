@@ -1,0 +1,69 @@
+{
+  "id": "admin-adapters",
+  "route": "/admin/adapters",
+  "brandRef": "packages/ui/brand",
+  "primaryCta": { "copyKey": null, "href": null },
+  "blocks": [
+    { "id": "sidebar", "role": "nav", "copyKey": "T.admin.twelveModules" },
+    {
+      "id": "collector_list",
+      "role": "list",
+      "copyKey": "T.admin.adaptersCollectors",
+      "note": "ebay·pokemontcg·ygoprodeck·coingecko·frankfurter + Phase1+ amazon/yahoo_jp"
+    },
+    {
+      "id": "listing_legs",
+      "role": "info",
+      "copyKey": "T.admin.adaptersListingLegs",
+      "note": "Day-1 ebay multi|admin · yahoo Day-1 auto-publish 0"
+    },
+    {
+      "id": "matching_kpi",
+      "role": "kpi",
+      "copyKey": "T.admin.adaptersMatchingKpi",
+      "fields": [
+        "skuMatchFailureRate",
+        "compareReadyFalseRatio",
+        "adapterMatchFailureRate",
+        "gradeMismatchCount"
+      ],
+      "note": "Engine §51.15 · >15% SKU fail → alert+reduce auto-publish · S4 input"
+    },
+    {
+      "id": "adapter_alerts",
+      "role": "banner",
+      "copyKey": "T.admin.adaptersAlerts",
+      "note": "sku_match_fail · compare_ready_false · stale_listing"
+    },
+    {
+      "id": "yahoo0",
+      "role": "info",
+      "copyKey": "T.admin.adaptersYahoo0",
+      "note": "day1AutoPublishYahooJp=false · Phase1+ partner only"
+    },
+    {
+      "id": "simulation_s4",
+      "role": "kpi",
+      "copyKey": "T.admin.adaptersSimulationS4",
+      "field": "adapterMatchFailureRate",
+      "note": "§51.4 S4 ≤15% · GET /admin/adapters/simulation-s4"
+    },
+    {
+      "id": "identity_review_queue",
+      "role": "list",
+      "copyKey": null,
+      "note": "Engine §0.10 U15 · GET /admin/adapters/identity-review-queue · unmatched ebay identity · silent drop 0 · query: persist 0"
+    }
+  ],
+  "forbidden": [
+    "nearMissCap_on_adapters",
+    "day1_yahoo_jp_auto_publish",
+    "success_rate_percent_control",
+    "gender_branch",
+    "photo_pixel_match",
+    "non_brand_logo",
+    "sidebar_not_twelve",
+    "query_placeholder_persist",
+    "unmatched_silent_drop"
+  ]
+}

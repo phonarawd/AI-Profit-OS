@@ -1,0 +1,241 @@
+{
+  "schema": "governance.engine-acceptance.workflow-amendments.v1",
+  "version": "1.0.0",
+  "decision_id": "POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1",
+  "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+  "frozen_at_qa0": {
+    "acceptance_workflow_hash": "4f6e6f99ec4642cae7fd8593cd9c6d11f453d746733f4c0caeb7e09ffaa347fa",
+    "prompt_hash": "4648ec224820627088fa6519e224b000f8781efe6fd27750f1112b952c42ec07",
+    "eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088"
+  },
+  "policies": {
+    "baseline_id": "STABLE",
+    "prompt_hash": "IMMUTABLE",
+    "eval_dataset_hash": "IMMUTABLE",
+    "acceptance_workflow_hash": "CONTROLLED_AMENDMENT_ONLY",
+    "qa0_qa6_validity": "RETAIN_IF_EXACT_DIFF_PROVES_NO_SEMANTICS_CHANGE_ELSE_BLOCKED",
+    "legacy_runner_auto_sync": "FORBIDDEN_FOR_ACCEPTANCE_WORKFLOW_HASH",
+    "qa7_in_flight_amendment": "FORBIDDEN",
+    "baseline_hash_mutation_path": "tooling/engine-acceptance/amend-acceptance-workflow-hash.cjs ONLY"
+  },
+  "amendments": [
+    {
+      "amendment_id": "qa7-formal-workflow-v3-20260813",
+      "reason": "Human/PO-approved QA7 workflow proposal v3: add workflow_dispatch qa7 choice, remove QA7 matrix placeholder, add dedicated qa7-ai-eval job (dispatch-only). QA0-QA6 commands/artifacts/env/pass-fail unchanged. Aggregator needs unchanged.",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-12T21:53:05.762Z",
+        "statement": "ACK APPROVED QA7 workflow proposal v3. FINAL_PRE_APPLY_PROPOSAL_READY = YES. POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1."
+      },
+      "old_acceptance_workflow_hash": "4f6e6f99ec4642cae7fd8593cd9c6d11f453d746733f4c0caeb7e09ffaa347fa",
+      "new_acceptance_workflow_hash": "7895541fa754124e1b00a4b6b8bf293e69ee1e4cc9c156c50af4760c02466786",
+      "workflow_diff_scope": {
+        "files": [
+          ".github/workflows/engine-acceptance.yml"
+        ],
+        "exact_diff_summary": "A) workflow_dispatch options += qa7 (description text only). B) matrix.suite QA7 placeholder removed: [QA3,QA4,QA5,QA6,QA7,QA8] -> [QA3,QA4,QA5,QA6,QA8]; QA3-QA6 case/run/env/artifact/retention unchanged. C) new job qa7-ai-eval with if: workflow_dispatch && (qa7|full); env TMPDIR/PORT/LLM_PROVIDER/QA7_* secrets/QA7_LOCAL_HTTP/AIPO_QA_*; build @aipo/api-nest; verify dist/main.js; nohup start PID /tmp/aipo-qa7-api.pid log /tmp/aipo-qa7-api.log; health http://127.0.0.1:4000/api/v1/health; run-qa7.cjs --mode full; artifact engine-acceptance-QA7-raw-traces path /tmp/aipo-qa7-traces/ retention 90 if-no-files-found error; cleanup kill PID only. Aggregator needs unchanged (qa7-ai-eval not added). continue-on-error absent.",
+        "qa0_qa6_semantics_changed": false,
+        "checks": {
+          "command_changes": false,
+          "artifact_upload_changes": false,
+          "env_permission_changes": false,
+          "pass_fail_semantics_changes": false
+        }
+      },
+      "affected_qa_suites": [
+        "QA7"
+      ],
+      "unaffected_completed_suites": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6"
+      ],
+      "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+      "commit_sha_or_pending": "pending",
+      "timestamp": "2026-08-12T21:53:05.762Z",
+      "applied_at": "2026-08-12T21:53:49.330Z"
+    },
+    {
+      "amendment_id": "qa8-security-privacy-workflow-v1-20260813",
+      "reason": "Human/PO-directed QA8 security-privacy acceptance wave: wire the existing QA8 matrix placeholder to a real run-qa8.cjs invocation (ASVS 5.0.0 subset check runner), mirroring the QA6 pattern (run + verify:engine-acceptance). QA0-QA6 commands/artifacts/env/pass-fail unchanged.",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-13T06:20:00.000Z",
+        "statement": "ACK APPROVED QA8 workflow wiring proposal v1. Session directive explicitly authorizes executing the canonical QA8 security/privacy acceptance slice, including publishing canonical QA8 evidence per repository governance where required. POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1."
+      },
+      "old_acceptance_workflow_hash": "7895541fa754124e1b00a4b6b8bf293e69ee1e4cc9c156c50af4760c02466786",
+      "new_acceptance_workflow_hash": "32da24b2178a242cb3fc158545fbb61cd4503cc159f0f91b84a8c632519785bb",
+      "workflow_diff_scope": {
+        "files": [
+          ".github/workflows/engine-acceptance.yml"
+        ],
+        "exact_diff_summary": "A) workflow_dispatch.inputs.qa_phase.options += qa8 (description text only). B) qa-matrix job if-condition += inputs.qa_phase == 'qa8' (so a qa8-only dispatch still runs the matrix job; QA3/QA4/QA5/QA6/full conditions unchanged). C) case statement: QA8 placeholder branch (previously falling into the default 'not enabled yet' echo/exit 0) replaced with a real invocation: node tooling/engine-acceptance/run-qa8.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci; then pnpm verify:engine-acceptance (same two-line pattern already used for the QA6 case). QA3/QA4/QA5/QA6 case bodies byte-for-byte unchanged; the default '*)' branch text updated from 'not enabled yet at QA-6' to 'not enabled yet at QA-8' (comment only, still echo + exit 0 for any future suite). D) 'Upload suite evidence' step if-condition += matrix.suite == 'QA8'; path list += governance/engine-acceptance/qa8-result.v1.json and governance/engine-acceptance/asvs-mapping.v1.json (existing QA3/QA4/QA5/QA6 path lines unchanged). E) aggregator step += two cp lines for qa8-result.v1.json and asvs-mapping.v1.json (existing cp lines for QA1-QA6/perf-budget/defects unchanged). No env, secrets, permissions, timeout, concurrency, or trigger (on:) changes. No changes to qa0-baseline, qa1-deterministic, qa2-synthetic-personas, or qa7-ai-eval jobs.",
+        "qa0_qa6_semantics_changed": false,
+        "checks": {
+          "command_changes": false,
+          "artifact_upload_changes": false,
+          "env_permission_changes": false,
+          "pass_fail_semantics_changes": false
+        }
+      },
+      "affected_qa_suites": [
+        "QA8"
+      ],
+      "unaffected_completed_suites": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7"
+      ],
+      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "commit_sha_or_pending": "pending",
+      "timestamp": "2026-08-13T06:20:00.000Z",
+      "applied_at": "2026-08-13T06:17:01.122Z"
+    },
+    {
+      "amendment_id": "pre-rebase-harness-ci-qa5-qa6-qa8-20260814",
+      "reason": "Human/PO-approved pre-rebase harness/CI wave: add additive jobs qa5-fault, qa6-measure, and qa8-adversarial (isolated CI Postgres + booted Nest). Existing QA0-QA6 matrix command bodies, artifacts, env, and pass-fail semantics are byte-for-byte unchanged. No protected product mutation. No new acceptance epoch. No L8 rebase. QA6 measurement is NON-VERDICT and does not invent performance thresholds.",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-14T02:00:00.000Z",
+        "statement": "ACK APPROVED implementing the planned pre-rebase harness/CI preparation wave, including the narrow controlled L7 workflow amendment required to add the approved pre-rebase QA jobs (qa5-fault, qa6-measure, qa8-adversarial). POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1. Do not perform V2 L8 rebase. Do not create a new acceptance epoch. Do not change protected product behavior."
+      },
+      "old_acceptance_workflow_hash": "32da24b2178a242cb3fc158545fbb61cd4503cc159f0f91b84a8c632519785bb",
+      "new_acceptance_workflow_hash": "d2c20b464a771029298a12f28cff74045360fab5f0cc3637a459d1c82b88969a",
+      "workflow_diff_scope": {
+        "files": [
+          ".github/workflows/engine-acceptance.yml"
+        ],
+        "exact_diff_summary": "A) workflow_dispatch.inputs.qa_phase.options += qa5-fault, qa6-measure, qa8-adversarial (description text updated to name them). B) three new additive jobs inserted before aggregator: qa5-fault, qa6-measure, qa8-adversarial. Each uses an isolated pgvector/pgvector:pg16 service named postgres, AIPO_QA_PG* parts assembled at runtime (no committed DSN), kill-switch --assert-db-target, pnpm --filter @aipo/api-nest build, and a dedicated harness runner (run-qa5-fault.cjs / run-qa6-measure.cjs / run-qa8-adversarial.cjs). qa6-measure additionally installs pinned k6 v0.54.0. Artifact uploads use if: always() with retention-days 90. C) qa0-baseline, qa1-deterministic, qa2-synthetic-personas, qa-matrix (including QA3/QA4/QA5/QA6/QA8 case bodies), qa7-ai-eval, and aggregator needs/steps are unchanged. No env/permission/pass-fail changes to QA0-QA6 jobs.",
+        "qa0_qa6_semantics_changed": false,
+        "checks": {
+          "command_changes": false,
+          "artifact_upload_changes": false,
+          "env_permission_changes": false,
+          "pass_fail_semantics_changes": false
+        }
+      },
+      "affected_qa_suites": [
+        "QA5_FAULT_ORCH",
+        "QA6_MEASURE",
+        "QA8_ADVERSARIAL"
+      ],
+      "unaffected_completed_suites": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7",
+        "QA8"
+      ],
+      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "commit_sha_or_pending": "pending",
+      "timestamp": "2026-08-14T02:00:00.000Z",
+      "applied_at": "2026-08-13T17:30:28.157Z"
+    },
+    {
+      "amendment_id": "pre-rebase-harness-gha-pghost-127-20260814",
+      "reason": "GitHub-hosted jobs run on the VM, not in a job container: isolated Postgres service is reachable at 127.0.0.1:5432, not hostname postgres (EAI_AGAIN). Additive job semantics unchanged. No protected product mutation. No new acceptance epoch.",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-14T02:00:00.000Z",
+        "statement": "ACK APPROVED implementing the planned pre-rebase harness/CI preparation wave, including the narrow controlled L7 workflow amendment required to add the approved pre-rebase QA jobs (qa5-fault, qa6-measure, qa8-adversarial). POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1. Do not perform V2 L8 rebase. Do not create a new acceptance epoch. Do not change protected product behavior."
+      },
+      "old_acceptance_workflow_hash": "d2c20b464a771029298a12f28cff74045360fab5f0cc3637a459d1c82b88969a",
+      "new_acceptance_workflow_hash": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
+      "workflow_diff_scope": {
+        "files": [
+          ".github/workflows/engine-acceptance.yml"
+        ],
+        "exact_diff_summary": "AIPO_QA_PGHOST on additive jobs qa5-fault, qa6-measure, qa8-adversarial changed from service DNS name postgres to 127.0.0.1 because these jobs run on ubuntu-latest (not a job container). Service image, ports, healthcheck, kill-switch, runners, artifacts, and QA0-QA6 matrix bodies are unchanged.",
+        "qa0_qa6_semantics_changed": false,
+        "checks": {
+          "command_changes": false,
+          "artifact_upload_changes": false,
+          "env_permission_changes": false,
+          "pass_fail_semantics_changes": false
+        }
+      },
+      "affected_qa_suites": [
+        "QA5_FAULT_ORCH",
+        "QA6_MEASURE",
+        "QA8_ADVERSARIAL"
+      ],
+      "unaffected_completed_suites": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7",
+        "QA8"
+      ],
+      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "commit_sha_or_pending": "pending",
+      "timestamp": "2026-08-14T03:10:00.000Z",
+      "applied_at": "2026-08-13T18:03:27.240Z"
+    }
+  ],
+  "epoch_bindings": [
+    {
+      "kind": "historical_predecessor",
+      "baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+      "rebase_id": null,
+      "note": "amendments[] provenance remains bound to this predecessor epoch; not rewritten as current-epoch events"
+    },
+    {
+      "kind": "historical_predecessor",
+      "baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
+      "rebase_id": "ea-rebase-a280b21fc7b5-dfa803530b9d",
+      "predecessor_baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+      "bound_at": "2026-08-12T23:19:05.523Z",
+      "note": "superseded current epoch; historical amendments were NOT created under this id"
+    },
+    {
+      "kind": "historical_predecessor",
+      "baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
+      "rebase_id": "ea-rebase-ca476b4698a6-c1d90fceefe9",
+      "predecessor_baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
+      "bound_at": "2026-08-13T02:07:54.755Z",
+      "note": "superseded current epoch; historical amendments were NOT created under this id"
+    },
+    {
+      "kind": "current",
+      "baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "rebase_id": "ea-rebase-2c7b9cffd323-1e2ce00bd6a1",
+      "predecessor_baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
+      "bound_at": "2026-08-13T03:04:37.142Z",
+      "note": "current acceptance_scope.unchanged compares against this epoch; historical amendments were NOT created under this id"
+    },
+    {
+      "kind": "current",
+      "baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "rebase_id": "ea-rebase-fdf692cb8a02-d532a6d7958b",
+      "predecessor_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "bound_at": "2026-08-13T20:28:48.168Z",
+      "note": "current acceptance_scope.unchanged compares against this epoch; historical amendments were NOT created under this id"
+    },
+    {
+      "kind": "current",
+      "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+      "rebase_id": "ea-rebase-64b0f8a6d984-3657543f36b5",
+      "predecessor_baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "bound_at": "2026-08-14T16:41:33.127Z",
+      "note": "current acceptance_scope.unchanged compares against this epoch; historical amendments were NOT created under this id"
+    }
+  ],
+  "current_epoch_baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5"
+}

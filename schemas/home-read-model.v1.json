@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/home-read-model.v1.json",
+  "title": "HomeReadModelV1",
+  "description": "Engine v7.23 R1 · single Home Fact/State mapper. Combines Money HomeMoneyRead + opportunity feed + growth public + session. todayPossibleProfitUsdt=server_derived Σ(affordable∧available∧compareReady). ledgerTotal=settlementCompletedTodayCount COUNT (never USDT). unauthorized must not invent Fact zeros. domain FSM separate (domainFsm). App/React/CSS Owns=UI R1 (this schema=Engine).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "viewState",
+    "session",
+    "money",
+    "opportunity",
+    "growth",
+    "ledgerTotal",
+    "todayPossibleProfitUsdt",
+    "provenance",
+    "domainFsm"
+  ],
+  "properties": {
+    "viewState": {
+      "type": "string",
+      "enum": [
+        "ready_empty",
+        "ready_data",
+        "stale",
+        "recoverable_error",
+        "blocked",
+        "unauthorized"
+      ],
+      "description": "Common view state · loading is client-only (excluded from server response)"
+    },
+    "reasonCode": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z]+(\\.[a-z0-9_]+)+$",
+      "description": "domain.resource.reason"
+    },
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["guest", "authenticated", "expired"]
+        }
+      }
+    },
+    "money": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "principalUsdt",
+        "settlementCompletedTodayCount",
+        "asOf",
+        "source",
+        "state"
+      ],
+      "properties": {
+        "principalUsdt": { "type": "string" },
+        "settlementCompletedTodayCount": { "type": "integer", "minimum": 0 },
+        "asOf": { "type": ["object", "null"] },
+        "source": { "type": ["object", "null"] },
+        "state": { "type": "string" },
+        "reasonCode": { "type": "string" }
+      }
+    },
+    "opportunity": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "todayPossibleProfitUsdt",
+        "affordableCount",
+        "nearMissCount",
+        "lockedHighCount",
+        "itemCount",
+        "state",
+        "provenance"
+      ],
+      "properties": {
+        "todayPossibleProfitUsdt": {
+          "type": "string",
+          "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+        },
+        "affordableCount": { "type": "integer", "minimum": 0 },
+        "nearMissCount": { "type": "integer", "minimum": 0 },
+        "lockedHighCount": { "type": "integer", "minimum": 0 },
+        "topSuggestDepositUsdt": { "type": ["string", "null"] },
+        "itemCount": { "type": "integer", "minimum": 0 },
+        "asOf": { "type": ["string", "null"] },
+        "state": { "type": "string" },
+        "reasonCode": { "type": "string" },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["todayPossibleProfitUsdt"],
+          "properties": {
+            "todayPossibleProfitUsdt": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["provenance", "derivationId"],
+              "properties": {
+                "provenance": { "const": "server_derived" },
+                "derivationId": {
+                  "const": "home.today_possible_affordable_available_compare_ready_sum"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "growth": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["tickerMode", "counterMode", "ledgerTotal", "state"],
+      "properties": {
+        "tickerMode": { "type": "string" },
+        "counterMode": { "type": "string" },
+        "ledgerTotal": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "COUNT alias · never USDT amount"
+        },
+        "asOf": { "type": ["string", "null"] },
+        "state": { "type": "string" },
+        "reasonCode": { "type": "string" }
+      }
+    },
+    "ledgerTotal": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "settlementCompletedTodayCount COUNT · null when unauthorized/absent"
+    },
+    "todayPossibleProfitUsdt": {
+      "type": ["string", "null"],
+      "description": "null when unauthorized/absent · never client-estimated"
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["todayPossibleProfitUsdt", "ledgerTotal"],
+      "properties": {
+        "todayPossibleProfitUsdt": { "type": ["object", "null"] },
+        "ledgerTotal": { "type": ["object", "null"] }
+      }
+    },
+    "domainFsm": {
+      "type": ["object", "null"],
+      "description": "Engine execution FSM pointer separate from viewState · Home aggregate = null"
+    }
+  }
+}

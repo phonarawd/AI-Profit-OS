@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/notification-prefs.v1.json",
+  "title": "NotificationPrefsV1",
+  "description": "UI §50.1n · signup defaults ALL true · OFF skips Push only · inbox still stored.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "userId",
+    "master",
+    "opportunity",
+    "wallet",
+    "notice",
+    "campaign",
+    "opsMessage",
+    "strategyMatch"
+  ],
+  "properties": {
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "master": {
+      "type": "boolean"
+    },
+    "opportunity": {
+      "type": "boolean"
+    },
+    "wallet": {
+      "type": "boolean"
+    },
+    "notice": {
+      "type": "boolean"
+    },
+    "campaign": {
+      "type": "boolean"
+    },
+    "opsMessage": {
+      "type": "boolean"
+    },
+    "strategyMatch": {
+      "type": "boolean"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    }
+  },
+  "default": {
+    "master": true,
+    "opportunity": true,
+    "wallet": true,
+    "notice": true,
+    "campaign": true,
+    "opsMessage": true,
+    "strategyMatch": true
+  }
+}

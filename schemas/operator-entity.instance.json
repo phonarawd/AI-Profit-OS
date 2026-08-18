@@ -1,0 +1,81 @@
+{
+  "legalName": "PRE-OWNED WATCHES L.L.C",
+  "legalForm": "LLC",
+  "licenseNumber": "1135431",
+  "issuingAuthority": "Dubai Department of Economy and Tourism",
+  "jurisdiction": "AE-DU",
+  "licenseStatus": "active",
+  "primaryActivityEn": "Watches & Clocks & Spare Parts Retailing",
+  "primaryActivityKo": "시계 및 예비 부품 소매업",
+  "licensedActivities": [
+    {
+      "activityKo": "시계 및 예비 부품 소매업",
+      "activityEn": "Watches & Clocks & Spare Parts Retailing",
+      "likelyDetCode": "4773.03",
+      "platformScope": "watch"
+    },
+    {
+      "activityKo": "중고 명품 시계·시계류 매매",
+      "activityEn": "Pre-owned luxury watches trading",
+      "likelyDetCode": "4774.02",
+      "platformScope": "watch"
+    },
+    {
+      "activityKo": "트레이딩 카드·수집품 거래",
+      "activityEn": "Trading cards and collectibles trading",
+      "likelyDetCode": "4778.99",
+      "platformScope": "trading_card"
+    },
+    {
+      "activityKo": "명품 가방·액세서리 중개",
+      "activityEn": "Luxury bag and accessories brokerage",
+      "likelyDetCode": "4771.01",
+      "platformScope": "luxury_bag"
+    },
+    {
+      "activityKo": "온라인 전자상거래·앱 운영",
+      "activityEn": "Online ecommerce and app operation",
+      "likelyDetCode": "4791.01",
+      "platformScope": "ecommerce"
+    },
+    {
+      "activityKo": "AI 시세 기회 안내·거래 지원",
+      "activityEn": "AI market opportunity guidance and trade support",
+      "likelyDetCode": "6201.01",
+      "platformScope": "ai_service"
+    },
+    {
+      "activityKo": "해외 시세 비교·국제 중개",
+      "activityEn": "Cross-border price compare and brokerage",
+      "likelyDetCode": "4690.01",
+      "platformScope": "platform"
+    }
+  ],
+  "tradingBrand": "Pre-Owned Watches",
+  "relatedWebsite": "https://hiptk.app",
+  "supportEmail": "support@hiptk.app",
+  "addresses": [
+    {
+      "label": "showroom",
+      "lines": ["Kia Flagship Office G05", "Sheikh Zayed Road, Al Quoz 1"],
+      "city": "Dubai",
+      "country": "AE"
+    },
+    {
+      "label": "office",
+      "lines": ["Office 322", "Blue Bay Tower", "Al Abraj Street, Business Bay"],
+      "city": "Dubai",
+      "country": "AE"
+    }
+  ],
+  "verificationUrls": [
+    {
+      "label": "Invest in Dubai directory",
+      "url": "https://www.investindubai.gov.ae/en/dubai-business-directory-search"
+    },
+    {
+      "label": "DET License Lookup",
+      "url": "https://eservices.dubaided.gov.ae/Pages/Anon/CompLookup.aspx"
+    }
+  ]
+}

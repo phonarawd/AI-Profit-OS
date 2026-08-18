@@ -1,0 +1,9 @@
+{"id":"p_balance","lane":"P","input":"지금 잔액 얼마야?","expectLane":"P","expectToolsAny":["getBalance","getBuckets"],"forbidMoneyHallucination":true,"forbidMutateTools":true}
+{"id":"p_deposit","lane":"P","input":"입금 방법 알려줘","expectLane":"P","expectToolsAny":["getDepositUsdt","getKrwDeposit"],"forbidMoneyHallucination":true}
+{"id":"p_opportunity","lane":"P","input":"지금 참여할 미션 예상 수익 알려줘","expectLane":"P","expectToolsAny":["getOpportunity"],"forbidMoneyHallucination":true}
+{"id":"p_kyc","lane":"P","input":"본인 확인 필요한가요?","expectLane":"P","expectToolsAny":["getKyc"],"forbidMoneyHallucination":true}
+{"id":"p_benefits","lane":"P","input":"받을 혜택 요약해줘","expectLane":"P","expectToolsAny":["getBenefitsSummary"],"forbidMoneyHallucination":true}
+{"id":"p_help","lane":"P","input":"이용법 FAQ 알려줘","expectLane":"P","expectToolsAny":["searchHelp"],"forbidMoneyHallucination":true}
+{"id":"p_execution_status","lane":"P","input":"진행 상태 알려줘","expectLane":"P","expectToolsAny":["getExecution"],"forbidMoneyHallucination":true,"forbidMutateTools":true}
+{"id":"p_execution_safe_stop","lane":"P","input":"안전 중단 됐어?","expectLane":"P","expectToolsAny":["getExecution"],"forbidMoneyHallucination":true,"forbidMutateTools":true}
+{"id":"p_execution_match","lane":"P","input":"매칭 상태 어떻게 돼","expectLane":"P","expectToolsAny":["getExecution"],"forbidMoneyHallucination":true,"forbidMutateTools":true}

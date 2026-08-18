@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/user-risk-state.v1.json",
+  "title": "UserRiskStateV1",
+  "description": "Money §49.9C malicious-user state machine",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["userId", "status"],
+  "properties": {
+    "userId": { "type": "string", "format": "uuid" },
+    "status": {
+      "type": "string",
+      "enum": ["active", "flagged", "restricted", "frozen", "banned"]
+    },
+    "reason": { "type": ["string", "null"], "minLength": 10 },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "effects": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "withdrawBlocked",
+        "principalWithdrawCapped",
+        "mergeBlocked",
+        "participateBlocked",
+        "loginBlocked"
+      ],
+      "properties": {
+        "withdrawBlocked": { "type": "boolean" },
+        "principalWithdrawCapped": { "type": "boolean" },
+        "mergeBlocked": { "type": "boolean" },
+        "participateBlocked": { "type": "boolean" },
+        "loginBlocked": { "type": "boolean" }
+      }
+    }
+  }
+}

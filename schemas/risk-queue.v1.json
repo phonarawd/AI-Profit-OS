@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/risk-queue.v1.json",
+  "title": "RiskQueueV1",
+  "description": "Money §49.9 Admin GET /admin/api/v1/risk/queue · /admin/risk?tab=queue",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "tab", "items", "moneyCircuitOpen"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "tab": { "type": "string", "const": "queue" },
+    "moneyCircuitOpen": { "type": "boolean" },
+    "items": {
+      "type": "array",
+      "items": { "$ref": "risk-signal.v1.json" }
+    }
+  }
+}

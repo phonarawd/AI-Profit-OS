@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/ui-copy-glossary.v1.json",
+  "title": "UiCopyGlossaryV1",
+  "description": "UI §27 · enum/code → koLabel API contract. NEVER: L2 English on L1 · Margin/Arbitrage/ROI/PnL on user UI.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "entries"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "koLabel",
+          "surface"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "koLabel": {
+            "type": "string"
+          },
+          "surface": {
+            "type": "string",
+            "enum": [
+              "user",
+              "admin",
+              "both"
+            ]
+          },
+          "forbiddenAliases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "default": {
+    "version": 1,
+    "entries": [
+      {
+        "code": "Spread",
+        "koLabel": "차익 금액",
+        "surface": "user",
+        "forbiddenAliases": [
+          "스프레드",
+          "Spread"
+        ]
+      },
+      {
+        "code": "Wallet",
+        "koLabel": "내 지갑",
+        "surface": "user",
+        "forbiddenAliases": [
+          "Wallet"
+        ]
+      },
+      {
+        "code": "KYC",
+        "koLabel": "본인 확인",
+        "surface": "user",
+        "forbiddenAliases": [
+          "KYC",
+          "신원인증"
+        ]
+      },
+      {
+        "code": "TRC20",
+        "koLabel": "트론",
+        "surface": "user",
+        "forbiddenAliases": [
+          "TRC20",
+          "ERC20",
+          "BEP20"
+        ]
+      },
+      {
+        "code": "principal",
+        "koLabel": "근무 중 원금",
+        "surface": "user"
+      },
+      {
+        "code": "profit",
+        "koLabel": "출금 가능 수익",
+        "surface": "user"
+      },
+      {
+        "code": "participate",
+        "koLabel": "수익 벌기",
+        "surface": "user",
+        "forbiddenAliases": [
+          "매칭 참여",
+          "구매",
+          "판매"
+        ]
+      },
+      {
+        "code": "MATCH_SUCCESS",
+        "koLabel": "조건이 맞았어요",
+        "surface": "user"
+      },
+      {
+        "code": "Margin",
+        "koLabel": "내 수익",
+        "surface": "user",
+        "forbiddenAliases": [
+          "Margin",
+          "마진",
+          "ROI",
+          "PnL"
+        ]
+      },
+      {
+        "code": "Arbitrage",
+        "koLabel": "시세차익",
+        "surface": "user",
+        "forbiddenAliases": [
+          "Arbitrage",
+          "아비트라지"
+        ]
+      }
+    ]
+  }
+}

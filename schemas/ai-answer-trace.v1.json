@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/ai-answer-trace.v1.json",
+  "title": "AiAnswerTraceV1",
+  "description": "Engine §47.5 explainability · lane P|G|S. NEVER: mutation tools · G-lane money tools.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "intent",
+    "lane",
+    "facts_used",
+    "tools_called",
+    "provider_id",
+    "answer_path",
+    "guard_result"
+  ],
+  "properties": {
+    "intent": {
+      "type": "string"
+    },
+    "lane": {
+      "type": "string",
+      "enum": [
+        "P",
+        "G",
+        "S"
+      ]
+    },
+    "twin_snapshot_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "memory_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "facts_used": {
+      "type": "array",
+      "items": {
+        "$ref": "https://ai-profit-os.local/schemas/fact-card.v1.json"
+      }
+    },
+    "tools_called": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "P lane only"
+    },
+    "provider_id": {
+      "type": "string",
+      "enum": [
+        "ollama",
+        "groq",
+        "gemini_free",
+        "openai",
+        "none"
+      ]
+    },
+    "answer_path": {
+      "type": "string",
+      "enum": [
+        "template",
+        "fact",
+        "rag",
+        "llm_p",
+        "llm_g",
+        "refuse_s",
+        "scope_redirect"
+      ]
+    },
+    "guard_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "refresh",
+            "block",
+            "reroute_p",
+            "ungrounded"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    }
+  }
+}

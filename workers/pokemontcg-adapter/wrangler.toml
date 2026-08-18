@@ -1,0 +1,19 @@
+name = "pokemontcg-adapter"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVICE = "pokemontcg-adapter"
+PHASE = "1"
+
+[triggers]
+crons = ["0 */6 * * *"]
+
+[env.production]
+name = "pokemontcg-adapter"
+vars = { SERVICE = "pokemontcg-adapter", PHASE = "1" }
+
+[env.preview]
+name = "pokemontcg-adapter-preview"
+vars = { SERVICE = "pokemontcg-adapter", PHASE = "1" }

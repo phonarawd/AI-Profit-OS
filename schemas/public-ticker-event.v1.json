@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/public-ticker-event.v1.json",
+  "title": "PublicTickerEventV1",
+  "description": "UI §33.2a · Admin §35.4 — masked public ticker DTO. FORBIDDEN: email, legalName, userId, raw displayName, kind.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "displayLabel", "amountKrwText", "templateKey", "at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "settlement_id | demo:{uuid}"
+    },
+    "displayLabel": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32,
+      "description": "Already masked (김*수 | A*** | ○○○). Client must not remask."
+    },
+    "amountKrwText": {
+      "type": "string",
+      "minLength": 1
+    },
+    "templateKey": {
+      "type": "string",
+      "enum": ["just_settled", "just_reflected", "participant_amt"]
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -1,0 +1,399 @@
+{
+  "schema": "governance.engine-acceptance.product-rebases.v1",
+  "version": "1.0.0",
+  "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+  "policies": {
+    "in_place_hash_rewrite": "FORBIDDEN",
+    "baseline_washing": "FORBIDDEN",
+    "eval_dataset_mutation_during_product_rebase": "FORBIDDEN",
+    "silent_workflow_hash_change": "FORBIDDEN",
+    "ungoverned_freeze_baseline_after_qa0": "FORBIDDEN",
+    "qa1_qa6_predecessor_as_current_complete": "FORBIDDEN",
+    "qa8_predecessor_as_current_complete": "FORBIDDEN",
+    "qa9_predecessor_verdict_as_current_authoritative": "FORBIDDEN"
+  },
+  "rebase_policy": {
+    "current_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
+    "historical_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V1",
+    "amendment_id": "rebase-policy-qa8-qa9-topology-20260814",
+    "effective_for": "future_rebases_only",
+    "creates_acceptance_epoch": false,
+    "invalidates_current_evidence": false,
+    "historical_rebase_ids": [
+      "ea-rebase-a280b21fc7b5-dfa803530b9d",
+      "ea-rebase-ca476b4698a6-c1d90fceefe9",
+      "ea-rebase-2c7b9cffd323-1e2ce00bd6a1"
+    ],
+    "human_po_ack": {
+      "by": "Human/PO",
+      "at": "2026-08-13T15:28:00.000Z",
+      "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: version product rebase policy for QA8 discovery invalidation/rerun and QA9 aggregation staleness; historical rebase approvals remain valid under ENGINE_ACCEPTANCE_REBASE_POLICY_V1; future protected-product rebases must use ENGINE_ACCEPTANCE_REBASE_POLICY_V2; no product mutation; no new acceptance epoch; do not rewrite historical approval payloads."
+    }
+  },
+  "rebases": [
+    {
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+      "rebase_id": "ea-rebase-a280b21fc7b5-dfa803530b9d",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-12T23:19:05.523Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: new epoch from predecessor ea-baseline-13b7a5138ebe-cb4530b02ecf; invalidate QA1-QA6; rerun QA1-QA6 then QA7; do not rewrite hashes inside the old baseline."
+      },
+      "predecessor_baseline_id": "ea-baseline-13b7a5138ebe-cb4530b02ecf",
+      "new_baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
+      "reason": "Protected product mutation after QA0 (api-nest TypeScript build fix) creates a new acceptance epoch. Predecessor hashes are history; QA1-QA6 must rerun.",
+      "product_commit": "a280b21fc7b5fe631bee88d1ac2a1d0341f0018b",
+      "changed_protected_paths": [
+        "services/api-nest/src/ai/coach.orchestrator.ts",
+        "services/api-nest/src/ledger/ledger.posting.service.ts"
+      ],
+      "changed_nonprotected_support_paths": [
+        "services/ai-platform/src/index.d.ts"
+      ],
+      "old_prompt_hash": "4648ec224820627088fa6519e224b000f8781efe6fd27750f1112b952c42ec07",
+      "new_prompt_hash": "3471a3bc2712cbeb85414ec848987996dac0d1a2ddab9fed3de968c6a8bc6079",
+      "old_protected_manifest_hash": "cb4530b02ecfd0b721c3dbd7884ee649e91430aadb8c713f69517f31318a9c5e",
+      "new_protected_manifest_hash": "dfa803530b9d61376cdb8ff2a86e9dbf14b1400bd8ff773be05b5dbabe5bc35f",
+      "eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088",
+      "acceptance_workflow_hash": "7895541fa754124e1b00a4b6b8bf293e69ee1e4cc9c156c50af4760c02466786",
+      "invalidated_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6"
+      ],
+      "required_rerun_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7"
+      ],
+      "predecessor_suite_checksums": {
+        "QA1": "e0e0378dd2977c84379c1ef28e0e9b3c05ce7bab390d5d73e1d725ac6ac380f6",
+        "QA2": "c8fbe6a347e0bcb19757e1e572fe7b22bcbf62a2da7860a3299e722e90dd4bd3",
+        "QA3": "015facfd5b10b5102a1e1e8cbe4aeba8fef675efc0c7fb03f137ccd735f8ffe7",
+        "QA4": "8712503dc860a661008be6dd11ed7e1f8d9200798267af12427e1818751f88de",
+        "QA5": "637ea4ed7a54569206d1bf11b839e3e1a7111ba58b9b872b30531ded7c7f4ac9",
+        "QA6": "2ba56763635d81b45201a980a64e8322149a980ca585c7d032a17473fad7c635"
+      },
+      "timestamp": "2026-08-12T23:19:05.523Z",
+      "commit_sha_or_pending": "c3828adb7ac508159c3d2541c3bf6bc11acaa45a",
+      "qa7_complete": false
+    },
+    {
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+      "rebase_id": "ea-rebase-ca476b4698a6-c1d90fceefe9",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-13T02:07:54.755Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: new epoch from predecessor ea-baseline-c3828adb7ac5-dfa803530b9d; invalidate QA1-QA6; rerun QA1-QA6 then QA7; do not rewrite hashes inside the old baseline."
+      },
+      "predecessor_baseline_id": "ea-baseline-c3828adb7ac5-dfa803530b9d",
+      "new_baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
+      "reason": "Protected product mutation after QA7 product repair (terminal scope_redirect and G-output must not grant P money tools) creates a new acceptance epoch. Predecessor hashes are history; QA1-QA6 must rerun.",
+      "product_commit": "ca476b4698a6f1ffdad88f814254bdc0449545f8",
+      "changed_protected_paths": [
+        "services/api-nest/src/ai/ai.engine.ts",
+        "services/api-nest/src/ai/assistant.service.ts",
+        "services/api-nest/src/ai/coach.orchestrator.ts"
+      ],
+      "changed_nonprotected_support_paths": [
+        "services/ai-platform/src/answer-guard.cjs",
+        "services/ai-platform/src/index.cjs",
+        "services/ai-platform/src/index.d.ts",
+        "tooling/verify/ai-guard-authority.cjs",
+        "tooling/engine-acceptance/lib/qa7-coach-executor.cjs"
+      ],
+      "old_prompt_hash": "3471a3bc2712cbeb85414ec848987996dac0d1a2ddab9fed3de968c6a8bc6079",
+      "new_prompt_hash": "7bed3fd180be97f04beb5a59cd16a9543f17e93c57b1c23ce47930e7b6e20ffc",
+      "old_protected_manifest_hash": "dfa803530b9d61376cdb8ff2a86e9dbf14b1400bd8ff773be05b5dbabe5bc35f",
+      "new_protected_manifest_hash": "c1d90fceefe9cae728e1e447eea85335c181ad85049cf5f97cd673abd5b9d5c2",
+      "eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088",
+      "acceptance_workflow_hash": "7895541fa754124e1b00a4b6b8bf293e69ee1e4cc9c156c50af4760c02466786",
+      "invalidated_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6"
+      ],
+      "required_rerun_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7"
+      ],
+      "predecessor_suite_checksums": {
+        "QA1": "61c4ffa5e370fb58d1c06025fc5fb82e375854beabbea33a3575f9adc2edc141",
+        "QA2": "839c9155c90a68f61eacb03b74900cd7670850d0c32ddd079e51bf4e8e82de85",
+        "QA3": "ed6c9ac394df286929c1eb110683236106f72ae969d1f85c3566aa1f37468817",
+        "QA4": "99b29659f9d05e90d97c0fc52e252cd9371281b02afe1ab05306cf30d92e12bd",
+        "QA5": "d46ffc2e7519c121c6b4d7c47c4a73bab4b448b0bb5101f926263b9179c99624",
+        "QA6": "285c8c763d34756781ef78900ee9f9ef86060268da9e7ce0bd1ab52ea90590bf"
+      },
+      "timestamp": "2026-08-13T02:07:54.755Z",
+      "commit_sha_or_pending": "ca476b4698a6f1ffdad88f814254bdc0449545f8",
+      "qa7_complete": false
+    },
+    {
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+      "rebase_id": "ea-rebase-2c7b9cffd323-1e2ce00bd6a1",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-13T03:04:37.142Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: new epoch from predecessor ea-baseline-ca476b4698a6-c1d90fceefe9; invalidate QA1-QA6; rerun QA1-QA6 then QA7; do not rewrite hashes inside the old baseline."
+      },
+      "predecessor_baseline_id": "ea-baseline-ca476b4698a6-c1d90fceefe9",
+      "new_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "reason": "Protected schema mutation: ai_logs.answer_path CHECK now allows scope_redirect so HTTP persist does not 500. Prompt/eval/workflow hashes MATCH predecessor; QA1-QA6 must rerun.",
+      "product_commit": "2c7b9cffd3234d2deee9fd14254413bc4b751c37",
+      "changed_protected_paths": [
+        "supabase/migrations/20260813025116_ai_logs_answer_path_scope_redirect.sql"
+      ],
+      "changed_nonprotected_support_paths": [
+        "tooling/verify/ai-scope-guard.cjs",
+        "tooling/verify/fixtures/migrations-applied.v1.json",
+        "tooling/engine-acceptance/lib/product-rebase.cjs",
+        "tooling/engine-acceptance/selftest-product-rebase.cjs"
+      ],
+      "old_prompt_hash": "7bed3fd180be97f04beb5a59cd16a9543f17e93c57b1c23ce47930e7b6e20ffc",
+      "new_prompt_hash": "7bed3fd180be97f04beb5a59cd16a9543f17e93c57b1c23ce47930e7b6e20ffc",
+      "old_protected_manifest_hash": "c1d90fceefe9cae728e1e447eea85335c181ad85049cf5f97cd673abd5b9d5c2",
+      "new_protected_manifest_hash": "1e2ce00bd6a1338d7cf3ee94c21639bdaa3d691e2aabe6ab3c2c24dcf2c4a34e",
+      "eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088",
+      "acceptance_workflow_hash": "7895541fa754124e1b00a4b6b8bf293e69ee1e4cc9c156c50af4760c02466786",
+      "invalidated_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6"
+      ],
+      "required_rerun_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7"
+      ],
+      "predecessor_suite_checksums": {
+        "QA1": "cf3ca8bb6315e2bf99278ff8fe4273f5e0f254a9d7957e321ecdbf5eccf59c40",
+        "QA2": "9405f3ac9ae762a3c2929da70cdc9655afec72a1af4fbe4a39a1a617f3dbeaf4",
+        "QA3": "f9138265dd9615177b69f142fd7f55706123ccd1fea3fccb56aa9a17f0ceda6d",
+        "QA4": "59a5b188377561baa1ad28191c8f71d0e551c5b314679e64c5cf2927608df56b",
+        "QA5": "408a4102d816a49662b3ed7cebca1ac06d6045d16f5673caac6bc088535fa4de",
+        "QA6": "8d321bf24fd81116b1ffa0df1d3667f3c89e1658aa7d09e8f878f1970f91c1b9"
+      },
+      "timestamp": "2026-08-13T03:04:37.142Z",
+      "commit_sha_or_pending": "2c7b9cffd3234d2deee9fd14254413bc4b751c37",
+      "qa7_complete": false
+    },
+    {
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+      "rebase_id": "ea-rebase-fdf692cb8a02-d532a6d7958b",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-13T20:28:48.168Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: Human/PO protected product repair wave (admin boundary + RBAC, admin operator identity, controlled domain clock seam, privacy purge/anonymize/tombstone, postgres pool error recovery, narrow privacy index migration) is complete. Executing the single governed V2 L8 rebase per ENGINE_ACCEPTANCE_REBASE_POLICY_V2. QA1-QA8 must rerun for the new epoch; QA9 aggregation is stale until current-epoch discovery evidence exists."
+      },
+      "predecessor_baseline_id": "ea-baseline-2c7b9cffd323-1e2ce00bd6a1",
+      "new_baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "reason": "Protected product mutation creates a new acceptance epoch. Predecessor hashes are history; discovery suites QA1-QA8 must rerun; QA9 aggregation is stale and must rerun only after current-epoch discovery evidence exists. Do not fabricate a verdict at rebase time.",
+      "product_commit": "fdf692cb8a02de01821f126f5ed7f09788c9eec5",
+      "changed_protected_paths": [
+        "services/api-nest/clock.core.cjs",
+        "services/api-nest/src/adapters/adapters.admin.controller.ts",
+        "services/api-nest/src/ai/ai-logs.admin.controller.ts",
+        "services/api-nest/src/ai/ai-pick.admin.controller.ts",
+        "services/api-nest/src/ai/shadow-replay.admin.controller.ts",
+        "services/api-nest/src/app.module.ts",
+        "services/api-nest/src/auth/auth.controller.ts",
+        "services/api-nest/src/auth/auth.module.ts",
+        "services/api-nest/src/auth/auth.service.ts",
+        "services/api-nest/src/auth/privacy-account.service.ts",
+        "services/api-nest/src/common/admin-capabilities.ts",
+        "services/api-nest/src/common/admin-guard.selftest.ts",
+        "services/api-nest/src/common/admin-operator.decorator.ts",
+        "services/api-nest/src/common/admin-rbac.policy.ts",
+        "services/api-nest/src/common/admin-token.ts",
+        "services/api-nest/src/common/admin.guard.ts",
+        "services/api-nest/src/common/clock.ts",
+        "services/api-nest/src/common/common.module.ts",
+        "services/api-nest/src/common/index.ts",
+        "services/api-nest/src/compliance/kyc.admin.controller.ts",
+        "services/api-nest/src/db/postgres-recovery.selftest.ts",
+        "services/api-nest/src/db/postgres.ts",
+        "services/api-nest/src/execution-policy/execution-policy.admin.controller.ts",
+        "services/api-nest/src/inbox/ops-inbox.admin.controller.ts",
+        "services/api-nest/src/ledger/ledger.admin.controller.ts",
+        "services/api-nest/src/loop/day-pulse.service.ts",
+        "services/api-nest/src/membership/membership.admin.controller.ts",
+        "services/api-nest/src/missions/mission.accrual.service.ts",
+        "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
+        "services/api-nest/src/opportunities/participate.service.ts",
+        "services/api-nest/src/opportunities/user-opportunity-override.admin.controller.ts",
+        "services/api-nest/src/referral/referral.admin.controller.ts",
+        "services/api-nest/src/referral/referral.share.service.ts",
+        "services/api-nest/src/risk/risk.admin.controller.ts",
+        "services/api-nest/src/simulation/platform-reserve.admin.controller.ts",
+        "services/api-nest/src/simulation/simulation.admin.controller.ts",
+        "services/api-nest/src/trades/trades.execution.service.ts",
+        "services/api-nest/src/wallet/deposit-config.admin.controller.ts",
+        "services/api-nest/src/wallet/deposit-dispute.admin.controller.ts",
+        "services/api-nest/src/wallet/krw-deposit.admin.controller.ts",
+        "services/api-nest/src/wallet/withdraw-credentials.admin.controller.ts",
+        "supabase/migrations/20260813202305_privacy_purge_anonymize_indexes.sql"
+      ],
+      "changed_nonprotected_support_paths": [
+        "package.json",
+        "tooling/verify/admin-boundary.cjs",
+        "tooling/verify/db-recovery.cjs",
+        "tooling/verify/domain-by-path.cjs",
+        "tooling/verify/domain-clock.cjs",
+        "tooling/verify/gate-tiers.cjs",
+        "tooling/verify/privacy-purge.cjs",
+        "tooling/verify/fixtures/migrations-applied.v1.json"
+      ],
+      "old_prompt_hash": "7bed3fd180be97f04beb5a59cd16a9543f17e93c57b1c23ce47930e7b6e20ffc",
+      "new_prompt_hash": "4b8b46a36a97e7b7553ff709ee46d377edac47cada38325e3eab5ae00f78c189",
+      "old_protected_manifest_hash": "1e2ce00bd6a1338d7cf3ee94c21639bdaa3d691e2aabe6ab3c2c24dcf2c4a34e",
+      "new_protected_manifest_hash": "d532a6d7958b64729f74ab0de99ce8f816ca2cae20d8c7c6f9619af5ff992f76",
+      "eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088",
+      "acceptance_workflow_hash": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
+      "predecessor_suite_checksums": {
+        "QA1": "ed28ae09e2baa795a2d43e8a1c31d6d37a648543bd06ef3c9f86b2bd57ddde89",
+        "QA2": "e3f5f2b99e3335fe3115c3e1c439a783e5958e5bdece30089ab1d66408e4ae86",
+        "QA3": "4cc3fef1063c81d5831efafd663c62be2c9bd1b5012458729874c5d43a87827c",
+        "QA4": "00050cc82c457eae23f13fb361f8b8061915b4465455fb653864770fd756a57e",
+        "QA5": "c4ac94532083d9be5908f07ac9b42144453ba2eac1601b61005f83fa9a390453",
+        "QA6": "6dcd672cb5593fe6d403cb969e23be14df7318e3d676efe51007768bef6859bd",
+        "QA8": "0d2b88fa67f6ca42f08cc34c733a1bedc4f00e049d98e7be23fcd420cb547260",
+        "QA9": "d27aef5da32621d0b57199445d4fb1ee0726b87a1a7b0fcf36351d7b11d326a8"
+      },
+      "timestamp": "2026-08-13T20:28:48.168Z",
+      "commit_sha_or_pending": "fdf692cb8a02de01821f126f5ed7f09788c9eec5",
+      "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
+      "invalidated_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA8"
+      ],
+      "required_rerun_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7",
+        "QA8"
+      ],
+      "stale_aggregation_phases": [
+        "QA9"
+      ],
+      "qa7_complete": false,
+      "qa8_complete": false,
+      "qa9_complete": false,
+      "qa9_verdict_issued": false
+    },
+    {
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+      "rebase_id": "ea-rebase-64b0f8a6d984-3657543f36b5",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-14T16:41:33.127Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: PTF-00C-R1 provider resilience closure (heartbeat idempotency ledger, nested-retry elimination, tick runtime budget, circuit-breaker honesty, real fault-injection harnesses) plus retained PTF-00C price-denomination/FX/eBay-resilience repairs constitute protected product mutation since predecessor baseline. New epoch required; QA1-QA8 must rerun; QA9 aggregation stale until current-epoch discovery evidence exists. Directed by PO closure mandate PTF-00C-R1."
+      },
+      "predecessor_baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
+      "new_baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+      "reason": "Protected product mutation creates a new acceptance epoch. Predecessor hashes are history; discovery suites QA1-QA8 must rerun; QA9 aggregation is stale and must rerun only after current-epoch discovery evidence exists. Do not fabricate a verdict at rebase time.",
+      "product_commit": "64b0f8a6d984765a6b9a1533d4e6dd94ba8720c5",
+      "changed_protected_paths": [
+        "schemas/fx-snapshot.v1.json",
+        "schemas/listing.v1.json",
+        "schemas/price-observation.v1.json",
+        "services/api-nest/src/adapters/adapters.admin.service.ts",
+        "services/api-nest/src/adapters/adapters.mi.ts",
+        "services/api-nest/src/adapters/adapters.module.ts",
+        "services/api-nest/src/adapters/adapters.types.ts",
+        "services/api-nest/src/adapters/provider-health.selftest.ts",
+        "services/api-nest/src/adapters/provider-health.service.ts",
+        "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+        "services/api-nest/src/opportunities/fx-snapshot.service.ts",
+        "services/api-nest/src/opportunities/opportunities.mi.ts",
+        "services/api-nest/src/opportunities/opportunities.module.ts",
+        "services/api-nest/src/opportunities/opportunities.user.service.ts",
+        "services/api-nest/src/types/market-intelligence-ptf-00c.d.ts",
+        "services/engine-rust/settlement_rule.cjs",
+        "supabase/migrations/20260814130000_ptf00c_fx_marketplace_normalization.sql",
+        "supabase/migrations/20260814130100_ptf00c_provider_runtime_health.sql",
+        "supabase/migrations/20260814130200_ptf00c_provider_health_last_tick_partial.sql",
+        "supabase/migrations/20260814140000_ptf00c_r1_provider_tick_ledger.sql"
+      ],
+      "changed_nonprotected_support_paths": [
+        "services/ai-platform/src/index.d.ts"
+      ],
+      "old_prompt_hash": "4b8b46a36a97e7b7553ff709ee46d377edac47cada38325e3eab5ae00f78c189",
+      "new_prompt_hash": "4b8b46a36a97e7b7553ff709ee46d377edac47cada38325e3eab5ae00f78c189",
+      "old_protected_manifest_hash": "d532a6d7958b64729f74ab0de99ce8f816ca2cae20d8c7c6f9619af5ff992f76",
+      "new_protected_manifest_hash": "3657543f36b5370c1054ff84656e2e3b317f77101c2638beb1d4063e6a2954e2",
+      "eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088",
+      "acceptance_workflow_hash": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
+      "predecessor_suite_checksums": {
+        "QA1": "f8019b30f0290511b76b98ff0d7c7207fb409cec9460847baf8fd61ba04aaf54",
+        "QA2": "bf0c98b070e208116c05f1a787a157f319931582bc59400a8fb13f517ffa0dd3",
+        "QA3": "682df388d2978cb09561f5ad1bd19200a41f1a98c82bc54bb5e3743b2ee9a7ae",
+        "QA4": "0b4f852ec9d65c042cf76008cbd89d9a939b5002bef711eb130c77b3c32004b5",
+        "QA5": "08eee6997c13bb4e88302f1446f909dda0c9b3c7a614c0d5c3ca1b04a34bb759",
+        "QA6": "a06fdee79e6b7bdb2148914b35f91afbee14413c67426b8e4a78cb7321482861",
+        "QA8": "5231de9d4543f019a6031d2429c1916acf4184a3d995d1eb783177f03761cafe",
+        "QA9": "3afae085b474b14a35432aefa4928494bdb7841d571df34fc4a7b876ac3d2a98"
+      },
+      "timestamp": "2026-08-14T16:41:33.127Z",
+      "commit_sha_or_pending": "64b0f8a6d984765a6b9a1533d4e6dd94ba8720c5",
+      "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
+      "invalidated_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA8"
+      ],
+      "required_rerun_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7",
+        "QA8"
+      ],
+      "stale_aggregation_phases": [
+        "QA9"
+      ],
+      "qa7_complete": false,
+      "qa8_complete": false,
+      "qa9_complete": false,
+      "qa9_verdict_issued": false
+    }
+  ]
+}

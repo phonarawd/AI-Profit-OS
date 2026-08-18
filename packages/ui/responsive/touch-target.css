@@ -1,0 +1,22 @@
+/**
+ * §29.1 Law 2 — Touch target ≥48px
+ */
+.touch-target {
+  min-height: var(--touch-min, 48px);
+  min-width: var(--touch-min, 48px);
+  flex-shrink: 0;
+  padding-inline: clamp(0.75rem, 2cqi, 1.25rem);
+}
+
+.touch-target__label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+@container (max-width: 320px) {
+  .touch-target__label {
+    font-size: clamp(0.75rem, 4cqi, 0.875rem);
+  }
+}

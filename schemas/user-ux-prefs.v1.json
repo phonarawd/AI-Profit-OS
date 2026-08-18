@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/user-ux-prefs.v1.json",
+  "title": "UserUxPrefsV1",
+  "description": "UI §38.9·§50.1 · toneBand·fontScale·depositPref. NEVER: theme light/system · gender · EN locale switch.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "toneBand",
+    "fontScale",
+    "depositPref"
+  ],
+  "properties": {
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "toneBand": {
+      "type": "string",
+      "enum": [
+        "young",
+        "mid",
+        "senior"
+      ]
+    },
+    "fontScale": {
+      "type": "string",
+      "enum": [
+        "md",
+        "lg",
+        "xl"
+      ]
+    },
+    "depositPref": {
+      "type": "string",
+      "enum": [
+        "usdt",
+        "krw"
+      ],
+      "description": "Display default deposit tab only · engine USDT recommend unchanged"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/user-membership.v1.json",
+  "title": "UserMembershipV1",
+  "description": "Engine §0.0.7 membership ladder. NEVER: membership alone ⇒ MATCH_SUCCESS 100% · conflate referral tiers · Soft/Hard by grade.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "userId",
+    "membership",
+    "maxCapitalBand",
+    "dailyUserMatchCap",
+    "matchStrictness",
+    "dailyMatchesUsed"
+  ],
+  "properties": {
+    "userId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "membership": {
+      "type": "string",
+      "enum": [
+        "sprout",
+        "entry",
+        "core",
+        "high",
+        "vip"
+      ]
+    },
+    "maxCapitalBand": {
+      "type": "string",
+      "enum": [
+        "micro",
+        "small",
+        "mid",
+        "high",
+        "whale"
+      ]
+    },
+    "dailyUserMatchCap": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "matchStrictness": {
+      "type": "string",
+      "enum": [
+        "lenient",
+        "standard",
+        "tight",
+        "scarce",
+        "custom"
+      ]
+    },
+    "adminForce": {
+      "type": "boolean"
+    },
+    "aiPerkFlags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fulfillRate7d": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Display only · NEVER Rule input"
+    },
+    "dailyMatchesUsed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    }
+  }
+}

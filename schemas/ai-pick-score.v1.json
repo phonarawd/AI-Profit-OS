@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/ai-pick-score.v1.json",
+  "title": "AiPickScoreV1",
+  "description": "Engine ai-platform L2 AI PICK. Admin override 0 · L3 money 0 · sellSuccessRate input 0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "level",
+    "formulaId",
+    "featureVectorHash",
+    "aiConfidenceScore",
+    "rankingScore",
+    "isAiPick",
+    "threshold",
+    "tags",
+    "components"
+  ],
+  "properties": {
+    "schema": { "const": "ai-pick-score.v1" },
+    "level": { "const": "L2" },
+    "formulaId": { "const": "ai_pick_score_v1" },
+    "featureFormulaId": { "type": "string" },
+    "featureVectorHash": { "type": "string", "minLength": 8 },
+    "opportunityId": { "type": ["string", "null"] },
+    "userId": { "type": ["string", "null"] },
+    "aiConfidenceScore": { "type": "number", "minimum": 0, "maximum": 100 },
+    "rankingScore": { "type": "number", "minimum": 0, "maximum": 1 },
+    "isAiPick": { "type": "boolean" },
+    "threshold": { "const": 75 },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["ai_pick"] }
+    },
+    "components": { "type": "object" },
+    "weights": { "type": "object" },
+    "scoredAt": { "type": "string", "format": "date-time" }
+  },
+  "not": {
+    "anyOf": [
+      { "required": ["adminOverride"] },
+      { "required": ["sellSuccessRate"] },
+      { "required": ["successRatePercent"] }
+    ]
+  }
+}

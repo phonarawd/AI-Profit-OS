@@ -1,0 +1,14 @@
+---
+description: §49 double-entry · 버킷 불변 · 잔액 직접 UPDATE 금지.
+globs: "**/ledger/**,**/wallet/**,**/buckets/**,**/risk/**,**/trades/**,**/missions/**,**/referral/**,services/**/wallet*/**,services/**/ledger*/**"
+alwaysApply: false
+---
+
+# Money Ledger (§49)
+
+- Double-entry only · `ASC FOR UPDATE` · `idempotency_key`
+- 잔액 column **직접 UPDATE 금지**
+- 버킷: principal / profit / locked / practice — 합=부채
+- practice → profit/출금 승격 금지
+- 출금 기본 `mode=profit` · 원금 숨김 금지
+- CI: `verify:bucket-invariant` · `verify:withdraw-mode-default`

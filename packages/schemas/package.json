@@ -1,0 +1,11 @@
+﻿{
+  "name": "@aipo/schemas",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Workspace pointer to repo-root /schemas JSON contracts (SSOT). Do not fork fields here.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./root": "./src/root.ts"
+  }
+}

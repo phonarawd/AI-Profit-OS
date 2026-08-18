@@ -1,0 +1,579 @@
+{
+  "schema": "governance.engine-acceptance.qa2-result.v1",
+  "version": "1.0.0",
+  "suite_id": "QA2",
+  "run_id": "qa2-synthetic-personas-20260814",
+  "todoId": "qa2-synthetic-personas",
+  "measuredAt": "2026-08-14T18:34:42.869Z",
+  "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+  "mode": "tiny",
+  "kill_switch": {
+    "verified_before_checks": true,
+    "target_env": "local",
+    "hostname": "localhost",
+    "synthetic_account_namespace": "qa-synth-local"
+  },
+  "dual_dirty": {
+    "working_tree_clean": false,
+    "protected_scope_clean": true,
+    "forced_clean_forbidden": true
+  },
+  "completion_status": "COMPLETE",
+  "checks": {
+    "coverage_mapping": {
+      "check_id": "QA2_COVERAGE_MAPPING",
+      "status": "PASS",
+      "suite_id": "QA2",
+      "mappingCount": 5,
+      "kpi_forbidden": true,
+      "findings": [],
+      "resolved": [
+        {
+          "coverage_id": "COV-001",
+          "persona_id": "KR-09",
+          "journey_id": "J-DIRTY-RETRY-01",
+          "invariant_id": "INV-IDEMPOTENCY-01",
+          "critical": true,
+          "attack_face": null,
+          "journey_kind": "dirty",
+          "steps": [
+            "participate",
+            "timeout",
+            "retry-same-idempotency-key"
+          ]
+        },
+        {
+          "coverage_id": "COV-003",
+          "persona_id": "KR-11",
+          "journey_id": "J-DIRTY-ISOLATION-01",
+          "invariant_id": "INV-ISOLATION-01",
+          "critical": true,
+          "attack_face": "interleave",
+          "journey_kind": "dirty",
+          "steps": [
+            "userA-action",
+            "userB-interleave",
+            "token-cross",
+            "object-id-swap"
+          ]
+        },
+        {
+          "coverage_id": "COV-003b",
+          "persona_id": "KR-11",
+          "journey_id": "J-DIRTY-TOKEN-CROSS-01",
+          "invariant_id": "INV-ISOLATION-01",
+          "critical": true,
+          "attack_face": "token_cross",
+          "journey_kind": "dirty",
+          "steps": [
+            "userA-auth",
+            "userB-auth",
+            "use-A-token-on-B-resource",
+            "expect-deny"
+          ]
+        },
+        {
+          "coverage_id": "COV-003c",
+          "persona_id": "KR-11",
+          "journey_id": "J-DIRTY-IDOR-01",
+          "invariant_id": "INV-ISOLATION-01",
+          "critical": true,
+          "attack_face": "object_id_swap",
+          "journey_kind": "dirty",
+          "steps": [
+            "userA-object",
+            "userB-swap-object-id",
+            "expect-deny"
+          ]
+        },
+        {
+          "coverage_id": "COV-004",
+          "persona_id": "KR-05",
+          "journey_id": "J-HAPPY-01",
+          "invariant_id": "INV-LIFECYCLE-01",
+          "critical": true,
+          "attack_face": null,
+          "journey_kind": "happy",
+          "steps": [
+            "signup",
+            "profile",
+            "feed",
+            "participate",
+            "execute-tick*",
+            "peotteok",
+            "save",
+            "reconnect",
+            "mutate",
+            "delete-account"
+          ]
+        }
+      ]
+    },
+    "dirty_path_bias": {
+      "check_id": "QA2_DIRTY_PATH_BIAS",
+      "status": "PASS",
+      "dirty": 4,
+      "happy": 1,
+      "rule": "dirty > happy",
+      "kpi_note": "counts are observational bias only — not a KPI/SLA target",
+      "findings": []
+    },
+    "user_isolation": {
+      "check_id": "QA2_USER_ISOLATION_SURFACES",
+      "status": "PASS",
+      "invariant_id": "INV-ISOLATION-01",
+      "required_faces": [
+        "interleave",
+        "token_cross",
+        "object_id_swap"
+      ],
+      "failCount": 0,
+      "passCount": 3,
+      "faces": [
+        {
+          "attack_face": "interleave",
+          "invariant_id": "INV-ISOLATION-01",
+          "status": "PASS",
+          "findings": []
+        },
+        {
+          "attack_face": "token_cross",
+          "invariant_id": "INV-ISOLATION-01",
+          "status": "PASS",
+          "findings": [],
+          "child_verifies": []
+        },
+        {
+          "attack_face": "object_id_swap",
+          "invariant_id": "INV-ISOLATION-01",
+          "status": "PASS",
+          "findings": [],
+          "child_verifies": [
+            {
+              "script": "tooling/verify/wallet-kyc-session-auth.cjs",
+              "exitCode": 0,
+              "signal": null,
+              "ok": true,
+              "stdout": "[verify:wallet-kyc-session-auth] PASS\n",
+              "stderr": "",
+              "summary": "[verify:wallet-kyc-session-auth] PASS"
+            },
+            {
+              "script": "tooling/verify/home-money-read-contract.cjs",
+              "exitCode": 0,
+              "signal": null,
+              "ok": true,
+              "stdout": "[verify:home-money-read-contract] PASS — schema+GET /me/home-money-read+SDK+source/asOf/state · Engine todayPossible 0\n",
+              "stderr": "",
+              "summary": "[verify:home-money-read-contract] PASS — schema+GET /me/home-money-read+SDK+source/asOf/state · Engine todayPossible 0"
+            }
+          ]
+        }
+      ]
+    },
+    "synthetic_evidence": {
+      "check_id": "QA2_SYNTHETIC_JOURNEY_EVIDENCE",
+      "status": "PASS",
+      "mode": "tiny",
+      "selectedCount": 4,
+      "mappingPoolCount": 5,
+      "kpi_note": "selectedCount is not a KPI — observational only",
+      "evidence_required_fields": [
+        "seed",
+        "rng_version",
+        "clock_as_of",
+        "request_sequence"
+      ],
+      "findings": [],
+      "cases": [
+        {
+          "coverage_id": "COV-001",
+          "persona_id": "KR-09",
+          "journey_id": "J-DIRTY-RETRY-01",
+          "invariant_id": "INV-IDEMPOTENCY-01",
+          "attack_face": null,
+          "seed": 3277543503,
+          "rng_version": "aipo-ea-rng-v1",
+          "clock_as_of": "2026-08-14T18:34:42.869Z",
+          "clock_source": "wall_clock_iso",
+          "request_sequence": [
+            {
+              "seq": 0,
+              "step": "participate",
+              "method": "POST",
+              "path": "/api/v1/opportunities/:id/participate",
+              "actor": null,
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 1,
+              "step": "timeout",
+              "method": "SYNTH",
+              "path": "(timeout-after-participate)",
+              "actor": null,
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 2,
+              "step": "retry-same-idempotency-key",
+              "method": "POST",
+              "path": "/api/v1/opportunities/:id/participate",
+              "actor": null,
+              "expect": null,
+              "note": "same Idempotency-Key",
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": "qa-synth-key-390211860",
+                "body": null
+              }
+            }
+          ],
+          "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+          "model_identifier": null,
+          "configuration_fingerprint": "baae1279417d5cc97184a6708cca07a4",
+          "live_http": false,
+          "product_mutation": 0
+        },
+        {
+          "coverage_id": "COV-003",
+          "persona_id": "KR-11",
+          "journey_id": "J-DIRTY-ISOLATION-01",
+          "invariant_id": "INV-ISOLATION-01",
+          "attack_face": "interleave",
+          "seed": 193944830,
+          "rng_version": "aipo-ea-rng-v1",
+          "clock_as_of": "2026-08-14T18:34:42.869Z",
+          "clock_source": "wall_clock_iso",
+          "request_sequence": [
+            {
+              "seq": 0,
+              "step": "userA-action",
+              "method": "GET",
+              "path": "/api/v1/me/home-read",
+              "actor": "A",
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 1,
+              "step": "userB-interleave",
+              "method": "GET",
+              "path": "/api/v1/wallet/buckets",
+              "actor": "B",
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 2,
+              "step": "token-cross",
+              "method": "GET",
+              "path": "/api/v1/wallet/buckets",
+              "actor": "A-token-on-B",
+              "expect": "deny",
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 3,
+              "step": "object-id-swap",
+              "method": "GET",
+              "path": "/api/v1/inbox/:objectId",
+              "actor": "B-with-A-objectId",
+              "expect": "deny",
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            }
+          ],
+          "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+          "model_identifier": null,
+          "configuration_fingerprint": "34c39cf2e78a15e4339d8338af93c4f9",
+          "live_http": false,
+          "product_mutation": 0
+        },
+        {
+          "coverage_id": "COV-003b",
+          "persona_id": "KR-11",
+          "journey_id": "J-DIRTY-TOKEN-CROSS-01",
+          "invariant_id": "INV-ISOLATION-01",
+          "attack_face": "token_cross",
+          "seed": 240349089,
+          "rng_version": "aipo-ea-rng-v1",
+          "clock_as_of": "2026-08-14T18:34:42.869Z",
+          "clock_source": "wall_clock_iso",
+          "request_sequence": [
+            {
+              "seq": 0,
+              "step": "userA-auth",
+              "method": "POST",
+              "path": "/api/v1/auth/login",
+              "actor": "A",
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 1,
+              "step": "userB-auth",
+              "method": "POST",
+              "path": "/api/v1/auth/login",
+              "actor": "B",
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 2,
+              "step": "use-A-token-on-B-resource",
+              "method": "GET",
+              "path": "/api/v1/me/home-money-read",
+              "actor": "A-token",
+              "expect": "session-bound-only",
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 3,
+              "step": "expect-deny",
+              "method": "ASSERT",
+              "path": "(expect-deny-or-empty)",
+              "actor": null,
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            }
+          ],
+          "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+          "model_identifier": null,
+          "configuration_fingerprint": "02db31e8f31a99e4f7f51c3e1ba63eed",
+          "live_http": false,
+          "product_mutation": 0
+        },
+        {
+          "coverage_id": "COV-004",
+          "persona_id": "KR-05",
+          "journey_id": "J-HAPPY-01",
+          "invariant_id": "INV-LIFECYCLE-01",
+          "attack_face": null,
+          "seed": 2766204250,
+          "rng_version": "aipo-ea-rng-v1",
+          "clock_as_of": "2026-08-14T18:34:42.869Z",
+          "clock_source": "wall_clock_iso",
+          "request_sequence": [
+            {
+              "seq": 0,
+              "step": "signup",
+              "method": "POST",
+              "path": "/api/v1/auth/signup",
+              "actor": null,
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 1,
+              "step": "profile",
+              "method": "GET",
+              "path": "/api/v1/me/profile",
+              "actor": null,
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 2,
+              "step": "feed",
+              "method": "GET",
+              "path": "/api/v1/opportunities/feed",
+              "actor": null,
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 3,
+              "step": "participate",
+              "method": "POST",
+              "path": "/api/v1/opportunities/:id/participate",
+              "actor": null,
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 4,
+              "step": "execute-tick*",
+              "method": "POST",
+              "path": "/api/v1/trades/execute-tick",
+              "actor": null,
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 5,
+              "step": "peotteok",
+              "method": "POST",
+              "path": "/api/v1/me/peotteok/chat",
+              "actor": null,
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 6,
+              "step": "save",
+              "method": "PUT",
+              "path": "/api/v1/me/preferences",
+              "actor": null,
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 7,
+              "step": "reconnect",
+              "method": "GET",
+              "path": "/api/v1/me/home-read",
+              "actor": null,
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 8,
+              "step": "mutate",
+              "method": "PATCH",
+              "path": "/api/v1/me/profile",
+              "actor": null,
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            },
+            {
+              "seq": 9,
+              "step": "delete-account",
+              "method": "POST",
+              "path": "/api/v1/me/delete-account",
+              "actor": null,
+              "expect": null,
+              "note": null,
+              "sanitized": {
+                "authorization": "[REDACTED]",
+                "idempotencyKey": null,
+                "body": null
+              }
+            }
+          ],
+          "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+          "model_identifier": null,
+          "configuration_fingerprint": "05dcc28de7319f87b5c0fd1576f6fc4c",
+          "live_http": false,
+          "product_mutation": 0
+        }
+      ]
+    }
+  },
+  "all_checks_pass": true,
+  "defects_found": 0,
+  "defects_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0,
+    "P3": 0
+  },
+  "verdict_contribution": "ENGINE_QA_INCOMPLETE",
+  "next": "QA3_GENERATIVE_FUZZ",
+  "product_mutation": 0,
+  "kpi_forbidden": true,
+  "notes": [
+    "Personas×journeys×coverage mapping runner.",
+    "Dirty Path bias > Happy Path.",
+    "Isolation faces: interleave · token_cross · object_id_swap.",
+    "Evidence requires seed+rng_version+clock_as_of+request_sequence.",
+    "Local default mode=tiny smoke. Case counts are not KPIs.",
+    "Does not issue ENGINE_ACCEPTED_FOR_UI."
+  ],
+  "checksum": "21d12c7f4bf3d4c3f3062aa17b93051ac7fdb0979800b0ababb6da154b0c702e"
+}

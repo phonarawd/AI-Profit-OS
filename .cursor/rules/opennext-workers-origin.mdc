@@ -1,0 +1,40 @@
+---
+description: OpenNext web/ops는 Cloudflare Workers만 — Pages deploy·pages.dev origin 재발 금지.
+globs:
+  - infra/web/**
+  - infra/ops/**
+  - infra/domain.manifest.json
+  - tooling/deploy/cf-pages-*.cjs
+  - tooling/deploy/cf-origin-smoke.cjs
+  - tooling/deploy/cf-preflight.cjs
+  - workers/web-proxy/**
+  - workers/ops-proxy/**
+  - workers/_shared/opennext-origin.ts
+alwaysApply: false
+---
+
+# OpenNext Workers Origin Lock
+
+404 재발 원인(고정): OpenNext는 `.open-next/worker.js` + `.open-next/assets`를 만들고, `.open-next/cloudflare`는 init 조각뿐이다. 그걸 `wrangler pages deploy`하면 업로드 수 파일·전 경로 404.
+
+## SSOT
+
+| 항목 | 위치 |
+|------|------|
+| runtime / workersDev | `infra/domain.manifest.json` → `openNext` |
+| workers.dev subdomain | `cloudflare.workersDevSubdomain` |
+| proxy TARGET | `workers/_shared/opennext-origin.ts` |
+| wrangler | `infra/web|ops/wrangler.toml` → `main` + `[assets]` |
+
+## 필수
+
+- 배포 = `opennextjs-cloudflare deploy` (+ 배포 후 `cf-origin-smoke`)
+- 변경 후 `pnpm verify:opennext-workers-origin` PASS
+
+## 금지
+
+- `wrangler pages deploy`
+- `pages_build_output_dir`
+- deploy root = `.open-next/cloudflare`
+- proxy / bridge target = `*.pages.dev`
+- subdomain 추측(`quick` 등) — deploy 로그·manifest만

@@ -1,0 +1,211 @@
+{
+  "schema": "governance.engine-acceptance.qa1-result.v1",
+  "version": "1.0.0",
+  "suite_id": "QA1",
+  "run_id": "qa1-deterministic-truth-20260814",
+  "todoId": "qa1-deterministic-truth",
+  "measuredAt": "2026-08-14T18:34:20.132Z",
+  "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+  "kill_switch": {
+    "verified_before_checks": true,
+    "target_env": "local",
+    "hostname": "localhost",
+    "synthetic_account_namespace": "qa-synth-local"
+  },
+  "dual_dirty": {
+    "working_tree_clean": false,
+    "protected_scope_clean": true,
+    "forced_clean_forbidden": true
+  },
+  "completion_status": "COMPLETE",
+  "checks": {
+    "schemas_routes": {
+      "check_id": "QA1_SCHEMAS_ROUTES_CONTRACT",
+      "status": "PASS",
+      "failCount": 0,
+      "passCount": 8,
+      "items": [
+        {
+          "id": "CTR-MANIFEST",
+          "status": "PASS",
+          "findings": [],
+          "fileCount": 52
+        },
+        {
+          "id": "CTR-HOME-MONEY-READ",
+          "schema": "schemas/home-money-read.v1.json",
+          "routesFile": "services/api-nest/src/wallet/home-money-read.user.routes.ts",
+          "routeNeedle": "me/home-money-read",
+          "invariant_id": null,
+          "status": "PASS",
+          "findings": []
+        },
+        {
+          "id": "CTR-HOME-READ",
+          "schema": "schemas/home-read-model.v1.json",
+          "routesFile": "services/api-nest/src/home-read/home-read.user.routes.ts",
+          "routeNeedle": "me/home-read",
+          "invariant_id": "INV-LIFECYCLE-01",
+          "status": "PASS",
+          "findings": []
+        },
+        {
+          "id": "CTR-PARTICIPATE",
+          "schema": "schemas/participate-request.v1.json",
+          "routesFile": "services/api-nest/src/opportunities/opportunities.user.routes.ts",
+          "routeNeedle": "opportunities/:id/participate",
+          "invariant_id": "INV-LIFECYCLE-01",
+          "status": "PASS",
+          "findings": []
+        },
+        {
+          "id": "CTR-WALLET-BUCKETS",
+          "schema": "schemas/wallet-buckets.v1.json",
+          "routesFile": "services/api-nest/src/wallet/wallet.routes.ts",
+          "routeNeedle": "buckets",
+          "invariant_id": "INV-LEDGER-01",
+          "status": "PASS",
+          "findings": []
+        },
+        {
+          "id": "CTR-LEDGER-JOURNAL",
+          "schema": "schemas/ledger-journal.v1.json",
+          "routesFile": "services/api-nest/src/ledger/ledger.routes.ts",
+          "routeNeedle": "journals",
+          "invariant_id": "INV-LEDGER-01",
+          "status": "PASS",
+          "findings": []
+        },
+        {
+          "id": "CTR-TRADE-EXECUTION",
+          "schema": "schemas/trade-execution-state.v1.json",
+          "routesFile": "services/api-nest/src/trades/trades.user.routes.ts",
+          "routeNeedle": "execute-tick",
+          "invariant_id": "INV-LIFECYCLE-01",
+          "status": "PASS",
+          "findings": []
+        },
+        {
+          "id": "CTR-OPPORTUNITY-CARD",
+          "schema": "schemas/opportunity-card.v1.json",
+          "routesFile": "services/api-nest/src/opportunities/opportunities.user.routes.ts",
+          "routeNeedle": "opportunities",
+          "invariant_id": null,
+          "status": "PASS",
+          "findings": []
+        }
+      ]
+    },
+    "db_consistency": {
+      "check_id": "QA1_DB_CONSISTENCY",
+      "status": "PASS",
+      "invariant_id": "INV-LEDGER-01",
+      "migrationCount": 39,
+      "migrations": [
+        "20260808205842_extensions_vector.sql",
+        "20260808205844_identity_nest_auth.sql",
+        "20260808205846_ledger_accounts_journals.sql",
+        "20260808205848_wallet_deposit_withdraw.sql",
+        "20260808205850_opportunities_pricing.sql",
+        "20260808205853_ai_twin_memory.sql",
+        "20260808205857_referral_support_attribution.sql",
+        "20260808205901_rls_ledger_guards.sql",
+        "20260808210600_rls_security_hardening.sql",
+        "20260808224856_auth_oauth_passkey_stage_a_b.sql",
+        "20260808234957_deposit_config_fee_min_holding.sql",
+        "20260809000351_kyc_decision_audit.sql",
+        "20260809001004_withdraw_stepup_auth.sql",
+        "20260809002330_chain_sweeper.sql",
+        "20260809003413_risk_p49_abuse.sql",
+        "20260809010541_practice_grants_onboarding.sql",
+        "20260809010849_deposit_disputes.sql",
+        "20260809010858_referral_pool_fifo_clawback.sql",
+        "20260809023230_market_intelligence.sql",
+        "20260809023713_user_opportunity_overrides_schema_align.sql",
+        "20260809042549_mission_auto_accrual_fanout.sql",
+        "20260809100440_execution_policy_feed_audit.sql",
+        "20260809101114_user_membership_match_policy.sql",
+        "20260809102109_simulation_engine_m05_platform_reserve.sql",
+        "20260809103208_ai_feature_platform_pick_eval_shadow.sql",
+        "20260809142108_execution_policy_day1_bootstrap.sql",
+        "20260809143754_user_opportunity_overrides_pin_cap_search_path.sql",
+        "20260809144814_catalog_runtime_day1_fx_bootstrap.sql",
+        "20260809222034_ops_inbox_hide_source_event.sql",
+        "20260810024643_growth_ticker_config.sql",
+        "20260811062000_idempotency_request_fingerprint.sql",
+        "20260811062100_ledger_outbox_events.sql",
+        "20260811194832_shadow_replay_advisory_label.sql",
+        "20260813025116_ai_logs_answer_path_scope_redirect.sql",
+        "20260813202305_privacy_purge_anonymize_indexes.sql",
+        "20260814130000_ptf00c_fx_marketplace_normalization.sql",
+        "20260814130100_ptf00c_provider_runtime_health.sql",
+        "20260814130200_ptf00c_provider_health_last_tick_partial.sql",
+        "20260814140000_ptf00c_r1_provider_tick_ledger.sql"
+      ],
+      "live_db_probe": {
+        "status": "NOT_RUN",
+        "reason": "QA1 local deterministic path = static migrations + bucket-invariant; live SQL optional via CI only"
+      },
+      "child_verifies": [
+        {
+          "script": "tooling/verify/bucket-invariant.cjs",
+          "exitCode": 0,
+          "signal": null,
+          "ok": true,
+          "stdout": "[verify:bucket-invariant] PASS (posting·ASC FOR UPDATE·idempotency·provision·recon·admin_adjust)\n",
+          "stderr": "",
+          "summary": "[verify:bucket-invariant] PASS (posting·ASC FOR UPDATE·idempotency·provision·recon·admin_adjust)"
+        }
+      ],
+      "findings": []
+    },
+    "idempotency_split": {
+      "check_id": "QA1_IDEMPOTENCY_SPLIT",
+      "status": "PASS",
+      "separated": true,
+      "axes": [
+        {
+          "invariant_id": "INV-IDEMPOTENCY-01",
+          "title": "same_key_same_payload_reuse",
+          "status": "PASS",
+          "findings": []
+        },
+        {
+          "invariant_id": "INV-IDEMPOTENCY-03",
+          "title": "same_key_conflicting_payload_reject",
+          "status": "PASS",
+          "findings": [],
+          "child_verifies": [
+            {
+              "script": "tooling/verify/idempotency-conflict-detection.cjs",
+              "exitCode": 0,
+              "signal": null,
+              "ok": true,
+              "stdout": "[verify:idempotency-conflict-detection] PASS (fingerprint helper · mig · ledger+participate conflict path · catalog)\n",
+              "stderr": "",
+              "summary": "[verify:idempotency-conflict-detection] PASS (fingerprint helper · mig · ledger+participate conflict path · catalog)"
+            }
+          ]
+        }
+      ],
+      "findings": []
+    }
+  },
+  "all_checks_pass": true,
+  "defects_found": 0,
+  "defects_counts": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0,
+    "P3": 0
+  },
+  "verdict_contribution": "ENGINE_QA_INCOMPLETE",
+  "next": "QA2_SYNTHETIC_PERSONAS",
+  "product_mutation": 0,
+  "notes": [
+    "Deterministic static + child verify oracles only.",
+    "Does not issue ENGINE_ACCEPTED_FOR_UI.",
+    "Idempotency INV-01 and INV-03 kept separate."
+  ],
+  "checksum": "cfb2a8c1a5ab2f40d8056dc93b1907bd626dc1ac891d22655ac714461e0a192b"
+}

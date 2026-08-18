@@ -1,0 +1,51 @@
+---
+description: File-Serial · 한 채팅=한 todo · completed 재실행 금지 · Index §111
+globs: ".cursor/plans/**,AGENTS.md,docs/CONSTITUTION_BOOTSTRAP.md"
+alwaysApply: false
+---
+
+# Plan File-Serial (Index §111 · AGENTS §5)
+
+## 절대 규칙
+
+1. **한 파일** frontmatter `todos` = **위 → 아래**만 실행
+2. **파일 N** todos 전부 `completed`(pending=0) 전 **파일 N+1 착수 금지**
+3. **한 채팅 = 한 todo** · 접두사 `[grok-4.5|256K]` / `[composer-2.5|200K]`
+4. `status: completed` todo **재실행·재오픈 금지** — 다음은 **첫 pending**부터
+5. todo `completed` + domain verify PASS → **T0 commit** · push는 **세션 stop / “푸시해”** (`git-auto-commit-push.mdc`)
+
+## 직렬 순서
+
+`00 Index` → `01 Money` → `02 Engine` → `02.5 Engine Acceptance QA` → `03 UI` → `04 Admin` → `05 PWA` → `06 Infra`
+
+03 UI 착수 = verdict `ENGINE_ACCEPTED_FOR_UI` + `acceptance_scope.unchanged` only.
+
+## 편집 SSOT
+
+| 위치 | 역할 |
+|------|------|
+| `.cursor/plans/ai_profit_os_*.plan.md` | **todo status 편집 유일 SSOT** |
+| `%USERPROFILE%\.cursor\plans\` | UI 경로 · workspace와 **hardlink**(동일 inode) |
+
+- sync: `pnpm cursor:sync-plans` (hardlink 우선) · verify: `pnpm verify:plans-ssot`
+- launch 플랜 = **ARCHIVE** — 실행 큐로 사용 금지
+
+## 문서화 예외만 (임의 일반화 금지)
+
+- **예외1** Money 가산 — **소멸**(v7.22.49)
+- **예외2** `engine-ebay-identity-match-ingest` — **활성** · 03 UI 재차단 **금지** · Engine §0.10 U15
+
+## UI 프레젠테이션 (todo 재오픈 아님)
+
+`status: completed` UI implementation todo(예: H7)를 **재오픈하지 않는다.**
+그러나 해당 화면이 Founder-approved Visual Master를 갖고 `visual-locks` LOCK 전이면,
+Visual Master 불일치는 시각 결함이며 프레젠테이션 코드 수정이 허용된다.
+이 수정은 todo 재실행이 아니라 PRESENTATION IMPLEMENTATION 교정이다
+(`.cursor/rules/ui-authority-governance.mdc`).
+Money·Engine·Auth·API 의미는 이 절의 대상이 아니다.
+
+## 금지
+
+- §18 Milestone만 보고 **도메인 교차 병행**
+- Pre-UI CLOSED todo **“0부터 재작성”**
+- `%USERPROFILE%\.cursor\plans\` 에서 todo status 수정

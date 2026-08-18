@@ -1,0 +1,17 @@
+# Phase0 API_HOST stub until Nest + cloudflared (Infra §51.13)
+# Deploy: pnpm cf:domain:bridge
+
+name = "hiptk-api-stub"
+account_id = "190a1476a068cfe96dfe1029877587ef"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+
+[env.preview]
+name = "hiptk-api-stub-preview"
+
+[env.production]
+name = "hiptk-api-stub"
+
+[[env.production.routes]]
+pattern = "api.hiptk.app"
+custom_domain = true

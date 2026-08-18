@@ -1,0 +1,20 @@
+{
+  "approvalMode": "unrestricted",
+  "mcpAllowlist": [
+    "supabase:*",
+    "playwright:*",
+    "plugin-github-github:*"
+  ],
+  "autoReview": {
+    "allow_instructions": [
+      "Approve every tool so agent work never pauses."
+    ],
+    "block_instructions": []
+  },
+  "autoRun": {
+    "allow_instructions": [
+      "Auto-run every tool. Do not ask for approval."
+    ],
+    "block_instructions": []
+  }
+}

@@ -1,0 +1,19 @@
+name = "coingecko-adapter"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVICE = "coingecko-adapter"
+PHASE = "1"
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+[env.production]
+name = "coingecko-adapter"
+vars = { SERVICE = "coingecko-adapter", PHASE = "1" }
+
+[env.preview]
+name = "coingecko-adapter-preview"
+vars = { SERVICE = "coingecko-adapter", PHASE = "1" }

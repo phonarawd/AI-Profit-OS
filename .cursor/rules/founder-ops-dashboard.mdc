@@ -1,0 +1,40 @@
+---
+description: Admin /admin Founder Dashboard는 왕초보 4질문·쉬운한글·광고 긴급정지·사람 할 일만
+globs: "apps/admin/**"
+alwaysApply: false
+---
+
+# FOUNDER_OPS_DASHBOARD_RULE (v7.24.6)
+
+> **지금 Admin runtime 구현 금지.** UX contract Owns = 04 `admin-ops` · 광고 mutation runtime = 06.
+> sidebar 13번째 모듈 금지. `/admin` + `admin-ops`에 흡수.
+
+## 항상 답할 4질문
+
+1. 지금 정상인가?
+2. 시스템이 지금 무엇을 하고 있는가?
+3. 왜 그렇게 했는가?
+4. 내가 해야 할 일이 있는가?
+
+기존 `오늘처리/막힘/위험/최근변경`을 이 4질문에 매핑한다. TOP5·12모듈 IA는 유지.
+
+## 최상단 (개발자 용어 기본화면 0)
+
+전체 시스템 · 오늘/이번 달 광고비(캡 대비) · Meta/TikTok/Google 상태 · 전환 추적 · SEO · 배포 · Cursor 자동운영 · 현재 자동 처리 중 N건 · 내가 해야 할 일 · `[모든 광고 긴급 정지]`.
+
+`[모든 광고 긴급 정지]` ≠ 기존 TOP5 거래 긴급 정지(participate/withdraw/deposit). 광고비 지출만 멈춘다.
+
+## 방금 시스템이 한 일
+
+모든 자동 행동은 무엇 / 왜 / 얼마가 바뀌었는가 / 어떤 정책·한도 안인지 / 현재 정상인가 / Founder 할 일이 있는가를 설명한다. 기술 로그는 Advanced만.
+
+## Human Required Queue
+
+사람만: 계정 재연결, OAuth, 새 channel/account, Standing Authorization 변경, 월 한도 증가, production deploy 승인, Money/KRW Confirm, 외부 사람 verification.
+
+올리지 않음(자동 처리 중): transient 429 · 자동 retry · Cursor가 고칠 수 있는 CI · SEO 자동 수정 PR · CAPI retryable · provider temporary outage.
+
+## 탭 혼동 금지
+
+`/admin/growth?tab=campaigns` = 이벤트/프로모.
+유료 광고 상세 = `/admin/growth?tab=paid-ads` (child/tab · sidebar 13 금지).

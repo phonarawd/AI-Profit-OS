@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "url": "https://mcp.supabase.com/mcp?project_ref=mgsytcetsiecllmhcyox"
+    },
+    "playwright": {
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "@playwright/mcp@0.0.79",
+        "--headless",
+        "--browser=chrome",
+        "--executable-path=C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "--isolated"
+      ]
+    }
+  }
+}

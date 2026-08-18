@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/deposit-config.v1.json",
+  "title": "DepositConfigV1",
+  "description": "Admin §37 · KRW rep account + TronGrid/onchain. NEVER: shared user deposit address · poll watcher · PG사 fields.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "configVersion",
+    "krw",
+    "usdtOnchain",
+    "withdrawGuards",
+    "pricingGuards",
+    "updatedAt",
+    "updatedByAdminId"
+  ],
+  "properties": {
+    "configVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "krw": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bankName",
+        "accountNumber",
+        "accountHolder",
+        "noticeKo",
+        "krwWithdrawFeeKrw"
+      ],
+      "properties": {
+        "bankName": {
+          "type": "string"
+        },
+        "accountNumber": {
+          "type": "string"
+        },
+        "accountHolder": {
+          "type": "string"
+        },
+        "noticeKo": {
+          "type": "string"
+        },
+        "krwWithdrawFeeKrw": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Money §11.1 · Day-1 default 0 · Admin deposit-settings"
+        }
+      }
+    },
+    "usdtOnchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "network",
+        "tronGridBaseUrl",
+        "chainWatcherMode",
+        "usdtUiConfirmations",
+        "usdtLedgerConfirmations",
+        "usdtContract",
+        "hotWalletXpubRef",
+        "treasuryHotAddressRef",
+        "energyDelegateEnabled",
+        "usdtWithdrawNetworkFeeUsdt",
+        "minTrxStakeForSweeper"
+      ],
+      "properties": {
+        "network": {
+          "const": "TRC20"
+        },
+        "tronGridBaseUrl": {
+          "type": "string",
+          "format": "uri",
+          "default": "https://api.trongrid.io"
+        },
+        "tronGridApiKey": {
+          "type": "string"
+        },
+        "chainWatcherMode": {
+          "const": "event_stream"
+        },
+        "usdtUiConfirmations": {
+          "type": "integer",
+          "const": 1
+        },
+        "usdtLedgerConfirmations": {
+          "type": "integer",
+          "const": 19
+        },
+        "usdtContract": {
+          "const": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
+        },
+        "hotWalletXpubRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "treasuryHotAddressRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "energyDelegateEnabled": {
+          "type": "boolean"
+        },
+        "usdtWithdrawNetworkFeeUsdt": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Money §11.1 · Day-1 default 1 · Admin deposit-settings"
+        },
+        "minTrxStakeForSweeper": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Money §43.2.1 · Day-1 default 5000 TRX"
+        },
+        "sweeperPaused": {
+          "type": "boolean",
+          "default": false,
+          "description": "Admin pause · user credit 불변 · 집금만 중지"
+        }
+      }
+    },
+    "withdrawGuards": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minHoldingHours"
+      ],
+      "properties": {
+        "minHoldingHours": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 24,
+          "description": "Money §11.2 · principal|combined only · profit-only 미적용 · 구호칭 compliance.minHoldingHours 승계"
+        }
+      }
+    },
+    "pricingGuards": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "priceStaleMaxSec",
+        "requireMinProfitUsdt"
+      ],
+      "properties": {
+        "priceStaleMaxSec": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 3
+        },
+        "requireMinProfitUsdt": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp"
+    },
+    "updatedByAdminId": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
