@@ -49,11 +49,10 @@ const harnessFiles = [
   "tooling/verify/responsive/tests/canon-structure.spec.cjs",
   "tooling/verify/responsive/run-playwright.cjs",
   "packages/ui/canon/visual-locks.v1.json",
-  ".cursor/rules/visual-master-intake.mdc",
 ];
 for (const f of harnessFiles) mustExist(f);
 
-// --- Visual Master LOCK registry (visual-master-intake.mdc · ADR-013 exception) ---
+// --- visual-locks registry (historical Visual Master LOCK = retired · not authority) ---
 let visualLocksDoc;
 try {
   visualLocksDoc = loadVisualLocks(root);
@@ -196,8 +195,8 @@ for (const s of surfaces) {
     );
   }
   // ADR-013 default: every surface's Canon wire must forbid photo_pixel_match.
-  // Exception: Owner-approved Visual Master → Visual Contract → visual-locks.v1.json
-  // status=locked (visual-master-intake.mdc). Registry empty today = no exception applies.
+  // Historical Visual Master LOCK exception = retired (visual-master-intake.mdc deleted).
+  // VISUAL_TRUTH = APPROVED_FIGMA_ONLY. Registry empty = no legacy exception.
   if (
     !lockedIds.has(s.id) &&
     !(s.forbidden || []).includes("photo_pixel_match")

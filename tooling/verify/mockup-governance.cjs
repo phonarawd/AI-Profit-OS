@@ -1,5 +1,18 @@
 /**
+ * RETIRED 2026-08-18 — Greenfield Consumer Reset.
+ * ACTIVE EXECUTABLE AUTHORITY = NO.
+ * Do not require deleted Cursor rules:
+ * mockup-governance.mdc · visual-master-intake.mdc · ui-authority-governance.mdc
+ * Historical body below is not executed.
+ */
+console.log(
+  "[verify:mockup-governance] RETIRED — not active authority (VISUAL_TRUTH=APPROVED_FIGMA_ONLY)",
+);
+process.exit(0);
+
+/**
  * verify:mockup-governance — ADR-013 · photo mockup 0 · Canon authority
+ * HISTORICAL / not executed.
  */
 const fs = require("fs");
 const path = require("path");

@@ -4,7 +4,7 @@
 > Do not use this file as Visual SSOT. Do not recover pre-reset UI from Git.
 ---
 name: AI Profit OS — Index
-overview: v7.23.0 플랫폼 재설계 리베이스 채택 · 외부 d903eef7=REFERENCE ONLY · 실행 SSOT=00~06 해시 플랜 · 현재=00 R0 `platform-redesign-r0-inventory` · Runtime Phase(P0~P3)와 Redesign Stage(R0~R8) 분리 · completed 불변 · ADR-017 Light+Purple/5탭 새 라벨/OpenNext Workers only · v7.23.1(2026-08-16) ADR-018 Peotteok Visual Master Reset이 ADR-017 Home 시각(geometry) authority 승계·03 STEP5 Slice5/6 SUPERSEDED/STOPPED·Home Visual Master intake 대기(구현코드0).
+overview: v7.23.0 플랫폼 재설계 리베이스 채택 · 외부 d903eef7=REFERENCE ONLY · 실행 SSOT=00~06 해시 플랜 · 현재=00 R0 `platform-redesign-r0-inventory` · Runtime Phase(P0~P3)와 Redesign Stage(R0~R8) 분리 · completed 불변 · ADR-017 Light+Purple/5탭 새 라벨/OpenNext Workers only · v7.23.1(2026-08-16) ADR-018 Peotteok Visual Master Reset은 **HISTORICAL / SUPERSEDED / REFERENCE ONLY**(GREENFIELD 2026-08-18 · execution disabled). 현재 VISUAL_TRUTH=APPROVED_FIGMA_ONLY · Home Visual Master는 현재 권위가 아님.
 todos:
   - id: yahoo-jp-permanent-ban
     content: "[grok-4.5|256K] v7.22.32 yahoo_jp 영구 FORBIDDEN · Phase1+ 철회 · Engine/UI/ENV 0 · verify:listing-legs-day1"
@@ -134,11 +134,13 @@ isProject: false
 | Web/Ops host | **OpenNext Cloudflare Workers only** | `infra/domain.manifest.json openNext` origin SSOT · `wrangler pages deploy`/pages.dev origin 금지 |
 | PART9 | fetch→SDK→Nest→DB/ledger/auth binding 보존 | `HomePageV2`·병렬 데이터 파이프라인 금지 |
 | Money/Engine | 기존 completed mutation·Rule·ledger 불변 | R1은 read contract/adaptor와 확인된 eBay ingest gap만 |
-| **Home 시각 구현 authority** *(2.1 신규)* | **ADR-018 Peotteok Visual Master Reset**(Founder-approved Visual Master 중심) | ADR-017 Home 시각 권위(geometry/Hero/RightRail/Sidebar/색 적용)=SUPERSEDED/HISTORICAL · 테마 모드 문구(Light+Purple 단일 출시) 자체는 방향으로 유지되나 정확한 값은 ADR-018 §9 intake 후 재확정 |
+| **Home 시각 구현 authority** *(2.1 · GREENFIELD 2026-08-18)* | **APPROVED_FIGMA_ONLY** (Approved Figma 없음 → production Consumer presentation 0) | ADR-018 Visual Master + ADR-017 Home 시각 = **SUPERSEDED / HISTORICAL / REFERENCE ONLY · execution disabled**. 구 Visual Master/Canon/Contract/Git UI fallback 금지 |
 
 ### 2.1 ADR-018 Visual Master Reset (신규 · 시각 authority만 · 구현코드0)
 
-> **결정(2026-08-16 · Founder 승인):** [`packages/ui/canon/contracts/ADR-018-peotteok-visual-master-reset.md`](../../packages/ui/canon/contracts/ADR-018-peotteok-visual-master-reset.md)가 ADR-017의 **시각 디자인 권위**(geometry·spacing·Hero composition·RightRail/Sidebar 비율·색 적용·shadow/radius·반응형 시각 기하)를 종료하고 유일한 신규 Visual Authority로 승격되었다.
+> **GREENFIELD 2026-08-18 · EXECUTION DISABLED:** 본 절 ADR-018 Visual Master / Visual Contract / Canon visual = **HISTORICAL / SUPERSEDED / REFERENCE ONLY**. 현재 VISUAL_TRUTH = APPROVED_FIGMA_ONLY. 이 절을 현재 Home visual authority로 쓰지 말 것. Approved Figma 없음 → production Consumer presentation 구현 0.
+
+> **결정(2026-08-16 · Founder 승인 · 이후 SUPERSEDED):** [`packages/ui/canon/contracts/ADR-018-peotteok-visual-master-reset.md`](../../packages/ui/canon/contracts/ADR-018-peotteok-visual-master-reset.md)가 ADR-017의 **시각 디자인 권위**(geometry·spacing·Hero composition·RightRail/Sidebar 비율·색 적용·shadow/radius·반응형 시각 기하)를 종료하고 당시 신규 Visual Authority로 승격되었다(2026-08-18 Greenfield 이후 실행 권위 0).
 
 - **보존:** ADR-017의 비시각 기록(Founder ACK·conflict resolution history·rollback history) · `ledgerTotal`=COUNT 등 데이터 바인딩 지식 · 접근성 원칙 · API/state/routing · PART9 fetch/SDK/mapper/Auth/Ledger 경계 · Canon functional wire(route/state/factSurface/forbidden).
 - **종료:** ADR-017 산하에서 확정된 시각 결정(px geometry·Hero 480–600px·sidebar 240px·rightRail 320–360px 등)을 새 Home 구현의 기준으로 자동 채택하는 것.
@@ -147,7 +149,7 @@ isProject: false
 - **다음 허용 단계:** Founder-provided Home Visual Master intake (ADR-018 §9) — 이 전에 새 Home UI 구현 착수 금지.
 - **Change Control:** `governance/platform-redesign/change-control.v1.md` §6.5 `cc.adr018.peotteok-visual-master-reset` (L3).
 - **본 절 구현코드 0** — Governance/문서 정리만.
-- **UI governance align (2026-08-16):** 위 "구현코드0 / intake 전 착수 금지"는 ADR-018 **작성 세션**의 다음 단계다. H1 intake와 H7 presentation은 이후 완료되었다. 현재 구현은 Visual Master보다 상위 authority가 아니다. `visual-locks` LOCK 전 프레젠테이션 교정은 `.cursor/rules/ui-authority-governance.mdc`를 따른다. Money/Engine/Auth/API는 본 주로 열리지 않는다. H7 PASS ≠ 시각 승인.
+- **UI governance align (2026-08-16 · SUPERSEDED 2026-08-18):** 위 문단은 ADR-018 작성 세션의 이력이다. H1/H7 및 `ui-authority-governance.mdc` / `visual-locks` LOCK = **historical/reference only · execution disabled**. 현재 Consumer visual = APPROVED_FIGMA_ONLY(`.cursor/rules/greenfield-ui.mdc`). Money/Engine/Auth/API는 본 주로 열리지 않는다.
 
 ### 3. 실행 큐
 
@@ -223,7 +225,7 @@ R0 종료 전 `01` 이하 착수 금지. 이후에도 파일 순서는 유지한
 | **05** | PWA & Native | 기존 PWA/Store + certification pending **0** 후만 06 착수 |
 | **06** | Infra & Marketing | Marketing/Auth/adapter + R7/R8 + **v7.24.6 ads/cursor 가산** + **v7.24.7 `ads-autonomous-ops-release-certification`** pending **0** = 전 플랜 직렬 완료 |
 
-**v7.23 현재 큐:** 01/02/02.5 pending0 · **02.5 acceptance completed**(QA-0..QA-9 전부 `completed` — 이력: QA-0 `qa0-baseline-freeze` CLOSED로 시작해 QA1~9까지 순서대로 완료) · **verdict=`ENGINE_ACCEPTED_FOR_UI`(ISSUED) · `UI_UX_ENTRY_GATE=OPEN`**(baseline `ea-baseline-64b0f8a6d984-3657543f36b5` · `governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md` · `pnpm verify:engine-acceptance` 라이브 재확인, 2026-08-16 resync) · **실행 파일=03 UI**(03 자체의 ADR-018 Visual Master/Visual Contract/Implementation Contract 선행조건은 이 gate와 별개로 계속 적용됨 — Visual Master 없이 실제 runtime 착수 불가). Pre-UI Runtime Gate(E-R1~E-R8)=CLOSED(역할 중복0 · 02.5=진실 acceptance).
+**v7.23 현재 큐:** 01/02/02.5 pending0 · **02.5 acceptance completed**(QA-0..QA-9 전부 `completed` — 이력: QA-0 `qa0-baseline-freeze` CLOSED로 시작해 QA1~9까지 순서대로 완료) · **verdict=`ENGINE_ACCEPTED_FOR_UI`(ISSUED) · `UI_UX_ENTRY_GATE=OPEN`**(baseline `ea-baseline-64b0f8a6d984-3657543f36b5` · `governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md` · `pnpm verify:engine-acceptance` 라이브 재확인, 2026-08-16 resync) · **실행 파일=03 UI**(NEW APPROVED FIGMA 선행 · ADR-018 Visual Master/Visual Contract/Implementation Contract = historical/reference only · execution disabled — Approved Figma 없이 production Consumer presentation 착수 불가). Pre-UI Runtime Gate(E-R1~E-R8)=CLOSED(역할 중복0 · 02.5=진실 acceptance).
 
 ### v7.22.48→49 Pre-UI Runtime Gate — CLOSED (이력 · 흡수 SSOT=Engine §0.9 · E-R8 done)
 

@@ -91,14 +91,14 @@ const live = [
   "notification-prefs-default-on.cjs",
   // P0-1 — real JWT sign/verify/tamper/expiry round-trip (see jwt.core.cjs)
   "auth-jwt-runtime.cjs",
-  // PART1 korean-first-copy · mockup-governance · ux-design-system
+  // PART1 korean-first-copy · ux-design-system
+  // mockup-governance.cjs · canon-surfaces.cjs = RETIRED (Greenfield 2026-08-18)
+  // deleted rules mockup-governance.mdc / visual-master-intake.mdc / ui-authority-governance.mdc 요구 금지
   "korean-ui.cjs",
   "age-tone-surfaces.cjs",
   "toast-emoji.cjs",
   "cute-emoji-palette.cjs",
   "no-it-jargon.cjs",
-  "mockup-governance.cjs",
-  "canon-surfaces.cjs",
   "brand-logo-single.cjs",
   "font-scale-three.cjs",
   "ux-design-system.cjs",
@@ -143,8 +143,7 @@ const live = [
   "market-briefing-no-investment-advice.cjs",
   "participate-proof.cjs",
   "deposit-ai-template-path.cjs",
-  // Visual regression harness (Canon structure · multi-viewport · ADR-013)
-  "responsive.cjs",
+  // responsive.cjs = RETIRED from T1 (required deleted visual-master-intake.mdc · Visual Master LOCK)
   // PART6 KYC · trust education · get-usdt
   "kyc-surfaces.cjs",
   "trust-copy.cjs",

@@ -9,7 +9,7 @@ alwaysApply: true
 
 1. 해당 도메인 `verify:*` PASS (`tooling/verify/CATALOG.md`)
 2. money면 `bucket-invariant` · `pg-module-scan` (해당 시)
-3. UI면 `no-it-jargon` · canon/mockup 게이트 (해당 시). Canon/mockup PASS는 도메인·구조 증거일 뿐 **시각 승인이 아니다**. 승인 Visual Master 화면의 시각 완료는 동일 viewport 캡처·overlay/diff·bbox·자산·타이포·Founder 확인이 필요하다.
+3. UI면 `no-it-jargon` (해당 시). Consumer presentation 완료는 **NEW APPROVED FIGMA**가 있을 때만 판단한다(`.cursor/rules/greenfield-ui.mdc`). Approved Figma 없음 → 시각 완료 증명 0. 구 Visual Master/Canon/Visual Contract/Git UI를 fallback으로 쓰지 않는다. Money/Engine 게이트는 본 항과 무관하다.
 4. `pnpm verify:gate:fast` PASS → **commit (T0)**
 5. **push 하지 않음** (세션 stop / “푸시해”까지 보류)
 

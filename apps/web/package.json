@@ -2,7 +2,7 @@
   "name": "@aipo/web",
   "private": true,
   "version": "0.0.0",
-  "description": "퍼뜩 consumer PWA — Next@16 · 5탭 IA",
+  "description": "퍼뜩 consumer PWA — Next@16",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
