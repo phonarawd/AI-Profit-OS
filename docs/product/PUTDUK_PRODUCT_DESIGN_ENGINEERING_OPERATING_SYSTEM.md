@@ -5,7 +5,7 @@
 > **상태:** PROCESS ACTIVE  
 > **시각 디자인 사전 고정:** NO  
 > **Phase 3 PRODUCT_TRUTH 산출물:** `docs/product/consumer/`  
-> **실행:** 본 문서는 프로세스만 정의한다. Consumer UX Architecture SSOT = `docs/product/consumer/CONSUMER_UX_ARCHITECTURE.md`. Brand / Mockup / Figma / Home 구현은 Founder 승인 전 착수 0.
+> **실행:** 본 문서는 프로세스만 정의한다. Consumer UX Architecture SSOT = `docs/product/consumer/CONSUMER_UX_ARCHITECTURE.md`. Core Loop 계약 = `docs/product/consumer/CONSUMER_CORE_LOOP_CONTRACT.md`. Home presentation = FOUNDER APPROVED / LOCKED (`governance/consumer-home-approval/home-approval-freeze.v1.json`). Admin future requirements = `governance/admin/admin-control-plane.v1.json` (구현 0 · 04 pending 위조 0). 다른 페이지 Brand / Mockup / Figma 구현은 Founder 승인 전 착수 0.
 
 ```text
 defines process = YES
@@ -32,6 +32,7 @@ PLAYWRIGHT            = VERIFICATION EVIDENCE
 
 ```text
 NEW APPROVED FIGMA = NONE
+HOME PRESENTATION BASELINE = FOUNDER APPROVED / LOCKED
 ```
 
 금지된 권위 승격:

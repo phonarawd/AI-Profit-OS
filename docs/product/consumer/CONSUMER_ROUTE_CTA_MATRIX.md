@@ -3,7 +3,7 @@
 > Phase 3 · `DEAD_CTA_IN_ARCHITECTURE = 0` · `UNCLASSIFIED_CRITICAL_CTA = 0`  
 > 분류(행당 정확히 1개): `VALID_ROUTE` · `VALID_ACTION` · `INTENTIONALLY_DISABLED` · `FUTURE_CAPABILITY` · `DEAD`
 
-현재 web CTA 구현 = 0 (`PendingFigma`). 아래는 **아키텍처 매핑**이다.
+현재 Core Loop CTA 구현 = 0 (`/profits/[id]`·`/trades`·execute = `PendingFigma`). Home·`/profits` 목록 presentation은 있으나 participate/preflight POST는 0. 아래는 **아키텍처 매핑**이다. 계약=`CONSUMER_CORE_LOOP_CONTRACT.md`.
 
 불변식:
 

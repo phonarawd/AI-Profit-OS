@@ -2,9 +2,9 @@
 
 > **문서 종류:** PRODUCT_TRUTH — Phase 3 NEW CONSUMER UX ARCHITECTURE  
 > **일자:** 2026-08-18  
-> **상태:** FOUNDER APPROVED PRODUCT DECISIONS — presentation 대기  
-> **시각 권위:** APPROVED FIGMA = NONE  
-> **구현:** 본 문서는 프로덕션 UI가 아니다.
+> **상태:** FOUNDER APPROVED PRODUCT DECISIONS — Home presentation LOCKED · 다른 페이지 presentation 대기  
+> **시각 권위:** APPROVED FIGMA = NONE · HOME PRESENTATION BASELINE = FOUNDER APPROVED / LOCKED (`governance/consumer-home-approval/home-approval-freeze.v1.json`)  
+> **구현:** 본 문서는 프로덕션 UI가 아니다. Home 런타임 시각은 freeze SSOT.
 
 ```text
 BUSINESS_TRUTH        = CURRENT DOMAIN / SERVER / ENGINE / MONEY / LEDGER
@@ -48,6 +48,7 @@ KNOWN_AMBIGUOUS_CRITICAL_TRUTH_OWNER = 0
 | Screen states | `CONSUMER_SCREEN_STATE_MATRIX.md` |
 | Gaps | `CONSUMER_IMPLEMENTATION_GAP_REGISTER.md` |
 | Current capability | `CONSUMER_CAPABILITY_MAP.md` |
+| Core Loop contract | `CONSUMER_CORE_LOOP_CONTRACT.md` (B-LOOP-001 · 2026-08-20) |
 
 ---
 
@@ -107,7 +108,7 @@ Opportunity (GET /opportunities)
 → Wallet (GET /wallet/buckets)
 ```
 
-현재 Consumer web은 전 페이지 `PendingFigma`이다. 위 흐름의 **API/Engine/Money owner는 존재**하고 **web wiring은 없다**.
+현재 Core Loop web 배선은 없다. Home·`/profits` 목록은 Spark Dash presentation이 있으나 `POST preflight`/`POST participate`/execute 호출은 0이다. `/profits/[id]`·`/trades`·`/trades/[id]/execute`는 `PendingFigma`. 위 흐름의 **API/Engine/Money owner는 존재**한다. 상세 = `CONSUMER_CORE_LOOP_CONTRACT.md`.
 
 ---
 
@@ -594,11 +595,12 @@ Premium = 명확함이지 이펙트가 아니다.
 
 ## Known implementation gaps
 
-상세 = `CONSUMER_IMPLEMENTATION_GAP_REGISTER.md`.
+상세 = `CONSUMER_IMPLEMENTATION_GAP_REGISTER.md`.  
+Core Loop 계약(2026-08-20 재실측) = `CONSUMER_CORE_LOOP_CONTRACT.md`.
 
 Brand/Figma를 막는 비즈니스 발명 요구는 없다. Home mockup은 **owned fields + UNAVAILABLE**만 쓰면 된다.
 
-구현 전에 막히는 것: 전면 web wiring, participate SDK, user history API, user trade list, user cancel.
+구현 전에 막히는 것: participate SDK, `/profits/[id]` participate 배선, execute 실데이터, user history API, user trade list, user cancel.
 
 ---
 

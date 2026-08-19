@@ -1,0 +1,90 @@
+{
+  "$id": "https://ai-profit-os.local/governance/consumer-loop/core-loop.v1.json",
+  "schema": "governance.consumer-loop.core-loop.v1",
+  "version": "1.0.0",
+  "measuredAt": "2026-08-20",
+  "status": "CONTRACT_READY",
+  "implementationStatus": "GAP_DOCUMENTED",
+  "task": "B-LOOP-001",
+  "legacyPointer": "03 redesign-r4-core-loop-contract",
+  "productContract": "docs/product/consumer/CONSUMER_CORE_LOOP_CONTRACT.md",
+  "authority": {
+    "ENGINE_RULE_REDEFINITION": "FORBIDDEN",
+    "NEW_PRICING_FORMULA": "FORBIDDEN",
+    "NEW_FX_FORMULA": "FORBIDDEN",
+    "KYC_ON_PARTICIPATE": "FORBIDDEN",
+    "FAKE_STEPPER": "FORBIDDEN",
+    "FAKE_MATCHING_PROGRESS": "FORBIDDEN",
+    "FAKE_FINANCIAL_TRUTH": "FORBIDDEN",
+    "PROGRESS_PCT_AS_TRUTH": "FORBIDDEN",
+    "AMOUNT_MUST_EQUAL_REQUIRED_CAPITAL": true,
+    "MATCH_EQUALS_OPPORTUNITY": false,
+    "EXPECTED_PROFIT_EQUALS_SETTLED_PROFIT": false,
+    "APPROVED_FIGMA_CORE_LOOP": "NONE",
+    "NEW_VISUAL_LOCK": false,
+    "LEGACY_VISUAL_RECOVERY": "FORBIDDEN",
+    "HOME_GEOMETRY_DEPENDENCY": "FORBIDDEN",
+    "USER_CANCEL": "FUTURE_CAPABILITY"
+  },
+  "identity": {
+    "opportunity": "opportunities.id",
+    "preflightToken": "HMAC pf1 userId+opportunityId TTL 300s",
+    "participateRequest": "participate_requests.idempotency_key + request_fingerprint",
+    "tradeId": "trade_executions.id",
+    "proof": "participate-proof.v1 proofHash SHA256",
+    "settlement": "journalType=settlement after MATCH_SUCCESS",
+    "safeStopUnlock": "journalType=participate_unlock"
+  },
+  "routes": {
+    "preflight": "POST /api/v1/opportunities/:id/preflight",
+    "participate": "POST /api/v1/opportunities/:id/participate",
+    "tradeGet": "GET /api/v1/trades/:id",
+    "executeTick": "POST /api/v1/trades/:id/execute-tick",
+    "compatDetail": "/profits/[id]",
+    "compatMatching": "/trades/[id]/execute",
+    "compatList": "/profits",
+    "compatTrades": "/trades"
+  },
+  "owners": {
+    "preflight": "services/api-nest/src/loop/preflight.service.ts",
+    "participate": "services/api-nest/src/opportunities/participate.service.ts",
+    "execute": "services/api-nest/src/trades/trades.execution.service.ts",
+    "rule": "services/engine-rust/settlement_rule.cjs",
+    "ledger": "services/api-nest/src/ledger/ledger.posting.service.ts",
+    "sdkFeed": "packages/sdk/src/user-feed",
+    "sdkExecution": "packages/sdk/src/execution-stream",
+    "sdkParticipate": "MISSING"
+  },
+  "measured": {
+    "webParticipatePost": 0,
+    "webPreflightPost": 0,
+    "sdkParticipateExport": "MISSING",
+    "useTradeExecutionExport": "EXISTS",
+    "executePageHook": 0,
+    "profitsListPresentation": "SPARK_DASH_DISCOVERY",
+    "profitsDetailPage": "PendingFigma",
+    "tradesPage": "PendingFigma",
+    "executePage": "PendingFigma",
+    "backendParticipate": "OWNER_FOUND",
+    "backendPreflight": "OWNER_FOUND",
+    "backendExecute": "OWNER_FOUND",
+    "userTradeListApi": "MISSING",
+    "userCancelApi": "MISSING",
+    "fakeFinancialValueBug": "CLOSED"
+  },
+  "states": [
+    "running",
+    "requeue",
+    "success",
+    "safe_stop",
+    "cancelled",
+    "failed"
+  ],
+  "nextSlices": [
+    "B-PARTICIPATION-001",
+    "B-EXECUTION-001",
+    "B-TRADES-001",
+    "B-LOOP-002"
+  ],
+  "verifier": "tooling/verify/core-loop-contract.cjs"
+}

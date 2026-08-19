@@ -7,7 +7,7 @@
 
 ```text
 ROUTE_COMPATIBILITY ≠ FUTURE_PRODUCT_IA
-CURRENT_WEB = PendingFigma (all consumer pages)
+CURRENT_WEB = Home + /profits list = Spark Dash presentation · Core Loop pages (/profits/[id] /trades /execute) = PendingFigma · POST participate/preflight = 0
 ```
 
 | Capability | Current route | Backend owner | SDK owner | Engine owner | Money owner | Current web wiring | Current status | UX dependency | Risk |
@@ -17,8 +17,8 @@ CURRENT_WEB = PendingFigma (all consumer pages)
 | Login | `/auth/login` | OWNER_FOUND session/oauth/passkey/magic | OWNER_MISSING | n/a | n/a | WEB_WIRING_MISSING | PARTIAL | Acquisition | Kakao API yes |
 | Onboarding | `/onboarding` | OWNER_MISSING product API | n/a | n/a | n/a | WEB_WIRING_MISSING | MISSING | Activation | copy only |
 | Home data | `/` | OWNER_FOUND HomeRead + HomeMoneyRead + DayPulse | OWNER_FOUND home-read-model · home-money-read · user-feed | OWNER_FOUND mapper | OWNER_FOUND | WEB_WIRING_MISSING | PARTIAL | Home | no activeTradeId |
-| Opportunity feed | `/profits` | OWNER_FOUND GET `/opportunities` | OWNER_FOUND fetchOpportunityFeed | OWNER_FOUND classification | principal read | WEB_WIRING_MISSING | PARTIAL | Discovery | item untyped |
-| Opportunity detail | `/profits/[id]` | OWNER_FOUND GET `/opportunities/:id` | OWNER_FOUND fetchOpportunityDetail | OWNER_FOUND | principal | WEB_WIRING_MISSING | PARTIAL | Detail | stale=404 |
+| Opportunity feed | `/profits` | OWNER_FOUND GET `/opportunities` | OWNER_FOUND fetchOpportunityFeed | OWNER_FOUND classification | principal read | WEB_WIRING_PRESENT (list UI) · participate POST 0 | PARTIAL | Discovery | item untyped |
+| Opportunity detail | `/profits/[id]` | OWNER_FOUND GET `/opportunities/:id` | OWNER_FOUND fetchOpportunityDetail | OWNER_FOUND | principal | WEB_WIRING_MISSING (PendingFigma) | PARTIAL | Detail | stale=404 |
 | Quote | (preflight) | OWNER_FOUND POST `.../preflight` + detail pricing | OWNER_MISSING | pricing | FX on card | WEB_WIRING_MISSING | PARTIAL | Participate | not a screen |
 | Eligibility | feed bucket | OWNER_FOUND MI classify | pass-through | OWNER_FOUND | principal | WEB_WIRING_MISSING | VERIFIED (API) | CTA | participate final |
 | Required Capital | card field | OWNER_FOUND | pass-through | OWNER_FOUND | compare principal | WEB_WIRING_MISSING | VERIFIED (API) | 3-second | — |

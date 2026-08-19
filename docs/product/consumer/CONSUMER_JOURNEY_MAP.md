@@ -69,7 +69,7 @@ FAKE_ACTIVITY = FORBIDDEN
 | failure recovery | `PREFLIGHT_REQUIRED` → 재확인. `INSUFFICIENT_PRINCIPAL` → Funding. `PRICE_STALE*` → 목록 복귀. `MATCH_BLOCKED`/`COMPARE_NOT_READY`/`CIRCUIT` → 불가 설명. `AUTH_REQUIRED` → Login |
 | screens | ParticipateConfirmation (MODAL/SHEET) |
 | classification | MODAL/SHEET |
-| notes | SDK participate 함수 없음 (GAP). Web wiring 없음 |
+| notes | 2026-08-20 재실측: SDK participate/preflight export 없음. `apps/web` POST participate/preflight 0. `/profits/[id]`=`PendingFigma`. 계약=`CONSUMER_CORE_LOOP_CONTRACT.md` |
 
 ---
 
@@ -100,7 +100,7 @@ FAKE_ACTIVITY = FORBIDDEN
 | failure recovery | 네트워크 → 재시도 poll. trade 없음 → Home. 가짜 % 복구 없음(표시 금지) |
 | screens | Matching |
 | classification | KEEP AS SCREEN (탭 아님) |
-| notes | `progressPct` = timer presentation. Consumer indeterminate |
+| notes | `progressPct` = timer presentation. Consumer indeterminate. 2026-08-20: `useTradeExecution` SDK EXISTS · execute page=`PendingFigma` import 0 |
 
 ---
 

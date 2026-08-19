@@ -85,7 +85,7 @@ blocks full-app implementation Figma = G-P1-04/05/08 annotations required
 
 | historical | verdict | evidence |
 |------------|---------|----------|
-| Participate POST web wiring | STILL_PRESENT | API POST exists. Web/SDK participate 없음. pages=PendingFigma |
+| Participate POST web wiring | STILL_PRESENT (2026-08-20 재실측) | Nest POST exists. SDK export 0. `apps/web` `preflightToken`/`/participate` 0. `/profits`=Spark Dash discovery only · `/profits/[id]`=`PendingFigma`. 계약=`CONSUMER_CORE_LOOP_CONTRACT.md` |
 | access token path | PARTIAL | SDK omits Bearer if token null; `credentials:include` + `aipo_session`. Web calls 0 |
 | cancel/merge handlers | NOT_FOUND (web) | no web handlers. API `profit/merge` exists. user cancel MISSING |
 | hardcoded zero | STILL_PRESENT | SDK/API fallbacks (G-P0-01) |
@@ -93,4 +93,4 @@ blocks full-app implementation Figma = G-P1-04/05/08 annotations required
 | wallet history | STILL_PRESENT | page placeholder + user journal list MISSING |
 | Kakao runtime | OWNER_FOUND API / WEB_WIRING_MISSING | `OAUTH_PRIMARY=kakao` |
 | dead href | NOT_FOUND | PendingFigma has no href |
-| legacy execute path | COMPATIBILITY | `/trades/[id]/execute` placeholder. API execute-tick exists |
+| legacy execute path | COMPATIBILITY (2026-08-20) | `/trades`+`/trades/[id]/execute`=`PendingFigma`. SDK `useTradeExecution` EXISTS · page import 0. API execute-tick EXISTS |
