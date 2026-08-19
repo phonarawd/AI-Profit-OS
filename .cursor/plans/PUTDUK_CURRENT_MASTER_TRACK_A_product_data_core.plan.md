@@ -27,8 +27,8 @@ todos:
     content: "[A-PRODUCT-004] Candidate Generation(첫 슬라이스) · STATUS=PASS(in-process) · PRIORITY=LAUNCH_REQUIRED · PRIORITY_AUTHORITY=FOUNDER_EXPLICIT · RISK=HIGH · DEPENDS_ON=A-PRODUCT-003(SOFT)·A-MATCH-002(HARD) · evidence=governance/global-product/candidate-generation.v1.json"
     status: completed
   - id: a-product-005
-    content: "[A-PRODUCT-005] Listing / Variant Compatibility · PRIORITY=LAUNCH_REQUIRED · PRIORITY_AUTHORITY=FOUNDER_EXPLICIT · RISK=HIGH · DEPENDS_ON=A-PRODUCT-004(HARD)"
-    status: pending
+    content: "[A-PRODUCT-005] Listing / Variant Compatibility · STATUS=PASS(in-process) · PRIORITY=LAUNCH_REQUIRED · PRIORITY_AUTHORITY=FOUNDER_EXPLICIT · RISK=HIGH · DEPENDS_ON=A-PRODUCT-004(HARD) · evidence=governance/global-product/listing-variant-compatibility.v1.json"
+    status: completed
   - id: a-product-006
     content: "[A-PRODUCT-006] Listing Promotion Contract · PRIORITY=LAUNCH_REQUIRED · PRIORITY_AUTHORITY=FOUNDER_EXPLICIT · RISK=HIGH · DEPENDS_ON=A-PRODUCT-005(HARD)"
     status: pending
@@ -81,6 +81,7 @@ same-product 판단 → 실행 가능한 가격/조건 확인 → Opportunity �
 | MatchResult durable | VERIFIED(local) | `tooling/verify/match-result-durable-persistence.cjs` PASS · production 미적용 |
 | Generic Product Profile(범용) | NOT_IMPLEMENTED | `tooling/verify/canonical-product.cjs`가 `GENERIC_PRODUCT_PROFILE_NOT_IMPLEMENTED`를 명시적으로 요구 |
 | Candidate Generation | PASS(in-process) | `governance/global-product/candidate-generation.v1.json` · `identity-matching.v2.json.layers.candidateGeneration=IN_PROCESS_MEMORY` · matcher/canonical PIPELINE는 NOT_IMPLEMENTED 유지 |
+| Listing/Variant Compatibility | PASS(in-process) | `governance/global-product/listing-variant-compatibility.v1.json` · `canonical-product.v2.json` boundaries · matcher/candidate PIPELINE는 NOT_IMPLEMENTED 유지 |
 | Production 적용 | NOT_IMPLEMENTED / NOT_VERIFIED | Supabase `list_tables` 실측 — `canonical_products`/`source_observations`/`match_results` 테이블 원격 없음 |
 
 ```text
@@ -142,7 +143,7 @@ Founder가 이후 언제든 카테고리를 추가/재정렬할 수 있다(`FOUN
 | A-MATCH-003 | MatchResult durable | 매칭 결정/증거 로그 durable persistence | 신규(§18 orphan) · 다른 세션 자체 next-slice 추천 | VERIFIED(local) | TECHNICAL_LAUNCH_REQUIREMENT | TECHNICAL_DEPENDENCY | A-PRODUCT-002(SOFT) | HIGH | NO(같은 세션/파일) |
 | A-PRODUCT-003 | Generic Product Profile | 범용 identity architecture + mvp 4종 최소 구현 | 신규(§18 orphan) | READY | LAUNCH_REQUIRED | FOUNDER_EXPLICIT | A-PRODUCT-001(HARD)·A-MATCH-003(SOFT) | HIGH | YES(A-MATCH-003 완료 후 다음 후보, AUTO_START=NO) |
 | A-PRODUCT-004 | Candidate Generation | 후보 쌍 탐색(첫 슬라이스) | 신규(§18 orphan) | PASS(in-process) | LAUNCH_REQUIRED | FOUNDER_EXPLICIT | A-PRODUCT-003(SOFT)·A-MATCH-002(HARD) | HIGH | YES |
-| A-PRODUCT-005 | Listing/Variant Compatibility | Opportunity 전 필수 게이트 | 신규(§18 orphan) | PENDING | LAUNCH_REQUIRED | FOUNDER_EXPLICIT | A-PRODUCT-004(HARD) | HIGH | NO |
+| A-PRODUCT-005 | Listing/Variant Compatibility | Opportunity 전 필수 게이트 | 신규(§18 orphan) | PASS(in-process) | LAUNCH_REQUIRED | FOUNDER_EXPLICIT | A-PRODUCT-004(HARD) | HIGH | NO |
 | A-PRODUCT-006 | Listing Promotion Contract | Listing→Opportunity 승격 계약 | 신규(§18 orphan) | PENDING | LAUNCH_REQUIRED | FOUNDER_EXPLICIT | A-PRODUCT-005(HARD) | HIGH | NO |
 | A-PRODUCT-007 | executable price/avail/fees/FX wiring | Money/Engine 기존 owner 재사용 연결 | 신규 · Money/Engine PROTECTED_BASELINE 재사용 | PENDING | LAUNCH_REQUIRED | FOUNDER_EXPLICIT | A-PRODUCT-006(HARD) | HIGH | NO |
 | A-PRODUCT-008 | Multi-source Opportunity Creation | 실제 신규 파이프라인 기반 Opportunity 발행 | 신규(§18 orphan) | PENDING | **LAUNCH_BLOCKER** | FOUNDER_EXPLICIT | A-PRODUCT-007(HARD) | HIGH | NO |
@@ -160,7 +161,7 @@ Founder가 이후 언제든 카테고리를 추가/재정렬할 수 있다(`FOUN
 | A-MATCH-003 | services/market-intelligence | match-result-durable-persistence.cjs · identity-matching.v2.json | NO | 없음(local only) | VERIFIED(local) · production 미적용 |
 | A-PRODUCT-003 | services/market-intelligence | identity-matching.v2.json categoryProfiles | NO(기술 결정) | 없음 | 카테고리 목록은 Founder가 언제든 변경 |
 | A-PRODUCT-004 | services/market-intelligence | candidate-generation.v1.json · tooling/verify/candidate-generation.cjs | NO | 없음(local in-process) | candidate≠MATCH · durable/production 0 |
-| A-PRODUCT-005 | services/market-intelligence | canonical-product.v2.json boundaries | NO | 없음 | — |
+| A-PRODUCT-005 | services/market-intelligence | listing-variant-compatibility.v1.json · canonical-product.v2.json boundaries | NO | 없음(local in-process) | SAME_VARIANT≠CP · samePhysicalItem 0 · durable/production 0 |
 | A-PRODUCT-006 | services/market-intelligence + api-nest | canonical-product.v2.json pipelineAfterMatch | NO | 없음(local) | Listing 승격 = 이후 Opportunity 생성 전제 |
 | A-PRODUCT-007 | api-nest opportunities | 기존 pricing-formula.cjs/fx-snapshot-formula.cjs | NO(재사용, 재설계 아님) | 없음(local) | Money/FX owner 재설계 금지 |
 | A-PRODUCT-008 | api-nest opportunities | 신규 Opportunity row | NO | **있음**(실제 Opportunity 생성 로직) | production 반영은 Track F 승인 후 |

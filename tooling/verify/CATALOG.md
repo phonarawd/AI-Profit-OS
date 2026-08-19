@@ -72,6 +72,7 @@
 | `services/market-intelligence/src/match-result/**` · `tooling/verify/match-result-durable-persistence.cjs` · `governance/global-product/identity-matching.v2.json` | identity-matching-v1 · identity-matching-v2 (T0 memory) · match-result-durable-persistence는 isolated PG runtime · T0 자동 클러스터 금지 |
 | `services/market-intelligence/src/canonical-product/**` · `governance/global-product/canonical-product.v2.json` · `tooling/verify/canonical-product.cjs` | canonical-product (T0 in-process · Generic Product Profile + MATCH-after create · live pair는 기존 증명 유지) |
 | `services/market-intelligence/src/candidate-generation/**` · `governance/global-product/candidate-generation.v1.json` · `tooling/verify/candidate-generation.cjs` | candidate-generation (T0 in-process · 교차 소스 후보 쌍 탐색 · candidate≠MATCH · durable/production 0) |
+| `services/market-intelligence/src/listing-variant-compatibility/**` · `governance/global-product/listing-variant-compatibility.v1.json` · `tooling/verify/listing-variant-compatibility.cjs` | listing-variant-compatibility (T0 in-process · Opportunity 전 SAME_VARIANT 게이트 · MATCH/Listing promotion/Opportunity 0 · durable/production 0) |
 
 ## Domain gates (T1 `stubs/run-all` · 구현되면 hard)
 
@@ -166,6 +167,7 @@
 | identity-matching-v2 | Identity Matching V2 pairwise memory · category profile · COMPOSITE_STRONG · fail-closed · matcher DB runtime 0 — **live** |
 | canonical-product | MATCH 이후 in-process CanonicalProduct + PD + Generic Product Profile(universal + mvp 4종) · identity key ≠ title/image/price · deferred/unknown fail-closed — **live** |
 | candidate-generation | Candidate Generation 첫 슬라이스 — 관측 풀에서 교차 소스 후보 쌍만 탐색 · candidate≠MATCH/Listing/Opportunity · title/image/price/source-local 금지 · matcher 미호출 · durable 0 — **live** |
+| listing-variant-compatibility | Listing/Variant Compatibility — Opportunity 전 SAME_VARIANT/TRADABLE_EQUIVALENT 게이트 · samePhysicalItem 0 · grade/size fail-closed · matcher 미호출 · durable 0 — **live** |
 | match-result-durable-persistence | MatchResult durable local Postgres · V2 실제 결정 저장 · pair 정규화 idempotency · 같은 version 모순 BLOCKED · CanonicalProduct 비-MATCH 생성 0 · production apply 0 — **live**(isolated PG only) |
 | fashionphile-identity-forensic | Fashionphile PUBLIC_JSON identity owner forensic — all-variant barcode/sku/options · SKU-derived barcode ≠ GTIN · product_type Bags ≠ luxury_bag · parser enrichment 0 unless V1-usable — **live** |
 | signup-ready-adapters | Engine §0.0 — ebay 멀티marketplaceId · pokemontcg+ygoprodeck · coingecko+frankfurter · yahoo-jp경로0 · Phase1 deploy (phase0 0) · Admin `/admin/adapters` health — **live** |

@@ -573,6 +573,13 @@ const RULES = [
     scripts: ["candidate-generation.cjs"],
   },
   {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/listing-variant-compatibility\//.test(f) ||
+      /^governance\/global-product\/listing-variant-compatibility\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/listing-variant-compatibility\.cjs$/.test(f),
+    scripts: ["listing-variant-compatibility.cjs"],
+  },
+  {
     // PTF-00C — shared Engine §0.0 pure-logic package. No prior rule covered
     // this whole directory (only 3 narrow file-specific matches above),
     // which is exactly how the P0-A/P0-B fx-snapshot-formula.cjs/money.cjs

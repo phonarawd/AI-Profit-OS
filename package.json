@@ -64,6 +64,7 @@
     "verify:identity-matching-v2": "node tooling/verify/identity-matching-v2.cjs",
     "verify:canonical-product": "node tooling/verify/canonical-product.cjs",
     "verify:candidate-generation": "node tooling/verify/candidate-generation.cjs",
+    "verify:listing-variant-compatibility": "node tooling/verify/listing-variant-compatibility.cjs",
     "verify:match-result-durable-persistence": "node tooling/verify/match-result-durable-persistence.cjs",
     "verify:fashionphile-identity-forensic": "node tooling/verify/fashionphile-identity-forensic.cjs",
     "observe:source": "node services/market-intelligence/src/source-observation/cli.cjs",
