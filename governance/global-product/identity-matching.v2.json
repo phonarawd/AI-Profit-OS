@@ -60,6 +60,7 @@
     "canonicalProduct": "created only after MATCH — later slice",
     "candidateGeneration": "IN_PROCESS_MEMORY — first-slice pair search. candidate != MATCH",
     "listingVariantCompatibility": "IN_PROCESS_MEMORY — Opportunity gate. SAME_VARIANT != SAME_CANONICAL_PRODUCT",
+    "listingPromotion": "IN_PROCESS_MEMORY — Listing→Opportunity 승격 계약. PROMOTABLE != Opportunity. executable price 0",
     "llmVision": "assist only — never final MATCH owner"
   },
   "decisions": ["MATCH", "NO_MATCH", "INSUFFICIENT_EVIDENCE", "CONFLICT"],
@@ -236,5 +237,5 @@
     "REAL_AUTOMATED_CROSS_SOURCE_MATCH": "BLOCKED_UNTIL_SOURCE_RUNTIME"
   },
   "firstImplementationSlice": "MATCHING_V2_MINIMAL_PAIRWISE_RUNTIME",
-  "nextCursorTask": "A-PRODUCT-006 Listing Promotion Contract — Listing/Variant Compatibility first slice PASS(in-process)"
+  "nextCursorTask": "A-PRODUCT-007 executable price + availability + fees + FX wiring — Listing Promotion first slice PASS(in-process)"
 }

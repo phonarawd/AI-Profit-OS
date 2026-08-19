@@ -1,0 +1,65 @@
+{
+  "$id": "https://ai-profit-os.local/governance/global-product/listing-promotion.v1.json",
+  "schema": "governance.global-product.listing-promotion.v1",
+  "version": "1.0.0",
+  "promoterVersion": "listing-promotion.v1",
+  "runtime": "IN_PROCESS_MEMORY",
+  "measuredAt": "2026-08-20",
+  "status": "PASS",
+  "authority": {
+    "COMPATIBLE_EQUALS_PROMOTABLE": false,
+    "PROMOTABLE_EQUALS_OPPORTUNITY": false,
+    "CANONICAL_PRODUCT_REQUIRED_FOR_PROMOTION": true,
+    "OBSERVED_PRICE_EQUALS_EXECUTABLE_PRICE": false,
+    "STALE_PRICE_EQUALS_CURRENT_PRICE": false,
+    "PRICE_AS_PROMOTION": "FORBIDDEN",
+    "TITLE_AS_PROMOTION_OWNER": "FORBIDDEN",
+    "IMAGE_AS_PROMOTION_OWNER": "FORBIDDEN",
+    "SAME_PHYSICAL_ITEM_NEVER_INFERRED": true
+  },
+  "vocabularyOwner": "governance/global-product/canonical-product.v2.json",
+  "boundaries": {
+    "CanonicalProduct": "internal same-product SSOT after MATCH",
+    "SourceListing": "one source offer / variant unit",
+    "ListingPromotion": "Listing→Opportunity 승격 계약. Opportunity가 아니다",
+    "Opportunity": "executable economics after price availability fees FX"
+  },
+  "firstSlice": {
+    "name": "listing_promotion_contract",
+    "doesNotCallMatcher": true,
+    "doesNotCreateCanonicalProduct": true,
+    "doesNotGenerateCandidates": true,
+    "doesCallListingVariantCompatibility": true,
+    "doesNotCreateOpportunity": true,
+    "doesNotCalculatePriceFeesFx": true,
+    "durablePersistence": "NOT_IMPLEMENTED",
+    "production": "NOT_IMPLEMENTED"
+  },
+  "decisions": ["PROMOTABLE", "NOT_PROMOTABLE", "INSUFFICIENT", "CONFLICT", "BLOCKED"],
+  "preservedBoundaries": {
+    "IDENTITY_MATCHING_V2_MECHANISM": "UNCHANGED",
+    "LISTING_VARIANT_COMPATIBILITY_FIRST_SLICE": "UNCHANGED",
+    "matcherPipelineListingPromotion": "NOT_IMPLEMENTED",
+    "canonicalProductPipelineListingPromotion": "NOT_IMPLEMENTED",
+    "candidateGenerationPipelineListingPromotion": "NOT_IMPLEMENTED",
+    "listingVariantCompatibilityPipelineListingPromotion": "NOT_IMPLEMENTED"
+  },
+  "persistence": {
+    "LISTING_PROMOTION_MEMORY_RUNTIME": "IN_PROCESS_MEMORY",
+    "LISTING_PROMOTION_DB_RUNTIME": "NOT_IMPLEMENTED",
+    "PRODUCTION_LISTING_PROMOTION": "NOT_IMPLEMENTED"
+  },
+  "pipelineAfterMatchOwner": "governance/global-product/canonical-product.v2.json",
+  "owner": "services/market-intelligence/src/listing-promotion",
+  "nestContract": "services/api-nest/src/opportunities/listing-promotion.contract.ts",
+  "verifier": "tooling/verify/listing-promotion.cjs",
+  "pinnedGeometry": {
+    "category": "trading_card",
+    "left": "TCG 113669",
+    "right": "eBay 377416817781",
+    "withoutCanonicalProductId": "INSUFFICIENT/IDENTITY_KEY_INCOMPLETE",
+    "withCanonicalProductIdMissingGrade": "INSUFFICIENT/VARIANT_FIELD_MISSING",
+    "withCanonicalProductIdAndGrade": "PROMOTABLE/COMPATIBLE_CANONICAL_LISTING_PAIR",
+    "note": "COMPATIBLE != PROMOTABLE — CanonicalProduct required. PROMOTABLE != Opportunity"
+  }
+}

@@ -28,6 +28,8 @@
     "./match-strictness": "./src/match-strictness.cjs",
     "./membership": "./src/membership.cjs",
     "./adapter-matching-kpi": "./src/adapter-matching-kpi.cjs",
-    "./money": "./src/money.cjs"
+    "./money": "./src/money.cjs",
+    "./source-observation": "./src/source-observation/index.cjs",
+    "./listing-promotion": "./src/listing-promotion/index.cjs"
   }
 }
