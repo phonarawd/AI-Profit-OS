@@ -184,8 +184,8 @@ if (list.includes("issuePreflight") || list.includes("postParticipate") || list.
   fail("/profits list must stay discovery-only (no participate POST)");
 }
 
-if (!trades.includes("PendingFigma")) {
-  fail("/trades must remain PendingFigma until B-TRADES-001");
+if (trades.includes("PendingFigma")) {
+  fail("/trades must not stay PendingFigma after B-TRADES-001");
 }
 if (execute.includes("PendingFigma")) {
   fail("execute page must not stay PendingFigma after B-EXECUTION-001");

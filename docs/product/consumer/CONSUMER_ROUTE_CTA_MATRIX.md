@@ -3,7 +3,7 @@
 > Phase 3 · `DEAD_CTA_IN_ARCHITECTURE = 0` · `UNCLASSIFIED_CRITICAL_CTA = 0`  
 > 분류(행당 정확히 1개): `VALID_ROUTE` · `VALID_ACTION` · `INTENTIONALLY_DISABLED` · `FUTURE_CAPABILITY` · `DEAD`
 
-`/profits/[id]` participate/preflight는 실배선. `/trades/[id]/execute`는 `useTradeExecution` 최소 실데이터. `/trades` 목록은 아직 `PendingFigma`. Home·`/profits` 목록 presentation은 discovery only(목록 POST 0). 아래는 **아키텍처 매핑**이다. 계약=`CONSUMER_CORE_LOOP_CONTRACT.md`.
+`/profits/[id]` participate/preflight는 실배선. `/trades/[id]/execute`는 `useTradeExecution` 최소 실데이터. `/trades` 목록은 `GET /api/v1/trades` 최소 실데이터. Home·`/profits` 목록 presentation은 discovery only(목록 POST 0). 아래는 **아키텍처 매핑**이다. 계약=`CONSUMER_CORE_LOOP_CONTRACT.md`.
 
 불변식:
 

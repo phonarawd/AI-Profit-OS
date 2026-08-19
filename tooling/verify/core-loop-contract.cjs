@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * verify:core-loop-contract — B-LOOP-001 계약 유지 + B-PARTICIPATION-001 배선 실측
- * Engine Rule 재정의 0 · /trades 목록은 B-TRADES-001
+ * Engine Rule 재정의 0 · /trades 목록은 B-TRADES-001 배선 후 유지
  * B-LOOP-002 release E2E 가 아니다.
  */
 "use strict";
@@ -64,8 +64,10 @@ const requiredFiles = [
   "packages/sdk/src/participate/fetch.ts",
   "apps/web/app/profits/page.tsx",
   "apps/web/app/trades/page.tsx",
+  "apps/web/app/trades/TradesClient.tsx",
   "apps/web/app/trades/[id]/execute/page.tsx",
   "apps/web/app/trades/[id]/execute/TradeExecuteClient.tsx",
+  "packages/sdk/src/trades/fetch.ts",
   "packages/sdk/src/index.ts",
   "services/api-nest/src/loop/preflight.service.ts",
   "services/api-nest/src/opportunities/participate.service.ts",
@@ -111,8 +113,8 @@ if (gov) {
   if (gov.status !== "CONTRACT_READY") {
     fail("governance status must be CONTRACT_READY");
   }
-  if (gov.implementationStatus !== "EXECUTION_WIRED") {
-    fail("implementationStatus must be EXECUTION_WIRED after B-EXECUTION-001");
+  if (gov.implementationStatus !== "TRADES_WIRED") {
+    fail("implementationStatus must be TRADES_WIRED after B-TRADES-001");
   }
   if (gov.authority.ENGINE_RULE_REDEFINITION !== "FORBIDDEN") {
     fail("ENGINE_RULE_REDEFINITION must stay FORBIDDEN");
@@ -150,6 +152,12 @@ if (gov) {
   if (gov.measured.executePage !== "WIRED_MINIMAL") {
     fail("measured.executePage must be WIRED_MINIMAL after B-EXECUTION-001");
   }
+  if (gov.measured.tradesPage !== "WIRED_MINIMAL") {
+    fail("measured.tradesPage must be WIRED_MINIMAL after B-TRADES-001");
+  }
+  if (gov.measured.userTradeListApi !== "PRESENT") {
+    fail("measured.userTradeListApi must be PRESENT after B-TRADES-001");
+  }
   if (gov.measured.fakeFinancialValueBug !== "CLOSED") {
     fail("fakeFinancialValueBug must stay CLOSED");
   }
@@ -165,8 +173,11 @@ if (detailClient && !/issuePreflight|postParticipate/.test(detailClient)) {
 }
 
 const trades = read("apps/web/app/trades/page.tsx");
-if (trades && !trades.includes("PendingFigma")) {
-  fail("trades page must remain PendingFigma until B-TRADES-001");
+if (trades && trades.includes("PendingFigma")) {
+  fail("trades page must not stay PendingFigma after B-TRADES-001");
+}
+if (trades && !trades.includes("TradesClient")) {
+  fail("trades page must mount TradesClient");
 }
 
 const execute = read("apps/web/app/trades/[id]/execute/page.tsx");
@@ -201,6 +212,9 @@ if (sdkIndex && !/issuePreflight|postParticipate/.test(sdkIndex)) {
 }
 if (sdkIndex && !sdkIndex.includes("useTradeExecution")) {
   fail("sdk index must keep useTradeExecution export");
+}
+if (sdkIndex && !sdkIndex.includes("fetchTradeList")) {
+  fail("sdk index must export fetchTradeList after B-TRADES-001");
 }
 if (sdkIndex && !sdkIndex.includes("fetchOpportunityDetail")) {
   fail("sdk index must keep fetchOpportunityDetail export");
@@ -282,6 +296,9 @@ if (routes && !routes.includes('participate: "opportunities/:id/participate"')) 
 }
 
 const tradeRoutes = read("services/api-nest/src/trades/trades.user.routes.ts");
+if (tradeRoutes && !tradeRoutes.includes('list: "trades"')) {
+  fail("TRADE_USER_ROUTES.list mismatch");
+}
 if (tradeRoutes && !tradeRoutes.includes('executeTick: "trades/:id/execute-tick"')) {
   fail("TRADE_USER_ROUTES.executeTick mismatch");
 }

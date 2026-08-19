@@ -326,7 +326,7 @@ Overflow: OpportunityList는 Home 임베드 + 필요 시 KEEP 전체 화면.
 | Secondary CTA | History |
 | Entry points | Home · Wallet |
 | Exit points | Wallet |
-| Required data | `profitUsdt` · optional settled list MISSING |
+| Required data | `profitUsdt` · `GET /api/v1/trades` list |
 | Authoritative owner | buckets.profitUsdt |
 | Critical states | ready empty unavailable |
 | Money sensitivity | YES |

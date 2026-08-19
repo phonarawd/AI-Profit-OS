@@ -75,6 +75,12 @@ export {
 } from "./user-feed";
 
 export {
+  fetchTradeList,
+  type TradeListRequestOpts,
+  type TradeListResponse,
+} from "./trades";
+
+export {
   createKrwDepositRequest,
   createWithdraw,
   createWithdrawStepUpChallenge,

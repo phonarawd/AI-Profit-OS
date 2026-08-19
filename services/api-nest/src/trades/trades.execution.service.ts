@@ -124,6 +124,9 @@ const TERMINAL_STATUSES = new Set([
   "failed",
 ]);
 
+/** B-TRADES-001 — 세션 목록 상한. 커서/필터 발명 0 */
+const LIST_LIMIT = 50;
+
 @Injectable()
 export class TradeExecutionService {
   constructor(
@@ -141,6 +144,24 @@ export class TradeExecutionService {
     const trade = await this.loadTrade(tradeId, userId);
     if (!trade) throw new NotFoundException("trade not found");
     return this.toState(trade);
+  }
+
+  /** 기존 toState 투영만. 새 money 필드 0 · userId=JWT only */
+  async list(userId: string): Promise<{ items: TradeExecutionState[] }> {
+    this.assertSessionUserId(userId);
+    const { rows } = await this.db.query<TradeRow>(
+      `SELECT id::text, user_id::text, opportunity_id::text, pricing_version,
+              status, result_code, step_index, progress_pct::text, log_line,
+              expected_profit_usdt::text, settled_profit_usdt::text,
+              ledger_journal_id::text, idempotency_key, asset,
+              created_at, updated_at
+         FROM public.trade_executions
+        WHERE user_id = $1::uuid
+        ORDER BY created_at DESC
+        LIMIT $2`,
+      [userId, LIST_LIMIT],
+    );
+    return { items: rows.map((row) => this.toState(row)) };
   }
 
   /**

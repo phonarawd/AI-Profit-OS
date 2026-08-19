@@ -3,7 +3,7 @@
 > **문서 종류:** Product · Visual · Implementation Contract  
 > **TASK:** B-LOOP-001 · Track B User Profit Loop  
 > **일자:** 2026-08-20  
-> **상태:** CONTRACT_READY · IMPLEMENTATION = EXECUTION_WIRED  
+> **상태:** CONTRACT_READY · IMPLEMENTATION = TRADES_WIRED  
 > **시각 권위:** APPROVED FIGMA = NONE  
 > **Engine Rule:** 재정의 0 (`settlement_rule.cjs` KEEP)
 
@@ -192,7 +192,7 @@ LEGACY_VISUAL_RECOVERY = FORBIDDEN
 | `/profits` | `ProfitsDesktopClient` Spark Dash | Discovery only. Founder Review Candidate. participate visual 아님 |
 | `/profits/[id]` | `OpportunityDetailClient` 최소 실데이터 표면 | Approved Figma 없음 · WIRE_WITHOUT_APPROVED_FIGMA |
 | ParticipateConfirmation | 라우트/컴포넌트 없음 | Approved Figma 없음 |
-| `/trades` | `PendingFigma title="수익"` | Approved Figma 없음 · 제목은 호환 잔여 |
+| `/trades` | `TradesClient` 최소 실목록 (`GET /api/v1/trades` + buckets.profitUsdt) | Approved Figma 없음 · WIRE_WITHOUT_APPROVED_FIGMA |
 | `/trades/[id]/execute` | `TradeExecuteClient` 최소 실데이터 (`useTradeExecution`) | Approved Figma 없음 · WIRE_WITHOUT_APPROVED_FIGMA |
 
 ### 2.2 Forbidden presentation
@@ -246,8 +246,9 @@ B-PARTICIPATION-001 / B-EXECUTION-001 / B-TRADES-001은 **가짜 돈을 넣지 �
 | SDK feed | `fetchOpportunityFeed` · `fetchOpportunityDetail` |
 | SDK participate | `issuePreflight` · `postParticipate` |
 | SDK execution | `useTradeExecution` (execute 페이지 연결) |
+| SDK trades list | `fetchTradeList` |
 | SDK wallet | `fetchWalletBuckets` |
-| Verify | `participate-http` · `preflight-may-stop` · `participate-web-wire` · `execute-rule-loop` · `participate-proof` · `match-success-rule` · `bucket-invariant` |
+| Verify | `participate-http` · `preflight-may-stop` · `participate-web-wire` · `execute-web-wire` · `trades-web-wire` · `execute-rule-loop` · `participate-proof` · `match-success-rule` · `bucket-invariant` |
 
 ### 3.2 WIRE (이 계약 다음 슬라이스 · 이 슬라이스에서 구현 0)
 
@@ -255,7 +256,7 @@ B-PARTICIPATION-001 / B-EXECUTION-001 / B-TRADES-001은 **가짜 돈을 넣지 �
 |-----------|------------|
 | B-PARTICIPATION-001 | DONE — SDK `preflight`+`participate` · `/profits/[id]` POST 실연결 · confirmation dialog |
 | B-EXECUTION-001 | DONE — `/trades/[id]/execute` → `useTradeExecution` · 상태 테이블 준수 |
-| B-TRADES-001 | `/trades` 실목록. list-by-user API 없으면 발명 금지 · UNAVAILABLE 또는 기존 GET만 |
+| B-TRADES-001 | DONE — `/trades` 실목록. `GET /api/v1/trades` = 기존 `toState()` 투영 · 새 money/cancel/필터 0 |
 | B-LOOP-002 | `verify:core-loop-release` 실 E2E (이 슬라이스에서 신설 0) |
 | B-FEED-001 | 참여 성공/진행 중 feed 제거 (별 계약) |
 
@@ -264,7 +265,7 @@ B-PARTICIPATION-001 / B-EXECUTION-001 / B-TRADES-001은 **가짜 돈을 넣지 �
 - 새 pricing / FX / fee / marketId
 - participate KYC 게이트
 - 유저 cancel API
-- trade list API (없으면)
+- trade list 추가 필드/커서/필터/취소 (목록은 기존 toState만)
 - returnTo API 필드
 - 클라 `suggestDepositUsdt` 재계산
 - 난수 매칭 · 가짜 stepper
@@ -277,7 +278,7 @@ B-PARTICIPATION-001 / B-EXECUTION-001 / B-TRADES-001은 **가짜 돈을 넣지 �
 | `packages/sdk/src/index.ts` | WIRED participate/preflight export |
 | `apps/web/app/profits/[id]/page.tsx` | WIRED real detail + confirm |
 | `apps/web/app/trades/[id]/execute/page.tsx` | WIRED `useTradeExecution` (최소 실데이터) |
-| `apps/web/app/trades/page.tsx` | REPLACE PendingFigma → list or honest UNAVAILABLE |
+| `apps/web/app/trades/page.tsx` | WIRED `TradesClient` 최소 실목록 |
 | `apps/web/app/profits/page.tsx` | KEEP discovery. participate POST 넣지 말 것 (카드는 Detail로) |
 | `services/api-nest/**` participate/preflight/execute | NO_CHANGE unless bug |
 | `services/engine-rust/settlement_rule.cjs` | NO_CHANGE |
@@ -299,7 +300,7 @@ B-PARTICIPATION-001 / B-EXECUTION-001 / B-TRADES-001은 **가짜 돈을 넣지 �
 | Nest POST preflight | **OWNER_FOUND** | `PreflightService.issue` · TTL 300 · `mayStopRequired` |
 | Nest POST participate | **OWNER_FOUND** | `ParticipateService` · KYC0 · amount=required · idempotency |
 | Nest GET/POST trades | **OWNER_FOUND** | `TRADE_USER_ROUTES` · `settlement_rule.cjs` |
-| User trade list API | **MISSING** | `GET /trades/:id` only (G-P1-05) |
+| User trade list API | **PRESENT** | `GET /api/v1/trades` session list · `toState()` KEEP (G-P1-05 CLOSED) |
 | User cancel API | **MISSING** | D-05 HIDE |
 | 가짜 금액 하드코드 | **CLOSED** | 그린필드 PendingFigma. 재실측 확인 |
 | Engine Rule 재정의 필요 | **NO** | 기존 Rule KEEP |
@@ -309,7 +310,7 @@ FAKE_FINANCIAL_VALUE_BUG = CLOSED
 WEB_PARTICIPATE_POST = 1
 SDK_PARTICIPATE_EXPORT = PRESENT
 BACKEND_CORE_LOOP = OWNER_FOUND
-REAL_IMPLEMENTATION = EXECUTION_WIRED
+REAL_IMPLEMENTATION = TRADES_WIRED
 CORE_LOOP_CERTIFICATION = NOT_THIS_SLICE
 ```
 
@@ -319,7 +320,8 @@ CORE_LOOP_CERTIFICATION = NOT_THIS_SLICE
 
 B-LOOP-001 done = 계약 문서 + 갭 재실측 + `verify:core-loop-contract` PASS.  
 B-PARTICIPATION-001 done = SDK export + `/profits/[id]` 실배선 + `verify:participate-web-wire` PASS.  
-B-EXECUTION-001 done = `/trades/[id]/execute` → `useTradeExecution` + `verify:execute-web-wire` PASS.
+B-EXECUTION-001 done = `/trades/[id]/execute` → `useTradeExecution` + `verify:execute-web-wire` PASS.  
+B-TRADES-001 done = `/trades` → `fetchTradeList` + `verify:trades-web-wire` PASS.
 
 ```text
 IMPLEMENTATION_START = B-PARTICIPATION-001

@@ -3,7 +3,7 @@
  * verify:execute-web-wire — B-EXECUTION-001
  * /trades/[id]/execute → useTradeExecution 실배선
  * FAKE_FINANCIAL_VALUE_BUG=CLOSED · progressPct/stepIndex 표시 0
- * 레거시 Canon/AiProgressRoom 복구 0 · /trades 목록은 다음 슬라이스
+ * 레거시 Canon/AiProgressRoom 복구 0 · /trades 목록은 B-TRADES-001
  */
 "use strict";
 
@@ -162,8 +162,8 @@ for (const lit of userLits) {
   }
 }
 
-if (!trades.includes("PendingFigma")) {
-  fail("/trades must remain PendingFigma until B-TRADES-001");
+if (trades.includes("PendingFigma")) {
+  fail("/trades must not stay PendingFigma after B-TRADES-001");
 }
 
 if (!hook.includes("export function useTradeExecution")) {
@@ -187,5 +187,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:execute-web-wire] PASS (useTradeExecution · cookie tick · state table · /trades untouched)",
+  "[verify:execute-web-wire] PASS (useTradeExecution · cookie tick · state table · execute KEEP)",
 );

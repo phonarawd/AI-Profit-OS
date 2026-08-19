@@ -108,7 +108,7 @@ Opportunity (GET /opportunities)
 → Wallet (GET /wallet/buckets)
 ```
 
-`POST preflight`/`POST participate`는 `/profits/[id]`에서 실배선됐다. `/trades/[id]/execute`는 `useTradeExecution` 최소 실데이터. Home·`/profits` 목록은 Spark Dash discovery만 하고 목록 POST는 0이다. `/trades` 목록은 아직 `PendingFigma`. 위 흐름의 **API/Engine/Money owner는 존재**한다. 상세 = `CONSUMER_CORE_LOOP_CONTRACT.md`.
+`POST preflight`/`POST participate`는 `/profits/[id]`에서 실배선됐다. `/trades/[id]/execute`는 `useTradeExecution` 최소 실데이터. `/trades` 목록은 `GET /api/v1/trades` 최소 실데이터. Home·`/profits` 목록은 Spark Dash discovery만 하고 목록 POST는 0이다. 위 흐름의 **API/Engine/Money owner는 존재**한다. 상세 = `CONSUMER_CORE_LOOP_CONTRACT.md`. 과거 `/trades`=`PendingFigma`는 B-TRADES-001으로 닫혔다.
 
 ---
 

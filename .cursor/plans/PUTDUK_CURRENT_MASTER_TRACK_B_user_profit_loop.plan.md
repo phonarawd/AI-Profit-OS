@@ -1,6 +1,6 @@
 ---
 name: "PUTDUK Current Master — Track B: User Profit Loop"
-overview: "실제 참여→매칭→정산→지갑까지 web 배선. 백엔드(ParticipateService·Rust guardParticipate·settlement_rule·LedgerPostingService)는 대부분 실재. participate·execute web 배선은 2026-08-20 실연결. /trades 목록은 아직 PendingFigma. User Opportunity Feed 정책은 Founder 신규 지시."
+overview: 실제 참여→매칭→정산→지갑까지 web 배선. 백엔드(ParticipateService·Rust guardParticipate·settlement_rule·LedgerPostingService)는 대부분 실재. participate·execute·/trades 목록 web 배선은 2026-08-20 실연결. User Opportunity Feed 정책은 Founder 신규 지시.
 todos:
   - id: b-loop-001
     content: "[B-LOOP-001] Core Loop contract(참여/preflight/실행/정산 Product·Visual·Implementation Contract) · legacy=03 redesign-r4-core-loop-contract(pending) · PRIORITY=LAUNCH_BLOCKER · RISK=HIGH"
@@ -13,7 +13,7 @@ todos:
     status: completed
   - id: b-trades-001
     content: "[B-TRADES-001] /trades 실데이터 배선(현재 PendingFigma placeholder) · legacy=03 redesign-r4-core-loop-implementation 하위 · PRIORITY=LAUNCH_REQUIRED · RISK=MEDIUM"
-    status: pending
+    status: completed
   - id: b-loop-002
     content: "[B-LOOP-002] Core Loop certification(성공/Safe-Stop 실제 E2E) · legacy=03 redesign-r4-core-loop-certification(pending) · PRIORITY=LAUNCH_REQUIRED · RISK=HIGH · DEPENDS_ON=B-PARTICIPATION-001+B-EXECUTION-001(HARD)"
     status: pending
@@ -51,8 +51,8 @@ isProject: false
 |---|---|---|
 | `ParticipateService` + Rust `guardParticipate` | 백엔드 실재 | `services/api-nest`, `services/engine-rust` |
 | web participate 호출 | **0건** | 과거 forensic 실측(`docs/CURRENT_PROJECT_AUDIT.md`, 참고자료 — 재확인 필요, 아래 NOTES) |
-| `/trades` | `PendingFigma title="수익"` | `apps/web/app/trades/page.tsx`(2026-08-20 재실측) |
-| `/trades/[id]/execute` | `useTradeExecution` 최소 실데이터 | `apps/web/app/trades/[id]/execute/TradeExecuteClient.tsx`(2026-08-20 B-EXECUTION-001) |
+| `/trades` | `TradesClient` 최소 실목록 (`GET /api/v1/trades`) | `apps/web/app/trades/page.tsx`(2026-08-20 B-TRADES-001) |
+| `/trades/[id]/execute` | `PendingFigma title="진행"` | `apps/web/app/trades/[id]/execute/page.tsx`(2026-08-20 재실측) |
 | 가짜 금액(하드코딩 `0`·가짜 `12.50 USDT`) | **CLOSED** | 그린필드 리셋으로 두 페이지 모두 PendingFigma로 교체됨 — 재실측 확인, Founder 질문 불필요 |
 | Wallet buckets/deposit/withdraw/KYC | 대부분 REAL | Supabase 실측(`ledger_accounts`·`withdraw_intents`·`kyc_status` 등 8+ 테이블) |
 | `/profits` UI | Spark Dash(`ProfitsDesktopClient`) | `apps/web/app/profits/page.tsx` |

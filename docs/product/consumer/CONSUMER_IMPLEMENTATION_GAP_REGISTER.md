@@ -26,7 +26,7 @@ Phase 3 does not fix these.
 | G-P1-02 | Participate SDK | preflight+participate client | `@aipo/sdk/participate` + `/profits/[id]` wired 2026-08-20 | CLOSED | P1 | NO | NO | remaining = execute E2E | SDK |
 | G-P1-03 | Auth SDK | signup/login/session client | no auth module in `packages/sdk` | SDK MISSING | P1 | NO | YES auth screens | YES | SDK |
 | G-P1-04 | User history | 입출금/정산 목록 | ledger journals = Admin only. User KRW request list only | OWNER_PARTIAL | P1 | History empty/unavailable OK | YES full history | YES history E2E | Money API |
-| G-P1-05 | User trade list | 진행/지난 매칭 목록 | `GET /trades/:id` only. no listByUser | OWNER_MISSING list | P1 | Home can use known tradeId | YES revisit matching | YES | Nest trades |
+| G-P1-05 | User trade list | 진행/지난 매칭 목록 | `GET /api/v1/trades` session list + `/trades` WIRED_MINIMAL (2026-08-20 B-TRADES-001) | CLOSED | P1 | NO | NO | remaining = core-loop E2E | Nest trades + web |
 | G-P1-06 | User cancel | D-05 APPROVED HIDE | `CANCELLED_BY_USER` enum. no user POST cancel found | OWNER_MISSING · FUTURE_CAPABILITY until API verified | P1 | NO — CTA not drawn | if cancel later exposed | if cancel later exposed | Nest trades |
 | G-P1-07 | KRW deposit route | 독립 레일 | web `/wallet/deposit` only (placeholder) | route MIXED | P1 | NO | YES IA rails | partial | Web routes |
 | G-P1-08 | Return after funding | 기회 복귀 | no returnTo contract in API | UX contract only | P1 | NO | YES funding loop | YES | Web + optional API |
@@ -93,4 +93,5 @@ blocks full-app implementation Figma = G-P1-04/05/08 annotations required
 | wallet history | STILL_PRESENT | page placeholder + user journal list MISSING |
 | Kakao runtime | OWNER_FOUND API / WEB_WIRING_MISSING | `OAUTH_PRIMARY=kakao` |
 | dead href | NOT_FOUND | PendingFigma has no href |
-| legacy execute path | CLOSED (2026-08-20 B-EXECUTION-001) | `/trades/[id]/execute`=`useTradeExecution` 최소 실데이터. `/trades` 목록만 PendingFigma. progressPct 표시 0. API execute-tick KEEP |
+| legacy execute path | CLOSED (2026-08-20 B-EXECUTION-001) | `/trades/[id]/execute`=`useTradeExecution` 최소 실데이터. progressPct 표시 0. API execute-tick KEEP |
+| user trade list | CLOSED (2026-08-20 B-TRADES-001) | `GET /api/v1/trades` + `/trades` `TradesClient`. 기존 `toState()` 투영. progressPct 표시 0 |

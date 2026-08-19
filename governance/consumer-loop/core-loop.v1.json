@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "measuredAt": "2026-08-20",
   "status": "CONTRACT_READY",
-  "implementationStatus": "EXECUTION_WIRED",
-  "task": "B-EXECUTION-001",
+  "implementationStatus": "TRADES_WIRED",
+  "task": "B-TRADES-001",
   "legacyPointer": "03 redesign-r4-core-loop-contract",
   "productContract": "docs/product/consumer/CONSUMER_CORE_LOOP_CONTRACT.md",
   "authority": {
@@ -38,6 +38,7 @@
   "routes": {
     "preflight": "POST /api/v1/opportunities/:id/preflight",
     "participate": "POST /api/v1/opportunities/:id/participate",
+    "tradeList": "GET /api/v1/trades",
     "tradeGet": "GET /api/v1/trades/:id",
     "executeTick": "POST /api/v1/trades/:id/execute-tick",
     "compatDetail": "/profits/[id]",
@@ -53,7 +54,8 @@
     "ledger": "services/api-nest/src/ledger/ledger.posting.service.ts",
     "sdkFeed": "packages/sdk/src/user-feed",
     "sdkExecution": "packages/sdk/src/execution-stream",
-    "sdkParticipate": "packages/sdk/src/participate"
+    "sdkParticipate": "packages/sdk/src/participate",
+    "sdkTrades": "packages/sdk/src/trades"
   },
   "measured": {
     "webParticipatePost": 1,
@@ -63,12 +65,12 @@
     "executePageHook": 1,
     "profitsListPresentation": "SPARK_DASH_DISCOVERY",
     "profitsDetailPage": "WIRED_MINIMAL",
-    "tradesPage": "PendingFigma",
+    "tradesPage": "WIRED_MINIMAL",
     "executePage": "WIRED_MINIMAL",
     "backendParticipate": "OWNER_FOUND",
     "backendPreflight": "OWNER_FOUND",
     "backendExecute": "OWNER_FOUND",
-    "userTradeListApi": "MISSING",
+    "userTradeListApi": "PRESENT",
     "userCancelApi": "MISSING",
     "fakeFinancialValueBug": "CLOSED"
   },
@@ -81,7 +83,6 @@
     "failed"
   ],
   "nextSlices": [
-    "B-TRADES-001",
     "B-LOOP-002"
   ],
   "verifier": "tooling/verify/core-loop-contract.cjs"

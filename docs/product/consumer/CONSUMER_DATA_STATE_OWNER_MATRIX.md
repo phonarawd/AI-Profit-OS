@@ -23,7 +23,7 @@ ZERO_NE_UNAVAILABLE = YES
 | Eligibility | feed `bucket` | Engine MI §0.0.5.1 | `classifyAffordability` via Nest | feed item `bucket` | opportunities list/detail | YES | YES | NO | label only | hide CTA | participate가 최종 |
 | SuggestDeposit | `suggestDepositUsdt` | Engine MI | balance-aware feed | feed field | same | YES | YES | NO | YES | hide deposit hint | Funding CTA만 |
 | NearMissCap | `nearMissCapUsdt` | execution-policy feed | policy or Day-1 formula in MI | feed | same | YES | YES | NO | NO user number unless owned | hide | — |
-| MatchingStatus | `trade_executions.status` | Engine+Nest | trade row | `TradeExecutionState` | `GET /api/v1/trades/:id` | `settlement_rule.cjs` | YES | NO | map to Korean | UNAVAILABLE | Home 우선순위 스킵 |
+| MatchingStatus | `trade_executions.status` | Engine+Nest | trade row | `TradeExecutionState` | `GET /api/v1/trades` · `GET /api/v1/trades/:id` | `settlement_rule.cjs` | YES | NO | map to Korean | UNAVAILABLE | Home 우선순위 스킵 |
 | MatchingResultCode | `result_code` | Engine rule | evaluateExecution | `TradeExecutionResultCode` | execute-tick + GET | YES | YES | NO | map | hide | — |
 | ProgressPct | presentation timer | Nest `presentationProgress` | Soft elapsed ratio | `progressPct` | same | NO (not Rule credit) | NO as truth | NO as % bar | FORBIDDEN as stepper | do not display | indeterminate |
 | SettlementStatus | journal + trade success | Money+Engine | `ledger_journals` type settlement · trade success | `settledProfitUsdt` | trade GET | YES | YES | NO | YES | not Settled | — |

@@ -19,6 +19,7 @@
     "verify:core-loop-contract": "node tooling/verify/core-loop-contract.cjs",
     "verify:participate-web-wire": "node tooling/verify/participate-web-wire.cjs",
     "verify:execute-web-wire": "node tooling/verify/execute-web-wire.cjs",
+    "verify:trades-web-wire": "node tooling/verify/trades-web-wire.cjs",
     "verify:project-boundary": "node scripts/verify-project-boundary.mjs",
     "verify:hook-stability": "node scripts/hook-stability-stress.mjs",
     "verify:stack-lock": "node tooling/verify/stack-lock.cjs",

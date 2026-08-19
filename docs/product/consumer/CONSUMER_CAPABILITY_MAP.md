@@ -7,7 +7,7 @@
 
 ```text
 ROUTE_COMPATIBILITY ≠ FUTURE_PRODUCT_IA
-CURRENT_WEB = Home + /profits list = Spark Dash presentation · /profits/[id] participate/preflight WIRED_MINIMAL · /trades/[id]/execute = WIRED_MINIMAL · /trades = PendingFigma
+CURRENT_WEB = Home + /profits list = Spark Dash presentation · /profits/[id] participate/preflight WIRED_MINIMAL · /trades/[id]/execute = WIRED_MINIMAL · /trades = WIRED_MINIMAL
 ```
 
 | Capability | Current route | Backend owner | SDK owner | Engine owner | Money owner | Current web wiring | Current status | UX dependency | Risk |
@@ -28,7 +28,7 @@ CURRENT_WEB = Home + /profits list = Spark Dash presentation · /profits/[id] pa
 | Matching | `/trades/[id]/execute` | OWNER_FOUND GET/POST trades | OWNER_FOUND execution-stream | OWNER_FOUND settlement_rule | lock/unlock | WEB_WIRING_PRESENT (minimal) | PARTIAL | Matching | progressPct 표시 0 |
 | Cancel | none | OWNER_MISSING user | n/a | resultCode exists | unlock on terminal | WEB_WIRING_MISSING | MISSING | D-05 HIDE | — |
 | Settlement | via trade success | OWNER_FOUND journal settlement | settledProfit field | MATCH_SUCCESS path | OWNER_FOUND | WEB_WIRING_MISSING | VERIFIED (API) | Result | — |
-| Earnings | `/trades` compat | OWNER_FOUND profitUsdt + count | buckets / home-money | count | OWNER_FOUND | WEB_WIRING_MISSING | PARTIAL | embed | no list |
+| Earnings | `/trades` compat | OWNER_FOUND profitUsdt + GET /trades list | buckets + `@aipo/sdk/trades` | count | OWNER_FOUND | WEB_WIRING_PRESENT (minimal) | PARTIAL | embed | list ≤50 · Figma 없음 |
 | Wallet | `/wallet` | OWNER_FOUND | OWNER_FOUND | n/a | OWNER_FOUND | WEB_WIRING_MISSING | PARTIAL | primary | — |
 | USDT Deposit | `/wallet/deposit` | OWNER_FOUND my-deposit-address | OWNER_PARTIAL (no address helper in index) | chain watchers | OWNER_FOUND | WEB_WIRING_MISSING | PARTIAL | rail | observe not user |
 | USDT Withdraw | `/wallet/withdraw/usdt` | OWNER_FOUND withdraw+step-up | OWNER_FOUND createWithdraw | n/a | OWNER_FOUND | WEB_WIRING_MISSING | PARTIAL | rail | KYC |

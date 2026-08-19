@@ -1,5 +1,5 @@
-﻿import { PendingFigma } from "@/app/PendingFigma";
+﻿import { TradesClient } from "./TradesClient";
 
 export default function Page() {
-  return <PendingFigma title="수익" />;
+  return <TradesClient />;
 }

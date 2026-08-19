@@ -27,6 +27,11 @@ type SessionReq = {
 export class TradesUserController {
   constructor(private readonly execution: TradeExecutionService) {}
 
+  @Get(TRADE_USER_ROUTES.list)
+  list(@Req() req: SessionReq) {
+    return this.execution.list(this.sessionUserId(req));
+  }
+
   @Get(TRADE_USER_ROUTES.get)
   get(@Param("id") id: string, @Req() req: SessionReq) {
     return this.execution.get(this.sessionUserId(req), id);
