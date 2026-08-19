@@ -7,7 +7,7 @@ todos:
     status: completed
   - id: b-participation-001
     content: "[B-PARTICIPATION-001] web participate/preflight 실배선(현재 0건 — 가장 확실한 단일 launch blocker) · legacy=03 redesign-r4-core-loop-implementation(pending) 하위 · PRIORITY=LAUNCH_BLOCKER · RISK=HIGH"
-    status: pending
+    status: completed
   - id: b-execution-001
     content: "[B-EXECUTION-001] execute 페이지 실데이터 배선(현재 PendingFigma placeholder) · FAKE_FINANCIAL_VALUE_BUG=CLOSED(이미 해결) · REAL_IMPLEMENTATION=REQUIRED · legacy=03 redesign-r4-core-loop-implementation 하위 · PRIORITY=LAUNCH_BLOCKER · RISK=HIGH"
     status: pending

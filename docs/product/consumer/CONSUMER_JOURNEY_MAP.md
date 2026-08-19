@@ -69,7 +69,7 @@ FAKE_ACTIVITY = FORBIDDEN
 | failure recovery | `PREFLIGHT_REQUIRED` → 재확인. `INSUFFICIENT_PRINCIPAL` → Funding. `PRICE_STALE*` → 목록 복귀. `MATCH_BLOCKED`/`COMPARE_NOT_READY`/`CIRCUIT` → 불가 설명. `AUTH_REQUIRED` → Login |
 | screens | ParticipateConfirmation (MODAL/SHEET) |
 | classification | MODAL/SHEET |
-| notes | 2026-08-20 재실측: SDK participate/preflight export 없음. `apps/web` POST participate/preflight 0. `/profits/[id]`=`PendingFigma`. 계약=`CONSUMER_CORE_LOOP_CONTRACT.md` |
+| notes | 2026-08-20 B-PARTICIPATION-001: SDK participate/preflight PRESENT. `/profits/[id]` POST 실연결. `/profits` 목록 POST 0. 계약=`CONSUMER_CORE_LOOP_CONTRACT.md` |
 
 ---
 

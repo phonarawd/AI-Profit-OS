@@ -1,5 +1,12 @@
-import { PendingFigma } from "@/app/PendingFigma";
+import { OpportunityDetailClient } from "./OpportunityDetailClient";
 
-export default function Page() {
-  return <PendingFigma title="기회 상세" />;
+/** live-wire: fetchOpportunityDetail 는 OpportunityDetailClient 가 호출한다. */
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return <OpportunityDetailClient opportunityId={id} />;
 }

@@ -23,7 +23,7 @@ Phase 3 does not fix these.
 | ID | capability | expected UX | current implementation evidence | gap | severity | blocks Figma? | blocks implementation? | blocks E2E? | recommended owner |
 |----|------------|-------------|---------------------------------|-----|----------|---------------|------------------------|-------------|-------------------|
 | G-P1-01 | Consumer web wiring | 전 여정 연결 | `apps/web/app/**/page.tsx` = `PendingFigma` only | WEB_WIRING_MISSING | P1 | NO (architecture exists) | YES product UI | YES | future Consumer impl |
-| G-P1-02 | Participate SDK | preflight+participate client | `@aipo/sdk` exports feed/wallet/fx — no participate | SDK MISSING | P1 | NO | YES participate slice | YES | SDK |
+| G-P1-02 | Participate SDK | preflight+participate client | `@aipo/sdk/participate` + `/profits/[id]` wired 2026-08-20 | CLOSED | P1 | NO | NO | remaining = execute E2E | SDK |
 | G-P1-03 | Auth SDK | signup/login/session client | no auth module in `packages/sdk` | SDK MISSING | P1 | NO | YES auth screens | YES | SDK |
 | G-P1-04 | User history | 입출금/정산 목록 | ledger journals = Admin only. User KRW request list only | OWNER_PARTIAL | P1 | History empty/unavailable OK | YES full history | YES history E2E | Money API |
 | G-P1-05 | User trade list | 진행/지난 매칭 목록 | `GET /trades/:id` only. no listByUser | OWNER_MISSING list | P1 | Home can use known tradeId | YES revisit matching | YES | Nest trades |
@@ -85,7 +85,7 @@ blocks full-app implementation Figma = G-P1-04/05/08 annotations required
 
 | historical | verdict | evidence |
 |------------|---------|----------|
-| Participate POST web wiring | STILL_PRESENT (2026-08-20 재실측) | Nest POST exists. SDK export 0. `apps/web` `preflightToken`/`/participate` 0. `/profits`=Spark Dash discovery only · `/profits/[id]`=`PendingFigma`. 계약=`CONSUMER_CORE_LOOP_CONTRACT.md` |
+| Participate POST web wiring | CLOSED (2026-08-20 B-PARTICIPATION-001) | SDK `issuePreflight`+`postParticipate`. `/profits/[id]` 실연결. `/profits` 목록 POST 0. execute/trades는 아직 PendingFigma. 계약=`CONSUMER_CORE_LOOP_CONTRACT.md` |
 | access token path | PARTIAL | SDK omits Bearer if token null; `credentials:include` + `aipo_session`. Web calls 0 |
 | cancel/merge handlers | NOT_FOUND (web) | no web handlers. API `profit/merge` exists. user cancel MISSING |
 | hardcoded zero | STILL_PRESENT | SDK/API fallbacks (G-P0-01) |

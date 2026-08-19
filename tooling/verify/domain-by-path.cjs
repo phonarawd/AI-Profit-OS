@@ -27,11 +27,17 @@ const RULES = [
       ) ||
       /^tooling\/verify\/consumer-ux-architecture\.cjs$/.test(f) ||
       /^tooling\/verify\/core-loop-contract\.cjs$/.test(f) ||
+      /^tooling\/verify\/participate-web-wire\.cjs$/.test(f) ||
       /^governance\/consumer-loop\//.test(f) ||
       /^apps\/web\/app\/profits\/\[id\]\//.test(f) ||
       /^apps\/web\/app\/trades\//.test(f) ||
-      /^packages\/sdk\/src\/index\.ts$/.test(f),
-    scripts: ["consumer-ux-architecture.cjs", "core-loop-contract.cjs"],
+      /^packages\/sdk\/src\/index\.ts$/.test(f) ||
+      /^packages\/sdk\/src\/participate\//.test(f),
+    scripts: [
+      "consumer-ux-architecture.cjs",
+      "core-loop-contract.cjs",
+      "participate-web-wire.cjs",
+    ],
   },
   {
     test: (f) =>
@@ -115,7 +121,11 @@ const RULES = [
       /^apps\/web\/app\/profits\//.test(f) ||
       /^apps\/web\/app\/ProfitsDesktopClient\.tsx$/.test(f) ||
       /^apps\/web\/components\/spark-dash-profits\//.test(f),
-    scripts: ["profits-live-wire.cjs", "sdk-user-feed.cjs"],
+    scripts: [
+      "profits-live-wire.cjs",
+      "sdk-user-feed.cjs",
+      "participate-web-wire.cjs",
+    ],
   },
   {
     test: (f) =>

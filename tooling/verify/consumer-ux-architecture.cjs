@@ -282,7 +282,7 @@ mustInclude(FILES.gaps, "FX_ZERO_FALLBACK_REGISTERED_AS_GAP = YES");
 mustInclude(FILES.caps, "WEB_WIRING_MISSING");
 mustInclude(FILES.caps, "COMPLETE_ENOUGH");
 mustInclude(FILES.loop, "ENGINE_RULE_REDEFINITION = FORBIDDEN");
-mustInclude(FILES.loop, "WEB_PARTICIPATE_POST = 0");
+mustInclude(FILES.loop, "WEB_PARTICIPATE_POST = 1");
 mustInclude(FILES.ux, "CONSUMER_CORE_LOOP_CONTRACT.md");
 
 const os = read(

@@ -42,11 +42,29 @@ export {
 } from "./peotteok";
 
 export {
+  ParticipateError,
+  issuePreflight,
+  isParticipateError,
+  newParticipateIdempotencyKey,
+  postParticipate,
+  readParticipateErrorCode,
+  type ParticipateRequestBody,
+  type ParticipateRequestOpts,
+  type ParticipateResult,
+  type PreflightResponse,
+} from "./participate";
+
+export {
+  OpportunityFeedError,
   fetchDayPulse,
   fetchOpportunityDetail,
   fetchOpportunityFeed,
+  isOpportunityFeedError,
   mapNearMissExtraCount,
+  readOpportunityFeedItem,
+  readOpportunityFeedItems,
   type DayPulseResponse,
+  type OpportunityAssetImageSource,
   type OpportunityDetailResponse,
   type OpportunityFeedItem,
   type OpportunityFeedResponse,

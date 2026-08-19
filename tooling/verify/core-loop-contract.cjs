@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 /**
- * verify:core-loop-contract — B-LOOP-001
- * Product·Visual·Implementation 계약 + 2026-08-20 재실측 갭.
- * Engine Rule 재정의 0 · web/SDK participate POST 0 을 잠근다.
+ * verify:core-loop-contract — B-LOOP-001 계약 유지 + B-PARTICIPATION-001 배선 실측
+ * Engine Rule 재정의 0 · execute/trades는 다음 슬라이스
  * B-LOOP-002 release E2E 가 아니다.
  */
 "use strict";
@@ -61,6 +60,8 @@ const requiredFiles = [
   CONTRACT,
   GOV,
   "apps/web/app/profits/[id]/page.tsx",
+  "apps/web/app/profits/[id]/OpportunityDetailClient.tsx",
+  "packages/sdk/src/participate/fetch.ts",
   "apps/web/app/profits/page.tsx",
   "apps/web/app/trades/page.tsx",
   "apps/web/app/trades/[id]/execute/page.tsx",
@@ -92,8 +93,8 @@ for (const token of [
   "requiredCapitalUsdt",
   "FAKE_STEPPER = 0",
   "FAKE_MATCHING_PROGRESS = 0",
-  "WEB_PARTICIPATE_POST = 0",
-  "SDK_PARTICIPATE_EXPORT = MISSING",
+  "WEB_PARTICIPATE_POST = 1",
+  "SDK_PARTICIPATE_EXPORT = PRESENT",
   "WIRE_WITHOUT_APPROVED_FIGMA = ALLOWED",
   "INVENT_PRESENTATION = FORBIDDEN",
   "HOME_GEOMETRY_DEPENDENCY = FORBIDDEN",
@@ -109,8 +110,8 @@ if (gov) {
   if (gov.status !== "CONTRACT_READY") {
     fail("governance status must be CONTRACT_READY");
   }
-  if (gov.implementationStatus !== "GAP_DOCUMENTED") {
-    fail("implementationStatus must be GAP_DOCUMENTED until next slices");
+  if (gov.implementationStatus !== "PARTICIPATION_WIRED") {
+    fail("implementationStatus must be PARTICIPATION_WIRED after B-PARTICIPATION-001");
   }
   if (gov.authority.ENGINE_RULE_REDEFINITION !== "FORBIDDEN") {
     fail("ENGINE_RULE_REDEFINITION must stay FORBIDDEN");
@@ -130,14 +131,17 @@ if (gov) {
   if (gov.authority.MATCH_EQUALS_OPPORTUNITY !== false) {
     fail("MATCH_EQUALS_OPPORTUNITY must stay false");
   }
-  if (gov.measured.webParticipatePost !== 0) {
-    fail("measured.webParticipatePost must be 0 until B-PARTICIPATION-001");
+  if (gov.measured.webParticipatePost < 1) {
+    fail("measured.webParticipatePost must be >= 1 after B-PARTICIPATION-001");
   }
-  if (gov.measured.webPreflightPost !== 0) {
-    fail("measured.webPreflightPost must be 0 until B-PARTICIPATION-001");
+  if (gov.measured.webPreflightPost < 1) {
+    fail("measured.webPreflightPost must be >= 1 after B-PARTICIPATION-001");
   }
-  if (gov.measured.sdkParticipateExport !== "MISSING") {
-    fail("measured.sdkParticipateExport must be MISSING until SDK slice");
+  if (gov.measured.sdkParticipateExport !== "PRESENT") {
+    fail("measured.sdkParticipateExport must be PRESENT after SDK slice");
+  }
+  if (gov.owners.sdkParticipate !== "packages/sdk/src/participate") {
+    fail("owners.sdkParticipate must point at packages/sdk/src/participate");
   }
   if (gov.measured.executePageHook !== 0) {
     fail("measured.executePageHook must be 0 until B-EXECUTION-001");
@@ -147,12 +151,13 @@ if (gov) {
   }
 }
 
-const detail = read("apps/web/app/profits/[id]/page.tsx");
-if (detail && !detail.includes("PendingFigma")) {
-  fail("profits/[id] must remain PendingFigma until B-PARTICIPATION-001");
+const detailPage = read("apps/web/app/profits/[id]/page.tsx");
+const detailClient = read("apps/web/app/profits/[id]/OpportunityDetailClient.tsx");
+if (detailPage && !detailPage.includes("OpportunityDetailClient")) {
+  fail("profits/[id] must mount OpportunityDetailClient");
 }
-if (detail && /useTradeExecution|preflightToken|\/participate/.test(detail)) {
-  fail("profits/[id] must not call participate/preflight in this slice");
+if (detailClient && !/issuePreflight|postParticipate/.test(detailClient)) {
+  fail("profits/[id] must call issuePreflight and postParticipate");
 }
 
 const trades = read("apps/web/app/trades/page.tsx");
@@ -169,17 +174,18 @@ if (execute && execute.includes("useTradeExecution")) {
 }
 
 const profitsList = read("apps/web/app/profits/page.tsx");
-if (profitsList && !profitsList.includes("ProfitsDesktopClient")) {
-  fail("profits list must stay ProfitsDesktopClient (discovery)");
+if (
+  profitsList &&
+  (profitsList.includes("postParticipate") ||
+    profitsList.includes("issuePreflight") ||
+    profitsList.includes("preflightToken"))
+) {
+  fail("profits list must stay discovery-only (no participate POST)");
 }
 
 const sdkIndex = read("packages/sdk/src/index.ts");
-if (
-  sdkIndex &&
-  (/fetchPreflight|postParticipate|issuePreflight/.test(sdkIndex) ||
-    /export \{[^}]*\bparticipate\b/i.test(sdkIndex))
-) {
-  fail("sdk index must not export participate/preflight until B-PARTICIPATION-001");
+if (sdkIndex && !/issuePreflight|postParticipate/.test(sdkIndex)) {
+  fail("sdk index must export issuePreflight and postParticipate");
 }
 if (sdkIndex && !sdkIndex.includes("useTradeExecution")) {
   fail("sdk index must keep useTradeExecution export");
@@ -199,17 +205,24 @@ for (const fp of webFiles) {
   const rel = path.relative(root, fp).replace(/\\/g, "/");
   if (rel.startsWith("apps/web/scripts/")) continue;
   const src = fs.readFileSync(fp, "utf8");
-  if (
-    src.includes("/participate") &&
-    /opportunities/.test(src) &&
-    !rel.includes("spark-dash")
-  ) {
-    webParticipate += 1;
-    fail(`web participate API path in ${rel}`);
+  const participateHit =
+    src.includes("postParticipate") ||
+    (src.includes("/participate") && /opportunities/.test(src));
+  const preflightHit =
+    src.includes("preflightToken") ||
+    src.includes("issuePreflight") ||
+    /\/preflight["'`]/.test(src);
+  if (participateHit) {
+    if (rel.includes("profits/[id]/")) webParticipate += 1;
+    else if (!rel.startsWith("apps/web/scripts/")) {
+      fail(`unexpected web participate wiring in ${rel}`);
+    }
   }
-  if (src.includes("preflightToken") || /\/preflight["'`]/.test(src)) {
-    webPreflight += 1;
-    fail(`web preflight wiring in ${rel}`);
+  if (preflightHit) {
+    if (rel.includes("profits/[id]/")) webPreflight += 1;
+    else if (!rel.startsWith("apps/web/scripts/")) {
+      fail(`unexpected web preflight wiring in ${rel}`);
+    }
   }
 }
 void wiringNeedles;
@@ -217,13 +230,13 @@ void wiringNeedles;
 const sdkFiles = walk(path.join(root, "packages/sdk/src"));
 for (const fp of sdkFiles) {
   const rel = path.relative(root, fp).replace(/\\/g, "/");
-  if (rel.includes("execution-stream")) continue;
+  if (rel.includes("execution-stream") || rel.includes("/participate/")) continue;
   const src = fs.readFileSync(fp, "utf8");
   if (src.includes("/participate") && /opportunities/.test(src)) {
-    fail(`sdk participate client in ${rel}`);
+    fail(`unexpected sdk participate client in ${rel}`);
   }
   if (src.includes("preflightToken") || /\/preflight["'`]/.test(src)) {
-    fail(`sdk preflight client in ${rel}`);
+    fail(`unexpected sdk preflight client in ${rel}`);
   }
 }
 
@@ -305,7 +318,7 @@ if (fails.length) {
 }
 
 console.log(
-  "[verify:core-loop-contract] PASS (contract + gap reconfirm · web participate=" +
+  "[verify:core-loop-contract] PASS (contract + participate wire · web participate=" +
     webParticipate +
     " preflight=" +
     webPreflight +

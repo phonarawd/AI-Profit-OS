@@ -3,7 +3,7 @@
 > **문서 종류:** Product · Visual · Implementation Contract  
 > **TASK:** B-LOOP-001 · Track B User Profit Loop  
 > **일자:** 2026-08-20  
-> **상태:** CONTRACT_READY · IMPLEMENTATION = GAP  
+> **상태:** CONTRACT_READY · IMPLEMENTATION = PARTICIPATION_WIRED  
 > **시각 권위:** APPROVED FIGMA = NONE  
 > **Engine Rule:** 재정의 0 (`settlement_rule.cjs` KEEP)
 
@@ -190,7 +190,7 @@ LEGACY_VISUAL_RECOVERY = FORBIDDEN
 |------|-----------|-------------|
 | Home | Spark Dash LOCKED | Home freeze SSOT. Core Loop 범위 밖 |
 | `/profits` | `ProfitsDesktopClient` Spark Dash | Discovery only. Founder Review Candidate. participate visual 아님 |
-| `/profits/[id]` | `PendingFigma title="기회 상세"` | Approved Figma 없음 |
+| `/profits/[id]` | `OpportunityDetailClient` 최소 실데이터 표면 | Approved Figma 없음 · WIRE_WITHOUT_APPROVED_FIGMA |
 | ParticipateConfirmation | 라우트/컴포넌트 없음 | Approved Figma 없음 |
 | `/trades` | `PendingFigma title="수익"` | Approved Figma 없음 · 제목은 호환 잔여 |
 | `/trades/[id]/execute` | `PendingFigma title="진행"` | Approved Figma 없음 |
@@ -244,15 +244,16 @@ B-PARTICIPATION-001 / B-EXECUTION-001 / B-TRADES-001은 **가짜 돈을 넣지 �
 | Ledger | `LedgerPostingService` · buckets · `participate_lock` / `settlement` / `participate_unlock` |
 | Schemas | `schemas/participate-request.v1.json` · `schemas/participate-proof.v1.json` |
 | SDK feed | `fetchOpportunityFeed` · `fetchOpportunityDetail` |
+| SDK participate | `issuePreflight` · `postParticipate` |
 | SDK execution | `useTradeExecution` (페이지 미연결) |
 | SDK wallet | `fetchWalletBuckets` |
-| Verify | `participate-http` · `preflight-may-stop` · `execute-rule-loop` · `participate-proof` · `match-success-rule` · `bucket-invariant` |
+| Verify | `participate-http` · `preflight-may-stop` · `participate-web-wire` · `execute-rule-loop` · `participate-proof` · `match-success-rule` · `bucket-invariant` |
 
 ### 3.2 WIRE (이 계약 다음 슬라이스 · 이 슬라이스에서 구현 0)
 
 | 다음 TASK | 해야 할 일 |
 |-----------|------------|
-| B-PARTICIPATION-001 | SDK `preflight`+`participate` · `/profits/[id]` → POST 실연결 · confirmation sheet |
+| B-PARTICIPATION-001 | DONE — SDK `preflight`+`participate` · `/profits/[id]` POST 실연결 · confirmation dialog |
 | B-EXECUTION-001 | `/trades/[id]/execute` → `useTradeExecution` · 상태 테이블 준수 |
 | B-TRADES-001 | `/trades` 실목록. list-by-user API 없으면 발명 금지 · UNAVAILABLE 또는 기존 GET만 |
 | B-LOOP-002 | `verify:core-loop-release` 실 E2E (이 슬라이스에서 신설 0) |
@@ -273,8 +274,8 @@ B-PARTICIPATION-001 / B-EXECUTION-001 / B-TRADES-001은 **가짜 돈을 넣지 �
 
 | 파일 | 다음 분류 |
 |------|-----------|
-| `packages/sdk/src/index.ts` | CREATE participate/preflight export |
-| `apps/web/app/profits/[id]/page.tsx` | REPLACE PendingFigma → real detail + confirm |
+| `packages/sdk/src/index.ts` | WIRED participate/preflight export |
+| `apps/web/app/profits/[id]/page.tsx` | WIRED real detail + confirm |
 | `apps/web/app/trades/[id]/execute/page.tsx` | REPLACE PendingFigma → `useTradeExecution` |
 | `apps/web/app/trades/page.tsx` | REPLACE PendingFigma → list or honest UNAVAILABLE |
 | `apps/web/app/profits/page.tsx` | KEEP discovery. participate POST 넣지 말 것 (카드는 Detail로) |
@@ -289,12 +290,12 @@ B-PARTICIPATION-001 / B-EXECUTION-001 / B-TRADES-001은 **가짜 돈을 넣지 �
 
 | 주장 | 판정 | Evidence |
 |------|------|----------|
-| `/profits/[id]`가 participate를 호출한다 | **FALSE** | `apps/web/app/profits/[id]/page.tsx` = `PendingFigma` only |
-| web `POST …/participate` | **0건** | `apps/web` `preflightToken` / `/participate` / `/preflight` 0 |
-| SDK participate/preflight export | **MISSING** | `packages/sdk/src/index.ts` = feed/wallet/execution/peotteok/growth only |
+| `/profits/[id]`가 participate를 호출한다 | **TRUE** | `OpportunityDetailClient` → `issuePreflight` + `postParticipate` |
+| web `POST …/participate` | **1건** | `/profits/[id]` only. `/profits` 목록 POST 0 |
+| SDK participate/preflight export | **PRESENT** | `packages/sdk/src/participate` + `index.ts` |
 | `useTradeExecution` | **EXISTS · UNWIRED** | SDK export 있음. execute page import 0 |
 | `GET` feed/detail SDK | **EXISTS** | `fetchOpportunityFeed` · `fetchOpportunityDetail` |
-| `/profits` 목록 UI | **DISCOVERY ONLY** | `ProfitsDesktopClient`. 카드 `href=/profits/:id`. POST 0 |
+| `/profits` 목록 UI | **DISCOVERY ONLY** | 카드는 Detail로. 목록 POST participate 0 |
 | Nest POST preflight | **OWNER_FOUND** | `PreflightService.issue` · TTL 300 · `mayStopRequired` |
 | Nest POST participate | **OWNER_FOUND** | `ParticipateService` · KYC0 · amount=required · idempotency |
 | Nest GET/POST trades | **OWNER_FOUND** | `TRADE_USER_ROUTES` · `settlement_rule.cjs` |
@@ -305,10 +306,10 @@ B-PARTICIPATION-001 / B-EXECUTION-001 / B-TRADES-001은 **가짜 돈을 넣지 �
 
 ```text
 FAKE_FINANCIAL_VALUE_BUG = CLOSED
-WEB_PARTICIPATE_POST = 0
-SDK_PARTICIPATE_EXPORT = MISSING
+WEB_PARTICIPATE_POST = 1
+SDK_PARTICIPATE_EXPORT = PRESENT
 BACKEND_CORE_LOOP = OWNER_FOUND
-REAL_IMPLEMENTATION = REQUIRED
+REAL_IMPLEMENTATION = PARTICIPATION_WIRED
 CORE_LOOP_CERTIFICATION = NOT_THIS_SLICE
 ```
 
@@ -316,7 +317,8 @@ CORE_LOOP_CERTIFICATION = NOT_THIS_SLICE
 
 ## 5. Acceptance (이 슬라이스)
 
-이 슬라이스 done = 계약 문서 + 갭 재실측 + `verify:core-loop-contract` PASS.
+B-LOOP-001 done = 계약 문서 + 갭 재실측 + `verify:core-loop-contract` PASS.  
+B-PARTICIPATION-001 done = SDK export + `/profits/[id]` 실배선 + `verify:participate-web-wire` PASS.
 
 ```text
 IMPLEMENTATION_START = B-PARTICIPATION-001
