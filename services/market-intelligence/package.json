@@ -30,6 +30,7 @@
     "./adapter-matching-kpi": "./src/adapter-matching-kpi.cjs",
     "./money": "./src/money.cjs",
     "./source-observation": "./src/source-observation/index.cjs",
-    "./listing-promotion": "./src/listing-promotion/index.cjs"
+    "./listing-promotion": "./src/listing-promotion/index.cjs",
+    "./executable-economics": "./src/executable-economics/index.cjs"
   }
 }

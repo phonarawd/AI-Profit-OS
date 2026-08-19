@@ -1,0 +1,77 @@
+{
+  "$id": "https://ai-profit-os.local/governance/global-product/executable-economics.v1.json",
+  "schema": "governance.global-product.executable-economics.v1",
+  "version": "1.0.0",
+  "evaluatorVersion": "executable-economics.v1",
+  "runtime": "IN_PROCESS_MEMORY",
+  "measuredAt": "2026-08-20",
+  "status": "PASS",
+  "authority": {
+    "PROMOTABLE_EQUALS_EXECUTABLE": false,
+    "EXECUTABLE_EQUALS_OPPORTUNITY": false,
+    "OBSERVED_PRICE_EQUALS_EXECUTABLE_PRICE": false,
+    "STALE_PRICE_EQUALS_CURRENT_PRICE": false,
+    "NEW_PRICING_FORMULA": "FORBIDDEN",
+    "NEW_FX_FORMULA": "FORBIDDEN",
+    "NEW_MARKET_ID": "FORBIDDEN",
+    "NEW_FEE_TABLE": "FORBIDDEN",
+    "CHEAPEST_AS_BUY_LEG": "FORBIDDEN",
+    "SOURCE_EBAY_DEFAULTS_TO_EBAY_US": "FORBIDDEN",
+    "SAME_PHYSICAL_ITEM_NEVER_INFERRED": true
+  },
+  "reusedOwners": {
+    "pricing": "services/market-intelligence/src/pricing-formula.cjs",
+    "fx": "services/market-intelligence/src/fx-snapshot-formula.cjs",
+    "staleAllowance": "services/market-intelligence/src/catalog-runtime-seed.cjs#LISTING_STALE_SEC",
+    "marketplaceMap": "services/market-intelligence/src/catalog-runtime-seed.cjs#MARKETPLACE_BY_MARKET",
+    "promotion": "services/market-intelligence/src/listing-promotion",
+    "staleJudge": "services/market-intelligence/src/adapter-matching-kpi.cjs#evaluateStaleListings"
+  },
+  "vocabularyOwner": "governance/global-product/canonical-product.v2.json",
+  "boundaries": {
+    "CanonicalProduct": "internal same-product SSOT after MATCH",
+    "SourceListing": "one source offer / variant unit",
+    "ListingPromotion": "Listing→Opportunity 승격 계약. Opportunity가 아니다",
+    "ExecutableEconomics": "current executable price + availability + fees/FX wiring. Opportunity가 아니다",
+    "Opportunity": "executable economics after price availability fees FX"
+  },
+  "firstSlice": {
+    "name": "executable_price_availability_fees_fx_wiring",
+    "doesNotCallMatcher": true,
+    "doesNotCreateCanonicalProduct": true,
+    "doesNotGenerateCandidates": true,
+    "doesCallListingPromotion": true,
+    "doesReuseComputeOpportunityPricing": true,
+    "doesReuseNormalizeNativeToUsdt": true,
+    "doesReuseListingStaleSec": true,
+    "doesNotCreateOpportunity": true,
+    "doesNotInventFeeTable": true,
+    "doesNotAddMarketId": true,
+    "durablePersistence": "NOT_IMPLEMENTED",
+    "production": "NOT_IMPLEMENTED"
+  },
+  "decisions": ["EXECUTABLE", "NOT_EXECUTABLE", "INSUFFICIENT", "CONFLICT", "BLOCKED"],
+  "preservedBoundaries": {
+    "IDENTITY_MATCHING_V2_MECHANISM": "UNCHANGED",
+    "LISTING_PROMOTION_FIRST_SLICE": "UNCHANGED",
+    "PRICING_FORMULA": "UNCHANGED",
+    "FX_SNAPSHOT_FORMULA": "UNCHANGED",
+    "matcherPipelineExecutableEconomics": "NOT_IMPLEMENTED",
+    "canonicalProductPipelineExecutableEconomics": "NOT_IMPLEMENTED",
+    "listingPromotionPipelineExecutableEconomics": "NOT_IMPLEMENTED"
+  },
+  "persistence": {
+    "EXECUTABLE_ECONOMICS_MEMORY_RUNTIME": "IN_PROCESS_MEMORY",
+    "EXECUTABLE_ECONOMICS_DB_RUNTIME": "NOT_IMPLEMENTED",
+    "PRODUCTION_EXECUTABLE_ECONOMICS": "NOT_IMPLEMENTED"
+  },
+  "pipelineAfterMatchOwner": "governance/global-product/canonical-product.v2.json",
+  "owner": "services/market-intelligence/src/executable-economics",
+  "nestContract": "services/api-nest/src/opportunities/executable-economics.contract.ts",
+  "verifier": "tooling/verify/executable-economics.cjs",
+  "pinnedGeometry": {
+    "positive": "ebay_us × admin (PROMOTABLE + Day-1 market + FX + available + current)",
+    "promotableNotExecutable": "TCG 113669-shaped × eBay 377416817781-shaped · PROMOTABLE · MARKET_ID_UNRESOLVED (tcgplayer fee owner 없음)",
+    "note": "PROMOTABLE != EXECUTABLE. observed native != FX-normalized USDT. stale != current. EXECUTABLE != Opportunity"
+  }
+}

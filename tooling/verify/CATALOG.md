@@ -74,6 +74,7 @@
 | `services/market-intelligence/src/candidate-generation/**` · `governance/global-product/candidate-generation.v1.json` · `tooling/verify/candidate-generation.cjs` | candidate-generation (T0 in-process · 교차 소스 후보 쌍 탐색 · candidate≠MATCH · durable/production 0) |
 | `services/market-intelligence/src/listing-variant-compatibility/**` · `governance/global-product/listing-variant-compatibility.v1.json` · `tooling/verify/listing-variant-compatibility.cjs` | listing-variant-compatibility (T0 in-process · Opportunity 전 SAME_VARIANT 게이트 · MATCH/Listing promotion/Opportunity 0 · durable/production 0) |
 | `services/market-intelligence/src/listing-promotion/**` · `governance/global-product/listing-promotion.v1.json` · `tooling/verify/listing-promotion.cjs` · `services/api-nest/src/opportunities/listing-promotion.contract.ts` | listing-promotion (T0 in-process · Listing→Opportunity 승격 계약 · COMPATIBLE≠PROMOTABLE · CP required · Opportunity/executable price 0 · durable/production 0) |
+| `services/market-intelligence/src/executable-economics/**` · `governance/global-product/executable-economics.v1.json` · `tooling/verify/executable-economics.cjs` · `services/api-nest/src/opportunities/executable-economics.contract.ts` | executable-economics (T0 in-process · executable price/availability/fees/FX wiring · Money/Engine owner 재사용 · PROMOTABLE≠EXECUTABLE · Opportunity 0 · durable/production 0) |
 
 ## Domain gates (T1 `stubs/run-all` · 구현되면 hard)
 
@@ -170,6 +171,7 @@
 | candidate-generation | Candidate Generation 첫 슬라이스 — 관측 풀에서 교차 소스 후보 쌍만 탐색 · candidate≠MATCH/Listing/Opportunity · title/image/price/source-local 금지 · matcher 미호출 · durable 0 — **live** |
 | listing-variant-compatibility | Listing/Variant Compatibility — Opportunity 전 SAME_VARIANT/TRADABLE_EQUIVALENT 게이트 · samePhysicalItem 0 · grade/size fail-closed · matcher 미호출 · durable 0 — **live** |
 | listing-promotion | Listing Promotion Contract — Listing→Opportunity 승격 계약 · COMPATIBLE≠PROMOTABLE · CanonicalProduct 필수 · Opportunity/executable price/fees/FX 0 · durable 0 — **live** |
+| executable-economics | executable price + availability + fees + FX wiring — pricing-formula/fx-snapshot-formula/LISTING_STALE_SEC 재사용 · PROMOTABLE≠EXECUTABLE · observed≠executable · stale≠current · Opportunity 0 · durable 0 — **live** |
 | match-result-durable-persistence | MatchResult durable local Postgres · V2 실제 결정 저장 · pair 정규화 idempotency · 같은 version 모순 BLOCKED · CanonicalProduct 비-MATCH 생성 0 · production apply 0 — **live**(isolated PG only) |
 | fashionphile-identity-forensic | Fashionphile PUBLIC_JSON identity owner forensic — all-variant barcode/sku/options · SKU-derived barcode ≠ GTIN · product_type Bags ≠ luxury_bag · parser enrichment 0 unless V1-usable — **live** |
 | signup-ready-adapters | Engine §0.0 — ebay 멀티marketplaceId · pokemontcg+ygoprodeck · coingecko+frankfurter · yahoo-jp경로0 · Phase1 deploy (phase0 0) · Admin `/admin/adapters` health — **live** |

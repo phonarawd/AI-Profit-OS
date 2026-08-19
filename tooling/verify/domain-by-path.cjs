@@ -588,6 +588,14 @@ const RULES = [
     scripts: ["listing-promotion.cjs"],
   },
   {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/executable-economics\//.test(f) ||
+      /^governance\/global-product\/executable-economics\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/executable-economics\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/executable-economics\.contract\.ts$/.test(f),
+    scripts: ["executable-economics.cjs"],
+  },
+  {
     // PTF-00C — shared Engine §0.0 pure-logic package. No prior rule covered
     // this whole directory (only 3 narrow file-specific matches above),
     // which is exactly how the P0-A/P0-B fx-snapshot-formula.cjs/money.cjs

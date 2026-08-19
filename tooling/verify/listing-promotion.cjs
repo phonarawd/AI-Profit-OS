@@ -152,6 +152,9 @@ const govV2 = readJson("governance/global-product/identity-matching.v2.json");
 if (govV2 && govV2.listingPromotion !== "NOT_IMPLEMENTED") {
   fail("identity-matching.v2 listingPromotion must stay NOT_IMPLEMENTED");
 }
+if (govV2 && govV2.executablePriceAvailFeesFx && govV2.executablePriceAvailFeesFx !== "NOT_IMPLEMENTED") {
+  fail("identity-matching.v2 executablePriceAvailFeesFx must stay NOT_IMPLEMENTED");
+}
 if (govV2 && govV2.multiSourceOpportunityCreation !== "NOT_IMPLEMENTED") {
   fail("identity-matching.v2 multiSourceOpportunityCreation must stay NOT_IMPLEMENTED");
 }
