@@ -62,6 +62,7 @@
     "listingVariantCompatibility": "IN_PROCESS_MEMORY — Opportunity gate. SAME_VARIANT != SAME_CANONICAL_PRODUCT",
     "listingPromotion": "IN_PROCESS_MEMORY — Listing→Opportunity 승격 계약. PROMOTABLE != Opportunity. executable price 0",
     "executablePriceAvailFeesFx": "IN_PROCESS_MEMORY — Money/Engine pricing·FX·LISTING_STALE_SEC 재사용 wiring. PROMOTABLE != EXECUTABLE != Opportunity",
+    "multiSourceOpportunityCreation": "IN_PROCESS_MEMORY — EXECUTABLE 교차 소스 Opportunity row. EXECUTABLE != Opportunity. production INSERT 0",
     "llmVision": "assist only — never final MATCH owner"
   },
   "decisions": ["MATCH", "NO_MATCH", "INSUFFICIENT_EVIDENCE", "CONFLICT"],
@@ -239,5 +240,5 @@
     "REAL_AUTOMATED_CROSS_SOURCE_MATCH": "BLOCKED_UNTIL_SOURCE_RUNTIME"
   },
   "firstImplementationSlice": "MATCHING_V2_MINIMAL_PAIRWISE_RUNTIME",
-  "nextCursorTask": "A-PRODUCT-008 Multi-source Opportunity Creation — executable economics first slice PASS(in-process)"
+  "nextCursorTask": "Track A first-slice complete — production Opportunity persist = Track F (F-REL-001)"
 }

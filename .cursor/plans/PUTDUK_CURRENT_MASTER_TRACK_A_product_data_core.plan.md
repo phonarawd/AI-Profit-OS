@@ -36,8 +36,8 @@ todos:
     content: "[A-PRODUCT-007] executable price + availability + fees + FX wiring(Money/Engine 기존 owner 재사용, 재설계 0) · STATUS=PASS(in-process) · PRIORITY=LAUNCH_REQUIRED · PRIORITY_AUTHORITY=FOUNDER_EXPLICIT · RISK=HIGH · DEPENDS_ON=A-PRODUCT-006(HARD) · evidence=governance/global-product/executable-economics.v1.json"
     status: completed
   - id: a-product-008
-    content: "[A-PRODUCT-008] Multi-source Opportunity Creation · PRIORITY=LAUNCH_BLOCKER · PRIORITY_AUTHORITY=FOUNDER_EXPLICIT · RISK=HIGH · DEPENDS_ON=A-PRODUCT-007(HARD)"
-    status: pending
+    content: "[A-PRODUCT-008] Multi-source Opportunity Creation · STATUS=PASS(in-process) · PRIORITY=LAUNCH_BLOCKER · PRIORITY_AUTHORITY=FOUNDER_EXPLICIT · RISK=HIGH · DEPENDS_ON=A-PRODUCT-007(HARD) · evidence=governance/global-product/multi-source-opportunity.v1.json"
+    status: completed
   - id: a-data-002
     content: "[A-DATA-002] Opportunity Reprice/Freshness(완료 슬라이스 재사용, 신규 formula 없음) · STATUS=COMPLETED · RISK=MEDIUM · evidence=services/api-nest/src/opportunities/opportunity-reprice.service.ts"
     status: completed
@@ -48,7 +48,7 @@ isProject: false
 
 ```text
 > classification = CURRENT_ACTIVE_TRACK
-> CURRENT_ACTIVE_PLAN = YES
+> CURRENT_ACTIVE_PLAN = NO
 > TRACK = A (PRODUCT / DATA CORE)
 > 
 
@@ -84,6 +84,7 @@ same-product 판단 → 실행 가능한 가격/조건 확인 → Opportunity �
 | Listing/Variant Compatibility | PASS(in-process) | `governance/global-product/listing-variant-compatibility.v1.json` · `canonical-product.v2.json` boundaries · matcher/candidate PIPELINE는 NOT_IMPLEMENTED 유지 |
 | Listing Promotion Contract | PASS(in-process) | `governance/global-product/listing-promotion.v1.json` · `canonical-product.v2.json pipelineAfterMatch`에 `listing promotion` · matcher `listingPromotion` 필드는 NOT_IMPLEMENTED 유지 |
 | executable price/availability/fees/FX wiring | PASS(in-process) | `governance/global-product/executable-economics.v1.json` · pricing-formula/fx-snapshot-formula/LISTING_STALE_SEC 재사용 · matcher `executablePriceAvailFeesFx` 필드는 NOT_IMPLEMENTED 유지 · Opportunity 0 |
+| Multi-source Opportunity Creation | PASS(in-process) | `governance/global-product/multi-source-opportunity.v1.json` · ebay_us×admin ISSUED row · EXECUTABLE≠Opportunity · matcher `multiSourceOpportunityCreation` 필드는 NOT_IMPLEMENTED 유지 · production INSERT 0 |
 | Production 적용 | NOT_IMPLEMENTED / NOT_VERIFIED | Supabase `list_tables` 실측 — `canonical_products`/`source_observations`/`match_results` 테이블 원격 없음 |
 
 ```text
@@ -148,7 +149,7 @@ Founder가 이후 언제든 카테고리를 추가/재정렬할 수 있다(`FOUN
 | A-PRODUCT-005 | Listing/Variant Compatibility | Opportunity 전 필수 게이트 | 신규(§18 orphan) | PASS(in-process) | LAUNCH_REQUIRED | FOUNDER_EXPLICIT | A-PRODUCT-004(HARD) | HIGH | NO |
 | A-PRODUCT-006 | Listing Promotion Contract | Listing→Opportunity 승격 계약 | 신규(§18 orphan) | PASS(in-process) | LAUNCH_REQUIRED | FOUNDER_EXPLICIT | A-PRODUCT-005(HARD) | HIGH | NO |
 | A-PRODUCT-007 | executable price/avail/fees/FX wiring | Money/Engine 기존 owner 재사용 연결 | 신규 · Money/Engine PROTECTED_BASELINE 재사용 | PASS(in-process) | LAUNCH_REQUIRED | FOUNDER_EXPLICIT | A-PRODUCT-006(HARD) | HIGH | NO |
-| A-PRODUCT-008 | Multi-source Opportunity Creation | 실제 신규 파이프라인 기반 Opportunity 발행 | 신규(§18 orphan) | PENDING | **LAUNCH_BLOCKER** | FOUNDER_EXPLICIT | A-PRODUCT-007(HARD) | HIGH | NO |
+| A-PRODUCT-008 | Multi-source Opportunity Creation | 실제 신규 파이프라인 기반 Opportunity 발행 | 신규(§18 orphan) | PASS(in-process) | **LAUNCH_BLOCKER** | FOUNDER_EXPLICIT | A-PRODUCT-007(HARD) | HIGH | NO |
 | A-DATA-002 | Opportunity Reprice/Freshness | 재사용(신규 formula 없음) | `ai_profit_os_opportunity_reprice_freshness.plan.md`(completed) | COMPLETED | — | — | A-PRODUCT-008 산출물 소비(HARD) | MEDIUM | YES |
 
 ## Owner / Evidence / Founder approval / Production impact
@@ -166,7 +167,7 @@ Founder가 이후 언제든 카테고리를 추가/재정렬할 수 있다(`FOUN
 | A-PRODUCT-005 | services/market-intelligence | listing-variant-compatibility.v1.json · canonical-product.v2.json boundaries | NO | 없음(local in-process) | SAME_VARIANT≠CP · samePhysicalItem 0 · durable/production 0 |
 | A-PRODUCT-006 | services/market-intelligence + api-nest | listing-promotion.v1.json · canonical-product.v2.json pipelineAfterMatch | NO | 없음(local) | Listing 승격 = 이후 Opportunity 생성 전제 · COMPATIBLE≠PROMOTABLE · CP required |
 | A-PRODUCT-007 | api-nest opportunities + market-intelligence | executable-economics.v1.json · tooling/verify/executable-economics.cjs · pricing-formula.cjs/fx-snapshot-formula.cjs 재사용 | NO(재사용, 재설계 아님) | 없음(local) | Money/FX owner 재설계 금지 · PROMOTABLE≠EXECUTABLE · Opportunity 0 |
-| A-PRODUCT-008 | api-nest opportunities | 신규 Opportunity row | NO | **있음**(실제 Opportunity 생성 로직) | production 반영은 Track F 승인 후 |
+| A-PRODUCT-008 | api-nest opportunities | multi-source-opportunity.v1.json · tooling/verify/multi-source-opportunity.cjs | NO | **있음**(in-process Opportunity 생성 로직) | production INSERT는 Track F 승인 후 · matcher 필드 NOT_IMPLEMENTED 유지 |
 | A-DATA-002 | api-nest opportunities | opportunity-reprice.service.ts | NO | 기존 완료분 재사용 | — |
 
 ## Parallel safety

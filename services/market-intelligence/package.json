@@ -31,6 +31,7 @@
     "./money": "./src/money.cjs",
     "./source-observation": "./src/source-observation/index.cjs",
     "./listing-promotion": "./src/listing-promotion/index.cjs",
-    "./executable-economics": "./src/executable-economics/index.cjs"
+    "./executable-economics": "./src/executable-economics/index.cjs",
+    "./multi-source-opportunity": "./src/multi-source-opportunity/index.cjs"
   }
 }
