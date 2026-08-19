@@ -58,7 +58,7 @@
     "v1": "typed identifier compare + evidence rows + fail-closed decide()",
     "v2": "category profile + evidenceOwner + composite MATCH orchestration",
     "canonicalProduct": "created only after MATCH — later slice",
-    "candidateGeneration": "NOT_IMPLEMENTED — after first REAL PAIR",
+    "candidateGeneration": "IN_PROCESS_MEMORY — first-slice pair search. candidate != MATCH",
     "llmVision": "assist only — never final MATCH owner"
   },
   "decisions": ["MATCH", "NO_MATCH", "INSUFFICIENT_EVIDENCE", "CONFLICT"],
@@ -235,5 +235,5 @@
     "REAL_AUTOMATED_CROSS_SOURCE_MATCH": "BLOCKED_UNTIL_SOURCE_RUNTIME"
   },
   "firstImplementationSlice": "MATCHING_V2_MINIMAL_PAIRWISE_RUNTIME",
-  "nextCursorTask": "PUTDUK_IDENTITY_MATCHING_V2_ONE_REAL_PAIR_VALIDATION — bounded pair 1 · TCG automated observation 0"
+  "nextCursorTask": "A-PRODUCT-005 Listing/Variant Compatibility — Candidate Generation first slice PASS(in-process)"
 }
