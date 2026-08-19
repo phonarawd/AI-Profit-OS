@@ -16,7 +16,7 @@
 |----|----------|------|------|
 | stack-lock | `verify:stack-lock` | T0 | ✅ live |
 | secrets | `verify:secrets` | T0 | ✅ live |
-| plans-ssot | `verify:plans-ssot` | T0 | ✅ live |
+| plans-ssot | `verify:plans-ssot` | T0 | ✅ live · integrity(frontmatter/`CURRENT_ACTIVE`/legacy pending) + home mirror |
 | legacy-plan-authority | `verify:legacy-plan-authority` | T0 | ✅ live (레거시 9플랜 auto-exec 0 · 헌법 Consumer presentation 0 · 미래 플랜 시스템 보존) |
 | brand-consumer | `verify:brand-consumer` | T0 | ✅ live |
 | pg-module-scan | `verify:pg-module-scan` | T1 | ✅ live |
@@ -57,7 +57,7 @@
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |
 | `supabase/migrations/**` · migrations-applied fixture | migrations-applied-parity |
 | `apps/web/app/page.tsx` · `HomePageClient` · `packages/sdk/src/user-feed/**` · `HomePrincipalRail` · `home-principal-slots` · sdk/api growth | home-live-wire · sdk-user-feed · home-principal-slots · growth-public-surface · ticker-pii-0 |
-| `apps/web/app/profits/**` | profits-live-wire · sdk-user-feed |
+| `apps/web/app/profits/**` · `apps/web/app/ProfitsDesktopClient.tsx` · `apps/web/components/spark-dash-profits/**` | profits-live-wire · sdk-user-feed |
 | `apps/web/app/wallet/page.tsx` · `packages/sdk/src/wallet/**` | wallet-live-wire |
 | `apps/web/app/wallet/deposit/**` · `me/kyc` · `me/support` · `KycFlow` | stub-page-actions |
 | money api-nest | pg-module-scan · bucket-invariant |
@@ -67,6 +67,10 @@
 | auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie |
 | `api-nest` wallet · kyc.controller | wallet-kyc-session-auth |
 | `krw-deposit*` · `schemas/krw-deposit-request*` · `krw_deposit_fx_facts` | krw-admin-decide · krw-deposit-fx-semantics · pg-module-scan · bucket-invariant · wallet-kyc-session-auth |
+| `schemas/source-observation.v1.json` · `governance/global-product/source-observation-runtime.v1.json` · `services/market-intelligence/src/source-observation/**` · `tooling/verify/source-observation-runtime.cjs` · `tooling/verify/fashionphile-identity-forensic.cjs` | source-observation-runtime · listing-legs-day1 · fashionphile-identity-forensic |
+| `services/market-intelligence/src/identity-matching/**` · `tooling/verify/identity-matching-v1.cjs` · `governance/global-product/identity-matching.v1.json` | identity-matching-v1 · source-observation-runtime · listing-legs-day1 |
+| `services/market-intelligence/src/match-result/**` · `tooling/verify/match-result-durable-persistence.cjs` · `governance/global-product/identity-matching.v2.json` | identity-matching-v1 · identity-matching-v2 (T0 memory) · match-result-durable-persistence는 isolated PG runtime · T0 자동 클러스터 금지 |
+| `services/market-intelligence/src/canonical-product/**` · `governance/global-product/canonical-product.v2.json` · `tooling/verify/canonical-product.cjs` | canonical-product (T0 in-process · Generic Product Profile + MATCH-after create · live pair는 기존 증명 유지) |
 
 ## Domain gates (T1 `stubs/run-all` · 구현되면 hard)
 
@@ -94,8 +98,9 @@
 | auth-session-cookie | UI PART9-pre2 — httpOnly `aipo_session` Set-Cookie · cookie-parser · JwtAuthGuard cookie fallback · JSON accessToken 유지 — **live** |
 | wallet-kyc-session-auth | UI PART9-pre2 — Wallet/Kyc 유저 라우트 JwtAuthGuard + session userId (IDOR query/body userId 0) — **live** |
 | home-live-wire | UI PART9b/9c — `/` page↔`@aipo/sdk/user-feed`↔DayPulse · nearMissExtraCount · 401 graceful — **live** |
+| sdk-user-feed | UI PART9a — `@aipo/sdk/user-feed` exact typed OpportunityFeedItem · money strings · ghost field 0 · buyMarketLabelKo optional · OpportunityFeedError.status — **live** |
 | home-principal-slots | UI PART9d — §5.3 B/D `HomePrincipalRail` + Canon `home-principal-slots` + `home-money-grid`(v1.3, 구 `lux-feed-grid` 공유 분리) · principalUsdt/todayPossibleProfitUsdt — **live** |
-| profits-live-wire | UI PART9b/9e — `/profits`+`/profits/[id]` live SDK feed/detail — **live** |
+| profits-live-wire | UI PART9b/9e — `/profits`+`/profits/[id]` live SDK feed/detail · fixture isolated · viewState LOADING/READY/EMPTY/ERROR/UNAUTHORIZED · media LOADING/AVAILABLE/MISSING/BROKEN/POLICY_UNKNOWN · 07 policy gate (admin_r2 only, URL≠authorized) — **live** |
 | wallet-live-wire | UI PART9b/9f — `/wallet` buckets + `@aipo/sdk/wallet` `fetchWalletBuckets` (출금≠9f2) — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |
 | migrations-applied-parity | Supabase — 로컬 `supabase/migrations` 버전 ↔ `fixtures/migrations-applied.v1.json`(원격 applied 스냅샷) 1:1 · path-trigger — **live** |
@@ -133,7 +138,7 @@
 | luxury-bag-vertical | Engine §0.0 — luxury_bag 시드10~25 · Asset Master admin_r2 이미지 · ebay 멀티\|admin 호가 · brand+model 매칭 · 필터칩 `가방` — **live** |
 | ultra-watch-whale | Engine §0.0 — watch 시드40~80 · PP/AP/Rolex · whale≥100k Ultra 경로 · Day-1 카탈로그 소액공존(≥40%) · brand+reference 매칭 · 필터칩 `시계` — **live** |
 | balance-aware-feed | Engine §0.0.5.1 · Money §49.2a · UI §5.3a — **live** (Engine classify affordable/nearMiss/lockedHigh · suggestDeposit ceil_to_tick · nearMissCap=`execution-policy.feed.nearMissCapUsdt` · override hide 100% · Money suggest query·principal Fact·deposit prefill·feed invalidate · UI `T.feed`+BalanceAwareHome 슬롯 affordable/nearMiss/lockedHigh·입금 suggest CTA) |
-| user-opportunity-feed | Engine §0.9 E-R3 — **live** (`GET /api/v1/opportunities(+/:id)` · `OpportunitiesUserController`≠admin · `OPPORTUNITY_USER_ROUTES` · `buildBalanceAwareFeedWithOverrides` · `executionPlatforms` 유저0 · `arbitrageTypeKo` DB pass-through · JWT session userId only) |
+| user-opportunity-feed | Engine §0.9 E-R3 — **live** (`GET /api/v1/opportunities(+/:id)` · `OpportunitiesUserController`≠admin · `OPPORTUNITY_USER_ROUTES` · `buildBalanceAwareFeedWithOverrides` · `executionPlatforms` 유저0 · `arbitrageTypeKo` DB pass-through · JWT session userId only · list `buyMarketLabelKo` lift · `pricing` leak 0) |
 | participate-http | Engine §0.9 E-R4 · §48.13.1 — **live** (`POST /api/v1/opportunities/:id/participate` · P0b~P5 · `participate_requests`+`trade_executions` · idempotency · KYC0 · practice/circuit/principal · JWT session userId only · external HTTP 0) |
 | execute-rule-loop | Engine §0.9 E-R5 · §48.13 — **live** (`GET/POST /api/v1/trades/:id(/execute-tick)` · Nest→`settlement_rule.cjs` · Soft60/Hard90/REQUEUE/MATCH_TIMEOUT · MATCH_SUCCESS→settlement journal · `SettlementCompletedFanout` 소비 · ticker/mission/demo Rule입력0 · FFI0 · Phase0 polling) |
 | catalog-runtime-seed | Engine §0.9 E-R6 — **live** (Admin seed trading_card/luxury_bag/watch + ebay ingest-shaped listings→opportunities available≥1 · compareReady 일부 true · assetImageUrl 가드 · Day-1 ebay\|admin · amazon/yahoo INSERT 0 · `seed:catalog-runtime`) |
@@ -155,6 +160,12 @@
 | soft-hard-requeue-sla | Index §20.2 · Engine §48.13 · UI §48 — Soft60/Hard90 · `MATCH_TIMEOUT` · 카피3줄(보통1분/다시맞추는중/시간지나안전정지) · presentation≠SLA (v7.22.29) · Audit A4 · **copy/Canon live** |
 | match-tension-surface | Index §20.2 · UI §48.3b — Soft/Hard전등급동일 · 긴장감=과정Fact · 등급≠대기특권 · slaAlmost/priceNearMiss · 난수틱·가짜대기·당첨게이지0 (v7.22.30) · Audit A6 · **copy/Canon live** |
 | listing-legs-day1 | Engine §0.0.1a/§0.0.2 — ebay 멀티marketplace\|admin only · yahoo_jp Day-1 auto-publish FORBIDDEN · §38.10 partner 표기 OK(카피금지 supersede) · KR/Chrono24대체0 — **live** — **live** |
+| source-observation-runtime | Global Observation · purpose-split DISCOVERY/CONFIRMATION · PUBLIC_JSON FASHIONPHILE · Chrono24 generic Confirmation parser · eBay Browse API Discovery+Confirmation · TCGplayer PUBLIC_PRODUCT_PAGE_PARSER forensic-pending · fail-closed · listing-leg 0 · Yahoo 0 — **live** |
+| identity-matching-v1 | Global Observation Identity Matching V1 — pairwise `matchSourceObservations` · typed GTIN / brand+MPN / brand+WATCH_REFERENCE · NO_MATCH≠CONFLICT · matchingDecisionEligible · title/image/source-name MATCH 금지 · listing promotion 0 · Opportunity 0 — **live** |
+| identity-matching-v2 | Identity Matching V2 pairwise memory · category profile · COMPOSITE_STRONG · fail-closed · matcher DB runtime 0 — **live** |
+| canonical-product | MATCH 이후 in-process CanonicalProduct + PD + Generic Product Profile(universal + mvp 4종) · identity key ≠ title/image/price · deferred/unknown fail-closed — **live** |
+| match-result-durable-persistence | MatchResult durable local Postgres · V2 실제 결정 저장 · pair 정규화 idempotency · 같은 version 모순 BLOCKED · CanonicalProduct 비-MATCH 생성 0 · production apply 0 — **live**(isolated PG only) |
+| fashionphile-identity-forensic | Fashionphile PUBLIC_JSON identity owner forensic — all-variant barcode/sku/options · SKU-derived barcode ≠ GTIN · product_type Bags ≠ luxury_bag · parser enrichment 0 unless V1-usable — **live** |
 | signup-ready-adapters | Engine §0.0 — ebay 멀티marketplaceId · pokemontcg+ygoprodeck · coingecko+frankfurter · yahoo-jp경로0 · Phase1 deploy (phase0 0) · Admin `/admin/adapters` health — **live** |
 | adapter-matching-kpi | Engine §51.12+§51.15 — 등급매칭·SKU실패율 KPI(>15%/24h 알림·자동공개축소) · compareReady false>40% 시드점검 · stale>TTL 적색 · Admin `/admin/adapters` KPI·알림 · yahoo0 · Simulation S4 `adapterMatchFailureRate` 선행 — **live** |
 | kyc-withdraw-only · kyc-redirect · kyc-r2-only | Money §42 — **live** (출금1회게이트 · toast→/me/kyc@800ms · R2 kyc-docs private) |

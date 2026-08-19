@@ -11,6 +11,16 @@ const root = path.resolve(__dirname, "../..");
 const RULES = [
   {
     test: (f) =>
+      /^\.cursor\/plans\//.test(f) ||
+      /^docs\/reference\/founder-intent\//.test(f) ||
+      /^tooling\/verify\/plans-ssot\.cjs$/.test(f) ||
+      /^tooling\/verify\/plans-integrity\.cjs$/.test(f) ||
+      /^tooling\/cursor\/sync-plans-ssot\.cjs$/.test(f) ||
+      /^tooling\/verify\/legacy-plan-authority\.cjs$/.test(f),
+    scripts: ["plans-ssot.cjs", "legacy-plan-authority.cjs"],
+  },
+  {
+    test: (f) =>
       /^docs\/product\/consumer\//.test(f) ||
       /^docs\/product\/PUTDUK_PRODUCT_DESIGN_ENGINEERING_OPERATING_SYSTEM\.md$/.test(
         f,
@@ -96,8 +106,23 @@ const RULES = [
     ],
   },
   {
-    test: (f) => /^apps\/web\/app\/profits\//.test(f),
+    test: (f) =>
+      /^apps\/web\/app\/profits\//.test(f) ||
+      /^apps\/web\/app\/ProfitsDesktopClient\.tsx$/.test(f) ||
+      /^apps\/web\/components\/spark-dash-profits\//.test(f),
     scripts: ["profits-live-wire.cjs", "sdk-user-feed.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/opportunities\/opportunities\.user\.(service|controller|routes)\.ts$/.test(
+        f,
+      ) ||
+      /^services\/api-nest\/src\/opportunities\/opportunity-reprice\.service\.ts$/.test(
+        f,
+      ) ||
+      /^schemas\/opportunity-card\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/user-opportunity-feed\.cjs$/.test(f),
+    scripts: ["user-opportunity-feed.cjs"],
   },
   {
     test: (f) =>
@@ -482,6 +507,9 @@ const RULES = [
       /^tooling\/ebay-resilience\//.test(f) ||
       /^\.github\/workflows\/ebay-fault-injection\.yml$/.test(f) ||
       /^supabase\/migrations\/.*provider.*\.sql$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/opportunity-reprice\.service\.ts$/.test(
+        f,
+      ) ||
       (/catalog-runtime-seed/.test(f) &&
         (/services\/(market-intelligence|api-nest)\//.test(f) ||
           /^tooling\/verify\//.test(f))),
@@ -494,6 +522,48 @@ const RULES = [
       "ebay-resilience.cjs",
       "price-denomination-contract.cjs",
     ],
+  },
+  {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/source-observation\//.test(f) ||
+      /^schemas\/source-observation\.v1\.json$/.test(f) ||
+      /^governance\/global-product\/source-observation-runtime\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/source-observation-runtime\.cjs$/.test(f) ||
+      /^tooling\/verify\/fashionphile-identity-forensic\.cjs$/.test(f),
+    scripts: [
+      "source-observation-runtime.cjs",
+      "listing-legs-day1.cjs",
+      "fashionphile-identity-forensic.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/identity-matching\//.test(f) ||
+      /^governance\/global-product\/identity-matching\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/identity-matching-v1\.cjs$/.test(f),
+    scripts: [
+      "identity-matching-v1.cjs",
+      "source-observation-runtime.cjs",
+      "listing-legs-day1.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/match-result\//.test(f) ||
+      /^governance\/global-product\/identity-matching\.v2\.json$/.test(f) ||
+      /^tooling\/verify\/match-result-durable-persistence\.cjs$/.test(f) ||
+      /^tooling\/verify\/identity-matching-v2\.cjs$/.test(f),
+    scripts: [
+      "identity-matching-v1.cjs",
+      "identity-matching-v2.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/canonical-product\//.test(f) ||
+      /^governance\/global-product\/canonical-product\.v2\.json$/.test(f) ||
+      /^tooling\/verify\/canonical-product\.cjs$/.test(f),
+    scripts: ["canonical-product.cjs"],
   },
   {
     // PTF-00C — shared Engine §0.0 pure-logic package. No prior rule covered

@@ -1,0 +1,239 @@
+{
+  "$id": "https://ai-profit-os.local/governance/global-product/source-observation-runtime.v1.json",
+  "schema": "governance.global-product.source-observation-runtime.v1",
+  "version": "1.0.0",
+  "measuredAt": "2026-08-19",
+  "currentActivePlan": ".cursor/plans/ai_profit_os_ebay_source_observation_bridge.plan.md",
+  "invariants": [
+    "PARTNER_LABEL != DATA_SOURCE",
+    "SOURCE_OBSERVATION != LISTING_LEG",
+    "SOURCE_OBSERVATION != OPPORTUNITY_TRUTH",
+    "SOURCE_ITEM != ASSET",
+    "DISCOVERY_OBSERVATION != CONFIRMED_MARKET_TRUTH",
+    "DISCOVERY_PRICE != OPPORTUNITY_PRICE",
+    "OBSERVED_IMAGE != DISPLAY_AUTHORIZED",
+    "SOURCE_NATIVE_LISTING_PRICE != LOCALIZED_VIEWER_DISPLAY_PRICE"
+  ],
+  "purposeSplit": {
+    "DISCOVERY": {
+      "required": [
+        "source",
+        "externalItemId",
+        "url",
+        "title",
+        "imageUrl",
+        "observedAt",
+        "fetchedAt",
+        "observationPurpose",
+        "sourceStatus",
+        "parserVersion"
+      ],
+      "nativeCurrency": "only_when_source_evidence",
+      "usdGuessForbidden": true,
+      "confirmedMarketTruth": false,
+      "opportunityPriceInput": false
+    },
+    "CONFIRMATION_SUCCESS": {
+      "required": [
+        "source",
+        "externalItemId",
+        "url",
+        "title",
+        "imageUrl",
+        "nativeAmount",
+        "nativeCurrency",
+        "observedAt",
+        "fetchedAt",
+        "observationPurpose",
+        "sourceStatus",
+        "parserVersion",
+        "meta.priceKind"
+      ]
+    }
+  },
+  "acquisitionVocabulary": [
+    "PUBLIC_JSON",
+    "STRUCTURED_DATA",
+    "EMBEDDED_STATE",
+    "DOM",
+    "URL_PATTERN",
+    "BROWSER_RENDERED",
+    "EXISTING_API",
+    "API",
+    "HTTP_HTML",
+    "PUBLIC_PRODUCT_PAGE_PARSER"
+  ],
+  "persistence": {
+    "OBSERVATION_REPOSITORY_CONTRACT": "PASS",
+    "OBSERVATION_MEMORY_RUNTIME": "PASS",
+    "OBSERVATION_SQL_CONTRACT": "PASS",
+    "OBSERVATION_DB_RUNTIME": "PASS",
+    "DURABLE_DB_RUNTIME_VERIFIED_ENVIRONMENT": "CURSOR_CREATED_LOCAL_TEST_POSTGRES",
+    "PRODUCTION_OBSERVATION_PERSISTENCE": "NOT_IMPLEMENTED",
+    "REMOTE_SUPABASE_RUNTIME_VERIFICATION": "NOT_VERIFIED",
+    "remoteWrite": false,
+    "supabaseMigrationThisSlice": false,
+    "supabaseMigrationFileCreated": true,
+    "supabaseMigrationApplied": false,
+    "sqlProposal": {
+      "source_items": {
+        "thisSlice": false,
+        "unique": ["source", "external_item_id"],
+        "columns": ["id", "source", "external_item_id", "canonical_url", "first_seen_at", "last_seen_at"],
+        "asset_id": false,
+        "yahoo_jp": false
+      },
+      "source_observations": {
+        "appendOnly": true,
+        "primaryKey": "id",
+        "sourceItemUniqueForbidden": true,
+        "columns": [
+          "id",
+          "source",
+          "external_item_id",
+          "observation_purpose",
+          "source_status",
+          "url",
+          "observed_at",
+          "payload",
+          "content_fingerprint",
+          "created_at"
+        ],
+        "idempotency": ["id", "content_fingerprint"],
+        "raceSafeInsert": "INSERT ON CONFLICT (id) DO NOTHING"
+      }
+    }
+  },
+  "sourceMatrix": [
+    {
+      "source": "ebay",
+      "ACQUISITION_MODE": "API",
+      "EBAY_ACQUISITION_MODE": "API",
+      "PARSER_CONTRACT_STATUS": "READY",
+      "EBAY_PRODUCT_NORMALIZER": "IMPLEMENTED",
+      "EBAY_DISCOVERY_RUNTIME": "PASS",
+      "EBAY_CONFIRMATION_RUNTIME": "PASS",
+      "EBAY_PRICE_OBSERVATION": "PASS",
+      "EBAY_IMAGE_OBSERVATION": "PASS",
+      "LIVE_RUNTIME_STATUS": "LIVE_PROVEN",
+      "NEXT_ACTION": "IDENTITY_MATCHING_V1",
+      "webParser": false,
+      "persistToListingLeg": false,
+      "listingLegPathUnchanged": true,
+      "EBAY_LIVE_PROVEN": true,
+      "notes": "workers/ebay-adapter listing-leg Browse search unchanged · source-observation uses same official API"
+    },
+    {
+      "source": "fashionphile",
+      "ACQUISITION_MODE": "PUBLIC_JSON",
+      "fallback": ["STRUCTURED_DATA", "EMBEDDED_STATE", "DOM", "BROWSER_RENDERED"],
+      "PRODUCT_URL_PATTERN": "/products/{handle}",
+      "DISCOVERY_PATH": "/products.json",
+      "CONFIRMATION_PATH": "/products/{handle}.json",
+      "PARSER_CONTRACT_STATUS": "READY",
+      "LIVE_RUNTIME_STATUS": "FIRST_SOURCE",
+      "NEXT_ACTION": "KEEP_THIS_SLICE",
+      "browserRequired": false,
+      "persistToListingLeg": false,
+      "priceKind": "listing_sale",
+      "currencyGuessForbidden": true
+    },
+    {
+      "source": "chrono24",
+      "ACQUISITION_MODE": "STRUCTURED_DATA",
+      "PARSER_CONTRACT_STATUS": "READY",
+      "DOCUMENT_STRUCTURE_STATUS": "PROVEN",
+      "PRODUCT_PARSER_STATUS": "IMPLEMENTED",
+      "GENERIC_PRODUCT_DETAIL_PARSER": "IMPLEMENTED",
+      "CONFIRMATION_PARSER_LOGIC": "PASS",
+      "CONFIRMATION_MARKET_TRUTH": "BLOCKED_NATIVE_PRICE",
+      "DISCOVERY_RUNTIME": "NOT_VERIFIED",
+      "AUTOMATED_DISCOVERY": "NOT_IMPLEMENTED",
+      "NORMAL_BROWSER_DOCUMENT_ACCESS": "PASS",
+      "AUTOMATED_HTTP_ACQUISITION": "BLOCKED_CURRENT_ENV",
+      "AUTOMATED_PLAYWRIGHT_ACQUISITION": "BLOCKED_CURRENT_ENV",
+      "AUTOMATED_ACQUISITION": "BLOCKED_CURRENT_ENV",
+      "LIVE_RUNTIME_STATUS": "PARSER_READY_ACQUISITION_BLOCKED",
+      "NEXT_ACTION": "LEGITIMATE_ACQUISITION_OWNER",
+      "CHRONO24_PRODUCTION_AUTOMATION": "NOT_COMPLETE",
+      "browserRequired": false,
+      "playwrightAcquisitionImplemented": false,
+      "persistToListingLeg": false,
+      "currencyGuessForbidden": true,
+      "manualFounderCopyPasteRequiredInProduction": false
+    },
+    {
+      "source": "tcgplayer",
+      "TCGPLAYER_SOURCE_MODE": "PUBLIC_PRODUCT_PAGE_PARSER",
+      "ACQUISITION_MODE": "PUBLIC_PRODUCT_PAGE_PARSER",
+      "TCGPLAYER_API_INTEGRATION": false,
+      "acquisition": ["HTTP_HTML", "BROWSER_RENDERED"],
+      "extraction": ["STRUCTURED_DATA", "EMBEDDED_STATE", "DOM"],
+      "PARSER_CONTRACT_STATUS": "READY",
+      "DOCUMENT_STRUCTURE_STATUS": "PROVEN",
+      "PRODUCT_PARSER_STATUS": "IMPLEMENTED",
+      "GENERIC_PRODUCT_DETAIL_PARSER": "IMPLEMENTED",
+      "LIVE_RUNTIME_STATUS": "LIVE_PROVEN",
+      "NEXT_ACTION": "KEEP_THIS_SLICE",
+      "browserRequired": true,
+      "playwrightAcquisitionImplemented": true,
+      "persistToListingLeg": false,
+      "currencyGuessForbidden": true
+    },
+    {
+      "source": "mercari_jp",
+      "ACQUISITION_MODE": "PUBLIC_WEB_META",
+      "PARSER_CONTRACT_STATUS": "READY",
+      "LIVE_RUNTIME_STATUS": "NOT_VERIFIED",
+      "NEXT_ACTION": "LIVE_REVALIDATION",
+      "persistToListingLeg": false
+    },
+    {
+      "source": "kream",
+      "ACQUISITION_MODE": "PUBLIC_BROWSER_RENDERED_WEB",
+      "PARSER_CONTRACT_STATUS": "READY",
+      "LIVE_RUNTIME_STATUS": "NOT_VERIFIED",
+      "NEXT_ACTION": "LIVE_REVALIDATION",
+      "persistToListingLeg": false
+    },
+    {
+      "source": "stockx",
+      "ACQUISITION_MODE": "PUBLIC_BROWSER_RENDERED_WEB",
+      "PARSER_CONTRACT_STATUS": "READY",
+      "LIVE_RUNTIME_STATUS": "NOT_VERIFIED",
+      "NEXT_ACTION": "LIVE_REVALIDATION",
+      "persistToListingLeg": false
+    },
+    {
+      "source": "goat",
+      "ACQUISITION_MODE": "PUBLIC_BROWSER_RENDERED_WEB",
+      "PARSER_CONTRACT_STATUS": "READY",
+      "LIVE_RUNTIME_STATUS": "NOT_VERIFIED",
+      "NEXT_ACTION": "LIVE_REVALIDATION",
+      "persistToListingLeg": false
+    },
+    {
+      "source": "bunjang",
+      "ACQUISITION_MODE": "PUBLIC_BROWSER_RENDERED_WEB",
+      "PARSER_CONTRACT_STATUS": "READY",
+      "LIVE_RUNTIME_STATUS": "NOT_VERIFIED",
+      "NEXT_ACTION": "LIVE_REVALIDATION",
+      "persistToListingLeg": false
+    },
+    {
+      "source": "vestiaire",
+      "ACQUISITION_MODE": "PUBLIC_BROWSER_RENDERED_WEB",
+      "PARSER_CONTRACT_STATUS": "BLOCKED",
+      "LIVE_RUNTIME_STATUS": "NOT_VERIFIED",
+      "NEXT_ACTION": "IMAGE_GATE",
+      "persistToListingLeg": false
+    },
+    {
+      "source": "yahoo_jp",
+      "PARSER_CONTRACT_STATUS": "PERMANENTLY_FORBIDDEN",
+      "LIVE_RUNTIME_STATUS": "FORBIDDEN",
+      "NEXT_ACTION": "NONE",
+      "observation": false
+    }
+  ]
+}
