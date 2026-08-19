@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * verify:core-loop-contract — B-LOOP-001 계약 유지 + B-PARTICIPATION-001 배선 실측
- * Engine Rule 재정의 0 · execute/trades는 다음 슬라이스
+ * Engine Rule 재정의 0 · /trades 목록은 B-TRADES-001
  * B-LOOP-002 release E2E 가 아니다.
  */
 "use strict";
@@ -65,6 +65,7 @@ const requiredFiles = [
   "apps/web/app/profits/page.tsx",
   "apps/web/app/trades/page.tsx",
   "apps/web/app/trades/[id]/execute/page.tsx",
+  "apps/web/app/trades/[id]/execute/TradeExecuteClient.tsx",
   "packages/sdk/src/index.ts",
   "services/api-nest/src/loop/preflight.service.ts",
   "services/api-nest/src/opportunities/participate.service.ts",
@@ -110,8 +111,8 @@ if (gov) {
   if (gov.status !== "CONTRACT_READY") {
     fail("governance status must be CONTRACT_READY");
   }
-  if (gov.implementationStatus !== "PARTICIPATION_WIRED") {
-    fail("implementationStatus must be PARTICIPATION_WIRED after B-PARTICIPATION-001");
+  if (gov.implementationStatus !== "EXECUTION_WIRED") {
+    fail("implementationStatus must be EXECUTION_WIRED after B-EXECUTION-001");
   }
   if (gov.authority.ENGINE_RULE_REDEFINITION !== "FORBIDDEN") {
     fail("ENGINE_RULE_REDEFINITION must stay FORBIDDEN");
@@ -143,8 +144,11 @@ if (gov) {
   if (gov.owners.sdkParticipate !== "packages/sdk/src/participate") {
     fail("owners.sdkParticipate must point at packages/sdk/src/participate");
   }
-  if (gov.measured.executePageHook !== 0) {
-    fail("measured.executePageHook must be 0 until B-EXECUTION-001");
+  if (gov.measured.executePageHook !== 1) {
+    fail("measured.executePageHook must be 1 after B-EXECUTION-001");
+  }
+  if (gov.measured.executePage !== "WIRED_MINIMAL") {
+    fail("measured.executePage must be WIRED_MINIMAL after B-EXECUTION-001");
   }
   if (gov.measured.fakeFinancialValueBug !== "CLOSED") {
     fail("fakeFinancialValueBug must stay CLOSED");
@@ -166,11 +170,19 @@ if (trades && !trades.includes("PendingFigma")) {
 }
 
 const execute = read("apps/web/app/trades/[id]/execute/page.tsx");
-if (execute && !execute.includes("PendingFigma")) {
-  fail("execute page must remain PendingFigma until B-EXECUTION-001");
+const executeClient = read("apps/web/app/trades/[id]/execute/TradeExecuteClient.tsx");
+if (execute && execute.includes("PendingFigma")) {
+  fail("execute page must not stay PendingFigma after B-EXECUTION-001");
 }
-if (execute && execute.includes("useTradeExecution")) {
-  fail("execute page must not import useTradeExecution in this slice");
+if (
+  executeClient &&
+  (!executeClient.includes("useTradeExecution") ||
+    !executeClient.includes("@aipo/sdk/execution-stream"))
+) {
+  fail("execute client must wire useTradeExecution from @aipo/sdk/execution-stream");
+}
+if (execute && !execute.includes("TradeExecuteClient")) {
+  fail("execute page must mount TradeExecuteClient");
 }
 
 const profitsList = read("apps/web/app/profits/page.tsx");

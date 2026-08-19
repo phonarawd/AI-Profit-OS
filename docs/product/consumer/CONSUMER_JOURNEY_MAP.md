@@ -100,7 +100,7 @@ FAKE_ACTIVITY = FORBIDDEN
 | failure recovery | 네트워크 → 재시도 poll. trade 없음 → Home. 가짜 % 복구 없음(표시 금지) |
 | screens | Matching |
 | classification | KEEP AS SCREEN (탭 아님) |
-| notes | `progressPct` = timer presentation. Consumer indeterminate. 2026-08-20: `useTradeExecution` SDK EXISTS · execute page=`PendingFigma` import 0 |
+| notes | `progressPct` = timer presentation. Consumer indeterminate. 2026-08-20: `useTradeExecution` WIRED on `/trades/[id]/execute` · 표시 0 |
 
 ---
 

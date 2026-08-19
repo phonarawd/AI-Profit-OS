@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "measuredAt": "2026-08-20",
   "status": "CONTRACT_READY",
-  "implementationStatus": "PARTICIPATION_WIRED",
-  "task": "B-LOOP-001",
+  "implementationStatus": "EXECUTION_WIRED",
+  "task": "B-EXECUTION-001",
   "legacyPointer": "03 redesign-r4-core-loop-contract",
   "productContract": "docs/product/consumer/CONSUMER_CORE_LOOP_CONTRACT.md",
   "authority": {
@@ -60,11 +60,11 @@
     "webPreflightPost": 1,
     "sdkParticipateExport": "PRESENT",
     "useTradeExecutionExport": "EXISTS",
-    "executePageHook": 0,
+    "executePageHook": 1,
     "profitsListPresentation": "SPARK_DASH_DISCOVERY",
     "profitsDetailPage": "WIRED_MINIMAL",
     "tradesPage": "PendingFigma",
-    "executePage": "PendingFigma",
+    "executePage": "WIRED_MINIMAL",
     "backendParticipate": "OWNER_FOUND",
     "backendPreflight": "OWNER_FOUND",
     "backendExecute": "OWNER_FOUND",
@@ -81,8 +81,6 @@
     "failed"
   ],
   "nextSlices": [
-    "B-PARTICIPATION-001",
-    "B-EXECUTION-001",
     "B-TRADES-001",
     "B-LOOP-002"
   ],

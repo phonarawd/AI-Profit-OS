@@ -1,5 +1,12 @@
-import { PendingFigma } from "@/app/PendingFigma";
+import { TradeExecuteClient } from "./TradeExecuteClient";
 
-export default function Page() {
-  return <PendingFigma title="진행" />;
+/** live-wire: useTradeExecution 은 TradeExecuteClient 가 호출한다. */
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return <TradeExecuteClient tradeId={id} />;
 }

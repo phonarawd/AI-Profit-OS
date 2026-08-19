@@ -7,7 +7,7 @@
 
 ```text
 ROUTE_COMPATIBILITY ≠ FUTURE_PRODUCT_IA
-CURRENT_WEB = Home + /profits list = Spark Dash presentation · /profits/[id] participate/preflight WIRED_MINIMAL · /trades /execute = PendingFigma
+CURRENT_WEB = Home + /profits list = Spark Dash presentation · /profits/[id] participate/preflight WIRED_MINIMAL · /trades/[id]/execute = WIRED_MINIMAL · /trades = PendingFigma
 ```
 
 | Capability | Current route | Backend owner | SDK owner | Engine owner | Money owner | Current web wiring | Current status | UX dependency | Risk |
@@ -25,7 +25,7 @@ CURRENT_WEB = Home + /profits list = Spark Dash presentation · /profits/[id] pa
 | Balance | `/wallet` | OWNER_FOUND GET `/wallet/buckets` | OWNER_FOUND fetchWalletBuckets | n/a | OWNER_FOUND | WEB_WIRING_MISSING | PARTIAL | Wallet/Home | SDK zero fallback |
 | Funding | deposit routes | OWNER_FOUND address + KRW | OWNER_FOUND KRW + buckets | n/a | OWNER_FOUND | WEB_WIRING_MISSING | PARTIAL | shortfall | no returnTo |
 | Participate | `/profits/[id]` | OWNER_FOUND POST participate | OWNER_FOUND postParticipate | guards + lock | lock principal | WEB_WIRING_PRESENT | PARTIAL | core | visual Figma 없음 |
-| Matching | `/trades/[id]/execute` | OWNER_FOUND GET/POST trades | OWNER_FOUND execution-stream | OWNER_FOUND settlement_rule | lock/unlock | WEB_WIRING_MISSING | PARTIAL | Matching | progressPct timer |
+| Matching | `/trades/[id]/execute` | OWNER_FOUND GET/POST trades | OWNER_FOUND execution-stream | OWNER_FOUND settlement_rule | lock/unlock | WEB_WIRING_PRESENT (minimal) | PARTIAL | Matching | progressPct 표시 0 |
 | Cancel | none | OWNER_MISSING user | n/a | resultCode exists | unlock on terminal | WEB_WIRING_MISSING | MISSING | D-05 HIDE | — |
 | Settlement | via trade success | OWNER_FOUND journal settlement | settledProfit field | MATCH_SUCCESS path | OWNER_FOUND | WEB_WIRING_MISSING | VERIFIED (API) | Result | — |
 | Earnings | `/trades` compat | OWNER_FOUND profitUsdt + count | buckets / home-money | count | OWNER_FOUND | WEB_WIRING_MISSING | PARTIAL | embed | no list |
@@ -59,7 +59,7 @@ CURRENT_WEB = Home + /profits list = Spark Dash presentation · /profits/[id] pa
 | Funding | OWNER_FOUND | WEB_WIRING_MISSING |
 | FX | OWNER_FOUND | WEB_WIRING_MISSING |
 | Participate | OWNER_FOUND API / OWNER_FOUND SDK | WEB_WIRING_PRESENT |
-| Matching | OWNER_FOUND | WEB_WIRING_MISSING |
+| Matching | OWNER_FOUND | WEB_WIRING_PRESENT |
 | Ledger | OWNER_FOUND | n/a |
 | Settlement | OWNER_FOUND | WEB_WIRING_MISSING |
 | Wallet | OWNER_FOUND | WEB_WIRING_MISSING |

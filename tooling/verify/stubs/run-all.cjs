@@ -144,6 +144,7 @@ const live = [
   "profits-live-wire.cjs",
   "core-loop-contract.cjs",
   "participate-web-wire.cjs",
+  "execute-web-wire.cjs",
   "wallet-live-wire.cjs",
   "withdraw-flow-wire.cjs",
   "growth-public-surface.cjs",

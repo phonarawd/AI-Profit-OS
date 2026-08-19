@@ -28,15 +28,18 @@ const RULES = [
       /^tooling\/verify\/consumer-ux-architecture\.cjs$/.test(f) ||
       /^tooling\/verify\/core-loop-contract\.cjs$/.test(f) ||
       /^tooling\/verify\/participate-web-wire\.cjs$/.test(f) ||
+      /^tooling\/verify\/execute-web-wire\.cjs$/.test(f) ||
       /^governance\/consumer-loop\//.test(f) ||
       /^apps\/web\/app\/profits\/\[id\]\//.test(f) ||
       /^apps\/web\/app\/trades\//.test(f) ||
       /^packages\/sdk\/src\/index\.ts$/.test(f) ||
-      /^packages\/sdk\/src\/participate\//.test(f),
+      /^packages\/sdk\/src\/participate\//.test(f) ||
+      /^packages\/sdk\/src\/execution-stream\//.test(f),
     scripts: [
       "consumer-ux-architecture.cjs",
       "core-loop-contract.cjs",
       "participate-web-wire.cjs",
+      "execute-web-wire.cjs",
     ],
   },
   {
@@ -224,6 +227,7 @@ const RULES = [
       "execution-surfaces.cjs",
       "match-tension-surface.cjs",
       "trade-execution-hook.cjs",
+      "execute-web-wire.cjs",
       "asset-image-surface.cjs",
     ],
   },

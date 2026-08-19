@@ -108,7 +108,7 @@ Opportunity (GET /opportunities)
 → Wallet (GET /wallet/buckets)
 ```
 
-`POST preflight`/`POST participate`는 `/profits/[id]`에서 실배선됐다. Home·`/profits` 목록은 Spark Dash discovery만 하고 목록 POST는 0이다. `/trades`·`/trades/[id]/execute`는 아직 `PendingFigma`. 위 흐름의 **API/Engine/Money owner는 존재**한다. 상세 = `CONSUMER_CORE_LOOP_CONTRACT.md`.
+`POST preflight`/`POST participate`는 `/profits/[id]`에서 실배선됐다. `/trades/[id]/execute`는 `useTradeExecution` 최소 실데이터. Home·`/profits` 목록은 Spark Dash discovery만 하고 목록 POST는 0이다. `/trades` 목록은 아직 `PendingFigma`. 위 흐름의 **API/Engine/Money owner는 존재**한다. 상세 = `CONSUMER_CORE_LOOP_CONTRACT.md`.
 
 ---
 
@@ -600,7 +600,7 @@ Core Loop 계약(2026-08-20 재실측) = `CONSUMER_CORE_LOOP_CONTRACT.md`.
 
 Brand/Figma를 막는 비즈니스 발명 요구는 없다. Home mockup은 **owned fields + UNAVAILABLE**만 쓰면 된다.
 
-구현 전에 막히는 것: execute 실데이터, user history API, user trade list, user cancel. participate SDK·`/profits/[id]` 배선은 B-PARTICIPATION-001에서 닫힘.
+구현 전에 막히는 것: user history API, user trade list, user cancel. participate·execute 배선은 B-PARTICIPATION-001 / B-EXECUTION-001에서 닫힘.
 
 ---
 

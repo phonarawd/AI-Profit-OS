@@ -2,7 +2,7 @@
 /**
  * verify:participate-web-wire — B-PARTICIPATION-001
  * SDK preflight+participate export · /profits/[id] 실배선 · 목록 POST 0
- * Engine/Money 재작성 0 · execute/trades는 다음 슬라이스
+ * Engine/Money 재작성 0 · /trades 목록은 B-TRADES-001
  */
 "use strict";
 
@@ -187,11 +187,11 @@ if (list.includes("issuePreflight") || list.includes("postParticipate") || list.
 if (!trades.includes("PendingFigma")) {
   fail("/trades must remain PendingFigma until B-TRADES-001");
 }
-if (!execute.includes("PendingFigma")) {
-  fail("execute page must remain PendingFigma until B-EXECUTION-001");
+if (execute.includes("PendingFigma")) {
+  fail("execute page must not stay PendingFigma after B-EXECUTION-001");
 }
-if (execute.includes("useTradeExecution")) {
-  fail("execute page must not import useTradeExecution in this slice");
+if (!execute.includes("TradeExecuteClient") && !execute.includes("useTradeExecution")) {
+  fail("execute page must stay wired after B-EXECUTION-001");
 }
 
 const webFiles = walk(path.join(root, "apps/web"));
@@ -230,5 +230,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:participate-web-wire] PASS (SDK preflight+participate · /profits/[id] wired · list/execute untouched)",
+  "[verify:participate-web-wire] PASS (SDK preflight+participate · /profits/[id] wired · list POST 0)",
 );

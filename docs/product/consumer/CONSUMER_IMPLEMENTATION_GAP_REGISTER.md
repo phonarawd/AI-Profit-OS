@@ -85,7 +85,7 @@ blocks full-app implementation Figma = G-P1-04/05/08 annotations required
 
 | historical | verdict | evidence |
 |------------|---------|----------|
-| Participate POST web wiring | CLOSED (2026-08-20 B-PARTICIPATION-001) | SDK `issuePreflight`+`postParticipate`. `/profits/[id]` 실연결. `/profits` 목록 POST 0. execute/trades는 아직 PendingFigma. 계약=`CONSUMER_CORE_LOOP_CONTRACT.md` |
+| Participate POST web wiring | CLOSED (2026-08-20 B-PARTICIPATION-001) | SDK `issuePreflight`+`postParticipate`. `/profits/[id]` 실연결. `/profits` 목록 POST 0. 계약=`CONSUMER_CORE_LOOP_CONTRACT.md` |
 | access token path | PARTIAL | SDK omits Bearer if token null; `credentials:include` + `aipo_session`. Web calls 0 |
 | cancel/merge handlers | NOT_FOUND (web) | no web handlers. API `profit/merge` exists. user cancel MISSING |
 | hardcoded zero | STILL_PRESENT | SDK/API fallbacks (G-P0-01) |
@@ -93,4 +93,4 @@ blocks full-app implementation Figma = G-P1-04/05/08 annotations required
 | wallet history | STILL_PRESENT | page placeholder + user journal list MISSING |
 | Kakao runtime | OWNER_FOUND API / WEB_WIRING_MISSING | `OAUTH_PRIMARY=kakao` |
 | dead href | NOT_FOUND | PendingFigma has no href |
-| legacy execute path | COMPATIBILITY (2026-08-20) | `/trades`+`/trades/[id]/execute`=`PendingFigma`. SDK `useTradeExecution` EXISTS · page import 0. API execute-tick EXISTS |
+| legacy execute path | CLOSED (2026-08-20 B-EXECUTION-001) | `/trades/[id]/execute`=`useTradeExecution` 최소 실데이터. `/trades` 목록만 PendingFigma. progressPct 표시 0. API execute-tick KEEP |

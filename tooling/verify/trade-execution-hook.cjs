@@ -43,7 +43,17 @@ const types = read("packages/sdk/src/execution-stream/types.ts");
 const tier = read("packages/sdk/src/device-tier.ts");
 const sdkPkg = read("packages/sdk/package.json");
 const sdkIdx = read("packages/sdk/src/index.ts");
-const page = read("apps/web/app/trades/[id]/execute/page.tsx");
+function readExecuteSurface() {
+  const dir = path.join(root, "apps/web/app/trades/[id]/execute");
+  if (!fs.existsSync(dir)) return "";
+  return fs
+    .readdirSync(dir)
+    .filter((n) => /\.(tsx|ts)$/.test(n))
+    .map((n) => fs.readFileSync(path.join(dir, n), "utf8"))
+    .join("\n");
+}
+
+const page = readExecuteSurface();
 const rootPkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
 const stubs = read("tooling/verify/stubs/run-all.cjs");
@@ -175,6 +185,9 @@ if (!pageIsSkeleton("apps/web/app/trades/[id]/execute/page.tsx")) {
   if (!page.includes("data-execution-transport")) {
     fails.push("execute page must expose data-execution-transport");
   }
+}
+if (!polling.includes('credentials: "include"')) {
+  fails.push("polling transport must send credentials:include for session cookie");
 }
 
 // --- gate wiring ---
