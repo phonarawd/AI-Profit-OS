@@ -44,6 +44,8 @@ export type DispatchClientResult = {
 export class PushDispatchClient {
   async dispatch(input: {
     pushEnabled: boolean;
+    channelAllowed?: boolean;
+    channel?: string;
     subscription: {
       endpoint: string;
       p256dh: string;
@@ -56,6 +58,8 @@ export class PushDispatchClient {
     const token = process.env.PUSH_DISPATCH_TOKEN || "";
     const body = {
       pushEnabled: input.pushEnabled,
+      channelAllowed: input.channelAllowed,
+      channel: input.channel,
       subscription: input.subscription,
       payload: input.payload,
       dryRun: input.dryRun === true,

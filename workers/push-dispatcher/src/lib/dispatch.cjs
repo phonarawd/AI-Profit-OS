@@ -1,8 +1,15 @@
 /**
  * REL-020 — Push dispatch SSOT (Worker HTTP + Nest in-process + verify).
  * kill이 꺼져 있으면 send 경로에 절대 들어가지 않는다.
+ * REL-021 — pref=false면 enqueue 0.
  */
 "use strict";
+
+const {
+  applyPlanChannelFilter,
+  filterAutoPush,
+  isAutoPushChannel,
+} = require("./channel-filter.cjs");
 
 function isPushEnabled(value) {
   return value === true || value === "true";
@@ -31,6 +38,28 @@ function dispatchPush(input, hooks) {
       sent: 0,
       sendAttempted: false,
     };
+  }
+
+  if (input && input.channelAllowed === false) {
+    return {
+      ok: false,
+      status: "filtered",
+      sent: 0,
+      sendAttempted: false,
+    };
+  }
+  if (input && input.channelAllowed !== true && (input.prefs || input.channel)) {
+    if (isAutoPushChannel(input.channel)) {
+      const decision = filterAutoPush(input.prefs, input.channel);
+      if (!decision.enqueue) {
+        return {
+          ok: false,
+          status: decision.status,
+          sent: 0,
+          sendAttempted: false,
+        };
+      }
+    }
   }
 
   const sub = normalizeSubscription(input && input.subscription);
@@ -171,6 +200,8 @@ function planEmit(input) {
   if (!isPushEnabled(input && input.pushEnabled)) {
     return { status: "killed", sent: 0, enqueue: false };
   }
+  const filtered = applyPlanChannelFilter(input);
+  if (filtered) return filtered;
   const count = Number(input && input.subscriptionCount);
   if (!Number.isFinite(count) || count < 1) {
     return { status: "no_subscription", sent: 0, enqueue: false };

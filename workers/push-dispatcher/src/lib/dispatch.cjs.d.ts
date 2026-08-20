@@ -22,4 +22,7 @@ export function handleDispatcherRequest(
 export function planEmit(input: {
   pushEnabled: boolean;
   subscriptionCount: number;
+  channelAllowed?: boolean;
+  channel?: string;
+  prefs?: Record<string, unknown>;
 }): { status: string; sent: number; enqueue: boolean };

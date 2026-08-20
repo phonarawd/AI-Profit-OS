@@ -42,6 +42,7 @@
 | web-remote-patterns | `verify:web-remote-patterns` | T0 path | ✅ live (REL-013 · next/image 최소 allowlist · used hosts match · https-all 0) |
 | pwa-native-shell | `verify:pwa-native-shell` | T0 path | ✅ live (REL-014 · E-PWA-001 · manifest+icons+동등 SW+install/update · store-bridge 0 · push=REL-020) |
 | pwa-push-badge | `verify:pwa-push-badge` | T0 path | ✅ live (REL-020 · E-PWA-002 · VAPID path · dispatcher 실연결 · subscribe+SW badge · Admin kill · secret 0) |
+| push-channel-prefs | `verify:push-channel-prefs` | T0 path | ✅ live (REL-021 · E-PWA-003 · notice/campaign/opportunity 격리 · pref=false enqueue 0) |
 | user-ledger-query | `verify:user-ledger-query` | T0 path | ✅ live (REL-015 · 유저 JWT 본인 전표 · 403 타인 · decimal string · GET-only · UPDATE 0) |
 | observability | `verify:observability` | T0 path | ✅ live (REL-016 · CF Workers console sink · money/KYC mask · 5xx/ledger/auth alerts · Vercel 0) |
 | legacy-plan-migration | `verify:legacy-plan-migration` | T0 path | ✅ live (REL-017 · 21파일 권위 스탬프 · sync-plans 0 · Home mirror 0) |
@@ -69,7 +70,7 @@
 | `apps/web/**` · `tooling/verify/web-lint.cjs` | web-lint |
 | `apps/web/next.config.ts` · `packages/ui/components/product/image-hosts.ts` · `tooling/verify/web-remote-patterns.cjs` | web-remote-patterns · product-image |
 | `apps/web/public/manifest.webmanifest` · `apps/web/public/sw.js` · `apps/web/public/icons/**` · `apps/web/app/pwa-shell.css` · `apps/web/components/pwa/**` · `tooling/verify/pwa-native-shell.cjs` | pwa-native-shell |
-| `workers/push-dispatcher/**` · `services/api-nest/src/push/**` · `packages/sdk/src/push/**` · `governance/pwa/**` · `schemas/push-*.json` · `tooling/pwa/**` · `tooling/verify/pwa-push-badge.cjs` | pwa-push-badge |
+| `workers/push-dispatcher/**` · `services/api-nest/src/push/**` · `packages/sdk/src/push/**` · `governance/pwa/**` · `schemas/push-*.json` · `tooling/pwa/**` · `tooling/verify/pwa-push-badge.cjs` | pwa-push-badge · push-channel-prefs |
 | `services/api-nest/src/ledger/ledger.user*` · `services/api-nest/ledger-user-query.core.cjs` · `tooling/e2e/**/ledger-user-query*` · `tooling/verify/user-ledger-query.cjs` | user-ledger-query |
 | `governance/observability/**` · `packages/observability/**` · `services/api-nest/src/observability/**` · `apps/web/components/observability/**` · `tooling/verify/observability.cjs` | observability |
 | `governance/legacy-plan-migration/**` · `tooling/legacy-plan-stamp.cjs` · `tooling/verify/legacy-plan-migration.cjs` · `.cursor/plans/*.plan.md` | legacy-plan-migration |
@@ -172,7 +173,7 @@
 | admin-user-credentials · admin-user-ban · admin-user-match-override | Admin §9.8.10 — 비번/PIN·밴·유저별엄격도 (v7.22.24) |
 | admin-user-capability-block | Admin §9.8.4a — 매칭/출금신청 개별차단 (v7.22.25) |
 | ops-inbox · notification-prefs-default-on | UI §5.9.4·§50.1n — 쪽지함 · 가입알림전부ON (v7.22.25) — **live** (OpsInbox·prefs signup ALL true·Admin ops-messages Nest·toast MATCH/WITHDRAW_BLOCK) |
-| push-channel-prefs | PWA §23.5a — notice/campaign/opp/ops prefs 필터 (v7.22.25) |
+| push-channel-prefs | PWA §23.5a — notice/campaign/opp prefs 필터 (v7.22.25) — **live** (REL-021 · E-PWA-003 · dispatcher enqueue 0 · 세 채널 격리) |
 | membership-badge-assets | UI §5.9.2c — Brand membership SVG 5종 · 사진목업0 (v7.22.25) — **live** (`assets/membership/{sprout…vip}.svg` · manifest ready) |
 | opportunity-scan-surface · arbitrage-type-label | UI §5.3b · Engine §4.2a — 홈기회스캔·타입뱃지 (v7.22.26) · arbitrage-type-label=**live** · opportunity-scan-surface=**live** (BalanceAwareHome·OpportunityCard·ScanBadge·PartnerTrustStrip/Leg·feed homeTitle/scanSub) |
 | margin-compare-surface | UI §5.3 · Engine §0.0.4 — **PriceCompareMargin** 홈/상세/확인/영수증 4면 · compareReady 가드 · UI 재계산0 · **live** (컴포넌트+`tooling/verify/margin-compare-surface.cjs`+CATALOG 3종 세트) |

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/push-channel-filter.v1.json",
+  "title": "PushChannelFilterV1",
+  "description": "REL-021 / E-PWA-003 — 자동 Push 채널. pref=false면 enqueue 0. 세 채널은 서로 섞이지 않는다.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["autoChannels", "enqueueWhenPrefFalse", "mixChannels"],
+  "properties": {
+    "autoChannels": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "prefixItems": [
+        { "const": "notice" },
+        { "const": "campaign" },
+        { "const": "opportunity" }
+      ],
+      "items": false
+    },
+    "enqueueWhenPrefFalse": {
+      "const": 0
+    },
+    "mixChannels": {
+      "const": false
+    },
+    "settingsUi": {
+      "const": "existing-settings-api"
+    }
+  },
+  "default": {
+    "autoChannels": ["notice", "campaign", "opportunity"],
+    "enqueueWhenPrefFalse": 0,
+    "mixChannels": false,
+    "settingsUi": "existing-settings-api"
+  }
+}
