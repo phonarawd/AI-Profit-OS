@@ -1,0 +1,14 @@
+{
+  "rel": "REL-012",
+  "homeFreeze": true,
+  "homeGeometryPatch": 0,
+  "mcpOnlyEvidence": 0,
+  "browserScanGate": "AXE_BROWSER=1",
+  "homeFreezeAllowlistedIds": [],
+  "notes": [
+    "REL-012 wires axe-core into the committed Playwright harness.",
+    "Home 390/1440 + /auth/login are the scan targets.",
+    "Live browser matrix is not required on the low-spec workstation.",
+    "Do not treat this REL as REL-105 Home a11y closure."
+  ]
+}
