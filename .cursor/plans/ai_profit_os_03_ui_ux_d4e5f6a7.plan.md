@@ -217,6 +217,16 @@ todos:
     status: pending
 isProject: false
 ---
+<!-- REL-017-AUTHORITY-STAMP -->
+```text
+EXECUTION_AUTHORITY = NO
+CONTENT_AUTHORITY = NO
+HISTORICAL_REFERENCE_ONLY = YES
+DO_NOT_EXECUTE = YES
+SUPERSEDED_BY = PUTDUK_RELEASE_MASTER.plan.md
+```
+<!-- /REL-017-AUTHORITY-STAMP -->
+
 
 # AI Profit OS — UI & UX (v7.24.1 · ADR-018 Visual Master Reset + Redesign R1~R5 hybrid)
 

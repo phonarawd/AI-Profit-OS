@@ -1,0 +1,206 @@
+{
+  "version": 1,
+  "rel": "REL-017",
+  "scope": "WORKSPACE_ONLY",
+  "cursorSyncPlans": "DISABLED_UNDER_CURRENT_ISOLATION",
+  "homeMirrorWrite": 0,
+  "fileDelete": 0,
+  "isolationRuleMutation": 0,
+  "unmappedValidOldTodo": 0,
+  "files": [
+    {
+      "file": "ai_profit_os_00_index_a1b2c3d4.plan.md",
+      "group": "legacy9",
+      "executionAuthority": "NO",
+      "contentAuthority": "NO",
+      "doNotExecute": "YES",
+      "historicalReferenceOnly": "YES",
+      "supersededBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I · CWR via Track A-G → REL/POST"
+    },
+    {
+      "file": "ai_profit_os_01_money_c3d4e5f6.plan.md",
+      "group": "legacy9",
+      "executionAuthority": "NO",
+      "contentAuthority": "NO",
+      "doNotExecute": "YES",
+      "historicalReferenceOnly": "YES",
+      "supersededBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I"
+    },
+    {
+      "file": "ai_profit_os_02_engine_b2c3d4e5.plan.md",
+      "group": "legacy9",
+      "executionAuthority": "NO",
+      "contentAuthority": "NO",
+      "doNotExecute": "YES",
+      "historicalReferenceOnly": "YES",
+      "supersededBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I"
+    },
+    {
+      "file": "ai_profit_os_02_5_engine_acceptance_qa_fd1cd7cc.plan.md",
+      "group": "legacy9",
+      "executionAuthority": "NO",
+      "contentAuthority": "NO",
+      "doNotExecute": "YES",
+      "historicalReferenceOnly": "YES",
+      "supersededBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I"
+    },
+    {
+      "file": "ai_profit_os_03_ui_ux_d4e5f6a7.plan.md",
+      "group": "legacy9",
+      "executionAuthority": "NO",
+      "contentAuthority": "NO",
+      "doNotExecute": "YES",
+      "historicalReferenceOnly": "YES",
+      "supersededBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I"
+    },
+    {
+      "file": "ai_profit_os_04_admin_e5f6a7b8.plan.md",
+      "group": "legacy9",
+      "executionAuthority": "NO",
+      "contentAuthority": "NO",
+      "doNotExecute": "YES",
+      "historicalReferenceOnly": "YES",
+      "supersededBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I"
+    },
+    {
+      "file": "ai_profit_os_05_pwa_f6a7b8c9.plan.md",
+      "group": "legacy9",
+      "executionAuthority": "NO",
+      "contentAuthority": "NO",
+      "doNotExecute": "YES",
+      "historicalReferenceOnly": "YES",
+      "supersededBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I"
+    },
+    {
+      "file": "ai_profit_os_06_infra_a7b8c9d0.plan.md",
+      "group": "legacy9",
+      "executionAuthority": "NO",
+      "contentAuthority": "NO",
+      "doNotExecute": "YES",
+      "historicalReferenceOnly": "YES",
+      "supersededBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I"
+    },
+    {
+      "file": "ai_profit_os_launch_54c1261e.plan.md",
+      "group": "legacy9",
+      "executionAuthority": "NO",
+      "contentAuthority": "NO",
+      "doNotExecute": "YES",
+      "historicalReferenceOnly": "YES",
+      "supersededBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I"
+    },
+    {
+      "file": "PUTDUK_CURRENT_MASTER.plan.md",
+      "group": "currentMaster",
+      "executionAuthority": "NO",
+      "contentAuthority": "YES",
+      "supersededForExecutionBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I.2"
+    },
+    {
+      "file": "PUTDUK_CURRENT_MASTER_TRACK_A_product_data_core.plan.md",
+      "group": "trackAG",
+      "executionAuthority": "NO",
+      "contentAuthority": "YES",
+      "supersededForExecutionBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I.2"
+    },
+    {
+      "file": "PUTDUK_CURRENT_MASTER_TRACK_B_user_profit_loop.plan.md",
+      "group": "trackAG",
+      "executionAuthority": "NO",
+      "contentAuthority": "YES",
+      "supersededForExecutionBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I.2"
+    },
+    {
+      "file": "PUTDUK_CURRENT_MASTER_TRACK_C_acquisition_account_trust.plan.md",
+      "group": "trackAG",
+      "executionAuthority": "NO",
+      "contentAuthority": "YES",
+      "supersededForExecutionBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I.2"
+    },
+    {
+      "file": "PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md",
+      "group": "trackAG",
+      "executionAuthority": "NO",
+      "contentAuthority": "YES",
+      "supersededForExecutionBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I.2"
+    },
+    {
+      "file": "PUTDUK_CURRENT_MASTER_TRACK_E_pwa.plan.md",
+      "group": "trackAG",
+      "executionAuthority": "NO",
+      "contentAuthority": "YES",
+      "supersededForExecutionBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I.2"
+    },
+    {
+      "file": "PUTDUK_CURRENT_MASTER_TRACK_F_production_infra.plan.md",
+      "group": "trackAG",
+      "executionAuthority": "NO",
+      "contentAuthority": "YES",
+      "supersededForExecutionBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I.2"
+    },
+    {
+      "file": "PUTDUK_CURRENT_MASTER_TRACK_G_growth.plan.md",
+      "group": "trackAG",
+      "executionAuthority": "NO",
+      "contentAuthority": "YES",
+      "supersededForExecutionBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "Master §I.2"
+    },
+    {
+      "file": "ai_profit_os_opportunity_reprice_freshness.plan.md",
+      "group": "slice4",
+      "executionAuthority": "NO",
+      "contentAuthority": "NO",
+      "doNotExecute": "YES",
+      "historicalReferenceOnly": "YES",
+      "supersededBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "VERIFIED_DONE → REL-003"
+    },
+    {
+      "file": "ai_profit_os_global_observation_chrono24.plan.md",
+      "group": "slice4",
+      "executionAuthority": "NO",
+      "contentAuthority": "NO",
+      "doNotExecute": "YES",
+      "historicalReferenceOnly": "YES",
+      "supersededBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "VERIFIED_DONE"
+    },
+    {
+      "file": "ai_profit_os_global_observation_parser_runtime.plan.md",
+      "group": "slice4",
+      "executionAuthority": "NO",
+      "contentAuthority": "NO",
+      "doNotExecute": "YES",
+      "historicalReferenceOnly": "YES",
+      "supersededBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "VERIFIED_DONE"
+    },
+    {
+      "file": "ai_profit_os_ebay_source_observation_bridge.plan.md",
+      "group": "slice4",
+      "executionAuthority": "NO",
+      "contentAuthority": "NO",
+      "doNotExecute": "YES",
+      "historicalReferenceOnly": "YES",
+      "supersededBy": "PUTDUK_RELEASE_MASTER.plan.md",
+      "mapping": "VERIFIED_DONE"
+    }
+  ]
+}
