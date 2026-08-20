@@ -26,6 +26,14 @@ import {
   withTimeSensitiveTag,
 } from "./opportunities.mi";
 import type { UserOpportunityOverrideV1 } from "./user-opportunity-override.merge";
+import {
+  applyStableFeedCaps,
+  excludeParticipatedFromFeed,
+  feedIdentityKey,
+  recountFeedBuckets,
+  resolveUserOpportunityFeedPolicy,
+  type FeedParticipation,
+} from "./user-opportunity-feed-policy";
 
 const req = createRequire(__filename);
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -70,6 +78,14 @@ type OppUserRow = {
   sell_success_window_days: number | null;
   sell_success_as_of: Date | null;
   risk_score: number | null;
+};
+
+type ParticipationLoadRow = {
+  opportunity_id: string;
+  status: string;
+  updated_at: Date;
+  asset_id: string;
+  pricing: Record<string, unknown> | null;
 };
 
 type OverrideRow = {
@@ -130,8 +146,23 @@ export class OpportunitiesUserService {
     const principalUsdt = await this.readPrincipalUsdt(userId);
     const { policy } = await this.executionPolicy.get();
     const allRows = await this.loadFeedCandidateRows();
-    const rows = allRows.filter((r) => this.isRowFresh(r.stale_at));
+    const freshRows = allRows.filter((r) => this.isRowFresh(r.stale_at));
     const overridesByOpportunityId = await this.loadOverridesMap(userId);
+    const feedPolicy = resolveUserOpportunityFeedPolicy({
+      overlay: this.readFeedPolicyOverlay(policy),
+    });
+    const participations = await this.loadUserParticipations(userId);
+    const eligible = excludeParticipatedFromFeed({
+      candidates: freshRows.map((r) => ({
+        id: r.id,
+        identityKey: this.feedIdentityForRow(r),
+      })),
+      participations,
+      nowMs: this.clock.nowMs(),
+      policy: feedPolicy,
+    });
+    const eligibleIds = new Set(eligible.items.map((x) => x.id));
+    const rows = freshRows.filter((r) => eligibleIds.has(r.id));
 
     const feed = buildBalanceAwareFeedWithOverrides({
       principalUsdt,
@@ -141,7 +172,17 @@ export class OpportunitiesUserService {
     });
 
     const byId = new Map(rows.map((r) => [r.id, r]));
-    const items = (feed.items as ClassifiedSlice[])
+    const ranked = (feed.items as ClassifiedSlice[]).map((classified) => ({
+      ...classified,
+      identityKey: this.feedIdentityForRow(byId.get(classified.id) ?? null),
+    }));
+    const capped = applyStableFeedCaps({
+      candidates: ranked,
+      policy: feedPolicy,
+    });
+    const counts = recountFeedBuckets(capped.items);
+
+    const items = capped.items
       .map((classified) => {
         const row = byId.get(classified.id);
         if (!row) return null;
@@ -155,11 +196,11 @@ export class OpportunitiesUserService {
       principalUsdt: feed.principalUsdt,
       nearMissCapUsdt: feed.nearMissCapUsdt,
       classificationOwner: feed.classificationOwner,
-      affordableCount: feed.affordableCount,
-      nearMissCount: feed.nearMissCount,
-      lockedHighCount: feed.lockedHighCount,
+      affordableCount: counts.affordableCount,
+      nearMissCount: counts.nearMissCount,
+      lockedHighCount: counts.lockedHighCount,
       hiddenCount: feed.hiddenCount,
-      topSuggestDepositUsdt: feed.topSuggestDepositUsdt,
+      topSuggestDepositUsdt: counts.topSuggestDepositUsdt,
       v1FeedArbitrageTypes: [...V1_FEED_ARBITRAGE_TYPES],
       items,
     };
@@ -275,6 +316,81 @@ export class OpportunitiesUserService {
       [id],
     );
     return rows[0] ?? null;
+  }
+
+  /**
+   * B-FEED-001 — session user의 성공/진행중만. 다른 user 행은 읽지 않음.
+   * pending participate = 진행중. safe_stop/cancelled/failed는 재노출 가능하므로 제외.
+   */
+  private async loadUserParticipations(
+    userId: string,
+  ): Promise<FeedParticipation[]> {
+    const hideStatuses = ["running", "requeue", "success"];
+    const { rows: trades } = await this.db.query<ParticipationLoadRow>(
+      `SELECT t.opportunity_id::text, t.status, t.updated_at,
+              o.asset_id, o.pricing
+         FROM public.trade_executions t
+         JOIN public.opportunities o ON o.id = t.opportunity_id
+        WHERE t.user_id = $1::uuid
+          AND t.status = ANY($2::text[])`,
+      [userId, hideStatuses],
+    );
+    const { rows: pending } = await this.db.query<ParticipationLoadRow>(
+      `SELECT p.opportunity_id::text, 'running'::text AS status,
+              p.created_at AS updated_at, o.asset_id, o.pricing
+         FROM public.participate_requests p
+         JOIN public.opportunities o ON o.id = p.opportunity_id
+        WHERE p.user_id = $1::uuid
+          AND p.status = 'pending'`,
+      [userId],
+    );
+    const byOpp = new Map<string, FeedParticipation>();
+    for (const r of pending) {
+      byOpp.set(r.opportunity_id, this.toParticipation(r));
+    }
+    for (const r of trades) {
+      byOpp.set(r.opportunity_id, this.toParticipation(r));
+    }
+    return [...byOpp.values()];
+  }
+
+  private toParticipation(r: ParticipationLoadRow): FeedParticipation {
+    return {
+      opportunityId: r.opportunity_id,
+      identityKey: this.feedIdentityForRow(r),
+      status: r.status,
+      updatedAtMs: new Date(r.updated_at).getTime(),
+    };
+  }
+
+  private feedIdentityForRow(
+    r: {
+      asset_id?: string;
+      pricing?: Record<string, unknown> | null;
+    } | null,
+  ): string {
+    if (!r) return "";
+    const pricing = r.pricing || {};
+    const cp =
+      typeof pricing.canonicalProductId === "string"
+        ? pricing.canonicalProductId
+        : null;
+    return feedIdentityKey({
+      canonicalProductId: cp,
+      assetId: r.asset_id ?? null,
+    });
+  }
+
+  /** Track D overlay. execution-policy.feed schema는 아직 nearMissCap만 — 없으면 Day-1 default */
+  private readFeedPolicyOverlay(
+    executionPolicy: { feed?: Record<string, unknown> } | null | undefined,
+  ): Record<string, unknown> | null {
+    const feed = executionPolicy?.feed;
+    if (!feed || typeof feed !== "object") return null;
+    const raw = feed.userOpportunity;
+    return raw && typeof raw === "object"
+      ? (raw as Record<string, unknown>)
+      : null;
   }
 
   private async loadOverridesMap(
@@ -406,8 +522,21 @@ export class OpportunitiesUserService {
       audience: "user",
     });
 
+    // listFeed는 includePricing:false. pricing 백 없이 라벨만 top-level lift.
+    const buyMarketId =
+      typeof pricing.buyMarketId === "string" && pricing.buyMarketId.trim()
+        ? pricing.buyMarketId
+        : undefined;
+    const buyMarketLabelKo =
+      typeof pricing.buyMarketLabelKo === "string" &&
+      pricing.buyMarketLabelKo.trim()
+        ? pricing.buyMarketLabelKo
+        : undefined;
+
     return {
       ...userCard,
+      ...(buyMarketId ? { buyMarketId } : {}),
+      ...(buyMarketLabelKo ? { buyMarketLabelKo } : {}),
       bucket: classified.bucket,
       suggestDepositUsdt: classified.suggestDepositUsdt,
       forceShowPromoted: classified.forceShowPromoted,

@@ -174,6 +174,9 @@ if (gov) {
   if ((gov.nextSlices || []).includes("B-LOOP-002")) {
     fail("nextSlices must not still list B-LOOP-002");
   }
+  if ((gov.nextSlices || []).includes("B-FEED-001")) {
+    fail("nextSlices must not still list B-FEED-001");
+  }
 }
 
 const detailPage = read("apps/web/app/profits/[id]/page.tsx");

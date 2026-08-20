@@ -19,7 +19,7 @@ todos:
     status: completed
   - id: b-feed-001
     content: "[B-FEED-001] User Opportunity Feed Policy(참여 성공/진행중 → main feed 제거·다른 유저는 계속 노출·재노출 가능·cooldown/diversity·완전 랜덤 금지) · Founder 직접 지시(신규, 어떤 legacy plan에도 없음) · PRIORITY=LAUNCH_REQUIRED · RISK=MEDIUM"
-    status: pending
+    status: completed
   - id: b-wallet-001
     content: "[B-WALLET-001] Wallet contract 재정합(Spark Dash) · legacy=03 redesign-r3-wallet-contract(pending) · PRIORITY=LAUNCH_REQUIRED · RISK=HIGH"
     status: pending

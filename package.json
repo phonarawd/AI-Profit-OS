@@ -144,6 +144,7 @@
     "verify:principal-profit-abuse": "node tooling/verify/principal-profit-abuse.cjs",
     "verify:balance-aware-feed": "node tooling/verify/balance-aware-feed.cjs",
     "verify:user-opportunity-feed": "node tooling/verify/user-opportunity-feed.cjs",
+    "verify:user-opportunity-feed-policy": "node tooling/verify/user-opportunity-feed-policy.cjs",
     "verify:sdk-user-feed": "node tooling/verify/sdk-user-feed.cjs",
     "verify:home-live-wire": "node tooling/verify/home-live-wire.cjs",
     "verify:home-principal-slots": "node tooling/verify/home-principal-slots.cjs",

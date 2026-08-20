@@ -25,6 +25,14 @@ export {
   BALANCE_AWARE_CLASSIFICATION_OWNER,
 } from "./balance-aware-feed";
 export {
+  excludeParticipatedFromFeed,
+  applyStableFeedCaps,
+  applyUserOpportunityFeedPolicy,
+  resolveUserOpportunityFeedPolicy,
+  feedIdentityKey,
+  DEFAULT_USER_OPPORTUNITY_FEED_POLICY,
+} from "./user-opportunity-feed-policy";
+export {
   computeOpportunityPricing,
   composeFxSnapshot,
   DEFAULT_FEE_PCT,

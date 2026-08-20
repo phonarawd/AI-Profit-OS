@@ -58,6 +58,7 @@
 | `supabase/migrations/**` · migrations-applied fixture | migrations-applied-parity |
 | `apps/web/app/page.tsx` · `HomePageClient` · `packages/sdk/src/user-feed/**` · `HomePrincipalRail` · `home-principal-slots` · sdk/api growth | home-live-wire · sdk-user-feed · home-principal-slots · growth-public-surface · ticker-pii-0 |
 | `apps/web/app/profits/**` · `apps/web/app/ProfitsDesktopClient.tsx` · `apps/web/components/spark-dash-profits/**` | profits-live-wire · sdk-user-feed |
+| `services/api-nest/src/opportunities/opportunities.user.*` · `user-opportunity-feed-policy` · `schemas/user-opportunity-feed-policy.v1.json` · `governance/consumer-loop/user-opportunity-feed-policy.v1.json` | user-opportunity-feed · user-opportunity-feed-policy (B-FEED-001) |
 | `apps/web/app/wallet/page.tsx` · `packages/sdk/src/wallet/**` | wallet-live-wire |
 | `apps/web/app/wallet/deposit/**` · `me/kyc` · `me/support` · `KycFlow` | stub-page-actions |
 | money api-nest | pg-module-scan · bucket-invariant |
@@ -144,6 +145,7 @@
 | ultra-watch-whale | Engine §0.0 — watch 시드40~80 · PP/AP/Rolex · whale≥100k Ultra 경로 · Day-1 카탈로그 소액공존(≥40%) · brand+reference 매칭 · 필터칩 `시계` — **live** |
 | balance-aware-feed | Engine §0.0.5.1 · Money §49.2a · UI §5.3a — **live** (Engine classify affordable/nearMiss/lockedHigh · suggestDeposit ceil_to_tick · nearMissCap=`execution-policy.feed.nearMissCapUsdt` · override hide 100% · Money suggest query·principal Fact·deposit prefill·feed invalidate · UI `T.feed`+BalanceAwareHome 슬롯 affordable/nearMiss/lockedHigh·입금 suggest CTA) |
 | user-opportunity-feed | Engine §0.9 E-R3 — **live** (`GET /api/v1/opportunities(+/:id)` · `OpportunitiesUserController`≠admin · `OPPORTUNITY_USER_ROUTES` · `buildBalanceAwareFeedWithOverrides` · `executionPlatforms` 유저0 · `arbitrageTypeKo` DB pass-through · JWT session userId only · list `buyMarketLabelKo` lift · `pricing` leak 0) |
+| user-opportunity-feed-policy | Track B B-FEED-001 — **live** (참여 success/running/requeue → 그 유저 main feed 제거 · 다른 유저 유지 · 새 Opportunity 재노출 · cooldown/diversity/allocation 메커니즘 · 완전 랜덤 금지 · Admin 값=Track D overlay · `/trades`가 참여 목록) |
 | core-loop-contract | Track B B-LOOP-001 — **live** (Product/Visual/Implementation 계약 · `CONSUMER_CORE_LOOP_CONTRACT.md` + `governance/consumer-loop/core-loop.v1.json` · participate 배선 후 재실측 · Engine Rule 재정의 0 · release=`verify:core-loop-release`) |
 | core-loop-release | Track B B-LOOP-002 — **live** (`verify:core-loop-release` · 성공/Safe-Stop 인프로세스 E2E · MATCH_SUCCESS+PRICE_MOVED/BELOW_MIN_PROFIT/MATCH_TIMEOUT/CIRCUIT_OPEN · 이중 정산/unlock 0 · Settled=success∧settledProfitUsdt · known defect 0 · Engine Rule 재정의 0) |
 | participate-web-wire | Track B B-PARTICIPATION-001 — **live** (`@aipo/sdk/participate` issuePreflight+postParticipate · `/profits/[id]` 실연결 · amountUsdt=requiredCapitalUsdt · 목록 POST 0) |

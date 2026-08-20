@@ -87,6 +87,7 @@ const live = [
   // P0-2 (Engine Final Re-Verification Audit) — previously implemented but
   // never enforced by verify:gate; wired in so a future regression fails CI.
   "user-opportunity-feed.cjs",
+  "user-opportunity-feed-policy.cjs",
   "participate-http.cjs",
   "execute-rule-loop.cjs",
   "catalog-runtime-seed.cjs",

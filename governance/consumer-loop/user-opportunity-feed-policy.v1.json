@@ -1,0 +1,47 @@
+{
+  "$id": "https://ai-profit-os.local/governance/consumer-loop/user-opportunity-feed-policy.v1.json",
+  "schema": "governance.consumer-loop.user-opportunity-feed-policy.v1",
+  "version": "1.0.0",
+  "measuredAt": "2026-08-20",
+  "status": "POLICY_WIRED",
+  "task": "B-FEED-001",
+  "authority": "FOUNDER_EXPLICIT",
+  "priority": "LAUNCH_REQUIRED",
+  "verifier": "tooling/verify/user-opportunity-feed-policy.cjs",
+  "policySchema": "schemas/user-opportunity-feed-policy.v1.json",
+  "runtime": {
+    "owner": "services/api-nest/src/opportunities/opportunities.user.service.ts",
+    "engine": "services/market-intelligence/src/user-opportunity-feed-policy.cjs",
+    "classificationKeep": "buildBalanceAwareFeedWithOverrides",
+    "participatedSurface": "/trades"
+  },
+  "rules": {
+    "HIDE_KEY": "opportunities.id",
+    "HIDE_WHEN": ["success", "running", "requeue", "pending_participate"],
+    "OTHER_USERS_KEEP_VISIBILITY": true,
+    "REEXPOSE_ON_NEW_OPPORTUNITY": true,
+    "REEXPOSE_IDENTITY": "canonicalProductId || assetId",
+    "RETRYABLE_SAME_OPPORTUNITY": ["safe_stop", "cancelled", "failed"],
+    "RANDOM_REFRESH": false,
+    "RANK_OWNER": "engine:§0.0.5.1",
+    "COOLDOWN_DEFAULT_SEC": 0,
+    "DIVERSITY_DEFAULT": 0,
+    "ALLOCATION_DEFAULT": 0
+  },
+  "adminControl": {
+    "ownerTrack": "D",
+    "visibility": "user_opportunity_overrides + hideSuccess/hideInProgress",
+    "repeat": "새 opportunities.id + cooldownSec",
+    "frequency": "cooldownSec",
+    "allocation": "maxFeedSlots",
+    "segment": "overlay FUTURE",
+    "ui": "NOT_THIS_SLICE"
+  },
+  "defaults": {
+    "hideSuccess": true,
+    "hideInProgress": true,
+    "cooldownSec": 0,
+    "diversityMaxPerIdentity": 0,
+    "maxFeedSlots": 0
+  }
+}

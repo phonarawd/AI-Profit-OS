@@ -88,7 +88,7 @@
     "failed"
   ],
   "nextSlices": [
-    "B-FEED-001"
+    "B-WALLET-001"
   ],
   "verifier": "tooling/verify/core-loop-contract.cjs",
   "releaseVerifier": "tooling/verify/core-loop-release.cjs"

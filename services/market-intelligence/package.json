@@ -25,6 +25,7 @@
     "./opportunity-scan": "./src/opportunity-scan.cjs",
     "./capital-provider-projection": "./src/capital-provider-projection.cjs",
     "./balance-aware-feed": "./src/balance-aware-feed.cjs",
+    "./user-opportunity-feed-policy": "./src/user-opportunity-feed-policy.cjs",
     "./match-strictness": "./src/match-strictness.cjs",
     "./membership": "./src/membership.cjs",
     "./adapter-matching-kpi": "./src/adapter-matching-kpi.cjs",

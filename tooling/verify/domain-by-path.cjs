@@ -147,7 +147,22 @@ const RULES = [
       ) ||
       /^schemas\/opportunity-card\.v1\.json$/.test(f) ||
       /^tooling\/verify\/user-opportunity-feed\.cjs$/.test(f),
-    scripts: ["user-opportunity-feed.cjs"],
+    scripts: ["user-opportunity-feed.cjs", "user-opportunity-feed-policy.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/user-opportunity-feed-policy\.cjs$/.test(
+        f,
+      ) ||
+      /^services\/api-nest\/src\/opportunities\/user-opportunity-feed-policy\.ts$/.test(
+        f,
+      ) ||
+      /^schemas\/user-opportunity-feed-policy\.v1\.json$/.test(f) ||
+      /^governance\/consumer-loop\/user-opportunity-feed-policy\.v1\.json$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/user-opportunity-feed-policy\.cjs$/.test(f),
+    scripts: ["user-opportunity-feed-policy.cjs", "user-opportunity-feed.cjs"],
   },
   {
     test: (f) =>

@@ -113,6 +113,12 @@ if (!ctrl.includes("AUTH_REQUIRED") && !ctrl.includes("UnauthorizedException")) 
 if (!svc.includes("buildBalanceAwareFeedWithOverrides")) {
   fails.push("user service must call buildBalanceAwareFeedWithOverrides");
 }
+if (!svc.includes("excludeParticipatedFromFeed")) {
+  fails.push("user service must apply B-FEED-001 excludeParticipatedFromFeed");
+}
+if (!svc.includes("applyStableFeedCaps")) {
+  fails.push("user service must apply B-FEED-001 applyStableFeedCaps (no random)");
+}
 if (!svc.includes("projectCapitalProviderUserSurface")) {
   fails.push("user service must project via projectCapitalProviderUserSurface");
 }
@@ -166,6 +172,20 @@ if (!schema.properties?.executionPlatforms) {
 }
 if (!String(schema.properties.executionPlatforms.description || "").includes("user UI 0")) {
   fails.push("executionPlatforms description must lock user UI 0");
+}
+if (schema.additionalProperties !== false) {
+  fails.push("opportunity-card.v1 must keep additionalProperties: false");
+}
+for (const field of ["buyMarketId", "buyMarketLabelKo"]) {
+  if (!schema.properties?.[field]) {
+    fails.push(`opportunity-card.v1 must document optional ${field}`);
+  }
+  if ((schema.required || []).includes(field)) {
+    fails.push(`opportunity-card.v1 ${field} must stay optional (not required)`);
+  }
+}
+if ((schema.properties?.buyMarketId?.enum || []).includes("yahoo_jp")) {
+  fails.push("opportunity-card.v1 buyMarketId enum must not include yahoo_jp");
 }
 
 // --- package script ---
@@ -250,10 +270,100 @@ if (projected.arbitrageTypeKo !== "시세차익") {
   fails.push("arbitrageTypeKo must pass through projection");
 }
 
+// --- 03 Market Label Projection: list lift · pricing leak 0 ---
+if (!/includePricing:\s*false/.test(svc)) {
+  fails.push("listFeed must keep includePricing: false (pricing leak 0)");
+}
+if (!/includePricing:\s*true/.test(svc)) {
+  fails.push("getById may keep includePricing: true (Detail 범위 · 변경 금지)");
+}
+if (!/pricing\.buyMarketId/.test(svc) || !/pricing\.buyMarketLabelKo/.test(svc)) {
+  fails.push("toUserCard must lift buyMarketId/buyMarketLabelKo from pricing");
+}
+{
+  const listSlice = svc.match(
+    /async listFeed\([\s\S]*?async getById/,
+  );
+  if (!listSlice) {
+    fails.push("listFeed block must be locatable before getById");
+  } else {
+    if (!/includePricing:\s*false/.test(listSlice[0])) {
+      fails.push("listFeed toUserCard must pass includePricing: false");
+    }
+    if (/includePricing:\s*true/.test(listSlice[0])) {
+      fails.push("listFeed must not enable includePricing");
+    }
+  }
+}
+{
+  const toUser = svc.match(
+    /private toUserCard\([\s\S]*$/,
+  );
+  if (!toUser) {
+    fails.push("toUserCard must exist");
+  } else {
+    const body = toUser[0];
+    if (!/if \(opts\.includePricing\)/.test(body)) {
+      fails.push("toUserCard must gate the pricing object on includePricing");
+    }
+    if (
+      !/buyMarketId\s*[:=]/.test(body) ||
+      !/buyMarketLabelKo\s*[:=]/.test(body)
+    ) {
+      fails.push("toUserCard must assign top-level buyMarketId/buyMarketLabelKo");
+    }
+    if (/\.\.\.\s*pricing/.test(body)) {
+      fails.push("toUserCard must not spread the pricing object onto the user card");
+    }
+  }
+}
+
+// --- 08 Freshness forensic lock (listing 300s 유지 · opportunity expiry 복사 금지 · ingest formula 금지) ---
+if (settlementRule.DEFAULT_PRICE_STALE_MAX_SEC !== 3) {
+  fails.push("08: DEFAULT_PRICE_STALE_MAX_SEC must stay 3");
+}
+if (/stale_at\s*=\s*now\(\)/.test(svc)) {
+  fails.push("08: user feed must not UPDATE stale_at = now()");
+}
+const seedBuilder = read("services/market-intelligence/src/catalog-runtime-seed.cjs");
+if (!/LISTING_STALE_SEC = 300/.test(seedBuilder)) {
+  fails.push("08: seed LISTING_STALE_SEC must stay 300 (forensic 전 시드 의미 변경 금지)");
+}
+const ebayAdapter = read("workers/ebay-adapter/src/constants.ts");
+if (!/CACHE_HINT_SEC = 300/.test(ebayAdapter)) {
+  fails.push("08: ebay CACHE_HINT_SEC must stay 300");
+}
+const ingest = read("services/api-nest/src/adapters/adapters.admin.service.ts");
+if (/upsertOpportunityFromBundle|repriceFromListings|fromListings\(/.test(ingest)) {
+  fails.push(
+    "08: adapters ingest must not grow its own opportunity reprice (owner는 persist hook)",
+  );
+}
+if (ingest.includes("computeOpportunityPricing") || ingest.includes("resolveStoredLegListingPrices")) {
+  fails.push("08: adapters ingest must not copy pricing formula / listing resolver");
+}
+{
+  const seedMi = require(path.join(
+    root,
+    "services/market-intelligence/src/catalog-runtime-seed.cjs",
+  ));
+  const locked = seedMi.buildMinCatalogRuntimeSeed({
+    observedAt: "2026-08-19T00:00:00.000Z",
+  });
+  for (const b of locked.bundles) {
+    if (b.opportunity.staleAt !== b.opportunity.pricedAt) {
+      fails.push("08: seed opportunity.staleAt must equal pricedAt (expiry 복사 금지)");
+    }
+    if (b.listings.some((L) => L.staleAt === b.opportunity.staleAt)) {
+      fails.push("08: opportunity.staleAt must not copy listing +300s expiry");
+    }
+  }
+}
+
 if (fails.length) {
   console.error("[verify:user-opportunity-feed] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
 console.log(
-  "[verify:user-opportunity-feed] PASS (OpportunitiesUserController · feed+get · strip platforms · arbitrageTypeKo)",
+  "[verify:user-opportunity-feed] PASS (OpportunitiesUserController · feed+get · strip platforms · buyMarketLabelKo lift · list pricing 0)",
 );

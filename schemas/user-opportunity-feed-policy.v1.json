@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/user-opportunity-feed-policy.v1.json",
+  "title": "UserOpportunityFeedPolicyV1",
+  "description": "B-FEED-001 · 유저별 main feed 노출 정책. hide는 opportunities.id. 재노출은 새 Opportunity. 완전 랜덤 금지. Admin 값 조절=Track D overlay.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "hideSuccess",
+    "hideInProgress",
+    "cooldownSec",
+    "diversityMaxPerIdentity",
+    "maxFeedSlots"
+  ],
+  "properties": {
+    "hideSuccess": {
+      "type": "boolean",
+      "description": "trade_executions.status=success 인 opportunityId를 그 유저 feed에서 제거. 다른 유저는 유지."
+    },
+    "hideInProgress": {
+      "type": "boolean",
+      "description": "running|requeue(및 pending participate) opportunityId를 그 유저 feed에서 제거."
+    },
+    "cooldownSec": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2592000,
+      "description": "같은 identity(canonicalProductId|assetId)의 *다른* Opportunity 재노출 대기. 0=즉시 재노출. hide 키가 아님."
+    },
+    "diversityMaxPerIdentity": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 50,
+      "description": "안정 랭크 순회 시 identity당 최대 장수. 0=제한 없음. 넘치면 다음 eligible로 채움."
+    },
+    "maxFeedSlots": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 200,
+      "description": "유저/세그먼트 allocation 상한. 0=추가 캡 없음. Admin=Track D."
+    }
+  }
+}

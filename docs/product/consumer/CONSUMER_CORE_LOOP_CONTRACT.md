@@ -158,6 +158,21 @@ Settled 판정 = `success` **그리고** `settledProfitUsdt` **그리고** settl
 - 네트워크 끊김: poll 재시도. trade 404 → Home. 가짜 %로 복구 금지.
 - Funding 복귀 토큰 `returnTo` = UX 개념만. API 필드 발명 금지 (G-P1-08).
 
+### 1.7a User Opportunity Feed Policy (B-FEED-001)
+
+```text
+HIDE_KEY = opportunities.id
+HIDE_WHEN = success | running | requeue | pending_participate
+OTHER_USERS_KEEP_VISIBILITY = YES
+REEXPOSE_ON_NEW_OPPORTUNITY = YES
+RANDOM_REFRESH = NO
+RANK_OWNER = engine:§0.0.5.1 (balance-aware)
+COOLDOWN / DIVERSITY / ALLOCATION = 메커니즘 있음 · Day-1 default 0 · 값=Track D
+PARTICIPATED_SURFACE = /trades
+```
+
+같은 Opportunity를 이미 성공/진행 중인 user만 그 행이 main feed에서 빠진다. 다음 eligible이 랭크 순으로 채운다. CanonicalProduct가 같아도 **새** `opportunities.id`면 재노출 가능하다. `safe_stop`/`cancelled`/`failed`는 같은 Opportunity 재시도 가능.
+
 ### 1.7 CTA domain
 
 ```text
@@ -248,7 +263,8 @@ B-PARTICIPATION-001 / B-EXECUTION-001 / B-TRADES-001은 **가짜 돈을 넣지 �
 | SDK execution | `useTradeExecution` (execute 페이지 연결) |
 | SDK trades list | `fetchTradeList` |
 | SDK wallet | `fetchWalletBuckets` |
-| Verify | `participate-http` · `preflight-may-stop` · `participate-web-wire` · `execute-web-wire` · `trades-web-wire` · `execute-rule-loop` · `participate-proof` · `match-success-rule` · `bucket-invariant` · `core-loop-release` |
+| Feed policy | `user-opportunity-feed-policy.cjs` · `excludeParticipatedFromFeed` · `applyStableFeedCaps` |
+| Verify | `participate-http` · `preflight-may-stop` · `participate-web-wire` · `execute-web-wire` · `trades-web-wire` · `execute-rule-loop` · `participate-proof` · `match-success-rule` · `bucket-invariant` · `core-loop-release` · `user-opportunity-feed-policy` |
 
 ### 3.2 WIRE (이 계약 다음 슬라이스 · 이 슬라이스에서 구현 0)
 
@@ -258,7 +274,7 @@ B-PARTICIPATION-001 / B-EXECUTION-001 / B-TRADES-001은 **가짜 돈을 넣지 �
 | B-EXECUTION-001 | DONE — `/trades/[id]/execute` → `useTradeExecution` · 상태 테이블 준수 |
 | B-TRADES-001 | DONE — `/trades` 실목록. `GET /api/v1/trades` = 기존 `toState()` 투영 · 새 money/cancel/필터 0 |
 | B-LOOP-002 | DONE — `verify:core-loop-release` 성공/Safe-Stop 인프로세스 E2E · known defect 0 |
-| B-FEED-001 | 참여 성공/진행 중 feed 제거 (별 계약) |
+| B-FEED-001 | DONE — 참여 성공/진행 중 main feed 제거 · 타유저 유지 · 새 Opportunity 재노출 · `verify:user-opportunity-feed-policy` |
 
 ### 3.3 DO NOT INVENT
 
@@ -322,7 +338,8 @@ B-LOOP-001 done = 계약 문서 + 갭 재실측 + `verify:core-loop-contract` PA
 B-PARTICIPATION-001 done = SDK export + `/profits/[id]` 실배선 + `verify:participate-web-wire` PASS.  
 B-EXECUTION-001 done = `/trades/[id]/execute` → `useTradeExecution` + `verify:execute-web-wire` PASS.  
 B-TRADES-001 done = `/trades` → `fetchTradeList` + `verify:trades-web-wire` PASS.  
-B-LOOP-002 done = `verify:core-loop-release` PASS (MATCH_SUCCESS + PRICE_MOVED/BELOW_MIN_PROFIT/MATCH_TIMEOUT/CIRCUIT_OPEN · 이중 정산/unlock 0 · Settled는 settledProfitUsdt 필수).
+B-LOOP-002 done = `verify:core-loop-release` PASS (MATCH_SUCCESS + PRICE_MOVED/BELOW_MIN_PROFIT/MATCH_TIMEOUT/CIRCUIT_OPEN · 이중 정산/unlock 0 · Settled는 settledProfitUsdt 필수).  
+B-FEED-001 done = 참여 성공/진행중 → 그 유저 main feed 제거 + 타유저 유지 + 새 Opportunity 재노출 + `verify:user-opportunity-feed-policy` PASS.
 
 ```text
 IMPLEMENTATION_START = B-PARTICIPATION-001
