@@ -1,6 +1,7 @@
 /**
  * verify:migrations-applied-parity
- * 로컬 supabase/migrations 버전 접두사 ↔ fixtures/migrations-applied.v1.json (원격 applied 스냅샷) 1:1
+ * 로컬 supabase/migrations 버전 접두사 ↔ fixtures/migrations-applied.v1.json
+ * versions[] = 원격 applied. committedUnapplied[] = file-only (원격 apply 전, REL-701-DB).
  */
 const fs = require("fs");
 const path = require("path");
@@ -50,24 +51,41 @@ if (!fs.existsSync(fixturePath)) {
     for (const v of [...new Set(dup)]) {
       fails.push(`duplicate local version: ${v}`);
     }
+    const pendingRaw = Array.isArray(fixture.committedUnapplied)
+      ? fixture.committedUnapplied
+      : [];
+    const pending = pendingRaw.map((item) =>
+      typeof item === "string" ? item : String(item && item.version ? item.version : ""),
+    );
+    if (pending.some((v) => !/^\d{14}$/.test(v))) {
+      fails.push("committedUnapplied entries must be 14-digit version prefixes");
+    }
     const localSet = new Set(localVersions);
     const expectedSet = new Set(expected);
+    const pendingSet = new Set(pending);
     for (const v of expected) {
       if (!localSet.has(v)) fails.push(`remote-applied missing locally: ${v}`);
     }
+    for (const v of pending) {
+      if (!v) continue;
+      if (!localSet.has(v)) fails.push(`committedUnapplied missing locally: ${v}`);
+      if (expectedSet.has(v)) {
+        fails.push(
+          `committedUnapplied also in versions (move after remote apply): ${v}`,
+        );
+      }
+    }
     for (const v of localVersions) {
-      if (!expectedSet.has(v)) {
+      if (!expectedSet.has(v) && !pendingSet.has(v)) {
         fails.push(
           `local-only version (update fixture after remote apply): ${v}`,
         );
       }
     }
-    if (
-      fails.length === 0 &&
-      localVersions.length !== expected.length
-    ) {
+    const accounted = expected.length + pendingSet.size;
+    if (fails.length === 0 && localVersions.length !== accounted) {
       fails.push(
-        `count mismatch local=${localVersions.length} fixture=${expected.length}`,
+        `count mismatch local=${localVersions.length} applied=${expected.length} committedUnapplied=${pendingSet.size}`,
       );
     }
   }

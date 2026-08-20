@@ -23,6 +23,7 @@ import {
   WHALE_MIN_REQUIRED_CAPITAL_USDT,
 } from "./opportunities.mi";
 import { OPPORTUNITY_EVENTS } from "./opportunities.events";
+import { OpportunityRepriceService } from "./opportunity-reprice.service";
 import type {
   OpportunityAdminListItem,
   OpportunityAdminListQuery,
@@ -68,6 +69,7 @@ export class OpportunitiesAdminService {
     private readonly db: PostgresService,
     private readonly bus: InProcessEventBus,
     private readonly assetImages: AssetImageR2Service,
+    private readonly reprice: OpportunityRepriceService,
   ) {}
 
   async list(
@@ -234,31 +236,17 @@ export class OpportunitiesAdminService {
       }
 
       const nextVersion = row.pricing_version + 1;
-      const { rows: updated } = await client.query<OppRow>(
-        `UPDATE public.opportunities SET
-            pricing = $2::jsonb,
-            pricing_version = $3,
-            priced_at = now(),
-            expected_profit_usdt = $4::numeric,
-            expected_profit_krw_approx = $5::numeric,
-            capital_band = $6,
-            updated_at = now()
-          WHERE id = $1
-          RETURNING id, asset_id, pricing_version, priced_at,
-                    expected_profit_usdt::text, expected_profit_krw_approx::text,
-                    fx_snapshot_id, required_capital_usdt::text, category,
-                    asset_label, asset_image_url, pricing, stale_at, status,
-                    grade_mismatch, image_missing, capital_band`,
-        [
-          id,
-          JSON.stringify(pricing),
-          nextVersion,
-          computed.expectedProfitUsdt,
-          expectedProfitKrw,
-          capitalBand,
-        ],
-      );
-      return this.toListItem(updated[0]);
+      const asOf = new Date().toISOString();
+      const updated = await this.reprice.persistComputedPricing(client, {
+        id,
+        pricing,
+        expectedProfitUsdt: computed.expectedProfitUsdt,
+        expectedProfitKrw,
+        capitalBand,
+        nextVersion,
+        asOf,
+      });
+      return this.toListItem(updated);
     });
 
     this.bus.emit(OPPORTUNITY_EVENTS.priceUpdated, {

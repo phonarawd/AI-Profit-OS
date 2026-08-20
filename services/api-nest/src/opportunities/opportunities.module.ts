@@ -7,6 +7,7 @@ import { RiskModule } from "../risk/risk.module";
 import { AssetImageR2Service } from "./asset-image-r2.service";
 import { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
 import { FxSnapshotService } from "./fx-snapshot.service";
+import { OpportunityRepriceService } from "./opportunity-reprice.service";
 import { OpportunitiesAdminController } from "./opportunities.admin.controller";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
 import { OpportunitiesUserController } from "./opportunities.user.controller";
@@ -30,6 +31,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
   ],
   providers: [
     AssetImageR2Service,
+    OpportunityRepriceService,
     OpportunitiesAdminService,
     OpportunitiesUserService,
     ParticipateService,
@@ -39,6 +41,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
   ],
   exports: [
     AssetImageR2Service,
+    OpportunityRepriceService,
     OpportunitiesAdminService,
     OpportunitiesUserService,
     ParticipateService,
