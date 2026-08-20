@@ -53,7 +53,7 @@ const RULES = [
     test: (f) =>
       /^tooling\/e2e\//.test(f) ||
       /^tooling\/verify\/qa-env-isolation-guard\.cjs$/.test(f),
-    scripts: ["qa-env-isolation-guard.cjs"],
+    scripts: ["qa-env-isolation-guard.cjs", "auth-rate-limit.cjs"],
   },
   {
     test: (f) =>
@@ -541,6 +541,7 @@ const RULES = [
       "auth-jwt-runtime.cjs",
       "auth-flows.cjs",
       "auth-session-cookie.cjs",
+      "auth-rate-limit.cjs",
     ],
   },
   {
