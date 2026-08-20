@@ -182,6 +182,7 @@
     "verify:qa-env-isolation-guard": "node tooling/verify/qa-env-isolation-guard.cjs",
     "verify:money-unavailable": "node tooling/verify/money-unavailable.cjs",
     "verify:settlement-rule-parity": "node tooling/verify/settlement-rule-parity.cjs",
+    "verify:figma-project-registry": "node tooling/verify/figma-project-registry.cjs",
     "engine-acceptance:freeze-baseline": "node tooling/engine-acceptance/freeze-baseline.cjs",
     "engine-acceptance:kill-switch": "node tooling/engine-acceptance/kill-switch.cjs",
     "engine-acceptance:tiny-smoke": "node tooling/engine-acceptance/tiny-smoke.cjs",
