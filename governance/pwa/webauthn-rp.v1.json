@@ -1,0 +1,15 @@
+{
+  "rel": "REL-022",
+  "title": "WebAuthn UX/RP + haptics fallback",
+  "rpId": "hiptk.app",
+  "origin": "https://app.hiptk.app",
+  "appHost": "app.hiptk.app",
+  "rpName": "퍼뜩",
+  "source": "infra/domain.manifest.json",
+  "moneyOwnerChange": 0,
+  "haptics": "optional",
+  "reducedMotion": "skip-haptic",
+  "unsupportedFallback": "existing-login",
+  "blankScreenForbidden": true,
+  "swMustNotHandle": true
+}

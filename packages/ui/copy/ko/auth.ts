@@ -8,6 +8,7 @@ export const auth = {
   kakaoStart: "카카오로 시작하기",
   googleStart: "Google로 계속하기",
   passkeyStart: "패스키로 로그인",
+  passkeyFallback: "이 기기에서는 다른 방법으로 들어가 주세요",
   emailMagic: "이메일로 로그인 링크 받기",
   emailForm: "이메일 주소",
   emailPlaceholder: "이름@예시.com",
