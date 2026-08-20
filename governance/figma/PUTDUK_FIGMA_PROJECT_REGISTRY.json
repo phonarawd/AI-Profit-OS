@@ -1,0 +1,166 @@
+{
+  "schema": "putduk.figma.project-registry.v1",
+  "source": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md §2 FIGMA_PROJECT_REGISTRY",
+  "fileKeyReRequest": "FORBIDDEN",
+  "approvedAuthority": 0,
+  "authorityStatus": "FOUNDER_REVIEW_CANDIDATE",
+  "fileKey": "w7Yg8j2x9evuheOSSLqFw5",
+  "fileName": "퍼뜩 · PUTDUK — Spark Dash Consumer UI",
+  "team": "퍼뜩의 팀",
+  "pages": ["00_Readme(0:1)", "03_Components(2:68)"],
+  "homeAuthorityConflict": "NONE",
+  "lastVerifiedAt": "2026-08-20",
+  "discoveredVia": "RECOVERED_PROJECT_CONTEXT",
+  "home": {
+    "visualAuthority": "SCREENSHOT_FREEZE",
+    "freezeFile": "governance/consumer-home-approval/home-approval-freeze.v1.json",
+    "figmaDesktopBackupNodeId": "46:2",
+    "figmaMobileReviewNodeId": "72:762",
+    "home_46_2_is_authority": false,
+    "homeRetroactiveVisualRedesign": false
+  },
+  "codeConnect": {
+    "status": "CANDIDATE_ONLY",
+    "applied": 0,
+    "note": "Code Connect templates are not applied. Screen RELs (REL-106~110/131) read node-ids from this registry."
+  },
+  "candidateFrames": {
+    "home_desktop_backup": {
+      "nodeId": "46:2",
+      "classification": "BACKUP",
+      "authority": false
+    },
+    "home_mobile_review": {
+      "nodeId": "72:762",
+      "classification": "BACKUP",
+      "authority": false
+    },
+    "opportunities_desktop": {
+      "nodeId": "76:2",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false
+    },
+    "opportunities_mobile": {
+      "nodeId": "116:28",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false
+    },
+    "opportunities_mobile_empty": {
+      "nodeId": "122:34",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false
+    },
+    "opportunity_room_desktop": {
+      "nodeId": "96:2",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false
+    },
+    "opportunity_room_mobile": {
+      "nodeId": "104:43",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false
+    },
+    "opportunity_room_mobile_scroll": {
+      "nodeId": "109:28",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false
+    },
+    "participate_confirmation_desktop": {
+      "nodeId": "103:315",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false
+    },
+    "execution_desktop_running": {
+      "nodeId": "155:222",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false
+    },
+    "execution_mobile_running": {
+      "nodeId": "140:34",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false
+    },
+    "execution_mobile_requeue": {
+      "nodeId": "140:142",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false
+    },
+    "execution_mobile_success": {
+      "nodeId": "140:250",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false
+    },
+    "execution_mobile_safestop": {
+      "nodeId": "140:358",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false
+    }
+  },
+  "screenBindings": [
+    {
+      "rel": "REL-105",
+      "route": "/",
+      "frameKeys": ["home_desktop_backup", "home_mobile_review"],
+      "apply": false,
+      "reason": "Home freeze is screenshot authority. Figma 46:2 / 72:762 are BACKUP."
+    },
+    {
+      "rel": "REL-106",
+      "route": "/profits",
+      "frameKeys": [
+        "opportunities_desktop",
+        "opportunities_mobile",
+        "opportunities_mobile_empty"
+      ],
+      "apply": false
+    },
+    {
+      "rel": "REL-107",
+      "route": "/profits/[id]",
+      "frameKeys": [
+        "opportunity_room_desktop",
+        "opportunity_room_mobile",
+        "opportunity_room_mobile_scroll"
+      ],
+      "apply": false
+    },
+    {
+      "rel": "REL-108",
+      "route": "ParticipateConfirmation",
+      "frameKeys": ["participate_confirmation_desktop"],
+      "extraNodeIdsNotInSection2": [
+        {
+          "nodeId": "103:314",
+          "note": "Master REL-108 CURRENT_SCOPE ParticipateConfirmSheet 11-state. Not a §2 top-level frame. Still FOUNDER_REVIEW_CANDIDATE, not APPROVED."
+        }
+      ],
+      "apply": false
+    },
+    {
+      "rel": "REL-109",
+      "route": "/trades/[id]/execute",
+      "frameKeys": [
+        "execution_desktop_running",
+        "execution_mobile_running",
+        "execution_mobile_requeue",
+        "execution_mobile_success",
+        "execution_mobile_safestop"
+      ],
+      "apply": false
+    },
+    {
+      "rel": "REL-110",
+      "route": "/trades",
+      "frameKeys": [],
+      "apply": false,
+      "note": "No §2 frame. Do not invent a node-id."
+    },
+    {
+      "rel": "REL-131",
+      "route": "later consumer surface",
+      "frameKeys": [],
+      "apply": false,
+      "note": "Read this registry. Do not re-discover fileKey."
+    }
+  ]
+}

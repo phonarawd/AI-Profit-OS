@@ -37,6 +37,12 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/figma\//.test(f) ||
+      /^tooling\/verify\/figma-project-registry\.cjs$/.test(f),
+    scripts: ["figma-project-registry.cjs"],
+  },
+  {
+    test: (f) =>
       /^governance\/engine-acceptance\//.test(f) ||
       /^tooling\/engine-acceptance\//.test(f) ||
       /^tooling\/verify\/engine-acceptance\.cjs$/.test(f) ||
