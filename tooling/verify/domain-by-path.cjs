@@ -95,6 +95,11 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\//.test(f) || /^tooling\/verify\/web-lint\.cjs$/.test(f),
+    scripts: ["web-lint.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/page\.tsx$/.test(f) ||
       /^apps\/web\/app\/HomePageClient\.tsx$/.test(f) ||
       /^apps\/web\/app\/_components\/HomePageClient\.tsx$/.test(f) ||
