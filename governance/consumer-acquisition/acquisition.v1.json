@@ -1,11 +1,12 @@
 {
   "$id": "https://ai-profit-os.local/governance/consumer-acquisition/acquisition.v1.json",
   "schema": "governance.consumer-acquisition.acquisition.v1",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "measuredAt": "2026-08-20",
   "status": "CONTRACT_READY",
-  "implementationStatus": "WEB_UNWIRED",
+  "implementationStatus": "WEB_GAP_WIRED",
   "task": "C-ACQ-001",
+  "implementationTask": "C-ACQ-002",
   "certification": {
     "task": "C-ACQ-003",
     "status": "PENDING",
@@ -63,9 +64,9 @@
     "webAcquisitionPendingFigma": 7,
     "kakaoStartPage": "PRESENT",
     "kakaoCodeExchange": "PRESENT",
-    "sdkAuthExport": "MISSING",
-    "loginSignupNestCall": 0,
+    "sdkAuthExport": "PRESENT",
+    "loginSignupNestCall": 1,
     "fakeFinancialValueBug": "CLOSED"
   },
-  "nextSlices": ["C-ACQ-002", "C-ACQ-003"]
+  "nextSlices": ["C-ACQ-003"]
 }

@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 /**
- * verify:acquisition-contract — C-ACQ-001
- * Product/Visual/Implementation 계약 유지 + 2026-08-20 재실측.
- * Auth Rule 재정의 0 · web 배선은 C-ACQ-002.
+ * verify:acquisition-contract — C-ACQ-001 계약 유지 + C-ACQ-002 실측.
+ * Auth Rule 재정의 0 · 시각 발명 0 · PendingFigma 7 유지.
  */
 "use strict";
 
@@ -84,8 +83,9 @@ for (const token of [
   "WEB_ACQUISITION_PENDING_FIGMA = 7",
   "KAKAO_START_PAGE = PRESENT",
   "KAKAO_CODE_EXCHANGE = PRESENT",
-  "SDK_AUTH_EXPORT = MISSING",
-  "REAL_IMPLEMENTATION = WEB_UNWIRED",
+  "SDK_AUTH_EXPORT = PRESENT",
+  "LOGIN_SIGNUP_NEST_CALL = PRESENT",
+  "REAL_IMPLEMENTATION = WEB_GAP_WIRED",
   "C-ACQ-002",
   "C-ACQ-003",
   "PendingFigma",
@@ -99,10 +99,10 @@ if (md.includes("12.50")) fail(`${CONTRACT} must not invent 12.50`);
 const gov = readJson(GOV);
 if (gov) {
   if (gov.status !== "CONTRACT_READY") fail("governance status must be CONTRACT_READY");
-  if (gov.implementationStatus !== "WEB_UNWIRED") {
-    fail("implementationStatus must be WEB_UNWIRED until C-ACQ-002");
+  if (gov.implementationStatus !== "WEB_GAP_WIRED") {
+    fail("implementationStatus must be WEB_GAP_WIRED after C-ACQ-002");
   }
-  if (gov.task !== "C-ACQ-001") fail("governance task must be C-ACQ-001");
+  if (gov.task !== "C-ACQ-001") fail("governance task must stay C-ACQ-001");
   if (gov.authority.AUTH_RULE_REDEFINITION !== "FORBIDDEN") {
     fail("AUTH_RULE_REDEFINITION must stay FORBIDDEN");
   }
@@ -132,8 +132,11 @@ if (gov) {
   if (gov.measured.kakaoCodeExchange !== "PRESENT") {
     fail("kakaoCodeExchange must be PRESENT after C-AUTH-001");
   }
-  if (gov.measured.sdkAuthExport !== "MISSING") {
-    fail("sdkAuthExport must stay MISSING until C-ACQ-002");
+  if (gov.measured.sdkAuthExport !== "PRESENT") {
+    fail("sdkAuthExport must be PRESENT after C-ACQ-002");
+  }
+  if (gov.measured.loginSignupNestCall !== 1) {
+    fail("loginSignupNestCall must be 1 after C-ACQ-002");
   }
   if (gov.certification?.status !== "PENDING") {
     fail("certification.status must stay PENDING until C-ACQ-003");
@@ -149,7 +152,7 @@ let pending = 0;
 for (const rel of ACQ_PENDING_PAGES) {
   const src = read(rel);
   if (src.includes("PendingFigma")) pending += 1;
-  else fail(`${rel} expected PendingFigma until C-ACQ-002`);
+  else fail(`${rel} must keep PendingFigma after C-ACQ-002`);
 }
 if (pending !== 7) {
   fail(`web PendingFigma acquisition pages must be 7, got ${pending}`);
@@ -196,5 +199,5 @@ if (fails.length) {
 }
 
 console.log(
-  "[verify:acquisition-contract] PASS (7 PendingFigma · Kakao start+exchange PRESENT · Home geometry 0)",
+  "[verify:acquisition-contract] PASS (7 PendingFigma · WEB_GAP_WIRED · SDK auth PRESENT · Home geometry 0)",
 );

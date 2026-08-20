@@ -29,7 +29,9 @@ const RULES = [
       /^tooling\/verify\/core-loop-contract\.cjs$/.test(f) ||
       /^tooling\/verify\/wallet-contract\.cjs$/.test(f) ||
       /^tooling\/verify\/acquisition-contract\.cjs$/.test(f) ||
+      /^tooling\/verify\/acquisition-gap-wire\.cjs$/.test(f) ||
       /^governance\/consumer-acquisition\//.test(f) ||
+      /^packages\/sdk\/src\/auth\//.test(f) ||
       /^tooling\/verify\/wallet-gap-wire\.cjs$/.test(f) ||
       /^tooling\/verify\/wallet-release\.cjs$/.test(f) ||
       /^tooling\/verify\/lib\/wallet-release-runtime\.cjs$/.test(f) ||
@@ -46,12 +48,18 @@ const RULES = [
       /^packages\/sdk\/src\/participate\//.test(f) ||
       /^packages\/sdk\/src\/execution-stream\//.test(f) ||
       /^packages\/sdk\/src\/trades\//.test(f) ||
-      /^services\/api-nest\/src\/trades\//.test(f),
+      /^services\/api-nest\/src\/trades\//.test(f) ||
+      /^apps\/web\/app\/auth\//.test(f) ||
+      /^apps\/web\/app\/onboarding\//.test(f) ||
+      /^apps\/web\/app\/ads\//.test(f) ||
+      /^apps\/web\/app\/l\//.test(f) ||
+      /^apps\/web\/app\/components\/GuestChrome\.tsx$/.test(f),
     scripts: [
       "consumer-ux-architecture.cjs",
       "core-loop-contract.cjs",
       "wallet-contract.cjs",
       "acquisition-contract.cjs",
+      "acquisition-gap-wire.cjs",
       "wallet-gap-wire.cjs",
       "wallet-release.cjs",
       "participate-web-wire.cjs",

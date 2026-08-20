@@ -24,7 +24,7 @@ Phase 3 does not fix these.
 |----|------------|-------------|---------------------------------|-----|----------|---------------|------------------------|-------------|-------------------|
 | G-P1-01 | Consumer web wiring | 전 여정 연결 | `apps/web/app/**/page.tsx` = `PendingFigma` only | WEB_WIRING_MISSING | P1 | NO (architecture exists) | YES product UI | YES | future Consumer impl |
 | G-P1-02 | Participate SDK | preflight+participate client | `@aipo/sdk/participate` + `/profits/[id]` wired 2026-08-20 | CLOSED | P1 | NO | NO | remaining = execute E2E | SDK |
-| G-P1-03 | Auth SDK | signup/login/session client | no auth module in `packages/sdk` | SDK MISSING | P1 | NO | YES auth screens | YES | SDK |
+| G-P1-03 | Auth SDK | signup/login/session client | `@aipo/sdk/auth` + login/signup/complete-profile WIRED_MINIMAL (2026-08-20 C-ACQ-002) | CLOSED | P1 | NO | NO | remaining = C-ACQ-003 | SDK + Web |
 | G-P1-04 | User history | 입출금/정산 목록 | ledger journals = Admin only. User KRW request list only | OWNER_PARTIAL | P1 | History empty/unavailable OK | YES full history | YES history E2E | Money API |
 | G-P1-05 | User trade list | 진행/지난 매칭 목록 | `GET /api/v1/trades` session list + `/trades` WIRED_MINIMAL (2026-08-20 B-TRADES-001) | CLOSED | P1 | NO | NO | remaining = core-loop E2E | Nest trades + web |
 | G-P1-06 | User cancel | D-05 APPROVED HIDE | `CANCELLED_BY_USER` enum. no user POST cancel found | OWNER_MISSING · FUTURE_CAPABILITY until API verified | P1 | NO — CTA not drawn | if cancel later exposed | if cancel later exposed | Nest trades |
@@ -43,7 +43,7 @@ Phase 3 does not fix these.
 | G-P2-03 | Transaction detail generic | journal by id user | Admin journals only | MISSING | P2 | UNAVAILABLE | YES | YES | Money |
 | G-P2-04 | Inbox fanout | 상태 변화 알림 | inbox + prefs exist. auto fanout 범위 미검증 | UNKNOWN | P2 | generic list OK | later | later | Inbox/events |
 | G-P2-05 | Referral amounts on user API | 조건/상태 | `referral/me` no % fields (good) but no user-facing reward summary DTO | PARTIAL | P2 | qualitative OK | if rewards on | if rewards on | Money |
-| G-P2-06 | Kakao web | OAuth 버튼 | Nest code exchange+GET callback VERIFIED (C-AUTH-001). thin `/auth/oauth/kakao` PRESENT. login/signup PendingFigma | WEB_WIRING_MISSING | P2 | NO | YES auth polish | YES oauth | Web |
+| G-P2-06 | Kakao web | OAuth 버튼 | Nest exchange+GET callback (C-AUTH-001). login thin start · signup `startKakaoOAuth`+terms (C-ACQ-002). PendingFigma 유지 | CLOSED | P2 | NO | remaining visual | remaining = C-ACQ-003 | Web |
 | G-P2-07 | Growth modes | live only | `GrowthPublicSurface` type includes demo/hybrid | must not use | P2 | NO | YES if ticker shown | YES | Web must ignore |
 | G-P2-08 | Home tradeId | 진행 매칭을 Home에 | HomeRead has no activeTradeId field | OWNER_PARTIAL | P2 | Home job still designable | YES matching priority | YES | HomeRead |
 | G-P2-09 | USDT deposit user status | 입금 진행 | observe/tick not user UI. no user event list SDK | PARTIAL | P2 | “확인 중” generic | YES | YES | Money+SDK |
@@ -86,13 +86,14 @@ blocks full-app implementation Figma = G-P1-04/05/08 annotations required
 | historical | verdict | evidence |
 |------------|---------|----------|
 | Participate POST web wiring | CLOSED (2026-08-20 B-PARTICIPATION-001) | SDK `issuePreflight`+`postParticipate`. `/profits/[id]` 실연결. `/profits` 목록 POST 0. 계약=`CONSUMER_CORE_LOOP_CONTRACT.md` |
-| access token path | PARTIAL | SDK omits Bearer if token null; `credentials:include` + `aipo_session`. Web calls 0 |
+| access token path | PARTIAL | SDK omits Bearer if token null; `credentials:include` + `aipo_session`. Auth web calls PRESENT (C-ACQ-002) |
+| Auth SDK + acquisition web | CLOSED (2026-08-20 C-ACQ-002) | `@aipo/sdk/auth` session/Kakao start/profile. login/signup/complete-profile/onboarding/ads/l WIRED_MINIMAL. PendingFigma 7 유지 |
 | cancel/merge handlers | NOT_FOUND (web) | no web handlers. API `profit/merge` exists. user cancel MISSING |
 | hardcoded zero | STILL_PRESENT | SDK/API fallbacks (G-P0-01) |
 | fake fallback amount | NOT_FOUND | no hardcoded demo profit amount in current web/sdk |
 | wallet history | STILL_PRESENT | page placeholder + user journal list MISSING |
 | wallet web 8면 | STILL_PRESENT PendingFigma | B-WALLET-001 재실측 2026-08-20. backend/SDK buckets·withdraw·KRW REAL. address/KYC SDK MISSING. 계약=`CONSUMER_WALLET_CONTRACT.md` · 배선=B-WALLET-002 |
-| Kakao runtime | OWNER_FOUND exchange+GET callback · thin start PRESENT · login/signup WEB_WIRING_MISSING | C-AUTH-001 · 계약=`CONSUMER_ACQUISITION_CONTRACT.md` |
+| Kakao runtime | OWNER_FOUND exchange+GET callback · thin start PRESENT · login/signup WEB_GAP_WIRED | C-AUTH-001 + C-ACQ-002 · 계약=`CONSUMER_ACQUISITION_CONTRACT.md` |
 | dead href | NOT_FOUND | PendingFigma has no href |
 | legacy execute path | CLOSED (2026-08-20 B-EXECUTION-001) | `/trades/[id]/execute`=`useTradeExecution` 최소 실데이터. progressPct 표시 0. API execute-tick KEEP |
 | user trade list | CLOSED (2026-08-20 B-TRADES-001) | `GET /api/v1/trades` + `/trades` `TradesClient`. 기존 `toState()` 투영. progressPct 표시 0 |

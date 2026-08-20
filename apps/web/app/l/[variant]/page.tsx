@@ -1,5 +1,12 @@
 import { PendingFigma } from "@/app/PendingFigma";
+import { GuestChrome } from "@/app/components/GuestChrome";
+import { PublicAdSurface } from "../PublicAdSurface";
 
 export default function Page() {
-  return <PendingFigma title="퍼뜩" />;
+  return (
+    <GuestChrome>
+      <PendingFigma title="퍼뜩" />
+      <PublicAdSurface />
+    </GuestChrome>
+  );
 }

@@ -10,7 +10,7 @@ todos:
     status: completed
   - id: c-acq-002
     content: "[C-ACQ-002] Acquisition gap-only 구현 · legacy=03 redesign-r2-acquisition-implementation(pending) · PRIORITY=LAUNCH_REQUIRED · RISK=HIGH"
-    status: pending
+    status: completed
   - id: c-acq-003
     content: "[C-ACQ-003] Acquisition certification · legacy=03 redesign-r2-acquisition-certification(pending) · PRIORITY=LAUNCH_REQUIRED · RISK=HIGH"
     status: pending
@@ -45,7 +45,7 @@ Guest가 가입/로그인해서 실제 계정을 만들고, 계정 안에서 신
 
 | 항목 | 상태 | Evidence |
 |---|---|---|
-| Kakao 로그인 UI | login/signup = `PendingFigma` · thin start = `/auth/oauth/kakao` | 시각 완성 ≠ 이 슬라이스. C-ACQ-002가 login/signup 배선 |
+| Kakao 로그인 UI | login/signup = `PendingFigma` + 실배선 (C-ACQ-002) · thin start = `/auth/oauth/kakao` | 시각 완성 ≠ 이 슬라이스. SDK `@aipo/sdk/auth` PRESENT · WEB_GAP_WIRED |
 | Kakao OAuth backend runtime | **IMPLEMENTED** (C-AUTH-001 · 2026-08-20) | Nest `GET+POST /api/v1/auth/oauth/kakao/callback` · `kakao-oauth.core.cjs` code→token→profile(`profile_nickname`) · `raw_profile` 저장 · 성별 strip · 기존 유저 terms 없이 세션 · 신규는 state/body terms · thin Next `/auth/oauth/kakao` → GET start. **LIVE_KAKAO_HUMAN_E2E = NOT_RUN**(Founder 계정 필요). LAUNCH_BLOCKER 후보 → **CODE_RUNTIME_CLOSED / HUMAN_E2E_OPEN** |
 | Account Hub 원 스코프 | 12+ 모듈(구 03 R5) | `CONSUMER_UX_ARCHITECTURE.md`가 D-01~D07로 Founder 승인 재정렬 |
 | Membership/Benefits/Events/Strategies | **이미 구현됨**(03 `benefit-hub-surfaces`·`membership-grade-ux`·03 `invite-explain-kr-2070` 등 completed) | `CONSUMER_UX_ARCHITECTURE.md`: "PRIMARY JOURNEY에서 제거. 호환 경로만 유지. 제품 핵심이 아님" — **기능 삭제 아님, IA 우선순위만 조정** |

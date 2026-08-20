@@ -3,7 +3,7 @@
 > **문서 종류:** Product · Visual · Implementation Contract  
 > **TASK:** C-ACQ-001 · Track C Acquisition / Account / Trust  
 > **일자:** 2026-08-20  
-> **상태:** CONTRACT_READY · IMPLEMENTATION = WEB_UNWIRED · CERTIFICATION = PENDING  
+> **상태:** CONTRACT_READY · IMPLEMENTATION = WEB_GAP_WIRED · CERTIFICATION = PENDING  
 > **시각 권위:** APPROVED FIGMA = NONE  
 > **Auth Rule:** 재정의 0 (Nest JWT · Stage A/B · Kakao primary · Supabase Auth 0)
 
@@ -61,7 +61,7 @@ PLAN_SAID(과거)     = /auth/oauth/kakao Next page 없음 · Nest signup POST �
 REMEASURED(C-AUTH-001) = Nest GET+POST callback + code→token→profile IMPLEMENTED
                         thin `/auth/oauth/kakao` PRESENT
                         login/signup/complete-profile/onboarding/ads/l = PendingFigma
-C-ACQ-002            = WIRE_WITHOUT_APPROVED_FIGMA (최소 실데이터) · 픽셀 발명 0
+C-ACQ-002            = WIRE_WITHOUT_APPROVED_FIGMA (최소 실데이터) · 픽셀 발명 0 · WEB_GAP_WIRED
 ```
 
 ---
@@ -229,13 +229,13 @@ HOME_GEOMETRY_DEPENDENCY = FORBIDDEN
 | Next API rewrite | `apps/web/next.config.ts` `/api/v1/:path*` |
 | Home guest visual | Home freeze SSOT |
 | Ads rewrite | `/ads` → `/l/meta` |
-| Verify | `kakao-oauth-runtime` · `auth-flows` · `auth-session-cookie` · `landing-3s` · `marketing-compliance` · `operator-footer` |
+| Verify | `kakao-oauth-runtime` · `auth-flows` · `auth-session-cookie` · `acquisition-contract` · `acquisition-gap-wire` · `landing-3s` · `marketing-compliance` · `operator-footer` |
 
-### 3.2 WIRE (이 계약 다음 슬라이스 · 이 슬라이스에서 구현 0)
+### 3.2 WIRE
 
-| 다음 TASK | 해야 할 일 |
-|-----------|------------|
-| C-ACQ-002 | login/signup/complete-profile/onboarding/ads/l gap-only 실배선. GuestChrome/consent/session-cookie 보존. 맵 컴포넌트 발명 0. 새 라우트 0. 광고 카피 자유생성 0 |
+| TASK | 상태 |
+|------|------|
+| C-ACQ-002 | **WEB_GAP_WIRED** · login/signup/complete-profile/onboarding/ads/l 실배선 · SDK auth PRESENT · PendingFigma 7 유지 · GuestChrome 최소 래퍼 · 맵 발명 0 · 새 라우트 0 |
 | C-ACQ-003 | 실 guest/auth/error/resume · known defect 0 · `verify:acquisition-release` |
 
 ### 3.3 DO NOT INVENT
@@ -249,18 +249,18 @@ HOME_GEOMETRY_DEPENDENCY = FORBIDDEN
 - Home freeze 파일 수정
 - Auth/Money/Engine 규칙 재정의
 
-### 3.4 File-level handoff (착수 지도 · 지금 수정 0)
+### 3.4 File-level handoff (C-ACQ-002)
 
-| 파일 | 다음 분류 |
-|------|-----------|
-| `apps/web/app/auth/login/page.tsx` | WIRE in C-ACQ-002 · PendingFigma 유지 가능 |
-| `apps/web/app/auth/signup/page.tsx` | WIRE · Kakao start + terms → POST start |
-| `apps/web/app/auth/complete-profile/page.tsx` | WIRE · `PATCH /auth/profile` |
-| `apps/web/app/onboarding/page.tsx` | WIRE · Home CTA |
-| `apps/web/app/ads/**` · `app/l/**` | KEEP surface · copy lock · Core redirect 0 |
+| 파일 | 분류 |
+|------|------|
+| `apps/web/app/auth/login/page.tsx` | WIRED · PendingFigma 유지 · thin `/auth/oauth/kakao` |
+| `apps/web/app/auth/signup/page.tsx` | WIRED · terms → `startKakaoOAuth` POST |
+| `apps/web/app/auth/complete-profile/page.tsx` | WIRED · `patchAuthProfile` |
+| `apps/web/app/onboarding/page.tsx` | WIRED · Home CTA |
+| `apps/web/app/ads/**` · `app/l/**` | 동일 PublicAdSurface · 잠금 CTA · Core redirect 0 |
 | `apps/web/app/auth/oauth/kakao/page.tsx` | KEEP thin |
-| `packages/sdk` auth | MISSING · C-ACQ-002가 최소 client만 |
-| `services/api-nest/src/auth/**` | NO_CHANGE unless bug |
+| `packages/sdk` auth | **PRESENT** |
+| `services/api-nest/src/auth/**` | NO_CHANGE |
 | Home freeze / `HomeDesktop` / `HomeMobile` | NO_CHANGE |
 
 ---
@@ -274,12 +274,12 @@ HOME_GEOMETRY_DEPENDENCY = FORBIDDEN
 | Kakao Next page 없음 | **CLOSED** | `apps/web/app/auth/oauth/kakao/page.tsx` → Nest GET start |
 | Nest Kakao callback GET 없음 | **CLOSED** | `oauthCallbackGet` · console redirect = API_HOST |
 | Kakao code를 subject로 사용 | **CLOSED** | `exchangeKakaoCode` · `id`만 subject |
-| login/signup Nest 호출 | **0** | 두 페이지 `PendingFigma` only |
-| complete-profile PATCH | **0** | `PendingFigma` |
-| onboarding 실데이터 | **0** | `PendingFigma` |
-| `/ads` `/l/*` 실카피 surface | **PendingFigma** | title=`퍼뜩` |
-| SDK auth module | **MISSING** | G-P1-03 |
-| GuestChrome wrap on auth pages | **MISSING** | greenfield skip |
+| login/signup Nest 호출 | **PRESENT** | login=thin Kakao + session · signup=`startKakaoOAuth` |
+| complete-profile PATCH | **PRESENT** | `patchAuthProfile` |
+| onboarding 실데이터 | **PRESENT** | Home CTA `시작하기` |
+| `/ads` `/l/*` 실카피 surface | **WIRED_MINIMAL** | PendingFigma title=`퍼뜩` + 잠금 CTA |
+| SDK auth module | **PRESENT** | `@aipo/sdk/auth` |
+| GuestChrome wrap on auth pages | **MINIMAL** | 5탭 0 래퍼 · 시각 발명 0 |
 | 성별 필드 | **0** | Stage/schema `not gender` |
 | 가짜 금액 하드코드 | **CLOSED** | PendingFigma. 재실측 |
 | Home geometry 종속 필요 | **NO** | freeze 독립 |
@@ -288,8 +288,9 @@ HOME_GEOMETRY_DEPENDENCY = FORBIDDEN
 WEB_ACQUISITION_PENDING_FIGMA = 7
 KAKAO_START_PAGE = PRESENT
 KAKAO_CODE_EXCHANGE = PRESENT
-SDK_AUTH_EXPORT = MISSING
-REAL_IMPLEMENTATION = WEB_UNWIRED
+SDK_AUTH_EXPORT = PRESENT
+LOGIN_SIGNUP_NEST_CALL = PRESENT
+REAL_IMPLEMENTATION = WEB_GAP_WIRED
 ACQUISITION_CERTIFICATION = PENDING
 ```
 
@@ -298,11 +299,12 @@ ACQUISITION_CERTIFICATION = PENDING
 ## 5. Acceptance (이 슬라이스)
 
 C-ACQ-001 done = 계약 문서 + 갭 재실측 + `verify:acquisition-contract` PASS.  
-C-ACQ-002 done = gap-only 배선 + 시각 발명 0.  
+C-ACQ-002 done = gap-only 배선 + 시각 발명 0 + `verify:acquisition-gap-wire` PASS.  
 C-ACQ-003 done = `verify:acquisition-release` PASS · known P0~P3 defect 0.
 
 ```text
 IMPLEMENTATION_START = C-ACQ-002
+IMPLEMENTATION = WEB_GAP_WIRED
 CERTIFICATION = C-ACQ-003
 FOUNDER_APPROVAL_REQUIRED = NO
 ```
