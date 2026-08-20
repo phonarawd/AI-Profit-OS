@@ -10,6 +10,7 @@ export const auth = {
   passkeyStart: "패스키로 로그인",
   passkeyFallback: "이 기기에서는 다른 방법으로 들어가 주세요",
   emailMagic: "이메일로 로그인 링크 받기",
+  emailSignup: "이메일로 가입하기",
   emailForm: "이메일 주소",
   emailPlaceholder: "이름@예시.com",
   loginHeadline: "👋 다시 오신 걸 환영해요",
@@ -35,6 +36,12 @@ export const auth = {
   termsNeeded: "약관에 동의한 뒤 카카오로 시작할 수 있어요",
   toSignup: "아직 계정이 없나요? 가입하기",
   toLogin: "이미 계정이 있나요? 로그인",
+  sending: "보내는 중…",
+  saveBusy: "저장하는 중…",
+  magicSent: "메일함을 확인해 주세요.",
+  genericError: "지금은 연결할 수 없어요. 다시 시도해 주세요.",
+  emailRequired: "이메일을 입력해 주세요.",
+  connecting: "연결하는 중이에요",
 } as const;
 
 export type AuthCopy = typeof auth;
