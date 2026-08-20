@@ -5,15 +5,19 @@ import { T } from "../../copy/ko";
 import { BrandMark } from "../brand/BrandMark";
 import { TouchButton } from "../lux/TouchButton";
 
+export type AuthCompleteProfilePayload = {
+  displayName: string;
+  phone: string;
+  birthDate: string;
+  email?: string;
+};
+
 export type AuthCompleteProfileProps = {
   /** When OAuth already provided email, hide email field */
   emailMissing?: boolean;
-  onSave?: (payload: {
-    displayName: string;
-    phone: string;
-    birthDate: string;
-    email?: string;
-  }) => void;
+  busy?: boolean;
+  error?: string | null;
+  onSave?: (payload: AuthCompleteProfilePayload) => void | Promise<void>;
 };
 
 /**
@@ -22,6 +26,8 @@ export type AuthCompleteProfileProps = {
  */
 export function AuthCompleteProfile({
   emailMissing = true,
+  busy = false,
+  error = null,
   onSave,
 }: AuthCompleteProfileProps) {
   const [displayName, setDisplayName] = useState("");
@@ -29,15 +35,18 @@ export function AuthCompleteProfile({
   const [birthDate, setBirthDate] = useState("");
   const [email, setEmail] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onSave?.({
+    const payload: AuthCompleteProfilePayload = {
       displayName: displayName.trim(),
       phone: phone.trim(),
       birthDate,
       ...(emailMissing ? { email: email.trim() } : {}),
-    });
-    // Phase0: local complete → onboarding (Nest PATCH = Infra/Engine later)
+    };
+    if (onSave) {
+      await onSave(payload);
+      return;
+    }
     if (typeof window !== "undefined") {
       window.location.href = "/onboarding";
     }
@@ -121,14 +130,21 @@ export function AuthCompleteProfile({
           {T.auth.completeHintWithdraw}
         </p>
 
+        {error ? (
+          <p role="alert" aria-live="assertive" className="text-sm text-lux-text">
+            {error}
+          </p>
+        ) : null}
+
         <TouchButton
           type="submit"
           variant="primary"
           className="w-full"
           data-testid="auth-save-continue"
           data-action="patch_profile_stage_b"
+          disabled={busy}
         >
-          {T.auth.saveContinue}
+          {busy ? T.auth.saveBusy : T.auth.saveContinue}
         </TouchButton>
       </form>
     </main>
