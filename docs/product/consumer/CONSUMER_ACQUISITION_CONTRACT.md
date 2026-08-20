@@ -3,7 +3,7 @@
 > **문서 종류:** Product · Visual · Implementation Contract  
 > **TASK:** C-ACQ-001 · Track C Acquisition / Account / Trust  
 > **일자:** 2026-08-20  
-> **상태:** CONTRACT_READY · IMPLEMENTATION = WEB_GAP_WIRED · CERTIFICATION = PENDING  
+> **상태:** CONTRACT_READY · IMPLEMENTATION = WEB_GAP_WIRED · CERTIFICATION = PASS  
 > **시각 권위:** APPROVED FIGMA = NONE  
 > **Auth Rule:** 재정의 0 (Nest JWT · Stage A/B · Kakao primary · Supabase Auth 0)
 
@@ -229,14 +229,14 @@ HOME_GEOMETRY_DEPENDENCY = FORBIDDEN
 | Next API rewrite | `apps/web/next.config.ts` `/api/v1/:path*` |
 | Home guest visual | Home freeze SSOT |
 | Ads rewrite | `/ads` → `/l/meta` |
-| Verify | `kakao-oauth-runtime` · `auth-flows` · `auth-session-cookie` · `acquisition-contract` · `acquisition-gap-wire` · `landing-3s` · `marketing-compliance` · `operator-footer` |
+| Verify | `kakao-oauth-runtime` · `auth-flows` · `auth-session-cookie` · `acquisition-contract` · `acquisition-gap-wire` · `acquisition-release` · `landing-3s` · `marketing-compliance` · `operator-footer` |
 
 ### 3.2 WIRE
 
 | TASK | 상태 |
 |------|------|
 | C-ACQ-002 | **WEB_GAP_WIRED** · login/signup/complete-profile/onboarding/ads/l 실배선 · SDK auth PRESENT · PendingFigma 7 유지 · GuestChrome 최소 래퍼 · 맵 발명 0 · 새 라우트 0 |
-| C-ACQ-003 | 실 guest/auth/error/resume · known defect 0 · `verify:acquisition-release` |
+| C-ACQ-003 | **DONE** — `verify:acquisition-release` guest/auth/error/resume 인프로세스 E2E · known defect 0 · 시각 lock 아님 · `LIVE_KAKAO_HUMAN_E2E = NOT_RUN` |
 
 ### 3.3 DO NOT INVENT
 
@@ -291,7 +291,8 @@ KAKAO_CODE_EXCHANGE = PRESENT
 SDK_AUTH_EXPORT = PRESENT
 LOGIN_SIGNUP_NEST_CALL = PRESENT
 REAL_IMPLEMENTATION = WEB_GAP_WIRED
-ACQUISITION_CERTIFICATION = PENDING
+ACQUISITION_CERTIFICATION = PASS
+LIVE_KAKAO_HUMAN_E2E = NOT_RUN
 ```
 
 ---
@@ -300,11 +301,13 @@ ACQUISITION_CERTIFICATION = PENDING
 
 C-ACQ-001 done = 계약 문서 + 갭 재실측 + `verify:acquisition-contract` PASS.  
 C-ACQ-002 done = gap-only 배선 + 시각 발명 0 + `verify:acquisition-gap-wire` PASS.  
-C-ACQ-003 done = `verify:acquisition-release` PASS · known P0~P3 defect 0.
+C-ACQ-003 done = `verify:acquisition-release` PASS (guest 401 유지 · ads→Core redirect 0 · 기존 Kakao terms 재수집 0 · 신규 TERMS_REQUIRED→signup · oauth deny→login · Stage resume · known defect 0 · `LIVE_KAKAO_HUMAN_E2E = NOT_RUN`).
 
 ```text
 IMPLEMENTATION_START = C-ACQ-002
 IMPLEMENTATION = WEB_GAP_WIRED
 CERTIFICATION = C-ACQ-003
+ACQUISITION_CERTIFICATION = PASS
+LIVE_KAKAO_HUMAN_E2E = NOT_RUN
 FOUNDER_APPROVAL_REQUIRED = NO
 ```

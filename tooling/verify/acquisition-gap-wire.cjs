@@ -221,8 +221,8 @@ if (gov.measured?.loginSignupNestCall !== 1) {
 if (gov.measured?.webAcquisitionPendingFigma !== 7) {
   fail("measured.webAcquisitionPendingFigma must stay 7");
 }
-if (gov.certification?.status !== "PENDING") {
-  fail("certification.status must stay PENDING until C-ACQ-003");
+if (gov.certification?.status !== "RELEASE_PASS") {
+  fail("certification.status must be RELEASE_PASS after C-ACQ-003");
 }
 if (gov.authority?.AUTH_RULE_REDEFINITION !== "FORBIDDEN") {
   fail("AUTH_RULE_REDEFINITION must stay FORBIDDEN");

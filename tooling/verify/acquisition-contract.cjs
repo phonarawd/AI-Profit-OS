@@ -86,6 +86,8 @@ for (const token of [
   "SDK_AUTH_EXPORT = PRESENT",
   "LOGIN_SIGNUP_NEST_CALL = PRESENT",
   "REAL_IMPLEMENTATION = WEB_GAP_WIRED",
+  "ACQUISITION_CERTIFICATION = PASS",
+  "LIVE_KAKAO_HUMAN_E2E = NOT_RUN",
   "C-ACQ-002",
   "C-ACQ-003",
   "PendingFigma",
@@ -138,10 +140,13 @@ if (gov) {
   if (gov.measured.loginSignupNestCall !== 1) {
     fail("loginSignupNestCall must be 1 after C-ACQ-002");
   }
-  if (gov.certification?.status !== "PENDING") {
-    fail("certification.status must stay PENDING until C-ACQ-003");
+  if (gov.certification?.status !== "RELEASE_PASS") {
+    fail("certification.status must be RELEASE_PASS after C-ACQ-003");
   }
   if (gov.certification?.task !== "C-ACQ-003") fail("certification.task must be C-ACQ-003");
+  if ((gov.nextSlices || []).includes("C-ACQ-003")) {
+    fail("nextSlices must drop C-ACQ-003 after certification");
+  }
   const axes = (gov.messageAxes || []).slice().sort().join(",");
   if (axes !== "MARKET_DISCOVERY,PRICE_COMPARISON,TIME_SAVING") {
     fail("messageAxes must be PRICE_COMPARISON, MARKET_DISCOVERY, TIME_SAVING");

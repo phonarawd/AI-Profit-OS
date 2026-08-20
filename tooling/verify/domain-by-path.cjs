@@ -30,6 +30,8 @@ const RULES = [
       /^tooling\/verify\/wallet-contract\.cjs$/.test(f) ||
       /^tooling\/verify\/acquisition-contract\.cjs$/.test(f) ||
       /^tooling\/verify\/acquisition-gap-wire\.cjs$/.test(f) ||
+      /^tooling\/verify\/acquisition-release\.cjs$/.test(f) ||
+      /^tooling\/verify\/lib\/acquisition-release-runtime\.cjs$/.test(f) ||
       /^governance\/consumer-acquisition\//.test(f) ||
       /^packages\/sdk\/src\/auth\//.test(f) ||
       /^tooling\/verify\/wallet-gap-wire\.cjs$/.test(f) ||
@@ -60,6 +62,7 @@ const RULES = [
       "wallet-contract.cjs",
       "acquisition-contract.cjs",
       "acquisition-gap-wire.cjs",
+      "acquisition-release.cjs",
       "wallet-gap-wire.cjs",
       "wallet-release.cjs",
       "participate-web-wire.cjs",

@@ -1,7 +1,7 @@
 {
   "$id": "https://ai-profit-os.local/governance/consumer-acquisition/acquisition.v1.json",
   "schema": "governance.consumer-acquisition.acquisition.v1",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "measuredAt": "2026-08-20",
   "status": "CONTRACT_READY",
   "implementationStatus": "WEB_GAP_WIRED",
@@ -9,8 +9,9 @@
   "implementationTask": "C-ACQ-002",
   "certification": {
     "task": "C-ACQ-003",
-    "status": "PENDING",
-    "verifier": "tooling/verify/acquisition-release.cjs"
+    "status": "RELEASE_PASS",
+    "verifier": "tooling/verify/acquisition-release.cjs",
+    "release": "governance/consumer-acquisition/acquisition-release.v1.json"
   },
   "legacyPointer": "03 redesign-r2-acquisition-contract",
   "productContract": "docs/product/consumer/CONSUMER_ACQUISITION_CONTRACT.md",
@@ -68,5 +69,7 @@
     "loginSignupNestCall": 1,
     "fakeFinancialValueBug": "CLOSED"
   },
-  "nextSlices": ["C-ACQ-003"]
+  "nextSlices": [],
+  "verifier": "tooling/verify/acquisition-contract.cjs",
+  "releaseVerifier": "tooling/verify/acquisition-release.cjs"
 }

@@ -148,6 +148,7 @@ const live = [
   "wallet-contract.cjs",
   "acquisition-contract.cjs",
   "acquisition-gap-wire.cjs",
+  "acquisition-release.cjs",
   "wallet-gap-wire.cjs",
   "wallet-release.cjs",
   "participate-web-wire.cjs",
@@ -195,6 +196,9 @@ for (const step of steps) {
         : {}),
       ...(step === "wallet-release.cjs"
         ? { WALLET_RELEASE_NESTED: "1" }
+        : {}),
+      ...(step === "acquisition-release.cjs"
+        ? { ACQUISITION_RELEASE_NESTED: "1" }
         : {}),
     },
   });

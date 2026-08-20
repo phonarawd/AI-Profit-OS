@@ -1,0 +1,78 @@
+{
+  "$id": "https://ai-profit-os.local/governance/consumer-acquisition/acquisition-release.v1",
+  "schema": "governance.consumer-acquisition.acquisition-release.v1",
+  "version": "1.0.0",
+  "measuredAt": "2026-08-20",
+  "task": "C-ACQ-003",
+  "legacyPointer": "03 redesign-r2-acquisition-certification",
+  "status": "RELEASE_PASS",
+  "knownDefects": [],
+  "e2e": {
+    "mode": "IN_PROCESS_GUEST_AUTH_ERROR_RESUME",
+    "guest": [
+      "SESSION_401_STAYS_GUEST",
+      "ADS_CTA_ONBOARDING_OR_LOGIN",
+      "ADS_CORE_REDIRECT_0",
+      "ADS_KAKAO_FIRST_VIEWPORT_0",
+      "GUEST_BANNED_COPY_0"
+    ],
+    "auth": [
+      "KAKAO_START_POST_TERMS",
+      "EXISTING_IDENTITY_NO_TERMS",
+      "NEW_IDENTITY_TERMS_REQUIRED",
+      "CODE_NOT_PROVIDER_SUBJECT",
+      "SESSION_COOKIE_AIPO",
+      "CONTINUE_PATH_STAGE"
+    ],
+    "error": [
+      "OAUTH_DENIED_TO_LOGIN",
+      "TERMS_REQUIRED_TO_SIGNUP",
+      "KAKAO_UNAVAILABLE_PLAIN_KO",
+      "SESSION_UNAVAILABLE",
+      "USER_COPY_IT_JARGON_0"
+    ],
+    "resume": [
+      "SESSION_B_COMPLETE_HOME",
+      "SESSION_B_INCOMPLETE_PROFILE",
+      "COMPLETE_PROFILE_NO_SESSION_LOGIN",
+      "EXISTING_KAKAO_NO_TERMS_RECOLLECT"
+    ],
+    "httpBrowser": "NOT_THIS_SLICE",
+    "liveKakaoHumanE2e": "NOT_RUN",
+    "note": "Phase0 로컬은 브라우저+API 동시 기동 금지. 인증 E2E는 SDK fetch mock + Nest Kakao complete 소유자 규칙 + 공개 surface 정적 증명. LIVE_KAKAO_HUMAN_E2E는 Founder 계정 필요 · 이 슬라이스 known defect가 아님. 시각 lock 아님 · PendingFigma 7 유지 · Canon/Home 복구 0."
+  },
+  "prereqVerifiers": [
+    "acquisition-contract",
+    "acquisition-gap-wire",
+    "kakao-oauth-runtime",
+    "auth-session-cookie",
+    "auth-flows"
+  ],
+  "surfacePointers": [
+    "marketing-compliance",
+    "operator-footer",
+    "landing-3s",
+    "auth-surfaces",
+    "onboarding-experiential"
+  ],
+  "surfacePointerNote": "landing-3s/auth-surfaces/onboarding-experiential/marketing-compliance = GREENFIELD skip 대상(레거시 Canon). 존재 pointer만. 인증 권위는 현재 GuestChrome+PendingFigma+PublicAdSurface.",
+  "authority": {
+    "AUTH_RULE_REDEFINITION": "FORBIDDEN",
+    "SUPABASE_AUTH": "FORBIDDEN",
+    "NEW_ROUTE": "FORBIDDEN",
+    "NEW_VISUAL_LOCK": false,
+    "APPROVED_FIGMA_ACQUISITION": "NONE",
+    "LEGACY_VISUAL_RECOVERY": "FORBIDDEN",
+    "HOME_GEOMETRY_DEPENDENCY": "FORBIDDEN",
+    "GEO_PRICE_MAP": "FORBIDDEN",
+    "G9_PUBLIC_MAP_BEFORE_SIGNUP": "FORBIDDEN",
+    "GENDER_FIELD": "FORBIDDEN",
+    "RRN_FIELD": "FORBIDDEN",
+    "CODE_EQUALS_PROVIDER_SUBJECT": "FORBIDDEN",
+    "KAKAO_ON_LANDING_FIRST_VIEWPORT": "FORBIDDEN",
+    "ADS_TO_CORE_UNINTENDED_REDIRECT": "FORBIDDEN",
+    "LIVE_KAKAO_HUMAN_E2E": "NOT_THIS_SLICE"
+  },
+  "runtime": "tooling/verify/lib/acquisition-release-runtime.cjs",
+  "verifier": "tooling/verify/acquisition-release.cjs"
+}
