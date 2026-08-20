@@ -440,6 +440,15 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/api-nest\/src\/ledger\/ledger\.user/.test(f) ||
+      /^services\/api-nest\/ledger-user-query\.core\.cjs$/.test(f) ||
+      /^tooling\/e2e\/lib\/ledger-user-query-harness\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/ledger-user-query\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/user-ledger-query\.cjs$/.test(f),
+    scripts: ["user-ledger-query.cjs"],
+  },
+  {
+    test: (f) =>
       /^schemas\/home-money-read\.v1\.json$/.test(f) ||
       /^services\/api-nest\/src\/wallet\/home-money-read/.test(f) ||
       /^packages\/sdk\/src\/home-money-read\//.test(f) ||
