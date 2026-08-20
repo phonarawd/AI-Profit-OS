@@ -4,6 +4,7 @@ import { PRODUCT_IMAGE_REMOTE_PATTERNS } from "../../packages/ui/components/prod
 const nextConfig: NextConfig = {
   transpilePackages: ["@aipo/ui", "@aipo/sdk", "@aipo/schemas"],
   images: {
+    // REL-013: 공유 최소 allowlist만. hostname '*' / 임의 https 전체 허용 0.
     remotePatterns: [...PRODUCT_IMAGE_REMOTE_PATTERNS],
   },
   /** Infra §31.2a — /ads aliases /l (identical landing-3s surface) */

@@ -95,6 +95,13 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/next\.config\.ts$/.test(f) ||
+      /^packages\/ui\/components\/product\/image-hosts\.ts$/.test(f) ||
+      /^tooling\/verify\/web-remote-patterns\.cjs$/.test(f),
+    scripts: ["web-remote-patterns.cjs", "product-image.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\//.test(f) || /^tooling\/verify\/web-lint\.cjs$/.test(f),
     scripts: ["web-lint.cjs"],
   },

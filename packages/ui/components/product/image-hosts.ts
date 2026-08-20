@@ -35,9 +35,22 @@ export function assetIconForCategory(category: string): string {
 }
 
 /**
- * next/image remotePatterns — Day-1 hotlink allowlist (audit §37/§44).
- * Custom R2_ASSET_IMAGES_PUBLIC_BASE hosts must be appended in app next.config.
+ * next/image remotePatterns — Day-1 hotlink allowlist (audit §37/§44 · REL-013).
+ * 최소 allowlist. 임의 https 전체 허용 0.
+ * Custom R2_ASSET_IMAGES_PUBLIC_BASE 호스트는 app next.config에만 추가한다.
  */
+export const PRODUCT_IMAGE_USED_HOSTS = [
+  "i.ebayimg.com",
+  "images.pokemontcg.io",
+  "images.ygoprodeck.com",
+  "asset-images.r2.dev",
+] as const;
+
+/** `{bucket}.{account}.r2.cloudflarestorage.com` 만. 그 외 ** 와일드카드 금지. */
+export const PRODUCT_IMAGE_ALLOWED_WILDCARD_HOSTS = [
+  "**.r2.cloudflarestorage.com",
+] as const;
+
 export const PRODUCT_IMAGE_REMOTE_PATTERNS = [
   { protocol: "https" as const, hostname: "i.ebayimg.com", pathname: "/**" },
   {

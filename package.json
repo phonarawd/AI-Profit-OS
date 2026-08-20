@@ -186,6 +186,7 @@
     "verify:auth-rate-limit": "node tooling/verify/auth-rate-limit.cjs",
     "verify:web-lint": "node tooling/verify/web-lint.cjs",
     "verify:axe-harness": "node tooling/verify/axe-harness.cjs",
+    "verify:web-remote-patterns": "node tooling/verify/web-remote-patterns.cjs",
     "engine-acceptance:freeze-baseline": "node tooling/engine-acceptance/freeze-baseline.cjs",
     "engine-acceptance:kill-switch": "node tooling/engine-acceptance/kill-switch.cjs",
     "engine-acceptance:tiny-smoke": "node tooling/engine-acceptance/tiny-smoke.cjs",
