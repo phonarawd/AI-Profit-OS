@@ -110,11 +110,14 @@ self.addEventListener("push", (event) => {
   const body = String(payload.bodyKo || "새 소식이 있어요");
   const href = String(payload.href || "/");
   const badgeCount = payload.badgeCount;
+  const sourceEventId = String(payload.sourceEventId || "").trim();
   event.waitUntil(
     Promise.all([
       self.registration.showNotification(title, {
         body,
-        data: { href },
+        data: { href, sourceEventId },
+        tag: sourceEventId || undefined,
+        renotify: false,
         icon: "/icons/icon-192.png",
         badge: "/icons/icon-192.png",
       }),
