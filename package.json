@@ -191,6 +191,7 @@
     "verify:pwa-push-badge": "node tooling/verify/pwa-push-badge.cjs",
     "verify:push-channel-prefs": "node tooling/verify/push-channel-prefs.cjs",
     "verify:webauthn-ux-rp": "node tooling/verify/webauthn-ux-rp.cjs",
+    "verify:pwa-day1-certification": "node tooling/verify/pwa-day1-certification.cjs",
     "pwa:generate-vapid": "node tooling/pwa/generate-vapid.mjs",
     "verify:user-ledger-query": "node tooling/verify/user-ledger-query.cjs",
     "verify:observability": "node tooling/verify/observability.cjs",

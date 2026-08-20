@@ -1,0 +1,22 @@
+{
+  "rel": "REL-023",
+  "title": "Day-1 PWA certification checklist",
+  "storeBridge": 0,
+  "post017": 0,
+  "requiredCompleted": ["REL-014", "REL-020", "REL-021", "REL-022"],
+  "items": [
+    "manifest",
+    "install",
+    "offline",
+    "push_dedup",
+    "webauthn",
+    "reduced_motion",
+    "badge",
+    "kill"
+  ],
+  "lighthouse": {
+    "category": "pwa",
+    "owner": "CI",
+    "localRequired": false
+  }
+}

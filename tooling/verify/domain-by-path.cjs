@@ -149,6 +149,16 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/pwa\/DAY1_CERTIFICATION\.md$/.test(f) ||
+      /^governance\/pwa\/day1-checklist/.test(f) ||
+      /^tooling\/pwa\/pwa-day1-/.test(f) ||
+      /^tooling\/pwa\/lighthouse-pwa/.test(f) ||
+      /^tooling\/verify\/pwa-day1-certification\.cjs$/.test(f) ||
+      /^apps\/web\/public\/sw\.js$/.test(f),
+    scripts: ["pwa-day1-certification.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/page\.tsx$/.test(f) ||
       /^apps\/web\/app\/HomePageClient\.tsx$/.test(f) ||
       /^apps\/web\/app\/_components\/HomePageClient\.tsx$/.test(f) ||
