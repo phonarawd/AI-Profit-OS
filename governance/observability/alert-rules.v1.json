@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "http_5xx",
+      "event": "http_5xx",
+      "when": { "statusGte": 500 }
+    },
+    {
+      "id": "ledger_write_fail",
+      "event": "ledger_write_fail",
+      "when": { "pathIncludes": "/ledger", "method": "POST", "statusGte": 500 }
+    },
+    {
+      "id": "auth_spike",
+      "event": "auth_spike",
+      "when": { "status": 401, "threshold": 20, "windowMs": 60000 }
+    }
+  ]
+}

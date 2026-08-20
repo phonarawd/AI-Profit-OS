@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "provider": "cloudflare-workers-console",
+  "vercel": 0,
+  "productionTokenInRepo": 0,
+  "stagingSampleEvent": "REL-600",
+  "notes": "OpenNext Workers + api-nest stdout JSON is the sink. Cloudflare tail consumes console. Agents do not hold production tokens."
+}

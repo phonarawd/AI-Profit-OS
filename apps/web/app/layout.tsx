@@ -6,6 +6,7 @@ import { AppShellRoot } from "@aipo/ui/components/shell";
 import { ToastHost } from "@aipo/ui/components/toast";
 import { DeviceTierApply } from "../components/DeviceTierApply";
 import { PwaRuntime } from "../components/pwa/PwaRuntime";
+import { ObsRuntime } from "../components/observability/ObsRuntime";
 
 export const viewport: Viewport = {
   themeColor: "#6B3CFF",
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AppShellRoot tabs={USER_TABS}>{children}</AppShellRoot>
         </ToastHost>
         <PwaRuntime />
+        <ObsRuntime />
       </body>
     </html>
   );

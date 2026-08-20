@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "redacted": "[REDACTED]",
+  "keys": [
+    "amountUsdt",
+    "balanceUsdt",
+    "principalUsdt",
+    "profitUsdt",
+    "lockedUsdt",
+    "practiceUsdt",
+    "liabilityUsdt",
+    "password",
+    "pin",
+    "jwt",
+    "token",
+    "authorization",
+    "email",
+    "phone",
+    "nationalId",
+    "documentNumber",
+    "kyc",
+    "idCard",
+    "resident"
+  ]
+}

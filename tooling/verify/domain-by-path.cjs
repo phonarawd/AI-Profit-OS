@@ -449,6 +449,15 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/observability\//.test(f) ||
+      /^packages\/observability\//.test(f) ||
+      /^services\/api-nest\/src\/observability\//.test(f) ||
+      /^apps\/web\/components\/observability\//.test(f) ||
+      /^tooling\/verify\/observability\.cjs$/.test(f),
+    scripts: ["observability.cjs"],
+  },
+  {
+    test: (f) =>
       /^schemas\/home-money-read\.v1\.json$/.test(f) ||
       /^services\/api-nest\/src\/wallet\/home-money-read/.test(f) ||
       /^packages\/sdk\/src\/home-money-read\//.test(f) ||
