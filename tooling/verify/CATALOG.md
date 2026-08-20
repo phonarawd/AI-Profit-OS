@@ -65,7 +65,7 @@
 | money api-nest | pg-module-scan · bucket-invariant |
 | `schemas/home-money-read.v1.json` · `wallet/home-money-read*` · `packages/sdk/src/home-money-read/**` | home-money-read-contract |
 | engine-rust · trade/opportunity api | match-success-rule · settlement-rule-parity · participate-http · execute-rule-loop |
-| auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie |
+| auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie · auth-rate-limit |
 | `api-nest` wallet · kyc.controller | wallet-kyc-session-auth |
 
 ## Domain gates (T1 `stubs/run-all` · 구현되면 hard)
@@ -127,6 +127,7 @@
 | qa-env-isolation-guard | REL-006 QA Lab — **live** (production ref `mgsytcetsiecllmhcyox` throw · money mutation fail-closed · committed Playwright spec · MCP-only DONE 0) |
 | money-unavailable | REL-007 — **live** (missing money → UNAVAILABLE · 실제 0 유지 · Home geometry 0) |
 | figma-project-registry | REL-009 — **live** (fileKey locked · APPROVED_AUTHORITY=0 · Home 46:2 BACKUP · Code Connect candidate-only · screen apply 0) |
+| auth-rate-limit | REL-010 — **live** (auth 라우트 서버 fixed-window · 429 + 한국어 · QA 가드 안 · 프로덕션 폭격 0) |
 | settlement-rule-parity | REL-008 — **live** (`settlement_rule.rs` == `settlement_rule.cjs` on golden vectors · T0 path + T1 · `cargo build --release` 0 · REL-502 대체 0) |
 | engine-acceptance | 02.5 PRE-UI Engine Acceptance QA — QA-0..QA-6 **live** (`governance/engine-acceptance/**` · Dual Dirty baseline · severity 선고정 · kill-switch before tiny-smoke/QA1..QA6 · schemas+routes · DB consistency · idempotency INV-01/03 분리 · personas×journeys×coverage · Dirty>Happy · isolation interleave/token_cross/IDOR · seed+rng+clock+request_seq evidence · QA3 fast-check · QA4 multi-day+KST · `BLOCKED_NO_CLOCK_HOOK` · QA5 Failure World 축1 degradation/fallback + 축2 post-recovery · `BLOCKED_NO_FAULT_HOOK` · QA6 k6 scenario mix + tag threshold 메커니즘 · `UNSPECIFIED_PERF_BUDGET`(수치 SLO 창작 금지) · CI-only heavy · aggregator `if: always()` · artifact retention ≥90d · 실패=rich evidence+defects(제품수정0) · KPI 케이스수 금지 · REPORT · `ENGINE_ACCEPTED_FOR_UI` 발급 금지 until QA1..QA8) · heavy suites = `.github/workflows/engine-acceptance.yml` only (T2 gate 편입 금지) · path-trigger |
 | mockup-governance · canon-surfaces · brand-assets · brand-logo-single | UI ADR-013/011 — **live** (photo mockup 0 · Canon wire checklist · Admin owns execution-policy · single Brand Kit · Visual Contract/Approved Visual Master 예외 = `visual-master-intake.mdc`+`visual-locks.v1.json`) |

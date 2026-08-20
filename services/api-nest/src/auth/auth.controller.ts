@@ -16,6 +16,7 @@ import {
 } from "./auth.constants";
 import { AUTH_ROUTES } from "./auth.routes";
 import { AuthService } from "./auth.service";
+import { AuthRateLimitGuard } from "./auth-rate-limit.guard";
 import { JwtAuthGuard, type SessionUser } from "./jwt-auth.guard";
 
 type AuthedRequest = { user: SessionUser };
@@ -66,6 +67,7 @@ function clearUserSessionCookie(res: CookieResponse): void {
  * delete-account require an already-issued JWT (P0-1 JwtAuthGuard).
  */
 @Controller("auth")
+@UseGuards(AuthRateLimitGuard)
 export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
