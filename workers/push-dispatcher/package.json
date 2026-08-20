@@ -2,7 +2,7 @@
   "name": "@ai-profit-os/push-dispatcher",
   "private": true,
   "version": "0.0.0",
-  "description": "PWA push dispatcher — Phase0 stub · Phase1+ NATS bridge",
+  "description": "PWA push dispatcher — REL-020 VAPID + kill · Phase0 Nest HTTP · Phase1+ NATS",
   "scripts": {
     "dev": "wrangler dev --config wrangler.toml",
     "deploy": "wrangler deploy --config wrangler.toml",

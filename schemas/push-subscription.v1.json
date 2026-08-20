@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/push-subscription.v1.json",
+  "title": "PushSubscriptionV1",
+  "description": "PWA §23.5 · user_id당 endpoint 최대 5 · REL-020",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["userId", "endpoint", "p256dh", "auth"],
+  "properties": {
+    "userId": { "type": "string", "minLength": 1 },
+    "endpoint": { "type": "string", "pattern": "^https://" },
+    "p256dh": { "type": "string", "minLength": 8 },
+    "auth": { "type": "string", "minLength": 8 },
+    "platform": {
+      "type": "string",
+      "enum": ["web", "ios_pwa", "android_pwa", "desktop"],
+      "default": "web"
+    },
+    "userAgent": { "type": "string" }
+  }
+}

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { InstallPrompt } from "./InstallPrompt";
 import { OfflineBanner } from "./OfflineBanner";
+import { PushOptIn } from "./PushOptIn";
 import { SwUpdateToast } from "./SwUpdateToast";
 
 export function PwaRuntime() {
@@ -16,6 +17,7 @@ export function PwaRuntime() {
       <OfflineBanner />
       <SwUpdateToast />
       <InstallPrompt />
+      <PushOptIn />
     </div>
   );
 }

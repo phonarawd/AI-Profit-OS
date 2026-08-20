@@ -58,6 +58,7 @@ const PURGE_TABLES: readonly [table: string, column: string][] = [
   // marketing attribution / profile / notification / ux preference state
   ["user_attributions", "user_id"],
   ["notification_prefs", "user_id"],
+  ["push_subscriptions", "user_id"],
   ["user_profiles", "user_id"],
   ["user_ux_prefs", "user_id"],
   // referral spam-counter (pure usage state, zero financial value)

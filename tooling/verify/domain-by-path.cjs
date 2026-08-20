@@ -119,6 +119,21 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^workers\/push-dispatcher\//.test(f) ||
+      /^services\/api-nest\/src\/push\//.test(f) ||
+      /^packages\/sdk\/src\/push\//.test(f) ||
+      /^governance\/pwa\//.test(f) ||
+      /^schemas\/push-/.test(f) ||
+      /^tooling\/pwa\//.test(f) ||
+      /^tooling\/pwa\/pwa-push-badge-harness\.cjs$/.test(f) ||
+      /^tooling\/pwa\/pwa-push-badge\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/pwa-push-badge\.cjs$/.test(f) ||
+      /^apps\/web\/components\/pwa\/PushOptIn\.tsx$/.test(f) ||
+      /^apps\/web\/public\/sw\.js$/.test(f),
+    scripts: ["pwa-push-badge.cjs", "pwa-native-shell.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/page\.tsx$/.test(f) ||
       /^apps\/web\/app\/HomePageClient\.tsx$/.test(f) ||
       /^apps\/web\/app\/_components\/HomePageClient\.tsx$/.test(f) ||

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "rel": "REL-020",
+  "contract": "pushEnabled",
+  "adminPath": "/api/v1/admin/system-control/push",
+  "uiOwner": "REL-213",
+  "failClosed": true,
+  "alwaysSendForbidden": true,
+  "envKill": "PUSH_ENABLED=false",
+  "dispatcherStatuses": [
+    "killed",
+    "unauthorized",
+    "invalid_subscription",
+    "accepted_unconfigured",
+    "dry_run",
+    "sent",
+    "send_failed"
+  ]
+}

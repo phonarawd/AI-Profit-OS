@@ -6,6 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 SERVICE = "push-dispatcher"
 PHASE = "0"
+PUSH_ENABLED = "true"
 
 [env.production]
 name = "push-dispatcher"

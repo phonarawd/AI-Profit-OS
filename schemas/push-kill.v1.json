@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/push-kill.v1.json",
+  "title": "PushKillV1",
+  "description": "Admin pushEnabled kill · UI는 REL-213 · 서버 enforce는 REL-020",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pushEnabled"],
+  "properties": {
+    "pushEnabled": { "type": "boolean" },
+    "reason": { "type": "string", "minLength": 10 },
+    "updatedAt": { "type": "string", "format": "date-time" }
+  }
+}
