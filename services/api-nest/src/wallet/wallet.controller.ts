@@ -5,6 +5,7 @@ import {
   Headers,
   Param,
   Post,
+  Query,
   Req,
   UnauthorizedException,
   UseGuards,
@@ -12,6 +13,7 @@ import {
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { loadPhase0Env } from "../config/phase0.env";
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
+import { LedgerUserJournalService } from "../ledger/ledger.user-journal.service";
 import { PracticeGrantService } from "../ledger/practice-grant.service";
 import { ChainSweeperPhase0Service } from "./chain-sweeper.phase0.service";
 import { ChainWatcherPhase0Service } from "./chain-watcher.phase0.service";
@@ -48,6 +50,7 @@ export class WalletController {
     private readonly chainWatcher: ChainWatcherPhase0Service,
     private readonly chainSweeper: ChainSweeperPhase0Service,
     private readonly buckets: LedgerBucketsService,
+    private readonly userJournals: LedgerUserJournalService,
     private readonly practiceGrant: PracticeGrantService,
     private readonly profitMerge: ProfitMergeService,
     private readonly withdrawIntent: WithdrawIntentService,
@@ -62,6 +65,24 @@ export class WalletController {
   @Get(WALLET_USER_ROUTES.buckets)
   getBuckets(@Req() req: SessionReq) {
     return this.buckets.getUserBuckets(this.sessionUserId(req));
+  }
+
+  /**
+   * Consumer journal projection · session user only.
+   * Never accepts query/body userId · never returns admin/global journals.
+   */
+  @UseGuards(JwtAuthGuard)
+  @Get(WALLET_USER_ROUTES.journals)
+  listJournals(
+    @Req() req: SessionReq,
+    @Query("limit") limitRaw?: string,
+    @Query("offset") offsetRaw?: string,
+  ) {
+    return this.userJournals.listForUser({
+      userId: this.sessionUserId(req),
+      limit: limitRaw ? Number(limitRaw) : undefined,
+      offset: offsetRaw ? Number(offsetRaw) : undefined,
+    });
   }
 
   /** §49.7 POST profit→principal merge */

@@ -122,6 +122,22 @@ export type WalletBucketsView = {
   asOfLedgerEntryId: string;
 };
 
+/** Consumer history projection — session user's bucket lines only. */
+export type WalletUserJournalLineV1 = {
+  bucket: UserBucket;
+  direction: "debit" | "credit";
+  amountUsdt: string;
+};
+
+export type WalletUserJournalItemV1 = {
+  id: string;
+  journalType: JournalType;
+  createdAt: string;
+  referenceType: string | null;
+  referenceId: string | null;
+  userLines: WalletUserJournalLineV1[];
+};
+
 export type AdminAdjustKind = "credit" | "debit" | "correct";
 
 export type AdminAdjustInput = {

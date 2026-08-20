@@ -1,5 +1,6 @@
-﻿import { PendingFigma } from "@/app/PendingFigma";
+﻿import { ProfitsDesktopClient } from "@/app/ProfitsDesktopClient";
+import "../../components/spark-dash-home/spark-dash-home.css";
 
 export default function Page() {
-  return <PendingFigma title="기회" />;
+  return <ProfitsDesktopClient />;
 }

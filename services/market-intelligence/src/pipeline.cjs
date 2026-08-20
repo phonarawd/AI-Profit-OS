@@ -62,9 +62,49 @@ function isAllowedLegPair(legs) {
   return true;
 }
 
+/**
+ * Stored listing pair → buy/sell USDT. Fail-closed unless each market has
+ * exactly one listing. Does not pick "cheapest" or last-write-wins.
+ * @param {{
+ *   listings: Array<{ marketId?: string, priceUsdt?: string }>,
+ *   buyMarketId: string,
+ *   sellMarketId: string,
+ * }} input
+ * @returns {{ ok: true, buyPriceUsdt: string, sellPriceUsdt: string } | { ok: false }}
+ */
+function resolveStoredLegListingPrices(input) {
+  const { assertAmount } = require("./money.cjs");
+  if (!input || !Array.isArray(input.listings)) return { ok: false };
+  const buyMarketId = String(input.buyMarketId ?? "");
+  const sellMarketId = String(input.sellMarketId ?? "");
+  if (!buyMarketId || !sellMarketId || buyMarketId === sellMarketId) {
+    return { ok: false };
+  }
+  const buyLegs = input.listings.filter(
+    (L) => String(L?.marketId ?? "") === buyMarketId,
+  );
+  const sellLegs = input.listings.filter(
+    (L) => String(L?.marketId ?? "") === sellMarketId,
+  );
+  if (buyLegs.length !== 1 || sellLegs.length !== 1) return { ok: false };
+  try {
+    return {
+      ok: true,
+      buyPriceUsdt: assertAmount(String(buyLegs[0].priceUsdt), "buyPriceUsdt"),
+      sellPriceUsdt: assertAmount(
+        String(sellLegs[0].priceUsdt),
+        "sellPriceUsdt",
+      ),
+    };
+  } catch {
+    return { ok: false };
+  }
+}
+
 module.exports = {
   PIPELINE_STAGES,
   PUBLISH_GUARDS,
   DAY1_LEG_PAIRS,
   isAllowedLegPair,
+  resolveStoredLegListingPrices,
 };

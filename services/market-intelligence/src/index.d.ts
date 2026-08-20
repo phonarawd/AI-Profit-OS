@@ -314,6 +314,13 @@ export const DAY1_LEG_PAIRS: ReadonlyArray<{
   sell: string;
   priority: string;
 }>;
+export function resolveStoredLegListingPrices(input: {
+  listings: ReadonlyArray<{ marketId?: string; priceUsdt?: string }>;
+  buyMarketId: string;
+  sellMarketId: string;
+}):
+  | { ok: true; buyPriceUsdt: string; sellPriceUsdt: string }
+  | { ok: false };
 export function marketIdFromEbayMarketplace(marketplaceId: string): string;
 export function isSignupReadyAdapterId(adapterId: string): boolean;
 export function isForbiddenAdapterId(id?: string | null): boolean;
@@ -1141,3 +1148,16 @@ export function mapHomeReadModelV1(
   input: Record<string, unknown>,
 ): Record<string, unknown>;
 export function assertNoFakeZeroHomeRead(dto: Record<string, unknown>): true;
+
+/** Global SourceObservation — listing-leg / Opportunity 와 분리 */
+export const sourceObservation: {
+  INVARIANTS: readonly string[];
+  OBSERVATION_PURPOSES: readonly string[];
+  IMPLEMENTED_PARSERS: readonly string[];
+  PERSISTENCE_VERDICT: Readonly<Record<string, string>>;
+  validateObservation: (obs: unknown) => { ok: boolean; [k: string]: unknown };
+  observeProduct: (input: Record<string, unknown>) => Promise<Record<string, unknown>>;
+  gateObserveSource: (source: string) => Record<string, unknown>;
+  createMemoryRepository: () => Record<string, unknown>;
+  discoverCandidates: (query: unknown) => never;
+};

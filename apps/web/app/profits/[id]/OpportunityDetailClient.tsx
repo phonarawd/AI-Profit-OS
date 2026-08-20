@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { OpportunityRoomDesktop } from "../../../components/spark-dash-room/OpportunityRoomDesktop";
+import { OpportunityRoomMobile } from "../../../components/spark-dash-room/OpportunityRoomMobile";
 import { ParticipateConfirmSheet } from "../../../components/spark-dash-room/ParticipateConfirmSheet";
 import {
   emptyOpportunityRoomModel,
@@ -323,38 +324,78 @@ export function OpportunityDetailClient({
       : null;
 
   const noticeNode = notice ? <p className="sdr-err">{notice}</p> : null;
+  const noticeNodeMobile = notice ? <p className="sdrm-cta-err">{notice}</p> : null;
 
-  const primaryCta = (
-    <div className="sdr-actions">
-      {kind === "unauthorized" ? (
-        <>
-          <Link href="/auth/login">로그인</Link>
-          <Link className="sdr-secondary" href="/profits">
+  function ctaNodes(variant: "desktop" | "mobile") {
+    const isMobile = variant === "mobile";
+    const primaryClass = isMobile ? "sdrm-cta" : undefined;
+    const secondaryClass = isMobile ? "sdrm-cta-secondary" : "sdr-secondary";
+    const warnClass = isMobile ? "sdrm-cta-warn" : "sdr-warn";
+    return (
+      <>
+        {kind === "unauthorized" ? (
+          <>
+            <Link className={primaryClass} href="/auth/login">
+              로그인
+            </Link>
+            <Link className={secondaryClass} href="/profits">
+              목록으로
+            </Link>
+          </>
+        ) : null}
+        {kind === "missing" || kind === "error" ? (
+          <Link className={primaryClass} href="/profits">
             목록으로
           </Link>
-        </>
-      ) : null}
-      {kind === "missing" || kind === "error" ? (
-        <Link href="/profits">목록으로</Link>
-      ) : null}
-      {kind === "ready" && joinable ? (
-        <button
-          type="button"
-          data-requires-preflight="true"
-          disabled={busy}
-          onClick={() => void openConfirm()}
-        >
-          {CTA_DETAIL} →
-        </button>
-      ) : null}
-      {kind === "ready" && funding ? (
-        <Link href="/wallet/deposit">입금하기</Link>
-      ) : null}
-      {kind === "ready" && !joinable && !funding && !locked ? (
-        <p className="sdr-warn">지금은 이 기회로 수익을 벌 수 없어요.</p>
-      ) : null}
-    </div>
-  );
+        ) : null}
+        {kind === "ready" && joinable ? (
+          <button
+            type="button"
+            className={primaryClass}
+            data-requires-preflight="true"
+            disabled={busy}
+            onClick={() => void openConfirm()}
+          >
+            {CTA_DETAIL}
+            {isMobile ? null : " →"}
+          </button>
+        ) : null}
+        {kind === "ready" && funding ? (
+          <Link className={primaryClass} href="/wallet/deposit">
+            입금하기
+          </Link>
+        ) : null}
+        {kind === "ready" && !joinable && !funding && !locked ? (
+          <p className={warnClass}>지금은 이 기회로 수익을 벌 수 없어요.</p>
+        ) : null}
+      </>
+    );
+  }
+
+  const primaryCta = <div className="sdr-actions">{ctaNodes("desktop")}</div>;
+  const primaryCtaMobile =
+    kind === "loading" ? null : (
+      <div className="sdrm-cta-actions">{ctaNodes("mobile")}</div>
+    );
+
+  const confirmSheet = item ? (
+    <ParticipateConfirmSheet
+      open={sheet.phase !== PHASE_CLOSED}
+      phase={sheet.phase}
+      errorCode={sheet.errorCode}
+      errorStatus={sheet.errorStatus}
+      capitalLine={usdtLine(item.requiredCapitalUsdt)}
+      profitLine={usdtLine(item.expectedProfitUsdt)}
+      remain={remain}
+      mayStop={MAY_STOP}
+      onClose={closeConfirm}
+      onConfirm={() => {
+        if (sheet.token) void submitParticipate(sheet.token);
+      }}
+      onRetryConfirm={() => void openConfirm()}
+      tradeHref={sheet.tradeId ? `/trades/${sheet.tradeId}/execute` : null}
+    />
+  ) : null;
 
   return (
     <>
@@ -363,35 +404,16 @@ export function OpportunityDetailClient({
           model={model}
           primaryCta={primaryCta}
           notice={noticeNode}
-        >
-          {item ? (
-            <ParticipateConfirmSheet
-              open={sheet.phase !== PHASE_CLOSED}
-              phase={sheet.phase}
-              errorCode={sheet.errorCode}
-              errorStatus={sheet.errorStatus}
-              capitalLine={usdtLine(item.requiredCapitalUsdt)}
-              profitLine={usdtLine(item.expectedProfitUsdt)}
-              remain={remain}
-              mayStop={MAY_STOP}
-              onClose={closeConfirm}
-              onConfirm={() => {
-                if (sheet.token) void submitParticipate(sheet.token);
-              }}
-              onRetryConfirm={() => void openConfirm()}
-              tradeHref={
-                sheet.tradeId ? `/trades/${sheet.tradeId}/execute` : null
-              }
-            />
-          ) : null}
-        </OpportunityRoomDesktop>
+        />
       </div>
       <div className="sd-mobile-placeholder">
-        <main className="sdp-mobile-hold">
-          <h1>기회 상세</h1>
-          <p>큰 화면에서 확인할 수 있어요.</p>
-        </main>
+        <OpportunityRoomMobile
+          model={model}
+          primaryCta={primaryCtaMobile}
+          notice={noticeNodeMobile}
+        />
       </div>
+      {confirmSheet}
     </>
   );
 }

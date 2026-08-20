@@ -1,0 +1,25 @@
+<svg width="120" height="180" viewBox="0 0 120 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sparkFill" x1="36" y1="8" x2="92" y2="168" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF8FB3"/>
+      <stop offset="0.46" stop-color="#FF2D6B"/>
+      <stop offset="1" stop-color="#F0125C"/>
+    </linearGradient>
+    <filter id="sparkGlow" x="-30" y="-20" width="180" height="220" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 1  0 0 0 0 0.18  0 0 0 0 0.42  0 0 0 0.55 0" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <path
+    filter="url(#sparkGlow)"
+    d="M72.4 6.2L22.8 86.4H52.6L41.2 173.2L99.6 84.8H68.8L72.4 6.2Z"
+    fill="url(#sparkFill)"
+    stroke="#FFD0DF"
+    stroke-width="2.4"
+    stroke-linejoin="round"
+  />
+</svg>

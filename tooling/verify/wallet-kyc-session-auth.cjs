@@ -56,6 +56,7 @@ if (/@UseGuards\(JwtAuthGuard\)\s*\r?\n@Controller/.test(wallet)) {
 
 const userMethods = [
   "getBuckets",
+  "listJournals",
   "mergeProfit",
   "practiceWelcome",
   "myDepositAddress",

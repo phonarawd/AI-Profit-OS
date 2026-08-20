@@ -4,6 +4,14 @@ export { LedgerProvisionService } from "./ledger.provision.service";
 export { LedgerBucketsService } from "./ledger.buckets.service";
 export { LedgerReconService } from "./ledger.recon.service";
 export { LedgerAdminService } from "./ledger.admin.service";
+export { LedgerUserJournalService } from "./ledger.user-journal.service";
+export {
+  projectUserJournalItems,
+} from "./ledger.user-journal.project";
+export type {
+  WalletUserJournalItemV1 as LedgerWalletUserJournalItemV1,
+  WalletUserJournalLineV1 as LedgerWalletUserJournalLineV1,
+} from "./ledger.user-journal.project";
 export {
   PracticeGrantService,
   PRACTICE_WELCOME_USDT,

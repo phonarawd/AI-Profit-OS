@@ -118,9 +118,13 @@ export const {
   FIAT_USD_RATE_FIELD,
   deriveMarketplaceLegs,
   normalizeNativeToUsdt,
+  resolveStoredLegListingPrices,
 } = mi;
 
 export type PricingResult = ReturnType<typeof computeOpportunityPricing>;
 export type FxSnapshotResult = ReturnType<typeof composeFxSnapshot>;
 export type FxMarketplaceLegs = ReturnType<typeof deriveMarketplaceLegs>;
 export type FxNormalizeResult = ReturnType<typeof normalizeNativeToUsdt>;
+export type StoredLegListingResolve = ReturnType<
+  typeof resolveStoredLegListingPrices
+>;

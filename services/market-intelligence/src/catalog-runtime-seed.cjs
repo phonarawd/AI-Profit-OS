@@ -225,7 +225,7 @@ function buildRuntimeSeedBundleForAsset(asset, opts = {}) {
       arbitrageType: scan.arbitrageType,
       arbitrageTypeKo: scan.arbitrageTypeKo,
       pricing,
-      staleAt: buyListing.staleAt,
+      staleAt: observedAt,
       status,
       gradeMismatch: pricing.gradeMismatch,
       imageMissing: pricing.imageMissing,

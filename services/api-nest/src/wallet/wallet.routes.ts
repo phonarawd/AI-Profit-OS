@@ -16,6 +16,8 @@ export const WALLET_USER_ROUTES = {
   chainSweeperStatus: "chain-sweeper/status",
   /** §49.7 */
   buckets: "buckets",
+  /** Consumer ledger history projection — session user only */
+  journals: "journals",
   /** §49.7 profit→principal */
   profitMerge: "profit/merge",
   /** §51.7 practice welcome (idempotent · normally via signup provision) */

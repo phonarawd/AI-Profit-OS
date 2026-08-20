@@ -6,6 +6,7 @@ import { LedgerOutboxService } from "./ledger.outbox.service";
 import { LedgerPostingService } from "./ledger.posting.service";
 import { LedgerProvisionService } from "./ledger.provision.service";
 import { LedgerReconService } from "./ledger.recon.service";
+import { LedgerUserJournalService } from "./ledger.user-journal.service";
 import { PracticeGrantService } from "./practice-grant.service";
 
 @Module({
@@ -17,6 +18,7 @@ import { PracticeGrantService } from "./practice-grant.service";
     LedgerBucketsService,
     LedgerReconService,
     LedgerAdminService,
+    LedgerUserJournalService,
     PracticeGrantService,
   ],
   exports: [
@@ -26,6 +28,7 @@ import { PracticeGrantService } from "./practice-grant.service";
     LedgerBucketsService,
     LedgerReconService,
     LedgerAdminService,
+    LedgerUserJournalService,
     PracticeGrantService,
   ],
 })

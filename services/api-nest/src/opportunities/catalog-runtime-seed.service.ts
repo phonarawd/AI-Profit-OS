@@ -6,6 +6,7 @@
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { PostgresService } from "../db/postgres";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
+import { OpportunityRepriceService } from "./opportunity-reprice.service";
 import { FxSnapshotService } from "./fx-snapshot.service";
 import {
   buildMinCatalogRuntimeSeed,
@@ -38,6 +39,7 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
     private readonly db: PostgresService,
     private readonly opportunities: OpportunitiesAdminService,
     private readonly fxSnapshots: FxSnapshotService,
+    private readonly reprice: OpportunityRepriceService,
   ) {}
 
   async onModuleInit(): Promise<void> {
@@ -231,6 +233,7 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
     let upserted = 0;
     let skipped = normalizeSkipped.length;
     let fxNormalizationFailed = 0;
+    const touchedAssetIds: string[] = [];
     const fxSnapshot =
       rows.some((r) => r.nativeCurrency !== "USDT") &&
       (await this.fxSnapshots.getLatestUsableSnapshot());
@@ -351,6 +354,18 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
         );
       }
       upserted += 1;
+      touchedAssetIds.push(row.assetId);
+    }
+    if (touchedAssetIds.length > 0) {
+      try {
+        await this.reprice.repriceFromCurrentListings(touchedAssetIds);
+      } catch (e) {
+        this.logger.warn(
+          `canonical reprice after listing persist failed: ${
+            e instanceof Error ? e.message : String(e)
+          }`,
+        );
+      }
     }
     return { upserted, skipped, fxNormalizationFailed };
   }

@@ -15,7 +15,7 @@ export function EbayMark() {
   );
 }
 
-function fallbackMark(title: string): string {
+export function fallbackMark(title: string): string {
   return title.replace(/[^A-Za-z0-9가-힣]/g, "").slice(0, 1) || "P";
 }
 
