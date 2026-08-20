@@ -7,7 +7,7 @@ todos:
     status: completed
   - id: c-acq-001
     content: "[C-ACQ-001] Acquisition contract(Landing/Auth/Signup/Onboarding) · legacy=03 redesign-r2-acquisition-contract(pending) · PRIORITY=LAUNCH_REQUIRED · RISK=HIGH"
-    status: pending
+    status: completed
   - id: c-acq-002
     content: "[C-ACQ-002] Acquisition gap-only 구현 · legacy=03 redesign-r2-acquisition-implementation(pending) · PRIORITY=LAUNCH_REQUIRED · RISK=HIGH"
     status: pending
@@ -61,7 +61,7 @@ PRIMARY_NAV_PRIORITY = LOWERED (Founder 명시 승인, CONSUMER_UX_ARCHITECTURE 
 | TASK_ID | TITLE | REQUIREMENT | SOURCE_TRACEABILITY | PRIORITY | PRIORITY_AUTHORITY | DEPENDS_ON(STRENGTH) | RISK |
 |---|---|---|---|---|---|---|---|
 | C-AUTH-001 | Kakao OAuth 재검증 | 콜백/세션 발급 실제 동작 확인+완주 | 06 `auth-kakao-oauth-runtime`(pending) | **LAUNCH_BLOCKER 후보** | PLAN_EXPLICIT + TECHNICAL_SAFETY_REQUIREMENT(로그인 없이 launch 불가) | 없음(PARALLEL_SAFE) | HIGH |
-| C-ACQ-001 | Acquisition contract | Landing/Auth/Signup/Onboarding 계약 | 03 `redesign-r2-acquisition-contract`(pending) | LAUNCH_REQUIRED | PLAN_EXPLICIT | 없음 | HIGH |
+| C-ACQ-001 | Acquisition contract | Landing/Auth/Signup/Onboarding 계약 · **CONTRACT_READY** (`CONSUMER_ACQUISITION_CONTRACT.md`) | 03 `redesign-r2-acquisition-contract`(pending) | LAUNCH_REQUIRED | PLAN_EXPLICIT | 없음 | HIGH |
 | C-ACQ-002 | Acquisition gap-only | 갭만 구현, 기존 GuestChrome/consent 보존 | 03 `redesign-r2-acquisition-implementation`(pending) | LAUNCH_REQUIRED | PLAN_EXPLICIT | C-ACQ-001(SOFT)·C-AUTH-001(HARD) | HIGH |
 | C-ACQ-003 | Acquisition certification | 실 guest/auth/error/resume, known defect 0 | 03 `redesign-r2-acquisition-certification`(pending) | LAUNCH_REQUIRED | PLAN_EXPLICIT | C-ACQ-002(HARD) | HIGH |
 | C-ACC-001 | Account Hub contract(재스코프) | 8영역 계약(Profile/Referral/Notif/KYC/Settings/Support/Guides/Legal) | 03 `redesign-r5-account-hub-contract`(pending) | LAUNCH_REQUIRED | PLAN_EXPLICIT + FOUNDER_EXPLICIT(재스코프) | 없음 | MEDIUM |

@@ -50,6 +50,7 @@ KNOWN_AMBIGUOUS_CRITICAL_TRUTH_OWNER = 0
 | Current capability | `CONSUMER_CAPABILITY_MAP.md` |
 | Core Loop contract | `CONSUMER_CORE_LOOP_CONTRACT.md` (B-LOOP-001 · 2026-08-20) |
 | Wallet contract | `CONSUMER_WALLET_CONTRACT.md` (B-WALLET-001 · 2026-08-20) |
+| Acquisition contract | `CONSUMER_ACQUISITION_CONTRACT.md` (C-ACQ-001 · 2026-08-20) |
 
 ---
 

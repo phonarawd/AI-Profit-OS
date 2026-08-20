@@ -22,7 +22,7 @@ FAKE_ACTIVITY = FORBIDDEN
 | failure recovery | AUTH 실패 → 다시 시도. OAuth 실패 → 이메일/패스키. 광고 랜딩은 noindex |
 | screens | Landing · Signup · Login |
 | classification | KEEP AS SCREEN |
-| notes | 현재 web = PendingFigma. `/ads` `/l/*` = COMPATIBILITY / 마케팅 |
+| notes | login/signup/ads/l = PendingFigma. Kakao thin `/auth/oauth/kakao` + Nest GET callback = C-AUTH-001. 계약=`CONSUMER_ACQUISITION_CONTRACT.md` |
 
 ---
 

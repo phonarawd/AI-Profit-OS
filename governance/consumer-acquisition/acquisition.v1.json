@@ -1,0 +1,71 @@
+{
+  "$id": "https://ai-profit-os.local/governance/consumer-acquisition/acquisition.v1.json",
+  "schema": "governance.consumer-acquisition.acquisition.v1",
+  "version": "1.0.0",
+  "measuredAt": "2026-08-20",
+  "status": "CONTRACT_READY",
+  "implementationStatus": "WEB_UNWIRED",
+  "task": "C-ACQ-001",
+  "certification": {
+    "task": "C-ACQ-003",
+    "status": "PENDING",
+    "verifier": "tooling/verify/acquisition-release.cjs"
+  },
+  "legacyPointer": "03 redesign-r2-acquisition-contract",
+  "productContract": "docs/product/consumer/CONSUMER_ACQUISITION_CONTRACT.md",
+  "authority": {
+    "AUTH_RULE_REDEFINITION": "FORBIDDEN",
+    "SUPABASE_AUTH": "FORBIDDEN",
+    "NEW_ROUTE": "FORBIDDEN",
+    "NEW_VISUAL_LOCK": false,
+    "APPROVED_FIGMA_ACQUISITION": "NONE",
+    "LEGACY_VISUAL_RECOVERY": "FORBIDDEN",
+    "HOME_GEOMETRY_DEPENDENCY": "FORBIDDEN",
+    "SPARK_DASH_DNA_SHARE": "CONSTRAINT_ONLY",
+    "LEGAL_SSOT_MUTATION": "FORBIDDEN",
+    "FAKE_LEGAL": "FORBIDDEN",
+    "GEO_PRICE_MAP": "FORBIDDEN",
+    "G9_PUBLIC_MAP_BEFORE_SIGNUP": "FORBIDDEN",
+    "KAKAO_ON_LANDING_FIRST_VIEWPORT": "FORBIDDEN",
+    "GENDER_FIELD": "FORBIDDEN",
+    "RRN_FIELD": "FORBIDDEN",
+    "CODE_EQUALS_PROVIDER_SUBJECT": "FORBIDDEN",
+    "DUAL_LAYER_CLOAKING": "FORBIDDEN",
+    "ROBOTS_AS_SECURITY": "FORBIDDEN",
+    "WIRE_WITHOUT_APPROVED_FIGMA": "ALLOWED",
+    "INVENT_PRESENTATION": "FORBIDDEN"
+  },
+  "identity": {
+    "stageA": "termsAcceptedAt + privacyAcceptedAt + oauth/passkey/email",
+    "stageB": "displayName + phoneE164 + birthDate + emailWhenMissing",
+    "kakaoSubject": "Kakao profile id after code exchange",
+    "session": "Nest JWT cookie aipo_session"
+  },
+  "surfaces": [
+    { "id": "landing-home-guest", "route": "/", "visual": "HOME_FREEZE", "pendingFigma": false },
+    { "id": "ads", "route": "/ads", "visual": "PendingFigma", "pendingFigma": true },
+    { "id": "ads-variant", "route": "/ads/[variant]", "visual": "PendingFigma", "pendingFigma": true },
+    { "id": "landing-variant", "route": "/l/[variant]", "visual": "PendingFigma", "pendingFigma": true },
+    { "id": "login", "route": "/auth/login", "visual": "PendingFigma", "pendingFigma": true },
+    { "id": "signup", "route": "/auth/signup", "visual": "PendingFigma", "pendingFigma": true },
+    { "id": "complete-profile", "route": "/auth/complete-profile", "visual": "PendingFigma", "pendingFigma": true },
+    { "id": "onboarding", "route": "/onboarding", "visual": "PendingFigma", "pendingFigma": true },
+    { "id": "kakao-start", "route": "/auth/oauth/kakao", "visual": "THIN_REDIRECT", "pendingFigma": false }
+  ],
+  "messageAxes": ["PRICE_COMPARISON", "MARKET_DISCOVERY", "TIME_SAVING"],
+  "lockedCtas": [
+    "실시간 시세 맵 열기",
+    "지금 비교해 보기",
+    "시세 맵 보기"
+  ],
+  "ctaDestinations": ["/onboarding", "/auth/login"],
+  "measured": {
+    "webAcquisitionPendingFigma": 7,
+    "kakaoStartPage": "PRESENT",
+    "kakaoCodeExchange": "PRESENT",
+    "sdkAuthExport": "MISSING",
+    "loginSignupNestCall": 0,
+    "fakeFinancialValueBug": "CLOSED"
+  },
+  "nextSlices": ["C-ACQ-002", "C-ACQ-003"]
+}

@@ -43,7 +43,7 @@ Phase 3 does not fix these.
 | G-P2-03 | Transaction detail generic | journal by id user | Admin journals only | MISSING | P2 | UNAVAILABLE | YES | YES | Money |
 | G-P2-04 | Inbox fanout | 상태 변화 알림 | inbox + prefs exist. auto fanout 범위 미검증 | UNKNOWN | P2 | generic list OK | later | later | Inbox/events |
 | G-P2-05 | Referral amounts on user API | 조건/상태 | `referral/me` no % fields (good) but no user-facing reward summary DTO | PARTIAL | P2 | qualitative OK | if rewards on | if rewards on | Money |
-| G-P2-06 | Kakao web | OAuth 버튼 | API kakao/google VERIFIED. web PendingFigma | WEB_WIRING_MISSING | P2 | NO | YES auth polish | YES oauth | Web |
+| G-P2-06 | Kakao web | OAuth 버튼 | Nest code exchange+GET callback VERIFIED (C-AUTH-001). thin `/auth/oauth/kakao` PRESENT. login/signup PendingFigma | WEB_WIRING_MISSING | P2 | NO | YES auth polish | YES oauth | Web |
 | G-P2-07 | Growth modes | live only | `GrowthPublicSurface` type includes demo/hybrid | must not use | P2 | NO | YES if ticker shown | YES | Web must ignore |
 | G-P2-08 | Home tradeId | 진행 매칭을 Home에 | HomeRead has no activeTradeId field | OWNER_PARTIAL | P2 | Home job still designable | YES matching priority | YES | HomeRead |
 | G-P2-09 | USDT deposit user status | 입금 진행 | observe/tick not user UI. no user event list SDK | PARTIAL | P2 | “확인 중” generic | YES | YES | Money+SDK |
@@ -92,7 +92,7 @@ blocks full-app implementation Figma = G-P1-04/05/08 annotations required
 | fake fallback amount | NOT_FOUND | no hardcoded demo profit amount in current web/sdk |
 | wallet history | STILL_PRESENT | page placeholder + user journal list MISSING |
 | wallet web 8면 | STILL_PRESENT PendingFigma | B-WALLET-001 재실측 2026-08-20. backend/SDK buckets·withdraw·KRW REAL. address/KYC SDK MISSING. 계약=`CONSUMER_WALLET_CONTRACT.md` · 배선=B-WALLET-002 |
-| Kakao runtime | OWNER_FOUND API / WEB_WIRING_MISSING | `OAUTH_PRIMARY=kakao` |
+| Kakao runtime | OWNER_FOUND exchange+GET callback · thin start PRESENT · login/signup WEB_WIRING_MISSING | C-AUTH-001 · 계약=`CONSUMER_ACQUISITION_CONTRACT.md` |
 | dead href | NOT_FOUND | PendingFigma has no href |
 | legacy execute path | CLOSED (2026-08-20 B-EXECUTION-001) | `/trades/[id]/execute`=`useTradeExecution` 최소 실데이터. progressPct 표시 0. API execute-tick KEEP |
 | user trade list | CLOSED (2026-08-20 B-TRADES-001) | `GET /api/v1/trades` + `/trades` `TradesClient`. 기존 `toState()` 투영. progressPct 표시 0 |

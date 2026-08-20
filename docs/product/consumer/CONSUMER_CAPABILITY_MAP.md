@@ -12,9 +12,9 @@ CURRENT_WEB = Home + /profits list = Spark Dash presentation · /profits/[id] pa
 
 | Capability | Current route | Backend owner | SDK owner | Engine owner | Money owner | Current web wiring | Current status | UX dependency | Risk |
 |------------|---------------|---------------|-----------|--------------|-------------|--------------------|----------------|---------------|------|
-| Auth | `/auth/*` | OWNER_FOUND AuthController | OWNER_MISSING | n/a | n/a | WEB_WIRING_MISSING | PARTIAL | all | session cookie exists, no SDK |
-| Signup | `/auth/signup` | OWNER_FOUND POST `/auth/signup` | OWNER_MISSING | n/a | provision buckets | WEB_WIRING_MISSING | PARTIAL | Acquisition | — |
-| Login | `/auth/login` | OWNER_FOUND session/oauth/passkey/magic | OWNER_MISSING | n/a | n/a | WEB_WIRING_MISSING | PARTIAL | Acquisition | Kakao API yes |
+| Auth | `/auth/*` | OWNER_FOUND AuthController | OWNER_MISSING | n/a | n/a | WEB_WIRING_MISSING | PARTIAL | all | Kakao code exchange PRESENT · login/signup PendingFigma · no SDK |
+| Signup | `/auth/signup` | OWNER_FOUND POST `/auth/signup` | OWNER_MISSING | n/a | provision buckets | WEB_WIRING_MISSING | PARTIAL | Acquisition | PendingFigma |
+| Login | `/auth/login` | OWNER_FOUND session/oauth/passkey/magic | OWNER_MISSING | n/a | n/a | WEB_WIRING_MISSING | PARTIAL | Acquisition | Kakao GET callback PRESENT · page PendingFigma |
 | Onboarding | `/onboarding` | OWNER_MISSING product API | n/a | n/a | n/a | WEB_WIRING_MISSING | MISSING | Activation | copy only |
 | Home data | `/` | OWNER_FOUND HomeRead + HomeMoneyRead + DayPulse | OWNER_FOUND home-read-model · home-money-read · user-feed | OWNER_FOUND mapper | OWNER_FOUND | WEB_WIRING_MISSING | PARTIAL | Home | no activeTradeId |
 | Opportunity feed | `/profits` | OWNER_FOUND GET `/opportunities` | OWNER_FOUND fetchOpportunityFeed | OWNER_FOUND classification | principal read | WEB_WIRING_PRESENT (list UI) · participate POST 0 | PARTIAL | Discovery | item untyped |

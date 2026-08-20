@@ -26,7 +26,7 @@ VALID_ROUTE
 | Landing | 시작하기(가입) | guest | VALID_ROUTE | Signup | `/auth/signup` | KEEP | — | Signup | — | mapped |
 | Landing | 로그인 | guest | VALID_ROUTE | Login | `/auth/login` | KEEP | — | Login | — | mapped |
 | Signup | 가입 | valid fields | VALID_ACTION | CompleteProfile | `/auth/complete-profile` | KEEP | `POST /api/v1/auth/signup` | session | validation | mapped |
-| Signup | 카카오 | oauth available | VALID_ACTION | Home/CompleteProfile | oauth callback | KEEP | `POST /auth/oauth/kakao/*` | session | oauth fail | mapped |
+| Signup | 카카오 | oauth available | VALID_ACTION | Home/CompleteProfile | oauth callback | KEEP | `GET\|POST /api/v1/auth/oauth/kakao/*` | session | oauth fail | mapped |
 | Signup | 구글 | oauth available | VALID_ACTION | Home/CompleteProfile | oauth callback | KEEP | `POST /auth/oauth/google/*` | session | oauth fail | mapped |
 | Signup | 로그인으로 | guest | VALID_ROUTE | Login | `/auth/login` | KEEP | — | Login | — | mapped |
 | Login | 로그인 | valid | VALID_ACTION | Home | `/` | KEEP | Auth session | Home | auth error | mapped |
