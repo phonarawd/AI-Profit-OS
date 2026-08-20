@@ -1,0 +1,28 @@
+<svg width="420" height="280" viewBox="0 0 420 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="streakA" x1="40" y1="240" x2="380" y2="20" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF2D6B" stop-opacity="0"/>
+      <stop offset="0.42" stop-color="#FF5B8B" stop-opacity="0.85"/>
+      <stop offset="0.72" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#FF2D6B" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="streakB" x1="80" y1="250" x2="360" y2="50" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF2D6B" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#FF2D6B" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#FF2D6B" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="streakGlow" x="-20" y="-20" width="460" height="320" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="3.2"/>
+    </filter>
+  </defs>
+  <g filter="url(#streakGlow)" stroke-linecap="round">
+    <path d="M46 232C128 168 236 96 368 38" stroke="url(#streakA)" stroke-width="3.4"/>
+    <path d="M72 248C154 186 248 122 352 68" stroke="url(#streakB)" stroke-width="2.1"/>
+    <path d="M28 198C118 142 230 78 356 24" stroke="#FF8FB3" stroke-opacity="0.42" stroke-width="1.4"/>
+    <path d="M96 256C176 204 250 154 338 108" stroke="#FF2D6B" stroke-opacity="0.28" stroke-width="1.2"/>
+  </g>
+  <circle cx="286" cy="86" r="1.6" fill="#FFF" fill-opacity="0.85"/>
+  <circle cx="214" cy="132" r="1.15" fill="#FFD0DF" fill-opacity="0.7"/>
+  <circle cx="168" cy="168" r="0.9" fill="#FF8FB3" fill-opacity="0.55"/>
+  <circle cx="318" cy="64" r="1.05" fill="#FFF" fill-opacity="0.55"/>
+</svg>

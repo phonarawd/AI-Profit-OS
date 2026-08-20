@@ -1,0 +1,32 @@
+---
+description: PUTDUK Home Founder-approved presentation freeze
+alwaysApply: true
+---
+
+# Home Presentation Freeze
+
+PUTDUK Home Desktop + Mobile = **FOUNDER APPROVED / LOCKED**.
+
+SSOT: `governance/consumer-home-approval/home-approval-freeze.v1.json`
+
+Founder가 Home을 다시 OPEN하기 전까지:
+
+- HomeDesktop / HomeMobile geometry, Hero, Header, Sidebar, Bottom Nav, Summary, Popular, AI card, ProductMedia, money typography, USDT/KRW hierarchy, Home spacing, Home CSS cleanup 수정 금지
+- global selector로 Home을 간접 변경 금지
+
+다른 페이지는 Spark Dash DNA를 공유할 수 있으나 **Home geometry에 종속시키지 않는다.**
+
+shared CSS/token/component를 바꾸면 Home regression만 본다:
+
+- Desktop 1440×1080
+- Mobile 390×693
+
+의미 있는 visual 변화만 regression. pixel-diff 수치 단독 실패 금지.
+
+Truth는 Home과 이후 Consumer UI에 유지한다:
+
+- FAKE FOMO / FAKE MONEY / FAKE DURATION = 0
+- USDT primary · KRW secondary
+- duration owner = `estimatedDurationSec` → `formatDurationMinutesFromSec`
+- FX second truth 0 · missing → 0 금지
+- visual fixture는 `/dev/spark-dash-*` only

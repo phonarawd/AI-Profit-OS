@@ -1,0 +1,25 @@
+<svg width="72" height="108" viewBox="-12 -12 86 118" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sdmBoltTrail" x1="6" y1="90" x2="60" y2="2" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF2D6B" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#FF5B8B" stop-opacity="0.62"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="sdmBoltBloom" x="-30" y="-30" width="132" height="172" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="2.2" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 1  0 0 0 0 0.2  0 0 0 0 0.44  0 0 0 0.7 0" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <path d="M8 82C20 62 32 40 52 12" stroke="url(#sdmBoltTrail)" stroke-width="5.2" stroke-linecap="round" opacity="0.48"/>
+  <g filter="url(#sdmBoltBloom)">
+    <path d="M36.25 1.17L11.06 51.39H29.49L24.58 92.27L51 38.54H33.79L36.25 1.17Z" stroke="#FF2D6B" stroke-width="3.2" stroke-linejoin="round" opacity="0.55"/>
+    <path d="M36.25 1.17L11.06 51.39H29.49L24.58 92.27L51 38.54H33.79L36.25 1.17Z" stroke="#FF8FB3" stroke-width="1.85" stroke-linejoin="round"/>
+    <path d="M36.25 1.17L11.06 51.39H29.49L24.58 92.27L51 38.54H33.79L36.25 1.17Z" stroke="#FFFFFF" stroke-width="0.95" stroke-linejoin="round"/>
+  </g>
+  <circle cx="27.5" cy="22" r="0.95" fill="#FFFFFF" fill-opacity="0.8"/>
+  <circle cx="45" cy="49" r="0.7" fill="#FFD0DF" fill-opacity="0.7"/>
+</svg>

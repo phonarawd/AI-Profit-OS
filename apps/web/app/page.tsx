@@ -1,5 +1,6 @@
-﻿import { PendingFigma } from "@/app/PendingFigma";
+﻿import { HomeDesktopClient } from "@/app/HomeDesktopClient";
+import "../components/spark-dash-home/spark-dash-home.css";
 
 export default function Page() {
-  return <PendingFigma title="퍼뜩" />;
+  return <HomeDesktopClient />;
 }

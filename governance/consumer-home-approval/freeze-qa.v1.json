@@ -1,0 +1,64 @@
+{
+  "schema": "governance.consumer-home-approval.freeze-qa.v1",
+  "measuredAt": "2026-08-19T02:58:38.186Z",
+  "desktop": {
+    "viewport": "1440x1080",
+    "url": "http://localhost:3000/dev/spark-dash-desktop",
+    "errors": [],
+    "overflowX": false,
+    "scrollWidth": 1440,
+    "innerWidth": 1440,
+    "rootW": 1440,
+    "heroCtaVisible": true,
+    "missing": [],
+    "pass": true
+  },
+  "mobile": {
+    "viewport": "390x693",
+    "url": "http://localhost:3000/dev/spark-dash-mobile",
+    "errors": [],
+    "overflowX": false,
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "hero": {
+      "x": 16,
+      "y": 214,
+      "w": 358,
+      "h": 346,
+      "bottom": 560,
+      "right": 374
+    },
+    "cta": {
+      "x": 31,
+      "y": 503,
+      "w": 328,
+      "h": 44,
+      "bottom": 547,
+      "right": 359
+    },
+    "nav": {
+      "x": 0,
+      "y": 628,
+      "w": 390,
+      "h": 65,
+      "bottom": 693,
+      "right": 390
+    },
+    "ctaClipped": false,
+    "navOverlap": false,
+    "moneyWrap": false,
+    "durationTexts": [
+      "—",
+      "—",
+      "—",
+      "—",
+      "—"
+    ],
+    "fakeFomo": false,
+    "fakeDurationRange": false,
+    "zeroMinute": false,
+    "durationTruthful": true,
+    "pass": true
+  },
+  "verdict": "HOME_FREEZE_QA_PASS"
+}

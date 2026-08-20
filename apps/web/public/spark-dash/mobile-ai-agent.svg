@@ -1,0 +1,48 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="sdmAiBloom" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(40 42) scale(31)">
+      <stop stop-color="#9EC4FF" stop-opacity="0.46"/>
+      <stop offset="0.5" stop-color="#5B4BFF" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#FF2D6B" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sdmAiCore" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(36 35) scale(18.5)">
+      <stop stop-color="#F4FBFF"/>
+      <stop offset="0.24" stop-color="#8FD6FF"/>
+      <stop offset="0.6" stop-color="#3B7CFF"/>
+      <stop offset="1" stop-color="#16133A"/>
+    </radialGradient>
+    <filter id="sdmAiSoft" x="-8" y="-8" width="96" height="96" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="3.6"/>
+    </filter>
+    <filter id="sdmAiRing" x="6" y="8" width="68" height="68" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="1.15" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.48  0 0 0 0 0.6  0 0 0 0 1  0 0 0 0.68 0" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="sdmAiEye" x="0" y="0" width="16" height="16" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="0.9" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.5  0 0 0 0 0.85  0 0 0 0 1  0 0 0 0.9 0" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <circle cx="40" cy="42" r="30" fill="url(#sdmAiBloom)" filter="url(#sdmAiSoft)"/>
+  <circle cx="51" cy="29" r="10" fill="#FF2D6B" fill-opacity="0.16" filter="url(#sdmAiSoft)"/>
+  <circle cx="40" cy="42" r="16.4" fill="url(#sdmAiCore)"/>
+  <ellipse cx="34.6" cy="35.4" rx="6.4" ry="3.6" fill="#FFFFFF" fill-opacity="0.2"/>
+  <g filter="url(#sdmAiRing)">
+    <circle cx="40" cy="42" r="21" stroke="#A9C6FF" stroke-width="1.45"/>
+  </g>
+  <path d="M32.8 38.8H47.2" stroke="#9EC4FF" stroke-opacity="0.35" stroke-width="0.8" stroke-linecap="round"/>
+  <g filter="url(#sdmAiEye)">
+    <circle cx="35.2" cy="41.4" r="1.7" fill="#FFFFFF"/>
+    <circle cx="44.8" cy="41.4" r="1.7" fill="#FFFFFF"/>
+  </g>
+  <path d="M35.2 46.2H44.8" stroke="#B9F3FF" stroke-opacity="0.7" stroke-width="1.05" stroke-linecap="round"/>
+  <path d="M56.6 22.4L53.6 29.6H55.8L55.1 35.4L58.8 27.2H56.8L56.6 22.4Z" fill="#FF2D6B"/>
+</svg>
