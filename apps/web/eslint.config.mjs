@@ -16,6 +16,7 @@ export default tseslint.config(
       "**/*.md",
       "**/*.mdc",
       "public/**",
+      "scripts/asset-pipeline/**",
     ],
   },
   {

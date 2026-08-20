@@ -466,6 +466,12 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/scripts\/asset-pipeline\//.test(f) ||
+      /^tooling\/verify\/asset-production-pipeline\.cjs$/.test(f),
+    scripts: ["asset-production-pipeline.cjs"],
+  },
+  {
+    test: (f) =>
       /^schemas\/home-money-read\.v1\.json$/.test(f) ||
       /^services\/api-nest\/src\/wallet\/home-money-read/.test(f) ||
       /^packages\/sdk\/src\/home-money-read\//.test(f) ||
