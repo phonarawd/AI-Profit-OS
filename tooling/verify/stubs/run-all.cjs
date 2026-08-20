@@ -38,6 +38,7 @@ const live = [
   "ultra-watch-whale.cjs",
   "match-tension-surface.cjs",
   "auth-flows.cjs",
+  "kakao-oauth-runtime.cjs",
   "bucket-invariant.cjs",
   "home-money-read-contract.cjs",
   "home-state-truth.cjs",

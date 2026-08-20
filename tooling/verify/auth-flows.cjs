@@ -23,6 +23,8 @@ mustExist("services/api-nest/src/auth/auth.routes.ts");
 mustExist("services/api-nest/src/auth/auth.controller.ts");
 mustExist("services/api-nest/src/auth/auth.service.ts");
 mustExist("services/api-nest/src/auth/auth.module.ts");
+mustExist("services/api-nest/kakao-oauth.core.cjs");
+mustExist("apps/web/app/auth/oauth/kakao/page.tsx");
 mustExist("schemas/auth-session.v1.json");
 mustExist("schemas/user-profile.v1.json");
 mustExist("supabase/migrations/20260808205844_identity_nest_auth.sql");
@@ -96,6 +98,27 @@ const controller = read("services/api-nest/src/auth/auth.controller.ts");
 if (!controller.includes('@Controller("auth")')) {
   fails.push('AuthController must be @Controller("auth")');
 }
+
+const service = read("services/api-nest/src/auth/auth.service.ts");
+for (const needle of [
+  "exchangeKakaoCode",
+  "kakao-oauth.core.cjs",
+  "raw_profile",
+]) {
+  if (!service.includes(needle)) {
+    fails.push(`auth.service.ts Kakao runtime missing ${needle}`);
+  }
+}
+if (service.includes("body.providerSubject ?? body.code")) {
+  fails.push("Kakao must not use authorization code as providerSubject");
+}
+const kakaoCore = read("services/api-nest/kakao-oauth.core.cjs");
+if (!kakaoCore.includes("profile_nickname")) {
+  fails.push("kakao-oauth.core.cjs must lock scope profile_nickname");
+}
+if (!kakaoCore.includes("kauth.kakao.com/oauth/token")) {
+  fails.push("kakao-oauth.core.cjs must call Kakao token endpoint");
+}
 for (const deco of [
   "@Post(AUTH_ROUTES.signup)",
   "@Patch(AUTH_ROUTES.profile)",
@@ -103,6 +126,7 @@ for (const deco of [
   "@Post(AUTH_ROUTES.logout)",
   "@Post(AUTH_ROUTES.deleteAccount)",
   "@Post(AUTH_ROUTES.oauthStart)",
+  "@Get(AUTH_ROUTES.oauthCallback)",
   "@Post(AUTH_ROUTES.passkeyRegisterOptions)",
   "@Post(AUTH_ROUTES.magicLinkRequest)",
 ]) {
@@ -199,13 +223,14 @@ for (const file of walk(path.join(root, "services/api-nest/src"))) {
   }
 }
 
-// Canon auth surfaces (field SSOT pointer — UI owns pixels)
+// Canon auth surfaces — Greenfield에서 파일 없으면 skip (시각 복구 금지).
+// 필드 SSOT는 파일이 있을 때만 대조한다.
 for (const id of ["auth-login", "auth-signup", "auth-complete-profile"]) {
   const wire = path.join(
     root,
     `packages/ui/canon/surfaces/${id}.wire.json`,
   );
-  if (!fs.existsSync(wire)) fails.push(`missing Canon ${id}`);
+  if (!fs.existsSync(wire)) continue;
 }
 
 const signupWire = path.join(

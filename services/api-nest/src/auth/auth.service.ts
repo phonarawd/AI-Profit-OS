@@ -5,14 +5,9 @@
  * (supabase/migrations/20260808205844_identity_nest_auth.sql +
  * .../20260808224856_auth_oauth_passkey_stage_a_b.sql — no new schema needed).
  *
- * Honesty note (kept intentionally out of scope, same tier as before):
- * OAuth code→token exchange with Kakao/Google and WebAuthn attestation/
- * assertion signature verification are NOT implemented here — both remain
- * Phase1/adapter-level concerns. This service trusts a caller-supplied
- * providerSubject/credentialId as the identity claim (same trust tier the
- * skeleton already had) and focuses the fix on: real DB-backed user
- * resolution + real JWT mint/verify so req.user is populated for every
- * session-protected Engine route.
+ * Kakao (C-AUTH-001): code→token→profile is implemented in kakao-oauth.core.cjs.
+ * Google code exchange and WebAuthn attestation remain out of scope — those
+ * still trust a caller-supplied providerSubject/credentialId.
  */
 
 import {
@@ -68,6 +63,47 @@ const jwtCore = req(join(__dirname, "..", "..", "jwt.core.cjs")) as {
       jti?: string;
     },
   ) => string;
+};
+
+const kakaoOauth = req(join(__dirname, "..", "..", "kakao-oauth.core.cjs")) as {
+  kakaoRedirectUri: (apiHost: string) => string;
+  appOrigin: (appHost: string) => string;
+  continuePathAfterOauth: (stage: OnboardingStage) => string;
+  buildAuthorizeUrl: (opts: {
+    clientId: string;
+    redirectUri: string;
+    state: string;
+  }) => string;
+  signOauthState: (
+    payload: {
+      termsAcceptedAt?: string;
+      privacyAcceptedAt?: string;
+      marketingConsent?: boolean;
+      referralCode?: string;
+    },
+    secret: string,
+  ) => string;
+  verifyOauthState: (
+    state: string,
+    secret: string,
+  ) => {
+    termsAcceptedAt: string;
+    privacyAcceptedAt: string;
+    marketingConsent: boolean;
+    referralCode: string;
+  };
+  exchangeKakaoCode: (opts: {
+    code: string;
+    redirectUri: string;
+    clientId: string;
+    clientSecret: string;
+    fetchImpl?: typeof fetch;
+  }) => Promise<{
+    providerSubject: string;
+    nickname?: string;
+    email?: string;
+    rawProfile: Record<string, unknown>;
+  }>;
 };
 
 export type AuthSessionView = {
@@ -205,43 +241,54 @@ export class AuthService {
     };
   }
 
-  oauthStart(providerRaw: string) {
+  oauthStart(providerRaw: string, body: Record<string, unknown> = {}) {
     const provider = this.parseOauthProvider(providerRaw);
     const env = loadPhase0Env();
-    if (!oauthConfigured(env, provider)) {
+    if (!oauthConfigured(env, provider) || !env.jwtUserSecret) {
       return {
         ok: true as const,
         provider,
         status: "not_configured" as const,
         message:
-          "Set OAUTH_*_CLIENT_ID/SECRET in .env (Phase0 hosts) — never commit secrets",
+          "Set OAUTH_*_CLIENT_ID/SECRET and JWT_USER_SECRET in .env (Phase0 hosts) — never commit secrets",
       };
     }
 
-    const apiBase = env.apiHost.startsWith("http")
-      ? env.apiHost
-      : env.apiHost.includes("localhost")
-        ? `http://${env.apiHost}`
-        : `https://${env.apiHost}`;
-    const redirectUri = `${apiBase}/api/v1/auth/oauth/${provider}/callback`;
+    const state = kakaoOauth.signOauthState(
+      {
+        termsAcceptedAt:
+          typeof body.termsAcceptedAt === "string" ? body.termsAcceptedAt : "",
+        privacyAcceptedAt:
+          typeof body.privacyAcceptedAt === "string"
+            ? body.privacyAcceptedAt
+            : "",
+        marketingConsent: body.marketingConsent === true,
+        referralCode:
+          typeof body.referralCode === "string" ? body.referralCode : "",
+      },
+      env.jwtUserSecret,
+    );
+
     if (provider === "kakao") {
-      const u = new URL("https://kauth.kakao.com/oauth/authorize");
-      u.searchParams.set("client_id", env.oauthKakaoClientId!);
-      u.searchParams.set("redirect_uri", redirectUri);
-      u.searchParams.set("response_type", "code");
       return {
         ok: true as const,
         provider,
         status: "ready" as const,
-        authorizeUrl: u.toString(),
+        authorizeUrl: kakaoOauth.buildAuthorizeUrl({
+          clientId: env.oauthKakaoClientId!,
+          redirectUri: kakaoOauth.kakaoRedirectUri(env.apiHost),
+          state,
+        }),
       };
     }
 
+    const redirectUri = `${kakaoOauth.appOrigin(env.apiHost)}/api/v1/auth/oauth/google/callback`;
     const u = new URL("https://accounts.google.com/o/oauth2/v2/auth");
     u.searchParams.set("client_id", env.oauthGoogleClientId!);
     u.searchParams.set("redirect_uri", redirectUri);
     u.searchParams.set("response_type", "code");
     u.searchParams.set("scope", "openid email profile");
+    u.searchParams.set("state", state);
     return {
       ok: true as const,
       provider,
@@ -250,13 +297,72 @@ export class AuthService {
     };
   }
 
+  oauthErrorRedirect(): string {
+    const env = loadPhase0Env();
+    return `${kakaoOauth.appOrigin(env.appHost)}/auth/login`;
+  }
+
+  oauthSignupRedirect(): string {
+    const env = loadPhase0Env();
+    return `${kakaoOauth.appOrigin(env.appHost)}/auth/signup`;
+  }
+
+  /**
+   * Kakao browser GET callback (console redirect = API_HOST).
+   * Existing identity → session. New identity → Stage A terms from signed state.
+   */
+  async oauthBrowserCallback(
+    providerRaw: string,
+    query: { code?: string; state?: string; error?: string },
+  ): Promise<{ accessToken: string; redirectUrl: string }> {
+    if (query.error) {
+      throw new BadRequestException("oauth denied");
+    }
+    const provider = this.parseOauthProvider(providerRaw);
+    if (provider !== "kakao") {
+      throw new BadRequestException("browser callback is kakao-only");
+    }
+    const out = await this.completeKakaoCode(
+      String(query.code ?? ""),
+      String(query.state ?? ""),
+    );
+    const env = loadPhase0Env();
+    const path = kakaoOauth.continuePathAfterOauth(out.session.onboardingStage);
+    return {
+      accessToken: out.accessToken,
+      redirectUrl: `${kakaoOauth.appOrigin(env.appHost)}${path}`,
+    };
+  }
+
   oauthCallback(providerRaw: string, body: Record<string, unknown>) {
     const provider = this.parseOauthProvider(providerRaw);
-    if (!body?.code && !body?.providerSubject) {
-      throw new BadRequestException("oauth code or providerSubject required");
+    if (provider === "kakao") {
+      if (!body?.code || typeof body.code !== "string") {
+        throw new BadRequestException("kakao oauth code required");
+      }
+      return this.completeKakaoCode(
+        body.code,
+        typeof body.state === "string" ? body.state : "",
+        {
+          termsAcceptedAt:
+            typeof body.termsAcceptedAt === "string"
+              ? body.termsAcceptedAt
+              : undefined,
+          privacyAcceptedAt:
+            typeof body.privacyAcceptedAt === "string"
+              ? body.privacyAcceptedAt
+              : undefined,
+          marketingConsent: Boolean(body.marketingConsent),
+          referralCode:
+            typeof body.referralCode === "string" ? body.referralCode : undefined,
+        },
+      );
+    }
+    if (typeof body.providerSubject !== "string" || !body.providerSubject) {
+      throw new BadRequestException("google oauth providerSubject required");
     }
     return this.signupStageA({
-      method: provider === "kakao" ? "oauth_kakao" : "oauth_google",
+      method: "oauth_google",
       termsAcceptedAt: String(body.termsAcceptedAt ?? ""),
       privacyAcceptedAt: String(body.privacyAcceptedAt ?? ""),
       marketingConsent: Boolean(body.marketingConsent),
@@ -264,8 +370,81 @@ export class AuthService {
         typeof body.referralCode === "string" ? body.referralCode : undefined,
       oauth: {
         provider,
-        providerSubject: String(body.providerSubject ?? body.code ?? ""),
+        providerSubject: body.providerSubject,
         email: typeof body.email === "string" ? body.email : undefined,
+      },
+    });
+  }
+
+  private async completeKakaoCode(
+    code: string,
+    state: string,
+    bodyTerms?: {
+      termsAcceptedAt?: string;
+      privacyAcceptedAt?: string;
+      marketingConsent?: boolean;
+      referralCode?: string;
+    },
+  ) {
+    if (!code) throw new BadRequestException("oauth code required");
+    const env = loadPhase0Env();
+    if (!oauthConfigured(env, "kakao") || !env.jwtUserSecret) {
+      throw new ServiceUnavailableException("kakao oauth not configured");
+    }
+    let stateTerms = {
+      termsAcceptedAt: "",
+      privacyAcceptedAt: "",
+      marketingConsent: false,
+      referralCode: "",
+    };
+    if (state) {
+      try {
+        stateTerms = kakaoOauth.verifyOauthState(state, env.jwtUserSecret);
+      } catch {
+        throw new BadRequestException("oauth state invalid");
+      }
+    }
+    const profile = await kakaoOauth.exchangeKakaoCode({
+      code,
+      redirectUri: kakaoOauth.kakaoRedirectUri(env.apiHost),
+      clientId: env.oauthKakaoClientId!,
+      clientSecret: env.oauthKakaoClientSecret!,
+    });
+    this.assertDbConfigured();
+    const existing = await this.db.query<{ user_id: string }>(
+      `SELECT user_id::text FROM public.auth_oauth_identities
+        WHERE provider = 'kakao' AND provider_subject = $1 AND unlinked_at IS NULL`,
+      [profile.providerSubject],
+    );
+    if (existing.rows[0]) {
+      await this.touchOauthProfile(
+        "kakao",
+        profile.providerSubject,
+        profile.email,
+        profile.rawProfile,
+      );
+      return this.mintSession(existing.rows[0].user_id);
+    }
+    const termsAcceptedAt =
+      bodyTerms?.termsAcceptedAt || stateTerms.termsAcceptedAt;
+    const privacyAcceptedAt =
+      bodyTerms?.privacyAcceptedAt || stateTerms.privacyAcceptedAt;
+    if (!termsAcceptedAt || !privacyAcceptedAt) {
+      throw new BadRequestException("TERMS_REQUIRED");
+    }
+    return this.signupStageA({
+      method: "oauth_kakao",
+      termsAcceptedAt,
+      privacyAcceptedAt,
+      marketingConsent:
+        bodyTerms?.marketingConsent === true || stateTerms.marketingConsent,
+      referralCode:
+        bodyTerms?.referralCode || stateTerms.referralCode || undefined,
+      oauth: {
+        provider: "kakao",
+        providerSubject: profile.providerSubject,
+        email: profile.email,
+        rawProfile: profile.rawProfile,
       },
     });
   }
@@ -407,6 +586,7 @@ export class AuthService {
         provider,
         subject,
         input.oauth?.email ?? input.email,
+        input.oauth?.rawProfile,
       );
     }
     if (input.method === "email_magic") {
@@ -429,6 +609,7 @@ export class AuthService {
     provider: "kakao" | "google",
     providerSubject: string,
     email?: string,
+    rawProfile?: Record<string, unknown>,
   ): Promise<{ userId: string; isNew: boolean }> {
     const existing = await this.db.query<{ user_id: string }>(
       `SELECT user_id::text FROM public.auth_oauth_identities
@@ -436,6 +617,12 @@ export class AuthService {
       [provider, providerSubject],
     );
     if (existing.rows[0]) {
+      await this.touchOauthProfile(
+        provider,
+        providerSubject,
+        email,
+        rawProfile,
+      );
       return { userId: existing.rows[0].user_id, isNew: false };
     }
 
@@ -443,9 +630,15 @@ export class AuthService {
     try {
       await this.db.query(
         `INSERT INTO public.auth_oauth_identities (
-           user_id, provider, provider_subject, email_from_provider
-         ) VALUES ($1::uuid, $2, $3, $4)`,
-        [userId, provider, providerSubject, email ?? null],
+           user_id, provider, provider_subject, email_from_provider, raw_profile
+         ) VALUES ($1::uuid, $2, $3, $4, $5::jsonb)`,
+        [
+          userId,
+          provider,
+          providerSubject,
+          email ?? null,
+          JSON.stringify(rawProfile ?? {}),
+        ],
       );
     } catch (e) {
       if (isUniqueViolation(e)) {
@@ -455,12 +648,39 @@ export class AuthService {
           [provider, providerSubject],
         );
         if (again.rows[0]) {
+          await this.touchOauthProfile(
+            provider,
+            providerSubject,
+            email,
+            rawProfile,
+          );
           return { userId: again.rows[0].user_id, isNew: false };
         }
       }
       throw e;
     }
     return { userId, isNew: true };
+  }
+
+  private async touchOauthProfile(
+    provider: OauthProvider,
+    providerSubject: string,
+    email: string | undefined,
+    rawProfile: Record<string, unknown> | undefined,
+  ): Promise<void> {
+    if (!rawProfile && !email) return;
+    await this.db.query(
+      `UPDATE public.auth_oauth_identities
+          SET raw_profile = COALESCE($3::jsonb, raw_profile),
+              email_from_provider = COALESCE($4, email_from_provider)
+        WHERE provider = $1 AND provider_subject = $2 AND unlinked_at IS NULL`,
+      [
+        provider,
+        providerSubject,
+        rawProfile ? JSON.stringify(rawProfile) : null,
+        email ?? null,
+      ],
+    );
   }
 
   private async findOrCreateUserByEmail(

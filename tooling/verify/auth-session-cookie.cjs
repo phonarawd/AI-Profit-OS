@@ -48,6 +48,7 @@ for (const needle of [
 for (const route of [
   "signup",
   "oauthCallback",
+  "oauthCallbackGet",
   "magicLinkVerify",
   "passkeyAuthVerify",
   "refresh",

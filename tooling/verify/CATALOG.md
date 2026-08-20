@@ -65,7 +65,7 @@
 | `schemas/home-money-read.v1.json` · `wallet/home-money-read*` · `packages/sdk/src/home-money-read/**` | home-money-read-contract |
 | `services/api-nest/src/current-fx/**` · `packages/sdk/src/current-fx/**` · `schemas/current-fx-approx*.json` | current-fx-consumer |
 | engine-rust · trade/opportunity api | match-success-rule · participate-http · execute-rule-loop |
-| auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie |
+| auth/jwt | auth-jwt-runtime · auth-flows · auth-session-cookie · kakao-oauth-runtime |
 | `api-nest` wallet · kyc.controller · ledger.user-journal | wallet-kyc-session-auth · wallet-gap-wire · wallet-release |
 | `krw-deposit*` · `schemas/krw-deposit-request*` · `krw_deposit_fx_facts` | krw-admin-decide · krw-deposit-fx-semantics · pg-module-scan · bucket-invariant · wallet-kyc-session-auth |
 | `schemas/source-observation.v1.json` · `governance/global-product/source-observation-runtime.v1.json` · `services/market-intelligence/src/source-observation/**` · `tooling/verify/source-observation-runtime.cjs` · `tooling/verify/fashionphile-identity-forensic.cjs` | source-observation-runtime · listing-legs-day1 · fashionphile-identity-forensic |
@@ -101,6 +101,7 @@
 | onboarding-experiential · auth-surfaces · landing-3s · kyc-surfaces | UI §6.4~6.4d · Infra §31.2a/b · Money §42 (v7.22.11) — **onboarding-experiential · auth-surfaces · landing-3s · kyc-surfaces live** (Canon Lux3면 · RRN0) |
 | trust-copy · tax-disclaimer · objection4 | UI §38 PART6b — **live** (금지어0 · 면책 입금/guide · Guest onboarding 면책0=v7.22.55 utility · Admin content 잠금 · Objection Q1~Q4 온보딩·입금게이트·FAQ·상세) |
 | auth-flows | Infra §51.9+§51.9.1 — Nest JWT only · Stage A/B · OAuth/Passkey · session · 탈퇴 · **live** |
+| kakao-oauth-runtime | Track C C-AUTH-001 — **live** (Kakao code→token→profile · GET `/api/v1/auth/oauth/kakao/callback` · scope=`profile_nickname` · `raw_profile`·성별0 · thin `/auth/oauth/kakao` · mock HTTP E2E · 실 Kakao 계정 불필요) |
 | auth-session-cookie | UI PART9-pre2 — httpOnly `aipo_session` Set-Cookie · cookie-parser · JwtAuthGuard cookie fallback · JSON accessToken 유지 — **live** |
 | wallet-kyc-session-auth | UI PART9-pre2 — Wallet/Kyc 유저 라우트 JwtAuthGuard + session userId (IDOR query/body userId 0) — **live** |
 | home-live-wire | UI PART9b/9c — `/` page↔`@aipo/sdk/user-feed`↔DayPulse · nearMissExtraCount · 401 graceful — **live** |

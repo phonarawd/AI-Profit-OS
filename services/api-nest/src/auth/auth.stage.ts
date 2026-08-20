@@ -50,7 +50,12 @@ export type StageASignupInput = {
   referralCode?: string;
   /** email magic path */
   email?: string;
-  oauth?: { provider: "kakao" | "google"; providerSubject: string; email?: string };
+  oauth?: {
+    provider: "kakao" | "google";
+    providerSubject: string;
+    email?: string;
+    rawProfile?: Record<string, unknown>;
+  };
   passkey?: { credentialId: string };
 };
 

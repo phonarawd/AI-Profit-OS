@@ -231,8 +231,16 @@ const RULES = [
       /^services\/api-nest\/src\/auth\/(privacy-account\.service|auth\.service|auth\.controller|auth\.stage)\.ts$/.test(
         f,
       ) ||
+      /^services\/api-nest\/kakao-oauth\.core\.cjs$/.test(f) ||
+      /^tooling\/verify\/kakao-oauth-runtime\.cjs$/.test(f) ||
+      /^apps\/web\/app\/auth\/oauth\//.test(f) ||
       /^tooling\/verify\/privacy-purge\.cjs$/.test(f),
-    scripts: ["privacy-purge.cjs", "auth-flows.cjs", "auth-jwt-runtime.cjs"],
+    scripts: [
+      "privacy-purge.cjs",
+      "auth-flows.cjs",
+      "auth-jwt-runtime.cjs",
+      "kakao-oauth-runtime.cjs",
+    ],
   },
   {
     test: (f) =>

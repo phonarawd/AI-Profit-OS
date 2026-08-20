@@ -1,10 +1,12 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   Param,
   Patch,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -36,6 +38,7 @@ type CookieResponse = {
     },
   ) => void;
   clearCookie: (name: string, opts?: { path?: string }) => void;
+  redirect: (status: number, url: string) => unknown;
 };
 
 /** PART9-pre2 — 로그인 성공 경로 Set-Cookie · JSON accessToken 응답 유지 */
@@ -118,8 +121,24 @@ export class AuthController {
   }
 
   @Post(AUTH_ROUTES.oauthStart)
-  oauthStart(@Param("provider") provider: string) {
-    return this.auth.oauthStart(provider);
+  oauthStart(
+    @Param("provider") provider: string,
+    @Body() body: Record<string, unknown>,
+  ) {
+    return this.auth.oauthStart(provider, body ?? {});
+  }
+
+  /** 브라우저 시작 — `/auth/oauth/kakao` thin page가 여기로 보냄 */
+  @Get(AUTH_ROUTES.oauthStart)
+  oauthStartGet(
+    @Param("provider") provider: string,
+    @Res() res: CookieResponse,
+  ) {
+    const out = this.auth.oauthStart(provider, {});
+    if (out.status === "ready" && "authorizeUrl" in out && out.authorizeUrl) {
+      return res.redirect(302, out.authorizeUrl);
+    }
+    return res.redirect(302, this.auth.oauthErrorRedirect());
   }
 
   @Post(AUTH_ROUTES.oauthCallback)
@@ -136,6 +155,36 @@ export class AuthController {
       attachUserSessionCookie(res, out.accessToken);
     }
     return out;
+  }
+
+  /** Kakao console redirect = GET API_HOST/api/v1/auth/oauth/kakao/callback */
+  @Get(AUTH_ROUTES.oauthCallback)
+  async oauthCallbackGet(
+    @Param("provider") provider: string,
+    @Query("code") code: string,
+    @Query("state") state: string,
+    @Query("error") error: string,
+    @Res() res: CookieResponse,
+  ) {
+    try {
+      const out = await this.auth.oauthBrowserCallback(provider, {
+        code,
+        state,
+        error,
+      });
+      if (typeof out.accessToken === "string") {
+        attachUserSessionCookie(res, out.accessToken);
+      }
+      return res.redirect(302, out.redirectUrl);
+    } catch (e) {
+      const raw =
+        e instanceof BadRequestException ? e.getResponse() : e instanceof Error ? e.message : "";
+      const msg = typeof raw === "string" ? raw : JSON.stringify(raw);
+      if (msg.includes("TERMS_REQUIRED")) {
+        return res.redirect(302, this.auth.oauthSignupRedirect());
+      }
+      return res.redirect(302, this.auth.oauthErrorRedirect());
+    }
   }
 
   @Post(AUTH_ROUTES.passkeyRegisterOptions)
