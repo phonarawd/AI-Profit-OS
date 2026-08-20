@@ -37,3 +37,9 @@ CODE_EQUALS_PROVIDER_SUBJECT = FORBIDDEN
 ## EXIT_GATE
 
 Kakao NOT_RUN을 production 완료로 쓰지 않음.
+
+## CI FIX
+
+`isKakaoOAuthReady`가 `process.env`를 좁은 `KakaoReadyEnv`에 직접 넣지 않는다.
+`NEXT_PUBLIC_OAUTH_KAKAO_ENABLED`만 읽고, CLIENT_ID 단독 활성은 계속 금지한다.
+`LIVE_KAKAO_HUMAN_E2E = NOT_RUN` 유지.

@@ -8,7 +8,16 @@ export type KakaoReadyEnv = {
   NEXT_PUBLIC_OAUTH_KAKAO_CLIENT_ID?: string;
 };
 
-export function isKakaoOAuthReady(env: KakaoReadyEnv = process.env): boolean {
-  const enabled = env.NEXT_PUBLIC_OAUTH_KAKAO_ENABLED;
+function readKakaoEnv(env?: KakaoReadyEnv): KakaoReadyEnv {
+  if (env) return env;
+  if (typeof process === "undefined") return {};
+  return {
+    NEXT_PUBLIC_OAUTH_KAKAO_ENABLED: process.env.NEXT_PUBLIC_OAUTH_KAKAO_ENABLED,
+    NEXT_PUBLIC_OAUTH_KAKAO_CLIENT_ID: process.env.NEXT_PUBLIC_OAUTH_KAKAO_CLIENT_ID,
+  };
+}
+
+export function isKakaoOAuthReady(env?: KakaoReadyEnv): boolean {
+  const enabled = readKakaoEnv(env).NEXT_PUBLIC_OAUTH_KAKAO_ENABLED;
   return enabled === "1" || enabled === "true";
 }
