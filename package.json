@@ -222,6 +222,7 @@
     "verify:landing-guest-closure": "node tooling/verify/landing-guest-closure.cjs",
     "verify:home-closure": "node tooling/verify/home-closure.cjs",
     "test:e2e:home-closure": "playwright test --config=tooling/e2e/playwright.config.cjs tooling/e2e/specs/home-closure.spec.cjs",
+    "test:e2e:profits-closure": "playwright test --config=tooling/e2e/playwright.config.cjs tooling/e2e/specs/profits-closure.spec.cjs",
     "verify:acquisition-release": "node tooling/verify/acquisition-release.cjs",
     "verify:login-kakao-closure": "node tooling/verify/login-kakao-closure.cjs",
     "verify:complete-profile-closure": "node tooling/verify/complete-profile-closure.cjs",

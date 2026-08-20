@@ -84,7 +84,7 @@
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |
 | `supabase/migrations/**` · migrations-applied fixture | migrations-applied-parity |
 | `apps/web/app/page.tsx` · `HomePageClient` · `HomeDesktopClient` · `packages/sdk/src/user-feed/**` · `HomePrincipalRail` · `home-principal-slots` · sdk/api growth | home-live-wire · sdk-user-feed · home-principal-slots · growth-public-surface · ticker-pii-0 · home-closure |
-| `apps/web/app/profits/**` | profits-live-wire · sdk-user-feed |
+| `apps/web/app/profits/**` · `ProfitsDesktopClient` · `spark-dash-profits` | profits-live-wire · sdk-user-feed |
 | `apps/web/app/wallet/page.tsx` · `packages/sdk/src/wallet/**` | wallet-live-wire |
 | `apps/web/app/wallet/deposit/**` · `me/kyc` · `me/support` · `KycFlow` | stub-page-actions |
 | money api-nest | pg-module-scan · bucket-invariant |
@@ -120,7 +120,7 @@
 | wallet-kyc-session-auth | UI PART9-pre2 — Wallet/Kyc 유저 라우트 JwtAuthGuard + session userId (IDOR query/body userId 0) — **live** |
 | home-live-wire | UI PART9b/9c — `/` page↔`@aipo/sdk/user-feed`↔DayPulse · nearMissExtraCount · 401 graceful — **live** |
 | home-principal-slots | UI PART9d — §5.3 B/D `HomePrincipalRail` + Canon `home-principal-slots` + `home-money-grid`(v1.3, 구 `lux-feed-grid` 공유 분리) · principalUsdt/todayPossibleProfitUsdt — **live** |
-| profits-live-wire | UI PART9b/9e — `/profits`+`/profits/[id]` live SDK feed/detail — **live** |
+| profits-live-wire | REL-106 — `/profits` live feed · error≠empty · requiredCapital · Playwright profits-closure — **live** |
 | wallet-live-wire | UI PART9b/9f — `/wallet` buckets + `@aipo/sdk/wallet` `fetchWalletBuckets` (출금≠9f2) — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |
 | migrations-applied-parity | Supabase — 로컬 `supabase/migrations` 버전 ↔ `fixtures/migrations-applied.v1.json`(원격 applied 스냅샷) 1:1 · path-trigger — **live** |

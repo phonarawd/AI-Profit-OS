@@ -218,7 +218,13 @@ const RULES = [
     ],
   },
   {
-    test: (f) => /^apps\/web\/app\/profits\//.test(f),
+    test: (f) =>
+      /^apps\/web\/app\/profits\//.test(f) ||
+      /^apps\/web\/app\/ProfitsDesktopClient\.tsx$/.test(f) ||
+      /^apps\/web\/components\/spark-dash-profits\//.test(f) ||
+      /^apps\/web\/app\/dev\/spark-dash-profits\//.test(f) ||
+      /^tooling\/e2e\/specs\/profits-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/profits-live-wire\.cjs$/.test(f),
     scripts: ["profits-live-wire.cjs", "sdk-user-feed.cjs"],
   },
   {
