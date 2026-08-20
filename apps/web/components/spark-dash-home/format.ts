@@ -51,6 +51,14 @@ export function moneyOrDash(value: string | null): string {
   return value ?? "—";
 }
 
+/** missing/null → UNAVAILABLE. 화면 기하 변경 없음. */
+export function moneyState(
+  raw: string | null | undefined,
+): "ready" | "UNAVAILABLE" {
+  if (raw == null || raw === "") return "UNAVAILABLE";
+  return USDT_DEC.test(raw) ? "ready" : "UNAVAILABLE";
+}
+
 /** 숫자와 USDT 단위를 한 줄에서 다른 크기로 그리기 위한 표시 분리. 값 재계산 없음. */
 export function splitUsdtParts(value: string | null): {
   amount: string;

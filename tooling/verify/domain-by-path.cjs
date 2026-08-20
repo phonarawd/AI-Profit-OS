@@ -51,6 +51,20 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/lib\/opportunity-card-map\.ts$/.test(f) ||
+      /^apps\/web\/components\/spark-dash-home\/format\.ts$/.test(f) ||
+      /^packages\/ui\/components\/opportunity\/money-display\.ts$/.test(f) ||
+      /^packages\/ui\/components\/opportunity\/Opportunity(Card|Detail)\.tsx$/.test(
+        f,
+      ) ||
+      /^packages\/ui\/components\/trust\/ParticipateProofPanel\.tsx$/.test(f) ||
+      /^tooling\/e2e\/lib\/money-unavailable\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/money-unavailable\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/money-unavailable\.cjs$/.test(f),
+    scripts: ["money-unavailable.cjs", "no-it-jargon.cjs"],
+  },
+  {
+    test: (f) =>
       /^supabase\/migrations\//.test(f) ||
       /^tooling\/verify\/migrations-applied-parity\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/migrations-applied\.v1\.json$/.test(f),
