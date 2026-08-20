@@ -9,6 +9,8 @@ const AXE_SCAN_TARGETS = [
   { name: "home-mobile", route: "/", width: 390, height: 693 },
   { name: "home-desktop", route: "/", width: 1440, height: 1080 },
   { name: "login-mobile", route: "/auth/login", width: 390, height: 693 },
+  { name: "signup-mobile", route: "/auth/signup", width: 390, height: 693 },
+  { name: "onboarding-mobile", route: "/onboarding", width: 390, height: 693 },
 ];
 
 function resolvePkg(name) {

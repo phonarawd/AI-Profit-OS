@@ -1,0 +1,161 @@
+/**
+ * 온보딩 체험 모션 — 이해 보조만. 무한 발광 금지.
+ */
+.acq-demo-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lux-md, 16px);
+  border: 1px solid var(--color-lux-border);
+  background: var(--color-lux-surface);
+  padding: 1rem;
+}
+
+.acq-demo-label {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-lux-accent);
+  background: color-mix(in srgb, var(--color-lux-accent) 12%, transparent);
+}
+
+.acq-markets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.acq-market {
+  border-radius: 12px;
+  border: 1px solid var(--color-lux-border);
+  background: var(--color-lux-elevated);
+  padding: 0.75rem;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.acq-market.is-in {
+  animation: acq-slide-up 420ms ease forwards;
+}
+
+.acq-scan {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: var(--color-lux-accent);
+  opacity: 0;
+}
+
+.acq-scan.is-on {
+  animation: acq-scan 700ms ease forwards;
+}
+
+.acq-connect {
+  height: 2px;
+  margin: 0.75rem 12%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: var(--color-lux-accent);
+}
+
+.acq-connect.is-on {
+  animation: acq-connect 380ms ease forwards;
+}
+
+.acq-pulse {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--color-lux-accent);
+}
+
+.acq-pulse.is-on {
+  animation: acq-pulse 900ms ease;
+}
+
+.acq-meter {
+  height: 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-lux-border) 70%, transparent);
+  overflow: hidden;
+}
+
+.acq-meter-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--color-lux-text-muted) 55%, transparent);
+}
+
+.acq-fade-in {
+  opacity: 0;
+}
+
+.acq-fade-in.is-in {
+  animation: acq-fade 360ms ease forwards;
+}
+
+@keyframes acq-slide-up {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes acq-scan {
+  0% {
+    opacity: 0.9;
+    left: 8%;
+  }
+  100% {
+    opacity: 0;
+    left: 92%;
+  }
+}
+
+@keyframes acq-connect {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes acq-pulse {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes acq-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acq-market,
+  .acq-market.is-in,
+  .acq-scan,
+  .acq-scan.is-on,
+  .acq-connect,
+  .acq-connect.is-on,
+  .acq-pulse,
+  .acq-pulse.is-on,
+  .acq-fade-in,
+  .acq-fade-in.is-in {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}

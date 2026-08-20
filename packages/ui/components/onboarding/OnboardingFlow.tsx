@@ -4,11 +4,15 @@ import { useEffect, useState } from "react";
 import { applyFontScale } from "../../tokens/font-scale";
 import { T } from "../../copy/ko";
 import { BrandMark } from "../brand/BrandMark";
-import { Badge } from "../lux/Badge";
 import { MotionCTA } from "../lux/MotionCTA";
 import { TouchButton } from "../lux/TouchButton";
 import { DemoWalletBanner } from "../wallet/DemoWalletBanner";
 import { MarketPartnerTrustStrip } from "../trust/MarketPartnerTrustStrip";
+import { BuyingPowerMeter } from "./BuyingPowerMeter";
+import { MarketDiffDemo } from "./MarketDiffDemo";
+import { MatchConfidenceCard } from "./MatchConfidenceCard";
+import { OpportunityDemoCard } from "./OpportunityDemoCard";
+import "./onboarding-motion.css";
 
 export type ToneBand = "young" | "mid" | "senior";
 
@@ -81,6 +85,11 @@ export function OnboardingFlow() {
   function goNext() {
     const i = STEPS.indexOf(step);
     if (i < STEPS.length - 1) persist(STEPS[i + 1]!);
+  }
+
+  function goBack() {
+    const i = STEPS.indexOf(step);
+    if (i > 0) persist(STEPS[i - 1]!);
   }
 
   function skipIfAllowed() {
@@ -159,6 +168,7 @@ export function OnboardingFlow() {
           <p className="text-center text-sm text-lux-text-muted">
             {toneCopy.identityBody}
           </p>
+          <MarketDiffDemo />
           <div
             data-testid="compare-mini"
             className="rounded-lux-md border border-lux-border bg-lux-surface px-4 py-3 text-center text-sm"
@@ -188,6 +198,14 @@ export function OnboardingFlow() {
           >
             {T.onboarding.next}
           </TouchButton>
+          <TouchButton
+            variant="ghost"
+            className="w-full"
+            data-testid="onboarding-back"
+            onClick={goBack}
+          >
+            {T.onboarding.back}
+          </TouchButton>
         </section>
       ) : null}
 
@@ -205,6 +223,14 @@ export function OnboardingFlow() {
           >
             {T.onboarding.next}
           </TouchButton>
+          <TouchButton
+            variant="ghost"
+            className="w-full"
+            data-testid="onboarding-back"
+            onClick={goBack}
+          >
+            {T.onboarding.back}
+          </TouchButton>
         </section>
       ) : null}
 
@@ -220,43 +246,17 @@ export function OnboardingFlow() {
           <p className="text-center text-sm text-lux-text-muted">
             {T.onboarding.demoHint}
           </p>
-          {/* Guest utility — amount/USDT ticker 0 (§6.4c.1 F) */}
+          <p className="text-center text-xs text-lux-text-muted">
+            {T.onboarding.demoPriceExample}
+          </p>
+          {/* Guest utility — amount/USDT ticker 0 · practice_only */}
           <DemoWalletBanner visible />
-          <button
-            type="button"
-            data-testid="demo-opportunity-card"
-            data-flags="demo,practice_only"
-            className="w-full rounded-lux-md border border-lux-border bg-lux-elevated p-4 text-left"
-            onClick={() => setDemoOpen(true)}
-          >
-            <div className="mb-2 flex items-center gap-2">
-              <Badge>{T.practice.badge}</Badge>
-              <span className="text-xs text-lux-text-muted">
-                {T.practice.notWithdrawable}
-              </span>
-            </div>
-            <p className="text-sm text-lux-text-muted">
-              {T.margin.compareMiniUtility}
-            </p>
-            <p className="mt-2 text-lg font-semibold text-lux-text">
-              {T.onboarding.demoPriceExample}
-            </p>
-            <p className="mt-3 text-sm font-medium text-lux-principal">
-              {T.onboarding.tryDemoCard}
-            </p>
-          </button>
-          {demoOpen ? (
-            <aside
-              data-testid="demo-preview"
-              className="rounded-lux-md border border-lux-accent/40 bg-lux-surface px-4 py-3"
-              role="status"
-            >
-              <p className="font-medium">{T.onboarding.demoPreviewTitle}</p>
-              <p className="mt-1 text-sm text-lux-text-muted">
-                {T.onboarding.demoPreviewBody}
-              </p>
-            </aside>
-          ) : null}
+          <MatchConfidenceCard />
+          <BuyingPowerMeter />
+          <OpportunityDemoCard
+            open={demoOpen}
+            onOpen={() => setDemoOpen(true)}
+          />
           <TouchButton
             variant="primary"
             className="w-full"
@@ -265,6 +265,14 @@ export function OnboardingFlow() {
             onClick={goNext}
           >
             {T.onboarding.next}
+          </TouchButton>
+          <TouchButton
+            variant="ghost"
+            className="w-full"
+            data-testid="onboarding-back"
+            onClick={goBack}
+          >
+            {T.onboarding.back}
           </TouchButton>
         </section>
       ) : null}
@@ -311,6 +319,14 @@ export function OnboardingFlow() {
           >
             {T.onboarding.skip}
           </TouchButton>
+          <TouchButton
+            variant="ghost"
+            className="w-full"
+            data-testid="onboarding-back"
+            onClick={goBack}
+          >
+            {T.onboarding.back}
+          </TouchButton>
         </section>
       ) : null}
 
@@ -326,6 +342,14 @@ export function OnboardingFlow() {
           >
             {T.landing.ctaStartUtility}
           </MotionCTA>
+          <TouchButton
+            variant="ghost"
+            className="w-full"
+            data-testid="onboarding-back"
+            onClick={goBack}
+          >
+            {T.onboarding.back}
+          </TouchButton>
         </section>
       ) : null}
 
@@ -348,10 +372,11 @@ export function OnboardingFlow() {
             {T.onboarding.startApp}
           </TouchButton>
           <a
-            href="/wallet/deposit"
+            href="/"
             className="block text-center text-sm text-lux-principal underline-offset-2 hover:underline"
+            data-testid="onboarding-continue-real"
           >
-            {T.onboarding.payoutDepositLink}
+            {T.onboarding.continueReal}
           </a>
         </section>
       ) : null}

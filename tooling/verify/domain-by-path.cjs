@@ -95,6 +95,33 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/app\/page\.tsx$/.test(f) ||
+      /^apps\/web\/app\/HomeDesktopClient\.tsx$/.test(f) ||
+      /^apps\/web\/app\/(ads|l)\//.test(f) ||
+      /^packages\/ui\/components\/landing\//.test(f) ||
+      /^tooling\/verify\/landing-guest-closure\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/landing-guest\.spec\.cjs$/.test(f),
+    scripts: ["landing-guest-closure.cjs", "no-it-jargon.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/auth\//.test(f) ||
+      /^apps\/web\/app\/onboarding\//.test(f) ||
+      /^packages\/sdk\/src\/auth\//.test(f) ||
+      /^packages\/ui\/components\/(auth|onboarding)\//.test(f) ||
+      /^governance\/consumer-acquisition\//.test(f) ||
+      /^tooling\/verify\/acquisition-release\.cjs$/.test(f) ||
+      /^tooling\/verify\/login-kakao-closure\.cjs$/.test(f) ||
+      /^tooling\/verify\/complete-profile-closure\.cjs$/.test(f) ||
+      /^tooling\/verify\/onboarding-journey-closure\.cjs$/.test(f),
+    scripts: [
+      "acquisition-release.cjs",
+      "auth-surfaces.cjs",
+      "onboarding-experiential.cjs",
+    ],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/next\.config\.ts$/.test(f) ||
       /^packages\/ui\/components\/product\/image-hosts\.ts$/.test(f) ||
       /^tooling\/verify\/web-remote-patterns\.cjs$/.test(f),

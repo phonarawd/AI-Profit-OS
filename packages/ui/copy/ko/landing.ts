@@ -11,6 +11,11 @@ export const landing = {
   ctaOpenPriceMap: "실시간 시세 맵 열기",
   ctaStartUtility: "시작하기",
   ctaContinueUtility: "시세 맵 계속",
+  ctaJoin: "가입하고 시작하기",
+  ctaLogin: "로그인",
+  guestUnderstandA: "여러 곳의 시세·가격을 나란히 비교해요",
+  guestUnderstandB: "같은 상품을 이어서 보여 드려요",
+  guestUnderstandC: "실제 기회에서 필요한 준비 금액을 분명히 알려 드려요",
   ctaHint: "👋 시세 맵을 열어 보세요",
   /** LandingOperatorFooter · /me/legal 1링크 (§6.4c.1 D) */
   legalLink: "약관과 정보",
