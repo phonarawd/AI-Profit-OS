@@ -1,11 +1,18 @@
 {
   "name": "퍼뜩",
   "short_name": "퍼뜩",
-  "lang": "ko",
+  "id": "/",
+  "description": "AI가 찾아주는 수익 기회",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
-  "start_url": "/",
-  "background_color": "#F6F4FC",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
   "theme_color": "#6B3CFF",
+  "background_color": "#F6F4FC",
+  "lang": "ko-KR",
+  "dir": "ltr",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -18,6 +25,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

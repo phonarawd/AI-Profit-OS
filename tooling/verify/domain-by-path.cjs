@@ -107,6 +107,18 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/public\/manifest\.webmanifest$/.test(f) ||
+      /^apps\/web\/public\/sw\.js$/.test(f) ||
+      /^apps\/web\/public\/_headers$/.test(f) ||
+      /^apps\/web\/public\/icons\//.test(f) ||
+      /^apps\/web\/app\/pwa-shell\.css$/.test(f) ||
+      /^apps\/web\/app\/layout\.tsx$/.test(f) ||
+      /^apps\/web\/components\/pwa\//.test(f) ||
+      /^tooling\/verify\/pwa-native-shell\.cjs$/.test(f),
+    scripts: ["pwa-native-shell.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/page\.tsx$/.test(f) ||
       /^apps\/web\/app\/HomePageClient\.tsx$/.test(f) ||
       /^apps\/web\/app\/_components\/HomePageClient\.tsx$/.test(f) ||
