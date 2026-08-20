@@ -1,0 +1,43 @@
+---
+description: 광고 자동 ACTIVE·예산 변경 시 Standing Authorization과 deterministic Budget Guardrail만 적용
+globs: ".cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md,.cursor/plans/ai_profit_os_04_admin_e5f6a7b8.plan.md,apps/admin/**,services/ads-*/**,workers/ads-*/**"
+alwaysApply: false
+---
+
+# STANDING_AUTHORIZATION_RULE (v7.24.6 · REL-005)
+
+> **지금 enable/connect/mutation 금지.** File-Serial이 06 `ads-budget-standing-authorization`에 도달하기 전 runtime 구현 0.
+> SSOT 본문 = Infra §31.9 · UX 표시 = 04 `admin-ops`.
+
+Standing Authorization = Founder가 **한 번** 승인한 deterministic 자동 광고 운영 범위.
+AI 자유재량 권한이 아니다. Agent가 한도를 스스로 높일 수 없다.
+
+## Contract 최소 필드
+
+`enabled` · `allowed_channels` · `allowed_ad_accounts` · `allowed_landing_variants` · `allowed_message_axes` · `approved_creative_pool_ids` · `daily_total_budget_cap` · `monthly_total_budget_cap` · `channel_daily_cap` · `campaign_daily_cap` · `max_daily_change_pct` · `max_new_campaigns_per_day` · `max_new_creatives_per_day` · `minimum_sample_size` · `optimization_cooldown` · `auto_pause_allowed` · `auto_resume_allowed` · `auto_create_campaign_allowed` · `auto_activate_campaign_allowed` · `expires_at` · `approved_by` · `approved_at` · `version`
+
+값은 Founder/Admin이 명시한 승인값만. repository naming convention 우선.
+
+## Auto ACTIVE — 전부 AND
+
+Standing Authorization valid AND channel allowed AND ad account allowed AND landing already approved AND message axis already approved AND creative ∈ Human-Reviewed approved pool AND marketing-compliance PASS AND ad↔landing consistency PASS AND tracking/attribution/CAPI healthy AND landing health PASS AND budget guardrail PASS AND daily/monthly cap not exceeded AND provider account READY.
+
+하나라도 실패 → 자동 ACTIVE **0**.
+
+## Budget Guardrail = deterministic code
+
+```text
+Agent Recommendation → Budget Guardrail Service → ALLOW / DENY → Provider Mutation
+```
+
+Rule/prompt only로 예산을 막지 않는다. `budget +50%` 요청이 한도 `+10%`이면 **서버 DENY**.
+
+## HIGH / HUMAN (Standing Authorization 밖 · 약화 금지)
+
+최초 광고 계정 연결 · OAuth/재인증 · 새 ad account · 새 channel · 새 landing · 새 message axis · Human Review 미통과 creative · 월 총 광고비 한도 증가 · Standing Authorization 자체 변경 · 허용 자동 증액 범위 확대 · production secret 변경 · legal SSOT 변경 · dual-layer 변경 · production deployment · Money/KRW/high-withdraw Human Confirm · 외부 플랫폼이 사람 verification을 요구하는 경우.
+
+REL-005 `NON_PRODUCTION_A3`(dev/QA/PR/CI/staging) 는 위 HIGH/HUMAN 목록을 제거하거나 약화하지 않는다.
+
+## Fail-closed
+
+CAPI/attribution/consent/landing/mismatch/compliance/provider auth·API/sample/too-new/deploy incident/budget near·exceeded/critical OpsEvent/tracking discrepancy/conversion diagnostics → 자동 SCALE_UP·신규 ACTIVE 즉시 차단. 자동 PAUSE는 허용 가능. **자동 중지 > 자동 증액**.

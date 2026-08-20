@@ -1,0 +1,77 @@
+---
+description: Cursor Autonomous Ops는 계획만 · Skill/Agent/Automation/Cloud/Bugbot enable 금지 · production deploy는 기존 workflow_dispatch · non-prod A3 허용
+globs: ".cursor/skills/**,.cursor/agents/**,.github/workflows/**,.cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md"
+alwaysApply: false
+---
+
+# CURSOR_AUTONOMOUS_OPS_RULE (v7.24.6 · REL-005)
+
+> **지금 Skill 파일·Agent 파일·Automations·Cloud Agents·Bugbot·CLI key·Service Account를 만들지 않고 enable하지 않는다.**
+> 실행 Owns = 06 `cursor-autonomous-ops-enablement` · OpsEvent schema Owns = `infra-observability-late`.
+> 최종 출시 판정 Owns = 06 `ads-autonomous-ops-release-certification` (§31.12). enablement completed ≠ 「퍼뜩의 최종 자동운영 출시 준비 완료」. R8 PASS로 대체 금지.
+> SSOT 본문 = Infra §31.10~§31.12.
+> POST-011 enablement를 이 개정으로 선실행하지 않는다.
+
+## Automation boundary (REL-005)
+
+```text
+NON_PRODUCTION_A3 = ALLOWED
+  - local / dev implementation
+  - QA (QA_ENV_ISOLATION_GUARD PASS 후)
+  - branch / PR / required CI
+  - staging deploy + verification (자격·경로가 있을 때)
+
+PRODUCTION_HUMAN_GATE = REQUIRED
+  - production deploy = .github/workflows/deploy-cloudflare.yml workflow_dispatch HUMAN
+  - production deploy token = Agent 보유 0
+  - ads live 연결 = HUMAN
+  - production DB mutation = REL-701-DB Founder 명시 승인만
+```
+
+에이전트는 non-production(dev/QA/PR/CI/staging)을 A3로 진행할 수 있다.
+production auto-deploy 문장·권한·토큰을 이 파일에 넣지 않는다.
+Standing Authorization HIGH/HUMAN 목록은 이 개정으로 약화하지 않는다.
+
+## 흐름
+
+```text
+OpsEvent / GitHub / cron / webhook
+  → Cursor Automation → Cloud Agent → Parent Agent
+  → readonly specialist Subagents
+  → External outage? YES → 코드 수정 0 + 상태 보고
+  → NO → fix → tests → PR → Bugbot → CI → staging
+  → existing production approval (workflow_dispatch HUMAN)
+```
+
+Production deployment 자동화를 이 패치에서 확대하지 않는다.
+기존 `.github/workflows/deploy-cloudflare.yml` `workflow_dispatch` + Human 유지.
+
+## Agent에게 주지 않는 권한
+
+- production ad secret
+- unrestricted provider spend
+- production deploy token
+- legal mutation
+- unrestricted database mutation
+
+Agent는 recommendation 또는 deterministic Internal API만 호출한다.
+
+## Skills (실행 todo 도달 시 후보 · 지금 생성 0)
+
+`seo-public-route-audit` · `marketing-compliance-review` · `capi-diagnostics` · `add-canonical-event` · `add-public-route` · `ci-gate-triage` · `post-deploy-health` · `incident-triage` · `ads-provider-readiness`
+
+Ads Orchestrator runtime **이후만** 검토: `ads-campaign-diagnostics` · `ads-budget-guardrail-review` · `ads-performance-review`.
+
+## Subagents (readonly · 지금 생성 0)
+
+`seo-auditor` · `ads-compliance-auditor` · `capi-attribution-auditor` · `ci-deploy-auditor` · `security-auditor`
+Orchestrator 이후 후보: `ads-performance-auditor`
+
+Subagent는 File-Serial todo `status`를 변경할 권한이 없다. Parent만 실행권.
+
+## Founder 언어
+
+Internal `Agent FINISHED / PR #142 / CI pending` → Founder `수정안을 만들었습니다. 자동 검사를 진행 중입니다.`
+Internal `Agent ERROR` → `자동 수정에 실패했습니다. 원인을 다시 확인하고 있습니다.`
+사람 필요 시에만 `직접 확인이 필요합니다.`
+표시 Owns = 04 `admin-ops`.
