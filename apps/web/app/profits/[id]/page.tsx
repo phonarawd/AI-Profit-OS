@@ -1,3 +1,4 @@
+import "../../../components/spark-dash-home/spark-dash-home.css";
 import { OpportunityDetailClient } from "./OpportunityDetailClient";
 
 /** live-wire: fetchOpportunityDetail 는 OpportunityDetailClient 가 호출한다. */
