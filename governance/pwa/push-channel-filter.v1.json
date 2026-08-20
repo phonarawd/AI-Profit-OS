@@ -1,0 +1,12 @@
+{
+  "rel": "REL-021",
+  "title": "자동 Push 채널 필터",
+  "autoChannels": ["notice", "campaign", "opportunity"],
+  "ownerTable": "notification_prefs",
+  "enqueueWhenPrefFalse": 0,
+  "mixChannels": false,
+  "settingsSurface": "packages/ui/components/settings/SettingsPanel.tsx",
+  "settingsApi": "/api/v1/me/notification-prefs",
+  "redesignForbidden": true,
+  "storeBridge": 0
+}

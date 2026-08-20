@@ -130,7 +130,7 @@ const RULES = [
       /^tooling\/verify\/pwa-push-badge\.cjs$/.test(f) ||
       /^apps\/web\/components\/pwa\/PushOptIn\.tsx$/.test(f) ||
       /^apps\/web\/public\/sw\.js$/.test(f),
-    scripts: ["pwa-push-badge.cjs", "pwa-native-shell.cjs"],
+    scripts: ["pwa-push-badge.cjs", "pwa-native-shell.cjs", "push-channel-prefs.cjs"],
   },
   {
     test: (f) =>
@@ -416,6 +416,7 @@ const RULES = [
     scripts: [
       "ops-inbox.cjs",
       "notification-prefs-default-on.cjs",
+      "push-channel-prefs.cjs",
     ],
   },
   {
