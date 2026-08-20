@@ -1,0 +1,31 @@
+{
+  "schema": "responsive.large-screen-safety.v1",
+  "rel": "REL-019",
+  "homeRetroactiveVisualRedesign": false,
+  "homeLargeScreenSafetyQa": true,
+  "homeQaRels": ["REL-105", "REL-601"],
+  "viewports": [2560, 3440, 3840],
+  "checks": [
+    {
+      "id": "overflow",
+      "fail": "horizontal scroll or money/card escape from rail"
+    },
+    {
+      "id": "clip",
+      "fail": "CTA, money, or media clipped"
+    },
+    {
+      "id": "absurd-stretch",
+      "fail": "hero/card stretched beyond content rail"
+    },
+    {
+      "id": "interaction-break",
+      "fail": "hit target overlap or unreachable control"
+    },
+    {
+      "id": "performance",
+      "fail": "scroll/paint collapse on large viewport"
+    }
+  ],
+  "thisRel": "document-and-lock-only"
+}

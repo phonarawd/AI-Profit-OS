@@ -192,6 +192,7 @@
     "verify:observability": "node tooling/verify/observability.cjs",
     "verify:legacy-plan-migration": "node tooling/verify/legacy-plan-migration.cjs",
     "verify:asset-production-pipeline": "node tooling/verify/asset-production-pipeline.cjs",
+    "verify:device-tier-system": "node tooling/verify/device-tier-system.cjs",
     "engine-acceptance:freeze-baseline": "node tooling/engine-acceptance/freeze-baseline.cjs",
     "engine-acceptance:kill-switch": "node tooling/engine-acceptance/kill-switch.cjs",
     "engine-acceptance:tiny-smoke": "node tooling/engine-acceptance/tiny-smoke.cjs",

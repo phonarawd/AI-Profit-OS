@@ -1,0 +1,59 @@
+{
+  "schema": "responsive.home-geometry-lock.v1",
+  "rel": "REL-019",
+  "rewrite": "FORBIDDEN",
+  "files": {
+    "apps/web/app/page.tsx": {
+      "sha256": "71fca6089547ee624d052555ea95b632ad14d81a26fa5595a83b57748b0a4463",
+      "bytes": 198
+    },
+    "apps/web/app/HomePageClient.tsx": {
+      "sha256": "e29dc8af1caa4aaac2fe34ab1b9d7e21656ac9c3b926201e49c8ea87e45bc9f2",
+      "bytes": 10120
+    },
+    "apps/web/app/HomeDesktopClient.tsx": {
+      "sha256": "f915c547a8fce30b9fc211148480ba61633562ae2aa4042f512b907122767680",
+      "bytes": 2246
+    },
+    "apps/web/app/globals.css": {
+      "sha256": "15bc0df228d1b37b9578b8abf46338dde7f624f4a9112fd821786601d064a4cf",
+      "bytes": 190
+    },
+    "apps/web/components/spark-dash-home/HomeDesktop.tsx": {
+      "sha256": "84cbbc21883a85c6929ce9f1bed5335e874e67782ec28b83e1f52d378353d719",
+      "bytes": 16640
+    },
+    "apps/web/components/spark-dash-home/HomeMobile.tsx": {
+      "sha256": "e2a204fa3a0fb15d33d1085d9e0f948e6341b356ce32996e048d76e90ab8dc0c",
+      "bytes": 15234
+    },
+    "apps/web/components/spark-dash-home/spark-dash-home.css": {
+      "sha256": "0b0c6c16752c1667c2088f3c7a2591df4bff8b59ed27c58f6d75217f31c24f32",
+      "bytes": 27773
+    },
+    "apps/web/components/spark-dash-home/spark-dash-mobile.css": {
+      "sha256": "d2b87e03df4f4627603973734d30296b864790fdb78cc92c8d34ffa311118ca7",
+      "bytes": 15625
+    },
+    "apps/web/components/spark-dash-home/assets.ts": {
+      "sha256": "a1260ff6707455ceb5b45012149f6088e82ee1497ba6e919a898df9b4089e694",
+      "bytes": 2631
+    },
+    "apps/web/components/spark-dash-home/format.ts": {
+      "sha256": "1f94de82a20695db66dd19840f7ab85f594861b45943cd4b11fd6a51197175e6",
+      "bytes": 2649
+    },
+    "apps/web/components/spark-dash-home/map-runtime.ts": {
+      "sha256": "cd888cc1d3d05f394323e5ce8a42133a853665d42a52f70b9d1be68c836a8cab",
+      "bytes": 6590
+    },
+    "apps/web/components/spark-dash-home/types.ts": {
+      "sha256": "3846fed5ab1ae966710f29534d1f5b9f7f1d24fb04009123014e171e23ccbcfb",
+      "bytes": 2372
+    },
+    "apps/web/components/spark-dash-home/visual-fixture.ts": {
+      "sha256": "912bcc7135ce8d8a1a26b1f4bad7b18307b55e0a4a6334f77757ebf4bc5403c6",
+      "bytes": 5112
+    }
+  }
+}
