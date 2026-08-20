@@ -131,6 +131,7 @@ FAKE_ACTIVITY = FORBIDDEN
 | failure recovery | buckets 404 → UNAVAILABLE. KYC → Kyc. step-up fail → 재시도 |
 | screens | Wallet · UsdtDeposit · UsdtWithdraw · KrwDeposit · KrwWithdraw · TransactionHistory · TransactionDetail |
 | classification | KEEP. History 목록 owner PARTIAL (KRW requests only; journal list MISSING) |
+| notes | 2026-08-20 B-WALLET-001: web 8면 PendingFigma. 계약=`CONSUMER_WALLET_CONTRACT.md` |
 
 ---
 

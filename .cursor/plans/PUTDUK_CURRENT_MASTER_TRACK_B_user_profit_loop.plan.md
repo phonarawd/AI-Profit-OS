@@ -22,7 +22,7 @@ todos:
     status: completed
   - id: b-wallet-001
     content: "[B-WALLET-001] Wallet contract 재정합(Spark Dash) · legacy=03 redesign-r3-wallet-contract(pending) · PRIORITY=LAUNCH_REQUIRED · RISK=HIGH"
-    status: pending
+    status: completed
   - id: b-wallet-002
     content: "[B-WALLET-002] Wallet gap-only 구현(기능 대부분 REAL, 시각 정합만) · legacy=03 redesign-r3-wallet-implementation(pending) · PRIORITY=LAUNCH_REQUIRED · RISK=HIGH"
     status: pending
@@ -54,7 +54,7 @@ isProject: false
 | `/trades` | `TradesClient` 최소 실목록 (`GET /api/v1/trades`) | `apps/web/app/trades/page.tsx`(2026-08-20 B-TRADES-001) |
 | `/trades/[id]/execute` | `PendingFigma title="진행"` | `apps/web/app/trades/[id]/execute/page.tsx`(2026-08-20 재실측) |
 | 가짜 금액(하드코딩 `0`·가짜 `12.50 USDT`) | **CLOSED** | 그린필드 리셋으로 두 페이지 모두 PendingFigma로 교체됨 — 재실측 확인, Founder 질문 불필요 |
-| Wallet buckets/deposit/withdraw/KYC | 대부분 REAL | Supabase 실측(`ledger_accounts`·`withdraw_intents`·`kyc_status` 등 8+ 테이블) |
+| Wallet buckets/deposit/withdraw/KYC | 백엔드 REAL · web PendingFigma 8면 | B-WALLET-001 재실측 2026-08-20 · 계약=`CONSUMER_WALLET_CONTRACT.md` |
 | `/profits` UI | Spark Dash(`ProfitsDesktopClient`) | `apps/web/app/profits/page.tsx` |
 
 ```text
@@ -67,6 +67,8 @@ REAL_TRADES_IMPLEMENTATION = REQUIRED   (placeholder만 있고 기능은 없음 
 재확인해야 한다(reconfirm-first 원칙, 추측 금지).
 
 **B-LOOP-001 재실측 (2026-08-20):** `/profits/[id]`=`PendingFigma` · `apps/web` POST participate/preflight **0** · SDK participate export **MISSING** · `useTradeExecution` EXISTS/unwired · Nest owners KEEP. 계약=`docs/product/consumer/CONSUMER_CORE_LOOP_CONTRACT.md`.
+
+**B-WALLET-001 재실측 (2026-08-20):** `/wallet`·deposit·withdraw*·history·`/me/kyc`·get-usdt = `PendingFigma` 8면 · Nest 4레일 OWNER_FOUND · SDK buckets/withdraw/KRW PRESENT · address/KYC SDK MISSING · journal list MISSING · Spark Dash DNA=CONSTRAINT_ONLY · Home geometry 종속 0. 플랜 “시각 정합만”은 백엔드 REAL을 가리킴 — B-WALLET-002=`WIRE_WITHOUT_APPROVED_FIGMA`. 계약=`docs/product/consumer/CONSUMER_WALLET_CONTRACT.md`.
 
 ## User Opportunity Feed Policy (Founder 직접 지시 — B-FEED-001)
 

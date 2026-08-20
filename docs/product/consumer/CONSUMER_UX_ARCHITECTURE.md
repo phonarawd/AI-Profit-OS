@@ -49,6 +49,7 @@ KNOWN_AMBIGUOUS_CRITICAL_TRUTH_OWNER = 0
 | Gaps | `CONSUMER_IMPLEMENTATION_GAP_REGISTER.md` |
 | Current capability | `CONSUMER_CAPABILITY_MAP.md` |
 | Core Loop contract | `CONSUMER_CORE_LOOP_CONTRACT.md` (B-LOOP-001 · 2026-08-20) |
+| Wallet contract | `CONSUMER_WALLET_CONTRACT.md` (B-WALLET-001 · 2026-08-20) |
 
 ---
 
@@ -342,6 +343,8 @@ Soft/Hard deadline 시각은 서버 필드다. 초시계로 성공을 연출하�
 
 ## Wallet UX
 
+상세 계약 = `CONSUMER_WALLET_CONTRACT.md` (B-WALLET-001). Spark Dash DNA는 money/trust 제약만 공유하고 Home geometry는 가져오지 않는다.
+
 네 레일:
 
 | Rail | Entry | 요구 | KYC | 금액 | Fee owner | FX | 도착/출발 | 확인 | pending | success | failure | history | recovery |
@@ -596,7 +599,8 @@ Premium = 명확함이지 이펙트가 아니다.
 ## Known implementation gaps
 
 상세 = `CONSUMER_IMPLEMENTATION_GAP_REGISTER.md`.  
-Core Loop 계약(2026-08-20 재실측) = `CONSUMER_CORE_LOOP_CONTRACT.md`.
+Core Loop 계약(2026-08-20 재실측) = `CONSUMER_CORE_LOOP_CONTRACT.md`.  
+Wallet 계약(2026-08-20 재실측) = `CONSUMER_WALLET_CONTRACT.md` — backend REAL · web 8면 PendingFigma · Spark Dash DNA=CONSTRAINT_ONLY · Home geometry 종속 0.
 
 Brand/Figma를 막는 비즈니스 발명 요구는 없다. Home mockup은 **owned fields + UNAVAILABLE**만 쓰면 된다.
 

@@ -1,0 +1,127 @@
+{
+  "$id": "https://ai-profit-os.local/governance/consumer-wallet/wallet.v1.json",
+  "schema": "governance.consumer-wallet.wallet.v1",
+  "version": "1.0.0",
+  "measuredAt": "2026-08-20",
+  "status": "CONTRACT_READY",
+  "implementationStatus": "WEB_UNWIRED",
+  "task": "B-WALLET-001",
+  "certification": {
+    "task": "B-WALLET-003",
+    "status": "PENDING",
+    "verifier": "tooling/verify/wallet-release.cjs"
+  },
+  "legacyPointer": "03 redesign-r3-wallet-contract",
+  "productContract": "docs/product/consumer/CONSUMER_WALLET_CONTRACT.md",
+  "authority": {
+    "MONEY_RULE_REDEFINITION": "FORBIDDEN",
+    "PG_GATEWAY": "FORBIDDEN",
+    "LEDGER_COLUMN_UPDATE": "FORBIDDEN",
+    "KYC_ON_DEPOSIT": "FORBIDDEN",
+    "KYC_ON_PARTICIPATE": "FORBIDDEN",
+    "KYC_ON_WITHDRAW": "REQUIRED",
+    "DEFAULT_WITHDRAW_MODE": "profit",
+    "PRACTICE_TO_PROFIT_OR_WITHDRAW": "FORBIDDEN",
+    "PRINCIPAL_PLUS_PROFIT_AS_AVAILABLE": "FORBIDDEN",
+    "ONE_CONF_EQUALS_CREDITED": "FORBIDDEN",
+    "MISSING_AS_ZERO": "FORBIDDEN",
+    "FAKE_MONEY": "FORBIDDEN",
+    "FAKE_FOMO": "FORBIDDEN",
+    "USDT_PRIMARY": true,
+    "KRW_SECONDARY": true,
+    "FX_SECOND_TRUTH": "FORBIDDEN",
+    "APPROVED_FIGMA_WALLET": "NONE",
+    "NEW_VISUAL_LOCK": false,
+    "LEGACY_VISUAL_RECOVERY": "FORBIDDEN",
+    "HOME_GEOMETRY_DEPENDENCY": "FORBIDDEN",
+    "PROFITS_GEOMETRY_DEPENDENCY": "FORBIDDEN",
+    "SPARK_DASH_DNA_SHARE": "CONSTRAINT_ONLY",
+    "PROFIT_MERGE_CTA": "HIDE",
+    "RETURN_TO_API_FIELD": "FORBIDDEN",
+    "USDT_UI_CONFIRMATIONS": 1,
+    "USDT_LEDGER_CONFIRMATIONS": 19,
+    "KRW_DEPOSIT_TTL_MIN": 120
+  },
+  "identity": {
+    "principal": "wallet_buckets.principal_usdt",
+    "profit": "wallet_buckets.profit_usdt",
+    "locked": "wallet_buckets.locked_usdt",
+    "practice": "wallet_buckets.practice_usdt",
+    "liability": "sum of four buckets",
+    "usdtAddress": "GET /api/v1/wallet/my-deposit-address",
+    "krwRequest": "requestedAmountKrw + uniqueSuffixKrw = payableAmountKrw",
+    "withdrawIntent": "POST /api/v1/wallet/withdraw default mode=profit",
+    "kyc": "GET/POST /api/v1/compliance/kyc/*",
+    "historyJournal": "MISSING"
+  },
+  "rails": [
+    {
+      "id": "usdt-deposit",
+      "route": "/wallet/deposit",
+      "api": "GET /api/v1/wallet/my-deposit-address",
+      "kyc": false
+    },
+    {
+      "id": "krw-deposit",
+      "route": "/wallet/deposit",
+      "api": "POST /api/v1/wallet/krw-deposit-requests",
+      "kyc": false
+    },
+    {
+      "id": "usdt-withdraw",
+      "route": "/wallet/withdraw/usdt",
+      "api": "POST /api/v1/wallet/withdraw",
+      "kyc": true
+    },
+    {
+      "id": "krw-withdraw",
+      "route": "/wallet/withdraw/krw",
+      "api": "POST /api/v1/wallet/withdraw asset=KRW",
+      "kyc": true
+    }
+  ],
+  "routes": {
+    "buckets": "GET /api/v1/wallet/buckets",
+    "depositAddress": "GET /api/v1/wallet/my-deposit-address",
+    "krwDeposit": "POST /api/v1/wallet/krw-deposit-requests",
+    "withdraw": "POST /api/v1/wallet/withdraw",
+    "withdrawStepUp": "POST /api/v1/wallet/withdraw/step-up/*",
+    "kycStatus": "GET /api/v1/compliance/kyc/status",
+    "kycSubmit": "POST /api/v1/compliance/kyc/submit",
+    "compatWallet": "/wallet",
+    "compatDeposit": "/wallet/deposit",
+    "compatWithdrawUsdt": "/wallet/withdraw/usdt",
+    "compatWithdrawKrw": "/wallet/withdraw/krw",
+    "compatHistory": "/wallet/history",
+    "compatKyc": "/me/kyc",
+    "compatGetUsdt": "/me/guide/get-usdt"
+  },
+  "owners": {
+    "buckets": "services/api-nest/src/ledger/ledger.buckets.service.ts",
+    "depositAddress": "services/api-nest/src/wallet/deposit-address.service.ts",
+    "usdtDeposit": "services/api-nest/src/wallet/usdt-deposit.service.ts",
+    "krwDeposit": "services/api-nest/src/wallet/krw-deposit.apply.ts",
+    "withdraw": "services/api-nest/src/wallet/withdraw-intent.service.ts",
+    "kyc": "services/api-nest/src/compliance/kyc-gate.ts",
+    "sdkWallet": "packages/sdk/src/wallet"
+  },
+  "measured": {
+    "webWalletPages": 8,
+    "webWalletPendingFigma": 8,
+    "webWalletBucketsFetch": 0,
+    "webWithdrawPost": 0,
+    "sdkWalletBucketsExport": "PRESENT",
+    "sdkWithdrawExport": "PRESENT",
+    "sdkKrwDepositExport": "PRESENT",
+    "sdkDepositAddressExport": "MISSING",
+    "sdkKycExport": "MISSING",
+    "backendWallet": "OWNER_FOUND",
+    "userJournalListApi": "MISSING",
+    "sdkZeroFallback": "STILL_PRESENT",
+    "fakeFinancialValueBug": "CLOSED",
+    "pgGateway": "ABSENT"
+  },
+  "nextSlices": ["B-WALLET-002", "B-WALLET-003"],
+  "verifier": "tooling/verify/wallet-contract.cjs",
+  "releaseVerifier": "tooling/verify/wallet-release.cjs"
+}

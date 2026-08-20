@@ -46,6 +46,7 @@ const FILES = {
   gaps: `${dir}/CONSUMER_IMPLEMENTATION_GAP_REGISTER.md`,
   caps: `${dir}/CONSUMER_CAPABILITY_MAP.md`,
   loop: `${dir}/CONSUMER_CORE_LOOP_CONTRACT.md`,
+  wallet: `${dir}/CONSUMER_WALLET_CONTRACT.md`,
 };
 
 for (const rel of Object.values(FILES)) {
@@ -284,6 +285,10 @@ mustInclude(FILES.caps, "COMPLETE_ENOUGH");
 mustInclude(FILES.loop, "ENGINE_RULE_REDEFINITION = FORBIDDEN");
 mustInclude(FILES.loop, "WEB_PARTICIPATE_POST = 1");
 mustInclude(FILES.ux, "CONSUMER_CORE_LOOP_CONTRACT.md");
+mustInclude(FILES.ux, "CONSUMER_WALLET_CONTRACT.md");
+mustInclude(FILES.wallet, "MONEY_RULE_REDEFINITION = FORBIDDEN");
+mustInclude(FILES.wallet, "WEB_WALLET_PENDING_FIGMA = 8");
+mustInclude(FILES.wallet, "HOME_GEOMETRY_DEPENDENCY = FORBIDDEN");
 
 const os = read(
   "docs/product/PUTDUK_PRODUCT_DESIGN_ENGINEERING_OPERATING_SYSTEM.md",

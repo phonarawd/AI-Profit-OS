@@ -91,6 +91,7 @@ blocks full-app implementation Figma = G-P1-04/05/08 annotations required
 | hardcoded zero | STILL_PRESENT | SDK/API fallbacks (G-P0-01) |
 | fake fallback amount | NOT_FOUND | no hardcoded demo profit amount in current web/sdk |
 | wallet history | STILL_PRESENT | page placeholder + user journal list MISSING |
+| wallet web 8면 | STILL_PRESENT PendingFigma | B-WALLET-001 재실측 2026-08-20. backend/SDK buckets·withdraw·KRW REAL. address/KYC SDK MISSING. 계약=`CONSUMER_WALLET_CONTRACT.md` · 배선=B-WALLET-002 |
 | Kakao runtime | OWNER_FOUND API / WEB_WIRING_MISSING | `OAUTH_PRIMARY=kakao` |
 | dead href | NOT_FOUND | PendingFigma has no href |
 | legacy execute path | CLOSED (2026-08-20 B-EXECUTION-001) | `/trades/[id]/execute`=`useTradeExecution` 최소 실데이터. progressPct 표시 0. API execute-tick KEEP |

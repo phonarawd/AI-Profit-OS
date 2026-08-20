@@ -27,6 +27,8 @@ const RULES = [
       ) ||
       /^tooling\/verify\/consumer-ux-architecture\.cjs$/.test(f) ||
       /^tooling\/verify\/core-loop-contract\.cjs$/.test(f) ||
+      /^tooling\/verify\/wallet-contract\.cjs$/.test(f) ||
+      /^governance\/consumer-wallet\//.test(f) ||
       /^tooling\/verify\/participate-web-wire\.cjs$/.test(f) ||
       /^tooling\/verify\/execute-web-wire\.cjs$/.test(f) ||
       /^tooling\/verify\/trades-web-wire\.cjs$/.test(f) ||
@@ -43,6 +45,7 @@ const RULES = [
     scripts: [
       "consumer-ux-architecture.cjs",
       "core-loop-contract.cjs",
+      "wallet-contract.cjs",
       "participate-web-wire.cjs",
       "execute-web-wire.cjs",
       "trades-web-wire.cjs",
