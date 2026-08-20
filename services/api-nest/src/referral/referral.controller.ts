@@ -40,6 +40,7 @@ export class ReferralController {
     const cfg = await this.program.get();
     const asReferrer = await this.edges.listByReferrer(userId);
     const asReferee = await this.edges.getByReferee(userId);
+    const myReferralCode = await this.edges.getMyReferralCode(userId);
     return {
       enabled: cfg.enabled,
       rewardsEnabled: cfg.rewardsEnabled,
@@ -47,6 +48,7 @@ export class ReferralController {
       copyOwner: "UI §5.9.1a",
       inviteCountUnlimited: true,
       sharePerUserPerDay: cfg.sharePerUserPerDay,
+      myReferralCode,
       edges: asReferrer,
       myBinding: asReferee,
       /** Pool empty → show REFERRAL_POOL_WAIT copy · not invite failure */

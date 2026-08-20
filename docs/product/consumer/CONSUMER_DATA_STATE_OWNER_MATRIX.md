@@ -36,18 +36,18 @@ ZERO_NE_UNAVAILABLE = YES
 | PayableKrw | requested+suffix | Money | create request | same | POST krw | no | YES | NO | explain suffix | n/a | — |
 | WithdrawStatus | withdraw intent | Money | `withdraw_intents` | SDK createWithdraw | `POST /wallet/withdraw` | no | YES | NO | map | UNAVAILABLE | — |
 | WithdrawStepUp | step-up | Auth/Money | challenge/verify | SDK types | `/wallet/withdraw/step-up/*` | no | NO | NO | — | retry | — |
-| KycStatus | `kyc_status` | Money compliance | kyc | none dedicated SDK | `GET /compliance/kyc/status` | no | gate | NO | map | UNAVAILABLE | block withdraw |
-| ReferralRewardStatus | edge/payout status | Money | `referral_edges` | none SDK | `GET /referral/me` | L3 on MATCH_SUCCESS | YES | NO | map Korean, no L1/L2/L3 label | hide % | rewardsEnabled=false |
+| KycStatus | `kyc_status` | Money compliance | kyc | `KycStatusResponse` | `GET /compliance/kyc/status` | no | gate | NO | map | UNAVAILABLE | block withdraw |
+| ReferralRewardStatus | edge/payout status | Money | `referral_edges` | `ReferralMe` | `GET /referral/me` | L3 on MATCH_SUCCESS | YES | NO | map Korean, no L1/L2/L3 label | hide % | rewardsEnabled=false |
 | PartnerStatus | Founder lock | Product · **SINGLE OWNER** | founder-intent | n/a | n/a | adapter ≠ partnership | NO | NO | official names | no fake partner | Yahoo partnership remains OFFICIAL |
 | AdapterAvailability | MI adapter catalog | Engine/runtime · **SINGLE OWNER** | market-intelligence catalog | n/a | n/a | listing ingest only | NO | NO | INTERNAL | never imply partnership | Yahoo API/adapter/data-source FORBIDDEN |
 | HomeViewState | HomeReadModel | Engine mapper | HomeReadService | `HomeReadModelResponse` | `GET /me/home-read` | feed+money+growth | YES | NO | label | unauthorized Fact null | — |
 | HomePrincipal | principal on Home | Money | home-money-read | `HomeMoneyReadResponse` | `GET /me/home-money-read` | no | YES | NO | YES | state≠ready → null | — |
 | SettlementCountToday | count not USDT | Money projection | DayPulse/settlement | HomeMoneyRead | same | YES count | COUNT only | NO as money | NO currency | hide | — |
 | TodayPossibleProfit | server_derived sum | Engine HomeRead | affordable∧available∧compareReady | HomeRead | `GET /me/home-read` | YES | YES | NO | YES | null | 보장 금지 |
-| Session | JWT cookie | Auth | `aipo_session` | none | `GET /auth/session` | no | NO | presence only | — | guest | Login |
+| Session | JWT cookie | Auth | `aipo_session` | `AuthSession` | `GET /auth/session` | no | NO | presence only | — | guest | Login |
 | DayPulse | live aggregates | Engine/Money | day-pulse | `DayPulseResponse` | `GET /me/day-pulse` | YES | COUNT | NO | NO fake presence | hide if off | — |
 | AIInsight | coach | Engine AI | chips/chat | peotteok types | `GET/POST /me/peotteok/*` | Fact tools | NO invent | NO | label FACT/INFERENCE | degrade | — |
-| Inbox | ops messages | Inbox | `ops_inbox` | none SDK | `GET /me/inbox` | no | NO | NO | — | empty | — |
+| Inbox | ops messages | Inbox | `ops_inbox` | `InboxList` | `GET /me/inbox` | no | NO | NO | — | empty | — |
 | UsdtAddress | TRC20 | Money | `user_deposit_addresses` | none typed in index | `GET /wallet/my-deposit-address` | no | YES | NO | copy | UNAVAILABLE | Support |
 | Membership | ladder display | Engine | user_membership | none | `GET /me/membership` | no Rule input | NO | NO | not primary | hide | REMOVE PRIMARY |
 | Benefits | missions | Money | benefits | none | `GET /me/benefits` | events | PARTIAL | NO | not primary | hide | REMOVE PRIMARY |

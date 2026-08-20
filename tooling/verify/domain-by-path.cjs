@@ -33,6 +33,7 @@ const RULES = [
       /^tooling\/verify\/acquisition-release\.cjs$/.test(f) ||
       /^tooling\/verify\/lib\/acquisition-release-runtime\.cjs$/.test(f) ||
       /^tooling\/verify\/account-hub-contract\.cjs$/.test(f) ||
+      /^tooling\/verify\/account-hub-gap-wire\.cjs$/.test(f) ||
       /^governance\/consumer-acquisition\//.test(f) ||
       /^governance\/consumer-account-hub\//.test(f) ||
       /^packages\/sdk\/src\/auth\//.test(f) ||
@@ -66,6 +67,7 @@ const RULES = [
       "acquisition-gap-wire.cjs",
       "acquisition-release.cjs",
       "account-hub-contract.cjs",
+      "account-hub-gap-wire.cjs",
       "wallet-gap-wire.cjs",
       "wallet-release.cjs",
       "participate-web-wire.cjs",
@@ -75,8 +77,11 @@ const RULES = [
     ],
   },
   {
-    test: (f) => /^apps\/web\/app\/me\//.test(f),
-    scripts: ["account-hub-contract.cjs"],
+    test: (f) =>
+      /^apps\/web\/app\/me\//.test(f) ||
+      /^packages\/sdk\/src\/referral\//.test(f) ||
+      /^packages\/sdk\/src\/inbox\//.test(f),
+    scripts: ["account-hub-contract.cjs", "account-hub-gap-wire.cjs"],
   },
   {
     test: (f) =>

@@ -151,6 +151,17 @@ export class ReferralEdgeService {
     return row ? this.toV1(row) : null;
   }
 
+  /** 기존 users.referral_code 읽기만. 없으면 발명하지 않음. */
+  async getMyReferralCode(userId: string): Promise<string | null> {
+    if (!this.db.configured()) return null;
+    const r = await this.db.query<{ referral_code: string | null }>(
+      `SELECT referral_code FROM public.users WHERE id = $1::uuid`,
+      [userId],
+    );
+    const code = r.rows[0]?.referral_code;
+    return typeof code === "string" && code.trim() ? code.trim() : null;
+  }
+
   async listByReferrer(referrerUserId: string): Promise<ReferralEdge[]> {
     const r = await this.db.query<EdgeRow>(
       `SELECT id::text, referrer_user_id::text, referee_user_id::text, code,

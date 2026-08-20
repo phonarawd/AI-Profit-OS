@@ -36,15 +36,15 @@ CURRENT_WEB = Home + /profits list = Spark Dash presentation · /profits/[id] pa
 | KRW Withdraw | `/wallet/withdraw/krw` | OWNER_FOUND asset=KRW | OWNER_FOUND | n/a | OWNER_FOUND + FX | WEB_WIRING_MISSING | PARTIAL | rail | KYC · PendingFigma |
 | History | `/wallet/history` | OWNER_PARTIAL KRW list only | OWNER_PARTIAL | n/a | journals Admin | WEB_WIRING_MISSING | PARTIAL | History | P1 · PendingFigma |
 | Transaction detail | none | OWNER_PARTIAL KRW by id | OWNER_FOUND getKrwDepositRequest | n/a | PARTIAL | WEB_WIRING_MISSING | PARTIAL | Detail | — |
-| KYC | `/me/kyc` | OWNER_FOUND compliance | OWNER_MISSING | n/a | OWNER_FOUND withdraw gate | WEB_WIRING_MISSING | PARTIAL | Withdraw | participate KYC 0 · PendingFigma |
-| Referral | `/me/invite` | OWNER_FOUND referral | OWNER_MISSING | L3 on success | OWNER_FOUND | WEB_WIRING_MISSING | PARTIAL | Retention | no % on user DTO |
-| Notifications | `/me/inbox` | OWNER_FOUND inbox+prefs | OWNER_MISSING | n/a | n/a | WEB_WIRING_MISSING | PARTIAL | Retention | fanout UNKNOWN |
+| KYC | `/me/kyc` | OWNER_FOUND compliance | OWNER_FOUND fetchKycStatus | n/a | OWNER_FOUND withdraw gate | WEB_WIRING_PRESENT (minimal) | PARTIAL | Withdraw | participate KYC 0 · PendingFigma |
+| Referral | `/me/invite` | OWNER_FOUND referral | OWNER_FOUND fetchReferralMe | L3 on success | OWNER_FOUND | WEB_WIRING_PRESENT (minimal) | PARTIAL | Retention | no % on user DTO |
+| Notifications | `/me/inbox` | OWNER_FOUND inbox+prefs | OWNER_FOUND listInbox | n/a | n/a | WEB_WIRING_PRESENT (minimal) | PARTIAL | Retention | fanout UNKNOWN |
 | AI insight | `/me/peotteok` | OWNER_FOUND coach | OWNER_FOUND peotteok | OWNER_FOUND P/G/S | Fact only | WEB_WIRING_MISSING | PARTIAL | Home embed | — |
-| Partners | `/me/guide/partners` | OWNER_MISSING display API | n/a | listing ebay Day-1 · yahoo FORBIDDEN | n/a | WEB_WIRING_MISSING | PARTIAL | Trust | partnership SINGLE (Founder) · adapter catalog separate |
-| Profile | `/me` | OWNER_FOUND session/profile | OWNER_MISSING | n/a | n/a | WEB_WIRING_MISSING | PARTIAL | Account | — |
-| Settings | `/me/settings` | OWNER_FOUND prefs + delete | OWNER_MISSING | n/a | n/a | WEB_WIRING_MISSING | PARTIAL | Account | — |
-| Support | `/me/support` | OWNER_FOUND disputes | OWNER_MISSING | n/a | disputes | WEB_WIRING_MISSING | PARTIAL | Account | — |
-| Legal | `/me/legal*` | OWNER_FOUND copy | n/a | n/a | n/a | WEB_WIRING_MISSING | PARTIAL | Account | placeholder pages |
+| Partners | `/me/guide/partners` | OWNER_MISSING display API | n/a | listing ebay Day-1 · yahoo FORBIDDEN | n/a | WEB_WIRING_PRESENT (Founder lock names) | PARTIAL | Trust | partnership SINGLE (Founder) · adapter catalog separate |
+| Profile | `/me` | OWNER_FOUND session/profile | OWNER_FOUND fetchAuthSession · logoutAuth | n/a | n/a | WEB_WIRING_PRESENT (minimal) | PARTIAL | Account | PendingFigma |
+| Settings | `/me/settings` | OWNER_FOUND prefs + delete | OWNER_FOUND prefs · deleteAuthAccount | n/a | n/a | WEB_WIRING_PRESENT (minimal) | PARTIAL | Account | PendingFigma |
+| Support | `/me/support` | OWNER_FOUND disputes | OWNER_FOUND createDepositDispute | n/a | disputes | WEB_WIRING_PRESENT (minimal) | PARTIAL | Account | PendingFigma |
+| Legal | `/me/legal*` | OWNER_FOUND operator-entity · copy gap | n/a | n/a | n/a | WEB_WIRING_PRESENT (nav + license facts) | PARTIAL | Account | 조문 창작 0 |
 | FX | n/a | OWNER_FOUND CurrentFxApprox | OWNER_FOUND current-fx | n/a | snapshot | WEB_WIRING_MISSING | VERIFIED (API) | KRW reference | SINGLE owner. card 0 = GAP not owner |
 
 ---

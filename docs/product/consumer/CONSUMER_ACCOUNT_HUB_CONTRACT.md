@@ -3,7 +3,7 @@
 > **문서 종류:** Product · Visual · Implementation Contract  
 > **TASK:** C-ACC-001 · Track C Acquisition / Account / Trust  
 > **일자:** 2026-08-20  
-> **상태:** CONTRACT_READY · IMPLEMENTATION = WEB_UNWIRED · CERTIFICATION = NOT_STARTED  
+> **상태:** CONTRACT_READY · IMPLEMENTATION = WEB_GAP_WIRED · CERTIFICATION = NOT_STARTED  
 > **시각 권위:** APPROVED FIGMA = NONE  
 > **재스코프:** Profile / Referral / Notifications / KYC / Settings / Support / Guides / Legal 우선
 
@@ -69,7 +69,7 @@ REMEASURED              = backend membership/benefits OWNER_FOUND
 REQUIREMENT_PRESERVED = YES
 FUNCTION_DELETE       = FORBIDDEN
 PRIMARY_NAV_PRIORITY  = LOWERED
-C-ACC-002             = WIRE_WITHOUT_APPROVED_FIGMA (최소 실데이터) · 픽셀 발명 0
+C-ACC-002             = WIRE_WITHOUT_APPROVED_FIGMA (최소 실데이터) · 픽셀 발명 0 · WEB_GAP_WIRED
 ```
 
 ---
@@ -332,11 +332,11 @@ C-ACC-002는 **가짜 돈을 넣지 않는 실배선**이 목표다. 픽셀 완�
 | SDK KYC | `fetchKycStatus` · `submitKyc` (Wallet KEEP) |
 | Verify keep | `auth-flows` · `ops-inbox` · `notification-prefs-default-on` · `kyc-surfaces` · `wallet-kyc-session-auth` · `legal-plain-ko` · `invite-explain-surfaces` · `referral-*` · `wallet-contract` |
 
-### 3.2 WIRE (이 계약 다음 슬라이스 · 이 슬라이스에서 구현 0)
+### 3.2 WIRE (C-ACC-002 실측)
 
-| 다음 TASK | 해야 할 일 |
-|-----------|------------|
-| C-ACC-002 | 핵심 8영역 gap-only 배선. PendingFigma 18 유지. 새 라우트 0. SDK referral/inbox/logout/delete/disputes 갭만. 호환 4면 삭제 0 |
+| TASK | 판정 |
+|------|------|
+| C-ACC-002 | **WEB_GAP_WIRED** · 핵심 8영역 gap-only 배선. PendingFigma 18 유지. 새 라우트 0. SDK referral/inbox/logout/delete/disputes PRESENT. 호환 4면 삭제 0 |
 | C-ACC-003 | `verify:account-hub-release` · 핵심 8영역 route-contract 100% · 호환경로 재확인 · known defect 0 |
 
 ### 3.3 DO NOT INVENT
@@ -356,16 +356,16 @@ C-ACC-002는 **가짜 돈을 넣지 않는 실배선**이 목표다. 픽셀 완�
 
 | 파일 | 다음 분류 |
 |------|-----------|
-| `apps/web/app/me/page.tsx` | WIRE later · PendingFigma 유지 |
-| `apps/web/app/me/invite/page.tsx` | WIRE later |
-| `apps/web/app/me/inbox/page.tsx` | WIRE later |
-| `apps/web/app/me/kyc/page.tsx` | WIRE later · Wallet과 공유 |
-| `apps/web/app/me/settings/page.tsx` | WIRE later |
-| `apps/web/app/me/support/page.tsx` | WIRE later |
-| `apps/web/app/me/guide/**` · `legal/**` | WIRE later · copy KEEP |
+| `apps/web/app/me/page.tsx` | WIRED · PendingFigma 유지 |
+| `apps/web/app/me/invite/page.tsx` | WIRED |
+| `apps/web/app/me/inbox/page.tsx` | WIRED |
+| `apps/web/app/me/kyc/page.tsx` | WIRED · Wallet과 공유 |
+| `apps/web/app/me/settings/page.tsx` | WIRED |
+| `apps/web/app/me/support/page.tsx` | WIRED |
+| `apps/web/app/me/guide/**` · `legal/**` | WIRED · copy KEEP · 조문 창작 0 |
 | `apps/web/app/me/{membership,benefits,events,strategies}/page.tsx` | KEEP 호환 PendingFigma |
 | `apps/web/app/me/peotteok/page.tsx` | KEEP 인접. 이 슬라이스 범위 밖 |
-| `packages/sdk` referral/inbox | MISSING → C-ACC-002 |
+| `packages/sdk` referral/inbox | PRESENT (C-ACC-002) |
 | `packages/sdk` KYC/session | KEEP PRESENT |
 | `services/api-nest` account owners | NO_CHANGE unless bug |
 | Home freeze / `HomeDesktop` / `HomeMobile` | NO_CHANGE |
@@ -385,8 +385,8 @@ C-ACC-002는 **가짜 돈을 넣지 않는 실배선**이 목표다. 픽셀 완�
 | Events/Strategies user API | **MISSING** | routes 0. 페이지 호환만 |
 | SDK KYC | **PRESENT** | `fetchKycStatus` · `submitKyc` (Wallet) |
 | SDK session | **PRESENT** | `fetchAuthSession` |
-| SDK logout / delete-account | **MISSING** | `packages/sdk/src/auth/fetch.ts` export 0 |
-| SDK referral / inbox / prefs / disputes | **MISSING** | index export 0 |
+| SDK logout / delete-account | **PRESENT** | `logoutAuth` · `deleteAuthAccount` |
+| SDK referral / inbox / prefs / disputes | **PRESENT** | `@aipo/sdk/referral` · `@aipo/sdk/inbox` · `createDepositDispute` |
 | 성별/주민번호 필드 | **0** | KYC `NEVER: rrnFull · gender` · Stage B not gender |
 | 가짜 금액 하드코드 | **CLOSED** | 그린필드 PendingFigma |
 | Home geometry 종속 필요 | **NO** | freeze 독립 |
@@ -397,10 +397,13 @@ WEB_ACCOUNT_HUB_PRIMARY_PENDING_FIGMA = 18
 WEB_ACCOUNT_HUB_COMPAT_PENDING_FIGMA = 4
 SDK_KYC_EXPORT = PRESENT
 SDK_AUTH_SESSION_EXPORT = PRESENT
-SDK_REFERRAL_EXPORT = MISSING
-SDK_INBOX_EXPORT = MISSING
+SDK_REFERRAL_EXPORT = PRESENT
+SDK_INBOX_EXPORT = PRESENT
+SDK_LOGOUT_EXPORT = PRESENT
+SDK_DELETE_ACCOUNT_EXPORT = PRESENT
+SDK_DISPUTES_EXPORT = PRESENT
 BACKEND_ACCOUNT_HUB = OWNER_FOUND
-REAL_IMPLEMENTATION = WEB_UNWIRED
+REAL_IMPLEMENTATION = WEB_GAP_WIRED
 ```
 
 ---
@@ -413,7 +416,7 @@ C-ACC-003 done = Account Hub certification PASS (핵심 8영역 route-contract 1
 
 ```text
 IMPLEMENTATION_START = C-ACC-002
-IMPLEMENTATION = WEB_UNWIRED
+IMPLEMENTATION = WEB_GAP_WIRED
 CERTIFICATION = C-ACC-003
 FOUNDER_APPROVAL_REQUIRED = NO
 ```

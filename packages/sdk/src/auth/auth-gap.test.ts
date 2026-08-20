@@ -5,8 +5,10 @@ import {
   assertNoForbiddenProfileFields,
   buildStageBProfileBody,
   continuePathAfterAuth,
+  deleteAuthAccount,
   normalizeAuthSession,
 } from "./fetch.ts";
+import { DELETE_ACCOUNT_CONFIRM_PHRASE } from "./types.ts";
 import { isKakaoOAuthReady } from "./kakao-ready.ts";
 
 describe("auth gap wiring — session/kakao/profile safety", () => {
@@ -88,5 +90,17 @@ describe("auth gap wiring — session/kakao/profile safety", () => {
     });
     assert.equal(body.gender, undefined);
     assert.equal(body.rrn, undefined);
+  });
+
+  it("rejects delete-account without the exact confirm phrase", async () => {
+    await assert.rejects(
+      () =>
+        deleteAuthAccount({
+          confirmPhrase: "탈퇴",
+          confirmAgain: true,
+        }),
+      /VALIDATION_ERROR/,
+    );
+    assert.equal(DELETE_ACCOUNT_CONFIRM_PHRASE, "탈퇴하겠습니다");
   });
 });

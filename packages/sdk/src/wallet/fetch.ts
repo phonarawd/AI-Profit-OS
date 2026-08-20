@@ -4,12 +4,22 @@
  */
 
 import type {
+  CreateDepositDisputeInput,
   CreateKrwDepositInput,
   CreateWithdrawInput,
+  DepositDispute,
+  DepositDisputeKind,
+  DepositDisputeStatus,
+  KycStatus,
+  KycStatusResponse,
   KrwDepositFinal,
   KrwDepositQuote,
   KrwDepositRequest,
+  SubmitKycInput,
+  UserDepositAddress,
   WalletBucketsResponse,
+  WalletJournalItem,
+  WalletJournalsResponse,
   WalletRequestOpts,
   WithdrawStepUpChallengeResponse,
   WithdrawStepUpMethod,
@@ -35,20 +45,46 @@ async function authHeaders(
   return headers;
 }
 
-function asAmount(v: unknown): string {
-  return typeof v === "string" && v.trim() ? v : "0";
+const LEDGER_AMOUNT_RE = /^-?[0-9]+(\.[0-9]+)?$/;
+const KYC_STATUSES = new Set<KycStatus>([
+  "none",
+  "pending",
+  "approved",
+  "rejected",
+]);
+const USER_BUCKETS = new Set(["principal", "profit", "locked", "practice"]);
+
+/** Real ledger zero is valid. Missing/invalid is not converted to "0". */
+function asLedgerAmount(v: unknown): string | undefined {
+  return typeof v === "string" && LEDGER_AMOUNT_RE.test(v) ? v : undefined;
 }
 
 export function normalizeWalletBuckets(
   raw: Partial<WalletBucketsResponse> & Record<string, unknown>,
 ): WalletBucketsResponse {
+  const userId = typeof raw.userId === "string" ? raw.userId : "";
+  const principalUsdt = asLedgerAmount(raw.principalUsdt);
+  const profitUsdt = asLedgerAmount(raw.profitUsdt);
+  const lockedUsdt = asLedgerAmount(raw.lockedUsdt);
+  const practiceUsdt = asLedgerAmount(raw.practiceUsdt);
+  const liabilityUsdt = asLedgerAmount(raw.liabilityUsdt);
+  if (
+    !userId ||
+    !principalUsdt ||
+    !profitUsdt ||
+    !lockedUsdt ||
+    !practiceUsdt ||
+    !liabilityUsdt
+  ) {
+    throw new Error("wallet_buckets_unavailable");
+  }
   return {
-    userId: typeof raw.userId === "string" ? raw.userId : "",
-    principalUsdt: asAmount(raw.principalUsdt),
-    profitUsdt: asAmount(raw.profitUsdt),
-    lockedUsdt: asAmount(raw.lockedUsdt),
-    practiceUsdt: asAmount(raw.practiceUsdt),
-    liabilityUsdt: asAmount(raw.liabilityUsdt),
+    userId,
+    principalUsdt,
+    profitUsdt,
+    lockedUsdt,
+    practiceUsdt,
+    liabilityUsdt,
     asOfLedgerEntryId:
       typeof raw.asOfLedgerEntryId === "string"
         ? raw.asOfLedgerEntryId
@@ -310,4 +346,221 @@ export function newWithdrawIdempotencyKey(): string {
     return `wd_${crypto.randomUUID().replace(/-/g, "")}`;
   }
   return `wd_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+}
+
+export function normalizeDepositAddress(
+  raw: Partial<UserDepositAddress> & Record<string, unknown>,
+): UserDepositAddress {
+  const trc20Address =
+    typeof raw.trc20Address === "string" ? raw.trc20Address.trim() : "";
+  const userId = typeof raw.userId === "string" ? raw.userId : "";
+  const qrPayload = typeof raw.qrPayload === "string" ? raw.qrPayload : "";
+  const createdAt = typeof raw.createdAt === "string" ? raw.createdAt : "";
+  if (!userId || !trc20Address || !qrPayload || !createdAt) {
+    throw new Error("deposit_address_unavailable");
+  }
+  if (!Number.isInteger(raw.derivationIndex)) {
+    throw new Error("deposit_address_unavailable");
+  }
+  return {
+    userId,
+    trc20Address,
+    derivationIndex: raw.derivationIndex,
+    qrPayload,
+    createdAt,
+    lastSeenTxAt:
+      typeof raw.lastSeenTxAt === "string" ? raw.lastSeenTxAt : undefined,
+  };
+}
+
+/** GET /api/v1/wallet/my-deposit-address — existing owner only. Never invents an address. */
+export async function fetchMyDepositAddress(
+  opts: WalletRequestOpts = {},
+): Promise<UserDepositAddress> {
+  const raw = (await getJson(
+    "/api/v1/wallet/my-deposit-address",
+    opts,
+    "wallet_deposit_address",
+  )) as Partial<UserDepositAddress> & Record<string, unknown>;
+  return normalizeDepositAddress(raw);
+}
+
+export function normalizeKycStatus(
+  raw: Partial<KycStatusResponse> & Record<string, unknown>,
+): KycStatusResponse {
+  const userId = typeof raw.userId === "string" ? raw.userId : "";
+  const kycStatus = raw.kycStatus;
+  if (!userId || !KYC_STATUSES.has(kycStatus as KycStatus)) {
+    throw new Error("kyc_status_unavailable");
+  }
+  return {
+    userId,
+    kycStatus: kycStatus as KycStatus,
+    submissionId:
+      typeof raw.submissionId === "string" ? raw.submissionId : undefined,
+    decidedAt: typeof raw.decidedAt === "string" ? raw.decidedAt : undefined,
+    rejectReason:
+      typeof raw.rejectReason === "string" ? raw.rejectReason : undefined,
+  };
+}
+
+/** GET /api/v1/compliance/kyc/status — missing/unknown is not treated as approved. */
+export async function fetchKycStatus(
+  opts: WalletRequestOpts = {},
+): Promise<KycStatusResponse> {
+  const raw = (await getJson(
+    "/api/v1/compliance/kyc/status",
+    opts,
+    "kyc_status",
+  )) as Partial<KycStatusResponse> & Record<string, unknown>;
+  return normalizeKycStatus(raw);
+}
+
+/** POST /api/v1/compliance/kyc/submit — existing Nest action only. */
+export async function submitKyc(
+  input: SubmitKycInput,
+  opts: WalletRequestOpts = {},
+): Promise<unknown> {
+  return postJson(
+    "/api/v1/compliance/kyc/submit",
+    {
+      legalName: input.legalName,
+      phoneE164: input.phoneE164,
+      birthDate: input.birthDate,
+      idDocType: input.idDocType,
+      idDocBase64: input.idDocBase64,
+      selfieBase64: input.selfieBase64,
+    },
+    opts,
+    "kyc_submit",
+  );
+}
+
+function normalizeWalletJournalItem(raw: unknown): WalletJournalItem | null {
+  if (!raw || typeof raw !== "object") return null;
+  const o = raw as Record<string, unknown>;
+  const id = typeof o.id === "string" && o.id.trim() ? o.id : "";
+  const journalType =
+    typeof o.journalType === "string" && o.journalType.trim()
+      ? o.journalType
+      : "";
+  const createdAt =
+    typeof o.createdAt === "string" && o.createdAt.trim() ? o.createdAt : "";
+  if (!id || !journalType || !createdAt) return null;
+  const linesRaw = Array.isArray(o.userLines) ? o.userLines : [];
+  const userLines = [];
+  for (const line of linesRaw) {
+    if (!line || typeof line !== "object") continue;
+    const l = line as Record<string, unknown>;
+    const bucket = l.bucket;
+    const direction = l.direction;
+    const amountUsdt = asLedgerAmount(l.amountUsdt);
+    if (
+      !USER_BUCKETS.has(bucket as string) ||
+      (direction !== "debit" && direction !== "credit") ||
+      !amountUsdt
+    ) {
+      continue;
+    }
+    userLines.push({
+      bucket: bucket as WalletJournalItem["userLines"][number]["bucket"],
+      direction,
+      amountUsdt,
+    });
+  }
+  if (userLines.length < 1) return null;
+  return {
+    id,
+    journalType,
+    createdAt,
+    referenceType: typeof o.referenceType === "string" ? o.referenceType : null,
+    referenceId: typeof o.referenceId === "string" ? o.referenceId : null,
+    userLines,
+  };
+}
+
+export function normalizeWalletJournals(raw: unknown): WalletJournalsResponse {
+  const obj = raw && typeof raw === "object" ? (raw as { items?: unknown }) : {};
+  const items = Array.isArray(obj.items) ? obj.items : [];
+  return {
+    items: items
+      .map((item) => normalizeWalletJournalItem(item))
+      .filter((item): item is WalletJournalItem => item != null),
+  };
+}
+
+const DISPUTE_KINDS = new Set<DepositDisputeKind>([
+  "wrong_chain",
+  "mis_deposit",
+]);
+const DISPUTE_STATUSES = new Set<DepositDisputeStatus>([
+  "open",
+  "credited",
+  "rejected",
+]);
+
+export function newDepositDisputeIdempotencyKey(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return `dd_${crypto.randomUUID().replace(/-/g, "")}`;
+  }
+  return `dd_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+}
+
+export function normalizeDepositDispute(
+  raw: Partial<DepositDispute> & Record<string, unknown>,
+): DepositDispute {
+  const id = typeof raw.id === "string" && raw.id.trim() ? raw.id : "";
+  const linkedTxHash =
+    typeof raw.linkedTxHash === "string" && raw.linkedTxHash.trim()
+      ? raw.linkedTxHash
+      : "";
+  if (
+    !id ||
+    !linkedTxHash ||
+    !DISPUTE_KINDS.has(raw.kind as DepositDisputeKind) ||
+    !DISPUTE_STATUSES.has(raw.status as DepositDisputeStatus)
+  ) {
+    throw new Error("deposit_dispute_unavailable");
+  }
+  return {
+    id,
+    kind: raw.kind as DepositDisputeKind,
+    status: raw.status as DepositDisputeStatus,
+    linkedTxHash,
+  };
+}
+
+/** POST /api/v1/wallet/deposit-disputes — existing Nest CS entry only. */
+export async function createDepositDispute(
+  input: CreateDepositDisputeInput,
+  opts: WalletRequestOpts = {},
+): Promise<DepositDispute> {
+  const linkedTxHash = input.linkedTxHash.trim();
+  if (linkedTxHash.length < 8) {
+    throw new Error("deposit_dispute_unavailable");
+  }
+  const raw = (await postJson(
+    "/api/v1/wallet/deposit-disputes",
+    {
+      kind: input.kind,
+      linkedTxHash,
+      networkClaimedKo: input.networkClaimedKo,
+      idempotencyKey: input.idempotencyKey,
+    },
+    opts,
+    "deposit_dispute",
+  )) as Partial<DepositDispute> & Record<string, unknown>;
+  return normalizeDepositDispute(raw);
+}
+
+/** GET /api/v1/wallet/journals — session user projection only. */
+export async function listWalletJournals(
+  opts: WalletRequestOpts = {},
+): Promise<WalletJournalsResponse> {
+  const raw = await getJson(
+    "/api/v1/wallet/journals",
+    opts,
+    "wallet_journals",
+  );
+  return normalizeWalletJournals(raw);
 }

@@ -45,3 +45,20 @@ export type StageBProfileResult = {
   onboardingStage: "B_complete";
 };
 
+/** Nest `DELETE_ACCOUNT_CONFIRM_PHRASE` — 화면 문구와 동일해야 한다. */
+export const DELETE_ACCOUNT_CONFIRM_PHRASE = "탈퇴하겠습니다" as const;
+
+export type DeleteAccountInput = {
+  confirmPhrase: string;
+  confirmAgain: boolean;
+};
+
+export type DeleteAccountResult = {
+  ok: true;
+};
+
+export type LogoutResult = {
+  ok: true;
+  revoked: true;
+};
+

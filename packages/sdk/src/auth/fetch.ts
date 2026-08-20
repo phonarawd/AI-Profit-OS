@@ -7,11 +7,16 @@ import type {
   AuthOnboardingStage,
   AuthRequestOpts,
   AuthSession,
+  DeleteAccountInput,
+  DeleteAccountResult,
   KakaoStartInput,
   KakaoStartResult,
+  LogoutResult,
   StageBProfileInput,
   StageBProfileResult,
 } from "./types";
+
+const DELETE_ACCOUNT_CONFIRM_PHRASE = "탈퇴하겠습니다";
 
 export class AuthError extends Error {
   readonly status: number;
@@ -277,6 +282,64 @@ export async function requestMagicLink(
         cache: "no-store",
         signal: opts.signal,
         body: JSON.stringify({ email: trimmed }),
+      },
+    );
+  } catch (err) {
+    if (isAbortError(err)) throw err;
+    throw new AuthError(0, "NETWORK_ERROR");
+  }
+  const raw = await readJson(res);
+  if (!res.ok) throwHttp(res.status, raw);
+  return { ok: true };
+}
+
+export async function logoutAuth(
+  opts: AuthRequestOpts = {},
+): Promise<LogoutResult> {
+  let res: Response;
+  try {
+    res = await fetch(apiUrl(opts.apiBase ?? "", "/api/v1/auth/logout"), {
+      method: "POST",
+      headers: await authHeaders(opts),
+      credentials: "include",
+      cache: "no-store",
+      signal: opts.signal,
+    });
+  } catch (err) {
+    if (isAbortError(err)) throw err;
+    throw new AuthError(0, "NETWORK_ERROR");
+  }
+  const raw = await readJson(res);
+  if (!res.ok) throwHttp(res.status, raw);
+  return { ok: true, revoked: true };
+}
+
+export async function deleteAuthAccount(
+  input: DeleteAccountInput,
+  opts: AuthRequestOpts = {},
+): Promise<DeleteAccountResult> {
+  if (input.confirmPhrase !== DELETE_ACCOUNT_CONFIRM_PHRASE) {
+    throw new AuthError(400, "VALIDATION_ERROR");
+  }
+  if (input.confirmAgain !== true) {
+    throw new AuthError(400, "VALIDATION_ERROR");
+  }
+  const headers = await authHeaders(opts);
+  headers["Content-Type"] = "application/json";
+  let res: Response;
+  try {
+    res = await fetch(
+      apiUrl(opts.apiBase ?? "", "/api/v1/auth/delete-account"),
+      {
+        method: "POST",
+        headers,
+        credentials: "include",
+        cache: "no-store",
+        signal: opts.signal,
+        body: JSON.stringify({
+          confirmPhrase: DELETE_ACCOUNT_CONFIRM_PHRASE,
+          confirmAgain: true,
+        }),
       },
     );
   } catch (err) {

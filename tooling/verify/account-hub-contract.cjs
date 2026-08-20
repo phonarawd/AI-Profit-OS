@@ -105,6 +105,8 @@ const requiredFiles = [
   "packages/sdk/src/index.ts",
   "packages/sdk/src/auth/fetch.ts",
   "packages/sdk/src/wallet/fetch.ts",
+  "packages/sdk/src/referral/fetch.ts",
+  "packages/sdk/src/inbox/fetch.ts",
   "services/api-nest/src/auth/auth.controller.ts",
   "services/api-nest/src/auth/auth.routes.ts",
   "services/api-nest/src/referral/referral.controller.ts",
@@ -151,9 +153,9 @@ for (const token of [
   "WEB_ACCOUNT_HUB_COMPAT_PENDING_FIGMA = 4",
   "SDK_KYC_EXPORT = PRESENT",
   "SDK_AUTH_SESSION_EXPORT = PRESENT",
-  "SDK_REFERRAL_EXPORT = MISSING",
-  "SDK_INBOX_EXPORT = MISSING",
-  "REAL_IMPLEMENTATION = WEB_UNWIRED",
+  "SDK_REFERRAL_EXPORT = PRESENT",
+  "SDK_INBOX_EXPORT = PRESENT",
+  "REAL_IMPLEMENTATION = WEB_GAP_WIRED",
   "C-ACC-002",
   "C-ACC-003",
   "PendingFigma",
@@ -167,8 +169,8 @@ if (gov) {
   if (gov.status !== "CONTRACT_READY") {
     fail("governance status must be CONTRACT_READY");
   }
-  if (gov.implementationStatus !== "WEB_UNWIRED") {
-    fail("implementationStatus must be WEB_UNWIRED until C-ACC-002");
+  if (gov.implementationStatus !== "WEB_GAP_WIRED") {
+    fail("implementationStatus must be WEB_GAP_WIRED after C-ACC-002");
   }
   if (gov.task !== "C-ACC-001") fail("governance task must be C-ACC-001");
   if (gov.authority.AUTH_RULE_REDEFINITION !== "FORBIDDEN") {
@@ -232,11 +234,11 @@ if (gov) {
   if (gov.measured.sdkKycExport !== "PRESENT") {
     fail("sdkKycExport must be PRESENT");
   }
-  if (gov.measured.sdkReferralExport !== "MISSING") {
-    fail("sdkReferralExport must stay MISSING until C-ACC-002");
+  if (gov.measured.sdkReferralExport !== "PRESENT") {
+    fail("sdkReferralExport must be PRESENT after C-ACC-002");
   }
-  if (gov.measured.sdkInboxExport !== "MISSING") {
-    fail("sdkInboxExport must stay MISSING until C-ACC-002");
+  if (gov.measured.sdkInboxExport !== "PRESENT") {
+    fail("sdkInboxExport must be PRESENT after C-ACC-002");
   }
   if (gov.certification?.task !== "C-ACC-003") {
     fail("certification.task must be C-ACC-003");
@@ -245,8 +247,11 @@ if (gov) {
     fail("certification.status must stay NOT_STARTED until C-ACC-003");
   }
   const next = gov.nextSlices || [];
-  if (!next.includes("C-ACC-002") || !next.includes("C-ACC-003")) {
-    fail("nextSlices must keep C-ACC-002 and C-ACC-003");
+  if (!next.includes("C-ACC-003")) {
+    fail("nextSlices must keep C-ACC-003");
+  }
+  if (next.includes("C-ACC-002")) {
+    fail("nextSlices must drop C-ACC-002 after wiring");
   }
 }
 
@@ -254,7 +259,7 @@ let primaryPending = 0;
 for (const rel of PRIMARY_PAGES) {
   const src = read(rel);
   if (src.includes("PendingFigma")) primaryPending += 1;
-  else fail(`${rel} must keep PendingFigma until C-ACC-002`);
+    else fail(`${rel} must keep PendingFigma after C-ACC-002`);
 }
 if (primaryPending !== 18) {
   fail(`web primary PendingFigma must be 18, got ${primaryPending}`);
@@ -284,8 +289,17 @@ if (!sdkIndex.includes("fetchKycStatus")) {
 if (!sdkIndex.includes("fetchAuthSession")) {
   fail("sdk must keep fetchAuthSession");
 }
-if (sdkIndex.includes("fetchReferralMe") || sdkIndex.includes("listInbox")) {
-  fail("sdk must not invent referral/inbox exports in C-ACC-001");
+if (!sdkIndex.includes("fetchReferralMe")) {
+  fail("sdk must export fetchReferralMe after C-ACC-002");
+}
+if (!sdkIndex.includes("listInbox")) {
+  fail("sdk must export listInbox after C-ACC-002");
+}
+if (!sdkIndex.includes("logoutAuth") || !sdkIndex.includes("deleteAuthAccount")) {
+  fail("sdk must export logoutAuth and deleteAuthAccount");
+}
+if (!sdkIndex.includes("createDepositDispute")) {
+  fail("sdk must export createDepositDispute");
 }
 
 const kycGate = read("services/api-nest/src/compliance/kyc-gate.ts");
@@ -344,5 +358,5 @@ if (fails.length) {
 }
 
 console.log(
-  "[verify:account-hub-contract] PASS (8 areas · PendingFigma 18+4 · WEB_UNWIRED · Home geometry 0)",
+  "[verify:account-hub-contract] PASS (8 areas · PendingFigma 18+4 · WEB_GAP_WIRED · Home geometry 0)",
 );

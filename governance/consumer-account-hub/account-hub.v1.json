@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "measuredAt": "2026-08-20",
   "status": "CONTRACT_READY",
-  "implementationStatus": "WEB_UNWIRED",
+  "implementationStatus": "WEB_GAP_WIRED",
   "task": "C-ACC-001",
   "implementationTask": "C-ACC-002",
   "certification": {
@@ -126,7 +126,9 @@
     "benefits": "services/api-nest/src/missions/benefits.user.routes.ts",
     "legalCopy": "packages/ui/copy/ko/legal.ts",
     "sdkAuth": "packages/sdk/src/auth",
-    "sdkKyc": "packages/sdk/src/wallet"
+    "sdkKyc": "packages/sdk/src/wallet",
+    "sdkReferral": "packages/sdk/src/referral",
+    "sdkInbox": "packages/sdk/src/inbox"
   },
   "measured": {
     "primaryAreaCount": 8,
@@ -135,12 +137,15 @@
     "webMeTotalPendingFigma": 23,
     "sdkKycExport": "PRESENT",
     "sdkAuthSessionExport": "PRESENT",
-    "sdkReferralExport": "MISSING",
-    "sdkInboxExport": "MISSING",
+    "sdkReferralExport": "PRESENT",
+    "sdkInboxExport": "PRESENT",
+    "sdkLogoutExport": "PRESENT",
+    "sdkDeleteAccountExport": "PRESENT",
+    "sdkDisputesExport": "PRESENT",
     "backendAccountHub": "OWNER_FOUND",
     "eventsStrategiesUserApi": "MISSING",
     "fakeFinancialValueBug": "CLOSED"
   },
-  "nextSlices": ["C-ACC-002", "C-ACC-003"],
+  "nextSlices": ["C-ACC-003"],
   "verifier": "tooling/verify/account-hub-contract.cjs"
 }
