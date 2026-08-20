@@ -249,8 +249,8 @@ if (gov.authority?.MONEY_RULE_REDEFINITION !== "FORBIDDEN") {
 if (gov.authority?.HOME_GEOMETRY_DEPENDENCY !== "FORBIDDEN") {
   fail("HOME_GEOMETRY_DEPENDENCY must stay FORBIDDEN");
 }
-if (gov.certification?.status === "RELEASE_PASS") {
-  fail("certification.status must stay NOT_STARTED until C-ACC-003");
+if (gov.certification?.status !== "RELEASE_PASS") {
+  fail("certification.status must be RELEASE_PASS after C-ACC-003");
 }
 
 const pkg = JSON.parse(read("package.json") || "{}");

@@ -156,6 +156,8 @@ for (const token of [
   "SDK_REFERRAL_EXPORT = PRESENT",
   "SDK_INBOX_EXPORT = PRESENT",
   "REAL_IMPLEMENTATION = WEB_GAP_WIRED",
+  "ACCOUNT_HUB_CERTIFICATION = PASS",
+  "verify:account-hub-release",
   "C-ACC-002",
   "C-ACC-003",
   "PendingFigma",
@@ -243,12 +245,15 @@ if (gov) {
   if (gov.certification?.task !== "C-ACC-003") {
     fail("certification.task must be C-ACC-003");
   }
-  if (gov.certification?.status === "RELEASE_PASS") {
-    fail("certification.status must stay NOT_STARTED until C-ACC-003");
+  if (gov.certification?.status !== "RELEASE_PASS") {
+    fail("certification.status must be RELEASE_PASS after C-ACC-003");
   }
   const next = gov.nextSlices || [];
-  if (!next.includes("C-ACC-003")) {
-    fail("nextSlices must keep C-ACC-003");
+  if (next.includes("C-ACC-003")) {
+    fail("nextSlices must drop C-ACC-003 after certification");
+  }
+  if (!next.includes("C-ACC-004")) {
+    fail("nextSlices must keep C-ACC-004");
   }
   if (next.includes("C-ACC-002")) {
     fail("nextSlices must drop C-ACC-002 after wiring");

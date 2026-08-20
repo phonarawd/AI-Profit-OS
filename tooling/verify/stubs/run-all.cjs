@@ -151,6 +151,7 @@ const live = [
   "acquisition-release.cjs",
   "account-hub-contract.cjs",
   "account-hub-gap-wire.cjs",
+  "account-hub-release.cjs",
   "wallet-gap-wire.cjs",
   "wallet-release.cjs",
   "participate-web-wire.cjs",
@@ -201,6 +202,9 @@ for (const step of steps) {
         : {}),
       ...(step === "acquisition-release.cjs"
         ? { ACQUISITION_RELEASE_NESTED: "1" }
+        : {}),
+      ...(step === "account-hub-release.cjs"
+        ? { ACCOUNT_HUB_RELEASE_NESTED: "1" }
         : {}),
     },
   });

@@ -22,7 +22,7 @@ todos:
     status: completed
   - id: c-acc-003
     content: "[C-ACC-003] Account Hub certification + Membership/Benefits/Events/Strategies 호환경로 재확인(이미 구현됨, primary journey 아님) · legacy=03 redesign-r5-account-hub-certification(pending) · PRIORITY=LAUNCH_REQUIRED(핵심)/IMPORTANT_POST_CORE(호환경로분) · RISK=MEDIUM"
-    status: pending
+    status: completed
   - id: c-acc-004
     content: "[C-ACC-004] 20/40/60~70대 실사 spotcheck(readability·3초질문·이모지·성별중성) · legacy=03 trust-age-spotcheck(pending, 구 ADR-018 H-track 종속 표현은 폐기·Home LOCK과 독립) · PRIORITY=IMPORTANT_POST_CORE · RISK=LOW"
     status: pending
@@ -49,7 +49,8 @@ Guest가 가입/로그인해서 실제 계정을 만들고, 계정 안에서 신
 | Kakao OAuth backend runtime | **IMPLEMENTED** (C-AUTH-001 · 2026-08-20) | Nest `GET+POST /api/v1/auth/oauth/kakao/callback` · `kakao-oauth.core.cjs` code→token→profile(`profile_nickname`) · `raw_profile` 저장 · 성별 strip · 기존 유저 terms 없이 세션 · 신규는 state/body terms · thin Next `/auth/oauth/kakao` → GET start. **LIVE_KAKAO_HUMAN_E2E = NOT_RUN**(Founder 계정 필요). LAUNCH_BLOCKER 후보 → **CODE_RUNTIME_CLOSED / HUMAN_E2E_OPEN** |
 | Acquisition certification | **RELEASE_PASS** (C-ACQ-003 · 2026-08-20) | `verify:acquisition-release` · guest/auth/error/resume 인프로세스 · known defect 0 · ads→Core redirect 0 · PendingFigma 7 · LIVE_KAKAO_HUMAN_E2E=NOT_RUN(known defect 아님) |
 | Account Hub 원 스코프 | 12+ 모듈(구 03 R5) | `CONSUMER_UX_ARCHITECTURE.md`가 D-01~D07로 Founder 승인 재정렬 |
-| Membership/Benefits/Events/Strategies | **이미 구현됨**(03 `benefit-hub-surfaces`·`membership-grade-ux`·03 `invite-explain-kr-2070` 등 completed) | `CONSUMER_UX_ARCHITECTURE.md`: "PRIMARY JOURNEY에서 제거. 호환 경로만 유지. 제품 핵심이 아님" — **기능 삭제 아님, IA 우선순위만 조정** |
+| Account Hub certification | **RELEASE_PASS** (C-ACC-003 · 2026-08-20) | `verify:account-hub-release` · 핵심 8영역 route-contract 100% · 호환 4면 보존·primary 아님 · known defect 0 · PendingFigma 18+4 · HTTP/browser=NOT_THIS_SLICE |
+| Membership/Benefits/Events/Strategies | **이미 구현됨**(03 `benefit-hub-surfaces`·`membership-grade-ux`·03 `invite-explain-kr-2070` 등 completed) | `CONSUMER_UX_ARCHITECTURE.md`: "PRIMARY JOURNEY에서 제거. 호환 경로만 유지. 제품 핵심이 아님" — **기능 삭제 아님, IA 우선순위만 조정** · C-ACC-003 재확인 KEEP |
 
 ```text
 REQUIREMENT_PRESERVED = YES (Membership/Benefits/Events/Strategies 기능 전부 보존)

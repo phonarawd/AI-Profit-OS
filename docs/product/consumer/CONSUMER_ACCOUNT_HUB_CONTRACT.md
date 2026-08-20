@@ -3,7 +3,7 @@
 > **문서 종류:** Product · Visual · Implementation Contract  
 > **TASK:** C-ACC-001 · Track C Acquisition / Account / Trust  
 > **일자:** 2026-08-20  
-> **상태:** CONTRACT_READY · IMPLEMENTATION = WEB_GAP_WIRED · CERTIFICATION = NOT_STARTED  
+> **상태:** CONTRACT_READY · IMPLEMENTATION = WEB_GAP_WIRED · CERTIFICATION = RELEASE_PASS  
 > **시각 권위:** APPROVED FIGMA = NONE  
 > **재스코프:** Profile / Referral / Notifications / KYC / Settings / Support / Guides / Legal 우선
 
@@ -164,7 +164,7 @@ REQUIREMENT_PRESERVED = YES
 FUNCTION_DELETE = FORBIDDEN
 PRIMARY_NAV_PRIORITY = LOWERED
 COMPAT_PAGE_COUNT = 4
-C-ACC-003 = 호환경로 재확인 (핵심 8영역 인증과 분리)
+C-ACC-003 = 호환경로 재확인 (핵심 8영역 인증과 분리) · ACCOUNT_HUB_CERTIFICATION = PASS
 ```
 
 레거시 4그룹은 **매핑 hint**일 뿐 IA가 아니다.
@@ -417,6 +417,8 @@ C-ACC-003 done = Account Hub certification PASS (핵심 8영역 route-contract 1
 ```text
 IMPLEMENTATION_START = C-ACC-002
 IMPLEMENTATION = WEB_GAP_WIRED
-CERTIFICATION = C-ACC-003
+ACCOUNT_HUB_CERTIFICATION = PASS
+CERTIFICATION = RELEASE_PASS
+verify:account-hub-release
 FOUNDER_APPROVAL_REQUIRED = NO
 ```

@@ -1,0 +1,89 @@
+{
+  "$id": "https://ai-profit-os.local/governance/consumer-account-hub/account-hub-release.v1",
+  "schema": "governance.consumer-account-hub.account-hub-release.v1",
+  "version": "1.0.0",
+  "measuredAt": "2026-08-20",
+  "task": "C-ACC-003",
+  "legacyPointer": "03 redesign-r5-account-hub-certification",
+  "status": "RELEASE_PASS",
+  "knownDefects": [],
+  "e2e": {
+    "mode": "IN_PROCESS_ROUTE_CONTRACT_MATRIX",
+    "primary": [
+      "PROFILE_ROUTE_WIRED",
+      "REFERRAL_ROUTE_WIRED",
+      "NOTIFICATIONS_ROUTE_WIRED",
+      "KYC_ROUTE_WIRED",
+      "SETTINGS_ROUTE_WIRED",
+      "SUPPORT_ROUTE_WIRED",
+      "GUIDES_ROUTE_WIRED",
+      "LEGAL_ROUTE_WIRED",
+      "PRIMARY_CTA_MATRIX_100",
+      "PRIMARY_AREA_COUNT_8"
+    ],
+    "compat": [
+      "MEMBERSHIP_COMPAT_KEPT",
+      "BENEFITS_COMPAT_KEPT",
+      "EVENTS_COMPAT_KEPT",
+      "STRATEGIES_COMPAT_KEPT",
+      "COMPAT_NOT_IN_PRIMARY_NAV",
+      "COMPAT_CTA_INTENTIONALLY_DISABLED",
+      "EVENTS_STRATEGIES_USER_API_0",
+      "MEMBERSHIP_BENEFITS_OWNER_FOUND",
+      "REQUIREMENT_PRESERVED",
+      "PRIMARY_NAV_PRIORITY_LOWERED"
+    ],
+    "invariant": [
+      "AUTH_REQUIRED_GATES",
+      "KYC_WITHDRAW_ONLY",
+      "GENDER_RRN_0",
+      "REFERRAL_PERCENT_0",
+      "L1_L2_L3_0",
+      "HOME_GEOMETRY_0",
+      "LEGAL_ARTICLE_INVENT_0",
+      "USER_COPY_IT_JARGON_0",
+      "FUNCTION_DELETE_0"
+    ],
+    "httpBrowser": "NOT_THIS_SLICE",
+    "note": "Phase0 로컬은 브라우저+API 동시 기동 금지. 인증은 핵심 8영역 route-contract 정적 증명 + SDK/Nest 소유자 KEEP + 호환 4면 재확인. 시각 lock 아님 · PendingFigma 18+4 유지 · Canon/Home 복구 0 · 호환 기능 삭제 0 · primary journey 승격 0."
+  },
+  "prereqVerifiers": [
+    "account-hub-contract",
+    "account-hub-gap-wire"
+  ],
+  "surfacePointers": [
+    "invite-explain-surfaces",
+    "ops-inbox",
+    "notification-prefs-default-on",
+    "kyc-surfaces",
+    "wallet-kyc-session-auth",
+    "legal-plain-ko",
+    "membership-surfaces",
+    "market-briefing-no-investment-advice",
+    "referral-unlimited-invites",
+    "auth-flows"
+  ],
+  "surfacePointerNote": "invite/inbox/kyc/membership/legal/market-weekly surface = GREENFIELD skip 가능(레거시 Canon). 존재 pointer만. 인증 권위는 현재 PendingFigma+실배선 클라이언트+호환 4면 KEEP.",
+  "authority": {
+    "AUTH_RULE_REDEFINITION": "FORBIDDEN",
+    "MONEY_RULE_REDEFINITION": "FORBIDDEN",
+    "SUPABASE_AUTH": "FORBIDDEN",
+    "NEW_ROUTE": "FORBIDDEN",
+    "NEW_VISUAL_LOCK": false,
+    "APPROVED_FIGMA_ACCOUNT_HUB": "NONE",
+    "LEGACY_VISUAL_RECOVERY": "FORBIDDEN",
+    "HOME_GEOMETRY_DEPENDENCY": "FORBIDDEN",
+    "LEGAL_SSOT_MUTATION": "FORBIDDEN",
+    "GENDER_FIELD": "FORBIDDEN",
+    "RRN_FIELD": "FORBIDDEN",
+    "KYC_ON_WITHDRAW": "REQUIRED",
+    "KYC_ON_PARTICIPATE": "FORBIDDEN",
+    "KYC_ON_DEPOSIT": "FORBIDDEN",
+    "FUNCTION_DELETE": "FORBIDDEN",
+    "REQUIREMENT_PRESERVED": "YES",
+    "PRIMARY_NAV_PRIORITY": "LOWERED",
+    "HTTP_BROWSER_E2E": "NOT_THIS_SLICE"
+  },
+  "runtime": "tooling/verify/lib/account-hub-release-runtime.cjs",
+  "verifier": "tooling/verify/account-hub-release.cjs"
+}

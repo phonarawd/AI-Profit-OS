@@ -9,8 +9,9 @@
   "implementationTask": "C-ACC-002",
   "certification": {
     "task": "C-ACC-003",
-    "status": "NOT_STARTED",
-    "verifier": "tooling/verify/account-hub-release.cjs"
+    "status": "RELEASE_PASS",
+    "verifier": "tooling/verify/account-hub-release.cjs",
+    "release": "governance/consumer-account-hub/account-hub-release.v1.json"
   },
   "legacyPointer": "03 redesign-r5-account-hub-contract",
   "productContract": "docs/product/consumer/CONSUMER_ACCOUNT_HUB_CONTRACT.md",
@@ -146,6 +147,6 @@
     "eventsStrategiesUserApi": "MISSING",
     "fakeFinancialValueBug": "CLOSED"
   },
-  "nextSlices": ["C-ACC-003"],
+  "nextSlices": ["C-ACC-004"],
   "verifier": "tooling/verify/account-hub-contract.cjs"
 }
