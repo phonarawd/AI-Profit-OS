@@ -24,7 +24,9 @@ function read(rel) {
 
 const files = [
   "services/market-intelligence/src/catalog-runtime-seed.cjs",
+  "services/market-intelligence/src/pipeline.cjs",
   "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+  "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
   "supabase/migrations/20260809144814_catalog_runtime_day1_fx_bootstrap.sql",
   "services/market-intelligence/src/trading-card-seed.cjs",
   "services/market-intelligence/src/luxury-bag-seed.cjs",
@@ -41,8 +43,18 @@ const mi = require(path.join(
   root,
   "services/market-intelligence/src/catalog-runtime-seed.cjs",
 ));
+const pipeline = require(path.join(
+  root,
+  "services/market-intelligence/src/pipeline.cjs",
+));
 const svc = read(
   "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+);
+const reprice = read(
+  "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
+);
+const adminSvc = read(
+  "services/api-nest/src/opportunities/opportunities.admin.service.ts",
 );
 const routes = read("services/api-nest/src/opportunities/opportunities.routes.ts");
 const ctrl = read(
@@ -195,6 +207,113 @@ if (!catalog.includes("catalog-runtime-seed")) {
 
 if (!svc.includes("FORBIDDEN_INGEST_ADAPTERS")) {
   fails.push("catalog seed service must reject amazon/yahoo via FORBIDDEN_INGEST_ADAPTERS");
+}
+
+// --- seed AS-OF (listing 300s 유지 · opportunity expiry 복사 금지) ---
+const observedAt = "2026-08-19T00:00:00.000Z";
+const asOfPlan = mi.buildMinCatalogRuntimeSeed({ observedAt });
+for (const b of asOfPlan.bundles) {
+  if (b.opportunity.pricedAt !== observedAt) {
+    fails.push("seed opportunity.pricedAt must be compute/observed as-of");
+  }
+  if (b.opportunity.staleAt !== b.opportunity.pricedAt) {
+    fails.push("SEED: opportunity.staleAt must equal pricedAt (AS-OF)");
+  }
+  for (const L of b.listings) {
+    const listingMs = Date.parse(L.staleAt);
+    const observedMs = Date.parse(L.observedAt);
+    if (listingMs - observedMs !== mi.LISTING_STALE_SEC * 1000) {
+      fails.push("listing.staleAt must stay observedAt + LISTING_STALE_SEC (300s)");
+    }
+    if (L.staleAt === b.opportunity.staleAt) {
+      fails.push("opportunity.staleAt must not copy listing expiry");
+    }
+  }
+}
+
+// --- resolver fixture ---
+if (typeof pipeline.resolveStoredLegListingPrices !== "function") {
+  fails.push("pipeline must export resolveStoredLegListingPrices");
+} else {
+  const unique = pipeline.resolveStoredLegListingPrices({
+    listings: [
+      { marketId: "ebay_us", priceUsdt: "100" },
+      { marketId: "ebay_gb", priceUsdt: "160" },
+    ],
+    buyMarketId: "ebay_us",
+    sellMarketId: "ebay_gb",
+  });
+  if (
+    !unique.ok ||
+    unique.buyPriceUsdt !== "100" ||
+    unique.sellPriceUsdt !== "160"
+  ) {
+    fails.push("RESOLVER: unique pair must return buy/sell prices");
+  }
+  const extra = pipeline.resolveStoredLegListingPrices({
+    listings: [
+      { marketId: "ebay_us", priceUsdt: "100" },
+      { marketId: "ebay_us", priceUsdt: "14995" },
+      { marketId: "ebay_gb", priceUsdt: "160" },
+    ],
+    buyMarketId: "ebay_us",
+    sellMarketId: "ebay_gb",
+  });
+  if (extra.ok) fails.push("RESOLVER: extra listing on a leg must fail-closed");
+  const missing = pipeline.resolveStoredLegListingPrices({
+    listings: [{ marketId: "ebay_us", priceUsdt: "100" }],
+    buyMarketId: "ebay_us",
+    sellMarketId: "ebay_gb",
+  });
+  if (missing.ok) fails.push("RESOLVER: missing sell leg must fail-closed");
+}
+
+// --- SOURCE: persist 후 canonical owner · ingest formula 복제 0 · seed skip 유지 ---
+if (!svc.includes("repriceFromCurrentListings")) {
+  fails.push("SOURCE: persistIngestListings must call repriceFromCurrentListings");
+}
+if (!mod.includes("OpportunityRepriceService")) {
+  fails.push("SOURCE: OpportunitiesModule must provide OpportunityRepriceService");
+}
+if (svc.includes("computeOpportunityPricing")) {
+  fails.push("SOURCE: catalog seed persist must not copy computeOpportunityPricing");
+}
+if (adapters.includes("computeOpportunityPricing")) {
+  fails.push("SOURCE: adapters ingest must not copy computeOpportunityPricing");
+}
+if (adapters.includes("resolveStoredLegListingPrices")) {
+  fails.push("SOURCE: adapters ingest must not resolve listing legs itself");
+}
+if (!svc.includes('reason: "min catalog already present"')) {
+  fails.push("SEED skip: existing catalog must still short-circuit refresh");
+}
+if (!/if \(existing\.rows\[0\]\) return false/.test(svc)) {
+  fails.push("SEED skip: existing opportunity row must not be overwritten");
+}
+
+// --- FAILURE: resolve fail → stale_at 미변경 ---
+if (!reprice.includes("resolveStoredLegListingPrices")) {
+  fails.push("FAILURE: reprice owner must use resolveStoredLegListingPrices");
+}
+if (!/if\s*\(\s*!resolved\.ok\s*\)\s*return null/.test(reprice)) {
+  fails.push("FAILURE: resolve fail must skip persist (stale_at unchanged)");
+}
+{
+  const code = (s) => s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+  if (
+    /stale_at\s*=\s*now\(\)/.test(code(reprice)) ||
+    /stale_at\s*=\s*now\(\)/.test(code(adminSvc))
+  ) {
+    fails.push("FAILURE: standalone stale_at = now() is forbidden");
+  }
+}
+
+// --- ADMIN: compute 성공 시 stale_at === priced_at (같은 as-of bind) ---
+if (!adminSvc.includes("persistComputedPricing")) {
+  fails.push("ADMIN: patchPricing must persist via canonical owner");
+}
+if (!/priced_at = \$4::timestamptz,\s*stale_at = \$4::timestamptz/.test(reprice)) {
+  fails.push("ADMIN: persist must write priced_at and stale_at as the same as-of");
 }
 
 if (fails.length) {

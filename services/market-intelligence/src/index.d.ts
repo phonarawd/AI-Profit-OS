@@ -314,6 +314,13 @@ export const DAY1_LEG_PAIRS: ReadonlyArray<{
   sell: string;
   priority: string;
 }>;
+export function resolveStoredLegListingPrices(input: {
+  listings: ReadonlyArray<{ marketId?: string; priceUsdt?: string }>;
+  buyMarketId: string;
+  sellMarketId: string;
+}):
+  | { ok: true; buyPriceUsdt: string; sellPriceUsdt: string }
+  | { ok: false };
 export function marketIdFromEbayMarketplace(marketplaceId: string): string;
 export function isSignupReadyAdapterId(adapterId: string): boolean;
 export function isForbiddenAdapterId(id?: string | null): boolean;
