@@ -1,0 +1,84 @@
+{
+  "schema": "putduk.release-master.rel-001-preserve-evidence.v1",
+  "rel": "REL-001",
+  "status": "PASS",
+  "preserve_branch": "preserve/2026-08-20-worktree-rescue",
+  "preserve_commit": "ae8d1e634cb07998982997bb520396b825a7a42e",
+  "preserve_commit_short": "ae8d1e6",
+  "parent_commit": "48ab180545c26881528902e880c1685e8d9798a0",
+  "main_head": "48ab180545c26881528902e880c1685e8d9798a0",
+  "merge_to_main": false,
+  "backup_authority_only": true,
+  "recoverable_expected": 151,
+  "recoverable_preserved": 151,
+  "commit_delta_paths": 145,
+  "already_in_parent_no_delta": [
+    "apps/web/app/wallet/deposit/page.tsx",
+    "apps/web/app/wallet/history/page.tsx",
+    "apps/web/app/wallet/page.tsx",
+    "apps/web/app/wallet/withdraw/krw/page.tsx",
+    "apps/web/app/wallet/withdraw/page.tsx",
+    "apps/web/app/wallet/withdraw/usdt/page.tsx"
+  ],
+  "secret_content_read_count": 0,
+  "secret_risk_staged": 0,
+  "secret_risk_in_commit": [],
+  "git_add_A_usage": 0,
+  "destructive_git_operation": 0,
+  "product_code_mutation_by_rel001": 0,
+  "verify": {
+    "staged_secrets": 0,
+    "home_profits_reprice_migration_in_tree": true,
+    "merge_to_main": 0,
+    "t0_gate_fast": "PASS"
+  },
+  "flags": {
+    "home-freeze": {
+      "expected": 28,
+      "in_tree": 28
+    },
+    "spark-dash": {
+      "expected": 97,
+      "in_tree": 97
+    },
+    "profits-ui": {
+      "expected": 17,
+      "in_tree": 17
+    },
+    "wallet-ui": {
+      "expected": 13,
+      "in_tree": 13
+    },
+    "ledger": {
+      "expected": 5,
+      "in_tree": 5
+    },
+    "opportunities": {
+      "expected": 6,
+      "in_tree": 6
+    },
+    "opportunity-reprice": {
+      "expected": 1,
+      "in_tree": 1
+    },
+    "market-intelligence": {
+      "expected": 9,
+      "in_tree": 9
+    },
+    "migrations": {
+      "expected": 3,
+      "in_tree": 3
+    }
+  },
+  "critical": {
+    "home_freeze": true,
+    "spark_dash": true,
+    "opportunities": true,
+    "opportunity_reprice": true,
+    "migrations": true
+  },
+  "source_inventory": [
+    "governance/release-master/REL-000-TREE-INVENTORY.md",
+    "governance/release-master/REL-000-TREE-INVENTORY.json"
+  ]
+}

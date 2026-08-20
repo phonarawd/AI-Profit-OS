@@ -1,0 +1,3786 @@
+{
+  "schema": "putduk.release-master.rel-000-tree-inventory.v1",
+  "execution_ssot": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
+  "rel": "REL-000",
+  "verify": {
+    "git_add_A_used": false,
+    "secret_risk_staged": 0,
+    "staged_paths": [],
+    "branch": "main",
+    "collected_at": "2026-08-20T14:00:04.113Z"
+  },
+  "counts": {
+    "tracked_modified": 54,
+    "untracked": 287,
+    "secret_risk_worktree": 0,
+    "tmp": 74,
+    "plan_meta": 81,
+    "recoverable": 151,
+    "other_work": 35,
+    "protected_scope_dirty": 17,
+    "ignored_secret_scan": 3,
+    "total_inventory_rows": 341
+  },
+  "ignored_secret_risk_paths": [
+    ".cursor/secrets/github-ai-profit-os.pat",
+    ".cursor/secrets/github-clime.pat",
+    ".env"
+  ],
+  "rel001_preserve": {
+    "branch": "preserve/2026-08-20-worktree-rescue",
+    "commit": "ae8d1e634cb07998982997bb520396b825a7a42e",
+    "merge_to_main": false,
+    "pr_target": null,
+    "backup_authority_only": true,
+    "recoverable_expected": 151,
+    "recoverable_preserved": 151
+  },
+  "items": [
+    {
+      "file": ".cursor/plans/_external_intake/02.5_engine_acceptance_qa_fd1cd7cc.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/3ì¼_ui_ì°ì _ì¶ì_0d19fb61.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/account_hub_figma_23be13c4.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/ai_profit_pivot_docs_a2f2ebb9.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/archive/2026-08-08T22-54-57-251Z__ai_profit_os_00_index_ssot.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/archive/2026-08-08T22-54-57-281Z__ai_profit_os_01_engine.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/archive/2026-08-08T22-54-57-283Z__ai_profit_os_01_engine_b2c3d4e5.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/archive/2026-08-08T22-54-57-285Z__ai_profit_os_02_money_c3d4e5f6.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/archive/2026-08-08T22-54-57-285Z__ai_profit_os_02_money_chain.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/archive/2026-08-08T22-54-57-288Z__ai_profit_os_03_ui_ux.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/archive/2026-08-08T22-54-57-300Z__ai_profit_os_04_admin_ops.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/archive/2026-08-08T22-54-57-301Z__ai_profit_os_05_pwa_native.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/archive/2026-08-08T22-54-57-302Z__ai_profit_os_06_infra_marketing.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/archive/2026-08-11T21-51-48-774Z__02.5_engine_acceptance_qa_fd1cd7cc.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/canonical_identity_v2_41da485f.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/canonical_identity_v2_662a1fcc.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/canonical_pd_durable_persistence_4af948dc.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/canonical_product_pd_id_6f82b50e.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/chrono24_observation_slice_2e325fd3.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/ebay_observation_bridge_46408cad.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/ebay_pair_source_select_9e7f8ca9.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/engine_final_re-verification_audit_15069cca.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/EXCLUSION_REGISTRY.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/EXECUTION_AUTHORITY.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/fashionphile_identity_forensic_a9a039d7.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/GLOBAL_DISCOVERY_SUMMARY.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/global_observation_runtime_d6c3eb9c.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/greenfield_frontend_reset_b5d39a4c.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/hc6-08_binding_pass1_e28aa3ad.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/hc6-08_c_impl_plan_d235b8bd.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/hc6-08_fx_architecture_f3495a7a.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/hc6-08_krw_approx_1a593a15.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/heygen_korean_test_de97a481.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/HOME_TODO_TRACEABILITY.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/home_visual_lock_875124f2.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/homecleanv1_clean-room_a7760b61.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/ì§ê°_ì¸ê³1í°ì´_ìì´ëì´_34db674f.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/í¼ë©_03_ui_ux_master_plan_be3fa3cc.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/í¼ë©_master_architecture_65b4f0e4.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/identity_matching_v1_e9f60503.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/íë«í¼_ì ì²´_ì¬ì¤ê³_ë¡ëë§µ_d903eef7.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/INTAKE_MANIFEST.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/local_test_db_proof_b2e31074.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/matching_v2_pairwise_a234ee50.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/mobile-home-polish_d1b87678.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/opportunity_reprice_lifecycle_a5272af5.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/parallel_consumer_ui_figma_a10ef910.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/pc_home_ë°ì¤í¬í±_ê·¸ë¦¬ë_ì¬ì¤ê³_3557c4d1.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/peotteok_ai_coach_hardening_v1_2969f0aa.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/plan_a645a0ad.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/plan_finish_order_8d0ab09d.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/profits_real_integration_b4a78f72.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/putduk_release_master_ff3a5134.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/r0_í¡ì_ë°ì_íë_eaebafd6.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/README.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/so_db_runtime_proof_9f3b7b50.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/so_durable_persistence_175f41f3.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/TEMP_ALLOWLIST_WORK_COMPLETE.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/ui_live_wiring_part9_a6643cf7.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/v2_corroboration_fix_9918eb0e.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/v2_real_pair_validation_306b7a96.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/wallet_figma_26_e617909c.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [
+        "wallet-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/_external_intake/wallet_master_contract_e889ee56.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [
+        "wallet-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/ai_profit_os_04_admin_e5f6a7b8.plan.md",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/ai_profit_os_05_pwa_f6a7b8c9.plan.md",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/ai_profit_os_ebay_source_observation_bridge.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/ai_profit_os_global_observation_chrono24.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/ai_profit_os_global_observation_parser_runtime.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/ai_profit_os_launch_54c1261e.plan.md",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/ai_profit_os_opportunity_reprice_freshness.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/PUTDUK_CURRENT_MASTER_TRACK_B_user_profit_loop.plan.md",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/PUTDUK_CURRENT_MASTER_TRACK_E_pwa.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/PUTDUK_CURRENT_MASTER_TRACK_F_production_infra.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/PUTDUK_CURRENT_MASTER_TRACK_G_growth.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/PUTDUK_CURRENT_MASTER.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/putduk_release_master_ff3a5134.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [
+        "execution-ssot"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/rules/greenfield-ui.mdc",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/rules/home-presentation-freeze.mdc",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": ".cursor/rules/phase0-ram.mdc",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".cursor/tmp/_audit_git_status_full.txt",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_audit_master_lock.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_audit_plan_todos_break.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_audit_plan_todos_detail.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_audit_plan_todos_full.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_audit_plan_todos_ids.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_audit_plan_todos.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_audit_scope_drift.txt",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_build_discovery_evidence.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_classify_home_plans_pass2.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_classify_home_plans.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_copy_intake.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_discovery_classify.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_home_plans_inventory.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_intake_todos.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_materialize_release_master_rest.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_materialize_release_master.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_parse_intake_todos.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_plan_todos_audit.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_plan_todos_break.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_plan_todos_detail.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_plan_todos_full_audit.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_prev_discovery_home_only.txt",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_rel000_cached_stat.txt",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_rel000_classify.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_rel000_diff_stat.txt",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_rel000_independent_verify.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_rel000_status_all.txt",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_rel000_verify.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_validate_release_master.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/_validate_release_master.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-001-time-fix-full.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-cta.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-desktop-regression-1440.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-device.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-device2.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-founder-fix-390x693.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-founder-fix-desktop-1440.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-founder-fix-report.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-founder-fix-scrolled.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-header.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-identity.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-identity2.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-impl-390x693.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-impl-scrolled.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-mobile-final-390x693.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-room-mobile-report.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-room-mobile.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-scroll.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-wrap.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-003-wrap2.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-card-1.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-card-2.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-card2-check.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-card2-full.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-empty-1.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-empty-2.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-fix-card1-2.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-fix-card2-full.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-fix-empty-1.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-fix-main-1.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-fix-main-FINAL.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-main-1.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-main-2.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-main-3.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-main-4.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-main-final.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-004-skeleton-1.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-005-desktop-running.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-005-reduced-motion.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-005-requeue.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-005-running-final.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-005-running-step1.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursor/tmp/cux-005-running-step2.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "tmp",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "EXCLUDE"
+    },
+    {
+      "file": ".cursorindexingignore",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": ".vscode/settings.json",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "AGENTS.md",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "apps/web/app/dev/spark-dash-desktop/page.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/app/dev/spark-dash-mobile/page.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/app/dev/spark-dash-profits/page.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/app/dev/spark-dash-profits/SparkDashProfitsPreviewClient.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/app/dev/spark-dash-room/SparkDashRoomPreviewClient.tsx",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/app/globals.css",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "apps/web/app/HomeDesktopClient.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/app/me/benefits/page.tsx",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "apps/web/app/me/events/page.tsx",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "apps/web/app/me/strategies/page.tsx",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "apps/web/app/page.tsx",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/app/profits/[id]/OpportunityDetailClient.tsx",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/app/profits/page.tsx",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/app/ProfitsDesktopClient.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "apps/web/app/wallet/deposit/page.tsx",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "wallet-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/app/wallet/history/page.tsx",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "wallet-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/app/wallet/page.tsx",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "wallet-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/app/wallet/withdraw/krw/page.tsx",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "wallet-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/app/wallet/withdraw/page.tsx",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "wallet-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/app/wallet/withdraw/usdt/page.tsx",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "wallet-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-home/assets.ts",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze",
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-home/format.ts",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze",
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-home/HomeDesktop.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze",
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-home/HomeMobile.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze",
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-home/map-runtime.ts",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze",
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-home/spark-dash-home.css",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze",
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-home/spark-dash-mobile.css",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze",
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-home/types.ts",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze",
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-home/visual-fixture.ts",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze",
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/map-runtime.ts",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/OpportunityCard.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/OpportunityCompareGuide.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/OpportunityGrid.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/OpportunityMedia.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/OpportunityMetrics.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/OpportunityToolbar.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/ProfitsDesktop.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/ProfitsDiscoveryHeader.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/ProfitsMobile.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/ProfitsShell.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/spark-dash-profits-mobile.css",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/spark-dash-profits.css",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/types.ts",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-profits/visual-fixture.ts",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "profits-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-room/OpportunityRoomMedia.tsx",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-room/OpportunityRoomMobile.tsx",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/components/spark-dash-room/spark-dash-room-mobile.css",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/ai-eye-right.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/ai-orb.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/ai-pink-glow.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/ai-ring.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/ambient-glow.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/avatar-body.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/avatar-face.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/avatar-online.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/brand-spark.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/energy-bloom-1.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/energy-bloom-2.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/energy-bloom-3.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/energy-streaks.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/header-bell.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/header-signal.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/headline-spark.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/hero-halo.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/hero-lightning-neon.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/hero-lightning-outline.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/hero-lightning-raster.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/hero-lightning.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/icon-bell.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/icon-home.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/icon-opportunity.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/icon-partner.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/icon-settings.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/icon-wallet.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "wallet-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mini-spark.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-ai-agent.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-ai-orb.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-brand-spark.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-hero-energy.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-hero-lightning.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-icon-clock.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-icon-explore.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-icon-home.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-icon-lightning.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-icon-nav-bell.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-icon-nav-explore.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-icon-nav-wallet.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "wallet-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-icon-notification.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-icon-trend.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-icon-trophy.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-icon-wallet.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash",
+        "wallet-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/mobile-product-sneaker.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/opportunity-energy.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/product-sneaker-cutout.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/product-sneaker-hero.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/product-sneaker-mask.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/product-sneaker-source.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/product-sneaker.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/public/spark-dash/spark-mark.svg",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/capture-cux-003-room-mobile.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "apps/web/scripts/capture-cux-004-profits-mobile.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "apps/web/scripts/capture-spark-dash-desktop.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/capture-spark-dash-home-regression.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/capture-spark-dash-hotfix.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/capture-spark-dash-mobile-polish.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/capture-spark-dash-mobile-scroll.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/capture-spark-dash-mobile.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/capture-spark-dash-profile-hotfix.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/capture-spark-dash-profits-runtime.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/capture-spark-dash-profits-states.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/capture-spark-dash-profits.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/download-spark-dash-assets.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/download-spark-dash-mobile-assets.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/freeze-home-qa.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/overlay-spark-dash.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "spark-dash"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "apps/web/scripts/prepare-founder-approved-desktop.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "apps/web/scripts/probe-profits-api.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "apps/web/scripts/process-product-sneaker.mjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "apps/web/tsconfig.json",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "docs/CURRENT_PROJECT_AUDIT.md",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "docs/reference/founder-intent/CONSTITUTION_AUTHORITY_MATRIX.md",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "docs/reference/founder-intent/LEGACY_CONFLICT_REGISTER.md",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "docs/reference/founder-intent/PLAN_AUTHORITY_MATRIX.md",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "docs/reference/founder-intent/README.md",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "governance/admin/admin-control-plane.v1.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "governance/consumer-home-approval/baselines/approved-home-desktop-1280.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/consumer-home-approval/baselines/approved-home-desktop-1366.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/consumer-home-approval/baselines/approved-home-desktop-1440.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/consumer-home-approval/baselines/approved-home-desktop-1680.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/consumer-home-approval/baselines/approved-home-desktop-1920.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/consumer-home-approval/baselines/approved-home-mobile-320.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/consumer-home-approval/baselines/approved-home-mobile-360.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/consumer-home-approval/baselines/approved-home-mobile-375.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/consumer-home-approval/baselines/approved-home-mobile-390.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/consumer-home-approval/baselines/approved-home-mobile-412.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/consumer-home-approval/baselines/approved-home-mobile-430.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/consumer-home-approval/baselines/approved-home-mobile-ai.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/consumer-home-approval/baselines/approved-home-mobile-hero.png",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/consumer-home-approval/freeze-qa.v1.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/consumer-home-approval/home-approval-freeze.v1.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "home-freeze"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/release-master/REL-000-TREE-INVENTORY.json",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "governance/release-master/REL-000-TREE-INVENTORY.md",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "plan-meta",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "packages/sdk/src/user-feed/fetch.ts",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "packages/sdk/src/user-feed/types.ts",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "schemas/opportunity-card.v1.json",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": true,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "services/api-nest/src/ledger/index.ts",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "ledger"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/api-nest/src/ledger/ledger.module.ts",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "ledger"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/api-nest/src/ledger/ledger.types.ts",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "ledger"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/api-nest/src/ledger/ledger.user-journal.project.ts",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "ledger"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/api-nest/src/ledger/ledger.user-journal.service.ts",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "ledger"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "opportunities"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/api-nest/src/opportunities/index.ts",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "opportunities"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/api-nest/src/opportunities/opportunities.admin.service.ts",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "opportunities"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/api-nest/src/opportunities/opportunities.mi.ts",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "opportunities"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/api-nest/src/opportunities/opportunities.module.ts",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "opportunities"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "opportunities",
+        "opportunity-reprice"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/api-nest/src/wallet/wallet.controller.ts",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "wallet-ui"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/api-nest/src/wallet/wallet.routes.ts",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "wallet-ui"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/market-intelligence/src/catalog-runtime-seed.cjs",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "market-intelligence"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/market-intelligence/src/index.cjs",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "market-intelligence"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/market-intelligence/src/index.d.ts",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "market-intelligence"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/market-intelligence/src/match-result/contract.cjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "market-intelligence"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/market-intelligence/src/match-result/index.cjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "market-intelligence"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/market-intelligence/src/match-result/persist.cjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "market-intelligence"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/market-intelligence/src/match-result/persistence-mapper.cjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "market-intelligence"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/market-intelligence/src/match-result/repository.postgres.cjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "market-intelligence"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "services/market-intelligence/src/pipeline.cjs",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "market-intelligence"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "supabase/migrations/20260819210000_source_observations.sql",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "migrations"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "supabase/migrations/20260819220000_canonical_products.sql",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "migrations"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "supabase/migrations/20260820013000_match_results.sql",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "migrations"
+      ],
+      "protected_scope": true,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "tooling/cursor/sync-plans-ssot.cjs",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "tooling/verify/canonical-product-durable-persistence.cjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "tooling/verify/catalog-runtime-seed.cjs",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "tooling/verify/match-result-durable-persistence.cjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "tooling/verify/plans-integrity.cjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "tooling/verify/plans-ssot.cjs",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "tooling/verify/profits-live-wire.cjs",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "tooling/verify/sdk-user-feed.cjs",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "tooling/verify/source-observation-db-runtime.cjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "tooling/verify/source-observation-durable-persistence.cjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "other-work",
+      "recoverable_flags": [],
+      "protected_scope": false,
+      "rel001_action": "REVIEW"
+    },
+    {
+      "file": "tooling/verify/wallet-gap-wire.cjs",
+      "git_code": "??",
+      "git_class": "untracked",
+      "tracked": false,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "wallet-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    },
+    {
+      "file": "tooling/verify/wallet-kyc-session-auth.cjs",
+      "git_code": " M",
+      "git_class": "tracked-modified",
+      "tracked": true,
+      "bucket": "recoverable",
+      "recoverable_flags": [
+        "wallet-ui"
+      ],
+      "protected_scope": false,
+      "rel001_action": "INCLUDE_CANDIDATE"
+    }
+  ]
+}
