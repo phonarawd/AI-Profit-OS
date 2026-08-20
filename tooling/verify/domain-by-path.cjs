@@ -53,7 +53,7 @@ const RULES = [
     test: (f) =>
       /^tooling\/e2e\//.test(f) ||
       /^tooling\/verify\/qa-env-isolation-guard\.cjs$/.test(f),
-    scripts: ["qa-env-isolation-guard.cjs", "auth-rate-limit.cjs"],
+    scripts: ["qa-env-isolation-guard.cjs", "auth-rate-limit.cjs", "axe-harness.cjs"],
   },
   {
     test: (f) =>
