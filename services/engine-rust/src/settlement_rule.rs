@@ -331,4 +331,66 @@ mod tests {
         ctx.listing_legs_fresh = false;
         assert_eq!(evaluate_execution(&ctx), ExecutionResultCode::Requeue);
     }
+
+    /// REL-008 — testdata/golden 과 동일 입력. 공식 변경 금지.
+    #[test]
+    fn golden_vector_parity() {
+        let mut stale_exhausted = base_ctx();
+        stale_exhausted.stale_at_ms = 990_000;
+        stale_exhausted.rematch_count = 2;
+
+        let mut below_min = base_ctx();
+        below_min.expected_profit_usdt = "2".into();
+
+        let mut circuit_open = base_ctx();
+        circuit_open.circuit_status = "open".into();
+
+        let mut requeue = base_ctx();
+        requeue.listing_legs_fresh = false;
+
+        let mut requeue_then_ok = base_ctx();
+        requeue_then_ok.now_ms = 1_004_000;
+        requeue_then_ok.stale_at_ms = 1_003_000;
+        requeue_then_ok.listing_legs_fresh = true;
+        requeue_then_ok.rematch_count = 1;
+
+        let mut soft_version = base_ctx();
+        soft_version.expected_profit_usdt = "8".into();
+        soft_version.opportunity_pricing_version = 2;
+
+        let mut tight = base_ctx();
+        tight.expected_profit_usdt = "6".into();
+        tight.policy.min_profit_usdt = "8".into();
+        tight.policy.stale_allowance_sec = 2;
+        tight.policy.max_rematch_count = 1;
+
+        let mut lenient = base_ctx();
+        lenient.expected_profit_usdt = "3".into();
+        lenient.policy.min_profit_usdt = "2".into();
+        lenient.policy.stale_allowance_sec = 5;
+        lenient.policy.max_rematch_count = 4;
+
+        let cases: &[(&str, usize, RuleContext, &str)] = &[
+            ("g_match_success", 0, base_ctx(), "MATCH_SUCCESS"),
+            ("g_price_moved_stale", 0, stale_exhausted, "PRICE_MOVED"),
+            ("g_below_min_profit", 0, below_min, "BELOW_MIN_PROFIT"),
+            ("g_circuit_open", 0, circuit_open, "CIRCUIT_OPEN"),
+            ("g_requeue_then_success", 0, requeue, "REQUEUE"),
+            ("g_requeue_then_success", 1, requeue_then_ok, "MATCH_SUCCESS"),
+            ("g_soft_version_ok", 0, soft_version, "MATCH_SUCCESS"),
+            (
+                "g_strictness_tight_below_min",
+                0,
+                tight,
+                "BELOW_MIN_PROFIT",
+            ),
+            ("g_strictness_lenient_ok", 0, lenient, "MATCH_SUCCESS"),
+        ];
+
+        for (id, step, input, expect) in cases {
+            let got = evaluate_execution(input);
+            println!("PARITY\t{id}\t{step}\t{}", got.as_str());
+            assert_eq!(got.as_str(), *expect, "{id} step[{step}]");
+        }
+    }
 }
