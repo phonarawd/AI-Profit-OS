@@ -48,6 +48,7 @@ const FILES = {
   loop: `${dir}/CONSUMER_CORE_LOOP_CONTRACT.md`,
   wallet: `${dir}/CONSUMER_WALLET_CONTRACT.md`,
   acquisition: `${dir}/CONSUMER_ACQUISITION_CONTRACT.md`,
+  accountHub: `${dir}/CONSUMER_ACCOUNT_HUB_CONTRACT.md`,
 };
 
 for (const rel of Object.values(FILES)) {
@@ -288,7 +289,11 @@ mustInclude(FILES.loop, "WEB_PARTICIPATE_POST = 1");
 mustInclude(FILES.ux, "CONSUMER_CORE_LOOP_CONTRACT.md");
 mustInclude(FILES.ux, "CONSUMER_WALLET_CONTRACT.md");
 mustInclude(FILES.ux, "CONSUMER_ACQUISITION_CONTRACT.md");
+mustInclude(FILES.ux, "CONSUMER_ACCOUNT_HUB_CONTRACT.md");
 mustInclude(FILES.acquisition, "AUTH_RULE_REDEFINITION = FORBIDDEN");
+mustInclude(FILES.accountHub, "NEW_ROUTE = FORBIDDEN");
+mustInclude(FILES.accountHub, "WEB_ACCOUNT_HUB_PRIMARY_PENDING_FIGMA = 18");
+mustInclude(FILES.accountHub, "FUNCTION_DELETE = FORBIDDEN");
 mustInclude(FILES.wallet, "MONEY_RULE_REDEFINITION = FORBIDDEN");
 mustInclude(FILES.wallet, "WEB_WALLET_PENDING_FIGMA = 8");
 mustInclude(FILES.wallet, "HOME_GEOMETRY_DEPENDENCY = FORBIDDEN");

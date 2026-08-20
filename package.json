@@ -20,6 +20,7 @@
     "verify:acquisition-contract": "node tooling/verify/acquisition-contract.cjs",
     "verify:acquisition-gap-wire": "node tooling/verify/acquisition-gap-wire.cjs",
     "verify:acquisition-release": "node tooling/verify/acquisition-release.cjs",
+    "verify:account-hub-contract": "node tooling/verify/account-hub-contract.cjs",
     "verify:core-loop-contract": "node tooling/verify/core-loop-contract.cjs",
     "verify:wallet-contract": "node tooling/verify/wallet-contract.cjs",
     "verify:wallet-gap-wire": "node tooling/verify/wallet-gap-wire.cjs",

@@ -149,6 +149,7 @@ const live = [
   "acquisition-contract.cjs",
   "acquisition-gap-wire.cjs",
   "acquisition-release.cjs",
+  "account-hub-contract.cjs",
   "wallet-gap-wire.cjs",
   "wallet-release.cjs",
   "participate-web-wire.cjs",

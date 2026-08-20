@@ -51,6 +51,7 @@ KNOWN_AMBIGUOUS_CRITICAL_TRUTH_OWNER = 0
 | Core Loop contract | `CONSUMER_CORE_LOOP_CONTRACT.md` (B-LOOP-001 · 2026-08-20) |
 | Wallet contract | `CONSUMER_WALLET_CONTRACT.md` (B-WALLET-001 · 2026-08-20) |
 | Acquisition contract | `CONSUMER_ACQUISITION_CONTRACT.md` (C-ACQ-001 · 2026-08-20) |
+| Account Hub contract | `CONSUMER_ACCOUNT_HUB_CONTRACT.md` (C-ACC-001 · 2026-08-20) |
 
 ---
 
@@ -460,6 +461,8 @@ DOES NOT disable official partner presentation
 ---
 
 ## Account/support UX
+
+상세 계약 = `CONSUMER_ACCOUNT_HUB_CONTRACT.md` (C-ACC-001). Founder 재스코프 = Profile / Referral / Notifications / KYC / Settings / Support / Guides / Legal 우선.
 
 My hub:
 

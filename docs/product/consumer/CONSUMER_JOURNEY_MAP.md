@@ -167,6 +167,8 @@ FAKE_ACTIVITY = FORBIDDEN
 
 ## Account/Support
 
+상세 계약 = `CONSUMER_ACCOUNT_HUB_CONTRACT.md` (C-ACC-001).
+
 | field | value |
 |-------|-------|
 | entry | My |

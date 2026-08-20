@@ -16,7 +16,7 @@ todos:
     status: completed
   - id: c-acc-001
     content: "[C-ACC-001] Account Hub contract(재스코프: Profile/Referral/Notifications/KYC/Settings/Support/Guides/Legal 우선) · legacy=03 redesign-r5-account-hub-contract(pending) · PRIORITY=LAUNCH_REQUIRED · RISK=MEDIUM"
-    status: pending
+    status: completed
   - id: c-acc-002
     content: "[C-ACC-002] Account Hub gap-only 구현(핵심 8영역) · legacy=03 redesign-r5-account-hub-implementation(pending) · PRIORITY=LAUNCH_REQUIRED · RISK=MEDIUM"
     status: pending
@@ -49,7 +49,8 @@ Guest가 가입/로그인해서 실제 계정을 만들고, 계정 안에서 신
 | Kakao OAuth backend runtime | **IMPLEMENTED** (C-AUTH-001 · 2026-08-20) | Nest `GET+POST /api/v1/auth/oauth/kakao/callback` · `kakao-oauth.core.cjs` code→token→profile(`profile_nickname`) · `raw_profile` 저장 · 성별 strip · 기존 유저 terms 없이 세션 · 신규는 state/body terms · thin Next `/auth/oauth/kakao` → GET start. **LIVE_KAKAO_HUMAN_E2E = NOT_RUN**(Founder 계정 필요). LAUNCH_BLOCKER 후보 → **CODE_RUNTIME_CLOSED / HUMAN_E2E_OPEN** |
 | Acquisition certification | **RELEASE_PASS** (C-ACQ-003 · 2026-08-20) | `verify:acquisition-release` · guest/auth/error/resume 인프로세스 · known defect 0 · ads→Core redirect 0 · PendingFigma 7 · LIVE_KAKAO_HUMAN_E2E=NOT_RUN(known defect 아님) |
 | Account Hub 원 스코프 | 12+ 모듈(구 03 R5) | `CONSUMER_UX_ARCHITECTURE.md`가 D-01~D07로 Founder 승인 재정렬 |
-| Membership/Benefits/Events/Strategies | **이미 구현됨**(03 `benefit-hub-surfaces`·`membership-grade-ux`·03 `invite-explain-kr-2070` 등 completed) | `CONSUMER_UX_ARCHITECTURE.md`: "PRIMARY JOURNEY에서 제거. 호환 경로만 유지. 제품 핵심이 아님" — **기능 삭제 아님, IA 우선순위만 조정** |
+| Account Hub contract | **CONTRACT_READY** (C-ACC-001 · 2026-08-20) | `CONSUMER_ACCOUNT_HUB_CONTRACT.md` · 8영역 · web primary 18 PendingFigma · 호환 4면 보존 · SDK KYC/session PRESENT · referral/inbox MISSING · NEW_ROUTE 0 |
+| Membership/Benefits/Events/Strategies | backend membership/benefits **OWNER_FOUND** · web 4면 PendingFigma · Events/Strategies user API 0 · **기능 삭제 아님** | C-ACC-001 재실측. PRIMARY 제거 · COMPAT KEEP. 구 03 completed는 API/카피 이력. 화면 픽셀 ≠ 구현됨 |
 
 ```text
 REQUIREMENT_PRESERVED = YES (Membership/Benefits/Events/Strategies 기능 전부 보존)
