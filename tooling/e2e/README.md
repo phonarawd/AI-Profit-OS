@@ -39,3 +39,15 @@ REL-500이 matrix를 확장한다.
 ```text
 node tooling/verify/axe-harness.cjs
 ```
+
+## 유저 원장 조회 (REL-015)
+
+`specs/ledger-user-query.spec.cjs` + `lib/ledger-user-query-harness.cjs`.
+
+- 권한: 본인만 200 · 타인 403 · 세션 없음 401
+- 빈목록 / 정상목록 decimal string
+- 프로덕션 DB mutation 0. GET only.
+
+```text
+node tooling/verify/user-ledger-query.cjs
+```

@@ -8,3 +8,9 @@ export const LEDGER_ADMIN_ROUTES = {
   balanceAdjust: "users/:userId/balance-adjust",
   userBuckets: "users/:userId/buckets",
 } as const;
+
+/** REL-015 유저 조회. Admin 경로와 권한 분리. GET only. */
+export const LEDGER_USER_ROUTES = {
+  journals: "journals",
+  journalById: "journals/:journalId",
+} as const;
