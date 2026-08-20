@@ -188,6 +188,8 @@
     "verify:axe-harness": "node tooling/verify/axe-harness.cjs",
     "verify:web-remote-patterns": "node tooling/verify/web-remote-patterns.cjs",
     "verify:pwa-native-shell": "node tooling/verify/pwa-native-shell.cjs",
+    "verify:pwa-push-badge": "node tooling/verify/pwa-push-badge.cjs",
+    "pwa:generate-vapid": "node tooling/pwa/generate-vapid.mjs",
     "verify:user-ledger-query": "node tooling/verify/user-ledger-query.cjs",
     "verify:observability": "node tooling/verify/observability.cjs",
     "verify:legacy-plan-migration": "node tooling/verify/legacy-plan-migration.cjs",

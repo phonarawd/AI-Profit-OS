@@ -98,9 +98,7 @@ if (!sw.includes("SKIP_WAITING")) {
 if (!sw.includes("cache.addAll") && !sw.includes("caches.open")) {
   fails.push("SW must cache shell assets (CacheFirst equivalent)");
 }
-if (/addEventListener\(\s*["']push["']/.test(sw)) {
-  fails.push("REL-014 SW must not handle push (REL-020)");
-}
+// REL-020 owns push/badge on the same SW. Native-shell no longer forbids it.
 if (/webauthn|PublicKeyCredential/i.test(sw + runtime)) {
   fails.push("REL-014 must not mix WebAuthn (REL-022)");
 }
@@ -212,5 +210,5 @@ if (fails.length) {
 }
 
 console.log(
-  "[verify:pwa-native-shell] PASS (manifest+icons+SW+install UX · Push/store-bridge 0 · Home freeze 0)",
+  "[verify:pwa-native-shell] PASS (manifest+icons+SW+install UX · store-bridge 0 · Home freeze 0 · push=REL-020)",
 );

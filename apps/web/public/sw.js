@@ -1,6 +1,6 @@
-/* REL-014 — OpenNext Workers 정적 자산으로 서빙하는 동등 Service Worker.
+/* REL-014 native shell + REL-020 push/badge.
  * @serwist/next webpack 플러그인은 OpenNext asset pipeline과 맞추지 않는다.
- * Push handler 0 · REL-022 범위 0 · native store listing 0 (POST-017).
+ * REL-022 범위 0 · native store listing 0 (POST-017).
  */
 const SHELL_CACHE = "putduk-shell-v1";
 const SHELL_URLS = [
@@ -84,4 +84,58 @@ self.addEventListener("fetch", (event) => {
       ),
     );
   }
+});
+
+function applyBadge(count) {
+  const n = Number(count);
+  if (!Number.isFinite(n) || n < 0) return Promise.resolve();
+  const nav = self.navigator;
+  if (n === 0 && nav && typeof nav.clearAppBadge === "function") {
+    return nav.clearAppBadge().catch(() => undefined);
+  }
+  if (nav && typeof nav.setAppBadge === "function") {
+    return nav.setAppBadge(n).catch(() => undefined);
+  }
+  return Promise.resolve();
+}
+
+self.addEventListener("push", (event) => {
+  let payload = {};
+  try {
+    payload = event.data ? event.data.json() : {};
+  } catch {
+    payload = { bodyKo: event.data ? event.data.text() : "" };
+  }
+  const title = String(payload.titleKo || "퍼뜩");
+  const body = String(payload.bodyKo || "새 소식이 있어요");
+  const href = String(payload.href || "/");
+  const badgeCount = payload.badgeCount;
+  event.waitUntil(
+    Promise.all([
+      self.registration.showNotification(title, {
+        body,
+        data: { href },
+        icon: "/icons/icon-192.png",
+        badge: "/icons/icon-192.png",
+      }),
+      applyBadge(badgeCount),
+    ]),
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const href = String((event.notification.data && event.notification.data.href) || "/");
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+      for (const client of clients) {
+        if ("focus" in client) {
+          client.navigate?.(href);
+          return client.focus();
+        }
+      }
+      if (self.clients.openWindow) return self.clients.openWindow(href);
+      return undefined;
+    }),
+  );
 });

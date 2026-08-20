@@ -10,4 +10,8 @@ export const pwaCopy = {
   updateLater: "나중에",
   offlineTitle: "연결이 끊겼어요",
   offlineRetry: "다시 시도",
+  pushTitle: "소식 받기",
+  pushBody: "새 기회가 오면 알려 줄게요",
+  pushAllow: "받기",
+  pushLater: "나중에",
 } as const;

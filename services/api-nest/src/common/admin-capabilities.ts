@@ -143,6 +143,10 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     put: write("all"),
     audit: read("all"),
   },
+  PushKillAdminController: {
+    get: read("circuit"),
+    put: write("circuit"),
+  },
   SimulationAdminController: {
     run: write("all"),
     latest: read("all"),

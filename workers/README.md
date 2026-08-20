@@ -2,7 +2,7 @@
 
 | Worker | Phase |
 |--------|-------|
-| push-dispatcher | 0 (stub live) |
+| push-dispatcher | 0 (REL-020 live: /dispatch + kill · VAPID secrets · deploy 0) |
 | marketing-capi-dispatcher | 1+ |
 | chain-watchers | **Phase0 = Nest in-process emit** · **Phase1+ CF deploy** (§43.1 single stream · 1/19) |
 | chain-sweeper | **Phase0 = Nest in-process emit** · **Phase1+ CF deploy** (§43.2 Energy+TRX guard · Admin pause) |
