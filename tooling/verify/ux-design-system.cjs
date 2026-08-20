@@ -27,6 +27,7 @@ const files = [
   "packages/ui/components/lux/Badge.tsx",
   "packages/ui/components/lux/Skeleton.tsx",
   "packages/sdk/src/device-tier.ts",
+  "packages/ui/tokens/device-tier-contract.ts",
 ];
 for (const f of files) must(f);
 

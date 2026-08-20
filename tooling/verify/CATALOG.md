@@ -45,6 +45,7 @@
 | observability | `verify:observability` | T0 path | ✅ live (REL-016 · CF Workers console sink · money/KYC mask · 5xx/ledger/auth alerts · Vercel 0) |
 | legacy-plan-migration | `verify:legacy-plan-migration` | T0 path | ✅ live (REL-017 · 21파일 권위 스탬프 · sync-plans 0 · Home mirror 0) |
 | asset-production-pipeline | `verify:asset-production-pipeline` | T0 path | ✅ live (REL-018 · source→optimize→hash→public→review · partner AI 0 · Home lock) |
+| device-tier-system | `verify:device-tier-system` | T0 path | ✅ live (REL-019 · detectDeviceTier 재사용 · 2560/3440/3840 안전 문서 · Home geometry lock) |
 
 ## T2 CI-only (heavy build)
 
@@ -71,6 +72,7 @@
 | `governance/observability/**` · `packages/observability/**` · `services/api-nest/src/observability/**` · `apps/web/components/observability/**` · `tooling/verify/observability.cjs` | observability |
 | `governance/legacy-plan-migration/**` · `tooling/legacy-plan-stamp.cjs` · `tooling/verify/legacy-plan-migration.cjs` · `.cursor/plans/*.plan.md` | legacy-plan-migration |
 | `apps/web/scripts/asset-pipeline/**` · `tooling/verify/asset-production-pipeline.cjs` | asset-production-pipeline |
+| `packages/sdk/src/device-tier.ts` · `packages/ui/tokens/device-tier-contract.ts` · `governance/responsive/**` · `tooling/verify/device-tier-system.cjs` · `tooling/verify/ux-design-system.cjs` | device-tier-system · ux-design-system |
 | `apps/admin/**` | no-admin-in-web · admin-routes |
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |
 | `supabase/migrations/**` · migrations-applied fixture | migrations-applied-parity |

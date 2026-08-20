@@ -472,6 +472,15 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^packages\/sdk\/src\/device-tier\.ts$/.test(f) ||
+      /^packages\/ui\/tokens\/device-tier-contract\.ts$/.test(f) ||
+      /^governance\/responsive\//.test(f) ||
+      /^tooling\/verify\/device-tier-system\.cjs$/.test(f) ||
+      /^tooling\/verify\/ux-design-system\.cjs$/.test(f),
+    scripts: ["device-tier-system.cjs", "ux-design-system.cjs"],
+  },
+  {
+    test: (f) =>
       /^schemas\/home-money-read\.v1\.json$/.test(f) ||
       /^services\/api-nest\/src\/wallet\/home-money-read/.test(f) ||
       /^packages\/sdk\/src\/home-money-read\//.test(f) ||
