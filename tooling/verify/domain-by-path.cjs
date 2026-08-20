@@ -95,13 +95,27 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^apps\/web\/app\/page\.tsx$/.test(f) ||
-      /^apps\/web\/app\/HomeDesktopClient\.tsx$/.test(f) ||
       /^apps\/web\/app\/(ads|l)\//.test(f) ||
       /^packages\/ui\/components\/landing\//.test(f) ||
       /^tooling\/verify\/landing-guest-closure\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/landing-guest\.spec\.cjs$/.test(f),
     scripts: ["landing-guest-closure.cjs", "no-it-jargon.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/page\.tsx$/.test(f) ||
+      /^apps\/web\/app\/layout\.tsx$/.test(f) ||
+      /^apps\/web\/app\/LegacyAppShell\.tsx$/.test(f) ||
+      /^apps\/web\/app\/(wallet|me)\/layout\.tsx$/.test(f) ||
+      /^apps\/web\/app\/HomeDesktopClient\.tsx$/.test(f) ||
+      /^apps\/web\/app\/GuestFirstVisit\.tsx$/.test(f) ||
+      /^apps\/web\/app\/guest-first-visit\.css$/.test(f) ||
+      /^apps\/web\/components\/spark-dash-home\//.test(f) ||
+      /^tooling\/verify\/home-closure\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/home-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/e2e\/lib\/local-web-runtime\.cjs$/.test(f) ||
+      /^tooling\/e2e\/lib\/consumer-route-stubs\.cjs$/.test(f),
+    scripts: ["home-closure.cjs", "landing-guest-closure.cjs", "no-it-jargon.cjs"],
   },
   {
     test: (f) =>

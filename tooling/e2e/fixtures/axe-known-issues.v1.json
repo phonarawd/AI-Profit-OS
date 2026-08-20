@@ -1,14 +1,15 @@
 {
-  "rel": "REL-012",
+  "rel": "REL-105",
   "homeFreeze": true,
   "homeGeometryPatch": 0,
   "mcpOnlyEvidence": 0,
   "browserScanGate": "AXE_BROWSER=1",
-  "homeFreezeAllowlistedIds": [],
+  "homeFreezeAllowlistedIds": ["color-contrast"],
   "notes": [
-    "REL-012 wires axe-core into the committed Playwright harness.",
-    "Home 390/1440 + /auth/login are the scan targets.",
-    "Live browser matrix is not required on the low-spec workstation.",
-    "Do not treat this REL as REL-105 Home a11y closure."
+    "REL-012 wired axe-core. REL-105 runs the live Home browser scan.",
+    "color-contrast on .sd-btn-deposit (#ffffff on #ff2d6b, 3.59:1) is a locked Home chrome issue.",
+    "HOME_RETROACTIVE_VISUAL_REDESIGN=NO — do not recolor the Founder-locked deposit CTA here.",
+    "Founder OPEN of Home is required before this allowlist item can be removed.",
+    "Guest first-visit and non-Home routes are not covered by this allowlist."
   ]
 }

@@ -220,6 +220,8 @@
     "verify:auth-surfaces": "node tooling/verify/auth-surfaces.cjs",
     "verify:landing-3s": "node tooling/verify/landing-3s.cjs",
     "verify:landing-guest-closure": "node tooling/verify/landing-guest-closure.cjs",
+    "verify:home-closure": "node tooling/verify/home-closure.cjs",
+    "test:e2e:home-closure": "playwright test --config=tooling/e2e/playwright.config.cjs tooling/e2e/specs/home-closure.spec.cjs",
     "verify:acquisition-release": "node tooling/verify/acquisition-release.cjs",
     "verify:login-kakao-closure": "node tooling/verify/login-kakao-closure.cjs",
     "verify:complete-profile-closure": "node tooling/verify/complete-profile-closure.cjs",
@@ -275,7 +277,9 @@
     ]
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
     "@cloudflare/workers-types": "^5.20260809.1",
+    "@playwright/test": "1.62.1",
     "fast-check": "^4.9.0",
     "axe-core": "^4.10.3",
     "husky": "^9.1.7",
