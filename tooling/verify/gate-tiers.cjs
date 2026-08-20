@@ -16,6 +16,7 @@ const T0_ALWAYS = [
 
 /** @type {string[]} */
 const T1_PUSH = [
+  "settlement-rule-parity.cjs",
   "pg-module-scan.cjs",
   "brand-assets.cjs",
   "cf-infra.cjs",
