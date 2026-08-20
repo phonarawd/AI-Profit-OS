@@ -82,6 +82,16 @@ todos:
     status: completed
 isProject: false
 ---
+<!-- REL-017-AUTHORITY-STAMP -->
+```text
+EXECUTION_AUTHORITY = NO
+CONTENT_AUTHORITY = NO
+HISTORICAL_REFERENCE_ONLY = YES
+DO_NOT_EXECUTE = YES
+SUPERSEDED_BY = PUTDUK_RELEASE_MASTER.plan.md
+```
+<!-- /REL-017-AUTHORITY-STAMP -->
+
 
 # AI Profit OS — Index · Constitution · Gates (v7.23.0 · PLATFORM REDESIGN REBASE)
 

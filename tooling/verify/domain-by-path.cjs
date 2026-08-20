@@ -458,6 +458,14 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/legacy-plan-migration\//.test(f) ||
+      /^tooling\/legacy-plan-stamp\.cjs$/.test(f) ||
+      /^tooling\/verify\/legacy-plan-migration\.cjs$/.test(f) ||
+      /^\.cursor\/plans\/.+\.plan\.md$/.test(f),
+    scripts: ["legacy-plan-migration.cjs"],
+  },
+  {
+    test: (f) =>
       /^schemas\/home-money-read\.v1\.json$/.test(f) ||
       /^services\/api-nest\/src\/wallet\/home-money-read/.test(f) ||
       /^packages\/sdk\/src\/home-money-read\//.test(f) ||

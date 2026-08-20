@@ -25,6 +25,16 @@ todos:
     status: pending
 isProject: false
 ---
+<!-- REL-017-AUTHORITY-STAMP -->
+```text
+EXECUTION_AUTHORITY = NO
+CONTENT_AUTHORITY = NO
+HISTORICAL_REFERENCE_ONLY = YES
+DO_NOT_EXECUTE = YES
+SUPERSEDED_BY = PUTDUK_RELEASE_MASTER.plan.md
+```
+<!-- /REL-017-AUTHORITY-STAMP -->
+
 # AI Profit OS — PWA & Native (v7.23.0 · PWA preserved + certification)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
