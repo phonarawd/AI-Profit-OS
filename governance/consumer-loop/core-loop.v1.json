@@ -6,6 +6,11 @@
   "status": "CONTRACT_READY",
   "implementationStatus": "TRADES_WIRED",
   "task": "B-TRADES-001",
+  "certification": {
+    "task": "B-LOOP-002",
+    "status": "RELEASE_PASS",
+    "verifier": "tooling/verify/core-loop-release.cjs"
+  },
   "legacyPointer": "03 redesign-r4-core-loop-contract",
   "productContract": "docs/product/consumer/CONSUMER_CORE_LOOP_CONTRACT.md",
   "authority": {
@@ -83,7 +88,8 @@
     "failed"
   ],
   "nextSlices": [
-    "B-LOOP-002"
+    "B-FEED-001"
   ],
-  "verifier": "tooling/verify/core-loop-contract.cjs"
+  "verifier": "tooling/verify/core-loop-contract.cjs",
+  "releaseVerifier": "tooling/verify/core-loop-release.cjs"
 }

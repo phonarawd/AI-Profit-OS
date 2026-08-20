@@ -16,7 +16,7 @@ todos:
     status: completed
   - id: b-loop-002
     content: "[B-LOOP-002] Core Loop certification(성공/Safe-Stop 실제 E2E) · legacy=03 redesign-r4-core-loop-certification(pending) · PRIORITY=LAUNCH_REQUIRED · RISK=HIGH · DEPENDS_ON=B-PARTICIPATION-001+B-EXECUTION-001(HARD)"
-    status: pending
+    status: completed
   - id: b-feed-001
     content: "[B-FEED-001] User Opportunity Feed Policy(참여 성공/진행중 → main feed 제거·다른 유저는 계속 노출·재노출 가능·cooldown/diversity·완전 랜덤 금지) · Founder 직접 지시(신규, 어떤 legacy plan에도 없음) · PRIORITY=LAUNCH_REQUIRED · RISK=MEDIUM"
     status: pending

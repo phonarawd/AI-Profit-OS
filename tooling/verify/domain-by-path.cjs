@@ -30,6 +30,8 @@ const RULES = [
       /^tooling\/verify\/participate-web-wire\.cjs$/.test(f) ||
       /^tooling\/verify\/execute-web-wire\.cjs$/.test(f) ||
       /^tooling\/verify\/trades-web-wire\.cjs$/.test(f) ||
+      /^tooling\/verify\/core-loop-release\.cjs$/.test(f) ||
+      /^tooling\/verify\/lib\/core-loop-release-runtime\.cjs$/.test(f) ||
       /^governance\/consumer-loop\//.test(f) ||
       /^apps\/web\/app\/profits\/\[id\]\//.test(f) ||
       /^apps\/web\/app\/trades\//.test(f) ||
@@ -44,6 +46,7 @@ const RULES = [
       "participate-web-wire.cjs",
       "execute-web-wire.cjs",
       "trades-web-wire.cjs",
+      "core-loop-release.cjs",
     ],
   },
   {

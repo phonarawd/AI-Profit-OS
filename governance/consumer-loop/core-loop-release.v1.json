@@ -1,0 +1,53 @@
+{
+  "$id": "https://ai-profit-os.local/governance/consumer-loop/core-loop-release.v1.json",
+  "schema": "governance.consumer-loop.core-loop-release.v1",
+  "version": "1.0.0",
+  "measuredAt": "2026-08-20",
+  "task": "B-LOOP-002",
+  "legacyPointer": "03 redesign-r4-core-loop-certification",
+  "status": "RELEASE_PASS",
+  "knownDefects": [],
+  "e2e": {
+    "mode": "IN_PROCESS_RULE_LEDGER_CONSUMER",
+    "success": ["MATCH_SUCCESS"],
+    "safeStop": [
+      "PRICE_MOVED",
+      "BELOW_MIN_PROFIT",
+      "MATCH_TIMEOUT",
+      "CIRCUIT_OPEN"
+    ],
+    "failed": ["SYSTEM_FAILED"],
+    "httpBrowser": "NOT_THIS_SLICE",
+    "isolatedPgHttpPointer": "tooling/engine-acceptance/run-qa4-clock.cjs",
+    "note": "Phase0 로컬은 브라우저+API 동시 기동 금지. 인증 E2E는 라이브 settlement_rule + 서비스 저널 모양 + TradeExecuteClient 상태 테이블. QA4 isolated-PG HTTP는 Engine Acceptance CI pointer."
+  },
+  "prereqVerifiers": [
+    "core-loop-contract",
+    "participate-http",
+    "execute-rule-loop",
+    "match-success-rule",
+    "bucket-invariant",
+    "participate-web-wire",
+    "execute-web-wire",
+    "trades-web-wire",
+    "participate-proof"
+  ],
+  "surfacePointers": [
+    "profits-live-wire",
+    "execution-surfaces",
+    "preflight-may-stop",
+    "cta-earn-profit",
+    "user-trader-jargon-0",
+    "margin-compare-surface",
+    "asset-image-surface"
+  ],
+  "authority": {
+    "ENGINE_RULE_REDEFINITION": "FORBIDDEN",
+    "NEW_MONEY_LOGIC": "FORBIDDEN",
+    "LEGACY_VISUAL_RECOVERY": "FORBIDDEN",
+    "HOME_GEOMETRY_DEPENDENCY": "FORBIDDEN",
+    "PROGRESS_PCT_AS_TRUTH": "FORBIDDEN"
+  },
+  "runtime": "tooling/verify/lib/core-loop-release-runtime.cjs",
+  "verifier": "tooling/verify/core-loop-release.cjs"
+}

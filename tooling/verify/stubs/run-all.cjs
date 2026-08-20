@@ -145,6 +145,8 @@ const live = [
   "core-loop-contract.cjs",
   "participate-web-wire.cjs",
   "execute-web-wire.cjs",
+  "trades-web-wire.cjs",
+  "core-loop-release.cjs",
   "wallet-live-wire.cjs",
   "withdraw-flow-wire.cjs",
   "growth-public-surface.cjs",
@@ -179,6 +181,12 @@ for (const step of steps) {
   const r = spawnSync(process.execPath, [path.join(__dirname, "..", step)], {
     cwd: root,
     encoding: "utf8",
+    env: {
+      ...process.env,
+      ...(step === "core-loop-release.cjs"
+        ? { CORE_LOOP_RELEASE_NESTED: "1" }
+        : {}),
+    },
   });
   process.stdout.write(r.stdout || "");
   process.stderr.write(r.stderr || "");

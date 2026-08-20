@@ -3,7 +3,7 @@
 > **문서 종류:** Product · Visual · Implementation Contract  
 > **TASK:** B-LOOP-001 · Track B User Profit Loop  
 > **일자:** 2026-08-20  
-> **상태:** CONTRACT_READY · IMPLEMENTATION = TRADES_WIRED  
+> **상태:** CONTRACT_READY · IMPLEMENTATION = TRADES_WIRED · CERTIFICATION = RELEASE_PASS  
 > **시각 권위:** APPROVED FIGMA = NONE  
 > **Engine Rule:** 재정의 0 (`settlement_rule.cjs` KEEP)
 
@@ -248,7 +248,7 @@ B-PARTICIPATION-001 / B-EXECUTION-001 / B-TRADES-001은 **가짜 돈을 넣지 �
 | SDK execution | `useTradeExecution` (execute 페이지 연결) |
 | SDK trades list | `fetchTradeList` |
 | SDK wallet | `fetchWalletBuckets` |
-| Verify | `participate-http` · `preflight-may-stop` · `participate-web-wire` · `execute-web-wire` · `trades-web-wire` · `execute-rule-loop` · `participate-proof` · `match-success-rule` · `bucket-invariant` |
+| Verify | `participate-http` · `preflight-may-stop` · `participate-web-wire` · `execute-web-wire` · `trades-web-wire` · `execute-rule-loop` · `participate-proof` · `match-success-rule` · `bucket-invariant` · `core-loop-release` |
 
 ### 3.2 WIRE (이 계약 다음 슬라이스 · 이 슬라이스에서 구현 0)
 
@@ -257,7 +257,7 @@ B-PARTICIPATION-001 / B-EXECUTION-001 / B-TRADES-001은 **가짜 돈을 넣지 �
 | B-PARTICIPATION-001 | DONE — SDK `preflight`+`participate` · `/profits/[id]` POST 실연결 · confirmation dialog |
 | B-EXECUTION-001 | DONE — `/trades/[id]/execute` → `useTradeExecution` · 상태 테이블 준수 |
 | B-TRADES-001 | DONE — `/trades` 실목록. `GET /api/v1/trades` = 기존 `toState()` 투영 · 새 money/cancel/필터 0 |
-| B-LOOP-002 | `verify:core-loop-release` 실 E2E (이 슬라이스에서 신설 0) |
+| B-LOOP-002 | DONE — `verify:core-loop-release` 성공/Safe-Stop 인프로세스 E2E · known defect 0 |
 | B-FEED-001 | 참여 성공/진행 중 feed 제거 (별 계약) |
 
 ### 3.3 DO NOT INVENT
@@ -311,7 +311,7 @@ WEB_PARTICIPATE_POST = 1
 SDK_PARTICIPATE_EXPORT = PRESENT
 BACKEND_CORE_LOOP = OWNER_FOUND
 REAL_IMPLEMENTATION = TRADES_WIRED
-CORE_LOOP_CERTIFICATION = NOT_THIS_SLICE
+CORE_LOOP_CERTIFICATION = PASS
 ```
 
 ---
@@ -321,10 +321,12 @@ CORE_LOOP_CERTIFICATION = NOT_THIS_SLICE
 B-LOOP-001 done = 계약 문서 + 갭 재실측 + `verify:core-loop-contract` PASS.  
 B-PARTICIPATION-001 done = SDK export + `/profits/[id]` 실배선 + `verify:participate-web-wire` PASS.  
 B-EXECUTION-001 done = `/trades/[id]/execute` → `useTradeExecution` + `verify:execute-web-wire` PASS.  
-B-TRADES-001 done = `/trades` → `fetchTradeList` + `verify:trades-web-wire` PASS.
+B-TRADES-001 done = `/trades` → `fetchTradeList` + `verify:trades-web-wire` PASS.  
+B-LOOP-002 done = `verify:core-loop-release` PASS (MATCH_SUCCESS + PRICE_MOVED/BELOW_MIN_PROFIT/MATCH_TIMEOUT/CIRCUIT_OPEN · 이중 정산/unlock 0 · Settled는 settledProfitUsdt 필수).
 
 ```text
 IMPLEMENTATION_START = B-PARTICIPATION-001
 CERTIFICATION = B-LOOP-002
+CORE_LOOP_CERTIFICATION = PASS
 FOUNDER_APPROVAL_REQUIRED = NO
 ```

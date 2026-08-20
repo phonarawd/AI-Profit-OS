@@ -2,7 +2,7 @@
 /**
  * verify:core-loop-contract — B-LOOP-001 계약 유지 + B-PARTICIPATION-001 배선 실측
  * Engine Rule 재정의 0 · /trades 목록은 B-TRADES-001 배선 후 유지
- * B-LOOP-002 release E2E 가 아니다.
+ * B-LOOP-002 release E2E 는 verify:core-loop-release.
  */
 "use strict";
 
@@ -78,6 +78,8 @@ const requiredFiles = [
   "schemas/participate-request.v1.json",
   "schemas/participate-proof.v1.json",
   "packages/sdk/src/execution-stream/useTradeExecution.ts",
+  "tooling/verify/core-loop-release.cjs",
+  "governance/consumer-loop/core-loop-release.v1.json",
 ];
 for (const f of requiredFiles) {
   if (!fs.existsSync(path.join(root, f))) fail(`missing: ${f}`);
@@ -103,6 +105,8 @@ for (const token of [
   "HOME_GEOMETRY_DEPENDENCY = FORBIDDEN",
   "B-PARTICIPATION-001",
   "PendingFigma",
+  "CORE_LOOP_CERTIFICATION = PASS",
+  "verify:core-loop-release",
 ]) {
   if (md && !md.includes(token)) fail(`${CONTRACT} must contain: ${token}`);
 }
@@ -160,6 +164,15 @@ if (gov) {
   }
   if (gov.measured.fakeFinancialValueBug !== "CLOSED") {
     fail("fakeFinancialValueBug must stay CLOSED");
+  }
+  if (gov.certification?.status !== "RELEASE_PASS") {
+    fail("certification.status must be RELEASE_PASS after B-LOOP-002");
+  }
+  if (gov.certification?.task !== "B-LOOP-002") {
+    fail("certification.task must be B-LOOP-002");
+  }
+  if ((gov.nextSlices || []).includes("B-LOOP-002")) {
+    fail("nextSlices must not still list B-LOOP-002");
   }
 }
 
@@ -334,6 +347,13 @@ if (
     "node tooling/verify/core-loop-contract.cjs"
 ) {
   fail("package.json missing verify:core-loop-contract script");
+}
+if (
+  pkg &&
+  pkg.scripts?.["verify:core-loop-release"] !==
+    "node tooling/verify/core-loop-release.cjs"
+) {
+  fail("package.json missing verify:core-loop-release script");
 }
 
 const catalog = read("tooling/verify/CATALOG.md");
