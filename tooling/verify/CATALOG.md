@@ -40,6 +40,7 @@
 | web-lint | `verify:web-lint` | T0 path | ✅ live (REL-011 · apps/web eslint 실검사 · no-op echo 0 · 구문 오류 FAIL) |
 | axe-harness | `verify:axe-harness` | T0 path | ✅ live (REL-012 · axe-core committed Playwright spec · Home 390/1440+login · MCP 0 · Home freeze 0) |
 | web-remote-patterns | `verify:web-remote-patterns` | T0 path | ✅ live (REL-013 · next/image 최소 allowlist · used hosts match · https-all 0) |
+| pwa-native-shell | `verify:pwa-native-shell` | T0 path | ✅ live (REL-014 · E-PWA-001 · manifest+icons+동등 SW+install/update · Push/WebAuthn/store-bridge 0) |
 
 ## T2 CI-only (heavy build)
 
@@ -61,6 +62,7 @@
 | `packages/ui/**` · `apps/web/**` | no-it-jargon · mockup-governance · canon-surfaces |
 | `apps/web/**` · `tooling/verify/web-lint.cjs` | web-lint |
 | `apps/web/next.config.ts` · `packages/ui/components/product/image-hosts.ts` · `tooling/verify/web-remote-patterns.cjs` | web-remote-patterns · product-image |
+| `apps/web/public/manifest.webmanifest` · `apps/web/public/sw.js` · `apps/web/public/icons/**` · `apps/web/app/pwa-shell.css` · `apps/web/components/pwa/**` · `tooling/verify/pwa-native-shell.cjs` | pwa-native-shell |
 | `apps/admin/**` | no-admin-in-web · admin-routes |
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |
 | `supabase/migrations/**` · migrations-applied fixture | migrations-applied-parity |
@@ -117,7 +119,7 @@
 | fact-freshness · answer-trace | Engine §47.4·47.5·47.15 — stale Fact refresh · lane+trace 100% · **live** |
 | conversation-state-bounded | Engine §47.16.2 (HARDENING V1 conv-state slice) — Redis working-state userId+conversationId 바인딩 · ownership fail-closed · TTL config-driven(`aiConvStateTtlSec`=3600·`aiConvStateAbsoluteLifetimeSec`=43200 12h) · bounded turns/history · F14 credentials 정합 · ConversationStateService durable-memory 비소유 · routing/scope/numeric 비침범 가드 — **live** |
 | reference-resolution | Engine §47.16.2 — `reference-resolver.cjs` resultRef hint-only resolve(resolved/ambiguous/not_found/unavailable) · getExecution `user_id+$id` 소유권 재검증 · normalized preference `ai_memory.append` 최초 연결 · unresolved≠REFERENCE_JSON · fact-only/no-autonomy 유지 — **live** |
-| pwa-manifest · pwa-serwist-single · pwa-brand-icons | PWA §23.1·25·26 — 퍼뜩·Lux theme · SW 1곳 · Brand icons (v7.22.17) |
+| pwa-manifest · pwa-serwist-single · pwa-brand-icons | PWA §23.1·25·26 — historical ids. Day-1 shell = **pwa-native-shell** (REL-014). Push/cert = REL-020~023 |
 | push-dedup · pwa-phase0-bus | PWA §23.5 — source_event_id · Phase0 NATS 0 |
 | webauthn-fallback-pointer · email-provider-resend | Money §43.6 Owns · PWA §23.6 UX only · Resend SSOT — **live** |
 | lighthouse-pwa | PWA §26 — CI ≥90 · local 8GB stub OK |

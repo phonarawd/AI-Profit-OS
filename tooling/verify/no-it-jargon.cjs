@@ -36,6 +36,7 @@ const files = [
   "packages/ui/copy/ko/settings.ts",
   "packages/ui/copy/ko/legal.ts",
   "packages/ui/copy/ko/ticker.ts",
+  "apps/web/components/pwa/copy.ts",
 ];
 
 for (const rel of files) {
