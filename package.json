@@ -184,6 +184,7 @@
     "verify:settlement-rule-parity": "node tooling/verify/settlement-rule-parity.cjs",
     "verify:figma-project-registry": "node tooling/verify/figma-project-registry.cjs",
     "verify:auth-rate-limit": "node tooling/verify/auth-rate-limit.cjs",
+    "verify:web-lint": "node tooling/verify/web-lint.cjs",
     "engine-acceptance:freeze-baseline": "node tooling/engine-acceptance/freeze-baseline.cjs",
     "engine-acceptance:kill-switch": "node tooling/engine-acceptance/kill-switch.cjs",
     "engine-acceptance:tiny-smoke": "node tooling/engine-acceptance/tiny-smoke.cjs",
