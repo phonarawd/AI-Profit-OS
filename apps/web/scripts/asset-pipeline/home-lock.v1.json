@@ -1,0 +1,201 @@
+{
+  "schema": "asset-pipeline.home-lock.v1",
+  "rel": "REL-018",
+  "lock": "HOME_APPROVED_ASSETS",
+  "rewrite": "FORBIDDEN",
+  "prefixes": [
+    "apps/web/public/spark-dash/",
+    "apps/web/components/spark-dash-home/"
+  ],
+  "fileCount": 47,
+  "files": {
+    "apps/web/public/spark-dash/ai-eye-right.svg": {
+      "sha256": "521261621f8d8b5848d9bcbb0dc268b4175ccf9f7fb0b1891a16eb5ebf541fc0",
+      "bytes": 938
+    },
+    "apps/web/public/spark-dash/ai-orb.svg": {
+      "sha256": "9ae84b0ae4934040fc0d4082eb33bbd29a6c31d1b55f5e13b2f7ad45a2cea1e3",
+      "bytes": 1317
+    },
+    "apps/web/public/spark-dash/ai-pink-glow.svg": {
+      "sha256": "853c8c878e767cbb33d16f370c3e19795af70d9e26a4413b69fa1f6a6bb4a5bb",
+      "bytes": 692
+    },
+    "apps/web/public/spark-dash/ai-ring.svg": {
+      "sha256": "e43d9706a68a61786b5eaa30a63f8c70dacd306c9098556e93faa2a3d3e75b8e",
+      "bytes": 976
+    },
+    "apps/web/public/spark-dash/ambient-glow.svg": {
+      "sha256": "5f8bec63a1830e991b168a3f2e27d351172fd78c241a2f74f2341cab92e99787",
+      "bytes": 710
+    },
+    "apps/web/public/spark-dash/avatar-body.svg": {
+      "sha256": "2aded37778e2a4b697bc1bd458bbfa19f93694ae4fe1967ad5699719910fc273",
+      "bytes": 251
+    },
+    "apps/web/public/spark-dash/avatar-face.svg": {
+      "sha256": "b8258729545008a2bcc358f11717c7c4d5b793d60f312bfc79cf50122487571b",
+      "bytes": 240
+    },
+    "apps/web/public/spark-dash/avatar-online.svg": {
+      "sha256": "3feb6ed30aa53e8341ec3bec0b7cd7c2341721feae392e02b8330b15346bb6e3",
+      "bytes": 238
+    },
+    "apps/web/public/spark-dash/brand-spark.svg": {
+      "sha256": "05cce98fae5c11db3201424edffd7982e47335ddefc11a2384e947736196db27",
+      "bytes": 502
+    },
+    "apps/web/public/spark-dash/energy-bloom-1.svg": {
+      "sha256": "a86bef9043a5492eaa6ccaef9ad539eb45753f33bf2b6a2431e02411312c29b1",
+      "bytes": 698
+    },
+    "apps/web/public/spark-dash/energy-bloom-2.svg": {
+      "sha256": "022e8d25983a8f4f2c2d2e09658cf1233a6cfc42b8fbaf2be10ffb4cf68035cf",
+      "bytes": 702
+    },
+    "apps/web/public/spark-dash/energy-bloom-3.svg": {
+      "sha256": "1b6e29d1e35b41af8474f32fe741f01a537f02d40a09548710f3c0cb4a17cf39",
+      "bytes": 698
+    },
+    "apps/web/public/spark-dash/energy-streaks.svg": {
+      "sha256": "e14a16e038040d629de1bf50be9e7ea7058f7b5734a64fedacc5443f1f8e7d5a",
+      "bytes": 1722
+    },
+    "apps/web/public/spark-dash/header-bell.svg": {
+      "sha256": "2cef33ef986799eed57a2505c9360e7e1e2926b78a4f59adf1252fb660b5ce77",
+      "bytes": 517
+    },
+    "apps/web/public/spark-dash/header-signal.svg": {
+      "sha256": "7ad46e4ad412d4f32e75f3c8604cec3beb92fd5f2538a1bfb7248c483237276f",
+      "bytes": 487
+    },
+    "apps/web/public/spark-dash/headline-spark.svg": {
+      "sha256": "e2bf650ddc193ca3cbe27fd99b45139eb52fbef2cd21da2794107203e522211b",
+      "bytes": 497
+    },
+    "apps/web/public/spark-dash/hero-halo.svg": {
+      "sha256": "9c924564075054ea3a53b0c15c5b1b289f655c7301dfe95d03fe7300eeb538ef",
+      "bytes": 718
+    },
+    "apps/web/public/spark-dash/hero-lightning-neon.svg": {
+      "sha256": "d5ba329ffe690e449296a640100cc94d66d58e318ed7906d906a46cb9b8d6580",
+      "bytes": 1664
+    },
+    "apps/web/public/spark-dash/hero-lightning-outline.svg": {
+      "sha256": "bcca780531198a0ca0ddeab14a24f30cb944707dd9419d0e736ec5fa4bf12df3",
+      "bytes": 1186
+    },
+    "apps/web/public/spark-dash/hero-lightning-raster.png": {
+      "sha256": "dff778ed740fc3c5d4123a0d1405f6e709eaa076824a679bb593c13f073a339e",
+      "bytes": 5779
+    },
+    "apps/web/public/spark-dash/hero-lightning.svg": {
+      "sha256": "124809cad39011a629ea0e3307b262d195e898a1d78faae342b7c67946248e6b",
+      "bytes": 395
+    },
+    "apps/web/public/spark-dash/icon-bell.svg": {
+      "sha256": "11c51906b3b6c88c44ab719eeb0be253401d3f59513280d951a8906949ac783f",
+      "bytes": 658
+    },
+    "apps/web/public/spark-dash/icon-home.svg": {
+      "sha256": "315fee620aac424cdf0131d3fc84e5e113496acdf249e92e3a97a17ee241d19c",
+      "bytes": 377
+    },
+    "apps/web/public/spark-dash/icon-opportunity.svg": {
+      "sha256": "7111bfd6db3ca5289affac01d3863e1ed28665216f7de4690ce386cc41f60d32",
+      "bytes": 607
+    },
+    "apps/web/public/spark-dash/icon-partner.svg": {
+      "sha256": "c2dc6079fc1c7a881494d608891fae89bb373a8a2c46d55f7b49b41371bd0c6e",
+      "bytes": 585
+    },
+    "apps/web/public/spark-dash/icon-settings.svg": {
+      "sha256": "e51a3df5589ee6dc13ecd203eb06b3a7da7d751f3914c52e0a89a9e0ef5b8ab8",
+      "bytes": 738
+    },
+    "apps/web/public/spark-dash/icon-wallet.svg": {
+      "sha256": "19ebc00e77400f2d0678b6c96fe3e11423450d5b88a88591a6ddcc0132947666",
+      "bytes": 500
+    },
+    "apps/web/public/spark-dash/mini-spark.svg": {
+      "sha256": "92d610e793fe3e2af2b1702e09d756b4613292ea7e050d97c0d3f7f372cccadb",
+      "bytes": 518
+    },
+    "apps/web/public/spark-dash/mobile-ai-agent.svg": {
+      "sha256": "2a24ca852072529b0a516f35b37dc6e0772dc68e9690fc458c3bd33ff7d29920",
+      "bytes": 2788
+    },
+    "apps/web/public/spark-dash/mobile-ai-orb.svg": {
+      "sha256": "5d36750f4e3fe23f1527b11ad312a9c417488c3dd07d0475e86d783fb5120071",
+      "bytes": 1317
+    },
+    "apps/web/public/spark-dash/mobile-brand-spark.svg": {
+      "sha256": "48c7c2f9c3f3789ec76e19bd6978833624b965bdd2d72497b0461d6ec5ab0a8c",
+      "bytes": 547
+    },
+    "apps/web/public/spark-dash/mobile-hero-energy.svg": {
+      "sha256": "850cf7d08ac3908df2b0ed2ac8c0731d08541d8112912c503a152fac886b7eb6",
+      "bytes": 2097
+    },
+    "apps/web/public/spark-dash/mobile-hero-lightning.svg": {
+      "sha256": "a670c2c3f5640b7e2489c5f3e77a465df8deb6a7a413075fba15432987147ef1",
+      "bytes": 1652
+    },
+    "apps/web/public/spark-dash/mobile-icon-clock.svg": {
+      "sha256": "580447e983fa6c036132d99687b1e119fd311c75ec65f5763c2cef1488dcbe2d",
+      "bytes": 635
+    },
+    "apps/web/public/spark-dash/mobile-icon-explore.svg": {
+      "sha256": "4494167c2e749ad6798565fa8a474e8b15375e70cdd52abae2c6a2c9c9e93620",
+      "bytes": 603
+    },
+    "apps/web/public/spark-dash/mobile-icon-home.svg": {
+      "sha256": "315fee620aac424cdf0131d3fc84e5e113496acdf249e92e3a97a17ee241d19c",
+      "bytes": 377
+    },
+    "apps/web/public/spark-dash/mobile-icon-lightning.svg": {
+      "sha256": "e9981f055926412f9295d5e586c2080a9e2ac23311b026c862d30729a8ee3050",
+      "bytes": 412
+    },
+    "apps/web/public/spark-dash/mobile-icon-nav-bell.svg": {
+      "sha256": "11c51906b3b6c88c44ab719eeb0be253401d3f59513280d951a8906949ac783f",
+      "bytes": 658
+    },
+    "apps/web/public/spark-dash/mobile-icon-nav-explore.svg": {
+      "sha256": "7111bfd6db3ca5289affac01d3863e1ed28665216f7de4690ce386cc41f60d32",
+      "bytes": 607
+    },
+    "apps/web/public/spark-dash/mobile-icon-nav-wallet.svg": {
+      "sha256": "19ebc00e77400f2d0678b6c96fe3e11423450d5b88a88591a6ddcc0132947666",
+      "bytes": 500
+    },
+    "apps/web/public/spark-dash/mobile-icon-notification.svg": {
+      "sha256": "2cef33ef986799eed57a2505c9360e7e1e2926b78a4f59adf1252fb660b5ce77",
+      "bytes": 517
+    },
+    "apps/web/public/spark-dash/mobile-icon-trend.svg": {
+      "sha256": "e46f041799117d0352ba143c81d7f6436f1bc0551e38662d59cb83024726f0cc",
+      "bytes": 506
+    },
+    "apps/web/public/spark-dash/mobile-icon-trophy.svg": {
+      "sha256": "1a02cb1e7b99df5dfe2c493cd45b24c64b1571005c18f17b19e8a4672208af6b",
+      "bytes": 936
+    },
+    "apps/web/public/spark-dash/mobile-icon-wallet.svg": {
+      "sha256": "ce47d3fb80866a011e893e6ee10e7a2a8b9d5850252b9c02755b42e4889ccf65",
+      "bytes": 500
+    },
+    "apps/web/public/spark-dash/opportunity-energy.png": {
+      "sha256": "c442d3627d8ec8ef0c64fbf91e492fafa1f035729aa70a554d9747d8317d5032",
+      "bytes": 2292
+    },
+    "apps/web/public/spark-dash/product-sneaker-hero.png": {
+      "sha256": "ca7e7001a380afd2115172f940a0d99a63384b5ec66e0ca54eda666fb99dbdfb",
+      "bytes": 1292553
+    },
+    "apps/web/public/spark-dash/spark-mark.svg": {
+      "sha256": "0d313562115cf1f5e112687230116b029071a5272e7ea31fbd587a3870a853c8",
+      "bytes": 1044
+    }
+  }
+}

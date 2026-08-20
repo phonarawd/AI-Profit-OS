@@ -1,0 +1,9 @@
+{
+  "id": "rel018-fixture-ok",
+  "class": "ui_icon",
+  "source": {
+    "kind": "local_file",
+    "path": "apps/web/scripts/asset-pipeline/examples/fixture-source.svg"
+  },
+  "destRel": "apps/web/scripts/asset-pipeline/examples/.generated/fixture.svg"
+}

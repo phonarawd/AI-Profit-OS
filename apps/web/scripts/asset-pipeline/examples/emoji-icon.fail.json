@@ -1,0 +1,10 @@
+{
+  "id": "rel018-emoji-icon-fail",
+  "class": "ui_icon",
+  "source": {
+    "kind": "local_file",
+    "path": "apps/web/scripts/asset-pipeline/examples/fixture-source.svg",
+    "emoji": "⚡"
+  },
+  "destRel": "apps/web/scripts/asset-pipeline/examples/.generated/emoji.svg"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "rel018-home-overwrite-fail",
+  "class": "raster",
+  "source": {
+    "kind": "local_file",
+    "path": "apps/web/scripts/asset-pipeline/examples/fixture-source.svg"
+  },
+  "destRel": "apps/web/public/spark-dash/brand-spark.svg"
+}

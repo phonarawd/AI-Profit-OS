@@ -1,0 +1,41 @@
+{
+  "schema": "asset-pipeline.review-checklist.v1",
+  "rel": "REL-018",
+  "items": [
+    {
+      "id": "source_recorded",
+      "required": true,
+      "meaning": "source.kind + source.path + source sha256 기록"
+    },
+    {
+      "id": "optimize_ran",
+      "required": true,
+      "meaning": "optimize 단계가 실행됨 (포맷 유지 또는 SVG 주석 제거)"
+    },
+    {
+      "id": "hash_recorded",
+      "required": true,
+      "meaning": "dest sha256 기록"
+    },
+    {
+      "id": "dest_not_home_locked",
+      "required": true,
+      "meaning": "Home 승인 경로에 쓰지 않음"
+    },
+    {
+      "id": "partner_official_only",
+      "required": true,
+      "meaning": "partner_logo 이면 source.kind=official 만"
+    },
+    {
+      "id": "ai_path_zero",
+      "required": true,
+      "meaning": "AI 생성 URL/kind/generator 0"
+    },
+    {
+      "id": "emoji_icon_zero",
+      "required": true,
+      "meaning": "이모지로 아이콘을 대체하는 경로 0"
+    }
+  ]
+}

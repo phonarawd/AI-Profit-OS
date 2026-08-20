@@ -1,0 +1,10 @@
+{
+  "id": "rel018-partner-ai-fail",
+  "class": "partner_logo",
+  "source": {
+    "kind": "ai_generated",
+    "path": "apps/web/scripts/asset-pipeline/examples/fixture-source.svg",
+    "generator": "dalle"
+  },
+  "destRel": "packages/ui/brand/assets/markets/ebay.svg"
+}
