@@ -1,0 +1,37 @@
+<svg width="240" height="340" viewBox="0 0 240 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="boltSoftGlow" x="-40" y="-40" width="320" height="420" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 1  0 0 0 0 0.18  0 0 0 0 0.42  0 0 0 0.42 0" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#boltSoftGlow)">
+    <path
+      d="M142 22L48 158H108L86 318L198 146H132L142 22Z"
+      fill="none"
+      stroke="#FF2D6B"
+      stroke-width="13"
+      stroke-linejoin="round"
+      opacity="0.46"
+    />
+    <path
+      d="M142 22L48 158H108L86 318L198 146H132L142 22Z"
+      fill="none"
+      stroke="#FF8FB3"
+      stroke-width="7"
+      stroke-linejoin="round"
+      opacity="0.95"
+    />
+    <path
+      d="M142 22L48 158H108L86 318L198 146H132L142 22Z"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="3.1"
+      stroke-linejoin="round"
+    />
+  </g>
+</svg>

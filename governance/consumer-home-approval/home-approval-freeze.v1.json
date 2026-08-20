@@ -1,0 +1,211 @@
+{
+  "schema": "governance.consumer-home-approval.freeze.v1",
+  "version": "1.0.0",
+  "measuredAt": "2026-08-19T02:52:00+09:00",
+  "product": "PUTDUK",
+  "surface": "HOME",
+  "verdict": {
+    "founderApproved": true,
+    "desktopFinalClose": "PASS",
+    "mobileFinalClose": "PASS",
+    "homePresentationBaseline": "LOCKED",
+    "reopenRequires": "explicit Founder OPEN of Home"
+  },
+  "lock": {
+    "doNotModifyHomeVisualUnlessReopened": true,
+    "doNotBindOtherPagesToHomeGeometry": true,
+    "protect": [
+      "approved Home visual baseline",
+      "Business Truth",
+      "Money Truth",
+      "Product Truth"
+    ]
+  },
+  "viewports": {
+    "desktopPrimary": { "width": 1440, "height": 1080 },
+    "mobilePrimary": { "width": 390, "height": 693 },
+    "desktopResponsiveSanity": [1280, 1366, 1440, 1680, 1920],
+    "mobileResponsiveSanity": [320, 360, 375, 390, 412, 430]
+  },
+  "truth": {
+    "USDT": "PRIMARY",
+    "KRW": "SECONDARY_REFERENCE",
+    "expectedReturnNeExpectedProfitAmount": true,
+    "durationOwner": "OpportunityCard.estimatedDurationSec",
+    "durationDb": "opportunities.estimated_duration_sec",
+    "durationDisplay": "formatDurationMinutesFromSec → N분; missing → —",
+    "FAKE_FOMO": 0,
+    "FAKE_MONEY": 0,
+    "FAKE_DURATION": 0,
+    "DAY_TO_MINUTE_CONVERSION": 0,
+    "FX_SECOND_TRUTH": 0,
+    "MISSING_TO_ZERO": 0,
+    "PRODUCTION_FIXTURE_LEAKAGE": 0
+  },
+  "fixtureIsolation": {
+    "visualFixtureOwner": "visual_fixture",
+    "devOnlyRoutes": [
+      "/dev/spark-dash-desktop",
+      "/dev/spark-dash-mobile"
+    ],
+    "productionHome": {
+      "route": "/",
+      "client": "apps/web/app/HomeDesktopClient.tsx",
+      "mapper": "apps/web/components/spark-dash-home/map-runtime.ts",
+      "financialOwner": "runtime/domain (home-read, wallet buckets, current-fx, opportunity feed)"
+    },
+    "forbidden": [
+      "inject visual fixture financial values into production /",
+      "client-side second FX truth",
+      "production hardcoded 1360",
+      "missing money → 0"
+    ]
+  },
+  "regressionGuard": {
+    "afterSharedChangeCheck": [
+      { "surface": "desktop", "viewport": "1440x1080" },
+      { "surface": "mobile", "viewport": "390x693" }
+    ],
+    "meaningfulChangeIncludes": [
+      "geometry",
+      "typography",
+      "money hierarchy",
+      "ProductMedia",
+      "CTA",
+      "Summary",
+      "navigation",
+      "AI",
+      "first viewport composition",
+      "clipping",
+      "overflow"
+    ],
+    "pixelPerfectDiffAloneIsNotFailure": true
+  },
+  "sourcePolicy": {
+    "copiedNotMoved": true,
+    "didNotOverwriteExistingEvidence": true,
+    "didNotPromoteStaleFigmaOrOldReferenceAsBaseline": true,
+    "tmpSourcesRemainUntouched": "_tmp_spark_dash_refs"
+  },
+  "baselines": [
+    {
+      "id": "approved-home-desktop-1440",
+      "role": "desktop-primary",
+      "path": "governance/consumer-home-approval/baselines/approved-home-desktop-1440.png",
+      "source": "_tmp_spark_dash_refs/regression-desktop-1440-after-mobile-polish.png",
+      "note": "latest Desktop 1440 after Mobile polish + profile hotfix",
+      "bytes": 503540,
+      "sha256": "2df49c52bada28cef078f9f2111a483fa3d7d03800b3a751393a8fdcde99b31e"
+    },
+    {
+      "id": "approved-home-desktop-1280",
+      "role": "desktop-sanity",
+      "path": "governance/consumer-home-approval/baselines/approved-home-desktop-1280.png",
+      "source": "_tmp_spark_dash_refs/desktop-profile-hotfix-1280.png",
+      "bytes": 474883,
+      "sha256": "5a8e3f5d8a3005b0f44b556bffa0a425be9ba3099d4759cdca930a86a25babb1"
+    },
+    {
+      "id": "approved-home-desktop-1366",
+      "role": "desktop-sanity",
+      "path": "governance/consumer-home-approval/baselines/approved-home-desktop-1366.png",
+      "source": "_tmp_spark_dash_refs/desktop-profile-hotfix-1366.png",
+      "bytes": 481847,
+      "sha256": "a22765c0b71a16b1ca9645260e0587dec2c22acfa17b8cf1d777de74e5bed28e"
+    },
+    {
+      "id": "approved-home-desktop-1680",
+      "role": "desktop-sanity",
+      "path": "governance/consumer-home-approval/baselines/approved-home-desktop-1680.png",
+      "source": "_tmp_spark_dash_refs/desktop-profile-hotfix-1680.png",
+      "bytes": 510693,
+      "sha256": "de0882504433b02977402e77e6989ad335df992a6e57671de5362726e4d1c470"
+    },
+    {
+      "id": "approved-home-desktop-1920",
+      "role": "desktop-sanity",
+      "path": "governance/consumer-home-approval/baselines/approved-home-desktop-1920.png",
+      "source": "_tmp_spark_dash_refs/desktop-profile-hotfix-1920.png",
+      "bytes": 535580,
+      "sha256": "c4459cf9975d86c9cd1083656b477a3efd1be6d4397e84484ba91d50d5954b30"
+    },
+    {
+      "id": "approved-home-mobile-320",
+      "role": "mobile-sanity",
+      "path": "governance/consumer-home-approval/baselines/approved-home-mobile-320.png",
+      "source": "_tmp_spark_dash_refs/final-mobile-320-polish.png",
+      "bytes": 69886,
+      "sha256": "e54b4ce6cb9ea5b648838ddf5a213c7f95dcedf4c5d61a2c4ba3ea44a01d21dd"
+    },
+    {
+      "id": "approved-home-mobile-360",
+      "role": "mobile-sanity",
+      "path": "governance/consumer-home-approval/baselines/approved-home-mobile-360.png",
+      "source": "_tmp_spark_dash_refs/final-mobile-360-polish.png",
+      "bytes": 74296,
+      "sha256": "50a79eb5aea96ca4996c92c2d0454d7d41acfd547758511df21f8edd26dd9c8b"
+    },
+    {
+      "id": "approved-home-mobile-375",
+      "role": "mobile-sanity",
+      "path": "governance/consumer-home-approval/baselines/approved-home-mobile-375.png",
+      "source": "_tmp_spark_dash_refs/final-mobile-375.png",
+      "note": "last available 375 capture; no separate *-polish file existed",
+      "bytes": 75884,
+      "sha256": "e4751e36a8b884a5d91741ec2f6dc8abcb90946a4d78430187f5a670e053be96"
+    },
+    {
+      "id": "approved-home-mobile-390",
+      "role": "mobile-primary",
+      "path": "governance/consumer-home-approval/baselines/approved-home-mobile-390.png",
+      "source": "_tmp_spark_dash_refs/final-mobile-390-polish.png",
+      "bytes": 76673,
+      "sha256": "456b025e02c537a42be9f4f14853dab9dde1e914c29804c78f3896bb1cc59e88"
+    },
+    {
+      "id": "approved-home-mobile-412",
+      "role": "mobile-sanity",
+      "path": "governance/consumer-home-approval/baselines/approved-home-mobile-412.png",
+      "source": "_tmp_spark_dash_refs/final-mobile-412-polish.png",
+      "bytes": 88905,
+      "sha256": "8d416ef180abde5d6134eaeb2fb79b456e17ce3f3c421944e6f50a14ff2a6726"
+    },
+    {
+      "id": "approved-home-mobile-430",
+      "role": "mobile-sanity",
+      "path": "governance/consumer-home-approval/baselines/approved-home-mobile-430.png",
+      "source": "_tmp_spark_dash_refs/final-mobile-430-polish.png",
+      "bytes": 89982,
+      "sha256": "68a14bc9a8566504042ac23f4a8bb4c8844f96581c265db2e13547e2787f613b"
+    },
+    {
+      "id": "approved-home-mobile-hero",
+      "role": "mobile-crop",
+      "path": "governance/consumer-home-approval/baselines/approved-home-mobile-hero.png",
+      "source": "_tmp_spark_dash_refs/crop-mobile-hero-polish.png",
+      "bytes": 45070,
+      "sha256": "d40e5091b7c7113248528cf13f07d50a69ad16e5c2271c55e02a9a48847ca015"
+    },
+    {
+      "id": "approved-home-mobile-ai",
+      "role": "mobile-crop",
+      "path": "governance/consumer-home-approval/baselines/approved-home-mobile-ai.png",
+      "source": "_tmp_spark_dash_refs/crop-mobile-ai-card-polish.png",
+      "note": "AI agent core + eyes cue + outer ring + glow + pink accent. Not a simple blue placeholder orb.",
+      "bytes": 25297,
+      "sha256": "3ba2fea34415de2417ca815058c747cca811cad7b1ad059f20b707a67b0fc926"
+    }
+  ],
+  "freezeQa": {
+    "path": "governance/consumer-home-approval/freeze-qa.v1.json",
+    "script": "apps/web/scripts/freeze-home-qa.mjs",
+    "verdict": "HOME_FREEZE_QA_PASS"
+  },
+  "gitAtFreezeRecord": {
+    "branch": "main",
+    "head": "0345206ad2e7238658454db5d072c8fbf93dbb37",
+    "workingTree": "dirty-other-session-files-left-untouched",
+    "commitOnThisRequest": false,
+    "pushOnThisRequest": false
+  }
+}

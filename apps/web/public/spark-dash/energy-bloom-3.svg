@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="342" height="196" viewBox="0 0 342 196" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Energy Bloom 3" filter="url(#filter0_f_0_11)">
+<ellipse cx="171" cy="98" rx="115" ry="42" fill="#FF2D6B" fill-opacity="0.095"/>
+</g>
+<defs>
+<filter id="filter0_f_0_11" x="0" y="0" width="342" height="196" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="28" result="effect1_foregroundBlur_0_11"/>
+</filter>
+</defs>
+</svg>
