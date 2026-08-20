@@ -89,6 +89,7 @@ const live = [
   "ops-inbox.cjs",
   "notification-prefs-default-on.cjs",
   "push-channel-prefs.cjs",
+  "webauthn-ux-rp.cjs",
   // P0-1 — real JWT sign/verify/tamper/expiry round-trip (see jwt.core.cjs)
   "auth-jwt-runtime.cjs",
   // PART1 korean-first-copy · mockup-governance · ux-design-system

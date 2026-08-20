@@ -134,6 +134,21 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/api-nest\/src\/auth\/webauthn-rp\.ts$/.test(f) ||
+      /^packages\/ui\/components\/auth\/webauthn-ready\.ts$/.test(f) ||
+      /^packages\/ui\/components\/auth\/AuthLogin\.tsx$/.test(f) ||
+      /^governance\/pwa\/webauthn-rp/.test(f) ||
+      /^tooling\/pwa\/webauthn-/.test(f) ||
+      /^tooling\/verify\/webauthn-ux-rp\.cjs$/.test(f),
+    scripts: [
+      "webauthn-ux-rp.cjs",
+      "webauthn-fallback-pointer.cjs",
+      "pwa-native-shell.cjs",
+      "auth-surfaces.cjs",
+    ],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/page\.tsx$/.test(f) ||
       /^apps\/web\/app\/HomePageClient\.tsx$/.test(f) ||
       /^apps\/web\/app\/_components\/HomePageClient\.tsx$/.test(f) ||

@@ -21,13 +21,14 @@ import {
   Injectable,
   ServiceUnavailableException,
 } from "@nestjs/common";
-import { randomUUID } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
 import { join } from "node:path";
 import {
   loadPhase0Env,
   oauthConfigured,
 } from "../config/phase0.env";
+import { loadAuthWebauthnRp } from "./webauthn-rp";
 import { PostgresService } from "../db/postgres";
 import { NotificationPrefsService } from "../inbox/notification-prefs.service";
 import { LedgerProvisionService } from "../ledger/ledger.provision.service";
@@ -271,11 +272,15 @@ export class AuthService {
   }
 
   passkeyOptions(kind: "register" | "authenticate") {
+    const rp = loadAuthWebauthnRp();
     return {
       ok: true as const,
       kind,
-      status: "not_configured" as const,
-      rpName: "퍼뜩",
+      status: "ready" as const,
+      rpName: rp.rpName,
+      rpId: rp.rpId,
+      origin: rp.origin,
+      challenge: randomBytes(32).toString("base64url"),
       issuer: USER_JWT_ISSUER,
     };
   }

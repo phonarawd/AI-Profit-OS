@@ -1,16 +1,30 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { T } from "../../copy/ko";
 import { BrandMark } from "../brand/BrandMark";
 import { TouchButton } from "../lux/TouchButton";
 import { isKakaoOAuthReady, kakaoStartHref } from "./kakao-ready";
+import {
+  isWebAuthnSupported,
+  tryPasskeyAuthenticate,
+} from "./webauthn-ready";
 
 /**
  * Canon auth-login — Kakao primary · Google/Passkey secondary · Email tertiary
  * Gender field 0 · stat strip 0
+ * REL-022: 미지원/실패 시 기존 로그인 유지. 빈 화면 금지.
  */
 export function AuthLogin() {
   const kakaoReady = isKakaoOAuthReady();
+  const [passkeySupported, setPasskeySupported] = useState(false);
+  const [showPasskeyFallback, setShowPasskeyFallback] = useState(false);
+
+  useEffect(() => {
+    const supported = isWebAuthnSupported();
+    setPasskeySupported(supported);
+    if (!supported) setShowPasskeyFallback(true);
+  }, []);
 
   return (
     <main
@@ -73,12 +87,28 @@ export function AuthLogin() {
         <TouchButton
           variant="secondary"
           className="w-full"
-          disabled
+          disabled={!passkeySupported}
           data-testid="auth-passkey"
-          data-oauth-ready="false"
+          data-passkey-supported={passkeySupported ? "true" : "false"}
+          data-oauth-ready={passkeySupported ? "true" : "false"}
+          onClick={() => {
+            void tryPasskeyAuthenticate().then((result) => {
+              if (!result.ok || result.usedFallback) {
+                setShowPasskeyFallback(true);
+              }
+            });
+          }}
         >
           {T.auth.passkeyStart}
         </TouchButton>
+        {showPasskeyFallback ? (
+          <p
+            className="text-center text-xs text-lux-text-muted"
+            data-testid="auth-passkey-fallback"
+          >
+            {T.auth.passkeyFallback}
+          </p>
+        ) : null}
         <TouchButton
           variant="ghost"
           className="w-full"
