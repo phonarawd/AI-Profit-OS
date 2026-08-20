@@ -1,0 +1,78 @@
+{
+  "$id": "https://ai-profit-os.local/governance/consumer-wallet/wallet-release.v1.json",
+  "schema": "governance.consumer-wallet.wallet-release.v1",
+  "version": "1.0.0",
+  "measuredAt": "2026-08-20",
+  "task": "B-WALLET-003",
+  "legacyPointer": "03 redesign-r3-wallet-certification",
+  "status": "RELEASE_PASS",
+  "knownDefects": [],
+  "e2e": {
+    "mode": "IN_PROCESS_OWNER_RULES",
+    "rails": [
+      "usdt-deposit",
+      "krw-deposit",
+      "usdt-withdraw",
+      "krw-withdraw"
+    ],
+    "money": [
+      "BUCKET_INVARIANT",
+      "USDT_1CONF_NO_LEDGER",
+      "USDT_19CONF_CREDIT_ONCE",
+      "KRW_PENDING_MATCHED_NO_CREDIT",
+      "KRW_APPROVE_CREDIT_ONCE",
+      "KRW_REJECT_NO_CREDIT",
+      "WITHDRAW_INTENT_NO_LEDGER",
+      "DEFAULT_WITHDRAW_MODE_PROFIT",
+      "MISSING_NOT_ZERO"
+    ],
+    "security": [
+      "KYC_WITHDRAW_ONLY",
+      "PRACTICE_NOT_WITHDRAWABLE",
+      "WITHDRAW_APPLY_BLOCKED",
+      "WITHDRAW_STEP_UP_REQUIRED",
+      "PRINCIPAL_CONFIRM_REQUIRED",
+      "SESSION_JOURNAL_ISOLATION",
+      "PG_GATEWAY_ABSENT",
+      "NO_QUERY_USER_ID"
+    ],
+    "httpBrowser": "NOT_THIS_SLICE",
+    "note": "Phase0 로컬은 브라우저+API 동시 기동 금지. 인증 E2E는 기존 소유자 규칙(1/19conf·KYC·default profit·idempotency·session isolation)의 인프로세스 증명. 출금 intent는 ledger follow-up이며 이 슬라이스가 잔액 column/출금 분개를 발명하지 않는다. web 8면 PendingFigma 유지(시각 lock 아님)."
+  },
+  "prereqVerifiers": [
+    "wallet-contract",
+    "wallet-gap-wire",
+    "bucket-invariant",
+    "deposit-confirm-stages",
+    "wallet-kyc-session-auth",
+    "webauthn-fallback-pointer"
+  ],
+  "surfacePointers": [
+    "wallet-live-wire",
+    "withdraw-flow-wire",
+    "withdraw-mode-default",
+    "kyc-withdraw-only",
+    "deposit-network-plain-ko",
+    "practice-non-withdrawable",
+    "pg-module-scan"
+  ],
+  "authority": {
+    "MONEY_RULE_REDEFINITION": "FORBIDDEN",
+    "NEW_FX_FORMULA": "FORBIDDEN",
+    "PG_GATEWAY": "FORBIDDEN",
+    "LEDGER_COLUMN_UPDATE": "FORBIDDEN",
+    "MISSING_AS_ZERO": "FORBIDDEN",
+    "ONE_CONF_EQUALS_CREDITED": "FORBIDDEN",
+    "KYC_ON_DEPOSIT": "FORBIDDEN",
+    "KYC_ON_PARTICIPATE": "FORBIDDEN",
+    "KYC_ON_WITHDRAW": "REQUIRED",
+    "DEFAULT_WITHDRAW_MODE": "profit",
+    "PRACTICE_TO_PROFIT_OR_WITHDRAW": "FORBIDDEN",
+    "PRINCIPAL_PLUS_PROFIT_AS_AVAILABLE": "FORBIDDEN",
+    "NEW_VISUAL_LOCK": false,
+    "LEGACY_VISUAL_RECOVERY": "FORBIDDEN",
+    "HOME_GEOMETRY_DEPENDENCY": "FORBIDDEN"
+  },
+  "runtime": "tooling/verify/lib/wallet-release-runtime.cjs",
+  "verifier": "tooling/verify/wallet-release.cjs"
+}

@@ -18,6 +18,8 @@
     "verify:consumer-ux-architecture": "node tooling/verify/consumer-ux-architecture.cjs",
     "verify:core-loop-contract": "node tooling/verify/core-loop-contract.cjs",
     "verify:wallet-contract": "node tooling/verify/wallet-contract.cjs",
+    "verify:wallet-gap-wire": "node tooling/verify/wallet-gap-wire.cjs",
+    "verify:wallet-release": "node tooling/verify/wallet-release.cjs",
     "verify:core-loop-release": "node tooling/verify/core-loop-release.cjs",
     "verify:participate-web-wire": "node tooling/verify/participate-web-wire.cjs",
     "verify:execute-web-wire": "node tooling/verify/execute-web-wire.cjs",

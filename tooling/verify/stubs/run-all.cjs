@@ -145,6 +145,8 @@ const live = [
   "profits-live-wire.cjs",
   "core-loop-contract.cjs",
   "wallet-contract.cjs",
+  "wallet-gap-wire.cjs",
+  "wallet-release.cjs",
   "participate-web-wire.cjs",
   "execute-web-wire.cjs",
   "trades-web-wire.cjs",
@@ -187,6 +189,9 @@ for (const step of steps) {
       ...process.env,
       ...(step === "core-loop-release.cjs"
         ? { CORE_LOOP_RELEASE_NESTED: "1" }
+        : {}),
+      ...(step === "wallet-release.cjs"
+        ? { WALLET_RELEASE_NESTED: "1" }
         : {}),
     },
   });

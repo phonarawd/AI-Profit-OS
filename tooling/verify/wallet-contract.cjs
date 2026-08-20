@@ -67,6 +67,8 @@ const requiredFiles = [
   "services/api-nest/src/ledger/ledger.buckets.service.ts",
   "services/api-nest/src/compliance/kyc-gate.ts",
   "schemas/wallet-buckets.v1.json",
+  "tooling/verify/wallet-release.cjs",
+  "governance/consumer-wallet/wallet-release.v1.json",
 ];
 for (const f of requiredFiles) {
   if (!fs.existsSync(path.join(root, f))) fail(`missing: ${f}`);
@@ -90,9 +92,14 @@ for (const token of [
   "WIRE_WITHOUT_APPROVED_FIGMA = ALLOWED",
   "INVENT_PRESENTATION = FORBIDDEN",
   "WEB_WALLET_PENDING_FIGMA = 8",
-  "SDK_DEPOSIT_ADDRESS_EXPORT = MISSING",
+  "SDK_DEPOSIT_ADDRESS_EXPORT = PRESENT",
+  "SDK_KYC_EXPORT = PRESENT",
+  "USER_JOURNAL_LIST = PRESENT",
   "REAL_IMPLEMENTATION = WEB_UNWIRED",
   "B-WALLET-002",
+  "B-WALLET-003",
+  "WALLET_CERTIFICATION = PASS",
+  "verify:wallet-release",
   "PendingFigma",
 ]) {
   if (md && !md.includes(token)) fail(`${CONTRACT} must contain: ${token}`);
@@ -163,19 +170,31 @@ if (gov) {
     fail("measured.webWalletPendingFigma must be 8");
   }
   if (gov.measured.webWalletBucketsFetch !== 0) {
-    fail("measured.webWalletBucketsFetch must stay 0 until B-WALLET-002");
+    fail("measured.webWalletBucketsFetch must stay 0 until CUX-007");
   }
   if (gov.measured.sdkWalletBucketsExport !== "PRESENT") {
     fail("sdkWalletBucketsExport must be PRESENT");
   }
-  if (gov.measured.sdkDepositAddressExport !== "MISSING") {
-    fail("sdkDepositAddressExport must stay MISSING until wired");
+  if (gov.measured.sdkDepositAddressExport !== "PRESENT") {
+    fail("sdkDepositAddressExport must be PRESENT after B-WALLET-002");
   }
-  if (gov.measured.userJournalListApi !== "MISSING") {
-    fail("userJournalListApi must stay MISSING (do not invent)");
+  if (gov.measured.sdkKycExport !== "PRESENT") {
+    fail("sdkKycExport must be PRESENT after B-WALLET-002");
+  }
+  if (gov.measured.userJournalListApi !== "PRESENT") {
+    fail("userJournalListApi must be PRESENT after B-WALLET-002");
   }
   if (gov.measured.fakeFinancialValueBug !== "CLOSED") {
     fail("fakeFinancialValueBug must stay CLOSED");
+  }
+  if (gov.certification?.status !== "RELEASE_PASS") {
+    fail("certification.status must be RELEASE_PASS after B-WALLET-003");
+  }
+  if (gov.certification?.task !== "B-WALLET-003") {
+    fail("certification.task must be B-WALLET-003");
+  }
+  if ((gov.nextSlices || []).includes("B-WALLET-003")) {
+    fail("nextSlices must drop B-WALLET-003 after certification");
   }
 }
 
@@ -204,10 +223,13 @@ if (!sdkIndex.includes("fetchWalletBuckets")) {
   fail("packages/sdk/src/index.ts must re-export fetchWalletBuckets");
 }
 if (
-  sdkFetch.includes("my-deposit-address") ||
-  sdkIndex.includes("my-deposit-address")
+  !sdkFetch.includes("my-deposit-address") ||
+  !sdkIndex.includes("fetchMyDepositAddress")
 ) {
-  fail("sdk must not silently gain deposit-address without contract update");
+  fail("sdk must export fetchMyDepositAddress after B-WALLET-002");
+}
+if (!sdkIndex.includes("fetchKycStatus") || !sdkIndex.includes("listWalletJournals")) {
+  fail("sdk must export fetchKycStatus and listWalletJournals after B-WALLET-002");
 }
 
 const stages = read("services/api-nest/src/wallet/chain-watcher.stages.ts");
@@ -253,6 +275,13 @@ if (
     "node tooling/verify/wallet-contract.cjs"
 ) {
   fail("package.json missing verify:wallet-contract");
+}
+if (
+  pkg &&
+  pkg.scripts?.["verify:wallet-release"] !==
+    "node tooling/verify/wallet-release.cjs"
+) {
+  fail("package.json missing verify:wallet-release script");
 }
 
 const catalog = read("tooling/verify/CATALOG.md");

@@ -8,7 +8,7 @@
   "task": "B-WALLET-001",
   "certification": {
     "task": "B-WALLET-003",
-    "status": "PENDING",
+    "status": "RELEASE_PASS",
     "verifier": "tooling/verify/wallet-release.cjs"
   },
   "legacyPointer": "03 redesign-r3-wallet-contract",
@@ -52,7 +52,7 @@
     "krwRequest": "requestedAmountKrw + uniqueSuffixKrw = payableAmountKrw",
     "withdrawIntent": "POST /api/v1/wallet/withdraw default mode=profit",
     "kyc": "GET/POST /api/v1/compliance/kyc/*",
-    "historyJournal": "MISSING"
+    "historyJournal": "GET /api/v1/wallet/journals"
   },
   "rails": [
     {
@@ -88,6 +88,7 @@
     "withdrawStepUp": "POST /api/v1/wallet/withdraw/step-up/*",
     "kycStatus": "GET /api/v1/compliance/kyc/status",
     "kycSubmit": "POST /api/v1/compliance/kyc/submit",
+    "journals": "GET /api/v1/wallet/journals",
     "compatWallet": "/wallet",
     "compatDeposit": "/wallet/deposit",
     "compatWithdrawUsdt": "/wallet/withdraw/usdt",
@@ -103,6 +104,7 @@
     "krwDeposit": "services/api-nest/src/wallet/krw-deposit.apply.ts",
     "withdraw": "services/api-nest/src/wallet/withdraw-intent.service.ts",
     "kyc": "services/api-nest/src/compliance/kyc-gate.ts",
+    "userJournals": "services/api-nest/src/ledger/ledger.user-journal.service.ts",
     "sdkWallet": "packages/sdk/src/wallet"
   },
   "measured": {
@@ -113,15 +115,15 @@
     "sdkWalletBucketsExport": "PRESENT",
     "sdkWithdrawExport": "PRESENT",
     "sdkKrwDepositExport": "PRESENT",
-    "sdkDepositAddressExport": "MISSING",
-    "sdkKycExport": "MISSING",
+    "sdkDepositAddressExport": "PRESENT",
+    "sdkKycExport": "PRESENT",
     "backendWallet": "OWNER_FOUND",
-    "userJournalListApi": "MISSING",
-    "sdkZeroFallback": "STILL_PRESENT",
+    "userJournalListApi": "PRESENT",
+    "sdkZeroFallback": "CLOSED",
     "fakeFinancialValueBug": "CLOSED",
     "pgGateway": "ABSENT"
   },
-  "nextSlices": ["B-WALLET-002", "B-WALLET-003"],
+  "nextSlices": [],
   "verifier": "tooling/verify/wallet-contract.cjs",
   "releaseVerifier": "tooling/verify/wallet-release.cjs"
 }

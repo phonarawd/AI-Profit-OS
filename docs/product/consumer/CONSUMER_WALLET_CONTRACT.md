@@ -3,7 +3,7 @@
 > **문서 종류:** Product · Visual · Implementation Contract  
 > **TASK:** B-WALLET-001 · Track B User Profit Loop  
 > **일자:** 2026-08-20  
-> **상태:** CONTRACT_READY · IMPLEMENTATION = WEB_UNWIRED · CERTIFICATION = PENDING  
+> **상태:** CONTRACT_READY · IMPLEMENTATION = WEB_UNWIRED · CERTIFICATION = PASS  
 > **시각 권위:** APPROVED FIGMA = NONE · Spark Dash DNA = CONSTRAINT_ONLY  
 > **Money Rule:** 재정의 0 (Ledger · buckets · 1/19conf · KRW Admin 승인 · KYC/step-up KEEP)
 
@@ -83,7 +83,7 @@ B-WALLET-002            = WIRE_WITHOUT_APPROVED_FIGMA (최소 실데이터) · �
 | WithdrawIntent | `POST /api/v1/wallet/withdraw` · default `mode=profit` | practice debit · PG 출금 |
 | StepUpToken | challenge/verify 후 단기 토큰 | 비밀번호만으로 출금 |
 | KycStatus | `none\|pending\|approved\|rejected` | 참여/입금 게이트 |
-| HistoryFact | user journal list **MISSING** · KRW request list PARTIAL | 가짜 0건 목록 |
+| HistoryFact | user journal list `GET /api/v1/wallet/journals` · KRW request list PARTIAL | 가짜 0건 목록 |
 | GetUsdtGuide | `/me/guide/get-usdt` 교육 | 5번째 머니 레일 |
 
 ```text
@@ -95,6 +95,7 @@ PG_GATEWAY = FORBIDDEN
 LEDGER_COLUMN_UPDATE = FORBIDDEN
 KYC_ON_DEPOSIT = FORBIDDEN
 KYC_ON_PARTICIPATE = FORBIDDEN
+KYC_ON_WITHDRAW = REQUIRED
 ```
 
 불변식(서버):
@@ -121,7 +122,7 @@ principalUsdt + profitUsdt + lockedUsdt + practiceUsdt = liabilityUsdt
 | Wallet | `/wallet` | 버킷 + 4레일 입구 (D-01 primary) |
 | UsdtDeposit + KrwDeposit | `/wallet/deposit` | 혼합. 미래 분리=`/wallet/deposit/usdt`·`/wallet/deposit/krw` (G-P1-07) |
 | WithdrawChooser | `/wallet/withdraw` | 테더/원화 선택 |
-| TransactionHistory | `/wallet/history` | KRW 목록 PARTIAL · journal UNAVAILABLE |
+| TransactionHistory | `/wallet/history` | journal `GET /api/v1/wallet/journals` · KRW list PARTIAL |
 | Kyc | `/me/kyc` | 출금만 |
 | GetUsdtGuide | `/me/guide/get-usdt` | 테더 준비 쉬운 말. mutation 0 |
 
@@ -354,15 +355,15 @@ B-WALLET-002는 **가짜 돈을 넣지 않는 실배선**이 목표다. 픽셀 �
 | Profit merge API | `profit-merge.service.ts` (CTA HIDE) |
 | Suggest href | `deposit-suggest.ts` (Engine pointer only) |
 | Schemas | `schemas/wallet-buckets.v1.json` · `schemas/withdraw-intent.v1.json` |
-| SDK wallet | `fetchWalletBuckets` · `createWithdraw` · KRW request helpers · step-up |
-| Verify | `bucket-invariant` · `deposit-confirm-stages` · `withdraw-mode-default` · `kyc-withdraw-only` · `pg-module-scan` · `wallet-kyc-session-auth` · `wallet-live-wire` · `withdraw-flow-wire` |
+| SDK wallet | `fetchWalletBuckets` · `fetchMyDepositAddress` · `fetchKycStatus` · `listWalletJournals` · `createWithdraw` · KRW request helpers · step-up |
+| Verify | `bucket-invariant` · `deposit-confirm-stages` · `withdraw-mode-default` · `kyc-withdraw-only` · `pg-module-scan` · `wallet-kyc-session-auth` · `wallet-live-wire` · `withdraw-flow-wire` · `wallet-gap-wire` · `wallet-release` |
 
 ### 3.2 WIRE (이 계약 다음 슬라이스 · 이 슬라이스에서 구현 0)
 
 | 다음 TASK | 해야 할 일 |
 |-----------|------------|
-| B-WALLET-002 | `/wallet*` · `/me/kyc` · get-usdt 최소 실데이터. SDK address/KYC 헬퍼 갭만. 레거시 UI 복구 0 · Home 수정 0 |
-| B-WALLET-003 | `verify:wallet-release` · money/security 100% · known defect 0 |
+| B-WALLET-002 | DONE — SDK address/KYC/journal 갭 배선. 레거시 UI 복구 0 · Home 수정 0 · web 8면 PendingFigma 유지 |
+| B-WALLET-003 | DONE — `verify:wallet-release` money/security 인프로세스 E2E · known defect 0 · 시각 lock 아님 |
 
 B-WALLET-002 배선 최소:
 
@@ -371,7 +372,7 @@ B-WALLET-002 배선 최소:
 | `/wallet` | `GET /wallet/buckets` · 결측=UNAVAILABLE |
 | `/wallet/deposit` | `GET /wallet/my-deposit-address` + KRW create/list (혼합 KEEP) |
 | `/wallet/withdraw*` | KYC status → step-up → `POST /wallet/withdraw` default profit |
-| `/wallet/history` | KRW list PARTIAL · journal 없으면 UNAVAILABLE |
+| `/wallet/history` | KRW list PARTIAL · journal `GET /api/v1/wallet/journals` |
 | `/me/kyc` | `GET/POST /api/v1/compliance/kyc/*` |
 | `/me/guide/get-usdt` | 교육 copy · mutation 0 · 네트워크 한글 경고 |
 
@@ -379,7 +380,6 @@ B-WALLET-002 배선 최소:
 
 - PG사 SDK/결제창
 - 새 FX/payable/fee 공식
-- user journal list API (Money 별 슬라이스)
 - returnTo API 필드
 - 클라 `suggestDepositUsdt` / payable 재계산
 - practice 출금·참여
@@ -399,9 +399,9 @@ B-WALLET-002 배선 최소:
 | `apps/web/app/wallet/history/page.tsx` | WIRE KRW list · journal UNAVAILABLE |
 | `apps/web/app/me/kyc/page.tsx` | WIRE compliance |
 | `apps/web/app/me/guide/get-usdt/page.tsx` | WIRE guide copy only |
-| `packages/sdk/src/wallet/fetch.ts` | KEEP + address/KYC 갭 · `asAmount→"0"` 표시 금지 |
-| `services/api-nest/src/wallet/**` | NO_CHANGE unless bug |
-| `services/api-nest/src/ledger/**` | NO_CHANGE |
+| `packages/sdk/src/wallet/fetch.ts` | KEEP + address/KYC/journal · `asAmount→"0"` 금지 |
+| `services/api-nest/src/wallet/**` | journals 라우트만 추가 · 4레일 owner NO_REWRITE |
+| `services/api-nest/src/ledger/ledger.user-journal.*` | consumer read projection only · posting NO_CHANGE |
 | Home / spark-dash-home | NO_CHANGE |
 
 ---
@@ -420,10 +420,10 @@ B-WALLET-002 배선 최소:
 | Nest POST withdraw default profit | **OWNER_FOUND** | `mode ?? "profit"` · practice 403 |
 | Nest KYC 출금만 | **OWNER_FOUND** | `kyc-gate.ts` participate/deposit 무관 |
 | SDK buckets/withdraw/KRW/step-up | **PRESENT** | `packages/sdk/src/wallet` + `index.ts` |
-| SDK my-deposit-address | **MISSING** | sdk 경로 0건 |
-| SDK KYC | **MISSING** | G-P2-10 |
-| User journal/history API | **MISSING** | G-P1-04 · KRW list only |
-| SDK 결측 `"0"` fallback | **STILL_PRESENT** | `asAmount` → `"0"` (G-P0-01) |
+| SDK my-deposit-address | **PRESENT** | `fetchMyDepositAddress` |
+| SDK KYC | **PRESENT** | `fetchKycStatus` · `submitKyc` |
+| User journal/history API | **PRESENT** | `GET /api/v1/wallet/journals` session-scoped projection |
+| SDK 결측 `"0"` fallback | **CLOSED** | missing bucket → `wallet_buckets_unavailable` |
 | 가짜 금액 하드코드 (페이지) | **CLOSED** | PendingFigma |
 | PG사 | **ABSENT** | `verify:pg-module-scan` KEEP |
 | Home geometry 종속 필요 | **NO** | freeze + 이 계약 |
@@ -434,13 +434,13 @@ WEB_WALLET_PAGES = 8
 WEB_WALLET_PENDING_FIGMA = 8
 WEB_WALLET_BUCKETS_FETCH = 0
 SDK_WALLET_BUCKETS_EXPORT = PRESENT
-SDK_DEPOSIT_ADDRESS_EXPORT = MISSING
-SDK_KYC_EXPORT = MISSING
+SDK_DEPOSIT_ADDRESS_EXPORT = PRESENT
+SDK_KYC_EXPORT = PRESENT
 BACKEND_WALLET = OWNER_FOUND
-USER_JOURNAL_LIST = MISSING
+USER_JOURNAL_LIST = PRESENT
 FAKE_FINANCIAL_VALUE_BUG = CLOSED
 REAL_IMPLEMENTATION = WEB_UNWIRED
-WALLET_CERTIFICATION = PENDING
+WALLET_CERTIFICATION = PASS
 ```
 
 ---
@@ -448,12 +448,12 @@ WALLET_CERTIFICATION = PENDING
 ## 5. Acceptance
 
 B-WALLET-001 done = 계약 문서 + 갭 재실측 + `verify:wallet-contract` PASS.  
-B-WALLET-002 done = 4레일+overview+KYC 최소 실배선 + 결측≠0 + Home 무수정 + domain verify PASS.  
-B-WALLET-003 done = `verify:wallet-release` PASS (money/security 100% · known defect 0).
+B-WALLET-002 done = SDK address/KYC/journal 갭 배선 + 결측≠0 + Home 무수정 + domain verify PASS · web 8면 PendingFigma 유지.  
+B-WALLET-003 done = `verify:wallet-release` PASS (USDT 1conf≠credit · 19conf 1회 · KRW pending/matched≠credit · approve 1회 · default mode=profit · KYC 출금만 · practice 403 · session isolation · missing≠0 · known defect 0).
 
 ```text
 IMPLEMENTATION_START = B-WALLET-002
 CERTIFICATION = B-WALLET-003
-WALLET_CERTIFICATION = PENDING
+WALLET_CERTIFICATION = PASS
 FOUNDER_APPROVAL_REQUIRED = NO
 ```

@@ -28,6 +28,9 @@ const RULES = [
       /^tooling\/verify\/consumer-ux-architecture\.cjs$/.test(f) ||
       /^tooling\/verify\/core-loop-contract\.cjs$/.test(f) ||
       /^tooling\/verify\/wallet-contract\.cjs$/.test(f) ||
+      /^tooling\/verify\/wallet-gap-wire\.cjs$/.test(f) ||
+      /^tooling\/verify\/wallet-release\.cjs$/.test(f) ||
+      /^tooling\/verify\/lib\/wallet-release-runtime\.cjs$/.test(f) ||
       /^governance\/consumer-wallet\//.test(f) ||
       /^tooling\/verify\/participate-web-wire\.cjs$/.test(f) ||
       /^tooling\/verify\/execute-web-wire\.cjs$/.test(f) ||
@@ -46,6 +49,8 @@ const RULES = [
       "consumer-ux-architecture.cjs",
       "core-loop-contract.cjs",
       "wallet-contract.cjs",
+      "wallet-gap-wire.cjs",
+      "wallet-release.cjs",
       "participate-web-wire.cjs",
       "execute-web-wire.cjs",
       "trades-web-wire.cjs",
@@ -172,7 +177,7 @@ const RULES = [
       /^apps\/web\/app\/wallet\/page\.tsx$/.test(f) ||
       /^packages\/sdk\/src\/wallet\//.test(f) ||
       /^packages\/sdk\/src\/wallet\.ts$/.test(f),
-    scripts: ["wallet-live-wire.cjs"],
+    scripts: ["wallet-live-wire.cjs", "wallet-gap-wire.cjs", "wallet-release.cjs"],
   },
   {
     test: (f) =>
@@ -696,8 +701,9 @@ const RULES = [
   {
     test: (f) =>
       /^services\/api-nest\/src\/wallet\//.test(f) ||
-      /^services\/api-nest\/src\/compliance\/kyc\.controller\.ts$/.test(f),
-    scripts: ["wallet-kyc-session-auth.cjs"],
+      /^services\/api-nest\/src\/compliance\/kyc\.controller\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/ledger\/ledger\.user-journal/.test(f),
+    scripts: ["wallet-kyc-session-auth.cjs", "wallet-gap-wire.cjs", "wallet-release.cjs"],
   },
   {
     test: (f) => /^tooling\/verify\//.test(f),
