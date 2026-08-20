@@ -179,6 +179,7 @@
     "verify:platform-change-control": "node tooling/verify/platform-change-control.cjs",
     "verify:governance-observation-registry": "node tooling/verify/governance-observation-registry.cjs",
     "verify:engine-acceptance": "node tooling/verify/engine-acceptance.cjs",
+    "verify:qa-env-isolation-guard": "node tooling/verify/qa-env-isolation-guard.cjs",
     "engine-acceptance:freeze-baseline": "node tooling/engine-acceptance/freeze-baseline.cjs",
     "engine-acceptance:kill-switch": "node tooling/engine-acceptance/kill-switch.cjs",
     "engine-acceptance:tiny-smoke": "node tooling/engine-acceptance/tiny-smoke.cjs",

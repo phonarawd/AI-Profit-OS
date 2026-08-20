@@ -45,6 +45,12 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^tooling\/e2e\//.test(f) ||
+      /^tooling\/verify\/qa-env-isolation-guard\.cjs$/.test(f),
+    scripts: ["qa-env-isolation-guard.cjs"],
+  },
+  {
+    test: (f) =>
       /^supabase\/migrations\//.test(f) ||
       /^tooling\/verify\/migrations-applied-parity\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/migrations-applied\.v1\.json$/.test(f),

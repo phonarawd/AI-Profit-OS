@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "productionProjectRef": "mgsytcetsiecllmhcyox",
+  "productionDenySubstrings": [
+    "mgsytcetsiecllmhcyox",
+    ".supabase.co"
+  ],
+  "allowedHosts": ["127.0.0.1", "localhost", "::1"],
+  "allowedProjectRefs": []
+}
