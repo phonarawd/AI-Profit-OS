@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { T } from "../../copy/ko";
+import { formatUsdtOrUnavailable } from "../opportunity/money-display";
 import type { ParticipateProofModel } from "./trust-types";
 
 export type ParticipateProofPanelProps = {
@@ -60,20 +61,34 @@ export function ParticipateProofPanel({
         <dl className="mt-3 space-y-2 text-lux-text-muted" data-testid="participate-proof-body">
           <div className="flex justify-between gap-2">
             <dt>{c.buy}</dt>
-            <dd data-field="buyPriceUsdt" className="text-lux-text">
-              {proof.buyPriceUsdt} USDT
+            <dd
+              data-field="buyPriceUsdt"
+              data-money-state={formatUsdtOrUnavailable(proof.buyPriceUsdt).state}
+              className="text-lux-text"
+            >
+              {formatUsdtOrUnavailable(proof.buyPriceUsdt).text}
             </dd>
           </div>
           <div className="flex justify-between gap-2">
             <dt>{c.sell}</dt>
-            <dd data-field="sellPriceUsdt" className="text-lux-text">
-              {proof.sellPriceUsdt} USDT
+            <dd
+              data-field="sellPriceUsdt"
+              data-money-state={formatUsdtOrUnavailable(proof.sellPriceUsdt).state}
+              className="text-lux-text"
+            >
+              {formatUsdtOrUnavailable(proof.sellPriceUsdt).text}
             </dd>
           </div>
           <div className="flex justify-between gap-2">
             <dt>{c.expected}</dt>
-            <dd data-field="expectedProfitUsdt" className="text-lux-accent">
-              +{proof.expectedProfitUsdt} USDT
+            <dd
+              data-field="expectedProfitUsdt"
+              data-money-state={
+                formatUsdtOrUnavailable(proof.expectedProfitUsdt, true).state
+              }
+              className="text-lux-accent"
+            >
+              {formatUsdtOrUnavailable(proof.expectedProfitUsdt, true).text}
             </dd>
           </div>
           <div className="flex items-center justify-between gap-2">

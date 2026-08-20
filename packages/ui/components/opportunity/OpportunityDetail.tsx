@@ -7,6 +7,7 @@ import { ProductImage } from "../product/ProductImage";
 import { MarketPartnerLeg } from "../trust/MarketPartnerLeg";
 import { OpportunityScanBadge } from "./OpportunityScanBadge";
 import { PriceCompareMargin } from "./PriceCompareMargin";
+import { formatUsdtOrUnavailable } from "./money-display";
 import type { OpportunityCardModel } from "./opportunity-types";
 
 export type OpportunityDetailProps = {
@@ -68,12 +69,24 @@ export function OpportunityDetail({
         <dt className="text-lux-text-muted">
           {T.opportunity.labelRequiredCapital}
         </dt>
-        <dd className="text-right font-medium">{o.requiredCapitalUsdt} USDT</dd>
+        <dd
+          className="text-right font-medium"
+          data-money-state={
+            formatUsdtOrUnavailable(o.requiredCapitalUsdt).state
+          }
+        >
+          {formatUsdtOrUnavailable(o.requiredCapitalUsdt).text}
+        </dd>
         <dt className="text-lux-text-muted">
           {T.opportunity.labelExpectedProfit}
         </dt>
-        <dd className="text-right text-lg font-semibold text-lux-accent">
-          +{o.expectedProfitUsdt} USDT
+        <dd
+          className="text-right text-lg font-semibold text-lux-accent"
+          data-money-state={
+            formatUsdtOrUnavailable(o.expectedProfitUsdt, true).state
+          }
+        >
+          {formatUsdtOrUnavailable(o.expectedProfitUsdt, true).text}
         </dd>
         <dt className="text-lux-text-muted">
           {T.opportunity.labelAiConfidence}

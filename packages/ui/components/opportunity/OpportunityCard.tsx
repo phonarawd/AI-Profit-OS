@@ -9,6 +9,7 @@ import { AdapterHealthChip } from "../trust/AdapterHealthChip";
 import { MarketPartnerLeg } from "../trust/MarketPartnerLeg";
 import { OpportunityScanBadge } from "./OpportunityScanBadge";
 import { PriceCompareMargin } from "./PriceCompareMargin";
+import { formatUsdtOrUnavailable } from "./money-display";
 import type { OpportunityCardModel } from "./opportunity-types";
 
 export type OpportunityCardProps = {
@@ -115,18 +116,24 @@ export function OpportunityCard({
           </dt>
           <dd
             data-field="requiredCapitalUsdt"
+            data-money-state={
+              formatUsdtOrUnavailable(o.requiredCapitalUsdt).state
+            }
             className="text-right font-medium text-lux-text"
           >
-            {o.requiredCapitalUsdt} USDT
+            {formatUsdtOrUnavailable(o.requiredCapitalUsdt).text}
           </dd>
           <dt className="text-lux-text-muted">
             {T.opportunity.labelExpectedProfit}
           </dt>
           <dd
             data-field="expectedProfitUsdt"
+            data-money-state={
+              formatUsdtOrUnavailable(o.expectedProfitUsdt, true).state
+            }
             className="text-right text-base font-semibold text-lux-profit"
           >
-            +{o.expectedProfitUsdt} USDT
+            {formatUsdtOrUnavailable(o.expectedProfitUsdt, true).text}
           </dd>
           <dt className="hidden text-lux-text-muted md:block">
             {T.opportunity.labelAiConfidence}

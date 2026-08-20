@@ -9,6 +9,11 @@ function asString(v: unknown, fallback = ""): string {
   return typeof v === "string" ? v : fallback;
 }
 
+/** missing money → 빈 문자열. "0" 위조 금지. 실제 "0"은 그대로 통과. */
+function asMoneyString(v: unknown): string {
+  return typeof v === "string" && /^-?[0-9]+(\.[0-9]+)?$/.test(v) ? v : "";
+}
+
 function asNumber(v: unknown, fallback = 0): number {
   return typeof v === "number" && Number.isFinite(v) ? v : fallback;
 }
@@ -49,8 +54,8 @@ export function toOpportunityCardModel(
         ? (item.assetIcon as string | null)
         : undefined,
     category: asString(item.category, "watch"),
-    requiredCapitalUsdt: asString(item.requiredCapitalUsdt, "0"),
-    expectedProfitUsdt: asString(item.expectedProfitUsdt, "0"),
+    requiredCapitalUsdt: asMoneyString(item.requiredCapitalUsdt),
+    expectedProfitUsdt: asMoneyString(item.expectedProfitUsdt),
     aiConfidenceScore: asNumber(item.aiConfidenceScore, 0),
     buyPriceUsdt:
       typeof item.buyPriceUsdt === "string" || item.buyPriceUsdt === null
