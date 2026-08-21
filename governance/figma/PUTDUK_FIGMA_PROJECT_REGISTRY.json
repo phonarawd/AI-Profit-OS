@@ -7,7 +7,17 @@
   "fileKey": "w7Yg8j2x9evuheOSSLqFw5",
   "fileName": "퍼뜩 · PUTDUK — Spark Dash Consumer UI",
   "team": "퍼뜩의 팀",
-  "pages": ["00_Readme(0:1)", "03_Components(2:68)"],
+  "pages": [
+    "00_Readme(0:1)",
+    "01_Foundations(2:66)",
+    "02_Primitives(2:67)",
+    "03_Components(2:68)",
+    "04_Patterns(2:69)",
+    "05_Flows(2:70)",
+    "06_Screens(2:71)",
+    "07_Dev-Handoff(2:72)",
+    "90_Explorations(2:73)"
+  ],
   "homeAuthorityConflict": "NONE",
   "lastVerifiedAt": "2026-08-22",
   "discoveredVia": "RECOVERED_PROJECT_CONTEXT",
@@ -158,6 +168,94 @@
       "revision": "V1",
       "name": "Account Hub / Mobile / Spark Dash / Founder Review Candidate",
       "note": "Preserved for Founder comparison. Not deleted. Not current candidate."
+    },
+    "auth_login_desktop": {
+      "nodeId": "198:591",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "founderApproved": false,
+      "locked": false,
+      "name": "Auth / Login / Desktop / Spark Dash / Founder Review Candidate",
+      "route": "/auth/login"
+    },
+    "auth_login_mobile": {
+      "nodeId": "199:523",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "founderApproved": false,
+      "locked": false,
+      "name": "Auth / Login / Mobile / Spark Dash / Founder Review Candidate",
+      "route": "/auth/login"
+    },
+    "auth_signup_desktop": {
+      "nodeId": "200:527",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "founderApproved": false,
+      "locked": false,
+      "name": "Auth / Signup / Desktop / Spark Dash / Founder Review Candidate",
+      "route": "/auth/signup"
+    },
+    "auth_signup_mobile": {
+      "nodeId": "201:539",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "founderApproved": false,
+      "locked": false,
+      "name": "Auth / Signup / Mobile / Spark Dash / Founder Review Candidate",
+      "route": "/auth/signup"
+    },
+    "auth_complete_profile_desktop": {
+      "nodeId": "201:571",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "founderApproved": false,
+      "locked": false,
+      "name": "Auth / Complete Profile / Desktop / Spark Dash / Founder Review Candidate",
+      "route": "/auth/complete-profile"
+    },
+    "auth_complete_profile_mobile": {
+      "nodeId": "201:604",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "founderApproved": false,
+      "locked": false,
+      "name": "Auth / Complete Profile / Mobile / Spark Dash / Founder Review Candidate",
+      "route": "/auth/complete-profile"
+    },
+    "auth_onboarding_desktop": {
+      "nodeId": "201:635",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "founderApproved": false,
+      "locked": false,
+      "name": "Auth / Onboarding / Desktop / Spark Dash / Founder Review Candidate",
+      "route": "/onboarding"
+    },
+    "auth_onboarding_mobile": {
+      "nodeId": "201:672",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "founderApproved": false,
+      "locked": false,
+      "name": "Auth / Onboarding / Mobile / Spark Dash / Founder Review Candidate",
+      "route": "/onboarding"
+    },
+    "auth_flow": {
+      "nodeId": "201:696",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "founderApproved": false,
+      "locked": false,
+      "name": "Auth Journey / Flow / Founder Review Candidate"
+    },
+    "auth_handoff": {
+      "nodeId": "201:735",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "founderApproved": false,
+      "locked": false,
+      "name": "Auth / Dev Handoff / Founder Review Candidate"
     }
   },
   "screenBindings": [
@@ -295,6 +393,38 @@
       "note": "Founder approved 2026-08-22. Visual authority = Desktop 192:194 + Mobile 192:434. V2 180:102 / 180:430 and V1 169:78 / 169:288 preserved. screenBindings.apply stays false because REL-131 verifier treats apply as Figma-binding/Code Connect, not runtime presence. Founder-directed audit/figma-repo-runtime-reconciliation applied the locked frames to production /me. Evidence = governance/visual-reconciliation/account/.",
       "runtimeReconciled": true,
       "reconciledBy": "audit/figma-repo-runtime-reconciliation"
+    },
+    {
+      "rel": "UX-AUTH-DS-BRIDGE",
+      "route": "/auth/login",
+      "frameKeys": ["auth_login_desktop", "auth_login_mobile"],
+      "apply": false,
+      "status": "FOUNDER_REVIEW_CANDIDATE",
+      "note": "Auth visual candidate only. Production Auth visual replacement = 0 until Founder approval. REL-207 not started."
+    },
+    {
+      "rel": "UX-AUTH-DS-BRIDGE",
+      "route": "/auth/signup",
+      "frameKeys": ["auth_signup_desktop", "auth_signup_mobile"],
+      "apply": false,
+      "status": "FOUNDER_REVIEW_CANDIDATE"
+    },
+    {
+      "rel": "UX-AUTH-DS-BRIDGE",
+      "route": "/auth/complete-profile",
+      "frameKeys": [
+        "auth_complete_profile_desktop",
+        "auth_complete_profile_mobile"
+      ],
+      "apply": false,
+      "status": "FOUNDER_REVIEW_CANDIDATE"
+    },
+    {
+      "rel": "UX-AUTH-DS-BRIDGE",
+      "route": "/onboarding",
+      "frameKeys": ["auth_onboarding_desktop", "auth_onboarding_mobile"],
+      "apply": false,
+      "status": "FOUNDER_REVIEW_CANDIDATE"
     }
   ]
 }

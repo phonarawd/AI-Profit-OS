@@ -1,0 +1,42 @@
+{
+  "status": "CANDIDATE_ONLY",
+  "applied": 0,
+  "note": "Not published to Figma Code Connect. Do not report APPLIED.",
+  "fileKey": "w7Yg8j2x9evuheOSSLqFw5",
+  "candidates": [
+    {
+      "figmaComponent": "PrimaryButton",
+      "figmaNodeId": "2:172",
+      "codeComponent": "TouchButton",
+      "codePath": "packages/ui/components/lux/TouchButton.tsx",
+      "propMap": {
+        "state=Default": "disabled=false",
+        "state=Disabled": "disabled=true"
+      }
+    },
+    {
+      "figmaComponent": "AuthTextField",
+      "figmaNodeId": "198:553",
+      "codeComponent": "native input (no AuthField yet)",
+      "codePath": "packages/ui/components/auth/AuthCompleteProfile.tsx",
+      "propMap": {
+        "state=Default": "default",
+        "state=Focus": ":focus-visible",
+        "state=Error": "aria-invalid + role=alert sibling",
+        "state=Disabled": "disabled"
+      }
+    },
+    {
+      "figmaComponent": "AuthOAuthButton",
+      "figmaNodeId": "198:568",
+      "codeComponent": "TouchButton in AuthLogin/AuthSignup",
+      "codePath": "packages/ui/components/auth/AuthLogin.tsx",
+      "propMap": {
+        "method=Kakao": "data-oauth=kakao + isKakaoOAuthReady",
+        "method=Google": "always disabled",
+        "method=Passkey": "isWebAuthnSupported",
+        "state=Loading": "busy"
+      }
+    }
+  ]
+}

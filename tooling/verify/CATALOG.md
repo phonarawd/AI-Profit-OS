@@ -65,7 +65,7 @@
 |-----------|--------|
 | `governance/platform-redesign/**` · `schemas/governance-observation.v1.json` · `tooling/verify/platform-redesign-inventory.cjs` · `tooling/verify/platform-fact-state-registry.cjs` · `tooling/verify/platform-change-control.cjs` · `tooling/verify/governance-observation-registry.cjs` · `tooling/verify/lib/platform-redesign-measure.cjs` | platform-redesign-inventory · platform-fact-state-registry · platform-change-control · governance-observation-registry |
 | `governance/engine-acceptance/**` · `tooling/engine-acceptance/**` · `tooling/verify/engine-acceptance.cjs` · `.github/workflows/engine-acceptance.yml` | engine-acceptance |
-| `governance/figma/**` · `tooling/verify/figma-project-registry.cjs` | figma-project-registry |
+| `governance/figma/**` · `tooling/verify/figma-project-registry.cjs` · `tooling/verify/figma-code-bridge.cjs` | figma-project-registry · figma-code-bridge |
 | `governance/visual-reconciliation/**` · `tooling/verify/locked-visual-reconciliation.cjs` · locked Account Hub `/me` | locked-visual-reconciliation |
 | `tooling/e2e/**` · `tooling/verify/qa-env-isolation-guard.cjs` | qa-env-isolation-guard |
 | `tooling/e2e/lib/axe-scan.cjs` · `tooling/e2e/specs/axe-a11y.spec.cjs` · `tooling/verify/axe-harness.cjs` | axe-harness |
@@ -187,6 +187,7 @@
 | qa-env-isolation-guard | REL-006 QA Lab — **live** (production ref `mgsytcetsiecllmhcyox` throw · money mutation fail-closed · committed Playwright spec · MCP-only DONE 0) |
 | money-unavailable | REL-007 — **live** (missing money → UNAVAILABLE · 실제 0 유지 · Home geometry 0) |
 | figma-project-registry | REL-009 + REL-131 — **live** (fileKey locked · REL-131 Desktop 192:194 + Mobile 192:434 FOUNDER_APPROVED_LOCKED · approvedAuthority=2 · V1/V2 SUPERSEDED preserved · other frames candidate · Home 46:2 BACKUP · Code Connect candidate-only · REL-131 apply 0) |
+| figma-code-bridge | Auth Figma ↔ code map — **live** (registered IDs · production paths exist · FOUNDER_REVIEW_CANDIDATE ≠ APPROVED · Code Connect applied 0 · Home/Account Hub lock · auth behavior mutation 0) |
 | auth-rate-limit | REL-010 — **live** (auth 라우트 서버 fixed-window · 429 + 한국어 · QA 가드 안 · 프로덕션 폭격 0) |
 | landing-guest-closure | REL-100 — **live** (guest `/` empty money truth · Landing3s CTA · Home freeze · Playwright landing-guest) |
 | home-closure | REL-105 — **live** (Home freeze · root legacy chrome 0 · guest+member single chrome · /dev isolation · 390/1440 + 2560/3440/3840 overflow · axe REL-012 · missing money ≠ 0 · /profits nav · production URL 0) |
