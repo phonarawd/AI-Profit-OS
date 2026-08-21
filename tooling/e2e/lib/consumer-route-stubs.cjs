@@ -640,6 +640,69 @@ async function stubWithdraw(page, mode) {
   });
 }
 
+const HISTORY_JOURNAL_ID = "jn-rel118";
+
+const HISTORY_JOURNAL = {
+  id: HISTORY_JOURNAL_ID,
+  journalType: "deposit_usdt",
+  createdAt: "2026-08-21T00:00:00.000Z",
+  referenceType: "deposit",
+  referenceId: "dep-rel118",
+  entries: [
+    {
+      id: "en-rel118",
+      direction: "credit",
+      amountUsdt: "25.00",
+      bucket: "principal",
+      accountKind: "user",
+    },
+  ],
+};
+
+/** DEV/TEST ledger history stub. production journal mutation 0. */
+async function stubHistory(page, mode) {
+  await page.route("**/api/v1/**", async (route) => {
+    const url = route.request().url();
+    const detail = url.match(/\/api\/v1\/me\/ledger\/journals\/([^/?#]+)/);
+    if (detail) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "other") {
+        return json(route, 403, { error: "forbidden" });
+      }
+      if (mode === "missing") {
+        return json(route, 404, { error: "not_found" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      return json(route, 200, { journal: HISTORY_JOURNAL });
+    }
+    if (url.includes("/api/v1/me/ledger/journals")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      if (mode === "empty") {
+        return json(route, 200, { items: [], total: 0, limit: 20, offset: 0 });
+      }
+      return json(route, 200, {
+        items: [HISTORY_JOURNAL],
+        total: 21,
+        limit: 20,
+        offset: 0,
+      });
+    }
+    if (url.includes("/api/v1/me/home-read")) {
+      return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    return json(route, 401, { error: "unauthorized" });
+  });
+}
+
 module.exports = {
   AUTHENTICATED_EMPTY_HOME,
   TEST_OPPORTUNITY_ITEM,
@@ -654,6 +717,8 @@ module.exports = {
   stubWallet,
   stubDeposit,
   stubWithdraw,
+  stubHistory,
+  HISTORY_JOURNAL_ID,
   JOURNEY_TRADE_ID,
   SETTLEMENT_TRADE_ID,
   SETTLEMENT_JOURNAL_ID,

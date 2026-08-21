@@ -129,6 +129,8 @@
     "verify:withdraw-flow-wire": "node tooling/verify/withdraw-flow-wire.cjs",
     "verify:usdt-withdraw-closure": "node tooling/verify/usdt-withdraw-closure.cjs",
     "verify:krw-withdraw-closure": "node tooling/verify/krw-withdraw-closure.cjs",
+    "verify:transaction-history-closure": "node tooling/verify/transaction-history-closure.cjs",
+    "verify:transaction-detail-closure": "node tooling/verify/transaction-detail-closure.cjs",
     "verify:migrations-applied-parity": "node tooling/verify/migrations-applied-parity.cjs",
     "verify:growth-public-surface": "node tooling/verify/growth-public-surface.cjs",
     "verify:stub-page-actions": "node tooling/verify/stub-page-actions.cjs",

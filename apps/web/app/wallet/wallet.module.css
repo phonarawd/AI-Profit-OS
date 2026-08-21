@@ -201,3 +201,59 @@
 .onNavy :global(input) {
   background: #0b1728;
 }
+
+.list {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.row {
+  display: block;
+  padding: 0.9rem 1rem;
+  border: 1px solid #2a3a52;
+  border-radius: 0.875rem;
+  color: #f6f1ea;
+  text-decoration: none;
+}
+
+.rowMeta {
+  margin: 0 0 0.35rem;
+  color: #d7deea;
+}
+
+.rowAmt {
+  margin: 0;
+  font-weight: 800;
+}
+
+.facts {
+  margin: 0 0 1.25rem;
+}
+
+.facts div {
+  margin: 0 0 0.75rem;
+}
+
+.facts dt {
+  color: #d7deea;
+}
+
+.facts dd {
+  margin: 0.2rem 0 0;
+  font-weight: 800;
+}
+
+.pager {
+  display: flex;
+  gap: 0.6rem;
+  margin: 0 0 1.25rem;
+}
+
+.pager a {
+  color: #ff4d8d;
+  font-weight: 800;
+  text-decoration: none;
+}

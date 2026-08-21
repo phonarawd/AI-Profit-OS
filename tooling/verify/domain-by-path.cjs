@@ -296,6 +296,18 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/app\/wallet\/history\//.test(f) ||
+      /^tooling\/e2e\/specs\/transaction-history-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/transaction-history-closure\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/transaction-detail-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/transaction-detail-closure\.cjs$/.test(f),
+    scripts: [
+      "transaction-history-closure.cjs",
+      "transaction-detail-closure.cjs",
+    ],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/wallet\/withdraw\//.test(f) ||
       /WithdrawLiveForm/.test(f) ||
       /WithdrawAmountPanel/.test(f) ||
