@@ -156,6 +156,7 @@
     "verify:support-closure": "node tooling/verify/support-closure.cjs",
     "verify:guides-closure": "node tooling/verify/guides-closure.cjs",
     "verify:legal-closure": "node tooling/verify/legal-closure.cjs",
+    "verify:partner-trust-closure": "node tooling/verify/partner-trust-closure.cjs",
     "verify:usdt-deposit-closure": "node tooling/verify/usdt-deposit-closure.cjs",
     "verify:krw-deposit-closure": "node tooling/verify/krw-deposit-closure.cjs",
     "verify:participate-http": "node tooling/verify/participate-http.cjs",

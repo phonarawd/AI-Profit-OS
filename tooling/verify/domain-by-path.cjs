@@ -342,6 +342,13 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^packages\/ui\/components\/trust\/MarketPartnerGrid\.tsx$/.test(f) ||
+      /^tooling\/e2e\/specs\/partner-trust-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/partner-trust-closure\.cjs$/.test(f),
+    scripts: ["partner-trust-closure.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/wallet\/history\//.test(f) ||
       /^tooling\/e2e\/specs\/transaction-history-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/transaction-history-closure\.cjs$/.test(f) ||
