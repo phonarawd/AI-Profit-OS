@@ -39,6 +39,7 @@ const files = [
   "packages/ui/components/wallet/NetworkPlainWarning.tsx",
   "packages/ui/canon/surfaces/wallet-deposit.wire.json",
   "apps/web/app/wallet/deposit/page.tsx",
+  "apps/web/app/wallet/deposit/DepositClient.tsx",
   "apps/web/app/wallet/withdraw/usdt/page.tsx",
   "apps/web/app/me/guide/get-usdt/page.tsx",
   "apps/web/app/me/support/page.tsx",
@@ -109,7 +110,10 @@ if (/\bTRC20\b/.test(warn)) {
 }
 
 // --- deposit USDT tab ---
-const depositPage = read("apps/web/app/wallet/deposit/page.tsx");
+const depositPage = [
+  read("apps/web/app/wallet/deposit/page.tsx"),
+  read("apps/web/app/wallet/deposit/DepositClient.tsx"),
+].join("\n");
 for (const needle of [
   "NetworkPlainWarning",
   'data-testid="deposit-usdt-network-block"',

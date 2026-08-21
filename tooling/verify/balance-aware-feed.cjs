@@ -450,7 +450,10 @@ for (const needle of [
   }
 }
 
-const page = read("apps/web/app/wallet/deposit/page.tsx");
+const page = [
+  read("apps/web/app/wallet/deposit/page.tsx"),
+  read("apps/web/app/wallet/deposit/DepositClient.tsx"),
+].join("\n");
 for (const needle of [
   "DepositAmountPanel",
   'searchParams.get("suggest")',

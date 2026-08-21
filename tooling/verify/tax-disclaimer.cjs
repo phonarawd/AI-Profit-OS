@@ -48,7 +48,12 @@ const requiredSurfaces = [
 ];
 
 for (const [rel, label] of requiredSurfaces) {
-  const t = read(rel);
+  const t =
+    rel === "apps/web/app/wallet/deposit/page.tsx"
+      ? [read(rel), read("apps/web/app/wallet/deposit/DepositClient.tsx")].join(
+          "\n",
+        )
+      : read(rel);
   if (
     !t.includes("TaxDisclaimerBlock") &&
     !t.includes("tax-disclaimer-block")
