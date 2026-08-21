@@ -18,7 +18,10 @@ function read(rel) {
   return fs.readFileSync(p, "utf8");
 }
 
-const deposit = read("apps/web/app/wallet/deposit/page.tsx");
+const deposit = [
+  read("apps/web/app/wallet/deposit/page.tsx"),
+  read("apps/web/app/wallet/deposit/DepositClient.tsx"),
+].join("\n");
 const kyc = read("apps/web/app/me/kyc/page.tsx");
 const support = read("apps/web/app/me/support/page.tsx");
 const kycFlow = read("packages/ui/components/kyc/KycFlow.tsx");

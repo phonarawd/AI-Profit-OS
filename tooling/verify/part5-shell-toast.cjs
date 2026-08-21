@@ -26,8 +26,8 @@ if (layout.includes("AppShellRoot") || layout.includes("USER_TABS")) {
 }
 const walletLayout = read("apps/web/app/wallet/layout.tsx");
 const meLayout = read("apps/web/app/me/layout.tsx");
-if (!walletLayout.includes("LegacyAppShell") && !walletLayout.includes("AppShellRoot")) {
-  fails.push("wallet layout must keep scoped leftover chrome");
+if (walletLayout.includes("LegacyAppShell") || walletLayout.includes("AppShellRoot")) {
+  fails.push("wallet layout must not remount leftover 5-tab chrome");
 }
 if (!meLayout.includes("LegacyAppShell") && !meLayout.includes("AppShellRoot")) {
   fails.push("me layout must keep scoped leftover chrome");

@@ -49,8 +49,16 @@ export function DepositConsult({
   const c = T.trust.depositConsult;
   const tone = fact?.toneBand ?? "mid";
   const senior = tone === "senior";
-  const balance = fact?.balanceUsdt ?? "0";
-  const previewN = fact?.opportunityPreviewCount ?? 0;
+  const balanceRaw = fact?.balanceUsdt;
+  const balance =
+    typeof balanceRaw === "string" && /^-?[0-9]+(\.[0-9]+)?$/.test(balanceRaw)
+      ? balanceRaw
+      : "확인할 수 없음";
+  const previewN =
+    typeof fact?.opportunityPreviewCount === "number" &&
+    Number.isFinite(fact.opportunityPreviewCount)
+      ? fact.opportunityPreviewCount
+      : null;
 
   function confirm() {
     if (!checked && !senior) return;
@@ -95,9 +103,15 @@ export function DepositConsult({
           <p data-field="balanceUsdt">
             {c.factBalance.replace("{n}", balance)}
           </p>
-          <p data-field="opportunityPreviewCount" className="mt-1 text-lux-text-muted">
-            {c.factPreview.replace("{n}", String(previewN))}
-          </p>
+          {previewN != null ? (
+            <p data-field="opportunityPreviewCount" className="mt-1 text-lux-text-muted">
+              {c.factPreview.replace("{n}", String(previewN))}
+            </p>
+          ) : (
+            <p data-field="opportunityPreviewCount" className="mt-1 text-lux-text-muted">
+              미리보기 수를 확인할 수 없음
+            </p>
+          )}
         </div>
 
         {senior && step === 0 ? (

@@ -109,7 +109,10 @@ for (const need of [
   }
 }
 
-const walletHome = read("apps/web/app/wallet/page.tsx");
+const walletHome = [
+  read("apps/web/app/wallet/page.tsx"),
+  read("apps/web/app/wallet/WalletClient.tsx"),
+].join("\n");
 if (!walletHome.includes("/wallet/withdraw?mode=principal")) {
   fails.push("wallet home must link principal withdraw");
 }

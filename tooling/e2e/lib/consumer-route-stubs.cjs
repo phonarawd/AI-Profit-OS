@@ -263,6 +263,9 @@ async function stubTradeList(page, mode) {
       if (mode === "profit_unavailable") {
         return json(route, 500, { error: "upstream_failed" });
       }
+      if (mode === "earnings_mismatch") {
+        return json(route, 200, { ...TEST_WALLET_BUCKETS, profitUsdt: "4.00" });
+      }
       return json(route, 200, TEST_WALLET_BUCKETS);
     }
     if (isTradeListUrl(url)) {
@@ -410,6 +413,350 @@ async function stubTradeExecution(page, mode) {
   });
 }
 
+const SETTLEMENT_TRADE_ID = "qa-rel112-trade";
+const SETTLEMENT_JOURNAL_ID = "qa-rel112-journal";
+
+const TEST_SETTLEMENT_JOURNAL = {
+  id: SETTLEMENT_JOURNAL_ID,
+  journalType: "settlement",
+  createdAt: "2026-08-21T00:00:00.000Z",
+  referenceType: "trade",
+  referenceId: SETTLEMENT_TRADE_ID,
+  entries: [
+    {
+      id: "qa-rel112-e1",
+      direction: "credit",
+      amountUsdt: "12.50",
+      bucket: "profit",
+      accountKind: "user_bucket",
+    },
+  ],
+};
+
+function isLedgerListUrl(url) {
+  try {
+    const pathName = new URL(url).pathname.replace(/\/$/, "");
+    return pathName.endsWith("/api/v1/me/ledger/journals");
+  } catch {
+    return /\/api\/v1\/me\/ledger\/journals\/?([?#]|$)/.test(url);
+  }
+}
+
+function ledgerJournalId(url) {
+  const match = String(url).match(/\/api\/v1\/me\/ledger\/journals\/([^/?#]+)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+function tradeIdFromUrl(url) {
+  const match = String(url).match(/\/api\/v1\/trades\/([^/?#]+)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+/** DEV/TEST settlement detail stub. production money mutation 0. */
+async function stubSettlement(page, mode) {
+  await page.route("**/api/v1/**", (route) => {
+    const url = route.request().url();
+    const journalId = ledgerJournalId(url);
+    if (url.includes("/api/v1/me/home-read")) {
+      return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    if (journalId) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "other") {
+        return json(route, 403, { messageKo: "다른 분의 내역은 볼 수 없어요" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      if (journalId !== SETTLEMENT_JOURNAL_ID) {
+        return json(route, 403, { messageKo: "다른 분의 내역은 볼 수 없어요" });
+      }
+      return json(route, 200, TEST_SETTLEMENT_JOURNAL);
+    }
+    if (isLedgerListUrl(url)) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "other") {
+        return json(route, 403, { messageKo: "다른 분의 내역은 볼 수 없어요" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      return json(route, 200, {
+        items: [TEST_SETTLEMENT_JOURNAL],
+        total: 1,
+        limit: 100,
+        offset: 0,
+      });
+    }
+    const tradeId = tradeIdFromUrl(url);
+    if (tradeId && !url.includes("execute-tick")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "other") {
+        return json(route, 403, { error: "forbidden" });
+      }
+      if (mode === "missing") {
+        return json(route, 404, { error: "not_found" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      return json(
+        route,
+        200,
+        {
+          ...tradeExecutionState("success", {
+            resultCode: "MATCH_SUCCESS",
+            settledProfitUsdt: "12.50",
+          }),
+          tradeId: SETTLEMENT_TRADE_ID,
+        },
+      );
+    }
+    return json(route, 401, { error: "unauthorized" });
+  });
+}
+
+/** DEV/TEST wallet buckets stub. production money mutation 0. */
+async function stubWallet(page, mode) {
+  await page.route("**/api/v1/**", (route) => {
+    const url = route.request().url();
+    if (url.includes("/api/v1/me/home-read")) {
+      return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    if (url.includes("/api/v1/wallet/buckets")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      return json(route, 200, TEST_WALLET_BUCKETS);
+    }
+    return json(route, 401, { error: "unauthorized" });
+  });
+}
+
+/** DEV/TEST deposit stub. production money mutation 0. */
+async function stubDeposit(page, mode) {
+  await page.route("**/api/v1/**", async (route) => {
+    const url = route.request().url();
+    if (url.includes("/api/v1/me/home-read")) {
+      return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    if (url.includes("/api/v1/wallet/buckets")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      return json(route, 200, TEST_WALLET_BUCKETS);
+    }
+    if (url.includes("/api/v1/wallet/my-deposit-address")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "usdt_deny") {
+        return json(route, 403, { error: "forbidden" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      return json(route, 200, { trc20Address: "TQADEPOSITADDRESSREL1140000001" });
+    }
+    if (url.includes("/api/v1/wallet/krw-deposit-requests")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "krw_deny") {
+        return json(route, 403, { error: "forbidden" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      return json(route, 200, {
+        status: "pending",
+        payableAmountKrw: 10004,
+        depositCode: "QA114",
+      });
+    }
+    return json(route, 401, { error: "unauthorized" });
+  });
+}
+
+/** DEV/TEST withdraw stub. production money mutation 0. */
+async function stubWithdraw(page, mode) {
+  await page.route("**/api/v1/**", async (route) => {
+    const url = route.request().url();
+    const method = route.request().method();
+    if (url.includes("/api/v1/me/home-read")) {
+      return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    if (url.includes("/api/v1/wallet/buckets")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      return json(route, 200, TEST_WALLET_BUCKETS);
+    }
+    if (url.includes("/api/v1/wallet/withdraw/step-up/challenge")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      return json(route, 200, {
+        challengeId: "ch-rel116",
+        method: "pin",
+      });
+    }
+    if (url.includes("/api/v1/wallet/withdraw/step-up/verify")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      return json(route, 200, {
+        ok: true,
+        stepUpToken: "su-rel116",
+        method: "pin",
+      });
+    }
+    if (
+      method === "POST" &&
+      url.includes("/api/v1/wallet/withdraw") &&
+      !url.includes("step-up")
+    ) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "usdt_deny" || mode === "krw_deny") {
+        return json(route, 403, { error: "forbidden", code: "KYC_WITHDRAW_REQUIRED" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      return json(route, 200, { status: "accepted" });
+    }
+    return json(route, 401, { error: "unauthorized" });
+  });
+}
+
+const HISTORY_JOURNAL_ID = "jn-rel118";
+
+const HISTORY_JOURNAL = {
+  id: HISTORY_JOURNAL_ID,
+  journalType: "deposit_usdt",
+  createdAt: "2026-08-21T00:00:00.000Z",
+  referenceType: "deposit",
+  referenceId: "dep-rel118",
+  entries: [
+    {
+      id: "en-rel118",
+      direction: "credit",
+      amountUsdt: "25.00",
+      bucket: "principal",
+      accountKind: "user",
+    },
+  ],
+};
+
+/** DEV/TEST ledger history stub. production journal mutation 0. */
+async function stubHistory(page, mode) {
+  await page.route("**/api/v1/**", async (route) => {
+    const url = route.request().url();
+    const detail = url.match(/\/api\/v1\/me\/ledger\/journals\/([^/?#]+)/);
+    if (detail) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "other") {
+        return json(route, 403, { error: "forbidden" });
+      }
+      if (mode === "missing") {
+        return json(route, 404, { error: "not_found" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      return json(route, 200, { journal: HISTORY_JOURNAL });
+    }
+    if (url.includes("/api/v1/me/ledger/journals")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      if (mode === "empty") {
+        return json(route, 200, { items: [], total: 0, limit: 20, offset: 0 });
+      }
+      return json(route, 200, {
+        items: [HISTORY_JOURNAL],
+        total: 21,
+        limit: 20,
+        offset: 0,
+      });
+    }
+    if (url.includes("/api/v1/me/home-read")) {
+      return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    return json(route, 401, { error: "unauthorized" });
+  });
+}
+
+/** REL-111~119 money-loop journey stub. production mutation 0. */
+async function stubMoneyLoop(page) {
+  await page.route("**/api/v1/**", async (route) => {
+    const url = route.request().url();
+    const method = route.request().method();
+    if (url.includes("/api/v1/me/home-read")) {
+      return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    if (url.includes("/api/v1/wallet/buckets")) {
+      return json(route, 200, TEST_WALLET_BUCKETS);
+    }
+    if (url.includes("/api/v1/wallet/my-deposit-address")) {
+      return json(route, 200, { trc20Address: "TQADEPOSITADDRESSREL1140000001" });
+    }
+    if (url.includes("/api/v1/wallet/krw-deposit-requests")) {
+      return json(route, 200, {
+        status: "pending",
+        payableAmountKrw: 10004,
+        depositCode: "QA114",
+      });
+    }
+    if (url.includes("/api/v1/wallet/withdraw/step-up/challenge")) {
+      return json(route, 200, { challengeId: "ch-rel116", method: "pin" });
+    }
+    if (url.includes("/api/v1/wallet/withdraw/step-up/verify")) {
+      return json(route, 200, {
+        ok: true,
+        stepUpToken: "su-rel116",
+        method: "pin",
+      });
+    }
+    if (
+      method === "POST" &&
+      url.includes("/api/v1/wallet/withdraw") &&
+      !url.includes("step-up")
+    ) {
+      return json(route, 200, { status: "accepted" });
+    }
+    const detail = url.match(/\/api\/v1\/me\/ledger\/journals\/([^/?#]+)/);
+    if (detail) {
+      return json(route, 200, { journal: HISTORY_JOURNAL });
+    }
+    if (url.includes("/api/v1/me/ledger/journals")) {
+      return json(route, 200, {
+        items: [HISTORY_JOURNAL],
+        total: 1,
+        limit: 20,
+        offset: 0,
+      });
+    }
+    return json(route, 401, { error: "unauthorized" });
+  });
+}
+
 module.exports = {
   AUTHENTICATED_EMPTY_HOME,
   TEST_OPPORTUNITY_ITEM,
@@ -420,5 +767,14 @@ module.exports = {
   stubTradeList,
   stubCoreOpportunityJourney,
   stubTradeExecution,
+  stubSettlement,
+  stubWallet,
+  stubDeposit,
+  stubWithdraw,
+  stubHistory,
+  stubMoneyLoop,
+  HISTORY_JOURNAL_ID,
   JOURNEY_TRADE_ID,
+  SETTLEMENT_TRADE_ID,
+  SETTLEMENT_JOURNAL_ID,
 };

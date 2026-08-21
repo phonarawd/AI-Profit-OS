@@ -115,6 +115,23 @@ test("ready list keeps expected vs confirmed and wallet owner", async ({
   });
 });
 
+test("earnings embed uses wallet profit, not list sum", async ({ page }) => {
+  await openTrades(page, "earnings_mismatch");
+  const embed = page.locator("[data-earnings-embed='true']");
+  await expect(embed).toHaveAttribute("data-earnings-owner", "wallet.profitUsdt");
+  await expect(embed).toHaveAttribute("data-earnings-state", "ready");
+  await expect(embed.getByText("4.00 USDT")).toBeVisible();
+  await expect(embed.getByText("12.50 USDT")).toHaveCount(0);
+  await expect(page.locator("[data-consumer-state='Settled']")).toContainText(
+    "12.50 USDT",
+  );
+  await expect(embed.getByText("원")).toHaveCount(0);
+  await page.screenshot({
+    path: "governance/release-master/rel-111-earnings/runtime-mismatch-1440.png",
+    fullPage: false,
+  });
+});
+
 test("wallet profit failure is unavailable, not zero", async ({ page }) => {
   await openTrades(page, "profit_unavailable");
   await expect(page.getByTestId("trades-shell")).toHaveAttribute(

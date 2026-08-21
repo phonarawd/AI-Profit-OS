@@ -12,6 +12,20 @@ import { WithdrawAmountPanel } from "@aipo/ui/components/wallet/WithdrawAmountPa
 import { WithdrawStepUpPanel } from "@aipo/ui/components/wallet/WithdrawStepUpPanel";
 import { T } from "@aipo/ui/copy/ko";
 
+function withdrawErrorView(err: unknown): {
+  state: "denied" | "unavailable" | "unauthorized";
+  status: string;
+} {
+  const msg = err instanceof Error ? err.message : "";
+  if (/_401\b/.test(msg)) {
+    return { state: "unauthorized", status: "로그인하면 출금을 신청할 수 있어요." };
+  }
+  if (/_403\b/.test(msg)) {
+    return { state: "denied", status: "지금은 출금할 수 없어요." };
+  }
+  return { state: "unavailable", status: T.withdrawMode.submitFail };
+}
+
 export type WithdrawLiveFormProps = {
   asset: "USDT" | "KRW";
   mode: "profit" | "principal" | "combined";
@@ -40,6 +54,9 @@ export function WithdrawLiveForm({
   const [method] = useState<WithdrawStepUpMethod>("pin");
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
+  const [flowState, setFlowState] = useState<
+    "idle" | "accepted" | "denied" | "unavailable" | "unauthorized"
+  >("idle");
 
   const onChallenge = useCallback(async () => {
     setBusy(true);
@@ -49,8 +66,10 @@ export function WithdrawLiveForm({
       setChallengeId(res.challengeId);
       setStepUpToken(null);
       setProof("");
-    } catch {
-      setStatus(T.withdrawMode.submitFail);
+    } catch (err) {
+      const next = withdrawErrorView(err);
+      setFlowState(next.state);
+      setStatus(next.status);
       setChallengeId(null);
     } finally {
       setBusy(false);
@@ -68,8 +87,10 @@ export function WithdrawLiveForm({
         proof: proof.trim(),
       });
       setStepUpToken(res.stepUpToken);
-    } catch {
-      setStatus(T.withdrawMode.submitFail);
+    } catch (err) {
+      const next = withdrawErrorView(err);
+      setFlowState(next.state);
+      setStatus(next.status);
       setStepUpToken(null);
     } finally {
       setBusy(false);
@@ -94,9 +115,12 @@ export function WithdrawLiveForm({
         stepUpToken,
         principalConfirmToken: principalConfirmToken ?? undefined,
       });
+      setFlowState("accepted");
       setStatus(T.withdrawMode.submitOk);
-    } catch {
-      setStatus(T.withdrawMode.submitFail);
+    } catch (err) {
+      const next = withdrawErrorView(err);
+      setFlowState(next.state);
+      setStatus(next.status);
     } finally {
       setBusy(false);
     }
@@ -114,7 +138,15 @@ export function WithdrawLiveForm({
   if (!allowForm) return null;
 
   return (
-    <div data-testid="withdraw-live-form" data-withdraw-asset={asset}>
+    <div
+      data-testid="withdraw-live-form"
+      data-withdraw-asset={asset}
+      data-withdraw-state={flowState}
+      data-credited="false"
+      data-has-amount={amountUsdt.trim() ? "true" : "false"}
+      data-has-destination={destination.trim() ? "true" : "false"}
+      data-has-token={stepUpToken ? "true" : "false"}
+    >
       <WithdrawAmountPanel
         amountUsdt={amountUsdt}
         onAmountChange={setAmountUsdt}
@@ -161,13 +193,17 @@ export function WithdrawLiveForm({
         onClick={() => {
           void onSubmit();
         }}
-        className="mt-6 w-full rounded-lux-md bg-lux-accent px-4 py-3 text-sm font-semibold text-lux-bg disabled:opacity-50"
+        className="mt-6 w-full rounded-[0.875rem] bg-[#ff2d6b] px-4 py-3 text-[1.1875rem] font-extrabold text-white disabled:opacity-50"
       >
         {T.withdrawMode.ctaSubmit}
       </button>
 
       {status ? (
-        <p className="mt-3 text-sm text-lux-text-muted" role="status">
+        <p
+          className="mt-3 text-sm"
+          role="status"
+          data-testid="withdraw-result"
+        >
           {status}
         </p>
       ) : null}

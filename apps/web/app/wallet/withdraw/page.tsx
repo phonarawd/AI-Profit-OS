@@ -12,6 +12,7 @@ import { T } from "@aipo/ui/copy/ko";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 import { WithdrawLiveForm } from "../../../components/WithdrawLiveForm";
 import { useWithdrawKycGate } from "../../../lib/use-withdraw-kyc-gate";
+import styles from "../wallet.module.css";
 
 function resolveMode(raw: string | null): WithdrawModeValue {
   if (raw === "principal" || raw === "combined") return raw;
@@ -55,12 +56,15 @@ function WithdrawContent() {
 
   return (
     <main
-      className="p-6 text-lux-text"
+      className={`${styles.page} ${styles.onNavy}`}
       data-withdraw-default-mode="profit"
       data-withdraw-mode={mode}
       data-testid="wallet-withdraw"
     >
-      <h1 className="text-xl font-semibold">{T.withdrawMode.pageTitle}</h1>
+      <p className={styles.nav}>
+        <Link href="/wallet">지갑</Link>
+      </p>
+      <h1 className={styles.title}>{T.withdrawMode.pageTitle}</h1>
       <div
         className="mt-4 flex gap-2"
         role="tablist"

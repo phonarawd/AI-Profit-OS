@@ -219,6 +219,14 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/app\/trades\/\[id\]\/settlement\//.test(f) ||
+      /^packages\/sdk\/src\/ledger\//.test(f) ||
+      /^tooling\/e2e\/specs\/settlement-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/settlement-detail\.cjs$/.test(f),
+    scripts: ["settlement-detail.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/trades\/\[id\]\/execute\//.test(f) ||
       /^packages\/sdk\/src\/execution-stream\//.test(f) ||
       /^tooling\/e2e\/specs\/execute-closure\.spec\.cjs$/.test(f) ||
@@ -230,12 +238,14 @@ const RULES = [
     test: (f) =>
       /^apps\/web\/app\/trades\/page\.tsx$/.test(f) ||
       /^apps\/web\/app\/trades\/TradesClient\.tsx$/.test(f) ||
+      /^apps\/web\/app\/trades\/EarningsEmbed\.tsx$/.test(f) ||
       /^apps\/web\/app\/trades\/trades\.module\.css$/.test(f) ||
       /^packages\/sdk\/src\/trades\//.test(f) ||
       /^tooling\/e2e\/specs\/trades-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/trades-live-wire\.cjs$/.test(f) ||
-      /^tooling\/verify\/trades-web-wire\.cjs$/.test(f),
-    scripts: ["trades-live-wire.cjs", "trades-web-wire.cjs"],
+      /^tooling\/verify\/trades-web-wire\.cjs$/.test(f) ||
+      /^tooling\/verify\/earnings-embed\.cjs$/.test(f),
+    scripts: ["trades-live-wire.cjs", "trades-web-wire.cjs", "earnings-embed.cjs"],
   },
   {
     test: (f) =>
@@ -275,9 +285,26 @@ const RULES = [
   {
     test: (f) =>
       /^apps\/web\/app\/wallet\/page\.tsx$/.test(f) ||
+      /^apps\/web\/app\/wallet\/WalletClient\.tsx$/.test(f) ||
+      /^apps\/web\/app\/wallet\/layout\.tsx$/.test(f) ||
+      /^apps\/web\/app\/wallet\/wallet\.module\.css$/.test(f) ||
       /^packages\/sdk\/src\/wallet\//.test(f) ||
-      /^packages\/sdk\/src\/wallet\.ts$/.test(f),
-    scripts: ["wallet-live-wire.cjs"],
+      /^packages\/sdk\/src\/wallet\.ts$/.test(f) ||
+      /^tooling\/e2e\/specs\/wallet-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/wallet-closure\.cjs$/.test(f),
+    scripts: ["wallet-live-wire.cjs", "wallet-closure.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/wallet\/history\//.test(f) ||
+      /^tooling\/e2e\/specs\/transaction-history-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/transaction-history-closure\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/transaction-detail-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/transaction-detail-closure\.cjs$/.test(f),
+    scripts: [
+      "transaction-history-closure.cjs",
+      "transaction-detail-closure.cjs",
+    ],
   },
   {
     test: (f) =>
@@ -285,8 +312,17 @@ const RULES = [
       /WithdrawLiveForm/.test(f) ||
       /WithdrawAmountPanel/.test(f) ||
       /WithdrawStepUpPanel/.test(f) ||
-      /withdraw-flow-wire/.test(f),
-    scripts: ["withdraw-flow-wire.cjs", "wallet-live-wire.cjs"],
+      /withdraw-flow-wire/.test(f) ||
+      /^tooling\/e2e\/specs\/usdt-withdraw-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/usdt-withdraw-closure\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/krw-withdraw-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/krw-withdraw-closure\.cjs$/.test(f),
+    scripts: [
+      "withdraw-flow-wire.cjs",
+      "wallet-live-wire.cjs",
+      "usdt-withdraw-closure.cjs",
+      "krw-withdraw-closure.cjs",
+    ],
   },
   {
     test: (f) =>
@@ -294,8 +330,16 @@ const RULES = [
       /^apps\/web\/app\/me\/kyc\//.test(f) ||
       /^apps\/web\/app\/me\/support\//.test(f) ||
       /stub-page-actions/.test(f) ||
-      (/packages\/ui\/components\/kyc\//.test(f) && /KycFlow/.test(f)),
-    scripts: ["stub-page-actions.cjs"],
+      (/packages\/ui\/components\/kyc\//.test(f) && /KycFlow/.test(f)) ||
+      /^tooling\/e2e\/specs\/usdt-deposit-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/usdt-deposit-closure\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/krw-deposit-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/krw-deposit-closure\.cjs$/.test(f),
+    scripts: [
+      "stub-page-actions.cjs",
+      "usdt-deposit-closure.cjs",
+      "krw-deposit-closure.cjs",
+    ],
   },
   {
     test: (f) => /^apps\/admin\//.test(f),

@@ -24,7 +24,10 @@ function read(rel) {
 
 mustExist("apps/web/app/wallet/page.tsx");
 
-const page = read("apps/web/app/wallet/page.tsx");
+const page = [
+  read("apps/web/app/wallet/page.tsx"),
+  read("apps/web/app/wallet/WalletClient.tsx"),
+].join("\n");
 const sdkPkgPath = path.join(root, "packages/sdk/package.json");
 const sdkPkg = fs.existsSync(sdkPkgPath)
   ? fs.readFileSync(sdkPkgPath, "utf8")

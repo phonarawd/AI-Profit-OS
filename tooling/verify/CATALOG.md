@@ -46,6 +46,7 @@
 | webauthn-ux-rp | `verify:webauthn-ux-rp` | T0 path | ✅ live (REL-022 · E-PWA-004 · CF RP · support+fallback · haptic optional · money owner 0) |
 | pwa-day1-certification | `verify:pwa-day1-certification` | T0 path | ✅ live (REL-023 · E-PWA-007 · 014/020/021/022 · store-bridge 0 · Lighthouse CI-delegated) |
 | user-ledger-query | `verify:user-ledger-query` | T0 path | ✅ live (REL-015 · 유저 JWT 본인 전표 · 403 타인 · decimal string · GET-only · UPDATE 0) |
+| earnings-embed | `verify:earnings-embed` | T0 path | ✅ live (REL-111 · /trades earnings owner=wallet.profitUsdt · client sum 0 · KRW 0) |
 | observability | `verify:observability` | T0 path | ✅ live (REL-016 · CF Workers console sink · money/KYC mask · 5xx/ledger/auth alerts · Vercel 0) |
 | legacy-plan-migration | `verify:legacy-plan-migration` | T0 path | ✅ live (REL-017 · 21파일 권위 스탬프 · sync-plans 0 · Home mirror 0) |
 | asset-production-pipeline | `verify:asset-production-pipeline` | T0 path | ✅ live (REL-018 · source→optimize→hash→public→review · partner AI 0 · Home lock) |
@@ -87,7 +88,8 @@
 | `apps/web/app/profits/**` · `ProfitsDesktopClient` · `spark-dash-profits` | profits-live-wire · sdk-user-feed |
 | `apps/web/app/profits/[id]/**` · `spark-dash-room` · `packages/sdk/src/participate` | opportunity-detail-live-wire · participate-web-wire · sdk-user-feed |
 | `apps/web/app/wallet/page.tsx` · `packages/sdk/src/wallet/**` | wallet-live-wire |
-| `apps/web/app/wallet/deposit/**` · `me/kyc` · `me/support` · `KycFlow` | stub-page-actions |
+| `apps/web/app/trades/EarningsEmbed.tsx` | earnings-embed · trades-live-wire |
+| `apps/web/app/wallet/deposit/**` · `me/kyc` · `me/support` · `KycFlow` | stub-page-actions · usdt-deposit-closure · krw-deposit-closure |
 | money api-nest | pg-module-scan · bucket-invariant |
 | `schemas/home-money-read.v1.json` · `wallet/home-money-read*` · `packages/sdk/src/home-money-read/**` | home-money-read-contract |
 | engine-rust · trade/opportunity api | match-success-rule · settlement-rule-parity · participate-http · execute-rule-loop |
@@ -129,9 +131,18 @@
 | execute-live-wire | REL-109 — server state owner · query-fake success 0 · settledProfit required · Playwright execute-closure — **live** |
 | trades-web-wire | REL-110 — `GET /api/v1/trades` session list · `@aipo/sdk/trades` fetchTradeList · `/trades` · buckets.profitUsdt · progressPct 표시 0 — **live** |
 | trades-live-wire | REL-110 — live list · error≠empty · wallet profit unavailable≠0 · Playwright trades-closure — **live** |
+| earnings-embed | REL-111 — `/trades` earnings owner=`wallet.profitUsdt` · client sum 0 · KRW 0 · missing≠0 — **live** |
+| settlement-detail | REL-112 — `/trades/[id]/settlement` · REL-015 journal · 재계산 0 · own/other/missing — **live** |
 | core-opportunity-journey | REL-106~110 DEV/TEST Home→List→Detail→Confirm→Execute→Result · production money mutation 0 — **live** |
 | wallet-live-wire | UI PART9b/9f — `/wallet` buckets + `@aipo/sdk/wallet` `fetchWalletBuckets` (출금≠9f2) — **live** |
+| wallet-closure | REL-113 — `/wallet` unauthorized/ready · missing≠0 · leftover 5-tab chrome 0 — **live** |
+| usdt-deposit-closure | REL-114 — `/wallet/deposit` USDT address owner · credit 0 · happy+deny — **live** |
+| krw-deposit-closure | REL-115 — `/wallet/deposit?tab=krw` pending≠credit · PG 0 · happy+deny — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |
+| usdt-withdraw-closure | REL-116 — `/wallet/withdraw/usdt` server accept · credit 0 · happy+deny — **live** |
+| krw-withdraw-closure | REL-117 — `/wallet/withdraw/krw` server accept · PG 0 · happy+deny — **live** |
+| transaction-history-closure | REL-118 — `/wallet/history` REL-015 list · mock 0 · empty≠401 — **live** |
+| transaction-detail-closure | REL-119 — `/wallet/history/[journalId]` REL-015 slip · 403 other · recalc 0 — **live** |
 | migrations-applied-parity | Supabase — 로컬 `supabase/migrations` 버전 ↔ `fixtures/migrations-applied.v1.json`(원격 applied 스냅샷) 1:1 · path-trigger — **live** |
 | growth-public-surface | UI PART9g — `growth_ticker_config` + GET `/growth/public-surface` · ledgerTotal=settlement.completed · Admin PATCH pointer — **live** |
 | stub-page-actions | UI PART9i — deposit `my-deposit-address`+copy · KYC multipart submit · support `deposit-disputes` POST+idempotencyKey — **live** |

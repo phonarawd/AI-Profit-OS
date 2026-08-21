@@ -1,0 +1,138 @@
+/**
+ * verify:wallet-closure — REL-113
+ * /wallet buckets server truth · unauthorized/ready · no leftover 5-tab chrome.
+ */
+"use strict";
+
+const fs = require("node:fs");
+const path = require("node:path");
+const { spawnSync } = require("node:child_process");
+
+const root = path.resolve(__dirname, "../..");
+const fails = [];
+
+function fail(msg) {
+  fails.push(msg);
+}
+
+function read(rel) {
+  const fp = path.join(root, rel);
+  if (!fs.existsSync(fp)) {
+    fail(`missing: ${rel}`);
+    return "";
+  }
+  return fs.readFileSync(fp, "utf8");
+}
+
+const files = [
+  "apps/web/app/wallet/page.tsx",
+  "apps/web/app/wallet/WalletClient.tsx",
+  "apps/web/app/wallet/layout.tsx",
+  "tooling/e2e/specs/wallet-closure.spec.cjs",
+];
+for (const f of files) {
+  if (!fs.existsSync(path.join(root, f))) fail(`missing: ${f}`);
+}
+
+const page = read("apps/web/app/wallet/page.tsx");
+const client = read("apps/web/app/wallet/WalletClient.tsx");
+const layout = read("apps/web/app/wallet/layout.tsx");
+const spec = read("tooling/e2e/specs/wallet-closure.spec.cjs");
+const pkg = read("package.json");
+const catalog = read("tooling/verify/CATALOG.md");
+const domain = read("tooling/verify/domain-by-path.cjs");
+const surface = `${page}\n${client}`;
+
+if (!page.includes("WalletClient")) fail("wallet page must mount WalletClient");
+if (!client.includes("fetchWalletBuckets")) {
+  fail("WalletClient must call fetchWalletBuckets");
+}
+if (/EMPTY_BUCKETS|principalUsdt:\s*"0"/.test(client)) {
+  fail("wallet must not fall back missing buckets to 0");
+}
+if (/reduce\(|\.reduce\(/.test(client)) {
+  fail("wallet must not sum buckets as authority");
+}
+if (client.includes("SafeStopTrustMetric")) {
+  fail("wallet must not invent SafeStop count");
+}
+if (layout.includes("LegacyAppShell") || layout.includes("AppShellRoot")) {
+  fail("wallet layout must not remount leftover 5-tab chrome");
+}
+if (!spec.includes("unauthorized") || !spec.includes("ready")) {
+  fail("committed spec must cover unauthorized/ready");
+}
+if (!pkg.includes('"verify:wallet-closure"')) {
+  fail("package.json missing verify:wallet-closure");
+}
+if (!catalog.includes("wallet-closure")) {
+  fail("CATALOG.md must list wallet-closure");
+}
+if (!domain.includes("wallet-closure.cjs")) {
+  fail("domain-by-path must trigger wallet-closure");
+}
+if (!surface.includes('data-testid="wallet-home"')) {
+  fail("wallet must keep wallet-home testid");
+}
+
+function finish(extra) {
+  if (fails.length) {
+    console.error("[verify:wallet-closure] FAIL\n- " + fails.join("\n- "));
+    process.exit(1);
+  }
+  console.log(
+    "[verify:wallet-closure] PASS — buckets owner · no fake zero · no leftover chrome" +
+      (extra ? ` · ${extra}` : ""),
+  );
+}
+
+if (
+  process.env.WALLET_CLOSURE_STATIC_ONLY === "1" ||
+  process.env.CI === "true" ||
+  process.env.CI === "1"
+) {
+  finish(process.env.WALLET_CLOSURE_STATIC_ONLY === "1" ? "static-only" : "ci-static");
+  process.exit(0);
+}
+
+const { ensureLocalWebRuntime } = require("../e2e/lib/local-web-runtime.cjs");
+
+async function runBrowser() {
+  const web = await ensureLocalWebRuntime({ timeoutMs: 180000 });
+  const result = spawnSync(
+    process.execPath,
+    [
+      path.join(root, "node_modules/@playwright/test/cli.js"),
+      "test",
+      "--config",
+      "tooling/e2e/playwright.config.cjs",
+      "wallet-closure.spec.cjs",
+    ],
+    {
+      cwd: root,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        PLAYWRIGHT_BASE_URL: web.baseUrl,
+        NODE_OPTIONS: process.env.NODE_OPTIONS || "--max-old-space-size=1536",
+      },
+      timeout: 420000,
+    },
+  );
+  await web.stop();
+  return result;
+}
+
+runBrowser()
+  .then((result) => {
+    process.stdout.write(result.stdout || "");
+    process.stderr.write(result.stderr || "");
+    if (result.status !== 0) {
+      fail("committed Playwright wallet-closure runtime failed");
+    }
+    finish("browser");
+  })
+  .catch((err) => {
+    fail(err && err.message ? err.message : String(err));
+    finish("browser");
+  });

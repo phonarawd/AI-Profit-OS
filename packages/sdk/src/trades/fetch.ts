@@ -153,3 +153,50 @@ export async function fetchTradeList(
   }
   return { items };
 }
+
+/** GET /api/v1/trades/:id — 기존 toState 한 건. 재계산 0. */
+export async function fetchTrade(
+  tradeId: string,
+  opts: TradeListRequestOpts = {},
+): Promise<TradeExecutionState> {
+  const id = tradeId.trim();
+  if (!id) {
+    throw new TradeExecutionRequestError(404, "trade id");
+  }
+  let res: Response;
+  try {
+    res = await fetch(
+      apiUrl(opts.apiBase ?? "", `/api/v1/trades/${encodeURIComponent(id)}`),
+      {
+        method: "GET",
+        headers: await authHeaders(opts),
+        credentials: "include",
+        cache: "no-store",
+        signal: opts.signal,
+      },
+    );
+  } catch (err) {
+    if (
+      (err instanceof DOMException && err.name === "AbortError") ||
+      (err instanceof Error && err.name === "AbortError")
+    ) {
+      throw err;
+    }
+    throw new TradeExecutionRequestError(0);
+  }
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new TradeExecutionRequestError(res.status, body);
+  }
+  let raw: unknown;
+  try {
+    raw = await res.json();
+  } catch {
+    throw new TradeExecutionRequestError(502, "trade body");
+  }
+  const item = readListItem(raw);
+  if (!item) {
+    throw new TradeExecutionRequestError(502, "trade shape");
+  }
+  return item;
+}

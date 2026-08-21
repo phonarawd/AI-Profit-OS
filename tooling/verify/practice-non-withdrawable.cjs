@@ -184,7 +184,10 @@ for (const needle of [
   }
 }
 
-const walletHome = read("apps/web/app/wallet/page.tsx");
+const walletHome = [
+  read("apps/web/app/wallet/page.tsx"),
+  read("apps/web/app/wallet/WalletClient.tsx"),
+].join("\n");
 if (!walletHome.includes("DemoWalletBanner")) {
   fails.push("wallet home must mount DemoWalletBanner");
 }

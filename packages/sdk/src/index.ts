@@ -71,10 +71,23 @@ export {
 } from "./user-feed";
 
 export {
+  fetchTrade,
   fetchTradeList,
   type TradeListRequestOpts,
   type TradeListResponse,
 } from "./trades";
+
+export {
+  LedgerRequestError,
+  fetchUserJournal,
+  fetchUserJournalList,
+  isLedgerRequestError,
+  type LedgerRequestCode,
+  type LedgerRequestOpts,
+  type UserJournal,
+  type UserJournalEntry,
+  type UserJournalList,
+} from "./ledger";
 
 export {
   createWithdraw,

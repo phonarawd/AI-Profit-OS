@@ -69,7 +69,10 @@ for (const rel of withdrawPages) {
   }
 }
 
-const walletHome = read("apps/web/app/wallet/page.tsx");
+const walletHome = [
+  read("apps/web/app/wallet/page.tsx"),
+  read("apps/web/app/wallet/WalletClient.tsx"),
+].join("\n");
 if (!walletHome.includes("/wallet/withdraw?mode=profit")) {
   fails.push("wallet home primary withdraw link must be ?mode=profit");
 }
