@@ -8,6 +8,7 @@ import { fetchTradeList } from "@aipo/sdk/trades";
 import { fetchWalletBuckets } from "@aipo/sdk/wallet";
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
+import { EarningsEmbed } from "./EarningsEmbed";
 import styles from "./trades.module.css";
 
 const USDT_DEC = /^-?[0-9]+(\.[0-9]+)?$/;
@@ -201,14 +202,7 @@ export function TradesClient() {
       </p>
       <h1 className={styles.title}>{TITLE}</h1>
       <p className={styles.lead}>참여한 기회와 결과예요.</p>
-      <dl className={styles.facts}>
-        <div>
-          <dt>지갑 수익</dt>
-          <dd>
-            {profitState === "ready" ? profitLine : "확인할 수 없음"}
-          </dd>
-        </div>
-      </dl>
+      <EarningsEmbed state={profitState} profitLine={profitLine} />
       {listState === "unavailable" ? (
         <p className={styles.err}>참여 목록을 불러오지 못했어요.</p>
       ) : null}

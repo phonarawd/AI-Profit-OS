@@ -156,6 +156,13 @@
       "note": "No §2 frame. Do not invent a node-id."
     },
     {
+      "rel": "REL-111",
+      "route": "/trades earnings embed",
+      "frameKeys": [],
+      "apply": false,
+      "note": "No §2 frame. Do not invent a node-id. Owner=wallet.profitUsdt."
+    },
+    {
       "rel": "REL-131",
       "route": "later consumer surface",
       "frameKeys": [],

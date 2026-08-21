@@ -36,8 +36,10 @@ for (const f of files) mustExist(f);
 
 const page = read("apps/web/app/trades/page.tsx");
 const client = read("apps/web/app/trades/TradesClient.tsx");
+const embed = read("apps/web/app/trades/EarningsEmbed.tsx");
 const spec = read("tooling/e2e/specs/trades-closure.spec.cjs");
 const pkg = read("package.json");
+const surface = `${client}\n${embed}`;
 
 if (!page.includes("TradesClient")) fail("page must mount TradesClient");
 if (page.includes("opportunities-desktop") || page.includes("trades-desktop")) {
@@ -52,8 +54,11 @@ if (client.includes("12.50") || client.includes("Math.random")) {
 if (!client.includes("fetchTradeList") || !client.includes("fetchWalletBuckets")) {
   fail("trades must fetch list + wallet buckets");
 }
-if (!client.includes("확인할 수 없음")) {
+if (!surface.includes("확인할 수 없음")) {
   fail("missing wallet profit must be unavailable, not 0");
+}
+if (!client.includes("EarningsEmbed") || !embed.includes("wallet.profitUsdt")) {
+  fail("trades earnings embed must own wallet.profitUsdt");
 }
 if (!spec.includes("unauthorized") || !spec.includes("unavailable") || !spec.includes("empty")) {
   fail("spec must cover unauthorized / unavailable / empty");

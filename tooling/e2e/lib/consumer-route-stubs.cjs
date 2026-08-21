@@ -263,6 +263,9 @@ async function stubTradeList(page, mode) {
       if (mode === "profit_unavailable") {
         return json(route, 500, { error: "upstream_failed" });
       }
+      if (mode === "earnings_mismatch") {
+        return json(route, 200, { ...TEST_WALLET_BUCKETS, profitUsdt: "4.00" });
+      }
       return json(route, 200, TEST_WALLET_BUCKETS);
     }
     if (isTradeListUrl(url)) {

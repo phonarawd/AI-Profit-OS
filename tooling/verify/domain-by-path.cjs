@@ -230,12 +230,14 @@ const RULES = [
     test: (f) =>
       /^apps\/web\/app\/trades\/page\.tsx$/.test(f) ||
       /^apps\/web\/app\/trades\/TradesClient\.tsx$/.test(f) ||
+      /^apps\/web\/app\/trades\/EarningsEmbed\.tsx$/.test(f) ||
       /^apps\/web\/app\/trades\/trades\.module\.css$/.test(f) ||
       /^packages\/sdk\/src\/trades\//.test(f) ||
       /^tooling\/e2e\/specs\/trades-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/trades-live-wire\.cjs$/.test(f) ||
-      /^tooling\/verify\/trades-web-wire\.cjs$/.test(f),
-    scripts: ["trades-live-wire.cjs", "trades-web-wire.cjs"],
+      /^tooling\/verify\/trades-web-wire\.cjs$/.test(f) ||
+      /^tooling\/verify\/earnings-embed\.cjs$/.test(f),
+    scripts: ["trades-live-wire.cjs", "trades-web-wire.cjs", "earnings-embed.cjs"],
   },
   {
     test: (f) =>
