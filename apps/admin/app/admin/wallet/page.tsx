@@ -1,8 +1,16 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import {
+  adminGet,
+  adminSend,
+  newIdempotencyKey,
+  type AdminResult,
+} from "../../../lib/admin-api";
+import { readAmount, readText } from "../../../lib/admin-truth";
+import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
 
 const TABS = [
   "deposit-settings",
@@ -17,6 +25,35 @@ const TAB_LABEL: Record<WalletTab, string> = {
   review: "출금 검토",
   "krw-pending": "원화 대기",
   disputes: "분쟁",
+};
+
+type DepositConfig = {
+  configVersion?: unknown;
+  krw?: {
+    bankName?: unknown;
+    accountHolder?: unknown;
+    noticeKo?: unknown;
+    krwWithdrawFeeKrw?: unknown;
+  };
+  usdtOnchain?: {
+    usdtWithdrawNetworkFeeUsdt?: unknown;
+    sweeperPaused?: unknown;
+  };
+  withdrawGuards?: { minHoldingHours?: unknown };
+};
+
+type KrwItem = {
+  id?: unknown;
+  depositorName?: unknown;
+  payableAmountKrw?: unknown;
+  status?: unknown;
+};
+
+type DisputeItem = {
+  id?: unknown;
+  kind?: unknown;
+  status?: unknown;
+  amountUsdt?: unknown;
 };
 
 /**
@@ -38,6 +75,91 @@ function WalletContent() {
   const disputesApi = "/api/v1/admin/wallet/deposit-disputes";
   const creditApi = "/api/v1/admin/wallet/deposit-disputes/:id/credit";
   const rejectApi = "/api/v1/admin/wallet/deposit-disputes/:id/reject";
+
+  const [config, setConfig] = useState<AdminResult<DepositConfig> | null>(null);
+  const [krw, setKrw] = useState<AdminResult<{ items?: KrwItem[] }> | null>(null);
+  const [disputes, setDisputes] = useState<AdminResult<{ items?: DisputeItem[] }> | null>(
+    null,
+  );
+  const [actionNote, setActionNote] = useState<string | null>(null);
+  const [creditAmount, setCreditAmount] = useState("");
+  const [actionReason, setActionReason] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const [c, k, d] = await Promise.all([
+        adminGet<DepositConfig>("/api/v1/admin/wallet/deposit-config"),
+        adminGet<{ items?: KrwItem[] }>(
+          "/api/v1/admin/wallet/krw-deposit-requests?status=pending",
+        ),
+        adminGet<{ items?: DisputeItem[] }>(disputesApi),
+      ]);
+      if (cancelled) return;
+      setConfig(c);
+      setKrw(k);
+      setDisputes(d);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [disputesApi]);
+
+  async function decideKrw(id: string, decision: "approve" | "reject") {
+    if (decision === "reject" && actionReason.trim().length < 10) {
+      setActionNote("거절 사유는 10자 이상이어야 합니다.");
+      return;
+    }
+    if (!window.confirm(decision === "approve" ? "원화 입금을 승인할까요?" : "거절할까요?")) {
+      return;
+    }
+    const path =
+      decision === "approve"
+        ? `/api/v1/admin/wallet/krw-deposits/${id}/approve`
+        : `/api/v1/admin/wallet/krw-deposits/${id}/reject`;
+    const res = await adminSend(path, "POST", {
+      idempotencyKey: newIdempotencyKey(),
+      reason: actionReason.trim(),
+    });
+    setActionNote(res.ok ? "반영했습니다." : "반영하지 못했습니다.");
+    if (res.ok) {
+      setKrw(
+        await adminGet("/api/v1/admin/wallet/krw-deposit-requests?status=pending"),
+      );
+    }
+  }
+
+  async function decideDispute(
+    event: { preventDefault(): void },
+    id: string,
+    decision: "credit" | "reject",
+  ) {
+    event.preventDefault();
+    if (actionReason.trim().length < 10) {
+      setActionNote("사유는 10자 이상이어야 합니다.");
+      return;
+    }
+    if (decision === "credit" && !readAmount(creditAmount)) {
+      setActionNote("넣을 금액을 확인할 수 없습니다.");
+      return;
+    }
+    if (!window.confirm(decision === "credit" ? "분쟁을 입금 처리할까요?" : "분쟁을 거절할까요?")) {
+      return;
+    }
+    const path =
+      decision === "credit"
+        ? `/api/v1/admin/wallet/deposit-disputes/${id}/credit`
+        : `/api/v1/admin/wallet/deposit-disputes/${id}/reject`;
+    const res = await adminSend(path, "POST", {
+      idempotencyKey: newIdempotencyKey(),
+      reason: actionReason.trim(),
+      amountUsdt: decision === "credit" ? creditAmount.trim() : undefined,
+    });
+    setActionNote(res.ok ? "반영했습니다." : "반영하지 못했습니다.");
+    if (res.ok) {
+      setDisputes(await adminGet(disputesApi));
+    }
+  }
 
   return (
     <main
@@ -85,12 +207,178 @@ function WalletContent() {
           <p className="mt-1 text-xs text-lux-text-muted">
             network code (admin): TRC20 · 유저 화면 라벨: 트론
           </p>
+          <label className="mt-4 block text-sm" htmlFor="dispute-reason">
+            결정 사유
+          </label>
+          <textarea
+            id="dispute-reason"
+            value={actionReason}
+            onChange={(e) => setActionReason(e.target.value)}
+            className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+          />
+          <label className="mt-3 block text-sm" htmlFor="dispute-amount">
+            입금 처리할 금액
+          </label>
+          <input
+            id="dispute-amount"
+            value={creditAmount}
+            onChange={(e) => setCreditAmount(e.target.value)}
+            className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+          />
+          {!disputes ? (
+            <p className="mt-3 text-sm text-lux-text-muted">불러오는 중</p>
+          ) : !disputes.ok ? (
+            <AdminFetchNote failure={disputes.failure} />
+          ) : Array.isArray(disputes.data.items) &&
+            disputes.data.items.length === 0 ? (
+            <p className="mt-3 text-sm text-lux-text-muted">분쟁이 없습니다.</p>
+          ) : Array.isArray(disputes.data.items) ? (
+            <ul className="mt-3 space-y-3">
+              {disputes.data.items.map((item, idx) => {
+                const id = readText(item.id);
+                return (
+                  <li
+                    key={id ?? String(idx)}
+                    className="rounded border border-lux-border p-3 text-sm"
+                  >
+                    <p>
+                      상태 <AdminTruth value={readText(item.status)} />
+                    </p>
+                    <p>
+                      금액 <AdminTruth value={readAmount(item.amountUsdt)} />
+                    </p>
+                    {id ? (
+                      <form className="mt-2 flex gap-2">
+                        <button
+                          type="submit"
+                          className="rounded bg-lux-elevated px-2 py-1"
+                          onClick={(e) => void decideDispute(e, id, "credit")}
+                        >
+                          입금 처리
+                        </button>
+                        <button
+                          type="submit"
+                          className="rounded px-2 py-1 text-lux-text-muted"
+                          onClick={(e) => void decideDispute(e, id, "reject")}
+                        >
+                          거절
+                        </button>
+                      </form>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <AdminTruth value={null} />
+          )}
+          {actionNote ? (
+            <p className="mt-2 text-sm text-lux-text-muted">{actionNote}</p>
+          ) : null}
+        </section>
+      ) : tab === "deposit-settings" ? (
+        <section className="mt-6 space-y-2" data-testid="wallet-deposit-settings-panel">
+          {!config ? (
+            <p className="text-sm text-lux-text-muted">불러오는 중</p>
+          ) : !config.ok ? (
+            <AdminFetchNote failure={config.failure} />
+          ) : (
+            <>
+              <p className="text-sm">
+                은행 <AdminTruth value={readText(config.data.krw?.bankName)} />
+              </p>
+              <p className="text-sm">
+                예금주{" "}
+                <AdminTruth value={readText(config.data.krw?.accountHolder)} />
+              </p>
+              <p className="text-sm">
+                안내 <AdminTruth value={readText(config.data.krw?.noticeKo)} />
+              </p>
+              <p className="text-sm">
+                출금 네트워크 수수료{" "}
+                <AdminTruth
+                  value={readAmount(
+                    config.data.usdtOnchain?.usdtWithdrawNetworkFeeUsdt,
+                  )}
+                />
+              </p>
+              <p className="text-sm">
+                최소 보유 시간{" "}
+                <AdminTruth
+                  value={readText(config.data.withdrawGuards?.minHoldingHours)}
+                />
+              </p>
+            </>
+          )}
+        </section>
+      ) : tab === "krw-pending" ? (
+        <section className="mt-6 space-y-2" data-testid="wallet-krw-pending-panel">
+          <label className="block text-sm" htmlFor="krw-reason">
+            거절 사유
+          </label>
+          <textarea
+            id="krw-reason"
+            value={actionReason}
+            onChange={(e) => setActionReason(e.target.value)}
+            className="w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+          />
+          {!krw ? (
+            <p className="text-sm text-lux-text-muted">불러오는 중</p>
+          ) : !krw.ok ? (
+            <AdminFetchNote failure={krw.failure} />
+          ) : Array.isArray(krw.data.items) && krw.data.items.length === 0 ? (
+            <p className="text-sm text-lux-text-muted">대기 건이 없습니다.</p>
+          ) : Array.isArray(krw.data.items) ? (
+            <ul className="space-y-3">
+              {krw.data.items.map((item, idx) => {
+                const id = readText(item.id);
+                return (
+                  <li
+                    key={id ?? String(idx)}
+                    className="rounded border border-lux-border p-3 text-sm"
+                  >
+                    <p>
+                      입금자 <AdminTruth value={readText(item.depositorName)} />
+                    </p>
+                    <p>
+                      입금 금액{" "}
+                      <AdminTruth value={readText(item.payableAmountKrw)} />
+                    </p>
+                    {id ? (
+                      <div className="mt-2 flex gap-2">
+                        <button
+                          type="button"
+                          className="rounded bg-lux-elevated px-2 py-1"
+                          onClick={() => void decideKrw(id, "approve")}
+                        >
+                          승인
+                        </button>
+                        <button
+                          type="button"
+                          className="rounded px-2 py-1 text-lux-text-muted"
+                          onClick={() => void decideKrw(id, "reject")}
+                        >
+                          거절
+                        </button>
+                      </div>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <AdminTruth value={null} />
+          )}
+          {actionNote ? (
+            <p className="text-sm text-lux-text-muted">{actionNote}</p>
+          ) : null}
         </section>
       ) : (
         <section className="mt-6" data-testid={`wallet-${tab}-panel`}>
           <p className="text-sm text-lux-text-muted">
-            Admin §9.1.1 골격 · 탭={TAB_LABEL[tab]}
+            출금 검토 목록 경로가 없습니다.
           </p>
+          <AdminTruth value={null} />
         </section>
       )}
     </main>
