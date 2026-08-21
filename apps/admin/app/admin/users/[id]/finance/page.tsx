@@ -34,6 +34,38 @@ type JournalList = {
   items?: Array<{ id?: unknown; journalType?: unknown; createdAt?: unknown }>;
 };
 
+type LiveBuckets = {
+  principalUsdt: string;
+  profitUsdt: string;
+  lockedUsdt: string;
+  practiceUsdt: string;
+  liabilityUsdt: string;
+};
+
+function readLiveBuckets(data: BucketsPayload): LiveBuckets | null {
+  const principalUsdt = readAmount(data.principalUsdt);
+  const profitUsdt = readAmount(data.profitUsdt);
+  const lockedUsdt = readAmount(data.lockedUsdt);
+  const practiceUsdt = readAmount(data.practiceUsdt);
+  const liabilityUsdt = readAmount(data.liabilityUsdt);
+  if (
+    !principalUsdt ||
+    !profitUsdt ||
+    !lockedUsdt ||
+    !practiceUsdt ||
+    !liabilityUsdt
+  ) {
+    return null;
+  }
+  return {
+    principalUsdt,
+    profitUsdt,
+    lockedUsdt,
+    practiceUsdt,
+    liabilityUsdt,
+  };
+}
+
 /**
  * Admin §9.8.7 / Money §49.6 — `/admin/users/:id/finance?tab=buckets`
  * Buckets SoT = GET /api/v1/admin/users/:id/buckets
@@ -78,23 +110,9 @@ function FinanceContent() {
     };
   }, [bucketsApi, userId]);
 
-  const liveBuckets =
-    buckets?.ok
-      ? {
-          principalUsdt: readAmount(buckets.data.principalUsdt),
-          profitUsdt: readAmount(buckets.data.profitUsdt),
-          lockedUsdt: readAmount(buckets.data.lockedUsdt),
-          practiceUsdt: readAmount(buckets.data.practiceUsdt),
-          liabilityUsdt: readAmount(buckets.data.liabilityUsdt),
-        }
-      : null;
-  const bucketsReady =
-    liveBuckets &&
-    liveBuckets.principalUsdt &&
-    liveBuckets.profitUsdt &&
-    liveBuckets.lockedUsdt &&
-    liveBuckets.practiceUsdt &&
-    liveBuckets.liabilityUsdt;
+  const liveBuckets = buckets?.ok
+    ? readLiveBuckets(buckets.data)
+    : null;
 
   return (
     <main
@@ -147,7 +165,7 @@ function FinanceContent() {
             <p className="mt-4 text-sm text-lux-text-muted">불러오는 중</p>
           ) : !buckets.ok ? (
             <AdminFetchNote failure={buckets.failure} />
-          ) : bucketsReady ? (
+          ) : liveBuckets ? (
             <BucketBreakdown
               principalUsdt={liveBuckets.principalUsdt}
               profitUsdt={liveBuckets.profitUsdt}
