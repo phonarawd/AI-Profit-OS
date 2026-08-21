@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-121 COMPLETED. FIRST_EXECUTION_TODO=REL-122. HARD_STOP_AFTER=REL-130. BATCH_REL_120_130=ACCOUNT_HUB.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-122 COMPLETED. FIRST_EXECUTION_TODO=REL-123. HARD_STOP_AFTER=REL-130. BATCH_REL_120_130=ACCOUNT_HUB.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -144,8 +144,8 @@ todos:
     content: "[Consumer][Legacy:C-ACC-001~003] Notifications(/me/inbox) 클로저 - Track C \"핵심 8영역\" completed 선언 범위(재확인 게이트만) — DONE 401≠empty · leftover chrome 0"
     status: completed
   - id: rel-122
-    content: "[Consumer][Asset 후보 기존재] AIInsight(/me/peotteok) 클로저 - public/spark-dash/ai-*.svg 재사용 여부 우선 확인"
-    status: pending
+    content: "[Consumer][Asset 후보 기존재] AIInsight(/me/peotteok) 클로저 - public/spark-dash/ai-orb.svg 재사용 · fact-only · leftover chrome 0"
+    status: completed
   - id: rel-123
     content: "[Consumer][Legacy:C-ACC-001~003] Profile(/me) 클로저 - Track C 재확인 게이트만. REL-131 Figma를 기다리지 않음(신규 프레임 적용은 REL-131 산출)"
     status: pending
@@ -420,8 +420,8 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-122
-LAST_COMPLETED_TODO = REL-121
+FIRST_EXECUTION_TODO = REL-123
+LAST_COMPLETED_TODO = REL-122
 BATCH_REL_120_130 = ACCOUNT_HUB
 HARD_STOP_AFTER = REL-130
 PRE_LOCK_COUNT = 1
@@ -1866,7 +1866,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-122
 TITLE: AIInsight (/me/peotteok) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER.plan.md
 SOURCE_TODO_IDS:
   - rel-122

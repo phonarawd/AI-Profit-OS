@@ -433,13 +433,16 @@ const RULES = [
       /packages\/ui\/copy\/ko\/peotteok\.ts/.test(f) ||
       /packages\/ui\/canon\/surfaces\/peotteok/.test(f) ||
       /apps\/web\/app\/me\/peotteok\//.test(f) ||
-      /packages\/sdk\/src\/peotteok\//.test(f),
+      /packages\/sdk\/src\/peotteok\//.test(f) ||
+      /^tooling\/e2e\/specs\/peotteok-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/peotteok-closure\.cjs$/.test(f),
     scripts: [
       "ai-coach-ui.cjs",
       "canon-surfaces.cjs",
       "ai-coach-fact-only.cjs",
       "ai-coach-no-autonomy.cjs",
       "age-tone-surfaces.cjs",
+      "peotteok-closure.cjs",
     ],
   },
   {

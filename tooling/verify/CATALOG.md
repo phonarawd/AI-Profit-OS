@@ -138,6 +138,7 @@
 | wallet-closure | REL-113 — `/wallet` unauthorized/ready · missing≠0 · leftover 5-tab chrome 0 — **live** |
 | invite-closure | REL-120 — `/me/invite` GET `/api/v1/referral/me` · unauthorized≠empty · leftover 5-tab chrome 0 — **live** |
 | inbox-closure | REL-121 — `/me/inbox` GET `/api/v1/me/inbox` · 401≠empty — **live** |
+| peotteok-closure | REL-122 — `/me/peotteok` fact-only · spark-dash ai-orb reuse — **live** |
 | usdt-deposit-closure | REL-114 — `/wallet/deposit` USDT address owner · credit 0 · happy+deny — **live** |
 | krw-deposit-closure | REL-115 — `/wallet/deposit?tab=krw` pending≠credit · PG 0 · happy+deny — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |

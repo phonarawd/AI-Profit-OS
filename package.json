@@ -149,6 +149,7 @@
     "verify:wallet-closure": "node tooling/verify/wallet-closure.cjs",
     "verify:invite-closure": "node tooling/verify/invite-closure.cjs",
     "verify:inbox-closure": "node tooling/verify/inbox-closure.cjs",
+    "verify:peotteok-closure": "node tooling/verify/peotteok-closure.cjs",
     "verify:usdt-deposit-closure": "node tooling/verify/usdt-deposit-closure.cjs",
     "verify:krw-deposit-closure": "node tooling/verify/krw-deposit-closure.cjs",
     "verify:participate-http": "node tooling/verify/participate-http.cjs",
