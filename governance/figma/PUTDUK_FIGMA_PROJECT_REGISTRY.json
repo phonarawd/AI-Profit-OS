@@ -292,7 +292,9 @@
           "note": "REL-131 V2 Mobile frame preserved for comparison. SUPERSEDED."
         }
       ],
-      "note": "Founder approved 2026-08-22. Visual authority = Desktop 192:194 + Mobile 192:434. V2 180:102 / 180:430 and V1 169:78 / 169:288 preserved. Production apply remains 0 until a later Master REL requires reconciliation."
+      "note": "Founder approved 2026-08-22. Visual authority = Desktop 192:194 + Mobile 192:434. V2 180:102 / 180:430 and V1 169:78 / 169:288 preserved. screenBindings.apply stays false because REL-131 verifier treats apply as Figma-binding/Code Connect, not runtime presence. Founder-directed audit/figma-repo-runtime-reconciliation applied the locked frames to production /me. Evidence = governance/visual-reconciliation/account/.",
+      "runtimeReconciled": true,
+      "reconciledBy": "audit/figma-repo-runtime-reconciliation"
     }
   ]
 }

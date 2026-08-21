@@ -41,7 +41,13 @@ const RULES = [
       /^tooling\/verify\/figma-project-registry\.cjs$/.test(f) ||
       /^governance\/release-master\/rel-131-account-figma/.test(f) ||
       /^governance\/release-master\/REL-131-ACCOUNT-HUB-FIGMA\.md$/.test(f),
-    scripts: ["figma-project-registry.cjs"],
+    scripts: ["figma-project-registry.cjs", "locked-visual-reconciliation.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/visual-reconciliation\//.test(f) ||
+      /^tooling\/verify\/locked-visual-reconciliation\.cjs$/.test(f),
+    scripts: ["locked-visual-reconciliation.cjs"],
   },
   {
     test: (f) =>
@@ -323,9 +329,11 @@ const RULES = [
     test: (f) =>
       /^apps\/web\/app\/me\/page\.tsx$/.test(f) ||
       /^apps\/web\/app\/me\/ProfileClient\.tsx$/.test(f) ||
+      /^apps\/web\/app\/me\/AccountHub\.tsx$/.test(f) ||
+      /^apps\/web\/app\/me\/account-hub/.test(f) ||
       /^tooling\/e2e\/specs\/profile-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/profile-closure\.cjs$/.test(f),
-    scripts: ["profile-closure.cjs", "part5-shell-toast.cjs"],
+    scripts: ["profile-closure.cjs", "part5-shell-toast.cjs", "locked-visual-reconciliation.cjs"],
   },
   {
     test: (f) =>

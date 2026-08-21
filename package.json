@@ -220,6 +220,7 @@
     "verify:money-unavailable": "node tooling/verify/money-unavailable.cjs",
     "verify:settlement-rule-parity": "node tooling/verify/settlement-rule-parity.cjs",
     "verify:figma-project-registry": "node tooling/verify/figma-project-registry.cjs",
+    "verify:locked-visual-reconciliation": "node tooling/verify/locked-visual-reconciliation.cjs",
     "verify:auth-rate-limit": "node tooling/verify/auth-rate-limit.cjs",
     "verify:web-lint": "node tooling/verify/web-lint.cjs",
     "verify:axe-harness": "node tooling/verify/axe-harness.cjs",
