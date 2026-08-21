@@ -414,7 +414,32 @@ const RULES = [
   },
   {
     test: (f) => /^apps\/admin\//.test(f),
-    scripts: ["no-admin-in-web.cjs", "admin-routes.cjs"],
+    scripts: [
+      "no-admin-in-web.cjs",
+      "admin-routes.cjs",
+      "rel-201-admin-dashboard.cjs",
+      "rel-202-admin-users.cjs",
+      "rel-203-admin-user-detail.cjs",
+      "rel-204-admin-user-finance.cjs",
+      "rel-205-admin-ledger.cjs",
+      "rel-206-admin-wallet.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^tooling\/verify\/rel-20[1-6]-admin-/.test(f) ||
+      /^tooling\/verify\/admin-entry-e2e\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/admin-entry-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/e2e\/lib\/local-admin-runtime\.cjs$/.test(f),
+    scripts: [
+      "rel-201-admin-dashboard.cjs",
+      "rel-202-admin-users.cjs",
+      "rel-203-admin-user-detail.cjs",
+      "rel-204-admin-user-finance.cjs",
+      "rel-205-admin-ledger.cjs",
+      "rel-206-admin-wallet.cjs",
+      "admin-entry-e2e.cjs",
+    ],
   },
   {
     test: (f) =>

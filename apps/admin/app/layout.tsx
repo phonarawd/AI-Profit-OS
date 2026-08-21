@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ADMIN_MODULES } from "../routes";
+import { AdminSessionBar } from "../components/AdminSessionBar";
 
 export const metadata: Metadata = {
   title: "AI Profit OS Ops",
@@ -38,7 +39,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               ))}
             </nav>
           </aside>
-          <div className="flex-1">{children}</div>
+          <div className="flex-1">
+            <AdminSessionBar />
+            {children}
+          </div>
         </div>
       </body>
     </html>
