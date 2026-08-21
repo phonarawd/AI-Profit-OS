@@ -124,6 +124,7 @@
 | profits-live-wire | REL-106 — `/profits` live feed · error≠empty · requiredCapital · Playwright profits-closure — **live** |
 | opportunity-detail-live-wire | REL-107 — `/profits/[id]` live detail · error≠empty/404 · requiredCapital continuity · preflight before execute · Playwright opportunity-detail-closure — **live** |
 | participate-web-wire | REL-107 — `@aipo/sdk/participate` issuePreflight+postParticipate · `/profits/[id]` 실연결 · amountUsdt=requiredCapitalUsdt · 목록 POST 0 — **live** |
+| participate-sheet-live-wire | REL-108 — ParticipateConfirmSheet 11-state · failure≠closed · accepted after server · Playwright participate-sheet-closure — **live** |
 | wallet-live-wire | UI PART9b/9f — `/wallet` buckets + `@aipo/sdk/wallet` `fetchWalletBuckets` (출금≠9f2) — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |
 | migrations-applied-parity | Supabase — 로컬 `supabase/migrations` 버전 ↔ `fixtures/migrations-applied.v1.json`(원격 applied 스냅샷) 1:1 · path-trigger — **live** |

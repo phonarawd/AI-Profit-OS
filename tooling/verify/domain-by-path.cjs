@@ -223,12 +223,16 @@ const RULES = [
       /^apps\/web\/components\/spark-dash-room\//.test(f) ||
       /^apps\/web\/app\/dev\/spark-dash-room\//.test(f) ||
       /^packages\/sdk\/src\/participate\//.test(f) ||
+      /^tooling\/e2e\/lib\/consumer-route-stubs\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/opportunity-detail-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/participate-sheet-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/opportunity-detail-live-wire\.cjs$/.test(f) ||
-      /^tooling\/verify\/participate-web-wire\.cjs$/.test(f),
+      /^tooling\/verify\/participate-web-wire\.cjs$/.test(f) ||
+      /^tooling\/verify\/participate-sheet-live-wire\.cjs$/.test(f),
     scripts: [
       "opportunity-detail-live-wire.cjs",
       "participate-web-wire.cjs",
+      "participate-sheet-live-wire.cjs",
       "sdk-user-feed.cjs",
     ],
   },

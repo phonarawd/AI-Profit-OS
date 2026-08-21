@@ -102,9 +102,13 @@ async function stubOpportunityFeed(page, mode) {
   });
 }
 
+function participateErrorBody(code) {
+  return { code, error: code };
+}
+
 /** DEV/TEST detail/preflight stub. production money mutation 0. */
-async function stubOpportunityRoom(page, mode) {
-  await page.route("**/api/v1/**", (route) => {
+async function stubOpportunityRoom(page, mode, opts = {}) {
+  await page.route("**/api/v1/**", async (route) => {
     const url = route.request().url();
     const detailId = opportunityDetailPath(url);
     if (url.includes("/api/v1/me/home-read")) {
@@ -142,6 +146,26 @@ async function stubOpportunityRoom(page, mode) {
         if (mode === "error") {
           return json(route, 500, { error: "upstream_failed" });
         }
+        const delayMs = Number(opts.participateDelayMs || 0);
+        if (delayMs > 0) {
+          await new Promise((resolve) => setTimeout(resolve, delayMs));
+        }
+        const participateCode = opts.participateCode;
+        if (participateCode === "INSUFFICIENT_PRINCIPAL") {
+          return json(route, 403, participateErrorBody(participateCode));
+        }
+        if (participateCode === "PREFLIGHT_REQUIRED") {
+          return json(route, 412, participateErrorBody(participateCode));
+        }
+        if (participateCode === "PRICE_STALE") {
+          return json(route, 409, participateErrorBody(participateCode));
+        }
+        if (participateCode === "OPPORTUNITY_EXPIRED") {
+          return json(route, 409, participateErrorBody(participateCode));
+        }
+        if (participateCode === "MATCH_BLOCKED") {
+          return json(route, 403, participateErrorBody(participateCode));
+        }
         return json(route, 200, {
           participateRequestId: "qa-rel107-participate",
           tradeId: "qa-rel107-trade",
@@ -149,7 +173,7 @@ async function stubOpportunityRoom(page, mode) {
           pricingVersion: TEST_OPPORTUNITY_ITEM.pricingVersion,
           expectedProfitUsdt: TEST_OPPORTUNITY_ITEM.expectedProfitUsdt,
           amountUsdt: TEST_OPPORTUNITY_ITEM.requiredCapitalUsdt,
-          reused: false,
+          reused: opts.reused === true,
         });
       }
       if (mode === "unauthorized") {
