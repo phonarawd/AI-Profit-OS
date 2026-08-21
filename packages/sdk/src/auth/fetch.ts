@@ -143,6 +143,8 @@ export function normalizeAuthSession(raw: unknown): AuthSession {
     expiresAt,
     revoked: false,
     onboardingStage: stage as AuthOnboardingStage,
+    beginnerOnboardingCompletedAt: asText(o.beginnerOnboardingCompletedAt),
+    fundingExperienceCompleted: o.fundingExperienceCompleted === true,
   };
 }
 
@@ -199,6 +201,30 @@ export async function fetchAuthSession(
     if (isAuthError(err) && err.code === "AUTH_REQUIRED") return null;
     throw err;
   }
+}
+
+export async function completeBeginnerOnboarding(
+  opts: AuthRequestOpts = {},
+): Promise<AuthSession> {
+  let res: Response;
+  try {
+    res = await fetch(
+      apiUrl(opts.apiBase ?? "", "/api/v1/auth/onboarding/complete"),
+      {
+        method: "POST",
+        headers: await authHeaders(opts),
+        credentials: "include",
+        cache: "no-store",
+        signal: opts.signal,
+      },
+    );
+  } catch (err) {
+    if (isAbortError(err)) throw err;
+    throw new AuthError(0, "NETWORK_ERROR");
+  }
+  const raw = await readJson(res);
+  if (!res.ok) throwHttp(res.status, raw);
+  return normalizeAuthSession(raw);
 }
 
 export async function signupStageA(

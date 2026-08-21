@@ -95,6 +95,12 @@ export class AuthController {
     return this.auth.session(req.user);
   }
 
+  @Post(AUTH_ROUTES.onboardingComplete)
+  @UseGuards(JwtAuthGuard)
+  completeBeginnerOnboarding(@Req() req: AuthedRequest) {
+    return this.auth.completeBeginnerOnboarding(req.user);
+  }
+
   @Post(AUTH_ROUTES.logout)
   @UseGuards(JwtAuthGuard)
   async logout(

@@ -1,6 +1,6 @@
 /**
- * verify:onboarding-experiential — UI §6.4 PART2a
- * Canon onboarding-identity · onboarding-demo-card · Partner strip 1slide · gender0
+ * verify:onboarding-experiential — Automation Story 7단
+ * Figma 237:1813 / 237:2155 · 구 tone-first/demo/practice 경험 금지
  */
 const fs = require("fs");
 const path = require("path");
@@ -22,153 +22,138 @@ function mustExist(rel) {
 }
 
 const files = [
-  "packages/ui/canon/surfaces/onboarding-identity.wire.json",
-  "packages/ui/canon/surfaces/onboarding-demo-card.wire.json",
   "packages/ui/copy/ko/onboarding.ts",
   "packages/ui/components/onboarding/OnboardingFlow.tsx",
+  "packages/ui/components/onboarding/OnboardingStoryVisual.tsx",
+  "packages/ui/components/onboarding/onboarding-automation.css",
+  "packages/ui/components/onboarding/onboarding-experience-gate.ts",
   "packages/ui/components/onboarding/index.ts",
   "apps/web/app/onboarding/page.tsx",
+  "supabase/migrations/20260822080000_beginner_onboarding_experience.sql",
 ];
 for (const f of files) mustExist(f);
 
 const copy = read("packages/ui/copy/ko/onboarding.ts");
 if (copy) {
-  for (const k of [
-    "identityHeadline",
-    "demoHint",
-    "tryDemoCard",
-    "partnerSlideLead",
-    "toneYoung",
-    "toneMid",
-    "toneSenior",
-    "startApp",
-  ]) {
-    if (!copy.includes(`${k}:`)) fails.push(`onboarding.ts missing ${k}`);
-  }
-  for (const band of ["young", "mid", "senior"]) {
-    if (!copy.includes(`${band}:`)) {
-      fails.push(`onboarding.ts missing toneBand ${band}`);
+  for (const label of ["탐색", "매칭", "계산", "검증", "준비", "결정", "실행"]) {
+    if (!copy.includes(`label: "${label}"`)) {
+      fails.push(`onboarding.ts missing story label ${label}`);
     }
+  }
+  for (const cta of [
+    "자동 매칭 보기",
+    "수익 계산 보기",
+    "검증 과정 보기",
+    "참여 준비 보기",
+    "방법 확인했어요",
+    "나중에 알아볼게요",
+    "첫 기회 둘러보기",
+  ]) {
+    if (!copy.includes(cta)) fails.push(`onboarding.ts missing CTA ${cta}`);
+  }
+  if (!copy.includes("실제 결과는 기회 조건에 따라 달라질 수 있어요")) {
+    fails.push("onboarding.ts missing step7 uncertainty");
+  }
+  if (copy.includes("toneYoung") || copy.includes("tonePickTitle")) {
+    fails.push("onboarding.ts must not keep tone-selection-first copy");
   }
 }
 
 const flow = read("packages/ui/components/onboarding/OnboardingFlow.tsx");
 if (flow) {
   for (const need of [
-    "onboarding-identity",
-    "onboarding-demo-card",
-    "onboarding-partner-slide",
-    "MarketPartnerTrustStrip",
-    "DemoWalletBanner",
-    "practice_only",
-    "tone-young",
-    "T.landing.ctaStartUtility",
-    "T.landing.transitionDisclosure",
-    "compareMiniUtility",
+    "OnboardingStoryVisual",
+    "onboarding-next",
+    "onboarding-back",
+    "onboarding-skip",
+    "onboarding-start",
+    "SKIPPABLE",
+    '"usdt"',
+    "decideOnboardingGate",
+    "/api/v1/auth/session",
+    "/api/v1/auth/onboarding/complete",
   ]) {
     if (!flow.includes(need)) fails.push(`OnboardingFlow missing ${need}`);
   }
-  if (flow.includes("T.execution.ctaEarn") || /["'`]수익 벌기["'`]/.test(flow)) {
-    fails.push("OnboardingFlow must not use capital CTA 「수익 벌기」(v7.22.55)");
-  }
-  if (/T\.margin\.compareMini[^U]/.test(flow) || /\{T\.margin\.compareMini\}/.test(flow)) {
-    fails.push("OnboardingFlow must use T.margin.compareMiniUtility (차익 라벨 0)");
-  }
-  if (flow.includes("WhyUsdtCard") || flow.includes("TaxDisclaimerBlock")) {
-    fails.push("OnboardingFlow Guest path must not mount WhyUsdtCard/TaxDisclaimerBlock (USDT/테더 카피)");
-  }
-  if (flow.includes("gender_male") || flow.includes("gender_female") || flow.includes("성별")) {
-    fails.push("OnboardingFlow must not branch on gender");
-  }
-  if (!flow.includes("demoPriceExample")) {
-    fails.push("OnboardingFlow demo must use T.onboarding.demoPriceExample (not +$ profit tease)");
-  }
-  if (/\+\s*\$|\+\$/.test(flow)) {
-    fails.push("OnboardingFlow must not tease demo profit with +$ amounts");
-  }
-  if (/practiceUsdt\s*=/.test(flow) || flow.includes("usdtSuffix")) {
-    fails.push(
-      "OnboardingFlow Guest DemoWalletBanner must omit practiceUsdt/usdtSuffix (USDT ticker 0)",
-    );
-  }
-  if (
-    !flow.includes("T.landing.ctaStartUtility") &&
-    !flow.includes("T.landing.ctaContinueUtility")
-  ) {
-    fails.push(
-      "OnboardingFlow ACTION must use T.landing.ctaStartUtility or ctaContinueUtility",
-    );
-  }
-  // USDT skip only
-  if (!flow.includes('SKIPPABLE') && !flow.includes('"usdt"')) {
-    fails.push("OnboardingFlow must allow skip on USDT step only");
-  }
-}
-
-// practice banner — Guest-facing strings · 수익|USDT 0 (CLOSE)
-const practice = read("packages/ui/copy/ko/practice.ts");
-if (practice) {
-  const guestBanned = /수익|투자|USDT|테더|보장|차익|괴리율/;
-  for (const key of ["bannerTitle", "bannerBody", "notWithdrawable", "badge"]) {
-    const m = practice.match(new RegExp(`${key}:\\s*"([^"]*)"`));
-    if (!m) {
-      fails.push(`practice.ts missing ${key}`);
-      continue;
-    }
-    if (guestBanned.test(m[1])) {
-      fails.push(`practice.${key} Guest banned token in "${m[1]}"`);
+  for (const banned of [
+    "tone-young",
+    "DemoWalletBanner",
+    "MarketPartnerTrustStrip",
+    "MatchConfidenceCard",
+    "BuyingPowerMeter",
+    "OpportunityDemoCard",
+    "T.landing.ctaStartUtility",
+    "T.landing.transitionDisclosure",
+    "compareMiniUtility",
+    "COMPOSITE_STRONG",
+    "WhyUsdtCard",
+    "gender_male",
+    "gender_female",
+    "수익 벌기",
+    "webgl",
+    "WebGL",
+    "THREE",
+    "gsap",
+    "requestAnimationFrame",
+  ]) {
+    if (flow.includes(banned)) {
+      fails.push(`OnboardingFlow must not keep superseded ${banned}`);
     }
   }
 }
 
-const idWire = read("packages/ui/canon/surfaces/onboarding-identity.wire.json");
-if (idWire) {
-  if (
-    idWire.includes("T.trust.expectedNotGuaranteed") ||
-    /"copyKey"\s*:\s*"T\.trust\.expectedNotGuaranteed"/.test(idWire)
-  ) {
-    fails.push("onboarding-identity.wire must not use expectedNotGuaranteed (Guest · use utilityDisclaimer)");
+const visual = read("packages/ui/components/onboarding/OnboardingStoryVisual.tsx");
+if (visual) {
+  for (const need of ["explore", "match", "calc", "validate", "prepare", "decide", "run"]) {
+    if (!visual.includes(`data-story="${need}"`)) {
+      fails.push(`OnboardingStoryVisual missing ${need}`);
+    }
   }
-  if (!idWire.includes("compareMiniUtility")) {
-    fails.push("onboarding-identity.wire missing compareMiniUtility");
+  if (visual.includes("COMPOSITE_STRONG")) {
+    fails.push("OnboardingStoryVisual must not expose identity jargon");
   }
-  if (!idWire.includes("utilityDisclaimer")) {
-    fails.push("onboarding-identity.wire missing utilityDisclaimer");
+}
+
+const css = read("packages/ui/components/onboarding/onboarding-automation.css");
+if (css) {
+  if (css.includes("spark-dash-home") || css.includes("HomeDesktop") || css.includes("home-approval")) {
+    fails.push("onboarding CSS must not mutate/import Home frozen presentation");
   }
-  if (/T\.margin\.compareMini"/.test(idWire)) {
-    fails.push("onboarding-identity.wire must not use capital compareMini copyKey");
+  if (!css.includes("#ff2e63") || !css.includes("#08111f")) {
+    fails.push("onboarding CSS missing Spark ink/fuchsia tokens");
   }
 }
 
 const page = read("apps/web/app/onboarding/page.tsx");
-if (page && !page.includes("OnboardingFlow")) {
-  fails.push("onboarding page must render OnboardingFlow");
-}
-
-for (const id of ["onboarding-identity", "onboarding-demo-card"]) {
-  const wire = read(`packages/ui/canon/surfaces/${id}.wire.json`);
-  if (!wire) continue;
-  let w;
-  try {
-    w = JSON.parse(wire);
-  } catch {
-    fails.push(`${id} invalid JSON`);
-    continue;
+if (page) {
+  if (!page.includes("OnboardingFlow")) {
+    fails.push("onboarding page must render OnboardingFlow");
   }
-  if (w.route !== "/onboarding") fails.push(`${id}.route must be /onboarding`);
-  if (!(w.forbidden || []).includes("gender_branch")) {
-    fails.push(`${id}.forbidden missing gender_branch`);
+  if (!page.includes('layout="viewport"')) {
+    fails.push("onboarding page must use GuestChrome viewport (not max-w-lg)");
   }
-  if (!(w.forbidden || []).includes("photo_pixel_match")) {
-    fails.push(`${id}.forbidden missing photo_pixel_match`);
+  if (page.includes("OnboardingFlowV2") || page.includes("AutomationOnboarding")) {
+    fails.push("must not create a parallel onboarding owner");
   }
 }
 
-const man = read("packages/ui/canon/manifest.json");
-if (man) {
-  const ids = JSON.parse(man).surfaces.map((s) => s.id);
-  for (const id of ["onboarding-identity", "onboarding-demo-card"]) {
-    if (!ids.includes(id)) fails.push(`canon/manifest missing ${id}`);
+const gate = read("packages/ui/components/onboarding/onboarding-experience-gate.ts");
+if (gate) {
+  if (!gate.includes('return "unknown"')) {
+    fails.push("gate must treat unknown separately from new user");
+  }
+  if (gate.includes("balance") || gate.includes("available")) {
+    fails.push("gate must not infer from balance");
+  }
+}
+
+const nest = read("services/api-nest/src/auth/auth.service.ts");
+if (nest) {
+  if (!nest.includes("beginner_onboarding_completed_at")) {
+    fails.push("auth.service missing durable beginner_onboarding_completed_at");
+  }
+  if (!nest.includes("status = 'approved'") || !nest.includes("ledger_credited")) {
+    fails.push("auth.service must only count completed KRW/USDT funding");
   }
 }
 
@@ -177,5 +162,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:onboarding-experiential] PASS (identity · demo · partner slide · toneBand · gender0)",
+  "[verify:onboarding-experiential] PASS (automation story · old experience 0 · durable gate)",
 );

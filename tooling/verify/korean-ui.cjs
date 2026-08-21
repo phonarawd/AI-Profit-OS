@@ -92,11 +92,11 @@ if (landing) {
 }
 
 // Guest utility surfaces — §6.4c.1 F banned words (string literals only)
+// /onboarding = 인증 후 Automation Story (자본 교육). Guest lexicon 대상 아님.
 const guestBanned = /수익|투자|USDT|테더|보장|차익|괴리율|재테크|알바/;
 for (const rel of [
   "packages/ui/copy/ko/landing.ts",
   "packages/ui/copy/ko/auth.ts",
-  "packages/ui/copy/ko/onboarding.ts",
 ]) {
   const src = read(rel);
   if (!src) continue;

@@ -18,6 +18,8 @@ export type AuthSession = {
   expiresAt: string;
   revoked: false;
   onboardingStage: AuthOnboardingStage;
+  beginnerOnboardingCompletedAt: string | null;
+  fundingExperienceCompleted: boolean;
 };
 
 export type KakaoStartInput = {

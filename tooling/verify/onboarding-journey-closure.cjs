@@ -1,5 +1,5 @@
 /**
- * verify:onboarding-journey-closure — REL-104
+ * verify:onboarding-journey-closure — Automation Story + durable gate
  */
 "use strict";
 
@@ -18,8 +18,11 @@ const flow = fs.readFileSync(
   path.join(root, "packages/ui/components/onboarding/OnboardingFlow.tsx"),
   "utf8",
 );
-if (!flow.includes("MarketDiffDemo") || !flow.includes("BuyingPowerMeter")) {
-  fail("onboarding must keep experiential demo pieces");
+if (!flow.includes("OnboardingStoryVisual")) {
+  fail("onboarding must render Automation Story visual");
+}
+if (flow.includes("DemoWalletBanner") || flow.includes("tone-young")) {
+  fail("onboarding must not keep superseded demo/tone-first experience");
 }
 if (flow.includes("/wallet/deposit")) {
   fail("onboarding must not use a deposit funnel CTA");
@@ -41,7 +44,7 @@ function finish() {
     process.exit(1);
   }
   console.log(
-    "[verify:onboarding-journey-closure] PASS (experiential · demo label · Home CTA)",
+    "[verify:onboarding-journey-closure] PASS (automation story · durable gate)",
   );
 }
 
@@ -49,10 +52,14 @@ const { runAxeOnHtml, blockingViolations } = require("../e2e/lib/axe-scan.cjs");
 const html = `<!doctype html><html lang="ko"><head><title>시작</title></head>
   <body>
     <main>
-      <h1>설명 방식을 골라 주세요</h1>
-      <button type="button">짧게</button>
-      <button type="button">비교로</button>
-      <button type="button">한 줄씩</button>
+      <h1>전 세계 시세차익 기회, 퍼뜩 AI가 먼저 찾아요</h1>
+      <nav aria-label="안내 단계">
+        <ol>
+          <li aria-current="step">1 탐색</li>
+          <li>2 매칭</li>
+        </ol>
+      </nav>
+      <button type="button">자동 매칭 보기</button>
     </main>
   </body></html>`;
 runAxeOnHtml(html)

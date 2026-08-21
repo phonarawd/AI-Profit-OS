@@ -87,6 +87,7 @@ const needPaths = [
   "magic-link/request",
   "magic-link/verify",
   "delete-account",
+  "onboarding/complete",
 ];
 for (const p of needPaths) {
   if (!routes.includes(p)) fails.push(`AUTH_ROUTES missing ${p}`);

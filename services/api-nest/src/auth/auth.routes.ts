@@ -20,6 +20,7 @@ export const AUTH_ROUTES = {
   magicLinkRequest: "magic-link/request",
   magicLinkVerify: "magic-link/verify",
   deleteAccount: "delete-account",
+  onboardingComplete: "onboarding/complete",
 } as const;
 
 /** Absolute paths after global prefix (for verify:auth-flows) */
@@ -38,4 +39,5 @@ export const AUTH_HTTP_PATHS = [
   "POST /api/v1/auth/magic-link/request",
   "POST /api/v1/auth/magic-link/verify",
   "POST /api/v1/auth/delete-account",
+  "POST /api/v1/auth/onboarding/complete",
 ] as const;

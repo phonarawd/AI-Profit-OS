@@ -5,12 +5,12 @@ Lightweight mapping. Not presentation authority. Not REL-207.
 ```text
 FILE = w7Yg8j2x9evuheOSSLqFw5
 CLASSIFICATION = FOUNDER_REVIEW_CANDIDATE for Auth frames
-REVISION = V3
+REVISION = V3_POLISH
 VISUAL_REVIEW = PENDING_FOUNDER_REVIEW
 CODE_CONNECT = CANDIDATE_ONLY
 APPLIED = 0
 PRODUCTION_AUTH_VISUAL_APPLY = 0
-PRODUCTION_ONBOARDING_APPLY = 0
+PRODUCTION_ONBOARDING_APPLY = 1
 HOME_MUTATION = 0
 ACCOUNT_HUB_MUTATION = 0
 REL_207_STARTED = NO
@@ -51,9 +51,9 @@ STATUS: CONNECTED · PARTIAL · FIGMA_ONLY · CODE_ONLY · SUPERSEDED · NOT_APP
 | AuthLogin screen | 198:591 / 199:523 | Desktop 1440 · Mobile 390 | AuthLogin + LoginRuntime | packages/ui/components/auth/AuthLogin.tsx · apps/web/app/auth/login/** | busy, error, note, onKakao, onMagic | Spark Dash semantic | FIGMA_ONLY visual | Production visual apply = 0 |
 | AuthSignup screen | 200:527 / 201:539 | Desktop · Mobile | AuthSignup + SignupRuntime | packages/ui/components/auth/AuthSignup.tsx · apps/web/app/auth/signup/** | terms, marketing, referral, onKakao, onMagic | Spark Dash semantic | FIGMA_ONLY visual | |
 | AuthCompleteProfile screen | 201:571 / 201:604 | Desktop · Mobile | AuthCompleteProfile + CompleteProfileRuntime | packages/ui/components/auth/AuthCompleteProfile.tsx · apps/web/app/auth/complete-profile/** | displayName, phone, birthDate, email?, onSave | Spark Dash semantic | FIGMA_ONLY visual | B_complete ≠ verified |
-| Onboarding screen | 201:635 / 201:672 | Compare candidate + 7-step variants | OnboardingFlow | packages/ui/components/onboarding/OnboardingFlow.tsx · apps/web/app/onboarding/page.tsx | step, tone, skip=usdt | Spark Dash semantic | FIGMA_ONLY visual | V3 StoryVisual; skip=usdt only |
+| Onboarding screen | 237:1813 / 237:2155 | Automation Story 7단 Desktop/Mobile | OnboardingFlow | packages/ui/components/onboarding/OnboardingFlow.tsx · apps/web/app/onboarding/page.tsx | skip=usdt only | Spark ink/paper/fuchsia local | PARTIAL | productionOnboardingApply=1 · Auth login/signup apply 0 |
 | AuthInviteDisclosure | 237:610 | Collapsed, Expanded | AuthSignup referral | packages/ui/components/auth/AuthSignup.tsx | optional referralCode | color/text/* | PARTIAL | Default Expanded matches always-visible optional field |
-| OnboardingStoryVisual | 237:1135 | 7 steps × Desktop/Mobile | OnboardingFlow visuals | packages/ui/components/onboarding/OnboardingFlow.tsx | step | Spark primitives | FIGMA_ONLY | CSS/SVG/transform-opacity contract |
+| OnboardingStoryVisual | 237:1135 | 7 steps × Desktop/Mobile/768 | OnboardingStoryVisual | packages/ui/components/onboarding/OnboardingStoryVisual.tsx | step | Spark primitives | PARTIAL | WEBGL/CANVAS/GSAP 0 · Home CSS 0 |
 
 ## Auth UX state matrix
 
@@ -128,7 +128,7 @@ A11y in Figma candidate (design stage, not axe PASS):
 - AuthCheckbox / AuthLink hit area = 48 after polish
 - Focus variant uses `color/border/focus` (not color-only error)
 - Error uses `color/border/error` + helper text (not color alone)
-- 768 / 1024 = same route/state, stacked composition; full frames not authored
+- 768 / 1024 = same route/state, true viewport stacked frames (237:2266 / 237:2337). Not 390-in-768. Not a cropped 1440.
 
 Unresolved Founder decisions (do not auto-lock):
 

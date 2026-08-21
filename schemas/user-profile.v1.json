@@ -57,6 +57,11 @@
         "B_complete"
       ]
     },
+    "beginnerOnboardingCompletedAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Durable beginner onboarding completion. Bypass /onboarding. Not inferred from balance."
+    },
     "createdAt": {
       "type": "string",
       "format": "date-time",

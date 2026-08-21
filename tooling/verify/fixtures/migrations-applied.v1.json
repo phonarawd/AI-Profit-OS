@@ -1,6 +1,6 @@
 {
   "projectRef": "mgsytcetsiecllmhcyox",
-  "asOf": "2026-08-14",
+  "asOf": "2026-08-22",
   "source": "Supabase MCP list_migrations",
   "note": "versions[] = 원격 applied 스냅샷. committedUnapplied[] = 레포에만 있는 file-only migration (원격 apply 전). 원격 apply 후 versions로 옮기고 committedUnapplied에서 제거. REL-003: +20260819210000/+20260819220000/+20260820013000 file restore · PRODUCTION apply = REL-701-DB. PTF-00C: +20260814130000, +20260814130100, +20260814130200. PTF-00C-R1: +20260814140000 (provider_tick_ledger; remote list_migrations assigns its own apply-time version — this fixture tracks the LOCAL filename prefix, not the raw remote version number).",
   "versions": [
@@ -42,7 +42,8 @@
     "20260814130000",
     "20260814130100",
     "20260814130200",
-    "20260814140000"
+    "20260814140000",
+    "20260822080000"
   ],
   "committedUnapplied": [
     "20260819210000",

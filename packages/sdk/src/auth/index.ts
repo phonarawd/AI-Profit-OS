@@ -2,6 +2,7 @@ export {
   AuthError,
   assertNoForbiddenProfileFields,
   buildStageBProfileBody,
+  completeBeginnerOnboarding,
   continuePathAfterAuth,
   deleteAuthAccount,
   fetchAuthSession,

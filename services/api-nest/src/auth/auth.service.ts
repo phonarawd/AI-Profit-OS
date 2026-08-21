@@ -79,6 +79,8 @@ export type AuthSessionView = {
   expiresAt: string;
   revoked: boolean;
   onboardingStage: OnboardingStage;
+  beginnerOnboardingCompletedAt: string | null;
+  fundingExperienceCompleted: boolean;
 };
 
 function isUniqueViolation(e: unknown): boolean {
@@ -352,6 +354,7 @@ export class AuthService {
       revoked = r.rows[0] ? r.rows[0].revoked === true : true;
     }
     const onboardingStage = await this.loadOnboardingStage(sessionUser.userId);
+    const experience = await this.loadOnboardingExperience(sessionUser.userId);
     return {
       sessionId: sessionUser.sessionId,
       userId: sessionUser.userId,
@@ -360,7 +363,20 @@ export class AuthService {
       expiresAt: sessionUser.expiresAt,
       revoked,
       onboardingStage,
+      ...experience,
     };
+  }
+
+  async completeBeginnerOnboarding(sessionUser: SessionUser): Promise<AuthSessionView> {
+    this.assertDbConfigured();
+    await this.db.query(
+      `UPDATE public.user_profiles
+          SET beginner_onboarding_completed_at = COALESCE(beginner_onboarding_completed_at, now()),
+              updated_at = now()
+        WHERE user_id = $1::uuid`,
+      [sessionUser.userId],
+    );
+    return this.session(sessionUser);
   }
 
   async deleteAccount(userId: string, body: Record<string, unknown>) {
@@ -602,6 +618,7 @@ export class AuthService {
     }
 
     const onboardingStage = await this.loadOnboardingStage(userId);
+    const experience = await this.loadOnboardingExperience(userId);
     return {
       accessToken,
       session: {
@@ -612,6 +629,7 @@ export class AuthService {
         expiresAt: expiresAt.toISOString(),
         revoked: false,
         onboardingStage,
+        ...experience,
       },
     };
   }
@@ -648,6 +666,48 @@ export class AuthService {
       [userId],
     );
     return r.rows[0]?.onboarding_stage ?? "A";
+  }
+
+  private async loadOnboardingExperience(userId: string): Promise<{
+    beginnerOnboardingCompletedAt: string | null;
+    fundingExperienceCompleted: boolean;
+  }> {
+    if (!this.db.configured()) {
+      return {
+        beginnerOnboardingCompletedAt: null,
+        fundingExperienceCompleted: false,
+      };
+    }
+    const profile = await this.db.query<{
+      beginner_onboarding_completed_at: Date | string | null;
+    }>(
+      `SELECT beginner_onboarding_completed_at
+         FROM public.user_profiles
+        WHERE user_id = $1::uuid`,
+      [userId],
+    );
+    const raw = profile.rows[0]?.beginner_onboarding_completed_at ?? null;
+    const beginnerOnboardingCompletedAt = raw
+      ? new Date(raw).toISOString()
+      : null;
+    const funding = await this.db.query<{ ok: number }>(
+      `SELECT 1 AS ok
+         WHERE EXISTS (
+           SELECT 1 FROM public.krw_deposit_requests
+            WHERE user_id = $1::uuid AND status = 'approved'
+         )
+            OR EXISTS (
+           SELECT 1 FROM public.usdt_deposit_events
+            WHERE user_id = $1::uuid
+              AND status IN ('ledger_credited', 'swept')
+         )
+         LIMIT 1`,
+      [userId],
+    );
+    return {
+      beginnerOnboardingCompletedAt,
+      fundingExperienceCompleted: funding.rows.length > 0,
+    };
   }
 
   private assertDbConfigured(): void {

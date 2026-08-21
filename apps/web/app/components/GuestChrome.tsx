@@ -1,10 +1,28 @@
 import type { ReactNode } from "react";
 
 /**
- * Full-viewport guest chrome — hides 5-tab shell for auth/onboarding/landing.
- * PART5b may replace with route-group layouts.
+ * Guest 래퍼 — 5탭/Home geometry 0.
+ * layout=narrow : auth 기본.
+ * layout=viewport : 온보딩 전폭. 데스크톱을 모바일 카드로 강제하지 않는다.
  */
-export function GuestChrome({ children }: { children: ReactNode }) {
+export function GuestChrome({
+  children,
+  layout = "narrow",
+}: {
+  children: ReactNode;
+  layout?: "narrow" | "viewport";
+}) {
+  if (layout === "viewport") {
+    return (
+      <div
+        data-testid="guest-chrome"
+        data-layout="viewport"
+        className="min-h-dvh bg-[#f7f8fb]"
+      >
+        {children}
+      </div>
+    );
+  }
   return (
     <div
       data-testid="guest-chrome"

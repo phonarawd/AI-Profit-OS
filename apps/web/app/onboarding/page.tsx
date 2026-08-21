@@ -1,10 +1,10 @@
 import { OnboardingFlow } from "@aipo/ui/components/onboarding";
 import { GuestChrome } from "../components/GuestChrome";
 
-/** Canon onboarding-identity · onboarding-demo-card · §6.4 experiential */
+/** Automation Story 7단 · Figma 237:1813 / 237:2155 */
 export default function OnboardingPage() {
   return (
-    <GuestChrome>
+    <GuestChrome layout="viewport">
       <OnboardingFlow />
     </GuestChrome>
   );

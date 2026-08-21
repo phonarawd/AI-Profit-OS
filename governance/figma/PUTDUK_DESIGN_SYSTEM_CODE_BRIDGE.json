@@ -3,6 +3,10 @@
   "fileKey": "w7Yg8j2x9evuheOSSLqFw5",
   "codeConnect": { "status": "CANDIDATE_ONLY", "applied": 0 },
   "productionAuthVisualApply": 0,
+  "productionOnboardingApply": 1,
+  "revision": "V3_POLISH",
+  "founderApproved": false,
+  "locked": false,
   "rel207Started": false,
   "rows": [
     {
@@ -105,17 +109,17 @@
     },
     {
       "figmaComponent": "Auth / Onboarding / Desktop",
-      "figmaNodeId": "201:635",
+      "figmaNodeId": "237:1813",
       "productionComponent": "OnboardingFlow",
       "productionPath": "apps/web/app/onboarding/page.tsx",
-      "status": "FIGMA_ONLY"
+      "status": "PARTIAL"
     },
     {
       "figmaComponent": "Auth / Onboarding / Mobile",
-      "figmaNodeId": "201:672",
+      "figmaNodeId": "237:2155",
       "productionComponent": "OnboardingFlow",
       "productionPath": "packages/ui/components/onboarding/OnboardingFlow.tsx",
-      "status": "FIGMA_ONLY"
+      "status": "PARTIAL"
     },
     {
       "figmaComponent": "AuthInviteDisclosure",
@@ -144,9 +148,9 @@
         "step=Action, device=Mobile",
         "step=Complete, device=Mobile"
       ],
-      "productionComponent": "OnboardingFlow",
-      "productionPath": "packages/ui/components/onboarding/OnboardingFlow.tsx",
-      "status": "FIGMA_ONLY"
+      "productionComponent": "OnboardingStoryVisual",
+      "productionPath": "packages/ui/components/onboarding/OnboardingStoryVisual.tsx",
+      "status": "PARTIAL"
     }
   ]
 }

@@ -74,6 +74,9 @@ if (connect.applied !== 0 || connect.status !== "CANDIDATE_ONLY") {
 if (bridge.codeConnect.applied !== 0 || bridge.productionAuthVisualApply !== 0) {
   fails.push("bridge must keep Code Connect + production auth apply at 0");
 }
+if (bridge.productionOnboardingApply !== 0 && bridge.productionOnboardingApply !== 1) {
+  fails.push("productionOnboardingApply must be 0 or 1");
+}
 if (bridge.rel207Started !== false) {
   fails.push("REL-207 must not be marked started");
 }
@@ -173,7 +176,6 @@ const authBehavior = [
   "apps/web/app/auth/login/LoginRuntime.tsx",
   "apps/web/app/auth/signup/SignupRuntime.tsx",
   "apps/web/app/auth/complete-profile/CompleteProfileRuntime.tsx",
-  "packages/ui/components/onboarding/OnboardingFlow.tsx",
 ];
 for (const f of authBehavior) {
   const r = require("child_process").spawnSync(
@@ -183,6 +185,16 @@ for (const f of authBehavior) {
   );
   if ((r.stdout || "").trim()) {
     fails.push(`auth behavior mutated (visual apply leak): ${f}`);
+  }
+}
+if (bridge.productionOnboardingApply !== 1) {
+  const onboarding = require("child_process").spawnSync(
+    "git",
+    ["diff", "--name-only", "HEAD", "--", "packages/ui/components/onboarding/OnboardingFlow.tsx"],
+    { cwd: root, encoding: "utf8" },
+  );
+  if ((onboarding.stdout || "").trim()) {
+    fails.push("OnboardingFlow mutated while productionOnboardingApply=0");
   }
 }
 

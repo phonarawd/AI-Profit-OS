@@ -56,6 +56,17 @@
     },
     "refreshJti": {
       "type": "string"
+    },
+    "onboardingStage": {
+      "type": "string",
+      "enum": ["A", "B_incomplete", "B_complete"]
+    },
+    "beginnerOnboardingCompletedAt": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "fundingExperienceCompleted": {
+      "type": "boolean"
     }
   }
 }
