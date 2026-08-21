@@ -587,6 +587,59 @@ async function stubDeposit(page, mode) {
   });
 }
 
+/** DEV/TEST withdraw stub. production money mutation 0. */
+async function stubWithdraw(page, mode) {
+  await page.route("**/api/v1/**", async (route) => {
+    const url = route.request().url();
+    const method = route.request().method();
+    if (url.includes("/api/v1/me/home-read")) {
+      return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    if (url.includes("/api/v1/wallet/buckets")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      return json(route, 200, TEST_WALLET_BUCKETS);
+    }
+    if (url.includes("/api/v1/wallet/withdraw/step-up/challenge")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      return json(route, 200, {
+        challengeId: "ch-rel116",
+        method: "pin",
+      });
+    }
+    if (url.includes("/api/v1/wallet/withdraw/step-up/verify")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      return json(route, 200, {
+        ok: true,
+        stepUpToken: "su-rel116",
+        method: "pin",
+      });
+    }
+    if (
+      method === "POST" &&
+      url.includes("/api/v1/wallet/withdraw") &&
+      !url.includes("step-up")
+    ) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "usdt_deny" || mode === "krw_deny") {
+        return json(route, 403, { error: "forbidden", code: "KYC_WITHDRAW_REQUIRED" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      return json(route, 200, { status: "accepted" });
+    }
+    return json(route, 401, { error: "unauthorized" });
+  });
+}
+
 module.exports = {
   AUTHENTICATED_EMPTY_HOME,
   TEST_OPPORTUNITY_ITEM,
@@ -600,6 +653,7 @@ module.exports = {
   stubSettlement,
   stubWallet,
   stubDeposit,
+  stubWithdraw,
   JOURNEY_TRADE_ID,
   SETTLEMENT_TRADE_ID,
   SETTLEMENT_JOURNAL_ID,

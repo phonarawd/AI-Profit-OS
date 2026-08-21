@@ -300,8 +300,17 @@ const RULES = [
       /WithdrawLiveForm/.test(f) ||
       /WithdrawAmountPanel/.test(f) ||
       /WithdrawStepUpPanel/.test(f) ||
-      /withdraw-flow-wire/.test(f),
-    scripts: ["withdraw-flow-wire.cjs", "wallet-live-wire.cjs"],
+      /withdraw-flow-wire/.test(f) ||
+      /^tooling\/e2e\/specs\/usdt-withdraw-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/usdt-withdraw-closure\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/krw-withdraw-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/krw-withdraw-closure\.cjs$/.test(f),
+    scripts: [
+      "withdraw-flow-wire.cjs",
+      "wallet-live-wire.cjs",
+      "usdt-withdraw-closure.cjs",
+      "krw-withdraw-closure.cjs",
+    ],
   },
   {
     test: (f) =>

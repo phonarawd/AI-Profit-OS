@@ -6,6 +6,7 @@ import { T } from "@aipo/ui/copy/ko";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 import { WithdrawLiveForm } from "../../../../components/WithdrawLiveForm";
 import { useWithdrawKycGate } from "../../../../lib/use-withdraw-kyc-gate";
+import styles from "../../wallet.module.css";
 
 /**
  * PART9f2 — USDT withdraw · WithdrawAmountPanel + step-up + POST withdraw
@@ -27,16 +28,16 @@ function UsdtWithdrawContent() {
 
   return (
     <main
-      className="p-6 text-lux-text"
+      className={`${styles.page} ${styles.onNavy}`}
       data-withdraw-default-mode="profit"
       data-withdraw-mode={mode}
       data-testid="wallet-withdraw-usdt"
     >
-      <h1 className="text-xl font-semibold">{T.withdrawMode.pageTitleUsdt}</h1>
-      <p
-        className="mt-2 text-sm text-lux-text-muted"
-        data-testid="withdraw-network-hint"
-      >
+      <p className={styles.nav}>
+        <a href="/wallet">지갑</a>
+      </p>
+      <h1 className={styles.title}>{T.withdrawMode.pageTitleUsdt}</h1>
+      <p className={styles.note} data-testid="withdraw-network-hint">
         {T.wallet.withdrawNetworkHint}
       </p>
       {gate.toastMessage ? (
@@ -59,22 +60,24 @@ function UsdtWithdrawContent() {
         requirePrincipalConfirm={requirePrincipalConfirm}
         allowForm={gate.allowWithdrawForm || !gate.toastMessage}
       />
-      <a
-        href="/wallet/withdraw?mode=profit"
-        data-testid="usdt-withdraw-profit"
-        data-default-mode="profit"
-        className="mt-4 block text-sm text-lux-accent"
-      >
-        {T.withdrawMode.ctaProfitWithdraw}
-      </a>
-      <a
-        href="/wallet/withdraw?mode=principal"
-        data-testid="usdt-withdraw-principal"
-        data-principal-reachable="true"
-        className="mt-2 block text-sm text-lux-text"
-      >
-        {T.withdrawMode.ctaOpenPrincipal}
-      </a>
+      <p className={styles.nav}>
+        <a
+          href="/wallet/withdraw?mode=profit"
+          data-testid="usdt-withdraw-profit"
+          data-default-mode="profit"
+        >
+          {T.withdrawMode.ctaProfitWithdraw}
+        </a>
+      </p>
+      <p className={styles.nav}>
+        <a
+          href="/wallet/withdraw?mode=principal"
+          data-testid="usdt-withdraw-principal"
+          data-principal-reachable="true"
+        >
+          {T.withdrawMode.ctaOpenPrincipal}
+        </a>
+      </p>
     </main>
   );
 }
