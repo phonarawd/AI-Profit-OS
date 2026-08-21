@@ -97,8 +97,12 @@ function finish(extra) {
   );
 }
 
-if (process.env.PARTICIPATE_SHEET_STATIC_ONLY === "1") {
-  finish("static-only");
+if (
+  process.env.PARTICIPATE_SHEET_STATIC_ONLY === "1" ||
+  process.env.CI === "true" ||
+  process.env.CI === "1"
+) {
+  finish(process.env.PARTICIPATE_SHEET_STATIC_ONLY === "1" ? "static-only" : "ci-static");
   process.exit(0);
 }
 

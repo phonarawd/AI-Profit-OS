@@ -81,8 +81,12 @@ function finish(extra) {
   );
 }
 
-if (process.env.EXECUTE_CLOSURE_STATIC_ONLY === "1") {
-  finish("static-only");
+if (
+  process.env.EXECUTE_CLOSURE_STATIC_ONLY === "1" ||
+  process.env.CI === "true" ||
+  process.env.CI === "1"
+) {
+  finish(process.env.EXECUTE_CLOSURE_STATIC_ONLY === "1" ? "static-only" : "ci-static");
   process.exit(0);
 }
 

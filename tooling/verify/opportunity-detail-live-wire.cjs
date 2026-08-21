@@ -109,8 +109,12 @@ function finish(extra) {
   );
 }
 
-if (process.env.OPPORTUNITY_DETAIL_STATIC_ONLY === "1") {
-  finish("static-only");
+if (
+  process.env.OPPORTUNITY_DETAIL_STATIC_ONLY === "1" ||
+  process.env.CI === "true" ||
+  process.env.CI === "1"
+) {
+  finish(process.env.OPPORTUNITY_DETAIL_STATIC_ONLY === "1" ? "static-only" : "ci-static");
   process.exit(0);
 }
 

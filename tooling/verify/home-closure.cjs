@@ -151,8 +151,12 @@ function finish(extra) {
   );
 }
 
-if (process.env.HOME_CLOSURE_STATIC_ONLY === "1") {
-  finish("static-only");
+if (
+  process.env.HOME_CLOSURE_STATIC_ONLY === "1" ||
+  process.env.CI === "true" ||
+  process.env.CI === "1"
+) {
+  finish(process.env.HOME_CLOSURE_STATIC_ONLY === "1" ? "static-only" : "ci-static");
   process.exit(0);
 }
 

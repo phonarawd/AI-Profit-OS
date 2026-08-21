@@ -49,8 +49,12 @@ function finish(extra) {
   );
 }
 
-if (process.env.CORE_JOURNEY_STATIC_ONLY === "1") {
-  finish("static-only");
+if (
+  process.env.CORE_JOURNEY_STATIC_ONLY === "1" ||
+  process.env.CI === "true" ||
+  process.env.CI === "1"
+) {
+  finish(process.env.CORE_JOURNEY_STATIC_ONLY === "1" ? "static-only" : "ci-static");
   process.exit(0);
 }
 
