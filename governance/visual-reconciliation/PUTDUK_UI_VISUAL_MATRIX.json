@@ -1,0 +1,66 @@
+{
+  "schema": "putduk.ui.visual-matrix.v1",
+  "baseMain": "03b2b9076c116950a402070ce646e280e3234086",
+  "rel207Started": false,
+  "surfaces": [
+    {
+      "route": "/",
+      "authority": "SCREENSHOT_FREEZE_LOCKED",
+      "status": "LOCKED_PARITY_PASS",
+      "codeMutation": 0,
+      "note": "Member chrome vs freeze. Raw / without API = unavailable."
+    },
+    {
+      "route": "/me",
+      "authority": "FOUNDER_APPROVED_LOCKED",
+      "desktop": "192:194",
+      "mobile": "192:434",
+      "status": "LOCKED_PARITY_PASS",
+      "before": "LOCKED_NOT_APPLIED"
+    },
+    {
+      "route": "/profits",
+      "authority": "FOUNDER_REVIEW_CANDIDATE",
+      "status": "CANDIDATE_RUNTIME_MATCH",
+      "founderApproved": false
+    },
+    {
+      "route": "/profits/[id]",
+      "authority": "FOUNDER_REVIEW_CANDIDATE",
+      "status": "BLOCKED",
+      "reason": "LIVE_ID_UNAVAILABLE",
+      "founderApproved": false
+    },
+    {
+      "route": "ParticipateConfirmation",
+      "authority": "FOUNDER_REVIEW_CANDIDATE",
+      "status": "BLOCKED",
+      "reason": "LIVE_ROOM_UNAVAILABLE",
+      "founderApproved": false
+    },
+    {
+      "route": "/trades/[id]/execute",
+      "authority": "FOUNDER_REVIEW_CANDIDATE",
+      "status": "BLOCKED",
+      "reason": "LIVE_ID_UNAVAILABLE",
+      "founderApproved": false
+    },
+    {
+      "route": "/trades",
+      "authority": "NO_FIGMA",
+      "status": "NO_FIGMA_RUNTIME_PASS"
+    },
+    {
+      "route": "/wallet",
+      "authority": "NO_FIGMA",
+      "status": "NO_FIGMA_RUNTIME_PASS"
+    },
+    {
+      "route": "/admin",
+      "authority": "NO_FIGMA",
+      "status": "NO_FIGMA_RUNTIME_PASS",
+      "browserVerified": true,
+      "figmaStatus": "NOT_FOUND"
+    }
+  ]
+}
