@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { T } from "@aipo/ui/copy/ko";
 import operatorEntity from "@aipo/operator-entity";
+import { AccountFrame } from "../../AccountFrame";
+import styles from "../../account.module.css";
 
 const entity = operatorEntity as {
   legalName: string;
@@ -36,7 +38,8 @@ export default function Page() {
     entity.licenseStatus === "active" ? L.statusActive : L.statusPending;
 
   return (
-    <main className="p-6 text-lux-text">
+    <AccountFrame title={L.pageTitle} view="ready" testId="legal-license" hideTitle>
+    <main className={styles.surface}>
       <h1 className="text-xl font-semibold">{L.pageTitle}</h1>
       <p className="mt-2 text-sm text-lux-text-muted">
         {L.pageSubtitle}
@@ -177,5 +180,6 @@ export default function Page() {
         </Link>
       </div>
     </main>
+    </AccountFrame>
   );
 }

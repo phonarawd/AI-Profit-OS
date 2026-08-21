@@ -80,7 +80,10 @@ if (!wire.forbidden?.includes("L1_L2_L3_english_labels")) {
   fails.push("canon must forbid L1_L2_L3_english_labels");
 }
 
-const page = read("apps/web/app/me/invite/page.tsx");
+const page =
+  read("apps/web/app/me/invite/page.tsx") +
+  read("apps/web/app/me/invite/InviteClient.tsx") +
+  read("packages/ui/components/invite/InviteHome.tsx");
 if (!page.includes("T.invite") && !page.includes("InviteHome")) {
   fails.push(
     "invite page must use T.invite copy SSOT (direct or via InviteHome)",

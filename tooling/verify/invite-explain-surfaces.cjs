@@ -140,9 +140,14 @@ if (/명까지만|월간\s*초대\s*캡|capPerReferrerMonth/.test(home)) {
   fails.push("InviteHome must not render invite count cap UI");
 }
 
-const page = read("apps/web/app/me/invite/page.tsx");
+const page =
+  read("apps/web/app/me/invite/page.tsx") +
+  read("apps/web/app/me/invite/InviteClient.tsx");
 if (!page.includes("InviteHome")) {
   fails.push("/me/invite must render InviteHome");
+}
+if (!page.includes("/api/v1/referral/me")) {
+  fails.push("/me/invite must call GET /api/v1/referral/me");
 }
 
 const pkg = read("packages/ui/package.json");

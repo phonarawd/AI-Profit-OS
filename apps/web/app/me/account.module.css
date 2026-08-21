@@ -1,0 +1,152 @@
+/* REL-120+ Account Hub. Home geometry 비의존. Approved Figma 없음. */
+
+.page {
+  box-sizing: border-box;
+  min-height: 100vh;
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+  background: #07111f;
+  color: #f6f1ea;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin: 0 0 1rem;
+}
+
+.nav a {
+  color: #ff4d8d;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.title {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.lead,
+.note,
+.err {
+  margin: 0 0 1.25rem;
+  line-height: 1.5;
+}
+
+.note {
+  color: #b7c0ce;
+}
+
+.err {
+  color: #ff4d8d;
+}
+
+.actions {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.actions button,
+.actions a {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 3.25rem;
+  padding: 0.75rem 1rem;
+  border: 0;
+  border-radius: 0.875rem;
+  background: #ff2d6b;
+  color: #fff;
+  text-decoration: none;
+  font: inherit;
+  font-size: 1.1875rem;
+  font-weight: 800;
+}
+
+.actions a.secondary,
+.actions button.secondary {
+  background: transparent;
+  border: 2px solid #ff4d8d;
+  color: #ff4d8d;
+}
+
+.cardList {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+
+.cardList a,
+.card {
+  display: block;
+  padding: 1rem 1.05rem;
+  border-radius: 0.875rem;
+  background: #101b2c;
+  color: #f6f1ea;
+  text-decoration: none;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 800;
+}
+
+.cardBody {
+  margin: 0.35rem 0 0;
+  color: #b7c0ce;
+  line-height: 1.45;
+}
+
+.surface {
+  color: #f6f1ea;
+}
+
+.surface :global(.text-lux-text),
+.surface :global(.text-lux-text-muted) {
+  color: inherit;
+}
+
+.surface :global(.text-lux-accent) {
+  color: #ff4d8d;
+}
+
+.surface :global(.border-lux-border),
+.surface :global(.bg-lux-surface),
+.surface :global(.bg-lux-elevated) {
+  border-color: #24324a;
+  background: #101b2c;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0 0 1rem;
+}
+
+.field input {
+  min-height: 3.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #24324a;
+  border-radius: 0.875rem;
+  background: #101b2c;
+  color: #f6f1ea;
+  font: inherit;
+}
+
+.sectionTitle {
+  margin: 1.5rem 0 0.6rem;
+  font-size: 1.125rem;
+  font-weight: 800;
+}
+
+@media (min-width: 768px) {
+  .page {
+    max-width: 42rem;
+    padding: 2rem 1.5rem 3.5rem;
+  }
+}

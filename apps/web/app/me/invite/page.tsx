@@ -1,15 +1,11 @@
 "use client";
 
-import { InviteHome } from "@aipo/ui/components/invite";
+import { InviteClient } from "./InviteClient";
 
 /**
- * /me/invite — Canon invite-home · copy Owns=UI §5.9.1a
- * Amounts/ledger Owns=Money §51.5 (pointer only on this surface)
+ * /me/invite — Canon invite-home · GET /api/v1/referral/me
+ * Amounts/ledger Owns=Money §51.5
  */
 export default function Page() {
-  return (
-    <div className="p-6">
-      <InviteHome />
-    </div>
-  );
+  return <InviteClient />;
 }

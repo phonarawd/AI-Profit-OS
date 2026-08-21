@@ -86,7 +86,9 @@ if (/r2\.dev|publicUrl|kyc-docs\//i.test(flow)) {
   fails.push("KycFlow must not hardcode public R2 URLs");
 }
 
-const page = read("apps/web/app/me/kyc/page.tsx");
+const page =
+  read("apps/web/app/me/kyc/page.tsx") +
+  read("apps/web/app/me/kyc/KycClient.tsx");
 if (!page.includes("KycFlow")) {
   fails.push("/me/kyc must render KycFlow");
 }

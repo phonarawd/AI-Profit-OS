@@ -29,8 +29,8 @@ const meLayout = read("apps/web/app/me/layout.tsx");
 if (walletLayout.includes("LegacyAppShell") || walletLayout.includes("AppShellRoot")) {
   fails.push("wallet layout must not remount leftover 5-tab chrome");
 }
-if (!meLayout.includes("LegacyAppShell") && !meLayout.includes("AppShellRoot")) {
-  fails.push("me layout must keep scoped leftover chrome");
+if (meLayout.includes("LegacyAppShell") || meLayout.includes("AppShellRoot")) {
+  fails.push("me layout must not remount leftover 5-tab chrome");
 }
 for (const needle of ["BottomNav5", "SiteFooter", "AppHeader", "HomeChromeProvider"]) {
   if (!shellRoot.includes(needle)) {
@@ -76,7 +76,8 @@ for (const page of [
   if (!fs.existsSync(path.join(root, page))) fails.push(`missing ${page}`);
 }
 
-const me = read("apps/web/app/me/page.tsx");
+const me =
+  read("apps/web/app/me/page.tsx") + read("apps/web/app/me/ProfileClient.tsx");
 if (!me.includes("/me/benefits") || !me.includes("/me/settings")) {
   fails.push("me hub must link benefits + settings");
 }
@@ -92,4 +93,4 @@ if (fails.length) {
   console.error("[verify:part5-shell-toast] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
-console.log("[verify:part5-shell-toast] PASS (root chrome 0 · scoped leftover shell · toast · nested routes)");
+console.log("[verify:part5-shell-toast] PASS (root chrome 0 · leftover /me chrome 0 · toast · nested routes)");

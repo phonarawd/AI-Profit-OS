@@ -136,6 +136,19 @@
 | core-opportunity-journey | REL-106~110 DEV/TEST Home→List→Detail→Confirm→Execute→Result · production money mutation 0 — **live** |
 | wallet-live-wire | UI PART9b/9f — `/wallet` buckets + `@aipo/sdk/wallet` `fetchWalletBuckets` (출금≠9f2) — **live** |
 | wallet-closure | REL-113 — `/wallet` unauthorized/ready · missing≠0 · leftover 5-tab chrome 0 — **live** |
+| invite-closure | REL-120 — `/me/invite` GET `/api/v1/referral/me` · unauthorized≠empty · leftover 5-tab chrome 0 — **live** |
+| inbox-closure | REL-121 — `/me/inbox` GET `/api/v1/me/inbox` · 401≠empty — **live** |
+| peotteok-closure | REL-122 — `/me/peotteok` fact-only · spark-dash ai-orb reuse — **live** |
+| profile-closure | REL-123 — `/me` session owner · leftover chrome 0 · fake zero 0 — **live** |
+| kyc-closure | REL-124 — `/me/kyc` status owner · fake approved 0 — **live** |
+| settings-closure | REL-125 — `/me/settings` prefs persist · logout/delete owners — **live** |
+| support-closure | REL-126 — `/me/support` deposit-disputes · fake chat 0 — **live** |
+| guides-closure | REL-127 — `/me/guide/*` 7 routes — **live** |
+| legal-closure | REL-128 — `/me/legal*` 5 routes · existing legal owner — **live** |
+| partner-trust-closure | REL-129 — official partner logos only — **live** |
+| account-compat-closure | REL-130 — `/ads` `/l/*` events/strategies/membership/benefits — **live** |
+| account-hub-batch | REL-120~130 static contract — **live** |
+| account-journey | REL-120~130 Account journey Playwright — **live** |
 | usdt-deposit-closure | REL-114 — `/wallet/deposit` USDT address owner · credit 0 · happy+deny — **live** |
 | krw-deposit-closure | REL-115 — `/wallet/deposit?tab=krw` pending≠credit · PG 0 · happy+deny — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |

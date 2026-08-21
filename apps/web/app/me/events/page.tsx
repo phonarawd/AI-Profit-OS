@@ -1,10 +1,12 @@
 "use client";
 
+import { AccountFrame } from "../AccountFrame";
+import styles from "../account.module.css";
+
 export default function Page() {
   return (
-    <main className="p-6 text-lux-text">
-      <h1 className="text-xl font-semibold">이벤트·공지</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">골격 · 본구현은 도메인 todo</p>
-    </main>
+    <AccountFrame title="이벤트" view="ready" testId="events-page">
+      <p className={styles.note}>지금은 확인할 수 있는 이벤트가 없어요.</p>
+    </AccountFrame>
   );
 }

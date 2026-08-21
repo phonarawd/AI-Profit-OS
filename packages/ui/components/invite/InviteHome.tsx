@@ -12,12 +12,14 @@ export type InviteHomeProps = {
   /** Money API 표시값 — 하드코딩 금액 금지 · 숫자만 서버 전달 */
   inviteCode?: string;
   shareUrl?: string;
+  /** true면 코드를 꾸며내지 않고 확인할 수 없음으로 둔다 */
+  codeUnavailable?: boolean;
   stats?: {
     joined?: number;
     progress?: number;
     hold?: number;
     bonusProfitLabel?: string;
-  };
+  } | null;
   onShare?: () => void;
   className?: string;
 };
@@ -33,6 +35,7 @@ export function InviteHome({
   toneBand: toneProp,
   inviteCode = "",
   shareUrl = "",
+  codeUnavailable = false,
   stats,
   onShare,
   className = "",
@@ -79,15 +82,21 @@ export function InviteHome({
     }
   }
 
-  const displayCode = inviteCode.trim() || "————";
-  const displayLink =
-    shareUrl.trim() ||
-    (inviteCode.trim() ? `/r/${inviteCode.trim()}` : "/r/————");
+  const missing = "확인할 수 없음";
+  const displayCode =
+    codeUnavailable || !inviteCode.trim() ? missing : inviteCode.trim();
+  const displayLink = shareUrl.trim() || missing;
 
-  const joined = stats?.joined ?? 0;
-  const progress = stats?.progress ?? 0;
-  const hold = stats?.hold ?? 0;
-  const bonusLabel = stats?.bonusProfitLabel ?? "—";
+  const joined =
+    stats && typeof stats.joined === "number" ? String(stats.joined) : missing;
+  const progress =
+    stats && typeof stats.progress === "number"
+      ? String(stats.progress)
+      : missing;
+  const hold =
+    stats && typeof stats.hold === "number" ? String(stats.hold) : missing;
+  const bonusLabel =
+    stats?.bonusProfitLabel?.trim() ? stats.bonusProfitLabel : missing;
 
   const oneLiner = useMemo(() => {
     if (tone === "young") return T.invite.young.oneLiner;
@@ -114,9 +123,13 @@ export function InviteHome({
       onShare();
       return;
     }
-    void copyText("link", displayLink.startsWith("http")
-      ? displayLink
-      : `${typeof window !== "undefined" ? window.location.origin : ""}${displayLink}`);
+    if (!shareUrl.trim()) return;
+    void copyText(
+      "link",
+      shareUrl.startsWith("http")
+        ? shareUrl
+        : `${typeof window !== "undefined" ? window.location.origin : ""}${shareUrl}`,
+    );
   }
 
   return (
@@ -349,6 +362,7 @@ export function InviteHome({
           data-block="ctaShare"
           data-testid="invite-cta-share"
           onClick={handleShare}
+          disabled={!shareUrl.trim() && !onShare}
         >
           {copied === "link" ? T.invite.copied : T.invite.ctaShare}
         </TouchButton>

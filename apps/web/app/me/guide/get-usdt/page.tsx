@@ -1,6 +1,8 @@
 "use client";
 
 import { GetUsdtGuide } from "@aipo/ui/components/trust";
+import { AccountFrame } from "../../AccountFrame";
+import styles from "../../account.module.css";
 
 /**
  * UI §38.8 — Canon get-usdt-guide
@@ -8,8 +10,10 @@ import { GetUsdtGuide } from "@aipo/ui/components/trust";
  */
 export default function Page() {
   return (
-    <div className="p-6" data-canon="get-usdt-guide">
-      <GetUsdtGuide />
-    </div>
+    <AccountFrame title="테더 준비" view="ready" testId="guide-get-usdt-page" hideTitle>
+      <div className={styles.surface} data-canon="get-usdt-guide">
+        <GetUsdtGuide />
+      </div>
+    </AccountFrame>
   );
 }

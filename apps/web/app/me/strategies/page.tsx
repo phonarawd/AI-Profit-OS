@@ -1,10 +1,12 @@
 "use client";
 
+import { AccountFrame } from "../AccountFrame";
+import styles from "../account.module.css";
+
 export default function Page() {
   return (
-    <main className="p-6 text-lux-text">
-      <h1 className="text-xl font-semibold">내 전략</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">골격 · 본구현은 도메인 todo</p>
-    </main>
+    <AccountFrame title="내 전략" view="ready" testId="strategies-page">
+      <p className={styles.note}>지금은 확인할 수 있는 전략이 없어요.</p>
+    </AccountFrame>
   );
 }

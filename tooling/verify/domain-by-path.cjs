@@ -106,7 +106,7 @@ const RULES = [
       /^apps\/web\/app\/page\.tsx$/.test(f) ||
       /^apps\/web\/app\/layout\.tsx$/.test(f) ||
       /^apps\/web\/app\/LegacyAppShell\.tsx$/.test(f) ||
-      /^apps\/web\/app\/(wallet|me)\/layout\.tsx$/.test(f) ||
+      /^apps\/web\/app\/wallet\/layout\.tsx$/.test(f) ||
       /^apps\/web\/app\/HomeDesktopClient\.tsx$/.test(f) ||
       /^apps\/web\/app\/GuestFirstVisit\.tsx$/.test(f) ||
       /^apps\/web\/app\/guest-first-visit\.css$/.test(f) ||
@@ -296,6 +296,74 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/app\/me\/layout\.tsx$/.test(f) ||
+      /^apps\/web\/app\/me\/AccountFrame\.tsx$/.test(f) ||
+      /^apps\/web\/app\/me\/account\.module\.css$/.test(f) ||
+      /^apps\/web\/app\/me\/invite\//.test(f) ||
+      /^packages\/ui\/components\/invite\//.test(f) ||
+      /^tooling\/e2e\/lib\/account-route-stubs\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/invite-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/invite-closure\.cjs$/.test(f),
+    scripts: [
+      "invite-closure.cjs",
+      "invite-explain-surfaces.cjs",
+      "part5-shell-toast.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/me\/inbox\//.test(f) ||
+      /^tooling\/e2e\/specs\/inbox-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/inbox-closure\.cjs$/.test(f),
+    scripts: ["inbox-closure.cjs", "ops-inbox.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/me\/page\.tsx$/.test(f) ||
+      /^apps\/web\/app\/me\/ProfileClient\.tsx$/.test(f) ||
+      /^tooling\/e2e\/specs\/profile-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/profile-closure\.cjs$/.test(f),
+    scripts: ["profile-closure.cjs", "part5-shell-toast.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/me\/settings\//.test(f) ||
+      /^packages\/ui\/components\/settings\//.test(f) ||
+      /^tooling\/e2e\/specs\/settings-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/settings-closure\.cjs$/.test(f),
+    scripts: ["settings-closure.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/me\/legal\//.test(f) ||
+      /^tooling\/e2e\/specs\/legal-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/legal-closure\.cjs$/.test(f),
+    scripts: ["legal-closure.cjs"],
+  },
+  {
+    test: (f) =>
+      /^packages\/ui\/components\/trust\/MarketPartnerGrid\.tsx$/.test(f) ||
+      /^tooling\/e2e\/specs\/partner-trust-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/partner-trust-closure\.cjs$/.test(f),
+    scripts: ["partner-trust-closure.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/me\/(events|strategies|membership|benefits)\//.test(f) ||
+      /^apps\/web\/app\/ads\//.test(f) ||
+      /^apps\/web\/app\/l\//.test(f) ||
+      /^tooling\/e2e\/specs\/account-journey\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/account-hub-batch\.cjs$/.test(f) ||
+      /^tooling\/verify\/account-journey\.cjs$/.test(f) ||
+      /^tooling\/verify\/account-compat-closure\.cjs$/.test(f),
+    scripts: [
+      "account-hub-batch.cjs",
+      "account-compat-closure.cjs",
+      "account-journey.cjs",
+    ],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/wallet\/history\//.test(f) ||
       /^tooling\/e2e\/specs\/transaction-history-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/transaction-history-closure\.cjs$/.test(f) ||
@@ -339,6 +407,7 @@ const RULES = [
       "stub-page-actions.cjs",
       "usdt-deposit-closure.cjs",
       "krw-deposit-closure.cjs",
+      "support-closure.cjs",
     ],
   },
   {
@@ -410,13 +479,16 @@ const RULES = [
       /packages\/ui\/copy\/ko\/peotteok\.ts/.test(f) ||
       /packages\/ui\/canon\/surfaces\/peotteok/.test(f) ||
       /apps\/web\/app\/me\/peotteok\//.test(f) ||
-      /packages\/sdk\/src\/peotteok\//.test(f),
+      /packages\/sdk\/src\/peotteok\//.test(f) ||
+      /^tooling\/e2e\/specs\/peotteok-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/peotteok-closure\.cjs$/.test(f),
     scripts: [
       "ai-coach-ui.cjs",
       "canon-surfaces.cjs",
       "ai-coach-fact-only.cjs",
       "ai-coach-no-autonomy.cjs",
       "age-tone-surfaces.cjs",
+      "peotteok-closure.cjs",
     ],
   },
   {
@@ -518,8 +590,10 @@ const RULES = [
       /packages\/ui\/components\/kyc\//.test(f) ||
       /packages\/ui\/copy\/ko\/kyc\.ts/.test(f) ||
       /packages\/ui\/canon\/surfaces\/kyc-/.test(f) ||
-      /apps\/web\/app\/me\/kyc\//.test(f),
-    scripts: ["kyc-surfaces.cjs", "canon-surfaces.cjs"],
+      /apps\/web\/app\/me\/kyc\//.test(f) ||
+      /^tooling\/e2e\/specs\/kyc-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/kyc-closure\.cjs$/.test(f),
+    scripts: ["kyc-surfaces.cjs", "canon-surfaces.cjs", "kyc-closure.cjs"],
   },
   {
     test: (f) =>
@@ -537,6 +611,7 @@ const RULES = [
       "market-briefing-no-investment-advice.cjs",
       "participate-proof.cjs",
       "deposit-ai-template-path.cjs",
+      "guides-closure.cjs",
     ],
   },
   {
