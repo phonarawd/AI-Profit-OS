@@ -151,6 +151,7 @@
     "verify:inbox-closure": "node tooling/verify/inbox-closure.cjs",
     "verify:peotteok-closure": "node tooling/verify/peotteok-closure.cjs",
     "verify:profile-closure": "node tooling/verify/profile-closure.cjs",
+    "verify:kyc-closure": "node tooling/verify/kyc-closure.cjs",
     "verify:usdt-deposit-closure": "node tooling/verify/usdt-deposit-closure.cjs",
     "verify:krw-deposit-closure": "node tooling/verify/krw-deposit-closure.cjs",
     "verify:participate-http": "node tooling/verify/participate-http.cjs",

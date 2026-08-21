@@ -552,8 +552,10 @@ const RULES = [
       /packages\/ui\/components\/kyc\//.test(f) ||
       /packages\/ui\/copy\/ko\/kyc\.ts/.test(f) ||
       /packages\/ui\/canon\/surfaces\/kyc-/.test(f) ||
-      /apps\/web\/app\/me\/kyc\//.test(f),
-    scripts: ["kyc-surfaces.cjs", "canon-surfaces.cjs"],
+      /apps\/web\/app\/me\/kyc\//.test(f) ||
+      /^tooling\/e2e\/specs\/kyc-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/kyc-closure\.cjs$/.test(f),
+    scripts: ["kyc-surfaces.cjs", "canon-surfaces.cjs", "kyc-closure.cjs"],
   },
   {
     test: (f) =>
