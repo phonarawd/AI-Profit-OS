@@ -171,7 +171,7 @@ todos:
     content: "[Consumer] Grouped compatibility 검증: /ads /l/* events/strategies/membership/benefits — leftover chrome 0 · fake money 0"
     status: completed
   - id: rel-131
-    content: "[Consumer][A3][Home-only:account_hub_figma] Account Hub Figma Desktop 1440 + Mobile 390 프레임 신설(Backup Home 클론 금지). REL-123 재확인과 독립. 새 프레임 Founder 검토 후 시각 적용은 본 REL 산출로 기록"
+    content: "[Consumer][A3][Home-only:account_hub_figma] Account Hub Figma Desktop 1440 + Mobile 390 = FOUNDER_REVIEW_CANDIDATE / WAITING_FOUNDER_REVIEW. APPROVED 아님. LOCKED 아님. REL-132 시작 금지"
     status: pending
   - id: rel-200
     content: "[Admin] apps/admin/app/page.tsx(root) 실사 - 순수 리다이렉트인지 확인 후 처리"
@@ -482,7 +482,9 @@ PUTDUK_FIGMA_AUTHORITY:
     execution_mobile_requeue: "140:142"
     execution_mobile_success: "140:250"
     execution_mobile_safestop: "140:358"
-  lastVerifiedAt: "2026-08-20"
+    account_hub_desktop: "169:78"
+    account_hub_mobile: "169:288"
+  lastVerifiedAt: "2026-08-21"
   discoveredVia: RECOVERED_PROJECT_CONTEXT
 ```
 
@@ -2138,7 +2140,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-131
 TITLE: Account Hub Figma Desktop + Mobile frames
-STATUS: PENDING
+STATUS: WAITING_FOUNDER_REVIEW
 SOURCE_PLAN: account_hub_figma_23be13c4.plan.md
 SOURCE_TODO_IDS:
   - figma-context
@@ -2157,8 +2159,8 @@ IMPLEMENTATION_STEPS:
   - REL-123을 이 프레임 때문에 재구현으로 확장하지 않음
 VERIFY: Figma MCP get_screenshot + node-id 기록, Home geometry regression 0
 ACCEPTANCE: Desktop/Mobile 프레임 존재, none/더보기 active 규칙, IT jargon 0, FAKE MONEY 0
-EVIDENCE: 실행 후 Figma node-id + intake source hash
-EXIT_GATE: Founder 프레임 검토 전 REL-123을 시각 재구현으로 확장하지 않음
+EVIDENCE: governance/release-master/rel-131-account-figma/ · Desktop 169:78 · Mobile 169:288 · FOUNDER_REVIEW_CANDIDATE
+EXIT_GATE: Founder 프레임 검토 전 REL-123을 시각 재구현으로 확장하지 않음 · REL-132 시작 금지
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
 ```

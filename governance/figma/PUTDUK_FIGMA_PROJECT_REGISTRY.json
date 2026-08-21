@@ -9,7 +9,7 @@
   "team": "퍼뜩의 팀",
   "pages": ["00_Readme(0:1)", "03_Components(2:68)"],
   "homeAuthorityConflict": "NONE",
-  "lastVerifiedAt": "2026-08-20",
+  "lastVerifiedAt": "2026-08-21",
   "discoveredVia": "RECOVERED_PROJECT_CONTEXT",
   "home": {
     "visualAuthority": "SCREENSHOT_FREEZE",
@@ -94,6 +94,20 @@
       "nodeId": "140:358",
       "classification": "FOUNDER_REVIEW_CANDIDATE",
       "authority": false
+    },
+    "account_hub_desktop": {
+      "nodeId": "169:78",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "rel": "REL-131",
+      "name": "Account Hub / Desktop / Spark Dash / Founder Review Candidate"
+    },
+    "account_hub_mobile": {
+      "nodeId": "169:288",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "rel": "REL-131",
+      "name": "Account Hub / Mobile / Spark Dash / Founder Review Candidate"
     }
   },
   "screenBindings": [
@@ -178,10 +192,21 @@
     },
     {
       "rel": "REL-131",
-      "route": "later consumer surface",
-      "frameKeys": [],
+      "route": "/me",
+      "frameKeys": ["account_hub_desktop", "account_hub_mobile"],
       "apply": false,
-      "note": "Read this registry. Do not re-discover fileKey."
+      "status": "FOUNDER_REVIEW_CANDIDATE",
+      "extraNodeIdsNotInSection2": [
+        {
+          "nodeId": "176:78",
+          "note": "REL-131 Desktop annotation. FOUNDER_REVIEW_CANDIDATE, not APPROVED."
+        },
+        {
+          "nodeId": "176:80",
+          "note": "REL-131 Mobile annotation. FOUNDER_REVIEW_CANDIDATE, not APPROVED."
+        }
+      ],
+      "note": "Founder review candidate only. Not approved. Not locked. Do not apply to production UI. Do not start REL-132."
     }
   ]
 }
