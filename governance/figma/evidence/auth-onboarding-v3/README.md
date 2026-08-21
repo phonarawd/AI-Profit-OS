@@ -23,12 +23,14 @@ fileKey `w7Yg8j2x9evuheOSSLqFw5`. Candidate node IDs unchanged.
 | onboarding-desktop-action.png | 237:1710 | 6 Action Desktop |
 | onboarding-desktop-complete.png | 237:1777 | 7 Complete Desktop |
 | onboarding-mobile-intro.png | 237:1814 | 1 Intro Mobile |
+| onboarding-mobile-compare.png | 237:1853 | 2 Compare Mobile screen variant |
 | onboarding-mobile-partner.png | 237:1912 | 3 Partner Mobile |
 | onboarding-mobile-practice.png | 237:1967 | 4 Practice Mobile |
 | onboarding-mobile-wallet.png | 237:2017 | 5 Wallet Mobile |
 | onboarding-mobile-action.png | 237:2069 | 6 Action Mobile |
 | onboarding-mobile-complete.png | 237:2119 | 7 Complete Mobile |
 | onboarding-768-sanity.png | 237:2266 | 768 stacked inspect |
+| onboarding-1024-sanity.png | 237:2337 | 1024 split inspect |
 
 Candidate Compare frames (also in `auth-founder-review-candidate/`):
 
