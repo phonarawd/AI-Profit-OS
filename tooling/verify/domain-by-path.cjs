@@ -239,6 +239,12 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^tooling\/e2e\/specs\/core-opportunity-journey\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/core-opportunity-journey\.cjs$/.test(f),
+    scripts: ["core-opportunity-journey.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/profits\/\[id\]\//.test(f) ||
       /^apps\/web\/components\/spark-dash-room\//.test(f) ||
       /^apps\/web\/app\/dev\/spark-dash-room\//.test(f) ||

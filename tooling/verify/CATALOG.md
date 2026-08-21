@@ -129,6 +129,7 @@
 | execute-live-wire | REL-109 — server state owner · query-fake success 0 · settledProfit required · Playwright execute-closure — **live** |
 | trades-web-wire | REL-110 — `GET /api/v1/trades` session list · `@aipo/sdk/trades` fetchTradeList · `/trades` · buckets.profitUsdt · progressPct 표시 0 — **live** |
 | trades-live-wire | REL-110 — live list · error≠empty · wallet profit unavailable≠0 · Playwright trades-closure — **live** |
+| core-opportunity-journey | REL-106~110 DEV/TEST Home→List→Detail→Confirm→Execute→Result · production money mutation 0 — **live** |
 | wallet-live-wire | UI PART9b/9f — `/wallet` buckets + `@aipo/sdk/wallet` `fetchWalletBuckets` (출금≠9f2) — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |
 | migrations-applied-parity | Supabase — 로컬 `supabase/migrations` 버전 ↔ `fixtures/migrations-applied.v1.json`(원격 applied 스냅샷) 1:1 · path-trigger — **live** |

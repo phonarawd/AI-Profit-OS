@@ -281,6 +281,76 @@ async function stubTradeList(page, mode) {
   });
 }
 
+const JOURNEY_TRADE_ID = "qa-rel107-trade";
+
+/** DEV/TEST full core loop stub. production money mutation 0. */
+async function stubCoreOpportunityJourney(page) {
+  await page.route("**/api/v1/**", async (route) => {
+    const url = route.request().url();
+    const detailId = opportunityDetailPath(url);
+    if (url.includes("/api/v1/me/home-read")) {
+      return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    if (url.includes("/api/v1/wallet/buckets")) {
+      return json(route, 200, TEST_WALLET_BUCKETS);
+    }
+    if (url.includes("/preflight")) {
+      return json(route, 200, {
+        preflightToken: "pf1_qa_journey_preflight_token",
+        expiresAt: new Date(Date.now() + 300000).toISOString(),
+      });
+    }
+    if (url.includes("/participate")) {
+      return json(route, 200, {
+        participateRequestId: "qa-journey-participate",
+        tradeId: JOURNEY_TRADE_ID,
+        opportunityId: TEST_OPPORTUNITY_ITEM.id,
+        pricingVersion: TEST_OPPORTUNITY_ITEM.pricingVersion,
+        expectedProfitUsdt: TEST_OPPORTUNITY_ITEM.expectedProfitUsdt,
+        amountUsdt: TEST_OPPORTUNITY_ITEM.requiredCapitalUsdt,
+        reused: false,
+      });
+    }
+    if (url.includes("/execute-tick") || /\/api\/v1\/trades\/[^/?#]+$/.test(url)) {
+      return json(
+        route,
+        200,
+        {
+          ...tradeExecutionState("running", {}),
+          tradeId: JOURNEY_TRADE_ID,
+          opportunityId: TEST_OPPORTUNITY_ITEM.id,
+          expectedProfitUsdt: TEST_OPPORTUNITY_ITEM.expectedProfitUsdt,
+        },
+      );
+    }
+    if (isTradeListUrl(url)) {
+      return json(route, 200, {
+        items: [
+          {
+            ...tradeExecutionState("running", {}),
+            tradeId: JOURNEY_TRADE_ID,
+            opportunityId: TEST_OPPORTUNITY_ITEM.id,
+            expectedProfitUsdt: TEST_OPPORTUNITY_ITEM.expectedProfitUsdt,
+          },
+        ],
+      });
+    }
+    if (url.includes("/api/v1/opportunities") && !detailId) {
+      return json(route, 200, opportunityFeedBody([TEST_OPPORTUNITY_ITEM]));
+    }
+    if (detailId === TEST_OPPORTUNITY_ITEM.id) {
+      return json(route, 200, {
+        principalUsdt: "100.00",
+        item: TEST_OPPORTUNITY_ITEM,
+      });
+    }
+    if (detailId) {
+      return json(route, 404, { error: "not_found" });
+    }
+    return json(route, 404, { error: "not_found" });
+  });
+}
+
 /** DEV/TEST execute-tick stub. production money mutation 0. */
 async function stubTradeExecution(page, mode) {
   await page.route("**/api/v1/**", (route) => {
@@ -348,5 +418,7 @@ module.exports = {
   stubOpportunityFeed,
   stubOpportunityRoom,
   stubTradeList,
+  stubCoreOpportunityJourney,
   stubTradeExecution,
+  JOURNEY_TRADE_ID,
 };
