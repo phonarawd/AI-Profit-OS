@@ -144,6 +144,7 @@
     "verify:wallet-live-wire": "node tooling/verify/wallet-live-wire.cjs",
     "verify:wallet-closure": "node tooling/verify/wallet-closure.cjs",
     "verify:usdt-deposit-closure": "node tooling/verify/usdt-deposit-closure.cjs",
+    "verify:krw-deposit-closure": "node tooling/verify/krw-deposit-closure.cjs",
     "verify:participate-http": "node tooling/verify/participate-http.cjs",
     "verify:execute-rule-loop": "node tooling/verify/execute-rule-loop.cjs",
     "verify:catalog-runtime-seed": "node tooling/verify/catalog-runtime-seed.cjs",

@@ -311,8 +311,14 @@ const RULES = [
       /stub-page-actions/.test(f) ||
       (/packages\/ui\/components\/kyc\//.test(f) && /KycFlow/.test(f)) ||
       /^tooling\/e2e\/specs\/usdt-deposit-closure\.spec\.cjs$/.test(f) ||
-      /^tooling\/verify\/usdt-deposit-closure\.cjs$/.test(f),
-    scripts: ["stub-page-actions.cjs", "usdt-deposit-closure.cjs"],
+      /^tooling\/verify\/usdt-deposit-closure\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/krw-deposit-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/krw-deposit-closure\.cjs$/.test(f),
+    scripts: [
+      "stub-page-actions.cjs",
+      "usdt-deposit-closure.cjs",
+      "krw-deposit-closure.cjs",
+    ],
   },
   {
     test: (f) => /^apps\/admin\//.test(f),
