@@ -600,7 +600,63 @@
   text-align: center;
 }
 
+.onb-caption-mid,
+.onb-caption-wide {
+  display: none;
+}
+
 @media (max-width: 767px) {
+  .onb-desktop-only,
+  .onb-caption-mid,
+  .onb-caption-wide {
+    display: none !important;
+  }
+
+  .onb-canvas[data-story="validate-mobile"] {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .onb-validate-mobile-list {
+    gap: 6px;
+    padding: 12px;
+  }
+
+  .onb-validate-item-mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 28px;
+    padding: 4px 8px;
+    grid-template-columns: none;
+  }
+
+  .onb-validate-mobile-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: 46px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: var(--onb-ink);
+    text-align: center;
+  }
+
+  .onb-validate-mobile-result .onb-card-title {
+    color: #fff;
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  .onb-validate-mobile-result-sub {
+    margin: 0;
+    color: var(--onb-spark);
+    font-size: 12px;
+    line-height: 18px;
+  }
+
   .onb-body {
     overflow-y: auto;
   }
@@ -664,13 +720,17 @@
 }
 
 @media (min-width: 768px) {
+  .onb-mobile-only {
+    display: none !important;
+  }
+
   .onb {
     --onb-header-h: 72px;
     --onb-cta-h: 52px;
   }
 
   .onb-header {
-    padding: 0 40px;
+    padding: 0 24px;
   }
 
   .onb-brand {
@@ -684,7 +744,7 @@
   .onb-body {
     align-items: center;
     gap: 16px;
-    padding: 16px 40px 24px;
+    padding: 16px 24px 24px;
   }
 
   .onb-rail {
@@ -730,7 +790,7 @@
 
   .onb-footer {
     align-items: center;
-    padding: 12px 40px 32px;
+    padding: 12px 24px 32px;
   }
 
   .onb-actions {
@@ -748,11 +808,25 @@
   }
 }
 
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .onb-header {
+    padding: 0 32px;
+  }
+
+  .onb-body {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .onb-footer {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
 @media (min-width: 1024px) {
   .onb-body {
     flex: 0 1 auto;
-    padding-left: 48px;
-    padding-right: 48px;
   }
 
   .onb-title {
@@ -806,17 +880,36 @@
     flex: 1.26 1 0;
   }
 
+  .onb-canvas.onb-desktop[data-story="match"] {
+    padding: 24px;
+    gap: 0;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 960px;
+  }
+
+  .onb-canvas.onb-desktop[data-story="match"] > .onb-card:not(.onb-card-ai) {
+    flex: 0 1 270px;
+    width: 270px;
+    max-width: 270px;
+    min-width: 0;
+  }
+
+  .onb-canvas.onb-desktop[data-story="match"] > .onb-card-ai {
+    flex: 0 1 288px;
+    width: 288px;
+    max-width: 288px;
+    min-width: 0;
+  }
+
   .onb-arrow {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex: 0 0 20px;
+    flex: 0 0 28px;
+    width: 28px;
     font-size: 18px;
     line-height: 1;
-  }
-
-  .onb-mobile-only {
-    display: none !important;
   }
 
   .onb-stages {
@@ -829,12 +922,6 @@
   }
 }
 
-@media (min-width: 1440px) {
-  .onb-body {
-    padding-left: 80px;
-    padding-right: 80px;
-  }
-}
 
 .onb-bp-desktop,
 .onb-bp-tablet {
@@ -879,8 +966,10 @@
     min-width: 0;
   }
 
-  .onb-tablet-ai {
+  .onb-tablet-products > .onb-tablet-ai {
     flex: 0 0 120px;
+    width: 120px;
+    max-width: 120px;
     align-items: center;
     text-align: center;
     justify-content: center;
@@ -912,9 +1001,29 @@
   }
 }
 
-@media (max-width: 1023px) {
-  .onb-desktop-only {
-    display: none !important;
+@media (min-width: 768px) and (max-width: 1439px) {
+  .onb-caption-mid {
+    display: block;
+  }
+}
+
+@media (min-width: 1440px) {
+  .onb-caption-wide {
+    display: block;
+  }
+
+  .onb-header {
+    padding: 0 40px;
+  }
+
+  .onb-body {
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+
+  .onb-footer {
+    padding-left: 80px;
+    padding-right: 80px;
   }
 }
 
@@ -937,6 +1046,11 @@
   }
 
   .onb-canvas.onb-desktop > .onb-card {
+    min-height: 352px;
+  }
+
+  .onb-canvas.onb-desktop[data-story="match"] > .onb-card,
+  .onb-canvas.onb-desktop[data-story="match"] > .onb-card-ai {
     min-height: 352px;
   }
 }

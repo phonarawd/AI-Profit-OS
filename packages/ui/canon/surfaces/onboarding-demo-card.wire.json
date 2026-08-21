@@ -1,21 +1,20 @@
 {
   "id": "onboarding-demo-card",
   "route": "/onboarding",
-  "state": "demo_tap",
+  "state": "demo",
   "brandRef": "packages/ui/brand",
-  "primaryCta": { "copyKey": "T.onboarding.tryDemoCard", "action": "open_demo_opportunity" },
+  "primaryCta": { "copyKey": "T.onboarding.story.demo.next", "action": "next_step" },
   "blocks": [
-    { "id": "hint", "role": "body", "copyKey": "T.onboarding.demoHint" },
-    { "id": "demoCard", "role": "opportunity_card", "flags": ["demo", "practice_only"] },
-    { "id": "practiceNote", "role": "banner", "copyKey": "T.practice.notWithdrawable" }
+    { "id": "headline", "role": "heading", "copyKey": "T.onboarding.story.demo.title" },
+    { "id": "story", "role": "story_visual", "copyKey": "T.onboarding.visual.validate.resultTitle" }
   ],
   "forbidden": [
-    "real_participate_without_practice_rules",
+    "real_participate_without_user_decision",
     "gender_branch",
     "photo_pixel_match",
     "cta_earn_profit",
-    "expected_profit_label"
+    "fabricated_finance_numbers",
+    "manual_validation_checklist"
   ],
-  "note": "v7.22.55 Guest utility · demo compare = T.margin.compareMiniUtility · +$ 수익 암시 0"
+  "note": "Automation Story step 4 검증 · 내부 키 demo · 가짜 금액 0"
 }
-

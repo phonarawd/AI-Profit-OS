@@ -288,14 +288,17 @@ export function OnboardingFlow() {
         <OnboardingStoryVisual step={step} />
 
         <p className="onb-caption">
-          {"captionMobile" in copy && copy.captionMobile ? (
+          {"captionMid" in copy && copy.captionMid ? (
             <>
-              <span className="onb-mobile-only">{copy.captionMobile}</span>
-              <span className="onb-desktop-only">{copy.caption}</span>
+              <span className="onb-caption-mid">{copy.captionMid}</span>
+              <span className="onb-caption-wide">{copy.caption}</span>
             </>
           ) : (
-            copy.caption
+            <span className="onb-desktop-only">{copy.caption}</span>
           )}
+          <span className="onb-mobile-only">
+            {"captionMobile" in copy && copy.captionMobile ? copy.captionMobile : copy.caption}
+          </span>
         </p>
       </div>
 

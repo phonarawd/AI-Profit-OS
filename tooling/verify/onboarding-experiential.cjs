@@ -57,6 +57,12 @@ if (copy) {
   if (copy.includes("toneYoung") || copy.includes("tonePickTitle")) {
     fails.push("onboarding.ts must not keep tone-selection-first copy");
   }
+  if (!copy.includes("다음 단계에서 가격 차이가 실제 수익인지 자동으로 계산해요.")) {
+    fails.push("onboarding.ts missing 1024/768 matching caption from Figma 237:2337/237:2266");
+  }
+  if (!copy.includes("진행 가능한 기회인지 다시 검증해요")) {
+    fails.push("onboarding.ts missing mobile step 4 headline from Figma 237:1967");
+  }
 }
 
 const flow = read("packages/ui/components/onboarding/OnboardingFlow.tsx");
@@ -72,6 +78,7 @@ if (flow) {
     "decideOnboardingGate",
     "/api/v1/auth/session",
     "/api/v1/auth/onboarding/complete",
+    "captionMid",
   ]) {
     if (!flow.includes(need)) fails.push(`OnboardingFlow missing ${need}`);
   }
@@ -112,6 +119,9 @@ if (visual) {
   if (visual.includes("COMPOSITE_STRONG")) {
     fails.push("OnboardingStoryVisual must not expose identity jargon");
   }
+  if (!visual.includes("itemsMobile") || !visual.includes("validate-mobile-result")) {
+    fails.push("OnboardingStoryVisual missing mobile step 4 Figma checklist/result");
+  }
 }
 
 const css = read("packages/ui/components/onboarding/onboarding-automation.css");
@@ -121,6 +131,12 @@ if (css) {
   }
   if (!css.includes("#ff2e63") || !css.includes("#08111f")) {
     fails.push("onboarding CSS missing Spark ink/fuchsia tokens");
+  }
+  if (!css.includes("flex: 0 1 288px") || !css.includes("flex: 0 1 270px")) {
+    fails.push("onboarding CSS missing Figma 1024 match card widths 270/288");
+  }
+  if (css.includes("transform: scale") || css.includes("scale(")) {
+    fails.push("onboarding CSS must not use transform/scale to fake 1024 parity");
   }
 }
 
@@ -154,6 +170,36 @@ if (nest) {
   }
   if (!nest.includes("status = 'approved'") || !nest.includes("ledger_credited")) {
     fails.push("auth.service must only count completed KRW/USDT funding");
+  }
+  const fundingSql = nest.slice(nest.indexOf("FROM public.krw_deposit_requests"));
+  for (const bad of ["pending", "failed", "rejected", "expired", "ignored", "cancelled"]) {
+    if (new RegExp(`status\\s*=\\s*'${bad}'`).test(fundingSql) || new RegExp(`'${bad}'`).test(fundingSql.split("LIMIT 1")[0] || "")) {
+      if (fundingSql.includes(`'${bad}'`)) {
+        fails.push(`auth.service funding experience must not count ${bad}`);
+      }
+    }
+  }
+}
+
+function decideOnboardingGate(session, status) {
+  if (status === "unknown") return "unknown";
+  if (status === "guest" || session == null) return "show";
+  if (session.beginnerOnboardingCompletedAt) return "bypass";
+  if (session.fundingExperienceCompleted === true) return "bypass";
+  return "show";
+}
+
+const gateCases = [
+  [null, "unknown", "unknown"],
+  [null, "guest", "show"],
+  [{ beginnerOnboardingCompletedAt: "2026-08-22T00:00:00.000Z", fundingExperienceCompleted: false }, "ok", "bypass"],
+  [{ beginnerOnboardingCompletedAt: null, fundingExperienceCompleted: true }, "ok", "bypass"],
+  [{ beginnerOnboardingCompletedAt: null, fundingExperienceCompleted: false }, "ok", "show"],
+];
+for (const [session, status, expected] of gateCases) {
+  const got = decideOnboardingGate(session, status);
+  if (got !== expected) {
+    fails.push(`gate ${status} ${JSON.stringify(session)} => ${got}, expected ${expected}`);
   }
 }
 

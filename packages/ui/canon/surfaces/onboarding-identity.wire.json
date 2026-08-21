@@ -3,12 +3,11 @@
   "route": "/onboarding",
   "state": "identity",
   "brandRef": "packages/ui/brand",
-  "primaryCta": { "copyKey": "T.onboarding.next", "action": "next_step" },
+  "primaryCta": { "copyKey": "T.onboarding.story.identity.next", "action": "next_step" },
   "blocks": [
-    { "id": "brand", "role": "brand", "copyKey": "T.brand.consumer" },
-    { "id": "headline", "role": "heading", "copyKey": "T.onboarding.identityHeadline" },
-    { "id": "compareMini", "role": "price_compare_margin", "copyKey": "T.margin.compareMiniUtility" },
-    { "id": "disclaimer", "role": "disclaimer", "copyKey": "T.landing.utilityDisclaimer" }
+    { "id": "brand", "role": "brand", "copyKey": "T.onboarding.brand" },
+    { "id": "headline", "role": "heading", "copyKey": "T.onboarding.story.identity.title" },
+    { "id": "story", "role": "story_visual", "copyKey": "T.onboarding.visual.match.aiTitle" }
   ],
   "forbidden": [
     "profit_guaranteed_cta",
@@ -17,8 +16,8 @@
     "non_brand_logo",
     "stat_strip",
     "cta_earn_profit",
-    "expected_not_guaranteed_on_guest",
-    "margin_compare_mini_capital"
+    "composite_strong_jargon",
+    "tone_selection_first"
   ],
-  "note": "v7.22.55 Guest utility · 차익·capital CTA·app expected-disclaimer 0 · disclosure Owns=tone step T.landing.transitionDisclosure"
+  "note": "Automation Story step 2 매칭 · 내부 키 identity · 유저 대면 매칭"
 }

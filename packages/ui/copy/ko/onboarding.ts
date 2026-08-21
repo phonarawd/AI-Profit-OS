@@ -34,6 +34,7 @@ export const onboarding = {
       title: "같은 상품을 퍼뜩 AI가 자동으로 연결해요",
       body: "상품명이 달라도 브랜드·모델·규격·특징을 함께 보고 같은 상품인지 확인해요.",
       caption: "같은 상품을 사람이 일일이 찾지 않아도 돼요.",
+      captionMid: "다음 단계에서 가격 차이가 실제 수익인지 자동으로 계산해요.",
       next: "수익 계산 보기",
     },
     partner: {
@@ -50,8 +51,11 @@ export const onboarding = {
       n: 4,
       label: "검증",
       title: "실제로 진행 가능한 기회인지 한 번 더 검증해요",
+      titleMobile: "진행 가능한 기회인지 다시 검증해요",
       body: "상품 일치·출처·가격 상태·비용·참여 가능 여부를 다시 확인해요.",
+      bodyMobile: "상품·출처·가격·비용·참여 가능 여부를 확인해요.",
       caption: "검증 기준을 통과한 기회만 사용자에게 보여줘요.",
+      captionMobile: "검증된 기회만 보여드려요.",
       next: "참여 준비 보기",
     },
     usdt: {
@@ -141,6 +145,7 @@ export const onboarding = {
       tabletCriteria: "같은 상품인지 여러 특징을 함께 확인해요",
       tabletResult: "같은 상품으로 자동 연결",
       tabletAttrs: "브랜드 · 모델 · 규격 · 특징",
+      tabletMarketBBody: "다른 이름도 상품 특징으로 비교",
     },
     calc: {
       principleKicker: "가격 차이만 보면 안 돼요",
@@ -178,7 +183,15 @@ export const onboarding = {
         { n: "04", title: "수수료·환율", detail: "계산 조건이 맞는지" },
         { n: "05", title: "참여 가능 여부", detail: "실행 가능한지" },
       ],
+      itemsMobile: [
+        { title: "상품 일치", detail: "같은 상품" },
+        { title: "출처", detail: "근거 확인" },
+        { title: "가격·상태", detail: "현재 조건" },
+        { title: "비용·환율", detail: "계산 조건" },
+        { title: "참여 가능", detail: "실행 가능" },
+      ],
       listFoot: "조건이 바뀌면 다시 확인하거나 기회를 숨겨요.",
+      resultSubMobile: "조건이 바뀌면 다시 확인하거나 숨겨요",
       resultKicker: "검증 결과",
       resultTitle: "검증된 기회만 사용자에게 보여줘요",
       resultBody: "찾았다는 이유만으로 참여 화면에 올리지 않아요.",

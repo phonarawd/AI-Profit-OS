@@ -196,7 +196,7 @@ function MatchTablet() {
         <article className="onb-card">
           <p className="onb-kicker">{v.marketBKicker}</p>
           <h3 className="onb-card-title">{v.marketBTitle}</h3>
-          <p className="onb-card-body">{v.marketBBody}</p>
+          <p className="onb-card-body">{v.tabletMarketBBody}</p>
         </article>
       </div>
       <div className="onb-tablet-criteria">
@@ -332,18 +332,19 @@ function ValidateMobile() {
   const v = T.onboarding.visual.validate;
   return (
     <div className="onb-canvas onb-mobile-only" data-story="validate-mobile">
-      <article className="onb-card onb-card-ink">
-        <p className="onb-kicker">{v.resultKicker}</p>
-        <h3 className="onb-card-title">{v.resultTitle}</h3>
-        <p className="onb-card-body">{v.resultBody}</p>
+      <article className="onb-card onb-validate-mobile-list">
+        <p className="onb-kicker">{v.listKicker}</p>
+        {v.itemsMobile.map((item) => (
+          <div className="onb-validate-item onb-validate-item-mobile" key={item.title}>
+            <span className="onb-validate-title">{item.title}</span>
+            <span className="onb-validate-detail">{item.detail}</span>
+          </div>
+        ))}
       </article>
-      {v.items.map((item) => (
-        <div className="onb-validate-item" key={item.n}>
-          <span className="onb-validate-n">{item.n}</span>
-          <span className="onb-validate-title">{item.title}</span>
-          <span className="onb-validate-detail">{item.detail}</span>
-        </div>
-      ))}
+      <div className="onb-validate-mobile-result">
+        <p className="onb-card-title">{v.resultTitle}</p>
+        <p className="onb-validate-mobile-result-sub">{v.resultSubMobile}</p>
+      </div>
     </div>
   );
 }
