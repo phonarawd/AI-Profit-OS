@@ -378,6 +378,7 @@ const RULES = [
       "stub-page-actions.cjs",
       "usdt-deposit-closure.cjs",
       "krw-deposit-closure.cjs",
+      "support-closure.cjs",
     ],
   },
   {

@@ -142,6 +142,7 @@
 | profile-closure | REL-123 — `/me` session owner · leftover chrome 0 · fake zero 0 — **live** |
 | kyc-closure | REL-124 — `/me/kyc` status owner · fake approved 0 — **live** |
 | settings-closure | REL-125 — `/me/settings` prefs persist · logout/delete owners — **live** |
+| support-closure | REL-126 — `/me/support` deposit-disputes · fake chat 0 — **live** |
 | usdt-deposit-closure | REL-114 — `/wallet/deposit` USDT address owner · credit 0 · happy+deny — **live** |
 | krw-deposit-closure | REL-115 — `/wallet/deposit?tab=krw` pending≠credit · PG 0 · happy+deny — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |

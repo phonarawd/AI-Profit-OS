@@ -153,6 +153,7 @@
     "verify:profile-closure": "node tooling/verify/profile-closure.cjs",
     "verify:kyc-closure": "node tooling/verify/kyc-closure.cjs",
     "verify:settings-closure": "node tooling/verify/settings-closure.cjs",
+    "verify:support-closure": "node tooling/verify/support-closure.cjs",
     "verify:usdt-deposit-closure": "node tooling/verify/usdt-deposit-closure.cjs",
     "verify:krw-deposit-closure": "node tooling/verify/krw-deposit-closure.cjs",
     "verify:participate-http": "node tooling/verify/participate-http.cjs",
