@@ -106,7 +106,7 @@ const RULES = [
       /^apps\/web\/app\/page\.tsx$/.test(f) ||
       /^apps\/web\/app\/layout\.tsx$/.test(f) ||
       /^apps\/web\/app\/LegacyAppShell\.tsx$/.test(f) ||
-      /^apps\/web\/app\/(wallet|me)\/layout\.tsx$/.test(f) ||
+      /^apps\/web\/app\/wallet\/layout\.tsx$/.test(f) ||
       /^apps\/web\/app\/HomeDesktopClient\.tsx$/.test(f) ||
       /^apps\/web\/app\/GuestFirstVisit\.tsx$/.test(f) ||
       /^apps\/web\/app\/guest-first-visit\.css$/.test(f) ||
@@ -293,6 +293,22 @@ const RULES = [
       /^tooling\/e2e\/specs\/wallet-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/wallet-closure\.cjs$/.test(f),
     scripts: ["wallet-live-wire.cjs", "wallet-closure.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/me\/layout\.tsx$/.test(f) ||
+      /^apps\/web\/app\/me\/AccountFrame\.tsx$/.test(f) ||
+      /^apps\/web\/app\/me\/account\.module\.css$/.test(f) ||
+      /^apps\/web\/app\/me\/invite\//.test(f) ||
+      /^packages\/ui\/components\/invite\//.test(f) ||
+      /^tooling\/e2e\/lib\/account-route-stubs\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/invite-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/invite-closure\.cjs$/.test(f),
+    scripts: [
+      "invite-closure.cjs",
+      "invite-explain-surfaces.cjs",
+      "part5-shell-toast.cjs",
+    ],
   },
   {
     test: (f) =>
