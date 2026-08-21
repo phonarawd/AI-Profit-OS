@@ -1,8 +1,8 @@
 "use client";
 
-import { SettingsPanel } from "@aipo/ui/components/settings/SettingsPanel";
+import { SettingsClient } from "./SettingsClient";
 
-/** PART5d §50.1 settings */
+/** /me/settings — prefs + logout + delete. Security 별도 라우트 없음 */
 export default function Page() {
-  return <SettingsPanel />;
+  return <SettingsClient />;
 }

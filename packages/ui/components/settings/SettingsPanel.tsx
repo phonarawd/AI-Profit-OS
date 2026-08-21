@@ -86,10 +86,11 @@ export function SettingsPanel() {
   };
 
   async function toggleNotify(key: keyof NotifyPrefs) {
+    const prev = notify;
     const next = { ...notify, [key]: !notify[key] };
     setNotify(next);
     try {
-      await fetch("/api/v1/me/notification-prefs", {
+      const res = await fetch("/api/v1/me/notification-prefs", {
         method: "PUT",
         credentials: "include",
         headers: {
@@ -98,8 +99,9 @@ export function SettingsPanel() {
         },
         body: JSON.stringify(next),
       });
+      if (!res.ok) setNotify(prev);
     } catch {
-      /* optimistic UI */
+      setNotify(prev);
     }
   }
 

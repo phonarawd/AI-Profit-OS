@@ -327,6 +327,14 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/app\/me\/settings\//.test(f) ||
+      /^packages\/ui\/components\/settings\//.test(f) ||
+      /^tooling\/e2e\/specs\/settings-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/settings-closure\.cjs$/.test(f),
+    scripts: ["settings-closure.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/wallet\/history\//.test(f) ||
       /^tooling\/e2e\/specs\/transaction-history-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/transaction-history-closure\.cjs$/.test(f) ||
