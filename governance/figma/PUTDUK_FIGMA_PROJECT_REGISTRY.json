@@ -96,22 +96,40 @@
       "authority": false
     },
     "account_hub_desktop": {
-      "nodeId": "180:102",
+      "nodeId": "192:194",
       "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "rel": "REL-131",
+      "revision": "V2.1",
+      "name": "Account Hub / Desktop / Spark Dash / Founder Review Candidate V2.1",
+      "supersedes": "180:102"
+    },
+    "account_hub_mobile": {
+      "nodeId": "192:434",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "rel": "REL-131",
+      "revision": "V2.1",
+      "name": "Account Hub / Mobile / Spark Dash / Founder Review Candidate V2.1",
+      "supersedes": "180:430"
+    },
+    "account_hub_desktop_v2": {
+      "nodeId": "180:102",
+      "classification": "SUPERSEDED",
       "authority": false,
       "rel": "REL-131",
       "revision": "V2",
       "name": "Account Hub / Desktop / Spark Dash / Founder Review Candidate V2",
-      "supersedes": "169:78"
+      "note": "Preserved for Founder comparison. Not deleted. Not current candidate."
     },
-    "account_hub_mobile": {
+    "account_hub_mobile_v2": {
       "nodeId": "180:430",
-      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "classification": "SUPERSEDED",
       "authority": false,
       "rel": "REL-131",
       "revision": "V2",
       "name": "Account Hub / Mobile / Spark Dash / Founder Review Candidate V2",
-      "supersedes": "169:288"
+      "note": "Preserved for Founder comparison. Not deleted. Not current candidate."
     },
     "account_hub_desktop_v1": {
       "nodeId": "169:78",
@@ -229,11 +247,23 @@
         },
         {
           "nodeId": "187:198",
-          "note": "REL-131 V2 Desktop annotation. FOUNDER_REVIEW_CANDIDATE, not APPROVED."
+          "note": "REL-131 V2 Desktop annotation. SUPERSEDED. Not APPROVED."
         },
         {
           "nodeId": "187:200",
-          "note": "REL-131 V2 Mobile annotation. FOUNDER_REVIEW_CANDIDATE, not APPROVED."
+          "note": "REL-131 V2 Mobile annotation. SUPERSEDED. Not APPROVED."
+        },
+        {
+          "nodeId": "195:630",
+          "note": "REL-131 V2.1 Desktop annotation. FOUNDER_REVIEW_CANDIDATE, not APPROVED."
+        },
+        {
+          "nodeId": "195:632",
+          "note": "REL-131 V2.1 Mobile annotation. FOUNDER_REVIEW_CANDIDATE, not APPROVED."
+        },
+        {
+          "nodeId": "195:328",
+          "note": "REL-131 V2.1 Mobile unclipped scroll-content proof. Evidence only. Not the candidate frame."
         },
         {
           "nodeId": "169:78",
@@ -242,9 +272,17 @@
         {
           "nodeId": "169:288",
           "note": "REL-131 V1 Mobile frame preserved for comparison. SUPERSEDED."
+        },
+        {
+          "nodeId": "180:102",
+          "note": "REL-131 V2 Desktop frame preserved for comparison. SUPERSEDED."
+        },
+        {
+          "nodeId": "180:430",
+          "note": "REL-131 V2 Mobile frame preserved for comparison. SUPERSEDED."
         }
       ],
-      "note": "V2 is the current Founder review candidate. V1 169:78 / 169:288 preserved. Not approved. Not locked. Do not apply to production UI. Do not start REL-132."
+      "note": "V2.1 is the current Founder review candidate. V2 180:102 / 180:430 and V1 169:78 / 169:288 preserved. Not approved. Not locked. Do not apply to production UI. Do not start REL-132."
     }
   ]
 }

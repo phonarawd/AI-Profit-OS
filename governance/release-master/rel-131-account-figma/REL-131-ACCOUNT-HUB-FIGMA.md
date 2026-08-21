@@ -1,12 +1,12 @@
 # REL-131 Account Hub Figma Human Gate
 
-> V1 evidence. Current Founder candidate is **V2** — see `governance/release-master/rel-131-account-figma-v2/REL-131-V2-VISUAL-QA.md`. V1 frames `169:78` / `169:288` are preserved, not deleted.
+> V1 evidence. Current Founder candidate is **V2.1** — see `governance/release-master/rel-131-account-figma-final/FINAL_VISUAL_QA.md`. V2 `180:102` / `180:430` and V1 `169:78` / `169:288` are preserved, not deleted.
 
 ```text
 REL = REL-131
 TITLE = Account Hub Figma Desktop + Mobile frames
 STATUS = WAITING_FOUNDER_REVIEW
-REVISION = V1_SUPERSEDED_BY_V2
+REVISION = V2_SUPERSEDED_BY_V2.1
 HUMAN_GATE = YES
 FOUNDER_APPROVED = NO
 LOCKED = NO
