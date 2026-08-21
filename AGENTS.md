@@ -43,6 +43,7 @@ Cursor는 **플랜 집행기**다. 스택을 ADR 없이 바꾸지 않는다.
 - `NODE_OPTIONS=--max-old-space-size=1536` · Docker OFF
 - 상태: `pnpm lowspec:status` · 정리: `pnpm cleanup:lowspec`
 - 이중 AI 확장(Continue 등)·rust-analyzer 상시 ON 금지 (engine 작업 때만)
+- 작업용 MCP(Playwright · Figma 등) 제거·비활성화 금지
 
 
 ## 금지

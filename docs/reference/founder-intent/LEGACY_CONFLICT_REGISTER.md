@@ -164,3 +164,49 @@ Consumer presentation authority
 ```
 
 **Resolution:** `ACTIVE` = Business/Engine/Money/Security/Ops 의도 보존. Consumer Visual 실행 권위 = 0.
+
+---
+
+## C-11
+
+```text
+03 R1 home-certification pending
+vs
+Home founder freeze LOCKED
+```
+
+출처: 03 `redesign-r1-home-certification` · `governance/consumer-home-approval/home-approval-freeze.v1.json`.
+
+**Resolution:** `HOME_FREEZE WINS` for Home presentation only.
+
+```text
+03 pending = historical
+PENDING_STATUS_FALSIFIED = NO
+HOME ≠ 03 H11 certification
+```
+
+---
+
+## C-12
+
+```text
+04 R6 12-module IA + Korean RBAC + §36 inline price + §9.8.9 hide/pin/margin
+vs
+Founder Admin Control Plane (price layers/modes/formula/scope, segments,
+named kill switches, future nav, FOUNDER/MATCH_ADMIN capability roles)
+```
+
+출처: 04 `§9.1`/`§9.6`/`§9.8.9`/`§9.9` · `governance/admin/admin-control-plane.v1.json` · 04 `§9.11`.
+
+**Resolution:** `EXISTING_R6_PRESERVED + CONTROL_PLANE_SUPERSET`
+
+```text
+12-module IA = PRESERVED (future nav ≠ this-slice sidebar rewrite; sidebar 13 = 0)
+Korean RBAC = PRESERVED (future roles = capability mapping, not delete-and-replace)
+§36 / §9.8.9 / 3-mode = PRESERVED surfaces; layers/modes/VIEW AS = SUPERSET
+successRatePercent random = FORBIDDEN (unchanged)
+OBSERVED_MATCH_RATE != ADMIN_TARGET_MATCH_RATE
+fee model = NOT_FROZEN
+04 pending 17 = historical (falsify 0)
+ADMIN_CONTROL_PLANE_RUNTIME = 0 this slice
+```

@@ -1,6 +1,6 @@
 ---
 name: AI Profit OS — Admin & Ops
-overview: "v7.23.0 기존 Admin pending15 전부 보존 · 03 R1~R5 pending0 후 R6 task-first 12모듈 실행 · LIVE/DRY_RUN/SIMULATION 3-mode + OpenNext Ops Worker + release certification."
+overview: v7.23.0 기존 Admin pending15 전부 보존 · 03 R1~R5 pending0 후 R6 task-first 12모듈 실행 · LIVE/DRY_RUN/SIMULATION 3-mode + OpenNext Ops Worker + release certification.
 todos:
   - id: admin-ia-child-routes-911
     content: "[grok-4.5|256K] v7.22.33 §9.1.1 자식 route/tab 전수 잠금 · sidebar13 0 · BOOTSTRAP §6 sync · monorepo routes 선행 SSOT"
@@ -58,6 +58,16 @@ todos:
     status: pending
 isProject: false
 ---
+<!-- REL-017-AUTHORITY-STAMP -->
+```text
+EXECUTION_AUTHORITY = NO
+CONTENT_AUTHORITY = NO
+HISTORICAL_REFERENCE_ONLY = YES
+DO_NOT_EXECUTE = YES
+SUPERSEDED_BY = PUTDUK_RELEASE_MASTER.plan.md
+```
+<!-- /REL-017-AUTHORITY-STAMP -->
+
 
 > **PHASE 2 PLAN AUTHORITY (2026-08-18)**
 >
@@ -66,10 +76,13 @@ isProject: false
 > ADMIN_RUNTIME = PRESERVED
 > AUTO_EXECUTION = DISABLED
 > CONSUMER_PRESENTATION_AUTHORITY = NO
+> ADMIN_CONTROL_PLANE_FOUNDER_LOCK = YES
+> ADMIN_CONTROL_PLANE_RUNTIME = NOT_IMPLEMENTED
 > ```
 >
 > History preserved. `status` not rewritten. Not current Consumer presentation authority.
 > SSOT: `docs/reference/founder-intent/PLAN_AUTHORITY_MATRIX.md`
+> Control Plane lock: `governance/admin/admin-control-plane.v1.json` · §9.11
 # AI Profit OS — Admin & Ops (v7.23.0 · Redesign R6)
 
 > 분리 플랜 — Index: `ai_profit_os_00_index_a1b2c3d4.plan.md` · ARCHIVE: `ai_profit_os_launch_54c1261e.plan.md` · 착수전: `docs/CONSTITUTION_BOOTSTRAP.md`
@@ -88,6 +101,7 @@ isProject: false
 > **v7.22.28:** Index §20.2 · 유저 CTA `수익 벌기` **pointer** · domain=`participate` · Admin Owns **변경 0** · `executionPlatforms` Admin only  
 > **v7.22.29~32 pointer:** Soft60/Hard90 · 긴장감 · listing=ebay멀티\|admin · **`yahoo_jp` adapter Day-1 FORBIDDEN** · **표기(§38.10)는 partners 탭** (v7.22.41 supersede)  
 > **v7.22.33:** **§9.1.1** 자식 route 전수 · `growth?tab=simulation` · feature-platform 유령 제거 · BOOTSTRAP §6 sync  
+> **v7.24.8 (Admin Control Plane Founder Lock · 플랜+governance only · 구현0):** PUTDUK Admin=`BUSINESS OPERATING CONTROL PLANE` · SSOT=`governance/admin/admin-control-plane.v1.json` · §9.11 신규만 흡수 · 기존 12모듈/§36/§9.8.9/3-mode/한국어 RBAC 본문 재서술 0 · 신규 todo 0 · pending 17 위조 0 · Home/Profits/Identity Matching/SourceObservation 미접촉 · commit/push 0  
 > **v7.24.7:** R6 certification PASS ≠ 「퍼뜩의 최종 자동운영 출시 준비 완료」 · 실데이터 판정 Owns=06 `ads-autonomous-ops-release-certification` · R6 완료조건 추가 0  
 > **v7.24.6 (Founder Operations Dashboard · 플랜+rule only · 구현0):** `admin-ops` HARDEN — `/admin` 흡수 · 4질문 · audit feed · Human Queue · 광고 긴급정지 ≠ 거래회로 · `growth?tab=paid-ads`≠`campaigns` · Standing Authorization 표시(enforce=06) · sidebar 13 금지 · 3-mode HIGH 목록 HARDEN · completed 재오픈 0  
 > **v7.24.5 (Ads Additive Patch · 플랜+rule only · 구현0):** §9.5.6 / `admin-ops` + `admin-user-ops` HARDEN — CAPI 진단 표시(retry backlog·permanent fail·last delivery·test/prod) · Admin은 표시만 · secret 0 · `/ads` Admin 변경 0 · wire Owns=Infra `marketing-admin-roas-health` 불변  
@@ -893,6 +907,305 @@ GET/PUT  /admin/api/v1/users/:id/match-policy-override
 | **알림** | 고액 입출금 · circuit · reconciliation fail | `/admin` bell |
 | **감사** | 운영자 행동 · 유저 상태 변경 · 잔액조정 | `/admin/audit` |
 | **설정** | deposit-config · platform_margin · RBAC | wallet/adapters/settings |
+
+### 9.11 PUTDUK Admin Control Plane Founder Lock (v7.24.8 · 구현 0)
+
+> **이번 절은 Admin을 지금 구현하지 않는다.** Founder 운영 요구사항 lock.  
+> **필드/enum SSOT:** `governance/admin/admin-control-plane.v1.json`  
+> **중복0:** 아래는 04 기존 본문(§9.1~§9.10 · §36 · §9.8.9 · §9.9 · 3-mode · §40)에 **없던 SUPERSET만** 흡수한다. 기존 표·인터페이스·12모듈 IA를 여기 재복사하지 않는다.  
+> **실행:** 레거시 04 File-Serial 자동착수 0 · 신규 todo 0 · pending 17 위조 0 · 미래 CURRENT ACTIVE Admin 플랜이 본 lock을 import.
+
+#### 9.11.0 절대 결정
+
+PUTDUK Admin은 회원/상품/문의 조회형 일반 관리자가 아니다.
+
+```text
+PUTDUK Admin = BUSINESS OPERATING CONTROL PLANE
+BACKEND_ADMIN_COMPLEXITY = HIGH
+USER_UI_COMPLEXITY = MINIMAL
+AUTOMATION + FOUNDER CONTROL + ADMIN OPERATIONS + POLICY ENGINE + AUDITABILITY
+```
+
+자동화는 운영자를 돕는 기능이다. Founder/권한 있는 운영자가 상품·기회·가격·사용자·매칭·배정·수익정책·참여한도·상태·캠페인을 세밀히 제어할 수 있어야 한다. 자동화가 운영권한을 제거하면 안 된다.
+
+필수 능력 (전부 `REQUIRED` → 본 절 `LOCKED`):
+
+```text
+ADMIN_PRICE_CONTROL
+ADMIN_OPPORTUNITY_CONTROL
+ADMIN_USER_POLICY_CONTROL
+ADMIN_MATCH_CONTROL
+ADMIN_ALLOCATION_CONTROL
+ADMIN_PROFIT_POLICY_CONTROL
+ADMIN_PARTICIPATION_CONTROL
+ADMIN_MANUAL_OVERRIDE
+ADMIN_BULK_OPERATION
+ADMIN_AUDIT_HISTORY
+ADMIN_RBAC
+ADMIN_KILL_SWITCH
+ADMIN_SIMULATION_PREVIEW
+ADMIN_SEGMENTATION
+ADMIN_SCHEDULE_CONTROL
+ADMIN_USER_PREVIEW
+ADMIN_POLICY_VERSIONING
+```
+
+#### 9.11.1 기존 04 대비 커버리지 (재서술 금지 장치)
+
+| Founder 요구 | 04 기존 | 판정 |
+|--------------|---------|------|
+| 12모듈 IA · sidebar 13 금지 | §9.1 · §9.1.1 | **PRESERVED** |
+| 인라인 매입/판매/마진 · 일괄 가격 · SSE | §9.6 / §36 | **PRESERVED_PARTIAL** — 표면 유지. 계층/모드/공식/scope는 NEW |
+| 유저별 숨김/핀/마진/예상수익 | §9.8.9 | **PRESERVED_PARTIAL** — 유지. ALLOW/DENY/WHITELIST/PRIORITY 등은 NEW |
+| 멤버십 sprout→vip · 엄격도 | §9.8.10 | **PRESERVED_PARTIAL** — 필드 유지. 운영 세그먼트 엔진은 NEW |
+| 매칭 엄격도 · 난수 성공률 0 | §48.6 / 2b | **PRESERVED** |
+| LIVE/DRY_RUN/SIMULATION | R6 3-mode | **PRESERVED_PARTIAL** — enum 유일. 영향지표·VIEW AS는 SUPERSET |
+| 한국어 RBAC 5역할 | §9.9 | **PRESERVED** — 미래 capability role은 매핑, 삭제교체 0 |
+| circuit · push kill · 입출금 정지 | §9.10 · §10.3 · §40 | **PRESERVED_PARTIAL** — named kill set는 NEW |
+| ops 분리 · Admin JWT · MFA · IP | §40 | **PRESERVED** |
+| 가격 계층/모드/공식/scope | — | **NEW** |
+| Opportunity 수명주기·운영필드 전수 | 등록·일시정지만 | **NEW** |
+| 참여/수익 운영정책 레이어 | 부분 플래그 | **NEW** |
+| 수수료 모델 수용 아키텍처 | `platform_margin_pct`만 | **NEW** · 모델 고정 0 |
+| AUTO/MANUAL/HYBRID match · 배정 제어 | — | **NEW** |
+| OBSERVED_MATCH_RATE ≠ ADMIN_TARGET | 목표% 자동맞춤 Day-1 0 | **NEW** · 난수% 금지 유지 |
+| 세그먼트 CRUD · 일괄 정책 | tier/membership만 | **NEW** |
+| CanonicalProduct / listing prefer·ignore | adapters health만 | **NEW** |
+| 독립 override ON/OFF · 선행순위 · 기간 · 예약 | 산재 | **NEW** |
+| audit 필수 스키마 · 정책 버전/rollback · 참여 snapshot | audit.events · pricingVersion | **NEW** |
+| Preview As User read-only | §9.8.9 카드 미리보기 | **NEW** |
+| 3층(관측/정책/표시) · 유저 UI 최소 | — | **NEW** |
+| FOUNDER_OVERRIDE ≠ immutable truth 파괴 | ledger 직접변경 금지 | **NEW** |
+
+**충돌 해소 (C-12):** 기존 R6 IA/RBAC/§36/§9.8.9/3-mode/난수성공률0 = 유지. 본 lock = 미래 CURRENT ACTIVE Admin 구현의 SUPERSET. 네비 제안 ≠ 이번 sidebar 개편. 수수료 모델 미고정. 정확한 precedence는 Admin contract 설계에서 확정. Money/Ledger/Engine owner 불변.
+
+#### 9.11.2 3층 아키텍처 (NEW)
+
+```text
+LAYER 1  OBSERVATION / SYSTEM FACT     — source provenance/history 별도 보존
+LAYER 2  PUTDUK OPERATING POLICY       — Admin override / 운영정책
+LAYER 3  USER PRESENTATION             — 유저 표시. 관측 사실과 동일 provenance 위조 금지
+```
+
+Admin은 Layer 2와 필요한 Layer 3를 강하게 통제한다. Layer 1 원본을 DB에서 덮어쓰지 않는다.
+
+#### 9.11.3 가격 제어 SUPERSET (NEW · §36 표 재복사 0)
+
+최소 가격 계층:
+
+```text
+SOURCE_OBSERVED_PRICE
+ADMIN_OVERRIDE_PRICE
+EFFECTIVE_PRICE
+USER_VISIBLE_PRICE
+```
+
+conceptual resolution:
+
+```text
+effectivePrice =
+  validAdminOverride
+  ?? automaticCalculatedPrice
+  ?? sourceObservedPrice
+```
+
+가격 모드: `AUTO_SOURCE` · `MANUAL_OVERRIDE` · `FORMULA` · `FIXED` · `CAMPAIGN` · `USER_SEGMENT` · `USER_SPECIFIC`
+
+Override 최소 필드: 상품 선택 · 매입 기준가격 · 판매 기준가격 · 수익 계산 기준가격 · 사용자 표시가격 · 시작/종료 시각 · 적용 대상 · 사유 · 활성화 ON/OFF.
+
+예: source observed sell 1,200,000 KRW → Admin effective sell 1,500,000 KRW. downstream `grossSpread` · `estimatedProfit` · `targetReturn` · `userPayout` · `platformMargin` · `allocationEconomics`는 **정책 owner**가 재계산한다. 외부 관측 원본 row 덮어쓰기 금지. 운영값은 override/version layer.
+
+유저 표시 가격의 명칭은 향후 법적·제품 계약 필드. 외부 관측 사실과 운영자 설정값을 같은 provenance로 위조하지 않는다.
+
+**Formula:** 임의 JavaScript 실행 **금지**. declarative rule · validated operands · allowed operators · bounded expression. 예: `sourcePrice * 1.05` · `sourcePrice + 50_000` · `min(sourcePrice * 1.10, fixedCap)` · FX adjusted + margin.
+
+**Scope:** `GLOBAL` · `CATEGORY` · `CANONICAL_PRODUCT` · `VARIANT` · `SOURCE` · `LISTING` · `OPPORTUNITY` · `USER_SEGMENT` · `USER` · `CAMPAIGN`.
+
+conceptual precedence (정확표는 contract 설계에서 확정):
+
+```text
+USER > USER_SEGMENT > OPPORTUNITY > PRODUCT > CATEGORY > GLOBAL
+```
+
+#### 9.11.4 Opportunity 운영 (NEW)
+
+자동 생성 Opportunity라도 Admin 수정 불가를 만들지 않는다.
+
+액션: `CREATE` · `ACTIVATE` · `PAUSE` · `DISABLE` · `ARCHIVE` · `HIDE` · `SCHEDULE` · `REOPEN` · `CLOSE`
+
+운영값: `requiredPrincipal` · `minPrincipal` · `maxPrincipal` · `targetProfit` · `targetReturn` · `expectedDuration` · `allocationCapacity` · `participantCapacity` · `startAt` · `endAt` · `visibility`
+
+#### 9.11.5 유저별 Opportunity / 참여 / 수익 정책 (NEW · §9.8.9 SUPERSET)
+
+유저×Opportunity: `USER_ALLOW` · `USER_DENY` · `USER_WHITELIST` · `USER_BLACKLIST` · `USER_PRIORITY` · `USER_FORCE_INCLUDE` · `USER_EXCLUDE`
+
+참여 정책: `minPrincipal` · `maxPrincipal` · daily/weekly/monthly participation limit · `maxConcurrentOpportunities` · `maxActivePrincipal` · category/product/opportunity allow·deny list. account tier/group + 개별 override 모두 지원.
+
+수익 정책은 시장 경제·플랫폼 마진·수수료·execution economics와 **별개**인 `PUTDUK OPERATING POLICY` 레이어:
+
+```text
+targetProfitAmount · minimumProfitAmount · maximumProfitAmount
+targetReturnRate · minimumReturnRate · maximumReturnRate
+profitCap · dailyProfitCap · monthlyProfitCap
+```
+
+예: GENERAL 5~8% · VIP 8~12% · USER_A 7.5% · USER_B 최대 150,000 KRW.
+
+#### 9.11.6 플랫폼 마진 아키텍처 (NEW · 모델 고정 0)
+
+§36 `platform_margin_pct`는 유지. 이번 절에서 실제 수수료 모델을 확정하지 않는다. 수용 가능해야 할 축:
+
+```text
+platformFee · platformMargin · minimumPlatformMargin · targetPlatformMargin
+userProfitShare · companyProfitShare
+fixedFee · percentageFee · hybridFee
+```
+
+#### 9.11.7 매칭 / 배정 / 목표율 (NEW · 난수 성공률 금지 유지)
+
+모드: `AUTO_MATCH` · `MANUAL_MATCH` · `HYBRID_MATCH`  
+액션: `ALLOW` · `BLOCK` · `PAUSE` · `CANCEL` · `REASSIGN` · `FORCE_REVIEW`
+
+유저별: `allocationPriority` · `allocationWeight` · `maxAllocation` · `maxConcurrentMatches` · `dailyMatchLimit` · eligible categories/products/opportunities.
+
+내부 정책: `TARGET_ALLOCATION_RATE` · `ALLOCATION_PRIORITY` · `ALLOCATION_WEIGHT` · `MATCH_ELIGIBILITY` · `MATCH_FREQUENCY_CAP`.
+
+```text
+OBSERVED_MATCH_RATE  !=  ADMIN_TARGET_MATCH_RATE
+```
+
+관측 성공률은 통계. Admin target은 allocation engine 제어에 사용 가능. `successRatePercent` 난수 · 가짜 `MATCH_SUCCESS`는 기존 금지 유지.
+
+#### 9.11.8 세그먼트 엔진 (NEW · membership 필드와 분리)
+
+예: `GENERAL` · `NEW_USER` · `VIP` · `VVIP` · `HIGH_VALUE` · `LOW_ACTIVITY` · `CAMPAIGN_A` · `CAMPAIGN_B` · `MANUAL_GROUP`
+
+액션: create · update · assign · remove.
+
+세그먼트 일괄 축: 가격 · 수익 · Opportunity 노출 · 참여한도 · 배정률 · 매칭 우선순위.
+
+기존 `membership` sprout→vip · `userTier`는 **별 필드 유지**.
+
+#### 9.11.9 CanonicalProduct / Source·Listing (NEW)
+
+CanonicalProduct: active/inactive · visible/hidden · displayName · displayImage 선택 · PUTDUK product code · category · internal tags · manual review · matching status · opportunity eligibility. source provenance · identity evidence history **삭제 금지**.
+
+Source/listing: `ENABLE` · `DISABLE` · `IGNORE` · `REVIEW` · `PREFER` · `DEPRIORITIZE`. 확인: health · parser status · last success · last failure · availability. 기존 adapters KPI 표 재복사 0.
+
+#### 9.11.10 Override 레이어 · 선행순위 · 기간 · 예약 (NEW)
+
+철학: `AUTOMATION + ADMIN OVERRIDE`. 후보(각각 독립 ON/OFF): price · profit · return · principal · duration · visibility · availability · allocation · match · user eligibility · capacity · status · campaign · product display.
+
+conceptual precedence (정확표는 contract 설계):
+
+```text
+FOUNDER EMERGENCY OVERRIDE
+> USER-SPECIFIC OVERRIDE
+> OPPORTUNITY OVERRIDE
+> SEGMENT POLICY
+> PRODUCT POLICY
+> CATEGORY POLICY
+> AUTO ENGINE
+```
+
+silent conflict **금지**.
+
+기간: `effectiveFrom` · `effectiveUntil` · 종료 후 이전 정책 자동 복귀.
+
+예약: Opportunity launch/close · price change · profit policy change · campaign start/end · user eligibility change.
+
+#### 9.11.11 Bulk · Simulation SUPERSET · Preview As User (NEW)
+
+Bulk 예: 선택 200 Opportunity pause · 1,000명 segment 변경 · category 가격 formula 일괄 · VIP return policy 변경 · source 전체 disable. **preview + confirmation + audit 필수**.
+
+Simulation은 새 mode enum을 만들지 않는다. 기존 `LIVE` / `DRY_RUN` / `SIMULATION`만. 적용 전 보여야 할 영향: 현재 상태 → 변경 예정 정책 → 영향 Opportunity 수 · 영향 유저 수 · 평균 표시 기대수익 · 추정 플랫폼 마진. `SIMULATION`/`DRY_RUN` live write 0 (기존 유지).
+
+Preview As User: `VIEW_AS_USER` · `VIEW_AS_VIP` · `VIEW_AS_GENERAL`. **read-only**. impersonation write 기본 금지. 확인: 보이는 상품 · 원금 · 예상수익 · 참여 가능 여부. §9.8.9 카드 미리보기는 유지, 본 기능이 SUPERSET.
+
+#### 9.11.12 Kill Switch SUPERSET (NEW)
+
+```text
+GLOBAL_OPPORTUNITY_PAUSE · GLOBAL_MATCH_PAUSE · GLOBAL_PARTICIPATION_PAUSE
+CATEGORY_PAUSE · SOURCE_PAUSE · PRODUCT_PAUSE · USER_PAUSE
+DEPOSIT_PAUSE · WITHDRAWAL_PAUSE
+```
+
+Money/Ledger truth 삭제·변조 금지. 긴급 버튼 = Founder/highest role. 기존 circuit · `pushEnabled` kill 유지.
+
+#### 9.11.13 RBAC 매핑 · 민감행위 · Audit · 버전 · Snapshot (NEW)
+
+§9.9 한국어 역할 **유지**. 미래 capability 역할(삭제교체 0, 매핑만): `FOUNDER` · `SUPER_ADMIN` · `OPS_ADMIN` · `FINANCE_ADMIN` · `MATCH_ADMIN` · `CONTENT_ADMIN` · `CS_ADMIN` · `READ_ONLY_AUDITOR`.
+
+예: CS → 가격 변경 불가 · CONTENT → 상품명/이미지만, Wallet 불가 · MATCH_ADMIN → allocation 가능, Ledger 직접 수정 불가.
+
+고위험(price/profit override · large allocation · wallet/settlement · global kill): role check · reason · confirmation · audit. 향후 `FOUNDER_ONLY` · `DUAL_APPROVAL` 수용 가능하게.
+
+Audit 필수 필드: `auditId` · `actorUserId` · `actorRole` · `action` · `resourceType` · `resourceId` · `before` · `after` · `reason` · `createdAt` · `requestId`.
+
+정책은 덮어쓰기만이 아니다. V1/V2/V3 history 보존. rollback 가능 · rollback도 audit event. 기존 `pricingVersion++`는 유지.
+
+참여 순간 snapshot (이후 정책 변경이 과거 참여 계약을 덮어쓰지 않음):
+
+```text
+userId · opportunityId
+effectivePrincipal · effectiveProfit · effectiveReturn
+pricingPolicyVersion · userPolicyVersion
+participatedAt
+```
+
+정산 owner = 기존 Money/Ledger 계약.
+
+#### 9.11.14 대시보드 가시성 후보 · 미래 네비 (NEW · KPI/IA 미고정)
+
+기존 TOP5 · 4질문 **유지**. 아래는 향후 Founder 승인 KPI 후보(지금 확정 0):
+
+Active/Paused Opportunities · Active Participants · Pending/Completed Matches · Total Active Principal · Expected User Payout · Expected Platform Margin · Source Health · Price Override Count · Manual Match Count · Failed Jobs · Stale Opportunities · Pending Admin Reviews.
+
+미래 네비 제안(이번 slice UI 0 · 12모듈 개편 0 · sidebar 13 금지):
+
+Dashboard · Opportunities · Products · Sources · Matching · Users · Segments · Allocations · Pricing · Profit Policies · Campaigns · Transactions · Settlement · Wallet Operations · Source Health · Jobs · Audit Logs · Admin Users · Roles & Permissions · System Controls.
+
+#### 9.11.15 유저 UI 최소 · 성능 · 보안 · Founder Override (NEW)
+
+Opportunity 기본 유저 화면은 대략: 표시 인가 이미지 · 상품명 · 매입/유효 기준 · 판매/유효 기준 · 필요 원금 · 예상수익 · 예상수익률 · 예상 기간 · 참여 상태 · [참여하기]. Matching evidence / parser / GTIN / MPN / SourceObservation를 기본 상품 UI에 노출하지 않는다. FAQ는 별도 UX owner.
+
+정책 lookup이 유저 요청마다 복잡한 join 수십 개를 만들지 않게 설계. 향후 검토: compiled effective policy · policy cache · version key · event invalidation · 기존 스택이 정당화하면 Redis. **이번 slice에서 신규 infra 강제 0.**
+
+Admin API는 유저 API와 권한 경계. 필수: authentication · authorization · RBAC · input validation · 해당 시 CSRF · 해당 시 rate limit · **서버측 권한 강제** · audit. 프론트 버튼 숨김 ≠ 권한보안. §40 분리/JWT/MFA/IP 유지.
+
+Founder는 운영정책 layer 최상위 override. 변경은 `FOUNDER_OVERRIDE`로 version/audit. 다음 파괴와 분리: Ledger historical entry 삭제 · Audit history 삭제 · Source provenance 파괴.
+
+#### 9.11.16 현재 작업 보호 · 이번 slice 금지
+
+미접촉: Identity Matching V2 · Canonical Product · Source Observation · Profits UI · Home · Spark Dash.
+
+금지: Admin UI/API · DB migration · price/Opportunity/matcher engine 변경 · user schema · Money/Ledger · 실제 정책 적용 · source parser · 신규 todo · commit/push/stash/restore/reset/clean/force.
+
+#### 9.11.17 향후 구현 순서 (개념 · 당시 재감사)
+
+한 번에 전부 만들지 않는다. 정확한 순서는 당시 repo 재감사.
+
+```text
+SLICE 1  Admin RBAC + Audit Foundation
+SLICE 2  Opportunity Control
+SLICE 3  Pricing Override Engine
+SLICE 4  User / Segment Policy
+SLICE 5  Profit / Allocation Policy
+SLICE 6  Manual Match Control
+SLICE 7  Bulk / Schedule / Campaign
+SLICE 8  Simulation / Preview As User
+SLICE 9  Source Health / Ops
+SLICE 10 Admin Dashboard / Full Control Center
+```
+
+```text
+FUTURE_ADMIN_IMPLEMENTATION_ENTRYPOINT =
+  governance/admin/admin-control-plane.v1.json
+  + 본 플랜 §9.11
+  + 미래 CURRENT ACTIVE Admin 플랜
+```
+
+레거시 04 pending 17은 이력 R6 큐. 본 lock을 이유로 completed 위조 · 재오픈 금지.
 
 ---
 

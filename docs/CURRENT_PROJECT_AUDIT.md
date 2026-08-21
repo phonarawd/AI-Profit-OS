@@ -1,5 +1,9 @@
 ﻿# CURRENT PROJECT AUDIT
 
+> **VOID 2026-08-18.** Pre-greenfield snapshot. HomePageClient / HomeClean / Visual Master = 권위 0.
+> 구현·플랜 입력으로 쓰지 말 것. BUSINESS_TRUTH = `docs/GREENFIELD_ENGINE_PRESERVATION_MANIFEST.md`.
+> VISUAL_TRUTH = APPROVED_FIGMA_ONLY.
+
 > READ-ONLY. 2026-08-18. 구현·삭제·리팩터·Figma 착수 없음.
 > 판단 근거 = 실제 import / 호출 / route / API / service / DB. 파일명·README만으로 단정하지 않음.
 > Working tree는 dirty이며 그 상태 그대로 분석했다.

@@ -1,7 +1,3 @@
-
-> **GREENFIELD 2026-08-18:** Consumer Visual / UX / Brand / Visual Master / Canon visual authority = VOID.
-> VISUAL_TRUTH = APPROVED_FIGMA_ONLY. BUSINESS_TRUTH = PRESERVED_DOMAIN_ENGINE.
-> Do not use this file as Visual SSOT. Do not recover pre-reset UI from Git.
 ---
 name: AI Profit OS — Index
 overview: v7.23.0 플랫폼 재설계 리베이스 채택 · 외부 d903eef7=REFERENCE ONLY · 실행 SSOT=00~06 해시 플랜 · 현재=00 R0 `platform-redesign-r0-inventory` · Runtime Phase(P0~P3)와 Redesign Stage(R0~R8) 분리 · completed 불변 · ADR-017 Light+Purple/5탭 새 라벨/OpenNext Workers only · v7.23.1(2026-08-16) ADR-018 Peotteok Visual Master Reset은 **HISTORICAL / SUPERSEDED / REFERENCE ONLY**(GREENFIELD 2026-08-18 · execution disabled). 현재 VISUAL_TRUTH=APPROVED_FIGMA_ONLY · Home Visual Master는 현재 권위가 아님.
@@ -86,6 +82,16 @@ todos:
     status: completed
 isProject: false
 ---
+<!-- REL-017-AUTHORITY-STAMP -->
+```text
+EXECUTION_AUTHORITY = NO
+CONTENT_AUTHORITY = NO
+HISTORICAL_REFERENCE_ONLY = YES
+DO_NOT_EXECUTE = YES
+SUPERSEDED_BY = PUTDUK_RELEASE_MASTER.plan.md
+```
+<!-- /REL-017-AUTHORITY-STAMP -->
+
 
 > **PHASE 2 PLAN AUTHORITY (2026-08-18)**
 >

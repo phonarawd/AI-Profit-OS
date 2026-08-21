@@ -7,6 +7,11 @@ alwaysApply: true
 
 VISUAL_TRUTH = APPROVED_FIGMA_ONLY.
 
+HOME PRESENTATION BASELINE = FOUNDER APPROVED / LOCKED
+(`governance/consumer-home-approval/home-approval-freeze.v1.json`).
+Founder가 Home을 다시 OPEN하기 전까지 Home visual 수정 금지.
+다른 페이지는 Home geometry에 종속되지 않는다.
+
 BUSINESS_TRUTH = PRESERVED_DOMAIN_ENGINE.
 
 LEGACY_UI_REFERENCE = FORBIDDEN.
@@ -50,7 +55,7 @@ FIGMA WINS.
 If Figma and UI assumption differ from engine truth:
 ENGINE WINS FOR BUSINESS LOGIC.
 
-If no approved Figma exists:
+If no approved Figma exists (Home freeze 제외):
 do not recover a legacy design.
 Use only minimal development placeholder.
 Do not invent Auth/Wallet forms or tab IA.

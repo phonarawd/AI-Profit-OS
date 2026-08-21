@@ -16,7 +16,14 @@ PLAYWRIGHT            = VERIFICATION EVIDENCE
 
 ```text
 NEW APPROVED FIGMA = NONE
+HOME PRESENTATION BASELINE = FOUNDER APPROVED / LOCKED
 ```
+
+Home SSOT = `governance/consumer-home-approval/home-approval-freeze.v1.json`.  
+Home freeze ≠ 03 UI `redesign-r1-home-certification` 완료. 다른 Consumer 페이지는 승인 Figma 전까지 placeholder.
+
+Admin Control Plane SSOT = `governance/admin/admin-control-plane.v1.json` (04 `§9.11` pointer).  
+구현 0. 04 pending 17을 completed로 바꾸지 않음.
 
 따라서 구 Visual Master / Visual Contract / Canon / Lux / Light+Purple / 고정 5탭 / 구 Home / 구 mockup / 구 Git UI 는 **현재 권위가 아니다.** 레거시 프레젠테이션 fallback 없음.
 
@@ -27,7 +34,8 @@ NEW APPROVED FIGMA = NONE
 | [PLAN_AUTHORITY_MATRIX.md](./PLAN_AUTHORITY_MATRIX.md) | 레거시 플랜 9개 분류 · 자동실행 0 |
 | [CONSTITUTION_AUTHORITY_MATRIX.md](./CONSTITUTION_AUTHORITY_MATRIX.md) | 헌법 29개 절별 분류 |
 | [FOUNDER_INTENT_EXTRACT.md](./FOUNDER_INTENT_EXTRACT.md) | 보존할 PUTDUK 제품 의도 (시각 복구 아님) |
-| [LEGACY_CONFLICT_REGISTER.md](./LEGACY_CONFLICT_REGISTER.md) | 충돌 C-01~ 와 현재 해소 |
+| [LEGACY_CONFLICT_REGISTER.md](./LEGACY_CONFLICT_REGISTER.md) | 충돌 C-01~C-12 와 현재 해소 |
+| [`governance/admin/admin-control-plane.v1.json`](../../../governance/admin/admin-control-plane.v1.json) | 미래 Admin Control Plane Founder Lock · 구현 0 |
 
 ## Process authority (not visual)
 

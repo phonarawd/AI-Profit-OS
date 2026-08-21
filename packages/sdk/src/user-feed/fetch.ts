@@ -109,10 +109,29 @@ export function readOpportunityFeedItem(
     marginPct: asMoneyString(o.marginPct) ?? asText(o.marginPct),
   };
 
-  const buyMarketId = asText(o.buyMarketId);
-  const buyMarketLabelKo = asText(o.buyMarketLabelKo);
+  const pricing =
+    o.pricing != null && typeof o.pricing === "object" && !Array.isArray(o.pricing)
+      ? (o.pricing as Record<string, unknown>)
+      : null;
+  const buyMarketId = asText(o.buyMarketId) ?? asText(pricing?.buyMarketId);
+  const buyMarketLabelKo =
+    asText(o.buyMarketLabelKo) ?? asText(pricing?.buyMarketLabelKo);
+  const sellMarketId = asText(o.sellMarketId) ?? asText(pricing?.sellMarketId);
+  const sellMarketLabelKo =
+    asText(o.sellMarketLabelKo) ?? asText(pricing?.sellMarketLabelKo);
+  const buyPriceUsdt =
+    asMoneyString(o.buyPriceUsdt) ?? asMoneyString(pricing?.buyPriceUsdt);
+  const sellPriceUsdt =
+    asMoneyString(o.sellPriceUsdt) ?? asMoneyString(pricing?.sellPriceUsdt);
+  const grossSpreadUsdt =
+    asMoneyString(o.grossSpreadUsdt) ?? asMoneyString(pricing?.grossSpreadUsdt);
   if (buyMarketId) item.buyMarketId = buyMarketId;
   if (buyMarketLabelKo) item.buyMarketLabelKo = buyMarketLabelKo;
+  if (sellMarketId) item.sellMarketId = sellMarketId;
+  if (sellMarketLabelKo) item.sellMarketLabelKo = sellMarketLabelKo;
+  if (buyPriceUsdt) item.buyPriceUsdt = buyPriceUsdt;
+  if (sellPriceUsdt) item.sellPriceUsdt = sellPriceUsdt;
+  if (grossSpreadUsdt) item.grossSpreadUsdt = grossSpreadUsdt;
   const pricingVersion = asPositiveInt(o.pricingVersion);
   if (pricingVersion != null) item.pricingVersion = pricingVersion;
   const suggestDepositUsdt = asMoneyString(o.suggestDepositUsdt);

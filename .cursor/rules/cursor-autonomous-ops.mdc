@@ -1,15 +1,36 @@
 ---
-description: Cursor Autonomous Ops는 계획만 · Skill/Agent/Automation/Cloud/Bugbot enable 금지 · production deploy는 기존 workflow_dispatch
+description: Cursor Autonomous Ops는 계획만 · Skill/Agent/Automation/Cloud/Bugbot enable 금지 · production deploy는 기존 workflow_dispatch · non-prod A3 허용
 globs: ".cursor/skills/**,.cursor/agents/**,.github/workflows/**,.cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md"
 alwaysApply: false
 ---
 
-# CURSOR_AUTONOMOUS_OPS_RULE (v7.24.6)
+# CURSOR_AUTONOMOUS_OPS_RULE (v7.24.6 · REL-005)
 
 > **지금 Skill 파일·Agent 파일·Automations·Cloud Agents·Bugbot·CLI key·Service Account를 만들지 않고 enable하지 않는다.**
 > 실행 Owns = 06 `cursor-autonomous-ops-enablement` · OpsEvent schema Owns = `infra-observability-late`.
 > 최종 출시 판정 Owns = 06 `ads-autonomous-ops-release-certification` (§31.12). enablement completed ≠ 「퍼뜩의 최종 자동운영 출시 준비 완료」. R8 PASS로 대체 금지.
 > SSOT 본문 = Infra §31.10~§31.12.
+> POST-011 enablement를 이 개정으로 선실행하지 않는다.
+
+## Automation boundary (REL-005)
+
+```text
+NON_PRODUCTION_A3 = ALLOWED
+  - local / dev implementation
+  - QA (QA_ENV_ISOLATION_GUARD PASS 후)
+  - branch / PR / required CI
+  - staging deploy + verification (자격·경로가 있을 때)
+
+PRODUCTION_HUMAN_GATE = REQUIRED
+  - production deploy = .github/workflows/deploy-cloudflare.yml workflow_dispatch HUMAN
+  - production deploy token = Agent 보유 0
+  - ads live 연결 = HUMAN
+  - production DB mutation = REL-701-DB Founder 명시 승인만
+```
+
+에이전트는 non-production(dev/QA/PR/CI/staging)을 A3로 진행할 수 있다.
+production auto-deploy 문장·권한·토큰을 이 파일에 넣지 않는다.
+Standing Authorization HIGH/HUMAN 목록은 이 개정으로 약화하지 않는다.
 
 ## 흐름
 

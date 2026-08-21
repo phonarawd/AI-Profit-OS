@@ -187,6 +187,21 @@
         "expired",
         "circuit_open"
       ]
+    },
+    "buyMarketId": {
+      "type": "string",
+      "enum": [
+        "ebay_us",
+        "ebay_gb",
+        "ebay_de",
+        "ebay_au",
+        "admin"
+      ],
+      "description": "User-surface lift from pricing · Day-1 ebay_*|admin · yahoo_jp 없음 · listFeed pricing 키 없음"
+    },
+    "buyMarketLabelKo": {
+      "type": "string",
+      "description": "User-surface lift from pricing.buyMarketLabelKo · optional · mapper fallback 금지"
     }
   }
 }

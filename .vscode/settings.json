@@ -5,7 +5,7 @@
   "typescript.validate.enable": true,
   "js/ts.implicitProjectConfig.checkJs": false,
   "typescript.disableAutomaticTypeAcquisition": true,
-  "typescript.tsserver.maxTsServerMemory": 1024,
+  "typescript.tsserver.maxTsServerMemory": 768,
   "typescript.tsserver.watchOptions": {
     "watchFile": "useFsEvents",
     "watchDirectory": "useFsEvents",
@@ -46,6 +46,11 @@
   "workbench.startupEditor": "none",
   "telemetry.telemetryLevel": "off",
   "problems.decorations.enabled": false,
+  "editor.semanticHighlighting.enabled": false,
+  "explorer.autoReveal": false,
+  "explorer.decorations.badges": false,
+  "scm.diffDecorations": "none",
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
 
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -133,6 +138,9 @@
     "**/pnpm-lock.yaml": true,
     "**/CONSTITUTION/**": true,
     "**/.cursor/plans/**": true,
+    "**/.cursor/tmp/**": true,
+    "**/.worktrees/**": true,
+    "**/_tmp_*/**": true,
     "**/.tools/**": true,
     "**/docs/**": true
   },
@@ -150,7 +158,10 @@
     "**/pnpm-lock.yaml": true,
     "**/CONSTITUTION": true,
     "**/docs": true,
-    "**/.tools": true
+    "**/.tools": true,
+    "**/.worktrees": true,
+    "**/_tmp_*": true,
+    "**/.cursor/tmp": true
   },
   "files.exclude": {
     "**/node_modules": true,
@@ -162,6 +173,9 @@
     "**/.turbo": true,
     "**/.open-next": true,
     "**/playwright-report": true,
-    "**/test-results": true
+    "**/test-results": true,
+    "**/.worktrees": true,
+    "**/_tmp_*": true,
+    "**/.cursor/tmp": true
   }
 }

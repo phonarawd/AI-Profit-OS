@@ -52,6 +52,13 @@
     "../../schemas/operator-entity.instance.json"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next",
+    ".wrangler",
+    ".open-next",
+    "dist",
+    "coverage",
+    "playwright-report",
+    "test-results"
   ]
 }

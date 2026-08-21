@@ -38,6 +38,12 @@ export type OpportunityFeedItem = {
   marginPct: string | null;
   buyMarketId?: string;
   buyMarketLabelKo?: string;
+  /** getById pricing lift. list에 없어도 됨. 클라 재계산 금지 */
+  sellMarketId?: string;
+  sellMarketLabelKo?: string;
+  buyPriceUsdt?: string;
+  sellPriceUsdt?: string;
+  grossSpreadUsdt?: string;
   /** getById pass-through · participate optimistic lock. list에 없어도 됨 */
   pricingVersion?: number;
   /** Engine suggest. 클라 재계산 금지 */

@@ -4,7 +4,7 @@ globs: ".cursor/plans/ai_profit_os_06_infra_a7b8c9d0.plan.md,.cursor/plans/ai_pr
 alwaysApply: false
 ---
 
-# STANDING_AUTHORIZATION_RULE (v7.24.6)
+# STANDING_AUTHORIZATION_RULE (v7.24.6 · REL-005)
 
 > **지금 enable/connect/mutation 금지.** File-Serial이 06 `ads-budget-standing-authorization`에 도달하기 전 runtime 구현 0.
 > SSOT 본문 = Infra §31.9 · UX 표시 = 04 `admin-ops`.
@@ -35,6 +35,8 @@ Rule/prompt only로 예산을 막지 않는다. `budget +50%` 요청이 한도 `
 ## HIGH / HUMAN (Standing Authorization 밖 · 약화 금지)
 
 최초 광고 계정 연결 · OAuth/재인증 · 새 ad account · 새 channel · 새 landing · 새 message axis · Human Review 미통과 creative · 월 총 광고비 한도 증가 · Standing Authorization 자체 변경 · 허용 자동 증액 범위 확대 · production secret 변경 · legal SSOT 변경 · dual-layer 변경 · production deployment · Money/KRW/high-withdraw Human Confirm · 외부 플랫폼이 사람 verification을 요구하는 경우.
+
+REL-005 `NON_PRODUCTION_A3`(dev/QA/PR/CI/staging) 는 위 HIGH/HUMAN 목록을 제거하거나 약화하지 않는다.
 
 ## Fail-closed
 

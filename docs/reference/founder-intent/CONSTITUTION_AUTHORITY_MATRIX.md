@@ -203,7 +203,8 @@ HISTORICAL_REFERENCE
 | partner impact | 없음 |
 | current authority owner | Admin + Engine pricing runtime |
 
-`PRESERVE_CURRENT_INTENT` + `PRESERVE_RUNTIME_REVALIDATE`
+`PRESERVE_CURRENT_INTENT` + `PRESERVE_RUNTIME_REVALIDATE`  
+additive future lock (2026-08-19): `governance/admin/admin-control-plane.v1.json` = SUPERSET. 본 절 intent 삭제 0.
 
 ---
 

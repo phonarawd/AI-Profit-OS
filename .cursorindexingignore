@@ -19,3 +19,18 @@ COMPANY_REGISTRATION_SUMMARY.md
 FOOTER_LICENSE_COPY.md
 docs/*
 !docs/CONSTITUTION_BOOTSTRAP.md
+!docs/GREENFIELD_ENGINE_PRESERVATION_MANIFEST.md
+!docs/GREENFIELD_RESET_CLASSIFICATION.md
+!docs/GREENFIELD_ADMIN_UI_IMPORT_GRAPH.md
+apps/web/.next/
+apps/admin/.next/
+**/.open-next/**
+**/.wrangler/**
+**/playwright-report/**
+**/test-results/**
+governance/consumer-home-approval/baselines/**
+
+# Worktree mirrors + session tmp — duplicate node_modules/index bloat (8GB RAM)
+.worktrees/
+_tmp_*/
+.cursor/tmp/

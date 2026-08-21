@@ -1,8 +1,9 @@
 # Plan Authority Matrix
 
 > 인덱스. 9개 플랜 본문을 복제하지 않는다.  
-> 실측 `status: pending` 개수 = 2026-08-18 workspace YAML (강제 맞추기 없음).  
-> 전 9파일: `AUTO_EXECUTION = DISABLED`.
+> 실측 `status: pending` 개수 = 2026-08-18 workspace YAML · 2026-08-19 재실측 동일.  
+> 전 9파일: `AUTO_EXECUTION = DISABLED`.  
+> 레거시 pending을 completed로 바꾸지 않음 (`PENDING_STATUS_FALSIFIED = NO`).
 
 ```text
 LEGACY_PLAN_COUNT = 9
@@ -123,9 +124,11 @@ not one of the 9 hashed legacy files below
 | Consumer presentation authority | `NO` |
 | Business/reference value | HIGH — Admin runtime 보존 · Organic Hybrid 생산 권위는 폐기 |
 | runtime revalidation | Admin 런타임 코드가 현재 진실. 본 플랜 pending ≠ 자동 착수 |
-| replacement/current owner | `apps/admin` 런타임 + 미래 CURRENT ACTIVE Admin 플랜 |
+| replacement/current owner | `apps/admin` 런타임 + `governance/admin/admin-control-plane.v1.json` + 미래 CURRENT ACTIVE Admin 플랜 |
 
 Admin 재설계·KYB 삭제는 본 Phase 범위 밖.
+04 pending 17을 본 lock으로 completed 위조하지 않음.
+Control Plane runtime 구현 ≠ 본 매트릭스 행.
 
 ---
 
@@ -181,12 +184,66 @@ Admin 재설계·KYB 삭제는 본 Phase 범위 밖.
 
 ---
 
+## Home presentation (2026-08-19)
+
+| 필드 | 값 |
+|------|-----|
+| file | `governance/consumer-home-approval/home-approval-freeze.v1.json` |
+| classification | `FOUNDER_APPROVED_HOME_LOCK` |
+| 03 `redesign-r1-home-certification` | **pending 유지** (이력 · 구 Visual Master/H11 경로 ≠ Home freeze) |
+| other Consumer pages | 승인 Figma 없음 → placeholder only |
+
+Home freeze ≠ 03 R1 certification 완료. 03 pending 14를 completed로 바꾸지 않음.
+
+---
+
+## Admin Control Plane (2026-08-19)
+
+| 필드 | 값 |
+|------|-----|
+| file | `governance/admin/admin-control-plane.v1.json` |
+| plan pointer | 04 `§9.11` |
+| classification | `FOUNDER_REQUIREMENTS_LOCK` |
+| runtime | `NOT_IMPLEMENTED` |
+| 04 pending | **17 유지** (위조 0 · 신규 todo 0) |
+| CURRENT_ACTIVE | `NO` |
+| Consumer presentation | `NO` |
+
+```text
+PUTDUK Admin = BUSINESS OPERATING CONTROL PLANE
+ADMIN_CONTROL_PLANE_RUNTIME = 0
+LEGACY_04_PENDING_FALSIFIED = NO
+```
+
+기존 12모듈 IA · §36 · §9.8.9 · 3-mode · 한국어 RBAC는 유지.
+본 lock은 미래 CURRENT ACTIVE Admin 구현의 SUPERSET.
+구현 착수 = Founder 승인 + `CURRENT_ACTIVE_PLAN = YES` Admin 플랜. 레거시 04 File-Serial 자동 큐 아님.
+
+---
+
+## Post-legacy slices (2026-08-19)
+
+레거시 9파일이 아님. File-Serial은 `CURRENT_ACTIVE_PLAN = YES`일 때만. 완료 슬라이스는 `NO`.
+
+| file | classification | pending | CURRENT_ACTIVE |
+|------|----------------|---------|----------------|
+| `ai_profit_os_opportunity_reprice_freshness.plan.md` | `COMPLETED_SLICE` | **0** | `NO` |
+| `ai_profit_os_global_observation_parser_runtime.plan.md` | `COMPLETED_SLICE` | **0** | `NO` |
+| `ai_profit_os_ebay_source_observation_bridge.plan.md` | `COMPLETED_SLICE` | **0** | `NO` |
+| `ai_profit_os_global_observation_chrono24.plan.md` | `COMPLETED_SLICE` | **0** | `NO` |
+
+```text
+CURRENT_ACTIVE_PLAN_YES_COUNT = 0
+```
+
+---
+
 ## Future plan system (보존)
 
 | 도구 | 상태 |
 |------|------|
 | 워크스페이스 `.cursor/plans/*.plan.md` 편집 SSOT | PRESERVED |
 | `pnpm cursor:sync-plans` hardlink | PRESERVED |
-| `pnpm verify:plans-ssot` | PRESERVED |
+| `pnpm verify:plans-ssot` | PRESERVED · integrity(frontmatter/`CURRENT_ACTIVE`/legacy pending) |
 | Cursor Plan UI | PRESERVED |
 | 레거시 9파일 File-Serial 자동 큐 | **DISABLED** |

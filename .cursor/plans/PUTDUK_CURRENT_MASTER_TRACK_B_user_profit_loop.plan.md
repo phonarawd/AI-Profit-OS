@@ -31,11 +31,22 @@ todos:
     status: completed
 isProject: false
 ---
+<!-- REL-017-AUTHORITY-STAMP -->
+```text
+EXECUTION_AUTHORITY = NO
+CONTENT_AUTHORITY = YES
+SUPERSEDED_FOR_EXECUTION_BY = PUTDUK_RELEASE_MASTER.plan.md
+```
+<!-- /REL-017-AUTHORITY-STAMP -->
+
 
 > ```text
-> classification = CURRENT_ACTIVE_TRACK
+> classification = CLOSED_TRACK
 > CURRENT_ACTIVE_PLAN = NO
 > TRACK = B (USER PROFIT LOOP)
+> TRACK_STATUS = CLOSED / PASS (2026-08-20 Founder)
+> NEXT_CORE_TRACK = DO_NOT_GUESS — Current Master Index를 read-only로 재확인한 뒤에만
+> WEB_WALLET_8_PENDING_FIGMA = CUX-007 (Track B 미완료가 아님)
 > ```
 
 # Track B — User Profit Loop

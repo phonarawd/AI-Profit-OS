@@ -1,4 +1,4 @@
-﻿---
+---
 name: AI Profit OS Launch
 overview: "ARCHIVE v7.22.25 pointer. ACTIVE=00~06 only. KRW=Admin승인. 본문동기화금지."
 todos:
@@ -31,6 +31,16 @@ todos:
     status: completed
 isProject: false
 ---
+<!-- REL-017-AUTHORITY-STAMP -->
+```text
+EXECUTION_AUTHORITY = NO
+CONTENT_AUTHORITY = NO
+HISTORICAL_REFERENCE_ONLY = YES
+DO_NOT_EXECUTE = YES
+SUPERSEDED_BY = PUTDUK_RELEASE_MASTER.plan.md
+```
+<!-- /REL-017-AUTHORITY-STAMP -->
+
 
 > **PHASE 2 PLAN AUTHORITY (2026-08-18)**
 >

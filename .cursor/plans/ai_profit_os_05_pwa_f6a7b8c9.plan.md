@@ -1,7 +1,3 @@
-
-> **GREENFIELD 2026-08-18:** Consumer Visual / UX / Brand / Visual Master / Canon visual authority = VOID.
-> VISUAL_TRUTH = APPROVED_FIGMA_ONLY. BUSINESS_TRUTH = PRESERVED_DOMAIN_ENGINE.
-> Do not use this file as Visual SSOT. Do not recover pre-reset UI from Git.
 ---
 name: AI Profit OS — PWA & Native
 overview: "v7.23.0 기존 PWA pending6 전부 보존 · 04 R6 pending0 후 Shell→Push→fanout→WebAuthn→Store(v2)→PWA certification · ADR-017 Light manifest · OpenNext Web Worker."
@@ -29,6 +25,20 @@ todos:
     status: pending
 isProject: false
 ---
+<!-- REL-017-AUTHORITY-STAMP -->
+```text
+EXECUTION_AUTHORITY = NO
+CONTENT_AUTHORITY = NO
+HISTORICAL_REFERENCE_ONLY = YES
+DO_NOT_EXECUTE = YES
+SUPERSEDED_BY = PUTDUK_RELEASE_MASTER.plan.md
+```
+<!-- /REL-017-AUTHORITY-STAMP -->
+
+
+> **GREENFIELD 2026-08-18:** Consumer Visual / UX / Brand / Visual Master / Canon visual authority = VOID.
+> VISUAL_TRUTH = APPROVED_FIGMA_ONLY. BUSINESS_TRUTH = PRESERVED_DOMAIN_ENGINE.
+> Do not use this file as Visual SSOT. Do not recover pre-reset UI from Git.
 
 > **PHASE 2 PLAN AUTHORITY (2026-08-18)**
 >

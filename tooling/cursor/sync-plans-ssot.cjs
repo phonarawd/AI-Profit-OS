@@ -45,20 +45,19 @@ function sha256(filePath) {
   return crypto.createHash("sha256").update(buf).digest("hex");
 }
 
+/** Workspace SSOT + Cursor Plan UI home mirror 대상 */
+function isSyncedPlanName(n) {
+  return /^(ai_profit_os_|PUTDUK_CURRENT_).+\.plan\.md$/i.test(n);
+}
+
 function listActiveWorkspacePlans() {
   if (!fs.existsSync(wsPlans)) return [];
-  return fs
-    .readdirSync(wsPlans)
-    .filter((n) => /^ai_profit_os_.+\.plan\.md$/i.test(n))
-    .sort();
+  return fs.readdirSync(wsPlans).filter(isSyncedPlanName).sort();
 }
 
 function listHomeAiProfitPlans() {
   if (!fs.existsSync(homePlans)) return [];
-  return fs
-    .readdirSync(homePlans)
-    .filter((n) => /^ai_profit_os_.+\.plan\.md$/i.test(n))
-    .sort();
+  return fs.readdirSync(homePlans).filter(isSyncedPlanName).sort();
 }
 
 function ensureDir(dir) {
@@ -137,7 +136,9 @@ function quarantineHome(name) {
 function main() {
   const active = listActiveWorkspacePlans();
   if (!active.length) {
-    console.error("[cursor:sync-plans] FAIL — no workspace ai_profit_os_*.plan.md");
+    console.error(
+      "[cursor:sync-plans] FAIL — no workspace ai_profit_os_*.plan.md / PUTDUK_CURRENT_*.plan.md",
+    );
     process.exit(1);
   }
 
