@@ -21,6 +21,31 @@
   "homeAuthorityConflict": "NONE",
   "lastVerifiedAt": "2026-08-22",
   "discoveredVia": "RECOVERED_PROJECT_CONTEXT",
+  "authFounderReviewCandidate": {
+    "revision": "V2",
+    "classification": "FOUNDER_REVIEW_CANDIDATE",
+    "visualReview": "PENDING_FOUNDER_REVIEW",
+    "founderApproved": false,
+    "locked": false,
+    "productionAuthApply": 0,
+    "rel207Started": false,
+    "pr30Merge": "HOLD",
+    "nodeIdsUnchanged": true,
+    "visualDecisions": {
+      "desktopSplit": true,
+      "emojiPrimaryHeadline": "REMOVED",
+      "kakaoDisabled": "MUTED_GRAY",
+      "emailAction": "TERTIARY_TEXT",
+      "productionCopyUnchanged": true,
+      "candidateHeadlines": {
+        "login": "다시 오신 걸 환영해요",
+        "signup": "퍼뜩 시작하기",
+        "completeProfile": "기본 정보만 남겨 주세요",
+        "onboardingIdentity": "글로벌 시세·가격을 비교해 보여 드려요"
+      },
+      "mobileSignupInvite": "DISCLOSURE_OPTIONAL"
+    }
+  },
   "home": {
     "visualAuthority": "SCREENSHOT_FREEZE",
     "freezeFile": "governance/consumer-home-approval/home-approval-freeze.v1.json",
@@ -175,6 +200,8 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
+      "revision": "V2",
+      "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Login / Desktop / Spark Dash / Founder Review Candidate",
       "route": "/auth/login"
     },
@@ -184,6 +211,8 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
+      "revision": "V2",
+      "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Login / Mobile / Spark Dash / Founder Review Candidate",
       "route": "/auth/login"
     },
@@ -193,6 +222,8 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
+      "revision": "V2",
+      "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Signup / Desktop / Spark Dash / Founder Review Candidate",
       "route": "/auth/signup"
     },
@@ -202,6 +233,8 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
+      "revision": "V2",
+      "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Signup / Mobile / Spark Dash / Founder Review Candidate",
       "route": "/auth/signup"
     },
@@ -211,6 +244,8 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
+      "revision": "V2",
+      "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Complete Profile / Desktop / Spark Dash / Founder Review Candidate",
       "route": "/auth/complete-profile"
     },
@@ -220,6 +255,8 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
+      "revision": "V2",
+      "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Complete Profile / Mobile / Spark Dash / Founder Review Candidate",
       "route": "/auth/complete-profile"
     },
@@ -229,6 +266,8 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
+      "revision": "V2",
+      "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Onboarding / Desktop / Spark Dash / Founder Review Candidate",
       "route": "/onboarding"
     },
@@ -238,6 +277,8 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
+      "revision": "V2",
+      "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Onboarding / Mobile / Spark Dash / Founder Review Candidate",
       "route": "/onboarding"
     },
@@ -247,6 +288,8 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
+      "revision": "V2",
+      "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth Journey / Flow / Founder Review Candidate"
     },
     "auth_handoff": {
@@ -255,6 +298,8 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
+      "revision": "V2",
+      "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Dev Handoff / Founder Review Candidate"
     }
   },

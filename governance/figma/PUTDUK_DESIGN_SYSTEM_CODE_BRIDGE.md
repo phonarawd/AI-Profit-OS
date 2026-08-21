@@ -5,6 +5,8 @@ Lightweight mapping. Not presentation authority. Not REL-207.
 ```text
 FILE = w7Yg8j2x9evuheOSSLqFw5
 CLASSIFICATION = FOUNDER_REVIEW_CANDIDATE for Auth frames
+REVISION = V2
+VISUAL_REVIEW = PENDING_FOUNDER_REVIEW
 CODE_CONNECT = CANDIDATE_ONLY
 APPLIED = 0
 PRODUCTION_AUTH_VISUAL_APPLY = 0
@@ -21,7 +23,7 @@ Machine table: `PUTDUK_DESIGN_SYSTEM_CODE_BRIDGE.json`
 |---|---|---|---|
 | Figma `color/bg/*` `color/text/*` `color/action/*` `color/status/*` `spacing/*` `radius/*` | ACTIVE_SEMANTIC_TOKEN | PUTDUK / Semantic · Dimensions | Auth Figma binds these |
 | Figma primitives `ink/*` `paper/*` `pink/500` | ACTIVE_SEMANTIC_TOKEN | PUTDUK / Primitives | Alias source only |
-| `color/border/focus` `color/border/error` `color/action/disabled` `color/status/error` | ACTIVE_SEMANTIC_TOKEN | Semantic aliases added 2026-08-22 | Minimal Auth a11y aliases |
+| `color/border/focus` `color/border/error` `color/action/disabled` `color/status/error` | ACTIVE_SEMANTIC_TOKEN | Semantic aliases added 2026-08-22 | V2: focus alias → pink/500 + 2px weight. error/disabled unchanged |
 | `luxFintech.color.*` | RUNTIME_COMPAT_TOKEN | `packages/ui/tokens/lux-fintech.ts` | Production Auth still uses lux-* classes. Not deleted |
 | `luxFintech.layout.sidebar/hero*` | HISTORICAL_VISUAL_GEOMETRY | same file | ADR-017 geometry. Not used as Auth visual authority |
 | Home `--sd-*` / `--sdm-*` | LOCKED Home local | spark-dash-home CSS | Do not import into Auth |
