@@ -163,6 +163,13 @@
       "note": "No §2 frame. Do not invent a node-id. Owner=wallet.profitUsdt."
     },
     {
+      "rel": "REL-112",
+      "route": "/trades/[id]/settlement",
+      "frameKeys": [],
+      "apply": false,
+      "note": "No §2 frame. Do not invent a node-id. Owner=REL-015 journal."
+    },
+    {
       "rel": "REL-131",
       "route": "later consumer surface",
       "frameKeys": [],

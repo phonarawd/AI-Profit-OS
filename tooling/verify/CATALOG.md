@@ -132,6 +132,7 @@
 | trades-web-wire | REL-110 — `GET /api/v1/trades` session list · `@aipo/sdk/trades` fetchTradeList · `/trades` · buckets.profitUsdt · progressPct 표시 0 — **live** |
 | trades-live-wire | REL-110 — live list · error≠empty · wallet profit unavailable≠0 · Playwright trades-closure — **live** |
 | earnings-embed | REL-111 — `/trades` earnings owner=`wallet.profitUsdt` · client sum 0 · KRW 0 · missing≠0 — **live** |
+| settlement-detail | REL-112 — `/trades/[id]/settlement` · REL-015 journal · 재계산 0 · own/other/missing — **live** |
 | core-opportunity-journey | REL-106~110 DEV/TEST Home→List→Detail→Confirm→Execute→Result · production money mutation 0 — **live** |
 | wallet-live-wire | UI PART9b/9f — `/wallet` buckets + `@aipo/sdk/wallet` `fetchWalletBuckets` (출금≠9f2) — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |

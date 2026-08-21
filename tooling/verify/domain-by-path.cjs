@@ -219,6 +219,14 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/app\/trades\/\[id\]\/settlement\//.test(f) ||
+      /^packages\/sdk\/src\/ledger\//.test(f) ||
+      /^tooling\/e2e\/specs\/settlement-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/settlement-detail\.cjs$/.test(f),
+    scripts: ["settlement-detail.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/trades\/\[id\]\/execute\//.test(f) ||
       /^packages\/sdk\/src\/execution-stream\//.test(f) ||
       /^tooling\/e2e\/specs\/execute-closure\.spec\.cjs$/.test(f) ||

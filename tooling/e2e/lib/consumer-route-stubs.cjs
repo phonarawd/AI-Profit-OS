@@ -413,6 +413,115 @@ async function stubTradeExecution(page, mode) {
   });
 }
 
+const SETTLEMENT_TRADE_ID = "qa-rel112-trade";
+const SETTLEMENT_JOURNAL_ID = "qa-rel112-journal";
+
+const TEST_SETTLEMENT_JOURNAL = {
+  id: SETTLEMENT_JOURNAL_ID,
+  journalType: "settlement",
+  createdAt: "2026-08-21T00:00:00.000Z",
+  referenceType: "trade",
+  referenceId: SETTLEMENT_TRADE_ID,
+  entries: [
+    {
+      id: "qa-rel112-e1",
+      direction: "credit",
+      amountUsdt: "12.50",
+      bucket: "profit",
+      accountKind: "user_bucket",
+    },
+  ],
+};
+
+function isLedgerListUrl(url) {
+  try {
+    const pathName = new URL(url).pathname.replace(/\/$/, "");
+    return pathName.endsWith("/api/v1/me/ledger/journals");
+  } catch {
+    return /\/api\/v1\/me\/ledger\/journals\/?([?#]|$)/.test(url);
+  }
+}
+
+function ledgerJournalId(url) {
+  const match = String(url).match(/\/api\/v1\/me\/ledger\/journals\/([^/?#]+)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+function tradeIdFromUrl(url) {
+  const match = String(url).match(/\/api\/v1\/trades\/([^/?#]+)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+/** DEV/TEST settlement detail stub. production money mutation 0. */
+async function stubSettlement(page, mode) {
+  await page.route("**/api/v1/**", (route) => {
+    const url = route.request().url();
+    const journalId = ledgerJournalId(url);
+    if (url.includes("/api/v1/me/home-read")) {
+      return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    if (journalId) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "other") {
+        return json(route, 403, { messageKo: "다른 분의 내역은 볼 수 없어요" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      if (journalId !== SETTLEMENT_JOURNAL_ID) {
+        return json(route, 403, { messageKo: "다른 분의 내역은 볼 수 없어요" });
+      }
+      return json(route, 200, TEST_SETTLEMENT_JOURNAL);
+    }
+    if (isLedgerListUrl(url)) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "other") {
+        return json(route, 403, { messageKo: "다른 분의 내역은 볼 수 없어요" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      return json(route, 200, {
+        items: [TEST_SETTLEMENT_JOURNAL],
+        total: 1,
+        limit: 100,
+        offset: 0,
+      });
+    }
+    const tradeId = tradeIdFromUrl(url);
+    if (tradeId && !url.includes("execute-tick")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "other") {
+        return json(route, 403, { error: "forbidden" });
+      }
+      if (mode === "missing") {
+        return json(route, 404, { error: "not_found" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      return json(
+        route,
+        200,
+        {
+          ...tradeExecutionState("success", {
+            resultCode: "MATCH_SUCCESS",
+            settledProfitUsdt: "12.50",
+          }),
+          tradeId: SETTLEMENT_TRADE_ID,
+        },
+      );
+    }
+    return json(route, 401, { error: "unauthorized" });
+  });
+}
+
 module.exports = {
   AUTHENTICATED_EMPTY_HOME,
   TEST_OPPORTUNITY_ITEM,
@@ -423,5 +532,8 @@ module.exports = {
   stubTradeList,
   stubCoreOpportunityJourney,
   stubTradeExecution,
+  stubSettlement,
   JOURNEY_TRADE_ID,
+  SETTLEMENT_TRADE_ID,
+  SETTLEMENT_JOURNAL_ID,
 };

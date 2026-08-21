@@ -232,6 +232,15 @@ export function TradesClient() {
                     </span>
                   ) : null}
                 </Link>
+                {settled ? (
+                  <Link
+                    className={styles.itemMeta}
+                    href={`/trades/${item.tradeId}/settlement`}
+                    data-settlement-link="true"
+                  >
+                    정산 보기
+                  </Link>
+                ) : null}
               </li>
             );
           })}
