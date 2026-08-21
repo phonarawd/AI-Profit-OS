@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-131 COMPLETED. FIRST_EXECUTION_TODO=REL-200. HARD_STOP_AFTER=REL-131. BATCH_REL_120_130=ACCOUNT_HUB.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-200 COMPLETED. FIRST_EXECUTION_TODO=REL-201. HARD_STOP_AFTER=REL-200. BATCH_REL_200_206=ADMIN_ENTRY.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -174,8 +174,8 @@ todos:
     content: "[Consumer][A3] Account Hub Figma Desktop 192:194 + Mobile 192:434 = FOUNDER_APPROVED_LOCKED. V1/V2 preserved. production apply 0"
     status: completed
   - id: rel-200
-    content: "[Admin] apps/admin/app/page.tsx(root) 실사 - 순수 리다이렉트인지 확인 후 처리"
-    status: pending
+    content: "[Admin] apps/admin/app/page.tsx(root) 실사 - redirect(/admin) · web /admin 0 · verify:no-admin-in-web PASS"
+    status: completed
   - id: rel-201
     content: "[Admin] /admin 대시보드 실사+구현(현재 2줄 stub 확인됨)"
     status: pending
@@ -420,10 +420,10 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-200
-LAST_COMPLETED_TODO = REL-131
-BATCH_REL_120_130 = ACCOUNT_HUB
-HARD_STOP_AFTER = REL-131
+FIRST_EXECUTION_TODO = REL-201
+LAST_COMPLETED_TODO = REL-200
+BATCH_REL_200_206 = ADMIN_ENTRY
+HARD_STOP_AFTER = REL-200
 PRE_LOCK_COUNT = 1
 REL_COUNT = 116
 POST_COUNT = 19
@@ -2176,12 +2176,12 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-200
 TITLE: apps/admin/app/page.tsx(root) 실사
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-200
 ORIGINAL_INTENT: Admin 루트가 빈 페이지/유저앱 혼입이 아니라 의도된 진입(리다이렉트 또는 대시보드)이어야 한다.
-CURRENT_SCOPE: apps/admin/app/page.tsx 실사. 순수 리다이렉트면 /admin으로 고정. apps/web에 /admin 라우트 0 유지.
+CURRENT_SCOPE: 실사 완료. apps/admin/app/page.tsx는 redirect("/admin"). apps/web/app/admin 없음. 코드 변경 0.
 DEPENDENCIES:
   - REL-006
 IMPLEMENTATION_STEPS:
@@ -2189,9 +2189,9 @@ IMPLEMENTATION_STEPS:
   - 루트가 stub이면 /admin 리다이렉트 또는 대시보드로 정리
   - "verify:no-admin-in-web이 있으면 실행"
   - PR → CI → merge
-VERIFY: web에 /admin 0. admin root가 의도된 진입.
+VERIFY: verify:no-admin-in-web PASS. web /admin 0. root redirect /admin.
 ACCEPTANCE: 루트 진입이 모호하지 않음.
-EVIDENCE: apps/admin/app/page.tsx
+EVIDENCE: governance/release-master/REL-200-ADMIN-ROOT.md
 EXIT_GATE: 유저 앱과 Admin 셸 혼입 시 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
