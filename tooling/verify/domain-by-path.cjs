@@ -319,6 +319,14 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/app\/me\/page\.tsx$/.test(f) ||
+      /^apps\/web\/app\/me\/ProfileClient\.tsx$/.test(f) ||
+      /^tooling\/e2e\/specs\/profile-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/profile-closure\.cjs$/.test(f),
+    scripts: ["profile-closure.cjs", "part5-shell-toast.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/wallet\/history\//.test(f) ||
       /^tooling\/e2e\/specs\/transaction-history-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/transaction-history-closure\.cjs$/.test(f) ||
