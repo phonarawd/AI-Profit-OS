@@ -4,6 +4,11 @@
  */
 
 export {
+  TradeExecutionRequestError,
+  isTradeExecutionRequestError,
+  type TradeExecutionRequestCode,
+} from "./errors";
+export {
   createExecutionTransport,
 } from "./create-transport";
 export {

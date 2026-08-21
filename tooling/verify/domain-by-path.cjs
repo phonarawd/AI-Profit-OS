@@ -219,6 +219,15 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/app\/trades\/\[id\]\/execute\//.test(f) ||
+      /^packages\/sdk\/src\/execution-stream\//.test(f) ||
+      /^tooling\/e2e\/specs\/execute-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/execute-live-wire\.cjs$/.test(f) ||
+      /^tooling\/verify\/execute-web-wire\.cjs$/.test(f),
+    scripts: ["execute-live-wire.cjs", "execute-web-wire.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/profits\/\[id\]\//.test(f) ||
       /^apps\/web\/components\/spark-dash-room\//.test(f) ||
       /^apps\/web\/app\/dev\/spark-dash-room\//.test(f) ||

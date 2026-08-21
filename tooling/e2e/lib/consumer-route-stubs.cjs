@@ -194,6 +194,84 @@ async function stubOpportunityRoom(page, mode, opts = {}) {
   });
 }
 
+function tradeExecutionState(status, extra) {
+  return {
+    tradeId: "qa-rel109-trade",
+    opportunityId: "qa-rel106-opp",
+    pricingVersion: 1,
+    status,
+    resultCode: extra.resultCode,
+    stepIndex: extra.stepIndex ?? 1,
+    progressPct: extra.progressPct ?? 0,
+    logLine: extra.logLine,
+    expectedProfitUsdt: extra.expectedProfitUsdt ?? "12.50",
+    settledProfitUsdt: extra.settledProfitUsdt,
+    asset: {
+      id: "qa-asset",
+      label: "QA 시세 참고 상품",
+    },
+  };
+}
+
+/** DEV/TEST execute-tick stub. production money mutation 0. */
+async function stubTradeExecution(page, mode) {
+  await page.route("**/api/v1/**", (route) => {
+    const url = route.request().url();
+    if (url.includes("/api/v1/me/home-read")) {
+      return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    if (url.includes("/execute-tick") || /\/api\/v1\/trades\/[^/?#]+$/.test(url)) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "missing") {
+        return json(route, 404, { error: "not_found" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      if (mode === "running") {
+        return json(route, 200, tradeExecutionState("running", {}));
+      }
+      if (mode === "requeue") {
+        return json(route, 200, tradeExecutionState("requeue", { resultCode: "REQUEUE" }));
+      }
+      if (mode === "success_pending") {
+        return json(
+          route,
+          200,
+          tradeExecutionState("success", { resultCode: "MATCH_SUCCESS" }),
+        );
+      }
+      if (mode === "success") {
+        return json(
+          route,
+          200,
+          tradeExecutionState("success", {
+            resultCode: "MATCH_SUCCESS",
+            settledProfitUsdt: "12.50",
+          }),
+        );
+      }
+      if (mode === "safe_stop") {
+        return json(
+          route,
+          200,
+          tradeExecutionState("safe_stop", { resultCode: "PRICE_MOVED" }),
+        );
+      }
+      if (mode === "failed") {
+        return json(
+          route,
+          200,
+          tradeExecutionState("failed", { resultCode: "SYSTEM_FAILED" }),
+        );
+      }
+    }
+    return json(route, 401, { error: "unauthorized" });
+  });
+}
+
 module.exports = {
   AUTHENTICATED_EMPTY_HOME,
   TEST_OPPORTUNITY_ITEM,
@@ -201,4 +279,5 @@ module.exports = {
   stubAuthenticatedEmptyHome,
   stubOpportunityFeed,
   stubOpportunityRoom,
+  stubTradeExecution,
 };

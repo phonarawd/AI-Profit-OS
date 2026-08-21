@@ -1,7 +1,7 @@
 /**
- * verify:execution-surfaces — UI §48 · Canon 3유저면 + Admin wire
- * AiProgressRoom · ExecutionSuccessReceipt · ExecutionSafeStop · ExecutionStepList
- * Soft/Hard 카피3줄 배선 · ProductThumb · steps active/done
+ * verify:execution-surfaces — Canon 라이브러리 3면은 유지.
+ * 프로덕션 `/trades/[id]/execute` 오너는 TradeExecuteClient (REL-109).
+ * 레거시 AiProgressRoom/Receipt/SafeStop를 프로덕션 라우트에 다시 붙이면 FAIL.
  */
 const fs = require("fs");
 const path = require("path");
@@ -35,6 +35,7 @@ const files = [
   "packages/ui/canon/surfaces/execution-safe-stop.wire.json",
   "packages/ui/canon/surfaces/admin-execution-policy.wire.json",
   "apps/web/app/trades/[id]/execute/page.tsx",
+  "apps/web/app/trades/[id]/execute/TradeExecuteClient.tsx",
 ];
 for (const f of files) mustExist(f);
 
@@ -123,14 +124,22 @@ for (const exp of [
 }
 
 const page = read("apps/web/app/trades/[id]/execute/page.tsx");
-for (const needle of [
-  "useTradeExecution",
+const client = read("apps/web/app/trades/[id]/execute/TradeExecuteClient.tsx");
+if (!page.includes("TradeExecuteClient")) {
+  fails.push("execute page must mount TradeExecuteClient");
+}
+if (!client.includes("useTradeExecution")) {
+  fails.push("TradeExecuteClient must call useTradeExecution");
+}
+for (const ban of [
   "AiProgressRoom",
   "ExecutionSuccessReceipt",
   "ExecutionSafeStop",
   "@aipo/ui/components/execution",
 ]) {
-  if (!page.includes(needle)) fails.push(`execute page missing ${needle}`);
+  if (page.includes(ban) || client.includes(ban)) {
+    fails.push(`production execute must not remount legacy ${ban}`);
+  }
 }
 
 const uiPkg = read("packages/ui/package.json");
@@ -188,7 +197,7 @@ if (!stubs.includes("execution-surfaces.cjs")) {
 }
 
 // Forbidden RNG / IT
-for (const src of [room, success, safe, page]) {
+for (const src of [room, success, safe, page, client]) {
   if (/successRatePercent|Math\.random\s*\(/.test(src)) {
     fails.push("execution surfaces must not use successRatePercent / Math.random");
   }
@@ -205,5 +214,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:execution-surfaces] PASS (3면+StepList · Soft/Hard · ProductThumb · Canon)",
+  "[verify:execution-surfaces] PASS (Canon library kept · production execute = TradeExecuteClient)",
 );
