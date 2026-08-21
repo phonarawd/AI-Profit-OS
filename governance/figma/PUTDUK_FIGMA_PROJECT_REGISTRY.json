@@ -9,7 +9,7 @@
   "team": "퍼뜩의 팀",
   "pages": ["00_Readme(0:1)", "03_Components(2:68)"],
   "homeAuthorityConflict": "NONE",
-  "lastVerifiedAt": "2026-08-21",
+  "lastVerifiedAt": "2026-08-22",
   "discoveredVia": "RECOVERED_PROJECT_CONTEXT",
   "home": {
     "visualAuthority": "SCREENSHOT_FREEZE",
@@ -96,18 +96,40 @@
       "authority": false
     },
     "account_hub_desktop": {
-      "nodeId": "169:78",
+      "nodeId": "180:102",
       "classification": "FOUNDER_REVIEW_CANDIDATE",
       "authority": false,
       "rel": "REL-131",
-      "name": "Account Hub / Desktop / Spark Dash / Founder Review Candidate"
+      "revision": "V2",
+      "name": "Account Hub / Desktop / Spark Dash / Founder Review Candidate V2",
+      "supersedes": "169:78"
     },
     "account_hub_mobile": {
-      "nodeId": "169:288",
+      "nodeId": "180:430",
       "classification": "FOUNDER_REVIEW_CANDIDATE",
       "authority": false,
       "rel": "REL-131",
-      "name": "Account Hub / Mobile / Spark Dash / Founder Review Candidate"
+      "revision": "V2",
+      "name": "Account Hub / Mobile / Spark Dash / Founder Review Candidate V2",
+      "supersedes": "169:288"
+    },
+    "account_hub_desktop_v1": {
+      "nodeId": "169:78",
+      "classification": "SUPERSEDED",
+      "authority": false,
+      "rel": "REL-131",
+      "revision": "V1",
+      "name": "Account Hub / Desktop / Spark Dash / Founder Review Candidate",
+      "note": "Preserved for Founder comparison. Not deleted. Not current candidate."
+    },
+    "account_hub_mobile_v1": {
+      "nodeId": "169:288",
+      "classification": "SUPERSEDED",
+      "authority": false,
+      "rel": "REL-131",
+      "revision": "V1",
+      "name": "Account Hub / Mobile / Spark Dash / Founder Review Candidate",
+      "note": "Preserved for Founder comparison. Not deleted. Not current candidate."
     }
   },
   "screenBindings": [
@@ -199,14 +221,30 @@
       "extraNodeIdsNotInSection2": [
         {
           "nodeId": "176:78",
-          "note": "REL-131 Desktop annotation. FOUNDER_REVIEW_CANDIDATE, not APPROVED."
+          "note": "REL-131 V1 Desktop annotation. SUPERSEDED. Not APPROVED."
         },
         {
           "nodeId": "176:80",
-          "note": "REL-131 Mobile annotation. FOUNDER_REVIEW_CANDIDATE, not APPROVED."
+          "note": "REL-131 V1 Mobile annotation. SUPERSEDED. Not APPROVED."
+        },
+        {
+          "nodeId": "187:198",
+          "note": "REL-131 V2 Desktop annotation. FOUNDER_REVIEW_CANDIDATE, not APPROVED."
+        },
+        {
+          "nodeId": "187:200",
+          "note": "REL-131 V2 Mobile annotation. FOUNDER_REVIEW_CANDIDATE, not APPROVED."
+        },
+        {
+          "nodeId": "169:78",
+          "note": "REL-131 V1 Desktop frame preserved for comparison. SUPERSEDED."
+        },
+        {
+          "nodeId": "169:288",
+          "note": "REL-131 V1 Mobile frame preserved for comparison. SUPERSEDED."
         }
       ],
-      "note": "Founder review candidate only. Not approved. Not locked. Do not apply to production UI. Do not start REL-132."
+      "note": "V2 is the current Founder review candidate. V1 169:78 / 169:288 preserved. Not approved. Not locked. Do not apply to production UI. Do not start REL-132."
     }
   ]
 }
