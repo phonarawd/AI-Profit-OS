@@ -11,6 +11,7 @@
     "./peotteok": "./src/peotteok/index.ts",
     "./peotteok/usePeotteokChat": "./src/peotteok/usePeotteokChat.ts",
     "./user-feed": "./src/user-feed/index.ts",
+    "./participate": "./src/participate/index.ts",
     "./wallet": "./src/wallet/index.ts",
     "./auth": "./src/auth/index.ts",
     "./home-money-read": "./src/home-money-read/index.ts",

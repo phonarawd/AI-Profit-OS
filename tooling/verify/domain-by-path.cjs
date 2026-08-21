@@ -219,6 +219,21 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/app\/profits\/\[id\]\//.test(f) ||
+      /^apps\/web\/components\/spark-dash-room\//.test(f) ||
+      /^apps\/web\/app\/dev\/spark-dash-room\//.test(f) ||
+      /^packages\/sdk\/src\/participate\//.test(f) ||
+      /^tooling\/e2e\/specs\/opportunity-detail-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/opportunity-detail-live-wire\.cjs$/.test(f) ||
+      /^tooling\/verify\/participate-web-wire\.cjs$/.test(f),
+    scripts: [
+      "opportunity-detail-live-wire.cjs",
+      "participate-web-wire.cjs",
+      "sdk-user-feed.cjs",
+    ],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/profits\//.test(f) ||
       /^apps\/web\/app\/ProfitsDesktopClient\.tsx$/.test(f) ||
       /^apps\/web\/components\/spark-dash-profits\//.test(f) ||
