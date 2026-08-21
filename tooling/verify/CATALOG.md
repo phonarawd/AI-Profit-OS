@@ -184,7 +184,7 @@
 | governance-observation-registry | Index v7.23 R0-4 + post-r0 — schema+registry · status enum · currentlyOccurring⊥reviewTrigger · R0 AtR0 locks=0 불변 · post-r0 Money wave1 promote4/materialize3 · Engine observed2 · Change Control `cc.money.r0-obs-promote-wave1` · path-trigger — **live** |
 | qa-env-isolation-guard | REL-006 QA Lab — **live** (production ref `mgsytcetsiecllmhcyox` throw · money mutation fail-closed · committed Playwright spec · MCP-only DONE 0) |
 | money-unavailable | REL-007 — **live** (missing money → UNAVAILABLE · 실제 0 유지 · Home geometry 0) |
-| figma-project-registry | REL-009 — **live** (fileKey locked · APPROVED_AUTHORITY=0 · Home 46:2 BACKUP · Code Connect candidate-only · screen apply 0) |
+| figma-project-registry | REL-009 + REL-131 — **live** (fileKey locked · REL-131 Desktop 192:194 + Mobile 192:434 FOUNDER_APPROVED_LOCKED · approvedAuthority=2 · V1/V2 SUPERSEDED preserved · other frames candidate · Home 46:2 BACKUP · Code Connect candidate-only · REL-131 apply 0) |
 | auth-rate-limit | REL-010 — **live** (auth 라우트 서버 fixed-window · 429 + 한국어 · QA 가드 안 · 프로덕션 폭격 0) |
 | landing-guest-closure | REL-100 — **live** (guest `/` empty money truth · Landing3s CTA · Home freeze · Playwright landing-guest) |
 | home-closure | REL-105 — **live** (Home freeze · root legacy chrome 0 · guest+member single chrome · /dev isolation · 390/1440 + 2560/3440/3840 overflow · axe REL-012 · missing money ≠ 0 · /profits nav · production URL 0) |

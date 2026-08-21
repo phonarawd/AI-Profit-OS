@@ -2,14 +2,14 @@
   "schema": "putduk.figma.project-registry.v1",
   "source": ".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md §2 FIGMA_PROJECT_REGISTRY",
   "fileKeyReRequest": "FORBIDDEN",
-  "approvedAuthority": 0,
-  "authorityStatus": "FOUNDER_REVIEW_CANDIDATE",
+  "approvedAuthority": 2,
+  "authorityStatus": "MIXED",
   "fileKey": "w7Yg8j2x9evuheOSSLqFw5",
   "fileName": "퍼뜩 · PUTDUK — Spark Dash Consumer UI",
   "team": "퍼뜩의 팀",
   "pages": ["00_Readme(0:1)", "03_Components(2:68)"],
   "homeAuthorityConflict": "NONE",
-  "lastVerifiedAt": "2026-08-20",
+  "lastVerifiedAt": "2026-08-22",
   "discoveredVia": "RECOVERED_PROJECT_CONTEXT",
   "home": {
     "visualAuthority": "SCREENSHOT_FREEZE",
@@ -94,6 +94,70 @@
       "nodeId": "140:358",
       "classification": "FOUNDER_REVIEW_CANDIDATE",
       "authority": false
+    },
+    "account_hub_desktop": {
+      "nodeId": "192:194",
+      "classification": "FOUNDER_APPROVED_LOCKED",
+      "authority": true,
+      "locked": true,
+      "founderApproved": true,
+      "reviewResult": "APPROVED",
+      "visualRevisionRequired": false,
+      "approvedAt": "2026-08-22",
+      "rel": "REL-131",
+      "revision": "V2.1",
+      "name": "Account Hub / Desktop / Spark Dash / Founder Review Candidate V2.1",
+      "supersedes": "180:102"
+    },
+    "account_hub_mobile": {
+      "nodeId": "192:434",
+      "classification": "FOUNDER_APPROVED_LOCKED",
+      "authority": true,
+      "locked": true,
+      "founderApproved": true,
+      "reviewResult": "APPROVED",
+      "visualRevisionRequired": false,
+      "approvedAt": "2026-08-22",
+      "rel": "REL-131",
+      "revision": "V2.1",
+      "name": "Account Hub / Mobile / Spark Dash / Founder Review Candidate V2.1",
+      "supersedes": "180:430"
+    },
+    "account_hub_desktop_v2": {
+      "nodeId": "180:102",
+      "classification": "SUPERSEDED",
+      "authority": false,
+      "rel": "REL-131",
+      "revision": "V2",
+      "name": "Account Hub / Desktop / Spark Dash / Founder Review Candidate V2",
+      "note": "Preserved for Founder comparison. Not deleted. Not current candidate."
+    },
+    "account_hub_mobile_v2": {
+      "nodeId": "180:430",
+      "classification": "SUPERSEDED",
+      "authority": false,
+      "rel": "REL-131",
+      "revision": "V2",
+      "name": "Account Hub / Mobile / Spark Dash / Founder Review Candidate V2",
+      "note": "Preserved for Founder comparison. Not deleted. Not current candidate."
+    },
+    "account_hub_desktop_v1": {
+      "nodeId": "169:78",
+      "classification": "SUPERSEDED",
+      "authority": false,
+      "rel": "REL-131",
+      "revision": "V1",
+      "name": "Account Hub / Desktop / Spark Dash / Founder Review Candidate",
+      "note": "Preserved for Founder comparison. Not deleted. Not current candidate."
+    },
+    "account_hub_mobile_v1": {
+      "nodeId": "169:288",
+      "classification": "SUPERSEDED",
+      "authority": false,
+      "rel": "REL-131",
+      "revision": "V1",
+      "name": "Account Hub / Mobile / Spark Dash / Founder Review Candidate",
+      "note": "Preserved for Founder comparison. Not deleted. Not current candidate."
     }
   },
   "screenBindings": [
@@ -178,10 +242,57 @@
     },
     {
       "rel": "REL-131",
-      "route": "later consumer surface",
-      "frameKeys": [],
+      "route": "/me",
+      "frameKeys": ["account_hub_desktop", "account_hub_mobile"],
       "apply": false,
-      "note": "Read this registry. Do not re-discover fileKey."
+      "status": "FOUNDER_APPROVED_LOCKED",
+      "extraNodeIdsNotInSection2": [
+        {
+          "nodeId": "176:78",
+          "note": "REL-131 V1 Desktop annotation. SUPERSEDED. Not APPROVED."
+        },
+        {
+          "nodeId": "176:80",
+          "note": "REL-131 V1 Mobile annotation. SUPERSEDED. Not APPROVED."
+        },
+        {
+          "nodeId": "187:198",
+          "note": "REL-131 V2 Desktop annotation. SUPERSEDED. Not APPROVED."
+        },
+        {
+          "nodeId": "187:200",
+          "note": "REL-131 V2 Mobile annotation. SUPERSEDED. Not APPROVED."
+        },
+        {
+          "nodeId": "195:630",
+          "note": "REL-131 V2.1 Desktop annotation. Annotation only. Not a locked surface."
+        },
+        {
+          "nodeId": "195:632",
+          "note": "REL-131 V2.1 Mobile annotation. Annotation only. Not a locked surface."
+        },
+        {
+          "nodeId": "195:328",
+          "note": "REL-131 V2.1 Mobile unclipped scroll-content proof. Evidence only. Not the candidate frame."
+        },
+        {
+          "nodeId": "169:78",
+          "note": "REL-131 V1 Desktop frame preserved for comparison. SUPERSEDED."
+        },
+        {
+          "nodeId": "169:288",
+          "note": "REL-131 V1 Mobile frame preserved for comparison. SUPERSEDED."
+        },
+        {
+          "nodeId": "180:102",
+          "note": "REL-131 V2 Desktop frame preserved for comparison. SUPERSEDED."
+        },
+        {
+          "nodeId": "180:430",
+          "note": "REL-131 V2 Mobile frame preserved for comparison. SUPERSEDED."
+        }
+      ],
+      "note": "Founder approved 2026-08-22. Visual authority = Desktop 192:194 + Mobile 192:434. V2 180:102 / 180:430 and V1 169:78 / 169:288 preserved. Production apply remains 0 until a later Master REL requires reconciliation."
     }
   ]
 }
