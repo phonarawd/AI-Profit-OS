@@ -116,6 +116,37 @@
       "productionComponent": "OnboardingFlow",
       "productionPath": "packages/ui/components/onboarding/OnboardingFlow.tsx",
       "status": "FIGMA_ONLY"
+    },
+    {
+      "figmaComponent": "AuthInviteDisclosure",
+      "figmaNodeId": "237:610",
+      "figmaVariants": ["state=Collapsed", "state=Expanded"],
+      "productionComponent": "AuthSignup referral field",
+      "productionPath": "packages/ui/components/auth/AuthSignup.tsx",
+      "status": "PARTIAL"
+    },
+    {
+      "figmaComponent": "OnboardingStoryVisual",
+      "figmaNodeId": "237:1135",
+      "figmaVariants": [
+        "step=Intro, device=Desktop",
+        "step=Compare, device=Desktop",
+        "step=Partner, device=Desktop",
+        "step=Practice, device=Desktop",
+        "step=Wallet, device=Desktop",
+        "step=Action, device=Desktop",
+        "step=Complete, device=Desktop",
+        "step=Intro, device=Mobile",
+        "step=Compare, device=Mobile",
+        "step=Partner, device=Mobile",
+        "step=Practice, device=Mobile",
+        "step=Wallet, device=Mobile",
+        "step=Action, device=Mobile",
+        "step=Complete, device=Mobile"
+      ],
+      "productionComponent": "OnboardingFlow",
+      "productionPath": "packages/ui/components/onboarding/OnboardingFlow.tsx",
+      "status": "FIGMA_ONLY"
     }
   ]
 }

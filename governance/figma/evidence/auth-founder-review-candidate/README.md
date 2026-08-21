@@ -1,18 +1,18 @@
-# Auth Figma Founder Review Candidate V2 — screenshots
+# Auth Figma Founder Review Candidate V3 — screenshots
 
 ```text
 CLASSIFICATION = FOUNDER_REVIEW_CANDIDATE
-REVISION = V2
+REVISION = V3
 FOUNDER_APPROVED = NO
 LOCKED = NO
 VISUAL_REVIEW = PENDING_FOUNDER_REVIEW
 PRODUCTION_AUTH_APPLY = 0
+PRODUCTION_ONBOARDING_APPLY = 0
 REL_207_STARTED = NO
 PR_30_MERGE = HOLD
-DESIGN_FIXTURE_ONLY
 ```
 
-Recaptured from fileKey `w7Yg8j2x9evuheOSSLqFw5` on 2026-08-22 after Spark Dash visual refinement. Previous V1 screenshots were replaced; node IDs were kept in place.
+Recaptured from fileKey `w7Yg8j2x9evuheOSSLqFw5` on 2026-08-22 after Auth minor polish + Onboarding 7-step Spark storytelling. Node IDs were kept in place.
 
 | file | node |
 |---|---|
@@ -25,6 +25,8 @@ Recaptured from fileKey `w7Yg8j2x9evuheOSSLqFw5` on 2026-08-22 after Spark Dash 
 | onboarding-desktop.png | 201:635 |
 | onboarding-mobile.png | 201:672 |
 | auth-flow.png | 201:696 |
+
+7-step Onboarding states: `../auth-onboarding-v3/`.
 
 ## Candidate visual copy (production copy unchanged)
 
@@ -39,10 +41,11 @@ Recaptured from fileKey `w7Yg8j2x9evuheOSSLqFw5` on 2026-08-22 after Spark Dash 
 
 Emphasis uses 퍼뜩 Spark glyph `↯`, not OS emoji.
 
-## Founder visual decisions locked for V2
+## V3 visual decisions (not approved)
 
-- Desktop = left Spark Dash brand pane / right Auth task pane
-- Kakao disabled = muted neutral gray
-- Email = tertiary text inside a 48px hit target
-- Mobile Signup invite code = optional disclosure (`초대 코드가 있나요?`) + optional field
-- Focus = `color/border/focus` → pink/500 + 2px weight
+- Desktop brand panel = static Spark wash + rail + lightning. Large purple blob retired.
+- Mobile Auth = warm paper canvas + footer at viewport bottom. No fake spacer band.
+- Mobile Signup invite = AuthInviteDisclosure default Expanded (matches production optional field). Collapsed exists as component state.
+- Onboarding Compare = Market A / Spark compare / Market B. Old ● ↯ ● removed.
+- Fixture notes moved to 07_Dev-Handoff. Not in product UI.
+- Skip remains usdt/charge step only.

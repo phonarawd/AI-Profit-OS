@@ -22,12 +22,13 @@
   "lastVerifiedAt": "2026-08-22",
   "discoveredVia": "RECOVERED_PROJECT_CONTEXT",
   "authFounderReviewCandidate": {
-    "revision": "V2",
+    "revision": "V3",
     "classification": "FOUNDER_REVIEW_CANDIDATE",
     "visualReview": "PENDING_FOUNDER_REVIEW",
     "founderApproved": false,
     "locked": false,
     "productionAuthApply": 0,
+    "productionOnboardingApply": 0,
     "rel207Started": false,
     "pr30Merge": "HOLD",
     "nodeIdsUnchanged": true,
@@ -43,7 +44,13 @@
         "completeProfile": "기본 정보만 남겨 주세요",
         "onboardingIdentity": "글로벌 시세·가격을 비교해 보여 드려요"
       },
-      "mobileSignupInvite": "DISCLOSURE_OPTIONAL"
+      "mobileSignupInvite": "DISCLOSURE_OPTIONAL",
+      "onboardingStoryVisual": "237:1135",
+      "onboardingScreenDesktop": "237:1813",
+      "onboardingScreenMobile": "237:2155",
+      "authInviteDisclosure": "237:610",
+      "oldCirclePlaceholderRemoved": true,
+      "fixturePolicyMovedToDevHandoff": true
     }
   },
   "home": {
@@ -200,7 +207,7 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
-      "revision": "V2",
+      "revision": "V3",
       "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Login / Desktop / Spark Dash / Founder Review Candidate",
       "route": "/auth/login"
@@ -211,7 +218,7 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
-      "revision": "V2",
+      "revision": "V3",
       "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Login / Mobile / Spark Dash / Founder Review Candidate",
       "route": "/auth/login"
@@ -222,7 +229,7 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
-      "revision": "V2",
+      "revision": "V3",
       "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Signup / Desktop / Spark Dash / Founder Review Candidate",
       "route": "/auth/signup"
@@ -233,7 +240,7 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
-      "revision": "V2",
+      "revision": "V3",
       "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Signup / Mobile / Spark Dash / Founder Review Candidate",
       "route": "/auth/signup"
@@ -244,7 +251,7 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
-      "revision": "V2",
+      "revision": "V3",
       "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Complete Profile / Desktop / Spark Dash / Founder Review Candidate",
       "route": "/auth/complete-profile"
@@ -255,7 +262,7 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
-      "revision": "V2",
+      "revision": "V3",
       "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Complete Profile / Mobile / Spark Dash / Founder Review Candidate",
       "route": "/auth/complete-profile"
@@ -266,7 +273,7 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
-      "revision": "V2",
+      "revision": "V3",
       "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Onboarding / Desktop / Spark Dash / Founder Review Candidate",
       "route": "/onboarding"
@@ -277,7 +284,7 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
-      "revision": "V2",
+      "revision": "V3",
       "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Onboarding / Mobile / Spark Dash / Founder Review Candidate",
       "route": "/onboarding"
@@ -288,7 +295,7 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
-      "revision": "V2",
+      "revision": "V3",
       "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth Journey / Flow / Founder Review Candidate"
     },
@@ -298,16 +305,55 @@
       "authority": false,
       "founderApproved": false,
       "locked": false,
-      "revision": "V2",
+      "revision": "V3",
       "visualReview": "PENDING_FOUNDER_REVIEW",
       "name": "Auth / Dev Handoff / Founder Review Candidate"
+    },
+    "auth_invite_disclosure": {
+      "nodeId": "237:610",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "founderApproved": false,
+      "locked": false,
+      "revision": "V3",
+      "name": "AuthInviteDisclosure"
+    },
+    "onboarding_story_visual": {
+      "nodeId": "237:1135",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "founderApproved": false,
+      "locked": false,
+      "revision": "V3",
+      "name": "OnboardingStoryVisual"
+    },
+    "onboarding_screen_desktop": {
+      "nodeId": "237:1813",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "founderApproved": false,
+      "locked": false,
+      "revision": "V3",
+      "name": "Onboarding / Screen / Desktop"
+    },
+    "onboarding_screen_mobile": {
+      "nodeId": "237:2155",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "founderApproved": false,
+      "locked": false,
+      "revision": "V3",
+      "name": "Onboarding / Screen / Mobile"
     }
   },
   "screenBindings": [
     {
       "rel": "REL-105",
       "route": "/",
-      "frameKeys": ["home_desktop_backup", "home_mobile_review"],
+      "frameKeys": [
+        "home_desktop_backup",
+        "home_mobile_review"
+      ],
       "apply": false,
       "reason": "Home freeze is screenshot authority. Figma 46:2 / 72:762 are BACKUP."
     },
@@ -334,7 +380,9 @@
     {
       "rel": "REL-108",
       "route": "ParticipateConfirmation",
-      "frameKeys": ["participate_confirmation_desktop"],
+      "frameKeys": [
+        "participate_confirmation_desktop"
+      ],
       "extraNodeIdsNotInSection2": [
         {
           "nodeId": "103:314",
@@ -386,7 +434,10 @@
     {
       "rel": "REL-131",
       "route": "/me",
-      "frameKeys": ["account_hub_desktop", "account_hub_mobile"],
+      "frameKeys": [
+        "account_hub_desktop",
+        "account_hub_mobile"
+      ],
       "apply": false,
       "status": "FOUNDER_APPROVED_LOCKED",
       "extraNodeIdsNotInSection2": [
@@ -442,7 +493,10 @@
     {
       "rel": "UX-AUTH-DS-BRIDGE",
       "route": "/auth/login",
-      "frameKeys": ["auth_login_desktop", "auth_login_mobile"],
+      "frameKeys": [
+        "auth_login_desktop",
+        "auth_login_mobile"
+      ],
       "apply": false,
       "status": "FOUNDER_REVIEW_CANDIDATE",
       "note": "Auth visual candidate only. Production Auth visual replacement = 0 until Founder approval. REL-207 not started."
@@ -450,7 +504,10 @@
     {
       "rel": "UX-AUTH-DS-BRIDGE",
       "route": "/auth/signup",
-      "frameKeys": ["auth_signup_desktop", "auth_signup_mobile"],
+      "frameKeys": [
+        "auth_signup_desktop",
+        "auth_signup_mobile"
+      ],
       "apply": false,
       "status": "FOUNDER_REVIEW_CANDIDATE"
     },
@@ -467,7 +524,10 @@
     {
       "rel": "UX-AUTH-DS-BRIDGE",
       "route": "/onboarding",
-      "frameKeys": ["auth_onboarding_desktop", "auth_onboarding_mobile"],
+      "frameKeys": [
+        "auth_onboarding_desktop",
+        "auth_onboarding_mobile"
+      ],
       "apply": false,
       "status": "FOUNDER_REVIEW_CANDIDATE"
     }

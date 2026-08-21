@@ -5,11 +5,12 @@ Lightweight mapping. Not presentation authority. Not REL-207.
 ```text
 FILE = w7Yg8j2x9evuheOSSLqFw5
 CLASSIFICATION = FOUNDER_REVIEW_CANDIDATE for Auth frames
-REVISION = V2
+REVISION = V3
 VISUAL_REVIEW = PENDING_FOUNDER_REVIEW
 CODE_CONNECT = CANDIDATE_ONLY
 APPLIED = 0
 PRODUCTION_AUTH_VISUAL_APPLY = 0
+PRODUCTION_ONBOARDING_APPLY = 0
 HOME_MUTATION = 0
 ACCOUNT_HUB_MUTATION = 0
 REL_207_STARTED = NO
@@ -50,7 +51,9 @@ STATUS: CONNECTED · PARTIAL · FIGMA_ONLY · CODE_ONLY · SUPERSEDED · NOT_APP
 | AuthLogin screen | 198:591 / 199:523 | Desktop 1440 · Mobile 390 | AuthLogin + LoginRuntime | packages/ui/components/auth/AuthLogin.tsx · apps/web/app/auth/login/** | busy, error, note, onKakao, onMagic | Spark Dash semantic | FIGMA_ONLY visual | Production visual apply = 0 |
 | AuthSignup screen | 200:527 / 201:539 | Desktop · Mobile | AuthSignup + SignupRuntime | packages/ui/components/auth/AuthSignup.tsx · apps/web/app/auth/signup/** | terms, marketing, referral, onKakao, onMagic | Spark Dash semantic | FIGMA_ONLY visual | |
 | AuthCompleteProfile screen | 201:571 / 201:604 | Desktop · Mobile | AuthCompleteProfile + CompleteProfileRuntime | packages/ui/components/auth/AuthCompleteProfile.tsx · apps/web/app/auth/complete-profile/** | displayName, phone, birthDate, email?, onSave | Spark Dash semantic | FIGMA_ONLY visual | B_complete ≠ verified |
-| Onboarding screen | 201:635 / 201:672 | identity step | OnboardingFlow | packages/ui/components/onboarding/OnboardingFlow.tsx · apps/web/app/onboarding/page.tsx | step, tone, skip=usdt | Spark Dash semantic | FIGMA_ONLY visual | 7 steps exist; screen shows identity |
+| Onboarding screen | 201:635 / 201:672 | Compare candidate + 7-step variants | OnboardingFlow | packages/ui/components/onboarding/OnboardingFlow.tsx · apps/web/app/onboarding/page.tsx | step, tone, skip=usdt | Spark Dash semantic | FIGMA_ONLY visual | V3 StoryVisual; skip=usdt only |
+| AuthInviteDisclosure | 237:610 | Collapsed, Expanded | AuthSignup referral | packages/ui/components/auth/AuthSignup.tsx | optional referralCode | color/text/* | PARTIAL | Default Expanded matches always-visible optional field |
+| OnboardingStoryVisual | 237:1135 | 7 steps × Desktop/Mobile | OnboardingFlow visuals | packages/ui/components/onboarding/OnboardingFlow.tsx | step | Spark primitives | FIGMA_ONLY | CSS/SVG/transform-opacity contract |
 
 ## Auth UX state matrix
 
@@ -137,3 +140,6 @@ Unresolved Founder decisions (do not auto-lock):
 ## Evidence
 
 `governance/figma/evidence/auth-founder-review-candidate/`
+`governance/figma/evidence/auth-onboarding-v3/`
+
+Performance (design contract, not production apply): WEBGL=0 CANVAS=0 PARTICLE=0 JS_ANIMATION_LOOP=0 ANIMATED_BLUR=0. Motion optional, transform/opacity only, reduced-motion static. Fixture notes live in 07_Dev-Handoff only.
