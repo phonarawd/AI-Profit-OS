@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-130 COMPLETED. FIRST_EXECUTION_TODO=REL-131. HARD_STOP_AFTER=REL-130. BATCH_REL_120_130=ACCOUNT_HUB.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-131 COMPLETED. FIRST_EXECUTION_TODO=REL-200. HARD_STOP_AFTER=REL-131. BATCH_REL_120_130=ACCOUNT_HUB.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -171,8 +171,8 @@ todos:
     content: "[Consumer] Grouped compatibility 검증: /ads /l/* events/strategies/membership/benefits — leftover chrome 0 · fake money 0"
     status: completed
   - id: rel-131
-    content: "[Consumer][A3][Home-only:account_hub_figma] Account Hub Figma Desktop 1440 + Mobile 390 = FOUNDER_REVIEW_CANDIDATE / WAITING_FOUNDER_REVIEW. APPROVED 아님. LOCKED 아님. REL-132 시작 금지"
-    status: pending
+    content: "[Consumer][A3] Account Hub Figma Desktop 192:194 + Mobile 192:434 = FOUNDER_APPROVED_LOCKED. V1/V2 preserved. production apply 0"
+    status: completed
   - id: rel-200
     content: "[Admin] apps/admin/app/page.tsx(root) 실사 - 순수 리다이렉트인지 확인 후 처리"
     status: pending
@@ -420,10 +420,10 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-131
-LAST_COMPLETED_TODO = REL-130
+FIRST_EXECUTION_TODO = REL-200
+LAST_COMPLETED_TODO = REL-131
 BATCH_REL_120_130 = ACCOUNT_HUB
-HARD_STOP_AFTER = REL-130
+HARD_STOP_AFTER = REL-131
 PRE_LOCK_COUNT = 1
 REL_COUNT = 116
 POST_COUNT = 19
@@ -446,7 +446,7 @@ PLAN_STAMP_SCOPE = WORKSPACE_ONLY
 
 ## 1. HARD INVARIANTS
 
-- Consumer presentation authority = APPROVED_FIGMA_ONLY. 현재 APPROVED_AUTHORITY = 0. Home은 screenshot freeze가 유일한 시각 권위.
+- Consumer presentation authority = APPROVED_FIGMA_ONLY. APPROVED_AUTHORITY = 2 (REL-131 Account Hub Desktop 192:194 + Mobile 192:434, FOUNDER_APPROVED_LOCKED). Home은 screenshot freeze가 유일한 Home 시각 권위. 그 외 Figma frame은 FOUNDER_REVIEW_CANDIDATE.
 - HOME_RETROACTIVE_VISUAL_REDESIGN = NO. HOME_LARGE_SCREEN_SAFETY_QA = YES.
 - FAKE FOMO / FAKE MONEY / FAKE DURATION = 0. USDT primary · KRW secondary. missing → 0 금지.
 - Money/Ledger/FX/Matching/Settlement owner 재발명 금지. 잔액 UPDATE 금지. PG사 0.
@@ -465,7 +465,8 @@ PUTDUK_FIGMA_AUTHORITY:
   fileName: "퍼뜩 · PUTDUK — Spark Dash Consumer UI"
   team: "퍼뜩의 팀"
   pages: ["00_Readme(0:1)", "03_Components(2:68)"]
-  authorityStatus: FOUNDER_REVIEW_CANDIDATE
+  authorityStatus: MIXED
+  approvedAuthority: 2
   homeAuthorityConflict: NONE
   candidateFrames:
     home_desktop_backup: "46:2"
@@ -482,13 +483,17 @@ PUTDUK_FIGMA_AUTHORITY:
     execution_mobile_requeue: "140:142"
     execution_mobile_success: "140:250"
     execution_mobile_safestop: "140:358"
-    account_hub_desktop: "169:78"
-    account_hub_mobile: "169:288"
-  lastVerifiedAt: "2026-08-21"
+    account_hub_desktop: "192:194"
+    account_hub_mobile: "192:434"
+    account_hub_desktop_v2: "180:102"
+    account_hub_mobile_v2: "180:430"
+    account_hub_desktop_v1: "169:78"
+    account_hub_mobile_v1: "169:288"
+  lastVerifiedAt: "2026-08-22"
   discoveredVia: RECOVERED_PROJECT_CONTEXT
 ```
 
-APPROVED_AUTHORITY = 0. 후보 frame을 승인으로 승격하지 않는다. REL-009는 이 레지스트리를 재사용한다.
+APPROVED_AUTHORITY = 2. REL-131 Desktop `192:194` + Mobile `192:434` = FOUNDER_APPROVED_LOCKED. V1/V2는 SUPERSEDED로 보존. 그 외 후보 frame을 승인으로 승격하지 않는다. Home freeze는 screenshot authority.
 
 ## 3. PROTECTED_SCOPE_MUTATION INDEX
 
@@ -2140,7 +2145,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-131
 TITLE: Account Hub Figma Desktop + Mobile frames
-STATUS: WAITING_FOUNDER_REVIEW
+STATUS: COMPLETED
 SOURCE_PLAN: account_hub_figma_23be13c4.plan.md
 SOURCE_TODO_IDS:
   - figma-context
@@ -2148,7 +2153,7 @@ SOURCE_TODO_IDS:
   - mobile-me
   - annotate-qa
 ORIGINAL_INTENT: Spark Dash DNA로 Account Hub(/me) Desktop 1440×1080과 Mobile 390×693 프레임을 새로 그리고, Backup Home(구 3탭)을 클론하지 않는다.
-CURRENT_SCOPE: Figma fileKey w7Yg8j2x9evuheOSSLqFw5에서 Room/Execution 셸만 safe duplicate. sidebar 8 + Primary 8 IA(Desktop), bottom 5 + 더보기 active(Mobile). truth-safe copy. 어노테이션+self QA REPORT 후 STOP.
+CURRENT_SCOPE: Founder approved V2.1 Desktop 192:194 and Mobile 192:434. Locked. V1 169:78/169:288 and V2 180:102/180:430 preserved. Production UI apply 0.
 DEPENDENCIES:
   - PRE-LOCK-001
 IMPLEMENTATION_STEPS:
@@ -2157,10 +2162,11 @@ IMPLEMENTATION_STEPS:
   - Mobile 390 Account Hub 프레임 신설
   - annotate + QA REPORT
   - REL-123을 이 프레임 때문에 재구현으로 확장하지 않음
-VERIFY: Figma MCP get_screenshot + node-id 기록, Home geometry regression 0
-ACCEPTANCE: Desktop/Mobile 프레임 존재, none/더보기 active 규칙, IT jargon 0, FAKE MONEY 0
-EVIDENCE: governance/release-master/rel-131-account-figma/ · Desktop 169:78 · Mobile 169:288 · FOUNDER_REVIEW_CANDIDATE
-EXIT_GATE: Founder 프레임 검토 전 REL-123을 시각 재구현으로 확장하지 않음 · REL-132 시작 금지
+  - Founder approval 2026-08-22 → FOUNDER_APPROVED_LOCKED
+VERIFY: Figma MCP get_metadata 192:194/192:434 exist · V1/V2 preserved · verify:figma-project-registry · Home geometry 0
+ACCEPTANCE: Desktop/Mobile 프레임 존재, FOUNDER_APPROVED=YES, LOCKED=YES, IT jargon 0, FAKE MONEY 0, production apply 0
+EVIDENCE: governance/release-master/rel-131-account-figma-final/FOUNDER_APPROVAL.md · Desktop 192:194 · Mobile 192:434
+EXIT_GATE: Founder reopen 없이 retroactive redesign 금지. Production apply는 이후 Master REL이 요구할 때만.
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
 ```

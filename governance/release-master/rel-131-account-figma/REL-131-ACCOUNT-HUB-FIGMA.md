@@ -1,6 +1,6 @@
 # REL-131 Account Hub Figma Human Gate
 
-> V1 evidence. Current Founder candidate is **V2.1** — see `governance/release-master/rel-131-account-figma-final/FINAL_VISUAL_QA.md`. V2 `180:102` / `180:430` and V1 `169:78` / `169:288` are preserved, not deleted.
+> V1 evidence. Founder-approved visual authority is V2.1 Desktop `192:194` + Mobile `192:434` — see `governance/release-master/rel-131-account-figma-final/FOUNDER_APPROVAL.md`. V2 `180:102` / `180:430` and V1 `169:78` / `169:288` are preserved, not deleted.
 
 ```text
 REL = REL-131
