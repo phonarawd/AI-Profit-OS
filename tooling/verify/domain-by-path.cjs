@@ -349,6 +349,21 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/app\/me\/(events|strategies|membership|benefits)\//.test(f) ||
+      /^apps\/web\/app\/ads\//.test(f) ||
+      /^apps\/web\/app\/l\//.test(f) ||
+      /^tooling\/e2e\/specs\/account-journey\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/account-hub-batch\.cjs$/.test(f) ||
+      /^tooling\/verify\/account-journey\.cjs$/.test(f) ||
+      /^tooling\/verify\/account-compat-closure\.cjs$/.test(f),
+    scripts: [
+      "account-hub-batch.cjs",
+      "account-compat-closure.cjs",
+      "account-journey.cjs",
+    ],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/wallet\/history\//.test(f) ||
       /^tooling\/e2e\/specs\/transaction-history-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/transaction-history-closure\.cjs$/.test(f) ||

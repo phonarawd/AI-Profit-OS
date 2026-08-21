@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-129 COMPLETED. FIRST_EXECUTION_TODO=REL-130. HARD_STOP_AFTER=REL-130. BATCH_REL_120_130=ACCOUNT_HUB.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-130 COMPLETED. FIRST_EXECUTION_TODO=REL-131. HARD_STOP_AFTER=REL-130. BATCH_REL_120_130=ACCOUNT_HUB.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -168,8 +168,8 @@ todos:
     content: "[Consumer] PartnerTrust(embed) 클로저 - official MarketPartnerGrid logos only · AI 생성 0"
     status: completed
   - id: rel-130
-    content: "[Consumer] Grouped compatibility 검증: /ads, /l/[variant], /me/events, /me/strategies, /me/membership, /me/benefits(6개 실제 경로, 경량 DoD)"
-    status: pending
+    content: "[Consumer] Grouped compatibility 검증: /ads /l/* events/strategies/membership/benefits — leftover chrome 0 · fake money 0"
+    status: completed
   - id: rel-131
     content: "[Consumer][A3][Home-only:account_hub_figma] Account Hub Figma Desktop 1440 + Mobile 390 프레임 신설(Backup Home 클론 금지). REL-123 재확인과 독립. 새 프레임 Founder 검토 후 시각 적용은 본 REL 산출로 기록"
     status: pending
@@ -420,8 +420,8 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-130
-LAST_COMPLETED_TODO = REL-129
+FIRST_EXECUTION_TODO = REL-131
+LAST_COMPLETED_TODO = REL-130
 BATCH_REL_120_130 = ACCOUNT_HUB
 HARD_STOP_AFTER = REL-130
 PRE_LOCK_COUNT = 1
@@ -2111,7 +2111,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-130
 TITLE: Grouped compatibility 검증 (6개 실제 경로)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER.plan.md
 SOURCE_TODO_IDS:
   - rel-130
