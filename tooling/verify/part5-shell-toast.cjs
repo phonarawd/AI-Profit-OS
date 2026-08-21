@@ -77,7 +77,9 @@ for (const page of [
 }
 
 const me =
-  read("apps/web/app/me/page.tsx") + read("apps/web/app/me/ProfileClient.tsx");
+  read("apps/web/app/me/page.tsx") +
+  read("apps/web/app/me/ProfileClient.tsx") +
+  read("apps/web/app/me/AccountHub.tsx");
 if (!me.includes("/me/benefits") || !me.includes("/me/settings")) {
   fails.push("me hub must link benefits + settings");
 }

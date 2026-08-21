@@ -101,9 +101,25 @@ async function ensureLocalWebRuntime(opts = {}) {
   if (!fs.existsSync(nextBin)) {
     throw new Error("local-web-runtime: next binary missing in apps/web");
   }
+  const webNm = path.join(webRoot, "node_modules");
+  let linkedNm = false;
+  try {
+    linkedNm = fs.lstatSync(webNm).isSymbolicLink();
+  } catch {
+    linkedNm = false;
+  }
+  const useWebpack = process.env.NEXT_DEV_WEBPACK === "1" || linkedNm;
   const child = spawn(
     process.execPath,
-    [nextBin, "dev", "--port", String(port), "--hostname", "127.0.0.1"],
+    [
+      nextBin,
+      "dev",
+      "--port",
+      String(port),
+      "--hostname",
+      "127.0.0.1",
+      ...(useWebpack ? ["--webpack"] : []),
+    ],
     {
       cwd: webRoot,
       env: {

@@ -23,6 +23,10 @@ async function openMe(page, mode, width = 1440, height = 1080) {
   await page.setViewportSize({ width, height });
   await page.goto(`${runtime.baseUrl}/me`, { waitUntil: "load" });
   await expect(page.getByTestId("me-hub")).toBeVisible({ timeout: 20000 });
+  const layout = width >= 1024 ? "desktop" : "mobile";
+  await expect(page.locator(`[data-account-layout='${layout}']`)).toBeVisible({
+    timeout: 10000,
+  });
 }
 
 test("401 is unauthorized, not a fake account", async ({ page }) => {
@@ -31,7 +35,7 @@ test("401 is unauthorized, not a fake account", async ({ page }) => {
     "data-account-view",
     "unauthorized",
   );
-  await expect(page.getByText("로그인하면 계정을 볼 수 있어요.")).toBeVisible();
+  await expect(page.getByText("로그인하면 계정을 볼 수 있어요.").first()).toBeVisible();
   await expect(page.getByTestId("app-shell")).toHaveCount(0);
 });
 
@@ -42,8 +46,9 @@ test("ready hub has no invented zeros or leftover chrome", async ({ page }) => {
     "ready",
   );
   await expect(page.getByText("프로필이 준비되어 있어요.")).toBeVisible();
-  await expect(page.getByRole("link", { name: "설정" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "혜택" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "설정" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "혜택" }).first()).toBeVisible();
+  await expect(page.locator("[data-account-hub='v2.1']")).toBeVisible();
   await expect(page.getByText("0 USDT")).toHaveCount(0);
   await expect(page.getByTestId("safe-stop-trust-metric")).toHaveCount(0);
   await page.screenshot({
