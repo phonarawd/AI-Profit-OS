@@ -14,6 +14,7 @@ import {
   type OpportunityFeedItem,
 } from "@aipo/sdk/user-feed";
 import { fetchWalletBuckets } from "@aipo/sdk/wallet";
+import { T } from "@aipo/ui/copy/ko";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -405,6 +406,10 @@ export function OpportunityDetailClient({
           notice={noticeNodeMobile}
         />
       </div>
+      <aside data-testid="objection-q1-mini" className="sdr-trust">
+        <p>{T.objections.q1.oneLiner}</p>
+        <Link href="/me/guide/revenue">{T.objections.detailLink}</Link>
+      </aside>
       {confirmSheet}
     </div>
   );

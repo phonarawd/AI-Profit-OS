@@ -112,7 +112,9 @@ if (!onboarding.includes("T.objections.onboardingSlide")) {
   fails.push("onboarding must use T.objections.onboardingSlide");
 }
 
-const detail = read("apps/web/app/profits/[id]/page.tsx");
+const detail = `${read("apps/web/app/profits/[id]/page.tsx")}\n${read(
+  "apps/web/app/profits/[id]/OpportunityDetailClient.tsx",
+)}`;
 for (const needle of [
   'data-testid="objection-q1-mini"',
   "T.objections.q1",

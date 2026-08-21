@@ -707,3 +707,17 @@
     min-height: 18rem;
   }
 }
+
+.sdr-trust {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 2.5rem;
+  color: #5d6776;
+  line-height: 1.5;
+}
+
+.sdr-trust a {
+  color: #c01048;
+  font-weight: 800;
+  text-decoration: none;
+}
