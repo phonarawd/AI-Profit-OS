@@ -1,4 +1,4 @@
-/* REL-112 SettlementDetail. Home geometry 비의존. Approved Figma 없음. */
+/* REL-113 Wallet. Home geometry 비의존. Approved Figma 없음. */
 
 .page {
   box-sizing: border-box;
@@ -42,53 +42,17 @@
   color: #ff4d8d;
 }
 
-.facts {
-  display: grid;
-  gap: 0.75rem;
+.buckets {
   margin: 0 0 1.25rem;
-  padding: 1rem 1.1rem;
-  border-radius: 1rem;
-  background: #101929;
-  border: 1px solid #243044;
 }
 
-.facts dt {
-  font-size: 0.8125rem;
-  color: #a8b4c4;
+.buckets :global([data-testid="bucket-breakdown"]) {
+  color: #f6f1ea;
 }
 
-.facts dd {
-  margin: 0.2rem 0 0;
-  font-size: 1.35rem;
-  font-weight: 800;
-}
-
-.lines {
-  list-style: none;
-  margin: 0 0 1.25rem;
-  padding: 0;
-  display: grid;
-  gap: 0.6rem;
-}
-
-.line {
-  padding: 0.9rem 1rem;
-  border-radius: 0.9rem;
-  background: #101929;
-  border: 1px solid #243044;
-}
-
-.lineMeta {
-  display: block;
-  font-size: 0.875rem;
-  color: #a8b4c4;
-}
-
-.lineAmt {
-  display: block;
-  margin-top: 0.25rem;
-  font-size: 1.125rem;
-  font-weight: 800;
+.buckets :global(.text-lux-text),
+.buckets :global(.text-lux-text-muted) {
+  color: inherit;
 }
 
 .actions {
@@ -116,4 +80,13 @@
   background: transparent;
   border: 1px solid #8b95a5;
   color: #f6f1ea;
+}
+
+.actions a.quiet {
+  background: transparent;
+  border: 0;
+  color: #d7deea;
+  min-height: 2.5rem;
+  font-size: 1.1875rem;
+  font-weight: 800;
 }

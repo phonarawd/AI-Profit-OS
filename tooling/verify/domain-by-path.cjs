@@ -285,9 +285,14 @@ const RULES = [
   {
     test: (f) =>
       /^apps\/web\/app\/wallet\/page\.tsx$/.test(f) ||
+      /^apps\/web\/app\/wallet\/WalletClient\.tsx$/.test(f) ||
+      /^apps\/web\/app\/wallet\/layout\.tsx$/.test(f) ||
+      /^apps\/web\/app\/wallet\/wallet\.module\.css$/.test(f) ||
       /^packages\/sdk\/src\/wallet\//.test(f) ||
-      /^packages\/sdk\/src\/wallet\.ts$/.test(f),
-    scripts: ["wallet-live-wire.cjs"],
+      /^packages\/sdk\/src\/wallet\.ts$/.test(f) ||
+      /^tooling\/e2e\/specs\/wallet-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/wallet-closure\.cjs$/.test(f),
+    scripts: ["wallet-live-wire.cjs", "wallet-closure.cjs"],
   },
   {
     test: (f) =>

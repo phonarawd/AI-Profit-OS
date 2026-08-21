@@ -522,6 +522,26 @@ async function stubSettlement(page, mode) {
   });
 }
 
+/** DEV/TEST wallet buckets stub. production money mutation 0. */
+async function stubWallet(page, mode) {
+  await page.route("**/api/v1/**", (route) => {
+    const url = route.request().url();
+    if (url.includes("/api/v1/me/home-read")) {
+      return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    if (url.includes("/api/v1/wallet/buckets")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      return json(route, 200, TEST_WALLET_BUCKETS);
+    }
+    return json(route, 401, { error: "unauthorized" });
+  });
+}
+
 module.exports = {
   AUTHENTICATED_EMPTY_HOME,
   TEST_OPPORTUNITY_ITEM,
@@ -533,6 +553,7 @@ module.exports = {
   stubCoreOpportunityJourney,
   stubTradeExecution,
   stubSettlement,
+  stubWallet,
   JOURNEY_TRADE_ID,
   SETTLEMENT_TRADE_ID,
   SETTLEMENT_JOURNAL_ID,

@@ -135,6 +135,7 @@
 | settlement-detail | REL-112 — `/trades/[id]/settlement` · REL-015 journal · 재계산 0 · own/other/missing — **live** |
 | core-opportunity-journey | REL-106~110 DEV/TEST Home→List→Detail→Confirm→Execute→Result · production money mutation 0 — **live** |
 | wallet-live-wire | UI PART9b/9f — `/wallet` buckets + `@aipo/sdk/wallet` `fetchWalletBuckets` (출금≠9f2) — **live** |
+| wallet-closure | REL-113 — `/wallet` unauthorized/ready · missing≠0 · leftover 5-tab chrome 0 — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |
 | migrations-applied-parity | Supabase — 로컬 `supabase/migrations` 버전 ↔ `fixtures/migrations-applied.v1.json`(원격 applied 스냅샷) 1:1 · path-trigger — **live** |
 | growth-public-surface | UI PART9g — `growth_ticker_config` + GET `/growth/public-surface` · ledgerTotal=settlement.completed · Admin PATCH pointer — **live** |
