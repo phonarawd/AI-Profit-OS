@@ -80,7 +80,9 @@ for (const needle of [
   if (ui && !ui.includes(needle)) fails.push(`OpsInbox missing: ${needle}`);
 }
 
-const page = read("apps/web/app/me/inbox/page.tsx");
+const page =
+  read("apps/web/app/me/inbox/page.tsx") +
+  read("apps/web/app/me/inbox/InboxClient.tsx");
 if (page && !page.includes("OpsInbox")) {
   fails.push("/me/inbox must render OpsInbox");
 }

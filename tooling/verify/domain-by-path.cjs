@@ -312,6 +312,13 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/app\/me\/inbox\//.test(f) ||
+      /^tooling\/e2e\/specs\/inbox-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/inbox-closure\.cjs$/.test(f),
+    scripts: ["inbox-closure.cjs", "ops-inbox.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/wallet\/history\//.test(f) ||
       /^tooling\/e2e\/specs\/transaction-history-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/transaction-history-closure\.cjs$/.test(f) ||
