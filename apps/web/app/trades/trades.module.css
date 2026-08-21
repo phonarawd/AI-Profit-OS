@@ -1,0 +1,131 @@
+/* REL-110 matching result. Home geometry 비의존. Approved Figma 없음. */
+
+.page {
+  box-sizing: border-box;
+  min-height: 100vh;
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+  background: #f7f8fb;
+  color: #08111f;
+}
+
+.nav {
+  margin: 0 0 1rem;
+}
+
+.nav a {
+  color: #c01048;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.title {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.lead {
+  margin: 0 0 1.25rem;
+  line-height: 1.5;
+  color: #5d6776;
+}
+
+.facts {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0 0 1.25rem;
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  background: #08111f;
+  color: #fff;
+}
+
+.facts div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.facts dt {
+  font-size: 0.8125rem;
+  color: #a8b4c4;
+}
+
+.facts dd {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.list {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.item {
+  display: grid;
+  gap: 0.25rem;
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  background: #fff;
+  border: 1px solid #d7dde8;
+  color: inherit;
+  text-decoration: none;
+}
+
+.itemName {
+  font-size: 1.125rem;
+  font-weight: 800;
+}
+
+.itemMeta {
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: #5d6776;
+}
+
+.note,
+.err {
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+.note {
+  color: #5d6776;
+}
+
+.err {
+  color: #c01048;
+}
+
+.actions {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.actions a {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 3.25rem;
+  padding: 0.75rem 1rem;
+  border: 0;
+  border-radius: 0.875rem;
+  background: #ff2d6b;
+  color: #fff;
+  text-decoration: none;
+  font: inherit;
+  font-size: 1.1875rem;
+  font-weight: 800;
+}
+
+.secondary {
+  background: transparent;
+  border: 1px solid #c5ccd8;
+  color: #08111f;
+}

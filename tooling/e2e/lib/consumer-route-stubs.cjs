@@ -213,6 +213,74 @@ function tradeExecutionState(status, extra) {
   };
 }
 
+function isTradeListUrl(url) {
+  try {
+    const pathName = new URL(url).pathname.replace(/\/$/, "");
+    return pathName.endsWith("/api/v1/trades");
+  } catch {
+    return /\/api\/v1\/trades\/?([?#]|$)/.test(url);
+  }
+}
+
+const TEST_WALLET_BUCKETS = {
+  userId: "qa-user",
+  principalUsdt: "100.00",
+  profitUsdt: "12.50",
+  lockedUsdt: "0.00",
+  practiceUsdt: "0.00",
+  liabilityUsdt: "0.00",
+  asOfLedgerEntryId: "qa-ledger",
+};
+
+function testTradeListItems() {
+  return [
+    { ...tradeExecutionState("running", {}), tradeId: "qa-rel110-running" },
+    {
+      ...tradeExecutionState("success", {
+        resultCode: "MATCH_SUCCESS",
+        settledProfitUsdt: "12.50",
+      }),
+      tradeId: "qa-rel110-settled",
+    },
+    {
+      ...tradeExecutionState("safe_stop", { resultCode: "PRICE_MOVED" }),
+      tradeId: "qa-rel110-stop",
+    },
+  ];
+}
+
+/** DEV/TEST trade list stub. production money mutation 0. */
+async function stubTradeList(page, mode) {
+  await page.route("**/api/v1/**", (route) => {
+    const url = route.request().url();
+    if (url.includes("/api/v1/me/home-read")) {
+      return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    if (url.includes("/api/v1/wallet/buckets")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "profit_unavailable") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      return json(route, 200, TEST_WALLET_BUCKETS);
+    }
+    if (isTradeListUrl(url)) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      if (mode === "empty") {
+        return json(route, 200, { items: [] });
+      }
+      return json(route, 200, { items: testTradeListItems() });
+    }
+    return json(route, 401, { error: "unauthorized" });
+  });
+}
+
 /** DEV/TEST execute-tick stub. production money mutation 0. */
 async function stubTradeExecution(page, mode) {
   await page.route("**/api/v1/**", (route) => {
@@ -279,5 +347,6 @@ module.exports = {
   stubAuthenticatedEmptyHome,
   stubOpportunityFeed,
   stubOpportunityRoom,
+  stubTradeList,
   stubTradeExecution,
 };

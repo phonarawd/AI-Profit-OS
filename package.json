@@ -136,6 +136,8 @@
     "verify:participate-sheet-live-wire": "node tooling/verify/participate-sheet-live-wire.cjs",
     "verify:execute-web-wire": "node tooling/verify/execute-web-wire.cjs",
     "verify:execute-live-wire": "node tooling/verify/execute-live-wire.cjs",
+    "verify:trades-web-wire": "node tooling/verify/trades-web-wire.cjs",
+    "verify:trades-live-wire": "node tooling/verify/trades-live-wire.cjs",
     "verify:wallet-live-wire": "node tooling/verify/wallet-live-wire.cjs",
     "verify:participate-http": "node tooling/verify/participate-http.cjs",
     "verify:execute-rule-loop": "node tooling/verify/execute-rule-loop.cjs",

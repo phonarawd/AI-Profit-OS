@@ -127,6 +127,8 @@
 | participate-sheet-live-wire | REL-108 — ParticipateConfirmSheet 11-state · failure≠closed · accepted after server · Playwright participate-sheet-closure — **live** |
 | execute-web-wire | REL-109 — `useTradeExecution` · `/trades/[id]/execute` 실데이터 · cookie session tick · consumer 상태 테이블 · progressPct 표시 0 — **live** |
 | execute-live-wire | REL-109 — server state owner · query-fake success 0 · settledProfit required · Playwright execute-closure — **live** |
+| trades-web-wire | REL-110 — `GET /api/v1/trades` session list · `@aipo/sdk/trades` fetchTradeList · `/trades` · buckets.profitUsdt · progressPct 표시 0 — **live** |
+| trades-live-wire | REL-110 — live list · error≠empty · wallet profit unavailable≠0 · Playwright trades-closure — **live** |
 | wallet-live-wire | UI PART9b/9f — `/wallet` buckets + `@aipo/sdk/wallet` `fetchWalletBuckets` (출금≠9f2) — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |
 | migrations-applied-parity | Supabase — 로컬 `supabase/migrations` 버전 ↔ `fixtures/migrations-applied.v1.json`(원격 applied 스냅샷) 1:1 · path-trigger — **live** |
