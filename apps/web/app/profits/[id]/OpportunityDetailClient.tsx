@@ -183,11 +183,12 @@ export function OpportunityDetailClient({
   }, [opportunityId]);
 
   useEffect(() => {
-    if (sheet.phase !== PHASE_READY || !sheet.expiresAt) return;
+    const expiresAt = sheet.expiresAt;
+    if (sheet.phase !== PHASE_READY || !expiresAt) return;
     const tick = () => {
       const nextNow = Date.now();
       setNowMs(nextNow);
-      if (Date.parse(sheet.expiresAt) <= nextNow) {
+      if (Date.parse(expiresAt) <= nextNow) {
         setSheet(errorSheet(CODE_PREFLIGHT_REQUIRED, 412));
       }
     };
