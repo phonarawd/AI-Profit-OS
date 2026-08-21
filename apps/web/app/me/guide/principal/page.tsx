@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { T } from "@aipo/ui/copy/ko";
+import { AccountFrame } from "../../AccountFrame";
+import styles from "../../account.module.css";
 
 /** Money §49.4 guide — 왜 원금을 두나요? */
 export default function Page() {
   return (
-    <main className="p-6 text-lux-text">
+    <AccountFrame title={T.principalGuide.pageTitle} view="ready" testId="guide-principal" hideTitle>
+    <main className={styles.surface}>
       <h1 className="text-xl font-semibold">{T.principalGuide.pageTitle}</h1>
       <p className="mt-3 text-sm text-lux-text-muted">
         {T.principalGuide.whyKeep}
@@ -25,5 +28,6 @@ export default function Page() {
         {T.withdrawMode.ctaOpenPrincipal}
       </Link>
     </main>
+    </AccountFrame>
   );
 }

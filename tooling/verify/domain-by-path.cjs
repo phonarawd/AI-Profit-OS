@@ -582,6 +582,7 @@ const RULES = [
       "market-briefing-no-investment-advice.cjs",
       "participate-proof.cjs",
       "deposit-ai-template-path.cjs",
+      "guides-closure.cjs",
     ],
   },
   {

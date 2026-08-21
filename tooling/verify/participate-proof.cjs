@@ -109,12 +109,15 @@ if (!card.includes("AdapterHealthChip")) {
   fails.push("OpportunityCard must mount AdapterHealthChip");
 }
 
-const me = read("apps/web/app/me/page.tsx");
-if (!me.includes("SafeStopTrustMetric")) {
-  fails.push("/me must mount SafeStopTrustMetric");
-}
-if (!me.includes("CapitalBandJourney")) {
-  fails.push("/me must mount CapitalBandJourney");
+const me =
+  read("apps/web/app/me/page.tsx") +
+  (fs.existsSync(path.join(root, "apps/web/app/me/ProfileClient.tsx"))
+    ? read("apps/web/app/me/ProfileClient.tsx")
+    : "");
+if (me.includes("SafeStopTrustMetric") || me.includes("CapitalBandJourney")) {
+  fails.push(
+    "/me must not remount SafeStop/CapitalBand without a real account owner",
+  );
 }
 
 const safeMetric = read(
