@@ -95,13 +95,27 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^apps\/web\/app\/page\.tsx$/.test(f) ||
-      /^apps\/web\/app\/HomeDesktopClient\.tsx$/.test(f) ||
       /^apps\/web\/app\/(ads|l)\//.test(f) ||
       /^packages\/ui\/components\/landing\//.test(f) ||
       /^tooling\/verify\/landing-guest-closure\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/landing-guest\.spec\.cjs$/.test(f),
     scripts: ["landing-guest-closure.cjs", "no-it-jargon.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/page\.tsx$/.test(f) ||
+      /^apps\/web\/app\/layout\.tsx$/.test(f) ||
+      /^apps\/web\/app\/LegacyAppShell\.tsx$/.test(f) ||
+      /^apps\/web\/app\/(wallet|me)\/layout\.tsx$/.test(f) ||
+      /^apps\/web\/app\/HomeDesktopClient\.tsx$/.test(f) ||
+      /^apps\/web\/app\/GuestFirstVisit\.tsx$/.test(f) ||
+      /^apps\/web\/app\/guest-first-visit\.css$/.test(f) ||
+      /^apps\/web\/components\/spark-dash-home\//.test(f) ||
+      /^tooling\/verify\/home-closure\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/home-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/e2e\/lib\/local-web-runtime\.cjs$/.test(f) ||
+      /^tooling\/e2e\/lib\/consumer-route-stubs\.cjs$/.test(f),
+    scripts: ["home-closure.cjs", "landing-guest-closure.cjs", "no-it-jargon.cjs"],
   },
   {
     test: (f) =>
@@ -204,7 +218,58 @@ const RULES = [
     ],
   },
   {
-    test: (f) => /^apps\/web\/app\/profits\//.test(f),
+    test: (f) =>
+      /^apps\/web\/app\/trades\/\[id\]\/execute\//.test(f) ||
+      /^packages\/sdk\/src\/execution-stream\//.test(f) ||
+      /^tooling\/e2e\/specs\/execute-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/execute-live-wire\.cjs$/.test(f) ||
+      /^tooling\/verify\/execute-web-wire\.cjs$/.test(f),
+    scripts: ["execute-live-wire.cjs", "execute-web-wire.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/trades\/page\.tsx$/.test(f) ||
+      /^apps\/web\/app\/trades\/TradesClient\.tsx$/.test(f) ||
+      /^apps\/web\/app\/trades\/trades\.module\.css$/.test(f) ||
+      /^packages\/sdk\/src\/trades\//.test(f) ||
+      /^tooling\/e2e\/specs\/trades-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/trades-live-wire\.cjs$/.test(f) ||
+      /^tooling\/verify\/trades-web-wire\.cjs$/.test(f),
+    scripts: ["trades-live-wire.cjs", "trades-web-wire.cjs"],
+  },
+  {
+    test: (f) =>
+      /^tooling\/e2e\/specs\/core-opportunity-journey\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/core-opportunity-journey\.cjs$/.test(f),
+    scripts: ["core-opportunity-journey.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/profits\/\[id\]\//.test(f) ||
+      /^apps\/web\/components\/spark-dash-room\//.test(f) ||
+      /^apps\/web\/app\/dev\/spark-dash-room\//.test(f) ||
+      /^packages\/sdk\/src\/participate\//.test(f) ||
+      /^tooling\/e2e\/lib\/consumer-route-stubs\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/opportunity-detail-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/participate-sheet-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/opportunity-detail-live-wire\.cjs$/.test(f) ||
+      /^tooling\/verify\/participate-web-wire\.cjs$/.test(f) ||
+      /^tooling\/verify\/participate-sheet-live-wire\.cjs$/.test(f),
+    scripts: [
+      "opportunity-detail-live-wire.cjs",
+      "participate-web-wire.cjs",
+      "participate-sheet-live-wire.cjs",
+      "sdk-user-feed.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/profits\//.test(f) ||
+      /^apps\/web\/app\/ProfitsDesktopClient\.tsx$/.test(f) ||
+      /^apps\/web\/components\/spark-dash-profits\//.test(f) ||
+      /^apps\/web\/app\/dev\/spark-dash-profits\//.test(f) ||
+      /^tooling\/e2e\/specs\/profits-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/profits-live-wire\.cjs$/.test(f),
     scripts: ["profits-live-wire.cjs", "sdk-user-feed.cjs"],
   },
   {

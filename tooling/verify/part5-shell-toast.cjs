@@ -18,8 +18,19 @@ function read(rel) {
 
 const layout = read("apps/web/app/layout.tsx");
 const shellRoot = read("packages/ui/components/shell/AppShellRoot.tsx");
-for (const needle of ["ToastHost", "theme-peotteok-light", "AppShellRoot"]) {
+for (const needle of ["ToastHost", "theme-peotteok-light"]) {
   if (!layout.includes(needle)) fails.push(`layout missing ${needle}`);
+}
+if (layout.includes("AppShellRoot") || layout.includes("USER_TABS")) {
+  fails.push("root layout must not globally mount AppShellRoot / USER_TABS");
+}
+const walletLayout = read("apps/web/app/wallet/layout.tsx");
+const meLayout = read("apps/web/app/me/layout.tsx");
+if (!walletLayout.includes("LegacyAppShell") && !walletLayout.includes("AppShellRoot")) {
+  fails.push("wallet layout must keep scoped leftover chrome");
+}
+if (!meLayout.includes("LegacyAppShell") && !meLayout.includes("AppShellRoot")) {
+  fails.push("me layout must keep scoped leftover chrome");
 }
 for (const needle of ["BottomNav5", "SiteFooter", "AppHeader", "HomeChromeProvider"]) {
   if (!shellRoot.includes(needle)) {
@@ -81,4 +92,4 @@ if (fails.length) {
   console.error("[verify:part5-shell-toast] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
-console.log("[verify:part5-shell-toast] PASS (5탭 shell · toast · nested routes)");
+console.log("[verify:part5-shell-toast] PASS (root chrome 0 · scoped leftover shell · toast · nested routes)");

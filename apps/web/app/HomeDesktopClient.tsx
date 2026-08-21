@@ -5,13 +5,13 @@ import { fetchHomeReadModel } from "@aipo/sdk/home-read-model";
 import { fetchOpportunityFeed } from "@aipo/sdk/user-feed";
 import { fetchWalletBuckets } from "@aipo/sdk/wallet";
 import { useEffect, useState } from "react";
-import { GuestFirstVisit } from "./GuestFirstVisit";
+import { GuestFirstVisit, HomeSessionUnavailable } from "./GuestFirstVisit";
 import { HomeDesktop } from "../components/spark-dash-home/HomeDesktop";
 import { HomeMobile } from "../components/spark-dash-home/HomeMobile";
 import { emptyRuntimeModel, mapRuntimeHome } from "../components/spark-dash-home/map-runtime";
 import type { SparkDashHomeModel } from "../components/spark-dash-home/types";
 
-type SessionGate = "loading" | "guest" | "member";
+type SessionGate = "loading" | "guest" | "member" | "unavailable";
 
 export function HomeDesktopClient() {
   const [model, setModel] = useState<SparkDashHomeModel>(emptyRuntimeModel);
@@ -54,7 +54,7 @@ export function HomeDesktopClient() {
       } catch {
         if (!ac.signal.aborted) {
           setModel(emptyRuntimeModel());
-          setGate("guest");
+          setGate("unavailable");
         }
       }
     })();
@@ -63,13 +63,16 @@ export function HomeDesktopClient() {
 
   if (gate === "loading") {
     return (
-      <div
-        data-testid="home-session-loading"
-        className="flex min-h-dvh items-center justify-center bg-lux-bg px-4"
-      >
-        <p className="text-base text-lux-text-muted">불러오는 중…</p>
+      <div data-testid="home-session-loading" className="gfv gfv--plain">
+        <div className="gfv-stage gfv-stage--narrow">
+          <p className="gfv-lead">불러오는 중…</p>
+        </div>
       </div>
     );
+  }
+
+  if (gate === "unavailable") {
+    return <HomeSessionUnavailable />;
   }
 
   if (gate === "guest") {
@@ -77,13 +80,13 @@ export function HomeDesktopClient() {
   }
 
   return (
-    <>
-      <div className="sd-desktop-only">
+    <div data-testid="home-authenticated">
+      <div className="sd-desktop-only" data-testid="home-desktop-shell">
         <HomeDesktop model={model} />
       </div>
-      <div className="sd-mobile-placeholder">
+      <div className="sd-mobile-placeholder" data-testid="home-mobile-shell">
         <HomeMobile model={model} />
       </div>
-    </>
+    </div>
   );
 }

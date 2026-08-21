@@ -26,6 +26,15 @@ node tooling/verify/qa-env-isolation-guard.cjs
 브라우저 스펙은 로컬 저사양에서 필수가 아니다. 파일 존재 + 가드 자기검증이 Bootstrap 증거다.
 REL-500이 matrix를 확장한다.
 
+## Home 클로저 (REL-105)
+
+`specs/home-closure.spec.cjs` 는 `PLAYWRIGHT_BASE_URL` 부재를 skip 이유로 쓰지 않는다.
+`lib/local-web-runtime.cjs` 가 loopback Next를 기동한다. production/Workers URL fallback 금지.
+
+```text
+node tooling/verify/home-closure.cjs
+```
+
 ## axe-core (REL-012)
 
 `specs/axe-a11y.spec.cjs` + `lib/axe-scan.cjs`.

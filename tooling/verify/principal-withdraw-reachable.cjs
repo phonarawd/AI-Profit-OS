@@ -131,13 +131,22 @@ if (!withdrawPage.includes("WithdrawModeCards")) {
   fails.push("withdraw page must mount WithdrawModeCards");
 }
 
-const execute = read("apps/web/app/trades/[id]/execute/page.tsx");
+const executePage = read("apps/web/app/trades/[id]/execute/page.tsx");
+const executeClient = fs.existsSync(
+  path.join(root, "apps/web/app/trades/[id]/execute/TradeExecuteClient.tsx"),
+)
+  ? read("apps/web/app/trades/[id]/execute/TradeExecuteClient.tsx")
+  : "";
+const execute = `${executePage}\n${executeClient}`;
+if (!execute.includes('href="/wallet"')) {
+  fails.push("Settled execute must recover via /wallet");
+}
 if (
-  !execute.includes("SuccessBucketCtas") &&
-  !execute.includes("ExecutionSuccessReceipt")
+  execute.includes("SuccessBucketCtas") ||
+  execute.includes("ExecutionSuccessReceipt")
 ) {
   fails.push(
-    "execution success page must render SuccessBucketCtas (direct or via ExecutionSuccessReceipt)",
+    "production execute must not remount SuccessBucketCtas/ExecutionSuccessReceipt (wallet owns those CTAs)",
   );
 }
 

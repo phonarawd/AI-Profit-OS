@@ -10,10 +10,12 @@ export {
   DEFAULT_EXECUTION_TRANSPORT,
   PHASE1_EXECUTION_SSE_PATH,
   TERMINAL_EXECUTION_STATUSES,
+  TradeExecutionRequestError,
   createExecutionTransport,
   createPollingTransport,
   createSseTransport,
   isTerminalExecutionStatus,
+  isTradeExecutionRequestError,
   useTradeExecution,
   type ExecutionSubscribeOptions,
   type ExecutionTransportKind,
@@ -42,9 +44,24 @@ export {
 } from "./peotteok";
 
 export {
+  ParticipateError,
+  issuePreflight,
+  isParticipateError,
+  newParticipateIdempotencyKey,
+  postParticipate,
+  readParticipateErrorCode,
+  type ParticipateRequestBody,
+  type ParticipateRequestOpts,
+  type ParticipateResult,
+  type PreflightResponse,
+} from "./participate";
+
+export {
+  OpportunityFeedError,
   fetchDayPulse,
   fetchOpportunityDetail,
   fetchOpportunityFeed,
+  isOpportunityFeedError,
   mapNearMissExtraCount,
   type DayPulseResponse,
   type OpportunityDetailResponse,
@@ -52,6 +69,12 @@ export {
   type OpportunityFeedResponse,
   type UserFeedRequestOpts,
 } from "./user-feed";
+
+export {
+  fetchTradeList,
+  type TradeListRequestOpts,
+  type TradeListResponse,
+} from "./trades";
 
 export {
   createWithdraw,

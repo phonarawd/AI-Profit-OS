@@ -99,7 +99,11 @@ if (!phase0.includes("nats: false") && !phase0.includes("NATS ≠ Day-1")) {
 }
 
 // Guard: when !allowSweep, return must set sweepCalls: 0 before any executor
-if (!/if\s*\(\s*!guard\.allowSweep\s*\)[\s\S]{0,800}sweepCalls:\s*0/.test(phase0)) {
+if (
+  !/if\s*\(\s*!guard\.allowSweep\s*\)[\s\S]{0,2000}return\s*\{[\s\S]{0,400}sweepCalls:\s*0/.test(
+    phase0,
+  )
+) {
   fails.push("Phase0 must return sweepCalls:0 when TRX/admin guard blocks");
 }
 

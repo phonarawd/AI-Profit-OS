@@ -148,6 +148,7 @@
     "./components/opportunity/VirtualOpportunityList": "./components/opportunity/VirtualOpportunityList.tsx"
   },
   "dependencies": {
-    "@tanstack/react-virtual": "^3.14.9"
+    "@tanstack/react-virtual": "^3.14.9",
+    "tailwindcss": "^4.1.11"
   }
 }

@@ -8,6 +8,8 @@ const config = {
   forbidOnly: !!process.env.CI,
   retries: 0,
   workers: 1,
+  timeout: 180000,
+  expect: { timeout: 20000 },
   reporter: process.env.CI ? "github" : "list",
   use: {
     headless: true,

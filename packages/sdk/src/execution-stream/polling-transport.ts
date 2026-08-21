@@ -1,8 +1,10 @@
 /**
  * Phase0 Live Scan transport — POST /api/v1/trades/:id/execute-tick
  * Soft60/Hard90 / REQUEUE / MATCH_TIMEOUT are server Rule facts · no client RNG.
+ * 세션 = httpOnly 쿠키 또는 Bearer. 토큰 없으면 틱을 건너뛰지 않는다.
  */
 
+import { TradeExecutionRequestError } from "./errors";
 import type { TradeExecutionTransport } from "./transport";
 import {
   isTerminalExecutionStatus,
@@ -20,9 +22,7 @@ async function readState(
 ): Promise<TradeExecutionState> {
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(
-      `execute-tick HTTP ${res.status}${body ? `: ${body.slice(0, 200)}` : ""}`,
-    );
+    throw new TradeExecutionRequestError(res.status, body);
   }
   return (await res.json()) as TradeExecutionState;
 }
@@ -55,10 +55,11 @@ export function createPollingTransport(): TradeExecutionTransport {
         inFlight = true;
         try {
           const token = await opts.getAccessToken();
-          if (!token) {
-            // Auth not ready — wait without fabricating progress
-            schedule(opts.intervalMs);
-            return;
+          const headers: Record<string, string> = {
+            Accept: "application/json",
+          };
+          if (token) {
+            headers.Authorization = `Bearer ${token}`;
           }
 
           const res = await fetch(
@@ -68,10 +69,8 @@ export function createPollingTransport(): TradeExecutionTransport {
             ),
             {
               method: "POST",
-              headers: {
-                Accept: "application/json",
-                Authorization: `Bearer ${token}`,
-              },
+              headers,
+              credentials: "include",
               cache: "no-store",
             },
           );
@@ -86,10 +85,21 @@ export function createPollingTransport(): TradeExecutionTransport {
           schedule(opts.intervalMs);
         } catch (err) {
           if (stopped) return;
-          opts.onError(
-            err instanceof Error ? err : new Error(String(err)),
-          );
-          // Back off with the same StreamPolicy band (no fake progress)
+          const next =
+            err instanceof TradeExecutionRequestError
+              ? err
+              : err instanceof Error
+                ? err
+                : new TradeExecutionRequestError(0);
+          opts.onError(next);
+          if (
+            next instanceof TradeExecutionRequestError &&
+            (next.status === 401 || next.status === 404)
+          ) {
+            stopped = true;
+            clearTimer();
+            return;
+          }
           schedule(opts.intervalMs);
         } finally {
           inFlight = false;

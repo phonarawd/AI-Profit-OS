@@ -44,6 +44,10 @@ const tier = read("packages/sdk/src/device-tier.ts");
 const sdkPkg = read("packages/sdk/package.json");
 const sdkIdx = read("packages/sdk/src/index.ts");
 const page = read("apps/web/app/trades/[id]/execute/page.tsx");
+const executeClient = read(
+  "apps/web/app/trades/[id]/execute/TradeExecuteClient.tsx",
+);
+const executeSurface = `${page}\n${executeClient}`;
 const rootPkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
 const stubs = read("tooling/verify/stubs/run-all.cjs");
@@ -163,15 +167,18 @@ if (!sdkPkg.includes('"react"')) {
   fails.push("@aipo/sdk must declare react peerDependency");
 }
 
-// --- page wiring ---
+// --- page wiring (REL-109: hook lives in TradeExecuteClient) ---
 if (
-  !page.includes("useTradeExecution") ||
-  !page.includes("@aipo/sdk/execution-stream")
+  !executeSurface.includes("useTradeExecution") ||
+  !executeSurface.includes("@aipo/sdk/execution-stream")
 ) {
-  fails.push("execute page must wire useTradeExecution from @aipo/sdk/execution-stream");
+  fails.push("execute surface must wire useTradeExecution from @aipo/sdk/execution-stream");
 }
-if (!page.includes("data-execution-transport")) {
-  fails.push("execute page must expose data-execution-transport");
+if (!page.includes("TradeExecuteClient")) {
+  fails.push("execute page must mount TradeExecuteClient");
+}
+if (!executeSurface.includes("data-execution-transport")) {
+  fails.push("execute surface must expose data-execution-transport");
 }
 
 // --- gate wiring ---

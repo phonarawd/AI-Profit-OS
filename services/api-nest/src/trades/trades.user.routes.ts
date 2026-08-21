@@ -5,6 +5,8 @@
  */
 
 export const TRADE_USER_ROUTES = {
+  /** GET — session user trade_executions (기존 GET :id 투영 · 목록) */
+  list: "trades",
   /** GET — trade execution state */
   get: "trades/:id",
   /** POST — Phase0 in-process Rule tick (Soft60/Hard90) */

@@ -137,6 +137,7 @@ const live = [
   "sdk-user-feed.cjs",
   "home-principal-slots.cjs",
   "profits-live-wire.cjs",
+  "trades-web-wire.cjs",
   "wallet-live-wire.cjs",
   "withdraw-flow-wire.cjs",
   "growth-public-surface.cjs",

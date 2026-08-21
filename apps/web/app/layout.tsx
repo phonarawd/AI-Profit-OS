@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./pwa-shell.css";
-import { USER_TABS } from "../routes";
-import { AppShellRoot } from "@aipo/ui/components/shell";
 import { ToastHost } from "@aipo/ui/components/toast";
 import { DeviceTierApply } from "../components/DeviceTierApply";
 import { PwaRuntime } from "../components/pwa/PwaRuntime";
@@ -42,9 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko" className="theme-peotteok-light" data-font-scale="md">
       <body className="min-h-dvh bg-lux-bg text-lux-text">
         <DeviceTierApply />
-        <ToastHost>
-          <AppShellRoot tabs={USER_TABS}>{children}</AppShellRoot>
-        </ToastHost>
+        <ToastHost>{children}</ToastHost>
         <PwaRuntime />
         <ObsRuntime />
       </body>

@@ -1,11 +1,10 @@
-import { cookies } from "next/headers";
-import { hasUserSessionCookie } from "../../lib/session-cookie";
-import { ProfitsPageClient } from "./ProfitsPageClient";
+import { ProfitsDesktopClient } from "../ProfitsDesktopClient";
+import "../../components/spark-dash-home/spark-dash-home.css";
 
 /**
- * PART9e /profits — server session gate · live Owns = ProfitsPageClient
+ * REL-106 /profits — one route, one feed truth, responsive presentation.
+ * Fixture는 /dev/spark-dash-profits 만.
  */
-export default async function Page() {
-  const hasSession = hasUserSessionCookie(await cookies());
-  return <ProfitsPageClient hasSession={hasSession} />;
+export default function Page() {
+  return <ProfitsDesktopClient />;
 }
