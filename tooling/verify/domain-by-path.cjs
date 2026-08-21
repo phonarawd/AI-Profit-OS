@@ -335,6 +335,13 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/app\/me\/legal\//.test(f) ||
+      /^tooling\/e2e\/specs\/legal-closure\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/legal-closure\.cjs$/.test(f),
+    scripts: ["legal-closure.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/app\/wallet\/history\//.test(f) ||
       /^tooling\/e2e\/specs\/transaction-history-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/transaction-history-closure\.cjs$/.test(f) ||

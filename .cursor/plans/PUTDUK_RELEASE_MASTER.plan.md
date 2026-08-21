@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-127 COMPLETED. FIRST_EXECUTION_TODO=REL-128. HARD_STOP_AFTER=REL-130. BATCH_REL_120_130=ACCOUNT_HUB.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-128 COMPLETED. FIRST_EXECUTION_TODO=REL-129. HARD_STOP_AFTER=REL-130. BATCH_REL_120_130=ACCOUNT_HUB.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -162,8 +162,8 @@ todos:
     content: "[Consumer][Legacy:C-ACC-001~003] Guides(/me/guide/* 7라우트) 클로저 - AccountFrame · leftover chrome 0"
     status: completed
   - id: rel-128
-    content: "[Consumer][Legacy:C-ACC-001~003] Legal(/me/legal/* 5라우트) 클로저 - Track C \"핵심 8영역\" completed 선언 범위(재확인 게이트만)"
-    status: pending
+    content: "[Consumer][Legacy:C-ACC-001~003] Legal(/me/legal/* 5라우트) 클로저 - existing legal/operator owners"
+    status: completed
   - id: rel-129
     content: "[Consumer] PartnerTrust(embed) 클로저 - 실제 파트너 로고만 사용, AI 생성 금지"
     status: pending
@@ -420,8 +420,8 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-128
-LAST_COMPLETED_TODO = REL-127
+FIRST_EXECUTION_TODO = REL-129
+LAST_COMPLETED_TODO = REL-128
 BATCH_REL_120_130 = ACCOUNT_HUB
 HARD_STOP_AFTER = REL-130
 PRE_LOCK_COUNT = 1
@@ -2053,7 +2053,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-128
 TITLE: Legal (/me/legal/*) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_C_acquisition_account_trust.plan.md
 SOURCE_TODO_IDS:
   - rel-128

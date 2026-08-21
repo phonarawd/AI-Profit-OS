@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { T } from "@aipo/ui/copy/ko";
+import { AccountFrame } from "../AccountFrame";
+import styles from "../account.module.css";
 
 /** UI §50.3 / §50.9 — legal hub */
 export default function Page() {
   return (
-    <main className="p-6 text-lux-text" data-testid="legal-hub">
+    <AccountFrame title={T.legal.hubTitle} view="ready" testId="legal-hub" hideTitle>
+    <main className={styles.surface}>
       <h1 className="text-xl font-semibold">{T.legal.hubTitle}</h1>
       <p className="mt-2 text-sm text-lux-text-muted">{T.operator.legal.body}</p>
       <p className="mt-3 text-sm text-lux-text-muted">{T.operator.legal.licenseLine}</p>
@@ -33,5 +36,6 @@ export default function Page() {
         </li>
       </ul>
     </main>
+    </AccountFrame>
   );
 }
