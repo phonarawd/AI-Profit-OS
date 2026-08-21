@@ -1,0 +1,121 @@
+{
+  "schema": "putduk.figma.design-system-code-bridge.v1",
+  "fileKey": "w7Yg8j2x9evuheOSSLqFw5",
+  "codeConnect": { "status": "CANDIDATE_ONLY", "applied": 0 },
+  "productionAuthVisualApply": 0,
+  "rel207Started": false,
+  "rows": [
+    {
+      "figmaComponent": "PrimaryButton",
+      "figmaNodeId": "2:172",
+      "figmaVariants": ["state=Default", "state=Disabled"],
+      "productionComponent": "TouchButton",
+      "productionPath": "packages/ui/components/lux/TouchButton.tsx",
+      "status": "PARTIAL"
+    },
+    {
+      "figmaComponent": "AuthOAuthButton",
+      "figmaNodeId": "198:568",
+      "figmaVariants": [
+        "method=Kakao, state=Default",
+        "method=Kakao, state=Disabled",
+        "method=Kakao, state=Loading",
+        "method=Google, state=Disabled",
+        "method=Passkey, state=Default",
+        "method=Passkey, state=Disabled",
+        "method=Passkey, state=Loading"
+      ],
+      "productionComponent": "AuthLogin/AuthSignup TouchButton",
+      "productionPath": "packages/ui/components/auth/AuthLogin.tsx",
+      "status": "PARTIAL"
+    },
+    {
+      "figmaComponent": "AuthTextField",
+      "figmaNodeId": "198:553",
+      "figmaVariants": ["state=Default", "state=Focus", "state=Error", "state=Disabled"],
+      "productionComponent": "native input",
+      "productionPath": "packages/ui/components/auth/AuthCompleteProfile.tsx",
+      "status": "PARTIAL"
+    },
+    {
+      "figmaComponent": "AuthAlert",
+      "figmaNodeId": "198:575",
+      "figmaVariants": ["tone=Error", "tone=Note"],
+      "productionComponent": "role=alert / role=status",
+      "productionPath": "packages/ui/components/auth/AuthLogin.tsx",
+      "status": "PARTIAL"
+    },
+    {
+      "figmaComponent": "AuthCheckbox",
+      "figmaNodeId": "198:586",
+      "figmaVariants": ["state=Unchecked", "state=Checked", "state=Error"],
+      "productionComponent": "native checkbox",
+      "productionPath": "packages/ui/components/auth/AuthSignup.tsx",
+      "status": "PARTIAL"
+    },
+    {
+      "figmaComponent": "AuthLink",
+      "figmaNodeId": "198:587",
+      "figmaVariants": [],
+      "productionComponent": "anchor",
+      "productionPath": "packages/ui/components/auth/AuthLogin.tsx",
+      "status": "CONNECTED"
+    },
+    {
+      "figmaComponent": "Auth / Login / Desktop",
+      "figmaNodeId": "198:591",
+      "productionComponent": "AuthLogin",
+      "productionPath": "apps/web/app/auth/login/page.tsx",
+      "status": "FIGMA_ONLY"
+    },
+    {
+      "figmaComponent": "Auth / Login / Mobile",
+      "figmaNodeId": "199:523",
+      "productionComponent": "AuthLogin",
+      "productionPath": "apps/web/app/auth/login/LoginRuntime.tsx",
+      "status": "FIGMA_ONLY"
+    },
+    {
+      "figmaComponent": "Auth / Signup / Desktop",
+      "figmaNodeId": "200:527",
+      "productionComponent": "AuthSignup",
+      "productionPath": "apps/web/app/auth/signup/page.tsx",
+      "status": "FIGMA_ONLY"
+    },
+    {
+      "figmaComponent": "Auth / Signup / Mobile",
+      "figmaNodeId": "201:539",
+      "productionComponent": "AuthSignup",
+      "productionPath": "apps/web/app/auth/signup/SignupRuntime.tsx",
+      "status": "FIGMA_ONLY"
+    },
+    {
+      "figmaComponent": "Auth / Complete Profile / Desktop",
+      "figmaNodeId": "201:571",
+      "productionComponent": "AuthCompleteProfile",
+      "productionPath": "apps/web/app/auth/complete-profile/page.tsx",
+      "status": "FIGMA_ONLY"
+    },
+    {
+      "figmaComponent": "Auth / Complete Profile / Mobile",
+      "figmaNodeId": "201:604",
+      "productionComponent": "AuthCompleteProfile",
+      "productionPath": "apps/web/app/auth/complete-profile/CompleteProfileRuntime.tsx",
+      "status": "FIGMA_ONLY"
+    },
+    {
+      "figmaComponent": "Auth / Onboarding / Desktop",
+      "figmaNodeId": "201:635",
+      "productionComponent": "OnboardingFlow",
+      "productionPath": "apps/web/app/onboarding/page.tsx",
+      "status": "FIGMA_ONLY"
+    },
+    {
+      "figmaComponent": "Auth / Onboarding / Mobile",
+      "figmaNodeId": "201:672",
+      "productionComponent": "OnboardingFlow",
+      "productionPath": "packages/ui/components/onboarding/OnboardingFlow.tsx",
+      "status": "FIGMA_ONLY"
+    }
+  ]
+}

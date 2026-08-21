@@ -39,9 +39,14 @@ const RULES = [
     test: (f) =>
       /^governance\/figma\//.test(f) ||
       /^tooling\/verify\/figma-project-registry\.cjs$/.test(f) ||
+      /^tooling\/verify\/figma-code-bridge\.cjs$/.test(f) ||
       /^governance\/release-master\/rel-131-account-figma/.test(f) ||
       /^governance\/release-master\/REL-131-ACCOUNT-HUB-FIGMA\.md$/.test(f),
-    scripts: ["figma-project-registry.cjs", "locked-visual-reconciliation.cjs"],
+    scripts: [
+      "figma-project-registry.cjs",
+      "figma-code-bridge.cjs",
+      "locked-visual-reconciliation.cjs",
+    ],
   },
   {
     test: (f) =>
