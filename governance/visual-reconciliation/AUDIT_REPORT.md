@@ -87,5 +87,13 @@ LAST_COMPLETED_TODO = REL-206
 FIRST_EXECUTION_TODO = REL-207
 REL_207_STARTED = NO
 
-STOP_REASON = audit complete
+GIT =
+BRANCH = audit/figma-repo-runtime-reconciliation
+COMMITS = dd68f11 3b52c38 c8db9bc f4c9ddc
+PR = pending
+CI = pending
+MERGE = pending
+MAIN_AFTER = pending
+
+STOP_REASON = audit complete · REL-207 not started
 ```
