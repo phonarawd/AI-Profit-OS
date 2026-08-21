@@ -703,6 +703,60 @@ async function stubHistory(page, mode) {
   });
 }
 
+/** REL-111~119 money-loop journey stub. production mutation 0. */
+async function stubMoneyLoop(page) {
+  await page.route("**/api/v1/**", async (route) => {
+    const url = route.request().url();
+    const method = route.request().method();
+    if (url.includes("/api/v1/me/home-read")) {
+      return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    if (url.includes("/api/v1/wallet/buckets")) {
+      return json(route, 200, TEST_WALLET_BUCKETS);
+    }
+    if (url.includes("/api/v1/wallet/my-deposit-address")) {
+      return json(route, 200, { trc20Address: "TQADEPOSITADDRESSREL1140000001" });
+    }
+    if (url.includes("/api/v1/wallet/krw-deposit-requests")) {
+      return json(route, 200, {
+        status: "pending",
+        payableAmountKrw: 10004,
+        depositCode: "QA114",
+      });
+    }
+    if (url.includes("/api/v1/wallet/withdraw/step-up/challenge")) {
+      return json(route, 200, { challengeId: "ch-rel116", method: "pin" });
+    }
+    if (url.includes("/api/v1/wallet/withdraw/step-up/verify")) {
+      return json(route, 200, {
+        ok: true,
+        stepUpToken: "su-rel116",
+        method: "pin",
+      });
+    }
+    if (
+      method === "POST" &&
+      url.includes("/api/v1/wallet/withdraw") &&
+      !url.includes("step-up")
+    ) {
+      return json(route, 200, { status: "accepted" });
+    }
+    const detail = url.match(/\/api\/v1\/me\/ledger\/journals\/([^/?#]+)/);
+    if (detail) {
+      return json(route, 200, { journal: HISTORY_JOURNAL });
+    }
+    if (url.includes("/api/v1/me/ledger/journals")) {
+      return json(route, 200, {
+        items: [HISTORY_JOURNAL],
+        total: 1,
+        limit: 20,
+        offset: 0,
+      });
+    }
+    return json(route, 401, { error: "unauthorized" });
+  });
+}
+
 module.exports = {
   AUTHENTICATED_EMPTY_HOME,
   TEST_OPPORTUNITY_ITEM,
@@ -718,6 +772,7 @@ module.exports = {
   stubDeposit,
   stubWithdraw,
   stubHistory,
+  stubMoneyLoop,
   HISTORY_JOURNAL_ID,
   JOURNEY_TRADE_ID,
   SETTLEMENT_TRADE_ID,
