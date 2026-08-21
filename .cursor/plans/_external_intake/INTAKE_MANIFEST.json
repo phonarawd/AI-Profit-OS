@@ -1,0 +1,862 @@
+{
+  "generatedAt": "2026-08-20T13:19:49.262Z",
+  "HOME_SOURCE_WRITE_COUNT": 0,
+  "HOME_SOURCE_DELETE_COUNT": 0,
+  "HOME_TO_INTAKE_HASH_MISMATCH": 0,
+  "copyCount": 56,
+  "copies": [
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\02.5_engine_acceptance_qa_fd1cd7cc.plan.md",
+      "intakeRel": "02.5_engine_acceptance_qa_fd1cd7cc.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_NAME",
+      "srcHash": "786D2205D3DB7C3A870C7D48AC8167099F487A52278FB5421BFAD54AA8294CA4",
+      "destHash": "786D2205D3DB7C3A870C7D48AC8167099F487A52278FB5421BFAD54AA8294CA4",
+      "hashMatch": true,
+      "size": 16986,
+      "mtime": "2026-08-12T12:21:49.551Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\3일_ui_우선_출시_0d19fb61.plan.md",
+      "intakeRel": "3일_ui_우선_출시_0d19fb61.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "BA41578F19B640577914ADFF8F061E0235C07DE29E8C082F266ADA40C67424E9",
+      "destHash": "BA41578F19B640577914ADFF8F061E0235C07DE29E8C082F266ADA40C67424E9",
+      "hashMatch": true,
+      "size": 12208,
+      "mtime": "2026-08-07T22:43:31.584Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\account_hub_figma_23be13c4.plan.md",
+      "intakeRel": "account_hub_figma_23be13c4.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "1B8BF4FBFAC170ABAC9258E950CE361A91F25E6B93FE7A7EF44602AB9C534DA2",
+      "destHash": "1B8BF4FBFAC170ABAC9258E950CE361A91F25E6B93FE7A7EF44602AB9C534DA2",
+      "hashMatch": true,
+      "size": 9353,
+      "mtime": "2026-08-20T07:08:11.426Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\ai_profit_pivot_docs_a2f2ebb9.plan.md",
+      "intakeRel": "ai_profit_pivot_docs_a2f2ebb9.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PRIOR",
+      "srcHash": "9FD92C7E010F9F24678F200E7CB222202AC195B0A66C224D44BCBDC4EDE717CD",
+      "destHash": "9FD92C7E010F9F24678F200E7CB222202AC195B0A66C224D44BCBDC4EDE717CD",
+      "hashMatch": true,
+      "size": 13591,
+      "mtime": "2026-08-07T17:13:41.361Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\canonical_identity_v2_41da485f.plan.md",
+      "intakeRel": "canonical_identity_v2_41da485f.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "FC7544A54E1F529094A5BD770A78698D61729EAE2F0B6596D1A22532B1FA526E",
+      "destHash": "FC7544A54E1F529094A5BD770A78698D61729EAE2F0B6596D1A22532B1FA526E",
+      "hashMatch": true,
+      "size": 14342,
+      "mtime": "2026-08-19T10:59:08.494Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\canonical_identity_v2_662a1fcc.plan.md",
+      "intakeRel": "canonical_identity_v2_662a1fcc.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "3DC137F473659F105A82811DE8E0AF8C22AD7664A973E7EFD4FFD9BD04B4AE2F",
+      "destHash": "3DC137F473659F105A82811DE8E0AF8C22AD7664A973E7EFD4FFD9BD04B4AE2F",
+      "hashMatch": true,
+      "size": 20313,
+      "mtime": "2026-08-19T08:50:23.742Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\canonical_pd_durable_persistence_4af948dc.plan.md",
+      "intakeRel": "canonical_pd_durable_persistence_4af948dc.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "FAE4424397E69318FCF4DF08B6073EDF5ADF52571BA1BA95B57EAF2D0FE9A9AC",
+      "destHash": "FAE4424397E69318FCF4DF08B6073EDF5ADF52571BA1BA95B57EAF2D0FE9A9AC",
+      "hashMatch": true,
+      "size": 26651,
+      "mtime": "2026-08-19T14:48:17.631Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\canonical_product_pd_id_6f82b50e.plan.md",
+      "intakeRel": "canonical_product_pd_id_6f82b50e.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PASS2",
+      "srcHash": "ACA5A574DE1FCA9E107E984131FB39933C543FB0492C17595712DC6ABBC9938D",
+      "destHash": "ACA5A574DE1FCA9E107E984131FB39933C543FB0492C17595712DC6ABBC9938D",
+      "hashMatch": true,
+      "size": 15805,
+      "mtime": "2026-08-19T11:47:51.475Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\chrono24_observation_slice_2e325fd3.plan.md",
+      "intakeRel": "chrono24_observation_slice_2e325fd3.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "7E42463731A4E4CA0543FFA70891C80AB1A7D5F21932FFACFE7D9F6B9978B29A",
+      "destHash": "7E42463731A4E4CA0543FFA70891C80AB1A7D5F21932FFACFE7D9F6B9978B29A",
+      "hashMatch": true,
+      "size": 11552,
+      "mtime": "2026-08-19T06:51:09.465Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\ebay_observation_bridge_46408cad.plan.md",
+      "intakeRel": "ebay_observation_bridge_46408cad.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "20D8336F669C1DD9581CE08D99B3F9BF6F724091486BDD1087EC3C6655AA64FA",
+      "destHash": "20D8336F669C1DD9581CE08D99B3F9BF6F724091486BDD1087EC3C6655AA64FA",
+      "hashMatch": true,
+      "size": 18273,
+      "mtime": "2026-08-19T07:24:41.366Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\ebay_pair_source_select_9e7f8ca9.plan.md",
+      "intakeRel": "ebay_pair_source_select_9e7f8ca9.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "F8B34C330362FA9B6BDA11D6A29BCBD85A56C41F62428A2BAD12993E7BE3338F",
+      "destHash": "F8B34C330362FA9B6BDA11D6A29BCBD85A56C41F62428A2BAD12993E7BE3338F",
+      "hashMatch": true,
+      "size": 13392,
+      "mtime": "2026-08-19T08:31:53.384Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\engine_final_re-verification_audit_15069cca.plan.md",
+      "intakeRel": "engine_final_re-verification_audit_15069cca.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PRIOR",
+      "srcHash": "43EF5F2C1B7792BA8D69C226883E326950D81F851B5B70AF332105A68ACBBD4F",
+      "destHash": "43EF5F2C1B7792BA8D69C226883E326950D81F851B5B70AF332105A68ACBBD4F",
+      "hashMatch": true,
+      "size": 48675,
+      "mtime": "2026-08-09T16:06:36.373Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\fashionphile_identity_forensic_a9a039d7.plan.md",
+      "intakeRel": "fashionphile_identity_forensic_a9a039d7.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "AB9EF8DA6F6EFF3E0503538F16F8D43D6E898CB6C3819862C95690ADAF9D4CE6",
+      "destHash": "AB9EF8DA6F6EFF3E0503538F16F8D43D6E898CB6C3819862C95690ADAF9D4CE6",
+      "hashMatch": true,
+      "size": 18903,
+      "mtime": "2026-08-19T08:09:28.230Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\global_observation_runtime_d6c3eb9c.plan.md",
+      "intakeRel": "global_observation_runtime_d6c3eb9c.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "BB06EEE76BB1B5F9B7FFF1E97EBA05B81CBF4A42C6113C00FF2C9F36DBF7E890",
+      "destHash": "BB06EEE76BB1B5F9B7FFF1E97EBA05B81CBF4A42C6113C00FF2C9F36DBF7E890",
+      "hashMatch": true,
+      "size": 12734,
+      "mtime": "2026-08-19T06:08:33.232Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\greenfield_frontend_reset_b5d39a4c.plan.md",
+      "intakeRel": "greenfield_frontend_reset_b5d39a4c.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_NAME",
+      "srcHash": "DA39034A6DD55DED8A6C66F884DE6D6F10E961FE9F222E9B33A09A0C63E75234",
+      "destHash": "DA39034A6DD55DED8A6C66F884DE6D6F10E961FE9F222E9B33A09A0C63E75234",
+      "hashMatch": true,
+      "size": 21192,
+      "mtime": "2026-08-18T05:48:44.225Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\hc6-08_binding_pass1_e28aa3ad.plan.md",
+      "intakeRel": "hc6-08_binding_pass1_e28aa3ad.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PASS2",
+      "srcHash": "553FF0D9F86C6EC63CC62D7F7BB3A6352967F50F337AF85178FAF9A06F5A171D",
+      "destHash": "553FF0D9F86C6EC63CC62D7F7BB3A6352967F50F337AF85178FAF9A06F5A171D",
+      "hashMatch": true,
+      "size": 16882,
+      "mtime": "2026-08-17T14:16:17.096Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\hc6-08_c_impl_plan_d235b8bd.plan.md",
+      "intakeRel": "hc6-08_c_impl_plan_d235b8bd.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PASS2",
+      "srcHash": "911DAACAFC40B22BC9F4E0588FA8DFA5CE13CA32709B292B7CC27BF7B11CF07E",
+      "destHash": "911DAACAFC40B22BC9F4E0588FA8DFA5CE13CA32709B292B7CC27BF7B11CF07E",
+      "hashMatch": true,
+      "size": 15120,
+      "mtime": "2026-08-17T15:26:54.078Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\hc6-08_fx_architecture_f3495a7a.plan.md",
+      "intakeRel": "hc6-08_fx_architecture_f3495a7a.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PASS2",
+      "srcHash": "ABFCDFEC8EFA763E63F0C5ECF6D0FBA13D2F1D8DC7A0FDF488DDE7E35AB2928A",
+      "destHash": "ABFCDFEC8EFA763E63F0C5ECF6D0FBA13D2F1D8DC7A0FDF488DDE7E35AB2928A",
+      "hashMatch": true,
+      "size": 16715,
+      "mtime": "2026-08-17T14:50:55.908Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\hc6-08_krw_approx_1a593a15.plan.md",
+      "intakeRel": "hc6-08_krw_approx_1a593a15.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PASS2",
+      "srcHash": "A3B4D926401E74BD9340D093D9031EE0BA91206ACA56098A1DF18258C52490D5",
+      "destHash": "A3B4D926401E74BD9340D093D9031EE0BA91206ACA56098A1DF18258C52490D5",
+      "hashMatch": true,
+      "size": 11421,
+      "mtime": "2026-08-17T14:34:51.317Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\heygen_korean_test_de97a481.plan.md",
+      "intakeRel": "heygen_korean_test_de97a481.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "37229FD584726AC7A221069A2AED4DD4508F9855B30B1F88555169DE8F251A13",
+      "destHash": "37229FD584726AC7A221069A2AED4DD4508F9855B30B1F88555169DE8F251A13",
+      "hashMatch": true,
+      "size": 3902,
+      "mtime": "2026-08-08T22:54:02.194Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\homecleanv1_clean-room_a7760b61.plan.md",
+      "intakeRel": "homecleanv1_clean-room_a7760b61.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PRIOR",
+      "srcHash": "C729B7B0F6996E50D9EDD6556271821F7B0937533C357173968F3B81E67F8074",
+      "destHash": "C729B7B0F6996E50D9EDD6556271821F7B0937533C357173968F3B81E67F8074",
+      "hashMatch": true,
+      "size": 132721,
+      "mtime": "2026-08-18T03:48:47.927Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\home_visual_lock_875124f2.plan.md",
+      "intakeRel": "home_visual_lock_875124f2.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "C4EB08793B7F4EE8CE5BE472ED8B2A21245F40098EDFF4FE8AAC5101180CB926",
+      "destHash": "C4EB08793B7F4EE8CE5BE472ED8B2A21245F40098EDFF4FE8AAC5101180CB926",
+      "hashMatch": true,
+      "size": 6374,
+      "mtime": "2026-08-10T03:47:15.476Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\identity_matching_v1_e9f60503.plan.md",
+      "intakeRel": "identity_matching_v1_e9f60503.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "76DF8B40FD3D5041DF2540D4DF811C829D2DDA67D35913E8AABC93E015BE6B53",
+      "destHash": "76DF8B40FD3D5041DF2540D4DF811C829D2DDA67D35913E8AABC93E015BE6B53",
+      "hashMatch": true,
+      "size": 12883,
+      "mtime": "2026-08-19T07:41:53.740Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\local_test_db_proof_b2e31074.plan.md",
+      "intakeRel": "local_test_db_proof_b2e31074.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "487AB279D3AD706047679A1D2350C83664C6EFB6469A1FD77ADCD5E98BFD394A",
+      "destHash": "487AB279D3AD706047679A1D2350C83664C6EFB6469A1FD77ADCD5E98BFD394A",
+      "hashMatch": true,
+      "size": 11524,
+      "mtime": "2026-08-19T14:06:16.333Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\matching_v2_pairwise_a234ee50.plan.md",
+      "intakeRel": "matching_v2_pairwise_a234ee50.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "58C93154D2F5D9F298E975F270A59D4BA7A85CFB4FB1DCB9627E5546FF9AE148",
+      "destHash": "58C93154D2F5D9F298E975F270A59D4BA7A85CFB4FB1DCB9627E5546FF9AE148",
+      "hashMatch": true,
+      "size": 15034,
+      "mtime": "2026-08-19T09:10:57.701Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\mobile-home-polish_d1b87678.plan.md",
+      "intakeRel": "mobile-home-polish_d1b87678.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "66EF86FC1C26B68B35D86A95A41F6A0754ACBEDEAEEF8B59C2ABCCD7F7D62A7E",
+      "destHash": "66EF86FC1C26B68B35D86A95A41F6A0754ACBEDEAEEF8B59C2ABCCD7F7D62A7E",
+      "hashMatch": true,
+      "size": 5777,
+      "mtime": "2026-08-10T13:53:31.025Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\opportunity_reprice_lifecycle_a5272af5.plan.md",
+      "intakeRel": "opportunity_reprice_lifecycle_a5272af5.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "AE8C39B9D17049A74306D5E3DB98C2BBA8C778913A2A8A567238F3573E34EA16",
+      "destHash": "AE8C39B9D17049A74306D5E3DB98C2BBA8C778913A2A8A567238F3573E34EA16",
+      "hashMatch": true,
+      "size": 14572,
+      "mtime": "2026-08-19T05:49:47.869Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\parallel_consumer_ui_figma_a10ef910.plan.md",
+      "intakeRel": "parallel_consumer_ui_figma_a10ef910.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "B90C142F316F7807EAC746499AAAF37BAB0D7F7192321C7817FA50695D81A77A",
+      "destHash": "B90C142F316F7807EAC746499AAAF37BAB0D7F7192321C7817FA50695D81A77A",
+      "hashMatch": true,
+      "size": 27320,
+      "mtime": "2026-08-20T07:12:36.514Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\pc_home_데스크톱_그리드_재설계_3557c4d1.plan.md",
+      "intakeRel": "pc_home_데스크톱_그리드_재설계_3557c4d1.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "B156E1D497B56BF7FF76EF9061912D23CF40D2EFB4E80DC167C1912F1C5BB445",
+      "destHash": "B156E1D497B56BF7FF76EF9061912D23CF40D2EFB4E80DC167C1912F1C5BB445",
+      "hashMatch": true,
+      "size": 27768,
+      "mtime": "2026-08-10T05:32:58.628Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\peotteok_ai_coach_hardening_v1_2969f0aa.plan.md",
+      "intakeRel": "peotteok_ai_coach_hardening_v1_2969f0aa.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PRIOR",
+      "srcHash": "2FED1E496BC036D6E034E74237E5629DA44B88539430C4BE535F25C2EE516F2D",
+      "destHash": "2FED1E496BC036D6E034E74237E5629DA44B88539430C4BE535F25C2EE516F2D",
+      "hashMatch": true,
+      "size": 17739,
+      "mtime": "2026-08-11T22:35:35.174Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\plan_a645a0ad.plan.md",
+      "intakeRel": "plan_a645a0ad.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "673E617F6CB41119CC14C71F7639F77B0E96C58E2B6168FD6BB1DDCDC802CAFC",
+      "destHash": "673E617F6CB41119CC14C71F7639F77B0E96C58E2B6168FD6BB1DDCDC802CAFC",
+      "hashMatch": true,
+      "size": 29293,
+      "mtime": "2026-08-11T20:59:24.950Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\plan_finish_order_8d0ab09d.plan.md",
+      "intakeRel": "plan_finish_order_8d0ab09d.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PASS2",
+      "srcHash": "7A36A6136155154192F369B17CA5F2AD9870C38F3988B44A7861D51609B0F083",
+      "destHash": "7A36A6136155154192F369B17CA5F2AD9870C38F3988B44A7861D51609B0F083",
+      "hashMatch": true,
+      "size": 7640,
+      "mtime": "2026-08-08T21:38:20.121Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\profits_real_integration_b4a78f72.plan.md",
+      "intakeRel": "profits_real_integration_b4a78f72.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "B35187C08AA6D283E9FCC789767D8EAC1E4080F83B169E4571F4E493A4CDE8DD",
+      "destHash": "B35187C08AA6D283E9FCC789767D8EAC1E4080F83B169E4571F4E493A4CDE8DD",
+      "hashMatch": true,
+      "size": 24455,
+      "mtime": "2026-08-19T05:26:10.324Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\putduk_release_master_ff3a5134.plan.md",
+      "intakeRel": "putduk_release_master_ff3a5134.plan.md",
+      "sourceKind": "CURRENT_MASTER_DRAFT_SOURCE",
+      "srcHash": "627BDF89DBB4C48EFAD38325DB1AFA29736D74C323C88A5EB8829A16149DA0E9",
+      "destHash": "627BDF89DBB4C48EFAD38325DB1AFA29736D74C323C88A5EB8829A16149DA0E9",
+      "hashMatch": true,
+      "size": 133931,
+      "mtime": "2026-08-20T09:19:48.257Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\r0_흡수_반영_플랜_eaebafd6.plan.md",
+      "intakeRel": "r0_흡수_반영_플랜_eaebafd6.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PRIOR",
+      "srcHash": "5F87B797DD161F843A4602971A1836065DDFF351BE8E8FB35F1034EBD7217D89",
+      "destHash": "5F87B797DD161F843A4602971A1836065DDFF351BE8E8FB35F1034EBD7217D89",
+      "hashMatch": true,
+      "size": 12237,
+      "mtime": "2026-08-10T17:15:08.890Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\so_db_runtime_proof_9f3b7b50.plan.md",
+      "intakeRel": "so_db_runtime_proof_9f3b7b50.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "15B09EEEB8B6DC2E9E0A538CA3D93154F0F42DAE1E8FDB029BFEDB48CE027F51",
+      "destHash": "15B09EEEB8B6DC2E9E0A538CA3D93154F0F42DAE1E8FDB029BFEDB48CE027F51",
+      "hashMatch": true,
+      "size": 13155,
+      "mtime": "2026-08-19T13:20:26.013Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\so_durable_persistence_175f41f3.plan.md",
+      "intakeRel": "so_durable_persistence_175f41f3.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "E06E3E55036C504A9CDFFFC394B05981E703AD145C6AF47A289047A5AD2285C4",
+      "destHash": "E06E3E55036C504A9CDFFFC394B05981E703AD145C6AF47A289047A5AD2285C4",
+      "hashMatch": true,
+      "size": 14264,
+      "mtime": "2026-08-19T12:06:43.627Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\ui_live_wiring_part9_a6643cf7.plan.md",
+      "intakeRel": "ui_live_wiring_part9_a6643cf7.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PRIOR",
+      "srcHash": "6435664CF8449FC549D70D5F4925A7EAEB22C1C54CC840C391615DCA7ACCF728",
+      "destHash": "6435664CF8449FC549D70D5F4925A7EAEB22C1C54CC840C391615DCA7ACCF728",
+      "hashMatch": true,
+      "size": 1376,
+      "mtime": "2026-08-10T00:47:25.524Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\v2_corroboration_fix_9918eb0e.plan.md",
+      "intakeRel": "v2_corroboration_fix_9918eb0e.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "EEEDBDCC8E37231614D9743F140D5502DAD674472DCA9A09B3FFF968D3D70A08",
+      "destHash": "EEEDBDCC8E37231614D9743F140D5502DAD674472DCA9A09B3FFF968D3D70A08",
+      "hashMatch": true,
+      "size": 10215,
+      "mtime": "2026-08-19T10:57:02.302Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\v2_real_pair_validation_306b7a96.plan.md",
+      "intakeRel": "v2_real_pair_validation_306b7a96.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "782D67AB25DF883FDD84CEBA02C88F791A3B357867EFBB8213E9E9406D14237F",
+      "destHash": "782D67AB25DF883FDD84CEBA02C88F791A3B357867EFBB8213E9E9406D14237F",
+      "hashMatch": true,
+      "size": 10080,
+      "mtime": "2026-08-19T09:29:55.343Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\wallet_figma_26_e617909c.plan.md",
+      "intakeRel": "wallet_figma_26_e617909c.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "83ECC9F2706DD0BA4BCCFBBD6C410EA6FC1AF4390D8DF7491E52770019DFA7C0",
+      "destHash": "83ECC9F2706DD0BA4BCCFBBD6C410EA6FC1AF4390D8DF7491E52770019DFA7C0",
+      "hashMatch": true,
+      "size": 13518,
+      "mtime": "2026-08-17T22:26:19.669Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\wallet_master_contract_e889ee56.plan.md",
+      "intakeRel": "wallet_master_contract_e889ee56.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "291DA93984B39AD0A3FC340BD3B3881657534C1097573C15BDCFD0AB458CB228",
+      "destHash": "291DA93984B39AD0A3FC340BD3B3881657534C1097573C15BDCFD0AB458CB228",
+      "hashMatch": true,
+      "size": 13913,
+      "mtime": "2026-08-17T20:53:05.942Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\지갑_세계1티어_아이디어_34db674f.plan.md",
+      "intakeRel": "지갑_세계1티어_아이디어_34db674f.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_HEADER",
+      "srcHash": "B5654639B907D11BFEEE36165616525F9226412C4FC5A99BDE8BE170C7CAE911",
+      "destHash": "B5654639B907D11BFEEE36165616525F9226412C4FC5A99BDE8BE170C7CAE911",
+      "hashMatch": true,
+      "size": 18025,
+      "mtime": "2026-08-18T03:46:20.963Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\퍼뜩_03_ui_ux_master_plan_be3fa3cc.plan.md",
+      "intakeRel": "퍼뜩_03_ui_ux_master_plan_be3fa3cc.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PRIOR",
+      "srcHash": "17A2EE9E45269F2C1F14FB82B51B63D09B513669E90BD9D3C832B2FBA16060F9",
+      "destHash": "17A2EE9E45269F2C1F14FB82B51B63D09B513669E90BD9D3C832B2FBA16060F9",
+      "hashMatch": true,
+      "size": 81508,
+      "mtime": "2026-08-10T00:14:12.577Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\퍼뜩_master_architecture_65b4f0e4.plan.md",
+      "intakeRel": "퍼뜩_master_architecture_65b4f0e4.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PRIOR",
+      "srcHash": "08C874727882435707B45C0ABAAEB6BB9533ADE71D8AB02453773485199FD19B",
+      "destHash": "08C874727882435707B45C0ABAAEB6BB9533ADE71D8AB02453773485199FD19B",
+      "hashMatch": true,
+      "size": 21640,
+      "mtime": "2026-08-09T16:46:55.997Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\플랫폼_전체_재설계_로드맵_d903eef7.plan.md",
+      "intakeRel": "플랫폼_전체_재설계_로드맵_d903eef7.plan.md",
+      "sourceKind": "HOME_ONLY_PUTDUK_PRIOR",
+      "srcHash": "7D986B0F2FB08D06671B5175728B8C50D6C5E9ED8270E85F4AD7A7A28FDC656F",
+      "destHash": "7D986B0F2FB08D06671B5175728B8C50D6C5E9ED8270E85F4AD7A7A28FDC656F",
+      "hashMatch": true,
+      "size": 46423,
+      "mtime": "2026-08-10T15:45:58.015Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\_archive\\ai_profit_os_stale\\2026-08-08T22-54-57-251Z__ai_profit_os_00_index_ssot.plan.md",
+      "intakeRel": "archive\\2026-08-08T22-54-57-251Z__ai_profit_os_00_index_ssot.plan.md",
+      "sourceKind": "STALE_ARCHIVE",
+      "srcHash": "7E9AE097FC9234E4732934A566E0F33A0ED4BFD3DB868A04F0D0AEBDB151403C",
+      "destHash": "7E9AE097FC9234E4732934A566E0F33A0ED4BFD3DB868A04F0D0AEBDB151403C",
+      "hashMatch": true,
+      "size": 730,
+      "mtime": "2026-08-08T13:35:23.821Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\_archive\\ai_profit_os_stale\\2026-08-08T22-54-57-281Z__ai_profit_os_01_engine.plan.md",
+      "intakeRel": "archive\\2026-08-08T22-54-57-281Z__ai_profit_os_01_engine.plan.md",
+      "sourceKind": "STALE_ARCHIVE",
+      "srcHash": "9B8E5555180270419769A03F3EBF42834B88C67F7618AFF4511C5757FEB31A2B",
+      "destHash": "9B8E5555180270419769A03F3EBF42834B88C67F7618AFF4511C5757FEB31A2B",
+      "hashMatch": true,
+      "size": 459,
+      "mtime": "2026-08-08T13:40:36.591Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\_archive\\ai_profit_os_stale\\2026-08-08T22-54-57-283Z__ai_profit_os_01_engine_b2c3d4e5.plan.md",
+      "intakeRel": "archive\\2026-08-08T22-54-57-283Z__ai_profit_os_01_engine_b2c3d4e5.plan.md",
+      "sourceKind": "STALE_ARCHIVE",
+      "srcHash": "4A8B5049D1C4348D519E47972A67E1109CE37D256B5238BE140A33366A0FD539",
+      "destHash": "4A8B5049D1C4348D519E47972A67E1109CE37D256B5238BE140A33366A0FD539",
+      "hashMatch": true,
+      "size": 72740,
+      "mtime": "2026-08-08T15:51:56.712Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\_archive\\ai_profit_os_stale\\2026-08-08T22-54-57-285Z__ai_profit_os_02_money_c3d4e5f6.plan.md",
+      "intakeRel": "archive\\2026-08-08T22-54-57-285Z__ai_profit_os_02_money_c3d4e5f6.plan.md",
+      "sourceKind": "STALE_ARCHIVE",
+      "srcHash": "3B70B02B1BB50FDDB9F0EC60D2B5B0CAE4E6D560BB3487A17FF3CC348599F41F",
+      "destHash": "3B70B02B1BB50FDDB9F0EC60D2B5B0CAE4E6D560BB3487A17FF3CC348599F41F",
+      "hashMatch": true,
+      "size": 51772,
+      "mtime": "2026-08-08T15:52:16.316Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\_archive\\ai_profit_os_stale\\2026-08-08T22-54-57-285Z__ai_profit_os_02_money_chain.plan.md",
+      "intakeRel": "archive\\2026-08-08T22-54-57-285Z__ai_profit_os_02_money_chain.plan.md",
+      "sourceKind": "STALE_ARCHIVE",
+      "srcHash": "290955CB6C15B2F2A31B5221E3100D7B8D0A034E77F2C407C9E002D6F61928CB",
+      "destHash": "290955CB6C15B2F2A31B5221E3100D7B8D0A034E77F2C407C9E002D6F61928CB",
+      "hashMatch": true,
+      "size": 424,
+      "mtime": "2026-08-08T13:35:26.849Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\_archive\\ai_profit_os_stale\\2026-08-08T22-54-57-288Z__ai_profit_os_03_ui_ux.plan.md",
+      "intakeRel": "archive\\2026-08-08T22-54-57-288Z__ai_profit_os_03_ui_ux.plan.md",
+      "sourceKind": "STALE_ARCHIVE",
+      "srcHash": "0F89C2AA2E8D973FBAF6846ACE242AEB8C56CC653F0A40FAE9DAA3FFB7DDC7ED",
+      "destHash": "0F89C2AA2E8D973FBAF6846ACE242AEB8C56CC653F0A40FAE9DAA3FFB7DDC7ED",
+      "hashMatch": true,
+      "size": 462,
+      "mtime": "2026-08-08T13:40:36.719Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\_archive\\ai_profit_os_stale\\2026-08-08T22-54-57-300Z__ai_profit_os_04_admin_ops.plan.md",
+      "intakeRel": "archive\\2026-08-08T22-54-57-300Z__ai_profit_os_04_admin_ops.plan.md",
+      "sourceKind": "STALE_ARCHIVE",
+      "srcHash": "B2676B6DF63BF5B477EE80D448A59AA333C655C8700E92F94A0CB25437E7F3A1",
+      "destHash": "B2676B6DF63BF5B477EE80D448A59AA333C655C8700E92F94A0CB25437E7F3A1",
+      "hashMatch": true,
+      "size": 472,
+      "mtime": "2026-08-08T13:40:36.817Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\_archive\\ai_profit_os_stale\\2026-08-08T22-54-57-301Z__ai_profit_os_05_pwa_native.plan.md",
+      "intakeRel": "archive\\2026-08-08T22-54-57-301Z__ai_profit_os_05_pwa_native.plan.md",
+      "sourceKind": "STALE_ARCHIVE",
+      "srcHash": "5CD3DDEE9F7EE993C901EC4F8B46EC7440F95AE5C55E9FA158C0F3E47EE60955",
+      "destHash": "5CD3DDEE9F7EE993C901EC4F8B46EC7440F95AE5C55E9FA158C0F3E47EE60955",
+      "hashMatch": true,
+      "size": 439,
+      "mtime": "2026-08-08T13:35:29.788Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\_archive\\ai_profit_os_stale\\2026-08-08T22-54-57-302Z__ai_profit_os_06_infra_marketing.plan.md",
+      "intakeRel": "archive\\2026-08-08T22-54-57-302Z__ai_profit_os_06_infra_marketing.plan.md",
+      "sourceKind": "STALE_ARCHIVE",
+      "srcHash": "AA08B1448F079168D6F5A67D229332A43D7FD50B7DC28FAFDA7493BE8D21D8A9",
+      "destHash": "AA08B1448F079168D6F5A67D229332A43D7FD50B7DC28FAFDA7493BE8D21D8A9",
+      "hashMatch": true,
+      "size": 465,
+      "mtime": "2026-08-08T13:35:31.234Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\.cursor\\plans\\_archive\\ai_profit_os_stale\\2026-08-11T21-51-48-774Z__02.5_engine_acceptance_qa_fd1cd7cc.plan.md",
+      "intakeRel": "archive\\2026-08-11T21-51-48-774Z__02.5_engine_acceptance_qa_fd1cd7cc.plan.md",
+      "sourceKind": "STALE_ARCHIVE",
+      "srcHash": "DA647D992D6039D1520DED00FB211782AC3E851DA053AA11FE2780C14230C712",
+      "destHash": "DA647D992D6039D1520DED00FB211782AC3E851DA053AA11FE2780C14230C712",
+      "hashMatch": true,
+      "size": 16830,
+      "mtime": "2026-08-11T21:39:52.270Z"
+    },
+    {
+      "sourcePath": "C:\\Users\\PC\\Desktop\\AI_PROFIT_OS\\.cursor\\plans\\_external_intake\\putduk_release_master_ff3a5134.plan.md",
+      "intakeRel": "../putduk_release_master_ff3a5134.plan.md",
+      "sourceKind": "WORKSPACE_MASTER_WORKING_COPY",
+      "srcHash": "627BDF89DBB4C48EFAD38325DB1AFA29736D74C323C88A5EB8829A16149DA0E9",
+      "destHash": "627BDF89DBB4C48EFAD38325DB1AFA29736D74C323C88A5EB8829A16149DA0E9",
+      "hashMatch": true,
+      "size": 133931,
+      "mtime": "2026-08-20T09:19:48.257Z"
+    }
+  ],
+  "mismatches": [],
+  "authority": [
+    {
+      "file": "02.5_engine_acceptance_qa_fd1cd7cc.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "3일_ui_우선_출시_0d19fb61.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "account_hub_figma_23be13c4.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "ai_profit_pivot_docs_a2f2ebb9.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "canonical_identity_v2_41da485f.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "canonical_identity_v2_662a1fcc.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "canonical_pd_durable_persistence_4af948dc.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "canonical_product_pd_id_6f82b50e.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "chrono24_observation_slice_2e325fd3.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "ebay_observation_bridge_46408cad.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "ebay_pair_source_select_9e7f8ca9.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "engine_final_re-verification_audit_15069cca.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "fashionphile_identity_forensic_a9a039d7.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "global_observation_runtime_d6c3eb9c.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "greenfield_frontend_reset_b5d39a4c.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "hc6-08_binding_pass1_e28aa3ad.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "hc6-08_c_impl_plan_d235b8bd.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "hc6-08_fx_architecture_f3495a7a.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "hc6-08_krw_approx_1a593a15.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "heygen_korean_test_de97a481.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "homecleanv1_clean-room_a7760b61.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "home_visual_lock_875124f2.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "identity_matching_v1_e9f60503.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "local_test_db_proof_b2e31074.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "matching_v2_pairwise_a234ee50.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "mobile-home-polish_d1b87678.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "opportunity_reprice_lifecycle_a5272af5.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "parallel_consumer_ui_figma_a10ef910.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "pc_home_데스크톱_그리드_재설계_3557c4d1.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "peotteok_ai_coach_hardening_v1_2969f0aa.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "plan_a645a0ad.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "plan_finish_order_8d0ab09d.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "profits_real_integration_b4a78f72.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "putduk_release_master_ff3a5134.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "r0_흡수_반영_플랜_eaebafd6.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "so_db_runtime_proof_9f3b7b50.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "so_durable_persistence_175f41f3.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "ui_live_wiring_part9_a6643cf7.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "v2_corroboration_fix_9918eb0e.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "v2_real_pair_validation_306b7a96.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "wallet_figma_26_e617909c.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "wallet_master_contract_e889ee56.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "지갑_세계1티어_아이디어_34db674f.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "퍼뜩_03_ui_ux_master_plan_be3fa3cc.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "퍼뜩_master_architecture_65b4f0e4.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "플랫폼_전체_재설계_로드맵_d903eef7.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-251Z__ai_profit_os_00_index_ssot.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-281Z__ai_profit_os_01_engine.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-283Z__ai_profit_os_01_engine_b2c3d4e5.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-285Z__ai_profit_os_02_money_c3d4e5f6.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-285Z__ai_profit_os_02_money_chain.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-288Z__ai_profit_os_03_ui_ux.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-300Z__ai_profit_os_04_admin_ops.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-301Z__ai_profit_os_05_pwa_native.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-302Z__ai_profit_os_06_infra_marketing.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-11T21-51-48-774Z__02.5_engine_acceptance_qa_fd1cd7cc.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    }
+  ]
+}

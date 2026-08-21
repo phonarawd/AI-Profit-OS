@@ -1,0 +1,77 @@
+{
+  "rel": "REL-002",
+  "stage": "ruleset-contract-repair-and-merge",
+  "repository": "phonarawd/AI-Profit-OS",
+  "ruleset": {
+    "id": 20576556,
+    "name": "main-gate-required",
+    "enforcement": "active",
+    "target": "branch",
+    "conditions": {
+      "ref_name": {
+        "exclude": [],
+        "include": ["refs/heads/main"]
+      }
+    },
+    "old_required_checks": ["gate / verify-gate"],
+    "new_required_checks": ["verify-gate"],
+    "old_bad_context_present": false,
+    "verify_gate_required": true,
+    "unrelated_ruleset_field_changes": 0,
+    "expected_diff_only": {
+      "path": ".rules[2].parameters.required_status_checks[0].context",
+      "before": "gate / verify-gate",
+      "after": "verify-gate"
+    },
+    "preserved": {
+      "deletion": true,
+      "non_fast_forward": true,
+      "strict_required_status_checks_policy": true,
+      "do_not_enforce_on_create": true,
+      "bypass_actors": [
+        {
+          "actor_id": 5,
+          "actor_type": "RepositoryRole",
+          "bypass_mode": "always"
+        }
+      ],
+      "pull_request": {
+        "required_approving_review_count": 0,
+        "dismiss_stale_reviews_on_push": true,
+        "required_reviewers": [],
+        "require_code_owner_review": false,
+        "require_last_push_approval": false,
+        "required_review_thread_resolution": false,
+        "allowed_merge_methods": ["merge", "squash", "rebase"]
+      }
+    }
+  },
+  "pr": {
+    "number": 2,
+    "url": "https://github.com/phonarawd/AI-Profit-OS/pull/2",
+    "head": "rel/REL-002-home-baseline",
+    "head_sha": "1a4662ddfad6cfb5fd613cf481d25b751a055db8",
+    "base": "main",
+    "verify_gate": {
+      "name": "verify-gate",
+      "conclusion": "SUCCESS",
+      "run": "32383942899",
+      "url": "https://github.com/phonarawd/AI-Profit-OS/actions/runs/32383942899"
+    },
+    "merge_state_before": "BLOCKED",
+    "merge_state_after_ruleset_repair": "CLEAN",
+    "state_after_merge": "MERGED",
+    "admin_bypass_used": 0,
+    "force_merge_used": 0,
+    "merge_method": "merge"
+  },
+  "merge": {
+    "merge_commit": "db6db871a809c6748173d76430e2fe56c6b5484c",
+    "remote_main_before": "60914f4a1c1671a5bd3cf0ef4da248cab12abdf9",
+    "remote_main_after": "db6db871a809c6748173d76430e2fe56c6b5484c",
+    "parents": [
+      "60914f4a1c1671a5bd3cf0ef4da248cab12abdf9",
+      "1a4662ddfad6cfb5fd613cf481d25b751a055db8"
+    ]
+  }
+}

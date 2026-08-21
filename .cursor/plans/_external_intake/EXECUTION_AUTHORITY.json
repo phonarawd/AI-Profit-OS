@@ -1,0 +1,285 @@
+{
+  "EXECUTION_AUTHORITY": "NO",
+  "files": [
+    {
+      "file": "02.5_engine_acceptance_qa_fd1cd7cc.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "3일_ui_우선_출시_0d19fb61.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "account_hub_figma_23be13c4.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "ai_profit_pivot_docs_a2f2ebb9.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "canonical_identity_v2_41da485f.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "canonical_identity_v2_662a1fcc.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "canonical_pd_durable_persistence_4af948dc.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "canonical_product_pd_id_6f82b50e.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "chrono24_observation_slice_2e325fd3.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "ebay_observation_bridge_46408cad.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "ebay_pair_source_select_9e7f8ca9.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "engine_final_re-verification_audit_15069cca.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "fashionphile_identity_forensic_a9a039d7.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "global_observation_runtime_d6c3eb9c.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "greenfield_frontend_reset_b5d39a4c.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "hc6-08_binding_pass1_e28aa3ad.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "hc6-08_c_impl_plan_d235b8bd.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "hc6-08_fx_architecture_f3495a7a.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "hc6-08_krw_approx_1a593a15.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "heygen_korean_test_de97a481.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "homecleanv1_clean-room_a7760b61.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "home_visual_lock_875124f2.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "identity_matching_v1_e9f60503.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "local_test_db_proof_b2e31074.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "matching_v2_pairwise_a234ee50.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "mobile-home-polish_d1b87678.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "opportunity_reprice_lifecycle_a5272af5.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "parallel_consumer_ui_figma_a10ef910.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "pc_home_데스크톱_그리드_재설계_3557c4d1.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "peotteok_ai_coach_hardening_v1_2969f0aa.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "plan_a645a0ad.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "plan_finish_order_8d0ab09d.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "profits_real_integration_b4a78f72.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "putduk_release_master_ff3a5134.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "r0_흡수_반영_플랜_eaebafd6.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "so_db_runtime_proof_9f3b7b50.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "so_durable_persistence_175f41f3.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "ui_live_wiring_part9_a6643cf7.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "v2_corroboration_fix_9918eb0e.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "v2_real_pair_validation_306b7a96.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "wallet_figma_26_e617909c.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "wallet_master_contract_e889ee56.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "지갑_세계1티어_아이디어_34db674f.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "퍼뜩_03_ui_ux_master_plan_be3fa3cc.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "퍼뜩_master_architecture_65b4f0e4.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "플랫폼_전체_재설계_로드맵_d903eef7.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-251Z__ai_profit_os_00_index_ssot.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-281Z__ai_profit_os_01_engine.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-283Z__ai_profit_os_01_engine_b2c3d4e5.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-285Z__ai_profit_os_02_money_c3d4e5f6.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-285Z__ai_profit_os_02_money_chain.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-288Z__ai_profit_os_03_ui_ux.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-300Z__ai_profit_os_04_admin_ops.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-301Z__ai_profit_os_05_pwa_native.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-08T22-54-57-302Z__ai_profit_os_06_infra_marketing.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    },
+    {
+      "file": "archive\\2026-08-11T21-51-48-774Z__02.5_engine_acceptance_qa_fd1cd7cc.plan.md",
+      "executionAuthority": "NO",
+      "note": "sidecar only — intake bytes kept identical to source for hash verify"
+    }
+  ]
+}

@@ -1,0 +1,363 @@
+{
+  "evidence": {
+    "generatedAt": "2026-08-20T13:23:09.557Z",
+    "TEMP_ALLOWLIST_PRESENT": true,
+    "HOME_TOP_LEVEL": 262,
+    "WORKSPACE_PLANS": 21,
+    "MIRROR_DUPLICATES": 21,
+    "PRIOR_10_PRESENT": true,
+    "PUTDUK_HOME_ONLY_FILES": 46,
+    "ARCHIVE_FILES": 10,
+    "EXCLUSION_COUNT": 195,
+    "ISOLATION_COUNT": 20,
+    "OTHER_COUNT": 175,
+    "INTAKE_TODO_ROWS": 381,
+    "CLASSIFICATION_COUNTS": {
+      "VERIFIED_DONE": 261,
+      "SUPERSEDED": 71,
+      "INVALID": 37,
+      "CANONICAL_WORK_REQUIRED": 11,
+      "DUPLICATE": 1
+    },
+    "HOME_TO_INTAKE_HASH_MISMATCH": 0,
+    "KNOWN_CACHE_SNAPSHOT": {
+      "CACHE_SNAPSHOT_PATH": "UNRESOLVED",
+      "CANONICAL_SOURCE": "engine_final_re-verification_audit_15069cca.plan.md",
+      "CANONICAL_STATUS": "COMPLETED_7_OF_7",
+      "CLASSIFICATION": "STALE_CACHE_SNAPSHOT",
+      "EXECUTION_AUTHORITY": "NO",
+      "KNOWN_CACHE_SNAPSHOT_PATH_STATUS": "UNRESOLVED_BUT_NON_BLOCKING",
+      "KNOWN_CACHE_SNAPSHOT_EXECUTION_RISK": 0
+    }
+  },
+  "prior10": [
+    {
+      "name": "putduk_release_master_ff3a5134.plan.md",
+      "present": true
+    },
+    {
+      "name": "homecleanv1_clean-room_a7760b61.plan.md",
+      "present": true
+    },
+    {
+      "name": "ai_profit_pivot_docs_a2f2ebb9.plan.md",
+      "present": true
+    },
+    {
+      "name": "퍼뜩_03_ui_ux_master_plan_be3fa3cc.plan.md",
+      "present": true
+    },
+    {
+      "name": "engine_final_re-verification_audit_15069cca.plan.md",
+      "present": true
+    },
+    {
+      "name": "r0_흡수_반영_플랜_eaebafd6.plan.md",
+      "present": true
+    },
+    {
+      "name": "퍼뜩_master_architecture_65b4f0e4.plan.md",
+      "present": true
+    },
+    {
+      "name": "플랫폼_전체_재설계_로드맵_d903eef7.plan.md",
+      "present": true
+    },
+    {
+      "name": "ui_live_wiring_part9_a6643cf7.plan.md",
+      "present": true
+    },
+    {
+      "name": "peotteok_ai_coach_hardening_v1_2969f0aa.plan.md",
+      "present": true
+    }
+  ],
+  "putduk": [
+    {
+      "name": "02.5_engine_acceptance_qa_fd1cd7cc.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_NAME",
+      "size": 16986,
+      "hash": "786D2205D3DB7C3A870C7D48AC8167099F487A52278FB5421BFAD54AA8294CA4"
+    },
+    {
+      "name": "3일_ui_우선_출시_0d19fb61.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 12208,
+      "hash": "BA41578F19B640577914ADFF8F061E0235C07DE29E8C082F266ADA40C67424E9"
+    },
+    {
+      "name": "account_hub_figma_23be13c4.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 9353,
+      "hash": "1B8BF4FBFAC170ABAC9258E950CE361A91F25E6B93FE7A7EF44602AB9C534DA2"
+    },
+    {
+      "name": "ai_profit_pivot_docs_a2f2ebb9.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PRIOR",
+      "size": 13591,
+      "hash": "9FD92C7E010F9F24678F200E7CB222202AC195B0A66C224D44BCBDC4EDE717CD"
+    },
+    {
+      "name": "canonical_identity_v2_41da485f.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 14342,
+      "hash": "FC7544A54E1F529094A5BD770A78698D61729EAE2F0B6596D1A22532B1FA526E"
+    },
+    {
+      "name": "canonical_identity_v2_662a1fcc.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 20313,
+      "hash": "3DC137F473659F105A82811DE8E0AF8C22AD7664A973E7EFD4FFD9BD04B4AE2F"
+    },
+    {
+      "name": "canonical_pd_durable_persistence_4af948dc.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 26651,
+      "hash": "FAE4424397E69318FCF4DF08B6073EDF5ADF52571BA1BA95B57EAF2D0FE9A9AC"
+    },
+    {
+      "name": "canonical_product_pd_id_6f82b50e.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PASS2",
+      "size": 15805,
+      "hash": "ACA5A574DE1FCA9E107E984131FB39933C543FB0492C17595712DC6ABBC9938D"
+    },
+    {
+      "name": "chrono24_observation_slice_2e325fd3.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 11552,
+      "hash": "7E42463731A4E4CA0543FFA70891C80AB1A7D5F21932FFACFE7D9F6B9978B29A"
+    },
+    {
+      "name": "ebay_observation_bridge_46408cad.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 18273,
+      "hash": "20D8336F669C1DD9581CE08D99B3F9BF6F724091486BDD1087EC3C6655AA64FA"
+    },
+    {
+      "name": "ebay_pair_source_select_9e7f8ca9.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 13392,
+      "hash": "F8B34C330362FA9B6BDA11D6A29BCBD85A56C41F62428A2BAD12993E7BE3338F"
+    },
+    {
+      "name": "engine_final_re-verification_audit_15069cca.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PRIOR",
+      "size": 48675,
+      "hash": "43EF5F2C1B7792BA8D69C226883E326950D81F851B5B70AF332105A68ACBBD4F"
+    },
+    {
+      "name": "fashionphile_identity_forensic_a9a039d7.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 18903,
+      "hash": "AB9EF8DA6F6EFF3E0503538F16F8D43D6E898CB6C3819862C95690ADAF9D4CE6"
+    },
+    {
+      "name": "global_observation_runtime_d6c3eb9c.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 12734,
+      "hash": "BB06EEE76BB1B5F9B7FFF1E97EBA05B81CBF4A42C6113C00FF2C9F36DBF7E890"
+    },
+    {
+      "name": "greenfield_frontend_reset_b5d39a4c.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_NAME",
+      "size": 21192,
+      "hash": "DA39034A6DD55DED8A6C66F884DE6D6F10E961FE9F222E9B33A09A0C63E75234"
+    },
+    {
+      "name": "hc6-08_binding_pass1_e28aa3ad.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PASS2",
+      "size": 16882,
+      "hash": "553FF0D9F86C6EC63CC62D7F7BB3A6352967F50F337AF85178FAF9A06F5A171D"
+    },
+    {
+      "name": "hc6-08_c_impl_plan_d235b8bd.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PASS2",
+      "size": 15120,
+      "hash": "911DAACAFC40B22BC9F4E0588FA8DFA5CE13CA32709B292B7CC27BF7B11CF07E"
+    },
+    {
+      "name": "hc6-08_fx_architecture_f3495a7a.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PASS2",
+      "size": 16715,
+      "hash": "ABFCDFEC8EFA763E63F0C5ECF6D0FBA13D2F1D8DC7A0FDF488DDE7E35AB2928A"
+    },
+    {
+      "name": "hc6-08_krw_approx_1a593a15.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PASS2",
+      "size": 11421,
+      "hash": "A3B4D926401E74BD9340D093D9031EE0BA91206ACA56098A1DF18258C52490D5"
+    },
+    {
+      "name": "heygen_korean_test_de97a481.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 3902,
+      "hash": "37229FD584726AC7A221069A2AED4DD4508F9855B30B1F88555169DE8F251A13"
+    },
+    {
+      "name": "homecleanv1_clean-room_a7760b61.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PRIOR",
+      "size": 132721,
+      "hash": "C729B7B0F6996E50D9EDD6556271821F7B0937533C357173968F3B81E67F8074"
+    },
+    {
+      "name": "home_visual_lock_875124f2.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 6374,
+      "hash": "C4EB08793B7F4EE8CE5BE472ED8B2A21245F40098EDFF4FE8AAC5101180CB926"
+    },
+    {
+      "name": "identity_matching_v1_e9f60503.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 12883,
+      "hash": "76DF8B40FD3D5041DF2540D4DF811C829D2DDA67D35913E8AABC93E015BE6B53"
+    },
+    {
+      "name": "local_test_db_proof_b2e31074.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 11524,
+      "hash": "487AB279D3AD706047679A1D2350C83664C6EFB6469A1FD77ADCD5E98BFD394A"
+    },
+    {
+      "name": "matching_v2_pairwise_a234ee50.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 15034,
+      "hash": "58C93154D2F5D9F298E975F270A59D4BA7A85CFB4FB1DCB9627E5546FF9AE148"
+    },
+    {
+      "name": "mobile-home-polish_d1b87678.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 5777,
+      "hash": "66EF86FC1C26B68B35D86A95A41F6A0754ACBEDEAEEF8B59C2ABCCD7F7D62A7E"
+    },
+    {
+      "name": "opportunity_reprice_lifecycle_a5272af5.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 14572,
+      "hash": "AE8C39B9D17049A74306D5E3DB98C2BBA8C778913A2A8A567238F3573E34EA16"
+    },
+    {
+      "name": "parallel_consumer_ui_figma_a10ef910.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 27320,
+      "hash": "B90C142F316F7807EAC746499AAAF37BAB0D7F7192321C7817FA50695D81A77A"
+    },
+    {
+      "name": "pc_home_데스크톱_그리드_재설계_3557c4d1.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 27768,
+      "hash": "B156E1D497B56BF7FF76EF9061912D23CF40D2EFB4E80DC167C1912F1C5BB445"
+    },
+    {
+      "name": "peotteok_ai_coach_hardening_v1_2969f0aa.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PRIOR",
+      "size": 17739,
+      "hash": "2FED1E496BC036D6E034E74237E5629DA44B88539430C4BE535F25C2EE516F2D"
+    },
+    {
+      "name": "plan_a645a0ad.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 29293,
+      "hash": "673E617F6CB41119CC14C71F7639F77B0E96C58E2B6168FD6BB1DDCDC802CAFC"
+    },
+    {
+      "name": "plan_finish_order_8d0ab09d.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PASS2",
+      "size": 7640,
+      "hash": "7A36A6136155154192F369B17CA5F2AD9870C38F3988B44A7861D51609B0F083"
+    },
+    {
+      "name": "profits_real_integration_b4a78f72.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 24455,
+      "hash": "B35187C08AA6D283E9FCC789767D8EAC1E4080F83B169E4571F4E493A4CDE8DD"
+    },
+    {
+      "name": "putduk_release_master_ff3a5134.plan.md",
+      "cls": "CURRENT_MASTER_DRAFT_SOURCE",
+      "size": 133931,
+      "hash": "627BDF89DBB4C48EFAD38325DB1AFA29736D74C323C88A5EB8829A16149DA0E9"
+    },
+    {
+      "name": "r0_흡수_반영_플랜_eaebafd6.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PRIOR",
+      "size": 12237,
+      "hash": "5F87B797DD161F843A4602971A1836065DDFF351BE8E8FB35F1034EBD7217D89"
+    },
+    {
+      "name": "so_db_runtime_proof_9f3b7b50.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 13155,
+      "hash": "15B09EEEB8B6DC2E9E0A538CA3D93154F0F42DAE1E8FDB029BFEDB48CE027F51"
+    },
+    {
+      "name": "so_durable_persistence_175f41f3.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 14264,
+      "hash": "E06E3E55036C504A9CDFFFC394B05981E703AD145C6AF47A289047A5AD2285C4"
+    },
+    {
+      "name": "ui_live_wiring_part9_a6643cf7.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PRIOR",
+      "size": 1376,
+      "hash": "6435664CF8449FC549D70D5F4925A7EAEB22C1C54CC840C391615DCA7ACCF728"
+    },
+    {
+      "name": "v2_corroboration_fix_9918eb0e.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 10215,
+      "hash": "EEEDBDCC8E37231614D9743F140D5502DAD674472DCA9A09B3FFF968D3D70A08"
+    },
+    {
+      "name": "v2_real_pair_validation_306b7a96.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 10080,
+      "hash": "782D67AB25DF883FDD84CEBA02C88F791A3B357867EFBB8213E9E9406D14237F"
+    },
+    {
+      "name": "wallet_figma_26_e617909c.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 13518,
+      "hash": "83ECC9F2706DD0BA4BCCFBBD6C410EA6FC1AF4390D8DF7491E52770019DFA7C0"
+    },
+    {
+      "name": "wallet_master_contract_e889ee56.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 13913,
+      "hash": "291DA93984B39AD0A3FC340BD3B3881657534C1097573C15BDCFD0AB458CB228"
+    },
+    {
+      "name": "지갑_세계1티어_아이디어_34db674f.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_HEADER",
+      "size": 18025,
+      "hash": "B5654639B907D11BFEEE36165616525F9226412C4FC5A99BDE8BE170C7CAE911"
+    },
+    {
+      "name": "퍼뜩_03_ui_ux_master_plan_be3fa3cc.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PRIOR",
+      "size": 81508,
+      "hash": "17A2EE9E45269F2C1F14FB82B51B63D09B513669E90BD9D3C832B2FBA16060F9"
+    },
+    {
+      "name": "퍼뜩_master_architecture_65b4f0e4.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PRIOR",
+      "size": 21640,
+      "hash": "08C874727882435707B45C0ABAAEB6BB9533ADE71D8AB02453773485199FD19B"
+    },
+    {
+      "name": "플랫폼_전체_재설계_로드맵_d903eef7.plan.md",
+      "cls": "HOME_ONLY_PUTDUK_PRIOR",
+      "size": 46423,
+      "hash": "7D986B0F2FB08D06671B5175728B8C50D6C5E9ED8270E85F4AD7A7A28FDC656F"
+    }
+  ],
+  "classifySummary": {
+    "HOME_ONLY_PUTDUK_NAME": 2,
+    "OTHER_PROJECT_EXCLUSION": 175,
+    "HOME_ONLY_PUTDUK_HEADER": 28,
+    "ISOLATION_EXCLUSION": 20,
+    "DUPLICATE_MIRROR": 21,
+    "HOME_ONLY_PUTDUK_PRIOR": 9,
+    "HOME_ONLY_PUTDUK_PASS2": 6,
+    "CURRENT_MASTER_DRAFT_SOURCE": 1
+  }
+}

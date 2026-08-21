@@ -1,0 +1,735 @@
+{
+  "$id": "https://ai-profit-os.local/governance/admin/admin-control-plane.v1.json",
+  "schema": "governance.admin.admin-control-plane.v1",
+  "version": "1.0.0",
+  "measuredAt": "2026-08-19",
+  "product": "PUTDUK",
+  "surface": "ADMIN_CONTROL_PLANE",
+  "classification": "FOUNDER_REQUIREMENTS_LOCK",
+  "runtime": "NOT_IMPLEMENTED",
+  "legacy04Plan": {
+    "file": ".cursor/plans/ai_profit_os_04_admin_e5f6a7b8.plan.md",
+    "section": "§9.11",
+    "classification": "ADMIN_FOUNDER_INTENT_REFERENCE",
+    "autoExecution": "DISABLED",
+    "pendingCountUnchanged": 17,
+    "pendingStatusFalsified": false,
+    "newTodoThisSlice": false,
+    "currentActivePlan": "NO"
+  },
+  "identity": {
+    "kind": "BUSINESS_OPERATING_CONTROL_PLANE",
+    "not": [
+      "generic member lookup admin",
+      "generic product lookup admin",
+      "generic inquiry lookup admin"
+    ]
+  },
+  "principle": {
+    "automationRole": "assists operators",
+    "founderControl": "REQUIRED",
+    "adminOperations": "REQUIRED",
+    "policyEngine": "REQUIRED",
+    "auditability": "REQUIRED",
+    "userUiComplexity": "MINIMAL",
+    "backendAdminComplexity": "HIGH",
+    "formula": "AUTOMATION + FOUNDER CONTROL + ADMIN OPERATIONS + POLICY ENGINE + AUDITABILITY = PUTDUK ADMIN CONTROL PLANE"
+  },
+  "layers": {
+    "LAYER_1": "OBSERVATION / SYSTEM FACT",
+    "LAYER_2": "PUTDUK OPERATING POLICY / ADMIN OVERRIDE",
+    "LAYER_3": "USER PRESENTATION",
+    "adminControls": ["LAYER_2", "LAYER_3_as_needed"],
+    "layer1ProvenancePreserved": true,
+    "sourceObservationOverwriteForbidden": true
+  },
+  "thisSlice": {
+    "purpose": "ADMIN_FUTURE_REQUIREMENT_LOCK",
+    "implementUi": false,
+    "implementApi": false,
+    "dbMigration": false,
+    "priceEngineChange": false,
+    "opportunityEngineChange": false,
+    "matcherChange": false,
+    "userSchemaChange": false,
+    "moneyLedgerChange": false,
+    "applyLivePolicy": false,
+    "homeChange": false,
+    "profitsChange": false,
+    "sourceParserChange": false,
+    "identityMatchingChange": false,
+    "canonicalProductRuntimeChange": false,
+    "commit": false,
+    "push": false,
+    "stash": false,
+    "restore": false,
+    "reset": false,
+    "clean": false,
+    "force": false
+  },
+  "requiredCapabilities": {
+    "ADMIN_PRICE_CONTROL": "REQUIRED",
+    "ADMIN_OPPORTUNITY_CONTROL": "REQUIRED",
+    "ADMIN_USER_POLICY_CONTROL": "REQUIRED",
+    "ADMIN_MATCH_CONTROL": "REQUIRED",
+    "ADMIN_ALLOCATION_CONTROL": "REQUIRED",
+    "ADMIN_PROFIT_POLICY_CONTROL": "REQUIRED",
+    "ADMIN_PARTICIPATION_CONTROL": "REQUIRED",
+    "ADMIN_MANUAL_OVERRIDE": "REQUIRED",
+    "ADMIN_BULK_OPERATION": "REQUIRED",
+    "ADMIN_AUDIT_HISTORY": "REQUIRED",
+    "ADMIN_RBAC": "REQUIRED",
+    "ADMIN_KILL_SWITCH": "REQUIRED",
+    "ADMIN_SIMULATION_PREVIEW": "REQUIRED",
+    "ADMIN_SEGMENTATION": "REQUIRED",
+    "ADMIN_SCHEDULE_CONTROL": "REQUIRED",
+    "ADMIN_USER_PREVIEW": "REQUIRED",
+    "ADMIN_POLICY_VERSIONING": "REQUIRED"
+  },
+  "lockVerdict": {
+    "ADMIN_PRICE_CONTROL": "LOCKED",
+    "ADMIN_USER_POLICY_CONTROL": "LOCKED",
+    "ADMIN_OPPORTUNITY_CONTROL": "LOCKED",
+    "ADMIN_MATCH_CONTROL": "LOCKED",
+    "ADMIN_ALLOCATION_CONTROL": "LOCKED",
+    "ADMIN_PROFIT_POLICY_CONTROL": "LOCKED",
+    "ADMIN_PARTICIPATION_CONTROL": "LOCKED",
+    "ADMIN_MANUAL_OVERRIDE": "LOCKED",
+    "ADMIN_SEGMENTATION": "LOCKED",
+    "ADMIN_BULK_CONTROL": "LOCKED",
+    "ADMIN_SCHEDULE_CONTROL": "LOCKED",
+    "ADMIN_SIMULATION": "LOCKED",
+    "ADMIN_USER_PREVIEW": "LOCKED",
+    "ADMIN_RBAC": "LOCKED",
+    "ADMIN_AUDIT": "LOCKED",
+    "ADMIN_POLICY_VERSIONING": "LOCKED",
+    "ADMIN_KILL_SWITCH": "LOCKED",
+    "USER_UI_MINIMALISM": "PRESERVED",
+    "CURRENT_RUNTIME_MODIFIED": "NO"
+  },
+  "coverageVs04Plan": {
+    "note": "PRESERVED = 04 본문 유지·여기 재서술 금지. PRESERVED_PARTIAL = 04 유지 + 본 lock SUPERSET. NEW = 04에 없던 계약·여기가 최초 흡수.",
+    "absoluteDecision": "NEW",
+    "priceInlineEdit36": "PRESERVED_PARTIAL",
+    "priceLayersModesFormulaScope": "NEW",
+    "userOpportunityOverride989": "PRESERVED_PARTIAL",
+    "userAllowDenyWhitelistPriority": "NEW",
+    "userParticipationPolicyFull": "NEW",
+    "userProfitPolicyOperatingLayer": "NEW",
+    "platformMarginPct36": "PRESERVED_PARTIAL",
+    "platformFeeModelArchitecture": "NEW",
+    "feeModelFrozenThisSlice": false,
+    "executionPolicy486": "PRESERVED",
+    "matchStrictnessNoRandomSuccess": "PRESERVED",
+    "matchAllocationManualHybrid": "NEW",
+    "observedVsAdminTargetMatchRate": "NEW",
+    "membership9810": "PRESERVED_PARTIAL",
+    "operatingSegmentationEngine": "NEW",
+    "opportunityRegisterPause": "PRESERVED_PARTIAL",
+    "opportunityLifecycleAndOperatingFields": "NEW",
+    "canonicalProductAdminControl": "NEW",
+    "adaptersHealth": "PRESERVED_PARTIAL",
+    "sourceListingEnablePreferIgnore": "NEW",
+    "manualOverrideIndependentToggles": "NEW",
+    "overridePrecedenceDeterministic": "NEW",
+    "timeBoundedOverride": "NEW",
+    "scheduledOperations": "NEW",
+    "bulkPriceApply": "PRESERVED_PARTIAL",
+    "bulkPreviewConfirmAuditGeneral": "NEW",
+    "threeModeLiveDryRunSimulation": "PRESERVED_PARTIAL",
+    "impactSimulationMetrics": "NEW",
+    "previewAsUserReadOnly": "NEW",
+    "systemControlCircuit": "PRESERVED_PARTIAL",
+    "namedKillSwitches": "NEW",
+    "koreanRbacRoles99": "PRESERVED",
+    "futureCapabilityRoles": "NEW",
+    "sensitiveConfirmReason": "PRESERVED_PARTIAL",
+    "founderOnlyDualApprovalCapability": "NEW",
+    "auditEvents": "PRESERVED_PARTIAL",
+    "mandatoryAuditSchema": "NEW",
+    "pricingVersion": "PRESERVED_PARTIAL",
+    "policyVersionHistoryRollback": "NEW",
+    "participationPolicySnapshot": "NEW",
+    "dashboardTop5FourQuestions": "PRESERVED_PARTIAL",
+    "operationalVisibilityCandidates": "NEW",
+    "twelveModuleIa": "PRESERVED",
+    "futureNavProposal": "NEW",
+    "sidebar13Forbidden": "PRESERVED",
+    "opsIsolation40": "PRESERVED",
+    "userUiMinimalism": "NEW",
+    "threeLayers": "NEW",
+    "policyLookupPerformance": "NEW",
+    "adminApiSecurity40": "PRESERVED_PARTIAL",
+    "csrfAndButtonHideNotAuthz": "NEW",
+    "founderOverrideImmutableTruth": "NEW"
+  },
+  "conflicts": {
+    "id": "C-12",
+    "resolution": {
+      "twelveModuleIa": "PRESERVED — future nav proposal ≠ this-slice sidebar rewrite; sidebar 13 remains forbidden",
+      "koreanRbac": "PRESERVED — future FOUNDER/MATCH_ADMIN/… is capability mapping, not delete-and-replace",
+      "section36Surface": "PRESERVED — buy/sell/margin inline remains existing Day-1 surface; layers/modes/formula/scope are SUPERSET",
+      "section989": "PRESERVED — hidden/forceShow/pin/margin/profit remain; USER_ALLOW/DENY/WHITELIST/PRIORITY/FORCE_INCLUDE/EXCLUDE are SUPERSET",
+      "threeMode": "PRESERVED — LIVE/DRY_RUN/SIMULATION remain the only mode enum; impact metrics + preview-as-user are SUPERSET",
+      "noRandomSuccessRate": "PRESERVED — successRatePercent / 난수 MATCH_SUCCESS remain FORBIDDEN",
+      "adminTargetMatchRate": "NEW allocation policy ≠ observed match rate ≠ fake success percent",
+      "feeModel": "NOT_FROZEN — architecture must accept multiple models",
+      "precedenceExact": "conceptual order locked; exact table finalized at Admin contract design",
+      "moneyLedgerEngineOwners": "UNCHANGED"
+    }
+  },
+  "price": {
+    "layers": [
+      "SOURCE_OBSERVED_PRICE",
+      "ADMIN_OVERRIDE_PRICE",
+      "EFFECTIVE_PRICE",
+      "USER_VISIBLE_PRICE"
+    ],
+    "effectivePriceResolution": "validAdminOverride ?? automaticCalculatedPrice ?? sourceObservedPrice",
+    "sourceObservationOriginal": "preserve in provenance/history — never overwrite Layer 1 row",
+    "modes": [
+      "AUTO_SOURCE",
+      "MANUAL_OVERRIDE",
+      "FORMULA",
+      "FIXED",
+      "CAMPAIGN",
+      "USER_SEGMENT",
+      "USER_SPECIFIC"
+    ],
+    "overrideMinimumFields": [
+      "productSelect",
+      "buyBasisOverride",
+      "sellBasisOverride",
+      "profitCalcBasisOverride",
+      "userVisiblePrice",
+      "effectiveFrom",
+      "effectiveUntil",
+      "applyTarget",
+      "reason",
+      "active"
+    ],
+    "downstreamRecalcOwners": [
+      "grossSpread",
+      "estimatedProfit",
+      "targetReturn",
+      "userPayout",
+      "platformMargin",
+      "allocationEconomics"
+    ],
+    "userVisiblePriceNaming": "future PUTDUK legal/product field — do not forge same provenance as external observed fact",
+    "formula": {
+      "javascriptEval": "FORBIDDEN",
+      "style": [
+        "declarativeRule",
+        "validatedOperands",
+        "allowedOperators",
+        "boundedExpression"
+      ],
+      "examples": [
+        "sourcePrice * 1.05",
+        "sourcePrice + 50000",
+        "min(sourcePrice * 1.10, fixedCap)",
+        "fxAdjusted + margin"
+      ]
+    },
+    "scopes": [
+      "GLOBAL",
+      "CATEGORY",
+      "CANONICAL_PRODUCT",
+      "VARIANT",
+      "SOURCE",
+      "LISTING",
+      "OPPORTUNITY",
+      "USER_SEGMENT",
+      "USER",
+      "CAMPAIGN"
+    ],
+    "scopePrecedenceConceptual": [
+      "USER",
+      "USER_SEGMENT",
+      "OPPORTUNITY",
+      "PRODUCT",
+      "CATEGORY",
+      "GLOBAL"
+    ],
+    "scopePrecedenceExact": "finalize at Admin contract design"
+  },
+  "opportunity": {
+    "autoGeneratedRemainAdminEditable": true,
+    "actions": [
+      "CREATE",
+      "ACTIVATE",
+      "PAUSE",
+      "DISABLE",
+      "ARCHIVE",
+      "HIDE",
+      "SCHEDULE",
+      "REOPEN",
+      "CLOSE"
+    ],
+    "operatingFields": [
+      "requiredPrincipal",
+      "minPrincipal",
+      "maxPrincipal",
+      "targetProfit",
+      "targetReturn",
+      "expectedDuration",
+      "allocationCapacity",
+      "participantCapacity",
+      "startAt",
+      "endAt",
+      "visibility"
+    ]
+  },
+  "userOpportunityControl": {
+    "supersetOf989": true,
+    "actions": [
+      "USER_ALLOW",
+      "USER_DENY",
+      "USER_WHITELIST",
+      "USER_BLACKLIST",
+      "USER_PRIORITY",
+      "USER_FORCE_INCLUDE",
+      "USER_EXCLUDE"
+    ]
+  },
+  "userParticipationPolicy": {
+    "fields": [
+      "minPrincipal",
+      "maxPrincipal",
+      "dailyParticipationLimit",
+      "weeklyParticipationLimit",
+      "monthlyParticipationLimit",
+      "maxConcurrentOpportunities",
+      "maxActivePrincipal",
+      "categoryAllowList",
+      "categoryDenyList",
+      "productAllowList",
+      "productDenyList",
+      "opportunityAllowList",
+      "opportunityDenyList"
+    ],
+    "tierAndIndividualOverride": true
+  },
+  "userProfitPolicy": {
+    "layer": "PUTDUK_OPERATING_POLICY",
+    "separateFrom": [
+      "actualMarketEconomics",
+      "platformMargin",
+      "fees",
+      "executionEconomics"
+    ],
+    "fields": [
+      "targetProfitAmount",
+      "minimumProfitAmount",
+      "maximumProfitAmount",
+      "targetReturnRate",
+      "minimumReturnRate",
+      "maximumReturnRate",
+      "profitCap",
+      "dailyProfitCap",
+      "monthlyProfitCap"
+    ],
+    "examples": [
+      "GENERAL target return 5-8%",
+      "VIP target return 8-12%",
+      "USER_A specific target 7.5%",
+      "USER_B specific maximum profit 150000 KRW"
+    ]
+  },
+  "platformMargin": {
+    "existing36PlatformMarginPct": "PRESERVED",
+    "feeModelFrozen": false,
+    "architectureMustAccept": [
+      "platformFee",
+      "platformMargin",
+      "minimumPlatformMargin",
+      "targetPlatformMargin",
+      "userProfitShare",
+      "companyProfitShare",
+      "fixedFee",
+      "percentageFee",
+      "hybridFee"
+    ]
+  },
+  "matchAllocation": {
+    "modes": ["AUTO_MATCH", "MANUAL_MATCH", "HYBRID_MATCH"],
+    "actions": ["ALLOW", "BLOCK", "PAUSE", "CANCEL", "REASSIGN", "FORCE_REVIEW"],
+    "userFields": [
+      "allocationPriority",
+      "allocationWeight",
+      "maxAllocation",
+      "maxConcurrentMatches",
+      "dailyMatchLimit",
+      "eligibleCategories",
+      "eligibleProducts",
+      "eligibleOpportunities"
+    ],
+    "policyConcepts": [
+      "TARGET_ALLOCATION_RATE",
+      "ALLOCATION_PRIORITY",
+      "ALLOCATION_WEIGHT",
+      "MATCH_ELIGIBILITY",
+      "MATCH_FREQUENCY_CAP"
+    ],
+    "observedMatchRate": "NOT_EQUAL_ADMIN_TARGET",
+    "adminTargetMatchRateControlsAllocationEngine": true,
+    "successRatePercentRandom": "FORBIDDEN",
+    "fakeMatchSuccess": "FORBIDDEN"
+  },
+  "segmentation": {
+    "exampleSegments": [
+      "GENERAL",
+      "NEW_USER",
+      "VIP",
+      "VVIP",
+      "HIGH_VALUE",
+      "LOW_ACTIVITY",
+      "CAMPAIGN_A",
+      "CAMPAIGN_B",
+      "MANUAL_GROUP"
+    ],
+    "actions": ["CREATE", "UPDATE", "ASSIGN", "REMOVE"],
+    "bulkPolicyAxes": [
+      "price",
+      "profit",
+      "opportunityVisibility",
+      "participationLimit",
+      "allocationRate",
+      "matchPriority"
+    ],
+    "existingMembershipSproutToVip": "PRESERVED_DISTINCT_FIELD"
+  },
+  "canonicalProduct": {
+    "fields": [
+      "activeInactive",
+      "visibleHidden",
+      "displayName",
+      "displayImageSelection",
+      "putdukProductCode",
+      "category",
+      "internalTags",
+      "manualReview",
+      "matchingStatus",
+      "opportunityEligibility"
+    ],
+    "deleteSourceProvenance": false,
+    "deleteIdentityEvidenceHistory": false
+  },
+  "sourceListing": {
+    "actions": ["ENABLE", "DISABLE", "IGNORE", "REVIEW", "PREFER", "DEPRIORITIZE"],
+    "visibility": [
+      "health",
+      "parserStatus",
+      "lastSuccess",
+      "lastFailure",
+      "availability"
+    ]
+  },
+  "manualOverride": {
+    "philosophy": "AUTOMATION + ADMIN OVERRIDE",
+    "candidates": [
+      "price",
+      "profit",
+      "return",
+      "principal",
+      "duration",
+      "visibility",
+      "availability",
+      "allocation",
+      "match",
+      "userEligibility",
+      "capacity",
+      "status",
+      "campaign",
+      "productDisplay"
+    ],
+    "independentOnOff": true,
+    "precedenceConceptual": [
+      "FOUNDER_EMERGENCY_OVERRIDE",
+      "USER_SPECIFIC_OVERRIDE",
+      "OPPORTUNITY_OVERRIDE",
+      "SEGMENT_POLICY",
+      "PRODUCT_POLICY",
+      "CATEGORY_POLICY",
+      "AUTO_ENGINE"
+    ],
+    "silentConflict": "FORBIDDEN",
+    "precedenceExact": "finalize at Admin contract design",
+    "timeBounded": {
+      "effectiveFrom": true,
+      "effectiveUntil": true,
+      "autoRevertOnExpiry": true
+    }
+  },
+  "scheduledOperations": [
+    "opportunityLaunch",
+    "opportunityClose",
+    "priceChange",
+    "profitPolicyChange",
+    "campaignStart",
+    "campaignEnd",
+    "userEligibilityChange"
+  ],
+  "bulk": {
+    "examples": [
+      "pause selected 200 opportunities",
+      "change segment for selected 1000 users",
+      "bulk change category price formula",
+      "change VIP group return policy",
+      "disable entire source"
+    ],
+    "required": ["preview", "confirmation", "audit"]
+  },
+  "simulation": {
+    "modeEnumOwner": "04 R6 LIVE | DRY_RUN | SIMULATION",
+    "newModeEnumForbidden": true,
+    "previewThenConfirmThenApply": true,
+    "simulationLiveWrite": false,
+    "impactPreview": [
+      "currentState",
+      "proposedPolicy",
+      "affectedOpportunities",
+      "affectedUsers",
+      "averageDisplayedExpectedReturn",
+      "estimatedPlatformMargin"
+    ]
+  },
+  "previewAsUser": {
+    "modes": ["VIEW_AS_USER", "VIEW_AS_VIP", "VIEW_AS_GENERAL"],
+    "writeImpersonation": "FORBIDDEN_DEFAULT",
+    "readOnly": true,
+    "confirm": [
+      "visibleProducts",
+      "principal",
+      "expectedProfit",
+      "participationEligibility"
+    ]
+  },
+  "killSwitch": {
+    "named": [
+      "GLOBAL_OPPORTUNITY_PAUSE",
+      "GLOBAL_MATCH_PAUSE",
+      "GLOBAL_PARTICIPATION_PAUSE",
+      "CATEGORY_PAUSE",
+      "SOURCE_PAUSE",
+      "PRODUCT_PAUSE",
+      "USER_PAUSE",
+      "DEPOSIT_PAUSE",
+      "WITHDRAWAL_PAUSE"
+    ],
+    "mutateLedgerTruth": false,
+    "deleteLedgerHistory": false,
+    "rbac": "FOUNDER_OR_HIGHEST_ROLE"
+  },
+  "rbac": {
+    "existingKoreanRolesPreserved": [
+      "최고관리자",
+      "재무",
+      "고객지원",
+      "리스크",
+      "마케팅"
+    ],
+    "futureCapabilityRoles": [
+      "FOUNDER",
+      "SUPER_ADMIN",
+      "OPS_ADMIN",
+      "FINANCE_ADMIN",
+      "MATCH_ADMIN",
+      "CONTENT_ADMIN",
+      "CS_ADMIN",
+      "READ_ONLY_AUDITOR"
+    ],
+    "mappingNote": "future roles map onto existing Korean roles; do not delete §9.9 matrix this slice",
+    "leastPrivilege": true,
+    "examples": {
+      "CS": "price change FORBIDDEN",
+      "CONTENT": "displayName/image allowed; wallet FORBIDDEN",
+      "MATCH_ADMIN": "allocation allowed; ledger direct edit FORBIDDEN"
+    }
+  },
+  "sensitiveActions": {
+    "examples": [
+      "priceOverride",
+      "profitOverride",
+      "largeUserAllocation",
+      "walletRelated",
+      "settlementRelated",
+      "globalKillSwitch"
+    ],
+    "required": ["roleCheck", "reason", "confirmation", "audit"],
+    "futureCapable": ["FOUNDER_ONLY", "DUAL_APPROVAL"]
+  },
+  "audit": {
+    "mandatoryFields": [
+      "auditId",
+      "actorUserId",
+      "actorRole",
+      "action",
+      "resourceType",
+      "resourceId",
+      "before",
+      "after",
+      "reason",
+      "createdAt",
+      "requestId"
+    ]
+  },
+  "policyVersioning": {
+    "overwriteOnly": false,
+    "preserveHistory": true,
+    "rollback": true,
+    "rollbackIsAuditEvent": true
+  },
+  "participationSnapshot": {
+    "atParticipate": true,
+    "fields": [
+      "userId",
+      "opportunityId",
+      "effectivePrincipal",
+      "effectiveProfit",
+      "effectiveReturn",
+      "pricingPolicyVersion",
+      "userPolicyVersion",
+      "participatedAt"
+    ],
+    "laterPolicyMustNotRewritePastContract": true,
+    "settlementOwner": "existing Money/Ledger contract"
+  },
+  "dashboard": {
+    "existingTop5FourQuestions": "PRESERVED",
+    "kpiFrozen": false,
+    "visibilityCandidates": [
+      "Active Opportunities",
+      "Paused Opportunities",
+      "Active Participants",
+      "Pending Matches",
+      "Completed Matches",
+      "Total Active Principal",
+      "Expected User Payout",
+      "Expected Platform Margin",
+      "Source Health",
+      "Price Override Count",
+      "Manual Match Count",
+      "Failed Jobs",
+      "Stale Opportunities",
+      "Pending Admin Reviews"
+    ]
+  },
+  "futureNavigationProposal": {
+    "thisSliceImplement": false,
+    "sidebar13": "FORBIDDEN",
+    "twelveModuleIa": "PRESERVED_UNTIL_CURRENT_ACTIVE_ADMIN_PLAN",
+    "groups": [
+      "Dashboard",
+      "Opportunities",
+      "Products",
+      "Sources",
+      "Matching",
+      "Users",
+      "Segments",
+      "Allocations",
+      "Pricing",
+      "Profit Policies",
+      "Campaigns",
+      "Transactions",
+      "Settlement",
+      "Wallet Operations",
+      "Source Health",
+      "Jobs",
+      "Audit Logs",
+      "Admin Users",
+      "Roles & Permissions",
+      "System Controls"
+    ]
+  },
+  "userUiMinimalism": {
+    "backendAdminComplexity": "HIGH",
+    "userUiComplexity": "MINIMAL",
+    "opportunityDefaultSurface": [
+      "displayAuthorizedProductImage",
+      "productName",
+      "buyOrEffectiveBasis",
+      "sellOrEffectiveBasis",
+      "requiredPrincipal",
+      "expectedProfit",
+      "expectedReturn",
+      "expectedDuration",
+      "participationStatus",
+      "participateCta"
+    ],
+    "forbiddenOnDefaultProductUi": [
+      "matchingEvidence",
+      "parser",
+      "GTIN",
+      "MPN",
+      "SourceObservation"
+    ],
+    "faqOwner": "separate UX owner"
+  },
+  "performance": {
+    "forbidPerRequestHeavyJoins": true,
+    "futureReview": [
+      "compiledEffectivePolicy",
+      "policyCache",
+      "versionKey",
+      "eventInvalidation",
+      "redisIfExistingArchitectureJustifies"
+    ],
+    "forceNewInfraThisSlice": false
+  },
+  "security": {
+    "adminApiSeparatedFromUserApi": true,
+    "required": [
+      "authentication",
+      "authorization",
+      "RBAC",
+      "inputValidation",
+      "csrfWhereRelevant",
+      "rateLimitingWhereRelevant",
+      "serverSidePermissionEnforcement",
+      "auditEvent"
+    ],
+    "frontendButtonHideIsNotAuthorization": true
+  },
+  "founderOverride": {
+    "topCapabilityOnPolicyLayer": true,
+    "explicitTag": "FOUNDER_OVERRIDE",
+    "mustVersionAndAudit": true,
+    "cannotDestroy": [
+      "ledgerHistoricalEntry",
+      "auditHistory",
+      "sourceProvenance"
+    ]
+  },
+  "currentWorkProtection": [
+    "Identity Matching V2",
+    "Canonical Product",
+    "Source Observation",
+    "Profits UI",
+    "Home"
+  ],
+  "futureImplementationSlicesConceptual": [
+    { "id": "SLICE_1", "name": "Admin RBAC + Audit Foundation" },
+    { "id": "SLICE_2", "name": "Opportunity Control" },
+    { "id": "SLICE_3", "name": "Pricing Override Engine" },
+    { "id": "SLICE_4", "name": "User / Segment Policy" },
+    { "id": "SLICE_5", "name": "Profit / Allocation Policy" },
+    { "id": "SLICE_6", "name": "Manual Match Control" },
+    { "id": "SLICE_7", "name": "Bulk / Schedule / Campaign" },
+    { "id": "SLICE_8", "name": "Simulation / Preview As User" },
+    { "id": "SLICE_9", "name": "Source Health / Ops" },
+    { "id": "SLICE_10", "name": "Admin Dashboard / Full Control Center" }
+  ],
+  "futureImplementationEntrypoint": {
+    "lockSsot": "governance/admin/admin-control-plane.v1.json",
+    "planPointer": ".cursor/plans/ai_profit_os_04_admin_e5f6a7b8.plan.md §9.11",
+    "execution": "future CURRENT_ACTIVE_PLAN = YES Admin plan — not legacy 04 File-Serial auto-execution"
+  },
+  "gitAtLockRecord": {
+    "knownHead": "0345206ad2e7238658454db5d072c8fbf93dbb37",
+    "workingTree": "dirty-other-session-files-left-untouched",
+    "commitOnThisRequest": false,
+    "pushOnThisRequest": false
+  }
+}

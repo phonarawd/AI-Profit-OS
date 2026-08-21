@@ -1,0 +1,15 @@
+services/api-nest/src/opportunities/catalog-runtime-seed.service.ts
+services/api-nest/src/opportunities/index.ts
+services/api-nest/src/opportunities/opportunities.admin.service.ts
+services/api-nest/src/opportunities/opportunities.mi.ts
+services/api-nest/src/opportunities/opportunities.module.ts
+services/api-nest/src/opportunities/opportunity-reprice.service.ts
+services/market-intelligence/src/catalog-runtime-seed.cjs
+services/market-intelligence/src/index.d.ts
+services/market-intelligence/src/pipeline.cjs
+supabase/migrations/20260819210000_source_observations.sql
+supabase/migrations/20260819220000_canonical_products.sql
+supabase/migrations/20260820013000_match_results.sql
+tooling/verify/catalog-runtime-seed.cjs
+tooling/verify/fixtures/migrations-applied.v1.json
+tooling/verify/migrations-applied-parity.cjs
