@@ -1,0 +1,44 @@
+# REL-500 — QA Lab expansion. Local full matrix is forbidden.
+# This workflow is the CI-delegated path. MCP-only evidence is not DONE.
+name: qa-lab-expansion
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "tooling/e2e/**"
+      - "tooling/verify/qa-lab-expansion.cjs"
+      - "tooling/verify/qa-env-isolation-guard.cjs"
+      - ".github/workflows/qa-lab-expansion.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tooling/e2e/**"
+      - "tooling/verify/qa-lab-expansion.cjs"
+      - "tooling/verify/qa-env-isolation-guard.cjs"
+      - ".github/workflows/qa-lab-expansion.yml"
+
+jobs:
+  expansion:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - name: isolation guard + risk matrix
+        run: |
+          pnpm verify:qa-env-isolation-guard
+          pnpm verify:qa-lab-expansion
+          pnpm verify:axe-harness
+      - name: committed expansion spec (no local full matrix)
+        run: pnpm test:e2e:qa-lab-expansion
+        env:
+          CI: "1"
+          QA_LAB_FULL_MATRIX: "0"

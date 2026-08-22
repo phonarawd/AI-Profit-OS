@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "id": "money-red-team",
+  "rel": "REL-501",
+  "policy": {
+    "qaEnvIsolationGuard": "REQUIRED",
+    "productionDbWrite": 0,
+    "newMoneyOwner": 0,
+    "balanceUpdateAsTruth": 0,
+    "mcpOnlyDone": false
+  },
+  "modes": [
+    {
+      "id": "idempotency",
+      "code": "IDEMPOTENCY_KEY_CONFLICT",
+      "owner": "services/api-nest/src/ledger/idempotency-fingerprint.ts"
+    },
+    {
+      "id": "double_submit",
+      "code": "REPLAY_REUSE",
+      "owner": "services/api-nest/src/opportunities/participate.service.ts"
+    },
+    {
+      "id": "insufficient",
+      "code": "INSUFFICIENT_PRINCIPAL",
+      "owner": "services/api-nest/src/opportunities/participate.service.ts"
+    },
+    {
+      "id": "stale",
+      "code": "PRICE_STALE_DATA",
+      "owner": "services/engine-rust/settlement_rule.cjs"
+    },
+    {
+      "id": "expired",
+      "code": "OPPORTUNITY_EXPIRED",
+      "owner": "services/api-nest/src/opportunities/participate.service.ts"
+    },
+    {
+      "id": "blocked",
+      "code": "MATCH_BLOCKED",
+      "owner": "services/engine-rust/settlement_rule.cjs"
+    },
+    {
+      "id": "replay",
+      "code": "REPLAY_REUSE",
+      "owner": "services/api-nest/src/ledger/idempotency-fingerprint.ts"
+    }
+  ]
+}

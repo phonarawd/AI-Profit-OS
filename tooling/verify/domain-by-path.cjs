@@ -65,8 +65,37 @@ const RULES = [
   {
     test: (f) =>
       /^tooling\/e2e\//.test(f) ||
-      /^tooling\/verify\/qa-env-isolation-guard\.cjs$/.test(f),
-    scripts: ["qa-env-isolation-guard.cjs", "auth-rate-limit.cjs", "axe-harness.cjs"],
+      /^tooling\/verify\/qa-env-isolation-guard\.cjs$/.test(f) ||
+      /^tooling\/verify\/qa-lab-expansion\.cjs$/.test(f) ||
+      /^tooling\/verify\/money-red-team\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-507-production-e2e\.cjs$/.test(f) ||
+      /^\.github\/workflows\/qa-lab-expansion\.yml$/.test(f),
+    scripts: [
+      "qa-env-isolation-guard.cjs",
+      "qa-lab-expansion.cjs",
+      "money-red-team.cjs",
+      "rel-507-production-e2e.cjs",
+      "auth-rate-limit.cjs",
+      "axe-harness.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^tooling\/verify\/rel-502-final-engine-acceptance\.cjs$/.test(f) ||
+      /^tooling\/verify\/protected-scope-stale\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-502-STATUS\.md$/.test(f) ||
+      /^governance\/release-master\/REL-503-PROTECTED-SCOPE-WATCH\.md$/.test(f) ||
+      /^\.github\/workflows\/protected-scope-stale\.yml$/.test(f),
+    scripts: ["rel-502-final-engine-acceptance.cjs", "protected-scope-stale.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/MIGRATION_READINESS\.md$/.test(f) ||
+      /^tooling\/verify\/rel-504-migration-readiness\.cjs$/.test(f) ||
+      /^supabase\/migrations\/20260822140000_rel405_admin_control_plane\.sql$/.test(
+        f,
+      ),
+    scripts: ["rel-504-migration-readiness.cjs"],
   },
   {
     test: (f) =>

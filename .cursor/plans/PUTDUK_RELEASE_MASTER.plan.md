@@ -297,11 +297,11 @@ todos:
     content: "[Hardening][Legacy:D-ADMIN-020] Admin R6 Certification(12모듈+2b 전수, deps REL-200~224+400+405~408)"
     status: completed
   - id: rel-500
-    content: "[QA-Expansion] QA-LAB-EXPANSION: 전체 persona x device x browser x network x a11y matrix, committed spec으로 확장"
-    status: pending
+    content: "[QA-Expansion] QA-LAB-EXPANSION: 전체 persona x device x browser x network x a11y matrix, committed spec으로 확장 — DONE evidence=governance/release-master/REL-500-QA-LAB-EXPANSION.md"
+    status: completed
   - id: rel-501
-    content: "[QA-Expansion] 금융/red-team 풀매트릭스 실행, QA_ENV_ISOLATION_GUARD 필수 적용"
-    status: pending
+    content: "[QA-Expansion] 금융/red-team 풀매트릭스 실행, QA_ENV_ISOLATION_GUARD 필수 적용 — DONE evidence=governance/release-master/REL-501-MONEY-RED-TEAM.md · LIVE_DB_MONEY_MUTATION=NOT_RUN"
+    status: completed
   - id: rel-502
     content: "[QA-Expansion][A2] FINAL ENGINE ACCEPTANCE: PROTECTED_SCOPE_MUTATION=TRUE 태그가 달린 모든 REL(고정 range 아님, §C 자동수집) 완료 후 QA0-QA9 재베이스+재인증"
     status: pending
@@ -3346,7 +3346,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-500
 TITLE: QA-LAB-EXPANSION (persona × device × browser × network × a11y)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-500
@@ -3374,7 +3374,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-501
 TITLE: 금융/red-team 풀매트릭스
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-501

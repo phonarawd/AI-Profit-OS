@@ -1,0 +1,263 @@
+{
+  "version": 1,
+  "id": "qa-lab-expansion",
+  "rel": "REL-500",
+  "policy": {
+    "naiveCartesian": false,
+    "localFullMatrix": "FORBIDDEN",
+    "ciDelegation": true,
+    "mcpOnlyDone": false,
+    "qaEnvIsolationGuard": "REQUIRED",
+    "homeVisualRedesign": 0,
+    "ageSpecificUi": 0,
+    "productionDbWrite": 0
+  },
+  "axes": {
+    "persona": [
+      "qa-lab-persona-001",
+      "qa-lab-persona-guest",
+      "qa-lab-persona-member",
+      "qa-lab-persona-insufficient",
+      "qa-lab-persona-blocked",
+      "qa-lab-persona-admin"
+    ],
+    "device": [
+      { "id": "mobile-390", "width": 390, "height": 693, "risk": "high" },
+      { "id": "tablet-768", "width": 768, "height": 1024, "risk": "low" },
+      { "id": "tablet-1024", "width": 1024, "height": 768, "risk": "low" },
+      { "id": "desktop-1440", "width": 1440, "height": 1080, "risk": "high" },
+      { "id": "large-2560", "width": 2560, "height": 1440, "risk": "low" }
+    ],
+    "browser": [
+      { "id": "chromium", "risk": "high" },
+      { "id": "firefox", "risk": "low" },
+      { "id": "webkit", "risk": "low" }
+    ],
+    "network": [
+      { "id": "online", "risk": "high" },
+      { "id": "slow-3g", "risk": "high" },
+      { "id": "offline", "risk": "low" }
+    ],
+    "a11y": [
+      { "id": "axe", "risk": "high" },
+      { "id": "none", "risk": "low" }
+    ]
+  },
+  "cells": [
+    {
+      "id": "guest-home-390-chromium-online-axe",
+      "risk": "high",
+      "required": true,
+      "persona": "qa-lab-persona-guest",
+      "device": "mobile-390",
+      "browser": "chromium",
+      "network": "online",
+      "a11y": "axe",
+      "surface": "home",
+      "spec": "tooling/e2e/specs/home-closure.spec.cjs",
+      "secondarySpec": "tooling/e2e/specs/axe-a11y.spec.cjs"
+    },
+    {
+      "id": "member-home-1440-chromium-online-axe",
+      "risk": "high",
+      "required": true,
+      "persona": "qa-lab-persona-member",
+      "device": "desktop-1440",
+      "browser": "chromium",
+      "network": "online",
+      "a11y": "axe",
+      "surface": "home",
+      "spec": "tooling/e2e/specs/home-closure.spec.cjs",
+      "secondarySpec": "tooling/e2e/specs/axe-a11y.spec.cjs"
+    },
+    {
+      "id": "guest-login-390-chromium-online",
+      "risk": "high",
+      "required": true,
+      "persona": "qa-lab-persona-guest",
+      "device": "mobile-390",
+      "browser": "chromium",
+      "network": "online",
+      "a11y": "none",
+      "surface": "login",
+      "spec": "tooling/e2e/specs/login-bootstrap.spec.cjs"
+    },
+    {
+      "id": "member-profits-390-chromium-online",
+      "risk": "high",
+      "required": true,
+      "persona": "qa-lab-persona-member",
+      "device": "mobile-390",
+      "browser": "chromium",
+      "network": "online",
+      "a11y": "none",
+      "surface": "profits",
+      "spec": "tooling/e2e/specs/profits-closure.spec.cjs"
+    },
+    {
+      "id": "member-opportunity-1440-chromium-online",
+      "risk": "high",
+      "required": true,
+      "persona": "qa-lab-persona-member",
+      "device": "desktop-1440",
+      "browser": "chromium",
+      "network": "online",
+      "a11y": "none",
+      "surface": "opportunity-detail",
+      "spec": "tooling/e2e/specs/opportunity-detail-closure.spec.cjs"
+    },
+    {
+      "id": "member-participate-1440-chromium-online",
+      "risk": "high",
+      "required": true,
+      "persona": "qa-lab-persona-member",
+      "device": "desktop-1440",
+      "browser": "chromium",
+      "network": "online",
+      "a11y": "none",
+      "surface": "participate",
+      "spec": "tooling/e2e/specs/participate-sheet-closure.spec.cjs"
+    },
+    {
+      "id": "insufficient-participate-1440-chromium-online",
+      "risk": "high",
+      "required": true,
+      "persona": "qa-lab-persona-insufficient",
+      "device": "desktop-1440",
+      "browser": "chromium",
+      "network": "online",
+      "a11y": "none",
+      "surface": "participate",
+      "spec": "tooling/e2e/specs/participate-sheet-closure.spec.cjs",
+      "ownedFailureModes": ["insufficient"]
+    },
+    {
+      "id": "member-execute-390-chromium-online",
+      "risk": "high",
+      "required": true,
+      "persona": "qa-lab-persona-member",
+      "device": "mobile-390",
+      "browser": "chromium",
+      "network": "online",
+      "a11y": "none",
+      "surface": "execute",
+      "spec": "tooling/e2e/specs/execute-closure.spec.cjs"
+    },
+    {
+      "id": "member-wallet-390-chromium-online",
+      "risk": "high",
+      "required": true,
+      "persona": "qa-lab-persona-member",
+      "device": "mobile-390",
+      "browser": "chromium",
+      "network": "online",
+      "a11y": "none",
+      "surface": "wallet",
+      "spec": "tooling/e2e/specs/wallet-closure.spec.cjs"
+    },
+    {
+      "id": "member-wallet-390-chromium-slow3g",
+      "risk": "high",
+      "required": true,
+      "persona": "qa-lab-persona-member",
+      "device": "mobile-390",
+      "browser": "chromium",
+      "network": "slow-3g",
+      "a11y": "none",
+      "surface": "wallet",
+      "spec": "tooling/e2e/specs/money-loop-journey.spec.cjs"
+    },
+    {
+      "id": "admin-dashboard-1440-chromium-online-axe",
+      "risk": "high",
+      "required": true,
+      "persona": "qa-lab-persona-admin",
+      "device": "desktop-1440",
+      "browser": "chromium",
+      "network": "online",
+      "a11y": "axe",
+      "surface": "admin-dashboard",
+      "spec": "tooling/e2e/specs/admin-entry-closure.spec.cjs"
+    },
+    {
+      "id": "guest-login-390-chromium-offline",
+      "risk": "low",
+      "required": false,
+      "sample": true,
+      "persona": "qa-lab-persona-guest",
+      "device": "mobile-390",
+      "browser": "chromium",
+      "network": "offline",
+      "a11y": "none",
+      "surface": "login",
+      "spec": "tooling/e2e/specs/login-bootstrap.spec.cjs"
+    },
+    {
+      "id": "guest-home-768-chromium-online",
+      "risk": "low",
+      "required": false,
+      "sample": true,
+      "persona": "qa-lab-persona-guest",
+      "device": "tablet-768",
+      "browser": "chromium",
+      "network": "online",
+      "a11y": "none",
+      "surface": "home",
+      "spec": "tooling/e2e/specs/home-closure.spec.cjs"
+    },
+    {
+      "id": "member-profits-1024-chromium-online",
+      "risk": "low",
+      "required": false,
+      "sample": true,
+      "persona": "qa-lab-persona-member",
+      "device": "tablet-1024",
+      "browser": "chromium",
+      "network": "online",
+      "a11y": "none",
+      "surface": "profits",
+      "spec": "tooling/e2e/specs/profits-closure.spec.cjs"
+    },
+    {
+      "id": "guest-login-1440-firefox-online",
+      "risk": "low",
+      "required": false,
+      "sample": true,
+      "persona": "qa-lab-persona-guest",
+      "device": "desktop-1440",
+      "browser": "firefox",
+      "network": "online",
+      "a11y": "none",
+      "surface": "login",
+      "spec": "tooling/e2e/specs/login-bootstrap.spec.cjs",
+      "runEnv": "ci"
+    },
+    {
+      "id": "member-home-2560-chromium-online",
+      "risk": "low",
+      "required": false,
+      "sample": true,
+      "persona": "qa-lab-persona-member",
+      "device": "large-2560",
+      "browser": "chromium",
+      "network": "online",
+      "a11y": "none",
+      "surface": "home",
+      "spec": "tooling/e2e/specs/home-closure.spec.cjs",
+      "note": "HOME_LARGE_SCREEN_SAFETY_QA only. HOME_RETROACTIVE_VISUAL_REDESIGN=NO"
+    },
+    {
+      "id": "admin-users-390-chromium-online",
+      "risk": "low",
+      "required": false,
+      "sample": true,
+      "persona": "qa-lab-persona-admin",
+      "device": "mobile-390",
+      "browser": "chromium",
+      "network": "online",
+      "a11y": "none",
+      "surface": "admin-users",
+      "spec": "tooling/e2e/specs/admin-entry-closure.spec.cjs"
+    }
+  ]
+}

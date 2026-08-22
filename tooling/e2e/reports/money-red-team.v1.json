@@ -1,0 +1,15 @@
+{
+  "rel": "REL-501",
+  "liveDbMoneyMutation": "NOT_RUN",
+  "productionDbWrite": 0,
+  "coveredModes": [
+    "idempotency",
+    "double_submit",
+    "insufficient",
+    "stale",
+    "expired",
+    "blocked",
+    "replay"
+  ],
+  "note": "In-process settlement_rule + fingerprint + participate contract. Isolated QA DB money mutation was not available. Production mutation denied."
+}

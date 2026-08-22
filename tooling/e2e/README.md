@@ -24,7 +24,34 @@ node tooling/verify/qa-env-isolation-guard.cjs
 ```
 
 브라우저 스펙은 로컬 저사양에서 필수가 아니다. 파일 존재 + 가드 자기검증이 Bootstrap 증거다.
-REL-500이 matrix를 확장한다.
+
+## Expansion (REL-500)
+
+`matrix/qa-lab-expansion.v1.json` + `lib/qa-lab-expansion.cjs` + `specs/qa-lab-expansion.spec.cjs`.
+
+- 축: persona × device × browser × network × a11y
+- 나이브 카르테시안 풀폭주 금지. 고위험 셀만 required, 저위험은 sample
+- **로컬 풀매트릭스 금지** (`QA_LAB_FULL_MATRIX=1` 로컬 throw). CI 위임 = `.github/workflows/qa-lab-expansion.yml`
+- `QA_ENV_ISOLATION_GUARD` 필수. production ref `mgsytcetsiecllmhcyox` 쓰기 0
+- **Playwright MCP 브라우저 클릭만으로는 DONE이 아니다.**
+- Home 시각 재설계 0. 연령대별 UI(seniorMode 등) 0
+
+```text
+node tooling/verify/qa-lab-expansion.cjs
+```
+
+## Money / red-team (REL-501)
+
+`matrix/money-red-team.v1.json` + `lib/money-red-team.cjs` + `specs/money-red-team.spec.cjs`.
+
+- 모드: idempotency · double submit · insufficient · stale · expired · blocked · replay
+- `QA_ENV_ISOLATION_GUARD` 필수. production DB 0
+- 가드 없이 실행되면 즉시 중단
+- 실원장 mutation은 isolated QA DB가 있을 때만. 없으면 `LIVE_DB_MONEY_MUTATION=NOT_RUN`
+
+```text
+node tooling/verify/money-red-team.cjs
+```
 
 ## Home 클로저 (REL-105)
 

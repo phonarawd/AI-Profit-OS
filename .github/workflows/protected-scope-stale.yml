@@ -1,0 +1,44 @@
+# REL-503 — protected-scope STALE watch.
+# Does not rewrite QA hashes. Drift is a signal to rerun REL-502, not a silent pass.
+name: protected-scope-stale
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "services/api-nest/**"
+      - "services/engine-rust/**"
+      - "schemas/**"
+      - "eval/**"
+      - "supabase/migrations/**"
+      - "governance/engine-acceptance/**"
+      - "tooling/verify/protected-scope-stale.cjs"
+      - ".github/workflows/protected-scope-stale.yml"
+  push:
+    branches: [main]
+    paths:
+      - "services/api-nest/**"
+      - "services/engine-rust/**"
+      - "schemas/**"
+      - "eval/**"
+      - "supabase/migrations/**"
+      - "governance/engine-acceptance/**"
+      - "tooling/verify/protected-scope-stale.cjs"
+      - ".github/workflows/protected-scope-stale.yml"
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - name: protected-scope stale watch
+        run: pnpm verify:protected-scope-stale

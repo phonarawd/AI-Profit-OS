@@ -39,6 +39,12 @@
 | settlement-rule-parity | `verify:settlement-rule-parity` | T0 path + T1 always | ✅ live (REL-008 · rust==cjs golden vectors · REL-502 대체 0) |
 | web-lint | `verify:web-lint` | T0 path | ✅ live (REL-011 · apps/web eslint 실검사 · no-op echo 0 · 구문 오류 FAIL) |
 | axe-harness | `verify:axe-harness` | T0 path | ✅ live (REL-012 · axe-core committed Playwright spec · Home 390/1440+login · MCP 0 · Home freeze 0) |
+| qa-lab-expansion | `verify:qa-lab-expansion` | T0 path | ✅ live (REL-500 · risk-based matrix · local full matrix 0 · CI-delegated · guard required · MCP 0) |
+| money-red-team | `verify:money-red-team` | T0 path | ✅ live (REL-501 · idempotency/double-submit/insufficient/stale/expired/blocked/replay · guard required · production DB 0 · live mutation NOT_RUN) |
+| rel-502-final-engine-acceptance | `verify:rel-502-final-engine-acceptance` | T0 path | ✅ live (REL-502 judge · STALE QA epoch = BLOCKED · FINAL_ACCEPTANCE 위조 0) |
+| protected-scope-stale | `verify:protected-scope-stale` | T0 path | ✅ live (REL-503 watch · 1-file mutation stale · hide 0) |
+| rel-504-migration-readiness | `verify:rel-504-migration-readiness` | T0 path | ✅ live (REL-504 · apply 0 · READY 위조 0) |
+| rel-507-production-e2e | `verify:rel-507-production-e2e` | T0 path | ✅ live (REL-507 · stub loop ≠ PASS · NOT_RUN honest) |
 | web-remote-patterns | `verify:web-remote-patterns` | T0 path | ✅ live (REL-013 · next/image 최소 allowlist · used hosts match · https-all 0) |
 | pwa-native-shell | `verify:pwa-native-shell` | T0 path | ✅ live (REL-014 · E-PWA-001 · manifest+icons+동등 SW+install/update · store-bridge 0 · push=REL-020) |
 | pwa-push-badge | `verify:pwa-push-badge` | T0 path | ✅ live (REL-020 · E-PWA-002 · VAPID path · dispatcher 실연결 · subscribe+SW badge · Admin kill · secret 0) |
@@ -67,7 +73,7 @@
 | `governance/engine-acceptance/**` · `tooling/engine-acceptance/**` · `tooling/verify/engine-acceptance.cjs` · `.github/workflows/engine-acceptance.yml` | engine-acceptance |
 | `governance/figma/**` · `tooling/verify/figma-project-registry.cjs` · `tooling/verify/figma-code-bridge.cjs` | figma-project-registry · figma-code-bridge |
 | `governance/visual-reconciliation/**` · `tooling/verify/locked-visual-reconciliation.cjs` · locked Account Hub `/me` | locked-visual-reconciliation |
-| `tooling/e2e/**` · `tooling/verify/qa-env-isolation-guard.cjs` | qa-env-isolation-guard |
+| `tooling/e2e/**` · `tooling/verify/qa-env-isolation-guard.cjs` · `tooling/verify/qa-lab-expansion.cjs` · `.github/workflows/qa-lab-expansion.yml` | qa-env-isolation-guard · qa-lab-expansion |
 | `tooling/e2e/lib/axe-scan.cjs` · `tooling/e2e/specs/axe-a11y.spec.cjs` · `tooling/verify/axe-harness.cjs` | axe-harness |
 | `apps/web/lib/opportunity-card-map.ts` · `apps/web/components/spark-dash-home/format.ts` · `packages/ui/components/opportunity/money-display.ts` · `tooling/e2e/lib/money-unavailable.cjs` · `tooling/e2e/specs/money-unavailable.spec.cjs` · `tooling/verify/money-unavailable.cjs` | money-unavailable |
 | `packages/ui/**` · `apps/web/**` | no-it-jargon · mockup-governance · canon-surfaces |
@@ -221,6 +227,12 @@
 | platform-change-control | Index v7.23 R0-3 — `change-control.v1.md` · L1/L2/L3+version bump · ADR-017 Light+Purple·IA 새 라벨·OpenNext Workers before/after/영향/rollback/승인 증거 · d903eef7 REFERENCE ONLY 흡수 crosswalk · 구현코드0 · path-trigger — **live** |
 | governance-observation-registry | Index v7.23 R0-4 + post-r0 — schema+registry · status enum · currentlyOccurring⊥reviewTrigger · R0 AtR0 locks=0 불변 · post-r0 Money wave1 promote4/materialize3 · Engine observed2 · Change Control `cc.money.r0-obs-promote-wave1` · path-trigger — **live** |
 | qa-env-isolation-guard | REL-006 QA Lab — **live** (production ref `mgsytcetsiecllmhcyox` throw · money mutation fail-closed · committed Playwright spec · MCP-only DONE 0) |
+| qa-lab-expansion | REL-500 QA Lab Expansion — **live** (risk-based persona×device×browser×network×a11y · naive cartesian 0 · local full matrix FORBIDDEN · CI-delegated · guard required · MCP-only DONE 0) |
+| money-red-team | REL-501 money/red-team — **live** (7 failure modes · QA_ENV_ISOLATION_GUARD · production DB 0 · live mutation NOT_RUN) |
+| rel-502-final-engine-acceptance | REL-502 judge — **live** (current QA epoch STALE · FINAL_ACCEPTANCE 0) |
+| protected-scope-stale | REL-503 watch — **live** (hash drift + synthetic mutation) |
+| rel-504-migration-readiness | REL-504 — **live** (NOT_READY honest · production apply 0) |
+| rel-507-production-e2e | REL-507 — **live** (NOT_RUN honest · stub 12.50 ≠ PASS) |
 | money-unavailable | REL-007 — **live** (missing money → UNAVAILABLE · 실제 0 유지 · Home geometry 0) |
 | figma-project-registry | REL-009 + REL-131 — **live** (fileKey locked · REL-131 Desktop 192:194 + Mobile 192:434 FOUNDER_APPROVED_LOCKED · approvedAuthority=2 · V1/V2 SUPERSEDED preserved · other frames candidate · Home 46:2 BACKUP · Code Connect candidate-only · REL-131 apply 0) |
 | figma-code-bridge | Auth Figma ↔ code map — **live** (registered IDs · production paths exist · FOUNDER_REVIEW_CANDIDATE ≠ APPROVED · Code Connect applied 0 · Home/Account Hub lock · auth behavior mutation 0) |
