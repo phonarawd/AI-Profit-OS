@@ -15,6 +15,8 @@
  * 11) QA-6: k6 scenario mix + threshold 메커니즘 · UNSPECIFIED_PERF_BUDGET ·
  *     CI only heavy · aggregator 증거 · product mutation 0
  * 12) QA-7: formal Actions evidence · qa7-result.v1.json · next=QA8
+ *     — mid-epoch (QA1-6 current COMPLETE · QA7-9 predecessor preserved)는
+ *       정식 Actions 전 상태를 Honour. predecessor를 현재 epoch로 강제 0.
  * 13) QA-8: ASVS 5.0.0 subset · qa8-result.v1.json · admin-boundary/privacy
  *     defects recorded (not repaired) · next=QA9 · ENGINE_ACCEPTED_FOR_UI 발급 금지
  */
@@ -65,6 +67,11 @@ const {
   assertEvalReviewEpochBound,
 } = require("../engine-acceptance/lib/eval-review-rebase.cjs");
 const { run: selftestEvalReviewRebase } = require("../engine-acceptance/selftest-eval-review-rebase.cjs");
+const {
+  isMidEpochFormalPending,
+  assertNoCurrentEpochFormalWashing,
+} = require("../engine-acceptance/lib/mid-epoch-formal.cjs");
+const { run: selftestMidEpochFormal } = require("../engine-acceptance/selftest-mid-epoch-formal.cjs");
 
 const fails = [];
 function fail(msg) {
@@ -186,6 +193,8 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/selftest-eval-review-rebase.cjs",
   "tooling/engine-acceptance/lib/eval-review-rebase.cjs",
   "tooling/engine-acceptance/lib/eval-dataset-diff.cjs",
+  "tooling/engine-acceptance/lib/mid-epoch-formal.cjs",
+  "tooling/engine-acceptance/selftest-mid-epoch-formal.cjs",
   "tooling/engine-acceptance/run-qa1.cjs",
   "tooling/engine-acceptance/run-qa2.cjs",
   "tooling/engine-acceptance/run-qa3.cjs",
@@ -543,6 +552,8 @@ let ephemeralPreQa9Rewrite = false;
 const pendingProductRerun = isPendingRerun(baseline, evidence, rebaseLedger);
 const pendingEvalRerun = isEvalReviewPendingRerun(baseline, evidence, evalLedger);
 const pendingRerun = pendingProductRerun || pendingEvalRerun;
+const midEpochFormalPending =
+  !pendingRerun && isMidEpochFormalPending(baseline, evidence);
 if (baseline && rebaseLedger) {
   verifyRebaseLedgerAgainstBaseline(baseline, rebaseLedger, evidence, fails);
 }
@@ -598,10 +609,15 @@ if (evidence) {
     qa9Peek = null;
   }
   const ephemeralQa6RewriteNow =
-    !pendingRerun && isEphemeralQa6Rewrite(evidence, qa7Peek);
+    !pendingRerun &&
+    !midEpochFormalPending &&
+    isEphemeralQa6Rewrite(evidence, qa7Peek);
   ephemeralQa6Rewrite = ephemeralQa6RewriteNow;
   const ephemeralPreQa9RewriteNow =
-    !pendingRerun && !ephemeralQa6RewriteNow && isEphemeralPreQa9Rewrite(evidence, qa9Peek);
+    !pendingRerun &&
+    !midEpochFormalPending &&
+    !ephemeralQa6RewriteNow &&
+    isEphemeralPreQa9Rewrite(evidence, qa9Peek);
   ephemeralPreQa9Rewrite = ephemeralPreQa9RewriteNow;
 
   // Independently re-derive the L1 formula and require evidence.verdict to
@@ -644,8 +660,13 @@ if (evidence) {
   }
   // ENGINE_ACCEPTED_FOR_UI is never legal to see mid-rewrite or before QA9 -
   // this part of the guard stays unconditional regardless of ephemeral state.
-  if (evidence.verdict === "ENGINE_ACCEPTED_FOR_UI" && (pendingRerun || ephemeralQa6RewriteNow)) {
-    fail("must not issue ENGINE_ACCEPTED_FOR_UI during a pending rebase rerun or ephemeral QA6 rewrite");
+  if (
+    evidence.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
+    (pendingRerun || ephemeralQa6RewriteNow || midEpochFormalPending)
+  ) {
+    fail(
+      "must not issue ENGINE_ACCEPTED_FOR_UI during a pending rebase rerun, ephemeral QA6 rewrite, or mid-epoch formal pending",
+    );
   }
 
   if (pendingRerun) {
@@ -672,6 +693,16 @@ if (evidence) {
       }
       if (evidence.next !== "QA9_ACCEPTANCE_REPORT") {
         fail("ephemeral pre-QA9 rewrite must keep evidence-manifest.next QA9_ACCEPTANCE_REPORT");
+      }
+    } else if (midEpochFormalPending) {
+      if (evidence.qa_phase !== "QA-6") {
+        fail("mid-epoch formal pending must keep evidence-manifest.qa_phase QA-6");
+      }
+      if (evidence.next !== "QA7_AI_EVAL") {
+        fail("mid-epoch formal pending must keep evidence-manifest.next QA7_AI_EVAL");
+      }
+      if (evidence.verdict !== "ENGINE_QA_INCOMPLETE") {
+        fail("mid-epoch formal pending must keep verdict ENGINE_QA_INCOMPLETE");
       }
     } else {
       if (evidence.qa_phase !== "QA-9") {
@@ -782,6 +813,13 @@ if (evidence) {
       if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa8 !== true) {
         fail("evidence.kill_switch.verified_before_qa8 must be true");
       }
+    } else if (midEpochFormalPending) {
+      if (qa7 && qa7.completion_status === "COMPLETE") {
+        fail("mid-epoch formal pending forbids current QA7 COMPLETE without formal publication");
+      }
+      if (qa8 && qa8.completion_status === "COMPLETE" && qa8.baseline_id === (baseline && baseline.id)) {
+        fail("mid-epoch formal pending forbids current QA8 COMPLETE");
+      }
     } else {
       if (!qa7 || qa7.completion_status !== "COMPLETE") {
         fail("QA7 suite must be COMPLETE after formal Actions publication");
@@ -822,7 +860,7 @@ if (evidence) {
         fail("evidence.kill_switch.verified_before_qa9 must be true");
       }
     }
-    if (ephemeralQa6RewriteNow) {
+    if (ephemeralQa6RewriteNow || midEpochFormalPending) {
       // run-qa6.cjs recomputes its own cumulative from QA5's on-disk result
       // only — it has no knowledge of QA8 in this ephemeral CI recompute.
       // Authoritative expected total = QA6's own self-computed cumulative
@@ -843,7 +881,7 @@ if (evidence) {
         fail("cannot re-derive expected critical_invariant.blocked (qa6-result.critical_invariant_cumulative missing)");
       } else if (!evidence.critical_invariant || evidence.critical_invariant.blocked !== expectedQa6Blocked) {
         fail(
-          `ephemeral QA6 rewrite critical_invariant.blocked must equal qa6-result.critical_invariant_cumulative.blocked=${expectedQa6Blocked} (got ${evidence.critical_invariant && evidence.critical_invariant.blocked})`,
+          `${midEpochFormalPending ? "mid-epoch" : "ephemeral QA6 rewrite"} critical_invariant.blocked must equal qa6-result.critical_invariant_cumulative.blocked=${expectedQa6Blocked} (got ${evidence.critical_invariant && evidence.critical_invariant.blocked})`,
         );
       }
     } else {
@@ -1428,7 +1466,7 @@ try {
 } catch {
   fail("qa7-result.v1.json invalid JSON");
 }
-if (qa7Result && !pendingRerun) {
+if (qa7Result && !pendingRerun && !midEpochFormalPending) {
   if (qa7Result.schema !== "governance.engine-acceptance.qa7-result.v1") {
     fail("qa7-result.schema mismatch");
   }
@@ -1621,7 +1659,7 @@ try {
 } catch {
   fail("qa8-result.v1.json invalid JSON");
 }
-if (qa8Result && !pendingRerun) {
+if (qa8Result && !pendingRerun && !midEpochFormalPending) {
   if (qa8Result.schema !== "governance.engine-acceptance.qa8-result.v1") {
     fail("qa8-result.schema mismatch");
   }
@@ -1760,7 +1798,15 @@ try {
 } catch {
   fail("qa9-result.v1.json invalid JSON");
 }
-if (qa9Result && !pendingRerun) {
+if (midEpochFormalPending) {
+  assertNoCurrentEpochFormalWashing(
+    baseline,
+    evidence,
+    { QA7: qa7Result, QA8: qa8Result, QA9: qa9Result },
+    fail,
+  );
+}
+if (qa9Result && !pendingRerun && !midEpochFormalPending) {
   if (qa9Result.schema !== "governance.engine-acceptance.qa9-result.v1") {
     fail("qa9-result.schema mismatch");
   }
@@ -1899,6 +1945,37 @@ if (report) {
     }
     if (!report.includes("QA1_DETERMINISTIC_TRUTH")) {
       fail("REPORT must declare NEXT=QA1_DETERMINISTIC_TRUTH after rebase");
+    }
+  } else if (midEpochFormalPending) {
+    if (!report.includes("QA7_AI_EVAL")) {
+      fail("mid-epoch REPORT must declare NEXT=QA7_AI_EVAL");
+    }
+    if (!report.includes("QA6 = COMPLETE")) {
+      fail("mid-epoch REPORT banner must include QA6 = COMPLETE");
+    }
+    if (!report.includes("ENGINE_QA_INCOMPLETE")) {
+      fail("mid-epoch REPORT must keep ENGINE_QA_INCOMPLETE");
+    }
+    if (/QA7 = COMPLETE/.test(report) || /QA8 = COMPLETE/.test(report) || /QA9 = COMPLETE/.test(report)) {
+      fail("mid-epoch REPORT must not claim QA7/QA8/QA9 COMPLETE");
+    }
+    if (qa6BudgetSpecified ? !report.includes("SPECIFIED") : !report.includes("UNSPECIFIED_PERF_BUDGET")) {
+      fail(`REPORT must mention QA6's current budget status (${qa6BudgetSpecified ? "SPECIFIED" : "UNSPECIFIED_PERF_BUDGET"})`);
+    }
+    if (!report.includes("threshold") && !report.includes("Threshold")) {
+      fail("REPORT must mention threshold mechanism");
+    }
+    if (!report.includes("CI only") && !report.includes("ci only") && !report.includes("CI-only")) {
+      fail("REPORT must mention CI only heavy k6");
+    }
+    if (!report.includes("retention") && !report.includes("90")) {
+      fail("REPORT must mention artifact retention ≥90");
+    }
+    if (!report.includes("always()")) {
+      fail("REPORT must mention aggregator if: always()");
+    }
+    if (!report.includes("PRODUCT MUTATION = 0") && !report.includes("product mutation")) {
+      fail("REPORT must state product mutation 0");
     }
   } else if (ephemeralQa6Rewrite) {
     if (!report.includes("QA7_AI_EVAL")) {
@@ -2355,6 +2432,11 @@ try {
   fail(`eval-review-rebase selftest threw: ${e && e.message ? e.message : e}`);
 }
 try {
+  selftestMidEpochFormal();
+} catch (e) {
+  fail(`mid-epoch-formal selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
   const { run: selftestQa7 } = require("../engine-acceptance/selftest-qa7.cjs");
   selftestQa7();
 } catch (e) {
@@ -2398,6 +2480,10 @@ console.log("  LEGACY_AUTO_SYNC_STATUS = MUST_BE_GATED");
 if (pendingRerun) {
   console.log("  QA1-QA6 = STALE_FOR_CURRENT_EPOCH");
   console.log("  NEXT = QA1_DETERMINISTIC_TRUTH");
+} else if (midEpochFormalPending) {
+  console.log("  QA1-QA6 = COMPLETE (MID_EPOCH_FORMAL_PENDING)");
+  console.log("  QA7-QA9 = PREDECESSOR_PRESERVED / NOT_STARTED");
+  console.log("  NEXT = QA7_AI_EVAL");
 } else if (ephemeralQa6Rewrite) {
   console.log("  QA1-QA5 = COMPLETE (ephemeral QA6 CI rewrite in this job workspace)");
   console.log("  NEXT = QA7_AI_EVAL");

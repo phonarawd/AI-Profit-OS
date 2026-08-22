@@ -368,7 +368,9 @@
     "engine-acceptance:selftest-workflow-amendment": "node tooling/engine-acceptance/selftest-workflow-amendment.cjs",
     "engine-acceptance:selftest-product-rebase": "node tooling/engine-acceptance/selftest-product-rebase.cjs",
     "engine-acceptance:selftest-eval-review-rebase": "node tooling/engine-acceptance/selftest-eval-review-rebase.cjs",
-    "engine-acceptance:selftest-pre-rebase-harness": "node tooling/engine-acceptance/selftest-pre-rebase-harness.cjs"
+    "engine-acceptance:selftest-pre-rebase-harness": "node tooling/engine-acceptance/selftest-pre-rebase-harness.cjs",
+    "engine-acceptance:selftest-mid-epoch-formal": "node tooling/engine-acceptance/selftest-mid-epoch-formal.cjs",
+    "selftest-mid-epoch-formal": "node tooling/engine-acceptance/selftest-mid-epoch-formal.cjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
