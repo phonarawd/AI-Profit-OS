@@ -74,6 +74,7 @@
     "verify:executable-economics": "node tooling/verify/executable-economics.cjs",
     "verify:multi-source-opportunity": "node tooling/verify/multi-source-opportunity.cjs",
     "verify:fashionphile-identity-forensic": "node tooling/verify/fashionphile-identity-forensic.cjs",
+    "verify:match-result-durable-persistence": "node tooling/verify/match-result-durable-persistence.cjs",
     "observe:source": "node services/market-intelligence/src/source-observation/cli.cjs",
     "verify:signup-ready-adapters": "node tooling/verify/signup-ready-adapters.cjs",
     "verify:market-partner-adapters": "node tooling/verify/market-partner-adapters.cjs",
