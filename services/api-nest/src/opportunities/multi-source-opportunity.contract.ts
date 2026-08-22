@@ -1,7 +1,8 @@
 /**
  * Multi-source Opportunity — Nest 소비면.
  * EXECUTABLE 교차 소스 쌍의 in-process Opportunity row만 노출한다.
- * public.opportunities INSERT / promotion persist 는 Track F.
+ * durable persist owner = TrackAOpportunityPersistService → opportunity-write.cjs
+ * 이 파일은 INSERT 하지 않는다. production ingest 0.
  */
 
 export type MultiSourceOpportunityDecision =

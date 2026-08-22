@@ -8,6 +8,8 @@ import { AssetImageR2Service } from "./asset-image-r2.service";
 import { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
 import { FxSnapshotService } from "./fx-snapshot.service";
 import { OpportunityRepriceService } from "./opportunity-reprice.service";
+import { OpportunityWriteService } from "./opportunity-write.service";
+import { TrackAOpportunityPersistService } from "./track-a-opportunity-persist.service";
 import { OpportunitiesAdminController } from "./opportunities.admin.controller";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
 import { OpportunitiesUserController } from "./opportunities.user.controller";
@@ -32,6 +34,8 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
   providers: [
     AssetImageR2Service,
     OpportunityRepriceService,
+    OpportunityWriteService,
+    TrackAOpportunityPersistService,
     OpportunitiesAdminService,
     OpportunitiesUserService,
     ParticipateService,
@@ -42,6 +46,8 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
   exports: [
     AssetImageR2Service,
     OpportunityRepriceService,
+    OpportunityWriteService,
+    TrackAOpportunityPersistService,
     OpportunitiesAdminService,
     OpportunitiesUserService,
     ParticipateService,

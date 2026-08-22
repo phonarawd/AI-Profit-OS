@@ -48,7 +48,7 @@
     "doesNotInventFeeTable": true,
     "doesNotAddMarketId": true,
     "doesNotMapAssetIdToCanonicalProduct": true,
-    "durablePersistence": "NOT_IMPLEMENTED",
+    "durablePersistence": "NEST_LOCAL_WRITE_THROUGH",
     "production": "NOT_IMPLEMENTED"
   },
   "decisions": ["ISSUED", "NOT_ISSUED", "INSUFFICIENT", "CONFLICT", "BLOCKED"],
@@ -63,7 +63,7 @@
   },
   "persistence": {
     "MULTI_SOURCE_OPPORTUNITY_MEMORY_RUNTIME": "IN_PROCESS_MEMORY",
-    "MULTI_SOURCE_OPPORTUNITY_DB_RUNTIME": "NOT_IMPLEMENTED",
+    "MULTI_SOURCE_OPPORTUNITY_DB_RUNTIME": "NEST_LOCAL_WRITE_THROUGH",
     "PRODUCTION_MULTI_SOURCE_OPPORTUNITY": "NOT_IMPLEMENTED"
   },
   "pipelineAfterMatchOwner": "governance/global-product/canonical-product.v2.json",

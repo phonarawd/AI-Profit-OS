@@ -41,6 +41,20 @@ const MARKETPLACE_BY_MARKET = Object.freeze({
 const FORBIDDEN_INGEST_ADAPTERS = Object.freeze(["amazon", "yahoo_jp"]);
 
 /**
+ * 기존 Opportunity persist row 의 presentation 계약.
+ * 초/분이 단위다. 8일·12일 fixture 가 아니다.
+ * Track A 는 기대시간을 계산하지 않으므로 이 기존 쓰기 계약만 재사용한다.
+ */
+const EXISTING_OPPORTUNITY_WRITE_PRESENTATION = Object.freeze({
+  estimatedDurationSec: 12,
+  aiConfidenceScore: "72.00",
+  difficulty: "normal",
+  riskScore: 2,
+  executionMode: "orchestrate",
+  executionPlatforms: [],
+});
+
+/**
  * Day-1 FX snapshot row (migration + Nest ensure share id).
  */
 function day1FxSnapshot(capturedAt = new Date().toISOString()) {
@@ -210,13 +224,13 @@ function buildRuntimeSeedBundleForAsset(asset, opts = {}) {
       expectedProfitUsdt: pricing.expectedProfitUsdt,
       expectedProfitKrwApprox: expectedProfitKrw,
       fxSnapshotId: fx.fxSnapshotId,
-      estimatedDurationSec: 12,
-      aiConfidenceScore: "72.00",
-      difficulty: "normal",
+      estimatedDurationSec: EXISTING_OPPORTUNITY_WRITE_PRESENTATION.estimatedDurationSec,
+      aiConfidenceScore: EXISTING_OPPORTUNITY_WRITE_PRESENTATION.aiConfidenceScore,
+      difficulty: EXISTING_OPPORTUNITY_WRITE_PRESENTATION.difficulty,
       tags: scan.tags,
       requiredCapitalUsdt: capital,
-      executionMode: "orchestrate",
-      executionPlatforms: [],
+      executionMode: EXISTING_OPPORTUNITY_WRITE_PRESENTATION.executionMode,
+      executionPlatforms: EXISTING_OPPORTUNITY_WRITE_PRESENTATION.executionPlatforms,
       category: asset.category,
       assetLabel: asset.assetLabel,
       assetImageUrl: asset.imageUrl,
@@ -224,7 +238,7 @@ function buildRuntimeSeedBundleForAsset(asset, opts = {}) {
       assetImageAltKo: asset.imageAltKo || asset.assetLabel,
       arbitrageType: scan.arbitrageType,
       arbitrageTypeKo: scan.arbitrageTypeKo,
-      pricing,
+      pricing: { ...pricing, origin: "catalog_seed" },
       staleAt: observedAt,
       status,
       gradeMismatch: pricing.gradeMismatch,
@@ -233,7 +247,7 @@ function buildRuntimeSeedBundleForAsset(asset, opts = {}) {
       sellSuccessRate: scan.sellSuccessRate ?? null,
       sellSuccessWindowDays: scan.sellSuccessWindowDays ?? null,
       sellSuccessAsOf: scan.sellSuccessAsOf ?? null,
-      riskScore: 2,
+      riskScore: EXISTING_OPPORTUNITY_WRITE_PRESENTATION.riskScore,
     },
     publishGuard: { canPublish, imageGuard },
   };
@@ -423,6 +437,7 @@ module.exports = {
   DAY1_USDT_KRW,
   LISTING_STALE_SEC,
   FORBIDDEN_INGEST_ADAPTERS,
+  EXISTING_OPPORTUNITY_WRITE_PRESENTATION,
   MARKETPLACE_BY_MARKET,
   day1FxSnapshot,
   listDay1AssetMasters,

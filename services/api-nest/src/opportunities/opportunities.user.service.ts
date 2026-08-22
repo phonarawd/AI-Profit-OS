@@ -396,7 +396,13 @@ export class OpportunitiesUserService {
       internal.riskScore = row.risk_score;
     }
     if (opts.includePricing) {
-      internal.pricing = pricing;
+      const {
+        origin: _origin,
+        trackAOpportunityId: _trackAOpportunityId,
+        canonicalProductId: _canonicalProductId,
+        ...publicPricing
+      } = pricing;
+      internal.pricing = publicPricing;
     }
     if (pricing.expectedSellDays != null) {
       internal.expectedSellDays = Number(pricing.expectedSellDays);

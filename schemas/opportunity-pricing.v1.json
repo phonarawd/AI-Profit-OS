@@ -135,6 +135,20 @@
     "lastAdminEditBy": {
       "type": "string",
       "minLength": 1
+    },
+    "origin": {
+      "type": "string",
+      "enum": ["catalog_seed", "track_a"],
+      "description": "catalog_seed = bootstrap/dev fallback · track_a = real market-derived. Not two feeds."
+    },
+    "trackAOpportunityId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable Track A identity. CanonicalProduct != assetId."
+    },
+    "canonicalProductId": {
+      "type": "string",
+      "minLength": 1
     }
   }
 }

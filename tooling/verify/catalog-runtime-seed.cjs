@@ -26,6 +26,7 @@ const files = [
   "services/market-intelligence/src/catalog-runtime-seed.cjs",
   "services/market-intelligence/src/pipeline.cjs",
   "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+  "services/api-nest/src/opportunities/opportunity-write.cjs",
   "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
   "supabase/migrations/20260809144814_catalog_runtime_day1_fx_bootstrap.sql",
   "services/market-intelligence/src/trading-card-seed.cjs",
@@ -287,8 +288,20 @@ if (adapters.includes("resolveStoredLegListingPrices")) {
 if (!svc.includes('reason: "min catalog already present"')) {
   fails.push("SEED skip: existing catalog must still short-circuit refresh");
 }
-if (!/if \(existing\.rows\[0\]\) return false/.test(svc)) {
+if (!svc.includes('reason: "track_a market-derived catalog present"')) {
+  fails.push("SEED skip: Track A market-derived catalog must short-circuit seed");
+}
+const writeOwner = read(
+  "services/api-nest/src/opportunities/opportunity-write.cjs",
+);
+if (!writeOwner.includes("insertIfAbsentByAssetId")) {
+  fails.push("Opportunity write owner must expose insertIfAbsentByAssetId");
+}
+if (!/if \(existing\) return \{ inserted: false/.test(writeOwner)) {
   fails.push("SEED skip: existing opportunity row must not be overwritten");
+}
+if (!svc.includes("insertIfAbsentByAssetId")) {
+  fails.push("CatalogRuntimeSeedService must reuse the shared write owner");
 }
 
 // --- FAILURE: resolve fail → stale_at 미변경 ---

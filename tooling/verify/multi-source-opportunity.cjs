@@ -39,6 +39,8 @@ const files = [
   "services/market-intelligence/src/multi-source-opportunity/fixtures.cjs",
   "services/market-intelligence/src/multi-source-opportunity/index.cjs",
   "services/api-nest/src/opportunities/multi-source-opportunity.contract.ts",
+  "services/api-nest/src/opportunities/track-a-opportunity-persist.cjs",
+  "services/api-nest/src/opportunities/opportunity-write.cjs",
   "tooling/verify/multi-source-opportunity.cjs",
   "governance/global-product/multi-source-opportunity.v1.json",
   "services/market-intelligence/src/pricing-formula.cjs",
@@ -99,7 +101,33 @@ if (/INSERT INTO(?: public\.)?opportunities/i.test(nestSrc)) {
 
 const moduleSrc = read("services/api-nest/src/opportunities/opportunities.module.ts");
 if (moduleSrc.includes("multi-source-opportunity.contract")) {
-  fail("opportunities.module must not wire multi-source-opportunity this slice");
+  fail("opportunities.module must not wire multi-source-opportunity.contract");
+}
+if (!moduleSrc.includes("TrackAOpportunityPersistService")) {
+  fail("opportunities.module must provide TrackAOpportunityPersistService");
+}
+if (!moduleSrc.includes("OpportunityWriteService")) {
+  fail("opportunities.module must provide OpportunityWriteService");
+}
+const persistSrc = read("services/api-nest/src/opportunities/track-a-opportunity-persist.cjs");
+if (!persistSrc.includes("persistQualifiedTrackAOpportunity")) {
+  fail("Nest persist owner missing persistQualifiedTrackAOpportunity");
+}
+if (/require\(['\"]pg['\"]\)/.test(persistSrc)) {
+  fail("Track A persist must not require pg");
+}
+const writeSrc = read("services/api-nest/src/opportunities/opportunity-write.cjs");
+if (!/INSERT INTO public\.opportunities/i.test(writeSrc)) {
+  fail("shared write owner must INSERT public.opportunities");
+}
+const miWrite = [
+  "services/market-intelligence/src/multi-source-opportunity/create.cjs",
+  "services/market-intelligence/src/executable-economics/evaluate.cjs",
+]
+  .map((rel) => read(rel))
+  .join("\n");
+if (/INSERT INTO(?: public\.)?opportunities/i.test(miWrite)) {
+  fail("market-intelligence must not INSERT public.opportunities");
 }
 
 const pkg = readJson("services/market-intelligence/package.json");
@@ -138,11 +166,14 @@ if (!gov) {
   if (gov.firstSlice.doesNotMapAssetIdToCanonicalProduct !== true) {
     fail("doesNotMapAssetIdToCanonicalProduct");
   }
-  if (gov.persistence.MULTI_SOURCE_OPPORTUNITY_DB_RUNTIME !== "NOT_IMPLEMENTED") {
-    fail("MULTI_SOURCE_OPPORTUNITY_DB_RUNTIME must stay NOT_IMPLEMENTED");
+  if (gov.persistence.MULTI_SOURCE_OPPORTUNITY_DB_RUNTIME !== "NEST_LOCAL_WRITE_THROUGH") {
+    fail("MULTI_SOURCE_OPPORTUNITY_DB_RUNTIME must be NEST_LOCAL_WRITE_THROUGH");
   }
   if (gov.persistence.PRODUCTION_MULTI_SOURCE_OPPORTUNITY !== "NOT_IMPLEMENTED") {
     fail("PRODUCTION_MULTI_SOURCE_OPPORTUNITY must stay NOT_IMPLEMENTED");
+  }
+  if (gov.firstSlice.durablePersistence !== "NEST_LOCAL_WRITE_THROUGH") {
+    fail("firstSlice.durablePersistence must be NEST_LOCAL_WRITE_THROUGH");
   }
 }
 

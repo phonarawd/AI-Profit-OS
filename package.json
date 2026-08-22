@@ -73,6 +73,7 @@
     "verify:listing-promotion": "node tooling/verify/listing-promotion.cjs",
     "verify:executable-economics": "node tooling/verify/executable-economics.cjs",
     "verify:multi-source-opportunity": "node tooling/verify/multi-source-opportunity.cjs",
+    "verify:opportunity-write-through": "node tooling/verify/opportunity-write-through.cjs",
     "verify:fashionphile-identity-forensic": "node tooling/verify/fashionphile-identity-forensic.cjs",
     "verify:match-result-durable-persistence": "node tooling/verify/match-result-durable-persistence.cjs",
     "observe:source": "node services/market-intelligence/src/source-observation/cli.cjs",

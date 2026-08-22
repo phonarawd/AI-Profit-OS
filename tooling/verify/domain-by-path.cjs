@@ -943,7 +943,20 @@ const RULES = [
       /^governance\/global-product\/multi-source-opportunity\.v1\.json$/.test(f) ||
       /^tooling\/verify\/multi-source-opportunity\.cjs$/.test(f) ||
       /^services\/api-nest\/src\/opportunities\/multi-source-opportunity\.contract\.ts$/.test(f),
-    scripts: ["multi-source-opportunity.cjs"],
+    scripts: ["multi-source-opportunity.cjs", "opportunity-write-through.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/opportunities\/opportunity-write/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/track-a-opportunity/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/opportunity-user-feed-read\.cjs$/.test(f) ||
+      /^tooling\/verify\/opportunity-write-through\.cjs$/.test(f),
+    scripts: [
+      "opportunity-write-through.cjs",
+      "multi-source-opportunity.cjs",
+      "catalog-runtime-seed.cjs",
+      "user-opportunity-feed.cjs",
+    ],
   },
   {
     // PTF-00C — shared Engine §0.0 pure-logic package. No prior rule covered

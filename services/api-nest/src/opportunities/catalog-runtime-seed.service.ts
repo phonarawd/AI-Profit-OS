@@ -7,6 +7,7 @@ import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { PostgresService } from "../db/postgres";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
 import { OpportunityRepriceService } from "./opportunity-reprice.service";
+import { OpportunityWriteService } from "./opportunity-write.service";
 import { FxSnapshotService } from "./fx-snapshot.service";
 import {
   buildMinCatalogRuntimeSeed,
@@ -40,6 +41,7 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
     private readonly opportunities: OpportunitiesAdminService,
     private readonly fxSnapshots: FxSnapshotService,
     private readonly reprice: OpportunityRepriceService,
+    private readonly write: OpportunityWriteService,
   ) {}
 
   async onModuleInit(): Promise<void> {
@@ -71,6 +73,26 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
         availableCount: 0,
         compareReadyTrue: 0,
         compareReadyFalse: 0,
+        forbiddenInsertAttempts: 0,
+      };
+    }
+
+    const trackAAvailable = await this.write.countAvailableByOrigin(
+      this.write.origins.TRACK_A,
+    );
+    if (trackAAvailable >= 1) {
+      const counts = await this.countCatalog();
+      return {
+        ok: true,
+        skipped: true,
+        reason: "track_a market-derived catalog present",
+        fxSnapshotId: counts.fxSnapshotId || DAY1_FX_SNAPSHOT_ID,
+        assetsUpserted: 0,
+        listingsUpserted: 0,
+        opportunitiesUpserted: 0,
+        availableCount: counts.available,
+        compareReadyTrue: counts.compareReadyTrue,
+        compareReadyFalse: counts.compareReadyFalse,
         forbiddenInsertAttempts: 0,
       };
     }
@@ -398,66 +420,8 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
   private async upsertOpportunityFromBundle(
     opp: Record<string, unknown>,
   ): Promise<boolean> {
-    const assetId = String(opp.assetId);
-    const existing = await this.db.query<{ id: string }>(
-      `SELECT id::text FROM public.opportunities WHERE asset_id = $1 LIMIT 1`,
-      [assetId],
-    );
-    if (existing.rows[0]) return false;
-
-    const pricing = opp.pricing as Record<string, unknown>;
-    await this.db.query(
-      `INSERT INTO public.opportunities (
-         asset_id, pricing_version, priced_at, expected_profit_usdt,
-         expected_profit_krw_approx, fx_snapshot_id, estimated_duration_sec,
-         ai_confidence_score, difficulty, tags, required_capital_usdt,
-         execution_mode, execution_platforms, category, asset_label,
-         asset_image_url, asset_image_source, asset_image_alt_ko,
-         arbitrage_type, arbitrage_type_ko, pricing, stale_at, status,
-         sell_success_rate, sell_success_window_days, sell_success_as_of,
-         risk_score, grade_mismatch, image_missing, capital_band
-       ) VALUES (
-         $1,$2,$3::timestamptz,$4::numeric,$5::numeric,$6,$7,
-         $8::numeric,$9,$10::text[],$11::numeric,
-         $12,$13::text[],$14,$15,
-         $16,$17,$18,
-         $19,$20,$21::jsonb,$22::timestamptz,$23,
-         $24::numeric,$25,$26::timestamptz,
-         $27,$28,$29,$30
-       )`,
-      [
-        assetId,
-        opp.pricingVersion,
-        opp.pricedAt,
-        opp.expectedProfitUsdt,
-        opp.expectedProfitKrwApprox,
-        opp.fxSnapshotId,
-        opp.estimatedDurationSec,
-        opp.aiConfidenceScore,
-        opp.difficulty,
-        opp.tags,
-        opp.requiredCapitalUsdt,
-        opp.executionMode,
-        opp.executionPlatforms,
-        opp.category,
-        opp.assetLabel,
-        opp.assetImageUrl,
-        opp.assetImageSource,
-        opp.assetImageAltKo,
-        opp.arbitrageType,
-        opp.arbitrageTypeKo,
-        JSON.stringify(pricing),
-        opp.staleAt,
-        opp.status,
-        opp.sellSuccessRate,
-        opp.sellSuccessWindowDays,
-        opp.sellSuccessAsOf,
-        opp.riskScore,
-        opp.gradeMismatch,
-        opp.imageMissing,
-        opp.capitalBand,
-      ],
-    );
+    const result = await this.write.insertIfAbsentByAssetId(opp);
+    if (result.inserted === false) return false;
     return true;
   }
 

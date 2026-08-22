@@ -11,6 +11,10 @@ const { Client } = require(path.join(
   root,
   "services/api-nest/node_modules/pg",
 ));
+const write = require(path.join(
+  root,
+  "services/api-nest/src/opportunities/opportunity-write.cjs",
+));
 
 function loadEnv() {
   const envPath = path.join(root, ".env");
@@ -144,64 +148,8 @@ async function upsertListing(client, L) {
 }
 
 async function upsertOpportunity(client, opp) {
-  const existing = await client.query(
-    `SELECT id::text FROM public.opportunities WHERE asset_id = $1 LIMIT 1`,
-    [opp.assetId],
-  );
-  if (existing.rows[0]) return false;
-  await client.query(
-    `INSERT INTO public.opportunities (
-       asset_id, pricing_version, priced_at, expected_profit_usdt,
-       expected_profit_krw_approx, fx_snapshot_id, estimated_duration_sec,
-       ai_confidence_score, difficulty, tags, required_capital_usdt,
-       execution_mode, execution_platforms, category, asset_label,
-       asset_image_url, asset_image_source, asset_image_alt_ko,
-       arbitrage_type, arbitrage_type_ko, pricing, stale_at, status,
-       sell_success_rate, sell_success_window_days, sell_success_as_of,
-       risk_score, grade_mismatch, image_missing, capital_band
-     ) VALUES (
-       $1,$2,$3::timestamptz,$4::numeric,$5::numeric,$6,$7,
-       $8::numeric,$9,$10::text[],$11::numeric,
-       $12,$13::text[],$14,$15,
-       $16,$17,$18,
-       $19,$20,$21::jsonb,$22::timestamptz,$23,
-       $24::numeric,$25,$26::timestamptz,
-       $27,$28,$29,$30
-     )`,
-    [
-      opp.assetId,
-      opp.pricingVersion,
-      opp.pricedAt,
-      opp.expectedProfitUsdt,
-      opp.expectedProfitKrwApprox,
-      opp.fxSnapshotId,
-      opp.estimatedDurationSec,
-      opp.aiConfidenceScore,
-      opp.difficulty,
-      opp.tags,
-      opp.requiredCapitalUsdt,
-      opp.executionMode,
-      opp.executionPlatforms,
-      opp.category,
-      opp.assetLabel,
-      opp.assetImageUrl,
-      opp.assetImageSource,
-      opp.assetImageAltKo,
-      opp.arbitrageType,
-      opp.arbitrageTypeKo,
-      JSON.stringify(opp.pricing),
-      opp.staleAt,
-      opp.status,
-      opp.sellSuccessRate,
-      opp.sellSuccessWindowDays,
-      opp.sellSuccessAsOf,
-      opp.riskScore,
-      opp.gradeMismatch,
-      opp.imageMissing,
-      opp.capitalBand,
-    ],
-  );
-  return true;
+  const result = await write.insertIfAbsentByAssetId(client, opp);
+  return result.inserted;
 }
 
 async function main() {
