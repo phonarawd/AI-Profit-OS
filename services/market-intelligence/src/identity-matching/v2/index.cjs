@@ -1,0 +1,14 @@
+const { matchSourceObservationsV2, MATCHER_VERSION, DECISIONS, EVIDENCE_OWNERS, EVIDENCE_STRENGTHS, PIPELINE_STATUS } = require("./matcher.cjs");
+const evidence = require("./evidence.cjs");
+
+module.exports = {
+  matchSourceObservationsV2,
+  MATCHER_VERSION,
+  DECISIONS,
+  EVIDENCE_OWNERS,
+  EVIDENCE_STRENGTHS,
+  PIPELINE_STATUS,
+  OWNER_BACKED_STRUCTURED: evidence.OWNER_BACKED_STRUCTURED,
+  DERIVED_STRUCTURED: evidence.DERIVED_STRUCTURED,
+  PRESENTATION_ONLY: evidence.PRESENTATION_ONLY,
+};

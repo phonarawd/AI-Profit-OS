@@ -1,0 +1,139 @@
+{
+  "$id": "https://ai-profit-os.local/governance/global-product/canonical-product.v2.json",
+  "schema": "governance.global-product.canonical-product.v2",
+  "version": "2.0.0",
+  "runtime": "DURABLE_DB_RUNTIME_VERIFIED",
+  "measuredAt": "2026-08-19",
+  "authority": {
+    "PUTDUK_CANONICAL_PRODUCT_ID": "YES",
+    "PUTDUK_PRODUCT_ID_EQUALS_MATCH_EVIDENCE": "NO",
+    "CREATE_ONLY_AFTER_MATCH": true,
+    "SOURCE_PROVENANCE_INTERNAL_RETENTION": "REQUIRED"
+  },
+  "boundaries": {
+    "CanonicalProduct": "internal same-product SSOT after MATCH",
+    "SourceListing": "one source offer / variant unit",
+    "Opportunity": "executable economics after price availability fees FX",
+    "AssetMaster": "Day-1 listing-leg SKU — not replaced by this contract",
+    "assetIdEqualsCanonicalProduct": false,
+    "assetIdEqualsPutdukProductCode": false
+  },
+  "vocabulary": {
+    "SAME_CANONICAL_PRODUCT": "same product model after MATCH",
+    "SAME_VARIANT": "same tradable variant (size / grade / finish as profile defines)",
+    "TRADABLE_EQUIVALENT": "listings compatible enough for Opportunity eligibility",
+    "SAME_PHYSICAL_ITEM": "never inferred — two Mini Kelly 20 Black are not one bag"
+  },
+  "pipelineAfterMatch": [
+    "MATCH",
+    "CanonicalProduct",
+    "PUTDUK product code",
+    "listing/variant compatibility",
+    "listing promotion",
+    "current executable price from SourceObservation/Reprice",
+    "availability",
+    "fees/FX",
+    "Opportunity eligibility",
+    "Opportunity"
+  ],
+  "canonicalProduct": {
+    "canonicalProductId": {
+      "role": "opaque DB primary key",
+      "proposedShape": "cp_<ulid>",
+      "productionLocked": false
+    },
+    "putdukProductCode": {
+      "role": "presentation identifier",
+      "proposedShape": "PD-0001842",
+      "productionLocked": false,
+      "principles": [
+        "INTERNAL_STABLE",
+        "NON_SEMANTIC_PREFERRED",
+        "SOURCE_INDEPENDENT",
+        "NO_EBAY_ID_EMBED",
+        "NO_STOCKX_ID_EMBED",
+        "NO_CATEGORY_MEANING_REQUIRED"
+      ],
+      "userDefaultOnOpportunityCard": "HIDDEN"
+    },
+    "fields": [
+      "canonicalProductId",
+      "putdukProductCode",
+      "categoryProfile",
+      "canonicalAttributes",
+      "variants",
+      "identityEvidenceSummary",
+      "createdAt",
+      "updatedAt"
+    ]
+  },
+  "canonicalProductSourceLink": {
+    "role": "identity relation only — this source item is linked to this CanonicalProduct",
+    "fields": [
+      "canonicalProductId",
+      "source",
+      "sourceItemId",
+      "sourceUrl",
+      "latestObservationRef",
+      "matchingDecision",
+      "matcherVersion",
+      "evidence"
+    ],
+    "forbiddenOnLink": [
+      "nativePrice",
+      "priceSemantics",
+      "observedAt",
+      "availability"
+    ],
+    "priceOwner": "SourceObservation / Reprice — second price truth forbidden"
+  },
+  "priceOwnership": {
+    "SOURCE_OBSERVATION": "observed native price at observedAt",
+    "REPRICE": "fresh executable price later",
+    "CANONICAL_PRODUCT_SOURCE_LINK": "no price fields",
+    "IDENTITY": "never uses price"
+  },
+  "provenance": {
+    "userVisibleSourceDetail": "HIDDEN_BY_DEFAULT",
+    "internalSourceProvenance": "REQUIRED",
+    "retain": [
+      "source",
+      "sourceUrl",
+      "sourceItemId",
+      "observation timestamp on SourceObservation",
+      "price provenance on SourceObservation",
+      "matching evidence on SourceLink"
+    ],
+    "deleteBecauseUserHidden": false
+  },
+  "persistence": {
+    "CANONICAL_PRODUCT_MEMORY_RUNTIME": "IN_PROCESS_MEMORY",
+    "CANONICAL_PRODUCT_DB_RUNTIME": "PASS",
+    "CANONICAL_PRODUCT_SOURCE_LINK_DB_RUNTIME": "PASS",
+    "CANONICAL_PRODUCT_DB_RUNTIME_VERIFIED_ENVIRONMENT": "CURSOR_CREATED_LOCAL_TEST_POSTGRES",
+    "PUTDUK_PRODUCT_ID_STABLE": "PASS_IN_PROCESS_ONLY",
+    "PUTDUK_PRODUCT_ID_STABLE_WITHIN_REPOSITORY_LIFETIME": "PASS",
+    "PUTDUK_PRODUCT_ID_DURABLE_STABILITY": "PASS",
+    "PRODUCTION_CANONICAL_PRODUCT_PERSISTENCE": "NOT_IMPLEMENTED",
+    "REMOTE_SUPABASE_CANONICAL_PRODUCT_RUNTIME_VERIFICATION": "NOT_VERIFIED",
+    "PRODUCTION_CANONICAL_PRODUCT_PG_CLIENT_WIRING": "NOT_IMPLEMENTED",
+    "MATCH_RESULT_DURABLE_PERSISTENCE": "PASS",
+    "MATCH_RESULT_DB_RUNTIME_VERIFIED_ENVIRONMENT": "CURSOR_CREATED_LOCAL_TEST_POSTGRES",
+    "PRODUCTION_MATCH_RESULT_PERSISTENCE": "NOT_IMPLEMENTED",
+    "REMOTE_SUPABASE_MATCH_RESULT_RUNTIME_VERIFICATION": "NOT_VERIFIED",
+    "PRODUCTION_MATCH_RESULT_PG_CLIENT_WIRING": "NOT_IMPLEMENTED",
+    "supabaseMigrationThisSlice": false,
+    "supabaseMigrationFileCreated": true,
+    "supabaseMigrationApplied": false
+  },
+  "genericProductProfile": {
+    "status": "PASS",
+    "architecture": "UNIVERSAL_FIELDS_PLUS_CATEGORY_PLUGINS",
+    "mvp": ["sneakers", "trading_card", "watch", "luxury_bag"],
+    "deferred": ["electronics", "general_goods"],
+    "founderCanChangeLater": true,
+    "identityKeyOwner": "services/market-intelligence/src/canonical-product/generic-profile.cjs"
+  },
+  "firstImplementationSlice": "MATCHING_V2_MINIMAL_PAIRWISE_RUNTIME",
+  "canonicalProductImplementationOrder": "after first REAL PAIR — not before"
+}

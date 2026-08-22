@@ -870,6 +870,82 @@ const RULES = [
     ],
   },
   {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/source-observation\//.test(f) ||
+      /^schemas\/source-observation\.v1\.json$/.test(f) ||
+      /^governance\/global-product\/source-observation-runtime\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/source-observation-runtime\.cjs$/.test(f) ||
+      /^tooling\/verify\/fashionphile-identity-forensic\.cjs$/.test(f),
+    scripts: [
+      "source-observation-runtime.cjs",
+      "listing-legs-day1.cjs",
+      "fashionphile-identity-forensic.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/identity-matching\//.test(f) ||
+      /^governance\/global-product\/identity-matching\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/identity-matching-v1\.cjs$/.test(f),
+    scripts: [
+      "identity-matching-v1.cjs",
+      "source-observation-runtime.cjs",
+      "listing-legs-day1.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/match-result\//.test(f) ||
+      /^governance\/global-product\/identity-matching\.v2\.json$/.test(f) ||
+      /^tooling\/verify\/identity-matching-v2\.cjs$/.test(f),
+    scripts: ["identity-matching-v1.cjs", "identity-matching-v2.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/canonical-product\//.test(f) ||
+      /^governance\/global-product\/canonical-product\.v2\.json$/.test(f) ||
+      /^tooling\/verify\/canonical-product\.cjs$/.test(f),
+    scripts: ["canonical-product.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/candidate-generation\//.test(f) ||
+      /^governance\/global-product\/candidate-generation\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/candidate-generation\.cjs$/.test(f),
+    scripts: ["candidate-generation.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/listing-variant-compatibility\//.test(f) ||
+      /^governance\/global-product\/listing-variant-compatibility\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/listing-variant-compatibility\.cjs$/.test(f),
+    scripts: ["listing-variant-compatibility.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/listing-promotion\//.test(f) ||
+      /^governance\/global-product\/listing-promotion\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/listing-promotion\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/listing-promotion\.contract\.ts$/.test(f),
+    scripts: ["listing-promotion.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/executable-economics\//.test(f) ||
+      /^governance\/global-product\/executable-economics\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/executable-economics\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/executable-economics\.contract\.ts$/.test(f),
+    scripts: ["executable-economics.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/market-intelligence\/src\/multi-source-opportunity\//.test(f) ||
+      /^governance\/global-product\/multi-source-opportunity\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/multi-source-opportunity\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/multi-source-opportunity\.contract\.ts$/.test(f),
+    scripts: ["multi-source-opportunity.cjs"],
+  },
+  {
     // PTF-00C — shared Engine §0.0 pure-logic package. No prior rule covered
     // this whole directory (only 3 narrow file-specific matches above),
     // which is exactly how the P0-A/P0-B fx-snapshot-formula.cjs/money.cjs

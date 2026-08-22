@@ -1,0 +1,80 @@
+{
+  "$id": "https://ai-profit-os.local/governance/global-product/multi-source-opportunity.v1.json",
+  "schema": "governance.global-product.multi-source-opportunity.v1",
+  "version": "1.0.0",
+  "evaluatorVersion": "multi-source-opportunity.v1",
+  "runtime": "IN_PROCESS_MEMORY",
+  "measuredAt": "2026-08-20",
+  "status": "PASS",
+  "authority": {
+    "MATCH_EQUALS_OPPORTUNITY": false,
+    "PROMOTABLE_EQUALS_OPPORTUNITY": false,
+    "EXECUTABLE_EQUALS_OPPORTUNITY": false,
+    "OBSERVED_PRICE_EQUALS_EXECUTABLE_PRICE": false,
+    "STALE_PRICE_EQUALS_CURRENT_PRICE": false,
+    "CANONICAL_PRODUCT_EQUALS_ASSET": false,
+    "NEW_PRICING_FORMULA": "FORBIDDEN",
+    "NEW_FX_FORMULA": "FORBIDDEN",
+    "NEW_MARKET_ID": "FORBIDDEN",
+    "NEW_FEE_TABLE": "FORBIDDEN",
+    "CHEAPEST_AS_BUY_LEG": "FORBIDDEN",
+    "SOURCE_EBAY_DEFAULTS_TO_EBAY_US": "FORBIDDEN",
+    "SAME_PHYSICAL_ITEM_NEVER_INFERRED": true,
+    "PRODUCTION_INSERT_THIS_SLICE": "FORBIDDEN"
+  },
+  "reusedOwners": {
+    "economics": "services/market-intelligence/src/executable-economics",
+    "pricing": "services/market-intelligence/src/pricing-formula.cjs",
+    "fx": "services/market-intelligence/src/fx-snapshot-formula.cjs",
+    "staleAsOf": "services/api-nest/src/opportunities/opportunity-reprice.service.ts"
+  },
+  "vocabularyOwner": "governance/global-product/canonical-product.v2.json",
+  "boundaries": {
+    "CanonicalProduct": "internal same-product SSOT after MATCH",
+    "SourceListing": "one source offer / variant unit",
+    "ListingPromotion": "Listing→Opportunity 승격 계약. Opportunity가 아니다",
+    "ExecutableEconomics": "current executable price + availability + fees/FX wiring. Opportunity가 아니다",
+    "Opportunity": "executable economics after price availability fees FX — issued only for multi-source EXECUTABLE pairs"
+  },
+  "firstSlice": {
+    "name": "multi_source_opportunity_creation",
+    "doesNotCallMatcher": true,
+    "doesNotCreateCanonicalProduct": true,
+    "doesNotGenerateCandidates": true,
+    "doesCallExecutableEconomics": true,
+    "doesReuseComputeOpportunityPricing": true,
+    "doesCreateOpportunity": true,
+    "doesInsertProductionOpportunity": false,
+    "doesNotInventFeeTable": true,
+    "doesNotAddMarketId": true,
+    "doesNotMapAssetIdToCanonicalProduct": true,
+    "durablePersistence": "NOT_IMPLEMENTED",
+    "production": "NOT_IMPLEMENTED"
+  },
+  "decisions": ["ISSUED", "NOT_ISSUED", "INSUFFICIENT", "CONFLICT", "BLOCKED"],
+  "preservedBoundaries": {
+    "IDENTITY_MATCHING_V2_MECHANISM": "UNCHANGED",
+    "EXECUTABLE_ECONOMICS_FIRST_SLICE": "UNCHANGED",
+    "PRICING_FORMULA": "UNCHANGED",
+    "FX_SNAPSHOT_FORMULA": "UNCHANGED",
+    "matcherPipelineMultiSourceOpportunity": "NOT_IMPLEMENTED",
+    "canonicalProductPipelineMultiSourceOpportunity": "NOT_IMPLEMENTED",
+    "executableEconomicsDoesNotCreateOpportunity": true
+  },
+  "persistence": {
+    "MULTI_SOURCE_OPPORTUNITY_MEMORY_RUNTIME": "IN_PROCESS_MEMORY",
+    "MULTI_SOURCE_OPPORTUNITY_DB_RUNTIME": "NOT_IMPLEMENTED",
+    "PRODUCTION_MULTI_SOURCE_OPPORTUNITY": "NOT_IMPLEMENTED"
+  },
+  "pipelineAfterMatchOwner": "governance/global-product/canonical-product.v2.json",
+  "owner": "services/market-intelligence/src/multi-source-opportunity",
+  "nestContract": "services/api-nest/src/opportunities/multi-source-opportunity.contract.ts",
+  "verifier": "tooling/verify/multi-source-opportunity.cjs",
+  "pinnedGeometry": {
+    "positive": "ebay_us × admin (EXECUTABLE + distinct sources → ISSUED in-process row)",
+    "executableNotOpportunity": "ebay_us × admin economics.opportunity=false · create()만 ISSUED row",
+    "sameSourceBlockedEarlier": "ebay_us × ebay_gb · listing-variant SAME_SOURCE → NOT_ISSUED",
+    "promotableNotExecutable": "TCG 113669-shaped × eBay 377416817781-shaped · PROMOTABLE · MARKET_ID_UNRESOLVED",
+    "note": "EXECUTABLE != Opportunity. observed native != FX-normalized USDT. CanonicalProduct != assetId. production INSERT = Track F"
+  }
+}

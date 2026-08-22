@@ -1,0 +1,244 @@
+{
+  "$id": "https://ai-profit-os.local/governance/global-product/identity-matching.v2.json",
+  "schema": "governance.global-product.identity-matching.v2",
+  "version": "2.0.0",
+  "matcherVersion": "identity-matching.v2",
+  "runtime": "IN_PROCESS_PAIRWISE",
+  "measuredAt": "2026-08-19",
+  "authority": {
+    "PUTDUK_EXTERNAL_PRODUCT_ID_USER_REQUIREMENT": "NO",
+    "PUTDUK_CANONICAL_PRODUCT_ID": "YES",
+    "GTIN_REQUIRED_FOR_MATCH": "NO",
+    "MPN_REQUIRED_FOR_MATCH": "NO",
+    "WATCH_REFERENCE_REQUIRED_FOR_MATCH": "NO",
+    "GTIN_MPN_REFERENCE_ROLE": "STRONG_EVIDENCE_WHEN_AVAILABLE",
+    "MULTI_SIGNAL_IDENTITY_MATCHING": "REQUIRED",
+    "CATEGORY_SPECIFIC_IDENTITY": "REQUIRED",
+    "TITLE_ONLY_MATCH": "FORBIDDEN",
+    "IMAGE_ONLY_MATCH": "FORBIDDEN",
+    "PRICE_AS_IDENTITY": "FORBIDDEN",
+    "SOURCE_PROVENANCE_INTERNAL_RETENTION": "REQUIRED",
+    "PUTDUK_PRODUCT_ID_EQUALS_MATCH_EVIDENCE": "NO"
+  },
+  "preservedV1": {
+    "matcherVersion": "identity-matching.v1",
+    "role": "strict_deterministic_evidence_primitive",
+    "delete": false,
+    "loosenSemantics": false,
+    "verifier": "tooling/verify/identity-matching-v1.cjs",
+    "V1_PASS_MUST_NOT_BECOME_FAIL": true,
+    "invariantsKept": [
+      "NO_RANDOM_MATCH",
+      "NO_FAKE_CONFIDENCE",
+      "NO_LLM_AS_FINAL_TRUTH_OWNER",
+      "NO_TITLE_ONLY_MATCH",
+      "NO_IMAGE_ONLY_MATCH",
+      "NO_PRICE_BASED_IDENTITY",
+      "NO_SOURCE_LOCAL_SKU_AS_MANUFACTURER_ID",
+      "NO_EXTERNAL_ITEM_ID_CROSS_SOURCE_EQUALITY_ASSUMPTION",
+      "CONFLICT_FAIL_CLOSED",
+      "INSUFFICIENT_EVIDENCE_FAIL_CLOSED",
+      "DETERMINISTIC_DECISION_WHERE_POSSIBLE",
+      "PROVENANCE_REQUIRED",
+      "SOURCE_ITEM != ASSET",
+      "SOURCE_OBSERVATION != LISTING_LEG",
+      "SOURCE_OBSERVATION != OPPORTUNITY_TRUTH",
+      "MATCH_RESULT != LISTING_PROMOTION",
+      "MATCH_RESULT != OPPORTUNITY_PUBLICATION",
+      "DISCOVERY_OBSERVATION != CONFIRMED_MARKET_TRUTH",
+      "raw meta.modelNumber equality alone != strong identity match"
+    ],
+    "typedIdentifiers": {
+      "GTIN": "typed exact",
+      "MPN": "brand + typed MPN exact",
+      "WATCH_REFERENCE": "brand + typed reference exact"
+    }
+  },
+  "layers": {
+    "v1": "typed identifier compare + evidence rows + fail-closed decide()",
+    "v2": "category profile + evidenceOwner + composite MATCH orchestration",
+    "canonicalProduct": "created only after MATCH — later slice",
+    "candidateGeneration": "IN_PROCESS_MEMORY — first-slice pair search. candidate != MATCH",
+    "listingVariantCompatibility": "IN_PROCESS_MEMORY — Opportunity gate. SAME_VARIANT != SAME_CANONICAL_PRODUCT",
+    "listingPromotion": "IN_PROCESS_MEMORY — Listing→Opportunity 승격 계약. PROMOTABLE != Opportunity. executable price 0",
+    "executablePriceAvailFeesFx": "IN_PROCESS_MEMORY — Money/Engine pricing·FX·LISTING_STALE_SEC 재사용 wiring. PROMOTABLE != EXECUTABLE != Opportunity",
+    "multiSourceOpportunityCreation": "IN_PROCESS_MEMORY — EXECUTABLE 교차 소스 Opportunity row. EXECUTABLE != Opportunity. production INSERT 0",
+    "llmVision": "assist only — never final MATCH owner"
+  },
+  "decisions": ["MATCH", "NO_MATCH", "INSUFFICIENT_EVIDENCE", "CONFLICT"],
+  "candidateIsNotMatchTruth": true,
+  "matchingDecisionEligible": "CONFIRMATION+SUCCESS pair only — not Opportunity truth",
+  "evidenceOwners": {
+    "OWNER_BACKED_STRUCTURED": "source-side structured field. never inferred from title",
+    "DERIVED_STRUCTURED": "deterministic category-native identifier extracted from title/caption. evidenceOwner stays DERIVED_FROM_TITLE. rewrite to OWNER_BACKED forbidden",
+    "PRESENTATION_ONLY": "free title / display name / non-deterministic token. MATCH owner forbidden"
+  },
+  "derivedStructured": {
+    "extractor": "deterministic only",
+    "llmExtractor": false,
+    "alone": "MATCH_FORBIDDEN",
+    "bothSidesDerivedOnly": "MATCH_FORBIDDEN",
+    "rewriteAsOwnerBacked": "FORBIDDEN",
+    "examples": ["manufacturerStyle DD1391-100", "cardNumber 11/83"],
+    "notDerivedStructured": [
+      "eBay localizedAspects.Style=Sneaker",
+      "Fashionphile sku",
+      "Fashionphile sku-derived barcode 0000+sku+0",
+      "luxury bag free-text title without deterministic identifier"
+    ]
+  },
+  "compositeMatch": {
+    "name": "COMPOSITE_STRONG",
+    "allRequired": [
+      "one_side_OWNER_BACKED_STRUCTURED_exact",
+      "other_side_same_value_DERIVED_STRUCTURED_exact",
+      "brand_or_character_and_category_agree",
+      "independent_corroboration_at_least_one",
+      "no_critical_conflict",
+      "matchingDecisionEligible"
+    ],
+    "independentCorroboration": [
+      "image_corroboration",
+      "other_owner_backed_attribute"
+    ],
+    "notTitleOnlyMatch": true
+  },
+  "evidenceTiers": {
+    "AUTHORITATIVE_STRONG": "GTIN exact, both OWNER_BACKED",
+    "STRONG": "brand+MPN / brand+WATCH_REFERENCE / category-native OWNER_BACKED identity",
+    "COMPOSITE_STRONG": "compositeMatch.allRequired",
+    "CORROBORATING": "brand, model, color, image similarity",
+    "PRESENTATION_ONLY": "free title — MATCH owner forbidden",
+    "CONFLICTING": "never averaged away",
+    "NOT_COMPARABLE": "missing one side or type mismatch — Fashionphile sku vs eBay MPN"
+  },
+  "conflictRules": {
+    "styleCodeMismatch": "CONFLICT_OR_NO_MATCH",
+    "cardNumberMismatch": "CONFLICT",
+    "gtinMatchAndMpnMismatch": "CONFLICT",
+    "imageDoesNotOverrideConflict": true,
+    "averageEvidenceForbidden": true
+  },
+  "imageRole": {
+    "FINAL_MATCH_OWNER": false,
+    "uses": [
+      "candidate_discovery",
+      "visual_corroboration",
+      "variant_checking",
+      "admin_review",
+      "composite_independent_corroboration"
+    ],
+    "OBSERVED_IMAGE_EQUALS_DISPLAY_AUTHORIZED": false,
+    "displayAuthorizationThisSlice": "NOT_IMPLEMENTED"
+  },
+  "confidence": {
+    "fakeScalarForbidden": true,
+    "userFacingAiPercentForbidden": true,
+    "opportunityCardAiConfidenceScoreIsNotMatchTruth": true,
+    "internal": "deterministic evidence vector / profile rule / owner + corroboration count"
+  },
+  "categoryProfiles": {
+    "closedInThisContract": true,
+    "nextSliceMustNotRedesignProfiles": true,
+    "genericProductProfile": "PASS",
+    "genericArchitecture": "UNIVERSAL_FIELDS_PLUS_CATEGORY_PLUGINS",
+    "founderCanChangeLater": true,
+    "assetMasterEnumUnchanged": ["watch", "trading_card", "luxury_bag"],
+    "mvp": ["sneakers", "trading_card", "watch", "luxury_bag"],
+    "deferred": ["electronics", "general_goods"],
+    "sneakers": {
+      "canonicalProduct": ["brand", "model", "colorway", "manufacturerStyleWhenPresent"],
+      "size": "VARIANT_NOT_SEPARATE_CANONICAL_PRODUCT",
+      "gender": "style_code_split_is_CONFLICT — same style label-only is variant",
+      "strong": "OWNER_BACKED manufacturer style exact + brand",
+      "composite": "OWNER_BACKED style + DERIVED_STRUCTURED exact + brand/model/category + independent corroboration + no conflict"
+    },
+    "trading_card": {
+      "canonicalProduct": ["game", "set", "cardNumber", "characterOrName", "language", "finishOrEdition"],
+      "grade": "TRADABLE_VARIANT_NOT_SAME_VARIANT",
+      "mvpOpportunityRequiresGradeEquivalent": true,
+      "strong": "both OWNER_BACKED structured set + cardNumber",
+      "composite": "OWNER_BACKED set+number + DERIVED_STRUCTURED exact + game/character/category + image corroboration + no conflict"
+    },
+    "watch": {
+      "canonicalProduct": ["brand", "manufacturerReference"],
+      "corroboratingOrCriticalWhenBothPresent": ["model", "caseSize", "dial", "material"],
+      "condition": "listing_not_identity",
+      "strong": "brand + manufacturer reference exact — not the only path",
+      "chrono24WatchReferenceEqualsEbayMpn": false,
+      "rawModelNumberCrossTypeEquality": "FORBIDDEN",
+      "acquisitionVsIdentity": "SEPARATE"
+    },
+    "luxury_bag": {
+      "canonicalProduct": ["brand", "model", "size", "color", "materialWhenPresent"],
+      "reuseV1FashionCorroborating": true,
+      "freeTextTitle": "PRESENTATION_ONLY",
+      "fashionphileSku": "SOURCE_LOCAL_ONLY",
+      "samePhysicalItem": "NEVER_INFERRED"
+    }
+  },
+  "sourceLocalNeverManufacturerId": [
+    "externalItemId",
+    "fashionphile.sku",
+    "fashionphile.skuDerivedBarcode",
+    "ebay.epid",
+    "ebay.inferredEpid",
+    "chrono24.productID"
+  ],
+  "userOpportunityUi": {
+    "PUTDUK_OPPORTUNITY_UI_COMPLEXITY": "MINIMAL",
+    "DEFAULT_PRODUCT_MATCH_EXPLANATION": "HIDDEN",
+    "DEFAULT_SOURCE_PROVENANCE": "HIDDEN",
+    "DEFAULT_IDENTITY_EVIDENCE": "HIDDEN",
+    "DEFAULT_MATCH_TECHNICAL_DETAIL": "HIDDEN",
+    "DEFAULT_PUTDUK_PRODUCT_CODE_ON_CARD": "HIDDEN",
+    "defaultVisible": [
+      "productImage",
+      "productName",
+      "buyBasisPrice",
+      "sellBasisPrice",
+      "requiredPrincipal",
+      "expectedProfit",
+      "expectedReturn",
+      "expectedDuration",
+      "participate"
+    ],
+    "explanationSurface": ["퍼뜩 알아보기", "FAQ", "이용 안내"],
+    "profitsAndHomeThisSlice": "DO_NOT_MODIFY"
+  },
+  "firstRealPairGeometry": {
+    "category": "trading_card",
+    "path": "composite",
+    "left": "TCG OWNER_BACKED set+number",
+    "right": "eBay DERIVED_STRUCTURED",
+    "alsoRequired": ["game/character/category", "image corroboration", "no conflict"],
+    "selectFullTcgplayerSourceNow": false,
+    "implementTcgplayerParserNow": false
+  },
+  "skippedThisSlice": {
+    "PUTDUK_EBAY_TYPED_IDENTITY_COVERAGE_FORENSIC": "NOT_EXECUTED",
+    "productionMatcher": false,
+    "sourceAdapterChange": false,
+    "dbMigration": false,
+    "opportunityCreation": false
+  },
+  "persistence": {
+    "IDENTITY_MATCHING_V2_MEMORY_RUNTIME": "IN_PROCESS_PAIRWISE",
+    "IDENTITY_MATCHING_V2_DB_RUNTIME": "NOT_IMPLEMENTED",
+    "MATCH_RESULT_DURABLE_PERSISTENCE": "PASS",
+    "MATCH_RESULT_DB_RUNTIME_VERIFIED_ENVIRONMENT": "CURSOR_CREATED_LOCAL_TEST_POSTGRES",
+    "PRODUCTION_MATCH_RESULT_PERSISTENCE": "NOT_IMPLEMENTED",
+    "REMOTE_SUPABASE_MATCH_RESULT_RUNTIME_VERIFICATION": "NOT_VERIFIED",
+    "PRODUCTION_MATCH_RESULT_PG_CLIENT_WIRING": "NOT_IMPLEMENTED"
+  },
+  "listingPromotion": "NOT_IMPLEMENTED",
+  "executablePriceAvailFeesFx": "NOT_IMPLEMENTED",
+  "multiSourceOpportunityCreation": "NOT_IMPLEMENTED",
+  "realPairNaming": {
+    "V2_REAL_PAIR_IDENTITY_MATCH": "NEXT_SLICE",
+    "TCGPLAYER_AUTOMATED_SOURCE_OBSERVATION": "NOT_IMPLEMENTED",
+    "REAL_AUTOMATED_CROSS_SOURCE_MATCH": "BLOCKED_UNTIL_SOURCE_RUNTIME"
+  },
+  "firstImplementationSlice": "MATCHING_V2_MINIMAL_PAIRWISE_RUNTIME",
+  "nextCursorTask": "Track A first-slice complete — production Opportunity persist = Track F (F-REL-001)"
+}

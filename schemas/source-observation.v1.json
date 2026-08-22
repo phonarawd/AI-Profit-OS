@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/source-observation.v1.json",
+  "title": "SourceObservationV1",
+  "description": "Global source observation · SOURCE_OBSERVATION != LISTING_LEG · SOURCE_ITEM != ASSET · DISCOVERY_OBSERVATION != CONFIRMED_MARKET_TRUTH · DISCOVERY_PRICE != OPPORTUNITY_PRICE · OBSERVED_IMAGE != DISPLAY_AUTHORIZED. Day-1 listing/price-observation enums are not extended.",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "isoCurrency": {
+      "type": "string",
+      "enum": ["USD", "GBP", "EUR", "AUD", "USDT", "JPY", "KRW", "SGD"]
+    },
+    "extractionMethod": {
+      "type": "string",
+      "enum": [
+        "PUBLIC_JSON",
+        "STRUCTURED_DATA",
+        "EMBEDDED_STATE",
+        "DOM",
+        "URL_PATTERN",
+        "BROWSER_RENDERED",
+        "EXISTING_API"
+      ]
+    },
+    "sourceStatus": {
+      "type": "string",
+      "enum": [
+        "SUCCESS",
+        "NOT_FOUND",
+        "UNAVAILABLE",
+        "OUT_OF_STOCK",
+        "PARSE_FAILED",
+        "AMBIGUOUS",
+        "ACCESS_BLOCKED",
+        "TEMPORARY_ERROR"
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "source",
+    "externalItemId",
+    "url",
+    "title",
+    "imageUrl",
+    "observedAt",
+    "fetchedAt",
+    "observationPurpose",
+    "sourceStatus",
+    "parserVersion",
+    "displayAuthorized"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "source": {
+      "type": "string",
+      "enum": [
+        "ebay",
+        "fashionphile",
+        "chrono24",
+        "tcgplayer",
+        "mercari_jp",
+        "kream",
+        "stockx",
+        "goat",
+        "bunjang",
+        "vestiaire"
+      ],
+      "description": "yahoo_jp FORBIDDEN · listing-leg enum과 분리"
+    },
+    "externalItemId": { "type": "string", "minLength": 1 },
+    "url": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "imageUrl": { "type": "string", "minLength": 1 },
+    "imageAlt": { "type": ["string", "null"] },
+    "nativeAmount": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$",
+      "description": "Optional on DISCOVERY · required on CONFIRMATION SUCCESS · decimal string · never invented"
+    },
+    "nativeCurrency": {
+      "$ref": "#/$defs/isoCurrency",
+      "description": "Optional on DISCOVERY when source evidence missing · never guessed from locale/tag/domain"
+    },
+    "observedAt": { "type": "string", "format": "date-time" },
+    "fetchedAt": { "type": "string", "format": "date-time" },
+    "observationPurpose": {
+      "type": "string",
+      "enum": ["DISCOVERY", "CONFIRMATION"]
+    },
+    "sourceStatus": { "$ref": "#/$defs/sourceStatus" },
+    "parserVersion": { "type": "string", "minLength": 1 },
+    "availability": {
+      "type": "string",
+      "enum": ["available", "unavailable", "out_of_stock", "unknown"]
+    },
+    "displayAuthorized": {
+      "const": false,
+      "description": "OBSERVED_IMAGE != DISPLAY_AUTHORIZED · this runtime never authorizes consumer display"
+    },
+    "lastSuccessAt": { "type": "string", "format": "date-time" },
+    "lastFailureAt": { "type": "string", "format": "date-time" },
+    "failureReason": { "type": "string" },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "priceKind": {
+          "type": "string",
+          "enum": ["listing_sale", "buy_now", "lowest_ask"]
+        },
+        "brand": { "type": "string" },
+        "model": { "type": "string" },
+        "modelNumber": { "type": "string" },
+        "sku": { "type": "string" },
+        "variant": { "type": "string" },
+        "condition": { "type": "string" },
+        "size": { "type": "string" },
+        "grade": { "type": "string" },
+        "categoryHint": { "type": "string" },
+        "variantResolution": { "type": "string" },
+        "localizedAmount": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Viewer/localized offer · SOURCE_NATIVE_LISTING_PRICE != LOCALIZED_VIEWER_DISPLAY_PRICE · never auto-promoted to nativeAmount"
+        },
+        "localizedCurrency": {
+          "$ref": "#/$defs/isoCurrency"
+        },
+        "priceSemantics": {
+          "type": "string",
+          "enum": ["native_unresolved", "native_proven", "localized_only"]
+        },
+        "observationMode": {
+          "type": "string",
+          "enum": ["AUTOMATED_LIVE", "MANUAL_LIVE_VALIDATION"]
+        },
+        "identityHints": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "extractionEvidence": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/extractionMethod" }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "observationPurpose": { "const": "CONFIRMATION" },
+          "sourceStatus": { "const": "SUCCESS" }
+        },
+        "required": ["observationPurpose", "sourceStatus"]
+      },
+      "then": {
+        "required": ["nativeAmount", "nativeCurrency", "meta"],
+        "properties": {
+          "meta": {
+            "type": "object",
+            "required": ["priceKind"]
+          }
+        }
+      }
+    }
+  ]
+}

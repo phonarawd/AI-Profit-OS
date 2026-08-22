@@ -85,6 +85,15 @@
 | `apps/admin/**` | no-admin-in-web · admin-routes · rel-201-admin-dashboard · rel-202-admin-users · rel-203-admin-user-detail · rel-204-admin-user-finance · rel-205-admin-ledger · rel-206-admin-wallet |
 | `tooling/verify/rel-20[1-6]-admin-*` · `admin-entry-e2e` · `tooling/e2e/specs/admin-entry-closure.spec.cjs` | same REL-201~206 verifiers · admin-entry-e2e |
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |
+| `schemas/source-observation.v1.json` · `governance/global-product/source-observation-runtime.v1.json` · `services/market-intelligence/src/source-observation/**` · `tooling/verify/source-observation-runtime.cjs` · `tooling/verify/fashionphile-identity-forensic.cjs` | source-observation-runtime · listing-legs-day1 · fashionphile-identity-forensic |
+| `services/market-intelligence/src/identity-matching/**` · `tooling/verify/identity-matching-v1.cjs` · `governance/global-product/identity-matching.v1.json` | identity-matching-v1 · source-observation-runtime · listing-legs-day1 |
+| `services/market-intelligence/src/match-result/**` · `governance/global-product/identity-matching.v2.json` | identity-matching-v1 · identity-matching-v2 (T0 memory · isolated PG durable verifier 미이식) |
+| `services/market-intelligence/src/canonical-product/**` · `governance/global-product/canonical-product.v2.json` · `tooling/verify/canonical-product.cjs` | canonical-product (T0 in-process · Generic Product Profile + MATCH-after create) |
+| `services/market-intelligence/src/candidate-generation/**` · `governance/global-product/candidate-generation.v1.json` · `tooling/verify/candidate-generation.cjs` | candidate-generation (T0 in-process · candidate≠MATCH · durable/production 0) |
+| `services/market-intelligence/src/listing-variant-compatibility/**` · `governance/global-product/listing-variant-compatibility.v1.json` · `tooling/verify/listing-variant-compatibility.cjs` | listing-variant-compatibility (T0 in-process · SAME_VARIANT 게이트 · durable/production 0) |
+| `services/market-intelligence/src/listing-promotion/**` · `governance/global-product/listing-promotion.v1.json` · `tooling/verify/listing-promotion.cjs` · `services/api-nest/src/opportunities/listing-promotion.contract.ts` | listing-promotion (T0 in-process · COMPATIBLE≠PROMOTABLE · Opportunity 0) |
+| `services/market-intelligence/src/executable-economics/**` · `governance/global-product/executable-economics.v1.json` · `tooling/verify/executable-economics.cjs` · `services/api-nest/src/opportunities/executable-economics.contract.ts` | executable-economics (T0 in-process · Money/Engine owner 재사용 · Opportunity 0) |
+| `services/market-intelligence/src/multi-source-opportunity/**` · `governance/global-product/multi-source-opportunity.v1.json` · `tooling/verify/multi-source-opportunity.cjs` · `services/api-nest/src/opportunities/multi-source-opportunity.contract.ts` | multi-source-opportunity (T0 in-process · production INSERT 0) |
 | `supabase/migrations/**` · migrations-applied fixture | migrations-applied-parity |
 | `apps/web/app/page.tsx` · `HomePageClient` · `HomeDesktopClient` · `packages/sdk/src/user-feed/**` · `HomePrincipalRail` · `home-principal-slots` · sdk/api growth | home-live-wire · sdk-user-feed · home-principal-slots · growth-public-surface · ticker-pii-0 · home-closure |
 | `apps/web/app/profits/**` · `ProfitsDesktopClient` · `spark-dash-profits` | profits-live-wire · sdk-user-feed |
@@ -227,6 +236,16 @@
 | soft-hard-requeue-sla | Index §20.2 · Engine §48.13 · UI §48 — Soft60/Hard90 · `MATCH_TIMEOUT` · 카피3줄(보통1분/다시맞추는중/시간지나안전정지) · presentation≠SLA (v7.22.29) · Audit A4 · **copy/Canon live** |
 | match-tension-surface | Index §20.2 · UI §48.3b — Soft/Hard전등급동일 · 긴장감=과정Fact · 등급≠대기특권 · slaAlmost/priceNearMiss · 난수틱·가짜대기·당첨게이지0 (v7.22.30) · Audit A6 · **copy/Canon live** |
 | listing-legs-day1 | Engine §0.0.1a/§0.0.2 — ebay 멀티marketplace\|admin only · yahoo_jp Day-1 auto-publish FORBIDDEN · §38.10 partner 표기 OK(카피금지 supersede) · KR/Chrono24대체0 — **live** — **live** |
+| source-observation-runtime | Global Observation · purpose-split DISCOVERY/CONFIRMATION · fail-closed · listing-leg 0 · Yahoo 0 — **live** |
+| identity-matching-v1 | pairwise `matchSourceObservations` · typed identifier fail-closed · title/image MATCH 금지 · Opportunity 0 — **live** |
+| identity-matching-v2 | category profile · COMPOSITE_STRONG · matcher DB runtime 0 — **live** |
+| canonical-product | MATCH 이후 in-process CanonicalProduct + PD + Generic Product Profile(universal + mvp 4종) — **live** |
+| candidate-generation | 교차 소스 후보 쌍 탐색 · candidate≠MATCH · durable 0 — **live** |
+| listing-variant-compatibility | SAME_VARIANT/TRADABLE_EQUIVALENT 게이트 · samePhysicalItem 0 · durable 0 — **live** |
+| listing-promotion | Listing→Opportunity 승격 계약 · COMPATIBLE≠PROMOTABLE · Opportunity 0 — **live** |
+| executable-economics | pricing-formula/fx-snapshot-formula/LISTING_STALE_SEC 재사용 · PROMOTABLE≠EXECUTABLE · Opportunity 0 — **live** |
+| multi-source-opportunity | EXECUTABLE 교차 소스 in-process Opportunity row · production INSERT 0 — **live** |
+| fashionphile-identity-forensic | Fashionphile PUBLIC_JSON identity owner forensic · parser enrichment 0 unless V1-usable — **live** |
 | signup-ready-adapters | Engine §0.0 — ebay 멀티marketplaceId · pokemontcg+ygoprodeck · coingecko+frankfurter · yahoo-jp경로0 · Phase1 deploy (phase0 0) · Admin `/admin/adapters` health — **live** |
 | adapter-matching-kpi | Engine §51.12+§51.15 — 등급매칭·SKU실패율 KPI(>15%/24h 알림·자동공개축소) · compareReady false>40% 시드점검 · stale>TTL 적색 · Admin `/admin/adapters` KPI·알림 · yahoo0 · Simulation S4 `adapterMatchFailureRate` 선행 — **live** |
 | kyc-withdraw-only · kyc-redirect · kyc-r2-only | Money §42 — **live** (출금1회게이트 · toast→/me/kyc@800ms · R2 kyc-docs private) |

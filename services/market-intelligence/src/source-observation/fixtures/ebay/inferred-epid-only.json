@@ -1,0 +1,12 @@
+{
+  "itemId": "v1|110000000012|0",
+  "legacyItemId": "110000000012",
+  "title": "Inferred epid only",
+  "itemWebUrl": "https://www.ebay.com/itm/110000000012",
+  "listingMarketplaceId": "EBAY_US",
+  "buyingOptions": ["FIXED_PRICE"],
+  "price": { "value": "9.50", "currency": "USD" },
+  "image": { "imageUrl": "https://i.ebayimg.com/images/g/abc/s-l1600.jpg" },
+  "inferredEpid": "inferred-only",
+  "estimatedAvailabilities": [{ "estimatedAvailabilityStatus": "IN_STOCK" }]
+}

@@ -1,0 +1,30 @@
+{
+  "$id": "https://ai-profit-os.local/governance/global-product/identity-matching.v1.json",
+  "schema": "governance.global-product.identity-matching.v1",
+  "version": "1.0.0",
+  "matcherVersion": "identity-matching.v1",
+  "invariants": [
+    "SOURCE_ITEM != ASSET",
+    "SOURCE_OBSERVATION != LISTING_LEG",
+    "SOURCE_OBSERVATION != OPPORTUNITY_TRUTH",
+    "MATCH_RESULT != LISTING_PROMOTION",
+    "MATCH_RESULT != OPPORTUNITY_PUBLICATION",
+    "DISCOVERY_OBSERVATION != CONFIRMED_MARKET_TRUTH",
+    "raw meta.modelNumber equality alone != strong identity match"
+  ],
+  "decisions": ["MATCH", "NO_MATCH", "INSUFFICIENT_EVIDENCE", "CONFLICT"],
+  "matchingDecisionEligible": "CONFIRMATION+SUCCESS pair only — not Opportunity truth",
+  "strongIdentifiers": {
+    "GTIN": "typed exact",
+    "MPN": "brand + typed MPN exact",
+    "WATCH_REFERENCE": "brand + typed reference exact"
+  },
+  "profileResolution": "owner-backed category or proven typed evidence only — never source name or title",
+  "persistence": {
+    "IDENTITY_MATCHING_MEMORY_RUNTIME": "IN_PROCESS_PAIRWISE",
+    "IDENTITY_MATCHING_DB_RUNTIME": "NOT_IMPLEMENTED"
+  },
+  "listingPromotion": "NOT_IMPLEMENTED",
+  "multiSourceOpportunityCreation": "NOT_IMPLEMENTED",
+  "PUTDUK_REAL_AUTOMATED_SOURCE_COUNT": 2
+}

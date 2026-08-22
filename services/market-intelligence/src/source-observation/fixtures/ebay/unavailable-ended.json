@@ -1,0 +1,12 @@
+{
+  "itemId": "v1|110000000006|0",
+  "legacyItemId": "110000000006",
+  "title": "Ended listing",
+  "itemWebUrl": "https://www.ebay.com/itm/110000000006",
+  "listingMarketplaceId": "EBAY_US",
+  "buyingOptions": ["FIXED_PRICE"],
+  "price": { "value": "20.00", "currency": "USD" },
+  "image": { "imageUrl": "https://i.ebayimg.com/images/g/abc/s-l1600.jpg" },
+  "itemEndDate": "2020-01-01T00:00:00.000Z",
+  "estimatedAvailabilities": [{ "estimatedAvailabilityStatus": "IN_STOCK" }]
+}

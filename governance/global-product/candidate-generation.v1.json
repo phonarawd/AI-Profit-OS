@@ -1,0 +1,68 @@
+{
+  "$id": "https://ai-profit-os.local/governance/global-product/candidate-generation.v1.json",
+  "schema": "governance.global-product.candidate-generation.v1",
+  "version": "1.0.0",
+  "generatorVersion": "candidate-generation.v1",
+  "runtime": "IN_PROCESS_MEMORY",
+  "measuredAt": "2026-08-20",
+  "status": "PASS",
+  "authority": {
+    "CANDIDATE_IS_NOT_MATCH_TRUTH": true,
+    "CANDIDATE_IS_NOT_LISTING": true,
+    "CANDIDATE_IS_NOT_OPPORTUNITY": true,
+    "CROSS_SOURCE_ONLY": true,
+    "TITLE_ONLY_CANDIDATE": "FORBIDDEN",
+    "IMAGE_ONLY_CANDIDATE": "FORBIDDEN",
+    "PRICE_AS_CANDIDATE": "FORBIDDEN",
+    "SOURCE_LOCAL_ID_AS_CANDIDATE": "FORBIDDEN",
+    "WATCH_REFERENCE_EQUALS_EBAY_MPN": false,
+    "LLM_AS_CANDIDATE_OWNER": false
+  },
+  "firstSlice": {
+    "name": "pair_search_from_observation_pool",
+    "doesNotCallMatcher": true,
+    "doesNotCreateCanonicalProduct": true,
+    "doesNotPromoteListing": true,
+    "doesNotCreateOpportunity": true,
+    "imageCandidateDiscovery": "NOT_IMPLEMENTED",
+    "durablePersistence": "NOT_IMPLEMENTED",
+    "production": "NOT_IMPLEMENTED"
+  },
+  "blocking": {
+    "typed": ["GTIN", "brand+MPN", "brand+WATCH_REFERENCE"],
+    "categoryNative": {
+      "trading_card": ["set", "cardNumber"],
+      "sneakers": ["brand", "manufacturerStyleCode"],
+      "watch": ["brand", "manufacturerReference"],
+      "luxury_bag": ["brand", "model", "size", "color"]
+    },
+    "ownerAnchoredTitle": true,
+    "bothDerivedTitleOnly": "FORBIDDEN"
+  },
+  "eligibility": "CONFIRMATION+SUCCESS only",
+  "genericProductProfile": {
+    "architecture": "UNIVERSAL_FIELDS_PLUS_CATEGORY_PLUGINS",
+    "mvp": ["sneakers", "trading_card", "watch", "luxury_bag"],
+    "deferred": ["electronics", "general_goods"],
+    "deferredNativePlugin": "FORBIDDEN"
+  },
+  "preservedBoundaries": {
+    "matcherPipelineCandidateGeneration": "NOT_IMPLEMENTED",
+    "sourceObservationDiscoverCandidates": "NOT_IMPLEMENTED",
+    "canonicalProductPipelineCandidateGeneration": "NOT_IMPLEMENTED",
+    "IDENTITY_MATCHING_V2_MECHANISM": "UNCHANGED"
+  },
+  "persistence": {
+    "CANDIDATE_GENERATION_MEMORY_RUNTIME": "IN_PROCESS_MEMORY",
+    "CANDIDATE_GENERATION_DB_RUNTIME": "NOT_IMPLEMENTED",
+    "PRODUCTION_CANDIDATE_GENERATION": "NOT_IMPLEMENTED"
+  },
+  "owner": "services/market-intelligence/src/candidate-generation",
+  "verifier": "tooling/verify/candidate-generation.cjs",
+  "pinnedGeometry": {
+    "category": "trading_card",
+    "left": "TCG 113669",
+    "right": "eBay 377416817781",
+    "note": "in-process pinned geometry — not live HTTP this slice"
+  }
+}

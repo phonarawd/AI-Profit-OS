@@ -1,0 +1,22 @@
+{
+  "itemId": "v1|110000000011|0",
+  "legacyItemId": "110000000011",
+  "title": "Direct identity fields",
+  "itemWebUrl": "https://www.ebay.com/itm/110000000011",
+  "listingMarketplaceId": "EBAY_US",
+  "buyingOptions": ["FIXED_PRICE"],
+  "price": { "value": "88.00", "currency": "USD" },
+  "image": { "imageUrl": "https://i.ebayimg.com/images/g/abc/s-l1600.jpg" },
+  "brand": "DirectBrand",
+  "mpn": "MPN-9",
+  "gtin": "1234567890123",
+  "epid": "998877",
+  "inferredEpid": "should-not-win",
+  "condition": "Used",
+  "estimatedAvailabilities": [{ "estimatedAvailabilityStatus": "LIMITED_STOCK" }],
+  "localizedAspects": [
+    { "name": "Brand", "value": "AspectBrand" },
+    { "name": "Model", "value": "AspectModel" },
+    { "name": "Size", "value": "L" }
+  ]
+}
