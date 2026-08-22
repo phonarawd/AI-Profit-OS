@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-305 COMPLETED. FIRST_EXECUTION_TODO=REL-215. BATCH_REL_200_206=CLOSED. BATCH_REL_207_209=CLOSED. BATCH_REL_210_212=CLOSED. BATCH_REL_216_221=CLOSED. BATCH_REL_300_305=CLOSED. BATCH_A_RUNTIME_ACCEPTANCE=CLOSED.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-215 COMPLETED. FIRST_EXECUTION_TODO=REL-400. BATCH_REL_200_206=CLOSED. BATCH_REL_207_209=CLOSED. BATCH_REL_210_212=CLOSED. BATCH_REL_216_221=CLOSED. BATCH_REL_300_305=CLOSED. BATCH_A_RUNTIME_ACCEPTANCE=CLOSED.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -250,7 +250,7 @@ todos:
     status: completed
   - id: rel-215
     content: "[Admin] /admin/ai-logs 실사+구현(deps REL-300~305 완료 후, TOP→BOTTOM에서 본 위치)"
-    status: pending
+    status: completed
   - id: rel-400
     content: "[Hardening] Admin Control Plane superset 클로저 스펙(kill-switch UI/audit UI/RBAC 관리 UI)"
     status: pending
@@ -420,8 +420,8 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-215
-LAST_COMPLETED_TODO = REL-305
+FIRST_EXECUTION_TODO = REL-400
+LAST_COMPLETED_TODO = REL-215
 BATCH_REL_200_206 = CLOSED
 BATCH_REL_207_209 = CLOSED
 BATCH_REL_210_212 = CLOSED
@@ -2881,7 +2881,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-215
 TITLE: /admin/ai-logs 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-215
@@ -2899,7 +2899,7 @@ IMPLEMENTATION_STEPS:
   - PR → CI → merge (main 직접 커밋 금지)
 VERIFY: /admin/ai-logs 실데이터 또는 정직한 empty. stub-only 0.
 ACCEPTANCE: /admin/ai-logs가 운영 가능. 가짜 ledger 0.
-EVIDENCE: apps/admin/app/admin/ai-logs
+EVIDENCE: "apps/admin/app/admin/ai-logs + governance/release-master/REL-215-AI-LOGS.md + verify:rel-215-admin-ai-logs"
 EXIT_GATE: 유저 JWT로 200이면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -4577,8 +4577,9 @@ REL-000은 2026-08-20에 PASS/COMPLETED.
 REL-001은 2026-08-20에 PASS/COMPLETED (`preserve/2026-08-20-worktree-rescue` · `ae8d1e6` · merge 금지).
 REL-002~REL-206은 통합선 `rel/auth-track-a-integration` @ `42a70973` 기준으로 COMPLETED.
 Batch A Runtime Acceptance는 2026-08-22에 PASS/CLOSED (`42a70973`) — 신규 TODO 없음. 기존 REL-106~110 증거 강화.
-현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-215`. HARD_STOP_AFTER 는 소비됨(`[]`).
-REL-300~REL-305는 2026-08-22 AI Coach Quality/Safety Batch에서 기존 P/G/S 오너+committed fixture 실행 후 COMPLETED. REL-215는 착수하지 않음.
+현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-400`. HARD_STOP_AFTER 는 소비됨(`[]`).
+REL-300~REL-305는 2026-08-22 AI Coach Quality/Safety Batch에서 기존 P/G/S 오너+committed fixture 실행 후 COMPLETED.
+REL-215는 2026-08-22에 기존 `ai_logs` 오너+AdminGuard를 `/admin/ai-logs`에 실배선 후 COMPLETED. Runtime/browser QA는 이 슬라이스에서 강제하지 않음(BLOCKED_LOCAL_RAM). REL-400은 착수하지 않음.
 REL-207~REL-209는 2026-08-22 Batch B에서 기존 Admin JWT+오너 API에 실배선 후 COMPLETED.
 REL-210~REL-212는 2026-08-22 Batch C에서 기존 Opportunity/Adapter/Support 오너에 실배선 후 COMPLETED. Runtime/browser QA는 이 배치에서 강제하지 않음(BLOCKED_LOCAL_RAM).
 REL-216~REL-221는 2026-08-22 Admin Report/Growth Batch에서 기존 ledger/wallet/growth/opportunity 오너에 실배선 후 COMPLETED. ROAS/CAPI/POST는 당기지 않음. Runtime/browser QA는 이 배치에서 강제하지 않음(BLOCKED_LOCAL_RAM).

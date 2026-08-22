@@ -7,6 +7,7 @@
 "use strict";
 
 const { assertNoL3Money, isForbiddenMoneyAction } = require("./levels.cjs");
+const { sanitizeTurnText } = require("./conversation-state.cjs");
 
 const LANES = Object.freeze(["P", "G", "S"]);
 const PROVIDER_IDS = Object.freeze([
@@ -67,6 +68,12 @@ function buildAiLogRecord(input = {}) {
   }
 
   const guard = normalizeGuard(input.guard_result || input.guardResult);
+  const rawPreview =
+    input.answer_preview != null
+      ? input.answer_preview
+      : input.answerPreview != null
+        ? input.answerPreview
+        : null;
 
   return Object.freeze({
     schema: "ai-answer-trace.v1",
@@ -89,11 +96,9 @@ function buildAiLogRecord(input = {}) {
     answer_path: answerPath,
     guard_result: guard,
     answer_preview:
-      input.answer_preview != null
-        ? String(input.answer_preview).slice(0, 280)
-        : input.answerPreview != null
-          ? String(input.answerPreview).slice(0, 280)
-          : null,
+      rawPreview != null
+        ? sanitizeTurnText(String(rawPreview)).slice(0, 280)
+        : null,
     createdAt: input.createdAt || new Date().toISOString(),
   });
 }
@@ -129,6 +134,91 @@ function toAiLogsRow(rec, userId = null) {
   });
 }
 
+function pickField(row, snake, camel) {
+  if (!row || typeof row !== "object") return undefined;
+  if (Object.prototype.hasOwnProperty.call(row, snake) && row[snake] != null) {
+    return row[snake];
+  }
+  if (Object.prototype.hasOwnProperty.call(row, camel) && row[camel] != null) {
+    return row[camel];
+  }
+  return row[snake] ?? row[camel];
+}
+
+function projectFactTrace(fact) {
+  if (!fact || typeof fact !== "object" || Array.isArray(fact)) return null;
+  const source = fact.source != null ? sanitizeTurnText(String(fact.source)) : null;
+  const capturedAt = fact.captured_at || fact.capturedAt || null;
+  const expiresAt = fact.expires_at || fact.expiresAt || null;
+  const confidence =
+    typeof fact.confidence === "number" && Number.isFinite(fact.confidence)
+      ? fact.confidence
+      : null;
+  return Object.freeze({
+    source,
+    capturedAt: capturedAt != null ? String(capturedAt) : null,
+    expiresAt: expiresAt != null ? String(expiresAt) : null,
+    confidence,
+  });
+}
+
+/**
+ * Admin observability projection of an existing ai_logs / trace row.
+ * Allowlist only — payload / prompt / secrets never leave this owner.
+ * Observability ≠ money/ledger/opportunity authority.
+ */
+function toAdminAiLogsView(row = {}) {
+  const factsRaw = pickField(row, "facts_used", "factsUsed");
+  const facts = Array.isArray(factsRaw)
+    ? factsRaw.map(projectFactTrace).filter(Boolean)
+    : [];
+  const toolsRaw = pickField(row, "tools_called", "toolsCalled");
+  const memoryRaw = pickField(row, "memory_ids", "memoryIds");
+  const guardRaw = pickField(row, "guard_result", "guardResult") || {};
+  const previewRaw = pickField(row, "answer_preview", "answerPreview");
+  const createdRaw =
+    pickField(row, "created_at", "createdAt") ??
+    pickField(row, "createdAt", "created_at");
+  const id = pickField(row, "id", "id");
+  const userId = pickField(row, "user_id", "userId");
+  const intent = pickField(row, "intent", "intent");
+  const lane = pickField(row, "lane", "lane");
+  const twin = pickField(row, "twin_snapshot_id", "twinSnapshotId");
+  const provider = pickField(row, "provider_id", "providerId");
+  const path = pickField(row, "answer_path", "answerPath");
+
+  const guard = {
+    status: guardRaw.status != null ? String(guardRaw.status) : null,
+  };
+  if (guardRaw.reason != null) {
+    guard.reason = sanitizeTurnText(String(guardRaw.reason));
+  }
+
+  return Object.freeze({
+    id: id != null ? String(id) : null,
+    createdAt:
+      createdRaw instanceof Date
+        ? createdRaw.toISOString()
+        : createdRaw != null
+          ? String(createdRaw)
+          : null,
+    userId: userId != null ? String(userId) : null,
+    intent: intent != null ? sanitizeTurnText(String(intent)) : null,
+    lane: lane != null ? String(lane) : null,
+    twinSnapshotId: twin != null ? String(twin) : null,
+    memoryIds: Array.isArray(memoryRaw) ? memoryRaw.map(String) : [],
+    factsUsed: Object.freeze(facts),
+    toolsCalled: Array.isArray(toolsRaw) ? toolsRaw.map(String) : [],
+    providerId: provider != null ? String(provider) : null,
+    answerPath: path != null ? String(path) : null,
+    guardResult: Object.freeze(guard),
+    answerPreview:
+      previewRaw != null
+        ? sanitizeTurnText(String(previewRaw)).slice(0, 280)
+        : null,
+  });
+}
+
 module.exports = {
   LANES,
   PROVIDER_IDS,
@@ -136,4 +226,5 @@ module.exports = {
   GUARD_STATUSES,
   buildAiLogRecord,
   toAiLogsRow,
+  toAdminAiLogsView,
 };

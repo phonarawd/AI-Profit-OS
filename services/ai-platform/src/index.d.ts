@@ -136,6 +136,27 @@ export function toAiLogsRow(
   rec: AiLogRecord,
   userId?: string | null,
 ): AiLogsRow;
+export type AdminAiLogsView = {
+  readonly id: string | null;
+  readonly createdAt: string | null;
+  readonly userId: string | null;
+  readonly intent: string | null;
+  readonly lane: string | null;
+  readonly twinSnapshotId: string | null;
+  readonly memoryIds: readonly string[];
+  readonly factsUsed: readonly {
+    readonly source: string | null;
+    readonly capturedAt: string | null;
+    readonly expiresAt: string | null;
+    readonly confidence: number | null;
+  }[];
+  readonly toolsCalled: readonly string[];
+  readonly providerId: string | null;
+  readonly answerPath: string | null;
+  readonly guardResult: { readonly status: string | null; readonly reason?: string };
+  readonly answerPreview: string | null;
+};
+export function toAdminAiLogsView(row?: object): AdminAiLogsView;
 export function evaluateModelCandidate(metrics?: object): EvalGateResult;
 export function promoteToProd(
   evalResult: EvalGateResult,

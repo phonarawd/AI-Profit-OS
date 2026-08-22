@@ -29,6 +29,7 @@ const {
   GUARD_STATUSES,
   buildAiLogRecord,
   toAiLogsRow,
+  toAdminAiLogsView,
 } = require("./ai-log.cjs");
 const {
   AUTO_LEARNING_ENABLED,
@@ -173,6 +174,7 @@ module.exports = {
   GUARD_STATUSES,
   buildAiLogRecord,
   toAiLogsRow,
+  toAdminAiLogsView,
   AUTO_LEARNING_ENABLED,
   EVAL_THRESHOLDS,
   evaluateModelCandidate,

@@ -442,6 +442,7 @@ const RULES = [
       "rel-210-admin-opportunities.cjs",
       "rel-211-admin-adapters.cjs",
       "rel-212-admin-support.cjs",
+      "rel-215-admin-ai-logs.cjs",
       "rel-216-admin-financial-report.cjs",
       "rel-217-admin-growth.cjs",
       "rel-218-admin-growth-deposit.cjs",
@@ -473,6 +474,16 @@ const RULES = [
       /^apps\/admin\/app\/admin\/support\//.test(f) ||
       /^tooling\/verify\/rel-212-admin-support\.cjs$/.test(f),
     scripts: ["rel-212-admin-support.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/admin\/app\/admin\/ai-logs\//.test(f) ||
+      /^services\/api-nest\/src\/ai\/ai-logs\.admin\.(controller|service)\.ts$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/rel-215-admin-ai-logs\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-215-AI-LOGS\.md$/.test(f),
+    scripts: ["rel-215-admin-ai-logs.cjs"],
   },
   {
     test: (f) =>
@@ -515,6 +526,7 @@ const RULES = [
     test: (f) =>
       /^tooling\/verify\/rel-20[1-9]-admin-/.test(f) ||
       /^tooling\/verify\/rel-21[0-2]-admin-/.test(f) ||
+      /^tooling\/verify\/rel-215-admin-ai-logs\.cjs$/.test(f) ||
       /^tooling\/verify\/rel-21[6-9]-admin-/.test(f) ||
       /^tooling\/verify\/rel-22[01]-admin-/.test(f) ||
       /^tooling\/verify\/admin-entry-e2e\.cjs$/.test(f) ||
@@ -533,6 +545,7 @@ const RULES = [
       "rel-210-admin-opportunities.cjs",
       "rel-211-admin-adapters.cjs",
       "rel-212-admin-support.cjs",
+      "rel-215-admin-ai-logs.cjs",
       "rel-216-admin-financial-report.cjs",
       "rel-217-admin-growth.cjs",
       "rel-218-admin-growth-deposit.cjs",
@@ -698,6 +711,7 @@ const RULES = [
       "rel-303-red-team.cjs",
       "rel-304-grounding.cjs",
       "rel-305-bounded-memory.cjs",
+      "rel-215-admin-ai-logs.cjs",
       "age-tone-surfaces.cjs",
     ],
   },
