@@ -56,6 +56,27 @@ test("ledger and wallet routes render without leftover stub-only copy", async ({
   await expect(page.getByRole("heading", { name: "입출금 관리" })).toBeVisible();
 });
 
+test("compliance risk and execution-policy stay honest without stub-only copy", async ({
+  page,
+}) => {
+  await openAdmin(page, "/admin/compliance?tab=kyc", 1440, 1080);
+  await expect(page.getByRole("heading", { name: "법적 확인·제재" })).toBeVisible();
+  await expect(page.getByTestId("compliance-kyc-panel")).toBeVisible();
+  await expect(page.locator("text=Admin §9.1.1 골격")).toHaveCount(0);
+  await expect(page.locator("text=KYC_APPROVED_FIXTURE")).toHaveCount(0);
+
+  await openAdmin(page, "/admin/risk?tab=queue", 1024, 768);
+  await expect(page.getByRole("heading", { name: "사기·이상 거래 방지" })).toBeVisible();
+  await expect(page.getByTestId("risk-queue-panel")).toBeVisible();
+  await expect(page.locator("text=Admin §9.1.1 골격")).toHaveCount(0);
+
+  await openAdmin(page, "/admin/execution-policy", 390, 693);
+  await expect(page.getByRole("heading", { name: "진행 정책" })).toBeVisible();
+  await expect(page.getByTestId("match-strictness")).toBeVisible();
+  await expect(page.locator('[data-forbid="successRatePercent"]')).toHaveCount(1);
+  await expect(page.locator("text=Admin §9.1.1 골격")).toHaveCount(0);
+});
+
 test("dashboard axe has no new critical/serious", async ({ page }) => {
   await openAdmin(page, "/admin", 1440, 1080);
   const html = await page.content();

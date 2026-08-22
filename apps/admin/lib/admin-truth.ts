@@ -34,3 +34,23 @@ export function isUuid(value: string): boolean {
     value.trim(),
   );
 }
+
+/** 목록 형태가 아니면 빈 배열로 위조하지 않는다. */
+export function asRecordList(value: unknown): Record<string, unknown>[] | null {
+  const rows = Array.isArray(value)
+    ? value
+    : value && typeof value === "object" && Array.isArray((value as { items?: unknown }).items)
+      ? (value as { items: unknown[] }).items
+      : null;
+  if (!rows) return null;
+  if (!rows.every((row) => row && typeof row === "object" && !Array.isArray(row))) {
+    return null;
+  }
+  return rows as Record<string, unknown>[];
+}
+
+/** 관측 비율. null·비숫자는 없음. 서버가 준 0만 0으로 표시. */
+export function readRate(value: unknown): string | null {
+  if (typeof value !== "number" || !Number.isFinite(value)) return null;
+  return `${(value * 100).toFixed(2)}%`;
+}

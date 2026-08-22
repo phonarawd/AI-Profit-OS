@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-206 COMPLETED. FIRST_EXECUTION_TODO=REL-207. BATCH_REL_200_206=CLOSED. BATCH_A_RUNTIME_ACCEPTANCE=CLOSED.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-209 COMPLETED. FIRST_EXECUTION_TODO=REL-210. BATCH_REL_200_206=CLOSED. BATCH_REL_207_209=CLOSED. BATCH_A_RUNTIME_ACCEPTANCE=CLOSED.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -196,13 +196,13 @@ todos:
     status: completed
   - id: rel-207
     content: "[Admin] /admin/compliance(KYC 심사) 실사+구현"
-    status: pending
+    status: completed
   - id: rel-208
     content: "[Admin] /admin/risk 실사+구현"
-    status: pending
+    status: completed
   - id: rel-209
     content: "[Admin] /admin/execution-policy 실사+구현"
-    status: pending
+    status: completed
   - id: rel-210
     content: "[Admin] /admin/opportunities 실사+구현"
     status: pending
@@ -420,9 +420,10 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-207
-LAST_COMPLETED_TODO = REL-206
+FIRST_EXECUTION_TODO = REL-210
+LAST_COMPLETED_TODO = REL-209
 BATCH_REL_200_206 = CLOSED
+BATCH_REL_207_209 = CLOSED
 HARD_STOP_AFTER = []
 BATCH_A_RUNTIME_ACCEPTANCE = CLOSED
 BATCH_A_FINAL_COMMIT = 42a70973d9537c8712e831130620de9ec5b7272f
@@ -2378,7 +2379,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-207
 TITLE: /admin/compliance 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-207
@@ -2396,7 +2397,7 @@ IMPLEMENTATION_STEPS:
   - PR → CI → merge (main 직접 커밋 금지)
 VERIFY: /admin/compliance 실데이터 또는 정직한 empty. stub-only 0.
 ACCEPTANCE: /admin/compliance가 운영 가능. 가짜 ledger 0.
-EVIDENCE: apps/admin/app/admin/compliance
+EVIDENCE: apps/admin/app/admin/compliance + tooling/verify/rel-207-admin-compliance.cjs + governance/release-master/REL-207-COMPLIANCE.md
 EXIT_GATE: 유저 JWT로 200이면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2407,7 +2408,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-208
 TITLE: /admin/risk 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-208
@@ -2425,7 +2426,7 @@ IMPLEMENTATION_STEPS:
   - PR → CI → merge (main 직접 커밋 금지)
 VERIFY: /admin/risk 실데이터 또는 정직한 empty. stub-only 0.
 ACCEPTANCE: /admin/risk가 운영 가능. 가짜 ledger 0.
-EVIDENCE: apps/admin/app/admin/risk
+EVIDENCE: apps/admin/app/admin/risk + tooling/verify/rel-208-admin-risk.cjs + governance/release-master/REL-208-RISK.md
 EXIT_GATE: 유저 JWT로 200이면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2436,7 +2437,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-209
 TITLE: /admin/execution-policy 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-209
@@ -2454,7 +2455,7 @@ IMPLEMENTATION_STEPS:
   - PR → CI → merge (main 직접 커밋 금지)
 VERIFY: /admin/execution-policy 실데이터 또는 정직한 empty. stub-only 0.
 ACCEPTANCE: /admin/execution-policy가 운영 가능. 가짜 ledger 0.
-EVIDENCE: apps/admin/app/admin/execution-policy
+EVIDENCE: apps/admin/app/admin/execution-policy + tooling/verify/rel-209-admin-execution-policy.cjs + governance/release-master/REL-209-EXECUTION-POLICY.md
 EXIT_GATE: 유저 JWT로 200이면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -4573,6 +4574,7 @@ REL-000은 2026-08-20에 PASS/COMPLETED.
 REL-001은 2026-08-20에 PASS/COMPLETED (`preserve/2026-08-20-worktree-rescue` · `ae8d1e6` · merge 금지).
 REL-002~REL-206은 통합선 `rel/auth-track-a-integration` @ `42a70973` 기준으로 COMPLETED.
 Batch A Runtime Acceptance는 2026-08-22에 PASS/CLOSED (`42a70973`) — 신규 TODO 없음. 기존 REL-106~110 증거 강화.
-현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-207`. HARD_STOP_AFTER 는 소비됨(`[]`).
+현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-210`. HARD_STOP_AFTER 는 소비됨(`[]`).
+REL-207~REL-209는 2026-08-22 Batch B에서 기존 Admin JWT+오너 API에 실배선 후 COMPLETED.
 Cursor workspace checkout이 `preserve/2026-08-20-worktree-rescue` 이면 그 복사본 Master는 STALE이다. 실행 SSOT는 이 파일(통합 worktree)이다.
 
