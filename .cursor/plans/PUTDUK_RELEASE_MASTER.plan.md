@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-206 COMPLETED. FIRST_EXECUTION_TODO=REL-207. HARD_STOP_AFTER=REL-206. BATCH_REL_200_206=ADMIN_ENTRY.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-206 COMPLETED. FIRST_EXECUTION_TODO=REL-207. BATCH_REL_200_206=CLOSED. BATCH_A_RUNTIME_ACCEPTANCE=CLOSED.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -99,7 +99,7 @@ todos:
     content: "[Consumer][Legacy:B-LOOP-001] OpportunityList(/profits) 클로저 - Round6 재검증: Track B(Current Master) backend/data 배선 completed 자체 선언 + FIG=76:2/116:28/122:34 Founder Review Candidate 확보. 잔여=Figma candidate 적용+PASS 승격 여부 확인만(전면 재구현 아님)"
     status: completed
   - id: rel-107
-    content: "[Consumer][Legacy:B-PARTICIPATION-001] OpportunityDetail(/profits/[id]) 클로저 - Round6 실측 재확인: OpportunityDetailClient.tsx가 issuePreflight+postParticipate 실제 호출(grep 직접 확인, git status=M 즉 아직 미커밋) · FIG=96:2/104:43+109:28 Founder Review Candidate. 잔여=REL-000~003 커밋 파이프라인으로 흡수+Figma 후 시각 정합"
+    content: "[Consumer][Legacy:B-PARTICIPATION-001] OpportunityDetail(/profits/[id]) 클로저 - issuePreflight+postParticipate 실호출 committed. FIG=96:2/104:43+109:28 Founder Review Candidate. Batch A official-partner runtime PASS. 잔여=Figma 승인 전 시각 정합만"
     status: completed
   - id: rel-108
     content: "[Consumer][Legacy:B-LOOP-001] ParticipateConfirmation(modal) 클로저 - FIG=103:315(Desktop)/103:314 ParticipateConfirmSheet 11-state 컴포넌트 Founder Review Candidate. Track B가 참여 플로우 전체를 completed로 선언(모달 포함 여부는 REL-107 실행 시 재확인)"
@@ -422,13 +422,16 @@ PLAN_LOCKED = TRUE
 BLOCKING_ON = []
 FIRST_EXECUTION_TODO = REL-207
 LAST_COMPLETED_TODO = REL-206
-BATCH_REL_200_206 = ADMIN_ENTRY
-HARD_STOP_AFTER = REL-206
+BATCH_REL_200_206 = CLOSED
+HARD_STOP_AFTER = []
+BATCH_A_RUNTIME_ACCEPTANCE = CLOSED
+BATCH_A_FINAL_COMMIT = 42a70973d9537c8712e831130620de9ec5b7272f
+RECONCILIATION_AS_OF = 2026-08-22
 PRE_LOCK_COUNT = 1
 REL_COUNT = 116
 POST_COUNT = 19
 MASTER_TODO_COUNT = 136
-REVISION = Round7 materialization (self-contained SSOT, pointer-only 0)
+REVISION = Round7 materialization (self-contained SSOT, pointer-only 0) + 2026-08-22 actual-state reconciliation
 
 CURRENT_TEMP_ALLOWLIST_PRESENT = FALSE
 TEMP_ALLOWLIST_PRESENT_AT_AUDIT = TRUE
@@ -1413,7 +1416,7 @@ SOURCE_TODO_IDS:
   - cux-004
   - cux-cert-profits-desktop
 ORIGINAL_INTENT: 기회 목록이 서버 기회만 보여주고, 후보 Figma와 시각을 맞추되 미승인을 승인으로 위조하지 않는다.
-CURRENT_SCOPE: "/profits. backend 배선 재확인. FIG=76:2 / 116:28 / 122:34 FOUNDER_REVIEW_CANDIDATE. 전면 재구현 아님."
+CURRENT_SCOPE: "/profits. backend 배선 재확인. FIG=76:2 / 116:28 / 122:34 FOUNDER_REVIEW_CANDIDATE. 전면 재구현 아님. Batch A A2 expected-time + A4 empty next-action runtime PASS (42a70973). Founder Figma 승인 전 PRESENTATION_TRUTH 선언 금지."
 DEPENDENCIES:
   - REL-007
   - REL-009
@@ -1426,7 +1429,7 @@ IMPLEMENTATION_STEPS:
   - "committed spec: 목록/빈상태. Home geometry 종속 금지"
 VERIFY: 실 API 목록. fake FOMO 0. candidate를 approved로 쓰지 않음.
 ACCEPTANCE: 목록 기능 REAL. 시각은 candidate 정합 또는 명시적 잔여.
-EVIDENCE: apps/web/app/profits + spark-dash-profits
+EVIDENCE: apps/web/app/profits + spark-dash-profits + governance/release-master/REL-106-PROFITS.md + rel-106-profits/runtime-* + Batch A 42a70973 (A2/A4)
 EXIT_GATE: 미승인 Figma를 Approved로 표기하면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -1444,7 +1447,7 @@ SOURCE_TODO_IDS:
   - b-participation-001
   - cux-003
 ORIGINAL_INTENT: 상세에서 참여 프리플라이트가 서버 진실로 동작해야 한다.
-CURRENT_SCOPE: "/profits/[id] OpportunityDetailClient. issuePreflight+postParticipate 실호출(미커밋이면 REL-000~003 파이프라인으로 흡수). FIG=96:2 / 104:43 / 109:28 FOUNDER_REVIEW_CANDIDATE."
+CURRENT_SCOPE: "/profits/[id] OpportunityRoom + issuePreflight+postParticipate 실호출 committed. FIG=96:2 / 104:43 / 109:28 FOUNDER_REVIEW_CANDIDATE. Batch A A3 official-partner owner truth PASS (42a70973)."
 DEPENDENCIES:
   - REL-002
   - REL-003
@@ -1458,7 +1461,7 @@ IMPLEMENTATION_STEPS:
   - "committed spec: 상세 로드/권한/프리플라이트 실패"
 VERIFY: preflight/participate 실호출. money 클라이언트 조작 0.
 ACCEPTANCE: 상세 기능 REAL. 시각 잔여는 명시.
-EVIDENCE: apps/web/app/profits/[id]/OpportunityDetailClient.tsx
+EVIDENCE: apps/web opportunity room + governance/release-master/REL-107-ROOM.md + rel-107-room/runtime-* + Batch A 42a70973 (A3)
 EXIT_GATE: 미커밋 상세를 없는 것처럼 재작성 금지
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -1485,7 +1488,7 @@ IMPLEMENTATION_STEPS:
   - committed spec으로 주요 실패 상태 2개 이상
 VERIFY: "상태 이름 1:1. 서버 전 성공 위조 0."
 ACCEPTANCE: 모달/시트가 서버 상태를 반영.
-EVIDENCE: participate-sheet 컴포넌트
+EVIDENCE: participate-sheet 컴포넌트 + governance/release-master/REL-108-SHEET.md + rel-108-sheet/runtime-* + Batch A 42a70973 (A1 continuity)
 EXIT_GATE: 상태 누락을 닫힘으로 위조 금지
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -1516,7 +1519,7 @@ IMPLEMENTATION_STEPS:
   - "committed spec: running/fail/safe-stop"
 VERIFY: 상태 머신 실구현. 모션 선행 성공 0.
 ACCEPTANCE: 실행 기능 REAL. 시각 잔여 명시 가능.
-EVIDENCE: TradeExecuteClient.tsx
+EVIDENCE: TradeExecuteClient.tsx + governance/release-master/REL-109-EXECUTE.md + rel-109-execute/runtime-* + Batch A 42a70973 (A1 continuity)
 EXIT_GATE: 클라이언트 난수 정산 발견 시 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -1546,7 +1549,7 @@ IMPLEMENTATION_STEPS:
   - "committed spec: 목록/빈상태"
 VERIFY: 실 fetch. fake 수익 0.
 ACCEPTANCE: 목록 기능 REAL.
-EVIDENCE: TradesClient.tsx
+EVIDENCE: TradesClient.tsx + governance/release-master/REL-110-TRADES.md + rel-110-trades/runtime-* + Batch A 42a70973 (A1 continuity)
 EXIT_GATE: 없음
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -4568,6 +4571,8 @@ FIRST_EXECUTION_TODO_AT_MATERIALIZATION = REL-000
 
 REL-000은 2026-08-20에 PASS/COMPLETED.
 REL-001은 2026-08-20에 PASS/COMPLETED (`preserve/2026-08-20-worktree-rescue` · `ae8d1e6` · merge 금지).
-REL-002는 2026-08-21에 PASS/COMPLETED (PR #2 MERGED · `db6db87` · ruleset `verify-gate` 계약 수정 후 비우회 merge).
-현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-003`. 이 채팅에서 REL-003 실행 0.
+REL-002~REL-206은 통합선 `rel/auth-track-a-integration` @ `42a70973` 기준으로 COMPLETED.
+Batch A Runtime Acceptance는 2026-08-22에 PASS/CLOSED (`42a70973`) — 신규 TODO 없음. 기존 REL-106~110 증거 강화.
+현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-207`. HARD_STOP_AFTER 는 소비됨(`[]`).
+Cursor workspace checkout이 `preserve/2026-08-20-worktree-rescue` 이면 그 복사본 Master는 STALE이다. 실행 SSOT는 이 파일(통합 worktree)이다.
 
