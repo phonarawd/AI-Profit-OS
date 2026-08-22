@@ -93,6 +93,17 @@ function run() {
   } catch {
     liveRebaseTip = null;
   }
+  let liveEvalTip = null;
+  try {
+    const ev = JSON.parse(
+      fs.readFileSync(path.join(ROOT, "governance/engine-acceptance/eval-evolutions.v1.json"), "utf8"),
+    );
+    if (Array.isArray(ev.evolutions) && ev.evolutions.length) {
+      liveEvalTip = ev.evolutions[ev.evolutions.length - 1];
+    }
+  } catch {
+    liveEvalTip = null;
+  }
   const shapeFails = [];
   validateLedgerShape(liveLedger, shapeFails);
   check("ledger_shape", shapeFails.length === 0, shapeFails.join("; "));
@@ -121,6 +132,27 @@ function run() {
     check(
       "predecessor_amendment_ledger_preserved",
       liveLedger.baseline_id !== liveRebaseTip.new_baseline_id,
+      "historical workflow-amendments.baseline_id must not be rewritten to current epoch",
+    );
+  } else if (liveEvalTip && liveEvalTip.new_baseline_id === liveBaseline.id) {
+    check(
+      "baseline_id_stable_pin",
+      liveBaseline.id === liveEvalTip.new_baseline_id,
+      `${liveBaseline.id} vs ${liveEvalTip.new_baseline_id}`,
+    );
+    check(
+      "prompt_immutable_pin",
+      liveBaseline.prompt_hash === liveEvalTip.new_prompt_hash,
+      "prompt drift vs current eval-review epoch",
+    );
+    check(
+      "eval_immutable_pin",
+      liveBaseline.eval_dataset_hash === liveEvalTip.new_eval_dataset_hash,
+      "eval drift vs current eval-review epoch",
+    );
+    check(
+      "predecessor_amendment_ledger_preserved",
+      liveLedger.baseline_id !== liveEvalTip.new_baseline_id,
       "historical workflow-amendments.baseline_id must not be rewritten to current epoch",
     );
   } else {

@@ -381,17 +381,13 @@ function run() {
     validateLedgerPolicy(liveLedger, policyFails);
     check("live_ledger_policy_block", policyFails.length === 0, policyFails.join("; "));
 
-    // Regression snapshot of the live ledger/baseline at the time this file was
-    // written, NOT a policy that forbids a rebase — the real policy is enforced
-    // by validateRebaseEntry/verifyRebaseLedgerAgainstBaseline/verifyWashing
-    // above and below. Updated again, in step with the PTF-00C-R1 provider
-    // resilience closure L9 rebase (heartbeat idempotency ledger, nested-retry
-    // elimination, tick runtime budget, circuit-breaker honesty; retains the
-    // prior L8 protected repair wave as history).
+    // Regression snapshot of the live product-rebase ledger. Eval-review epochs
+    // do not append product-rebases[] (length stays 5). Current baseline tip
+    // after ENGINE_ACCEPTANCE_REBASE_EVAL_REVIEW_V1 apply is the new epoch.
     check("no_new_epoch_created", liveLedger.rebases.length === 5, `rebases=${liveLedger.rebases.length}`);
     check(
       "live_baseline_unchanged",
-      liveBaseline.id === "ea-baseline-64b0f8a6d984-3657543f36b5",
+      liveBaseline.id === "ea-baseline-00bc4bd82aaf-6baee484bb30",
       liveBaseline.id,
     );
     // qa9-result is the current-epoch verdict SSOT and is only ever written by

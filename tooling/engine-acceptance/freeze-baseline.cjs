@@ -41,6 +41,15 @@ function main() {
       console.error(
         "  node tooling/engine-acceptance/rebase-acceptance-baseline.cjs --apply ...",
       );
+      console.error(
+        "  Intentional eval dataset change requires ENGINE_ACCEPTANCE_REBASE_EVAL_REVIEW_V1",
+      );
+      console.error(
+        "  (product-only rebase still requires eval_dataset_hash MATCH):",
+      );
+      console.error(
+        "  node tooling/engine-acceptance/rebase-acceptance-baseline-eval-review.cjs --apply ...",
+      );
       process.exit(1);
     }
   }

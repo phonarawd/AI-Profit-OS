@@ -235,7 +235,16 @@
       "predecessor_baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
       "bound_at": "2026-08-14T16:41:33.127Z",
       "note": "current acceptance_scope.unchanged compares against this epoch; historical amendments were NOT created under this id"
+    },
+    {
+      "kind": "current",
+      "baseline_id": "ea-baseline-00bc4bd82aaf-6baee484bb30",
+      "rebase_id": "ea-evalrev-9f087d0d7d4d-6baee484bb30",
+      "predecessor_baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+      "bound_at": "2026-08-22T07:03:42.688Z",
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_EVAL_REVIEW_V1",
+      "note": "eval-review epoch; historical product-rebases[] untouched"
     }
   ],
-  "current_epoch_baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5"
+  "current_epoch_baseline_id": "ea-baseline-00bc4bd82aaf-6baee484bb30"
 }

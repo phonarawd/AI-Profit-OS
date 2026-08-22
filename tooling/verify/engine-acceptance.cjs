@@ -54,6 +54,17 @@ const {
   findBridgingAmendment,
 } = require("../engine-acceptance/lib/product-rebase.cjs");
 const { run: selftestProductRebase } = require("../engine-acceptance/selftest-product-rebase.cjs");
+const {
+  DECISION_ID: EVAL_REVIEW_DECISION_ID,
+  LEDGER_REL: EVAL_LEDGER_REL,
+  loadEvalLedger,
+  latestEvolution,
+  verifyEvalEvolutionLedger,
+  isEvalReviewPendingRerun,
+  verifyEvalReviewPendingRerunEpoch,
+  assertEvalReviewEpochBound,
+} = require("../engine-acceptance/lib/eval-review-rebase.cjs");
+const { run: selftestEvalReviewRebase } = require("../engine-acceptance/selftest-eval-review-rebase.cjs");
 
 const fails = [];
 function fail(msg) {
@@ -144,6 +155,7 @@ const REQUIRED_FILES = [
   `${GOV}/baseline.v1.json`,
   `${GOV}/workflow-amendments.v1.json`,
   `${GOV}/product-rebases.v1.json`,
+  `${GOV}/eval-evolutions.v1.json`,
   `${GOV}/personas.v1.json`,
   `${GOV}/journeys.v1.json`,
   `${GOV}/coverage.v1.json`,
@@ -170,6 +182,10 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/rebase-acceptance-baseline.cjs",
   "tooling/engine-acceptance/selftest-product-rebase.cjs",
   "tooling/engine-acceptance/lib/product-rebase.cjs",
+  "tooling/engine-acceptance/rebase-acceptance-baseline-eval-review.cjs",
+  "tooling/engine-acceptance/selftest-eval-review-rebase.cjs",
+  "tooling/engine-acceptance/lib/eval-review-rebase.cjs",
+  "tooling/engine-acceptance/lib/eval-dataset-diff.cjs",
   "tooling/engine-acceptance/run-qa1.cjs",
   "tooling/engine-acceptance/run-qa2.cjs",
   "tooling/engine-acceptance/run-qa3.cjs",
@@ -244,6 +260,8 @@ for (const token of [
   "workflow-amendments.v1.json",
   "ENGINE_ACCEPTANCE_REBASE_V1",
   "product-rebases.v1.json",
+  "ENGINE_ACCEPTANCE_REBASE_EVAL_REVIEW_V1",
+  "eval-evolutions.v1.json",
   "baseline washing",
 ]) {
   if (!contract.includes(token)) fail(`acceptance-contract missing: ${token}`);
@@ -502,6 +520,16 @@ try {
   fail("product-rebases.v1.json invalid JSON");
 }
 
+let evalLedger = null;
+try {
+  evalLedger = loadEvalLedger(EVAL_LEDGER_REL);
+} catch {
+  fail("eval-evolutions.v1.json invalid JSON");
+}
+if (evalLedger) {
+  verifyEvalEvolutionLedger(evalLedger, fails);
+}
+
 let evidence;
 try {
   evidence = readJson(`${GOV}/evidence-manifest.v1.json`);
@@ -512,7 +540,9 @@ try {
 let ephemeralQa6Rewrite = false;
 let ephemeralPreQa9Rewrite = false;
 
-const pendingRerun = isPendingRerun(baseline, evidence, rebaseLedger);
+const pendingProductRerun = isPendingRerun(baseline, evidence, rebaseLedger);
+const pendingEvalRerun = isEvalReviewPendingRerun(baseline, evidence, evalLedger);
+const pendingRerun = pendingProductRerun || pendingEvalRerun;
 if (baseline && rebaseLedger) {
   verifyRebaseLedgerAgainstBaseline(baseline, rebaseLedger, evidence, fails);
 }
@@ -523,7 +553,11 @@ if (baseline) {
   } catch {
     amendmentForInPlace = null;
   }
-  if (amendmentForInPlace) {
+  const evalTip = latestEvolution(evalLedger);
+  const evalBound = Boolean(evalTip && evalTip.new_baseline_id === baseline.id);
+  if (evalBound) {
+    assertEvalReviewEpochBound(baseline, evalLedger, amendmentForInPlace, fails);
+  } else if (amendmentForInPlace) {
     assertNoInPlaceHashRewrite(baseline, amendmentForInPlace, rebaseLedger, fails);
   }
 }
@@ -615,7 +649,11 @@ if (evidence) {
   }
 
   if (pendingRerun) {
-    verifyPendingRerunEpoch(baseline, evidence, rebaseLedger, fails);
+    if (pendingEvalRerun) {
+      verifyEvalReviewPendingRerunEpoch(baseline, evidence, evalLedger, fails);
+    } else {
+      verifyPendingRerunEpoch(baseline, evidence, rebaseLedger, fails);
+    }
   } else {
     if (ephemeralQa6RewriteNow) {
       if (evidence.qa_phase !== "QA-6") {
@@ -2273,13 +2311,31 @@ if (baseline && amendmentLedger) {
   } catch {
     evidenceForAmend = null;
   }
+  const evalTipForGov = latestEvolution(evalLedger);
+  const evalBoundForGov = Boolean(
+    evalTipForGov && baseline && evalTipForGov.new_baseline_id === baseline.id,
+  );
+  const governanceRebaseLedger = evalBoundForGov
+    ? {
+        ...(rebaseLedger || {}),
+        rebases: [
+          ...((rebaseLedger && rebaseLedger.rebases) || []),
+          {
+            new_baseline_id: evalTipForGov.new_baseline_id,
+            predecessor_baseline_id: evalTipForGov.predecessor_baseline_id,
+            new_prompt_hash: evalTipForGov.new_prompt_hash,
+            eval_dataset_hash: evalTipForGov.new_eval_dataset_hash,
+          },
+        ],
+      }
+    : rebaseLedger;
   verifyGovernanceAgainstBaseline(
     baseline,
     scope,
     amendmentLedger,
     evidenceForAmend,
     fails,
-    rebaseLedger,
+    governanceRebaseLedger,
   );
 }
 assertRunnersForbidSilentWorkflowSync(fails);
@@ -2292,6 +2348,11 @@ try {
   selftestProductRebase();
 } catch (e) {
   fail(`product-rebase selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
+  selftestEvalReviewRebase();
+} catch (e) {
+  fail(`eval-review-rebase selftest threw: ${e && e.message ? e.message : e}`);
 }
 try {
   const { run: selftestQa7 } = require("../engine-acceptance/selftest-qa7.cjs");
@@ -2331,6 +2392,7 @@ console.log("  ACCEPTANCE CONTRACT = LOCKED");
 console.log(pendingRerun ? "  BASELINE = NEW_EPOCH (REBASE PENDING RERUN)" : "  BASELINE = FROZEN");
 console.log("  GOVERNANCE_DECISION = POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1");
 console.log(`  REBASE_DECISION = ${REBASE_DECISION_ID}`);
+console.log(`  EVAL_REVIEW_DECISION = ${EVAL_REVIEW_DECISION_ID}`);
 console.log("  WORKFLOW_HASH_POLICY = CONTROLLED_AMENDMENT_ONLY");
 console.log("  LEGACY_AUTO_SYNC_STATUS = MUST_BE_GATED");
 if (pendingRerun) {

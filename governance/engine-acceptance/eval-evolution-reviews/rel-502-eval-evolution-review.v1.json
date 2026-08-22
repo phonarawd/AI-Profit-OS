@@ -1,0 +1,216 @@
+{
+  "schema": "governance.engine-acceptance.eval-evolution-review.v1",
+  "version": "1.0.0",
+  "review_id": "ea-evalrev-rel502-64b0f8a6-05d1b1ce",
+  "decision_id": "ENGINE_ACCEPTANCE_REBASE_EVAL_REVIEW_V1",
+  "status": "APPROVED",
+  "predecessor_acceptance_epoch": "ea-baseline-64b0f8a6d984-3657543f36b5",
+  "predecessor_product_commit": "64b0f8a6d984765a6b9a1533d4e6dd94ba8720c5",
+  "new_product_commit": "9f087d0d7d4d4be34f48d5c32d761a1e2d4369d1",
+  "current_head": "00bc4bd82aaf5122fbb89e647e0517d29f5984d1",
+  "old_eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088",
+  "new_eval_dataset_hash": "05d1b1cead8b48b3f7bb74e4d9479837a5e6c0746c9e094ce401bad484ee0091",
+  "acceptance_workflow_hash": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
+  "schema_migration_hash": {
+    "predecessor": "a15f3a6ffdb1aaeb663285a86cbe5ce6004b95b8f5cd5351c5d251cb2ee41e71",
+    "live": "e114b6581da1aac7751775647acdba8834018998a3cbee51fb42f0ce660fba11",
+    "status": "CHANGED_RECORDED"
+  },
+  "lockfile_hash": {
+    "predecessor": "3e4b2632d7e0e11afe179502ba50bdb2a47b67c7ca5838bb511d38ad854f70a1",
+    "live": "faf4c73927d1b92cbe8bc9b8ffb57000e9d630c920ca98fdea2ebf55182f820c",
+    "status": "CHANGED_RECORDED"
+  },
+  "old_prompt_hash": "4b8b46a36a97e7b7553ff709ee46d377edac47cada38325e3eab5ae00f78c189",
+  "new_prompt_hash": "6361e6b6b6bc8d70ae3a373e7e12e620e035686f85a9ed9dfd62831dd528c8d0",
+  "reason": "Intentional reviewed eval evolution after predecessor epoch 64b0f8a6: additive P-lane fact cases, G-lane jailbreak/policy-extraction cases, S-lane refuse cases, coach natural-language fixtures, and REL-300~305 quality/safety fixtures. Existing P/G/S owner unchanged. No money-authority rewrite. Product-only ENGINE_ACCEPTANCE_REBASE_V1 remains eval-MATCH-only.",
+  "commits": [
+    "fe938c7",
+    "d9c514a"
+  ],
+  "coverage_effect": "STRICTER",
+  "p_g_s_ownership_impact": "Existing P/G/S runtime remains the sole owner. No second AI runtime. Coverage expanded on the same lanes.",
+  "money_authority_impact": "No money-authority grant or rewrite. Additive P fact-grounding and S refuse cases do not introduce execute/withdraw tools.",
+  "tool_authority_impact": "rel-301 adds G-lane tool-call constraints (money tools forbidden / fake tool results). Stricter tool authority.",
+  "prompt_injection_coverage_impact": "g_scope_escape adds jailbreak/hidden-policy; rel-303 red-team adds ignore-instructions, persona, SYSTEM_BASE leak, force-tools. Stricter.",
+  "refusal_coverage_impact": "s_refuse adds takeover/kyc_bypass/launder; rel-302 adds refuse plus keep-P/G over-refusal guards. Stricter.",
+  "numeric_grounding_impact": "p_fact adds profit-no-invent; rel-300/304 add unavailable/not-zero/source-asof/ungrounded. Stricter.",
+  "changed_eval_files": [
+    {
+      "path": "eval/coach_ko_natural.jsonl",
+      "old_case_count": 0,
+      "new_case_count": 10,
+      "added": [
+        "nl_cancel_how",
+        "nl_deposit_not_showing",
+        "nl_how_much_left",
+        "nl_how_much_receive",
+        "nl_last_participation",
+        "nl_progress_situation",
+        "nl_receive_if_do",
+        "nl_what_can_i_do",
+        "nl_why_money",
+        "nl_withdraw"
+      ],
+      "removed": [],
+      "modified": [],
+      "semantic_effect": "STRICTER"
+    },
+    {
+      "path": "eval/g_scope_escape.jsonl",
+      "old_case_count": 7,
+      "new_case_count": 9,
+      "added": [
+        "scope_hidden_policy",
+        "scope_jailbreak"
+      ],
+      "removed": [],
+      "modified": [],
+      "semantic_effect": "STRICTER"
+    },
+    {
+      "path": "eval/p_fact.jsonl",
+      "old_case_count": 9,
+      "new_case_count": 12,
+      "added": [
+        "p_execution_last_participation",
+        "p_execution_progress_situation",
+        "p_profit_no_invent"
+      ],
+      "removed": [],
+      "modified": [],
+      "semantic_effect": "STRICTER"
+    },
+    {
+      "path": "eval/rel-300-fact-only.jsonl",
+      "old_case_count": 0,
+      "new_case_count": 5,
+      "added": [
+        "p_balance_grounded",
+        "p_missing_profit_not_zero",
+        "p_no_guarantee",
+        "p_profit_unavailable",
+        "p_unknown_tool"
+      ],
+      "removed": [],
+      "modified": [],
+      "semantic_effect": "STRICTER"
+    },
+    {
+      "path": "eval/rel-301-tool-call.jsonl",
+      "old_case_count": 0,
+      "new_case_count": 7,
+      "added": [
+        "g_chat_no_tools",
+        "g_fabricated_money",
+        "g_fake_tool_result",
+        "g_forbid_getBalance",
+        "g_requested_balance_ignored",
+        "g_weather_no_tools",
+        "scope_no_tools"
+      ],
+      "removed": [],
+      "modified": [],
+      "semantic_effect": "STRICTER"
+    },
+    {
+      "path": "eval/rel-302-safe-refuse.jsonl",
+      "old_case_count": 0,
+      "new_case_count": 10,
+      "added": [
+        "keep_g_weather",
+        "keep_p_balance",
+        "keep_p_help",
+        "keep_p_withdraw_guide",
+        "s_kyc_bypass",
+        "s_launder",
+        "s_payout",
+        "s_raise",
+        "s_takeover",
+        "s_withdraw"
+      ],
+      "removed": [],
+      "modified": [],
+      "semantic_effect": "STRICTER"
+    },
+    {
+      "path": "eval/rel-303-red-team.jsonl",
+      "old_case_count": 0,
+      "new_case_count": 8,
+      "added": [
+        "rt_disable_safety_payout",
+        "rt_force_tools",
+        "rt_ignore_withdraw",
+        "rt_leak_output",
+        "rt_persona",
+        "rt_policy_ignore",
+        "rt_system_base",
+        "rt_system_prompt"
+      ],
+      "removed": [],
+      "modified": [],
+      "semantic_effect": "STRICTER"
+    },
+    {
+      "path": "eval/rel-304-grounding.jsonl",
+      "old_case_count": 0,
+      "new_case_count": 6,
+      "added": [
+        "empty_unavailable",
+        "grounded_has_source_asof",
+        "known_zero_preserved",
+        "null_not_zero",
+        "stale_triggers_refresh",
+        "ungrounded_current_claim"
+      ],
+      "removed": [],
+      "modified": [],
+      "semantic_effect": "STRICTER"
+    },
+    {
+      "path": "eval/rel-305-bounded-memory.jsonl",
+      "old_case_count": 0,
+      "new_case_count": 6,
+      "added": [
+        "absolute_lifetime",
+        "no_durable_in_conv_state",
+        "ownership_fail_closed",
+        "secret_redact",
+        "turn_cap",
+        "user_isolation_key"
+      ],
+      "removed": [],
+      "modified": [],
+      "semantic_effect": "STRICTER"
+    },
+    {
+      "path": "eval/s_refuse.jsonl",
+      "old_case_count": 4,
+      "new_case_count": 7,
+      "added": [
+        "s_kyc_bypass",
+        "s_launder",
+        "s_takeover"
+      ],
+      "removed": [],
+      "modified": [],
+      "semantic_effect": "STRICTER"
+    }
+  ],
+  "unchanged_eval_files": [
+    "eval/g_no_money.jsonl"
+  ],
+  "removed_safety_cases": 0,
+  "weakened_assertions": 0,
+  "disabled_eval_files": 0,
+  "skipped_required_qa": 0,
+  "hash_check_bypass": 0,
+  "product_only_rebase_weakened": 0,
+  "human_po_ack": {
+    "by": "Founder/Human",
+    "at": "2026-08-22T07:00:00.000Z",
+    "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_EVAL_REVIEW_V1: Founder/Human approval of review ea-evalrev-rel502-64b0f8a6-05d1b1ce; EVAL_CASES_ADDED=60 REMOVED=0 MODIFIED=0; SAFETY_COVERAGE_WEAKENED=0 ASSERTIONS_WEAKENED=0 HASH_CHECK_BYPASS=0; PRODUCT_ONLY_REBASE_SEMANTICS_PRESERVED; create new current acceptance epoch; do not mutate predecessor ea-baseline-64b0f8a6d984-3657543f36b5."
+  },
+  "founder_approval_used": true,
+  "current_epoch_created": true
+}

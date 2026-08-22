@@ -197,3 +197,27 @@ QA0 freeze 이후 **protected product mutation**은 새 acceptance epoch를 만�
 V1 shape은 새 epoch를 인가할 수 없다. 정책 amendment는 새 acceptance epoch를 만들지 않고 현재 evidence를 무효화하지 않는다.
 
 SSOT: `product-rebases.v1.json` `rebase_policy` + `tooling/engine-acceptance/lib/product-rebase.cjs`.
+
+## L9 — Reviewed Eval Evolution (new epoch · distinct from L8)
+
+> **Decision ID:** `ENGINE_ACCEPTANCE_REBASE_EVAL_REVIEW_V1`  
+> **SSOT ledger:** `eval-evolutions.v1.json`  
+> **Apply path only:** `tooling/engine-acceptance/rebase-acceptance-baseline-eval-review.cjs`  
+> **Review evidence:** `governance/engine-acceptance/eval-evolution-reviews/*.json`
+
+L8 product-only rebase는 계속 `eval_dataset_hash = MATCH`를 요구한다. 이 가드를 우회하거나 약화하지 않는다.
+
+의도적 eval dataset 변경은 **별도** 경로로만 새 epoch를 만든다. 리뷰 없는 eval drift는 거절한다. Human/PO ACK 없는 apply는 거절한다. Founder ACK를 날조하지 않는다.
+
+| 규칙 | 정책 |
+|---|---|
+| product-only L8 | eval MATCH 유지 · 본 경로로 대체 금지 |
+| eval hashes | predecessor / live / review 세 값이 일치하게 기록 (old ≠ new) |
+| changed files | exact path + added/removed/modified case ids |
+| safety | REMOVED_SAFETY_CASES=0 (정당화 없는 삭제 금지) · WEAKENED_ASSERTIONS=0 · DISABLED_EVAL_FILES=0 |
+| predecessor | 옛 baseline archive · 제자리 rewrite 금지 |
+| QA topology | L8 V2와 동일 (QA1–QA8 STALE · QA9 aggregation stale) |
+| workflow hash | 바이트가 안 바뀌면 MATCH · 바뀌면 L7 |
+| Human/PO ACK | apply 필수 · statement가 `ENGINE_ACCEPTANCE_REBASE_EVAL_REVIEW_V1`를 명시 |
+
+SSOT: `eval-evolutions.v1.json` + `tooling/engine-acceptance/lib/eval-review-rebase.cjs`.

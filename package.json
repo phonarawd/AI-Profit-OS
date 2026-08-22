@@ -364,8 +364,10 @@
     "verify:domain-clock": "node tooling/verify/domain-clock.cjs",
     "engine-acceptance:amend-workflow-hash": "node tooling/engine-acceptance/amend-acceptance-workflow-hash.cjs",
     "engine-acceptance:rebase-baseline": "node tooling/engine-acceptance/rebase-acceptance-baseline.cjs",
+    "engine-acceptance:rebase-baseline-eval-review": "node tooling/engine-acceptance/rebase-acceptance-baseline-eval-review.cjs",
     "engine-acceptance:selftest-workflow-amendment": "node tooling/engine-acceptance/selftest-workflow-amendment.cjs",
     "engine-acceptance:selftest-product-rebase": "node tooling/engine-acceptance/selftest-product-rebase.cjs",
+    "engine-acceptance:selftest-eval-review-rebase": "node tooling/engine-acceptance/selftest-eval-review-rebase.cjs",
     "engine-acceptance:selftest-pre-rebase-harness": "node tooling/engine-acceptance/selftest-pre-rebase-harness.cjs"
   },
   "pnpm": {

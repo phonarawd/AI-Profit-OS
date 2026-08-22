@@ -13,8 +13,11 @@ DATE: 2026-08-22
 
 ## Current reading
 
-Live protected scope ≠ August 14 QA9 baseline.
+SNAPSHOT_EQUALS_LIVE after `ENGINE_ACCEPTANCE_REBASE_EVAL_REVIEW_V1`
+current epoch `ea-baseline-00bc4bd82aaf-6baee484bb30`.
+This equals the new legal freeze, not FINAL_ACCEPTANCE.
 STALE이면 REL-502 재실행. 은폐 금지.
+REL-502 QA0–QA9 current-epoch certification is still required.
 
 ## Recert procedure
 
