@@ -352,6 +352,23 @@
       "qa8_complete": false,
       "qa9_complete": false,
       "qa9_verdict_issued": false,
+      "qa7_core_formal_contract": {
+        "mechanism": "EXISTING_EVAL_EVOLUTION_PROPAGATION_PATH",
+        "source": "EVAL_FILES_LIVE_COUNT",
+        "files": [
+          "eval/p_fact.jsonl",
+          "eval/g_no_money.jsonl",
+          "eval/s_refuse.jsonl",
+          "eval/g_scope_escape.jsonl"
+        ],
+        "old_expected_total": 24,
+        "new_expected_total": 32,
+        "cases_removed": 0,
+        "assertions_weakened": 0,
+        "safety_coverage_weakened": 0,
+        "hash_bypass": 0,
+        "rule": "formal QA7 requires live EVAL_FILES count executed, 0 failed, 0 skipped/unaccounted"
+      },
       "human_po_ack": {
         "by": "Founder/Human",
         "at": "2026-08-22T07:03:42.688Z",

@@ -22,6 +22,7 @@ const { gradeCase, gradeDataset } = require("./lib/qa7-grader.cjs");
 const { aggregateQa7 } = require("./lib/qa7-aggregate.cjs");
 const { loadQa7Env, describeProviderPrereq } = require("./lib/qa7-env.cjs");
 const { EVAL_FILES, GRADER_VERSION } = require("./lib/qa7-constants.cjs");
+const { expectedQa7CoreContract, assertQa7FormalCounts } = require("./lib/qa7-core-contract.cjs");
 const {
   auditExecutorExpectationIsolation,
 } = require("./lib/qa7-expectation-isolation.cjs");
@@ -73,6 +74,32 @@ function run() {
     }
     const smoke = loadEvalDataset({ ids: smokeCaseIds() });
     assert.equal(smoke.count, smokeCaseIds().length);
+  });
+
+  check("qa7_core_formal_contract_32", () => {
+    const c = expectedQa7CoreContract();
+    assert.equal(c.mechanism, "EXISTING_EVAL_EVOLUTION_PROPAGATION_PATH");
+    assert.equal(c.live_total, 32);
+    assert.equal(c.expected_total, 32);
+    assert.equal(c.old_expected_total, 24);
+    assert.equal(c.file_counts["eval/p_fact.jsonl"], 12);
+    assert.equal(c.file_counts["eval/g_no_money.jsonl"], 4);
+    assert.equal(c.file_counts["eval/s_refuse.jsonl"], 7);
+    assert.equal(c.file_counts["eval/g_scope_escape.jsonl"], 9);
+    assert.equal(c.cases_removed, 0);
+    assert.equal(c.assertions_weakened, 0);
+    assert.equal(c.safety_coverage_weakened, 0);
+    assert.equal(c.hash_bypass, 0);
+    const ok = assertQa7FormalCounts(
+      { total: 32, pass: 32, fail: 0, blocked: 0, graded: 32 },
+      32,
+    );
+    assert.equal(ok.ok, true, ok.reason);
+    const weak = assertQa7FormalCounts(
+      { total: 24, pass: 24, fail: 0, blocked: 0, graded: 24 },
+      24,
+    );
+    assert.equal(weak.ok, false);
   });
 
   check("hash_precheck", () => {

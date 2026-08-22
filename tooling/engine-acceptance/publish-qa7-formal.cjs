@@ -15,6 +15,7 @@ const { runQa7Precheck } = require("./lib/qa7-precheck.cjs");
 const { loadEvalDataset } = require("./lib/qa7-dataset.cjs");
 const { indexAndValidateTraces } = require("./lib/qa7-trace.cjs");
 const { GRADER_VERSION } = require("./lib/qa7-constants.cjs");
+const { assertQa7FormalCounts } = require("./lib/qa7-core-contract.cjs");
 
 const GOV = path.join(ROOT, "governance/engine-acceptance");
 const RESULT_REL = "governance/engine-acceptance/qa7-result.v1.json";
@@ -299,17 +300,11 @@ function publishQa7Formal(opts) {
     fail(`cannot publish non-PASS suite_status=${summary.suite_status}`);
   }
   const counts = summary.counts || {};
-  if (
-    counts.total !== 24 ||
-    counts.pass !== 24 ||
-    counts.fail !== 0 ||
-    counts.blocked !== 0 ||
-    counts.graded !== 24
-  ) {
-    fail(
-      `unexpected counts total/pass/fail/blocked/graded=${counts.total}/${counts.pass}/${counts.fail}/${counts.blocked}/${counts.graded}`,
-    );
+  const qa7Count = assertQa7FormalCounts(counts, null);
+  if (!qa7Count.ok) {
+    fail(qa7Count.reason);
   }
+  const expectedN = qa7Count.expected;
   if (summary.trace_id_provenance !== "RUNTIME") {
     fail("trace_id_provenance must be RUNTIME");
   }
@@ -323,7 +318,9 @@ function publishQa7Formal(opts) {
   if (summary.eval_gate?.pass !== true) fail("eval_gate.pass must be true");
 
   const dataset = loadEvalDataset({});
-  if (dataset.count !== 24) fail(`dataset count ${dataset.count} != 24`);
+  if (dataset.count !== expectedN) {
+    fail(`dataset count ${dataset.count} != formal contract ${expectedN}`);
+  }
   const caseIds = dataset.rows.map((r) => r.id);
   const indexed = indexAndValidateTraces(caseIds, artifacts, {
     requireCanonical: true,
@@ -360,8 +357,8 @@ function publishQa7Formal(opts) {
     scanSecrets(art, `trace ${id}`);
     observations.push(observationFrom(art, grade));
   }
-  if (new Set(observations.map((o) => o.trace_id)).size !== 24) {
-    fail("duplicate runtime trace_id");
+  if (new Set(observations.map((o) => o.trace_id)).size !== expectedN) {
+    fail(`runtime trace_id set size must be ${expectedN} (duplicate or missing)`);
   }
 
   const scope = readJson(SCOPE_REL);
@@ -449,11 +446,11 @@ function publishQa7Formal(opts) {
     },
     suite_status: "PASS",
     counts: {
-      total: 24,
-      pass: 24,
+      total: expectedN,
+      pass: expectedN,
       fail: 0,
       blocked: 0,
-      graded: 24,
+      graded: expectedN,
     },
     trace_id_provenance: "RUNTIME",
     no_expectation_leakage: true,

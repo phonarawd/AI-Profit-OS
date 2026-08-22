@@ -72,6 +72,7 @@ const {
   assertNoCurrentEpochFormalWashing,
 } = require("../engine-acceptance/lib/mid-epoch-formal.cjs");
 const { run: selftestMidEpochFormal } = require("../engine-acceptance/selftest-mid-epoch-formal.cjs");
+const { assertQa7FormalCounts } = require("../engine-acceptance/lib/qa7-core-contract.cjs");
 
 const fails = [];
 function fail(msg) {
@@ -1516,9 +1517,10 @@ if (qa7Result && !pendingRerun && !midEpochFormalPending) {
   if (baseline && qa7Result.baseline_id !== baseline.id) {
     fail("qa7-result.baseline_id must match current baseline.id");
   }
-  const c = qa7Result.counts || {};
-  if (c.total !== 24 || c.pass !== 24 || c.fail !== 0 || c.blocked !== 0) {
-    fail("qa7-result.counts must be 24/24/0/0");
+  const obs = qa7Result.observations || [];
+  const qa7Count = assertQa7FormalCounts(qa7Result.counts || {}, obs.length);
+  if (!qa7Count.ok) {
+    fail(qa7Count.reason);
   }
   if (qa7Result.suite_status !== "PASS") fail("qa7-result.suite_status must be PASS");
   if (qa7Result.trace_id_provenance !== "RUNTIME") {
@@ -1552,8 +1554,6 @@ if (qa7Result && !pendingRerun && !midEpochFormalPending) {
   if (qa7Result.quality_grader.sole_oracle !== false) {
     fail("qa7-result quality grader must not be sole oracle");
   }
-  const obs = qa7Result.observations || [];
-  if (obs.length !== 24) fail("qa7-result.observations must have 24 cases");
   const seenTid = new Set();
   const expectKeys = [
     "expectLane",

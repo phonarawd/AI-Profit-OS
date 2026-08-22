@@ -273,6 +273,27 @@ function validateEvolutionEntry(entry, index, fails, opts = {}) {
   if (entry.qa9_verdict_issued === true) {
     fail("must not fabricate a QA9 verdict at rebase time");
   }
+  if (entry.qa7_core_formal_contract) {
+    const c = entry.qa7_core_formal_contract;
+    if (typeof c.old_expected_total !== "number" || typeof c.new_expected_total !== "number") {
+      fail("qa7_core_formal_contract old/new expected totals required");
+    }
+    if (c.new_expected_total < c.old_expected_total) {
+      fail("qa7_core_formal_contract must not shrink expected total");
+    }
+    if (Number(c.cases_removed || 0) !== 0) {
+      fail("qa7_core_formal_contract.cases_removed must be 0");
+    }
+    if (Number(c.assertions_weakened || 0) !== 0) {
+      fail("qa7_core_formal_contract.assertions_weakened must be 0");
+    }
+    if (Number(c.safety_coverage_weakened || 0) !== 0) {
+      fail("qa7_core_formal_contract.safety_coverage_weakened must be 0");
+    }
+    if (Number(c.hash_bypass || 0) !== 0) {
+      fail("qa7_core_formal_contract.hash_bypass must be 0");
+    }
+  }
 }
 
 function assertSafetyNotWeakened(diff, review, fails) {
