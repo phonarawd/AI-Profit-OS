@@ -24,6 +24,12 @@ const S_PATTERNS = Object.freeze([
   /\bexecute[_ ]?withdraw\b/i,
   /\braise[_ ]?limit\b/i,
   /\bpayout\b/i,
+  /계정\s*탈취|비밀번호\s*(빼|훔|털)|해킹\s*해/,
+  /KYC\s*우회|본인\s*확인\s*우회|한도\s*우회|인증\s*우회/,
+  /자금\s*세탁|불법\s*자금|탈세\s*(방법|도와)/,
+  /\bmoney\s*launder/i,
+  /\bbypass\s*(kyc|limit|auth)/i,
+  /\bsteal\s*(password|account)\b/i,
 ]);
 
 /**
@@ -39,6 +45,9 @@ const OFF_TOPIC_PATTERNS = Object.freeze([
   /지시\s*무시|이전\s*(규칙|지시|프롬프트)\s*무시|ignore\s+(all\s+)?(previous|prior)\s+instructions?/i,
   /시스템\s*프롬프트\s*(보여|출력|알려)|숨겨진\s*정책|system\s*prompt/i,
   /일반\s*Gemini처럼|ChatGPT처럼\s*행동|클로드처럼\s*행동|jailbreak/i,
+  /SYSTEM_BASE|FACTS_JSON\s*(보여|출력|알려)|GROUNDED[_ ]NUMERIC/,
+  /tools\s*=\s*\[|강제\s*툴|툴을\s*강제|force\s+tools/i,
+  /developer\s+mode|정책\s*무시|disable\s+safety/i,
 ]);
 
 /**

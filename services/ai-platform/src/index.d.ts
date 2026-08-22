@@ -265,6 +265,11 @@ export const P_REFRESH_TEMPLATE: {
   readonly text: string;
   readonly copyKey: string;
 };
+export const P_UNAVAILABLE_TEMPLATE: {
+  readonly text: string;
+  readonly copyKey: string;
+};
+export function sanitizeTurnText(text: string): string;
 export const SCOPE_REDIRECT_TEMPLATE: {
   readonly text: string;
   readonly copyKey: string;

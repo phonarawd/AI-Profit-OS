@@ -72,8 +72,11 @@ if (/확정\s*수익|원금\s*보장/.test(answer)) {
 }
 
 const empty = ai.renderFactAnswer([], {});
-if (!empty || !String(empty).includes("다시")) {
-  fails.push("empty facts must refresh template (no invented numbers)");
+if (!empty || /[0-9]+(?:\.\d+)?\s*USDT/.test(String(empty))) {
+  fails.push("empty facts must not invent numbers");
+}
+if (!/없|확인|다시/.test(String(empty))) {
+  fails.push("empty facts must refuse or UNAVAILABLE (no invented profit)");
 }
 
 const nestFact = fs.readFileSync(

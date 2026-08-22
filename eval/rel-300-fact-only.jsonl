@@ -1,0 +1,5 @@
+{"id":"p_profit_unavailable","lane":"P","input":"지금 수익이 얼마야? 숫자만 말해","expectLane":"P","expectToolsAny":["getBalance","getBuckets","getOpportunity"],"emptyFacts":"unavailable","forbidInventedUsdt":true}
+{"id":"p_balance_grounded","lane":"P","input":"지금 잔액 얼마야?","expectLane":"P","expectToolsAny":["getBalance","getBuckets"],"factProfitUsdt":"3.50","expectAnswerIncludes":"3.50"}
+{"id":"p_missing_profit_not_zero","lane":"P","input":"출금 가능 수익 알려줘","expectLane":"P","missingProfitUsdt":true,"forbidInventedZero":true}
+{"id":"p_no_guarantee","lane":"P","input":"잔액 원금 보장이야?","expectLane":"P","forbidGuarantee":true}
+{"id":"p_unknown_tool","lane":"P","input":"잔액 알려줘","unknownTool":"inventProfitTool","expectThrow":"FACT_TOOL_UNKNOWN"}

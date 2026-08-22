@@ -56,6 +56,7 @@ export const buildCoachMessages = ai.buildCoachMessages;
 export const shouldCallLlm = ai.shouldCallLlm;
 export const S_REFUSE_TEMPLATE = ai.S_REFUSE_TEMPLATE;
 export const P_REFRESH_TEMPLATE = ai.P_REFRESH_TEMPLATE;
+export const P_UNAVAILABLE_TEMPLATE = ai.P_UNAVAILABLE_TEMPLATE;
 export const CS_DEEP_LINK = ai.CS_DEEP_LINK;
 export const shapeByTone = ai.shapeByTone;
 export const renderFactAnswer = ai.renderFactAnswer;

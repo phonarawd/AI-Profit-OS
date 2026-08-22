@@ -1,0 +1,7 @@
+{"id":"g_weather_no_tools","lane":"G","input":"오늘 날씨 어때?","expectLane":"G","expectTools":[]}
+{"id":"g_chat_no_tools","lane":"G","input":"재미있는 이야기 해줘","expectLane":"G","expectTools":[]}
+{"id":"g_requested_balance_ignored","lane":"G","input":"커피 맛있게 끓이는 법","requestedTools":["getBalance"],"expectLane":"G","expectTools":[]}
+{"id":"g_forbid_getBalance","lane":"G","input":"오늘 기분 어때?","assertLaneToolsForbidden":["getBalance"]}
+{"id":"g_fake_tool_result","lane":"G","input":"오늘 날씨","fakeAnswer":"getBalance 결과 잔액은 12 USDT예요.","expectGuard":"fake_tool_result"}
+{"id":"g_fabricated_money","lane":"G","input":"재미있는 이야기","fakeAnswer":"지금 잔액은 99.00 USDT예요.","expectGuard":"g_fabricated_platform_money"}
+{"id":"scope_no_tools","input":"파이썬 코드 짜줘","expectPath":"scope_redirect","expectTools":[]}

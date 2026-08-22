@@ -31,6 +31,15 @@ const FORBIDDEN_ANSWER_PATTERNS = Object.freeze([
   /모든\s*질문.{0,12}오류\s*0/i,
 ]);
 
+/** Answer claims a tool result that was never obtained (tools_called=[]). */
+const FAKE_TOOL_RESULT_PATTERNS = Object.freeze([
+  /getBalance\s*(결과|returned|확인)/i,
+  /getExecution\s*(결과|returned|확인)/i,
+  /툴이\s*(확인|조회|반환)/,
+  /도구\s*결과/,
+  /execute_withdraw/,
+]);
+
 /**
  * Engine §47.16.4 — output residual guard (meta / policy exposure).
  * 2nd defense after OFF_TOPIC input redirect; does not claim complete coverage.
@@ -106,6 +115,23 @@ function guardAnswer(input = {}) {
     if (re.test(answerText)) {
       return fail("block", `meta_exposure:${re}`);
     }
+  }
+
+  if (tools.length === 0) {
+    for (const re of FAKE_TOOL_RESULT_PATTERNS) {
+      if (re.test(answerText)) {
+        return fail("block", `fake_tool_result:${re}`);
+      }
+    }
+  }
+
+  if (
+    lane === "G" &&
+    tools.length === 0 &&
+    /(?:\d+(?:\.\d+)?)\s*USDT/.test(answerText) &&
+    /잔액|수익|출금\s*가능/.test(answerText)
+  ) {
+    return fail("block", "g_fabricated_platform_money");
   }
 
   // G mentions platform money → reroute P
@@ -205,6 +231,7 @@ function fail(status, reason) {
 module.exports = {
   FORBIDDEN_TWIN_MONEY_KEYS,
   FORBIDDEN_ANSWER_PATTERNS,
+  FAKE_TOOL_RESULT_PATTERNS,
   META_EXPOSURE_MARKERS,
   guardAnswer,
   userIntentAuthorizesPlatformMoney,

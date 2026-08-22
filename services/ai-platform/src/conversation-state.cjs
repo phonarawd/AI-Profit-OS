@@ -21,6 +21,26 @@ const MAX_TURNS = 8;
 const MAX_TURN_TEXT_LEN = 300;
 const TURN_ROLES = Object.freeze(["user", "assistant"]);
 
+const SECRET_REDACT = Object.freeze([
+  /Bearer\s+[A-Za-z0-9._\-+=/]+/gi,
+  /eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g,
+  /sk-[A-Za-z0-9]{20,}/g,
+  /service_role/gi,
+  /-----BEGIN [A-Z ]+PRIVATE KEY-----[\s\S]*?-----END [A-Z ]+PRIVATE KEY-----/g,
+]);
+
+/**
+ * Session text may be recalled — secrets/tokens must not persist.
+ * @param {string} text
+ */
+function sanitizeTurnText(text) {
+  let s = String(text || "");
+  for (const re of SECRET_REDACT) {
+    s = s.replace(re, "[REDACTED]");
+  }
+  return s.slice(0, MAX_TURN_TEXT_LEN);
+}
+
 /**
  * @returns {string}
  */
@@ -50,7 +70,7 @@ function normalizeTurn(raw) {
   const role = TURN_ROLES.includes(raw?.role) ? raw.role : "user";
   return Object.freeze({
     role,
-    text: String(raw?.text || "").slice(0, MAX_TURN_TEXT_LEN),
+    text: sanitizeTurnText(raw?.text || ""),
     lane: raw?.lane != null ? String(raw.lane) : null,
     at: raw?.at || new Date().toISOString(),
   });
@@ -206,6 +226,7 @@ function buildHistoryMessages(state, maxChars = 800) {
 module.exports = {
   MAX_TURNS,
   MAX_TURN_TEXT_LEN,
+  sanitizeTurnText,
   newConversationId,
   conversationStateRedisKey,
   buildConversationState,

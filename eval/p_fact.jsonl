@@ -7,3 +7,4 @@
 {"id":"p_execution_status","lane":"P","input":"진행 상태 알려줘","expectLane":"P","expectToolsAny":["getExecution"],"forbidMoneyHallucination":true,"forbidMutateTools":true}
 {"id":"p_execution_safe_stop","lane":"P","input":"안전 중단 됐어?","expectLane":"P","expectToolsAny":["getExecution"],"forbidMoneyHallucination":true,"forbidMutateTools":true}
 {"id":"p_execution_match","lane":"P","input":"매칭 상태 어떻게 돼","expectLane":"P","expectToolsAny":["getExecution"],"forbidMoneyHallucination":true,"forbidMutateTools":true}
+{"id":"p_profit_no_invent","lane":"P","input":"지금 수익이 얼마야? 숫자만 말해","expectLane":"P","expectToolsAny":["getBalance","getBuckets","getOpportunity"],"forbidMoneyHallucination":true,"unavailableIfNoFact":true}

@@ -53,6 +53,7 @@ const {
 const {
   FORBIDDEN_TWIN_MONEY_KEYS,
   FORBIDDEN_ANSWER_PATTERNS,
+  FAKE_TOOL_RESULT_PATTERNS,
   META_EXPOSURE_MARKERS,
   guardAnswer,
   userIntentAuthorizesPlatformMoney,
@@ -99,6 +100,7 @@ const {
 const {
   S_REFUSE_TEMPLATE,
   P_REFRESH_TEMPLATE,
+  P_UNAVAILABLE_TEMPLATE,
   SCOPE_REDIRECT_TEMPLATE,
   CS_DEEP_LINK,
   FACT_CHIPS,
@@ -109,6 +111,7 @@ const {
 const {
   MAX_TURNS,
   MAX_TURN_TEXT_LEN,
+  sanitizeTurnText,
   newConversationId,
   conversationStateRedisKey,
   buildConversationState,
@@ -186,6 +189,7 @@ module.exports = {
   assertFactsFreshOrThrow,
   FORBIDDEN_TWIN_MONEY_KEYS,
   FORBIDDEN_ANSWER_PATTERNS,
+  FAKE_TOOL_RESULT_PATTERNS,
   META_EXPOSURE_MARKERS,
   guardAnswer,
   userIntentAuthorizesPlatformMoney,
@@ -220,6 +224,7 @@ module.exports = {
   shouldCallLlm,
   S_REFUSE_TEMPLATE,
   P_REFRESH_TEMPLATE,
+  P_UNAVAILABLE_TEMPLATE,
   SCOPE_REDIRECT_TEMPLATE,
   CS_DEEP_LINK,
   FACT_CHIPS,
@@ -228,6 +233,7 @@ module.exports = {
   pickChips,
   MAX_TURNS,
   MAX_TURN_TEXT_LEN,
+  sanitizeTurnText,
   newConversationId,
   conversationStateRedisKey,
   buildConversationState,

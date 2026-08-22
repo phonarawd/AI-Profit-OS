@@ -78,6 +78,12 @@ const live = [
   "fact-freshness.cjs",
   "answer-trace.cjs",
   "conversation-state-bounded.cjs",
+  "rel-300-fact-only.cjs",
+  "rel-301-tool-call.cjs",
+  "rel-302-safe-refuse.cjs",
+  "rel-303-red-team.cjs",
+  "rel-304-grounding.cjs",
+  "rel-305-bounded-memory.cjs",
   "reference-resolution.cjs",
   // P0-2 (Engine Final Re-Verification Audit) — previously implemented but
   // never enforced by verify:gate; wired in so a future regression fails CI.

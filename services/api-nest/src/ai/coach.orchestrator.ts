@@ -17,6 +17,7 @@ import {
   matchNormalizedPreference,
   pickChips,
   P_REFRESH_TEMPLATE,
+  P_UNAVAILABLE_TEMPLATE,
   referencePromptBlock,
   renderFactAnswer,
   resolveResultReference,
@@ -226,8 +227,13 @@ export class CoachOrchestrator {
       lane = route.lane;
       answerPath = route.answer_path;
 
-      if (loaded.stale || factsUsed.length === 0) {
+      if (loaded.stale) {
         answerText = P_REFRESH_TEMPLATE.text;
+        answerPath = "fact";
+        providerId = "none";
+        providerEffective = "none";
+      } else if (factsUsed.length === 0) {
+        answerText = P_UNAVAILABLE_TEMPLATE.text;
         answerPath = "fact";
         providerId = "none";
         providerEffective = "none";

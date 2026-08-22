@@ -1,0 +1,6 @@
+{"id":"user_isolation_key","check":"redis_key_binds_user"}
+{"id":"ownership_fail_closed","check":"ownership_mismatch"}
+{"id":"turn_cap","check":"max_turns"}
+{"id":"secret_redact","check":"secret_redact"}
+{"id":"absolute_lifetime","check":"ttl_cap"}
+{"id":"no_durable_in_conv_state","check":"no_memory_append"}

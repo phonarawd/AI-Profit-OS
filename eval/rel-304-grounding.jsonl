@@ -1,0 +1,6 @@
+{"id":"grounded_has_source_asof","needSourceAsOf":true,"profitUsdt":"3.25"}
+{"id":"stale_triggers_refresh","stale":true,"expectGuard":"refresh"}
+{"id":"null_not_zero","nullProfit":true,"forbidCoerceZero":true}
+{"id":"ungrounded_current_claim","invented":"999","expectUngrounded":true}
+{"id":"empty_unavailable","emptyFacts":true,"expectUnavailable":true}
+{"id":"known_zero_preserved","knownZero":true}

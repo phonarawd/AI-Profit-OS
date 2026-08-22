@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-221 COMPLETED. FIRST_EXECUTION_TODO=REL-300. BATCH_REL_200_206=CLOSED. BATCH_REL_207_209=CLOSED. BATCH_REL_210_212=CLOSED. BATCH_REL_216_221=CLOSED. BATCH_A_RUNTIME_ACCEPTANCE=CLOSED.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-305 COMPLETED. FIRST_EXECUTION_TODO=REL-215. BATCH_REL_200_206=CLOSED. BATCH_REL_207_209=CLOSED. BATCH_REL_210_212=CLOSED. BATCH_REL_216_221=CLOSED. BATCH_REL_300_305=CLOSED. BATCH_A_RUNTIME_ACCEPTANCE=CLOSED.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -232,22 +232,22 @@ todos:
     status: completed
   - id: rel-300
     content: "[AI Capability] Coach P-lane(Fact-only) 런타임 재확인"
-    status: pending
+    status: completed
   - id: rel-301
     content: "[AI Capability] Coach G-lane(scope-guard, tools=[]) 런타임 재확인"
-    status: pending
+    status: completed
   - id: rel-302
     content: "[AI Capability] Coach S-lane(safe-refuse) 런타임 재확인"
-    status: pending
+    status: completed
   - id: rel-303
     content: "[AI Capability] prompt-injection/scope-escape red-team pass"
-    status: pending
+    status: completed
   - id: rel-304
     content: "[AI Capability] numeric-grounding + fact-freshness 런타임 재확인"
-    status: pending
+    status: completed
   - id: rel-305
     content: "[AI Capability] conversation-state bounded-memory 런타임 재확인"
-    status: pending
+    status: completed
   - id: rel-215
     content: "[Admin] /admin/ai-logs 실사+구현(deps REL-300~305 완료 후, TOP→BOTTOM에서 본 위치)"
     status: pending
@@ -420,12 +420,13 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-300
-LAST_COMPLETED_TODO = REL-221
+FIRST_EXECUTION_TODO = REL-215
+LAST_COMPLETED_TODO = REL-305
 BATCH_REL_200_206 = CLOSED
 BATCH_REL_207_209 = CLOSED
 BATCH_REL_210_212 = CLOSED
 BATCH_REL_216_221 = CLOSED
+BATCH_REL_300_305 = CLOSED
 HARD_STOP_AFTER = []
 BATCH_A_RUNTIME_ACCEPTANCE = CLOSED
 BATCH_A_FINAL_COMMIT = 42a70973d9537c8712e831130620de9ec5b7272f
@@ -2729,7 +2730,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-300
 TITLE: Coach P-lane (Fact-only) 런타임 재확인
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: peotteok_ai_coach_hardening_v1 (workspace/intake) + putduk_release_master
 SOURCE_TODO_IDS:
   - rel-300
@@ -2743,7 +2744,7 @@ IMPLEMENTATION_STEPS:
   - 회귀 verify가 있으면 실행, 없으면 최소 fixture 추가
 VERIFY: fact-only fixture PASS
 ACCEPTANCE: P-lane이 수익을 창작하지 않음
-EVIDENCE: coach P-lane 모듈 + fixture
+EVIDENCE: "governance/release-master/REL-300-FACT-ONLY.md + eval/rel-300-fact-only.jsonl + verify:rel-300-fact-only"
 EXIT_GATE: 창작 수익 발견 시 REL-122 DONE 무효
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2754,7 +2755,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-301
 TITLE: Coach G-lane (scope-guard, tools=[]) 런타임 재확인
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-301
@@ -2768,7 +2769,7 @@ IMPLEMENTATION_STEPS:
   - 실패 시 가드 강화. 새 툴 추가 금지
 VERIFY: G-lane tool call 0 fixture
 ACCEPTANCE: scope-guard 유지
-EVIDENCE: G-lane config + fixture
+EVIDENCE: "governance/release-master/REL-301-TOOL-CALL.md + eval/rel-301-tool-call.jsonl + verify:rel-301-tool-call"
 EXIT_GATE: 툴 호출 가능하면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2779,7 +2780,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-302
 TITLE: Coach S-lane (safe-refuse) 런타임 재확인
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-302
@@ -2793,7 +2794,7 @@ IMPLEMENTATION_STEPS:
   - verify 실행
 VERIFY: safe-refuse fixture PASS
 ACCEPTANCE: 위험 요청이 실행 조언으로 바뀌지 않음
-EVIDENCE: S-lane fixture
+EVIDENCE: "governance/release-master/REL-302-SAFE-REFUSE.md + eval/rel-302-safe-refuse.jsonl + verify:rel-302-safe-refuse"
 EXIT_GATE: 없음
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2804,7 +2805,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-303
 TITLE: prompt-injection / scope-escape red-team pass
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-303
@@ -2819,7 +2820,7 @@ IMPLEMENTATION_STEPS:
   - 통과를 채팅 한 줄로 대체 금지
 VERIFY: red-team fixture PASS
 ACCEPTANCE: 경계 탈출 0
-EVIDENCE: coach red-team fixture
+EVIDENCE: "governance/release-master/REL-303-RED-TEAM.md + eval/rel-303-red-team.jsonl + verify:rel-303-red-team"
 EXIT_GATE: 미실행을 PASS로 위조 금지
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2830,7 +2831,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-304
 TITLE: numeric-grounding + fact-freshness 런타임 재확인
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-304
@@ -2844,7 +2845,7 @@ IMPLEMENTATION_STEPS:
   - REL-007 UNAVAILABLE과 계약 일치
 VERIFY: grounding/freshness fixture PASS
 ACCEPTANCE: 근거 없는 숫자 0
-EVIDENCE: grounding fixture
+EVIDENCE: "governance/release-master/REL-304-GROUNDING.md + eval/rel-304-grounding.jsonl + verify:rel-304-grounding"
 EXIT_GATE: 없음
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2855,7 +2856,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-305
 TITLE: conversation-state bounded-memory 런타임 재확인
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-305
@@ -2869,7 +2870,7 @@ IMPLEMENTATION_STEPS:
   - 한도 초과 시 안전 축소
 VERIFY: bounded-memory fixture PASS
 ACCEPTANCE: 메모리 경계 유지
-EVIDENCE: conversation-state 모듈
+EVIDENCE: "governance/release-master/REL-305-BOUNDED-MEMORY.md + eval/rel-305-bounded-memory.jsonl + verify:rel-305-bounded-memory"
 EXIT_GATE: 없음
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -4576,7 +4577,8 @@ REL-000은 2026-08-20에 PASS/COMPLETED.
 REL-001은 2026-08-20에 PASS/COMPLETED (`preserve/2026-08-20-worktree-rescue` · `ae8d1e6` · merge 금지).
 REL-002~REL-206은 통합선 `rel/auth-track-a-integration` @ `42a70973` 기준으로 COMPLETED.
 Batch A Runtime Acceptance는 2026-08-22에 PASS/CLOSED (`42a70973`) — 신규 TODO 없음. 기존 REL-106~110 증거 강화.
-현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-300`. HARD_STOP_AFTER 는 소비됨(`[]`).
+현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-215`. HARD_STOP_AFTER 는 소비됨(`[]`).
+REL-300~REL-305는 2026-08-22 AI Coach Quality/Safety Batch에서 기존 P/G/S 오너+committed fixture 실행 후 COMPLETED. REL-215는 착수하지 않음.
 REL-207~REL-209는 2026-08-22 Batch B에서 기존 Admin JWT+오너 API에 실배선 후 COMPLETED.
 REL-210~REL-212는 2026-08-22 Batch C에서 기존 Opportunity/Adapter/Support 오너에 실배선 후 COMPLETED. Runtime/browser QA는 이 배치에서 강제하지 않음(BLOCKED_LOCAL_RAM).
 REL-216~REL-221는 2026-08-22 Admin Report/Growth Batch에서 기존 ledger/wallet/growth/opportunity 오너에 실배선 후 COMPLETED. ROAS/CAPI/POST는 당기지 않음. Runtime/browser QA는 이 배치에서 강제하지 않음(BLOCKED_LOCAL_RAM).

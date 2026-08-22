@@ -21,6 +21,12 @@ const P_REFRESH_TEMPLATE = Object.freeze({
   copyKey: "T.peotteok.pRefresh",
 });
 
+/** P-lane missing Fact — REL-007 UNAVAILABLE · invent 0 금지 */
+const P_UNAVAILABLE_TEMPLATE = Object.freeze({
+  text: "지금 확인할 수 있는 숫자가 없어요. 없는 값은 만들어 말하지 않을게요.",
+  copyKey: "T.peotteok.pUnavailable",
+});
+
 /**
  * Engine §47.16.4 — known off-topic / injection → no LLM · tools=[] · P칩 유도
  */
@@ -120,15 +126,19 @@ function shapeByTone(toneBand, body) {
 function renderFactAnswer(facts, opts = {}) {
   const list = Array.isArray(facts) ? facts : [];
   if (list.length === 0) {
-    return P_REFRESH_TEMPLATE.text;
+    return P_UNAVAILABLE_TEMPLATE.text;
   }
   const lines = [];
   for (const f of list) {
     const p = f?.payload && typeof f.payload === "object" ? f.payload : {};
     if (p.profitUsdt != null || p.liabilityUsdt != null) {
-      lines.push(
-        `지금 출금 가능한 수익은 ${String(p.profitUsdt ?? "0")} USDT예요. (원장 기준)`,
-      );
+      if (p.profitUsdt == null) {
+        lines.push("출금 가능 수익은 지금 확인할 수 없어요.");
+      } else {
+        lines.push(
+          `지금 출금 가능한 수익은 ${String(p.profitUsdt)} USDT예요. (원장 기준)`,
+        );
+      }
       if (p.principalUsdt != null) {
         lines.push(`원금 버킷은 ${String(p.principalUsdt)} USDT예요.`);
       }
@@ -148,8 +158,12 @@ function renderFactAnswer(facts, opts = {}) {
       continue;
     }
     if (p.claimableCount != null || p.benefitsHref) {
+      const countPart =
+        p.claimableCount != null
+          ? `받을 혜택 ${String(p.claimableCount)}건`
+          : "받을 혜택 건수는 지금 확인할 수 없어요";
       lines.push(
-        `받을 혜택 ${String(p.claimableCount ?? 0)}건 · 자세히: ${String(p.benefitsHref || "/me/benefits")}`,
+        `${countPart} · 자세히: ${String(p.benefitsHref || "/me/benefits")}`,
       );
       continue;
     }
@@ -177,7 +191,7 @@ function renderFactAnswer(facts, opts = {}) {
       lines.push(String(p.summary));
     }
   }
-  const body = lines.length ? lines.join(" ") : P_REFRESH_TEMPLATE.text;
+  const body = lines.length ? lines.join(" ") : P_UNAVAILABLE_TEMPLATE.text;
   return shapeByTone(opts.toneBand, body);
 }
 
@@ -208,6 +222,7 @@ function pickChips(opts = {}) {
 module.exports = {
   S_REFUSE_TEMPLATE,
   P_REFRESH_TEMPLATE,
+  P_UNAVAILABLE_TEMPLATE,
   SCOPE_REDIRECT_TEMPLATE,
   CS_DEEP_LINK,
   FACT_CHIPS,

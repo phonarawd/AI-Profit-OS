@@ -628,12 +628,22 @@ const RULES = [
       /^services\/api-nest\/src\/ai\/(coach\.orchestrator|fact-tool\.service|conversation-state\.service|memory\.service|ai\.engine)\.ts$/.test(
         f,
       ) ||
-      /^tooling\/verify\/(reference-resolution|conversation-state-bounded)\.cjs$/.test(
+      /^tooling\/verify\/(reference-resolution|conversation-state-bounded|rel-30[0-5]-[\w-]+)\.cjs$/.test(
+        f,
+      ) ||
+      /^eval\/rel-30[0-5]-/.test(f) ||
+      /^eval\/(p_fact|s_refuse|g_no_money|g_scope_escape|rel-303-red-team)\.jsonl$/.test(
         f,
       ),
     scripts: [
       "reference-resolution.cjs",
       "conversation-state-bounded.cjs",
+      "rel-300-fact-only.cjs",
+      "rel-301-tool-call.cjs",
+      "rel-302-safe-refuse.cjs",
+      "rel-303-red-team.cjs",
+      "rel-304-grounding.cjs",
+      "rel-305-bounded-memory.cjs",
       "ai-coach-fact-only.cjs",
       "ai-coach-no-autonomy.cjs",
       "ai-general-no-money-tools.cjs",
@@ -653,6 +663,10 @@ const RULES = [
       "ai-coach-no-autonomy.cjs",
       "ai-general-no-money-tools.cjs",
       "reference-resolution.cjs",
+      "rel-300-fact-only.cjs",
+      "rel-301-tool-call.cjs",
+      "rel-302-safe-refuse.cjs",
+      "rel-303-red-team.cjs",
       "age-tone-surfaces.cjs",
     ],
   },
@@ -677,6 +691,12 @@ const RULES = [
       "ai-general-no-money-tools.cjs",
       "reference-resolution.cjs",
       "conversation-state-bounded.cjs",
+      "rel-300-fact-only.cjs",
+      "rel-301-tool-call.cjs",
+      "rel-302-safe-refuse.cjs",
+      "rel-303-red-team.cjs",
+      "rel-304-grounding.cjs",
+      "rel-305-bounded-memory.cjs",
       "age-tone-surfaces.cjs",
     ],
   },
@@ -692,6 +712,7 @@ const RULES = [
       "ai-coach-no-autonomy.cjs",
       "ai-general-no-money-tools.cjs",
       "fact-freshness.cjs",
+      "rel-304-grounding.cjs",
       "home-state-truth.cjs",
       "no-fake-zero-status.cjs",
     ],
