@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   adminGet,
+  adminSend,
   type AdminResult,
 } from "../../../lib/admin-api";
 import {
@@ -39,7 +40,6 @@ type HealthPayload = {
   items?: unknown;
   day1AutoPublishYahooJp?: unknown;
   phase1Partners?: unknown;
-  nearMissCapOwns?: unknown;
   matchingKpi?: {
     skuMatchFailureRate?: unknown;
     skuAttempts?: unknown;
@@ -76,19 +76,27 @@ export default function Page() {
   const [health, setHealth] = useState<AdminResult<HealthPayload> | null>(null);
   const [legs, setLegs] = useState<AdminResult<LegsPayload> | null>(null);
   const [review, setReview] = useState<AdminResult<ReviewPayload> | null>(null);
+  const [sourceHealth, setSourceHealth] = useState<AdminResult<unknown> | null>(
+    null,
+  );
+  const [policy, setPolicy] = useState<AdminResult<unknown> | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      const [h, l, r] = await Promise.all([
+      const [h, l, r, sh, pv] = await Promise.all([
         adminGet<HealthPayload>("/api/v1/admin/adapters"),
         adminGet<LegsPayload>("/api/v1/admin/adapters/listing-legs"),
         adminGet<ReviewPayload>("/api/v1/admin/adapters/identity-review-queue"),
+        adminGet<unknown>("/api/v1/admin/source-health"),
+        adminGet<unknown>("/api/v1/admin/policy/versions"),
       ]);
       if (cancelled) return;
       setHealth(h);
       setLegs(l);
       setReview(r);
+      setSourceHealth(sh);
+      setPolicy(pv);
     })();
     return () => {
       cancelled = true;
@@ -417,10 +425,76 @@ export default function Page() {
         당일 기회 자동 공개는 이베이·운영자 기준가만 씁니다. 아마존·야후 일본은
         공식 협력 수집기(Phase1+)입니다.
       </p>
+      <section
+        className="mt-8 rounded-md border border-lux-border p-3"
+        data-testid="adapter-source-health"
+      >
+        <h2 className="text-sm font-medium">수집기 건강·정책 버전</h2>
+        <p className="mt-1 text-xs text-lux-text-muted">
+          관측이 없으면 정상으로 만들지 않습니다.
+        </p>
+        {!sourceHealth ? (
+          <p className="mt-3 text-sm text-lux-text-muted">불러오는 중</p>
+        ) : !sourceHealth.ok ? (
+          <AdminFetchNote failure={sourceHealth.failure} />
+        ) : (
+          <ul className="mt-3 space-y-1 text-sm">
+            {(asRecordList(sourceHealth.data) ?? []).map((row, idx) => (
+              <li key={readText(row.adapterId) ?? String(idx)}>
+                <AdminTruth value={readText(row.adapterId)} />{" "}
+                <AdminTruth value={readText(row.status)} />
+              </li>
+            ))}
+          </ul>
+        )}
+        {!policy ? (
+          <p className="mt-3 text-sm text-lux-text-muted">불러오는 중</p>
+        ) : !policy.ok ? (
+          <AdminFetchNote failure={policy.failure} />
+        ) : (
+          <p className="mt-3 text-sm">
+            정책{" "}
+            <AdminTruth
+              value={readText((policy.data as { current?: unknown }).current)}
+              testId="policy-current"
+            />
+          </p>
+        )}
+        <button
+          type="button"
+          className="mt-2 rounded bg-lux-elevated px-2 py-1 text-sm"
+          onClick={() => {
+            if (!window.confirm("정책 버전을 V1으로 되돌릴까요?")) return;
+            void adminSend("/api/v1/admin/policy/rollback", "POST", {
+              version: "V1",
+              reason: "adapter panel policy rollback",
+            }).then((res) => {
+              if (res.ok) setPolicy(res);
+            });
+          }}
+        >
+          V1으로 되돌리기
+        </button>
+        <button
+          type="button"
+          className="mt-2 ml-2 rounded px-2 py-1 text-sm"
+          onClick={() => {
+            if (!window.confirm("창립자 최상위 덮어쓰기를 기록할까요?")) return;
+            void adminSend("/api/v1/admin/founder-override", "POST", {
+              engaged: true,
+              reason: "adapter panel founder override",
+            });
+          }}
+        >
+          창립자 덮어쓰기
+        </button>
+      </section>
+
       <p
         className="mt-2 text-xs text-lux-text-muted"
         data-lock="proximity-limit-owns"
         data-owns="execution-policy"
+        data-catalog-adapters="ebay pokemontcg ygoprodeck coingecko frankfurter"
       >
         근접미달 한도 설정은 진행 정책 화면만 · 이 화면 금지
       </p>

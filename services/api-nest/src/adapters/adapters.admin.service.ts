@@ -29,6 +29,7 @@ import { CatalogRuntimeSeedService } from "../opportunities/catalog-runtime-seed
 import { FxSnapshotService } from "../opportunities/fx-snapshot.service";
 import { ADAPTER_EVENTS } from "./adapters.events";
 import { ProviderHealthService } from "./provider-health.service";
+import { KillSwitchService } from "../admin-control/kill-switch.service";
 import type {
   AdapterHealthRow,
   AdapterHealthStatus,
@@ -107,6 +108,7 @@ export class AdaptersAdminService {
     @Optional()
     @Inject(forwardRef(() => FxSnapshotService))
     private readonly fxSnapshots?: FxSnapshotService,
+    @Optional() private readonly killSwitch?: KillSwitchService,
   ) {
     for (const a of this.deployAdapters) {
       this.state.set(a.adapterId, {
@@ -294,6 +296,9 @@ export class AdaptersAdminService {
     }
     if (!isIngestableAdapterId(adapterId)) {
       throw new BadRequestException(`unknown adapter: ${adapterId}`);
+    }
+    if (this.killSwitch) {
+      await this.killSwitch.assertAllowed("GLOBAL_SOURCE_INGEST_PAUSE");
     }
 
     const observedAt = body.observedAt || new Date().toISOString();

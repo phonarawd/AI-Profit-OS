@@ -177,6 +177,33 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     resetPin: write("withdrawPinReset"),
     revokeWebauthn: write("withdrawPinReset"),
   },
+  AdminAuditAdminController: {
+    list: read("controlAudit"),
+  },
+  KillSwitchAdminController: {
+    catalog: read("circuit"),
+    put: write("circuit"),
+  },
+  OpsModeAdminController: {
+    get: read("opsMode"),
+    put: write("opsMode"),
+    previewAsUser: write("opsMode"),
+    impactPreview: write("opsMode"),
+    impactConfirm: write("opsMode"),
+    impactApply: write("opsMode"),
+    impactGet: read("opsMode"),
+    impactRollback: write("opsMode"),
+  },
+  AllocationAdminController: {
+    preview: read("allocation"),
+    apply: write("allocation"),
+  },
+  SourceHealthAdminController: {
+    health: read("sourceHealth"),
+    versions: read("sourceHealth"),
+    rollback: write("sourceHealth"),
+    founderOverride: write("founderOverride"),
+  },
 });
 
 export function requiredCapabilityFor(

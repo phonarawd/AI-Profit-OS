@@ -14,6 +14,7 @@ import { InProcessEventBus } from "../events/in-process.bus";
 import { PostgresService } from "../db/postgres";
 import { assertAmountUsdt, cmpAmount, parseAmount } from "../ledger/ledger.money";
 import { RiskService } from "../risk/risk.service";
+import { KillSwitchService } from "../admin-control/kill-switch.service";
 import {
   assertWithdrawApplyAllowed,
   WITHDRAW_APPLY_BLOCKED,
@@ -90,6 +91,7 @@ export class WithdrawIntentService {
     private readonly stepUp: WithdrawStepUpService,
     private readonly fee: WithdrawFeeService,
     private readonly risk: RiskService,
+    private readonly killSwitch: KillSwitchService,
     private readonly minHolding: MinHoldingService,
     private readonly bus: InProcessEventBus,
   ) {}
@@ -100,6 +102,7 @@ export class WithdrawIntentService {
    */
   async create(input: WithdrawIntentCreateInput): Promise<WithdrawIntentV1> {
     if (!input.userId) throw new BadRequestException("userId required");
+    await this.killSwitch.assertAllowed("GLOBAL_WITHDRAW_PAUSE");
     if (!input.idempotencyKey || input.idempotencyKey.length < 8) {
       throw new BadRequestException("idempotencyKey minLength 8");
     }

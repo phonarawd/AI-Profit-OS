@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { ExecutionPolicyModule } from "../execution-policy/execution-policy.module";
 import { LedgerModule } from "../ledger/ledger.module";
 import { RiskModule } from "../risk/risk.module";
+import { KillSwitchModule } from "../admin-control/kill-switch.module";
 import { SimulationModule } from "../simulation/simulation.module";
 import { TradeExecutionService } from "./trades.execution.service";
 import { TradesUserController } from "./trades.user.controller";
@@ -14,6 +15,7 @@ import { TradesUserController } from "./trades.user.controller";
   imports: [
     LedgerModule,
     RiskModule,
+    KillSwitchModule,
     ExecutionPolicyModule,
     SimulationModule,
   ],

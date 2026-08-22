@@ -1,0 +1,18 @@
+export const ADMIN_CONTROL_ROUTES = {
+  audit: "audit",
+  switches: "system-control/switches",
+  switchById: "system-control/switches/:id",
+  opsMode: "ops/mode",
+  previewAsUser: "ops/preview-as-user",
+  impactPreview: "ops/impact/preview",
+  impactConfirm: "ops/impact/confirm",
+  impactApply: "ops/impact/apply",
+  impactGet: "ops/impact/:id",
+  impactRollback: "ops/impact/:id/rollback",
+  allocationPreview: "allocation/preview",
+  allocationApply: "allocation/apply",
+  sourceHealth: "source-health",
+  policyVersions: "policy/versions",
+  policyRollback: "policy/rollback",
+  founderOverride: "founder-override",
+} as const;

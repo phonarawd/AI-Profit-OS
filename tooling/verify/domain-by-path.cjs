@@ -452,6 +452,14 @@ const RULES = [
       "rel-220-admin-growth-whale.cjs",
       "rel-221-admin-growth-content.cjs",
       "rel-400-control-plane-spec.cjs",
+      "rel-222-admin-ops-mode.cjs",
+      "rel-223-allocation-match.cjs",
+      "rel-224-source-health-policy.cjs",
+      "rel-405-rbac-audit.cjs",
+      "rel-406-kill-switch.cjs",
+      "rel-407-price-override.cjs",
+      "rel-408-security-baseline.cjs",
+      "rel-409-admin-r6.cjs",
     ],
   },
   {
@@ -532,6 +540,67 @@ const RULES = [
       /^tooling\/verify\/rel-404-lighthouse-budget\.cjs$/.test(f) ||
       /^governance\/release-master\/REL-404-LIGHTHOUSE-BUDGET\.md$/.test(f),
     scripts: ["rel-404-lighthouse-budget.cjs"],
+  },
+  {
+    test: (f) =>
+      /^schemas\/admin-audit\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/src\/admin-control\//.test(f) ||
+      /^services\/api-nest\/src\/common\/admin-capabilities\.ts$/.test(f) ||
+      /^tooling\/verify\/rel-405-rbac-audit\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-405-RBAC-AUDIT\.md$/.test(f),
+    scripts: ["rel-405-rbac-audit.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/admin-control\/kill-switch/.test(f) ||
+      /^tooling\/verify\/rel-406-kill-switch\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-406-KILL-SWITCH\.md$/.test(f),
+    scripts: ["rel-406-kill-switch.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/opportunities\/price-layers\.ts$/.test(f) ||
+      /^tooling\/verify\/rel-407-price-override\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-407-PRICE-OVERRIDE\.md$/.test(f),
+    scripts: ["rel-407-price-override.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/SECURITY_BASELINE\.md$/.test(f) ||
+      /^governance\/release-master\/ROLLBACK_RUNBOOK\.md$/.test(f) ||
+      /^governance\/release-master\/REL-408-SECURITY-BASELINE\.md$/.test(f) ||
+      /^supabase\/migrations\/20260822140000_rel405_admin_control_plane\.sql$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/rel-408-security-baseline\.cjs$/.test(f),
+    scripts: ["rel-408-security-baseline.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/admin-control\/ops-mode/.test(f) ||
+      /^tooling\/verify\/rel-222-admin-ops-mode\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-222-OPS-MODE\.md$/.test(f),
+    scripts: ["rel-222-admin-ops-mode.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/admin-control\/allocation/.test(f) ||
+      /^tooling\/verify\/rel-223-allocation-match\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-223-ALLOCATION\.md$/.test(f),
+    scripts: ["rel-223-allocation-match.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/admin-control\/source-health/.test(f) ||
+      /^tooling\/verify\/rel-224-source-health-policy\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-224-SOURCE-HEALTH\.md$/.test(f),
+    scripts: ["rel-224-source-health-policy.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/admin\/R6_CERTIFICATION\.md$/.test(f) ||
+      /^tooling\/verify\/rel-409-admin-r6\.cjs$/.test(f),
+    scripts: ["rel-409-admin-r6.cjs"],
   },
   {
     test: (f) =>

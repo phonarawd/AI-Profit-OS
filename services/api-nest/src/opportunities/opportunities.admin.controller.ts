@@ -115,6 +115,9 @@ export class OpportunitiesAdminController {
       sellMarketId:
         body.sellMarketId as UpdateOpportunityPricingRequest["sellMarketId"],
       updatedByAdminId: operatorId,
+      changeReason:
+        body.changeReason != null ? String(body.changeReason) : undefined,
+      reasonCode: body.reasonCode != null ? String(body.reasonCode) : undefined,
     };
     return this.opportunities.patchPricing(id, req);
   }

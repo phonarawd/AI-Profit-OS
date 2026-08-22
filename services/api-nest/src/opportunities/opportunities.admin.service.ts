@@ -24,6 +24,11 @@ import {
 } from "./opportunities.mi";
 import { OPPORTUNITY_EVENTS } from "./opportunities.events";
 import { OpportunityRepriceService } from "./opportunity-reprice.service";
+import { AdminAuditService } from "../admin-control/admin-audit.service";
+import {
+  amountOrNull,
+  resolvePriceLayers,
+} from "./price-layers";
 import type {
   OpportunityAdminListItem,
   OpportunityAdminListQuery,
@@ -70,6 +75,7 @@ export class OpportunitiesAdminService {
     private readonly bus: InProcessEventBus,
     private readonly assetImages: AssetImageR2Service,
     private readonly reprice: OpportunityRepriceService,
+    private readonly audit: AdminAuditService,
   ) {}
 
   async list(
@@ -188,12 +194,29 @@ export class OpportunitiesAdminService {
         body.sellMarketId ?? prev.sellMarketId ?? "ebay_gb",
       );
 
-      let buyPriceUsdt = String(prev.buyPriceUsdt ?? "0");
-      let sellPriceUsdt = String(prev.sellPriceUsdt ?? "0");
+      const sourceBuy =
+        (prev.sourceObserved as { buyPriceUsdt?: unknown } | undefined)
+          ?.buyPriceUsdt ??
+        (prev.useAdminOverride === true ? undefined : prev.buyPriceUsdt);
+      const sourceSell =
+        (prev.sourceObserved as { sellPriceUsdt?: unknown } | undefined)
+          ?.sellPriceUsdt ??
+        (prev.useAdminOverride === true ? undefined : prev.sellPriceUsdt);
+      const layers = resolvePriceLayers({
+        sourceBuy,
+        sourceSell,
+        overrideBuy: body.adminBuyUsdt ?? prev.adminBuyUsdt,
+        overrideSell: body.adminSellUsdt ?? prev.adminSellUsdt,
+        useAdminOverride: Boolean(body.useAdminOverride),
+      });
+      const buyPriceUsdt = amountOrNull(layers.effective.buy);
+      const sellPriceUsdt = amountOrNull(layers.effective.sell);
+      if (!buyPriceUsdt || !sellPriceUsdt) {
+        throw new Error("PRICE_UNAVAILABLE");
+      }
       if (body.useAdminOverride) {
-        if (body.adminBuyUsdt != null) buyPriceUsdt = String(body.adminBuyUsdt);
-        if (body.adminSellUsdt != null) {
-          sellPriceUsdt = String(body.adminSellUsdt);
+        if (!body.changeReason || body.changeReason.trim().length < 10) {
+          throw new Error("changeReason required for override");
         }
       }
 
@@ -213,11 +236,28 @@ export class OpportunitiesAdminService {
       const pricing = {
         ...prev,
         ...computed,
+        sourceObserved: {
+          buyPriceUsdt: amountOrNull(layers.sourceObserved.buy),
+          sellPriceUsdt: amountOrNull(layers.sourceObserved.sell),
+        },
+        override: layers.override.present
+          ? {
+              buyPriceUsdt: amountOrNull(layers.override.buy),
+              sellPriceUsdt: amountOrNull(layers.override.sell),
+              reasonCode: body.reasonCode ?? null,
+            }
+          : null,
+        effective: {
+          buyPriceUsdt,
+          sellPriceUsdt,
+          expectedProfitUsdt: computed.expectedProfitUsdt,
+        },
         adminBuyUsdt: body.adminBuyUsdt ?? prev.adminBuyUsdt,
         adminSellUsdt: body.adminSellUsdt ?? prev.adminSellUsdt,
         adminMarginPct: body.adminMarginPct ?? prev.adminMarginPct,
         useAdminOverride: Boolean(body.useAdminOverride),
         lastAdminEditBy: body.updatedByAdminId,
+        pricingSource: body.useAdminOverride ? "admin" : prev.pricingSource,
       };
 
       const capitalBand = resolveCapitalBand(row.required_capital_usdt);
@@ -247,6 +287,21 @@ export class OpportunitiesAdminService {
         asOf,
       });
       return this.toListItem(updated);
+    });
+
+    await this.audit.record({
+      action: "price.override",
+      outcome: "applied",
+      actorAdminId: body.updatedByAdminId,
+      capability: "all",
+      reasonCode: body.reasonCode ?? null,
+      reason: body.changeReason ?? null,
+      targetType: "opportunity",
+      targetId: id,
+      after: {
+        pricingVersion: item.pricingVersion,
+        useAdminOverride: Boolean(body.useAdminOverride),
+      },
     });
 
     this.bus.emit(OPPORTUNITY_EVENTS.priceUpdated, {

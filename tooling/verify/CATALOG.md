@@ -82,13 +82,17 @@
 | `governance/legacy-plan-migration/**` · `tooling/legacy-plan-stamp.cjs` · `tooling/verify/legacy-plan-migration.cjs` · `.cursor/plans/*.plan.md` | legacy-plan-migration |
 | `apps/web/scripts/asset-pipeline/**` · `tooling/verify/asset-production-pipeline.cjs` | asset-production-pipeline |
 | `packages/sdk/src/device-tier.ts` · `packages/ui/tokens/device-tier-contract.ts` · `governance/responsive/**` · `tooling/verify/device-tier-system.cjs` · `tooling/verify/ux-design-system.cjs` | device-tier-system · ux-design-system |
-| `apps/admin/**` | no-admin-in-web · admin-routes · rel-201-admin-dashboard · rel-202-admin-users · rel-203-admin-user-detail · rel-204-admin-user-finance · rel-205-admin-ledger · rel-206-admin-wallet · rel-207-admin-compliance · rel-208-admin-risk · rel-209-admin-execution-policy · rel-210-admin-opportunities · rel-211-admin-adapters · rel-212-admin-support · rel-213-admin-system-control · rel-214-admin-audit · rel-215-admin-ai-logs · rel-216-admin-financial-report · rel-217-admin-growth · rel-218-admin-growth-deposit · rel-219-admin-growth-ticker · rel-220-admin-growth-whale · rel-221-admin-growth-content · rel-400-control-plane-spec |
+| `apps/admin/**` | no-admin-in-web · admin-routes · rel-201-admin-dashboard · rel-202-admin-users · rel-203-admin-user-detail · rel-204-admin-user-finance · rel-205-admin-ledger · rel-206-admin-wallet · rel-207-admin-compliance · rel-208-admin-risk · rel-209-admin-execution-policy · rel-210-admin-opportunities · rel-211-admin-adapters · rel-212-admin-support · rel-213-admin-system-control · rel-214-admin-audit · rel-215-admin-ai-logs · rel-216-admin-financial-report · rel-217-admin-growth · rel-218-admin-growth-deposit · rel-219-admin-growth-ticker · rel-220-admin-growth-whale · rel-221-admin-growth-content · rel-400-control-plane-spec · rel-222-admin-ops-mode · rel-223-allocation-match · rel-224-source-health-policy · rel-405-rbac-audit · rel-406-kill-switch · rel-407-price-override · rel-408-security-baseline · rel-409-admin-r6 |
 | `tooling/verify/rel-20[1-9]-admin-*` · `rel-21[0-4]-admin-*` · `rel-215-admin-ai-logs` · `rel-21[6-9]-admin-*` · `rel-22[01]-admin-*` · `admin-entry-e2e` · `tooling/e2e/specs/admin-entry-closure.spec.cjs` | same REL-201~221 verifiers · rel-213-admin-system-control · rel-214-admin-audit · rel-215-admin-ai-logs · admin-entry-e2e |
 | `governance/admin/control-plane-superset.md` · `tooling/verify/rel-400-control-plane-spec.cjs` | rel-400-control-plane-spec |
 | `tooling/security/security-headers.cjs` · `services/api-nest/src/common/security-headers.ts` · `tooling/verify/rel-401-security-headers.cjs` | rel-401-security-headers |
 | `governance/security/pnpm-audit-exceptions.json` · `tooling/verify/rel-402-pnpm-audit.cjs` | rel-402-pnpm-audit |
 | `governance/release-master/VERSIONING.md` · `apps/*/lib/release-id.ts` · `tooling/verify/rel-403-versioning.cjs` | rel-403-versioning |
 | `governance/performance/lighthouse-budget.json` · `.github/workflows/lighthouse.yml` · `tooling/verify/rel-404-lighthouse-budget.cjs` | rel-404-lighthouse-budget |
+| `schemas/admin-audit.v1.json` · `services/api-nest/src/admin-control/**` · `tooling/verify/rel-405-rbac-audit.cjs` | rel-405-rbac-audit · rel-406-kill-switch · rel-222-admin-ops-mode · rel-223-allocation-match · rel-224-source-health-policy |
+| `services/api-nest/src/opportunities/price-layers.ts` · `tooling/verify/rel-407-price-override.cjs` | rel-407-price-override |
+| `governance/release-master/SECURITY_BASELINE.md` · `governance/release-master/ROLLBACK_RUNBOOK.md` · `tooling/verify/rel-408-security-baseline.cjs` | rel-408-security-baseline |
+| `governance/admin/R6_CERTIFICATION.md` · `tooling/verify/rel-409-admin-r6.cjs` | rel-409-admin-r6 |
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |
 | `schemas/source-observation.v1.json` · `governance/global-product/source-observation-runtime.v1.json` · `services/market-intelligence/src/source-observation/**` · `tooling/verify/source-observation-runtime.cjs` · `tooling/verify/fashionphile-identity-forensic.cjs` | source-observation-runtime · listing-legs-day1 · fashionphile-identity-forensic |
 | `services/market-intelligence/src/identity-matching/**` · `tooling/verify/identity-matching-v1.cjs` · `governance/global-product/identity-matching.v1.json` | identity-matching-v1 · source-observation-runtime · listing-legs-day1 |
@@ -194,6 +198,14 @@
 | rel-402-pnpm-audit | REL-402 — pnpm audit CI wiring · exceptions documented · local full scan not forced — **live** |
 | rel-403-versioning | REL-403 — VERSIONING.md · release id on web/admin · REL-602 pointer — **live** |
 | rel-404-lighthouse-budget | REL-404 — lighthouse budget + CI workflow · local full LH 0 · Home geometry lock — **live** |
+| rel-405-rbac-audit | REL-405 — 8-role matrix expand · existing AdminGuard · deny audit · no second RBAC/audit owner — **live** |
+| rel-406-kill-switch | REL-406 — kill switch 9 IDs · server enforce · money_circuit/push/growth reuse — **live** |
+| rel-407-price-override | REL-407 — SOURCE_OBSERVED→OVERRIDE→EFFECTIVE→USER_VISIBLE · missing≠0 — **live** |
+| rel-408-security-baseline | REL-408 — RLS-role read evidence · secrets scan pointer · rollback runbook · apply_migration 0 — **live** |
+| rel-222-admin-ops-mode | REL-222 — LIVE/DRY_RUN/SIMULATION · LIVE confirm · no user JWT · ledgerWrite false — **live** |
+| rel-223-allocation-match | REL-223 — ALLOW/BLOCK/PAUSE/CANCEL/REASSIGN · preview+confirm · no ledger verb — **live** |
+| rel-224-source-health-policy | REL-224 — adapter health owner · V1/V2/V3 history · founder override role gate — **live** |
+| rel-409-admin-r6 | REL-409 — Admin R6 12모듈+2b certification honesty — **live** |
 | reference-resolution | Engine §47.16.2 — `reference-resolver.cjs` resultRef hint-only resolve(resolved/ambiguous/not_found/unavailable) · getExecution `user_id+$id` 소유권 재검증 · normalized preference `ai_memory.append` 최초 연결 · unresolved≠REFERENCE_JSON · fact-only/no-autonomy 유지 — **live** |
 | pwa-manifest · pwa-serwist-single · pwa-brand-icons | PWA §23.1·25·26 — historical ids. Day-1 shell = **pwa-native-shell** (REL-014). Push/cert = REL-020~023 |
 | push-dedup · pwa-phase0-bus | PWA §23.5 — source_event_id · Phase0 NATS 0 |

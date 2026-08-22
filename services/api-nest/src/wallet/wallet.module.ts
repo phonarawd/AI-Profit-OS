@@ -3,6 +3,7 @@ import { ComplianceModule } from "../compliance/compliance.module";
 import { LedgerModule } from "../ledger/ledger.module";
 import { LoopModule } from "../loop/loop.module";
 import { RiskModule } from "../risk/risk.module";
+import { KillSwitchModule } from "../admin-control/kill-switch.module";
 import { ChainSweeperPhase0Service } from "./chain-sweeper.phase0.service";
 import { ChainWatcherPhase0Service } from "./chain-watcher.phase0.service";
 import { DepositAddressService } from "./deposit-address.service";
@@ -28,7 +29,7 @@ import { WithdrawKycGuard } from "./withdraw-kyc.guard";
 import { WithdrawStepUpService } from "./withdraw-stepup.service";
 
 @Module({
-  imports: [LedgerModule, ComplianceModule, RiskModule, LoopModule],
+  imports: [LedgerModule, ComplianceModule, RiskModule, KillSwitchModule, LoopModule],
   controllers: [
     WalletController,
     HomeMoneyReadUserController,

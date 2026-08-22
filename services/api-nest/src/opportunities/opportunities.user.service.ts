@@ -396,13 +396,20 @@ export class OpportunitiesUserService {
       internal.riskScore = row.risk_score;
     }
     if (opts.includePricing) {
-      const {
-        origin: _origin,
-        trackAOpportunityId: _trackAOpportunityId,
-        canonicalProductId: _canonicalProductId,
-        ...publicPricing
-      } = pricing;
-      internal.pricing = publicPricing;
+      const effective = (pricing.effective || {}) as {
+        buyPriceUsdt?: unknown;
+        sellPriceUsdt?: unknown;
+        expectedProfitUsdt?: unknown;
+      };
+      internal.pricing = {
+        buyPriceUsdt: effective.buyPriceUsdt ?? pricing.buyPriceUsdt,
+        sellPriceUsdt: effective.sellPriceUsdt ?? pricing.sellPriceUsdt,
+        expectedProfitUsdt:
+          effective.expectedProfitUsdt ?? pricing.expectedProfitUsdt,
+        compareReady: pricing.compareReady,
+        capitalBand: pricing.capitalBand,
+        layer: "USER_VISIBLE",
+      };
     }
     if (pricing.expectedSellDays != null) {
       internal.expectedSellDays = Number(pricing.expectedSellDays);

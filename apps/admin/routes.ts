@@ -63,6 +63,8 @@ export const ADMIN_CHILD_ROUTES = [
   { href: "/admin/users/:id/finance?tab=buckets", parent: 6, note: "버킷" },
   { href: "/admin/risk?tab=queue", parent: 7, note: "동결 큐" },
   { href: "/admin/system-control?tab=reserve", parent: 9, note: "platform_reserve · Engine §0.0.4.3 · 시뮬 S2" },
+  { href: "/admin/system-control?tab=ops", parent: 9, note: "REL-222 3-mode LIVE/DRY_RUN/SIMULATION" },
+  { href: "/admin/opportunities?tab=allocation", parent: 2, note: "REL-223 allocation/manual match" },
 ] as const;
 
 /** Legacy growth paths → ?tab= redirect (이중 IA 금지) */

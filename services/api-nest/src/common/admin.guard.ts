@@ -30,6 +30,7 @@ import {
   verifyAdminAuthorizationHeader,
   type AdminPrincipal,
 } from "./admin-token";
+import { writeAdminAuditDeny } from "../admin-control/admin-audit.writer";
 
 export const ADMIN_ROUTE_SEGMENT = "admin";
 
@@ -110,6 +111,13 @@ export class AdminGuard implements CanActivate {
     // Role authority is the token claim; the *permissions* always come from the
     // server-side matrix. An unknown role can never resolve to a capability.
     if (!isKnownAdminRole(principal.role)) {
+      writeAdminAuditDeny({
+        action: "rbac.deny",
+        outcome: "denied",
+        actorAdminId: principal.adminId,
+        actorRole: principal.role,
+        reasonCode: "ADMIN_ROLE_UNKNOWN",
+      });
       throw new ForbiddenException("ADMIN_ROLE_UNKNOWN");
     }
 
@@ -118,9 +126,24 @@ export class AdminGuard implements CanActivate {
       context.getHandler().name,
     );
     if (!required) {
+      writeAdminAuditDeny({
+        action: "rbac.deny",
+        outcome: "denied",
+        actorAdminId: principal.adminId,
+        actorRole: principal.role,
+        reasonCode: "ADMIN_CAPABILITY_UNCLASSIFIED",
+      });
       throw new ForbiddenException("ADMIN_CAPABILITY_UNCLASSIFIED");
     }
     if (!adminRoleAllows(principal.role, required.capability, required.level)) {
+      writeAdminAuditDeny({
+        action: "rbac.deny",
+        outcome: "denied",
+        actorAdminId: principal.adminId,
+        actorRole: principal.role,
+        capability: required.capability,
+        reasonCode: "ADMIN_CAPABILITY_DENIED",
+      });
       throw new ForbiddenException("ADMIN_CAPABILITY_DENIED");
     }
 

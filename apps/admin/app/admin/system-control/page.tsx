@@ -11,12 +11,13 @@ import {
 import { asRecordList, readText } from "../../../lib/admin-truth";
 import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
 
-const TABS = ["circuit", "reserve"] as const;
+const TABS = ["circuit", "reserve", "ops"] as const;
 type SystemTab = (typeof TABS)[number];
 
 const TAB_LABEL: Record<SystemTab, string> = {
   circuit: "긴급 정지",
   reserve: "운영 준비금",
+  ops: "운영 모드",
 };
 
 const PUSH_SOURCE_LABEL: Record<string, string> = {
@@ -31,6 +32,7 @@ const CIRCUIT_API = "/api/v1/admin/risk/circuit";
 const RESERVE_API = "/api/v1/admin/system-control/reserve";
 const RESERVE_AUDIT_API = "/api/v1/admin/system-control/reserve/audit";
 const SWITCH_CATALOG_API = "/api/v1/admin/system-control/switches";
+const OPS_MODE_API = "/api/v1/admin/ops/mode";
 
 type PushState = {
   pushEnabled?: unknown;
@@ -61,6 +63,7 @@ function SystemControlContent() {
   const tab = useMemo((): SystemTab => {
     const raw = searchParams.get("tab");
     if (raw === "reserve") return "reserve";
+    if (raw === "ops") return "ops";
     return "circuit";
   }, [searchParams]);
 
@@ -74,6 +77,15 @@ function SystemControlContent() {
   const [pushReason, setPushReason] = useState("");
   const [reserveTarget, setReserveTarget] = useState("");
   const [reserveReason, setReserveReason] = useState("");
+  const [switchReason, setSwitchReason] = useState("");
+  const [ops, setOps] = useState<AdminResult<{ mode?: unknown }> | null>(null);
+  const [opsReason, setOpsReason] = useState("");
+  const [previewUserId, setPreviewUserId] = useState("");
+  const [previewUser, setPreviewUser] = useState<AdminResult<unknown> | null>(
+    null,
+  );
+  const [impactId, setImpactId] = useState<string | null>(null);
+  const [impact, setImpact] = useState<AdminResult<unknown> | null>(null);
   const [actionNote, setActionNote] = useState<string | null>(null);
 
   useEffect(() => {
@@ -93,6 +105,19 @@ function SystemControlContent() {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (tab !== "ops") return;
+    let cancelled = false;
+    void (async () => {
+      const m = await adminGet<{ mode?: unknown }>(OPS_MODE_API);
+      if (cancelled) return;
+      setOps(m);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [tab]);
 
   useEffect(() => {
     if (tab !== "reserve") return;
@@ -124,6 +149,79 @@ function SystemControlContent() {
     });
     setActionNote(res.ok ? "반영했습니다." : "반영하지 못했습니다.");
     if (res.ok) setPush(res);
+  }
+
+  async function applySwitch(id: string, engaged: boolean) {
+    if (switchReason.trim().length < 10) {
+      setActionNote("사유는 10자 이상이어야 합니다.");
+      return;
+    }
+    if (!window.confirm(`${id}을(를) ${engaged ? "켭니다" : "끕니다"}. 적용할까요?`)) {
+      return;
+    }
+    const res = await adminSend<unknown>(`${SWITCH_CATALOG_API}/${id}`, "PUT", {
+      engaged,
+      reason: switchReason.trim(),
+    });
+    setActionNote(res.ok ? "반영했습니다." : "반영하지 못했습니다.");
+    if (res.ok) setSwitches(await adminGet(SWITCH_CATALOG_API));
+  }
+
+  async function applyOps(mode: "LIVE" | "DRY_RUN" | "SIMULATION") {
+    if (opsReason.trim().length < 10) {
+      setActionNote("사유는 10자 이상이어야 합니다.");
+      return;
+    }
+    if (!window.confirm(`운영 모드를 ${mode}로 바꿀까요?`)) return;
+    const res = await adminSend<{ mode?: unknown }>(OPS_MODE_API, "PUT", {
+      mode,
+      confirm: mode === "LIVE" ? true : undefined,
+      reason: opsReason.trim(),
+    });
+    setActionNote(res.ok ? "반영했습니다." : "반영하지 못했습니다.");
+    if (res.ok) setOps(res);
+  }
+
+  async function runPreviewAsUser() {
+    const res = await adminSend<unknown>("/api/v1/admin/ops/preview-as-user", "POST", {
+      userId: previewUserId.trim(),
+    });
+    setPreviewUser(res);
+    setActionNote(
+      res.ok ? "회원 화면 미리보기(회원 토큰 없음)." : "미리보지 못했습니다.",
+    );
+  }
+
+  async function runImpact(step: "preview" | "confirm" | "apply" | "rollback") {
+    if (step === "preview") {
+      const res = await adminSend<{ id?: string }>(
+        "/api/v1/admin/ops/impact/preview",
+        "POST",
+        { verb: "PAUSE", targetIds: [] },
+      );
+      setImpact(res);
+      if (res.ok && typeof res.data.id === "string") setImpactId(res.data.id);
+      return;
+    }
+    if (!impactId) {
+      setActionNote("먼저 영향 미리보기가 필요합니다.");
+      return;
+    }
+    if (step !== "confirm" && !window.confirm("이 운영 조치를 진행할까요?")) {
+      return;
+    }
+    const path =
+      step === "confirm"
+        ? "/api/v1/admin/ops/impact/confirm"
+        : step === "apply"
+          ? "/api/v1/admin/ops/impact/apply"
+          : `/api/v1/admin/ops/impact/${impactId}/rollback`;
+    const res = await adminSend<unknown>(
+      path,
+      "POST",
+      step === "rollback" ? {} : { id: impactId },
+    );
+    setImpact(res);
   }
 
   async function applyReserve() {
@@ -339,12 +437,185 @@ function SystemControlContent() {
             ) : (
               <ul className="mt-3 space-y-2 text-sm" data-testid="system-control-switches">
                 {switchItems.map((row, idx) => (
-                  <li key={readText(row.id) ?? String(idx)}>
+                  <li
+                    key={readText(row.id) ?? String(idx)}
+                    className="rounded border border-lux-border p-2"
+                  >
                     <AdminTruth value={readText(row.id)} />
+                    <p>
+                      상태{" "}
+                      <AdminTruth
+                        value={
+                          row.engaged === true
+                            ? "켜짐"
+                            : row.engaged === false
+                              ? "꺼짐"
+                              : null
+                        }
+                      />
+                    </p>
+                    {typeof row.id === "string" ? (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          className="rounded bg-lux-elevated px-2 py-1"
+                          onClick={() => void applySwitch(row.id as string, true)}
+                        >
+                          켜기
+                        </button>
+                        <button
+                          type="button"
+                          className="rounded px-2 py-1 text-lux-text-muted"
+                          onClick={() => void applySwitch(row.id as string, false)}
+                        >
+                          끄기
+                        </button>
+                      </div>
+                    ) : null}
                   </li>
                 ))}
               </ul>
             )}
+            <label className="mt-3 block text-sm" htmlFor="switch-reason">
+              변경 사유
+            </label>
+            <textarea
+              id="switch-reason"
+              value={switchReason}
+              onChange={(e) => setSwitchReason(e.target.value)}
+              className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+            />
+          </div>
+        </section>
+      ) : tab === "ops" ? (
+        <section
+          className="mt-6 space-y-4"
+          data-testid="system-control-ops-panel"
+        >
+          <h2 className="text-base font-medium">운영 모드</h2>
+          <p className="text-sm text-lux-text-muted">
+            서버 모드만 표시합니다. LIVE는 확인 없이 켜지지 않습니다.
+          </p>
+          {!ops ? (
+            <p className="text-sm text-lux-text-muted">불러오는 중</p>
+          ) : !ops.ok ? (
+            <AdminFetchNote failure={ops.failure} />
+          ) : (
+            <p className="text-sm">
+              현재{" "}
+              <AdminTruth
+                value={readText(ops.data.mode)}
+                testId="system-control-ops-mode"
+              />
+            </p>
+          )}
+          <label className="block text-sm" htmlFor="ops-reason">
+            변경 사유
+          </label>
+          <textarea
+            id="ops-reason"
+            value={opsReason}
+            onChange={(e) => setOpsReason(e.target.value)}
+            className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+          />
+          <div className="mt-2 flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="rounded bg-lux-elevated px-2 py-1 text-sm"
+              onClick={() => void applyOps("DRY_RUN")}
+            >
+              DRY_RUN
+            </button>
+            <button
+              type="button"
+              className="rounded px-2 py-1 text-sm"
+              onClick={() => void applyOps("SIMULATION")}
+            >
+              SIMULATION
+            </button>
+            <button
+              type="button"
+              className="rounded px-2 py-1 text-sm"
+              onClick={() => void applyOps("LIVE")}
+            >
+              LIVE 확인 후 적용
+            </button>
+          </div>
+          <div className="mt-6 space-y-2" data-testid="system-control-preview-as-user">
+            <h3 className="text-sm font-medium">회원 화면 미리보기</h3>
+            <p className="text-xs text-lux-text-muted">
+              서버 범위만 봅니다. 회원 토큰을 만들지 않습니다.
+            </p>
+            <input
+              value={previewUserId}
+              onChange={(e) => setPreviewUserId(e.target.value)}
+              className="w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+              aria-label="미리볼 회원 식별값"
+            />
+            <button
+              type="button"
+              className="rounded bg-lux-elevated px-2 py-1 text-sm"
+              onClick={() => void runPreviewAsUser()}
+            >
+              미리보기
+            </button>
+            {previewUser ? (
+              previewUser.ok ? (
+                <AdminTruth
+                  value={
+                    (previewUser.data as { userJwtIssued?: unknown })
+                      .userJwtIssued === false
+                      ? "회원 토큰 없음"
+                      : null
+                  }
+                />
+              ) : (
+                <AdminFetchNote failure={previewUser.failure} />
+              )
+            ) : null}
+          </div>
+          <div className="mt-6 space-y-2" data-testid="system-control-impact">
+            <h3 className="text-sm font-medium">영향 미리보기</h3>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="rounded bg-lux-elevated px-2 py-1 text-sm"
+                onClick={() => void runImpact("preview")}
+              >
+                미리보기
+              </button>
+              <button
+                type="button"
+                className="rounded px-2 py-1 text-sm"
+                onClick={() => void runImpact("confirm")}
+              >
+                확인
+              </button>
+              <button
+                type="button"
+                className="rounded px-2 py-1 text-sm"
+                onClick={() => void runImpact("apply")}
+              >
+                적용
+              </button>
+              <button
+                type="button"
+                className="rounded px-2 py-1 text-sm"
+                onClick={() => void runImpact("rollback")}
+              >
+                되돌리기
+              </button>
+            </div>
+            {impact ? (
+              impact.ok ? (
+                <AdminTruth
+                  value={readText((impact.data as { id?: unknown }).id)}
+                  testId="system-control-impact-id"
+                />
+              ) : (
+                <AdminFetchNote failure={impact.failure} />
+              )
+            ) : null}
           </div>
         </section>
       ) : (

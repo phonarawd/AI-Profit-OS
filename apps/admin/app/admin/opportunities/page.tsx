@@ -47,7 +47,12 @@ const BAND_LABEL: Record<string, string> = {
 
 function OpportunitiesInner() {
   const sp = useSearchParams();
-  const tab = sp.get("tab") === "assets" ? "assets" : "pricing";
+  const tab =
+    sp.get("tab") === "assets"
+      ? "assets"
+      : sp.get("tab") === "allocation"
+        ? "allocation"
+        : "pricing";
   const activeBand = sp.get("capitalBand") ?? "";
   const activeCategory = sp.get("category") ?? "";
   const compareReady = sp.get("compareReady") ?? "";
@@ -158,6 +163,8 @@ function OpportunitiesInner() {
       useAdminOverride: true,
       adminBuyUsdt: buy || undefined,
       adminSellUsdt: sell || undefined,
+      changeReason: "admin price override from opportunities panel",
+      reasonCode: "ADMIN_PRICE_OVERRIDE",
     });
     setActionNote(res.ok ? "반영했습니다." : "반영하지 못했습니다.");
     if (res.ok) await reloadList();
@@ -197,6 +204,12 @@ function OpportunitiesInner() {
           className={tab === "assets" ? "font-semibold" : "text-lux-text-muted"}
         >
           상품 마스터
+        </a>
+        <a
+          href="/admin/opportunities?tab=allocation"
+          className={tab === "allocation" ? "font-semibold" : "text-lux-text-muted"}
+        >
+          배정·수동 매칭
         </a>
       </div>
 
@@ -349,7 +362,9 @@ function OpportunitiesInner() {
         </p>
       </section>
 
-      {tab === "pricing" ? (
+      {tab === "allocation" ? (
+        <AllocationPanel />
+      ) : tab === "pricing" ? (
         <section
           className="mt-6 space-y-3"
           data-testid="opportunities-pricing-panel"
@@ -685,6 +700,119 @@ function OpportunitiesInner() {
         <p className="mt-3 text-sm text-lux-text-muted">{actionNote}</p>
       ) : null}
     </main>
+  );
+}
+
+function AllocationPanel() {
+  const [ids, setIds] = useState("");
+  const [reason, setReason] = useState("");
+  const [verb, setVerb] = useState("PAUSE");
+  const [preview, setPreview] = useState<AdminResult<unknown> | null>(null);
+  const [result, setResult] = useState<AdminResult<unknown> | null>(null);
+
+  async function runPreview() {
+    const targetIds = ids.split(/[\s,]+/).filter(Boolean);
+    setPreview(
+      await adminSend("/api/v1/admin/allocation/preview", "POST", {
+        verb,
+        targetIds,
+      }),
+    );
+  }
+
+  async function runApply() {
+    const targetIds = ids.split(/[\s,]+/).filter(Boolean);
+    if (!window.confirm("미리본 배정을 적용할까요?")) return;
+    setResult(
+      await adminSend("/api/v1/admin/allocation/apply", "POST", {
+        verb,
+        targetIds,
+        reason,
+        previewed: true,
+        confirm: true,
+      }),
+    );
+  }
+
+  return (
+    <section
+      className="mt-6 space-y-3"
+      data-testid="opportunities-allocation-panel"
+    >
+      <p className="text-sm text-lux-text-muted">
+        허용 동사만. 미리보기 없이 LIVE 적용 없음. 장부 직접 수정 없음.
+      </p>
+      <label className="block text-sm" htmlFor="alloc-verb">
+        허용 동사
+      </label>
+      <select
+        id="alloc-verb"
+        value={verb}
+        onChange={(e) => setVerb(e.target.value)}
+        className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+      >
+        <option value="ALLOW">ALLOW</option>
+        <option value="BLOCK">BLOCK</option>
+        <option value="PAUSE">PAUSE</option>
+        <option value="CANCEL">CANCEL</option>
+        <option value="REASSIGN">REASSIGN</option>
+      </select>
+      <label className="block text-sm" htmlFor="alloc-ids">
+        대상 식별값
+      </label>
+      <textarea
+        id="alloc-ids"
+        value={ids}
+        onChange={(e) => setIds(e.target.value)}
+        className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+      />
+      <label className="block text-sm" htmlFor="alloc-reason">
+        사유
+      </label>
+      <textarea
+        id="alloc-reason"
+        value={reason}
+        onChange={(e) => setReason(e.target.value)}
+        className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+      />
+      <div className="flex gap-2">
+        <button
+          type="button"
+          className="rounded bg-lux-elevated px-2 py-1 text-sm"
+          onClick={() => void runPreview()}
+        >
+          미리보기
+        </button>
+        <button
+          type="button"
+          className="rounded px-2 py-1 text-sm"
+          onClick={() => void runApply()}
+        >
+          확인 후 적용
+        </button>
+      </div>
+      {preview ? (
+        preview.ok ? (
+          <AdminTruth value="미리보기 있음" testId="allocation-preview" />
+        ) : (
+          <AdminFetchNote failure={preview.failure} />
+        )
+      ) : null}
+      {result ? (
+        result.ok ? (
+          <AdminTruth
+            value={
+              (result.data as { allSucceeded?: unknown })?.allSucceeded === true
+                ? "전부 반영"
+                : "일부만 반영"
+            }
+            testId="allocation-result"
+          />
+        ) : (
+          <AdminFetchNote failure={result.failure} />
+        )
+      ) : null}
+    </section>
   );
 }
 

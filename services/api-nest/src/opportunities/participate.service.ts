@@ -37,6 +37,7 @@ import { LedgerPostingService } from "../ledger/ledger.posting.service";
 import { PostgresService } from "../db/postgres";
 import { PreflightService } from "../loop/preflight.service";
 import { RiskService } from "../risk/risk.service";
+import { KillSwitchService } from "../admin-control/kill-switch.service";
 import {
   checkParticipateMembershipGuards,
   membershipDefaults,
@@ -139,6 +140,7 @@ export class ParticipateService {
     private readonly buckets: LedgerBucketsService,
     private readonly posting: LedgerPostingService,
     private readonly risk: RiskService,
+    private readonly killSwitch: KillSwitchService,
     private readonly executionPolicy: ExecutionPolicyAdminService,
     private readonly bus: InProcessEventBus,
     private readonly preflight: PreflightService,
@@ -151,6 +153,7 @@ export class ParticipateService {
     body: ParticipateBody,
   ): Promise<ParticipateResult> {
     this.assertSessionUserId(userId);
+    await this.killSwitch.assertAllowed("GLOBAL_OPPORTUNITY_PAUSE");
 
     const validated = this.validateBody(body);
     if (validated.opportunityId !== pathOpportunityId) {

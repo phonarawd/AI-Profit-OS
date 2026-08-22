@@ -27,6 +27,7 @@ import {
 } from "../ledger/ledger.types";
 import { PostgresService } from "../db/postgres";
 import { MoneyCircuitService } from "../risk/money-circuit.service";
+import { KillSwitchService } from "../admin-control/kill-switch.service";
 import { RiskService } from "../risk/risk.service";
 import {
   evaluatePayoutFeasibility,
@@ -133,6 +134,7 @@ export class TradeExecutionService {
     private readonly posting: LedgerPostingService,
     private readonly risk: RiskService,
     private readonly circuit: MoneyCircuitService,
+    private readonly killSwitch: KillSwitchService,
     private readonly executionPolicy: ExecutionPolicyAdminService,
     private readonly simulation: SimulationAdminService,
     @Inject(CLOCK) private readonly clock: Clock,
@@ -172,6 +174,7 @@ export class TradeExecutionService {
     tradeId: string,
   ): Promise<TradeExecutionState> {
     this.assertSessionUserId(userId);
+    await this.killSwitch.assertAllowed("GLOBAL_MATCH_PAUSE");
     const trade = await this.loadTrade(tradeId, userId);
     if (!trade) throw new NotFoundException("trade not found");
 
@@ -233,6 +236,7 @@ export class TradeExecutionService {
     >;
 
     if (resultCode === "MATCH_SUCCESS") {
+      await this.killSwitch.assertAllowed("GLOBAL_SETTLEMENT_PAUSE");
       return this.finalizeMatchSuccess(trade, {
         nowMs,
         acceptedAtMs,

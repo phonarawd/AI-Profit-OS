@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/admin-audit.v1.json",
+  "title": "AdminAuditV1",
+  "description": "REL-405 mandatory control-plane audit. Actual operations only. Domain audits stay on their owners. AI logs are not audit.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "action",
+    "outcome",
+    "createdAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "action": { "type": "string", "minLength": 1 },
+    "outcome": {
+      "type": "string",
+      "enum": ["applied", "denied", "preview", "error"]
+    },
+    "actorAdminId": { "type": ["string", "null"] },
+    "actorRole": { "type": ["string", "null"] },
+    "capability": { "type": ["string", "null"] },
+    "reasonCode": { "type": ["string", "null"] },
+    "reason": { "type": ["string", "null"] },
+    "targetType": { "type": ["string", "null"] },
+    "targetId": { "type": ["string", "null"] },
+    "before": { "type": ["object", "null"] },
+    "after": { "type": ["object", "null"] },
+    "mode": {
+      "type": ["string", "null"],
+      "enum": ["LIVE", "DRY_RUN", "SIMULATION", null]
+    },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}

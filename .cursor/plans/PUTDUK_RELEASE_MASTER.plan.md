@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-215 COMPLETED. FIRST_EXECUTION_TODO=REL-400. BATCH_REL_200_206=CLOSED. BATCH_REL_207_209=CLOSED. BATCH_REL_210_212=CLOSED. BATCH_REL_216_221=CLOSED. BATCH_REL_300_305=CLOSED. BATCH_A_RUNTIME_ACCEPTANCE=CLOSED.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-215 COMPLETED. FIRST_EXECUTION_TODO=REL-500. BATCH_REL_200_206=CLOSED. BATCH_REL_207_209=CLOSED. BATCH_REL_210_212=CLOSED. BATCH_REL_216_221=CLOSED. BATCH_REL_300_305=CLOSED. BATCH_A_RUNTIME_ACCEPTANCE=CLOSED. BATCH_ADMIN_CONTROL_PLANE_2=CLOSED.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -274,28 +274,28 @@ todos:
     status: completed
   - id: rel-405
     content: "[Hardening][Legacy:D-ADMIN-001] RBAC + Audit Foundation(8 role capability mapping + mandatory audit schema, OWASP ASVS V8/V16)"
-    status: pending
+    status: completed
   - id: rel-406
     content: "[Hardening][Legacy:D-ADMIN-002] Kill Switch 9종(GLOBAL_OPPORTUNITY_PAUSE 등, money_circuit 선례 재사용), deps REL-405"
-    status: pending
+    status: completed
   - id: rel-407
     content: "[Hardening][Legacy:D-ADMIN-005] Price Override Engine(4레이어: SOURCE_OBSERVED->OVERRIDE->EFFECTIVE->USER_VISIBLE)"
-    status: pending
+    status: completed
   - id: rel-408
     content: "[Hardening][Legacy:F-REL-006] Security/secrets/RLS-role 실증 + backup/rollback runbook baseline"
-    status: pending
+    status: completed
   - id: rel-222
     content: "[Admin][Legacy:D-ADMIN-016] 3-mode Admin Ops(LIVE/DRY_RUN/SIMULATION) + Preview-As-User + Impact Simulation(preview→confirm→apply→result→rollback), deps REL-405"
-    status: pending
+    status: completed
   - id: rel-223
     content: "[Admin][Legacy:D-ADMIN-018] Allocation/Manual Match Control(ALLOW/BLOCK/PAUSE/CANCEL/REASSIGN) + Bulk/Schedule/Campaign Ops(preview+confirmation+audit 필수), deps REL-407"
-    status: pending
+    status: completed
   - id: rel-224
     content: "[Admin][Legacy:D-ADMIN-019] Source/Parser Health 대시보드 + Founder Override(최상위 override) + Policy Versioning(V1/V2/V3 history+rollback), deps REL-405"
-    status: pending
+    status: completed
   - id: rel-409
     content: "[Hardening][Legacy:D-ADMIN-020] Admin R6 Certification(12모듈+2b 전수, deps REL-200~224+400+405~408)"
-    status: pending
+    status: completed
   - id: rel-500
     content: "[QA-Expansion] QA-LAB-EXPANSION: 전체 persona x device x browser x network x a11y matrix, committed spec으로 확장"
     status: pending
@@ -3095,7 +3095,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-405
 TITLE: RBAC + Audit Foundation
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-405
@@ -3111,7 +3111,7 @@ IMPLEMENTATION_STEPS:
   - verify fixture
 VERIFY: RBAC deny fixture + audit write fixture
 ACCEPTANCE: 서버 RBAC/audit 존재
-EVIDENCE: api-nest rbac/audit + migration
+EVIDENCE: schemas/admin-rbac.v1.json · schemas/admin-audit.v1.json · services/api-nest/src/admin-control · supabase/migrations/20260822140000_rel405_admin_control_plane.sql · governance/release-master/REL-405-RBAC-AUDIT.md
 EXIT_GATE: UI만 있고 서버 가드 없으면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: true
@@ -3122,7 +3122,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-406
 TITLE: Kill Switch 9종
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-406
@@ -3138,7 +3138,7 @@ IMPLEMENTATION_STEPS:
   - "verify: 스위치 ON이면 해당 경로 block"
 VERIFY: 스위치 enforce fixture
 ACCEPTANCE: "9종 서버 강제"
-EVIDENCE: kill-switch service
+EVIDENCE: services/api-nest/src/admin-control/kill-switch.service.ts · governance/release-master/REL-406-KILL-SWITCH.md
 EXIT_GATE: UI 토글만 있고 서버 무시되면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: true
@@ -3149,7 +3149,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-407
 TITLE: Price Override Engine (4레이어)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-407
@@ -3166,7 +3166,7 @@ IMPLEMENTATION_STEPS:
   - verify fixture
 VERIFY: 레이어 혼용 0 fixture
 ACCEPTANCE: 가격 오너 4단 유지
-EVIDENCE: price override module
+EVIDENCE: services/api-nest/src/opportunities/price-layers.ts · governance/release-master/REL-407-PRICE-OVERRIDE.md
 EXIT_GATE: 유저 화면이 observed를 임의 표시하면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: true
@@ -3177,7 +3177,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-408
 TITLE: Security/secrets/RLS-role 실증 + backup/rollback runbook baseline
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_F_production_infra.plan.md
 SOURCE_TODO_IDS:
   - rel-408
@@ -3205,7 +3205,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-222
 TITLE: "3-mode Admin Ops + Preview-As-User + Impact Simulation"
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-222
@@ -3223,7 +3223,7 @@ IMPLEMENTATION_STEPS:
   - verify fixture
 VERIFY: DRY_RUN이 원장을 바꾸지 않음. LIVE는 confirm 필수.
 ACCEPTANCE: "3-mode 운영 경로 존재"
-EVIDENCE: admin ops 3-mode module
+EVIDENCE: services/api-nest/src/admin-control/ops-mode.service.ts · governance/release-master/REL-222-OPS-MODE.md
 EXIT_GATE: SIMULATION이 실원장을 바꾸면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: true
@@ -3234,7 +3234,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-223
 TITLE: Allocation/Manual Match Control + Bulk/Schedule/Campaign Ops
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-223
@@ -3251,7 +3251,7 @@ IMPLEMENTATION_STEPS:
   - verify fixture
 VERIFY: 미허용 동사 거부. preview 없는 LIVE 0.
 ACCEPTANCE: 수동 매칭/대량 운영이 감사 가능
-EVIDENCE: allocation/match control module
+EVIDENCE: services/api-nest/src/admin-control/allocation.service.ts · governance/release-master/REL-223-ALLOCATION.md
 EXIT_GATE: 숨은 잔액 수정 API 발견 시 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: true
@@ -3262,7 +3262,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-224
 TITLE: Source/Parser Health + Founder Override + Policy Versioning
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-224
@@ -3279,7 +3279,7 @@ IMPLEMENTATION_STEPS:
   - verify fixture
 VERIFY: 버전 이력 존재. override audit 존재.
 ACCEPTANCE: 소스 건강/정책 버전 운영 가능
-EVIDENCE: source health + policy versioning
+EVIDENCE: services/api-nest/src/admin-control/source-health.service.ts · governance/release-master/REL-224-SOURCE-HEALTH.md
 EXIT_GATE: 이력 없는 덮어쓰기면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: true
@@ -3290,7 +3290,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-409
 TITLE: Admin R6 Certification
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-409
