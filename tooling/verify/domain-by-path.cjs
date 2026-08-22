@@ -439,6 +439,9 @@ const RULES = [
       "rel-207-admin-compliance.cjs",
       "rel-208-admin-risk.cjs",
       "rel-209-admin-execution-policy.cjs",
+      "rel-210-admin-opportunities.cjs",
+      "rel-211-admin-adapters.cjs",
+      "rel-212-admin-support.cjs",
     ],
   },
   {
@@ -449,7 +452,26 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/admin\/app\/admin\/opportunities\//.test(f) ||
+      /^tooling\/verify\/rel-210-admin-opportunities\.cjs$/.test(f),
+    scripts: ["capital-tier-catalog.cjs", "rel-210-admin-opportunities.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/admin\/app\/admin\/adapters\//.test(f) ||
+      /^tooling\/verify\/rel-211-admin-adapters\.cjs$/.test(f),
+    scripts: ["rel-211-admin-adapters.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/admin\/app\/admin\/support\//.test(f) ||
+      /^tooling\/verify\/rel-212-admin-support\.cjs$/.test(f),
+    scripts: ["rel-212-admin-support.cjs"],
+  },
+  {
+    test: (f) =>
       /^tooling\/verify\/rel-20[1-9]-admin-/.test(f) ||
+      /^tooling\/verify\/rel-21[0-2]-admin-/.test(f) ||
       /^tooling\/verify\/admin-entry-e2e\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/admin-entry-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/e2e\/lib\/local-admin-runtime\.cjs$/.test(f),
@@ -463,6 +485,9 @@ const RULES = [
       "rel-207-admin-compliance.cjs",
       "rel-208-admin-risk.cjs",
       "rel-209-admin-execution-policy.cjs",
+      "rel-210-admin-opportunities.cjs",
+      "rel-211-admin-adapters.cjs",
+      "rel-212-admin-support.cjs",
       "admin-entry-e2e.cjs",
     ],
   },

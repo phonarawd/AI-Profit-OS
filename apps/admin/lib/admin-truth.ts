@@ -54,3 +54,14 @@ export function readRate(value: unknown): string | null {
   if (typeof value !== "number" || !Number.isFinite(value)) return null;
   return `${(value * 100).toFixed(2)}%`;
 }
+
+/** 시도 횟수가 없거나 0이면 비율 없음. 분모 없는 0 위조 금지. */
+export function readObservedRate(
+  rate: unknown,
+  attempts: unknown,
+): string | null {
+  if (typeof attempts !== "number" || !Number.isFinite(attempts) || attempts <= 0) {
+    return null;
+  }
+  return readRate(rate);
+}
