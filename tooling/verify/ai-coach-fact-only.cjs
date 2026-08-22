@@ -79,6 +79,44 @@ if (!/없|확인|다시/.test(String(empty))) {
   fails.push("empty facts must refuse or UNAVAILABLE (no invented profit)");
 }
 
+const missingProfit = ai.renderFactAnswer(
+  [
+    ai.buildFactCard({
+      source: "ledger",
+      payload: { liabilityUsdt: "10.00" },
+      captured_at: "2026-08-22T12:00:00.000Z",
+      expires_at: "2026-08-22T12:05:00.000Z",
+      confidence: 1,
+    }),
+  ],
+  { toneBand: "mid" },
+);
+if (/출금 가능한 수익은 0/.test(missingProfit)) {
+  fails.push("missing profitUsdt must not render as 0");
+}
+
+const unavailable = ai.renderFactAnswer(
+  [
+    ai.buildFactCard({
+      source: "ledger",
+      payload: {
+        availability: "unavailable",
+        summary: "지금 잔액을 확인할 수 없어요.",
+      },
+      captured_at: "2026-08-22T12:00:00.000Z",
+      expires_at: "2026-08-22T12:05:00.000Z",
+      confidence: 1,
+    }),
+  ],
+  { toneBand: "mid" },
+);
+if (/\b0 USDT\b/.test(unavailable)) {
+  fails.push("unavailable fact must not invent 0 USDT");
+}
+if (!unavailable.includes("확인할 수 없어요")) {
+  fails.push("unavailable fact must use honest summary");
+}
+
 const nestFact = fs.readFileSync(
   path.join(root, "services/api-nest/src/ai/fact-tool.service.ts"),
   "utf8",

@@ -66,6 +66,8 @@ const SCOPE_ASSURANCE = Object.freeze({
  */
 const EXECUTION_PATTERNS = Object.freeze([
   /진행\s*상태/,
+  /진행\s*상황/,
+  /어떻게\s*되고/,
   /안전\s*중단/,
   /중단\s*(된|됐)/,
   /매칭\s*상태/,

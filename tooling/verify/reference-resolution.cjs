@@ -79,6 +79,15 @@ const ordinal2 = ai.resolveResultReference({
 if (ordinal2.status !== "resolved" || ordinal2.id !== ID_B) {
   fails.push("ordinal second must resolve to B");
 }
+const lastCue = ai.resolveResultReference({
+  text: "저번에 참여한 거 지금 어떻게 되고 있어?",
+  resultRefs: refs,
+});
+if (lastCue.status !== "resolved" || lastCue.id !== ID_C) {
+  fails.push(
+    `저번 participation cue must resolve to last execution (got ${lastCue.status}/${lastCue.id})`,
+  );
+}
 
 // 3) exact bounded alias → correct result
 const alias = ai.resolveResultReference({
@@ -269,6 +278,9 @@ if (!/user_id\s*=\s*\$1::uuid/.test(factSrc) || !/id\s*=\s*\$2::uuid/.test(factS
 if (!/executionId/.test(factSrc)) {
   fails.push("FactToolService must accept executionId for resultRef re-query");
 }
+if (!/opportunityId/.test(factSrc)) {
+  fails.push("FactToolService must accept opportunityId for resultRef re-query");
+}
 if (!/executionIds/.test(factSrc)) {
   fails.push("getExecution list path must expose executionIds for resultRef snapshots");
 }
@@ -283,6 +295,7 @@ for (const needle of [
   "buildPreferenceAppendInput",
   "this.memory.append",
   "executionId",
+  "opportunityId",
 ]) {
   if (!orch.includes(needle)) {
     fails.push(`CoachOrchestrator missing ${needle}`);

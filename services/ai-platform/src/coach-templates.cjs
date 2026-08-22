@@ -131,6 +131,11 @@ function renderFactAnswer(facts, opts = {}) {
   const lines = [];
   for (const f of list) {
     const p = f?.payload && typeof f.payload === "object" ? f.payload : {};
+    if (p.availability === "unavailable") {
+      if (p.summary) lines.push(String(p.summary));
+      else lines.push("지금 그 숫자를 확인할 수 없어요. 잠시 후 다시 확인해 주세요.");
+      continue;
+    }
     if (p.profitUsdt != null || p.liabilityUsdt != null) {
       if (p.profitUsdt == null) {
         lines.push("출금 가능 수익은 지금 확인할 수 없어요.");

@@ -654,6 +654,7 @@ const RULES = [
     test: (f) =>
       /^services\/ai-platform\/src\/assistant-router\.cjs$/.test(f) ||
       /^eval\/p_fact\.jsonl$/.test(f) ||
+      /^eval\/coach_ko_natural\.jsonl$/.test(f) ||
       /^tooling\/verify\/(routing-coverage|ai-lane-router)\.cjs$/.test(f),
     scripts: [
       "routing-coverage.cjs",
