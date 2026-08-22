@@ -1,16 +1,15 @@
 "use client";
 
 import { useMemo } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { T } from "@aipo/ui/copy/ko";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 import { WithdrawLiveForm } from "../../../../components/WithdrawLiveForm";
 import { useWithdrawKycGate } from "../../../../lib/use-withdraw-kyc-gate";
+import { WalletChrome } from "../../WalletChrome";
 import styles from "../../wallet.module.css";
 
-/**
- * PART9f2 — USDT withdraw · WithdrawAmountPanel + step-up + POST withdraw
- */
 function UsdtWithdrawContent() {
   const searchParams = useSearchParams();
   const mode = useMemo(() => {
@@ -27,58 +26,69 @@ function UsdtWithdrawContent() {
   const requirePrincipalConfirm = mode === "principal" || mode === "combined";
 
   return (
-    <main
-      className={`${styles.page} ${styles.onNavy}`}
-      data-withdraw-default-mode="profit"
-      data-withdraw-mode={mode}
-      data-testid="wallet-withdraw-usdt"
-    >
-      <p className={styles.nav}>
-        <a href="/wallet">지갑</a>
-      </p>
-      <h1 className={styles.title}>{T.withdrawMode.pageTitleUsdt}</h1>
-      <p className={styles.note} data-testid="withdraw-network-hint">
-        {T.wallet.withdrawNetworkHint}
-      </p>
-      {gate.toastMessage ? (
-        <p
-          className="mt-3 text-sm"
-          data-toast-code={gate.toastCode ?? undefined}
-          role="status"
-        >
-          {gate.toastMessage}
+    <WalletChrome tone="paper">
+      <main
+        className={styles.surface}
+        data-withdraw-default-mode="profit"
+        data-withdraw-mode={mode}
+        data-testid="wallet-withdraw-usdt"
+      >
+        <header className={styles.pageHead}>
+          <p className={styles.pageEyebrow}>{T.withdrawMode.pageTitle}</p>
+          <h1 className={styles.pageTitle}>{T.withdrawMode.pageTitleUsdt}</h1>
+          <p className={styles.lead}>{T.withdrawMode.pageLeadUsdt}</p>
+        </header>
+        <div className={styles.tabs} role="tablist" data-testid="withdraw-currency-tabs">
+          <Link
+            href={`/wallet/withdraw/usdt?mode=${mode}`}
+            role="tab"
+            data-tab="usdt"
+            className={styles.tabActive}
+          >
+            {T.withdrawMode.tabUsdt}
+          </Link>
+          <Link
+            href={`/wallet/withdraw/krw?mode=${mode}`}
+            role="tab"
+            data-tab="krw"
+            className={styles.tab}
+          >
+            {T.withdrawMode.tabKrw}
+          </Link>
+        </div>
+        <p data-testid="withdraw-network-hint">{T.wallet.withdrawNetworkHint}</p>
+        {gate.toastMessage ? (
+          <p data-toast-code={gate.toastCode ?? undefined} role="status">
+            {gate.toastMessage}
+          </p>
+        ) : null}
+        {gate.pendingReview ? <p>{T.kyc.pendingInline}</p> : null}
+        <WithdrawLiveForm
+          asset="USDT"
+          mode={mode}
+          requirePrincipalConfirm={requirePrincipalConfirm}
+          allowForm={gate.allowWithdrawForm || !gate.toastMessage}
+        />
+        <p>
+          <Link
+            href="/wallet/withdraw?mode=profit"
+            data-testid="usdt-withdraw-profit"
+            data-default-mode="profit"
+          >
+            {T.withdrawMode.ctaProfitWithdraw}
+          </Link>
         </p>
-      ) : null}
-      {gate.pendingReview ? (
-        <p className="mt-2 text-sm text-lux-text-muted">
-          {T.kyc.pendingInline}
+        <p>
+          <Link
+            href="/wallet/withdraw?mode=principal"
+            data-testid="usdt-withdraw-principal"
+            data-principal-reachable="true"
+          >
+            {T.withdrawMode.ctaOpenPrincipal}
+          </Link>
         </p>
-      ) : null}
-      <WithdrawLiveForm
-        asset="USDT"
-        mode={mode}
-        requirePrincipalConfirm={requirePrincipalConfirm}
-        allowForm={gate.allowWithdrawForm || !gate.toastMessage}
-      />
-      <p className={styles.nav}>
-        <a
-          href="/wallet/withdraw?mode=profit"
-          data-testid="usdt-withdraw-profit"
-          data-default-mode="profit"
-        >
-          {T.withdrawMode.ctaProfitWithdraw}
-        </a>
-      </p>
-      <p className={styles.nav}>
-        <a
-          href="/wallet/withdraw?mode=principal"
-          data-testid="usdt-withdraw-principal"
-          data-principal-reachable="true"
-        >
-          {T.withdrawMode.ctaOpenPrincipal}
-        </a>
-      </p>
-    </main>
+      </main>
+    </WalletChrome>
   );
 }
 

@@ -40,6 +40,22 @@ export function useOptionalToast(): ToastContextValue | null {
   return useContext(ToastContext);
 }
 
+function splitToast(message: string): { emoji: string; title: string; body: string } {
+  const [head = "", ...rest] = message.split("\n");
+  const match = head.match(/^(\p{Extended_Pictographic}\uFE0F?)\s*(.*)$/u);
+  return {
+    emoji: match?.[1] ?? "",
+    title: (match?.[2] ?? head).trim(),
+    body: rest.join("\n").trim(),
+  };
+}
+
+const TONE_BAR: Record<ResolvedToast["tone"], string> = {
+  error: "#e5484d",
+  success: "#34d399",
+  info: "#2f7bff",
+};
+
 export function ToastHost({ children }: { children: ReactNode }) {
   const [current, setCurrent] = useState<ResolvedToast | null>(null);
 
@@ -62,26 +78,102 @@ export function ToastHost({ children }: { children: ReactNode }) {
     [showToast, current, dismiss],
   );
 
+  const parts = current ? splitToast(current.message) : null;
+
   return (
     <ToastContext.Provider value={value}>
       {children}
-      {current ? (
+      {current && parts ? (
         <div
           data-testid="toast-host"
           data-toast-code={current.code}
           data-toast-tone={current.tone}
           role="status"
           aria-live="polite"
-          className="fixed inset-x-0 bottom-20 z-50 mx-auto max-w-md px-4 md:bottom-6"
+          style={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: 88,
+            zIndex: 60,
+            display: "flex",
+            justifyContent: "center",
+            padding: "0 16px",
+            pointerEvents: "none",
+          }}
         >
-          <div className="rounded-lux-md border border-lux-border bg-lux-elevated px-4 py-3 text-sm text-lux-text shadow-lg">
-            <p>{current.message}</p>
+          <div
+            style={{
+              pointerEvents: "auto",
+              position: "relative",
+              width: "min(100%, 420px)",
+              minHeight: 84,
+              overflow: "hidden",
+              border: "1px solid #26364d",
+              borderRadius: 16,
+              background: "#0d1726",
+              color: "#fff",
+              transform: "translateY(0)",
+              opacity: 1,
+            }}
+          >
+            <span
+              aria-hidden
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                width: 4,
+                height: "100%",
+                background: TONE_BAR[current.tone],
+              }}
+            />
             <button
               type="button"
-              className="mt-2 text-xs text-lux-text-muted underline"
               onClick={dismiss}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "34px 1fr",
+                gap: 10,
+                width: "100%",
+                minHeight: 84,
+                padding: "13px 16px 13px 17px",
+                border: 0,
+                background: "transparent",
+                color: "inherit",
+                textAlign: "left",
+                cursor: "pointer",
+              }}
             >
-              {T.common.close}
+              <span style={{ fontSize: 20, lineHeight: "28px" }} aria-hidden>
+                {parts.emoji}
+              </span>
+              <span>
+                <span
+                  style={{
+                    display: "block",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    lineHeight: "20px",
+                  }}
+                >
+                  {parts.title || current.message}
+                </span>
+                {parts.body ? (
+                  <span
+                    style={{
+                      display: "block",
+                      marginTop: 4,
+                      color: "#b7c0ce",
+                      fontSize: 12,
+                      lineHeight: "18px",
+                    }}
+                  >
+                    {parts.body}
+                  </span>
+                ) : null}
+                <span className="sr-only">{T.common.close}</span>
+              </span>
             </button>
           </div>
         </div>

@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   createWithdraw,
   createWithdrawStepUpChallenge,
+  fetchWalletBuckets,
   newWithdrawIdempotencyKey,
   verifyWithdrawStepUp,
   type WithdrawStepUpMethod,
@@ -11,6 +12,7 @@ import {
 import { WithdrawAmountPanel } from "@aipo/ui/components/wallet/WithdrawAmountPanel";
 import { WithdrawStepUpPanel } from "@aipo/ui/components/wallet/WithdrawStepUpPanel";
 import { T } from "@aipo/ui/copy/ko";
+import styles from "../app/wallet/wallet.module.css";
 
 function withdrawErrorView(err: unknown): {
   state: "denied" | "unavailable" | "unauthorized";
@@ -18,7 +20,7 @@ function withdrawErrorView(err: unknown): {
 } {
   const msg = err instanceof Error ? err.message : "";
   if (/_401\b/.test(msg)) {
-    return { state: "unauthorized", status: "로그인하면 출금을 신청할 수 있어요." };
+    return { state: "unauthorized", status: T.withdrawMode.unauthorized };
   }
   if (/_403\b/.test(msg)) {
     return { state: "denied", status: "지금은 출금할 수 없어요." };
@@ -30,15 +32,10 @@ export type WithdrawLiveFormProps = {
   asset: "USDT" | "KRW";
   mode: "profit" | "principal" | "combined";
   principalConfirmToken?: string | null;
-  /** principal|combined 인데 토큰 없으면 submit 차단 */
   requirePrincipalConfirm?: boolean;
   allowForm?: boolean;
 };
 
-/**
- * PART9f2 — 금액·step-up·POST /wallet/withdraw(idempotencyKey)
- * PrincipalConfirmSheet 토큰=클라랜덤 pointer(서버 재설계=Money 후속)
- */
 export function WithdrawLiveForm({
   asset,
   mode,
@@ -57,6 +54,22 @@ export function WithdrawLiveForm({
   const [flowState, setFlowState] = useState<
     "idle" | "accepted" | "denied" | "unavailable" | "unauthorized"
   >("idle");
+  const [availableProfitUsdt, setAvailableProfitUsdt] = useState<string | null>(
+    null,
+  );
+
+  useEffect(() => {
+    const ac = new AbortController();
+    void (async () => {
+      try {
+        const buckets = await fetchWalletBuckets({ signal: ac.signal });
+        if (!ac.signal.aborted) setAvailableProfitUsdt(buckets.profitUsdt);
+      } catch {
+        if (!ac.signal.aborted) setAvailableProfitUsdt(null);
+      }
+    })();
+    return () => ac.abort();
+  }, []);
 
   const onChallenge = useCallback(async () => {
     setBusy(true);
@@ -137,6 +150,9 @@ export function WithdrawLiveForm({
 
   if (!allowForm) return null;
 
+  const modeLabel =
+    mode === "profit" ? T.withdrawMode.modeProfit : T.withdrawMode.modePrincipal;
+
   return (
     <div
       data-testid="withdraw-live-form"
@@ -146,67 +162,108 @@ export function WithdrawLiveForm({
       data-has-amount={amountUsdt.trim() ? "true" : "false"}
       data-has-destination={destination.trim() ? "true" : "false"}
       data-has-token={stepUpToken ? "true" : "false"}
+      className={styles.deskSplit}
     >
-      <WithdrawAmountPanel
-        amountUsdt={amountUsdt}
-        onAmountChange={setAmountUsdt}
-        destination={destination}
-        onDestinationChange={setDestination}
-        showDestination={asset === "USDT"}
-        asset={asset}
-        disabled={busy}
-      />
-
-      <WithdrawStepUpPanel
-        method={method === "pin" ? "pin" : "email_otp"}
-        proof={proof}
-        onProofChange={setProof}
-        onChallenge={() => {
-          void onChallenge();
-        }}
-        onVerify={() => {
-          void onVerify();
-        }}
-        challengeReady={Boolean(challengeId)}
-        busy={busy}
-      />
-
-      {stepUpToken ? (
-        <p
-          className="mt-2 hidden"
-          data-testid="withdraw-step-up-token-ready"
-          data-token-len={stepUpToken.length}
+      <section className={styles.card}>
+        <WithdrawAmountPanel
+          amountUsdt={amountUsdt}
+          onAmountChange={setAmountUsdt}
+          destination={destination}
+          onDestinationChange={setDestination}
+          showDestination={asset === "USDT"}
+          asset={asset}
+          disabled={busy}
+          availableProfitUsdt={availableProfitUsdt}
         />
-      ) : null}
 
-      <button
-        type="button"
-        data-testid="withdraw-submit"
-        data-mode={mode}
-        disabled={
-          busy ||
-          !stepUpToken ||
-          !amountUsdt.trim() ||
-          (requirePrincipalConfirm && !principalConfirmToken) ||
-          (asset === "USDT" && !destination.trim())
-        }
-        onClick={() => {
-          void onSubmit();
-        }}
-        className="mt-6 w-full rounded-[0.875rem] bg-[#ff2d6b] px-4 py-3 text-[1.1875rem] font-extrabold text-white disabled:opacity-50"
-      >
-        {T.withdrawMode.ctaSubmit}
-      </button>
+        <WithdrawStepUpPanel
+          method={method === "pin" ? "pin" : "email_otp"}
+          proof={proof}
+          onProofChange={setProof}
+          onChallenge={() => {
+            void onChallenge();
+          }}
+          onVerify={() => {
+            void onVerify();
+          }}
+          challengeReady={Boolean(challengeId)}
+          busy={busy}
+        />
 
-      {status ? (
-        <p
-          className="mt-3 text-sm"
-          role="status"
-          data-testid="withdraw-result"
+        {stepUpToken ? (
+          <p
+            hidden
+            data-testid="withdraw-step-up-token-ready"
+            data-token-len={stepUpToken.length}
+          />
+        ) : null}
+
+        <button
+          type="button"
+          data-testid="withdraw-submit"
+          data-mode={mode}
+          disabled={
+            busy ||
+            !stepUpToken ||
+            !amountUsdt.trim() ||
+            (requirePrincipalConfirm && !principalConfirmToken) ||
+            (asset === "USDT" && !destination.trim())
+          }
+          onClick={() => {
+            void onSubmit();
+          }}
+          className={styles.cta}
         >
-          {status}
-        </p>
-      ) : null}
+          {T.withdrawMode.ctaReview}
+        </button>
+
+        {status ? (
+          <p role="status" data-testid="withdraw-result">
+            {status}
+          </p>
+        ) : null}
+      </section>
+      <aside>
+        <section className={styles.card}>
+          <h2 className={styles.cardTitle}>{T.withdrawMode.reviewPreviewTitle}</h2>
+          <dl className={styles.reviewList}>
+            <div className={styles.reviewRow}>
+              <dt>{T.withdrawMode.reviewMode}</dt>
+              <dd>{modeLabel}</dd>
+            </div>
+            <div className={styles.reviewRow}>
+              <dt>{T.withdrawMode.reviewAmount}</dt>
+              <dd>
+                {amountUsdt.trim()
+                  ? `${amountUsdt.trim()} ${T.walletBuckets.usdtSuffix}`
+                  : T.withdrawMode.amountPending}
+              </dd>
+            </div>
+            <div className={styles.reviewRow}>
+              <dt>
+                {asset === "USDT"
+                  ? T.withdrawMode.receivePlace
+                  : T.withdrawMode.receiveCurrency}
+              </dt>
+              <dd>
+                {asset === "KRW"
+                  ? T.withdrawMode.receiveKrw
+                  : destination.trim() || T.withdrawMode.destPending}
+              </dd>
+            </div>
+            {asset === "USDT" ? (
+              <div className={styles.reviewRow}>
+                <dt>{T.withdrawMode.feeLabel}</dt>
+                <dd>{T.withdrawMode.feePending}</dd>
+              </div>
+            ) : null}
+          </dl>
+        </section>
+        <div className={styles.notice}>
+          <p className={styles.noticeTitle}>{T.withdrawMode.stepUpLast}</p>
+          <p className={styles.noticeBody}>{T.withdrawMode.stepUpLastBody}</p>
+        </div>
+      </aside>
     </div>
   );
 }

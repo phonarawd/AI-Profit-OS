@@ -4,71 +4,50 @@ import { T } from "../../copy/ko";
 
 export type PrincipalConfirmSheetProps = {
   open: boolean;
-  nearMissCount?: number;
   onChooseProfitOnly: () => void;
-  /** Called with opaque confirm token (≥8 chars) after user affirms principal */
   onConfirmPrincipal: (principalConfirmToken: string) => void;
 };
 
 function makePrincipalConfirmToken(): string {
-  const rand =
-    typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID().replace(/-/g, "")
-      : `${Date.now()}${Math.random().toString(16).slice(2)}`;
-  return `pc_${rand}`;
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return `pc_${crypto.randomUUID()}`;
+  }
+  return `pc_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 }
 
 /**
- * Money §49.4 PrincipalConfirmSheet — required for mode=principal|combined.
- * Threat/forfeit/timer pressure copy forbidden.
+ * Principal confirm — reachable, no countdown/fear/loss.
  */
 export function PrincipalConfirmSheet({
   open,
-  nearMissCount = 0,
   onChooseProfitOnly,
   onConfirmPrincipal,
 }: PrincipalConfirmSheetProps) {
   if (!open) return null;
-
   return (
     <div
+      data-testid="principal-confirm-sheet"
+      className="walletV2Sheet"
       role="dialog"
       aria-modal="true"
-      data-testid="principal-confirm-sheet"
-      className="fixed inset-x-0 bottom-0 z-50 rounded-t-lux-lg border border-lux-border bg-lux-surface p-6 shadow-lg"
     >
-      <h2 className="text-lg font-semibold text-lux-text">
-        {T.withdrawMode.confirmTitle}
-      </h2>
-      <p className="mt-2 text-sm text-lux-text-muted">
-        {T.withdrawMode.confirmBody}
-      </p>
-      {nearMissCount > 0 ? (
-        <p
-          className="mt-2 text-sm text-lux-warning"
-          data-testid="principal-near-miss"
-        >
-          {nearMissCount}
-        </p>
-      ) : null}
-      <p className="mt-3 text-sm text-lux-text">
-        {T.withdrawMode.confirmSelfOnly}
-      </p>
-      <div className="mt-6 flex flex-col gap-2">
-        <button
-          type="button"
-          data-testid="cta-profit-only"
-          onClick={onChooseProfitOnly}
-          className="rounded-lux-md bg-lux-accent px-4 py-3 text-sm font-semibold text-lux-bg"
-        >
+      <button
+        type="button"
+        className="walletV2SheetBackdrop"
+        aria-label={T.common.close}
+        onClick={onChooseProfitOnly}
+      />
+      <div className="walletV2SheetPanel">
+        <h2>{T.withdrawMode.confirmTitle}</h2>
+        <p>{T.withdrawMode.confirmBody}</p>
+        <p>{T.withdrawMode.confirmSelfOnly}</p>
+        <button type="button" data-testid="cta-profit-only" onClick={onChooseProfitOnly}>
           {T.withdrawMode.ctaProfitOnly}
         </button>
         <button
           type="button"
           data-testid="cta-still-principal"
-          data-principal-reachable="true"
           onClick={() => onConfirmPrincipal(makePrincipalConfirmToken())}
-          className="rounded-lux-md border border-lux-border px-4 py-3 text-sm text-lux-text"
         >
           {T.withdrawMode.ctaStillPrincipal}
         </button>

@@ -7,6 +7,7 @@ import {
 } from "@aipo/sdk/ledger";
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
+import { WalletChrome } from "../../WalletChrome";
 import styles from "../../wallet.module.css";
 
 const TITLE = "내역 상세";
@@ -52,13 +53,15 @@ function Shell({
   children: ReactNode;
 }) {
   return (
-    <main
-      className={styles.page}
-      data-testid="wallet-history-detail"
-      data-history-detail-view={view}
-    >
-      {children}
-    </main>
+    <WalletChrome tone="paper">
+      <main
+        className={styles.surface}
+        data-testid="wallet-history-detail"
+        data-history-detail-view={view}
+      >
+        {children}
+      </main>
+    </WalletChrome>
   );
 }
 
@@ -173,7 +176,7 @@ export function HistoryDetailClient({ journalId }: { journalId: string }) {
       </dl>
       <ul className={styles.list} data-testid="history-detail-entries">
         {journal.entries.length === 0 ? (
-          <li className={styles.note}>줄을 확인할 수 없음</li>
+          <li className={styles.note}>이 내역의 금액을 확인할 수 없어요.</li>
         ) : (
           journal.entries.map((entry) => (
             <li key={entry.id} className={styles.row}>

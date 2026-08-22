@@ -12,6 +12,7 @@ import { T } from "@aipo/ui/copy/ko";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 import { WithdrawLiveForm } from "../../../components/WithdrawLiveForm";
 import { useWithdrawKycGate } from "../../../lib/use-withdraw-kyc-gate";
+import { WalletChrome } from "../WalletChrome";
 import styles from "../wallet.module.css";
 
 function resolveMode(raw: string | null): WithdrawModeValue {
@@ -19,10 +20,6 @@ function resolveMode(raw: string | null): WithdrawModeValue {
   return "profit";
 }
 
-/**
- * Money §49.4 — default mode=profit · PrincipalConfirmSheet for principal|combined.
- * §42 KYC gate on entry.
- */
 function WithdrawContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -37,9 +34,9 @@ function WithdrawContent() {
   });
 
   const [sheetOpen, setSheetOpen] = useState(mode !== "profit");
-  const [principalConfirmToken, setPrincipalConfirmToken] = useState<
-    string | null
-  >(null);
+  const [principalConfirmToken, setPrincipalConfirmToken] = useState<string | null>(
+    null,
+  );
 
   const setMode = useCallback(
     (next: WithdrawModeValue) => {
@@ -55,91 +52,82 @@ function WithdrawContent() {
   const requirePrincipalConfirm = mode === "principal" || mode === "combined";
 
   return (
-    <main
-      className={`${styles.page} ${styles.onNavy}`}
-      data-withdraw-default-mode="profit"
-      data-withdraw-mode={mode}
-      data-testid="wallet-withdraw"
-    >
-      <p className={styles.nav}>
-        <Link href="/wallet">지갑</Link>
-      </p>
-      <h1 className={styles.title}>{T.withdrawMode.pageTitle}</h1>
-      <div
-        className="mt-4 flex gap-2"
-        role="tablist"
-        data-testid="withdraw-currency-tabs"
+    <WalletChrome tone="paper">
+      <main
+        className={styles.surface}
+        data-withdraw-default-mode="profit"
+        data-withdraw-mode={mode}
+        data-testid="wallet-withdraw"
       >
-        <Link
-          href={`/wallet/withdraw/usdt?mode=${mode}`}
-          role="tab"
-          data-tab="usdt"
-          className="rounded-lux-md border border-lux-border px-3 py-2 text-sm"
-        >
-          {T.withdrawMode.tabUsdt}
-        </Link>
-        <Link
-          href={`/wallet/withdraw/krw?mode=${mode}`}
-          role="tab"
-          data-tab="krw"
-          className="rounded-lux-md border border-lux-border px-3 py-2 text-sm"
-        >
-          {T.withdrawMode.tabKrw}
-        </Link>
-      </div>
-      {gate.toastMessage ? (
-        <p
-          className="mt-3 text-sm"
-          data-toast-code={gate.toastCode ?? undefined}
-          role="status"
-        >
-          {gate.toastMessage}
-        </p>
-      ) : null}
-      {gate.pendingReview ? (
-        <p className="mt-2 text-sm text-lux-text-muted">
-          {T.kyc.pendingInline}
-        </p>
-      ) : null}
+        <header className={styles.pageHead}>
+          <p className={styles.pageEyebrow}>{T.withdrawMode.pageTitle}</p>
+          <h1 className={styles.pageTitle}>{T.withdrawMode.pageTitle}</h1>
+          <p className={styles.lead}>{T.withdrawMode.pageLeadPrincipal}</p>
+        </header>
+        <div className={styles.tabs} role="tablist" data-testid="withdraw-currency-tabs">
+          <Link
+            href={`/wallet/withdraw/usdt?mode=${mode}`}
+            role="tab"
+            data-tab="usdt"
+            className={styles.tab}
+          >
+            {T.withdrawMode.tabUsdt}
+          </Link>
+          <Link
+            href={`/wallet/withdraw/krw?mode=${mode}`}
+            role="tab"
+            data-tab="krw"
+            className={styles.tab}
+          >
+            {T.withdrawMode.tabKrw}
+          </Link>
+        </div>
+        {gate.toastMessage ? (
+          <p data-toast-code={gate.toastCode ?? undefined} role="status">
+            {gate.toastMessage}
+          </p>
+        ) : null}
+        {gate.pendingReview ? <p>{T.kyc.pendingInline}</p> : null}
 
-      <WithdrawModeCards mode={mode} onModeChange={setMode} />
+        <WithdrawModeCards mode={mode} onModeChange={setMode} />
 
-      {requirePrincipalConfirm && !principalConfirmToken ? (
-        <button
-          type="button"
-          data-testid="withdraw-open-principal-sheet"
-          className="mt-4 w-full rounded-lux-md border border-lux-border px-4 py-3 text-sm text-lux-text"
-          onClick={() => setSheetOpen(true)}
-        >
-          {T.withdrawMode.ctaOpenPrincipal}
-        </button>
-      ) : null}
+        {requirePrincipalConfirm && !principalConfirmToken ? (
+          <button
+            type="button"
+            data-testid="withdraw-open-principal-sheet"
+            className={styles.ctaSoft}
+            onClick={() => setSheetOpen(true)}
+          >
+            {T.withdrawMode.ctaOpenPrincipal}
+          </button>
+        ) : null}
 
-      <WithdrawLiveForm
-        asset="USDT"
-        mode={mode}
-        principalConfirmToken={principalConfirmToken}
-        requirePrincipalConfirm={requirePrincipalConfirm}
-        allowForm={gate.allowWithdrawForm || !gate.toastMessage}
-      />
-
-      {principalConfirmToken ? (
-        <p
-          className="mt-2 hidden"
-          data-testid="principal-confirm-token-ready"
-          data-token-len={principalConfirmToken.length}
+        <WithdrawLiveForm
+          asset="USDT"
+          mode={mode}
+          principalConfirmToken={principalConfirmToken}
+          requirePrincipalConfirm={requirePrincipalConfirm}
+          allowForm={gate.allowWithdrawForm || !gate.toastMessage}
         />
-      ) : null}
 
-      <PrincipalConfirmSheet
-        open={sheetOpen && requirePrincipalConfirm}
-        onChooseProfitOnly={() => setMode("profit")}
-        onConfirmPrincipal={(token) => {
-          setPrincipalConfirmToken(token);
-          setSheetOpen(false);
-        }}
-      />
-    </main>
+        {principalConfirmToken ? (
+          <p
+            hidden
+            data-testid="principal-confirm-token-ready"
+            data-token-len={principalConfirmToken.length}
+          />
+        ) : null}
+
+        <PrincipalConfirmSheet
+          open={sheetOpen && requirePrincipalConfirm}
+          onChooseProfitOnly={() => setMode("profit")}
+          onConfirmPrincipal={(token) => {
+            setPrincipalConfirmToken(token);
+            setSheetOpen(false);
+          }}
+        />
+      </main>
+    </WalletChrome>
   );
 }
 

@@ -13,7 +13,7 @@ export const toast = {
   CIRCUIT_OPEN: "⏸️ 잠시 거래를 멈췄어요. 곧 다시 열릴게요",
   BUCKET_INVARIANT_FAIL:
     "⏸️ 잔액 확인이 필요해서 잠시 멈췄어요. 곧 안내드릴게요",
-  RATE_LIMITED: "🐢 잠깐만요! 너무 빠르게 눌렀어요",
+  RATE_LIMITED: "🐢 잠깐만요!\n천천히 한 번만 눌러 주세요.",
   OPPORTUNITY_EXPIRED: "⏰ 이 기회는 방금 마감됐어요",
   EXEC_SAFE_STOP_PRICE: "🛡️ 가격이 움직여서 이번엔 안전하게 멈췄어요",
   EXEC_SAFE_STOP_MIN: "🛡️ 예상보다 적어져서 진행하지 않았어요 (잔액 그대로)",
@@ -28,9 +28,9 @@ export const toast = {
   PRACTICE_GRANTED: "🎁 연습 잔액이 생겼어요. 출금은 안 돼요",
   PRACTICE_EXPIRED: "⏰ 연습 잔액이 만료됐어요",
   MERGE_PROFIT_OK: "✨ 수익을 원금에 합쳤어요. 다음 기회에 바로 쓸 수 있어요",
-  DEPOSIT_DETECTED: "👀 USDT {amount} 입금 감지! 확정까지 잠시만요",
-  DEPOSIT_CONFIRMED: "🎉 USDT {amount} 입금 확정! 바로 거래할 수 있어요",
-  KRW_DEPOSIT_SUBMITTED: "📝 원화 입금 신청 접수! 송금 후 확인해 드릴게요",
+  DEPOSIT_DETECTED: "👀 입금이 들어온 걸 확인했어요\n확인이 끝나면 잔액에 반영해요.",
+  DEPOSIT_CONFIRMED: "🎉 입금 완료!\n잔액에 반영했어요.",
+  KRW_DEPOSIT_SUBMITTED: "📝 입금 신청을 받았어요\n확인이 끝나면 잔액에 반영해요.",
   KRW_DEPOSIT_APPROVED: "✅ 원화 입금이 확인됐어요. 잔액에 반영됐어요 🎉",
   KRW_DEPOSIT_REJECTED:
     "😔 원화 입금을 확인할 수 없어요. 내역에서 이유를 확인해 주세요",
@@ -42,9 +42,9 @@ export const toast = {
   DEPOSIT_DISPUTE_CREDITED: "✅ 확인했어요. 잔액에 반영됐어요 🎉",
   DEPOSIT_DISPUTE_REJECTED:
     "😔 이번 건은 반영하기 어려워요. 내역에서 이유를 확인해 주세요",
-  WITHDRAW_SUBMITTED: "📤 출금 요청을 받았어요",
+  WITHDRAW_SUBMITTED: "📤 출금 요청을 받았어요\n아직 출금 완료 전이에요.",
   TRADE_COMPLETE: "🎉 +{amount} USDT 지급 완료!",
-  NETWORK_ERROR: "📡 연결이 불안정해요. 다시 시도해 주세요",
+  NETWORK_ERROR: "📡 연결이 잠깐 불안정해요\n다시 시도해 주세요.",
   SESSION_EXPIRED: "🔐 다시 로그인해 주세요",
   ACCOUNT_FROZEN: "⏸️ 계정이 일시 정지됐어요. 고객센터에 문의해 주세요",
   ACCOUNT_BANNED: "🚫 이용이 제한된 계정이에요",
@@ -56,7 +56,7 @@ export const toast = {
   PASSWORD_RESET_BY_OPS: "🔐 로그인 비밀번호가 재설정됐어요. 다시 로그인해 주세요",
   WITHDRAW_PIN_RESET:
     "🔑 출금 비밀번호가 초기화됐어요. 다음 출금 때 다시 등록해 주세요",
-  WITHDRAW_STEP_UP_REQUIRED: "🔐 출금하려면 본인 확인이 한 번 더 필요해요",
+  WITHDRAW_STEP_UP_REQUIRED: "🔐 출금 전에 본인 확인이 필요해요",
   PIN_REQUIRED: "🔑 출금 비밀번호를 다시 등록해 주세요",
   WEBAUTHN_REVOKED:
     "🔐 패스키가 해제됐어요. 이메일·비밀번호로 본인 확인해 주세요",

@@ -10,6 +10,7 @@ import { T } from "@aipo/ui/copy/ko";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import { WalletChrome } from "../WalletChrome";
 import styles from "../wallet.module.css";
 
 const PAGE = 20;
@@ -43,7 +44,7 @@ function rowMoney(item: UserJournal): string {
     return `${item.entries[0].amountUsdt} USDT`;
   }
   if (item.entries.length === 0) return "확인할 수 없음";
-  return `줄 ${item.entries.length}개`;
+  return "여러 건";
 }
 
 function Shell({
@@ -54,13 +55,15 @@ function Shell({
   children: ReactNode;
 }) {
   return (
-    <main
-      className={styles.page}
-      data-testid="wallet-history"
-      data-history-view={view}
-    >
-      {children}
-    </main>
+    <WalletChrome tone="paper">
+      <main
+        className={styles.surface}
+        data-testid="wallet-history"
+        data-history-view={view}
+      >
+        {children}
+      </main>
+    </WalletChrome>
   );
 }
 

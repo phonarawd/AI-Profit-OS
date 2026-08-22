@@ -3,23 +3,18 @@
  * Ledger/admin network code mapping Owns=api-nest network-plain-ko · user=트론 only.
  */
 export const wallet = {
-  /** Fixed §41.6 warning — deposit USDT tab · above address/QR */
-  networkWarning:
-    "⚠️ 이 주소는 테더(USDT) · 트론 네트워크 로만 보내 주세요.",
-  networkWarningLine2:
-    "다른 네트워크로 보내면 찾을 수 없을 수 있어요.",
+  networkWarning: "네트워크를 꼭 확인해 주세요",
+  networkWarningLine2: "테더(USDT)는 트론 네트워크로만 보내 주세요.",
+  networkWarningLine3: "다른 네트워크로 보내면 찾기 어려울 수 있어요.",
   networkWarningDetail: "자세히",
-  networkWarningWrongSent: "잘못 보냈어요",
-  /** User-facing network name (ledger code ≠ this) */
+  networkWarningWrongSent: "잘못 보냈어요?",
   networkName: "트론",
   networkNameFull: "트론 네트워크",
   addressLabel: "내 입금 주소",
   addressCopy: "주소 복사",
   addressCopyDone: "주소를 복사했어요",
   qrLabel: "입금용 QR",
-  /** Withdraw confirm — same network name */
   withdrawNetworkHint: "받는 네트워크: 트론",
-  /** /me/support wrong-chain · category=deposit */
   supportWrongChainTitle: "잘못 보낸 입금",
   supportWrongChainHint:
     "보낸 기록(거래 번호)을 남겨 주시면 확인 후 안내해 드릴게요.",

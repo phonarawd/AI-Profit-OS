@@ -1,19 +1,14 @@
 "use client";
 
-import { fetchWalletBuckets } from "@aipo/sdk/wallet";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
-import {
-  DepositConsult,
-  TaxDisclaimerBlock,
-  UsdtVsKrwCompareTable,
-  WhyUsdtCard,
-} from "@aipo/ui/components/trust";
 import { DepositAmountPanel } from "@aipo/ui/components/wallet/DepositAmountPanel";
+import { DepositAddressQr } from "@aipo/ui/components/wallet/DepositAddressQr";
 import { NetworkPlainWarning } from "@aipo/ui/components/wallet/NetworkPlainWarning";
 import { T } from "@aipo/ui/copy/ko";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { WalletChrome } from "../WalletChrome";
 import styles from "../wallet.module.css";
 
 function parseSuggest(raw: string | null): number {
@@ -21,10 +16,6 @@ function parseSuggest(raw: string | null): number {
   const n = Number(raw);
   if (!Number.isFinite(n) || n <= 0) return 0;
   return Math.max(1, Math.ceil(n));
-}
-
-function sessionToken(): string | null {
-  return null;
 }
 
 type AddressState = "loading" | "ready" | "unavailable" | "unauthorized" | "denied";
@@ -54,26 +45,10 @@ function DepositContent() {
   const [addressState, setAddressState] = useState<AddressState>("loading");
   const [denyCopy, setDenyCopy] = useState<string | null>(null);
   const [copyDone, setCopyDone] = useState(false);
-  const [principalUsdt, setPrincipalUsdt] = useState<string | null>(null);
   const [krwAmount, setKrwAmount] = useState("");
   const [depositorName, setDepositorName] = useState("");
   const [krwState, setKrwState] = useState<KrwState>("idle");
   const [krwPending, setKrwPending] = useState<KrwPending | null>(null);
-
-  useEffect(() => {
-    const ac = new AbortController();
-    void fetchWalletBuckets({
-      getAccessToken: sessionToken,
-      signal: ac.signal,
-    })
-      .then((buckets) => {
-        setPrincipalUsdt(buckets.principalUsdt);
-      })
-      .catch(() => {
-        setPrincipalUsdt(null);
-      });
-    return () => ac.abort();
-  }, []);
 
   useEffect(() => {
     if (tab !== "usdt") return;
@@ -93,7 +68,7 @@ function DepositContent() {
         }
         if (res.status === 403) {
           setAddressState("denied");
-          setDenyCopy("지금은 입금 주소를 열 수 없어요.");
+          setDenyCopy(T.deposit.deniedUsdt);
           return;
         }
         if (!res.ok) {
@@ -130,7 +105,7 @@ function DepositContent() {
     const amount = Number(krwAmount);
     if (!Number.isInteger(amount) || amount < 1 || depositorName.trim().length < 1) {
       setKrwState("denied");
-      setDenyCopy("입금 신청에 필요한 값이 부족해요.");
+      setDenyCopy(T.deposit.missingValues);
       return;
     }
     setKrwState("submitting");
@@ -149,17 +124,17 @@ function DepositContent() {
       });
       if (res.status === 401) {
         setKrwState("unauthorized");
-        setDenyCopy("로그인하면 원화 입금을 신청할 수 있어요.");
+        setDenyCopy(T.deposit.unauthorizedKrw);
         return;
       }
       if (res.status === 403) {
         setKrwState("denied");
-        setDenyCopy("지금은 원화 입금을 신청할 수 없어요.");
+        setDenyCopy(T.deposit.deniedKrw);
         return;
       }
       if (!res.ok) {
         setKrwState("unavailable");
-        setDenyCopy("입금 신청을 확인할 수 없음");
+        setDenyCopy(T.deposit.unavailableKrw);
         return;
       }
       const json = (await res.json()) as KrwPending;
@@ -175,185 +150,261 @@ function DepositContent() {
   }
 
   return (
-    <main
-      className={styles.page}
-      data-testid="wallet-deposit-page"
-      data-deposit-tab={tab}
-      data-deposit-suggest={suggestUsdt > 0 ? String(suggestUsdt) : undefined}
-      data-address-state={tab === "usdt" ? addressState : undefined}
-      data-krw-state={tab === "krw" ? krwState : undefined}
-      data-classification-owner="engine:§0.0.5.1"
-    >
-      <DepositConsult
-        fact={{
-          ...(principalUsdt ? { balanceUsdt: principalUsdt } : {}),
-          toneBand: "mid",
-          fontScale: "md",
-          depositPref: tab,
-        }}
-      />
-      <p className={styles.nav}>
-        <Link href="/wallet">지갑</Link>
-      </p>
-      <h1 className={styles.title}>{T.deposit.pageTitle}</h1>
-      <div className={styles.trust}>
-        <WhyUsdtCard />
-        <UsdtVsKrwCompareTable className="bg-lux-elevated" />
-      </div>
-      <div className={styles.tabs} role="tablist" data-testid="deposit-tabs">
-        <Link
-          href={usdtHref}
-          role="tab"
-          aria-selected={tab === "usdt"}
-          data-tab="usdt"
-          data-active={tab === "usdt" ? "true" : "false"}
-          className={tab === "usdt" ? styles.tabActive : styles.tab}
-        >
-          {T.deposit.tabUsdt}
-        </Link>
-        <Link
-          href={krwHref}
-          role="tab"
-          aria-selected={tab === "krw"}
-          data-tab="krw"
-          data-active={tab === "krw" ? "true" : "false"}
-          className={tab === "krw" ? styles.tabActive : styles.tab}
-        >
-          {T.deposit.tabKrw}
-        </Link>
-      </div>
+    <WalletChrome tone="paper">
+      <main
+        className={styles.surface}
+        data-testid="wallet-deposit-page"
+        data-deposit-tab={tab}
+        data-deposit-suggest={suggestUsdt > 0 ? String(suggestUsdt) : undefined}
+        data-address-state={tab === "usdt" ? addressState : undefined}
+        data-krw-state={tab === "krw" ? krwState : undefined}
+        data-classification-owner="engine:§0.0.5.1"
+      >
+        <header className={styles.pageHead}>
+          <p className={styles.pageEyebrow}>{T.deposit.pageTitle}</p>
+          <h1 className={styles.pageTitle}>
+            {tab === "usdt" ? T.deposit.pageTitleUsdt : T.deposit.pageTitleKrw}
+          </h1>
+          <p className={styles.lead}>
+            {tab === "krw" && krwState === "pending"
+              ? T.deposit.submittedLead
+              : tab === "usdt"
+                ? T.deposit.leadUsdt
+                : T.deposit.leadKrw}
+          </p>
+        </header>
 
-      {tab === "usdt" ? (
-        <section className={styles.panel} data-testid="deposit-usdt-network-block">
-          <NetworkPlainWarning />
-          {addressState === "unauthorized" ? (
-            <p className={styles.lead}>로그인하면 입금 주소를 볼 수 있어요.</p>
-          ) : null}
-          {addressState === "denied" ? (
-            <p className={styles.err}>{denyCopy ?? "지금은 입금 주소를 열 수 없어요."}</p>
-          ) : null}
-          {addressState === "unavailable" ? (
-            <p className={styles.err}>입금 주소를 확인할 수 없음</p>
-          ) : null}
-          <div
-            data-testid="deposit-address-panel"
-            data-network-label={T.wallet.networkName}
-            className={styles.addressBox}
+        <div className={styles.tabs} role="tablist" data-testid="deposit-tabs">
+          <Link
+            href={usdtHref}
+            role="tab"
+            aria-selected={tab === "usdt"}
+            data-tab="usdt"
+            data-active={tab === "usdt" ? "true" : "false"}
+            className={tab === "usdt" ? styles.tabActive : styles.tab}
           >
-            <p>{T.wallet.addressLabel}</p>
-            <p
-              className={styles.mono}
-              data-testid="deposit-address-value"
-              data-qr-label={T.wallet.qrLabel}
-            >
-              {addressState === "ready" ? depositAddress : ""}
-            </p>
+            {T.deposit.tabUsdt}
+          </Link>
+          <Link
+            href={krwHref}
+            role="tab"
+            aria-selected={tab === "krw"}
+            data-tab="krw"
+            data-active={tab === "krw" ? "true" : "false"}
+            className={tab === "krw" ? styles.tabActive : styles.tab}
+          >
+            {T.deposit.tabKrw}
+          </Link>
+        </div>
+
+        {tab === "usdt" ? (
+          <div className={styles.deskSplit}>
+            <section className={styles.card} data-testid="deposit-usdt-network-block">
+              <div className={styles.addressHead}>
+                <h2 className={styles.cardTitle}>{T.deposit.addressPrimary}</h2>
+                <p className={styles.netBadge}>{T.wallet.networkNameFull}</p>
+              </div>
+              {addressState === "unauthorized" ? (
+                <p className={styles.lead}>{T.deposit.unauthorizedUsdt}</p>
+              ) : null}
+              {addressState === "denied" ? (
+                <p className={styles.err}>{denyCopy ?? T.deposit.deniedUsdt}</p>
+              ) : null}
+              {addressState === "unavailable" ? (
+                <p className={styles.err}>{T.deposit.unavailableUsdt}</p>
+              ) : null}
+              <div className={styles.qrBlock}>
+                <div className={styles.qrFrame}>
+                  {addressState === "ready" ? (
+                    <DepositAddressQr
+                      address={depositAddress}
+                      label={T.wallet.qrLabel}
+                    />
+                  ) : (
+                    <p className={styles.qrCaption}>{T.wallet.qrLabel}</p>
+                  )}
+                </div>
+                <div
+                  data-testid="deposit-address-panel"
+                  data-network-label={T.wallet.networkName}
+                  className={styles.addressBox}
+                >
+                  <p>{T.wallet.addressLabel}</p>
+                  <p
+                    className={styles.mono}
+                    data-testid="deposit-address-value"
+                    data-qr-label={T.wallet.qrLabel}
+                  >
+                    {addressState === "ready" ? depositAddress : ""}
+                  </p>
+                  <button
+                    type="button"
+                    data-testid="deposit-address-copy"
+                    className={styles.copyBtn}
+                    disabled={addressState !== "ready"}
+                    onClick={() => {
+                      if (addressState !== "ready" || !navigator.clipboard) return;
+                      void navigator.clipboard.writeText(depositAddress).then(() => {
+                        setCopyDone(true);
+                      });
+                    }}
+                  >
+                    {copyDone ? T.wallet.addressCopyDone : T.wallet.addressCopy}
+                  </button>
+                </div>
+              </div>
+              <NetworkPlainWarning />
+              <p className={styles.noticeBody}>{T.wallet.networkWarningLine3}</p>
+              <Link className={styles.textLink} href="/me/support?category=deposit&kind=wrong_chain">
+                {T.wallet.networkWarningWrongSent} ›
+              </Link>
+            </section>
+            <aside>
+              <div className={styles.cardDark}>
+                <h2 className={styles.cardTitle}>{T.deposit.amountTitle}</h2>
+                <p className={styles.cardSub}>{T.deposit.amountHint}</p>
+                <DepositAmountPanel
+                  suggestUsdt={suggestUsdt}
+                  oppId={oppId}
+                  tab={tab}
+                />
+              </div>
+              <div className={styles.noticeOk}>
+                <p className={styles.noticeTitle}>{T.deposit.afterDepositTitle}</p>
+                <p className={styles.noticeBody}>{T.deposit.afterDepositBody}</p>
+              </div>
+            </aside>
+          </div>
+        ) : krwState === "pending" && krwPending ? (
+          <section className={styles.submitted} data-testid="deposit-krw-panel">
+            <div className={styles.submittedIcon} aria-hidden>
+              📝
+            </div>
+            <h2 className={styles.submittedTitle}>{T.deposit.submittedTitle}</h2>
+            <p className={styles.submittedBody}>{T.deposit.submittedBody}</p>
+            <dl className={styles.submittedFacts} data-testid="krw-pending">
+              <div className={styles.factRow}>
+                <dt>{T.deposit.submittedAmount}</dt>
+                <dd>
+                  {typeof krwPending.payableAmountKrw === "number"
+                    ? `${krwPending.payableAmountKrw} ${T.deposit.krwUnit}`
+                    : `${T.walletBuckets.missingAmount} ${T.deposit.krwUnit}`}
+                </dd>
+              </div>
+              <div className={styles.factRow}>
+                <dt>{T.deposit.submittedCode}</dt>
+                <dd>{krwPending.depositCode || T.walletBuckets.missingAmount}</dd>
+              </div>
+            </dl>
+            <p className={styles.submittedBody}>{T.deposit.submittedNotCredited}</p>
+          </section>
+        ) : (
+          <div className={styles.deskSplit}>
+            <section className={styles.card} data-testid="deposit-krw-panel">
+              <h2 className={styles.cardTitle}>{T.deposit.krwFormTitle}</h2>
+              <p className={styles.cardSub}>{T.deposit.krwFormHint}</p>
+              <label className={styles.field}>
+                {T.deposit.depositorLabel}
+                <input
+                  data-testid="krw-depositor-name"
+                  value={depositorName}
+                  placeholder={T.deposit.depositorPlaceholder}
+                  onChange={(e) => setDepositorName(e.target.value)}
+                />
+              </label>
+              <label className={styles.field}>
+                {T.deposit.amountLabelKrw}
+                <span className={styles.amountWrap}>
+                  <input
+                    data-testid="krw-amount"
+                    inputMode="numeric"
+                    value={krwAmount}
+                    placeholder={T.deposit.amountPlaceholder}
+                    onChange={(e) => setKrwAmount(e.target.value)}
+                  />
+                  <span className={styles.amountUnit}>{T.deposit.krwUnit}</span>
+                </span>
+              </label>
+              <div className={styles.noticeWarn}>
+                <p className={styles.noticeTitle}>{T.deposit.krwNoticeTitle}</p>
+                <p className={styles.noticeBody}>{T.deposit.krwNoticeBody}</p>
+              </div>
+              {krwState === "unauthorized" ? (
+                <p className={styles.lead}>{denyCopy ?? T.deposit.unauthorizedKrw}</p>
+              ) : null}
+              {krwState === "denied" ? (
+                <p className={styles.err}>{denyCopy ?? T.deposit.deniedKrw}</p>
+              ) : null}
+              {krwState === "unavailable" ? (
+                <p className={styles.err}>{T.deposit.unavailableKrw}</p>
+              ) : null}
+            </section>
+            <aside>
+              <div className={styles.card}>
+                <h2 className={styles.cardTitle}>{T.deposit.guideTitle}</h2>
+                <div className={styles.steps}>
+                  <div className={styles.step}>
+                    <span className={styles.stepNum}>1</span>
+                    <span>{T.deposit.guide1}</span>
+                  </div>
+                  <div className={styles.step}>
+                    <span className={styles.stepNum}>2</span>
+                    <span>{T.deposit.guide2}</span>
+                  </div>
+                  <div className={styles.step}>
+                    <span className={styles.stepNum}>3</span>
+                    <span>{T.deposit.guide3}</span>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.noticeOk}>
+                <p className={styles.noticeTitle}>{T.deposit.afterRequestTitle}</p>
+                <p className={styles.noticeBody}>{T.deposit.afterRequestBody}</p>
+              </div>
+            </aside>
+          </div>
+        )}
+
+        <div className={styles.heroActions} style={{ marginTop: 16 }}>
+          {tab === "usdt" ? (
             <button
               type="button"
-              data-testid="deposit-address-copy"
-              className={styles.copyBtn}
-              disabled={addressState !== "ready"}
+              data-testid="deposit-continue"
+              data-force-deposit="false"
+              data-credited="false"
+              className={styles.ctaSoft}
               onClick={() => {
-                if (addressState !== "ready" || !navigator.clipboard) return;
-                void navigator.clipboard.writeText(depositAddress).then(() => {
-                  setCopyDone(true);
-                });
+                if (addressState !== "ready") {
+                  setDenyCopy(T.deposit.unavailableUsdt);
+                }
               }}
             >
-              {copyDone ? T.wallet.addressCopyDone : T.wallet.addressCopy}
+              {T.deposit.ctaContinue}
             </button>
-          </div>
-        </section>
-      ) : (
-        <section className={styles.panel} data-testid="deposit-krw-panel">
-          <p className={styles.note}>
-            원화는 신청만 받아요. 확인되기 전에는 잔액이 늘지 않아요.
-          </p>
-          <label className={styles.field}>
-            입금자 이름
-            <input
-              data-testid="krw-depositor-name"
-              value={depositorName}
-              onChange={(e) => setDepositorName(e.target.value)}
-            />
-          </label>
-          <label className={styles.field}>
-            신청 금액
-            <input
-              data-testid="krw-amount"
-              inputMode="numeric"
-              value={krwAmount}
-              onChange={(e) => setKrwAmount(e.target.value)}
-            />
-          </label>
-          {krwState === "pending" && krwPending ? (
-            <p className={styles.note} data-testid="krw-pending">
-              신청을 받았어요. 아직 잔액에 넣지 않았어요.
-              {typeof krwPending.payableAmountKrw === "number"
-                ? ` 받을 금액 ${krwPending.payableAmountKrw}`
-                : ""}
-              {krwPending.depositCode ? ` · ${krwPending.depositCode}` : ""}
-            </p>
+          ) : (
+            <button
+              type="button"
+              data-testid="deposit-continue"
+              data-force-deposit="false"
+              data-credited="false"
+              className={krwState === "pending" ? styles.ctaSoft : styles.cta}
+              disabled={krwState === "submitting"}
+              onClick={() => {
+                if (krwState === "pending") return;
+                void submitKrw();
+              }}
+            >
+              {krwState === "pending" ? T.deposit.backToWallet : T.deposit.ctaSubmit}
+            </button>
+          )}
+          {tab === "krw" && krwState !== "pending" ? (
+            <Link className={styles.ctaSoft} href="/wallet">
+              {T.deposit.backToWallet}
+            </Link>
           ) : null}
-          {krwState === "unauthorized" ? (
-            <p className={styles.lead}>
-              {denyCopy ?? "로그인하면 원화 입금을 신청할 수 있어요."}
-            </p>
-          ) : null}
-          {krwState === "denied" ? (
-            <p className={styles.err}>{denyCopy ?? "입금 신청을 받지 못했어요."}</p>
-          ) : null}
-          {krwState === "unavailable" ? (
-            <p className={styles.err}>입금 신청을 확인할 수 없음</p>
-          ) : null}
-        </section>
-      )}
-
-      <div className={styles.onNavy}>
-        <DepositAmountPanel
-          suggestUsdt={suggestUsdt}
-          oppId={oppId}
-          tab={tab}
-          onAmountChange={(amount) => {
-            if (tab === "krw") setKrwAmount(amount);
-          }}
-        />
-      </div>
-      <TaxDisclaimerBlock className="mt-4" />
-      <div className={styles.actions}>
-        {tab === "usdt" ? (
-          <button
-            type="button"
-            data-testid="deposit-continue"
-            data-force-deposit="false"
-            data-credited="false"
-            onClick={() => {
-              if (addressState !== "ready") {
-                setDenyCopy("입금 주소가 준비되기 전에는 다음으로 가지 않아요.");
-              }
-            }}
-          >
-            {T.deposit.ctaContinue}
-          </button>
-        ) : (
-          <button
-            type="button"
-            data-testid="deposit-continue"
-            data-force-deposit="false"
-            data-credited="false"
-            disabled={krwState === "submitting" || krwState === "pending"}
-            onClick={() => {
-              void submitKrw();
-            }}
-          >
-            {krwState === "pending" ? "신청됨" : "입금 신청"}
-          </button>
-        )}
-        <Link className={styles.secondary} href="/wallet">
-          지갑으로
-        </Link>
-      </div>
-    </main>
+        </div>
+      </main>
+    </WalletChrome>
   );
 }
 

@@ -5,13 +5,13 @@ import { T } from "../../copy/ko";
 export type WithdrawAmountPanelProps = {
   amountUsdt: string;
   onAmountChange: (amount: string) => void;
-  /** 표시용 수수료(서버 quote 없을 때 빈 문자열 → feeHint만) */
   feeUsdt?: string | null;
   destination?: string;
   onDestinationChange?: (destination: string) => void;
   showDestination?: boolean;
   asset?: "USDT" | "KRW";
   disabled?: boolean;
+  availableProfitUsdt?: string | null;
   className?: string;
 };
 
@@ -28,6 +28,7 @@ export function WithdrawAmountPanel({
   showDestination = true,
   asset = "USDT",
   disabled = false,
+  availableProfitUsdt = null,
   className = "",
 }: WithdrawAmountPanelProps) {
   const fee =
@@ -37,32 +38,51 @@ export function WithdrawAmountPanel({
     <section
       data-testid="withdraw-amount-panel"
       data-asset={asset}
-      className={["mt-4 space-y-3", className].filter(Boolean).join(" ")}
+      className={["walletV2WithdrawAmount", className].filter(Boolean).join(" ")}
     >
-      <label className="block text-sm text-lux-text-muted">
+      <label>
         {T.withdrawMode.amountLabel}
-        <input
-          data-testid="withdraw-amount-input"
-          type="text"
-          inputMode="decimal"
-          disabled={disabled}
-          value={amountUsdt}
-          onChange={(e) => onAmountChange(e.target.value)}
-          className="mt-1 w-full rounded-lux-md border border-lux-border bg-transparent px-3 py-2 text-lux-text"
-        />
+        <span className="walletV2AmountWrap">
+          <input
+            data-testid="withdraw-amount-input"
+            type="text"
+            inputMode="decimal"
+            disabled={disabled}
+            value={amountUsdt}
+            placeholder={T.withdrawMode.amountPlaceholder}
+            onChange={(e) => onAmountChange(e.target.value)}
+          />
+          <span>{T.walletBuckets.usdtSuffix}</span>
+        </span>
       </label>
 
-      <p
-        className="text-xs text-lux-text-muted"
-        data-testid="withdraw-fee-hint"
-      >
+      <div className="walletV2Available">
+        <p>{T.withdrawMode.availableProfit}</p>
+        <p>
+          {availableProfitUsdt
+            ? `${availableProfitUsdt} ${T.walletBuckets.usdtSuffix}`
+            : `${T.walletBuckets.missingAmount} ${T.walletBuckets.usdtSuffix}`}
+        </p>
+        {availableProfitUsdt ? (
+          <button
+            type="button"
+            data-testid="withdraw-all"
+            disabled={disabled}
+            onClick={() => onAmountChange(availableProfitUsdt)}
+          >
+            {T.withdrawMode.allAmount}
+          </button>
+        ) : null}
+      </div>
+
+      <p data-testid="withdraw-fee-hint">
         {fee
           ? T.withdrawMode.feeLine.replace("{fee}", fee)
           : T.withdrawMode.feeHint}
       </p>
 
       {showDestination && asset === "USDT" ? (
-        <label className="block text-sm text-lux-text-muted">
+        <label>
           {T.withdrawMode.destinationLabel}
           <input
             data-testid="withdraw-destination-input"
@@ -72,20 +92,23 @@ export function WithdrawAmountPanel({
             placeholder={T.withdrawMode.destinationPlaceholder}
             value={destination}
             onChange={(e) => onDestinationChange?.(e.target.value)}
-            className="mt-1 w-full rounded-lux-md border border-lux-border bg-transparent px-3 py-2 text-lux-text"
           />
         </label>
       ) : null}
 
       {asset === "USDT" ? (
         <p
-          className="text-sm text-lux-text-muted"
           data-testid="withdraw-network-hint"
           data-network-label={T.wallet.networkName}
         >
           {T.wallet.withdrawNetworkHint}
         </p>
-      ) : null}
+      ) : (
+        <div className="walletV2Notice">
+          <p>{T.withdrawMode.krwNoticeTitle}</p>
+          <p>{T.withdrawMode.krwNoticeBody}</p>
+        </div>
+      )}
     </section>
   );
 }
