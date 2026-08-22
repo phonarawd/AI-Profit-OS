@@ -5,6 +5,7 @@ import {
   type WalletBucketsResponse,
 } from "@aipo/sdk/wallet";
 import { BucketBreakdown } from "@aipo/ui/components/wallet/BucketBreakdown";
+import { DemoWalletBanner } from "@aipo/ui/components/wallet/DemoWalletBanner";
 import { T } from "@aipo/ui/copy/ko";
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
@@ -162,6 +163,8 @@ export function WalletClient() {
           </Link>
         </div>
       </section>
+
+      <DemoWalletBanner practiceUsdt={buckets.practiceUsdt} />
 
       <div className={styles.sectionHead}>
         <h2 className={styles.sectionTitle}>{T.walletBuckets.compositionHeading}</h2>

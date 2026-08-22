@@ -287,6 +287,10 @@ export function OnboardingFlow() {
 
         <OnboardingStoryVisual step={step} />
 
+        <aside data-testid="onboarding-objection-slide" role="note">
+          {T.objections.onboardingSlide}
+        </aside>
+
         <p className="onb-caption">
           {"captionMid" in copy && copy.captionMid ? (
             <>

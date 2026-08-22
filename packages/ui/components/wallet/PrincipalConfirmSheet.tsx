@@ -27,6 +27,7 @@ export function PrincipalConfirmSheet({
   return (
     <div
       data-testid="principal-confirm-sheet"
+      data-principal-reachable="true"
       className="walletV2Sheet"
       role="dialog"
       aria-modal="true"

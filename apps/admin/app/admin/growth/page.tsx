@@ -69,6 +69,42 @@ const KRW_STATUS_LABEL: Record<string, string> = {
   manual_review: "수동 확인",
 };
 
+const SIMULATION_GATES = [
+  { id: "S1" },
+  { id: "S2" },
+  { id: "S3" },
+  { id: "S4" },
+] as const;
+
+type SimulationGateId = (typeof SIMULATION_GATES)[number]["id"];
+
+function readGatePass(
+  gates: unknown,
+  id: SimulationGateId,
+): boolean | null {
+  if (!gates || typeof gates !== "object") return null;
+  const row = (gates as Record<string, unknown>)[id.toLowerCase()];
+  if (!row || typeof row !== "object") return null;
+  const pass = (row as { pass?: unknown }).pass;
+  return typeof pass === "boolean" ? pass : null;
+}
+
+function readAdapterMatchFailureRate(
+  data: Record<string, unknown>,
+): string | null {
+  const report = data.report;
+  if (report && typeof report === "object") {
+    const v = (report as { adapterMatchFailureRate?: unknown })
+      .adapterMatchFailureRate;
+    if (typeof v === "number" && Number.isFinite(v)) return String(v);
+    if (typeof v === "string" && v.length > 0) return v;
+  }
+  const top = data.adapterMatchFailureRate;
+  if (typeof top === "number" && Number.isFinite(top)) return String(top);
+  if (typeof top === "string" && top.length > 0) return top;
+  return null;
+}
+
 /**
  * Admin §35.6 / Engine §51.4 — `/admin/growth?tab=*`
  * 하위 /admin/growth/{content,deposit,whale,ticker} 는 레거시 리다이렉트(이중 IA 금지).
@@ -90,6 +126,7 @@ function GrowthContent() {
   const topUpApi = "/api/v1/admin/growth/referral/pool/top-up";
   const accrualHaltApi = "/api/v1/admin/growth/referral/accrual-halt";
   const simLatestApi = "/api/v1/admin/simulation/latest";
+  const simRunApi = "/api/v1/admin/simulation/run";
   const simGrowthGateApi = "/api/v1/admin/simulation/growth-gate";
   const growthEnabledApi = "/api/v1/admin/growth/enabled";
   const tickerApi = "/api/v1/admin/growth/ticker";
@@ -314,7 +351,13 @@ function GrowthContent() {
         {TABS.map((t) => (
           <a
             key={t}
-            href={`/admin/growth?tab=${t}`}
+            href={
+              t === "simulation"
+                ? "/admin/growth?tab=simulation"
+                : t === "referral"
+                  ? "/admin/growth?tab=referral"
+                  : `/admin/growth?tab=${t}`
+            }
             data-tab={t}
             className={
               tab === t
@@ -333,6 +376,7 @@ function GrowthContent() {
           data-testid="growth-simulation-panel"
           data-surface="admin-growth-simulation"
           data-latest-api={simLatestApi}
+          data-run-api={simRunApi}
           data-growth-gate-api={simGrowthGateApi}
           data-growth-enabled-api={growthEnabledApi}
         >
@@ -367,6 +411,31 @@ function GrowthContent() {
                   </p>
                   <p>
                     시각 <AdminTruth value={readText(latest.data.asOf)} />
+                  </p>
+                  <ul className="mt-2 space-y-1">
+                    {SIMULATION_GATES.map((g) => {
+                      const pass = readGatePass(latest.data.gates, g.id);
+                      return (
+                        <li key={g.id} data-gate={g.id}>
+                          {g.id}{" "}
+                          <AdminTruth
+                            value={
+                              pass === true
+                                ? "통과"
+                                : pass === false
+                                  ? "실패"
+                                  : null
+                            }
+                          />
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  <p data-field="adapterMatchFailureRate">
+                    비교 실패 비율{" "}
+                    <AdminTruth
+                      value={readAdapterMatchFailureRate(latest.data)}
+                    />
                   </p>
                 </div>
               )}

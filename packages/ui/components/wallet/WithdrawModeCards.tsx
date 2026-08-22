@@ -18,7 +18,7 @@ export function WithdrawModeCards({
   onModeChange,
 }: WithdrawModeCardsProps) {
   return (
-    <div data-testid="withdraw-mode-cards">
+    <div data-testid="withdraw-mode-cards" data-default-mode="profit">
       <p>{T.withdrawMode.whatToWithdraw}</p>
       <div className="walletV2Modes">
         <button

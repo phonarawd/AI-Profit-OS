@@ -279,7 +279,9 @@ function SystemControlContent() {
             href={
               t === "circuit"
                 ? "/admin/system-control"
-                : `/admin/system-control?tab=${t}`
+                : t === "reserve"
+                  ? "/admin/system-control?tab=reserve"
+                  : `/admin/system-control?tab=${t}`
             }
             data-tab={t}
             className={
