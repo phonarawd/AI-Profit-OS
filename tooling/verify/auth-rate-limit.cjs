@@ -32,8 +32,51 @@ const ctrl = read("services/api-nest/src/auth/auth.controller.ts");
 if (!ctrl.includes("AuthRateLimitGuard")) {
   fails.push("auth.controller.ts must use AuthRateLimitGuard");
 }
-if (!/@UseGuards\(AuthRateLimitGuard\)/.test(ctrl)) {
-  fails.push("AuthRateLimitGuard must wrap the auth controller");
+if (/@Controller\("auth"\)\s*@UseGuards\(AuthRateLimitGuard\)/.test(ctrl)) {
+  fails.push(
+    "AuthRateLimitGuard must not wrap the whole AuthController (GET session excluded)",
+  );
+}
+
+function methodBlock(src, routeDeco, fnName) {
+  const re = new RegExp(
+    `${routeDeco.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[\\s\\S]*?${fnName}\\(`,
+  );
+  return src.match(re)?.[0] || "";
+}
+
+const credentialMethods = [
+  ["@Post(AUTH_ROUTES.signup)", "signup"],
+  ["@Post(AUTH_ROUTES.oauthStart)", "oauthStart"],
+  ["@Post(AUTH_ROUTES.oauthCallback)", "oauthCallback"],
+  ["@Post(AUTH_ROUTES.magicLinkRequest)", "magicLinkRequest"],
+  ["@Post(AUTH_ROUTES.magicLinkVerify)", "magicLinkVerify"],
+  ["@Post(AUTH_ROUTES.passkeyRegisterOptions)", "passkeyRegisterOptions"],
+  ["@Post(AUTH_ROUTES.passkeyRegisterVerify)", "passkeyRegisterVerify"],
+  ["@Post(AUTH_ROUTES.passkeyAuthOptions)", "passkeyAuthOptions"],
+  ["@Post(AUTH_ROUTES.passkeyAuthVerify)", "passkeyAuthVerify"],
+];
+for (const [deco, fnName] of credentialMethods) {
+  const block = methodBlock(ctrl, deco, fnName);
+  if (!block) {
+    fails.push(`auth.controller.ts missing ${deco} ${fnName}()`);
+    continue;
+  }
+  if (!/@UseGuards\([^)]*AuthRateLimitGuard/.test(block)) {
+    fails.push(`${fnName} must apply AuthRateLimitGuard`);
+  }
+}
+
+const sessionBlock = methodBlock(ctrl, "@Get(AUTH_ROUTES.session)", "session");
+if (!sessionBlock) {
+  fails.push("auth.controller.ts missing @Get(AUTH_ROUTES.session) session()");
+} else {
+  if (!/@UseGuards\(JwtAuthGuard\)/.test(sessionBlock)) {
+    fails.push("GET session must keep JwtAuthGuard");
+  }
+  if (/AuthRateLimitGuard/.test(sessionBlock)) {
+    fails.push("GET session must not apply AuthRateLimitGuard");
+  }
 }
 
 const routes = read("services/api-nest/src/auth/auth.routes.ts");

@@ -65,13 +65,15 @@ function clearUserSessionCookie(res: CookieResponse): void {
  * signup/profile-start/oauth/passkey/magic-link routes stay PUBLIC — they are
  * how a session is obtained in the first place. session/logout/refresh/
  * delete-account require an already-issued JWT (P0-1 JwtAuthGuard).
+ * AuthRateLimitGuard is per-route (not class-wide) so GET session is not
+ * in the 20/60s bucket — JWT still required.
  */
 @Controller("auth")
-@UseGuards(AuthRateLimitGuard)
 export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
   @Post(AUTH_ROUTES.signup)
+  @UseGuards(AuthRateLimitGuard)
   async signup(@Body() body: Record<string, unknown>, @Res({ passthrough: true }) res: CookieResponse) {
     const out = await this.auth.signupStageA(body ?? {});
     if (typeof out.accessToken === "string") {
@@ -81,7 +83,7 @@ export class AuthController {
   }
 
   @Patch(AUTH_ROUTES.profile)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthRateLimitGuard, JwtAuthGuard)
   profile(@Body() body: Record<string, unknown>, @Req() req: AuthedRequest) {
     return this.auth.patchProfileStageB(req.user.userId, body ?? {});
   }
@@ -93,13 +95,13 @@ export class AuthController {
   }
 
   @Post(AUTH_ROUTES.onboardingComplete)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthRateLimitGuard, JwtAuthGuard)
   completeBeginnerOnboarding(@Req() req: AuthedRequest) {
     return this.auth.completeBeginnerOnboarding(req.user);
   }
 
   @Post(AUTH_ROUTES.logout)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthRateLimitGuard, JwtAuthGuard)
   async logout(
     @Req() req: AuthedRequest,
     @Res({ passthrough: true }) res: CookieResponse,
@@ -110,7 +112,7 @@ export class AuthController {
   }
 
   @Post(AUTH_ROUTES.refresh)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthRateLimitGuard, JwtAuthGuard)
   async refresh(
     @Req() req: AuthedRequest,
     @Res({ passthrough: true }) res: CookieResponse,
@@ -123,11 +125,13 @@ export class AuthController {
   }
 
   @Post(AUTH_ROUTES.oauthStart)
+  @UseGuards(AuthRateLimitGuard)
   oauthStart(@Param("provider") provider: string) {
     return this.auth.oauthStart(provider);
   }
 
   @Post(AUTH_ROUTES.oauthCallback)
+  @UseGuards(AuthRateLimitGuard)
   async oauthCallback(
     @Param("provider") provider: string,
     @Body() body: Record<string, unknown>,
@@ -144,11 +148,13 @@ export class AuthController {
   }
 
   @Post(AUTH_ROUTES.passkeyRegisterOptions)
+  @UseGuards(AuthRateLimitGuard)
   passkeyRegisterOptions() {
     return this.auth.passkeyOptions("register");
   }
 
   @Post(AUTH_ROUTES.passkeyRegisterVerify)
+  @UseGuards(AuthRateLimitGuard)
   async passkeyRegisterVerify(
     @Body() body: Record<string, unknown>,
     @Res({ passthrough: true }) res: CookieResponse,
@@ -171,11 +177,13 @@ export class AuthController {
   }
 
   @Post(AUTH_ROUTES.passkeyAuthOptions)
+  @UseGuards(AuthRateLimitGuard)
   passkeyAuthOptions() {
     return this.auth.passkeyOptions("authenticate");
   }
 
   @Post(AUTH_ROUTES.passkeyAuthVerify)
+  @UseGuards(AuthRateLimitGuard)
   async passkeyAuthVerify(
     @Body() body: Record<string, unknown>,
     @Res({ passthrough: true }) res: CookieResponse,
@@ -196,11 +204,13 @@ export class AuthController {
   }
 
   @Post(AUTH_ROUTES.magicLinkRequest)
+  @UseGuards(AuthRateLimitGuard)
   magicLinkRequest(@Body() body: Record<string, unknown>) {
     return this.auth.magicLinkRequest(body ?? {});
   }
 
   @Post(AUTH_ROUTES.magicLinkVerify)
+  @UseGuards(AuthRateLimitGuard)
   async magicLinkVerify(
     @Body() body: Record<string, unknown>,
     @Res({ passthrough: true }) res: CookieResponse,
@@ -223,7 +233,7 @@ export class AuthController {
   }
 
   @Post(AUTH_ROUTES.deleteAccount)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthRateLimitGuard, JwtAuthGuard)
   deleteAccount(
     @Body() body: Record<string, unknown>,
     @Req() req: AuthedRequest,
