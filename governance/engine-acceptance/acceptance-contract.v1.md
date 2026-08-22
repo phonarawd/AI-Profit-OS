@@ -140,13 +140,36 @@ QA-0 baseline freeze 이후에도 **workflow-only orchestration** 변경은 명�
 
 QA7-only wiring처럼 QA0–QA6 실행 semantics를 변경하지 않음이 **exact diff로 증명**되면 QA0–QA6 COMPLETE evidence를 재실행 없이 유지할 수 있다.
 
-다음 중 하나라도 true/불확실이면 amendment **FAIL/BLOCKED** (별도 governance 판정 필요):
+다음 중 하나라도 true/불확실이면 amendment **FAIL/BLOCKED** (기본):
 
 - QA0–QA6 command 변경
 - artifact/upload semantics 변경
 - env/permission 변경
 - PASS/FAIL logic 변경
 - `workflow_diff_scope.qa0_qa6_semantics_changed != false`
+
+### QA0–QA6 impact exception (승인된 parent decision만)
+
+기본은 계속 **BLOCK**. Founder/PO가 승인한 parent decision이 있을 때만, 정직한 impact 기록을 전제로 예외를 연다. 예외는 새 acceptance epoch를 만들지 않고 `baseline.id` / `prompt_hash` / `eval_dataset_hash`를 바꾸지 않는다.
+
+현재 allowlist: `QA4_WORKFLOW_AMENDMENT_DECISION_V1` (QA4 Full Harness Wiring).
+
+예외는 아래를 **전부 AND**로 만족할 때만 허용한다.
+
+| 조건 | 요구 |
+|---|---|
+| `allow_qa0_qa6_impact` | `true` |
+| `parent_decision_id` | allowlist와 일치 (`QA4_WORKFLOW_AMENDMENT_DECISION_V1`) |
+| `human_po_ack.statement` | `ACK`/`APPROVED`/`승인` **그리고** 그 `parent_decision_id` 문자열 |
+| `affected_qa_suites` | QA0–QA6과 **실제 overlap** (예: `["QA4"]`). `QA4_CLOCK` 같은 alias 우회 금지 |
+| `required_rerun_suites` | overlap 전부를 포함 (예: `["QA4"]`) |
+| `qa0_qa6_semantics_changed` | **true** (거짓 기록으로 예외 획득 금지) |
+| `checks.*` 4항목 | **전부 true** (false 세탁 금지) |
+
+구현 SSOT: `tooling/engine-acceptance/lib/workflow-amendment.cjs` `qa0Qa6ImpactExceptionAllowed`.  
+Apply persist SSOT: 같은 모듈 `toLedgerAmendment` — `allow_qa0_qa6_impact` · `parent_decision_id` · `required_rerun_suites`는 ledger append에 반드시 남긴다. proposal에서 복사하며 QA4 상수를 writer에 하드코딩하지 않는다.
+
+예외가 열려도 영향 suite COMPLETE를 재사용하지 않는다. `required_rerun_suites`에 적힌 suite는 새 workflow로 재실행한 뒤에만 current-authoritative다.
 
 L7 STABLE / IMMUTABLE 핀은 **같은 acceptance epoch 안**에서만 성립한다. 보호 제품 바이트가 QA0 이후 바뀌면 L8 rebase가 새 epoch를 만든다. Amendment로 `prompt_hash`를 제자리 수정하는 것은 계속 금지.
 

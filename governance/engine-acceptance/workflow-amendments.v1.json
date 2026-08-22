@@ -187,6 +187,48 @@
       "commit_sha_or_pending": "pending",
       "timestamp": "2026-08-14T03:10:00.000Z",
       "applied_at": "2026-08-13T18:03:27.240Z"
+    },
+    {
+      "amendment_id": "qa4-full-harness-wiring-20260823",
+      "reason": "QA4 Full Harness Wiring official acceptance workflow amendment",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-22T23:20:00.000Z",
+        "statement": "ACK APPROVED QA4_WORKFLOW_AMENDMENT_DECISION_V1. QA4 Full Harness Wiring official acceptance workflow amendment. Honest QA0-QA6 impact recorded; required rerun QA4. POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1."
+      },
+      "old_acceptance_workflow_hash": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
+      "new_acceptance_workflow_hash": "e497483da99f856d5378fab966e87d1c7545ca04f2090c075e889dff65272478",
+      "workflow_diff_scope": {
+        "files": [
+          ".github/workflows/engine-acceptance.yml"
+        ],
+        "exact_diff_summary": "A) qa-matrix timeout-minutes 30 → 40. B) qa-matrix.services += isolated pgvector/pgvector:pg16 postgres (5432, pg_isready healthcheck); comment: only QA4 case assembles AIPO_QA_PG* / --assert-db-target. C) QA4 case: export AIPO_QA_PGHOST=127.0.0.1 + PGUSER/PGPASSWORD/PGDATABASE/PGPORT + AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa4-clock; kill-switch --assert-db-target; pnpm --filter @aipo/api-nest build; test services/api-nest/dist/main.js; run-qa4-clock.cjs then existing run-qa4.cjs. D) Upload suite evidence path += /tmp/aipo-harness/qa4-clock/. E) QA3/QA5/QA6/QA8 case bodies, QA0/QA1/QA2/QA7 jobs, aggregator, secrets, permissions, and on: triggers unchanged.",
+        "qa0_qa6_semantics_changed": true,
+        "checks": {
+          "command_changes": true,
+          "artifact_upload_changes": true,
+          "env_permission_changes": true,
+          "pass_fail_semantics_changes": true
+        }
+      },
+      "affected_qa_suites": [
+        "QA4"
+      ],
+      "unaffected_completed_suites": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA3"
+      ],
+      "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+      "commit_sha_or_pending": "pending",
+      "timestamp": "2026-08-22T23:20:00.000Z",
+      "applied_at": "2026-08-22T23:21:39.329Z",
+      "allow_qa0_qa6_impact": true,
+      "parent_decision_id": "QA4_WORKFLOW_AMENDMENT_DECISION_V1",
+      "required_rerun_suites": [
+        "QA4"
+      ]
     }
   ],
   "epoch_bindings": [

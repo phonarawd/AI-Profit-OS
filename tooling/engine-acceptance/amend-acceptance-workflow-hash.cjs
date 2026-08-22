@@ -27,6 +27,7 @@ const {
   expectedWorkflowHash,
   validateAmendmentEntry,
   qa0Qa6ImpactBlocked,
+  toLedgerAmendment,
   assertQa7NotInFlight,
   writeJson,
 } = require("./lib/workflow-amendment.cjs");
@@ -164,20 +165,9 @@ function main() {
   // baseline.id / prompt_hash / eval_dataset_hash 절대 변경하지 않음
   writeJson(BASELINE_REL, baseline);
 
-  ledger.amendments.push({
-    amendment_id: proposal.amendment_id,
-    reason: proposal.reason,
-    human_po_ack: proposal.human_po_ack,
-    old_acceptance_workflow_hash: proposal.old_acceptance_workflow_hash,
-    new_acceptance_workflow_hash: proposal.new_acceptance_workflow_hash,
-    workflow_diff_scope: proposal.workflow_diff_scope,
-    affected_qa_suites: proposal.affected_qa_suites,
-    unaffected_completed_suites: proposal.unaffected_completed_suites,
-    baseline_id: baseline.id,
-    commit_sha_or_pending: proposal.commit_sha_or_pending,
-    timestamp: proposal.timestamp,
-    applied_at: new Date().toISOString(),
-  });
+  ledger.amendments.push(
+    toLedgerAmendment(proposal, baseline.id, new Date().toISOString()),
+  );
   writeJson(LEDGER_REL, ledger);
 
   console.log("[amend-acceptance-workflow-hash] APPLY OK");

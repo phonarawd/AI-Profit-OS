@@ -130,13 +130,29 @@ jobs:
   # QA3+ matrix — fail-fast:false (전수 조사 · 조기 취소 금지)
   qa-matrix:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     needs: [qa2-synthetic-personas]
     if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'qa8' || inputs.qa_phase == 'full' }}
     strategy:
       fail-fast: false
       matrix:
         suite: [QA3, QA4, QA5, QA6, QA8]
+    # Isolated Postgres is consumed only by the QA4 case (executor→scorer).
+    # Other matrix suites do not assemble AIPO_QA_PG* / assert-db-target.
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: aipo_qa_synth
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d aipo_qa_synth"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -167,6 +183,18 @@ jobs:
               node tooling/engine-acceptance/run-qa3.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
               ;;
             QA4)
+              # Same-job isolated CI: real executor evidence then canonical full scorer.
+              # AIPO_QA_HARNESS_OUT is shared so run-qa4.cjs consumes fresh qa4-clock-harness.v1.json.
+              export AIPO_QA_PGHOST=127.0.0.1
+              export AIPO_QA_PGUSER=postgres
+              export AIPO_QA_PGPASSWORD=postgres
+              export AIPO_QA_PGDATABASE=aipo_qa_synth
+              export AIPO_QA_PGPORT=5432
+              export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa4-clock
+              node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+              pnpm --filter @aipo/api-nest build
+              test -f services/api-nest/dist/main.js
+              node tooling/engine-acceptance/run-qa4-clock.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
               node tooling/engine-acceptance/run-qa4.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
               ;;
             QA5)
@@ -205,6 +233,7 @@ jobs:
             governance/engine-acceptance/defects.v1.json
             governance/engine-acceptance/evidence-manifest.v1.json
             governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
+            /tmp/aipo-harness/qa4-clock/
           # acceptance evidence retention ≥ 90 days (L5)
           retention-days: 90
           if-no-files-found: ignore

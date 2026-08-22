@@ -297,6 +297,7 @@
     "engine-acceptance:qa2": "node tooling/engine-acceptance/run-qa2.cjs",
     "engine-acceptance:qa3": "node tooling/engine-acceptance/run-qa3.cjs",
     "engine-acceptance:qa4": "node tooling/engine-acceptance/run-qa4.cjs",
+    "engine-acceptance:qa4-clock": "node tooling/engine-acceptance/run-qa4-clock.cjs",
     "engine-acceptance:qa5": "node tooling/engine-acceptance/run-qa5.cjs",
     "engine-acceptance:qa6": "node tooling/engine-acceptance/run-qa6.cjs",
     "engine-acceptance:qa5-fault": "node tooling/engine-acceptance/run-qa5-fault.cjs",

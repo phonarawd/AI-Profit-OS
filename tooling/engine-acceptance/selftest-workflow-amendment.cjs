@@ -11,10 +11,13 @@ const crypto = require("node:crypto");
 const { ROOT } = require("./lib/hash-scope.cjs");
 const {
   DECISION_ID,
+  QA4_WIRING_PARENT_DECISION_ID,
   SCHEMA,
   validateLedgerShape,
   validateAmendmentEntry,
+  qa0Qa6ImpactExceptionAllowed,
   qa0Qa6ImpactBlocked,
+  toLedgerAmendment,
   expectedWorkflowHash,
   verifyGovernanceAgainstBaseline,
   assertAcceptanceWorkflowHashMatch,
@@ -56,6 +59,39 @@ function makeValidAmendment(oldHash, newHash, baselineId) {
     baseline_id: baselineId,
     commit_sha_or_pending: "pending:fixture",
     timestamp: "2026-08-13T00:00:00.000Z",
+  };
+}
+
+function makeQa4ImpactExceptionAmendment(oldHash, newHash, baselineId) {
+  return {
+    amendment_id: "test-amend-qa4-harness-wiring",
+    reason: "fixture: honest QA4 Full Harness Wiring under parent decision",
+    human_po_ack: {
+      by: "Human/PO",
+      at: "2026-08-23T00:00:00.000Z",
+      statement: `ACK APPROVED ${QA4_WIRING_PARENT_DECISION_ID}. Honest QA4 semantics change; required rerun QA4.`,
+    },
+    old_acceptance_workflow_hash: oldHash,
+    new_acceptance_workflow_hash: newHash,
+    workflow_diff_scope: {
+      files: [".github/workflows/engine-acceptance.yml"],
+      exact_diff_summary: "fixture diff: QA4 case clock executor then scorer",
+      qa0_qa6_semantics_changed: true,
+      checks: {
+        command_changes: true,
+        artifact_upload_changes: true,
+        env_permission_changes: true,
+        pass_fail_semantics_changes: true,
+      },
+    },
+    affected_qa_suites: ["QA4"],
+    unaffected_completed_suites: ["QA0", "QA1", "QA2", "QA3"],
+    baseline_id: baselineId,
+    commit_sha_or_pending: "pending:fixture",
+    timestamp: "2026-08-23T00:00:00.000Z",
+    allow_qa0_qa6_impact: true,
+    parent_decision_id: QA4_WIRING_PARENT_DECISION_ID,
+    required_rerun_suites: ["QA4"],
   };
 }
 
@@ -328,6 +364,193 @@ function run() {
     const f = [];
     verifyGovernanceAgainstBaseline(baseline2, null, ledger2, { suites: [] }, f);
     check("approved_amendment_tip_pass", f.length === 0, f.join("; "));
+  }
+
+  // 9) QA4 impact exception — 정식 decision + ACK + required rerun 만 허용
+  {
+    const honest = makeQa4ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    check(
+      "qa4_exception_honest_allowed",
+      qa0Qa6ImpactExceptionAllowed(honest) === true && qa0Qa6ImpactBlocked(honest) === null,
+      qa0Qa6ImpactBlocked(honest),
+    );
+    const fEntry = [];
+    validateAmendmentEntry(honest, 0, fEntry);
+    check("qa4_exception_shape_valid", fEntry.length === 0, fEntry.join("; "));
+    const ledgerEx = { ...ledger, amendments: [honest] };
+    const baselineEx = { ...baseline, acceptance_workflow_hash: newHash };
+    const fGov = [];
+    verifyGovernanceAgainstBaseline(baselineEx, null, ledgerEx, { suites: [] }, fGov);
+    check("qa4_exception_ledger_tip_pass", fGov.length === 0, fGov.join("; "));
+
+    const alias = makeQa4ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    alias.affected_qa_suites = ["QA4_CLOCK"];
+    check(
+      "qa4_exception_alias_blocked",
+      qa0Qa6ImpactExceptionAllowed(alias) === false && Boolean(qa0Qa6ImpactBlocked(alias)),
+      "QA4_CLOCK alias must not receive exception",
+    );
+
+    const washed = makeQa4ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    washed.workflow_diff_scope.qa0_qa6_semantics_changed = false;
+    washed.workflow_diff_scope.checks = {
+      command_changes: false,
+      artifact_upload_changes: false,
+      env_permission_changes: false,
+      pass_fail_semantics_changes: false,
+    };
+    check(
+      "qa4_exception_false_checks_blocked",
+      qa0Qa6ImpactExceptionAllowed(washed) === false && Boolean(qa0Qa6ImpactBlocked(washed)),
+      "false checks / false semantics must not receive exception",
+    );
+
+    const noDecision = makeQa4ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    delete noDecision.parent_decision_id;
+    check(
+      "qa4_exception_missing_decision_blocked",
+      qa0Qa6ImpactExceptionAllowed(noDecision) === false && Boolean(qa0Qa6ImpactBlocked(noDecision)),
+      "missing parent_decision_id must remain BLOCKED",
+    );
+
+    const noAckDecision = makeQa4ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    noAckDecision.human_po_ack.statement = "ACK APPROVED without naming the parent decision";
+    check(
+      "qa4_exception_ack_without_decision_blocked",
+      qa0Qa6ImpactExceptionAllowed(noAckDecision) === false &&
+        Boolean(qa0Qa6ImpactBlocked(noAckDecision)),
+      "ACK that omits parent decision_id must remain BLOCKED",
+    );
+
+    const noRerun = makeQa4ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    delete noRerun.required_rerun_suites;
+    check(
+      "qa4_exception_missing_rerun_blocked",
+      qa0Qa6ImpactExceptionAllowed(noRerun) === false && Boolean(qa0Qa6ImpactBlocked(noRerun)),
+      "missing required_rerun_suites must remain BLOCKED",
+    );
+
+    const noException = makeQa4ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    delete noException.allow_qa0_qa6_impact;
+    delete noException.parent_decision_id;
+    delete noException.required_rerun_suites;
+    noException.human_po_ack.statement = "ACK APPROVED for controlled workflow amendment fixture";
+    check(
+      "qa4_impact_without_exception_still_blocked",
+      qa0Qa6ImpactExceptionAllowed(noException) === false &&
+        Boolean(qa0Qa6ImpactBlocked(noException)),
+      "honest QA4 impact without exception fields must stay BLOCKED",
+    );
+
+    const appliedAt = "2026-08-23T00:00:00.000Z";
+    const persisted = toLedgerAmendment(honest, baselineId, appliedAt);
+    check(
+      "qa4_exception_apply_persists_allow",
+      persisted.allow_qa0_qa6_impact === true,
+      "allow_qa0_qa6_impact dropped on apply shape",
+    );
+    check(
+      "qa4_exception_apply_persists_parent",
+      persisted.parent_decision_id === QA4_WIRING_PARENT_DECISION_ID,
+      "parent_decision_id dropped on apply shape",
+    );
+    check(
+      "qa4_exception_apply_persists_rerun",
+      Array.isArray(persisted.required_rerun_suites) &&
+        persisted.required_rerun_suites.length === 1 &&
+        persisted.required_rerun_suites[0] === "QA4",
+      "required_rerun_suites dropped or rewritten on apply shape",
+    );
+    check(
+      "qa4_exception_apply_does_not_hardcode_if_proposal_differs",
+      persisted.parent_decision_id === honest.parent_decision_id &&
+        JSON.stringify(persisted.required_rerun_suites) ===
+          JSON.stringify(honest.required_rerun_suites),
+      "apply writer must copy proposal exception metadata",
+    );
+    const fPersist = [];
+    verifyGovernanceAgainstBaseline(
+      { ...baseline, acceptance_workflow_hash: newHash },
+      null,
+      { ...ledger, amendments: [persisted] },
+      { suites: [] },
+      fPersist,
+    );
+    check(
+      "qa4_exception_apply_shaped_ledger_pass",
+      fPersist.length === 0,
+      fPersist.join("; "),
+    );
+
+    const stripped = { ...persisted };
+    delete stripped.allow_qa0_qa6_impact;
+    delete stripped.parent_decision_id;
+    delete stripped.required_rerun_suites;
+    const fStripped = [];
+    verifyGovernanceAgainstBaseline(
+      { ...baseline, acceptance_workflow_hash: newHash },
+      null,
+      { ...ledger, amendments: [stripped] },
+      { suites: [] },
+      fStripped,
+    );
+    check(
+      "qa4_exception_stripped_apply_shape_verify_fail",
+      fStripped.some((x) => /QA0-QA6 impact/i.test(x)),
+      "stripped exception metadata must make post-apply verify FAIL",
+    );
+
+    const regularPersisted = toLedgerAmendment(
+      makeValidAmendment(ledger.frozen_at_qa0.acceptance_workflow_hash, newHash, baselineId),
+      baselineId,
+      appliedAt,
+    );
+    check(
+      "regular_apply_omits_exception_fields",
+      regularPersisted.allow_qa0_qa6_impact === undefined &&
+        regularPersisted.parent_decision_id === undefined &&
+        regularPersisted.required_rerun_suites === undefined,
+      "non-exception apply must not invent QA4 exception fields",
+    );
+
+    const applySrc = fs.readFileSync(
+      path.join(ROOT, "tooling/engine-acceptance/amend-acceptance-workflow-hash.cjs"),
+      "utf8",
+    );
+    check(
+      "apply_writer_uses_toLedgerAmendment",
+      applySrc.includes("toLedgerAmendment") &&
+        /ledger\.amendments\.push\(\s*toLedgerAmendment\(/.test(applySrc),
+      "apply writer must persist via toLedgerAmendment",
+    );
   }
 
   // live runner guard export exists

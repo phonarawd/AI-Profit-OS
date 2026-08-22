@@ -5,11 +5,16 @@
  * checks/stateful-time-lifecycle.cjs for the consumer) — this harness only
  * produces non-canonical, real-execution evidence.
  *
- * Three canonical scenarios, three different real domain decisions:
+ * Six canonical Formal-full scenarios, all real domain decisions:
  *  - TIME-KST-DAY-BOUNDARY: DayPulseService "today" filter across a real
  *    KST midnight, with a real trade_executions row.
+ *  - TIME-KST-MONTH-END: the same DayPulse "today" filter across a real
+ *    KST month boundary (2026-01-31 23:59:59+09 → 2026-02-01 00:00+09).
+ *  - TIME-KST-YEAR-END: the same filter across a real KST year boundary
+ *    (2026-12-31 23:59:59+09 → 2027-01-01 00:00+09).
  *  - TIME-PLUS-30D: the SAME DayPulseService filter, but a +30d long-distance
  *    offset instead of a boundary-precision crossing.
+ *  - TIME-PLUS-365D: the same long-distance proof at +365d.
  *  - TIME-MULTI-DAY-LIFECYCLE: participate -> synthetic clock +3d -> real
  *    execute-tick -> settlement truth (ledger unlock), via
  *    TradeExecutionService.
@@ -244,6 +249,167 @@ async function runPlus30dScenario(ctx) {
   };
 }
 
+/** Asia/Seoul is a fixed +09:00 offset (no DST). Matches clock.core.cjs. */
+const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+
+function kstLocalToUtcMs(y, m, d, hh = 0, mm = 0, ss = 0) {
+  return Date.UTC(y, m - 1, d, hh, mm, ss, 0) - KST_OFFSET_MS;
+}
+
+/**
+ * Shared DayPulse "today" visibility proof across a calendar boundary.
+ * A real trade_executions row is placed just before the boundary; the SAME
+ * row must be visible from DayPulseService just before and invisible just
+ * after — driven only by the installed synthetic clock.
+ */
+async function runDayPulseCalendarBoundary(ctx, spec) {
+  const oppId = await withPgClient(ctx.databaseUrl, async (client) => {
+    const r = await client.query("SELECT id::text FROM public.opportunities LIMIT 1");
+    return r.rows[0] ? r.rows[0].id : null;
+  });
+  if (!oppId) {
+    return {
+      scenario_id: spec.scenario_id,
+      status: "BLOCKED",
+      blocked_code: "BLOCKED_ENV_CAPABILITY",
+      findings: ["no opportunities row exists to satisfy trade_executions.opportunity_id FK"],
+    };
+  }
+
+  const rowCreatedAt = new Date(spec.boundaryMs - 5_000).toISOString();
+  const idemKey = `${spec.idemPrefix}-${crypto.randomUUID()}`;
+  await withPgClient(ctx.databaseUrl, (client) =>
+    client.query(
+      `INSERT INTO public.trade_executions
+         (user_id, opportunity_id, pricing_version, status, expected_profit_usdt, idempotency_key, created_at)
+       VALUES ($1::uuid, $2::uuid, 1, 'success', 1, $3, $4::timestamptz)`,
+      [SYNTH_USER_A, oppId, idemKey, rowCreatedAt],
+    ),
+  );
+
+  clockControl.installSyntheticClock(spec.boundaryMs - 2_000, ctx.clockEnvOpts);
+  const beforeRes = await httpCall(ctx.baseUrl, "GET", "/api/v1/me/day-pulse", { authorization: ctx.userBearer });
+  clockControl.installSyntheticClock(spec.boundaryMs + 2_000, ctx.clockEnvOpts);
+  const afterRes = await httpCall(ctx.baseUrl, "GET", "/api/v1/me/day-pulse", { authorization: ctx.userBearer });
+  clockControl.clearSyntheticClock();
+
+  const beforeCount = beforeRes.parsed ? Number(beforeRes.parsed.settlementCompletedToday) : null;
+  const afterCount = afterRes.parsed ? Number(afterRes.parsed.settlementCompletedToday) : null;
+  const rowVisibleBefore = beforeRes.status === 200 && Number.isFinite(beforeCount) && beforeCount >= 1;
+  const rowInvisibleAfter =
+    afterRes.status === 200 && Number.isFinite(afterCount) && Number.isFinite(beforeCount) && afterCount === beforeCount - 1;
+
+  const pass = rowVisibleBefore && rowInvisibleAfter;
+  return {
+    scenario_id: spec.scenario_id,
+    status: pass ? "PASS" : "FAIL",
+    boundary_ms: spec.boundaryMs,
+    boundary_iso: new Date(spec.boundaryMs).toISOString(),
+    kst_label: spec.kstLabel,
+    before: { clock_ms: spec.boundaryMs - 2_000, http_status: beforeRes.status, settlementCompletedToday: beforeCount },
+    after: { clock_ms: spec.boundaryMs + 2_000, http_status: afterRes.status, settlementCompletedToday: afterCount },
+    row_visible_before_boundary: rowVisibleBefore,
+    row_invisible_after_boundary: rowInvisibleAfter,
+    findings: pass
+      ? []
+      : [
+          `${spec.scenario_id} proof FAIL: before=${beforeCount} (status=${beforeRes.status}) after=${afterCount} (status=${afterRes.status})`,
+        ],
+  };
+}
+
+async function runKstMonthEndScenario(ctx) {
+  return runDayPulseCalendarBoundary(ctx, {
+    scenario_id: "TIME-KST-MONTH-END",
+    idemPrefix: "qa4-kst-month-end",
+    // 2026-02-01T00:00:00+09:00 — matches scorer TIME-KST-MONTH-END.
+    boundaryMs: kstLocalToUtcMs(2026, 2, 1),
+    kstLabel: "2026-01-31T23:59:59+09:00 → 2026-02-01T00:00:00+09:00",
+  });
+}
+
+async function runKstYearEndScenario(ctx) {
+  return runDayPulseCalendarBoundary(ctx, {
+    scenario_id: "TIME-KST-YEAR-END",
+    idemPrefix: "qa4-kst-year-end",
+    // 2027-01-01T00:00:00+09:00 — matches scorer TIME-KST-YEAR-END.
+    boundaryMs: kstLocalToUtcMs(2027, 1, 1),
+    kstLabel: "2026-12-31T23:59:59+09:00 → 2027-01-01T00:00:00+09:00",
+  });
+}
+
+/**
+ * TIME-PLUS-365D — long-distance offset proof at +365 real days.
+ * Distinct from +30d only in distance; same DayPulse consultation proof.
+ */
+async function runPlus365dScenario(ctx) {
+  const core = clockControl.loadClockCore();
+  const anchorMs = Date.now();
+  const plus365dMs = core.addDaysMs(anchorMs, 365);
+
+  const oppId = await withPgClient(ctx.databaseUrl, async (client) => {
+    const r = await client.query("SELECT id::text FROM public.opportunities LIMIT 1");
+    return r.rows[0] ? r.rows[0].id : null;
+  });
+  if (!oppId) {
+    return {
+      scenario_id: "TIME-PLUS-365D",
+      status: "BLOCKED",
+      blocked_code: "BLOCKED_ENV_CAPABILITY",
+      findings: ["no opportunities row exists to satisfy trade_executions.opportunity_id FK"],
+    };
+  }
+
+  const idemKey = `qa4-plus365d-${crypto.randomUUID()}`;
+  await withPgClient(ctx.databaseUrl, (client) =>
+    client.query(
+      `INSERT INTO public.trade_executions
+         (user_id, opportunity_id, pricing_version, status, expected_profit_usdt, idempotency_key, created_at)
+       VALUES ($1::uuid, $2::uuid, 1, 'safe_stop', 1, $3, now())`,
+      [SYNTH_USER_A, oppId, idemKey],
+    ),
+  );
+
+  clockControl.installSyntheticClock(anchorMs, ctx.clockEnvOpts);
+  const anchorRes = await httpCall(ctx.baseUrl, "GET", "/api/v1/me/day-pulse", { authorization: ctx.userBearer });
+  clockControl.installSyntheticClock(plus365dMs, ctx.clockEnvOpts);
+  const plus365Res = await httpCall(ctx.baseUrl, "GET", "/api/v1/me/day-pulse", { authorization: ctx.userBearer });
+  clockControl.clearSyntheticClock();
+
+  const anchorCount = anchorRes.parsed ? Number(anchorRes.parsed.platformSafeStopToday) : null;
+  const plus365Count = plus365Res.parsed ? Number(plus365Res.parsed.platformSafeStopToday) : null;
+  const rowVisibleAtAnchor = anchorRes.status === 200 && Number.isFinite(anchorCount) && anchorCount >= 1;
+  const rowInvisibleAt365d =
+    plus365Res.status === 200 &&
+    Number.isFinite(plus365Count) &&
+    Number.isFinite(anchorCount) &&
+    plus365Count === anchorCount - 1;
+
+  const kstAnchorDay = core.kstDayKey(anchorMs);
+  const kstPlus365Day = core.kstDayKey(plus365dMs);
+  const calendarArithmeticOk = kstAnchorDay !== kstPlus365Day;
+
+  const pass = rowVisibleAtAnchor && rowInvisibleAt365d && calendarArithmeticOk;
+  return {
+    scenario_id: "TIME-PLUS-365D",
+    status: pass ? "PASS" : "FAIL",
+    anchor_ms: anchorMs,
+    plus365d_ms: plus365dMs,
+    kst_anchor_day: kstAnchorDay,
+    kst_plus365d_day: kstPlus365Day,
+    anchor: { http_status: anchorRes.status, platformSafeStopToday: anchorCount },
+    plus365d: { http_status: plus365Res.status, platformSafeStopToday: plus365Count },
+    row_visible_at_anchor: rowVisibleAtAnchor,
+    row_invisible_at_plus365d: rowInvisibleAt365d,
+    calendar_arithmetic_ok: calendarArithmeticOk,
+    findings: pass
+      ? []
+      : [
+          `+365d proof FAIL: anchor=${anchorCount} (status=${anchorRes.status}) plus365d=${plus365Count} (status=${plus365Res.status}) kst_days=${kstAnchorDay}->${kstPlus365Day}`,
+        ],
+  };
+}
+
 /**
  * TIME-MULTI-DAY-LIFECYCLE — participate -> synthetic clock +3d -> real
  * execute-tick -> settlement truth. TradeExecutionService.executeTick reads
@@ -464,7 +630,10 @@ async function runQa4Clock(opts = {}) {
   if (!skipBoot) {
     scenarios = [
       await runKstDayBoundaryScenario(ctx),
+      await runKstMonthEndScenario(ctx),
+      await runKstYearEndScenario(ctx),
       await runPlus30dScenario(ctx),
+      await runPlus365dScenario(ctx),
       await runMultiDayLifecycleScenario(ctx),
     ];
   }
@@ -472,9 +641,10 @@ async function runQa4Clock(opts = {}) {
   const passCount = scenarios.filter((s) => s.status === "PASS").length;
   const failCount = scenarios.filter((s) => s.status === "FAIL").length;
   const blockedCount = scenarios.filter((s) => s.status === "BLOCKED").length;
-  const allPass = scenarios.length === 3 && passCount === 3;
+  const expectedCount = 6;
+  const allPass = scenarios.length === expectedCount && passCount === expectedCount;
 
-  const harness_status = gateChild.ok && (skipBoot || scenarios.length === 3) ? "PASS" : "HARNESS_FAILURE";
+  const harness_status = gateChild.ok && (skipBoot || scenarios.length === expectedCount) ? "PASS" : "HARNESS_FAILURE";
 
   const result = {
     schema: "harness.qa4-clock.v1",
