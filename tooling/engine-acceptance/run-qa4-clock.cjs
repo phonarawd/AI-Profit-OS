@@ -45,6 +45,11 @@ const {
 const { prepareIsolatedPostgres } = require("./harness/ci-postgres.cjs");
 const nest = require("./harness/ci-nest-boot.cjs");
 const clockControl = require("./harness/clock-control.cjs");
+const {
+  plusNdFixtureIdemLikePatterns,
+  plusNdLeavesExactlyOne,
+  isolatedPlus365dAnchorMs,
+} = require("./lib/qa4-plus-nd-isolation.cjs");
 
 const nestPgRequire = createRequire(path.join(ROOT, "services/api-nest/package.json"));
 const ADMIN_API_PREFIX = "/api/v1/admin";
@@ -178,16 +183,32 @@ async function runKstDayBoundaryScenario(ctx) {
 }
 
 /**
- * TIME-PLUS-30D — long-distance offset proof (distinct from boundary
- * precision above): a row created "now" is visible at the anchor and must
- * become invisible exactly because the synthetic clock moved +30 real days
- * forward, proving the domain decision genuinely consults the clock value
- * rather than any hardcoded window.
+ * DayPulse is platform-scoped. Prior plus-Nd `safe_stop` fixtures must not
+ * remain in the next scenario's "today" window (INV-TIME-01 = exactly one
+ * extra row leaves). Formal 32605594769: leftover TIME-PLUS-30D row made
+ * TIME-PLUS-365D report anchor=2 / plus365d=0.
  */
-async function runPlus30dScenario(ctx) {
+async function deleteQa4PlusNdFixtures(databaseUrl) {
+  const [like30, like365] = plusNdFixtureIdemLikePatterns();
+  await withPgClient(databaseUrl, (client) =>
+    client.query(
+      `DELETE FROM public.trade_executions
+        WHERE idempotency_key LIKE $1
+           OR idempotency_key LIKE $2`,
+      [like30, like365],
+    ),
+  );
+}
+
+/**
+ * Shared long-distance DayPulse proof: one `safe_stop` row pinned to the
+ * synthetic anchor is visible at T and must be the unique row that leaves
+ * "today" at T+N days.
+ */
+async function runPlusNdDayPulseScenario(ctx, spec) {
   const core = clockControl.loadClockCore();
-  const anchorMs = Date.now();
-  const plus30dMs = core.addDaysMs(anchorMs, 30);
+  const anchorMs = spec.anchorMs;
+  const plusMs = core.addDaysMs(anchorMs, spec.days);
 
   const oppId = await withPgClient(ctx.databaseUrl, async (client) => {
     const r = await client.query("SELECT id::text FROM public.opportunities LIMIT 1");
@@ -195,58 +216,82 @@ async function runPlus30dScenario(ctx) {
   });
   if (!oppId) {
     return {
-      scenario_id: "TIME-PLUS-30D",
+      scenario_id: spec.scenario_id,
       status: "BLOCKED",
       blocked_code: "BLOCKED_ENV_CAPABILITY",
       findings: ["no opportunities row exists to satisfy trade_executions.opportunity_id FK"],
     };
   }
 
-  const idemKey = `qa4-plus30d-${crypto.randomUUID()}`;
+  await deleteQa4PlusNdFixtures(ctx.databaseUrl);
+
+  const idemKey = `${spec.idemPrefix}-${crypto.randomUUID()}`;
+  const rowCreatedAt = new Date(anchorMs).toISOString();
   await withPgClient(ctx.databaseUrl, (client) =>
     client.query(
       `INSERT INTO public.trade_executions
          (user_id, opportunity_id, pricing_version, status, expected_profit_usdt, idempotency_key, created_at)
-       VALUES ($1::uuid, $2::uuid, 1, 'safe_stop', 1, $3, now())`,
-      [SYNTH_USER_A, oppId, idemKey],
+       VALUES ($1::uuid, $2::uuid, 1, 'safe_stop', 1, $3, $4::timestamptz)`,
+      [SYNTH_USER_A, oppId, idemKey, rowCreatedAt],
     ),
   );
 
   clockControl.installSyntheticClock(anchorMs, ctx.clockEnvOpts);
   const anchorRes = await httpCall(ctx.baseUrl, "GET", "/api/v1/me/day-pulse", { authorization: ctx.userBearer });
-  clockControl.installSyntheticClock(plus30dMs, ctx.clockEnvOpts);
-  const plus30Res = await httpCall(ctx.baseUrl, "GET", "/api/v1/me/day-pulse", { authorization: ctx.userBearer });
+  clockControl.installSyntheticClock(plusMs, ctx.clockEnvOpts);
+  const plusRes = await httpCall(ctx.baseUrl, "GET", "/api/v1/me/day-pulse", { authorization: ctx.userBearer });
   clockControl.clearSyntheticClock();
 
   const anchorCount = anchorRes.parsed ? Number(anchorRes.parsed.platformSafeStopToday) : null;
-  const plus30Count = plus30Res.parsed ? Number(plus30Res.parsed.platformSafeStopToday) : null;
+  const plusCount = plusRes.parsed ? Number(plusRes.parsed.platformSafeStopToday) : null;
   const rowVisibleAtAnchor = anchorRes.status === 200 && Number.isFinite(anchorCount) && anchorCount >= 1;
-  const rowInvisibleAt30d =
-    plus30Res.status === 200 && Number.isFinite(plus30Count) && Number.isFinite(anchorCount) && plus30Count === anchorCount - 1;
+  const rowInvisibleAtPlus =
+    plusRes.status === 200 && Number.isFinite(plusCount) && plusNdLeavesExactlyOne(anchorCount, plusCount);
 
   const kstAnchorDay = core.kstDayKey(anchorMs);
-  const kstPlus30Day = core.kstDayKey(plus30dMs);
-  const calendarArithmeticOk = kstAnchorDay !== kstPlus30Day;
+  const kstPlusDay = core.kstDayKey(plusMs);
+  const calendarArithmeticOk = kstAnchorDay !== kstPlusDay;
 
-  const pass = rowVisibleAtAnchor && rowInvisibleAt30d && calendarArithmeticOk;
+  const pass = rowVisibleAtAnchor && rowInvisibleAtPlus && calendarArithmeticOk;
   return {
-    scenario_id: "TIME-PLUS-30D",
+    scenario_id: spec.scenario_id,
     status: pass ? "PASS" : "FAIL",
     anchor_ms: anchorMs,
-    plus30d_ms: plus30dMs,
+    [spec.plusMsKey]: plusMs,
     kst_anchor_day: kstAnchorDay,
-    kst_plus30d_day: kstPlus30Day,
+    [spec.kstPlusDayKey]: kstPlusDay,
     anchor: { http_status: anchorRes.status, platformSafeStopToday: anchorCount },
-    plus30d: { http_status: plus30Res.status, platformSafeStopToday: plus30Count },
+    [spec.plusResultKey]: { http_status: plusRes.status, platformSafeStopToday: plusCount },
     row_visible_at_anchor: rowVisibleAtAnchor,
-    row_invisible_at_plus30d: rowInvisibleAt30d,
+    [spec.invisibleKey]: rowInvisibleAtPlus,
     calendar_arithmetic_ok: calendarArithmeticOk,
     findings: pass
       ? []
       : [
-          `+30d proof FAIL: anchor=${anchorCount} (status=${anchorRes.status}) plus30d=${plus30Count} (status=${plus30Res.status}) kst_days=${kstAnchorDay}->${kstPlus30Day}`,
+          `${spec.failLabel} proof FAIL: anchor=${anchorCount} (status=${anchorRes.status}) ${spec.plusResultKey}=${plusCount} (status=${plusRes.status}) kst_days=${kstAnchorDay}->${kstPlusDay}`,
         ],
   };
+}
+
+/**
+ * TIME-PLUS-30D — long-distance offset proof (distinct from boundary
+ * precision above): a row created at the synthetic anchor is visible at T
+ * and must become invisible exactly because the synthetic clock moved +30
+ * real days forward, proving the domain decision genuinely consults the
+ * clock value rather than any hardcoded window.
+ */
+async function runPlus30dScenario(ctx) {
+  return runPlusNdDayPulseScenario(ctx, {
+    scenario_id: "TIME-PLUS-30D",
+    days: 30,
+    anchorMs: Date.now(),
+    idemPrefix: "qa4-plus30d",
+    plusMsKey: "plus30d_ms",
+    kstPlusDayKey: "kst_plus30d_day",
+    plusResultKey: "plus30d",
+    invisibleKey: "row_invisible_at_plus30d",
+    failLabel: "+30d",
+  });
 }
 
 /** Asia/Seoul is a fixed +09:00 offset (no DST). Matches clock.core.cjs. */
@@ -340,74 +385,22 @@ async function runKstYearEndScenario(ctx) {
 
 /**
  * TIME-PLUS-365D — long-distance offset proof at +365 real days.
- * Distinct from +30d only in distance; same DayPulse consultation proof.
+ * Distinct from +30d only in distance; the "today" window is isolated from
+ * leftover wall-clock plus-Nd fixtures (see lib/qa4-plus-nd-isolation.cjs).
  */
 async function runPlus365dScenario(ctx) {
   const core = clockControl.loadClockCore();
-  const anchorMs = Date.now();
-  const plus365dMs = core.addDaysMs(anchorMs, 365);
-
-  const oppId = await withPgClient(ctx.databaseUrl, async (client) => {
-    const r = await client.query("SELECT id::text FROM public.opportunities LIMIT 1");
-    return r.rows[0] ? r.rows[0].id : null;
-  });
-  if (!oppId) {
-    return {
-      scenario_id: "TIME-PLUS-365D",
-      status: "BLOCKED",
-      blocked_code: "BLOCKED_ENV_CAPABILITY",
-      findings: ["no opportunities row exists to satisfy trade_executions.opportunity_id FK"],
-    };
-  }
-
-  const idemKey = `qa4-plus365d-${crypto.randomUUID()}`;
-  await withPgClient(ctx.databaseUrl, (client) =>
-    client.query(
-      `INSERT INTO public.trade_executions
-         (user_id, opportunity_id, pricing_version, status, expected_profit_usdt, idempotency_key, created_at)
-       VALUES ($1::uuid, $2::uuid, 1, 'safe_stop', 1, $3, now())`,
-      [SYNTH_USER_A, oppId, idemKey],
-    ),
-  );
-
-  clockControl.installSyntheticClock(anchorMs, ctx.clockEnvOpts);
-  const anchorRes = await httpCall(ctx.baseUrl, "GET", "/api/v1/me/day-pulse", { authorization: ctx.userBearer });
-  clockControl.installSyntheticClock(plus365dMs, ctx.clockEnvOpts);
-  const plus365Res = await httpCall(ctx.baseUrl, "GET", "/api/v1/me/day-pulse", { authorization: ctx.userBearer });
-  clockControl.clearSyntheticClock();
-
-  const anchorCount = anchorRes.parsed ? Number(anchorRes.parsed.platformSafeStopToday) : null;
-  const plus365Count = plus365Res.parsed ? Number(plus365Res.parsed.platformSafeStopToday) : null;
-  const rowVisibleAtAnchor = anchorRes.status === 200 && Number.isFinite(anchorCount) && anchorCount >= 1;
-  const rowInvisibleAt365d =
-    plus365Res.status === 200 &&
-    Number.isFinite(plus365Count) &&
-    Number.isFinite(anchorCount) &&
-    plus365Count === anchorCount - 1;
-
-  const kstAnchorDay = core.kstDayKey(anchorMs);
-  const kstPlus365Day = core.kstDayKey(plus365dMs);
-  const calendarArithmeticOk = kstAnchorDay !== kstPlus365Day;
-
-  const pass = rowVisibleAtAnchor && rowInvisibleAt365d && calendarArithmeticOk;
-  return {
+  return runPlusNdDayPulseScenario(ctx, {
     scenario_id: "TIME-PLUS-365D",
-    status: pass ? "PASS" : "FAIL",
-    anchor_ms: anchorMs,
-    plus365d_ms: plus365dMs,
-    kst_anchor_day: kstAnchorDay,
-    kst_plus365d_day: kstPlus365Day,
-    anchor: { http_status: anchorRes.status, platformSafeStopToday: anchorCount },
-    plus365d: { http_status: plus365Res.status, platformSafeStopToday: plus365Count },
-    row_visible_at_anchor: rowVisibleAtAnchor,
-    row_invisible_at_plus365d: rowInvisibleAt365d,
-    calendar_arithmetic_ok: calendarArithmeticOk,
-    findings: pass
-      ? []
-      : [
-          `+365d proof FAIL: anchor=${anchorCount} (status=${anchorRes.status}) plus365d=${plus365Count} (status=${plus365Res.status}) kst_days=${kstAnchorDay}->${kstPlus365Day}`,
-        ],
-  };
+    days: 365,
+    anchorMs: isolatedPlus365dAnchorMs(Date.now(), (ms, d) => core.addDaysMs(ms, d)),
+    idemPrefix: "qa4-plus365d",
+    plusMsKey: "plus365d_ms",
+    kstPlusDayKey: "kst_plus365d_day",
+    plusResultKey: "plus365d",
+    invisibleKey: "row_invisible_at_plus365d",
+    failLabel: "+365d",
+  });
 }
 
 /**

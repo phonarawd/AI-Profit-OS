@@ -371,6 +371,7 @@
     "engine-acceptance:selftest-eval-review-rebase": "node tooling/engine-acceptance/selftest-eval-review-rebase.cjs",
     "engine-acceptance:selftest-pre-rebase-harness": "node tooling/engine-acceptance/selftest-pre-rebase-harness.cjs",
     "engine-acceptance:selftest-mid-epoch-formal": "node tooling/engine-acceptance/selftest-mid-epoch-formal.cjs",
+    "engine-acceptance:selftest-qa4-plus-nd-isolation": "node tooling/engine-acceptance/selftest-qa4-plus-nd-isolation.cjs",
     "selftest-mid-epoch-formal": "node tooling/engine-acceptance/selftest-mid-epoch-formal.cjs"
   },
   "pnpm": {
