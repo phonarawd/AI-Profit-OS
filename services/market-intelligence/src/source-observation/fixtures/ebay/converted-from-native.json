@@ -1,0 +1,16 @@
+{
+  "itemId": "v1|110000000009|0",
+  "legacyItemId": "110000000009",
+  "title": "Converted amount",
+  "itemWebUrl": "https://www.ebay.com/itm/110000000009",
+  "listingMarketplaceId": "EBAY_GB",
+  "buyingOptions": ["FIXED_PRICE"],
+  "price": {
+    "value": "50.00",
+    "currency": "USD",
+    "convertedFromValue": "40.00",
+    "convertedFromCurrency": "GBP"
+  },
+  "image": { "imageUrl": "https://i.ebayimg.com/images/g/abc/s-l1600.jpg" },
+  "estimatedAvailabilities": [{ "estimatedAvailabilityStatus": "IN_STOCK" }]
+}

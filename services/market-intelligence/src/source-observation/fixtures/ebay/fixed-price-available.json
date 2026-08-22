@@ -1,0 +1,24 @@
+{
+  "itemId": "v1|110000000001|0",
+  "legacyItemId": "110000000001",
+  "title": "Leather card holder",
+  "itemWebUrl": "https://www.ebay.com/itm/110000000001",
+  "listingMarketplaceId": "EBAY_US",
+  "buyingOptions": ["FIXED_PRICE"],
+  "price": { "value": "42.00", "currency": "USD" },
+  "image": { "imageUrl": "https://i.ebayimg.com/images/g/abc/s-l1600.jpg" },
+  "brand": "ExampleBrand",
+  "mpn": "EB-100",
+  "gtin": "0123456789012",
+  "epid": "223344556",
+  "condition": "New",
+  "categoryId": "15724",
+  "categoryPath": "Clothing, Shoes & Accessories",
+  "estimatedAvailabilities": [{ "estimatedAvailabilityStatus": "IN_STOCK" }],
+  "localizedAspects": [
+    { "name": "Model", "value": "Classic" },
+    { "name": "Size", "value": "M" },
+    { "name": "Color", "value": "Black" }
+  ],
+  "additionalImages": [{ "imageUrl": "https://i.ebayimg.com/images/g/def/s-l1600.jpg" }]
+}

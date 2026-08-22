@@ -1148,3 +1148,16 @@ export function mapHomeReadModelV1(
   input: Record<string, unknown>,
 ): Record<string, unknown>;
 export function assertNoFakeZeroHomeRead(dto: Record<string, unknown>): true;
+
+/** Global SourceObservation — listing-leg / Opportunity 와 분리 */
+export const sourceObservation: {
+  INVARIANTS: readonly string[];
+  OBSERVATION_PURPOSES: readonly string[];
+  IMPLEMENTED_PARSERS: readonly string[];
+  PERSISTENCE_VERDICT: Readonly<Record<string, string>>;
+  validateObservation: (obs: unknown) => { ok: boolean; [k: string]: unknown };
+  observeProduct: (input: Record<string, unknown>) => Promise<Record<string, unknown>>;
+  gateObserveSource: (source: string) => Record<string, unknown>;
+  createMemoryRepository: () => Record<string, unknown>;
+  discoverCandidates: (query: unknown) => never;
+};

@@ -1,0 +1,23 @@
+{
+  "product": {
+    "id": 16132567925039,
+    "title": "Epsom Mini Kelly Sellier 20 Black",
+    "handle": "hermes-epsom-mini-kelly-sellier-20-black-1956054",
+    "vendor": "Hermes",
+    "variants": [
+      {
+        "id": 1,
+        "sku": "1956054",
+        "available": true,
+        "price": "1734563892000",
+        "price_currency": "USD"
+      }
+    ],
+    "images": [
+      {
+        "position": 1,
+        "src": "https://cdn.shopify.com/s/files/1/0894/3186/7695/files/a07bfc29e3b7424e24b72ff429a5115b.jpg?v=1787118325"
+      }
+    ]
+  }
+}

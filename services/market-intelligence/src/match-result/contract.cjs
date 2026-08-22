@@ -1,0 +1,84 @@
+/**
+ * MatchResult durable persistence 계약.
+ * Identity V2 런타임 객체가 source of truth. matcher / CanonicalProduct를 재설계하지 않는다.
+ * MatchResult != CanonicalProduct != Opportunity != Listing.
+ */
+
+const {
+  DECISIONS,
+  MATCHER_VERSION,
+} = require("../identity-matching/v2/matcher.cjs");
+
+const MATCH_RESULT_ID_PREFIX = "mr_";
+const MATCHER_VERSION_V2 = MATCHER_VERSION;
+
+const MATCH_PATHS = Object.freeze([
+  "AUTHORITATIVE_STRONG",
+  "STRONG",
+  "COMPOSITE_STRONG",
+]);
+
+const CATEGORY_PROFILES = Object.freeze([
+  "trading_card",
+  "sneakers",
+  "watch",
+  "luxury_bag",
+  "unknown",
+]);
+
+const UNSUPPORTED_CATEGORY_PROFILES = Object.freeze([
+  "electronics",
+  "general_goods",
+]);
+
+const PERSISTENCE_STATUS = Object.freeze({
+  MATCH_RESULT_RUNTIME: "DURABLE_DB_RUNTIME",
+  MATCH_RESULT_DURABLE_PERSISTENCE: "PASS",
+  MATCH_RESULT_HISTORY_POLICY: "VERSIONED_APPEND_SAME_VERSION_CONFLICT_BLOCKED",
+  MATCH_RESULT_PAIR_DIRECTION: "NORMALIZED_FOR_IDENTITY_PRESERVED_FOR_PAYLOAD",
+  PRODUCTION_MATCH_RESULT_PERSISTENCE: "NOT_IMPLEMENTED",
+  REMOTE_SUPABASE_MATCH_RESULT_RUNTIME_VERIFICATION: "NOT_VERIFIED",
+  PRODUCTION_MATCH_RESULT_PG_CLIENT_WIRING: "NOT_IMPLEMENTED",
+});
+
+const PERSIST_BLOCKED = Object.freeze({
+  MALFORMED: "MATCH_RESULT_MALFORMED",
+  MALFORMED_DECISION: "MATCH_RESULT_MALFORMED_DECISION",
+  UNSUPPORTED_CATEGORY: "MATCH_RESULT_UNSUPPORTED_CATEGORY_PROFILE",
+  SOURCE_REF: "MATCH_RESULT_SOURCE_REF_INVALID",
+  SEMANTICS_CONFLICT: "MATCH_RESULT_SEMANTICS_CONFLICT",
+  SELF_PAIR: "MATCH_RESULT_SELF_PAIR_FORBIDDEN",
+  PD_AS_EVIDENCE: "MATCH_RESULT_PD_USED_AS_EVIDENCE",
+  PRICE_AS_IDENTITY: "MATCH_RESULT_PRICE_USED_AS_IDENTITY",
+  PAYLOAD_CONFLICT: "MATCH_RESULT_PAYLOAD_CONFLICT",
+});
+
+const FORBIDDEN_IDENTITY_FIELDS = Object.freeze([
+  "putdukProductCode",
+  "canonicalProductId",
+  "nativePrice",
+  "price",
+  "nativeAmount",
+  "nativeCurrency",
+]);
+
+const FORBIDDEN_EVIDENCE_FIELDS = Object.freeze([
+  "putdukProductCode",
+  "canonicalProductId",
+  "price",
+  "nativePrice",
+  "nativeAmount",
+]);
+
+module.exports = {
+  DECISIONS,
+  MATCH_PATHS,
+  MATCHER_VERSION_V2,
+  MATCH_RESULT_ID_PREFIX,
+  CATEGORY_PROFILES,
+  UNSUPPORTED_CATEGORY_PROFILES,
+  PERSISTENCE_STATUS,
+  PERSIST_BLOCKED,
+  FORBIDDEN_IDENTITY_FIELDS,
+  FORBIDDEN_EVIDENCE_FIELDS,
+};

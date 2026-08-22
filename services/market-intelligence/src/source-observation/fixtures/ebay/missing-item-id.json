@@ -1,0 +1,9 @@
+{
+  "title": "Missing Browse itemId",
+  "itemWebUrl": "https://www.ebay.com/itm/110000000003",
+  "listingMarketplaceId": "EBAY_US",
+  "buyingOptions": ["FIXED_PRICE"],
+  "price": { "value": "12.00", "currency": "USD" },
+  "image": { "imageUrl": "https://i.ebayimg.com/images/g/abc/s-l1600.jpg" },
+  "estimatedAvailabilities": [{ "estimatedAvailabilityStatus": "IN_STOCK" }]
+}

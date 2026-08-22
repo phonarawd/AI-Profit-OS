@@ -1,0 +1,72 @@
+{
+  "$id": "https://ai-profit-os.local/governance/global-product/listing-variant-compatibility.v1.json",
+  "schema": "governance.global-product.listing-variant-compatibility.v1",
+  "version": "1.0.0",
+  "evaluatorVersion": "listing-variant-compatibility.v1",
+  "runtime": "IN_PROCESS_MEMORY",
+  "measuredAt": "2026-08-20",
+  "status": "PASS",
+  "authority": {
+    "SAME_CANONICAL_PRODUCT_EQUALS_SAME_VARIANT": false,
+    "SAME_VARIANT_EQUALS_SAME_PHYSICAL_ITEM": false,
+    "SAME_PHYSICAL_ITEM_NEVER_INFERRED": true,
+    "TRADABLE_EQUIVALENT_REQUIRES_SAME_VARIANT": true,
+    "TRADABLE_EQUIVALENT_REQUIRES_CROSS_SOURCE": true,
+    "CONDITION_IS_LISTING_NOT_IDENTITY": true,
+    "PRICE_AS_COMPATIBILITY": "FORBIDDEN",
+    "TITLE_AS_COMPATIBILITY_OWNER": "FORBIDDEN",
+    "IMAGE_AS_COMPATIBILITY_OWNER": "FORBIDDEN",
+    "MVP_OPPORTUNITY_REQUIRES_GRADE_EQUIVALENT": true
+  },
+  "vocabularyOwner": "governance/global-product/canonical-product.v2.json",
+  "boundaries": {
+    "CanonicalProduct": "internal same-product SSOT after MATCH",
+    "SourceListing": "one source offer / variant unit",
+    "Opportunity": "executable economics after price availability fees FX",
+    "SAME_CANONICAL_PRODUCT": "same product model after MATCH",
+    "SAME_VARIANT": "same tradable variant (size / grade / finish as profile defines)",
+    "TRADABLE_EQUIVALENT": "listings compatible enough for Opportunity eligibility",
+    "SAME_PHYSICAL_ITEM": "never inferred"
+  },
+  "variantFields": {
+    "owner": "services/market-intelligence/src/canonical-product/generic-profile.cjs",
+    "sneakers": ["size"],
+    "trading_card": ["grade"],
+    "watch": [],
+    "luxury_bag": []
+  },
+  "firstSlice": {
+    "name": "listing_variant_compatibility_gate",
+    "doesNotCallMatcher": true,
+    "doesNotCreateCanonicalProduct": true,
+    "doesNotGenerateCandidates": true,
+    "doesNotPromoteListing": true,
+    "doesNotCreateOpportunity": true,
+    "doesNotCalculatePriceFeesFx": true,
+    "durablePersistence": "NOT_IMPLEMENTED",
+    "production": "NOT_IMPLEMENTED"
+  },
+  "decisions": ["COMPATIBLE", "INCOMPATIBLE", "INSUFFICIENT", "CONFLICT", "BLOCKED"],
+  "preservedBoundaries": {
+    "IDENTITY_MATCHING_V2_MECHANISM": "UNCHANGED",
+    "CANDIDATE_GENERATION_FIRST_SLICE": "UNCHANGED",
+    "matcherPipelineListingVariantCompatibility": "NOT_IMPLEMENTED",
+    "canonicalProductPipelineListingVariantCompatibility": "NOT_IMPLEMENTED",
+    "candidateGenerationPipelineListingVariantCompatibility": "NOT_IMPLEMENTED"
+  },
+  "persistence": {
+    "LISTING_VARIANT_COMPATIBILITY_MEMORY_RUNTIME": "IN_PROCESS_MEMORY",
+    "LISTING_VARIANT_COMPATIBILITY_DB_RUNTIME": "NOT_IMPLEMENTED",
+    "PRODUCTION_LISTING_VARIANT_COMPATIBILITY": "NOT_IMPLEMENTED"
+  },
+  "owner": "services/market-intelligence/src/listing-variant-compatibility",
+  "verifier": "tooling/verify/listing-variant-compatibility.cjs",
+  "pinnedGeometry": {
+    "category": "trading_card",
+    "left": "TCG 113669",
+    "right": "eBay 377416817781",
+    "withoutCanonicalProductId": "INSUFFICIENT/IDENTITY_KEY_INCOMPLETE",
+    "withCanonicalProductIdMissingGrade": "INSUFFICIENT/VARIANT_FIELD_MISSING",
+    "note": "MATCH != tradableEquivalent — grade required for trading_card Opportunity"
+  }
+}

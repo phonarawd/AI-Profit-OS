@@ -31,6 +31,7 @@ const catalogRuntimeSeed = require("./catalog-runtime-seed.cjs");
 const ebayIdentityMatch = require("./ebay-identity-match.cjs");
 const homeReadModel = require("./home-read-model.cjs");
 const providerHealth = require("./provider-health.cjs");
+const sourceObservation = require("./source-observation/index.cjs");
 
 module.exports = {
   ...money,
@@ -61,4 +62,5 @@ module.exports = {
   ...ebayIdentityMatch,
   ...homeReadModel,
   ...providerHealth,
+  sourceObservation,
 };

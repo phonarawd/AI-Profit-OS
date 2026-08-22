@@ -1,0 +1,30 @@
+{
+  "products": [
+    {
+      "id": 16132567925039,
+      "title": "Epsom Mini Kelly Sellier 20 Black",
+      "handle": "hermes-epsom-mini-kelly-sellier-20-black-1956054",
+      "vendor": "Hermes",
+      "product_type": "Bags",
+      "tags": ["Must-have Mini Bags", "US"],
+      "variants": [
+        {
+          "id": 58349280330031,
+          "title": "Default Title",
+          "sku": "1956054",
+          "available": true,
+          "price": "34995.00",
+          "compare_at_price": "34995.00"
+        }
+      ],
+      "images": [
+        {
+          "id": 61464859181359,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0894/3186/7695/files/a07bfc29e3b7424e24b72ff429a5115b.jpg?v=1787118325",
+          "alt": null
+        }
+      ]
+    }
+  ]
+}
