@@ -2,10 +2,10 @@
   "schema": "governance.engine-acceptance.qa1-result.v1",
   "version": "1.0.0",
   "suite_id": "QA1",
-  "run_id": "qa1-deterministic-truth-20260814",
+  "run_id": "qa1-deterministic-truth-20260822",
   "todoId": "qa1-deterministic-truth",
-  "measuredAt": "2026-08-14T18:34:20.132Z",
-  "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+  "measuredAt": "2026-08-22T22:25:29.044Z",
+  "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
   "kill_switch": {
     "verified_before_checks": true,
     "target_env": "local",
@@ -100,7 +100,7 @@
       "check_id": "QA1_DB_CONSISTENCY",
       "status": "PASS",
       "invariant_id": "INV-LEDGER-01",
-      "migrationCount": 39,
+      "migrationCount": 45,
       "migrations": [
         "20260808205842_extensions_vector.sql",
         "20260808205844_identity_nest_auth.sql",
@@ -140,7 +140,13 @@
         "20260814130000_ptf00c_fx_marketplace_normalization.sql",
         "20260814130100_ptf00c_provider_runtime_health.sql",
         "20260814130200_ptf00c_provider_health_last_tick_partial.sql",
-        "20260814140000_ptf00c_r1_provider_tick_ledger.sql"
+        "20260814140000_ptf00c_r1_provider_tick_ledger.sql",
+        "20260819210000_source_observations.sql",
+        "20260819220000_canonical_products.sql",
+        "20260820013000_match_results.sql",
+        "20260821090000_push_subscriptions_and_control.sql",
+        "20260822080000_beginner_onboarding_experience.sql",
+        "20260822140000_rel405_admin_control_plane.sql"
       ],
       "live_db_probe": {
         "status": "NOT_RUN",
@@ -207,5 +213,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "Idempotency INV-01 and INV-03 kept separate."
   ],
-  "checksum": "cfb2a8c1a5ab2f40d8056dc93b1907bd626dc1ac891d22655ac714461e0a192b"
+  "checksum": "4d0a0c66a7ac6abeb9a25b2173ee3c2bb6b51e70f4b46db77c15e2e95dfcfd58"
 }

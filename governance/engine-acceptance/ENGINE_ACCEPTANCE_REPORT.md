@@ -1,50 +1,71 @@
 # ENGINE ACCEPTANCE REPORT
 
-> **QA phase:** QA-0 `ENGINE_ACCEPTANCE_REBASE_V1`  
-> **Measured:** 2026-08-22T22:08:44.657Z  
+> **QA phase:** QA-4 `qa4-stateful-time`  
+> **Measured:** 2026-08-22T22:26:28.618Z  
 > **baseline_id:** `ea-baseline-b5f275949da2-c8d8ae7d479e`  
-> **predecessor_baseline_id:** `ea-baseline-00bc4bd82aaf-6baee484bb30`  
-> **rebase_id:** `ea-rebase-b5f275949da2-c8d8ae7d479e`  
-> **rebase_policy_version:** `ENGINE_ACCEPTANCE_REBASE_POLICY_V2`
+> **qa4_run_id:** `qa4-stateful-time-20260822`  
+> **qa4_result_checksum:** `108e72d6340a597dcf1960b7886079120d9c7fbf318350632a787730e8c036e5`  
+> **mode:** `full`
 
 ## Status banner
 
 ```text
 ACCEPTANCE CONTRACT = LOCKED
-DECISION = ENGINE_ACCEPTANCE_REBASE_V1
-BASELINE = NEW_EPOCH
-PREDECESSOR = ea-baseline-00bc4bd82aaf-6baee484bb30
-QA0 = COMPLETE (new epoch freeze)
-QA1 = STALE_FOR_CURRENT_EPOCH
-QA2 = STALE_FOR_CURRENT_EPOCH
-QA3 = STALE_FOR_CURRENT_EPOCH
-QA4 = STALE_FOR_CURRENT_EPOCH
-QA5 = STALE_FOR_CURRENT_EPOCH
-QA6 = STALE_FOR_CURRENT_EPOCH
-QA7 = NOT_STARTED
-QA8 = STALE_FOR_CURRENT_EPOCH
-QA9 = STALE_AGGREGATION (not current-authoritative)
-NEXT = QA1_DETERMINISTIC_TRUTH
-BASELINE WASHING = FORBIDDEN
+BASELINE = FROZEN
+QA0 = COMPLETE
+QA1 = COMPLETE
+QA2 = COMPLETE
+QA3 = COMPLETE
+QA4 = COMPLETE
+QA HARNESS TARGET = SAFE
+NEXT = QA5_FAILURE_WORLD
+PRODUCT MUTATION = 0
 03 UI = BLOCKED
-ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
 ```
 
-## Verdict (after product rebase)
+## Verdict (after QA-4)
 
 | Field | Value |
 |---|---|
-| verdict | `ENGINE_QA_INCOMPLETE` |
-| reason | ENGINE_ACCEPTANCE_REBASE_V1 · predecessor discovery is historical COMPLETE / current-epoch STALE · required rerun QA1-QA8 then QA9 aggregation · do not fabricate a verdict at rebase time |
+| verdict | `ENGINE_NOT_ACCEPTED` |
+| reason | QA4 found P0=0 P1=6 · 03 blocked · product mutation 0 |
 | evidence_integrity | `VALID` |
 | baseline.valid | `true` |
 | working_tree_clean | `false` (fact only — not forced clean) |
 | protected_scope_clean | `true` |
-| prompt_hash | live pinned (`6361e6b6b6bc8d70ae3a373e7e12e620e035686f85a9ed9dfd62831dd528c8d0`) |
-| eval_dataset_hash | MATCH predecessor (`05d1b1cead8b48b3f7bb74e4d9479837a5e6c0746c9e094ce401bad484ee0091`) |
-| acceptance_workflow_hash | MATCH current approved (`acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6`) |
+| defects.P0 / P1 | 0 / 6 |
+| critical_invariant.blocked | 0 |
+| critical_invariant.skipped | 0 |
+| critical_invariant.uncovered | 0 |
+| mandatory suites COMPLETE | QA0..QA4 only · QA5..QA8 NOT_STARTED |
 
-**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued**. Predecessor discovery/aggregation results were **not** rewritten as current-epoch COMPLETE. Predecessor QA9 verdict is **not** current-authoritative.
+**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (critical BLOCKED and/or QA5..QA8 incomplete).
+
+## Stateful time (KST + multi-day)
+
+| Field | Value |
+|---|---|
+| suite status | `FAIL` |
+| clock_hook.available | `true` |
+| clock_hook.blocked_code | `—` |
+| scenarios blocked/failed/passed | 0 / 6 / 0 |
+| mock PASS | **forbidden** |
+| product mutation | `0` |
+
+| Scenario | Invariant | Status | Blocked code | KST label |
+|---|---|---|---|---|
+| `TIME-KST-DAY-BOUNDARY` | `INV-TIME-01` | `FAIL` | `—` | 2026-03-15T00:00:00+09:00 |
+| `TIME-KST-MONTH-END` | `INV-TIME-01` | `FAIL` | `—` | 2026-01-31T23:59:59+09:00 |
+| `TIME-KST-YEAR-END` | `INV-TIME-01` | `FAIL` | `—` | 2026-12-31T23:59:59+09:00 |
+| `TIME-PLUS-30D` | `INV-TIME-01` | `FAIL` | `—` | +30d from 2026-03-15T12:00:00+09:00 |
+| `TIME-PLUS-365D` | `INV-TIME-01` | `FAIL` | `—` | +365d from 2026-03-15T12:00:00+09:00 |
+| `TIME-MULTI-DAY-LIFECYCLE` | `INV-LIFECYCLE-01` | `FAIL` | `—` | multi-day lifecycle +3d |
+
+### BLOCKED_NO_CLOCK_HOOK
+
+- Formal L3 result type (≠ defect).
+- `INV-TIME-01` is **critical** → `critical_invariant.blocked > 0` → `ENGINE_QA_INCOMPLETE` (ACCEPTED 불가).
+- Wall-clock-only / invented mock clock = **금지**.
 
 ## Dual Dirty
 
@@ -54,4 +75,4 @@ ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
 
 ## Next
 
-`QA1_DETERMINISTIC_TRUTH` only. Full ACCEPTED · product mutation to chase green · 03 UI — **금지**.
+`QA5_FAILURE_WORLD` only. Full ACCEPTED · product mutation · 03 UI — **금지**.
