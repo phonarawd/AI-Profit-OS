@@ -35,6 +35,11 @@ export function isAuthError(err: unknown): err is AuthError {
   return err instanceof AuthError;
 }
 
+/** 401만 미인증. 5xx/네트워크는 게스트·로그인이 아니다. */
+export function isAuthUnauthorized(err: unknown): boolean {
+  return isAuthError(err) && err.status === 401;
+}
+
 const NEST_ISSUER = "ai-profit-os-nest";
 const STAGES = new Set<AuthOnboardingStage>([
   "A",
@@ -145,6 +150,7 @@ export function normalizeAuthSession(raw: unknown): AuthSession {
     onboardingStage: stage as AuthOnboardingStage,
     beginnerOnboardingCompletedAt: asText(o.beginnerOnboardingCompletedAt),
     fundingExperienceCompleted: o.fundingExperienceCompleted === true,
+    emailMissing: o.emailMissing !== false,
   };
 }
 
@@ -169,7 +175,6 @@ export function buildStageBProfileBody(
     displayName: input.displayName.trim(),
     phoneE164: input.phoneE164.trim(),
     birthDate: input.birthDate.trim(),
-    emailAlreadyKnown: input.emailAlreadyKnown === true,
   };
   if (input.email?.trim()) body.email = input.email.trim();
   assertNoForbiddenProfileFields(body);

@@ -1,3 +1,5 @@
+export { AuthShell } from "./AuthShell";
+export type { AuthShellTone } from "./AuthShell";
 export { AuthLogin } from "./AuthLogin";
 export type { AuthLoginProps } from "./AuthLogin";
 export { AuthSignup } from "./AuthSignup";

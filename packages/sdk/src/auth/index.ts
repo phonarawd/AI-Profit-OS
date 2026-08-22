@@ -7,6 +7,7 @@ export {
   deleteAuthAccount,
   fetchAuthSession,
   isAuthError,
+  isAuthUnauthorized,
   logoutAuth,
   normalizeAuthSession,
   patchAuthProfile,

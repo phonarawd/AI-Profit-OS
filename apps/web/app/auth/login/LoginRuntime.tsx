@@ -1,15 +1,15 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AuthLogin } from "@aipo/ui/components/auth";
 import {
   continuePathAfterAuth,
   fetchAuthSession,
-  isKakaoOAuthReady,
+  isAuthError,
   requestMagicLink,
   startKakaoOAuth,
 } from "@aipo/sdk/auth";
-import { AuthLogin } from "@aipo/ui/components/auth";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { authUserMessage } from "../auth-messages";
 
 export function LoginRuntime() {
@@ -17,63 +17,67 @@ export function LoginRuntime() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
+  const [sessionState, setSessionState] = useState<
+    "loading" | "guest" | "unavailable"
+  >("loading");
 
   useEffect(() => {
-    const ac = new AbortController();
-    void fetchAuthSession({ apiBase: "", signal: ac.signal })
+    const ctrl = new AbortController();
+    fetchAuthSession({ signal: ctrl.signal })
       .then((session) => {
-        if (!session) return;
-        router.replace(continuePathAfterAuth(session.onboardingStage));
+        if (session) {
+          router.replace(continuePathAfterAuth(session.onboardingStage));
+          return;
+        }
+        setSessionState("guest");
       })
-      .catch(() => {
-        /* 게스트 유지 */
+      .catch((err: unknown) => {
+        if (isAuthError(err) && err.status === 401) {
+          setSessionState("guest");
+          return;
+        }
+        if ((err as { name?: string }).name === "AbortError") return;
+        setError(authUserMessage(err));
+        setSessionState("unavailable");
       });
-    return () => ac.abort();
+    return () => ctrl.abort();
   }, [router]);
-
-  async function onKakao() {
-    setError(null);
-    setNote(null);
-    if (!isKakaoOAuthReady()) {
-      setError("지금은 카카오로 연결할 수 없어요.");
-      return;
-    }
-    setBusy(true);
-    try {
-      const out = await startKakaoOAuth({}, { apiBase: "" });
-      if (out.status !== "ready") {
-        setError("지금은 카카오로 연결할 수 없어요.");
-        return;
-      }
-      window.location.assign(out.authorizeUrl);
-    } catch (caught) {
-      setError(authUserMessage(caught));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function onMagic(email: string) {
-    setError(null);
-    setNote(null);
-    setBusy(true);
-    try {
-      await requestMagicLink(email, { apiBase: "" });
-      setNote("메일함을 확인해 주세요.");
-    } catch (caught) {
-      setError(authUserMessage(caught));
-    } finally {
-      setBusy(false);
-    }
-  }
 
   return (
     <AuthLogin
       busy={busy}
       error={error}
       note={note}
-      onKakao={onKakao}
-      onMagic={onMagic}
+      sessionState={sessionState === "loading" ? "loading" : sessionState}
+      onKakao={async () => {
+        setBusy(true);
+        setError(null);
+        try {
+          const out = await startKakaoOAuth();
+          if (out.status === "ready") {
+            window.location.assign(out.authorizeUrl);
+            return;
+          }
+          setError(authUserMessage({ code: "KAKAO_UNAVAILABLE" }));
+        } catch (err) {
+          setError(authUserMessage(err));
+        } finally {
+          setBusy(false);
+        }
+      }}
+      onMagic={async (email) => {
+        setBusy(true);
+        setError(null);
+        setNote(null);
+        try {
+          await requestMagicLink(email);
+          setNote(authUserMessage({ code: "MAGIC_SENT" }));
+        } catch (err) {
+          setError(authUserMessage(err));
+        } finally {
+          setBusy(false);
+        }
+      }}
     />
   );
 }

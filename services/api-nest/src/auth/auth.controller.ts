@@ -83,10 +83,7 @@ export class AuthController {
   @Patch(AUTH_ROUTES.profile)
   @UseGuards(JwtAuthGuard)
   profile(@Body() body: Record<string, unknown>, @Req() req: AuthedRequest) {
-    const emailAlreadyKnown = body?.emailAlreadyKnown === true;
-    return this.auth.patchProfileStageB(req.user.userId, body ?? {}, {
-      emailAlreadyKnown,
-    });
+    return this.auth.patchProfileStageB(req.user.userId, body ?? {});
   }
 
   @Get(AUTH_ROUTES.session)

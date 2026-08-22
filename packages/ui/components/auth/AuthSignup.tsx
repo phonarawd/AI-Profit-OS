@@ -1,36 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { T } from "../../copy/ko";
-import { BrandMark } from "../brand/BrandMark";
-import { TouchButton } from "../lux/TouchButton";
-import { isKakaoOAuthReady, kakaoStartHref } from "./kakao-ready";
+import { AuthShell } from "./AuthShell";
+import { isKakaoOAuthReady } from "./kakao-ready";
 
 export type AuthSignupRuntimeInput = {
   termsAcceptedAt: string;
   privacyAcceptedAt: string;
   marketingConsent: boolean;
-  referralCode: string;
+  referralCode?: string;
   email?: string;
 };
 
 export type AuthSignupProps = {
   busy?: boolean;
   error?: string | null;
-  note?: string | null;
+  sessionState?: "guest" | "unavailable" | "ready" | "loading";
   onKakao?: (input: AuthSignupRuntimeInput) => void | Promise<void>;
-  onMagic?: (input: AuthSignupRuntimeInput) => void | Promise<void>;
+  onEmail?: (input: AuthSignupRuntimeInput) => void | Promise<void>;
 };
 
 /**
- * Canon auth-signup — Stage A · Kakao primary · terms required · forbidden fields 0
+ * Spark Dash signup — Desktop Passkey disabled · Mobile Passkey render 0
  */
 export function AuthSignup({
   busy = false,
   error = null,
-  note = null,
+  sessionState = "guest",
   onKakao,
-  onMagic,
+  onEmail,
 }: AuthSignupProps = {}) {
   const kakaoReady = isKakaoOAuthReady();
   const [terms, setTerms] = useState(false);
@@ -38,206 +37,192 @@ export function AuthSignup({
   const [referral, setReferral] = useState("");
   const [showEmail, setShowEmail] = useState(false);
   const [email, setEmail] = useState("");
+  const [showDesktopPasskey, setShowDesktopPasskey] = useState(false);
 
-  function accepted(): AuthSignupRuntimeInput {
-    const at = new Date().toISOString();
-    return {
-      termsAcceptedAt: at,
-      privacyAcceptedAt: at,
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const apply = () => setShowDesktopPasskey(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+
+  function nowIso() {
+    return new Date().toISOString();
+  }
+
+  function payload(withEmail: boolean): AuthSignupRuntimeInput {
+    const input: AuthSignupRuntimeInput = {
+      termsAcceptedAt: nowIso(),
+      privacyAcceptedAt: nowIso(),
       marketingConsent: marketing,
-      referralCode: referral,
-      email,
     };
+    if (referral.trim()) input.referralCode = referral.trim();
+    if (withEmail && email.trim()) input.email = email.trim();
+    return input;
   }
 
   function startKakao() {
-    if (!terms || busy) return;
-    if (onKakao) {
-      void onKakao(accepted());
-      return;
-    }
-    window.location.href = kakaoStartHref();
+    if (busy || !terms || !kakaoReady) return;
+    if (onKakao) void onKakao(payload(false));
   }
 
-  function submitMagic(e: React.FormEvent) {
+  function submitEmail(e: FormEvent) {
     e.preventDefault();
-    if (!terms || busy) return;
-    if (onMagic) {
-      void onMagic(accepted());
-    }
+    if (busy || !terms) return;
+    if (onEmail) void onEmail(payload(true));
   }
 
   return (
-    <main
-      data-testid="auth-signup"
-      data-canon="auth-signup"
-      data-stage="A"
-      className="flex flex-1 flex-col gap-6"
+    <AuthShell
+      tone="signup"
+      title={T.auth.signupHeadline}
+      sub={T.auth.signupSub}
+      lead={T.auth.signupLead}
+      sessionState={sessionState}
     >
-      <BrandMark size="compact" />
-      <header className="space-y-2 text-center">
-        <h1 className="text-xl font-semibold text-lux-text">
-          {T.auth.signupHeadline}
-        </h1>
-        <p className="text-sm text-lux-text-muted">{T.auth.signupSub}</p>
-      </header>
-
-      <div className="flex flex-col gap-3">
-        {kakaoReady && terms ? (
-          <TouchButton
-            variant="primary"
-            className="w-full bg-[#FEE500] text-[#191600]"
+      <main data-testid="auth-signup" data-canon="auth-signup" data-stage="A">
+        {kakaoReady ? (
+          <button
+            type="button"
+            className={
+              terms
+                ? "authSparkBtn authSparkBtnKakao"
+                : "authSparkBtn authSparkBtnDisabled"
+            }
             data-testid="auth-kakao-primary"
             data-oauth="kakao"
-            disabled={busy}
+            disabled={!terms || busy}
             onClick={startKakao}
           >
             {busy ? T.auth.connecting : T.auth.kakaoStart}
-          </TouchButton>
+          </button>
         ) : (
-          <div className="space-y-2">
-            <TouchButton
-              variant="primary"
-              className="w-full opacity-50"
+          <div>
+            <button
+              type="button"
+              className="authSparkBtn authSparkBtnDisabled"
               disabled
               data-testid="auth-kakao-primary"
               data-oauth="kakao"
-              data-oauth-ready={kakaoReady ? "true" : "false"}
+              data-oauth-ready="false"
               aria-disabled="true"
             >
               {T.auth.kakaoStart}
-            </TouchButton>
-            {!kakaoReady ? (
-              <p
-                className="text-center text-xs text-lux-text-muted"
-                data-testid="auth-kakao-unavailable"
-              >
-                {T.auth.kakaoUnavailable}
-              </p>
-            ) : (
-              <p
-                className="text-center text-xs text-lux-text-muted"
-                data-testid="auth-terms-needed"
-              >
-                {T.auth.termsNeeded}
-              </p>
-            )}
+            </button>
+            <p className="authSparkHint" data-testid="auth-kakao-unavailable">
+              {T.auth.kakaoUnavailable}
+            </p>
           </div>
         )}
-
-        <TouchButton variant="secondary" className="w-full" disabled>
+        <button
+          type="button"
+          className="authSparkBtn authSparkBtnDisabled"
+          disabled
+          data-testid="auth-google"
+        >
           {T.auth.googleStart}
-        </TouchButton>
-        <TouchButton variant="secondary" className="w-full" disabled>
-          {T.auth.passkeyStart}
-        </TouchButton>
-        <TouchButton
-          variant="ghost"
-          className="w-full"
+        </button>
+        {showDesktopPasskey ? (
+          <button
+            type="button"
+            className="authSparkBtn authSparkBtnDisabled"
+            disabled
+            data-testid="auth-signup-passkey"
+            data-passkey="disabled"
+            aria-disabled="true"
+          >
+            {T.auth.passkeyStart}
+          </button>
+        ) : null}
+
+        {kakaoReady && !terms ? (
+          <p className="authSparkHint" data-testid="auth-terms-needed">
+            {T.auth.termsNeeded}
+          </p>
+        ) : null}
+
+        <button
+          type="button"
+          className="authSparkBtn authSparkBtnGhost"
           data-testid="auth-email-toggle"
           disabled={busy}
           onClick={() => setShowEmail((v) => !v)}
         >
-          {T.auth.emailMagic}
-        </TouchButton>
-      </div>
+          {T.auth.emailSignup}
+        </button>
 
-      {showEmail ? (
-        <form
-          onSubmit={submitMagic}
-          className="space-y-3"
-          data-testid="auth-email-form"
-        >
-          <label
-            className="flex flex-col gap-1 text-sm"
-            data-testid="auth-email-fields"
+        {showEmail ? (
+          <form
+            onSubmit={submitEmail}
+            className="authSparkField"
+            data-testid="auth-email-form"
           >
-            <span className="text-lux-text-muted">{T.auth.emailForm}</span>
-            <input
-              type="email"
-              name="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={T.auth.emailPlaceholder}
-              className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
-            />
-          </label>
-          <TouchButton
-            type="submit"
-            variant="secondary"
-            className="w-full"
-            data-testid="auth-email-submit"
-            disabled={busy || !terms}
-          >
-            {busy ? T.auth.sending : T.auth.emailSignup}
-          </TouchButton>
-        </form>
-      ) : null}
+            <div className="authSparkField" data-testid="auth-email-fields">
+              <label className="authSparkField">
+                <span>{T.auth.emailForm}</span>
+                <input
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={T.auth.emailPlaceholder}
+                />
+              </label>
+            </div>
+            <button
+              type="submit"
+              className="authSparkBtn authSparkBtnPasskey"
+              data-testid="auth-email-submit"
+              disabled={!terms || busy}
+            >
+              {busy ? T.auth.sending : T.auth.emailSignup}
+            </button>
+          </form>
+        ) : null}
 
-      <div className="space-y-3 text-sm">
-        <label className="flex items-start gap-3" data-testid="auth-terms">
+        <label className="authSparkCheck">
           <input
             type="checkbox"
-            name="terms"
+            data-testid="auth-terms"
             checked={terms}
             onChange={(e) => setTerms(e.target.checked)}
-            className="mt-1 h-5 w-5 shrink-0"
-            required
           />
-          <span>
-            {T.auth.termsRequired}{" "}
-            <a
-              href="/me/legal"
-              className="text-lux-principal underline-offset-2 hover:underline"
-            >
-              {T.legal.termsTitle}
-            </a>
-          </span>
+          <span>{T.auth.termsRequired}</span>
         </label>
-        <label className="flex items-start gap-3" data-testid="auth-marketing">
+        <label className="authSparkCheck">
           <input
             type="checkbox"
-            name="marketing"
+            data-testid="auth-marketing"
             checked={marketing}
             onChange={(e) => setMarketing(e.target.checked)}
-            className="mt-1 h-5 w-5 shrink-0"
           />
           <span>{T.auth.marketingOptional}</span>
         </label>
-        <label className="flex flex-col gap-1" data-testid="auth-referral">
-          <span className="text-lux-text-muted">{T.auth.referralCode}</span>
+        <label className="authSparkField">
+          <span>{T.auth.referralCode}</span>
           <input
             type="text"
-            name="referralCode"
+            data-testid="auth-referral"
             value={referral}
             onChange={(e) => setReferral(e.target.value)}
+            placeholder={T.auth.inviteHint}
             autoComplete="off"
-            className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
           />
         </label>
-      </div>
 
-      {error ? (
-        <p role="alert" aria-live="assertive" className="text-center text-sm text-lux-text">
-          {error}
-        </p>
-      ) : null}
-      {note ? (
-        <p role="status" aria-live="polite" className="text-center text-sm text-lux-text-muted">
-          {note}
-        </p>
-      ) : null}
+        {error ? (
+          <p role="alert" aria-live="assertive" className="authSparkAlert">
+            {error}
+          </p>
+        ) : null}
 
-      <p className="text-center text-sm">
-        <a
-          href="/auth/login"
-          className="text-lux-principal underline-offset-2 hover:underline"
-        >
+        <a href="/auth/login" className="authSparkLink">
           {T.auth.toLogin}
         </a>
-      </p>
-    </main>
+      </main>
+    </AuthShell>
   );
 }

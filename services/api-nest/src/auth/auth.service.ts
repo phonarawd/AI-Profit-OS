@@ -81,6 +81,8 @@ export type AuthSessionView = {
   onboardingStage: OnboardingStage;
   beginnerOnboardingCompletedAt: string | null;
   fundingExperienceCompleted: boolean;
+  /** users.email 권위. 클라 emailAlreadyKnown로 우회 금지 */
+  emailMissing: boolean;
 };
 
 function isUniqueViolation(e: unknown): boolean {
@@ -165,13 +167,13 @@ export class AuthService {
   async patchProfileStageB(
     userId: string,
     body: Record<string, unknown>,
-    opts: { emailAlreadyKnown: boolean },
   ) {
     const forbidden = assertNoForbiddenAuthFields(body);
     if (forbidden) throw new BadRequestException(forbidden);
 
     const input = body as unknown as StageBProfileInput;
-    const err = validateStageB(input, opts);
+    const emailAlreadyKnown = !(await this.loadEmailMissing(userId));
+    const err = validateStageB(input, { emailAlreadyKnown });
     if (err) throw new BadRequestException(err);
     this.assertDbConfigured();
 
@@ -187,7 +189,7 @@ export class AuthService {
              updated_at = now()`,
       [userId, input.displayName, input.birthDate],
     );
-    if (input.email && !opts.emailAlreadyKnown) {
+    if (input.email && !emailAlreadyKnown) {
       await this.db.query(
         `UPDATE public.users SET email = $2, updated_at = now()
           WHERE id = $1::uuid AND email IS NULL`,
@@ -355,6 +357,7 @@ export class AuthService {
     }
     const onboardingStage = await this.loadOnboardingStage(sessionUser.userId);
     const experience = await this.loadOnboardingExperience(sessionUser.userId);
+    const emailMissing = await this.loadEmailMissing(sessionUser.userId);
     return {
       sessionId: sessionUser.sessionId,
       userId: sessionUser.userId,
@@ -364,6 +367,7 @@ export class AuthService {
       revoked,
       onboardingStage,
       ...experience,
+      emailMissing,
     };
   }
 
@@ -619,6 +623,7 @@ export class AuthService {
 
     const onboardingStage = await this.loadOnboardingStage(userId);
     const experience = await this.loadOnboardingExperience(userId);
+    const emailMissing = await this.loadEmailMissing(userId);
     return {
       accessToken,
       session: {
@@ -630,6 +635,7 @@ export class AuthService {
         revoked: false,
         onboardingStage,
         ...experience,
+        emailMissing,
       },
     };
   }
@@ -657,6 +663,17 @@ export class AuthService {
         WHERE user_id = $1::uuid AND revoked = false`,
       [userId],
     );
+  }
+
+  /** users.email 만 권위. 없으면 이메일 필수. DB 없으면 fail-closed(true). */
+  private async loadEmailMissing(userId: string): Promise<boolean> {
+    if (!this.db.configured()) return true;
+    const r = await this.db.query<{ email: string | null }>(
+      `SELECT email FROM public.users WHERE id = $1::uuid`,
+      [userId],
+    );
+    const email = r.rows[0]?.email;
+    return typeof email !== "string" || email.trim().length === 0;
   }
 
   private async loadOnboardingStage(userId: string): Promise<OnboardingStage> {

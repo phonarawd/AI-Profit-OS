@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { T } from "../../copy/ko";
-import { BrandMark } from "../brand/BrandMark";
-import { TouchButton } from "../lux/TouchButton";
+import { AuthShell } from "./AuthShell";
 import { isKakaoOAuthReady, kakaoStartHref } from "./kakao-ready";
 import {
   isWebAuthnSupported,
@@ -14,19 +13,19 @@ export type AuthLoginProps = {
   busy?: boolean;
   error?: string | null;
   note?: string | null;
+  sessionState?: "guest" | "unavailable" | "ready" | "loading";
   onKakao?: () => void | Promise<void>;
   onMagic?: (email: string) => void | Promise<void>;
 };
 
 /**
- * Canon auth-login — Kakao primary · Google/Passkey secondary · Email tertiary
- * Gender field 0 · stat strip 0
- * REL-022: 미지원/실패 시 기존 로그인 유지. 빈 화면 금지.
+ * Spark Dash login — Kakao primary · Passkey kept · Google disabled
  */
 export function AuthLogin({
   busy = false,
   error = null,
   note = null,
+  sessionState = "guest",
   onKakao,
   onMagic,
 }: AuthLoginProps = {}) {
@@ -51,43 +50,37 @@ export function AuthLogin({
     window.location.href = kakaoStartHref();
   }
 
-  function submitMagic(e: React.FormEvent) {
+  function submitMagic(e: FormEvent) {
     e.preventDefault();
     if (busy) return;
     if (onMagic) void onMagic(email);
   }
 
   return (
-    <main
-      data-testid="auth-login"
-      data-canon="auth-login"
-      className="flex flex-1 flex-col gap-6"
+    <AuthShell
+      tone="login"
+      title={T.auth.loginHeadline}
+      sub={T.auth.loginSub}
+      lead={T.auth.loginLead}
+      sessionState={sessionState}
     >
-      <BrandMark size="compact" />
-      <header className="space-y-2 text-center">
-        <h1 className="text-xl font-semibold text-lux-text">
-          {T.auth.loginHeadline}
-        </h1>
-        <p className="text-sm text-lux-text-muted">{T.auth.loginSub}</p>
-      </header>
-
-      <div className="flex flex-col gap-3">
+      <main data-testid="auth-login" data-canon="auth-login">
         {kakaoReady ? (
-          <TouchButton
-            variant="primary"
-            className="w-full bg-[#FEE500] text-[#191600]"
+          <button
+            type="button"
+            className="authSparkBtn authSparkBtnKakao"
             data-testid="auth-kakao-primary"
             data-oauth="kakao"
             disabled={busy}
             onClick={startKakao}
           >
             {busy ? T.auth.connecting : T.auth.kakaoStart}
-          </TouchButton>
+          </button>
         ) : (
-          <div className="space-y-2">
-            <TouchButton
-              variant="primary"
-              className="w-full opacity-50"
+          <div>
+            <button
+              type="button"
+              className="authSparkBtn authSparkBtnDisabled"
               disabled
               data-testid="auth-kakao-primary"
               data-oauth="kakao"
@@ -95,28 +88,25 @@ export function AuthLogin({
               aria-disabled="true"
             >
               {T.auth.kakaoStart}
-            </TouchButton>
-            <p
-              className="text-center text-xs text-lux-text-muted"
-              data-testid="auth-kakao-unavailable"
-            >
+            </button>
+            <p className="authSparkHint" data-testid="auth-kakao-unavailable">
               {T.auth.kakaoUnavailable}
             </p>
           </div>
         )}
 
-        <TouchButton
-          variant="secondary"
-          className="w-full"
+        <button
+          type="button"
+          className="authSparkBtn authSparkBtnDisabled"
           disabled
           data-testid="auth-google"
           data-oauth-ready="false"
         >
           {T.auth.googleStart}
-        </TouchButton>
-        <TouchButton
-          variant="secondary"
-          className="w-full"
+        </button>
+        <button
+          type="button"
+          className="authSparkBtn authSparkBtnPasskey"
           disabled={!passkeySupported || busy}
           data-testid="auth-passkey"
           data-passkey-supported={passkeySupported ? "true" : "false"}
@@ -130,81 +120,67 @@ export function AuthLogin({
           }}
         >
           {T.auth.passkeyStart}
-        </TouchButton>
+        </button>
         {showPasskeyFallback ? (
-          <p
-            className="text-center text-xs text-lux-text-muted"
-            data-testid="auth-passkey-fallback"
-          >
+          <p className="authSparkHint" data-testid="auth-passkey-fallback">
             {T.auth.passkeyFallback}
           </p>
         ) : null}
-        <TouchButton
-          variant="ghost"
-          className="w-full"
+        <button
+          type="button"
+          className="authSparkBtn authSparkBtnGhost"
           data-testid="auth-email"
           data-oauth-ready="true"
           disabled={busy}
           onClick={() => setShowEmail((v) => !v)}
         >
           {T.auth.emailMagic}
-        </TouchButton>
-      </div>
+        </button>
 
-      {showEmail ? (
-        <form
-          onSubmit={submitMagic}
-          className="space-y-3"
-          data-testid="auth-email-form"
-        >
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="text-lux-text-muted">{T.auth.emailForm}</span>
-            <input
-              type="email"
-              name="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={T.auth.emailPlaceholder}
-              className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
-            />
-          </label>
-          <TouchButton
-            type="submit"
-            variant="secondary"
-            className="w-full"
-            data-testid="auth-email-submit"
-            disabled={busy}
+        {showEmail ? (
+          <form
+            onSubmit={submitMagic}
+            className="authSparkField"
+            data-testid="auth-email-form"
           >
-            {busy ? T.auth.sending : T.auth.emailMagic}
-          </TouchButton>
-        </form>
-      ) : null}
+            <label className="authSparkField">
+              <span>{T.auth.emailForm}</span>
+              <input
+                type="email"
+                name="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={T.auth.emailPlaceholder}
+              />
+            </label>
+            <button
+              type="submit"
+              className="authSparkBtn authSparkBtnPasskey"
+              data-testid="auth-email-submit"
+              disabled={busy}
+            >
+              {busy ? T.auth.sending : T.auth.emailMagic}
+            </button>
+          </form>
+        ) : null}
 
-      {error ? (
-        <p role="alert" aria-live="assertive" className="text-center text-sm text-lux-text">
-          {error}
-        </p>
-      ) : null}
-      {note ? (
-        <p role="status" aria-live="polite" className="text-center text-sm text-lux-text-muted">
-          {note}
-        </p>
-      ) : null}
+        {error ? (
+          <p role="alert" aria-live="assertive" className="authSparkAlert">
+            {error}
+          </p>
+        ) : null}
+        {note ? (
+          <p role="status" aria-live="polite" className="authSparkNote">
+            {note}
+          </p>
+        ) : null}
 
-      <p className="text-center text-sm">
-        <a
-          href="/auth/signup"
-          className="text-lux-principal underline-offset-2 hover:underline"
-        >
+        <a href="/auth/signup" className="authSparkLink">
           {T.auth.toSignup}
         </a>
-      </p>
-
-      <footer className="mt-auto pt-6 text-center text-xs text-lux-text-muted">
-        {T.legal.operator.footerLine}
-      </footer>
-    </main>
+      </main>
+    </AuthShell>
   );
 }

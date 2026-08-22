@@ -4,7 +4,7 @@ import { SignupRuntime } from "./SignupRuntime";
 /** Canon auth-signup · Stage A */
 export default function AuthSignupPage() {
   return (
-    <GuestChrome>
+    <GuestChrome layout="viewport">
       <SignupRuntime />
     </GuestChrome>
   );

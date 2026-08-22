@@ -67,6 +67,10 @@
     },
     "fundingExperienceCompleted": {
       "type": "boolean"
+    },
+    "emailMissing": {
+      "type": "boolean",
+      "description": "users.email 권위. true면 Stage B 이메일 필수. 클라 emailAlreadyKnown로 우회 금지"
     }
   }
 }

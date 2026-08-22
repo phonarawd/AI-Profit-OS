@@ -1,88 +1,88 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AuthSignup, type AuthSignupRuntimeInput } from "@aipo/ui/components/auth";
 import {
   continuePathAfterAuth,
   fetchAuthSession,
-  isKakaoOAuthReady,
+  isAuthError,
   signupStageA,
   startKakaoOAuth,
 } from "@aipo/sdk/auth";
-import {
-  AuthSignup,
-  type AuthSignupRuntimeInput,
-} from "@aipo/ui/components/auth";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { authUserMessage } from "../auth-messages";
 
 export function SignupRuntime() {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [note, setNote] = useState<string | null>(null);
+  const [sessionState, setSessionState] = useState<
+    "loading" | "guest" | "unavailable"
+  >("loading");
 
   useEffect(() => {
-    const ac = new AbortController();
-    void fetchAuthSession({ apiBase: "", signal: ac.signal })
+    const ctrl = new AbortController();
+    fetchAuthSession({ signal: ctrl.signal })
       .then((session) => {
-        if (!session) return;
-        router.replace(continuePathAfterAuth(session.onboardingStage));
+        if (session) {
+          router.replace(continuePathAfterAuth(session.onboardingStage));
+          return;
+        }
+        setSessionState("guest");
       })
-      .catch(() => {
-        /* 게스트 유지 */
+      .catch((err: unknown) => {
+        if (isAuthError(err) && err.status === 401) {
+          setSessionState("guest");
+          return;
+        }
+        if ((err as { name?: string }).name === "AbortError") return;
+        setError(authUserMessage(err));
+        setSessionState("unavailable");
       });
-    return () => ac.abort();
+    return () => ctrl.abort();
   }, [router]);
 
-  async function onKakao(input: AuthSignupRuntimeInput) {
-    setError(null);
-    setNote(null);
-    if (!isKakaoOAuthReady()) {
-      setError("지금은 카카오로 연결할 수 없어요.");
-      return;
-    }
+  async function startKakao(input: AuthSignupRuntimeInput) {
     setBusy(true);
+    setError(null);
     try {
-      const out = await startKakaoOAuth(
-        {
-          termsAcceptedAt: input.termsAcceptedAt,
-          privacyAcceptedAt: input.privacyAcceptedAt,
-          marketingConsent: input.marketingConsent,
-          referralCode: input.referralCode,
-        },
-        { apiBase: "" },
-      );
-      if (out.status !== "ready") {
-        setError("지금은 카카오로 연결할 수 없어요.");
+      const out = await startKakaoOAuth({
+        termsAcceptedAt: input.termsAcceptedAt,
+        privacyAcceptedAt: input.privacyAcceptedAt,
+        marketingConsent: input.marketingConsent,
+        referralCode: input.referralCode,
+      });
+      if (out.status === "ready") {
+        window.location.assign(out.authorizeUrl);
         return;
       }
-      window.location.assign(out.authorizeUrl);
-    } catch (caught) {
-      setError(authUserMessage(caught));
+      setError(authUserMessage({ code: "KAKAO_UNAVAILABLE" }));
+    } catch (err) {
+      setError(authUserMessage(err));
     } finally {
       setBusy(false);
     }
   }
 
-  async function onMagic(input: AuthSignupRuntimeInput) {
-    setError(null);
-    setNote(null);
+  async function startEmail(input: AuthSignupRuntimeInput) {
+    if (!input.email) {
+      setError(authUserMessage({ code: "VALIDATION_ERROR" }));
+      return;
+    }
     setBusy(true);
+    setError(null);
     try {
-      const session = await signupStageA(
-        {
-          method: "email_magic",
-          termsAcceptedAt: input.termsAcceptedAt,
-          privacyAcceptedAt: input.privacyAcceptedAt,
-          marketingConsent: input.marketingConsent,
-          referralCode: input.referralCode,
-          email: input.email ?? "",
-        },
-        { apiBase: "" },
-      );
+      const session = await signupStageA({
+        method: "email_magic",
+        termsAcceptedAt: input.termsAcceptedAt,
+        privacyAcceptedAt: input.privacyAcceptedAt,
+        marketingConsent: input.marketingConsent,
+        referralCode: input.referralCode,
+        email: input.email,
+      });
       router.replace(continuePathAfterAuth(session.onboardingStage));
-    } catch (caught) {
-      setError(authUserMessage(caught));
+    } catch (err) {
+      setError(authUserMessage(err));
     } finally {
       setBusy(false);
     }
@@ -92,9 +92,9 @@ export function SignupRuntime() {
     <AuthSignup
       busy={busy}
       error={error}
-      note={note}
-      onKakao={onKakao}
-      onMagic={onMagic}
+      sessionState={sessionState === "loading" ? "loading" : sessionState}
+      onKakao={startKakao}
+      onEmail={startEmail}
     />
   );
 }

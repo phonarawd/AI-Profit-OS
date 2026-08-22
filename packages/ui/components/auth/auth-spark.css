@@ -1,0 +1,358 @@
+/* Spark Dash Auth — Figma 198:591 / 199:523 / 200:527 / 201:539 / 201:571 / 201:604 */
+.authSpark {
+  min-height: 100dvh;
+  background: #f7f8fb;
+  color: #08111f;
+}
+
+.authSparkSplit {
+  display: flex;
+  min-height: 100dvh;
+  align-items: stretch;
+}
+
+.authSparkBrand {
+  display: none;
+}
+
+.authSparkMasthead {
+  position: relative;
+  overflow: hidden;
+  background: #08111f;
+  padding: 22px 20px 18px;
+}
+
+.authSparkMasthead::after {
+  content: "";
+  position: absolute;
+  right: -24px;
+  top: -70px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 46, 99, 0.28) 0%,
+    rgba(255, 46, 99, 0.08) 45%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.authSparkLockup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.authSparkDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff2e63;
+}
+
+.authSparkWord {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+  letter-spacing: -0.04px;
+  color: #fff;
+}
+
+.authSparkBolt {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 22px;
+  color: #ff2e63;
+}
+
+.authSparkTitle {
+  position: relative;
+  z-index: 1;
+  margin: 10px 0 0;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: -0.088px;
+  color: #fff;
+}
+
+.authSparkSub {
+  position: relative;
+  z-index: 1;
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  color: #e6e8ee;
+  opacity: 0.82;
+}
+
+.authSparkLead {
+  display: none;
+}
+
+.authSparkForm {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 20px 16px;
+  background: #fff;
+}
+
+.authSparkCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 16px;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.authSparkCard main,
+.authSparkCard form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.authSparkBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: -0.014px;
+}
+
+.authSparkBtnKakao {
+  background: #fee500;
+  color: #191600;
+  border: 0;
+}
+
+.authSparkBtnKakao:disabled,
+.authSparkBtnDisabled {
+  background: #e6e8ee;
+  color: #667085;
+  border: 1px solid #e6e8ee;
+}
+
+.authSparkBtnPasskey {
+  background: #fff;
+  color: #08111f;
+  border: 1px solid #e6e8ee;
+}
+
+.authSparkBtnPrimary {
+  background: #ff2e63;
+  color: #fff;
+  border: 0;
+}
+
+.authSparkBtnGhost {
+  background: transparent;
+  color: #667085;
+  border: 0;
+  min-height: 48px;
+}
+
+.authSparkHint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 18px;
+  color: #667085;
+}
+
+.authSparkLink {
+  display: block;
+  padding: 13px 0;
+  text-align: center;
+  font-size: 14px;
+  line-height: 22px;
+  letter-spacing: -0.014px;
+  color: #ff2e63;
+  text-decoration: none;
+}
+
+.authSparkLink:hover {
+  text-decoration: underline;
+}
+
+.authSparkFooter {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: 10px;
+  line-height: 18px;
+  color: #667085;
+  opacity: 0.58;
+}
+
+.authSparkField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.authSparkField span {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+  color: #667085;
+}
+
+.authSparkField input[type="text"],
+.authSparkField input[type="email"],
+.authSparkField input[type="tel"],
+.authSparkField input[type="date"] {
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid #e6e8ee;
+  border-radius: 12px;
+  background: #fff;
+  color: #08111f;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.authSparkCheck {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  font-size: 14px;
+  line-height: 22px;
+  color: #08111f;
+}
+
+.authSparkCheck input {
+  margin-top: 2px;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.authSparkAlert {
+  margin: 0;
+  font-size: 14px;
+  line-height: 22px;
+  color: #08111f;
+  text-align: center;
+}
+
+.authSparkNote {
+  margin: 0;
+  font-size: 14px;
+  line-height: 22px;
+  color: #667085;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .authSparkMasthead {
+    display: none;
+  }
+
+  .authSparkBrand {
+    position: relative;
+    display: flex;
+    flex: 4 0 0;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
+    min-width: 400px;
+    overflow: hidden;
+    background: #08111f;
+    padding: 80px 56px 72px 72px;
+  }
+
+  .authSparkBrand::after {
+    content: "";
+    position: absolute;
+    right: -40px;
+    bottom: 80px;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(255, 46, 99, 0.16) 0%,
+      rgba(255, 46, 99, 0.05) 45%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  .authSparkWord {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 44px;
+    letter-spacing: -0.36px;
+  }
+
+  .authSparkBolt {
+    font-size: 32px;
+    line-height: 36px;
+  }
+
+  .authSparkTitle {
+    max-width: 420px;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 46px;
+    letter-spacing: -0.216px;
+  }
+
+  .authSparkSub {
+    max-width: 420px;
+    font-size: 16px;
+    line-height: 26px;
+    letter-spacing: -0.016px;
+    opacity: 1;
+  }
+
+  .authSparkLead {
+    display: block;
+    position: relative;
+    z-index: 1;
+    max-width: 420px;
+    margin: 0;
+    font-size: 13px;
+    line-height: 20px;
+    color: #e6e8ee;
+    opacity: 0.78;
+  }
+
+  .authSparkForm {
+    flex: 6 0 0;
+    align-items: center;
+    justify-content: center;
+    min-width: 420px;
+    padding: 80px 80px 48px;
+    background: #f7f8fb;
+  }
+
+  .authSparkCard {
+    width: 420px;
+    gap: 12px;
+    padding: 28px;
+    box-shadow: 0 10px 28px rgba(8, 17, 31, 0.08);
+  }
+
+  .authSparkFooter {
+    font-size: 11px;
+    opacity: 0.62;
+  }
+}

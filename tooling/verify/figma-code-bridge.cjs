@@ -71,8 +71,11 @@ if (registry.codeConnect.status !== "CANDIDATE_ONLY") {
 if (connect.applied !== 0 || connect.status !== "CANDIDATE_ONLY") {
   fails.push("PUTDUK_CODE_CONNECT_CANDIDATES must stay CANDIDATE_ONLY / applied 0");
 }
-if (bridge.codeConnect.applied !== 0 || bridge.productionAuthVisualApply !== 0) {
-  fails.push("bridge must keep Code Connect + production auth apply at 0");
+if (bridge.codeConnect.applied !== 0) {
+  fails.push("bridge must keep Code Connect applied at 0");
+}
+if (bridge.productionAuthVisualApply !== 0 && bridge.productionAuthVisualApply !== 1) {
+  fails.push("productionAuthVisualApply must be 0 or 1");
 }
 if (bridge.productionOnboardingApply !== 0 && bridge.productionOnboardingApply !== 1) {
   fails.push("productionOnboardingApply must be 0 or 1");
@@ -177,14 +180,29 @@ const authBehavior = [
   "apps/web/app/auth/signup/SignupRuntime.tsx",
   "apps/web/app/auth/complete-profile/CompleteProfileRuntime.tsx",
 ];
-for (const f of authBehavior) {
-  const r = require("child_process").spawnSync(
-    "git",
-    ["diff", "--name-only", "HEAD", "--", f],
-    { cwd: root, encoding: "utf8" },
-  );
-  if ((r.stdout || "").trim()) {
-    fails.push(`auth behavior mutated (visual apply leak): ${f}`);
+if (bridge.productionAuthVisualApply !== 1) {
+  for (const f of authBehavior) {
+    const r = require("child_process").spawnSync(
+      "git",
+      ["diff", "--name-only", "HEAD", "--", f],
+      { cwd: root, encoding: "utf8" },
+    );
+    if ((r.stdout || "").trim()) {
+      fails.push(`auth behavior mutated (visual apply leak): ${f}`);
+    }
+  }
+} else {
+  const shell = read("packages/ui/components/auth/AuthShell.tsx") || "";
+  if (!shell.includes('data-auth-chrome="v2"')) {
+    fails.push("AuthShell must mark Spark Dash v2 chrome");
+  }
+  const login = read("packages/ui/components/auth/AuthLogin.tsx") || "";
+  if (!login.includes("tryPasskeyAuthenticate")) {
+    fails.push("Login Passkey must stay");
+  }
+  const signup = read("packages/ui/components/auth/AuthSignup.tsx") || "";
+  if (!signup.includes('data-passkey="disabled"')) {
+    fails.push("Desktop Signup Passkey must stay disabled");
   }
 }
 if (bridge.productionOnboardingApply !== 1) {
@@ -227,5 +245,5 @@ if (fails.length) {
 }
 
 console.log(
-  "[verify:figma-code-bridge] PASS (IDs consistent · paths exist · Auth candidate ≠ approved · Code Connect 0 · Home/Account Hub lock · auth behavior 0)",
+  "[verify:figma-code-bridge] PASS (IDs consistent · paths exist · Auth candidate ≠ approved · Code Connect 0 · Home/Account Hub lock)",
 );

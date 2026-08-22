@@ -4,7 +4,7 @@ import { LoginRuntime } from "./LoginRuntime";
 /** Canon auth-login */
 export default function AuthLoginPage() {
   return (
-    <GuestChrome>
+    <GuestChrome layout="viewport">
       <LoginRuntime />
     </GuestChrome>
   );

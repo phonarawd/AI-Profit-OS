@@ -20,6 +20,7 @@ export type AuthSession = {
   onboardingStage: AuthOnboardingStage;
   beginnerOnboardingCompletedAt: string | null;
   fundingExperienceCompleted: boolean;
+  emailMissing: boolean;
 };
 
 export type KakaoStartInput = {
@@ -47,7 +48,6 @@ export type StageBProfileInput = {
   phoneE164: string;
   birthDate: string;
   email?: string;
-  emailAlreadyKnown?: boolean;
 };
 
 export type StageBProfileResult = {

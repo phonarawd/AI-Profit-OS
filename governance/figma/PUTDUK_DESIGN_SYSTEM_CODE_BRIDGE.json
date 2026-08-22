@@ -2,7 +2,7 @@
   "schema": "putduk.figma.design-system-code-bridge.v1",
   "fileKey": "w7Yg8j2x9evuheOSSLqFw5",
   "codeConnect": { "status": "CANDIDATE_ONLY", "applied": 0 },
-  "productionAuthVisualApply": 0,
+  "productionAuthVisualApply": 1,
   "productionOnboardingApply": 1,
   "revision": "V3_POLISH",
   "founderApproved": false,
@@ -70,42 +70,42 @@
       "figmaNodeId": "198:591",
       "productionComponent": "AuthLogin",
       "productionPath": "apps/web/app/auth/login/page.tsx",
-      "status": "FIGMA_ONLY"
+      "status": "APPLIED"
     },
     {
       "figmaComponent": "Auth / Login / Mobile",
       "figmaNodeId": "199:523",
       "productionComponent": "AuthLogin",
       "productionPath": "apps/web/app/auth/login/LoginRuntime.tsx",
-      "status": "FIGMA_ONLY"
+      "status": "APPLIED"
     },
     {
       "figmaComponent": "Auth / Signup / Desktop",
       "figmaNodeId": "200:527",
       "productionComponent": "AuthSignup",
       "productionPath": "apps/web/app/auth/signup/page.tsx",
-      "status": "FIGMA_ONLY"
+      "status": "APPLIED"
     },
     {
       "figmaComponent": "Auth / Signup / Mobile",
       "figmaNodeId": "201:539",
       "productionComponent": "AuthSignup",
       "productionPath": "apps/web/app/auth/signup/SignupRuntime.tsx",
-      "status": "FIGMA_ONLY"
+      "status": "APPLIED"
     },
     {
       "figmaComponent": "Auth / Complete Profile / Desktop",
       "figmaNodeId": "201:571",
       "productionComponent": "AuthCompleteProfile",
       "productionPath": "apps/web/app/auth/complete-profile/page.tsx",
-      "status": "FIGMA_ONLY"
+      "status": "APPLIED"
     },
     {
       "figmaComponent": "Auth / Complete Profile / Mobile",
       "figmaNodeId": "201:604",
       "productionComponent": "AuthCompleteProfile",
       "productionPath": "apps/web/app/auth/complete-profile/CompleteProfileRuntime.tsx",
-      "status": "FIGMA_ONLY"
+      "status": "APPLIED"
     },
     {
       "figmaComponent": "Auth / Onboarding / Desktop",

@@ -84,12 +84,56 @@ for (const rel of [
   }
 }
 
+for (const rel of [
+  "apps/web/app/auth/login/page.tsx",
+  "apps/web/app/auth/signup/page.tsx",
+  "apps/web/app/auth/complete-profile/page.tsx",
+]) {
+  const src = read(rel);
+  if (!src.includes('layout="viewport"')) {
+    fail(`${rel} must use GuestChrome viewport (narrow Auth 0)`);
+  }
+}
+
+const loginRt = read("apps/web/app/auth/login/LoginRuntime.tsx");
+const signupRt = read("apps/web/app/auth/signup/SignupRuntime.tsx");
+if (!loginRt.includes('err.status === 401') || !signupRt.includes('err.status === 401')) {
+  fail("login/signup 5xx must not collapse to guest — 401 only");
+}
+if (!loginRt.includes("unavailable") || !signupRt.includes("unavailable")) {
+  fail("login/signup must surface session unavailable");
+}
+
+const profile = read("apps/web/app/auth/complete-profile/CompleteProfileRuntime.tsx");
+if (!profile.includes("session.emailMissing") && !profile.includes("emailMissing")) {
+  fail("complete-profile must take emailMissing from session");
+}
+if (profile.includes('router.replace("/auth/login")') && !profile.includes("err.status === 401")) {
+  fail("complete-profile 5xx must not collapse to login");
+}
+
+const signupUi = read("packages/ui/components/auth/AuthSignup.tsx");
+if (!signupUi.includes('data-passkey="disabled"')) {
+  fail("desktop signup Passkey must stay disabled");
+}
+if (!signupUi.includes("min-width: 768px")) {
+  fail("mobile signup Passkey render must be 0");
+}
+
+const nestSvc = read("services/api-nest/src/auth/auth.service.ts");
+if (!nestSvc.includes("loadEmailMissing") || !nestSvc.includes("SELECT email FROM public.users")) {
+  fail("session emailMissing must be derived from users.email");
+}
+const nestCtl = read("services/api-nest/src/auth/auth.controller.ts");
+if (nestCtl.includes("body?.emailAlreadyKnown")) {
+  fail("profile PATCH must not trust browser emailAlreadyKnown");
+}
+
 const signup = read("apps/web/app/auth/signup/SignupRuntime.tsx");
 if (!signup.includes("startKakaoOAuth") || !signup.includes("signupStageA")) {
   fail("signup runtime must call Nest signup via SDK");
 }
 
-const profile = read("apps/web/app/auth/complete-profile/CompleteProfileRuntime.tsx");
 if (!profile.includes("patchAuthProfile")) {
   fail("complete-profile must PATCH Nest profile");
 }

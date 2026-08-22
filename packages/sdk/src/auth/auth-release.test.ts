@@ -204,4 +204,33 @@ describe("acquisition release — guest / auth / error / resume", () => {
     mockFetch(() => jsonRes(200, { ...nestSession, issuer: "supabase" }));
     await assert.rejects(() => fetchAuthSession({ apiBase: "" }), /SESSION_UNAVAILABLE/);
   });
+
+  it("throws on 5xx session instead of treating it as guest", async () => {
+    mockFetch(() => jsonRes(503, { message: "unavailable" }));
+    await assert.rejects(() => fetchAuthSession({ apiBase: "" }), (err: unknown) => {
+      assert.ok(err instanceof AuthError);
+      assert.equal(err.status, 503);
+      return true;
+    });
+  });
+
+  it("uses server emailMissing and never sends emailAlreadyKnown", async () => {
+    mockFetch(() =>
+      jsonRes(200, { ...nestSession, onboardingStage: "B_incomplete", emailMissing: false }),
+    );
+    const session = await fetchAuthSession({ apiBase: "" });
+    assert.equal(session?.emailMissing, false);
+
+    let body = "";
+    mockFetch((_url, init) => {
+      body = String(init?.body ?? "");
+      return jsonRes(200, { ok: true });
+    });
+    await patchAuthProfile({
+      displayName: "이름",
+      phoneE164: "+821012345678",
+      birthDate: "1990-01-01",
+    });
+    assert.doesNotMatch(body, /emailAlreadyKnown/);
+  });
 });
