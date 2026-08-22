@@ -181,7 +181,7 @@ function RoomMobileTop({ item }: { item: OpportunityRoomItem }) {
           ) : item.partner ? (
             <span className="sdrm-partner">{item.partner}</span>
           ) : null}
-          {item.partnerKind === "ebay" ? (
+          {item.official === true ? (
             <span className="sdrm-official">공식 파트너</span>
           ) : null}
         </div>

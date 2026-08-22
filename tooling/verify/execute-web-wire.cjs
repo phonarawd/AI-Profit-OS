@@ -101,6 +101,15 @@ if (!client.includes('href="/profits"')) {
 if (!client.includes('href="/me/support"')) {
   fail("Failed recovery must link /me/support");
 }
+if (!client.includes("data-execute-chrome") || !client.includes("주요 화면")) {
+  fail("execute must keep consumer chrome/navigation");
+}
+if (!client.includes("/me/inbox") || !/href:\s*"\/me"/.test(client)) {
+  fail("mobile execute chrome must reach inbox and account");
+}
+if (!client.includes("data-execute-context")) {
+  fail("execute must show owned opportunity/state context");
+}
 
 for (const kind of [
   "MatchingInProgress",

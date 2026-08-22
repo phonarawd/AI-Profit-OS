@@ -7,13 +7,13 @@ import type { CurrentFxApproxResponse } from "@aipo/sdk/current-fx";
 import type { OpportunityFeedItem } from "@aipo/sdk/user-feed";
 import type { WalletBucketsResponse } from "@aipo/sdk/wallet";
 import {
-  formatDurationMinutesFromSec,
   formatKrwApprox,
   formatRatePct,
   formatSignedUsdt,
   formatUsdtDisplay,
 } from "../spark-dash-home/format";
 import type { SparkDashNavItem } from "../spark-dash-home/types";
+import { formatOpportunityExpectedTime } from "../spark-dash-profits/format-expected-time";
 import { resolveProfitsMediaPolicy } from "../spark-dash-profits/map-runtime";
 import type { ProfitsDesktopModel } from "../spark-dash-profits/types";
 import type {
@@ -114,7 +114,8 @@ export function mapOpportunityRoomItem(
         : null,
     capitalUsdt: capital,
     capitalKrw: null,
-    durationLabel: formatDurationMinutesFromSec(sec),
+    durationLabel: formatOpportunityExpectedTime(sec),
+    // official 미할당 = UNKNOWN. source/ebay로 true 생성 금지
     statusLabel: joinable
       ? "참여 가능"
       : funding

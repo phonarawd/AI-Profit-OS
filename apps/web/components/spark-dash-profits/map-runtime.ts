@@ -7,13 +7,13 @@ import type { CurrentFxApproxResponse } from "@aipo/sdk/current-fx";
 import type { OpportunityFeedItem } from "@aipo/sdk/user-feed";
 import type { WalletBucketsResponse } from "@aipo/sdk/wallet";
 import {
-  formatDurationMinutesFromSec,
   formatKrwApprox,
   formatRatePct,
   formatSignedUsdt,
   formatUsdtDisplay,
 } from "../spark-dash-home/format";
 import type { SparkDashNavItem } from "../spark-dash-home/types";
+import { formatOpportunityExpectedTime } from "./format-expected-time";
 import type {
   ProfitsDesktopModel,
   ProfitsMediaState,
@@ -105,7 +105,7 @@ function mapItem(item: OpportunityFeedItem, index: number): ProfitsOpportunity |
     expectedProfitUsdt: formatSignedUsdt(asText(item.expectedProfitUsdt)),
     expectedProfitKrw:
       profitKrw != null ? formatKrwApprox(String(Math.round(profitKrw))) : null,
-    durationLabel: formatDurationMinutesFromSec(sec),
+    durationLabel: formatOpportunityExpectedTime(sec),
     capitalUsdt: capital ? `${capital} USDT` : null,
     capitalKrw: null,
     statusLabel: joinable ? "참여 가능" : "조건 확인 후 참여 가능",

@@ -59,7 +59,7 @@ export function OpportunityGrid({
     return (
       <FeedMessage kind="unauthorized">
         <p>로그인하면 확인할 수 있는 기회를 보여드려요.</p>
-        <Link className="sdp-empty-link" href="/auth/login">
+        <Link className="sdp-empty-action" href="/auth/login">
           로그인
         </Link>
       </FeedMessage>
@@ -70,6 +70,10 @@ export function OpportunityGrid({
     return (
       <FeedMessage kind="empty">
         <p>지금 확인할 수 있는 기회가 아직 없어요.</p>
+        <p>새로운 기회가 생기면 여기에서 확인할 수 있어요.</p>
+        <Link className="sdp-empty-action" href="/" data-sdp-empty-action="home">
+          홈으로
+        </Link>
       </FeedMessage>
     );
   }

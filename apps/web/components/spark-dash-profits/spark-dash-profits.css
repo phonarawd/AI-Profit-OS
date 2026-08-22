@@ -306,8 +306,12 @@
 }
 
 .sdp-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
   margin: 2.5rem 0 0;
-  padding: 2rem;
+  padding: 2.25rem 1.5rem;
   border-radius: 1rem;
   background: #fff;
   border: 1px solid var(--sdp-line);
@@ -318,14 +322,27 @@
 
 .sdp-empty p {
   margin: 0;
+  max-width: 22rem;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-break: keep-all;
 }
 
-.sdp-empty-link {
-  display: inline-block;
-  margin-top: 0.85rem;
+.sdp-empty-link,
+.sdp-empty-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  min-width: 8.5rem;
+  margin-top: 0.35rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 0.875rem;
+  background: #ff2d6b;
+  color: #fff;
   font-size: 0.9375rem;
-  font-weight: 750;
-  color: var(--sdp-pink);
+  font-weight: 800;
+  text-decoration: none;
 }
 
 .sdp-skel {

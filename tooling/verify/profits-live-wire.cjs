@@ -98,6 +98,67 @@ if (!metrics.includes("최소 참여 원금") && !mobile.includes("필요 원금
 if (!metrics.includes("확인할 수 없음") || !mobile.includes("확인할 수 없음")) {
   fail("missing required capital must be unavailable, not 0");
 }
+
+const expectedTime = read(
+  "apps/web/components/spark-dash-profits/format-expected-time.ts",
+);
+if (!expectedTime.includes("export function formatOpportunityExpectedTime")) {
+  fail("opportunity expected-time formatter must exist");
+}
+if (/\$\{[^}]+\}일|\d+일/.test(expectedTime)) {
+  fail("opportunity expected-time must not use day-level copy");
+}
+if (!mapRuntime.includes("formatOpportunityExpectedTime")) {
+  fail("profits mapper must use opportunity expected-time formatter");
+}
+if (/durationLabel:\s*formatDurationMinutesFromSec/.test(mapRuntime)) {
+  fail("profits mapper must not reuse Home minute-only duration");
+}
+
+let expectedTimeFn;
+try {
+  expectedTimeFn = new Function(
+    `${expectedTime
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/\bexport\s+/g, "")
+      .replace(/:\s*number \| null \| undefined/g, "")
+      .replace(/\):\s*string \| null/g, ")")}
+    return formatOpportunityExpectedTime;`,
+  )();
+} catch (err) {
+  fail(
+    `opportunity expected-time formatter could not be evaluated: ${
+      err && err.message ? err.message : err
+    }`,
+  );
+}
+if (typeof expectedTimeFn === "function") {
+  const expectedTimeCases = [
+    [45 * 60, "45분"],
+    [60 * 60, "1시간"],
+    [90 * 60, "1시간 30분"],
+    [120 * 60, "2시간"],
+    [null, null],
+    [0, null],
+    [Number.NaN, null],
+  ];
+  for (const [input, want] of expectedTimeCases) {
+    const got = expectedTimeFn(input);
+    if (got !== want) {
+      fail(`expected-time ${input} want ${want} got ${got}`);
+    }
+  }
+}
+if (!mobile.includes('href="/"') || !mobile.includes("홈으로")) {
+  fail("authenticated empty state must offer Home next action");
+}
+const grid = read("apps/web/components/spark-dash-profits/OpportunityGrid.tsx");
+if (!grid.includes('href="/"') || !grid.includes("홈으로")) {
+  fail("desktop empty state must offer Home next action");
+}
+if (!grid.includes('href="/auth/login"') || !mobile.includes('href="/auth/login"')) {
+  fail("unauthenticated empty/unauthorized must keep login action");
+}
 if (!desktop.includes("onQuery") || !desktop.includes("onFilter")) {
   fail("search/filter controls must be wired");
 }

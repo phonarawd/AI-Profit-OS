@@ -13,6 +13,22 @@ import styles from "./trade-execute.module.css";
 const USDT_DEC = /^-?[0-9]+(\.[0-9]+)?$/;
 const TITLE = "진행";
 
+const DESKTOP_NAV = [
+  { key: "home", href: "/", label: "홈" },
+  { key: "explore", href: "/profits", label: "기회 탐색" },
+  { key: "assets", href: "/wallet", label: "내 자산" },
+  { key: "participations", href: "/trades", label: "참여 내역" },
+  { key: "settlements", href: "/wallet/history", label: "정산 내역" },
+] as const;
+
+const MOBILE_NAV = [
+  { key: "home", href: "/", label: "홈" },
+  { key: "explore", href: "/profits", label: "기회 탐색" },
+  { key: "assets", href: "/wallet", label: "내 자산" },
+  { key: "alerts", href: "/me/inbox", label: "알림" },
+  { key: "more", href: "/me", label: "더보기" },
+] as const;
+
 type ConsumerState =
   | "MatchingInProgress"
   | "MatchingRetrying"
@@ -88,6 +104,26 @@ function meaningCopy(state: TradeExecutionState): string {
   }
 }
 
+function nextCopy(state: TradeExecutionState): string | null {
+  const kind = consumerState(state);
+  switch (kind) {
+    case "MatchingInProgress":
+    case "MatchingRetrying":
+      return "결과가 나오면 이 화면에서 바로 확인할 수 있어요.";
+    case "Settled":
+      return "확정된 수익은 지갑에서 확인할 수 있어요.";
+    case "StoppedSafely":
+    case "Cancelled":
+      return "다른 기회를 이어서 볼 수 있어요.";
+    case "Failed":
+      return "도움이 필요하면 고객지원으로 문의해 주세요.";
+    default:
+      return state.status === "success"
+        ? "처리가 끝나면 이 화면에서 결과를 확인할 수 있어요."
+        : null;
+  }
+}
+
 function Shell({
   transport,
   consumer,
@@ -109,9 +145,74 @@ function Shell({
       data-consumer-state={consumer ?? "loading"}
       data-trade-status={tradeStatus ?? ""}
       data-live={live ? "true" : "false"}
+      data-execute-chrome="true"
     >
-      {children}
+      <aside className={styles.sidebar} data-execute-chrome="desktop">
+        <p className={styles.wordmark}>퍼뜩</p>
+        <p className={styles.tagline}>참여 진행</p>
+        <nav className={styles.sideNav} aria-label="주요 메뉴">
+          {DESKTOP_NAV.map((item) => (
+            <Link
+              key={item.key}
+              href={item.href}
+              className={
+                item.key === "participations"
+                  ? `${styles.sideLink} ${styles.isActive}`
+                  : styles.sideLink
+              }
+              aria-current={item.key === "participations" ? "page" : undefined}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      </aside>
+      <div className={styles.column}>
+        <header className={styles.topbar} data-execute-chrome="mobile-top">
+          <Link className={styles.back} href="/profits">
+            <span aria-hidden>‹</span>
+            기회 탐색
+          </Link>
+          <p className={styles.brand}>퍼뜩</p>
+          <Link className={styles.inbox} href="/me/inbox">
+            알림
+          </Link>
+        </header>
+        <div className={styles.body}>{children}</div>
+        <nav
+          className={styles.tabbar}
+          data-execute-chrome="mobile-nav"
+          aria-label="주요 화면"
+        >
+          {MOBILE_NAV.map((item) => (
+            <Link key={item.key} className={styles.tab} href={item.href}>
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
     </main>
+  );
+}
+
+function Context({ state }: { state: TradeExecutionState }) {
+  const label = state.asset?.label?.trim() || null;
+  const next = nextCopy(state);
+  return (
+    <section className={styles.context} data-execute-context="true">
+      {label ? (
+        <p className={styles.contextRow}>
+          <span>상품</span>
+          <strong>{label}</strong>
+        </p>
+      ) : null}
+      {next ? (
+        <p className={styles.contextRow} data-execute-next="true">
+          <span>다음</span>
+          <strong>{next}</strong>
+        </p>
+      ) : null}
+    </section>
   );
 }
 
@@ -185,7 +286,6 @@ export function TradeExecuteClient({ tradeId }: { tradeId: string }) {
 
   const kind = consumerState(state);
   const settled = isSettled(state);
-  const label = state.asset?.label?.trim() || null;
 
   return (
     <Shell
@@ -194,12 +294,9 @@ export function TradeExecuteClient({ tradeId }: { tradeId: string }) {
       tradeStatus={state.status}
       live={live}
     >
-      <p className={styles.nav}>
-        <Link href="/">홈</Link>
-      </p>
       <h1 className={styles.title}>{TITLE}</h1>
       <p className={styles.lead}>{meaningCopy(state)}</p>
-      {label ? <p className={styles.note}>{label}</p> : null}
+      <Context state={state} />
       {kind === "MatchingInProgress" || kind === "MatchingRetrying" ? (
         <div className={styles.motion} aria-hidden>
           <span className={styles.orbit} />

@@ -523,11 +523,21 @@
   color: #d8dee8;
 }
 
-.sdpm-empty-link {
-  margin-top: 2px;
-  font-size: 13.5px;
-  font-weight: 750;
-  color: var(--sdpm-pink);
+.sdpm-empty-link,
+.sdpm-empty-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  min-width: 140px;
+  margin-top: 6px;
+  padding: 12px 20px;
+  border-radius: 14px;
+  background: var(--sdpm-pink);
+  color: #fff;
+  font-size: 14.5px;
+  font-weight: 800;
+  text-decoration: none;
 }
 
 .sdpm-skel-list {

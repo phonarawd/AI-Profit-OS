@@ -253,6 +253,9 @@ function ProfitsMobileEmpty() {
         <br />
         여기에서 바로 확인할 수 있어요
       </p>
+      <Link className="sdpm-empty-action" href="/" data-sdpm-empty-action="home">
+        홈으로
+      </Link>
     </div>
   );
 }
@@ -290,7 +293,7 @@ export function ProfitsMobile({ model }: { model: ProfitsDesktopModel }) {
           {model.viewState === "UNAUTHORIZED" ? (
             <ProfitsMobileMessage>
               <p>로그인하면 확인할 수 있는 기회를 보여드려요.</p>
-              <Link className="sdpm-empty-link" href="/auth/login">
+              <Link className="sdpm-empty-action" href="/auth/login">
                 로그인
               </Link>
             </ProfitsMobileMessage>

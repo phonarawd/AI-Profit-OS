@@ -223,7 +223,7 @@ export function OpportunityRoomDesktop({
                   ) : item.partner ? (
                     <span className="sdr-partner">{item.partner}</span>
                   ) : null}
-                  {item.partnerKind === "ebay" ? (
+                  {item.official === true ? (
                     <span className="sdr-official">공식 파트너</span>
                   ) : null}
                 </div>

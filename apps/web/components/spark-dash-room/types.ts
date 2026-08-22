@@ -29,6 +29,8 @@ export type OpportunityRoomItem = {
   capitalKrw: string | null;
   durationLabel: string | null;
   statusLabel: string;
+  /** 있으면 true만. 없으면 UNKNOWN — source/ebay로 false·true 생성 금지 */
+  official?: true;
   joinable: boolean;
   funding: boolean;
   locked: boolean;

@@ -79,6 +79,21 @@ if (!desktop.includes("필요 원금") || !mobile.includes("필요 원금")) {
 if (!desktop.includes("확인할 수 없음") || !mobile.includes("확인할 수 없음")) {
   fail("missing required capital must be unavailable, not 0");
 }
+if (!mapRuntime.includes("formatOpportunityExpectedTime")) {
+  fail("room mapper must use opportunity expected-time formatter");
+}
+if (/durationLabel:\s*formatDurationMinutesFromSec/.test(mapRuntime)) {
+  fail("room mapper must not reuse Home minute-only duration");
+}
+if (
+  /partnerKind === ["']ebay["'][\s\S]{0,160}공식 파트너/.test(desktop) ||
+  /partnerKind === ["']ebay["'][\s\S]{0,160}공식 파트너/.test(mobile)
+) {
+  fail("EBAY_IMPLIES_OFFICIAL must stay 0");
+}
+if (!desktop.includes("official === true") || !mobile.includes("official === true")) {
+  fail("room official-partner badge must use official === true");
+}
 if (
   !spec.includes("unauthorized") ||
   !spec.includes("error") ||
