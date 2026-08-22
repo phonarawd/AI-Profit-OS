@@ -154,6 +154,10 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     getGrowthEnabled: read("growth"),
     putGrowthEnabled: write("growth"),
   },
+  GrowthTickerAdminController: {
+    get: read("growth"),
+    patch: write("growth"),
+  },
   DepositConfigAdminController: {
     get: read("wallet"),
     patch: write("wallet"),

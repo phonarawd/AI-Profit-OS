@@ -442,6 +442,12 @@ const RULES = [
       "rel-210-admin-opportunities.cjs",
       "rel-211-admin-adapters.cjs",
       "rel-212-admin-support.cjs",
+      "rel-216-admin-financial-report.cjs",
+      "rel-217-admin-growth.cjs",
+      "rel-218-admin-growth-deposit.cjs",
+      "rel-219-admin-growth-ticker.cjs",
+      "rel-220-admin-growth-whale.cjs",
+      "rel-221-admin-growth-content.cjs",
     ],
   },
   {
@@ -470,8 +476,47 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/admin\/app\/admin\/reports\/financial\//.test(f) ||
+      /^tooling\/verify\/rel-216-admin-financial-report\.cjs$/.test(f),
+    scripts: ["rel-216-admin-financial-report.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/admin\/app\/admin\/growth\/page\.tsx$/.test(f) ||
+      /^tooling\/verify\/rel-217-admin-growth\.cjs$/.test(f),
+    scripts: ["rel-217-admin-growth.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/admin\/app\/admin\/growth\/deposit\//.test(f) ||
+      /^tooling\/verify\/rel-218-admin-growth-deposit\.cjs$/.test(f),
+    scripts: ["rel-218-admin-growth-deposit.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/admin\/app\/admin\/growth\/ticker\//.test(f) ||
+      /^tooling\/verify\/rel-219-admin-growth-ticker\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/growth\//.test(f),
+    scripts: ["rel-219-admin-growth-ticker.cjs", "growth-public-surface.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/admin\/app\/admin\/growth\/whale\//.test(f) ||
+      /^tooling\/verify\/rel-220-admin-growth-whale\.cjs$/.test(f),
+    scripts: ["rel-220-admin-growth-whale.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/admin\/app\/admin\/growth\/content\//.test(f) ||
+      /^tooling\/verify\/rel-221-admin-growth-content\.cjs$/.test(f),
+    scripts: ["rel-221-admin-growth-content.cjs"],
+  },
+  {
+    test: (f) =>
       /^tooling\/verify\/rel-20[1-9]-admin-/.test(f) ||
       /^tooling\/verify\/rel-21[0-2]-admin-/.test(f) ||
+      /^tooling\/verify\/rel-21[6-9]-admin-/.test(f) ||
+      /^tooling\/verify\/rel-22[01]-admin-/.test(f) ||
       /^tooling\/verify\/admin-entry-e2e\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/admin-entry-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/e2e\/lib\/local-admin-runtime\.cjs$/.test(f),
@@ -488,6 +533,12 @@ const RULES = [
       "rel-210-admin-opportunities.cjs",
       "rel-211-admin-adapters.cjs",
       "rel-212-admin-support.cjs",
+      "rel-216-admin-financial-report.cjs",
+      "rel-217-admin-growth.cjs",
+      "rel-218-admin-growth-deposit.cjs",
+      "rel-219-admin-growth-ticker.cjs",
+      "rel-220-admin-growth-whale.cjs",
+      "rel-221-admin-growth-content.cjs",
       "admin-entry-e2e.cjs",
     ],
   },

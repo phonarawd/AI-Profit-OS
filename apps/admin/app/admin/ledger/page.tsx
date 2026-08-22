@@ -71,6 +71,11 @@ function LedgerContent() {
     <main className="p-6 text-lux-text" data-testid="admin-ledger">
       <h1 className="text-xl font-semibold">입출금·정산 장부</h1>
       <p className="mt-2 text-sm text-lux-text-muted">읽기 전용 · 화면에서 전표를 고치지 않습니다</p>
+      <p className="mt-1 text-xs text-lux-text-muted">
+        <a href="/admin/reports/financial" className="underline">
+          금융 리포트
+        </a>
+      </p>
 
       <nav className="mt-4 flex flex-wrap gap-2" aria-label="장부 탭">
         {TABS.map((t) => (

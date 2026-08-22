@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-212 COMPLETED. FIRST_EXECUTION_TODO=REL-216. BATCH_REL_200_206=CLOSED. BATCH_REL_207_209=CLOSED. BATCH_REL_210_212=CLOSED. BATCH_A_RUNTIME_ACCEPTANCE=CLOSED.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-221 COMPLETED. FIRST_EXECUTION_TODO=REL-300. BATCH_REL_200_206=CLOSED. BATCH_REL_207_209=CLOSED. BATCH_REL_210_212=CLOSED. BATCH_REL_216_221=CLOSED. BATCH_A_RUNTIME_ACCEPTANCE=CLOSED.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -214,22 +214,22 @@ todos:
     status: completed
   - id: rel-216
     content: "[Admin] /admin/reports/financial 실사+구현"
-    status: pending
+    status: completed
   - id: rel-217
     content: "[Admin] /admin/growth 허브 실사+구현"
-    status: pending
+    status: completed
   - id: rel-218
     content: "[Admin] /admin/growth/deposit 실사+구현"
-    status: pending
+    status: completed
   - id: rel-219
     content: "[Admin] /admin/growth/ticker 실사+구현"
-    status: pending
+    status: completed
   - id: rel-220
     content: "[Admin] /admin/growth/whale 실사+구현"
-    status: pending
+    status: completed
   - id: rel-221
     content: "[Admin] /admin/growth/content 실사+구현"
-    status: pending
+    status: completed
   - id: rel-300
     content: "[AI Capability] Coach P-lane(Fact-only) 런타임 재확인"
     status: pending
@@ -420,11 +420,12 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-216
-LAST_COMPLETED_TODO = REL-212
+FIRST_EXECUTION_TODO = REL-300
+LAST_COMPLETED_TODO = REL-221
 BATCH_REL_200_206 = CLOSED
 BATCH_REL_207_209 = CLOSED
 BATCH_REL_210_212 = CLOSED
+BATCH_REL_216_221 = CLOSED
 HARD_STOP_AFTER = []
 BATCH_A_RUNTIME_ACCEPTANCE = CLOSED
 BATCH_A_FINAL_COMMIT = 42a70973d9537c8712e831130620de9ec5b7272f
@@ -2554,7 +2555,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-216
 TITLE: /admin/reports/financial 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-216
@@ -2572,7 +2573,7 @@ IMPLEMENTATION_STEPS:
   - PR → CI → merge (main 직접 커밋 금지)
 VERIFY: /admin/reports/financial 실데이터 또는 정직한 empty. stub-only 0.
 ACCEPTANCE: /admin/reports/financial가 운영 가능. 가짜 ledger 0.
-EVIDENCE: apps/admin/app/admin/reports/financial
+EVIDENCE: apps/admin/app/admin/reports/financial + tooling/verify/rel-216-admin-financial-report.cjs + governance/release-master/REL-216-FINANCIAL.md
 EXIT_GATE: 유저 JWT로 200이면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2583,7 +2584,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-217
 TITLE: /admin/growth 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-217
@@ -2601,7 +2602,7 @@ IMPLEMENTATION_STEPS:
   - PR → CI → merge (main 직접 커밋 금지)
 VERIFY: /admin/growth 실데이터 또는 정직한 empty. stub-only 0.
 ACCEPTANCE: /admin/growth가 운영 가능. 가짜 ledger 0.
-EVIDENCE: apps/admin/app/admin/growth
+EVIDENCE: apps/admin/app/admin/growth + tooling/verify/rel-217-admin-growth.cjs + governance/release-master/REL-217-GROWTH.md
 EXIT_GATE: 유저 JWT로 200이면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2612,7 +2613,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-218
 TITLE: /admin/growth/deposit 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-218
@@ -2630,7 +2631,7 @@ IMPLEMENTATION_STEPS:
   - PR → CI → merge (main 직접 커밋 금지)
 VERIFY: /admin/growth/deposit 실데이터 또는 정직한 empty. stub-only 0.
 ACCEPTANCE: /admin/growth/deposit가 운영 가능. 가짜 ledger 0.
-EVIDENCE: apps/admin/app/admin/growth/deposit
+EVIDENCE: apps/admin/app/admin/growth/deposit + apps/admin/app/admin/growth?tab=deposit + tooling/verify/rel-218-admin-growth-deposit.cjs + governance/release-master/REL-218-GROWTH-DEPOSIT.md
 EXIT_GATE: 유저 JWT로 200이면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2641,7 +2642,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-219
 TITLE: /admin/growth/ticker 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-219
@@ -2659,7 +2660,7 @@ IMPLEMENTATION_STEPS:
   - PR → CI → merge (main 직접 커밋 금지)
 VERIFY: /admin/growth/ticker 실데이터 또는 정직한 empty. stub-only 0.
 ACCEPTANCE: /admin/growth/ticker가 운영 가능. 가짜 ledger 0.
-EVIDENCE: apps/admin/app/admin/growth/ticker
+EVIDENCE: apps/admin/app/admin/growth/ticker + apps/admin/app/admin/growth?tab=ticker + tooling/verify/rel-219-admin-growth-ticker.cjs + governance/release-master/REL-219-GROWTH-TICKER.md
 EXIT_GATE: 유저 JWT로 200이면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2670,7 +2671,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-220
 TITLE: /admin/growth/whale 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-220
@@ -2688,7 +2689,7 @@ IMPLEMENTATION_STEPS:
   - PR → CI → merge (main 직접 커밋 금지)
 VERIFY: /admin/growth/whale 실데이터 또는 정직한 empty. stub-only 0.
 ACCEPTANCE: /admin/growth/whale가 운영 가능. 가짜 ledger 0.
-EVIDENCE: apps/admin/app/admin/growth/whale
+EVIDENCE: apps/admin/app/admin/growth/whale + apps/admin/app/admin/growth?tab=whale + tooling/verify/rel-220-admin-growth-whale.cjs + governance/release-master/REL-220-GROWTH-WHALE.md
 EXIT_GATE: 유저 JWT로 200이면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2699,7 +2700,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-221
 TITLE: /admin/growth/content 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-221
@@ -2717,7 +2718,7 @@ IMPLEMENTATION_STEPS:
   - PR → CI → merge (main 직접 커밋 금지)
 VERIFY: /admin/growth/content 실데이터 또는 정직한 empty. stub-only 0.
 ACCEPTANCE: /admin/growth/content가 운영 가능. 가짜 ledger 0.
-EVIDENCE: apps/admin/app/admin/growth/content
+EVIDENCE: apps/admin/app/admin/growth/content + apps/admin/app/admin/growth?tab=content + tooling/verify/rel-221-admin-growth-content.cjs + governance/release-master/REL-221-GROWTH-CONTENT.md
 EXIT_GATE: 유저 JWT로 200이면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -4575,8 +4576,9 @@ REL-000은 2026-08-20에 PASS/COMPLETED.
 REL-001은 2026-08-20에 PASS/COMPLETED (`preserve/2026-08-20-worktree-rescue` · `ae8d1e6` · merge 금지).
 REL-002~REL-206은 통합선 `rel/auth-track-a-integration` @ `42a70973` 기준으로 COMPLETED.
 Batch A Runtime Acceptance는 2026-08-22에 PASS/CLOSED (`42a70973`) — 신규 TODO 없음. 기존 REL-106~110 증거 강화.
-현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-216`. HARD_STOP_AFTER 는 소비됨(`[]`).
+현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-300`. HARD_STOP_AFTER 는 소비됨(`[]`).
 REL-207~REL-209는 2026-08-22 Batch B에서 기존 Admin JWT+오너 API에 실배선 후 COMPLETED.
 REL-210~REL-212는 2026-08-22 Batch C에서 기존 Opportunity/Adapter/Support 오너에 실배선 후 COMPLETED. Runtime/browser QA는 이 배치에서 강제하지 않음(BLOCKED_LOCAL_RAM).
+REL-216~REL-221는 2026-08-22 Admin Report/Growth Batch에서 기존 ledger/wallet/growth/opportunity 오너에 실배선 후 COMPLETED. ROAS/CAPI/POST는 당기지 않음. Runtime/browser QA는 이 배치에서 강제하지 않음(BLOCKED_LOCAL_RAM).
 Cursor workspace checkout이 `preserve/2026-08-20-worktree-rescue` 이면 그 복사본 Master는 STALE이다. 실행 SSOT는 이 파일(통합 worktree)이다.
 
