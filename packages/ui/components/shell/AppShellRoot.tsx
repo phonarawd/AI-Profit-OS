@@ -1,10 +1,12 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import { AppHeader } from "./AppHeader";
 import { BottomNav5, type BottomNavTab } from "./BottomNav5";
 import { HomeChromeProvider } from "./HomeChromeContext";
 import { SiteFooter } from "./SiteFooter";
+import { isShellBarePath } from "./shell-bare-paths";
 
 export function AppShellRoot({
   tabs,
@@ -13,6 +15,11 @@ export function AppShellRoot({
   tabs: readonly BottomNavTab[];
   children: ReactNode;
 }) {
+  const pathname = usePathname();
+  if (isShellBarePath(pathname)) {
+    return children;
+  }
+
   return (
     <HomeChromeProvider>
       <div

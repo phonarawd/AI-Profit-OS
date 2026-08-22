@@ -1,0 +1,108 @@
+/**
+ * HomeCleanV1 surface tokens.
+ * 적용 루트 = [data-ui-surface="home-clean-v1"] 만.
+ * hex는 Lux 참조. lux-fintech / lux-theme / component.css 의미 변경 0.
+ * geometry 소유 = 768 / 1024 / 1440 / 1920 / 3840. Tailwind lg(1280) 아님.
+ */
+
+:global([data-ui-surface="home-clean-v1"]) {
+  --hc-bg: var(--color-lux-bg);
+  --hc-surface: var(--color-lux-surface);
+  --hc-elevated: var(--color-lux-elevated);
+  --hc-border: var(--color-lux-border);
+  --hc-text: var(--color-lux-text);
+  --hc-text-muted: var(--color-lux-text-muted);
+  --hc-accent: var(--color-lux-accent);
+  --hc-accent-muted: var(--color-lux-accent-muted);
+  --hc-profit: var(--color-lux-profit);
+  --hc-danger: var(--color-lux-danger);
+  --hc-font: var(--font-lux-sans);
+  --hc-radius-sm: var(--radius-lux-sm);
+  --hc-radius-md: var(--radius-lux-md);
+  --hc-radius-lg: var(--radius-lux-lg);
+  --hc-space-xs: var(--space-lux-xs);
+  --hc-space-sm: var(--space-lux-sm);
+  --hc-space-md: var(--space-lux-md);
+  --hc-space-lg: var(--space-lux-lg);
+  --hc-space-xl: var(--space-lux-xl);
+  --hc-shadow-soft: var(--shadow-lux-soft);
+  --hc-header-h: 64px;
+  /* HomeClean page token. lux-fintech sidebar(240) 의미 변경 0. 승인 원본 ~220 계열 */
+  --hc-sidebar-w: 220px;
+  --hc-rail-min: 252px;
+  --hc-rail-max: 280px;
+  /* luxFintech.layout.contentRailMax · CONTENT_RAIL.maxWidthPx — 전역 토큰 신설 0 */
+  --hc-max: 1680px;
+  --hc-section-y: 12px;
+  --hc-main-pad-top: 12px;
+  --hc-card-pad: 18px;
+  --hc-gutter: 16px;
+  --hc-nav-clearance: 16px;
+  --hc-ai-from: color-mix(in srgb, #10162f 38%, var(--color-lux-hero-from));
+  --hc-ai-mid: color-mix(in srgb, var(--color-lux-hero-from) 18%, var(--color-lux-hero-to));
+  --hc-ai-to: var(--color-lux-hero-to);
+  --hc-ai-orb: color-mix(in srgb, #fff 28%, var(--color-lux-accent-muted));
+  --hc-ai-depth: color-mix(in srgb, #1a1040 55%, transparent);
+  --hc-metric-panel: color-mix(in srgb, #0b1024 28%, transparent);
+  --hc-metric-line: color-mix(in srgb, #fff 26%, transparent);
+  --hc-ai-robot-h: 268px;
+  --hc-ai-robot-slot-inset: 0px;
+  --hc-asset-trend-h: 132px;
+  --hc-product-img-h: 128px;
+  --hc-product-img-bg: color-mix(in srgb, var(--color-lux-accent) 5%, var(--color-lux-bg));
+  --hc-rail-card-min: 100px;
+  --hc-shadow-card: 0 1px 2px rgba(20, 18, 31, 0.05), 0 8px 24px rgba(107, 60, 255, 0.08);
+  --hc-sidebar-ai-robot-h: 118px;
+  /* luxFintech.touch.minPx — 최소 44, 목표 48 */
+  --hc-touch: 48px;
+  --hc-nav-h: 48px;
+  --hc-page-zoom: 1;
+  --hc-bp-md: 768px;
+  --hc-bp-lg: 1024px;
+  --hc-bp-xl: 1440px;
+  --hc-bp-2xl: 1920px;
+  --hc-bp-4k: 3840px;
+}
+
+@media (max-width: 767px) {
+  :global([data-ui-surface="home-clean-v1"]) {
+    --hc-header-h: 0px;
+    --hc-section-y: 2px;
+    --hc-main-pad-top: 0px;
+    --hc-ai-robot-h: 0px;
+    --hc-ai-robot-slot-inset: 0px;
+    --hc-asset-trend-h: 24px;
+    --hc-product-img-h: 104px;
+    --hc-rail-card-min: 0px;
+    --hc-nav-clearance: 16px;
+  }
+}
+
+/* 390×693 유지. 단높이 모바일만 섹션 간격 축소 */
+@media (max-width: 767px) and (max-height: 667px) {
+  :global([data-ui-surface="home-clean-v1"]) {
+    --hc-section-y: 2px;
+  }
+}
+
+/* 320×568. 로봇이 AI 카드 높이를 다시 밀지 않게 */
+@media (max-width: 767px) and (max-height: 600px) {
+  :global([data-ui-surface="home-clean-v1"]) {
+    --hc-header-h: 0px;
+    --hc-ai-robot-h: 0px;
+    --hc-product-img-h: 104px;
+  }
+}
+
+:global([data-ui-surface="home-clean-v1"] a:focus-visible),
+:global([data-ui-surface="home-clean-v1"] button:focus-visible) {
+  outline: 2px solid var(--hc-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global([data-ui-surface="home-clean-v1"] *) {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,136 @@
+/**
+ * HomeCleanV1 Header presentation.
+ * AppHeader / .home-* / !important 0.
+ * Desktop 로고는 Sidebar. Mobile만 brand lockup 표시.
+ */
+
+.header {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hc-space-md);
+  width: 100%;
+  max-width: var(--hc-max);
+  min-width: 0;
+  min-height: var(--hc-header-h);
+  margin-inline: auto;
+  padding: var(--hc-space-sm) var(--hc-space-md);
+}
+
+.brandLockup {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  min-width: 0;
+  color: var(--hc-text);
+  font-family: var(--hc-font);
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.brandMark {
+  display: block;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.greeting {
+  margin: 0;
+  min-width: 0;
+  color: var(--hc-text);
+  font-family: var(--hc-font);
+  font-size: clamp(1.35rem, 1.8vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--hc-space-sm);
+}
+
+.bell {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--hc-touch);
+  height: var(--hc-touch);
+  min-width: var(--hc-touch);
+  min-height: var(--hc-touch);
+  border-radius: 999px;
+  border: 1px solid var(--hc-border);
+  background: var(--hc-elevated);
+  color: var(--hc-text);
+  box-shadow: var(--hc-shadow-soft);
+  text-decoration: none;
+}
+
+.profile {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--hc-touch);
+  padding: 4px 12px 4px 4px;
+  border-radius: 999px;
+  border: 1px solid var(--hc-border);
+  background: var(--hc-elevated);
+  color: var(--hc-text);
+  box-shadow: var(--hc-shadow-soft);
+  text-decoration: none;
+}
+
+.avatar,
+.initial {
+  display: block;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 999px;
+}
+
+@media (max-width: 767px) {
+  .avatar,
+  .initial {
+    width: 32px;
+    height: 32px;
+  }
+
+  .brandMark {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.avatar {
+  object-fit: contain;
+  object-position: center;
+}
+
+.initial {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--hc-accent) 14%, var(--hc-surface));
+  color: var(--hc-accent);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.profileName {
+  max-width: 8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  font-weight: 600;
+}

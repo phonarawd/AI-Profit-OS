@@ -78,6 +78,7 @@
     "./components/toast": "./components/toast/index.ts",
     "./components/shell": "./components/shell/index.ts",
     "./components/home": "./components/home/index.ts",
+    "./components/home-clean-v1": "./components/home-clean-v1/index.ts",
     "./components/home/HomeExperience": "./components/home/HomeExperience.tsx",
     "./components/home/HomeHero": "./components/home/HomeHero.tsx",
     "./components/home/HomeRightRail": "./components/home/HomeRightRail.tsx",

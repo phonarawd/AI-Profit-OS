@@ -1,0 +1,279 @@
+/**
+ * HomeCleanV1 Phase 4 responsive presentation.
+ * 둘째 Home tree 0. JS matchMedia tree 교체 0.
+ * Desktop 1440 composition 삭제 금지.
+ * HC4-01~11. 둘째 Home tree 0. JS matchMedia tree 교체 0.
+ */
+
+@media (max-width: 767px) {
+  .header {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand actions"
+      "greet greet";
+    align-items: center;
+    column-gap: var(--hc-space-sm);
+    row-gap: 0;
+    min-height: 0;
+    padding-block: 4px 0;
+    padding-inline: var(--hc-gutter);
+    overflow: visible;
+  }
+
+  .brandLockup {
+    display: flex;
+    grid-area: brand;
+    min-width: 0;
+  }
+
+  .greeting {
+    grid-area: greet;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 1rem;
+    line-height: 1.15;
+  }
+
+  .actions {
+    grid-area: actions;
+    flex: 0 0 auto;
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .bell {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .profile {
+    min-width: 0;
+    max-width: min(11.5rem, 46vw);
+    min-height: 44px;
+    padding: 2px 8px 2px 2px;
+  }
+
+  .profileName {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) and (max-height: 640px) {
+  .header {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    min-height: 0;
+    padding-block: 6px;
+  }
+
+  .brandLockup {
+    flex: 0 0 auto;
+  }
+
+  .greeting {
+    flex: 1 1 auto;
+    font-size: 1rem;
+  }
+
+  .actions {
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .aiWrap,
+  .assetWrap,
+  .chipsWrap,
+  .discoveryWrap,
+  .productsWrap {
+    padding-inline: var(--hc-gutter);
+  }
+
+  .aiCard {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "copy"
+      "metrics";
+    padding: 6px 38% 4px 10px;
+    align-items: stretch;
+    overflow: hidden;
+  }
+
+  .aiRobotSlot {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 48%;
+  }
+
+  .aiCopy {
+    justify-content: flex-start;
+    gap: 2px;
+  }
+
+  .aiTitle {
+    max-width: none;
+    font-size: 0.875rem;
+    line-height: 1.2;
+    overflow-wrap: break-word;
+  }
+
+  .aiStatus {
+    max-width: 100%;
+    padding: 2px 8px;
+    font-size: 0.6875rem;
+  }
+
+  .aiRobotSlot {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 48%;
+    align-self: stretch;
+    min-height: 0;
+    max-height: none;
+    padding: 0;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  .aiRobot {
+    position: absolute;
+    right: -10%;
+    bottom: -8%;
+    width: 124%;
+    height: 112%;
+    max-width: none;
+    max-height: none;
+    overflow: hidden;
+    background: transparent;
+    object-fit: cover;
+    object-position: 62% 10%;
+  }
+
+  .aiMetrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .aiMetric:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .aiMetric {
+    padding: 3px 5px;
+    border: 1px solid var(--hc-metric-line);
+    border-radius: 10px;
+    background: var(--hc-metric-panel);
+  }
+
+  .aiMetric + .aiMetric {
+    border-top: 1px solid var(--hc-metric-line);
+  }
+
+  .aiMetricValue {
+    overflow-wrap: break-word;
+    font-size: 0.8125rem;
+  }
+
+  .assetCard {
+    min-height: 0;
+    row-gap: 1px;
+    padding: 6px 12px 4px;
+  }
+
+  .assetHead {
+    flex-wrap: wrap;
+  }
+
+  .assetBalancePrimary,
+  .assetBalanceSecondary {
+    overflow-wrap: anywhere;
+  }
+
+  .assetBalancePrimary {
+    font-size: 1.25rem;
+  }
+
+  .assetActions {
+    width: 100%;
+  }
+
+  .assetAction,
+  .assetActionPrimary {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0 12px;
+  }
+
+  .assetTrend {
+    min-height: var(--hc-asset-trend-h);
+    padding: 0;
+  }
+
+  .assetTrend svg {
+    height: var(--hc-asset-trend-h);
+  }
+
+  .discoveryCta {
+    min-height: 44px;
+  }
+
+  .productsWrap {
+    padding-bottom: 16px;
+  }
+
+  .productsWrap .productsGrid {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .productsWrap .productCard {
+    flex: 0 0 168px;
+    width: 168px;
+    max-width: 48%;
+    min-width: 156px;
+    height: auto;
+    padding: 6px 6px 6px;
+    scroll-snap-align: start;
+  }
+
+  .railStack {
+    gap: 10px;
+    padding-inline: var(--hc-gutter);
+    padding-top: 4px;
+    padding-bottom: 16px;
+    overflow: visible;
+  }
+
+  .railCard {
+    min-height: 0;
+    overflow: visible;
+  }
+}
+
+.aiPicture {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}

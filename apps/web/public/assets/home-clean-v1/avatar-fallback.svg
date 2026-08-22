@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">기본 사용자 프로필</title>
+  <desc id="desc">로그인 정보가 없거나 불러오는 동안 사용하는 중립 프로필</desc>
+  <defs>
+    <linearGradient id="avatar" x1="18" y1="10" x2="111" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F1ECFF"/>
+      <stop offset="0.58" stop-color="#D5C7FF"/>
+      <stop offset="1" stop-color="#BBA5FF"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="62" fill="url(#avatar)" stroke="#fff" stroke-width="4"/>
+  <circle cx="64" cy="49" r="19" fill="#6B3CFF" opacity=".92"/>
+  <path fill="#6B3CFF" opacity=".92" d="M27 105c2-22 16-34 37-34s35 12 37 34a62 62 0 0 1-74 0Z"/>
+</svg>

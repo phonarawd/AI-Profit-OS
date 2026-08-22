@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-labelledby="title">
+  <title id="title">AI 수익 기회 지표</title>
+  <defs>
+    <linearGradient id="bars" x1="16" y1="46" x2="47" y2="20" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3ED6C6"/>
+      <stop offset="1" stop-color="#7B4DFF"/>
+    </linearGradient>
+  </defs>
+  <path d="M16 47V37M29 47V29M42 47V20" stroke="url(#bars)" stroke-width="7" stroke-linecap="round"/>
+  <path d="m13 30 12-10 9 6 15-14" stroke="#6B3CFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M41 12h8v8" stroke="#6B3CFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
