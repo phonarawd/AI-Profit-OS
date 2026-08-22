@@ -394,6 +394,63 @@
       "qa8_complete": false,
       "qa9_complete": false,
       "qa9_verdict_issued": false
+    },
+    {
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+      "rebase_id": "ea-rebase-b5f275949da2-c8d8ae7d479e",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-22T22:08:44.657Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: current release-branch product-only drift since predecessor ea-baseline-00bc4bd82aaf-6baee484bb30. New acceptance epoch required; QA1-QA8 must rerun; QA9 aggregation stale until current-epoch discovery evidence exists."
+      },
+      "predecessor_baseline_id": "ea-baseline-00bc4bd82aaf-6baee484bb30",
+      "new_baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+      "reason": "Protected product mutation creates a new acceptance epoch. Predecessor hashes are history; discovery suites QA1-QA8 must rerun; QA9 aggregation is stale and must rerun only after current-epoch discovery evidence exists. Do not fabricate a verdict at rebase time.",
+      "product_commit": "b5f275949da2ebb0a255890061b76d8022b9e30a",
+      "changed_protected_paths": [
+        "services/api-nest/package.json",
+        "services/api-nest/scripts/copy-runtime-cjs.cjs",
+        "services/api-nest/src/auth/auth.controller.ts"
+      ],
+      "changed_nonprotected_support_paths": [
+        "services/ai-platform/src/index.d.ts"
+      ],
+      "old_prompt_hash": "6361e6b6b6bc8d70ae3a373e7e12e620e035686f85a9ed9dfd62831dd528c8d0",
+      "new_prompt_hash": "6361e6b6b6bc8d70ae3a373e7e12e620e035686f85a9ed9dfd62831dd528c8d0",
+      "old_protected_manifest_hash": "6baee484bb304fb711772c25b3a23a9608a886d62b2262740f91eff6abb9a299",
+      "new_protected_manifest_hash": "c8d8ae7d479e4be655a93ea2609748b0fb6f942009de481eeea721e9450118b5",
+      "eval_dataset_hash": "05d1b1cead8b48b3f7bb74e4d9479837a5e6c0746c9e094ce401bad484ee0091",
+      "acceptance_workflow_hash": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
+      "predecessor_suite_checksums": {},
+      "timestamp": "2026-08-22T22:08:44.657Z",
+      "commit_sha_or_pending": "b5f275949da2ebb0a255890061b76d8022b9e30a",
+      "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
+      "invalidated_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA8"
+      ],
+      "required_rerun_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7",
+        "QA8"
+      ],
+      "stale_aggregation_phases": [
+        "QA9"
+      ],
+      "qa7_complete": false,
+      "qa8_complete": false,
+      "qa9_complete": false,
+      "qa9_verdict_issued": false
     }
   ]
 }

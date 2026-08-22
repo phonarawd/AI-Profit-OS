@@ -1,14 +1,18 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
-  "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-08-22T22:08:44.657Z",
-  "commit_sha": "b5f275949da2ebb0a255890061b76d8022b9e30a",
-  "tree_sha": "138e883a8623b3878d8e83f02ff4cf312c42d7ba",
+  "id": "ea-baseline-00bc4bd82aaf-6baee484bb30",
+  "todoId": "engine-acceptance-rebase-eval-review-v1",
+  "measuredAt": "2026-08-22T07:03:42.688Z",
+  "commit_sha": "00bc4bd82aaf5122fbb89e647e0517d29f5984d1",
+  "tree_sha": "6707e4bddcfa02a126bffbb6a160f0fee6e1de30",
   "working_tree_clean": false,
   "protected_scope_clean": true,
   "dirty_paths_all": [
+    "governance/engine-acceptance/acceptance-contract.v1.md",
+    "governance/engine-acceptance/eval-evolution-reviews/rel-502-eval-evolution-review.v1.json",
+    "governance/engine-acceptance/eval-evolutions.v1.json",
+    "governance/release-master/REL-502-STATUS.md",
     "governance/release-master/rel-105-guest-visual/guest-desktop-1440.png",
     "governance/release-master/rel-105-guest-visual/guest-desktop-1920.png",
     "governance/release-master/rel-105-guest-visual/guest-mobile-390.png",
@@ -30,13 +34,14 @@
     "governance/release-master/rel-109-execute/runtime-safestop-390.png",
     "governance/release-master/rel-109-execute/runtime-success-1440.png",
     "governance/release-master/rel-109-execute/runtime-success-390.png",
-    "governance/release-master/rel-113-wallet/runtime-ready-1440.png",
-    "governance/release-master/rel-114-usdt-deposit/runtime-ready-1440.png",
-    "governance/release-master/rel-114-usdt-deposit/runtime-ready-390.png",
-    "governance/release-master/rel-115-krw-deposit/runtime-pending-1440.png",
-    "governance/release-master/rel-115-krw-deposit/runtime-pending-390.png",
-    "governance/release-master/rel-126-support/runtime-ready-1440.png",
-    "tooling/engine-acceptance/lib/isolated-harness-db.cjs"
+    "package.json",
+    "tooling/engine-acceptance/freeze-baseline.cjs",
+    "tooling/engine-acceptance/lib/eval-dataset-diff.cjs",
+    "tooling/engine-acceptance/lib/eval-review-rebase.cjs",
+    "tooling/engine-acceptance/rebase-acceptance-baseline-eval-review.cjs",
+    "tooling/engine-acceptance/selftest-eval-review-rebase.cjs",
+    "tooling/verify/engine-acceptance.cjs",
+    "governance/engine-acceptance/_pred-snapshot-before-apply.json"
   ],
   "dirty_paths_protected": [],
   "lockfile_hash": "faf4c73927d1b92cbe8bc9b8ffb57000e9d630c920ca98fdea2ebf55182f820c",
@@ -50,8 +55,8 @@
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "c8d8ae7d479e4be655a93ea2609748b0fb6f942009de481eeea721e9450118b5",
-    "pathCount": 439,
+    "aggregate": "6baee484bb304fb711772c25b3a23a9608a886d62b2262740f91eff6abb9a299",
+    "pathCount": 438,
     "entries": [
       {
         "path": "eval/coach_ko_natural.jsonl",
@@ -423,11 +428,7 @@
       },
       {
         "path": "services/api-nest/package.json",
-        "sha256": "5285fb06ec7c418ba4ed311b88281e1f4b86cfecc472ad20f1420c85aff8084f"
-      },
-      {
-        "path": "services/api-nest/scripts/copy-runtime-cjs.cjs",
-        "sha256": "3d0de860f7fa449f4a83daec177122a5640e76cacb05bdc367769dc75e2bcf25"
+        "sha256": "004c4e7a84264da6c2ebcf6f4dee07f5119d049b420f55b7913b51bf7eddb20a"
       },
       {
         "path": "services/api-nest/src/adapters/adapters.admin.controller.ts",
@@ -643,7 +644,7 @@
       },
       {
         "path": "services/api-nest/src/auth/auth.controller.ts",
-        "sha256": "ec668fcfd1e35c0e633316d88259d8dab58539401357dcd1480940589e41c555"
+        "sha256": "fce0d6e342098453b2fc50546660a2b928a66c848b895aeb0bc95f9c1d19e744"
       },
       {
         "path": "services/api-nest/src/auth/auth.module.ts",
@@ -1816,9 +1817,10 @@
   "qa_phase": "QA-0",
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
-    "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-b5f275949da2-c8d8ae7d479e",
-    "predecessor_baseline_id": "ea-baseline-00bc4bd82aaf-6baee484bb30",
-    "kind": "product_rebase"
+    "decision_id": "ENGINE_ACCEPTANCE_REBASE_EVAL_REVIEW_V1",
+    "rebase_id": "ea-evalrev-9f087d0d7d4d-6baee484bb30",
+    "predecessor_baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+    "kind": "eval_review_rebase",
+    "review_id": "ea-evalrev-rel502-64b0f8a6-05d1b1ce"
   }
 }

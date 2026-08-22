@@ -244,7 +244,15 @@
       "bound_at": "2026-08-22T07:03:42.688Z",
       "decision_id": "ENGINE_ACCEPTANCE_REBASE_EVAL_REVIEW_V1",
       "note": "eval-review epoch; historical product-rebases[] untouched"
+    },
+    {
+      "kind": "current",
+      "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+      "rebase_id": "ea-rebase-b5f275949da2-c8d8ae7d479e",
+      "predecessor_baseline_id": "ea-baseline-00bc4bd82aaf-6baee484bb30",
+      "bound_at": "2026-08-22T22:08:44.657Z",
+      "note": "current acceptance_scope.unchanged compares against this epoch; historical amendments were NOT created under this id"
     }
   ],
-  "current_epoch_baseline_id": "ea-baseline-00bc4bd82aaf-6baee484bb30"
+  "current_epoch_baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e"
 }
