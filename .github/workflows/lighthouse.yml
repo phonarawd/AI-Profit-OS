@@ -1,0 +1,43 @@
+# REL-404 — Lighthouse CI path. Not part of verify:gate T2 heavy suites.
+# Local 8GB full Lighthouse is forbidden. This workflow is CI-delegated.
+name: lighthouse
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "governance/performance/**"
+      - "tooling/verify/rel-404-lighthouse-budget.cjs"
+      - "tooling/pwa/lighthouse-pwa.ci.cjs"
+      - ".github/workflows/lighthouse.yml"
+      - "apps/web/app/page.tsx"
+      - "apps/web/app/layout.tsx"
+  push:
+    branches: [main]
+    paths:
+      - "governance/performance/**"
+      - "tooling/verify/rel-404-lighthouse-budget.cjs"
+      - "tooling/pwa/lighthouse-pwa.ci.cjs"
+      - ".github/workflows/lighthouse.yml"
+
+jobs:
+  budget:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - name: performance budget + PWA static lighthouse path
+        run: |
+          pnpm verify:rel-404-lighthouse-budget
+          node tooling/pwa/lighthouse-pwa.ci.cjs
+      - name: Lighthouse CI (optional full)
+        if: ${{ vars.LIGHTHOUSE_FULL == '1' }}
+        run: echo "Full Lighthouse is opted-in via LIGHTHOUSE_FULL=1"

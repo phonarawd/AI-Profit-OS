@@ -37,6 +37,8 @@ jobs:
           cargo test --locked
       - name: verify:gate
         run: pnpm verify:gate
+      - name: pnpm audit (REL-402)
+        run: pnpm verify:rel-402-pnpm-audit --full
       - name: OpenNext build:cf (Linux — Workers deploy output SSOT)
         run: |
           pnpm --filter @aipo/web build:cf

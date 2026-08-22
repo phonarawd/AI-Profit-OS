@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "auditLevel": "high",
+  "notes": "예외는 숨기지 않는다. advisory id · 이유 · 만료를 적는다. 빈 목록 = 현재 허용 예외 0.",
+  "exceptions": []
+}

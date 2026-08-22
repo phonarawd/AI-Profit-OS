@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "rel": "REL-404",
+  "note": "CI 예산. 제품 SLO를 창작하지 않는다. Home geometry 다운그레이드 금지.",
+  "homeGeometryLock": true,
+  "localFullLighthouse": false,
+  "ciDelegated": true,
+  "budgets": [
+    {
+      "path": "/",
+      "resourceSizes": [
+        { "resourceType": "script", "budget": 400 },
+        { "resourceType": "stylesheet", "budget": 80 },
+        { "resourceType": "image", "budget": 500 },
+        { "resourceType": "total", "budget": 1200 }
+      ],
+      "resourceCounts": [
+        { "resourceType": "third-party", "budget": 12 }
+      ]
+    }
+  ],
+  "image": {
+    "preferredFormats": ["avif", "webp", "png", "svg"],
+    "belowFold": "lazy",
+    "homeHeroDowngradeForbidden": true
+  },
+  "lazyLoad": {
+    "belowFoldRequired": true,
+    "homeGeometryException": "do not shrink Home to pass budget"
+  }
+}

@@ -442,6 +442,8 @@ const RULES = [
       "rel-210-admin-opportunities.cjs",
       "rel-211-admin-adapters.cjs",
       "rel-212-admin-support.cjs",
+      "rel-213-admin-system-control.cjs",
+      "rel-214-admin-audit.cjs",
       "rel-215-admin-ai-logs.cjs",
       "rel-216-admin-financial-report.cjs",
       "rel-217-admin-growth.cjs",
@@ -449,6 +451,7 @@ const RULES = [
       "rel-219-admin-growth-ticker.cjs",
       "rel-220-admin-growth-whale.cjs",
       "rel-221-admin-growth-content.cjs",
+      "rel-400-control-plane-spec.cjs",
     ],
   },
   {
@@ -474,6 +477,61 @@ const RULES = [
       /^apps\/admin\/app\/admin\/support\//.test(f) ||
       /^tooling\/verify\/rel-212-admin-support\.cjs$/.test(f),
     scripts: ["rel-212-admin-support.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/admin\/app\/admin\/system-control\//.test(f) ||
+      /^tooling\/verify\/rel-213-admin-system-control\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-213-SYSTEM-CONTROL\.md$/.test(f),
+    scripts: ["rel-213-admin-system-control.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/admin\/app\/admin\/audit\//.test(f) ||
+      /^tooling\/verify\/rel-214-admin-audit\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-214-AUDIT\.md$/.test(f),
+    scripts: ["rel-214-admin-audit.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/admin\/control-plane-superset\.md$/.test(f) ||
+      /^tooling\/verify\/rel-400-control-plane-spec\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-400-CONTROL-PLANE-SPEC\.md$/.test(f),
+    scripts: ["rel-400-control-plane-spec.cjs"],
+  },
+  {
+    test: (f) =>
+      /^tooling\/security\/security-headers\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/common\/security-headers\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/main\.ts$/.test(f) ||
+      /^apps\/admin\/next\.config\.ts$/.test(f) ||
+      /^tooling\/verify\/rel-401-security-headers\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-401-SECURITY-HEADERS\.md$/.test(f),
+    scripts: ["rel-401-security-headers.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/security\/pnpm-audit-exceptions\.json$/.test(f) ||
+      /^tooling\/verify\/rel-402-pnpm-audit\.cjs$/.test(f) ||
+      /^\.github\/workflows\/gate\.yml$/.test(f) ||
+      /^governance\/release-master\/REL-402-PNPM-AUDIT\.md$/.test(f),
+    scripts: ["rel-402-pnpm-audit.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/VERSIONING\.md$/.test(f) ||
+      /^apps\/(web|admin)\/lib\/release-id\.ts$/.test(f) ||
+      /^tooling\/verify\/rel-403-versioning\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-403-VERSIONING\.md$/.test(f),
+    scripts: ["rel-403-versioning.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/performance\/lighthouse-budget\.json$/.test(f) ||
+      /^\.github\/workflows\/lighthouse\.yml$/.test(f) ||
+      /^tooling\/verify\/rel-404-lighthouse-budget\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-404-LIGHTHOUSE-BUDGET\.md$/.test(f),
+    scripts: ["rel-404-lighthouse-budget.cjs"],
   },
   {
     test: (f) =>
@@ -525,7 +583,7 @@ const RULES = [
   {
     test: (f) =>
       /^tooling\/verify\/rel-20[1-9]-admin-/.test(f) ||
-      /^tooling\/verify\/rel-21[0-2]-admin-/.test(f) ||
+      /^tooling\/verify\/rel-21[0-4]-admin-/.test(f) ||
       /^tooling\/verify\/rel-215-admin-ai-logs\.cjs$/.test(f) ||
       /^tooling\/verify\/rel-21[6-9]-admin-/.test(f) ||
       /^tooling\/verify\/rel-22[01]-admin-/.test(f) ||
@@ -545,6 +603,8 @@ const RULES = [
       "rel-210-admin-opportunities.cjs",
       "rel-211-admin-adapters.cjs",
       "rel-212-admin-support.cjs",
+      "rel-213-admin-system-control.cjs",
+      "rel-214-admin-audit.cjs",
       "rel-215-admin-ai-logs.cjs",
       "rel-216-admin-financial-report.cjs",
       "rel-217-admin-growth.cjs",

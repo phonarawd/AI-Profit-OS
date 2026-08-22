@@ -253,25 +253,25 @@ todos:
     status: completed
   - id: rel-400
     content: "[Hardening] Admin Control Plane superset 클로저 스펙(kill-switch UI/audit UI/RBAC 관리 UI)"
-    status: pending
+    status: completed
   - id: rel-213
     content: "[Admin] /admin/system-control(kill-switch) 실구현(deps REL-400 완료 후, TOP→BOTTOM에서 본 위치)"
-    status: pending
+    status: completed
   - id: rel-214
     content: "[Admin] /admin/audit 실구현(deps REL-400 완료 후, TOP→BOTTOM에서 본 위치)"
-    status: pending
+    status: completed
   - id: rel-401
     content: "[Hardening] 보안 헤더 미들웨어(CSP/HSTS/X-Frame-Options)"
-    status: pending
+    status: completed
   - id: rel-402
     content: "[Hardening] 의존성 취약점 스캔(pnpm audit)을 CI에 편입"
-    status: pending
+    status: completed
   - id: rel-403
     content: "[Hardening] 버전/릴리스 태깅 체계 도입"
-    status: pending
+    status: completed
   - id: rel-404
     content: "[Hardening][Performance] Lighthouse CI + 성능예산(bundle/이미지/lazy-load) baseline 배선"
-    status: pending
+    status: completed
   - id: rel-405
     content: "[Hardening][Legacy:D-ADMIN-001] RBAC + Audit Foundation(8 role capability mapping + mandatory audit schema, OWASP ASVS V8/V16)"
     status: pending
@@ -2910,7 +2910,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-400
 TITLE: Admin Control Plane superset 클로저 스펙
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-400
@@ -2925,7 +2925,7 @@ IMPLEMENTATION_STEPS:
   - 구현 PR을 이 REL에 섞지 않음
 VERIFY: 스펙 문서 존재. 구현 혼입 0.
 ACCEPTANCE: REL-213/214/405가 이 스펙을 구현할 수 있음
-EVIDENCE: governance/admin/control-plane-superset.md (신설 또는 갱신)
+EVIDENCE: governance/admin/control-plane-superset.md · governance/release-master/REL-400-CONTROL-PLANE-SPEC.md
 EXIT_GATE: 스펙 없이 킬스위치 UI 착수 금지
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2936,7 +2936,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-213
 TITLE: /admin/system-control (kill-switch) 실구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-213
@@ -2954,7 +2954,7 @@ IMPLEMENTATION_STEPS:
   - PR → CI → merge (main 직접 커밋 금지)
 VERIFY: /admin/system-control 실데이터 또는 정직한 empty. stub-only 0.
 ACCEPTANCE: /admin/system-control가 운영 가능. 가짜 ledger 0.
-EVIDENCE: apps/admin/app/admin/system-control
+EVIDENCE: apps/admin/app/admin/system-control · governance/release-master/REL-213-SYSTEM-CONTROL.md
 EXIT_GATE: 유저 JWT로 200이면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2965,7 +2965,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-214
 TITLE: /admin/audit 실구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-214
@@ -2983,7 +2983,7 @@ IMPLEMENTATION_STEPS:
   - PR → CI → merge (main 직접 커밋 금지)
 VERIFY: /admin/audit 실데이터 또는 정직한 empty. stub-only 0.
 ACCEPTANCE: /admin/audit가 운영 가능. 가짜 ledger 0.
-EVIDENCE: apps/admin/app/admin/audit
+EVIDENCE: apps/admin/app/admin/audit · governance/release-master/REL-214-AUDIT.md
 EXIT_GATE: 유저 JWT로 200이면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -2994,7 +2994,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-401
 TITLE: 보안 헤더 미들웨어 (CSP/HSTS/X-Frame-Options)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-401
@@ -3009,7 +3009,7 @@ IMPLEMENTATION_STEPS:
   - verify 또는 헤더 스모크
 VERIFY: 필수 헤더 존재. 와일드카드 CSP 남용 0.
 ACCEPTANCE: 보안 헤더 실적용
-EVIDENCE: middleware/headers
+EVIDENCE: tooling/security/security-headers.cjs · services/api-nest/src/common/security-headers.ts · governance/release-master/REL-401-SECURITY-HEADERS.md
 EXIT_GATE: 없음
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: true
@@ -3020,7 +3020,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-402
 TITLE: 의존성 취약점 스캔을 CI에 편입
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-402
@@ -3034,7 +3034,7 @@ IMPLEMENTATION_STEPS:
   - 예외를 숨기지 않고 기록
 VERIFY: CI 또는 verify에 audit 단계 존재
 ACCEPTANCE: 취약점 스캔이 게이트에 있음
-EVIDENCE: .github/workflows/gate.yml 또는 tooling/verify
+EVIDENCE: .github/workflows/gate.yml · tooling/verify/rel-402-pnpm-audit.cjs · governance/security/pnpm-audit-exceptions.json · governance/release-master/REL-402-PNPM-AUDIT.md
 EXIT_GATE: 없음
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -3045,7 +3045,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-403
 TITLE: 버전/릴리스 태깅 체계 도입
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-403
@@ -3059,7 +3059,7 @@ IMPLEMENTATION_STEPS:
   - REL-602 롤백이 이 id를 쓰도록 연결 메모
 VERIFY: 버전 규칙 문서 + 빌드에 id
 ACCEPTANCE: 릴리스를 식별 가능
-EVIDENCE: governance/release-master/VERSIONING.md
+EVIDENCE: governance/release-master/VERSIONING.md · apps/web/lib/release-id.ts · apps/admin/lib/release-id.ts · governance/release-master/REL-403-VERSIONING.md
 EXIT_GATE: 없음
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -3070,7 +3070,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-404
 TITLE: Lighthouse CI + 성능예산 배선
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-404
@@ -3084,7 +3084,7 @@ IMPLEMENTATION_STEPS:
   - Home 성능을 이유로 geometry 다운그레이드 금지
 VERIFY: 예산 파일이 레포에 있음
 ACCEPTANCE: 성능 게이트 경로 존재
-EVIDENCE: lighthouse/budget config
+EVIDENCE: governance/performance/lighthouse-budget.json · .github/workflows/lighthouse.yml · governance/release-master/REL-404-LIGHTHOUSE-BUDGET.md
 EXIT_GATE: Home 시각 후퇴 PR 거부
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false

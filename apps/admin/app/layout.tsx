@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ADMIN_MODULES } from "../routes";
 import { AdminSessionBar } from "../components/AdminSessionBar";
+import { readReleaseId } from "../lib/release-id";
 
 export const metadata: Metadata = {
   title: "AI Profit OS Ops",
@@ -12,8 +13,9 @@ const sidebar = ADMIN_MODULES.filter((m) => !("sidebarChild" in m && m.sidebarCh
 const child2b = ADMIN_MODULES.find((m) => m.id === "2b");
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const releaseId = readReleaseId();
   return (
-    <html lang="ko">
+    <html lang="ko" data-release-id={releaseId ?? undefined}>
       <body className="min-h-dvh bg-lux-bg text-lux-text">
         <div className="mx-auto flex min-h-dvh max-w-7xl">
           <aside className="hidden w-60 shrink-0 border-r border-lux-border bg-lux-surface p-3 md:block">
