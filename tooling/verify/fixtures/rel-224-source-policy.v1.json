@@ -1,0 +1,8 @@
+{
+  "policyKeys": ["source_parser", "founder_override"],
+  "labels": ["V1", "V2", "V3"],
+  "healthStatuses": ["HEALTHY", "DEGRADED", "STALE", "BLOCKED"],
+  "inventedLabelsForbidden": ["V4", "LATEST"],
+  "founderRole": "super",
+  "founderSeverity": "HIGH"
+}

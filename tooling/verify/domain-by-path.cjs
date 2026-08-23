@@ -600,6 +600,18 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^schemas\/admin-policy-version\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/admin-policy-version\.core\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/source-policy\//.test(f) ||
+      /^governance\/admin\/source-policy/.test(f) ||
+      /^governance\/release-master\/REL-224-SOURCE-POLICY\.md$/.test(f) ||
+      /^tooling\/verify\/rel-224-source-policy\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-224-source-policy\.v1\.json$/.test(f) ||
+      /^supabase\/migrations\/\d+_admin_policy_versions\.sql$/.test(f),
+    scripts: ["rel-224-source-policy.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||

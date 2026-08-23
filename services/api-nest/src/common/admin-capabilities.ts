@@ -196,6 +196,13 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     confirm: write("all"),
     apply: write("all"),
   },
+  SourcePolicyAdminController: {
+    health: read("all"),
+    versions: read("all"),
+    publish: write("all"),
+    rollback: write("all"),
+    founderOverride: write("all"),
+  },
 });
 
 export function requiredCapabilityFor(

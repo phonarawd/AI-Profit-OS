@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/admin-policy-version.v1.json",
+  "title": "AdminPolicyVersionV1",
+  "description": "REL-224 frozen policy versions + health statuses. In-place overwrite is FAIL. Founder override is HIGH + super only. Missing health must not become HEALTHY.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "policyKeys", "labels", "healthStatuses"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "policyKeys": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "string",
+        "enum": ["source_parser", "founder_override"]
+      }
+    },
+    "labels": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "string", "enum": ["V1", "V2", "V3"] }
+    },
+    "healthStatuses": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "enum": ["HEALTHY", "DEGRADED", "STALE", "BLOCKED"]
+      }
+    }
+  },
+  "default": {
+    "version": 1,
+    "policyKeys": ["source_parser", "founder_override"],
+    "labels": ["V1", "V2", "V3"],
+    "healthStatuses": ["HEALTHY", "DEGRADED", "STALE", "BLOCKED"]
+  }
+}
