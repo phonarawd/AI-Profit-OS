@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
- * Deploy 유저 PWA → CF Workers ai-profit-web (OpenNext)
- * 파일명 cf-pages-web = 레거시 · 실제는 Workers deploy (pages.dev 404 원인 수정)
+ * Deploy user PWA to CF Workers (OpenNext).
+ * Filename cf-pages-web is legacy; actual path is Workers deploy.
+ * staging/preview = env preview (ai-profit-web-preview, REL-600)
+ * production = env production (ai-profit-web)
  */
 const { spawnSync } = require("child_process");
 const path = require("path");
@@ -11,6 +13,7 @@ const {
   requireCloudflareCreds,
   mustExist,
   loadDotEnv,
+  resolveWranglerEnv,
 } = require("./lib/env.cjs");
 
 const target = process.argv[2] || "preview";
@@ -21,7 +24,8 @@ mustExist("apps/web/package.json", "apps/web");
 
 const appDir = path.join(root, "apps/web");
 const configPath = path.join(root, "infra/web/wrangler.toml");
-const envFlag = target === "production" || target === "prod" ? "production" : "preview";
+const envFlag = resolveWranglerEnv(target);
+const smokeSlot = envFlag === "production" ? "production" : "staging";
 
 function spawnEnv() {
   const env = { ...process.env };
@@ -34,7 +38,7 @@ function spawnEnv() {
   return env;
 }
 
-console.log("[cf:deploy:web] building apps/web …");
+console.log("[cf:deploy:web] building apps/web");
 const build = spawnSync("pnpm", ["--filter", "@aipo/web", "build:cf"], {
   cwd: root,
   stdio: "inherit",
@@ -43,21 +47,15 @@ const build = spawnSync("pnpm", ["--filter", "@aipo/web", "build:cf"], {
 });
 if (build.status !== 0) process.exit(build.status || 1);
 
-// preview = top-level name ai-profit-web (proxy/workers.dev SSOT)
-// production = --env=production (동일 이름 · 향후 바인딩 분리)
 const deployArgs = [
   "exec",
   "opennextjs-cloudflare",
   "deploy",
-  `--config=${configPath}`,
+  "--config=" + configPath,
+  "--env=" + envFlag,
 ];
-if (envFlag === "production") {
-  deployArgs.push("--env=production");
-}
 
-console.log(
-  `[cf:deploy:web] OpenNext Workers deploy · target=${envFlag} · worker=ai-profit-web …`
-);
+console.log("[cf:deploy:web] OpenNext Workers deploy target=" + envFlag + " smoke=" + smokeSlot);
 const deploy = spawnSync("pnpm", deployArgs, {
   cwd: appDir,
   stdio: "inherit",
@@ -66,10 +64,10 @@ const deploy = spawnSync("pnpm", deployArgs, {
 });
 if (deploy.status !== 0) process.exit(deploy.status || 1);
 
-console.log("[cf:deploy:web] origin smoke …");
+console.log("[cf:deploy:web] origin smoke");
 const smoke = spawnSync(
   "node",
-  [path.join(__dirname, "cf-origin-smoke.cjs"), "web"],
+  [path.join(__dirname, "cf-origin-smoke.cjs"), "web", smokeSlot],
   { cwd: root, stdio: "inherit", shell: true, env: spawnEnv() }
 );
 process.exit(smoke.status || 0);

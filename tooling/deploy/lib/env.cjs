@@ -31,6 +31,15 @@ function isProdTarget(target) {
   return target === "production" || target === "prod";
 }
 
+/** preview|staging → wrangler [env.preview]. production only uses [env.production]. */
+function resolveWranglerEnv(target) {
+  return isProdTarget(target) ? "production" : "preview";
+}
+
+function isStagingSlot(slot) {
+  return slot === "staging" || slot === "preview";
+}
+
 function requireRootDomainForProd(target) {
   if (!isProdTarget(target)) return;
   loadDotEnv();
@@ -83,6 +92,8 @@ module.exports = {
   root,
   loadDotEnv,
   isProdTarget,
+  resolveWranglerEnv,
+  isStagingSlot,
   requireRootDomainForProd,
   requireCloudflareCreds,
   mustExist,

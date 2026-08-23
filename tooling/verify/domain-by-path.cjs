@@ -701,6 +701,16 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/release-master\/REL-600-STAGING\.md$/.test(f) ||
+      /^infra\/domain\.manifest\.json$/.test(f) ||
+      /^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|origin-smoke)\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-600-staging\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-600-staging\.v1\.json$/.test(f) ||
+      /^\.github\/workflows\/deploy-staging\.yml$/.test(f),
+    scripts: ["rel-600-staging.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||
