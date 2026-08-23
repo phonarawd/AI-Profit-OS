@@ -250,7 +250,9 @@ function ComplianceContent() {
             <AdminFetchNote failure={queue.failure} />
           ) : items && items.length === 0 ? (
             <p className="mt-3 text-sm text-lux-text-muted">
-              대기 중인 본인 확인이 없습니다.
+              {queueStatus === "pending"
+                ? "대기 중인 본인 확인이 없습니다."
+                : "해당 목록이 없습니다."}
             </p>
           ) : items ? (
             <ul className="mt-3 space-y-3">
