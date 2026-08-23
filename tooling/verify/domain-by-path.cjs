@@ -102,10 +102,16 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^governance\/platform-redesign\//.test(f) ||
+      /^governance\/platform-redesign\/fact-state-registry\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/platform-fact-state-registry\.cjs$/.test(f),
+    scripts: ["platform-fact-state-registry.cjs"],
+  },
+  {
+    test: (f) =>
+      (/^governance\/platform-redesign\//.test(f) &&
+        !/fact-state-registry\.v1\.json$/.test(f)) ||
       /^schemas\/governance-observation\.v1\.json$/.test(f) ||
       /^tooling\/verify\/platform-redesign-inventory\.cjs$/.test(f) ||
-      /^tooling\/verify\/platform-fact-state-registry\.cjs$/.test(f) ||
       /^tooling\/verify\/platform-change-control\.cjs$/.test(f) ||
       /^tooling\/verify\/governance-observation-registry\.cjs$/.test(f) ||
       /^tooling\/verify\/lib\/platform-redesign-measure\.cjs$/.test(f),
@@ -143,8 +149,19 @@ const RULES = [
       /^services\/engine-rust\/settlement_rule\.cjs$/.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/risk\/rules\/p49_circuit\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/risk\/rules\/p49_catalog\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/risk\/money-circuit\.service\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/trades\/trades\.execution\.service\.ts$/.test(f) ||
+      /^schemas\/toast-codes\.v1\.json$/.test(f) ||
       /^governance\/platform-redesign\/fact-state-registry\.v1\.json$/.test(f),
     scripts: ["rel-505-backend-alignment.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/risk\//.test(f) ||
+      /^schemas\/toast-codes\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/principal-profit-abuse\.cjs$/.test(f),
+    scripts: ["principal-profit-abuse.cjs"],
   },
   {
     test: (f) =>

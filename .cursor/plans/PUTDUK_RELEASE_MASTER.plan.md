@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 119 + POST 19 = 139개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-001 COMPLETED. FIRST_EXECUTION_TODO=REL-002. REL-505 R7 ISSUED (CONFLICTS_OWNED).
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 119 + POST 19 = 139개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-001 COMPLETED. FIRST_EXECUTION_TODO=REL-002. REL-505 R7 ISSUED (HOLDS_OWNED · C-FSM/C-REASON RECONCILED).
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -319,10 +319,10 @@ todos:
     status: completed
   - id: rel-509
     content: "[QA-Expansion][A2][REL-505 owner] ENGINE_FSM_REGISTRY_AND_RESULT_CODE_ALIGN: fact-state-registry engine.trade_execution에 cancelled/failed 반영 또는 owner-split 문서화, rust/cjs ExecutionResultCode ↔ Nest CANCELLED_BY_USER 1:1"
-    status: pending
+    status: completed
   - id: rel-510
     content: "[QA-Expansion][A2][REL-505 owner] REASONCODE_CIRCUIT_GRAMMAR_ALIGN: BUCKET_INVARIANT_FAIL → domain.resource.reason (예: money.circuit.bucket_invariant). 레거시 alias 은폐 금지"
-    status: pending
+    status: completed
   - id: rel-506
     content: "[QA-Expansion][A2][Legacy:F-REL-003] INFRA_RELEASE_CERTIFICATION_CORE(R8, Ads 자동화 제외): infra/domain.manifest openNext Workers origin·cache/R2/Web Vitals·에러추적·세션·rollback/known-good, known P0~P3 defect 0"
     status: pending
@@ -3556,7 +3556,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-509
 TITLE: ENGINE_FSM_REGISTRY_AND_RESULT_CODE_ALIGN
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_RELEASE_MASTER.plan.md
 SOURCE_TODO_IDS:
   - rel-509
@@ -3580,7 +3580,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-510
 TITLE: REASONCODE_CIRCUIT_GRAMMAR_ALIGN
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_RELEASE_MASTER.plan.md
 SOURCE_TODO_IDS:
   - rel-510

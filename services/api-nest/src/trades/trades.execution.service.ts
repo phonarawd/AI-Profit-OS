@@ -46,7 +46,13 @@ const settlementRule = req(
   softDeadlineMs: (acceptedAtMs: number) => number;
   hardDeadlineMs: (acceptedAtMs: number) => number;
   evaluateExecution: (ctx: Record<string, unknown>) => string;
+  RUST_NOT_OWNER_STATUSES: readonly string[];
+  RUST_NOT_OWNER_RESULT_CODES: readonly string[];
 };
+
+/** rust-not-owner — Rule Engine은 cancelled / 유저취소 resultCode를 만들지 않는다. */
+const RUST_NOT_OWNER_STATUSES = settlementRule.RUST_NOT_OWNER_STATUSES;
+const RUST_NOT_OWNER_RESULT_CODES = settlementRule.RUST_NOT_OWNER_RESULT_CODES;
 
 export type TradeExecutionState = {
   tradeId: string;
@@ -232,6 +238,9 @@ export class TradeExecutionService {
     const resultCode = settlementRule.evaluateExecution(ctx) as NonNullable<
       TradeExecutionState["resultCode"]
     >;
+    if (RUST_NOT_OWNER_RESULT_CODES.includes(resultCode)) {
+      throw new Error("RUST_NOT_OWNER_RESULT_CODE");
+    }
 
     if (resultCode === "MATCH_SUCCESS") {
       return this.finalizeMatchSuccess(trade, {
@@ -444,6 +453,9 @@ export class TradeExecutionService {
 
     const status: TradeExecutionState["status"] =
       resultCode === "SYSTEM_FAILED" ? "failed" : "safe_stop";
+    if (RUST_NOT_OWNER_STATUSES.includes(status)) {
+      throw new Error("RUST_NOT_OWNER_STATUS");
+    }
     const presentation = this.presentationProgress(nowMs, acceptedAtMs);
     // P1-3: status-guarded WHERE — see finalizeMatchSuccess comment.
     const { rows } = await this.db.query<TradeRow>(

@@ -9,6 +9,9 @@
 const SOFT_SEC = 60;
 const HARD_SEC = 90;
 const DEFAULT_PRICE_STALE_MAX_SEC = 3;
+/** Nest/schema persist. evaluateExecution은 이 값을 만들지 않는다. */
+const RUST_NOT_OWNER_STATUSES = Object.freeze(["cancelled"]);
+const RUST_NOT_OWNER_RESULT_CODES = Object.freeze(["CANCELLED_BY_USER"]);
 
 function softDeadlineMs(participateAcceptedAtMs) {
   return participateAcceptedAtMs + SOFT_SEC * 1000;
@@ -125,7 +128,11 @@ function evaluateExecution(ctx) {
     (ctx.rematchCount ?? 0) < (policy.maxRematchCount ?? 0) &&
     ctx.nowMs + (policy.retryWaitSec ?? 0) * 1000 < hard;
 
-  return canRequeue ? "REQUEUE" : fail;
+  const out = canRequeue ? "REQUEUE" : fail;
+  if (RUST_NOT_OWNER_RESULT_CODES.includes(out)) {
+    throw new Error("RUST_NOT_OWNER_RESULT_CODE");
+  }
+  return out;
 }
 
 function evaluateMatchSuccess(ctx) {
@@ -136,6 +143,8 @@ module.exports = {
   SOFT_SEC,
   HARD_SEC,
   DEFAULT_PRICE_STALE_MAX_SEC,
+  RUST_NOT_OWNER_STATUSES,
+  RUST_NOT_OWNER_RESULT_CODES,
   softDeadlineMs,
   hardDeadlineMs,
   isPriceFresh,

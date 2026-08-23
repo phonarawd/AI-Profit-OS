@@ -5,7 +5,8 @@ pub mod settlement_rule;
 pub use settlement_rule::{
     evaluate_execution, evaluate_match_success, guard_participate, hard_deadline_ms,
     soft_deadline_ms, ExecutionPolicy, ExecutionResultCode, ParticipateContext,
-    ParticipateGuardCode, RuleContext, DEFAULT_PRICE_STALE_MAX_SEC, HARD_SEC, SOFT_SEC,
+    ParticipateGuardCode, RuleContext, DEFAULT_PRICE_STALE_MAX_SEC, HARD_SEC,
+    RUST_NOT_OWNER_RESULT_CODES, RUST_NOT_OWNER_STATUSES, SOFT_SEC,
 };
 
 pub fn engine_name() -> &'static str {

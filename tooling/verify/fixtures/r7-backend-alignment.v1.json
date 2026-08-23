@@ -1,7 +1,7 @@
 {
   "schema": "governance.release-master.r7-backend-alignment.v1",
   "rel": "REL-505",
-  "certVersion": 2,
+  "certVersion": 3,
   "asOf": "2026-08-23",
   "projectRef": "mgsytcetsiecllmhcyox",
   "remoteSource": "Supabase MCP list_migrations + execute_sql (read-only)",
@@ -14,7 +14,7 @@
     "REL-504": "PENDING"
   },
   "ownerRels": ["REL-508", "REL-509", "REL-510"],
-  "ownerRelsOpen": ["REL-509", "REL-510"],
+  "ownerRelsOpen": [],
   "dimensions": [
     {
       "id": "D-API-SDK",
@@ -33,9 +33,9 @@
     {
       "id": "D-ENGINE-FSM",
       "title": "Engine FSM · resultCode",
-      "verdict": "CONFLICT",
-      "ownerRel": "REL-509",
-      "note": "schema/SDK/Nest status includes cancelled+failed; registry engine.trade_execution omits them. Nest resultCode has CANCELLED_BY_USER; rust/cjs ExecutionResultCode does not."
+      "verdict": "ALIGNED",
+      "ownerRel": null,
+      "note": "registry engine.trade_execution states include failed (Nest write). cancelled + CANCELLED_BY_USER = rust-not-owner in rust/cjs/Nest/registry. No fake rust CancelledByUser variant."
     },
     {
       "id": "D-MIGRATION-HEAD",
@@ -68,9 +68,9 @@
     {
       "id": "D-SOURCE-ASOF-REASON",
       "title": "source / asOf / reasonCode",
-      "verdict": "CONFLICT",
-      "ownerRel": "REL-510",
-      "note": "home-money-read source/asOf/reasonCode=money.home.buckets_missing matches grammar. Live circuit reason BUCKET_INVARIANT_FAIL violates domain.resource.reason (forbidden underscore_flat_alias)."
+      "verdict": "ALIGNED",
+      "ownerRel": null,
+      "note": "home-money-read reasonCode=money.home.buckets_missing. Live circuit reasonCode=money.circuit.bucket_invariant matches domain.resource.reason. Legacy underscore_flat_alias 0. money_circuit.reason_code currently null · apply 0."
     }
   ],
   "reconciled": [
@@ -101,28 +101,30 @@
       "ownerRel": "REL-508",
       "status": "RECONCILED",
       "summary": "Local-prefix fixture kept. Remote apply-time ids live in migrations-remote-applied.v1.json. Local prefixes do not overwrite remote."
-    }
-  ],
-  "conflicts": [
+    },
     {
       "id": "C-FSM-REGISTRY-STATUS",
       "dimension": "D-ENGINE-FSM",
       "ownerRel": "REL-509",
-      "summary": "fact-state-registry engine.trade_execution states omit cancelled and failed present in schemas/trade-execution-state.v1.json + SDK + Nest."
+      "status": "RECONCILED",
+      "summary": "registry engine.trade_execution now includes failed (Nest write). cancelled stays rust-not-owner, not a rust-owned state."
     },
     {
       "id": "C-FSM-CANCELLED-BY-USER",
       "dimension": "D-ENGINE-FSM",
       "ownerRel": "REL-509",
-      "summary": "Nest/SDK/schema resultCode includes CANCELLED_BY_USER; engine-rust ExecutionResultCode and settlement_rule.cjs do not."
+      "status": "RECONCILED",
+      "summary": "cancelled / CANCELLED_BY_USER declared rust-not-owner in rust + cjs + Nest + registry. No fake CancelledByUser variant."
     },
     {
       "id": "C-REASON-CIRCUIT-GRAMMAR",
       "dimension": "D-SOURCE-ASOF-REASON",
       "ownerRel": "REL-510",
-      "summary": "CIRCUIT_REASON_BUCKET_INVARIANT = BUCKET_INVARIANT_FAIL does not match reasonCode grammar domain.resource.reason."
+      "status": "RECONCILED",
+      "summary": "CIRCUIT_REASON_BUCKET_INVARIANT = money.circuit.bucket_invariant. Legacy underscore_flat_alias removed. apply 0."
     }
   ],
+  "conflicts": [],
   "holds": [
     {
       "id": "H-TRACK-A-UNAPPLIED",

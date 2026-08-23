@@ -28,7 +28,7 @@
         "properties": {
           "code": {
             "type": "string",
-            "pattern": "^[A-Z][A-Z0-9_]+$"
+            "pattern": "^([A-Z][A-Z0-9_]+|[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*)$"
           },
           "toastKo": {
             "type": "string",
@@ -76,7 +76,7 @@
         "trigger": "any money"
       },
       {
-        "code": "BUCKET_INVARIANT_FAIL",
+        "code": "money.circuit.bucket_invariant",
         "toastKo": "⏸️ 잔액 확인이 필요해서 잠시 멈췄어요. 곧 안내드릴게요",
         "trigger": "§49.9 E1/P24 recon mismatch"
       },

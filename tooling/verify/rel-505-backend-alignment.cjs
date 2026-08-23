@@ -138,33 +138,37 @@ for (const h of fixture.holds || []) {
 }
 
 if (fixture.cleanAlignment !== false) {
-  fail("cleanAlignment must be false while conflicts exist");
+  fail("cleanAlignment must stay false while holds exist (CLEAN citation forbidden)");
 }
-if (!fixture.conflicts.length) fail("conflicts[] empty while live drift exists");
+if (fixture.conflicts.length) {
+  fail("semantic conflicts must be empty after REL-509/510");
+}
 
 const expectedReconciled = [
   "C-MIG-VERSION-DRIFT",
   "C-MIG-REMOTE-ORPHAN-ONBOARDING",
   "C-MIG-REMOTE-DUP-IDEMPOTENCY",
   "C-MIG-FIXTURE-HIDE",
-];
-for (const id of expectedReconciled) {
-  if (!reconciledIds.has(id)) fail(`required reconciled missing: ${id}`);
-  if (conflictIds.has(id)) fail(`${id} must not stay CONFLICT after REL-508`);
-}
-
-const expectedConflict = [
   "C-FSM-REGISTRY-STATUS",
   "C-FSM-CANCELLED-BY-USER",
   "C-REASON-CIRCUIT-GRAMMAR",
 ];
-for (const id of expectedConflict) {
-  if (!conflictIds.has(id)) fail(`required conflict missing: ${id}`);
+for (const id of expectedReconciled) {
+  if (!reconciledIds.has(id)) fail(`required reconciled missing: ${id}`);
+  if (conflictIds.has(id)) fail(`${id} must not stay CONFLICT after owner slice`);
 }
 
 const migHead = (fixture.dimensions || []).find((d) => d.id === "D-MIGRATION-HEAD");
 if (!migHead || migHead.verdict !== "ALIGNED") {
   fail("D-MIGRATION-HEAD must be ALIGNED after REL-508 identity reconcile");
+}
+const fsmDim = (fixture.dimensions || []).find((d) => d.id === "D-ENGINE-FSM");
+if (!fsmDim || fsmDim.verdict !== "ALIGNED") {
+  fail("D-ENGINE-FSM must be ALIGNED after REL-509");
+}
+const reasonDim = (fixture.dimensions || []).find((d) => d.id === "D-SOURCE-ASOF-REASON");
+if (!reasonDim || reasonDim.verdict !== "ALIGNED") {
+  fail("D-SOURCE-ASOF-REASON must be ALIGNED after REL-510");
 }
 
 const expectedHolds = ["H-TRACK-A-UNAPPLIED", "H-DEP-502", "H-DEP-504"];
@@ -178,11 +182,11 @@ for (const rel of ["REL-508", "REL-509", "REL-510"]) {
   }
 }
 const openOwners = fixture.ownerRelsOpen || [];
-if (!openOwners.includes("REL-509") || !openOwners.includes("REL-510")) {
-  fail("ownerRelsOpen must keep REL-509 and REL-510");
-}
 if (openOwners.includes("REL-508")) {
   fail("REL-508 must not stay in ownerRelsOpen after reconcile");
+}
+if (openOwners.includes("REL-509") || openOwners.includes("REL-510")) {
+  fail("REL-509/510 must leave ownerRelsOpen after FSM/reason align");
 }
 
 // ── local migrations vs fixture ──
@@ -319,33 +323,94 @@ const registry = JSON.parse(
 );
 const fsm = (registry.domainFsm || []).find((x) => x.fsmId === "engine.trade_execution");
 const regStates = fsm?.states || [];
+const rustNotOwner = fsm?.rustNotOwner || {};
 
 for (const s of ["running", "requeue", "success", "safe_stop", "cancelled", "failed"]) {
   if (!schemaStates.includes(s)) fail(`schema status missing ${s}`);
   if (!sdkTypes.includes(`"${s}"`)) fail(`SDK status missing ${s}`);
   if (!nestExec.includes(`"${s}"`)) fail(`Nest status missing ${s}`);
 }
-if (regStates.includes("cancelled") || regStates.includes("failed")) {
-  fail("registry now has cancelled/failed — update fixture conflict C-FSM-REGISTRY-STATUS");
+if (!regStates.includes("failed")) {
+  fail("registry engine.trade_execution must include failed (Nest write)");
+}
+if (regStates.includes("cancelled")) {
+  fail("cancelled is rust-not-owner — do not list as rust-owned registry state");
+}
+if (
+  !Array.isArray(rustNotOwner.statuses) ||
+  !rustNotOwner.statuses.includes("cancelled")
+) {
+  fail("registry rustNotOwner.statuses must include cancelled");
+}
+if (
+  !Array.isArray(rustNotOwner.resultCodes) ||
+  !rustNotOwner.resultCodes.includes("CANCELLED_BY_USER")
+) {
+  fail("registry rustNotOwner.resultCodes must include CANCELLED_BY_USER");
+}
+if (rustNotOwner.ruleEngine !== "rust-not-owner") {
+  fail("registry rustNotOwner.ruleEngine must be rust-not-owner");
 }
 if (!schemaCodes.includes("CANCELLED_BY_USER")) {
   fail("schema resultCode missing CANCELLED_BY_USER");
 }
-if (/CancelledByUser|CANCELLED_BY_USER/.test(rust)) {
-  fail("rust now has CANCELLED_BY_USER — update fixture conflict C-FSM-CANCELLED-BY-USER");
+if (/\bCancelledByUser\b/.test(rust) || /\bSelf::CancelledByUser\b/.test(rust)) {
+  fail("do not add fake rust CancelledByUser variant");
 }
-if (/CANCELLED_BY_USER/.test(rustCjs)) {
-  fail("settlement_rule.cjs now has CANCELLED_BY_USER — update fixture");
+if (
+  !/RUST_NOT_OWNER_STATUSES/.test(rust) ||
+  !/RUST_NOT_OWNER_RESULT_CODES/.test(rust)
+) {
+  fail("rust must declare RUST_NOT_OWNER_* (not a registry-only footnote)");
+}
+if (!/RUST_NOT_OWNER_RESULT_CODES[\s\S]*CANCELLED_BY_USER/.test(rust)) {
+  fail("rust RUST_NOT_OWNER_RESULT_CODES must include CANCELLED_BY_USER");
+}
+if (
+  !/RUST_NOT_OWNER_STATUSES/.test(rustCjs) ||
+  !/RUST_NOT_OWNER_RESULT_CODES/.test(rustCjs)
+) {
+  fail("settlement_rule.cjs must declare RUST_NOT_OWNER_*");
+}
+if (
+  !/RUST_NOT_OWNER_STATUSES/.test(nestExec) ||
+  !/RUST_NOT_OWNER_RESULT_CODES/.test(nestExec)
+) {
+  fail("Nest must consume rust-not-owner (not registry-only)");
 }
 
 // ── reasonCode ──
 const circuit = read("services/api-nest/src/risk/rules/p49_circuit.ts");
-if (!/BUCKET_INVARIANT_FAIL/.test(circuit)) {
-  fail("circuit reason changed — update C-REASON-CIRCUIT-GRAMMAR");
+const catalog = read("services/api-nest/src/risk/rules/p49_catalog.ts");
+const toastCodes = read("schemas/toast-codes.v1.json");
+const moneyCircuit = read("services/api-nest/src/risk/money-circuit.service.ts");
+if (!/money\.circuit\.bucket_invariant/.test(circuit)) {
+  fail("circuit reasonCode must be money.circuit.bucket_invariant");
+}
+if (/BUCKET_INVARIANT_FAIL/.test(circuit)) {
+  fail("p49_circuit must not keep legacy underscore_flat_alias");
+}
+if (/BUCKET_INVARIANT_FAIL/.test(catalog)) {
+  fail("p49_catalog must not keep legacy underscore_flat_alias");
+}
+if (/BUCKET_INVARIANT_FAIL/.test(toastCodes)) {
+  fail("toast-codes must not keep legacy underscore_flat_alias");
+}
+if (!/money\.circuit\.bucket_invariant/.test(catalog)) {
+  fail("p49_catalog must use money.circuit.bucket_invariant");
+}
+if (!/money\.circuit\.bucket_invariant/.test(toastCodes)) {
+  fail("toast-codes must use money.circuit.bucket_invariant");
+}
+if (!/CIRCUIT_REASON_BUCKET_INVARIANT/.test(moneyCircuit)) {
+  fail("money-circuit must keep CIRCUIT_REASON_BUCKET_INVARIANT");
 }
 const grammar = /^[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$/;
 if (grammar.test("BUCKET_INVARIANT_FAIL")) {
   fail("grammar regex would accept circuit alias — broken test");
+}
+if (!grammar.test("money.circuit.bucket_invariant")) {
+  fail("circuit reasonCode must match domain.resource.reason");
 }
 if (!grammar.test("money.home.buckets_missing")) {
   fail("home-money reasonCode must keep grammar");
@@ -459,18 +524,41 @@ if (/auth\.uid\s*\(/.test(migBlob)) {
 const cert = read(certRel);
 if (!cert) fail("R7 cert missing");
 if (!/R7_CERT:\s*ISSUED/.test(cert)) fail("cert must set R7_CERT: ISSUED");
-if (!/R7_ALIGNMENT:\s*CONFLICTS_OWNED/.test(cert)) {
-  fail("cert must set R7_ALIGNMENT: CONFLICTS_OWNED (hide-as-clean forbidden)");
+if (!/R7_ALIGNMENT:\s*HOLDS_OWNED/.test(cert)) {
+  fail("cert must set R7_ALIGNMENT: HOLDS_OWNED (CLEAN citation forbidden)");
 }
 if (/R7_ALIGNMENT:\s*CLEAN/.test(cert) || /CLEAN_ALIGNMENT:\s*YES/.test(cert)) {
-  fail("cert claims CLEAN while conflicts exist");
+  fail("cert claims CLEAN while holds exist");
+}
+if (/R7_ALIGNMENT:\s*CONFLICTS_OWNED/.test(cert)) {
+  fail("C-FSM/C-REASON are reconciled — do not keep CONFLICTS_OWNED");
 }
 if (!/HIDE:\s*0/.test(cert)) fail("cert must lock HIDE: 0");
+if (!/D-ENGINE-FSM[^\n]*ALIGNED/.test(cert)) {
+  fail("cert D-ENGINE-FSM must be ALIGNED");
+}
+if (!/D-SOURCE-ASOF-REASON[^\n]*ALIGNED/.test(cert)) {
+  fail("cert D-SOURCE-ASOF-REASON must be ALIGNED");
+}
 if (!/migrations-applied\.v1\.json/.test(cert) || !/NOT remote 1:1/.test(cert)) {
   fail("cert must say migrations-applied.v1.json is NOT remote 1:1");
 }
-for (const id of expectedConflict) {
-  if (!cert.includes(id)) fail(`cert missing first-class conflict ${id}`);
+for (const id of [
+  "C-FSM-REGISTRY-STATUS",
+  "C-FSM-CANCELLED-BY-USER",
+  "C-REASON-CIRCUIT-GRAMMAR",
+]) {
+  if (!cert.includes(id)) fail(`cert missing first-class reconciled ${id}`);
+}
+const conflictSection = (cert.split("## Conflicts")[1] || "").split("## ")[0];
+for (const id of [
+  "C-FSM-REGISTRY-STATUS",
+  "C-FSM-CANCELLED-BY-USER",
+  "C-REASON-CIRCUIT-GRAMMAR",
+]) {
+  if (new RegExp(`\\|\\s*${id}\\s*\\|`).test(conflictSection)) {
+    fail(`${id} still listed as open conflict`);
+  }
 }
 if (!/## Reconciled/.test(cert)) {
   fail("cert must keep a first-class Reconciled section");
@@ -513,8 +601,8 @@ for (const id of ["rel-509", "rel-510"]) {
     new RegExp(`- id: ${id}\\r?\\n(?:    [^\\n]*\\r?\\n)*?    status: (\\w+)`),
   );
   if (!m) fail(`plan ${id} status unreadable`);
-  else if (m[1] === "completed") {
-    fail(`${id} must stay pending until owner slice runs (hide-by-close forbidden)`);
+  else if (m[1] !== "completed") {
+    fail(`${id} must be completed after owner slice`);
   }
 }
 
@@ -525,5 +613,5 @@ if (fails.length) {
 }
 
 console.log(
-  "[verify:rel-505-backend-alignment] PASS (R7 ISSUED · CONFLICTS_OWNED · C-MIG RECONCILED · hide 0 · open REL-509/510)",
+  "[verify:rel-505-backend-alignment] PASS (R7 ISSUED · HOLDS_OWNED · C-MIG/C-FSM/C-REASON RECONCILED · hide 0 · CLEAN 0)",
 );

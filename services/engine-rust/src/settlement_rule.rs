@@ -10,6 +10,11 @@ pub const HARD_SEC: i64 = 90;
 /// Default price hard-stale gate for participate P5 (seconds).
 pub const DEFAULT_PRICE_STALE_MAX_SEC: i64 = 3;
 
+/// Nest/schema persist status. `evaluate_execution`은 이 값을 만들지 않는다.
+pub const RUST_NOT_OWNER_STATUSES: &[&str] = &["cancelled"];
+/// Nest/schema persist resultCode. rust enum에 유저취소 variant 가짜 추가 금지.
+pub const RUST_NOT_OWNER_RESULT_CODES: &[&str] = &["CANCELLED_BY_USER"];
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ExecutionResultCode {
     MatchSuccess,
@@ -330,5 +335,23 @@ mod tests {
         let mut ctx = base_ctx();
         ctx.listing_legs_fresh = false;
         assert_eq!(evaluate_execution(&ctx), ExecutionResultCode::Requeue);
+    }
+
+    #[test]
+    fn cancelled_is_rust_not_owner() {
+        assert!(RUST_NOT_OWNER_STATUSES.contains(&"cancelled"));
+        assert!(RUST_NOT_OWNER_RESULT_CODES.contains(&"CANCELLED_BY_USER"));
+        let owned = [
+            ExecutionResultCode::MatchSuccess,
+            ExecutionResultCode::Requeue,
+            ExecutionResultCode::PriceMoved,
+            ExecutionResultCode::BelowMinProfit,
+            ExecutionResultCode::CircuitOpen,
+            ExecutionResultCode::SystemFailed,
+            ExecutionResultCode::MatchTimeout,
+        ];
+        for code in owned {
+            assert_ne!(code.as_str(), "CANCELLED_BY_USER");
+        }
     }
 }

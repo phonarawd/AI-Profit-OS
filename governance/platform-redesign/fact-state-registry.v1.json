@@ -29,13 +29,21 @@
         "running",
         "requeue",
         "success",
-        "safe_stop"
+        "safe_stop",
+        "failed"
       ],
       "terminalHints": {
         "success": "MATCH_SUCCESS → settlement journal",
-        "safe_stop": "Soft60/Hard90/MATCH_TIMEOUT · recovery ≠ blocked view"
+        "safe_stop": "Soft60/Hard90/MATCH_TIMEOUT · recovery ≠ blocked view",
+        "failed": "SYSTEM_FAILED → Nest write (rust emits SystemFailed)"
       },
-      "separationRule": "commonViewStates에 합치지 않음 · UI는 viewState + domainFsm.status 이중 필드"
+      "rustNotOwner": {
+        "statuses": ["cancelled"],
+        "resultCodes": ["CANCELLED_BY_USER"],
+        "owner": "nest-persist-schema",
+        "ruleEngine": "rust-not-owner"
+      },
+      "separationRule": "commonViewStates에 합치지 않음 · UI는 viewState + domainFsm.status 이중 필드 · cancelled는 rust-not-owner"
     },
     {
       "fsmId": "auth.session",
@@ -56,6 +64,7 @@
     "examplesSchemaOnly": [
       "money.principal.insufficient",
       "money.kyc.required",
+      "money.circuit.bucket_invariant",
       "auth.session.expired",
       "engine.opportunity.compare_not_ready",
       "engine.opportunity.price_stale",
@@ -119,7 +128,7 @@
           "auth.session.status"
         ],
         "stateFindings": [
-          "running|requeue|success|safe_stop ∈ engine.trade_execution only",
+          "running|requeue|success|safe_stop|failed ∈ engine.trade_execution · cancelled=rust-not-owner",
           "commonViewStates ∩ domainFsm.states = ∅ 검증",
           "safe_stop ≠ blocked(view) — recovery path 상이"
         ],

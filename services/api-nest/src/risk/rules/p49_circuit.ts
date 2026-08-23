@@ -2,7 +2,9 @@
  * Money §49.9 E1/P24 — money circuit on bucket drift / recon mismatch.
  */
 
-export const CIRCUIT_REASON_BUCKET_INVARIANT = "BUCKET_INVARIANT_FAIL" as const;
+/** money circuit reasonCode · domain.resource.reason. 레거시 underscore_flat_alias 0. */
+export const CIRCUIT_REASON_BUCKET_INVARIANT =
+  "money.circuit.bucket_invariant" as const;
 
 export type CircuitState = {
   open: boolean;

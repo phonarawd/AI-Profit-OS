@@ -112,7 +112,7 @@ for (const code of [
   "MIN_HOLDING",
   "RATE_LIMITED",
   "CIRCUIT_OPEN",
-  "BUCKET_INVARIANT_FAIL",
+  "money.circuit.bucket_invariant",
   "ACCOUNT_FROZEN",
   "ACCOUNT_BANNED",
   "WITHDRAW_BLOCKED",
@@ -158,13 +158,23 @@ for (const needle of [
 
 const circuit = read("services/api-nest/src/risk/rules/p49_circuit.ts");
 for (const needle of [
-  "BUCKET_INVARIANT_FAIL",
+  "money.circuit.bucket_invariant",
   "shouldOpenCircuitFromRecon",
   "CIRCUIT_OPEN",
 ]) {
   if (!circuit.includes(needle)) {
     fails.push(`p49_circuit missing: ${needle}`);
   }
+}
+if (/BUCKET_INVARIANT_FAIL/.test(circuit)) {
+  fails.push("p49_circuit must not keep legacy underscore_flat_alias");
+}
+const catalogSrc = catalog;
+if (/BUCKET_INVARIANT_FAIL/.test(catalogSrc)) {
+  fails.push("p49_catalog must not keep legacy underscore_flat_alias");
+}
+if (/BUCKET_INVARIANT_FAIL/.test(toast)) {
+  fails.push("toast-codes must not keep legacy underscore_flat_alias");
 }
 
 const riskSvc = read("services/api-nest/src/risk/risk.service.ts");
