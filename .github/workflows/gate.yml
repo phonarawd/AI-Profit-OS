@@ -58,6 +58,8 @@ jobs:
         run: pnpm verify:rel-502-final-engine-acceptance
       - name: REL-503 protected-scope STALE watch
         run: pnpm verify:rel-503-protected-scope-watch
+      - name: REL-504 migration readiness
+        run: pnpm verify:rel-504-migration-readiness
       - name: Stub .env for Docker-less stack-lock
         run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
       - name: cargo test (services/engine-rust — Rule Engine R1-R10 golden unit tests)

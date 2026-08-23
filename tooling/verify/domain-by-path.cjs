@@ -659,6 +659,13 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/release-master\/MIGRATION_READINESS\.md$/.test(f) ||
+      /^tooling\/verify\/rel-504-migration-readiness\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-504-migration-readiness\.v1\.json$/.test(f),
+    scripts: ["rel-504-migration-readiness.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||
