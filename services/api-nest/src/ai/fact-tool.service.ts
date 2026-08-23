@@ -3,7 +3,7 @@
  * 13 read-only Fact loaders (FACT_TOOLS catalog) · mutation tools 0
  */
 
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { KycService } from "../compliance/kyc.service";
 import { PostgresService } from "../db/postgres";
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
@@ -49,7 +49,11 @@ export class FactToolService {
   async loadTools(
     userId: string,
     tools: string[],
-    opts: { query?: string; executionId?: string | null } = {},
+    opts: {
+      query?: string;
+      executionId?: string | null;
+      opportunityId?: string | null;
+    } = {},
   ): Promise<{
     facts: ReturnType<typeof buildFactCard>[];
     toolsCalled: FactToolName[];
@@ -82,7 +86,13 @@ export class FactToolService {
   async loadOne(
     userId: string,
     tool: FactToolName,
-    opts: { query?: string; executionId?: string | null } | string = {},
+    opts:
+      | {
+          query?: string;
+          executionId?: string | null;
+          opportunityId?: string | null;
+        }
+      | string = {},
   ): Promise<FactToolLoadResult> {
     // Backward-compatible: older callers passed query as a bare string.
     const options =
@@ -97,7 +107,7 @@ export class FactToolService {
       case "getKrwDeposit":
         return this.loadKrwDeposit(userId);
       case "getOpportunity":
-        return this.loadOpportunity(userId);
+        return this.loadOpportunity(userId, options.opportunityId);
       case "getExecution":
         return this.loadExecution(userId, options.executionId);
       case "getKyc":
@@ -145,21 +155,20 @@ export class FactToolService {
           },
         ],
       };
-    } catch {
+    } catch (e) {
+      const notFound = e instanceof NotFoundException;
       return {
         tool,
         facts: [
           {
             source: "ledger",
             ttlSec: TTL_LEDGER_SEC,
-            confidence: 0.5,
+            confidence: 1,
             payload: {
-              principalUsdt: "0",
-              profitUsdt: "0",
-              lockedUsdt: "0",
-              practiceUsdt: "0",
-              liabilityUsdt: "0",
-              summary: "아직 지갑이 준비되지 않았어요. 입금으로 시작해 보세요.",
+              availability: "unavailable",
+              summary: notFound
+                ? "아직 지갑이 준비되지 않았어요. 입금으로 시작해 보세요."
+                : "지금 잔액을 확인할 수 없어요. 잠시 후 다시 확인해 주세요.",
             },
           },
         ],
@@ -237,7 +246,16 @@ export class FactToolService {
     };
   }
 
-  private async loadOpportunity(userId: string): Promise<FactToolLoadResult> {
+  private async loadOpportunity(
+    userId: string,
+    opportunityId?: string | null,
+  ): Promise<FactToolLoadResult> {
+    const wantedId = opportunityId ? String(opportunityId).trim() : "";
+    const idLooksUuid =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        wantedId,
+      );
+
     if (!this.db.configured()) {
       return {
         tool: "getOpportunity",
@@ -245,10 +263,10 @@ export class FactToolService {
           {
             source: "opportunity",
             ttlSec: TTL_OPP_SEC,
-            confidence: 0.5,
+            confidence: 1,
             payload: {
-              count: 0,
-              opportunityIds: [],
+              availability: "unavailable",
+              requestedOpportunityId: wantedId || null,
               summary: "지금 볼 수 있는 미션을 불러오는 중이에요.",
             },
           },
@@ -256,22 +274,57 @@ export class FactToolService {
       };
     }
     try {
-      const r = await this.db.query<{
-        id: string;
-        expected_profit_usdt: string;
-        pricing: { compareReady?: boolean } | null;
-      }>(
-        `SELECT id::text,
-                expected_profit_usdt::text,
-                pricing
-           FROM public.opportunities
-          WHERE status = 'available'
-            AND COALESCE((pricing->>'compareReady')::boolean, false) = true
-          ORDER BY updated_at DESC NULLS LAST
-          LIMIT 5`,
-      );
+      const r = wantedId
+        ? idLooksUuid
+          ? await this.db.query<{
+              id: string;
+              expected_profit_usdt: string;
+              estimated_duration_sec: number | null;
+            }>(
+              `SELECT id::text,
+                      expected_profit_usdt::text,
+                      estimated_duration_sec
+                 FROM public.opportunities
+                WHERE id = $1::uuid
+                LIMIT 1`,
+              [wantedId],
+            )
+          : { rows: [] }
+        : await this.db.query<{
+            id: string;
+            expected_profit_usdt: string;
+            estimated_duration_sec: number | null;
+          }>(
+            `SELECT id::text,
+                    expected_profit_usdt::text,
+                    estimated_duration_sec
+               FROM public.opportunities
+              WHERE status = 'available'
+                AND COALESCE((pricing->>'compareReady')::boolean, false) = true
+              ORDER BY updated_at DESC NULLS LAST
+              LIMIT 5`,
+          );
       const count = r.rows.length;
       const top = r.rows[0];
+      if (wantedId && !top) {
+        return {
+          tool: "getOpportunity",
+          facts: [
+            {
+              source: "opportunity",
+              ttlSec: TTL_OPP_SEC,
+              confidence: 1,
+              payload: {
+                availability: "unavailable",
+                requestedOpportunityId: wantedId,
+                summary:
+                  "그 미션을 지금 찾을 수 없어요. 목록에서 다시 확인해 주세요.",
+                deepLink: "/me/opportunities",
+              },
+            },
+          ],
+        };
+      }
       const opportunityIds = r.rows.map((row) => row.id);
       return {
         tool: "getOpportunity",
@@ -285,6 +338,10 @@ export class FactToolService {
               opportunityId: top?.id ?? null,
               opportunityIds,
               expectedProfitUsdt: top?.expected_profit_usdt ?? null,
+              estimatedDurationSec:
+                top?.estimated_duration_sec != null
+                  ? top.estimated_duration_sec
+                  : null,
               summary:
                 count > 0
                   ? `지금 참여 가능한 미션 ${count}건이 있어요.`
@@ -302,10 +359,10 @@ export class FactToolService {
           {
             source: "opportunity",
             ttlSec: TTL_OPP_SEC,
-            confidence: 0.5,
+            confidence: 1,
             payload: {
-              count: 0,
-              opportunityIds: [],
+              availability: "unavailable",
+              requestedOpportunityId: wantedId || null,
               summary: "미션 목록을 잠시 불러오지 못했어요.",
             },
           },
@@ -429,8 +486,12 @@ export class FactToolService {
           {
             source: "kyc",
             ttlSec: TTL_GUIDE_SEC,
-            confidence: 0.5,
-            payload: { kycStatus: "none", deepLink: "/me/kyc" },
+            confidence: 1,
+            payload: {
+              availability: "unavailable",
+              summary: "본인 확인 상태를 지금 확인할 수 없어요.",
+              deepLink: "/me/kyc",
+            },
           },
         ],
       };
@@ -530,10 +591,10 @@ export class FactToolService {
           {
             source: "ledger",
             ttlSec: TTL_LEDGER_SEC,
-            confidence: 0.5,
+            confidence: 1,
             payload: {
-              practiceUsdt: "0",
-              guideText: "연습 잔액 안내를 불러오는 중이에요.",
+              availability: "unavailable",
+              summary: "연습 잔액 안내를 불러오는 중이에요.",
               notWithdrawable: true,
             },
           },

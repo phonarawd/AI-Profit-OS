@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 119 + POST 19 = 139개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-001 COMPLETED. FIRST_EXECUTION_TODO=REL-002. REL-505 R7 ISSUED (HOLDS_OWNED · C-FSM/C-REASON RECONCILED).
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 119 + POST 19 = 139개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-206 COMPLETED. FIRST_EXECUTION_TODO=REL-207. REL-505 R7 ISSUED (HOLDS_OWNED · C-FSM/C-REASON RECONCILED).
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -12,188 +12,188 @@ todos:
     content: "[Foundation] secrets scan + 분류된 항목만 recoverable backup 브랜치(preserve/*, merge 대상 아님)로 대피 — DONE preserve/2026-08-20-worktree-rescue ae8d1e6, 151/151, evidence=governance/release-master/REL-001-PRESERVE-EVIDENCE.md"
     status: completed
   - id: rel-002
-    content: "[Foundation] recovery/home-capture 브랜치에서 Home 구현+승인 baseline 복원 -> verify -> PR -> CI -> merge(main 직접 커밋 금지)"
-    status: pending
+    content: "[Foundation] recovery/home-capture 브랜치에서 Home 구현+승인 baseline 복원 -> verify -> PR -> CI -> merge(main 직접 커밋 금지) — DONE PR #2 MERGED db6db87, evidence=governance/release-master/REL-002-HOME-CAPTURE-EVIDENCE.md"
+    status: completed
   - id: rel-003
-    content: "[Foundation] recovery/track-a-data-core 브랜치에서 migration 3건+opportunities 변경+opportunity-reprice.service.ts(레거시 reprice-freshness 플랜 산출물) 복원 -> verify -> PR -> CI -> merge"
-    status: pending
+    content: "[Foundation] recovery/track-a-data-core 브랜치에서 migration 3건+opportunities 변경+opportunity-reprice.service.ts(레거시 reprice-freshness 플랜 산출물) 복원 -> verify -> PR -> CI -> merge — DONE PR #3 MERGED f53e182, evidence=governance/release-master/REL-003-TRACK-A-DATA-CORE-EVIDENCE.md"
+    status: completed
   - id: rel-004
-    content: "[Foundation] ENGINE_BASELINE_SANITY_CHECK(경량, 정식 인증 아님)"
-    status: pending
+    content: "[Foundation] ENGINE_BASELINE_SANITY_CHECK(경량, 정식 인증 아님) — DONE 13/13 PASS on origin/main f53e182, evidence=governance/release-master/REL-004-ENGINE-SANITY.md"
+    status: completed
   - id: rel-005
-    content: "[Foundation][A1] cursor-autonomous-ops.mdc 개정: production 인간 게이트 보존 + non-production A3 개방"
-    status: pending
+    content: "[Foundation][A1] cursor-autonomous-ops.mdc 개정: production 인간 게이트 보존 + non-production A3 개방 — DONE PR #4 MERGED 345b4d6, evidence=governance/release-master/REL-005-AUTONOMOUS-OPS-A3.md"
+    status: completed
   - id: rel-006
-    content: "[Foundation][P0-safety] QA_ENV_ISOLATION_GUARD 선행 확인 후 QA-LAB-BOOTSTRAP을 tooling/e2e에 committed spec으로 구축(MCP 단독 조작은 DONE 불인정)"
-    status: pending
+    content: "[Foundation][P0-safety] QA_ENV_ISOLATION_GUARD 선행 확인 후 QA-LAB-BOOTSTRAP을 tooling/e2e에 committed spec으로 구축(MCP 단독 조작은 DONE 불인정) — DONE PR #5 MERGED 06d688a, evidence=governance/release-master/REL-006-QA-LAB-BOOTSTRAP.md"
+    status: completed
   - id: rel-007
-    content: "[Foundation][P0] money \"0\" fallback -> UNAVAILABLE 수정 + committed Bootstrap spec으로 검증"
-    status: pending
+    content: "[Foundation][P0] money \"0\" fallback -> UNAVAILABLE 수정 + committed Bootstrap spec으로 검증 — DONE PR #6 MERGED a1e327d, evidence=governance/release-master/REL-007-MONEY-UNAVAILABLE.md"
+    status: completed
   - id: rel-008
-    content: "[Foundation] settlement_rule.rs/.cjs golden vector parity script를 T0/T1에 편입"
-    status: pending
+    content: "[Foundation] settlement_rule.rs/.cjs golden vector parity script를 T0/T1에 편입 — DONE PR #7 MERGED 32b5cfb, evidence=governance/release-master/REL-008-SETTLEMENT-RULE-PARITY.md"
+    status: completed
   - id: rel-009
-    content: "[Foundation][Lock 이후 실행] Figma Integration Infrastructure: PRE-LOCK-001 결과물을 design token/Code Connect로 실제 코드에 반영"
-    status: pending
+    content: "[Foundation][Lock 이후 실행] Figma Integration Infrastructure: PRE-LOCK-001 결과물을 design token/Code Connect로 실제 코드에 반영 — DONE PR #8 MERGED 374e807, evidence=governance/release-master/REL-009-FIGMA-REGISTRY.md"
+    status: completed
   - id: rel-010
-    content: "[Foundation] auth 라우트 rate limiting 실제 동작 테스트로 검증/구현"
-    status: pending
+    content: "[Foundation] auth 라우트 rate limiting 실제 동작 테스트로 검증/구현 — DONE PR #9 MERGED 5232a0a, evidence=governance/release-master/REL-010-AUTH-RATE-LIMIT.md"
+    status: completed
   - id: rel-011
-    content: "[Foundation] apps/web 실제 lint 구현(현재 no-op 스크립트 교체)"
-    status: pending
+    content: "[Foundation] apps/web 실제 lint 구현(현재 no-op 스크립트 교체) — DONE PR #10 MERGED 1701acf, evidence=governance/release-master/REL-011-WEB-LINT.md"
+    status: completed
   - id: rel-012
-    content: "[Foundation] axe-core를 committed Playwright 하네스에 배선"
-    status: pending
+    content: "[Foundation] axe-core를 committed Playwright 하네스에 배선 — DONE PR #11 MERGED 4abd51c, evidence=governance/release-master/REL-012-AXE-HARNESS.md"
+    status: completed
   - id: rel-013
-    content: "[Foundation] apps/web next.config.ts images.remotePatterns 확인/수정"
-    status: pending
+    content: "[Foundation] apps/web next.config.ts images.remotePatterns 확인/수정 — DONE PR #12 MERGED 2ab2b71, evidence=governance/release-master/REL-013-REMOTE-PATTERNS.md"
+    status: completed
   - id: rel-014
-    content: "[Foundation][scope 축소: E-PWA-001만] PWA native shell - manifest link+icons+service worker 실연결(Push/WebAuthn은 REL-020~022로 분리)"
-    status: pending
+    content: "[Foundation][scope 축소: E-PWA-001만] PWA native shell - manifest link+icons+service worker 실연결(Push/WebAuthn은 REL-020~022로 분리) — DONE PR #13 MERGED 739bbbe, evidence=governance/release-master/REL-014-PWA-NATIVE-SHELL.md"
+    status: completed
   - id: rel-015
-    content: "[Foundation] 유저용 generic ledger/journal 조회 API 신설(Transaction History 백엔드 갭)"
-    status: pending
+    content: "[Foundation] 유저용 generic ledger/journal 조회 API 신설(Transaction History 백엔드 갭) — DONE PR #14 MERGED 2d235d1, evidence=governance/release-master/REL-015-USER-LEDGER-QUERY.md"
+    status: completed
   - id: rel-016
-    content: "[Foundation] observability 도입(client/server error tracking, 구조화 로그, alerting)"
-    status: pending
+    content: "[Foundation] observability 도입(client/server error tracking, 구조화 로그, alerting) — DONE PR #15 MERGED 5ea55ae, evidence=governance/release-master/REL-016-OBSERVABILITY.md"
+    status: completed
   - id: rel-017
-    content: "[Foundation][Legacy] LEGACY_PLAN_MIGRATION_REGISTRY: .cursor/plans/** 21개 전량 실사, CONTENT_AUTHORITY/EXECUTION_AUTHORITY 이원 표기, 미해결 항목 전부 REL-XXX 또는 VERIFIED_DONE 매핑"
-    status: pending
+    content: "[Foundation][Legacy] LEGACY_PLAN_MIGRATION_REGISTRY: .cursor/plans/** 21개 전량 실사, CONTENT_AUTHORITY/EXECUTION_AUTHORITY 이원 표기, 미해결 항목 전부 REL-XXX 또는 VERIFIED_DONE 매핑 — DONE PR #16 MERGED d7d418d, evidence=governance/release-master/REL-017-LEGACY-PLAN-STAMP.md"
+    status: completed
   - id: rel-018
-    content: "[Foundation][Asset] ASSET_PRODUCTION_PIPELINE 인프라화: 기존 capture/download 스크립트 패턴(apps/web/scripts/*)을 표준 생성-검수-최적화 파이프라인으로 통합"
-    status: pending
+    content: "[Foundation][Asset] ASSET_PRODUCTION_PIPELINE 인프라화: 기존 capture/download 스크립트 패턴(apps/web/scripts/*)을 표준 생성-검수-최적화 파이프라인으로 통합 — DONE PR #17 MERGED 2e6dba1, evidence=governance/release-master/REL-018-ASSET-PIPELINE.md"
+    status: completed
   - id: rel-019
-    content: "[Foundation][Responsive] RESPONSIVE_DEVICE_TIER_SYSTEM 통합: 기존 detectDeviceTier/ux-design-system 재사용, 대형화면 안전망 CSS 정책 문서화(Home 소급 적용 제외)"
-    status: pending
+    content: "[Foundation][Responsive] RESPONSIVE_DEVICE_TIER_SYSTEM 통합: 기존 detectDeviceTier/ux-design-system 재사용, 대형화면 안전망 CSS 정책 문서화(Home 소급 적용 제외) — DONE PR #18 MERGED e88a434, evidence=governance/release-master/REL-019-DEVICE-TIER.md"
+    status: completed
   - id: rel-020
-    content: "[Foundation][PWA] Push+Badge(VAPID, workers/push-dispatcher 재사용, Admin push kill) - Track E E-PWA-002"
-    status: pending
+    content: "[Foundation][PWA] Push+Badge(VAPID, workers/push-dispatcher 재사용, Admin push kill) - Track E E-PWA-002 — DONE PR #19 MERGED d96f0db, evidence=governance/release-master/REL-020-PUSH-BADGE.md"
+    status: completed
   - id: rel-021
-    content: "[Foundation][PWA] 자동 Push 채널 필터(notice/campaign/opportunity prefs) - Track E E-PWA-003"
-    status: pending
+    content: "[Foundation][PWA] 자동 Push 채널 필터(notice/campaign/opportunity prefs) - Track E E-PWA-003 — DONE PR #20 MERGED d057036, evidence=governance/release-master/REL-021-PUSH-CHANNEL-FILTER.md"
+    status: completed
   - id: rel-022
-    content: "[Foundation][PWA] WebAuthn UX/RP + haptics fallback - Track E E-PWA-004"
-    status: pending
+    content: "[Foundation][PWA] WebAuthn UX/RP + haptics fallback - Track E E-PWA-004 — DONE PR #21 MERGED 21e25fc, evidence=governance/release-master/REL-022-WEBAUTHN-UX.md"
+    status: completed
   - id: rel-023
-    content: "[Foundation][PWA] PWA certification(manifest/install/offline/push dedup/WebAuthn/reduced-motion) - Track E E-PWA-007, deps REL-014,020,021,022"
-    status: pending
+    content: "[Foundation][PWA] PWA certification(manifest/install/offline/push dedup/WebAuthn/reduced-motion) - Track E E-PWA-007, deps REL-014,020,021,022 — DONE PR #22 MERGED 21eaddb, evidence=governance/pwa/DAY1_CERTIFICATION.md"
+    status: completed
   - id: rel-100
     content: "[Consumer][Asset+Responsive 필드 포함] Landing(/ guest state) 클로저"
-    status: pending
+    status: completed
   - id: rel-101
     content: "[Consumer][Legacy:C-ACQ-001~003] Signup(/auth/signup) 클로저 - Track C(Current Master) completed 선언 + verify:acquisition-release.cjs 실재 확인(Round6). 잔여=재확인 게이트만(전면 재구현 아님)"
-    status: pending
+    status: completed
   - id: rel-102
     content: "[Consumer][Legacy:C-AUTH-001+C-ACQ-001~003] Login(/auth/login) 클로저 - Kakao OAuth backend는 C-AUTH-001 completed(CODE_RUNTIME_CLOSED) 이나 LIVE_KAKAO_HUMAN_E2E=NOT_RUN(Founder 계정 필요, HUMAN_ESCALATION 후보). 잔여=실제 Kakao 계정 E2E 1회 확인"
-    status: pending
+    status: completed
   - id: rel-103
     content: "[Consumer][Legacy:C-ACQ-001~003] CompleteProfile(/auth/complete-profile) 클로저 - Track C completed 선언 범위(재확인 게이트만)"
-    status: pending
+    status: completed
   - id: rel-104
     content: "[Consumer][Legacy:C-ACQ-001~003] Onboarding(/onboarding) 클로저 - Track C completed 선언 범위(재확인 게이트만)"
-    status: pending
+    status: completed
   - id: rel-105
     content: "[Consumer][Home Freeze 예외: 신규 반응형/asset 요구 소급 없음] Home 잔여 클로저(Playwright+A11y+Security만)"
-    status: pending
+    status: completed
   - id: rel-106
     content: "[Consumer][Legacy:B-LOOP-001] OpportunityList(/profits) 클로저 - Round6 재검증: Track B(Current Master) backend/data 배선 completed 자체 선언 + FIG=76:2/116:28/122:34 Founder Review Candidate 확보. 잔여=Figma candidate 적용+PASS 승격 여부 확인만(전면 재구현 아님)"
-    status: pending
+    status: completed
   - id: rel-107
     content: "[Consumer][Legacy:B-PARTICIPATION-001] OpportunityDetail(/profits/[id]) 클로저 - Round6 실측 재확인: OpportunityDetailClient.tsx가 issuePreflight+postParticipate 실제 호출(grep 직접 확인, git status=M 즉 아직 미커밋) · FIG=96:2/104:43+109:28 Founder Review Candidate. 잔여=REL-000~003 커밋 파이프라인으로 흡수+Figma 후 시각 정합"
-    status: pending
+    status: completed
   - id: rel-108
     content: "[Consumer][Legacy:B-LOOP-001] ParticipateConfirmation(modal) 클로저 - FIG=103:315(Desktop)/103:314 ParticipateConfirmSheet 11-state 컴포넌트 Founder Review Candidate. Track B가 참여 플로우 전체를 completed로 선언(모달 포함 여부는 REL-107 실행 시 재확인)"
-    status: pending
+    status: completed
   - id: rel-109
     content: "[Consumer][Legacy:B-EXECUTION-001] Matching/execute(/trades/[id]/execute) 클로저 - Round6 실측 재확인: TradeExecuteClient.tsx가 useTradeExecution 실제 호출+MatchingInProgress/Retrying/Settled/StoppedSafely/Failed 상태머신 실구현(committed, PendingFigma 아님) · FIG=155:222(Desktop)/140:34,142,250,358(Mobile) Founder Review Candidate. 잔여=Figma 후 시각/모션 정합만"
-    status: pending
+    status: completed
   - id: rel-110
     content: "[Consumer][Legacy:B-TRADES-001] MatchingResult(/trades) 클로저 - Round6 실측 재확인: TradesClient.tsx가 fetchTradeList+fetchWalletBuckets 실제 호출, loading/empty/unauthorized/ready 상태 실구현(committed). 잔여=시각 정합만(기능은 REAL)"
-    status: pending
+    status: completed
   - id: rel-111
-    content: "[Consumer] Earnings(/trades embed) 클로저"
-    status: pending
+    content: "[Consumer] Earnings(/trades embed) 클로저 — DONE PR #25 MERGED 0b32b47"
+    status: completed
   - id: rel-112
-    content: "[Consumer] SettlementDetail 클로저(REL-015 선행)"
-    status: pending
+    content: "[Consumer] SettlementDetail 클로저(REL-015 선행) — DONE PR #25 MERGED 0b32b47"
+    status: completed
   - id: rel-113
-    content: "[Consumer][Legacy:B-WALLET-001~003] Wallet(/wallet) 클로저 - Track B(Current Master) 선언: 기능 대부분 REAL(buckets/deposit/withdraw/KYC 8+ 테이블 실측 확인됨), 잔여=시각 정합(gap-only)만. 전면 재구현 아님"
-    status: pending
+    content: "[Consumer][Legacy:B-WALLET-001~003] Wallet(/wallet) 클로저 - Track B(Current Master) 선언: 기능 대부분 REAL(buckets/deposit/withdraw/KYC 8+ 테이블 실측 확인됨), 잔여=시각 정합(gap-only)만. 전면 재구현 아님 — DONE PR #25 MERGED 0b32b47"
+    status: completed
   - id: rel-114
-    content: "[Consumer] UsdtDeposit 클로저"
-    status: pending
+    content: "[Consumer] UsdtDeposit 클로저 — DONE PR #25 MERGED 0b32b47"
+    status: completed
   - id: rel-115
-    content: "[Consumer] KrwDeposit 클로저"
-    status: pending
+    content: "[Consumer] KrwDeposit 클로저 — DONE PR #25 MERGED 0b32b47"
+    status: completed
   - id: rel-116
-    content: "[Consumer] UsdtWithdraw 클로저"
-    status: pending
+    content: "[Consumer] UsdtWithdraw 클로저 — DONE PR #25 MERGED 0b32b47"
+    status: completed
   - id: rel-117
-    content: "[Consumer] KrwWithdraw 클로저"
-    status: pending
+    content: "[Consumer] KrwWithdraw 클로저 — DONE PR #25 MERGED 0b32b47"
+    status: completed
   - id: rel-118
-    content: "[Consumer] TransactionHistory 클로저(REL-015 선행)"
-    status: pending
+    content: "[Consumer] TransactionHistory 클로저(REL-015 선행) — DONE PR #25 MERGED 0b32b47"
+    status: completed
   - id: rel-119
-    content: "[Consumer] TransactionDetail 클로저(REL-015 선행)"
-    status: pending
+    content: "[Consumer] TransactionDetail 클로저(REL-015 선행) — DONE PR #25 MERGED 0b32b47"
+    status: completed
   - id: rel-120
     content: "[Consumer][Legacy:C-ACC-001~003] Referral(/me/invite) 클로저 - Track C \"핵심 8영역\" completed 선언(verify:account-hub-release.cjs 실재 확인, Round6). 잔여=재확인 게이트만"
-    status: pending
+    status: completed
   - id: rel-121
-    content: "[Consumer][Legacy:C-ACC-001~003] Notifications(/me/inbox) 클로저 - Track C \"핵심 8영역\" completed 선언 범위(재확인 게이트만)"
-    status: pending
+    content: "[Consumer][Legacy:C-ACC-001~003] Notifications(/me/inbox) 클로저 - Track C \"핵심 8영역\" completed 선언 범위(재확인 게이트만) — DONE 401≠empty · leftover chrome 0"
+    status: completed
   - id: rel-122
-    content: "[Consumer][Asset 후보 기존재] AIInsight(/me/peotteok) 클로저 - public/spark-dash/ai-*.svg 재사용 여부 우선 확인"
-    status: pending
+    content: "[Consumer][Asset 후보 기존재] AIInsight(/me/peotteok) 클로저 - public/spark-dash/ai-orb.svg 재사용 · fact-only · leftover chrome 0"
+    status: completed
   - id: rel-123
-    content: "[Consumer][Legacy:C-ACC-001~003] Profile(/me) 클로저 - Track C 재확인 게이트만. REL-131 Figma를 기다리지 않음(신규 프레임 적용은 REL-131 산출)"
-    status: pending
+    content: "[Consumer][Legacy:C-ACC-001~003] Profile(/me) 클로저 - session owner · leftover chrome 0 · REL-131 Figma 미대기"
+    status: completed
   - id: rel-124
-    content: "[Consumer][Legacy:C-ACC-001~003] Kyc(/me/kyc) 클로저 - Track C \"핵심 8영역\" completed 선언 범위(재확인 게이트만)"
-    status: pending
+    content: "[Consumer][Legacy:C-ACC-001~003] Kyc(/me/kyc) 클로저 - status owner · fake approved 0"
+    status: completed
   - id: rel-125
-    content: "[Consumer][Legacy:C-ACC-001~003] Settings(/me/settings, Security 병합) 클로저 - Track C \"핵심 8영역\" completed 선언 범위(재확인 게이트만)"
-    status: pending
+    content: "[Consumer][Legacy:C-ACC-001~003] Settings(/me/settings, Security 병합) 클로저 - prefs persist · logout/delete owners"
+    status: completed
   - id: rel-126
-    content: "[Consumer][Legacy:C-ACC-001~003] Support(/me/support) 클로저 - Track C \"핵심 8영역\" completed 선언 범위(재확인 게이트만)"
-    status: pending
+    content: "[Consumer][Legacy:C-ACC-001~003] Support(/me/support) 클로저 - deposit-disputes · fake chat 0"
+    status: completed
   - id: rel-127
-    content: "[Consumer][Legacy:C-ACC-001~003] Guides(/me/guide/* 7라우트) 클로저 - Track C \"핵심 8영역\" completed 선언 범위(재확인 게이트만)"
-    status: pending
+    content: "[Consumer][Legacy:C-ACC-001~003] Guides(/me/guide/* 7라우트) 클로저 - AccountFrame · leftover chrome 0"
+    status: completed
   - id: rel-128
-    content: "[Consumer][Legacy:C-ACC-001~003] Legal(/me/legal/* 5라우트) 클로저 - Track C \"핵심 8영역\" completed 선언 범위(재확인 게이트만)"
-    status: pending
+    content: "[Consumer][Legacy:C-ACC-001~003] Legal(/me/legal/* 5라우트) 클로저 - existing legal/operator owners"
+    status: completed
   - id: rel-129
-    content: "[Consumer] PartnerTrust(embed) 클로저 - 실제 파트너 로고만 사용, AI 생성 금지"
-    status: pending
+    content: "[Consumer] PartnerTrust(embed) 클로저 - official MarketPartnerGrid logos only · AI 생성 0"
+    status: completed
   - id: rel-130
-    content: "[Consumer] Grouped compatibility 검증: /ads, /l/[variant], /me/events, /me/strategies, /me/membership, /me/benefits(6개 실제 경로, 경량 DoD)"
-    status: pending
+    content: "[Consumer] Grouped compatibility 검증: /ads /l/* events/strategies/membership/benefits — leftover chrome 0 · fake money 0"
+    status: completed
   - id: rel-131
-    content: "[Consumer][A3][Home-only:account_hub_figma] Account Hub Figma Desktop 1440 + Mobile 390 프레임 신설(Backup Home 클론 금지). REL-123 재확인과 독립. 새 프레임 Founder 검토 후 시각 적용은 본 REL 산출로 기록"
-    status: pending
+    content: "[Consumer][A3] Account Hub Figma Desktop 192:194 + Mobile 192:434 = FOUNDER_APPROVED_LOCKED. V1/V2 preserved. production apply 0"
+    status: completed
   - id: rel-200
-    content: "[Admin] apps/admin/app/page.tsx(root) 실사 - 순수 리다이렉트인지 확인 후 처리"
-    status: pending
+    content: "[Admin] apps/admin/app/page.tsx(root) 실사 - redirect(/admin) · web /admin 0 · verify:no-admin-in-web PASS"
+    status: completed
   - id: rel-201
-    content: "[Admin] /admin 대시보드 실사+구현(현재 2줄 stub 확인됨)"
-    status: pending
+    content: "[Admin] /admin 대시보드 실사+구현 - live push/circuit/queue · user count UNAVAILABLE"
+    status: completed
   - id: rel-202
-    content: "[Admin] /admin/users 리스트 실사+구현"
-    status: pending
+    content: "[Admin] /admin/users 리스트 실사+구현 - list API 없음 · UUID jump"
+    status: completed
   - id: rel-203
-    content: "[Admin] /admin/users/[id] 상세 실사+구현"
-    status: pending
+    content: "[Admin] /admin/users/[id] 상세 실사+구현 - membership/risk/overrides live"
+    status: completed
   - id: rel-204
-    content: "[Admin] /admin/users/[id]/finance 실사+구현"
-    status: pending
+    content: "[Admin] /admin/users/[id]/finance 실사+구현 - live buckets · balance UPDATE UI 0"
+    status: completed
   - id: rel-205
-    content: "[Admin] /admin/ledger 실사+구현"
-    status: pending
+    content: "[Admin] /admin/ledger 실사+구현 - journals/recon/shadow read"
+    status: completed
   - id: rel-206
-    content: "[Admin] /admin/wallet 실사+구현"
-    status: pending
+    content: "[Admin] /admin/wallet 실사+구현 - deposit-config/krw/disputes live · review UNAVAILABLE"
+    status: completed
   - id: rel-207
     content: "[Admin] /admin/compliance(KYC 심사) 실사+구현"
     status: pending
@@ -429,8 +429,8 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-002
-LAST_COMPLETED_TODO = REL-001
+FIRST_EXECUTION_TODO = REL-207
+LAST_COMPLETED_TODO = REL-206
 PRE_LOCK_COUNT = 1
 REL_COUNT = 119
 POST_COUNT = 19
@@ -600,7 +600,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-002
 TITLE: Home 구현+승인 baseline 복원 (branch-PR-CI-merge)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-002
@@ -628,7 +628,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-003
 TITLE: Track A data-core + reprice 산출물 복원 (branch-PR-CI-merge)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_A_product_data_core.plan.md + ai_profit_os_opportunity_reprice_freshness.plan.md
 SOURCE_TODO_IDS:
   - rel-003
@@ -660,7 +660,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-004
 TITLE: ENGINE_BASELINE_SANITY_CHECK (경량, 정식 인증 아님)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: ai_profit_os_02_5_engine_acceptance_c3d4e5f6.plan.md
 SOURCE_TODO_IDS:
   - rel-004
@@ -688,7 +688,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-005
 TITLE: cursor-autonomous-ops.mdc 개정 (prod 인간 게이트 보존 + non-prod A3 개방)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-005
@@ -715,7 +715,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-006
 TITLE: QA_ENV_ISOLATION_GUARD + QA-LAB-BOOTSTRAP (committed Playwright spec)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-006
@@ -743,7 +743,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-007
 TITLE: money 0 fallback → UNAVAILABLE + Bootstrap spec 검증
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-007
@@ -771,7 +771,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-008
 TITLE: settlement_rule.rs/.cjs golden vector parity를 T0/T1에 편입
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-008
@@ -798,7 +798,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-009
 TITLE: Figma Integration Infrastructure (token/Code Connect 반영)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-009
@@ -826,7 +826,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-010
 TITLE: auth 라우트 rate limiting 실제 동작 검증/구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-010
@@ -853,7 +853,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-011
 TITLE: apps/web 실제 lint 구현 (no-op 교체)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-011
@@ -880,7 +880,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-012
 TITLE: axe-core를 committed Playwright 하네스에 배선
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: 퍼뜩_03_ui_ux_master_plan_be3fa3cc.plan.md (intake)
 SOURCE_TODO_IDS:
   - rel-012
@@ -908,7 +908,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-013
 TITLE: apps/web next.config.ts images.remotePatterns 확인/수정
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-013
@@ -934,7 +934,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-014
 TITLE: PWA native shell (E-PWA-001 only)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_E_pwa.plan.md
 SOURCE_TODO_IDS:
   - rel-014
@@ -963,7 +963,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-015
 TITLE: 유저용 generic ledger/journal 조회 API
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-015
@@ -991,7 +991,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-016
 TITLE: observability 도입 (error tracking, 구조화 로그, alerting)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-016
@@ -1018,7 +1018,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-017
 TITLE: LEGACY_PLAN_MIGRATION_REGISTRY workspace stamp
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-017
@@ -1046,7 +1046,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-018
 TITLE: ASSET_PRODUCTION_PIPELINE 인프라화
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-018
@@ -1073,7 +1073,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-019
 TITLE: RESPONSIVE_DEVICE_TIER_SYSTEM 통합
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: 퍼뜩_03_ui_ux_master_plan_be3fa3cc.plan.md (intake) + putduk_release_master
 SOURCE_TODO_IDS:
   - rel-019
@@ -1101,7 +1101,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-020
 TITLE: PWA Push+Badge (E-PWA-002)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_E_pwa.plan.md
 SOURCE_TODO_IDS:
   - rel-020
@@ -1130,7 +1130,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-021
 TITLE: 자동 Push 채널 필터 (E-PWA-003)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_E_pwa.plan.md
 SOURCE_TODO_IDS:
   - rel-021
@@ -1159,7 +1159,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-022
 TITLE: WebAuthn UX/RP + haptics fallback (E-PWA-004)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_E_pwa.plan.md
 SOURCE_TODO_IDS:
   - rel-022
@@ -1188,7 +1188,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-023
 TITLE: PWA certification (E-PWA-007)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_E_pwa.plan.md
 SOURCE_TODO_IDS:
   - rel-023
@@ -1219,7 +1219,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-100
 TITLE: Landing (/ guest) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER.plan.md
 SOURCE_TODO_IDS:
   - rel-100
@@ -1250,7 +1250,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-101
 TITLE: Signup (/auth/signup) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_C_acquisition_account_trust.plan.md
 SOURCE_TODO_IDS:
   - rel-101
@@ -1282,7 +1282,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-102
 TITLE: Login (/auth/login) 클로저 + Kakao 잔여 판정
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_C_acquisition_account_trust.plan.md
 SOURCE_TODO_IDS:
   - rel-102
@@ -1312,7 +1312,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-103
 TITLE: CompleteProfile (/auth/complete-profile) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_C_acquisition_account_trust.plan.md
 SOURCE_TODO_IDS:
   - rel-103
@@ -1344,7 +1344,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-104
 TITLE: Onboarding (/onboarding) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_C_acquisition_account_trust.plan.md
 SOURCE_TODO_IDS:
   - rel-104
@@ -1376,7 +1376,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-105
 TITLE: Home 잔여 클로저 (Playwright+A11y+Security, 시각 재설계 없음)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: governance/consumer-home-approval/home-approval-freeze.v1.json
 SOURCE_TODO_IDS:
   - rel-105
@@ -1406,7 +1406,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-106
 TITLE: OpportunityList (/profits) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_B_user_profit_loop.plan.md + parallel_consumer_ui_figma (cux-004)
 SOURCE_TODO_IDS:
   - rel-106
@@ -1438,7 +1438,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-107
 TITLE: OpportunityDetail (/profits/[id]) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_B_user_profit_loop.plan.md + parallel_consumer_ui_figma (cux-003)
 SOURCE_TODO_IDS:
   - rel-107
@@ -1470,7 +1470,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-108
 TITLE: ParticipateConfirmation (modal/sheet) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_B_user_profit_loop.plan.md
 SOURCE_TODO_IDS:
   - rel-108
@@ -1497,7 +1497,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-109
 TITLE: Matching/execute (/trades/[id]/execute) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_B_user_profit_loop.plan.md + parallel_consumer_ui_figma (cux-005)
 SOURCE_TODO_IDS:
   - rel-109
@@ -1528,7 +1528,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-110
 TITLE: MatchingResult (/trades) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_B_user_profit_loop.plan.md + parallel_consumer_ui_figma (cux-006)
 SOURCE_TODO_IDS:
   - rel-110
@@ -1558,7 +1558,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-111
 TITLE: Earnings (/trades embed) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER.plan.md
 SOURCE_TODO_IDS:
   - rel-111
@@ -1585,7 +1585,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-112
 TITLE: SettlementDetail 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_B_user_profit_loop.plan.md + parallel_consumer_ui_figma (cux-006)
 SOURCE_TODO_IDS:
   - rel-112
@@ -1613,7 +1613,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-113
 TITLE: Wallet (/wallet) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_B_user_profit_loop.plan.md + parallel_consumer_ui_figma (cux-007)
 SOURCE_TODO_IDS:
   - rel-113
@@ -1644,7 +1644,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-114
 TITLE: UsdtDeposit 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_B_user_profit_loop.plan.md
 SOURCE_TODO_IDS:
   - rel-114
@@ -1672,7 +1672,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-115
 TITLE: KrwDeposit 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_B_user_profit_loop.plan.md
 SOURCE_TODO_IDS:
   - rel-115
@@ -1700,7 +1700,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-116
 TITLE: UsdtWithdraw 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_B_user_profit_loop.plan.md
 SOURCE_TODO_IDS:
   - rel-116
@@ -1728,7 +1728,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-117
 TITLE: KrwWithdraw 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_B_user_profit_loop.plan.md
 SOURCE_TODO_IDS:
   - rel-117
@@ -1756,7 +1756,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-118
 TITLE: TransactionHistory 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-118
@@ -1783,7 +1783,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-119
 TITLE: TransactionDetail 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-119
@@ -1810,7 +1810,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-120
 TITLE: Referral (/me/invite) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_C_acquisition_account_trust.plan.md
 SOURCE_TODO_IDS:
   - rel-120
@@ -1842,7 +1842,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-121
 TITLE: Notifications (/me/inbox) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_C_acquisition_account_trust.plan.md
 SOURCE_TODO_IDS:
   - rel-121
@@ -1874,7 +1874,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-122
 TITLE: AIInsight (/me/peotteok) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER.plan.md
 SOURCE_TODO_IDS:
   - rel-122
@@ -1902,7 +1902,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-123
 TITLE: Profile (/me) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_C_acquisition_account_trust.plan.md
 SOURCE_TODO_IDS:
   - rel-123
@@ -1933,7 +1933,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-124
 TITLE: Kyc (/me/kyc) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_C_acquisition_account_trust.plan.md
 SOURCE_TODO_IDS:
   - rel-124
@@ -1965,7 +1965,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-125
 TITLE: Settings (/me/settings) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_C_acquisition_account_trust.plan.md
 SOURCE_TODO_IDS:
   - rel-125
@@ -1997,7 +1997,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-126
 TITLE: Support (/me/support) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_C_acquisition_account_trust.plan.md
 SOURCE_TODO_IDS:
   - rel-126
@@ -2029,7 +2029,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-127
 TITLE: Guides (/me/guide/*) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_C_acquisition_account_trust.plan.md
 SOURCE_TODO_IDS:
   - rel-127
@@ -2061,7 +2061,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-128
 TITLE: Legal (/me/legal/*) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_C_acquisition_account_trust.plan.md
 SOURCE_TODO_IDS:
   - rel-128
@@ -2093,7 +2093,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-129
 TITLE: PartnerTrust (embed) 클로저
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER.plan.md
 SOURCE_TODO_IDS:
   - rel-129
@@ -2119,7 +2119,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-130
 TITLE: Grouped compatibility 검증 (6개 실제 경로)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER.plan.md
 SOURCE_TODO_IDS:
   - rel-130
@@ -2146,7 +2146,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-131
 TITLE: Account Hub Figma Desktop + Mobile frames
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: account_hub_figma_23be13c4.plan.md
 SOURCE_TODO_IDS:
   - figma-context
@@ -2176,7 +2176,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-200
 TITLE: apps/admin/app/page.tsx(root) 실사
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-200
@@ -2202,7 +2202,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-201
 TITLE: /admin 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-201
@@ -2230,7 +2230,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-202
 TITLE: /admin/users 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-202
@@ -2259,7 +2259,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-203
 TITLE: /admin/users/[id] 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-203
@@ -2288,7 +2288,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-204
 TITLE: /admin/users/[id]/finance 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-204
@@ -2317,7 +2317,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-205
 TITLE: /admin/ledger 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-205
@@ -2346,7 +2346,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-206
 TITLE: /admin/wallet 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-206

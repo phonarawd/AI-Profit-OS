@@ -117,26 +117,26 @@ export class LlmAdapterService {
     }
 
     const adapter = createLlmAdapter(providerId, this.adapterConfig());
-    let result = await llmAdapterChat(adapter, {
+    // Client SSE is post-hoc chunking in CoachOrchestrator.
+    // Provider stream=true breaks Chat Completions JSON parse — never enable it here.
+    const providerInput = {
       messages: input.messages,
       tools: lane === "G" ? [] : input.tools,
-      stream: input.stream,
+      stream: false,
       maxTokens: input.maxTokens,
       temperature: input.temperature,
-    });
+    };
+    let result = await llmAdapterChat(adapter, providerInput);
 
     if (!result.degraded) {
       await this.bumpQuota(providerId);
     }
 
     if (result.degraded && result.finish_reason === "quota") {
-      const retry = await llmAdapterChat(createLlmAdapter(providerId, this.adapterConfig()), {
-        messages: input.messages,
-        tools: lane === "G" ? [] : input.tools,
-        stream: false,
-        maxTokens: input.maxTokens,
-        temperature: input.temperature,
-      });
+      const retry = await llmAdapterChat(
+        createLlmAdapter(providerId, this.adapterConfig()),
+        providerInput,
+      );
       if (!retry.degraded) {
         result = retry;
         await this.bumpQuota(providerId);

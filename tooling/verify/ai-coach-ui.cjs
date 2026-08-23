@@ -13,7 +13,10 @@ const fails = [];
 function mustExist(rel) {
   const fp = path.join(root, rel);
   if (!fs.existsSync(fp)) {
-    if (/^packages\\/ui\\/components\\//.test(rel) || /WithdrawLiveForm|HomePageClient|ProfitsPageClient/.test(rel)) {
+    if (
+      /^packages\/ui\/components\//.test(rel) ||
+      /WithdrawLiveForm|HomePageClient|ProfitsPageClient/.test(rel)
+    ) {
       return;
     }
     fails.push(`missing: ${rel}`);

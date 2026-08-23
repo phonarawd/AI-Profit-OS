@@ -56,6 +56,19 @@ if (gLane.lane !== "G" || gLane.tools_called.length !== 0) {
     fails.push("openai without key must degrade");
   }
 
+  const geminiNoKey = ai.createLlmAdapter("gemini_free", {});
+  const geminiDegraded = await geminiNoKey.chat({
+    messages: [{ role: "user", content: "hello" }],
+  });
+  if (!geminiDegraded.degraded || geminiDegraded.provider_effective !== "none") {
+    fails.push("gemini_free without key must degrade");
+  }
+
+  const gDegrade = ai.degradeAnswerPath("P", true);
+  if (gDegrade?.path !== "fact") {
+    fails.push("provider failure must not invent P money facts");
+  }
+
   if (fails.length) {
     console.error("[verify:llm-quota-degrade] FAIL\n- " + fails.join("\n- "));
     process.exit(1);

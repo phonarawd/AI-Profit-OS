@@ -119,7 +119,8 @@ export function loadPhase0Env(): Phase0Env {
     resendFromEmail: read("RESEND_FROM_EMAIL"),
     llmProvider: readLlmProvider(),
     llmApiKey: read("LLM_API_KEY"),
-    geminiApiKey: read("GEMINI_API_KEY"),
+    // Official Gemini env names: GEMINI_API_KEY or GOOGLE_API_KEY (do not rename SSOT).
+    geminiApiKey: read("GEMINI_API_KEY") ?? read("GOOGLE_API_KEY"),
     geminiModel: read("GEMINI_MODEL") ?? "gemini-flash-lite-latest",
     openaiModel: read("OPENAI_MODEL") ?? "gpt-4o-mini",
     groqModel: read("GROQ_MODEL") ?? "llama-3.1-8b-instant",

@@ -125,10 +125,19 @@ function renderFactAnswer(facts, opts = {}) {
   const lines = [];
   for (const f of list) {
     const p = f?.payload && typeof f.payload === "object" ? f.payload : {};
+    if (p.availability === "unavailable") {
+      if (p.summary) lines.push(String(p.summary));
+      else lines.push("지금 그 숫자를 확인할 수 없어요. 잠시 후 다시 확인해 주세요.");
+      continue;
+    }
     if (p.profitUsdt != null || p.liabilityUsdt != null) {
-      lines.push(
-        `지금 출금 가능한 수익은 ${String(p.profitUsdt ?? "0")} USDT예요. (원장 기준)`,
-      );
+      if (p.profitUsdt == null) {
+        lines.push("지금 출금 가능한 수익 숫자를 확인할 수 없어요.");
+      } else {
+        lines.push(
+          `지금 출금 가능한 수익은 ${String(p.profitUsdt)} USDT예요. (원장 기준)`,
+        );
+      }
       if (p.principalUsdt != null) {
         lines.push(`원금 버킷은 ${String(p.principalUsdt)} USDT예요.`);
       }
@@ -148,9 +157,15 @@ function renderFactAnswer(facts, opts = {}) {
       continue;
     }
     if (p.claimableCount != null || p.benefitsHref) {
-      lines.push(
-        `받을 혜택 ${String(p.claimableCount ?? 0)}건 · 자세히: ${String(p.benefitsHref || "/me/benefits")}`,
-      );
+      if (p.claimableCount == null) {
+        lines.push(
+          `혜택 건수를 지금 확인할 수 없어요. 자세히: ${String(p.benefitsHref || "/me/benefits")}`,
+        );
+      } else {
+        lines.push(
+          `받을 혜택 ${String(p.claimableCount)}건 · 자세히: ${String(p.benefitsHref || "/me/benefits")}`,
+        );
+      }
       continue;
     }
     if (p.guideText) {

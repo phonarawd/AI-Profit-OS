@@ -29,7 +29,7 @@ const UUID_RE =
 
 /** Deictic / ordinal cues that mean the user is referring to a prior result */
 const REFERENCE_CUE_RE =
-  /그중|위에\s*나온|아까|방금|첫\s*번째|첫번째|두\s*번째|두번째|세\s*번째|세번째|네\s*번째|네번째|다섯\s*번째|다섯번째|\d\s*번째|맨\s*(앞|마지막)|가장\s*(싼|최근|앞)|그\s*(거|것|상품|기회|미션)|결과\s*중/;
+  /그중|위에\s*나온|아까|방금|저번|첫\s*번째|첫번째|두\s*번째|두번째|세\s*번째|세번째|네\s*번째|네번째|다섯\s*번째|다섯번째|\d\s*번째|맨\s*(앞|마지막)|가장\s*(싼|최근|앞)|그\s*(거|것|상품|기회|미션)|결과\s*중/;
 
 const ORDINAL_RULES = Object.freeze([
   {
@@ -54,7 +54,7 @@ const ORDINAL_RULES = Object.freeze([
   },
   {
     index: -1,
-    re: /(?:맨\s*마지막|가장\s*최근|방금\s*(?:본|나온)|마지막\s*(?:거|것)?)/,
+    re: /(?:맨\s*마지막|가장\s*최근|방금\s*(?:본|나온)|저번(?:에)?|마지막\s*(?:거|것)?)/,
   },
 ]);
 
@@ -258,7 +258,7 @@ function resolveResultReference(input = {}) {
 
   const preferType = /기회|미션|상품/.test(text)
     ? "opportunities"
-    : /진행|실행|체결|거래|중단/.test(text)
+    : /진행|실행|체결|거래|중단|참여한/.test(text)
       ? "executions"
       : null;
   const set = candidateSet(refs, preferType);

@@ -197,21 +197,35 @@ export class CoachOrchestrator {
       providerEffective = "none";
       toolsCalled = [];
       lane = "P";
-    } else if (lane === "P") {
-      const executionId =
-        referenceResolution.status === "resolved" &&
-        referenceResolution.type === "executions" &&
-        referenceResolution.id
+    } else if (lane === "P" || referenceResolution.status === "resolved") {
+      // Resolved resultRef is a hint to load that entity — not authorization.
+      // G + resolved must not reach llm_g without facts (confabulation).
+      const resolvedId =
+        referenceResolution.status === "resolved" && referenceResolution.id
           ? referenceResolution.id
           : null;
+      const resolvedType = referenceResolution.type;
+      if (lane === "G" && resolvedId) {
+        lane = "P";
+        toolsCalled =
+          resolvedType === "executions" ? ["getExecution"] : ["getOpportunity"];
+      }
+      const executionId =
+        resolvedId && resolvedType === "executions" ? resolvedId : null;
+      const opportunityId =
+        resolvedId && resolvedType === "opportunities" ? resolvedId : null;
       let toolsForLoad = [...toolsCalled];
       if (executionId && !toolsForLoad.includes("getExecution")) {
         toolsForLoad = [...toolsForLoad, "getExecution"];
+      }
+      if (opportunityId && !toolsForLoad.includes("getOpportunity")) {
+        toolsForLoad = [...toolsForLoad, "getOpportunity"];
       }
       // Ownership re-verified inside FactToolService (user_id + id).
       const loaded = await this.facts.loadTools(userId, toolsForLoad, {
         query: text,
         executionId,
+        opportunityId,
       });
       factsUsed = loaded.facts;
       toolsCalled = loaded.toolsCalled;
@@ -223,8 +237,14 @@ export class CoachOrchestrator {
         facts: factsUsed,
         llm: input.llm !== false,
       });
-      lane = route.lane;
-      answerPath = route.answer_path;
+      if (resolvedId) {
+        // Keep Fact path — regex G must not drop loaded tools into llm_g.
+        lane = "P";
+        answerPath = route.lane === "P" ? route.answer_path : "llm_p";
+      } else {
+        lane = route.lane;
+        answerPath = route.answer_path;
+      }
 
       if (loaded.stale || factsUsed.length === 0) {
         answerText = P_REFRESH_TEMPLATE.text;

@@ -1,5 +1,7 @@
 /**
- * Gemini free tier adapter — Engine §47.13 Day-1 default
+ * Gemini adapter — Engine §47.13
+ * Official REST (2026): generateContent + x-goog-api-key header.
+ * Key must never appear in the request URL (proxy/access-log leak).
  */
 
 "use strict";
@@ -30,24 +32,40 @@ function createGeminiFreeAdapter(config = {}) {
       }
 
       const messages = Array.isArray(input.messages) ? input.messages : [];
-      const contents = messages.map((m) => ({
-        role: m.role === "assistant" ? "model" : "user",
-        parts: [{ text: String(m.content || "") }],
-      }));
+      const systemTexts = [];
+      const contents = [];
+      for (const m of messages) {
+        const text = String(m?.content || "");
+        if (m?.role === "system") {
+          if (text) systemTexts.push(text);
+          continue;
+        }
+        contents.push({
+          role: m?.role === "assistant" ? "model" : "user",
+          parts: [{ text }],
+        });
+      }
 
-      const url =
-        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
+
+      const body = {
+        contents,
+        generationConfig: {
+          maxOutputTokens: Number(input.maxTokens) || 512,
+          temperature:
+            input.temperature != null ? Number(input.temperature) : 0.3,
+        },
+      };
+      if (systemTexts.length) {
+        body.systemInstruction = {
+          parts: [{ text: systemTexts.join("\n") }],
+        };
+      }
 
       const res = await postJson({
         url,
-        body: {
-          contents,
-          generationConfig: {
-            maxOutputTokens: Number(input.maxTokens) || 512,
-            temperature:
-              input.temperature != null ? Number(input.temperature) : 0.3,
-          },
-        },
+        headers: { "x-goog-api-key": apiKey },
+        body,
       });
 
       if (!res.ok) {
