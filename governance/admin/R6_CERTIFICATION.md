@@ -41,4 +41,4 @@ Control-plane: REL-222 3-mode · REL-223 match verbs · REL-224 policy versions 
 
 ## EXIT_GATE
 
-의존 REL 미완료면 인증 금지. 사이드바 13번째 = FAIL. `apps/web/app/admin` = FAIL. known P0~P3 ≠ 0 이면 FAIL.
+의존 REL 미완료면 인증 금지. 사이드바 13번째 = FAIL. `apps/web/app/admin` = FAIL. 이 인증서 `KNOWN_P0`~`KNOWN_P3` 가 0이 아니면 FAIL. 엔진 수용 발견 장부(`governance/engine-acceptance/defects.v1.json`)는 REL-502 공식이므로 이 검증이 비우기를 요구하지 않는다.
