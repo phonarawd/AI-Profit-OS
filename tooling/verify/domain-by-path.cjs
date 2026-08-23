@@ -518,6 +518,15 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/performance\//.test(f) ||
+      /^governance\/release-master\/REL-404-LIGHTHOUSE-BUDGET\.md$/.test(f) ||
+      /^tooling\/perf\/lighthouse\.ci\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-404-lighthouse-budget\.cjs$/.test(f) ||
+      /^\.github\/workflows\/lighthouse\.yml$/.test(f),
+    scripts: ["rel-404-lighthouse-budget.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||

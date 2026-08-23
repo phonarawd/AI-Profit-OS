@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "rel": "REL-404",
+  "localFullLighthouse": false,
+  "ciDelegated": true,
+  "numericSloInvented": false,
+  "numericSloOwner": "performance-baseline phase · PO approval",
+  "homeVisualDowngrade": false,
+  "homeGeometryRewrite": "FORBIDDEN",
+  "homeFreeze": "governance/consumer-home-approval/home-approval-freeze.v1.json",
+  "homeGeometryLock": "governance/responsive/home-geometry-lock.v1.json",
+  "ppeOwner": "packages/ui/performance/ppe-ladder.ts",
+  "ciEnv": "AIPO_LIGHTHOUSE",
+  "fullLhWorkflow": ".github/workflows/lighthouse.yml",
+  "budgets": {
+    "bundle": {
+      "id": "bundle",
+      "kind": "policy",
+      "rules": [
+        "Do not cut Home geometry/CSS/artwork to chase a Lighthouse number",
+        "Prefer route/code split and static optimized assets",
+        "VISUAL_PERFORMANCE_CONFLICT reports to PO — no silent Visual Master downgrade"
+      ]
+    },
+    "image": {
+      "id": "image",
+      "kind": "policy",
+      "heroFormats": ["image/avif", "image/webp"],
+      "productOwner": "packages/ui/components/product/ProductImage.tsx",
+      "heroOwner": "packages/ui/components/home/HomeHeroIllustration.tsx",
+      "rules": [
+        "ProductImage uses sizes() and lazy unless priority",
+        "Home hero stays AVIF/WebP picture + fetchPriority high",
+        "Do not invent a new image optimizer in this REL"
+      ]
+    },
+    "lazy": {
+      "id": "lazy",
+      "kind": "policy",
+      "default": "lazy",
+      "priorityOnly": "above-the-fold LCP / Home hero / first opportunity card",
+      "rules": [
+        "ProductImage loading=lazy when priority is false",
+        "Home hero must not become lazy"
+      ]
+    }
+  },
+  "exitGate": {
+    "homeVisualRegressPr": "REJECT",
+    "pixelDiffAlone": "not a failure"
+  }
+}

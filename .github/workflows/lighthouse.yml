@@ -1,0 +1,27 @@
+name: lighthouse
+
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "REL-404 full Lighthouse is reserved. This workflow runs the static budget gate only."
+        required: false
+        default: "static-budget"
+
+jobs:
+  budget:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: REL-404 static budget
+        run: pnpm verify:rel-404-lighthouse-budget
