@@ -620,6 +620,16 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^tooling\/e2e\/expansion\//.test(f) ||
+      /^tooling\/e2e\/lib\/qa-lab-expansion\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/qa-lab-expansion\.spec\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-500-QA-LAB-EXPANSION\.md$/.test(f) ||
+      /^tooling\/verify\/rel-500-qa-lab-expansion\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-500-qa-lab-expansion\.v1\.json$/.test(f),
+    scripts: ["rel-500-qa-lab-expansion.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||

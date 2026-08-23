@@ -1,0 +1,40 @@
+{
+  "rel": "REL-500",
+  "mcpOnlyDone": false,
+  "localFullMatrixForbidden": true,
+  "homeGeometryPatch": 0,
+  "minCartesian": 200,
+  "maxRequired": 16,
+  "minRequired": 7,
+  "requiredCellIds": [
+    "req-home-390-chromium-a11y",
+    "req-home-1440-chromium-a11y",
+    "req-auth-login-chromium-online",
+    "req-wallet-auth-chromium-online",
+    "req-profits-auth-chromium-online",
+    "req-participate-auth-chromium-online",
+    "req-settlement-auth-chromium-online",
+    "req-admin-entry-isolation"
+  ],
+  "deps": ["REL-006", "REL-012", "REL-019"],
+  "extraVerifies": [
+    "qa-env-isolation-guard.cjs",
+    "axe-harness.cjs",
+    "money-unavailable.cjs"
+  ],
+  "homeFilesForbidden": [
+    "apps/web/app/HomeDesktopClient.tsx",
+    "apps/web/app/HomePageClient.tsx",
+    "apps/web/components/spark-dash-home/HomeDesktop.tsx",
+    "apps/web/components/spark-dash-home/HomeMobile.tsx",
+    "governance/responsive/home-geometry-lock.v1.json"
+  ],
+  "bootstrapMustExist": [
+    "tooling/e2e/README.md",
+    "tooling/e2e/playwright.config.cjs",
+    "tooling/e2e/lib/qa-env-isolation-guard.cjs",
+    "tooling/e2e/lib/money-mutation-gate.cjs",
+    "tooling/e2e/persona/qa-lab-seed.v1.md",
+    "tooling/e2e/specs/happy-path.placeholder.spec.cjs"
+  ]
+}
