@@ -11,10 +11,13 @@ APPLY_MIGRATION: 0
 PRODUCTION_DB_WRITE: 0
 PROTECTED_SCOPE_MUTATION: false
 FIXTURE: tooling/verify/fixtures/r7-backend-alignment.v1.json
+REMOTE_APPLIED: tooling/verify/fixtures/migrations-remote-applied.v1.json
+certVersion: 2
 ```
 
 이 문서는 API·SDK·Nest AppModule·Engine FSM·local/remote migration head·indexes/RLS/idempotency·auth permission·money units·source/asOf/reasonCode 의 **1:1 대조 결과**다.
 `tooling/verify/fixtures/migrations-applied.v1.json` 은 로컬 파일명 접두사 스냅샷이며 **NOT remote 1:1**.
+원격 apply-time 진실은 `migrations-remote-applied.v1.json` 이다.
 
 ## Dependencies (위조 0)
 
@@ -30,20 +33,27 @@ FIXTURE: tooling/verify/fixtures/r7-backend-alignment.v1.json
 | D-API-SDK | API · SDK consumer path | ALIGNED | — |
 | D-APPMODULE | Nest AppModule imports | ALIGNED | — |
 | D-ENGINE-FSM | Engine FSM · resultCode | CONFLICT | REL-509 |
-| D-MIGRATION-HEAD | local/remote migration head | CONFLICT | REL-508 |
+| D-MIGRATION-HEAD | local/remote migration head | ALIGNED | — |
 | D-INDEX-RLS-IDEM | indexes · RLS · idempotency | ALIGNED | — |
 | D-AUTH-PERM | auth permission | ALIGNED | — |
 | D-MONEY-UNITS | money units | ALIGNED | — |
 | D-SOURCE-ASOF-REASON | source / asOf / reasonCode | CONFLICT | REL-510 |
 
+## Reconciled (REL-508 · first-class · 숨기지 않음)
+
+| id | 내용 | owner |
+|---|---|---|
+| C-MIG-VERSION-DRIFT | 같은 name, 다른 version id 맵 공개 (ptf00c ×4 + krw_deposit_fx_facts). 버전 숫자를 같게 만들지 않음 | REL-508 |
+| C-MIG-REMOTE-ORPHAN-ONBOARDING | ORPHAN_REMOTE `20260821223109 beginner_onboarding_experience` · 이 트리 로컬 SQL 0 · 컬럼 효과 있음 | REL-508 |
+| C-MIG-REMOTE-DUP-IDEMPOTENCY | 원격 두 줄 (`20260810212231` + `20260811062000`) · 로컬은 후자만 · 행 삭제 0 | REL-508 |
+| C-MIG-FIXTURE-HIDE | local-prefix 픽스처 유지 · remote proof = migrations-remote-applied.v1.json | REL-508 |
+
+맵 문서: `governance/release-master/REL-508-MIGRATION-HEAD-IDENTITY.md`
+
 ## Conflicts (first-class · 각주로 숨기지 않음)
 
 | id | 내용 | owner |
 |---|---|---|
-| C-MIG-VERSION-DRIFT | 같은 name, 다른 version id (ptf00c ×4 + krw_deposit_fx_facts) | REL-508 |
-| C-MIG-REMOTE-ORPHAN-ONBOARDING | 원격 `20260821223109 beginner_onboarding_experience` · 로컬 SQL 0 · public 잔여 객체 0 | REL-508 |
-| C-MIG-REMOTE-DUP-IDEMPOTENCY | 원격 idempotency_request_fingerprint 두 줄 (`20260810212231` + `20260811062000`) | REL-508 |
-| C-MIG-FIXTURE-HIDE | migrations-applied.v1.json 이 원격 apply-time version을 로컬 접두사로 대체 | REL-508 |
 | C-FSM-REGISTRY-STATUS | registry `engine.trade_execution` 에 cancelled/failed 없음 (schema/SDK/Nest 에는 있음) | REL-509 |
 | C-FSM-CANCELLED-BY-USER | Nest/SDK/schema `CANCELLED_BY_USER` · rust/cjs ExecutionResultCode 없음 | REL-509 |
 | C-REASON-CIRCUIT-GRAMMAR | `BUCKET_INVARIANT_FAIL` ≠ `domain.resource.reason` | REL-510 |
@@ -63,20 +73,21 @@ FIXTURE: tooling/verify/fixtures/r7-backend-alignment.v1.json
 - RLS ENABLE + money/auth FORCE + policy 2개(deny_all) + ledger 불변 트리거 + `request_fingerprint` + idempotency_key unique. `auth.uid()` 0.
 - 유저 컨트롤러 JwtAuthGuard. Nest JWT SoT.
 - USDT = decimal string (wallet-buckets schema · SDK · Nest).
+- Migration head identity map 공란 0. apply 0.
 
 ## Version bump
 
 ```text
-RELEASE_MASTER_REVISION += REL-505 R7 + additive REL-508/509/510
+RELEASE_MASTER_REVISION += REL-508 migration-head identity reconcile
 R7_ALIGNMENT_EPOCH = 2026-08-23
-certVersion = 1
+certVersion = 2
 ```
 
-기존 116 REL 정의를 덮어쓰지 않는다. 충돌 owner 가산만.
+기존 REL 정의를 덮어쓰지 않는다. C-MIG-* 는 RECONCILED. C-FSM-* / C-REASON-* 는 열린 CONFLICT.
 
 ## Exit
 
 - 충돌을 각주/노트/로컬접두사 픽스처로 숨기면 FAIL.
 - 이 인증을 CLEAN alignment 로 인용하면 FAIL.
 - apply/DDL 0.
-- 재인증은 owner REL 완료 후 fixture+본 문서 갱신.
+- 재인증은 남은 owner REL(509/510) 완료 후 fixture+본 문서 갱신.

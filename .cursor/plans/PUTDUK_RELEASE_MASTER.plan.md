@@ -316,7 +316,7 @@ todos:
     status: completed
   - id: rel-508
     content: "[QA-Expansion][A2][REL-505 owner] MIGRATION_HEAD_IDENTITY_RECONCILE: local↔remote version-id map, remote-only beginner_onboarding source recovery, duplicate idempotency version, migrations-applied fixture hide 해소. apply 0 (apply=REL-701-DB)"
-    status: pending
+    status: completed
   - id: rel-509
     content: "[QA-Expansion][A2][REL-505 owner] ENGINE_FSM_REGISTRY_AND_RESULT_CODE_ALIGN: fact-state-registry engine.trade_execution에 cancelled/failed 반영 또는 owner-split 문서화, rust/cjs ExecutionResultCode ↔ Nest CANCELLED_BY_USER 1:1"
     status: pending
@@ -3531,7 +3531,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-508
 TITLE: MIGRATION_HEAD_IDENTITY_RECONCILE
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_RELEASE_MASTER.plan.md
 SOURCE_TODO_IDS:
   - rel-508
@@ -3545,7 +3545,7 @@ IMPLEMENTATION_STEPS:
   - 중복 idempotency 행 설명. Track A apply 금지
 VERIFY: verify:rel-505-backend-alignment 가 C-MIG-* 를 더 이상 CONFLICT로 요구하지 않음
 ACCEPTANCE: migration head identity 공란 0. hide 0. apply 0
-EVIDENCE: tooling/verify/fixtures/r7-backend-alignment.v1.json
+EVIDENCE: tooling/verify/fixtures/r7-backend-alignment.v1.json · tooling/verify/fixtures/migrations-remote-applied.v1.json · governance/release-master/REL-508-MIGRATION-HEAD-IDENTITY.md
 EXIT_GATE: 로컬 접두사로 원격을 덮어쓰면 FAIL. apply는 REL-701-DB
 AUTOMATION_LEVEL: A2
 PROTECTED_SCOPE_MUTATION: true

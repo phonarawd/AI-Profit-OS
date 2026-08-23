@@ -61,6 +61,7 @@ const requiredMeta = [
   "projectRef",
   "cleanAlignment",
   "dimensions",
+  "reconciled",
   "conflicts",
   "holds",
   "migrations",
@@ -75,6 +76,12 @@ if (fixture.projectRef !== "mgsytcetsiecllmhcyox") {
 if (fixture.hideForbidden !== true) fail("fixture.hideForbidden must be true");
 if (fixture.migrationsAppliedFixtureIsNotRemoteProof !== true) {
   fail("fixture must refuse migrations-applied.v1.json as remote 1:1 proof");
+}
+if (
+  fixture.remoteAppliedFixture !==
+  "tooling/verify/fixtures/migrations-remote-applied.v1.json"
+) {
+  fail("fixture.remoteAppliedFixture must point at remote-applied identity");
 }
 
 const dimIds = new Set();
@@ -97,6 +104,18 @@ for (const d of fixture.dimensions || []) {
   if (!d.note || !String(d.note).trim()) fail(`dimension ${d.id} note blank`);
 }
 
+const reconciledIds = new Set();
+for (const r of fixture.reconciled || []) {
+  if (!r.id || !r.dimension || !r.ownerRel || !r.summary || !r.status) {
+    fail(`reconciled blank cell: ${JSON.stringify(r)}`);
+    continue;
+  }
+  reconciledIds.add(r.id);
+  if (r.status !== "RECONCILED") fail(`reconciled ${r.id} status must be RECONCILED`);
+  if (!dimIds.has(r.dimension)) fail(`reconciled ${r.id} unknown dimension`);
+  if (!/^REL-\d+$/.test(r.ownerRel)) fail(`reconciled ${r.id} ownerRel invalid`);
+}
+
 const conflictIds = new Set();
 for (const c of fixture.conflicts || []) {
   if (!c.id || !c.dimension || !c.ownerRel || !c.summary) {
@@ -104,6 +123,7 @@ for (const c of fixture.conflicts || []) {
     continue;
   }
   conflictIds.add(c.id);
+  if (reconciledIds.has(c.id)) fail(`conflict ${c.id} also listed as reconciled`);
   if (!dimIds.has(c.dimension)) fail(`conflict ${c.id} unknown dimension`);
   if (!/^REL-\d+$/.test(c.ownerRel)) fail(`conflict ${c.id} ownerRel invalid`);
 }
@@ -122,17 +142,29 @@ if (fixture.cleanAlignment !== false) {
 }
 if (!fixture.conflicts.length) fail("conflicts[] empty while live drift exists");
 
-const expectedConflict = [
+const expectedReconciled = [
   "C-MIG-VERSION-DRIFT",
   "C-MIG-REMOTE-ORPHAN-ONBOARDING",
   "C-MIG-REMOTE-DUP-IDEMPOTENCY",
   "C-MIG-FIXTURE-HIDE",
+];
+for (const id of expectedReconciled) {
+  if (!reconciledIds.has(id)) fail(`required reconciled missing: ${id}`);
+  if (conflictIds.has(id)) fail(`${id} must not stay CONFLICT after REL-508`);
+}
+
+const expectedConflict = [
   "C-FSM-REGISTRY-STATUS",
   "C-FSM-CANCELLED-BY-USER",
   "C-REASON-CIRCUIT-GRAMMAR",
 ];
 for (const id of expectedConflict) {
   if (!conflictIds.has(id)) fail(`required conflict missing: ${id}`);
+}
+
+const migHead = (fixture.dimensions || []).find((d) => d.id === "D-MIGRATION-HEAD");
+if (!migHead || migHead.verdict !== "ALIGNED") {
+  fail("D-MIGRATION-HEAD must be ALIGNED after REL-508 identity reconcile");
 }
 
 const expectedHolds = ["H-TRACK-A-UNAPPLIED", "H-DEP-502", "H-DEP-504"];
@@ -144,6 +176,13 @@ for (const rel of ["REL-508", "REL-509", "REL-510"]) {
   if (!(fixture.ownerRels || []).includes(rel)) {
     fail(`ownerRels missing ${rel}`);
   }
+}
+const openOwners = fixture.ownerRelsOpen || [];
+if (!openOwners.includes("REL-509") || !openOwners.includes("REL-510")) {
+  fail("ownerRelsOpen must keep REL-509 and REL-510");
+}
+if (openOwners.includes("REL-508")) {
+  fail("REL-508 must not stay in ownerRelsOpen after reconcile");
 }
 
 // ── local migrations vs fixture ──
@@ -178,6 +217,15 @@ for (const x of expectedLocal) {
   if (!liveSet.has(x)) fail(`R7 fixture local missing on disk: ${x}`);
 }
 
+const remoteRequired = [
+  "20260814134038",
+  "20260814134055",
+  "20260814135111",
+  "20260814152139",
+  "20260817154827",
+  "20260810212231",
+  "20260821223109",
+];
 for (const row of fixture.migrations.versionIdDrift || []) {
   if (!row.name || !row.local || !row.remote) {
     fail(`versionIdDrift blank: ${JSON.stringify(row)}`);
@@ -186,10 +234,18 @@ for (const row of fixture.migrations.versionIdDrift || []) {
   if (row.local === row.remote) {
     fail(`versionIdDrift ${row.name} hides drift (local==remote)`);
   }
+  if (row.status !== "RECONCILED") {
+    fail(`versionIdDrift ${row.name} must stay RECONCILED (do not delete the map)`);
+  }
 }
 
 if ((fixture.migrations.remoteOnly || []).length < 2) {
   fail("remoteOnly must keep orphan onboarding + dup idempotency");
+}
+for (const row of fixture.migrations.remoteOnly || []) {
+  if (row.status !== "RECONCILED") {
+    fail(`remoteOnly ${row.name} must stay RECONCILED`);
+  }
 }
 
 const oldFix = JSON.parse(
@@ -201,6 +257,26 @@ if (!/apply-time version|LOCAL filename prefix/i.test(oldNote)) {
 }
 if ((oldFix.versions || []).includes("20260814134038")) {
   fail("do not rewrite migrations-applied.v1.json to pretend remote ids");
+}
+
+const remoteFix = JSON.parse(
+  read("tooling/verify/fixtures/migrations-remote-applied.v1.json") || "{}",
+);
+if (remoteFix.projectRef !== "mgsytcetsiecllmhcyox") {
+  fail("remote-applied fixture projectRef must be isolation allowlist only");
+}
+if (remoteFix.applyMigration !== 0) {
+  fail("remote-applied fixture must lock applyMigration 0");
+}
+const remoteVers = new Set(remoteFix.versions || []);
+for (const v of remoteRequired) {
+  if (!remoteVers.has(v)) fail(`remote-applied fixture missing ${v}`);
+}
+if (remoteVers.has("20260819210000")) {
+  fail("do not list Track A unapplied files as remote-applied");
+}
+if ((remoteFix.versions || []).length !== 42) {
+  fail(`remote-applied versions must be 42, got ${(remoteFix.versions || []).length}`);
 }
 
 // ── AppModule 1:1 ──
@@ -396,6 +472,15 @@ if (!/migrations-applied\.v1\.json/.test(cert) || !/NOT remote 1:1/.test(cert)) 
 for (const id of expectedConflict) {
   if (!cert.includes(id)) fail(`cert missing first-class conflict ${id}`);
 }
+if (!/## Reconciled/.test(cert)) {
+  fail("cert must keep a first-class Reconciled section");
+}
+for (const id of expectedReconciled) {
+  if (!cert.includes(id)) fail(`cert missing first-class reconciled ${id}`);
+}
+if (!/migrations-remote-applied\.v1\.json/.test(cert)) {
+  fail("cert must name the remote-applied fixture");
+}
 if (/각주/.test(cert) && /충돌/.test(cert)) {
   const after = cert.split("## ")[0];
   if (/각주/.test(after)) fail("do not park conflicts only in 각주");
@@ -417,7 +502,13 @@ const m505 = plan.match(
 if (!m505 || m505[1] !== "completed") {
   fail("plan rel-505 status must be completed");
 }
-for (const id of ["rel-508", "rel-509", "rel-510"]) {
+const m508 = plan.match(
+  /- id: rel-508\r?\n(?:    [^\n]*\r?\n)*?    status: (\w+)/,
+);
+if (!m508 || m508[1] !== "completed") {
+  fail("plan rel-508 status must be completed after identity reconcile");
+}
+for (const id of ["rel-509", "rel-510"]) {
   const m = plan.match(
     new RegExp(`- id: ${id}\\r?\\n(?:    [^\\n]*\\r?\\n)*?    status: (\\w+)`),
   );
@@ -434,5 +525,5 @@ if (fails.length) {
 }
 
 console.log(
-  "[verify:rel-505-backend-alignment] PASS (R7 ISSUED · CONFLICTS_OWNED · hide 0 · owner REL-508/509/510)",
+  "[verify:rel-505-backend-alignment] PASS (R7 ISSUED · CONFLICTS_OWNED · C-MIG RECONCILED · hide 0 · open REL-509/510)",
 );

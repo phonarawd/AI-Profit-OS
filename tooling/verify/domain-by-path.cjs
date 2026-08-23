@@ -134,8 +134,10 @@ const RULES = [
   {
     test: (f) =>
       /^governance\/release-master\/R7_BACKEND_ALIGNMENT\.md$/.test(f) ||
+      /^governance\/release-master\/REL-508-MIGRATION-HEAD-IDENTITY\.md$/.test(f) ||
       /^tooling\/verify\/rel-505-backend-alignment\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/r7-backend-alignment\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/fixtures\/migrations-remote-applied\.v1\.json$/.test(f) ||
       /^schemas\/trade-execution-state\.v1\.json$/.test(f) ||
       /^services\/engine-rust\/src\/settlement_rule\.rs$/.test(f) ||
       /^services\/engine-rust\/settlement_rule\.cjs$/.test(f) ||

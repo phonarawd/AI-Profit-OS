@@ -58,7 +58,7 @@
 | `apps/admin/**` | no-admin-in-web · admin-routes |
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |
 | `supabase/migrations/**` · migrations-applied fixture | migrations-applied-parity |
-| `governance/release-master/R7_BACKEND_ALIGNMENT.md` · `tooling/verify/rel-505-backend-alignment.cjs` · `tooling/verify/fixtures/r7-backend-alignment.v1.json` | rel-505-backend-alignment (REL-505 R7 · 충돌 은폐 0) |
+| `governance/release-master/R7_BACKEND_ALIGNMENT.md` · `governance/release-master/REL-508-MIGRATION-HEAD-IDENTITY.md` · `tooling/verify/rel-505-backend-alignment.cjs` · `tooling/verify/fixtures/r7-backend-alignment.v1.json` · `tooling/verify/fixtures/migrations-remote-applied.v1.json` | rel-505-backend-alignment (REL-505 R7 · REL-508 C-MIG RECONCILED · 충돌 은폐 0) |
 | `apps/web/app/page.tsx` · `HomePageClient` · `packages/sdk/src/user-feed/**` · `HomePrincipalRail` · `home-principal-slots` · sdk/api growth | home-live-wire · sdk-user-feed · home-principal-slots · growth-public-surface · ticker-pii-0 |
 | `apps/web/app/profits/**` · `apps/web/app/ProfitsDesktopClient.tsx` · `apps/web/components/spark-dash-profits/**` | profits-live-wire · sdk-user-feed |
 | `services/api-nest/src/opportunities/opportunities.user.*` · `user-opportunity-feed-policy` · `schemas/user-opportunity-feed-policy.v1.json` · `governance/consumer-loop/user-opportunity-feed-policy.v1.json` | user-opportunity-feed · user-opportunity-feed-policy (B-FEED-001) |
@@ -114,7 +114,7 @@
 | wallet-live-wire | UI PART9b/9f — `/wallet` buckets + `@aipo/sdk/wallet` `fetchWalletBuckets` (출금≠9f2) — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |
 | migrations-applied-parity | Supabase — 로컬 `supabase/migrations` 버전 ↔ `fixtures/migrations-applied.v1.json`(원격 applied 스냅샷) 1:1 · path-trigger — **live** |
-| rel-505-backend-alignment | REL-505 R7 — API·SDK·AppModule·FSM·migration head·RLS/idempotency·auth·money units·source/asOf/reasonCode 1:1 · 충돌=가산 REL · `migrations-applied.v1.json` ≠ remote 1:1 · path-trigger — **live** |
+| rel-505-backend-alignment | REL-505 R7 — API·SDK·AppModule·FSM·migration head·RLS/idempotency·auth·money units·source/asOf/reasonCode 1:1 · C-MIG RECONCILED (REL-508) · 남은 충돌=REL-509/510 · `migrations-applied.v1.json` ≠ remote 1:1 · remote proof=`migrations-remote-applied.v1.json` · path-trigger — **live** |
 | growth-public-surface | UI PART9g — `growth_ticker_config` + GET `/growth/public-surface` · ledgerTotal=settlement.completed · Admin PATCH pointer — **live** |
 | stub-page-actions | UI PART9i — deposit `my-deposit-address`+copy · KYC multipart submit · support `deposit-disputes` POST+idempotencyKey — **live** |
 | ai-coach-fact-only · ai-coach-no-autonomy · ai-coach-ui | Engine §47.12~15 · UI §6.4e/§27.10 — **P레인** Fact-only · 전레인 자율집행 0 · FactToolService+CoachOrchestrator+SSE — **live** · **ai-coach-ui live** (`/me/peotteok` Canon · SSE client · P칩 · S거절 deep-link · degrade toast · voice pace) |

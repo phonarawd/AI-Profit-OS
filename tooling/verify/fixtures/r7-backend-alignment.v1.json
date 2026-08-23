@@ -1,18 +1,20 @@
 {
   "schema": "governance.release-master.r7-backend-alignment.v1",
   "rel": "REL-505",
-  "certVersion": 1,
+  "certVersion": 2,
   "asOf": "2026-08-23",
   "projectRef": "mgsytcetsiecllmhcyox",
   "remoteSource": "Supabase MCP list_migrations + execute_sql (read-only)",
   "cleanAlignment": false,
   "hideForbidden": true,
   "migrationsAppliedFixtureIsNotRemoteProof": true,
+  "remoteAppliedFixture": "tooling/verify/fixtures/migrations-remote-applied.v1.json",
   "deps": {
     "REL-502": "PENDING",
     "REL-504": "PENDING"
   },
   "ownerRels": ["REL-508", "REL-509", "REL-510"],
+  "ownerRelsOpen": ["REL-509", "REL-510"],
   "dimensions": [
     {
       "id": "D-API-SDK",
@@ -38,9 +40,9 @@
     {
       "id": "D-MIGRATION-HEAD",
       "title": "local/remote migration head",
-      "verdict": "CONFLICT",
-      "ownerRel": "REL-508",
-      "note": "5 version-id drifts + remote-only beginner_onboarding_experience + remote duplicate idempotency version. Track A 3 files = LOCAL_ONLY_UNAPPLIED (owner REL-701-DB, not semantic). migrations-applied.v1.json local-prefix 1:1 is NOT remote proof."
+      "verdict": "ALIGNED",
+      "ownerRel": null,
+      "note": "REL-508 identity map complete. local↔remote version ids published (not equalized). ORPHAN_REMOTE onboarding + remote duplicate idempotency first-class. migrations-applied.v1.json stays local-prefix; remote proof = migrations-remote-applied.v1.json. Track A 3 files remain H-TRACK-A-UNAPPLIED."
     },
     {
       "id": "D-INDEX-RLS-IDEM",
@@ -71,31 +73,37 @@
       "note": "home-money-read source/asOf/reasonCode=money.home.buckets_missing matches grammar. Live circuit reason BUCKET_INVARIANT_FAIL violates domain.resource.reason (forbidden underscore_flat_alias)."
     }
   ],
-  "conflicts": [
+  "reconciled": [
     {
       "id": "C-MIG-VERSION-DRIFT",
       "dimension": "D-MIGRATION-HEAD",
       "ownerRel": "REL-508",
-      "summary": "Same migration name, different version id local vs remote (ptf00c ×4 + krw_deposit_fx_facts)."
+      "status": "RECONCILED",
+      "summary": "Same name, different version id (ptf00c ×4 + krw_deposit_fx_facts). Map published. Versions not rewritten."
     },
     {
       "id": "C-MIG-REMOTE-ORPHAN-ONBOARDING",
       "dimension": "D-MIGRATION-HEAD",
       "ownerRel": "REL-508",
-      "summary": "Remote applied 20260821223109 beginner_onboarding_experience with no local SQL source and no leftover public object by that name."
+      "status": "RECONCILED",
+      "summary": "ORPHAN_REMOTE 20260821223109 beginner_onboarding_experience. Local SQL 0 on this tree. Column beginner_onboarding_completed_at exists. Worktree 20260822080000 is source candidate only."
     },
     {
       "id": "C-MIG-REMOTE-DUP-IDEMPOTENCY",
       "dimension": "D-MIGRATION-HEAD",
       "ownerRel": "REL-508",
-      "summary": "Remote has two applied rows named idempotency_request_fingerprint (20260810212231 and 20260811062000). Local has only 20260811062000."
+      "status": "RECONCILED",
+      "summary": "Remote duplicate identity 20260810212231 + 20260811062000. Local file is 20260811062000 only. Rows not deleted."
     },
     {
       "id": "C-MIG-FIXTURE-HIDE",
       "dimension": "D-MIGRATION-HEAD",
       "ownerRel": "REL-508",
-      "summary": "tooling/verify/fixtures/migrations-applied.v1.json stores local filename prefixes and notes remote apply-time versions differ. That is not remote 1:1 proof."
-    },
+      "status": "RECONCILED",
+      "summary": "Local-prefix fixture kept. Remote apply-time ids live in migrations-remote-applied.v1.json. Local prefixes do not overwrite remote."
+    }
+  ],
+  "conflicts": [
     {
       "id": "C-FSM-REGISTRY-STATUS",
       "dimension": "D-ENGINE-FSM",
@@ -189,27 +197,32 @@
       {
         "name": "ptf00c_fx_marketplace_normalization",
         "local": "20260814130000",
-        "remote": "20260814134038"
+        "remote": "20260814134038",
+        "status": "RECONCILED"
       },
       {
         "name": "ptf00c_provider_runtime_health",
         "local": "20260814130100",
-        "remote": "20260814134055"
+        "remote": "20260814134055",
+        "status": "RECONCILED"
       },
       {
         "name": "ptf00c_provider_health_last_tick_partial",
         "local": "20260814130200",
-        "remote": "20260814135111"
+        "remote": "20260814135111",
+        "status": "RECONCILED"
       },
       {
         "name": "ptf00c_r1_provider_tick_ledger",
         "local": "20260814140000",
-        "remote": "20260814152139"
+        "remote": "20260814152139",
+        "status": "RECONCILED"
       },
       {
         "name": "krw_deposit_fx_facts",
         "local": "20260818010000",
-        "remote": "20260817154827"
+        "remote": "20260817154827",
+        "status": "RECONCILED"
       }
     ],
     "localOnlyUnapplied": [
@@ -221,12 +234,14 @@
       {
         "version": "20260810212231",
         "name": "idempotency_request_fingerprint",
-        "conflictId": "C-MIG-REMOTE-DUP-IDEMPOTENCY"
+        "reconciledId": "C-MIG-REMOTE-DUP-IDEMPOTENCY",
+        "status": "RECONCILED"
       },
       {
         "version": "20260821223109",
         "name": "beginner_onboarding_experience",
-        "conflictId": "C-MIG-REMOTE-ORPHAN-ONBOARDING"
+        "reconciledId": "C-MIG-REMOTE-ORPHAN-ONBOARDING",
+        "status": "RECONCILED"
       }
     ]
   }
