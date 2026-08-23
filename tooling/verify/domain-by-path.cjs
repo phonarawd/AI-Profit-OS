@@ -692,6 +692,15 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^tooling\/e2e\/specs\/production-loop\.spec\.cjs$/.test(f) ||
+      /^tooling\/e2e\/lib\/production-loop\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-507-PRODUCTION-E2E\.md$/.test(f) ||
+      /^tooling\/verify\/rel-507-production-e2e\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-507-production-e2e\.v1\.json$/.test(f),
+    scripts: ["rel-507-production-e2e.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||

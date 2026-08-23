@@ -1,0 +1,12 @@
+{
+  "rel": "REL-507",
+  "deps": ["REL-102", "REL-107", "REL-109", "REL-113", "REL-501"],
+  "protectedScopeMutation": false,
+  "productionDbWrite": 0,
+  "realLedgerMutation": 0,
+  "mcpOnlyDone": 0,
+  "localFullMatrix": 0,
+  "inventedSuccess": 0,
+  "liveKakaoClaim": 0,
+  "extraVerifies": ["qa-env-isolation-guard.cjs"]
+}

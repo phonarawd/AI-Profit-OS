@@ -85,3 +85,16 @@ node tooling/verify/user-ledger-query.cjs
 ```text
 node tooling/verify/rel-501-money-red-team.cjs
 ```
+
+## Production loop (REL-507)
+
+`specs/production-loop.spec.cjs` + `lib/production-loop.cjs`.
+
+- One line: login -> participate -> settlement -> wallet
+- Isolation guard required. production host 0. invented success amount 0
+- LIVE_KAKAO_HUMAN_E2E stays NOT_RUN
+- Playwright MCP click is not DONE
+
+```text
+node tooling/verify/rel-507-production-e2e.cjs
+```
