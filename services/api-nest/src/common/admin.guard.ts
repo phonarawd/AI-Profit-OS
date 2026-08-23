@@ -23,6 +23,8 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { PATH_METADATA } from "@nestjs/common/constants";
+import { createRequire } from "node:module";
+import { join } from "node:path";
 import { requiredCapabilityFor } from "./admin-capabilities";
 import { adminRoleAllows, isKnownAdminRole } from "./admin-rbac.policy";
 import {
@@ -30,6 +32,22 @@ import {
   verifyAdminAuthorizationHeader,
   type AdminPrincipal,
 } from "./admin-token";
+
+const requireCjs = createRequire(__filename);
+const auditCore = requireCjs(
+  join(__dirname, "..", "..", "admin-audit.core.cjs"),
+) as {
+  buildDeniedEvent: (input: Record<string, unknown>) => Record<string, unknown>;
+  writeAuditEvent: (raw: unknown) => Promise<unknown>;
+};
+
+async function noteDenied(input: Record<string, unknown>): Promise<void> {
+  try {
+    await auditCore.writeAuditEvent(auditCore.buildDeniedEvent(input));
+  } catch {
+    // 권한 거부는 항상 403. audit persist 실패가 허용으로 바뀌면 안 된다.
+  }
+}
 
 export const ADMIN_ROUTE_SEGMENT = "admin";
 
@@ -89,12 +107,15 @@ export function isAdminHandler(
 
 @Injectable()
 export class AdminGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     // Non-admin surfaces (including every user route) keep their prior behaviour.
     if (context.getType<string>() !== "http") return true;
     if (!isAdminHandler(context.getClass(), context.getHandler())) return true;
 
     const request = context.switchToHttp().getRequest<RequestWithAdmin>();
+    const controllerName = context.getClass().name;
+    const handlerName = context.getHandler().name;
+    const action = `${controllerName}.${handlerName}`;
 
     let principal: AdminPrincipal;
     try {
@@ -110,17 +131,41 @@ export class AdminGuard implements CanActivate {
     // Role authority is the token claim; the *permissions* always come from the
     // server-side matrix. An unknown role can never resolve to a capability.
     if (!isKnownAdminRole(principal.role)) {
+      await noteDenied({
+        actorKey: principal.adminId,
+        actorId: principal.adminId,
+        role: principal.role,
+        action,
+        targetType: "admin_route",
+        targetId: action,
+        reason: "ADMIN_ROLE_UNKNOWN",
+      });
       throw new ForbiddenException("ADMIN_ROLE_UNKNOWN");
     }
 
-    const required = requiredCapabilityFor(
-      context.getClass().name,
-      context.getHandler().name,
-    );
+    const required = requiredCapabilityFor(controllerName, handlerName);
     if (!required) {
+      await noteDenied({
+        actorKey: principal.adminId,
+        actorId: principal.adminId,
+        role: principal.role,
+        action,
+        targetType: "admin_route",
+        targetId: action,
+        reason: "ADMIN_CAPABILITY_UNCLASSIFIED",
+      });
       throw new ForbiddenException("ADMIN_CAPABILITY_UNCLASSIFIED");
     }
     if (!adminRoleAllows(principal.role, required.capability, required.level)) {
+      await noteDenied({
+        actorKey: principal.adminId,
+        actorId: principal.adminId,
+        role: principal.role,
+        action,
+        targetType: "admin_route",
+        targetId: action,
+        reason: "ADMIN_CAPABILITY_DENIED",
+      });
       throw new ForbiddenException("ADMIN_CAPABILITY_DENIED");
     }
 

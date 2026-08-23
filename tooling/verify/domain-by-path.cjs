@@ -527,6 +527,18 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^schemas\/admin-audit\.v1\.json$/.test(f) ||
+      /^schemas\/admin-rbac\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/admin-audit\.core\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/audit\//.test(f) ||
+      /^governance\/admin\/rbac-audit/.test(f) ||
+      /^governance\/release-master\/REL-405-RBAC-AUDIT\.md$/.test(f) ||
+      /^tooling\/verify\/rel-405-rbac-audit\.cjs$/.test(f) ||
+      /^supabase\/migrations\/\d+_admin_audit_events\.sql$/.test(f),
+    scripts: ["rel-405-rbac-audit.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||

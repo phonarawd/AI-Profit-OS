@@ -173,6 +173,10 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     resetPin: write("withdrawPinReset"),
     revokeWebauthn: write("withdrawPinReset"),
   },
+  AuditEventsAdminController: {
+    list: read("audit"),
+    get: read("audit"),
+  },
 });
 
 export function requiredCapabilityFor(

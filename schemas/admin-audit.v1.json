@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/admin-audit.v1.json",
+  "title": "AdminAuditEventV1",
+  "description": "REL-405 · OWASP ASVS V8/V16 admin audit event. NEVER: delete/wipe · PII dump · bearer/token · money reconstruction · user JWT.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "actorKey",
+    "role",
+    "action",
+    "targetType",
+    "targetId",
+    "occurredAt",
+    "mode",
+    "result"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "actorKey": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Verified admin token sub. Not an email."
+    },
+    "actorId": {
+      "type": ["string", "null"],
+      "description": "UUID form of actorKey when parseable"
+    },
+    "role": {
+      "type": "string",
+      "minLength": 1
+    },
+    "action": {
+      "type": "string",
+      "minLength": 1
+    },
+    "targetType": {
+      "type": "string",
+      "minLength": 1
+    },
+    "targetId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["LIVE", "DRY_RUN", "SIMULATION", "n/a"]
+    },
+    "result": {
+      "type": "string",
+      "enum": ["preview", "applied", "denied", "rolled_back"]
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "idempotencyKey": {
+      "type": ["string", "null"],
+      "maxLength": 128
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Non-PII metadata only. Forbidden keys enforced in admin-audit.core.cjs"
+    }
+  }
+}
