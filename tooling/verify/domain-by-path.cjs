@@ -487,6 +487,19 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/security\//.test(f) ||
+      /^tooling\/security\/http-headers\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-401-security-headers\.cjs$/.test(f) ||
+      /^apps\/web\/next\.config\.ts$/.test(f) ||
+      /^apps\/admin\/next\.config\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/common\/security-headers\.middleware\.ts$/.test(
+        f,
+      ) ||
+      /^services\/api-nest\/src\/main\.ts$/.test(f),
+    scripts: ["rel-401-security-headers.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||

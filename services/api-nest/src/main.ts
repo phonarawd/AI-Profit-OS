@@ -7,6 +7,7 @@ import { NestExpressApplication } from "@nestjs/platform-express";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const cookieParser = require("cookie-parser");
 import { AppModule } from "./app.module";
+import { securityHeadersMiddleware } from "./common/security-headers.middleware";
 import { loadPhase0Env } from "./config/phase0.env";
 
 async function bootstrap() {
@@ -14,6 +15,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   // PART9-pre2 — httpOnly 세션쿠키 파싱 (JwtAuthGuard cookie fallback)
   app.use(cookieParser());
+  app.use(securityHeadersMiddleware);
   app.useBodyParser("json", { limit: "10mb" });
   app.setGlobalPrefix("api/v1");
 
