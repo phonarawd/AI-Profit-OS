@@ -1,0 +1,10 @@
+{"id":"nl_deposit_not_showing","input":"입금한 게 왜 아직 안 보여?","expectLane":"P","expectToolsAny":["getDepositUsdt","getKrwDeposit"],"forbidMutateTools":true}
+{"id":"nl_progress_situation","input":"아까 본 첫 번째 기회 진행 상황 알려줘","expectLane":"P","expectToolsAny":["getExecution"],"forbidMutateTools":true}
+{"id":"nl_last_participation","input":"저번에 참여한 거 지금 어떻게 되고 있어?","expectLane":"P","expectToolsAny":["getExecution"],"forbidMutateTools":true}
+{"id":"nl_how_much_left","input":"아까 그거 돈은 얼마나 남았어?","expectLane":"P","expectToolsAny":["getBalance","getBuckets"],"forbidMutateTools":true}
+{"id":"nl_withdraw","input":"출금해줘","expectLane":"S","expectTools":[],"forbidMutateTools":true}
+{"id":"nl_why_money","input":"이게 왜 돈이 되는 건데?","residual":true,"forbidMutateTools":true,"note":"surface context 없으면 G residual — 새 semantic router 없음"}
+{"id":"nl_what_can_i_do","input":"내가 지금 할 수 있는 건 뭐야?","residual":true,"forbidMutateTools":true,"note":"surface context 없으면 G residual"}
+{"id":"nl_how_much_receive","input":"결국 내가 얼마 받는 거야?","residual":true,"forbidMutateTools":true,"note":"얼마 cue → getBalance 가능. opportunity/settlement는 surface+intent 후속"}
+{"id":"nl_cancel_how","input":"그거 취소하고 싶은데 어떻게 해?","residual":true,"forbidMutateTools":true,"note":"안내 질문 — S mutation 아님"}
+{"id":"nl_receive_if_do","input":"그거 하면 내가 실제로 받는 건 얼마 정도야?","residual":true,"forbidMutateTools":true,"note":"얼마 cue → getBalance 가능. opportunity explain은 surface 후속"}
