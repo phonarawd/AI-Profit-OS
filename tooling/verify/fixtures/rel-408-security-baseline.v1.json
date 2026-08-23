@@ -1,0 +1,19 @@
+{
+  "measuredAt": "2026-08-23",
+  "projectRef": "mgsytcetsiecllmhcyox",
+  "publicTables": 80,
+  "rlsOn": 80,
+  "rlsOff": 0,
+  "anonAuthenticatedPublicGrants": 0,
+  "denyAllPolicies": [
+    "user_membership_audit_deny_all",
+    "user_match_policy_override_audit_deny_all"
+  ],
+  "roles": {
+    "anon": { "login": false, "bypassrls": false },
+    "authenticated": { "login": false, "bypassrls": false },
+    "service_role": { "login": false, "bypassrls": true }
+  },
+  "secretsScan": "verify:secrets",
+  "applyMigration": 0
+}

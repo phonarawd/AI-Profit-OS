@@ -40,6 +40,8 @@ jobs:
         run: pnpm verify:rel-406-kill-switch
       - name: REL-407 price override layers
         run: pnpm verify:rel-407-price-override
+      - name: REL-408 security baseline
+        run: pnpm verify:rel-408-security-baseline
       - name: Stub .env for Docker-less stack-lock
         run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
       - name: cargo test (services/engine-rust — Rule Engine R1-R10 golden unit tests)

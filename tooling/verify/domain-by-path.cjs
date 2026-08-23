@@ -567,6 +567,15 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/release-master\/SECURITY_BASELINE\.md$/.test(f) ||
+      /^governance\/release-master\/ROLLBACK_RUNBOOK\.md$/.test(f) ||
+      /^governance\/release-master\/REL-408-SECURITY-BASELINE\.md$/.test(f) ||
+      /^tooling\/verify\/rel-408-security-baseline\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-408-security-baseline\.v1\.json$/.test(f),
+    scripts: ["rel-408-security-baseline.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||
