@@ -382,6 +382,10 @@ export function resolveResultReference(input?: {
   text?: string;
   resultRefs?: readonly object[];
 }): ResultReferenceResolution;
+export function shouldLoadFactsDespiteUnresolvedRef(
+  resolution?: { status?: string } | null,
+  toolsCalled?: readonly string[] | null,
+): boolean;
 export function referencePromptBlock(
   resolution: ResultReferenceResolution | null | undefined,
 ): { readonly kind: "resolved" | "unresolved"; readonly line: string } | null;

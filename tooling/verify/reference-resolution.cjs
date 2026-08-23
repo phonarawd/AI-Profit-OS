@@ -288,6 +288,7 @@ if (!/executionIds/.test(factSrc)) {
 const orch = read("services/api-nest/src/ai/coach.orchestrator.ts");
 for (const needle of [
   "resolveResultReference",
+  "shouldLoadFactsDespiteUnresolvedRef",
   "referencePromptBlock",
   "rememberResultRef",
   "extractResultRefFromFacts",

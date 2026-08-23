@@ -149,6 +149,19 @@ function hasReferenceCue(text) {
 }
 
 /**
+ * 빈 working-state(unavailable) + execution Fact intent → getExecution은 그대로 로드.
+ * 서수/별칭 id는 만들지 않는다. ambiguous / not_found 는 추측 금지(숏서킷 유지).
+ * Engine §47.16.3 — execution-state intent는 getExecution에 도달해야 한다.
+ * @param {{status?: string}|null|undefined} resolution
+ * @param {unknown} toolsCalled
+ */
+function shouldLoadFactsDespiteUnresolvedRef(resolution, toolsCalled) {
+  if (!resolution || resolution.status !== "unavailable") return false;
+  const tools = Array.isArray(toolsCalled) ? toolsCalled : [];
+  return tools.includes("getExecution");
+}
+
+/**
  * Flatten candidates from the newest-first resultRefs (stable ordinal = first set that matches type filter, else newest set).
  * @param {object[]} resultRefs
  * @param {string|null} preferType
@@ -384,6 +397,7 @@ module.exports = {
   upsertResultRef,
   extractResultRefFromFacts,
   hasReferenceCue,
+  shouldLoadFactsDespiteUnresolvedRef,
   resolveResultReference,
   referencePromptBlock,
 };

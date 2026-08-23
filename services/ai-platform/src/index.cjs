@@ -133,6 +133,7 @@ const {
   upsertResultRef,
   extractResultRefFromFacts,
   hasReferenceCue,
+  shouldLoadFactsDespiteUnresolvedRef,
   resolveResultReference,
   referencePromptBlock,
 } = require("./reference-resolver.cjs");
@@ -254,6 +255,7 @@ module.exports = {
   upsertResultRef,
   extractResultRefFromFacts,
   hasReferenceCue,
+  shouldLoadFactsDespiteUnresolvedRef,
   resolveResultReference,
   referencePromptBlock,
   SERVER_DERIVED_ALLOWLIST,

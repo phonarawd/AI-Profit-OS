@@ -118,6 +118,30 @@ for (const row of execCases) {
   if (route.tools_called.includes("getOpportunity") && route.tools_called.length === 1) {
     fails.push(`${row.id} must not fall back to getOpportunity-only`);
   }
+  const emptyRefs = ai.resolveResultReference({
+    text: row.input,
+    resultRefs: [],
+  });
+  if (
+    emptyRefs.status === "unavailable" &&
+    !ai.shouldLoadFactsDespiteUnresolvedRef(emptyRefs, route.tools_called)
+  ) {
+    fails.push(
+      `${row.id} empty resultRefs must still load getExecution (no REF_UNAVAILABLE short-circuit)`,
+    );
+  }
+}
+
+const ambiguousExec = ai.resolveResultReference({
+  text: "그중 그거 진행 상황",
+  resultRefs: [{ type: "executions", ids: ["exec-a", "exec-b"] }],
+});
+if (ambiguousExec.status !== "ambiguous") {
+  fails.push("그중 그거 진행 상황 with two ids must be ambiguous");
+} else if (
+  ai.shouldLoadFactsDespiteUnresolvedRef(ambiguousExec, ["getExecution"])
+) {
+  fails.push("ambiguous ref must not bypass unresolved short-circuit");
 }
 
 const pkg = fs.readFileSync(path.join(root, "package.json"), "utf8");

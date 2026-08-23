@@ -21,6 +21,7 @@ import {
   referencePromptBlock,
   renderFactAnswer,
   resolveResultReference,
+  shouldLoadFactsDespiteUnresolvedRef,
   routeAssistant,
   SCOPE_REDIRECT_TEMPLATE,
   S_REFUSE_TEMPLATE,
@@ -185,9 +186,13 @@ export class CoachOrchestrator {
       providerEffective = "none";
       toolsCalled = [];
       deepLink = null;
-    } else if (unresolvedRef) {
+    } else if (
+      unresolvedRef &&
+      !shouldLoadFactsDespiteUnresolvedRef(referenceResolution, toolsCalled)
+    ) {
       // Do not let the model guess a candidate when resolution failed.
       // unresolvedRef already excludes status "none"/"resolved".
+      // 빈 working-state + getExecution intent는 Fact 로드를 막지 않는다 (§47.16.3).
       // S lane is handled in the first branch; remaining lanes stay on P.
       answerText =
         referenceResolution.status === "unavailable"

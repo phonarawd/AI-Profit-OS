@@ -120,6 +120,8 @@ export const isWithinAbsoluteLifetime = ai.isWithinAbsoluteLifetime;
 export const effectiveTtlSec = ai.effectiveTtlSec;
 export const buildHistoryMessages = ai.buildHistoryMessages;
 export const resolveResultReference = ai.resolveResultReference;
+export const shouldLoadFactsDespiteUnresolvedRef =
+  ai.shouldLoadFactsDespiteUnresolvedRef;
 export const referencePromptBlock = ai.referencePromptBlock;
 export const extractResultRefFromFacts = ai.extractResultRefFromFacts;
 export const normalizeResultRefs = ai.normalizeResultRefs;

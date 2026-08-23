@@ -117,6 +117,16 @@ if (!unavailable.includes("확인할 수 없어요")) {
   fails.push("unavailable fact must use honest summary");
 }
 
+const orch = fs.readFileSync(
+  path.join(root, "services/api-nest/src/ai/coach.orchestrator.ts"),
+  "utf8",
+);
+if (!orch.includes("shouldLoadFactsDespiteUnresolvedRef")) {
+  fails.push(
+    "CoachOrchestrator must keep getExecution on empty resultRefs (shouldLoadFactsDespiteUnresolvedRef)",
+  );
+}
+
 const nestFact = fs.readFileSync(
   path.join(root, "services/api-nest/src/ai/fact-tool.service.ts"),
   "utf8",
