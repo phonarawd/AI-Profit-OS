@@ -666,6 +666,15 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/release-master\/R7_BACKEND_ALIGNMENT\.md$/.test(f) ||
+      /^tooling\/verify\/backend-data-alignment\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-505-r7-backend-alignment\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/backend-data-alignment\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-505-r7-backend-alignment\.v1\.json$/.test(f),
+    scripts: ["rel-505-r7-backend-alignment.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||

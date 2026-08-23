@@ -1,0 +1,143 @@
+{
+  "rel": "REL-505",
+  "version": "1.0.0",
+  "certIssued": 0,
+  "protectedScopeMutation": false,
+  "applyMigration": 0,
+  "projectRef": "mgsytcetsiecllmhcyox",
+  "openConflicts": [
+    {
+      "id": "SDK_NEST_CURRENT_FX_APPROX",
+      "sdkPath": "/api/v1/me/current-fx/approx",
+      "nestNeedle": "me/current-fx/approx",
+      "nestHandler": null,
+      "ownerRel": "REL-508"
+    }
+  ],
+  "additiveRel": "REL-508",
+  "sdkPairs": [
+    {
+      "id": "home-money-read",
+      "sdk": "packages/sdk/src/home-money-read/fetch.ts",
+      "path": "/api/v1/me/home-money-read",
+      "nest": "services/api-nest/src/wallet/home-money-read.user.routes.ts",
+      "nestNeedle": "me/home-money-read"
+    },
+    {
+      "id": "home-read",
+      "sdk": "packages/sdk/src/home-read-model/fetch.ts",
+      "path": "/api/v1/me/home-read",
+      "nest": "services/api-nest/src/home-read/home-read.user.routes.ts",
+      "nestNeedle": "me/home-read"
+    },
+    {
+      "id": "wallet-buckets",
+      "sdk": "packages/sdk/src/wallet/fetch.ts",
+      "path": "/api/v1/wallet/buckets",
+      "nest": "services/api-nest/src/wallet/wallet.routes.ts",
+      "nestNeedle": "buckets"
+    },
+    {
+      "id": "wallet-withdraw",
+      "sdk": "packages/sdk/src/wallet/fetch.ts",
+      "path": "/api/v1/wallet/withdraw",
+      "nest": "services/api-nest/src/wallet/wallet.routes.ts",
+      "nestNeedle": "withdraw"
+    },
+    {
+      "id": "participate",
+      "sdk": "packages/sdk/src/participate/fetch.ts",
+      "path": "/api/v1/opportunities/:id/participate",
+      "nest": "services/api-nest/src/opportunities/opportunities.user.routes.ts",
+      "nestNeedle": "opportunities/:id/participate"
+    },
+    {
+      "id": "preflight",
+      "sdk": "packages/sdk/src/participate/fetch.ts",
+      "path": "/api/v1/opportunities/:id/preflight",
+      "nest": "services/api-nest/src/opportunities/opportunities.user.routes.ts",
+      "nestNeedle": "opportunities/:id/preflight"
+    },
+    {
+      "id": "opportunities",
+      "sdk": "packages/sdk/src/user-feed/fetch.ts",
+      "path": "/api/v1/opportunities",
+      "nest": "services/api-nest/src/opportunities/opportunities.user.routes.ts",
+      "nestNeedle": "opportunities"
+    },
+    {
+      "id": "day-pulse",
+      "sdk": "packages/sdk/src/user-feed/fetch.ts",
+      "path": "/api/v1/me/day-pulse",
+      "nest": "services/api-nest/src/loop/day-pulse.user.routes.ts",
+      "nestNeedle": "me/day-pulse"
+    },
+    {
+      "id": "trades",
+      "sdk": "packages/sdk/src/trades/fetch.ts",
+      "path": "/api/v1/trades",
+      "nest": "services/api-nest/src/trades/trades.user.routes.ts",
+      "nestNeedle": "trades"
+    },
+    {
+      "id": "execute-tick",
+      "sdk": "packages/sdk/src/execution-stream/polling-transport.ts",
+      "path": "/api/v1/trades/:id/execute-tick",
+      "nest": "services/api-nest/src/trades/trades.user.routes.ts",
+      "nestNeedle": "trades/:id/execute-tick"
+    },
+    {
+      "id": "ledger",
+      "sdk": "packages/sdk/src/ledger/fetch.ts",
+      "path": "/api/v1/me/ledger/journals",
+      "nest": "services/api-nest/src/ledger/ledger.user.controller.ts",
+      "nestNeedle": "me/ledger"
+    },
+    {
+      "id": "growth",
+      "sdk": "packages/sdk/src/growth/fetch.ts",
+      "path": "/api/v1/growth/public-surface",
+      "nest": "services/api-nest/src/growth/growth.public.controller.ts",
+      "nestNeedle": "growth/public-surface"
+    },
+    {
+      "id": "auth-session",
+      "sdk": "packages/sdk/src/auth/fetch.ts",
+      "path": "/api/v1/auth/session",
+      "nest": "services/api-nest/src/auth/auth.routes.ts",
+      "nestNeedle": "/api/v1/auth/session"
+    },
+    {
+      "id": "push-vapid",
+      "sdk": "packages/sdk/src/push/subscribe.ts",
+      "path": "/api/v1/me/push/vapid-public",
+      "nest": "services/api-nest/src/push/push.routes.ts",
+      "nestNeedle": "me/push/vapid-public"
+    },
+    {
+      "id": "peotteok-chat",
+      "sdk": "packages/sdk/src/peotteok/chat-sse.ts",
+      "path": "/api/v1/me/peotteok/chat",
+      "nest": "services/api-nest/src/ai/coach.controller.ts",
+      "nestNeedle": "me/peotteok/chat"
+    },
+    {
+      "id": "current-fx",
+      "sdk": "packages/sdk/src/current-fx/fetch.ts",
+      "path": "/api/v1/me/current-fx/approx",
+      "nest": null,
+      "conflict": "SDK_NEST_CURRENT_FX_APPROX"
+    }
+  ],
+  "engineFsmCore": ["running", "requeue", "success", "safe_stop"],
+  "extraVerifies": [
+    "migrations-applied-parity.cjs",
+    "rel-408-security-baseline.cjs",
+    "rel-405-rbac-audit.cjs",
+    "match-success-rule.cjs",
+    "settlement-rule-parity.cjs",
+    "bucket-invariant.cjs",
+    "home-money-read-contract.cjs",
+    "platform-fact-state-registry.cjs"
+  ]
+}
