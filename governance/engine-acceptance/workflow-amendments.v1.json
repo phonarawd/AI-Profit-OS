@@ -348,7 +348,15 @@
       "predecessor_baseline_id": "ea-baseline-00bc4bd82aaf-6baee484bb30",
       "bound_at": "2026-08-22T22:08:44.657Z",
       "note": "current acceptance_scope.unchanged compares against this epoch; historical amendments were NOT created under this id"
+    },
+    {
+      "kind": "current",
+      "baseline_id": "ea-baseline-395861b0e7aa-a1fe8f018d0f",
+      "rebase_id": "ea-rebase-395861b0e7aa-a1fe8f018d0f",
+      "predecessor_baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+      "bound_at": "2026-08-23T01:29:02.161Z",
+      "note": "current acceptance_scope.unchanged compares against this epoch; historical amendments were NOT created under this id"
     }
   ],
-  "current_epoch_baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e"
+  "current_epoch_baseline_id": "ea-baseline-395861b0e7aa-a1fe8f018d0f"
 }

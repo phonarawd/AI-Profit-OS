@@ -451,6 +451,74 @@
       "qa8_complete": false,
       "qa9_complete": false,
       "qa9_verdict_issued": false
+    },
+    {
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+      "rebase_id": "ea-rebase-395861b0e7aa-a1fe8f018d0f",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-23T01:29:02.161Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: new epoch from predecessor ea-baseline-b5f275949da2-c8d8ae7d479e; Founder 2026-08-23 instructed complete current-epoch acceptance; product fix keeps getExecution on empty resultRefs for QA7 p_execution_progress_situation and p_execution_last_participation; invalidate QA1-QA8; rerun QA1-QA8 then QA9; do not rewrite hashes inside the old baseline."
+      },
+      "predecessor_baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+      "new_baseline_id": "ea-baseline-395861b0e7aa-a1fe8f018d0f",
+      "reason": "Protected product mutation creates a new acceptance epoch. Predecessor hashes are history; discovery suites QA1-QA8 must rerun; QA9 aggregation is stale and must rerun only after current-epoch discovery evidence exists. Do not fabricate a verdict at rebase time.",
+      "product_commit": "395861b0e7aaa3030362dbb283effce6fe9e4d9e",
+      "changed_protected_paths": [
+        "services/api-nest/src/ai/ai.engine.ts",
+        "services/api-nest/src/ai/coach.orchestrator.ts"
+      ],
+      "changed_nonprotected_support_paths": [
+        "services/ai-platform/src/reference-resolver.cjs",
+        "services/ai-platform/src/index.cjs",
+        "services/ai-platform/src/index.d.ts",
+        "tooling/verify/ai-lane-router.cjs",
+        "tooling/verify/ai-coach-fact-only.cjs",
+        "tooling/verify/reference-resolution.cjs"
+      ],
+      "old_prompt_hash": "6361e6b6b6bc8d70ae3a373e7e12e620e035686f85a9ed9dfd62831dd528c8d0",
+      "new_prompt_hash": "4c53023ef5a9eaab0af693f03eb89901db9315273db4160bf7be69de81c0694e",
+      "old_protected_manifest_hash": "c8d8ae7d479e4be655a93ea2609748b0fb6f942009de481eeea721e9450118b5",
+      "new_protected_manifest_hash": "a1fe8f018d0f13adc05afce218c9ebf6c32b1e6d049d67b697db507e3123502d",
+      "eval_dataset_hash": "05d1b1cead8b48b3f7bb74e4d9479837a5e6c0746c9e094ce401bad484ee0091",
+      "acceptance_workflow_hash": "f294916c28e2f319cf7574a34af4386860d1a9c00fc7d1f6bba2fafb50cf6faa",
+      "predecessor_suite_checksums": {
+        "QA1": "d8490fc41dbd8db8100065537c3e6b9d5876d2b1837bcb764b46a97e01dcce73",
+        "QA2": "dd029fad5400eaed4ba60e8dd0ec252b03923cecddd89d1a91308a037288b912",
+        "QA3": "40a28a8177f47e93b4a1574ec2d474fd031fb9acd80c54ea16111a65af3d9ee0",
+        "QA4": "a59d446aaff96ac986f7c392208a3924c103f02c8b4ad997b3eaf782e58dbeed",
+        "QA5": "0e283488680ca4fd5c72b8b2a08464eade7111adac0d65af5c390c60aad3af8a",
+        "QA6": "ff0c6bab3a86f1e88a51154c34d0f741202d83558c86ed587d1c9ca3c60504e6"
+      },
+      "timestamp": "2026-08-23T01:29:02.161Z",
+      "commit_sha_or_pending": "395861b0e7aaa3030362dbb283effce6fe9e4d9e",
+      "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
+      "invalidated_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA8"
+      ],
+      "required_rerun_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7",
+        "QA8"
+      ],
+      "stale_aggregation_phases": [
+        "QA9"
+      ],
+      "qa7_complete": false,
+      "qa8_complete": false,
+      "qa9_complete": false,
+      "qa9_verdict_issued": false
     }
   ]
 }

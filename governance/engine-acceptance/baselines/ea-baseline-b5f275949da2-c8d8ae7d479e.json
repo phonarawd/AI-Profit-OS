@@ -1,31 +1,47 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-395861b0e7aa-a1fe8f018d0f",
+  "id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
   "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-08-23T01:29:02.161Z",
-  "commit_sha": "395861b0e7aaa3030362dbb283effce6fe9e4d9e",
-  "tree_sha": "0b2803f39a87bd754cf6af5f5d6b824301d1f0be",
+  "measuredAt": "2026-08-22T22:08:44.657Z",
+  "commit_sha": "b5f275949da2ebb0a255890061b76d8022b9e30a",
+  "tree_sha": "138e883a8623b3878d8e83f02ff4cf312c42d7ba",
   "working_tree_clean": false,
   "protected_scope_clean": true,
   "dirty_paths_all": [
+    "governance/release-master/rel-105-guest-visual/guest-desktop-1440.png",
+    "governance/release-master/rel-105-guest-visual/guest-desktop-1920.png",
+    "governance/release-master/rel-105-guest-visual/guest-mobile-390.png",
+    "governance/release-master/rel-105-guest-visual/guest-tablet-1024.png",
+    "governance/release-master/rel-105-guest-visual/guest-tablet-768.png",
+    "governance/release-master/rel-105-guest-visual/member-home-1440.png",
     "governance/release-master/rel-106-profits/runtime-empty-390.png",
     "governance/release-master/rel-106-profits/runtime-ready-1440.png",
     "governance/release-master/rel-106-profits/runtime-ready-390.png",
-    "_tmp_formal_qa3_32608746981/",
-    "_tmp_formal_qa4_32605594769/",
-    "_tmp_formal_qa4_32606282311/",
-    "_tmp_formal_qa4_32608746981/",
-    "_tmp_formal_qa5_32608409328/",
-    "_tmp_formal_qa6_32608746981/",
-    "_tmp_formal_qa7_32609328589/",
-    "_tmp_formal_qa8_32608746981/",
+    "governance/release-master/rel-107-room/runtime-ready-1440.png",
+    "governance/release-master/rel-107-room/runtime-ready-390.png",
+    "governance/release-master/rel-108-sheet/runtime-insufficient-1440.png",
+    "governance/release-master/rel-108-sheet/runtime-ready-1440.png",
+    "governance/release-master/rel-109-execute/runtime-requeue-1440.png",
+    "governance/release-master/rel-109-execute/runtime-requeue-390.png",
+    "governance/release-master/rel-109-execute/runtime-running-1440.png",
+    "governance/release-master/rel-109-execute/runtime-running-390.png",
+    "governance/release-master/rel-109-execute/runtime-safestop-1440.png",
+    "governance/release-master/rel-109-execute/runtime-safestop-390.png",
+    "governance/release-master/rel-109-execute/runtime-success-1440.png",
+    "governance/release-master/rel-109-execute/runtime-success-390.png",
+    "governance/release-master/rel-113-wallet/runtime-ready-1440.png",
+    "governance/release-master/rel-114-usdt-deposit/runtime-ready-1440.png",
+    "governance/release-master/rel-114-usdt-deposit/runtime-ready-390.png",
+    "governance/release-master/rel-115-krw-deposit/runtime-pending-1440.png",
+    "governance/release-master/rel-115-krw-deposit/runtime-pending-390.png",
+    "governance/release-master/rel-126-support/runtime-ready-1440.png",
     "tooling/engine-acceptance/lib/isolated-harness-db.cjs"
   ],
   "dirty_paths_protected": [],
   "lockfile_hash": "faf4c73927d1b92cbe8bc9b8ffb57000e9d630c920ca98fdea2ebf55182f820c",
   "schema_migration_hash": "e114b6581da1aac7751775647acdba8834018998a3cbee51fb42f0ce660fba11",
-  "prompt_hash": "4c53023ef5a9eaab0af693f03eb89901db9315273db4160bf7be69de81c0694e",
+  "prompt_hash": "6361e6b6b6bc8d70ae3a373e7e12e620e035686f85a9ed9dfd62831dd528c8d0",
   "eval_dataset_hash": "05d1b1cead8b48b3f7bb74e4d9479837a5e6c0746c9e094ce401bad484ee0091",
   "acceptance_workflow_hash": "f294916c28e2f319cf7574a34af4386860d1a9c00fc7d1f6bba2fafb50cf6faa",
   "node_version": "v22.14.0",
@@ -34,7 +50,7 @@
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "a1fe8f018d0f13adc05afce218c9ebf6c32b1e6d049d67b697db507e3123502d",
+    "aggregate": "c8d8ae7d479e4be655a93ea2609748b0fb6f942009de481eeea721e9450118b5",
     "pathCount": 439,
     "entries": [
       {
@@ -535,7 +551,7 @@
       },
       {
         "path": "services/api-nest/src/ai/ai.engine.ts",
-        "sha256": "6819ab001e51589b2876d63ad79798063919480cc5da6f005c0352be736fea2a"
+        "sha256": "0d344bb0b1b4cc65d0a225e1ce50490681169cc333c006995e95efcbe199681c"
       },
       {
         "path": "services/api-nest/src/ai/ai.events.ts",
@@ -563,7 +579,7 @@
       },
       {
         "path": "services/api-nest/src/ai/coach.orchestrator.ts",
-        "sha256": "63db049a04d4b4536de206a35abc6f13459d1d48ef7c1c2ded41fdcf600ff71f"
+        "sha256": "08d7a3f0992202ae8afa6d9db579fb91a7a3d84c82d8da749d19e4a3ed2fd4c5"
       },
       {
         "path": "services/api-nest/src/ai/coach.routes.ts",
@@ -1801,8 +1817,8 @@
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-395861b0e7aa-a1fe8f018d0f",
-    "predecessor_baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+    "rebase_id": "ea-rebase-b5f275949da2-c8d8ae7d479e",
+    "predecessor_baseline_id": "ea-baseline-00bc4bd82aaf-6baee484bb30",
     "kind": "product_rebase"
   }
 }

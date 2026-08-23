@@ -382,13 +382,13 @@ function run() {
     check("live_ledger_policy_block", policyFails.length === 0, policyFails.join("; "));
 
     // Regression snapshot of the live product-rebase ledger. Unexpected extra
-    // product-rebase epochs fail this pin (approved length = 6 after
-    // ENGINE_ACCEPTANCE_REBASE_V1 / ea-rebase-b5f275949da2-c8d8ae7d479e).
+    // product-rebase epochs fail this pin (approved length = 7 after
+    // ENGINE_ACCEPTANCE_REBASE_V1 / ea-rebase-395861b0e7aa-a1fe8f018d0f).
     // Current baseline tip must remain the approved epoch pointer.
-    check("no_new_epoch_created", liveLedger.rebases.length === 6, `rebases=${liveLedger.rebases.length}`);
+    check("no_new_epoch_created", liveLedger.rebases.length === 7, `rebases=${liveLedger.rebases.length}`);
     check(
       "live_baseline_unchanged",
-      liveBaseline.id === "ea-baseline-b5f275949da2-c8d8ae7d479e",
+      liveBaseline.id === "ea-baseline-395861b0e7aa-a1fe8f018d0f",
       liveBaseline.id,
     );
     // qa9-result is the current-epoch verdict SSOT and is only ever written by
