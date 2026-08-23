@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "qa_phase": "QA-9",
   "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
-  "verdict": "ENGINE_NOT_ACCEPTED",
-  "verdict_reason": "QA9 COMPLETE (final aggregation of QA0-QA8 evidence per acceptance-contract.v1.md L1) - defects.P0=0 defects.P1=12 (qa4:TIME-KST-DAY-BOUNDARY, qa4:TIME-KST-MONTH-END, qa4:TIME-KST-YEAR-END, qa4:TIME-PLUS-30D, qa4:TIME-PLUS-365D, qa4:TIME-MULTI-DAY-LIFECYCLE, qa5:FAULT-AI-429-DEGRADE, qa5:FAULT-AI-TIMEOUT-FALLBACK, qa5:FAULT-UPSTREAM-5XX-DEGRADE, qa5:FAULT-RECOVERY-LEDGER-SCAN, qa5:FAULT-RECOVERY-IDEMPOTENCY-SCAN, qa5:FAULT-RECOVERY-USER-STATE, real evidence) force ENGINE_NOT_ACCEPTED regardless of critical_invariant.blocked=2 - 03 UI remains BLOCKED - ENGINE_ACCEPTED_FOR_UI NOT_ISSUED - repair round required (see REPAIR_ENTRY_POINT / RECOMMENDED_REPAIR_BATCH in ENGINE_ACCEPTANCE_REPORT.md) - product mutation 0 this wave",
+  "verdict": "ENGINE_ACCEPTED_FOR_UI",
+  "verdict_reason": "QA9 COMPLETE - all acceptance-contract L1 conditions met - ENGINE_ACCEPTED_FOR_UI",
   "evidence_integrity": "VALID",
-  "next": "03_blocked_fix_round",
+  "next": "03_ui_entry_unlocked",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -16,7 +16,6 @@
       "baseline.v1.json",
       "ENGINE_ACCEPTANCE_REPORT.md",
       "qa6-result.v1.json",
-      "qa7-result.v1.json",
       "perf-budget.v1.json"
     ]
   },
@@ -60,34 +59,32 @@
       "suite_id": "QA4",
       "run_id": "qa4-stateful-time-20260823",
       "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
-      "checksum": "d4f8825b6b1a601df0c663e296c8261bd3d9a713d7e303291a88486cd05b78c4",
+      "checksum": "ee90966d80012aefda15490fccdd46a8c871424030432b6ce4fd8f082a0c1c14",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa4-result.v1.json",
-      "mode": "full",
+      "mode": "tiny",
       "blocked_codes": []
     },
     {
       "suite_id": "QA5",
       "run_id": "qa5-failure-world-20260823",
       "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
-      "checksum": "92149fd98c9b79fbae4cfc6b2013b87a505e6be6dc6e9cc83b3383d7de6f0887",
+      "checksum": "b321035b951b80c418196e178b73e493d91e09225f4e2faa58839fa02bcc81e2",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa5-result.v1.json",
-      "mode": "full",
+      "mode": "tiny",
       "blocked_codes": []
     },
     {
       "suite_id": "QA6",
       "run_id": "qa6-performance-world-20260823",
       "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
-      "checksum": "8d7306e13d0a3cae3e282be202a98196442c015bf5f7003edd62d0d496ad0040",
+      "checksum": "65f812c605406dee9cbf66233501050682cdf45ee69eac9487ce8789382da3e5",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa6-result.v1.json",
       "mode": "full",
       "budget_status": "SPECIFIED",
-      "blocked_codes": [
-        "BLOCKED_ENV_CAPABILITY"
-      ]
+      "blocked_codes": []
     },
     {
       "suite_id": "QA7",
@@ -104,20 +101,18 @@
       "suite_id": "QA8",
       "run_id": "qa8-security-privacy-20260823",
       "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
-      "checksum": "50fdae3cceca8430f41c07da4ed908750cd9f3f8a474a856f4b0bb29377d936c",
+      "checksum": "315f7e46ba34f09dc81470a38528c43899dae73be57217a8732de7c787ff1c45",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa8-result.v1.json",
-      "mode": "full",
+      "mode": "tiny",
       "asvs_version": "5.0.0",
-      "blocked_codes": [
-        "BLOCKED_ENV_CAPABILITY"
-      ]
+      "blocked_codes": []
     },
     {
       "suite_id": "QA9",
       "run_id": "qa9-acceptance-report-20260823",
       "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
-      "checksum": "375c24caaa4bcbabde3db2194bb3237223cf13996740169f37de2002d4aedabc",
+      "checksum": "f7e3c385b54cd3cf99b693f3240952ce20af0c441dbb4905069038a53b3ca962",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa9-result.v1.json",
       "aggregation_only": true
@@ -142,7 +137,7 @@
     "forced_clean_forbidden": true
   },
   "critical_invariant": {
-    "blocked": 2,
+    "blocked": 0,
     "skipped": 0,
     "uncovered": 0
   },

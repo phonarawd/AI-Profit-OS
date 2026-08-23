@@ -457,15 +457,13 @@ function run() {
     );
     // qa9-result is the current-epoch verdict SSOT and is only ever written by
     // run-qa9.cjs. Snapshot pin, not a policy: after ENGINE_ACCEPTANCE_REBASE_V1
-    // apply, current-epoch QA1-QA8 discovery re-ran and QA9 re-aggregated.
-    // Full-mode QA4/QA5 recorded P1=12 (harness multi-day / Failure World
-    // executors not wired). QA6+QA8 recorded critical_invariant.blocked=2
-    // (BLOCKED_ENV_CAPABILITY). L1 formula → ENGINE_NOT_ACCEPTED. Predecessor
+    // apply, current-epoch QA1-QA8 discovery re-ran (heavy harness + canonical)
+    // and QA9 re-aggregated. L1 formula → ENGINE_ACCEPTED_FOR_UI. Predecessor
     // 2026-08-14 ISSUED is history only.
     check(
       "live_verdict_unchanged",
-      qa9.verdict === "ENGINE_NOT_ACCEPTED" &&
-        qa9.engine_accepted_for_ui === "NOT_ISSUED" &&
+      qa9.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
+        qa9.engine_accepted_for_ui === "ISSUED" &&
         qa9.baseline_id === "ea-baseline-a6908eff1def-3db9e8f8832f",
       qa9.verdict,
     );

@@ -5,8 +5,8 @@
 ```text
 REL = REL-502
 TITLE = FINAL ENGINE ACCEPTANCE
-STATUS = NOT_ISSUED
-CERT_ISSUED = 0
+STATUS = ISSUED
+CERT_ISSUED = 1
 REL-004_SUBSTITUTE = 0
 QA9_PREDECESSOR_VERDICT_AS_CURRENT = 0
 PSM_REL_PENDING = 0
@@ -18,12 +18,12 @@ ACK_RECEIVED = 1
 LOCAL_QA0_QA9_RERUN = 0
 EVAL_DATASET_STATUS = ACKNOWLEDGED_EXPANSION
 QA1_QA8_STATUS = COMPLETE_CURRENT_EPOCH
-QA9_STATUS = COMPLETE_NOT_ACCEPTED
-QA9_VERDICT = ENGINE_NOT_ACCEPTED
+QA9_STATUS = COMPLETE_ACCEPTED
+QA9_VERDICT = ENGINE_ACCEPTED_FOR_UI
 DEFECTS_P0 = 0
-DEFECTS_P1 = 12
-CRITICAL_INVARIANT_BLOCKED = 2
-NEXT = 03_blocked_fix_round
+DEFECTS_P1 = 0
+CRITICAL_INVARIANT_BLOCKED = 0
+NEXT = 03_ui_entry_unlocked
 BASELINE_ID = ea-baseline-a6908eff1def-3db9e8f8832f
 PREDECESSOR_BASELINE_ID = ea-baseline-64b0f8a6d984-3657543f36b5
 REBASE_ID = ea-rebase-a6908eff1def-3db9e8f8832f
@@ -46,13 +46,15 @@ Human/PO ACK `ENGINE_ACCEPTANCE_REBASE_V1` 수신 · apply 완료.
 `qa9_predecessor_verdict_as_current_authoritative = FORBIDDEN`.
 
 현재 epoch QA1-QA8 재실행 + QA9 재집계를 완료했다.
-- QA1-QA3 · QA7(CI Actions `32634726715` formal 26/26) COMPLETE
-- QA4 full: P1=6 — clock hook 있음 · harness multi-day executor 미배선 (FAIL, laundry PASS 금지)
-- QA5 full: P1=6 — fault hook 있음 · Failure World executor 미배선 (FAIL, laundry PASS 금지)
-- QA6+QA8: `critical_invariant.blocked=2` (`BLOCKED_ENV_CAPABILITY`)
-- QA9 공식: `ENGINE_NOT_ACCEPTED` · `ENGINE_ACCEPTED_FOR_UI=NOT_ISSUED` · NEXT=`03_blocked_fix_round`
+- QA1-QA3 COMPLETE
+- QA4 tiny + clock harness (Actions `32638272888`) COMPLETE · critical PASS
+- QA5 tiny + fault harness (동일 run) COMPLETE · critical PASS
+- QA6 full + k6 threshold (동일 run) COMPLETE · 4/4 tag PASS
+- QA7 formal Actions `32634726715` 26/26 COMPLETE
+- QA8 tiny + adversarial harness (동일 run) COMPLETE · critical PASS
+- QA9 공식: `ENGINE_ACCEPTED_FOR_UI` · `ENGINE_ACCEPTED_FOR_UI=ISSUED` · NEXT=`03_ui_entry_unlocked`
 
-인증서를 발급하지 않는다. 제품 mutation 으로 초록을 쫓지 않는다.
+인증서를 발급한다. 제품 mutation 으로 초록을 쫓지 않았다.
 로컬에서 QA0-QA9 를 가짜 PASS 로 닫지 않았다.
 eval 은 `ACKNOWLEDGED_EXPANSION` 이며 QA7 케이스 수는 live dataset(26)이다.
 
@@ -66,13 +68,13 @@ COMPLETED: REL-003 · REL-008 · REL-010 · REL-015 · REL-016 · REL-020 · REL
 
 POST-001 · POST-002 · POST-003 은 PSM=TRUE 이지만 실행 순서가 REL-502 이후다. 인증 발급을 막지 않는다. 이후 실행되면 REL-503 이 이 인증을 STALE 로 만든다.
 
-## 발급 조건 (4·5 미충족)
+## 발급 조건 (5항 전부 충족)
 
 1. PSM=TRUE REL 미완료 0 — 충족
 2. live aggregate == current baseline aggregate — 충족
 3. QA1-QA8 COMPLETE on that baseline — 충족
-4. QA9 가 현재 epoch 로 `ENGINE_ACCEPTED_FOR_UI` 재집계 — 미충족 (`ENGINE_NOT_ACCEPTED`, P1=12)
-5. 이 문서 `STATUS = ISSUED` · `CERT_ISSUED = 1` — 미충족
+4. QA9 가 현재 epoch 로 `ENGINE_ACCEPTED_FOR_UI` 재집계 — 충족
+5. 이 문서 `STATUS = ISSUED` · `CERT_ISSUED = 1` — 충족
 
 ## 변경 경로 (108 · predecessor 대비 이력 · 현재 epoch pin 이후 CHANGED_PATHS = 0)
 

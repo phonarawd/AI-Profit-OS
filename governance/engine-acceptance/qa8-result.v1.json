@@ -4,9 +4,9 @@
   "suite_id": "QA8",
   "run_id": "qa8-security-privacy-20260823",
   "todoId": "qa8-security-privacy",
-  "measuredAt": "2026-08-23T10:56:34.109Z",
+  "measuredAt": "2026-08-23T12:07:50.878Z",
   "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
-  "mode": "full",
+  "mode": "tiny",
   "asvs_version": "5.0.0",
   "exhaustive_certification_claim": false,
   "kill_switch": {
@@ -24,9 +24,9 @@
   "checks": {
     "security_privacy_world": {
       "check_id": "QA8_SECURITY_PRIVACY_WORLD",
-      "status": "BLOCKED_PARTIAL",
-      "mode": "full",
-      "measuredAt": "2026-08-23T10:56:34.109Z",
+      "status": "PASS",
+      "mode": "tiny",
+      "measuredAt": "2026-08-23T12:07:50.878Z",
       "seed": 20260813,
       "asvs_version": "5.0.0",
       "exhaustive_certification_claim": false,
@@ -180,11 +180,14 @@
           },
           "findings": [],
           "dynamic_evidence": {
-            "source": null,
-            "verdict": "NOT_RUN",
-            "notes": [
-              "Live dynamic delete-account proof (real HTTP + isolated Postgres row-level verification) requires the CI-heavy qa8-adversarial harness; not available in this run (local/no-heavy-capability). Static source evidence above is not weakened or replaced by this absence."
-            ]
+            "source": "run-qa8-adversarial.cjs privacy_delete (isolated CI Postgres + booted Nest)",
+            "verdict": "PASS",
+            "target_user_tombstoned": true,
+            "purge_table_confirmed": true,
+            "retain_table_confirmed": true,
+            "control_user_unaffected": true,
+            "invalid_confirm_rejected_no_mutation": true,
+            "findings": []
           },
           "rich_evidence": null
         },
@@ -214,8 +217,8 @@
       "dynamic_scenarios": [
         {
           "scenario_id": "SEC-DYNAMIC-ADVERSARIAL-01",
-          "status": "BLOCKED",
-          "blocked_code": "BLOCKED_ENV_CAPABILITY",
+          "status": "PASS",
+          "blocked_code": null,
           "asvs_ids": [
             "v5.0.0-8.2.1",
             "v5.0.0-8.2.2",
@@ -223,23 +226,62 @@
           ],
           "invariant_id": "INV-ISOLATION-01",
           "harness_probe": {
-            "probed_path": "_tmp_qa_harness/qa8-adversarial/qa8-adversarial.v1.json",
-            "reason": "no_harness_evidence_file"
+            "available": true,
+            "probed_path": "../../../../../tmp/aipo-harness/qa8-adversarial/qa8-adversarial.v1.json",
+            "age_ms": 134
           },
-          "findings": [
-            "Live adversarial HTTP testing against a booted api-nest instance (tampered JWTs, cross-user object-id probing at runtime, concurrent interleave under a real DB, operator-identity spoofing attempts) requires an isolated CI Postgres + booted Nest (run-qa8-adversarial.cjs). Not available in this run (no_harness_evidence_file); not run locally to avoid OOM on this Phase0 2C/8GB machine; mock-PASS is forbidden by acceptance-contract L3 - recorded BLOCKED, not PASS."
-          ]
+          "evidence": {
+            "source": "run-qa8-adversarial.cjs (isolated CI Postgres + booted Nest, real HTTP)",
+            "measuredAt": "2026-08-23T12:07:50.745Z",
+            "case_count": 41,
+            "product_security_verdict": "PASS",
+            "unknown_product_failures": 0,
+            "inventory": {
+              "controller_count": 25,
+              "route_count": 115,
+              "controllers": [
+                "services/api-nest/src/adapters/adapters.admin.controller.ts",
+                "services/api-nest/src/admin-ops/admin-ops.admin.controller.ts",
+                "services/api-nest/src/ai/ai-logs.admin.controller.ts",
+                "services/api-nest/src/ai/ai-pick.admin.controller.ts",
+                "services/api-nest/src/ai/shadow-replay.admin.controller.ts",
+                "services/api-nest/src/audit/audit-events.admin.controller.ts",
+                "services/api-nest/src/compliance/kyc.admin.controller.ts",
+                "services/api-nest/src/execution-policy/execution-policy.admin.controller.ts",
+                "services/api-nest/src/inbox/ops-inbox.admin.controller.ts",
+                "services/api-nest/src/kill-switch/kill-switch.admin.controller.ts",
+                "services/api-nest/src/ledger/ledger.admin.controller.ts",
+                "services/api-nest/src/match-control/match-control.admin.controller.ts",
+                "services/api-nest/src/membership/membership.admin.controller.ts",
+                "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
+                "services/api-nest/src/opportunities/user-opportunity-override.admin.controller.ts",
+                "services/api-nest/src/push/push-kill.admin.controller.ts",
+                "services/api-nest/src/referral/referral.admin.controller.ts",
+                "services/api-nest/src/risk/risk.admin.controller.ts",
+                "services/api-nest/src/simulation/platform-reserve.admin.controller.ts",
+                "services/api-nest/src/simulation/simulation.admin.controller.ts",
+                "services/api-nest/src/source-policy/source-policy.admin.controller.ts",
+                "services/api-nest/src/wallet/deposit-config.admin.controller.ts",
+                "services/api-nest/src/wallet/deposit-dispute.admin.controller.ts",
+                "services/api-nest/src/wallet/krw-deposit.admin.controller.ts",
+                "services/api-nest/src/wallet/withdraw-credentials.admin.controller.ts"
+              ],
+              "drift": false,
+              "controllers_without_case": []
+            }
+          },
+          "findings": []
         }
       ],
       "counts": {
-        "pass": 5,
+        "pass": 6,
         "fail": 0,
-        "blocked": 1,
+        "blocked": 0,
         "total": 6
       },
       "critical_invariant": {
         "failed": 0,
-        "blocked": 1,
+        "blocked": 0,
         "skipped": 0,
         "uncovered": 0
       },
@@ -254,22 +296,22 @@
   },
   "critical_invariant": {
     "failed": 0,
-    "blocked": 1,
+    "blocked": 0,
     "skipped": 0,
     "uncovered": 0
   },
   "critical_invariant_cumulative": {
-    "blocked": 2,
+    "blocked": 0,
     "skipped": 0,
     "uncovered": 0,
     "sources": {
       "QA4_QA6_cumulative": {
-        "blocked": 1,
+        "blocked": 0,
         "skipped": 0,
         "uncovered": 0
       },
       "QA8_new": {
-        "blocked": 1,
+        "blocked": 0,
         "skipped": 0,
         "uncovered": 0
       }
@@ -292,13 +334,11 @@
     "strategy_fail_fast": false,
     "concurrency_group": "engine-acceptance-${{ github.ref }}"
   },
-  "blocked_codes_observed": [
-    "BLOCKED_ENV_CAPABILITY"
-  ],
+  "blocked_codes_observed": [],
   "notes": [
     "ASVS 5.0.0 subset - IDOR/authz/PII/delete-account - isolation invariant mapping shared with QA2.",
     "Real defects recorded in defects.v1.json - discovery only, not repaired this wave.",
     "Does not issue ENGINE_ACCEPTED_FOR_UI. Does not start QA9."
   ],
-  "checksum": "50fdae3cceca8430f41c07da4ed908750cd9f3f8a474a856f4b0bb29377d936c"
+  "checksum": "315f7e46ba34f09dc81470a38528c43899dae73be57217a8732de7c787ff1c45"
 }

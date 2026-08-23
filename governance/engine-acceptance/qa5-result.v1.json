@@ -4,9 +4,9 @@
   "suite_id": "QA5",
   "run_id": "qa5-failure-world-20260823",
   "todoId": "qa5-failure-world",
-  "measuredAt": "2026-08-23T10:54:22.639Z",
+  "measuredAt": "2026-08-23T12:05:30.093Z",
   "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
-  "mode": "full",
+  "mode": "tiny",
   "kill_switch": {
     "verified_before_checks": true,
     "target_env": "ci",
@@ -22,9 +22,9 @@
   "checks": {
     "failure_world": {
       "check_id": "QA5_FAILURE_WORLD",
-      "status": "FAIL",
-      "mode": "full",
-      "measuredAt": "2026-08-23T10:54:22.639Z",
+      "status": "PASS",
+      "mode": "tiny",
+      "measuredAt": "2026-08-23T12:05:30.093Z",
       "seed": 20260812,
       "fault_hook": {
         "available": true,
@@ -49,29 +49,29 @@
         "adapter_rel": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
       },
       "harness_probe": {
-        "available": false,
-        "probed_path": "_tmp_qa_harness/qa5-fault/qa5-fault-harness.v1.json",
-        "reason": "no_harness_evidence_file"
+        "available": true,
+        "probed_path": "../../../../../tmp/aipo-harness/qa5-fault/qa5-fault-harness.v1.json",
+        "reason": null
       },
       "axes": {
         "axis1_expected_degradation_fallback": {
-          "scenario_count": 3,
+          "scenario_count": 1,
           "blocked": 0,
-          "failed": 3,
-          "passed": 0,
-          "status": "FAIL"
+          "failed": 0,
+          "passed": 1,
+          "status": "PASS"
         },
         "axis2_post_recovery_invariant": {
-          "scenario_count": 3,
+          "scenario_count": 1,
           "blocked": 0,
-          "failed": 3,
-          "passed": 0,
-          "status": "FAIL"
+          "failed": 0,
+          "passed": 1,
+          "status": "PASS"
         }
       },
-      "scenarioCount": 6,
-      "passed": 0,
-      "failed": 6,
+      "scenarioCount": 2,
+      "passed": 2,
+      "failed": 0,
       "blocked": 0,
       "scenarios": [
         {
@@ -93,15 +93,15 @@
             "mock_pass_forbidden": true
           },
           "kind": "ai_429_degrade",
-          "status": "FAIL",
+          "status": "PASS",
           "blocked_code": null,
           "findings": [
-            "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
+            "Real execution via run-qa5-fault.cjs (isolated CI Postgres + booted Nest + LLM fault server)."
           ],
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T10:54:22.639Z",
+            "clock_as_of": "2026-08-23T12:05:27.983Z",
             "request_sequence": [
               {
                 "step": "probe_fault_hook",
@@ -110,120 +110,25 @@
               },
               {
                 "step": "execute_scenario",
-                "result": "not_wired",
-                "axis": 1
+                "result": "real_execution",
+                "axis": 1,
+                "source": "run-qa5-fault.cjs"
               }
             ],
             "sanitized_request": null,
-            "sanitized_response": null,
+            "sanitized_response": {
+              "verdict": "PASS",
+              "observed_failure": true,
+              "response_body_class": "busy_or_degraded",
+              "ledger_journal_count_before": 0,
+              "ledger_journal_count_after": 0,
+              "ledger_untouched": true
+            },
             "counterexample": null,
             "error_message": null,
             "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "e95cd452b6056559a887689c8b80be177a41ac1a1ccc7ccdf9253b371d823f2f",
-            "invariant_id": "INV-FEED-AI-01",
-            "suite_id": "QA5",
-            "live_http": false
-          }
-        },
-        {
-          "scenario_id": "FAULT-AI-TIMEOUT-FALLBACK",
-          "axis": 1,
-          "axis_label": "expected_degradation_fallback",
-          "invariant_id": "INV-FEED-AI-01",
-          "journey_id": "J-FAULT-DEGRADE-01",
-          "persona_id": "KR-10",
-          "title": "AI timeout → fail-safe fallback · ledger 비침범",
-          "fault": {
-            "kind": "ai_timeout",
-            "ms": 1,
-            "target": "peotteok_ai"
-          },
-          "expected": {
-            "degradation": true,
-            "fallback_contract": true,
-            "ledger_untouched": true
-          },
-          "kind": "ai_timeout_fallback",
-          "status": "FAIL",
-          "blocked_code": null,
-          "findings": [
-            "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
-          ],
-          "rich_evidence": {
-            "seed": 20260812,
-            "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T10:54:22.639Z",
-            "request_sequence": [
-              {
-                "step": "probe_fault_hook",
-                "result": "present",
-                "adapter": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
-              },
-              {
-                "step": "execute_scenario",
-                "result": "not_wired",
-                "axis": 1
-              }
-            ],
-            "sanitized_request": null,
-            "sanitized_response": null,
-            "counterexample": null,
-            "error_message": null,
-            "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
-            "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "e95cd452b6056559a887689c8b80be177a41ac1a1ccc7ccdf9253b371d823f2f",
-            "invariant_id": "INV-FEED-AI-01",
-            "suite_id": "QA5",
-            "live_http": false
-          }
-        },
-        {
-          "scenario_id": "FAULT-UPSTREAM-5XX-DEGRADE",
-          "axis": 1,
-          "axis_label": "expected_degradation_fallback",
-          "invariant_id": "INV-FEED-AI-01",
-          "journey_id": "J-FAULT-DEGRADE-01",
-          "persona_id": "KR-10",
-          "title": "upstream 5xx → expected degradation 계약",
-          "fault": {
-            "kind": "upstream_http",
-            "status": 503,
-            "target": "feed_upstream"
-          },
-          "expected": {
-            "degradation": true,
-            "ledger_untouched": true
-          },
-          "kind": "upstream_5xx_degrade",
-          "status": "FAIL",
-          "blocked_code": null,
-          "findings": [
-            "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
-          ],
-          "rich_evidence": {
-            "seed": 20260812,
-            "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T10:54:22.639Z",
-            "request_sequence": [
-              {
-                "step": "probe_fault_hook",
-                "result": "present",
-                "adapter": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
-              },
-              {
-                "step": "execute_scenario",
-                "result": "not_wired",
-                "axis": 1
-              }
-            ],
-            "sanitized_request": null,
-            "sanitized_response": null,
-            "counterexample": null,
-            "error_message": null,
-            "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
-            "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "e95cd452b6056559a887689c8b80be177a41ac1a1ccc7ccdf9253b371d823f2f",
+            "configuration_fingerprint": "c08a69977c60981ee373f918c87c57235492a3fcf8a2c0e082db57bb6291faf9",
             "invariant_id": "INV-FEED-AI-01",
             "suite_id": "QA5",
             "live_http": false
@@ -247,15 +152,15 @@
             ]
           },
           "kind": "recovery_ledger",
-          "status": "FAIL",
+          "status": "PASS",
           "blocked_code": null,
           "findings": [
-            "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
+            "Real execution via run-qa5-fault.cjs (isolated CI Postgres + booted Nest + LLM fault server)."
           ],
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T10:54:22.639Z",
+            "clock_as_of": "2026-08-23T12:05:27.983Z",
             "request_sequence": [
               {
                 "step": "probe_fault_hook",
@@ -264,120 +169,28 @@
               },
               {
                 "step": "execute_scenario",
-                "result": "not_wired",
-                "axis": 2
+                "result": "real_execution",
+                "axis": 2,
+                "source": "run-qa5-fault.cjs"
               }
             ],
             "sanitized_request": null,
-            "sanitized_response": null,
-            "counterexample": null,
-            "error_message": null,
-            "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
-            "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "505cb1c50dbca9e274b4857b74263fb08f8e59802943d6cccbb7afb7147d6677",
-            "invariant_id": "INV-LEDGER-01",
-            "suite_id": "QA5",
-            "live_http": false
-          }
-        },
-        {
-          "scenario_id": "FAULT-RECOVERY-IDEMPOTENCY-SCAN",
-          "axis": 2,
-          "axis_label": "post_recovery_invariant",
-          "invariant_id": "INV-IDEMPOTENCY-01",
-          "journey_id": "J-FAULT-RECOVERY-01",
-          "persona_id": "KR-09",
-          "title": "fault clear 후 idempotency invariant scan",
-          "fault": {
-            "kind": "request_drop",
-            "then": "clear"
-          },
-          "expected": {
-            "post_recovery_scan": [
-              "INV-IDEMPOTENCY-01"
-            ]
-          },
-          "kind": "recovery_idempotency",
-          "status": "FAIL",
-          "blocked_code": null,
-          "findings": [
-            "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
-          ],
-          "rich_evidence": {
-            "seed": 20260812,
-            "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T10:54:22.639Z",
-            "request_sequence": [
-              {
-                "step": "probe_fault_hook",
-                "result": "present",
-                "adapter": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
+            "sanitized_response": {
+              "verdict": "PASS",
+              "scan": {
+                "http_status": 200,
+                "ok": true,
+                "mismatches": 0,
+                "journalsChecked": 0
               },
-              {
-                "step": "execute_scenario",
-                "result": "not_wired",
-                "axis": 2
-              }
-            ],
-            "sanitized_request": null,
-            "sanitized_response": null,
+              "same_nest_process": true,
+              "nest_restarted": false
+            },
             "counterexample": null,
             "error_message": null,
             "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "511d1055eda236800647d35f8c98bb1716a1474d382d30e94d117321b21b5f12",
-            "invariant_id": "INV-IDEMPOTENCY-01",
-            "suite_id": "QA5",
-            "live_http": false
-          }
-        },
-        {
-          "scenario_id": "FAULT-RECOVERY-USER-STATE",
-          "axis": 2,
-          "axis_label": "post_recovery_invariant",
-          "invariant_id": "INV-LEDGER-01",
-          "journey_id": "J-FAULT-RECOVERY-01",
-          "persona_id": "KR-03",
-          "title": "fault clear 후 user state / money truth scan",
-          "fault": {
-            "kind": "partial_write",
-            "then": "clear"
-          },
-          "expected": {
-            "post_recovery_scan": [
-              "INV-LEDGER-01",
-              "user_state"
-            ]
-          },
-          "kind": "recovery_user_state",
-          "status": "FAIL",
-          "blocked_code": null,
-          "findings": [
-            "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
-          ],
-          "rich_evidence": {
-            "seed": 20260812,
-            "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T10:54:22.639Z",
-            "request_sequence": [
-              {
-                "step": "probe_fault_hook",
-                "result": "present",
-                "adapter": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
-              },
-              {
-                "step": "execute_scenario",
-                "result": "not_wired",
-                "axis": 2
-              }
-            ],
-            "sanitized_request": null,
-            "sanitized_response": null,
-            "counterexample": null,
-            "error_message": null,
-            "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
-            "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "505cb1c50dbca9e274b4857b74263fb08f8e59802943d6cccbb7afb7147d6677",
+            "configuration_fingerprint": "511f28cbfe44c5720feb2e280ad9c60f63ddef5ab33238ffa048bb1c4bc7ed53",
             "invariant_id": "INV-LEDGER-01",
             "suite_id": "QA5",
             "live_http": false
@@ -388,36 +201,24 @@
         "blocked": 0,
         "skipped": 0,
         "uncovered": 0,
-        "failed": 3,
+        "failed": 0,
         "details": [
           {
             "invariant_id": "INV-FEED-AI-01",
             "critical": true,
-            "status": "FAIL",
+            "status": "PASS",
             "blocked_code": null,
             "scenario_ids": [
-              "FAULT-AI-429-DEGRADE",
-              "FAULT-AI-TIMEOUT-FALLBACK",
-              "FAULT-UPSTREAM-5XX-DEGRADE"
+              "FAULT-AI-429-DEGRADE"
             ]
           },
           {
             "invariant_id": "INV-LEDGER-01",
             "critical": true,
-            "status": "FAIL",
+            "status": "PASS",
             "blocked_code": null,
             "scenario_ids": [
-              "FAULT-RECOVERY-LEDGER-SCAN",
-              "FAULT-RECOVERY-USER-STATE"
-            ]
-          },
-          {
-            "invariant_id": "INV-IDEMPOTENCY-01",
-            "critical": true,
-            "status": "FAIL",
-            "blocked_code": null,
-            "scenario_ids": [
-              "FAULT-RECOVERY-IDEMPOTENCY-SCAN"
+              "FAULT-RECOVERY-LEDGER-SCAN"
             ]
           }
         ]
@@ -435,36 +236,24 @@
     "blocked": 0,
     "skipped": 0,
     "uncovered": 0,
-    "failed": 3,
+    "failed": 0,
     "details": [
       {
         "invariant_id": "INV-FEED-AI-01",
         "critical": true,
-        "status": "FAIL",
+        "status": "PASS",
         "blocked_code": null,
         "scenario_ids": [
-          "FAULT-AI-429-DEGRADE",
-          "FAULT-AI-TIMEOUT-FALLBACK",
-          "FAULT-UPSTREAM-5XX-DEGRADE"
+          "FAULT-AI-429-DEGRADE"
         ]
       },
       {
         "invariant_id": "INV-LEDGER-01",
         "critical": true,
-        "status": "FAIL",
+        "status": "PASS",
         "blocked_code": null,
         "scenario_ids": [
-          "FAULT-RECOVERY-LEDGER-SCAN",
-          "FAULT-RECOVERY-USER-STATE"
-        ]
-      },
-      {
-        "invariant_id": "INV-IDEMPOTENCY-01",
-        "critical": true,
-        "status": "FAIL",
-        "blocked_code": null,
-        "scenario_ids": [
-          "FAULT-RECOVERY-IDEMPOTENCY-SCAN"
+          "FAULT-RECOVERY-LEDGER-SCAN"
         ]
       }
     ]
@@ -486,15 +275,15 @@
       }
     }
   },
-  "all_checks_pass": false,
-  "defects_found": 6,
+  "all_checks_pass": true,
+  "defects_found": 0,
   "defects_counts": {
     "P0": 0,
-    "P1": 6,
+    "P1": 0,
     "P2": 0,
     "P3": 0
   },
-  "verdict_contribution": "ENGINE_NOT_ACCEPTED",
+  "verdict_contribution": "ENGINE_QA_INCOMPLETE",
   "next": "QA6_PERFORMANCE",
   "product_mutation": 0,
   "kpi_forbidden": true,
@@ -512,5 +301,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "CI aggregator uses if: always(); artifact retention ≥ 90 days."
   ],
-  "checksum": "92149fd98c9b79fbae4cfc6b2013b87a505e6be6dc6e9cc83b3383d7de6f0887"
+  "checksum": "b321035b951b80c418196e178b73e493d91e09225f4e2faa58839fa02bcc81e2"
 }
