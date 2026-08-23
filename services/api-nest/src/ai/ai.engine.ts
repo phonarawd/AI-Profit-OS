@@ -117,6 +117,7 @@ export const rememberResultRef = ai.rememberResultRef;
 export const assertStateOwnership = ai.assertStateOwnership;
 export const isWithinAbsoluteLifetime = ai.isWithinAbsoluteLifetime;
 export const effectiveTtlSec = ai.effectiveTtlSec;
+export const redactConversationPii = ai.redactConversationPii;
 export const buildHistoryMessages = ai.buildHistoryMessages;
 export const resolveResultReference = ai.resolveResultReference;
 export const referencePromptBlock = ai.referencePromptBlock;
