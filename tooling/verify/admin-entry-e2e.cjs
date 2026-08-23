@@ -1,5 +1,5 @@
 /**
- * verify:admin-entry-e2e — REL-200~206 Playwright
+ * verify:admin-entry-e2e — REL-200~208 Playwright
  */
 const fs = require("fs");
 const path = require("path");
