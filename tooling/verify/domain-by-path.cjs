@@ -477,6 +477,12 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/admin\//.test(f) ||
+      /^tooling\/verify\/rel-400-admin-control-plane\.cjs$/.test(f),
+    scripts: ["rel-400-admin-control-plane.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||
