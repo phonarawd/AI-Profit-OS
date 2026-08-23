@@ -612,6 +612,14 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/admin\/R6_CERTIFICATION\.md$/.test(f) ||
+      /^governance\/release-master\/REL-409-R6-CERT\.md$/.test(f) ||
+      /^tooling\/verify\/rel-409-r6-cert\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-409-r6-cert\.v1\.json$/.test(f),
+    scripts: ["rel-409-r6-cert.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||

@@ -1,0 +1,147 @@
+{
+  "topLevel": 12,
+  "child2b": true,
+  "sidebar13": 0,
+  "webAdmin": 0,
+  "p0": 0,
+  "p1": 0,
+  "p2": 0,
+  "p3": 0,
+  "deps": [
+    "REL-200",
+    "REL-201",
+    "REL-202",
+    "REL-203",
+    "REL-204",
+    "REL-205",
+    "REL-206",
+    "REL-207",
+    "REL-208",
+    "REL-209",
+    "REL-210",
+    "REL-211",
+    "REL-212",
+    "REL-213",
+    "REL-214",
+    "REL-215",
+    "REL-216",
+    "REL-217",
+    "REL-218",
+    "REL-219",
+    "REL-220",
+    "REL-221",
+    "REL-222",
+    "REL-223",
+    "REL-224",
+    "REL-400",
+    "REL-405",
+    "REL-406",
+    "REL-407",
+    "REL-408"
+  ],
+  "modules": [
+    {
+      "id": "1",
+      "href": "/admin",
+      "rel": "REL-201",
+      "verify": "rel-201-admin-dashboard.cjs",
+      "page": "apps/admin/app/admin/page.tsx"
+    },
+    {
+      "id": "2",
+      "href": "/admin/opportunities",
+      "rel": "REL-210",
+      "verify": "rel-210-admin-opportunities.cjs",
+      "page": "apps/admin/app/admin/opportunities/page.tsx"
+    },
+    {
+      "id": "2b",
+      "href": "/admin/execution-policy",
+      "rel": "REL-209",
+      "verify": "rel-209-admin-execution-policy.cjs",
+      "page": "apps/admin/app/admin/execution-policy/page.tsx"
+    },
+    {
+      "id": "3",
+      "href": "/admin/adapters",
+      "rel": "REL-211",
+      "verify": "rel-211-admin-adapters.cjs",
+      "page": "apps/admin/app/admin/adapters/page.tsx"
+    },
+    {
+      "id": "4",
+      "href": "/admin/wallet",
+      "rel": "REL-206",
+      "verify": "rel-206-admin-wallet.cjs",
+      "page": "apps/admin/app/admin/wallet/page.tsx"
+    },
+    {
+      "id": "5",
+      "href": "/admin/ledger",
+      "rel": "REL-205",
+      "verify": "rel-205-admin-ledger.cjs",
+      "page": "apps/admin/app/admin/ledger/page.tsx"
+    },
+    {
+      "id": "6",
+      "href": "/admin/users",
+      "rel": "REL-202",
+      "verify": "rel-202-admin-users.cjs",
+      "page": "apps/admin/app/admin/users/page.tsx"
+    },
+    {
+      "id": "7",
+      "href": "/admin/risk",
+      "rel": "REL-208",
+      "verify": "rel-208-admin-risk.cjs",
+      "page": "apps/admin/app/admin/risk/page.tsx"
+    },
+    {
+      "id": "8",
+      "href": "/admin/compliance",
+      "rel": "REL-207",
+      "verify": "rel-207-admin-compliance.cjs",
+      "page": "apps/admin/app/admin/compliance/page.tsx"
+    },
+    {
+      "id": "9",
+      "href": "/admin/system-control",
+      "rel": "REL-213",
+      "verify": "rel-213-admin-system-control.cjs",
+      "page": "apps/admin/app/admin/system-control/page.tsx"
+    },
+    {
+      "id": "10",
+      "href": "/admin/ai-logs",
+      "rel": "REL-215",
+      "verify": "rel-215-admin-ai-logs.cjs",
+      "page": "apps/admin/app/admin/ai-logs/page.tsx"
+    },
+    {
+      "id": "11",
+      "href": "/admin/growth",
+      "rel": "REL-217",
+      "verify": "rel-217-admin-growth.cjs",
+      "page": "apps/admin/app/admin/growth/page.tsx"
+    },
+    {
+      "id": "12",
+      "href": "/admin/audit",
+      "rel": "REL-214",
+      "verify": "rel-214-admin-audit.cjs",
+      "page": "apps/admin/app/admin/audit/page.tsx"
+    }
+  ],
+  "extraVerifies": [
+    "no-admin-in-web.cjs",
+    "admin-routes.cjs",
+    "rel-400-admin-control-plane.cjs",
+    "rel-405-rbac-audit.cjs",
+    "rel-406-kill-switch.cjs",
+    "rel-407-price-override.cjs",
+    "rel-408-security-baseline.cjs",
+    "rel-222-admin-ops.cjs",
+    "rel-223-match-control.cjs",
+    "rel-224-source-policy.cjs"
+  ]
+}
