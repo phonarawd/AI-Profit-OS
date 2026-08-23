@@ -2,16 +2,16 @@
   "schema": "governance.engine-acceptance.qa4-result.v1",
   "version": "1.0.0",
   "suite_id": "QA4",
-  "run_id": "qa4-stateful-time-20260814",
+  "run_id": "qa4-stateful-time-20260823",
   "todoId": "qa4-stateful-time",
-  "measuredAt": "2026-08-14T19:05:00.208Z",
-  "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
-  "mode": "tiny",
+  "measuredAt": "2026-08-23T01:00:28.063Z",
+  "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+  "mode": "full",
   "kill_switch": {
     "verified_before_checks": true,
-    "target_env": "local",
+    "target_env": "ci",
     "hostname": "localhost",
-    "synthetic_account_namespace": "qa-synth-local"
+    "synthetic_account_namespace": "qa-synth-ci"
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -23,8 +23,8 @@
     "stateful_time": {
       "check_id": "QA4_STATEFUL_TIME_LIFECYCLE",
       "status": "PASS",
-      "mode": "tiny",
-      "measuredAt": "2026-08-14T19:05:00.208Z",
+      "mode": "full",
+      "measuredAt": "2026-08-23T01:00:28.063Z",
       "seed": 20260812,
       "clock_hook": {
         "available": true,
@@ -40,11 +40,11 @@
       },
       "harness_probe": {
         "available": true,
-        "probed_path": "_tmp_qa_harness/qa4-clock/qa4-clock-harness.v1.json",
+        "probed_path": "_tmp_formal_qa4_32608746981/tmp/aipo-harness/qa4-clock/qa4-clock-harness.v1.json",
         "reason": null
       },
-      "scenarioCount": 3,
-      "passed": 3,
+      "scenarioCount": 6,
+      "passed": 6,
       "failed": 0,
       "blocked": 0,
       "scenarios": [
@@ -65,7 +65,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-14T18:41:07.615Z",
+            "clock_as_of": "2026-08-23T00:49:06.028Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -82,15 +82,15 @@
             "sanitized_response": {
               "scenario_id": "TIME-KST-DAY-BOUNDARY",
               "status": "PASS",
-              "kst_midnight_ms": 1786806000000,
-              "kst_midnight_iso": "2026-08-15T15:00:00.000Z",
+              "kst_midnight_ms": 1787497200000,
+              "kst_midnight_iso": "2026-08-23T15:00:00.000Z",
               "before": {
-                "clock_ms": 1786805998000,
+                "clock_ms": 1787497198000,
                 "http_status": 200,
                 "settlementCompletedToday": 1
               },
               "after": {
-                "clock_ms": 1786806002000,
+                "clock_ms": 1787497202000,
                 "http_status": 200,
                 "settlementCompletedToday": 0
               },
@@ -100,9 +100,131 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+            "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "b3a274f4a207e7848229fc6d19595262f6b7437264823d1b7b20084d369edfae",
+            "configuration_fingerprint": "83dc45a74f9b79b2e7c158884d14a402b57cc2f1495d55f10a04ecaeb7fd83a6",
+            "invariant_id": "INV-TIME-01",
+            "suite_id": "QA4",
+            "live_http": false
+          }
+        },
+        {
+          "scenario_id": "TIME-KST-MONTH-END",
+          "invariant_id": "INV-TIME-01",
+          "journey_id": "J-TIME-MULTIDAY-01",
+          "persona_id": "KR-06",
+          "title": "KST 월말 경계",
+          "clock_as_of": "2026-01-31T14:59:59.000Z",
+          "kst_label": "2026-01-31T23:59:59+09:00",
+          "kind": "kst_month_end",
+          "status": "PASS",
+          "blocked_code": null,
+          "findings": [
+            "Real execution via run-qa4-clock.cjs (in-process booted Nest + isolated Postgres, real domain services) — not a static/fixture result."
+          ],
+          "rich_evidence": {
+            "seed": 20260812,
+            "rng_version": "aipo-ea-rng-v1",
+            "clock_as_of": "2026-08-23T00:49:06.028Z",
+            "request_sequence": [
+              {
+                "step": "probe_clock_hook",
+                "result": "present",
+                "adapter": "services/api-nest/src/common/clock.ts"
+              },
+              {
+                "step": "execute_scenario",
+                "result": "real_execution",
+                "source": "run-qa4-clock.cjs"
+              }
+            ],
+            "sanitized_request": null,
+            "sanitized_response": {
+              "scenario_id": "TIME-KST-MONTH-END",
+              "status": "PASS",
+              "boundary_ms": 1769871600000,
+              "boundary_iso": "2026-01-31T15:00:00.000Z",
+              "kst_label": "2026-01-31T23:59:59+09:00 → 2026-02-01T00:00:00+09:00",
+              "before": {
+                "clock_ms": 1769871598000,
+                "http_status": 200,
+                "settlementCompletedToday": 2
+              },
+              "after": {
+                "clock_ms": 1769871602000,
+                "http_status": 200,
+                "settlementCompletedToday": 1
+              },
+              "row_visible_before_boundary": true,
+              "row_invisible_after_boundary": true,
+              "findings": []
+            },
+            "counterexample": null,
+            "error_message": null,
+            "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+            "model_identifier": "harness-static-oracle",
+            "configuration_fingerprint": "83dc45a74f9b79b2e7c158884d14a402b57cc2f1495d55f10a04ecaeb7fd83a6",
+            "invariant_id": "INV-TIME-01",
+            "suite_id": "QA4",
+            "live_http": false
+          }
+        },
+        {
+          "scenario_id": "TIME-KST-YEAR-END",
+          "invariant_id": "INV-TIME-01",
+          "journey_id": "J-TIME-MULTIDAY-01",
+          "persona_id": "KR-06",
+          "title": "KST 연말 경계",
+          "clock_as_of": "2026-12-31T14:59:59.000Z",
+          "kst_label": "2026-12-31T23:59:59+09:00",
+          "kind": "kst_year_end",
+          "status": "PASS",
+          "blocked_code": null,
+          "findings": [
+            "Real execution via run-qa4-clock.cjs (in-process booted Nest + isolated Postgres, real domain services) — not a static/fixture result."
+          ],
+          "rich_evidence": {
+            "seed": 20260812,
+            "rng_version": "aipo-ea-rng-v1",
+            "clock_as_of": "2026-08-23T00:49:06.028Z",
+            "request_sequence": [
+              {
+                "step": "probe_clock_hook",
+                "result": "present",
+                "adapter": "services/api-nest/src/common/clock.ts"
+              },
+              {
+                "step": "execute_scenario",
+                "result": "real_execution",
+                "source": "run-qa4-clock.cjs"
+              }
+            ],
+            "sanitized_request": null,
+            "sanitized_response": {
+              "scenario_id": "TIME-KST-YEAR-END",
+              "status": "PASS",
+              "boundary_ms": 1798729200000,
+              "boundary_iso": "2026-12-31T15:00:00.000Z",
+              "kst_label": "2026-12-31T23:59:59+09:00 → 2027-01-01T00:00:00+09:00",
+              "before": {
+                "clock_ms": 1798729198000,
+                "http_status": 200,
+                "settlementCompletedToday": 1
+              },
+              "after": {
+                "clock_ms": 1798729202000,
+                "http_status": 200,
+                "settlementCompletedToday": 0
+              },
+              "row_visible_before_boundary": true,
+              "row_invisible_after_boundary": true,
+              "findings": []
+            },
+            "counterexample": null,
+            "error_message": null,
+            "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+            "model_identifier": "harness-static-oracle",
+            "configuration_fingerprint": "83dc45a74f9b79b2e7c158884d14a402b57cc2f1495d55f10a04ecaeb7fd83a6",
             "invariant_id": "INV-TIME-01",
             "suite_id": "QA4",
             "live_http": false
@@ -125,7 +247,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-14T18:41:07.615Z",
+            "clock_as_of": "2026-08-23T00:49:06.028Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -142,10 +264,10 @@
             "sanitized_response": {
               "scenario_id": "TIME-PLUS-30D",
               "status": "PASS",
-              "anchor_ms": 1786732867524,
-              "plus30d_ms": 1789324867524,
-              "kst_anchor_day": "2026-08-15",
-              "kst_plus30d_day": "2026-09-14",
+              "anchor_ms": 1787446145875,
+              "plus30d_ms": 1790038145875,
+              "kst_anchor_day": "2026-08-23",
+              "kst_plus30d_day": "2026-09-22",
               "anchor": {
                 "http_status": 200,
                 "platformSafeStopToday": 1
@@ -161,9 +283,70 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+            "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "b3a274f4a207e7848229fc6d19595262f6b7437264823d1b7b20084d369edfae",
+            "configuration_fingerprint": "83dc45a74f9b79b2e7c158884d14a402b57cc2f1495d55f10a04ecaeb7fd83a6",
+            "invariant_id": "INV-TIME-01",
+            "suite_id": "QA4",
+            "live_http": false
+          }
+        },
+        {
+          "scenario_id": "TIME-PLUS-365D",
+          "invariant_id": "INV-TIME-01",
+          "journey_id": "J-TIME-MULTIDAY-01",
+          "persona_id": "KR-06",
+          "title": "앵커 +365일 상태 진실",
+          "clock_as_of": "2027-03-15T03:00:00.000Z",
+          "kst_label": "+365d from 2026-03-15T12:00:00+09:00",
+          "kind": "plus_365d",
+          "status": "PASS",
+          "blocked_code": null,
+          "findings": [
+            "Real execution via run-qa4-clock.cjs (in-process booted Nest + isolated Postgres, real domain services) — not a static/fixture result."
+          ],
+          "rich_evidence": {
+            "seed": 20260812,
+            "rng_version": "aipo-ea-rng-v1",
+            "clock_as_of": "2026-08-23T00:49:06.028Z",
+            "request_sequence": [
+              {
+                "step": "probe_clock_hook",
+                "result": "present",
+                "adapter": "services/api-nest/src/common/clock.ts"
+              },
+              {
+                "step": "execute_scenario",
+                "result": "real_execution",
+                "source": "run-qa4-clock.cjs"
+              }
+            ],
+            "sanitized_request": null,
+            "sanitized_response": {
+              "scenario_id": "TIME-PLUS-365D",
+              "status": "PASS",
+              "anchor_ms": 1822006145906,
+              "plus365d_ms": 1853542145906,
+              "kst_anchor_day": "2027-09-27",
+              "kst_plus365d_day": "2028-09-26",
+              "anchor": {
+                "http_status": 200,
+                "platformSafeStopToday": 1
+              },
+              "plus365d": {
+                "http_status": 200,
+                "platformSafeStopToday": 0
+              },
+              "row_visible_at_anchor": true,
+              "row_invisible_at_plus365d": true,
+              "calendar_arithmetic_ok": true,
+              "findings": []
+            },
+            "counterexample": null,
+            "error_message": null,
+            "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+            "model_identifier": "harness-static-oracle",
+            "configuration_fingerprint": "83dc45a74f9b79b2e7c158884d14a402b57cc2f1495d55f10a04ecaeb7fd83a6",
             "invariant_id": "INV-TIME-01",
             "suite_id": "QA4",
             "live_http": false
@@ -186,7 +369,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-14T18:41:07.615Z",
+            "clock_as_of": "2026-08-23T00:49:06.028Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -203,10 +386,10 @@
             "sanitized_response": {
               "scenario_id": "TIME-MULTI-DAY-LIFECYCLE",
               "status": "PASS",
-              "opportunity_id": "9e44108f-f19c-4934-a978-1ee9c8888be0",
-              "trade_id": "0e6fa1b8-da01-4bf7-bf42-63d0a17958d9",
-              "accepted_at_ms": 1786732867589,
-              "clock_at_tick_ms": 1786992067589,
+              "opportunity_id": "ca9c10c2-d98f-4796-91de-c6db460b7b75",
+              "trade_id": "5488e266-9c53-40f1-b968-b9c43d338116",
+              "accepted_at_ms": 1787446145996,
+              "clock_at_tick_ms": 1787705345996,
               "tick_response": {
                 "status": "safe_stop",
                 "resultCode": "MATCH_TIMEOUT"
@@ -225,9 +408,9 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+            "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "8852dbad4630c701940d1caa402262b37cf6eba516fd1642ab4224048ad9beab",
+            "configuration_fingerprint": "49f62089d79fdcf6b0f66dd4896b43b53179c98ed037a9a59e4866db99d389af",
             "invariant_id": "INV-LIFECYCLE-01",
             "suite_id": "QA4",
             "live_http": false
@@ -247,7 +430,10 @@
             "blocked_code": null,
             "scenario_ids": [
               "TIME-KST-DAY-BOUNDARY",
-              "TIME-PLUS-30D"
+              "TIME-KST-MONTH-END",
+              "TIME-KST-YEAR-END",
+              "TIME-PLUS-30D",
+              "TIME-PLUS-365D"
             ]
           },
           {
@@ -282,7 +468,10 @@
         "blocked_code": null,
         "scenario_ids": [
           "TIME-KST-DAY-BOUNDARY",
-          "TIME-PLUS-30D"
+          "TIME-KST-MONTH-END",
+          "TIME-KST-YEAR-END",
+          "TIME-PLUS-30D",
+          "TIME-PLUS-365D"
         ]
       },
       {
@@ -319,5 +508,5 @@
     "critical INV-TIME-01 BLOCKED → ENGINE_QA_INCOMPLETE (ACCEPTED 불가).",
     "Does not issue ENGINE_ACCEPTED_FOR_UI."
   ],
-  "checksum": "16d4943d37e4c52ee12a864a98ef7032704c2d4c89a98355a64be92dcb6071ec"
+  "checksum": "a59d446aaff96ac986f7c392208a3924c103f02c8b4ad997b3eaf782e58dbeed"
 }
