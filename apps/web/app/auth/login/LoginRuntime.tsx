@@ -69,6 +69,7 @@ export function LoginRuntime() {
 
   return (
     <AuthLogin
+      embedded
       busy={busy}
       error={error}
       note={note}

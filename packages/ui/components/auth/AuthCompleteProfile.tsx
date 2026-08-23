@@ -13,6 +13,7 @@ export type AuthCompleteProfilePayload = {
 };
 
 export type AuthCompleteProfileProps = {
+  embedded?: boolean;
   /** When OAuth already provided email, hide email field */
   emailMissing?: boolean;
   busy?: boolean;
@@ -25,6 +26,7 @@ export type AuthCompleteProfileProps = {
  * Fields: displayName · phone · birthDate · email? · forbidden fields 0
  */
 export function AuthCompleteProfile({
+  embedded = false,
   emailMissing = true,
   busy = false,
   error = null,
@@ -57,17 +59,20 @@ export function AuthCompleteProfile({
       data-testid="auth-complete-profile"
       data-canon="auth-complete-profile"
       data-stage="B"
-      className="flex flex-1 flex-col gap-6"
+      data-embedded={embedded ? "true" : "false"}
+      className={embedded ? "flex flex-col gap-3" : "flex flex-1 flex-col gap-6"}
     >
-      <BrandMark size="compact" />
-      <header className="space-y-2 text-center">
-        <h1 className="text-xl font-semibold text-lux-text">
-          {T.auth.completeHeadline}
-        </h1>
-        <p className="text-sm text-lux-text-muted">{T.auth.completeSub}</p>
-      </header>
+      {!embedded ? <BrandMark size="compact" /> : null}
+      {!embedded ? (
+        <header className="space-y-2 text-center">
+          <h1 className="text-xl font-semibold text-lux-text">
+            {T.auth.completeHeadline}
+          </h1>
+          <p className="text-sm text-lux-text-muted">{T.auth.completeSub}</p>
+        </header>
+      ) : null}
 
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
+      <form className="flex flex-col gap-3" onSubmit={handleSubmit} noValidate>
         <label className="flex flex-col gap-1 text-sm" data-testid="field-displayName">
           <span className="text-lux-text-muted">{T.auth.displayName}</span>
           <input

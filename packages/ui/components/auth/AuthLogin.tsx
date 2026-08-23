@@ -11,6 +11,8 @@ import {
 } from "./webauthn-ready";
 
 export type AuthLoginProps = {
+  /** Spark Dash AuthShell provides brand chrome — card body only */
+  embedded?: boolean;
   busy?: boolean;
   error?: string | null;
   note?: string | null;
@@ -24,6 +26,7 @@ export type AuthLoginProps = {
  * REL-022: 미지원/실패 시 기존 로그인 유지. 빈 화면 금지.
  */
 export function AuthLogin({
+  embedded = false,
   busy = false,
   error = null,
   note = null,
@@ -61,15 +64,18 @@ export function AuthLogin({
     <main
       data-testid="auth-login"
       data-canon="auth-login"
-      className="flex flex-1 flex-col gap-6"
+      data-embedded={embedded ? "true" : "false"}
+      className={embedded ? "flex flex-col gap-3" : "flex flex-1 flex-col gap-6"}
     >
-      <BrandMark size="compact" />
-      <header className="space-y-2 text-center">
-        <h1 className="text-xl font-semibold text-lux-text">
-          {T.auth.loginHeadline}
-        </h1>
-        <p className="text-sm text-lux-text-muted">{T.auth.loginSub}</p>
-      </header>
+      {!embedded ? <BrandMark size="compact" /> : null}
+      {!embedded ? (
+        <header className="space-y-2 text-center">
+          <h1 className="text-xl font-semibold text-lux-text">
+            {T.auth.loginHeadline}
+          </h1>
+          <p className="text-sm text-lux-text-muted">{T.auth.loginSub}</p>
+        </header>
+      ) : null}
 
       <div className="flex flex-col gap-3">
         {kakaoReady ? (
@@ -202,9 +208,11 @@ export function AuthLogin({
         </a>
       </p>
 
-      <footer className="mt-auto pt-6 text-center text-xs text-lux-text-muted">
-        {T.legal.operator.footerLine}
-      </footer>
+      {!embedded ? (
+        <footer className="mt-auto pt-6 text-center text-xs text-lux-text-muted">
+          {T.legal.operator.footerLine}
+        </footer>
+      ) : null}
     </main>
   );
 }

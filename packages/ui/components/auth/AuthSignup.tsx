@@ -15,6 +15,7 @@ export type AuthSignupRuntimeInput = {
 };
 
 export type AuthSignupProps = {
+  embedded?: boolean;
   busy?: boolean;
   error?: string | null;
   note?: string | null;
@@ -26,6 +27,7 @@ export type AuthSignupProps = {
  * Canon auth-signup — Stage A · Kakao primary · terms required · forbidden fields 0
  */
 export function AuthSignup({
+  embedded = false,
   busy = false,
   error = null,
   note = null,
@@ -72,15 +74,18 @@ export function AuthSignup({
       data-testid="auth-signup"
       data-canon="auth-signup"
       data-stage="A"
-      className="flex flex-1 flex-col gap-6"
+      data-embedded={embedded ? "true" : "false"}
+      className={embedded ? "flex flex-col gap-3" : "flex flex-1 flex-col gap-6"}
     >
-      <BrandMark size="compact" />
-      <header className="space-y-2 text-center">
-        <h1 className="text-xl font-semibold text-lux-text">
-          {T.auth.signupHeadline}
-        </h1>
-        <p className="text-sm text-lux-text-muted">{T.auth.signupSub}</p>
-      </header>
+      {!embedded ? <BrandMark size="compact" /> : null}
+      {!embedded ? (
+        <header className="space-y-2 text-center">
+          <h1 className="text-xl font-semibold text-lux-text">
+            {T.auth.signupHeadline}
+          </h1>
+          <p className="text-sm text-lux-text-muted">{T.auth.signupSub}</p>
+        </header>
+      ) : null}
 
       <div className="flex flex-col gap-3">
         {kakaoReady && terms ? (
@@ -138,9 +143,15 @@ export function AuthSignup({
           disabled={busy}
           onClick={() => setShowEmail((v) => !v)}
         >
-          {T.auth.emailMagic}
+          {embedded ? T.auth.emailSignup : T.auth.emailMagic}
         </TouchButton>
       </div>
+
+      {embedded ? (
+        <p className="text-xs text-lux-text-muted" data-testid="auth-terms-needed">
+          {T.auth.termsNeeded}
+        </p>
+      ) : null}
 
       {showEmail ? (
         <form

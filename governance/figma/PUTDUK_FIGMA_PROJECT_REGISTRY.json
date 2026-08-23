@@ -9,7 +9,7 @@
   "team": "퍼뜩의 팀",
   "pages": ["00_Readme(0:1)", "03_Components(2:68)"],
   "homeAuthorityConflict": "NONE",
-  "lastVerifiedAt": "2026-08-22",
+  "lastVerifiedAt": "2026-08-24",
   "discoveredVia": "RECOVERED_PROJECT_CONTEXT",
   "home": {
     "visualAuthority": "SCREENSHOT_FREEZE",
@@ -158,6 +158,54 @@
       "revision": "V1",
       "name": "Account Hub / Mobile / Spark Dash / Founder Review Candidate",
       "note": "Preserved for Founder comparison. Not deleted. Not current candidate."
+    },
+    "auth_login_desktop": {
+      "nodeId": "198:591",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "rel": "REL-102",
+      "name": "Auth / Login / Desktop / Spark Dash / Founder Review Candidate",
+      "size": "1440x1080"
+    },
+    "auth_login_mobile": {
+      "nodeId": "199:523",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "rel": "REL-102",
+      "name": "Auth / Login / Mobile / Spark Dash / Founder Review Candidate",
+      "size": "390x844"
+    },
+    "auth_signup_desktop": {
+      "nodeId": "200:527",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "rel": "REL-101",
+      "name": "Auth / Signup / Desktop / Spark Dash / Founder Review Candidate",
+      "size": "1440x1080"
+    },
+    "auth_signup_mobile": {
+      "nodeId": "201:539",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "rel": "REL-101",
+      "name": "Auth / Signup / Mobile / Spark Dash / Founder Review Candidate",
+      "size": "390x844"
+    },
+    "auth_complete_desktop": {
+      "nodeId": "201:571",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "rel": "REL-103",
+      "name": "Auth / Complete Profile / Desktop / Spark Dash / Founder Review Candidate",
+      "size": "1440x1080"
+    },
+    "auth_complete_mobile": {
+      "nodeId": "201:604",
+      "classification": "FOUNDER_REVIEW_CANDIDATE",
+      "authority": false,
+      "rel": "REL-103",
+      "name": "Auth / Complete Profile / Mobile / Spark Dash / Founder Review Candidate",
+      "size": "390x844"
     }
   },
   "screenBindings": [
@@ -295,6 +343,42 @@
       "note": "Founder approved 2026-08-22. Visual authority = Desktop 192:194 + Mobile 192:434. V2 180:102 / 180:430 and V1 169:78 / 169:288 preserved. screenBindings.apply stays false because REL-131 verifier treats apply as Figma-binding/Code Connect, not runtime presence. Founder-directed audit/figma-repo-runtime-reconciliation applied the locked frames to production /me. Evidence = governance/visual-reconciliation/account/.",
       "runtimeReconciled": true,
       "reconciledBy": "audit/figma-repo-runtime-reconciliation"
+    },
+    {
+      "rel": "REL-102",
+      "route": "/auth/login",
+      "frameKeys": ["auth_login_desktop", "auth_login_mobile"],
+      "codeConnect": {
+        "AuthLogin": "packages/ui/components/auth/AuthLogin.tsx",
+        "AuthShell": "apps/web/components/spark-dash-auth/AuthShell.tsx",
+        "LoginRuntime": "apps/web/app/auth/login/LoginRuntime.tsx"
+      },
+      "apply": false,
+      "status": "FOUNDER_REVIEW_CANDIDATE"
+    },
+    {
+      "rel": "REL-101",
+      "route": "/auth/signup",
+      "frameKeys": ["auth_signup_desktop", "auth_signup_mobile"],
+      "codeConnect": {
+        "AuthSignup": "packages/ui/components/auth/AuthSignup.tsx",
+        "AuthShell": "apps/web/components/spark-dash-auth/AuthShell.tsx",
+        "SignupRuntime": "apps/web/app/auth/signup/SignupRuntime.tsx"
+      },
+      "apply": false,
+      "status": "FOUNDER_REVIEW_CANDIDATE"
+    },
+    {
+      "rel": "REL-103",
+      "route": "/auth/complete-profile",
+      "frameKeys": ["auth_complete_desktop", "auth_complete_mobile"],
+      "codeConnect": {
+        "AuthCompleteProfile": "packages/ui/components/auth/AuthCompleteProfile.tsx",
+        "AuthShell": "apps/web/components/spark-dash-auth/AuthShell.tsx",
+        "CompleteProfileRuntime": "apps/web/app/auth/complete-profile/CompleteProfileRuntime.tsx"
+      },
+      "apply": false,
+      "status": "FOUNDER_REVIEW_CANDIDATE"
     }
   ]
 }

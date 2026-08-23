@@ -53,4 +53,5 @@ test("runtime login route when base URL is provided", async ({ page }) => {
   });
   expect(res && res.ok()).toBeTruthy();
   await expect(page.getByTestId("auth-login")).toBeVisible();
+  await expect(page.getByTestId("auth-shell")).toBeVisible();
 });

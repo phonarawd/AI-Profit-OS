@@ -47,6 +47,12 @@ jobs:
       - name: Origin lock
         run: pnpm verify:opennext-workers-origin
 
+      - name: Preview API proxy env
+        env:
+          API_HOST: ${{ secrets.API_HOST }}
+        run: |
+          printf 'API_HOST=%s\n' "${API_HOST:-api.hiptk.app}" >> .env
+
       - name: Deploy web staging
         if: inputs.surface == 'web' || inputs.surface == 'all'
         env:

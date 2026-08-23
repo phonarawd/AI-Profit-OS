@@ -90,6 +90,7 @@ export function SignupRuntime() {
 
   return (
     <AuthSignup
+      embedded
       busy={busy}
       error={error}
       note={note}

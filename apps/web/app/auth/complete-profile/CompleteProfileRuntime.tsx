@@ -31,6 +31,7 @@ export function CompleteProfileRuntime() {
 
   return (
     <AuthCompleteProfile
+      embedded
       busy={busy}
       error={error}
       onSave={async (payload) => {
