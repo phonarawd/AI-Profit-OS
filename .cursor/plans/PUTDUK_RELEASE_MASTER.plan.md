@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-305 COMPLETED. FIRST_EXECUTION_TODO=REL-215. HARD_STOP_AFTER=REL-305. BATCH_REL_200_206=ADMIN_ENTRY.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-215 COMPLETED. FIRST_EXECUTION_TODO=REL-400. HARD_STOP_AFTER=REL-215. BATCH_REL_200_206=ADMIN_ENTRY.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -249,8 +249,8 @@ todos:
     content: "[AI Capability] conversation-state bounded-memory 런타임 재확인 -- DONE bounded-memory + PII"
     status: completed
   - id: rel-215
-    content: "[Admin] /admin/ai-logs 실사+구현(deps REL-300~305 완료 후, TOP→BOTTOM에서 본 위치)"
-    status: pending
+    content: "[Admin] /admin/ai-logs -- DONE live traces/eval/coach/pick, honest empty, PII mask, stub-only 0"
+    status: completed
   - id: rel-400
     content: "[Hardening] Admin Control Plane superset 클로저 스펙(kill-switch UI/audit UI/RBAC 관리 UI)"
     status: pending
@@ -420,10 +420,10 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-215
-LAST_COMPLETED_TODO = REL-305
+FIRST_EXECUTION_TODO = REL-400
+LAST_COMPLETED_TODO = REL-215
 BATCH_REL_200_206 = ADMIN_ENTRY
-HARD_STOP_AFTER = REL-305
+HARD_STOP_AFTER = REL-215
 PRE_LOCK_COUNT = 1
 REL_COUNT = 116
 POST_COUNT = 19
@@ -2874,7 +2874,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-215
 TITLE: /admin/ai-logs 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-215
@@ -4569,5 +4569,5 @@ FIRST_EXECUTION_TODO_AT_MATERIALIZATION = REL-000
 REL-000은 2026-08-20에 PASS/COMPLETED.
 REL-001은 2026-08-20에 PASS/COMPLETED (`preserve/2026-08-20-worktree-rescue` · `ae8d1e6` · merge 금지).
 REL-002는 2026-08-21에 PASS/COMPLETED (PR #2 MERGED · `db6db87` · ruleset `verify-gate` 계약 수정 후 비우회 merge).
-현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-215`. HARD_STOP_AFTER = REL-305.
+현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-400`. HARD_STOP_AFTER = REL-215.
 

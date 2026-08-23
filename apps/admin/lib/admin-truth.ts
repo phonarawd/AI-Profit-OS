@@ -34,3 +34,18 @@ export function isUuid(value: string): boolean {
     value.trim(),
   );
 }
+
+/** Admin log preview — resident/phone/token raw 0 */
+export function maskLogPreview(value: unknown): string | null {
+  const text = readText(value);
+  if (!text) return null;
+  return text
+    .replace(/\b\d{6}-?\d{7}\b/g, "[숨김]")
+    .replace(/\b01[016789]-?\d{3,4}-?\d{4}\b/g, "[숨김]")
+    .replace(/\bBearer\s+\S+/gi, "Bearer [숨김]")
+    .replace(/\bsk-[A-Za-z0-9]{8,}\b/g, "[숨김]")
+    .replace(
+      /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b/g,
+      "[숨김]",
+    );
+}

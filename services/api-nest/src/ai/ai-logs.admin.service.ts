@@ -18,6 +18,7 @@ import {
   FACT_CHIPS,
   FACT_TOOLS,
   promoteToProd,
+  redactConversationPii,
   toAiLogsRow,
 } from "./ai.engine";
 import type { AiEvalRunRequest } from "./ai.types";
@@ -41,7 +42,7 @@ export class AiLogsAdminService {
       [lim],
     );
     return {
-      items: res.rows,
+      items: res.rows.map((row) => this.publicLogRow(row)),
       autoLearningEnabled: AUTO_LEARNING_ENABLED,
     };
   }
@@ -56,7 +57,16 @@ export class AiLogsAdminService {
       [id],
     );
     if (!res.rows[0]) throw new NotFoundException("AI_LOG_NOT_FOUND");
-    return res.rows[0];
+    return this.publicLogRow(res.rows[0]);
+  }
+
+  private publicLogRow(row: Record<string, unknown>) {
+    const preview = row.answer_preview;
+    return {
+      ...row,
+      answer_preview:
+        preview == null ? null : redactConversationPii(String(preview)),
+    };
   }
 
   /** Append trace (Nest internal / future coach) — aligned to ai_logs */
