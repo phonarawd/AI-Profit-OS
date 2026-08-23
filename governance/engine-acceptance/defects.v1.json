@@ -1,7 +1,7 @@
 {
   "schema": "governance.engine-acceptance.defects.v1",
   "version": "1.0.0",
-  "status": "qa8_empty",
+  "status": "qa8_recorded",
   "requiredLinkFields": [
     "severity",
     "invariant_id",
@@ -16,11 +16,522 @@
   ],
   "counts": {
     "P0": 0,
-    "P1": 0,
+    "P1": 12,
     "P2": 0,
     "P3": 0
   },
-  "defects": [],
+  "defects": [
+    {
+      "severity": "P1",
+      "invariant_id": "INV-TIME-01",
+      "suite_id": "QA4",
+      "persona_id": "KR-06",
+      "journey_id": "J-TIME-MULTIDAY-01",
+      "seed": 20260812,
+      "trace_id": "qa4:TIME-KST-DAY-BOUNDARY",
+      "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "first_observed_at": "2026-08-23T10:54:14.895Z",
+      "repro_status": "blocked",
+      "title": "stateful-time fail: TIME-KST-DAY-BOUNDARY",
+      "findings": [
+        "Clock hook module present but harness multi-day executor not wired in this slice — record as FAIL (not laundry PASS)."
+      ],
+      "rich_evidence": {
+        "seed": 20260812,
+        "rng_version": "aipo-ea-rng-v1",
+        "clock_as_of": "2026-03-14T15:00:00.000Z",
+        "request_sequence": [
+          {
+            "step": "probe_clock_hook",
+            "result": "present",
+            "adapter": "services/api-nest/src/common/clock.ts"
+          },
+          {
+            "step": "execute_scenario",
+            "result": "not_wired"
+          }
+        ],
+        "sanitized_request": null,
+        "sanitized_response": null,
+        "counterexample": null,
+        "error_message": null,
+        "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+        "model_identifier": "harness-static-oracle",
+        "configuration_fingerprint": "9993184581e92b4077aa971742243ec2ae99d7f7c2fc8110471b4ddfb52e8cbc",
+        "suite_id": "QA3",
+        "live_http": false
+      }
+    },
+    {
+      "severity": "P1",
+      "invariant_id": "INV-TIME-01",
+      "suite_id": "QA4",
+      "persona_id": "KR-06",
+      "journey_id": "J-TIME-MULTIDAY-01",
+      "seed": 20260812,
+      "trace_id": "qa4:TIME-KST-MONTH-END",
+      "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "first_observed_at": "2026-08-23T10:54:14.895Z",
+      "repro_status": "blocked",
+      "title": "stateful-time fail: TIME-KST-MONTH-END",
+      "findings": [
+        "Clock hook module present but harness multi-day executor not wired in this slice — record as FAIL (not laundry PASS)."
+      ],
+      "rich_evidence": {
+        "seed": 20260812,
+        "rng_version": "aipo-ea-rng-v1",
+        "clock_as_of": "2026-01-31T14:59:59.000Z",
+        "request_sequence": [
+          {
+            "step": "probe_clock_hook",
+            "result": "present",
+            "adapter": "services/api-nest/src/common/clock.ts"
+          },
+          {
+            "step": "execute_scenario",
+            "result": "not_wired"
+          }
+        ],
+        "sanitized_request": null,
+        "sanitized_response": null,
+        "counterexample": null,
+        "error_message": null,
+        "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+        "model_identifier": "harness-static-oracle",
+        "configuration_fingerprint": "9993184581e92b4077aa971742243ec2ae99d7f7c2fc8110471b4ddfb52e8cbc",
+        "suite_id": "QA3",
+        "live_http": false
+      }
+    },
+    {
+      "severity": "P1",
+      "invariant_id": "INV-TIME-01",
+      "suite_id": "QA4",
+      "persona_id": "KR-06",
+      "journey_id": "J-TIME-MULTIDAY-01",
+      "seed": 20260812,
+      "trace_id": "qa4:TIME-KST-YEAR-END",
+      "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "first_observed_at": "2026-08-23T10:54:14.895Z",
+      "repro_status": "blocked",
+      "title": "stateful-time fail: TIME-KST-YEAR-END",
+      "findings": [
+        "Clock hook module present but harness multi-day executor not wired in this slice — record as FAIL (not laundry PASS)."
+      ],
+      "rich_evidence": {
+        "seed": 20260812,
+        "rng_version": "aipo-ea-rng-v1",
+        "clock_as_of": "2026-12-31T14:59:59.000Z",
+        "request_sequence": [
+          {
+            "step": "probe_clock_hook",
+            "result": "present",
+            "adapter": "services/api-nest/src/common/clock.ts"
+          },
+          {
+            "step": "execute_scenario",
+            "result": "not_wired"
+          }
+        ],
+        "sanitized_request": null,
+        "sanitized_response": null,
+        "counterexample": null,
+        "error_message": null,
+        "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+        "model_identifier": "harness-static-oracle",
+        "configuration_fingerprint": "9993184581e92b4077aa971742243ec2ae99d7f7c2fc8110471b4ddfb52e8cbc",
+        "suite_id": "QA3",
+        "live_http": false
+      }
+    },
+    {
+      "severity": "P1",
+      "invariant_id": "INV-TIME-01",
+      "suite_id": "QA4",
+      "persona_id": "KR-06",
+      "journey_id": "J-TIME-MULTIDAY-01",
+      "seed": 20260812,
+      "trace_id": "qa4:TIME-PLUS-30D",
+      "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "first_observed_at": "2026-08-23T10:54:14.895Z",
+      "repro_status": "blocked",
+      "title": "stateful-time fail: TIME-PLUS-30D",
+      "findings": [
+        "Clock hook module present but harness multi-day executor not wired in this slice — record as FAIL (not laundry PASS)."
+      ],
+      "rich_evidence": {
+        "seed": 20260812,
+        "rng_version": "aipo-ea-rng-v1",
+        "clock_as_of": "2026-04-14T03:00:00.000Z",
+        "request_sequence": [
+          {
+            "step": "probe_clock_hook",
+            "result": "present",
+            "adapter": "services/api-nest/src/common/clock.ts"
+          },
+          {
+            "step": "execute_scenario",
+            "result": "not_wired"
+          }
+        ],
+        "sanitized_request": null,
+        "sanitized_response": null,
+        "counterexample": null,
+        "error_message": null,
+        "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+        "model_identifier": "harness-static-oracle",
+        "configuration_fingerprint": "9993184581e92b4077aa971742243ec2ae99d7f7c2fc8110471b4ddfb52e8cbc",
+        "suite_id": "QA3",
+        "live_http": false
+      }
+    },
+    {
+      "severity": "P1",
+      "invariant_id": "INV-TIME-01",
+      "suite_id": "QA4",
+      "persona_id": "KR-06",
+      "journey_id": "J-TIME-MULTIDAY-01",
+      "seed": 20260812,
+      "trace_id": "qa4:TIME-PLUS-365D",
+      "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "first_observed_at": "2026-08-23T10:54:14.895Z",
+      "repro_status": "blocked",
+      "title": "stateful-time fail: TIME-PLUS-365D",
+      "findings": [
+        "Clock hook module present but harness multi-day executor not wired in this slice — record as FAIL (not laundry PASS)."
+      ],
+      "rich_evidence": {
+        "seed": 20260812,
+        "rng_version": "aipo-ea-rng-v1",
+        "clock_as_of": "2027-03-15T03:00:00.000Z",
+        "request_sequence": [
+          {
+            "step": "probe_clock_hook",
+            "result": "present",
+            "adapter": "services/api-nest/src/common/clock.ts"
+          },
+          {
+            "step": "execute_scenario",
+            "result": "not_wired"
+          }
+        ],
+        "sanitized_request": null,
+        "sanitized_response": null,
+        "counterexample": null,
+        "error_message": null,
+        "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+        "model_identifier": "harness-static-oracle",
+        "configuration_fingerprint": "9993184581e92b4077aa971742243ec2ae99d7f7c2fc8110471b4ddfb52e8cbc",
+        "suite_id": "QA3",
+        "live_http": false
+      }
+    },
+    {
+      "severity": "P1",
+      "invariant_id": "INV-LIFECYCLE-01",
+      "suite_id": "QA4",
+      "persona_id": "KR-05",
+      "journey_id": "J-TIME-MULTIDAY-01",
+      "seed": 20260812,
+      "trace_id": "qa4:TIME-MULTI-DAY-LIFECYCLE",
+      "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "first_observed_at": "2026-08-23T10:54:14.895Z",
+      "repro_status": "blocked",
+      "title": "stateful-time fail: TIME-MULTI-DAY-LIFECYCLE",
+      "findings": [
+        "Clock hook module present but harness multi-day executor not wired in this slice — record as FAIL (not laundry PASS)."
+      ],
+      "rich_evidence": {
+        "seed": 20260812,
+        "rng_version": "aipo-ea-rng-v1",
+        "clock_as_of": "2026-03-18T03:00:00.000Z",
+        "request_sequence": [
+          {
+            "step": "probe_clock_hook",
+            "result": "present",
+            "adapter": "services/api-nest/src/common/clock.ts"
+          },
+          {
+            "step": "execute_scenario",
+            "result": "not_wired"
+          }
+        ],
+        "sanitized_request": null,
+        "sanitized_response": null,
+        "counterexample": null,
+        "error_message": null,
+        "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+        "model_identifier": "harness-static-oracle",
+        "configuration_fingerprint": "9993184581e92b4077aa971742243ec2ae99d7f7c2fc8110471b4ddfb52e8cbc",
+        "suite_id": "QA3",
+        "live_http": false
+      }
+    },
+    {
+      "severity": "P1",
+      "invariant_id": "INV-FEED-AI-01",
+      "suite_id": "QA5",
+      "persona_id": "KR-10",
+      "journey_id": "J-FAULT-DEGRADE-01",
+      "seed": 20260812,
+      "trace_id": "qa5:FAULT-AI-429-DEGRADE",
+      "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "first_observed_at": "2026-08-23T10:54:22.639Z",
+      "repro_status": "blocked",
+      "title": "failure-world fail: FAULT-AI-429-DEGRADE",
+      "findings": [
+        "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
+      ],
+      "rich_evidence": {
+        "seed": 20260812,
+        "rng_version": "aipo-ea-rng-v1",
+        "clock_as_of": "2026-08-23T10:54:22.639Z",
+        "request_sequence": [
+          {
+            "step": "probe_fault_hook",
+            "result": "present",
+            "adapter": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
+          },
+          {
+            "step": "execute_scenario",
+            "result": "not_wired",
+            "axis": 1
+          }
+        ],
+        "sanitized_request": null,
+        "sanitized_response": null,
+        "counterexample": null,
+        "error_message": null,
+        "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+        "model_identifier": "harness-static-oracle",
+        "configuration_fingerprint": "e95cd452b6056559a887689c8b80be177a41ac1a1ccc7ccdf9253b371d823f2f",
+        "invariant_id": "INV-FEED-AI-01",
+        "suite_id": "QA5",
+        "live_http": false
+      },
+      "axis": 1
+    },
+    {
+      "severity": "P1",
+      "invariant_id": "INV-FEED-AI-01",
+      "suite_id": "QA5",
+      "persona_id": "KR-10",
+      "journey_id": "J-FAULT-DEGRADE-01",
+      "seed": 20260812,
+      "trace_id": "qa5:FAULT-AI-TIMEOUT-FALLBACK",
+      "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "first_observed_at": "2026-08-23T10:54:22.639Z",
+      "repro_status": "blocked",
+      "title": "failure-world fail: FAULT-AI-TIMEOUT-FALLBACK",
+      "findings": [
+        "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
+      ],
+      "rich_evidence": {
+        "seed": 20260812,
+        "rng_version": "aipo-ea-rng-v1",
+        "clock_as_of": "2026-08-23T10:54:22.639Z",
+        "request_sequence": [
+          {
+            "step": "probe_fault_hook",
+            "result": "present",
+            "adapter": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
+          },
+          {
+            "step": "execute_scenario",
+            "result": "not_wired",
+            "axis": 1
+          }
+        ],
+        "sanitized_request": null,
+        "sanitized_response": null,
+        "counterexample": null,
+        "error_message": null,
+        "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+        "model_identifier": "harness-static-oracle",
+        "configuration_fingerprint": "e95cd452b6056559a887689c8b80be177a41ac1a1ccc7ccdf9253b371d823f2f",
+        "invariant_id": "INV-FEED-AI-01",
+        "suite_id": "QA5",
+        "live_http": false
+      },
+      "axis": 1
+    },
+    {
+      "severity": "P1",
+      "invariant_id": "INV-FEED-AI-01",
+      "suite_id": "QA5",
+      "persona_id": "KR-10",
+      "journey_id": "J-FAULT-DEGRADE-01",
+      "seed": 20260812,
+      "trace_id": "qa5:FAULT-UPSTREAM-5XX-DEGRADE",
+      "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "first_observed_at": "2026-08-23T10:54:22.639Z",
+      "repro_status": "blocked",
+      "title": "failure-world fail: FAULT-UPSTREAM-5XX-DEGRADE",
+      "findings": [
+        "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
+      ],
+      "rich_evidence": {
+        "seed": 20260812,
+        "rng_version": "aipo-ea-rng-v1",
+        "clock_as_of": "2026-08-23T10:54:22.639Z",
+        "request_sequence": [
+          {
+            "step": "probe_fault_hook",
+            "result": "present",
+            "adapter": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
+          },
+          {
+            "step": "execute_scenario",
+            "result": "not_wired",
+            "axis": 1
+          }
+        ],
+        "sanitized_request": null,
+        "sanitized_response": null,
+        "counterexample": null,
+        "error_message": null,
+        "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+        "model_identifier": "harness-static-oracle",
+        "configuration_fingerprint": "e95cd452b6056559a887689c8b80be177a41ac1a1ccc7ccdf9253b371d823f2f",
+        "invariant_id": "INV-FEED-AI-01",
+        "suite_id": "QA5",
+        "live_http": false
+      },
+      "axis": 1
+    },
+    {
+      "severity": "P1",
+      "invariant_id": "INV-LEDGER-01",
+      "suite_id": "QA5",
+      "persona_id": "KR-03",
+      "journey_id": "J-FAULT-RECOVERY-01",
+      "seed": 20260812,
+      "trace_id": "qa5:FAULT-RECOVERY-LEDGER-SCAN",
+      "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "first_observed_at": "2026-08-23T10:54:22.639Z",
+      "repro_status": "blocked",
+      "title": "failure-world fail: FAULT-RECOVERY-LEDGER-SCAN",
+      "findings": [
+        "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
+      ],
+      "rich_evidence": {
+        "seed": 20260812,
+        "rng_version": "aipo-ea-rng-v1",
+        "clock_as_of": "2026-08-23T10:54:22.639Z",
+        "request_sequence": [
+          {
+            "step": "probe_fault_hook",
+            "result": "present",
+            "adapter": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
+          },
+          {
+            "step": "execute_scenario",
+            "result": "not_wired",
+            "axis": 2
+          }
+        ],
+        "sanitized_request": null,
+        "sanitized_response": null,
+        "counterexample": null,
+        "error_message": null,
+        "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+        "model_identifier": "harness-static-oracle",
+        "configuration_fingerprint": "505cb1c50dbca9e274b4857b74263fb08f8e59802943d6cccbb7afb7147d6677",
+        "invariant_id": "INV-LEDGER-01",
+        "suite_id": "QA5",
+        "live_http": false
+      },
+      "axis": 2
+    },
+    {
+      "severity": "P1",
+      "invariant_id": "INV-IDEMPOTENCY-01",
+      "suite_id": "QA5",
+      "persona_id": "KR-09",
+      "journey_id": "J-FAULT-RECOVERY-01",
+      "seed": 20260812,
+      "trace_id": "qa5:FAULT-RECOVERY-IDEMPOTENCY-SCAN",
+      "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "first_observed_at": "2026-08-23T10:54:22.639Z",
+      "repro_status": "blocked",
+      "title": "failure-world fail: FAULT-RECOVERY-IDEMPOTENCY-SCAN",
+      "findings": [
+        "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
+      ],
+      "rich_evidence": {
+        "seed": 20260812,
+        "rng_version": "aipo-ea-rng-v1",
+        "clock_as_of": "2026-08-23T10:54:22.639Z",
+        "request_sequence": [
+          {
+            "step": "probe_fault_hook",
+            "result": "present",
+            "adapter": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
+          },
+          {
+            "step": "execute_scenario",
+            "result": "not_wired",
+            "axis": 2
+          }
+        ],
+        "sanitized_request": null,
+        "sanitized_response": null,
+        "counterexample": null,
+        "error_message": null,
+        "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+        "model_identifier": "harness-static-oracle",
+        "configuration_fingerprint": "511d1055eda236800647d35f8c98bb1716a1474d382d30e94d117321b21b5f12",
+        "invariant_id": "INV-IDEMPOTENCY-01",
+        "suite_id": "QA5",
+        "live_http": false
+      },
+      "axis": 2
+    },
+    {
+      "severity": "P1",
+      "invariant_id": "INV-LEDGER-01",
+      "suite_id": "QA5",
+      "persona_id": "KR-03",
+      "journey_id": "J-FAULT-RECOVERY-01",
+      "seed": 20260812,
+      "trace_id": "qa5:FAULT-RECOVERY-USER-STATE",
+      "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "first_observed_at": "2026-08-23T10:54:22.639Z",
+      "repro_status": "blocked",
+      "title": "failure-world fail: FAULT-RECOVERY-USER-STATE",
+      "findings": [
+        "Fault hook module present but harness Failure World executor not wired in this slice — record as FAIL (not laundry PASS)."
+      ],
+      "rich_evidence": {
+        "seed": 20260812,
+        "rng_version": "aipo-ea-rng-v1",
+        "clock_as_of": "2026-08-23T10:54:22.639Z",
+        "request_sequence": [
+          {
+            "step": "probe_fault_hook",
+            "result": "present",
+            "adapter": "tooling/engine-acceptance/harness/fault-orchestrator.cjs"
+          },
+          {
+            "step": "execute_scenario",
+            "result": "not_wired",
+            "axis": 2
+          }
+        ],
+        "sanitized_request": null,
+        "sanitized_response": null,
+        "counterexample": null,
+        "error_message": null,
+        "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+        "model_identifier": "harness-static-oracle",
+        "configuration_fingerprint": "505cb1c50dbca9e274b4857b74263fb08f8e59802943d6cccbb7afb7147d6677",
+        "invariant_id": "INV-LEDGER-01",
+        "suite_id": "QA5",
+        "live_http": false
+      },
+      "axis": 2
+    }
+  ],
   "notes": [
     "BLOCKED_ENV_CAPABILITY (SEC-DYNAMIC-ADVERSARIAL-01) is a suite/invariant result, not a defect row.",
     "QA8 FAIL rows are recorded for the dedicated repair wave - not fixed here (discovery only)."

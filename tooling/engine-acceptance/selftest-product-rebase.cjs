@@ -456,19 +456,17 @@ function run() {
       liveBaseline.id,
     );
     // qa9-result is the current-epoch verdict SSOT and is only ever written by
-    // run-qa9.cjs, so it stays stable across every other suite's CI job.
-    // Snapshot pin, not a policy: QA4/QA5/QA6/QA8's canonical checks are now wired to real
-    // CI-heavy harness executors (in-process Nest + isolated Postgres + real k6 threshold
-    // execution + real adversarial HTTP), so the P1=5 "harness executor not wired" findings
-    // this pin used to record are gone. QA9 re-aggregated the current-epoch QA0-QA8 evidence
-    // and, with defects.P0/P1=0 and critical_invariant.blocked/skipped/uncovered=0, the
-    // acceptance-contract L1 formula now legitimately yields ENGINE_ACCEPTED_FOR_UI (no rebase,
-    // no product mutation, no threshold/verdict-formula edit - see computeVerdict() above it).
+    // run-qa9.cjs. Snapshot pin, not a policy: after ENGINE_ACCEPTANCE_REBASE_V1
+    // apply, current-epoch QA1-QA8 discovery re-ran and QA9 re-aggregated.
+    // Full-mode QA4/QA5 recorded P1=12 (harness multi-day / Failure World
+    // executors not wired). QA6+QA8 recorded critical_invariant.blocked=2
+    // (BLOCKED_ENV_CAPABILITY). L1 formula → ENGINE_NOT_ACCEPTED. Predecessor
+    // 2026-08-14 ISSUED is history only.
     check(
       "live_verdict_unchanged",
-      qa9.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
-        qa9.engine_accepted_for_ui === "ISSUED" &&
-        qa9.baseline_id === "ea-baseline-64b0f8a6d984-3657543f36b5",
+      qa9.verdict === "ENGINE_NOT_ACCEPTED" &&
+        qa9.engine_accepted_for_ui === "NOT_ISSUED" &&
+        qa9.baseline_id === "ea-baseline-a6908eff1def-3db9e8f8832f",
       qa9.verdict,
     );
     // evidence-manifest.verdict is rewritten ephemerally by run-qa3/4/5/6/8.cjs in every

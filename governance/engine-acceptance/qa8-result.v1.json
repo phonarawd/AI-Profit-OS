@@ -2,18 +2,18 @@
   "schema": "governance.engine-acceptance.qa8-result.v1",
   "version": "1.0.0",
   "suite_id": "QA8",
-  "run_id": "qa8-security-privacy-20260814",
+  "run_id": "qa8-security-privacy-20260823",
   "todoId": "qa8-security-privacy",
-  "measuredAt": "2026-08-14T19:09:45.313Z",
-  "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
-  "mode": "tiny",
+  "measuredAt": "2026-08-23T10:56:34.109Z",
+  "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+  "mode": "full",
   "asvs_version": "5.0.0",
   "exhaustive_certification_claim": false,
   "kill_switch": {
     "verified_before_checks": true,
-    "target_env": "local",
+    "target_env": "ci",
     "hostname": "localhost",
-    "synthetic_account_namespace": "qa-synth-local"
+    "synthetic_account_namespace": "qa-synth-ci"
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -24,9 +24,9 @@
   "checks": {
     "security_privacy_world": {
       "check_id": "QA8_SECURITY_PRIVACY_WORLD",
-      "status": "PASS",
-      "mode": "tiny",
-      "measuredAt": "2026-08-14T19:09:45.313Z",
+      "status": "BLOCKED_PARTIAL",
+      "mode": "full",
+      "measuredAt": "2026-08-23T10:56:34.109Z",
       "seed": 20260813,
       "asvs_version": "5.0.0",
       "exhaustive_certification_claim": false,
@@ -41,16 +41,16 @@
           "attack_face": "admin_boundary",
           "critical": true,
           "status": "PASS",
-          "controllers_scanned": 19,
+          "controllers_scanned": 25,
           "unguarded_count": 0,
-          "guarded_count": 19,
+          "guarded_count": 25,
           "unguarded": [],
           "findings": [],
           "dynamic_child_verify": {
             "script": "tooling/verify/admin-boundary.cjs",
             "ok": true,
             "exitCode": 0,
-            "summary": "PASS - missing admin signing secret -> 401 (admin routes stay closed) (status=401) | [admin-guard.selftest] ALL PASS — real Nest HTTP admin boundary verified (25 checks) | [verify:admin-boundary] PASS (19 admin controllers · 93 routes classified · global APP_GUARD · real Nest HTTP adversarial round-trip)",
+            "summary": "PASS - missing admin signing secret -> 401 (admin routes stay closed) (status=401) | [admin-guard.selftest] ALL PASS — real Nest HTTP admin boundary verified (25 checks) | [verify:admin-boundary] PASS (25 admin controllers · 115 routes classified · global APP_GUARD · real Nest HTTP adversarial round-trip)",
             "cases_covered": [
               "no_token",
               "malformed_token",
@@ -164,7 +164,7 @@
             "delegates_to_privacy_service": true,
             "purge_method_found": true,
             "single_transaction": true,
-            "purge_table_count": 25,
+            "purge_table_count": 26,
             "anonymize_table_count_hint": 7,
             "sessions_purged": true,
             "email_nulled": true,
@@ -180,14 +180,11 @@
           },
           "findings": [],
           "dynamic_evidence": {
-            "source": "run-qa8-adversarial.cjs privacy_delete (isolated CI Postgres + booted Nest)",
-            "verdict": "PASS",
-            "target_user_tombstoned": true,
-            "purge_table_confirmed": true,
-            "retain_table_confirmed": true,
-            "control_user_unaffected": true,
-            "invalid_confirm_rejected_no_mutation": true,
-            "findings": []
+            "source": null,
+            "verdict": "NOT_RUN",
+            "notes": [
+              "Live dynamic delete-account proof (real HTTP + isolated Postgres row-level verification) requires the CI-heavy qa8-adversarial harness; not available in this run (local/no-heavy-capability). Static source evidence above is not weakened or replaced by this absence."
+            ]
           },
           "rich_evidence": null
         },
@@ -217,8 +214,8 @@
       "dynamic_scenarios": [
         {
           "scenario_id": "SEC-DYNAMIC-ADVERSARIAL-01",
-          "status": "PASS",
-          "blocked_code": null,
+          "status": "BLOCKED",
+          "blocked_code": "BLOCKED_ENV_CAPABILITY",
           "asvs_ids": [
             "v5.0.0-8.2.1",
             "v5.0.0-8.2.2",
@@ -226,56 +223,23 @@
           ],
           "invariant_id": "INV-ISOLATION-01",
           "harness_probe": {
-            "available": true,
             "probed_path": "_tmp_qa_harness/qa8-adversarial/qa8-adversarial.v1.json",
-            "age_ms": 1476978
+            "reason": "no_harness_evidence_file"
           },
-          "evidence": {
-            "source": "run-qa8-adversarial.cjs (isolated CI Postgres + booted Nest, real HTTP)",
-            "measuredAt": "2026-08-14T18:45:08.341Z",
-            "case_count": 35,
-            "product_security_verdict": "PASS",
-            "unknown_product_failures": 0,
-            "inventory": {
-              "controller_count": 19,
-              "route_count": 93,
-              "controllers": [
-                "services/api-nest/src/adapters/adapters.admin.controller.ts",
-                "services/api-nest/src/ai/ai-logs.admin.controller.ts",
-                "services/api-nest/src/ai/ai-pick.admin.controller.ts",
-                "services/api-nest/src/ai/shadow-replay.admin.controller.ts",
-                "services/api-nest/src/compliance/kyc.admin.controller.ts",
-                "services/api-nest/src/execution-policy/execution-policy.admin.controller.ts",
-                "services/api-nest/src/inbox/ops-inbox.admin.controller.ts",
-                "services/api-nest/src/ledger/ledger.admin.controller.ts",
-                "services/api-nest/src/membership/membership.admin.controller.ts",
-                "services/api-nest/src/opportunities/opportunities.admin.controller.ts",
-                "services/api-nest/src/opportunities/user-opportunity-override.admin.controller.ts",
-                "services/api-nest/src/referral/referral.admin.controller.ts",
-                "services/api-nest/src/risk/risk.admin.controller.ts",
-                "services/api-nest/src/simulation/platform-reserve.admin.controller.ts",
-                "services/api-nest/src/simulation/simulation.admin.controller.ts",
-                "services/api-nest/src/wallet/deposit-config.admin.controller.ts",
-                "services/api-nest/src/wallet/deposit-dispute.admin.controller.ts",
-                "services/api-nest/src/wallet/krw-deposit.admin.controller.ts",
-                "services/api-nest/src/wallet/withdraw-credentials.admin.controller.ts"
-              ],
-              "drift": false,
-              "controllers_without_case": []
-            }
-          },
-          "findings": []
+          "findings": [
+            "Live adversarial HTTP testing against a booted api-nest instance (tampered JWTs, cross-user object-id probing at runtime, concurrent interleave under a real DB, operator-identity spoofing attempts) requires an isolated CI Postgres + booted Nest (run-qa8-adversarial.cjs). Not available in this run (no_harness_evidence_file); not run locally to avoid OOM on this Phase0 2C/8GB machine; mock-PASS is forbidden by acceptance-contract L3 - recorded BLOCKED, not PASS."
+          ]
         }
       ],
       "counts": {
-        "pass": 6,
+        "pass": 5,
         "fail": 0,
-        "blocked": 0,
+        "blocked": 1,
         "total": 6
       },
       "critical_invariant": {
         "failed": 0,
-        "blocked": 0,
+        "blocked": 1,
         "skipped": 0,
         "uncovered": 0
       },
@@ -290,22 +254,22 @@
   },
   "critical_invariant": {
     "failed": 0,
-    "blocked": 0,
+    "blocked": 1,
     "skipped": 0,
     "uncovered": 0
   },
   "critical_invariant_cumulative": {
-    "blocked": 0,
+    "blocked": 2,
     "skipped": 0,
     "uncovered": 0,
     "sources": {
       "QA4_QA6_cumulative": {
-        "blocked": 0,
+        "blocked": 1,
         "skipped": 0,
         "uncovered": 0
       },
       "QA8_new": {
-        "blocked": 0,
+        "blocked": 1,
         "skipped": 0,
         "uncovered": 0
       }
@@ -328,11 +292,13 @@
     "strategy_fail_fast": false,
     "concurrency_group": "engine-acceptance-${{ github.ref }}"
   },
-  "blocked_codes_observed": [],
+  "blocked_codes_observed": [
+    "BLOCKED_ENV_CAPABILITY"
+  ],
   "notes": [
     "ASVS 5.0.0 subset - IDOR/authz/PII/delete-account - isolation invariant mapping shared with QA2.",
     "Real defects recorded in defects.v1.json - discovery only, not repaired this wave.",
     "Does not issue ENGINE_ACCEPTED_FOR_UI. Does not start QA9."
   ],
-  "checksum": "feeecc632dbaf09be37c0cadcd61c4ed5d44e049e5963c267c300750901d719e"
+  "checksum": "50fdae3cceca8430f41c07da4ed908750cd9f3f8a474a856f4b0bb29377d936c"
 }

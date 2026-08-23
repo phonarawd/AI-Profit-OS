@@ -298,16 +298,21 @@ function publishQa7Formal(opts) {
   if (summary.suite_status !== "PASS") {
     fail(`cannot publish non-PASS suite_status=${summary.suite_status}`);
   }
+  const dataset = loadEvalDataset({});
+  const expectedCount = dataset.count;
+  if (!Number.isInteger(expectedCount) || expectedCount < 1) {
+    fail(`dataset count invalid: ${expectedCount}`);
+  }
   const counts = summary.counts || {};
   if (
-    counts.total !== 24 ||
-    counts.pass !== 24 ||
+    counts.total !== expectedCount ||
+    counts.pass !== expectedCount ||
     counts.fail !== 0 ||
     counts.blocked !== 0 ||
-    counts.graded !== 24
+    counts.graded !== expectedCount
   ) {
     fail(
-      `unexpected counts total/pass/fail/blocked/graded=${counts.total}/${counts.pass}/${counts.fail}/${counts.blocked}/${counts.graded}`,
+      `unexpected counts total/pass/fail/blocked/graded=${counts.total}/${counts.pass}/${counts.fail}/${counts.blocked}/${counts.graded} (dataset=${expectedCount})`,
     );
   }
   if (summary.trace_id_provenance !== "RUNTIME") {
@@ -322,8 +327,6 @@ function publishQa7Formal(opts) {
   }
   if (summary.eval_gate?.pass !== true) fail("eval_gate.pass must be true");
 
-  const dataset = loadEvalDataset({});
-  if (dataset.count !== 24) fail(`dataset count ${dataset.count} != 24`);
   const caseIds = dataset.rows.map((r) => r.id);
   const indexed = indexAndValidateTraces(caseIds, artifacts, {
     requireCanonical: true,
@@ -360,7 +363,7 @@ function publishQa7Formal(opts) {
     scanSecrets(art, `trace ${id}`);
     observations.push(observationFrom(art, grade));
   }
-  if (new Set(observations.map((o) => o.trace_id)).size !== 24) {
+  if (new Set(observations.map((o) => o.trace_id)).size !== expectedCount) {
     fail("duplicate runtime trace_id");
   }
 
@@ -449,11 +452,11 @@ function publishQa7Formal(opts) {
     },
     suite_status: "PASS",
     counts: {
-      total: 24,
-      pass: 24,
+      total: expectedCount,
+      pass: expectedCount,
       fail: 0,
       blocked: 0,
-      graded: 24,
+      graded: expectedCount,
     },
     trace_id_provenance: "RUNTIME",
     no_expectation_leakage: true,

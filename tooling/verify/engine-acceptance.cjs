@@ -54,6 +54,7 @@ const {
   findBridgingAmendment,
 } = require("../engine-acceptance/lib/product-rebase.cjs");
 const { run: selftestProductRebase } = require("../engine-acceptance/selftest-product-rebase.cjs");
+const { loadEvalDataset } = require("../engine-acceptance/lib/qa7-dataset.cjs");
 
 const fails = [];
 function fail(msg) {
@@ -1441,8 +1442,9 @@ if (qa7Result && !pendingRerun) {
     fail("qa7-result.baseline_id must match current baseline.id");
   }
   const c = qa7Result.counts || {};
-  if (c.total !== 24 || c.pass !== 24 || c.fail !== 0 || c.blocked !== 0) {
-    fail("qa7-result.counts must be 24/24/0/0");
+  const qa7Expected = loadEvalDataset({}).count;
+  if (c.total !== qa7Expected || c.pass !== qa7Expected || c.fail !== 0 || c.blocked !== 0) {
+    fail(`qa7-result.counts must be ${qa7Expected}/${qa7Expected}/0/0 (live eval dataset)`);
   }
   if (qa7Result.suite_status !== "PASS") fail("qa7-result.suite_status must be PASS");
   if (qa7Result.trace_id_provenance !== "RUNTIME") {
@@ -1477,7 +1479,9 @@ if (qa7Result && !pendingRerun) {
     fail("qa7-result quality grader must not be sole oracle");
   }
   const obs = qa7Result.observations || [];
-  if (obs.length !== 24) fail("qa7-result.observations must have 24 cases");
+  if (obs.length !== qa7Expected) {
+    fail(`qa7-result.observations must have ${qa7Expected} cases (live eval dataset)`);
+  }
   const seenTid = new Set();
   const expectKeys = [
     "expectLane",
