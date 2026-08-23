@@ -6,9 +6,12 @@ PRODUCTION_EXECUTE = 0
 THIS_REL_PRACTICE = 0
 KNOWN_GOOD_OWNER = REL-403
 PRACTICE_OWNER = REL-602
+REL-602_EVIDENCE = governance/release-master/REL-602-STAGING-ROLLBACK.md
 ```
 
 이 문서는 초안이다. staging에서 실제로 되감는 증거는 REL-602가 남긴다.
+연습 기록 = `governance/release-master/REL-602-STAGING-ROLLBACK.md` (PENDING이면 미실행).
+미리보기 전용 명령 = `pnpm cf:rollback:staging` (production target 거부 · 토큰 없으면 exit 2).
 
 ## 1. 무엇을 되돌리는가
 

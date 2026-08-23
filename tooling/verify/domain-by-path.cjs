@@ -719,6 +719,14 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/release-master\/REL-602-STAGING-ROLLBACK\.md$/.test(f) ||
+      /^tooling\/deploy\/cf-rollback-staging\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-602-staging-rollback\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-602-staging-rollback\.v1\.json$/.test(f),
+    scripts: ["rel-602-staging-rollback.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||

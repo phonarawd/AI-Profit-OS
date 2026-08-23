@@ -1,0 +1,43 @@
+{
+  "rel": "REL-602",
+  "deps": ["REL-600", "REL-403", "REL-408"],
+  "protectedScopeMutation": false,
+  "productionDomainMutation": 0,
+  "productionWorkflowDispatch": 0,
+  "pagesDeploy": 0,
+  "vercel": 0,
+  "secretHardcoded": 0,
+  "fakePass": 0,
+  "moneyMutation": 0,
+  "homeVisualRedesign": 0,
+  "ledgerBalanceUpdate": 0,
+  "acceptanceMet": 0,
+  "rollbackExecuted": 0,
+  "forwardDeployExecuted": 0,
+  "knownGoodProductionTag": 0,
+  "stagingSlotControl": 0,
+  "runtimeReleaseIdHeader": 0,
+  "putdukPointersUpdated": 0,
+  "stagingWeb": "https://ai-profit-web-preview.ebay-adapter.workers.dev",
+  "stagingOps": "https://ai-profit-ops-preview.ebay-adapter.workers.dev",
+  "allowedWorkers": ["ai-profit-web-preview", "ai-profit-ops-preview"],
+  "forbiddenWorkers": [
+    "ai-profit-web",
+    "ai-profit-ops",
+    "hiptk-web-proxy",
+    "hiptk-ops-proxy"
+  ],
+  "forbiddenHosts": [
+    "app.hiptk.app",
+    "ops.hiptk.app",
+    "ai-profit-web.ebay-adapter.workers.dev",
+    "ai-profit-ops.ebay-adapter.workers.dev"
+  ],
+  "evidence": "governance/release-master/REL-602-STAGING-ROLLBACK.md",
+  "rollbackScript": "tooling/deploy/cf-rollback-staging.cjs",
+  "extraVerifies": [
+    "qa-env-isolation-guard.cjs",
+    "rel-403-versioning.cjs",
+    "rel-600-staging.cjs"
+  ]
+}
