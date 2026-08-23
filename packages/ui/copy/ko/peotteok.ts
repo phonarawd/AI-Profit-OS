@@ -14,6 +14,8 @@ export const peotteok = {
   llmBusy: "지금은 잠시 바빠요. 조금 뒤 다시 물어봐 주세요.",
   sRefuse:
     "출금·지급은 제가 대신 실행할 수 없어요. 출금 화면에서 직접 진행해 주세요.",
+  pUnavailable: "\uC9C0\uAE08 \uADF8 \uC22B\uC790\uB294 \uD655\uC778\uD560 \uC218 \uC5C6\uC5B4\uC694.",
+  sSafeRefuse: "\uADF8\uB7F0 \uC694\uCCAD\uC740 \uB3C4\uC640\uB4DC\uB9B4 \uC218 \uC5C6\uC5B4\uC694.",
   pRefresh: "방금 숫자가 바뀌었을 수 있어요. 최신 잔액·기회를 다시 불러올게요.",
   csDeepLink: "고객센터로 문의하기",
   chipBalance: "출금 가능 수익",

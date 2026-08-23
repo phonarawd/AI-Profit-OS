@@ -161,6 +161,7 @@
 | migrations-applied-parity | Supabase — 로컬 `supabase/migrations` 버전 ↔ `fixtures/migrations-applied.v1.json`(원격 applied 스냅샷) 1:1 · path-trigger — **live** |
 | growth-public-surface | UI PART9g — `growth_ticker_config` + GET `/growth/public-surface` · ledgerTotal=settlement.completed · Admin PATCH pointer — **live** |
 | stub-page-actions | UI PART9i — deposit `my-deposit-address`+copy · KYC multipart submit · support `deposit-disputes` POST+idempotencyKey — **live** |
+| ai-coach-runtime | REL-300~305 Coach runtime reconfirm -- P UNAVAILABLE · G tools=[] · S safe-refuse · red-team fixture · stale != current · bounded PII -- **live** |
 | ai-coach-fact-only · ai-coach-no-autonomy · ai-coach-ui | Engine §47.12~15 · UI §6.4e/§27.10 — **P레인** Fact-only · 전레인 자율집행 0 · FactToolService+CoachOrchestrator+SSE — **live** · **ai-coach-ui live** (`/me/peotteok` Canon · SSE client · P칩 · S거절 deep-link · degrade toast · voice pace) |
 | ai-general-no-money-tools · ai-lane-router · llm-adapter-contract | Engine §47.8·47.13~15 — G tools=[] · P/G/S router · **live** · ai-lane-router는 `expectToolsAny`→`tools_called` 실검증 |
 | routing-coverage | Engine §47.16.3 — `/지갑/`+`EXECUTION_PATTERNS`→P · `defaultToolsForText`→`getExecution` 도달(opportunity fallback 전) · eval/p_fact getExecution 3케이스 · S/G safe fallback · numeric 비침범 — **live** |

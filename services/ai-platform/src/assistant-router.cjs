@@ -26,6 +26,19 @@ const S_PATTERNS = Object.freeze([
   /\bpayout\b/i,
 ]);
 
+/** Dangerous requests -- S refuse without execute/how-to advice. */
+const S_DANGER_PATTERNS = Object.freeze([
+  /\uD0C8\uCDE8/,
+  /\uACC4\uC815\s*(\uD6D0|\uBE7C|\uD574\uD0B9)/,
+  /\uBE44\uBC00\uBC88\uD638\s*(\uC54C\uB824|\uBE7C|\uD6D0|\uB178\uCD9C)/,
+  /KYC\s*\uC6B0\uD68C|\uBCF8\uC778\s*\uD655\uC778\s*\uC6B0\uD68C|\uC778\uC99D\s*\uC6B0\uD68C/,
+  /\uD55C\uB3C4\s*\uC6B0\uD68C/,
+  /\uBD88\uBC95\s*\uC790\uAE08/,
+  /\uC790\uAE08\s*\uC138\uD0C1|\uB3C8\s*\uC138\uD0C1|money\s*launder/i,
+  /stolen\s+funds?/i,
+  /bypass\s+(kyc|limit|withdraw)/i,
+]);
+
 /**
  * Engine §47.16.4 — known off-topic / injection class (code-enforced).
  * Match → answer_path=scope_redirect · tools=[] · LLM 미호출.
@@ -39,6 +52,12 @@ const OFF_TOPIC_PATTERNS = Object.freeze([
   /지시\s*무시|이전\s*(규칙|지시|프롬프트)\s*무시|ignore\s+(all\s+)?(previous|prior)\s+instructions?/i,
   /시스템\s*프롬프트\s*(보여|출력|알려)|숨겨진\s*정책|system\s*prompt/i,
   /일반\s*Gemini처럼|ChatGPT처럼\s*행동|클로드처럼\s*행동|jailbreak/i,
+  /tools\s*=\s*\[/,
+  /function\s*call|tool_call/i,
+  /ignore\s+(all\s+)?(policies|rules|safety)/i,
+  /\uC815\uCC45\s*\uBB34\uC2DC|\uAC00\uB4DC\s*\uB044\uACE0|\uAC00\uB4DC\uB97C\s*\uB044/,
+  /\uB108\uB294\s*\uC774\uC81C\s*(DAN|\uAD00\uB9AC\uC790|\uAC1C\uBC1C\uC790\s*\uBAA8\uB4DC)/i,
+  /developer\s*mode/i,
 ]);
 
 /**
@@ -97,6 +116,11 @@ const P_PATTERNS = Object.freeze([
  * @param {string} text
  * @returns {"P"|"G"|"S"}
  */
+function matchesDanger(text) {
+  const t = String(text || "");
+  return S_DANGER_PATTERNS.some((re) => re.test(t));
+}
+
 function classifyLane(text) {
   const t = String(text || "").trim();
   if (!t) return "G";
@@ -104,6 +128,7 @@ function classifyLane(text) {
   for (const re of S_PATTERNS) {
     if (re.test(t)) return "S";
   }
+  if (matchesDanger(t)) return "S";
   for (const re of P_PATTERNS) {
     if (re.test(t)) return "P";
   }
@@ -140,7 +165,7 @@ function decideScope(text, lane) {
     return Object.freeze({
       decision: "refuse_s",
       assurance: SCOPE_ASSURANCE.KNOWN_CODE_ENFORCED,
-      reason: "sensitive_execute",
+      reason: matchesDanger(text) ? "dangerous_request" : "sensitive_execute",
       toolsAllowed: Object.freeze([]),
       allowFacts: false,
       allowLlm: false,
@@ -316,7 +341,9 @@ function defaultToolsForText(text) {
 }
 
 function summarizeIntent(text, lane) {
-  if (lane === "S") return "sensitive_execute";
+  if (lane === "S") {
+    return matchesDanger(text) ? "dangerous_request" : "sensitive_execute";
+  }
   if (lane === "G") return "general_chat";
   if (/잔액|지갑|balance/i.test(text)) return "balance";
   if (/입금|deposit/i.test(text)) return "deposit";
@@ -330,6 +357,7 @@ function summarizeIntent(text, lane) {
 
 module.exports = {
   S_PATTERNS,
+  S_DANGER_PATTERNS,
   P_PATTERNS,
   EXECUTION_PATTERNS,
   OFF_TOPIC_PATTERNS,
@@ -340,5 +368,6 @@ module.exports = {
   defaultToolsForText,
   matchesExecutionIntent,
   matchesOffTopic,
+  matchesDanger,
   decideScope,
 };

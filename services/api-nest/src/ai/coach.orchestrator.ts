@@ -23,6 +23,7 @@ import {
   routeAssistant,
   SCOPE_REDIRECT_TEMPLATE,
   S_REFUSE_TEMPLATE,
+  S_SAFE_REFUSE_TEMPLATE,
   shouldCallLlm,
   shapeByTone,
   mayEscalateToPlatformFacts,
@@ -170,8 +171,10 @@ export class CoachOrchestrator {
       referenceResolution.status === "unavailable";
 
     if (lane === "S") {
-      answerText = shapeByTone(twin?.toneBand, S_REFUSE_TEMPLATE.text);
-      deepLink = S_REFUSE_TEMPLATE.deepLink;
+      const danger = route.scope?.reason === "dangerous_request";
+      const refuseTpl = danger ? S_SAFE_REFUSE_TEMPLATE : S_REFUSE_TEMPLATE;
+      answerText = shapeByTone(twin?.toneBand, refuseTpl.text);
+      deepLink = refuseTpl.deepLink || null;
       answerPath = "refuse_s";
       providerId = "none";
       providerEffective = "none";
@@ -375,7 +378,9 @@ export class CoachOrchestrator {
     if (guard.status === "block") {
       const metaHit = String(guard.reason || "").startsWith("meta_exposure");
       if (lane === "S") {
-        answerText = S_REFUSE_TEMPLATE.text;
+        const danger = route.scope?.reason === "dangerous_request";
+        answerText = danger ? S_SAFE_REFUSE_TEMPLATE.text : S_REFUSE_TEMPLATE.text;
+        deepLink = danger ? null : S_REFUSE_TEMPLATE.deepLink;
         answerPath = "refuse_s";
       } else if (metaHit) {
         // §47.16.4 residual output guard → scope redirect template (no leak)
