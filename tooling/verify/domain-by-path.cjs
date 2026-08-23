@@ -52,8 +52,10 @@ const RULES = [
   {
     test: (f) =>
       (/^governance\/engine-acceptance\//.test(f) &&
-        !/^governance\/engine-acceptance\/FINAL_ACCEPTANCE\.md$/.test(f)) ||
-      /^tooling\/engine-acceptance\//.test(f) ||
+        !/^governance\/engine-acceptance\/FINAL_ACCEPTANCE\.md$/.test(f) &&
+        !/^governance\/engine-acceptance\/PROTECTED_SCOPE_STALE_WATCH\.md$/.test(f)) ||
+      (/^tooling\/engine-acceptance\//.test(f) &&
+        !/^tooling\/engine-acceptance\/protected-scope-watch\.cjs$/.test(f)) ||
       /^tooling\/verify\/engine-acceptance\.cjs$/.test(f) ||
       /^\.github\/workflows\/engine-acceptance\.yml$/.test(f),
     scripts: ["engine-acceptance.cjs"],
@@ -646,6 +648,14 @@ const RULES = [
       /^tooling\/verify\/fixtures\/rel-502-final-engine-acceptance\.v1\.json$/.test(f) ||
       /^tooling\/verify\/lib\/rel-502-psm\.cjs$/.test(f),
     scripts: ["rel-502-final-engine-acceptance.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/engine-acceptance\/PROTECTED_SCOPE_STALE_WATCH\.md$/.test(f) ||
+      /^tooling\/engine-acceptance\/protected-scope-watch\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-503-protected-scope-watch\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-503-protected-scope-watch\.v1\.json$/.test(f),
+    scripts: ["rel-503-protected-scope-watch.cjs"],
   },
   {
     test: (f) =>

@@ -1,0 +1,8 @@
+{
+  "rel": "REL-503",
+  "deps": ["REL-502"],
+  "protectedScopeMutation": false,
+  "concealmentForbidden": true,
+  "simulateOneFileChange": true,
+  "issuedMustStaleOnSimulatedChange": true
+}

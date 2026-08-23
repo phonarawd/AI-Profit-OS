@@ -77,6 +77,7 @@
     "verify:rel-500-qa-lab-expansion": "node tooling/verify/rel-500-qa-lab-expansion.cjs",
     "verify:rel-501-money-red-team": "node tooling/verify/rel-501-money-red-team.cjs",
     "verify:rel-502-final-engine-acceptance": "node tooling/verify/rel-502-final-engine-acceptance.cjs",
+    "verify:rel-503-protected-scope-watch": "node tooling/verify/rel-503-protected-scope-watch.cjs",
     "release:id": "node tooling/release/version-id.cjs",
     "verify:admin-entry-e2e": "node tooling/verify/admin-entry-e2e.cjs",
     "verify:cta-earn-profit": "node tooling/verify/cta-earn-profit.cjs",
