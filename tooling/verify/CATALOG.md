@@ -51,6 +51,7 @@
 | rel-224-source-policy | `verify:rel-224-source-policy` | T0 path + CI | live (REL-224 · V1-V3 · overwrite 0 · founder HIGH) |
 | rel-409-r6-cert | `verify:rel-409-r6-cert` | T0 path + CI | live (REL-409 · 12+2b · deps re-run · P0-P3 0) |
 | rel-500-qa-lab-expansion | `verify:rel-500-qa-lab-expansion` | T0 path + CI | live (REL-500 · risk-based matrix · MCP-only 0 · local full 0) |
+| rel-501-money-red-team | `verify:rel-501-money-red-team` | T0 path + CI | live (REL-501 · 7 money modes · guard abort · ledger write 0) |
 | web-remote-patterns | `verify:web-remote-patterns` | T0 path | ✅ live (REL-013 · next/image 최소 allowlist · used hosts match · https-all 0) |
 | pwa-native-shell | `verify:pwa-native-shell` | T0 path | ✅ live (REL-014 · E-PWA-001 · manifest+icons+동등 SW+install/update · store-bridge 0 · push=REL-020) |
 | pwa-push-badge | `verify:pwa-push-badge` | T0 path | ✅ live (REL-020 · E-PWA-002 · VAPID path · dispatcher 실연결 · subscribe+SW badge · Admin kill · secret 0) |
@@ -108,6 +109,7 @@
 | `schemas/admin-policy-version.v1.json` · `services/api-nest/admin-policy-version.core.cjs` · `services/api-nest/src/source-policy/**` · `governance/admin/source-policy*` | rel-224-source-policy |
 | `governance/admin/R6_CERTIFICATION.md` · `tooling/verify/rel-409-r6-cert.cjs` | rel-409-r6-cert |
 | `tooling/e2e/expansion/**` · `tooling/e2e/lib/qa-lab-expansion.cjs` · `tooling/verify/rel-500-qa-lab-expansion.cjs` | rel-500-qa-lab-expansion |
+| `tooling/e2e/money/**` · `tooling/e2e/lib/money-red-team.cjs` · `tooling/verify/rel-501-money-red-team.cjs` | rel-501-money-red-team |
 | `apps/admin/**` | no-admin-in-web · admin-routes · rel-201-admin-dashboard · rel-202-admin-users · rel-203-admin-user-detail · rel-204-admin-user-finance · rel-205-admin-ledger · rel-206-admin-wallet · rel-207-admin-compliance · rel-208-admin-risk · rel-209-admin-execution-policy · rel-210-admin-opportunities · rel-211-admin-adapters · rel-212-admin-support · rel-213-admin-system-control · rel-214-admin-audit · rel-215-admin-ai-logs · rel-216-admin-financial · rel-217-admin-growth · rel-218-admin-growth-deposit · rel-219-admin-growth-ticker · rel-220-admin-growth-whale · rel-221-admin-growth-content |
 | `tooling/verify/rel-2xx-admin-*` · `admin-entry-e2e` · `tooling/e2e/specs/admin-entry-closure.spec.cjs` | same REL-201~221 verifiers · admin-entry-e2e |
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |

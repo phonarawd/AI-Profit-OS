@@ -630,6 +630,16 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^tooling\/e2e\/money\//.test(f) ||
+      /^tooling\/e2e\/lib\/money-red-team\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/money-red-team\.spec\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-501-MONEY-RED-TEAM\.md$/.test(f) ||
+      /^tooling\/verify\/rel-501-money-red-team\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-501-money-red-team\.v1\.json$/.test(f),
+    scripts: ["rel-501-money-red-team.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||

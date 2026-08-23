@@ -73,3 +73,15 @@ node tooling/verify/axe-harness.cjs
 ```text
 node tooling/verify/user-ledger-query.cjs
 ```
+
+## 금융/red-team (REL-501)
+
+가드 안에서만 실패 모드를 친다. 실원장 mutation 0. production DB write 0.
+
+- 모드: idempotency · double_submit · insufficient · stale · expired · blocked · replay
+- 진입: `lib/money-red-team.cjs` → `runMoneyMutationTest` 필수
+- Playwright MCP 클릭만으로는 DONE이 아니다
+
+```text
+node tooling/verify/rel-501-money-red-team.cjs
+```
