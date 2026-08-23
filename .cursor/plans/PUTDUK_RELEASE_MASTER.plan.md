@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-208 COMPLETED. FIRST_EXECUTION_TODO=REL-209. HARD_STOP_AFTER=REL-208. BATCH_REL_200_206=ADMIN_ENTRY.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-209 COMPLETED. FIRST_EXECUTION_TODO=REL-210. HARD_STOP_AFTER=REL-221. BATCH_REL_200_206=ADMIN_ENTRY.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -201,8 +201,8 @@ todos:
     content: "[Admin] /admin/risk 실사+구현 — DONE live queue+freeze/ack/resolve+circuit · stub-only 0"
     status: completed
   - id: rel-209
-    content: "[Admin] /admin/execution-policy 실사+구현"
-    status: pending
+    content: "[Admin] /admin/execution-policy 실사+구현 -- DONE live GET/PUT+stats/today · stub-only 0"
+    status: completed
   - id: rel-210
     content: "[Admin] /admin/opportunities 실사+구현"
     status: pending
@@ -420,10 +420,10 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-209
-LAST_COMPLETED_TODO = REL-208
+FIRST_EXECUTION_TODO = REL-210
+LAST_COMPLETED_TODO = REL-209
 BATCH_REL_200_206 = ADMIN_ENTRY
-HARD_STOP_AFTER = REL-208
+HARD_STOP_AFTER = REL-221
 PRE_LOCK_COUNT = 1
 REL_COUNT = 116
 POST_COUNT = 19
@@ -2433,7 +2433,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-209
 TITLE: /admin/execution-policy 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-209
@@ -2449,9 +2449,9 @@ IMPLEMENTATION_STEPS:
   - secret/토큰 화면 노출 0
   - committed spec 또는 verify 1케이스
   - PR → CI → merge (main 직접 커밋 금지)
-VERIFY: /admin/execution-policy 실데이터 또는 정직한 empty. stub-only 0.
-ACCEPTANCE: /admin/execution-policy가 운영 가능. 가짜 ledger 0.
-EVIDENCE: apps/admin/app/admin/execution-policy
+VERIFY: "PASS 2026-08-23. live GET/PUT + stats/today · honest empty · Admin JWT · client money math 0. verify:rel-209-admin-execution-policy PASS."
+ACCEPTANCE: /admin/execution-policy가 운영 가능. 가짜 ledger 0. PASS 2026-08-23.
+EVIDENCE: apps/admin/app/admin/execution-policy + tooling/verify/rel-209-admin-execution-policy.cjs
 EXIT_GATE: 유저 JWT로 200이면 FAIL
 AUTOMATION_LEVEL: A3
 PROTECTED_SCOPE_MUTATION: false
@@ -4569,5 +4569,5 @@ FIRST_EXECUTION_TODO_AT_MATERIALIZATION = REL-000
 REL-000은 2026-08-20에 PASS/COMPLETED.
 REL-001은 2026-08-20에 PASS/COMPLETED (`preserve/2026-08-20-worktree-rescue` · `ae8d1e6` · merge 금지).
 REL-002는 2026-08-21에 PASS/COMPLETED (PR #2 MERGED · `db6db87` · ruleset `verify-gate` 계약 수정 후 비우회 merge).
-현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-003`. 이 채팅에서 REL-003 실행 0.
+현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-210`. HARD_STOP_AFTER = REL-221.
 
