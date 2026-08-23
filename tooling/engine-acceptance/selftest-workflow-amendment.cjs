@@ -12,6 +12,7 @@ const { ROOT } = require("./lib/hash-scope.cjs");
 const {
   DECISION_ID,
   QA4_WIRING_PARENT_DECISION_ID,
+  QA5_QA6_QA8_WIRING_PARENT_DECISION_ID,
   SCHEMA,
   validateLedgerShape,
   validateAmendmentEntry,
@@ -92,6 +93,39 @@ function makeQa4ImpactExceptionAmendment(oldHash, newHash, baselineId) {
     allow_qa0_qa6_impact: true,
     parent_decision_id: QA4_WIRING_PARENT_DECISION_ID,
     required_rerun_suites: ["QA4"],
+  };
+}
+
+function makeQa5Qa6Qa8ImpactExceptionAmendment(oldHash, newHash, baselineId) {
+  return {
+    amendment_id: "test-amend-qa5-qa6-qa8-harness-wiring",
+    reason: "fixture: honest QA5/QA6/QA8 same-job harness wiring under parent decision",
+    human_po_ack: {
+      by: "Human/PO",
+      at: "2026-08-23T00:00:00.000Z",
+      statement: `ACK APPROVED ${QA5_QA6_QA8_WIRING_PARENT_DECISION_ID}. Honest QA5/QA6/QA8 semantics change; required rerun QA5 QA6 QA8.`,
+    },
+    old_acceptance_workflow_hash: oldHash,
+    new_acceptance_workflow_hash: newHash,
+    workflow_diff_scope: {
+      files: [".github/workflows/engine-acceptance.yml"],
+      exact_diff_summary: "fixture diff: QA5/QA6/QA8 same-job harness wiring",
+      qa0_qa6_semantics_changed: true,
+      checks: {
+        command_changes: true,
+        artifact_upload_changes: true,
+        env_permission_changes: true,
+        pass_fail_semantics_changes: true,
+      },
+    },
+    affected_qa_suites: ["QA5", "QA6", "QA8"],
+    unaffected_completed_suites: ["QA0", "QA1", "QA2", "QA3", "QA4"],
+    baseline_id: baselineId,
+    commit_sha_or_pending: "pending:fixture",
+    timestamp: "2026-08-23T00:00:00.000Z",
+    allow_qa0_qa6_impact: true,
+    parent_decision_id: QA5_QA6_QA8_WIRING_PARENT_DECISION_ID,
+    required_rerun_suites: ["QA5", "QA6", "QA8"],
   };
 }
 
@@ -550,6 +584,139 @@ function run() {
       applySrc.includes("toLedgerAmendment") &&
         /ledger\.amendments\.push\(\s*toLedgerAmendment\(/.test(applySrc),
       "apply writer must persist via toLedgerAmendment",
+    );
+  }
+
+  // 10) QA5/QA6/QA8 impact exception — additive parent + exact suite binding
+  {
+    const honest = makeQa5Qa6Qa8ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    check(
+      "qa5qa6qa8_exception_honest_allowed",
+      qa0Qa6ImpactExceptionAllowed(honest) === true && qa0Qa6ImpactBlocked(honest) === null,
+      qa0Qa6ImpactBlocked(honest),
+    );
+    const fEntry = [];
+    validateAmendmentEntry(honest, 0, fEntry);
+    check("qa5qa6qa8_exception_shape_valid", fEntry.length === 0, fEntry.join("; "));
+    const fGov = [];
+    verifyGovernanceAgainstBaseline(
+      { ...baseline, acceptance_workflow_hash: newHash },
+      null,
+      { ...ledger, amendments: [honest] },
+      { suites: [] },
+      fGov,
+    );
+    check("qa5qa6qa8_exception_ledger_tip_pass", fGov.length === 0, fGov.join("; "));
+    const persisted = toLedgerAmendment(honest, baselineId, "2026-08-23T00:00:00.000Z");
+    check(
+      "qa5qa6qa8_exception_apply_persists_parent",
+      persisted.parent_decision_id === QA5_QA6_QA8_WIRING_PARENT_DECISION_ID,
+      "parent_decision_id dropped on apply shape",
+    );
+    check(
+      "qa5qa6qa8_required_rerun_includes_qa8",
+      Array.isArray(honest.required_rerun_suites) &&
+        honest.required_rerun_suites.includes("QA5") &&
+        honest.required_rerun_suites.includes("QA6") &&
+        honest.required_rerun_suites.includes("QA8"),
+      "honest fixture must require QA5 QA6 QA8 rerun",
+    );
+
+    const qa4PlusQa5 = makeQa4ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    qa4PlusQa5.affected_qa_suites = ["QA5"];
+    qa4PlusQa5.required_rerun_suites = ["QA5"];
+    check(
+      "qa4_parent_qa5_affected_blocked",
+      qa0Qa6ImpactExceptionAllowed(qa4PlusQa5) === false && Boolean(qa0Qa6ImpactBlocked(qa4PlusQa5)),
+      "QA4 parent must not authorize QA5",
+    );
+
+    const qa4PlusAll = makeQa4ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    qa4PlusAll.affected_qa_suites = ["QA5", "QA6", "QA8"];
+    qa4PlusAll.required_rerun_suites = ["QA5", "QA6", "QA8"];
+    check(
+      "qa4_parent_qa5qa6qa8_affected_blocked",
+      qa0Qa6ImpactExceptionAllowed(qa4PlusAll) === false && Boolean(qa0Qa6ImpactBlocked(qa4PlusAll)),
+      "QA4 parent must not authorize QA5/QA6/QA8",
+    );
+
+    const newParentQa4 = makeQa5Qa6Qa8ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    newParentQa4.affected_qa_suites = ["QA4"];
+    newParentQa4.required_rerun_suites = ["QA4"];
+    check(
+      "qa5qa6qa8_parent_qa4_affected_blocked",
+      qa0Qa6ImpactExceptionAllowed(newParentQa4) === false &&
+        Boolean(qa0Qa6ImpactBlocked(newParentQa4)),
+      "QA5/QA6/QA8 parent must not authorize QA4",
+    );
+
+    const unknown = makeQa5Qa6Qa8ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    unknown.parent_decision_id = "UNKNOWN_WORKFLOW_AMENDMENT";
+    unknown.human_po_ack.statement =
+      "ACK APPROVED UNKNOWN_WORKFLOW_AMENDMENT. Honest fixture with unknown parent.";
+    check(
+      "unknown_parent_blocked",
+      qa0Qa6ImpactExceptionAllowed(unknown) === false && Boolean(qa0Qa6ImpactBlocked(unknown)),
+      "unknown parent must remain BLOCKED",
+    );
+
+    const ackMismatch = makeQa5Qa6Qa8ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    ackMismatch.human_po_ack.statement = `ACK APPROVED ${QA4_WIRING_PARENT_DECISION_ID}`;
+    check(
+      "qa5qa6qa8_ack_names_qa4_blocked",
+      qa0Qa6ImpactExceptionAllowed(ackMismatch) === false &&
+        Boolean(qa0Qa6ImpactBlocked(ackMismatch)),
+      "ACK that names a different parent must remain BLOCKED",
+    );
+
+    const rerunMissingQa8 = makeQa5Qa6Qa8ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    rerunMissingQa8.required_rerun_suites = ["QA5", "QA6"];
+    check(
+      "qa5qa6qa8_rerun_missing_qa8_blocked",
+      qa0Qa6ImpactExceptionAllowed(rerunMissingQa8) === false &&
+        Boolean(qa0Qa6ImpactBlocked(rerunMissingQa8)),
+      "required_rerun omitting QA8 must remain BLOCKED",
+    );
+
+    const subset = makeQa5Qa6Qa8ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    subset.affected_qa_suites = ["QA5"];
+    subset.required_rerun_suites = ["QA5"];
+    check(
+      "qa5qa6qa8_subset_affected_blocked",
+      qa0Qa6ImpactExceptionAllowed(subset) === false && Boolean(qa0Qa6ImpactBlocked(subset)),
+      "subset affected suites must remain BLOCKED",
     );
   }
 

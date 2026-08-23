@@ -38,8 +38,45 @@ const QA0_QA6_IMPACT_CHECK_KEYS = [
   "env_permission_changes",
   "pass_fail_semantics_changes",
 ];
-/** QA4 Full Harness Wiring — 정직한 QA0–QA6 impact amendment를 여는 유일한 parent decision */
+/** QA4 Full Harness Wiring — 기존 parent. 삭제/개명 금지. */
 const QA4_WIRING_PARENT_DECISION_ID = "QA4_WORKFLOW_AMENDMENT_DECISION_V1";
+/** QA5/QA6/QA8 same-job harness wiring — additive parent. */
+const QA5_QA6_QA8_WIRING_PARENT_DECISION_ID = "QA5_QA6_QA8_WORKFLOW_AMENDMENT_DECISION_V1";
+/**
+ * allowed amendment parent set + parent → allowed affected suites.
+ * 새 parent는 키 추가만. 기존 키 삭제 금지.
+ */
+const PARENT_SUITE_BINDING = Object.freeze({
+  [QA4_WIRING_PARENT_DECISION_ID]: Object.freeze(["QA4"]),
+  [QA5_QA6_QA8_WIRING_PARENT_DECISION_ID]: Object.freeze(["QA5", "QA6", "QA8"]),
+});
+
+function allowedSuitesForParent(parentDecisionId) {
+  const allowed = PARENT_SUITE_BINDING[parentDecisionId];
+  return Array.isArray(allowed) ? allowed : null;
+}
+
+function sameSuiteSet(actual, expected) {
+  if (!Array.isArray(actual) || !Array.isArray(expected) || expected.length < 1) return false;
+  if (actual.length !== expected.length) return false;
+  const want = new Set(expected);
+  if (want.size !== expected.length) return false;
+  const seen = new Set();
+  for (const s of actual) {
+    if (!want.has(s) || seen.has(s)) return false;
+    seen.add(s);
+  }
+  return seen.size === want.size;
+}
+
+function parentSuiteBindingHolds(entry) {
+  if (!entry || typeof entry !== "object") return false;
+  const parentId = entry.parent_decision_id;
+  if (!parentId) return false;
+  const allowed = allowedSuitesForParent(parentId);
+  if (!allowed) return false;
+  return sameSuiteSet(entry.affected_qa_suites, allowed);
+}
 
 function writeJson(rel, obj) {
   fs.writeFileSync(path.join(ROOT, rel), `${JSON.stringify(obj, null, 2)}\n`, "utf8");
@@ -168,10 +205,12 @@ function qa0Qa6ImpactOverlap(entry) {
 function qa0Qa6ImpactExceptionAllowed(entry) {
   if (!entry || typeof entry !== "object") return false;
   if (entry.allow_qa0_qa6_impact !== true) return false;
-  if (entry.parent_decision_id !== QA4_WIRING_PARENT_DECISION_ID) return false;
+  const parentId = entry.parent_decision_id;
+  if (!parentId || !allowedSuitesForParent(parentId)) return false;
   const statement = String((entry.human_po_ack && entry.human_po_ack.statement) || "");
-  if (!statement.includes(QA4_WIRING_PARENT_DECISION_ID)) return false;
+  if (!statement.includes(parentId)) return false;
   if (!/ACK|APPROVED|승인/i.test(statement)) return false;
+  if (!parentSuiteBindingHolds(entry)) return false;
   const scope = entry.workflow_diff_scope || {};
   if (scope.qa0_qa6_semantics_changed !== true) return false;
   const checks = scope.checks || {};
@@ -180,9 +219,10 @@ function qa0Qa6ImpactExceptionAllowed(entry) {
   }
   const overlap = qa0Qa6ImpactOverlap(entry);
   if (overlap.length < 1) return false;
+  const affected = Array.isArray(entry.affected_qa_suites) ? entry.affected_qa_suites : [];
   const rerun = entry.required_rerun_suites;
   if (!Array.isArray(rerun) || rerun.length < 1) return false;
-  if (!overlap.every((s) => rerun.includes(s))) return false;
+  if (!affected.every((s) => rerun.includes(s))) return false;
   return true;
 }
 
@@ -398,6 +438,10 @@ function assertRunnersForbidSilentWorkflowSync(fails) {
 module.exports = {
   DECISION_ID,
   QA4_WIRING_PARENT_DECISION_ID,
+  QA5_QA6_QA8_WIRING_PARENT_DECISION_ID,
+  PARENT_SUITE_BINDING,
+  allowedSuitesForParent,
+  parentSuiteBindingHolds,
   LEDGER_REL,
   BASELINE_REL,
   SCOPE_REL,

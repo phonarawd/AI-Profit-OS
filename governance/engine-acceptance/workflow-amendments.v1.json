@@ -229,6 +229,60 @@
       "required_rerun_suites": [
         "QA4"
       ]
+    },
+    {
+      "amendment_id": "qa5-qa6-qa8-same-job-harness-wiring-20260823",
+      "reason": "Formal qa-matrix same-job harness wiring. QA5: fault executor evidence then tiny scorer. QA6: threshold executor evidence then full scorer. QA8: adversarial executor evidence then full scorer. Existing additive jobs remain unchanged. QA4 Formal case remains unchanged.",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-23T00:30:00.000Z",
+        "statement": "ACK APPROVED 승인 QA5_QA6_QA8_WORKFLOW_AMENDMENT_DECISION_V1. QA5/QA6/QA8 affected 인정. QA5 tiny. QA6 threshold. QA8 adversarial. QA4 unchanged. Formal qa-matrix same-job harness wiring. Honest QA0-QA6 impact recorded; required rerun QA5 QA6 QA8. Additive jobs unchanged. POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1."
+      },
+      "old_acceptance_workflow_hash": "e497483da99f856d5378fab966e87d1c7545ca04f2090c075e889dff65272478",
+      "new_acceptance_workflow_hash": "f294916c28e2f319cf7574a34af4386860d1a9c00fc7d1f6bba2fafb50cf6faa",
+      "workflow_diff_scope": {
+        "files": [
+          ".github/workflows/engine-acceptance.yml"
+        ],
+        "exact_diff_summary": [
+          "QA5 case adds same-job fault harness execution. Uses: run-qa5-fault.cjs. Then: run-qa5.cjs --mode tiny. Reason: align Formal scorer with generated harness coverage (FAULT-AI-429-DEGRADE, FAULT-RECOVERY-LEDGER-SCAN). Formal command changes full → tiny. Case also exports AIPO_QA_PGHOST=127.0.0.1 + PGUSER/PGPASSWORD/PGDATABASE/PGPORT + AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa5-fault; kill-switch --assert-db-target; pnpm --filter @aipo/api-nest build; test services/api-nest/dist/main.js.",
+          "QA6 case adds same-job threshold harness execution. Uses: run-qa6-threshold.cjs. Installs pinned k6 dependency (v0.54.0). Runs: run-qa6.cjs --mode full. Existing pnpm verify:engine-acceptance kept. Forbidden: run-qa6-measure.cjs. Case also exports AIPO_QA_PG* + AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa6-threshold; kill-switch --assert-db-target; nest build.",
+          "QA8 case adds same-job adversarial harness execution. Uses: run-qa8-adversarial.cjs. Runs: run-qa8.cjs --mode full. Existing pnpm verify:engine-acceptance kept. Case also exports AIPO_QA_PG* + AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa8-adversarial; kill-switch --assert-db-target; nest build.",
+          "Upload suite evidence path += /tmp/aipo-harness/qa5-fault/ /tmp/aipo-harness/qa6-threshold/ /tmp/aipo-harness/qa8-adversarial/. Existing /tmp/aipo-harness/qa4-clock/ kept.",
+          "qa-matrix.services comment: only QA4 → QA4+QA5+QA6+QA8 assemble AIPO_QA_PG* / --assert-db-target. Postgres service image unchanged.",
+          "QA4 Formal case unchanged. QA3/QA4 case bodies unchanged. QA0/QA1/QA2/QA7 jobs unchanged. Additive qa5-fault, qa6-measure, qa8-adversarial jobs unchanged. Aggregator, secrets, permissions, on:, timeout-minutes 40 unchanged. No oracle change. No baseline.id change."
+        ],
+        "qa0_qa6_semantics_changed": true,
+        "checks": {
+          "command_changes": true,
+          "artifact_upload_changes": true,
+          "env_permission_changes": true,
+          "pass_fail_semantics_changes": true
+        }
+      },
+      "affected_qa_suites": [
+        "QA5",
+        "QA6",
+        "QA8"
+      ],
+      "unaffected_completed_suites": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4"
+      ],
+      "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+      "commit_sha_or_pending": "pending",
+      "timestamp": "2026-08-23T00:21:30.000Z",
+      "applied_at": "2026-08-23T00:34:03.058Z",
+      "allow_qa0_qa6_impact": true,
+      "parent_decision_id": "QA5_QA6_QA8_WORKFLOW_AMENDMENT_DECISION_V1",
+      "required_rerun_suites": [
+        "QA5",
+        "QA6",
+        "QA8"
+      ]
     }
   ],
   "epoch_bindings": [
