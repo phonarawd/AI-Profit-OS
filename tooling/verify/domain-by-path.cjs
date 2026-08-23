@@ -711,6 +711,14 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/release-master\/REL-601-STAGING-REGRESSION\.md$/.test(f) ||
+      /^governance\/visual-reconciliation\/PUTDUK_UI_VISUAL_MATRIX\.(md|json)$/.test(f) ||
+      /^tooling\/verify\/rel-601-staging-regression\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-601-staging-regression\.v1\.json$/.test(f),
+    scripts: ["rel-601-staging-regression.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||
