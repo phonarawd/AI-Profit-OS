@@ -433,11 +433,12 @@ const RULES = [
       "rel-206-admin-wallet.cjs",
       "rel-207-admin-compliance.cjs",
       "rel-208-admin-risk.cjs",
+      "rel-209-admin-execution-policy.cjs",
     ],
   },
   {
     test: (f) =>
-      /^tooling\/verify\/rel-20[1-8]-admin-/.test(f) ||
+      /^tooling\/verify\/rel-20[1-9]-admin-/.test(f) ||
       /^tooling\/verify\/admin-entry-e2e\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/admin-entry-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/e2e\/lib\/local-admin-runtime\.cjs$/.test(f),
@@ -450,6 +451,7 @@ const RULES = [
       "rel-206-admin-wallet.cjs",
       "rel-207-admin-compliance.cjs",
       "rel-208-admin-risk.cjs",
+      "rel-209-admin-execution-policy.cjs",
       "admin-entry-e2e.cjs",
     ],
   },

@@ -82,8 +82,8 @@
 | `governance/legacy-plan-migration/**` · `tooling/legacy-plan-stamp.cjs` · `tooling/verify/legacy-plan-migration.cjs` · `.cursor/plans/*.plan.md` | legacy-plan-migration |
 | `apps/web/scripts/asset-pipeline/**` · `tooling/verify/asset-production-pipeline.cjs` | asset-production-pipeline |
 | `packages/sdk/src/device-tier.ts` · `packages/ui/tokens/device-tier-contract.ts` · `governance/responsive/**` · `tooling/verify/device-tier-system.cjs` · `tooling/verify/ux-design-system.cjs` | device-tier-system · ux-design-system |
-| `apps/admin/**` | no-admin-in-web · admin-routes · rel-201-admin-dashboard · rel-202-admin-users · rel-203-admin-user-detail · rel-204-admin-user-finance · rel-205-admin-ledger · rel-206-admin-wallet · rel-207-admin-compliance · rel-208-admin-risk |
-| `tooling/verify/rel-20[1-8]-admin-*` · `admin-entry-e2e` · `tooling/e2e/specs/admin-entry-closure.spec.cjs` | same REL-201~208 verifiers · admin-entry-e2e |
+| `apps/admin/**` | no-admin-in-web · admin-routes · rel-201-admin-dashboard · rel-202-admin-users · rel-203-admin-user-detail · rel-204-admin-user-finance · rel-205-admin-ledger · rel-206-admin-wallet · rel-207-admin-compliance · rel-208-admin-risk · rel-209-admin-execution-policy |
+| `tooling/verify/rel-20[1-9]-admin-*` · `admin-entry-e2e` · `tooling/e2e/specs/admin-entry-closure.spec.cjs` | same REL-201~209 verifiers · admin-entry-e2e |
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |
 | `supabase/migrations/**` · migrations-applied fixture | migrations-applied-parity |
 | `apps/web/app/page.tsx` · `HomePageClient` · `HomeDesktopClient` · `packages/sdk/src/user-feed/**` · `HomePrincipalRail` · `home-principal-slots` · sdk/api growth | home-live-wire · sdk-user-feed · home-principal-slots · growth-public-surface · ticker-pii-0 · home-closure |
