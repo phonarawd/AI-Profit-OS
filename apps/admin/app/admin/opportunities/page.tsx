@@ -1,8 +1,11 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { adminGet, type AdminResult } from "../../../lib/admin-api";
+import { readAmount, readText } from "../../../lib/admin-truth";
+import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
 
 /**
  * Admin §9.1.1 / Engine §0.0 + §36 — opportunities contract surface.
@@ -12,11 +15,68 @@ import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 
 /** Band chip labels mirror Engine §0.0.5 CAPITAL_BAND_LABEL_KO · verify:capital-tier-catalog */
 
+type OppItem = {
+  id?: unknown;
+  assetLabel?: unknown;
+  expectedProfitUsdt?: unknown;
+  requiredCapitalUsdt?: unknown;
+  capitalBand?: unknown;
+  status?: unknown;
+  compareReady?: unknown;
+  gradeMismatch?: unknown;
+};
+
+type AssetItem = {
+  assetId?: unknown;
+  assetLabel?: unknown;
+  imageUrl?: unknown;
+  imageSource?: unknown;
+  category?: unknown;
+};
+
+function asItems<T>(data: unknown): T[] | null {
+  if (!data || typeof data !== "object") return null;
+  const items = (data as { items?: unknown }).items;
+  return Array.isArray(items) ? (items as T[]) : null;
+}
+
 function OpportunitiesInner() {
   const sp = useSearchParams();
   const tab = sp.get("tab") === "assets" ? "assets" : "pricing";
   const activeBand = sp.get("capitalBand") ?? "";
   const activeCategory = sp.get("category") ?? "";
+  const imageMissing = sp.get("image_missing") === "true";
+
+  const listQs = new URLSearchParams();
+  if (activeBand) listQs.set("capitalBand", activeBand);
+  if (activeCategory) listQs.set("category", activeCategory);
+  const listApi = `/api/v1/admin/opportunities${listQs.toString() ? `?${listQs}` : ""}`;
+  const assetsQs = new URLSearchParams();
+  if (activeCategory) assetsQs.set("category", activeCategory);
+  if (imageMissing) assetsQs.set("image_missing", "true");
+  const assetsApi = `/api/v1/admin/opportunities/assets${assetsQs.toString() ? `?${assetsQs}` : ""}`;
+
+  const [list, setList] = useState<AdminResult<unknown> | null>(null);
+  const [assets, setAssets] = useState<AdminResult<unknown> | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      if (tab === "assets") {
+        const next = await adminGet<unknown>(assetsApi);
+        if (!cancelled) setAssets(next);
+        return;
+      }
+      const next = await adminGet<unknown>(listApi);
+      if (!cancelled) setList(next);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [tab, listApi, assetsApi]);
+
+  const oppItems = list?.ok ? asItems<OppItem>(list.data) : null;
+  const assetItems = assets?.ok ? asItems<AssetItem>(assets.data) : null;
 
   const filters = useMemo(
     () => [
@@ -48,7 +108,10 @@ function OpportunitiesInner() {
   };
 
   return (
-    <main className="p-6 text-lux-text">
+    <main
+      className="p-6 text-lux-text"
+      data-testid="admin-opportunities-page"
+    >
       <h1 className="text-xl font-semibold">수익 기회 관리</h1>
       <p className="mt-2 text-sm text-lux-text-muted">
         가격·마진 적용 · Asset Master · 필터 계약
@@ -271,6 +334,31 @@ function OpportunitiesInner() {
             /admin/opportunities?category=watch&capitalBand=whale · POST
             /admin/opportunities/assets/seed/watch
           </p>
+
+          {!list ? (
+            <p className="text-sm text-lux-text-muted">불러오는 중</p>
+          ) : !list.ok ? (
+            <AdminFetchNote failure={list.failure} />
+          ) : oppItems && oppItems.length === 0 ? (
+            <p className="text-sm text-lux-text-muted">해당 기회가 없습니다.</p>
+          ) : oppItems ? (
+            <ul className="mt-3 space-y-3" data-testid="opportunities-live-list">
+              {oppItems.map((item, idx) => {
+                const id = readText(item.id);
+                return (
+                  <li key={id ?? String(idx)} className="rounded border border-lux-border p-3 text-sm">
+                    <p><AdminTruth value={readText(item.assetLabel)} /></p>
+                    <p>예상 수익 <AdminTruth value={readAmount(item.expectedProfitUsdt)} /></p>
+                    <p>필요 원금 <AdminTruth value={readAmount(item.requiredCapitalUsdt)} /></p>
+                    <p>상태 <AdminTruth value={readText(item.status)} /> · 자본대 <AdminTruth value={readText(item.capitalBand)} /></p>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <AdminTruth value={null} />
+          )}
+          <p className="text-xs text-lux-text-muted">API: {listApi}</p>
         </section>
       ) : (
         <section
@@ -328,6 +416,30 @@ function OpportunitiesInner() {
           <p className="text-xs text-lux-text-muted">
             독립 /admin/assets 경로 없음 · tab=assets 만
           </p>
+
+          {!assets ? (
+            <p className="text-sm text-lux-text-muted">불러오는 중</p>
+          ) : !assets.ok ? (
+            <AdminFetchNote failure={assets.failure} />
+          ) : assetItems && assetItems.length === 0 ? (
+            <p className="text-sm text-lux-text-muted">상품 마스터 항목이 없습니다.</p>
+          ) : assetItems ? (
+            <ul className="mt-3 space-y-3" data-testid="opportunities-assets-list">
+              {assetItems.map((item, idx) => {
+                const id = readText(item.assetId);
+                return (
+                  <li key={id ?? String(idx)} className="rounded border border-lux-border p-3 text-sm">
+                    <p><AdminTruth value={readText(item.assetLabel)} /></p>
+                    <p>imageSource <AdminTruth value={readText(item.imageSource)} /></p>
+                    <p>assetImageUrl <AdminTruth value={readText(item.imageUrl)} /></p>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <AdminTruth value={null} />
+          )}
+          <p className="text-xs text-lux-text-muted">API: {assetsApi}</p>
         </section>
       )}
     </main>

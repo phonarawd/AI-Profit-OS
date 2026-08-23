@@ -1,5 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { adminGet, type AdminResult } from "../../../lib/admin-api";
+import { readText } from "../../../lib/admin-truth";
+import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
+
 /**
  * Admin §9.1.1 · 해외 시세 수집기
  * Engine contract: GET /api/v1/admin/adapters · listing-legs · matching-kpi
@@ -37,9 +42,59 @@ const KPI_THRESHOLDS = {
   windowHours: 24,
 } as const;
 
+type HealthItem = {
+  adapterId?: unknown;
+  labelKo?: unknown;
+  status?: unknown;
+  skuMatchFailureRate?: unknown;
+  gradeMismatchCount?: unknown;
+  healthStatus?: unknown;
+};
+
+type KpiPayload = {
+  skuMatchFailureRate?: unknown;
+  gradeMismatchCount?: unknown;
+  compareReadyFalseRatio?: unknown;
+  adapterMatchFailureRate?: unknown;
+  items?: HealthItem[];
+  alerts?: Array<{ messageKo?: unknown }>;
+};
+
+type ReviewQueue = {
+  items?: Array<{ assetId?: unknown; searchQuery?: unknown }>;
+  count?: unknown;
+};
+
 export default function Page() {
+  const listApi = "/api/v1/admin/adapters";
+  const kpiApi = "/api/v1/admin/adapters/matching-kpi";
+  const reviewApi = "/api/v1/admin/adapters/identity-review-queue";
+  const [health, setHealth] = useState<AdminResult<KpiPayload> | null>(null);
+  const [kpi, setKpi] = useState<AdminResult<KpiPayload> | null>(null);
+  const [review, setReview] = useState<AdminResult<ReviewQueue> | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const [h, k, q] = await Promise.all([
+        adminGet<KpiPayload>(listApi),
+        adminGet<KpiPayload>(kpiApi),
+        adminGet<ReviewQueue>(reviewApi),
+      ]);
+      if (cancelled) return;
+      setHealth(h);
+      setKpi(k);
+      setReview(q);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const rows = health?.ok && Array.isArray(health.data.items) ? health.data.items : null;
+
   return (
-    <main className="p-6 text-lux-text" data-surface="admin-adapters">
+    <main className="p-6 text-lux-text" data-surface="admin-adapters" data-testid="admin-adapters-page">
       <h1 className="text-xl font-semibold">해외 시세 수집기</h1>
       <p className="mt-2 text-sm text-lux-text-muted">
         연결 상태 · 시세 다리 · 매칭 실패율 · 공식 협력(아마존·야후 일본) Phase1+
@@ -62,7 +117,8 @@ export default function Page() {
           >
             <span>SKU 매칭 실패율</span>
             <span className="text-lux-text-muted">
-              기준 {(KPI_THRESHOLDS.skuMatchFailRateMax * 100).toFixed(0)}% 초과 시
+              관측 <AdminTruth value={readText(kpi?.ok ? kpi.data.skuMatchFailureRate : null)} />
+              · 기준 {(KPI_THRESHOLDS.skuMatchFailRateMax * 100).toFixed(0)}% 초과 시
               알림 · 자동 공개 축소
             </span>
           </li>
@@ -73,7 +129,8 @@ export default function Page() {
           >
             <span>등급 불일치</span>
             <span className="text-lux-text-muted">
-              listing 등급 ≠ 자산 등급 · 비교 준비 불가
+              관측 <AdminTruth value={readText(kpi?.ok ? kpi.data.gradeMismatchCount : null)} />
+              · listing 등급 ≠ 자산 등급 · 비교 준비 불가
             </span>
           </li>
           <li
@@ -83,7 +140,8 @@ export default function Page() {
           >
             <span>비교 준비 미달 비율</span>
             <span className="text-lux-text-muted">
-              기준 {(KPI_THRESHOLDS.compareReadyFalseRatioMax * 100).toFixed(0)}%
+              관측 <AdminTruth value={readText(kpi?.ok ? kpi.data.compareReadyFalseRatio : null)} />
+              · 기준 {(KPI_THRESHOLDS.compareReadyFalseRatioMax * 100).toFixed(0)}%
               초과 시 시드 점검
             </span>
           </li>
@@ -95,7 +153,8 @@ export default function Page() {
           >
             <span>시뮬레이션 S4 입력</span>
             <span className="text-lux-text-muted">
-              adapterMatchFailureRate ≤{" "}
+              관측 <AdminTruth value={readText(kpi?.ok ? kpi.data.adapterMatchFailureRate : null)} />
+              · adapterMatchFailureRate ≤{" "}
               {(KPI_THRESHOLDS.s4AdapterMatchFailureRateMax * 100).toFixed(0)}%
             </span>
           </li>
@@ -130,13 +189,29 @@ export default function Page() {
           listing이 Asset Master exact match에 실패하면 여기로 남깁니다 (조용히
           버리지 않음 · query 자리표시자 저장 금지).
         </p>
-        <p
+        <div
           className="mt-2 text-xs text-lux-text-muted"
           data-field="identityReviewCount"
           data-silent-drop="false"
         >
-          검토 대기 항목은 Admin API identity-review-queue에서 확인합니다.
-        </p>
+          {!review ? (
+            <p>불러오는 중</p>
+          ) : !review.ok ? (
+            <AdminFetchNote failure={review.failure} />
+          ) : Array.isArray(review.data.items) && review.data.items.length === 0 ? (
+            <p>신원 미매칭 검토 항목이 없습니다.</p>
+          ) : Array.isArray(review.data.items) ? (
+            <ul className="mt-2 space-y-1">
+              {review.data.items.map((item, idx) => (
+                <li key={readText(item.assetId) ?? String(idx)}>
+                  <AdminTruth value={readText(item.searchQuery) ?? readText(item.assetId)} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <AdminTruth value={null} />
+          )}
+        </div>
       </section>
 
       <section className="mt-6">
@@ -156,7 +231,12 @@ export default function Page() {
                 className="text-lux-text-muted"
                 data-field="skuMatchFailureRate"
               >
-                대기
+                <AdminTruth
+                  value={readText(
+                    rows?.find((r) => readText(r.adapterId) === c.id)?.status ??
+                      (health && !health.ok ? null : undefined),
+                  )}
+                />
               </span>
             </li>
           ))}
@@ -188,6 +268,12 @@ export default function Page() {
         당일 기회 자동 공개는 이베이·운영자 기준가만 씁니다. 아마존·야후 일본은
         공식 협력 수집기(Phase1+)입니다.
       </p>
+      {!health ? (
+        <p className="mt-4 text-sm text-lux-text-muted">불러오는 중</p>
+      ) : !health.ok ? (
+        <AdminFetchNote failure={health.failure} />
+      ) : null}
+      <p className="mt-4 text-xs text-lux-text-muted">API: {listApi} · {kpiApi} · {reviewApi}</p>
       <p
         className="mt-2 text-xs text-lux-text-muted"
         data-lock="proximity-limit-owns"

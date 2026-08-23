@@ -434,11 +434,20 @@ const RULES = [
       "rel-207-admin-compliance.cjs",
       "rel-208-admin-risk.cjs",
       "rel-209-admin-execution-policy.cjs",
+      "rel-210-admin-opportunities.cjs",
+      "rel-211-admin-adapters.cjs",
+      "rel-212-admin-support.cjs",
+      "rel-216-admin-financial.cjs",
+      "rel-217-admin-growth.cjs",
+      "rel-218-admin-growth-deposit.cjs",
+      "rel-219-admin-growth-ticker.cjs",
+      "rel-220-admin-growth-whale.cjs",
+      "rel-221-admin-growth-content.cjs",
     ],
   },
   {
     test: (f) =>
-      /^tooling\/verify\/rel-20[1-9]-admin-/.test(f) ||
+      /^tooling\/verify\/rel-2\d{2}-admin-/.test(f) ||
       /^tooling\/verify\/admin-entry-e2e\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/admin-entry-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/e2e\/lib\/local-admin-runtime\.cjs$/.test(f),
@@ -452,6 +461,15 @@ const RULES = [
       "rel-207-admin-compliance.cjs",
       "rel-208-admin-risk.cjs",
       "rel-209-admin-execution-policy.cjs",
+      "rel-210-admin-opportunities.cjs",
+      "rel-211-admin-adapters.cjs",
+      "rel-212-admin-support.cjs",
+      "rel-216-admin-financial.cjs",
+      "rel-217-admin-growth.cjs",
+      "rel-218-admin-growth-deposit.cjs",
+      "rel-219-admin-growth-ticker.cjs",
+      "rel-220-admin-growth-whale.cjs",
+      "rel-221-admin-growth-content.cjs",
       "admin-entry-e2e.cjs",
     ],
   },
