@@ -30,6 +30,14 @@ import type { UserOpportunityOverrideV1 } from "./user-opportunity-override.merg
 
 const req = createRequire(__filename);
 // eslint-disable-next-line @typescript-eslint/no-require-imports
+const priceOverrideCore = req(
+  join(__dirname, "..", "..", "price-override.core.cjs"),
+) as {
+  projectUserVisible: (effective: unknown) =>
+    | { ok: true; userVisible: Record<string, unknown> }
+    | { ok: false; error: string };
+};
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const settlementRule = req(
   join(__dirname, "..", "..", "..", "engine-rust", "settlement_rule.cjs"),
 ) as {
@@ -414,7 +422,8 @@ export class OpportunitiesUserService {
       internal.riskScore = row.risk_score;
     }
     if (opts.includePricing) {
-      internal.pricing = pricing;
+      const projected = priceOverrideCore.projectUserVisible(pricing);
+      internal.pricing = projected.ok ? projected.userVisible : {};
     }
     if (pricing.expectedSellDays != null) {
       internal.expectedSellDays = Number(pricing.expectedSellDays);

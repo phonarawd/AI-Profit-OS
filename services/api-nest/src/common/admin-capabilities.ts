@@ -97,6 +97,7 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     list: read("all"),
     get: read("all"),
     patchPricing: write("all"),
+    getPriceLayers: read("all"),
     upsertAsset: write("all"),
     seedTradingCards: write("all"),
     seedLuxuryBags: write("all"),

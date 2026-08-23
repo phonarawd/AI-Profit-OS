@@ -553,6 +553,20 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^schemas\/price-override-layers\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/price-override\.core\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/price-override\//.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/opportunities\.(admin|user)\.service\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/opportunities\.admin\.controller\.ts$/.test(f) ||
+      /^governance\/admin\/price-override/.test(f) ||
+      /^governance\/release-master\/REL-407-PRICE-OVERRIDE\.md$/.test(f) ||
+      /^tooling\/verify\/rel-407-price-override\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-407-price-override\.v1\.json$/.test(f) ||
+      /^supabase\/migrations\/\d+_opportunity_price_overrides\.sql$/.test(f),
+    scripts: ["rel-407-price-override.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||

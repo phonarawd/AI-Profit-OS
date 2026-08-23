@@ -4,6 +4,7 @@ import { LedgerModule } from "../ledger/ledger.module";
 import { EventsModule } from "../events/events.module";
 import { LoopModule } from "../loop/loop.module";
 import { KillSwitchModule } from "../kill-switch/kill-switch.module";
+import { PriceOverrideModule } from "../price-override/price-override.module";
 import { RiskModule } from "../risk/risk.module";
 import { AssetImageR2Service } from "./asset-image-r2.service";
 import { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
@@ -24,6 +25,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
     ExecutionPolicyModule,
     RiskModule,
     KillSwitchModule,
+    PriceOverrideModule,
     LoopModule,
   ],
   controllers: [
