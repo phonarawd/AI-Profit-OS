@@ -684,6 +684,14 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/release-master\/R8_INFRA_CORE\.md$/.test(f) ||
+      /^governance\/release-master\/r8-cache-inventory\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/rel-506-r8-infra-core\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-506-r8-infra-core\.v1\.json$/.test(f),
+    scripts: ["rel-506-r8-infra-core.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||

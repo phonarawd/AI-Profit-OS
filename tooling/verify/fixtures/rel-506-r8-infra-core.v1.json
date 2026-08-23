@@ -1,0 +1,30 @@
+{
+  "rel": "REL-506",
+  "deps": ["REL-016", "REL-403", "REL-505"],
+  "protectedScopeMutation": false,
+  "certIssued": 1,
+  "allAligned": 0,
+  "pagesDeploy": 0,
+  "vercel": 0,
+  "adsExcluded": 1,
+  "autonomousOpsComplete": 0,
+  "productionAnnotatedTag": 0,
+  "webVitalsRum": 0,
+  "dynamicCacheRules": 0,
+  "p0": 0,
+  "p1": 0,
+  "p2": 0,
+  "p3": 0,
+  "knownGoodScheme": "REL-403",
+  "knownGoodPractice": "REL-602",
+  "rumOwner": "REL-703",
+  "adsOwner": "POST-012",
+  "extraVerifies": [
+    "opennext-workers-origin.cjs",
+    "observability.cjs",
+    "auth-session-cookie.cjs",
+    "kyc-r2-only.cjs",
+    "rel-403-versioning.cjs",
+    "rel-404-lighthouse-budget.cjs"
+  ]
+}
