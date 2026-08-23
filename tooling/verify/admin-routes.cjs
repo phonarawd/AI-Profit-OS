@@ -71,6 +71,7 @@ const childRequired = [
   "/admin/users/:id/finance?tab=buckets",
   "/admin/risk?tab=queue",
   "/admin/system-control?tab=reserve",
+  "/admin/audit?tab=rbac",
 ];
 
 for (const href of childRequired) {

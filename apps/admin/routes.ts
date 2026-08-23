@@ -63,6 +63,7 @@ export const ADMIN_CHILD_ROUTES = [
   { href: "/admin/users/:id/finance?tab=buckets", parent: 6, note: "버킷" },
   { href: "/admin/risk?tab=queue", parent: 7, note: "동결 큐" },
   { href: "/admin/system-control?tab=reserve", parent: 9, note: "platform_reserve · Engine §0.0.4.3 · 시뮬 S2" },
+  { href: "/admin/audit?tab=rbac", parent: 12, note: "reserved RBAC child · no 13th sidebar" },
 ] as const;
 
 /** Legacy growth paths → ?tab= redirect (이중 IA 금지) */

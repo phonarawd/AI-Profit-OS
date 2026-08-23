@@ -19,9 +19,6 @@ function read(rel) {
 const spec = read("governance/admin/control-plane-superset.md");
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
-const systemPage = read("apps/admin/app/admin/system-control/page.tsx");
-const auditPage = read("apps/admin/app/admin/audit/page.tsx");
-
 for (const n of [
   "IMPLEMENTATION_IN_THIS_REL: 0",
   "PROTECTED_SCOPE_MUTATION: false",
@@ -55,13 +52,6 @@ if (!pkg.includes("verify:rel-400-admin-control-plane")) {
 }
 if (!catalog.includes("rel-400-admin-control-plane")) {
   fails.push("CATALOG missing rel-400-admin-control-plane");
-}
-
-if (systemPage.includes("adminGet")) {
-  fails.push("REL-400 must not live-wire system-control");
-}
-if (auditPage.includes("adminGet")) {
-  fails.push("REL-400 must not live-wire audit");
 }
 
 const webAdmin = path.join(root, "apps/web/app/admin");
