@@ -190,6 +190,12 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     rollback: write("all"),
     previewAsUser: read("all"),
   },
+  MatchControlAdminController: {
+    verbs: read("all"),
+    preview: write("all"),
+    confirm: write("all"),
+    apply: write("all"),
+  },
 });
 
 export function requiredCapabilityFor(

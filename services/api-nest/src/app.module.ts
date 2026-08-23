@@ -26,6 +26,7 @@ import { HomeReadModule } from "./home-read/home-read.module";
 import { AdminAuditModule } from "./audit/admin-audit.module";
 import { KillSwitchModule } from "./kill-switch/kill-switch.module";
 import { AdminOpsModule } from "./admin-ops/admin-ops.module";
+import { MatchControlModule } from "./match-control/match-control.module";
 import { ObsExceptionFilter } from "./observability/obs.exception-filter";
 
 @Module({
@@ -54,6 +55,7 @@ import { ObsExceptionFilter } from "./observability/obs.exception-filter";
     AdminAuditModule,
     KillSwitchModule,
     AdminOpsModule,
+    MatchControlModule,
   ],
   controllers: [HealthController],
   // Global admin boundary — an admin controller added without @UseGuards is

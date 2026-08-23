@@ -588,6 +588,18 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^schemas\/admin-match-control\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/admin-match-control\.core\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/match-control\//.test(f) ||
+      /^governance\/admin\/match-control/.test(f) ||
+      /^governance\/release-master\/REL-223-MATCH-CONTROL\.md$/.test(f) ||
+      /^tooling\/verify\/rel-223-match-control\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-223-match-control\.v1\.json$/.test(f) ||
+      /^supabase\/migrations\/\d+_admin_match_controls\.sql$/.test(f),
+    scripts: ["rel-223-match-control.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||
