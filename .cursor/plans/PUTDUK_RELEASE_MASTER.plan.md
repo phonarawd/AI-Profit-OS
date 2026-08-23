@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-400 COMPLETED. FIRST_EXECUTION_TODO=REL-213. HARD_STOP_AFTER=REL-400. BATCH_REL_200_206=ADMIN_ENTRY.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-400 COMPLETED. REL-213 COMPLETED. REL-214 COMPLETED. FIRST_EXECUTION_TODO=REL-401. HARD_STOP_AFTER=REL-214. BATCH_REL_200_206=ADMIN_ENTRY.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -255,11 +255,11 @@ todos:
     content: "[Hardening] Admin Control Plane -- DONE spec only, 3-mode locked, implementation 0"
     status: completed
   - id: rel-213
-    content: "[Admin] /admin/system-control(kill-switch) 실구현(deps REL-400 완료 후, TOP→BOTTOM에서 본 위치)"
-    status: pending
+    content: "[Admin] /admin/system-control -- DONE live kill reads + preview/confirm, unpublished honest empty"
+    status: completed
   - id: rel-214
-    content: "[Admin] /admin/audit 실구현(deps REL-400 완료 후, TOP→BOTTOM에서 본 위치)"
-    status: pending
+    content: "[Admin] /admin/audit -- DONE honest empty + reserved rbac tab, delete UI 0"
+    status: completed
   - id: rel-401
     content: "[Hardening] 보안 헤더 미들웨어(CSP/HSTS/X-Frame-Options)"
     status: pending
@@ -420,10 +420,10 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-213
-LAST_COMPLETED_TODO = REL-400
+FIRST_EXECUTION_TODO = REL-401
+LAST_COMPLETED_TODO = REL-214
 BATCH_REL_200_206 = ADMIN_ENTRY
-HARD_STOP_AFTER = REL-400
+HARD_STOP_AFTER = REL-214
 PRE_LOCK_COUNT = 1
 REL_COUNT = 116
 POST_COUNT = 19
@@ -2929,7 +2929,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-213
 TITLE: /admin/system-control (kill-switch) 실구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-213
@@ -2958,7 +2958,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-214
 TITLE: /admin/audit 실구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-214
@@ -4569,5 +4569,5 @@ FIRST_EXECUTION_TODO_AT_MATERIALIZATION = REL-000
 REL-000은 2026-08-20에 PASS/COMPLETED.
 REL-001은 2026-08-20에 PASS/COMPLETED (`preserve/2026-08-20-worktree-rescue` · `ae8d1e6` · merge 금지).
 REL-002는 2026-08-21에 PASS/COMPLETED (PR #2 MERGED · `db6db87` · ruleset `verify-gate` 계약 수정 후 비우회 merge).
-현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-213`. HARD_STOP_AFTER = REL-400.
+현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-401`. HARD_STOP_AFTER = REL-214.
 

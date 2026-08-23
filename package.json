@@ -52,6 +52,8 @@
     "verify:rel-210-admin-opportunities": "node tooling/verify/rel-210-admin-opportunities.cjs",
     "verify:rel-211-admin-adapters": "node tooling/verify/rel-211-admin-adapters.cjs",
     "verify:rel-212-admin-support": "node tooling/verify/rel-212-admin-support.cjs",
+    "verify:rel-213-admin-system-control": "node tooling/verify/rel-213-admin-system-control.cjs",
+    "verify:rel-214-admin-audit": "node tooling/verify/rel-214-admin-audit.cjs",
     "verify:rel-215-admin-ai-logs": "node tooling/verify/rel-215-admin-ai-logs.cjs",
     "verify:rel-216-admin-financial": "node tooling/verify/rel-216-admin-financial.cjs",
     "verify:rel-217-admin-growth": "node tooling/verify/rel-217-admin-growth.cjs",
