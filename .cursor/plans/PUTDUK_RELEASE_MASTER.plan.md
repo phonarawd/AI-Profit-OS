@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-221 COMPLETED. FIRST_EXECUTION_TODO=REL-300. HARD_STOP_AFTER=REL-221. BATCH_REL_200_206=ADMIN_ENTRY.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-305 COMPLETED. FIRST_EXECUTION_TODO=REL-215. HARD_STOP_AFTER=REL-305. BATCH_REL_200_206=ADMIN_ENTRY.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -231,23 +231,23 @@ todos:
     content: "[Admin] /admin/growth/content 실사+구현 -- DONE redirect + tax lock · stub-only 0"
     status: completed
   - id: rel-300
-    content: "[AI Capability] Coach P-lane(Fact-only) 런타임 재확인"
-    status: pending
+    content: "[AI Capability] Coach P-lane(Fact-only) 런타임 재확인 -- DONE fact-only + UNAVAILABLE"
+    status: completed
   - id: rel-301
-    content: "[AI Capability] Coach G-lane(scope-guard, tools=[]) 런타임 재확인"
-    status: pending
+    content: "[AI Capability] Coach G-lane(scope-guard, tools=[]) 런타임 재확인 -- DONE G tools=[] scope-guard"
+    status: completed
   - id: rel-302
-    content: "[AI Capability] Coach S-lane(safe-refuse) 런타임 재확인"
-    status: pending
+    content: "[AI Capability] Coach S-lane(safe-refuse) 런타임 재확인 -- DONE S safe-refuse"
+    status: completed
   - id: rel-303
-    content: "[AI Capability] prompt-injection/scope-escape red-team pass"
-    status: pending
+    content: "[AI Capability] prompt-injection/scope-escape red-team pass -- DONE red-team fixture"
+    status: completed
   - id: rel-304
-    content: "[AI Capability] numeric-grounding + fact-freshness 런타임 재확인"
-    status: pending
+    content: "[AI Capability] numeric-grounding + fact-freshness 런타임 재확인 -- DONE grounding + freshness"
+    status: completed
   - id: rel-305
-    content: "[AI Capability] conversation-state bounded-memory 런타임 재확인"
-    status: pending
+    content: "[AI Capability] conversation-state bounded-memory 런타임 재확인 -- DONE bounded-memory + PII"
+    status: completed
   - id: rel-215
     content: "[Admin] /admin/ai-logs 실사+구현(deps REL-300~305 완료 후, TOP→BOTTOM에서 본 위치)"
     status: pending
@@ -420,10 +420,10 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-300
-LAST_COMPLETED_TODO = REL-221
+FIRST_EXECUTION_TODO = REL-215
+LAST_COMPLETED_TODO = REL-305
 BATCH_REL_200_206 = ADMIN_ENTRY
-HARD_STOP_AFTER = REL-221
+HARD_STOP_AFTER = REL-305
 PRE_LOCK_COUNT = 1
 REL_COUNT = 116
 POST_COUNT = 19
@@ -2723,7 +2723,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-300
 TITLE: Coach P-lane (Fact-only) 런타임 재확인
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: peotteok_ai_coach_hardening_v1 (workspace/intake) + putduk_release_master
 SOURCE_TODO_IDS:
   - rel-300
@@ -2748,7 +2748,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-301
 TITLE: Coach G-lane (scope-guard, tools=[]) 런타임 재확인
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-301
@@ -2773,7 +2773,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-302
 TITLE: Coach S-lane (safe-refuse) 런타임 재확인
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-302
@@ -2798,7 +2798,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-303
 TITLE: prompt-injection / scope-escape red-team pass
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-303
@@ -2824,7 +2824,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-304
 TITLE: numeric-grounding + fact-freshness 런타임 재확인
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-304
@@ -2849,7 +2849,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-305
 TITLE: conversation-state bounded-memory 런타임 재확인
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-305
@@ -4569,5 +4569,5 @@ FIRST_EXECUTION_TODO_AT_MATERIALIZATION = REL-000
 REL-000은 2026-08-20에 PASS/COMPLETED.
 REL-001은 2026-08-20에 PASS/COMPLETED (`preserve/2026-08-20-worktree-rescue` · `ae8d1e6` · merge 금지).
 REL-002는 2026-08-21에 PASS/COMPLETED (PR #2 MERGED · `db6db87` · ruleset `verify-gate` 계약 수정 후 비우회 merge).
-현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-300`. HARD_STOP_AFTER = REL-221.
+현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-215`. HARD_STOP_AFTER = REL-305.
 

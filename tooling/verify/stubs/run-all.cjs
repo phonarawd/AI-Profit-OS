@@ -66,6 +66,7 @@ const live = [
   "llm-adapter-contract.cjs",
   "llm-quota-degrade.cjs",
   "ai-coach-fact-only.cjs",
+  "ai-coach-runtime.cjs",
   "ai-coach-no-autonomy.cjs",
   "ai-general-no-money-tools.cjs",
   "ai-lane-router.cjs",

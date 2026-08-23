@@ -64,6 +64,18 @@ try {
 }
 ai.assertStateOwnership(state, "u1"); // same owner must not throw
 
+const piiState = ai.appendTurn(state, {
+  role: "user",
+  text: "900101-1234567 010-1234-5678",
+});
+const piiText = piiState.turns[0].text;
+if (piiText.includes("900101-1234567") || piiText.includes("010-1234-5678")) {
+  fails.push("conversation turns must redact resident-id/phone PII");
+}
+if (typeof ai.redactConversationPii !== "function") {
+  fails.push("redactConversationPii must be exported");
+}
+
 // --- Bounded turns (sliding window + truncation) ---
 let bounded = state;
 for (let i = 0; i < 20; i++) {

@@ -7,6 +7,7 @@
 "use strict";
 
 const { G_BUSY_TEMPLATE } = require("./llm-quota.cjs");
+const { isFactFresh } = require("./fact-card-loader.cjs");
 
 /** S-lane: never execute — UI deep-link only */
 const S_REFUSE_TEMPLATE = Object.freeze({
@@ -31,6 +32,25 @@ const SCOPE_REDIRECT_TEMPLATE = Object.freeze({
 });
 
 /** CS deep-link when user is stuck */
+const P_UNAVAILABLE_TEMPLATE = Object.freeze({
+  text: "\uC9C0\uAE08 \uADF8 \uC22B\uC790\uB294 \uD655\uC778\uD560 \uC218 \uC5C6\uC5B4\uC694.",
+  copyKey: "T.peotteok.pUnavailable",
+});
+
+const S_SAFE_REFUSE_TEMPLATE = Object.freeze({
+  text: "\uADF8\uB7F0 \uC694\uCCAD\uC740 \uB3C4\uC640\uB4DC\uB9B4 \uC218 \uC5C6\uC5B4\uC694.",
+  deepLink: null,
+  copyKey: "T.peotteok.sSafeRefuse",
+});
+
+const USDT_DEC = /^-?[0-9]+(\.[0-9]+)?$/;
+function coachMoneyOrUnavailable(raw) {
+  if (raw == null || raw === "" || !USDT_DEC.test(String(raw))) {
+    return { state: "UNAVAILABLE", display: null };
+  }
+  return { state: "ready", display: String(raw) };
+}
+
 const CS_DEEP_LINK = Object.freeze({
   href: "/me/support",
   copyKey: "T.peotteok.csDeepLink",
@@ -122,15 +142,36 @@ function renderFactAnswer(facts, opts = {}) {
   if (list.length === 0) {
     return P_REFRESH_TEMPLATE.text;
   }
+  const usable =
+    opts.now != null ? list.filter((f) => isFactFresh(f, { now: opts.now })) : list;
+  if (usable.length === 0) {
+    return P_REFRESH_TEMPLATE.text;
+  }
   const lines = [];
-  for (const f of list) {
+  for (const f of usable) {
     const p = f?.payload && typeof f.payload === "object" ? f.payload : {};
     if (p.profitUsdt != null || p.liabilityUsdt != null) {
-      lines.push(
-        `지금 출금 가능한 수익은 ${String(p.profitUsdt ?? "0")} USDT예요. (원장 기준)`,
-      );
+      const profitMoney = coachMoneyOrUnavailable(p.profitUsdt);
+      if (profitMoney.state === "UNAVAILABLE") {
+        lines.push(P_UNAVAILABLE_TEMPLATE.text);
+      } else {
+        lines.push(
+          "\uC9C0\uAE08 \uCD9C\uAE08 \uAC00\uB2A5\uD55C \uC218\uC775\uC740 " +
+            profitMoney.display +
+            " USDT\uC608\uC694. (\uC6D0\uC7A5 \uAE30\uC900)",
+        );
+      }
+      const principalMoney = coachMoneyOrUnavailable(p.principalUsdt);
       if (p.principalUsdt != null) {
-        lines.push(`원금 버킷은 ${String(p.principalUsdt)} USDT예요.`);
+        if (principalMoney.state === "UNAVAILABLE") {
+          lines.push(P_UNAVAILABLE_TEMPLATE.text);
+        } else {
+          lines.push(
+            "\uC6D0\uAE08 \uBC84\uD0B7\uC740 " +
+              principalMoney.display +
+              " USDT\uC608\uC694.",
+          );
+        }
       }
       continue;
     }
@@ -207,9 +248,12 @@ function pickChips(opts = {}) {
 
 module.exports = {
   S_REFUSE_TEMPLATE,
+  S_SAFE_REFUSE_TEMPLATE,
   P_REFRESH_TEMPLATE,
+  P_UNAVAILABLE_TEMPLATE,
   SCOPE_REDIRECT_TEMPLATE,
   CS_DEEP_LINK,
+  coachMoneyOrUnavailable,
   FACT_CHIPS,
   G_BUSY_TEMPLATE,
   shapeByTone,

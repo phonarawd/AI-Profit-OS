@@ -64,6 +64,7 @@ const {
   answerPathForLane,
   routeAssistant,
   S_PATTERNS,
+  S_DANGER_PATTERNS,
   P_PATTERNS,
   EXECUTION_PATTERNS,
   OFF_TOPIC_PATTERNS,
@@ -71,6 +72,7 @@ const {
   defaultToolsForText,
   matchesExecutionIntent,
   matchesOffTopic,
+  matchesDanger,
   decideScope,
 } = require("./assistant-router.cjs");
 const {
@@ -98,13 +100,16 @@ const {
 } = require("./coach-prompt.cjs");
 const {
   S_REFUSE_TEMPLATE,
+  S_SAFE_REFUSE_TEMPLATE,
   P_REFRESH_TEMPLATE,
+  P_UNAVAILABLE_TEMPLATE,
   SCOPE_REDIRECT_TEMPLATE,
   CS_DEEP_LINK,
   FACT_CHIPS,
   shapeByTone,
   renderFactAnswer,
   pickChips,
+  coachMoneyOrUnavailable,
 } = require("./coach-templates.cjs");
 const {
   MAX_TURNS,
@@ -118,6 +123,7 @@ const {
   isWithinAbsoluteLifetime,
   effectiveTtlSec,
   buildHistoryMessages,
+  redactConversationPii,
 } = require("./conversation-state.cjs");
 const {
   RESULT_REF_TYPES,
@@ -195,6 +201,7 @@ module.exports = {
   answerPathForLane,
   routeAssistant,
   S_PATTERNS,
+  S_DANGER_PATTERNS,
   P_PATTERNS,
   EXECUTION_PATTERNS,
   OFF_TOPIC_PATTERNS,
@@ -202,6 +209,7 @@ module.exports = {
   defaultToolsForText,
   matchesExecutionIntent,
   matchesOffTopic,
+  matchesDanger,
   decideScope,
   HELP_CHUNK_KINDS,
   buildHelpChunk,
@@ -219,13 +227,16 @@ module.exports = {
   buildCoachMessages,
   shouldCallLlm,
   S_REFUSE_TEMPLATE,
+  S_SAFE_REFUSE_TEMPLATE,
   P_REFRESH_TEMPLATE,
+  P_UNAVAILABLE_TEMPLATE,
   SCOPE_REDIRECT_TEMPLATE,
   CS_DEEP_LINK,
   FACT_CHIPS,
   shapeByTone,
   renderFactAnswer,
   pickChips,
+  coachMoneyOrUnavailable,
   MAX_TURNS,
   MAX_TURN_TEXT_LEN,
   newConversationId,
@@ -237,6 +248,7 @@ module.exports = {
   isWithinAbsoluteLifetime,
   effectiveTtlSec,
   buildHistoryMessages,
+  redactConversationPii,
   RESULT_REF_TYPES,
   RESOLUTION_STATUSES,
   MAX_RESULT_REF_SETS,

@@ -21,6 +21,13 @@ const MAX_TURNS = 8;
 const MAX_TURN_TEXT_LEN = 300;
 const TURN_ROLES = Object.freeze(["user", "assistant"]);
 
+function redactConversationPii(text) {
+  let t = String(text || "");
+  t = t.replace(/\b\d{6}-?\d{7}\b/g, "[\uC228\uAE40]");
+  t = t.replace(/\b01[016789]-?\d{3,4}-?\d{4}\b/g, "[\uC228\uAE40]");
+  return t;
+}
+
 /**
  * @returns {string}
  */
@@ -50,7 +57,7 @@ function normalizeTurn(raw) {
   const role = TURN_ROLES.includes(raw?.role) ? raw.role : "user";
   return Object.freeze({
     role,
-    text: String(raw?.text || "").slice(0, MAX_TURN_TEXT_LEN),
+    text: redactConversationPii(String(raw?.text || "")).slice(0, MAX_TURN_TEXT_LEN),
     lane: raw?.lane != null ? String(raw.lane) : null,
     at: raw?.at || new Date().toISOString(),
   });
@@ -215,4 +222,5 @@ module.exports = {
   isWithinAbsoluteLifetime,
   effectiveTtlSec,
   buildHistoryMessages,
+  redactConversationPii,
 };

@@ -95,6 +95,7 @@
     "verify:ai-coach-fact-only": "node tooling/verify/ai-coach-fact-only.cjs",
     "verify:ai-coach-no-autonomy": "node tooling/verify/ai-coach-no-autonomy.cjs",
     "verify:ai-coach-ui": "node tooling/verify/ai-coach-ui.cjs",
+    "verify:ai-coach-runtime": "node tooling/verify/ai-coach-runtime.cjs",
     "verify:ai-general-no-money-tools": "node tooling/verify/ai-general-no-money-tools.cjs",
     "verify:ai-lane-router": "node tooling/verify/ai-lane-router.cjs",
     "verify:routing-coverage": "node tooling/verify/routing-coverage.cjs",

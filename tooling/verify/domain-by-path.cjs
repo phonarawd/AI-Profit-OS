@@ -546,6 +546,7 @@ const RULES = [
       "canon-surfaces.cjs",
       "ai-coach-fact-only.cjs",
       "ai-coach-no-autonomy.cjs",
+      "ai-coach-runtime.cjs",
       "age-tone-surfaces.cjs",
       "peotteok-closure.cjs",
     ],
@@ -565,6 +566,7 @@ const RULES = [
     scripts: [
       "reference-resolution.cjs",
       "conversation-state-bounded.cjs",
+      "ai-coach-runtime.cjs",
       "ai-coach-fact-only.cjs",
       "ai-coach-no-autonomy.cjs",
       "ai-general-no-money-tools.cjs",
@@ -583,6 +585,7 @@ const RULES = [
       "ai-coach-fact-only.cjs",
       "ai-coach-no-autonomy.cjs",
       "ai-general-no-money-tools.cjs",
+      "ai-coach-runtime.cjs",
       "reference-resolution.cjs",
       "age-tone-surfaces.cjs",
     ],
@@ -593,6 +596,8 @@ const RULES = [
         f,
       ) ||
       /^eval\/g_scope_escape\.jsonl$/.test(f) ||
+      /^eval\/(s_safe_refuse|coach_redteam)\.jsonl$/.test(f) ||
+      /^tooling\/verify\/ai-coach-runtime\.cjs$/.test(f) ||
       /^schemas\/ai-answer-trace\.v1\.json$/.test(f) ||
       /^tooling\/verify\/ai-scope-guard\.cjs$/.test(f) ||
       /^tooling\/verify\/ai-guard-authority\.cjs$/.test(f) ||

@@ -176,6 +176,7 @@ export function answerPathForLane(
 ): string;
 export function routeAssistant(input?: object): AssistantRoute;
 export const S_PATTERNS: readonly RegExp[];
+export const S_DANGER_PATTERNS: readonly RegExp[];
 export const P_PATTERNS: readonly RegExp[];
 export const EXECUTION_PATTERNS: readonly RegExp[];
 export const OFF_TOPIC_PATTERNS: readonly RegExp[];
@@ -187,6 +188,7 @@ export const SCOPE_ASSURANCE: {
 export function defaultToolsForText(text: string): string[];
 export function matchesExecutionIntent(text: string): boolean;
 export function matchesOffTopic(text: string): boolean;
+export function matchesDanger(text: string): boolean;
 export function decideScope(
   text: string,
   lane: "P" | "G" | "S",
@@ -260,6 +262,19 @@ export const S_REFUSE_TEMPLATE: {
   readonly text: string;
   readonly deepLink: string;
   readonly copyKey: string;
+};
+export const S_SAFE_REFUSE_TEMPLATE: {
+  readonly text: string;
+  readonly deepLink: string | null;
+  readonly copyKey: string;
+};
+export const P_UNAVAILABLE_TEMPLATE: {
+  readonly text: string;
+  readonly copyKey: string;
+};
+export function coachMoneyOrUnavailable(raw: unknown): {
+  readonly state: "ready" | "UNAVAILABLE";
+  readonly display: string | null;
 };
 export const P_REFRESH_TEMPLATE: {
   readonly text: string;
@@ -385,6 +400,7 @@ export function effectiveTtlSec(
   slidingTtlSec: number,
   absoluteLifetimeSec: number,
 ): number;
+export function redactConversationPii(text: string): string;
 export function buildHistoryMessages(
   state: ConversationState | null | undefined,
   maxChars?: number,

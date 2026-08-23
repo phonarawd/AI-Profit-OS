@@ -71,6 +71,22 @@ if (/확정\s*수익|원금\s*보장/.test(answer)) {
   fails.push("P answer must not invent guarantee copy");
 }
 
+const missingProfit = ai.renderFactAnswer([
+  ai.buildFactCard({
+    source: "ledger",
+    payload: { liabilityUsdt: "10.00" },
+    captured_at: "2026-08-23T00:00:00.000Z",
+    expires_at: "2026-08-23T00:05:00.000Z",
+    confidence: 1,
+  }),
+], { now: "2026-08-23T00:01:00.000Z" });
+if (!String(missingProfit).includes("\uD655\uC778\uD560 \uC218 \uC5C6")) {
+  fails.push("missing profitUsdt must be UNAVAILABLE, not invented 0");
+}
+if (/\uC218\uC775\uC740 0/.test(missingProfit)) {
+  fails.push("missing profitUsdt must not invent 0 copy");
+}
+
 const empty = ai.renderFactAnswer([], {});
 if (!empty || !String(empty).includes("다시")) {
   fails.push("empty facts must refresh template (no invented numbers)");

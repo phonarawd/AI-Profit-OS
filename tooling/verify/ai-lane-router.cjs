@@ -18,6 +18,8 @@ mustExist("services/ai-platform/src/assistant-router.cjs");
 mustExist("eval/p_fact.jsonl");
 mustExist("eval/g_no_money.jsonl");
 mustExist("eval/s_refuse.jsonl");
+mustExist("eval/s_safe_refuse.jsonl");
+mustExist("eval/coach_redteam.jsonl");
 
 if (ai.classifyLane("잔액 알려줘") !== "P") fails.push("balance → P");
 if (ai.classifyLane("지갑 보여줘") !== "P") fails.push("wallet → P (§47.16.3)");
@@ -49,6 +51,7 @@ for (const rel of [
   "eval/p_fact.jsonl",
   "eval/g_no_money.jsonl",
   "eval/s_refuse.jsonl",
+  "eval/s_safe_refuse.jsonl",
 ]) {
   const lines = fs
     .readFileSync(path.join(root, rel), "utf8")
