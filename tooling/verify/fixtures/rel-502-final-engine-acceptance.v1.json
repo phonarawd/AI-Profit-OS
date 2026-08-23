@@ -1,0 +1,11 @@
+{
+  "rel": "REL-502",
+  "collectFromPlan": true,
+  "explicitNonPsmDeps": ["REL-004", "REL-501"],
+  "extraVerifies": ["settlement-rule-parity.cjs"],
+  "rel004Substitute": 0,
+  "qa9PredecessorVerdictAsCurrent": "FORBIDDEN",
+  "localQa0to9Rerun": 0,
+  "postPsmBlocksIssue": false,
+  "protectedScopeMutation": false
+}

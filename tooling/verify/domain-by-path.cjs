@@ -51,7 +51,8 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^governance\/engine-acceptance\//.test(f) ||
+      (/^governance\/engine-acceptance\//.test(f) &&
+        !/^governance\/engine-acceptance\/FINAL_ACCEPTANCE\.md$/.test(f)) ||
       /^tooling\/engine-acceptance\//.test(f) ||
       /^tooling\/verify\/engine-acceptance\.cjs$/.test(f) ||
       /^\.github\/workflows\/engine-acceptance\.yml$/.test(f),
@@ -637,6 +638,14 @@ const RULES = [
       /^tooling\/verify\/rel-501-money-red-team\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-501-money-red-team\.v1\.json$/.test(f),
     scripts: ["rel-501-money-red-team.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/engine-acceptance\/FINAL_ACCEPTANCE\.md$/.test(f) ||
+      /^tooling\/verify\/rel-502-final-engine-acceptance\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-502-final-engine-acceptance\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/lib\/rel-502-psm\.cjs$/.test(f),
+    scripts: ["rel-502-final-engine-acceptance.cjs"],
   },
   {
     test: (f) =>

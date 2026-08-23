@@ -54,6 +54,8 @@ jobs:
         run: pnpm verify:rel-500-qa-lab-expansion
       - name: REL-501 money red-team
         run: pnpm verify:rel-501-money-red-team
+      - name: REL-502 final engine acceptance
+        run: pnpm verify:rel-502-final-engine-acceptance
       - name: Stub .env for Docker-less stack-lock
         run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
       - name: cargo test (services/engine-rust — Rule Engine R1-R10 golden unit tests)
