@@ -31,6 +31,36 @@ RUNTIME_RELEASE_ID_HEADER = 0
 
 REL-408 runbook was followed as far as this session can go. ACCEPTANCE ("롤백이 실동작") is not met. This is not a paper PASS.
 
+## EXECUTION ADDENDUM — SECOND PREVIEW VERSIONS CREATED
+
+```text
+ADDENDUM_AS_OF = 2026-08-23T20:08Z
+GITHUB_ACTIONS_PREVIEW_RERUN = 1
+SECOND_PREVIEW_VERSION_CREATED = 1
+SINGLE_VERSION_BLOCKER_RESOLVED = 1
+ROLLBACK_EXECUTED = 0
+FORWARD_DEPLOY_EXECUTED = 0
+ACCEPTANCE_MET = 0
+STATUS = PENDING
+PRODUCTION_WORKFLOW_DISPATCH = 0
+PRODUCTION_DOMAIN_MUTATION = 0
+```
+
+Existing preview-only deploy jobs were re-run through GitHub Actions. This created additional deployable versions without using a production target. The historical investigation below is preserved; its single-version blocker is superseded by this addendum.
+
+| surface | action/run | new version id | smoke |
+|---|---|---|---|
+| web preview | deploy-cloudflare run 32658478446 · rerun job 97252831059 | `ac624265-b475-4c06-b0e2-6aed7e78607e` | 200 · PASS |
+| ops preview | deploy-cloudflare run 32658798096 · rerun job 97252830692 | `4c07bd9f-f1e9-415d-87fb-af4dae7ec3b9` | 307 · PASS |
+| ops preview | deploy-cloudflare run 32658478446 · rerun job 97252831059 | `4a6125d4-9793-4101-89dc-be37972a7d00` | 307 · PASS |
+
+REL-600 known-good candidates remain:
+
+- web: `a85bfa7b-639a-4ad1-b1f3-1ca5f35fb40f`
+- ops: `81d9b6a2-c5ef-42da-b2e2-46e7af2d4b10`
+
+The prerequisite `versions.length >= 2` is now met for both preview Workers. The remaining blocker is execution authority for `wrangler versions list` / `wrangler rollback <VERSION_ID>` (or an equivalent preview-only Cloudflare version-control action). No rollback or forward restore is claimed until before/after active version IDs are captured.
+
 ## ORIGIN
 
 staging web = https://ai-profit-web-preview.ebay-adapter.workers.dev
