@@ -46,6 +46,7 @@
 | rel-406-kill-switch | `verify:rel-406-kill-switch` | T0 path + CI | live (REL-406 · 9 kill IDs · path enforce · audit · invented switches 0) |
 | rel-407-price-override | `verify:rel-407-price-override` | T0 path + CI | live (REL-407 · 4 price layers · mix 0 · reason/audit · USER_VISIBLE=EFFECTIVE) |
 | rel-408-security-baseline | `verify:rel-408-security-baseline` | T0 path + CI | live (REL-408 · RLS 80/80 · secrets · rollback runbook · apply 0) |
+| rel-222-admin-ops | `verify:rel-222-admin-ops` | T0 path + CI | live (REL-222 · 3 modes · LIVE confirm · ledger 0 · JWT mint 0) |
 | web-remote-patterns | `verify:web-remote-patterns` | T0 path | ✅ live (REL-013 · next/image 최소 allowlist · used hosts match · https-all 0) |
 | pwa-native-shell | `verify:pwa-native-shell` | T0 path | ✅ live (REL-014 · E-PWA-001 · manifest+icons+동등 SW+install/update · store-bridge 0 · push=REL-020) |
 | pwa-push-badge | `verify:pwa-push-badge` | T0 path | ✅ live (REL-020 · E-PWA-002 · VAPID path · dispatcher 실연결 · subscribe+SW badge · Admin kill · secret 0) |
@@ -98,6 +99,7 @@
 | `schemas/admin-kill-switch.v1.json` · `services/api-nest/admin-kill-switch.core.cjs` · `services/api-nest/src/kill-switch/**` · `governance/admin/kill-switch*` | rel-406-kill-switch |
 | `schemas/price-override-layers.v1.json` · `services/api-nest/price-override.core.cjs` · `services/api-nest/src/price-override/**` · `governance/admin/price-override*` | rel-407-price-override |
 | `governance/release-master/SECURITY_BASELINE.md` · `governance/release-master/ROLLBACK_RUNBOOK.md` · `tooling/verify/rel-408-security-baseline.cjs` | rel-408-security-baseline |
+| `schemas/admin-ops-mode.v1.json` · `services/api-nest/admin-ops.core.cjs` · `services/api-nest/src/admin-ops/**` · `governance/admin/admin-ops*` | rel-222-admin-ops |
 | `apps/admin/**` | no-admin-in-web · admin-routes · rel-201-admin-dashboard · rel-202-admin-users · rel-203-admin-user-detail · rel-204-admin-user-finance · rel-205-admin-ledger · rel-206-admin-wallet · rel-207-admin-compliance · rel-208-admin-risk · rel-209-admin-execution-policy · rel-210-admin-opportunities · rel-211-admin-adapters · rel-212-admin-support · rel-213-admin-system-control · rel-214-admin-audit · rel-215-admin-ai-logs · rel-216-admin-financial · rel-217-admin-growth · rel-218-admin-growth-deposit · rel-219-admin-growth-ticker · rel-220-admin-growth-whale · rel-221-admin-growth-content |
 | `tooling/verify/rel-2xx-admin-*` · `admin-entry-e2e` · `tooling/e2e/specs/admin-entry-closure.spec.cjs` | same REL-201~221 verifiers · admin-entry-e2e |
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |

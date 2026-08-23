@@ -1,0 +1,14 @@
+{
+  "modes": ["LIVE", "DRY_RUN", "SIMULATION"],
+  "stages": ["preview", "confirm", "apply", "result", "rollback"],
+  "families": [
+    "policy",
+    "bulk",
+    "execution_rule",
+    "wallet_operation",
+    "risk_threshold"
+  ],
+  "inventedModesForbidden": ["SHADOW", "FORCE_LIVE", "FOURTH_MODE"],
+  "inventedFamiliesForbidden": ["ledger_edit", "balance_patch"],
+  "reasonMin": 10
+}

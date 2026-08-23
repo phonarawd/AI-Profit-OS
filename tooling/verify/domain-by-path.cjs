@@ -576,6 +576,18 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^schemas\/admin-ops-mode\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/admin-ops\.core\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/admin-ops\//.test(f) ||
+      /^governance\/admin\/admin-ops/.test(f) ||
+      /^governance\/release-master\/REL-222-ADMIN-OPS\.md$/.test(f) ||
+      /^tooling\/verify\/rel-222-admin-ops\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-222-admin-ops\.v1\.json$/.test(f) ||
+      /^supabase\/migrations\/\d+_admin_ops_intents\.sql$/.test(f),
+    scripts: ["rel-222-admin-ops.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||
