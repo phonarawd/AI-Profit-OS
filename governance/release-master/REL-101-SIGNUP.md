@@ -31,6 +31,13 @@ LIVE_KAKAO_HUMAN_E2E = NOT_RUN
 | `node tooling/verify/auth-surfaces.cjs` | PASS |
 | `packages/sdk/src/auth/auth-release.test.ts` | PASS 12/12 |
 | committed spec `signup-bootstrap.spec.cjs` | 파일+axe in-process |
+| `tooling/e2e/specs/auth-spark-dash.spec.cjs` | 12/12 PASS · preview runtime · screenshots `rel-101-signup/` |
+
+## SPARK_DASH_AUTH (2026-08-24)
+
+- Figma nodes `199:523` / `200:527` · `AuthShell` split layout desktop+mobile
+- `packages/ui/copy/ko/auth-shell.ts` brand notes · emoji-free shell headlines
+- Evidence: `governance/release-master/rel-101-signup/runtime-desktop-1440.png` · `runtime-mobile-390.png`
 
 ## ACCEPTANCE
 

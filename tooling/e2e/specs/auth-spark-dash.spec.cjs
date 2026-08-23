@@ -19,12 +19,31 @@ function read(rel) {
 }
 
 const AUTH_ROUTES = [
-  { route: "/auth/login", testId: "auth-login", variant: "login" },
-  { route: "/auth/signup", testId: "auth-signup", variant: "signup" },
+  {
+    route: "/auth/login",
+    testId: "auth-login",
+    variant: "login",
+    rel: "rel-102-login",
+    shotDesktop: "governance/release-master/rel-102-login/runtime-desktop-1440.png",
+    shotMobile: "governance/release-master/rel-102-login/runtime-mobile-390.png",
+  },
+  {
+    route: "/auth/signup",
+    testId: "auth-signup",
+    variant: "signup",
+    rel: "rel-101-signup",
+    shotDesktop: "governance/release-master/rel-101-signup/runtime-desktop-1440.png",
+    shotMobile: "governance/release-master/rel-101-signup/runtime-mobile-390.png",
+  },
   {
     route: "/auth/complete-profile",
     testId: "auth-complete-profile",
     variant: "complete-profile",
+    rel: "rel-103-complete-profile",
+    shotDesktop:
+      "governance/release-master/rel-103-complete-profile/runtime-desktop-1440.png",
+    shotMobile:
+      "governance/release-master/rel-103-complete-profile/runtime-mobile-390.png",
   },
 ];
 
@@ -38,6 +57,87 @@ for (const { route, testId, variant } of AUTH_ROUTES) {
     expect(
       read("apps/web/components/spark-dash-auth/AuthShell.tsx"),
     ).toContain("data-auth-variant");
+    expect(read("apps/web/components/spark-dash-auth/shell-copy.ts")).toContain(
+      "authShellCopy",
+    );
+    expect(read("packages/ui/copy/ko/auth-shell.ts")).toContain("loginBrandNote");
+  });
+}
+
+async function hideNextDevChrome(page) {
+  await page
+    .addStyleTag({
+      content:
+        "nextjs-portal, [data-next-mark-loading], #__next-build-watcher { display: none !important; pointer-events: none !important; }",
+    })
+    .catch(() => {});
+}
+
+async function stubAuthSession(page, onboardingStage) {
+  await page.route("**/api/v1/auth/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        sessionId: "qa-auth-shell",
+        userId: "qa-auth-user",
+        issuer: "ai-profit-os-nest",
+        issuedAt: "2026-08-21T00:00:00.000Z",
+        expiresAt: "2026-08-22T00:00:00.000Z",
+        revoked: false,
+        onboardingStage,
+      }),
+    });
+  });
+}
+
+for (const { route, testId, variant, shotDesktop, shotMobile } of AUTH_ROUTES) {
+  test(`${route} runtime desktop shell + screenshot`, async ({ page }) => {
+    const base = process.env.PLAYWRIGHT_BASE_URL;
+    test.skip(!base, "PLAYWRIGHT_BASE_URL 없으면 로컬 웹 기동을 강제하지 않음");
+
+    if (variant === "complete-profile") {
+      await stubAuthSession(page, "B_incomplete");
+    }
+
+    await page.setViewportSize({ width: 1440, height: 1080 });
+    const res = await page.goto(new URL(route, base).toString(), {
+      waitUntil: "domcontentloaded",
+    });
+    expect(res && res.ok()).toBeTruthy();
+    await hideNextDevChrome(page);
+    await expect(page.getByTestId("auth-shell")).toBeVisible();
+    await expect(page.getByTestId("auth-shell")).toHaveAttribute(
+      "data-auth-variant",
+      variant,
+    );
+    await expect(page.getByTestId("auth-shell")).toHaveAttribute(
+      "data-auth-layout",
+      "desktop",
+    );
+    await expect(page.getByTestId(testId)).toBeVisible();
+    await page.screenshot({ path: shotDesktop, fullPage: false });
+  });
+
+  test(`${route} runtime mobile shell + screenshot`, async ({ page }) => {
+    const base = process.env.PLAYWRIGHT_BASE_URL;
+    test.skip(!base, "PLAYWRIGHT_BASE_URL 없으면 로컬 웹 기동을 강제하지 않음");
+
+    if (variant === "complete-profile") {
+      await stubAuthSession(page, "B_incomplete");
+    }
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(new URL(route, base).toString(), {
+      waitUntil: "domcontentloaded",
+    });
+    await hideNextDevChrome(page);
+    await expect(page.getByTestId("auth-shell")).toHaveAttribute(
+      "data-auth-layout",
+      "mobile",
+    );
+    await expect(page.getByTestId(testId)).toBeVisible();
+    await page.screenshot({ path: shotMobile, fullPage: false });
   });
 }
 
@@ -60,7 +160,13 @@ test("login bootstrap expects auth-shell on runtime", async ({ page }) => {
 
   const consoleErrors = [];
   page.on("console", (msg) => {
-    if (msg.type() === "error") consoleErrors.push(msg.text());
+    if (msg.type() === "error") {
+      const text = msg.text();
+      if (text.includes("503") && text.includes("Failed to load resource")) {
+        return;
+      }
+      consoleErrors.push(text);
+    }
   });
   await page.waitForTimeout(500);
   expect(consoleErrors).toEqual([]);

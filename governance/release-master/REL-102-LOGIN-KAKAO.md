@@ -28,7 +28,14 @@ CODE_EQUALS_PROVIDER_SUBJECT = FORBIDDEN
 |---|---|
 | `node tooling/verify/login-kakao-closure.cjs` | PASS |
 | committed spec `login-bootstrap.spec.cjs` | 파일+axe in-process |
+| `tooling/e2e/specs/auth-spark-dash.spec.cjs` | 12/12 PASS · preview runtime · screenshots `rel-102-login/` |
 | Founder Kakao human E2E | NOT_RUN |
+
+## SPARK_DASH_AUTH (2026-08-24)
+
+- Figma nodes `198:591` / `199:523` · `AuthShell` + `embedded` AuthLogin
+- Staging session API 503 (stub) — console 503 허용 · UI shell 정상
+- Evidence: `governance/release-master/rel-102-login/runtime-desktop-1440.png` · `runtime-mobile-390.png`
 
 ## ACCEPTANCE
 

@@ -1,5 +1,6 @@
 import { admin } from "./admin";
 import { auth } from "./auth";
+import { authShell } from "./auth-shell";
 import { benefits } from "./benefits";
 import { brand } from "./brand";
 import { common } from "./common";
@@ -45,6 +46,7 @@ import { wallet } from "./wallet";
 export const T = {
   admin,
   auth,
+  authShell,
   benefits,
   brand,
   common,
@@ -84,6 +86,7 @@ export type CopyRoot = typeof T;
 export {
   admin,
   auth,
+  authShell,
   benefits,
   brand,
   common,

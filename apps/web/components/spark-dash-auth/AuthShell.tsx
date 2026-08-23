@@ -7,6 +7,7 @@ import { SD_ASSETS } from "../spark-dash-home/assets";
 import { AuthShellContext } from "./AuthShellContext";
 import styles from "./auth-shell.module.css";
 import type { AuthShellVariant } from "./types";
+import { authShellCopy } from "./shell-copy";
 
 function subscribeDesktop(onChange: () => void) {
   const mq = window.matchMedia("(min-width: 1024px)");
@@ -19,25 +20,7 @@ function desktopSnapshot() {
 }
 
 function copyFor(variant: AuthShellVariant) {
-  if (variant === "signup") {
-    return {
-      title: T.auth.signupHeadline,
-      sub: T.auth.signupSub,
-      note: "약관에 동의한 뒤에만 카카오로 시작할 수 있어요. 표시 이름·연락처는 다음 단계에서 받아요.",
-    };
-  }
-  if (variant === "complete-profile") {
-    return {
-      title: T.auth.completeHeadline,
-      sub: T.auth.completeSub,
-      note: "서비스 이용에 필요한 기본 정보만 받아요. 본인확인은 별도 절차이며, 출금 전에 안내해 드려요.",
-    };
-  }
-  return {
-    title: T.auth.loginHeadline,
-    sub: T.auth.loginSub,
-    note: "카카오로 시작하거나, 이 기기에서 패스키·이메일 링크로 들어와요. Google은 아직 열려 있지 않아요.",
-  };
+  return authShellCopy(variant);
 }
 
 function BrandLockup({ compact }: { compact?: boolean }) {

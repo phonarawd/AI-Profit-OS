@@ -26,6 +26,12 @@ GENDER_FIELD = FORBIDDEN
 |---|---|
 | `node tooling/verify/complete-profile-closure.cjs` | PASS |
 | committed spec `complete-profile-bootstrap.spec.cjs` | 파일+axe in-process |
+| `tooling/e2e/specs/auth-spark-dash.spec.cjs` | 12/12 PASS · session stub · screenshots `rel-103-complete-profile/` |
+
+## SPARK_DASH_AUTH (2026-08-24)
+
+- Figma nodes `201:539` / `201:571` / `201:604` · Stage B embedded form
+- Evidence: `governance/release-master/rel-103-complete-profile/runtime-desktop-1440.png` · `runtime-mobile-390.png`
 
 ## ACCEPTANCE
 
