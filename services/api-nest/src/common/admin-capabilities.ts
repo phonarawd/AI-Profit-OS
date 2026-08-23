@@ -177,6 +177,10 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     list: read("audit"),
     get: read("audit"),
   },
+  KillSwitchAdminController: {
+    list: read("circuit"),
+    put: write("circuit"),
+  },
 });
 
 export function requiredCapabilityFor(

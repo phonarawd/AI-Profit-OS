@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { KillSwitchModule } from "../kill-switch/kill-switch.module";
 import { ComplianceModule } from "../compliance/compliance.module";
 import { LedgerModule } from "../ledger/ledger.module";
 import { LoopModule } from "../loop/loop.module";
@@ -28,7 +29,7 @@ import { WithdrawKycGuard } from "./withdraw-kyc.guard";
 import { WithdrawStepUpService } from "./withdraw-stepup.service";
 
 @Module({
-  imports: [LedgerModule, ComplianceModule, RiskModule, LoopModule],
+  imports: [LedgerModule, ComplianceModule, RiskModule, LoopModule, KillSwitchModule],
   controllers: [
     WalletController,
     HomeMoneyReadUserController,

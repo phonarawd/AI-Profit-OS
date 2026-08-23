@@ -1,7 +1,7 @@
 /**
  * verify:rel-213-admin-system-control
- * Live-wire existing kill reads + preview/confirm writes. No new Nest API.
- * Unpublished REL-406 IDs stay honest-empty. Do not invent 8 extra switch names.
+ * Live-wire existing kill reads + preview/confirm writes.
+ * REL-406 publishes the 9 server IDs and may add KillSwitchAdminController.
  */
 const fs = require("fs");
 const path = require("path");
@@ -75,13 +75,21 @@ const allowed = new Set([
   "growth_enabled",
   "referral_accrual_halt",
   "GLOBAL_OPPORTUNITY_PAUSE",
+  "GLOBAL_MATCHING_PAUSE",
+  "GLOBAL_WITHDRAW_PAUSE",
+  "GLOBAL_DEPOSIT_PAUSE",
+  "GLOBAL_ALL_PAUSE",
+  "MONEY_CIRCUIT",
+  "PUSH_KILL",
+  "GROWTH_PAUSE",
+  "REFERRAL_ACCRUAL_HALT",
 ]);
 for (const id of switchIds) {
   if (!allowed.has(id)) fails.push("invented switch id " + id);
 }
 
-if (/\/api\/v1\/admin\/system-control\/(open|kill|switches)/.test(page)) {
-  fails.push("system-control must not invent a kill list API");
+if (/\/api\/v1\/admin\/system-control\/(open|kill)(?:\/|"|'|$)/.test(page)) {
+  fails.push("system-control must not invent open/kill aliases");
 }
 if (/circuit\/open/.test(page)) {
   fails.push("system-control must not invent circuit open");
@@ -118,11 +126,17 @@ function walk(dir, acc) {
 const controllers = [];
 walk(nestAdmin, controllers);
 const extra = controllers.filter((p) =>
-  /system-control\.admin\.controller\.ts$|kill-switch\.admin\.controller\.ts$/.test(
-    p.replace(/\\/g, "/"),
-  ),
+  /system-control\.admin\.controller\.ts$/.test(p.replace(/\\/g, "/")),
 );
-if (extra.length) fails.push("must not add new kill-switch admin controller");
+if (extra.length) {
+  fails.push("must not add a second system-control admin controller");
+}
+const killCtl = controllers.some((p) =>
+  /kill-switch\.admin\.controller\.ts$/.test(p.replace(/\\/g, "/")),
+);
+if (!killCtl) {
+  fails.push("REL-406 KillSwitchAdminController must exist");
+}
 
 if (!pkg.includes("verify:rel-213-admin-system-control")) {
   fails.push("package.json missing verify:rel-213-admin-system-control");

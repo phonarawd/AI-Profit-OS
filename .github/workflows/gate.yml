@@ -36,6 +36,8 @@ jobs:
         run: pnpm verify:rel-404-lighthouse-budget
       - name: REL-405 RBAC audit foundation
         run: pnpm verify:rel-405-rbac-audit
+      - name: REL-406 kill switch 9
+        run: pnpm verify:rel-406-kill-switch
       - name: Stub .env for Docker-less stack-lock
         run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
       - name: cargo test (services/engine-rust — Rule Engine R1-R10 golden unit tests)

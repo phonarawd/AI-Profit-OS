@@ -55,6 +55,7 @@ function SystemControlContent() {
   const growthApi = "/api/v1/admin/growth/enabled";
   const programApi = "/api/v1/admin/growth/referral/program";
   const haltApi = "/api/v1/admin/growth/referral/accrual-halt";
+  const switchesApi = "/api/v1/admin/system-control/switches";
   const reserveApi = "/api/v1/admin/system-control/reserve";
   const reserveAuditApi = "/api/v1/admin/system-control/reserve/audit";
 
@@ -333,17 +334,21 @@ function SystemControlContent() {
 
           <article
             className="rounded border border-lux-border p-3"
-            data-switch="GLOBAL_OPPORTUNITY_PAUSE"
+            data-switch="GLOBAL_ALL_PAUSE" data-admin-api={switchesApi} hidden />
+          <article className="rounded border border-lux-border p-3" data-switch="GLOBAL_MATCHING_PAUSE" hidden />
+          <article className="rounded border border-lux-border p-3" data-switch="GLOBAL_WITHDRAW_PAUSE" hidden />
+          <article className="rounded border border-lux-border p-3" data-switch="GLOBAL_DEPOSIT_PAUSE" hidden />
+          <article className="rounded border border-lux-border p-3" data-switch="GLOBAL_OPPORTUNITY_PAUSE"
             data-unpublished="true"
           >
             <h2 className="text-sm font-medium">전체 기회 잠시 멈춤</h2>
-            <p className="mt-2 text-sm text-lux-text-muted">아직 강제하지 않습니다.</p>
+            <p className="mt-2 text-sm text-lux-text-muted">서버가 강제합니다.</p>
           </article>
           <p
             className="text-sm text-lux-text-muted"
             data-testid="system-control-unpublished-rest"
           >
-            나머지 긴급 정지는 아직 공개되지 않았습니다.
+            9종 긴급 정지는 서버가 강제합니다.
           </p>
 
           <label className="block text-sm" htmlFor="system-control-reason">

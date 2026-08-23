@@ -438,6 +438,7 @@ const RULES = [
       "rel-211-admin-adapters.cjs",
       "rel-212-admin-support.cjs",
       "rel-213-admin-system-control.cjs",
+      "rel-406-kill-switch.cjs",
       "rel-214-admin-audit.cjs",
       "rel-215-admin-ai-logs.cjs",
       "rel-216-admin-financial.cjs",
@@ -468,6 +469,7 @@ const RULES = [
       "rel-211-admin-adapters.cjs",
       "rel-212-admin-support.cjs",
       "rel-213-admin-system-control.cjs",
+      "rel-406-kill-switch.cjs",
       "rel-214-admin-audit.cjs",
       "rel-215-admin-ai-logs.cjs",
       "rel-216-admin-financial.cjs",
@@ -536,6 +538,18 @@ const RULES = [
       /^tooling\/verify\/rel-405-rbac-audit\.cjs$/.test(f) ||
       /^supabase\/migrations\/\d+_admin_audit_events\.sql$/.test(f),
     scripts: ["rel-405-rbac-audit.cjs"],
+  },
+  {
+    test: (f) =>
+      /^schemas\/admin-kill-switch\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/admin-kill-switch\.core\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/kill-switch\//.test(f) ||
+      /^governance\/admin\/kill-switch/.test(f) ||
+      /^governance\/release-master\/REL-406-KILL-SWITCH\.md$/.test(f) ||
+      /^tooling\/verify\/rel-406-kill-switch\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-406-kill-switch\.v1\.json$/.test(f) ||
+      /^supabase\/migrations\/\d+_admin_kill_switches\.sql$/.test(f),
+    scripts: ["rel-406-kill-switch.cjs"],
   },
   {
     test: (f) =>

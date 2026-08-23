@@ -8,6 +8,7 @@ import {
   Injectable,
   ConflictException,
 } from "@nestjs/common";
+import { KillSwitchService } from "../kill-switch/kill-switch.service";
 import { PostgresService } from "../db/postgres";
 import { DepositConfigService } from "./deposit-config.service";
 import { deriveTrc20Address, isTrc20AddressFormat } from "./tron-address";
@@ -27,6 +28,7 @@ export class DepositAddressService {
   constructor(
     private readonly db: PostgresService,
     private readonly depositConfig: DepositConfigService,
+    private readonly killSwitch: KillSwitchService,
   ) {}
 
   /** GET /wallet/my-deposit-address — auth · lazy-create */
@@ -35,6 +37,7 @@ export class DepositAddressService {
       throw new BadRequestException("userId required");
     }
 
+    await this.killSwitch.assertPath("deposit");
     const existing = await this.fetch(userId);
     if (existing) return this.toV1(existing);
 

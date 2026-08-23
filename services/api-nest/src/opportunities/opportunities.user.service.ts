@@ -14,6 +14,7 @@ import {
 import { createRequire } from "node:module";
 import { join } from "node:path";
 import { CLOCK, Inject, type Clock } from "../common/clock";
+import { KillSwitchService } from "../kill-switch/kill-switch.service";
 import { ExecutionPolicyAdminService } from "../execution-policy/execution-policy.admin.service";
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
 import { PostgresService } from "../db/postgres";
@@ -107,6 +108,7 @@ export class OpportunitiesUserService {
     private readonly db: PostgresService,
     private readonly buckets: LedgerBucketsService,
     private readonly executionPolicy: ExecutionPolicyAdminService,
+    private readonly killSwitch: KillSwitchService,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
@@ -127,6 +129,21 @@ export class OpportunitiesUserService {
 
   async listFeed(userId: string) {
     this.assertSessionUserId(userId);
+    if (await this.killSwitch.isBlocked("opportunity")) {
+      const principalUsdt = await this.readPrincipalUsdt(userId);
+      return {
+        principalUsdt,
+        nearMissCapUsdt: "0",
+        classificationOwner: "engine:§0.0.5.1",
+        affordableCount: 0,
+        nearMissCount: 0,
+        lockedHighCount: 0,
+        hiddenCount: 0,
+        topSuggestDepositUsdt: "0",
+        v1FeedArbitrageTypes: [...V1_FEED_ARBITRAGE_TYPES],
+        items: [],
+      };
+    }
     const principalUsdt = await this.readPrincipalUsdt(userId);
     const { policy } = await this.executionPolicy.get();
     const allRows = await this.loadFeedCandidateRows();
@@ -167,6 +184,7 @@ export class OpportunitiesUserService {
 
   async getById(userId: string, opportunityId: string) {
     this.assertSessionUserId(userId);
+    await this.killSwitch.assertPath("opportunity");
     if (!opportunityId?.trim()) {
       throw new NotFoundException("opportunity not found");
     }

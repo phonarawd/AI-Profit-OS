@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { KillSwitchModule } from "../kill-switch/kill-switch.module";
 import { LedgerModule } from "../ledger/ledger.module";
 import { ReferralAdminController } from "./referral.admin.controller";
 import { ReferralClawbackService } from "./referral.clawback.service";
@@ -15,7 +16,7 @@ import { ReferralShareService } from "./referral.share.service";
  * User explain copy Owns = UI §5.9.1a · Admin shell = /admin/growth?tab=referral
  */
 @Module({
-  imports: [LedgerModule],
+  imports: [LedgerModule, KillSwitchModule],
   controllers: [ReferralController, ReferralAdminController],
   providers: [
     ReferralProgramService,

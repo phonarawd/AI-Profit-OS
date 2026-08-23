@@ -24,6 +24,7 @@ import { WalletModule } from "./wallet/wallet.module";
 import { GrowthModule } from "./growth/growth.module";
 import { HomeReadModule } from "./home-read/home-read.module";
 import { AdminAuditModule } from "./audit/admin-audit.module";
+import { KillSwitchModule } from "./kill-switch/kill-switch.module";
 import { ObsExceptionFilter } from "./observability/obs.exception-filter";
 
 @Module({
@@ -50,6 +51,7 @@ import { ObsExceptionFilter } from "./observability/obs.exception-filter";
     AiModule,
     AuthModule,
     AdminAuditModule,
+    KillSwitchModule,
   ],
   controllers: [HealthController],
   // Global admin boundary — an admin controller added without @UseGuards is

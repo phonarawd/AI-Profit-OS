@@ -9,6 +9,7 @@ import { join } from "node:path";
 import { NotificationPrefsService } from "../inbox/notification-prefs.service";
 import type { NotifyPushChannel } from "../inbox/notification-prefs.defaults";
 import { PushDispatchClient } from "./push-dispatch.client";
+import { KillSwitchService } from "../kill-switch/kill-switch.service";
 import { PushKillService } from "./push-kill.service";
 import { PushSubscriptionService } from "./push-subscription.service";
 
@@ -42,6 +43,7 @@ export class PushEmitService {
     private readonly subs: PushSubscriptionService,
     private readonly client: PushDispatchClient,
     private readonly prefs: NotificationPrefsService,
+    private readonly killSwitch: KillSwitchService,
   ) {}
 
   async emitToUser(input: {
@@ -56,7 +58,8 @@ export class PushEmitService {
     }
 
     const channelAllowed = await this.safeAllow(input.userId, channel);
-    const pushEnabled = await this.kill.getEnabled();
+    const killed = await this.killSwitch.isBlocked("push");
+    const pushEnabled = killed ? false : await this.kill.getEnabled();
     const list = await this.safeList(input.userId);
     const plan = dispatchCore.planEmit({
       pushEnabled,
