@@ -487,7 +487,7 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^governance\/security\//.test(f) ||
+      /^governance\/security\/http-headers/.test(f) ||
       /^tooling\/security\/http-headers\.cjs$/.test(f) ||
       /^tooling\/verify\/rel-401-security-headers\.cjs$/.test(f) ||
       /^apps\/web\/next\.config\.ts$/.test(f) ||
@@ -497,6 +497,24 @@ const RULES = [
       ) ||
       /^services\/api-nest\/src\/main\.ts$/.test(f),
     scripts: ["rel-401-security-headers.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/security\/dependency-audit/.test(f) ||
+      /^governance\/security\/AUDIT_EXCEPTIONS\.md$/.test(f) ||
+      /^governance\/release-master\/REL-402-DEPENDENCY-AUDIT\.md$/.test(f) ||
+      /^tooling\/security\/dependency-audit\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-402-dependency-audit\.cjs$/.test(f) ||
+      /^\.github\/workflows\/gate\.yml$/.test(f),
+    scripts: ["rel-402-dependency-audit.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/VERSIONING\.md$/.test(f) ||
+      /^governance\/release-master\/versioning\.v1\.json$/.test(f) ||
+      /^tooling\/release\/version-id\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-403-versioning\.cjs$/.test(f),
+    scripts: ["rel-403-versioning.cjs"],
   },
   {
     test: (f) =>

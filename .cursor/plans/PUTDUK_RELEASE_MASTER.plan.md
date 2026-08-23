@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-400 COMPLETED. REL-213 COMPLETED. REL-214 COMPLETED. REL-401 COMPLETED. FIRST_EXECUTION_TODO=REL-402. HARD_STOP_AFTER=REL-401. BATCH_REL_200_206=ADMIN_ENTRY.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-400 COMPLETED. REL-213 COMPLETED. REL-214 COMPLETED. REL-401 COMPLETED. REL-402 COMPLETED. REL-403 COMPLETED. FIRST_EXECUTION_TODO=REL-404. HARD_STOP_AFTER=REL-403. BATCH_REL_200_206=ADMIN_ENTRY.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -264,11 +264,11 @@ todos:
     content: "[Hardening] security headers -- DONE CSP/HSTS/X-Frame/X-Content-Type, real hosts only, SW worker-src self"
     status: completed
   - id: rel-402
-    content: "[Hardening] 의존성 취약점 스캔(pnpm audit)을 CI에 편입"
-    status: pending
+    content: "[Hardening] dependency audit -- DONE pnpm audit high+ in CI, exceptions ledger, local full scan 0"
+    status: completed
   - id: rel-403
-    content: "[Hardening] 버전/릴리스 태깅 체계 도입"
-    status: pending
+    content: "[Hardening] version tags -- DONE semver+manual v* after HUMAN deploy, release id builder, REL-602 known-good"
+    status: completed
   - id: rel-404
     content: "[Hardening][Performance] Lighthouse CI + 성능예산(bundle/이미지/lazy-load) baseline 배선"
     status: pending
@@ -420,10 +420,10 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-402
-LAST_COMPLETED_TODO = REL-401
+FIRST_EXECUTION_TODO = REL-404
+LAST_COMPLETED_TODO = REL-403
 BATCH_REL_200_206 = ADMIN_ENTRY
-HARD_STOP_AFTER = REL-401
+HARD_STOP_AFTER = REL-403
 PRE_LOCK_COUNT = 1
 REL_COUNT = 116
 POST_COUNT = 19
@@ -3013,7 +3013,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-402
 TITLE: 의존성 취약점 스캔을 CI에 편입
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-402
@@ -3038,7 +3038,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-403
 TITLE: 버전/릴리스 태깅 체계 도입
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-403
@@ -4569,5 +4569,5 @@ FIRST_EXECUTION_TODO_AT_MATERIALIZATION = REL-000
 REL-000은 2026-08-20에 PASS/COMPLETED.
 REL-001은 2026-08-20에 PASS/COMPLETED (`preserve/2026-08-20-worktree-rescue` · `ae8d1e6` · merge 금지).
 REL-002는 2026-08-21에 PASS/COMPLETED (PR #2 MERGED · `db6db87` · ruleset `verify-gate` 계약 수정 후 비우회 merge).
-현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-402`. HARD_STOP_AFTER = REL-401.
+현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-404`. HARD_STOP_AFTER = REL-403.
 

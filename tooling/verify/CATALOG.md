@@ -39,6 +39,8 @@
 | settlement-rule-parity | `verify:settlement-rule-parity` | T0 path + T1 always | ✅ live (REL-008 · rust==cjs golden vectors · REL-502 대체 0) |
 | web-lint | `verify:web-lint` | T0 path | ✅ live (REL-011 · apps/web eslint 실검사 · no-op echo 0 · 구문 오류 FAIL) |
 | axe-harness | `verify:axe-harness` | T0 path | ✅ live (REL-012 · axe-core committed Playwright spec · Home 390/1440+login · MCP 0 · Home freeze 0) |
+| rel-402-dependency-audit | `verify:rel-402-dependency-audit` | T0 path + CI | ✅ live (REL-402 · pnpm audit high+ · local full scan 0 · exception ledger) |
+| rel-403-versioning | `verify:rel-403-versioning` | T0 path | ✅ live (REL-403 · semver + manual tag · HUMAN deploy · REL-602) |
 | web-remote-patterns | `verify:web-remote-patterns` | T0 path | ✅ live (REL-013 · next/image 최소 allowlist · used hosts match · https-all 0) |
 | pwa-native-shell | `verify:pwa-native-shell` | T0 path | ✅ live (REL-014 · E-PWA-001 · manifest+icons+동등 SW+install/update · store-bridge 0 · push=REL-020) |
 | pwa-push-badge | `verify:pwa-push-badge` | T0 path | ✅ live (REL-020 · E-PWA-002 · VAPID path · dispatcher 실연결 · subscribe+SW badge · Admin kill · secret 0) |
@@ -83,7 +85,9 @@
 | `apps/web/scripts/asset-pipeline/**` · `tooling/verify/asset-production-pipeline.cjs` | asset-production-pipeline |
 | `packages/sdk/src/device-tier.ts` · `packages/ui/tokens/device-tier-contract.ts` · `governance/responsive/**` · `tooling/verify/device-tier-system.cjs` · `tooling/verify/ux-design-system.cjs` | device-tier-system · ux-design-system |
 | `governance/admin/**` · `tooling/verify/rel-400-admin-control-plane.cjs` | rel-400-admin-control-plane |
-| `governance/security/**` · `tooling/security/http-headers.cjs` · web/admin next.config · api-nest security-headers | rel-401-security-headers |
+| `governance/security/http-headers` · `tooling/security/http-headers.cjs` · web/admin next.config · api-nest security-headers | rel-401-security-headers |
+| `governance/security/dependency-audit` · `governance/security/AUDIT_EXCEPTIONS.md` · `tooling/security/dependency-audit.cjs` · `.github/workflows/gate.yml` | rel-402-dependency-audit |
+| `governance/release-master/VERSIONING.md` · `governance/release-master/versioning.v1.json` · `tooling/release/version-id.cjs` | rel-403-versioning |
 | `apps/admin/**` | no-admin-in-web · admin-routes · rel-201-admin-dashboard · rel-202-admin-users · rel-203-admin-user-detail · rel-204-admin-user-finance · rel-205-admin-ledger · rel-206-admin-wallet · rel-207-admin-compliance · rel-208-admin-risk · rel-209-admin-execution-policy · rel-210-admin-opportunities · rel-211-admin-adapters · rel-212-admin-support · rel-213-admin-system-control · rel-214-admin-audit · rel-215-admin-ai-logs · rel-216-admin-financial · rel-217-admin-growth · rel-218-admin-growth-deposit · rel-219-admin-growth-ticker · rel-220-admin-growth-whale · rel-221-admin-growth-content |
 | `tooling/verify/rel-2xx-admin-*` · `admin-entry-e2e` · `tooling/e2e/specs/admin-entry-closure.spec.cjs` | same REL-201~221 verifiers · admin-entry-e2e |
 | opportunity UI/copy/canon | balance-aware-feed · opportunity-scan · margin-compare · asset-image · cta-earn-profit |

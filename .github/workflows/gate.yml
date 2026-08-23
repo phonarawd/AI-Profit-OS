@@ -28,6 +28,10 @@ jobs:
           toolchain: "1.85.0"
       - name: Install
         run: pnpm install --frozen-lockfile
+      - name: REL-402 dependency audit
+        env:
+          AIPO_AUDIT: "1"
+        run: pnpm verify:rel-402-dependency-audit
       - name: Stub .env for Docker-less stack-lock
         run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
       - name: cargo test (services/engine-rust — Rule Engine R1-R10 golden unit tests)

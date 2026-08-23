@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "rel": "REL-402",
+  "tool": "pnpm audit",
+  "auditLevel": "high",
+  "allowedAuditLevels": ["high", "critical"],
+  "localFullScan": false,
+  "ciRequired": true,
+  "ciEnv": "AIPO_AUDIT",
+  "ignoreRegistryErrors": false,
+  "exceptionsFile": "governance/security/AUDIT_EXCEPTIONS.md",
+  "exceptions": [],
+  "notes": {
+    "threshold": "CI fails on high or critical. info/low/moderate are visible locally but not exceptions.",
+    "exceptions": "Every ignore must be listed here and in AUDIT_EXCEPTIONS.md with a reason. Silent package.json ignoreCves is forbidden.",
+    "local": "T0/T1 wiring only. Do not force a full audit on this machine."
+  }
+}
