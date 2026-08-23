@@ -11,30 +11,37 @@ REL-004_SUBSTITUTE = 0
 QA9_PREDECESSOR_VERDICT_AS_CURRENT = 0
 PSM_REL_PENDING = 0
 POST_PSM_PENDING = 3
-PROTECTED_SCOPE_DRIFT = 1
-REBASE_REQUIRED = 1
+PROTECTED_SCOPE_DRIFT = 0
+REBASE_REQUIRED = 0
+REBASE_APPLIED = 1
+ACK_RECEIVED = 1
 LOCAL_QA0_QA9_RERUN = 0
-BASELINE_ID = ea-baseline-64b0f8a6d984-3657543f36b5
+EVAL_DATASET_STATUS = ACKNOWLEDGED_EXPANSION
+QA1_QA8_STATUS = STALE_PENDING_RERUN
+QA9_STATUS = STALE_AGGREGATION_PENDING_DISCOVERY
+BASELINE_ID = ea-baseline-a6908eff1def-3db9e8f8832f
+PREDECESSOR_BASELINE_ID = ea-baseline-64b0f8a6d984-3657543f36b5
+REBASE_ID = ea-rebase-a6908eff1def-3db9e8f8832f
 LIVE_AGGREGATE = 3db9e8f8832f62ed0527e9eea7622944098fff5b9b66d8a0318953ceb58f7a65
-BASELINE_AGGREGATE = 3657543f36b5370c1054ff84656e2e3b317f77101c2638beb1d4063e6a2954e2
+BASELINE_AGGREGATE = 3db9e8f8832f62ed0527e9eea7622944098fff5b9b66d8a0318953ceb58f7a65
 PATH_COUNT_LIVE = 443
-PATH_COUNT_BASELINE = 374
-CHANGED_PATHS = 108
-ADDED_PATHS = 69
-MUTATED_PATHS = 39
+PATH_COUNT_BASELINE = 443
+CHANGED_PATHS = 0
+ADDED_PATHS = 0
+MUTATED_PATHS = 0
 MISSING_PATHS = 0
 EXIT_GATE = 이후 PSM=TRUE 작업이 생기면 인증 무효 → 재실행
 ```
 
 ## 판정
 
-2026-08-14 QA9 `ENGINE_ACCEPTED_FOR_UI` 는 predecessor epoch 결과다.
+Human/PO ACK `ENGINE_ACCEPTANCE_REBASE_V1` 수신 · apply 완료.
+새 epoch `ea-baseline-a6908eff1def-3db9e8f8832f` 가 live protected-scope 를 pin 한다.
+2026-08-14 QA9 `ENGINE_ACCEPTED_FOR_UI` 는 predecessor epoch 결과이며 current-authoritative 가 아니다.
 `qa9_predecessor_verdict_as_current_authoritative = FORBIDDEN`.
-live protected-scope 해시가 baseline 과 다르다. 현재 epoch 인증을 발급하지 않는다.
-
-Human/PO 가 `ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1` 문장을 주기 전에는 rebase apply 0.
-rebase 이후 QA1-QA8 재실행 + QA9 재집계는 CI(`.github/workflows/engine-acceptance.yml`)에 위임한다.
+현재 epoch 인증을 발급하지 않는다. QA1-QA8 재실행 + QA9 재집계는 CI(`.github/workflows/engine-acceptance.yml`)에 위임한다.
 로컬에서 QA0-QA9 를 가짜 PASS 로 닫지 않는다.
+eval 은 product-only MATCH 가 아니라 `ACKNOWLEDGED_EXPANSION`(REL-300-305 coach fixtures 포함)으로 새 epoch 에 기록했다.
 
 ## PSM 수집 (고정 range 아님)
 
@@ -54,7 +61,7 @@ POST-001 · POST-002 · POST-003 은 PSM=TRUE 이지만 실행 순서가 REL-502
 4. QA9 가 현재 epoch 로 `ENGINE_ACCEPTED_FOR_UI` 재집계
 5. 이 문서 `STATUS = ISSUED` · `CERT_ISSUED = 1`
 
-## 변경 경로 (108)
+## 변경 경로 (108 · predecessor 대비 이력 · 현재 epoch pin 이후 CHANGED_PATHS = 0)
 
 ### 추가 69
 

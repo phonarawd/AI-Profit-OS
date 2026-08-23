@@ -28,6 +28,7 @@ const {
   detectProtectedScopeWash,
   mapSuitesForRebase,
   stampCurrentPolicyOnEntry,
+  stampEvalDatasetOnEntry,
   currentPolicy,
   isPendingRerun,
 } = require("./lib/product-rebase.cjs");
@@ -262,6 +263,68 @@ function run() {
     );
   }
 
+  // 6b) live eval ≠ predecessor + ACKNOWLEDGED_EXPANSION old/new pin → PASS
+  {
+    const f = [];
+    evaluateRebaseInvariants(
+      makeValidEntry({
+        eval_dataset_status: "ACKNOWLEDGED_EXPANSION",
+        eval_dataset_hash: "99".repeat(32),
+        old_eval_dataset_hash: "55".repeat(32),
+        new_eval_dataset_hash: "99".repeat(32),
+      }),
+      {
+        predecessorBaseline: predBaseline(),
+        liveEvalHash: "99".repeat(32),
+        livePromptHash: "22".repeat(32),
+        liveWorkflowHash: "66".repeat(32),
+        liveManifestAggregate: "44".repeat(32),
+        liveManifestEntries: predBaseline().protected_scope_manifest.entries,
+        predecessorManifestEntries: predBaseline().protected_scope_manifest.entries,
+        fileExists: () => false,
+      },
+      f,
+    );
+    check("eval_expansion_recorded_ok", f.length === 0, f.join("; "));
+  }
+
+  // 6c) live eval ≠ predecessor but MATCH claim → still FAIL
+  {
+    const f = [];
+    evaluateRebaseInvariants(
+      makeValidEntry({ eval_dataset_status: "MATCH" }),
+      {
+        predecessorBaseline: predBaseline(),
+        liveEvalHash: "99".repeat(32),
+        livePromptHash: "22".repeat(32),
+        liveWorkflowHash: "66".repeat(32),
+        liveManifestAggregate: "44".repeat(32),
+        liveManifestEntries: predBaseline().protected_scope_manifest.entries,
+        predecessorManifestEntries: predBaseline().protected_scope_manifest.entries,
+        fileExists: () => false,
+      },
+      f,
+    );
+    check(
+      "eval_expansion_claimed_match_fail",
+      f.some((x) => /eval dataset drift/i.test(x)),
+      f.join("; "),
+    );
+  }
+
+  {
+    const e = {};
+    stampEvalDatasetOnEntry(e, "55".repeat(32), "99".repeat(32));
+    check(
+      "stamp_eval_expansion",
+      e.eval_dataset_status === "ACKNOWLEDGED_EXPANSION" &&
+        e.old_eval_dataset_hash === "55".repeat(32) &&
+        e.new_eval_dataset_hash === "99".repeat(32) &&
+        e.eval_dataset_hash === "99".repeat(32),
+      JSON.stringify(e),
+    );
+  }
+
   // 7) workflow hash silently changed → FAIL
   {
     const f = [];
@@ -384,14 +447,12 @@ function run() {
     // Regression snapshot of the live ledger/baseline at the time this file was
     // written, NOT a policy that forbids a rebase — the real policy is enforced
     // by validateRebaseEntry/verifyRebaseLedgerAgainstBaseline/verifyWashing
-    // above and below. Updated again, in step with the PTF-00C-R1 provider
-    // resilience closure L9 rebase (heartbeat idempotency ledger, nested-retry
-    // elimination, tick runtime budget, circuit-breaker honesty; retains the
-    // prior L8 protected repair wave as history).
-    check("no_new_epoch_created", liveLedger.rebases.length === 5, `rebases=${liveLedger.rebases.length}`);
+    // above and below. Updated with REL-502 L8 apply
+    // (ea-rebase-a6908eff1def-3db9e8f8832f · ACKNOWLEDGED_EXPANSION eval pin).
+    check("no_new_epoch_created", liveLedger.rebases.length === 6, `rebases=${liveLedger.rebases.length}`);
     check(
       "live_baseline_unchanged",
-      liveBaseline.id === "ea-baseline-64b0f8a6d984-3657543f36b5",
+      liveBaseline.id === "ea-baseline-a6908eff1def-3db9e8f8832f",
       liveBaseline.id,
     );
     // qa9-result is the current-epoch verdict SSOT and is only ever written by
