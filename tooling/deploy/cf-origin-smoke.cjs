@@ -60,25 +60,40 @@ if (surface === "ops" || surface === "all") {
   });
 }
 
+function sleep(ms) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, ms);
+  });
+}
+
 async function smokeOne(check) {
   const url = "https://" + check.host + "/";
-  const res = await fetch(url, {
-    redirect: "manual",
-    headers: { "user-agent": "ai-profit-os-cf-origin-smoke/1" },
-  });
-  const body = await res.text();
-  if (!check.ok(res.status, res.headers, body)) {
-    throw new Error(
+  const attempts = isStagingSlot(slotArg) ? 10 : 3;
+  let lastErr = "";
+  for (let i = 1; i <= attempts; i++) {
+    const res = await fetch(url, {
+      redirect: "manual",
+      headers: { "user-agent": "ai-profit-os-cf-origin-smoke/1" },
+    });
+    const body = await res.text();
+    if (check.ok(res.status, res.headers, body)) {
+      console.log("[cf:origin-smoke] PASS " + check.key + " " + url + " " + res.status);
+      return;
+    }
+    lastErr =
       check.key +
-        " FAIL " +
-        url +
-        " status=" +
-        res.status +
-        " x-opennext=" +
-        res.headers.get("x-opennext")
-    );
+      " FAIL " +
+      url +
+      " status=" +
+      res.status +
+      " x-opennext=" +
+      res.headers.get("x-opennext") +
+      " attempt=" +
+      i;
+    console.log("[cf:origin-smoke] retry " + lastErr);
+    if (i < attempts) await sleep(4000);
   }
-  console.log("[cf:origin-smoke] PASS " + check.key + " " + url + " " + res.status);
+  throw new Error(lastErr);
 }
 
 (async function main() {
