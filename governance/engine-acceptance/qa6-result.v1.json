@@ -4,8 +4,8 @@
   "suite_id": "QA6",
   "run_id": "qa6-performance-world-20260823",
   "todoId": "qa6-performance-world",
-  "measuredAt": "2026-08-23T01:00:45.270Z",
-  "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+  "measuredAt": "2026-08-23T01:41:21.159Z",
+  "baseline_id": "ea-baseline-395861b0e7aa-a1fe8f018d0f",
   "mode": "full",
   "kill_switch": {
     "verified_before_checks": true,
@@ -24,7 +24,7 @@
       "check_id": "QA6_PERFORMANCE_WORLD",
       "status": "PASS",
       "mode": "full",
-      "measuredAt": "2026-08-23T01:00:45.270Z",
+      "measuredAt": "2026-08-23T01:41:21.159Z",
       "seed": 20260812,
       "perf_oracle": {
         "available": true,
@@ -50,7 +50,7 @@
       },
       "harness_probe": {
         "available": true,
-        "probed_path": "_tmp_formal_qa6_32608746981/tmp/aipo-harness/qa6-threshold/qa6-threshold.v1.json",
+        "probed_path": "_tmp_formal_qa6_32610755208/tmp/aipo-harness/qa6-threshold/qa6-threshold.v1.json",
         "reason": null
       },
       "threshold_mechanism": {
@@ -99,10 +99,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 5.124554,
-              "p95": 7.4004685,
-              "p99": 12.520675300000011,
-              "avg": 5.370612841836733
+              "p50": 5.074714,
+              "p95": 7.40312375,
+              "p99": 11.372780750000034,
+              "avg": 5.338352744897956
             },
             "error_rate": 0
           },
@@ -112,7 +112,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T00:49:28.053Z",
+            "clock_as_of": "2026-08-23T01:38:19.650Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -135,10 +135,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 5.124554,
-                  "p95": 7.4004685,
-                  "p99": 12.520675300000011,
-                  "avg": 5.370612841836733
+                  "p50": 5.074714,
+                  "p95": 7.40312375,
+                  "p99": 11.372780750000034,
+                  "avg": 5.338352744897956
                 },
                 "error_rate": 0
               },
@@ -160,7 +160,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+            "baseline_id": "ea-baseline-395861b0e7aa-a1fe8f018d0f",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "09067cecfda7e58408f05bcc559348721770ffd844fbb659e5612e3799a62114",
             "invariant_id": "INV-PERF-01",
@@ -187,10 +187,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 3.734221,
-              "p95": 4.5736285,
-              "p99": 9.910198699999945,
-              "avg": 3.9240142121212123
+              "p50": 3.469518,
+              "p95": 5.238486,
+              "p99": 9.62484429999994,
+              "avg": 3.8117392121212124
             },
             "error_rate": 0
           },
@@ -200,7 +200,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T00:49:28.053Z",
+            "clock_as_of": "2026-08-23T01:38:19.650Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -223,10 +223,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 3.734221,
-                  "p95": 4.5736285,
-                  "p99": 9.910198699999945,
-                  "avg": 3.9240142121212123
+                  "p50": 3.469518,
+                  "p95": 5.238486,
+                  "p99": 9.62484429999994,
+                  "avg": 3.8117392121212124
                 },
                 "error_rate": 0
               },
@@ -248,7 +248,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+            "baseline_id": "ea-baseline-395861b0e7aa-a1fe8f018d0f",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "98101ee617d2c2c12c8a80906d836573a0d78b6ba56225663d13496e42a6f4b0",
             "invariant_id": "INV-PERF-01",
@@ -275,10 +275,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 2.327181,
-              "p95": 3.0038727999999995,
-              "p99": 5.027757739999992,
-              "avg": 2.396454848484849
+              "p50": 2.2743,
+              "p95": 3.080491299999999,
+              "p99": 5.5933255999999805,
+              "avg": 2.3649866565656565
             },
             "error_rate": 0
           },
@@ -288,7 +288,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T00:49:28.053Z",
+            "clock_as_of": "2026-08-23T01:38:19.650Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -311,10 +311,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 2.327181,
-                  "p95": 3.0038727999999995,
-                  "p99": 5.027757739999992,
-                  "avg": 2.396454848484849
+                  "p50": 2.2743,
+                  "p95": 3.080491299999999,
+                  "p99": 5.5933255999999805,
+                  "avg": 2.3649866565656565
                 },
                 "error_rate": 0
               },
@@ -336,7 +336,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+            "baseline_id": "ea-baseline-395861b0e7aa-a1fe8f018d0f",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "15b6ea799edccaa59e56b2b7c3734ff60ca5b699cc0039f055838213416a677f",
             "invariant_id": "INV-PERF-01",
@@ -363,10 +363,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 2.762721,
-              "p95": 5.511548899999999,
-              "p99": 8.426834199999982,
-              "avg": 3.1537856666666677
+              "p50": 2.454011,
+              "p95": 6.0906972,
+              "p99": 10.217415599999972,
+              "avg": 3.202053424242424
             },
             "error_rate": 0
           },
@@ -376,7 +376,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T00:49:28.053Z",
+            "clock_as_of": "2026-08-23T01:38:19.650Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -399,10 +399,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 2.762721,
-                  "p95": 5.511548899999999,
-                  "p99": 8.426834199999982,
-                  "avg": 3.1537856666666677
+                  "p50": 2.454011,
+                  "p95": 6.0906972,
+                  "p99": 10.217415599999972,
+                  "avg": 3.202053424242424
                 },
                 "error_rate": 0
               },
@@ -424,7 +424,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-b5f275949da2-c8d8ae7d479e",
+            "baseline_id": "ea-baseline-395861b0e7aa-a1fe8f018d0f",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "46f24e679dcca8e62ee864299a617afadd002f652133c3a49bcad3904493feec",
             "invariant_id": "INV-PERF-01",
@@ -533,5 +533,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "CI aggregator uses if: always(); artifact retention ≥ 90 days."
   ],
-  "checksum": "ff0c6bab3a86f1e88a51154c34d0f741202d83558c86ed587d1c9ca3c60504e6"
+  "checksum": "43fa9580badad8b8244ae5035c2a0ba98487ac05ece21d04431e66a7735021e1"
 }
