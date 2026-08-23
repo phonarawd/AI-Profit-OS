@@ -59,6 +59,7 @@
     "verify:rel-219-admin-growth-ticker": "node tooling/verify/rel-219-admin-growth-ticker.cjs",
     "verify:rel-220-admin-growth-whale": "node tooling/verify/rel-220-admin-growth-whale.cjs",
     "verify:rel-221-admin-growth-content": "node tooling/verify/rel-221-admin-growth-content.cjs",
+    "verify:rel-400-admin-control-plane": "node tooling/verify/rel-400-admin-control-plane.cjs",
     "verify:admin-entry-e2e": "node tooling/verify/admin-entry-e2e.cjs",
     "verify:cta-earn-profit": "node tooling/verify/cta-earn-profit.cjs",
     "verify:cta-match-participate": "node tooling/verify/cta-earn-profit.cjs",
