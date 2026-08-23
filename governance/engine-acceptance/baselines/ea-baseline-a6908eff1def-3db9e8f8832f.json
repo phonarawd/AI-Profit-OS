@@ -1,19 +1,19 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
+  "id": "ea-baseline-a6908eff1def-3db9e8f8832f",
   "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-08-23T16:59:32.198Z",
-  "commit_sha": "229e7777f9b01607a9259c0b1b03be1dbe4d4e61",
-  "tree_sha": "6971ba3c9276adb5a04bdd6f42460efe3102ce28",
+  "measuredAt": "2026-08-23T10:32:29.436Z",
+  "commit_sha": "a6908eff1def21f5fb557d4d7276def7037da66d",
+  "tree_sha": "b309fb8ededaa8da08049810f2bf0a5638d105cd",
   "working_tree_clean": false,
   "protected_scope_clean": true,
   "dirty_paths_all": [
-    ".playwright-mcp/",
-    "_tmp_ea_full_32634726715/",
-    "_tmp_ea_heavy_32637722986/",
-    "_tmp_ea_heavy_32638272888/",
-    "_tmp_ea_pr_32634718543/"
+    "governance/engine-acceptance/acceptance-contract.v1.md",
+    "tooling/engine-acceptance/lib/product-rebase.cjs",
+    "tooling/engine-acceptance/rebase-acceptance-baseline.cjs",
+    "tooling/engine-acceptance/selftest-product-rebase.cjs",
+    ".playwright-mcp/"
   ],
   "dirty_paths_protected": [],
   "lockfile_hash": "faf4c73927d1b92cbe8bc9b8ffb57000e9d630c920ca98fdea2ebf55182f820c",
@@ -27,8 +27,8 @@
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "2d4567b3a2c8d80e1ea06dbe522eb9e4477e127adb75a655e5e41c348300a01d",
-    "pathCount": 448,
+    "aggregate": "3db9e8f8832f62ed0527e9eea7622944098fff5b9b66d8a0318953ceb58f7a65",
+    "pathCount": 443,
     "entries": [
       {
         "path": "eval/coach_redteam.jsonl",
@@ -105,10 +105,6 @@
       {
         "path": "schemas/balance-aware-fact.v1.json",
         "sha256": "089a06c333f7acc491570ea53184e9a9c002d2ecce18f2645f2c31f4c625a4a9"
-      },
-      {
-        "path": "schemas/current-fx-approx.v1.json",
-        "sha256": "d8b8db814d9039a94289e2120001fb358a83e531f216efe20319aa3318e47667"
       },
       {
         "path": "schemas/day-opportunity-pulse.v1.json",
@@ -1091,24 +1087,8 @@
         "sha256": "4b6f5689d9a38bcfd6254de5985c0ce1745e07a6f68cab247510f77db604c365"
       },
       {
-        "path": "services/api-nest/src/opportunities/current-fx-approx.map.ts",
-        "sha256": "5c559c8f0049923dcb4f888d89dcf0522efdf63d6080a1898ecd5f10c246dac3"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/current-fx-approx.service.ts",
-        "sha256": "83f88f55c19f6e5bcda29c8073c6ec05c13edc7297f4eae7501b527cbc7eef5a"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/current-fx-approx.user.controller.ts",
-        "sha256": "b87e88607d033b7b4eebb682b61386cc5834c4882e45588e20781ab10ba21188"
-      },
-      {
-        "path": "services/api-nest/src/opportunities/current-fx-approx.user.routes.ts",
-        "sha256": "e4315381be296234a91dbce7915c7667fb7fe253758c51af2e548ef5f324cdc2"
-      },
-      {
         "path": "services/api-nest/src/opportunities/fx-snapshot.service.ts",
-        "sha256": "4a426ed0c93c03d786e43d7c00b612939578bdbc63fdcb47710c9b2b830cfa68"
+        "sha256": "47a0de62767533ccd3b2b04fb798095e23513af59c7ce8bab5268872b51b430b"
       },
       {
         "path": "services/api-nest/src/opportunities/index.ts",
@@ -1132,7 +1112,7 @@
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.module.ts",
-        "sha256": "ec9d5b5075a6cf5fcfb0fbdc2e8b318e255fdcfdd8c27d7016c80fae74dc924b"
+        "sha256": "1698cc38d967ab0738f274b30d28c88f07a2b022d4aa3fb56191669f59f1ae79"
       },
       {
         "path": "services/api-nest/src/opportunities/opportunities.routes.ts",
@@ -1830,8 +1810,8 @@
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-229e7777f9b0-2d4567b3a2c8",
-    "predecessor_baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+    "rebase_id": "ea-rebase-a6908eff1def-3db9e8f8832f",
+    "predecessor_baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
     "kind": "product_rebase"
   }
 }

@@ -568,6 +568,77 @@
       "eval_dataset_status": "ACKNOWLEDGED_EXPANSION",
       "old_eval_dataset_hash": "83be4de5a913438f565c111b2b78d33dcd32ca52d7887313919ec08e828a6088",
       "new_eval_dataset_hash": "710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d"
+    },
+    {
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+      "rebase_id": "ea-rebase-229e7777f9b0-2d4567b3a2c8",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-23T16:59:32.198Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: session directive 다음진행 after REL-508 current-fx Nest wire drifted protected scope (live 2d4567b3 vs pin 3db9e8f8, 448 vs 443). New epoch required; QA1-QA8 must rerun; QA9 aggregation stale until current-epoch discovery evidence exists. Do not treat predecessor ENGINE_ACCEPTED_FOR_UI as current."
+      },
+      "predecessor_baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "new_baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
+      "reason": "Protected product mutation creates a new acceptance epoch. Predecessor hashes are history; discovery suites QA1-QA8 must rerun; QA9 aggregation is stale and must rerun only after current-epoch discovery evidence exists. Do not fabricate a verdict at rebase time.",
+      "product_commit": "229e7777f9b01607a9259c0b1b03be1dbe4d4e61",
+      "changed_protected_paths": [
+        "schemas/current-fx-approx.v1.json",
+        "services/api-nest/src/opportunities/current-fx-approx.map.ts",
+        "services/api-nest/src/opportunities/current-fx-approx.service.ts",
+        "services/api-nest/src/opportunities/current-fx-approx.user.controller.ts",
+        "services/api-nest/src/opportunities/current-fx-approx.user.routes.ts",
+        "services/api-nest/src/opportunities/fx-snapshot.service.ts",
+        "services/api-nest/src/opportunities/opportunities.module.ts"
+      ],
+      "changed_nonprotected_support_paths": [
+        "services/ai-platform/src/index.d.ts"
+      ],
+      "old_prompt_hash": "ff6edf9fb8d7cf5b298a1ff34169fdd3e1746316e320a0363d237f95f5ea42d3",
+      "new_prompt_hash": "ff6edf9fb8d7cf5b298a1ff34169fdd3e1746316e320a0363d237f95f5ea42d3",
+      "old_protected_manifest_hash": "3db9e8f8832f62ed0527e9eea7622944098fff5b9b66d8a0318953ceb58f7a65",
+      "new_protected_manifest_hash": "2d4567b3a2c8d80e1ea06dbe522eb9e4477e127adb75a655e5e41c348300a01d",
+      "eval_dataset_hash": "710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d",
+      "acceptance_workflow_hash": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
+      "predecessor_suite_checksums": {
+        "QA1": "65a76529b51f0fa413fecf711b6ee3d8ff349b3b302417e2e99198cc5ca74593",
+        "QA2": "1e05268fcc75552e2f081624042f9d560c15bc426a96aee2ca11fb499d1ccbf1",
+        "QA3": "e7ed225ef5ead0b771446f4c12a79e316dbe80767d014e4c2b7d4d51e500330b",
+        "QA4": "ee90966d80012aefda15490fccdd46a8c871424030432b6ce4fd8f082a0c1c14",
+        "QA5": "b321035b951b80c418196e178b73e493d91e09225f4e2faa58839fa02bcc81e2",
+        "QA6": "65f812c605406dee9cbf66233501050682cdf45ee69eac9487ce8789382da3e5",
+        "QA8": "315f7e46ba34f09dc81470a38528c43899dae73be57217a8732de7c787ff1c45",
+        "QA9": "f7e3c385b54cd3cf99b693f3240952ce20af0c441dbb4905069038a53b3ca962"
+      },
+      "timestamp": "2026-08-23T16:59:32.198Z",
+      "commit_sha_or_pending": "229e7777f9b01607a9259c0b1b03be1dbe4d4e61",
+      "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
+      "invalidated_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA8"
+      ],
+      "required_rerun_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7",
+        "QA8"
+      ],
+      "stale_aggregation_phases": [
+        "QA9"
+      ],
+      "qa7_complete": false,
+      "qa8_complete": false,
+      "qa9_complete": false,
+      "qa9_verdict_issued": false,
+      "eval_dataset_status": "MATCH"
     }
   ]
 }

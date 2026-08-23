@@ -11,53 +11,44 @@ REL-004_SUBSTITUTE = 0
 QA9_PREDECESSOR_VERDICT_AS_CURRENT = 0
 PSM_REL_PENDING = 0
 POST_PSM_PENDING = 3
-PROTECTED_SCOPE_DRIFT = 1
+PROTECTED_SCOPE_DRIFT = 0
 REBASE_REQUIRED = 1
 REBASE_APPLIED = 1
 ACK_RECEIVED = 1
 LOCAL_QA0_QA9_RERUN = 0
-EVAL_DATASET_STATUS = ACKNOWLEDGED_EXPANSION
-QA1_QA8_STATUS = STALE_NEEDS_REBASE
-QA9_STATUS = STALE_NEEDS_REBASE
-QA9_VERDICT = ENGINE_ACCEPTED_FOR_UI
+EVAL_DATASET_STATUS = MATCH
+QA1_QA8_STATUS = STALE_PENDING_RERUN
+QA9_STATUS = STALE_AGGREGATION_PENDING_DISCOVERY
+QA9_VERDICT = ENGINE_QA_INCOMPLETE
 DEFECTS_P0 = 0
 DEFECTS_P1 = 0
 CRITICAL_INVARIANT_BLOCKED = 0
-NEXT = REL-502_REBASE
-BASELINE_ID = ea-baseline-a6908eff1def-3db9e8f8832f
-PREDECESSOR_BASELINE_ID = ea-baseline-64b0f8a6d984-3657543f36b5
-REBASE_ID = ea-rebase-a6908eff1def-3db9e8f8832f
+NEXT = QA1_DETERMINISTIC_TRUTH
+BASELINE_ID = ea-baseline-229e7777f9b0-2d4567b3a2c8
+PREDECESSOR_BASELINE_ID = ea-baseline-a6908eff1def-3db9e8f8832f
+REBASE_ID = ea-rebase-229e7777f9b0-2d4567b3a2c8
 LIVE_AGGREGATE = 2d4567b3a2c8d80e1ea06dbe522eb9e4477e127adb75a655e5e41c348300a01d
-BASELINE_AGGREGATE = 3db9e8f8832f62ed0527e9eea7622944098fff5b9b66d8a0318953ceb58f7a65
+BASELINE_AGGREGATE = 2d4567b3a2c8d80e1ea06dbe522eb9e4477e127adb75a655e5e41c348300a01d
 PATH_COUNT_LIVE = 448
-PATH_COUNT_BASELINE = 443
-CHANGED_PATHS = 7
-ADDED_PATHS = 5
-MUTATED_PATHS = 2
+PATH_COUNT_BASELINE = 448
+CHANGED_PATHS = 0
+ADDED_PATHS = 0
+MUTATED_PATHS = 0
 MISSING_PATHS = 0
-EXIT_GATE = REL-508 current-fx Nest wire drifted protected scope. Do not treat this epoch ISSUED as current. Rebase then rerun QA1-QA9.
+EXIT_GATE = rebase applied after REL-508. Current-epoch QA1-QA9 required. Predecessor ISSUED is not current.
 ```
 
 ## 판정
 
 Human/PO ACK `ENGINE_ACCEPTANCE_REBASE_V1` 수신 · apply 완료.
-새 epoch `ea-baseline-a6908eff1def-3db9e8f8832f` 가 live protected-scope 를 pin 한다.
-2026-08-14 QA9 `ENGINE_ACCEPTED_FOR_UI` 는 predecessor epoch 결과이며 current-authoritative 가 아니다.
+새 epoch `ea-baseline-229e7777f9b0-2d4567b3a2c8` 가 live protected-scope 를 pin 한다.
+predecessor `ea-baseline-a6908eff1def-3db9e8f8832f` QA9 `ENGINE_ACCEPTED_FOR_UI` 는 history 이며 current-authoritative 가 아니다.
 `qa9_predecessor_verdict_as_current_authoritative = FORBIDDEN`.
 
-현재 epoch QA1-QA8 재실행 + QA9 재집계를 완료했다.
-- QA1-QA3 COMPLETE
-- QA4 tiny + clock harness (Actions `32638272888`) COMPLETE · critical PASS
-- QA5 tiny + fault harness (동일 run) COMPLETE · critical PASS
-- QA6 full + k6 threshold (동일 run) COMPLETE · 4/4 tag PASS
-- QA7 formal Actions `32634726715` 26/26 COMPLETE
-- QA8 tiny + adversarial harness (동일 run) COMPLETE · critical PASS
-- QA9 공식: `ENGINE_ACCEPTED_FOR_UI` · `ENGINE_ACCEPTED_FOR_UI=ISSUED` · NEXT=`03_ui_entry_unlocked`
-
-REL-508 이 `POST /api/v1/me/current-fx/approx` 를 Nest 에 열면서 protected-scope 가 drift 했다 (live 448 vs pin 443 · added 5 · mutated 2).
-이 문서는 ISSUED 를 유지하지 않는다. 해시/결함을 지워 STALE 을 숨기지 않는다.
+현재 epoch QA1-QA8 / QA9 를 완료하지 않았다. evidence-manifest = `ENGINE_QA_INCOMPLETE`.
+QA1-QA8 재실행 + QA9 재집계는 CI(`.github/workflows/engine-acceptance-heavy.yml` + formal QA7 restore) 에 위임한다.
 로컬에서 QA0-QA9 를 가짜 PASS 로 닫지 않는다.
-다음 = `ENGINE_ACCEPTANCE_REBASE_V1` ACK 후 새 epoch pin · QA1-QA8 재실행 · QA9 재집계.
+eval dataset = predecessor MATCH. `REBASE_REQUIRED = 1` 은 pin 후에도 current-epoch QA 전 ISSUED 금지.
 
 ## PSM 수집 (고정 range 아님)
 
@@ -72,10 +63,10 @@ POST-001 · POST-002 · POST-003 은 PSM=TRUE 이지만 실행 순서가 REL-502
 ## 발급 조건 (5항 전부 충족)
 
 1. PSM=TRUE REL 미완료 0 — 충족 (REL-508 COMPLETED)
-2. live aggregate == current baseline aggregate — 불충족 (drift)
-3. QA1-QA8 COMPLETE on that baseline — 이전 epoch 증거 · 현재 drift 로 stale
-4. QA9 현재 epoch 재집계 — stale · ISSUED 를 current 로 쓰지 않음
-5. 이 문서 `STATUS = NOT_ISSUED` · `CERT_ISSUED = 0` — 충족 (철회)
+2. live aggregate == current baseline aggregate — 충족 (pin applied)
+3. QA1-QA8 COMPLETE on that baseline — predecessor 증거 · current-epoch STALE_PENDING_RERUN
+4. QA9 현재 epoch 재집계 — STALE_AGGREGATION_PENDING_DISCOVERY
+5. 이 문서 `STATUS = NOT_ISSUED` · `CERT_ISSUED = 0` — 충족 (QA 전 발급 0)
 
 ## 변경 경로 (108 · predecessor 대비 이력 · 현재 epoch pin 이후 CHANGED_PATHS = 0)
 

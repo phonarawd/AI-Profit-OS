@@ -447,19 +447,17 @@ function run() {
     // Regression snapshot of the live ledger/baseline at the time this file was
     // written, NOT a policy that forbids a rebase — the real policy is enforced
     // by validateRebaseEntry/verifyRebaseLedgerAgainstBaseline/verifyWashing
-    // above and below. Updated with REL-502 L8 apply
-    // (ea-rebase-a6908eff1def-3db9e8f8832f · ACKNOWLEDGED_EXPANSION eval pin).
-    check("no_new_epoch_created", liveLedger.rebases.length === 6, `rebases=${liveLedger.rebases.length}`);
+    // above and below. Updated with REL-502 rebase after REL-508
+    // (ea-rebase-229e7777f9b0-2d4567b3a2c8 · eval MATCH predecessor).
+    check("no_new_epoch_created", liveLedger.rebases.length === 7, `rebases=${liveLedger.rebases.length}`);
     check(
       "live_baseline_unchanged",
-      liveBaseline.id === "ea-baseline-a6908eff1def-3db9e8f8832f",
+      liveBaseline.id === "ea-baseline-229e7777f9b0-2d4567b3a2c8",
       liveBaseline.id,
     );
-    // qa9-result is the current-epoch verdict SSOT and is only ever written by
-    // run-qa9.cjs. Snapshot pin, not a policy: after ENGINE_ACCEPTANCE_REBASE_V1
-    // apply, current-epoch QA1-QA8 discovery re-ran (heavy harness + canonical)
-    // and QA9 re-aggregated. L1 formula → ENGINE_ACCEPTED_FOR_UI. Predecessor
-    // 2026-08-14 ISSUED is history only.
+    // qa9-result is only ever written by run-qa9.cjs. After rebase apply the
+    // on-disk file stays predecessor history (not rewritten). Current-epoch
+    // evidence-manifest is ENGINE_QA_INCOMPLETE until discovery + QA9 rerun.
     check(
       "live_verdict_unchanged",
       qa9.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
