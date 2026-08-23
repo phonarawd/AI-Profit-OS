@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "rel": "REL-401",
+  "protectedScopeMutation": true,
+  "requiredHeaderNames": [
+    "Content-Security-Policy",
+    "Strict-Transport-Security",
+    "X-Frame-Options",
+    "X-Content-Type-Options"
+  ],
+  "staticHeaders": {
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()"
+  },
+  "hosts": {
+    "app": "https://app.hiptk.app",
+    "ops": "https://ops.hiptk.app",
+    "api": "https://api.hiptk.app",
+    "root": "https://hiptk.app",
+    "go": "https://go.hiptk.app",
+    "webWorkersDev": "https://ai-profit-web.ebay-adapter.workers.dev",
+    "opsWorkersDev": "https://ai-profit-ops.ebay-adapter.workers.dev",
+    "pretendard": "https://cdn.jsdelivr.net",
+    "ebayImg": "https://i.ebayimg.com",
+    "pokemonImg": "https://images.pokemontcg.io",
+    "ygoImg": "https://images.ygoprodeck.com",
+    "r2Dev": "https://asset-images.r2.dev"
+  },
+  "allowedHostWildcard": ["https://*.r2.cloudflarestorage.com"],
+  "forbiddenCspSources": ["*", "https:", "http:", "'unsafe-eval'"],
+  "notes": {
+    "scriptUnsafeInline": "Next/OpenNext hydration. Not a host wildcard.",
+    "jsdelivr": "Current Pretendard @import in lux-theme.css.",
+    "r2Wildcard": "Same REL-013 exception as image-hosts **.r2.cloudflarestorage.com.",
+    "sw": "worker-src 'self' keeps /sw.js registration."
+  }
+}

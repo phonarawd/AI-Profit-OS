@@ -1,11 +1,23 @@
 import type { NextConfig } from "next";
+import { createRequire } from "module";
 import { PRODUCT_IMAGE_REMOTE_PATTERNS } from "../../packages/ui/components/product/image-hosts";
+
+const require = createRequire(import.meta.url);
+const { nextSecurityHeaderSources } = require("../../tooling/security/http-headers.cjs") as {
+  nextSecurityHeaderSources: () => Array<{
+    source: string;
+    headers: Array<{ key: string; value: string }>;
+  }>;
+};
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@aipo/ui", "@aipo/sdk", "@aipo/schemas"],
   images: {
     // REL-013: 공유 최소 allowlist만. hostname '*' / 임의 https 전체 허용 0.
     remotePatterns: [...PRODUCT_IMAGE_REMOTE_PATTERNS],
+  },
+  async headers() {
+    return nextSecurityHeaderSources();
   },
   /** Infra §31.2a — /ads aliases /l (identical landing-3s surface) */
   /** PART9-pre — /api/v1 → API_HOST (dev proxy · /ads 규칙 보존) */
