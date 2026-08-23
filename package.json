@@ -160,6 +160,7 @@
     "verify:home-principal-slots": "node tooling/verify/home-principal-slots.cjs",
     "verify:withdraw-flow-wire": "node tooling/verify/withdraw-flow-wire.cjs",
     "verify:migrations-applied-parity": "node tooling/verify/migrations-applied-parity.cjs",
+    "verify:rel-505-backend-alignment": "node tooling/verify/rel-505-backend-alignment.cjs",
     "verify:growth-public-surface": "node tooling/verify/growth-public-surface.cjs",
     "verify:stub-page-actions": "node tooling/verify/stub-page-actions.cjs",
     "verify:profits-live-wire": "node tooling/verify/profits-live-wire.cjs",

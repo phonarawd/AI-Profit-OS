@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-001 COMPLETED. FIRST_EXECUTION_TODO=REL-002.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 119 + POST 19 = 139개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-001 COMPLETED. FIRST_EXECUTION_TODO=REL-002. REL-505 R7 ISSUED (CONFLICTS_OWNED).
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -313,6 +313,15 @@ todos:
     status: pending
   - id: rel-505
     content: "[QA-Expansion][A2][Legacy:F-REL-002] BACKEND_DATA_ALIGNMENT_CERTIFICATION(R7): API·SDK·Nest AppModule imports·Engine FSM·local/remote migration head·indexes/RLS/idempotency·auth permission·money units·source/asOf/reasonCode 1:1 대조, semantic conflict 발견 시 owner에 가산 REL+version bump(은폐 금지)"
+    status: completed
+  - id: rel-508
+    content: "[QA-Expansion][A2][REL-505 owner] MIGRATION_HEAD_IDENTITY_RECONCILE: local↔remote version-id map, remote-only beginner_onboarding source recovery, duplicate idempotency version, migrations-applied fixture hide 해소. apply 0 (apply=REL-701-DB)"
+    status: pending
+  - id: rel-509
+    content: "[QA-Expansion][A2][REL-505 owner] ENGINE_FSM_REGISTRY_AND_RESULT_CODE_ALIGN: fact-state-registry engine.trade_execution에 cancelled/failed 반영 또는 owner-split 문서화, rust/cjs ExecutionResultCode ↔ Nest CANCELLED_BY_USER 1:1"
+    status: pending
+  - id: rel-510
+    content: "[QA-Expansion][A2][REL-505 owner] REASONCODE_CIRCUIT_GRAMMAR_ALIGN: BUCKET_INVARIANT_FAIL → domain.resource.reason (예: money.circuit.bucket_invariant). 레거시 alias 은폐 금지"
     status: pending
   - id: rel-506
     content: "[QA-Expansion][A2][Legacy:F-REL-003] INFRA_RELEASE_CERTIFICATION_CORE(R8, Ads 자동화 제외): infra/domain.manifest openNext Workers origin·cache/R2/Web Vitals·에러추적·세션·rollback/known-good, known P0~P3 defect 0"
@@ -423,10 +432,11 @@ BLOCKING_ON = []
 FIRST_EXECUTION_TODO = REL-002
 LAST_COMPLETED_TODO = REL-001
 PRE_LOCK_COUNT = 1
-REL_COUNT = 116
+REL_COUNT = 119
 POST_COUNT = 19
-MASTER_TODO_COUNT = 136
-REVISION = Round7 materialization (self-contained SSOT, pointer-only 0)
+MASTER_TODO_COUNT = 139
+REVISION = Round7 + REL-505 R7 alignment (additive REL-508/509/510)
+R7_ALIGNMENT_EPOCH = 2026-08-23
 
 CURRENT_TEMP_ALLOWLIST_PRESENT = FALSE
 TEMP_ALLOWLIST_PRESENT_AT_AUDIT = TRUE
@@ -439,7 +449,7 @@ CURSOR_SYNC_PLANS = DISABLED_UNDER_CURRENT_ISOLATION
 PLAN_STAMP_SCOPE = WORKSPACE_ONLY
 ```
 
-이 파일 하나만 읽어도 136개 실행 TODO를 수행할 수 있다.
+이 파일 하나만 읽어도 139개 실행 TODO를 수행할 수 있다.
 다른 플랜의 실행 큐를 따르지 않는다. Track/레거시 파일은 SOURCE_PLAN(출처)일 뿐 실행 정의가 아니다.
 
 ## 1. HARD INVARIANTS
@@ -490,7 +500,7 @@ APPROVED_AUTHORITY = 0. 후보 frame을 승인으로 승격하지 않는다. REL
 
 protected roots = `services/api-nest/**`, `services/engine-rust/**`, 관련 `schemas/**`, `eval/**`, `supabase/migrations/**`.
 
-현재 TRUE: REL-003, REL-008, REL-010, REL-015, REL-016, REL-020, REL-021, REL-022, REL-222, REL-223, REL-224, REL-401, REL-405, REL-406, REL-407, REL-408.
+현재 TRUE: REL-003, REL-008, REL-010, REL-015, REL-016, REL-020, REL-021, REL-022, REL-222, REL-223, REL-224, REL-401, REL-405, REL-406, REL-407, REL-408, REL-508, REL-509, REL-510.
 
 REL-701-DB 는 이미 인증된 migration 의 production apply 이며 소스 트리 신규 mutation이 아니므로 FALSE. 실행 중 예상 밖 backend 변경이 필요하면 그 REL에 TRUE를 재부여하고 REL-502 집합에 편입한다.
 
@@ -3494,7 +3504,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-505
 TITLE: BACKEND_DATA_ALIGNMENT_CERTIFICATION (R7)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_F_production_infra.plan.md
 SOURCE_TODO_IDS:
   - rel-505
@@ -3514,6 +3524,79 @@ EVIDENCE: governance/release-master/R7_BACKEND_ALIGNMENT.md
 EXIT_GATE: 충돌을 각주로 숨기면 FAIL
 AUTOMATION_LEVEL: A2
 PROTECTED_SCOPE_MUTATION: false
+```
+
+### REL-508
+
+```yaml
+ID: REL-508
+TITLE: MIGRATION_HEAD_IDENTITY_RECONCILE
+STATUS: PENDING
+SOURCE_PLAN: PUTDUK_RELEASE_MASTER.plan.md
+SOURCE_TODO_IDS:
+  - rel-508
+ORIGINAL_INTENT: "REL-505가 발견한 local↔remote migration identity 충돌을 은폐하지 않고 맞춘다."
+CURRENT_SCOPE: version-id map(ptf00c×4+krw_deposit_fx_facts) · remote-only beginner_onboarding source recovery · duplicate idempotency version · migrations-applied fixture hide 해소. apply 0.
+DEPENDENCIES:
+  - REL-505
+IMPLEMENTATION_STEPS:
+  - 원격 apply-time version ↔ 로컬 파일명 1:1 맵 문서화 후 fixture를 원격 id로 정정
+  - beginner_onboarding_experience 소스 복구 또는 ORPHAN_REMOTE 공개
+  - 중복 idempotency 행 설명. Track A apply 금지
+VERIFY: verify:rel-505-backend-alignment 가 C-MIG-* 를 더 이상 CONFLICT로 요구하지 않음
+ACCEPTANCE: migration head identity 공란 0. hide 0. apply 0
+EVIDENCE: tooling/verify/fixtures/r7-backend-alignment.v1.json
+EXIT_GATE: 로컬 접두사로 원격을 덮어쓰면 FAIL. apply는 REL-701-DB
+AUTOMATION_LEVEL: A2
+PROTECTED_SCOPE_MUTATION: true
+```
+
+### REL-509
+
+```yaml
+ID: REL-509
+TITLE: ENGINE_FSM_REGISTRY_AND_RESULT_CODE_ALIGN
+STATUS: PENDING
+SOURCE_PLAN: PUTDUK_RELEASE_MASTER.plan.md
+SOURCE_TODO_IDS:
+  - rel-509
+ORIGINAL_INTENT: "trade execution FSM/resultCode가 registry·schema·SDK·Nest·rust에서 같은 집합을 말하게 한다."
+CURRENT_SCOPE: fact-state-registry engine.trade_execution + cancelled/failed. rust/cjs CANCELLED_BY_USER 또는 명시적 owner-split.
+DEPENDENCIES:
+  - REL-505
+IMPLEMENTATION_STEPS:
+  - registry states를 schema enum과 1:1
+  - rust/cjs resultCode를 Nest와 1:1 또는 rust-not-owner를 코드+registry에 명시
+VERIFY: C-FSM-* 해소. hide-by-comment 0
+ACCEPTANCE: FSM/resultCode 단일 집합
+EVIDENCE: governance/platform-redesign/fact-state-registry.v1.json
+EXIT_GATE: registry만 고치고 rust를 각주로 남기면 FAIL
+AUTOMATION_LEVEL: A2
+PROTECTED_SCOPE_MUTATION: true
+```
+
+### REL-510
+
+```yaml
+ID: REL-510
+TITLE: REASONCODE_CIRCUIT_GRAMMAR_ALIGN
+STATUS: PENDING
+SOURCE_PLAN: PUTDUK_RELEASE_MASTER.plan.md
+SOURCE_TODO_IDS:
+  - rel-510
+ORIGINAL_INTENT: "money circuit reasonCode가 domain.resource.reason 문법을 지키게 한다."
+CURRENT_SCOPE: BUCKET_INVARIANT_FAIL → money.circuit.bucket_invariant (또는 동등 grammar). 레거시 alias 은폐 금지.
+DEPENDENCIES:
+  - REL-505
+IMPLEMENTATION_STEPS:
+  - p49_circuit + money-circuit.service + DB 값 마이그레이션 계획(apply는 701-DB)
+  - 문법 위반 코드 경로 0
+VERIFY: C-REASON-CIRCUIT-GRAMMAR 해소
+ACCEPTANCE: live circuit reasonCode grammar PASS
+EVIDENCE: services/api-nest/src/risk/rules/p49_circuit.ts
+EXIT_GATE: 옛 코드를 alias로 남겨 Dual truth 이면 FAIL
+AUTOMATION_LEVEL: A2
+PROTECTED_SCOPE_MUTATION: true
 ```
 
 ### REL-506
@@ -4493,38 +4576,41 @@ PROTECTED_SCOPE_MUTATION: false
 102. REL-503
 103. REL-504
 104. REL-505
-105. REL-506
-106. REL-507
-107. REL-600
-108. REL-601
-109. REL-602
-110. REL-603
-111. REL-700
-112. REL-701-PRE
-113. REL-701-DB
-114. REL-701
-115. REL-702
-116. REL-703
-117. REL-704
-118. POST-001
-119. POST-002
-120. POST-003
-121. POST-004
-122. POST-005
-123. POST-006
-124. POST-007
-125. POST-008
-126. POST-009
-127. POST-010
-128. POST-011
-129. POST-012
-130. POST-013
-131. POST-014
-132. POST-015
-133. POST-016
-134. POST-017
-135. POST-018
-136. POST-019
+105. REL-508
+106. REL-509
+107. REL-510
+108. REL-506
+109. REL-507
+110. REL-600
+111. REL-601
+112. REL-602
+113. REL-603
+114. REL-700
+115. REL-701-PRE
+116. REL-701-DB
+117. REL-701
+118. REL-702
+119. REL-703
+120. REL-704
+121. POST-001
+122. POST-002
+123. POST-003
+124. POST-004
+125. POST-005
+126. POST-006
+127. POST-007
+128. POST-008
+129. POST-009
+130. POST-010
+131. POST-011
+132. POST-012
+133. POST-013
+134. POST-014
+135. POST-015
+136. POST-016
+137. POST-017
+138. POST-018
+139. POST-019
 
 ## 7. SELF-VALIDATOR (materialization)
 
@@ -4535,10 +4621,12 @@ MASTER_FILE_EXISTS = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
 PRE_LOCK_COUNT = 1
-REL_COUNT = 116
+REL_COUNT = 119
 POST_COUNT = 19
-MASTER_TODO_COUNT = 136
-FRONTMATTER_TODO_COUNT = 136
+MASTER_TODO_COUNT = 139
+FRONTMATTER_TODO_COUNT = 139
+R7_ALIGNMENT_EPOCH = 2026-08-23
+ADDITIVE_AFTER_MATERIALIZATION = REL-508,REL-509,REL-510
 REL_000_EXISTS = TRUE
 REL_131_EXISTS = TRUE
 POST_019_EXISTS = TRUE

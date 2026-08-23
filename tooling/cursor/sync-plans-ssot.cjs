@@ -155,6 +155,23 @@ function main() {
     return;
   }
 
+  // Isolation: do not read/write %USERPROFILE%\.cursor\plans when the
+  // release master stamps HOME_MIRROR_SYNC DISABLED (project-isolation-boundary).
+  const master = path.join(wsPlans, "PUTDUK_RELEASE_MASTER.plan.md");
+  const masterText = fs.existsSync(master) ? fs.readFileSync(master, "utf8") : "";
+  if (/HOME_MIRROR_SYNC\s*=\s*DISABLED/.test(masterText)) {
+    if (checkOnly) {
+      console.log(
+        `[verify:plans-ssot] PASS (HOME_MIRROR_SYNC DISABLED · workspace SSOT only · ${active.length} ACTIVE)`,
+      );
+      return;
+    }
+    console.log(
+      `[cursor:sync-plans] skip home sync — HOME_MIRROR_SYNC DISABLED · active=${active.length}`,
+    );
+    return;
+  }
+
   if (!process.env.USERPROFILE && !process.env.HOME) {
     console.warn("[cursor:sync-plans] skip — no USERPROFILE/HOME");
     process.exit(0);

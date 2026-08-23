@@ -129,7 +129,20 @@ const RULES = [
       /^supabase\/migrations\//.test(f) ||
       /^tooling\/verify\/migrations-applied-parity\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/migrations-applied\.v1\.json$/.test(f),
-    scripts: ["migrations-applied-parity.cjs"],
+    scripts: ["migrations-applied-parity.cjs", "rel-505-backend-alignment.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/R7_BACKEND_ALIGNMENT\.md$/.test(f) ||
+      /^tooling\/verify\/rel-505-backend-alignment\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/r7-backend-alignment\.v1\.json$/.test(f) ||
+      /^schemas\/trade-execution-state\.v1\.json$/.test(f) ||
+      /^services\/engine-rust\/src\/settlement_rule\.rs$/.test(f) ||
+      /^services\/engine-rust\/settlement_rule\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/risk\/rules\/p49_circuit\.ts$/.test(f) ||
+      /^governance\/platform-redesign\/fact-state-registry\.v1\.json$/.test(f),
+    scripts: ["rel-505-backend-alignment.cjs"],
   },
   {
     test: (f) =>

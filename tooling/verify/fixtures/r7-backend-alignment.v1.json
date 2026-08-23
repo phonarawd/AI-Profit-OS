@@ -1,0 +1,233 @@
+{
+  "schema": "governance.release-master.r7-backend-alignment.v1",
+  "rel": "REL-505",
+  "certVersion": 1,
+  "asOf": "2026-08-23",
+  "projectRef": "mgsytcetsiecllmhcyox",
+  "remoteSource": "Supabase MCP list_migrations + execute_sql (read-only)",
+  "cleanAlignment": false,
+  "hideForbidden": true,
+  "migrationsAppliedFixtureIsNotRemoteProof": true,
+  "deps": {
+    "REL-502": "PENDING",
+    "REL-504": "PENDING"
+  },
+  "ownerRels": ["REL-508", "REL-509", "REL-510"],
+  "dimensions": [
+    {
+      "id": "D-API-SDK",
+      "title": "API · SDK consumer path",
+      "verdict": "ALIGNED",
+      "ownerRel": null,
+      "note": "SDK /api/v1/* (Phase0 live) ⊆ Nest user/public routes. Phase1 SSE path reserved. membership/benefits web = PendingFigma · SDK 불필요."
+    },
+    {
+      "id": "D-APPMODULE",
+      "title": "Nest AppModule imports",
+      "verdict": "ALIGNED",
+      "ownerRel": null,
+      "note": "disk *Module 21 = AppModule imports 21."
+    },
+    {
+      "id": "D-ENGINE-FSM",
+      "title": "Engine FSM · resultCode",
+      "verdict": "CONFLICT",
+      "ownerRel": "REL-509",
+      "note": "schema/SDK/Nest status includes cancelled+failed; registry engine.trade_execution omits them. Nest resultCode has CANCELLED_BY_USER; rust/cjs ExecutionResultCode does not."
+    },
+    {
+      "id": "D-MIGRATION-HEAD",
+      "title": "local/remote migration head",
+      "verdict": "CONFLICT",
+      "ownerRel": "REL-508",
+      "note": "5 version-id drifts + remote-only beginner_onboarding_experience + remote duplicate idempotency version. Track A 3 files = LOCAL_ONLY_UNAPPLIED (owner REL-701-DB, not semantic). migrations-applied.v1.json local-prefix 1:1 is NOT remote proof."
+    },
+    {
+      "id": "D-INDEX-RLS-IDEM",
+      "title": "indexes · RLS · idempotency",
+      "verdict": "ALIGNED",
+      "ownerRel": null,
+      "note": "RLS ENABLE + money/auth FORCE + 2 deny_all policies + ledger immutability triggers + request_fingerprint + idempotency_key unique indexes. Remote matches local source. No auth.uid() policies."
+    },
+    {
+      "id": "D-AUTH-PERM",
+      "title": "auth permission",
+      "verdict": "ALIGNED",
+      "ownerRel": null,
+      "note": "Nest JWT + JwtAuthGuard on user controllers. RLS deny-by-default for anon/authenticated. Supabase Auth session 0."
+    },
+    {
+      "id": "D-MONEY-UNITS",
+      "title": "money units",
+      "verdict": "ALIGNED",
+      "ownerRel": null,
+      "note": "USDT = decimal string in schema/SDK/Nest home-money + wallet buckets. KRW integer owned by krw-deposit contract."
+    },
+    {
+      "id": "D-SOURCE-ASOF-REASON",
+      "title": "source / asOf / reasonCode",
+      "verdict": "CONFLICT",
+      "ownerRel": "REL-510",
+      "note": "home-money-read source/asOf/reasonCode=money.home.buckets_missing matches grammar. Live circuit reason BUCKET_INVARIANT_FAIL violates domain.resource.reason (forbidden underscore_flat_alias)."
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "C-MIG-VERSION-DRIFT",
+      "dimension": "D-MIGRATION-HEAD",
+      "ownerRel": "REL-508",
+      "summary": "Same migration name, different version id local vs remote (ptf00c ×4 + krw_deposit_fx_facts)."
+    },
+    {
+      "id": "C-MIG-REMOTE-ORPHAN-ONBOARDING",
+      "dimension": "D-MIGRATION-HEAD",
+      "ownerRel": "REL-508",
+      "summary": "Remote applied 20260821223109 beginner_onboarding_experience with no local SQL source and no leftover public object by that name."
+    },
+    {
+      "id": "C-MIG-REMOTE-DUP-IDEMPOTENCY",
+      "dimension": "D-MIGRATION-HEAD",
+      "ownerRel": "REL-508",
+      "summary": "Remote has two applied rows named idempotency_request_fingerprint (20260810212231 and 20260811062000). Local has only 20260811062000."
+    },
+    {
+      "id": "C-MIG-FIXTURE-HIDE",
+      "dimension": "D-MIGRATION-HEAD",
+      "ownerRel": "REL-508",
+      "summary": "tooling/verify/fixtures/migrations-applied.v1.json stores local filename prefixes and notes remote apply-time versions differ. That is not remote 1:1 proof."
+    },
+    {
+      "id": "C-FSM-REGISTRY-STATUS",
+      "dimension": "D-ENGINE-FSM",
+      "ownerRel": "REL-509",
+      "summary": "fact-state-registry engine.trade_execution states omit cancelled and failed present in schemas/trade-execution-state.v1.json + SDK + Nest."
+    },
+    {
+      "id": "C-FSM-CANCELLED-BY-USER",
+      "dimension": "D-ENGINE-FSM",
+      "ownerRel": "REL-509",
+      "summary": "Nest/SDK/schema resultCode includes CANCELLED_BY_USER; engine-rust ExecutionResultCode and settlement_rule.cjs do not."
+    },
+    {
+      "id": "C-REASON-CIRCUIT-GRAMMAR",
+      "dimension": "D-SOURCE-ASOF-REASON",
+      "ownerRel": "REL-510",
+      "summary": "CIRCUIT_REASON_BUCKET_INVARIANT = BUCKET_INVARIANT_FAIL does not match reasonCode grammar domain.resource.reason."
+    }
+  ],
+  "holds": [
+    {
+      "id": "H-TRACK-A-UNAPPLIED",
+      "ownerRel": "REL-701-DB",
+      "summary": "Local-only unapplied: 20260819210000_source_observations, 20260819220000_canonical_products, 20260820013000_match_results. Apply ≠ this slice."
+    },
+    {
+      "id": "H-DEP-502",
+      "ownerRel": "REL-502",
+      "summary": "REL-502 still PENDING in plan YAML. This cert does not invent FINAL_ACCEPTANCE."
+    },
+    {
+      "id": "H-DEP-504",
+      "ownerRel": "REL-504",
+      "summary": "REL-504 still PENDING in plan YAML. This cert does not invent MIGRATION_READINESS READY."
+    }
+  ],
+  "phase1ReservedSdkPaths": ["/api/v1/trades/:id/execution"],
+  "rlsSnapshot": {
+    "policyCount": 2,
+    "policyNames": [
+      "user_membership_audit_deny_all",
+      "user_match_policy_override_audit_deny_all"
+    ],
+    "authUidPolicyCount": 0,
+    "requestFingerprintTables": ["ledger_journals", "participate_requests"],
+    "ledgerTriggers": [
+      "ledger_accounts_balance_guard",
+      "ledger_journals_immutable",
+      "ledger_entries_immutable"
+    ]
+  },
+  "migrations": {
+    "alignedByVersion": [
+      ["20260808205842", "extensions_vector"],
+      ["20260808205844", "identity_nest_auth"],
+      ["20260808205846", "ledger_accounts_journals"],
+      ["20260808205848", "wallet_deposit_withdraw"],
+      ["20260808205850", "opportunities_pricing"],
+      ["20260808205853", "ai_twin_memory"],
+      ["20260808205857", "referral_support_attribution"],
+      ["20260808205901", "rls_ledger_guards"],
+      ["20260808210600", "rls_security_hardening"],
+      ["20260808224856", "auth_oauth_passkey_stage_a_b"],
+      ["20260808234957", "deposit_config_fee_min_holding"],
+      ["20260809000351", "kyc_decision_audit"],
+      ["20260809001004", "withdraw_stepup_auth"],
+      ["20260809002330", "chain_sweeper"],
+      ["20260809003413", "risk_p49_abuse"],
+      ["20260809010541", "practice_grants_onboarding"],
+      ["20260809010849", "deposit_disputes"],
+      ["20260809010858", "referral_pool_fifo_clawback"],
+      ["20260809023230", "market_intelligence"],
+      ["20260809023713", "user_opportunity_overrides_schema_align"],
+      ["20260809042549", "mission_auto_accrual_fanout"],
+      ["20260809100440", "execution_policy_feed_audit"],
+      ["20260809101114", "user_membership_match_policy"],
+      ["20260809102109", "simulation_engine_m05_platform_reserve"],
+      ["20260809103208", "ai_feature_platform_pick_eval_shadow"],
+      ["20260809142108", "execution_policy_day1_bootstrap"],
+      ["20260809143754", "user_opportunity_overrides_pin_cap_search_path"],
+      ["20260809144814", "catalog_runtime_day1_fx_bootstrap"],
+      ["20260809222034", "ops_inbox_hide_source_event"],
+      ["20260810024643", "growth_ticker_config"],
+      ["20260811062000", "idempotency_request_fingerprint"],
+      ["20260811062100", "ledger_outbox_events"],
+      ["20260811194832", "shadow_replay_advisory_label"],
+      ["20260813025116", "ai_logs_answer_path_scope_redirect"],
+      ["20260813202305", "privacy_purge_anonymize_indexes"]
+    ],
+    "versionIdDrift": [
+      {
+        "name": "ptf00c_fx_marketplace_normalization",
+        "local": "20260814130000",
+        "remote": "20260814134038"
+      },
+      {
+        "name": "ptf00c_provider_runtime_health",
+        "local": "20260814130100",
+        "remote": "20260814134055"
+      },
+      {
+        "name": "ptf00c_provider_health_last_tick_partial",
+        "local": "20260814130200",
+        "remote": "20260814135111"
+      },
+      {
+        "name": "ptf00c_r1_provider_tick_ledger",
+        "local": "20260814140000",
+        "remote": "20260814152139"
+      },
+      {
+        "name": "krw_deposit_fx_facts",
+        "local": "20260818010000",
+        "remote": "20260817154827"
+      }
+    ],
+    "localOnlyUnapplied": [
+      ["20260819210000", "source_observations"],
+      ["20260819220000", "canonical_products"],
+      ["20260820013000", "match_results"]
+    ],
+    "remoteOnly": [
+      {
+        "version": "20260810212231",
+        "name": "idempotency_request_fingerprint",
+        "conflictId": "C-MIG-REMOTE-DUP-IDEMPOTENCY"
+      },
+      {
+        "version": "20260821223109",
+        "name": "beginner_onboarding_experience",
+        "conflictId": "C-MIG-REMOTE-ORPHAN-ONBOARDING"
+      }
+    ]
+  }
+}
