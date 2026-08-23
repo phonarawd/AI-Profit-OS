@@ -1,10 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 import { TaxDisclaimerBlock } from "@aipo/ui/components/trust";
 import { T } from "@aipo/ui/copy/ko";
+import { adminGet, type AdminResult } from "../../../lib/admin-api";
+import { readText } from "../../../lib/admin-truth";
+import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
 
 const TABS = [
   "simulation",
@@ -88,10 +91,41 @@ function GrowthContent() {
   const simGrowthGateApi = "/api/v1/admin/simulation/growth-gate";
   const growthEnabledApi = "/api/v1/admin/growth/enabled";
 
+  const [simLatest, setSimLatest] = useState<AdminResult<unknown> | null>(null);
+  const [program, setProgram] = useState<AdminResult<unknown> | null>(null);
+  const [pool, setPool] = useState<AdminResult<unknown> | null>(null);
+  const [hold, setHold] = useState<AdminResult<unknown> | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      if (tab === "simulation") {
+        const next = await adminGet<unknown>(simLatestApi);
+        if (!cancelled) setSimLatest(next);
+        return;
+      }
+      if (tab === "referral") {
+        const [p, o, h] = await Promise.all([
+          adminGet<unknown>(programApi),
+          adminGet<unknown>(poolApi),
+          adminGet<unknown>(holdQueueApi),
+        ]);
+        if (cancelled) return;
+        setProgram(p);
+        setPool(o);
+        setHold(h);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [tab, simLatestApi, programApi, poolApi, holdQueueApi]);
+
   return (
     <main
       className="p-6 text-lux-text"
       data-admin-growth-tab={tab}
+      data-testid="admin-growth-page"
     >
       <h1 className="text-xl font-semibold">이벤트·프로모션</h1>
       <nav
@@ -184,6 +218,15 @@ function GrowthContent() {
           <p className="text-xs text-lux-text-muted">
             API: POST {simRunApi} · GET {simLatestApi}
           </p>
+          {!simLatest ? (
+            <p className="text-sm text-lux-text-muted">불러오는 중</p>
+          ) : !simLatest.ok ? (
+            <AdminFetchNote failure={simLatest.failure} />
+          ) : (
+            <p className="text-sm">
+              최근 시뮬레이션 <AdminTruth value={readText((simLatest.data as { pass?: unknown }).pass)} />
+            </p>
+          )}
         </section>
       ) : tab === "referral" ? (
         <section
@@ -211,6 +254,26 @@ function GrowthContent() {
           <p className="text-xs text-lux-text-muted">
             API: {programApi}
           </p>
+          {!program ? (
+            <p className="text-sm text-lux-text-muted">불러오는 중</p>
+          ) : !program.ok ? (
+            <AdminFetchNote failure={program.failure} />
+          ) : (
+            <div className="text-sm space-y-1">
+              <p>rewardsEnabled <AdminTruth value={readText((program.data as { rewardsEnabled?: unknown }).rewardsEnabled)} /></p>
+              <p>pool <AdminTruth value={pool?.ok ? readText((pool.data as { availableUsdt?: unknown }).availableUsdt) : null} /></p>
+              <p>
+                hold{" "}
+                <AdminTruth
+                  value={
+                    hold?.ok && Array.isArray((hold.data as { items?: unknown[] }).items)
+                      ? String((hold.data as { items: unknown[] }).items.length)
+                      : null
+                  }
+                />
+              </p>
+            </div>
+          )}
         </section>
       ) : tab === "content" ? (
         <section
@@ -235,9 +298,9 @@ function GrowthContent() {
           </div>
         </section>
       ) : (
-        <section className="mt-6" data-testid={`growth-${tab}-panel`}>
+        <section className="mt-6" data-testid={`growth-${tab}-panel`} data-admin-api="none">
           <p className="text-sm text-lux-text-muted">
-            Admin §35.6 골격 · 시뮬레이션·초대 계약은 해당 탭
+            이 탭의 운영 목록 API가 없습니다.
           </p>
         </section>
       )}
