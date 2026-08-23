@@ -1,5 +1,5 @@
 /**
- * REL-200~206 Admin entry journey.
+ * REL-200~207 Admin entry journey.
  * 로컬 admin 런타임. production URL fallback 0.
  */
 const { test, expect } = require("@playwright/test");
@@ -45,7 +45,7 @@ test("mobile users list stays unavailable and jump is present", async ({ page })
   await expect(page.locator("#admin-user-jump")).toBeVisible();
 });
 
-test("ledger and wallet routes render without leftover stub-only copy", async ({
+test("ledger wallet and compliance routes render without leftover stub-only copy", async ({
   page,
 }) => {
   await openAdmin(page, "/admin/ledger", 1024, 768);
@@ -54,6 +54,11 @@ test("ledger and wallet routes render without leftover stub-only copy", async ({
 
   await openAdmin(page, "/admin/wallet", 768, 1024);
   await expect(page.getByRole("heading", { name: "입출금 관리" })).toBeVisible();
+
+  await openAdmin(page, "/admin/compliance?tab=kyc", 1440, 1080);
+  await expect(page.getByRole("heading", { name: "법적 확인·제재" })).toBeVisible();
+  await expect(page.getByTestId("compliance-kyc-panel")).toBeVisible();
+  await expect(page.locator("text=Admin §9.1.1 골격")).toHaveCount(0);
 });
 
 test("dashboard axe has no new critical/serious", async ({ page }) => {

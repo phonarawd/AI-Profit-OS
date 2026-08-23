@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-206 COMPLETED. FIRST_EXECUTION_TODO=REL-207. HARD_STOP_AFTER=REL-206. BATCH_REL_200_206=ADMIN_ENTRY.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-207 COMPLETED. FIRST_EXECUTION_TODO=REL-208. HARD_STOP_AFTER=REL-207. BATCH_REL_200_206=ADMIN_ENTRY.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -195,8 +195,8 @@ todos:
     content: "[Admin] /admin/wallet 실사+구현 - deposit-config/krw/disputes live · review UNAVAILABLE"
     status: completed
   - id: rel-207
-    content: "[Admin] /admin/compliance(KYC 심사) 실사+구현"
-    status: pending
+    content: "[Admin] /admin/compliance(KYC 심사) 실사+구현 — DONE live queue+approve/reject+doc-url · stub-only 0"
+    status: completed
   - id: rel-208
     content: "[Admin] /admin/risk 실사+구현"
     status: pending
@@ -420,10 +420,10 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-207
-LAST_COMPLETED_TODO = REL-206
+FIRST_EXECUTION_TODO = REL-208
+LAST_COMPLETED_TODO = REL-207
 BATCH_REL_200_206 = ADMIN_ENTRY
-HARD_STOP_AFTER = REL-206
+HARD_STOP_AFTER = REL-207
 PRE_LOCK_COUNT = 1
 REL_COUNT = 116
 POST_COUNT = 19
@@ -2375,7 +2375,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-207
 TITLE: /admin/compliance 실사+구현
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-207
