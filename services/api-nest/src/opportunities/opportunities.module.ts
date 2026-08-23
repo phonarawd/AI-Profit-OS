@@ -3,6 +3,8 @@ import { ExecutionPolicyModule } from "../execution-policy/execution-policy.modu
 import { LedgerModule } from "../ledger/ledger.module";
 import { EventsModule } from "../events/events.module";
 import { LoopModule } from "../loop/loop.module";
+import { KillSwitchModule } from "../kill-switch/kill-switch.module";
+import { PriceOverrideModule } from "../price-override/price-override.module";
 import { RiskModule } from "../risk/risk.module";
 import { AssetImageR2Service } from "./asset-image-r2.service";
 import { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
@@ -10,6 +12,8 @@ import { FxSnapshotService } from "./fx-snapshot.service";
 import { OpportunityRepriceService } from "./opportunity-reprice.service";
 import { OpportunitiesAdminController } from "./opportunities.admin.controller";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
+import { CurrentFxApproxService } from "./current-fx-approx.service";
+import { CurrentFxApproxUserController } from "./current-fx-approx.user.controller";
 import { OpportunitiesUserController } from "./opportunities.user.controller";
 import { OpportunitiesUserService } from "./opportunities.user.service";
 import { ParticipateService } from "./participate.service";
@@ -22,10 +26,13 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
     LedgerModule,
     ExecutionPolicyModule,
     RiskModule,
+    KillSwitchModule,
+    PriceOverrideModule,
     LoopModule,
   ],
   controllers: [
     OpportunitiesUserController,
+    CurrentFxApproxUserController,
     OpportunitiesAdminController,
     UserOpportunityOverrideAdminController,
   ],
@@ -38,6 +45,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
     UserOpportunityOverrideAdminService,
     CatalogRuntimeSeedService,
     FxSnapshotService,
+    CurrentFxApproxService,
   ],
   exports: [
     AssetImageR2Service,

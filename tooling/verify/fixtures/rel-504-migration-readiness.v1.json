@@ -1,0 +1,13 @@
+{
+  "rel": "REL-504",
+  "deps": ["REL-003", "REL-408", "REL-502"],
+  "protectedScopeMutation": false,
+  "applyMigration": 0,
+  "productionDbApply": 0,
+  "applyLog": 0,
+  "applyOwner": "REL-701-DB",
+  "projectRef": "mgsytcetsiecllmhcyox",
+  "trackAVersions": ["20260819210000", "20260819220000", "20260820013000"],
+  "trackAReprice": "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
+  "extraVerifies": ["migrations-applied-parity.cjs", "rel-408-security-baseline.cjs"]
+}

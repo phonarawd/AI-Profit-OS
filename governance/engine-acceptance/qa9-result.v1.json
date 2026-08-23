@@ -2,15 +2,15 @@
   "schema": "governance.engine-acceptance.qa9-result.v1",
   "version": "1.0.0",
   "suite_id": "QA9",
-  "run_id": "qa9-acceptance-report-20260814",
+  "run_id": "qa9-acceptance-report-20260823",
   "todoId": "qa9-acceptance-report",
-  "measuredAt": "2026-08-14T19:11:43.651Z",
-  "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+  "measuredAt": "2026-08-23T17:18:35.745Z",
+  "baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
   "kill_switch": {
     "verified_before_checks": true,
-    "target_env": "local",
+    "target_env": "ci",
     "hostname": "localhost",
-    "synthetic_account_namespace": "qa-synth-local"
+    "synthetic_account_namespace": "qa-synth-ci"
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -89,5 +89,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI while defects.P0/P1 > 0.",
     "Every report section is derived from the current qa4/5/6/8-result files at run time - no hardcoded historical defect name."
   ],
-  "checksum": "8c2f75be89cac0bb645e8249f143f9c95500846e07a0728d5b99484058d76552"
+  "checksum": "c058046548207d298b2690e38a63a7028431a11cb5466264e3d1a3b12a691a61"
 }

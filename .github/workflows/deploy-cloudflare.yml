@@ -99,8 +99,12 @@ jobs:
       - name: Origin smoke (workers.dev HTTP)
         if: inputs.surface == 'web' || inputs.surface == 'ops' || inputs.surface == 'all'
         run: |
+          SLOT="production"
+          if [ "${{ inputs.target }}" != "production" ]; then
+            SLOT="staging"
+          fi
           case "${{ inputs.surface }}" in
-            web) node tooling/deploy/cf-origin-smoke.cjs web ;;
-            ops) node tooling/deploy/cf-origin-smoke.cjs ops ;;
-            *) node tooling/deploy/cf-origin-smoke.cjs all ;;
+            web) node tooling/deploy/cf-origin-smoke.cjs web "$SLOT" ;;
+            ops) node tooling/deploy/cf-origin-smoke.cjs ops "$SLOT" ;;
+            *) node tooling/deploy/cf-origin-smoke.cjs all "$SLOT" ;;
           esac

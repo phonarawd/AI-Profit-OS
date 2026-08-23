@@ -7,6 +7,7 @@ import {
   BadRequestException,
   Injectable,
 } from "@nestjs/common";
+import { KillSwitchService } from "../kill-switch/kill-switch.service";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { PostgresService } from "../db/postgres";
 import { REFERRAL_EVENTS } from "./referral.events";
@@ -31,6 +32,7 @@ export class ReferralProgramService {
   constructor(
     private readonly db: PostgresService,
     private readonly bus: InProcessEventBus,
+    private readonly killSwitch: KillSwitchService,
   ) {}
 
   day1Defaults(
@@ -182,6 +184,7 @@ export class ReferralProgramService {
 
   /** Cash accrual allowed only when rewards ON and not halted */
   async canAccrueCash(): Promise<boolean> {
+    if (await this.killSwitch.isBlocked("referral_accrual")) return false;
     const cfg = await this.get();
     return cfg.rewardsEnabled === true && cfg.accrualHalted !== true;
   }

@@ -167,7 +167,7 @@ QA0 freeze 이후 **protected product mutation**은 새 acceptance epoch를 만�
 | QA7 | current-epoch QA1–QA6 재구축 후에만 |
 | QA8 | **discovery suite** (mandatory_suite.QA1..QA8). V2부터 predecessor COMPLETE는 역사 · **current epoch = STALE** · 재실행 필수. P0/P2 발견은 새 epoch 실행이 대체할 때까지 predecessor evidence/history로 남긴다. 결함을 rebase가 지우지 않는다. |
 | QA9 | **aggregation / verdict phase** (discovery 아님). V2부터 predecessor QA9 verdict/report는 current-authoritative가 아니다. 새 epoch discovery evidence가 생긴 뒤에만 aggregation을 재실행한다. rebase 시점에 새 verdict를 만들지 않는다. |
-| eval dataset | product-only rebase 동안 **unchanged / MATCH** |
+| eval dataset | product-only rebase 동안 **unchanged / MATCH**. live eval ≠ predecessor 이면 MATCH 주장 금지 · 새 epoch ledger에 `ACKNOWLEDGED_EXPANSION`(old/new hash) 기록 · in-place eval rewrite 금지 |
 | workflow hash | 바이트가 안 바뀌면 현 승인 해시 **MATCH** · 바뀌면 L7 amendment |
 | `acceptance_scope.unchanged` | **NEW epoch baseline**과 비교 |
 | Human/PO ACK | rebase 필수 |
@@ -178,7 +178,7 @@ QA0 freeze 이후 **protected product mutation**은 새 acceptance epoch를 만�
 1. 옛 baseline id를 유지한 채 `prompt_hash`만 교체
 2. predecessor QA1–QA6 결과를 current COMPLETE로 재사용
 3. protected 변경 파일을 scope에서 빼서 MATCH 제조
-4. product-only rebase 중 eval dataset 변경
+4. product-only rebase 중 eval dataset 변경(MATCH 주장 또는 옛 baseline id에 eval hash 제자리 수정). 새 epoch에 old/new를 `ACKNOWLEDGED_EXPANSION`으로 기록하는 것은 이 금지가 아님
 5. workflow hash 암묵 변경
 6. invalidation ledger 없이 새 baseline 생성
 7. ACK 없는 rebase

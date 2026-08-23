@@ -88,6 +88,25 @@ export class FxSnapshotService {
   }
 
   /**
+   * REL-508 — latest row for USDT→KRW display only.
+   * Missing DB/row → null. Never invent usdtKrw.
+   */
+  async getLatestKrwDisplaySnapshot(): Promise<{
+    id: string;
+    capturedAt: string;
+    usdtKrw: string;
+  } | null> {
+    if (!this.db.configured()) return null;
+    const row = await this.loadLatest();
+    if (!row || !row.usd_krw) return null;
+    return {
+      id: row.id,
+      capturedAt: row.captured_at,
+      usdtKrw: row.usd_krw,
+    };
+  }
+
+  /**
    * PTF-00C P0-B entry point — call for adapterId=coingecko|frankfurter fx
    * ingest ticks. Idempotent: a composite result identical to the latest
    * row is a no-op (never inserts a byte-identical duplicate).

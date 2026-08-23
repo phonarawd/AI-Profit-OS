@@ -35,6 +35,11 @@ const nest = require("./harness/ci-nest-boot.cjs");
 const K6_SCRIPT = path.join(ROOT, "tooling/engine-acceptance/k6/scenario-mix.js");
 const BUDGET_REL = "governance/engine-acceptance/perf-budget.v1.json";
 const REQUIRED_TAGS = ["feed_read", "participate", "wallet_read", "auth_profile"];
+// Isolated CI Nest only. Production default stays 20/60s in auth-rate-limit.cjs.
+// GET /auth/session shares the class-level flood guard; the ACK'd 1VU/20s mix
+// is ~100 session reads and 429s after 20 by design. QA6 measures session-read
+// p95/error_rate of successful traffic, not login-flood behavior.
+const ISOLATED_AUTH_RATE_LIMIT_MAX = "10000";
 
 const TAG_ENV_NAME = {
   feed_read: "FEED_READ",
@@ -194,6 +199,7 @@ async function runQa6Threshold(opts = {}) {
         LLM_PROVIDER: "none",
         JWT_USER_SECRET: secrets.jwtUserSecret,
         JWT_ADMIN_SECRET: secrets.jwtAdminSecret,
+        AUTH_RATE_LIMIT_MAX: ISOLATED_AUTH_RATE_LIMIT_MAX,
       },
     });
     await nest.waitForHealth({ port });
@@ -343,10 +349,16 @@ async function runQa6Threshold(opts = {}) {
           .replace(/Bearer\s+[A-Za-z0-9._-]+/g, "Bearer [redacted]")
           .replace(/postgres:[^@\s]+@/gi, "postgres:[redacted]@")
       : null,
+    isolated_auth_rate_limit: {
+      max: Number(ISOLATED_AUTH_RATE_LIMIT_MAX),
+      production_default_unchanged: true,
+      reason: "ACK'd QA6 mix vs class-level AuthRateLimitGuard on GET /auth/session",
+    },
     notes: [
       "Real k6 threshold execution against a booted Nest + isolated Postgres.",
       "Thresholds are read from perf-budget.v1.json only — never invented here.",
       "This runner does not itself decide the canonical QA6 verdict — checks/performance-world.cjs does, only when this evidence is fresh.",
+      "Isolated Nest AUTH_RATE_LIMIT_MAX is raised so session-read p95 is measured; production 20/60s limiter is unchanged.",
     ],
   };
 

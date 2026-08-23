@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/admin-kill-switch.v1.json",
+  "title": "AdminKillSwitchV1",
+  "description": "REL-406 frozen 9 kill-switch IDs. GLOBAL_OPPORTUNITY_PAUSE reserved by REL-400. Other eight published from live wraps + Admin §9.5.5 domains. NEVER: 10th ID · second money_circuit · client-only toggle.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "ids"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "ids": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "string",
+        "enum": [
+          "GLOBAL_OPPORTUNITY_PAUSE",
+          "GLOBAL_MATCHING_PAUSE",
+          "GLOBAL_WITHDRAW_PAUSE",
+          "GLOBAL_DEPOSIT_PAUSE",
+          "GLOBAL_ALL_PAUSE",
+          "MONEY_CIRCUIT",
+          "PUSH_KILL",
+          "GROWTH_PAUSE",
+          "REFERRAL_ACCRUAL_HALT"
+        ]
+      }
+    }
+  },
+  "default": {
+    "version": 1,
+    "ids": [
+      "GLOBAL_OPPORTUNITY_PAUSE",
+      "GLOBAL_MATCHING_PAUSE",
+      "GLOBAL_WITHDRAW_PAUSE",
+      "GLOBAL_DEPOSIT_PAUSE",
+      "GLOBAL_ALL_PAUSE",
+      "MONEY_CIRCUIT",
+      "PUSH_KILL",
+      "GROWTH_PAUSE",
+      "REFERRAL_ACCRUAL_HALT"
+    ]
+  }
+}

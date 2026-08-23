@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { EventsModule } from "../events/events.module";
+import { KillSwitchModule } from "../kill-switch/kill-switch.module";
 import { InboxModule } from "../inbox/inbox.module";
 import { PushDispatchClient } from "./push-dispatch.client";
 import { PushEmitService } from "./push-emit.service";
@@ -9,7 +10,7 @@ import { PushSubscriptionService } from "./push-subscription.service";
 import { PushUserController } from "./push.user.controller";
 
 @Module({
-  imports: [EventsModule, InboxModule],
+  imports: [EventsModule, InboxModule, KillSwitchModule],
   controllers: [PushUserController, PushKillAdminController],
   providers: [
     PushKillService,

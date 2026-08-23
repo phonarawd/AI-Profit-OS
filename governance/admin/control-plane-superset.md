@@ -72,15 +72,19 @@ second money circuit.
 
 ### 3.2 REL-406 9 IDs
 
-REL-406 must publish exactly nine frozen constants. The master plan reserves
-`GLOBAL_OPPORTUNITY_PAUSE` as one of those nine. REL-400 does **not** invent the
-other eight names.
+REL-406 published exactly nine frozen constants:
 
-Until REL-406 publishes the list:
+1. `GLOBAL_OPPORTUNITY_PAUSE`
+2. `GLOBAL_MATCHING_PAUSE`
+3. `GLOBAL_WITHDRAW_PAUSE`
+4. `GLOBAL_DEPOSIT_PAUSE`
+5. `GLOBAL_ALL_PAUSE`
+6. `MONEY_CIRCUIT` (wrap `money_circuit`)
+7. `PUSH_KILL` (wrap `push_kill`)
+8. `GROWTH_PAUSE` (wrap `growth_enabled` — ON only)
+9. `REFERRAL_ACCRUAL_HALT` (wrap `referral_accrual_halt`)
 
-- REL-213 may live-wire existing reads (`push`, `money_circuit`) and must show an
-  honest empty state for unpublished switches.
-- A toggle that the server does not enforce is FAIL (REL-406 EXIT_GATE).
+A toggle that the server does not enforce is FAIL (REL-406 EXIT_GATE).
 
 ### 3.3 UI rules (REL-213)
 

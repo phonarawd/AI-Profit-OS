@@ -2,16 +2,16 @@
   "schema": "governance.engine-acceptance.qa3-result.v1",
   "version": "1.0.0",
   "suite_id": "QA3",
-  "run_id": "qa3-generative-fuzz-20260814",
+  "run_id": "qa3-generative-fuzz-20260823",
   "todoId": "qa3-generative-fuzz",
-  "measuredAt": "2026-08-14T18:34:53.636Z",
-  "baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
-  "mode": "tiny",
+  "measuredAt": "2026-08-23T17:16:29.648Z",
+  "baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
+  "mode": "full",
   "kill_switch": {
     "verified_before_checks": true,
-    "target_env": "local",
+    "target_env": "ci",
     "hostname": "localhost",
-    "synthetic_account_namespace": "qa-synth-local"
+    "synthetic_account_namespace": "qa-synth-ci"
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -23,8 +23,8 @@
     "fast_check": {
       "check_id": "QA3_FAST_CHECK_PROPERTIES",
       "status": "PASS",
-      "mode": "tiny",
-      "numRuns": 40,
+      "mode": "full",
+      "numRuns": 200,
       "seedBase": 169017344,
       "rng_version": "aipo-ea-rng-v1",
       "fast_check_version": "4.9.0",
@@ -38,7 +38,7 @@
           "title": "evaluateExecution same ctx → same result",
           "status": "PASS",
           "seed": 172154881,
-          "numRuns": 40,
+          "numRuns": 200,
           "fast_check_version": "4.9.0",
           "findings": [],
           "rich_evidence": null
@@ -49,7 +49,7 @@
           "title": "nowMs >= hard deadline → MATCH_TIMEOUT",
           "status": "PASS",
           "seed": 172154882,
-          "numRuns": 40,
+          "numRuns": 200,
           "fast_check_version": "4.9.0",
           "findings": [],
           "rich_evidence": null
@@ -60,7 +60,7 @@
           "title": "settlement_rule source forbids Math.random / successRate",
           "status": "PASS",
           "seed": 172154883,
-          "numRuns": 40,
+          "numRuns": 200,
           "fast_check_version": "4.9.0",
           "findings": [],
           "rich_evidence": null
@@ -71,7 +71,7 @@
           "title": "same semantic → same fingerprint (key-order independent)",
           "status": "PASS",
           "seed": 168747009,
-          "numRuns": 40,
+          "numRuns": 200,
           "fast_check_version": "4.9.0",
           "findings": [],
           "rich_evidence": null
@@ -82,7 +82,7 @@
           "title": "same key + conflicting payload → IDEMPOTENCY_KEY_CONFLICT",
           "status": "PASS",
           "seed": 168747011,
-          "numRuns": 40,
+          "numRuns": 200,
           "fast_check_version": "4.9.0",
           "findings": [],
           "rich_evidence": null
@@ -93,7 +93,7 @@
           "title": "user A token never authorizes user B resource",
           "status": "PASS",
           "seed": 168165377,
-          "numRuns": 40,
+          "numRuns": 200,
           "fast_check_version": "4.9.0",
           "findings": [],
           "rich_evidence": null
@@ -104,7 +104,7 @@
           "title": "usdtGe(x,x) always true",
           "status": "PASS",
           "seed": 168677377,
-          "numRuns": 40,
+          "numRuns": 200,
           "fast_check_version": "4.9.0",
           "findings": [],
           "rich_evidence": null
@@ -145,5 +145,5 @@
     "Failure → rich evidence + defects · product mutation 0.",
     "Does not issue ENGINE_ACCEPTED_FOR_UI."
   ],
-  "checksum": "ebd51113b63ac08769f7f1dc1a6d9853986b9e49f3db128956af3e665150cf39"
+  "checksum": "9156bf579c3d9f5c6a6d3cba8ef7ad816697a31a724666fe9c07a5dd136dd75e"
 }

@@ -18,8 +18,9 @@ const config = {
     trace: "off",
   },
   metadata: {
-    gate: "qa-lab-bootstrap",
+    gate: "qa-lab-expansion",
     mcpOnlyEvidence: "NOT_DONE",
+    localFullMatrix: "FORBIDDEN",
   },
 };
 

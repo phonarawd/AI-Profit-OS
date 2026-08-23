@@ -97,6 +97,7 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     list: read("all"),
     get: read("all"),
     patchPricing: write("all"),
+    getPriceLayers: read("all"),
     upsertAsset: write("all"),
     seedTradingCards: write("all"),
     seedLuxuryBags: write("all"),
@@ -172,6 +173,35 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
   WithdrawCredentialsAdminController: {
     resetPin: write("withdrawPinReset"),
     revokeWebauthn: write("withdrawPinReset"),
+  },
+  AuditEventsAdminController: {
+    list: read("audit"),
+    get: read("audit"),
+  },
+  KillSwitchAdminController: {
+    list: read("circuit"),
+    put: write("circuit"),
+  },
+  AdminOpsAdminController: {
+    modes: read("all"),
+    preview: write("all"),
+    confirm: write("all"),
+    apply: write("all"),
+    rollback: write("all"),
+    previewAsUser: read("all"),
+  },
+  MatchControlAdminController: {
+    verbs: read("all"),
+    preview: write("all"),
+    confirm: write("all"),
+    apply: write("all"),
+  },
+  SourcePolicyAdminController: {
+    health: read("all"),
+    versions: read("all"),
+    publish: write("all"),
+    rollback: write("all"),
+    founderOverride: write("all"),
   },
 });
 

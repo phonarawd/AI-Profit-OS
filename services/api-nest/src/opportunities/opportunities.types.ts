@@ -16,6 +16,9 @@ export type UpdateOpportunityPricingRequest = {
   buyMarketId?: MarketId;
   sellMarketId?: MarketId;
   updatedByAdminId: string;
+  reason: string;
+  reasonCode: string;
+  role?: string;
 };
 
 export type OpportunityAdminListQuery = {

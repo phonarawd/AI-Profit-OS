@@ -12,6 +12,7 @@ import {
 import { InProcessEventBus } from "../events/in-process.bus";
 import { PostgresService } from "../db/postgres";
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
+import { KillSwitchService } from "../kill-switch/kill-switch.service";
 import { MoneyCircuitService } from "./money-circuit.service";
 import { P49_ALL_RULES, getP49Rule } from "./rules/p49_catalog";
 import {
@@ -58,6 +59,7 @@ export class RiskService {
     private readonly bus: InProcessEventBus,
     private readonly circuit: MoneyCircuitService,
     private readonly buckets: LedgerBucketsService,
+    private readonly killSwitch: KillSwitchService,
   ) {}
 
   catalog() {
@@ -285,6 +287,7 @@ export class RiskService {
     practiceDebitAttempt?: boolean;
     requestedBucket?: string;
   }): Promise<void> {
+    await this.killSwitch.assertPath("withdraw");
     try {
       await this.circuit.assertMoneyOpsAllowed();
     } catch {
@@ -378,6 +381,7 @@ export class RiskService {
   }
 
   async assertBeforeMerge(userId: string): Promise<void> {
+    await this.killSwitch.assertPath("merge");
     try {
       await this.circuit.assertMoneyOpsAllowed();
     } catch {
@@ -426,6 +430,7 @@ export class RiskService {
       throw new ForbiddenException(practiceHit);
     }
 
+    await this.killSwitch.assertPath("matching");
     try {
       await this.circuit.assertMoneyOpsAllowed();
     } catch {

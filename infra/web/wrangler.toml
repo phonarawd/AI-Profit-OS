@@ -24,6 +24,10 @@ PLATFORM_NAME = "AI Profit OS"
 name = "ai-profit-web-preview"
 workers_dev = true
 
+[env.preview.assets]
+directory = "../../apps/web/.open-next/assets"
+binding = "ASSETS"
+
 [env.production]
 name = "ai-profit-web"
 workers_dev = true

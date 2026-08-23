@@ -1,0 +1,13 @@
+{
+  "lockedRoles": ["super", "finance", "cs", "risk", "marketing"],
+  "inventedRolesForbidden": ["role_6", "role_7", "role_8"],
+  "auditCapability": {
+    "super": "write",
+    "finance": "read",
+    "cs": "read",
+    "risk": "read",
+    "marketing": "none"
+  },
+  "denyAction": "AuditEventsAdminController.list",
+  "denyReason": "ADMIN_CAPABILITY_DENIED"
+}

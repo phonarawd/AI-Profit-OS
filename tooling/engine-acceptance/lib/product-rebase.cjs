@@ -347,6 +347,22 @@ function validateRebaseEntry(entry, index, fails, opts = {}) {
   if (entry.qa9_verdict_issued === true) {
     fail("must not fabricate a QA9 verdict at rebase time");
   }
+  if (entry.eval_dataset_status != null) {
+    if (
+      entry.eval_dataset_status !== "MATCH" &&
+      entry.eval_dataset_status !== "ACKNOWLEDGED_EXPANSION"
+    ) {
+      fail("eval_dataset_status must be MATCH or ACKNOWLEDGED_EXPANSION");
+    }
+    if (entry.eval_dataset_status === "ACKNOWLEDGED_EXPANSION") {
+      if (!entry.old_eval_dataset_hash || !entry.new_eval_dataset_hash) {
+        fail("ACKNOWLEDGED_EXPANSION requires old_eval_dataset_hash and new_eval_dataset_hash");
+      }
+      if (entry.old_eval_dataset_hash === entry.new_eval_dataset_hash) {
+        fail("ACKNOWLEDGED_EXPANSION requires old_eval_dataset_hash ≠ new_eval_dataset_hash");
+      }
+    }
+  }
 }
 
 /**
@@ -372,14 +388,34 @@ function evaluateRebaseInvariants(entry, ctx, fails) {
   if (entry.old_protected_manifest_hash !== pred.protected_scope_manifest.aggregate) {
     fail("old_protected_manifest_hash must equal predecessor manifest aggregate");
   }
-  if (entry.eval_dataset_hash !== pred.eval_dataset_hash) {
-    fail("eval_dataset_hash must remain MATCH to predecessor during product-only rebase");
-  }
-  if (ctx.liveEvalHash && entry.eval_dataset_hash !== ctx.liveEvalHash) {
-    fail("eval dataset drift during product-only rebase");
-  }
-  if (ctx.liveEvalHash && pred.eval_dataset_hash !== ctx.liveEvalHash) {
-    fail("eval dataset drift during product-only rebase (live ≠ predecessor)");
+  const predEval = pred.eval_dataset_hash;
+  const liveEval = ctx.liveEvalHash;
+  const evalExpanded = Boolean(liveEval && predEval && liveEval !== predEval);
+  const expansionRecorded = entry.eval_dataset_status === "ACKNOWLEDGED_EXPANSION";
+  if (evalExpanded) {
+    if (!expansionRecorded) {
+      fail("eval dataset drift during product-only rebase");
+    } else {
+      if (entry.old_eval_dataset_hash !== predEval) {
+        fail("old_eval_dataset_hash must equal predecessor eval_dataset_hash");
+      }
+      if (entry.new_eval_dataset_hash !== liveEval) {
+        fail("new_eval_dataset_hash must equal live eval_dataset_hash");
+      }
+      if (entry.eval_dataset_hash !== liveEval) {
+        fail("eval_dataset_hash must equal live eval when recording ACKNOWLEDGED_EXPANSION");
+      }
+    }
+  } else {
+    if (expansionRecorded) {
+      fail("ACKNOWLEDGED_EXPANSION requires live eval ≠ predecessor");
+    }
+    if (entry.eval_dataset_hash !== predEval) {
+      fail("eval_dataset_hash must remain MATCH to predecessor during product-only rebase");
+    }
+    if (liveEval && entry.eval_dataset_hash !== liveEval) {
+      fail("eval dataset drift during product-only rebase");
+    }
   }
   if (ctx.liveWorkflowHash && entry.acceptance_workflow_hash !== ctx.liveWorkflowHash) {
     fail("workflow hash silently changed");
@@ -817,6 +853,20 @@ function stampCurrentPolicyOnEntry(entry) {
   return entry;
 }
 
+/** product-only = MATCH. live eval ≠ predecessor 이면 MATCH 주장 금지 · 새 epoch에 old/new 기록. */
+function stampEvalDatasetOnEntry(entry, predecessorEvalHash, liveEvalHash) {
+  if (liveEvalHash && predecessorEvalHash && liveEvalHash !== predecessorEvalHash) {
+    entry.eval_dataset_status = "ACKNOWLEDGED_EXPANSION";
+    entry.old_eval_dataset_hash = predecessorEvalHash;
+    entry.new_eval_dataset_hash = liveEvalHash;
+    entry.eval_dataset_hash = liveEvalHash;
+  } else {
+    entry.eval_dataset_status = "MATCH";
+    entry.eval_dataset_hash = liveEvalHash || predecessorEvalHash;
+  }
+  return entry;
+}
+
 function buildRebaseReport({ baseline, tip, measuredAt }) {
   const policy = resolvePolicyForEntry(tip) || currentPolicy();
   const qa8Line =
@@ -870,7 +920,11 @@ ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
 | working_tree_clean | \`${baseline.working_tree_clean}\` (fact only — not forced clean) |
 | protected_scope_clean | \`${baseline.protected_scope_clean}\` |
 | prompt_hash | live pinned (\`${baseline.prompt_hash}\`) |
-| eval_dataset_hash | MATCH predecessor (\`${baseline.eval_dataset_hash}\`) |
+| eval_dataset_hash | ${
+    tip.eval_dataset_status === "ACKNOWLEDGED_EXPANSION"
+      ? `ACKNOWLEDGED_EXPANSION (old \`${tip.old_eval_dataset_hash}\` → live \`${baseline.eval_dataset_hash}\`)`
+      : `MATCH predecessor (\`${baseline.eval_dataset_hash}\`)`
+  } |
 | acceptance_workflow_hash | MATCH current approved (\`${baseline.acceptance_workflow_hash}\`) |
 
 **금지 확인:** \`ENGINE_ACCEPTED_FOR_UI\` **not issued**. Predecessor discovery/aggregation results were **not** rewritten as current-epoch COMPLETE. Predecessor QA9 verdict is **not** current-authoritative.
@@ -928,6 +982,7 @@ module.exports = {
   buildStaleAggregationPhase,
   mapSuitesForRebase,
   stampCurrentPolicyOnEntry,
+  stampEvalDatasetOnEntry,
   currentPolicy,
   policyById,
   resolvePolicyId,

@@ -235,7 +235,23 @@
       "predecessor_baseline_id": "ea-baseline-fdf692cb8a02-d532a6d7958b",
       "bound_at": "2026-08-14T16:41:33.127Z",
       "note": "current acceptance_scope.unchanged compares against this epoch; historical amendments were NOT created under this id"
+    },
+    {
+      "kind": "current",
+      "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "rebase_id": "ea-rebase-a6908eff1def-3db9e8f8832f",
+      "predecessor_baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5",
+      "bound_at": "2026-08-23T10:32:29.436Z",
+      "note": "current acceptance_scope.unchanged compares against this epoch; historical amendments were NOT created under this id"
+    },
+    {
+      "kind": "current",
+      "baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
+      "rebase_id": "ea-rebase-229e7777f9b0-2d4567b3a2c8",
+      "predecessor_baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+      "bound_at": "2026-08-23T16:59:32.198Z",
+      "note": "current acceptance_scope.unchanged compares against this epoch; historical amendments were NOT created under this id"
     }
   ],
-  "current_epoch_baseline_id": "ea-baseline-64b0f8a6d984-3657543f36b5"
+  "current_epoch_baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8"
 }

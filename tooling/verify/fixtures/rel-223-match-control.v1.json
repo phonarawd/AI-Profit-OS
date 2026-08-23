@@ -1,0 +1,15 @@
+{
+  "verbs": ["ALLOW", "BLOCK", "PAUSE", "CANCEL", "REASSIGN"],
+  "kinds": ["match", "bulk", "schedule", "campaign"],
+  "forbiddenVerbs": [
+    "CREDIT",
+    "DEBIT",
+    "ADJUST",
+    "BALANCE_PATCH",
+    "LEDGER_EDIT",
+    "FORCE_SETTLE",
+    "WALLET_TOPUP"
+  ],
+  "inventedVerbsForbidden": ["FORCE_MATCH", "EDIT_BALANCE", "CREDIT"],
+  "reasonMin": 10
+}

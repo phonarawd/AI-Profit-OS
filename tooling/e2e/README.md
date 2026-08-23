@@ -24,7 +24,20 @@ node tooling/verify/qa-env-isolation-guard.cjs
 ```
 
 브라우저 스펙은 로컬 저사양에서 필수가 아니다. 파일 존재 + 가드 자기검증이 Bootstrap 증거다.
-REL-500이 matrix를 확장한다.
+
+## QA Lab Expansion (REL-500)
+
+위험 기반 매트릭스. 나이브 카르테시안은 진단 크기일 뿐 required DONE 집합이 아니다.
+
+- SSOT: `expansion/qa-lab-expansion.v1.json` · 선택기 `lib/qa-lab-expansion.cjs`
+- 필수: money paths × auth × chromium × online · Home 390/1440 × chromium × a11y · admin-entry isolation
+- 샘플: firefox/webkit Home · tablet 768 · offline Home
+- 로컬 풀매트릭스 금지 (`QA_LAB_FULL=1` / CI만)
+- Playwright MCP 브라우저 클릭만으로는 DONE이 아니다
+
+```text
+node tooling/verify/rel-500-qa-lab-expansion.cjs
+```
 
 ## Home 클로저 (REL-105)
 
@@ -59,4 +72,29 @@ node tooling/verify/axe-harness.cjs
 
 ```text
 node tooling/verify/user-ledger-query.cjs
+```
+
+## 금융/red-team (REL-501)
+
+가드 안에서만 실패 모드를 친다. 실원장 mutation 0. production DB write 0.
+
+- 모드: idempotency · double_submit · insufficient · stale · expired · blocked · replay
+- 진입: `lib/money-red-team.cjs` → `runMoneyMutationTest` 필수
+- Playwright MCP 클릭만으로는 DONE이 아니다
+
+```text
+node tooling/verify/rel-501-money-red-team.cjs
+```
+
+## Production loop (REL-507)
+
+`specs/production-loop.spec.cjs` + `lib/production-loop.cjs`.
+
+- One line: login -> participate -> settlement -> wallet
+- Isolation guard required. production host 0. invented success amount 0
+- LIVE_KAKAO_HUMAN_E2E stays NOT_RUN
+- Playwright MCP click is not DONE
+
+```text
+node tooling/verify/rel-507-production-e2e.cjs
 ```

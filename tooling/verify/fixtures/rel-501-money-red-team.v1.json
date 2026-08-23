@@ -1,0 +1,22 @@
+{
+  "rel": "REL-501",
+  "modeCount": 7,
+  "modes": [
+    "idempotency",
+    "double_submit",
+    "insufficient",
+    "stale",
+    "expired",
+    "blocked",
+    "replay"
+  ],
+  "deps": ["REL-006", "REL-007", "REL-008", "REL-015", "REL-500"],
+  "extraVerifies": [
+    "qa-env-isolation-guard.cjs",
+    "money-unavailable.cjs",
+    "idempotency-conflict-detection.cjs",
+    "user-ledger-query.cjs"
+  ],
+  "productionDbWrite": 0,
+  "realLedgerMutation": 0
+}

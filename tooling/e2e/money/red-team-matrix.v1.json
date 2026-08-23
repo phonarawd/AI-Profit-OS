@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "rel": "REL-501",
+  "mcpOnlyDone": false,
+  "productionDbWrite": 0,
+  "isolationGuardRequired": true,
+  "realLedgerMutation": 0,
+  "modes": [
+    {
+      "id": "idempotency",
+      "expect": "reuse_or_conflict",
+      "productFiles": [
+        "services/api-nest/src/ledger/idempotency-fingerprint.ts",
+        "services/api-nest/src/ledger/ledger.posting.service.ts"
+      ],
+      "needles": ["IDEMPOTENCY_KEY_CONFLICT", "reused: true"]
+    },
+    {
+      "id": "double_submit",
+      "expect": "second_no_extra_side_effect",
+      "productFiles": [
+        "services/api-nest/src/opportunities/participate.service.ts"
+      ],
+      "needles": ["reused: true"]
+    },
+    {
+      "id": "insufficient",
+      "expect": "reject",
+      "productFiles": [
+        "services/api-nest/src/opportunities/participate.service.ts"
+      ],
+      "needles": ["INSUFFICIENT_BALANCE", "INSUFFICIENT_PRINCIPAL"]
+    },
+    {
+      "id": "stale",
+      "expect": "reject",
+      "productFiles": [
+        "services/api-nest/src/opportunities/participate.service.ts"
+      ],
+      "needles": ["PRICE_STALE", "PRICE_STALE_DATA"]
+    },
+    {
+      "id": "expired",
+      "expect": "reject",
+      "productFiles": [
+        "services/api-nest/src/opportunities/participate.service.ts"
+      ],
+      "needles": ["OPPORTUNITY_EXPIRED"]
+    },
+    {
+      "id": "blocked",
+      "expect": "reject",
+      "productFiles": [
+        "services/api-nest/src/opportunities/participate.service.ts",
+        "services/api-nest/src/risk/risk.service.ts",
+        "services/api-nest/src/wallet/withdraw-apply-block.ts"
+      ],
+      "needles": ["MATCH_BLOCKED", "WITHDRAW_BLOCKED", "WITHDRAW_APPLY_BLOCKED"]
+    },
+    {
+      "id": "replay",
+      "expect": "reuse_no_second_write",
+      "productFiles": [
+        "services/api-nest/src/ledger/ledger.posting.service.ts"
+      ],
+      "needles": ["crash-safe replay", "reused: true"]
+    }
+  ]
+}

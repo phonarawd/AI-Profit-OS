@@ -51,8 +51,11 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^governance\/engine-acceptance\//.test(f) ||
-      /^tooling\/engine-acceptance\//.test(f) ||
+      (/^governance\/engine-acceptance\//.test(f) &&
+        !/^governance\/engine-acceptance\/FINAL_ACCEPTANCE\.md$/.test(f) &&
+        !/^governance\/engine-acceptance\/PROTECTED_SCOPE_STALE_WATCH\.md$/.test(f)) ||
+      (/^tooling\/engine-acceptance\//.test(f) &&
+        !/^tooling\/engine-acceptance\/protected-scope-watch\.cjs$/.test(f)) ||
       /^tooling\/verify\/engine-acceptance\.cjs$/.test(f) ||
       /^\.github\/workflows\/engine-acceptance\.yml$/.test(f),
     scripts: ["engine-acceptance.cjs"],
@@ -438,6 +441,7 @@ const RULES = [
       "rel-211-admin-adapters.cjs",
       "rel-212-admin-support.cjs",
       "rel-213-admin-system-control.cjs",
+      "rel-406-kill-switch.cjs",
       "rel-214-admin-audit.cjs",
       "rel-215-admin-ai-logs.cjs",
       "rel-216-admin-financial.cjs",
@@ -468,6 +472,7 @@ const RULES = [
       "rel-211-admin-adapters.cjs",
       "rel-212-admin-support.cjs",
       "rel-213-admin-system-control.cjs",
+      "rel-406-kill-switch.cjs",
       "rel-214-admin-audit.cjs",
       "rel-215-admin-ai-logs.cjs",
       "rel-216-admin-financial.cjs",
@@ -487,7 +492,7 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^governance\/security\//.test(f) ||
+      /^governance\/security\/http-headers/.test(f) ||
       /^tooling\/security\/http-headers\.cjs$/.test(f) ||
       /^tooling\/verify\/rel-401-security-headers\.cjs$/.test(f) ||
       /^apps\/web\/next\.config\.ts$/.test(f) ||
@@ -497,6 +502,212 @@ const RULES = [
       ) ||
       /^services\/api-nest\/src\/main\.ts$/.test(f),
     scripts: ["rel-401-security-headers.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/security\/dependency-audit/.test(f) ||
+      /^governance\/security\/AUDIT_EXCEPTIONS\.md$/.test(f) ||
+      /^governance\/release-master\/REL-402-DEPENDENCY-AUDIT\.md$/.test(f) ||
+      /^tooling\/security\/dependency-audit\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-402-dependency-audit\.cjs$/.test(f) ||
+      /^\.github\/workflows\/gate\.yml$/.test(f),
+    scripts: ["rel-402-dependency-audit.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/VERSIONING\.md$/.test(f) ||
+      /^governance\/release-master\/versioning\.v1\.json$/.test(f) ||
+      /^tooling\/release\/version-id\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-403-versioning\.cjs$/.test(f),
+    scripts: ["rel-403-versioning.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/performance\//.test(f) ||
+      /^governance\/release-master\/REL-404-LIGHTHOUSE-BUDGET\.md$/.test(f) ||
+      /^tooling\/perf\/lighthouse\.ci\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-404-lighthouse-budget\.cjs$/.test(f) ||
+      /^\.github\/workflows\/lighthouse\.yml$/.test(f),
+    scripts: ["rel-404-lighthouse-budget.cjs"],
+  },
+  {
+    test: (f) =>
+      /^schemas\/admin-audit\.v1\.json$/.test(f) ||
+      /^schemas\/admin-rbac\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/admin-audit\.core\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/audit\//.test(f) ||
+      /^governance\/admin\/rbac-audit/.test(f) ||
+      /^governance\/release-master\/REL-405-RBAC-AUDIT\.md$/.test(f) ||
+      /^tooling\/verify\/rel-405-rbac-audit\.cjs$/.test(f) ||
+      /^supabase\/migrations\/\d+_admin_audit_events\.sql$/.test(f),
+    scripts: ["rel-405-rbac-audit.cjs"],
+  },
+  {
+    test: (f) =>
+      /^schemas\/admin-kill-switch\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/admin-kill-switch\.core\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/kill-switch\//.test(f) ||
+      /^governance\/admin\/kill-switch/.test(f) ||
+      /^governance\/release-master\/REL-406-KILL-SWITCH\.md$/.test(f) ||
+      /^tooling\/verify\/rel-406-kill-switch\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-406-kill-switch\.v1\.json$/.test(f) ||
+      /^supabase\/migrations\/\d+_admin_kill_switches\.sql$/.test(f),
+    scripts: ["rel-406-kill-switch.cjs"],
+  },
+  {
+    test: (f) =>
+      /^schemas\/price-override-layers\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/price-override\.core\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/price-override\//.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/opportunities\.(admin|user)\.service\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/opportunities\.admin\.controller\.ts$/.test(f) ||
+      /^governance\/admin\/price-override/.test(f) ||
+      /^governance\/release-master\/REL-407-PRICE-OVERRIDE\.md$/.test(f) ||
+      /^tooling\/verify\/rel-407-price-override\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-407-price-override\.v1\.json$/.test(f) ||
+      /^supabase\/migrations\/\d+_opportunity_price_overrides\.sql$/.test(f),
+    scripts: ["rel-407-price-override.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/SECURITY_BASELINE\.md$/.test(f) ||
+      /^governance\/release-master\/ROLLBACK_RUNBOOK\.md$/.test(f) ||
+      /^governance\/release-master\/REL-408-SECURITY-BASELINE\.md$/.test(f) ||
+      /^tooling\/verify\/rel-408-security-baseline\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-408-security-baseline\.v1\.json$/.test(f),
+    scripts: ["rel-408-security-baseline.cjs"],
+  },
+  {
+    test: (f) =>
+      /^schemas\/admin-ops-mode\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/admin-ops\.core\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/admin-ops\//.test(f) ||
+      /^governance\/admin\/admin-ops/.test(f) ||
+      /^governance\/release-master\/REL-222-ADMIN-OPS\.md$/.test(f) ||
+      /^tooling\/verify\/rel-222-admin-ops\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-222-admin-ops\.v1\.json$/.test(f) ||
+      /^supabase\/migrations\/\d+_admin_ops_intents\.sql$/.test(f),
+    scripts: ["rel-222-admin-ops.cjs"],
+  },
+  {
+    test: (f) =>
+      /^schemas\/admin-match-control\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/admin-match-control\.core\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/match-control\//.test(f) ||
+      /^governance\/admin\/match-control/.test(f) ||
+      /^governance\/release-master\/REL-223-MATCH-CONTROL\.md$/.test(f) ||
+      /^tooling\/verify\/rel-223-match-control\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-223-match-control\.v1\.json$/.test(f) ||
+      /^supabase\/migrations\/\d+_admin_match_controls\.sql$/.test(f),
+    scripts: ["rel-223-match-control.cjs"],
+  },
+  {
+    test: (f) =>
+      /^schemas\/admin-policy-version\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/admin-policy-version\.core\.cjs$/.test(f) ||
+      /^services\/api-nest\/src\/source-policy\//.test(f) ||
+      /^governance\/admin\/source-policy/.test(f) ||
+      /^governance\/release-master\/REL-224-SOURCE-POLICY\.md$/.test(f) ||
+      /^tooling\/verify\/rel-224-source-policy\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-224-source-policy\.v1\.json$/.test(f) ||
+      /^supabase\/migrations\/\d+_admin_policy_versions\.sql$/.test(f),
+    scripts: ["rel-224-source-policy.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/admin\/R6_CERTIFICATION\.md$/.test(f) ||
+      /^governance\/release-master\/REL-409-R6-CERT\.md$/.test(f) ||
+      /^tooling\/verify\/rel-409-r6-cert\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-409-r6-cert\.v1\.json$/.test(f),
+    scripts: ["rel-409-r6-cert.cjs"],
+  },
+  {
+    test: (f) =>
+      /^tooling\/e2e\/expansion\//.test(f) ||
+      /^tooling\/e2e\/lib\/qa-lab-expansion\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/qa-lab-expansion\.spec\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-500-QA-LAB-EXPANSION\.md$/.test(f) ||
+      /^tooling\/verify\/rel-500-qa-lab-expansion\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-500-qa-lab-expansion\.v1\.json$/.test(f),
+    scripts: ["rel-500-qa-lab-expansion.cjs"],
+  },
+  {
+    test: (f) =>
+      /^tooling\/e2e\/money\//.test(f) ||
+      /^tooling\/e2e\/lib\/money-red-team\.cjs$/.test(f) ||
+      /^tooling\/e2e\/specs\/money-red-team\.spec\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-501-MONEY-RED-TEAM\.md$/.test(f) ||
+      /^tooling\/verify\/rel-501-money-red-team\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-501-money-red-team\.v1\.json$/.test(f),
+    scripts: ["rel-501-money-red-team.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/engine-acceptance\/FINAL_ACCEPTANCE\.md$/.test(f) ||
+      /^tooling\/verify\/rel-502-final-engine-acceptance\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-502-final-engine-acceptance\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/lib\/rel-502-psm\.cjs$/.test(f),
+    scripts: ["rel-502-final-engine-acceptance.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/engine-acceptance\/PROTECTED_SCOPE_STALE_WATCH\.md$/.test(f) ||
+      /^tooling\/engine-acceptance\/protected-scope-watch\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-503-protected-scope-watch\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-503-protected-scope-watch\.v1\.json$/.test(f),
+    scripts: ["rel-503-protected-scope-watch.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/MIGRATION_READINESS\.md$/.test(f) ||
+      /^tooling\/verify\/rel-504-migration-readiness\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-504-migration-readiness\.v1\.json$/.test(f),
+    scripts: ["rel-504-migration-readiness.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/R7_BACKEND_ALIGNMENT\.md$/.test(f) ||
+      /^tooling\/verify\/backend-data-alignment\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-505-r7-backend-alignment\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/backend-data-alignment\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-505-r7-backend-alignment\.v1\.json$/.test(f),
+    scripts: ["rel-505-r7-backend-alignment.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/REL-508-CURRENT-FX-APPROX\.md$/.test(f) ||
+      /^schemas\/current-fx-approx\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/current-fx-approx/.test(f) ||
+      /^tooling\/verify\/rel-508-current-fx-approx\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-508-current-fx-approx\.v1\.json$/.test(f),
+    scripts: ["rel-508-current-fx-approx.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/R8_INFRA_CORE\.md$/.test(f) ||
+      /^governance\/release-master\/r8-cache-inventory\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/rel-506-r8-infra-core\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-506-r8-infra-core\.v1\.json$/.test(f),
+    scripts: ["rel-506-r8-infra-core.cjs"],
+  },
+  {
+    test: (f) =>
+      /^tooling\/e2e\/specs\/production-loop\.spec\.cjs$/.test(f) ||
+      /^tooling\/e2e\/lib\/production-loop\.cjs$/.test(f) ||
+      /^governance\/release-master\/REL-507-PRODUCTION-E2E\.md$/.test(f) ||
+      /^tooling\/verify\/rel-507-production-e2e\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-507-production-e2e\.v1\.json$/.test(f),
+    scripts: ["rel-507-production-e2e.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/REL-600-STAGING\.md$/.test(f) ||
+      /^infra\/domain\.manifest\.json$/.test(f) ||
+      /^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|origin-smoke)\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-600-staging\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-600-staging\.v1\.json$/.test(f) ||
+      /^\.github\/workflows\/deploy-staging\.yml$/.test(f),
+    scripts: ["rel-600-staging.cjs"],
   },
   {
     test: (f) =>

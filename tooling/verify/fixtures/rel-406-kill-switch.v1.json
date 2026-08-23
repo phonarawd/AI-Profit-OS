@@ -1,0 +1,36 @@
+{
+  "ids": [
+    "GLOBAL_OPPORTUNITY_PAUSE",
+    "GLOBAL_MATCHING_PAUSE",
+    "GLOBAL_WITHDRAW_PAUSE",
+    "GLOBAL_DEPOSIT_PAUSE",
+    "GLOBAL_ALL_PAUSE",
+    "MONEY_CIRCUIT",
+    "PUSH_KILL",
+    "GROWTH_PAUSE",
+    "REFERRAL_ACCRUAL_HALT"
+  ],
+  "aliases": {
+    "money_circuit": "MONEY_CIRCUIT",
+    "push_kill": "PUSH_KILL",
+    "growth_enabled": "GROWTH_PAUSE",
+    "referral_accrual_halt": "REFERRAL_ACCRUAL_HALT"
+  },
+  "pathBlocks": {
+    "opportunity": ["GLOBAL_OPPORTUNITY_PAUSE", "GLOBAL_ALL_PAUSE"],
+    "matching": [
+      "GLOBAL_MATCHING_PAUSE",
+      "GLOBAL_OPPORTUNITY_PAUSE",
+      "MONEY_CIRCUIT",
+      "GLOBAL_ALL_PAUSE"
+    ],
+    "withdraw": ["GLOBAL_WITHDRAW_PAUSE", "MONEY_CIRCUIT", "GLOBAL_ALL_PAUSE"],
+    "deposit": ["GLOBAL_DEPOSIT_PAUSE", "GLOBAL_ALL_PAUSE"],
+    "merge": ["MONEY_CIRCUIT", "GLOBAL_ALL_PAUSE"],
+    "push": ["PUSH_KILL", "GLOBAL_ALL_PAUSE"],
+    "growth": ["GROWTH_PAUSE", "GLOBAL_ALL_PAUSE"],
+    "referral_accrual": ["REFERRAL_ACCRUAL_HALT", "GLOBAL_ALL_PAUSE"]
+  },
+  "inventedForbidden": ["GLOBAL_SIGNUP_PAUSE", "FAKE_KILL", "role_6"],
+  "denyAction": "KillSwitchAdminController.put"
+}

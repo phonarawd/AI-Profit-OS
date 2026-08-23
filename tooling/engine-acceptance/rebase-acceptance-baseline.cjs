@@ -39,6 +39,7 @@ const {
   collectPredecessorChecksums,
   mapSuitesForRebase,
   stampCurrentPolicyOnEntry,
+  stampEvalDatasetOnEntry,
   currentPolicy,
   buildRebaseReport,
   writeJson,
@@ -159,6 +160,7 @@ function main() {
     commit_sha_or_pending: commit_sha,
   };
   stampCurrentPolicyOnEntry(entry);
+  stampEvalDatasetOnEntry(entry, predecessor.eval_dataset_hash, aggregates.eval_dataset_hash);
 
   const fails = [];
   validateRebaseEntry(entry, null, fails, { requireCurrentPolicy: true });
@@ -189,7 +191,11 @@ function main() {
   console.log(`  rebase_id=${rebaseId}`);
   console.log(`  old_prompt=${predecessor.prompt_hash}`);
   console.log(`  new_prompt=${aggregates.prompt_hash}`);
-  console.log(`  eval=${aggregates.eval_dataset_hash} (must MATCH predecessor)`);
+  const evalStatus =
+    aggregates.eval_dataset_hash === predecessor.eval_dataset_hash
+      ? "MATCH predecessor"
+      : "ACKNOWLEDGED_EXPANSION (new epoch pin; product-only MATCH claim forbidden)";
+  console.log(`  eval=${aggregates.eval_dataset_hash} (${evalStatus})`);
   console.log(`  workflow=${aggregates.acceptance_workflow_hash} (must MATCH current)`);
   console.log(`  changed_protected=${changedProtected.length}`);
   console.log(`  working_tree_clean=${dirty.working_tree_clean}`);

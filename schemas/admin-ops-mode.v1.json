@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/admin-ops-mode.v1.json",
+  "title": "AdminOpsModeV1",
+  "description": "REL-222 frozen 3-mode + flow. LIVE without confirm is FAIL. DRY_RUN/SIMULATION never write the production ledger. Preview-As-User must not mint a user JWT.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "modes", "stages", "families"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "modes": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "string",
+        "enum": ["LIVE", "DRY_RUN", "SIMULATION"]
+      }
+    },
+    "stages": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "enum": ["preview", "confirm", "apply", "result", "rollback"]
+      }
+    },
+    "families": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "enum": [
+          "policy",
+          "bulk",
+          "execution_rule",
+          "wallet_operation",
+          "risk_threshold"
+        ]
+      }
+    }
+  },
+  "default": {
+    "version": 1,
+    "modes": ["LIVE", "DRY_RUN", "SIMULATION"],
+    "stages": ["preview", "confirm", "apply", "result", "rollback"],
+    "families": [
+      "policy",
+      "bulk",
+      "execution_rule",
+      "wallet_operation",
+      "risk_threshold"
+    ]
+  }
+}

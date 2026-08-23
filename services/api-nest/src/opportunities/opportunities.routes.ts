@@ -8,6 +8,7 @@ export const OPPORTUNITY_ADMIN_ROUTES = {
   list: "opportunities",
   get: "opportunities/:id",
   patchPricing: "opportunities/:id/pricing",
+  priceLayers: "opportunities/:id/price-layers",
   assets: "opportunities/assets",
   assetById: "opportunities/assets/:assetId",
   /** Engine §0.0.6 · R2 public register · source=admin_r2 */

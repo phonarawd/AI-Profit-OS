@@ -7,10 +7,13 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from "@nestjs/common";
 import { AdminGuard } from "../common/admin.guard";
 import { AdminOperator } from "../common/admin-operator.decorator";
+import type { RequestWithAdmin } from "../common/admin.guard";
+import { PriceOverrideService } from "../price-override/price-override.service";
 import { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
 import { isCapitalBand } from "./opportunities.mi";
@@ -32,6 +35,7 @@ export class OpportunitiesAdminController {
   constructor(
     private readonly opportunities: OpportunitiesAdminService,
     private readonly catalogSeed: CatalogRuntimeSeedService,
+    private readonly priceOverride: PriceOverrideService,
   ) {}
 
   @Get(OPPORTUNITY_ADMIN_ROUTES.assets)
@@ -97,13 +101,19 @@ export class OpportunitiesAdminController {
     return this.opportunities.get(id);
   }
 
+  @Get(OPPORTUNITY_ADMIN_ROUTES.priceLayers)
+  getPriceLayers(@Param("id") id: string) {
+    return this.priceOverride.describe(id);
+  }
+
   @Patch(OPPORTUNITY_ADMIN_ROUTES.patchPricing)
   patchPricing(
     @Param("id") id: string,
     @Body() body: Record<string, unknown>,
     @AdminOperator() operatorId: string,
+    @Req() req: RequestWithAdmin,
   ) {
-    const req: UpdateOpportunityPricingRequest = {
+    const patch: UpdateOpportunityPricingRequest = {
       adminBuyUsdt: body.adminBuyUsdt != null ? String(body.adminBuyUsdt) : undefined,
       adminSellUsdt:
         body.adminSellUsdt != null ? String(body.adminSellUsdt) : undefined,
@@ -115,8 +125,11 @@ export class OpportunitiesAdminController {
       sellMarketId:
         body.sellMarketId as UpdateOpportunityPricingRequest["sellMarketId"],
       updatedByAdminId: operatorId,
+      reason: String(body.reason ?? ""),
+      reasonCode: String(body.reasonCode ?? ""),
+      role: req.admin?.role ?? "unknown",
     };
-    return this.opportunities.patchPricing(id, req);
+    return this.opportunities.patchPricing(id, patch);
   }
 
   @Put(OPPORTUNITY_ADMIN_ROUTES.assets)

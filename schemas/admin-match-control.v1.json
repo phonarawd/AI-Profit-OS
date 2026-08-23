@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/admin-match-control.v1.json",
+  "title": "AdminMatchControlV1",
+  "description": "REL-223 frozen match verbs + kinds. Unknown verbs fail. Bulk/schedule/campaign require a preview impact count. Ledger edit verbs are forbidden. LIVE apply without preview+confirm is FAIL.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "verbs", "kinds", "forbiddenVerbs"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "verbs": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "enum": ["ALLOW", "BLOCK", "PAUSE", "CANCEL", "REASSIGN"]
+      }
+    },
+    "kinds": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "enum": ["match", "bulk", "schedule", "campaign"]
+      }
+    },
+    "forbiddenVerbs": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "string",
+        "enum": [
+          "CREDIT",
+          "DEBIT",
+          "ADJUST",
+          "BALANCE_PATCH",
+          "LEDGER_EDIT",
+          "FORCE_SETTLE",
+          "WALLET_TOPUP"
+        ]
+      }
+    }
+  },
+  "default": {
+    "version": 1,
+    "verbs": ["ALLOW", "BLOCK", "PAUSE", "CANCEL", "REASSIGN"],
+    "kinds": ["match", "bulk", "schedule", "campaign"],
+    "forbiddenVerbs": [
+      "CREDIT",
+      "DEBIT",
+      "ADJUST",
+      "BALANCE_PATCH",
+      "LEDGER_EDIT",
+      "FORCE_SETTLE",
+      "WALLET_TOPUP"
+    ]
+  }
+}

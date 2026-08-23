@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-400 COMPLETED. REL-213 COMPLETED. REL-214 COMPLETED. REL-401 COMPLETED. FIRST_EXECUTION_TODO=REL-402. HARD_STOP_AFTER=REL-401. BATCH_REL_200_206=ADMIN_ENTRY.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-400 COMPLETED. REL-213 COMPLETED. REL-214 COMPLETED. REL-401 COMPLETED. REL-402 COMPLETED. REL-403 COMPLETED. REL-404 COMPLETED. REL-405 COMPLETED. REL-406 COMPLETED. REL-407 COMPLETED. REL-408 COMPLETED. REL-222 COMPLETED. REL-223 COMPLETED. REL-224 COMPLETED. REL-409 COMPLETED. REL-500 COMPLETED. REL-501 COMPLETED. REL-502 COMPLETED. REL-503 COMPLETED. REL-504 COMPLETED. REL-505 COMPLETED. REL-508 COMPLETED. REL-506 COMPLETED. REL-507 COMPLETED. REL-502 ISSUED_CURRENT_EPOCH. FIRST_EXECUTION_TODO=REL-601. HARD_STOP_AFTER=REL-600. REL-600 COMPLETED. BATCH_REL_200_206=ADMIN_ENTRY.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -264,65 +264,68 @@ todos:
     content: "[Hardening] security headers -- DONE CSP/HSTS/X-Frame/X-Content-Type, real hosts only, SW worker-src self"
     status: completed
   - id: rel-402
-    content: "[Hardening] 의존성 취약점 스캔(pnpm audit)을 CI에 편입"
-    status: pending
+    content: "[Hardening] dependency audit -- DONE pnpm audit high+ in CI, exceptions ledger, local full scan 0"
+    status: completed
   - id: rel-403
-    content: "[Hardening] 버전/릴리스 태깅 체계 도입"
-    status: pending
+    content: "[Hardening] version tags -- DONE semver+manual v* after HUMAN deploy, release id builder, REL-602 known-good"
+    status: completed
   - id: rel-404
-    content: "[Hardening][Performance] Lighthouse CI + 성능예산(bundle/이미지/lazy-load) baseline 배선"
-    status: pending
+    content: "[Hardening][Performance] lighthouse budget -- DONE bundle/image/lazy policy files, CI static gate, local full LH 0, Home freeze"
+    status: completed
   - id: rel-405
-    content: "[Hardening][Legacy:D-ADMIN-001] RBAC + Audit Foundation(8 role capability mapping + mandatory audit schema, OWASP ASVS V8/V16)"
-    status: pending
+    content: "[Hardening][Legacy:D-ADMIN-001] RBAC + Audit Foundation -- DONE 5-role matrix + audit schema/write/deny, invented roles 0"
+    status: completed
   - id: rel-406
-    content: "[Hardening][Legacy:D-ADMIN-002] Kill Switch 9종(GLOBAL_OPPORTUNITY_PAUSE 등, money_circuit 선례 재사용), deps REL-405"
-    status: pending
+    content: "[Hardening][Legacy:D-ADMIN-002] Kill Switch 9종(GLOBAL_OPPORTUNITY_PAUSE 등, money_circuit 선례 재사용), deps REL-405 -- DONE 9 frozen IDs + server enforce + audit"
+    status: completed
   - id: rel-407
-    content: "[Hardening][Legacy:D-ADMIN-005] Price Override Engine(4레이어: SOURCE_OBSERVED->OVERRIDE->EFFECTIVE->USER_VISIBLE)"
-    status: pending
+    content: "[Hardening][Legacy:D-ADMIN-005] Price Override Engine(4레이어: SOURCE_OBSERVED->OVERRIDE->EFFECTIVE->USER_VISIBLE) -- DONE 4 frozen layers + EFFECTIVE-only user surface + audit"
+    status: completed
   - id: rel-408
-    content: "[Hardening][Legacy:F-REL-006] Security/secrets/RLS-role 실증 + backup/rollback runbook baseline"
-    status: pending
+    content: "[Hardening][Legacy:F-REL-006] Security/secrets/RLS-role 실증 + backup/rollback runbook baseline -- DONE RLS 80/80 + secrets + runbook, prod apply 0"
+    status: completed
   - id: rel-222
-    content: "[Admin][Legacy:D-ADMIN-016] 3-mode Admin Ops(LIVE/DRY_RUN/SIMULATION) + Preview-As-User + Impact Simulation(preview→confirm→apply→result→rollback), deps REL-405"
-    status: pending
+    content: "[Admin][Legacy:D-ADMIN-016] 3-mode Admin Ops(LIVE/DRY_RUN/SIMULATION) + Preview-As-User + Impact Simulation -- DONE 3 frozen modes + LIVE confirm + JWT mint 0"
+    status: completed
   - id: rel-223
-    content: "[Admin][Legacy:D-ADMIN-018] Allocation/Manual Match Control(ALLOW/BLOCK/PAUSE/CANCEL/REASSIGN) + Bulk/Schedule/Campaign Ops(preview+confirmation+audit 필수), deps REL-407"
-    status: pending
+    content: "[Admin][Legacy:D-ADMIN-018] Allocation/Manual Match Control + Bulk/Schedule/Campaign -- DONE 5 verbs + preview LIVE + ledger verbs 0"
+    status: completed
   - id: rel-224
-    content: "[Admin][Legacy:D-ADMIN-019] Source/Parser Health 대시보드 + Founder Override(최상위 override) + Policy Versioning(V1/V2/V3 history+rollback), deps REL-405"
-    status: pending
+    content: "[Admin][Legacy:D-ADMIN-019] Source/Parser Health + Founder Override + Policy Versioning -- DONE V1-V3 history + overwrite 0 + founder HIGH"
+    status: completed
   - id: rel-409
-    content: "[Hardening][Legacy:D-ADMIN-020] Admin R6 Certification(12모듈+2b 전수, deps REL-200~224+400+405~408)"
-    status: pending
+    content: "[Hardening][Legacy:D-ADMIN-020] Admin R6 Certification -- DONE 12+2b + deps re-run + P0-P3 0"
+    status: completed
   - id: rel-500
-    content: "[QA-Expansion] QA-LAB-EXPANSION: 전체 persona x device x browser x network x a11y matrix, committed spec으로 확장"
-    status: pending
+    content: "[QA-Expansion] QA-LAB-EXPANSION -- DONE risk-based matrix + committed specs + MCP-only 0 + local full 0"
+    status: completed
   - id: rel-501
-    content: "[QA-Expansion] 금융/red-team 풀매트릭스 실행, QA_ENV_ISOLATION_GUARD 필수 적용"
-    status: pending
+    content: "[QA-Expansion] 금융/red-team -- DONE 7 modes + guard abort + product codes + ledger write 0"
+    status: completed
   - id: rel-502
     content: "[QA-Expansion][A2] FINAL ENGINE ACCEPTANCE: PROTECTED_SCOPE_MUTATION=TRUE 태그가 달린 모든 REL(고정 range 아님, §C 자동수집) 완료 후 QA0-QA9 재베이스+재인증"
-    status: pending
+    status: completed
   - id: rel-503
     content: "[QA-Expansion] protected-scope STALE 감시 메커니즘 상시화"
-    status: pending
+    status: completed
   - id: rel-504
     content: "[QA-Expansion][A3][Legacy:F-REL-001] PRODUCTION_MIGRATION_READINESS_CHECK: Track A local proof + REL-408 보안 baseline 완료 여부 검증, migration 파일 리뷰(실제 apply는 하지 않음 - apply는 REL-701-DB로 분리)"
-    status: pending
+    status: completed
   - id: rel-505
     content: "[QA-Expansion][A2][Legacy:F-REL-002] BACKEND_DATA_ALIGNMENT_CERTIFICATION(R7): API·SDK·Nest AppModule imports·Engine FSM·local/remote migration head·indexes/RLS/idempotency·auth permission·money units·source/asOf/reasonCode 1:1 대조, semantic conflict 발견 시 owner에 가산 REL+version bump(은폐 금지)"
-    status: pending
+    status: completed
+  - id: rel-508
+    content: "[QA-Expansion][A2][Additive from REL-505] CURRENT_FX_APPROX_NEST_WIRE: Nest POST /api/v1/me/current-fx/approx via approxKrwFromSnapshot + latest fx_snapshots. Display-only. missing rate/amount -> null not 0. PROTECTED_SCOPE_MUTATION=true. After wire: REL-502 rebase."
+    status: completed
   - id: rel-506
     content: "[QA-Expansion][A2][Legacy:F-REL-003] INFRA_RELEASE_CERTIFICATION_CORE(R8, Ads 자동화 제외): infra/domain.manifest openNext Workers origin·cache/R2/Web Vitals·에러추적·세션·rollback/known-good, known P0~P3 defect 0"
-    status: pending
+    status: completed
   - id: rel-507
     content: "[QA-Expansion][A3][Legacy:F-REL-007] PRODUCTION_E2E: 인증 세션 실 브라우저 Playwright E2E(로그인->참여->정산->지갑), Track B 핵심 task 완료 후"
-    status: pending
+    status: completed
   - id: rel-600
-    content: "[Staging][A2] Staging 배포(경로/자격 확정 필요)"
-    status: pending
+    content: "[Staging][A2] Staging deploy DONE preview workers, evidence=governance/release-master/REL-600-STAGING.md"
+    status: completed
   - id: rel-601
     content: "[Staging] Staging 전체 회귀(Surface Matrix 전량 재검증, 반응형/에셋 QA 포함)"
     status: pending
@@ -420,14 +423,14 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-402
-LAST_COMPLETED_TODO = REL-401
+FIRST_EXECUTION_TODO = REL-601
+LAST_COMPLETED_TODO = REL-600
 BATCH_REL_200_206 = ADMIN_ENTRY
-HARD_STOP_AFTER = REL-401
+HARD_STOP_AFTER = REL-600
 PRE_LOCK_COUNT = 1
-REL_COUNT = 116
+REL_COUNT = 117
 POST_COUNT = 19
-MASTER_TODO_COUNT = 136
+MASTER_TODO_COUNT = 137
 REVISION = Round7 materialization (self-contained SSOT, pointer-only 0)
 
 CURRENT_TEMP_ALLOWLIST_PRESENT = FALSE
@@ -3013,7 +3016,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-402
 TITLE: 의존성 취약점 스캔을 CI에 편입
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-402
@@ -3038,7 +3041,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-403
 TITLE: 버전/릴리스 태깅 체계 도입
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-403
@@ -3063,7 +3066,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-404
 TITLE: Lighthouse CI + 성능예산 배선
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-404
@@ -3088,7 +3091,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-405
 TITLE: RBAC + Audit Foundation
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-405
@@ -3115,7 +3118,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-406
 TITLE: Kill Switch 9종
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-406
@@ -3142,7 +3145,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-407
 TITLE: Price Override Engine (4레이어)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-407
@@ -3170,7 +3173,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-408
 TITLE: Security/secrets/RLS-role 실증 + backup/rollback runbook baseline
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_F_production_infra.plan.md
 SOURCE_TODO_IDS:
   - rel-408
@@ -3198,7 +3201,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-222
 TITLE: "3-mode Admin Ops + Preview-As-User + Impact Simulation"
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-222
@@ -3227,7 +3230,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-223
 TITLE: Allocation/Manual Match Control + Bulk/Schedule/Campaign Ops
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-223
@@ -3255,7 +3258,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-224
 TITLE: Source/Parser Health + Founder Override + Policy Versioning
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-224
@@ -3283,7 +3286,7 @@ PROTECTED_SCOPE_MUTATION: true
 ```yaml
 ID: REL-409
 TITLE: Admin R6 Certification
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_D_admin_control_plane.plan.md
 SOURCE_TODO_IDS:
   - rel-409
@@ -3339,7 +3342,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-500
 TITLE: QA-LAB-EXPANSION (persona × device × browser × network × a11y)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-500
@@ -3367,7 +3370,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-501
 TITLE: 금융/red-team 풀매트릭스
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-501
@@ -3397,7 +3400,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-502
 TITLE: FINAL ENGINE ACCEPTANCE
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: ai_profit_os_02_5_engine_acceptance_c3d4e5f6.plan.md
 SOURCE_TODO_IDS:
   - rel-502
@@ -3432,6 +3435,7 @@ DEPENDENCIES:
   - REL-408
   - REL-004
   - REL-501
+  - REL-508
 IMPLEMENTATION_STEPS:
   - 현재 PSM=TRUE REL이 전부 completed인지 기계 확인
   - 실행 중 새로 TRUE가 된 REL이 있으면 이 목록에 편입하고 기다림
@@ -3450,7 +3454,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-503
 TITLE: protected-scope STALE 감시 상시화
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-503
@@ -3475,7 +3479,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-504
 TITLE: PRODUCTION_MIGRATION_READINESS_CHECK
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_F_production_infra.plan.md
 SOURCE_TODO_IDS:
   - rel-504
@@ -3504,7 +3508,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-505
 TITLE: BACKEND_DATA_ALIGNMENT_CERTIFICATION (R7)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_F_production_infra.plan.md
 SOURCE_TODO_IDS:
   - rel-505
@@ -3526,12 +3530,38 @@ AUTOMATION_LEVEL: A2
 PROTECTED_SCOPE_MUTATION: false
 ```
 
+### REL-508
+
+```yaml
+ID: REL-508
+TITLE: CURRENT_FX_APPROX_NEST_WIRE
+STATUS: COMPLETED
+SOURCE_PLAN: PUTDUK_RELEASE_MASTER.plan.md
+SOURCE_TODO_IDS:
+  - rel-508
+ORIGINAL_INTENT: Close the REL-505 SDK/Nest current-fx conflict without hiding it.
+CURRENT_SCOPE: Nest POST /api/v1/me/current-fx/approx. approxKrwFromSnapshot + latest fx_snapshots. Display-only. null not 0. No client FX math. PROTECTED_SCOPE_MUTATION true.
+DEPENDENCIES:
+  - REL-505
+IMPLEMENTATION_STEPS:
+  - Add Nest route matching SDK path
+  - Reuse approxKrwFromSnapshot
+  - Fail-closed nulls
+  - REL-502 rebase after ISSUED STALE
+VERIFY: SDK path has Nest handler. backend-data-alignment openConflicts 0. R7 CERT_ISSUED only after rebase.
+ACCEPTANCE: current-fx 1:1
+EVIDENCE: governance/release-master/REL-508-CURRENT-FX-APPROX.md
+EXIT_GATE: fabricate KRW 0 / client multiply / hide STALE
+AUTOMATION_LEVEL: A2
+PROTECTED_SCOPE_MUTATION: true
+```
+
 ### REL-506
 
 ```yaml
 ID: REL-506
 TITLE: INFRA_RELEASE_CERTIFICATION_CORE (R8, Ads 제외)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_F_production_infra.plan.md
 SOURCE_TODO_IDS:
   - rel-506
@@ -3560,7 +3590,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-507
 TITLE: PRODUCTION_E2E (로그인→참여→정산→지갑)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_F_production_infra.plan.md
 SOURCE_TODO_IDS:
   - rel-507
@@ -3590,7 +3620,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-600
 TITLE: Staging 배포
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: PUTDUK_CURRENT_MASTER_TRACK_F_production_infra.plan.md
 SOURCE_TODO_IDS:
   - rel-600
@@ -4503,38 +4533,39 @@ PROTECTED_SCOPE_MUTATION: false
 102. REL-503
 103. REL-504
 104. REL-505
-105. REL-506
-106. REL-507
-107. REL-600
-108. REL-601
-109. REL-602
-110. REL-603
-111. REL-700
-112. REL-701-PRE
-113. REL-701-DB
-114. REL-701
-115. REL-702
-116. REL-703
-117. REL-704
-118. POST-001
-119. POST-002
-120. POST-003
-121. POST-004
-122. POST-005
-123. POST-006
-124. POST-007
-125. POST-008
-126. POST-009
-127. POST-010
-128. POST-011
-129. POST-012
-130. POST-013
-131. POST-014
-132. POST-015
-133. POST-016
-134. POST-017
-135. POST-018
-136. POST-019
+105. REL-508
+106. REL-506
+107. REL-507
+108. REL-600
+109. REL-601
+110. REL-602
+111. REL-603
+112. REL-700
+113. REL-701-PRE
+114. REL-701-DB
+115. REL-701
+116. REL-702
+117. REL-703
+118. REL-704
+119. POST-001
+120. POST-002
+121. POST-003
+122. POST-004
+123. POST-005
+124. POST-006
+125. POST-007
+126. POST-008
+127. POST-009
+128. POST-010
+129. POST-011
+130. POST-012
+131. POST-013
+132. POST-014
+133. POST-015
+134. POST-016
+135. POST-017
+136. POST-018
+137. POST-019
 
 ## 7. SELF-VALIDATOR (materialization)
 
@@ -4545,10 +4576,10 @@ MASTER_FILE_EXISTS = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
 PRE_LOCK_COUNT = 1
-REL_COUNT = 116
+REL_COUNT = 117
 POST_COUNT = 19
-MASTER_TODO_COUNT = 136
-FRONTMATTER_TODO_COUNT = 136
+MASTER_TODO_COUNT = 137
+FRONTMATTER_TODO_COUNT = 137
 REL_000_EXISTS = TRUE
 REL_131_EXISTS = TRUE
 POST_019_EXISTS = TRUE
@@ -4569,5 +4600,5 @@ FIRST_EXECUTION_TODO_AT_MATERIALIZATION = REL-000
 REL-000은 2026-08-20에 PASS/COMPLETED.
 REL-001은 2026-08-20에 PASS/COMPLETED (`preserve/2026-08-20-worktree-rescue` · `ae8d1e6` · merge 금지).
 REL-002는 2026-08-21에 PASS/COMPLETED (PR #2 MERGED · `db6db87` · ruleset `verify-gate` 계약 수정 후 비우회 merge).
-현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-402`. HARD_STOP_AFTER = REL-401.
+현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-601`. HARD_STOP_AFTER = REL-600. BLOCKING_ON = []. LAST_COMPLETED_TODO = REL-600.
 

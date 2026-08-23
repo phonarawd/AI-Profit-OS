@@ -71,7 +71,8 @@
           "loginPasswordReset": "write",
           "withdrawPinReset": "write",
           "financeExport": "write",
-          "balanceAdjust": "write"
+          "balanceAdjust": "write",
+          "audit": "write"
         }
       },
       {
@@ -88,7 +89,8 @@
           "userMembershipForce": "write",
           "withdrawPinReset": "write",
           "loginPasswordReset": "none",
-          "growth": "none"
+          "growth": "none",
+          "audit": "read"
         }
       },
       {
@@ -105,7 +107,8 @@
           "userOpportunityOverride": "read",
           "userMatchPolicy": "read",
           "balanceAdjust": "none",
-          "financeExport": "none"
+          "financeExport": "none",
+          "audit": "read"
         }
       },
       {
@@ -117,7 +120,8 @@
           "freezeBan": "write",
           "ipBlock": "write",
           "financeExport": "none",
-          "growth": "none"
+          "growth": "none",
+          "audit": "read"
         }
       },
       {
@@ -130,7 +134,8 @@
           "financeExport": "none",
           "balanceAdjust": "none",
           "userOpportunityOverride": "none",
-          "userMatchPolicy": "none"
+          "userMatchPolicy": "none",
+          "audit": "none"
         }
       }
     ]

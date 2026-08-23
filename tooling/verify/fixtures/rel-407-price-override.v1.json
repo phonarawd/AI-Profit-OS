@@ -1,0 +1,61 @@
+{
+  "layers": [
+    "SOURCE_OBSERVED",
+    "OVERRIDE",
+    "EFFECTIVE",
+    "USER_VISIBLE"
+  ],
+  "reasonCodes": [
+    "SOURCE_STALE",
+    "FEED_GAP",
+    "MANUAL_COMMERCIAL",
+    "RISK_ADJUST",
+    "OVERRIDE_CLEAR"
+  ],
+  "inventedLayersForbidden": [
+    "RAW_TICKER",
+    "BLENDED_DISPLAY",
+    "LEDGER_PRICE"
+  ],
+  "sourceOnlyKeys": [
+    "nativeAmount",
+    "nativeCurrency",
+    "observedAt",
+    "sourceBuyUsdt",
+    "sourceSellUsdt"
+  ],
+  "overrideOnlyKeys": [
+    "adminBuyUsdt",
+    "adminSellUsdt",
+    "useAdminOverride",
+    "reasonCode"
+  ],
+  "vectors": {
+    "source": {
+      "buyMarketId": "ebay_us",
+      "sellMarketId": "ebay_gb",
+      "buyPriceUsdt": "100",
+      "sellPriceUsdt": "130",
+      "nativeAmount": "100",
+      "nativeCurrency": "USDT",
+      "observedAt": "2026-08-23T00:00:00.000Z",
+      "source": "ebay"
+    },
+    "overrideOn": {
+      "engaged": true,
+      "adminBuyUsdt": "90",
+      "adminSellUsdt": "140",
+      "adminMarginPct": "0.10",
+      "reasonCode": "MANUAL_COMMERCIAL"
+    },
+    "overrideOff": {
+      "engaged": false,
+      "reasonCode": "OVERRIDE_CLEAR"
+    },
+    "compute": {
+      "buyMarketId": "ebay_us",
+      "sellMarketId": "ebay_gb",
+      "requiredCapitalUsdt": "100"
+    }
+  }
+}

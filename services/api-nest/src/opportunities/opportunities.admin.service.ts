@@ -6,8 +6,6 @@ import {
   approxKrwFromSnapshot,
   assertPublishImageGuard,
   canAutoPublishAvailable,
-  computeOpportunityPricing,
-  DEFAULT_PLATFORM_MARGIN_PCT,
   evaluateBagListingMatch,
   evaluateCardListingMatch,
   evaluateListingGradeMatch,
@@ -23,6 +21,7 @@ import {
   WHALE_MIN_REQUIRED_CAPITAL_USDT,
 } from "./opportunities.mi";
 import { OPPORTUNITY_EVENTS } from "./opportunities.events";
+import { PriceOverrideService } from "../price-override/price-override.service";
 import { OpportunityRepriceService } from "./opportunity-reprice.service";
 import type {
   OpportunityAdminListItem,
@@ -70,6 +69,7 @@ export class OpportunitiesAdminService {
     private readonly bus: InProcessEventBus,
     private readonly assetImages: AssetImageR2Service,
     private readonly reprice: OpportunityRepriceService,
+    private readonly priceOverride: PriceOverrideService,
   ) {}
 
   async list(
@@ -146,7 +146,9 @@ export class OpportunitiesAdminService {
   }
 
   /**
-   * PATCH /admin/opportunities/:id/pricing · §36
+   * PATCH /admin/opportunities/:id/pricing · §36 · REL-407 4레이어
+   * EFFECTIVE owner = computeOpportunityPricing (price-override.core).
+   * SOURCE = listings 읽기 · listings UPDATE 0 · 사유+audit 필수.
    * Optimistic lock on expectedPricingVersion · pricingVersion++
    */
   async patchPricing(id: string, body: UpdateOpportunityPricingRequest) {
@@ -159,6 +161,11 @@ export class OpportunitiesAdminService {
     ) {
       throw new Error("expectedPricingVersion required");
     }
+    const write = this.priceOverride.requireWrite({
+      reason: body.reason,
+      reasonCode: body.reasonCode,
+      engaged: Boolean(body.useAdminOverride),
+    });
 
     const item = await this.db.withTransaction(async (client) => {
       const { rows } = await client.query<OppRow>(
@@ -188,28 +195,41 @@ export class OpportunitiesAdminService {
         body.sellMarketId ?? prev.sellMarketId ?? "ebay_gb",
       );
 
-      let buyPriceUsdt = String(prev.buyPriceUsdt ?? "0");
-      let sellPriceUsdt = String(prev.sellPriceUsdt ?? "0");
-      if (body.useAdminOverride) {
-        if (body.adminBuyUsdt != null) buyPriceUsdt = String(body.adminBuyUsdt);
-        if (body.adminSellUsdt != null) {
-          sellPriceUsdt = String(body.adminSellUsdt);
-        }
-      }
-
-      const computed = computeOpportunityPricing({
+      const listingSource = await this.priceOverride.loadSource(client, {
+        assetId: row.asset_id,
         buyMarketId,
         sellMarketId,
-        buyPriceUsdt,
-        sellPriceUsdt,
-        adminMarginPct: body.adminMarginPct,
-        platformMarginPct: DEFAULT_PLATFORM_MARGIN_PCT,
-        requiredCapitalUsdt: row.required_capital_usdt,
-        useAdminOverride: Boolean(body.useAdminOverride),
-        gradeMismatch: row.grade_mismatch,
-        imageMissing: row.image_missing,
       });
-
+      const sourceObserved =
+        listingSource.buyPriceUsdt && listingSource.sellPriceUsdt
+          ? listingSource
+          : prev.useAdminOverride === true
+            ? listingSource
+            : {
+                ...listingSource,
+                buyPriceUsdt: prev.buyPriceUsdt,
+                sellPriceUsdt: prev.sellPriceUsdt,
+              };
+      // EFFECTIVE owner = computeOpportunityPricing (price-override.core)
+      const layers = this.priceOverride.resolve({
+        sourceObserved,
+        override: {
+          engaged: Boolean(body.useAdminOverride),
+          adminBuyUsdt: body.adminBuyUsdt ?? prev.adminBuyUsdt,
+          adminSellUsdt: body.adminSellUsdt ?? prev.adminSellUsdt,
+          adminMarginPct: body.adminMarginPct ?? prev.adminMarginPct,
+          lastAdminEditBy: body.updatedByAdminId,
+          reasonCode: write.reasonCode,
+        },
+        compute: {
+          buyMarketId,
+          sellMarketId,
+          requiredCapitalUsdt: row.required_capital_usdt,
+          gradeMismatch: row.grade_mismatch,
+          imageMissing: row.image_missing,
+        },
+      });
+      const computed = layers.EFFECTIVE;
       const pricing = {
         ...prev,
         ...computed,
@@ -219,6 +239,22 @@ export class OpportunitiesAdminService {
         useAdminOverride: Boolean(body.useAdminOverride),
         lastAdminEditBy: body.updatedByAdminId,
       };
+      await this.priceOverride.persistOverride(client, id, {
+        engaged: Boolean(body.useAdminOverride),
+        adminBuyUsdt:
+          body.adminBuyUsdt ??
+          (prev.adminBuyUsdt != null ? String(prev.adminBuyUsdt) : undefined),
+        adminSellUsdt:
+          body.adminSellUsdt ??
+          (prev.adminSellUsdt != null ? String(prev.adminSellUsdt) : undefined),
+        adminMarginPct:
+          body.adminMarginPct ??
+          (prev.adminMarginPct != null ? String(prev.adminMarginPct) : undefined),
+        reason: write.reason,
+        reasonCode: write.reasonCode,
+        adminId: body.updatedByAdminId,
+        role: body.role || "unknown",
+      });
 
       const capitalBand = resolveCapitalBand(row.required_capital_usdt);
       let expectedProfitKrw: string | null = row.expected_profit_krw_approx;
@@ -230,7 +266,7 @@ export class OpportunitiesAdminService {
         [row.fx_snapshot_id],
       );
       if (fx.rows[0]) {
-        expectedProfitKrw = approxKrwFromSnapshot(computed.expectedProfitUsdt, {
+        expectedProfitKrw = approxKrwFromSnapshot(String(computed.expectedProfitUsdt), {
           usdtKrw: fx.rows[0].usd_krw,
         });
       }
@@ -240,7 +276,7 @@ export class OpportunitiesAdminService {
       const updated = await this.reprice.persistComputedPricing(client, {
         id,
         pricing,
-        expectedProfitUsdt: computed.expectedProfitUsdt,
+        expectedProfitUsdt: String(computed.expectedProfitUsdt),
         expectedProfitKrw,
         capitalBand,
         nextVersion,
@@ -249,6 +285,14 @@ export class OpportunitiesAdminService {
       return this.toListItem(updated);
     });
 
+    await this.priceOverride.writeAppliedAudit({
+      opportunityId: item.id,
+      engaged: Boolean(body.useAdminOverride),
+      reason: write.reason,
+      reasonCode: write.reasonCode,
+      adminId: body.updatedByAdminId,
+      role: body.role || "unknown",
+    });
     this.bus.emit(OPPORTUNITY_EVENTS.priceUpdated, {
       id: item.id,
       pricingVersion: item.pricingVersion,
