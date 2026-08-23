@@ -86,6 +86,19 @@ node tooling/verify/user-ledger-query.cjs
 node tooling/verify/rel-501-money-red-team.cjs
 ```
 
+## Staging Surface Matrix regression (REL-601)
+
+Reuses the REL-500 risk-based matrix and `PUTDUK_UI_VISUAL_MATRIX` against live preview workers.
+
+- Live target = `ai-profit-web-preview` / `ai-profit-ops-preview` only
+- Local full matrix / full Lighthouse / Playwright vs live staging = NOT_RUN
+- Home visual redesign 0. Large-screen contract reused from REL-019/105
+- Playwright MCP click is not DONE
+
+```text
+node tooling/verify/rel-601-staging-regression.cjs
+```
+
 ## Production loop (REL-507)
 
 `specs/production-loop.spec.cjs` + `lib/production-loop.cjs`.
