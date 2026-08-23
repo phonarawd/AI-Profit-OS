@@ -67,8 +67,8 @@ pnpm exec wrangler -v
 | KYC | R2 `kyc-docs` · `infra/r2/kyc-docs.toml` |
 | Bus | Nest **in-process** · NATS/Temporal/EKS **0** |
 
-- Origin SSOT: `infra/domain.manifest.json` `openNext.web|ops` · host inventory: `infra/hosts.manifest.json`
-- Deploy: `opennextjs-cloudflare deploy`; `wrangler pages deploy` · `pages_build_output_dir` · `.open-next/cloudflare` deploy root 금지
+- Origin SSOT: `infra/domain.manifest.json` `openNext.web|ops` · staging = `openNext.staging` (`pnpm cf:deploy:staging`) · host inventory: `infra/hosts.manifest.json`
+- Deploy: `opennextjs-cloudflare deploy`; staging = wrangler `[env.preview]`; `wrangler pages deploy` · `pages_build_output_dir` · `.open-next/cloudflare` deploy root 금지
 - Cutover: `infra/phase0-migration-playbook.md`
 - Verify: `pnpm verify:phase0-bootstrap` (in `verify:gate`)
 - Compose=`pnpm docker:up` **옵션만** (8GB OFF)

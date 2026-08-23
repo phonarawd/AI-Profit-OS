@@ -25,6 +25,10 @@ ROBOTS = "noindex, nofollow"
 name = "ai-profit-ops-preview"
 workers_dev = true
 
+[env.preview.assets]
+directory = "../../apps/admin/.open-next/assets"
+binding = "ASSETS"
+
 [env.production]
 name = "ai-profit-ops"
 workers_dev = true

@@ -1,0 +1,11 @@
+{
+  "rel": "REL-600",
+  "deps": ["REL-506", "REL-016", "REL-502"],
+  "protectedScopeMutation": false,
+  "productionDomainMutation": 0,
+  "productionWorkflowDispatch": 0,
+  "pagesDeploy": 0,
+  "vercel": 0,
+  "secretHardcoded": 0,
+  "extraVerifies": ["opennext-workers-origin.cjs", "domain-bootstrap.cjs"]
+}

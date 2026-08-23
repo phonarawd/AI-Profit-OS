@@ -91,6 +91,40 @@ for (const key of ["web", "ops"]) {
   }
 }
 
+const staging = openNext?.staging;
+if (!staging?.wranglerEnv || staging.wranglerEnv !== "preview") {
+  fails.push("openNext.staging.wranglerEnv must be preview");
+}
+if (!Array.isArray(staging?.forbiddenHosts) || staging.forbiddenHosts.length < 3) {
+  fails.push("openNext.staging.forbiddenHosts must list production hosts");
+}
+for (const host of staging?.forbiddenHosts || []) {
+  if (String(host).includes("workers.dev")) {
+    fails.push("openNext.staging.forbiddenHosts must be custom domains, not workers.dev");
+  }
+}
+for (const key of ["web", "ops"]) {
+  const slot = staging?.[key];
+  if (!slot?.worker || !slot?.workersDev) {
+    fails.push(`openNext.staging.${key} requires worker/workersDev`);
+    continue;
+  }
+  const expectedHost = `${slot.worker}.${subdomain}.workers.dev`;
+  if (slot.workersDev !== expectedHost) {
+    fails.push(`openNext.staging.${key}.workersDev must be ${expectedHost}`);
+  }
+  if (slot.worker === openNext?.[key]?.worker) {
+    fails.push(`openNext.staging.${key}.worker must differ from production worker`);
+  }
+  if (slot.workersDev === openNext?.[key]?.workersDev) {
+    fails.push(`openNext.staging.${key}.workersDev must differ from production origin`);
+  }
+  const toml = read(openNext?.[key]?.wrangler);
+  if (toml && !toml.includes(`name = "${slot.worker}"`)) {
+    fails.push(`${openNext[key].wrangler}: preview name must be ${slot.worker}`);
+  }
+}
+
 const shared = read("workers/_shared/opennext-origin.ts");
 if (shared && openNext) {
   if (!shared.includes(`https://${openNext.web.workersDev}`)) {

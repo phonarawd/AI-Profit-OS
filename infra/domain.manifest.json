@@ -34,7 +34,27 @@
       "wrangler": "infra/ops/wrangler.toml",
       "workersDev": "ai-profit-ops.ebay-adapter.workers.dev"
     },
-    "note": "OpenNext(@opennextjs/cloudflare) = Workers only. pages.dev 레거시 404 — 배포·프록시·스모크는 workersDev SSOT."
+    "note": "OpenNext(@opennextjs/cloudflare) = Workers only. pages.dev 레거시 404 — 배포·프록시·스모크는 workersDev SSOT.",
+    "staging": {
+      "wranglerEnv": "preview",
+      "deploy": "pnpm cf:deploy:staging",
+      "forbiddenHosts": [
+        "app.hiptk.app",
+        "ops.hiptk.app",
+        "api.hiptk.app",
+        "hiptk.app",
+        "go.hiptk.app"
+      ],
+      "web": {
+        "worker": "ai-profit-web-preview",
+        "workersDev": "ai-profit-web-preview.ebay-adapter.workers.dev"
+      },
+      "ops": {
+        "worker": "ai-profit-ops-preview",
+        "workersDev": "ai-profit-ops-preview.ebay-adapter.workers.dev"
+      },
+      "note": "REL-600 staging origin = wrangler [env.preview]. production workersDev/custom domain 불변. production workflow_dispatch 오용 금지."
+    }
   },
   "pages": {
     "web": {
