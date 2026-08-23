@@ -3,12 +3,12 @@
 ```text
 REL = REL-505
 TITLE = BACKEND_DATA_ALIGNMENT_CERTIFICATION
-STATUS = BLOCKED_PROTECTED_SCOPE_STALE
-CERT_ISSUED = 0
+STATUS = COMPLETED
+CERT_ISSUED = 1
 PLAN_LOCKED = TRUE
 PROTECTED_SCOPE_MUTATION = FALSE
 OPEN_CONFLICT = 0
-STALE_PENDING_REBASE = 1
+STALE_PENDING_REBASE = 0
 REBASE_OWNER = REL-502
 CONCEALMENT = 0
 ALL_ALIGNED = 0
@@ -49,18 +49,18 @@ missing snapshot/amount → null. KRW 0 위조 0. client `Number()*rate` 0.
 | rls | REL-408 80/80 ON | `SECURITY_BASELINE.md` | ALIGNED | REL-408 |
 | indexes | applied migration `CREATE INDEX` | unapplied file-only indexes | MEASURED · unapplied owner REL-701-DB | REL-408 / REL-701-DB |
 | migration_head | local `20260823210000` | remote applied `20260814140000` | DIVERGE deferred | REL-701-DB |
-| p0_p3_engine | REL-502 `FINAL_ACCEPTANCE` | DEFECTS_P0/P1 = 0 | ALIGNED (epoch pre-508) | REL-502 |
+| p0_p3_engine | REL-502 `FINAL_ACCEPTANCE` | DEFECTS_P0/P1 = 0 | ALIGNED (current epoch ISSUED) | REL-502 |
 | p0_p3_admin | REL-409 R6 cert | KNOWN_P0~P3 = 0 | ALIGNED | REL-409 |
 | ui_truth_home_money | home-money-read contract | Engine todayPossible 0 · fake zero 0 | ALIGNED | money / UI |
 | route_contract_100 | R0 matrix (historical missing_fact) | 100% close | DEFERRED not aligned | REL-506 |
 | execution_sse | SDK Phase1 SSE comment | Phase0 `POST execute-tick` live | DEFERRED Phase1 | engine Phase1 |
-| protected_scope | live hash | ISSUED baseline | STALE after REL-508 | REL-502 rebase |
+| protected_scope | live hash | ISSUED baseline | ALIGNED (448-path pin) | REL-502 |
 
 ## 3. VERIFY
 
 | command | result |
 |---|---|
-| `pnpm verify:backend-data-alignment` | live table · current-fx wired · CERT_ISSUED 0 |
+| `pnpm verify:backend-data-alignment` | live table · current-fx wired · CERT_ISSUED 1 |
 | `pnpm verify:rel-505-r7-backend-alignment` | this document |
 | `pnpm verify:rel-508-current-fx-approx` | Nest wire |
 

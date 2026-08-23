@@ -4,8 +4,8 @@
   "suite_id": "QA4",
   "run_id": "qa4-stateful-time-20260823",
   "todoId": "qa4-stateful-time",
-  "measuredAt": "2026-08-23T12:03:54.007Z",
-  "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+  "measuredAt": "2026-08-23T17:08:18.047Z",
+  "baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
   "mode": "tiny",
   "kill_switch": {
     "verified_before_checks": true,
@@ -24,7 +24,7 @@
       "check_id": "QA4_STATEFUL_TIME_LIFECYCLE",
       "status": "PASS",
       "mode": "tiny",
-      "measuredAt": "2026-08-23T12:03:54.007Z",
+      "measuredAt": "2026-08-23T17:08:18.047Z",
       "seed": 20260812,
       "clock_hook": {
         "available": true,
@@ -65,7 +65,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T12:03:53.802Z",
+            "clock_as_of": "2026-08-23T17:08:17.943Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -82,15 +82,15 @@
             "sanitized_response": {
               "scenario_id": "TIME-KST-DAY-BOUNDARY",
               "status": "PASS",
-              "kst_midnight_ms": 1787497200000,
-              "kst_midnight_iso": "2026-08-23T15:00:00.000Z",
+              "kst_midnight_ms": 1787583600000,
+              "kst_midnight_iso": "2026-08-24T15:00:00.000Z",
               "before": {
-                "clock_ms": 1787497198000,
+                "clock_ms": 1787583598000,
                 "http_status": 200,
                 "settlementCompletedToday": 1
               },
               "after": {
-                "clock_ms": 1787497202000,
+                "clock_ms": 1787583602000,
                 "http_status": 200,
                 "settlementCompletedToday": 0
               },
@@ -100,7 +100,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+            "baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "b3a274f4a207e7848229fc6d19595262f6b7437264823d1b7b20084d369edfae",
             "invariant_id": "INV-TIME-01",
@@ -125,7 +125,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T12:03:53.802Z",
+            "clock_as_of": "2026-08-23T17:08:17.943Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -142,10 +142,10 @@
             "sanitized_response": {
               "scenario_id": "TIME-PLUS-30D",
               "status": "PASS",
-              "anchor_ms": 1787486633687,
-              "plus30d_ms": 1790078633687,
-              "kst_anchor_day": "2026-08-23",
-              "kst_plus30d_day": "2026-09-22",
+              "anchor_ms": 1787504897832,
+              "plus30d_ms": 1790096897832,
+              "kst_anchor_day": "2026-08-24",
+              "kst_plus30d_day": "2026-09-23",
               "anchor": {
                 "http_status": 200,
                 "platformSafeStopToday": 1
@@ -161,7 +161,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+            "baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "b3a274f4a207e7848229fc6d19595262f6b7437264823d1b7b20084d369edfae",
             "invariant_id": "INV-TIME-01",
@@ -186,7 +186,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T12:03:53.802Z",
+            "clock_as_of": "2026-08-23T17:08:17.943Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -203,10 +203,10 @@
             "sanitized_response": {
               "scenario_id": "TIME-MULTI-DAY-LIFECYCLE",
               "status": "PASS",
-              "opportunity_id": "fa04cd92-43f1-46b6-a0bf-8c51e0e9f46d",
-              "trade_id": "85af0a31-6bce-416e-beb4-83b5faba282e",
-              "accepted_at_ms": 1787486633768,
-              "clock_at_tick_ms": 1787745833768,
+              "opportunity_id": "8037d194-d06b-4713-9eb9-bad8118895f0",
+              "trade_id": "ad8835ec-f897-416a-bbd6-8750236da4fb",
+              "accepted_at_ms": 1787504897910,
+              "clock_at_tick_ms": 1787764097910,
               "tick_response": {
                 "status": "safe_stop",
                 "resultCode": "MATCH_TIMEOUT"
@@ -225,7 +225,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+            "baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "8852dbad4630c701940d1caa402262b37cf6eba516fd1642ab4224048ad9beab",
             "invariant_id": "INV-LIFECYCLE-01",
@@ -319,5 +319,5 @@
     "critical INV-TIME-01 BLOCKED → ENGINE_QA_INCOMPLETE (ACCEPTED 불가).",
     "Does not issue ENGINE_ACCEPTED_FOR_UI."
   ],
-  "checksum": "ee90966d80012aefda15490fccdd46a8c871424030432b6ce4fd8f082a0c1c14"
+  "checksum": "508a3c9c0c022c4efbf3ca5299be2d8f12ab8c708c04ad056df5b5bfebfa11f0"
 }

@@ -455,14 +455,14 @@ function run() {
       liveBaseline.id === "ea-baseline-229e7777f9b0-2d4567b3a2c8",
       liveBaseline.id,
     );
-    // qa9-result is only ever written by run-qa9.cjs. After rebase apply the
-    // on-disk file stays predecessor history (not rewritten). Current-epoch
-    // evidence-manifest is ENGINE_QA_INCOMPLETE until discovery + QA9 rerun.
+    // qa9-result is only ever written by run-qa9.cjs. After REL-508 rebase,
+    // current-epoch QA1-QA8 reran and QA9 re-aggregated on
+    // ea-baseline-229e7777f9b0-2d4567b3a2c8. Predecessor ISSUED is history.
     check(
       "live_verdict_unchanged",
       qa9.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
         qa9.engine_accepted_for_ui === "ISSUED" &&
-        qa9.baseline_id === "ea-baseline-a6908eff1def-3db9e8f8832f",
+        qa9.baseline_id === "ea-baseline-229e7777f9b0-2d4567b3a2c8",
       qa9.verdict,
     );
     // evidence-manifest.verdict is rewritten ephemerally by run-qa3/4/5/6/8.cjs in every

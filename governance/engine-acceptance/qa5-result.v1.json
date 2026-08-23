@@ -4,8 +4,8 @@
   "suite_id": "QA5",
   "run_id": "qa5-failure-world-20260823",
   "todoId": "qa5-failure-world",
-  "measuredAt": "2026-08-23T12:05:30.093Z",
-  "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+  "measuredAt": "2026-08-23T17:09:47.403Z",
+  "baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
   "mode": "tiny",
   "kill_switch": {
     "verified_before_checks": true,
@@ -24,7 +24,7 @@
       "check_id": "QA5_FAILURE_WORLD",
       "status": "PASS",
       "mode": "tiny",
-      "measuredAt": "2026-08-23T12:05:30.093Z",
+      "measuredAt": "2026-08-23T17:09:47.403Z",
       "seed": 20260812,
       "fault_hook": {
         "available": true,
@@ -101,7 +101,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T12:05:27.983Z",
+            "clock_as_of": "2026-08-23T17:09:43.190Z",
             "request_sequence": [
               {
                 "step": "probe_fault_hook",
@@ -126,7 +126,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+            "baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "c08a69977c60981ee373f918c87c57235492a3fcf8a2c0e082db57bb6291faf9",
             "invariant_id": "INV-FEED-AI-01",
@@ -160,7 +160,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-23T12:05:27.983Z",
+            "clock_as_of": "2026-08-23T17:09:43.190Z",
             "request_sequence": [
               {
                 "step": "probe_fault_hook",
@@ -188,7 +188,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+            "baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "511f28cbfe44c5720feb2e280ad9c60f63ddef5ab33238ffa048bb1c4bc7ed53",
             "invariant_id": "INV-LEDGER-01",
@@ -301,5 +301,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "CI aggregator uses if: always(); artifact retention ≥ 90 days."
   ],
-  "checksum": "b321035b951b80c418196e178b73e493d91e09225f4e2faa58839fa02bcc81e2"
+  "checksum": "ea0c25ef45ce882adda71aec9e8c078751536283915b89633b5ad6ccc4315480"
 }

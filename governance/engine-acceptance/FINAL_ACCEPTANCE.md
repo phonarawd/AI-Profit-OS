@@ -5,25 +5,25 @@
 ```text
 REL = REL-502
 TITLE = FINAL ENGINE ACCEPTANCE
-STATUS = NOT_ISSUED
-CERT_ISSUED = 0
+STATUS = ISSUED
+CERT_ISSUED = 1
 REL-004_SUBSTITUTE = 0
 QA9_PREDECESSOR_VERDICT_AS_CURRENT = 0
 PSM_REL_PENDING = 0
 POST_PSM_PENDING = 3
 PROTECTED_SCOPE_DRIFT = 0
-REBASE_REQUIRED = 1
+REBASE_REQUIRED = 0
 REBASE_APPLIED = 1
 ACK_RECEIVED = 1
 LOCAL_QA0_QA9_RERUN = 0
 EVAL_DATASET_STATUS = MATCH
-QA1_QA8_STATUS = STALE_PENDING_RERUN
-QA9_STATUS = STALE_AGGREGATION_PENDING_DISCOVERY
-QA9_VERDICT = ENGINE_QA_INCOMPLETE
+QA1_QA8_STATUS = COMPLETE_CURRENT_EPOCH
+QA9_STATUS = COMPLETE_ACCEPTED
+QA9_VERDICT = ENGINE_ACCEPTED_FOR_UI
 DEFECTS_P0 = 0
 DEFECTS_P1 = 0
 CRITICAL_INVARIANT_BLOCKED = 0
-NEXT = QA1_DETERMINISTIC_TRUTH
+NEXT = 03_ui_entry_unlocked
 BASELINE_ID = ea-baseline-229e7777f9b0-2d4567b3a2c8
 PREDECESSOR_BASELINE_ID = ea-baseline-a6908eff1def-3db9e8f8832f
 REBASE_ID = ea-rebase-229e7777f9b0-2d4567b3a2c8
@@ -35,7 +35,7 @@ CHANGED_PATHS = 0
 ADDED_PATHS = 0
 MUTATED_PATHS = 0
 MISSING_PATHS = 0
-EXIT_GATE = rebase applied after REL-508. Current-epoch QA1-QA9 required. Predecessor ISSUED is not current.
+EXIT_GATE = 이후 PSM=TRUE 작업이 생기면 인증 무효 → 재실행
 ```
 
 ## 판정
@@ -45,10 +45,18 @@ Human/PO ACK `ENGINE_ACCEPTANCE_REBASE_V1` 수신 · apply 완료.
 predecessor `ea-baseline-a6908eff1def-3db9e8f8832f` QA9 `ENGINE_ACCEPTED_FOR_UI` 는 history 이며 current-authoritative 가 아니다.
 `qa9_predecessor_verdict_as_current_authoritative = FORBIDDEN`.
 
-현재 epoch QA1-QA8 / QA9 를 완료하지 않았다. evidence-manifest = `ENGINE_QA_INCOMPLETE`.
-QA1-QA8 재실행 + QA9 재집계는 CI(`.github/workflows/engine-acceptance-heavy.yml` + formal QA7 restore) 에 위임한다.
-로컬에서 QA0-QA9 를 가짜 PASS 로 닫지 않는다.
-eval dataset = predecessor MATCH. `REBASE_REQUIRED = 1` 은 pin 후에도 current-epoch QA 전 ISSUED 금지.
+Current-epoch QA1-QA8 + QA9 COMPLETE.
+- QA1-QA3 COMPLETE
+- QA4 tiny + clock harness (Actions `32653818941`) COMPLETE / critical PASS
+- QA5 tiny + fault harness (same run) COMPLETE / critical PASS
+- QA6 full + k6 threshold (same run) COMPLETE / 4/4 tag PASS
+- QA7 formal Actions `32654175694` 26/26 COMPLETE
+- QA8 tiny + adversarial harness (Actions `32653818941`) COMPLETE / critical PASS
+- QA9 formula: `ENGINE_ACCEPTED_FOR_UI` / ISSUED / NEXT=`03_ui_entry_unlocked`
+
+Cert issued. Product mutation was not used to chase green.
+Local fake QA0-QA9 PASS = 0.
+eval dataset = predecessor MATCH. QA7 cases = live dataset 26.
 
 ## PSM 수집 (고정 range 아님)
 
@@ -63,10 +71,10 @@ POST-001 · POST-002 · POST-003 은 PSM=TRUE 이지만 실행 순서가 REL-502
 ## 발급 조건 (5항 전부 충족)
 
 1. PSM=TRUE REL 미완료 0 — 충족 (REL-508 COMPLETED)
-2. live aggregate == current baseline aggregate — 충족 (pin applied)
-3. QA1-QA8 COMPLETE on that baseline — predecessor 증거 · current-epoch STALE_PENDING_RERUN
-4. QA9 현재 epoch 재집계 — STALE_AGGREGATION_PENDING_DISCOVERY
-5. 이 문서 `STATUS = NOT_ISSUED` · `CERT_ISSUED = 0` — 충족 (QA 전 발급 0)
+2. live aggregate == current baseline aggregate — 충족
+3. QA1-QA8 COMPLETE on that baseline — 충족
+4. QA9 current-epoch `ENGINE_ACCEPTED_FOR_UI` — 충족
+5. this document `STATUS = ISSUED` · `CERT_ISSUED = 1` — 충족
 
 ## 변경 경로 (108 · predecessor 대비 이력 · 현재 epoch pin 이후 CHANGED_PATHS = 0)
 

@@ -4,8 +4,8 @@
   "suite_id": "QA1",
   "run_id": "qa1-deterministic-truth-20260823",
   "todoId": "qa1-deterministic-truth",
-  "measuredAt": "2026-08-23T10:53:44.727Z",
-  "baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
+  "measuredAt": "2026-08-23T17:16:02.620Z",
+  "baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
   "kill_switch": {
     "verified_before_checks": true,
     "target_env": "ci",
@@ -217,5 +217,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "Idempotency INV-01 and INV-03 kept separate."
   ],
-  "checksum": "65a76529b51f0fa413fecf711b6ee3d8ff349b3b302417e2e99198cc5ca74593"
+  "checksum": "8ac936ddf1057b64f7b370e0421080a817cade5a1b85096bb65eb95dec530b8f"
 }

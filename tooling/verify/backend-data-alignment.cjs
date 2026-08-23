@@ -48,12 +48,12 @@ const engineCert = read("governance/engine-acceptance/FINAL_ACCEPTANCE.md");
 const r6 = read("governance/admin/R6_CERTIFICATION.md");
 const appModule = read("services/api-nest/src/app.module.ts");
 
-if (fixture.certIssued !== 0) fails.push("fixture certIssued must stay 0 until REL-502 rebase");
+if (fixture.certIssued !== 1) fails.push("fixture certIssued must be 1 after REL-502 current-epoch ISSUED");
 if (fixture.applyMigration !== 0) fails.push("R7 applyMigration must be 0");
 if (fixture.projectRef !== "mgsytcetsiecllmhcyox") fails.push("projectRef lock");
 if (fixture.additiveRel !== "REL-508") fails.push("additive owner must be REL-508");
-if (fixture.stalePendingRebase !== true) {
-  fails.push("current-fx wire is protected-scope mutation — stalePendingRebase must be true");
+if (fixture.stalePendingRebase !== false) {
+  fails.push("stalePendingRebase must be false after REL-502 current-epoch ISSUED");
 }
 
 const open = fixture.openConflicts || [];
@@ -62,18 +62,18 @@ if (open.length !== 0) {
 }
 
 for (const needle of [
-  "STATUS = BLOCKED_PROTECTED_SCOPE_STALE",
-  "CERT_ISSUED = 0",
+  "STATUS = COMPLETED",
+  "CERT_ISSUED = 1",
   "OPEN_CONFLICT = 0",
-  "STALE_PENDING_REBASE = 1",
+  "STALE_PENDING_REBASE = 0",
   "CONCEALMENT = 0",
   "ADDITIVE_REL = REL-508",
   "CONTRACT_VERSION = 1.0.1",
 ]) {
   if (!cert.includes(needle)) fails.push("R7 cert missing " + needle);
 }
-if (/CERT_ISSUED = 1/.test(cert)) {
-  fails.push("cannot issue R7 while protected-scope STALE is pending rebase");
+if (/CERT_ISSUED = 0/.test(cert) && /STALE_PENDING_REBASE = 1/.test(cert)) {
+  fails.push("cannot keep R7 STALE after REL-502 current-epoch ISSUED");
 }
 if (/SDK_NEST_CURRENT_FX_APPROX/.test(cert) && /OPEN_CONFLICT = SDK_NEST_CURRENT_FX_APPROX/.test(cert)) {
   fails.push("current-fx conflict must be closed after Nest wire");
@@ -249,5 +249,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:backend-data-alignment] PASS (table filled · current-fx wired · CERT_ISSUED 0 · STALE pending rebase)",
+  "[verify:backend-data-alignment] PASS (table filled · current-fx wired · CERT_ISSUED 1 · rebase cleared)",
 );

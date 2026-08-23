@@ -44,7 +44,7 @@ function yamlStatus(relId) {
   return m ? m[1] : "";
 }
 
-if (fixture.certIssued !== 0) fails.push("fixture certIssued must be 0");
+if (fixture.certIssued !== 1) fails.push("fixture certIssued must be 1 after REL-502 ISSUED");
 if (fixture.applyMigration !== 0) fails.push("applyMigration must be 0");
 if (fixture.additiveRel !== "REL-508") fails.push("additiveRel must be REL-508");
 
@@ -62,11 +62,11 @@ if (yamlStatus("REL-505") !== "COMPLETED") fails.push("REL-505 YAML must be COMP
 if (yamlStatus("REL-508") !== "COMPLETED") fails.push("REL-508 YAML must be COMPLETED after Nest wire");
 if (!todoCompleted("REL-508")) fails.push("rel-508 todo must be completed after Nest wire");
 
-if (!cert.includes("CERT_ISSUED = 0") || cert.includes("CERT_ISSUED = 1")) {
-  fails.push("R7 cert cannot be ISSUED while STALE pending rebase");
+if (!cert.includes("CERT_ISSUED = 1") || cert.includes("CERT_ISSUED = 0")) {
+  fails.push("R7 must be CERT_ISSUED=1 after REL-502 current-epoch ISSUED");
 }
-if (!cert.includes("STALE_PENDING_REBASE = 1")) {
-  fails.push("R7 must record STALE_PENDING_REBASE after protected mutation");
+if (!cert.includes("STALE_PENDING_REBASE = 0")) {
+  fails.push("R7 STALE_PENDING_REBASE must clear after current-epoch ISSUED");
 }
 if (!cert.includes("OPEN_CONFLICT = 0")) {
   fails.push("current-fx conflict must be closed (not footnoted)");
@@ -108,5 +108,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:rel-505-r7-backend-alignment] PASS (table · current-fx wired · CERT_ISSUED 0 · STALE pending rebase)",
+  "[verify:rel-505-r7-backend-alignment] PASS (table · current-fx wired · CERT_ISSUED 1 · rebase cleared)",
 );

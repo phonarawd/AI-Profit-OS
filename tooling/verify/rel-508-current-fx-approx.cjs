@@ -56,8 +56,8 @@ function yamlStatus(relId) {
 if (fixture.protectedScopeMutation !== true) {
   fails.push("REL-508 must declare protectedScopeMutation true");
 }
-if (fixture.certIssued !== 0) fails.push("this slice cannot issue R7");
-if (fixture.stalePendingRebase !== true) fails.push("stalePendingRebase must be true");
+if (fixture.certIssued !== 1) fails.push("R7 certIssued must be 1 after REL-502 ISSUED");
+if (fixture.stalePendingRebase !== false) fails.push("stalePendingRebase must be false after rebase ISSUED");
 
 const rebaseRequired = /REBASE_REQUIRED = 1/.test(
   read("governance/engine-acceptance/FINAL_ACCEPTANCE.md"),
@@ -73,14 +73,14 @@ if (yamlStatus("REL-508") !== "COMPLETED") fails.push("REL-508 YAML must be COMP
 for (const needle of [
   "STATUS = COMPLETED",
   "PROTECTED_SCOPE_MUTATION = TRUE",
-  "STALE_PENDING_REBASE = 1",
+  "STALE_PENDING_REBASE = 0",
   "CLIENT_FX_MATH = 0",
   "FABRICATE_KRW_ZERO = 0",
 ]) {
   if (!evidence.includes(needle)) fails.push("evidence missing " + needle);
 }
-if (!r7.includes("STALE_PENDING_REBASE = 1") || /CERT_ISSUED = 1/.test(r7)) {
-  fails.push("R7 must stay CERT_ISSUED=0 with STALE pending rebase");
+if (!r7.includes("STALE_PENDING_REBASE = 0") || !/CERT_ISSUED = 1/.test(r7)) {
+  fails.push("R7 must be CERT_ISSUED=1 and STALE_PENDING_REBASE=0 after ISSUED");
 }
 
 if (!routes.includes("me/current-fx/approx")) fails.push("route missing me/current-fx/approx");
