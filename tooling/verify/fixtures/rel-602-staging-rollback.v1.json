@@ -1,6 +1,10 @@
 {
   "rel": "REL-602",
-  "deps": ["REL-600", "REL-403", "REL-408"],
+  "deps": [
+    "REL-600",
+    "REL-403",
+    "REL-408"
+  ],
   "protectedScopeMutation": false,
   "productionDomainMutation": 0,
   "productionWorkflowDispatch": 0,
@@ -20,7 +24,10 @@
   "putdukPointersUpdated": 0,
   "stagingWeb": "https://ai-profit-web-preview.ebay-adapter.workers.dev",
   "stagingOps": "https://ai-profit-ops-preview.ebay-adapter.workers.dev",
-  "allowedWorkers": ["ai-profit-web-preview", "ai-profit-ops-preview"],
+  "allowedWorkers": [
+    "ai-profit-web-preview",
+    "ai-profit-ops-preview"
+  ],
   "forbiddenWorkers": [
     "ai-profit-web",
     "ai-profit-ops",
@@ -39,5 +46,14 @@
     "qa-env-isolation-guard.cjs",
     "rel-403-versioning.cjs",
     "rel-600-staging.cjs"
+  ],
+  "secondPreviewVersionCreated": 1,
+  "singleVersionBlockerResolved": 1,
+  "webKnownGoodVersionId": "a85bfa7b-639a-4ad1-b1f3-1ca5f35fb40f",
+  "webNewVersionId": "ac624265-b475-4c06-b0e2-6aed7e78607e",
+  "opsKnownGoodVersionId": "81d9b6a2-c5ef-42da-b2e2-46e7af2d4b10",
+  "opsNewVersionIds": [
+    "4c07bd9f-f1e9-415d-87fb-af4dae7ec3b9",
+    "4a6125d4-9793-4101-89dc-be37972a7d00"
   ]
 }
