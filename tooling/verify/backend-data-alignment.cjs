@@ -48,30 +48,35 @@ const engineCert = read("governance/engine-acceptance/FINAL_ACCEPTANCE.md");
 const r6 = read("governance/admin/R6_CERTIFICATION.md");
 const appModule = read("services/api-nest/src/app.module.ts");
 
-if (fixture.certIssued !== 0) fails.push("fixture certIssued must stay 0 until conflicts close");
+if (fixture.certIssued !== 0) fails.push("fixture certIssued must stay 0 until REL-502 rebase");
 if (fixture.applyMigration !== 0) fails.push("R7 applyMigration must be 0");
 if (fixture.projectRef !== "mgsytcetsiecllmhcyox") fails.push("projectRef lock");
 if (fixture.additiveRel !== "REL-508") fails.push("additive owner must be REL-508");
+if (fixture.stalePendingRebase !== true) {
+  fails.push("current-fx wire is protected-scope mutation — stalePendingRebase must be true");
+}
 
 const open = fixture.openConflicts || [];
-if (open.length !== 1 || open[0].id !== "SDK_NEST_CURRENT_FX_APPROX") {
-  fails.push("openConflicts must be exactly SDK_NEST_CURRENT_FX_APPROX");
+if (open.length !== 0) {
+  fails.push("openConflicts must be empty after REL-508 Nest wire");
 }
 
 for (const needle of [
-  "STATUS = BLOCKED_OPEN_CONFLICT",
+  "STATUS = BLOCKED_PROTECTED_SCOPE_STALE",
   "CERT_ISSUED = 0",
-  "OPEN_CONFLICT = SDK_NEST_CURRENT_FX_APPROX",
-  "OPEN_CONFLICT_OWNER = REL-508",
+  "OPEN_CONFLICT = 0",
+  "STALE_PENDING_REBASE = 1",
   "CONCEALMENT = 0",
-  "ALL_ALIGNED = 0",
   "ADDITIVE_REL = REL-508",
-  "CONTRACT_VERSION = 1.0.0",
+  "CONTRACT_VERSION = 1.0.1",
 ]) {
   if (!cert.includes(needle)) fails.push("R7 cert missing " + needle);
 }
-if (/CERT_ISSUED = 1/.test(cert) || /ALL_ALIGNED = 1/.test(cert)) {
-  fails.push("cannot issue R7 while a conflict is open");
+if (/CERT_ISSUED = 1/.test(cert)) {
+  fails.push("cannot issue R7 while protected-scope STALE is pending rebase");
+}
+if (/SDK_NEST_CURRENT_FX_APPROX/.test(cert) && /OPEN_CONFLICT = SDK_NEST_CURRENT_FX_APPROX/.test(cert)) {
+  fails.push("current-fx conflict must be closed after Nest wire");
 }
 if (/apply_migration\s*\(/.test(cert)) fails.push("cert must not invoke apply_migration");
 
@@ -84,10 +89,8 @@ const nestBlob = nestFiles
   .filter((f) => f.endsWith(".ts"))
   .map((f) => fs.readFileSync(f, "utf8"))
   .join("\n");
-if (nestBlob.includes("me/current-fx/approx") || nestBlob.includes("current-fx/approx")) {
-  fails.push(
-    "Nest now has current-fx — close OPEN_CONFLICT via REL-508 (do not keep CERT_ISSUED=0 fixture)",
-  );
+if (!nestBlob.includes("me/current-fx/approx")) {
+  fails.push("Nest must expose me/current-fx/approx after REL-508");
 }
 if (/supabase\.auth/.test(nestBlob)) fails.push("api-nest must not use supabase.auth");
 if (!read("services/api-nest/src/auth/jwt-auth.guard.ts").includes("export class JwtAuthGuard")) {
@@ -211,8 +214,15 @@ if (localHead === remoteHead) {
   fails.push("heads unexpectedly equal — update the R7 table, do not hide apply state");
 }
 
-if (!/STATUS = ISSUED/.test(engineCert) || !/DEFECTS_P0 = 0/.test(engineCert)) {
-  fails.push("REL-502 cert must stay ISSUED with P0=0");
+if (!/DEFECTS_P0 = 0/.test(engineCert)) {
+  fails.push("engine cert DEFECTS_P0 must stay 0");
+}
+if (/REBASE_REQUIRED = 1/.test(engineCert)) {
+  if (!/STATUS = NOT_ISSUED/.test(engineCert) || !/CERT_ISSUED = 0/.test(engineCert)) {
+    fails.push("drifted cert must be NOT_ISSUED until rebase");
+  }
+} else if (!/STATUS = ISSUED/.test(engineCert) || !/CERT_ISSUED = 1/.test(engineCert)) {
+  fails.push("REL-502 cert must stay ISSUED with P0=0 when scope is clean");
 }
 if (!/KNOWN_P0 = 0/.test(r6) || !/KNOWN_P3 = 0/.test(r6)) {
   fails.push("R6 known P0-P3 must stay 0");
@@ -239,5 +249,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:backend-data-alignment] PASS (table filled · current-fx CONFLICT owned by REL-508 · CERT_ISSUED 0)",
+  "[verify:backend-data-alignment] PASS (table filled · current-fx wired · CERT_ISSUED 0 · STALE pending rebase)",
 );

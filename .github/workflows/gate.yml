@@ -62,6 +62,8 @@ jobs:
         run: pnpm verify:rel-504-migration-readiness
       - name: REL-505 R7 backend alignment
         run: pnpm verify:rel-505-r7-backend-alignment
+      - name: REL-508 current-fx Nest wire
+        run: pnpm verify:rel-508-current-fx-approx
       - name: Stub .env for Docker-less stack-lock
         run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
       - name: cargo test (services/engine-rust — Rule Engine R1-R10 golden unit tests)

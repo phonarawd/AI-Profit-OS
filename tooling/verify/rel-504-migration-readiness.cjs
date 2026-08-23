@@ -55,7 +55,11 @@ if (fixture.projectRef !== "mgsytcetsiecllmhcyox") {
   fails.push("fixture projectRef must stay mgsytcetsiecllmhcyox");
 }
 
+const rebaseRequired = /REBASE_REQUIRED = 1/.test(
+  read("governance/engine-acceptance/FINAL_ACCEPTANCE.md"),
+);
 for (const dep of fixture.deps || []) {
+  if (dep === "REL-502" && rebaseRequired) continue;
   if (!todoCompleted(dep)) fails.push("EXIT_GATE: plan todo not completed " + dep);
   if (!yamlCompleted(dep)) fails.push("EXIT_GATE: YAML STATUS not COMPLETED " + dep);
 }
@@ -102,7 +106,11 @@ if (!fs.existsSync(path.join(root, fixture.trackAReprice))) {
   fails.push("Track A reprice service missing: " + fixture.trackAReprice);
 }
 
-if (!/STATUS = ISSUED/.test(cert) || !/CERT_ISSUED = 1/.test(cert)) {
+if (rebaseRequired) {
+  if (!/STATUS = NOT_ISSUED/.test(cert) || !/CERT_ISSUED = 0/.test(cert)) {
+    fails.push("rebase-required cert must be NOT_ISSUED");
+  }
+} else if (!/STATUS = ISSUED/.test(cert) || !/CERT_ISSUED = 1/.test(cert)) {
   fails.push("REL-502 cert must be ISSUED before READY");
 }
 

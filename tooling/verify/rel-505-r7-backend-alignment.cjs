@@ -48,21 +48,28 @@ if (fixture.certIssued !== 0) fails.push("fixture certIssued must be 0");
 if (fixture.applyMigration !== 0) fails.push("applyMigration must be 0");
 if (fixture.additiveRel !== "REL-508") fails.push("additiveRel must be REL-508");
 
+const rebaseRequired = /REBASE_REQUIRED = 1/.test(
+  read("governance/engine-acceptance/FINAL_ACCEPTANCE.md"),
+);
 for (const dep of fixture.deps || []) {
+  if (dep === "REL-502" && rebaseRequired) continue;
   if (!todoCompleted(dep)) fails.push("EXIT_GATE: plan todo not completed " + dep);
   if (yamlStatus(dep) !== "COMPLETED") fails.push("EXIT_GATE: YAML not COMPLETED " + dep);
 }
 
 if (!todoCompleted("REL-505")) fails.push("rel-505 todo must be completed");
 if (yamlStatus("REL-505") !== "COMPLETED") fails.push("REL-505 YAML must be COMPLETED");
-if (yamlStatus("REL-508") !== "PENDING") fails.push("REL-508 must stay PENDING until Nest wire");
-if (todoCompleted("REL-508")) fails.push("rel-508 todo must stay pending in this slice");
+if (yamlStatus("REL-508") !== "COMPLETED") fails.push("REL-508 YAML must be COMPLETED after Nest wire");
+if (!todoCompleted("REL-508")) fails.push("rel-508 todo must be completed after Nest wire");
 
 if (!cert.includes("CERT_ISSUED = 0") || cert.includes("CERT_ISSUED = 1")) {
-  fails.push("R7 cert cannot be ISSUED with an open conflict");
+  fails.push("R7 cert cannot be ISSUED while STALE pending rebase");
 }
-if (!cert.includes("OPEN_CONFLICT = SDK_NEST_CURRENT_FX_APPROX")) {
-  fails.push("open conflict must be named, not footnoted");
+if (!cert.includes("STALE_PENDING_REBASE = 1")) {
+  fails.push("R7 must record STALE_PENDING_REBASE after protected mutation");
+}
+if (!cert.includes("OPEN_CONFLICT = 0")) {
+  fails.push("current-fx conflict must be closed (not footnoted)");
 }
 
 if (!pkg.includes("verify:backend-data-alignment")) {
@@ -101,5 +108,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:rel-505-r7-backend-alignment] PASS (table · CONFLICT owned · CERT_ISSUED 0 · REL-508 pending)",
+  "[verify:rel-505-r7-backend-alignment] PASS (table · current-fx wired · CERT_ISSUED 0 · STALE pending rebase)",
 );

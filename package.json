@@ -81,6 +81,7 @@
     "verify:rel-504-migration-readiness": "node tooling/verify/rel-504-migration-readiness.cjs",
     "verify:backend-data-alignment": "node tooling/verify/backend-data-alignment.cjs",
     "verify:rel-505-r7-backend-alignment": "node tooling/verify/rel-505-r7-backend-alignment.cjs",
+    "verify:rel-508-current-fx-approx": "node tooling/verify/rel-508-current-fx-approx.cjs",
     "release:id": "node tooling/release/version-id.cjs",
     "verify:admin-entry-e2e": "node tooling/verify/admin-entry-e2e.cjs",
     "verify:cta-earn-profit": "node tooling/verify/cta-earn-profit.cjs",

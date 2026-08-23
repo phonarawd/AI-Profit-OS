@@ -1,19 +1,12 @@
 {
   "rel": "REL-505",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "certIssued": 0,
   "protectedScopeMutation": false,
   "applyMigration": 0,
   "projectRef": "mgsytcetsiecllmhcyox",
-  "openConflicts": [
-    {
-      "id": "SDK_NEST_CURRENT_FX_APPROX",
-      "sdkPath": "/api/v1/me/current-fx/approx",
-      "nestNeedle": "me/current-fx/approx",
-      "nestHandler": null,
-      "ownerRel": "REL-508"
-    }
-  ],
+  "stalePendingRebase": true,
+  "openConflicts": [],
   "additiveRel": "REL-508",
   "sdkPairs": [
     {
@@ -125,8 +118,8 @@
       "id": "current-fx",
       "sdk": "packages/sdk/src/current-fx/fetch.ts",
       "path": "/api/v1/me/current-fx/approx",
-      "nest": null,
-      "conflict": "SDK_NEST_CURRENT_FX_APPROX"
+      "nest": "services/api-nest/src/opportunities/current-fx-approx.user.routes.ts",
+      "nestNeedle": "me/current-fx/approx"
     }
   ],
   "engineFsmCore": ["running", "requeue", "success", "safe_stop"],

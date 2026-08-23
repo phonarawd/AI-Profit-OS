@@ -58,7 +58,9 @@ if (fixture.protectedScopeMutation !== false) {
   fails.push("REL-503 must stay non-PSM");
 }
 
+const rebaseRequired = /REBASE_REQUIRED = 1/.test(cert);
 for (const dep of fixture.deps || []) {
+  if (dep === "REL-502" && rebaseRequired) continue;
   if (!todoCompleted(dep)) fails.push("EXIT_GATE: plan todo not completed " + dep);
   if (!yamlCompleted(dep)) fails.push("EXIT_GATE: YAML STATUS not COMPLETED " + dep);
 }

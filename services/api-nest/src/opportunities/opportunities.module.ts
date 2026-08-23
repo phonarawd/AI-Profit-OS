@@ -12,6 +12,8 @@ import { FxSnapshotService } from "./fx-snapshot.service";
 import { OpportunityRepriceService } from "./opportunity-reprice.service";
 import { OpportunitiesAdminController } from "./opportunities.admin.controller";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
+import { CurrentFxApproxService } from "./current-fx-approx.service";
+import { CurrentFxApproxUserController } from "./current-fx-approx.user.controller";
 import { OpportunitiesUserController } from "./opportunities.user.controller";
 import { OpportunitiesUserService } from "./opportunities.user.service";
 import { ParticipateService } from "./participate.service";
@@ -30,6 +32,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
   ],
   controllers: [
     OpportunitiesUserController,
+    CurrentFxApproxUserController,
     OpportunitiesAdminController,
     UserOpportunityOverrideAdminController,
   ],
@@ -42,6 +45,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
     UserOpportunityOverrideAdminService,
     CatalogRuntimeSeedService,
     FxSnapshotService,
+    CurrentFxApproxService,
   ],
   exports: [
     AssetImageR2Service,

@@ -675,6 +675,15 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/release-master\/REL-508-CURRENT-FX-APPROX\.md$/.test(f) ||
+      /^schemas\/current-fx-approx\.v1\.json$/.test(f) ||
+      /^services\/api-nest\/src\/opportunities\/current-fx-approx/.test(f) ||
+      /^tooling\/verify\/rel-508-current-fx-approx\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-508-current-fx-approx\.v1\.json$/.test(f),
+    scripts: ["rel-508-current-fx-approx.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||
