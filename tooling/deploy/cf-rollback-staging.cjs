@@ -6,7 +6,8 @@
  * Usage:
  *   node tooling/deploy/cf-rollback-staging.cjs staging <webVersionId> <opsVersionId>
  *
- * Exit 2 = blocked (missing creds). Exit 1 = refused/failure.
+ * Both target versions are preflighted before any rollback mutation, so a missing
+ * target cannot leave web/ops in a partial rollback state.
  */
 const { spawnSync } = require("child_process");
 const path = require("path");
@@ -36,10 +37,12 @@ const FORBIDDEN_NAMES = [
 ];
 
 const target = process.argv[2] || "staging";
-const webVersion = process.argv[3] || "";
-const opsVersion = process.argv[4] || "";
+const requested = {
+  web: process.argv[3] || "",
+  ops: process.argv[4] || "",
+};
 
-if (!webVersion || !opsVersion) {
+if (!requested.web || !requested.ops) {
   console.error("[cf:rollback:staging] FAIL: explicit web/ops version ids are required");
   process.exit(1);
 }
@@ -47,8 +50,7 @@ if (isProdTarget(target)) {
   console.error("[cf:rollback:staging] FAIL: production target forbidden");
   process.exit(1);
 }
-const envFlag = resolveWranglerEnv(target);
-if (envFlag !== "preview") {
+if (resolveWranglerEnv(target) !== "preview") {
   console.error("[cf:rollback:staging] FAIL: wrangler env must be preview");
   process.exit(1);
 }
@@ -77,7 +79,7 @@ function wrangler(args) {
   });
 }
 
-function rollbackOne(slot, versionId) {
+function readVersions(slot) {
   const cfg = ALLOWED[slot];
   const list = wrangler([
     "versions",
@@ -95,18 +97,40 @@ function rollbackOne(slot, versionId) {
     console.error(list.stderr || list.stdout);
     process.exit(list.status || 1);
   }
-  let versions;
   try {
-    versions = JSON.parse(list.stdout || "[]");
-  } catch {
+    const versions = JSON.parse(list.stdout || "[]");
+    if (!Array.isArray(versions)) throw new Error("not an array");
+    console.log(
+      "[cf:rollback:staging] deployable " + cfg.name + ": " +
+        versions.map((v) => v.id || v.version_id).filter(Boolean).join(","),
+    );
+    return versions;
+  } catch (error) {
     console.error("[cf:rollback:staging] FAIL: versions list was not JSON for " + cfg.name);
+    console.error(error && error.message ? error.message : String(error));
     process.exit(1);
   }
-  if (!Array.isArray(versions) || !versions.some((v) => (v.id || v.version_id) === versionId)) {
-    console.error("[cf:rollback:staging] FAIL: target version not present for " + cfg.name + ": " + versionId);
-    process.exit(1);
-  }
+}
 
+function hasVersion(versions, versionId) {
+  return versions.some((v) => (v.id || v.version_id) === versionId);
+}
+
+// Atomic preflight: prove both targets exist before mutating either worker.
+const webVersions = readVersions("web");
+const opsVersions = readVersions("ops");
+const missing = [];
+if (!hasVersion(webVersions, requested.web)) missing.push(ALLOWED.web.name + ":" + requested.web);
+if (!hasVersion(opsVersions, requested.ops)) missing.push(ALLOWED.ops.name + ":" + requested.ops);
+if (missing.length) {
+  console.error("[cf:rollback:staging] FAIL: target version(s) not present: " + missing.join(", "));
+  console.error("[cf:rollback:staging] MUTATION = 0");
+  process.exit(1);
+}
+
+function rollbackOne(slot) {
+  const cfg = ALLOWED[slot];
+  const versionId = requested[slot];
   const rb = wrangler([
     "rollback",
     versionId,
@@ -127,6 +151,6 @@ function rollbackOne(slot, versionId) {
   console.log("[cf:rollback:staging] rollback " + cfg.name + " -> " + versionId + " OK");
 }
 
-rollbackOne("web", webVersion);
-rollbackOne("ops", opsVersion);
+rollbackOne("web");
+rollbackOne("ops");
 console.log("[cf:rollback:staging] PASS · preview workers only");
