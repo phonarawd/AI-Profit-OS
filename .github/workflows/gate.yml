@@ -6,152 +6,88 @@ on:
   pull_request:
     branches: [main]
 
-permissions:
-  contents: write
+concurrency:
+  group: gate-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   verify-gate:
-    if: github.event_name == 'pull_request' && github.head_ref == 'rel/REL-602-staging-rollback-current'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v6
-        with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 1
-
       - uses: pnpm/action-setup@v6
         with:
           version: 10.14.0
-
       - uses: actions/setup-node@v6
         with:
           node-version: "22"
           cache: "pnpm"
-
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.85.0"
       - name: Install
         run: pnpm install --frozen-lockfile
-
-      - name: Apply REL-602 closure with exact anchors
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          def must_replace(path, old, new, count=1):
-              p = Path(path)
-              s = p.read_text()
-              actual = s.count(old)
-              if actual != count:
-                  raise SystemExit(f"{path}: expected anchor count {count}, got {actual}: {old[:120]!r}")
-              p.write_text(s.replace(old, new, count))
-
-          must_replace(
-              'package.json',
-              '    "verify:rel-601-staging-regression": "node tooling/verify/rel-601-staging-regression.cjs",\n',
-              '    "verify:rel-601-staging-regression": "node tooling/verify/rel-601-staging-regression.cjs",\n'
-              '    "verify:rel-602-staging-rollback": "node tooling/verify/rel-602-staging-rollback.cjs",\n'
-          )
-          must_replace(
-              'package.json',
-              '    "cf:deploy:staging": "node tooling/deploy/cf-deploy-staging.cjs staging",\n',
-              '    "cf:deploy:staging": "node tooling/deploy/cf-deploy-staging.cjs staging",\n'
-              '    "cf:rollback:staging": "node tooling/deploy/cf-rollback-staging.cjs staging",\n'
-          )
-
-          must_replace(
-              'tooling/verify/CATALOG.md',
-              '| rel-601-staging-regression | `verify:rel-601-staging-regression` | T0 path + CI | live (REL-601 Surface Matrix staging preview · Home redesign 0 · local full 0) |\n',
-              '| rel-601-staging-regression | `verify:rel-601-staging-regression` | T0 path + CI | live (REL-601 Surface Matrix staging preview · Home redesign 0 · local full 0) |\n'
-              '| rel-602-staging-rollback | `verify:rel-602-staging-rollback` | T0 path + CI | live (REL-602 real preview rollback + read-only regression + forward deploy · production/DB/money 0) |\n'
-          )
-          must_replace(
-              'tooling/verify/CATALOG.md',
-              '| `governance/release-master/REL-601-STAGING-REGRESSION.md` · Surface Matrix · `tooling/verify/rel-601-staging-regression.cjs` | rel-601-staging-regression |\n',
-              '| `governance/release-master/REL-601-STAGING-REGRESSION.md` · Surface Matrix · `tooling/verify/rel-601-staging-regression.cjs` | rel-601-staging-regression |\n'
-              '| `governance/release-master/REL-602-STAGING-ROLLBACK.md` · `tooling/deploy/cf-rollback-staging.cjs` · `tooling/verify/rel-602-staging-rollback.cjs` | rel-602-staging-rollback |\n'
-          )
-
-          anchor = '    scripts: ["rel-601-staging-regression.cjs"],\n  },\n'
-          block = anchor + '''  {
-            test: (f) =>
-              /^governance\\/release-master\\/REL-602-STAGING-ROLLBACK\\.md$/.test(f) ||
-              /^governance\\/release-master\\/ROLLBACK_RUNBOOK\\.md$/.test(f) ||
-              /^tooling\\/deploy\\/cf-rollback-staging\\.cjs$/.test(f) ||
-              /^tooling\\/verify\\/rel-602-staging-rollback\\.cjs$/.test(f) ||
-              /^tooling\\/verify\\/fixtures\\/rel-602-staging-rollback\\.v1\\.json$/.test(f),
-            scripts: ["rel-602-staging-rollback.cjs"],
-          },
-'''
-          must_replace('tooling/verify/domain-by-path.cjs', anchor, block)
-
-          plan = '.cursor/plans/PUTDUK_RELEASE_MASTER.plan.md'
-          must_replace(
-              plan,
-              'FIRST_EXECUTION_TODO=REL-602. HARD_STOP_AFTER=REL-601. REL-600 COMPLETED. REL-601 COMPLETED.',
-              'FIRST_EXECUTION_TODO=REL-603. HARD_STOP_AFTER=REL-602. REL-600 COMPLETED. REL-601 COMPLETED. REL-602 COMPLETED.'
-          )
-          must_replace(
-              plan,
-              '  - id: rel-602\n    content: "[Staging][A2] Rollback 연습(staging에서 실제 실행+검증)"\n    status: pending',
-              '  - id: rel-602\n    content: "[Staging][A2] Rollback 연습 DONE preview Workers actual rollback + read-only regression + forward deploy, run=32718187604, evidence=governance/release-master/REL-602-STAGING-ROLLBACK.md"\n    status: completed'
-          )
-          must_replace(
-              plan,
-              'ID: REL-602\nTITLE: Rollback 연습 (staging 실실행)\nSTATUS: PENDING',
-              'ID: REL-602\nTITLE: Rollback 연습 (staging 실실행)\nSTATUS: COMPLETED'
-          )
-          must_replace(
-              plan,
-              'FIRST_EXECUTION_TODO = REL-602\nLAST_COMPLETED_TODO = REL-601\nBATCH_REL_200_206 = ADMIN_ENTRY\nHARD_STOP_AFTER = REL-601',
-              'FIRST_EXECUTION_TODO = REL-603\nLAST_COMPLETED_TODO = REL-602\nBATCH_REL_200_206 = ADMIN_ENTRY\nHARD_STOP_AFTER = REL-602'
-          )
-          must_replace(
-              plan,
-              '현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-602`. HARD_STOP_AFTER = REL-601. BLOCKING_ON = []. LAST_COMPLETED_TODO = REL-601.',
-              '현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-603`. HARD_STOP_AFTER = REL-602. BLOCKING_ON = []. LAST_COMPLETED_TODO = REL-602.'
-          )
-          PY
-
-      - name: Restore clean standard gate with REL-602 verifier
-        run: |
-          git fetch origin main:refs/remotes/origin/main --depth=1
-          git show origin/main:.github/workflows/gate.yml > .github/workflows/gate.yml
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path('.github/workflows/gate.yml')
-          s = p.read_text()
-          anchor = '      - name: REL-601 staging regression\n        run: pnpm verify:rel-601-staging-regression\n'
-          if s.count(anchor) != 1:
-              raise SystemExit('clean main gate REL-601 anchor drift')
-          addition = anchor + '      - name: REL-602 staging rollback\n        run: pnpm verify:rel-602-staging-rollback\n'
-          p.write_text(s.replace(anchor, addition, 1))
-          PY
-          git rm -f .github/workflows/rel-602-close-once.yml
-          test ! -e .github/workflows/rel-602-staging-rollback-once.yml
-
-      - name: Verify closed REL-602 before push
-        run: |
-          pnpm verify:rel-408-security-baseline
-          pnpm verify:rel-602-staging-rollback
-          pnpm verify:gate:fast
-
-      - name: Scope guard
-        run: |
-          CHANGED="$(git diff --name-only | sort)"
-          printf '%s\n' "$CHANGED"
-          for f in $CHANGED; do
-            case "$f" in
-              .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md|.github/workflows/gate.yml|.github/workflows/rel-602-close-once.yml|package.json|tooling/verify/CATALOG.md|tooling/verify/domain-by-path.cjs) ;;
-              *) echo "unexpected closure mutation: $f" >&2; exit 1 ;;
-            esac
-          done
-
-      - name: Commit closure and clean gate to PR branch
+      - name: REL-402 dependency audit
         env:
-          BRANCH: ${{ github.head_ref }}
+          AIPO_AUDIT: "1"
+        run: pnpm verify:rel-402-dependency-audit
+      - name: REL-404 lighthouse budget
+        run: pnpm verify:rel-404-lighthouse-budget
+      - name: REL-405 RBAC audit foundation
+        run: pnpm verify:rel-405-rbac-audit
+      - name: REL-406 kill switch 9
+        run: pnpm verify:rel-406-kill-switch
+      - name: REL-407 price override layers
+        run: pnpm verify:rel-407-price-override
+      - name: REL-408 security baseline
+        run: pnpm verify:rel-408-security-baseline
+      - name: REL-222 admin ops 3-mode
+        run: pnpm verify:rel-222-admin-ops
+      - name: REL-223 match control verbs
+        run: pnpm verify:rel-223-match-control
+      - name: REL-224 source policy versions
+        run: pnpm verify:rel-224-source-policy
+      - name: REL-409 admin R6 cert
+        run: pnpm verify:rel-409-r6-cert
+      - name: REL-500 QA lab expansion
+        run: pnpm verify:rel-500-qa-lab-expansion
+      - name: REL-501 money red-team
+        run: pnpm verify:rel-501-money-red-team
+      - name: REL-502 final engine acceptance
+        run: pnpm verify:rel-502-final-engine-acceptance
+      - name: REL-503 protected-scope STALE watch
+        run: pnpm verify:rel-503-protected-scope-watch
+      - name: REL-504 migration readiness
+        run: pnpm verify:rel-504-migration-readiness
+      - name: REL-505 R7 backend alignment
+        run: pnpm verify:rel-505-r7-backend-alignment
+      - name: REL-508 current-fx Nest wire
+        run: pnpm verify:rel-508-current-fx-approx
+      - name: REL-506 R8 infra core
+        run: pnpm verify:rel-506-r8-infra-core
+      - name: REL-507 production E2E
+        run: pnpm verify:rel-507-production-e2e
+      - name: REL-600 staging
+        run: pnpm verify:rel-600-staging
+      - name: REL-601 staging regression
+        run: pnpm verify:rel-601-staging-regression
+      - name: REL-602 staging rollback
+        run: pnpm verify:rel-602-staging-rollback
+      - name: Stub .env for Docker-less stack-lock
+        run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
+      - name: cargo test (services/engine-rust — Rule Engine R1-R10 golden unit tests)
+        working-directory: services/engine-rust
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
-          git commit -m 'REL-602 close staging rollback practice and advance pointer'
-          git push origin "HEAD:${BRANCH}"
+          cargo check --locked
+          cargo test --locked
+      - name: verify:gate
+        run: pnpm verify:gate
+      - name: OpenNext build:cf (Linux — Workers deploy output SSOT)
+        run: |
+          pnpm --filter @aipo/web build:cf
+          pnpm --filter @aipo/admin build:cf
+          test -f apps/web/.open-next/worker.js
+          test -d apps/web/.open-next/assets
+          test -f apps/admin/.open-next/worker.js
+          test -d apps/admin/.open-next/assets
