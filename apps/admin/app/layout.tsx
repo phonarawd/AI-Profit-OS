@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { T } from "@aipo/ui/copy/ko";
 import "./globals.css";
+import "./spark-admin.css";
 import { AdminShell } from "../components/AdminShell";
 
 export const metadata: Metadata = {
