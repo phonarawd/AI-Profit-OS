@@ -12,20 +12,9 @@ on:
           - all
           - web
           - ops
-  # Temporary branch-only staging trigger for PR #51 validation.
-  # Production hosts remain forbidden by cf-preflight/domain manifest.
-  push:
-    branches:
-      - feat/consumer-spark-dash-worldclass
-    paths:
-      - ".github/workflows/deploy-staging.yml"
-
-permissions:
-  contents: read
-  issues: write
 
 concurrency:
-  group: cf-staging-${{ github.ref }}-${{ inputs.surface || 'web-pr51' }}
+  group: cf-staging-${{ github.ref }}-${{ inputs.surface }}
   cancel-in-progress: false
 
 jobs:
@@ -71,24 +60,15 @@ jobs:
           printf 'API_HOST=%s\n' "$API" >> .env
 
       - name: Deploy web staging
-        if: github.event_name == 'push' || inputs.surface == 'web' || inputs.surface == 'all'
+        if: inputs.surface == 'web' || inputs.surface == 'all'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: node tooling/deploy/cf-preflight.cjs staging web && node tooling/deploy/cf-pages-web.cjs staging
 
       - name: Deploy ops staging
-        if: github.event_name == 'workflow_dispatch' && (inputs.surface == 'ops' || inputs.surface == 'all')
+        if: inputs.surface == 'ops' || inputs.surface == 'all'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: node tooling/deploy/cf-preflight.cjs staging ops && node tooling/deploy/cf-pages-ops.cjs staging
-
-      - name: Report PR51 staging result
-        if: always() && github.event_name == 'push'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          JOB_STATUS: ${{ job.status }}
-        run: |
-          gh api "repos/${GITHUB_REPOSITORY}/issues/51/comments" \
-            -f body="STAGING_WEB_DEPLOY_${JOB_STATUS^^} · sha=${GITHUB_SHA} · preview=https://ai-profit-web-preview.ebay-adapter.workers.dev"
