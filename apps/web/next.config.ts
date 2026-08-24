@@ -23,9 +23,19 @@ const nextConfig: NextConfig = {
   /** PART9-pre — /api/v1 → API_HOST (dev proxy · /ads 규칙 보존) */
   async rewrites() {
     const apiHost = process.env.API_HOST ?? "localhost:4000";
-    const apiBase = apiHost.startsWith("http")
-      ? apiHost.replace(/\/$/, "")
-      : `http://${apiHost}`;
+    const apiBase = (() => {
+      if (apiHost.startsWith("http://") || apiHost.startsWith("https://")) {
+        return apiHost.replace(/\/$/, "");
+      }
+      if (
+        apiHost.includes("localhost") ||
+        apiHost.startsWith("127.") ||
+        apiHost.startsWith("0.0.0.0")
+      ) {
+        return `http://${apiHost}`;
+      }
+      return `https://${apiHost}`;
+    })();
     return [
       { source: "/ads", destination: "/l/meta" },
       { source: "/ads/:variant", destination: "/l/:variant" },

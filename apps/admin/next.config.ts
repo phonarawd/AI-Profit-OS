@@ -21,9 +21,19 @@ const nextConfig: NextConfig = {
   /** web과 동일 — /api/v1 → API_HOST (ops staging·로컬 프록시) */
   async rewrites() {
     const apiHost = process.env.API_HOST ?? "localhost:4000";
-    const apiBase = apiHost.startsWith("http")
-      ? apiHost.replace(/\/$/, "")
-      : `http://${apiHost}`;
+    const apiBase = (() => {
+      if (apiHost.startsWith("http://") || apiHost.startsWith("https://")) {
+        return apiHost.replace(/\/$/, "");
+      }
+      if (
+        apiHost.includes("localhost") ||
+        apiHost.startsWith("127.") ||
+        apiHost.startsWith("0.0.0.0")
+      ) {
+        return `http://${apiHost}`;
+      }
+      return `https://${apiHost}`;
+    })();
     return [
       {
         source: "/api/v1/:path*",
