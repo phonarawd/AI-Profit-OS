@@ -1,5 +1,5 @@
 /**
- * verify:part5-shell-toast — PART5b/e shell + toast host + nested routes lock
+ * verify:part5-shell-toast — Spark Dash route-aware shell + toast host + nested routes lock
  */
 const fs = require("fs");
 const path = require("path");
@@ -18,12 +18,28 @@ function read(rel) {
 
 const layout = read("apps/web/app/layout.tsx");
 const shellRoot = read("packages/ui/components/shell/AppShellRoot.tsx");
-for (const needle of ["ToastHost", "theme-peotteok-light"]) {
+for (const needle of ["ToastHost", "theme-putduk-spark", "ConsumerSparkRoot"]) {
   if (!layout.includes(needle)) fails.push(`layout missing ${needle}`);
 }
-if (layout.includes("AppShellRoot") || layout.includes("USER_TABS")) {
-  fails.push("root layout must not globally mount AppShellRoot / USER_TABS");
+if (layout.includes("theme-peotteok-light")) {
+  fails.push("layout must not use retired theme-peotteok-light presentation");
 }
+if (layout.includes("GlobalSparkBoundary")) {
+  fails.push("layout must not use obsolete GlobalSparkBoundary");
+}
+if (layout.includes("AppShellRoot") || layout.includes("USER_TABS")) {
+  fails.push("root layout must not globally mount leftover AppShellRoot / USER_TABS");
+}
+
+const consumerShell = read("apps/web/components/spark-shell/ConsumerSparkRoot.tsx");
+for (const needle of [
+  'data-testid="consumer-spark-shell"',
+  'data-testid="consumer-spark-sidebar"',
+  'className="csp-bottom-nav"',
+]) {
+  if (!consumerShell.includes(needle)) fails.push(`ConsumerSparkRoot missing ${needle}`);
+}
+
 const walletLayout = read("apps/web/app/wallet/layout.tsx");
 const meLayout = read("apps/web/app/me/layout.tsx");
 if (walletLayout.includes("LegacyAppShell") || walletLayout.includes("AppShellRoot")) {
@@ -84,7 +100,6 @@ if (!me.includes("/me/benefits") || !me.includes("/me/settings")) {
   fails.push("me hub must link benefits + settings");
 }
 
-// retired brands
 for (const banned of ["오늘수익", "바로번다"]) {
   if (me.includes(banned) || layout.includes(banned)) {
     fails.push(`retired brand ${banned}`);
@@ -95,4 +110,4 @@ if (fails.length) {
   console.error("[verify:part5-shell-toast] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
-console.log("[verify:part5-shell-toast] PASS (root chrome 0 · leftover /me chrome 0 · toast · nested routes)");
+console.log("[verify:part5-shell-toast] PASS (Spark root · protected native surfaces · toast · nested routes)");
