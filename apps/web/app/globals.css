@@ -3,17 +3,7 @@
 html,
 body {
   min-height: 100%;
-  margin: 0;
-  background: #08111f;
-  color: #ffffff;
+  background: var(--color-lux-bg);
+  color: var(--color-lux-text);
   font-family: var(--font-lux-sans);
-}
-
-html {
-  color-scheme: dark;
-}
-
-body {
-  min-width: 320px;
-  overflow-x: hidden;
 }
