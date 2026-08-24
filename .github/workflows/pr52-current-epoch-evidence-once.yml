@@ -1,0 +1,140 @@
+name: pr52-current-epoch-evidence-once
+
+on:
+  push:
+    branches:
+      - fix/live-migration-truth-reconciliation
+
+permissions:
+  contents: write
+
+jobs:
+  hydrate-current-epoch:
+    if: ${{ github.actor != 'github-actions[bot]' && contains(github.event.head_commit.message, 'hydrate current epoch evidence') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      AIPO_QA_TARGET_ENV: ci
+      AIPO_QA_HOSTNAME: localhost
+      AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Verify current baseline and protected scope
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node - <<'NODE'
+          const b=require('./governance/engine-acceptance/baseline.v1.json');
+          if (b.id !== 'ea-baseline-04ef3c7de4dd-2ff1760b7d72') throw new Error(`unexpected baseline ${b.id}`);
+          if (b.protected_scope_clean !== true) throw new Error('baseline protected scope not clean');
+          if (b.acceptance_workflow_hash !== 'b8e724ba3af9e2d240f4daeefd53d4330972afdb942396698389825167752aa7') throw new Error('unexpected acceptance workflow hash');
+          NODE
+      - name: Run QA1 QA2 QA3 QA4 sequentially
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/run-qa1.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa2.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa3.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa4.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+      - name: Run QA5 same-job fault harness and scorer
+        run: |
+          set -euo pipefail
+          docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+          docker run -d --name aipo-qa-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=aipo_qa_synth -p 5432:5432 pgvector/pgvector:pg16 >/dev/null
+          trap 'docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true' EXIT
+          for i in $(seq 1 60); do
+            if docker exec aipo-qa-postgres pg_isready -U postgres -d aipo_qa_synth >/dev/null 2>&1; then break; fi
+            if [ "$i" -eq 60 ]; then exit 1; fi
+            sleep 1
+          done
+          export AIPO_QA_PGHOST=127.0.0.1 AIPO_QA_PGUSER=postgres AIPO_QA_PGPASSWORD=postgres AIPO_QA_PGDATABASE=aipo_qa_synth AIPO_QA_PGPORT=5432
+          export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa5-fault
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+          pnpm --filter @aipo/api-nest build
+          test -f services/api-nest/dist/main.js
+          node tooling/engine-acceptance/run-qa5-fault.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa5.cjs --mode tiny --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+          trap - EXIT
+      - name: Run QA6 same-job threshold harness and scorer
+        run: |
+          set -euo pipefail
+          docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+          docker run -d --name aipo-qa-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=aipo_qa_synth -p 5432:5432 pgvector/pgvector:pg16 >/dev/null
+          trap 'docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true' EXIT
+          for i in $(seq 1 60); do
+            if docker exec aipo-qa-postgres pg_isready -U postgres -d aipo_qa_synth >/dev/null 2>&1; then break; fi
+            if [ "$i" -eq 60 ]; then exit 1; fi
+            sleep 1
+          done
+          export AIPO_QA_PGHOST=127.0.0.1 AIPO_QA_PGUSER=postgres AIPO_QA_PGPASSWORD=postgres AIPO_QA_PGDATABASE=aipo_qa_synth AIPO_QA_PGPORT=5432
+          export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa6-threshold
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+          curl -fsSL https://github.com/grafana/k6/releases/download/v0.54.0/k6-v0.54.0-linux-amd64.tar.gz | tar -xz
+          sudo mv k6-v0.54.0-linux-amd64/k6 /usr/local/bin/k6
+          k6 version
+          pnpm --filter @aipo/api-nest build
+          test -f services/api-nest/dist/main.js
+          node tooling/engine-acceptance/run-qa6-threshold.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa6.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+          trap - EXIT
+      - name: Run QA8 same-job adversarial harness and scorer
+        run: |
+          set -euo pipefail
+          docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+          docker run -d --name aipo-qa-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=aipo_qa_synth -p 5432:5432 pgvector/pgvector:pg16 >/dev/null
+          trap 'docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true' EXIT
+          for i in $(seq 1 60); do
+            if docker exec aipo-qa-postgres pg_isready -U postgres -d aipo_qa_synth >/dev/null 2>&1; then break; fi
+            if [ "$i" -eq 60 ]; then exit 1; fi
+            sleep 1
+          done
+          export AIPO_QA_PGHOST=127.0.0.1 AIPO_QA_PGUSER=postgres AIPO_QA_PGPASSWORD=postgres AIPO_QA_PGDATABASE=aipo_qa_synth AIPO_QA_PGPORT=5432
+          export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa8-adversarial
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+          pnpm --filter @aipo/api-nest build
+          test -f services/api-nest/dist/main.js
+          node tooling/engine-acceptance/run-qa8-adversarial.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa8.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+          trap - EXIT
+      - name: Verify honest pre-QA7 state
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const e=require('./governance/engine-acceptance/evidence-manifest.v1.json');
+          const b=require('./governance/engine-acceptance/baseline.v1.json');
+          for (const id of ['QA1','QA2','QA3','QA4','QA5','QA6','QA8']) {
+            const s=(e.suites||[]).find(x=>x.suite_id===id);
+            if (!s || s.completion_status!=='COMPLETE' || s.baseline_id!==b.id) throw new Error(`${id} not current COMPLETE`);
+          }
+          const q7=(e.suites||[]).find(x=>x.suite_id==='QA7');
+          if (!q7 || q7.completion_status==='COMPLETE') throw new Error('QA7 must remain pending until formal workflow_dispatch evidence');
+          if (e.verdict==='ENGINE_ACCEPTED_FOR_UI') throw new Error('pre-QA7 evidence must not self-issue acceptance');
+          NODE
+          pnpm verify:engine-acceptance
+      - name: Commit current-epoch QA1-QA6-QA8 evidence only
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --name-only | grep -E '^(services/|schemas/|eval/|supabase/migrations/)'; then
+            echo 'protected product bytes changed unexpectedly'
+            exit 1
+          fi
+          git add governance/engine-acceptance
+          test -n "$(git diff --cached --name-only)"
+          git commit --no-verify -m "Engine acceptance: publish current-epoch QA1-QA6 and QA8 evidence"
+          git push origin HEAD:fix/live-migration-truth-reconciliation
