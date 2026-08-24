@@ -2,29 +2,29 @@
   min-height: 100dvh;
 }
 
+/* Spark Dash mobile/tablet language follows the locked Home family: navy canvas + pink accent. */
 .spark-global-boundary[data-spark-global="on"] {
-  --color-lux-bg: #0b0f17;
-  --color-lux-surface: #121826;
-  --color-lux-elevated: #1a2030;
-  --color-lux-border: #2a3447;
-  --color-lux-text: #f6f7fa;
-  --color-lux-text-muted: #b5bed0;
-  --color-lux-accent: #ff2d6b;
-  --color-lux-accent-muted: #ff6a98;
+  --color-lux-bg: #08111f;
+  --color-lux-surface: #0d1726;
+  --color-lux-elevated: #111d2d;
+  --color-lux-border: #1a2a40;
+  --color-lux-text: #ffffff;
+  --color-lux-text-muted: #b7c3d3;
+  --color-lux-accent: #ff2e63;
+  --color-lux-accent-muted: #ff6a91;
   --color-lux-danger: #ff6b6b;
   --color-lux-warning: #f7b955;
   --color-lux-profit: #35d07f;
-  --color-lux-principal: #ff2d6b;
+  --color-lux-principal: #ff2e63;
   --color-lux-hero-from: #171226;
   --color-lux-hero-to: #31152a;
-  --shadow-lux-card: 0 18px 48px rgba(0, 0, 0, 0.28), 0 1px 0 rgba(255, 255, 255, 0.03) inset;
-  --shadow-lux-soft: 0 8px 28px rgba(0, 0, 0, 0.2);
+  --shadow-lux-card: 0 16px 44px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.035) inset;
+  --shadow-lux-soft: 0 8px 26px rgba(0, 0, 0, 0.22);
 
   min-height: 100dvh;
   background:
-    radial-gradient(circle at 82% -8%, rgba(255, 45, 107, 0.2), transparent 30rem),
-    radial-gradient(circle at 18% 12%, rgba(110, 76, 255, 0.12), transparent 26rem),
-    #0b0f17;
+    radial-gradient(circle at 82% -8%, rgba(255, 46, 99, 0.18), transparent 26rem),
+    #08111f;
   color: var(--color-lux-text);
   color-scheme: dark;
   font-family:
@@ -43,26 +43,26 @@
 }
 
 .spark-global-boundary[data-spark-global="on"] [data-testid="app-header"] {
-  border-color: color-mix(in srgb, var(--color-lux-border) 84%, transparent);
-  background: color-mix(in srgb, #101624 88%, transparent);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+  border-color: var(--color-lux-border);
+  background: color-mix(in srgb, #08111f 94%, transparent);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(18px);
 }
 
 .spark-global-boundary[data-spark-global="on"] [data-testid="app-sidebar"] {
   border-color: var(--color-lux-border);
-  background: linear-gradient(180deg, #101624 0%, #0d1320 100%);
+  background: linear-gradient(180deg, #07101d 0%, #081423 100%);
 }
 
 .spark-global-boundary[data-spark-global="on"] [data-testid="bottom-nav-5"] {
   border-color: var(--color-lux-border);
-  background: color-mix(in srgb, #101624 95%, transparent);
-  box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.22);
+  background: color-mix(in srgb, #08111f 96%, transparent);
+  box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.24);
   backdrop-filter: blur(18px);
 }
 
 .spark-global-boundary[data-spark-global="on"] [data-testid="bottom-nav-5"] a[data-active="true"] {
-  box-shadow: 0 8px 24px rgba(255, 45, 107, 0.22);
+  box-shadow: 0 8px 24px rgba(255, 46, 99, 0.22);
 }
 
 .spark-global-boundary[data-spark-global="on"] :where(button, input, textarea, select) {
@@ -71,28 +71,98 @@
 
 .spark-global-boundary[data-spark-global="on"] :where(input, textarea, select) {
   border-color: var(--color-lux-border);
-  background-color: color-mix(in srgb, var(--color-lux-elevated) 88%, #000);
+  background-color: color-mix(in srgb, var(--color-lux-elevated) 90%, #000);
   color: var(--color-lux-text);
 }
 
 .spark-global-boundary[data-spark-global="on"] :where(input, textarea)::placeholder {
-  color: #929caf;
+  color: #9aa7ba;
   opacity: 1;
 }
 
 .spark-global-boundary[data-spark-global="on"] :focus-visible {
-  outline: 3px solid #ff5b8b;
+  outline: 3px solid #ff5f88;
   outline-offset: 3px;
 }
 
 .spark-global-boundary[data-spark-global="on"] ::selection {
-  background: rgba(255, 45, 107, 0.34);
+  background: rgba(255, 46, 99, 0.34);
   color: #ffffff;
 }
 
+/* Desktop follows the same locked Home family: light work canvas + navy navigation + pink action. */
 @media (min-width: 1280px) {
+  .spark-global-boundary[data-spark-global="on"] {
+    --color-lux-bg: #f6f7fb;
+    --color-lux-surface: #ffffff;
+    --color-lux-elevated: #ffffff;
+    --color-lux-border: #e1e6ee;
+    --color-lux-text: #121721;
+    --color-lux-text-muted: #5d6675;
+    --color-lux-accent: #ff2d6b;
+    --color-lux-accent-muted: #ff5c8c;
+    --color-lux-danger: #d92d20;
+    --color-lux-warning: #b54708;
+    --color-lux-profit: #067647;
+    --color-lux-principal: #ff2d6b;
+    --color-lux-hero-from: #fff0f5;
+    --color-lux-hero-to: #fff7fa;
+    --shadow-lux-card: 0 1px 2px rgba(18, 23, 33, 0.06), 0 10px 30px rgba(18, 23, 33, 0.07);
+    --shadow-lux-soft: 0 4px 16px rgba(18, 23, 33, 0.06);
+
+    background:
+      radial-gradient(circle at 82% -10%, rgba(255, 45, 107, 0.09), transparent 28rem),
+      #f6f7fb;
+    color-scheme: light;
+  }
+
+  .spark-global-boundary[data-spark-global="on"] [data-testid="app-header"] {
+    border-color: #e1e6ee;
+    background: color-mix(in srgb, #ffffff 95%, transparent);
+    box-shadow: 0 6px 24px rgba(18, 23, 33, 0.055);
+  }
+
   .spark-global-boundary[data-spark-global="on"] [data-testid="app-sidebar"] {
-    box-shadow: 14px 0 38px rgba(0, 0, 0, 0.18);
+    border-color: #172438;
+    background: linear-gradient(180deg, #07101d 0%, #07101d 58%, #081423 100%);
+    box-shadow: 14px 0 38px rgba(7, 16, 29, 0.15);
+  }
+
+  .spark-global-boundary[data-spark-global="on"] [data-testid="app-sidebar"] [data-testid="sidebar-brand"],
+  .spark-global-boundary[data-spark-global="on"] [data-testid="app-sidebar"] [data-testid="bottom-nav-5"] a:not([data-active="true"]) {
+    color: #e6edf7;
+  }
+
+  .spark-global-boundary[data-spark-global="on"] [data-testid="app-sidebar"] [data-testid="bottom-nav-5"] a:not([data-active="true"]):hover {
+    background: #111d2d;
+    color: #ffffff;
+  }
+
+  .spark-global-boundary[data-spark-global="on"] [data-testid="app-sidebar"] [data-testid="bottom-nav-5"] a[data-active="true"] {
+    background: #ff2d6b;
+    color: #ffffff;
+  }
+
+  .spark-global-boundary[data-spark-global="on"] [data-testid="app-sidebar"] [data-testid="sidebar-invite"] a {
+    border-color: #1a2a40;
+    background: #0d1726;
+  }
+
+  .spark-global-boundary[data-spark-global="on"] [data-testid="app-sidebar"] [data-testid="sidebar-invite"] p:first-child {
+    color: #ffffff;
+  }
+
+  .spark-global-boundary[data-spark-global="on"] [data-testid="app-sidebar"] [data-testid="sidebar-invite"] p:last-child {
+    color: #b7c3d3;
+  }
+
+  .spark-global-boundary[data-spark-global="on"] :where(input, textarea, select) {
+    background-color: #ffffff;
+    color: #121721;
+  }
+
+  .spark-global-boundary[data-spark-global="on"] :where(input, textarea)::placeholder {
+    color: #667085;
   }
 }
 
