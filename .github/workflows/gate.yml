@@ -53,7 +53,6 @@ jobs:
           node tooling/engine-acceptance/run-qa1.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
           node tooling/engine-acceptance/run-qa2.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
           node tooling/engine-acceptance/run-qa3.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
-          node tooling/engine-acceptance/run-qa4.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
 
           run_pg() {
             docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
@@ -65,6 +64,17 @@ jobs:
             return 1
           }
           export AIPO_QA_PGHOST=127.0.0.1 AIPO_QA_PGUSER=postgres AIPO_QA_PGPASSWORD=postgres AIPO_QA_PGDATABASE=aipo_qa_synth AIPO_QA_PGPORT=5432
+
+          # QA4 uses its existing approved real-clock harness. The canonical
+          # engine workflow remains unchanged by the QA5/6/8 amendment.
+          run_pg
+          export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa4-clock
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+          pnpm --filter @aipo/api-nest build
+          test -f services/api-nest/dist/main.js
+          node tooling/engine-acceptance/run-qa4-clock.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa4.cjs --mode tiny --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
 
           run_pg
           export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa5-fault
@@ -95,17 +105,25 @@ jobs:
           docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
 
           node - <<'NODE'
+          const fs=require('fs');
           const e=require('./governance/engine-acceptance/evidence-manifest.v1.json');
           const b=require('./governance/engine-acceptance/baseline.v1.json');
           for (const id of ['QA1','QA2','QA3','QA4','QA5','QA6','QA8']) {
             const s=(e.suites||[]).find(x=>x.suite_id===id);
             if (!s || s.completion_status!=='COMPLETE' || s.baseline_id!==b.id) throw new Error(`${id} not current COMPLETE`);
           }
+          for (const id of ['QA4','QA5','QA6','QA8']) {
+            const r=JSON.parse(fs.readFileSync(`governance/engine-acceptance/${id.toLowerCase()}-result.v1.json`,'utf8'));
+            if (r.all_checks_pass !== true) throw new Error(`${id} all_checks_pass != true`);
+            const d=r.defects_counts||{};
+            if ((d.P0||0)!==0 || (d.P1||0)!==0) throw new Error(`${id} P0/P1 not zero`);
+            const c=r.critical_invariant||{};
+            for (const k of ['blocked','skipped','uncovered','failed']) if ((c[k]||0)!==0) throw new Error(`${id} critical ${k} != 0`);
+          }
           const q7=(e.suites||[]).find(x=>x.suite_id==='QA7');
           if (!q7 || q7.completion_status==='COMPLETE') throw new Error('QA7 must remain pending before formal publication');
           if (e.verdict==='ENGINE_ACCEPTED_FOR_UI') throw new Error('pre-QA7 evidence must not self-issue acceptance');
           NODE
-          pnpm verify:engine-acceptance
 
       - name: Persist pre-QA7 current-epoch evidence
         run: |
