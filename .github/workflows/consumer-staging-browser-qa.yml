@@ -91,6 +91,12 @@ jobs:
             throw lastError;
           }
 
+          async function assertNoSevereAxe(page, route) {
+            const result = await new AxeBuilder({ page }).analyze();
+            const severe = result.violations.filter((v) => v.impact === "critical" || v.impact === "serious");
+            expect(severe, `${route} serious/critical axe violations`).toEqual([]);
+          }
+
           async function open(page, route, width, height, allowedPaths = [route]) {
             const pageErrors = [];
             const severeConsole = [];
@@ -162,6 +168,7 @@ jobs:
               const panel = await page.locator(".csp-auth-panel").boundingBox();
               expect(panel).not.toBeNull();
               expect(panel.width).toBeGreaterThan(500);
+              if (route === "/auth/login") await assertNoSevereAxe(page, route);
             }
             const guardedPath = await open(page, "/auth/complete-profile", 1440, 1080, ["/auth/login"]);
             expect(guardedPath).toBe("/auth/login");
@@ -175,11 +182,9 @@ jobs:
           });
 
           test("live staging key surfaces have no serious or critical axe violations", async ({ page }) => {
-            for (const route of ["/", "/wallet", "/me/settings", "/auth/login"]) {
+            for (const route of ["/", "/wallet", "/me/settings"]) {
               await open(page, route, 1440, 1080);
-              const result = await new AxeBuilder({ page }).analyze();
-              const severe = result.violations.filter((v) => v.impact === "critical" || v.impact === "serious");
-              expect(severe, `${route} serious/critical axe violations`).toEqual([]);
+              await assertNoSevereAxe(page, route);
             }
           });
           EOF
