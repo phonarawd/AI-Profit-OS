@@ -1,0 +1,14 @@
+/* WCAG AA text/action overrides for the shared Consumer Spark shell.
+ * Keep vivid #ff2d6b for decorative accents only; white text uses the darker action pink.
+ */
+.csp-primary {
+  background: #c81d55;
+  color: #ffffff;
+}
+
+@media (min-width: 1280px) {
+  .csp-nav-link[data-active="true"] {
+    background: linear-gradient(90deg, #c81d55 0%, #a91448 100%);
+    color: #ffffff;
+  }
+}
