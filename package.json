@@ -40,6 +40,7 @@
     "verify:ia-tabs": "node tooling/verify/ia-tabs.cjs",
     "verify:admin-boundary": "node tooling/verify/admin-boundary.cjs",
     "verify:admin-routes": "node tooling/verify/admin-routes.cjs",
+    "verify:admin-novice-ui": "node tooling/verify/admin-novice-ui.cjs",
     "verify:rel-201-admin-dashboard": "node tooling/verify/rel-201-admin-dashboard.cjs",
     "verify:rel-202-admin-users": "node tooling/verify/rel-202-admin-users.cjs",
     "verify:rel-203-admin-user-detail": "node tooling/verify/rel-203-admin-user-detail.cjs",

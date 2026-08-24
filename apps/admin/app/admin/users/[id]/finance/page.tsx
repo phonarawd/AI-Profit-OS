@@ -6,7 +6,7 @@ import { BucketBreakdown } from "@aipo/ui/components/wallet/BucketBreakdown";
 import { T } from "@aipo/ui/copy/ko";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 import { adminGet, type AdminResult } from "../../../../../lib/admin-api";
-import { readAmount, readText } from "../../../../../lib/admin-truth";
+import { readAmount, readMoneyRecordLabel, readText } from "../../../../../lib/admin-truth";
 import { AdminFetchNote, AdminTruth } from "../../../../../components/AdminTruth";
 
 const TABS = [
@@ -21,6 +21,17 @@ const TABS = [
 ] as const;
 
 type FinanceTab = (typeof TABS)[number];
+
+const TAB_LABEL: Record<FinanceTab, string> = {
+  summary: "한눈에 보기",
+  deposits: "입금",
+  withdrawals: "출금",
+  spread: "거래 차액",
+  buckets: "잔액 구분",
+  ledger: "돈의 이동 기록",
+  margin: "수익률",
+  referral: "친구 초대 혜택",
+};
 
 type BucketsPayload = {
   principalUsdt?: unknown;
@@ -121,13 +132,14 @@ function FinanceContent() {
       data-user-id={userId}
       data-testid="admin-user-finance"
     >
-      <h1 className="text-xl font-semibold">회원 금융</h1>
+      <h1 className="text-xl font-semibold">회원 입출금·수익</h1>
       <p className="mt-2 text-sm text-lux-text-muted" data-forbid="balance-update">
-        잔액 직접 수정 없음
+        안전을 위해 이 화면에서 회원 잔액을 직접 고칠 수 없습니다.
       </p>
       <nav
         className="mt-4 flex flex-wrap gap-2 text-sm"
         data-testid="finance-tabs"
+        aria-label="회원 입출금·수익 메뉴"
       >
         {TABS.map((t) => (
           <a
@@ -140,7 +152,7 @@ function FinanceContent() {
                 : "rounded px-2 py-1 text-lux-text-muted"
             }
           >
-            {t === "buckets" ? "버킷" : t}
+            {TAB_LABEL[t]}
           </a>
         ))}
       </nav>
@@ -162,7 +174,7 @@ function FinanceContent() {
             {T.practice.adminNote}
           </p>
           {!buckets ? (
-            <p className="mt-4 text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="mt-4 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !buckets.ok ? (
             <AdminFetchNote failure={buckets.failure} />
           ) : liveBuckets ? (
@@ -183,12 +195,12 @@ function FinanceContent() {
       ) : tab === "ledger" ? (
         <section className="mt-6 space-y-2">
           {!journals ? (
-            <p className="text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !journals.ok ? (
             <AdminFetchNote failure={journals.failure} />
           ) : Array.isArray(journals.data.items) &&
             journals.data.items.length === 0 ? (
-            <p className="text-sm text-lux-text-muted">전표가 없습니다.</p>
+            <p className="text-sm text-lux-text-muted">아직 돈의 이동 기록이 없습니다.</p>
           ) : Array.isArray(journals.data.items) ? (
             <ul className="space-y-2 text-sm">
               {journals.data.items.map((row, idx) => (
@@ -196,7 +208,7 @@ function FinanceContent() {
                   key={String(row.id ?? idx)}
                   className="rounded border border-lux-border p-2"
                 >
-                  <AdminTruth value={readText(row.journalType)} />
+                  <AdminTruth value={readMoneyRecordLabel(row.journalType)} />
                 </li>
               ))}
             </ul>
@@ -207,7 +219,7 @@ function FinanceContent() {
       ) : tab === "summary" ? (
         <section className="mt-6 text-sm">
           {!buckets ? (
-            <p className="text-lux-text-muted">불러오는 중</p>
+            <p className="text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !buckets.ok ? (
             <AdminFetchNote failure={buckets.failure} />
           ) : (
@@ -219,7 +231,7 @@ function FinanceContent() {
         </section>
       ) : (
         <p className="mt-6 text-sm text-lux-text-muted">
-          <AdminTruth value={null} /> · 이 칸의 전용 조회가 없습니다
+          이 항목은 아직 확인 기능이 준비되지 않았습니다. <AdminTruth value={null} />
         </p>
       )}
     </main>

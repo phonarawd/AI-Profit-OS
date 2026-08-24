@@ -428,6 +428,7 @@ const RULES = [
     scripts: [
       "no-admin-in-web.cjs",
       "admin-routes.cjs",
+      "admin-novice-ui.cjs",
       "rel-201-admin-dashboard.cjs",
       "rel-202-admin-users.cjs",
       "rel-203-admin-user-detail.cjs",
@@ -455,11 +456,13 @@ const RULES = [
   {
     test: (f) =>
       /^tooling\/verify\/rel-2\d{2}-admin-/.test(f) ||
+      /^tooling\/verify\/admin-novice-ui\.cjs$/.test(f) ||
       /^tooling\/verify\/admin-entry-e2e\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/admin-entry-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/e2e\/lib\/local-admin-runtime\.cjs$/.test(f),
     scripts: [
       "rel-201-admin-dashboard.cjs",
+      "admin-novice-ui.cjs",
       "rel-202-admin-users.cjs",
       "rel-203-admin-user-detail.cjs",
       "rel-204-admin-user-finance.cjs",

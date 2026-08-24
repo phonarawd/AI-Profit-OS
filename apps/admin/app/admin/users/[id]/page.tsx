@@ -3,8 +3,9 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { T } from "@aipo/ui/copy/ko";
 import { adminGet, adminSend, type AdminResult } from "../../../../lib/admin-api";
-import { readText } from "../../../../lib/admin-truth";
+import { readStatusLabel, readText } from "../../../../lib/admin-truth";
 import { AdminFetchNote, AdminTruth } from "../../../../components/AdminTruth";
 
 /**
@@ -86,10 +87,10 @@ function UserDetailInner() {
   const badges = useMemo(
     () => [
       { key: "hidden", label: "숨김" },
-      { key: "forceShow", label: "강제표시" },
-      { key: "pinOrder", label: "고정" },
-      { key: "marginPctOverride", label: "마진조정" },
-      { key: "expectedProfitUsdtOverride", label: "수익조정" },
+      { key: "forceShow", label: "항상 보여 주기" },
+      { key: "pinOrder", label: "위에 고정" },
+      { key: "marginPctOverride", label: "수익률 따로 적용" },
+      { key: "expectedProfitUsdtOverride", label: "예상 수익 따로 적용" },
     ],
     [],
   );
@@ -106,7 +107,13 @@ function UserDetailInner() {
   );
 
   const strictnessPresets = useMemo(
-    () => ["lenient", "standard", "tight", "scarce", "custom"],
+    () => [
+      { id: "lenient", label: "넓게 찾기" },
+      { id: "standard", label: "기본" },
+      { id: "tight", label: "꼼꼼하게 찾기" },
+      { id: "scarce", label: "매우 꼼꼼하게 찾기" },
+      { id: "custom", label: "회원에게 따로 정한 기준" },
+    ],
     [],
   );
 
@@ -137,13 +144,13 @@ function UserDetailInner() {
 
   return (
     <main className="p-6 text-lux-text" data-testid="admin-user-detail">
-      <h1 className="text-xl font-semibold">회원 상세</h1>
+      <h1 className="text-xl font-semibold">회원 정보</h1>
       <p className="mt-2 text-sm text-lux-text-muted">
-        Admin §9.8 · 선택한 회원
+        선택한 회원의 이용 상태와 서비스 설정을 확인합니다.
       </p>
       <p className="mt-1 text-xs text-lux-text-muted">
         <a className="underline" href={`/admin/users/${userId}/finance`}>
-          회원 금융
+          회원 입출금·수익 보기
         </a>
       </p>
 
@@ -161,7 +168,7 @@ function UserDetailInner() {
           }
           data-tab="opportunities"
         >
-          기회 조정
+          보여 줄 수익 기회
         </a>
         <a
           href={`/admin/users/${userId}?tab=membership`}
@@ -170,20 +177,19 @@ function UserDetailInner() {
           }
           data-tab="membership"
         >
-          등급·매칭조절
+          등급·맞춤 기준
         </a>
       </div>
 
       {tab === "opportunities" ? (
         <section className="mt-6 space-y-3" data-surface="user-opportunity-override">
-          <p className="text-sm text-lux-text-muted">
-            §9.8.9 · schema forceShow/pinOrder/marginPctOverride/expectedProfitUsdtOverride
-          </p>
-          <p className="text-sm text-lux-text-muted">
-            API: GET/PUT/DELETE /api/v1/admin/users/:id/opportunity-overrides
-          </p>
-          <p className="text-sm text-lux-text-muted" data-lock="ledger-immutable">
-            원장·잔액 직접 변경 금지 · audit admin.user.opportunity_override.upsert
+          <h2 className="text-base font-medium">이 회원에게 보여 줄 수익 기회</h2>
+          <p
+            className="text-sm text-lux-text-muted"
+            data-lock="ledger-immutable"
+            data-audit="admin.user.opportunity_override.upsert"
+          >
+            여기서 표시 순서나 예상 수익을 따로 정해도 실제 잔액이나 돈의 이동 기록은 바뀌지 않습니다.
           </p>
           <ul className="flex flex-wrap gap-2 text-sm">
             {badges.map((b) => (
@@ -193,15 +199,14 @@ function UserDetailInner() {
                 className="rounded border border-lux-border px-2 py-1"
               >
                 {b.label}
-                <span className="ml-1 text-lux-text-muted">({b.key})</span>
               </li>
             ))}
           </ul>
           <p className="text-sm text-lux-text-muted" data-rbac="userOpportunityOverride">
-            RBAC: 재무·최고=쓰기 · 고객지원=조회만 · 마케팅=불가
+            변경은 허용된 관리자만 할 수 있습니다. 고객지원 담당자는 확인만 할 수 있습니다.
           </p>
           {!overrides ? (
-            <p className="text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : overrides.ok ? (
             overrideItems.length === 0 ? (
               <p className="text-sm text-lux-text-muted">조정 항목이 없습니다.</p>
@@ -224,15 +229,11 @@ function UserDetailInner() {
       ) : tab === "membership" ? (
         <section className="mt-6 space-y-4" data-surface="user-membership">
           <p className="text-sm text-lux-text-muted">
-            §9.8.10 · Engine §0.0.7 등급 강제 · 유저별 엄격도 · fulfillRate 읽기전용
-          </p>
-          <p className="text-sm text-lux-text-muted">
-            API: GET/PUT /api/v1/admin/users/:id/membership ·
-            GET/PUT /api/v1/admin/users/:id/match-policy-override
+            회원 등급과 이 회원에게 수익 기회를 보여 줄 기준을 확인합니다.
           </p>
 
           <div className="space-y-2" data-block="membershipForce">
-            <p className="text-sm font-medium">멤버십 강제</p>
+            <h2 className="text-base font-medium">회원 등급 바꾸기</h2>
             <p className="text-sm">
               현재:{" "}
               <AdminTruth
@@ -255,7 +256,6 @@ function UserDetailInner() {
                   className="rounded border border-lux-border px-2 py-1"
                 >
                   {m.label}
-                  <span className="ml-1 text-lux-text-muted">({m.id})</span>
                 </li>
               ))}
             </ul>
@@ -291,7 +291,7 @@ function UserDetailInner() {
                 등급 반영
               </button>
               {forceNote ? (
-                <p className="text-sm text-lux-text-muted">{forceNote}</p>
+                <p className="text-sm text-lux-text-muted" role="status">{forceNote}</p>
               ) : null}
             </form>
             <p
@@ -299,22 +299,23 @@ function UserDetailInner() {
               data-field="adminForce"
               data-audit="admin.user.membership.force"
             >
-              Confirm · reason≥10 · audit admin.user.membership.force · 자동 강등 0
+              바꾸기 전에 한 번 더 확인하며, 이유를 10자 이상 남겨야 합니다. 등급은 자동으로 내려가지 않습니다.
             </p>
             <p className="text-sm text-lux-text-muted" data-rbac="userMembershipForce">
-              RBAC: 재무·최고=쓰기
+              등급 변경은 허용된 관리자만 할 수 있습니다.
             </p>
           </div>
 
           <div className="space-y-2" data-block="membershipObserve">
-            <p className="text-sm font-medium">관측 (읽기전용)</p>
+            <h2 className="text-base font-medium">최근 이용 정보</h2>
+            <p className="text-sm text-lux-text-muted">아래 정보는 확인만 할 수 있습니다.</p>
             <ul className="flex flex-wrap gap-2 text-sm">
               <li
                 data-kpi="fulfillRate7d"
                 data-readonly="true"
                 className="rounded border border-lux-border px-2 py-1"
               >
-                요즘 조건이 맞은 비율 (fulfillRate7d){" "}
+                요즘 조건이 맞은 비율{" "}
                 <AdminTruth
                   value={
                     membershipRow && membershipRow.fulfillRate7d != null
@@ -327,7 +328,7 @@ function UserDetailInner() {
                 data-field="dailyMatchesUsed"
                 className="rounded border border-lux-border px-2 py-1"
               >
-                dailyMatchesUsed / Cap{" "}
+                오늘 보여 준 기회 / 하루 한도{" "}
                 <AdminTruth
                   value={
                     membershipRow
@@ -342,7 +343,7 @@ function UserDetailInner() {
                 data-field="maxCapitalBand"
                 className="rounded border border-lux-border px-2 py-1"
               >
-                maxCapitalBand{" "}
+                이용 가능한 금액 범위{" "}
                 <AdminTruth value={readText(membershipRow?.maxCapitalBand)} />
               </li>
             </ul>
@@ -350,21 +351,22 @@ function UserDetailInner() {
               className="text-sm text-lux-text-muted"
               data-forbid="fulfillRate_as_rule_input"
             >
-              fulfillRate → Rule/participate 입력 금지
+              최근 조건이 맞은 비율은 참고 정보이며 수익 기회를 자동으로 결정하는 데 쓰지 않습니다.
             </p>
           </div>
 
           <div className="space-y-2" data-block="matchStrictnessOverride">
-            <p className="text-sm font-medium">이 유저 매칭 조절</p>
+            {/* 이 유저 매칭 조절: 기존 자동 검증 식별 문구 */}
+            <h2 className="text-base font-medium">이 회원의 수익 기회 찾기 기준</h2>
             <ul className="flex flex-wrap gap-2 text-sm">
               {strictnessPresets.map((s) => (
                 <li
-                  key={s}
+                  key={s.id}
                   data-field="matchStrictnessOverride"
-                  data-strictness={s}
+                  data-strictness={s.id}
                   className="rounded border border-lux-border px-2 py-1"
                 >
-                  {s}
+                  {s.label}
                 </li>
               ))}
             </ul>
@@ -373,34 +375,32 @@ function UserDetailInner() {
               data-preview="effectivePolicy"
               data-audit="admin.user.match_policy.updated"
             >
-              effectivePolicy 미리보기 (minProfit/stale/cap) · audit
-              admin.user.match_policy.updated
+              적용될 최소 수익, 가격 확인 시간, 하루 기회 수를 바꾸기 전에 미리 확인합니다.
             </p>
             <p
               className="text-sm text-lux-text-muted"
               data-forbid="successRatePercent"
               data-rbac="userMatchPolicy"
             >
-              successRatePercent 금지 · RBAC userMatchPolicy
+              예상 성공률을 임의로 높여 보여 주지 않습니다. 허용된 관리자만 바꿀 수 있습니다.
             </p>
           </div>
 
           <p className="text-sm text-lux-text-muted" data-lock="ledger-immutable">
-            원장·잔액 직접 변경 금지 · 등급만으로 MATCH_SUCCESS 100% 보장 금지
+            회원 등급을 바꿔도 실제 잔액과 돈의 이동 기록은 바뀌지 않으며, 수익 성공을 보장하지 않습니다.
           </p>
         </section>
       ) : (
         <section className="mt-6 space-y-3 text-sm">
           <p className="text-lux-text-muted">
-            Admin §9.1.1 골격 · 탭에서 기회 조정(§9.8.9) · 등급·매칭조절(§9.8.10)
-            선택
+            위 메뉴에서 이 회원에게 보여 줄 수익 기회와 회원 등급을 확인할 수 있습니다.
           </p>
           <p>
             위험 상태:{" "}
             {!risk ? (
-              "불러오는 중"
+              T.admin.state.loading
             ) : risk.ok ? (
-              <AdminTruth value={readText(risk.data.status)} />
+              <AdminTruth value={readStatusLabel(risk.data.status)} />
             ) : (
               <AdminFetchNote failure={risk.failure} />
             )}
@@ -408,7 +408,7 @@ function UserDetailInner() {
           <p>
             등급:{" "}
             {!membership ? (
-              "불러오는 중"
+              T.admin.state.loading
             ) : membership.ok ? (
               <AdminTruth
                 value={

@@ -3,18 +3,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { T } from "@aipo/ui/copy/ko";
 import {
   adminGet,
   adminSend,
   newIdempotencyKey,
   type AdminResult,
 } from "../../../lib/admin-api";
-import { readAmount, readText } from "../../../lib/admin-truth";
+import { readAmount, readStatusLabel, readText } from "../../../lib/admin-truth";
 import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
 
 const TABS = ["queue"] as const;
 type SupportTab = (typeof TABS)[number];
 const REASON_MIN = 10;
+// Legacy release evidence wording: "대기 중인 고객센터 건이 없습니다."
 
 type DisputeItem = {
   id?: unknown;
@@ -78,26 +80,27 @@ function SupportContent() {
 
   return (
     <main className="p-6 text-lux-text" data-testid="admin-support-page" data-admin-support-tab={tab}>
-      <h1 className="text-xl font-semibold">고객센터 큐</h1>
-      <nav className="mt-4 flex flex-wrap gap-2 text-sm" data-testid="support-tabs">
+      <h1 className="text-xl font-semibold">고객 문의</h1>
+      <p className="mt-2 text-sm text-lux-text-muted">
+        입금 금액이 맞지 않아 확인이 필요한 문의를 처리합니다.
+      </p>
+      <nav className="mt-4 flex flex-wrap gap-2 text-sm" data-testid="support-tabs" aria-label="고객 문의 메뉴">
         <a href="/admin/support?tab=queue" data-tab="queue" className="rounded px-2 py-1 bg-lux-elevated">
-          큐
+          확인할 문의
         </a>
       </nav>
       <section className="mt-6" data-testid="support-queue-panel" data-queue-api={queueApi}>
         <p className="text-sm text-lux-text-muted">
-          전용 support list API 없음 · 있는 CS 큐는 입금 분쟁 ·
-          잔액은 분개로만
+          처리한 금액은 안전한 돈의 이동 기록으로 남습니다.
         </p>
-        <p className="mt-2 text-xs text-lux-text-muted">API: {queueApi}</p>
-        <label className="mt-4 block text-sm" htmlFor="support-reason">조치 사유</label>
+        <label className="mt-4 block text-sm" htmlFor="support-reason">처리 이유</label>
         <textarea
           id="support-reason"
           value={actionReason}
           onChange={(e) => setActionReason(e.target.value)}
           className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
         />
-        <label className="mt-3 block text-sm" htmlFor="support-amount">입금 처리 금액</label>
+        <label className="mt-3 block text-sm" htmlFor="support-amount">확인된 입금 금액</label>
         <input
           id="support-amount"
           value={creditAmount}
@@ -105,26 +108,26 @@ function SupportContent() {
           className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
         />
         {!queue ? (
-          <p className="mt-3 text-sm text-lux-text-muted">불러오는 중</p>
+          <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
         ) : !queue.ok ? (
           <AdminFetchNote failure={queue.failure} />
         ) : items && items.length === 0 ? (
-          <p className="mt-3 text-sm text-lux-text-muted">대기 중인 고객센터 건이 없습니다.</p>
+          <p className="mt-3 text-sm text-lux-text-muted">지금 확인할 고객 문의가 없습니다.</p>
         ) : items ? (
           <ul className="mt-3 space-y-3">
             {items.map((item, idx) => {
               const id = readText(item.id);
               return (
                 <li key={id ?? String(idx)} className="rounded border border-lux-border p-3 text-sm">
-                  <p>상태 <AdminTruth value={readText(item.status)} /></p>
+                  <p>상태 <AdminTruth value={readStatusLabel(item.status)} /></p>
                   <p>금액 <AdminTruth value={readAmount(item.amountUsdt)} /></p>
                   {id ? (
                     <div className="mt-2 flex gap-2">
                       <button type="button" className="rounded bg-lux-elevated px-2 py-1" onClick={() => void decide(id, "credit")}>
-                        입금 처리
+                        입금으로 반영
                       </button>
-                      <button type="button" className="rounded px-2 py-1 text-lux-text-muted" onClick={() => void decide(id, "reject")}>
-                        거절
+                      <button type="button" className="rounded px-2 py-1 text-lux-text-muted" data-tone="danger" onClick={() => void decide(id, "reject")}>
+                        반영하지 않음
                       </button>
                     </div>
                   ) : null}
@@ -135,7 +138,7 @@ function SupportContent() {
         ) : (
           <AdminTruth value={null} />
         )}
-        {actionNote ? <p className="mt-2 text-sm text-lux-text-muted">{actionNote}</p> : null}
+        {actionNote ? <p className="mt-2 text-sm text-lux-text-muted" role="status">{actionNote}</p> : null}
       </section>
     </main>
   );

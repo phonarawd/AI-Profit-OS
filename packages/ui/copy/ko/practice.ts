@@ -10,7 +10,7 @@ export const practice = {
   notWithdrawable: "연습 잔액은 출금할 수 없어요",
   expiredToast: "⏰ 연습 잔액이 만료됐어요",
   grantedToast: "🎁 연습 잔액이 생겼어요. 출금은 안 돼요",
-  adminNote: "연습 버킷 · 출금·참여·수익 승격 불가",
+  adminNote: "연습 잔액은 실제 출금이나 수익 진행에 사용할 수 없습니다.",
 } as const;
 
 export type PracticeCopy = typeof practice;

@@ -3,20 +3,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { T } from "@aipo/ui/copy/ko";
 import {
   adminGet,
   adminSend,
   newIdempotencyKey,
   type AdminResult,
 } from "../../../lib/admin-api";
-import { readText } from "../../../lib/admin-truth";
 import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
 
 const TABS = ["circuit", "reserve"] as const;
 type SystemTab = (typeof TABS)[number];
 
 const TAB_LABEL: Record<SystemTab, string> = {
-  circuit: "긴급 정지",
+  circuit: "서비스 멈춤",
   reserve: "운영 준비금",
 };
 
@@ -38,7 +38,12 @@ type Preview = {
 
 function circuitLabel(open: unknown): string | null {
   if (typeof open !== "boolean") return null;
-  return open ? "열림" : "닫힘";
+  return open ? "멈춤" : "정상";
+}
+
+function enabledLabel(enabled: unknown): string | null {
+  if (typeof enabled !== "boolean") return null;
+  return enabled ? "사용 중" : "멈춤";
 }
 
 function SystemControlContent() {
@@ -127,7 +132,10 @@ function SystemControlContent() {
       data-admin-system-control-tab={tab}
       data-testid="admin-system-control-page"
     >
-      <h1 className="text-xl font-semibold">긴급 정지</h1>
+      <h1 className="text-xl font-semibold">{T.admin.navigation.systemControl}</h1>
+      <p className="mt-2 text-sm text-lux-text-muted">
+        문제가 생겼을 때 필요한 기능만 안전하게 멈추고, 확인 후 다시 시작합니다.
+      </p>
       <nav
         className="mt-4 flex flex-wrap gap-2 text-sm"
         data-testid="system-control-tabs"
@@ -164,18 +172,15 @@ function SystemControlContent() {
           data-s2-input="true"
         >
           <p className="text-sm text-lux-text-muted">
-            Engine §0.0.4.3 · 운영 준비금 목표 · 미설정 시 Growth ON 차단 · 시뮬 S2 입력
+            혜택과 행사를 시작하기 전에 반드시 지켜야 할 운영 준비금입니다.
           </p>
           <div
             className="rounded border border-lux-border p-3 space-y-2"
             data-field="targetUsdt"
           >
-            <p className="text-sm font-medium">목표 잔액 (USDT)</p>
+            <p className="text-sm font-medium">목표 잔액 (테더)</p>
             <p className="text-xs text-lux-text-muted">
-              계정 <code>ops.platform_reserve_usdt</code> · PUT {reserveApi}
-            </p>
-            <p className="text-xs text-lux-text-muted">
-              S2: worstCasePlatformDrain ≤ 운영 준비금 × 10%
+              한 번에 예상되는 최대 지출이 운영 준비금의 10%를 넘지 않아야 합니다.
             </p>
           </div>
           <div
@@ -184,7 +189,7 @@ function SystemControlContent() {
           >
             <p className="font-medium">변경 기록</p>
             <p className="mt-1 text-xs text-lux-text-muted">
-              GET {reserveAuditApi} · changeReason ≥ 4
+              누가, 언제, 왜 준비금 목표를 바꿨는지 확인합니다.
             </p>
           </div>
         </section>
@@ -194,16 +199,16 @@ function SystemControlContent() {
           data-testid="system-control-circuit-panel"
           data-forbid="client_ledger_edit"
         >
-          <p className="text-sm text-lux-text-muted">있는 정지 상태만 표시합니다. 없는 값은 닫힘으로 채우지 않습니다.</p>
+          <p className="text-sm text-lux-text-muted">실제로 확인된 상태만 표시합니다. 확인하지 못한 상태를 정상으로 꾸미지 않습니다.</p>
           <p className="text-xs text-lux-text-muted">잔액은 이 화면에서 바꾸지 않습니다</p>
 
           <SwitchCard
             switchId="push_kill"
-            title={"알림 긴급 정지"}
+            title={"알림 보내기"}
             api={pushApi}
             result={push}
             value={
-              push?.ok ? readText(push.data.pushEnabled) : null
+              push?.ok ? enabledLabel(push.data.pushEnabled) : null
             }
             actions={
               push?.ok && typeof push.data.pushEnabled === "boolean"
@@ -215,12 +220,12 @@ function SystemControlContent() {
                       onClick: () =>
                         setPreview({
                           id: "push_kill",
-                          title: "알림 긴급 정지",
-                          from: readText(push.data.pushEnabled) ?? "",
-                          to: readText(!push.data.pushEnabled) ?? "",
+                          title: "알림 보내기",
+                          from: enabledLabel(push.data.pushEnabled) ?? "",
+                          to: enabledLabel(!push.data.pushEnabled) ?? "",
                           confirmText: push.data.pushEnabled
                             ? "알림 발송을 멈출까요?"
-                            : "알림 발송을 다시 켸까요?",
+                            : "알림 발송을 다시 켤까요?",
                           apply: (reason) =>
                             adminSend(pushApi, "PUT", {
                               pushEnabled: push.data.pushEnabled !== true,
@@ -235,23 +240,23 @@ function SystemControlContent() {
 
           <SwitchCard
             switchId="money_circuit"
-            title={"돈 회로"}
+            title={"입출금·수익 진행"}
             api={circuitApi}
             result={circuit}
             value={circuit?.ok ? circuitLabel(circuit.data.open) : null}
-            hint={"열림이면 입출금이 멈춥니다."}
+            hint={"멈춤 상태에서는 입출금과 수익 진행을 시작할 수 없습니다."}
             actions={
               circuit?.ok && circuit.data.open === true
                 ? [
                     {
-                      label: "회로 닫기",
+                      label: "입출금·수익 진행 다시 시작",
                       onClick: () =>
                         setPreview({
                           id: "money_circuit",
-                          title: "돈 회로",
-                          from: "열림",
-                          to: "닫힘",
-                          confirmText: "돈 회로를 닫아 입출금을 다시 열까요?",
+                          title: "입출금·수익 진행",
+                          from: "멈춤",
+                          to: "정상",
+                          confirmText: "입출금과 수익 진행을 다시 시작할까요?",
                           apply: (reason) =>
                             adminSend(circuitCloseApi, "POST", {
                               idempotencyKey: newIdempotencyKey(),
@@ -266,26 +271,26 @@ function SystemControlContent() {
 
           <SwitchCard
             switchId="growth_enabled"
-            title={"성장 기능"}
+            title={"혜택·행사"}
             api={growthApi}
             result={growth}
-            value={growth?.ok ? readText(growth.data.enabled) : null}
+            value={growth?.ok ? enabledLabel(growth.data.enabled) : null}
             actions={
               growth?.ok && typeof growth.data.enabled === "boolean"
                 ? [
                     {
                       label: growth.data.enabled
-                        ? "성장 끄기"
-                        : "성장 켜기",
+                        ? "혜택·행사 멈추기"
+                        : "혜택·행사 시작하기",
                       onClick: () =>
                         setPreview({
                           id: "growth_enabled",
-                          title: "성장 기능",
-                          from: readText(growth.data.enabled) ?? "",
-                          to: readText(!growth.data.enabled) ?? "",
+                          title: "혜택·행사",
+                          from: enabledLabel(growth.data.enabled) ?? "",
+                          to: enabledLabel(!growth.data.enabled) ?? "",
                           confirmText: growth.data.enabled
-                            ? "성장 기능을 끌까요?"
-                            : "성장 기능을 켸까요?",
+                            ? "혜택과 행사를 멈출까요?"
+                            : "혜택과 행사를 시작할까요?",
                           apply: (reason) =>
                             adminSend(growthApi, "PATCH", {
                               enabled: growth.data.enabled !== true,
@@ -300,10 +305,16 @@ function SystemControlContent() {
 
           <SwitchCard
             switchId="referral_accrual_halt"
-            title={"초대 적립 정지"}
+            title={"친구 초대 혜택 지급"}
             api={programApi}
             result={program}
-            value={program?.ok ? readText(program.data.accrualHalted) : null}
+            value={
+              program?.ok && typeof program.data.accrualHalted === "boolean"
+                ? program.data.accrualHalted
+                  ? "멈춤"
+                  : "사용 중"
+                : null
+            }
             actions={
               program?.ok && typeof program.data.accrualHalted === "boolean"
                 ? [
@@ -314,9 +325,9 @@ function SystemControlContent() {
                       onClick: () =>
                         setPreview({
                           id: "referral_accrual_halt",
-                          title: "초대 적립 정지",
-                          from: readText(program.data.accrualHalted) ?? "",
-                          to: readText(!program.data.accrualHalted) ?? "",
+                          title: "친구 초대 혜택 지급",
+                          from: program.data.accrualHalted ? "멈춤" : "사용 중",
+                          to: program.data.accrualHalted ? "사용 중" : "멈춤",
                           confirmText: program.data.accrualHalted
                             ? "초대 적립을 다시 시작할까요?"
                             : "초대 적립을 멈출까요?",
@@ -342,17 +353,17 @@ function SystemControlContent() {
             data-unpublished="true"
           >
             <h2 className="text-sm font-medium">전체 기회 잠시 멈춤</h2>
-            <p className="mt-2 text-sm text-lux-text-muted">서버가 강제합니다.</p>
+            <p className="mt-2 text-sm text-lux-text-muted">모든 회원에게 즉시 적용됩니다.</p>
           </article>
           <p
             className="text-sm text-lux-text-muted"
             data-testid="system-control-unpublished-rest"
           >
-            9종 긴급 정지는 서버가 강제합니다.
+            긴급 멈춤은 관련된 모든 기능에 즉시 적용됩니다.
           </p>
 
           <label className="block text-sm" htmlFor="system-control-reason">
-            조치 사유
+            변경 이유
           </label>
           <textarea
             id="system-control-reason"
@@ -367,7 +378,7 @@ function SystemControlContent() {
               data-testid="system-control-preview"
               data-preview={preview.id}
             >
-              <p className="font-medium">미리보기</p>
+              <p className="font-medium">바꾸기 전 확인</p>
               <p className="mt-1">바꿀 내용 {preview.title}</p>
               <p>지금 {preview.from}</p>
               <p>다음 {preview.to}</p>
@@ -375,6 +386,7 @@ function SystemControlContent() {
                 <button
                   type="button"
                   className="rounded bg-lux-elevated px-2 py-1"
+                  data-tone={preview.to === "멈춤" ? "danger" : "default"}
                   onClick={() => void runPreview()}
                 >
                   확인 후 반영
@@ -392,7 +404,7 @@ function SystemControlContent() {
             <div data-testid="system-control-preview" hidden />
           )}
           {actionNote ? (
-            <p className="text-sm text-lux-text-muted">{actionNote}</p>
+            <p className="text-sm text-lux-text-muted" role="status">{actionNote}</p>
           ) : null}
         </section>
       )}
@@ -425,7 +437,7 @@ function SwitchCard({
     >
       <h2 className="text-sm font-medium">{title}</h2>
       {!result ? (
-        <p className="mt-2 text-sm text-lux-text-muted">불러오는 중</p>
+        <p className="mt-2 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
       ) : !result.ok ? (
         <div className="mt-2">
           <AdminFetchNote failure={result.failure} />
@@ -443,6 +455,7 @@ function SwitchCard({
               key={action.label}
               type="button"
               className="mt-2 mr-2 rounded bg-lux-elevated px-2 py-1 text-sm"
+              data-tone={/멈추기|끄기/.test(action.label) ? "danger" : "default"}
               onClick={action.onClick}
             >
               {action.label}

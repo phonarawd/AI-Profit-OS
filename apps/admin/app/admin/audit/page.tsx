@@ -3,13 +3,14 @@
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { T } from "@aipo/ui/copy/ko";
 
 const TABS = ["records", "rbac"] as const;
 type AuditTab = (typeof TABS)[number];
 
 const TAB_LABEL: Record<AuditTab, string> = {
-  records: "운영 기록",
-  rbac: "권한",
+  records: "바꾼 내용",
+  rbac: "관리자 권한",
 };
 
 function AuditContent() {
@@ -27,9 +28,9 @@ function AuditContent() {
       data-admin-audit-tab={tab}
       data-forbid="audit_delete"
     >
-      <h1 className="text-xl font-semibold">운영 기록</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">누가 무엇을 바꿔는지 봅니다. 기록은 지우지 않습니다.</p>
-      <nav className="mt-4 flex flex-wrap gap-2 text-sm" aria-label="운영 기록">
+      <h1 className="text-xl font-semibold">{T.admin.navigation.audit}</h1>
+      <p className="mt-2 text-sm text-lux-text-muted">어떤 관리자가 무엇을 바꿨는지 확인합니다. 안전을 위해 기록은 지울 수 없습니다.</p>
+      <nav className="mt-4 flex flex-wrap gap-2 text-sm" aria-label="관리자 작업 기록 메뉴">
         {TABS.map((t) => (
           <a
             key={t}
@@ -51,7 +52,7 @@ function AuditContent() {
             className="text-sm text-lux-text-muted"
             data-testid="audit-empty-rbac"
           >
-            역할 목록이 없습니다.
+            표시할 관리자 권한이 없습니다.
           </p>
         </section>
       ) : (
@@ -60,7 +61,7 @@ function AuditContent() {
             className="text-sm text-lux-text-muted"
             data-testid="audit-empty-records"
           >
-            운영 기록 목록이 없습니다.
+            아직 관리자가 바꾼 기록이 없습니다.
           </p>
         </section>
       )}

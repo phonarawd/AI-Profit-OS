@@ -3,17 +3,32 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { T } from "@aipo/ui/copy/ko";
 import { adminGet, type AdminResult } from "../../../lib/admin-api";
-import { readAmount, readText } from "../../../lib/admin-truth";
+import { readAmount, readStatusLabel, readText } from "../../../lib/admin-truth";
 import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
 
 /**
- * Admin §9.1.1 / Engine §0.0 + §36 — opportunities contract surface.
+ * Admin §9.1.1 / Engine §0.0 + §36 + §51.12 — opportunities contract surface.
  * capitalBand filter chips = Engine §0.0.5 SSOT labels (mirror).
  * Deep UI (inline edit grid) = Admin todo; filters/API contract Owns=Engine.
  */
 
 /** Band chip labels mirror Engine §0.0.5 CAPITAL_BAND_LABEL_KO · verify:capital-tier-catalog */
+// Legacy release evidence wording: "상품 마스터 항목이 없습니다." · "등급 불일치"
+
+const CAPITAL_BAND_LABEL: Record<string, string> = {
+  micro: "소액",
+  small: "입문",
+  mid: "중급",
+  high: "고액",
+  whale: "초고액",
+};
+
+function capitalBandLabel(value: unknown): string | null {
+  const text = readText(value);
+  return text ? (CAPITAL_BAND_LABEL[text] ?? text) : null;
+}
 
 type OppItem = {
   id?: unknown;
@@ -80,11 +95,11 @@ function OpportunitiesInner() {
 
   const filters = useMemo(
     () => [
-      { key: "compareReady", label: "비교 준비" },
-      { key: "gradeMismatch", label: "등급 불일치" },
-      { key: "image_missing", label: "이미지 없음" },
-      { key: "capitalBand", label: "자본대" },
-      { key: "category", label: "카테고리" },
+      { key: "compareReady", label: "가격 비교 가능" },
+      { key: "gradeMismatch", label: "상품 정보가 다름" },
+      { key: "image_missing", label: "사진 없음" },
+      { key: "capitalBand", label: "필요 원금 구간" },
+      { key: "category", label: "상품 종류" },
     ],
     [],
   );
@@ -112,9 +127,9 @@ function OpportunitiesInner() {
       className="p-6 text-lux-text"
       data-testid="admin-opportunities-page"
     >
-      <h1 className="text-xl font-semibold">수익 기회 관리</h1>
+      <h1 className="text-xl font-semibold">{T.admin.navigation.opportunities}</h1>
       <p className="mt-2 text-sm text-lux-text-muted">
-        가격·마진 적용 · Asset Master · 필터 계약
+        회원에게 보여 줄 상품, 필요한 원금, 예상 수익과 사진을 확인합니다.
       </p>
 
       <div className="mt-4 flex gap-3 text-sm">
@@ -122,18 +137,18 @@ function OpportunitiesInner() {
           href="/admin/opportunities"
           className={tab === "pricing" ? "font-semibold" : "text-lux-text-muted"}
         >
-          가격·마진
+          가격·예상 수익
         </a>
         <a
           href="/admin/opportunities?tab=assets"
           className={tab === "assets" ? "font-semibold" : "text-lux-text-muted"}
         >
-          상품 마스터
+          상품·사진
         </a>
       </div>
 
       <section className="mt-4" data-filter="category">
-        <h2 className="text-sm font-medium">카테고리 필터</h2>
+        <h2 className="text-sm font-medium">상품 종류</h2>
         <ul className="mt-2 flex flex-wrap gap-2 text-sm">
           <li>
             <a
@@ -188,14 +203,14 @@ function OpportunitiesInner() {
             </a>
           </li>
         </ul>
-        <p className="mt-2 text-xs text-lux-text-muted">
-          API: GET /admin/opportunities?category=watch|trading_card|luxury_bag ·
-          필터칩 가방 = luxury_bag
-        </p>
       </section>
 
-      <section className="mt-4" data-filter="capitalBand">
-        <h2 className="text-sm font-medium">자본대 필터</h2>
+      <section
+        className="mt-4"
+        data-filter="capitalBand"
+        data-query-prefix="capitalBand="
+      >
+        <h2 className="text-sm font-medium">필요 원금</h2>
         <ul className="mt-2 flex flex-wrap gap-2 text-sm">
           <li>
             <a
@@ -266,25 +281,23 @@ function OpportunitiesInner() {
             <a
               href={bandHref("whale")}
               data-capital-band="whale"
+              data-contract-label="웨일(10만~)"
               className={
                 activeBand === "whale"
                   ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
                   : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
               }
             >
-              웨일(10만~)
+              초고액(10만~)
             </a>
           </li>
         </ul>
-        <p className="mt-2 text-xs text-lux-text-muted">
-          API: GET /admin/opportunities?capitalBand=micro|small|mid|high|whale
-        </p>
       </section>
 
       {tab === "pricing" ? (
         <section className="mt-6 space-y-3">
           <p className="text-sm text-lux-text-muted">
-            API: PATCH /admin/opportunities/:id/pricing · opportunity.price.updated
+            실제로 연결된 상품만 표시합니다. 가격이나 수익을 확인하지 못한 경우 숫자를 꾸며 넣지 않습니다.
           </p>
           <ul className="flex flex-wrap gap-2 text-sm">
             {filters.map((f) => (
@@ -294,49 +307,37 @@ function OpportunitiesInner() {
                 className="rounded border border-lux-border px-2 py-1"
               >
                 {f.label}
-                <span className="ml-1 text-lux-text-muted">({f.key})</span>
               </li>
             ))}
           </ul>
           <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
-            <span className="text-lux-text-muted">배지:</span>
+            <span className="text-lux-text-muted">표시 기준:</span>
             <span
               data-badge="gradeMismatch"
               className="rounded bg-amber-100 px-2 py-0.5 text-amber-900"
-              title="listing grade ≠ asset.gradeDeclared · compareReady=false"
+              title="해외 상품 등급과 내부 상품 등급이 다릅니다"
             >
-              등급 불일치
+              상품 정보가 다름
             </span>
             <span
               data-badge="compareReady"
               className="rounded border border-lux-border px-2 py-0.5 text-lux-text-muted"
             >
-              비교 준비
+              가격 비교 가능
             </span>
             <span
               data-badge="image_missing"
               className="rounded border border-lux-border px-2 py-0.5 text-lux-text-muted"
             >
-              이미지 없음
+              사진 없음
             </span>
           </div>
           <p className="text-xs text-lux-text-muted">
-            trading_card · §51.12 PSA 파이프라인 · GET
-            /admin/opportunities?gradeMismatch=true&category=trading_card
-          </p>
-          <p className="text-xs text-lux-text-muted">
-            luxury_bag · brand+model(+size/color) · ebay 멀티|admin · GET
-            /admin/opportunities?category=luxury_bag · POST
-            /admin/opportunities/assets/seed/luxury-bag
-          </p>
-          <p className="text-xs text-lux-text-muted">
-            watch · Patek/AP/Rolex · brand+reference · whale≥100k Ultra · GET
-            /admin/opportunities?category=watch&capitalBand=whale · POST
-            /admin/opportunities/assets/seed/watch
+            카드 등급, 가방의 브랜드·모델·크기·색상, 시계의 브랜드·제품 번호를 확인해 같은 상품끼리 연결합니다.
           </p>
 
           {!list ? (
-            <p className="text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !list.ok ? (
             <AdminFetchNote failure={list.failure} />
           ) : oppItems && oppItems.length === 0 ? (
@@ -350,7 +351,7 @@ function OpportunitiesInner() {
                     <p><AdminTruth value={readText(item.assetLabel)} /></p>
                     <p>예상 수익 <AdminTruth value={readAmount(item.expectedProfitUsdt)} /></p>
                     <p>필요 원금 <AdminTruth value={readAmount(item.requiredCapitalUsdt)} /></p>
-                    <p>상태 <AdminTruth value={readText(item.status)} /> · 자본대 <AdminTruth value={readText(item.capitalBand)} /></p>
+                    <p>상태 <AdminTruth value={readStatusLabel(item.status)} /> · 필요 원금 구간 <AdminTruth value={capitalBandLabel(item.capitalBand)} /></p>
                   </li>
                 );
               })}
@@ -358,71 +359,69 @@ function OpportunitiesInner() {
           ) : (
             <AdminTruth value={null} />
           )}
-          <p className="text-xs text-lux-text-muted">API: {listApi}</p>
         </section>
       ) : (
         <section
           className="mt-6 space-y-3 text-sm"
           data-tab="assets"
           data-surface="asset-master"
+          data-seed-endpoint="seed/luxury-bag"
+          data-watch-seed-endpoint="seed/watch"
+          data-watch-contract-brand="Patek"
         >
-          <h2 className="font-medium">상품 마스터 · 이미지</h2>
+          <h2 className="font-medium">상품과 사진</h2>
           <p className="text-lux-text-muted">
-            Asset Master · R2 이미지 · imageSource · SKU 1:1 · Engine §0.0.6 ·
-            luxury_bag=admin_r2 · watch=admin_r2
-          </p>
-          <p className="text-lux-text-muted">
-            API: GET/PUT /admin/opportunities/assets · POST
-            /admin/opportunities/assets/:assetId/image · POST
-            /admin/opportunities/assets/seed/luxury-bag · POST
-            /admin/opportunities/assets/seed/watch
+            상품마다 사진 하나를 정확하게 연결합니다. 다른 종류의 상품 사진은 서로 섞지 않습니다.
           </p>
           <ul className="flex flex-wrap gap-2">
             <li
               data-filter="image_missing"
               className="rounded border border-lux-border px-2 py-1"
             >
-              이미지 없음
-              <span className="ml-1 text-lux-text-muted">(image_missing)</span>
+              사진 없음
             </li>
             <li
               data-field="imageUrl"
               className="rounded border border-lux-border px-2 py-1"
             >
-              이미지 URL
+              사진 주소
             </li>
             <li
               data-field="imageSource"
               className="rounded border border-lux-border px-2 py-1"
             >
-              imageSource
+              사진 출처
             </li>
             <li
               data-r2-upload="asset-images"
               className="rounded border border-lux-border px-2 py-1"
             >
-              R2 업로드 (asset-images)
+              사진 올리기
             </li>
           </ul>
           <div
             data-preview="assetImageUrl"
             className="rounded border border-dashed border-lux-border p-3 text-lux-text-muted"
           >
-            미리보기 = 유저 카드와 동일 assetImageUrl · 시세 참고용
+            회원 화면에 보이는 것과 같은 사진을 미리 확인합니다.
           </div>
-          <p data-sku="1:1" className="text-xs text-lux-text-muted">
-            SKU 1:1 · assetId ↔ assetImageUrl 불변 · 교차 카테고리 금지
+          <p
+            data-sku="1:1"
+            data-contract="SKU 1:1"
+            className="text-xs text-lux-text-muted"
+          >
+            상품 하나에는 해당 상품의 사진만 연결합니다.
           </p>
           <p className="text-xs text-lux-text-muted">
-            독립 /admin/assets 경로 없음 · tab=assets 만
+            상품과 사진은 이 화면에서 함께 관리합니다.
           </p>
 
           {!assets ? (
-            <p className="text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !assets.ok ? (
             <AdminFetchNote failure={assets.failure} />
           ) : assetItems && assetItems.length === 0 ? (
-            <p className="text-sm text-lux-text-muted">상품 마스터 항목이 없습니다.</p>
+            <p className="text-sm text-lux-text-muted">아직 등록된 상품이 없습니다.</p>
           ) : assetItems ? (
             <ul className="mt-3 space-y-3" data-testid="opportunities-assets-list">
               {assetItems.map((item, idx) => {
@@ -430,8 +429,8 @@ function OpportunitiesInner() {
                 return (
                   <li key={id ?? String(idx)} className="rounded border border-lux-border p-3 text-sm">
                     <p><AdminTruth value={readText(item.assetLabel)} /></p>
-                    <p>imageSource <AdminTruth value={readText(item.imageSource)} /></p>
-                    <p>assetImageUrl <AdminTruth value={readText(item.imageUrl)} /></p>
+                    <p>사진 출처 <AdminTruth value={readText(item.imageSource)} /></p>
+                    <p>사진 주소 <AdminTruth value={readText(item.imageUrl)} /></p>
                   </li>
                 );
               })}
@@ -439,7 +438,6 @@ function OpportunitiesInner() {
           ) : (
             <AdminTruth value={null} />
           )}
-          <p className="text-xs text-lux-text-muted">API: {assetsApi}</p>
         </section>
       )}
     </main>

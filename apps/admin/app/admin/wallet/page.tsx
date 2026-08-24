@@ -3,13 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { T } from "@aipo/ui/copy/ko";
 import {
   adminGet,
   adminSend,
   newIdempotencyKey,
   type AdminResult,
 } from "../../../lib/admin-api";
-import { readAmount, readText } from "../../../lib/admin-truth";
+import { readAmount, readStatusLabel, readText } from "../../../lib/admin-truth";
 import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
 
 const TABS = [
@@ -22,9 +23,9 @@ type WalletTab = (typeof TABS)[number];
 
 const TAB_LABEL: Record<WalletTab, string> = {
   "deposit-settings": "입금 설정",
-  review: "출금 검토",
-  "krw-pending": "원화 대기",
-  disputes: "분쟁",
+  review: "출금 확인",
+  "krw-pending": "원화 입금 확인",
+  disputes: "잘못 보낸 입금",
 };
 
 type DepositConfig = {
@@ -143,7 +144,7 @@ function WalletContent() {
       setActionNote("넣을 금액을 확인할 수 없습니다.");
       return;
     }
-    if (!window.confirm(decision === "credit" ? "분쟁을 입금 처리할까요?" : "분쟁을 거절할까요?")) {
+    if (!window.confirm(decision === "credit" ? "잘못 보낸 입금을 반영할까요?" : "이 입금을 반영하지 않을까요?")) {
       return;
     }
     const path =
@@ -167,7 +168,10 @@ function WalletContent() {
       data-admin-wallet-tab={tab}
       data-testid="admin-wallet-page"
     >
-      <h1 className="text-xl font-semibold">입출금 관리</h1>
+      <h1 className="text-xl font-semibold">{T.admin.navigation.wallet}</h1>
+      <p className="mt-2 text-sm text-lux-text-muted">
+        입금 설정과 확인 요청, 출금 확인, 잘못 보낸 입금을 한곳에서 관리합니다.
+      </p>
       <nav
         className="mt-4 flex flex-wrap gap-2 text-sm"
         data-testid="wallet-tabs"
@@ -199,13 +203,7 @@ function WalletContent() {
           data-audit-required="true"
         >
           <p className="text-sm text-lux-text-muted">
-            오입금·다른 네트워크 분쟁 · 결정마다 감사 기록 · 잔액은 분개로만
-          </p>
-          <p className="mt-2 text-xs text-lux-text-muted">
-            API: {disputesApi}
-          </p>
-          <p className="mt-1 text-xs text-lux-text-muted">
-            network code (admin): TRC20 · 유저 화면 라벨: 트론
+            트론이 아닌 곳으로 보낸 입금이나 확인이 필요한 입금을 처리합니다. 모든 결정은 관리자 기록에 남습니다.
           </p>
           <label className="mt-4 block text-sm" htmlFor="dispute-reason">
             결정 사유
@@ -217,7 +215,7 @@ function WalletContent() {
             className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
           />
           <label className="mt-3 block text-sm" htmlFor="dispute-amount">
-            입금 처리할 금액
+            입금 처리할 금액 (테더)
           </label>
           <input
             id="dispute-amount"
@@ -226,12 +224,12 @@ function WalletContent() {
             className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
           />
           {!disputes ? (
-            <p className="mt-3 text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !disputes.ok ? (
             <AdminFetchNote failure={disputes.failure} />
           ) : Array.isArray(disputes.data.items) &&
             disputes.data.items.length === 0 ? (
-            <p className="mt-3 text-sm text-lux-text-muted">분쟁이 없습니다.</p>
+            <p className="mt-3 text-sm text-lux-text-muted">확인할 잘못된 입금이 없습니다.</p>
           ) : Array.isArray(disputes.data.items) ? (
             <ul className="mt-3 space-y-3">
               {disputes.data.items.map((item, idx) => {
@@ -242,7 +240,7 @@ function WalletContent() {
                     className="rounded border border-lux-border p-3 text-sm"
                   >
                     <p>
-                      상태 <AdminTruth value={readText(item.status)} />
+                      상태 <AdminTruth value={readStatusLabel(item.status)} />
                     </p>
                     <p>
                       금액 <AdminTruth value={readAmount(item.amountUsdt)} />
@@ -259,6 +257,7 @@ function WalletContent() {
                         <button
                           type="submit"
                           className="rounded px-2 py-1 text-lux-text-muted"
+                          data-tone="danger"
                           onClick={(e) => void decideDispute(e, id, "reject")}
                         >
                           거절
@@ -273,13 +272,13 @@ function WalletContent() {
             <AdminTruth value={null} />
           )}
           {actionNote ? (
-            <p className="mt-2 text-sm text-lux-text-muted">{actionNote}</p>
+            <p className="mt-2 text-sm text-lux-text-muted" role="status">{actionNote}</p>
           ) : null}
         </section>
       ) : tab === "deposit-settings" ? (
         <section className="mt-6 space-y-2" data-testid="wallet-deposit-settings-panel">
           {!config ? (
-            <p className="text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !config.ok ? (
             <AdminFetchNote failure={config.failure} />
           ) : (
@@ -295,7 +294,7 @@ function WalletContent() {
                 안내 <AdminTruth value={readText(config.data.krw?.noticeKo)} />
               </p>
               <p className="text-sm">
-                출금 네트워크 수수료{" "}
+                테더 출금 수수료{" "}
                 <AdminTruth
                   value={readAmount(
                     config.data.usdtOnchain?.usdtWithdrawNetworkFeeUsdt,
@@ -323,7 +322,7 @@ function WalletContent() {
             className="w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
           />
           {!krw ? (
-            <p className="text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !krw.ok ? (
             <AdminFetchNote failure={krw.failure} />
           ) : Array.isArray(krw.data.items) && krw.data.items.length === 0 ? (
@@ -356,6 +355,7 @@ function WalletContent() {
                         <button
                           type="button"
                           className="rounded px-2 py-1 text-lux-text-muted"
+                          data-tone="danger"
                           onClick={() => void decideKrw(id, "reject")}
                         >
                           거절
@@ -370,13 +370,13 @@ function WalletContent() {
             <AdminTruth value={null} />
           )}
           {actionNote ? (
-            <p className="text-sm text-lux-text-muted">{actionNote}</p>
+            <p className="text-sm text-lux-text-muted" role="status">{actionNote}</p>
           ) : null}
         </section>
       ) : (
         <section className="mt-6" data-testid={`wallet-${tab}-panel`}>
           <p className="text-sm text-lux-text-muted">
-            출금 검토 목록 경로가 없습니다.
+            출금 확인 목록이 아직 연결되지 않았습니다.
           </p>
           <AdminTruth value={null} />
         </section>

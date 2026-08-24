@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { T } from "@aipo/ui/copy/ko";
 import {
   clearAdminToken,
   hasAdminToken,
@@ -8,62 +9,112 @@ import {
 } from "../lib/admin-session";
 
 export function AdminSessionBar() {
-  const [connected, setConnected] = useState(() => hasAdminToken());
+  const [connected, setConnected] = useState(false);
   const [draft, setDraft] = useState("");
+  const [formOpen, setFormOpen] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
+
+  useEffect(() => {
+    setConnected(hasAdminToken());
+  }, []);
 
   function onSubmit(event: FormEvent) {
     event.preventDefault();
+    if (!draft.trim()) {
+      setNote("관리자 연결 코드를 입력해 주세요.");
+      return;
+    }
     setAdminToken(draft);
     setDraft("");
     setConnected(hasAdminToken());
+    setFormOpen(false);
+    setNote("관리자 연결을 완료했습니다.");
   }
 
   function onClear() {
     clearAdminToken();
     setDraft("");
     setConnected(false);
+    setFormOpen(false);
+    setNote("관리자 연결을 끊었습니다.");
   }
 
   return (
-    <div
-      className="border-b border-lux-border bg-lux-surface px-4 py-2"
+    <section
+      className="admin-session-bar"
       data-testid="admin-session-bar"
+      aria-label="관리자 연결 상태"
     >
-      <form
-        className="flex flex-wrap items-center gap-2 text-sm"
-        onSubmit={onSubmit}
-      >
-        <span className="text-lux-text-muted">
-          {connected ? "운영 연결됨" : "운영 연결 없음"}
-        </span>
-        <label className="sr-only" htmlFor="admin-bearer">
-          운영 연결 값
-        </label>
-        <input
-          id="admin-bearer"
-          type="password"
-          autoComplete="off"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          className="min-w-48 flex-1 rounded border border-lux-border bg-lux-bg px-2 py-1"
-          placeholder={connected ? "다시 연결" : "운영 연결"}
+      <div className="admin-session-summary">
+        <span
+          className="admin-status-dot"
+          data-status={connected ? "connected" : "disconnected"}
+          aria-hidden="true"
         />
+        <div className="admin-session-copy">
+          <strong>
+            {connected ? T.admin.session.connected : T.admin.session.disconnected}
+          </strong>
+          <span>
+            {connected
+              ? T.admin.session.connectedHint
+              : T.admin.session.disconnectedHint}
+          </span>
+        </div>
         <button
-          type="submit"
-          className="rounded bg-lux-elevated px-3 py-1 text-lux-text"
+          type="button"
+          className="admin-session-toggle"
+          aria-expanded={formOpen}
+          aria-controls="admin-connection-form"
+          onClick={() => {
+            setFormOpen((open) => !open);
+            setNote(null);
+          }}
         >
-          연결
+          {connected ? T.admin.session.change : T.admin.session.open}
         </button>
         {connected ? (
           <button
             type="button"
             onClick={onClear}
-            className="rounded px-3 py-1 text-lux-text-muted"
+            className="admin-session-disconnect"
           >
-            해제
+            {T.admin.session.disconnect}
           </button>
         ) : null}
-      </form>
-    </div>
+      </div>
+
+      {formOpen ? (
+        <form
+          id="admin-connection-form"
+          className="admin-session-form"
+          onSubmit={onSubmit}
+        >
+          <label htmlFor="admin-bearer">{T.admin.session.codeLabel}</label>
+          <p id="admin-connection-hint">{T.admin.session.codeHint}</p>
+          <div className="admin-session-field-row">
+            <input
+              id="admin-bearer"
+              type="password"
+              autoComplete="off"
+              value={draft}
+              onChange={(event) => {
+                setDraft(event.target.value);
+                setNote(null);
+              }}
+              aria-describedby="admin-connection-hint"
+              placeholder={T.admin.session.codePlaceholder}
+            />
+            <button type="submit">{T.admin.session.connect}</button>
+          </div>
+        </form>
+      ) : null}
+
+      {note ? (
+        <p className="admin-session-note" role="status" aria-live="polite">
+          {note}
+        </p>
+      ) : null}
+    </section>
   );
 }

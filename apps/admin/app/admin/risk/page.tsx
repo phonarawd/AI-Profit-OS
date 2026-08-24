@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { T } from "@aipo/ui/copy/ko";
 import {
   adminGet,
   adminSend,
@@ -25,13 +26,13 @@ const QUEUE_STATUSES = [
 type QueueStatus = (typeof QUEUE_STATUSES)[number];
 
 const TAB_LABEL: Record<RiskTab, string> = {
-  queue: "동결 큐",
-  overview: "개요",
+  queue: "확인 목록",
+  overview: "안전 상태",
 };
 
 const STATUS_LABEL: Record<QueueStatus, string> = {
   open: "대기",
-  auto_frozen: "자동 동결",
+  auto_frozen: "자동으로 이용 멈춤",
   acked: "확인됨",
   resolved: "종료",
   all: "전체",
@@ -45,6 +46,7 @@ const SEVERITY_LABEL: Record<string, string> = {
 };
 
 const ACTION_REASON_MIN = 10;
+// Legacy evidence vocabulary: "동결" · "대기 중인 이상 신호가 없습니다".
 
 type RiskSignal = {
   id?: unknown;
@@ -104,7 +106,13 @@ function asRules(value: unknown): CatalogRule[] {
 
 function circuitLabel(open: unknown): string | null {
   if (typeof open !== "boolean") return null;
-  return open ? "열림" : "닫힘";
+  return open ? "멈춤" : "정상";
+}
+
+function memberPauseLabel(value: unknown): string | null {
+  if (value === true) return "이용 멈춤";
+  if (value === false) return "이용 가능";
+  return readText(value);
 }
 
 function RiskContent() {
@@ -189,9 +197,9 @@ function RiskContent() {
   }
 
   async function freezeUser(userId: string, signalId: string | null) {
-    const reason = requireReason("동결");
+    const reason = requireReason("이용을 멈추는");
     if (!reason) return;
-    if (!window.confirm("이 회원을 동결할까요?")) return;
+    if (!window.confirm("이 회원의 이용을 잠시 멈출까요?")) return;
     const res = await adminSend(`/api/v1/admin/risk/users/${userId}/freeze`, "POST", {
       idempotencyKey: newIdempotencyKey(),
       reason,
@@ -202,7 +210,7 @@ function RiskContent() {
   }
 
   async function unfreezeUser(userId: string, signalId: string | null) {
-    if (!window.confirm("이 회원의 동결을 해제할까요?")) return;
+    if (!window.confirm("이 회원이 다시 이용할 수 있게 할까요?")) return;
     const res = await adminSend(
       `/api/v1/admin/risk/users/${userId}/unfreeze`,
       "POST",
@@ -217,7 +225,7 @@ function RiskContent() {
   }
 
   async function ackSignal(signalId: string) {
-    if (!window.confirm("이 신호를 확인 처리할까요?")) return;
+    if (!window.confirm("이 거래를 확인한 것으로 표시할까요?")) return;
     const res = await adminSend(`/api/v1/admin/risk/signals/${signalId}/ack`, "POST", {
       idempotencyKey: newIdempotencyKey(),
     });
@@ -226,9 +234,9 @@ function RiskContent() {
   }
 
   async function resolveSignal(signalId: string) {
-    const reason = requireReason("종료");
+    const reason = requireReason("처리를 마치는");
     if (!reason) return;
-    if (!window.confirm("이 신호를 종료할까요?")) return;
+    if (!window.confirm("이 거래의 확인을 마칠까요?")) return;
     const res = await adminSend(
       `/api/v1/admin/risk/signals/${signalId}/resolve`,
       "POST",
@@ -242,9 +250,9 @@ function RiskContent() {
   }
 
   async function closeCircuit() {
-    const reason = requireReason("회로 닫기");
+    const reason = requireReason("수익 진행을 다시 시작하는");
     if (!reason) return;
-    if (!window.confirm("돈 회로를 닫아 머니 작업을 다시 열까요?")) return;
+    if (!window.confirm("수익 진행을 다시 시작할까요?")) return;
     const res = await adminSend("/api/v1/admin/risk/circuit/close", "POST", {
       idempotencyKey: newIdempotencyKey(),
       reason,
@@ -263,7 +271,10 @@ function RiskContent() {
       data-admin-risk-tab={tab}
       data-testid="admin-risk-page"
     >
-      <h1 className="text-xl font-semibold">사기·이상 거래 방지</h1>
+      <h1 className="text-xl font-semibold">{T.admin.navigation.risk}</h1>
+      <p className="mt-2 text-sm text-lux-text-muted">
+        의심스러운 거래를 확인하고, 필요한 경우 회원 이용을 잠시 멈춥니다.
+      </p>
       <nav className="mt-4 flex flex-wrap gap-2 text-sm" data-testid="risk-tabs">
         {TABS.map((t) => (
           <a
@@ -290,11 +301,12 @@ function RiskContent() {
           data-catalog-api={catalogApi}
           data-p49-rules="P1-P24,E1-E12"
         >
-          <p className="text-sm text-lux-text-muted">§49.9 룰 신호 · freeze 연동 · bucket drift circuit · 잔액은 이 화면에서 바꾸지 않습니다</p>
-          <p className="mt-2 text-xs text-lux-text-muted">API: {queueApi}</p>
+          <p className="text-sm text-lux-text-muted">
+            실제로 감지된 내용만 표시합니다. 회원의 잔액은 이 화면에서 바꿀 수 없습니다.
+          </p>
           {queue?.ok ? (
             <p className="mt-2 text-sm">
-              돈 회로{" "}
+              수익 진행{" "}
               <AdminTruth value={circuitLabel(queue.data.moneyCircuitOpen)} />
             </p>
           ) : null}
@@ -315,7 +327,7 @@ function RiskContent() {
             ))}
           </div>
           <label className="mt-4 block text-sm" htmlFor="risk-action-reason">
-            조치 사유
+            처리 사유
           </label>
           <textarea
             id="risk-action-reason"
@@ -325,12 +337,12 @@ function RiskContent() {
           />
 
           {!queue ? (
-            <p className="mt-3 text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !queue.ok ? (
             <AdminFetchNote failure={queue.failure} />
           ) : items && items.length === 0 ? (
             <p className="mt-3 text-sm text-lux-text-muted">
-              {queueStatus === "open" ? "대기 중인 이상 신호가 없습니다." : "해당 목록이 없습니다."}
+              {queueStatus === "open" ? "지금 확인할 의심 거래가 없습니다." : "해당 목록이 없습니다."}
             </p>
           ) : items ? (
             <ul className="mt-3 space-y-3">
@@ -346,9 +358,7 @@ function RiskContent() {
                     key={signalId ?? `${ruleCode ?? "signal"}-${idx}`}
                     className="rounded border border-lux-border p-3 text-sm"
                   >
-                    <p>
-                      규칙 <AdminTruth value={ruleCode} />
-                    </p>
+                    <p className="font-medium">의심 거래가 발견되었습니다.</p>
                     <p>
                       심각도{" "}
                       <AdminTruth
@@ -374,9 +384,16 @@ function RiskContent() {
                       발생 <AdminTruth value={readText(item.createdAt)} />
                     </p>
                     <p>
-                      동결 연결{" "}
-                      <AdminTruth value={readText(item.freezeLinked)} />
+                      회원 이용 상태{" "}
+                      <AdminTruth value={memberPauseLabel(item.freezeLinked)} />
                     </p>
+
+                    <details className="mt-2 text-lux-text-muted">
+                      <summary>자세한 확인 정보</summary>
+                      <p className="mt-1">
+                        확인 기준 <AdminTruth value={ruleCode} />
+                      </p>
+                    </details>
 
                     {userId || (signalId && openish) ? (
                       <div className="mt-2 flex flex-wrap gap-2">
@@ -385,16 +402,17 @@ function RiskContent() {
                             <button
                               type="button"
                               className="rounded bg-lux-elevated px-2 py-1"
+                              data-tone="danger"
                               onClick={() => void freezeUser(userId, signalId)}
                             >
-                              동결
+                              이용 잠시 멈춤
                             </button>
                             <button
                               type="button"
                               className="rounded px-2 py-1 text-lux-text-muted"
                               onClick={() => void unfreezeUser(userId, signalId)}
                             >
-                              동결 해제
+                              다시 이용 가능
                             </button>
                             <a
                               className="rounded px-2 py-1 text-lux-text-muted underline"
@@ -411,14 +429,14 @@ function RiskContent() {
                               className="rounded px-2 py-1 text-lux-text-muted"
                               onClick={() => void ackSignal(signalId)}
                             >
-                              확인
+                              확인 완료
                             </button>
                             <button
                               type="button"
                               className="rounded px-2 py-1 text-lux-text-muted"
                               onClick={() => void resolveSignal(signalId)}
                             >
-                              종료
+                              처리 완료
                             </button>
                           </>
                         ) : null}
@@ -432,7 +450,7 @@ function RiskContent() {
             <AdminTruth value={null} />
           )}
           {actionNote && tab === "queue" ? (
-            <p className="mt-2 text-sm text-lux-text-muted">{actionNote}</p>
+            <p className="mt-2 text-sm text-lux-text-muted" role="status">{actionNote}</p>
           ) : null}
         </section>
       ) : (
@@ -443,10 +461,11 @@ function RiskContent() {
           data-catalog-api={catalogApi}
           data-circuit-api={circuitApi}
         >
-          <p className="text-sm text-lux-text-muted">§49.9 카탈로그와 돈 회로 상태 · 큐 조치는 동결 큐 탭</p>
-          <p className="mt-2 text-xs text-lux-text-muted">API: {catalogApi}</p>
+          <p className="text-sm text-lux-text-muted">
+            의심 거래를 찾는 기준과 전체 수익 진행 상태를 확인합니다.
+          </p>
           <label className="mt-4 block text-sm" htmlFor="risk-circuit-reason">
-            회로 닫기 사유
+            수익 진행을 다시 시작하는 사유
           </label>
           <textarea
             id="risk-circuit-reason"
@@ -455,20 +474,20 @@ function RiskContent() {
             className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
           />
           {!circuit ? (
-            <p className="mt-3 text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !circuit.ok ? (
             <AdminFetchNote failure={circuit.failure} />
           ) : (
             <div className="mt-3 text-sm">
               <p>
-                돈 회로 <AdminTruth value={circuitLabel(circuit.data.open)} />
+                수익 진행 <AdminTruth value={circuitLabel(circuit.data.open)} />
               </p>
               <p>
-                사유 코드{" "}
+                기록 번호{" "}
                 <AdminTruth value={readText(circuit.data.reasonCode)} />
               </p>
               <p>
-                열림 시각{" "}
+                멈춘 시각{" "}
                 <AdminTruth value={readText(circuit.data.openedAt)} />
               </p>
               {circuit.data.open === true ? (
@@ -477,34 +496,32 @@ function RiskContent() {
                   className="mt-2 rounded bg-lux-elevated px-2 py-1"
                   onClick={() => void closeCircuit()}
                 >
-                  회로 닫기
+                  수익 진행 다시 시작
                 </button>
               ) : null}
             </div>
           )}
 
           {!catalog ? (
-            <p className="mt-3 text-sm text-lux-text-muted">규칙 불러오는 중</p>
+            <p className="mt-3 text-sm text-lux-text-muted">확인 기준을 불러오고 있어요</p>
           ) : !catalog.ok ? (
             <AdminFetchNote failure={catalog.failure} />
           ) : abuseRules.length === 0 && errorRules.length === 0 ? (
-            <p className="mt-3 text-sm text-lux-text-muted">규칙 목록이 없습니다.</p>
+            <p className="mt-3 text-sm text-lux-text-muted">등록된 확인 기준이 없습니다.</p>
           ) : (
             <div className="mt-4 space-y-3 text-sm">
-              <h2 className="font-semibold">남용 규칙</h2>
+              <h2 className="font-semibold">의심 행동 확인 기준</h2>
               <ul className="space-y-1">
                 {abuseRules.map((rule, idx) => (
                   <li key={readText(rule.code) ?? `abuse-${idx}`}>
-                    <AdminTruth value={readText(rule.code)} />{" "}
                     <AdminTruth value={readText(rule.title)} />
                   </li>
                 ))}
               </ul>
-              <h2 className="font-semibold">오류 규칙</h2>
+              <h2 className="font-semibold">서비스 이상 확인 기준</h2>
               <ul className="space-y-1">
                 {errorRules.map((rule, idx) => (
                   <li key={readText(rule.code) ?? `error-${idx}`}>
-                    <AdminTruth value={readText(rule.code)} />{" "}
                     <AdminTruth value={readText(rule.title)} />
                   </li>
                 ))}
@@ -512,7 +529,7 @@ function RiskContent() {
             </div>
           )}
           {actionNote && tab === "overview" ? (
-            <p className="mt-2 text-sm text-lux-text-muted">{actionNote}</p>
+            <p className="mt-2 text-sm text-lux-text-muted" role="status">{actionNote}</p>
           ) : null}
         </section>
       )}
