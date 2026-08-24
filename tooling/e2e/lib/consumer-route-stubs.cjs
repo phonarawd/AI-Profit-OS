@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Consumer QA route stubs.
  * 세션 게이트만 결정한다. profit/FX/잔액/참여자/카운트다운을 발명하지 않는다.
  */
@@ -85,6 +85,12 @@ async function stubOpportunityFeed(page, mode) {
     const url = route.request().url();
     if (url.includes("/api/v1/me/home-read")) {
       return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    if (url.includes("/api/v1/wallet/buckets")) {
+      return json(route, 200, TEST_WALLET_BUCKETS);
+    }
+    if (url.includes("/api/v1/me/current-fx/approx")) {
+      return json(route, 200, TEST_CURRENT_FX_APPROX);
     }
     if (url.includes("/api/v1/opportunities") && !opportunityDetailPath(url)) {
       if (mode === "unauthorized") {
@@ -222,6 +228,13 @@ function isTradeListUrl(url) {
   }
 }
 
+const TEST_CURRENT_FX_APPROX = {
+  fxSnapshotId: "qa-fx-snapshot",
+  capturedAt: "2026-08-24T00:00:00.000Z",
+  principalKrwApprox: "135000",
+  withdrawableProfitKrwApprox: "15000",
+  expectedProfitKrwApprox: "18750",
+};
 const TEST_WALLET_BUCKETS = {
   userId: "qa-user",
   principalUsdt: "100.00",
@@ -296,6 +309,9 @@ async function stubCoreOpportunityJourney(page) {
     }
     if (url.includes("/api/v1/wallet/buckets")) {
       return json(route, 200, TEST_WALLET_BUCKETS);
+    }
+    if (url.includes("/api/v1/me/current-fx/approx")) {
+      return json(route, 200, TEST_CURRENT_FX_APPROX);
     }
     if (url.includes("/preflight")) {
       return json(route, 200, {
