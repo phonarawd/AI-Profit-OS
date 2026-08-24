@@ -12,9 +12,16 @@ on:
           - all
           - web
           - ops
+  # One-shot branch trigger for PR #51 preview verification only.
+  # The existing staging preflight/domain manifest still forbids production targets.
+  push:
+    branches:
+      - feat/consumer-spark-dash-worldclass
+    paths:
+      - ".github/workflows/deploy-staging.yml"
 
 concurrency:
-  group: cf-staging-${{ github.ref }}-${{ inputs.surface }}
+  group: cf-staging-${{ github.ref }}-${{ inputs.surface || 'web-pr51' }}
   cancel-in-progress: false
 
 jobs:
@@ -60,14 +67,14 @@ jobs:
           printf 'API_HOST=%s\n' "$API" >> .env
 
       - name: Deploy web staging
-        if: inputs.surface == 'web' || inputs.surface == 'all'
+        if: github.event_name == 'push' || inputs.surface == 'web' || inputs.surface == 'all'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: node tooling/deploy/cf-preflight.cjs staging web && node tooling/deploy/cf-pages-web.cjs staging
 
       - name: Deploy ops staging
-        if: inputs.surface == 'ops' || inputs.surface == 'all'
+        if: github.event_name == 'workflow_dispatch' && (inputs.surface == 'ops' || inputs.surface == 'all')
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
