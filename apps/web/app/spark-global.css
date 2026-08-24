@@ -1,0 +1,105 @@
+.spark-global-boundary {
+  min-height: 100dvh;
+}
+
+.spark-global-boundary[data-spark-global="on"] {
+  --color-lux-bg: #0b0f17;
+  --color-lux-surface: #121826;
+  --color-lux-elevated: #1a2030;
+  --color-lux-border: #2a3447;
+  --color-lux-text: #f6f7fa;
+  --color-lux-text-muted: #b5bed0;
+  --color-lux-accent: #ff2d6b;
+  --color-lux-accent-muted: #ff6a98;
+  --color-lux-danger: #ff6b6b;
+  --color-lux-warning: #f7b955;
+  --color-lux-profit: #35d07f;
+  --color-lux-principal: #ff2d6b;
+  --color-lux-hero-from: #171226;
+  --color-lux-hero-to: #31152a;
+  --shadow-lux-card: 0 18px 48px rgba(0, 0, 0, 0.28), 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+  --shadow-lux-soft: 0 8px 28px rgba(0, 0, 0, 0.2);
+
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 82% -8%, rgba(255, 45, 107, 0.2), transparent 30rem),
+    radial-gradient(circle at 18% 12%, rgba(110, 76, 255, 0.12), transparent 26rem),
+    #0b0f17;
+  color: var(--color-lux-text);
+  color-scheme: dark;
+  font-family:
+    "Pretendard Variable",
+    "Pretendard",
+    "Apple SD Gothic Neo",
+    "Noto Sans KR",
+    "Malgun Gothic",
+    system-ui,
+    sans-serif;
+}
+
+.spark-global-boundary[data-spark-global="on"] .lux-app-main {
+  min-width: 0;
+  background: transparent;
+}
+
+.spark-global-boundary[data-spark-global="on"] [data-testid="app-header"] {
+  border-color: color-mix(in srgb, var(--color-lux-border) 84%, transparent);
+  background: color-mix(in srgb, #101624 88%, transparent);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(18px);
+}
+
+.spark-global-boundary[data-spark-global="on"] [data-testid="app-sidebar"] {
+  border-color: var(--color-lux-border);
+  background: linear-gradient(180deg, #101624 0%, #0d1320 100%);
+}
+
+.spark-global-boundary[data-spark-global="on"] [data-testid="bottom-nav-5"] {
+  border-color: var(--color-lux-border);
+  background: color-mix(in srgb, #101624 95%, transparent);
+  box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px);
+}
+
+.spark-global-boundary[data-spark-global="on"] [data-testid="bottom-nav-5"] a[data-active="true"] {
+  box-shadow: 0 8px 24px rgba(255, 45, 107, 0.22);
+}
+
+.spark-global-boundary[data-spark-global="on"] :where(button, input, textarea, select) {
+  font: inherit;
+}
+
+.spark-global-boundary[data-spark-global="on"] :where(input, textarea, select) {
+  border-color: var(--color-lux-border);
+  background-color: color-mix(in srgb, var(--color-lux-elevated) 88%, #000);
+  color: var(--color-lux-text);
+}
+
+.spark-global-boundary[data-spark-global="on"] :where(input, textarea)::placeholder {
+  color: #929caf;
+  opacity: 1;
+}
+
+.spark-global-boundary[data-spark-global="on"] :focus-visible {
+  outline: 3px solid #ff5b8b;
+  outline-offset: 3px;
+}
+
+.spark-global-boundary[data-spark-global="on"] ::selection {
+  background: rgba(255, 45, 107, 0.34);
+  color: #ffffff;
+}
+
+@media (min-width: 1280px) {
+  .spark-global-boundary[data-spark-global="on"] [data-testid="app-sidebar"] {
+    box-shadow: 14px 0 38px rgba(0, 0, 0, 0.18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spark-global-boundary[data-spark-global="on"] *,
+  .spark-global-boundary[data-spark-global="on"] *::before,
+  .spark-global-boundary[data-spark-global="on"] *::after {
+    scroll-behavior: auto !important;
+  }
+}
