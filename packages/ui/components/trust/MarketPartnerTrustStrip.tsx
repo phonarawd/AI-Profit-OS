@@ -1,7 +1,7 @@
 "use client";
 
 import { T } from "../../copy/ko";
-import { listReadyMarketLogos } from "../../brand/markets";
+import { listMarketLogos } from "../../brand/markets";
 
 export type MarketPartnerTrustStripProps = {
   /** compact = SiteFooter small logos */
@@ -13,17 +13,17 @@ export type MarketPartnerTrustStripProps = {
 
 /**
  * UI §38.10 — PartnerTrustStrip (landing / home / onboarding / footer).
- * Tier-A target ≥4 ready logos; blocked logos never render.
- * peotteok-light = Brand markets SVG fill `#14121F`(dark monochrome).
+ * Unverified logo marks stay hidden; tracked partner names remain visible.
  */
 export function MarketPartnerTrustStrip({
   variant = "default",
   tier = "A",
   className = "",
 }: MarketPartnerTrustStripProps) {
-  const logos = listReadyMarketLogos().filter(
+  const partners = listMarketLogos().filter(
     (l) => tier === "all" || l.tier === tier,
   );
+  const readyCount = partners.filter((logo) => logo.status === "ready").length;
   const height = variant === "compact" ? 20 : 24;
   const headline =
     variant === "compact"
@@ -34,7 +34,7 @@ export function MarketPartnerTrustStrip({
     <aside
       data-testid="market-partner-trust-strip"
       data-variant={variant}
-      data-logos-ready={String(logos.length)}
+      data-logos-ready={String(readyCount)}
       data-min-tier-a="4"
       className={`flex flex-col gap-2 ${className}`.trim()}
       role="group"
@@ -44,20 +44,13 @@ export function MarketPartnerTrustStrip({
       {variant === "default" ? (
         <p className="text-xs text-lux-text-muted">{T.trust.partners.stripSub}</p>
       ) : null}
-      {logos.length === 0 ? (
-        <p
-          className="text-xs text-lux-text-muted"
-          data-testid="market-partner-logos-blocked"
-        >
-          {T.trust.partners.legFootnote}
-        </p>
-      ) : (
-        <ul
-          className="flex flex-wrap items-center gap-4"
-          style={{ minHeight: height }}
-        >
-          {logos.map((logo) => (
-            <li key={logo.id} className="flex items-center">
+      <ul
+        className="flex flex-wrap items-center gap-3"
+        style={{ minHeight: height }}
+      >
+        {partners.map((logo) => (
+          <li key={logo.id} className="flex items-center">
+            {logo.status === "ready" ? (
               <img
                 src={`/brand/${logo.path}`}
                 alt={logo.labelKo}
@@ -66,10 +59,25 @@ export function MarketPartnerTrustStrip({
                 className="w-auto max-w-[7.5rem] object-contain"
                 style={{ height, width: "auto" }}
               />
-            </li>
-          ))}
-        </ul>
-      )}
+            ) : (
+              <span
+                className="rounded-full border border-lux-border px-2.5 py-1 text-xs font-medium text-lux-text"
+                data-testid="market-partner-name-fallback"
+              >
+                {logo.labelKo}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+      {readyCount === 0 ? (
+        <p
+          className="text-xs text-lux-text-muted"
+          data-testid="market-partner-logos-blocked"
+        >
+          {T.trust.partners.legFootnote}
+        </p>
+      ) : null}
     </aside>
   );
 }
