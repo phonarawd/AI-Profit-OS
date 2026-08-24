@@ -1,0 +1,332 @@
+- generic [ref=f23e4]:
+  - banner [ref=f23e5]:
+    - generic [ref=f23e6]:
+      - link "TCGplayer.com" [ref=f23e8] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f23e28] [cursor=pointer]:
+        - generic [ref=f23e29]: Shipping to
+        - generic [ref=f23e30]: Singapore
+      - generic [ref=f23e33]:
+        - generic [ref=f23e34]:
+          - generic "Select a product line to search for" [ref=f23e38] [cursor=pointer]: Pokémon
+          - generic [ref=f23e42]:
+            - generic: Try “tuner synchros”
+            - 'search "Search: suggestions appear below" [ref=f23e43]'
+            - generic [ref=f23e44]: "Search: suggestions appear below"
+        - button "submit your search" [ref=f23e47] [cursor=pointer]
+      - generic [ref=f23e52]:
+        - link "Sign In" [ref=f23e56] [cursor=pointer]:
+          - /url: https://www.tcgplayer.com/login?returnUrl=https://www.tcgplayer.com/product/278793/pokemon-swsh11-lost-origin-lost-origin-booster-box-case?page=1&Language=English
+        - generic [ref=f23e57]:
+          - button [ref=f23e59] [cursor=pointer]
+          - button [ref=f23e61] [cursor=pointer]
+  - navigation "main navigation" [ref=f23e63]:
+    - generic [ref=f23e65]:
+      - generic [ref=f23e66]: Magic
+      - generic [ref=f23e68]: Yu-Gi-Oh!
+      - generic [ref=f23e70]: Pokémon
+      - generic [ref=f23e72]: Disney Lorcana
+      - generic [ref=f23e74]: One Piece
+      - generic [ref=f23e76]: Digimon
+      - generic [ref=f23e78]: More Products
+      - generic [ref=f23e80]: Content
+  - generic [ref=f23e83]:
+    - dialog "Shipping to Singapore":
+      - generic [ref=f23e85]:
+        - generic [ref=f23e86]:
+          - heading "Shipping to Singapore" [level=2] [ref=f23e87]
+          - button "Dismiss modal" [active] [ref=f23e88] [cursor=pointer]
+        - generic [ref=f23e94]:
+          - paragraph [ref=f23e95]: Shop U.S. Products on TCGplayer
+          - paragraph [ref=f23e96]: Shop the entire TCGplayer marketplace and get your orders sent to you through our trusted international shipping partners. Enjoy secure delivery in one consolidated, fully tracked package.
+          - paragraph [ref=f23e97]:
+            - link "Learn more." [ref=f23e98] [cursor=pointer]:
+              - /url: https://pages.tcgplayer.com/global-shopping
+        - button "Close" [ref=f23e100] [cursor=pointer]
+    - generic [ref=f23e102]:
+      - button "All Filters" [ref=f23e105] [cursor=pointer]
+      - generic [ref=f23e108]: No Listings Available
+    - generic [ref=f23e114]:
+      - navigation "Breadcrumbs" [ref=f23e117]:
+        - list [ref=f23e118]:
+          - listitem [ref=f23e119]:
+            - link "All Categories" [ref=f23e120] [cursor=pointer]:
+              - /url: /categories
+          - listitem [ref=f23e125]:
+            - link "Pokemon Cards" [ref=f23e126] [cursor=pointer]:
+              - /url: /categories/trading-and-collectible-card-games/pokemon
+          - listitem [ref=f23e131]:
+            - 'link "SWSH11: Lost Origin" [ref=f23e132] [cursor=pointer]':
+              - /url: /categories/trading-and-collectible-card-games/pokemon/swsh11-lost-origin
+          - listitem [ref=f23e137]: Lost Origin Booster Box Case
+      - generic [ref=f23e138]:
+        - generic [ref=f23e139]:
+          - 'heading "Lost Origin Booster Box Case - SWSH11: Lost Origin (SWSH11)" [level=1] [ref=f23e140]'
+          - 'link "SWSH11: Lost Origin" [ref=f23e144] [cursor=pointer]':
+            - /url: /search/pokemon/swsh11-lost-origin?productLineName=pokemon&setName=swsh11-lost-origin
+        - img "Lost Origin Booster Box Case-0" [ref=f23e154]
+        - generic [ref=f23e159]:
+          - link "Sell this" [ref=f23e160] [cursor=pointer]:
+            - /url: https://store.tcgplayer.com/admin/product/manage/278793
+          - button "Report a problem on this page" [ref=f23e164] [cursor=pointer]: Report a problem
+        - generic [ref=f23e173]:
+          - heading "Product Details" [level=2] [ref=f23e174]
+          - list [ref=f23e175]:
+            - listitem [ref=f23e176]:
+              - generic [ref=f23e177]:
+                - strong [ref=f23e178]: "Card Text:"
+                - generic [ref=f23e179]:
+                  - text: Each sealed booster box case contains 6 booster boxes of 36 booster packs.
+                  - emphasis [ref=f23e180]: (Each pack contains 10 random cards)
+            - listitem [ref=f23e181]:
+              - generic [ref=f23e182]:
+                - strong [ref=f23e183]: "TCGplayer Tip:"
+                - text: A full case of Lost Origin booster boxes. Many of the cards that debuted in Lost Origin either send your cards to the Lost Zone, or get stronger depending on how many cards you had in the Lost Zone. Together, these cards form the core of the “Lost Zone Box” archetype.
+        - generic [ref=f23e185]:
+          - generic [ref=f23e186]:
+            - generic [ref=f23e187]:
+              - generic [ref=f23e188]:
+                - generic [ref=f23e189]: Near Mint Comparison Prices
+                - generic [ref=f23e190]: Market prices for alternative printings and conditions
+              - table [ref=f23e192]:
+                - row [ref=f23e193]:
+                  - cell "Loading..." [ref=f23e194]
+            - generic [ref=f23e195]:
+              - generic [ref=f23e196]:
+                - heading [level=2] [ref=f23e197]:
+                  - text: Price Points
+                  - generic [ref=f23e199]:
+                    - link "Learn more about what price points are" [ref=f23e200] [cursor=pointer]:
+                      - /url: https://help.tcgplayer.com/hc/en-us/articles/222376867
+                    - generic:
+                      - tooltip "Price and quantity data based on the currently selected item. Change any of the filters at top of page to refine your search"
+                - generic [ref=f23e203]: Unopened
+              - table [ref=f23e205]:
+                - row [ref=f23e206]:
+                  - cell [ref=f23e207]
+            - generic [ref=f23e210]:
+              - generic [ref=f23e211]:
+                - generic [ref=f23e212]: 3 Month Snapshot
+                - button "View More Data" [ref=f23e215] [cursor=pointer]
+              - table [ref=f23e217]:
+                - row [ref=f23e218]:
+                  - cell "Low Sale Price:" [ref=f23e219]
+                  - cell "$4,200.00" [ref=f23e220]
+                  - cell "High Sale Price:" [ref=f23e221]
+                  - cell "$4,750.00" [ref=f23e222]
+                - row [ref=f23e223]:
+                  - cell "Total Sold:" [ref=f23e224]
+                  - cell "10" [ref=f23e225]
+                  - cell "Avg. Daily Sold:" [ref=f23e226]
+                  - cell "-" [ref=f23e227]
+          - generic [ref=f23e228]:
+            - heading "Market Price History" [level=2] [ref=f23e229]
+            - generic [ref=f23e232]:
+              - generic [ref=f23e233]:
+                - generic [ref=f23e236]:
+                  - generic [ref=f23e237]:
+                    - generic [ref=f23e238]: Unopened
+                    - generic [ref=f23e242]: $4,542.62
+                  - generic [ref=f23e243]: (+6.24%)
+                - generic [ref=f23e244]:
+                  - generic [ref=f23e245]: items sold
+                  - generic: Items Sold
+              - generic [ref=f23e249]:
+                - button "1M" [ref=f23e250]
+                - button "3M" [ref=f23e251]
+                - button "6M" [ref=f23e252]
+                - button "1Y" [ref=f23e253]
+    - generic [ref=f23e255]:
+      - generic [ref=f23e256]:
+        - generic [ref=f23e257]: No Listings Available
+        - generic [ref=f23e261]:
+          - generic [ref=f23e264]:
+            - generic [ref=f23e265]: Sort By
+            - generic [ref=f23e269]:
+              - combobox "Price + Shipping" [ref=f23e270]
+              - button "Toggle listbox" [ref=f23e272]
+          - generic [ref=f23e278]:
+            - generic [ref=f23e279]: Listings / Page
+            - generic [ref=f23e283]:
+              - combobox "10" [ref=f23e284]
+              - button "Toggle listbox" [ref=f23e286]
+      - generic [ref=f23e292]:
+        - generic [ref=f23e293]: This item has no current listings.
+        - button "Browse Pokemon" [ref=f23e295] [cursor=pointer]
+    - heading "Customers Also Purchased" [level=2] [ref=f23e299]
+  - contentinfo [ref=f23e304]:
+    - generic [ref=f23e306]:
+      - generic [ref=f23e308]:
+        - generic [ref=f23e309]:
+          - generic [ref=f23e310]: Shop
+          - 'link "Magic: The Gathering" [ref=f23e312] [cursor=pointer]':
+            - /url: /categories/trading-and-collectible-card-games/magic-the-gathering?scrollToTop=true
+          - link "Yu-Gi-Oh!" [ref=f23e314] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/yugioh?scrollToTop=true
+          - link "Pokémon" [ref=f23e316] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/pokemon?scrollToTop=true
+          - link "Disney Lorcana" [ref=f23e318] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/disney-lorcana?scrollToTop=true
+          - link "One Piece Card Game" [ref=f23e320] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/one-piece-card-game?scrollToTop=true
+          - link "Digimon Card Game" [ref=f23e322] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/digimon-card-game?scrollToTop=true
+          - 'link "Star Wars: Unlimited" [ref=f23e324] [cursor=pointer]':
+            - /url: /categories/trading-and-collectible-card-games/star-wars-unlimited?scrollToTop=true
+          - link "Flesh and Blood" [ref=f23e326] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/flesh-and-blood-tcg?scrollToTop=true
+          - link "TCGplayer Gift Cards" [ref=f23e328] [cursor=pointer]:
+            - /url: /giftcard?scrollToTop=true
+          - link "All Games" [ref=f23e330] [cursor=pointer]:
+            - /url: /categories?scrollToTop=true
+        - generic [ref=f23e331]:
+          - generic [ref=f23e332]: Articles & Decks
+          - link "TCGplayer Content" [ref=f23e334] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/
+          - 'link "Magic: The Gathering" [ref=f23e336] [cursor=pointer]':
+            - /url: https://www.tcgplayer.com/content/magic-the-gathering
+          - link "Yu-Gi-Oh!" [ref=f23e338] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/yugioh
+          - link "Pokémon" [ref=f23e340] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/pokemon
+          - link "Disney Lorcana" [ref=f23e342] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/disney-lorcana
+          - link "One Piece Card Game" [ref=f23e344] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/one-piece
+          - link "Flesh and Blood" [ref=f23e346] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/flesh-and-blood
+          - link "More Articles & Decks" [ref=f23e348] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/more-games
+        - generic [ref=f23e349]:
+          - generic [ref=f23e350]: Buy
+          - link "TCGplayer Safeguard" [ref=f23e352] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201637633-TCGplayer-Safeguard
+          - link "TCGplayer Direct" [ref=f23e354] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201996857-Buying-from-TCGplayer-Direct
+          - link "TCGplayer Subscription" [ref=f23e356] [cursor=pointer]:
+            - /url: /subscription?scrollToTop=true
+          - link "Cart Optimizer" [ref=f23e358] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201769673-Cart-Optimizer
+          - link "Mass Entry" [ref=f23e360] [cursor=pointer]:
+            - /url: /massentry
+          - link "Find a Seller" [ref=f23e362] [cursor=pointer]:
+            - /url: /sellers
+          - link "Collection Tracker" [ref=f23e364] [cursor=pointer]:
+            - /url: https://store.tcgplayer.com/collection
+        - generic [ref=f23e365]:
+          - generic [ref=f23e366]: Sell
+          - link "Sell on TCGplayer" [ref=f23e368] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/
+          - link "Pricing & Listing Tools" [ref=f23e370] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/pricing-listing-tools
+          - link "Fulfillment Solutions" [ref=f23e372] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/sell-with-us/tcgplayer-direct
+          - link "TCGplayer Pro" [ref=f23e374] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/#pro-tools
+          - link "Growth Acceleration Program" [ref=f23e376] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/growth
+          - link "Roca" [ref=f23e378] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/roca
+          - link "Seller Blog" [ref=f23e380] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/blog
+        - generic [ref=f23e381]:
+          - generic [ref=f23e382]: Help & Contact
+          - link "Contact Us" [ref=f23e384] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/requests/new
+          - link "Help Center" [ref=f23e386] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us
+          - link "Refund and Return Policy" [ref=f23e388] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201642073-Refund-and-Return-Policy
+          - link "Security Center" [ref=f23e390] [cursor=pointer]:
+            - /url: https://pages.ebay.com/securitycenter/security_researchers.html
+        - generic [ref=f23e391]:
+          - generic [ref=f23e392]: About
+          - link "About Us" [ref=f23e394] [cursor=pointer]:
+            - /url: /about-us/?scrollToTop=true
+          - link "Job Openings" [ref=f23e396] [cursor=pointer]:
+            - /url: https://ebay.wd5.myworkdayjobs.com/en-US/TCGPlayer_External_Career
+          - link "Press Center" [ref=f23e398] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/press-center
+          - link "Become an Affiliate" [ref=f23e400] [cursor=pointer]:
+            - /url: https://docs.tcgplayer.com/docs/tcgplayer-affiliate-program
+      - generic [ref=f23e401]:
+        - generic [ref=f23e402]:
+          - heading "Get the latest strategies, promos, and more from your favorite games." [level=2] [ref=f23e403]
+          - generic [ref=f23e404]:
+            - generic [ref=f23e406]:
+              - generic [ref=f23e407]: Your Email
+              - textbox "Your Email" [ref=f23e411]
+            - button "Subscribe" [ref=f23e412] [cursor=pointer]
+          - generic [ref=f23e414]:
+            - text: By subscribing, you consent to receive emails from TCGplayer in line with our
+            - link "Privacy Policy" [ref=f23e415] [cursor=pointer]:
+              - /url: https://help.tcgplayer.com/hc/en-us/articles/11736500567959-TCGplayer-Privacy-Policy
+            - text: .
+        - generic [ref=f23e417]:
+          - generic "TCGplayer App QR Code" [ref=f23e418]:
+            - img "TCGplayer App QR Code" [ref=f23e419]
+          - generic [ref=f23e420]:
+            - generic [ref=f23e421]: Get The App
+            - generic [ref=f23e422]: Digitize your collection, find prices, and more with the TCGplayer app.
+            - link "mobile-app-link" [ref=f23e424] [cursor=pointer]:
+              - /url: /mobile-app
+              - text: Learn More
+        - generic [ref=f23e426]:
+          - link [ref=f23e427] [cursor=pointer]:
+            - /url: https://www.facebook.com/TCGplayerofficial
+          - link [ref=f23e431] [cursor=pointer]:
+            - /url: https://x.com/TCGplayer
+            - img "Twitter Icon" [ref=f23e433]
+          - link [ref=f23e434] [cursor=pointer]:
+            - /url: https://www.youtube.com/@TCGplayerofficial
+          - link [ref=f23e438] [cursor=pointer]:
+            - /url: https://www.instagram.com/tcgplayer_com
+    - generic [ref=f23e442]:
+      - generic [ref=f23e443]: Copyright © 2026 TCGplayer, Inc. All Rights Reserved.
+      - generic [ref=f23e444]:
+        - 'link "Magic: The Gathering" [ref=f23e445] [cursor=pointer]':
+          - /url: https://magic.wizards.com/en
+        - text: and its respective properties are ©
+        - link "Wizards of the Coast" [ref=f23e446] [cursor=pointer]:
+          - /url: http://company.wizards.com/
+        - text: .
+        - link "Yu-Gi-Oh!" [ref=f23e447] [cursor=pointer]:
+          - /url: http://www.yugioh-card.com/en/
+        - text: and its respective properties are © 2026 Studio Dice/SHUEISHA, TV TOKYO, KONAMI.
+        - link "Cardfight!! Vanguard" [ref=f23e448] [cursor=pointer]:
+          - /url: https://en.cf-vanguard.com/
+        - text: and
+        - link "Weiß Schwarz" [ref=f23e449] [cursor=pointer]:
+          - /url: https://en.ws-tcg.com/
+        - text: are © bushiroad All Rights Reserved.
+        - 'link "Shadowverse: Evolve" [ref=f23e450] [cursor=pointer]':
+          - /url: https://en.shadowverse-evolve.com/
+        - text: is © Cygames, Inc.
+        - link "Godzilla Card Game" [ref=f23e451] [cursor=pointer]:
+          - /url: https://en.godzilla-cardgame.com/
+        - text: is TM & © TOHO CO., LTD.
+        - link "hololive OFFICIAL CARD GAME" [ref=f23e452] [cursor=pointer]:
+          - /url: https://en.hololive-official-cardgame.com/
+        - text: is © COVER ©2026
+        - link "Pokémon" [ref=f23e453] [cursor=pointer]:
+          - /url: https://www.pokemon.com/us/pokemon-tcg/
+        - text: . ©1995 - 2026 Nintendo/Creatures Inc./GAME FREAK Inc. TM, ®Nintendo. Disney Lorcana and its respective properties are ©
+        - link "Disney" [ref=f23e454] [cursor=pointer]:
+          - /url: https://www.disney.com/
+        - 'link "RIFTBOUND: LEAGUE OF LEGENDS" [ref=f23e455] [cursor=pointer]':
+          - /url: https://riftbound.leagueoflegends.com/en-us/
+        - text: manufactured by
+        - link "UVS Games" [ref=f23e456] [cursor=pointer]:
+          - /url: https://uvsgames.com/
+        - text: under license from Riot Games. ™ & © 2026 Riot Games, Inc.
+        - 'link "CookieRun: Braverse TCG" [ref=f23e457] [cursor=pointer]':
+          - /url: https://cookierunbraverse.com/en/
+        - text: is © Devsisters Corp. All rights reserved.
+      - generic [ref=f23e458]:
+        - link "Privacy Policy" [ref=f23e459] [cursor=pointer]:
+          - /url: https://help.tcgplayer.com/hc/en-us/articles/11736500567959-TCGplayer-Privacy-Policy
+        - link "Terms of Service" [ref=f23e460] [cursor=pointer]:
+          - /url: https://help.tcgplayer.com/hc/en-us/articles/205004918-Terms-of-Service
+        - link "Accessibility" [ref=f23e461] [cursor=pointer]:
+          - /url: https://help.tcgplayer.com/hc/en-us/articles/4419756533527-Accessibility-Statement
+        - generic [ref=f23e462] [cursor=pointer]: Do Not Sell or Share My Personal Information

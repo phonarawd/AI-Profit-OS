@@ -1,0 +1,15 @@
+{
+  "rel": "REL-602",
+  "deps": ["REL-600", "REL-403", "REL-408"],
+  "productionRollback": 0,
+  "productionWorkflowRollback": 0,
+  "pagesDeploy": 0,
+  "vercel": 0,
+  "secretHardcoded": 0,
+  "knownGoodBaseline": {
+    "source": "REL-600-STAGING.md deploy log",
+    "web": "a85bfa7b-639a-4ad1-b1f3-1ca5f35fb40f",
+    "ops": "81d9b6a2-c5ef-42da-b2e2-46e7af2d4b10"
+  },
+  "extraVerifies": ["rel-403-versioning.cjs", "rel-408-security-baseline.cjs"]
+}

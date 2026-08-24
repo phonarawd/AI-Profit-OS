@@ -1,0 +1,10 @@
+{
+  "rel": "REL-601",
+  "deps": ["REL-600", "REL-500", "REL-105"],
+  "homeGeometryPatch": 0,
+  "pixelDiffAloneFail": 0,
+  "productionHost": 0,
+  "mcpOnlyDone": 0,
+  "minSurfaces": 50,
+  "extraVerifies": ["rel-600-staging.cjs", "rel-500-qa-lab-expansion.cjs"]
+}

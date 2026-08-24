@@ -1,0 +1,480 @@
+- generic [ref=f22e4]:
+  - banner [ref=f22e5]:
+    - generic [ref=f22e6]:
+      - link "TCGplayer.com" [ref=f22e8] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f22e28] [cursor=pointer]:
+        - generic [ref=f22e29]: Shipping to
+        - generic [ref=f22e30]: Singapore
+      - generic [ref=f22e33]:
+        - generic [ref=f22e34]:
+          - generic "Select a product line to search for" [ref=f22e38] [cursor=pointer]: Pokémon
+          - generic [ref=f22e42]:
+            - 'search "Search: suggestions appear below" [ref=f22e43]': booster box
+            - generic [ref=f22e44]: "Search: suggestions appear below"
+        - button "submit your search" [ref=f22e47] [cursor=pointer]
+      - generic [ref=f22e52]:
+        - link "Sign In" [ref=f22e56] [cursor=pointer]:
+          - /url: https://www.tcgplayer.com/login?returnUrl=https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=booster%20box&view=grid
+        - generic [ref=f22e57]:
+          - button [ref=f22e59] [cursor=pointer]
+          - button [ref=f22e61] [cursor=pointer]
+  - navigation "main navigation" [ref=f22e63]:
+    - generic [ref=f22e65]:
+      - generic [ref=f22e66]: Magic
+      - generic [ref=f22e68]: Yu-Gi-Oh!
+      - generic [ref=f22e70]: Pokémon
+      - generic [ref=f22e72]: Disney Lorcana
+      - generic [ref=f22e74]: One Piece
+      - generic [ref=f22e76]: Digimon
+      - generic [ref=f22e78]: More Products
+      - generic [ref=f22e80]: Content
+  - generic [ref=f22e83]:
+    - tablist [ref=f22e88]:
+      - tab "Products Products" [selected] [ref=f22e89] [cursor=pointer]:
+        - img "Products" [ref=f22e90]
+        - generic [ref=f22e91]: Products
+      - tab "Articles Articles" [ref=f22e92] [cursor=pointer]:
+        - img "Articles" [ref=f22e93]
+        - generic [ref=f22e94]: Articles
+      - tab "Decks Decks" [ref=f22e95] [cursor=pointer]:
+        - img "Decks" [ref=f22e96]
+        - generic [ref=f22e97]: Decks
+    - generic [ref=f22e99]:
+      - dialog "Shipping to Singapore":
+        - generic [ref=f22e101]:
+          - generic [ref=f22e102]:
+            - heading "Shipping to Singapore" [level=2] [ref=f22e103]
+            - button "Dismiss modal" [active] [ref=f22e104] [cursor=pointer]
+          - generic [ref=f22e110]:
+            - paragraph [ref=f22e111]: Shop U.S. Products on TCGplayer
+            - paragraph [ref=f22e112]: Shop the entire TCGplayer marketplace and get your orders sent to you through our trusted international shipping partners. Enjoy secure delivery in one consolidated, fully tracked package.
+            - paragraph [ref=f22e113]:
+              - link "Learn more." [ref=f22e114] [cursor=pointer]:
+                - /url: https://pages.tcgplayer.com/global-shopping
+          - button "Close" [ref=f22e116] [cursor=pointer]
+      - generic [ref=f22e119]:
+        - button "All Filters 1" [ref=f22e121] [cursor=pointer]:
+          - generic [ref=f22e122]:
+            - generic [ref=f22e123]: All Filters
+            - generic [ref=f22e124]: "1"
+        - button "Toggle product type filters" [ref=f22e127] [cursor=pointer]:
+          - generic [ref=f22e128]: Condition
+        - button "Toggle product type filters" [ref=f22e135] [cursor=pointer]:
+          - generic [ref=f22e136]: Printing
+        - button "Toggle product type filters" [ref=f22e143] [cursor=pointer]:
+          - generic [ref=f22e144]: Pokémon
+        - button "Toggle product type filters" [ref=f22e151] [cursor=pointer]:
+          - generic [ref=f22e152]: Set
+        - button "Toggle product type filters" [ref=f22e159] [cursor=pointer]:
+          - generic [ref=f22e160]: Product Type
+        - button "Toggle product type filters" [ref=f22e167] [cursor=pointer]:
+          - generic [ref=f22e168]: Card Type
+        - button "Toggle product type filters" [ref=f22e175] [cursor=pointer]:
+          - generic [ref=f22e176]: Rarity
+        - button "Clear Filters" [ref=f22e182] [cursor=pointer]
+      - generic [ref=f22e184]:
+        - 'heading "581 results for: “booster box” in Pokémon" [level=1] [ref=f22e186]':
+          - generic [ref=f22e187]:
+            - generic [ref=f22e188]: "581 results for: “booster box”"
+            - generic [ref=f22e189]: in Pokémon
+        - generic [ref=f22e190]:
+          - generic [ref=f22e193]:
+            - generic [ref=f22e194]: Sort & View
+            - generic [ref=f22e198]:
+              - generic [ref=f22e199]: "Sort by:"
+              - generic [ref=f22e203]:
+                - combobox "Best Match" [ref=f22e204]
+                - button "Toggle listbox" [ref=f22e206]
+          - generic [ref=f22e212]:
+            - button "Grid View" [ref=f22e213] [cursor=pointer]
+            - button "List View" [ref=f22e217] [cursor=pointer]
+      - generic [ref=f22e221]:
+        - text: () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () ()
+        - generic [ref=f22e222]:
+          - generic [ref=f22e224]:
+            - 'link "Lost Origin Booster Box Case SWSH11: Lost Origin Lost Origin Booster Box Case Out of Stock Market Price:$4,519.75" [ref=f22e230] [cursor=pointer]':
+              - /url: /product/278793/pokemon-swsh11-lost-origin-lost-origin-booster-box-case?page=1
+              - generic [ref=f22e231]:
+                - img "Lost Origin Booster Box Case" [ref=f22e234]
+                - 'heading "SWSH11: Lost Origin" [level=4] [ref=f22e235]'
+                - generic [ref=f22e237]: Lost Origin Booster Box Case
+                - generic [ref=f22e238]: Out of Stock
+                - generic [ref=f22e242]: Market Price:$4,519.75
+            - 'link "Battle Styles Booster Box Case SWSH05: Battle Styles Battle Styles Booster Box Case Out of Stock Market Price:$1,753.75" [ref=f22e249] [cursor=pointer]':
+              - /url: /product/233335/pokemon-swsh05-battle-styles-battle-styles-booster-box-case?page=1
+              - generic [ref=f22e250]:
+                - img "Battle Styles Booster Box Case" [ref=f22e253]
+                - 'heading "SWSH05: Battle Styles" [level=4] [ref=f22e254]'
+                - generic [ref=f22e256]: Battle Styles Booster Box Case
+                - generic [ref=f22e257]: Out of Stock
+                - generic [ref=f22e261]: Market Price:$1,753.75
+            - 'link "Vivid Voltage Booster Box Case SWSH04: Vivid Voltage Vivid Voltage Booster Box Case Out of Stock Market Price:$1,836.06" [ref=f22e268] [cursor=pointer]':
+              - /url: /product/243051/pokemon-swsh04-vivid-voltage-vivid-voltage-booster-box-case?page=1
+              - generic [ref=f22e269]:
+                - img "Vivid Voltage Booster Box Case" [ref=f22e272]
+                - 'heading "SWSH04: Vivid Voltage" [level=4] [ref=f22e273]'
+                - generic [ref=f22e275]: Vivid Voltage Booster Box Case
+                - generic [ref=f22e276]: Out of Stock
+                - generic [ref=f22e280]: Market Price:$1,836.06
+            - 'link "Brilliant Stars Booster Box Case SWSH09: Brilliant Stars Brilliant Stars Booster Box Case Out of Stock Market Price:$3,833.62" [ref=f22e287] [cursor=pointer]':
+              - /url: /product/256145/pokemon-swsh09-brilliant-stars-brilliant-stars-booster-box-case?page=1
+              - generic [ref=f22e288]:
+                - img "Brilliant Stars Booster Box Case" [ref=f22e291]
+                - 'heading "SWSH09: Brilliant Stars" [level=4] [ref=f22e292]'
+                - generic [ref=f22e294]: Brilliant Stars Booster Box Case
+                - generic [ref=f22e295]: Out of Stock
+                - generic [ref=f22e299]: Market Price:$3,833.62
+            - 'link "Rebel Clash Booster Box Case SWSH02: Rebel Clash Rebel Clash Booster Box Case Out of Stock Market Price Unavailable" [ref=f22e306] [cursor=pointer]':
+              - /url: /product/240182/pokemon-swsh02-rebel-clash-rebel-clash-booster-box-case?page=1
+              - generic [ref=f22e307]:
+                - img "Rebel Clash Booster Box Case" [ref=f22e310]
+                - 'heading "SWSH02: Rebel Clash" [level=4] [ref=f22e311]'
+                - generic [ref=f22e313]: Rebel Clash Booster Box Case
+                - generic [ref=f22e314]: Out of Stock
+                - paragraph [ref=f22e320]: Market Price Unavailable
+            - 'link "Silver Tempest Booster Box Case SWSH12: Silver Tempest Silver Tempest Booster Box Case Out of Stock Market Price:$3,420.00" [ref=f22e326] [cursor=pointer]':
+              - /url: /product/283391/pokemon-swsh12-silver-tempest-silver-tempest-booster-box-case?page=1
+              - generic [ref=f22e327]:
+                - img "Silver Tempest Booster Box Case" [ref=f22e330]
+                - 'heading "SWSH12: Silver Tempest" [level=4] [ref=f22e331]'
+                - generic [ref=f22e333]: Silver Tempest Booster Box Case
+                - generic [ref=f22e334]: Out of Stock
+                - generic [ref=f22e338]: Market Price:$3,420.00
+            - 'link "Journey Together Enhanced Booster Box Case SV09: Journey Together Journey Together Enhanced Booster Box Case Out of Stock Market Price:$1,583.79" [ref=f22e345] [cursor=pointer]':
+              - /url: /product/625583/pokemon-sv09-journey-together-journey-together-enhanced-booster-box-case?page=1
+              - generic [ref=f22e346]:
+                - img "Journey Together Enhanced Booster Box Case" [ref=f22e349]
+                - 'heading "SV09: Journey Together" [level=4] [ref=f22e350]'
+                - generic [ref=f22e352]: Journey Together Enhanced Booster Box Case
+                - generic [ref=f22e353]: Out of Stock
+                - generic [ref=f22e357]: Market Price:$1,583.79
+            - link "Iron Valiant ex Box Miscellaneous Cards & Products Iron Valiant ex Box Out of Stock Market Price:$41.15" [ref=f22e364] [cursor=pointer]:
+              - /url: /product/516578/pokemon-miscellaneous-cards-and-products-iron-valiant-ex-box?page=1
+              - generic [ref=f22e365]:
+                - img "Iron Valiant ex Box" [ref=f22e368]
+                - heading "Miscellaneous Cards & Products" [level=4] [ref=f22e369]
+                - generic [ref=f22e371]: Iron Valiant ex Box
+                - generic [ref=f22e372]: Out of Stock
+                - generic [ref=f22e376]: Market Price:$41.15
+            - 'link "Chilling Reign Booster Box Case SWSH06: Chilling Reign Chilling Reign Booster Box Case Out of Stock Market Price:$3,438.51" [ref=f22e383] [cursor=pointer]':
+              - /url: /product/236259/pokemon-swsh06-chilling-reign-chilling-reign-booster-box-case?page=1
+              - generic [ref=f22e384]:
+                - img "Chilling Reign Booster Box Case" [ref=f22e387]
+                - 'heading "SWSH06: Chilling Reign" [level=4] [ref=f22e388]'
+                - generic [ref=f22e390]: Chilling Reign Booster Box Case
+                - generic [ref=f22e391]: Out of Stock
+                - generic [ref=f22e395]: Market Price:$3,438.51
+            - link "Costco Pokemon Prismatic Evolutions 2-Pack Trainer Box and Booster Bundle Miscellaneous Cards & Products Costco Pokemon Prismatic Evolutions 2-Pack Trainer Box and Booster Bundle Out of Stock Market Price:$292.84" [ref=f22e402] [cursor=pointer]:
+              - /url: /product/636740/pokemon-miscellaneous-cards-and-products-costco-pokemon-prismatic-evolutions-2-pack-trainer-box-and-booster-bundle?page=1
+              - generic [ref=f22e403]:
+                - img "Costco Pokemon Prismatic Evolutions 2-Pack Trainer Box and Booster Bundle" [ref=f22e406]
+                - heading "Miscellaneous Cards & Products" [level=4] [ref=f22e407]
+                - generic [ref=f22e409]: Costco Pokemon Prismatic Evolutions 2-Pack Trainer Box and Booster Bundle
+                - generic [ref=f22e410]: Out of Stock
+                - generic [ref=f22e414]: Market Price:$292.84
+            - 'link "Fusion Strike Booster Box Case SWSH08: Fusion Strike Fusion Strike Booster Box Case Out of Stock Market Price:$6,538.79" [ref=f22e421] [cursor=pointer]':
+              - /url: /product/247655/pokemon-swsh08-fusion-strike-fusion-strike-booster-box-case?page=1
+              - generic [ref=f22e422]:
+                - img "Fusion Strike Booster Box Case" [ref=f22e425]
+                - 'heading "SWSH08: Fusion Strike" [level=4] [ref=f22e426]'
+                - generic [ref=f22e428]: Fusion Strike Booster Box Case
+                - generic [ref=f22e429]: Out of Stock
+                - generic [ref=f22e433]: Market Price:$6,538.79
+            - 'link "Evolving Skies Booster Box Case SWSH07: Evolving Skies Evolving Skies Booster Box Case Out of Stock Market Price Unavailable" [ref=f22e440] [cursor=pointer]':
+              - /url: /product/248124/pokemon-swsh07-evolving-skies-evolving-skies-booster-box-case?page=1
+              - generic [ref=f22e441]:
+                - img "Evolving Skies Booster Box Case" [ref=f22e444]
+                - 'heading "SWSH07: Evolving Skies" [level=4] [ref=f22e445]'
+                - generic [ref=f22e447]: Evolving Skies Booster Box Case
+                - generic [ref=f22e448]: Out of Stock
+                - paragraph [ref=f22e454]: Market Price Unavailable
+            - 'link "Obsidian Flames Booster Box Case SV03: Obsidian Flames Obsidian Flames Booster Box Case Out of Stock Market Price:$2,395.20" [ref=f22e460] [cursor=pointer]':
+              - /url: /product/501258/pokemon-sv03-obsidian-flames-obsidian-flames-booster-box-case?page=1
+              - generic [ref=f22e461]:
+                - img "Obsidian Flames Booster Box Case" [ref=f22e464]
+                - 'heading "SV03: Obsidian Flames" [level=4] [ref=f22e465]'
+                - generic [ref=f22e467]: Obsidian Flames Booster Box Case
+                - generic [ref=f22e468]: Out of Stock
+                - generic [ref=f22e472]: Market Price:$2,395.20
+            - 'link "Sword & Shield Booster Box Case SWSH01: Sword & Shield Base Set Sword & Shield Booster Box Case Out of Stock Market Price Unavailable" [ref=f22e479] [cursor=pointer]':
+              - /url: /product/530142/pokemon-swsh01-sword-and-shield-base-set-sword-and-shield-booster-box-case?page=1
+              - generic [ref=f22e480]:
+                - img "Sword & Shield Booster Box Case" [ref=f22e483]
+                - 'heading "SWSH01: Sword & Shield Base Set" [level=4] [ref=f22e484]'
+                - generic [ref=f22e486]: Sword & Shield Booster Box Case
+                - generic [ref=f22e487]: Out of Stock
+                - paragraph [ref=f22e493]: Market Price Unavailable
+            - 'link "Astral Radiance Booster Box Case SWSH10: Astral Radiance Astral Radiance Booster Box Case Out of Stock Market Price:$2,488.69" [ref=f22e499] [cursor=pointer]':
+              - /url: /product/265520/pokemon-swsh10-astral-radiance-astral-radiance-booster-box-case?page=1
+              - generic [ref=f22e500]:
+                - img "Astral Radiance Booster Box Case" [ref=f22e503]
+                - 'heading "SWSH10: Astral Radiance" [level=4] [ref=f22e504]'
+                - generic [ref=f22e506]: Astral Radiance Booster Box Case
+                - generic [ref=f22e507]: Out of Stock
+                - generic [ref=f22e511]: Market Price:$2,488.69
+            - 'link "Prismatic Evolutions Booster Bundle + Surprise Box Bundle (Sam''s Club) SV: Prismatic Evolutions Prismatic Evolutions Booster Bundle + Surprise Box Bundle (Sam''s Club) Out of Stock Market Price:$150.47" [ref=f22e518] [cursor=pointer]':
+              - /url: /product/678555/pokemon-sv-prismatic-evolutions-prismatic-evolutions-booster-bundle-plus-surprise-box-bundle-sams-club?page=1
+              - generic [ref=f22e519]:
+                - img "Prismatic Evolutions Booster Bundle + Surprise Box Bundle (Sam's Club)" [ref=f22e522]
+                - 'heading "SV: Prismatic Evolutions" [level=4] [ref=f22e523]'
+                - generic [ref=f22e525]: Prismatic Evolutions Booster Bundle + Surprise Box Bundle (Sam's Club)
+                - generic [ref=f22e526]: Out of Stock
+                - generic [ref=f22e530]: Market Price:$150.47
+            - 'link "Costco Ascended Heroes Mega ex Box Bundle ME: Ascended Heroes Costco Ascended Heroes Mega ex Box Bundle Out of Stock Market Price:$199.98" [ref=f22e537] [cursor=pointer]':
+              - /url: /product/692541/pokemon-me-ascended-heroes-costco-ascended-heroes-mega-ex-box-bundle?page=1
+              - generic [ref=f22e538]:
+                - img "Costco Ascended Heroes Mega ex Box Bundle" [ref=f22e541]
+                - 'heading "ME: Ascended Heroes" [level=4] [ref=f22e542]'
+                - generic [ref=f22e544]: Costco Ascended Heroes Mega ex Box Bundle
+                - generic [ref=f22e545]: Out of Stock
+                - generic [ref=f22e549]: Market Price:$199.98
+            - 'link "Destined Rivals Booster Box SV10: Destined Rivals Destined Rivals Booster Box 1 listing from $599.99 Market Price:$439.39" [ref=f22e556] [cursor=pointer]':
+              - /url: /product/624679/pokemon-sv10-destined-rivals-destined-rivals-booster-box?page=1
+              - generic [ref=f22e557]:
+                - img "Destined Rivals Booster Box" [ref=f22e560]
+                - 'heading "SV10: Destined Rivals" [level=4] [ref=f22e561]'
+                - generic [ref=f22e563]: Destined Rivals Booster Box
+                - generic [ref=f22e565]:
+                  - generic [ref=f22e566]: 1 listing from
+                  - generic [ref=f22e567]: $599.99
+                - generic [ref=f22e568]: Market Price:$439.39
+            - 'link "Crown Zenith Pokemon Center Elite Trainer Box Plus SWSH: Crown Zenith Crown Zenith Pokemon Center Elite Trainer Box Plus 1 listing from $2,000.00 Market Price:$575.36" [ref=f22e575] [cursor=pointer]':
+              - /url: /product/454246/pokemon-swsh-crown-zenith-crown-zenith-pokemon-center-elite-trainer-box-plus?page=1
+              - generic [ref=f22e576]:
+                - img "Crown Zenith Pokemon Center Elite Trainer Box Plus" [ref=f22e579]
+                - 'heading "SWSH: Crown Zenith" [level=4] [ref=f22e580]'
+                - generic [ref=f22e582]: Crown Zenith Pokemon Center Elite Trainer Box Plus
+                - generic [ref=f22e584]:
+                  - generic [ref=f22e585]: 1 listing from
+                  - generic [ref=f22e586]: $2,000.00
+                - generic [ref=f22e587]: Market Price:$575.36
+            - 'link "Ice Rider/ Shadow Rider Calyrex V Box Case SWSH06: Chilling Reign Ice Rider/ Shadow Rider Calyrex V Box Case Out of Stock Market Price:$345.00" [ref=f22e594] [cursor=pointer]':
+              - /url: /product/256972/pokemon-swsh06-chilling-reign-ice-rider-shadow-rider-calyrex-v-box-case?page=1
+              - generic [ref=f22e595]:
+                - img "Ice Rider/ Shadow Rider Calyrex V Box Case" [ref=f22e598]
+                - 'heading "SWSH06: Chilling Reign" [level=4] [ref=f22e599]'
+                - generic [ref=f22e601]: Ice Rider/ Shadow Rider Calyrex V Box Case
+                - generic [ref=f22e602]: Out of Stock
+                - generic [ref=f22e606]: Market Price:$345.00
+            - 'link "Destined Rivals Booster Box Case SV10: Destined Rivals Destined Rivals Booster Box Case Out of Stock Market Price:$2,870.08" [ref=f22e613] [cursor=pointer]':
+              - /url: /product/624678/pokemon-sv10-destined-rivals-destined-rivals-booster-box-case?page=1
+              - generic [ref=f22e614]:
+                - img "Destined Rivals Booster Box Case" [ref=f22e617]
+                - 'heading "SV10: Destined Rivals" [level=4] [ref=f22e618]'
+                - generic [ref=f22e620]: Destined Rivals Booster Box Case
+                - generic [ref=f22e621]: Out of Stock
+                - generic [ref=f22e625]: Market Price:$2,870.08
+            - 'link "Pitch Black Booster Box ME05: Pitch Black Pitch Black Booster Box 1 listing from $229.99 Market Price:$177.29" [ref=f22e632] [cursor=pointer]':
+              - /url: /product/692939/pokemon-me05-pitch-black-pitch-black-booster-box?page=1
+              - generic [ref=f22e633]:
+                - img "Pitch Black Booster Box" [ref=f22e636]
+                - 'heading "ME05: Pitch Black" [level=4] [ref=f22e637]'
+                - generic [ref=f22e639]: Pitch Black Booster Box
+                - generic [ref=f22e641]:
+                  - generic [ref=f22e642]: 1 listing from
+                  - generic [ref=f22e643]: $229.99
+                - generic [ref=f22e644]: Market Price:$177.29
+            - link "Guardians Rising Booster Box Case SM - Guardians Rising Guardians Rising Booster Box Case Out of Stock Market Price Unavailable" [ref=f22e651] [cursor=pointer]:
+              - /url: /product/618840/pokemon-sm-guardians-rising-guardians-rising-booster-box-case?page=1
+              - generic [ref=f22e652]:
+                - img "Guardians Rising Booster Box Case" [ref=f22e655]
+                - heading "SM - Guardians Rising" [level=4] [ref=f22e656]
+                - generic [ref=f22e658]: Guardians Rising Booster Box Case
+                - generic [ref=f22e659]: Out of Stock
+                - paragraph [ref=f22e665]: Market Price Unavailable
+            - 'link "Darkness Ablaze Booster Box Case SWSH03: Darkness Ablaze Darkness Ablaze Booster Box Case Out of Stock Market Price:$2,249.99" [ref=f22e671] [cursor=pointer]':
+              - /url: /product/256971/pokemon-swsh03-darkness-ablaze-darkness-ablaze-booster-box-case?page=1
+              - generic [ref=f22e672]:
+                - img "Darkness Ablaze Booster Box Case" [ref=f22e675]
+                - 'heading "SWSH03: Darkness Ablaze" [level=4] [ref=f22e676]'
+                - generic [ref=f22e678]: Darkness Ablaze Booster Box Case
+                - generic [ref=f22e679]: Out of Stock
+                - generic [ref=f22e683]: Market Price:$2,249.99
+          - generic [ref=f22e685]:
+            - link "Previous page" [disabled] [ref=f22e686]
+            - generic [ref=f22e691]:
+              - link "1" [ref=f22e692] [cursor=pointer]
+              - link "2" [ref=f22e694] [cursor=pointer]
+              - link "3" [ref=f22e696] [cursor=pointer]
+              - link "4" [ref=f22e698] [cursor=pointer]
+              - link "5" [ref=f22e700] [cursor=pointer]
+              - generic [ref=f22e702]: ...
+              - link "25" [ref=f22e703] [cursor=pointer]
+            - link "Next page" [ref=f22e705] [cursor=pointer]
+  - contentinfo [ref=f22e711]:
+    - generic [ref=f22e713]:
+      - generic [ref=f22e715]:
+        - generic [ref=f22e716]:
+          - generic [ref=f22e717]: Shop
+          - 'link "Magic: The Gathering" [ref=f22e719] [cursor=pointer]':
+            - /url: /categories/trading-and-collectible-card-games/magic-the-gathering?scrollToTop=true
+          - link "Yu-Gi-Oh!" [ref=f22e721] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/yugioh?scrollToTop=true
+          - link "Pokémon" [ref=f22e723] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/pokemon?scrollToTop=true
+          - link "Disney Lorcana" [ref=f22e725] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/disney-lorcana?scrollToTop=true
+          - link "One Piece Card Game" [ref=f22e727] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/one-piece-card-game?scrollToTop=true
+          - link "Digimon Card Game" [ref=f22e729] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/digimon-card-game?scrollToTop=true
+          - 'link "Star Wars: Unlimited" [ref=f22e731] [cursor=pointer]':
+            - /url: /categories/trading-and-collectible-card-games/star-wars-unlimited?scrollToTop=true
+          - link "Flesh and Blood" [ref=f22e733] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/flesh-and-blood-tcg?scrollToTop=true
+          - link "TCGplayer Gift Cards" [ref=f22e735] [cursor=pointer]:
+            - /url: /giftcard?scrollToTop=true
+          - link "All Games" [ref=f22e737] [cursor=pointer]:
+            - /url: /categories?scrollToTop=true
+        - generic [ref=f22e738]:
+          - generic [ref=f22e739]: Articles & Decks
+          - link "TCGplayer Content" [ref=f22e741] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/
+          - 'link "Magic: The Gathering" [ref=f22e743] [cursor=pointer]':
+            - /url: https://www.tcgplayer.com/content/magic-the-gathering
+          - link "Yu-Gi-Oh!" [ref=f22e745] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/yugioh
+          - link "Pokémon" [ref=f22e747] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/pokemon
+          - link "Disney Lorcana" [ref=f22e749] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/disney-lorcana
+          - link "One Piece Card Game" [ref=f22e751] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/one-piece
+          - link "Flesh and Blood" [ref=f22e753] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/flesh-and-blood
+          - link "More Articles & Decks" [ref=f22e755] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/more-games
+        - generic [ref=f22e756]:
+          - generic [ref=f22e757]: Buy
+          - link "TCGplayer Safeguard" [ref=f22e759] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201637633-TCGplayer-Safeguard
+          - link "TCGplayer Direct" [ref=f22e761] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201996857-Buying-from-TCGplayer-Direct
+          - link "TCGplayer Subscription" [ref=f22e763] [cursor=pointer]:
+            - /url: /subscription?scrollToTop=true
+          - link "Cart Optimizer" [ref=f22e765] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201769673-Cart-Optimizer
+          - link "Mass Entry" [ref=f22e767] [cursor=pointer]:
+            - /url: /massentry
+          - link "Find a Seller" [ref=f22e769] [cursor=pointer]:
+            - /url: /sellers
+          - link "Collection Tracker" [ref=f22e771] [cursor=pointer]:
+            - /url: https://store.tcgplayer.com/collection
+        - generic [ref=f22e772]:
+          - generic [ref=f22e773]: Sell
+          - link "Sell on TCGplayer" [ref=f22e775] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/
+          - link "Pricing & Listing Tools" [ref=f22e777] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/pricing-listing-tools
+          - link "Fulfillment Solutions" [ref=f22e779] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/sell-with-us/tcgplayer-direct
+          - link "TCGplayer Pro" [ref=f22e781] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/#pro-tools
+          - link "Growth Acceleration Program" [ref=f22e783] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/growth
+          - link "Roca" [ref=f22e785] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/roca
+          - link "Seller Blog" [ref=f22e787] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/blog
+        - generic [ref=f22e788]:
+          - generic [ref=f22e789]: Help & Contact
+          - link "Contact Us" [ref=f22e791] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/requests/new
+          - link "Help Center" [ref=f22e793] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us
+          - link "Refund and Return Policy" [ref=f22e795] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201642073-Refund-and-Return-Policy
+          - link "Security Center" [ref=f22e797] [cursor=pointer]:
+            - /url: https://pages.ebay.com/securitycenter/security_researchers.html
+        - generic [ref=f22e798]:
+          - generic [ref=f22e799]: About
+          - link "About Us" [ref=f22e801] [cursor=pointer]:
+            - /url: /about-us/?scrollToTop=true
+          - link "Job Openings" [ref=f22e803] [cursor=pointer]:
+            - /url: https://ebay.wd5.myworkdayjobs.com/en-US/TCGPlayer_External_Career
+          - link "Press Center" [ref=f22e805] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/press-center
+          - link "Become an Affiliate" [ref=f22e807] [cursor=pointer]:
+            - /url: https://docs.tcgplayer.com/docs/tcgplayer-affiliate-program
+      - generic [ref=f22e808]:
+        - generic [ref=f22e809]:
+          - heading "Get the latest strategies, promos, and more from your favorite games." [level=2] [ref=f22e810]
+          - generic [ref=f22e811]:
+            - generic [ref=f22e813]:
+              - generic [ref=f22e814]: Your Email
+              - textbox "Your Email" [ref=f22e818]
+            - button "Subscribe" [ref=f22e819] [cursor=pointer]
+          - generic [ref=f22e821]:
+            - text: By subscribing, you consent to receive emails from TCGplayer in line with our
+            - link "Privacy Policy" [ref=f22e822] [cursor=pointer]:
+              - /url: https://help.tcgplayer.com/hc/en-us/articles/11736500567959-TCGplayer-Privacy-Policy
+            - text: .
+        - generic [ref=f22e824]:
+          - generic "TCGplayer App QR Code" [ref=f22e825]:
+            - img "TCGplayer App QR Code"
+          - generic [ref=f22e826]:
+            - generic [ref=f22e827]: Get The App
+            - generic [ref=f22e828]: Digitize your collection, find prices, and more with the TCGplayer app.
+            - link "mobile-app-link" [ref=f22e830] [cursor=pointer]:
+              - /url: /mobile-app
+              - text: Learn More
+        - generic [ref=f22e832]:
+          - link [ref=f22e833] [cursor=pointer]:
+            - /url: https://www.facebook.com/TCGplayerofficial
+          - link [ref=f22e837] [cursor=pointer]:
+            - /url: https://x.com/TCGplayer
+            - img "Twitter Icon" [ref=f22e839]
+          - link [ref=f22e840] [cursor=pointer]:
+            - /url: https://www.youtube.com/@TCGplayerofficial
+          - link [ref=f22e844] [cursor=pointer]:
+            - /url: https://www.instagram.com/tcgplayer_com
+    - generic [ref=f22e848]:
+      - generic [ref=f22e849]: Copyright © 2026 TCGplayer, Inc. All Rights Reserved.
+      - generic [ref=f22e850]:
+        - 'link "Magic: The Gathering" [ref=f22e851] [cursor=pointer]':
+          - /url: https://magic.wizards.com/en
+        - text: and its respective properties are ©
+        - link "Wizards of the Coast" [ref=f22e852] [cursor=pointer]:
+          - /url: http://company.wizards.com/
+        - text: .
+        - link "Yu-Gi-Oh!" [ref=f22e853] [cursor=pointer]:
+          - /url: http://www.yugioh-card.com/en/
+        - text: and its respective properties are © 2026 Studio Dice/SHUEISHA, TV TOKYO, KONAMI.
+        - link "Cardfight!! Vanguard" [ref=f22e854] [cursor=pointer]:
+          - /url: https://en.cf-vanguard.com/
+        - text: and
+        - link "Weiß Schwarz" [ref=f22e855] [cursor=pointer]:
+          - /url: https://en.ws-tcg.com/
+        - text: are © bushiroad All Rights Reserved.
+        - 'link "Shadowverse: Evolve" [ref=f22e856] [cursor=pointer]':
+          - /url: https://en.shadowverse-evolve.com/
+        - text: is © Cygames, Inc.
+        - link "Godzilla Card Game" [ref=f22e857] [cursor=pointer]:
+          - /url: https://en.godzilla-cardgame.com/
+        - text: is TM & © TOHO CO., LTD.
+        - link "hololive OFFICIAL CARD GAME" [ref=f22e858] [cursor=pointer]:
+          - /url: https://en.hololive-official-cardgame.com/
+        - text: is © COVER ©2026
+        - link "Pokémon" [ref=f22e859] [cursor=pointer]:
+          - /url: https://www.pokemon.com/us/pokemon-tcg/
+        - text: . ©1995 - 2026 Nintendo/Creatures Inc./GAME FREAK Inc. TM, ®Nintendo. Disney Lorcana and its respective properties are ©
+        - link "Disney" [ref=f22e860] [cursor=pointer]:
+          - /url: https://www.disney.com/
+        - 'link "RIFTBOUND: LEAGUE OF LEGENDS" [ref=f22e861] [cursor=pointer]':
+          - /url: https://riftbound.leagueoflegends.com/en-us/
+        - text: manufactured by
+        - link "UVS Games" [ref=f22e862] [cursor=pointer]:
+          - /url: https://uvsgames.com/
+        - text: under license from Riot Games. ™ & © 2026 Riot Games, Inc.
+        - 'link "CookieRun: Braverse TCG" [ref=f22e863] [cursor=pointer]':
+          - /url: https://cookierunbraverse.com/en/
+        - text: is © Devsisters Corp. All rights reserved.
+      - generic [ref=f22e864]:
+        - link "Privacy Policy" [ref=f22e865] [cursor=pointer]:
+          - /url: https://help.tcgplayer.com/hc/en-us/articles/11736500567959-TCGplayer-Privacy-Policy
+        - link "Terms of Service" [ref=f22e866] [cursor=pointer]:
+          - /url: https://help.tcgplayer.com/hc/en-us/articles/205004918-Terms-of-Service
+        - link "Accessibility" [ref=f22e867] [cursor=pointer]:
+          - /url: https://help.tcgplayer.com/hc/en-us/articles/4419756533527-Accessibility-Statement
+        - generic [ref=f22e868] [cursor=pointer]: Do Not Sell or Share My Personal Information

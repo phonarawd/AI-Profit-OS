@@ -1,0 +1,20 @@
+- generic [active] [ref=f12e1]:
+  - main [ref=f12e2]:
+    - generic [ref=f12e3]:
+      - heading "www.vestiairecollective.com" [level=1] [ref=f12e5]
+      - heading "보안 확인 수행 중" [level=2] [ref=f12e6]
+      - paragraph [ref=f12e7]: 이 웹 사이트는 보안 서비스를 사용하여 악의적인 봇으로부터 보호합니다. 이 페이지는 웹 사이트에서 사용자가 봇이 아님을 확인하는 동안에만 표시됩니다.
+  - contentinfo [ref=f12e8]:
+    - generic [ref=f12e10]:
+      - generic [ref=f12e12]:
+        - text: "Ray ID:"
+        - code [ref=f12e13]: a2d7c752fb2afd77
+      - generic [ref=f12e14]:
+        - generic [ref=f12e15]:
+          - link "Cloudflare, 새 탭에서 열림" [ref=f12e16] [cursor=pointer]:
+            - /url: https://www.cloudflare.com?utm_source=challenge&utm_campaign=m
+            - text: Cloudflare
+          - text: 의 성능 및 보안
+        - link "개인 정보, 새 탭에서 열림" [ref=f12e18] [cursor=pointer]:
+          - /url: https://www.cloudflare.com/ko-kr/privacypolicy/
+          - text: 개인 정보

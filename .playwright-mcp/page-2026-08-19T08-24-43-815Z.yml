@@ -1,0 +1,322 @@
+- generic [ref=f1e4]:
+  - banner [ref=f1e5]:
+    - generic [ref=f1e6]:
+      - link "TCGplayer.com" [ref=f1e8] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f1e28] [cursor=pointer]:
+        - generic [ref=f1e29]: Shipping to
+        - generic [ref=f1e30]: Singapore
+      - generic [ref=f1e33]:
+        - generic [ref=f1e34]:
+          - generic "Select a product line to search for" [ref=f1e38] [cursor=pointer]: Pokémon
+          - generic [ref=f1e42]:
+            - generic: Try “collector's rare effect monsters”
+            - 'search "Search: suggestions appear below" [ref=f1e43]'
+            - generic [ref=f1e44]: "Search: suggestions appear below"
+        - button "submit your search" [ref=f1e47] [cursor=pointer]
+      - generic [ref=f1e52]:
+        - link "Sign In" [ref=f1e56] [cursor=pointer]:
+          - /url: https://www.tcgplayer.com/login?returnUrl=https://www.tcgplayer.com/product/117515/pokemon-xy-fates-collide-m-alakazam-ex?Language=English&page=1
+        - generic [ref=f1e57]:
+          - button [ref=f1e59] [cursor=pointer]
+          - button [ref=f1e61] [cursor=pointer]
+  - navigation "main navigation" [ref=f1e63]:
+    - generic [ref=f1e65]:
+      - generic [ref=f1e66]: Magic
+      - generic [ref=f1e68]: Yu-Gi-Oh!
+      - generic [ref=f1e70]: Pokémon
+      - generic [ref=f1e72]: Disney Lorcana
+      - generic [ref=f1e74]: One Piece
+      - generic [ref=f1e76]: Digimon
+      - generic [ref=f1e78]: More Products
+      - generic [ref=f1e80]: Content
+  - generic [ref=f1e83]:
+    - dialog "Shipping to Singapore":
+      - generic [ref=f1e85]:
+        - generic [ref=f1e86]:
+          - heading "Shipping to Singapore" [level=2] [ref=f1e87]
+          - button "Dismiss modal" [active] [ref=f1e88] [cursor=pointer]
+        - generic [ref=f1e94]:
+          - paragraph [ref=f1e95]: Shop U.S. Products on TCGplayer
+          - paragraph [ref=f1e96]: Shop the entire TCGplayer marketplace and get your orders sent to you through our trusted international shipping partners. Enjoy secure delivery in one consolidated, fully tracked package.
+          - paragraph [ref=f1e97]:
+            - link "Learn more." [ref=f1e98] [cursor=pointer]:
+              - /url: https://pages.tcgplayer.com/global-shopping
+        - button "Close" [ref=f1e100] [cursor=pointer]
+    - generic [ref=f1e102]:
+      - button "All Filters" [ref=f1e105] [cursor=pointer]
+      - generic [ref=f1e108]: No Listings Available
+    - generic [ref=f1e114]:
+      - navigation "Breadcrumbs" [ref=f1e117]:
+        - list [ref=f1e118]:
+          - listitem [ref=f1e119]:
+            - link "All Categories" [ref=f1e120] [cursor=pointer]:
+              - /url: /categories
+          - listitem [ref=f1e125]:
+            - link "Pokemon Cards" [ref=f1e126] [cursor=pointer]:
+              - /url: /categories/trading-and-collectible-card-games/pokemon
+          - listitem [ref=f1e131]:
+            - link "XY - Fates Collide" [ref=f1e132] [cursor=pointer]:
+              - /url: /categories/trading-and-collectible-card-games/pokemon/xy-fates-collide
+          - listitem [ref=f1e137]: M Alakazam EX
+      - generic [ref=f1e138]:
+        - generic [ref=f1e139]:
+          - heading "M Alakazam EX - XY - Fates Collide (FCO)" [level=1] [ref=f1e140]
+          - link "XY - Fates Collide" [ref=f1e144] [cursor=pointer]:
+            - /url: /search/pokemon/xy-fates-collide?productLineName=pokemon&setName=xy-fates-collide
+        - img "M Alakazam EX-0" [ref=f1e154]
+        - generic [ref=f1e159]:
+          - link "Sell this" [ref=f1e160] [cursor=pointer]:
+            - /url: https://store.tcgplayer.com/admin/product/manage/117515
+          - button "Report a problem on this page" [ref=f1e164] [cursor=pointer]: Report a problem
+        - generic [ref=f1e173]:
+          - heading "Product Details" [level=2] [ref=f1e174]
+          - list [ref=f1e175]:
+            - listitem [ref=f1e176]:
+              - generic [ref=f1e177]:
+                - strong [ref=f1e178]: "Card Number / Rarity:"
+                - text: 26/124 / Ultra Rare
+            - listitem [ref=f1e179]:
+              - generic [ref=f1e180]:
+                - strong [ref=f1e181]: "Card Type / HP / Stage:"
+                - text: Psychic / 210 / Mega
+            - listitem [ref=f1e182]:
+              - generic [ref=f1e183]:
+                - strong [ref=f1e184]: "Attack 1:"
+                - generic [ref=f1e185]: "[1P] Zen Force (10+) This attack does 30 more damage for each damage counter on your opponent's Active Pokemon."
+            - listitem [ref=f1e186]:
+              - generic [ref=f1e187]:
+                - strong [ref=f1e188]: "Weakness / Resistance / Retreat Cost:"
+                - text: Px2 / None / 1
+        - generic [ref=f1e190]:
+          - generic [ref=f1e191]:
+            - generic [ref=f1e192]:
+              - generic [ref=f1e193]:
+                - generic [ref=f1e194]: Near Mint Comparison Prices
+                - generic [ref=f1e195]: Market prices for alternative printings and conditions
+              - table [ref=f1e197]:
+                - row [ref=f1e198]:
+                  - cell "Loading..." [ref=f1e199]
+            - generic [ref=f1e200]:
+              - generic [ref=f1e201]:
+                - heading [level=2] [ref=f1e202]:
+                  - text: Price Points
+                  - generic [ref=f1e204]:
+                    - link "Learn more about what price points are" [ref=f1e205] [cursor=pointer]:
+                      - /url: https://help.tcgplayer.com/hc/en-us/articles/222376867
+                    - generic:
+                      - tooltip "Price and quantity data based on the currently selected item. Change any of the filters at top of page to refine your search"
+                - generic [ref=f1e208]: Near Mint Holofoil
+              - table [ref=f1e210]:
+                - row [ref=f1e211]:
+                  - cell [ref=f1e212]
+            - generic [ref=f1e215]:
+              - generic [ref=f1e216]:
+                - generic [ref=f1e217]: 3 Month Snapshot
+                - button "View More Data" [ref=f1e220] [cursor=pointer]
+              - table [ref=f1e222]:
+                - row [ref=f1e223]:
+                  - cell [ref=f1e224]
+          - generic [ref=f1e227]:
+            - heading "Market Price History" [level=2] [ref=f1e228]
+            - generic [ref=f1e231]:
+              - generic [ref=f1e232]: Past 3 Months
+              - generic [ref=f1e240]:
+                - button "1M" [ref=f1e241]
+                - button "3M" [ref=f1e242]
+                - button "6M" [ref=f1e243]
+                - button "1Y" [ref=f1e244]
+    - generic [ref=f1e246]:
+      - generic [ref=f1e247]:
+        - generic [ref=f1e248]: No Listings Available
+        - generic [ref=f1e252]:
+          - generic [ref=f1e255]:
+            - generic [ref=f1e256]: Sort By
+            - generic [ref=f1e260]:
+              - combobox "Price + Shipping" [ref=f1e261]
+              - button "Toggle listbox" [ref=f1e263]
+          - generic [ref=f1e269]:
+            - generic [ref=f1e270]: Listings / Page
+            - generic [ref=f1e274]:
+              - combobox "10" [ref=f1e275]
+              - button "Toggle listbox" [ref=f1e277]
+      - generic [ref=f1e283]:
+        - generic [ref=f1e284]: This item has no current listings.
+        - button "Browse Pokemon" [ref=f1e286] [cursor=pointer]
+    - heading "Customers Also Purchased" [level=2] [ref=f1e290]
+  - contentinfo [ref=f1e295]:
+    - generic [ref=f1e297]:
+      - generic [ref=f1e299]:
+        - generic [ref=f1e300]:
+          - generic [ref=f1e301]: Shop
+          - 'link "Magic: The Gathering" [ref=f1e303] [cursor=pointer]':
+            - /url: /categories/trading-and-collectible-card-games/magic-the-gathering?scrollToTop=true
+          - link "Yu-Gi-Oh!" [ref=f1e305] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/yugioh?scrollToTop=true
+          - link "Pokémon" [ref=f1e307] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/pokemon?scrollToTop=true
+          - link "Disney Lorcana" [ref=f1e309] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/disney-lorcana?scrollToTop=true
+          - link "One Piece Card Game" [ref=f1e311] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/one-piece-card-game?scrollToTop=true
+          - link "Digimon Card Game" [ref=f1e313] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/digimon-card-game?scrollToTop=true
+          - 'link "Star Wars: Unlimited" [ref=f1e315] [cursor=pointer]':
+            - /url: /categories/trading-and-collectible-card-games/star-wars-unlimited?scrollToTop=true
+          - link "Flesh and Blood" [ref=f1e317] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/flesh-and-blood-tcg?scrollToTop=true
+          - link "TCGplayer Gift Cards" [ref=f1e319] [cursor=pointer]:
+            - /url: /giftcard?scrollToTop=true
+          - link "All Games" [ref=f1e321] [cursor=pointer]:
+            - /url: /categories?scrollToTop=true
+        - generic [ref=f1e322]:
+          - generic [ref=f1e323]: Articles & Decks
+          - link "TCGplayer Content" [ref=f1e325] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/
+          - 'link "Magic: The Gathering" [ref=f1e327] [cursor=pointer]':
+            - /url: https://www.tcgplayer.com/content/magic-the-gathering
+          - link "Yu-Gi-Oh!" [ref=f1e329] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/yugioh
+          - link "Pokémon" [ref=f1e331] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/pokemon
+          - link "Disney Lorcana" [ref=f1e333] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/disney-lorcana
+          - link "One Piece Card Game" [ref=f1e335] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/one-piece
+          - link "Flesh and Blood" [ref=f1e337] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/flesh-and-blood
+          - link "More Articles & Decks" [ref=f1e339] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/more-games
+        - generic [ref=f1e340]:
+          - generic [ref=f1e341]: Buy
+          - link "TCGplayer Safeguard" [ref=f1e343] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201637633-TCGplayer-Safeguard
+          - link "TCGplayer Direct" [ref=f1e345] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201996857-Buying-from-TCGplayer-Direct
+          - link "TCGplayer Subscription" [ref=f1e347] [cursor=pointer]:
+            - /url: /subscription?scrollToTop=true
+          - link "Cart Optimizer" [ref=f1e349] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201769673-Cart-Optimizer
+          - link "Mass Entry" [ref=f1e351] [cursor=pointer]:
+            - /url: /massentry
+          - link "Find a Seller" [ref=f1e353] [cursor=pointer]:
+            - /url: /sellers
+          - link "Collection Tracker" [ref=f1e355] [cursor=pointer]:
+            - /url: https://store.tcgplayer.com/collection
+        - generic [ref=f1e356]:
+          - generic [ref=f1e357]: Sell
+          - link "Sell on TCGplayer" [ref=f1e359] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/
+          - link "Pricing & Listing Tools" [ref=f1e361] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/pricing-listing-tools
+          - link "Fulfillment Solutions" [ref=f1e363] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/sell-with-us/tcgplayer-direct
+          - link "TCGplayer Pro" [ref=f1e365] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/#pro-tools
+          - link "Growth Acceleration Program" [ref=f1e367] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/growth
+          - link "Roca" [ref=f1e369] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/roca
+          - link "Seller Blog" [ref=f1e371] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/blog
+        - generic [ref=f1e372]:
+          - generic [ref=f1e373]: Help & Contact
+          - link "Contact Us" [ref=f1e375] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/requests/new
+          - link "Help Center" [ref=f1e377] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us
+          - link "Refund and Return Policy" [ref=f1e379] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201642073-Refund-and-Return-Policy
+          - link "Security Center" [ref=f1e381] [cursor=pointer]:
+            - /url: https://pages.ebay.com/securitycenter/security_researchers.html
+        - generic [ref=f1e382]:
+          - generic [ref=f1e383]: About
+          - link "About Us" [ref=f1e385] [cursor=pointer]:
+            - /url: /about-us/?scrollToTop=true
+          - link "Job Openings" [ref=f1e387] [cursor=pointer]:
+            - /url: https://ebay.wd5.myworkdayjobs.com/en-US/TCGPlayer_External_Career
+          - link "Press Center" [ref=f1e389] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/press-center
+          - link "Become an Affiliate" [ref=f1e391] [cursor=pointer]:
+            - /url: https://docs.tcgplayer.com/docs/tcgplayer-affiliate-program
+      - generic [ref=f1e392]:
+        - generic [ref=f1e393]:
+          - heading "Get the latest strategies, promos, and more from your favorite games." [level=2] [ref=f1e394]
+          - generic [ref=f1e395]:
+            - generic [ref=f1e397]:
+              - generic [ref=f1e398]: Your Email
+              - textbox "Your Email" [ref=f1e402]
+            - button "Subscribe" [ref=f1e403] [cursor=pointer]
+          - generic [ref=f1e405]:
+            - text: By subscribing, you consent to receive emails from TCGplayer in line with our
+            - link "Privacy Policy" [ref=f1e406] [cursor=pointer]:
+              - /url: https://help.tcgplayer.com/hc/en-us/articles/11736500567959-TCGplayer-Privacy-Policy
+            - text: .
+        - generic [ref=f1e408]:
+          - generic "TCGplayer App QR Code" [ref=f1e409]:
+            - img "TCGplayer App QR Code" [ref=f1e410]
+          - generic [ref=f1e411]:
+            - generic [ref=f1e412]: Get The App
+            - generic [ref=f1e413]: Digitize your collection, find prices, and more with the TCGplayer app.
+            - link "mobile-app-link" [ref=f1e415] [cursor=pointer]:
+              - /url: /mobile-app
+              - text: Learn More
+        - generic [ref=f1e417]:
+          - link [ref=f1e418] [cursor=pointer]:
+            - /url: https://www.facebook.com/TCGplayerofficial
+          - link [ref=f1e422] [cursor=pointer]:
+            - /url: https://x.com/TCGplayer
+            - img "Twitter Icon" [ref=f1e424]
+          - link [ref=f1e425] [cursor=pointer]:
+            - /url: https://www.youtube.com/@TCGplayerofficial
+          - link [ref=f1e429] [cursor=pointer]:
+            - /url: https://www.instagram.com/tcgplayer_com
+    - generic [ref=f1e433]:
+      - generic [ref=f1e434]: Copyright © 2026 TCGplayer, Inc. All Rights Reserved.
+      - generic [ref=f1e435]:
+        - 'link "Magic: The Gathering" [ref=f1e436] [cursor=pointer]':
+          - /url: https://magic.wizards.com/en
+        - text: and its respective properties are ©
+        - link "Wizards of the Coast" [ref=f1e437] [cursor=pointer]:
+          - /url: http://company.wizards.com/
+        - text: .
+        - link "Yu-Gi-Oh!" [ref=f1e438] [cursor=pointer]:
+          - /url: http://www.yugioh-card.com/en/
+        - text: and its respective properties are © 2026 Studio Dice/SHUEISHA, TV TOKYO, KONAMI.
+        - link "Cardfight!! Vanguard" [ref=f1e439] [cursor=pointer]:
+          - /url: https://en.cf-vanguard.com/
+        - text: and
+        - link "Weiß Schwarz" [ref=f1e440] [cursor=pointer]:
+          - /url: https://en.ws-tcg.com/
+        - text: are © bushiroad All Rights Reserved.
+        - 'link "Shadowverse: Evolve" [ref=f1e441] [cursor=pointer]':
+          - /url: https://en.shadowverse-evolve.com/
+        - text: is © Cygames, Inc.
+        - link "Godzilla Card Game" [ref=f1e442] [cursor=pointer]:
+          - /url: https://en.godzilla-cardgame.com/
+        - text: is TM & © TOHO CO., LTD.
+        - link "hololive OFFICIAL CARD GAME" [ref=f1e443] [cursor=pointer]:
+          - /url: https://en.hololive-official-cardgame.com/
+        - text: is © COVER ©2026
+        - link "Pokémon" [ref=f1e444] [cursor=pointer]:
+          - /url: https://www.pokemon.com/us/pokemon-tcg/
+        - text: . ©1995 - 2026 Nintendo/Creatures Inc./GAME FREAK Inc. TM, ®Nintendo. Disney Lorcana and its respective properties are ©
+        - link "Disney" [ref=f1e445] [cursor=pointer]:
+          - /url: https://www.disney.com/
+        - 'link "RIFTBOUND: LEAGUE OF LEGENDS" [ref=f1e446] [cursor=pointer]':
+          - /url: https://riftbound.leagueoflegends.com/en-us/
+        - text: manufactured by
+        - link "UVS Games" [ref=f1e447] [cursor=pointer]:
+          - /url: https://uvsgames.com/
+        - text: under license from Riot Games. ™ & © 2026 Riot Games, Inc.
+        - 'link "CookieRun: Braverse TCG" [ref=f1e448] [cursor=pointer]':
+          - /url: https://cookierunbraverse.com/en/
+        - text: is © Devsisters Corp. All rights reserved.
+      - generic [ref=f1e449]:
+        - link "Privacy Policy" [ref=f1e450] [cursor=pointer]:
+          - /url: https://help.tcgplayer.com/hc/en-us/articles/11736500567959-TCGplayer-Privacy-Policy
+        - link "Terms of Service" [ref=f1e451] [cursor=pointer]:
+          - /url: https://help.tcgplayer.com/hc/en-us/articles/205004918-Terms-of-Service
+        - link "Accessibility" [ref=f1e452] [cursor=pointer]:
+          - /url: https://help.tcgplayer.com/hc/en-us/articles/4419756533527-Accessibility-Statement
+        - generic [ref=f1e453] [cursor=pointer]: Do Not Sell or Share My Personal Information

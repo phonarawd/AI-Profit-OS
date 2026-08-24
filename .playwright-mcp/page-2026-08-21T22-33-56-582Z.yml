@@ -1,0 +1,8 @@
+- generic [active] [ref=f10e1]:
+  - main [ref=f10e3]:
+    - paragraph [ref=f10e5]: 퍼뜩↯
+    - generic [ref=f10e6]:
+      - heading "잠시만요" [level=1] [ref=f10e7]
+      - paragraph [ref=f10e8]: 이어서 안내를 준비하고 있어요.
+      - button "다시 시도" [ref=f10e9] [cursor=pointer]
+  - alert [ref=f10e10]

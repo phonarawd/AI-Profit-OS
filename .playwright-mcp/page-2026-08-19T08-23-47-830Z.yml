@@ -1,0 +1,552 @@
+- generic [ref=e4]:
+  - banner [ref=e5]:
+    - generic [ref=e6]:
+      - link "TCGplayer.com" [ref=e8] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e28] [cursor=pointer]:
+        - generic [ref=e29]: Shipping to
+        - generic [ref=e30]: Singapore
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - generic "Select a product line to search for" [ref=e38] [cursor=pointer]: All
+          - generic [ref=e42]:
+            - generic: Try “poncho pikachu”
+            - 'search "Search: suggestions appear below" [ref=e43]'
+            - generic [ref=e44]: "Search: suggestions appear below"
+        - button "submit your search" [ref=e47] [cursor=pointer]
+      - generic [ref=e52]:
+        - link "Sign In" [ref=e56] [cursor=pointer]:
+          - /url: https://www.tcgplayer.com/login?returnUrl=https://www.tcgplayer.com/product/113669?Language=English
+        - generic [ref=e57]:
+          - button [ref=e59] [cursor=pointer]
+          - button [ref=e61] [cursor=pointer]
+  - navigation "main navigation" [ref=e63]:
+    - generic [ref=e65]:
+      - generic [ref=e66]: Magic
+      - generic [ref=e68]: Yu-Gi-Oh!
+      - generic [ref=e70]: Pokémon
+      - generic [ref=e72]: Disney Lorcana
+      - generic [ref=e74]: One Piece
+      - generic [ref=e76]: Digimon
+      - generic [ref=e78]: More Products
+      - generic [ref=e80]: Content
+  - generic [ref=e83]:
+    - dialog "Shipping to Singapore":
+      - generic [ref=e85]:
+        - generic [ref=e86]:
+          - heading "Shipping to Singapore" [level=2] [ref=e87]
+          - button "Dismiss modal" [active] [ref=e88] [cursor=pointer]
+        - generic [ref=e94]:
+          - paragraph [ref=e95]: Shop U.S. Products on TCGplayer
+          - paragraph [ref=e96]: Shop the entire TCGplayer marketplace and get your orders sent to you through our trusted international shipping partners. Enjoy secure delivery in one consolidated, fully tracked package.
+          - paragraph [ref=e97]:
+            - link "Learn more." [ref=e98] [cursor=pointer]:
+              - /url: https://pages.tcgplayer.com/global-shopping
+        - button "Close" [ref=e100] [cursor=pointer]
+    - generic [ref=e102]:
+      - button "All Filters" [ref=e105] [cursor=pointer]
+      - generic [ref=e108]: No Listings Available
+    - generic [ref=e114]:
+      - navigation "Breadcrumbs" [ref=e117]:
+        - list [ref=e118]:
+          - listitem [ref=e119]:
+            - link "All Categories" [ref=e120] [cursor=pointer]:
+              - /url: /categories
+          - listitem [ref=e125]:
+            - link "Pokemon Cards" [ref=e126] [cursor=pointer]:
+              - /url: /categories/trading-and-collectible-card-games/pokemon
+          - listitem [ref=e131]:
+            - link "Generations" [ref=e132] [cursor=pointer]:
+              - /url: /categories/trading-and-collectible-card-games/pokemon/generations
+          - listitem [ref=e137]: Charizard EX
+      - generic [ref=e138]:
+        - generic [ref=e139]:
+          - heading "Charizard EX - Generations (GEN)" [level=1] [ref=e140]
+          - generic [ref=e141]:
+            - link "Generations" [ref=e144] [cursor=pointer]:
+              - /url: /search/pokemon/generations?productLineName=pokemon&setName=generations
+            - link "All versions" [ref=e147] [cursor=pointer]:
+              - /url: /search/pokemon/product?productName=Charizard+EX&productLineName=pokemon
+        - img "Charizard EX-0" [ref=e158]
+        - generic [ref=e163]:
+          - link "Sell this" [ref=e164] [cursor=pointer]:
+            - /url: https://store.tcgplayer.com/admin/product/manage/113669
+          - button "Report a problem on this page" [ref=e168] [cursor=pointer]: Report a problem
+        - generic [ref=e177]:
+          - heading "Product Details" [level=2] [ref=e178]
+          - list [ref=e179]:
+            - listitem [ref=e180]:
+              - generic [ref=e181]:
+                - strong [ref=e182]: "Card Number / Rarity:"
+                - text: 11/83 / Ultra Rare
+            - listitem [ref=e183]:
+              - generic [ref=e184]:
+                - strong [ref=e185]: "Card Type / HP / Stage:"
+                - text: Fire / 180 / Basic
+            - listitem [ref=e186]:
+              - generic [ref=e187]:
+                - strong [ref=e188]: "Attack 1:"
+                - generic [ref=e189]: "[1R] Flame Cloak (30) Attach a Fire Energy from your discard pile to this Pokemon."
+            - listitem [ref=e190]:
+              - generic [ref=e191]:
+                - strong [ref=e192]: "Attack 2:"
+                - generic [ref=e193]: "[2RR] Burning Breath (80+) Flip 2 coins. This attack does 40 more damage for each heads."
+            - listitem [ref=e194]:
+              - generic [ref=e195]:
+                - strong [ref=e196]: "Weakness / Resistance / Retreat Cost:"
+                - text: Wx2 / None / 2
+        - generic [ref=e198]:
+          - generic [ref=e199]:
+            - generic [ref=e200]:
+              - generic [ref=e201]:
+                - generic [ref=e202]: Near Mint Comparison Prices
+                - generic [ref=e203]: Market prices for alternative printings and conditions
+              - table [ref=e205]:
+                - row [ref=e206]:
+                  - cell "Normal:" [ref=e207]
+                  - cell "N/A" [ref=e208]
+            - generic [ref=e209]:
+              - generic [ref=e210]:
+                - heading [level=2] [ref=e211]:
+                  - text: Price Points
+                  - generic [ref=e213]:
+                    - link "Learn more about what price points are" [ref=e214] [cursor=pointer]:
+                      - /url: https://help.tcgplayer.com/hc/en-us/articles/222376867
+                    - generic:
+                      - tooltip "Price and quantity data based on the currently selected item. Change any of the filters at top of page to refine your search"
+                - generic [ref=e217]: Near Mint Holofoil
+              - generic [ref=e218]:
+                - table [ref=e220]:
+                  - row [ref=e221]:
+                    - cell "Market Price" [ref=e222]
+                    - cell "$26.59" [ref=e223]
+                  - row [ref=e224]:
+                    - cell "Most Recent Sale" [ref=e225]
+                    - cell "N/A" [ref=e226]
+                  - row [ref=e227]:
+                    - cell "Indeterminate Volatility" [ref=e228]
+                - table [ref=e235]:
+                  - row [ref=e236]:
+                    - cell "Listed Median:" [ref=e237]
+                    - cell "-" [ref=e238]
+                    - cell [ref=e239]
+                    - cell [ref=e240]
+                  - row [ref=e241]:
+                    - cell "Current Quantity:" [ref=e242]
+                    - cell "0" [ref=e243]
+                    - cell "Current Sellers:" [ref=e244]
+                    - cell "0" [ref=e245]
+            - generic [ref=e246]:
+              - generic [ref=e247]:
+                - generic [ref=e248]: 3 Month Snapshot
+                - button "View More Data" [ref=e251] [cursor=pointer]
+              - table [ref=e253]:
+                - row [ref=e254]:
+                  - cell "Low Sale Price:" [ref=e255]
+                  - cell "$20.00" [ref=e256]
+                  - cell "High Sale Price:" [ref=e257]
+                  - cell "$40.00" [ref=e258]
+                - row [ref=e259]:
+                  - cell "Total Sold:" [ref=e260]
+                  - cell "34" [ref=e261]
+                  - cell "Avg. Daily Sold:" [ref=e262]
+                  - cell "-" [ref=e263]
+          - generic [ref=e264]:
+            - heading "Market Price History" [level=2] [ref=e265]
+            - generic [ref=e268]:
+              - generic [ref=e269]:
+                - generic [ref=e272]:
+                  - generic [ref=e273]:
+                    - generic [ref=e274]: Near Mint Holofoil
+                    - generic [ref=e278]: $26.68
+                  - generic [ref=e279]: (+15.85%)
+                - generic [ref=e280]:
+                  - generic [ref=e281]: items sold
+                  - generic: Items Sold
+              - generic [ref=e285]:
+                - button "1M" [ref=e286]
+                - button "3M" [ref=e287]
+                - button "6M" [ref=e288]
+                - button "1Y" [ref=e289]
+    - generic [ref=e291]:
+      - generic [ref=e292]:
+        - generic [ref=e293]: No Listings Available
+        - generic [ref=e297]:
+          - generic [ref=e300]:
+            - generic [ref=e301]: Sort By
+            - generic [ref=e305]:
+              - combobox "Price + Shipping" [ref=e306]
+              - button "Toggle listbox" [ref=e308]
+          - generic [ref=e314]:
+            - generic [ref=e315]: Listings / Page
+            - generic [ref=e319]:
+              - combobox "10" [ref=e320]
+              - button "Toggle listbox" [ref=e322]
+      - generic [ref=e328]:
+        - generic [ref=e329]: This item has no current listings.
+        - button "Browse Pokemon" [ref=e331] [cursor=pointer]
+    - generic [ref=e334]:
+      - heading "Customers Also Purchased" [level=2] [ref=e335]
+      - generic [ref=e338]:
+        - generic [ref=e339]:
+          - group "1 / 10" [ref=e340]:
+            - 'link "M Alakazam EX XY - Fates Collide Ultra Rare, #26/124 M Alakazam EX 119 listings from $8.99 Market Price:$17.64" [ref=e344] [cursor=pointer]':
+              - /url: /product/117515/pokemon-xy-fates-collide-m-alakazam-ex?Language=English&page=1
+              - generic [ref=e345]:
+                - img "M Alakazam EX" [ref=e348]
+                - heading "XY - Fates Collide" [level=4] [ref=e349]
+                - generic [ref=e351]: "Ultra Rare, #26/124"
+                - generic [ref=e353]: M Alakazam EX
+                - generic [ref=e355]:
+                  - generic [ref=e356]: 119 listings from
+                  - generic [ref=e357]: $8.99
+                - generic [ref=e358]: Market Price:$17.64
+          - group "2 / 10" [ref=e360]:
+            - 'link "Lapras (10) Fossil Holo Rare, #10/62 Lapras (10) 310 listings from $4.50 Market Price:$110.04" [ref=e364] [cursor=pointer]':
+              - /url: /product/44419/pokemon-fossil-lapras-10?Language=English&page=1
+              - generic [ref=e365]:
+                - img "Lapras (10)" [ref=e368]
+                - heading "Fossil" [level=4] [ref=e369]
+                - generic [ref=e371]: "Holo Rare, #10/62"
+                - generic [ref=e373]: Lapras (10)
+                - generic [ref=e375]:
+                  - generic [ref=e376]: 310 listings from
+                  - generic [ref=e377]: $4.50
+                - generic [ref=e378]: Market Price:$110.04
+          - group "3 / 10" [ref=e380]:
+            - 'link "Jolteon (4) Jungle Holo Rare, #04/64 Jolteon (4) 165 listings from $17.68 Market Price:$251.53" [ref=e384] [cursor=pointer]':
+              - /url: /product/45130/pokemon-jungle-jolteon-4?Language=English&page=1
+              - generic [ref=e385]:
+                - img "Jolteon (4)" [ref=e388]
+                - heading "Jungle" [level=4] [ref=e389]
+                - generic [ref=e391]: "Holo Rare, #04/64"
+                - generic [ref=e393]: Jolteon (4)
+                - generic [ref=e395]:
+                  - generic [ref=e396]: 165 listings from
+                  - generic [ref=e397]: $17.68
+                - generic [ref=e398]: Market Price:$251.53
+          - group "4 / 10" [ref=e400]:
+            - 'link "Arceus (AR2) Arceus Holo Rare, #AR2 Arceus (AR2) 28 listings from $9.00 Market Price:$36.64" [ref=e404] [cursor=pointer]':
+              - /url: /product/83593/pokemon-arceus-arceus-ar2?Language=English&page=1
+              - generic [ref=e405]:
+                - img "Arceus (AR2)" [ref=e408]
+                - heading "Arceus" [level=4] [ref=e409]
+                - generic [ref=e411]: "Holo Rare, #AR2"
+                - generic [ref=e413]: Arceus (AR2)
+                - generic [ref=e415]:
+                  - generic [ref=e416]: 28 listings from
+                  - generic [ref=e417]: $9.00
+                - generic [ref=e418]: Market Price:$36.64
+          - group "5 / 10" [ref=e420]:
+            - 'link "Armaldo EX Sandstorm Holo Rare, #1/100 Armaldo 44 listings from $7.64 Market Price:$20.62" [ref=e424] [cursor=pointer]':
+              - /url: /product/83619/pokemon-ex-sandstorm-armaldo?Language=English&page=1
+              - generic [ref=e425]:
+                - img "Armaldo" [ref=e428]
+                - heading "EX Sandstorm" [level=4] [ref=e429]
+                - generic [ref=e431]: "Holo Rare, #1/100"
+                - generic [ref=e433]: Armaldo
+                - generic [ref=e435]:
+                  - generic [ref=e436]: 44 listings from
+                  - generic [ref=e437]: $7.64
+                - generic [ref=e438]: Market Price:$20.62
+          - group "6 / 10" [ref=e440]:
+            - 'link "Chimchar POP Series 6 Common, #014/017 Chimchar 66 listings from $0.68 Market Price:$3.26" [ref=e444] [cursor=pointer]':
+              - /url: /product/84283/pokemon-pop-series-6-chimchar?Language=English&page=1
+              - generic [ref=e445]:
+                - img "Chimchar" [ref=e448]
+                - heading "POP Series 6" [level=4] [ref=e449]
+                - generic [ref=e451]: "Common, #014/017"
+                - generic [ref=e453]: Chimchar
+                - generic [ref=e455]:
+                  - generic [ref=e456]: 66 listings from
+                  - generic [ref=e457]: $0.68
+                - generic [ref=e458]: Market Price:$3.26
+          - group "7 / 10" [ref=e460]:
+            - 'link "Corsola EX Unseen Forces Uncommon, #37/115 Corsola 21 listings from $2.25 Market Price:$2.65" [ref=e464] [cursor=pointer]':
+              - /url: /product/84440/pokemon-ex-unseen-forces-corsola?Language=English&page=1
+              - generic [ref=e465]:
+                - img "Corsola" [ref=e468]
+                - heading "EX Unseen Forces" [level=4] [ref=e469]
+                - generic [ref=e471]: "Uncommon, #37/115"
+                - generic [ref=e473]: Corsola
+                - generic [ref=e475]:
+                  - generic [ref=e476]: 21 listings from
+                  - generic [ref=e477]: $2.25
+                - generic [ref=e478]: Market Price:$2.65
+          - group "8 / 10" [ref=e480]:
+            - 'link "Dark Pupitar - 040/109 EX Team Rocket Returns Uncommon, #40/109 Dark Pupitar - 040/109 71 listings from $0.49 Market Price:$1.87" [ref=e484] [cursor=pointer]':
+              - /url: /product/84643/pokemon-ex-team-rocket-returns-dark-pupitar-040-109?Language=English&page=1
+              - generic [ref=e485]:
+                - img "Dark Pupitar - 040/109" [ref=e488]
+                - heading "EX Team Rocket Returns" [level=4] [ref=e489]
+                - generic [ref=e491]: "Uncommon, #40/109"
+                - generic [ref=e493]: Dark Pupitar - 040/109
+                - generic [ref=e495]:
+                  - generic [ref=e496]: 71 listings from
+                  - generic [ref=e497]: $0.49
+                - generic [ref=e498]: Market Price:$1.87
+          - group "9 / 10" [ref=e500]:
+            - 'link "Dark Typhlosion Neo Destiny Holo Rare, #010/105 Dark Typhlosion 74 listings from $18.40 Market Price:$274.99" [ref=e504] [cursor=pointer]':
+              - /url: /product/84659/pokemon-neo-destiny-dark-typhlosion?Language=English&page=1
+              - generic [ref=e505]:
+                - img "Dark Typhlosion" [ref=e508]
+                - heading "Neo Destiny" [level=4] [ref=e509]
+                - generic [ref=e511]: "Holo Rare, #010/105"
+                - generic [ref=e513]: Dark Typhlosion
+                - generic [ref=e515]:
+                  - generic [ref=e516]: 74 listings from
+                  - generic [ref=e517]: $18.40
+                - generic [ref=e518]: Market Price:$274.99
+          - group "10 / 10" [ref=e520]:
+            - 'link "Donphan EX Holon Phantoms Uncommon, #40/110 Donphan 90 listings from $0.25 Market Price:$0.81" [ref=e524] [cursor=pointer]':
+              - /url: /product/84875/pokemon-ex-holon-phantoms-donphan?Language=English&page=1
+              - generic [ref=e525]:
+                - img "Donphan" [ref=e528]
+                - heading "EX Holon Phantoms" [level=4] [ref=e529]
+                - generic [ref=e531]: "Uncommon, #40/110"
+                - generic [ref=e533]: Donphan
+                - generic [ref=e535]:
+                  - generic [ref=e536]: 90 listings from
+                  - generic [ref=e537]: $0.25
+                - generic [ref=e538]: Market Price:$0.81
+        - generic [ref=e540]:
+          - generic [ref=e541]:
+            - button "Go to slide 1" [ref=e542] [cursor=pointer]
+            - button "Go to slide 2" [ref=e543] [cursor=pointer]
+            - button "Go to slide 3" [ref=e544] [cursor=pointer]
+            - button "Go to slide 4" [ref=e545] [cursor=pointer]
+          - generic [ref=e547]:
+            - button "Previous slide" [disabled] [ref=e548]
+            - button "Next slide" [ref=e553] [cursor=pointer]
+    - generic [ref=e565]:
+      - heading "Articles Featuring This Card" [level=3] [ref=e569]
+      - generic [ref=e570]:
+        - link "read time 6 min read How To Beat Charizard ex with Gardevoir ex (Pokémon TCG) By Natalie Millar Jan 6, 2026" [ref=e574] [cursor=pointer]:
+          - /url: https://www.tcgplayer.com/content/article/How-To-Beat-Charizard-ex-with-Gardevoir-ex-Pokémon-TCG/df339242-5cf8-4b86-bc71-5cfee625ba1d/
+          - generic [ref=e576]:
+            - generic [ref=e577]:
+              - figure [ref=e578]
+              - paragraph [ref=e580]:
+                - img "read time" [ref=e581]
+                - text: 6 min read
+            - heading "How To Beat Charizard ex with Gardevoir ex (Pokémon TCG)" [level=2] [ref=e585]
+            - generic [ref=e586]:
+              - generic [ref=e587]: By Natalie Millar
+              - paragraph [ref=e589]: Jan 6, 2026
+        - link "Pokémon Deck Guides read time 5 min read Charizard ex Deck Guide (Pokémon TCG) By Natalie Millar Dec 9, 2025" [ref=e593] [cursor=pointer]:
+          - /url: https://www.tcgplayer.com/content/article/Charizard-ex-Deck-Guide-Pokémon-TCG/2f7299f4-1db4-47d0-bfe3-98e7565f3086/
+          - generic [ref=e595]:
+            - generic [ref=e596]:
+              - img "Pokémon Deck Guides"
+              - figure [ref=e597]
+              - paragraph [ref=e599]:
+                - img "read time" [ref=e600]
+                - text: 5 min read
+            - heading "Charizard ex Deck Guide (Pokémon TCG)" [level=2] [ref=e604]
+            - generic [ref=e605]:
+              - generic [ref=e606]: By Natalie Millar
+              - paragraph [ref=e608]: Dec 9, 2025
+        - link "Pokémon Deck Guides read time 5 min read Charizard ex/Pidgeot ex Deck Guide (Pokémon TCG) (September 2025) By Natalie Millar Sep 9, 2025" [ref=e612] [cursor=pointer]:
+          - /url: https://www.tcgplayer.com/content/article/Charizard-ex-Pidgeot-ex-Deck-Guide-Pokémon-TCG-September-2025/2a58fe75-f168-4405-bae1-faee7d91fe58/
+          - generic [ref=e614]:
+            - generic [ref=e615]:
+              - img "Pokémon Deck Guides"
+              - figure [ref=e616]
+              - paragraph [ref=e618]:
+                - img "read time" [ref=e619]
+                - text: 5 min read
+            - heading "Charizard ex/Pidgeot ex Deck Guide (Pokémon TCG) (September 2025)" [level=2] [ref=e623]
+            - generic [ref=e624]:
+              - generic [ref=e625]: By Natalie Millar
+              - paragraph [ref=e627]: Sep 9, 2025
+        - link "Pokémon Deck Guides read time 6 min read Dragapult ex/Charizard ex Deck Guide (Pokémon TCG) By Natalie Millar Jul 29, 2025" [ref=e631] [cursor=pointer]:
+          - /url: https://www.tcgplayer.com/content/article/Dragapult-ex-Charizard-ex-Deck-Guide-Pokémon-TCG/cbf3f2f0-cbac-41de-9ac5-868882096f70/
+          - generic [ref=e633]:
+            - generic [ref=e634]:
+              - img "Pokémon Deck Guides"
+              - figure [ref=e635]
+              - paragraph [ref=e637]:
+                - img "read time" [ref=e638]
+                - text: 6 min read
+            - heading "Dragapult ex/Charizard ex Deck Guide (Pokémon TCG)" [level=2] [ref=e642]
+            - generic [ref=e643]:
+              - generic [ref=e644]: By Natalie Millar
+              - paragraph [ref=e646]: Jul 29, 2025
+      - link "More Articles" [ref=e649] [cursor=pointer]:
+        - /url: /search/articles?q=Charizard+EX&productLineName=pokemon&page=1
+  - contentinfo [ref=e652]:
+    - generic [ref=e654]:
+      - generic [ref=e656]:
+        - generic [ref=e657]:
+          - generic [ref=e658]: Shop
+          - 'link "Magic: The Gathering" [ref=e660] [cursor=pointer]':
+            - /url: /categories/trading-and-collectible-card-games/magic-the-gathering?scrollToTop=true
+          - link "Yu-Gi-Oh!" [ref=e662] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/yugioh?scrollToTop=true
+          - link "Pokémon" [ref=e664] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/pokemon?scrollToTop=true
+          - link "Disney Lorcana" [ref=e666] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/disney-lorcana?scrollToTop=true
+          - link "One Piece Card Game" [ref=e668] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/one-piece-card-game?scrollToTop=true
+          - link "Digimon Card Game" [ref=e670] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/digimon-card-game?scrollToTop=true
+          - 'link "Star Wars: Unlimited" [ref=e672] [cursor=pointer]':
+            - /url: /categories/trading-and-collectible-card-games/star-wars-unlimited?scrollToTop=true
+          - link "Flesh and Blood" [ref=e674] [cursor=pointer]:
+            - /url: /categories/trading-and-collectible-card-games/flesh-and-blood-tcg?scrollToTop=true
+          - link "TCGplayer Gift Cards" [ref=e676] [cursor=pointer]:
+            - /url: /giftcard?scrollToTop=true
+          - link "All Games" [ref=e678] [cursor=pointer]:
+            - /url: /categories?scrollToTop=true
+        - generic [ref=e679]:
+          - generic [ref=e680]: Articles & Decks
+          - link "TCGplayer Content" [ref=e682] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/
+          - 'link "Magic: The Gathering" [ref=e684] [cursor=pointer]':
+            - /url: https://www.tcgplayer.com/content/magic-the-gathering
+          - link "Yu-Gi-Oh!" [ref=e686] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/yugioh
+          - link "Pokémon" [ref=e688] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/pokemon
+          - link "Disney Lorcana" [ref=e690] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/disney-lorcana
+          - link "One Piece Card Game" [ref=e692] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/one-piece
+          - link "Flesh and Blood" [ref=e694] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/flesh-and-blood
+          - link "More Articles & Decks" [ref=e696] [cursor=pointer]:
+            - /url: https://www.tcgplayer.com/content/more-games
+        - generic [ref=e697]:
+          - generic [ref=e698]: Buy
+          - link "TCGplayer Safeguard" [ref=e700] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201637633-TCGplayer-Safeguard
+          - link "TCGplayer Direct" [ref=e702] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201996857-Buying-from-TCGplayer-Direct
+          - link "TCGplayer Subscription" [ref=e704] [cursor=pointer]:
+            - /url: /subscription?scrollToTop=true
+          - link "Cart Optimizer" [ref=e706] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201769673-Cart-Optimizer
+          - link "Mass Entry" [ref=e708] [cursor=pointer]:
+            - /url: /massentry
+          - link "Find a Seller" [ref=e710] [cursor=pointer]:
+            - /url: /sellers
+          - link "Collection Tracker" [ref=e712] [cursor=pointer]:
+            - /url: https://store.tcgplayer.com/collection
+        - generic [ref=e713]:
+          - generic [ref=e714]: Sell
+          - link "Sell on TCGplayer" [ref=e716] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/
+          - link "Pricing & Listing Tools" [ref=e718] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/pricing-listing-tools
+          - link "Fulfillment Solutions" [ref=e720] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/sell-with-us/tcgplayer-direct
+          - link "TCGplayer Pro" [ref=e722] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/#pro-tools
+          - link "Growth Acceleration Program" [ref=e724] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/growth
+          - link "Roca" [ref=e726] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/roca
+          - link "Seller Blog" [ref=e728] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/blog
+        - generic [ref=e729]:
+          - generic [ref=e730]: Help & Contact
+          - link "Contact Us" [ref=e732] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/requests/new
+          - link "Help Center" [ref=e734] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us
+          - link "Refund and Return Policy" [ref=e736] [cursor=pointer]:
+            - /url: https://help.tcgplayer.com/hc/en-us/articles/201642073-Refund-and-Return-Policy
+          - link "Security Center" [ref=e738] [cursor=pointer]:
+            - /url: https://pages.ebay.com/securitycenter/security_researchers.html
+        - generic [ref=e739]:
+          - generic [ref=e740]: About
+          - link "About Us" [ref=e742] [cursor=pointer]:
+            - /url: /about-us/?scrollToTop=true
+          - link "Job Openings" [ref=e744] [cursor=pointer]:
+            - /url: https://ebay.wd5.myworkdayjobs.com/en-US/TCGPlayer_External_Career
+          - link "Press Center" [ref=e746] [cursor=pointer]:
+            - /url: https://seller.tcgplayer.com/press-center
+          - link "Become an Affiliate" [ref=e748] [cursor=pointer]:
+            - /url: https://docs.tcgplayer.com/docs/tcgplayer-affiliate-program
+      - generic [ref=e749]:
+        - generic [ref=e750]:
+          - heading "Get the latest strategies, promos, and more from your favorite games." [level=2] [ref=e751]
+          - generic [ref=e752]:
+            - generic [ref=e754]:
+              - generic [ref=e755]: Your Email
+              - textbox "Your Email" [ref=e759]
+            - button "Subscribe" [ref=e760] [cursor=pointer]
+          - generic [ref=e762]:
+            - text: By subscribing, you consent to receive emails from TCGplayer in line with our
+            - link "Privacy Policy" [ref=e763] [cursor=pointer]:
+              - /url: https://help.tcgplayer.com/hc/en-us/articles/11736500567959-TCGplayer-Privacy-Policy
+            - text: .
+        - generic [ref=e765]:
+          - generic "TCGplayer App QR Code" [ref=e766]:
+            - img "TCGplayer App QR Code"
+          - generic [ref=e767]:
+            - generic [ref=e768]: Get The App
+            - generic [ref=e769]: Digitize your collection, find prices, and more with the TCGplayer app.
+            - link "mobile-app-link" [ref=e771] [cursor=pointer]:
+              - /url: /mobile-app
+              - text: Learn More
+        - generic [ref=e773]:
+          - link [ref=e774] [cursor=pointer]:
+            - /url: https://www.facebook.com/TCGplayerofficial
+          - link [ref=e778] [cursor=pointer]:
+            - /url: https://x.com/TCGplayer
+            - img "Twitter Icon" [ref=e780]
+          - link [ref=e781] [cursor=pointer]:
+            - /url: https://www.youtube.com/@TCGplayerofficial
+          - link [ref=e785] [cursor=pointer]:
+            - /url: https://www.instagram.com/tcgplayer_com
+    - generic [ref=e789]:
+      - generic [ref=e790]: Copyright © 2026 TCGplayer, Inc. All Rights Reserved.
+      - generic [ref=e791]:
+        - 'link "Magic: The Gathering" [ref=e792] [cursor=pointer]':
+          - /url: https://magic.wizards.com/en
+        - text: and its respective properties are ©
+        - link "Wizards of the Coast" [ref=e793] [cursor=pointer]:
+          - /url: http://company.wizards.com/
+        - text: .
+        - link "Yu-Gi-Oh!" [ref=e794] [cursor=pointer]:
+          - /url: http://www.yugioh-card.com/en/
+        - text: and its respective properties are © 2026 Studio Dice/SHUEISHA, TV TOKYO, KONAMI.
+        - link "Cardfight!! Vanguard" [ref=e795] [cursor=pointer]:
+          - /url: https://en.cf-vanguard.com/
+        - text: and
+        - link "Weiß Schwarz" [ref=e796] [cursor=pointer]:
+          - /url: https://en.ws-tcg.com/
+        - text: are © bushiroad All Rights Reserved.
+        - 'link "Shadowverse: Evolve" [ref=e797] [cursor=pointer]':
+          - /url: https://en.shadowverse-evolve.com/
+        - text: is © Cygames, Inc.
+        - link "Godzilla Card Game" [ref=e798] [cursor=pointer]:
+          - /url: https://en.godzilla-cardgame.com/
+        - text: is TM & © TOHO CO., LTD.
+        - link "hololive OFFICIAL CARD GAME" [ref=e799] [cursor=pointer]:
+          - /url: https://en.hololive-official-cardgame.com/
+        - text: is © COVER ©2026
+        - link "Pokémon" [ref=e800] [cursor=pointer]:
+          - /url: https://www.pokemon.com/us/pokemon-tcg/
+        - text: . ©1995 - 2026 Nintendo/Creatures Inc./GAME FREAK Inc. TM, ®Nintendo. Disney Lorcana and its respective properties are ©
+        - link "Disney" [ref=e801] [cursor=pointer]:
+          - /url: https://www.disney.com/
+        - 'link "RIFTBOUND: LEAGUE OF LEGENDS" [ref=e802] [cursor=pointer]':
+          - /url: https://riftbound.leagueoflegends.com/en-us/
+        - text: manufactured by
+        - link "UVS Games" [ref=e803] [cursor=pointer]:
+          - /url: https://uvsgames.com/
+        - text: under license from Riot Games. ™ & © 2026 Riot Games, Inc.
+        - 'link "CookieRun: Braverse TCG" [ref=e804] [cursor=pointer]':
+          - /url: https://cookierunbraverse.com/en/
+        - text: is © Devsisters Corp. All rights reserved.
+      - generic [ref=e805]:
+        - link "Privacy Policy" [ref=e806] [cursor=pointer]:
+          - /url: https://help.tcgplayer.com/hc/en-us/articles/11736500567959-TCGplayer-Privacy-Policy
+        - link "Terms of Service" [ref=e807] [cursor=pointer]:
+          - /url: https://help.tcgplayer.com/hc/en-us/articles/205004918-Terms-of-Service
+        - link "Accessibility" [ref=e808] [cursor=pointer]:
+          - /url: https://help.tcgplayer.com/hc/en-us/articles/4419756533527-Accessibility-Statement
+        - generic [ref=e809] [cursor=pointer]: Do Not Sell or Share My Personal Information

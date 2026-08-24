@@ -1,0 +1,53 @@
+- generic [active] [ref=f33e1]:
+  - main [ref=f33e3]:
+    - generic [ref=f33e4]:
+      - paragraph [ref=f33e5]: 퍼뜩↯
+      - paragraph [ref=f33e6]: 검증
+    - generic [ref=f33e7]:
+      - navigation [ref=f33e8]:
+        - paragraph [ref=f33e9]: 안내 단계 4 / 7 검증
+        - list [ref=f33e10]:
+          - listitem [ref=f33e11]:
+            - generic [ref=f33e12]: "1"
+          - listitem [ref=f33e13]:
+            - generic [ref=f33e14]: "2"
+          - listitem [ref=f33e15]:
+            - generic [ref=f33e16]: "3"
+          - listitem [ref=f33e17]:
+            - generic [ref=f33e18]: 검증
+          - listitem [ref=f33e19]:
+            - generic [ref=f33e20]: "5"
+          - listitem [ref=f33e21]:
+            - generic [ref=f33e22]: "6"
+          - listitem [ref=f33e23]:
+            - generic [ref=f33e24]: "7"
+      - generic [ref=f33e25]:
+        - heading "진행 가능한 기회인지 다시 검증해요" [level=1] [ref=f33e26]
+        - paragraph [ref=f33e27]: 상품·출처·가격·비용·참여 가능 여부를 확인해요.
+      - generic [ref=f33e30]:
+        - article [ref=f33e31]:
+          - paragraph [ref=f33e32]: 자동 검증
+          - generic [ref=f33e33]:
+            - generic [ref=f33e34]: 상품 일치
+            - generic [ref=f33e35]: 같은 상품
+          - generic [ref=f33e36]:
+            - generic [ref=f33e37]: 출처
+            - generic [ref=f33e38]: 근거 확인
+          - generic [ref=f33e39]:
+            - generic [ref=f33e40]: 가격·상태
+            - generic [ref=f33e41]: 현재 조건
+          - generic [ref=f33e42]:
+            - generic [ref=f33e43]: 비용·환율
+            - generic [ref=f33e44]: 계산 조건
+          - generic [ref=f33e45]:
+            - generic [ref=f33e46]: 참여 가능
+            - generic [ref=f33e47]: 실행 가능
+        - generic [ref=f33e48]:
+          - paragraph [ref=f33e49]: 검증된 기회만 사용자에게 보여줘요
+          - paragraph [ref=f33e50]: 조건이 바뀌면 다시 확인하거나 숨겨요
+      - paragraph [ref=f33e51]: 검증된 기회만 보여드려요.
+    - generic [ref=f33e53]:
+      - button "참여 준비 보기" [ref=f33e54] [cursor=pointer]
+      - button "이전" [ref=f33e55] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=f33e61] [cursor=pointer]
+  - alert [ref=f33e65]

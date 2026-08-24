@@ -1,0 +1,659 @@
+{
+  "rel": "REL-601",
+  "at": "2026-08-23T21:01:22.270Z",
+  "origins": {
+    "web": "https://ai-profit-web-preview.ebay-adapter.workers.dev",
+    "ops": "https://ai-profit-ops-preview.ebay-adapter.workers.dev"
+  },
+  "surfaceCount": 61,
+  "assetCount": 3,
+  "passCount": 64,
+  "failCount": 0,
+  "rows": [
+    {
+      "kind": "surface",
+      "id": "home",
+      "route": "/",
+      "app": "web",
+      "rel": "REL-105",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "profits",
+      "route": "/profits",
+      "app": "web",
+      "rel": "REL-106",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "trades",
+      "route": "/trades",
+      "app": "web",
+      "rel": "REL-110",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "wallet",
+      "route": "/wallet",
+      "app": "web",
+      "rel": "REL-113",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "wallet-deposit",
+      "route": "/wallet/deposit",
+      "app": "web",
+      "rel": "REL-114",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "wallet-withdraw",
+      "route": "/wallet/withdraw",
+      "app": "web",
+      "rel": "REL-116",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "wallet-withdraw-usdt",
+      "route": "/wallet/withdraw/usdt",
+      "app": "web",
+      "rel": "REL-116",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "wallet-withdraw-krw",
+      "route": "/wallet/withdraw/krw",
+      "app": "web",
+      "rel": "REL-117",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "wallet-history",
+      "route": "/wallet/history",
+      "app": "web",
+      "rel": "REL-118",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "auth-login",
+      "route": "/auth/login",
+      "app": "web",
+      "rel": "REL-102",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "auth-signup",
+      "route": "/auth/signup",
+      "app": "web",
+      "rel": "REL-101",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "auth-complete",
+      "route": "/auth/complete-profile",
+      "app": "web",
+      "rel": "REL-103",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "onboarding",
+      "route": "/onboarding",
+      "app": "web",
+      "rel": "REL-104",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me",
+      "route": "/me",
+      "app": "web",
+      "rel": "REL-123",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-invite",
+      "route": "/me/invite",
+      "app": "web",
+      "rel": "REL-120",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-inbox",
+      "route": "/me/inbox",
+      "app": "web",
+      "rel": "REL-121",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-peotteok",
+      "route": "/me/peotteok",
+      "app": "web",
+      "rel": "REL-122",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-kyc",
+      "route": "/me/kyc",
+      "app": "web",
+      "rel": "REL-124",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-settings",
+      "route": "/me/settings",
+      "app": "web",
+      "rel": "REL-125",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-support",
+      "route": "/me/support",
+      "app": "web",
+      "rel": "REL-126",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-benefits",
+      "route": "/me/benefits",
+      "app": "web",
+      "rel": "REL-130",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-membership",
+      "route": "/me/membership",
+      "app": "web",
+      "rel": "REL-130",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-events",
+      "route": "/me/events",
+      "app": "web",
+      "rel": "REL-130",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-strategies",
+      "route": "/me/strategies",
+      "app": "web",
+      "rel": "REL-130",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-legal",
+      "route": "/me/legal",
+      "app": "web",
+      "rel": "REL-128",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-legal-terms",
+      "route": "/me/legal/terms",
+      "app": "web",
+      "rel": "REL-128",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-legal-privacy",
+      "route": "/me/legal/privacy",
+      "app": "web",
+      "rel": "REL-128",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-legal-license",
+      "route": "/me/legal/license",
+      "app": "web",
+      "rel": "REL-128",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-legal-oss",
+      "route": "/me/legal/oss",
+      "app": "web",
+      "rel": "REL-128",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-guide-principal",
+      "route": "/me/guide/principal",
+      "app": "web",
+      "rel": "REL-127",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-guide-usdt",
+      "route": "/me/guide/usdt",
+      "app": "web",
+      "rel": "REL-127",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-guide-faq",
+      "route": "/me/guide/faq",
+      "app": "web",
+      "rel": "REL-127",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-guide-partners",
+      "route": "/me/guide/partners",
+      "app": "web",
+      "rel": "REL-127",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-guide-market-weekly",
+      "route": "/me/guide/market-weekly",
+      "app": "web",
+      "rel": "REL-127",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-guide-revenue",
+      "route": "/me/guide/revenue",
+      "app": "web",
+      "rel": "REL-127",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "me-guide-get-usdt",
+      "route": "/me/guide/get-usdt",
+      "app": "web",
+      "rel": "REL-127",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "ads",
+      "route": "/ads",
+      "app": "web",
+      "rel": "REL-130",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "profits-missing",
+      "route": "/profits/__staging_smoke__",
+      "app": "web",
+      "rel": "REL-107",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "execute-missing",
+      "route": "/trades/__staging_smoke__/execute",
+      "app": "web",
+      "rel": "REL-109",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "settlement-missing",
+      "route": "/trades/__staging_smoke__/settlement",
+      "app": "web",
+      "rel": "REL-112",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-root",
+      "route": "/admin",
+      "app": "ops",
+      "rel": "REL-201",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-users",
+      "route": "/admin/users",
+      "app": "ops",
+      "rel": "REL-202",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-ledger",
+      "route": "/admin/ledger",
+      "app": "ops",
+      "rel": "REL-205",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-wallet",
+      "route": "/admin/wallet",
+      "app": "ops",
+      "rel": "REL-206",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-adapters",
+      "route": "/admin/adapters",
+      "app": "ops",
+      "rel": "REL-211",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-ai-logs",
+      "route": "/admin/ai-logs",
+      "app": "ops",
+      "rel": "REL-215",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-audit",
+      "route": "/admin/audit",
+      "app": "ops",
+      "rel": "REL-214",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-compliance",
+      "route": "/admin/compliance",
+      "app": "ops",
+      "rel": "REL-207",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-execution-policy",
+      "route": "/admin/execution-policy",
+      "app": "ops",
+      "rel": "REL-209",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-growth",
+      "route": "/admin/growth",
+      "app": "ops",
+      "rel": "REL-217",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-growth-content",
+      "route": "/admin/growth/content",
+      "app": "ops",
+      "rel": "REL-217",
+      "status": 307,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-growth-deposit",
+      "route": "/admin/growth/deposit",
+      "app": "ops",
+      "rel": "REL-218",
+      "status": 307,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-growth-ticker",
+      "route": "/admin/growth/ticker",
+      "app": "ops",
+      "rel": "REL-219",
+      "status": 307,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-growth-whale",
+      "route": "/admin/growth/whale",
+      "app": "ops",
+      "rel": "REL-220",
+      "status": 307,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-opportunities",
+      "route": "/admin/opportunities",
+      "app": "ops",
+      "rel": "REL-210",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-reports-financial",
+      "route": "/admin/reports/financial",
+      "app": "ops",
+      "rel": "REL-216",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-risk",
+      "route": "/admin/risk",
+      "app": "ops",
+      "rel": "REL-208",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-support",
+      "route": "/admin/support",
+      "app": "ops",
+      "rel": "REL-212",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-system-control",
+      "route": "/admin/system-control",
+      "app": "ops",
+      "rel": "REL-213",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-user-missing",
+      "route": "/admin/users/__staging_smoke__",
+      "app": "ops",
+      "rel": "REL-203",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "surface",
+      "id": "admin-finance-missing",
+      "route": "/admin/users/__staging_smoke__/finance",
+      "app": "ops",
+      "rel": "REL-204",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "asset",
+      "id": "pwa-manifest",
+      "route": "/manifest.webmanifest",
+      "app": "web",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "asset",
+      "id": "icon-192",
+      "route": "/icons/icon-192.png",
+      "app": "web",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    },
+    {
+      "kind": "asset",
+      "id": "icon-512",
+      "route": "/icons/icon-512.png",
+      "app": "web",
+      "status": 200,
+      "pass": true,
+      "issues": []
+    }
+  ],
+  "pass": true,
+  "playwright": {
+    "ran": true,
+    "pass": true,
+    "exitCode": 0,
+    "stdout": "\nRunning 5 tests using 1 worker\n\n  ok 1 tooling\\e2e\\specs\\staging-regression.spec.cjs:15:3 › home home-390 overflow-safe (9.4s)\n  ok 2 tooling\\e2e\\specs\\staging-regression.spec.cjs:15:3 › home home-1440 overflow-safe (3.6s)\n  ok 3 tooling\\e2e\\specs\\staging-regression.spec.cjs:15:3 › home home-2560 overflow-safe (4.7s)\n  ok 4 tooling\\e2e\\specs\\staging-regression.spec.cjs:15:3 › home home-3440 overflow-safe (2.6s)\n  ok 5 tooling\\e2e\\specs\\staging-regression.spec.cjs:15:3 › home home-3840 overflow-safe (2.5s)\n\n  5 passed (24.8s)\n",
+    "stderr": "(node:16688) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:16688) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  }
+}
