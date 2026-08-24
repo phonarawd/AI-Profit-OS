@@ -76,7 +76,7 @@ test("desktop user surfaces inherit light canvas + accessible Spark accent", asy
   }
 });
 
-test("Founder-locked Home and Account Hub do not receive the global theme", async ({ page }) => {
+test("Founder-locked Home and Account Hub keep their original DOM ancestry", async ({ page }) => {
   for (const route of ["/", "/me"]) {
     await page.setViewportSize({ width: 1440, height: 1080 });
     const response = await page.goto(`${runtime.baseUrl}${route}`, {
@@ -84,10 +84,7 @@ test("Founder-locked Home and Account Hub do not receive the global theme", asyn
     });
     expect(response).not.toBeNull();
     expect(response.status()).toBeLessThan(500);
-    await expect(page.locator(".spark-global-boundary")).toHaveAttribute(
-      "data-spark-global",
-      "off",
-    );
+    await expect(page.locator(".spark-global-boundary")).toHaveCount(0);
   }
 });
 
