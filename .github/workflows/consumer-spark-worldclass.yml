@@ -1,0 +1,45 @@
+name: consumer-spark-worldclass
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "apps/web/**"
+      - "packages/ui/**"
+      - "tooling/e2e/specs/consumer-spark-worldclass.spec.cjs"
+      - ".github/workflows/consumer-spark-worldclass.yml"
+
+concurrency:
+  group: consumer-spark-worldclass-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  worldclass-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.85.0"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: T1 push gate
+        run: pnpm verify:gate:push
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Spark Dash responsive continuity
+        env:
+          CI: "1"
+          NEXT_DEV_WEBPACK: "1"
+        run: >-
+          pnpm exec playwright test
+          --config=tooling/e2e/playwright.config.cjs
+          tooling/e2e/specs/consumer-spark-worldclass.spec.cjs
