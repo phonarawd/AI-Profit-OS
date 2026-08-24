@@ -18,9 +18,7 @@ function read(rel) {
   return fs.readFileSync(p, "utf8");
 }
 
-const fixture = JSON.parse(
-  read("tooling/verify/fixtures/rel-504-migration-readiness.v1.json") || "{}",
-);
+const fixture = JSON.parse(read("tooling/verify/fixtures/rel-504-migration-readiness.v1.json") || "{}");
 const plan = read(".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md");
 const ready = read("governance/release-master/MIGRATION_READINESS.md");
 const cert = read("governance/engine-acceptance/FINAL_ACCEPTANCE.md");
@@ -28,15 +26,11 @@ const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
 const gate = read(".github/workflows/gate.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
-const applied = JSON.parse(
-  read("tooling/verify/fixtures/migrations-applied.v1.json") || "{}",
-);
+const applied = JSON.parse(read("tooling/verify/fixtures/migrations-applied.v1.json") || "{}");
 
 function todoCompleted(relId) {
   const id = relId.replace(/^REL-/i, "rel-").toLowerCase();
-  const re = new RegExp(
-    "- id: " + id + "\\r?\\n(?:.*\\r?\\n){0,3}\\s*status: (\\w+)",
-  );
+  const re = new RegExp("- id: " + id + "\\r?\\n(?:.*\\r?\\n){0,3}\\s*status: (\\w+)");
   const m = plan.match(re);
   return m && m[1] === "completed";
 }
@@ -51,13 +45,9 @@ if (fixture.applyMigration !== 0) fails.push("fixture applyMigration must be 0")
 if (fixture.productionDbApply !== 0) fails.push("fixture productionDbApply must be 0");
 if (fixture.applyLog !== 0) fails.push("fixture applyLog must be 0");
 if (fixture.applyOwner !== "REL-701-DB") fails.push("apply owner must stay REL-701-DB");
-if (fixture.projectRef !== "mgsytcetsiecllmhcyox") {
-  fails.push("fixture projectRef must stay mgsytcetsiecllmhcyox");
-}
+if (fixture.projectRef !== "mgsytcetsiecllmhcyox") fails.push("fixture projectRef must stay mgsytcetsiecllmhcyox");
 
-const rebaseRequired = /REBASE_REQUIRED = 1/.test(
-  read("governance/engine-acceptance/FINAL_ACCEPTANCE.md"),
-);
+const rebaseRequired = /REBASE_REQUIRED = 1/.test(read("governance/engine-acceptance/FINAL_ACCEPTANCE.md"));
 for (const dep of fixture.deps || []) {
   if (dep === "REL-502" && rebaseRequired) continue;
   if (!todoCompleted(dep)) fails.push("EXIT_GATE: plan todo not completed " + dep);
@@ -76,6 +66,11 @@ for (const needle of [
   if (!ready.includes(needle)) fails.push("readiness doc missing " + needle);
 }
 
+// Preserve the original hard stop: the readiness evidence may describe the
+// owner, but it must never contain an executable apply_migration invocation.
+if (/apply_migration\s*\(/.test(ready)) {
+  fails.push("readiness doc must not invoke apply_migration");
+}
 if (/APPLY_LOG = 1/.test(ready) || /PRODUCTION_DB_APPLY = 1/.test(ready)) {
   fails.push("readiness doc flipped apply bits");
 }
@@ -116,18 +111,10 @@ if (rebaseRequired) {
   fails.push("REL-502 cert must be ISSUED before READY");
 }
 
-if (!pkg.includes("verify:rel-504-migration-readiness")) {
-  fails.push("package.json missing verify:rel-504-migration-readiness");
-}
-if (!catalog.includes("rel-504-migration-readiness")) {
-  fails.push("CATALOG missing rel-504-migration-readiness");
-}
-if (!gate.includes("verify:rel-504-migration-readiness")) {
-  fails.push("gate.yml must run verify:rel-504-migration-readiness");
-}
-if (!domain.includes("rel-504-migration-readiness.cjs")) {
-  fails.push("domain-by-path must trigger rel-504");
-}
+if (!pkg.includes("verify:rel-504-migration-readiness")) fails.push("package.json missing verify:rel-504-migration-readiness");
+if (!catalog.includes("rel-504-migration-readiness")) fails.push("CATALOG missing rel-504-migration-readiness");
+if (!gate.includes("verify:rel-504-migration-readiness")) fails.push("gate.yml must run verify:rel-504-migration-readiness");
+if (!domain.includes("rel-504-migration-readiness.cjs")) fails.push("domain-by-path must trigger rel-504");
 
 if (fails.length === 0) {
   for (const script of fixture.extraVerifies || []) {
@@ -137,12 +124,7 @@ if (fails.length === 0) {
       timeout: 60_000,
     });
     if (run.status !== 0) {
-      fails.push(
-        "re-run FAIL " +
-          script +
-          ": " +
-          String(run.stderr || run.stdout || "").split("\n")[0],
-      );
+      fails.push("re-run FAIL " + script + ": " + String(run.stderr || run.stdout || "").split("\n")[0]);
     }
   }
 }
