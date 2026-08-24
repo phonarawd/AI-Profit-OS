@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./pwa-shell.css";
+import "./spark-global.css";
 import { ToastHost } from "@aipo/ui/components/toast";
 import { DeviceTierApply } from "../components/DeviceTierApply";
+import { GlobalSparkBoundary } from "../components/GlobalSparkBoundary";
 import { PwaRuntime } from "../components/pwa/PwaRuntime";
 import { ObsRuntime } from "../components/observability/ObsRuntime";
 
@@ -40,7 +42,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko" className="theme-peotteok-light" data-font-scale="md">
       <body className="min-h-dvh bg-lux-bg text-lux-text">
         <DeviceTierApply />
-        <ToastHost>{children}</ToastHost>
+        <ToastHost>
+          <GlobalSparkBoundary>{children}</GlobalSparkBoundary>
+        </ToastHost>
         <PwaRuntime />
         <ObsRuntime />
       </body>
