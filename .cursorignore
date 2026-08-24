@@ -1,3 +1,7 @@
+﻿
+# Git worktrees — duplicate repo copies; exclude from Cursor index/watch (8GB RAM)
+.worktrees/
+_wt_*/
 node_modules/
 .next/
 dist/

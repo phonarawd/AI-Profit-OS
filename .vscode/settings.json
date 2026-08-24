@@ -116,6 +116,8 @@
   ],
 
   "files.watcherExclude": {
+    "**/.worktrees/**": true,
+    "**/_wt_*/**": true,
     "**/node_modules/**": true,
     "**/.next/**": true,
     "**/dist/**": true,
@@ -135,6 +137,8 @@
     "**/docs/**": true
   },
   "search.exclude": {
+    "**/.worktrees": true,
+    "**/_wt_*": true,
     "**/node_modules": true,
     "**/target": true,
     "**/.next": true,
@@ -151,6 +155,8 @@
     "**/.tools": true
   },
   "files.exclude": {
+    "**/.worktrees": true,
+    "**/_wt_*": true,
     "**/node_modules": true,
     "**/.next": true,
     "**/dist": true,
