@@ -1,10 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./pwa-shell.css";
+import "./spark-global.css";
 import { ToastHost } from "@aipo/ui/components/toast";
 import { DeviceTierApply } from "../components/DeviceTierApply";
+import { GlobalSparkBoundary } from "../components/GlobalSparkBoundary";
 import { PwaRuntime } from "../components/pwa/PwaRuntime";
 import { ObsRuntime } from "../components/observability/ObsRuntime";
+
+const PRETENDARD_CSS =
+  "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css";
 
 export const viewport: Viewport = {
   themeColor: "#6B3CFF",
@@ -38,9 +43,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" className="theme-peotteok-light" data-font-scale="md">
+      <head>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+        <link rel="preload" href={PRETENDARD_CSS} as="style" />
+      </head>
       <body className="min-h-dvh bg-lux-bg text-lux-text">
         <DeviceTierApply />
-        <ToastHost>{children}</ToastHost>
+        <GlobalSparkBoundary>
+          <ToastHost>{children}</ToastHost>
+        </GlobalSparkBoundary>
         <PwaRuntime />
         <ObsRuntime />
       </body>

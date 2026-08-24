@@ -1,0 +1,174 @@
+body {
+  --color-lux-bg: #0b0f17;
+  --color-lux-surface: #121826;
+  --color-lux-elevated: #1a2030;
+  --color-lux-border: #2b3548;
+  --color-lux-text: #f6f7fa;
+  --color-lux-text-muted: #b7c0d2;
+  --color-lux-accent: #ff2d6b;
+  --color-lux-accent-muted: #ff6a98;
+  --color-lux-danger: #ff6b6b;
+  --color-lux-warning: #f7b955;
+  --color-lux-profit: #35d07f;
+  --color-lux-principal: #ff2d6b;
+  --shadow-lux-card: 0 20px 52px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.035) inset;
+  --shadow-lux-soft: 0 10px 30px rgba(0, 0, 0, 0.22);
+
+  color-scheme: dark;
+  background:
+    radial-gradient(circle at 85% -8%, rgba(255, 45, 107, 0.2), transparent 32rem),
+    radial-gradient(circle at 12% 8%, rgba(94, 74, 255, 0.12), transparent 28rem),
+    #0b0f17;
+  color: var(--color-lux-text);
+  font-family:
+    "Pretendard Variable",
+    "Pretendard",
+    "Apple SD Gothic Neo",
+    "Noto Sans KR",
+    "Malgun Gothic",
+    system-ui,
+    sans-serif;
+}
+
+.admin-app-shell {
+  background: transparent;
+}
+
+.admin-sidebar {
+  border-color: var(--color-lux-border);
+  background: linear-gradient(180deg, rgba(16, 22, 36, 0.98), rgba(11, 15, 23, 0.98));
+  box-shadow: 16px 0 42px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(20px);
+}
+
+.admin-brand-block,
+.admin-session-bar {
+  border-color: var(--color-lux-border);
+}
+
+.admin-brand-name {
+  color: #ffffff;
+}
+
+.admin-only-label {
+  border-color: rgba(255, 45, 107, 0.36);
+  background: rgba(255, 45, 107, 0.12);
+  color: #ff78a3;
+}
+
+.admin-nav-link {
+  color: #b7c0d2;
+}
+
+.admin-nav-link:hover {
+  background: rgba(255, 255, 255, 0.045);
+  color: #ffffff;
+}
+
+.admin-nav-link[data-active="true"] {
+  background: linear-gradient(90deg, rgba(255, 45, 107, 0.2), rgba(255, 45, 107, 0.07));
+  color: #ff78a3;
+  box-shadow: inset 3px 0 0 #ff2d6b;
+}
+
+.admin-nav-link[data-active="true"] .admin-nav-dot {
+  background: #ff2d6b;
+  box-shadow: 0 0 0 5px rgba(255, 45, 107, 0.13), 0 0 18px rgba(255, 45, 107, 0.3);
+}
+
+.admin-mobile-header,
+.admin-session-bar {
+  background: color-mix(in srgb, #101624 92%, transparent);
+  backdrop-filter: blur(18px);
+}
+
+.admin-menu-button,
+.admin-sidebar-close,
+.admin-session-toggle,
+.admin-session-disconnect,
+.admin-session-form button {
+  border-color: var(--color-lux-border);
+  color: var(--color-lux-text);
+}
+
+.admin-session-toggle,
+.admin-session-form button {
+  border-color: #ff2d6b;
+  background: #ff2d6b;
+  color: #0b0f17;
+}
+
+.admin-content > main > section,
+.admin-content article {
+  border-color: var(--color-lux-border);
+  background: color-mix(in srgb, var(--color-lux-surface) 96%, transparent);
+  box-shadow: var(--shadow-lux-card);
+}
+
+.admin-content button {
+  border-color: var(--color-lux-border);
+  background: var(--color-lux-elevated);
+  color: var(--color-lux-text);
+}
+
+.admin-content button:hover:not(:disabled) {
+  border-color: color-mix(in srgb, #ff2d6b 46%, var(--color-lux-border));
+  background: color-mix(in srgb, #ff2d6b 9%, var(--color-lux-elevated));
+}
+
+.admin-content input,
+.admin-content textarea,
+.admin-content select,
+.admin-session-form input {
+  border-color: var(--color-lux-border);
+  background: #101624;
+  color: var(--color-lux-text);
+}
+
+.admin-content input::placeholder,
+.admin-content textarea::placeholder,
+.admin-session-form input::placeholder {
+  color: #929caf;
+  opacity: 1;
+}
+
+.admin-fetch-note {
+  border-left-color: #f7b955;
+  background: rgba(247, 185, 85, 0.1);
+}
+
+.admin-eyebrow {
+  color: #ff78a3;
+}
+
+.admin-skip-link:focus,
+.admin-content :focus-visible,
+.admin-sidebar :focus-visible,
+.admin-session-bar :focus-visible {
+  outline-color: #ff78a3;
+}
+
+::selection {
+  background: rgba(255, 45, 107, 0.34);
+  color: #ffffff;
+}
+
+@media (max-width: 767px) {
+  .admin-mobile-header {
+    border-bottom: 1px solid var(--color-lux-border);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+  }
+
+  .admin-nav-backdrop[data-open="true"] {
+    background: rgba(4, 7, 13, 0.72);
+    backdrop-filter: blur(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-app-shell *,
+  .admin-app-shell *::before,
+  .admin-app-shell *::after {
+    scroll-behavior: auto !important;
+  }
+}

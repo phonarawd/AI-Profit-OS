@@ -105,7 +105,7 @@
     "manifest": "assets/markets/manifest.json",
     "planRef": "UI §38.10.3",
     "blockingSubDeliverable": "market-partner-logo-svgs",
-    "note": "Partner marks are not peotteok Brand Kit slots · 7/7 status=ready · tracked in assets/markets"
+    "note": "Partner relationships remain tracked. Visual marks are 7/7 blocked pending verified official originals; runtime must show partner names instead of unverified SVG marks."
   },
   "membershipBadges": {
     "status": "ready",
