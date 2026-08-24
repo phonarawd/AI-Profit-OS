@@ -6,6 +6,7 @@
  * `next start`로 기동해 실제 production CSP/렌더링 조건을 검증한다.
  * LOCAL_WEB_RUNTIME_API_STUB=1이면 API_HOST의 loopback 포트에 fail-closed 401
  * API stub을 열어 시각/반응형 QA가 외부 API 가용성에 오염되지 않게 한다.
+ * 이 stub은 product success data를 만들지 않으며 unauthorized 상태만 제공한다.
  */
 "use strict";
 
