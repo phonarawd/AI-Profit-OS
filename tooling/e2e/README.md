@@ -111,3 +111,14 @@ node tooling/verify/rel-601-staging-regression.cjs
 ```text
 node tooling/verify/rel-507-production-e2e.cjs
 ```
+
+## REL-603 automated age cohort (Founder B)
+
+`specs/rel-603-age-usability-spotcheck.spec.cjs` — 9 cohort profiles x 4 scenarios on **staging preview only**.
+
+- Human participants 0 · MCP-only evidence 0 · production mutation 0
+- Verifier: `verify:rel-603-age-usability-spotcheck`
+
+```text
+node tooling/verify/rel-603-age-usability-spotcheck.cjs
+```

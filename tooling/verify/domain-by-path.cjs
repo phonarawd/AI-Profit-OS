@@ -722,6 +722,14 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/release-master\/AGE_SPOTCHECK\.md$/.test(f) ||
+      /^tooling\/e2e\/specs\/rel-603-age-usability-spotcheck\.spec\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-603-age-usability-spotcheck\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-603-age-usability-spotcheck\.v1\.json$/.test(f),
+    scripts: ["rel-603-age-usability-spotcheck.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/common\//.test(f) ||
       /^services\/api-nest\/src\/app\.module\.ts$/.test(f) ||
       /^services\/api-nest\/src\/.*\.admin\.controller\.ts$/.test(f) ||
