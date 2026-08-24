@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: write
+
 concurrency:
   group: gate-${{ github.ref }}
   cancel-in-progress: true
@@ -63,6 +66,15 @@ jobs:
           name: pr52-acceptance-rebase-generated
           path: governance/engine-acceptance
           if-no-files-found: error
+      - name: Commit approved rebase governance evidence
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add governance/engine-acceptance
+          git diff --cached --check
+          git commit -m "Engine acceptance: start approved PR52 rebase epoch"
+          git push origin HEAD:fix/live-migration-truth-reconciliation
       - name: REL-402 dependency audit
         env:
           AIPO_AUDIT: "1"
