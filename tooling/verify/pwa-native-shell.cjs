@@ -1,13 +1,14 @@
 /**
  * verify:pwa-native-shell — REL-014 / E-PWA-001
- * manifest link + ADR-017 색 + 아이콘 + SW 등록 + install/update UX.
- * Push/WebAuthn/store-bridge 끌어오면 FAIL. Home 파일 수정 FAIL.
+ * manifest link + Spark Dash native-shell colors + icons + SW registration + install/update UX.
+ * Push/WebAuthn/store-bridge 끌어오면 FAIL. Home files stay protected.
  */
 const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
+const SPARK_THEME = "#08111F";
 
 function read(rel) {
   const p = path.join(root, rel);
@@ -50,11 +51,11 @@ try {
 if (manifest.name !== "퍼뜩" || manifest.short_name !== "퍼뜩") {
   fails.push("manifest name/short_name must be 퍼뜩");
 }
-if (manifest.theme_color !== "#6B3CFF") {
-  fails.push("manifest theme_color must be ADR-017 #6B3CFF");
+if (manifest.theme_color !== SPARK_THEME) {
+  fails.push(`manifest theme_color must be Spark Dash ${SPARK_THEME}`);
 }
-if (manifest.background_color !== "#F6F4FC") {
-  fails.push("manifest background_color must be ADR-017 #F6F4FC");
+if (manifest.background_color !== SPARK_THEME) {
+  fails.push(`manifest background_color must be Spark Dash ${SPARK_THEME}`);
 }
 if (manifest.display !== "standalone") {
   fails.push("manifest display must be standalone");
@@ -79,10 +80,10 @@ if (!layout.includes('manifest: "/manifest.webmanifest"')) {
 if (!layout.includes("PwaRuntime")) {
   fails.push("layout must mount PwaRuntime");
 }
-if (!layout.includes("#6B3CFF") || !layout.includes("themeColor")) {
-  fails.push("layout viewport themeColor must be ADR-017 #6B3CFF");
+if (!layout.includes(SPARK_THEME) || !layout.includes("themeColor")) {
+  fails.push(`layout viewport themeColor must be Spark Dash ${SPARK_THEME}`);
 }
-if (!layout.includes('appleWebApp') || !layout.includes("퍼뜩")) {
+if (!layout.includes("appleWebApp") || !layout.includes("퍼뜩")) {
   fails.push("layout appleWebApp title must be 퍼뜩");
 }
 
@@ -98,7 +99,6 @@ if (!sw.includes("SKIP_WAITING")) {
 if (!sw.includes("cache.addAll") && !sw.includes("caches.open")) {
   fails.push("SW must cache shell assets (CacheFirst equivalent)");
 }
-// REL-020 owns push/badge on the same SW. Native-shell no longer forbids it.
 if (/webauthn|PublicKeyCredential/i.test(sw + runtime)) {
   fails.push("REL-014 must not mix WebAuthn (REL-022)");
 }
@@ -210,5 +210,5 @@ if (fails.length) {
 }
 
 console.log(
-  "[verify:pwa-native-shell] PASS (manifest+icons+SW+install UX · store-bridge 0 · Home freeze 0 · push=REL-020)",
+  "[verify:pwa-native-shell] PASS (Spark Dash manifest+icons+SW+install UX · store-bridge 0 · Home freeze 0 · push=REL-020)",
 );
