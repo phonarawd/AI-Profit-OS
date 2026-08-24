@@ -7,14 +7,18 @@ import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { PostgresService } from "../db/postgres";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
 import { OpportunityRepriceService } from "./opportunity-reprice.service";
+import { OpportunityPromotionService } from "./opportunity-promotion.service";
 import { FxSnapshotService } from "./fx-snapshot.service";
 import {
   buildMinCatalogRuntimeSeed,
   DAY1_FX_SNAPSHOT_ID,
   day1FxSnapshot,
   FORBIDDEN_INGEST_ADAPTERS,
+  listDay1AssetMasters,
+  normalizeAssetMaster,
   normalizeIngestListingsForPersist,
   normalizeNativeToUsdt,
+  IMAGE_RIGHTS_NOTE_KO,
 } from "./opportunities.mi";
 
 export type CatalogRuntimeSeedResult = {
@@ -40,6 +44,7 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
     private readonly opportunities: OpportunitiesAdminService,
     private readonly fxSnapshots: FxSnapshotService,
     private readonly reprice: OpportunityRepriceService,
+    private readonly promotion: OpportunityPromotionService,
   ) {}
 
   async onModuleInit(): Promise<void> {
@@ -366,8 +371,143 @@ export class CatalogRuntimeSeedService implements OnModuleInit {
           }`,
         );
       }
+      try {
+        const promoted = await this.promotion.promoteFromLiveListings(
+          touchedAssetIds,
+        );
+        if (promoted.promoted > 0) {
+          this.logger.log(
+            `opportunity promotion: promoted=${promoted.promoted} skipped=${promoted.skipped}`,
+          );
+        }
+      } catch (e) {
+        this.logger.warn(
+          `opportunity promotion after listing persist failed: ${
+            e instanceof Error ? e.message : String(e)
+          }`,
+        );
+      }
     }
     return { upserted, skipped, fxNormalizationFailed };
+  }
+
+  /**
+   * §0.10 — DB assets + Day-1 seed merge for ebay identity match pool.
+   * DB image/meta wins when present; seed meta fills gaps.
+   */
+  async loadAssetMastersForEbayMatch(): Promise<
+    ReturnType<typeof listDay1AssetMasters>
+  > {
+    const seed = listDay1AssetMasters();
+    if (!this.db.configured()) return seed;
+
+    const { rows } = await this.db.query<{
+      asset_id: string;
+      category: string;
+      asset_label: string;
+      image_url: string;
+      image_source: string;
+      image_alt_ko: string;
+      meta: Record<string, unknown>;
+    }>(
+      `SELECT asset_id, category, asset_label, image_url, image_source,
+              image_alt_ko, meta
+         FROM public.assets`,
+    );
+    if (rows.length === 0) return seed;
+
+    const byId = new Map(seed.map((m) => [m.assetId, m]));
+    for (const row of rows) {
+      const seedRow = byId.get(row.asset_id);
+      const imageSource = row.image_source as
+        | "ebay"
+        | "pokemontcg"
+        | "ygoprodeck"
+        | "admin_r2";
+      const merged = normalizeAssetMaster({
+        assetId: row.asset_id,
+        category: row.category as "watch" | "trading_card" | "luxury_bag",
+        assetLabel: row.asset_label,
+        imageUrl: row.image_url,
+        imageSource,
+        imageAltKo: row.image_alt_ko,
+        imageFetchedAt: seedRow?.imageFetchedAt ?? undefined,
+        meta: {
+          ...(seedRow?.meta && typeof seedRow.meta === "object"
+            ? seedRow.meta
+            : {}),
+          ...(row.meta && typeof row.meta === "object" ? row.meta : {}),
+        },
+      });
+      byId.set(row.asset_id, merged as (typeof seed)[number]);
+    }
+    return [...byId.values()] as ReturnType<typeof listDay1AssetMasters>;
+  }
+
+  /**
+   * Ensure matched ebay listings have Asset Master rows before persist.
+   */
+  async ensureMatchedAssetsInDb(
+    matchedListings: unknown[],
+    masters: ReturnType<typeof listDay1AssetMasters>,
+  ): Promise<{ upserted: number }> {
+    if (!this.db.configured()) return { upserted: 0 };
+    const mastersById = new Map(masters.map((m) => [m.assetId, m]));
+    const assetIds = new Set<string>();
+    for (const raw of matchedListings) {
+      if (!raw || typeof raw !== "object") continue;
+      const assetId = String(
+        (raw as Record<string, unknown>).assetId ?? "",
+      ).trim();
+      if (!assetId || assetId.startsWith("query:")) continue;
+      assetIds.add(assetId);
+    }
+
+    let upserted = 0;
+    for (const assetId of assetIds) {
+      const existing = await this.db.query<{ asset_id: string }>(
+        `SELECT asset_id FROM public.assets WHERE asset_id = $1 LIMIT 1`,
+        [assetId],
+      );
+      if (existing.rows[0]) continue;
+
+      const master = mastersById.get(assetId);
+      if (!master) continue;
+
+      const asset = normalizeAssetMaster({
+        assetId: master.assetId,
+        category: master.category,
+        assetLabel: master.assetLabel,
+        imageUrl: master.imageUrl,
+        imageSource: master.imageSource as
+          | "ebay"
+          | "pokemontcg"
+          | "ygoprodeck"
+          | "admin_r2",
+        imageAltKo: master.imageAltKo,
+        meta: master.meta,
+      });
+      await this.db.query(
+        `INSERT INTO public.assets (
+           asset_id, category, asset_label, image_url, image_source,
+           image_alt_ko, image_rights_note_ko, image_fetched_at, meta
+         ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb)
+         ON CONFLICT (asset_id) DO NOTHING`,
+        [
+          asset.assetId,
+          asset.category,
+          asset.assetLabel,
+          asset.imageUrl,
+          asset.imageSource,
+          asset.imageAltKo,
+          IMAGE_RIGHTS_NOTE_KO,
+          asset.imageFetchedAt,
+          JSON.stringify(asset.meta),
+        ],
+      );
+      upserted += 1;
+    }
+    return { upserted };
   }
 
   private async ensureFxSnapshot(): Promise<void> {

@@ -367,8 +367,12 @@ export class AdaptersAdminService {
       body.listings.length > 0 &&
       !body.dryRun
     ) {
+      const masters = this.catalogSeed
+        ? await this.catalogSeed.loadAssetMastersForEbayMatch()
+        : undefined;
       const resolved = resolveEbayIngestListings({
         listings: body.listings,
+        masters,
         now: observedAt,
       });
       assertNoQueryAssetIds(resolved.matched);
@@ -378,6 +382,12 @@ export class AdaptersAdminService {
       listingsForPersist = resolved.matched;
       if (resolved.matchAttempts.length > 0) {
         this.recordMatchAttempts(resolved.matchAttempts, { adapterId: "ebay" });
+      }
+      if (this.catalogSeed && masters && resolved.matched.length > 0) {
+        await this.catalogSeed.ensureMatchedAssetsInDb(
+          resolved.matched,
+          masters,
+        );
       }
     }
 

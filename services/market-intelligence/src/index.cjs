@@ -28,6 +28,7 @@ const matchStrictness = require("./match-strictness.cjs");
 const membership = require("./membership.cjs");
 const adapterMatchingKpi = require("./adapter-matching-kpi.cjs");
 const catalogRuntimeSeed = require("./catalog-runtime-seed.cjs");
+const opportunityPromotion = require("./opportunity-promotion.cjs");
 const ebayIdentityMatch = require("./ebay-identity-match.cjs");
 const homeReadModel = require("./home-read-model.cjs");
 const providerHealth = require("./provider-health.cjs");
@@ -58,6 +59,7 @@ module.exports = {
   ...membership,
   ...adapterMatchingKpi,
   ...catalogRuntimeSeed,
+  ...opportunityPromotion,
   ...ebayIdentityMatch,
   ...homeReadModel,
   ...providerHealth,

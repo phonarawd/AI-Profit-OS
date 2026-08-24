@@ -1127,7 +1127,7 @@ const RULES = [
       /^tooling\/ebay-resilience\//.test(f) ||
       /^\.github\/workflows\/ebay-fault-injection\.yml$/.test(f) ||
       /^supabase\/migrations\/.*provider.*\.sql$/.test(f) ||
-      (/catalog-runtime-seed/.test(f) &&
+      (/catalog-runtime-seed|opportunity-promotion/.test(f) &&
         (/services\/(market-intelligence|api-nest)\//.test(f) ||
           /^tooling\/verify\//.test(f))),
     scripts: [

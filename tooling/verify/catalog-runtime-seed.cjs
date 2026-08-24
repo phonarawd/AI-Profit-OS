@@ -24,9 +24,11 @@ function read(rel) {
 
 const files = [
   "services/market-intelligence/src/catalog-runtime-seed.cjs",
+  "services/market-intelligence/src/opportunity-promotion.cjs",
   "services/market-intelligence/src/pipeline.cjs",
   "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
   "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
+  "services/api-nest/src/opportunities/opportunity-promotion.service.ts",
   "supabase/migrations/20260809144814_catalog_runtime_day1_fx_bootstrap.sql",
   "services/market-intelligence/src/trading-card-seed.cjs",
   "services/market-intelligence/src/luxury-bag-seed.cjs",
@@ -64,6 +66,13 @@ const mod = read("services/api-nest/src/opportunities/opportunities.module.ts");
 const adapters = read(
   "services/api-nest/src/adapters/adapters.admin.service.ts",
 );
+const promotionSvc = read(
+  "services/api-nest/src/opportunities/opportunity-promotion.service.ts",
+);
+const promotionMi = require(path.join(
+  root,
+  "services/market-intelligence/src/opportunity-promotion.cjs",
+));
 const adaptersMod = read("services/api-nest/src/adapters/adapters.module.ts");
 const mig = read(
   "supabase/migrations/20260809144814_catalog_runtime_day1_fx_bootstrap.sql",
@@ -314,6 +323,67 @@ if (!adminSvc.includes("persistComputedPricing")) {
 }
 if (!/priced_at = \$4::timestamptz,\s*stale_at = \$4::timestamptz/.test(reprice)) {
   fails.push("ADMIN: persist must write priced_at and stale_at as the same as-of");
+}
+
+// --- Phase A: live listing → opportunity promotion ---
+if (!svc.includes("promoteFromLiveListings")) {
+  fails.push("PROMOTION: persistIngestListings must call promoteFromLiveListings");
+}
+if (!adapters.includes("loadAssetMastersForEbayMatch")) {
+  fails.push("PROMOTION: ebay ingest must load DB+seed masters for identity match");
+}
+if (!promotionSvc.includes("buildOpportunityPromotionFromLiveListings")) {
+  fails.push("PROMOTION: service must use MI builder (no inline formula)");
+}
+if (promotionSvc.includes("UPDATE public.opportunities")) {
+  fails.push("PROMOTION: INSERT only — must not UPDATE existing opportunities");
+}
+const promoFixture = promotionMi.buildOpportunityPromotionFromLiveListings({
+  asset: {
+    assetId: "watch_rolex_sub",
+    category: "watch",
+    assetLabel: "Rolex Submariner",
+    imageUrl: "https://i.ebayimg.com/images/g/promo-test/s-l500.jpg",
+    imageSource: "ebay",
+    meta: { requiredCapitalUsdt: "100" },
+  },
+  listings: [
+    {
+      marketId: "ebay_us",
+      priceUsdt: "100",
+      staleAt: "2099-01-01T00:00:00.000Z",
+      observedAt: "2026-08-19T00:00:00.000Z",
+    },
+    {
+      marketId: "ebay_gb",
+      priceUsdt: "160",
+      staleAt: "2099-01-01T00:00:00.000Z",
+      observedAt: "2026-08-19T00:00:00.000Z",
+    },
+  ],
+  fxSnapshotId: "fx_promo_test",
+  usdtKrw: "1380",
+});
+if (!promoFixture.ok || promoFixture.opportunity?.status !== "available") {
+  fails.push("PROMOTION: fixture must promote available when guards pass");
+}
+const promoStale = promotionMi.buildOpportunityPromotionFromLiveListings({
+  asset: {
+    assetId: "watch_rolex_sub",
+    category: "watch",
+    assetLabel: "Rolex Submariner",
+    imageUrl: "https://i.ebayimg.com/images/g/promo-test/s-l500.jpg",
+    imageSource: "ebay",
+  },
+  listings: [
+    { marketId: "ebay_us", priceUsdt: "100", staleAt: "2020-01-01T00:00:00.000Z" },
+    { marketId: "ebay_gb", priceUsdt: "160", staleAt: "2099-01-01T00:00:00.000Z" },
+  ],
+  fxSnapshotId: "fx_promo_test",
+  usdtKrw: "1380",
+});
+if (promoStale.ok) {
+  fails.push("PROMOTION: stale legs must fail-closed");
 }
 
 if (fails.length) {

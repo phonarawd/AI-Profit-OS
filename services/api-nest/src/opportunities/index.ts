@@ -4,6 +4,7 @@ export { OpportunitiesUserService } from "./opportunities.user.service";
 export { ParticipateService } from "./participate.service";
 export { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
 export { OpportunityRepriceService } from "./opportunity-reprice.service";
+export { OpportunityPromotionService } from "./opportunity-promotion.service";
 export { UserOpportunityOverrideAdminService } from "./user-opportunity-override.admin.service";
 export { OPPORTUNITY_EVENTS } from "./opportunities.events";
 export {

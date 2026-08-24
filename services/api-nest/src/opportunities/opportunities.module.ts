@@ -10,6 +10,7 @@ import { AssetImageR2Service } from "./asset-image-r2.service";
 import { CatalogRuntimeSeedService } from "./catalog-runtime-seed.service";
 import { FxSnapshotService } from "./fx-snapshot.service";
 import { OpportunityRepriceService } from "./opportunity-reprice.service";
+import { OpportunityPromotionService } from "./opportunity-promotion.service";
 import { OpportunitiesAdminController } from "./opportunities.admin.controller";
 import { OpportunitiesAdminService } from "./opportunities.admin.service";
 import { CurrentFxApproxService } from "./current-fx-approx.service";
@@ -39,6 +40,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
   providers: [
     AssetImageR2Service,
     OpportunityRepriceService,
+    OpportunityPromotionService,
     OpportunitiesAdminService,
     OpportunitiesUserService,
     ParticipateService,
@@ -50,6 +52,7 @@ import { UserOpportunityOverrideAdminService } from "./user-opportunity-override
   exports: [
     AssetImageR2Service,
     OpportunityRepriceService,
+    OpportunityPromotionService,
     OpportunitiesAdminService,
     OpportunitiesUserService,
     ParticipateService,

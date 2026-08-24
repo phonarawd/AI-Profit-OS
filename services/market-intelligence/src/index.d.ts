@@ -1,4 +1,4 @@
-/** Type surface for @aipo/market-intelligence (implementation = *.cjs) */
+﻿/** Type surface for @aipo/market-intelligence (implementation = *.cjs) */
 
 export const MARKET_IDS: readonly [
   "ebay_us",
@@ -1090,6 +1090,12 @@ export function buildMinCatalogRuntimeSeed(opts?: { observedAt?: string }): {
   day1LegPair: { buy: string; sell: string };
   forbiddenInsertAttempts: string[];
 };
+export const DEFAULT_BUY_MARKET: string;
+export const DEFAULT_SELL_MARKET: string;
+export function areListingLegsFresh(input: Record<string, unknown>): boolean;
+export function buildOpportunityPromotionFromLiveListings(
+  input: Record<string, unknown>,
+): Record<string, unknown>;
 export function normalizeIngestListingsForPersist(
   rawListings: unknown[],
   adapterId: string,
