@@ -1,7 +1,9 @@
 /**
  * 로컬 consumer web 런타임.
  * production/Workers/pages.dev 를 QA fallback으로 쓰지 않는다.
- * PLAYWRIGHT_BASE_URL이 없어도 Cursor가 loopback Next를 기동한다.
+ * PLAYWRIGHT_BASE_URL이 없어도 Cursor/CI가 loopback Next를 기동한다.
+ * LOCAL_WEB_RUNTIME_MODE=production이면 이미 생성된 .next production build를
+ * `next start`로 기동해 실제 production CSP/렌더링 조건을 검증한다.
  */
 "use strict";
 
@@ -101,6 +103,17 @@ async function ensureLocalWebRuntime(opts = {}) {
   if (!fs.existsSync(nextBin)) {
     throw new Error("local-web-runtime: next binary missing in apps/web");
   }
+
+  const productionMode = process.env.LOCAL_WEB_RUNTIME_MODE === "production";
+  if (productionMode) {
+    const buildId = path.join(webRoot, ".next", "BUILD_ID");
+    if (!fs.existsSync(buildId)) {
+      throw new Error(
+        "local-web-runtime: production mode requires apps/web/.next/BUILD_ID; run the production/Cloudflare build first",
+      );
+    }
+  }
+
   const webNm = path.join(webRoot, "node_modules");
   let linkedNm = false;
   try {
@@ -109,32 +122,39 @@ async function ensureLocalWebRuntime(opts = {}) {
     linkedNm = false;
   }
   const useWebpack = process.env.NEXT_DEV_WEBPACK === "1" || linkedNm;
-  const child = spawn(
-    process.execPath,
-    [
-      nextBin,
-      "dev",
-      "--port",
-      String(port),
-      "--hostname",
-      "127.0.0.1",
-      ...(useWebpack ? ["--webpack"] : []),
-    ],
-    {
-      cwd: webRoot,
-      env: {
-        ...process.env,
-        BROWSER: "none",
-        NODE_ENV: "development",
-        NODE_OPTIONS:
-          process.env.NODE_OPTIONS || "--max-old-space-size=1536",
-        PORT: String(port),
-        NEXT_DEV_SKIP_OPENNEXT: "1",
-      },
-      stdio: ["ignore", "pipe", "pipe"],
-      windowsHide: true,
+  const nextArgs = productionMode
+    ? [
+        nextBin,
+        "start",
+        "--port",
+        String(port),
+        "--hostname",
+        "127.0.0.1",
+      ]
+    : [
+        nextBin,
+        "dev",
+        "--port",
+        String(port),
+        "--hostname",
+        "127.0.0.1",
+        ...(useWebpack ? ["--webpack"] : []),
+      ];
+
+  const child = spawn(process.execPath, nextArgs, {
+    cwd: webRoot,
+    env: {
+      ...process.env,
+      BROWSER: "none",
+      NODE_ENV: productionMode ? "production" : "development",
+      NODE_OPTIONS:
+        process.env.NODE_OPTIONS || "--max-old-space-size=1536",
+      PORT: String(port),
+      ...(productionMode ? {} : { NEXT_DEV_SKIP_OPENNEXT: "1" }),
     },
-  );
+    stdio: ["ignore", "pipe", "pipe"],
+    windowsHide: true,
+  });
 
   let output = "";
   const append = (buf) => {
