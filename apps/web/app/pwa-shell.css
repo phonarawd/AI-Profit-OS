@@ -40,22 +40,23 @@
   flex-direction: column;
   gap: 8px;
   padding: 14px 16px;
+  border: 1px solid #1a2a40;
   border-radius: 16px;
-  background: #ffffff;
-  color: #14121f;
-  box-shadow: 0 8px 28px rgb(20 18 31 / 16%);
+  background: #0d1726;
+  color: #ffffff;
+  box-shadow: 0 16px 44px rgb(0 0 0 / 28%);
 }
 
 .pwa-overlay-title {
   margin: 0;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .pwa-overlay-body {
   margin: 0;
   font-size: 13px;
-  color: #6b6680;
+  color: #b7c3d3;
 }
 
 .pwa-overlay-actions {
@@ -70,16 +71,25 @@
   border: 0;
   border-radius: 12px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 800;
   cursor: pointer;
 }
 
 .pwa-overlay-primary {
-  background: #6b3cff;
+  background: #ff2e63;
   color: #ffffff;
 }
 
 .pwa-overlay-secondary {
-  background: #f6f4fc;
-  color: #14121f;
+  border: 1px solid #26364f !important;
+  background: #111d2d;
+  color: #ffffff;
+}
+
+@media (min-width: 1280px) {
+  .pwa-overlay {
+    left: auto;
+    right: 24px;
+    width: min(420px, calc(100vw - 48px));
+  }
 }
