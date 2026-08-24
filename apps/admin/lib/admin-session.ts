@@ -1,5 +1,13 @@
 const STORAGE_KEY = "aipo.admin.bearer";
 
+/** 연결/해제 시 페이지가 다시 불러오도록 알림 */
+export const ADMIN_SESSION_CHANGE_EVENT = "aipo.admin.session.change";
+
+function notifyAdminSessionChange(): void {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event(ADMIN_SESSION_CHANGE_EVENT));
+}
+
 export function getAdminToken(): string | null {
   if (typeof window === "undefined") return null;
   try {
@@ -19,11 +27,13 @@ export function setAdminToken(token: string): void {
     return;
   }
   window.sessionStorage.setItem(STORAGE_KEY, next);
+  notifyAdminSessionChange();
 }
 
 export function clearAdminToken(): void {
   if (typeof window === "undefined") return;
   window.sessionStorage.removeItem(STORAGE_KEY);
+  notifyAdminSessionChange();
 }
 
 export function hasAdminToken(): boolean {
