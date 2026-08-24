@@ -3,6 +3,7 @@
   "deps": ["REL-601"],
   "status": "COMPLETED",
   "automationLevel": "A2",
+  "playwrightApiIsolation": "qa-stubs",
   "humanParticipantsRequired": 0,
   "automatedCohortRunsRequired": 9,
   "acceptanceMet": 1,
@@ -10,9 +11,12 @@
   "mcpOnlyDone": 0,
   "fakePass": 0,
   "productionDomainMutation": 0,
+  "productionDbMutation": 0,
   "productionWorkflowDispatch": 0,
   "moneyMutation": 0,
   "homeVisualRedesign": 0,
+  "protectedScopeMutation": 0,
+  "participatePostRequestsExpected": 0,
   "stagingWeb": "https://ai-profit-web-preview.ebay-adapter.workers.dev",
   "forbiddenHosts": ["app.hiptk.app", "ops.hiptk.app"],
   "forbiddenTokens": ["jackpot", "2450", "vercel"],
@@ -28,10 +32,10 @@
     { "id": "A6070-03", "ageBand": "60-70s", "viewport": { "width": 1366, "height": 900 }, "deviceClass": "desktop-large-text" }
   ],
   "scenarios": [
-    { "id": "S1", "title": "signup", "path": "/auth/signup", "expectStatus": [200], "mustIncludeAny": ["signup", "auth", "login"] },
-    { "id": "S2", "title": "opportunity", "path": "/profits", "expectStatus": [200], "mustIncludeAny": ["profit", "profits", "opportunity"] },
-    { "id": "S3", "title": "participate-entry", "path": "/profits", "expectStatus": [200], "mustIncludeAny": ["profit", "profits", "participate"] },
-    { "id": "S4", "title": "wallet", "path": "/wallet", "expectStatus": [200, 307, 401, 403], "mustIncludeAny": ["wallet", "USDT", "usdt"] }
+    { "id": "S1", "title": "signup", "path": "/auth/signup", "expectStatus": [200], "mustIncludeAny": ["signup", "auth", "login"], "browserAssertion": "signup-form-terms-gate-no-submit" },
+    { "id": "S2", "title": "opportunity", "path": "/profits", "expectStatus": [200], "mustIncludeAny": ["profit", "profits", "opportunity"], "browserAssertion": "opportunity-card-ready" },
+    { "id": "S3", "title": "participate-entry", "path": "/profits", "expectStatus": [200], "mustIncludeAny": ["profit", "profits"], "browserAssertion": "card-detail-preflight-sheet-no-participate-post" },
+    { "id": "S4", "title": "wallet", "path": "/wallet", "expectStatus": [200, 307, 401, 403], "mustIncludeAny": ["wallet", "USDT", "usdt"], "browserAssertion": "wallet-ready-read-ctas" }
   ],
   "playwrightSpec": "tooling/e2e/specs/rel-603-age-usability-spotcheck.spec.cjs",
   "evidence": "governance/release-master/AGE_SPOTCHECK.md",

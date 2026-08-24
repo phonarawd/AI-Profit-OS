@@ -14,23 +14,28 @@ FAKE_PASS = 0
 MCP_ONLY_DONE = 0
 PRODUCTION_DOMAIN_MUTATION = 0
 PRODUCTION_DB_MUTATION = 0
+PRODUCTION_WORKFLOW_DISPATCH = 0
 MONEY_MUTATION = 0
 HOME_VISUAL_REDESIGN = 0
+PROTECTED_SCOPE_MUTATION = 0
+PARTICIPATE_POST_REQUESTS = 0
 ```
 
 ## Scope
 
 Founder decision **B**: replace manual 9-person study with **9 automated cohort runs** on staging preview.
 
-- **Not** human subjects. Cohort IDs reuse age-band labels (`A20-*`, `A40-*`, `A6070-*`) as **automation profiles** (viewport / device class).
-- Scenarios: **S1 signup · S2 opportunity · S3 participate entry · S4 wallet** on staging web.
-- Tooling: committed Playwright spec + `verify:rel-603-age-usability-spotcheck` (live HTTP + Playwright + deps).
-- Staging: `https://ai-profit-web-preview.ebay-adapter.workers.dev`
-- Production / DB / money mutation: **0**
+- **Not** human subjects. Cohort IDs reuse age-band labels (`A20-*`, `A40-*`, `A6070-*`) as **automation profiles** (viewport / device class); they are not a demographic behavior model.
+- Scenarios: **S1 signup · S2 opportunity · S3 participate entry · S4 wallet**.
+- Staging UI origin: `https://ai-profit-web-preview.ebay-adapter.workers.dev`.
+- The verifier performs separate **live GET liveness checks** against the staging routes.
+- Playwright loads the **real staging UI bundle** but isolates API state with committed QA route stubs. This makes browser interaction deterministic and prevents production/staging money mutation.
+- S3 intentionally stops at the preflight confirmation sheet and asserts **zero `/participate` POST requests**.
+- Production / DB / money / protected-scope mutation: **0**.
 
 ## Cohort matrix (9 runs)
 
-| Cohort | Age band | Viewport | Device class |
+| Cohort | Age band label | Viewport | Device class |
 |---|---|---|---|
 | A20-01 | 20s | 390×693 | mobile |
 | A20-02 | 20s | 1440×1080 | desktop |
@@ -40,16 +45,16 @@ Founder decision **B**: replace manual 9-person study with **9 automated cohort 
 | A40-03 | 40s | 1024×768 | tablet |
 | A6070-01 | 60–70s | 390×693 | mobile |
 | A6070-02 | 60–70s | 1440×1080 | desktop |
-| A6070-03 | 60–70s | 1366×900 | desktop-large-text |
+| A6070-03 | 60–70s | 1366×900 | desktop-large-text profile label |
 
 ## Scenario sheet (automated assertions)
 
-| ID | Path | Automated checks |
+| ID | Staging route | Browser assertion |
 |---|---|---|
-| S1 | `/auth/signup` | HTTP 200 · signup/auth markers · no forbidden tokens · no horizontal overflow · axe blocking 0 on HTML snapshot |
-| S2 | `/profits` | HTTP 200 · profits/opportunity markers · overflow 0 |
-| S3 | `/profits` | HTTP 200 · participate entry markers on list surface · overflow 0 |
-| S4 | `/wallet` | HTTP 200 · wallet/usdt markers · overflow 0 |
+| S1 | `/auth/signup` | live GET 200 · real signup surface visible · email form opens · terms gate disables/enables submit · no submit · forbidden tokens 0 · horizontal overflow 0 · axe blocking 0 |
+| S2 | `/profits` | live GET 200 · QA-isolated opportunity feed · real staging card visible · expected detail href · required-capital text visible · overflow 0 |
+| S3 | `/profits` → `/profits/{id}` | live GET 200 · QA-isolated feed/detail/preflight · real card click → detail `ready` → `data-requires-preflight=true` CTA click → confirmation sheet visible · preflight request exactly 1 · `/participate` POST request exactly 0 · overflow 0 |
+| S4 | `/wallet` | live route accepted status · QA-isolated wallet read model · wallet `ready` · deposit / profit-withdraw / principal-withdraw / history CTAs visible · no money action click · overflow 0 |
 
 Forbidden tokens (auto-fail): `jackpot`, `2450`, `vercel`.
 
@@ -57,14 +62,16 @@ Forbidden tokens (auto-fail): `jackpot`, `2450`, `vercel`.
 
 | Command | Role |
 |---|---|
-| `pnpm verify:rel-603-age-usability-spotcheck` | SSOT verifier (live + Playwright 9×4 + deps) |
-| `pnpm exec playwright test --config=tooling/e2e/playwright.config.cjs tooling/e2e/specs/rel-603-age-usability-spotcheck.spec.cjs` | Direct Playwright (optional) |
+| `pnpm verify:rel-603-age-usability-spotcheck` | SSOT verifier: fixture/plan/wiring safety → live staging GETs → Playwright 9×4 → dependency re-verifies |
+| `pnpm exec playwright test --config=tooling/e2e/playwright.config.cjs tooling/e2e/specs/rel-603-age-usability-spotcheck.spec.cjs` | Direct Playwright 9×4 browser matrix |
 
 Fixture: `tooling/verify/fixtures/rel-603-age-usability-spotcheck.v1.json`
 
+Playwright API isolation: `qa-stubs` from `tooling/e2e/lib/consumer-route-stubs.cjs`.
+
 ## Automated results (9×4)
 
-All cohort×scenario cells **PASS** via Playwright against staging preview (read-only; no money mutation).
+All 36 cohort×scenario browser cells must PASS in CI before this evidence is accepted. The staging UI bundle is real; deterministic API data for browser interaction is QA-isolated as documented above. Live route liveness is checked separately by the verifier.
 
 | Cohort | S1 | S2 | S3 | S4 |
 |---|---|---|---|---|
@@ -83,11 +90,15 @@ All cohort×scenario cells **PASS** via Playwright against staging preview (read
 - `AUTOMATED_COHORT_EXECUTED = 1`
 - `COHORT_RUNS_COMPLETE = 9`
 - `verify:rel-603-age-usability-spotcheck` PASS
+- Playwright **36/36** browser cells PASS
+- S3 verifies actual card → detail → preflight confirmation-sheet entry and **does not submit participation**
+- `PARTICIPATE_POST_REQUESTS = 0`
 - `HUMAN_EXECUTED = 0` (explicit — not a hidden human study)
-- P0 from automated run: **0** (no reopen triggered)
+- automated P0 from this release-scope matrix: **0**
 
 ## Exit gate
 
-- MCP-only browser clicks alone ≠ DONE (committed spec + verifier required).
-- Human participant table is **superseded** by automated cohort matrix above.
-- Do not claim this replaces real-world longitudinal user research outside release scope.
+- MCP-only browser clicks alone ≠ DONE; committed fixture + spec + verifier + CI are required.
+- Human participant table is **superseded** by Founder B for REL-603 release scope.
+- Age-band names are automation profile labels, not claims that Playwright simulates human cognition or demographic behavior.
+- This does not claim to replace real-world longitudinal user research outside REL-603 release scope.
