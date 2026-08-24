@@ -70,7 +70,7 @@ export function ConsumerSparkRoot({ children }: { children: ReactNode }) {
   return (
     <div className="csp-root" data-testid="consumer-spark-shell" data-spark-route={pathname}>
       <aside className="csp-sidebar" data-testid="consumer-spark-sidebar">
-        <Link className="csp-brand" href="/" aria-label="퍼뜩 홈">
+        <Link prefetch={false} className="csp-brand" href="/" aria-label="퍼뜩 홈">
           <span className="csp-wordmark">퍼뜩</span>
           <img src={SD_ASSETS.brandSpark} alt="" />
         </Link>
@@ -80,6 +80,7 @@ export function ConsumerSparkRoot({ children }: { children: ReactNode }) {
             const selected = active === item.key;
             return (
               <Link
+                prefetch={false}
                 key={item.key}
                 href={item.href}
                 className="csp-nav-link"
@@ -96,10 +97,10 @@ export function ConsumerSparkRoot({ children }: { children: ReactNode }) {
           <section className="csp-wallet-card">
             <p className="csp-wallet-title">내 자산 요약</p>
             <p className="csp-wallet-copy">실제 잔액은 내 자산에서 확인하세요.</p>
-            <Link className="csp-primary" href="/wallet/deposit">입금하기</Link>
-            <Link className="csp-secondary" href="/wallet/withdraw">출금하기</Link>
+            <Link prefetch={false} className="csp-primary" href="/wallet/deposit">입금하기</Link>
+            <Link prefetch={false} className="csp-secondary" href="/wallet/withdraw">출금하기</Link>
           </section>
-          <Link className="csp-ai-card" href="/me/peotteok">
+          <Link prefetch={false} className="csp-ai-card" href="/me/peotteok">
             <span>
               <strong>퍼뜩 AI</strong>
               <small>지금 필요한 정보를 빠르게 정리해드려요.</small>
@@ -116,19 +117,19 @@ export function ConsumerSparkRoot({ children }: { children: ReactNode }) {
             <span>새로운 글로벌 기회를 확인해보세요</span>
           </div>
           <div className="csp-top-actions">
-            <Link href="/me/inbox" aria-label="알림" className="csp-icon-button">
+            <Link prefetch={false} href="/me/inbox" aria-label="알림" className="csp-icon-button">
               <img src={SD_ASSETS.headerBell} alt="" />
             </Link>
-            <Link href="/me" className="csp-user-link">회원님</Link>
+            <Link prefetch={false} href="/me" className="csp-user-link">회원님</Link>
           </div>
         </header>
 
         <header className="csp-mobile-header">
-          <Link className="csp-mobile-brand" href="/">
+          <Link prefetch={false} className="csp-mobile-brand" href="/">
             <span>퍼뜩</span>
             <img src={SD_ASSETS.mobileBrandSpark} alt="" />
           </Link>
-          <Link href="/me/inbox" aria-label="알림" className="csp-icon-button">
+          <Link prefetch={false} href="/me/inbox" aria-label="알림" className="csp-icon-button">
             <img src={SD_ASSETS.mobileBell} alt="" />
           </Link>
         </header>
@@ -141,13 +142,13 @@ export function ConsumerSparkRoot({ children }: { children: ReactNode }) {
           {MOBILE_NAV.map((item) => {
             const selected = active === item.key;
             return (
-              <Link key={item.key} href={item.href} data-active={selected ? "true" : "false"}>
+              <Link prefetch={false} key={item.key} href={item.href} data-active={selected ? "true" : "false"}>
                 <img src={item.icon} alt="" />
                 <span>{item.label}</span>
               </Link>
             );
           })}
-          <Link href="/me" data-active={active === "more" ? "true" : "false"}>
+          <Link prefetch={false} href="/me" data-active={active === "more" ? "true" : "false"}>
             <span className="csp-dots" aria-hidden>•••</span>
             <span>더보기</span>
           </Link>
