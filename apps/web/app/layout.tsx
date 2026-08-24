@@ -42,9 +42,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko" className="theme-peotteok-light" data-font-scale="md">
       <body className="min-h-dvh bg-lux-bg text-lux-text">
         <DeviceTierApply />
-        <ToastHost>
-          <GlobalSparkBoundary>{children}</GlobalSparkBoundary>
-        </ToastHost>
+        <GlobalSparkBoundary>
+          <ToastHost>{children}</ToastHost>
+        </GlobalSparkBoundary>
         <PwaRuntime />
         <ObsRuntime />
       </body>
