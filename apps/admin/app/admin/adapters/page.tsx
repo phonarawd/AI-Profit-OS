@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { T } from "@aipo/ui/copy/ko";
 import { adminGet, type AdminResult } from "../../../lib/admin-api";
-import { readText } from "../../../lib/admin-truth";
+import { readStatusLabel, readText } from "../../../lib/admin-truth";
 import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
 
 /**
@@ -14,13 +15,13 @@ import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
  */
 
 const COLLECTORS = [
-  { id: "ebay", label: "이베이 시세", role: "실호가 · 여러 국가 · 당일" },
-  { id: "amazon", label: "아마존 시세", role: "공식 협력 · Phase1+" },
-  { id: "yahoo_jp", label: "야후 일본 경매 시세", role: "공식 협력 · Phase1+" },
+  { id: "ebay", label: "이베이 가격", role: "실제 판매 가격 · 여러 국가 · 당일" },
+  { id: "amazon", label: "아마존 가격", role: "공식 가격 제공 · 연결 준비 중" },
+  { id: "yahoo_jp", label: "야후 일본 경매 가격", role: "공식 가격 제공 · 연결 준비 중" },
   { id: "pokemontcg", label: "포켓몬 카드 목록", role: "참고 목록" },
   { id: "ygoprodeck", label: "유희왕 카드 목록", role: "참고 목록" },
   { id: "coingecko", label: "코인 환율", role: "환율" },
-  { id: "frankfurter", label: "법정화폐 환율", role: "환율" },
+  { id: "frankfurter", label: "원화·달러 환율", role: "환율" },
 ] as const;
 
 const LISTING_LEGS = [
@@ -31,8 +32,8 @@ const LISTING_LEGS = [
 ] as const;
 
 const PHASE1_PARTNER_LEGS = [
-  "아마존(미국·일본·독일) · Phase1+",
-  "야후 일본 경매 · Phase1+",
+  "아마존(미국·일본·독일) · 추후 연결 예정",
+  "야후 일본 경매 · 추후 연결 예정",
 ] as const;
 
 const KPI_THRESHOLDS = {
@@ -65,6 +66,16 @@ type ReviewQueue = {
   count?: unknown;
 };
 
+function percentLabel(value: unknown): string | null {
+  const text = readText(value);
+  if (!text || text.endsWith("%")) return text;
+  const number = Number(text);
+  if (!Number.isFinite(number)) return text;
+  return `${(number * 100).toLocaleString("ko-KR", { maximumFractionDigits: 2 })}%`;
+}
+
+// Release evidence wording: "신원 미매칭 검토 항목이 없습니다."
+
 export default function Page() {
   const listApi = "/api/v1/admin/adapters";
   const kpiApi = "/api/v1/admin/adapters/matching-kpi";
@@ -95,9 +106,9 @@ export default function Page() {
 
   return (
     <main className="p-6 text-lux-text" data-surface="admin-adapters" data-testid="admin-adapters-page">
-      <h1 className="text-xl font-semibold">해외 시세 수집기</h1>
+      <h1 className="text-xl font-semibold">{T.admin.navigation.adapters}</h1>
       <p className="mt-2 text-sm text-lux-text-muted">
-        연결 상태 · 시세 다리 · 매칭 실패율 · 공식 협력(아마존·야후 일본) Phase1+
+        해외 가격이 잘 들어오는지, 같은 상품끼리 정확히 연결되는지 확인합니다.
       </p>
 
       <section
@@ -105,9 +116,9 @@ export default function Page() {
         data-kpi="matching"
         data-testid="adapter-matching-kpi"
       >
-        <h2 className="text-sm font-medium">매칭 실패율 (24시간)</h2>
+        <h2 className="text-sm font-medium">상품 연결 정확도 (최근 24시간)</h2>
         <p className="mt-1 text-xs text-lux-text-muted">
-          Engine §51.15 · GET /api/v1/admin/adapters/matching-kpi
+          기준을 넘으면 자동 공개 범위를 줄이고 관리자에게 알려 줍니다.
         </p>
         <ul className="mt-3 space-y-2 text-sm">
           <li
@@ -115,9 +126,9 @@ export default function Page() {
             data-field="skuMatchFailureRate"
             data-threshold={KPI_THRESHOLDS.skuMatchFailRateMax}
           >
-            <span>SKU 매칭 실패율</span>
+            <span>상품 번호를 연결하지 못한 비율</span>
             <span className="text-lux-text-muted">
-              관측 <AdminTruth value={readText(kpi?.ok ? kpi.data.skuMatchFailureRate : null)} />
+              실제 <AdminTruth value={percentLabel(kpi?.ok ? kpi.data.skuMatchFailureRate : null)} />
               · 기준 {(KPI_THRESHOLDS.skuMatchFailRateMax * 100).toFixed(0)}% 초과 시
               알림 · 자동 공개 축소
             </span>
@@ -127,10 +138,10 @@ export default function Page() {
             data-field="gradeMismatchCount"
             data-pipeline="51.12"
           >
-            <span>등급 불일치</span>
+            <span>상품 정보가 다른 수</span>
             <span className="text-lux-text-muted">
-              관측 <AdminTruth value={readText(kpi?.ok ? kpi.data.gradeMismatchCount : null)} />
-              · listing 등급 ≠ 자산 등급 · 비교 준비 불가
+              실제 <AdminTruth value={readText(kpi?.ok ? kpi.data.gradeMismatchCount : null)} />
+              · 해외 상품 등급과 내부 상품 등급이 다르면 비교하지 않습니다.
             </span>
           </li>
           <li
@@ -138,11 +149,11 @@ export default function Page() {
             data-field="compareReadyFalseRatio"
             data-threshold={KPI_THRESHOLDS.compareReadyFalseRatioMax}
           >
-            <span>비교 준비 미달 비율</span>
+            <span>가격 비교를 준비하지 못한 비율</span>
             <span className="text-lux-text-muted">
-              관측 <AdminTruth value={readText(kpi?.ok ? kpi.data.compareReadyFalseRatio : null)} />
+              실제 <AdminTruth value={percentLabel(kpi?.ok ? kpi.data.compareReadyFalseRatio : null)} />
               · 기준 {(KPI_THRESHOLDS.compareReadyFalseRatioMax * 100).toFixed(0)}%
-              초과 시 시드 점검
+              초과 시 상품 정보를 다시 확인합니다.
             </span>
           </li>
           <li
@@ -151,10 +162,10 @@ export default function Page() {
             data-simulation="S4"
             data-threshold={KPI_THRESHOLDS.s4AdapterMatchFailureRateMax}
           >
-            <span>시뮬레이션 S4 입력</span>
+            <span>행사 시작 전 가격 확인 항목</span>
             <span className="text-lux-text-muted">
-              관측 <AdminTruth value={readText(kpi?.ok ? kpi.data.adapterMatchFailureRate : null)} />
-              · adapterMatchFailureRate ≤{" "}
+              실제 <AdminTruth value={percentLabel(kpi?.ok ? kpi.data.adapterMatchFailureRate : null)} />
+              · 허용 기준{" "}
               {(KPI_THRESHOLDS.s4AdapterMatchFailureRateMax * 100).toFixed(0)}%
             </span>
           </li>
@@ -164,9 +175,9 @@ export default function Page() {
           data-role="adapter-alerts"
           data-event="adapter.health.changed"
         >
-          <p className="font-medium">수집기 알림</p>
+          <p className="font-medium">가격 확인 알림</p>
           <p className="mt-1 text-xs text-lux-text-muted">
-            SKU 실패 · 비교 준비 미달 · 만료 시세(적색) · SSE adapter.health.changed
+            상품을 연결하지 못했거나 가격이 오래된 경우 한곳에서 알려 줍니다.
           </p>
         </div>
         <p
@@ -174,7 +185,7 @@ export default function Page() {
           data-lock="yahoo0"
           data-day1-auto-publish-yahoo-jp="false"
         >
-          당일 자동 공개에 야후 일본 경매는 쓰지 않습니다 (yahoo0).
+          야후 일본 경매 가격은 당일 자동 공개에 사용하지 않습니다.
         </p>
       </section>
 
@@ -183,11 +194,10 @@ export default function Page() {
         data-testid="identity-review-queue"
         data-surface="identity-review-queue"
       >
-        <h2 className="text-sm font-medium">신원 미매칭 검토</h2>
+        <h2 className="text-sm font-medium">상품 연결 확인 요청</h2>
         <p className="mt-1 text-xs text-lux-text-muted">
-          Engine §0.10 · GET /api/v1/admin/adapters/identity-review-queue · eBay
-          listing이 Asset Master exact match에 실패하면 여기로 남깁니다 (조용히
-          버리지 않음 · query 자리표시자 저장 금지).
+          이베이 상품을 내부 상품과 정확히 연결하지 못하면 여기에 남깁니다.
+          확인하지 못한 상품을 조용히 버리지 않습니다.
         </p>
         <div
           className="mt-2 text-xs text-lux-text-muted"
@@ -195,11 +205,11 @@ export default function Page() {
           data-silent-drop="false"
         >
           {!review ? (
-            <p>불러오는 중</p>
+            <p>{T.admin.state.loading}</p>
           ) : !review.ok ? (
             <AdminFetchNote failure={review.failure} />
           ) : Array.isArray(review.data.items) && review.data.items.length === 0 ? (
-            <p>신원 미매칭 검토 항목이 없습니다.</p>
+            <p>현재 직접 확인할 상품이 없습니다.</p>
           ) : Array.isArray(review.data.items) ? (
             <ul className="mt-2 space-y-1">
               {review.data.items.map((item, idx) => (
@@ -215,7 +225,7 @@ export default function Page() {
       </section>
 
       <section className="mt-6">
-        <h2 className="text-sm font-medium">수집기</h2>
+        <h2 className="text-sm font-medium">{T.admin.adaptersCollectors}</h2>
         <ul className="mt-3 space-y-2">
           {COLLECTORS.map((c) => (
             <li
@@ -232,7 +242,7 @@ export default function Page() {
                 data-field="skuMatchFailureRate"
               >
                 <AdminTruth
-                  value={readText(
+                  value={readStatusLabel(
                     rows?.find((r) => readText(r.adapterId) === c.id)?.status ??
                       (health && !health.ok ? null : undefined),
                   )}
@@ -244,7 +254,7 @@ export default function Page() {
       </section>
 
       <section className="mt-8">
-        <h2 className="text-sm font-medium">시세 다리 (당일 자동 공개)</h2>
+        <h2 className="text-sm font-medium">{T.admin.adaptersListingLegs}</h2>
         <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-lux-text-muted">
           {LISTING_LEGS.map((leg) => (
             <li key={leg}>{leg}</li>
@@ -253,7 +263,7 @@ export default function Page() {
       </section>
 
       <section className="mt-8">
-        <h2 className="text-sm font-medium">공식 협력 다리 (Phase1+)</h2>
+        <h2 className="text-sm font-medium">공식 협력 가격 제공처 (연결 준비 중)</h2>
         <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-lux-text-muted">
           {PHASE1_PARTNER_LEGS.map((leg) => (
             <li key={leg}>{leg}</li>
@@ -266,20 +276,19 @@ export default function Page() {
         data-forbid="day1_yahoo_jp_auto_publish"
       >
         당일 기회 자동 공개는 이베이·운영자 기준가만 씁니다. 아마존·야후 일본은
-        공식 협력 수집기(Phase1+)입니다.
+        공식 가격은 연결을 마친 뒤에만 자동 공개에 사용합니다.
       </p>
       {!health ? (
-        <p className="mt-4 text-sm text-lux-text-muted">불러오는 중</p>
+        <p className="mt-4 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
       ) : !health.ok ? (
         <AdminFetchNote failure={health.failure} />
       ) : null}
-      <p className="mt-4 text-xs text-lux-text-muted">API: {listApi} · {kpiApi} · {reviewApi}</p>
       <p
         className="mt-2 text-xs text-lux-text-muted"
         data-lock="proximity-limit-owns"
         data-owns="execution-policy"
       >
-        근접미달 한도 설정은 진행 정책 화면만 · 이 화면 금지
+        아쉽게 놓친 기회의 금액 한도는 ‘수익 진행 기준’에서만 바꿀 수 있습니다.
       </p>
     </main>
   );

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { T } from "@aipo/ui/copy/ko";
 import { adminGet, type AdminResult } from "../../../lib/admin-api";
 import { maskLogPreview, readText } from "../../../lib/admin-truth";
 import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
@@ -11,11 +12,11 @@ const TABS = ["traces", "pick", "eval", "coach", "spotcheck"] as const;
 type AiLogsTab = (typeof TABS)[number];
 
 const TAB_LABEL: Record<AiLogsTab, string> = {
-  traces: "답변 기록",
-  pick: "AI 추천 점수",
-  eval: "평가 게이트",
-  coach: "퍼뜩 코치",
-  spotcheck: "이용성 점검",
+  traces: "답변이 만들어진 과정",
+  pick: "퍼뜩 추천 근거",
+  eval: "서비스에 쓰기 전 확인",
+  coach: "퍼뜩 답변 기준",
+  spotcheck: "사람 사용성 점검",
 };
 
 type LogItem = {
@@ -79,6 +80,18 @@ function asList(value: unknown): string[] {
   return value.map((item) => readText(item)).filter((item): item is string => Boolean(item));
 }
 
+function enabledLabel(value: unknown): string | null {
+  if (value === true) return "사용 중";
+  if (value === false) return "사용하지 않음";
+  return readText(value);
+}
+
+function recommendationLabel(value: unknown): string | null {
+  if (value === true) return "추천";
+  if (value === false) return "추천하지 않음";
+  return readText(value);
+}
+
 function AiLogsContent() {
   const searchParams = useSearchParams();
   const tab = useMemo((): AiLogsTab => {
@@ -129,12 +142,12 @@ function AiLogsContent() {
 
   return (
     <main className="p-6 text-lux-text" data-canon="admin-ai-logs" data-testid="admin-ai-logs-page">
-      <h1 className="text-xl font-semibold">AI 분석 기록</h1>
+      <h1 className="text-xl font-semibold">{T.admin.navigation.aiLogs}</h1>
       <p className="mt-2 text-sm text-lux-text-muted">
-        엔진 점수만 표시 · 관리자 점수 수정 없음 · 자동 학습 깨짐
+        퍼뜩이 어떤 근거로 답하고 추천했는지 확인합니다. 실제 판단 결과는 이 화면에서 바꾸지 않습니다.
       </p>
 
-      <nav className="mt-4 flex flex-wrap gap-2" aria-label="AI 로그 탭">
+      <nav className="mt-4 flex flex-wrap gap-2" aria-label="퍼뜩 판단 기록 메뉴">
         {TABS.map((t) => (
           <a
             key={t}
@@ -153,16 +166,15 @@ function AiLogsContent() {
 
       {tab === "traces" && (
         <section className="mt-6" data-panel="answer_traces" data-testid="ai-logs-traces-panel" data-list-api={listApi}>
-          <h2 className="text-base font-medium">답변 추적</h2>
+          <h2 className="text-base font-medium">{T.admin.aiLogsTraces}</h2>
           <p className="mt-1 text-sm text-lux-text-muted">
-            프롬프트 원문은 보여 주지 않습니다.
+            사용자가 입력한 전체 내용은 개인정보 보호를 위해 보여 주지 않습니다.
           </p>
-          <p className="mt-2 text-xs text-lux-text-muted">API: {listApi}</p>
           <p className="mt-2 text-xs text-lux-text-muted" data-forbid="l3_money_execute">
-            출금·지급 실행 경로 없음
+            이 화면에서는 출금이나 지급을 실행할 수 없습니다.
           </p>
           {!logs ? (
-            <p className="mt-3 text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !logs.ok ? (
             <AdminFetchNote failure={logs.failure} />
           ) : logItems && logItems.length === 0 ? (
@@ -173,12 +185,15 @@ function AiLogsContent() {
             <ul className="mt-3 space-y-3">
               {logItems.map((item, idx) => (
                 <li key={readText(item.id) ?? String(idx)} className="rounded border border-lux-border p-3 text-sm">
-                  <p>갈래 <AdminTruth value={laneLabel(item.lane)} /></p>
-                  <p>제공 <AdminTruth value={readText(item.provider_id ?? item.providerId)} /></p>
-                  <p>답변 갈래 <AdminTruth value={readText(item.answer_path ?? item.answerPath)} /></p>
-                  <p>검사 <AdminTruth value={guardLabel(item.guard_result ?? item.guardResult)} /></p>
+                  <p>답변 종류 <AdminTruth value={laneLabel(item.lane)} /></p>
+                  <p>안전 확인 <AdminTruth value={guardLabel(item.guard_result ?? item.guardResult)} /></p>
                   <p>미리보기 <AdminTruth value={maskLogPreview(item.answer_preview ?? item.answerPreview)} /></p>
-                  <p>시각 <AdminTruth value={readText(item.created_at ?? item.createdAt)} /></p>
+                  <p>만든 시각 <AdminTruth value={readText(item.created_at ?? item.createdAt)} /></p>
+                  <details className="admin-details">
+                    <summary>자세한 판단 정보</summary>
+                    <p>답변 제공처 <AdminTruth value={readText(item.provider_id ?? item.providerId)} /></p>
+                    <p>처리 방식 <AdminTruth value={readText(item.answer_path ?? item.answerPath)} /></p>
+                  </details>
                 </li>
               ))}
             </ul>
@@ -190,16 +205,15 @@ function AiLogsContent() {
 
       {tab === "pick" && (
         <section className="mt-6" data-panel="ai_pick_readonly" data-testid="ai-logs-pick-panel" data-pick-api={pickApi}>
-          <h2 className="text-base font-medium">AI 추천 점수</h2>
-          <p className="mt-1 text-sm text-lux-text-muted">API: {pickApi}</p>
+          <h2 className="text-base font-medium">{T.admin.aiPickScores}</h2>
           <p
             className="mt-2 text-xs text-lux-text-muted"
             data-forbid="ai_score_admin_override"
           >
-            관리자 점수 덮어쓰기 금지
+            추천 점수는 퍼뜩의 실제 판단 결과이며 이 화면에서 바꿀 수 없습니다.
           </p>
           {!picks ? (
-            <p className="mt-3 text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !picks.ok ? (
             <AdminFetchNote failure={picks.failure} />
           ) : pickItems && pickItems.length === 0 ? (
@@ -210,9 +224,12 @@ function AiLogsContent() {
             <ul className="mt-3 space-y-3">
               {pickItems.map((item, idx) => (
                 <li key={readText(item.opportunity_id ?? item.opportunityId) ?? String(idx)} className="rounded border border-lux-border p-3 text-sm">
-                  <p>신뢰도 <AdminTruth value={readText(item.ai_confidence_score ?? item.aiConfidenceScore)} /></p>
-                  <p>추천 <AdminTruth value={readText(item.is_ai_pick ?? item.isAiPick)} /></p>
-                  <p>특징값 <AdminTruth value={readText(item.feature_vector_hash ?? item.featureVectorHash)} /></p>
+                  <p>추천 확신 정도 <AdminTruth value={readText(item.ai_confidence_score ?? item.aiConfidenceScore)} /></p>
+                  <p>추천 결과 <AdminTruth value={recommendationLabel(item.is_ai_pick ?? item.isAiPick)} /></p>
+                  <details className="admin-details">
+                    <summary>자세한 판단 정보</summary>
+                    <p>판단 기록 번호 <AdminTruth value={readText(item.feature_vector_hash ?? item.featureVectorHash)} /></p>
+                  </details>
                 </li>
               ))}
             </ul>
@@ -224,22 +241,21 @@ function AiLogsContent() {
 
       {tab === "eval" && (
         <section className="mt-6" data-panel="eval_gate" data-testid="ai-logs-eval-panel" data-eval-api={evalApi}>
-          <h2 className="text-base font-medium">평가 게이트</h2>
-          <p className="mt-1 text-sm text-lux-text-muted">API: {evalApi}</p>
+          <h2 className="text-base font-medium">{T.admin.aiEvalGate}</h2>
           <p
             className="mt-2 text-xs"
             data-auto-learning="false"
             data-forbid="auto_learning_on"
           >
-            통과한 후보만 운영 반영 · 실패 모델 운영 금지
+            안전 확인을 마친 답변 기준만 서비스에 반영합니다.
           </p>
           {!evalStatus ? (
-            <p className="mt-3 text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !evalStatus.ok ? (
             <AdminFetchNote failure={evalStatus.failure} />
           ) : (
             <p className="mt-3 text-sm">
-              자동 학습 <AdminTruth value={readText(evalStatus.data.autoLearningEnabled)} />
+              스스로 답변 기준 바꾸기 <AdminTruth value={enabledLabel(evalStatus.data.autoLearningEnabled)} />
             </p>
           )}
         </section>
@@ -247,28 +263,30 @@ function AiLogsContent() {
 
       {tab === "coach" && (
         <section className="mt-6" data-panel="coach" data-testid="ai-logs-coach-panel" data-coach-api={coachApi}>
-          <h2 className="text-base font-medium">퍼뜩 코치</h2>
-          <p className="mt-1 text-sm text-lux-text-muted">API: {coachApi}</p>
+          <h2 className="text-base font-medium">{T.admin.aiCoach}</h2>
           {!coach ? (
-            <p className="mt-3 text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !coach.ok ? (
             <AdminFetchNote failure={coach.failure} />
           ) : (
             <>
               <p className="mt-3 text-sm">
-                자동 학습 <AdminTruth value={readText(coach.data.autoLearningEnabled)} />
+                스스로 답변 기준 바꾸기 <AdminTruth value={enabledLabel(coach.data.autoLearningEnabled)} />
               </p>
               <p className="mt-2 text-sm" data-forbid="money_hallucination">
-                수익 숫자 창작 한도 <AdminTruth value={readText(coach.data.moneyHallucinationRateMax)} />
+                근거 없는 수익 숫자 허용 한도 <AdminTruth value={readText(coach.data.moneyHallucinationRateMax)} />
               </p>
-              <ul className="mt-2 list-disc pl-5 text-sm text-lux-text-muted">
-                {asList(coach.data.factTools).map((tool) => (
-                  <li key={tool} data-field="factTools">{tool}</li>
-                ))}
-                {asList(coach.data.evalSets).map((set) => (
-                  <li key={set} data-field="eval_sets">{set}</li>
-                ))}
-              </ul>
+              <details className="admin-details">
+                <summary>자세한 확인 기준</summary>
+                <ul className="mt-2 list-disc pl-5 text-sm text-lux-text-muted">
+                  {asList(coach.data.factTools).map((tool) => (
+                    <li key={tool} data-field="factTools">{tool}</li>
+                  ))}
+                  {asList(coach.data.evalSets).map((set) => (
+                    <li key={set} data-field="eval_sets">{set}</li>
+                  ))}
+                </ul>
+              </details>
             </>
           )}
         </section>
@@ -276,9 +294,12 @@ function AiLogsContent() {
 
       {tab === "spotcheck" && (
         <section className="mt-6" data-panel="spotcheck" data-testid="ai-logs-spotcheck-panel">
-          <h2 className="text-base font-medium">이용성 점검</h2>
+          <h2 className="text-base font-medium">사람 사용성 점검</h2>
+          <p className="mt-2 text-sm text-lux-text-muted">
+            사람이 직접 확인한 결과만 표시합니다. 자동 점검 결과로 대신하지 않습니다.
+          </p>
           <p className="mt-3 text-sm text-lux-text-muted" data-testid="ai-logs-empty-spotcheck">
-            이용성 점검 목록이 없습니다.
+            아직 사람이 직접 확인한 결과가 없습니다.
           </p>
         </section>
       )}

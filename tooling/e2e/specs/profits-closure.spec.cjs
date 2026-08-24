@@ -163,7 +163,9 @@ test("profits a11y has no new critical/serious axe violations", async ({
     "READY",
   );
   const run = async () => {
-    await page.addScriptTag({ path: require.resolve("axe-core") });
+    // Dev CSP blocks DOM-injected scripts; CDP evaluation keeps the committed
+    // axe runtime executable without weakening the application policy.
+    await page.evaluate(require("axe-core").source);
     return page.evaluate(async () => {
       return window.axe.run(document, {
         runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },

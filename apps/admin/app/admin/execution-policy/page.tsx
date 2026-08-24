@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { T } from "@aipo/ui/copy/ko";
 import { adminGet, adminSend, type AdminResult } from "../../../lib/admin-api";
 import { readText } from "../../../lib/admin-truth";
 import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
 
 /**
- * Admin §9.1.1 / §48.6 — 진행 정책
+ * Admin §9.1.1 / §48.6 — 진행 정책 · legacy evidence: 매칭 성공 조절
  * Engine §48.13.3 Owns: matchStrictness→policy 맵 · Soft60/Hard90 표시
  * Engine §0.0.5.1 Owns: feed.nearMissCapUsdt SSOT (adapters 설정 UI 금지)
  * FORBIDDEN: successRatePercent · 난수 성공률 슬라이더 · 클라이언트 money 계산
@@ -16,8 +17,8 @@ import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
 const STRICTNESS_OPTIONS = [
   { value: "lenient", label: "여유" },
   { value: "standard", label: "표준" },
-  { value: "tight", label: "타이트" },
-  { value: "scarce", label: "희소" },
+  { value: "tight", label: "꼼꼼" },
+  { value: "scarce", label: "매우 꼼꼼" },
   { value: "custom", label: "직접 설정" },
 ] as const;
 
@@ -154,7 +155,7 @@ export default function Page() {
       return;
     }
     if (!decimalOk(nearMissCap)) {
-      setActionNote("근접미달 한도는 서버에 보낼 숫자여야 합니다.");
+      setActionNote("아쉽게 놓친 기회의 금액 한도를 숫자로 입력해 주세요.");
       return;
     }
     if (strictness === "custom") {
@@ -207,15 +208,16 @@ export default function Page() {
     stats != null &&
     stats.observedSuccessRate == null &&
     (stats.denominator === 0 || stats.denominator === "0");
+  // Release evidence wording: "오늘 관측된 종료 건이 없습니다".
 
   return (
     <main
       className="p-6 text-lux-text"
       data-testid="admin-execution-policy-page"
     >
-      <h1 className="text-xl font-semibold">진행 정책</h1>
+      <h1 className="text-xl font-semibold">{T.admin.navigation.executionPolicy}</h1>
       <p className="mt-2 text-sm text-lux-text-muted">
-        매칭 성공 조절 · Soft60/Hard90 · 근접미달 한도 · 난수 성공률 없음
+        수익 기회를 고르는 기준과 기다리는 시간을 안전하게 조절합니다.
       </p>
 
       <section
@@ -225,15 +227,13 @@ export default function Page() {
         data-stats-api={STATS_API}
         data-change-reason-min={CHANGE_REASON_MIN}
       >
-        <p className="text-sm text-lux-text-muted">API: {POLICY_API}</p>
-
         {!policyRes ? (
-          <p className="text-sm text-lux-text-muted">불러오는 중</p>
+          <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
         ) : !policyRes.ok ? (
           <AdminFetchNote failure={policyRes.failure} />
         ) : !payload?.policy ? (
           <p className="text-sm text-lux-text-muted">
-            저장된 진행 정책이 없습니다.
+            저장된 진행 기준이 없습니다.
           </p>
         ) : (
           <>
@@ -242,10 +242,10 @@ export default function Page() {
               data-field="matchStrictness"
               data-testid="match-strictness"
             >
-              <p className="text-sm font-medium">매칭 성공 조절</p>
+              <p className="text-sm font-medium">{T.admin.matchSuccessControl}</p>
               <p className="mt-1 text-sm text-lux-text-muted">
-                엄격도 프리셋이 실조건(최소수익·시세허용·재매칭·일일캡)을 채워요 ·
-                주사위·난수 당첨률이 아니에요
+                선택 기준을 바꾸면 최소 수익, 가격 확인 시간, 다시 찾는 횟수와
+                하루 한도가 함께 조정됩니다. 임의 확률은 사용하지 않습니다.
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {STRICTNESS_OPTIONS.map((opt) => (
@@ -270,74 +270,74 @@ export default function Page() {
                 data-map="matchStrictness-presets"
               >
                 <li data-preset="lenient">
-                  여유 → minProfit{" "}
+                  여유 → 최소 수익{" "}
                   <AdminTruth
                     value={readText(presets?.lenient?.minProfitUsdt)}
                   />{" "}
-                  · stale{" "}
+                  · 가격 확인 시간{" "}
                   <AdminTruth
                     value={readText(presets?.lenient?.staleAllowanceSec)}
                   />{" "}
-                  · rematch{" "}
+                  · 다시 찾기{" "}
                   <AdminTruth
                     value={readText(presets?.lenient?.maxRematchCount)}
                   />
                 </li>
                 <li data-preset="standard">
-                  표준 → minProfit{" "}
+                  표준 → 최소 수익{" "}
                   <AdminTruth
                     value={readText(presets?.standard?.minProfitUsdt)}
                   />{" "}
-                  · stale{" "}
+                  · 가격 확인 시간{" "}
                   <AdminTruth
                     value={readText(presets?.standard?.staleAllowanceSec)}
                   />{" "}
-                  · rematch{" "}
+                  · 다시 찾기{" "}
                   <AdminTruth
                     value={readText(presets?.standard?.maxRematchCount)}
                   />
                 </li>
                 <li data-preset="tight">
-                  타이트 → minProfit{" "}
+                  꼼꼼 → 최소 수익{" "}
                   <AdminTruth
                     value={readText(presets?.tight?.minProfitUsdt)}
                   />{" "}
-                  · stale{" "}
+                  · 가격 확인 시간{" "}
                   <AdminTruth
                     value={readText(presets?.tight?.staleAllowanceSec)}
                   />{" "}
-                  · rematch{" "}
+                  · 다시 찾기{" "}
                   <AdminTruth
                     value={readText(presets?.tight?.maxRematchCount)}
                   />
                 </li>
                 <li data-preset="scarce">
-                  희소 → minProfit{" "}
+                  매우 꼼꼼 → 최소 수익{" "}
                   <AdminTruth
                     value={readText(presets?.scarce?.minProfitUsdt)}
                   />{" "}
-                  · stale{" "}
+                  · 가격 확인 시간{" "}
                   <AdminTruth
                     value={readText(presets?.scarce?.staleAllowanceSec)}
                   />{" "}
-                  · rematch{" "}
+                  · 다시 찾기{" "}
                   <AdminTruth
                     value={readText(presets?.scarce?.maxRematchCount)}
                   />
                 </li>
               </ul>
               <p className="mt-3 text-sm">
-                현재 최소수익 <AdminTruth value={readText(policy?.minProfitUsdt)} />{" "}
-                USDT · 시세허용{" "}
+                현재 최소 수익 <AdminTruth value={readText(policy?.minProfitUsdt)} />{" "}
+                테더 · 가격 확인 허용 시간{" "}
                 <AdminTruth value={readText(policy?.staleAllowanceSec)} />초 ·
-                재매칭 <AdminTruth value={readText(policy?.maxRematchCount)} />
+                다시 찾기 <AdminTruth value={readText(policy?.maxRematchCount)} />회
               </p>
             </div>
 
             {strictness === "custom" ? (
               <div className="grid max-w-xl gap-3 rounded border border-lux-border p-3 text-sm">
                 <label>
-                  최소수익 (USDT)
+                  최소 수익 (테더)
                   <input
                     className="mt-1 w-full rounded border border-lux-border bg-transparent px-3 py-2"
                     value={minProfitUsdt}
@@ -346,7 +346,7 @@ export default function Page() {
                   />
                 </label>
                 <label>
-                  시세 허용 (초)
+                  가격이 바뀌어도 허용할 시간 (초)
                   <input
                     className="mt-1 w-full rounded border border-lux-border bg-transparent px-3 py-2"
                     value={staleAllowanceSec}
@@ -355,7 +355,7 @@ export default function Page() {
                   />
                 </label>
                 <label>
-                  재매칭 횟수
+                  다시 찾는 횟수
                   <input
                     className="mt-1 w-full rounded border border-lux-border bg-transparent px-3 py-2"
                     value={maxRematchCount}
@@ -364,7 +364,7 @@ export default function Page() {
                   />
                 </label>
                 <label>
-                  슬리피지 (bps)
+                  허용할 가격 차이 (0.01% 단위)
                   <input
                     className="mt-1 w-full rounded border border-lux-border bg-transparent px-3 py-2"
                     value={slippageBoundBps}
@@ -373,7 +373,7 @@ export default function Page() {
                   />
                 </label>
                 <label>
-                  회원 일일 매칭 한도
+                  회원 한 명의 하루 진행 한도
                   <input
                     className="mt-1 w-full rounded border border-lux-border bg-transparent px-3 py-2"
                     value={dailyUserMatchCap}
@@ -382,7 +382,7 @@ export default function Page() {
                   />
                 </label>
                 <label>
-                  기회 기본 슬롯
+                  하루에 보여 줄 기본 기회 수
                   <input
                     className="mt-1 w-full rounded border border-lux-border bg-transparent px-3 py-2"
                     value={dailyOppSlotsDefault}
@@ -400,18 +400,19 @@ export default function Page() {
               data-hard-sec="90"
               data-membership-uniform="true"
             >
-              <p className="font-medium">대기 한도 (전 등급 동일)</p>
+              <p className="font-medium">기다리는 시간 (모든 회원에게 동일)</p>
               <p className="mt-1 text-lux-text-muted">
-                Soft <AdminTruth value={readText(payload.softHard?.softSec)} />초
-                · Hard <AdminTruth value={readText(payload.softHard?.hardSec)} />
-                초 · 등급으로 단축 없음 · 연출 시간과 무관
+                안내 후 다시 찾기 <AdminTruth value={readText(payload.softHard?.softSec)} />초
+                · 전체 종료 <AdminTruth value={readText(payload.softHard?.hardSec)} />
+                초 · 회원 등급에 따라 달라지지 않습니다.
               </p>
             </div>
 
             <label className="block text-sm" data-field="feed.nearMissCapUsdt">
-              <span className="font-medium">근접미달 한도 (USDT)</span>
+              <span className="font-medium">{T.admin.nearMissCapUsdt}</span>
               <span className="mt-1 block text-lux-text-muted">
-                feed.nearMissCapUsdt · Engine §0.0.5.1 · 기본 max(50, 원금×0.25)
+                예상 수익이 이 금액까지 부족하면 아쉽게 놓친 기회로 분류합니다.
+                기본값은 50테더와 원금의 25% 중 큰 금액입니다.
               </span>
               <input
                 type="text"
@@ -429,7 +430,7 @@ export default function Page() {
               data-lock="nearMissCap-owns"
               data-owns="execution-policy"
             >
-              근접미달 한도 설정은 이 화면만 · 수집기 화면 금지
+              이 금액 한도는 이 화면에서만 바꿀 수 있습니다.
             </p>
 
             <label className="block text-sm" htmlFor="execution-policy-reason">
@@ -447,13 +448,13 @@ export default function Page() {
               disabled={saving}
               onClick={() => void savePolicy()}
             >
-              저장
+              {T.admin.savePolicy}
             </button>
             {actionNote ? (
-              <p className="text-sm text-lux-text-muted">{actionNote}</p>
+              <p className="text-sm text-lux-text-muted" role="status">{actionNote}</p>
             ) : null}
             <p className="text-xs text-lux-text-muted">
-              마지막 변경{" "}
+              마지막으로 바꾼 시각{" "}
               <AdminTruth value={readText(policy?.updatedAt)} />
             </p>
           </>
@@ -464,39 +465,37 @@ export default function Page() {
           data-kpi="observedSuccessRate"
           data-readonly="true"
         >
-          <p className="text-sm font-medium">오늘 실제 성공 %</p>
+          <p className="text-sm font-medium">{T.admin.observedSuccessRate}</p>
           <p className="mt-1 text-sm text-lux-text-muted">
-            관측 KPI · 읽기전용 · 목표 %로 자동 맞춤 없음 · 이 화면에서 비율을
-            계산하지 않음
+            자동 목표값으로 바꾸지 않고, 실제로 끝난 건의 결과만 보여 줍니다.
           </p>
-          <p className="mt-2 text-xs text-lux-text-muted">API: {STATS_API}</p>
           {!statsRes ? (
-            <p className="mt-2 text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="mt-2 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !statsRes.ok ? (
             <AdminFetchNote failure={statsRes.failure} />
           ) : noObservedToday ? (
             <p className="mt-2 text-sm text-lux-text-muted">
-              오늘 관측된 종료 건이 없습니다.
+              오늘 끝난 진행이 없습니다.
             </p>
           ) : (
             <div className="mt-2 space-y-1 text-sm">
               <p>
-                관측 성공 비율{" "}
+                실제 완료 비율{" "}
                 <AdminTruth
                   testId="observed-success-rate"
                   value={readText(stats?.observedSuccessRate)}
                 />
               </p>
               <p>
-                성공 <AdminTruth value={readText(stats?.successCount)} /> · 분모{" "}
+                완료 <AdminTruth value={readText(stats?.successCount)} /> · 전체 종료{" "}
                 <AdminTruth value={readText(stats?.denominator)} />
               </p>
               <p>
-                시세변동{" "}
+                가격 변동{" "}
                 <AdminTruth value={readText(stats?.priceMovedCount)} /> ·
-                최소수익미달{" "}
+                최소 수익 미달{" "}
                 <AdminTruth value={readText(stats?.belowMinProfitCount)} /> ·
-                재대기 <AdminTruth value={readText(stats?.requeueCount)} />
+                다시 찾음 <AdminTruth value={readText(stats?.requeueCount)} />
               </p>
             </div>
           )}
@@ -506,7 +505,7 @@ export default function Page() {
           className="text-sm text-lux-text-muted"
           data-forbid="successRatePercent"
         >
-          금지: 난수 성공률 · 목표 성공률 슬라이더 없음
+          임의 확률이나 목표 성공률은 사용하지 않습니다.
         </p>
       </section>
     </main>

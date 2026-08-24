@@ -2,27 +2,29 @@
  * Admin IA lock — Admin §9.1 (12 modules) + §9.1.1 children
  * sidebar 13th top-level FORBIDDEN · verify:admin-routes
  */
+import { T } from "@aipo/ui/copy/ko";
+
 export const ADMIN_MODULES = [
-  { id: 1, label: "한눈에 보기", href: "/admin", service: "dashboard" },
-  { id: 2, label: "수익 기회 관리", href: "/admin/opportunities", service: "opportunities" },
+  { id: 1, label: T.admin.navigation.dashboard, href: "/admin", service: "dashboard" },
+  { id: 2, label: T.admin.navigation.opportunities, href: "/admin/opportunities", service: "opportunities" },
   {
     id: "2b",
-    label: "진행 정책",
+    label: T.admin.navigation.executionPolicy,
     href: "/admin/execution-policy",
     service: "execution-policy",
     parentOf: 2,
     sidebarChild: true,
   },
-  { id: 3, label: "해외 시세 수집기", href: "/admin/adapters", service: "adapters" },
-  { id: 4, label: "입출금 관리", href: "/admin/wallet", service: "wallet" },
-  { id: 5, label: "입출금·정산 장부", href: "/admin/ledger", service: "ledger" },
-  { id: 6, label: "회원 관리", href: "/admin/users", service: "users" },
-  { id: 7, label: "사기·이상 거래 방지", href: "/admin/risk", service: "risk" },
-  { id: 8, label: "법적 확인·제재", href: "/admin/compliance", service: "compliance" },
-  { id: 9, label: "긴급 정지", href: "/admin/system-control", service: "circuit" },
-  { id: 10, label: "AI 분석 기록", href: "/admin/ai-logs", service: "ai-logs" },
-  { id: 11, label: "이벤트·프로모션", href: "/admin/growth", service: "growth" },
-  { id: 12, label: "운영 기록", href: "/admin/audit", service: "audit" },
+  { id: 3, label: T.admin.navigation.adapters, href: "/admin/adapters", service: "adapters" },
+  { id: 4, label: T.admin.navigation.wallet, href: "/admin/wallet", service: "wallet" },
+  { id: 5, label: T.admin.navigation.ledger, href: "/admin/ledger", service: "ledger" },
+  { id: 6, label: T.admin.navigation.users, href: "/admin/users", service: "users" },
+  { id: 7, label: T.admin.navigation.risk, href: "/admin/risk", service: "risk" },
+  { id: 8, label: T.admin.navigation.compliance, href: "/admin/compliance", service: "compliance" },
+  { id: 9, label: T.admin.navigation.systemControl, href: "/admin/system-control", service: "circuit" },
+  { id: 10, label: T.admin.navigation.aiLogs, href: "/admin/ai-logs", service: "ai-logs" },
+  { id: 11, label: T.admin.navigation.growth, href: "/admin/growth", service: "growth" },
+  { id: 12, label: T.admin.navigation.audit, href: "/admin/audit", service: "audit" },
 ] as const;
 
 /** Top-level sidebar count must stay 12 (2b is child link, not 13th) */

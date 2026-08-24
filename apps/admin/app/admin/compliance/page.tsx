@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
+import { T } from "@aipo/ui/copy/ko";
 import {
   adminGet,
   adminSend,
@@ -151,7 +152,7 @@ function ComplianceContent() {
     if (!res.ok) {
       setActionNote(
         res.failure.kind === "unauthorized"
-          ? "운영 권한이 필요합니다"
+          ? T.admin.state.unauthorized
           : "서류를 열 수 없습니다.",
       );
       return;
@@ -183,7 +184,10 @@ function ComplianceContent() {
       data-admin-compliance-tab={tab}
       data-testid="admin-compliance-page"
     >
-      <h1 className="text-xl font-semibold">법적 확인·제재</h1>
+      <h1 className="text-xl font-semibold">{T.admin.navigation.compliance}</h1>
+      <p className="mt-2 text-sm text-lux-text-muted">
+        출금 전 본인 확인 요청을 살펴보고 승인하거나 다시 요청합니다.
+      </p>
       <nav
         className="mt-4 flex flex-wrap gap-2 text-sm"
         data-testid="compliance-tabs"
@@ -215,10 +219,8 @@ function ComplianceContent() {
           data-reject-reason-min={REJECT_REASON_MIN}
         >
           <p className="text-sm text-lux-text-muted">
-            출금 본인 확인 심사 · 승인·거절은 서버 상태로만 · 잔액은 이 화면에서
-            바꾸지 않습니다
+            제출된 이름과 서류를 직접 확인해 주세요. 회원 잔액은 이 화면에서 바꿀 수 없습니다.
           </p>
-          <p className="mt-2 text-xs text-lux-text-muted">API: {queueApi}</p>
           <div className="mt-4 flex flex-wrap gap-2 text-sm">
             {QUEUE_STATUSES.map((status) => (
               <a
@@ -245,7 +247,7 @@ function ComplianceContent() {
             className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
           />
           {!queue ? (
-            <p className="mt-3 text-sm text-lux-text-muted">불러오는 중</p>
+            <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
           ) : !queue.ok ? (
             <AdminFetchNote failure={queue.failure} />
           ) : items && items.length === 0 ? (
@@ -268,7 +270,7 @@ function ComplianceContent() {
                       이름 <AdminTruth value={readText(item.legalName)} />
                     </p>
                     <p>
-                      회원 <AdminTruth value={userId} />
+                      회원 번호 <AdminTruth value={userId} />
                     </p>
                     <p>
                       신청일 <AdminTruth value={readText(item.createdAt)} />
@@ -321,7 +323,7 @@ function ComplianceContent() {
                           className="rounded px-2 py-1 text-lux-text-muted"
                           onClick={() => void openDoc(userId, "selfie")}
                         >
-                          셀피 보기
+                          얼굴 사진 보기
                         </button>
                         {queueStatus === "pending" ? (
                           <>
@@ -335,6 +337,7 @@ function ComplianceContent() {
                             <button
                               type="button"
                               className="rounded px-2 py-1 text-lux-text-muted"
+                              data-tone="danger"
                               onClick={() => void decide(userId, "reject")}
                             >
                               거절
@@ -360,7 +363,9 @@ function ComplianceContent() {
             <AdminTruth value={null} />
           )}
           {actionNote ? (
-            <p className="mt-2 text-sm text-lux-text-muted">{actionNote}</p>
+            <p className="mt-2 text-sm text-lux-text-muted" role="status">
+              {actionNote}
+            </p>
           ) : null}
         </section>
       ) : null}
