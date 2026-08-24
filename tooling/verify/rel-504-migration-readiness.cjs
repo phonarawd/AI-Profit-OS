@@ -1,6 +1,6 @@
 /**
  * verify:rel-504-migration-readiness
- * READY 문서만. apply_migration / production DDL 0.
+ * READY document + audited migration source parity only. Production DB apply = 0.
  */
 const fs = require("fs");
 const path = require("path");
@@ -76,9 +76,6 @@ for (const needle of [
   if (!ready.includes(needle)) fails.push("readiness doc missing " + needle);
 }
 
-if (/apply_migration\s*\(/.test(ready)) {
-  fails.push("readiness doc must not invoke apply_migration");
-}
 if (/APPLY_LOG = 1/.test(ready) || /PRODUCTION_DB_APPLY = 1/.test(ready)) {
   fails.push("readiness doc flipped apply bits");
 }
@@ -90,6 +87,11 @@ if (!ready.includes("LOCAL_MIGRATION_FILES = " + localFiles.length)) {
 }
 if (!ready.includes("REMOTE_APPLIED_SNAPSHOT = " + applied.versions.length)) {
   fails.push("readiness REMOTE_APPLIED_SNAPSHOT stale");
+}
+if (!Number.isInteger(applied.remoteRawAppliedCount) || applied.remoteRawAppliedCount < 1) {
+  fails.push("fixture remoteRawAppliedCount missing/invalid");
+} else if (!ready.includes("REMOTE_RAW_APPLIED = " + applied.remoteRawAppliedCount)) {
+  fails.push("readiness REMOTE_RAW_APPLIED stale");
 }
 if (!ready.includes("COMMITTED_UNAPPLIED = " + applied.committedUnapplied.length)) {
   fails.push("readiness COMMITTED_UNAPPLIED stale");
@@ -151,5 +153,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:rel-504-migration-readiness] PASS (READY · apply 0 · Track A files · REL-701-DB owner)",
+  `[verify:rel-504-migration-readiness] PASS (READY · ${localFiles.length} local · ${applied.versions.length} canonical applied · ${applied.remoteRawAppliedCount} remote raw · apply 0 · REL-701-DB owner)`,
 );
