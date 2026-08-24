@@ -15,6 +15,7 @@ const { assertQaIsolation } = require("../lib/qa-env-isolation-guard.cjs");
 const { runAxeOnHtml, blockingViolations } = require("../lib/axe-scan.cjs");
 const {
   TEST_OPPORTUNITY_ITEM,
+  stubCoreOpportunityJourney,
   stubGuestApis,
   stubOpportunityFeed,
   stubOpportunityRoom,
@@ -140,7 +141,10 @@ async function runParticipateEntry(page, cohort, scenario) {
     }
   });
 
-  await stubOpportunityRoom(page, "ready");
+  // Reuse the repository's proven REL-106~110 full journey stub contract so
+  // detail hydration has the same read-model support as the canonical journey.
+  // The test still stops before confirmation and asserts participate POST = 0.
+  await stubCoreOpportunityJourney(page);
   await gotoStaging(page, cohort, scenario);
 
   await expect(page.getByTestId("profits-shell")).toHaveAttribute(
@@ -155,12 +159,14 @@ async function runParticipateEntry(page, cohort, scenario) {
   await expect(card).toBeVisible();
   await card.click();
 
-  await expect(page).toHaveURL(new RegExp(`/profits/${TEST_OPPORTUNITY_ITEM.id}$`));
+  // Match the already-proven core journey ordering: first require the dynamic
+  // detail read model to hydrate, then verify the canonical detail URL.
   await expect(page.getByTestId("opportunity-detail")).toHaveAttribute(
     "data-detail-state",
     "ready",
     { timeout: 20_000 },
   );
+  await expect(page).toHaveURL(new RegExp(`/profits/${TEST_OPPORTUNITY_ITEM.id}$`));
 
   const detailCta = page
     .locator("[data-requires-preflight='true']")
