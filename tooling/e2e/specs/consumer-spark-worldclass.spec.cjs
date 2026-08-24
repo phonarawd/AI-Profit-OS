@@ -44,17 +44,19 @@ const SHELL_ROUTES = [
   "/me/support",
 ];
 
-const AUTH_ROUTES = [
+const AUTH_DIRECT_ROUTES = [
   "/auth/login",
   "/auth/signup",
-  "/auth/complete-profile",
   "/onboarding",
+];
+const AUTH_GUARDED_ROUTES = [
+  { from: "/auth/complete-profile", unauthenticatedTo: "/auth/login" },
 ];
 
 const LANDING_ROUTES = ["/ads", "/ads/meta", "/l/meta"];
 const NATIVE_SPARK_ROUTES = ["/", "/me", "/profits"];
 
-async function open(page, route, width, height) {
+async function open(page, route, width, height, opts = {}) {
   const pageErrors = [];
   const severeConsole = [];
   const serverErrors = [];
@@ -80,11 +82,14 @@ async function open(page, route, width, height) {
   expect(response, `${route} should return a response`).not.toBeNull();
   expect(response.status(), `${route} should stay below 500`).toBeLessThan(500);
 
-  // Let client effects settle, but do not silently accept a redirect to a different surface.
   await page.waitForTimeout(300);
   await page.waitForLoadState("domcontentloaded");
   const currentPath = new URL(page.url()).pathname;
-  expect(currentPath, `${route} unexpected client navigation`).toBe(targetUrl.pathname);
+  const allowedFinalPaths = opts.allowedFinalPaths ?? [targetUrl.pathname];
+  expect(
+    allowedFinalPaths,
+    `${route} unexpected client navigation to ${currentPath}`,
+  ).toContain(currentPath);
 
   const metrics = await page.evaluate(() => ({
     width: window.innerWidth,
@@ -94,6 +99,7 @@ async function open(page, route, width, height) {
   expect(serverErrors, `${route} 5xx subresource responses`).toEqual([]);
   expect(pageErrors, `${route} pageerror`).toEqual([]);
   expect(severeConsole, `${route} severe console errors`).toEqual([]);
+  return { currentPath };
 }
 
 test.beforeAll(async () => {
@@ -135,7 +141,7 @@ test("all mobile app routes use one Spark mobile header and bottom navigation", 
 });
 
 test("auth, onboarding, ads and landing surfaces use full Spark Dash responsive guest composition", async ({ page }) => {
-  for (const route of [...AUTH_ROUTES, ...LANDING_ROUTES]) {
+  for (const route of [...AUTH_DIRECT_ROUTES, ...LANDING_ROUTES]) {
     await open(page, route, 1440, 1080);
     await expect(page.getByTestId("guest-chrome")).toBeVisible();
     await expect(page.locator(".csp-auth-story")).toBeVisible();
@@ -144,8 +150,24 @@ test("auth, onboarding, ads and landing surfaces use full Spark Dash responsive 
     expect(panel.width).toBeGreaterThan(500);
   }
 
-  for (const route of [...AUTH_ROUTES, ...LANDING_ROUTES]) {
+  for (const route of [...AUTH_DIRECT_ROUTES, ...LANDING_ROUTES]) {
     await open(page, route, 390, 844);
+    await expect(page.getByTestId("guest-chrome")).toBeVisible();
+    await expect(page.locator(".csp-auth-story")).toBeHidden();
+  }
+
+  for (const guarded of AUTH_GUARDED_ROUTES) {
+    const desktop = await open(page, guarded.from, 1440, 1080, {
+      allowedFinalPaths: [guarded.unauthenticatedTo],
+    });
+    expect(desktop.currentPath).toBe(guarded.unauthenticatedTo);
+    await expect(page.getByTestId("guest-chrome")).toBeVisible();
+    await expect(page.locator(".csp-auth-story")).toBeVisible();
+
+    const mobile = await open(page, guarded.from, 390, 844, {
+      allowedFinalPaths: [guarded.unauthenticatedTo],
+    });
+    expect(mobile.currentPath).toBe(guarded.unauthenticatedTo);
     await expect(page.getByTestId("guest-chrome")).toBeVisible();
     await expect(page.locator(".csp-auth-story")).toBeHidden();
   }
