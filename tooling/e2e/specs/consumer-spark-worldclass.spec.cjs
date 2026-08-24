@@ -57,8 +57,10 @@ const NATIVE_SPARK_ROUTES = ["/", "/me", "/profits"];
 async function open(page, route, width, height) {
   const pageErrors = [];
   const severeConsole = [];
+  const serverErrors = [];
   page.removeAllListeners("pageerror");
   page.removeAllListeners("console");
+  page.removeAllListeners("response");
   page.on("pageerror", (err) => pageErrors.push(String(err?.message || err)));
   page.on("console", (msg) => {
     if (msg.type() === "error") {
@@ -68,18 +70,28 @@ async function open(page, route, width, height) {
       }
     }
   });
+  page.on("response", (res) => {
+    if (res.status() >= 500) serverErrors.push(`${res.status()} ${res.url()}`);
+  });
 
   await page.setViewportSize({ width, height });
-  const response = await page.goto(`${runtime.baseUrl}${route}`, { waitUntil: "domcontentloaded" });
+  const targetUrl = new URL(`${runtime.baseUrl}${route}`);
+  const response = await page.goto(targetUrl.toString(), { waitUntil: "load" });
   expect(response, `${route} should return a response`).not.toBeNull();
   expect(response.status(), `${route} should stay below 500`).toBeLessThan(500);
-  await page.waitForTimeout(150);
+
+  // Let client effects settle, but do not silently accept a redirect to a different surface.
+  await page.waitForTimeout(300);
+  await page.waitForLoadState("domcontentloaded");
+  const currentPath = new URL(page.url()).pathname;
+  expect(currentPath, `${route} unexpected client navigation`).toBe(targetUrl.pathname);
 
   const metrics = await page.evaluate(() => ({
     width: window.innerWidth,
     scrollWidth: document.documentElement.scrollWidth,
   }));
   expect(metrics.scrollWidth, `${route} horizontal overflow`).toBeLessThanOrEqual(metrics.width + 2);
+  expect(serverErrors, `${route} 5xx subresource responses`).toEqual([]);
   expect(pageErrors, `${route} pageerror`).toEqual([]);
   expect(severeConsole, `${route} severe console errors`).toEqual([]);
 }
