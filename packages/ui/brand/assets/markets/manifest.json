@@ -14,7 +14,7 @@
   },
   "blockingSubDeliverable": {
     "id": "market-partner-logo-svgs",
-    "status": "unblocked",
+    "status": "blocked",
     "owner": "Brand/Design (ADR-011)",
     "blocks": [],
     "acceptance": "All 7 logos status=ready + SVG files on disk · verify:market-partner-trust PASS without BLOCKER · verify:brand-assets accepts ready market marks"
@@ -24,7 +24,7 @@
       "id": "ebay",
       "file": "ebay.svg",
       "path": "assets/markets/ebay.svg",
-      "status": "ready",
+      "status": "blocked",
       "partnerIds": [
         "ebay_us",
         "ebay_gb",
@@ -40,7 +40,7 @@
       "id": "amazon",
       "file": "amazon.svg",
       "path": "assets/markets/amazon.svg",
-      "status": "ready",
+      "status": "blocked",
       "partnerIds": [
         "amazon_us",
         "amazon_jp",
@@ -55,7 +55,7 @@
       "id": "yahoo-jp",
       "file": "yahoo-jp.svg",
       "path": "assets/markets/yahoo-jp.svg",
-      "status": "ready",
+      "status": "blocked",
       "partnerIds": [
         "yahoo_jp"
       ],
@@ -68,7 +68,7 @@
       "id": "pokemontcg",
       "file": "pokemontcg.svg",
       "path": "assets/markets/pokemontcg.svg",
-      "status": "ready",
+      "status": "blocked",
       "partnerIds": [
         "pokemontcg"
       ],
@@ -81,7 +81,7 @@
       "id": "ygoprodeck",
       "file": "ygoprodeck.svg",
       "path": "assets/markets/ygoprodeck.svg",
-      "status": "ready",
+      "status": "blocked",
       "partnerIds": [
         "ygoprodeck"
       ],
@@ -94,7 +94,7 @@
       "id": "coingecko",
       "file": "coingecko.svg",
       "path": "assets/markets/coingecko.svg",
-      "status": "ready",
+      "status": "blocked",
       "partnerIds": [
         "coingecko"
       ],
@@ -107,7 +107,7 @@
       "id": "frankfurter",
       "file": "frankfurter.svg",
       "path": "assets/markets/frankfurter.svg",
-      "status": "ready",
+      "status": "blocked",
       "partnerIds": [
         "frankfurter"
       ],
