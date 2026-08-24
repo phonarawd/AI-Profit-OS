@@ -1,28 +1,34 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+  "id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
   "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-08-24T08:50:46.120Z",
-  "commit_sha": "04ef3c7de4dda0d0d5f8a2ef403dfa25bd0e9318",
-  "tree_sha": "1f134c9dc7d6cf3fae89af199eaac97b320748bb",
-  "working_tree_clean": true,
+  "measuredAt": "2026-08-23T16:59:32.198Z",
+  "commit_sha": "229e7777f9b01607a9259c0b1b03be1dbe4d4e61",
+  "tree_sha": "6971ba3c9276adb5a04bdd6f42460efe3102ce28",
+  "working_tree_clean": false,
   "protected_scope_clean": true,
-  "dirty_paths_all": [],
+  "dirty_paths_all": [
+    ".playwright-mcp/",
+    "_tmp_ea_full_32634726715/",
+    "_tmp_ea_heavy_32637722986/",
+    "_tmp_ea_heavy_32638272888/",
+    "_tmp_ea_pr_32634718543/"
+  ],
   "dirty_paths_protected": [],
   "lockfile_hash": "faf4c73927d1b92cbe8bc9b8ffb57000e9d630c920ca98fdea2ebf55182f820c",
-  "schema_migration_hash": "7d79073fee241c9abcd259ae76e0ab792513a40123ecd78c1abbc6b94e161356",
+  "schema_migration_hash": "febbd6bf5b54d9ae028405f70628fb3a1e048318a34e5f73cfee9076330c1986",
   "prompt_hash": "ff6edf9fb8d7cf5b298a1ff34169fdd3e1746316e320a0363d237f95f5ea42d3",
   "eval_dataset_hash": "710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d",
   "acceptance_workflow_hash": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
-  "node_version": "v22.23.2",
+  "node_version": "v22.14.0",
   "package_manager_version": "pnpm@10.14.0",
   "hash_rules_ref": "governance/engine-acceptance/protected-scope.v1.json",
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8",
-    "pathCount": 450,
+    "aggregate": "2d4567b3a2c8d80e1ea06dbe522eb9e4477e127adb75a655e5e41c348300a01d",
+    "pathCount": 448,
     "entries": [
       {
         "path": "eval/coach_redteam.jsonl",
@@ -1777,10 +1783,6 @@
         "sha256": "dfb697807bb4aae03acbef2273bbe168c2bfec349fc7a706dbf79e00cf7f7c3d"
       },
       {
-        "path": "supabase/migrations/20260817154827_krw_deposit_fx_facts.sql",
-        "sha256": "2dbf306ba92062a2c0bd5973ae2b5e3549eeeb140fb35ae0d5d7f06b8b6aae20"
-      },
-      {
         "path": "supabase/migrations/20260819210000_source_observations.sql",
         "sha256": "b0cf9a7ac30b5ccb1fc9dbca22a9c305e2968dba9decb2953f3ee30ed4ae4ffa"
       },
@@ -1795,10 +1797,6 @@
       {
         "path": "supabase/migrations/20260821090000_push_subscriptions_and_control.sql",
         "sha256": "f7a3b850ec5d6b0aa8d6472e91f08dde3a6f79c9d94f0f55131a2252e17f4427"
-      },
-      {
-        "path": "supabase/migrations/20260821223109_beginner_onboarding_experience.sql",
-        "sha256": "b9721b372c7972cb3ba3565b35b2927b10fc18d921beec9cce6e75eefd936b0d"
       },
       {
         "path": "supabase/migrations/20260823160000_admin_audit_events.sql",
@@ -1832,8 +1830,8 @@
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-ffffb4808987-2ff1760b7d72",
-    "predecessor_baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
+    "rebase_id": "ea-rebase-229e7777f9b0-2d4567b3a2c8",
+    "predecessor_baseline_id": "ea-baseline-a6908eff1def-3db9e8f8832f",
     "kind": "product_rebase"
   }
 }
