@@ -170,16 +170,61 @@ jobs:
               node tooling/engine-acceptance/run-qa4.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
               ;;
             QA5)
-              # CI fault · axis1 degradation/fallback · axis2 post-recovery
-              node tooling/engine-acceptance/run-qa5.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+              # Approved same-job fault harness → canonical tiny scorer. QA4 and other suites unchanged.
+              docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+              docker run -d --name aipo-qa-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=aipo_qa_synth -p 5432:5432 pgvector/pgvector:pg16 >/dev/null
+              trap 'docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true' EXIT
+              for i in $(seq 1 60); do
+                if docker exec aipo-qa-postgres pg_isready -U postgres -d aipo_qa_synth >/dev/null 2>&1; then break; fi
+                if [ "$i" -eq 60 ]; then echo "isolated postgres readiness timeout"; exit 1; fi
+                sleep 1
+              done
+              export AIPO_QA_PGHOST=127.0.0.1 AIPO_QA_PGUSER=postgres AIPO_QA_PGPASSWORD=postgres AIPO_QA_PGDATABASE=aipo_qa_synth AIPO_QA_PGPORT=5432
+              export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa5-fault
+              node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+              pnpm --filter @aipo/api-nest build
+              test -f services/api-nest/dist/main.js
+              node tooling/engine-acceptance/run-qa5-fault.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+              node tooling/engine-acceptance/run-qa5.cjs --mode tiny --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
               ;;
             QA6)
-              # CI only heavy · k6 scenario mix · UNSPECIFIED_PERF_BUDGET if no product SLO
+              # Approved same-job threshold harness → canonical full scorer. Measurement-only runner remains disconnected.
+              docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+              docker run -d --name aipo-qa-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=aipo_qa_synth -p 5432:5432 pgvector/pgvector:pg16 >/dev/null
+              trap 'docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true' EXIT
+              for i in $(seq 1 60); do
+                if docker exec aipo-qa-postgres pg_isready -U postgres -d aipo_qa_synth >/dev/null 2>&1; then break; fi
+                if [ "$i" -eq 60 ]; then echo "isolated postgres readiness timeout"; exit 1; fi
+                sleep 1
+              done
+              export AIPO_QA_PGHOST=127.0.0.1 AIPO_QA_PGUSER=postgres AIPO_QA_PGPASSWORD=postgres AIPO_QA_PGDATABASE=aipo_qa_synth AIPO_QA_PGPORT=5432
+              export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa6-threshold
+              node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+              curl -fsSL https://github.com/grafana/k6/releases/download/v0.54.0/k6-v0.54.0-linux-amd64.tar.gz | tar -xz
+              sudo mv k6-v0.54.0-linux-amd64/k6 /usr/local/bin/k6
+              k6 version
+              pnpm --filter @aipo/api-nest build
+              test -f services/api-nest/dist/main.js
+              node tooling/engine-acceptance/run-qa6-threshold.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
               node tooling/engine-acceptance/run-qa6.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
               pnpm verify:engine-acceptance
               ;;
             QA8)
-              # ASVS 5.0.0 subset · IDOR/authz/PII/delete-account · static + child-verify oracle
+              # Approved same-job adversarial harness → canonical full scorer.
+              docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+              docker run -d --name aipo-qa-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=aipo_qa_synth -p 5432:5432 pgvector/pgvector:pg16 >/dev/null
+              trap 'docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true' EXIT
+              for i in $(seq 1 60); do
+                if docker exec aipo-qa-postgres pg_isready -U postgres -d aipo_qa_synth >/dev/null 2>&1; then break; fi
+                if [ "$i" -eq 60 ]; then echo "isolated postgres readiness timeout"; exit 1; fi
+                sleep 1
+              done
+              export AIPO_QA_PGHOST=127.0.0.1 AIPO_QA_PGUSER=postgres AIPO_QA_PGPASSWORD=postgres AIPO_QA_PGDATABASE=aipo_qa_synth AIPO_QA_PGPORT=5432
+              export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa8-adversarial
+              node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+              pnpm --filter @aipo/api-nest build
+              test -f services/api-nest/dist/main.js
+              node tooling/engine-acceptance/run-qa8-adversarial.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
               node tooling/engine-acceptance/run-qa8.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
               pnpm verify:engine-acceptance
               ;;
@@ -205,6 +250,9 @@ jobs:
             governance/engine-acceptance/defects.v1.json
             governance/engine-acceptance/evidence-manifest.v1.json
             governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
+            /tmp/aipo-harness/qa5-fault/
+            /tmp/aipo-harness/qa6-threshold/
+            /tmp/aipo-harness/qa8-adversarial/
           # acceptance evidence retention ≥ 90 days (L5)
           retention-days: 90
           if-no-files-found: ignore

@@ -187,6 +187,53 @@
       "commit_sha_or_pending": "pending",
       "timestamp": "2026-08-14T03:10:00.000Z",
       "applied_at": "2026-08-13T18:03:27.240Z"
+    },
+    {
+      "amendment_id": "qa5-qa6-qa8-same-job-harness-wiring-20260823",
+      "reason": "Human/PO-approved same-job harness wiring: QA5 real fault executor evidence then tiny scorer; QA6 real k6 threshold executor evidence then full scorer; QA8 real adversarial executor evidence then full scorer. Current PR52 QA4 body stays byte-for-byte unchanged; additive jobs stay unchanged; production DB/deploy remain zero.",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-24T08:57:00.000Z",
+        "statement": "ACK APPROVED 승인 QA5_QA6_QA8_WORKFLOW_AMENDMENT_DECISION_V1: amendment_id=qa5-qa6-qa8-same-job-harness-wiring-20260823, allow_qa0_qa6_impact=true. QA5·QA6·QA8 same-job harness wiring 및 required rerun [QA5, QA6, QA8]을 승인한다. QA4, QA0~QA3, QA7, aggregator, secrets, permissions, triggers, production DB, production deploy는 변경하지 않는다. 기존 evidence/PASS를 조작하지 않고 실제 재실행 결과만 인정한다."
+      },
+      "old_acceptance_workflow_hash": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
+      "new_acceptance_workflow_hash": "b8e724ba3af9e2d240f4daeefd53d4330972afdb942396698389825167752aa7",
+      "workflow_diff_scope": {
+        "files": [
+          ".github/workflows/engine-acceptance.yml"
+        ],
+        "exact_diff_summary": "QA5 case: isolated CI Postgres env + AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa5-fault + assert-db-target + Nest build + run-qa5-fault.cjs then run-qa5.cjs --mode tiny. QA6 case: isolated CI Postgres env + AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa6-threshold + assert-db-target + pinned k6 v0.54.0 + Nest build + run-qa6-threshold.cjs then run-qa6.cjs --mode full + verify:engine-acceptance; run-qa6-measure.cjs remains disconnected. QA8 case: isolated CI Postgres env + AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa8-adversarial + assert-db-target + Nest build + run-qa8-adversarial.cjs then run-qa8.cjs --mode full + verify:engine-acceptance. Matrix artifact list adds only QA5/QA6/QA8 harness dirs. QA4, QA0-QA3, QA7, additive jobs, aggregator, secrets, permissions, triggers and production actions unchanged.",
+        "qa0_qa6_semantics_changed": true,
+        "checks": {
+          "command_changes": true,
+          "artifact_upload_changes": true,
+          "env_permission_changes": true,
+          "pass_fail_semantics_changes": true
+        }
+      },
+      "affected_qa_suites": [
+        "QA5",
+        "QA6",
+        "QA8"
+      ],
+      "unaffected_completed_suites": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4"
+      ],
+      "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+      "commit_sha_or_pending": "pending",
+      "timestamp": "2026-08-24T08:57:00.000Z",
+      "applied_at": "2026-08-24T09:11:02.874Z",
+      "allow_qa0_qa6_impact": true,
+      "parent_decision_id": "QA5_QA6_QA8_WORKFLOW_AMENDMENT_DECISION_V1",
+      "required_rerun_suites": [
+        "QA5",
+        "QA6",
+        "QA8"
+      ]
     }
   ],
   "epoch_bindings": [

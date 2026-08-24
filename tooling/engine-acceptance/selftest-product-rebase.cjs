@@ -449,10 +449,10 @@ function run() {
     // by validateRebaseEntry/verifyRebaseLedgerAgainstBaseline/verifyWashing
     // above and below. Updated with REL-502 rebase after REL-508
     // (ea-rebase-229e7777f9b0-2d4567b3a2c8 · eval MATCH predecessor).
-    check("no_new_epoch_created", liveLedger.rebases.length === 7, `rebases=${liveLedger.rebases.length}`);
+    check("no_new_epoch_created", liveLedger.rebases.length === 8, `rebases=${liveLedger.rebases.length}`);
     check(
       "live_baseline_unchanged",
-      liveBaseline.id === "ea-baseline-229e7777f9b0-2d4567b3a2c8",
+      liveBaseline.id === "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
       liveBaseline.id,
     );
     // qa9-result is only ever written by run-qa9.cjs. After REL-508 rebase,
