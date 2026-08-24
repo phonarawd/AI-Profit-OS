@@ -11,10 +11,13 @@ const crypto = require("node:crypto");
 const { ROOT } = require("./lib/hash-scope.cjs");
 const {
   DECISION_ID,
+  QA5_QA6_QA8_WIRING_PARENT_DECISION_ID,
   SCHEMA,
   validateLedgerShape,
   validateAmendmentEntry,
+  qa0Qa6ImpactExceptionAllowed,
   qa0Qa6ImpactBlocked,
+  toLedgerAmendment,
   expectedWorkflowHash,
   verifyGovernanceAgainstBaseline,
   assertAcceptanceWorkflowHashMatch,
@@ -56,6 +59,39 @@ function makeValidAmendment(oldHash, newHash, baselineId) {
     baseline_id: baselineId,
     commit_sha_or_pending: "pending:fixture",
     timestamp: "2026-08-13T00:00:00.000Z",
+  };
+}
+
+function makeQa5Qa6Qa8ImpactExceptionAmendment(oldHash, newHash, baselineId) {
+  return {
+    amendment_id: "test-amend-qa5-qa6-qa8-harness-wiring",
+    reason: "fixture: approved QA5/QA6/QA8 same-job harness wiring",
+    human_po_ack: {
+      by: "Human/PO",
+      at: "2026-08-24T08:57:00.000Z",
+      statement: `ACK APPROVED 승인 ${QA5_QA6_QA8_WIRING_PARENT_DECISION_ID}: exact QA5 QA6 QA8 rerun.`,
+    },
+    old_acceptance_workflow_hash: oldHash,
+    new_acceptance_workflow_hash: newHash,
+    workflow_diff_scope: {
+      files: [".github/workflows/engine-acceptance.yml"],
+      exact_diff_summary: "fixture: QA5/QA6/QA8 same-job harness wiring only",
+      qa0_qa6_semantics_changed: true,
+      checks: {
+        command_changes: true,
+        artifact_upload_changes: true,
+        env_permission_changes: true,
+        pass_fail_semantics_changes: true,
+      },
+    },
+    affected_qa_suites: ["QA5", "QA6", "QA8"],
+    unaffected_completed_suites: ["QA0", "QA1", "QA2", "QA3", "QA4"],
+    baseline_id: baselineId,
+    commit_sha_or_pending: "pending:fixture",
+    timestamp: "2026-08-24T08:57:00.000Z",
+    allow_qa0_qa6_impact: true,
+    parent_decision_id: QA5_QA6_QA8_WIRING_PARENT_DECISION_ID,
+    required_rerun_suites: ["QA5", "QA6", "QA8"],
   };
 }
 
@@ -273,6 +309,36 @@ function run() {
     bad.workflow_diff_scope.checks.command_changes = true;
     const reason = qa0Qa6ImpactBlocked(bad);
     check("qa0_qa6_impact_blocked", Boolean(reason), "expected block reason");
+  }
+
+  // 9) Exact approved QA5/QA6/QA8 exception → PASS; any scope drift stays BLOCKED.
+  {
+    const good = makeQa5Qa6Qa8ImpactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    check("qa5_qa6_qa8_exact_exception_allowed", qa0Qa6ImpactExceptionAllowed(good) === true, "expected exact exception");
+    check("qa5_qa6_qa8_exact_exception_not_blocked", qa0Qa6ImpactBlocked(good) === null, qa0Qa6ImpactBlocked(good));
+
+    const wrongSuite = { ...good, affected_qa_suites: ["QA4", "QA5", "QA6", "QA8"] };
+    check("qa4_cannot_enter_qa5_qa6_qa8_parent", Boolean(qa0Qa6ImpactBlocked(wrongSuite)), "QA4 scope injection must block");
+
+    const missingRerun = { ...good, required_rerun_suites: ["QA5", "QA6"] };
+    check("required_rerun_exact_set_enforced", Boolean(qa0Qa6ImpactBlocked(missingRerun)), "missing QA8 rerun must block");
+
+    const wrongAck = JSON.parse(JSON.stringify(good));
+    wrongAck.human_po_ack.statement = "ACK APPROVED generic workflow change";
+    check("parent_id_must_be_in_ack", Boolean(qa0Qa6ImpactBlocked(wrongAck)), "parent decision id omission must block");
+
+    const persisted = toLedgerAmendment(good, baselineId, "2026-08-24T08:58:00.000Z");
+    check(
+      "exception_metadata_persisted",
+      persisted.allow_qa0_qa6_impact === true &&
+        persisted.parent_decision_id === QA5_QA6_QA8_WIRING_PARENT_DECISION_ID &&
+        JSON.stringify(persisted.required_rerun_suites) === JSON.stringify(["QA5", "QA6", "QA8"]),
+      JSON.stringify(persisted),
+    );
   }
 
   // approved structured amendment chain tip (fixture only — no repo write)

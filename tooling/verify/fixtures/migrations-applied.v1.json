@@ -1,8 +1,25 @@
 {
   "projectRef": "mgsytcetsiecllmhcyox",
-  "asOf": "2026-08-14",
-  "source": "Supabase MCP list_migrations",
-  "note": "versions[] = 원격 applied 스냅샷. committedUnapplied[] = 레포에만 있는 file-only migration (원격 apply 전). 원격 apply 후 versions로 옮기고 committedUnapplied에서 제거. REL-003: +20260819210000/+20260819220000/+20260820013000 file restore · PRODUCTION apply = REL-701-DB. PTF-00C: +20260814130000, +20260814130100, +20260814130200. PTF-00C-R1: +20260814140000 (provider_tick_ledger; remote list_migrations assigns its own apply-time version — this fixture tracks the LOCAL filename prefix, not the raw remote version number).",
+  "asOf": "2026-08-24",
+  "source": "Supabase connector execute_sql on supabase_migrations.schema_migrations",
+  "remoteRawAppliedCount": 42,
+  "remoteHistoricalMappings": [
+    {
+      "remoteVersion": "20260810212231",
+      "localVersion": "20260811062000",
+      "name": "idempotency_request_fingerprint",
+      "kind": "historical-early-apply-plus-later-noop-record",
+      "rawCountDelta": 1
+    },
+    {
+      "remoteVersion": "20260814152139",
+      "localVersion": "20260814140000",
+      "name": "ptf00c_r1_provider_tick_ledger",
+      "kind": "apply-time-version-alias",
+      "rawCountDelta": 0
+    }
+  ],
+  "note": "versions[] = canonical local version prefixes corresponding to remote-applied schema truth. committedUnapplied[] = repo-only migrations awaiting their authorized production apply. remoteRawAppliedCount preserves the actual schema_migrations row count. remoteHistoricalMappings explicitly records remote version aliases/history that must not be hidden by canonical local prefixes. 2026-08-24 reconciliation restored the exact remote-applied SQL for krw_deposit_fx_facts and beginner_onboarding_experience into the repo; production DB mutation = 0.",
   "versions": [
     "20260808205842",
     "20260808205844",
@@ -42,7 +59,9 @@
     "20260814130000",
     "20260814130100",
     "20260814130200",
-    "20260814140000"
+    "20260814140000",
+    "20260817154827",
+    "20260821223109"
   ],
   "committedUnapplied": [
     "20260819210000",

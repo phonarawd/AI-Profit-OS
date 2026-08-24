@@ -639,6 +639,77 @@
       "qa9_complete": false,
       "qa9_verdict_issued": false,
       "eval_dataset_status": "MATCH"
+    },
+    {
+      "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
+      "rebase_id": "ea-rebase-ffffb4808987-2ff1760b7d72",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-24T08:50:46.120Z",
+        "statement": "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: PR #52 live migration truth reconciliation을 새 acceptance epoch로 승인하며, 기존 baseline은 history로 보존하고 QA1~QA8을 현재 변경 기준으로 재실행한 뒤 QA9를 재집계한다. 기존 evidence/hash washing은 금지한다."
+      },
+      "predecessor_baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
+      "new_baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+      "reason": "Protected product mutation creates a new acceptance epoch. Predecessor hashes are history; discovery suites QA1-QA8 must rerun; QA9 aggregation is stale and must rerun only after current-epoch discovery evidence exists. Do not fabricate a verdict at rebase time.",
+      "product_commit": "ffffb4808987d539e8e50b3aa8a56514ee9cd011",
+      "changed_protected_paths": [
+        "supabase/migrations/20260817154827_krw_deposit_fx_facts.sql",
+        "supabase/migrations/20260821223109_beginner_onboarding_experience.sql"
+      ],
+      "changed_nonprotected_support_paths": [
+        "governance/release-master/MIGRATION_READINESS.md",
+        "tooling/verify/fixtures/migrations-applied.v1.json",
+        "tooling/verify/migrations-applied-parity.cjs",
+        "tooling/verify/rel-504-migration-readiness.cjs",
+        ".github/workflows/gate.yml",
+        ".github/workflows/pr52-acceptance-rebase-once.yml"
+      ],
+      "old_prompt_hash": "ff6edf9fb8d7cf5b298a1ff34169fdd3e1746316e320a0363d237f95f5ea42d3",
+      "new_prompt_hash": "ff6edf9fb8d7cf5b298a1ff34169fdd3e1746316e320a0363d237f95f5ea42d3",
+      "old_protected_manifest_hash": "2d4567b3a2c8d80e1ea06dbe522eb9e4477e127adb75a655e5e41c348300a01d",
+      "new_protected_manifest_hash": "2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8",
+      "eval_dataset_hash": "710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d",
+      "acceptance_workflow_hash": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
+      "predecessor_suite_checksums": {
+        "QA1": "8ac936ddf1057b64f7b370e0421080a817cade5a1b85096bb65eb95dec530b8f",
+        "QA2": "b3ee6e8fcdb6a57827489492667aba085c9a3a7a384771e2388e582d27cafa69",
+        "QA3": "9156bf579c3d9f5c6a6d3cba8ef7ad816697a31a724666fe9c07a5dd136dd75e",
+        "QA4": "508a3c9c0c022c4efbf3ca5299be2d8f12ab8c708c04ad056df5b5bfebfa11f0",
+        "QA5": "ea0c25ef45ce882adda71aec9e8c078751536283915b89633b5ad6ccc4315480",
+        "QA6": "b737ebaccf18da35620724596340b0daf4e8c841dfda2254bf36f792eee39431",
+        "QA8": "590ab4da0e9b941bda3481a5a36c0180a5326363582204f26c1c5bdd5791e52f",
+        "QA9": "c058046548207d298b2690e38a63a7028431a11cb5466264e3d1a3b12a691a61"
+      },
+      "timestamp": "2026-08-24T08:50:46.120Z",
+      "commit_sha_or_pending": "04ef3c7de4dda0d0d5f8a2ef403dfa25bd0e9318",
+      "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
+      "invalidated_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA8"
+      ],
+      "required_rerun_suites": [
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7",
+        "QA8"
+      ],
+      "stale_aggregation_phases": [
+        "QA9"
+      ],
+      "qa7_complete": false,
+      "qa8_complete": false,
+      "qa9_complete": false,
+      "qa9_verdict_issued": false,
+      "eval_dataset_status": "MATCH"
     }
   ]
 }

@@ -32,6 +32,40 @@ const REQUIRED_AMENDMENT_FIELDS = [
 ];
 
 const QA0_QA6 = ["QA0", "QA1", "QA2", "QA3", "QA4", "QA5", "QA6"];
+const QA0_QA6_IMPACT_CHECK_KEYS = [
+  "command_changes",
+  "artifact_upload_changes",
+  "env_permission_changes",
+  "pass_fail_semantics_changes",
+];
+const QA5_QA6_QA8_WIRING_PARENT_DECISION_ID = "QA5_QA6_QA8_WORKFLOW_AMENDMENT_DECISION_V1";
+const PARENT_SUITE_BINDING = Object.freeze({
+  [QA5_QA6_QA8_WIRING_PARENT_DECISION_ID]: Object.freeze(["QA5", "QA6", "QA8"]),
+});
+
+function allowedSuitesForParent(parentDecisionId) {
+  const allowed = PARENT_SUITE_BINDING[parentDecisionId];
+  return Array.isArray(allowed) ? allowed : null;
+}
+
+function sameSuiteSet(actual, expected) {
+  if (!Array.isArray(actual) || !Array.isArray(expected) || expected.length < 1) return false;
+  if (actual.length !== expected.length) return false;
+  const want = new Set(expected);
+  if (want.size !== expected.length) return false;
+  const seen = new Set();
+  for (const s of actual) {
+    if (!want.has(s) || seen.has(s)) return false;
+    seen.add(s);
+  }
+  return seen.size === want.size;
+}
+
+function parentSuiteBindingHolds(entry) {
+  if (!entry || typeof entry !== "object") return false;
+  const allowed = allowedSuitesForParent(entry.parent_decision_id);
+  return Boolean(allowed && sameSuiteSet(entry.affected_qa_suites, allowed));
+}
 
 function writeJson(rel, obj) {
   fs.writeFileSync(path.join(ROOT, rel), `${JSON.stringify(obj, null, 2)}\n`, "utf8");
@@ -148,22 +182,69 @@ function validateAmendmentEntry(entry, index, fails) {
   }
 }
 
-function qa0Qa6ImpactBlocked(entry) {
+function qa0Qa6ImpactOverlap(entry) {
+  const affected = Array.isArray(entry && entry.affected_qa_suites) ? entry.affected_qa_suites : [];
+  return affected.filter((s) => QA0_QA6.includes(s));
+}
+
+function qa0Qa6ImpactExceptionAllowed(entry) {
+  if (!entry || typeof entry !== "object") return false;
+  if (entry.allow_qa0_qa6_impact !== true) return false;
+  if (entry.parent_decision_id !== QA5_QA6_QA8_WIRING_PARENT_DECISION_ID) return false;
+  const statement = String((entry.human_po_ack && entry.human_po_ack.statement) || "");
+  if (!statement.includes(QA5_QA6_QA8_WIRING_PARENT_DECISION_ID)) return false;
+  if (!/ACK|APPROVED|승인/i.test(statement)) return false;
+  if (!parentSuiteBindingHolds(entry)) return false;
   const scope = entry.workflow_diff_scope || {};
+  if (scope.qa0_qa6_semantics_changed !== true) return false;
+  const checks = scope.checks || {};
+  for (const k of QA0_QA6_IMPACT_CHECK_KEYS) {
+    if (checks[k] !== true) return false;
+  }
+  if (qa0Qa6ImpactOverlap(entry).length < 1) return false;
+  if (!sameSuiteSet(entry.required_rerun_suites, ["QA5", "QA6", "QA8"])) return false;
+  return true;
+}
+
+function persistExceptionMetadata(proposal, entry) {
+  if (!proposal || !entry || proposal.allow_qa0_qa6_impact !== true) return entry;
+  entry.allow_qa0_qa6_impact = true;
+  entry.parent_decision_id = proposal.parent_decision_id;
+  entry.required_rerun_suites = Array.isArray(proposal.required_rerun_suites)
+    ? proposal.required_rerun_suites.slice()
+    : proposal.required_rerun_suites;
+  return entry;
+}
+
+function toLedgerAmendment(proposal, baselineId, appliedAt) {
+  const entry = {
+    amendment_id: proposal.amendment_id,
+    reason: proposal.reason,
+    human_po_ack: proposal.human_po_ack,
+    old_acceptance_workflow_hash: proposal.old_acceptance_workflow_hash,
+    new_acceptance_workflow_hash: proposal.new_acceptance_workflow_hash,
+    workflow_diff_scope: proposal.workflow_diff_scope,
+    affected_qa_suites: Array.isArray(proposal.affected_qa_suites) ? proposal.affected_qa_suites.slice() : proposal.affected_qa_suites,
+    unaffected_completed_suites: Array.isArray(proposal.unaffected_completed_suites) ? proposal.unaffected_completed_suites.slice() : proposal.unaffected_completed_suites,
+    baseline_id: baselineId,
+    commit_sha_or_pending: proposal.commit_sha_or_pending,
+    timestamp: proposal.timestamp,
+    applied_at: appliedAt,
+  };
+  return persistExceptionMetadata(proposal, entry);
+}
+
+function qa0Qa6ImpactBlocked(entry) {
+  if (qa0Qa6ImpactExceptionAllowed(entry)) return null;
+  const scope = (entry && entry.workflow_diff_scope) || {};
   const checks = scope.checks || {};
   if (scope.qa0_qa6_semantics_changed === true) return "qa0_qa6_semantics_changed=true";
   if (scope.qa0_qa6_semantics_changed !== false) return "qa0_qa6_semantics_changed not proven false";
-  for (const k of [
-    "command_changes",
-    "artifact_upload_changes",
-    "env_permission_changes",
-    "pass_fail_semantics_changes",
-  ]) {
+  for (const k of QA0_QA6_IMPACT_CHECK_KEYS) {
     if (checks[k] === true) return `checks.${k}=true`;
     if (checks[k] !== false) return `checks.${k} not proven false`;
   }
-  const affected = entry.affected_qa_suites || [];
-  const overlap = affected.filter((s) => QA0_QA6.includes(s));
+  const overlap = qa0Qa6ImpactOverlap(entry);
   if (overlap.length) return `affected_qa_suites overlaps QA0-QA6: ${overlap.join(",")}`;
   return null;
 }
@@ -329,12 +410,16 @@ module.exports = {
   EVIDENCE_REL,
   SCHEMA,
   REQUIRED_AMENDMENT_FIELDS,
+  QA5_QA6_QA8_WIRING_PARENT_DECISION_ID,
+  PARENT_SUITE_BINDING,
   writeJson,
   loadLedger,
   expectedWorkflowHash,
   validateLedgerShape,
   validateAmendmentEntry,
+  qa0Qa6ImpactExceptionAllowed,
   qa0Qa6ImpactBlocked,
+  toLedgerAmendment,
   assertQa7NotInFlight,
   assertAcceptanceWorkflowHashMatch,
   syncLockfileHashOnly,
