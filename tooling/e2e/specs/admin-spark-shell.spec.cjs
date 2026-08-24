@@ -95,11 +95,12 @@ test("all 22 admin routes remain usable on mobile", async ({ page }) => {
 
 test("mobile admin menu opens on the first click and closes cleanly", async ({ page }) => {
   await openAdmin(page, "/admin", 390, 844);
-  const openButton = page.getByRole("button", { name: "전체 메뉴 열기" });
-  await expect(openButton).toBeVisible();
-  await openButton.click();
+  const menuButton = page.locator(".admin-menu-button");
+  await expect(menuButton).toBeVisible();
+  await expect(menuButton).toHaveAttribute("aria-expanded", "false");
+  await menuButton.click();
   await expect(page.getByRole("navigation", { name: "운영 메뉴" })).toBeVisible();
-  await expect(openButton).toHaveAttribute("aria-expanded", "true");
+  await expect(menuButton).toHaveAttribute("aria-expanded", "true");
   await page.locator(".admin-sidebar-close").click();
-  await expect(openButton).toHaveAttribute("aria-expanded", "false");
+  await expect(menuButton).toHaveAttribute("aria-expanded", "false");
 });
