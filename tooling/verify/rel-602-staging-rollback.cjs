@@ -39,6 +39,7 @@ const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
 const gate = read(".github/workflows/gate.yml");
 const domain = read("tooling/verify/domain-by-path.cjs");
+const gateTiers = read("tooling/verify/gate-tiers.cjs");
 const rollback = read("tooling/deploy/cf-rollback-staging.cjs");
 const manifest = readJson("infra/domain.manifest.json");
 const prodWorkflow = read(".github/workflows/deploy-cloudflare.yml");
@@ -161,7 +162,9 @@ if (!pkg.includes("verify:rel-602-staging-rollback")) fails.push("package missin
 if (!pkg.includes("cf:rollback:staging")) fails.push("package missing staging rollback script");
 if (!catalog.includes("rel-602-staging-rollback")) fails.push("catalog missing REL-602");
 if (!gate.includes("verify:rel-602-staging-rollback")) fails.push("gate missing REL-602");
-if (!domain.includes("rel-602-staging-rollback.cjs")) fails.push("domain-by-path missing REL-602");
+if (!domain.includes("rel-602-staging-rollback.cjs") && !gateTiers.includes("rel-602-staging-rollback.cjs")) {
+  fails.push("T0 selector missing REL-602");
+}
 
 async function live(url, allowed) {
   const res = await fetch(url, {
