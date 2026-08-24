@@ -42,6 +42,8 @@ export const WALLET_ADMIN_ROUTES = {
   depositDisputes: "wallet/deposit-disputes",
   depositDisputeCredit: "wallet/deposit-disputes/:id/credit",
   depositDisputeReject: "wallet/deposit-disputes/:id/reject",
+  /** Read-only operational visibility for §49.3 withdraw intents. */
+  withdrawReviews: "wallet/withdrawals",
   /** §43.6a · Admin §9.8.10E */
   withdrawPinReset: "users/:id/withdraw-pin/reset",
   webauthnRevoke: "users/:id/webauthn/revoke",
