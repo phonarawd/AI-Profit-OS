@@ -1,4 +1,5 @@
 @import "@aipo/ui/tokens/lux-theme.css";
+@import "../components/spark-shell/consumer-spark-a11y.css";
 
 html,
 body {
