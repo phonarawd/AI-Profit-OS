@@ -25,6 +25,7 @@ const fixture = JSON.parse(
 const baseline = read("governance/release-master/SECURITY_BASELINE.md");
 const runbook = read("governance/release-master/ROLLBACK_RUNBOOK.md");
 const versioning = read("governance/release-master/VERSIONING.md");
+const plan = read(".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md");
 
 if (fixture.projectRef !== "mgsytcetsiecllmhcyox") {
   fails.push("fixture projectRef must stay mgsytcetsiecllmhcyox");
@@ -52,8 +53,30 @@ for (const needle of [
   if (!baseline.includes(needle)) fails.push("SECURITY_BASELINE missing " + needle);
 }
 
+const rel602TodoCompleted = /- id: rel-602\r?\n(?:.*\r?\n){0,3}\s*status: completed/.test(plan);
+const rel602FormalIdx = plan.indexOf("ID: REL-602");
+const rel602FormalCompleted =
+  rel602FormalIdx >= 0 && /STATUS:\s*COMPLETED/.test(plan.slice(rel602FormalIdx, rel602FormalIdx + 300));
+const rel602Completed = rel602TodoCompleted || rel602FormalCompleted;
+
+if (rel602Completed) {
+  for (const needle of [
+    "STATUS = STAGING_PRACTICED",
+    "THIS_REL_PRACTICE = 1",
+    "REL-602_EVIDENCE = governance/release-master/REL-602-STAGING-ROLLBACK.md",
+  ]) {
+    if (!runbook.includes(needle)) fails.push("completed REL-602 runbook missing " + needle);
+  }
+} else {
+  if (!runbook.includes("STATUS = DRAFT_FOR_REL_602")) {
+    fails.push("pending REL-602 runbook must stay DRAFT_FOR_REL_602");
+  }
+  if (!runbook.includes("THIS_REL_PRACTICE = 0")) {
+    fails.push("pending REL-602 runbook THIS_REL_PRACTICE must stay 0");
+  }
+}
+
 for (const needle of [
-  "STATUS = DRAFT_FOR_REL_602",
   "PRODUCTION_EXECUTE = 0",
   "pnpm release:id",
   "REL-701",
@@ -113,5 +136,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:rel-408-security-baseline] PASS (RLS 80/80 · secrets · runbook · apply 0)",
+  "[verify:rel-408-security-baseline] PASS (RLS 80/80 · secrets · runbook lifecycle · apply 0)",
 );

@@ -1,6 +1,6 @@
 ---
 name: PUTDUK Release Master
-overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-400 COMPLETED. REL-213 COMPLETED. REL-214 COMPLETED. REL-401 COMPLETED. REL-402 COMPLETED. REL-403 COMPLETED. REL-404 COMPLETED. REL-405 COMPLETED. REL-406 COMPLETED. REL-407 COMPLETED. REL-408 COMPLETED. REL-222 COMPLETED. REL-223 COMPLETED. REL-224 COMPLETED. REL-409 COMPLETED. REL-500 COMPLETED. REL-501 COMPLETED. REL-502 COMPLETED. REL-503 COMPLETED. REL-504 COMPLETED. REL-505 COMPLETED. REL-508 COMPLETED. REL-506 COMPLETED. REL-507 COMPLETED. REL-502 ISSUED_CURRENT_EPOCH. FIRST_EXECUTION_TODO=REL-602. HARD_STOP_AFTER=REL-601. REL-600 COMPLETED. REL-601 COMPLETED. BATCH_REL_200_206=ADMIN_ENTRY.
+overview: 단일 실행 SSOT. PRE-LOCK 1 + REL 116 + POST 19 = 136개 canonical task definition을 이 파일에 전부 수록. pointer-only 0. PLAN_LOCKED=TRUE. REL-400 COMPLETED. REL-213 COMPLETED. REL-214 COMPLETED. REL-401 COMPLETED. REL-402 COMPLETED. REL-403 COMPLETED. REL-404 COMPLETED. REL-405 COMPLETED. REL-406 COMPLETED. REL-407 COMPLETED. REL-408 COMPLETED. REL-222 COMPLETED. REL-223 COMPLETED. REL-224 COMPLETED. REL-409 COMPLETED. REL-500 COMPLETED. REL-501 COMPLETED. REL-502 COMPLETED. REL-503 COMPLETED. REL-504 COMPLETED. REL-505 COMPLETED. REL-508 COMPLETED. REL-506 COMPLETED. REL-507 COMPLETED. REL-502 ISSUED_CURRENT_EPOCH. FIRST_EXECUTION_TODO=REL-603. HARD_STOP_AFTER=REL-602. REL-600 COMPLETED. REL-601 COMPLETED. REL-602 COMPLETED. BATCH_REL_200_206=ADMIN_ENTRY.
 todos:
   - id: pre-lock-001
     content: "[PRE-LOCK, REL큐 밖] FIGMA_AUTHORITY_DISCOVERY: 실행 완료 - fileKey w7Yg8j2x9evuheOSSLqFw5 실제 MCP 접근 확인, 15개 frame 실사+분류 완료(전부 BACKUP 또는 FOUNDER_REVIEW_CANDIDATE, APPROVED_AUTHORITY 0건). Surface Matrix FIG 컬럼 갱신 완료. 본 파일 materialization 검산 PASS 후 PLAN_LOCKED=TRUE"
@@ -330,8 +330,8 @@ todos:
     content: "[Staging] Staging 전체 회귀 DONE Surface Matrix live preview workers, evidence=governance/release-master/REL-601-STAGING-REGRESSION.md"
     status: completed
   - id: rel-602
-    content: "[Staging][A2] Rollback 연습(staging에서 실제 실행+검증)"
-    status: pending
+    content: "[Staging][A2] Rollback 연습 DONE preview Workers actual rollback + read-only regression + forward deploy, run=32718187604, evidence=governance/release-master/REL-602-STAGING-ROLLBACK.md"
+    status: completed
   - id: rel-603
     content: "[Staging][A0][Legacy:trust-age-spotcheck] 연령대별 수동 사용성 실사(20/40/60-70대 각3명, 사람 실행 필수·자동화 불가)"
     status: pending
@@ -423,10 +423,10 @@ CURRENT_EXECUTION_SSOT = .cursor/plans/PUTDUK_RELEASE_MASTER.plan.md
 CURRENT_EXECUTION_SSOT_VERIFIED = TRUE
 PLAN_LOCKED = TRUE
 BLOCKING_ON = []
-FIRST_EXECUTION_TODO = REL-602
-LAST_COMPLETED_TODO = REL-601
+FIRST_EXECUTION_TODO = REL-603
+LAST_COMPLETED_TODO = REL-602
 BATCH_REL_200_206 = ADMIN_ENTRY
-HARD_STOP_AFTER = REL-601
+HARD_STOP_AFTER = REL-602
 PRE_LOCK_COUNT = 1
 REL_COUNT = 117
 POST_COUNT = 19
@@ -3674,12 +3674,12 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-602
 TITLE: Rollback 연습 (staging 실실행)
-STATUS: PENDING
+STATUS: COMPLETED
 SOURCE_PLAN: putduk_release_master_ff3a5134.plan.md
 SOURCE_TODO_IDS:
   - rel-602
 ORIGINAL_INTENT: 롤백을 문서만으로 끝내지 않고 스테이징에서 실제로 되돌린다.
-CURRENT_SCOPE: REL-408 runbook을 staging에서 실행+검증. production 롤백 연습 아님.
+CURRENT_SCOPE: REL-408 runbook을 staging preview Workers에서 실제 실행+검증 완료. production 롤백 연습 아님.
 DEPENDENCIES:
   - REL-600
   - REL-403
@@ -3689,10 +3689,10 @@ IMPLEMENTATION_STEPS:
   - 앱이 이전 버전으로 사는지 확인
   - 다시 forward deploy
   - 결과 기록
-VERIFY: rollback 전후 버전 id 증거
-ACCEPTANCE: 롤백이 실동작
-EVIDENCE: staging rollback report
-EXIT_GATE: 미연습 상태로 auto-deploy 금지 (우리는 auto-deploy 없음)
+VERIFY: "PASS. workflow run 32718187604 · rollback web=8306d58e-b6ab-46fb-bd49-d1e240778fb7 ops=eaf10c40-6d5d-4920-96ad-626aeb8f6b4b · read-only REL-601 regression PASS · forward deploy confirmed."
+ACCEPTANCE: 롤백이 staging preview에서 실동작했고 forward 복구까지 검증됨.
+EVIDENCE: governance/release-master/REL-602-STAGING-ROLLBACK.md
+EXIT_GATE: 완료. production deploy/DB/money/ledger mutation 0 유지.
 AUTOMATION_LEVEL: A2
 PROTECTED_SCOPE_MUTATION: false
 ```
@@ -4600,5 +4600,5 @@ FIRST_EXECUTION_TODO_AT_MATERIALIZATION = REL-000
 REL-000은 2026-08-20에 PASS/COMPLETED.
 REL-001은 2026-08-20에 PASS/COMPLETED (`preserve/2026-08-20-worktree-rescue` · `ae8d1e6` · merge 금지).
 REL-002는 2026-08-21에 PASS/COMPLETED (PR #2 MERGED · `db6db87` · ruleset `verify-gate` 계약 수정 후 비우회 merge).
-현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-602`. HARD_STOP_AFTER = REL-601. BLOCKING_ON = []. LAST_COMPLETED_TODO = REL-601.
+현재 실행 포인터는 헤더의 `FIRST_EXECUTION_TODO = REL-603`. HARD_STOP_AFTER = REL-602. BLOCKING_ON = []. LAST_COMPLETED_TODO = REL-602.
 

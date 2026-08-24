@@ -72,6 +72,8 @@ jobs:
         run: pnpm verify:rel-600-staging
       - name: REL-601 staging regression
         run: pnpm verify:rel-601-staging-regression
+      - name: REL-602 staging rollback
+        run: pnpm verify:rel-602-staging-rollback
       - name: Stub .env for Docker-less stack-lock
         run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
       - name: cargo test (services/engine-rust — Rule Engine R1-R10 golden unit tests)

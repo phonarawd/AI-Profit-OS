@@ -44,10 +44,24 @@ const T1_PUSH = [
 /** @type {string[]} */
 const T2_CI = ["next-build.cjs", "opennext-build.cjs"];
 
+function isRel602Path(file) {
+  return (
+    /^governance\/release-master\/REL-602-STAGING-ROLLBACK\.md$/.test(file) ||
+    /^governance\/release-master\/ROLLBACK_RUNBOOK\.md$/.test(file) ||
+    /^tooling\/deploy\/cf-rollback-staging\.cjs$/.test(file) ||
+    /^tooling\/verify\/rel-602-staging-rollback\.cjs$/.test(file) ||
+    /^tooling\/verify\/fixtures\/rel-602-staging-rollback\.v1\.json$/.test(file)
+  );
+}
+
 function domainSteps() {
   const files = getChangedFiles();
   if (files.length === 0) return [];
-  return scriptsForChangedFiles(files);
+  const steps = scriptsForChangedFiles(files);
+  if (files.some(isRel602Path)) {
+    steps.push("rel-602-staging-rollback.cjs");
+  }
+  return [...new Set(steps)];
 }
 
 /** @param {"fast"|"push"|"full"} tier */
