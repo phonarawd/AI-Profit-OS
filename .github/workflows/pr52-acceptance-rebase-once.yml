@@ -1,0 +1,64 @@
+name: pr52-acceptance-rebase-once
+
+on:
+  push:
+    branches:
+      - fix/live-migration-truth-reconciliation
+
+permissions:
+  contents: write
+
+jobs:
+  rebase-acceptance:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Verify clean checkout
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain)"
+          node --version
+          pnpm --version
+      - name: Apply approved acceptance rebase
+        run: >-
+          node tooling/engine-acceptance/rebase-acceptance-baseline.cjs
+          --apply
+          --predecessor ea-baseline-229e7777f9b0-2d4567b3a2c8
+          --product-commit ffffb4808987d539e8e50b3aa8a56514ee9cd011
+          --ack-by "Human/PO"
+          --ack-statement "ACK APPROVED ENGINE_ACCEPTANCE_REBASE_V1: PR #52 live migration truth reconciliation을 새 acceptance epoch로 승인하며, 기존 baseline은 history로 보존하고 QA1~QA8을 현재 변경 기준으로 재실행한 뒤 QA9를 재집계한다. 기존 evidence/hash washing은 금지한다."
+          --support-path governance/release-master/MIGRATION_READINESS.md
+          --support-path tooling/verify/fixtures/migrations-applied.v1.json
+          --support-path tooling/verify/migrations-applied-parity.cjs
+          --support-path tooling/verify/rel-504-migration-readiness.cjs
+      - name: Mark REL-502 certificate pending current-epoch QA
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const baseline = JSON.parse(fs.readFileSync('governance/engine-acceptance/baseline.v1.json','utf8'));
+          const evidence = JSON.parse(fs.readFileSync('governance/engine-acceptance/evidence-manifest.v1.json','utf8'));
+          const rb = JSON.parse(fs.readFileSync('governance/engine-acceptance/product-rebases.v1.json','utf8'));
+          const tip = rb.rebases[rb.rebases.length - 1];
+          const postPending = (evidence.suites || []).filter(s => s.completion_status !== 'COMPLETE').length;
+          const doc = `# REL-502 FINAL ENGINE ACCEPTANCE\n\nCurrent protected-scope 변경에 대해 Human/PO가 \`ENGINE_ACCEPTANCE_REBASE_V1\`을 승인했다. 이전 인증은 history이며 현재 epoch 권위가 아니다. QA1~QA8 current-epoch 재실행 및 QA9 재집계 전에는 발급 금지.\n\n\`\`\`text\nREL = REL-502\nTITLE = FINAL ENGINE ACCEPTANCE\nSTATUS = NOT_ISSUED\nCERT_ISSUED = 0\nREL-004_SUBSTITUTE = 0\nQA9_PREDECESSOR_VERDICT_AS_CURRENT = 0\nPSM_REL_PENDING = 0\nPOST_PSM_PENDING = ${postPending}\nPROTECTED_SCOPE_DRIFT = 0\nREBASE_REQUIRED = 0\nREBASE_APPLIED = 1\nACK_RECEIVED = 1\nLOCAL_QA0_QA9_RERUN = 0\nEVAL_DATASET_STATUS = ${tip.eval_dataset_status || 'MATCH'}\nQA1_QA8_STATUS = STALE_PENDING_CURRENT_EPOCH_RERUN\nQA9_STATUS = STALE_AGGREGATION_PENDING_DISCOVERY\nQA9_VERDICT = NOT_ISSUED\nDEFECTS_P0 = UNKNOWN_PENDING_RERUN\nDEFECTS_P1 = UNKNOWN_PENDING_RERUN\nCRITICAL_INVARIANT_BLOCKED = UNKNOWN_PENDING_RERUN\nNEXT = QA1_DETERMINISTIC_TRUTH\nBASELINE_ID = ${baseline.id}\nPREDECESSOR_BASELINE_ID = ${tip.predecessor_baseline_id}\nREBASE_ID = ${tip.rebase_id}\nLIVE_AGGREGATE = ${baseline.protected_scope_manifest.aggregate}\nBASELINE_AGGREGATE = ${baseline.protected_scope_manifest.aggregate}\nPATH_COUNT_LIVE = ${baseline.protected_scope_manifest.pathCount}\nPATH_COUNT_BASELINE = ${baseline.protected_scope_manifest.pathCount}\nCHANGED_PATHS = 0\nADDED_PATHS = 0\nMUTATED_PATHS = 0\nMISSING_PATHS = 0\nEXIT_GATE = QA1-QA8 current-epoch COMPLETE + QA9 current-epoch ENGINE_ACCEPTED_FOR_UI before ISSUED\n\`\`\`\n\n## Current verdict\n\n- Current epoch verdict: \`ENGINE_QA_INCOMPLETE\`.\n- QA0 new epoch freeze: COMPLETE.\n- QA1~QA8: predecessor evidence preserved as history; current epoch must rerun.\n- QA9: predecessor aggregation is not current-authoritative; discovery rerun 후 재집계.\n- Baseline washing / predecessor checksum 재사용 / 가짜 PASS: 금지.\n- Production DB apply / production deploy: 이 변경에서 0.\n`;
+          fs.writeFileSync('governance/engine-acceptance/FINAL_ACCEPTANCE.md', doc, 'utf8');
+          NODE
+      - name: Commit generated governance evidence
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add governance/engine-acceptance
+          git diff --cached --check
+          git commit -m "Engine acceptance: start approved PR52 rebase epoch"
+          git push origin HEAD:fix/live-migration-truth-reconciliation
