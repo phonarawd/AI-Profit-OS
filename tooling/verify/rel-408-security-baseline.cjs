@@ -53,7 +53,6 @@ for (const needle of [
 }
 
 for (const needle of [
-  "STATUS = DRAFT_FOR_REL_602",
   "PRODUCTION_EXECUTE = 0",
   "pnpm release:id",
   "REL-701",
@@ -61,6 +60,12 @@ for (const needle of [
   "apply_migration",
 ]) {
   if (!runbook.includes(needle)) fails.push("ROLLBACK_RUNBOOK missing " + needle);
+}
+if (
+  !runbook.includes("STATUS = DRAFT_FOR_REL_602") &&
+  !runbook.includes("STATUS = PRACTICE_COMPLETE_REL_602")
+) {
+  fails.push("ROLLBACK_RUNBOOK must keep REL-602 runbook status marker");
 }
 if (!versioning.includes("ROLLBACK_CONSUMER = REL-602")) {
   fails.push("VERSIONING must keep REL-602 as rollback consumer");

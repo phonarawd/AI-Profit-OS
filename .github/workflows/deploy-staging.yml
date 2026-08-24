@@ -21,8 +21,6 @@ jobs:
   deploy-staging:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Secrets live in GitHub `production` environment (preview wrangler env only).
-    environment: production
     steps:
       - uses: actions/checkout@v6
 
