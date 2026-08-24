@@ -11,11 +11,11 @@ export function failureLabel(failure: AdminFailure): string {
   return T.admin.state.error;
 }
 
-/** missing ≠ 0. 빈 문자열·비문자 금액은 없음. */
-export function readAmount(value: unknown): string | null {
+function readAmountRaw(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const text = value.trim();
-  return text ? text : null;
+  if (!text || !/^-?\d+(?:\.\d+)?$/.test(text)) return null;
+  return text;
 }
 
 /**
@@ -26,8 +26,8 @@ export function formatDecimalString(
   value: unknown,
   maxFractionDigits = 2,
 ): string | null {
-  const raw = readAmount(value);
-  if (!raw || !/^-?\d+(?:\.\d+)?$/.test(raw)) return null;
+  const raw = readAmountRaw(value);
+  if (!raw) return null;
   const negative = raw.startsWith("-");
   const unsigned = negative ? raw.slice(1) : raw;
   let [integer, fraction = ""] = unsigned.split(".");
@@ -52,6 +52,11 @@ export function formatDecimalString(
   const grouped = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   const sign = negative && (integer !== "0" || fraction) ? "-" : "";
   return `${sign}${grouped}${fraction ? `.${fraction}` : ""}`;
+}
+
+/** missing ≠ 0. 관리자 기본 금액 표시는 최대 소수 4자리. */
+export function readAmount(value: unknown): string | null {
+  return formatDecimalString(value, 4);
 }
 
 export function formatUsdt(value: unknown): string | null {
@@ -95,7 +100,8 @@ export function maskPhone(value: unknown): string | null {
   if (!raw) return null;
   const digits = raw.replace(/\D/g, "");
   if (digits.length < 7) return raw;
-  return `${raw.slice(0, 4)}••••${digits.slice(-4)}`;
+  const prefix = raw.startsWith("+") ? raw.slice(0, Math.min(4, raw.length)) : raw.slice(0, 3);
+  return `${prefix}••••${digits.slice(-4)}`;
 }
 
 export function readText(value: unknown): string | null {
