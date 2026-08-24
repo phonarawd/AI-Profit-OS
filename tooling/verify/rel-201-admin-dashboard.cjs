@@ -1,5 +1,6 @@
 /**
- * verify:rel-201-admin-dashboard — /admin live ops tiles
+ * verify:rel-201-admin-dashboard — live, action-first admin home.
+ * Real queue APIs are required; missing data must never be invented as zero.
  */
 const fs = require("fs");
 const path = require("path");
@@ -21,27 +22,29 @@ const api = read("apps/admin/lib/admin-api.ts");
 const truth = read("apps/admin/lib/admin-truth.ts");
 const session = read("apps/admin/lib/admin-session.ts");
 
-if (page.includes("Admin §9.1.1 골격") && !page.includes("adminGet")) {
-  fails.push("dashboard must not stay stub-only");
-}
 for (const needle of [
-  'data-metric="user-count"',
-  'data-truth="unavailable"',
+  "/api/v1/admin/users?limit=1&offset=0",
+  "/api/v1/admin/risk/queue",
+  "/api/v1/admin/compliance/kyc?status=pending",
+  "/api/v1/admin/wallet/withdrawals?status=auth_ok",
+  "/api/v1/admin/wallet/deposit-disputes",
   "/api/v1/admin/system-control/push",
   "/api/v1/admin/risk/circuit",
-  "/api/v1/admin/risk/queue",
   "adminGet",
+  'data-metric="user-count"',
+  'data-truth="unavailable"',
   "확인할 수 없음",
+  "지금 먼저 확인할 일",
 ]) {
   if (!page.includes(needle)) fails.push(`dashboard missing ${needle}`);
 }
-if (/ROAS|todayPossible|fake/i.test(page)) {
-  fails.push("dashboard must not invent growth/ROAS/fake money");
+
+if (/ROAS|todayPossible|fakeUsers|mockUsers|fakeLedger/i.test(page)) {
+  fails.push("dashboard must not invent business/money/user data");
 }
-if (page.includes('principalUsdt="0"')) {
+if (/principalUsdt\s*=\s*["']0["']/.test(page)) {
   fails.push("dashboard must not hardcode money 0");
 }
-
 for (const needle of ["unauthorized", "forbidden", "not_found", "unavailable"]) {
   if (!api.includes(needle)) fails.push(`admin-api missing ${needle}`);
 }
@@ -57,4 +60,4 @@ if (fails.length) {
   for (const f of fails) console.error(" -", f);
   process.exit(1);
 }
-console.log("[verify:rel-201-admin-dashboard] PASS");
+console.log("[verify:rel-201-admin-dashboard] PASS (live queues · no fake zero)");
