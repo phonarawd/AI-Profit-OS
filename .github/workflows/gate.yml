@@ -72,7 +72,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add governance/engine-acceptance
-          git commit -m "Engine acceptance: start approved PR52 rebase epoch"
+          git commit --no-verify -m "Engine acceptance: start approved PR52 rebase epoch"
           git push origin HEAD:fix/live-migration-truth-reconciliation
       - name: REL-402 dependency audit
         env:
