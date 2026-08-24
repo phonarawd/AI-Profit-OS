@@ -5,58 +5,56 @@
 ```text
 REL = REL-502
 TITLE = FINAL ENGINE ACCEPTANCE
-STATUS = ISSUED
-CERT_ISSUED = 1
+STATUS = NOT_ISSUED
+CERT_ISSUED = 0
 REL-004_SUBSTITUTE = 0
 QA9_PREDECESSOR_VERDICT_AS_CURRENT = 0
 PSM_REL_PENDING = 0
 POST_PSM_PENDING = 3
-PROTECTED_SCOPE_DRIFT = 0
-REBASE_REQUIRED = 0
-REBASE_APPLIED = 1
-ACK_RECEIVED = 1
+PROTECTED_SCOPE_DRIFT = 1
+REBASE_REQUIRED = 1
+REBASE_APPLIED = 0
+ACK_RECEIVED = 0
 LOCAL_QA0_QA9_RERUN = 0
 EVAL_DATASET_STATUS = MATCH
-QA1_QA8_STATUS = COMPLETE_CURRENT_EPOCH
-QA9_STATUS = COMPLETE_ACCEPTED
-QA9_VERDICT = ENGINE_ACCEPTED_FOR_UI
+QA1_QA8_STATUS = STALE_PENDING_REBASE
+QA9_STATUS = STALE_PENDING_REBASE
+QA9_VERDICT = NOT_CURRENT
 DEFECTS_P0 = 0
 DEFECTS_P1 = 0
 CRITICAL_INVARIANT_BLOCKED = 0
-NEXT = 03_ui_entry_unlocked
+NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-229e7777f9b0-2d4567b3a2c8
 PREDECESSOR_BASELINE_ID = ea-baseline-a6908eff1def-3db9e8f8832f
-REBASE_ID = ea-rebase-229e7777f9b0-2d4567b3a2c8
-LIVE_AGGREGATE = 2d4567b3a2c8d80e1ea06dbe522eb9e4477e127adb75a655e5e41c348300a01d
+REBASE_ID = pending
+LIVE_AGGREGATE = 80c655990a9101ff4511f07c80d9838b0895c198b53f3a056b8b62daa2a6594d
 BASELINE_AGGREGATE = 2d4567b3a2c8d80e1ea06dbe522eb9e4477e127adb75a655e5e41c348300a01d
-PATH_COUNT_LIVE = 448
+PATH_COUNT_LIVE = 449
 PATH_COUNT_BASELINE = 448
-CHANGED_PATHS = 0
-ADDED_PATHS = 0
-MUTATED_PATHS = 0
+CHANGED_PATHS = 6
+ADDED_PATHS = 1
+MUTATED_PATHS = 5
 MISSING_PATHS = 0
-EXIT_GATE = 이후 PSM=TRUE 작업이 생기면 인증 무효 → 재실행
+EXIT_GATE = Phase A opportunity-promotion Nest mutation · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 QA0-QA9 재실행 전까지 ISSUED 금지
 ```
 
 ## 판정
 
-Human/PO ACK `ENGINE_ACCEPTANCE_REBASE_V1` 수신 · apply 완료.
-새 epoch `ea-baseline-229e7777f9b0-2d4567b3a2c8` 가 live protected-scope 를 pin 한다.
-predecessor `ea-baseline-a6908eff1def-3db9e8f8832f` QA9 `ENGINE_ACCEPTED_FOR_UI` 는 history 이며 current-authoritative 가 아니다.
-`qa9_predecessor_verdict_as_current_authoritative = FORBIDDEN`.
+Phase A (`feat/phase-a-opportunity-promotion`) 가 Nest protected-scope 6경로를 변경했다.
+live aggregate ≠ baseline → 이전 ISSUED 인증은 current-authoritative 가 아니다.
+은폐 금지 · `STATUS = NOT_ISSUED` · `CERT_ISSUED = 0` · `PROTECTED_SCOPE_DRIFT = 1` · `REBASE_REQUIRED = 1`.
 
-Current-epoch QA1-QA8 + QA9 COMPLETE.
-- QA1-QA3 COMPLETE
-- QA4 tiny + clock harness (Actions `32653818941`) COMPLETE / critical PASS
-- QA5 tiny + fault harness (same run) COMPLETE / critical PASS
-- QA6 full + k6 threshold (same run) COMPLETE / 4/4 tag PASS
-- QA7 formal Actions `32654175694` 26/26 COMPLETE
-- QA8 tiny + adversarial harness (Actions `32653818941`) COMPLETE / critical PASS
-- QA9 formula: `ENGINE_ACCEPTED_FOR_UI` / ISSUED / NEXT=`03_ui_entry_unlocked`
+변경 경로 (6):
+- services/api-nest/src/adapters/adapters.admin.service.ts
+- services/api-nest/src/opportunities/catalog-runtime-seed.service.ts
+- services/api-nest/src/opportunities/index.ts
+- services/api-nest/src/opportunities/opportunities.mi.ts
+- services/api-nest/src/opportunities/opportunities.module.ts
+- services/api-nest/src/opportunities/opportunity-promotion.service.ts (added)
 
-Cert issued. Product mutation was not used to chase green.
+재발급 조건: Human/PO `ENGINE_ACCEPTANCE_REBASE_V1` ACK → rebase apply → current-epoch QA1-QA8 COMPLETE → QA9 `ENGINE_ACCEPTED_FOR_UI` → 그때만 인증서 재발급(ISSUED).
 Local fake QA0-QA9 PASS = 0.
-eval dataset = predecessor MATCH. QA7 cases = live dataset 26.
+predecessor QA9 verdict 는 history · `qa9_predecessor_verdict_as_current_authoritative = FORBIDDEN`.
 
 ## PSM 수집 (고정 range 아님)
 
@@ -68,15 +66,15 @@ COMPLETED: REL-003 · REL-008 · REL-010 · REL-015 · REL-016 · REL-020 · REL
 
 POST-001 · POST-002 · POST-003 은 PSM=TRUE 이지만 실행 순서가 REL-502 이후다. 인증 발급을 막지 않는다. 이후 실행되면 REL-503 이 이 인증을 STALE 로 만든다.
 
-## 발급 조건 (5항 전부 충족)
+## 발급 조건 (5항 — 현재 drift 로 미충족)
 
 1. PSM=TRUE REL 미완료 0 — 충족 (REL-508 COMPLETED)
-2. live aggregate == current baseline aggregate — 충족
-3. QA1-QA8 COMPLETE on that baseline — 충족
-4. QA9 current-epoch `ENGINE_ACCEPTED_FOR_UI` — 충족
-5. this document `STATUS = ISSUED` · `CERT_ISSUED = 1` — 충족
+2. live aggregate == current baseline aggregate — **미충족 (drift)**
+3. QA1-QA8 COMPLETE on that baseline — **STALE (rebase 후 재실행 필요)**
+4. QA9 current-epoch `ENGINE_ACCEPTED_FOR_UI` — **STALE**
+5. this document STATUS/CERT issued flags — **미충족 (현재 NOT_ISSUED / CERT=0)**
 
-## 변경 경로 (108 · predecessor 대비 이력 · 현재 epoch pin 이후 CHANGED_PATHS = 0)
+## 변경 경로 (현재 epoch · CHANGED_PATHS = 6)
 
 ### 추가 69
 
