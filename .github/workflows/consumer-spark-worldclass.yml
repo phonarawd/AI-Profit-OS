@@ -6,6 +6,7 @@ on:
     paths:
       - "apps/web/**"
       - "packages/ui/**"
+      - "tooling/e2e/lib/local-web-runtime.cjs"
       - "tooling/e2e/specs/consumer-spark-worldclass.spec.cjs"
       - "tooling/verify/pwa-native-shell.cjs"
       - ".github/workflows/consumer-spark-worldclass.yml"
@@ -41,7 +42,7 @@ jobs:
       - name: Spark Dash all-route responsive continuity
         env:
           CI: "1"
-          NEXT_DEV_WEBPACK: "1"
+          LOCAL_WEB_RUNTIME_MODE: "production"
         run: >-
           pnpm exec playwright test
           --config=tooling/e2e/playwright.config.cjs
