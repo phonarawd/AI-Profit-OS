@@ -55,7 +55,11 @@ export default function Page() {
 
       setUserCount(
         usersRes.ok
-          ? { value: typeof usersRes.data.total === "number" ? `${usersRes.data.total}명` : null, tone: "good", note: "회원 검색과 상세 확인이 가능합니다." }
+          ? {
+              value: typeof usersRes.data.total === "number" ? `${usersRes.data.total}명` : null,
+              tone: "good",
+              note: "회원 검색과 상세 확인이 가능합니다.",
+            }
           : { failure: usersRes.failure },
       );
       setRiskQueue(
@@ -70,7 +74,11 @@ export default function Page() {
       );
       setWithdrawQueue(
         withdrawRes.ok
-          ? asCountTile(typeof withdrawRes.data.total === "number" ? withdrawRes.data.total : null, "확인할 출금 요청이 없습니다.", "본인 확인을 마친 출금 요청을 확인해 주세요.")
+          ? asCountTile(
+              typeof withdrawRes.data.total === "number" ? withdrawRes.data.total : null,
+              "확인할 출금 요청이 없습니다.",
+              "본인 확인을 마친 출금 요청을 확인해 주세요.",
+            )
           : { failure: withdrawRes.failure },
       );
       setSupportQueue(
@@ -112,6 +120,9 @@ export default function Page() {
         <p className="admin-eyebrow">{T.admin.dashboard.eyebrow}</p>
         <h1>{T.admin.dashboard.title}</h1>
         <p>{T.admin.dashboard.description}</p>
+        <p className="mt-2 text-xs text-lux-text-muted" data-truth="unavailable">
+          정보를 불러오지 못한 값은 숫자 0으로 꾸미지 않고 “확인할 수 없음”으로 표시합니다.
+        </p>
       </header>
 
       <section className="mt-6 rounded-2xl border border-lux-border p-4" aria-labelledby="admin-priority-title">
@@ -132,7 +143,9 @@ export default function Page() {
 
       <h2 className="mt-7 text-lg font-bold">서비스 상태</h2>
       <section className="admin-stat-grid mt-3" aria-label="서비스 상태">
-        <StatusCard title="전체 회원" tile={userCount} href="/admin/users" />
+        <div data-metric="user-count">
+          <StatusCard title="전체 회원" tile={userCount} href="/admin/users" />
+        </div>
         <StatusCard title="알림 보내기" tile={push} href="/admin/system-control" />
         <StatusCard title="돈 흐름" tile={circuit} href="/admin/risk?tab=overview" />
         <div className="admin-stat-card">
@@ -150,7 +163,13 @@ function ActionCard({ title, tile, href }: { title: string; tile: Tile | null; h
     <Link href={href} className="admin-stat-card block transition-transform hover:-translate-y-0.5">
       <p className="admin-stat-label">{title}</p>
       <div className="admin-stat-value">
-        {!tile ? <span>{T.admin.state.loading}</span> : "failure" in tile ? <AdminFetchNote failure={tile.failure} /> : <AdminTruth value={tile.value} />}
+        {!tile ? (
+          <span>{T.admin.state.loading}</span>
+        ) : "failure" in tile ? (
+          <AdminFetchNote failure={tile.failure} />
+        ) : (
+          <AdminTruth value={tile.value} />
+        )}
       </div>
       {tile && !("failure" in tile) && tile.note ? <p className="mt-2 text-xs text-lux-text-muted">{tile.note}</p> : null}
       <span className="mt-3 inline-block text-sm font-bold text-lux-accent">자세히 보기 →</span>
@@ -160,7 +179,7 @@ function ActionCard({ title, tile, href }: { title: string; tile: Tile | null; h
 
 function StatusCard({ title, tile, href }: { title: string; tile: Tile | null; href: string }) {
   return (
-    <div className="admin-stat-card">
+    <div className="admin-stat-card h-full">
       <div className="flex items-center justify-between gap-2">
         <p className="admin-stat-label">{title}</p>
         {tile && !("failure" in tile) ? (
@@ -170,7 +189,13 @@ function StatusCard({ title, tile, href }: { title: string; tile: Tile | null; h
         ) : null}
       </div>
       <div className="admin-stat-value">
-        {!tile ? <span>{T.admin.state.loading}</span> : "failure" in tile ? <AdminFetchNote failure={tile.failure} /> : <AdminTruth value={tile.value} />}
+        {!tile ? (
+          <span>{T.admin.state.loading}</span>
+        ) : "failure" in tile ? (
+          <AdminFetchNote failure={tile.failure} />
+        ) : (
+          <AdminTruth value={tile.value} />
+        )}
       </div>
       {tile && !("failure" in tile) && tile.note ? <p className="mt-2 text-xs text-lux-text-muted">{tile.note}</p> : null}
       <Link className="mt-3 inline-block text-sm font-bold text-lux-accent" href={href}>자세히 보기</Link>
