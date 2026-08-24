@@ -1,0 +1,43 @@
+﻿
+✓ recovery/spark-dash-global-ui gate phonarawd/AI-Profit-OS#47 · 32687093554
+Triggered via pull_request about 1 hour ago
+
+✓ verify-gate in 2m54s (ID 97314146119)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Run pnpm/action-setup@v6
+  ✓ Run actions/setup-node@v6
+  ✓ Run dtolnay/rust-toolchain@stable
+  ✓ Install
+  ✓ REL-402 dependency audit
+  ✓ REL-404 lighthouse budget
+  ✓ REL-405 RBAC audit foundation
+  ✓ REL-406 kill switch 9
+  ✓ REL-407 price override layers
+  ✓ REL-408 security baseline
+  ✓ REL-222 admin ops 3-mode
+  ✓ REL-223 match control verbs
+  ✓ REL-224 source policy versions
+  ✓ REL-409 admin R6 cert
+  ✓ REL-500 QA lab expansion
+  ✓ REL-501 money red-team
+  ✓ REL-502 final engine acceptance
+  ✓ REL-503 protected-scope STALE watch
+  ✓ REL-504 migration readiness
+  ✓ REL-505 R7 backend alignment
+  ✓ REL-508 current-fx Nest wire
+  ✓ REL-506 R8 infra core
+  ✓ REL-507 production E2E
+  ✓ REL-600 staging
+  ✓ REL-601 staging regression
+  ✓ Stub .env for Docker-less stack-lock
+  ✓ cargo test (services/engine-rust — Rule Engine R1-R10 golden unit tests)
+  ✓ verify:gate
+  ✓ OpenNext build:cf (Linux — Workers deploy output SSOT)
+  ✓ Post Run actions/setup-node@v6
+  ✓ Post Run pnpm/action-setup@v6
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+
+To see the full job log, try: gh run view --log --job=97314146119
+View this run on GitHub: https://github.com/phonarawd/AI-Profit-OS/actions/runs/32687093554
