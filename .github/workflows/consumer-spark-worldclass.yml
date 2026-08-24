@@ -37,6 +37,8 @@ jobs:
         run: pnpm verify:gate:push
       - name: Cloudflare OpenNext build
         env:
+          # Browser visual QA is intentionally isolated from a live backend.
+          # The production bundle still exercises the same Worker rewrite contract.
           API_HOST: "127.0.0.1:4010"
         run: pnpm --filter @aipo/web build:cf
       - name: Install Chromium
