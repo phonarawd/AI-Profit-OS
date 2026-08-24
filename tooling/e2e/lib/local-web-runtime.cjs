@@ -4,6 +4,8 @@
  * PLAYWRIGHT_BASE_URL이 없어도 Cursor/CI가 loopback Next를 기동한다.
  * LOCAL_WEB_RUNTIME_MODE=production이면 이미 생성된 .next production build를
  * `next start`로 기동해 실제 production CSP/렌더링 조건을 검증한다.
+ * LOCAL_WEB_RUNTIME_API_STUB=1이면 API_HOST의 loopback 포트에 fail-closed 401
+ * API stub을 열어 시각/반응형 QA가 외부 API 가용성에 오염되지 않게 한다.
  */
 "use strict";
 
@@ -14,6 +16,7 @@ const net = require("node:net");
 const path = require("node:path");
 
 const ROOT = path.resolve(__dirname, "../../..");
+const LOOPBACK_HOSTS = new Set(["127.0.0.1", "localhost", "::1"]);
 
 const PRODUCTION_HOST_FRAGMENTS = [
   "hiptk.app",
@@ -33,7 +36,7 @@ function assertSafeBaseUrl(raw) {
   ) {
     throw new Error("local-web-runtime: production host denied");
   }
-  if (host !== "127.0.0.1" && host !== "localhost" && host !== "::1") {
+  if (!LOOPBACK_HOSTS.has(host)) {
     throw new Error(`local-web-runtime: loopback only (got ${host})`);
   }
   return url.origin;
@@ -82,6 +85,51 @@ function stopChild(child) {
   child.kill("SIGTERM");
 }
 
+function localApiEndpoint(raw) {
+  const value = String(raw || "127.0.0.1:4000");
+  const url = new URL(
+    value.startsWith("http://") || value.startsWith("https://")
+      ? value
+      : `http://${value}`,
+  );
+  const host = url.hostname.toLowerCase();
+  if (!LOOPBACK_HOSTS.has(host)) {
+    throw new Error(`local-web-runtime: API stub must be loopback (got ${host})`);
+  }
+  if (url.protocol !== "http:") {
+    throw new Error("local-web-runtime: API stub only supports loopback http");
+  }
+  return {
+    host: host === "localhost" ? "127.0.0.1" : host,
+    port: Number(url.port || 80),
+  };
+}
+
+function startApiStub() {
+  if (process.env.LOCAL_WEB_RUNTIME_API_STUB !== "1") return Promise.resolve(null);
+  const endpoint = localApiEndpoint(process.env.API_HOST);
+  const server = http.createServer((req, res) => {
+    if (req.method === "OPTIONS") {
+      res.statusCode = 204;
+      res.end();
+      return;
+    }
+    res.statusCode = 401;
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    res.setHeader("Cache-Control", "no-store");
+    res.end(JSON.stringify({ message: "QA_AUTH_REQUIRED" }));
+  });
+  return new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(endpoint.port, endpoint.host, () => resolve(server));
+  });
+}
+
+function closeServer(server) {
+  if (!server) return Promise.resolve();
+  return new Promise((resolve) => server.close(() => resolve()));
+}
+
 /**
  * @returns {Promise<{ baseUrl: string, started: boolean, stop: () => Promise<void> }>}
  */
@@ -113,6 +161,8 @@ async function ensureLocalWebRuntime(opts = {}) {
       );
     }
   }
+
+  const apiStub = await startApiStub();
 
   const webNm = path.join(webRoot, "node_modules");
   let linkedNm = false;
@@ -168,6 +218,7 @@ async function ensureLocalWebRuntime(opts = {}) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     if (child.exitCode != null) {
+      await closeServer(apiStub);
       throw new Error(
         `local-web-runtime: next exited ${child.exitCode}\n${output}`,
       );
@@ -178,12 +229,14 @@ async function ensureLocalWebRuntime(opts = {}) {
         started: true,
         stop: async () => {
           stopChild(child);
+          await closeServer(apiStub);
         },
       };
     }
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
   stopChild(child);
+  await closeServer(apiStub);
   throw new Error(`local-web-runtime: timeout waiting for ${baseUrl}\n${output}`);
 }
 
