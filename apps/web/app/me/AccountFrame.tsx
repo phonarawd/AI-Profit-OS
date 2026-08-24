@@ -29,11 +29,12 @@ export function AccountFrame({
   children: ReactNode;
 }) {
   return (
-    <div className={styles.page} data-testid={testId} data-account-view={view}>
-      <p className={styles.nav}>
-        <Link href="/">홈</Link>
-        {showHubLink ? <Link href="/me">계정</Link> : null}
-      </p>
+    <div
+      className={styles.page}
+      data-testid={testId}
+      data-account-view={view}
+      data-account-hub-link={showHubLink ? "available" : "hidden"}
+    >
       {hideTitle ? null : <h1 className={styles.title}>{title}</h1>}
       {children}
     </div>
