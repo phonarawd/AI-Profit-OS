@@ -1,0 +1,154 @@
+name: consumer-staging-browser-qa
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/consumer-staging-browser-qa.yml"
+
+concurrency:
+  group: consumer-staging-browser-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  staging-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CI: "1"
+      STAGING_WEB_URL: "https://ai-profit-web-preview.ebay-adapter.workers.dev"
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Build live-staging browser spec
+        run: |
+          cat > tooling/e2e/specs/_tmp-live-staging.spec.cjs <<'EOF'
+          "use strict";
+          const { test, expect } = require("@playwright/test");
+          const AxeBuilder = require("@axe-core/playwright").default;
+
+          test.describe.configure({ timeout: 300000 });
+          const BASE = process.env.STAGING_WEB_URL;
+          const ID = "00000000-0000-4000-8000-000000000000";
+          const SHELL_ROUTES = [
+            "/wallet", "/wallet/deposit", "/wallet/withdraw", "/wallet/withdraw/usdt",
+            "/wallet/withdraw/krw", "/wallet/history", `/wallet/history/${ID}`,
+            "/trades", `/trades/${ID}/execute`, `/trades/${ID}/settlement`,
+            "/me/benefits", "/me/events", "/me/guide/faq", "/me/guide/get-usdt",
+            "/me/guide/market-weekly", "/me/guide/partners", "/me/guide/principal",
+            "/me/guide/revenue", "/me/guide/usdt", "/me/inbox", "/me/invite",
+            "/me/kyc", "/me/legal", "/me/legal/license", "/me/legal/oss",
+            "/me/legal/privacy", "/me/legal/terms", "/me/membership", "/me/peotteok",
+            "/me/settings", "/me/strategies", "/me/support"
+          ];
+          const GUEST_ROUTES = ["/auth/login", "/auth/signup", "/onboarding", "/ads", "/ads/meta", "/l/meta"];
+
+          async function open(page, route, width, height, allowedPaths = [route]) {
+            const pageErrors = [];
+            const severeConsole = [];
+            const serverErrors = [];
+            page.removeAllListeners("pageerror");
+            page.removeAllListeners("console");
+            page.removeAllListeners("response");
+            page.on("pageerror", (err) => pageErrors.push(String(err?.message || err)));
+            page.on("console", (msg) => {
+              if (msg.type() !== "error") return;
+              const text = msg.text();
+              if (!/\b401\b|\b403\b|Unauthorized|Forbidden|ERR_ABORTED|Failed to load resource.*(401|403)/i.test(text)) {
+                severeConsole.push(text);
+              }
+            });
+            page.on("response", (res) => {
+              if (res.status() >= 500) serverErrors.push(`${res.status()} ${res.url()}`);
+            });
+            await page.setViewportSize({ width, height });
+            const response = await page.goto(`${BASE}${route}`, { waitUntil: "load", timeout: 60000 });
+            expect(response, `${route} response`).not.toBeNull();
+            expect(response.status(), `${route} status`).toBeLessThan(500);
+            await page.waitForTimeout(350);
+            const currentPath = new URL(page.url()).pathname;
+            expect(allowedPaths, `${route} unexpected navigation ${currentPath}`).toContain(currentPath);
+            const metrics = await page.evaluate(() => ({
+              width: window.innerWidth,
+              scrollWidth: document.documentElement.scrollWidth,
+            }));
+            expect(metrics.scrollWidth, `${route} horizontal overflow`).toBeLessThanOrEqual(metrics.width + 2);
+            expect(serverErrors, `${route} 5xx responses`).toEqual([]);
+            expect(pageErrors, `${route} page errors`).toEqual([]);
+            expect(severeConsole, `${route} severe console`).toEqual([]);
+          }
+
+          test("live staging desktop shell continuity", async ({ page }) => {
+            for (const route of SHELL_ROUTES) {
+              await open(page, route, 1440, 1080);
+              await expect(page.getByTestId("consumer-spark-shell")).toBeVisible();
+              await expect(page.getByTestId("consumer-spark-sidebar")).toBeVisible();
+              await expect(page.getByTestId("consumer-spark-topbar")).toBeVisible();
+              await expect(page.locator(".csp-bottom-nav")).toBeHidden();
+            }
+            for (const route of ["/me/settings", "/me/peotteok", "/me/guide/partners"]) {
+              await open(page, route, 1440, 1080);
+              const box = await page.locator("[data-account-view]").first().boundingBox();
+              expect(box, `${route} account frame`).not.toBeNull();
+              expect(box.width, `${route} legacy narrow column`).toBeGreaterThan(800);
+            }
+          });
+
+          test("live staging mobile shell continuity", async ({ page }) => {
+            for (const route of SHELL_ROUTES) {
+              await open(page, route, 390, 844);
+              await expect(page.getByTestId("consumer-spark-shell")).toBeVisible();
+              await expect(page.getByTestId("consumer-spark-sidebar")).toBeHidden();
+              await expect(page.locator(".csp-mobile-header")).toBeVisible();
+              await expect(page.locator(".csp-bottom-nav")).toBeVisible();
+            }
+          });
+
+          test("live staging protected Home and guest surfaces", async ({ page }) => {
+            await open(page, "/", 1440, 1080);
+            await expect(page.getByTestId("consumer-spark-shell")).toHaveCount(0);
+            await expect(page.locator("html")).toHaveClass(/theme-peotteok-light/);
+            await expect(page.locator("body")).toHaveClass(/bg-lux-bg/);
+
+            for (const route of GUEST_ROUTES) {
+              await open(page, route, 1440, 1080);
+              await expect(page.getByTestId("guest-chrome")).toBeVisible();
+              await expect(page.locator(".csp-auth-story")).toBeVisible();
+              const panel = await page.locator(".csp-auth-panel").boundingBox();
+              expect(panel).not.toBeNull();
+              expect(panel.width).toBeGreaterThan(500);
+            }
+            await open(page, "/auth/complete-profile", 1440, 1080, ["/auth/login"]);
+            await expect(page.getByTestId("guest-chrome")).toBeVisible();
+
+            for (const width of [320, 360, 430, 1280, 1366, 1920]) {
+              for (const route of ["/wallet", "/me/settings", "/auth/signup"]) {
+                await open(page, route, width, width < 768 ? 844 : 1080);
+              }
+            }
+          });
+
+          test("live staging key surfaces have no serious or critical axe violations", async ({ page }) => {
+            for (const route of ["/", "/wallet", "/me/settings", "/auth/login"]) {
+              await open(page, route, 1440, 1080);
+              const result = await new AxeBuilder({ page }).analyze();
+              const severe = result.violations.filter((v) => v.impact === "critical" || v.impact === "serious");
+              expect(severe, `${route} serious/critical axe violations`).toEqual([]);
+            }
+          });
+          EOF
+      - name: Live Cloudflare staging desktop/mobile QA
+        run: >-
+          pnpm exec playwright test
+          --config=tooling/e2e/playwright.config.cjs
+          tooling/e2e/specs/_tmp-live-staging.spec.cjs
