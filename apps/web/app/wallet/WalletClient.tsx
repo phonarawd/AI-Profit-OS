@@ -102,9 +102,6 @@ export function WalletClient() {
 
   return (
     <Shell view="ready">
-      <p className={styles.nav}>
-        <Link href="/">홈</Link>
-      </p>
       <h1 className={styles.title}>{T.walletBuckets.pageTitle}</h1>
       <DemoWalletBanner practiceUsdt={buckets.practiceUsdt} />
       <div className={styles.buckets}>
