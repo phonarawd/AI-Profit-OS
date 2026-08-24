@@ -75,7 +75,9 @@ jobs:
       - name: REL-602 staging rollback
         run: pnpm verify:rel-602-staging-rollback
       - name: REL-603 automated age usability cohort
-        run: pnpm verify:rel-603-age-usability-spotcheck
+        run: |
+          pnpm exec playwright install --with-deps chromium
+          pnpm verify:rel-603-age-usability-spotcheck
       - name: Stub .env for Docker-less stack-lock
         run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
       - name: cargo test (services/engine-rust — Rule Engine R1-R10 golden unit tests)
@@ -93,3 +95,4 @@ jobs:
           test -d apps/web/.open-next/assets
           test -f apps/admin/.open-next/worker.js
           test -d apps/admin/.open-next/assets
+
