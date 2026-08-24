@@ -61,6 +61,7 @@
         "id": "super",
         "labelKo": "최고관리자",
         "capabilities": {
+          "session": "read",
           "all": "write",
           "rbac": "write",
           "circuit": "write",
@@ -79,6 +80,7 @@
         "id": "finance",
         "labelKo": "재무",
         "capabilities": {
+          "session": "read",
           "wallet": "write",
           "ledger": "write",
           "financeExport": "write",
@@ -97,6 +99,7 @@
         "id": "cs",
         "labelKo": "고객지원",
         "capabilities": {
+          "session": "read",
           "users": "write",
           "tendencyMemo": "write",
           "kyc": "write",
@@ -115,6 +118,7 @@
         "id": "risk",
         "labelKo": "리스크",
         "capabilities": {
+          "session": "read",
           "risk": "write",
           "compliance": "write",
           "freezeBan": "write",
@@ -128,6 +132,7 @@
         "id": "marketing",
         "labelKo": "마케팅",
         "capabilities": {
+          "session": "read",
           "growth": "write",
           "attribution": "write",
           "content": "write",
