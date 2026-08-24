@@ -20,6 +20,10 @@ on:
     paths:
       - ".github/workflows/deploy-staging.yml"
 
+permissions:
+  contents: read
+  issues: write
+
 concurrency:
   group: cf-staging-${{ github.ref }}-${{ inputs.surface || 'web-pr51' }}
   cancel-in-progress: false
@@ -79,3 +83,12 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: node tooling/deploy/cf-preflight.cjs staging ops && node tooling/deploy/cf-pages-ops.cjs staging
+
+      - name: Report PR51 staging result
+        if: always() && github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          gh api "repos/${GITHUB_REPOSITORY}/issues/51/comments" \
+            -f body="STAGING_WEB_DEPLOY_${JOB_STATUS^^} · sha=${GITHUB_SHA} · preview=https://ai-profit-web-preview.ebay-adapter.workers.dev"
