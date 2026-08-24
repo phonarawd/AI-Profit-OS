@@ -5,12 +5,13 @@ import type { ReactNode } from "react";
 
 /**
  * Recovery shell for the global Spark Dash rollout.
- * Founder-locked Home and Account Hub surfaces are deliberately excluded.
+ * Founder-locked Home `/` and Account Hub `/me` are deliberately excluded.
+ * Nested `/me/**` utility/content routes remain eligible for the global shell.
  */
 export function GlobalSparkBoundary({ children }: { children: ReactNode }) {
   const pathname = usePathname() || "/";
   const protectedSurface =
-    pathname === "/" || pathname.startsWith("/me") || pathname.startsWith("/dev");
+    pathname === "/" || pathname === "/me" || pathname.startsWith("/dev");
 
   return (
     <div
