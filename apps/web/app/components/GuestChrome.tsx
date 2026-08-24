@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { SD_ASSETS } from "../../components/spark-dash-home/assets";
+import "./guest-spark.css";
 
 export function GuestChrome({ children }: { children: ReactNode }) {
   return (
