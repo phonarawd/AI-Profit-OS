@@ -1,10 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./pwa-shell.css";
-import "./spark-global.css";
 import { ToastHost } from "@aipo/ui/components/toast";
 import { DeviceTierApply } from "../components/DeviceTierApply";
-import { GlobalSparkBoundary } from "../components/GlobalSparkBoundary";
+import { ConsumerSparkRoot } from "../components/spark-shell/ConsumerSparkRoot";
 import { PwaRuntime } from "../components/pwa/PwaRuntime";
 import { ObsRuntime } from "../components/observability/ObsRuntime";
 
@@ -12,7 +11,7 @@ const PRETENDARD_CSS =
   "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css";
 
 export const viewport: Viewport = {
-  themeColor: "#6B3CFF",
+  themeColor: "#08111F",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -20,7 +19,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "퍼뜩",
-  description: "퍼뜩 — AI Profit OS consumer",
+  description: "퍼뜩 — Global Opportunity Platform",
   applicationName: "퍼뜩",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -50,9 +49,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-dvh bg-lux-bg text-lux-text">
         <DeviceTierApply />
-        <GlobalSparkBoundary>
+        <ConsumerSparkRoot>
           <ToastHost>{children}</ToastHost>
-        </GlobalSparkBoundary>
+        </ConsumerSparkRoot>
         <PwaRuntime />
         <ObsRuntime />
       </body>

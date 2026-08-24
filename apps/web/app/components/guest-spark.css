@@ -1,0 +1,122 @@
+.csp-auth-shell {
+  min-height: 100dvh;
+  display: grid;
+  background:
+    radial-gradient(circle at 88% -8%, rgba(255, 46, 99, 0.18), transparent 28rem),
+    #08111f;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+.csp-auth-story { display: none; }
+
+.csp-auth-main {
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  padding: 28px 16px 48px;
+}
+
+.csp-auth-panel {
+  width: min(100%, 560px);
+  min-width: 0;
+}
+
+.csp-auth-panel > * { max-width: none !important; }
+.csp-auth-panel :where(button, a, input, select, textarea) { font: inherit; }
+.csp-auth-panel :where(input, select, textarea) {
+  background: #111d2d;
+  border-color: #24344b;
+  color: #fff;
+}
+.csp-auth-panel :where(input, textarea)::placeholder { color: #93a0b3; opacity: 1; }
+.csp-auth-panel :focus-visible { outline: 3px solid #ff6a91; outline-offset: 3px; }
+
+@media (min-width: 1280px) {
+  .csp-auth-shell {
+    grid-template-columns: minmax(520px, 0.95fr) minmax(560px, 1.05fr);
+    background: #f6f7fb;
+    color: #121721;
+  }
+
+  .csp-auth-story {
+    position: sticky;
+    top: 0;
+    display: grid;
+    height: 100dvh;
+    grid-template-rows: auto 1fr auto;
+    padding: 38px 54px 52px;
+    background:
+      radial-gradient(circle at 85% 25%, rgba(255, 45, 107, 0.2), transparent 20rem),
+      radial-gradient(circle at 15% 85%, rgba(73, 94, 255, 0.16), transparent 26rem),
+      #07101d;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .csp-auth-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.65rem;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+  }
+  .csp-auth-brand img { width: 20px; height: 32px; }
+  .csp-auth-copy { align-self: center; max-width: 560px; }
+  .csp-auth-kicker {
+    margin: 0 0 18px;
+    color: #ff7aa5;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+  }
+  .csp-auth-copy h1 {
+    margin: 0;
+    font-size: clamp(2.8rem, 4vw, 4.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.055em;
+  }
+  .csp-auth-copy > p:last-child {
+    margin: 24px 0 0;
+    max-width: 510px;
+    color: #b7c3d3;
+    font-size: 1.03rem;
+    line-height: 1.7;
+  }
+  .csp-auth-art {
+    position: absolute;
+    right: 8%;
+    bottom: 5%;
+    opacity: 0.78;
+    filter: drop-shadow(0 0 26px rgba(255, 45, 107, 0.32));
+  }
+  .csp-auth-art img { width: min(22vw, 300px); height: auto; }
+
+  .csp-auth-main {
+    align-items: center;
+    padding: 56px clamp(44px, 6vw, 96px);
+    background:
+      radial-gradient(circle at 88% -10%, rgba(255, 45, 107, 0.08), transparent 24rem),
+      #f6f7fb;
+  }
+
+  .csp-auth-panel {
+    width: min(100%, 600px);
+    padding: 34px;
+    border: 1px solid #e1e6ee;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 20px 60px rgba(18, 23, 33, 0.1);
+  }
+  .csp-auth-panel :where(input, select, textarea) {
+    background: #fff;
+    border-color: #d9e0ea;
+    color: #121721;
+  }
+  .csp-auth-panel :where(input, textarea)::placeholder { color: #697386; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .csp-auth-shell * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

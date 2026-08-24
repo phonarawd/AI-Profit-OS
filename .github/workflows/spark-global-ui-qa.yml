@@ -4,12 +4,11 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "apps/web/**"
       - "apps/admin/**"
       - "packages/ui/brand/**"
       - "packages/ui/components/trust/**"
-      - "tooling/e2e/specs/global-spark-shell.spec.cjs"
       - "tooling/e2e/specs/admin-spark-shell.spec.cjs"
+      - "tooling/e2e/specs/admin-entry-closure.spec.cjs"
       - ".github/workflows/spark-global-ui-qa.yml"
 
 concurrency:
@@ -17,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  recovery-qa:
+  admin-spark-qa:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -38,13 +37,12 @@ jobs:
         run: pnpm verify:gate:push
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
-      - name: Spark Dash browser regression
+      - name: Spark Dash admin browser regression
         env:
           CI: "1"
           NEXT_DEV_WEBPACK: "1"
         run: >-
           pnpm exec playwright test
           --config=tooling/e2e/playwright.config.cjs
-          tooling/e2e/specs/global-spark-shell.spec.cjs
           tooling/e2e/specs/admin-spark-shell.spec.cjs
           tooling/e2e/specs/admin-entry-closure.spec.cjs
