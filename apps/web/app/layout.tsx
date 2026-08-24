@@ -41,13 +41,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" className="theme-putduk-spark" data-font-scale="md">
+    <html lang="ko" className="theme-peotteok-light" data-font-scale="md">
       <head>
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
         <link rel="preload" href={PRETENDARD_CSS} as="style" />
       </head>
-      <body className="min-h-dvh">
+      <body className="min-h-dvh bg-lux-bg text-lux-text">
         <DeviceTierApply />
         <ConsumerSparkRoot>
           <ToastHost>{children}</ToastHost>
