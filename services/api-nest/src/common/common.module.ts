@@ -5,10 +5,12 @@
  */
 
 import { Global, Module } from "@nestjs/common";
+import { AdminSessionAdminController } from "./admin-session.admin.controller";
 import { CLOCK_PROVIDER } from "./clock";
 
 @Global()
 @Module({
+  controllers: [AdminSessionAdminController],
   providers: [CLOCK_PROVIDER],
   exports: [CLOCK_PROVIDER.provide],
 })
