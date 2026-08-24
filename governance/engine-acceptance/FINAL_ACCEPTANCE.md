@@ -1,29 +1,29 @@
 # REL-502 FINAL ENGINE ACCEPTANCE
 
-Current protected-scope 변경에 대해 Human/PO가 `ENGINE_ACCEPTANCE_REBASE_V1`을 승인했다. 이전 인증은 history이며 현재 epoch 권위가 아니다. QA1~QA8 current-epoch 재실행 및 QA9 재집계 전에는 발급 금지.
+이 문서는 REL-004 sanity 와 별도다. REL-004 로 대체 금지.
 
 ```text
 REL = REL-502
 TITLE = FINAL ENGINE ACCEPTANCE
-STATUS = NOT_ISSUED
-CERT_ISSUED = 0
+STATUS = ISSUED
+CERT_ISSUED = 1
 REL-004_SUBSTITUTE = 0
 QA9_PREDECESSOR_VERDICT_AS_CURRENT = 0
 PSM_REL_PENDING = 0
-POST_PSM_PENDING = 9
+POST_PSM_PENDING = 3
 PROTECTED_SCOPE_DRIFT = 0
 REBASE_REQUIRED = 0
 REBASE_APPLIED = 1
 ACK_RECEIVED = 1
 LOCAL_QA0_QA9_RERUN = 0
 EVAL_DATASET_STATUS = MATCH
-QA1_QA8_STATUS = STALE_PENDING_CURRENT_EPOCH_RERUN
-QA9_STATUS = STALE_AGGREGATION_PENDING_DISCOVERY
-QA9_VERDICT = NOT_ISSUED
-DEFECTS_P0 = UNKNOWN_PENDING_RERUN
-DEFECTS_P1 = UNKNOWN_PENDING_RERUN
-CRITICAL_INVARIANT_BLOCKED = UNKNOWN_PENDING_RERUN
-NEXT = QA1_DETERMINISTIC_TRUTH
+QA1_QA8_STATUS = COMPLETE_CURRENT_EPOCH
+QA9_STATUS = COMPLETE_ACCEPTED
+QA9_VERDICT = ENGINE_ACCEPTED_FOR_UI
+DEFECTS_P0 = 0
+DEFECTS_P1 = 0
+CRITICAL_INVARIANT_BLOCKED = 0
+NEXT = 03_ui_entry_unlocked
 BASELINE_ID = ea-baseline-04ef3c7de4dd-2ff1760b7d72
 PREDECESSOR_BASELINE_ID = ea-baseline-229e7777f9b0-2d4567b3a2c8
 REBASE_ID = ea-rebase-ffffb4808987-2ff1760b7d72
@@ -35,14 +35,9 @@ CHANGED_PATHS = 0
 ADDED_PATHS = 0
 MUTATED_PATHS = 0
 MISSING_PATHS = 0
-EXIT_GATE = QA1-QA8 current-epoch COMPLETE + QA9 current-epoch ENGINE_ACCEPTED_FOR_UI before ISSUED
+EXIT_GATE = 이후 PSM=TRUE 작업이 생기면 인증 무효 → 재실행
 ```
 
-## Current verdict
+## 판정
 
-- Current epoch verdict: `ENGINE_QA_INCOMPLETE`.
-- QA0 new epoch freeze: COMPLETE.
-- QA1~QA8: predecessor evidence preserved as history; current epoch must rerun.
-- QA9: predecessor aggregation is not current-authoritative; discovery rerun 후 재집계.
-- Baseline washing / predecessor checksum 재사용 / 가짜 PASS: 금지.
-- Production DB apply / production deploy: 이 변경에서 0.
+Current-epoch QA1-QA8 및 QA9가 같은 baseline에서 COMPLETE이고, QA9 잠금식 결과는 `ENGINE_ACCEPTED_FOR_UI`이다. defects P0/P1=0, critical blocked/skipped/uncovered=0, protected-scope drift=0인 경우에만 이 인증을 발급한다. Predecessor QA9는 history이며 current-authoritative가 아니다. Product mutation을 green 추적에 사용하지 않았다.

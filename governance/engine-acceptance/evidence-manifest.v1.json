@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-8",
+  "qa_phase": "QA-9",
   "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
-  "verdict": "ENGINE_QA_INCOMPLETE",
-  "verdict_reason": "QA8 COMPLETE - P0/P1=0 - mandatory suite QA9 report not yet issued",
+  "verdict": "ENGINE_ACCEPTED_FOR_UI",
+  "verdict_reason": "QA9 COMPLETE - all acceptance-contract L1 conditions met - ENGINE_ACCEPTED_FOR_UI",
   "evidence_integrity": "VALID",
-  "next": "QA9_ACCEPTANCE_REPORT",
+  "next": "03_ui_entry_unlocked",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -16,6 +16,7 @@
       "baseline.v1.json",
       "ENGINE_ACCEPTANCE_REPORT.md",
       "qa6-result.v1.json",
+      "qa7-result.v1.json",
       "perf-budget.v1.json"
     ]
   },
@@ -88,21 +89,20 @@
     },
     {
       "suite_id": "QA7",
-      "run_id": null,
+      "run_id": "32713082605",
       "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
-      "checksum": null,
-      "completion_status": "NOT_STARTED",
+      "checksum": "a407df3b50ecc4ca6fa8000789d97dca40c27bb0c2654b97508626fa1bb46243",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa7-result.v1.json",
       "mode": "full",
       "formal_actions_evidence": true,
-      "artifact": "engine-acceptance-QA7-raw-traces",
-      "predecessor_baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8"
+      "artifact": "engine-acceptance-QA7-raw-traces"
     },
     {
       "suite_id": "QA8",
       "run_id": "qa8-security-privacy-20260824",
       "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
-      "checksum": "69486158c4a8b7c19fbde5da708ef0f05f5faab249c30b4e45a7e6182e051ed4",
+      "checksum": "7fc1296402dcce7eafbad9da90e7ce96c5d7af1b5f149ffb2190577880ce84c0",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa8-result.v1.json",
       "mode": "full",
@@ -111,22 +111,12 @@
     },
     {
       "suite_id": "QA9",
-      "run_id": null,
+      "run_id": "qa9-acceptance-report-20260824",
       "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
-      "checksum": null,
-      "completion_status": "NOT_STARTED",
-      "epoch_status": "STALE_AGGREGATION_FOR_CURRENT_EPOCH",
-      "aggregation_only": true,
-      "discovery_suite": false,
-      "current_epoch_authoritative": false,
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
-      "historical_run_id": "qa9-acceptance-report-20260823",
-      "historical_checksum": "c058046548207d298b2690e38a63a7028431a11cb5466264e3d1a3b12a691a61",
-      "historical_verdict": "ENGINE_ACCEPTED_FOR_UI",
+      "checksum": "e410ad596403ea8eef40bfb3e5d0fd3beb525fcb9b70d9cd4f76c906d76a9f00",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa9-result.v1.json",
-      "predecessor_result_preserved": true,
-      "rerun_after_current_epoch_discovery": true
+      "aggregation_only": true
     }
   ],
   "kill_switch": {
@@ -138,7 +128,9 @@
     "verified_before_qa4": true,
     "verified_before_qa5": true,
     "verified_before_qa6": true,
-    "verified_before_qa8": true
+    "verified_before_qa8": true,
+    "verified_before_qa7": true,
+    "verified_before_qa9": true
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -156,7 +148,7 @@
     "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
     "predecessor_baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
     "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
-    "qa1_qa6_status": "STALE_PENDING_RERUN",
+    "qa1_qa6_status": "COMPLETE",
     "qa8_status": "STALE_PENDING_RERUN",
     "qa9_status": "STALE_AGGREGATION_PENDING_DISCOVERY"
   },

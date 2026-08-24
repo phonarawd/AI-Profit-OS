@@ -462,7 +462,7 @@ function run() {
       "live_verdict_unchanged",
       qa9.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
         qa9.engine_accepted_for_ui === "ISSUED" &&
-        qa9.baseline_id === "ea-baseline-229e7777f9b0-2d4567b3a2c8",
+        qa9.baseline_id === "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
       qa9.verdict,
     );
     // evidence-manifest.verdict is rewritten ephemerally by run-qa3/4/5/6/8.cjs in every
