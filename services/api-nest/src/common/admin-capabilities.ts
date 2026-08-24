@@ -92,6 +92,9 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     putMatchPolicy: write("userMatchPolicy"),
     effectivePreview: read("userMembershipForce"),
   },
+  UserDirectoryAdminController: {
+    listUsers: read("users"),
+  },
   OpportunitiesAdminController: {
     listAssets: read("all"),
     list: read("all"),
