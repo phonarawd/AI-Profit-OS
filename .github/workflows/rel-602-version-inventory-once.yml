@@ -1,0 +1,51 @@
+name: REL-602 preview version inventory once
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  preview-version-inventory:
+    if: github.head_ref == 'rel/REL-602-staging-rollback-current'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Read-only safety guard
+        run: |
+          test "${GITHUB_HEAD_REF}" = "rel/REL-602-staging-rollback-current"
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          pnpm verify:opennext-workers-origin
+      - name: Web preview versions and deployments
+        run: |
+          echo '=== WEB VERSIONS ==='
+          pnpm exec wrangler versions list --config infra/web/wrangler.toml --env preview --name ai-profit-web-preview --json
+          echo '=== WEB DEPLOYMENTS ==='
+          pnpm exec wrangler deployments list --config infra/web/wrangler.toml --env preview --name ai-profit-web-preview --json
+          echo '=== WEB ACTIVE ==='
+          pnpm exec wrangler deployments status --config infra/web/wrangler.toml --env preview --name ai-profit-web-preview --json
+      - name: Ops preview versions and deployments
+        run: |
+          echo '=== OPS VERSIONS ==='
+          pnpm exec wrangler versions list --config infra/ops/wrangler.toml --env preview --name ai-profit-ops-preview --json
+          echo '=== OPS DEPLOYMENTS ==='
+          pnpm exec wrangler deployments list --config infra/ops/wrangler.toml --env preview --name ai-profit-ops-preview --json
+          echo '=== OPS ACTIVE ==='
+          pnpm exec wrangler deployments status --config infra/ops/wrangler.toml --env preview --name ai-profit-ops-preview --json
