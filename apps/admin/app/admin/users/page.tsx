@@ -6,6 +6,7 @@ import { T } from "@aipo/ui/copy/ko";
 import { adminGet, type AdminResult } from "../../../lib/admin-api";
 import {
   formatDateTimeKo,
+  isUuid,
   maskEmail,
   maskPhone,
   readStatusLabel,
@@ -57,6 +58,8 @@ export default function Page() {
   const [status, setStatus] = useState("all");
   const [offset, setOffset] = useState(0);
   const [directory, setDirectory] = useState<AdminResult<UserDirectoryResponse> | null>(null);
+  const [directId, setDirectId] = useState("");
+  const [jumpNote, setJumpNote] = useState<string | null>(null);
 
   const api = useMemo(() => {
     const qs = new URLSearchParams({ limit: "50", offset: String(offset) });
@@ -83,6 +86,16 @@ export default function Page() {
     setQuery(draft.trim());
   }
 
+  function onDirectJump(event: FormEvent) {
+    event.preventDefault();
+    const id = directId.trim();
+    if (!isUuid(id)) {
+      setJumpNote("회원 번호 형식을 다시 확인해 주세요.");
+      return;
+    }
+    window.location.href = `/admin/users/${id}`;
+  }
+
   const items = directory?.ok && Array.isArray(directory.data.items) ? directory.data.items : null;
   const total = directory?.ok ? Number(directory.data.total ?? 0) : null;
   const limit = directory?.ok ? Number(directory.data.limit ?? 50) : 50;
@@ -95,8 +108,11 @@ export default function Page() {
       <p className="mt-2 max-w-3xl text-sm text-lux-text-muted">
         회원 이름, 이메일, 전화번호 또는 회원 번호로 찾고 현재 이용 상태와 본인 확인 상태를 한눈에 확인합니다.
       </p>
+      <p className="mt-2 text-xs text-lux-text-muted" data-truth="unavailable">
+        회원 정보를 불러오지 못한 경우 숫자나 상태를 만들지 않고 “확인할 수 없음”으로 표시합니다.
+      </p>
 
-      <section className="mt-6 rounded-2xl border border-lux-border p-4">
+      <section className="mt-6 rounded-2xl border border-lux-border p-4" data-metric="user-list">
         <div className="admin-stat-grid">
           <div className="admin-stat-card">
             <p className="admin-stat-label">검색된 회원</p>
@@ -114,9 +130,7 @@ export default function Page() {
           </div>
           <div className="admin-stat-card">
             <p className="admin-stat-label">이용 상태</p>
-            <p className="admin-stat-value text-base">
-              {status === "all" ? "전체" : readStatusLabel(status)}
-            </p>
+            <p className="admin-stat-value text-base">{status === "all" ? "전체" : readStatusLabel(status)}</p>
           </div>
         </div>
       </section>
@@ -151,10 +165,8 @@ export default function Page() {
               <option value="deleted">탈퇴 처리</option>
             </select>
           </label>
-          <button type="submit" className="min-h-11 rounded-xl px-4 py-2 font-bold">
-            검색
-          </button>
-          {(query || status !== "all") ? (
+          <button type="submit" className="min-h-11 rounded-xl px-4 py-2 font-bold">검색</button>
+          {query || status !== "all" ? (
             <button
               type="button"
               className="min-h-11 rounded-xl px-4 py-2 text-lux-text-muted"
@@ -169,6 +181,27 @@ export default function Page() {
             </button>
           ) : null}
         </form>
+
+        <details className="mt-4 rounded-xl border border-lux-border/70 p-3">
+          <summary className="cursor-pointer text-sm font-bold">회원 번호를 정확히 아는 경우 바로 이동</summary>
+          <form id="admin-user-jump" className="admin-toolbar mt-3" onSubmit={onDirectJump}>
+            <label className="admin-toolbar-field flex-1" htmlFor="admin-user-jump-id">
+              <span>회원 번호</span>
+              <input
+                id="admin-user-jump-id"
+                value={directId}
+                onChange={(event) => {
+                  setDirectId(event.target.value);
+                  setJumpNote(null);
+                }}
+                className="min-h-11 w-full rounded-xl border px-3 py-2 admin-mono"
+                placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+              />
+            </label>
+            <button type="submit" className="min-h-11 rounded-xl px-4 py-2 font-bold">회원 상세 보기</button>
+          </form>
+          {jumpNote ? <p className="mt-2 text-sm text-lux-warning" role="status">{jumpNote}</p> : null}
+        </details>
       </section>
 
       <section className="mt-5 rounded-2xl border border-lux-border p-4">
@@ -186,17 +219,7 @@ export default function Page() {
             <div className="admin-table-wrap">
               <table className="admin-table" data-testid="admin-users-table">
                 <thead>
-                  <tr>
-                    <th>회원</th>
-                    <th>연락처</th>
-                    <th>등급</th>
-                    <th>본인 확인</th>
-                    <th>이용 상태</th>
-                    <th>제한</th>
-                    <th>최근 로그인</th>
-                    <th>가입일</th>
-                    <th>보기</th>
-                  </tr>
+                  <tr><th>회원</th><th>연락처</th><th>등급</th><th>본인 확인</th><th>이용 상태</th><th>제한</th><th>최근 로그인</th><th>가입일</th><th>보기</th></tr>
                 </thead>
                 <tbody>
                   {items.map((item, idx) => {
@@ -209,37 +232,15 @@ export default function Page() {
                     ].filter(Boolean);
                     return (
                       <tr key={id ?? String(idx)}>
-                        <td data-label="회원">
-                          <strong>{readText(item.displayName) ?? "이름 미설정"}</strong>
-                          <div className="admin-mono mt-1 text-lux-text-muted">{id ?? "—"}</div>
-                        </td>
-                        <td data-label="연락처">
-                          <div>{maskEmail(item.email) ?? "—"}</div>
-                          <div className="mt-1 text-lux-text-muted">{maskPhone(item.phoneE164) ?? "—"}</div>
-                        </td>
+                        <td data-label="회원"><strong>{readText(item.displayName) ?? "이름 미설정"}</strong><div className="admin-mono mt-1 text-lux-text-muted">{id ?? "—"}</div></td>
+                        <td data-label="연락처"><div>{maskEmail(item.email) ?? "—"}</div><div className="mt-1 text-lux-text-muted">{maskPhone(item.phoneE164) ?? "—"}</div></td>
                         <td data-label="등급">{membershipLabel(item.membership) ?? "기본"}</td>
-                        <td data-label="본인 확인">
-                          <span className="admin-status-chip" data-tone={statusTone(kyc)}>
-                            {readStatusLabel(kyc)}
-                          </span>
-                        </td>
-                        <td data-label="이용 상태">
-                          <span className="admin-status-chip" data-tone={statusTone(userStatus)}>
-                            {readStatusLabel(userStatus) ?? "확인 필요"}
-                          </span>
-                        </td>
-                        <td data-label="제한">
-                          {restrictions.length > 0 ? restrictions.join(" · ") : "없음"}
-                        </td>
+                        <td data-label="본인 확인"><span className="admin-status-chip" data-tone={statusTone(kyc)}>{readStatusLabel(kyc)}</span></td>
+                        <td data-label="이용 상태"><span className="admin-status-chip" data-tone={statusTone(userStatus)}>{readStatusLabel(userStatus) ?? "확인 필요"}</span></td>
+                        <td data-label="제한">{restrictions.length > 0 ? restrictions.join(" · ") : "없음"}</td>
                         <td data-label="최근 로그인">{formatDateTimeKo(item.lastSeenAt) ?? "기록 없음"}</td>
                         <td data-label="가입일">{formatDateTimeKo(item.createdAt) ?? "—"}</td>
-                        <td data-label="보기">
-                          {id ? (
-                            <Link className="font-bold text-lux-accent" href={`/admin/users/${id}`}>
-                              상세 보기
-                            </Link>
-                          ) : null}
-                        </td>
+                        <td data-label="보기">{id ? <Link className="font-bold text-lux-accent" href={`/admin/users/${id}`}>상세 보기</Link> : null}</td>
                       </tr>
                     );
                   })}
@@ -247,26 +248,10 @@ export default function Page() {
               </table>
             </div>
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-              <p className="text-xs text-lux-text-muted">
-                {total != null ? `${total}명 중 ${offset + 1}~${Math.min(offset + items.length, total)}명` : ""}
-              </p>
+              <p className="text-xs text-lux-text-muted">{total != null ? `${total}명 중 ${offset + 1}~${Math.min(offset + items.length, total)}명` : ""}</p>
               <div className="flex gap-2">
-                <button
-                  type="button"
-                  disabled={offset <= 0}
-                  className="rounded-lg px-3 py-2 text-sm disabled:opacity-40"
-                  onClick={() => setOffset(Math.max(0, offset - limit))}
-                >
-                  이전
-                </button>
-                <button
-                  type="button"
-                  disabled={nextOffset == null}
-                  className="rounded-lg px-3 py-2 text-sm disabled:opacity-40"
-                  onClick={() => nextOffset != null && setOffset(nextOffset)}
-                >
-                  다음
-                </button>
+                <button type="button" disabled={offset <= 0} className="rounded-lg px-3 py-2 text-sm disabled:opacity-40" onClick={() => setOffset(Math.max(0, offset - limit))}>이전</button>
+                <button type="button" disabled={nextOffset == null} className="rounded-lg px-3 py-2 text-sm disabled:opacity-40" onClick={() => nextOffset != null && setOffset(nextOffset)}>다음</button>
               </div>
             </div>
           </>
