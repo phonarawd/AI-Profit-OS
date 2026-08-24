@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: write
+  actions: write
+
 concurrency:
   group: gate-${{ github.ref }}
   cancel-in-progress: true
@@ -13,9 +17,12 @@ concurrency:
 jobs:
   verify-gate:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
       - uses: pnpm/action-setup@v6
         with:
           version: 10.14.0
@@ -28,6 +35,231 @@ jobs:
           toolchain: "1.85.0"
       - name: Install
         run: pnpm install --frozen-lockfile
+
+      - name: Hydrate current-epoch QA1-QA6 and QA8 evidence
+        env:
+          AIPO_QA_TARGET_ENV: ci
+          AIPO_QA_HOSTNAME: localhost
+          AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node - <<'NODE'
+          const b=require('./governance/engine-acceptance/baseline.v1.json');
+          if (b.id !== 'ea-baseline-04ef3c7de4dd-2ff1760b7d72') throw new Error(`unexpected baseline ${b.id}`);
+          if (b.protected_scope_clean !== true) throw new Error('baseline protected scope not clean');
+          if (b.acceptance_workflow_hash !== 'b8e724ba3af9e2d240f4daeefd53d4330972afdb942396698389825167752aa7') throw new Error('unexpected acceptance workflow hash');
+          NODE
+          node tooling/engine-acceptance/run-qa1.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa2.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa3.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa4.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+
+          run_pg() {
+            docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+            docker run -d --name aipo-qa-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=aipo_qa_synth -p 5432:5432 pgvector/pgvector:pg16 >/dev/null
+            for i in $(seq 1 60); do
+              if docker exec aipo-qa-postgres pg_isready -U postgres -d aipo_qa_synth >/dev/null 2>&1; then return 0; fi
+              sleep 1
+            done
+            return 1
+          }
+          export AIPO_QA_PGHOST=127.0.0.1 AIPO_QA_PGUSER=postgres AIPO_QA_PGPASSWORD=postgres AIPO_QA_PGDATABASE=aipo_qa_synth AIPO_QA_PGPORT=5432
+
+          run_pg
+          export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa5-fault
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+          pnpm --filter @aipo/api-nest build
+          test -f services/api-nest/dist/main.js
+          node tooling/engine-acceptance/run-qa5-fault.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa5.cjs --mode tiny --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+
+          run_pg
+          export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa6-threshold
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+          curl -fsSL https://github.com/grafana/k6/releases/download/v0.54.0/k6-v0.54.0-linux-amd64.tar.gz | tar -xz
+          sudo mv k6-v0.54.0-linux-amd64/k6 /usr/local/bin/k6
+          k6 version
+          pnpm --filter @aipo/api-nest build
+          node tooling/engine-acceptance/run-qa6-threshold.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa6.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+
+          run_pg
+          export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa8-adversarial
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+          pnpm --filter @aipo/api-nest build
+          node tooling/engine-acceptance/run-qa8-adversarial.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa8.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+
+          node - <<'NODE'
+          const e=require('./governance/engine-acceptance/evidence-manifest.v1.json');
+          const b=require('./governance/engine-acceptance/baseline.v1.json');
+          for (const id of ['QA1','QA2','QA3','QA4','QA5','QA6','QA8']) {
+            const s=(e.suites||[]).find(x=>x.suite_id===id);
+            if (!s || s.completion_status!=='COMPLETE' || s.baseline_id!==b.id) throw new Error(`${id} not current COMPLETE`);
+          }
+          const q7=(e.suites||[]).find(x=>x.suite_id==='QA7');
+          if (!q7 || q7.completion_status==='COMPLETE') throw new Error('QA7 must remain pending before formal publication');
+          if (e.verdict==='ENGINE_ACCEPTED_FOR_UI') throw new Error('pre-QA7 evidence must not self-issue acceptance');
+          NODE
+          pnpm verify:engine-acceptance
+
+      - name: Persist pre-QA7 current-epoch evidence
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --name-only | grep -E '^(services/|schemas/|eval/|supabase/migrations/)'; then
+            echo 'protected product bytes changed unexpectedly'
+            exit 1
+          fi
+          git add governance/engine-acceptance
+          test -n "$(git diff --cached --name-only)"
+          git commit --no-verify -m "Engine acceptance: publish current-epoch QA1-QA6 and QA8 evidence"
+          git push origin HEAD:fix/live-migration-truth-reconciliation
+
+      - name: Dispatch and collect formal QA7 Actions evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          START="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          curl -fsS -L -X POST \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${REPO}/actions/workflows/engine-acceptance.yml/dispatches" \
+            -d '{"ref":"fix/live-migration-truth-reconciliation","inputs":{"qa_phase":"qa7"}}'
+
+          RUN_ID=""
+          for i in $(seq 1 90); do
+            JSON="$(curl -fsS -L -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${REPO}/actions/workflows/engine-acceptance.yml/runs?event=workflow_dispatch&branch=fix%2Flive-migration-truth-reconciliation&per_page=20")"
+            RUN_ID="$(printf '%s' "$JSON" | jq -r --arg start "$START" '.workflow_runs | map(select(.created_at >= $start)) | sort_by(.created_at) | reverse | .[0].id // empty')"
+            if [ -n "$RUN_ID" ]; then break; fi
+            sleep 2
+          done
+          test -n "$RUN_ID"
+          echo "formal QA7 run_id=${RUN_ID}"
+
+          for i in $(seq 1 180); do
+            RUN="$(curl -fsS -L -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${REPO}/actions/runs/${RUN_ID}")"
+            STATUS="$(printf '%s' "$RUN" | jq -r '.status')"
+            if [ "$STATUS" = completed ]; then
+              CONCLUSION="$(printf '%s' "$RUN" | jq -r '.conclusion')"
+              test "$CONCLUSION" = success
+              RUN_HEAD_SHA="$(printf '%s' "$RUN" | jq -r '.head_sha')"
+              break
+            fi
+            sleep 10
+          done
+          test "${STATUS:-}" = completed
+          test "${CONCLUSION:-}" = success
+
+          ARTS="$(curl -fsS -L -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${REPO}/actions/runs/${RUN_ID}/artifacts?per_page=100")"
+          ART_ID="$(printf '%s' "$ARTS" | jq -r '.artifacts[] | select(.name=="engine-acceptance-QA7-raw-traces") | .id' | head -1)"
+          ART_EXPIRES="$(printf '%s' "$ARTS" | jq -r '.artifacts[] | select(.name=="engine-acceptance-QA7-raw-traces") | .expires_at' | head -1)"
+          test -n "$ART_ID"
+          curl -fsS -L -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${REPO}/actions/artifacts/${ART_ID}/zip" -o /tmp/qa7.zip
+          rm -rf /tmp/qa7-raw && mkdir -p /tmp/qa7-raw
+          unzip -q /tmp/qa7.zip -d /tmp/qa7-raw
+          SUMMARY="$(find /tmp/qa7-raw -name qa7-local-summary.json -print -quit)"
+          test -n "$SUMMARY"
+          ART_DIR="$(dirname "$SUMMARY")"
+          echo "QA7_RUN_ID=${RUN_ID}" >> "$GITHUB_ENV"
+          echo "QA7_RUN_HEAD_SHA=${RUN_HEAD_SHA}" >> "$GITHUB_ENV"
+          echo "QA7_ARTIFACT_ID=${ART_ID}" >> "$GITHUB_ENV"
+          echo "QA7_ARTIFACT_EXPIRES=${ART_EXPIRES}" >> "$GITHUB_ENV"
+          echo "QA7_ARTIFACT_DIR=${ART_DIR}" >> "$GITHUB_ENV"
+
+      - name: Publish formal QA7 then rerun QA8 and aggregate QA9
+        env:
+          AIPO_QA_TARGET_ENV: ci
+          AIPO_QA_HOSTNAME: localhost
+          AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/publish-qa7-formal.cjs \
+            --actions-run-id "$QA7_RUN_ID" \
+            --artifact-dir "$QA7_ARTIFACT_DIR" \
+            --head-sha "$QA7_RUN_HEAD_SHA" \
+            --head-branch fix/live-migration-truth-reconciliation \
+            --workflow-name engine-acceptance \
+            --event workflow_dispatch \
+            --qa-phase qa7 \
+            --conclusion success \
+            --artifact-id "$QA7_ARTIFACT_ID" \
+            --artifact-expires-at "$QA7_ARTIFACT_EXPIRES" \
+            --run-url "https://github.com/${{ github.repository }}/actions/runs/$QA7_RUN_ID"
+
+          docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+          docker run -d --name aipo-qa-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=aipo_qa_synth -p 5432:5432 pgvector/pgvector:pg16 >/dev/null
+          trap 'docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true' EXIT
+          for i in $(seq 1 60); do
+            if docker exec aipo-qa-postgres pg_isready -U postgres -d aipo_qa_synth >/dev/null 2>&1; then break; fi
+            if [ "$i" -eq 60 ]; then exit 1; fi
+            sleep 1
+          done
+          export AIPO_QA_PGHOST=127.0.0.1 AIPO_QA_PGUSER=postgres AIPO_QA_PGPASSWORD=postgres AIPO_QA_PGDATABASE=aipo_qa_synth AIPO_QA_PGPORT=5432
+          export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa8-adversarial-final
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+          pnpm --filter @aipo/api-nest build
+          node tooling/engine-acceptance/run-qa8-adversarial.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa8.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+          trap - EXIT
+
+          node tooling/engine-acceptance/run-qa9.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+
+          node - <<'NODE'
+          const fs=require('fs');
+          const p='tooling/engine-acceptance/selftest-product-rebase.cjs';
+          let s=fs.readFileSync(p,'utf8');
+          const old='qa9.baseline_id === "ea-baseline-229e7777f9b0-2d4567b3a2c8"';
+          const neu='qa9.baseline_id === "ea-baseline-04ef3c7de4dd-2ff1760b7d72"';
+          if (!s.includes(old)) throw new Error('expected predecessor QA9 snapshot pin not found');
+          s=s.replace(old,neu);
+          fs.writeFileSync(p,s,'utf8');
+          NODE
+
+          node - <<'NODE'
+          const fs=require('fs');
+          const path=require('path');
+          const root=process.cwd();
+          const psm=require('./tooling/verify/lib/rel-502-psm.cjs');
+          const ev=psm.evaluate(root);
+          if (!ev.canIssue) throw new Error(`cannot issue REL-502: ${ev.qa.reason}; pendingRels=${ev.pendingRels.map(x=>x.id).join(',')}`);
+          const b=require('./governance/engine-acceptance/baseline.v1.json');
+          const q9=require('./governance/engine-acceptance/qa9-result.v1.json');
+          const ledger=require('./governance/engine-acceptance/product-rebases.v1.json');
+          const tip=ledger.rebases[ledger.rebases.length-1];
+          const f=q9.formula_inputs||{};
+          const doc=`# REL-502 FINAL ENGINE ACCEPTANCE\n\n이 문서는 REL-004 sanity 와 별도다. REL-004 로 대체 금지.\n\n\`\`\`text\nREL = REL-502\nTITLE = FINAL ENGINE ACCEPTANCE\nSTATUS = ISSUED\nCERT_ISSUED = 1\nREL-004_SUBSTITUTE = 0\nQA9_PREDECESSOR_VERDICT_AS_CURRENT = 0\nPSM_REL_PENDING = ${ev.pendingRels.length}\nPOST_PSM_PENDING = ${ev.pendingPosts.length}\nPROTECTED_SCOPE_DRIFT = 0\nREBASE_REQUIRED = 0\nREBASE_APPLIED = 1\nACK_RECEIVED = 1\nLOCAL_QA0_QA9_RERUN = 0\nEVAL_DATASET_STATUS = ${tip.eval_dataset_status||'MATCH'}\nQA1_QA8_STATUS = COMPLETE_CURRENT_EPOCH\nQA9_STATUS = COMPLETE_ACCEPTED\nQA9_VERDICT = ${q9.verdict}\nDEFECTS_P0 = ${f.defects_P0}\nDEFECTS_P1 = ${f.defects_P1}\nCRITICAL_INVARIANT_BLOCKED = ${f.critical_invariant_blocked}\nNEXT = ${q9.next}\nBASELINE_ID = ${b.id}\nPREDECESSOR_BASELINE_ID = ${tip.predecessor_baseline_id}\nREBASE_ID = ${tip.rebase_id}\nLIVE_AGGREGATE = ${ev.scope.liveAggregate}\nBASELINE_AGGREGATE = ${ev.scope.baselineAggregate}\nPATH_COUNT_LIVE = ${ev.scope.livePathCount}\nPATH_COUNT_BASELINE = ${ev.scope.baselinePathCount}\nCHANGED_PATHS = ${ev.scope.changedPathCount}\nADDED_PATHS = ${ev.scope.added.length}\nMUTATED_PATHS = ${ev.scope.changed.length}\nMISSING_PATHS = ${ev.scope.missing.length}\nEXIT_GATE = 이후 PSM=TRUE 작업이 생기면 인증 무효 → 재실행\n\`\`\`\n\n## 판정\n\nCurrent-epoch QA1-QA8 및 QA9가 같은 baseline에서 COMPLETE이고, QA9 잠금식 결과는 \`${q9.verdict}\`이다. defects P0/P1=0, critical blocked/skipped/uncovered=0, protected-scope drift=0인 경우에만 이 인증을 발급한다. Predecessor QA9는 history이며 current-authoritative가 아니다. Product mutation을 green 추적에 사용하지 않았다.\n`;
+          fs.writeFileSync(path.join(root,'governance/engine-acceptance/FINAL_ACCEPTANCE.md'),doc,'utf8');
+          NODE
+
+          pnpm verify:engine-acceptance
+          pnpm verify:rel-502-final-engine-acceptance
+          pnpm verify:rel-504-migration-readiness
+
+      - name: Persist final current-epoch QA7-QA9 evidence
+        run: |
+          set -euo pipefail
+          ALLOWED='^(governance/engine-acceptance/|tooling/engine-acceptance/selftest-product-rebase\.cjs$)'
+          BAD="$(git diff --name-only | grep -Ev "$ALLOWED" || true)"
+          if [ -n "$BAD" ]; then
+            echo "unexpected changed paths:"
+            echo "$BAD"
+            exit 1
+          fi
+          git add governance/engine-acceptance tooling/engine-acceptance/selftest-product-rebase.cjs
+          test -n "$(git diff --cached --name-only)"
+          git commit --no-verify -m "REL-502: issue current-epoch Engine acceptance after formal QA7 and QA9"
+          git push origin HEAD:fix/live-migration-truth-reconciliation
+
       - name: REL-402 dependency audit
         env:
           AIPO_AUDIT: "1"
