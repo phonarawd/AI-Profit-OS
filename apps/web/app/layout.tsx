@@ -3,11 +3,12 @@ import "./globals.css";
 import "./pwa-shell.css";
 import { ToastHost } from "@aipo/ui/components/toast";
 import { DeviceTierApply } from "../components/DeviceTierApply";
+import { ConsumerSparkRoot } from "../components/spark-shell/ConsumerSparkRoot";
 import { PwaRuntime } from "../components/pwa/PwaRuntime";
 import { ObsRuntime } from "../components/observability/ObsRuntime";
 
 export const viewport: Viewport = {
-  themeColor: "#6B3CFF",
+  themeColor: "#08111F",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -15,7 +16,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "퍼뜩",
-  description: "퍼뜩 — AI Profit OS consumer",
+  description: "퍼뜩 — Global Opportunity Platform",
   applicationName: "퍼뜩",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -37,10 +38,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" className="theme-peotteok-light" data-font-scale="md">
-      <body className="min-h-dvh bg-lux-bg text-lux-text">
+    <html lang="ko" className="theme-putduk-spark" data-font-scale="md">
+      <body className="min-h-dvh">
         <DeviceTierApply />
-        <ToastHost>{children}</ToastHost>
+        <ConsumerSparkRoot>
+          <ToastHost>{children}</ToastHost>
+        </ConsumerSparkRoot>
         <PwaRuntime />
         <ObsRuntime />
       </body>
