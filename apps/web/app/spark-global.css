@@ -99,12 +99,12 @@
     --color-lux-border: #e1e6ee;
     --color-lux-text: #121721;
     --color-lux-text-muted: #5d6675;
-    --color-lux-accent: #ff2d6b;
-    --color-lux-accent-muted: #ff5c8c;
-    --color-lux-danger: #d92d20;
-    --color-lux-warning: #b54708;
+    --color-lux-accent: #c81d55;
+    --color-lux-accent-muted: #b5476a;
+    --color-lux-danger: #b42318;
+    --color-lux-warning: #93420b;
     --color-lux-profit: #067647;
-    --color-lux-principal: #ff2d6b;
+    --color-lux-principal: #c81d55;
     --color-lux-hero-from: #fff0f5;
     --color-lux-hero-to: #fff7fa;
     --shadow-lux-card: 0 1px 2px rgba(18, 23, 33, 0.06), 0 10px 30px rgba(18, 23, 33, 0.07);
@@ -163,6 +163,10 @@
 
   .spark-global-boundary[data-spark-global="on"] :where(input, textarea)::placeholder {
     color: #667085;
+  }
+
+  .spark-global-boundary[data-spark-global="on"] :focus-visible {
+    outline-color: #c81d55;
   }
 }
 
