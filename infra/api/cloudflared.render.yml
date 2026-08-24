@@ -1,0 +1,12 @@
+# Local connector only — api.hiptk.app DNS still points at this tunnel until
+# Cloudflare DNS CNAME is removed and hiptk-api-stub Worker custom_domain is attached.
+# Origin = Render Nest (PC-independent API process; connector itself still needs a host until DNS cutover).
+tunnel: b5518ac3-df90-4daf-b447-f35eee2bfef8
+credentials-file: C:\Users\PC\.cloudflared\b5518ac3-df90-4daf-b447-f35eee2bfef8.json
+
+ingress:
+  - hostname: api.hiptk.app
+    service: https://ai-profit-os.onrender.com
+    originRequest:
+      httpHostHeader: ai-profit-os.onrender.com
+  - service: http_status:404

@@ -1,4 +1,4 @@
-# Phase0 API_HOST stub until Nest + cloudflared (Infra §51.13)
+# Phase0 API_HOST → Nest on Render
 # Deploy: pnpm cf:domain:bridge
 
 name = "hiptk-api-stub"

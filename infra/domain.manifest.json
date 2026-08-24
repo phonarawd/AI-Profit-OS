@@ -87,7 +87,8 @@
       "worker": "hiptk-api-stub",
       "path": "workers/api-stub",
       "hostnames": ["api.hiptk.app"],
-      "note": "Phase0 Nest stub · cloudflared/VPS 배포 후 교체"
+      "target": "https://ai-profit-os.onrender.com",
+      "note": "Phase0 Nest on Render · workers/_shared/api-origin.ts SSOT · cloudflared 로컬 터널 폐기"
     }
   },
   "dns": {

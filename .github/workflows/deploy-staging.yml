@@ -47,17 +47,17 @@ jobs:
       - name: Origin lock
         run: pnpm verify:opennext-workers-origin
 
+      # rewrite 전용 — NEXT_PUBLIC_API_BASE 비움(브라우저 same-origin /api/v1 → Worker fetch Render)
       - name: Preview API proxy env
         env:
           API_HOST: ${{ secrets.API_HOST }}
         run: |
-          API="${API_HOST:-https://api.hiptk.app}"
+          API="${API_HOST:-https://ai-profit-os.onrender.com}"
           case "$API" in
             http://*|https://*) ;;
             *) API="https://$API" ;;
           esac
           printf 'API_HOST=%s\n' "$API" >> .env
-          printf 'NEXT_PUBLIC_API_BASE=%s\n' "$API" >> .env
 
       - name: Deploy web staging
         if: inputs.surface == 'web' || inputs.surface == 'all'

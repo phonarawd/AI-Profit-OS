@@ -27,9 +27,6 @@ async function bootstrap() {
       origins.add(`https://${host}`);
     }
   }
-  // staging preview Workers — 브라우저가 API_HOST를 직접 호출할 때
-  origins.add("https://ai-profit-ops-preview.ebay-adapter.workers.dev");
-  origins.add("https://ai-profit-web-preview.ebay-adapter.workers.dev");
   app.enableCors({
     origin: [...origins],
     credentials: true,
