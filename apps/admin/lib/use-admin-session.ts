@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { adminGet } from "./admin-api";
 import {
   ADMIN_SESSION_CHANGE_EVENT,
   hasAdminToken,
@@ -22,12 +23,31 @@ export function useAdminSessionRevision(): number {
   return revision;
 }
 
+/**
+ * 브라우저 저장소에 문자열이 있다는 사실은 연결 완료의 근거가 아니다.
+ * 실제 AdminGuard + server-side RBAC를 통과한 경우에만 true.
+ */
 export function useAdminConnected(): boolean {
   const revision = useAdminSessionRevision();
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    setConnected(hasAdminToken());
+    let cancelled = false;
+    if (!hasAdminToken()) {
+      setConnected(false);
+      return;
+    }
+
+    setConnected(false);
+    void (async () => {
+      const result = await adminGet<{ connected?: unknown }>("/api/v1/admin/session");
+      if (cancelled) return;
+      setConnected(result.ok && result.data.connected === true);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [revision]);
 
   return connected;
