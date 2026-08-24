@@ -43,13 +43,13 @@
   padding: 0.75rem 1rem;
   border: 0;
   border-radius: 0.875rem;
-  background: #ff2d6b;
+  background: #c81d55;
   color: #fff;
   text-decoration: none;
   font: inherit;
   font-size: 1rem;
   font-weight: 800;
-  box-shadow: 0 10px 24px rgba(255, 45, 107, 0.18);
+  box-shadow: 0 10px 24px rgba(200, 29, 85, 0.2);
 }
 .actions a.secondary,
 .actions a.quiet { background: transparent; border: 1px solid var(--color-lux-border); color: var(--color-lux-text); box-shadow: none; }
@@ -70,7 +70,7 @@
   font-weight: 800;
 }
 .tab { border: 1px solid var(--color-lux-border); color: var(--color-lux-text); background: var(--color-lux-surface); }
-.tabActive { border: 1px solid #ff2d6b; background: #ff2d6b; color: #fff; }
+.tabActive { border: 1px solid #c81d55; background: #c81d55; color: #fff; }
 .addressBox,
 .field input { box-sizing: border-box; width: 100%; }
 .addressBox,
