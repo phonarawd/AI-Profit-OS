@@ -18,11 +18,11 @@ function read(rel) {
 
 const layout = read("apps/web/app/layout.tsx");
 const shellRoot = read("packages/ui/components/shell/AppShellRoot.tsx");
-for (const needle of ["ToastHost", "theme-putduk-spark", "ConsumerSparkRoot"]) {
+for (const needle of ["ToastHost", "theme-peotteok-light", "ConsumerSparkRoot"]) {
   if (!layout.includes(needle)) fails.push(`layout missing ${needle}`);
 }
-if (layout.includes("theme-peotteok-light")) {
-  fails.push("layout must not use retired theme-peotteok-light presentation");
+if (layout.includes("theme-putduk-spark")) {
+  fails.push("root layout must keep protected Home theme; Spark styling belongs inside ConsumerSparkRoot");
 }
 if (layout.includes("GlobalSparkBoundary")) {
   fails.push("layout must not use obsolete GlobalSparkBoundary");
@@ -36,8 +36,22 @@ for (const needle of [
   'data-testid="consumer-spark-shell"',
   'data-testid="consumer-spark-sidebar"',
   'className="csp-bottom-nav"',
+  'pathname === "/"',
+  'pathname === "/me"',
+  'pathname.startsWith("/profits")',
+  'return <>{children}</>;',
 ]) {
   if (!consumerShell.includes(needle)) fails.push(`ConsumerSparkRoot missing ${needle}`);
+}
+
+const consumerCss = read("apps/web/components/spark-shell/consumer-spark-shell.css");
+for (const needle of [
+  ".csp-root",
+  ".csp-immersive",
+  "--color-lux-bg: #08111f",
+  "@media (min-width: 1280px)",
+]) {
+  if (!consumerCss.includes(needle)) fails.push(`consumer Spark CSS missing ${needle}`);
 }
 
 const walletLayout = read("apps/web/app/wallet/layout.tsx");
@@ -110,4 +124,4 @@ if (fails.length) {
   console.error("[verify:part5-shell-toast] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
-console.log("[verify:part5-shell-toast] PASS (Spark root · protected native surfaces · toast · nested routes)");
+console.log("[verify:part5-shell-toast] PASS (route-aware Spark root · protected Home theme · toast · nested routes)");
