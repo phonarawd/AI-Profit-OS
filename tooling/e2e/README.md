@@ -111,3 +111,20 @@ node tooling/verify/rel-601-staging-regression.cjs
 ```text
 node tooling/verify/rel-507-production-e2e.cjs
 ```
+
+## REL-603 automated age cohort (Founder B)
+
+`specs/rel-603-age-usability-spotcheck.spec.cjs` — 9 cohort profiles × 4 scenarios on the **staging preview UI**.
+
+- Human participants 0 · MCP-only evidence 0 · production/DB/money mutation 0
+- Verifier performs separate live staging route GET checks.
+- Playwright loads the real staging UI bundle while API state is isolated with committed QA stubs for deterministic browser assertions.
+- S1: signup form + terms gate, no submit.
+- S2: opportunity card ready + detail href/capital assertion.
+- S3: card → detail → preflight confirmation sheet, with `/participate` POST requests asserted at 0.
+- S4: wallet ready + deposit/withdraw/history read-surface CTAs, no money action click.
+- Verifier: `verify:rel-603-age-usability-spotcheck`.
+
+```text
+node tooling/verify/rel-603-age-usability-spotcheck.cjs
+```

@@ -89,9 +89,16 @@ for (const dep of fixture.deps || []) {
 }
 if (todoStatus("REL-602") !== "completed") fails.push("rel-602 todo must be completed");
 if (yamlStatus("REL-602") !== "COMPLETED") fails.push("REL-602 YAML must be COMPLETED");
-if (!plan.includes("FIRST_EXECUTION_TODO = REL-603")) fails.push("FIRST_EXECUTION_TODO must advance to REL-603");
-if (!plan.includes("LAST_COMPLETED_TODO = REL-602")) fails.push("LAST_COMPLETED_TODO must be REL-602");
-if (!plan.includes("HARD_STOP_AFTER = REL-602")) fails.push("HARD_STOP_AFTER must be REL-602");
+const rel603Closed = todoStatus("REL-603") === "completed" && yamlStatus("REL-603") === "COMPLETED";
+if (rel603Closed) {
+  if (!plan.includes("FIRST_EXECUTION_TODO = REL-700")) fails.push("FIRST_EXECUTION_TODO must advance to REL-700 after REL-603");
+  if (!plan.includes("LAST_COMPLETED_TODO = REL-603")) fails.push("LAST_COMPLETED_TODO must be REL-603 after REL-603 close");
+  if (!plan.includes("HARD_STOP_AFTER = REL-603")) fails.push("HARD_STOP_AFTER must be REL-603 after REL-603 close");
+} else {
+  if (!plan.includes("FIRST_EXECUTION_TODO = REL-603")) fails.push("FIRST_EXECUTION_TODO must advance to REL-603");
+  if (!plan.includes("LAST_COMPLETED_TODO = REL-602")) fails.push("LAST_COMPLETED_TODO must be REL-602");
+  if (!plan.includes("HARD_STOP_AFTER = REL-602")) fails.push("HARD_STOP_AFTER must be REL-602");
+}
 
 const staging = manifest.openNext && manifest.openNext.staging;
 if (!staging || staging.wranglerEnv !== "preview") fails.push("manifest staging wranglerEnv must be preview");

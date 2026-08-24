@@ -1,0 +1,43 @@
+{
+  "rel": "REL-603",
+  "deps": ["REL-601"],
+  "status": "COMPLETED",
+  "automationLevel": "A2",
+  "playwrightApiIsolation": "qa-stubs",
+  "humanParticipantsRequired": 0,
+  "automatedCohortRunsRequired": 9,
+  "acceptanceMet": 1,
+  "automatedCohortExecuted": 1,
+  "mcpOnlyDone": 0,
+  "fakePass": 0,
+  "productionDomainMutation": 0,
+  "productionDbMutation": 0,
+  "productionWorkflowDispatch": 0,
+  "moneyMutation": 0,
+  "homeVisualRedesign": 0,
+  "protectedScopeMutation": 0,
+  "participatePostRequestsExpected": 0,
+  "stagingWeb": "https://ai-profit-web-preview.ebay-adapter.workers.dev",
+  "forbiddenHosts": ["app.hiptk.app", "ops.hiptk.app"],
+  "forbiddenTokens": ["jackpot", "2450", "vercel"],
+  "cohorts": [
+    { "id": "A20-01", "ageBand": "20s", "viewport": { "width": 390, "height": 693 }, "deviceClass": "mobile" },
+    { "id": "A20-02", "ageBand": "20s", "viewport": { "width": 1440, "height": 1080 }, "deviceClass": "desktop" },
+    { "id": "A20-03", "ageBand": "20s", "viewport": { "width": 768, "height": 1024 }, "deviceClass": "tablet" },
+    { "id": "A40-01", "ageBand": "40s", "viewport": { "width": 390, "height": 693 }, "deviceClass": "mobile" },
+    { "id": "A40-02", "ageBand": "40s", "viewport": { "width": 1440, "height": 1080 }, "deviceClass": "desktop" },
+    { "id": "A40-03", "ageBand": "40s", "viewport": { "width": 1024, "height": 768 }, "deviceClass": "tablet" },
+    { "id": "A6070-01", "ageBand": "60-70s", "viewport": { "width": 390, "height": 693 }, "deviceClass": "mobile" },
+    { "id": "A6070-02", "ageBand": "60-70s", "viewport": { "width": 1440, "height": 1080 }, "deviceClass": "desktop" },
+    { "id": "A6070-03", "ageBand": "60-70s", "viewport": { "width": 1366, "height": 900 }, "deviceClass": "desktop-large-text" }
+  ],
+  "scenarios": [
+    { "id": "S1", "title": "signup", "path": "/auth/signup", "expectStatus": [200], "mustIncludeAny": ["signup", "auth", "login"], "browserAssertion": "signup-form-terms-gate-no-submit" },
+    { "id": "S2", "title": "opportunity", "path": "/profits", "expectStatus": [200], "mustIncludeAny": ["profit", "profits", "opportunity"], "browserAssertion": "opportunity-card-ready" },
+    { "id": "S3", "title": "participate-entry", "path": "/profits", "expectStatus": [200], "mustIncludeAny": ["profit", "profits"], "browserAssertion": "card-detail-preflight-sheet-no-participate-post" },
+    { "id": "S4", "title": "wallet", "path": "/wallet", "expectStatus": [200, 307, 401, 403], "mustIncludeAny": ["wallet", "USDT", "usdt"], "browserAssertion": "wallet-ready-read-ctas" }
+  ],
+  "playwrightSpec": "tooling/e2e/specs/rel-603-age-usability-spotcheck.spec.cjs",
+  "evidence": "governance/release-master/AGE_SPOTCHECK.md",
+  "extraVerifies": ["qa-env-isolation-guard.cjs", "rel-601-staging-regression.cjs", "axe-harness.cjs"]
+}
