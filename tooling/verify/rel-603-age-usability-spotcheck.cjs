@@ -110,7 +110,11 @@ for (const [band, expected] of Object.entries(expectedBands)) {
   }
 }
 for (const cohort of cohorts) {
-  if (!cohort.viewport || !Number.isInteger(cohort.viewport.width) || !Number.isInteger(cohort.viewport.height)) {
+  if (
+    !cohort.viewport ||
+    !Number.isInteger(cohort.viewport.width) ||
+    !Number.isInteger(cohort.viewport.height)
+  ) {
     fails.push("cohort " + cohort.id + " must have integer viewport width/height");
   }
 }
@@ -273,13 +277,9 @@ function runPlaywright() {
     },
   );
   if (run.status !== 0) {
-    fails.push(
-      "playwright FAIL: " +
-        String(run.stderr || run.stdout || "")
-          .split("\n")
-          .slice(-8)
-          .join(" "),
-    );
+    if (run.stdout) console.error(run.stdout);
+    if (run.stderr) console.error(run.stderr);
+    fails.push("playwright FAIL exit=" + String(run.status));
   } else {
     console.log(
       "[verify:rel-603-age-usability-spotcheck] playwright PASS 9 cohorts x 4 scenarios",
