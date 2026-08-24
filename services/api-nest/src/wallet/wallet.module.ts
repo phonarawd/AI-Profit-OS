@@ -26,6 +26,8 @@ import { WithdrawCredentialsAdminService } from "./withdraw-credentials.admin.se
 import { WithdrawFeeService } from "./withdraw-fee.service";
 import { WithdrawIntentService } from "./withdraw-intent.service";
 import { WithdrawKycGuard } from "./withdraw-kyc.guard";
+import { WithdrawReviewAdminController } from "./withdraw-review.admin.controller";
+import { WithdrawReviewAdminService } from "./withdraw-review.admin.service";
 import { WithdrawStepUpService } from "./withdraw-stepup.service";
 
 @Module({
@@ -37,6 +39,7 @@ import { WithdrawStepUpService } from "./withdraw-stepup.service";
     KrwDepositAdminController,
     DepositDisputeAdminController,
     WithdrawCredentialsAdminController,
+    WithdrawReviewAdminController,
   ],
   providers: [
     DepositConfigService,
@@ -53,6 +56,7 @@ import { WithdrawStepUpService } from "./withdraw-stepup.service";
     WithdrawStepUpService,
     WithdrawIntentService,
     WithdrawCredentialsAdminService,
+    WithdrawReviewAdminService,
     ProfitMergeService,
     FeedCacheInvalidateService,
     HomeMoneyReadService,
@@ -72,6 +76,7 @@ import { WithdrawStepUpService } from "./withdraw-stepup.service";
     WithdrawStepUpService,
     WithdrawIntentService,
     WithdrawCredentialsAdminService,
+    WithdrawReviewAdminService,
     ProfitMergeService,
     FeedCacheInvalidateService,
     HomeMoneyReadService,
