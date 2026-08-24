@@ -179,6 +179,10 @@ test("Founder-locked and native Spark surfaces keep their dedicated presentation
   for (const route of NATIVE_SPARK_ROUTES) {
     await open(page, route, 1440, 1080);
     await expect(page.getByTestId("consumer-spark-shell")).toHaveCount(0);
+    if (route === "/") {
+      await expect(page.locator("html")).toHaveClass(/theme-peotteok-light/);
+      await expect(page.locator("body")).toHaveClass(/bg-lux-bg/);
+    }
   }
 });
 
