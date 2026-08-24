@@ -22,19 +22,9 @@ function isAuthFailure(err: unknown): boolean {
   return msg.includes("wallet_buckets_401") || /unauthorized/i.test(msg);
 }
 
-function Shell({
-  view,
-  children,
-}: {
-  view: ViewKind;
-  children: ReactNode;
-}) {
+function Shell({ view, children }: { view: ViewKind; children: ReactNode }) {
   return (
-    <main
-      className={styles.page}
-      data-testid="wallet-home"
-      data-wallet-view={view}
-    >
+    <main className={styles.page} data-testid="wallet-home" data-wallet-view={view}>
       {children}
     </main>
   );
@@ -48,10 +38,7 @@ export function WalletClient() {
     const ac = new AbortController();
     void (async () => {
       try {
-        const next = await fetchWalletBuckets({
-          getAccessToken: sessionToken,
-          signal: ac.signal,
-        });
+        const next = await fetchWalletBuckets({ getAccessToken: sessionToken, signal: ac.signal });
         if (ac.signal.aborted) return;
         setBuckets(next);
         setView("ready");
@@ -80,9 +67,7 @@ export function WalletClient() {
         <p className={styles.lead}>로그인하면 지갑을 볼 수 있어요.</p>
         <div className={styles.actions}>
           <Link href="/auth/login">로그인</Link>
-          <Link className={styles.secondary} href="/">
-            홈으로
-          </Link>
+          <Link className={styles.secondary} href="/">홈으로</Link>
         </div>
       </Shell>
     );
@@ -102,9 +87,6 @@ export function WalletClient() {
 
   return (
     <Shell view="ready">
-      <p className={styles.nav}>
-        <Link href="/">홈</Link>
-      </p>
       <h1 className={styles.title}>{T.walletBuckets.pageTitle}</h1>
       <DemoWalletBanner practiceUsdt={buckets.practiceUsdt} />
       <div className={styles.buckets}>
@@ -117,34 +99,17 @@ export function WalletClient() {
         />
       </div>
       <div className={styles.actions}>
-        <Link href="/wallet/deposit?tab=usdt" data-testid="wallet-deposit-cta">
-          {T.walletBuckets.ctaDeposit}
-        </Link>
-        <Link
-          href="/wallet/withdraw?mode=profit"
-          data-testid="wallet-withdraw-profit"
-          data-default-mode="profit"
-        >
+        <Link href="/wallet/deposit?tab=usdt" data-testid="wallet-deposit-cta">{T.walletBuckets.ctaDeposit}</Link>
+        <Link href="/wallet/withdraw?mode=profit" data-testid="wallet-withdraw-profit" data-default-mode="profit">
           {T.walletBuckets.ctaWithdraw}
         </Link>
-        <Link
-          className={styles.secondary}
-          href="/wallet/withdraw?mode=principal"
-          data-testid="wallet-withdraw-principal"
-          data-principal-reachable="true"
-        >
+        <Link className={styles.secondary} href="/wallet/withdraw?mode=principal" data-testid="wallet-withdraw-principal" data-principal-reachable="true">
           {T.withdrawMode.ctaOpenPrincipal}
         </Link>
-        <Link
-          className={styles.secondary}
-          href="/wallet/history"
-          data-testid="wallet-history-link"
-        >
+        <Link className={styles.secondary} href="/wallet/history" data-testid="wallet-history-link">
           {T.walletBuckets.historyLink}
         </Link>
-        <Link className={styles.quiet} href="/me/guide/principal">
-          {T.walletBuckets.guideLink}
-        </Link>
+        <Link className={styles.quiet} href="/me/guide/principal">{T.walletBuckets.guideLink}</Link>
       </div>
     </Shell>
   );
