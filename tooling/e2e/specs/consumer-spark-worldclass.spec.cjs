@@ -49,6 +49,8 @@ const AUTH_DIRECT_ROUTES = [
   "/auth/signup",
   "/onboarding",
 ];
+// Stage-B profile completion is protected by design. An unauthenticated visual
+// regression visit must land on the Spark login composition, not bypass auth.
 const AUTH_GUARDED_ROUTES = [
   { from: "/auth/complete-profile", unauthenticatedTo: "/auth/login" },
 ];
