@@ -1,57 +1,101 @@
 # ENGINE ACCEPTANCE REPORT
 
-> **QA phase:** QA-0 `ENGINE_ACCEPTANCE_REBASE_V1`  
-> **Measured:** 2026-08-24T08:50:46.120Z  
-> **baseline_id:** `ea-baseline-04ef3c7de4dd-2ff1760b7d72`  
-> **predecessor_baseline_id:** `ea-baseline-229e7777f9b0-2d4567b3a2c8`  
-> **rebase_id:** `ea-rebase-ffffb4808987-2ff1760b7d72`  
-> **rebase_policy_version:** `ENGINE_ACCEPTANCE_REBASE_POLICY_V2`
+> **QA phase:** QA-8 `qa8-security-privacy`
+> **Measured:** 2026-08-24T09:43:08.426Z
+> **baseline_id:** `ea-baseline-04ef3c7de4dd-2ff1760b7d72`
+> **qa8_run_id:** `qa8-security-privacy-20260824`
+> **qa8_result_checksum:** `69486158c4a8b7c19fbde5da708ef0f05f5faab249c30b4e45a7e6182e051ed4`
+> **mode:** `full`
+> **asvs_version:** `5.0.0` (subset - exhaustive_certification_claim=false)
 
 ## Status banner
 
 ```text
 ACCEPTANCE CONTRACT = LOCKED
-DECISION = ENGINE_ACCEPTANCE_REBASE_V1
-BASELINE = NEW_EPOCH
-PREDECESSOR = ea-baseline-229e7777f9b0-2d4567b3a2c8
-QA0 = COMPLETE (new epoch freeze)
-QA1 = STALE_FOR_CURRENT_EPOCH
-QA2 = STALE_FOR_CURRENT_EPOCH
-QA3 = STALE_FOR_CURRENT_EPOCH
-QA4 = STALE_FOR_CURRENT_EPOCH
-QA5 = STALE_FOR_CURRENT_EPOCH
-QA6 = STALE_FOR_CURRENT_EPOCH
-QA7 = NOT_STARTED
-QA8 = STALE_FOR_CURRENT_EPOCH
-QA9 = STALE_AGGREGATION (not current-authoritative)
-NEXT = QA1_DETERMINISTIC_TRUTH
-BASELINE WASHING = FORBIDDEN
+BASELINE = FROZEN
+QA0 = COMPLETE
+QA1 = COMPLETE
+QA2 = COMPLETE
+QA3 = COMPLETE
+QA4 = COMPLETE
+QA5 = COMPLETE
+QA6 = COMPLETE
+QA7 = COMPLETE
+QA8 = COMPLETE
+QA HARNESS TARGET = SAFE
+NEXT = QA9_ACCEPTANCE_REPORT
+PRODUCT MUTATION = 0
+EVAL_MUTATION = 0
+GRADER_MUTATION = 0
 03 UI = BLOCKED
 ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
 ```
 
-## Verdict (after product rebase)
+## Verdict (after QA-8)
 
 | Field | Value |
 |---|---|
 | verdict | `ENGINE_QA_INCOMPLETE` |
-| reason | ENGINE_ACCEPTANCE_REBASE_V1 · predecessor discovery is historical COMPLETE / current-epoch STALE · required rerun QA1-QA8 then QA9 aggregation · do not fabricate a verdict at rebase time |
+| reason | QA8 COMPLETE - P0/P1=0 - mandatory suite QA9 report not yet issued |
 | evidence_integrity | `VALID` |
 | baseline.valid | `true` |
-| working_tree_clean | `true` (fact only — not forced clean) |
+| working_tree_clean | `false` (fact only, not forced clean) |
 | protected_scope_clean | `true` |
-| prompt_hash | live pinned (`ff6edf9fb8d7cf5b298a1ff34169fdd3e1746316e320a0363d237f95f5ea42d3`) |
-| eval_dataset_hash | MATCH predecessor (`710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d`) |
-| acceptance_workflow_hash | MATCH current approved (`acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6`) |
+| defects.P0 / P1 / P2 / P3 | 0 / 0 / 0 / 0 |
+| critical_invariant.blocked (cumulative, QA4-QA6 + QA8) | 0 |
+| critical_invariant.skipped | 0 |
+| critical_invariant.uncovered | 0 |
+| mandatory suites COMPLETE | QA0..QA8 |
 
-**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued**. Predecessor discovery/aggregation results were **not** rewritten as current-epoch COMPLETE. Predecessor QA9 verdict is **not** current-authoritative.
+**Prohibited state confirmed:** `ENGINE_ACCEPTED_FOR_UI` is **not issued** (P0 defect present and/or critical BLOCKED > 0).
+
+## QA8 Security and Privacy World (ASVS 5.0.0 subset)
+
+| check_id | ASVS IDs | invariant | status |
+|---|---|---|---|
+| `QA8_ADMIN_BOUNDARY` | v5.0.0-8.2.1, v5.0.0-8.4.2 | `INV-ISOLATION-01` | `PASS` |
+| `QA8_USER_ISOLATION_SHARED_WITH_QA2` | v5.0.0-8.2.2, v5.0.0-8.3.1 | `INV-ISOLATION-01` | `PASS` |
+| `QA8_JWT_TOKEN_VALIDATION` | v5.0.0-9.1.1, v5.0.0-9.1.2, v5.0.0-9.2.1, v5.0.0-9.2.3 | `INV-ISOLATION-01` | `PASS` |
+| `QA8_PRIVACY_DELETE_ACCOUNT` | v5.0.0-14.2.7 | `INV-PRIVACY-01` | `PASS` |
+| `QA8_ERROR_DISCLOSURE_AND_LOGGING` | v5.0.0-16.5.1, v5.0.0-16.2.5 | `INV-PRIVACY-01` | `PASS` |
+
+### PASS - QA8_ADMIN_BOUNDARY
+
+25 admin controllers scanned, 0 unguarded (static @UseGuards scan). Dynamic Nest+HTTP adversarial round-trip (tooling/verify/admin-boundary.cjs) PASS: PASS - missing admin signing secret -> 401 (admin routes stay closed) (status=401) | [admin-guard.selftest] ALL PASS — real Nest HTTP admin boundary verified (25 checks) | [verify:admin-boundary] PASS (25 admin controllers · 115 routes classified · global APP_GUARD · real Nest HTTP adversarial round-trip)
+
+### PASS - QA8_PRIVACY_DELETE_ACCOUNT
+
+delete_mode=purge_and_tombstone; purge_table_count=26; sessions_purged=true; KYC retention (§42.2.1) excluded from this finding. Dynamic proof (run-qa8-adversarial.cjs privacy_delete (isolated CI Postgres + booted Nest)): tombstone=true purge=true retain=true control_user_unaffected=true invalid_confirm_no_mutation=true.
+
+### PASS - QA8_USER_ISOLATION_SHARED_WITH_QA2, QA8_JWT_TOKEN_VALIDATION, QA8_ERROR_DISCLOSURE_AND_LOGGING
+
+### PASS - SEC-DYNAMIC-ADVERSARIAL-01
+
+Real adversarial HTTP evidence against a booted api-nest instance (isolated CI Postgres). No findings.
+
+This QA8 run is discovery/aggregation only - any current or future FAIL finding is recorded honestly and is not repaired in this wave.
+
+## Performance World (k6, CI only heavy) - QA6 record retained
+
+QA6 record retained unchanged. suite status `PASS` - budget SPECIFIED (Human/PO ACK) -
+tags evaluated: `feed_read`, `participate`, `wallet_read`, `auth_profile` - threshold mechanism locked - numeric invention forbidden -
+heavy k6 CI only - artifact retention >= 90 days - aggregator if: always().
+
+| tag | status | blocked_code |
+|---|---|---|
+| `feed_read` | `PASS` | `-` |
+| `participate` | `PASS` | `-` |
+| `wallet_read` | `PASS` | `-` |
+| `auth_profile` | `PASS` | `-` |
 
 ## Dual Dirty
 
-- working_tree_clean=`true`
+- working_tree_clean=`false`
 - protected_scope_clean=`true`
-- forced clean / stash laundry = **forbidden**
+- forced clean / stash laundry = forbidden
 
 ## Next
 
-`QA1_DETERMINISTIC_TRUTH` only. Full ACCEPTED · product mutation to chase green · 03 UI — **금지**.
+`QA9_ACCEPTANCE_REPORT` per the 02.5 plan file-serial order. This wave does not start
+QA9, does not repair the P0/P2 findings above, and does not issue
+`ENGINE_ACCEPTED_FOR_UI`.
