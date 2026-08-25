@@ -263,6 +263,21 @@ if (/dummy-id|dummy-secret|dummy-token|example\.invalid/.test(`${applyNoAllow.st
   fail("blocked apply leaked dummy secret values");
 }
 
+const newest = deploy.latestVersionId([
+  { id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", created_on: "2026-08-25T14:00:56Z" },
+  { id: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb", created_on: "2026-08-25T15:03:18Z" },
+]);
+if (newest !== "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb") {
+  fail("latestVersionId must pick newest version, not first deploy");
+}
+const newestLast = deploy.latestVersionId([
+  { id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" },
+  { id: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb" },
+]);
+if (newestLast !== "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb") {
+  fail("latestVersionId without timestamps must use the last row");
+}
+
 const redacted = deploy.redact("token=super-secret-value", ["super-secret-value"]);
 if (redacted.includes("super-secret-value")) fail("redact() must strip values");
 if (!redacted.includes("[REDACTED]")) fail("redact() must replace values");
