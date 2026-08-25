@@ -86,7 +86,7 @@ try {
     nativeCurrency: "JPY",
     snapshot: { usdtPerUsd: "1" },
   });
-} catch (e) {
+} catch {
   jpyThrew = true;
 }
 if (!jpyThrew) fails.push("JPY must fail-closed (unsupported Day-1 currency)");
@@ -104,6 +104,9 @@ if (!cg.includes('crons = ["*/10 * * * *"]')) {
   fails.push("CoinGecko cron must be */10 for Demo 10k budget");
 }
 if (cg.includes("*/5 * * * *")) fails.push("CoinGecko 5-minute cron exceeds Demo budget");
+if (!cg.includes('ALLOW_MANUAL_TICK = "false"')) {
+  fails.push("CoinGecko production/default manual tick must be disabled");
+}
 
 const cgClient = read("workers/coingecko-adapter/src/client.ts");
 if (!cgClient.includes("vs_currencies")) fails.push("CoinGecko must batch vs_currencies");
@@ -113,6 +116,9 @@ if (!cgClient.includes("include_last_updated_at")) {
 if (!cgClient.includes("shouldRetry") || !cgClient.includes("429")) {
   fails.push("CoinGecko client must bound retry and skip 429");
 }
+if (!cgClient.includes("UPSTREAM_TIMEOUT_MS") || !cgClient.includes("AbortController")) {
+  fails.push("CoinGecko upstream fetch must have an explicit timeout");
+}
 
 const cgIdx = read("workers/coingecko-adapter/src/index.ts");
 if (!cgIdx.includes("inflight") || !cgIdx.includes("MIN_FETCH_GAP_MS")) {
@@ -121,6 +127,15 @@ if (!cgIdx.includes("inflight") || !cgIdx.includes("MIN_FETCH_GAP_MS")) {
 if (!cgIdx.includes("FREE_DEMO")) fails.push("CoinGecko worker must declare FREE_DEMO");
 if (!cgIdx.includes("lastFetchAt") || !cgIdx.includes("consecutiveFailures")) {
   fails.push("CoinGecko health must expose fetch/failure observability");
+}
+if (!cgIdx.includes("MANUAL_TICK_DISABLED") || !cgIdx.includes("ALLOW_MANUAL_TICK")) {
+  fails.push("CoinGecko manual HTTP tick must be fail-closed by config");
+}
+if (!cgIdx.includes("nest_ingest_unconfigured") || !cgIdx.includes("forwarded === 1")) {
+  fails.push("CoinGecko success must require Nest publication when live");
+}
+if (!/lastTick\s*=\s*result/.test(cgIdx) || !/now - lastFetchMs < MIN_FETCH_GAP_MS/.test(cgIdx)) {
+  fails.push("CoinGecko failed attempts must still respect the free-quota fetch gap");
 }
 if (/pro-api\.coingecko|x-cg-pro-api-key/.test(cgIdx + cgClient)) {
   fails.push("paid CoinGecko plan must not be referenced");
@@ -132,6 +147,9 @@ if (!/GBP/.test(frank) || !/EUR/.test(frank) || !/AUD/.test(frank)) {
 }
 if (/divAmount|mulAmount/.test(frank)) {
   fails.push("Frankfurter must remain raw-relay-only");
+}
+if (!frank.includes("UPSTREAM_TIMEOUT_MS") || !frank.includes("AbortController")) {
+  fails.push("Frankfurter upstream fetch must have an explicit timeout");
 }
 
 const nestFx = read("services/api-nest/src/opportunities/fx-snapshot.service.ts");
@@ -161,6 +179,14 @@ if (!approx.includes("krwDisplayAvailable") || !approx.includes("quotes")) {
   fails.push("current-fx must expose status + quotes");
 }
 
+const schema = read("schemas/current-fx-approx.v1.json");
+for (const requiredField of ["krwDisplayAvailable", "fxStatus", "quotes", "budget"]) {
+  const requiredBlock = schema.slice(schema.indexOf('"required"'), schema.indexOf('"properties"'));
+  if (!requiredBlock.includes(`"${requiredField}"`)) {
+    fails.push(`current-fx schema must require ${requiredField}`);
+  }
+}
+
 const sdk = read("packages/sdk/src/current-fx/fetch.ts");
 if (!sdk.includes("/api/v1/me/current-fx/approx")) {
   fails.push("SDK path drift");
@@ -182,6 +208,29 @@ for (const rel of webClients) {
   }
 }
 
+const background = read("apps/web/lib/start-fx-background-refresh.ts");
+if (!background.includes("FX_REFRESH_UNAVAILABLE") || !background.includes('fxStatus: "UNAVAILABLE"')) {
+  fails.push("FX refresh transport failure must actively clear KRW display state");
+}
+if (/keep previous KRW/i.test(background)) {
+  fails.push("FX refresh must not keep previous KRW indefinitely after API failure");
+}
+
+const moneyMappers = [
+  "apps/web/components/spark-dash-home/map-runtime.ts",
+  "apps/web/components/spark-dash-profits/map-runtime.ts",
+  "apps/web/components/spark-dash-room/map-runtime.ts",
+];
+for (const rel of moneyMappers) {
+  const src = read(rel);
+  if (/item\.expectedProfitKrwApprox/.test(src)) {
+    fails.push(rel + " must not resurrect feed KRW without current-fx freshness");
+  }
+  if (!src.includes("quoteKrw")) {
+    fails.push(rel + " must use current-fx quotes for KRW display");
+  }
+}
+
 const homeMap = read("apps/web/components/spark-dash-home/map-runtime.ts");
 if (!/capitalKrw:\s*null/.test(homeMap)) {
   fails.push("Home runtime must keep capitalKrw null (presentation freeze)");
@@ -190,6 +239,13 @@ if (!/capitalKrw:\s*null/.test(homeMap)) {
 const moneyUi = read("packages/ui/components/money/MoneyAmount.tsx");
 if (!moneyUi.includes("putduk-money") || !moneyUi.includes("aria-label")) {
   fails.push("shared MoneyAmount missing a11y/status");
+}
+if (!moneyUi.includes("formatKrwApproxLine")) {
+  fails.push("MoneyAmount must reuse shared KRW formatter");
+}
+const moneyFormat = read("packages/ui/components/money/money-format.ts");
+if (!moneyFormat.includes('`${sign}₩${abs}`')) {
+  fails.push("signed KRW must render sign before won symbol");
 }
 
 const copy = read("packages/ui/copy/ko/money.ts");
@@ -269,7 +325,7 @@ if (!read("package.json").includes("verify:p0-c-free-fx-krw-money")) {
   fails.push("package.json missing verify:p0-c-free-fx-krw-money");
 }
 if (!read("tooling/verify/CATALOG.md").includes("p0-c-free-fx-krw-money")) {
-  fails.push("CATALOG missing p0-c-free-fx-krw-money");
+  fails.push("CATALOG missing verify:p0-c-free-fx-krw-money");
 }
 if (!read("tooling/verify/domain-by-path.cjs").includes("p0-c-free-fx-krw-money.cjs")) {
   fails.push("domain-by-path missing p0-c-free-fx-krw-money.cjs");
@@ -284,5 +340,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:p0-c-free-fx-krw-money] PASS (Demo budget, single-flight, freshness fail-closed, USD!=USDT, KRW secondary, no fabricated 0, P0-B ebay untouched)",
+  "[verify:p0-c-free-fx-krw-money] PASS (Demo budget, manual-tick guard, bounded upstream, publish truth, freshness fail-closed, USD!=USDT, KRW secondary, no fabricated 0, P0-B ebay untouched)",
 );
