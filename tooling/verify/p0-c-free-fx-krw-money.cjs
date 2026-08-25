@@ -204,20 +204,65 @@ if (!footer.includes("T.money.attribution")) {
 
 const ebay = read("workers/ebay-adapter/wrangler.toml");
 if (!ebay.includes("ebay-adapter")) fails.push("ebay adapter vanished");
+if (!ebay.includes('crons = ["*/15 * * * *"]')) {
+  fails.push("P0-B regression: ebay cron must stay */15");
+}
 
-try {
-  const diff = execSync("git diff --name-only origin/main", {
-    cwd: root,
-    encoding: "utf8",
-  });
-  const touched = diff.split(/\r?\n/).filter(Boolean);
-  for (const f of touched) {
-    if (f.startsWith("workers/ebay-adapter/")) {
-      fails.push("P0-B regression: ebay-adapter must stay untouched, got " + f);
-    }
+function refExists(ref) {
+  try {
+    execSync('git rev-parse --verify "' + ref + '"', {
+      cwd: root,
+      stdio: "pipe",
+    });
+    return true;
+  } catch {
+    return false;
   }
-} catch (e) {
-  fails.push("git diff origin/main failed: " + (e && e.message ? e.message : e));
+}
+
+function resolveEbayDiffBase() {
+  const envRef = process.env.GITHUB_BASE_REF
+    ? "origin/" + process.env.GITHUB_BASE_REF
+    : "";
+  const candidates = [envRef, "origin/main", "main"].filter(Boolean);
+  for (const ref of candidates) {
+    if (refExists(ref)) return ref;
+  }
+  if (process.env.GITHUB_ACTIONS) {
+    try {
+      execSync("git fetch --depth=1 origin main", {
+        cwd: root,
+        stdio: "pipe",
+      });
+    } catch (e) {
+      fails.push(
+        "CI fetch origin/main failed: " + (e && e.message ? e.message : e),
+      );
+      return "";
+    }
+    if (refExists("origin/main")) return "origin/main";
+    if (refExists("FETCH_HEAD")) return "FETCH_HEAD";
+  }
+  fails.push("cannot resolve main for P0-B ebay path check");
+  return "";
+}
+
+const ebayBase = resolveEbayDiffBase();
+if (ebayBase) {
+  try {
+    const diff = execSync('git diff --name-only "' + ebayBase + '"', {
+      cwd: root,
+      encoding: "utf8",
+    });
+    const touched = diff.split(/\r?\n/).filter(Boolean);
+    for (const f of touched) {
+      if (f.startsWith("workers/ebay-adapter/")) {
+        fails.push("P0-B regression: ebay-adapter must stay untouched, got " + f);
+      }
+    }
+  } catch (e) {
+    fails.push("git diff vs " + ebayBase + " failed: " + (e && e.message ? e.message : e));
+  }
 }
 
 if (!read("package.json").includes("verify:p0-c-free-fx-krw-money")) {
