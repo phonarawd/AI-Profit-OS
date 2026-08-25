@@ -35,11 +35,27 @@ type KrwState =
   | "denied"
   | "unavailable"
   | "unauthorized";
+type KrwInstructionsState =
+  | "loading"
+  | "ready"
+  | "not_ready"
+  | "unauthorized"
+  | "denied"
+  | "unavailable";
 
 type KrwPending = {
   status: string;
   payableAmountKrw?: number;
   depositCode?: string;
+};
+
+type KrwDepositInstructions = {
+  configVersion: number;
+  bankName: string;
+  accountNumber: string;
+  accountHolder: string;
+  noticeKo: string;
+  updatedAt: string;
 };
 
 function DepositContent() {
@@ -59,6 +75,11 @@ function DepositContent() {
   const [depositorName, setDepositorName] = useState("");
   const [krwState, setKrwState] = useState<KrwState>("idle");
   const [krwPending, setKrwPending] = useState<KrwPending | null>(null);
+  const [krwInstructionsState, setKrwInstructionsState] =
+    useState<KrwInstructionsState>("loading");
+  const [krwInstructions, setKrwInstructions] =
+    useState<KrwDepositInstructions | null>(null);
+  const [krwAccountCopyDone, setKrwAccountCopyDone] = useState(false);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -114,6 +135,63 @@ function DepositContent() {
     return () => ac.abort();
   }, [tab]);
 
+  useEffect(() => {
+    if (tab !== "krw") return;
+    const ac = new AbortController();
+    setKrwInstructions(null);
+    setKrwInstructionsState("loading");
+    setKrwAccountCopyDone(false);
+    void (async () => {
+      try {
+        const res = await fetch("/api/v1/wallet/krw-deposit-instructions", {
+          credentials: "include",
+          cache: "no-store",
+          signal: ac.signal,
+        });
+        if (res.status === 401) {
+          setKrwInstructionsState("unauthorized");
+          return;
+        }
+        if (res.status === 403) {
+          setKrwInstructionsState("denied");
+          return;
+        }
+        if (res.status === 404) {
+          setKrwInstructionsState("not_ready");
+          return;
+        }
+        if (!res.ok) {
+          setKrwInstructionsState("unavailable");
+          return;
+        }
+        const json = (await res.json()) as Partial<KrwDepositInstructions>;
+        const bankName = typeof json.bankName === "string" ? json.bankName.trim() : "";
+        const accountNumber =
+          typeof json.accountNumber === "string" ? json.accountNumber.trim() : "";
+        const accountHolder =
+          typeof json.accountHolder === "string" ? json.accountHolder.trim() : "";
+        const noticeKo = typeof json.noticeKo === "string" ? json.noticeKo.trim() : "";
+        if (!bankName || !accountNumber || !accountHolder) {
+          setKrwInstructionsState("not_ready");
+          return;
+        }
+        setKrwInstructions({
+          configVersion:
+            typeof json.configVersion === "number" ? json.configVersion : 0,
+          bankName,
+          accountNumber,
+          accountHolder,
+          noticeKo,
+          updatedAt: typeof json.updatedAt === "string" ? json.updatedAt : "",
+        });
+        setKrwInstructionsState("ready");
+      } catch {
+        if (!ac.signal.aborted) setKrwInstructionsState("unavailable");
+      }
+    })();
+    return () => ac.abort();
+  }, [tab]);
+
   const usdtHref = useMemo(() => {
     const q = new URLSearchParams(searchParams.toString());
     q.set("tab", "usdt");
@@ -127,6 +205,11 @@ function DepositContent() {
   }, [searchParams]);
 
   async function submitKrw() {
+    if (krwInstructionsState !== "ready" || !krwInstructions) {
+      setKrwState("denied");
+      setDenyCopy("입금 계좌가 준비된 뒤에 신청할 수 있어요.");
+      return;
+    }
     const amount = Number(krwAmount);
     if (!Number.isInteger(amount) || amount < 1 || depositorName.trim().length < 1) {
       setKrwState("denied");
@@ -182,6 +265,7 @@ function DepositContent() {
       data-deposit-suggest={suggestUsdt > 0 ? String(suggestUsdt) : undefined}
       data-address-state={tab === "usdt" ? addressState : undefined}
       data-krw-state={tab === "krw" ? krwState : undefined}
+      data-krw-instructions-state={tab === "krw" ? krwInstructionsState : undefined}
       data-classification-owner="engine:§0.0.5.1"
     >
       <DepositConsult
@@ -269,6 +353,54 @@ function DepositContent() {
           <p className={styles.note}>
             원화는 신청만 받아요. 확인되기 전에는 잔액이 늘지 않아요.
           </p>
+
+          {krwInstructionsState === "ready" && krwInstructions ? (
+            <div className={styles.addressBox} data-testid="krw-deposit-instructions">
+              <p className={styles.note}>아래 계좌는 관리자가 확인해 둔 현재 입금 계좌예요.</p>
+              <p data-testid="krw-bank-name">은행 · {krwInstructions.bankName}</p>
+              <p className={styles.mono} data-testid="krw-account-number">
+                {krwInstructions.accountNumber}
+              </p>
+              <p data-testid="krw-account-holder">예금주 · {krwInstructions.accountHolder}</p>
+              {krwInstructions.noticeKo ? (
+                <p className={styles.note} data-testid="krw-account-notice">
+                  {krwInstructions.noticeKo}
+                </p>
+              ) : null}
+              <button
+                type="button"
+                className={styles.copyBtn}
+                data-testid="krw-account-copy"
+                aria-label="원화 입금 계좌번호 복사"
+                onClick={() => {
+                  if (!navigator.clipboard) return;
+                  void navigator.clipboard
+                    .writeText(krwInstructions.accountNumber)
+                    .then(() => setKrwAccountCopyDone(true));
+                }}
+              >
+                {krwAccountCopyDone ? "계좌번호 복사됨" : "계좌번호 복사"}
+              </button>
+            </div>
+          ) : null}
+          {krwInstructionsState === "loading" ? (
+            <p className={styles.note}>입금 계좌를 확인하고 있어요.</p>
+          ) : null}
+          {krwInstructionsState === "not_ready" ? (
+            <p className={styles.err} data-testid="krw-account-not-ready">
+              입금 계좌가 아직 준비되지 않았어요. 계좌가 확인되기 전에는 입금하지 마세요.
+            </p>
+          ) : null}
+          {krwInstructionsState === "unauthorized" ? (
+            <p className={styles.lead}>로그인하면 원화 입금 계좌를 볼 수 있어요.</p>
+          ) : null}
+          {krwInstructionsState === "denied" ? (
+            <p className={styles.err}>지금은 원화 입금 계좌를 열 수 없어요.</p>
+          ) : null}
+          {krwInstructionsState === "unavailable" ? (
+            <p className={styles.err}>입금 계좌를 확인할 수 없음</p>
+          ) : null}
+
           <label className={styles.field}>
             입금자 이름
             <input
@@ -341,7 +473,11 @@ function DepositContent() {
             data-testid="deposit-continue"
             data-force-deposit="false"
             data-credited="false"
-            disabled={krwState === "submitting" || krwState === "pending"}
+            disabled={
+              krwInstructionsState !== "ready" ||
+              krwState === "submitting" ||
+              krwState === "pending"
+            }
             onClick={() => {
               void submitKrw();
             }}
