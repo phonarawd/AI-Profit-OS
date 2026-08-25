@@ -33,6 +33,9 @@ const baseUrl =
   fixture.stagingWeb;
 
 const DESKTOP_BREAKPOINT = 1280;
+const GOTO_ATTEMPTS = 3;
+const GOTO_TIMEOUT_MS = 60_000;
+const GOTO_RETRY_DELAY_MS = 750;
 
 test.describe.configure({ timeout: 180000 });
 
@@ -75,17 +78,106 @@ async function stabilizePage(page) {
   await page.waitForLoadState("networkidle", { timeout: 15_000 }).catch(() => {});
 }
 
-async function gotoStaging(page, cohort, scenario) {
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isTransientNavigationError(error) {
+  const msg = String(error?.message || error);
+  return (
+    /page\.goto: Timeout \d+ms exceeded/i.test(msg) ||
+    /net::ERR_/i.test(msg) ||
+    /NS_ERROR_/i.test(msg) ||
+    /NS_BINDING_ABORTED/i.test(msg) ||
+    /Navigation interrupted/i.test(msg) ||
+    /Navigation failed because page crashed/i.test(msg) ||
+    /frame was detached/i.test(msg) ||
+    /Target closed/i.test(msg) ||
+    /Cannot find context/i.test(msg) ||
+    /Execution context was destroyed/i.test(msg)
+  );
+}
+
+async function isIncompleteDocument(page, scenario) {
+  try {
+    const html = await page.content();
+    if (!html || html.length < 400) return true;
+    if (!includesAny(html, scenario.mustIncludeAny)) return true;
+    const url = page.url();
+    return !url || url === "about:blank" || url.startsWith("chrome-error://");
+  } catch {
+    return true;
+  }
+}
+
+async function isRetryableRootError(page, scenario, error) {
+  const msg = String(error?.message || error);
+  if (
+    /waiting for navigation to finish/i.test(msg) ||
+    /Execution context was destroyed/i.test(msg) ||
+    /Cannot find context/i.test(msg) ||
+    /Target closed/i.test(msg) ||
+    /frame was detached/i.test(msg)
+  ) {
+    return true;
+  }
+  if (/element\(s\) not found/i.test(msg) || /Received:\s+undefined/i.test(msg)) {
+    return isIncompleteDocument(page, scenario);
+  }
+  return false;
+}
+
+async function gotoOnce(page, cohort, scenario) {
   const url = baseUrl.replace(/\/$/, "") + scenario.path;
   const res = await page.goto(url, {
     waitUntil: "load",
-    timeout: 60_000,
+    timeout: GOTO_TIMEOUT_MS,
   });
   expect(res, cohort.id + " " + scenario.id + " response").not.toBeNull();
   expect(scenario.expectStatus).toContain(res.status());
   await hideNextDevChrome(page);
   await stabilizePage(page);
   return res;
+}
+
+async function gotoStaging(page, cohort, scenario) {
+  const url = baseUrl.replace(/\/$/, "") + scenario.path;
+  let lastError;
+  for (let attempt = 1; attempt <= GOTO_ATTEMPTS; attempt += 1) {
+    try {
+      return await gotoOnce(page, cohort, scenario);
+    } catch (error) {
+      lastError = error;
+      if (
+        !isTransientNavigationError(error) ||
+        attempt === GOTO_ATTEMPTS
+      ) {
+        throw error;
+      }
+      console.warn(
+        `[REL-603] transient goto retry ${attempt}/${GOTO_ATTEMPTS - 1} ${cohort.id} ${scenario.id} ${url}`,
+      );
+      await page.goto("about:blank", { timeout: 10_000 }).catch(() => {});
+      await sleep(GOTO_RETRY_DELAY_MS * attempt);
+    }
+  }
+  throw lastError;
+}
+
+async function waitForScenarioRoot(page, cohort, scenario, check) {
+  try {
+    await check();
+  } catch (error) {
+    if (!(await isRetryableRootError(page, scenario, error))) {
+      throw error;
+    }
+    console.warn(
+      `[REL-603] transient root retry ${cohort.id} ${scenario.id} ${scenario.path}`,
+    );
+    await page.goto("about:blank", { timeout: 10_000 }).catch(() => {});
+    await gotoOnce(page, cohort, scenario);
+    await check();
+  }
 }
 
 async function assertNoHorizontalOverflow(page, label) {
@@ -183,7 +275,9 @@ async function runSignup(page, cohort, scenario) {
   await stubGuestApis(page);
   await gotoStaging(page, cohort, scenario);
 
-  await expect(page.getByTestId("auth-signup")).toBeVisible({ timeout: 20_000 });
+  await waitForScenarioRoot(page, cohort, scenario, async () => {
+    await expect(page.getByTestId("auth-signup")).toBeVisible({ timeout: 20_000 });
+  });
   await openEmailSignupForm(page, cohort, scenario);
 
   const emailForm = page.getByTestId("auth-email-form");
@@ -208,11 +302,13 @@ async function runOpportunity(page, cohort, scenario) {
   await stubOpportunityFeed(page, "ready");
   await gotoStaging(page, cohort, scenario);
 
-  await expect(page.getByTestId("profits-shell")).toHaveAttribute(
-    "data-profits-state",
-    "READY",
-    { timeout: 20_000 },
-  );
+  await waitForScenarioRoot(page, cohort, scenario, async () => {
+    await expect(page.getByTestId("profits-shell")).toHaveAttribute(
+      "data-profits-state",
+      "READY",
+      { timeout: 20_000 },
+    );
+  });
   const card = profitsCard(page, cohort.viewport.width);
   await expect(card).toBeVisible({ timeout: 20_000 });
   await expect(card).toHaveAttribute(
@@ -239,11 +335,13 @@ async function runParticipateEntry(page, cohort, scenario) {
   await stubCoreOpportunityJourney(page);
   await gotoStaging(page, cohort, scenario);
 
-  await expect(page.getByTestId("profits-shell")).toHaveAttribute(
-    "data-profits-state",
-    "READY",
-    { timeout: 20_000 },
-  );
+  await waitForScenarioRoot(page, cohort, scenario, async () => {
+    await expect(page.getByTestId("profits-shell")).toHaveAttribute(
+      "data-profits-state",
+      "READY",
+      { timeout: 20_000 },
+    );
+  });
   const card = profitsCard(page, cohort.viewport.width);
   await expect(card).toBeVisible({ timeout: 20_000 });
   const detailUrl = new RegExp(`/profits/${TEST_OPPORTUNITY_ITEM.id}$`);
@@ -284,11 +382,13 @@ async function runWallet(page, cohort, scenario) {
   await stubWallet(page, "ready");
   await gotoStaging(page, cohort, scenario);
 
-  await expect(page.getByTestId("wallet-home")).toHaveAttribute(
-    "data-wallet-view",
-    "ready",
-    { timeout: 20_000 },
-  );
+  await waitForScenarioRoot(page, cohort, scenario, async () => {
+    await expect(page.getByTestId("wallet-home")).toHaveAttribute(
+      "data-wallet-view",
+      "ready",
+      { timeout: 20_000 },
+    );
+  });
   await expect(page.getByTestId("wallet-deposit-cta")).toBeVisible();
   await expect(page.getByTestId("wallet-withdraw-profit")).toBeVisible();
   await expect(page.getByTestId("wallet-withdraw-principal")).toBeVisible();

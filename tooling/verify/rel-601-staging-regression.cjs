@@ -9,6 +9,9 @@ const { spawnSync } = require("child_process");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
+const LIVE_FETCH_ATTEMPTS = 3;
+const LIVE_FETCH_TIMEOUT_MS = 12000;
+const LIVE_FETCH_RETRY_DELAY_MS = 750;
 
 function read(rel) {
   const p = path.join(root, rel);
@@ -167,6 +170,30 @@ if (closed) {
   }
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchTransientSafe(url, options) {
+  let lastError;
+  for (let attempt = 1; attempt <= LIVE_FETCH_ATTEMPTS; attempt += 1) {
+    try {
+      return await fetch(url, {
+        ...options,
+        signal: AbortSignal.timeout(LIVE_FETCH_TIMEOUT_MS),
+      });
+    } catch (e) {
+      lastError = e;
+      if (attempt === LIVE_FETCH_ATTEMPTS) break;
+      console.warn(
+        `[verify:rel-601-staging-regression] transient fetch retry ${attempt}/${LIVE_FETCH_ATTEMPTS - 1} ${url}`,
+      );
+      await sleep(LIVE_FETCH_RETRY_DELAY_MS * attempt);
+    }
+  }
+  throw lastError || new Error("live fetch failed after bounded retries");
+}
+
 function originOf(probe) {
   return probe.origin === "ops" ? fixture.stagingOps : fixture.stagingWeb;
 }
@@ -183,7 +210,7 @@ function statusOk(probe, status) {
 
 async function live(probe) {
   const url = originOf(probe) + probe.path;
-  const res = await fetch(url, {
+  const res = await fetchTransientSafe(url, {
     redirect: "manual",
     headers: { "user-agent": "ai-profit-os-rel-601-verify/1" },
   });
@@ -211,7 +238,7 @@ async function live(probe) {
 
 async function homeAssetAndBrand() {
   const url = fixture.stagingWeb + "/";
-  const res = await fetch(url, {
+  const res = await fetchTransientSafe(url, {
     headers: { "user-agent": "ai-profit-os-rel-601-verify/1" },
   });
   const html = await res.text();
@@ -233,7 +260,7 @@ async function homeAssetAndBrand() {
     fails.push("Home HTML missing Next static CSS href");
     return;
   }
-  const asset = await fetch(fixture.stagingWeb + css[1], {
+  const asset = await fetchTransientSafe(fixture.stagingWeb + css[1], {
     redirect: "manual",
     headers: { "user-agent": "ai-profit-os-rel-601-verify/1" },
   });
@@ -252,7 +279,7 @@ async function homeAssetAndBrand() {
       }
       await homeAssetAndBrand();
     } catch (e) {
-      fails.push("live fetch error: " + (e.message || e));
+      fails.push("live fetch error after bounded retries: " + (e.message || e));
     }
   }
 
