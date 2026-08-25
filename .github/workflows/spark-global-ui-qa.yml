@@ -9,6 +9,8 @@ on:
       - "packages/ui/components/trust/**"
       - "tooling/e2e/specs/admin-spark-shell.spec.cjs"
       - "tooling/e2e/specs/admin-entry-closure.spec.cjs"
+      - "tooling/e2e/specs/admin-deposit-settings.spec.cjs"
+      - "tooling/e2e/lib/axe-scan.cjs"
       - ".github/workflows/spark-global-ui-qa.yml"
 
 concurrency:
@@ -46,3 +48,4 @@ jobs:
           --config=tooling/e2e/playwright.config.cjs
           tooling/e2e/specs/admin-spark-shell.spec.cjs
           tooling/e2e/specs/admin-entry-closure.spec.cjs
+          tooling/e2e/specs/admin-deposit-settings.spec.cjs
