@@ -126,11 +126,17 @@ if (/from-preview|copy-preview/i.test(src)) {
 if (!src.includes('["versions", "list"')) {
   fail("provision script must prove production worker via wrangler versions list");
 }
-if (!/pnpm/.test(src) || !/"exec", "wrangler"/.test(src)) {
-  fail("provision script must spawn wrangler via pnpm exec like deploy-cloudflare");
+if (!src.includes('node_modules", "wrangler", "bin", "wrangler.js"')) {
+  fail("provision script must spawn wrangler.js by filesystem path so stdin reaches secret put");
 }
 if (/require\.resolve\("wrangler/.test(src)) {
   fail("provision script must not require.resolve wrangler (package exports hide the bin)");
+}
+if (/shell:\s*true/.test(src)) {
+  fail("provision script must not use shell:true (stdin/secret put would not reach wrangler)");
+}
+if (!/putLooksSuccessful/.test(src)) {
+  fail("secret put must require wrangler success text, not only exit 0");
 }
 if (!/firstBind/.test(src)) {
   fail("first production bind must tolerate empty secret list");

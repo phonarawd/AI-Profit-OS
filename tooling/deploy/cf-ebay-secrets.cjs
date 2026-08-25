@@ -6,6 +6,7 @@
  * .env 로드 금지 · preview 복사 금지 · 값 출력 금지.
  */
 const { spawnSync } = require("child_process");
+const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
@@ -157,15 +158,29 @@ function formatPlan(presence) {
   return lines.join("\n");
 }
 
+function resolveWranglerJs() {
+  const candidate = path.join(root, "node_modules", "wrangler", "bin", "wrangler.js");
+  return fs.existsSync(candidate) ? candidate : null;
+}
+
 function spawnWrangler(args, opts) {
-  return spawnSync("pnpm", ["exec", "wrangler", ...args], {
+  const bin = resolveWranglerJs();
+  if (!bin) {
+    return { status: 1, stdout: "", stderr: "wrangler binary not installed" };
+  }
+  return spawnSync(process.execPath, [bin, ...args], {
     cwd: WORKER_DIR,
     encoding: "utf8",
-    shell: true,
     env: { ...process.env, ...(opts.env || {}) },
     input: opts.input,
-    timeout: opts.timeout || 60000,
+    timeout: opts.timeout || 120000,
+    windowsHide: true,
   });
+}
+
+function putLooksSuccessful(put) {
+  const body = `${put.stdout || ""}\n${put.stderr || ""}`;
+  return /uploaded secret|success! uploaded|creating the secret/i.test(body);
 }
 
 function wranglerNameArgs() {
@@ -329,9 +344,9 @@ function main(argv, env) {
 
   for (const name of SECRET_NAMES) {
     const put = putSecret(name, env[name], env, secretValues);
-    if (put.status !== 0) {
-      if (put.stdout) console.error(put.stdout);
-      if (put.stderr) console.error(put.stderr);
+    if (put.status !== 0 || !putLooksSuccessful(put)) {
+      const detail = summarizeWranglerError(put, secretValues);
+      if (detail) console.log(`${name}_PUT_DETAIL=${detail}`);
       fail(`wrangler secret put failed for ${name} (value not printed)`);
     }
     console.log(`${name}_PUT=YES`);
