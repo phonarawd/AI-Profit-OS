@@ -3,17 +3,22 @@
  * Fiat FX (USD→KRW/GBP/EUR/AUD) · no signup · Phase1 CF deploy
  * Composes with coingecko for fallback USDT/KRW formula.
  *
- * PTF-00C P0-B: also relays raw USD->GBP/EUR/AUD quotes (Day-1 eBay
- * marketplace currencies) so Nest can durably compose the marketplace
- * normalization legs. This worker performs zero FX math itself.
+ * This worker relays raw provider directions only. Nest owns authoritative
+ * inversion/derivation and snapshot persistence.
  */
 
 import { fetchUsdRates } from "./client";
-import { ADAPTER_ID, CACHE_HINT_SEC, SERVICE } from "./constants";
+import {
+  ADAPTER_ID,
+  CACHE_HINT_SEC,
+  INGEST_TIMEOUT_MS,
+  SERVICE,
+} from "./constants";
 
 export interface Env {
   SERVICE: string;
   PHASE: string;
+  ALLOW_MANUAL_TICK?: string;
   NEST_ADAPTER_INGEST_URL?: string;
   ADAPTER_INGEST_TOKEN?: string;
 }
@@ -31,9 +36,17 @@ export default {
         cacheHintSec: CACHE_HINT_SEC,
         yahooJp: false,
         credentialsConfigured: true,
+        ingestConfigured: Boolean(env.NEST_ADAPTER_INGEST_URL),
+        manualTickEnabled: env.ALLOW_MANUAL_TICK === "true",
       });
     }
     if (url.pathname === "/tick" && request.method === "POST") {
+      if (env.ALLOW_MANUAL_TICK !== "true") {
+        return Response.json(
+          { ok: false, error: "MANUAL_TICK_DISABLED", adapterId: ADAPTER_ID },
+          { status: 403 },
+        );
+      }
       return Response.json(await runTick(env));
     }
     return Response.json({
@@ -51,6 +64,16 @@ export default {
   },
 };
 
+async function fetchIngest(url: string, init: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), INGEST_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function runTick(env: Env) {
   const observedAt = new Date().toISOString();
   const quote = await fetchUsdRates();
@@ -60,7 +83,6 @@ async function runTick(env: Env) {
       id: `obs_frankfurter_usd_krw_${observedAt}`,
       assetId: "fx:usd_krw",
       source: ADAPTER_ID,
-      // PTF-00C P0-A — native reading, not an assertion of USDT.
       nativeAmount: quote.usdKrw,
       nativeCurrency: "KRW",
       observedAt,
@@ -73,36 +95,44 @@ async function runTick(env: Env) {
   }
 
   let forwarded = 0;
-  if (env.NEST_ADAPTER_INGEST_URL) {
-    const res = await fetch(env.NEST_ADAPTER_INGEST_URL, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        ...(env.ADAPTER_INGEST_TOKEN
-          ? { "x-adapter-token": env.ADAPTER_INGEST_TOKEN }
-          : {}),
-      },
-      body: JSON.stringify({
-        adapterId: ADAPTER_ID,
-        worker: SERVICE,
-        observedAt,
-        role: "fx",
-        // Raw provider quotes only (X per 1 USD) — Nest inverts/derives.
-        fx: {
-          usdKrw: quote.usdKrw ?? null,
-          usdGbp: quote.usdGbp ?? null,
-          usdEur: quote.usdEur ?? null,
-          usdAud: quote.usdAud ?? null,
-          date: quote.date ?? null,
+  let forwardError: string | null = null;
+  if (env.NEST_ADAPTER_INGEST_URL && !quote.error) {
+    try {
+      const res = await fetchIngest(env.NEST_ADAPTER_INGEST_URL, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          ...(env.ADAPTER_INGEST_TOKEN
+            ? { "x-adapter-token": env.ADAPTER_INGEST_TOKEN }
+            : {}),
         },
-        observations,
-      }),
-    });
-    if (res.ok) forwarded = 1;
+        body: JSON.stringify({
+          adapterId: ADAPTER_ID,
+          worker: SERVICE,
+          observedAt,
+          role: "fx",
+          fx: {
+            usdKrw: quote.usdKrw ?? null,
+            usdGbp: quote.usdGbp ?? null,
+            usdEur: quote.usdEur ?? null,
+            usdAud: quote.usdAud ?? null,
+            date: quote.date ?? null,
+          },
+          observations,
+        }),
+      });
+      if (res.ok) forwarded = 1;
+      else forwardError = `nest_ingest_${res.status}`;
+    } catch {
+      forwardError = "nest_ingest_network_error";
+    }
+  } else if (!quote.error) {
+    forwardError = "nest_ingest_unconfigured";
   }
 
+  const ok = !quote.error && forwarded === 1;
   return {
-    ok: !quote.error,
+    ok,
     adapterId: ADAPTER_ID,
     usdKrw: quote.usdKrw ?? null,
     usdGbp: quote.usdGbp ?? null,
@@ -111,7 +141,7 @@ async function runTick(env: Env) {
     date: quote.date ?? null,
     observations: observations.length,
     forwarded,
-    error: quote.error,
+    error: quote.error ?? forwardError ?? undefined,
     yahooJp: false,
   };
 }
