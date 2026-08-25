@@ -126,6 +126,12 @@ if (/from-preview|copy-preview/i.test(src)) {
 if (!src.includes('["versions", "list"')) {
   fail("provision script must prove production worker via wrangler versions list");
 }
+if (!/pnpm/.test(src) || !/"exec", "wrangler"/.test(src)) {
+  fail("provision script must spawn wrangler via pnpm exec like deploy-cloudflare");
+}
+if (/require\.resolve\("wrangler/.test(src)) {
+  fail("provision script must not require.resolve wrangler (package exports hide the bin)");
+}
 if (!/firstBind/.test(src)) {
   fail("first production bind must tolerate empty secret list");
 }
