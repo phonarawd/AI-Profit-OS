@@ -419,7 +419,8 @@
   justify-content: center;
   min-height: 44px;
   border-radius: 12px;
-  background: var(--sdm-pink);
+  /* --sdm-pink 텍스트 액센트는 유지. CTA fill만 계정 승인 분홍 #c9184a */
+  background: #c9184a;
   color: #fff;
   font-size: 14px;
   font-weight: 600;

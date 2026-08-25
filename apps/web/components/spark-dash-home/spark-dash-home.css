@@ -301,6 +301,11 @@
   font-weight: 650;
 }
 
+.sd-root:not(.sdp-root) a.sd-btn-deposit {
+  /* Home only. Profits .sdp-root는 공유 핑크 유지. #c9184a = 계정 승인 입금 CTA */
+  background: #c9184a;
+}
+
 .sd-root a.sd-btn-deposit:hover {
   filter: brightness(1.06);
 }

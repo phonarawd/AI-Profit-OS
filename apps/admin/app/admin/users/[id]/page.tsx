@@ -395,7 +395,7 @@ function UserDetailInner() {
           <p className="text-lux-text-muted">
             위 메뉴에서 이 회원에게 보여 줄 수익 기회와 회원 등급을 확인할 수 있습니다.
           </p>
-          <p>
+          <div>
             위험 상태:{" "}
             {!risk ? (
               T.admin.state.loading
@@ -404,8 +404,8 @@ function UserDetailInner() {
             ) : (
               <AdminFetchNote failure={risk.failure} />
             )}
-          </p>
-          <p>
+          </div>
+          <div>
             등급:{" "}
             {!membership ? (
               T.admin.state.loading
@@ -419,7 +419,7 @@ function UserDetailInner() {
             ) : (
               <AdminFetchNote failure={membership.failure} />
             )}
-          </p>
+          </div>
         </section>
       )}
     </main>
