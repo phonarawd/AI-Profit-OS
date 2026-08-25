@@ -46,6 +46,22 @@ export function formatKrwInteger(raw: string | null | undefined): string | null 
   return `${neg ? "-" : ""}${grouped}`;
 }
 
+function applyKrwTemplate(
+  template: string,
+  body: string,
+  signed: boolean,
+): string {
+  const negative = body.startsWith("-");
+  const abs = negative ? body.slice(1) : body;
+  const sign = negative ? "-" : signed ? "+" : "";
+  // Korean consumer convention: sign precedes the currency symbol.
+  // "약 ₩{amount}" -> "약 +₩33,540" / "약 -₩11,680".
+  if (template.includes("₩{amount}")) {
+    return template.replace("₩{amount}", `${sign}₩${abs}`);
+  }
+  return template.replace("{amount}", `${sign}${abs}`);
+}
+
 export function formatKrwApproxLine(
   raw: string | null | undefined,
   signed = false,
@@ -53,13 +69,7 @@ export function formatKrwApproxLine(
 ): string | null {
   const body = formatKrwInteger(raw);
   if (body == null) return null;
-  if (signed && !body.startsWith("-")) {
-    return template.replace("{amount}", `+${body}`);
-  }
-  if (signed && body.startsWith("-")) {
-    return template.replace("{amount}", body);
-  }
-  return template.replace("{amount}", body);
+  return applyKrwTemplate(template, body, signed);
 }
 
 export function moneyAriaLabel(input: {
