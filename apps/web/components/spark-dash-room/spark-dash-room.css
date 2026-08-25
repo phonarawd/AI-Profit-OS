@@ -308,7 +308,8 @@
 .sdr-rate {
   padding: 0.125rem 0.5rem;
   border-radius: 999px;
-  background: #591730;
+  /* #ff2d6b on #591730 ≈ 3.67:1. Local darker rose keeps the pink token. */
+  background: #2e101c;
   font-size: 0.71875rem;
   font-weight: 650;
   color: #ff2d6b;

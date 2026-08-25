@@ -93,6 +93,15 @@
   overflow-y: auto;
 }
 
+.sdrm-scroll:focus {
+  outline: none;
+}
+
+.sdrm-scroll:focus-visible {
+  outline: 2px solid var(--sdrm-pink);
+  outline-offset: -2px;
+}
+
 .sdrm-stack {
   width: min(100%, 480px);
   margin: 0 auto;
@@ -435,7 +444,8 @@
   align-self: flex-start;
   padding: 5px 10px;
   border-radius: 999px;
-  background: #3a1424;
+  /* #ff2d6b on #3a1424 ≈ 4.47:1. Local darker rose keeps the pink token. */
+  background: #2e101c;
   font-size: 12.5px;
   font-weight: 750;
   color: var(--sdrm-pink);

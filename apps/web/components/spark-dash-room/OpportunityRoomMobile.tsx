@@ -337,7 +337,12 @@ export function OpportunityRoomMobile({
       data-sdrm-state={model.viewState}
     >
       <RoomMobileHeader />
-      <div className="sdrm-scroll" data-sdrm="scroll">
+      <div
+        className="sdrm-scroll"
+        data-sdrm="scroll"
+        tabIndex={0}
+        aria-label="기회 상세"
+      >
         <div className="sdrm-stack">
           {model.viewState === "LOADING" ? (
             <RoomMobileMessage>
