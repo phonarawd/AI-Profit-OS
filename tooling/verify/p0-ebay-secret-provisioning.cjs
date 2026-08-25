@@ -141,8 +141,11 @@ if (!/putLooksSuccessful/.test(src)) {
 if (!/firstBind/.test(src)) {
   fail("first production bind must tolerate empty secret list");
 }
-if (!/--name/.test(src) || src.includes("--name preview")) {
-  fail("wrangler secret commands must target --name ebay-adapter only");
+if (/--name", PRODUCTION_WORKER|--name ebay-adapter/.test(src)) {
+  fail("provision wrangler args must match deploy --env production only (no --name)");
+}
+if (!/deployLatestProductionVersion/.test(src) || !src.includes("versions")) {
+  fail("after secret put, latest version must be promoted with wrangler versions deploy");
 }
 
 const workflowRel = ".github/workflows/provision-ebay-adapter-secrets.yml";
