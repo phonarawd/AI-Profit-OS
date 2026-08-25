@@ -10,7 +10,11 @@
     "capturedAt",
     "principalKrwApprox",
     "withdrawableProfitKrwApprox",
-    "expectedProfitKrwApprox"
+    "expectedProfitKrwApprox",
+    "krwDisplayAvailable",
+    "fxStatus",
+    "quotes",
+    "budget"
   ],
   "properties": {
     "fxSnapshotId": {
