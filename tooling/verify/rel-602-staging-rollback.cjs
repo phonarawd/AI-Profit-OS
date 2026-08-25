@@ -231,13 +231,13 @@ function runVerify(script) {
   let run = spawn();
   const output = String(run.stderr || run.stdout || "");
   const transientLiveFetchFailure =
-    script === "rel-601-staging-regression.cjs" &&
+    ["rel-600-staging.cjs", "rel-601-staging-regression.cjs"].includes(script) &&
     run.status !== 0 &&
     /live fetch error:\s*fetch failed/i.test(output);
 
   if (transientLiveFetchFailure) {
     console.warn(
-      "[verify:rel-602-staging-rollback] rel-601 transient live fetch failed; retrying once",
+      `[verify:rel-602-staging-rollback] ${script} transient live fetch failed; retrying once`,
     );
     run = spawn();
   }
