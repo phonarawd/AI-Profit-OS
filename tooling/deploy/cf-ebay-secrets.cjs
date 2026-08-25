@@ -183,8 +183,70 @@ function putLooksSuccessful(put) {
   return /uploaded secret|success! uploaded|creating the secret/i.test(body);
 }
 
+function latestVersionId(parsed) {
+  const rows = Array.isArray(parsed)
+    ? parsed
+    : parsed && Array.isArray(parsed.versions)
+      ? parsed.versions
+      : parsed && Array.isArray(parsed.items)
+        ? parsed.items
+        : [];
+  const first = rows[0];
+  if (!first) return null;
+  if (typeof first === "string") return first;
+  return first.id || first.version_id || first.versionId || null;
+}
+
+function deployLatestProductionVersion(env, secretValues) {
+  const listed = spawnWrangler(
+    ["versions", "list", ...wranglerNameArgs(), "--json"],
+    { env },
+  );
+  if (listed.status !== 0) {
+    return {
+      ok: false,
+      reason: "versions list after put failed",
+      detail: summarizeWranglerError(listed, secretValues),
+    };
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(listed.stdout || "[]");
+  } catch {
+    return { ok: false, reason: "versions list after put JSON parse failed", detail: "" };
+  }
+  const id = latestVersionId(parsed);
+  if (!id || !/^[0-9a-f-]{16,}$/i.test(String(id))) {
+    return { ok: false, reason: "latest production version id missing", detail: "" };
+  }
+  const deployed = spawnWrangler(
+    [
+      "versions",
+      "deploy",
+      "--yes",
+      ...wranglerNameArgs(),
+      "--version-id",
+      String(id),
+      "--percentage",
+      "100",
+    ],
+    { env, timeout: 120000 },
+  );
+  if (deployed.status !== 0) {
+    return {
+      ok: false,
+      reason: "versions deploy failed",
+      detail: summarizeWranglerError(deployed, secretValues),
+      id,
+    };
+  }
+  return { ok: true, id };
+}
+
 function wranglerNameArgs() {
-  return ["--config", "wrangler.toml", "--env", WRANGLER_ENV, "--name", PRODUCTION_WORKER];
+  // deploy-cloudflare uses --env=production only. Do not add --name;
+  // that can target a different script than [env.production] name.
+  return ["--config", "wrangler.toml", "--env", WRANGLER_ENV];
 }
 
 function summarizeWranglerError(result, secretValues) {
@@ -351,6 +413,12 @@ function main(argv, env) {
     }
     console.log(`${name}_PUT=YES`);
   }
+  const promoted = deployLatestProductionVersion(env, secretValues);
+  if (!promoted.ok) {
+    if (promoted.detail) console.log(`versions_deploy_detail=${promoted.detail}`);
+    fail(promoted.reason);
+  }
+  console.log(`latest_version_promoted=${promoted.id}`);
   console.log(
     `[cf:ebay-secrets] PASS · worker=${PRODUCTION_WORKER} · env=${WRANGLER_ENV} · names=${SECRET_NAMES.length}`,
   );
