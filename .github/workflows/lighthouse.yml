@@ -3,10 +3,21 @@ name: lighthouse
 on:
   workflow_dispatch:
     inputs:
+      mode:
+        description: "REL-404 Lighthouse mode"
+        required: true
+        type: choice
+        options:
+          - full-browser
+          - static-only
+        default: full-browser
       note:
-        description: "REL-404 full Lighthouse is reserved. This workflow runs the static budget gate only."
+        description: "Optional operator note"
         required: false
-        default: "static-budget"
+        default: "launch-qa"
+
+permissions:
+  contents: read
 
 jobs:
   budget:
@@ -25,3 +36,71 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: REL-404 static budget
         run: pnpm verify:rel-404-lighthouse-budget
+
+  full-browser:
+    if: ${{ inputs.mode == 'full-browser' }}
+    needs: budget
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Re-prove REL-404 static locks
+        run: pnpm verify:rel-404-lighthouse-budget
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Build consumer web
+        run: pnpm --filter @aipo/web build
+      - name: Start isolated consumer web
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf artifacts/lighthouse .lighthouseci
+          nohup pnpm --filter @aipo/web start -- -H 127.0.0.1 -p 3000 > /tmp/aipo-lighthouse-web.log 2>&1 &
+          echo $! > /tmp/aipo-lighthouse-web.pid
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent --show-error http://127.0.0.1:3000/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/aipo-lighthouse-web.log || true
+          exit 1
+      - name: Resolve Playwright Chromium path
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME_PATH="$(node -e "console.log(require('@playwright/test').chromium.executablePath())")"
+          test -x "$CHROME_PATH"
+          echo "CHROME_PATH=$CHROME_PATH" >> "$GITHUB_ENV"
+      - name: Full Lighthouse collection
+        env:
+          AIPO_LIGHTHOUSE: "1"
+        run: >-
+          pnpm dlx @lhci/cli@0.15.1 autorun
+          --config=tooling/perf/lighthouserc.full.cjs
+      - name: Assert report artifact exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f artifacts/lighthouse/manifest.json
+          test "$(find artifacts/lighthouse -name '*.report.json' -type f | wc -l)" -ge 3
+          test "$(find artifacts/lighthouse -name '*.report.html' -type f | wc -l)" -ge 3
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-full-${{ github.sha }}
+          path: |
+            artifacts/lighthouse
+            /tmp/aipo-lighthouse-web.log
+          if-no-files-found: warn
+          retention-days: 14
