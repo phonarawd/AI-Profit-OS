@@ -7,6 +7,7 @@ import {
   formatUsdtLine,
   moneyAriaLabel,
 } from "./money-format";
+import styles from "./MoneyAmount.module.css";
 
 export type MoneyKrwStatus =
   | "ready"
@@ -44,30 +45,44 @@ export function MoneyAmount({
 
   return (
     <span
-      className={["putduk-money", className].filter(Boolean).join(" ")}
+      className={["putduk-money", styles.root, className]
+        .filter(Boolean)
+        .join(" ")}
       data-testid="putduk-money"
       data-krw-status={krwStatus}
       aria-label={aria || undefined}
     >
-      <span className="putduk-money__usdt tabular-nums">{usdtLine ?? "-"}</span>
+      <span className={`putduk-money__usdt tabular-nums ${styles.usdt}`}>
+        {usdtLine ?? "-"}
+      </span>
       {krwStatus === "loading" ? (
-        <span className="putduk-money__krw putduk-money__krw--loading">
-          <Skeleton height="1em" className="putduk-money__skel" />
+        <span
+          className={`putduk-money__krw putduk-money__krw--loading ${styles.krw} ${styles.loading}`}
+        >
+          <Skeleton height="1em" className={`putduk-money__skel ${styles.skeleton}`} />
         </span>
       ) : null}
       {readyKrw ? (
-        <span className="putduk-money__krw tabular-nums">{readyKrw}</span>
+        <span className={`putduk-money__krw tabular-nums ${styles.krw}`}>
+          {readyKrw}
+        </span>
       ) : null}
       {krwStatus === "error" ? (
-        <span className="putduk-money__krw putduk-money__krw--err">
+        <span
+          className={`putduk-money__krw putduk-money__krw--err ${styles.krw} ${styles.error}`}
+        >
           {T.money.krwError}
         </span>
       ) : null}
       {showHint && krwStatus === "ready" ? (
-        <span className="putduk-money__hint">{T.money.hintLatest}</span>
+        <span className={`putduk-money__hint ${styles.hint}`}>
+          {T.money.hintLatest}
+        </span>
       ) : null}
       {showHint && krwStatus === "stale" ? (
-        <span className="putduk-money__hint">{T.money.hintRecent}</span>
+        <span className={`putduk-money__hint ${styles.hint}`}>
+          {T.money.hintRecent}
+        </span>
       ) : null}
     </span>
   );
