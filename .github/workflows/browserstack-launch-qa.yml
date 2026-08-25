@@ -1,0 +1,146 @@
+name: browserstack-launch-qa
+
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "Optional launch QA note"
+        required: false
+        default: "cross-browser-smoke"
+
+permissions:
+  contents: read
+
+env:
+  # Fail-closed compatibility lock. Official BrowserStack support table was
+  # verified on 2026-08-26 and currently tops out at Playwright 1.61.
+  # Update this only after re-checking BrowserStack's official support table.
+  BROWSERSTACK_DOCS_MAX_PLAYWRIGHT_MINOR: "61"
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+      BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Credential names and Playwright compatibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${BROWSERSTACK_USERNAME:-}" ] || [ -z "${BROWSERSTACK_ACCESS_KEY:-}" ]; then
+            echo "::error::BROWSERSTACK_CREDENTIALS_MISSING — configure BROWSERSTACK_USERNAME and BROWSERSTACK_ACCESS_KEY as GitHub Actions secrets; values must never be printed."
+            exit 2
+          fi
+          node <<'NODE'
+          const pkg = require('./package.json');
+          const raw = String(pkg.devDependencies?.['@playwright/test'] || '');
+          const match = raw.match(/^1\.(\d+)(?:\.|$)/);
+          if (!match) {
+            console.error(`::error::BROWSERSTACK_PLAYWRIGHT_VERSION_UNPARSEABLE:${raw || 'missing'}`);
+            process.exit(3);
+          }
+          const minor = Number(match[1]);
+          const supportedMax = Number(process.env.BROWSERSTACK_DOCS_MAX_PLAYWRIGHT_MINOR);
+          if (minor > supportedMax) {
+            console.error(`::error::BROWSERSTACK_PLAYWRIGHT_UNSUPPORTED — repo=1.${minor}, verified BrowserStack max=1.${supportedMax}. Do not fake client.playwrightVersion or downgrade the main test stack just to force PASS.`);
+            process.exit(4);
+          }
+          console.log(`[browserstack-preflight] PASS version=1.${minor} supportedMax=1.${supportedMax}; secret values not printed`);
+          NODE
+
+  cross-browser:
+    needs: preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - id: chrome-win11
+            engine: chromium
+            browser: chrome
+            browser_version: latest
+            os: Windows
+            os_version: "11"
+          - id: edge-win11
+            engine: chromium
+            browser: edge
+            browser_version: latest
+            os: Windows
+            os_version: "11"
+          - id: firefox-win11
+            engine: firefox
+            browser: playwright-firefox
+            browser_version: ""
+            os: Windows
+            os_version: "11"
+          - id: webkit-macos
+            engine: webkit
+            browser: playwright-webkit
+            browser_version: ""
+            os: OS X
+            os_version: Tahoe
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: BrowserStack environment
+        uses: browserstack/github-actions/setup-env@1ab56d9521ce20f4651bb5d9f3ef39c5ba54805a
+        with:
+          username: ${{ secrets.BROWSERSTACK_USERNAME }}
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          build-name: "PUTDUK-launch-${{ github.sha }}"
+          project-name: "AI-Profit-OS"
+      - name: BrowserStack Local start
+        uses: browserstack/github-actions/setup-local@1ab56d9521ce20f4651bb5d9f3ef39c5ba54805a
+        with:
+          local-testing: start
+          local-identifier: random
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Build consumer web
+        run: pnpm --filter @aipo/web build
+      - name: Start isolated consumer web
+        shell: bash
+        run: |
+          set -euo pipefail
+          nohup pnpm --filter @aipo/web start -- -H 0.0.0.0 -p 3000 > /tmp/aipo-browserstack-web.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent --show-error http://127.0.0.1:3000/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/aipo-browserstack-web.log || true
+          exit 1
+      - name: Remote browser smoke
+        env:
+          BROWSERSTACK_ENGINE: ${{ matrix.target.engine }}
+          BROWSERSTACK_BROWSER: ${{ matrix.target.browser }}
+          BROWSERSTACK_BROWSER_VERSION: ${{ matrix.target.browser_version }}
+          BROWSERSTACK_OS: ${{ matrix.target.os }}
+          BROWSERSTACK_OS_VERSION: ${{ matrix.target.os_version }}
+          BROWSERSTACK_SESSION_NAME: ${{ matrix.target.id }}
+          BROWSERSTACK_BASE_URL: http://localhost:3000
+        run: node tooling/e2e/browserstack-launch-smoke.cjs
+      - name: BrowserStack Local stop
+        if: always()
+        uses: browserstack/github-actions/setup-local@1ab56d9521ce20f4651bb5d9f3ef39c5ba54805a
+        with:
+          local-testing: stop
+      - name: Upload local web log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browserstack-${{ matrix.target.id }}-${{ github.sha }}
+          path: /tmp/aipo-browserstack-web.log
+          if-no-files-found: warn
+          retention-days: 14
