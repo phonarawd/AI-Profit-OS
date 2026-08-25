@@ -66,7 +66,9 @@ export function fxRequestFromWallet(input: {
   };
 }
 
-export function fxHintFromStatus(status: CurrentFxStatus | undefined): "latest" | "recent" | null {
+export function fxHintFromStatus(
+  status: CurrentFxStatus | null | undefined,
+): "latest" | "recent" | null {
   if (status === "FRESH") return "latest";
   if (status === "STALE") return "recent";
   return null;

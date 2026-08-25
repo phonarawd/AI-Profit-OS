@@ -162,6 +162,6 @@ export function mapRuntimeProfits(input: {
     sidebarBalance: { usdt: principal, krw: principalKrw },
     nav: PROFITS_RUNTIME_NAV,
     items,
-    fxHint: fxHintFromStatus(input.fx && input.fx.fxStatus),
+    fxHint: fxHintFromStatus(input.fx?.fxStatus),
   };
 }
