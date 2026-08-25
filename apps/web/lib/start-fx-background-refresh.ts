@@ -5,6 +5,17 @@ import {
 } from "@aipo/sdk/current-fx";
 import { CURRENT_FX_REFRESH_MS } from "./current-fx-refresh";
 
+const FX_REFRESH_UNAVAILABLE: CurrentFxApproxResponse = {
+  fxSnapshotId: null,
+  capturedAt: null,
+  principalKrwApprox: null,
+  withdrawableProfitKrwApprox: null,
+  expectedProfitKrwApprox: null,
+  krwDisplayAvailable: false,
+  fxStatus: "UNAVAILABLE",
+  quotes: [],
+};
+
 export function startFxBackgroundRefresh(
   buildRequest: () => CurrentFxApproxRequest | null,
   onFx: (fx: CurrentFxApproxResponse) => void,
@@ -18,7 +29,11 @@ export function startFxBackgroundRefresh(
         if (!signal.aborted) onFx(fx);
       })
       .catch(() => {
-        /* keep previous KRW */
+        // Transport/API failure must not leave a previously rendered KRW
+        // amount on screen indefinitely. USDT remains authoritative; KRW
+        // fails closed until a later successful refresh restores a valid
+        // FRESH/STALE snapshot.
+        if (!signal.aborted) onFx(FX_REFRESH_UNAVAILABLE);
       });
   };
   tick();
