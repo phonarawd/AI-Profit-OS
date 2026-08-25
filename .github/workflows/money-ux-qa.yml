@@ -1,0 +1,55 @@
+name: money-ux-qa
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "services/api-nest/src/wallet/deposit-config.user.controller.ts"
+      - "services/api-nest/src/wallet/wallet.routes.ts"
+      - "services/api-nest/src/wallet/wallet.module.ts"
+      - "apps/web/app/wallet/deposit/**"
+      - "tooling/e2e/specs/krw-deposit-closure.spec.cjs"
+      - "tooling/verify/krw-deposit-instructions-contract.cjs"
+      - ".github/workflows/money-ux-qa.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: money-ux-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  krw-deposit-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.85.0"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Public KRW instructions contract
+        run: node tooling/verify/krw-deposit-instructions-contract.cjs
+      - name: Nest API TypeScript build
+        run: pnpm --filter @aipo/api-nest build
+      - name: T1 push gate
+        run: pnpm verify:gate:push
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: KRW deposit browser regression
+        env:
+          CI: "1"
+          NEXT_DEV_WEBPACK: "1"
+        run: >-
+          pnpm exec playwright test
+          --config=tooling/e2e/playwright.config.cjs
+          tooling/e2e/specs/krw-deposit-closure.spec.cjs
