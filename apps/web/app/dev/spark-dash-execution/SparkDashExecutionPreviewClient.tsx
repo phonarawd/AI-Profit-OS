@@ -82,6 +82,7 @@ const STATES: ReadonlyArray<TradeExecutionState> = [
 ];
 
 const LABELS = ["접수", "진행", "다시 확인", "정산 준비", "완료", "안전 중지"] as const;
+const TERMINAL = new Set(["success", "safe_stop", "cancelled", "failed"]);
 
 function DemoMoney({ primary, secondary, positive = false }: { primary: string; secondary: string; positive?: boolean }) {
   return (
@@ -94,7 +95,7 @@ function DemoMoney({ primary, secondary, positive = false }: { primary: string; 
 
 export function SparkDashExecutionPreviewClient() {
   const [index, setIndex] = useState(1);
-  const state = STATES[index];
+  const state = STATES[index] ?? STATES[0]!;
   const logs = useMemo<ExecutionLogEntry[]>(() => {
     const now = Date.now();
     return STATES.slice(0, Math.max(1, index + 1)).map((item, logIndex) => ({
@@ -128,7 +129,7 @@ export function SparkDashExecutionPreviewClient() {
       <SparkDashExecutionExperience
         state={state}
         transport="polling"
-        live={!(["success", "safe_stop", "cancelled", "failed"] as string[]).includes(state.status)}
+        live={!TERMINAL.has(state.status)}
         logs={logs}
         summary={{
           marketplaceLabel: "eBay · DEV",
