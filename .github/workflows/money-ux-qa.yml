@@ -22,7 +22,7 @@ concurrency:
 jobs:
   krw-deposit-contract:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -43,12 +43,18 @@ jobs:
         run: pnpm --filter @aipo/api-nest build
       - name: T1 push gate
         run: pnpm verify:gate:push
+      - name: Cloudflare OpenNext build
+        env:
+          API_HOST: "127.0.0.1:4010"
+        run: pnpm --filter @aipo/web build:cf
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
       - name: KRW deposit browser regression
         env:
           CI: "1"
-          NEXT_DEV_WEBPACK: "1"
+          API_HOST: "127.0.0.1:4010"
+          LOCAL_WEB_RUNTIME_MODE: "production"
+          LOCAL_WEB_RUNTIME_API_STUB: "1"
         run: >-
           pnpm exec playwright test
           --config=tooling/e2e/playwright.config.cjs
