@@ -6,14 +6,15 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 SERVICE = "frankfurter-adapter"
 PHASE = "1"
+ALLOW_MANUAL_TICK = "false"
 
 [triggers]
 crons = ["0 * * * *"]
 
 [env.production]
 name = "frankfurter-adapter"
-vars = { SERVICE = "frankfurter-adapter", PHASE = "1" }
+vars = { SERVICE = "frankfurter-adapter", PHASE = "1", ALLOW_MANUAL_TICK = "false" }
 
 [env.preview]
 name = "frankfurter-adapter-preview"
-vars = { SERVICE = "frankfurter-adapter", PHASE = "1" }
+vars = { SERVICE = "frankfurter-adapter", PHASE = "1", ALLOW_MANUAL_TICK = "true" }
