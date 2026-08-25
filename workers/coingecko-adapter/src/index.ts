@@ -17,6 +17,8 @@ import {
 export interface Env {
   SERVICE: string;
   PHASE: string;
+  /** Manual HTTP tick is disabled in production to protect the free quota. */
+  ALLOW_MANUAL_TICK?: string;
   COINGECKO_DEMO_API_KEY?: string;
   NEST_ADAPTER_INGEST_URL?: string;
   ADAPTER_INGEST_TOKEN?: string;
@@ -51,9 +53,17 @@ export default {
         consecutiveFailures,
         yahooJp: false,
         credentialsConfigured: Boolean(env.COINGECKO_DEMO_API_KEY),
+        ingestConfigured: Boolean(env.NEST_ADAPTER_INGEST_URL),
+        manualTickEnabled: env.ALLOW_MANUAL_TICK === "true",
       });
     }
     if (url.pathname === "/tick" && request.method === "POST") {
+      if (env.ALLOW_MANUAL_TICK !== "true") {
+        return Response.json(
+          { ok: false, error: "MANUAL_TICK_DISABLED", adapterId: ADAPTER_ID },
+          { status: 403 },
+        );
+      }
       return Response.json(await runTickSingleFlight(env));
     }
     return Response.json({
@@ -88,7 +98,9 @@ function budgetLevel(estimatedMonthlyCalls: number): string {
 
 async function runTick(env: Env) {
   const now = Date.now();
-  if (lastTick && lastSuccessMs > 0 && now - lastSuccessMs < MIN_FETCH_GAP_MS) {
+  // Protect Demo quota after every real attempt, including failed publish.
+  // A failed Nest forward must not cause an immediate new CoinGecko call.
+  if (lastTick && lastFetchMs > 0 && now - lastFetchMs < MIN_FETCH_GAP_MS) {
     return { ...lastTick, reused: true, singleFlight: true };
   }
 
@@ -122,35 +134,46 @@ async function runTick(env: Env) {
   }
 
   let forwarded = 0;
-  if (env.NEST_ADAPTER_INGEST_URL) {
-    const res = await fetch(env.NEST_ADAPTER_INGEST_URL, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        ...(env.ADAPTER_INGEST_TOKEN
-          ? { "x-adapter-token": env.ADAPTER_INGEST_TOKEN }
-          : {}),
-      },
-      body: JSON.stringify({
-        adapterId: ADAPTER_ID,
-        worker: SERVICE,
-        observedAt: quote.providerObservedAt ?? observedAt,
-        role: "fx",
-        dryRun: quote.dryRun,
-        fx: {
-          usdtKrw: quote.usdtKrw ?? null,
-          usdtUsd: quote.usdtUsd ?? null,
-          providerObservedAt: quote.providerObservedAt ?? null,
+  let forwardError: string | null = null;
+  if (env.NEST_ADAPTER_INGEST_URL && !quote.error) {
+    try {
+      const res = await fetch(env.NEST_ADAPTER_INGEST_URL, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          ...(env.ADAPTER_INGEST_TOKEN
+            ? { "x-adapter-token": env.ADAPTER_INGEST_TOKEN }
+            : {}),
         },
-        observations,
-      }),
-    });
-    if (res.ok) forwarded = 1;
+        body: JSON.stringify({
+          adapterId: ADAPTER_ID,
+          worker: SERVICE,
+          observedAt: quote.providerObservedAt ?? observedAt,
+          role: "fx",
+          dryRun: quote.dryRun,
+          fx: {
+            usdtKrw: quote.usdtKrw ?? null,
+            usdtUsd: quote.usdtUsd ?? null,
+            providerObservedAt: quote.providerObservedAt ?? null,
+          },
+          observations,
+        }),
+      });
+      if (res.ok) forwarded = 1;
+      else forwardError = `nest_ingest_${res.status}`;
+    } catch {
+      forwardError = "nest_ingest_network_error";
+    }
+  } else if (!quote.dryRun && !quote.error) {
+    forwardError = "nest_ingest_unconfigured";
   }
 
   const estimatedMonthlyCalls = Math.ceil((30 * 24 * 3600) / UPSTREAM_INTERVAL_SEC);
+  const published = quote.dryRun || forwarded === 1;
+  const ok = (!quote.error && published) || quote.dryRun;
+  const error = quote.error ?? forwardError ?? undefined;
   const result = {
-    ok: !quote.error || quote.dryRun,
+    ok,
     adapterId: ADAPTER_ID,
     dryRun: quote.dryRun,
     usdtKrw: quote.usdtKrw ?? null,
@@ -158,7 +181,7 @@ async function runTick(env: Env) {
     providerObservedAt: quote.providerObservedAt ?? null,
     observations: observations.length,
     forwarded,
-    error: quote.error,
+    error,
     yahooJp: false,
     reused: false,
     singleFlight: true,
@@ -170,10 +193,13 @@ async function runTick(env: Env) {
       level: budgetLevel(estimatedMonthlyCalls),
     },
   };
-  if (!quote.error && !quote.dryRun) {
+
+  // Store every real attempt result for the 9m quota gap. Only end-to-end
+  // provider + Nest publication counts as a success heartbeat.
+  if (!quote.dryRun) lastTick = result;
+  if (ok && !quote.dryRun) {
     lastSuccessMs = now;
     consecutiveFailures = 0;
-    lastTick = result;
   } else if (!quote.dryRun) {
     lastFailureMs = now;
     consecutiveFailures += 1;
