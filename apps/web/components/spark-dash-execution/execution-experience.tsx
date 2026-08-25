@@ -2,15 +2,16 @@
 
 import type { ReactNode } from "react";
 import type {
-  ExecutionConnectionMode,
+  ExecutionTransportKind,
   TradeExecutionState,
-} from "@putduk/sdk/execution-stream";
+} from "@aipo/sdk/execution-stream";
 import "./spark-dash-execution.css";
 
 export type ExecutionLogEntry = {
   id: string;
   line: string;
-  timestamp?: string | null;
+  /** Client observation time for this line; not presented as a server event timestamp. */
+  observedAt?: string | null;
 };
 
 export type SparkDashExecutionSummary = {
@@ -20,12 +21,14 @@ export type SparkDashExecutionSummary = {
   productVisual?: ReactNode;
   requiredDeposit?: ReactNode;
   expectedProfit?: ReactNode;
+  settledProfit?: ReactNode;
   profitRate?: ReactNode;
 };
 
 type Props = {
   state: TradeExecutionState | null;
-  connectionMode: ExecutionConnectionMode;
+  transport: ExecutionTransportKind;
+  live?: boolean;
   logs?: ExecutionLogEntry[];
   summary?: SparkDashExecutionSummary;
   errorMessage?: string | null;
@@ -34,58 +37,44 @@ type Props = {
   onRefresh?: () => void;
 };
 
-const STOPPED_STATUSES = new Set(["CANCELED", "SAFE_STOPPED", "STOPPED"]);
-const RUNNING_STATUSES = new Set([
-  "RESERVED",
-  "CLAIMED",
-  "ORDER_PLACED",
-  "SHIPMENT_TRACKING",
-  "RESELL_LISTED",
-]);
+const STAGE_COPY = ["접수 확인", "맞추는 중", "결과 확인", "정산 준비", "정산 확인"] as const;
 
 function clampProgress(value: number | undefined) {
   if (!Number.isFinite(value)) return 0;
   return Math.min(100, Math.max(0, Number(value)));
 }
 
-function statusCopy(status?: string) {
-  switch (status) {
-    case "SETTLED":
-      return { label: "정산 완료", tone: "success" as const };
-    case "CANCELED":
-      return { label: "거래 취소", tone: "danger" as const };
-    case "SAFE_STOPPED":
+function isSettled(state: TradeExecutionState | null) {
+  return state?.status === "success" && typeof state.settledProfitUsdt === "string";
+}
+
+function isStopped(state: TradeExecutionState | null) {
+  return state?.status === "safe_stop" || state?.status === "cancelled" || state?.status === "failed";
+}
+
+function statusCopy(state: TradeExecutionState | null) {
+  if (!state) return { label: "연결 중", tone: "muted" as const };
+  if (isSettled(state)) return { label: "정산 완료", tone: "success" as const };
+  switch (state.status) {
+    case "running":
+      return { label: "맞추는 중", tone: "active" as const };
+    case "requeue":
+      return { label: "다시 맞추는 중", tone: "active" as const };
+    case "success":
+      return { label: "결과 확인 중", tone: "active" as const };
+    case "safe_stop":
       return { label: "안전 중지", tone: "danger" as const };
-    case "STOPPED":
-      return { label: "거래 중지", tone: "danger" as const };
-    case "RESERVED":
-      return { label: "거래 접수", tone: "active" as const };
-    case "CLAIMED":
-      return { label: "진행 중", tone: "active" as const };
-    case "ORDER_PLACED":
-      return { label: "주문 진행", tone: "active" as const };
-    case "SHIPMENT_TRACKING":
-      return { label: "배송 확인", tone: "active" as const };
-    case "RESELL_LISTED":
-      return { label: "판매 준비", tone: "active" as const };
-    default:
-      return { label: "연결 중", tone: "muted" as const };
+    case "cancelled":
+      return { label: "진행 취소", tone: "danger" as const };
+    case "failed":
+      return { label: "처리 중단", tone: "danger" as const };
   }
 }
 
-function connectionCopy(mode: ExecutionConnectionMode) {
-  switch (mode) {
-    case "ws":
-      return "라이브 연결됨";
-    case "sse":
-      return "실시간 연결됨";
-    case "poll":
-      return "자동 갱신 중";
-    case "stopped":
-      return "연결 종료";
-    default:
-      return "연결하는 중";
-  }
+function connectionCopy(transport: ExecutionTransportKind, live?: boolean) {
+  if (transport === "sse" && live) return "실시간 연결됨";
+  if (transport === "sse") return "연결 복구 중";
+  return live ? "자동 갱신 중" : "상태 확인 중";
 }
 
 function formatTime(timestamp?: string | null) {
@@ -100,28 +89,21 @@ function formatTime(timestamp?: string | null) {
   }).format(date);
 }
 
-function stageLabel(state: TradeExecutionState | null, index: number) {
-  if (!state) return index === 0 ? "거래 준비" : `다음 단계 ${index + 1}`;
-  if (index === state.stepIndex && state.stepLabel?.trim()) return state.stepLabel.trim();
-  if (index < state.stepIndex) return `단계 ${index + 1} 완료`;
-  return `다음 단계 ${index + 1}`;
-}
-
 function StageRail({ state }: { state: TradeExecutionState | null }) {
-  const stepCount = Math.max(1, state?.stepCount ?? 5);
-  const activeIndex = Math.min(stepCount - 1, Math.max(0, state?.stepIndex ?? 0));
-  const finished = state?.status === "SETTLED";
-  const stopped = state ? STOPPED_STATUSES.has(state.status) : false;
+  const activeIndex = Math.min(4, Math.max(0, state?.stepIndex ?? 0));
+  const finished = isSettled(state);
+  const stopped = isStopped(state);
 
   return (
     <ol className="sdx-stage-list" aria-label="거래 진행 단계">
-      {Array.from({ length: stepCount }, (_, index) => {
+      {STAGE_COPY.map((label, index) => {
+        // Visual completion is derived only from server-authored stepIndex/status.
         const complete = finished || index < activeIndex;
         const active = !finished && !stopped && index === activeIndex;
         const failed = stopped && index === activeIndex;
         return (
           <li
-            key={index}
+            key={label}
             className={`sdx-stage ${complete ? "is-complete" : ""} ${active ? "is-active" : ""} ${failed ? "is-failed" : ""}`}
             aria-current={active ? "step" : undefined}
           >
@@ -129,7 +111,7 @@ function StageRail({ state }: { state: TradeExecutionState | null }) {
               {complete ? "✓" : failed ? "!" : index + 1}
             </span>
             <span className="sdx-stage-copy">
-              <strong>{stageLabel(state, index)}</strong>
+              <strong>{label}</strong>
               <small>
                 {complete
                   ? "완료"
@@ -158,7 +140,8 @@ function Metric({ label, value }: { label: string; value?: ReactNode }) {
 
 export function SparkDashExecutionExperience({
   state,
-  connectionMode,
+  transport,
+  live = false,
   logs = [],
   summary,
   errorMessage,
@@ -167,17 +150,22 @@ export function SparkDashExecutionExperience({
   onRefresh,
 }: Props) {
   const progress = clampProgress(state?.progressPct);
-  const status = statusCopy(state?.status);
-  const settled = state?.status === "SETTLED";
-  const stopped = state ? STOPPED_STATUSES.has(state.status) : false;
-  const running = state ? RUNNING_STATUSES.has(state.status) : false;
+  const status = statusCopy(state);
+  const settled = isSettled(state);
+  const stopped = isStopped(state);
+  const running = state?.status === "running" || state?.status === "requeue" || state?.status === "success";
   const currentLine = state?.logLine?.trim() || "거래 실행 상태를 확인하고 있어요.";
-  const visibleLogs = logs.length
-    ? logs.slice(-24)
-    : [{ id: "current", line: currentLine, timestamp: state?.timestamp }];
+  const visibleLogs = logs.length ? logs.slice(-24) : [{ id: "current", line: currentLine, observedAt: null }];
+  const connection = connectionCopy(transport, live);
 
   return (
-    <main className="sdx-shell" data-state={settled ? "success" : stopped ? "stopped" : running ? "running" : "connecting"}>
+    <main
+      className="sdx-shell"
+      data-testid="spark-dash-execution"
+      data-state={settled ? "success" : stopped ? "stopped" : running ? "running" : "connecting"}
+      data-execution-transport={transport}
+      data-live={live ? "true" : "false"}
+    >
       <div className="sdx-ambient sdx-ambient-one" aria-hidden="true" />
       <div className="sdx-ambient sdx-ambient-two" aria-hidden="true" />
 
@@ -185,13 +173,13 @@ export function SparkDashExecutionExperience({
         <div>
           <p className="sdx-eyebrow">PUTDUK · 거래 실행</p>
           <h1>거래가 어떻게 진행되는지 한눈에 확인하세요</h1>
-          <p className="sdx-header-desc">실제 서버 상태와 실행 기록을 기준으로 자동 업데이트됩니다.</p>
+          <p className="sdx-header-desc">서버가 보내는 실제 진행 상태를 기준으로 자동 업데이트됩니다.</p>
         </div>
         <div className="sdx-header-status" aria-live="polite">
           <span className={`sdx-status-dot is-${status.tone}`} aria-hidden="true" />
           <div>
             <strong>{status.label}</strong>
-            <small>{connectionCopy(connectionMode)}</small>
+            <small>{connection}</small>
           </div>
         </div>
       </header>
@@ -207,17 +195,17 @@ export function SparkDashExecutionExperience({
         </div>
         <div className="sdx-product-copy">
           <div className="sdx-market-row">
-            <span className="sdx-market-badge">{summary?.marketplaceLabel ?? "Marketplace"}</span>
+            <span className="sdx-market-badge">{summary?.marketplaceLabel ?? "PUTDUK"}</span>
             <span className="sdx-live-pill">
-              <i aria-hidden="true" /> {connectionCopy(connectionMode)}
+              <i aria-hidden="true" /> {connection}
             </span>
           </div>
-          <h2>{summary?.title ?? "거래 실행 중"}</h2>
-          <p>{summary?.subtitle ?? "상품과 거래 조건을 안전하게 확인하며 진행하고 있어요."}</p>
+          <h2>{summary?.title ?? state?.asset.label ?? "거래 실행 중"}</h2>
+          <p>{summary?.subtitle ?? "조건을 안전하게 확인하면서 가장 좋은 결과를 찾고 있어요."}</p>
         </div>
         <div className="sdx-metrics">
           <Metric label="필요 입금" value={summary?.requiredDeposit} />
-          <Metric label="예상 수익" value={summary?.expectedProfit} />
+          <Metric label={settled ? "확정 수익" : "예상 수익"} value={settled ? summary?.settledProfit ?? summary?.expectedProfit : summary?.expectedProfit} />
           <Metric label="수익률" value={summary?.profitRate} />
         </div>
       </section>
@@ -247,27 +235,28 @@ export function SparkDashExecutionExperience({
               <span className="sdx-panel-kicker">실행 상태</span>
               <h2>지금 어디까지 왔나요?</h2>
             </div>
-            {state ? <time dateTime={state.timestamp}>{formatTime(state.timestamp)}</time> : null}
+            <span className="sdx-step-count">{activeIndexLabel(state)}</span>
           </div>
           <StageRail state={state} />
         </section>
 
-        <section className="sdx-panel sdx-log-panel" aria-label="라이브 실행 기록">
+        <section className="sdx-panel sdx-log-panel" aria-label="실행 기록">
           <div className="sdx-panel-heading">
             <div>
               <span className="sdx-panel-kicker">실행 기록</span>
               <h2>방금 일어난 일</h2>
             </div>
-            <span className="sdx-log-live"><i aria-hidden="true" /> 자동 업데이트</span>
+            <span className="sdx-log-live"><i aria-hidden="true" /> {connection}</span>
           </div>
           <div className="sdx-log-stream" role="log" aria-live="polite" aria-relevant="additions text">
             {visibleLogs.map((entry, index) => (
               <div className={`sdx-log-line ${index === visibleLogs.length - 1 ? "is-latest" : ""}`} key={entry.id}>
-                <time dateTime={entry.timestamp ?? undefined}>{formatTime(entry.timestamp)}</time>
+                <time dateTime={entry.observedAt ?? undefined}>{formatTime(entry.observedAt)}</time>
                 <span>{entry.line}</span>
               </div>
             ))}
           </div>
+          <p className="sdx-observation-note">시간은 이 화면이 상태를 확인한 시각이에요.</p>
         </section>
       </div>
 
@@ -276,17 +265,17 @@ export function SparkDashExecutionExperience({
           <div className="sdx-result-icon" aria-hidden="true">✓</div>
           <div>
             <span>거래 완료</span>
-            <h2>정산까지 안전하게 마쳤어요</h2>
+            <h2>정산 결과가 반영됐어요</h2>
             <p>{currentLine}</p>
           </div>
-          <div className="sdx-result-money">{summary?.expectedProfit}</div>
+          <div className="sdx-result-money">{summary?.settledProfit ?? summary?.expectedProfit}</div>
         </section>
       ) : stopped ? (
         <section className="sdx-result sdx-result-danger" role="alert">
           <div className="sdx-result-icon" aria-hidden="true">!</div>
           <div>
             <span>{status.label}</span>
-            <h2>이번 거래는 여기서 멈췄어요</h2>
+            <h2>{state?.status === "safe_stop" ? "원금을 지키기 위해 안전하게 멈췄어요" : "이번 진행은 여기서 멈췄어요"}</h2>
             <p>{currentLine}</p>
           </div>
         </section>
@@ -316,4 +305,9 @@ export function SparkDashExecutionExperience({
       </footer>
     </main>
   );
+}
+
+function activeIndexLabel(state: TradeExecutionState | null) {
+  if (!state) return "준비 중";
+  return `${state.stepIndex + 1} / 5 단계`;
 }
