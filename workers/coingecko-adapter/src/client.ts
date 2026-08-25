@@ -1,4 +1,4 @@
-import { API_BASE, VS_CURRENCIES } from "./constants";
+import { API_BASE, UPSTREAM_TIMEOUT_MS, VS_CURRENCIES } from "./constants";
 
 export interface CoinGeckoTetherQuote {
   usdtKrw?: string;
@@ -32,6 +32,16 @@ function shouldRetry(status: number | null, attempt: number): boolean {
   return status >= 500;
 }
 
+async function boundedFetch(url: string, init: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function fetchOnce(opts: {
   demoApiKey?: string;
 }): Promise<CoinGeckoTetherQuote> {
@@ -39,7 +49,7 @@ async function fetchOnce(opts: {
   url.searchParams.set("ids", "tether");
   url.searchParams.set("vs_currencies", VS_CURRENCIES);
   url.searchParams.set("include_last_updated_at", "true");
-  const res = await fetch(url.toString(), {
+  const res = await boundedFetch(url.toString(), {
     headers: {
       accept: "application/json",
       "x-cg-demo-api-key": opts.demoApiKey as string,
@@ -92,7 +102,7 @@ export async function fetchTetherSimplePrice(opts: {
     if (!shouldRetry(first.httpStatus ?? null, 0)) return first;
     await new Promise((resolve) => setTimeout(resolve, 400));
     return await fetchOnce(opts);
-  } catch (e) {
+  } catch {
     try {
       await new Promise((resolve) => setTimeout(resolve, 400));
       return await fetchOnce(opts);
