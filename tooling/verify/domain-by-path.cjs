@@ -721,6 +721,16 @@ const RULES = [
     scripts: ["rel-601-staging-regression.cjs"],
   },
   {
+    // REL-602 T0 path SSOT (CATALOG). gate-tiers special-case 금지 — 동일 시맨틱.
+    test: (f) =>
+      /^governance\/release-master\/REL-602-STAGING-ROLLBACK\.md$/.test(f) ||
+      /^governance\/release-master\/ROLLBACK_RUNBOOK\.md$/.test(f) ||
+      /^tooling\/deploy\/cf-rollback-staging\.cjs$/.test(f) ||
+      /^tooling\/verify\/rel-602-staging-rollback\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/rel-602-staging-rollback\.v1\.json$/.test(f),
+    scripts: ["rel-602-staging-rollback.cjs"],
+  },
+  {
     test: (f) =>
       /^governance\/release-master\/AGE_SPOTCHECK\.md$/.test(f) ||
       /^tooling\/e2e\/specs\/rel-603-age-usability-spotcheck\.spec\.cjs$/.test(f) ||

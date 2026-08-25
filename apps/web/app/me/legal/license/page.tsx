@@ -69,7 +69,7 @@ export default function Page() {
           <div>
             <dt className="text-lux-text-muted">{L.fields.licenseStatus}</dt>
             <dd className="mt-1">
-              <span className="rounded-full bg-[color-mix(in_srgb,var(--color-lux-accent)_18%,transparent)] px-2 py-0.5 text-xs font-semibold text-lux-accent">
+              <span className={styles.statusBadge}>
                 {statusLabel}
               </span>
             </dd>

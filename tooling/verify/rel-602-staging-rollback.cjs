@@ -169,8 +169,11 @@ if (!pkg.includes("verify:rel-602-staging-rollback")) fails.push("package missin
 if (!pkg.includes("cf:rollback:staging")) fails.push("package missing staging rollback script");
 if (!catalog.includes("rel-602-staging-rollback")) fails.push("catalog missing REL-602");
 if (!gate.includes("verify:rel-602-staging-rollback")) fails.push("gate missing REL-602");
-if (!domain.includes("rel-602-staging-rollback.cjs") && !gateTiers.includes("rel-602-staging-rollback.cjs")) {
-  fails.push("T0 selector missing REL-602");
+if (!domain.includes("rel-602-staging-rollback.cjs")) {
+  fails.push("domain-by-path SSOT missing REL-602 T0 mapping");
+}
+if (gateTiers.includes("isRel602Path")) {
+  fails.push("REL-602 T0 must live in domain-by-path only");
 }
 
 async function live(url, allowed) {

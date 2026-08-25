@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   },
   description: T.admin.productDescription,
   robots: { index: false, follow: false },
+  icons: {
+    icon: [{ url: "/favicon.ico", sizes: "32x32" }],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

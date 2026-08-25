@@ -64,9 +64,10 @@
 
 .actions a.secondary,
 .actions button.secondary {
-  background: transparent;
-  border: 1px solid var(--color-lux-accent);
-  color: var(--color-lux-accent);
+  /* 계정 허브 모바일(어두운 카드)과 데스크톱(밝은 stateBox) 모두 4.5:1 이상 */
+  background: #fff;
+  border: 1px solid #08111f;
+  color: #08111f;
   box-shadow: none;
 }
 
@@ -90,6 +91,16 @@
 
 .cardTitle { margin: 0; font-size: 1.05rem; font-weight: 800; }
 .cardBody { margin: 0.35rem 0 0; color: var(--color-lux-text-muted); line-height: 1.5; }
+.statusBadge {
+  display: inline-block;
+  border-radius: 999px;
+  background: #c81d55;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+}
+
 .surface { color: var(--color-lux-text); }
 .surface :global(.text-lux-text) { color: var(--color-lux-text); }
 .surface :global(.text-lux-text-muted) { color: var(--color-lux-text-muted); }
