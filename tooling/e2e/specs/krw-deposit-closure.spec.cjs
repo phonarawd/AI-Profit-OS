@@ -89,7 +89,10 @@ async function openKrw(
   await hideNextDevChrome(page);
 }
 
-test("KRW shows persisted account instructions before allowing a request", async ({ page }) => {
+test("KRW shows persisted account instructions before allowing a request", async ({ page, context }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+    origin: runtime.baseUrl,
+  });
   await openKrw(page, "ready");
   await expect(page.getByTestId("wallet-deposit-page")).toHaveAttribute(
     "data-krw-instructions-state",
@@ -104,6 +107,7 @@ test("KRW shows persisted account instructions before allowing a request", async
 
   await page.getByTestId("krw-account-copy").click();
   await expect(page.getByTestId("krw-account-copy")).toHaveText("계좌번호 복사됨");
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe("000-000-000000");
 });
 
 test("KRW happy path is pending, not credited", async ({ page }) => {
