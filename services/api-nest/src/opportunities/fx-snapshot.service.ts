@@ -1,17 +1,13 @@
 /**
  * PTF-00C P0-B — real-time FX ingest repair.
  *
- * Root cause fixed here: `AdapterIngestBody.fx` (coingecko/frankfurter) was
- * accepted by the DTO but never read by AdaptersAdminService.ingest() — only
- * the hardcoded Day-1 bootstrap snapshot ever existed. This service durably
- * persists validated FX observations as new IMMUTABLE fx_snapshots rows
- * (never UPDATEs an existing row's rates — approxKrwFromSnapshot's "same
- * snapshot only" guarantee and every already-issued opportunity's
- * fx_snapshot_id both depend on that immutability).
+ * Adapter FX observations are persisted as IMMUTABLE fx_snapshots rows.
+ * No existing rate row is UPDATEd: opportunity fx_snapshot_id bindings and
+ * same-snapshot calculations depend on immutability.
  *
- * Marketplace-normalization legs (gbpUsd/eurUsd/audUsd/usdtPerUsd) are
- * carried forward from the latest row only while within a bounded freshness
- * window — past that, they go null (fail-closed, never fabricated).
+ * P0-C: every carried FX leg expires from its own provider provenance time,
+ * never from the enclosing row captured_at. A fresh CoinGecko row therefore
+ * cannot make an old Frankfurter fiat leg look current.
  */
 import { Injectable, Logger } from "@nestjs/common";
 import { PostgresService } from "../db/postgres";
@@ -24,12 +20,10 @@ import {
   krwDisplayAvailable,
 } from "./opportunities.mi";
 
-/** CoinGecko display/market observation carry-forward guard. */
+/** CoinGecko is collected every 10m; allow one 5m collection grace. */
 const COINGECKO_CARRY_FORWARD_MS = 15 * 60 * 1000;
-/** Frankfurter cacheHintSec=3600s (daily-cadence rate) → wider bound. */
+/** Frankfurter is re-confirmed hourly; a bounded outage may reuse the last confirmed official quote. */
 const FRANKFURTER_CARRY_FORWARD_MS = 6 * 60 * 60 * 1000;
-/** Marketplace legs may be carried from either adapter's last tick — use the wider bound. */
-const MARKETPLACE_LEG_CARRY_FORWARD_MS = FRANKFURTER_CARRY_FORWARD_MS;
 
 export type FxNormalizationSnapshotRow = {
   id: string;
@@ -72,9 +66,9 @@ export class FxSnapshotService {
   constructor(private readonly db: PostgresService) {}
 
   /**
-   * Latest snapshot usable for native→USDT normalization (catalog-runtime-seed
-   * persistIngestListings). Legs never resolved stay null — callers must
-   * fail closed, never assume/fabricate a rate.
+   * Latest snapshot usable for native→USDT normalization. Each returned leg
+   * has already passed its own bounded provenance carry-forward at ingest.
+   * Missing/expired legs stay null and callers fail closed.
    */
   async getLatestUsableSnapshot(): Promise<FxNormalizationSnapshotRow | null> {
     if (!this.db.configured()) return null;
@@ -103,8 +97,7 @@ export class FxSnapshotService {
   } | null> {
     if (!this.db.configured()) return null;
     const row = await this.loadLatest();
-    if (!row || !row.usd_krw) return null;
-    if (!isPositiveAmount(row.usd_krw)) return null;
+    if (!row || !row.usd_krw || !isPositiveAmount(row.usd_krw)) return null;
     const observedAt = row.rate_provenance?.usdtKrw?.capturedAt;
     if (!observedAt) return null;
     const classified = classifyFxFreshness(observedAt, Date.now());
@@ -122,9 +115,9 @@ export class FxSnapshotService {
   }
 
   /**
-   * PTF-00C P0-B entry point — call for adapterId=coingecko|frankfurter fx
-   * ingest ticks. Immutable snapshots are deduped only when both the values
-   * AND the authoritative primary observation time are unchanged.
+   * P0-C FX ingest. Numeric equality does NOT erase a new provider observation:
+   * if an authoritative observation timestamp advances, a new immutable row
+   * records that freshness even when the numeric quote is unchanged.
    */
   async recordFxIngest(input: {
     adapterId: "coingecko" | "frankfurter";
@@ -139,12 +132,12 @@ export class FxSnapshotService {
         reason: "DATABASE_URL_UNSET",
       };
     }
+
     const fx = input.fx && typeof input.fx === "object" ? input.fx : {};
     const observedAt = this.isIsoDate(input.observedAt)
       ? input.observedAt
       : new Date().toISOString();
     const nowMs = Date.parse(observedAt);
-
     const raw = this.readAdapterFields(input.adapterId, fx);
     if (Object.keys(raw).length === 0) {
       return {
@@ -156,22 +149,77 @@ export class FxSnapshotService {
     }
 
     const prev = await this.loadLatest();
-    if (raw.usdtKrw && raw.usdtUsd && (raw.usdKrw || prev?.usd_krw_frank)) {
+    const prevUsdtUsdFresh = this.carryLeg(
+      prev,
+      "usdtPerUsd",
+      prev?.usdt_usd ?? null,
+      nowMs,
+      COINGECKO_CARRY_FORWARD_MS,
+      "coingecko",
+    );
+    const prevUsdtPerUsdFresh = this.carryLeg(
+      prev,
+      "usdtPerUsd",
+      prev?.usdt_per_usd ?? null,
+      nowMs,
+      COINGECKO_CARRY_FORWARD_MS,
+      "coingecko",
+    );
+    const prevUsdKrwFrankFresh = this.carryLeg(
+      prev,
+      "usdKrwFrank",
+      prev?.usd_krw_frank ?? null,
+      nowMs,
+      FRANKFURTER_CARRY_FORWARD_MS,
+      "frankfurter",
+    );
+    const prevGbpUsdFresh = this.carryLeg(
+      prev,
+      "gbpUsd",
+      prev?.gbp_usd ?? null,
+      nowMs,
+      FRANKFURTER_CARRY_FORWARD_MS,
+      "frankfurter",
+    );
+    const prevEurUsdFresh = this.carryLeg(
+      prev,
+      "eurUsd",
+      prev?.eur_usd ?? null,
+      nowMs,
+      FRANKFURTER_CARRY_FORWARD_MS,
+      "frankfurter",
+    );
+    const prevAudUsdFresh = this.carryLeg(
+      prev,
+      "audUsd",
+      prev?.aud_usd ?? null,
+      nowMs,
+      FRANKFURTER_CARRY_FORWARD_MS,
+      "frankfurter",
+    );
+
+    // Cross-provider validation is fail-closed only when the reference was
+    // confirmed inside its own bounded provenance window. A stale fiat row
+    // must never veto a fresh CoinGecko market quote.
+    const anomalyReference = raw.usdKrw ?? prevUsdKrwFrankFresh;
+    if (raw.usdtKrw && raw.usdtUsd && anomalyReference) {
       const anomaly = detectUsdtKrwAnomaly(
         raw.usdtKrw,
         raw.usdtUsd,
-        raw.usdKrw ?? prev?.usd_krw_frank,
+        anomalyReference,
       );
       if (anomaly.anomalous) {
-        this.logger.warn(
-          `fx anomaly adapter=${input.adapterId} primary=${raw.usdtKrw} reference=${anomaly.reference} ratio=${anomaly.ratio}`,
+        this.logger.error(
+          `fx anomaly rejected adapter=${input.adapterId} primary=${raw.usdtKrw} reference=${anomaly.reference} ratio=${anomaly.ratio}`,
         );
+        return {
+          ok: false,
+          snapshotId: null,
+          created: false,
+          reason: "FX_ANOMALY_REJECTED",
+        };
       }
     }
-
-    const carryMarketplace =
-      !!prev &&
-      nowMs - Date.parse(prev.captured_at) <= MARKETPLACE_LEG_CARRY_FORWARD_MS;
 
     const freshLegs = deriveMarketplaceLegs({
       usdtUsd: raw.usdtUsd,
@@ -179,15 +227,10 @@ export class FxSnapshotService {
       usdEur: raw.usdEur,
       usdAud: raw.usdAud,
     });
-    const gbpUsd =
-      freshLegs.gbpUsd ?? (carryMarketplace ? prev?.gbp_usd ?? null : null);
-    const eurUsd =
-      freshLegs.eurUsd ?? (carryMarketplace ? prev?.eur_usd ?? null : null);
-    const audUsd =
-      freshLegs.audUsd ?? (carryMarketplace ? prev?.aud_usd ?? null : null);
-    let usdtPerUsd =
-      freshLegs.usdtPerUsd ??
-      (carryMarketplace ? prev?.usdt_per_usd ?? null : null);
+    const gbpUsd = freshLegs.gbpUsd ?? prevGbpUsdFresh;
+    const eurUsd = freshLegs.eurUsd ?? prevEurUsdFresh;
+    const audUsd = freshLegs.audUsd ?? prevAudUsdFresh;
+    let usdtPerUsd = freshLegs.usdtPerUsd ?? prevUsdtPerUsdFresh;
 
     let usdtKrw: string;
     let usdtUsdOut: string | null;
@@ -201,11 +244,11 @@ export class FxSnapshotService {
         capturedAt: observedAt,
       });
       usdtKrw = composed.usdtKrw;
-      usdtUsdOut = raw.usdtUsd ?? prev?.usdt_usd ?? null;
-      usdKrwFrank = prev?.usd_krw_frank ?? null;
+      usdtUsdOut = raw.usdtUsd ?? prevUsdtUsdFresh;
+      usdKrwFrank = raw.usdKrw ?? prevUsdKrwFrankFresh;
       formulaId = composed.formulaId;
-    } else if (raw.usdtUsd && (prev?.usd_krw_frank || raw.usdKrw)) {
-      const usdKrwLeg = raw.usdKrw ?? (prev?.usd_krw_frank as string);
+    } else if (raw.usdtUsd && (raw.usdKrw || prevUsdKrwFrankFresh)) {
+      const usdKrwLeg = raw.usdKrw ?? (prevUsdKrwFrankFresh as string);
       const composed = composeFxSnapshot({
         fxSnapshotId: "tmp",
         fallback: { usdtUsd: raw.usdtUsd, usdKrw: usdKrwLeg },
@@ -215,10 +258,10 @@ export class FxSnapshotService {
       usdtUsdOut = composed.usdtUsd;
       usdKrwFrank = composed.usdKrwFrank;
       formulaId = composed.formulaId;
-    } else if (raw.usdKrw && prev?.usdt_usd) {
+    } else if (raw.usdKrw && prevUsdtUsdFresh) {
       const composed = composeFxSnapshot({
         fxSnapshotId: "tmp",
-        fallback: { usdtUsd: prev.usdt_usd, usdKrw: raw.usdKrw },
+        fallback: { usdtUsd: prevUsdtUsdFresh, usdKrw: raw.usdKrw },
         capturedAt: observedAt,
       });
       usdtKrw = composed.usdtKrw;
@@ -226,9 +269,11 @@ export class FxSnapshotService {
       usdKrwFrank = composed.usdKrwFrank;
       formulaId = composed.formulaId;
     } else if (prev) {
+      // Frankfurter may still publish fresh fiat legs while the primary KRW
+      // keeps its ORIGINAL provenance. Display freshness may therefore expire.
       usdtKrw = prev.usd_krw;
-      usdtUsdOut = prev.usdt_usd;
-      usdKrwFrank = prev.usd_krw_frank;
+      usdtUsdOut = prevUsdtUsdFresh;
+      usdKrwFrank = raw.usdKrw ?? prevUsdKrwFrankFresh;
       formulaId = prev.formula_id;
     } else {
       return {
@@ -239,14 +284,8 @@ export class FxSnapshotService {
       };
     }
 
-    if (
-      usdtPerUsd == null &&
-      usdtUsdOut != null &&
-      isPositiveAmount(usdtUsdOut)
-    ) {
-      usdtPerUsd = deriveMarketplaceLegs({
-        usdtUsd: usdtUsdOut,
-      }).usdtPerUsd;
+    if (usdtPerUsd == null && usdtUsdOut && isPositiveAmount(usdtUsdOut)) {
+      usdtPerUsd = deriveMarketplaceLegs({ usdtUsd: usdtUsdOut }).usdtPerUsd;
     }
 
     const sources = Array.from(
@@ -259,19 +298,15 @@ export class FxSnapshotService {
       raw,
     );
 
-    // A CoinGecko quote can legitimately have the same numeric value on two
-    // consecutive polls. If the provider's last_updated_at advanced, that is
-    // a NEW freshness observation and must be persisted even though the rate
-    // is identical. Otherwise a healthy unchanged market could age out after
-    // 45 minutes. Frankfurter-only ticks do not refresh usdtKrw provenance.
-    const primaryObservationUnchanged =
-      raw.usdtKrw == null ||
-      (prev?.rate_provenance?.usdtKrw?.source === input.adapterId &&
-        prev?.rate_provenance?.usdtKrw?.capturedAt === observedAt);
-
+    const observationUnchanged = this.rawObservationUnchanged(
+      prev?.rate_provenance ?? null,
+      input.adapterId,
+      observedAt,
+      raw,
+    );
     const unchanged =
       !!prev &&
-      primaryObservationUnchanged &&
+      observationUnchanged &&
       prev.usd_krw === usdtKrw &&
       (prev.usdt_usd ?? null) === usdtUsdOut &&
       (prev.usd_krw_frank ?? null) === usdKrwFrank &&
@@ -363,19 +398,57 @@ export class FxSnapshotService {
     raw: Partial<Record<string, string>>,
   ): RateProvenance {
     const merged: RateProvenance = { ...(prev ?? {}) };
-    const keyForRaw: Record<string, string> = {
-      usdtKrw: "usdtKrw",
-      usdtUsd: "usdtPerUsd",
-      usdGbp: "gbpUsd",
-      usdEur: "eurUsd",
-      usdAud: "audUsd",
-    };
-    for (const [rawKey, legKey] of Object.entries(keyForRaw)) {
+    for (const [rawKey, legKey] of Object.entries(this.provenanceKeyMap())) {
       if (raw[rawKey] != null) {
         merged[legKey] = { source: adapterId, capturedAt: observedAt };
       }
     }
     return merged;
+  }
+
+  private rawObservationUnchanged(
+    prev: RateProvenance | null,
+    adapterId: string,
+    observedAt: string,
+    raw: Partial<Record<string, string>>,
+  ): boolean {
+    for (const [rawKey, legKey] of Object.entries(this.provenanceKeyMap())) {
+      if (raw[rawKey] == null) continue;
+      const p = prev?.[legKey];
+      if (!p || p.source !== adapterId || p.capturedAt !== observedAt) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private provenanceKeyMap(): Record<string, string> {
+    return {
+      usdtKrw: "usdtKrw",
+      usdtUsd: "usdtPerUsd",
+      usdKrw: "usdKrwFrank",
+      usdGbp: "gbpUsd",
+      usdEur: "eurUsd",
+      usdAud: "audUsd",
+    };
+  }
+
+  private carryLeg(
+    row: LatestRow | null,
+    provenanceKey: string,
+    value: string | null,
+    nowMs: number,
+    maxAgeMs: number,
+    expectedSource: "coingecko" | "frankfurter",
+  ): string | null {
+    if (!row || !value || !isPositiveAmount(value)) return null;
+    const p = row.rate_provenance?.[provenanceKey];
+    if (!p || p.source !== expectedSource) return null;
+    const capturedMs = Date.parse(p.capturedAt);
+    if (!Number.isFinite(capturedMs)) return null;
+    const ageMs = nowMs - capturedMs;
+    if (ageMs < 0 || ageMs > maxAgeMs) return null;
+    return value;
   }
 
   private isIsoDate(v: string | null | undefined): v is string {
