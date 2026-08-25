@@ -10,6 +10,9 @@ const { spawnSync } = require("child_process");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
+const LIVE_FETCH_ATTEMPTS = 3;
+const LIVE_FETCH_TIMEOUT_MS = 12000;
+const LIVE_FETCH_RETRY_DELAY_MS = 750;
 
 function read(rel) {
   const p = path.join(root, rel);
@@ -29,6 +32,10 @@ function readJson(rel) {
     fails.push(rel + " invalid JSON: " + e.message);
     return {};
   }
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 const fixture = readJson("tooling/verify/fixtures/rel-602-staging-rollback.v1.json");
@@ -176,8 +183,28 @@ if (gateTiers.includes("isRel602Path")) {
   fails.push("REL-602 T0 must live in domain-by-path only");
 }
 
+async function fetchTransientSafe(url, options) {
+  let lastError;
+  for (let attempt = 1; attempt <= LIVE_FETCH_ATTEMPTS; attempt += 1) {
+    try {
+      return await fetch(url, {
+        ...options,
+        signal: AbortSignal.timeout(LIVE_FETCH_TIMEOUT_MS),
+      });
+    } catch (e) {
+      lastError = e;
+      if (attempt === LIVE_FETCH_ATTEMPTS) break;
+      console.warn(
+        `[verify:rel-602-staging-rollback] transient fetch retry ${attempt}/${LIVE_FETCH_ATTEMPTS - 1} ${url}`,
+      );
+      await sleep(LIVE_FETCH_RETRY_DELAY_MS * attempt);
+    }
+  }
+  throw lastError || new Error("live fetch failed after bounded retries");
+}
+
 async function live(url, allowed) {
-  const res = await fetch(url, {
+  const res = await fetchTransientSafe(url, {
     redirect: "manual",
     headers: { "user-agent": "ai-profit-os-rel-602-verify/1" },
   });
@@ -192,23 +219,44 @@ async function live(url, allowed) {
   console.log("[verify:rel-602-staging-rollback] live PASS " + url + " " + res.status);
 }
 
+function runVerify(script) {
+  const args = [path.join(root, "tooling/verify", script)];
+  const spawn = () =>
+    spawnSync(process.execPath, args, {
+      cwd: root,
+      encoding: "utf8",
+      timeout: 180000,
+    });
+
+  let run = spawn();
+  const output = String(run.stderr || run.stdout || "");
+  const transientLiveFetchFailure =
+    script === "rel-601-staging-regression.cjs" &&
+    run.status !== 0 &&
+    /live fetch error:\s*fetch failed/i.test(output);
+
+  if (transientLiveFetchFailure) {
+    console.warn(
+      "[verify:rel-602-staging-rollback] rel-601 transient live fetch failed; retrying once",
+    );
+    run = spawn();
+  }
+  return run;
+}
+
 (async function main() {
   if (fails.length === 0) {
     try {
       await live(fixture.stagingWeb + "/", [200]);
       await live(fixture.stagingOps + "/", [200, 307, 308]);
     } catch (e) {
-      fails.push("live fetch error: " + (e.message || e));
+      fails.push("live fetch error after bounded retries: " + (e.message || e));
     }
   }
 
   if (fails.length === 0) {
     for (const script of fixture.extraVerifies || []) {
-      const run = spawnSync(process.execPath, [path.join(root, "tooling/verify", script)], {
-        cwd: root,
-        encoding: "utf8",
-        timeout: 180000,
-      });
+      const run = runVerify(script);
       if (run.status !== 0) {
         fails.push("re-run FAIL " + script + ": " + String(run.stderr || run.stdout || "").split("\n")[0]);
       }
