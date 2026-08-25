@@ -86,6 +86,7 @@
     "verify:backend-data-alignment": "node tooling/verify/backend-data-alignment.cjs",
     "verify:rel-505-r7-backend-alignment": "node tooling/verify/rel-505-r7-backend-alignment.cjs",
     "verify:rel-508-current-fx-approx": "node tooling/verify/rel-508-current-fx-approx.cjs",
+    "verify:p0-c-free-fx-krw-money": "node tooling/verify/p0-c-free-fx-krw-money.cjs",
     "verify:rel-506-r8-infra-core": "node tooling/verify/rel-506-r8-infra-core.cjs",
     "verify:rel-507-production-e2e": "node tooling/verify/rel-507-production-e2e.cjs",
     "verify:rel-600-staging": "node tooling/verify/rel-600-staging.cjs",

@@ -62,6 +62,7 @@
 | backend-data-alignment | `verify:backend-data-alignment` | T0 path | live (R7 table · blank cell FAIL) |
 | rel-505-r7-backend-alignment | `verify:rel-505-r7-backend-alignment` | T0 path + CI | live (REL-505 · CERT_ISSUED 0 · current-fx wired · STALE pending rebase) |
 | rel-508-current-fx-approx | `verify:rel-508-current-fx-approx` | T0 path + CI | live (REL-508 · Nest approx · null not 0 · STALE pending REL-502) |
+| p0-c-free-fx-krw-money | `verify:p0-c-free-fx-krw-money` | T0 path + CI | live (P0-C Demo FX · freshness fail-closed · USDT primary KRW secondary) |
 | rel-506-r8-infra-core | `verify:rel-506-r8-infra-core` | T0 path + CI | live (REL-506 · R8 Core · pages deploy 0 · Ads excluded · rum/tag deferred) |
 | rel-507-production-e2e | `verify:rel-507-production-e2e` | T0 path + CI | live (REL-507 · production-loop · isolation · invented success 0) |
 | rel-600-staging | `verify:rel-600-staging` | T0 path + CI | live (REL-600 staging preview workers) |
@@ -131,6 +132,7 @@
 | `governance/release-master/MIGRATION_READINESS.md` · `tooling/verify/rel-504-migration-readiness.cjs` | rel-504-migration-readiness |
 | `governance/release-master/R7_BACKEND_ALIGNMENT.md` · `tooling/verify/backend-data-alignment.cjs` · `tooling/verify/rel-505-r7-backend-alignment.cjs` | backend-data-alignment · rel-505-r7-backend-alignment |
 | `governance/release-master/REL-508-CURRENT-FX-APPROX.md` · `services/api-nest/src/opportunities/current-fx-approx*` · `schemas/current-fx-approx.v1.json` | rel-508-current-fx-approx |
+| `services/market-intelligence/src/fx-display-policy.cjs` · `workers/coingecko-adapter/**` · `packages/ui/components/money/**` · `tooling/verify/p0-c-free-fx-krw-money.cjs` | p0-c-free-fx-krw-money |
 | `governance/release-master/R8_INFRA_CORE.md` · `governance/release-master/r8-cache-inventory.v1.json` · `tooling/verify/rel-506-r8-infra-core.cjs` | rel-506-r8-infra-core |
 | `tooling/e2e/specs/production-loop.spec.cjs` · `tooling/e2e/lib/production-loop.cjs` · `tooling/verify/rel-507-production-e2e.cjs` | rel-507-production-e2e |
 | `governance/release-master/REL-600-STAGING.md` · staging origin · `tooling/verify/rel-600-staging.cjs` | rel-600-staging |

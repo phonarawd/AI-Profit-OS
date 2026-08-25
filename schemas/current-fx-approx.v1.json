@@ -32,6 +32,44 @@
     "expectedProfitKrwApprox": {
       "type": ["string", "null"],
       "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+    },
+    "krwDisplayAvailable": {
+      "type": "boolean"
+    },
+    "fxStatus": {
+      "type": "string",
+      "enum": ["FRESH", "STALE", "UNAVAILABLE"]
+    },
+    "quotes": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "amountUsdt", "amountKrw"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "amountUsdt": {
+            "type": ["string", "null"],
+            "pattern": "^-?[0-9]+(\\.[0-9]+)?$"
+          },
+          "amountKrw": {
+            "type": ["string", "null"],
+            "pattern": "^-?[0-9]+$"
+          }
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["plan", "estimatedMonthlyCalls", "monthlyLimit", "level"],
+      "properties": {
+        "plan": { "type": "string", "const": "FREE_DEMO" },
+        "estimatedMonthlyCalls": { "type": "integer", "minimum": 1 },
+        "monthlyLimit": { "type": "integer", "minimum": 1 },
+        "level": { "type": "string", "enum": ["NORMAL", "WARNING", "CRITICAL"] }
+      }
     }
   }
 }

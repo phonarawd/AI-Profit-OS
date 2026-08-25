@@ -70,7 +70,11 @@ if (client.includes("/trades/${oppId}/execute") || client.includes("`/trades/${i
 if (!client.includes("/trades/${result.tradeId}/execute") && !client.includes("`/trades/${result.tradeId}/execute`")) {
   fail("accepted participate must go to /trades/:tradeId/execute");
 }
-if (!mapRuntime.includes("requiredCapitalUsdt") || !mapRuntime.includes("capitalKrw: null")) {
+if (
+  !mapRuntime.includes("requiredCapitalUsdt") ||
+  !mapRuntime.includes("quoteKrw") ||
+  !/capitalKrw:\s*quotedCapital \? formatKrwApproxLine\(quotedCapital\) : null/.test(mapRuntime)
+) {
   fail("room mapper must pass through required capital and not invent KRW");
 }
 if (!desktop.includes("필요 원금") || !mobile.includes("필요 원금")) {

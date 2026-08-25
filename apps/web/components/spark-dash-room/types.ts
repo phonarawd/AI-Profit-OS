@@ -35,8 +35,10 @@ export type OpportunityRoomItem = {
   suggestDeposit: string | null;
   buyLabel: string | null;
   buyPriceUsdt: string | null;
+  buyPriceKrw: string | null;
   sellLabel: string | null;
   sellPriceUsdt: string | null;
+  sellPriceKrw: string | null;
   grossSpreadUsdt: string | null;
 };
 

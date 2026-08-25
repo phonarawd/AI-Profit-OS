@@ -701,7 +701,7 @@ const RULES = [
       /^services\/api-nest\/src\/opportunities\/current-fx-approx/.test(f) ||
       /^tooling\/verify\/rel-508-current-fx-approx\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-508-current-fx-approx\.v1\.json$/.test(f),
-    scripts: ["rel-508-current-fx-approx.cjs"],
+    scripts: ["rel-508-current-fx-approx.cjs", "p0-c-free-fx-krw-money.cjs"],
   },
   {
     test: (f) =>
@@ -1189,14 +1189,24 @@ const RULES = [
       "balance-aware-feed.cjs",
       "price-denomination-contract.cjs",
       "ebay-resilience.cjs",
+      "p0-c-free-fx-krw-money.cjs",
     ],
   },
   {
     test: (f) =>
       /^workers\/(frankfurter|coingecko)-adapter\//.test(f) ||
       /^services\/api-nest\/src\/opportunities\/fx-snapshot\.service\.ts$/.test(f),
-    scripts: ["fx-snapshot-formula.cjs", "price-denomination-contract.cjs"],
+    scripts: ["fx-snapshot-formula.cjs", "price-denomination-contract.cjs", "p0-c-free-fx-krw-money.cjs"],
   },
+  {
+    test: (f) =>
+      /^packages\/ui\/components\/money\//.test(f) ||
+      /^packages\/ui\/copy\/ko\/money\.ts$/.test(f) ||
+      /^apps\/web\/lib\/(current-fx-refresh|start-fx-background-refresh)\.ts$/.test(f) ||
+      /^tooling\/verify\/p0-c-free-fx-krw-money\.cjs$/.test(f),
+    scripts: ["p0-c-free-fx-krw-money.cjs"],
+  },
+
   {
     test: (f) =>
       (/^services\/api-nest\//.test(f) && /auth/i.test(f)) ||

@@ -6,9 +6,10 @@
 import type { CurrentFxApproxResponse } from "@aipo/sdk/current-fx";
 import type { OpportunityFeedItem } from "@aipo/sdk/user-feed";
 import type { WalletBucketsResponse } from "@aipo/sdk/wallet";
+import { formatKrwApproxLine } from "@aipo/ui/components/money";
+import { fxHintFromStatus, quoteKrw } from "../../lib/current-fx-refresh";
 import {
   formatDurationMinutesFromSec,
-  formatKrwApprox,
   formatRatePct,
   formatSignedUsdt,
   formatUsdtDisplay,
@@ -80,7 +81,7 @@ export function resolveProfitsMediaPolicy(input: {
   return { mediaState: "POLICY_UNKNOWN", displayUrl: null };
 }
 
-function mapItem(item: OpportunityFeedItem, index: number): ProfitsOpportunity | null {
+function mapItem(item: OpportunityFeedItem, index: number, fx: CurrentFxApproxResponse | null): ProfitsOpportunity | null {
   const id = asText(item.id);
   const title = asText(item.assetLabel);
   if (!id || !title) return null;
@@ -90,7 +91,10 @@ function mapItem(item: OpportunityFeedItem, index: number): ProfitsOpportunity |
     source: item.assetImageSource,
   });
   const sec = asNum(item.estimatedDurationSec);
-  const profitKrw = asNum(item.expectedProfitKrwApprox);
+  const quotedProfit = quoteKrw(fx, `profit:${item.id}`);
+  const quotedCapital = quoteKrw(fx, `capital:${item.id}`);
+  const feedKrw = asNum(item.expectedProfitKrwApprox);
+  const profitKrw = quotedProfit ?? (feedKrw != null ? String(Math.round(feedKrw)) : null);
   const capital = formatUsdtDisplay(asText(item.requiredCapitalUsdt));
   const joinable = isJoinable(item);
   return {
@@ -104,10 +108,10 @@ function mapItem(item: OpportunityFeedItem, index: number): ProfitsOpportunity |
     ratePct: formatRatePct(asText(item.marginPct)),
     expectedProfitUsdt: formatSignedUsdt(asText(item.expectedProfitUsdt)),
     expectedProfitKrw:
-      profitKrw != null ? formatKrwApprox(String(Math.round(profitKrw))) : null,
+      profitKrw != null ? formatKrwApproxLine(profitKrw, true) : null,
     durationLabel: formatDurationMinutesFromSec(sec),
     capitalUsdt: capital ? `${capital} USDT` : null,
-    capitalKrw: null,
+    capitalKrw: quotedCapital ? formatKrwApproxLine(quotedCapital) : null,
     statusLabel: joinable ? "참여 가능" : "조건 확인 후 참여 가능",
     href: `/profits/${id}`,
     joinable,
@@ -127,6 +131,7 @@ export function emptyProfitsRuntimeModel(
     sidebarBalance: { usdt: null, krw: null },
     nav: PROFITS_RUNTIME_NAV,
     items: [],
+    fxHint: null,
   };
 }
 
@@ -138,11 +143,11 @@ export function mapRuntimeProfits(input: {
   viewState: ProfitsViewState;
 }): ProfitsDesktopModel {
   const principal = formatUsdtDisplay(input.buckets?.principalUsdt ?? null);
-  const principalKrw = formatKrwApprox(input.fx?.principalKrwApprox ?? null);
+  const principalKrw = formatKrwApproxLine(input.fx?.principalKrwApprox ?? null);
   const mapped =
     input.viewState === "READY" || input.viewState === "EMPTY"
       ? input.items
-          .map((item, index) => mapItem(item, index))
+          .map((item, index) => mapItem(item, index, input.fx))
           .filter((x): x is ProfitsOpportunity => x != null)
       : [];
   const viewState =
@@ -157,5 +162,6 @@ export function mapRuntimeProfits(input: {
     sidebarBalance: { usdt: principal, krw: principalKrw },
     nav: PROFITS_RUNTIME_NAV,
     items,
+    fxHint: fxHintFromStatus(input.fx && input.fx.fxStatus),
   };
 }

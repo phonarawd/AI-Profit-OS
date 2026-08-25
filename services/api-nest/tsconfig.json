@@ -10,6 +10,9 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "@aipo/market-intelligence": ["../market-intelligence/src/index"]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strict": true

@@ -1,14 +1,18 @@
 "use client";
 
+import { type CurrentFxApproxResponse } from "@aipo/sdk/current-fx";
 import {
   fetchWalletBuckets,
   type WalletBucketsResponse,
 } from "@aipo/sdk/wallet";
+import { formatKrwInteger } from "@aipo/ui/components/money";
 import { BucketBreakdown } from "@aipo/ui/components/wallet/BucketBreakdown";
 import { DemoWalletBanner } from "@aipo/ui/components/wallet/DemoWalletBanner";
 import { T } from "@aipo/ui/copy/ko";
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
+import { quoteKrw } from "../../lib/current-fx-refresh";
+import { startFxBackgroundRefresh } from "../../lib/start-fx-background-refresh";
 import styles from "./wallet.module.css";
 
 type ViewKind = "loading" | "ready" | "unavailable" | "unauthorized";
@@ -32,6 +36,7 @@ function Shell({ view, children }: { view: ViewKind; children: ReactNode }) {
 
 export function WalletClient() {
   const [buckets, setBuckets] = useState<WalletBucketsResponse | null>(null);
+  const [fx, setFx] = useState<CurrentFxApproxResponse | null>(null);
   const [view, setView] = useState<ViewKind>("loading");
 
   useEffect(() => {
@@ -42,6 +47,19 @@ export function WalletClient() {
         if (ac.signal.aborted) return;
         setBuckets(next);
         setView("ready");
+        startFxBackgroundRefresh(
+          () => ({
+            principalUsdt: next.principalUsdt,
+            withdrawableProfitUsdt: next.profitUsdt,
+            expectedProfitUsdt: next.lockedUsdt,
+            quotes: [
+              { id: "locked", amountUsdt: next.lockedUsdt },
+              { id: "liability", amountUsdt: next.liabilityUsdt },
+            ],
+          }),
+          (fresh) => setFx(fresh),
+          ac.signal,
+        );
       } catch (err) {
         if (ac.signal.aborted) return;
         setBuckets(null);
@@ -96,6 +114,11 @@ export function WalletClient() {
           lockedUsdt={buckets.lockedUsdt}
           practiceUsdt={buckets.practiceUsdt}
           liabilityUsdt={buckets.liabilityUsdt}
+          principalKrw={formatKrwInteger(fx?.principalKrwApprox ?? null)}
+          profitKrw={formatKrwInteger(fx?.withdrawableProfitKrwApprox ?? null)}
+          lockedKrw={formatKrwInteger(quoteKrw(fx, "locked"))}
+          liabilityKrw={formatKrwInteger(quoteKrw(fx, "liability"))}
+          krwReady={fx?.krwDisplayAvailable === true}
         />
       </div>
       <div className={styles.actions}>

@@ -20,6 +20,7 @@ import { landing } from "./landing";
 import { legal } from "./legal";
 import { loop } from "./loop";
 import { margin } from "./margin";
+import { money } from "./money";
 import { membership } from "./membership";
 import { objections } from "./objections";
 import { onboarding } from "./onboarding";
@@ -61,6 +62,7 @@ export const T = {
   loop,
   margin,
   membership,
+  money,
   objections,
   onboarding,
   operator,
@@ -103,6 +105,7 @@ export {
   loop,
   margin,
   membership,
+  money,
   objections,
   onboarding,
   operator,

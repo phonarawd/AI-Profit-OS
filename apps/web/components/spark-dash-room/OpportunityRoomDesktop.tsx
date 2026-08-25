@@ -117,6 +117,7 @@ function RoomCompare({ item }: { item: OpportunityRoomItem }) {
           <p className="sdr-leg-amt">
             {item.buyPriceUsdt ? `${item.buyPriceUsdt} USDT` : "—"}
           </p>
+          {item.buyPriceKrw ? <p className="sdr-krw">{item.buyPriceKrw}</p> : null}
         </div>
         <div className="sdr-spread">
           <p className="sdr-spread-arrow">→</p>
@@ -130,6 +131,7 @@ function RoomCompare({ item }: { item: OpportunityRoomItem }) {
           <p className="sdr-leg-amt">
             {item.sellPriceUsdt ? `${item.sellPriceUsdt} USDT` : "—"}
           </p>
+          {item.sellPriceKrw ? <p className="sdr-krw">{item.sellPriceKrw}</p> : null}
         </div>
       </div>
       <p className="sdr-compare-note">

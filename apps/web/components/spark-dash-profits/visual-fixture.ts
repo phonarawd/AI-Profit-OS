@@ -120,4 +120,5 @@ export const PROFITS_DESKTOP_VISUAL_FIXTURE: ProfitsDesktopModel = {
   sidebarBalance: SPARK_DASH_DESKTOP_VISUAL_FIXTURE.sidebarBalance,
   nav: SPARK_DASH_DESKTOP_VISUAL_FIXTURE.nav,
   items,
+  fxHint: null,
 };

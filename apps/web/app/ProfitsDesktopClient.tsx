@@ -1,13 +1,14 @@
 "use client";
 
-import { fetchCurrentFxApprox } from "@aipo/sdk/current-fx";
 import { fetchHomeReadModel } from "@aipo/sdk/home-read-model";
 import {
   fetchOpportunityFeed,
   isOpportunityFeedError,
 } from "@aipo/sdk/user-feed";
 import { fetchWalletBuckets } from "@aipo/sdk/wallet";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { fxRequestFromWallet } from "../lib/current-fx-refresh";
+import { startFxBackgroundRefresh } from "../lib/start-fx-background-refresh";
 import { ProfitsDesktop } from "../components/spark-dash-profits/ProfitsDesktop";
 import { ProfitsMobile } from "../components/spark-dash-profits/ProfitsMobile";
 import {
@@ -41,6 +42,11 @@ export function ProfitsDesktopClient() {
   const [model, setModel] = useState<ProfitsDesktopModel>(
     emptyProfitsRuntimeModel("LOADING"),
   );
+  const payloadRef = useRef<{
+    buckets: Awaited<ReturnType<typeof fetchWalletBuckets>> | null;
+    items: Awaited<ReturnType<typeof fetchOpportunityFeed>>["items"];
+    expectedProfitUsdt: string | null;
+  } | null>(null);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -55,17 +61,12 @@ export function ProfitsDesktopClient() {
       ]);
       if (ac.signal.aborted) return;
 
-      const fx = buckets
-        ? await fetchCurrentFxApprox(
-            {
-              principalUsdt: buckets.principalUsdt,
-              withdrawableProfitUsdt: buckets.profitUsdt,
-              expectedProfitUsdt: home?.todayPossibleProfitUsdt ?? null,
-            },
-            { signal: ac.signal },
-          ).catch(() => null)
-        : null;
-      if (ac.signal.aborted) return;
+      const items0 = feedOutcome.ok ? feedOutcome.feed.items : [];
+      payloadRef.current = {
+        buckets,
+        items: items0,
+        expectedProfitUsdt: home?.todayPossibleProfitUsdt ?? null,
+      };
 
       if (!feedOutcome.ok) {
         const viewState = viewStateFromFeedError(feedOutcome.err);
@@ -73,7 +74,7 @@ export function ProfitsDesktopClient() {
         setModel(
           mapRuntimeProfits({
             buckets,
-            fx,
+            fx: null,
             items: [],
             displayName: null,
             viewState,
@@ -83,14 +84,46 @@ export function ProfitsDesktopClient() {
       }
 
       const items = feedOutcome.feed.items;
+      const viewState: ProfitsViewState = items.length >= 1 ? "READY" : "EMPTY";
+      payloadRef.current = {
+        buckets,
+        items,
+        expectedProfitUsdt: home?.todayPossibleProfitUsdt ?? null,
+      };
       setModel(
         mapRuntimeProfits({
           buckets,
-          fx,
+          fx: null,
           items,
           displayName: null,
-          viewState: items.length >= 1 ? "READY" : "EMPTY",
+          viewState,
         }),
+      );
+      startFxBackgroundRefresh(
+        () => {
+          const p = payloadRef.current;
+          if (!p?.buckets) return null;
+          return fxRequestFromWallet({
+            principalUsdt: p.buckets.principalUsdt,
+            profitUsdt: p.buckets.profitUsdt,
+            expectedProfitUsdt: p.expectedProfitUsdt,
+            items: p.items,
+          });
+        },
+        (nextFx) => {
+          const p = payloadRef.current;
+          if (!p) return;
+          setModel(
+            mapRuntimeProfits({
+              buckets: p.buckets,
+              fx: nextFx,
+              items: p.items,
+              displayName: null,
+              viewState,
+            }),
+          );
+        },
+        ac.signal,
       );
     })();
     return () => ac.abort();

@@ -21,6 +21,6 @@
 
 ## Domains (PART1b skeleton)
 
-`auth` · `onboarding` · `landing` · `guide` · `user`(empty/hint) · `toast` · `settings` · `legal` · `admin`(plain) · `trust` · `peotteok` · `emoji`
+`auth` · `onboarding` · `landing` · `guide` · `user`(empty/hint) · `toast` · `settings` · `legal` · `admin`(plain) · `trust` · `peotteok` · `emoji` · `money`
 
 Wiring todos: `ai-coach-ui` · `plain-korean-surfaces` · `toast-notification` · `auth-login-signup-ui` · `onboarding-experiential` · `landing-3s-ui`

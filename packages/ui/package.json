@@ -84,6 +84,7 @@
     "./components/home/HomeMoneySurface": "./components/home/HomeMoneySurface.tsx",
     "./components/settings/SettingsPanel": "./components/settings/SettingsPanel.tsx",
     "./components/legal/LegalDoc": "./components/legal/LegalDoc.tsx",
+    "./components/money": "./components/money/index.ts",
     "./components/wallet/BucketBreakdown": "./components/wallet/BucketBreakdown.tsx",
     "./components/wallet/WithdrawModeCards": "./components/wallet/WithdrawModeCards.tsx",
     "./components/wallet/PrincipalConfirmSheet": "./components/wallet/PrincipalConfirmSheet.tsx",

@@ -19,7 +19,13 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { PostgresService } from "../db/postgres";
 import { isPositiveAmount } from "../ledger/ledger.money";
-import { composeFxSnapshot, deriveMarketplaceLegs } from "./opportunities.mi";
+import {
+  classifyFxFreshness,
+  composeFxSnapshot,
+  deriveMarketplaceLegs,
+  detectUsdtKrwAnomaly,
+  krwDisplayAvailable,
+} from "./opportunities.mi";
 
 /** CoinGecko cacheHintSec=120s → generous carry-forward bound for its legs. */
 const COINGECKO_CARRY_FORWARD_MS = 15 * 60 * 1000;
@@ -88,21 +94,33 @@ export class FxSnapshotService {
   }
 
   /**
-   * REL-508 — latest row for USDT→KRW display only.
-   * Missing DB/row → null. Never invent usdtKrw.
+   * REL-508 / P0-C — latest row for USDT→KRW display only.
+   * Missing/invalid/too-stale → null. Never invent usdtKrw. Never ₩0 fabricate.
    */
   async getLatestKrwDisplaySnapshot(): Promise<{
     id: string;
     capturedAt: string;
     usdtKrw: string;
+    status: "FRESH" | "STALE";
+    ageMs: number | null;
   } | null> {
     if (!this.db.configured()) return null;
     const row = await this.loadLatest();
     if (!row || !row.usd_krw) return null;
+    if (!isPositiveAmount(row.usd_krw)) return null;
+    const observedAt = row.rate_provenance?.usdtKrw?.capturedAt;
+    if (!observedAt) return null;
+    const classified = classifyFxFreshness(observedAt, Date.now());
+    if (!krwDisplayAvailable(classified.status)) return null;
+    if (classified.status !== "FRESH" && classified.status !== "STALE") {
+      return null;
+    }
     return {
       id: row.id,
-      capturedAt: row.captured_at,
+      capturedAt: observedAt,
       usdtKrw: row.usd_krw,
+      status: classified.status,
+      ageMs: classified.ageMs,
     };
   }
 
@@ -131,6 +149,18 @@ export class FxSnapshotService {
     }
 
     const prev = await this.loadLatest();
+    if (raw.usdtKrw && raw.usdtUsd && (raw.usdKrw || prev?.usd_krw_frank)) {
+      const anomaly = detectUsdtKrwAnomaly(
+        raw.usdtKrw,
+        raw.usdtUsd,
+        raw.usdKrw ?? prev?.usd_krw_frank,
+      );
+      if (anomaly.anomalous) {
+        this.logger.warn(
+          `fx anomaly adapter=${input.adapterId} primary=${raw.usdtKrw} reference=${anomaly.reference} ratio=${anomaly.ratio}`,
+        );
+      }
+    }
     const carryMarketplace =
       !!prev && nowMs - Date.parse(prev.captured_at) <= MARKETPLACE_LEG_CARRY_FORWARD_MS;
 

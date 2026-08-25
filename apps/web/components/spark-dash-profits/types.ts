@@ -64,4 +64,5 @@ export type ProfitsDesktopModel = {
   sidebarBalance: SparkDashMoney;
   nav: SparkDashNavItem[];
   items: ProfitsOpportunity[];
+  fxHint: "latest" | "recent" | null;
 };

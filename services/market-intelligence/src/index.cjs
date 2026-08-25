@@ -8,6 +8,7 @@ const forbidden = require("./forbidden.cjs");
 const pipeline = require("./pipeline.cjs");
 const pricing = require("./pricing-formula.cjs");
 const fx = require("./fx-snapshot-formula.cjs");
+const fxDisplay = require("./fx-display-policy.cjs");
 const capitalBand = require("./capital-band.cjs");
 const assetMaster = require("./asset-master.cjs");
 const assetImage = require("./asset-image.cjs");
@@ -39,6 +40,7 @@ module.exports = {
   ...pipeline,
   ...pricing,
   ...fx,
+  ...fxDisplay,
   ...capitalBand,
   ...assetMaster,
   ...assetImage,

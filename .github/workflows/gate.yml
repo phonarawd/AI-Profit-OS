@@ -64,6 +64,8 @@ jobs:
         run: pnpm verify:rel-505-r7-backend-alignment
       - name: REL-508 current-fx Nest wire
         run: pnpm verify:rel-508-current-fx-approx
+      - name: P0-C free FX KRW money UX
+        run: pnpm verify:p0-c-free-fx-krw-money
       - name: REL-506 R8 infra core
         run: pnpm verify:rel-506-r8-infra-core
       - name: REL-507 production E2E

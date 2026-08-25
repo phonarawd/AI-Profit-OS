@@ -15,6 +15,62 @@ export interface FrankfurterUsdRates {
   date?: string;
   dryRun: boolean;
   error?: string;
+  httpStatus?: number;
+}
+
+function shouldRetry(status: number | null, attempt: number): boolean {
+  if (attempt >= 1) return false;
+  if (status == null) return true;
+  if (status === 429) return false;
+  if (status >= 400 && status < 500) return false;
+  return status >= 500;
+}
+
+function asPositive(raw: unknown): string | undefined {
+  if (raw == null) return undefined;
+  const n = typeof raw === "number" ? raw : Number(raw);
+  if (!Number.isFinite(n) || n <= 0) return undefined;
+  return String(raw);
+}
+
+async function fetchOnce(): Promise<FrankfurterUsdRates> {
+  const url = new URL(`${API_BASE}/v1/latest`);
+  url.searchParams.set("base", "USD");
+  url.searchParams.set("symbols", "KRW,GBP,EUR,AUD");
+  const res = await fetch(url.toString(), {
+    headers: { accept: "application/json" },
+  });
+  if (!res.ok) {
+    return { dryRun: false, error: `frankfurter ${res.status}`, httpStatus: res.status };
+  }
+  let json: {
+    date?: string;
+    rates?: { KRW?: number; GBP?: number; EUR?: number; AUD?: number };
+  };
+  try {
+    json = (await res.json()) as {
+      date?: string;
+      rates?: { KRW?: number; GBP?: number; EUR?: number; AUD?: number };
+    };
+  } catch {
+    return { dryRun: false, error: "frankfurter malformed_json", httpStatus: 200 };
+  }
+  if (json.rates?.KRW == null) {
+    return { dryRun: false, error: "frankfurter missing KRW", httpStatus: 200 };
+  }
+  const usdKrw = asPositive(json.rates.KRW);
+  if (!usdKrw) {
+    return { dryRun: false, error: "frankfurter invalid KRW", httpStatus: 200 };
+  }
+  return {
+    usdKrw,
+    usdGbp: asPositive(json.rates.GBP),
+    usdEur: asPositive(json.rates.EUR),
+    usdAud: asPositive(json.rates.AUD),
+    date: json.date,
+    dryRun: false,
+    httpStatus: 200,
+  };
 }
 
 /**
@@ -23,36 +79,22 @@ export interface FrankfurterUsdRates {
  * normalization legs for Day-1 eBay currencies).
  */
 export async function fetchUsdRates(): Promise<FrankfurterUsdRates> {
-  const url = new URL(`${API_BASE}/v1/latest`);
-  url.searchParams.set("base", "USD");
-  url.searchParams.set("symbols", "KRW,GBP,EUR,AUD");
   try {
-    const res = await fetch(url.toString(), {
-      headers: { accept: "application/json" },
-    });
-    if (!res.ok) {
-      return { dryRun: false, error: `frankfurter ${res.status}` };
-    }
-    const json = (await res.json()) as {
-      date?: string;
-      rates?: { KRW?: number; GBP?: number; EUR?: number; AUD?: number };
-    };
-    if (json.rates?.KRW == null) {
-      return { dryRun: false, error: "frankfurter missing KRW" };
-    }
-    return {
-      usdKrw: String(json.rates.KRW),
-      usdGbp: json.rates.GBP != null ? String(json.rates.GBP) : undefined,
-      usdEur: json.rates.EUR != null ? String(json.rates.EUR) : undefined,
-      usdAud: json.rates.AUD != null ? String(json.rates.AUD) : undefined,
-      date: json.date,
-      dryRun: false,
-    };
+    const first = await fetchOnce();
+    if (!first.error) return first;
+    if (!shouldRetry(first.httpStatus ?? null, 0)) return first;
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    return await fetchOnce();
   } catch (e) {
-    return {
-      dryRun: false,
-      error: e instanceof Error ? e.message : "frankfurter_failed",
-    };
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      return await fetchOnce();
+    } catch (retryErr) {
+      return {
+        dryRun: false,
+        error: retryErr instanceof Error ? retryErr.message : "frankfurter_failed",
+      };
+    }
   }
 }
 

@@ -5,6 +5,7 @@
  */
 
 import type { CurrentFxApproxResponse } from "@aipo/sdk/current-fx";
+import { quoteKrw } from "../../lib/current-fx-refresh";
 import type { HomeReadModelResponse } from "@aipo/sdk/home-read-model";
 import type { OpportunityFeedItem } from "@aipo/sdk/user-feed";
 import type { WalletBucketsResponse } from "@aipo/sdk/wallet";
@@ -50,7 +51,7 @@ function homeVisualCompat(item: OpportunityFeedItem): HomeFeedVisualCompat {
   return item as OpportunityFeedItem & HomeFeedVisualCompat;
 }
 
-function mapItem(item: OpportunityFeedItem): SparkDashPopular | null {
+function mapItem(item: OpportunityFeedItem, fx: CurrentFxApproxResponse | null = null): SparkDashPopular | null {
   const compat = homeVisualCompat(item);
   const id = asText(item.id);
   const title = asText(item.assetLabel) ?? asText(compat.title);
@@ -60,7 +61,8 @@ function mapItem(item: OpportunityFeedItem): SparkDashPopular | null {
     asText(compat.partner) ??
     asText(compat.officialPartner);
   const sec = asNum(item.estimatedDurationSec);
-  const profitKrw = asNum(item.expectedProfitKrwApprox);
+  const quoted = quoteKrw(fx, `profit:${item.id}`);
+  const profitKrw = quoted != null ? Number(quoted) : asNum(item.expectedProfitKrwApprox);
   return {
     id,
     partner: partner ?? "공식 파트너",
@@ -119,7 +121,7 @@ export function mapRuntimeHome(input: {
   const principalKrw = formatKrwApprox(input.fx?.principalKrwApprox ?? null);
   const profitKrw = formatKrwApprox(input.fx?.withdrawableProfitKrwApprox ?? null);
 
-  const popular = input.items.map(mapItem).filter((x): x is SparkDashPopular => x != null);
+  const popular = input.items.map((item) => mapItem(item, input.fx)).filter((x): x is SparkDashPopular => x != null);
   const top = popular[0] ?? null;
 
   return {

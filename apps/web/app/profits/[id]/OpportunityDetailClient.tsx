@@ -1,6 +1,5 @@
 "use client";
 
-import { fetchCurrentFxApprox } from "@aipo/sdk/current-fx";
 import {
   issuePreflight,
   isParticipateError,
@@ -18,6 +17,8 @@ import { T } from "@aipo/ui/copy/ko";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { fxRequestFromWallet } from "../../../lib/current-fx-refresh";
+import { startFxBackgroundRefresh } from "../../../lib/start-fx-background-refresh";
 import { OpportunityRoomDesktop } from "../../../components/spark-dash-room/OpportunityRoomDesktop";
 import { OpportunityRoomMobile } from "../../../components/spark-dash-room/OpportunityRoomMobile";
 import { ParticipateConfirmSheet } from "../../../components/spark-dash-room/ParticipateConfirmSheet";
@@ -141,28 +142,40 @@ export function OpportunityDetailClient({
           fetchWalletBuckets({ signal: ac.signal }).catch(() => null),
         ]);
         if (ac.signal.aborted) return;
-        const fx = buckets
-          ? await fetchCurrentFxApprox(
-              {
-                principalUsdt: buckets.principalUsdt,
-                withdrawableProfitUsdt: buckets.profitUsdt,
-                expectedProfitUsdt: next.item.expectedProfitUsdt,
-              },
-              { signal: ac.signal },
-            ).catch(() => null)
-          : null;
-        if (ac.signal.aborted) return;
         setDetail(next);
         setModel(
           mapOpportunityRoom({
             buckets,
-            fx,
+            fx: null,
             item: next.item,
             displayName: null,
             viewState: "READY",
           }),
         );
         setKind("ready");
+        startFxBackgroundRefresh(
+          () => {
+            if (!buckets) return null;
+            return fxRequestFromWallet({
+              principalUsdt: buckets.principalUsdt,
+              profitUsdt: buckets.profitUsdt,
+              expectedProfitUsdt: next.item.expectedProfitUsdt,
+              items: [next.item],
+            });
+          },
+          (nextFx) => {
+            setModel(
+              mapOpportunityRoom({
+                buckets,
+                fx: nextFx,
+                item: next.item,
+                displayName: null,
+                viewState: "READY",
+              }),
+            );
+          },
+          ac.signal,
+        );
       } catch (err) {
         if (ac.signal.aborted) return;
         if (isOpportunityFeedError(err) && err.status === 401) {

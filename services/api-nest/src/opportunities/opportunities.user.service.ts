@@ -19,10 +19,14 @@ import { ExecutionPolicyAdminService } from "../execution-policy/execution-polic
 import { LedgerBucketsService } from "../ledger/ledger.buckets.service";
 import { PostgresService } from "../db/postgres";
 import { buildBalanceAwareFeedWithOverrides } from "./balance-aware-feed";
+import { approxKrwOrNull } from "./current-fx-approx.map";
+import { FxSnapshotService } from "./fx-snapshot.service";
 import {
+  approxKrwFromSnapshot,
   assetIconForCategory,
   isV1FeedArbitrageType,
   projectCapitalProviderUserSurface,
+  roundKrwDisplay,
   V1_FEED_ARBITRAGE_TYPES,
   withTimeSensitiveTag,
 } from "./opportunities.mi";
@@ -117,6 +121,7 @@ export class OpportunitiesUserService {
     private readonly buckets: LedgerBucketsService,
     private readonly executionPolicy: ExecutionPolicyAdminService,
     private readonly killSwitch: KillSwitchService,
+    private readonly fxSnapshots: FxSnapshotService,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
@@ -166,12 +171,14 @@ export class OpportunitiesUserService {
     });
 
     const byId = new Map(rows.map((r) => [r.id, r]));
+    const krwSnap = await this.fxSnapshots.getLatestKrwDisplaySnapshot();
     const items = (feed.items as ClassifiedSlice[])
       .map((classified) => {
         const row = byId.get(classified.id);
         if (!row) return null;
         return this.toUserCard(row, classified, {
           includePricing: false,
+          krwSnap,
         });
       })
       .filter((x): x is Record<string, unknown> => x != null);
@@ -233,6 +240,7 @@ export class OpportunitiesUserService {
       classificationOwner: feed.classificationOwner,
       item: this.toUserCard(row, classified, {
         includePricing: true,
+        krwSnap: await this.fxSnapshots.getLatestKrwDisplaySnapshot(),
       }),
     };
   }
@@ -363,16 +371,32 @@ export class OpportunitiesUserService {
   private toUserCard(
     row: OppUserRow,
     classified: ClassifiedSlice,
-    opts: { includePricing: boolean },
+    opts: {
+      includePricing: boolean;
+      krwSnap: { usdtKrw: string } | null;
+    },
   ): Record<string, unknown> {
     const pricing = row.pricing || {};
     const tags = withTimeSensitiveTag(row.tags, {
       staleAt: row.stale_at,
     });
 
-    const krwRaw = row.expected_profit_krw_approx;
-    const expectedProfitKrwApprox =
-      krwRaw != null && krwRaw !== "" ? Number(krwRaw) : 0;
+    const profitUsdt =
+      classified.expectedProfitUsdt ?? row.expected_profit_usdt;
+    const liveKrw = approxKrwOrNull(
+      profitUsdt,
+      opts.krwSnap,
+      approxKrwFromSnapshot,
+    );
+    let expectedProfitKrwApprox: number | null = null;
+    if (liveKrw != null) {
+      try {
+        const rounded = Number(roundKrwDisplay(liveKrw));
+        expectedProfitKrwApprox = Number.isFinite(rounded) ? rounded : null;
+      } catch {
+        expectedProfitKrwApprox = null;
+      }
+    }
 
     /** INTERNAL fields present before user strip (never leak to response) */
     const internal: Record<string, unknown> = {
@@ -381,9 +405,7 @@ export class OpportunitiesUserService {
       pricedAt: new Date(row.priced_at).toISOString(),
       expectedProfitUsdt:
         classified.expectedProfitUsdt ?? row.expected_profit_usdt,
-      expectedProfitKrwApprox: Number.isFinite(expectedProfitKrwApprox)
-        ? expectedProfitKrwApprox
-        : 0,
+      expectedProfitKrwApprox,
       fxSnapshotId: row.fx_snapshot_id,
       estimatedDurationSec: row.estimated_duration_sec,
       aiConfidenceScore: Number(row.ai_confidence_score),

@@ -255,6 +255,7 @@ function RoomMobileCompare({ item }: { item: OpportunityRoomItem }) {
           <p className="sdrm-compare-amt">
             {item.buyPriceUsdt ? `${item.buyPriceUsdt} USDT` : "—"}
           </p>
+          {item.buyPriceKrw ? <p className="sdrm-kpi-sub">{item.buyPriceKrw}</p> : null}
         </div>
         {item.grossSpreadUsdt ? (
           <p className="sdrm-compare-chip">↓ 차익 {item.grossSpreadUsdt}</p>
@@ -265,6 +266,7 @@ function RoomMobileCompare({ item }: { item: OpportunityRoomItem }) {
           <p className="sdrm-compare-amt">
             {item.sellPriceUsdt ? `${item.sellPriceUsdt} USDT` : "—"}
           </p>
+          {item.sellPriceKrw ? <p className="sdrm-kpi-sub">{item.sellPriceKrw}</p> : null}
         </div>
         <p className="sdrm-compare-note">실제 체결 가격은 참여 시점 기준으로 다시 확인돼요.</p>
       </div>

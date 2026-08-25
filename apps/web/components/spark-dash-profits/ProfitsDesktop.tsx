@@ -36,7 +36,7 @@ export function ProfitsDesktop({ model }: { model: ProfitsDesktopModel }) {
     <ProfitsShell model={model}>
       <div className="sdp-canvas">
         <div className="sdp-stage">
-          <ProfitsDiscoveryHeader />
+          <ProfitsDiscoveryHeader fxHint={model.fxHint} />
           <OpportunityToolbar
             query={query}
             filter={filter}

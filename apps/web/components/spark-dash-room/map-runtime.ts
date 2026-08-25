@@ -4,11 +4,12 @@
  */
 
 import type { CurrentFxApproxResponse } from "@aipo/sdk/current-fx";
+import { formatKrwApproxLine } from "@aipo/ui/components/money";
+import { quoteKrw } from "../../lib/current-fx-refresh";
 import type { OpportunityFeedItem } from "@aipo/sdk/user-feed";
 import type { WalletBucketsResponse } from "@aipo/sdk/wallet";
 import {
   formatDurationMinutesFromSec,
-  formatKrwApprox,
   formatRatePct,
   formatSignedUsdt,
   formatUsdtDisplay,
@@ -80,6 +81,7 @@ function formatSpreadChip(raw: string | null): string | null {
 
 export function mapOpportunityRoomItem(
   item: OpportunityFeedItem,
+  fx: CurrentFxApproxResponse | null = null,
 ): OpportunityRoomItem | null {
   const id = asText(item.id);
   const title = asText(item.assetLabel);
@@ -89,7 +91,13 @@ export function mapOpportunityRoomItem(
     source: item.assetImageSource,
   });
   const sec = asNum(item.estimatedDurationSec);
-  const profitKrw = asNum(item.expectedProfitKrwApprox);
+  const quotedProfit = quoteKrw(fx, `profit:${item.id}`);
+  const quotedCapital = quoteKrw(fx, `capital:${item.id}`);
+  const quotedBuy = quoteKrw(fx, `buy:${item.id}`);
+  const quotedSell = quoteKrw(fx, `sell:${item.id}`);
+  const feedKrw = asNum(item.expectedProfitKrwApprox);
+  const profitKrwRaw =
+    quotedProfit ?? (feedKrw != null ? String(Math.round(feedKrw)) : null);
   const capital = formatUsdtDisplay(asText(item.requiredCapitalUsdt));
   const suggestRaw = asText(item.suggestDepositUsdt);
   const suggest =
@@ -108,12 +116,11 @@ export function mapOpportunityRoomItem(
     corridorKo: asText(item.arbitrageTypeKo),
     ratePct: formatRatePct(asText(item.marginPct)),
     expectedProfitUsdt: formatSignedUsdt(asText(item.expectedProfitUsdt)),
-    expectedProfitKrw:
-      profitKrw != null && profitKrw > 0
-        ? formatKrwApprox(String(Math.round(profitKrw)))
-        : null,
+    expectedProfitKrw: profitKrwRaw
+      ? formatKrwApproxLine(profitKrwRaw, true)
+      : null,
     capitalUsdt: capital,
-    capitalKrw: null,
+    capitalKrw: quotedCapital ? formatKrwApproxLine(quotedCapital) : null,
     durationLabel: formatDurationMinutesFromSec(sec),
     statusLabel: joinable
       ? "참여 가능"
@@ -128,8 +135,10 @@ export function mapOpportunityRoomItem(
     suggestDeposit: suggest,
     buyLabel: asText(item.buyMarketLabelKo),
     buyPriceUsdt: formatUsdtDisplay(asText(item.buyPriceUsdt)),
+    buyPriceKrw: quotedBuy ? formatKrwApproxLine(quotedBuy) : null,
     sellLabel: asText(item.sellMarketLabelKo),
     sellPriceUsdt: formatUsdtDisplay(asText(item.sellPriceUsdt)),
+    sellPriceKrw: quotedSell ? formatKrwApproxLine(quotedSell) : null,
     grossSpreadUsdt: formatSpreadChip(asText(item.grossSpreadUsdt)),
   };
 }
@@ -156,10 +165,10 @@ export function mapOpportunityRoom(input: {
   viewState: OpportunityRoomViewState;
 }): OpportunityRoomModel {
   const principal = formatUsdtDisplay(input.buckets?.principalUsdt ?? null);
-  const principalKrw = formatKrwApprox(input.fx?.principalKrwApprox ?? null);
+  const principalKrw = formatKrwApproxLine(input.fx?.principalKrwApprox ?? null);
   const mapped =
     input.viewState === "READY" && input.item
-      ? mapOpportunityRoomItem(input.item)
+      ? mapOpportunityRoomItem(input.item, input.fx)
       : null;
   const viewState =
     input.viewState === "READY" && mapped == null ? "EMPTY" : input.viewState;
@@ -186,5 +195,6 @@ export function toRoomShellModel(
     sidebarBalance: model.sidebarBalance,
     nav: model.nav,
     items: [],
+    fxHint: null,
   };
 }

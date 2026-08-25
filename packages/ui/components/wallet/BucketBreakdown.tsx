@@ -8,6 +8,11 @@ export type BucketBreakdownProps = {
   lockedUsdt: string;
   practiceUsdt: string;
   liabilityUsdt: string;
+  principalKrw?: string | null;
+  profitKrw?: string | null;
+  lockedKrw?: string | null;
+  liabilityKrw?: string | null;
+  krwReady?: boolean;
   /** Hide practice row when zero (Money §49.4) */
   hidePracticeWhenZero?: boolean;
 };
@@ -22,27 +27,35 @@ export function BucketBreakdown({
   lockedUsdt,
   practiceUsdt,
   liabilityUsdt,
+  principalKrw = null,
+  profitKrw = null,
+  lockedKrw = null,
+  liabilityKrw = null,
+  krwReady = false,
   hidePracticeWhenZero = true,
 }: BucketBreakdownProps) {
   const practiceZero =
     practiceUsdt === "0" || practiceUsdt === "0.0" || practiceUsdt === "0.00";
   const showPractice = !(hidePracticeWhenZero && practiceZero);
 
-  const rows: Array<{ key: string; label: string; amount: string }> = [
+  const rows: Array<{ key: string; label: string; amount: string; krw: string | null }> = [
     {
       key: "principal",
       label: T.walletBuckets.workingPrincipal,
       amount: principalUsdt,
+      krw: principalKrw,
     },
     {
       key: "profit",
       label: T.walletBuckets.withdrawableProfit,
       amount: profitUsdt,
+      krw: profitKrw,
     },
     {
       key: "locked",
       label: T.walletBuckets.locked,
       amount: lockedUsdt,
+      krw: lockedKrw,
     },
   ];
   if (showPractice) {
@@ -50,6 +63,7 @@ export function BucketBreakdown({
       key: "practice",
       label: T.walletBuckets.practice,
       amount: practiceUsdt,
+      krw: null,
     });
   }
 
@@ -71,6 +85,11 @@ export function BucketBreakdown({
           <span className="text-sm font-normal">
             {T.walletBuckets.usdtSuffix}
           </span>
+          {krwReady && liabilityKrw ? (
+            <span className="mt-1 block text-sm font-normal text-lux-text-muted">
+              {T.money.krwApprox.replace("{amount}", liabilityKrw)}
+            </span>
+          ) : null}
         </span>
       </div>
       <ul className="space-y-2">
@@ -85,6 +104,11 @@ export function BucketBreakdown({
             </span>
             <span className="text-lux-text">
               {row.amount} {T.walletBuckets.usdtSuffix}
+              {krwReady && row.krw ? (
+                <span className="mt-1 block text-xs text-lux-text-muted">
+                  {T.money.krwApprox.replace("{amount}", row.krw)}
+                </span>
+              ) : null}
             </span>
           </li>
         ))}

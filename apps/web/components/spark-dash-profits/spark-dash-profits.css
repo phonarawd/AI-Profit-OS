@@ -664,9 +664,36 @@
 .sdp-metric .krw,
 .sdp-need .krw {
   margin: 0.12rem 0 0;
-  font-size: 0.75rem;
+  min-height: 1.2em;
+  font-size: 0.8125rem;
   font-weight: 550;
-  color: #8b94a3;
+  color: #5d6776;
+  overflow-wrap: anywhere;
+}
+
+.putduk-money {
+  display: flex;
+  flex-direction: column;
+  align-items: inherit;
+  min-width: 0;
+  gap: 0.12rem;
+}
+
+.putduk-money__usdt {
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.putduk-money__krw {
+  min-height: 1.2em;
+  font-size: 0.8125rem;
+  color: #5d6776;
+  overflow-wrap: anywhere;
+}
+
+.putduk-money__hint {
+  font-size: 0.75rem;
+  color: #5d6776;
 }
 
 .sdp-need {

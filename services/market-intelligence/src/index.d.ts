@@ -138,6 +138,27 @@ export function approxKrwFromSnapshot(
   snapshot: { usdtKrw: string },
 ): string;
 
+export function classifyFxFreshness(capturedAt: string | null | undefined, nowMs: number): { status: string; ageMs: number | null };
+export function krwDisplayAvailable(status: string): boolean;
+export function shouldRetryFxHttp(status: number | null | undefined, attempt: number): boolean;
+export function estimateMonthlyCalls(intervalSec: number): number;
+export function classifyBudgetLevel(callsThisMonth: number, monthlyLimit: number): string;
+export function rejectInvalidRate(raw: unknown): string | null;
+export function detectUsdtKrwAnomaly(primaryUsdtKrw: unknown, fallbackUsdtUsd: unknown, fallbackUsdKrw: unknown): { anomalous: boolean; ratio: string | null; reference: string | null };
+export function roundKrwDisplay(amount: string): string;
+export function clampQuotes(quotes: unknown[] | null | undefined): unknown[];
+export function selftestFxDisplayPolicy(): true;
+export const COINGECKO_PLAN: string;
+export const COINGECKO_MONTHLY_LIMIT: number;
+export const UPSTREAM_FETCH_INTERVAL_SEC: number;
+export const FRONTEND_REFRESH_MS: number;
+export const FRESH_UNTIL_MS: number;
+export const STALE_UNTIL_MS: number;
+export const MAX_TRANSIENT_RETRIES: number;
+export const QUOTES_MAX: number;
+export const FX_STATUS: Record<string, string>;
+export const BUDGET_LEVEL: Record<string, string>;
+
 export function normalizeAssetMaster(input: {
   assetId: string;
   category: "watch" | "trading_card" | "luxury_bag";

@@ -9,6 +9,11 @@ export function SiteFooter({ className = "" }: { className?: string }) {
     >
       <p>{T.operator.footer.line}</p>
       <p className="mt-1">{T.legal.operator.footerLine}</p>
+      <p className="mt-1">
+        <a href={T.money.attributionHref} target="_blank" rel="noreferrer">
+          {T.money.attribution}
+        </a>
+      </p>
     </footer>
   );
 }

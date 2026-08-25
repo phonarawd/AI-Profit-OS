@@ -42,8 +42,10 @@ export const OPPORTUNITY_ROOM_VISUAL_FIXTURE: OpportunityRoomModel = {
     suggestDeposit: null,
     buyLabel: "이베이(미국)",
     buyPriceUsdt: "1,000.00",
+    buyPriceKrw: null,
     sellLabel: "운영자 기준가",
     sellPriceUsdt: "1,344.00",
+    sellPriceKrw: null,
     grossSpreadUsdt: "+344.00",
   },
 };

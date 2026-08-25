@@ -32,6 +32,7 @@ export class CurrentFxApproxUserController {
       principalUsdt?: string | null;
       withdrawableProfitUsdt?: string | null;
       expectedProfitUsdt?: string | null;
+      quotes?: Array<{ id?: string | null; amountUsdt?: string | null }>;
     },
   ) {
     this.sessionUserId(req);
@@ -39,6 +40,7 @@ export class CurrentFxApproxUserController {
       principalUsdt: body?.principalUsdt ?? null,
       withdrawableProfitUsdt: body?.withdrawableProfitUsdt ?? null,
       expectedProfitUsdt: body?.expectedProfitUsdt ?? null,
+      quotes: body?.quotes ?? [],
     });
   }
 
