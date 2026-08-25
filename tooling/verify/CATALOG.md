@@ -21,6 +21,9 @@
 | pg-module-scan | `verify:pg-module-scan` | T1 | ✅ live |
 | brand-assets | `verify:brand-assets` | T1 | ✅ live (visual_kit_v1) |
 | cf-infra | `verify:cf-infra` | T1 | ✅ live |
+| ebay-worker-deploy-path | `verify:ebay-worker-deploy-path` | T0 path + T1 | ✅ live (P0-A · p0-ebay=ebay-adapter only · surface fail-closed · dry-run mutation=0) |
+| p0-ebay-secret-provisioning | `verify:p0-ebay-secret-provisioning` | T0 path + T1 | ✅ live (P0-B1 · production ebay-adapter four secret names · no value print · no preview copy · dry-run mutation=0) |
+| nest-production-provenance | `verify:nest-production-provenance` | T0 path | ✅ live (P0-B2 · health gitSha from RENDER_GIT_COMMIT · hardcoded SHA 0 · db/redis semantics unchanged) |
 | workers-types | `verify:workers-types` | T1 | ✅ live |
 | phase0-bootstrap | `verify:phase0-bootstrap` | T1 | ✅ live |
 | root-domain-env | `verify:root-domain-env` | T1 | ✅ live |
