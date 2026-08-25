@@ -183,18 +183,42 @@ function putLooksSuccessful(put) {
   return /uploaded secret|success! uploaded|creating the secret/i.test(body);
 }
 
+function versionRows(parsed) {
+  if (Array.isArray(parsed)) return parsed;
+  if (parsed && Array.isArray(parsed.versions)) return parsed.versions;
+  if (parsed && Array.isArray(parsed.items)) return parsed.items;
+  return [];
+}
+
+function versionIdOf(row) {
+  if (!row) return null;
+  if (typeof row === "string") return row;
+  return row.id || row.version_id || row.versionId || null;
+}
+
+function versionTimeOf(row) {
+  if (!row || typeof row === "string") return 0;
+  const raw =
+    row.created_on ||
+    row.createdOn ||
+    row.uploaded_on ||
+    row.uploadedOn ||
+    row.modified_on ||
+    row.metadata?.created_on;
+  const ts = Date.parse(raw || "");
+  return Number.isFinite(ts) ? ts : 0;
+}
+
 function latestVersionId(parsed) {
-  const rows = Array.isArray(parsed)
-    ? parsed
-    : parsed && Array.isArray(parsed.versions)
-      ? parsed.versions
-      : parsed && Array.isArray(parsed.items)
-        ? parsed.items
-        : [];
-  const first = rows[0];
-  if (!first) return null;
-  if (typeof first === "string") return first;
-  return first.id || first.version_id || first.versionId || null;
+  const scored = versionRows(parsed)
+    .map((row) => ({ id: versionIdOf(row), ts: versionTimeOf(row) }))
+    .filter((row) => row.id);
+  if (!scored.length) return null;
+  if (scored.every((row) => row.ts === 0)) {
+    return scored[scored.length - 1].id;
+  }
+  scored.sort((a, b) => b.ts - a.ts);
+  return scored[0].id;
 }
 
 function deployLatestProductionVersion(env, secretValues) {
@@ -441,6 +465,7 @@ const exported = {
   validateWorkerSet,
   presenceMap,
   redact,
+  latestVersionId,
 };
 
 if (require.main === module) {
