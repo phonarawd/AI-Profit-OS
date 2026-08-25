@@ -20,6 +20,7 @@ const T1_PUSH = [
   "pg-module-scan.cjs",
   "brand-assets.cjs",
   "cf-infra.cjs",
+  "ebay-worker-deploy-path.cjs",
   "workers-types.cjs",
   "phase0-bootstrap.cjs",
   "root-domain-env.cjs",

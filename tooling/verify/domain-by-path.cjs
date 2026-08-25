@@ -101,6 +101,14 @@ const RULES = [
     ],
   },
   {
+    test: (f) =>
+      /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
+      /^infra\/workers\.manifest\.json$/.test(f) ||
+      /^tooling\/deploy\/cf-workers\.cjs$/.test(f) ||
+      /^tooling\/verify\/ebay-worker-deploy-path\.cjs$/.test(f),
+    scripts: ["ebay-worker-deploy-path.cjs"],
+  },
+  {
     test: (f) => /^(packages\/ui\/|apps\/web\/)/.test(f),
     scripts: ["no-it-jargon.cjs", "mockup-governance.cjs", "canon-surfaces.cjs"],
   },

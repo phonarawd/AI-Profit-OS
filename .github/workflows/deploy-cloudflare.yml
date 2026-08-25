@@ -21,6 +21,14 @@ on:
           - web
           - ops
           - all
+      worker_set:
+        description: "Worker deployment set"
+        required: true
+        default: phase0
+        type: choice
+        options:
+          - phase0
+          - p0-ebay
 
 concurrency:
   group: cf-deploy-${{ github.ref }}-${{ inputs.surface }}
@@ -71,12 +79,15 @@ jobs:
           printf 'ROOT_DOMAIN=%s\nAPP_HOST=%s\nOPS_HOST=%s\nAPI_HOST=%s\n' \
             "$ROOT_DOMAIN" "${APP_HOST:-app.$ROOT_DOMAIN}" "${OPS_HOST:-ops.$ROOT_DOMAIN}" "${API_HOST:-api.$ROOT_DOMAIN}" >> .env
 
+      - name: Guard worker_set / surface
+        run: node tooling/deploy/cf-workers.cjs --check-surface "${{ inputs.worker_set }}" "${{ inputs.surface }}"
+
       - name: Deploy workers
         if: inputs.surface == 'workers' || inputs.surface == 'all'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: node tooling/deploy/cf-workers.cjs ${{ inputs.target }} phase0
+        run: node tooling/deploy/cf-workers.cjs "${{ inputs.target }}" "${{ inputs.worker_set }}"
 
       - name: Origin lock (OpenNext → Workers)
         if: inputs.surface == 'web' || inputs.surface == 'ops' || inputs.surface == 'all'
