@@ -157,22 +157,11 @@ function formatPlan(presence) {
   return lines.join("\n");
 }
 
-function resolveWranglerBin() {
-  try {
-    return require.resolve("wrangler/bin/wrangler.js");
-  } catch {
-    return null;
-  }
-}
-
 function spawnWrangler(args, opts) {
-  const bin = resolveWranglerBin();
-  if (!bin) {
-    return { status: 1, stdout: "", stderr: "wrangler binary not installed" };
-  }
-  return spawnSync(process.execPath, [bin, ...args], {
+  return spawnSync("pnpm", ["exec", "wrangler", ...args], {
     cwd: WORKER_DIR,
     encoding: "utf8",
+    shell: true,
     env: { ...process.env, ...(opts.env || {}) },
     input: opts.input,
     timeout: opts.timeout || 60000,
