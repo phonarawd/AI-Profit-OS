@@ -32,19 +32,21 @@ export function SparkDashExecutionLive({
   const [logs, setLogs] = useState<ExecutionLogEntry[]>([]);
 
   useEffect(() => {
-    const line = state?.logLine?.trim();
+    const snapshot = state;
+    if (!snapshot) return;
+    const line = snapshot.logLine?.trim();
     if (!line) return;
 
     setLogs((current) => {
       if (current.at(-1)?.line === line) return current;
       const next: ExecutionLogEntry = {
-        id: `${state.tradeId}:${state.stepIndex}:${state.status}:${Date.now()}`,
+        id: `${snapshot.tradeId}:${snapshot.stepIndex}:${snapshot.status}:${Date.now()}`,
         line,
         observedAt: new Date().toISOString(),
       };
       return [...current, next].slice(-MAX_VISIBLE_LOGS);
     });
-  }, [state?.logLine, state?.status, state?.stepIndex, state?.tradeId]);
+  }, [state]);
 
   return (
     <SparkDashExecutionExperience
