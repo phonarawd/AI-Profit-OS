@@ -8,6 +8,7 @@ import { ChainSweeperPhase0Service } from "./chain-sweeper.phase0.service";
 import { ChainWatcherPhase0Service } from "./chain-watcher.phase0.service";
 import { DepositAddressService } from "./deposit-address.service";
 import { DepositConfigAdminController } from "./deposit-config.admin.controller";
+import { DepositConfigUserController } from "./deposit-config.user.controller";
 import { DepositConfigService } from "./deposit-config.service";
 import { DepositDisputeAdminController } from "./deposit-dispute.admin.controller";
 import { DepositDisputeService } from "./deposit-dispute.service";
@@ -34,6 +35,7 @@ import { WithdrawStepUpService } from "./withdraw-stepup.service";
     WalletController,
     HomeMoneyReadUserController,
     DepositConfigAdminController,
+    DepositConfigUserController,
     KrwDepositAdminController,
     DepositDisputeAdminController,
     WithdrawCredentialsAdminController,
