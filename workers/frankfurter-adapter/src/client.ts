@@ -1,4 +1,4 @@
-import { API_BASE } from "./constants";
+import { API_BASE, UPSTREAM_TIMEOUT_MS } from "./constants";
 
 export interface FrankfurterUsdRates {
   usdKrw?: string;
@@ -33,11 +33,21 @@ function asPositive(raw: unknown): string | undefined {
   return String(raw);
 }
 
+async function boundedFetch(url: string, init: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function fetchOnce(): Promise<FrankfurterUsdRates> {
   const url = new URL(`${API_BASE}/v1/latest`);
   url.searchParams.set("base", "USD");
   url.searchParams.set("symbols", "KRW,GBP,EUR,AUD");
-  const res = await fetch(url.toString(), {
+  const res = await boundedFetch(url.toString(), {
     headers: { accept: "application/json" },
   });
   if (!res.ok) {
@@ -85,7 +95,7 @@ export async function fetchUsdRates(): Promise<FrankfurterUsdRates> {
     if (!shouldRetry(first.httpStatus ?? null, 0)) return first;
     await new Promise((resolve) => setTimeout(resolve, 400));
     return await fetchOnce();
-  } catch (e) {
+  } catch {
     try {
       await new Promise((resolve) => setTimeout(resolve, 400));
       return await fetchOnce();
