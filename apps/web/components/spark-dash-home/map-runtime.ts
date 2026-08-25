@@ -62,7 +62,6 @@ function mapItem(item: OpportunityFeedItem, fx: CurrentFxApproxResponse | null =
     asText(compat.officialPartner);
   const sec = asNum(item.estimatedDurationSec);
   const quoted = quoteKrw(fx, `profit:${item.id}`);
-  const profitKrw = quoted != null ? Number(quoted) : asNum(item.expectedProfitKrwApprox);
   return {
     id,
     partner: partner ?? "공식 파트너",
@@ -70,8 +69,10 @@ function mapItem(item: OpportunityFeedItem, fx: CurrentFxApproxResponse | null =
     title,
     ratePct: formatRatePct(asText(item.marginPct)),
     expectedProfitUsdt: formatSignedUsdt(asText(item.expectedProfitUsdt)),
-    expectedProfitKrw:
-      profitKrw != null ? formatKrwApprox(String(Math.round(profitKrw))) : null,
+    // KRW is displayable only when the current-fx endpoint supplies a
+    // freshness-qualified quote. Do not resurrect the feed's older KRW
+    // approximation after a refresh/API failure.
+    expectedProfitKrw: quoted != null ? formatKrwApprox(quoted) : null,
     durationLabel: formatDurationMinutesFromSec(sec),
     capitalUsdt: formatUsdtDisplay(asText(item.requiredCapitalUsdt))
       ? `${formatUsdtDisplay(asText(item.requiredCapitalUsdt))} USDT`
