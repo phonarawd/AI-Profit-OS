@@ -2,6 +2,7 @@
 
 export const WALLET_USER_ROUTES = {
   myDepositAddress: "my-deposit-address",
+  krwDepositInstructions: "krw-deposit-instructions",
   krwDepositRequests: "krw-deposit-requests",
   /**
    * §43.1 Phase0/1 ingest — Transfer observation (worker or phase0 tick).
