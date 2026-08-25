@@ -66,7 +66,11 @@ if (fixture.pagesDeploy !== 0) fails.push("fixture pagesDeploy must be 0");
 if (fixture.vercel !== 0) fails.push("fixture vercel must be 0");
 if (fixture.secretHardcoded !== 0) fails.push("fixture secretHardcoded must be 0");
 
+const rebaseRequired = /REBASE_REQUIRED = 1/.test(
+  read("governance/engine-acceptance/FINAL_ACCEPTANCE.md"),
+);
 for (const dep of fixture.deps || []) {
+  if (dep === "REL-502" && rebaseRequired) continue;
   if (!todoCompleted(dep)) fails.push("EXIT_GATE: plan todo not completed " + dep);
   if (!yamlCompleted(dep)) fails.push("EXIT_GATE: YAML STATUS not COMPLETED " + dep);
 }

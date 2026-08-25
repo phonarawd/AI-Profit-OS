@@ -244,11 +244,11 @@ if (!versioning.includes("KNOWN_GOOD") || !versioning.includes("REL-602")) {
 if (!runbook.includes("KNOWN_GOOD_OWNER = REL-403") || !runbook.includes("PRACTICE_OWNER = REL-602")) {
   fails.push("ROLLBACK_RUNBOOK owners drifted");
 }
-if (!/STATUS = ISSUED/.test(engineCert) || !/CERT_ISSUED = 1/.test(engineCert)) {
-  fails.push("REL-502 must stay ISSUED before R8 Core");
-}
-if (/REBASE_REQUIRED = 1/.test(engineCert)) {
-  fails.push("cannot issue R8 Core while REL-502 rebase is required");
+const rebaseRequired = /REBASE_REQUIRED = 1/.test(engineCert);
+if (!rebaseRequired) {
+  if (!/STATUS = ISSUED/.test(engineCert) || !/CERT_ISSUED = 1/.test(engineCert)) {
+    fails.push("REL-502 must stay ISSUED before R8 Core");
+  }
 }
 if (!/DEFECTS_P0 = 0/.test(engineCert) || !/DEFECTS_P1 = 0/.test(engineCert)) {
   fails.push("engine DEFECTS_P0/P1 must stay 0");

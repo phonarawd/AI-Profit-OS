@@ -103,10 +103,20 @@ const RULES = [
   {
     test: (f) =>
       /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
+      /^\.github\/workflows\/provision-ebay-adapter-secrets\.yml$/.test(f) ||
       /^infra\/workers\.manifest\.json$/.test(f) ||
       /^tooling\/deploy\/cf-workers\.cjs$/.test(f) ||
-      /^tooling\/verify\/ebay-worker-deploy-path\.cjs$/.test(f),
-    scripts: ["ebay-worker-deploy-path.cjs"],
+      /^tooling\/deploy\/cf-ebay-secrets\.cjs$/.test(f) ||
+      /^tooling\/verify\/ebay-worker-deploy-path\.cjs$/.test(f) ||
+      /^tooling\/verify\/p0-ebay-secret-provisioning\.cjs$/.test(f),
+    scripts: ["ebay-worker-deploy-path.cjs", "p0-ebay-secret-provisioning.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/health\.controller\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/config\/nest-provenance\.ts$/.test(f) ||
+      /^tooling\/verify\/nest-production-provenance\.cjs$/.test(f),
+    scripts: ["nest-production-provenance.cjs", "api-nest-build.cjs"],
   },
   {
     test: (f) => /^(packages\/ui\/|apps\/web\/)/.test(f),

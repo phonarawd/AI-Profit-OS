@@ -1,4 +1,5 @@
 import { Controller, Get } from "@nestjs/common";
+import { nestProvenance } from "./config/nest-provenance";
 import {
   assertSupabaseRegionOrWarn,
   loadPhase0Env,
@@ -25,6 +26,7 @@ export class HealthController {
       ok: true,
       service: "api-nest",
       phase: 0,
+      ...nestProvenance(),
       bus: this.bus.describe(),
       hosts: {
         app: env.appHost,

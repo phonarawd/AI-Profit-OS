@@ -11,6 +11,8 @@ const steps = [
   "brand-assets.cjs",
   "cf-infra.cjs",
   "ebay-worker-deploy-path.cjs",
+  "p0-ebay-secret-provisioning.cjs",
+  "nest-production-provenance.cjs",
   "workers-types.cjs",
   "phase0-bootstrap.cjs",
   "root-domain-env.cjs",

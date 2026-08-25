@@ -33,6 +33,8 @@
     "verify:dark-leak-guard": "node tooling/verify/dark-leak-guard.cjs",
     "verify:cf-deploy-packages": "node tooling/verify/cf-deploy-packages.cjs",
     "verify:ebay-worker-deploy-path": "node tooling/verify/ebay-worker-deploy-path.cjs",
+    "verify:p0-ebay-secret-provisioning": "node tooling/verify/p0-ebay-secret-provisioning.cjs",
+    "verify:nest-production-provenance": "node tooling/verify/nest-production-provenance.cjs",
     "verify:opennext-workers-origin": "node tooling/verify/opennext-workers-origin.cjs",
     "verify:next-build": "node tooling/verify/next-build.cjs",
     "verify:opennext-build": "node tooling/verify/opennext-build.cjs",
