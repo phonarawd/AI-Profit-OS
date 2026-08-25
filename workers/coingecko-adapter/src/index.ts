@@ -9,6 +9,7 @@ import {
   ADAPTER_ID,
   CACHE_HINT_SEC,
   COINGECKO_MONTHLY_LIMIT,
+  INGEST_TIMEOUT_MS,
   MIN_FETCH_GAP_MS,
   SERVICE,
   UPSTREAM_INTERVAL_SEC,
@@ -96,6 +97,16 @@ function budgetLevel(estimatedMonthlyCalls: number): string {
   return "NORMAL";
 }
 
+async function fetchIngest(url: string, init: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), INGEST_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function runTick(env: Env) {
   const now = Date.now();
   // Protect Demo quota after every real attempt, including failed publish.
@@ -137,7 +148,7 @@ async function runTick(env: Env) {
   let forwardError: string | null = null;
   if (env.NEST_ADAPTER_INGEST_URL && !quote.error) {
     try {
-      const res = await fetch(env.NEST_ADAPTER_INGEST_URL, {
+      const res = await fetchIngest(env.NEST_ADAPTER_INGEST_URL, {
         method: "POST",
         headers: {
           "content-type": "application/json",
