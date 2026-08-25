@@ -173,24 +173,75 @@ function spawnWrangler(args, opts) {
   return spawnSync(process.execPath, [bin, ...args], {
     cwd: WORKER_DIR,
     encoding: "utf8",
-    env: opts.env,
+    env: { ...process.env, ...(opts.env || {}) },
     input: opts.input,
     timeout: opts.timeout || 60000,
   });
 }
 
+function wranglerNameArgs() {
+  return ["--config", "wrangler.toml", "--env", WRANGLER_ENV, "--name", PRODUCTION_WORKER];
+}
+
+function summarizeWranglerError(result, secretValues) {
+  const raw = redact(`${result.stderr || ""}\n${result.stdout || ""}`, secretValues);
+  const line =
+    raw
+      .split(/\r?\n/)
+      .map((s) => s.trim())
+      .find((s) => s.length > 0) || "";
+  return line.slice(0, 180);
+}
+
+function productionWorkerExists(env, secretValues) {
+  const result = spawnWrangler(
+    ["versions", "list", ...wranglerNameArgs(), "--json"],
+    { env },
+  );
+  if (result.status !== 0) {
+    return {
+      ok: false,
+      reason: "production worker versions list failed",
+      detail: summarizeWranglerError(result, secretValues),
+    };
+  }
+  try {
+    const parsed = JSON.parse(result.stdout || "[]");
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      return { ok: false, reason: "production worker has no versions", detail: "" };
+    }
+    return { ok: true };
+  } catch {
+    return { ok: false, reason: "production worker versions JSON parse failed", detail: "" };
+  }
+}
+
 function listProductionSecretNames(env, secretValues) {
   const result = spawnWrangler(
-    ["secret", "list", "--config", "wrangler.toml", "--env", WRANGLER_ENV, "--format", "json"],
+    ["secret", "list", ...wranglerNameArgs(), "--format", "json"],
     { env },
   );
   const stdout = redact(result.stdout, secretValues);
   const stderr = redact(result.stderr, secretValues);
   if (result.status !== 0) {
+    const exists = productionWorkerExists(env, secretValues);
+    if (exists.ok) {
+      return {
+        ok: true,
+        names: [],
+        firstBind: true,
+        stdout,
+        stderr,
+      };
+    }
     return {
       ok: false,
       names: [],
-      reason: "production worker secret list failed (worker missing or auth denied)",
+      reason:
+        "production worker secret list failed and worker versions were not proven",
+      detail: [summarizeWranglerError(result, secretValues), exists.reason, exists.detail]
+        .filter(Boolean)
+        .join(" | "),
       stdout,
       stderr,
     };
@@ -208,12 +259,12 @@ function listProductionSecretNames(env, secretValues) {
   for (const item of parsed) {
     if (item && typeof item.name === "string") names.push(item.name);
   }
-  return { ok: true, names, stdout, stderr };
+  return { ok: true, names, firstBind: false, stdout, stderr };
 }
 
 function putSecret(name, value, env, secretValues) {
   const result = spawnWrangler(
-    ["secret", "put", name, "--config", "wrangler.toml", "--env", WRANGLER_ENV],
+    ["secret", "put", name, ...wranglerNameArgs()],
     { env, input: `${value}\n`, timeout: 120000 },
   );
   return {
@@ -278,9 +329,11 @@ function main(argv, env) {
   const listed = listProductionSecretNames(env, secretValues);
   if (!listed.ok) {
     console.log("mutation=0");
+    if (listed.detail) console.log(`secret_list_detail=${listed.detail}`);
     fail(listed.reason);
   }
   console.log(`existing_secret_name_count=${listed.names.length}`);
+  console.log(`first_bind=${listed.firstBind ? "YES" : "NO"}`);
   for (const name of SECRET_NAMES) {
     console.log(`${name}_ALREADY_BOUND=${listed.names.includes(name) ? "YES" : "NO"}`);
   }
