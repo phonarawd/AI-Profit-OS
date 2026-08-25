@@ -32,6 +32,7 @@
     "verify:lux-theme-sync": "node tooling/verify/lux-theme-sync.cjs",
     "verify:dark-leak-guard": "node tooling/verify/dark-leak-guard.cjs",
     "verify:cf-deploy-packages": "node tooling/verify/cf-deploy-packages.cjs",
+    "verify:ebay-worker-deploy-path": "node tooling/verify/ebay-worker-deploy-path.cjs",
     "verify:opennext-workers-origin": "node tooling/verify/opennext-workers-origin.cjs",
     "verify:next-build": "node tooling/verify/next-build.cjs",
     "verify:opennext-build": "node tooling/verify/opennext-build.cjs",
