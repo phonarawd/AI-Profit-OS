@@ -95,9 +95,6 @@ export function mapOpportunityRoomItem(
   const quotedCapital = quoteKrw(fx, `capital:${item.id}`);
   const quotedBuy = quoteKrw(fx, `buy:${item.id}`);
   const quotedSell = quoteKrw(fx, `sell:${item.id}`);
-  const feedKrw = asNum(item.expectedProfitKrwApprox);
-  const profitKrwRaw =
-    quotedProfit ?? (feedKrw != null ? String(Math.round(feedKrw)) : null);
   const capital = formatUsdtDisplay(asText(item.requiredCapitalUsdt));
   const suggestRaw = asText(item.suggestDepositUsdt);
   const suggest =
@@ -116,8 +113,10 @@ export function mapOpportunityRoomItem(
     corridorKo: asText(item.arbitrageTypeKo),
     ratePct: formatRatePct(asText(item.marginPct)),
     expectedProfitUsdt: formatSignedUsdt(asText(item.expectedProfitUsdt)),
-    expectedProfitKrw: profitKrwRaw
-      ? formatKrwApproxLine(profitKrwRaw, true)
+    // Current-fx quote is the only freshness-qualified KRW display source.
+    // Never restore the feed's older approximation after refresh failure.
+    expectedProfitKrw: quotedProfit
+      ? formatKrwApproxLine(quotedProfit, true)
       : null,
     capitalUsdt: capital,
     capitalKrw: quotedCapital ? formatKrwApproxLine(quotedCapital) : null,
