@@ -6,14 +6,15 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 SERVICE = "coingecko-adapter"
 PHASE = "1"
+ALLOW_MANUAL_TICK = "false"
 
 [triggers]
 crons = ["*/10 * * * *"]
 
 [env.production]
 name = "coingecko-adapter"
-vars = { SERVICE = "coingecko-adapter", PHASE = "1" }
+vars = { SERVICE = "coingecko-adapter", PHASE = "1", ALLOW_MANUAL_TICK = "false" }
 
 [env.preview]
 name = "coingecko-adapter-preview"
-vars = { SERVICE = "coingecko-adapter", PHASE = "1" }
+vars = { SERVICE = "coingecko-adapter", PHASE = "1", ALLOW_MANUAL_TICK = "true" }
