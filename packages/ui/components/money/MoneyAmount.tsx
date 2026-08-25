@@ -3,7 +3,7 @@
 import { T } from "../../copy/ko";
 import { Skeleton } from "../lux/Skeleton";
 import {
-  formatKrwInteger,
+  formatKrwApproxLine,
   formatUsdtLine,
   moneyAriaLabel,
 } from "./money-format";
@@ -24,18 +24,6 @@ export type MoneyAmountProps = {
   className?: string;
 };
 
-function krwText(
-  amountKrw: string | null | undefined,
-  signed: boolean,
-): string | null {
-  const body = formatKrwInteger(amountKrw);
-  if (body == null) return null;
-  const neg = body.startsWith("-");
-  const abs = neg ? body.slice(1) : body;
-  const signedAbs = signed && !neg ? `+${abs}` : neg ? `-${abs}` : abs;
-  return T.money.krwApprox.replace("{amount}", signedAbs);
-}
-
 export function MoneyAmount({
   amountUsdt,
   amountKrw = null,
@@ -47,7 +35,7 @@ export function MoneyAmount({
   const usdtLine = formatUsdtLine(amountUsdt, signed);
   const readyKrw =
     (krwStatus === "ready" || krwStatus === "stale") && amountKrw != null
-      ? krwText(amountKrw, signed)
+      ? formatKrwApproxLine(amountKrw, signed, T.money.krwApprox)
       : null;
   const aria = moneyAriaLabel({
     usdtLine,
