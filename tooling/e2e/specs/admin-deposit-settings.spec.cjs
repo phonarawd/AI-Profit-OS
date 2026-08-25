@@ -3,6 +3,7 @@
 const { test, expect } = require("@playwright/test");
 const { assertQaIsolation } = require("../lib/qa-env-isolation-guard.cjs");
 const { ensureLocalAdminRuntime } = require("../lib/local-admin-runtime.cjs");
+const { runAxeOnHtml, blockingViolations } = require("../lib/axe-scan.cjs");
 
 test.describe.configure({ timeout: 360000 });
 
@@ -19,9 +20,6 @@ const BASE_CONFIG = {
   },
   usdtOnchain: {
     network: "TRC20",
-    hotWalletXpubRef: "secret:configured",
-    treasuryHotAddressRef: "secret:configured",
-    energyDelegateEnabled: true,
     usdtWithdrawNetworkFeeUsdt: "1",
     sweeperPaused: false,
   },
@@ -87,6 +85,15 @@ async function openSettings(page, width, height) {
   await expect(page.getByTestId("deposit-account-number")).toBeVisible();
 }
 
+async function expectNoBlockingA11y(page) {
+  const result = await runAxeOnHtml(await page.content());
+  const blocking = blockingViolations(result);
+  expect(
+    blocking,
+    blocking.map((item) => `${item.id}: ${item.help}`).join("\n"),
+  ).toEqual([]);
+}
+
 test.beforeAll(async () => {
   assertQaIsolation({ purpose: "e2e", databaseUrl: "", projectRef: "" });
   runtime = await ensureLocalAdminRuntime({ timeoutMs: 180000 });
@@ -106,6 +113,7 @@ test("admin can edit the KRW deposit account through the audited PATCH contract"
     "forbidden",
   );
   await expect(page.getByText("사용자마다 전용 TRC20 입금주소를 자동 배정하며")).toBeVisible();
+  await expectNoBlockingA11y(page);
 
   await page.getByTestId("deposit-bank-name").fill("국민은행");
   await page.getByTestId("deposit-account-holder").fill("주식회사 퍼뜩");
@@ -127,11 +135,13 @@ test("admin can edit the KRW deposit account through the audited PATCH contract"
   });
   expect(state.patchBody.changeReason).toBe("운영 입금계좌 변경");
   expect(state.patchBody).not.toHaveProperty("sharedUsdtAddress");
-  expect(state.patchBody.usdtOnchain).not.toHaveProperty("hotWalletXpubRef");
-  expect(state.patchBody.usdtOnchain).not.toHaveProperty("treasuryHotAddressRef");
+  expect(Object.keys(state.patchBody.usdtOnchain || {}).sort()).toEqual([
+    "sweeperPaused",
+    "usdtWithdrawNetworkFeeUsdt",
+  ]);
 });
 
-test("deposit settings stay usable without horizontal overflow on 390px mobile", async ({ page }) => {
+test("deposit settings stay usable and accessible without horizontal overflow on 390px mobile", async ({ page }) => {
   const state = { patchBody: null };
   await stubWalletApis(page, state);
   await openSettings(page, 390, 844);
@@ -142,4 +152,5 @@ test("deposit settings stay usable without horizontal overflow on 390px mobile",
   }));
   expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.width + 2);
   await expect(page.getByTestId("deposit-settings-save")).toBeVisible();
+  await expectNoBlockingA11y(page);
 });
