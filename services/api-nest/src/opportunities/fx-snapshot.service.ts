@@ -11,10 +11,7 @@
  *
  * Marketplace-normalization legs (gbpUsd/eurUsd/audUsd/usdtPerUsd) are
  * carried forward from the latest row only while within a bounded freshness
- * window — past that, they go null (fail-closed, never fabricated). The
- * legacy KRW-approx-display leg keeps its pre-existing carry-forward
- * posture (display-only, not a money-authoritative gate) — repairing its
- * freshness policy is out of PTF-00C's price-denomination/resilience scope.
+ * window — past that, they go null (fail-closed, never fabricated).
  */
 import { Injectable, Logger } from "@nestjs/common";
 import { PostgresService } from "../db/postgres";
@@ -27,7 +24,7 @@ import {
   krwDisplayAvailable,
 } from "./opportunities.mi";
 
-/** CoinGecko cacheHintSec=120s → generous carry-forward bound for its legs. */
+/** CoinGecko display/market observation carry-forward guard. */
 const COINGECKO_CARRY_FORWARD_MS = 15 * 60 * 1000;
 /** Frankfurter cacheHintSec=3600s (daily-cadence rate) → wider bound. */
 const FRANKFURTER_CARRY_FORWARD_MS = 6 * 60 * 60 * 1000;
@@ -126,8 +123,8 @@ export class FxSnapshotService {
 
   /**
    * PTF-00C P0-B entry point — call for adapterId=coingecko|frankfurter fx
-   * ingest ticks. Idempotent: a composite result identical to the latest
-   * row is a no-op (never inserts a byte-identical duplicate).
+   * ingest ticks. Immutable snapshots are deduped only when both the values
+   * AND the authoritative primary observation time are unchanged.
    */
   async recordFxIngest(input: {
     adapterId: "coingecko" | "frankfurter";
@@ -135,7 +132,12 @@ export class FxSnapshotService {
     observedAt: string;
   }): Promise<FxIngestResult> {
     if (!this.db.configured()) {
-      return { ok: false, snapshotId: null, created: false, reason: "DATABASE_URL_UNSET" };
+      return {
+        ok: false,
+        snapshotId: null,
+        created: false,
+        reason: "DATABASE_URL_UNSET",
+      };
     }
     const fx = input.fx && typeof input.fx === "object" ? input.fx : {};
     const observedAt = this.isIsoDate(input.observedAt)
@@ -145,7 +147,12 @@ export class FxSnapshotService {
 
     const raw = this.readAdapterFields(input.adapterId, fx);
     if (Object.keys(raw).length === 0) {
-      return { ok: false, snapshotId: null, created: false, reason: "FX_EMPTY_PAYLOAD" };
+      return {
+        ok: false,
+        snapshotId: null,
+        created: false,
+        reason: "FX_EMPTY_PAYLOAD",
+      };
     }
 
     const prev = await this.loadLatest();
@@ -161,26 +168,32 @@ export class FxSnapshotService {
         );
       }
     }
-    const carryMarketplace =
-      !!prev && nowMs - Date.parse(prev.captured_at) <= MARKETPLACE_LEG_CARRY_FORWARD_MS;
 
-    // --- marketplace-normalization legs (P0-A/P0-B core) ---
+    const carryMarketplace =
+      !!prev &&
+      nowMs - Date.parse(prev.captured_at) <= MARKETPLACE_LEG_CARRY_FORWARD_MS;
+
     const freshLegs = deriveMarketplaceLegs({
       usdtUsd: raw.usdtUsd,
       usdGbp: raw.usdGbp,
       usdEur: raw.usdEur,
       usdAud: raw.usdAud,
     });
-    const gbpUsd = freshLegs.gbpUsd ?? (carryMarketplace ? prev?.gbp_usd ?? null : null);
-    const eurUsd = freshLegs.eurUsd ?? (carryMarketplace ? prev?.eur_usd ?? null : null);
-    const audUsd = freshLegs.audUsd ?? (carryMarketplace ? prev?.aud_usd ?? null : null);
-    let usdtPerUsd = freshLegs.usdtPerUsd ?? (carryMarketplace ? prev?.usdt_per_usd ?? null : null);
+    const gbpUsd =
+      freshLegs.gbpUsd ?? (carryMarketplace ? prev?.gbp_usd ?? null : null);
+    const eurUsd =
+      freshLegs.eurUsd ?? (carryMarketplace ? prev?.eur_usd ?? null : null);
+    const audUsd =
+      freshLegs.audUsd ?? (carryMarketplace ? prev?.aud_usd ?? null : null);
+    let usdtPerUsd =
+      freshLegs.usdtPerUsd ??
+      (carryMarketplace ? prev?.usdt_per_usd ?? null : null);
 
-    // --- legacy KRW-approx display leg — unchanged carry-forward posture ---
     let usdtKrw: string;
     let usdtUsdOut: string | null;
     let usdKrwFrank: string | null;
     let formulaId: string;
+
     if (raw.usdtKrw) {
       const composed = composeFxSnapshot({
         fxSnapshotId: "tmp",
@@ -213,31 +226,52 @@ export class FxSnapshotService {
       usdKrwFrank = composed.usdKrwFrank;
       formulaId = composed.formulaId;
     } else if (prev) {
-      // No fresh KRW-leg input this tick — carry forward unchanged
-      // (pre-existing display-only posture; P0-B scope = marketplace legs).
       usdtKrw = prev.usd_krw;
       usdtUsdOut = prev.usdt_usd;
       usdKrwFrank = prev.usd_krw_frank;
       formulaId = prev.formula_id;
     } else {
-      // No prior row at all (should not happen once Day-1 bootstrap has run)
-      // and this tick alone cannot satisfy fx_snapshots.usd_krw NOT NULL —
-      // fail closed rather than fabricate a KRW display rate.
-      return { ok: false, snapshotId: null, created: false, reason: "FX_NO_KRW_LEG_AVAILABLE" };
+      return {
+        ok: false,
+        snapshotId: null,
+        created: false,
+        reason: "FX_NO_KRW_LEG_AVAILABLE",
+      };
     }
-    // usdtPerUsd should track usdtUsdOut when both are known from the same
-    // tick's coingecko reading and the marketplace leg carry-forward missed it.
-    if (usdtPerUsd == null && usdtUsdOut != null && isPositiveAmount(usdtUsdOut)) {
-      usdtPerUsd = deriveMarketplaceLegs({ usdtUsd: usdtUsdOut }).usdtPerUsd;
+
+    if (
+      usdtPerUsd == null &&
+      usdtUsdOut != null &&
+      isPositiveAmount(usdtUsdOut)
+    ) {
+      usdtPerUsd = deriveMarketplaceLegs({
+        usdtUsd: usdtUsdOut,
+      }).usdtPerUsd;
     }
 
     const sources = Array.from(
       new Set([...(prev?.sources ?? []), input.adapterId]),
     );
-    const rateProvenance = this.mergeProvenance(prev?.rate_provenance ?? null, input.adapterId, observedAt, raw);
+    const rateProvenance = this.mergeProvenance(
+      prev?.rate_provenance ?? null,
+      input.adapterId,
+      observedAt,
+      raw,
+    );
+
+    // A CoinGecko quote can legitimately have the same numeric value on two
+    // consecutive polls. If the provider's last_updated_at advanced, that is
+    // a NEW freshness observation and must be persisted even though the rate
+    // is identical. Otherwise a healthy unchanged market could age out after
+    // 45 minutes. Frankfurter-only ticks do not refresh usdtKrw provenance.
+    const primaryObservationUnchanged =
+      raw.usdtKrw == null ||
+      (prev?.rate_provenance?.usdtKrw?.source === input.adapterId &&
+        prev?.rate_provenance?.usdtKrw?.capturedAt === observedAt);
 
     const unchanged =
       !!prev &&
+      primaryObservationUnchanged &&
       prev.usd_krw === usdtKrw &&
       (prev.usdt_usd ?? null) === usdtUsdOut &&
       (prev.usd_krw_frank ?? null) === usdKrwFrank &&
@@ -245,8 +279,9 @@ export class FxSnapshotService {
       (prev.eur_usd ?? null) === eurUsd &&
       (prev.aud_usd ?? null) === audUsd &&
       (prev.usdt_per_usd ?? null) === usdtPerUsd;
+
     if (unchanged) {
-      return { ok: true, snapshotId: prev!.id, created: false };
+      return { ok: true, snapshotId: prev.id, created: false };
     }
 
     const id = `fx_rt_${Date.parse(observedAt) || Date.now()}_${input.adapterId}`;
@@ -294,7 +329,14 @@ export class FxSnapshotService {
   private readAdapterFields(
     adapterId: "coingecko" | "frankfurter",
     fx: Record<string, unknown>,
-  ): Partial<{ usdtKrw: string; usdtUsd: string; usdKrw: string; usdGbp: string; usdEur: string; usdAud: string }> {
+  ): Partial<{
+    usdtKrw: string;
+    usdtUsd: string;
+    usdKrw: string;
+    usdGbp: string;
+    usdEur: string;
+    usdAud: string;
+  }> {
     const out: Record<string, string> = {};
     const take = (key: string, field: string) => {
       const v = fx[key];
