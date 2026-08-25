@@ -123,6 +123,15 @@ if (/wrangler deploy|--secrets-file/.test(src)) {
 if (/from-preview|copy-preview/i.test(src)) {
   fail("provision script must not copy preview secrets");
 }
+if (!src.includes('["versions", "list"')) {
+  fail("provision script must prove production worker via wrangler versions list");
+}
+if (!/firstBind/.test(src)) {
+  fail("first production bind must tolerate empty secret list");
+}
+if (!/--name/.test(src) || src.includes("--name preview")) {
+  fail("wrangler secret commands must target --name ebay-adapter only");
+}
 
 const workflowRel = ".github/workflows/provision-ebay-adapter-secrets.yml";
 if (!fs.existsSync(path.join(root, workflowRel))) {
