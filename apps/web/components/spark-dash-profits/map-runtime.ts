@@ -93,8 +93,6 @@ function mapItem(item: OpportunityFeedItem, index: number, fx: CurrentFxApproxRe
   const sec = asNum(item.estimatedDurationSec);
   const quotedProfit = quoteKrw(fx, `profit:${item.id}`);
   const quotedCapital = quoteKrw(fx, `capital:${item.id}`);
-  const feedKrw = asNum(item.expectedProfitKrwApprox);
-  const profitKrw = quotedProfit ?? (feedKrw != null ? String(Math.round(feedKrw)) : null);
   const capital = formatUsdtDisplay(asText(item.requiredCapitalUsdt));
   const joinable = isJoinable(item);
   return {
@@ -107,8 +105,11 @@ function mapItem(item: OpportunityFeedItem, index: number, fx: CurrentFxApproxRe
     mediaState: media.mediaState,
     ratePct: formatRatePct(asText(item.marginPct)),
     expectedProfitUsdt: formatSignedUsdt(asText(item.expectedProfitUsdt)),
+    // Only the current-fx endpoint may authorize a display KRW quote.
+    // The feed value has no client-side freshness clock and must not be used
+    // as a fallback after an FX/API refresh failure.
     expectedProfitKrw:
-      profitKrw != null ? formatKrwApproxLine(profitKrw, true) : null,
+      quotedProfit != null ? formatKrwApproxLine(quotedProfit, true) : null,
     durationLabel: formatDurationMinutesFromSec(sec),
     capitalUsdt: capital ? `${capital} USDT` : null,
     capitalKrw: quotedCapital ? formatKrwApproxLine(quotedCapital) : null,
