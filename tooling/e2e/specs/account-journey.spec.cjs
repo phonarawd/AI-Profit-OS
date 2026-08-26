@@ -51,6 +51,13 @@ test("account journey: hub → inbox → settings → guides → legal", async (
   await go(page, "/me/events", null, "events-page");
   await expect(page.getByText("골격")).toHaveCount(0);
   await go(page, "/me/strategies", null, "strategies-page");
+  await expect(page.getByTestId("strategies-page")).toHaveAttribute(
+    "data-account-view",
+    "ready",
+  );
+  await expect(
+    page.getByText("지금은 확인할 수 있는 전략이 없어요."),
+  ).toBeVisible();
   await expect(page.getByText("도메인 todo")).toHaveCount(0);
   await go(page, "/me/membership", null, "membership-page");
   await go(page, "/me/benefits", null, "benefits-page");
@@ -102,3 +109,57 @@ test("hub a11y has no new critical/serious axe violations", async ({ page }) => 
     JSON.stringify(blockingViolations(results).map((v) => v.id)),
   ).toEqual([]);
 });
+
+test("strategies ready empty has no leftover chrome or fake money", async ({
+  page,
+}) => {
+  for (const [width, height] of [
+    [390, 844],
+    [768, 1024],
+    [1024, 768],
+    [1440, 1080],
+  ]) {
+    await page.setViewportSize({ width, height });
+    await go(page, "/me/strategies", null, "strategies-page");
+    const root = page.getByTestId("strategies-page");
+    await expect(root).toBeVisible();
+    await expect(root).toHaveAttribute("data-account-view", "ready");
+    await expect(page.getByRole("heading", { level: 1, name: "내 전략" })).toBeVisible();
+    await expect(
+      page.getByText("지금은 확인할 수 있는 전략이 없어요."),
+    ).toBeVisible();
+    await expect(page.getByTestId("app-shell")).toHaveCount(0);
+    await expect(page.getByText("0 USDT")).toHaveCount(0);
+    await expect(page.getByText("0 KRW")).toHaveCount(0);
+    await expect(page.getByText("ROI")).toHaveCount(0);
+    await expect(page.getByText("도메인 todo")).toHaveCount(0);
+    const overflow = await page.evaluate(
+      () =>
+        document.documentElement.scrollWidth >
+        document.documentElement.clientWidth + 1,
+    );
+    expect(overflow, `${width} overflow`).toBeFalsy();
+  }
+});
+
+test("strategies a11y has no new critical/serious axe violations", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1080 });
+  await go(page, "/me/strategies", null, "strategies-page");
+  await expect(page.getByTestId("strategies-page")).toHaveAttribute(
+    "data-account-view",
+    "ready",
+  );
+  await page.addScriptTag({ path: require.resolve("axe-core") });
+  const results = await page.evaluate(async () => {
+    return window.axe.run(document, {
+      runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },
+    });
+  });
+  expect(
+    blockingViolations(results),
+    JSON.stringify(blockingViolations(results).map((v) => v.id)),
+  ).toEqual([]);
+});
+
