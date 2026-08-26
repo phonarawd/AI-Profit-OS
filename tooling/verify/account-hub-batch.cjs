@@ -141,6 +141,53 @@ if (!membership.includes("MembershipHome")) {
 if (!membership.includes('view="unauthorized"') || !membership.includes('view="unavailable"')) {
   fail("membership must keep unauthorized and unavailable states");
 }
+const membershipEnum = ["sprout", "entry", "core", "high", "vip"];
+for (const id of membershipEnum) {
+  if (!membership.includes(`"${id}"`)) {
+    fail(`membership route must validate server enum id ${id}`);
+  }
+}
+if (!membership.includes("isMembershipMe") || !membership.includes("isMembershipId")) {
+  fail("membership must validate payload with isMembershipMe / isMembershipId");
+}
+if (
+  /typeof membership === "string" && membership\.trim\(\)\.length > 0/.test(membership) &&
+  !membership.includes("isMembershipId")
+) {
+  fail("membership must not treat any non-empty string as a valid membership");
+}
+if (!membership.includes("Array.isArray") || !/ladder\.length/.test(membership)) {
+  fail("membership must require a non-empty server ladder before READY");
+}
+if (membership.includes("MEMBERSHIP_BADGES")) {
+  fail("membership route must not invent a local MEMBERSHIP_BADGES ladder");
+}
+const membershipReadyAt = membership.indexOf('setView("ready")');
+const membershipValidateAt = membership.indexOf("isMembershipMe");
+if (
+  membershipReadyAt < 0 ||
+  membershipValidateAt < 0 ||
+  membershipValidateAt > membershipReadyAt
+) {
+  fail("membership must validate the server payload before setView ready");
+}
+if (
+  !membership.includes('if (!isMembershipMe(json))') ||
+  !membership.includes('setView("unavailable")')
+) {
+  fail("membership must fail-closed malformed server data");
+}
+
+const journey = read("tooling/e2e/specs/account-journey.spec.cjs");
+for (const mode of [
+  "malformed-missing-membership",
+  "malformed-invalid-membership",
+  "malformed-missing-ladder",
+]) {
+  if (!journey.includes(mode)) {
+    fail(`account-journey must cover ${mode}`);
+  }
+}
 
 const benefits = read("apps/web/app/me/benefits/page.tsx");
 if (benefits.includes('releasedMonthUsdt: "0"') && benefits.includes("unauthorized")) {

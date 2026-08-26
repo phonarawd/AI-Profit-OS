@@ -26,10 +26,27 @@ const UNAVAILABLE_TITLE = HUB_COPY.unavailableTitle;
 const UNAVAILABLE =
   "\uBA64\uBC84\uC2ED\uC744 \uD655\uC778\uD560 \uC218 \uC5C6\uC74C";
 
+const MEMBERSHIP_IDS = ["sprout", "entry", "core", "high", "vip"] as const;
+
+function isMembershipId(
+  value: unknown,
+): value is (typeof MEMBERSHIP_IDS)[number] {
+  return (
+    typeof value === "string" &&
+    (MEMBERSHIP_IDS as readonly string[]).includes(value)
+  );
+}
+
 function isMembershipMe(value: unknown): value is MembershipMeModel {
   if (value == null || typeof value !== "object") return false;
-  const membership = (value as { membership?: unknown }).membership;
-  return typeof membership === "string" && membership.trim().length > 0;
+  const rec = value as { membership?: unknown; ladder?: unknown };
+  if (!isMembershipId(rec.membership)) return false;
+  if (!Array.isArray(rec.ladder) || rec.ladder.length === 0) return false;
+  for (const rung of rec.ladder) {
+    if (rung == null || typeof rung !== "object") return false;
+    if (!isMembershipId((rung as { id?: unknown }).id)) return false;
+  }
+  return true;
 }
 
 export default function Page() {

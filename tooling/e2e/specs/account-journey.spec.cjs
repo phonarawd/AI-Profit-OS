@@ -74,6 +74,33 @@ async function stubMembership(page, mode, delayMs = 0) {
         body: JSON.stringify({ error: "unavailable" }),
       });
     }
+    if (mode === "malformed-missing-membership") {
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({}),
+      });
+    }
+    if (mode === "malformed-invalid-membership") {
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          membership: "garbage",
+          ladder: [{ id: "garbage" }],
+        }),
+      });
+    }
+    if (mode === "malformed-missing-ladder") {
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          membership: "core",
+          labelKo: MEMBERSHIP_QA_MARKER,
+        }),
+      });
+    }
     return route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -323,6 +350,43 @@ test("membership ready a11y has no new critical/serious axe violations", async (
   await expect(root).toHaveAttribute("data-account-view", "ready");
   await expect(page.getByTestId("membership-home")).toBeVisible();
   await runMembershipAxe(page);
+});
+
+async function assertMalformedMembershipClosed(page) {
+  const root = page.getByTestId("membership-page");
+  await expect(root).toBeVisible({ timeout: 20000 });
+  await expect(root).toHaveAttribute("data-account-view", "unavailable");
+  await expect(page.getByText(MEMBERSHIP_UNAVAILABLE)).toBeVisible();
+  await expect(page.getByTestId("membership-home")).toHaveCount(0);
+  await expect(page.getByTestId("membership-ladder")).toHaveCount(0);
+  await expect(page.getByTestId("membership-ladder-toggle")).toHaveCount(0);
+  await expect(page.getByText("sprout", { exact: true })).toHaveCount(0);
+  await expect(page.getByText(MEMBERSHIP_SPROUT_KO)).toHaveCount(0);
+  await expect(page.getByText(MEMBERSHIP_QA_MARKER)).toHaveCount(0);
+  await expect(page.getByText("\uC785\uBB38")).toHaveCount(0);
+  await expect(page.getByText("\uBCF8\uACA9")).toHaveCount(0);
+  await expect(page.getByTestId("app-shell")).toHaveCount(0);
+}
+
+test("membership malformed-missing-membership stays fail-closed", async ({
+  page,
+}) => {
+  await openMembership(page, "malformed-missing-membership");
+  await assertMalformedMembershipClosed(page);
+});
+
+test("membership malformed-invalid-membership stays fail-closed", async ({
+  page,
+}) => {
+  await openMembership(page, "malformed-invalid-membership");
+  await assertMalformedMembershipClosed(page);
+});
+
+test("membership malformed-missing-ladder stays fail-closed", async ({
+  page,
+}) => {
+  await openMembership(page, "malformed-missing-ladder");
+  await assertMalformedMembershipClosed(page);
 });
 
 test("membership loading and unavailable stay distinct on 390 and 1440", async ({
