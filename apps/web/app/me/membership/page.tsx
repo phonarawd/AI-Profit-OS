@@ -6,11 +6,31 @@ import {
   type MembershipMeModel,
 } from "@aipo/ui/components/membership";
 import {
+  PremiumEmptyState,
+  PremiumSurface,
+} from "../../../components/putduk-premium";
+import {
   AccountAuthActions,
   AccountFrame,
   type AccountView,
 } from "../AccountFrame";
-import styles from "../account.module.css";
+import { HUB_COPY } from "../account-hub-copy";
+import styles from "./membership-premium.module.css";
+
+const TITLE = HUB_COPY.membership;
+const LOADING = HUB_COPY.loadingEllipsis;
+const LOGIN_TITLE = HUB_COPY.loginTitle;
+const LOGIN_LINE =
+  "\uB85C\uADF8\uC778\uD558\uBA74 \uBA64\uBC84\uC2ED\uC744 \uBCFC \uC218 \uC788\uC5B4\uC694.";
+const UNAVAILABLE_TITLE = HUB_COPY.unavailableTitle;
+const UNAVAILABLE =
+  "\uBA64\uBC84\uC2ED\uC744 \uD655\uC778\uD560 \uC218 \uC5C6\uC74C";
+
+function isMembershipMe(value: unknown): value is MembershipMeModel {
+  if (value == null || typeof value !== "object") return false;
+  const membership = (value as { membership?: unknown }).membership;
+  return typeof membership === "string" && membership.trim().length > 0;
+}
 
 export default function Page() {
   const [view, setView] = useState<AccountView>("loading");
@@ -36,8 +56,21 @@ export default function Page() {
           setView("unavailable");
           return;
         }
-        const json = (await res.json()) as MembershipMeModel;
+        let json: unknown;
+        try {
+          json = await res.json();
+        } catch {
+          if (ac.signal.aborted) return;
+          setData(null);
+          setView("unavailable");
+          return;
+        }
         if (ac.signal.aborted) return;
+        if (!isMembershipMe(json)) {
+          setData(null);
+          setView("unavailable");
+          return;
+        }
         setData(json);
         setView("ready");
       } catch (err) {
@@ -52,30 +85,54 @@ export default function Page() {
 
   if (view === "loading") {
     return (
-      <AccountFrame title="멤버십" view="loading" testId="membership-page">
-        <p className={styles.lead}>불러오는 중…</p>
+      <AccountFrame title={TITLE} view="loading" testId="membership-page">
+        <PremiumSurface
+          as="section"
+          className={styles.surface}
+          aria-busy="true"
+          aria-live="polite"
+        >
+          <p className={`pt-premium-description ${styles.stateCopy}`}>{LOADING}</p>
+        </PremiumSurface>
       </AccountFrame>
     );
   }
   if (view === "unauthorized") {
     return (
-      <AccountFrame title="멤버십" view="unauthorized" testId="membership-page">
-        <p className={styles.lead}>로그인하면 멤버십을 볼 수 있어요.</p>
-        <AccountAuthActions />
+      <AccountFrame title={TITLE} view="unauthorized" testId="membership-page">
+        <PremiumSurface as="section" className={styles.surface}>
+          <PremiumEmptyState
+            title={LOGIN_TITLE}
+            description={LOGIN_LINE}
+            action={<AccountAuthActions />}
+          />
+        </PremiumSurface>
       </AccountFrame>
     );
   }
   if (view === "unavailable" || data == null) {
     return (
-      <AccountFrame title="멤버십" view="unavailable" testId="membership-page">
-        <p className={styles.err}>멤버십을 확인할 수 없음</p>
+      <AccountFrame title={TITLE} view="unavailable" testId="membership-page">
+        <PremiumSurface as="section" className={styles.surface}>
+          <PremiumEmptyState
+            title={UNAVAILABLE_TITLE}
+            description={UNAVAILABLE}
+          />
+        </PremiumSurface>
       </AccountFrame>
     );
   }
   return (
-    <AccountFrame title="멤버십" view="ready" testId="membership-page" hideTitle>
-      <div className={styles.surface}>
-        <MembershipHome data={data} />
+    <AccountFrame title={TITLE} view="ready" testId="membership-page" hideTitle>
+      <div className={styles.page}>
+        <p className={`pt-premium-kicker ${styles.kicker}`}>{HUB_COPY.kicker}</p>
+        <PremiumSurface
+          as="section"
+          className={styles.surface}
+          aria-label={TITLE}
+        >
+          <MembershipHome data={data} className={styles.owner} />
+        </PremiumSurface>
       </div>
     </AccountFrame>
   );

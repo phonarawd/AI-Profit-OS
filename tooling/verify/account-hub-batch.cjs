@@ -126,8 +126,20 @@ if (
 }
 
 const membership = read("apps/web/app/me/membership/page.tsx");
-if (membership.includes('membership: "sprout"')) {
+if (membership.includes('membership: "sprout"') || membership.includes('?? "sprout"')) {
   fail("membership must not invent sprout on error");
+}
+if (!membership.includes("/api/v1/me/membership")) {
+  fail("membership must keep GET /api/v1/me/membership");
+}
+if (!membership.includes('credentials: "include"')) {
+  fail("membership must keep credentials include");
+}
+if (!membership.includes("MembershipHome")) {
+  fail("membership must keep MembershipHome owner");
+}
+if (!membership.includes('view="unauthorized"') || !membership.includes('view="unavailable"')) {
+  fail("membership must keep unauthorized and unavailable states");
 }
 
 const benefits = read("apps/web/app/me/benefits/page.tsx");
