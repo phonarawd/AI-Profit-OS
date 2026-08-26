@@ -1,0 +1,137 @@
+.shell {
+  width: 100%;
+  min-width: 0;
+}
+
+.shell :global([data-testid="onboarding-flow"]) {
+  --pt-onboarding-progress: 14%;
+  position: relative;
+  min-width: 0;
+  gap: 1rem;
+  padding-top: 1.15rem;
+}
+
+.shell :global([data-testid="onboarding-flow"])::before,
+.shell :global([data-testid="onboarding-flow"])::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 4px;
+  border-radius: 999px;
+}
+
+.shell :global([data-testid="onboarding-flow"])::before {
+  width: 100%;
+  background: #edf0f5;
+}
+
+.shell :global([data-testid="onboarding-flow"])::after {
+  width: var(--pt-onboarding-progress);
+  background: linear-gradient(90deg, #6b3cff, #ff316d);
+  box-shadow: 0 0 14px rgba(107, 60, 255, 0.18);
+  transition: width 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.shell :global([data-testid="onboarding-flow"][data-step="tone"]) { --pt-onboarding-progress: 14%; }
+.shell :global([data-testid="onboarding-flow"][data-step="identity"]) { --pt-onboarding-progress: 28%; }
+.shell :global([data-testid="onboarding-flow"][data-step="partner"]) { --pt-onboarding-progress: 42%; }
+.shell :global([data-testid="onboarding-flow"][data-step="demo"]) { --pt-onboarding-progress: 57%; }
+.shell :global([data-testid="onboarding-flow"][data-step="usdt"]) { --pt-onboarding-progress: 71%; }
+.shell :global([data-testid="onboarding-flow"][data-step="action"]) { --pt-onboarding-progress: 85%; }
+.shell :global([data-testid="onboarding-flow"][data-step="payout"]) { --pt-onboarding-progress: 100%; }
+
+.shell :global([data-testid="onboarding-flow"] > section) {
+  min-width: 0;
+  padding: 0.25rem 0 0;
+  animation: onboarding-step-in 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.shell :global([data-testid="onboarding-flow"] h1) {
+  margin-inline: auto;
+  max-width: 28ch;
+  color: #172033;
+  font-size: clamp(1.4rem, 5vw, 1.85rem);
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+  word-break: keep-all;
+}
+
+.shell :global([data-testid="onboarding-flow"] p) {
+  word-break: keep-all;
+}
+
+.shell :global([data-testid="onboarding-flow"] button),
+.shell :global([data-testid="onboarding-flow"] a) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.shell :global([data-testid="onboarding-flow"] button) {
+  min-height: 52px;
+  border-radius: 15px;
+  font-weight: 800;
+  transition:
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 160ms ease;
+}
+
+.shell :global([data-testid="onboarding-flow"] button:not(:disabled):active) {
+  transform: scale(0.985);
+}
+
+.shell :global([data-testid="onboarding-flow"] button:focus-visible),
+.shell :global([data-testid="onboarding-flow"] a:focus-visible) {
+  outline: 3px solid rgba(107, 60, 255, 0.3);
+  outline-offset: 3px;
+}
+
+.shell :global([data-testid="onboarding-transition-disclosure"]),
+.shell :global([data-testid="onboarding-objection-slide"]) {
+  line-height: 1.55;
+}
+
+.shell :global([data-testid="compare-mini"]) {
+  border-color: rgba(107, 60, 255, 0.1);
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(107, 60, 255, 0.05), rgba(255, 255, 255, 0.98));
+  box-shadow: 0 10px 28px rgba(16, 24, 40, 0.045);
+}
+
+.shell :global([data-testid="onboarding-demo"]) :global(.rounded-lux-md),
+.shell :global([data-testid="onboarding-identity"]) :global(.rounded-lux-md),
+.shell :global([data-testid="onboarding-partner-slide"]) :global(.rounded-lux-md) {
+  border-radius: 17px;
+}
+
+@keyframes onboarding-step-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 639px) {
+  .shell :global([data-testid="onboarding-flow"]) {
+    padding-top: 1rem;
+  }
+
+  .shell :global([data-testid="onboarding-flow"] h1) {
+    font-size: clamp(1.34rem, 6.4vw, 1.7rem);
+  }
+
+  .shell :global([data-testid="onboarding-flow"] button) {
+    min-height: 54px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell :global([data-testid="onboarding-flow"]),
+  .shell :global([data-testid="onboarding-flow"]::after),
+  .shell :global([data-testid="onboarding-flow"] > section),
+  .shell :global([data-testid="onboarding-flow"] button) {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
