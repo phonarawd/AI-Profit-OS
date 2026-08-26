@@ -12,6 +12,7 @@ import {
   type AccountView,
 } from "../AccountFrame";
 import styles from "../account.module.css";
+import inboxStyles from "./inbox-premium.module.css";
 
 type InboxListResponse = {
   items?: InboxItemModel[];
@@ -123,7 +124,12 @@ export function InboxClient() {
   return (
     <AccountFrame title={T.inbox.title} view="ready" testId="inbox-page" hideTitle>
       <div className={styles.surface}>
-        <OpsInbox items={items} onMarkRead={markRead} onHide={hide} />
+        <OpsInbox
+          className={inboxStyles.inbox}
+          items={items}
+          onMarkRead={markRead}
+          onHide={hide}
+        />
       </div>
     </AccountFrame>
   );
