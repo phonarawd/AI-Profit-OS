@@ -148,6 +148,15 @@ export function detectUsdtKrwAnomaly(primaryUsdtKrw: unknown, fallbackUsdtUsd: u
 export function roundKrwDisplay(amount: string): string;
 export function clampQuotes(quotes: unknown[] | null | undefined): unknown[];
 export function selftestFxDisplayPolicy(): true;
+export function selftestFxIngestDecision(): true;
+export const COINGECKO_CARRY_FORWARD_MS: number;
+export const FRANKFURTER_CARRY_FORWARD_MS: number;
+export function carryLeg(row: object | null, provenanceKey: string, value: string | null, nowMs: number, maxAgeMs: number, expectedSource: "coingecko" | "frankfurter"): string | null;
+export function decideFxIngest(input: { adapterId: "coingecko" | "frankfurter"; fx: Record<string, unknown> | null | undefined; observedAt: string; prev: Record<string, unknown> | null; }): { action: string; reason?: string; snapshotId?: string; observedAt?: string; snapshot: Record<string, unknown> | null; };
+export function evaluateFxTickPublication(input: Record<string, unknown>): { forwarded: number; published: boolean; ok: boolean };
+export function interpretNestIngestResponse(input: Record<string, unknown>): { forwarded: number; forwardError: string | null };
+export function fxRefreshUnavailable(): Record<string, unknown>;
+export function formatSignedMoneyLines(usdtRaw: string, krwRaw: string): { usdtLine: string; krwLine: string };
 export const COINGECKO_PLAN: string;
 export const COINGECKO_MONTHLY_LIMIT: number;
 export const UPSTREAM_FETCH_INTERVAL_SEC: number;

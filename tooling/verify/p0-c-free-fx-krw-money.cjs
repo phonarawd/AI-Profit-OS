@@ -26,6 +26,16 @@ try {
   fails.push("fx-display-policy selftest: " + (e && e.message ? e.message : e));
 }
 
+const ingest = require(path.join(
+  root,
+  "services/market-intelligence/src/fx-ingest-decision.cjs",
+));
+try {
+  ingest.selftestFxIngestDecision();
+} catch (e) {
+  fails.push("fx-ingest-decision selftest: " + (e && e.message ? e.message : e));
+}
+
 const fx = require(path.join(
   root,
   "services/market-intelligence/src/fx-snapshot-formula.cjs",
@@ -134,6 +144,9 @@ if (!cgIdx.includes("MANUAL_TICK_DISABLED") || !cgIdx.includes("ALLOW_MANUAL_TIC
 if (!cgIdx.includes("nest_ingest_unconfigured") || !cgIdx.includes("forwarded === 1")) {
   fails.push("CoinGecko success must require Nest publication when live");
 }
+if (!cgIdx.includes("nest_ingest_rejected") || !cgIdx.includes("published")) {
+  fails.push("CoinGecko must treat Nest ok:false as unpublished");
+}
 if (!/lastTick\s*=\s*result/.test(cgIdx) || !/now - lastFetchMs < MIN_FETCH_GAP_MS/.test(cgIdx)) {
   fails.push("CoinGecko failed attempts must still respect the free-quota fetch gap");
 }
@@ -151,6 +164,17 @@ if (/divAmount|mulAmount/.test(frank)) {
 if (!frank.includes("UPSTREAM_TIMEOUT_MS") || !frank.includes("AbortController")) {
   fails.push("Frankfurter upstream fetch must have an explicit timeout");
 }
+const frankIdx = read("workers/frankfurter-adapter/src/index.ts");
+if (!frankIdx.includes("MANUAL_TICK_DISABLED") || !frankIdx.includes("ALLOW_MANUAL_TICK")) {
+  fails.push("Frankfurter manual HTTP tick must be fail-closed by config");
+}
+if (!frankIdx.includes("nest_ingest_rejected") || !frankIdx.includes("published")) {
+  fails.push("Frankfurter must treat Nest ok:false as unpublished");
+}
+const frankToml = read("workers/frankfurter-adapter/wrangler.toml");
+if (!frankToml.includes('ALLOW_MANUAL_TICK = "false"')) {
+  fails.push("Frankfurter production/default manual tick must be disabled");
+}
 
 const nestFx = read("services/api-nest/src/opportunities/fx-snapshot.service.ts");
 if (!nestFx.includes("classifyFxFreshness") || !nestFx.includes("krwDisplayAvailable")) {
@@ -159,8 +183,19 @@ if (!nestFx.includes("classifyFxFreshness") || !nestFx.includes("krwDisplayAvail
 if (!nestFx.includes("rate_provenance?.usdtKrw?.capturedAt")) {
   fails.push("KRW display must use usdtKrw provenance, not row captured_at");
 }
+if (!nestFx.includes("decideFxIngest") || !nestFx.includes("carryLeg")) {
+  fails.push("Nest FX ingest must use shared per-leg decision + read-time expiry");
+}
 if (/UPDATE public\.fx_snapshots/.test(nestFx)) {
   fails.push("fx_snapshots immutability regression");
+}
+
+const nestIngest = read("services/api-nest/src/adapters/adapters.admin.service.ts");
+if (
+  !nestIngest.includes("InternalServerErrorException") ||
+  !nestIngest.includes("FX_INGEST_FAILED")
+) {
+  fails.push("Nest FX ingest failure must not return HTTP success");
 }
 
 const userSvc = read("services/api-nest/src/opportunities/opportunities.user.service.ts");
@@ -246,6 +281,19 @@ if (!moneyUi.includes("formatKrwApproxLine")) {
 const moneyFormat = read("packages/ui/components/money/money-format.ts");
 if (!moneyFormat.includes('`${sign}₩${abs}`')) {
   fails.push("signed KRW must render sign before won symbol");
+}
+const signedPlus = ingest.formatSignedMoneyLines("24.18", "33540");
+const signedMinus = ingest.formatSignedMoneyLines("-8.42", "-11680");
+if (signedPlus.krwLine !== "약 +₩33540" || signedMinus.krwLine !== "약 -₩11680") {
+  fails.push("signed KRW behavioral contract drifted");
+}
+if (signedPlus.krwLine.includes("₩+") || signedMinus.krwLine.includes("₩-")) {
+  fails.push("signed KRW must not place the sign after the won symbol");
+}
+
+const moneyCss = read("packages/ui/components/money/MoneyAmount.module.css");
+if (!moneyCss.includes(".usdt") || !moneyCss.includes(".krw") || !moneyCss.includes("font-weight: 780")) {
+  fails.push("MoneyAmount must keep USDT/KRW hierarchy in its own CSS");
 }
 
 const copy = read("packages/ui/copy/ko/money.ts");

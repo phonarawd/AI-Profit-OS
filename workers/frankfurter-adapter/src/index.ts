@@ -121,8 +121,17 @@ async function runTick(env: Env) {
           observations,
         }),
       });
-      if (res.ok) forwarded = 1;
-      else forwardError = `nest_ingest_${res.status}`;
+      const nestBody = (await res.json().catch(() => null)) as
+        | { ok?: boolean; error?: string }
+        | null;
+      if (res.ok && nestBody && nestBody.ok === false) {
+        forwarded = 0;
+        forwardError = nestBody.error ?? "nest_ingest_rejected";
+      } else if (res.ok) {
+        forwarded = 1;
+      } else {
+        forwardError = `nest_ingest_${res.status}`;
+      }
     } catch {
       forwardError = "nest_ingest_network_error";
     }
@@ -130,6 +139,7 @@ async function runTick(env: Env) {
     forwardError = "nest_ingest_unconfigured";
   }
 
+  const published = forwarded === 1;
   const ok = !quote.error && forwarded === 1;
   return {
     ok,
@@ -141,6 +151,7 @@ async function runTick(env: Env) {
     date: quote.date ?? null,
     observations: observations.length,
     forwarded,
+    published,
     error: quote.error ?? forwardError ?? undefined,
     yahooJp: false,
   };

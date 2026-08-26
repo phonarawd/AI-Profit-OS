@@ -170,8 +170,17 @@ async function runTick(env: Env) {
           observations,
         }),
       });
-      if (res.ok) forwarded = 1;
-      else forwardError = `nest_ingest_${res.status}`;
+      const nestBody = (await res.json().catch(() => null)) as
+        | { ok?: boolean; error?: string }
+        | null;
+      if (res.ok && nestBody && nestBody.ok === false) {
+        forwarded = 0;
+        forwardError = nestBody.error ?? "nest_ingest_rejected";
+      } else if (res.ok) {
+        forwarded = 1;
+      } else {
+        forwardError = `nest_ingest_${res.status}`;
+      }
     } catch {
       forwardError = "nest_ingest_network_error";
     }
@@ -181,7 +190,7 @@ async function runTick(env: Env) {
 
   const estimatedMonthlyCalls = Math.ceil((30 * 24 * 3600) / UPSTREAM_INTERVAL_SEC);
   const published = quote.dryRun || forwarded === 1;
-  const ok = (!quote.error && published) || quote.dryRun;
+  const ok = Boolean(quote.dryRun) || (!quote.error && forwarded === 1);
   const error = quote.error ?? forwardError ?? undefined;
   const result = {
     ok,
@@ -192,6 +201,7 @@ async function runTick(env: Env) {
     providerObservedAt: quote.providerObservedAt ?? null,
     observations: observations.length,
     forwarded,
+    published,
     error,
     yahooJp: false,
     reused: false,

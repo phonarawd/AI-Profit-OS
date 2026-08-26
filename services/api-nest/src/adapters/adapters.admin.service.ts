@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   Optional,
   forwardRef,
 } from "@nestjs/common";
@@ -430,6 +431,14 @@ export class AdaptersAdminService {
         observedAt,
       });
       fxSnapshotId = fxResult.snapshotId;
+      if (!fxResult.ok && !body.dryRun) {
+        throw new InternalServerErrorException({
+          ok: false,
+          adapterId,
+          error: fxResult.reason ?? "FX_INGEST_FAILED",
+          fxSnapshotId: null,
+        });
+      }
     }
 
     // PTF-00C §8/§9 — always-report heartbeat, even on total/zero-listing

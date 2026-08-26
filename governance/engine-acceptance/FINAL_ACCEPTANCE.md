@@ -27,13 +27,13 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-04ef3c7de4dd-2ff1760b7d72
 PREDECESSOR_BASELINE_ID = ea-baseline-229e7777f9b0-2d4567b3a2c8
 REBASE_ID = pending
-LIVE_AGGREGATE = b416afb96f89438b3ec424500001228749e3f8e53458397a17771953f03af602
+LIVE_AGGREGATE = 4f9d46aa712f5ccb8c4551b5eaa8bf4b6bea15207f3a4da3199e140664bdea46
 BASELINE_AGGREGATE = 2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8
 PATH_COUNT_LIVE = 451
 PATH_COUNT_BASELINE = 450
-CHANGED_PATHS = 9
+CHANGED_PATHS = 10
 ADDED_PATHS = 1
-MUTATED_PATHS = 8
+MUTATED_PATHS = 9
 MISSING_PATHS = 0
 EXIT_GATE = P0-B provenance + P0-C current-fx display · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 QA0-QA9 재실행 전까지 ISSUED 금지
 ```
@@ -44,10 +44,11 @@ P0-B (`p0/p0-b-runtime-preflight`) 가 Nest protected-scope 2경로를 변경했
 live aggregate ≠ baseline → 이전 ISSUED 인증은 current-authoritative 가 아니다.
 은폐 금지 · `STATUS = NOT_ISSUED` · `CERT_ISSUED = 0` · `PROTECTED_SCOPE_DRIFT = 1` · `REBASE_REQUIRED = 1`.
 
-변경 경로 (9):
+변경 경로 (10):
 - services/api-nest/src/health.controller.ts
 - services/api-nest/src/config/nest-provenance.ts (added)
 - schemas/current-fx-approx.v1.json
+- services/api-nest/src/adapters/adapters.admin.service.ts
 - services/api-nest/src/opportunities/current-fx-approx.service.ts
 - services/api-nest/src/opportunities/current-fx-approx.user.controller.ts
 - services/api-nest/src/opportunities/fx-snapshot.service.ts
