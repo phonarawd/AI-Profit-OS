@@ -4,6 +4,7 @@ type SurfaceProps = HTMLAttributes<HTMLElement> & {
   as?: ElementType;
   children: ReactNode;
   interactive?: boolean;
+  href?: string;
 };
 
 function cx(...values: Array<string | false | null | undefined>) {
