@@ -1,5 +1,6 @@
 @import "@aipo/ui/tokens/lux-theme.css";
 @import "../components/spark-shell/consumer-spark-a11y.css";
+@import "../components/putduk-premium/premium-foundation.css";
 
 html,
 body {
