@@ -3,6 +3,7 @@
 import { KycFlow, type KycSubmitPayload } from "@aipo/ui/components/kyc";
 import { T } from "@aipo/ui/copy/ko";
 import { useEffect, useState } from "react";
+import { PremiumStatus } from "../../../components/putduk-premium";
 import {
   AccountAuthActions,
   AccountFrame,
@@ -26,6 +27,17 @@ function statusLabel(status: KycStatus): string {
   if (status === "approved") return "출금에 필요한 본인 확인이 되어 있어요.";
   if (status === "rejected") return "본인 확인이 반려되었어요.";
   return "출금하려면 본인 확인이 필요해요.";
+}
+
+function statusVisual(status: KycStatus): {
+  label: string;
+  tone: "live" | "success" | "warning" | "danger";
+  live?: boolean;
+} {
+  if (status === "pending") return { label: "확인 중", tone: "live", live: true };
+  if (status === "approved") return { label: "본인 확인 완료", tone: "success" };
+  if (status === "rejected") return { label: "다시 확인 필요", tone: "danger" };
+  return { label: "본인 확인 필요", tone: "warning" };
 }
 
 export function KycClient() {
@@ -111,11 +123,30 @@ export function KycClient() {
     );
   }
 
+  const visual = statusVisual(status);
+
   return (
     <AccountFrame title={T.kyc.pageTitle} view="ready" testId="kyc-page">
-      <p className={styles.note} data-testid="kyc-status" data-kyc-status={status}>
-        {statusLabel(status)}
-      </p>
+      <section className={styles.statusPanel} aria-labelledby="kyc-current-status">
+        <div className={styles.statusPanelTop}>
+          <div>
+            <p className={styles.statusPanelKicker}>현재 상태</p>
+            <h2 id="kyc-current-status" className={styles.statusPanelTitle}>
+              {statusLabel(status)}
+            </h2>
+          </div>
+          <PremiumStatus label={visual.label} tone={visual.tone} live={visual.live} />
+        </div>
+        <p className={styles.statusPanelBody}>
+          {status === "approved"
+            ? "추가로 제출할 내용이 없어요. 필요한 기능을 그대로 이용하면 됩니다."
+            : status === "pending"
+              ? "제출한 내용을 확인하고 있어요. 상태가 바뀌면 이 화면에서 확인할 수 있습니다."
+              : status === "rejected"
+                ? "아래 안내를 확인하고 필요한 내용을 다시 제출해 주세요."
+                : "아래 정보를 차례대로 입력하면 본인 확인을 시작할 수 있어요."}
+        </p>
+      </section>
       {status === "rejected" && rejectReason ? (
         <p className={styles.err}>{rejectReason}</p>
       ) : null}
