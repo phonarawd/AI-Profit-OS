@@ -30,10 +30,16 @@
   height: 18px;
 }
 
+.mobileRoot,
 .mobileHeader,
 .mobileMain,
 .bottomNav {
   display: flex;
+}
+
+.mobileRoot {
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .desktop {
@@ -398,6 +404,7 @@
     color: #08111f;
   }
 
+  .mobileRoot,
   .mobileHeader,
   .mobileMain,
   .bottomNav {
@@ -594,9 +601,25 @@
     background: #07101d;
   }
 
+  .topbarBell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    min-width: 48px;
+    height: 48px;
+    min-height: 48px;
+    margin: 0;
+    padding: 0;
+    border-radius: 12px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
   .topbarBell img {
     width: 22px;
     height: 22px;
+    pointer-events: none;
   }
 
   .topDivider {
@@ -609,6 +632,10 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0 10px 0 4px;
+    border-radius: 12px;
     color: #fff;
     text-decoration: none;
   }
@@ -696,11 +723,20 @@
     color: #08111f;
   }
 
-  .profileSummary span {
+  .profileSummary [data-testid="account-stage"] {
     display: block;
     font-size: 12px;
     line-height: 16px;
     color: #667085;
+  }
+
+  .profileSummary :global(.pt-premium-status[data-tone="live"]) {
+    color: #9f1239;
+    background: #ffe4ec;
+  }
+
+  .profileSummary :global(.pt-premium-status span) {
+    color: inherit;
   }
 
   .logoutBtn {
@@ -916,7 +952,9 @@
   .deposit,
   .withdraw,
   .row,
-  .navItem {
+  .navItem,
+  .topbarBell,
+  .topUser {
     transition: none !important;
     transform: none !important;
   }

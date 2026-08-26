@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useSyncExternalStore } from "react";
 import { SD_ASSETS } from "../../components/spark-dash-home/assets";
 import {
   PremiumCard,
@@ -14,16 +13,6 @@ import { AccountAuthActions, type AccountView } from "./AccountFrame";
 import { HUB_COPY } from "./account-hub-copy";
 import { HUB_ASSETS } from "./account-hub-assets";
 import styles from "./account-hub.module.css";
-
-function subscribeDesktop(onChange: () => void) {
-  const mq = window.matchMedia("(min-width: 1024px)");
-  mq.addEventListener("change", onChange);
-  return () => mq.removeEventListener("change", onChange);
-}
-
-function desktopSnapshot() {
-  return window.matchMedia("(min-width: 1024px)").matches;
-}
 
 const SIDE_NAV = [
   { href: "/", label: HUB_COPY.navHome, icon: SD_ASSETS.iconHome },
@@ -128,11 +117,19 @@ export function AccountHub({
   logoutView: "idle" | "saving" | "unavailable";
   onLogout: () => void;
 }) {
-  const desktop = useSyncExternalStore(subscribeDesktop, desktopSnapshot, () => false);
   const line = profileLine(stage, view);
   const ready = view === "ready";
   const status = hubStatus(view, stage, logoutView);
   const showProfileContinue = Boolean(ready && stage && stage !== "B_complete");
+  const shared = {
+    line,
+    status,
+    view,
+    ready,
+    logoutView,
+    showProfileContinue,
+    onLogout,
+  };
 
   return (
     <div
@@ -140,30 +137,12 @@ export function AccountHub({
       data-testid="me-hub"
       data-account-view={view}
       data-account-hub="v2.1"
-      data-account-layout={desktop ? "desktop" : "mobile"}
       aria-busy={view === "loading"}
     >
-      {!desktop ? (
-        <AccountHubMobile
-          line={line}
-          status={status}
-          view={view}
-          ready={ready}
-          logoutView={logoutView}
-          showProfileContinue={showProfileContinue}
-          onLogout={onLogout}
-        />
-      ) : (
-        <AccountHubDesktop
-          line={line}
-          status={status}
-          view={view}
-          ready={ready}
-          logoutView={logoutView}
-          showProfileContinue={showProfileContinue}
-          onLogout={onLogout}
-        />
-      )}
+      <div className={styles.mobileRoot} data-account-layout="mobile">
+        <AccountHubMobile {...shared} />
+      </div>
+      <AccountHubDesktop {...shared} />
     </div>
   );
 }
@@ -375,7 +354,7 @@ function AccountHubDesktop({
   onLogout: () => void;
 }) {
   return (
-    <div className={styles.desktop}>
+    <div className={styles.desktop} data-account-layout="desktop">
       <aside className={styles.sidebar}>
         <Link className={`${styles.sideBrand} pt-premium-focus`} href="/">
           <span className={styles.sideBrandRow}>

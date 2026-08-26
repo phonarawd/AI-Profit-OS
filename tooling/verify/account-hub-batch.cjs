@@ -145,6 +145,19 @@ if (!weekly.includes("data={null}")) {
   fail("market-weekly must not invent briefing numbers");
 }
 
+const hub = read("apps/web/app/me/AccountHub.tsx");
+if (!hub.includes('data-account-layout="desktop"') || !hub.includes('data-account-layout="mobile"')) {
+  fail("account hub must keep both layout markers in source");
+}
+
+const hubCss = read("apps/web/app/me/account-hub.module.css");
+if (!/\.topbarBell\s*\{[^}]*min-height:\s*48px/.test(hubCss)) {
+  fail("desktop topbar notification must have a 48px hit target");
+}
+if (!/\.topUser\s*\{[^}]*min-height:\s*48px/.test(hubCss)) {
+  fail("desktop top-user must have a 48px hit target");
+}
+
 const guidePage = read("apps/web/app/me/guide/GuidePage.tsx");
 if (!guidePage.includes("PremiumSurface") || !guidePage.includes("AccountFrame")) {
   fail("GuidePage must wrap AccountFrame + PremiumSurface");
