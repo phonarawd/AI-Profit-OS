@@ -241,3 +241,31 @@ The final release decision needs evidence for every row below. A missing row is 
 | Production ops | explicit production-deploy authorization recorded separately |
 
 Release remains blocked if any critical truth is unknown, stale, inferred from an older SHA, or represented only by a local/static check when the required gate is runtime/browser/production evidence.
+
+## 15. Main branch governance observation
+
+Observation snapshot: 2026-08-26. Treat this as an operational observation, not a permanent repository contract; re-read the live ruleset before every merge decision.
+
+At this snapshot the active main ruleset requires pull requests and has a required-status-check rule, but the required check list contains only `verify-gate`. `engine-acceptance` and `consumer-spark-worldclass` are not enforced as required status checks by that live ruleset, and an always-on repository-role bypass actor is present.
+
+Consequences:
+
+- GitHub being technically able to merge is **not** evidence that the Engine governance gate is satisfied.
+- PR #76 remains HOLD while Engine Acceptance is not genuinely issued even if GitHub reports `mergeable=true`.
+- A bypass must never be used to convert a governance failure into an apparent release PASS.
+- This readiness PR does not mutate branch protection or rulesets. Any decision to strengthen required checks is a separate repository-governance change requiring explicit authorization and its own change review.
+
+## 16. Legacy/open PR disposition queue
+
+This queue is a current integration aid only. Re-evaluate heads and diffs before acting; do not close or merge based solely on this document.
+
+| PR | Snapshot classification | Reason / safe next point |
+| --- | --- | --- |
+| #63 Admin Money | `REUSE_AFTER_REBASE` | only 3 direct files; admin wallet + UI QA/E2E; no direct P0-C file overlap; branch is 7 commits behind current main, so rebase and full admin QA are required before use |
+| #69 KRW deposit instructions | `HOLD_UNTIL_P0_C_EPOCH_CLOSED` | useful consumer feature, but adds/changes `services/api-nest/src/wallet/*` under Engine protected root; integrating it now would create new protected-scope drift before P0-C acceptance closes |
+| #68 BrowserStack gate | `BLOCKED_COMPATIBILITY` | official BrowserStack Playwright compatibility currently does not cover repository Playwright 1.62.1; do not downgrade main or fabricate a real-device PASS just to close the PR |
+| #72 validation-only | `OBSOLETE_CLOSE_CANDIDATE` | evidence-only / DO NOT MERGE snapshot on an older line; current main contains newer accepted history |
+| #74 validation-only | `OBSOLETE_CLOSE_CANDIDATE` | exact-head evidence-only / DO NOT MERGE snapshot; not a product merge candidate |
+| #50 Phase A opportunity promotion | `REDESIGN_OR_CLOSE_CANDIDATE` | 125 commits behind current main at snapshot, currently non-mergeable, and directly overlaps P0-C protected files such as `adapters.admin.service.ts` and `opportunities.mi.ts`; do not resurrect by blind rebase/cherry-pick |
+
+Recommended product order after P0-C acceptance is: settle #75/#77/#78 integration first, then reconsider #63, then create a fresh current-main implementation for #69 if still desired. #50 should be mined only for still-valid intent/tests, not merged as-is.
