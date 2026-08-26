@@ -2,9 +2,10 @@
   min-height: 100dvh;
   display: grid;
   background:
-    radial-gradient(circle at 88% -8%, rgba(255, 46, 99, 0.18), transparent 28rem),
-    #08111f;
-  color: #ffffff;
+    radial-gradient(circle at 92% -4%, rgba(255, 49, 109, 0.1), transparent 23rem),
+    radial-gradient(circle at -8% 30%, rgba(107, 60, 255, 0.08), transparent 24rem),
+    #f7f8fc;
+  color: #141821;
   overflow-x: hidden;
 }
 
@@ -14,29 +15,71 @@
   min-width: 0;
   display: flex;
   justify-content: center;
-  padding: 28px 16px 48px;
+  align-items: flex-start;
+  padding: max(22px, env(safe-area-inset-top)) 16px max(42px, env(safe-area-inset-bottom));
 }
 
 .csp-auth-panel {
+  position: relative;
   width: min(100%, 560px);
   min-width: 0;
+  padding: 24px 18px 20px;
+  border: 1px solid rgba(17, 24, 39, 0.07);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 18px 54px rgba(16, 24, 40, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.csp-auth-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 28px;
+  width: 110px;
+  height: 1px;
+  background: linear-gradient(90deg, #6b3cff, rgba(255, 49, 109, 0));
+  opacity: 0.7;
 }
 
 .csp-auth-panel > * { max-width: none !important; }
 .csp-auth-panel :where(button, a, input, select, textarea) { font: inherit; }
-.csp-auth-panel :where(input, select, textarea) {
-  background: #111d2d;
-  border-color: #24344b;
-  color: #fff;
+.csp-auth-panel :where(button) {
+  min-height: 52px;
+  border-radius: 15px;
+  transition:
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 160ms ease;
 }
-.csp-auth-panel :where(input, textarea)::placeholder { color: #93a0b3; opacity: 1; }
-.csp-auth-panel :focus-visible { outline: 3px solid #ff6a91; outline-offset: 3px; }
+.csp-auth-panel :where(button:not(:disabled)):active { transform: scale(0.985); }
+.csp-auth-panel :where(input, select, textarea) {
+  min-height: 52px;
+  border-radius: 14px;
+  background: #fff;
+  border-color: #dce2ea;
+  color: #151923;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+.csp-auth-panel :where(input, select, textarea):focus {
+  border-color: rgba(107, 60, 255, 0.56);
+  box-shadow: 0 0 0 4px rgba(107, 60, 255, 0.09);
+}
+.csp-auth-panel :where(input, textarea)::placeholder { color: #98a2b3; opacity: 1; }
+.csp-auth-panel :focus-visible { outline: 3px solid rgba(107, 60, 255, 0.32); outline-offset: 3px; }
+
+@media (min-width: 640px) {
+  .csp-auth-main { align-items: center; padding: 48px 28px; }
+  .csp-auth-panel { padding: 34px; border-radius: 28px; }
+}
 
 @media (min-width: 1280px) {
   .csp-auth-shell {
     grid-template-columns: minmax(520px, 0.95fr) minmax(560px, 1.05fr);
-    background: #f6f7fb;
-    color: #121721;
+    background: #f7f8fc;
   }
 
   .csp-auth-story {
@@ -47,49 +90,87 @@
     grid-template-rows: auto 1fr auto;
     padding: 38px 54px 52px;
     background:
-      radial-gradient(circle at 85% 25%, rgba(255, 45, 107, 0.2), transparent 20rem),
-      radial-gradient(circle at 15% 85%, rgba(73, 94, 255, 0.16), transparent 26rem),
-      #07101d;
+      radial-gradient(circle at 82% 22%, rgba(255, 49, 109, 0.22), transparent 20rem),
+      radial-gradient(circle at 14% 86%, rgba(91, 65, 255, 0.2), transparent 27rem),
+      linear-gradient(145deg, #07111f 0%, #0a1423 58%, #101225 100%);
     color: #fff;
     overflow: hidden;
+    isolation: isolate;
+  }
+
+  .csp-auth-story::before,
+  .csp-auth-story::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    border-radius: 999px;
+    filter: blur(1px);
+    pointer-events: none;
+  }
+  .csp-auth-story::before {
+    width: 340px;
+    height: 340px;
+    right: -170px;
+    top: 18%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 80px rgba(255, 49, 109, 0.12);
+  }
+  .csp-auth-story::after {
+    width: 210px;
+    height: 210px;
+    left: -100px;
+    bottom: 14%;
+    border: 1px solid rgba(122, 98, 255, 0.2);
   }
 
   .csp-auth-brand {
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    width: fit-content;
     font-size: 1.65rem;
     font-weight: 900;
     letter-spacing: -0.05em;
   }
-  .csp-auth-brand img { width: 20px; height: 32px; }
-  .csp-auth-copy { align-self: center; max-width: 560px; }
+  .csp-auth-brand img {
+    width: 20px;
+    height: 32px;
+    filter: drop-shadow(0 0 12px rgba(255, 49, 109, 0.42));
+  }
+
+  .csp-auth-copy { align-self: center; max-width: 590px; }
   .csp-auth-kicker {
     margin: 0 0 18px;
-    color: #ff7aa5;
-    font-size: 0.78rem;
-    font-weight: 800;
+    color: #ff86aa;
+    font-size: 0.76rem;
+    font-weight: 820;
     letter-spacing: 0.14em;
   }
   .csp-auth-copy h1 {
     margin: 0;
-    font-size: clamp(2.8rem, 4vw, 4.5rem);
-    line-height: 1.04;
-    letter-spacing: -0.055em;
+    max-width: 570px;
+    font-size: clamp(2.8rem, 4vw, 4.45rem);
+    font-weight: 850;
+    line-height: 1.045;
+    letter-spacing: -0.058em;
+    text-wrap: balance;
   }
   .csp-auth-copy > p:last-child {
     margin: 24px 0 0;
     max-width: 510px;
-    color: #b7c3d3;
-    font-size: 1.03rem;
-    line-height: 1.7;
+    color: #b8c3d2;
+    font-size: 1.02rem;
+    line-height: 1.72;
+    word-break: keep-all;
   }
+
   .csp-auth-art {
     position: absolute;
-    right: 8%;
-    bottom: 5%;
-    opacity: 0.78;
-    filter: drop-shadow(0 0 26px rgba(255, 45, 107, 0.32));
+    right: 7%;
+    bottom: 4%;
+    opacity: 0.72;
+    filter: drop-shadow(0 0 30px rgba(255, 49, 109, 0.28));
+    animation: csp-auth-float 5.6s ease-in-out infinite;
   }
   .csp-auth-art img { width: min(22vw, 300px); height: auto; }
 
@@ -97,26 +178,35 @@
     align-items: center;
     padding: 56px clamp(44px, 6vw, 96px);
     background:
-      radial-gradient(circle at 88% -10%, rgba(255, 45, 107, 0.08), transparent 24rem),
-      #f6f7fb;
+      radial-gradient(circle at 88% -10%, rgba(255, 49, 109, 0.07), transparent 25rem),
+      radial-gradient(circle at 14% 110%, rgba(107, 60, 255, 0.06), transparent 26rem),
+      #f7f8fc;
   }
 
   .csp-auth-panel {
     width: min(100%, 600px);
-    padding: 34px;
-    border: 1px solid #e1e6ee;
-    border-radius: 24px;
-    background: rgba(255, 255, 255, 0.96);
-    box-shadow: 0 20px 60px rgba(18, 23, 33, 0.1);
+    padding: 38px;
+    border: 1px solid rgba(17, 24, 39, 0.075);
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow:
+      0 28px 80px rgba(16, 24, 40, 0.1),
+      0 1px 0 rgba(255, 255, 255, 0.92) inset;
   }
-  .csp-auth-panel :where(input, select, textarea) {
-    background: #fff;
-    border-color: #d9e0ea;
-    color: #121721;
-  }
-  .csp-auth-panel :where(input, textarea)::placeholder { color: #697386; }
+}
+
+@keyframes csp-auth-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -8px, 0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .csp-auth-shell * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  .csp-auth-shell *,
+  .csp-auth-shell *::before,
+  .csp-auth-shell *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
