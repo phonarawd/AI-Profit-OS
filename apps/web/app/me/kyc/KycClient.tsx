@@ -10,6 +10,7 @@ import {
   type AccountView,
 } from "../AccountFrame";
 import styles from "../account.module.css";
+import kycStyles from "./kyc-premium.module.css";
 
 type KycStatus = "none" | "pending" | "approved" | "rejected";
 
@@ -127,17 +128,17 @@ export function KycClient() {
 
   return (
     <AccountFrame title={T.kyc.pageTitle} view="ready" testId="kyc-page">
-      <section className={styles.statusPanel} aria-labelledby="kyc-current-status">
-        <div className={styles.statusPanelTop}>
+      <section className={kycStyles.statusPanel} aria-labelledby="kyc-current-status">
+        <div className={kycStyles.statusPanelTop}>
           <div>
-            <p className={styles.statusPanelKicker}>현재 상태</p>
-            <h2 id="kyc-current-status" className={styles.statusPanelTitle}>
+            <p className={kycStyles.statusPanelKicker}>현재 상태</p>
+            <h2 id="kyc-current-status" className={kycStyles.statusPanelTitle}>
               {statusLabel(status)}
             </h2>
           </div>
           <PremiumStatus label={visual.label} tone={visual.tone} live={visual.live} />
         </div>
-        <p className={styles.statusPanelBody}>
+        <p className={kycStyles.statusPanelBody}>
           {status === "approved"
             ? "추가로 제출할 내용이 없어요. 필요한 기능을 그대로 이용하면 됩니다."
             : status === "pending"
