@@ -49,6 +49,10 @@ function documentConnectSrc(spec, production) {
 function documentCsp(spec, production) {
   const h = spec.hosts;
   const script = ["'self'", "'unsafe-inline'"];
+  if (!production) {
+    // next dev React Refresh는 eval이 필요하다. 프로덕션 CSP는 fail-closed 유지.
+    script.push("'unsafe-eval'");
+  }
   const directives = {
     "default-src": ["'self'"],
     "script-src": script,

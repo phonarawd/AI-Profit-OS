@@ -142,10 +142,10 @@
   box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 12%, transparent);
 }
 
-.pt-premium-status[data-tone="live"] { color: var(--pt-premium-spark); background: rgba(255, 49, 109, 0.08); }
-.pt-premium-status[data-tone="success"] { color: var(--pt-premium-profit); background: rgba(18, 183, 106, 0.09); }
-.pt-premium-status[data-tone="warning"] { color: var(--pt-premium-warning); background: rgba(247, 144, 9, 0.09); }
-.pt-premium-status[data-tone="danger"] { color: var(--pt-premium-danger); background: rgba(240, 68, 56, 0.09); }
+.pt-premium-status[data-tone="live"] { color: #be123c; background: rgba(255, 49, 109, 0.08); }
+.pt-premium-status[data-tone="success"] { color: #0b6b3f; background: rgba(18, 183, 106, 0.09); }
+.pt-premium-status[data-tone="warning"] { color: #9a4d00; background: rgba(247, 144, 9, 0.09); }
+.pt-premium-status[data-tone="danger"] { color: #b42318; background: rgba(240, 68, 56, 0.09); }
 
 .pt-premium-status[data-live="true"] .pt-premium-status-dot {
   animation: pt-premium-live-pulse 1.8s ease-in-out infinite;
