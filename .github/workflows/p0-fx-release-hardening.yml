@@ -1,0 +1,51 @@
+name: p0-fx-release-hardening
+
+on:
+  push:
+    branches:
+      - "ops/p0-c-fx-release-hardening-*"
+    paths:
+      - "infra/workers.manifest.json"
+      - "tooling/deploy/cf-fx-workers.cjs"
+      - "tooling/deploy/cf-fx-health-smoke.cjs"
+      - "tooling/deploy/cf-fx-rollback.cjs"
+      - "tooling/verify/p0-fx-release-path.cjs"
+      - ".github/workflows/p0-fx-release-hardening.yml"
+  pull_request:
+    branches:
+      - main
+      - p0/p0-c-free-fx-krw-money-ux
+    paths:
+      - "infra/workers.manifest.json"
+      - "tooling/deploy/cf-fx-workers.cjs"
+      - "tooling/deploy/cf-fx-health-smoke.cjs"
+      - "tooling/deploy/cf-fx-rollback.cjs"
+      - "tooling/verify/p0-fx-release-path.cjs"
+      - ".github/workflows/p0-fx-release-hardening.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: p0-fx-release-hardening-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - name: Verify isolated FX release path
+        run: node tooling/verify/p0-fx-release-path.cjs
+
+      - name: Production plan remains mutation-free
+        run: node tooling/deploy/cf-fx-workers.cjs production --dry-run
+
+      - name: Preview plan remains mutation-free
+        run: node tooling/deploy/cf-fx-workers.cjs preview --dry-run
