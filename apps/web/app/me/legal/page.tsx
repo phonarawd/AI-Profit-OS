@@ -2,40 +2,49 @@
 
 import Link from "next/link";
 import { T } from "@aipo/ui/copy/ko";
+import { PremiumCard, PremiumSurface } from "../../../components/putduk-premium";
 import { AccountFrame } from "../AccountFrame";
-import styles from "../account.module.css";
+import styles from "./legal.module.css";
+
+const HUB_LINKS = [
+  { href: "/me/legal/terms", title: T.legal.termsTitle },
+  { href: "/me/legal/privacy", title: T.legal.privacyTitle },
+  { href: "/me/legal/oss", title: T.legal.ossTitle },
+  { href: "/me/legal/license", title: T.legal.licenseTitle },
+] as const;
 
 /** UI §50.3 / §50.9 — legal hub */
 export default function Page() {
   return (
     <AccountFrame title={T.legal.hubTitle} view="ready" testId="legal-hub" hideTitle>
-    <main className={styles.surface}>
-      <h1 className="text-xl font-semibold">{T.legal.hubTitle}</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">{T.operator.legal.body}</p>
-      <p className="mt-3 text-sm text-lux-text-muted">{T.operator.legal.licenseLine}</p>
-      <ul className="mt-6 space-y-2 text-sm">
-        <li>
-          <Link href="/me/legal/terms" className="text-lux-accent underline">
-            {T.legal.termsTitle}
-          </Link>
-        </li>
-        <li>
-          <Link href="/me/legal/privacy" className="text-lux-accent underline">
-            {T.legal.privacyTitle}
-          </Link>
-        </li>
-        <li>
-          <Link href="/me/legal/oss" className="text-lux-accent underline">
-            {T.legal.ossTitle}
-          </Link>
-        </li>
-        <li>
-          <Link href="/me/legal/license" className="text-lux-accent underline">
-            {T.legal.licenseTitle}
-          </Link>
-        </li>
-      </ul>
-    </main>
+      <div className={styles.page}>
+        <PremiumSurface as="main" className={styles.surface}>
+          <header className={styles.header}>
+            <h1 id="legal-hub-title" className="pt-premium-title">
+              {T.legal.hubTitle}
+            </h1>
+            <p className={styles.context}>{T.operator.legal.body}</p>
+            <p className={styles.context}>{T.operator.legal.licenseLine}</p>
+          </header>
+          <nav aria-labelledby="legal-hub-title">
+            <ul className={styles.cards}>
+              {HUB_LINKS.map((item) => (
+                <li key={item.href}>
+                  <PremiumCard
+                    as={Link}
+                    href={item.href}
+                    interactive
+                    className={`${styles.card} pt-premium-focus`}
+                  >
+                    <span className={styles.cardTitle}>{item.title}</span>
+                    <span className={styles.cardAffordance} aria-hidden="true" />
+                  </PremiumCard>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </PremiumSurface>
+      </div>
     </AccountFrame>
   );
 }

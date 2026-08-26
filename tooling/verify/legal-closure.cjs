@@ -33,14 +33,39 @@ for (const [file, testId] of routes) {
   if (!src.includes(testId)) fail(`${file} must expose ${testId}`);
 }
 
+const hub = read("apps/web/app/me/legal/page.tsx");
 const terms = read("apps/web/app/me/legal/terms/page.tsx");
 const privacy = read("apps/web/app/me/legal/privacy/page.tsx");
+const oss = read("apps/web/app/me/legal/oss/page.tsx");
 const license = read("apps/web/app/me/legal/license/page.tsx");
 if (!terms.includes("T.legal.terms") || !privacy.includes("T.legal.privacy")) {
   fail("legal docs must use existing T.legal owners");
 }
+if (!oss.includes("T.legal.oss") || !oss.includes("LegalDoc")) {
+  fail("oss must keep existing T.legal.oss owner through LegalDoc");
+}
+if (!terms.includes("LegalDoc") || !privacy.includes("LegalDoc")) {
+  fail("terms/privacy must keep existing LegalDoc ownership");
+}
 if (!license.includes("@aipo/operator-entity")) {
   fail("license must use existing operator-entity owner");
+}
+if (license.includes("PRE-OWNED WATCHES") || /["']1135431["']/.test(license.replace("/kyb/trade-license-1135431.html", ""))) {
+  fail("license must not hard-code operator identity beside the existing print-summary path");
+}
+for (const href of [
+  "/me/legal/terms",
+  "/me/legal/privacy",
+  "/me/legal/oss",
+  "/me/legal/license",
+]) {
+  if (!hub.includes(`"${href}"`)) fail(`legal hub must keep ${href}`);
+}
+if (!license.includes('rel="noopener noreferrer"')) {
+  fail("license verification/print links must keep noopener noreferrer");
+}
+if (!license.includes("/kyb/trade-license-1135431.html")) {
+  fail("license must keep the existing print-summary path");
 }
 const layout = read("apps/web/app/me/layout.tsx");
 if (layout.includes("LegacyAppShell") || layout.includes("AppShellRoot")) {
@@ -49,6 +74,22 @@ if (layout.includes("LegacyAppShell") || layout.includes("AppShellRoot")) {
 const spec = read("tooling/e2e/specs/legal-closure.spec.cjs");
 if (!spec.includes("legal-hub") || !spec.includes("legal-terms")) {
   fail("committed spec must cover legal hub and terms");
+}
+for (const needle of [
+  "legal-privacy",
+  "legal-oss",
+  "legal-license",
+  "operator-entity.instance.json",
+  'a[href="/me/legal/terms"]',
+  "390",
+  "768",
+  "1024",
+  "1440",
+]) {
+  if (!spec.includes(needle)) fail(`committed spec must cover ${needle}`);
+}
+if (!spec.includes("legal hub a11y") || !spec.includes("legal license a11y")) {
+  fail("committed spec must run axe on hub and license");
 }
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");

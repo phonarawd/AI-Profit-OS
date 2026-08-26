@@ -3,8 +3,13 @@
 import Link from "next/link";
 import { T } from "@aipo/ui/copy/ko";
 import operatorEntity from "@aipo/operator-entity";
+import {
+  PremiumCard,
+  PremiumStatus,
+  PremiumSurface,
+} from "../../../../components/putduk-premium";
 import { AccountFrame } from "../../AccountFrame";
-import styles from "../../account.module.css";
+import styles from "../legal.module.css";
 
 const entity = operatorEntity as {
   legalName: string;
@@ -36,150 +41,143 @@ export default function Page() {
   const L = T.operator.license;
   const statusLabel =
     entity.licenseStatus === "active" ? L.statusActive : L.statusPending;
+  const statusTone =
+    entity.licenseStatus === "active" ? "success" : "warning";
 
   return (
     <AccountFrame title={L.pageTitle} view="ready" testId="legal-license" hideTitle>
-    <main className={styles.surface}>
-      <h1 className="text-xl font-semibold">{L.pageTitle}</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">
-        {L.pageSubtitle}
-      </p>
-      <p className="mt-4 rounded-lg border border-lux-border bg-lux-surface p-3 text-xs leading-relaxed text-lux-text-muted">
-        {L.disclaimer}
-      </p>
+      <div className={styles.page}>
+        <PremiumSurface as="main" className={styles.surface}>
+          <header className={styles.header}>
+            <h1 className="pt-premium-title">{L.pageTitle}</h1>
+            <p className={styles.context}>{L.pageSubtitle}</p>
+          </header>
 
-      <section className="mt-6 space-y-4 rounded-xl border border-lux-border bg-lux-surface p-4">
-        <dl className="grid gap-3 text-sm">
-          <div>
-            <dt className="text-lux-text-muted">{L.fields.legalName}</dt>
-            <dd className="mt-1 font-semibold">{entity.legalName}</dd>
-          </div>
-          <div>
-            <dt className="text-lux-text-muted">{L.fields.legalForm}</dt>
-            <dd className="mt-1">{entity.legalForm}</dd>
-          </div>
-          <div>
-            <dt className="text-lux-text-muted">{L.fields.licenseNumber}</dt>
-            <dd className="mt-1 font-semibold tracking-wide">{entity.licenseNumber}</dd>
-          </div>
-          <div>
-            <dt className="text-lux-text-muted">{L.fields.issuingAuthority}</dt>
-            <dd className="mt-1">{entity.issuingAuthority}</dd>
-          </div>
-          <div>
-            <dt className="text-lux-text-muted">{L.fields.licenseStatus}</dt>
-            <dd className="mt-1">
-              <span className={styles.statusBadge}>
-                {statusLabel}
-              </span>
-            </dd>
-          </div>
-          <div>
-            <dt className="text-lux-text-muted">{L.fields.primaryActivity}</dt>
-            <dd className="mt-1">
-              {entity.primaryActivityKo}
-              <span className="mt-1 block text-xs text-lux-text-muted">
-                {entity.primaryActivityEn}
-              </span>
-            </dd>
-          </div>
-          {entity.tradingBrand ? (
-            <div>
-              <dt className="text-lux-text-muted">{L.fields.tradingBrand}</dt>
-              <dd className="mt-1">{entity.tradingBrand}</dd>
-            </div>
-          ) : null}
-          {entity.relatedWebsite ? (
-            <div>
-              <dt className="text-lux-text-muted">{L.fields.relatedWebsite}</dt>
-              <dd className="mt-1">
-                <a
-                  href={entity.relatedWebsite}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-lux-accent underline"
-                >
-                  {entity.relatedWebsite.replace(/^https?:\/\//, "")}
-                </a>
-              </dd>
-            </div>
-          ) : null}
-        </dl>
-      </section>
+          <PremiumCard className={styles.disclaimer}>
+            <p>{L.disclaimer}</p>
+          </PremiumCard>
 
-      <section className="mt-6">
-        <h2 className="text-sm font-semibold">{L.fields.licensedActivities}</h2>
-        <ul className="mt-3 space-y-2">
-          {entity.licensedActivities.map((item) => (
-            <li
-              key={item.activityEn}
-              className="rounded-lg border border-lux-border bg-lux-surface p-3 text-sm"
+          <PremiumCard as="section" className={styles.panel}>
+            <dl className={styles.fields}>
+              <div className={styles.field}>
+                <dt>{L.fields.legalName}</dt>
+                <dd className={styles.identity}>{entity.legalName}</dd>
+              </div>
+              <div className={styles.field}>
+                <dt>{L.fields.legalForm}</dt>
+                <dd>{entity.legalForm}</dd>
+              </div>
+              <div className={styles.field}>
+                <dt>{L.fields.licenseNumber}</dt>
+                <dd className={styles.licenseNumber}>{entity.licenseNumber}</dd>
+              </div>
+              <div className={styles.field}>
+                <dt>{L.fields.issuingAuthority}</dt>
+                <dd>{entity.issuingAuthority}</dd>
+              </div>
+              <div className={styles.field}>
+                <dt>{L.fields.licenseStatus}</dt>
+                <dd>
+                  <PremiumStatus label={statusLabel} tone={statusTone} />
+                </dd>
+              </div>
+              <div className={styles.field}>
+                <dt>{L.fields.primaryActivity}</dt>
+                <dd>
+                  {entity.primaryActivityKo}
+                  <span className={styles.secondary}>{entity.primaryActivityEn}</span>
+                </dd>
+              </div>
+              {entity.tradingBrand ? (
+                <div className={styles.field}>
+                  <dt>{L.fields.tradingBrand}</dt>
+                  <dd>{entity.tradingBrand}</dd>
+                </div>
+              ) : null}
+              {entity.relatedWebsite ? (
+                <div className={styles.field}>
+                  <dt>{L.fields.relatedWebsite}</dt>
+                  <dd>
+                    <a
+                      href={entity.relatedWebsite}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.external}
+                    >
+                      {entity.relatedWebsite.replace(/^https?:\/\//, "")}
+                    </a>
+                  </dd>
+                </div>
+              ) : null}
+            </dl>
+          </PremiumCard>
+
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>{L.fields.licensedActivities}</h2>
+            <ul className={styles.stack}>
+              {entity.licensedActivities.map((item) => (
+                <li key={item.activityEn}>
+                  <PremiumCard className={styles.block}>
+                    <p className={styles.itemTitle}>{item.activityKo}</p>
+                    <p className={styles.itemMeta}>{item.activityEn}</p>
+                  </PremiumCard>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>{L.fields.addresses}</h2>
+            <div className={styles.stack}>
+              {entity.addresses.map((address) => (
+                <PremiumCard key={address.label} className={styles.block}>
+                  <p className={styles.addressLabel}>{address.label}</p>
+                  <p className={styles.addressBody}>
+                    {address.lines.join(", ")}
+                    <br />
+                    {address.city}, {address.country}
+                  </p>
+                </PremiumCard>
+              ))}
+            </div>
+          </section>
+
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>{L.fields.verification}</h2>
+            <ul className={styles.stack}>
+              {entity.verificationUrls.map((item) => (
+                <li key={item.url}>
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.external}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <div className={styles.actions}>
+            <a
+              href="/kyb/trade-license-1135431.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${styles.printLink} pt-premium-focus`}
             >
-              <p>{item.activityKo}</p>
-              <p className="mt-1 text-xs text-lux-text-muted">
-                {item.activityEn}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="mt-6">
-        <h2 className="text-sm font-semibold">{L.fields.addresses}</h2>
-        <div className="mt-3 space-y-2">
-          {entity.addresses.map((address) => (
-            <div
-              key={address.label}
-              className="rounded-lg border border-lux-border bg-lux-surface p-3 text-sm"
+              {L.printLink}
+            </a>
+            <Link
+              href="/me/legal"
+              className={`${styles.backLink} pt-premium-focus`}
             >
-              <p className="text-xs font-semibold uppercase tracking-wide text-lux-text-muted">
-                {address.label}
-              </p>
-              <p className="mt-2 leading-relaxed">
-                {address.lines.join(", ")}
-                <br />
-                {address.city}, {address.country}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mt-6">
-        <h2 className="text-sm font-semibold">{L.fields.verification}</h2>
-        <ul className="mt-3 space-y-2 text-sm">
-          {entity.verificationUrls.map((item) => (
-            <li key={item.url}>
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-lux-accent underline"
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <div className="mt-8 flex flex-col gap-3">
-        <a
-          href="/kyb/trade-license-1135431.html"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center justify-center rounded-lg border border-lux-border px-4 py-3 text-sm font-medium"
-        >
-          {L.printLink}
-        </a>
-        <Link
-          href="/me/legal"
-          className="text-center text-sm text-lux-accent underline"
-        >
-          {L.backToLegal}
-        </Link>
+              {L.backToLegal}
+            </Link>
+          </div>
+        </PremiumSurface>
       </div>
-    </main>
     </AccountFrame>
   );
 }
