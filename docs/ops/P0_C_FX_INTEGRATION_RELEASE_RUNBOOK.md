@@ -96,6 +96,12 @@ After #75 is accepted/merged, rebase or retarget #77 onto current main.
 
 Because #77 is currently stacked on #75, its absence of main-target PR CI is not a PASS. Once it targets current main, run the normal gate/worldclass/UI QA set on the actual final head.
 
+### Step D — FX release hardening (#78)
+
+PR #78 is stacked directly on #76 and is readiness-only. It must not be merged independently of the accepted P0-C line.
+
+After #76 is accepted and merged, rebase #78 onto the resulting main and rerun its dedicated hardening CI. Keep production apply blocked until the provider-commercial migration and production Nest ingest prerequisites are separately satisfied.
+
 ## 7. FX production rollout prerequisites
 
 All must be true before a production FX worker deployment can even be considered:
@@ -162,3 +168,76 @@ Use only evidence-backed values:
 - `ROLLED_BACK`
 
 Never map code review or `wrangler deploy` exit code alone to full production `PASS`.
+
+## 11. Current stacked-PR collision matrix
+
+Snapshot anchor: PR #76 HEAD `bbb7b18e30ec06d0895792731e4b794d4911e748`, PR #75 HEAD `1edcf87c7f1fbdc267100631eb01b109aaef90e8`, PR #77 HEAD `ced4e34793257c34bb60ea88ff3efde17a5ad696`. Recalculate this matrix whenever any head moves.
+
+| Pair | Direct path overlap at snapshot | Integration meaning |
+| --- | ---: | --- |
+| #75 vs #76 | 0 | execution preview/components are isolated; later semantic integration is via money ReactNode slots |
+| #77 vs #76 | 0 | premium account/auth/onboarding UI does not directly edit P0-C Money/FX files |
+| #77 vs #78 | 0 | Cursor UI paths and FX release/ops paths are fully disjoint |
+| #75 vs #77 | stacked ancestry | #77 is based on #75; do not treat them as independent merge order |
+| #76 vs #78 | stacked ancestry | #78 is based on #76; readiness work must follow the accepted P0-C line |
+
+A zero direct path overlap is not a guarantee of zero semantic conflict. Re-run full integration QA after rebasing each stacked PR onto the newly accepted main.
+
+## 12. Commercial CoinGecko migration design — future separate product PR
+
+Do not retrofit this inside the release-hardening PR. The current product code explicitly implements Demo authentication, so commercial production is not a secret-only operation.
+
+A future provider-commercial PR should:
+
+1. Make provider tier/auth configuration explicit rather than inferring it from a key value.
+2. Support the approved commercial API base URL and matching authentication header documented by CoinGecko.
+3. Keep the API key server/Worker-only and never expose it to the browser.
+4. Preserve one batched upstream request for KRW/USD and the current 10-minute single-flight budget policy unless the commercial plan intentionally changes that policy.
+5. Preserve upstream/Nest timeouts, publication truth, immutable snapshots, per-leg freshness and anomaly fail-closed behavior.
+6. Preserve production manual tick disabled by default.
+7. Update health so the configured provider tier/auth mode can be verified without leaking secret material.
+8. Add deterministic tests proving Demo and commercial headers/base URLs cannot be accidentally mixed.
+9. Re-run P0-C money/FX verification and the applicable acceptance/governance process before production deploy.
+
+Do not rename or rotate production secrets until the new code path and rollout plan have been reviewed together. A paid key inserted into the current Demo header/base implementation is not a valid migration.
+
+## 13. Stacked UI CI closure
+
+PR #77 currently targets PR #75's branch, while normal `gate` and `consumer-spark-worldclass` pull-request workflows target `main`. Missing checks on #77 therefore remain `NOT_RUN`, not PASS.
+
+Safe closure strategy:
+
+1. While #77 is stacked, use bounded local/static checks and keep every unexecuted browser/build/axe item explicitly `NOT_RUN`.
+2. Do not broaden the global workflow trigger merely to make a stacked draft green; that would create unrelated workflow governance drift.
+3. Accept/merge #76 first when its own governance allows it.
+4. Rebase and validate #75 on accepted main; integrate shared MoneyAmount only then.
+5. After #75 is accepted, retarget/rebase #77 onto current main.
+6. Run the normal main-target `gate`, `consumer-spark-worldclass`, Chromium route continuity and accessibility checks on the actual final #77 head.
+7. Only those final-head runs may be used for merge readiness.
+
+If Cursor pushes a new #77 head before this sequence, recompute its direct changed-file set and collision matrix before relying on earlier review.
+
+## 14. Final release QA matrix
+
+The final release decision needs evidence for every row below. A missing row is not implicitly green.
+
+| Area | Required evidence |
+| --- | --- |
+| Engine governance | current epoch valid; certificate genuinely issued |
+| P0-B | eBay deploy/runtime isolation and existing resilience checks green |
+| P0-C money | USDT authoritative; KRW secondary; stale/transport fail-closed |
+| Provider | commercial CoinGecko auth/license path cleared and tested |
+| Worker isolation | exact `p0-fx` two-worker plan; phase1 not used for P0-C rollout |
+| Worker health | correct adapter/service/role; ingest configured; credential configured; manual tick false |
+| Cron | scheduled fetch/publication observed after propagation window |
+| Nest | production ingest reachable and persistence confirmed |
+| Current-FX API | fresh/stale/unavailable behavior verified against persisted truth |
+| Web | no browser CoinGecko/Frankfurter fan-out; 45s refresh targets own API only |
+| Execution | server state authoritative; MoneyAmount injected without client FX math |
+| UI | 390/768/1024/1440 responsive checks on final integration head |
+| Accessibility | keyboard focus, hit targets, reduced motion, axe/browser evidence |
+| Routes | main consumer route continuity on final head |
+| Rollback | both FX pre-deploy version IDs captured; rollback preflight proves both exist |
+| Production ops | explicit production-deploy authorization recorded separately |
+
+Release remains blocked if any critical truth is unknown, stale, inferred from an older SHA, or represented only by a local/static check when the required gate is runtime/browser/production evidence.
