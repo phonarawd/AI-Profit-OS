@@ -9,6 +9,10 @@ import {
   type BenefitSummaryModel,
 } from "@aipo/ui/components/benefits";
 import {
+  PremiumEmptyState,
+  PremiumSurface,
+} from "../../../components/putduk-premium";
+import {
   AccountAuthActions,
   AccountFrame,
   type AccountView,
@@ -26,6 +30,13 @@ type BenefitsListResponse = {
 };
 
 type BenefitsSummaryResponse = BenefitSummaryModel;
+
+const TITLE = "\uD61C\uD0DD";
+const LOADING = "\uBD88\uB7EC\uC624\uB294 \uC911\u2026";
+const LOGIN_LINE = "\uB85C\uADF8\uC778\uD558\uBA74 \uD61C\uD0DD\uC744 \uBCFC \uC218 \uC788\uC5B4\uC694.";
+const LOGIN_TITLE = "\uB85C\uADF8\uC778\uD558\uBA74 \uD61C\uD0DD\uC744 \uBCFC \uC218 \uC788\uC5B4\uC694";
+const UNAVAILABLE = "\uD61C\uD0DD\uC744 \uD655\uC778\uD560 \uC218 \uC5C6\uC74C";
+const UNAVAILABLE_TITLE = "\uC9C0\uAE08\uC740 \uD655\uC778\uD560 \uC218 \uC5C6\uC5B4\uC694";
 
 export default function Page() {
   const [view, setView] = useState<AccountView>("loading");
@@ -101,32 +112,39 @@ export default function Page() {
 
   if (view === "loading") {
     return (
-      <AccountFrame title="혜택" view="loading" testId="benefits-page">
-        <p className={styles.lead}>불러오는 중…</p>
+      <AccountFrame title={TITLE} view="loading" testId="benefits-page">
+        <p className={styles.lead}>{LOADING}</p>
       </AccountFrame>
     );
   }
   if (view === "unauthorized") {
     return (
-      <AccountFrame title="혜택" view="unauthorized" testId="benefits-page">
-        <p className={styles.lead}>로그인하면 혜택을 볼 수 있어요.</p>
-        <AccountAuthActions />
+      <AccountFrame title={TITLE} view="unauthorized" testId="benefits-page">
+        <PremiumSurface>
+          <PremiumEmptyState
+            title={LOGIN_TITLE}
+            description={LOGIN_LINE}
+            action={<AccountAuthActions />}
+          />
+        </PremiumSurface>
       </AccountFrame>
     );
   }
   if (view === "unavailable") {
     return (
-      <AccountFrame title="혜택" view="unavailable" testId="benefits-page">
-        <p className={styles.err}>혜택을 확인할 수 없음</p>
+      <AccountFrame title={TITLE} view="unavailable" testId="benefits-page">
+        <PremiumSurface>
+          <PremiumEmptyState title={UNAVAILABLE_TITLE} description={UNAVAILABLE} />
+        </PremiumSurface>
       </AccountFrame>
     );
   }
 
   return (
-    <AccountFrame title="혜택" view="ready" testId="benefits-page" hideTitle>
-      <div className={styles.surface}>
+    <AccountFrame title={TITLE} view="ready" testId="benefits-page" hideTitle>
+      <PremiumSurface className={styles.surface}>
         <BenefitHub summary={summary} sections={sections} campaigns={campaigns} />
-      </div>
+      </PremiumSurface>
     </AccountFrame>
   );
 }

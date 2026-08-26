@@ -56,7 +56,9 @@ if (layout.includes("LegacyAppShell") || layout.includes("AppShellRoot")) {
   fail("me layout must not remount leftover 5-tab chrome");
 }
 
-const profile = read("apps/web/app/me/ProfileClient.tsx");
+const profile =
+  read("apps/web/app/me/ProfileClient.tsx") +
+  read("apps/web/app/me/AccountHub.tsx");
 if (!profile.includes("fetchAuthSession")) fail("profile must use fetchAuthSession");
 if (profile.includes("SafeStopTrustMetric") || profile.includes("depositUsdt")) {
   fail("profile must not invent money zeros");
@@ -95,7 +97,7 @@ for (const needle of [
 ]) {
   if (!support.includes(needle)) fail(`support missing ${needle}`);
 }
-if (support.includes("라이브 채팅") || support.includes("fake chat")) {
+if (support.includes("\uB77C\uC774\uBE0C \uCC44\uD305") || support.includes("fake chat")) {
   fail("support must not invent live chat");
 }
 
@@ -104,15 +106,18 @@ if (!peotteok.includes("usePeotteokChat") || !peotteok.includes("ai-orb.svg")) {
   fail("peotteok must keep chat owner and reuse spark-dash ai-orb");
 }
 
+const leftoverA = "\uACE8\uACA9";
+const leftoverB = "\uB3C4\uBA54\uC778 todo";
+const leftoverC = "\uBCF8\uAD6C\uD604";
 const events = read("apps/web/app/me/events/page.tsx");
 const strategies = read("apps/web/app/me/strategies/page.tsx");
-if (events.includes("골격") || events.includes("도메인 todo") || events.includes("본구현")) {
+if (events.includes(leftoverA) || events.includes(leftoverB) || events.includes(leftoverC)) {
   fail("events must not show developer leftover copy");
 }
 if (
-  strategies.includes("골격") ||
-  strategies.includes("도메인 todo") ||
-  strategies.includes("본구현")
+  strategies.includes(leftoverA) ||
+  strategies.includes(leftoverB) ||
+  strategies.includes(leftoverC)
 ) {
   fail("strategies must not show developer leftover copy");
 }
