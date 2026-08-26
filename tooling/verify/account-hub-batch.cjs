@@ -27,6 +27,9 @@ const required = [
   "apps/web/app/me/settings/SettingsClient.tsx",
   "apps/web/app/me/peotteok/page.tsx",
   "apps/web/app/me/support/page.tsx",
+  "apps/web/app/me/guide/GuidePage.tsx",
+  "apps/web/app/me/guide/guide-copy.ts",
+  "apps/web/app/me/guide/guide.module.css",
   "apps/web/app/me/guide/faq/page.tsx",
   "apps/web/app/me/guide/usdt/page.tsx",
   "apps/web/app/me/guide/get-usdt/page.tsx",
@@ -140,6 +143,51 @@ if (!partners.includes("MarketPartnerGrid")) {
 const weekly = read("apps/web/app/me/guide/market-weekly/page.tsx");
 if (!weekly.includes("data={null}")) {
   fail("market-weekly must not invent briefing numbers");
+}
+
+const guidePage = read("apps/web/app/me/guide/GuidePage.tsx");
+if (!guidePage.includes("PremiumSurface") || !guidePage.includes("AccountFrame")) {
+  fail("GuidePage must wrap AccountFrame + PremiumSurface");
+}
+
+const guideCss = read("apps/web/app/me/guide/guide.module.css");
+if (!/\.cta\s*\{[\s\S]*min-height:\s*48px/.test(guideCss)) {
+  fail("guide CTA must keep a 48px hit target");
+}
+
+const guideRoutes = [
+  "apps/web/app/me/guide/faq/page.tsx",
+  "apps/web/app/me/guide/usdt/page.tsx",
+  "apps/web/app/me/guide/get-usdt/page.tsx",
+  "apps/web/app/me/guide/principal/page.tsx",
+  "apps/web/app/me/guide/revenue/page.tsx",
+  "apps/web/app/me/guide/partners/page.tsx",
+  "apps/web/app/me/guide/market-weekly/page.tsx",
+];
+for (const rel of guideRoutes) {
+  const src = read(rel);
+  if (!src.includes("GuidePage")) fail(`${rel} must use GuidePage chrome`);
+  if (/coingecko\.com|frankfurter\.app|MoneyAmount|current-fx/i.test(src)) {
+    fail(`${rel} must not add FX or money clones`);
+  }
+}
+
+const getUsdt = read("apps/web/app/me/guide/get-usdt/page.tsx");
+if (!getUsdt.includes("GetUsdtGuide") || !getUsdt.includes("get-usdt-guide")) {
+  fail("get-usdt must keep GetUsdtGuide owner");
+}
+
+const usdt = read("apps/web/app/me/guide/usdt/page.tsx");
+if (!usdt.includes("/me/guide/get-usdt") || !usdt.includes("WhyUsdtCard")) {
+  fail("usdt must keep educational owner and get-usdt route");
+}
+
+const principal = read("apps/web/app/me/guide/principal/page.tsx");
+if (
+  !principal.includes("/wallet/withdraw?mode=principal") ||
+  !principal.includes("data-principal-reachable")
+) {
+  fail("principal must keep the real withdraw route");
 }
 
 const ads = read("apps/web/app/ads/page.tsx");

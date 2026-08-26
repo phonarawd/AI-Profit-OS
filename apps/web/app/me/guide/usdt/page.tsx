@@ -7,29 +7,27 @@ import {
   WhyUsdtCard,
 } from "@aipo/ui/components/trust";
 import { T } from "@aipo/ui/copy/ko";
-import { AccountFrame } from "../../AccountFrame";
-import styles from "../../account.module.css";
+import { GuidePage } from "../GuidePage";
+import styles from "../guide.module.css";
 
 /** UI §38.2 — /me/guide/usdt */
 export default function Page() {
   return (
-    <AccountFrame title={T.guide.usdt.title} view="ready" testId="guide-usdt" hideTitle>
-    <main className={`${styles.surface} space-y-6`}>
-      <header className="space-y-1">
-        <h1 className="text-xl font-semibold">{T.guide.usdt.title}</h1>
-        <p className="text-sm text-lux-text-muted">{T.guide.usdt.lead}</p>
+    <GuidePage title={T.guide.usdt.title} testId="guide-usdt">
+      <header className={styles.header}>
+        <h1 className="pt-premium-title">{T.guide.usdt.title}</h1>
+        <p className="pt-premium-description">{T.guide.usdt.lead}</p>
       </header>
       <WhyUsdtCard showSeniorAnalogy />
       <UsdtVsKrwCompareTable />
       <TaxDisclaimerBlock />
       <Link
         href="/me/guide/get-usdt"
-        className="inline-block text-sm text-lux-accent underline"
+        className={`${styles.cta} pt-premium-focus`}
         data-testid="guide-usdt-to-get"
       >
         {T.guide.getUsdt.title}
       </Link>
-    </main>
-    </AccountFrame>
+    </GuidePage>
   );
 }
