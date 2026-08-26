@@ -44,6 +44,12 @@ jobs:
       - name: Verify isolated FX release path
         run: node tooling/verify/p0-fx-release-path.cjs
 
+      - name: Verify P0-B eBay deploy isolation remains intact
+        run: node tooling/verify/ebay-worker-deploy-path.cjs
+
+      - name: Verify P0-C money and FX product truth remains intact
+        run: node tooling/verify/p0-c-free-fx-krw-money.cjs
+
       - name: Production plan remains mutation-free
         run: node tooling/deploy/cf-fx-workers.cjs production --dry-run
 
