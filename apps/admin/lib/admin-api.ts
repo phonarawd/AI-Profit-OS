@@ -57,11 +57,10 @@ export async function adminRequest<T>(
   const extra = init.headers;
   if (extra && typeof extra === "object" && !Array.isArray(extra)) {
     for (const [k, v] of Object.entries(extra as Record<string, string>)) {
+      if (k.toLowerCase() === "authorization") continue;
       headers[k] = v;
     }
   }
-  delete headers.Authorization;
-  delete headers.authorization;
   const url = adminUrl(path);
   if (!url) {
     return {
