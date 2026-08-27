@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { applyFontScale, type FontScaleKey } from "../../tokens/font-scale";
 import { T } from "../../copy/ko";
 import { useOptionalToast } from "../toast";
 
 type ToneBand = "young" | "mid" | "senior";
 type DepositPref = "usdt" | "krw";
+type PrefsView = "loading" | "ready" | "unavailable";
 
-type NotifyPrefs = {
+export type NotifyPrefs = {
   master: boolean;
   opportunity: boolean;
   wallet: boolean;
@@ -18,6 +19,16 @@ type NotifyPrefs = {
   opsMessage: boolean;
   strategyMatch: boolean;
 };
+
+const PREF_KEYS: (keyof NotifyPrefs)[] = [
+  "master",
+  "opportunity",
+  "wallet",
+  "notice",
+  "campaign",
+  "opsMessage",
+  "strategyMatch",
+];
 
 const NOTIFY_KEYS: { key: keyof NotifyPrefs; label: string }[] = [
   { key: "master", label: T.settings.notify.master },
@@ -29,48 +40,118 @@ const NOTIFY_KEYS: { key: keyof NotifyPrefs; label: string }[] = [
   { key: "strategyMatch", label: T.settings.notify.strategyMatch },
 ];
 
-const DEFAULT_PREFS: NotifyPrefs = {
-  master: true,
-  opportunity: true,
-  wallet: true,
-  notice: true,
-  campaign: true,
-  opsMessage: true,
-  strategyMatch: true,
+const prefsWriteState: {
+  confirmed: NotifyPrefs | null;
+  desired: NotifyPrefs | null;
+  queued: NotifyPrefs | null;
+  inFlight: boolean;
+} = {
+  confirmed: null,
+  desired: null,
+  queued: null,
+  inFlight: false,
 };
+
+export function parseNotificationPrefs(raw: unknown): NotifyPrefs | null {
+  if (raw === null || typeof raw !== "object" || Array.isArray(raw)) {
+    return null;
+  }
+  const rec = raw as Record<string, unknown>;
+  if (typeof rec.userId !== "string" || rec.userId.trim() === "") {
+    return null;
+  }
+  const prefs = {} as NotifyPrefs;
+  for (const key of PREF_KEYS) {
+    const value = rec[key];
+    if (typeof value !== "boolean") return null;
+    prefs[key] = value;
+  }
+  return prefs;
+}
 
 /**
  * SettingsPanel — §50.1 fontScale 3단 · toneBand · depositPref · §50.1n 알림 · Light 토글 0
  */
-export function SettingsPanel() {
+export function SettingsPanel({
+  onPrefsAuthFailure,
+}: {
+  onPrefsAuthFailure?: () => void;
+}) {
   const toast = useOptionalToast();
   const [fontScale, setFontScale] = useState<FontScaleKey>("md");
   const [toneBand, setToneBand] = useState<ToneBand>("mid");
   const [depositPref, setDepositPref] = useState<DepositPref>("usdt");
-  const [notify, setNotify] = useState<NotifyPrefs>(DEFAULT_PREFS);
+  const [prefsView, setPrefsView] = useState<PrefsView>(() =>
+    prefsWriteState.desired ? "ready" : "loading",
+  );
+  const [notify, setNotify] = useState<NotifyPrefs | null>(
+    () => prefsWriteState.desired,
+  );
+  const onPrefsAuthFailureRef = useRef(onPrefsAuthFailure);
+  onPrefsAuthFailureRef.current = onPrefsAuthFailure;
 
   useEffect(() => {
     let cancelled = false;
+    if (!prefsWriteState.inFlight && !prefsWriteState.queued) {
+      prefsWriteState.confirmed = null;
+      prefsWriteState.desired = null;
+    }
     async function loadPrefs() {
       try {
         const res = await fetch("/api/v1/me/notification-prefs", {
           credentials: "include",
+          cache: "no-store",
           headers: { Accept: "application/json" },
         });
-        if (!res.ok || cancelled) return;
-        const json = (await res.json()) as Partial<NotifyPrefs>;
         if (cancelled) return;
-        setNotify({
-          master: json.master !== false,
-          opportunity: json.opportunity !== false,
-          wallet: json.wallet !== false,
-          notice: json.notice !== false,
-          campaign: json.campaign !== false,
-          opsMessage: json.opsMessage !== false,
-          strategyMatch: json.strategyMatch !== false,
-        });
+        if (res.status === 401 || res.status === 403) {
+          setNotify(null);
+          setPrefsView("unavailable");
+          onPrefsAuthFailureRef.current?.();
+          return;
+        }
+        if (!res.ok) {
+          setNotify(null);
+          setPrefsView("unavailable");
+          return;
+        }
+        let raw: unknown = null;
+        try {
+          raw = await res.json();
+        } catch {
+          setNotify(null);
+          setPrefsView("unavailable");
+          return;
+        }
+        const parsed = parseNotificationPrefs(raw);
+        if (!parsed) {
+          setNotify(null);
+          setPrefsView("unavailable");
+          return;
+        }
+        if (
+          prefsWriteState.inFlight ||
+          prefsWriteState.queued ||
+          prefsWriteState.desired
+        ) {
+          const keep = prefsWriteState.desired ?? parsed;
+          setNotify(keep);
+          setPrefsView("ready");
+          return;
+        }
+        prefsWriteState.confirmed = parsed;
+        prefsWriteState.desired = parsed;
+        setNotify(parsed);
+        setPrefsView("ready");
       } catch {
-        /* keep defaults ALL ON */
+        if (cancelled) return;
+        if (prefsWriteState.desired) {
+          setNotify(prefsWriteState.desired);
+          setPrefsView("ready");
+          return;
+        }
+        setNotify(null);
+        setPrefsView("unavailable");
       }
     }
     void loadPrefs();
@@ -79,31 +160,72 @@ export function SettingsPanel() {
     };
   }, []);
 
+  async function flushPrefsWrite() {
+    if (prefsWriteState.inFlight) return;
+    prefsWriteState.inFlight = true;
+    try {
+      while (prefsWriteState.queued) {
+        const sending = prefsWriteState.queued;
+        prefsWriteState.queued = null;
+        try {
+          const res = await fetch("/api/v1/me/notification-prefs", {
+            method: "PUT",
+            credentials: "include",
+            cache: "no-store",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(sending),
+          });
+          if (res.status === 401 || res.status === 403) {
+            prefsWriteState.desired = prefsWriteState.confirmed;
+            prefsWriteState.queued = null;
+            setNotify(prefsWriteState.confirmed);
+            if (!prefsWriteState.confirmed) setPrefsView("unavailable");
+            onPrefsAuthFailureRef.current?.();
+            return;
+          }
+          if (!res.ok) {
+            throw new Error("prefs_put_failed");
+          }
+          prefsWriteState.confirmed = sending;
+          if (prefsWriteState.desired === sending) {
+            setNotify(sending);
+          }
+        } catch {
+          if (prefsWriteState.queued) continue;
+          if (prefsWriteState.desired !== sending) continue;
+          prefsWriteState.desired = prefsWriteState.confirmed;
+          setNotify(prefsWriteState.confirmed);
+          if (!prefsWriteState.confirmed) setPrefsView("unavailable");
+        }
+      }
+    } finally {
+      prefsWriteState.inFlight = false;
+      if (prefsWriteState.queued) void flushPrefsWrite();
+    }
+  }
+
+  function toggleNotify(key: keyof NotifyPrefs) {
+    if (prefsView !== "ready" && !prefsWriteState.desired) return;
+    const current = prefsWriteState.desired;
+    if (!current) return;
+    const next = { ...current, [key]: !current[key] };
+    prefsWriteState.desired = next;
+    prefsWriteState.queued = next;
+    setNotify(next);
+    setPrefsView("ready");
+    void flushPrefsWrite();
+  }
+
   const onFont = (next: FontScaleKey) => {
     setFontScale(next);
     if (typeof document !== "undefined") applyFontScale(next);
     toast?.showToast({ code: "FONT_SCALE_CHANGED" });
   };
 
-  async function toggleNotify(key: keyof NotifyPrefs) {
-    const prev = notify;
-    const next = { ...notify, [key]: !notify[key] };
-    setNotify(next);
-    try {
-      const res = await fetch("/api/v1/me/notification-prefs", {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(next),
-      });
-      if (!res.ok) setNotify(prev);
-    } catch {
-      setNotify(prev);
-    }
-  }
+  const prefsReady = prefsView === "ready" && notify != null;
 
   return (
     <main
@@ -117,34 +239,58 @@ export function SettingsPanel() {
         className="mt-6"
         data-testid="settings-notify"
         id="notify"
+        data-prefs-view={prefsView}
         data-notify-default-all-on={String(T.settings.notify.defaultAllOn)}
       >
         <h2 className="text-sm font-semibold">{T.settings.notify.label}</h2>
         <p className="mt-1 text-xs text-lux-text-muted">
           {T.settings.notify.offPushOnlyNote}
         </p>
-        <ul className="mt-3 space-y-2">
-          {NOTIFY_KEYS.map(({ key, label }) => (
-            <li key={key} className="flex items-center justify-between gap-3">
-              <span className="text-sm">{label}</span>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={notify[key]}
-                data-notify-channel={key}
-                className={[
-                  "touch-target rounded-lux-md border px-3 py-2 text-sm",
-                  notify[key]
-                    ? "border-lux-accent text-lux-accent"
-                    : "border-lux-border text-lux-text-muted",
-                ].join(" ")}
-                onClick={() => void toggleNotify(key)}
-              >
-                {notify[key] ? "켜짐" : "꺼짐"}
-              </button>
-            </li>
-          ))}
-        </ul>
+        {prefsView === "loading" ? (
+          <p
+            className="mt-3 text-sm text-lux-text-muted"
+            data-testid="settings-notify-status"
+            role="status"
+          >
+            {T.settings.notify.loading}
+          </p>
+        ) : null}
+        {prefsView === "unavailable" ? (
+          <p
+            className="mt-3 text-sm text-lux-text-muted"
+            data-testid="settings-notify-status"
+            role="status"
+          >
+            {T.settings.notify.unavailable}
+          </p>
+        ) : null}
+        {prefsReady ? (
+          <ul className="mt-3 space-y-2">
+            {NOTIFY_KEYS.map(({ key, label }) => (
+              <li key={key} className="flex items-center justify-between gap-3">
+                <span className="text-sm" id={`notify-label-${key}`}>
+                  {label}
+                </span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-labelledby={`notify-label-${key}`}
+                  aria-checked={notify[key]}
+                  data-notify-channel={key}
+                  className={[
+                    "touch-target rounded-lux-md border px-3 py-2 text-sm",
+                    notify[key]
+                      ? "border-lux-accent text-lux-accent"
+                      : "border-lux-border text-lux-text-muted",
+                  ].join(" ")}
+                  onClick={() => void toggleNotify(key)}
+                >
+                  {notify[key] ? T.settings.notify.on : T.settings.notify.off}
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </section>
 
       <section className="mt-6" data-testid="settings-font-scale">

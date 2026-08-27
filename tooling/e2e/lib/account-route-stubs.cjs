@@ -35,7 +35,7 @@ const TEST_INBOX = {
   ],
 };
 
-const TEST_PREFS = {
+const TEST_PREF_FLAGS = {
   master: true,
   opportunity: true,
   wallet: true,
@@ -43,6 +43,11 @@ const TEST_PREFS = {
   campaign: true,
   opsMessage: true,
   strategyMatch: true,
+};
+
+const TEST_PREFS = {
+  userId: "qa-account-user",
+  ...TEST_PREF_FLAGS,
 };
 
 const TEST_SESSION = {
@@ -142,13 +147,43 @@ async function stubInbox(page, mode) {
   });
 }
 
-async function stubSettings(page, mode) {
+async function stubSettings(page, mode, options = {}) {
+  const captured = {
+    prefsGetCount: 0,
+    prefsPutCount: 0,
+    prefsPutBodies: [],
+    logoutCount: 0,
+    deleteCount: 0,
+    deleteBodies: [],
+  };
+  const getDelayMs = Number(options.getDelayMs || 0);
+  const putDelayMs = Number(options.putDelayMs || 0);
+  const logoutDelayMs = Number(options.logoutDelayMs || 0);
+  const deleteDelayMs = Number(options.deleteDelayMs || 0);
+  const prefsStatus = Number(options.prefsStatus || 0);
+  const putStatus = Number(options.putStatus || 0);
+  const logoutStatus = Number(options.logoutStatus || 0);
+  const deleteStatus = Number(options.deleteStatus || 0);
+  const prefsNetworkFail = options.prefsNetworkFail === true;
+  const putNetworkFail = options.putNetworkFail === true;
+  const logoutNetworkFail = options.logoutNetworkFail === true;
+  const deleteNetworkFail = options.deleteNetworkFail === true;
+  const prefsBody = options.prefsBody;
+  const prefsRawBody = options.prefsRawBody;
+  let sessionRevoked = false;
+
   await page.route("**/api/v1/**", async (route) => {
     const url = route.request().url();
     const method = route.request().method();
     if (url.includes("/api/v1/auth/session")) {
+      if (sessionRevoked) {
+        return json(route, 401, { error: "unauthorized" });
+      }
       if (mode === "unauthorized") {
         return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "unauthorized403") {
+        return json(route, 403, { error: "forbidden" });
       }
       if (mode === "error") {
         return json(route, 500, { error: "upstream_failed" });
@@ -156,22 +191,97 @@ async function stubSettings(page, mode) {
       return json(route, 200, TEST_SESSION);
     }
     if (url.includes("/api/v1/me/notification-prefs")) {
+      if (method === "PUT") {
+        captured.prefsPutCount += 1;
+        captured.prefsPutBodies.push(route.request().postData() || "");
+        if (putDelayMs > 0) {
+          await new Promise((resolve) => setTimeout(resolve, putDelayMs));
+        }
+        if (putNetworkFail) {
+          return route.abort("failed");
+        }
+        if (putStatus > 0 && putStatus >= 400) {
+          return json(route, putStatus, { error: "prefs_put_failed" });
+        }
+        const sent = route.request().postData();
+        let echoed = TEST_PREFS;
+        try {
+          echoed = { userId: TEST_PREFS.userId, ...JSON.parse(sent || "{}") };
+        } catch {
+          echoed = TEST_PREFS;
+        }
+        return json(route, putStatus > 0 ? putStatus : 200, echoed);
+      }
+      captured.prefsGetCount += 1;
+      if (getDelayMs > 0) {
+        await new Promise((resolve) => setTimeout(resolve, getDelayMs));
+      }
+      if (prefsNetworkFail || mode === "prefsNetwork") {
+        return route.abort("failed");
+      }
       if (mode === "unauthorized") {
         return json(route, 401, { error: "unauthorized" });
       }
-      if (mode === "error") {
+      if (mode === "unauthorized403" || prefsStatus === 403) {
+        return json(route, 403, { error: "forbidden" });
+      }
+      if (prefsStatus === 401) {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "error" || mode === "prefsError" || prefsStatus === 500) {
         return json(route, 500, { error: "upstream_failed" });
       }
-      if (method === "PUT") {
-        return json(route, 200, TEST_PREFS);
+      if (prefsRawBody !== undefined) {
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: prefsRawBody,
+        });
       }
-      return json(route, 200, TEST_PREFS);
+      if (prefsBody !== undefined) {
+        if (prefsBody === null) {
+          return route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: "null",
+          });
+        }
+        return json(route, 200, prefsBody);
+      }
+      return json(route, 200, options.prefs || TEST_PREFS);
     }
     if (url.includes("/api/v1/auth/logout")) {
+      captured.logoutCount += 1;
+      if (logoutDelayMs > 0) {
+        await new Promise((resolve) => setTimeout(resolve, logoutDelayMs));
+      }
+      if (logoutNetworkFail) {
+        return route.abort("failed");
+      }
+      if (logoutStatus >= 400) {
+        return json(route, logoutStatus, { error: "logout_failed" });
+      }
+      sessionRevoked = true;
       return json(route, 200, { ok: true, revoked: true });
+    }
+    if (url.includes("/api/v1/auth/delete-account")) {
+      captured.deleteCount += 1;
+      captured.deleteBodies.push(route.request().postData() || "");
+      if (deleteDelayMs > 0) {
+        await new Promise((resolve) => setTimeout(resolve, deleteDelayMs));
+      }
+      if (deleteNetworkFail) {
+        return route.abort("failed");
+      }
+      if (deleteStatus >= 400) {
+        return json(route, deleteStatus, { error: "delete_failed" });
+      }
+      sessionRevoked = true;
+      return json(route, 200, { ok: true });
     }
     return json(route, 401, { error: "unauthorized" });
   });
+  return captured;
 }
 
 async function stubAccountHub(page, mode) {
@@ -224,6 +334,7 @@ async function stubKyc(page, mode) {
 module.exports = {
   TEST_REFERRAL_ME,
   TEST_INBOX,
+  TEST_PREF_FLAGS,
   TEST_PREFS,
   TEST_SESSION,
   TEST_KYC_NONE,

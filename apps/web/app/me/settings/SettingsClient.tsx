@@ -9,16 +9,26 @@ import {
 } from "@aipo/sdk/auth";
 import { SettingsPanel } from "@aipo/ui/components/settings/SettingsPanel";
 import { T } from "@aipo/ui/copy/ko";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  PremiumCard,
+  PremiumEmptyState,
+  PremiumSurface,
+} from "../../../components/putduk-premium";
 import {
   AccountAuthActions,
   AccountFrame,
   type AccountView,
 } from "../AccountFrame";
-import styles from "../account.module.css";
+import { HUB_COPY } from "../account-hub-copy";
+import styles from "./settings-premium.module.css";
 
 function sessionToken(): string | null {
   return null;
+}
+
+function isAuthFailure(err: unknown): boolean {
+  return isAuthError(err) && (err.status === 401 || err.status === 403);
 }
 
 export function SettingsClient() {
@@ -28,6 +38,14 @@ export function SettingsClient() {
   const [actionView, setActionView] = useState<
     "idle" | "logout-unavail" | "delete-unavail" | "delete-success"
   >("idle");
+  const [logoutBusy, setLogoutBusy] = useState(false);
+  const [deleteBusy, setDeleteBusy] = useState(false);
+  const logoutInFlightRef = useRef(false);
+  const deleteInFlightRef = useRef(false);
+
+  const onPrefsAuthFailure = useCallback(() => {
+    setView("unauthorized");
+  }, []);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -41,7 +59,7 @@ export function SettingsClient() {
         setView(session ? "ready" : "unauthorized");
       } catch (err) {
         if (ac.signal.aborted) return;
-        if (isAuthError(err) && err.status === 401) {
+        if (isAuthFailure(err)) {
           setView("unauthorized");
           return;
         }
@@ -51,32 +69,65 @@ export function SettingsClient() {
     return () => ac.abort();
   }, []);
 
-  async function logout() {
-    try {
-      await logoutAuth({ getAccessToken: sessionToken });
-      setView("unauthorized");
-    } catch {
-      setActionView("logout-unavail");
-    }
+  function logout() {
+    if (logoutInFlightRef.current) return;
+    logoutInFlightRef.current = true;
+    setLogoutBusy(true);
+    void (async () => {
+      try {
+        await logoutAuth({ getAccessToken: sessionToken });
+        setView("unauthorized");
+      } catch (err) {
+        if (isAuthFailure(err)) {
+          setView("unauthorized");
+          return;
+        }
+        setActionView("logout-unavail");
+        logoutInFlightRef.current = false;
+        setLogoutBusy(false);
+      }
+    })();
   }
 
-  async function removeAccount() {
-    try {
-      await deleteAuthAccount(
-        { confirmPhrase: phrase, confirmAgain },
-        { getAccessToken: sessionToken },
-      );
-      setActionView("delete-success");
-      setView("unauthorized");
-    } catch {
-      setActionView("delete-unavail");
-    }
+  function removeAccount() {
+    if (phrase !== DELETE_ACCOUNT_CONFIRM_PHRASE) return;
+    if (confirmAgain !== true) return;
+    if (deleteInFlightRef.current) return;
+    deleteInFlightRef.current = true;
+    setDeleteBusy(true);
+    void (async () => {
+      try {
+        await deleteAuthAccount(
+          { confirmPhrase: phrase, confirmAgain },
+          { getAccessToken: sessionToken },
+        );
+        setActionView("delete-success");
+        setView("unauthorized");
+      } catch (err) {
+        if (isAuthFailure(err)) {
+          setView("unauthorized");
+          return;
+        }
+        setActionView("delete-unavail");
+        deleteInFlightRef.current = false;
+        setDeleteBusy(false);
+      }
+    })();
   }
 
   if (view === "loading") {
     return (
       <AccountFrame title={T.settings.title} view="loading" testId="settings-page">
-        <p className={styles.lead}>불러오는 중…</p>
+        <PremiumSurface
+          as="section"
+          className={styles.surface}
+          aria-busy="true"
+          aria-live="polite"
+        >
+          <p className={`pt-premium-description ${styles.stateCopy}`}>
+            {T.settings.loading}
+          </p>
+        </PremiumSurface>
       </AccountFrame>
     );
   }
@@ -88,11 +139,22 @@ export function SettingsClient() {
         view="unauthorized"
         testId="settings-page"
       >
-        <p className={styles.lead}>로그인하면 설정을 볼 수 있어요.</p>
-        {actionView === "delete-success" ? (
-          <p className={styles.note}>계정 삭제 요청이 접수되었어요.</p>
-        ) : null}
-        <AccountAuthActions />
+        <PremiumSurface as="section" className={styles.surface}>
+          <PremiumEmptyState
+            title={HUB_COPY.loginTitle}
+            description={T.settings.loginToView}
+            action={<AccountAuthActions />}
+          />
+          {actionView === "delete-success" ? (
+            <p
+              className={styles.accountStatus}
+              data-tone="success"
+              role="status"
+            >
+              {T.settings.deleteAccepted}
+            </p>
+          ) : null}
+        </PremiumSurface>
       </AccountFrame>
     );
   }
@@ -104,61 +166,101 @@ export function SettingsClient() {
         view="unavailable"
         testId="settings-page"
       >
-        <p className={styles.err}>설정을 확인할 수 없음</p>
+        <PremiumSurface as="section" className={styles.surface}>
+          <PremiumEmptyState
+            title={HUB_COPY.unavailableTitle}
+            description={T.settings.pageUnavailable}
+          />
+        </PremiumSurface>
       </AccountFrame>
     );
   }
 
   return (
     <AccountFrame title={T.settings.title} view="ready" testId="settings-page" hideTitle>
-      <div className={styles.surface}>
-        <SettingsPanel />
-      </div>
-      <h2 className={styles.sectionTitle}>계정</h2>
-      <div className={styles.actions}>
-        <button type="button" data-testid="settings-logout" onClick={() => void logout()}>
-          로그아웃
-        </button>
-      </div>
-      {actionView === "logout-unavail" ? (
-        <p className={styles.err}>지금은 로그아웃할 수 없음</p>
-      ) : null}
-      <h2 className={styles.sectionTitle}>계정 삭제</h2>
-      <p className={styles.note}>
-        정말 삭제하려면 아래 문구를 그대로 입력하세요.
-      </p>
-      <div className={styles.field}>
-        <label htmlFor="delete-account-phrase">{DELETE_ACCOUNT_CONFIRM_PHRASE}</label>
-        <input
-          id="delete-account-phrase"
-          data-testid="delete-account-phrase"
-          value={phrase}
-          onChange={(e) => setPhrase(e.target.value)}
-          autoComplete="off"
-        />
-        <label>
-          <input
-            type="checkbox"
-            data-testid="delete-account-confirm"
-            checked={confirmAgain}
-            onChange={(e) => setConfirmAgain(e.target.checked)}
-          />{" "}
-          다시 확인했어요
-        </label>
-      </div>
-      <div className={styles.actions}>
-        <button
-          type="button"
-          className={styles.secondary}
-          data-testid="delete-account-submit"
-          onClick={() => void removeAccount()}
+      <div className={styles.page}>
+        <p className={`pt-premium-kicker ${styles.kicker}`}>{HUB_COPY.kicker}</p>
+        <PremiumSurface
+          as="section"
+          className={styles.surface}
+          aria-label={T.settings.title}
         >
-          계정 삭제 요청
-        </button>
+          <div className={styles.owner}>
+            <SettingsPanel onPrefsAuthFailure={onPrefsAuthFailure} />
+          </div>
+        </PremiumSurface>
+        <PremiumCard className={styles.accountCard} data-testid="settings-account-card">
+          <h2 className={styles.accountTitle}>{T.settings.accountSection}</h2>
+          <div className={styles.actions}>
+            <button
+              type="button"
+              data-testid="settings-logout"
+              disabled={logoutBusy}
+              aria-busy={logoutBusy}
+              onClick={() => logout()}
+            >
+              {logoutBusy ? T.settings.logoutBusy : T.settings.logout}
+            </button>
+          </div>
+          {actionView === "logout-unavail" ? (
+            <p
+              className={styles.accountStatus}
+              data-tone="warning"
+              role="status"
+              data-testid="settings-logout-status"
+            >
+              {T.settings.logoutUnavailable}
+            </p>
+          ) : null}
+        </PremiumCard>
+        <PremiumCard className={styles.accountCard} data-testid="settings-delete-card">
+          <h2 className={styles.accountTitle}>{T.settings.deleteTitle}</h2>
+          <p className={styles.accountNote}>{T.settings.deleteLead}</p>
+          <div className={styles.field}>
+            <label htmlFor="delete-account-phrase">{DELETE_ACCOUNT_CONFIRM_PHRASE}</label>
+            <input
+              id="delete-account-phrase"
+              data-testid="delete-account-phrase"
+              value={phrase}
+              onChange={(e) => setPhrase(e.target.value)}
+              autoComplete="off"
+              disabled={deleteBusy}
+            />
+            <label>
+              <input
+                type="checkbox"
+                data-testid="delete-account-confirm"
+                checked={confirmAgain}
+                onChange={(e) => setConfirmAgain(e.target.checked)}
+                disabled={deleteBusy}
+              />{" "}
+              {T.settings.deleteConfirmAgain}
+            </label>
+          </div>
+          <div className={styles.actions}>
+            <button
+              type="button"
+              className={styles.secondary}
+              data-testid="delete-account-submit"
+              disabled={deleteBusy}
+              aria-busy={deleteBusy}
+              onClick={() => removeAccount()}
+            >
+              {deleteBusy ? T.settings.deleteBusy : T.settings.deleteSubmit}
+            </button>
+          </div>
+          {actionView === "delete-unavail" ? (
+            <p
+              className={styles.accountStatus}
+              data-tone="danger"
+              role="status"
+              data-testid="settings-delete-status"
+            >
+              {T.settings.deleteUnavailable}
+            </p>
+          ) : null}
+        </PremiumCard>
       </div>
-      {actionView === "delete-unavail" ? (
-        <p className={styles.err}>계정 삭제를 완료했다고 표시할 수 없음</p>
-      ) : null}
     </AccountFrame>
   );
 }
