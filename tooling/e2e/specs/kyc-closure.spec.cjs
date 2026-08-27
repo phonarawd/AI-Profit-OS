@@ -5,7 +5,7 @@ const { test, expect } = require("@playwright/test");
 const { assertQaIsolation } = require("../lib/qa-env-isolation-guard.cjs");
 const { ensureLocalWebRuntime } = require("../lib/local-web-runtime.cjs");
 const { stubKyc } = require("../lib/account-route-stubs.cjs");
-const { blockingViolations } = require("../lib/axe-scan.cjs");
+const { assertFourBreakpointA11y } = require("../lib/four-breakpoint-a11y.cjs");
 
 test.describe.configure({ timeout: 180000 });
 let runtime;
@@ -57,13 +57,10 @@ test("ready none keeps the form and approved hides it", async ({ page }) => {
   });
 });
 
-test("kyc a11y has no new critical/serious axe violations", async ({ page }) => {
-  await openKyc(page, "ready");
-  await page.addScriptTag({ path: require.resolve("axe-core") });
-  const results = await page.evaluate(async () => {
-    return window.axe.run(document, {
-      runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },
-    });
+test("kyc a11y + overflow passes 390/768/1024/1440", async ({ page }) => {
+  await assertFourBreakpointA11y({
+    page,
+    label: "kyc",
+    open: ({ width, height }) => openKyc(page, "ready", width, height),
   });
-  expect(blockingViolations(results), JSON.stringify(blockingViolations(results).map((v) => v.id))).toEqual([]);
 });

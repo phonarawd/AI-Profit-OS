@@ -5,7 +5,7 @@ const { test, expect } = require("@playwright/test");
 const { assertQaIsolation } = require("../lib/qa-env-isolation-guard.cjs");
 const { ensureLocalWebRuntime } = require("../lib/local-web-runtime.cjs");
 const { stubWithdraw } = require("../lib/consumer-route-stubs.cjs");
-const { blockingViolations } = require("../lib/axe-scan.cjs");
+const { assertFourBreakpointA11y } = require("../lib/four-breakpoint-a11y.cjs");
 
 test.describe.configure({ timeout: 180000 });
 let runtime;
@@ -94,22 +94,10 @@ test("USDT withdraw deny is not a fake success", async ({ page }) => {
   await expect(page.getByText("출금 완료")).toHaveCount(0);
 });
 
-test("USDT withdraw a11y has no new critical/serious", async ({ page }) => {
-  await openUsdt(page, "ready");
-  await page.addScriptTag({ path: require.resolve("axe-core") });
-  const results = await page.evaluate(async () =>
-    window.axe.run(document, {
-      runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },
-    }),
-  );
-  const blocking = blockingViolations(results);
-  expect(
-    blocking.map((v) => ({
-      id: v.id,
-      nodes: v.nodes.map((n) => ({
-        target: n.target,
-        html: String(n.html || "").slice(0, 160),
-      })),
-    })),
-  ).toEqual([]);
+test("usdt-withdraw a11y + overflow passes 390/768/1024/1440", async ({ page }) => {
+  await assertFourBreakpointA11y({
+    page,
+    label: "usdt-withdraw",
+    open: ({ width, height }) => openUsdt(page, "ready", width, height),
+  });
 });

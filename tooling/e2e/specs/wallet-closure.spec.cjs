@@ -10,6 +10,7 @@ const {
   runAxeOnHtml,
   blockingViolations,
 } = require("../lib/axe-scan.cjs");
+const { assertFourBreakpointA11y } = require("../lib/four-breakpoint-a11y.cjs");
 
 test.describe.configure({ timeout: 180000 });
 
@@ -84,16 +85,10 @@ test("ready buckets stay server-owned", async ({ page }) => {
   });
 });
 
-test("wallet a11y has no new critical/serious axe violations", async ({
-  page,
-}) => {
-  await openWallet(page, "ready");
-  await page.addScriptTag({ path: require.resolve("axe-core") });
-  const results = await page.evaluate(async () => {
-    return window.axe.run(document, {
-      runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },
-    });
+test("wallet a11y + overflow passes 390/768/1024/1440", async ({ page }) => {
+  await assertFourBreakpointA11y({
+    page,
+    label: "wallet",
+    open: ({ width, height }) => openWallet(page, "ready", width, height),
   });
-  const blocking = blockingViolations(results);
-  expect(blocking, JSON.stringify(blocking.map((v) => v.id))).toEqual([]);
 });

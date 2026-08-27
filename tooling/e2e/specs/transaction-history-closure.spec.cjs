@@ -5,7 +5,7 @@ const { test, expect } = require("@playwright/test");
 const { assertQaIsolation } = require("../lib/qa-env-isolation-guard.cjs");
 const { ensureLocalWebRuntime } = require("../lib/local-web-runtime.cjs");
 const { stubHistory } = require("../lib/consumer-route-stubs.cjs");
-const { blockingViolations } = require("../lib/axe-scan.cjs");
+const { assertFourBreakpointA11y } = require("../lib/four-breakpoint-a11y.cjs");
 
 test.describe.configure({ timeout: 180000 });
 let runtime;
@@ -73,22 +73,10 @@ test("empty is not unauthorized, 401 is not empty", async ({ page }) => {
   await expect(page.getByText("로그인하면 내역을 볼 수 있어요.")).toBeVisible();
 });
 
-test("history list a11y has no new critical/serious", async ({ page }) => {
-  await openHistory(page, "ready");
-  await page.addScriptTag({ path: require.resolve("axe-core") });
-  const results = await page.evaluate(async () =>
-    window.axe.run(document, {
-      runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },
-    }),
-  );
-  const blocking = blockingViolations(results);
-  expect(
-    blocking.map((v) => ({
-      id: v.id,
-      nodes: v.nodes.map((n) => ({
-        target: n.target,
-        html: String(n.html || "").slice(0, 160),
-      })),
-    })),
-  ).toEqual([]);
+test("transaction-history a11y + overflow passes 390/768/1024/1440", async ({ page }) => {
+  await assertFourBreakpointA11y({
+    page,
+    label: "transaction-history",
+    open: ({ width, height }) => openHistory(page, "ready", width, height),
+  });
 });
