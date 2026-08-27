@@ -672,6 +672,13 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^\.github\/workflows\/rel-502-auth-wallet-current-epoch-once\.yml$/.test(f) ||
+      /^tooling\/verify\/rel-502-current-epoch-once\.cjs$/.test(f) ||
+      /^tooling\/verify\/CATALOG\.md$/.test(f),
+    scripts: ["rel-502-current-epoch-once.cjs"],
+  },
+  {
+    test: (f) =>
       /^governance\/engine-acceptance\/PROTECTED_SCOPE_STALE_WATCH\.md$/.test(f) ||
       /^tooling\/engine-acceptance\/protected-scope-watch\.cjs$/.test(f) ||
       /^tooling\/verify\/rel-503-protected-scope-watch\.cjs$/.test(f) ||

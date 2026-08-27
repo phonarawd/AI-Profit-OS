@@ -81,6 +81,7 @@
     "verify:rel-500-qa-lab-expansion": "node tooling/verify/rel-500-qa-lab-expansion.cjs",
     "verify:rel-501-money-red-team": "node tooling/verify/rel-501-money-red-team.cjs",
     "verify:rel-502-final-engine-acceptance": "node tooling/verify/rel-502-final-engine-acceptance.cjs",
+    "verify:rel-502-current-epoch-once": "node tooling/verify/rel-502-current-epoch-once.cjs",
     "verify:rel-503-protected-scope-watch": "node tooling/verify/rel-503-protected-scope-watch.cjs",
     "verify:rel-504-migration-readiness": "node tooling/verify/rel-504-migration-readiness.cjs",
     "verify:backend-data-alignment": "node tooling/verify/backend-data-alignment.cjs",

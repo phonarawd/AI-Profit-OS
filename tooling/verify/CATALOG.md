@@ -57,6 +57,7 @@
 | rel-500-qa-lab-expansion | `verify:rel-500-qa-lab-expansion` | T0 path + CI | live (REL-500 · risk-based matrix · MCP-only 0 · local full 0) |
 | rel-501-money-red-team | `verify:rel-501-money-red-team` | T0 path + CI | live (REL-501 · 7 money modes · guard abort · ledger write 0) |
 | rel-502-final-engine-acceptance | `verify:rel-502-final-engine-acceptance` | T0 path + CI | live (REL-502 · PSM collect · drift fail-closed · REL-004 substitute 0) |
+| rel-502-current-epoch-once | `verify:rel-502-current-epoch-once` | T0 path + CI | live (REL-502 · Auth+Wallet current-epoch one-shot pin · QA7/QA9/ISSUED 0) |
 | rel-503-protected-scope-watch | `verify:rel-503-protected-scope-watch` | T0 path + CI | live (REL-503 · ISSUED+drift=STALE · simulated 1-file · concealment 0) |
 | rel-504-migration-readiness | `verify:rel-504-migration-readiness` | T0 path + CI | live (REL-504 · READY · apply 0 · Track A files · REL-701-DB owner) |
 | backend-data-alignment | `verify:backend-data-alignment` | T0 path | live (R7 table · blank cell FAIL) |
@@ -127,6 +128,7 @@
 | `tooling/e2e/expansion/**` · `tooling/e2e/lib/qa-lab-expansion.cjs` · `tooling/verify/rel-500-qa-lab-expansion.cjs` | rel-500-qa-lab-expansion |
 | `tooling/e2e/money/**` · `tooling/e2e/lib/money-red-team.cjs` · `tooling/verify/rel-501-money-red-team.cjs` | rel-501-money-red-team |
 | `governance/engine-acceptance/FINAL_ACCEPTANCE.md` · `tooling/verify/rel-502-final-engine-acceptance.cjs` · `tooling/verify/lib/rel-502-psm.cjs` | rel-502-final-engine-acceptance |
+| `.github/workflows/rel-502-auth-wallet-current-epoch-once.yml` · `tooling/verify/rel-502-current-epoch-once.cjs` | rel-502-current-epoch-once |
 | `governance/engine-acceptance/PROTECTED_SCOPE_STALE_WATCH.md` · `tooling/engine-acceptance/protected-scope-watch.cjs` · `tooling/verify/rel-503-protected-scope-watch.cjs` | rel-503-protected-scope-watch |
 | `governance/release-master/MIGRATION_READINESS.md` · `tooling/verify/rel-504-migration-readiness.cjs` | rel-504-migration-readiness |
 | `governance/release-master/R7_BACKEND_ALIGNMENT.md` · `tooling/verify/backend-data-alignment.cjs` · `tooling/verify/rel-505-r7-backend-alignment.cjs` | backend-data-alignment · rel-505-r7-backend-alignment |
