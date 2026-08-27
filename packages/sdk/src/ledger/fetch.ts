@@ -12,6 +12,25 @@ import type {
 } from "./types";
 
 const MONEY_RE = /^[0-9]+(\\.[0-9]+)?$/;
+function apiUrl(apiBase: string, path: string): string {
+  const base = (apiBase || "").replace(/\/$/, "");
+  const p = path.startsWith("/") ? path : `/${path}`;
+  return base ? `${base}${p}` : p;
+}
+
+async function authHeaders(
+  opts: LedgerRequestOpts,
+): Promise<Record<string, string>> {
+  const headers: Record<string, string> = {
+    Accept: "application/json",
+  };
+  if (opts.getAccessToken) {
+    const token = await opts.getAccessToken();
+    if (token) headers.Authorization = `Bearer ${token}`;
+  }
+  return headers;
+}
+
 const JOURNAL_TYPES = new Set([
   "deposit_usdt",
   "deposit_krw",
