@@ -19,6 +19,8 @@ function read(rel) {
 const page = read("apps/admin/app/admin/compliance/page.tsx");
 const api = read("apps/admin/lib/admin-api.ts");
 const session = read("apps/admin/lib/admin-session.ts");
+const bff = read("apps/admin/app/api/admin-bff/proxy/route.ts");
+const bffServer = read("apps/admin/lib/admin-bff-server.ts");
 const ctl = read("services/api-nest/src/compliance/kyc.admin.controller.ts");
 
 if (page.includes("Admin §9.1.1 골격") && !page.includes("adminGet")) {
@@ -69,14 +71,26 @@ if (page.includes("idDocR2Key}") || page.includes("selfieR2Key}")) {
   fails.push("compliance must not print R2 keys");
 }
 
-if (!api.includes("getAdminToken")) {
-  fails.push("admin-api must send Admin bearer, not user session");
+if (!api.includes("/api/admin-bff/proxy")) {
+  fails.push("admin-api must route Admin requests through the same-origin BFF");
+}
+if (api.includes("getAdminToken") || api.includes("Bearer ${token}")) {
+  fails.push("browser admin-api must not read or construct the Admin bearer");
 }
 if (api.includes("aipo_session")) {
   fails.push("admin-api must not read user session cookie");
 }
+if (session.includes("sessionStorage") || session.includes("localStorage")) {
+  fails.push("admin-session must not persist the Admin bearer in browser storage");
+}
 if (session.includes("console.log") || session.includes("console.info")) {
   fails.push("admin-session must not log token");
+}
+if (!bff.includes("Authorization: `Bearer ${token}`")) {
+  fails.push("Admin BFF must be the only layer that constructs the upstream bearer");
+}
+if (!bffServer.includes('ADMIN_API_PREFIX = "/api/v1/admin"') || !bffServer.includes("safeAdminTarget")) {
+  fails.push("Admin BFF must fail closed to the /api/v1/admin target allowlist");
 }
 
 if (!ctl.includes("@UseGuards(AdminGuard)")) {
