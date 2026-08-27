@@ -23,7 +23,6 @@ import { JwtAuthGuard, type SessionUser } from "./jwt-auth.guard";
 
 type AuthedRequest = { user: SessionUser };
 
-type SessionMintBody = { accessToken?: string };
 
 /** Nest passthrough res — cookie API만 (express 타입 패키지 의존 0) */
 type CookieResponse = {
