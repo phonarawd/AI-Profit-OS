@@ -48,8 +48,62 @@ if (!page.includes("InviteClient")) fail("invite page must mount InviteClient");
 if (!client.includes("/api/v1/referral/me")) {
   fail("InviteClient must call GET /api/v1/referral/me");
 }
+if (!client.includes("/api/v1/referral/bind")) {
+  fail("InviteClient must call POST /api/v1/referral/bind");
+}
+if (!client.includes('credentials: "include"')) {
+  fail("InviteClient must keep credentials include");
+}
+if (!client.includes('cache: "no-store"')) {
+  fail("InviteClient must keep cache no-store on GET /referral/me");
+}
+if (!client.includes('JSON.stringify({ referralCode: code })')) {
+  fail("bind body must be exactly { referralCode: code }");
+}
+if (/JSON\.stringify\(\{[^}]*\b(userId|user_id|clientId)\b/.test(client)) {
+  fail("bind body must not include client identity");
+}
+if (
+  /shareUrl=\{\s*[`'"]https?:/.test(client) ||
+  /https?:\/\/[^\s"'`]*invite/i.test(client)
+) {
+  fail("InviteClient must not invent a referral share URL");
+}
+if (!client.includes('shareUrl=""')) {
+  fail("shareUrl authority is none and must stay empty");
+}
+if (
+  /joined:\s*0|inviteCount:\s*0|reward:\s*0|bonus:\s*0/.test(client) ||
+  /0 USDT|0 KRW/.test(client)
+) {
+  fail("invite must not invent reward/money zeros");
+}
 if (!client.includes("unauthorized") || !client.includes("unavailable")) {
   fail("InviteClient must distinguish unauthorized/unavailable");
+}
+if (!client.includes('view="disabled"') && !client.includes('"disabled"')) {
+  fail("InviteClient must keep disabled program path");
+}
+if (!client.includes("bindInFlightRef") || !client.includes("useRef")) {
+  fail("bind must use a synchronous in-flight guard");
+}
+if (!/if \(bindInFlightRef\.current\) return/.test(client)) {
+  fail("bind must refuse a second in-flight POST");
+}
+for (const state of [
+  "idle",
+  "submitting",
+  "success",
+  "denied",
+  "unauthorized",
+  "unavailable",
+]) {
+  if (!client.includes(`"${state}"`)) {
+    fail(`InviteClient must keep bind state ${state}`);
+  }
+}
+if (!client.includes("res.status === 400") || !client.includes("res.status === 409")) {
+  fail("bind must map 400/409 to denied");
 }
 if (/joined:\s*0|statsJoined.*0/.test(client) && /catch/.test(client)) {
   fail("invite must not invent joined=0 on error");
@@ -62,6 +116,27 @@ if (home.includes('?? 0') || /stats\?\.joined \?\? 0/.test(home)) {
 }
 if (!spec.includes("unauthorized") || !spec.includes("ready")) {
   fail("committed spec must cover unauthorized/ready");
+}
+for (const needle of [
+  "unauthorized403",
+  "network",
+  "disabled",
+  "readyAbsent",
+  "alreadyBound",
+  "bindStatus: 400",
+  "bindStatus: 409",
+  "bindStatus: 401",
+  "bindStatus: 403",
+  "bindStatus: 500",
+  "bindNetworkFail",
+  "ONCEONLY",
+  "referralCode",
+  "invite responsive",
+  "wcag2aa",
+]) {
+  if (!spec.includes(needle)) {
+    fail(`committed spec must cover ${needle}`);
+  }
 }
 if (!pkg.includes('"verify:invite-closure"')) {
   fail("package.json missing verify:invite-closure");

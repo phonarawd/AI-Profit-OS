@@ -1,0 +1,191 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  max-width: 760px;
+  color-scheme: light;
+}
+
+.kicker {
+  margin: 0 2px;
+}
+
+.surface {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  padding: 18px 16px 20px;
+  color: #111827;
+  color-scheme: light;
+}
+
+.stateCopy {
+  margin: 0;
+}
+
+.owner {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.bindCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px;
+}
+
+.bindTitle {
+  margin: 0;
+  color: #111827;
+  font-size: 1.05rem;
+  font-weight: 850;
+  letter-spacing: -0.02em;
+}
+
+.bindLead,
+.bindNote,
+.bindStatus {
+  margin: 0;
+  color: #667085;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  word-break: keep-all;
+}
+
+.bindStatus[data-tone="danger"],
+.bindStatus[data-tone="warning"] {
+  color: #b42318;
+}
+
+.bindStatus[data-tone="success"] {
+  color: #067647;
+}
+
+.field {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.field label {
+  color: #344054;
+  font-size: 0.92rem;
+  font-weight: 720;
+}
+
+.field input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.78rem 1rem;
+  border: 1px solid #d8dee8;
+  border-radius: 14px;
+  background: #fff;
+  color: #172033;
+  font: inherit;
+}
+
+.actions {
+  display: grid;
+  gap: 0.65rem;
+  width: min(100%, 480px);
+}
+
+.actions button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 48px;
+  padding: 0.8rem 1.05rem;
+  border: 0;
+  border-radius: 15px;
+  background: linear-gradient(100deg, #6b3cff, #8a4df2);
+  color: #fff;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 820;
+}
+
+.actions button:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+.surface :global(:focus-visible),
+.bindCard :global(:focus-visible),
+.field input:focus-visible,
+.actions button:focus-visible {
+  outline: 3px solid rgba(107, 60, 255, 0.34);
+  outline-offset: 3px;
+}
+
+.surface :global(.pt-premium-title),
+.surface :global(.pt-premium-description),
+.owner :global(h1),
+.owner :global(h2),
+.owner :global(p),
+.owner :global(li),
+.owner :global(code) {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: keep-all;
+}
+
+.owner :global(button),
+.surface :global(a),
+.bindCard :global(a) {
+  min-height: 48px;
+}
+
+.surface :global(.pt-premium-empty .pt-premium-title) {
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  line-height: 1.28;
+}
+
+@media (min-width: 768px) {
+  .page {
+    gap: 14px;
+  }
+
+  .surface {
+    gap: 20px;
+    padding: 22px 22px 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page {
+    max-width: 820px;
+  }
+
+  .surface {
+    padding: 24px 26px 26px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .page {
+    max-width: 880px;
+  }
+}
+
+@media (max-width: 389px) {
+  .surface,
+  .bindCard {
+    padding: 16px 12px 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page,
+  .surface,
+  .owner,
+  .bindCard,
+  .actions button {
+    transition: none !important;
+    transform: none !important;
+  }
+}

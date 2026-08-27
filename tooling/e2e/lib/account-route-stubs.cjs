@@ -60,26 +60,67 @@ const TEST_KYC_NONE = {
   kycStatus: "none",
 };
 
-async function stubInvite(page, mode) {
-  await page.route("**/api/v1/**", (route) => {
+async function stubInvite(page, mode, options = {}) {
+  const captured = {
+    bindCount: 0,
+    bindBodies: [],
+    bindHeaders: [],
+  };
+  const getDelayMs = Number(options.getDelayMs || 0);
+  const bindDelayMs = Number(options.bindDelayMs || 0);
+  const bindStatus = Number(options.bindStatus || 200);
+  const bindNetworkFail = options.bindNetworkFail === true;
+
+  await page.route("**/api/v1/**", async (route) => {
     const url = route.request().url();
     if (url.includes("/api/v1/referral/me")) {
+      if (getDelayMs > 0) {
+        await new Promise((resolve) => setTimeout(resolve, getDelayMs));
+      }
+      if (mode === "network") {
+        return route.abort("failed");
+      }
       if (mode === "unauthorized") {
         return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "unauthorized403") {
+        return json(route, 403, { error: "forbidden" });
       }
       if (mode === "error") {
         return json(route, 500, { error: "upstream_failed" });
       }
       if (mode === "disabled") {
-        return json(route, 200, { ...TEST_REFERRAL_ME, enabled: false, edges: [] });
+        return json(route, 200, { enabled: false });
+      }
+      if (mode === "readyAbsent") {
+        return json(route, 200, { enabled: true });
+      }
+      if (mode === "alreadyBound") {
+        return json(route, 200, {
+          ...TEST_REFERRAL_ME,
+          myBinding: { code: "QA120BOUND", status: "bound" },
+        });
       }
       return json(route, 200, TEST_REFERRAL_ME);
     }
     if (url.includes("/api/v1/referral/bind")) {
-      return json(route, 200, { ok: true });
+      captured.bindCount += 1;
+      captured.bindBodies.push(route.request().postData() || "");
+      captured.bindHeaders.push(route.request().headers());
+      if (bindDelayMs > 0) {
+        await new Promise((resolve) => setTimeout(resolve, bindDelayMs));
+      }
+      if (bindNetworkFail) {
+        return route.abort("failed");
+      }
+      if (bindStatus >= 200 && bindStatus < 300) {
+        return json(route, bindStatus, { ok: true });
+      }
+      return json(route, bindStatus, { error: "bind_failed" });
     }
     return json(route, 401, { error: "unauthorized" });
   });
+  return captured;
 }
 
 async function stubInbox(page, mode) {
