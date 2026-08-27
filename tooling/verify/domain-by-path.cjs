@@ -674,7 +674,8 @@ const RULES = [
     test: (f) =>
       /^\.github\/workflows\/rel-502-auth-wallet-current-epoch-once\.yml$/.test(f) ||
       /^tooling\/verify\/rel-502-current-epoch-once\.cjs$/.test(f) ||
-      /^tooling\/verify\/CATALOG\.md$/.test(f),
+      /^tooling\/verify\/CATALOG\.md$/.test(f) ||
+      /^package\.json$/.test(f),
     scripts: ["rel-502-current-epoch-once.cjs"],
   },
   {
