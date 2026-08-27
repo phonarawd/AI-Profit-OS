@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -8,6 +9,7 @@ import {
   Req,
   Res,
   UseGuards,
+  ServiceUnavailableException,
 } from "@nestjs/common";
 import { loadPhase0Env } from "../config/phase0.env";
 import {
@@ -72,12 +74,10 @@ export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
   @Post(AUTH_ROUTES.signup)
-  async signup(@Body() body: Record<string, unknown>, @Res({ passthrough: true }) res: CookieResponse) {
-    const out = await this.auth.signupStageA(body ?? {});
-    if (typeof out.accessToken === "string") {
-      attachUserSessionCookie(res, out.accessToken);
-    }
-    return out;
+  signup(@Body() _body: Record<string, unknown>) {
+    // Raw email/provider subject/credential id is never identity proof.
+    // Use a proof-gated magic-link/OAuth/Passkey verifier instead.
+    throw new BadRequestException("IDENTITY_PROOF_REQUIRED");
   }
 
   @Patch(AUTH_ROUTES.profile)
@@ -121,75 +121,34 @@ export class AuthController {
 
   @Post(AUTH_ROUTES.oauthStart)
   oauthStart(@Param("provider") provider: string) {
-    return this.auth.oauthStart(provider);
+    this.auth.parseOauthProvider(provider);
+    throw new ServiceUnavailableException("OAUTH_IDENTITY_PROOF_NOT_READY");
   }
 
   @Post(AUTH_ROUTES.oauthCallback)
-  async oauthCallback(
-    @Param("provider") provider: string,
-    @Body() body: Record<string, unknown>,
-    @Res({ passthrough: true }) res: CookieResponse,
-  ) {
-    const out = (await this.auth.oauthCallback(
-      provider,
-      body ?? {},
-    )) as SessionMintBody;
-    if (typeof out.accessToken === "string") {
-      attachUserSessionCookie(res, out.accessToken);
-    }
-    return out;
+  oauthCallback(@Param("provider") provider: string) {
+    this.auth.parseOauthProvider(provider);
+    throw new ServiceUnavailableException("OAUTH_IDENTITY_PROOF_NOT_READY");
   }
 
   @Post(AUTH_ROUTES.passkeyRegisterOptions)
   passkeyRegisterOptions() {
-    return this.auth.passkeyOptions("register");
+    throw new ServiceUnavailableException("PASSKEY_IDENTITY_PROOF_NOT_READY");
   }
 
   @Post(AUTH_ROUTES.passkeyRegisterVerify)
-  async passkeyRegisterVerify(
-    @Body() body: Record<string, unknown>,
-    @Res({ passthrough: true }) res: CookieResponse,
-  ) {
-    const out = await this.auth.signupStageA({
-      method: "passkey",
-      termsAcceptedAt: String(body?.termsAcceptedAt ?? ""),
-      privacyAcceptedAt: String(body?.privacyAcceptedAt ?? ""),
-      marketingConsent: Boolean(body?.marketingConsent),
-      referralCode:
-        typeof body?.referralCode === "string" ? body.referralCode : undefined,
-      passkey: {
-        credentialId: String(body?.credentialId ?? body?.id ?? ""),
-      },
-    });
-    if (typeof out.accessToken === "string") {
-      attachUserSessionCookie(res, out.accessToken);
-    }
-    return out;
+  passkeyRegisterVerify() {
+    throw new ServiceUnavailableException("PASSKEY_IDENTITY_PROOF_NOT_READY");
   }
 
   @Post(AUTH_ROUTES.passkeyAuthOptions)
   passkeyAuthOptions() {
-    return this.auth.passkeyOptions("authenticate");
+    throw new ServiceUnavailableException("PASSKEY_IDENTITY_PROOF_NOT_READY");
   }
 
   @Post(AUTH_ROUTES.passkeyAuthVerify)
-  async passkeyAuthVerify(
-    @Body() body: Record<string, unknown>,
-    @Res({ passthrough: true }) res: CookieResponse,
-  ) {
-    // Authenticate existing passkey → session (M1 wires credential verify)
-    const out = await this.auth.signupStageA({
-      method: "passkey",
-      termsAcceptedAt: new Date().toISOString(),
-      privacyAcceptedAt: new Date().toISOString(),
-      passkey: {
-        credentialId: String(body?.credentialId ?? body?.id ?? "session"),
-      },
-    });
-    if (typeof out.accessToken === "string") {
-      attachUserSessionCookie(res, out.accessToken);
-    }
-    return out;
+  passkeyAuthVerify() {
+    throw new ServiceUnavailableException("PASSKEY_IDENTITY_PROOF_NOT_READY");
   }
 
   @Post(AUTH_ROUTES.magicLinkRequest)
@@ -202,17 +161,7 @@ export class AuthController {
     @Body() body: Record<string, unknown>,
     @Res({ passthrough: true }) res: CookieResponse,
   ) {
-    const out = await this.auth.signupStageA({
-      method: "email_magic",
-      termsAcceptedAt: String(body?.termsAcceptedAt ?? new Date().toISOString()),
-      privacyAcceptedAt: String(
-        body?.privacyAcceptedAt ?? new Date().toISOString(),
-      ),
-      marketingConsent: Boolean(body?.marketingConsent),
-      referralCode:
-        typeof body?.referralCode === "string" ? body.referralCode : undefined,
-      email: typeof body?.email === "string" ? body.email : undefined,
-    });
+    const out = await this.auth.magicLinkVerify(body ?? {});
     if (typeof out.accessToken === "string") {
       attachUserSessionCookie(res, out.accessToken);
     }
