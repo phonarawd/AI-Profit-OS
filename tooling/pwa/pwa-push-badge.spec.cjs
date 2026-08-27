@@ -21,12 +21,12 @@ function loadSafeNotificationHref() {
     path.resolve(__dirname, "../../apps/web/public/sw.js"),
     "utf8",
   );
-  const match = sw.match(
-    /function safeNotificationHref\(value\) \{[\s\S]*?\n\}/,
-  );
-  assert(match, "SW safeNotificationHref function must exist");
+  const start = sw.indexOf("function safeNotificationHref(value) {");
+  const end = sw.indexOf("\n}\n\nfunction applyBadge", start);
+  assert(start >= 0 && end > start, "SW safeNotificationHref function must exist");
+  const source = sw.slice(start, end + 2);
   const context = {};
-  vm.runInNewContext(`${match[0]}; this.safeNotificationHref = safeNotificationHref;`, context);
+  vm.runInNewContext(`${source}; this.safeNotificationHref = safeNotificationHref;`, context);
   return context.safeNotificationHref;
 }
 
