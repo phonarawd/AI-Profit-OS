@@ -10,6 +10,8 @@ export {
   normalizeAuthSession,
   patchAuthProfile,
   requestMagicLink,
+  requestSignupMagicLink,
+  verifyMagicLink,
   signupStageA,
   startKakaoOAuth,
 } from "./fetch";
