@@ -164,8 +164,8 @@ export async function createWithdraw(
 }
 
 export function newWithdrawIdempotencyKey(): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    return `wd_${crypto.randomUUID().replace(/-/g, "")}`;
+  if (typeof crypto === "undefined" || typeof crypto.randomUUID !== "function") {
+    throw new Error("secure_random_unavailable");
   }
-  return `wd_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+  return `wd_${crypto.randomUUID().replace(/-/g, "")}`;
 }
