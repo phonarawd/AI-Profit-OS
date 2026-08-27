@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   createWithdraw,
   createWithdrawStepUpChallenge,
@@ -53,6 +53,8 @@ export function WithdrawLiveForm({
   const [stepUpToken, setStepUpToken] = useState<string | null>(null);
   const [method] = useState<WithdrawStepUpMethod>("pin");
   const [busy, setBusy] = useState(false);
+  const submitInFlight = useRef(false);
+  const withdrawIntent = useRef<{ fingerprint: string; key: string } | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [flowState, setFlowState] = useState<
     "idle" | "accepted" | "denied" | "unavailable" | "unauthorized"
@@ -98,30 +100,59 @@ export function WithdrawLiveForm({
   }, [challengeId, method, proof]);
 
   const onSubmit = useCallback(async () => {
+    if (submitInFlight.current) return;
     if (!allowForm) return;
-    if (!amountUsdt.trim() || !stepUpToken) return;
+    const normalizedAmount = amountUsdt.trim();
+    const normalizedDestination = asset === "USDT" ? destination.trim() : "";
+    if (!normalizedAmount || !stepUpToken) return;
     if (requirePrincipalConfirm && !principalConfirmToken) return;
-    if (asset === "USDT" && !destination.trim()) return;
+    if (asset === "USDT" && !normalizedDestination) return;
 
+    const fingerprint = JSON.stringify({
+      mode,
+      asset,
+      amountUsdt: normalizedAmount,
+      destination: normalizedDestination,
+      requirePrincipalConfirm,
+    });
+    if (
+      !withdrawIntent.current ||
+      withdrawIntent.current.fingerprint !== fingerprint
+    ) {
+      withdrawIntent.current = {
+        fingerprint,
+        key: newWithdrawIdempotencyKey(),
+      };
+    }
+    const idempotencyKey = withdrawIntent.current.key;
+
+    submitInFlight.current = true;
     setBusy(true);
     setStatus(null);
     try {
       await createWithdraw({
         mode,
-        amountUsdt: amountUsdt.trim(),
+        amountUsdt: normalizedAmount,
         asset,
-        destination: asset === "USDT" ? destination.trim() : undefined,
-        idempotencyKey: newWithdrawIdempotencyKey(),
+        destination: normalizedDestination || undefined,
+        idempotencyKey,
         stepUpToken,
         principalConfirmToken: principalConfirmToken ?? undefined,
       });
+      withdrawIntent.current = null;
       setFlowState("accepted");
       setStatus(T.withdrawMode.submitOk);
     } catch (err) {
+      const msg = err instanceof Error ? err.message : "";
+      if (/_(400|401|403|409)\b/.test(msg)) {
+        withdrawIntent.current = null;
+      }
+      // 5xx/network is ambiguous: preserve the exact key for retry.
       const next = withdrawErrorView(err);
       setFlowState(next.state);
       setStatus(next.status);
     } finally {
+      submitInFlight.current = false;
       setBusy(false);
     }
   }, [
