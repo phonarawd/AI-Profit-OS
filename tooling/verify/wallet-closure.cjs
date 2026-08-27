@@ -42,6 +42,7 @@ const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
 const domain = read("tooling/verify/domain-by-path.cjs");
 const surface = `${page}\n${client}`;
+const sdkWallet = read("packages/sdk/src/wallet/fetch.ts");
 
 if (!page.includes("WalletClient")) fail("wallet page must mount WalletClient");
 if (!client.includes("fetchWalletBuckets")) {
@@ -49,6 +50,23 @@ if (!client.includes("fetchWalletBuckets")) {
 }
 if (/EMPTY_BUCKETS|principalUsdt:\s*"0"/.test(client)) {
   fail("wallet must not fall back missing buckets to 0");
+}
+if (/function\s+asAmount\b|:\s*"none"/.test(sdkWallet)) {
+  fail("wallet SDK must not synthesize missing bucket authority");
+}
+for (const needle of [
+  "const MONEY_RE",
+  "wallet_buckets_shape",
+  "WALLET_BUCKET_KEYS",
+  "Object.keys(value)",
+  'requiredMoney(value, "principalUsdt")',
+  'requiredMoney(value, "profitUsdt")',
+  'requiredMoney(value, "lockedUsdt")',
+  'requiredMoney(value, "practiceUsdt")',
+  'requiredMoney(value, "liabilityUsdt")',
+  'requiredText(value, "asOfLedgerEntryId")',
+]) {
+  if (!sdkWallet.includes(needle)) fail("wallet SDK strict parser missing " + needle);
 }
 if (/reduce\(|\.reduce\(/.test(client)) {
   fail("wallet must not sum buckets as authority");
