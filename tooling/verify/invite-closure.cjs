@@ -105,6 +105,12 @@ for (const state of [
 if (!client.includes("res.status === 400") || !client.includes("res.status === 409")) {
   fail("bind must map 400/409 to denied");
 }
+if (!client.includes("res.status === 404")) {
+  fail("bind must map 404 to denied");
+}
+if (!client.includes("bindLocked")) {
+  fail("successful bind must lock input and submit");
+}
 if (/joined:\s*0|statsJoined.*0/.test(client) && /catch/.test(client)) {
   fail("invite must not invent joined=0 on error");
 }
@@ -127,9 +133,12 @@ for (const needle of [
   "bindStatus: 409",
   "bindStatus: 401",
   "bindStatus: 403",
+  "bindStatus: 404",
   "bindStatus: 500",
   "bindNetworkFail",
   "ONCEONLY",
+  "LOCKONCE",
+  "toBeDisabled",
   "referralCode",
   "invite responsive",
   "wcag2aa",

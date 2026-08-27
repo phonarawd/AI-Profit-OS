@@ -134,8 +134,9 @@ export function InviteClient() {
           setBindView("unauthorized");
         } else if (
           res.status === 400 ||
-          res.status === 409 ||
-          res.status === 403
+          res.status === 403 ||
+          res.status === 404 ||
+          res.status === 409
         ) {
           setBindView("denied");
         } else {
@@ -224,7 +225,7 @@ export function InviteClient() {
     typeof data.myBinding?.code === "string" && data.myBinding.code.trim()
       ? data.myBinding.code.trim()
       : null;
-  const bindBusy = bindView === "submitting";
+  const bindLocked = bindView === "submitting" || bindView === "success";
 
   return (
     <AccountFrame
@@ -270,14 +271,15 @@ export function InviteClient() {
             value={bindCode}
             onChange={(e) => setBindCode(e.target.value)}
             autoComplete="off"
+            disabled={bindLocked}
           />
           <div className={styles.actions}>
             <button
               type="button"
               data-testid="invite-bind-submit"
               onClick={bind}
-              disabled={bindBusy}
-            >{bindBusy ? "연결하는 중" : "연결"}</button>
+              disabled={bindLocked}
+            >{bindView === "success" ? "연결 완료" : bindView === "submitting" ? "연결하는 중" : "연결"}</button>
           </div>
           {bindView === "success" ? (
             <p

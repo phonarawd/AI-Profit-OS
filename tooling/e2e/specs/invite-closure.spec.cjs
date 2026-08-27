@@ -286,6 +286,15 @@ test("bind 403 is denied, not success", async ({ page }) => {
   await expect(page.getByText(SUCCESS_LINE)).toHaveCount(0);
 });
 
+test("bind 404 is denied", async ({ page }) => {
+  const captured = await openInvite(page, "ready", { bindStatus: 404 });
+  await page.getByTestId("invite-bind-code").fill("UNKNOWNCODE");
+  await page.getByTestId("invite-bind-submit").click();
+  await expect(page.getByText(DENIED_LINE)).toBeVisible();
+  await expect(page.getByText(SUCCESS_LINE)).toHaveCount(0);
+  expect(captured.bindCount).toBe(1);
+});
+
 test("bind 500 is unavailable", async ({ page }) => {
   await openInvite(page, "ready", { bindStatus: 500 });
   await page.getByTestId("invite-bind-code").fill("SERVERFAIL");
@@ -318,6 +327,22 @@ test("rapid double-click posts exactly once", async ({ page }) => {
   expect(JSON.parse(captured.bindBodies[0])).toEqual({
     referralCode: "ONCEONLY",
   });
+});
+
+test("successful bind locks controls and stays one POST", async ({ page }) => {
+  const captured = await openInvite(page, "ready", { bindStatus: 200 });
+  await page.getByTestId("invite-bind-code").fill("LOCKONCE");
+  await page.getByTestId("invite-bind-submit").click();
+  await expect(page.getByText(SUCCESS_LINE)).toBeVisible();
+  await expect(page.getByTestId("invite-bind-status")).toHaveAttribute("role", "status");
+  await expect(page.getByTestId("invite-bind-submit")).toBeDisabled();
+  await expect(page.getByTestId("invite-bind-code")).toBeDisabled();
+  expect(captured.bindCount).toBe(1);
+  await page.evaluate(() => {
+    const btn = document.querySelector('[data-testid="invite-bind-submit"]');
+    if (btn) btn.click();
+  });
+  expect(captured.bindCount).toBe(1);
 });
 
 test("already-bound hides bind action", async ({ page }) => {
