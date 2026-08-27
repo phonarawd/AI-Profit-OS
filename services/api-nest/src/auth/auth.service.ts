@@ -21,7 +21,13 @@ import {
   Injectable,
   ServiceUnavailableException,
 } from "@nestjs/common";
-import { randomBytes, randomUUID } from "node:crypto";
+import {
+  createHash,
+  createHmac,
+  randomBytes,
+  randomUUID,
+  timingSafeEqual,
+} from "node:crypto";
 import { createRequire } from "node:module";
 import { join } from "node:path";
 import {
@@ -45,6 +51,7 @@ import {
 } from "./auth.constants";
 import type { SessionUser } from "./jwt-auth.guard";
 import { PrivacyAccountService } from "./privacy-account.service";
+import { ResendEmailProvider } from "../wallet/resend-email.provider";
 import {
   assertNoForbiddenAuthFields,
   evaluateDeleteAccountGuards,
@@ -81,6 +88,22 @@ export type AuthSessionView = {
   onboardingStage: OnboardingStage;
 };
 
+type MagicLinkFlow =
+  | { purpose: "login" }
+  | {
+      purpose: "signup";
+      termsAcceptedAt: string;
+      privacyAcceptedAt: string;
+      marketingConsent: boolean;
+      referralCode?: string;
+    };
+
+function hostOrigin(host: string): string {
+  if (/^https?:\/\//i.test(host)) return host.replace(/\/$/, "");
+  if (/localhost|127\.0\.0\.1/.test(host)) return `http://${host}`;
+  return `https://${host}`;
+}
+
 function isUniqueViolation(e: unknown): boolean {
   return (
     typeof e === "object" &&
@@ -98,6 +121,7 @@ export class AuthService {
     private readonly practiceGrant: PracticeGrantService,
     private readonly notificationPrefs: NotificationPrefsService,
     private readonly privacy: PrivacyAccountService,
+    private readonly emailProvider: ResendEmailProvider,
   ) {}
 
   /**
@@ -285,16 +309,216 @@ export class AuthService {
     };
   }
 
-  magicLinkRequest(body: Record<string, unknown>) {
+  async magicLinkRequest(body: Record<string, unknown>) {
     const email = typeof body.email === "string" ? body.email.trim() : "";
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       throw new BadRequestException("valid email required");
     }
+    this.assertDbConfigured();
+
+    const purpose = body.purpose === "signup" ? "signup" : "login";
+    let flow: MagicLinkFlow = { purpose: "login" };
+    if (purpose === "signup") {
+      const input: StageASignupInput = {
+        method: "email_magic",
+        email,
+        termsAcceptedAt: String(body.termsAcceptedAt ?? ""),
+        privacyAcceptedAt: String(body.privacyAcceptedAt ?? ""),
+        marketingConsent: body.marketingConsent === true,
+        referralCode:
+          typeof body.referralCode === "string"
+            ? body.referralCode.trim() || undefined
+            : undefined,
+      };
+      const err = validateStageA(input);
+      if (err) throw new BadRequestException(err);
+      flow = {
+        purpose: "signup",
+        termsAcceptedAt: input.termsAcceptedAt,
+        privacyAcceptedAt: input.privacyAcceptedAt,
+        marketingConsent: input.marketingConsent === true,
+        referralCode: input.referralCode,
+      };
+    }
+
+    const token = this.createMagicLinkToken(flow);
+    const tokenHash = createHash("sha256").update(token).digest("hex");
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+    await this.db.query(
+      `INSERT INTO public.auth_magic_link_challenges
+         (email, token_hash, purpose, expires_at)
+       VALUES ($1, $2, $3, $4)`,
+      [email, tokenHash, purpose, expiresAt.toISOString()],
+    );
+
+    const env = loadPhase0Env();
+    const loginUrl =
+      `${hostOrigin(env.appHost)}/auth/magic-link?token=${encodeURIComponent(token)}`;
+
+    try {
+      const delivered = await this.emailProvider.sendMagicLink({
+        to: email,
+        loginUrl,
+      });
+      if (!delivered.ok) {
+        await this.consumeMagicLinkHash(tokenHash);
+        throw new ServiceUnavailableException("MAGIC_LINK_DELIVERY_UNAVAILABLE");
+      }
+    } catch (err) {
+      await this.consumeMagicLinkHash(tokenHash);
+      if (err instanceof ServiceUnavailableException) throw err;
+      throw new ServiceUnavailableException("MAGIC_LINK_DELIVERY_UNAVAILABLE");
+    }
+
     return {
       ok: true as const,
       delivery: "resend" as const,
       status: "accepted" as const,
-      // Never echo magic token
+      // Raw token/link are intentionally never returned or logged.
+    };
+  }
+
+  async magicLinkVerify(body: Record<string, unknown>) {
+    const token = typeof body.token === "string" ? body.token.trim() : "";
+    if (!token) throw new BadRequestException("magic link token required");
+    this.assertDbConfigured();
+
+    const flow = this.verifyMagicLinkToken(token);
+    const tokenHash = createHash("sha256").update(token).digest("hex");
+    const consumed = await this.db.query<{
+      email: string;
+      purpose: "login" | "signup";
+    }>(
+      `UPDATE public.auth_magic_link_challenges
+          SET consumed_at = now()
+        WHERE token_hash = $1
+          AND consumed_at IS NULL
+          AND expires_at > now()
+        RETURNING email, purpose`,
+      [tokenHash],
+    );
+    const row = consumed.rows[0];
+    if (!row || row.purpose !== flow.purpose) {
+      throw new BadRequestException("MAGIC_LINK_INVALID_OR_EXPIRED");
+    }
+
+    if (flow.purpose === "login") {
+      const existing = await this.db.query<{ id: string }>(
+        `SELECT id::text FROM public.users WHERE email = $1`,
+        [row.email],
+      );
+      const userId = existing.rows[0]?.id;
+      if (!userId) {
+        throw new BadRequestException("MAGIC_LINK_SIGNUP_REQUIRED");
+      }
+      return this.stageASessionResponse(userId);
+    }
+
+    const input: StageASignupInput = {
+      method: "email_magic",
+      email: row.email,
+      termsAcceptedAt: flow.termsAcceptedAt,
+      privacyAcceptedAt: flow.privacyAcceptedAt,
+      marketingConsent: flow.marketingConsent,
+      referralCode: flow.referralCode,
+    };
+    const err = validateStageA(input);
+    if (err) throw new BadRequestException(err);
+
+    const { userId, isNew } = await this.findOrCreateUserByEmail(row.email);
+    if (isNew) {
+      await this.provisionLedgerBucketsForUser(userId);
+      await this.upsertStageAProfile(userId, input);
+    }
+    return this.stageASessionResponse(userId);
+  }
+
+  private createMagicLinkToken(flow: MagicLinkFlow): string {
+    const secret = loadPhase0Env().jwtUserSecret;
+    if (!secret) {
+      throw new ServiceUnavailableException("JWT_USER_SECRET required");
+    }
+    const payload = Buffer.from(JSON.stringify(flow), "utf8").toString("base64url");
+    const nonce = randomBytes(32).toString("base64url");
+    const signed = `${payload}.${nonce}`;
+    const signature = createHmac("sha256", secret)
+      .update(signed)
+      .digest("base64url");
+    return `${signed}.${signature}`;
+  }
+
+  private verifyMagicLinkToken(token: string): MagicLinkFlow {
+    const [payload, nonce, signature, extra] = token.split(".");
+    if (!payload || !nonce || !signature || extra) {
+      throw new BadRequestException("MAGIC_LINK_INVALID_OR_EXPIRED");
+    }
+    const secret = loadPhase0Env().jwtUserSecret;
+    if (!secret) throw new ServiceUnavailableException("JWT_USER_SECRET required");
+    const expected = createHmac("sha256", secret)
+      .update(`${payload}.${nonce}`)
+      .digest("base64url");
+    const gotBuf = Buffer.from(signature);
+    const expectedBuf = Buffer.from(expected);
+    if (
+      gotBuf.length !== expectedBuf.length ||
+      !timingSafeEqual(gotBuf, expectedBuf)
+    ) {
+      throw new BadRequestException("MAGIC_LINK_INVALID_OR_EXPIRED");
+    }
+
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+    } catch {
+      throw new BadRequestException("MAGIC_LINK_INVALID_OR_EXPIRED");
+    }
+    if (!parsed || typeof parsed !== "object") {
+      throw new BadRequestException("MAGIC_LINK_INVALID_OR_EXPIRED");
+    }
+    const o = parsed as Record<string, unknown>;
+    if (o.purpose === "login") return { purpose: "login" };
+    if (
+      o.purpose !== "signup" ||
+      typeof o.termsAcceptedAt !== "string" ||
+      typeof o.privacyAcceptedAt !== "string" ||
+      typeof o.marketingConsent !== "boolean"
+    ) {
+      throw new BadRequestException("MAGIC_LINK_INVALID_OR_EXPIRED");
+    }
+    return {
+      purpose: "signup",
+      termsAcceptedAt: o.termsAcceptedAt,
+      privacyAcceptedAt: o.privacyAcceptedAt,
+      marketingConsent: o.marketingConsent,
+      referralCode:
+        typeof o.referralCode === "string" && o.referralCode.trim()
+          ? o.referralCode.trim()
+          : undefined,
+    };
+  }
+
+  private async consumeMagicLinkHash(tokenHash: string): Promise<void> {
+    if (!this.db.configured()) return;
+    await this.db.query(
+      `UPDATE public.auth_magic_link_challenges
+          SET consumed_at = COALESCE(consumed_at, now())
+        WHERE token_hash = $1`,
+      [tokenHash],
+    );
+  }
+
+  private async stageASessionResponse(userId: string) {
+    const { accessToken, session } = await this.mintSession(userId);
+    return {
+      ok: true as const,
+      stage: "A" as const,
+      onboarding:
+        session.onboardingStage === "B_complete"
+          ? ("complete" as const)
+          : ("incomplete" as const),
+      session,
+      accessToken,
+      issuer: USER_JWT_ISSUER,
     };
   }
 
