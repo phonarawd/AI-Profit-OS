@@ -13,7 +13,7 @@ import { NetworkPlainWarning } from "@aipo/ui/components/wallet/NetworkPlainWarn
 import { T } from "@aipo/ui/copy/ko";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "../wallet.module.css";
 
 function parseSuggest(raw: string | null): number {
@@ -42,6 +42,13 @@ type KrwPending = {
   depositCode?: string;
 };
 
+function newKrwIdempotencyKey(): string {
+  if (typeof crypto === "undefined" || typeof crypto.randomUUID !== "function") {
+    throw new Error("secure_random_unavailable");
+  }
+  return `krw_${crypto.randomUUID().replace(/-/g, "")}`;
+}
+
 function DepositContent() {
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab") === "krw" ? "krw" : "usdt";
@@ -59,6 +66,8 @@ function DepositContent() {
   const [depositorName, setDepositorName] = useState("");
   const [krwState, setKrwState] = useState<KrwState>("idle");
   const [krwPending, setKrwPending] = useState<KrwPending | null>(null);
+  const krwSubmitInFlight = useRef(false);
+  const krwIntent = useRef<{ fingerprint: string; key: string } | null>(null);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -127,12 +136,25 @@ function DepositContent() {
   }, [searchParams]);
 
   async function submitKrw() {
+    if (krwSubmitInFlight.current) return;
     const amount = Number(krwAmount);
-    if (!Number.isInteger(amount) || amount < 1 || depositorName.trim().length < 1) {
+    const normalizedName = depositorName.trim();
+    if (!Number.isInteger(amount) || amount < 1 || normalizedName.length < 1) {
       setKrwState("denied");
       setDenyCopy("입금 신청에 필요한 값이 부족해요.");
       return;
     }
+
+    const fingerprint = JSON.stringify({
+      requestedAmountKrw: amount,
+      depositorName: normalizedName,
+    });
+    if (!krwIntent.current || krwIntent.current.fingerprint !== fingerprint) {
+      krwIntent.current = { fingerprint, key: newKrwIdempotencyKey() };
+    }
+    const idempotencyKey = krwIntent.current.key;
+
+    krwSubmitInFlight.current = true;
     setKrwState("submitting");
     setDenyCopy(null);
     try {
@@ -143,34 +165,41 @@ function DepositContent() {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           requestedAmountKrw: amount,
-          depositorName: depositorName.trim(),
-          idempotencyKey: `krw_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+          depositorName: normalizedName,
+          idempotencyKey,
         }),
       });
       if (res.status === 401) {
+        krwIntent.current = null;
         setKrwState("unauthorized");
         setDenyCopy("로그인하면 원화 입금을 신청할 수 있어요.");
         return;
       }
       if (res.status === 403) {
+        krwIntent.current = null;
         setKrwState("denied");
         setDenyCopy("지금은 원화 입금을 신청할 수 없어요.");
         return;
       }
       if (!res.ok) {
+        if (res.status >= 400 && res.status < 500) krwIntent.current = null;
         setKrwState("unavailable");
         setDenyCopy("입금 신청을 확인할 수 없음");
         return;
       }
       const json = (await res.json()) as KrwPending;
       if (json.status === "pending") {
+        krwIntent.current = null;
         setKrwPending(json);
         setKrwState("pending");
         return;
       }
       setKrwState("unavailable");
     } catch {
+      // Network/transport failure is ambiguous: keep the same key for retry.
       setKrwState("unavailable");
+    } finally {
+      krwSubmitInFlight.current = false;
     }
   }
 
