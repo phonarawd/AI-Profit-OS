@@ -29,9 +29,34 @@ function maskValue(key, value) {
   return value;
 }
 
+/** Redact the whole string when a generic message contains money/PII/auth material. */
+function redactSensitiveText(input) {
+  const text = String(input ?? "");
+  const lower = text.toLowerCase();
+  if (MASK.keys.some((key) => lower.includes(String(key).toLowerCase()))) {
+    return MASK.redacted;
+  }
+  if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(text)) {
+    return MASK.redacted;
+  }
+  if (/\bBearer\s+[A-Za-z0-9._~+\/-]+=*\b/i.test(text)) {
+    return MASK.redacted;
+  }
+  if (/\beyJ[A-Za-z0-9_-]*\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b/.test(text)) {
+    return MASK.redacted;
+  }
+  if (/\b(?:\+?82[- .]?)?0?1[016789][- .]?\d{3,4}[- .]?\d{4}\b/.test(text)) {
+    return MASK.redacted;
+  }
+  if (/\b(?:\d+(?:\.\d+)?\s*(?:USDT|KRW)|(?:USDT|KRW)\s*\d+(?:\.\d+)?)\b/i.test(text)) {
+    return MASK.redacted;
+  }
+  return text;
+}
 function maskDeep(input, depth = 0) {
   if (depth > 6 || input == null) return input;
   if (Array.isArray(input)) return input.map((v) => maskDeep(v, depth + 1));
+  if (typeof input === "string") return redactSensitiveText(input);
   if (typeof input !== "object") return input;
   const out = {};
   for (const [k, v] of Object.entries(input)) {
@@ -118,6 +143,7 @@ module.exports = {
   RULES,
   maskValue,
   maskDeep,
+  redactSensitiveText,
   formatObsLog,
   classifyAlerts,
   recordAuthFailure,

@@ -84,6 +84,41 @@ if (!sample.json.includes("[REDACTED]")) {
 if (sample.json.includes("12.5") || sample.json.includes("a@b.c")) {
   fails.push("raw money/PII leaked into log sample");
 }
+const embedded = obs.formatObsLog({
+  service: "apps-web",
+  status: 500,
+  message:
+    "email=a@b.c amountUsdt=12.5 token=eyJhbGciOiJIUzI1NiJ9.e30.signature 12.5 USDT +82 10-1234-5678",
+});
+for (const raw of [
+  "a@b.c",
+  "12.5",
+  "eyJhbGciOiJIUzI1NiJ9.e30.signature",
+  "+82 10-1234-5678",
+]) {
+  if (embedded.json.includes(raw)) {
+    fails.push("embedded sensitive message leaked: " + raw);
+  }
+}
+if (!embedded.json.includes("[REDACTED]")) {
+  fails.push("embedded sensitive message must be redacted");
+}
+
+const clientRuntime = read("apps/web/components/observability/ObsRuntime.tsx");
+if (/message:\s*event\.message/.test(clientRuntime)) {
+  fails.push("browser observability must not serialize raw ErrorEvent.message");
+}
+if (/String\(event\.reason/.test(clientRuntime)) {
+  fails.push("browser observability must not serialize raw rejection reason");
+}
+for (const source of ['source: "window_error"', 'source: "unhandled_rejection"']) {
+  if (!clientRuntime.includes(source)) {
+    fails.push("browser observability missing safe source marker " + source);
+  }
+}
+if (!clientRuntime.includes("safeClientPath")) {
+  fails.push("browser observability must strip high-entropy route ids");
+}
 
 const five = obs.classifyAlerts({
   status: 500,

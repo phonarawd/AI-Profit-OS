@@ -2,6 +2,17 @@
 
 import { useEffect } from "react";
 
+function safeClientPath(): string {
+  if (typeof location === "undefined") return "";
+  return location.pathname
+    .split("/")
+    .map((segment) => {
+      if (/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(segment)) return ":id";
+      if (/^[A-Za-z0-9_-]{20,}$/.test(segment)) return ":id";
+      return segment;
+    })
+    .join("/");
+}
 function emitClient(event: Record<string, unknown>) {
   const payload = {
     ts: new Date().toISOString(),
@@ -15,18 +26,18 @@ function emitClient(event: Record<string, unknown>) {
 
 export function ObsRuntime() {
   useEffect(() => {
-    const onError = (event: ErrorEvent) => {
+    const onError = () => {
       emitClient({
         event: "client_error",
-        message: event.message,
-        path: typeof location !== "undefined" ? location.pathname : "",
+        source: "window_error",
+        path: safeClientPath(),
       });
     };
-    const onRejected = (event: PromiseRejectionEvent) => {
+    const onRejected = () => {
       emitClient({
         event: "client_error",
-        message: String(event.reason ?? "unhandled"),
-        path: typeof location !== "undefined" ? location.pathname : "",
+        source: "unhandled_rejection",
+        path: safeClientPath(),
       });
     };
     window.addEventListener("error", onError);
