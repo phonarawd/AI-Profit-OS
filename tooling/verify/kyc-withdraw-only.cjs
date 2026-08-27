@@ -1,11 +1,13 @@
 /**
  * verify:kyc-withdraw-only — Money §42
  * participate without kyc → 200 · withdraw without approved → 403 KYC_WITHDRAW_REQUIRED
+ * Evidence class: STATIC_CONTRACT — source/schema/wiring only; runtime behavior is not executed here.
  */
 const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
+const EVIDENCE_CLASS = "STATIC_CONTRACT";
 const fails = [];
 
 function mustExist(rel) {
@@ -199,5 +201,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:kyc-withdraw-only] PASS (participate 200 no-kyc · withdraw 403 KYC_WITHDRAW_REQUIRED · Admin approve/reject API)",
+  `[verify:kyc-withdraw-only][${EVIDENCE_CLASS}] PASS (source/schema gate contract · runtime HTTP=NOT_RUN · Admin approve/reject API wiring)`,
 );

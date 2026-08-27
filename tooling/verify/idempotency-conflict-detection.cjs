@@ -1,11 +1,13 @@
 /**
  * verify:idempotency-conflict-detection — Money post-r0
  * same key + semantic-different payload → conflict · same payload → reuse
+ * Evidence class: STATIC_CONTRACT — source/schema/wiring only; runtime behavior is not executed here.
  */
 const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
+const EVIDENCE_CLASS = "STATIC_CONTRACT";
 const fails = [];
 
 function mustExist(rel) {
@@ -81,5 +83,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:idempotency-conflict-detection] PASS (fingerprint helper · mig · ledger+participate conflict path · catalog)",
+  `[verify:idempotency-conflict-detection][${EVIDENCE_CLASS}] PASS (fingerprint helper · migration/source wiring · runtime DB conflict/reuse=NOT_RUN)`,
 );

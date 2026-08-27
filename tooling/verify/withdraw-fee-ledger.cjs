@@ -1,11 +1,13 @@
 /**
  * verify:withdraw-fee-ledger — Money §11.1
  * deposit-config fee keys · FEE_REVENUE posting · WITHDRAW_FEE_HINT 필수 표시
+ * Evidence class: STATIC_CONTRACT — source/schema/wiring only; runtime behavior is not executed here.
  */
 const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
+const EVIDENCE_CLASS = "STATIC_CONTRACT";
 const fails = [];
 
 function mustExist(rel) {
@@ -155,5 +157,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:withdraw-fee-ledger] PASS (fee keys·FEE_REVENUE·WITHDRAW_FEE_HINT·deposit-settings)",
+  `[verify:withdraw-fee-ledger][${EVIDENCE_CLASS}] PASS (fee schema/source wiring · runtime ledger posting=NOT_RUN · deposit-settings contract)`,
 );

@@ -1,11 +1,13 @@
 /**
  * verify:kyc-redirect — Money §42.2
  * withdraw tap → toast KYC_WITHDRAW_REQUIRED → /me/kyc within 1s (800ms)
+ * Evidence class: STATIC_CONTRACT — source/schema/wiring only; runtime behavior is not executed here.
  */
 const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
+const EVIDENCE_CLASS = "STATIC_CONTRACT";
 const fails = [];
 
 function mustExist(rel) {
@@ -105,5 +107,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:kyc-redirect] PASS (withdraw tap → toast → /me/kyc @800ms · Canon 3면)",
+  `[verify:kyc-redirect][${EVIDENCE_CLASS}] PASS (redirect source/copy contract · runtime browser timing=NOT_RUN · Canon 3면)`,
 );

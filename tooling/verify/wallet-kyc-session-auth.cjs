@@ -2,11 +2,13 @@
  * verify:wallet-kyc-session-auth — PART9-pre2
  * Wallet 유저 10라우트(+practiceWelcome) + Kyc 2라우트 JwtAuthGuard · session userId
  * 내부 라우트(JWT 미부착) 허용리스트 · practiceExpireTick=machine-auth(별도 verify)
+ * Evidence class: STATIC_CONTRACT — source/schema/wiring only; runtime behavior is not executed here.
  */
 const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
+const EVIDENCE_CLASS = "STATIC_CONTRACT";
 const fails = [];
 
 function read(rel) {
@@ -156,4 +158,6 @@ if (fails.length) {
   console.error("[verify:wallet-kyc-session-auth] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
-console.log("[verify:wallet-kyc-session-auth] PASS");
+console.log(
+  `[verify:wallet-kyc-session-auth][${EVIDENCE_CLASS}] PASS (route guard/session source contract · runtime HTTP auth=NOT_RUN)`,
+);
