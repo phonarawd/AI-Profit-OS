@@ -86,6 +86,21 @@ self.addEventListener("fetch", (event) => {
   }
 });
 
+function safeNotificationHref(value) {
+  const href = String(value || "").trim();
+  if (
+    !href ||
+    href.length > 512 ||
+    !href.startsWith("/") ||
+    href.startsWith("//") ||
+    href.includes("\\") ||
+    /[\u0000-\u001f\u007f]/.test(href)
+  ) {
+    return "/";
+  }
+  return href;
+}
+
 function applyBadge(count) {
   const n = Number(count);
   if (!Number.isFinite(n) || n < 0) return Promise.resolve();
@@ -108,7 +123,7 @@ self.addEventListener("push", (event) => {
   }
   const title = String(payload.titleKo || "퍼뜩");
   const body = String(payload.bodyKo || "새 소식이 있어요");
-  const href = String(payload.href || "/");
+  const href = safeNotificationHref(payload.href);
   const badgeCount = payload.badgeCount;
   const sourceEventId = String(payload.sourceEventId || "").trim();
   event.waitUntil(
@@ -128,7 +143,7 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const href = String((event.notification.data && event.notification.data.href) || "/");
+  const href = safeNotificationHref(event.notification.data && event.notification.data.href);
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
       for (const client of clients) {

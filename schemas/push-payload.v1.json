@@ -5,13 +5,32 @@
   "description": "SW notification + badge. 본문 카피 = 한국어. IT 용어 0.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["titleKo", "href"],
+  "required": [
+    "titleKo",
+    "href"
+  ],
   "properties": {
-    "titleKo": { "type": "string", "minLength": 1 },
-    "bodyKo": { "type": "string" },
-    "href": { "type": "string", "minLength": 1 },
-    "badgeCount": { "type": "integer", "minimum": 0 },
-    "sourceEventId": { "type": "string" },
+    "titleKo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "bodyKo": {
+      "type": "string"
+    },
+    "href": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^/(?!/)(?!.*\\\\).*$",
+      "description": "Same-origin internal path only; Service Worker re-validates before navigation."
+    },
+    "badgeCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "sourceEventId": {
+      "type": "string"
+    },
     "channel": {
       "type": "string",
       "enum": [

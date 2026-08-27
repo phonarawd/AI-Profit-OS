@@ -13,9 +13,41 @@ const {
 function assert(cond, message) {
   if (!cond) throw new Error(message);
 }
+function loadSafeNotificationHref() {
+  const fs = require("fs");
+  const path = require("path");
+  const vm = require("vm");
+  const sw = fs.readFileSync(
+    path.resolve(__dirname, "../../apps/web/public/sw.js"),
+    "utf8",
+  );
+  const match = sw.match(
+    /function safeNotificationHref\(value\) \{[\s\S]*?\n\}/,
+  );
+  assert(match, "SW safeNotificationHref function must exist");
+  const context = {};
+  vm.runInNewContext(`${match[0]}; this.safeNotificationHref = safeNotificationHref;`, context);
+  return context.safeNotificationHref;
+}
+
 
 function run() {
   assertQaIsolation({ purpose: "e2e", host: "localhost" });
+  const safeHref = loadSafeNotificationHref();
+  assert(safeHref("/me/inbox") === "/me/inbox", "internal href allowed");
+  assert(safeHref("/") === "/", "root allowed");
+  for (const unsafe of [
+    "https://evil.example/phish",
+    "http://evil.example/phish",
+    "//evil.example/phish",
+    "\\\\evil.example\\phish",
+    "/ok\\evil",
+    "/\u0000evil",
+    "",
+  ]) {
+    assert(safeHref(unsafe) === "/", `unsafe push href must fall back: ${JSON.stringify(unsafe)}`);
+  }
+  assert(safeHref("/" + "a".repeat(600)) === "/", "overlong href must fall back");
   const cases = runPushBadgeQaCases();
   assert(cases.killed.status === "killed", "kill status");
   assert(cases.killed.sendAttempted === false, "kill must not send");

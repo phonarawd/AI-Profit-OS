@@ -59,6 +59,18 @@ if (!/addEventListener\(\s*["']push["']/.test(sw)) {
 if (!sw.includes("setAppBadge") && !sw.includes("applyBadge")) {
   fails.push("SW must apply badge");
 }
+if (!sw.includes("safeNotificationHref")) {
+  fails.push("SW must sanitize notification href");
+}
+if (sw.includes('const href = String(payload.href || "/")')) {
+  fails.push("SW must not trust raw push payload href");
+}
+if (!sw.includes("safeNotificationHref(payload.href)")) {
+  fails.push("push event must sanitize href before notification data");
+}
+if (!sw.includes("safeNotificationHref(event.notification.data && event.notification.data.href)")) {
+  fails.push("notification click must sanitize href again before navigation");
+}
 if (/PublicKeyCredential|webauthn/i.test(sw)) {
   fails.push("REL-020 must not mix WebAuthn (REL-022)");
 }
