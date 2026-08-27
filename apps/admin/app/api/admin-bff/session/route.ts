@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   ADMIN_SESSION_COOKIE,
   adminSessionCookieOptions,
+  isStorableAdminToken,
   sameOrigin,
 } from "../../../../lib/admin-bff-server";
 
@@ -14,7 +15,7 @@ function noStore<T extends NextResponse>(response: T): T {
 
 export function GET(request: NextRequest) {
   const token = request.cookies.get(ADMIN_SESSION_COOKIE)?.value?.trim() ?? "";
-  return noStore(NextResponse.json({ connected: token.length > 0 }));
+  return noStore(NextResponse.json({ connected: isStorableAdminToken(token) }));
 }
 
 export async function POST(request: NextRequest) {
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
     body && typeof body === "object" && typeof (body as { token?: unknown }).token === "string"
       ? (body as { token: string }).token.trim()
       : "";
-  if (!token || token.length > 8192 || token.split(".").length !== 3) {
+  if (!isStorableAdminToken(token)) {
     return noStore(NextResponse.json({ connected: false, code: "ADMIN_SESSION_TOKEN_INVALID" }, { status: 400 }));
   }
   const response = NextResponse.json({ connected: true, authority: "upstream" });

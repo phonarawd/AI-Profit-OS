@@ -1,5 +1,10 @@
 const ADMIN_API_PREFIX = "/api/v1/admin";
 export const ADMIN_SESSION_COOKIE = "aipo_admin_session";
+export const ADMIN_SESSION_TOKEN_MAX_CHARS = 3800;
+
+export function isStorableAdminToken(token: string): boolean {
+  return token.length > 0 && token.length <= ADMIN_SESSION_TOKEN_MAX_CHARS && token.split(".").length === 3;
+}
 
 export function adminApiBase(): string {
   const apiHost = process.env.API_HOST ?? "localhost:4000";
