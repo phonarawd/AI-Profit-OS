@@ -26,9 +26,9 @@ async function hideNextDevChrome(page) {
     .catch(() => {});
 }
 
-async function openUsdt(page, mode, width = 1440, height = 1080) {
+async function openUsdt(page, mode, width = 1440, height = 1080, opts = {}) {
   await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
-  await stubWithdraw(page, mode);
+  await stubWithdraw(page, mode, opts);
   await page.setViewportSize({ width, height });
   await page.goto(`${runtime.baseUrl}/wallet/withdraw/usdt?mode=profit`, {
     waitUntil: "load",
@@ -92,6 +92,45 @@ test("USDT withdraw deny is not a fake success", async ({ page }) => {
   );
   await expect(page.getByText("지금은 출금할 수 없어요.")).toBeVisible();
   await expect(page.getByText("출금 완료")).toHaveCount(0);
+});
+
+test("ambiguous retry keeps one key for equivalent amount presentation", async ({
+  page,
+}) => {
+  const requests = [];
+  await openUsdt(page, "ambiguous_retry", 1440, 1080, {
+    onWithdrawRequest: (body) => requests.push(body),
+  });
+
+  await page.getByTestId("withdraw-amount-input").fill("10");
+  await page
+    .getByTestId("withdraw-destination-input")
+    .fill("TQAWITHDRAWADDR116");
+  await page.getByTestId("withdraw-step-up-challenge").click();
+  await expect(page.getByTestId("withdraw-step-up-panel")).toHaveAttribute(
+    "data-challenge-ready",
+    "true",
+  );
+  await page.getByTestId("withdraw-step-up-proof").fill("1234");
+  await page.getByTestId("withdraw-step-up-verify").click();
+  await expect(page.getByTestId("withdraw-step-up-token-ready")).toBeAttached();
+
+  await page.getByTestId("withdraw-submit").click();
+  await expect(page.getByTestId("withdraw-live-form")).toHaveAttribute(
+    "data-withdraw-state",
+    "unavailable",
+  );
+
+  await page.getByTestId("withdraw-amount-input").fill("10.0");
+  await page.getByTestId("withdraw-submit").click();
+  await expect(page.getByTestId("withdraw-live-form")).toHaveAttribute(
+    "data-withdraw-state",
+    "accepted",
+  );
+
+  expect(requests).toHaveLength(2);
+  expect(requests[0].idempotencyKey).toBe(requests[1].idempotencyKey);
+  expect(requests.map((request) => request.amountUsdt)).toEqual(["10", "10"]);
 });
 
 test("USDT withdraw a11y has no new critical/serious", async ({ page }) => {

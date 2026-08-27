@@ -3,6 +3,7 @@ export {
   createWithdrawStepUpChallenge,
   fetchWalletBuckets,
   newWithdrawIdempotencyKey,
+  normalizeWithdrawAmountUsdt,
   normalizeWalletBuckets,
   verifyWithdrawStepUp,
 } from "./fetch";

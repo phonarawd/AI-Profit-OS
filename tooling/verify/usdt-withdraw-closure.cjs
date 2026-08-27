@@ -38,6 +38,10 @@ const kycGate = read("apps/web/lib/use-withdraw-kyc-gate.ts");
 const form = read("apps/web/components/WithdrawLiveForm.tsx");
 const spec = read("tooling/e2e/specs/usdt-withdraw-closure.spec.cjs");
 const stubs = read("tooling/e2e/lib/consumer-route-stubs.cjs");
+const withdrawStub = stubs.slice(
+  stubs.indexOf("async function stubWithdraw"),
+  stubs.indexOf("const HISTORY_JOURNAL_ID"),
+);
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
 const domain = read("tooling/verify/domain-by-path.cjs");
@@ -58,8 +62,25 @@ if (!form.includes("지금은 출금할 수 없어요.")) {
 if (!spec.includes("usdt_deny") || !spec.includes("접수했어요")) {
   fail("committed spec must cover USDT accepted + deny");
 }
-if (!stubs.includes("stubWithdraw") || !stubs.includes("KYC_WITHDRAW_REQUIRED")) {
+for (const needle of [
+  "ambiguous_retry",
+  'fill("10.0")',
+  "requests[0].idempotencyKey",
+  '["10", "10"]',
+]) {
+  if (!spec.includes(needle)) {
+    fail(`committed spec must cover canonical ambiguous retry: ${needle}`);
+  }
+}
+if (!withdrawStub.includes("stubWithdraw") || !withdrawStub.includes("KYC_WITHDRAW_REQUIRED")) {
   fail("stubWithdraw must expose KYC/limit deny");
+}
+if (
+  !withdrawStub.includes('/api/v1/compliance/kyc/status') ||
+  !withdrawStub.includes('kycStatus: "approved"') ||
+  !withdrawStub.includes("userId: TEST_WALLET_BUCKETS.userId")
+) {
+  fail("stubWithdraw must satisfy the session-owned approved KYC authority");
 }
 if (!pkg.includes('"verify:usdt-withdraw-closure"')) {
   fail("package.json missing verify:usdt-withdraw-closure");

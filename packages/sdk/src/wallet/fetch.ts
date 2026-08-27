@@ -31,7 +31,9 @@ async function authHeaders(
   return headers;
 }
 
-const MONEY_RE = /^-?[0-9]+(\\.[0-9]+)?$/;
+const MONEY_RE = /^-?[0-9]+(\.[0-9]+)?$/;
+const WITHDRAW_AMOUNT_RE = /^([0-9]+)(?:\.([0-9]+))?$/;
+const WITHDRAW_AMOUNT_SCALE = 18;
 const WALLET_BUCKET_KEYS = [
   "userId",
   "principalUsdt",
@@ -87,6 +89,37 @@ export function normalizeWalletBuckets(raw: unknown): WalletBucketsResponse {
     liabilityUsdt: requiredMoney(value, "liabilityUsdt"),
     asOfLedgerEntryId: requiredText(value, "asOfLedgerEntryId"),
   };
+}
+
+/**
+ * Canonicalizes a positive USDT amount to the API ledger's 18-decimal format.
+ * Presentation-only changes such as `1`, `1.0`, and `01.000` must keep the
+ * same idempotency fingerprint after an ambiguous network response.
+ */
+export function normalizeWithdrawAmountUsdt(raw: string): string {
+  const value = raw.trim();
+  const match = WITHDRAW_AMOUNT_RE.exec(value);
+  if (!match) throw new Error("withdraw_amount_invalid");
+
+  const whole = match[1];
+  const fraction = match[2] ?? "";
+  if (fraction.length > WITHDRAW_AMOUNT_SCALE) {
+    throw new Error("withdraw_amount_scale");
+  }
+
+  const scaled = BigInt(
+    `${whole}${fraction.padEnd(WITHDRAW_AMOUNT_SCALE, "0")}`,
+  );
+  if (scaled <= 0n) throw new Error("withdraw_amount_invalid");
+
+  const padded = scaled.toString().padStart(WITHDRAW_AMOUNT_SCALE + 1, "0");
+  const canonicalWhole = padded.slice(0, -WITHDRAW_AMOUNT_SCALE) || "0";
+  const canonicalFraction = padded
+    .slice(-WITHDRAW_AMOUNT_SCALE)
+    .replace(/0+$/, "");
+  return canonicalFraction
+    ? `${canonicalWhole}.${canonicalFraction}`
+    : canonicalWhole;
 }
 
 export async function fetchWalletBuckets(

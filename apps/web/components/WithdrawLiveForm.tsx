@@ -5,6 +5,7 @@ import {
   createWithdraw,
   createWithdrawStepUpChallenge,
   newWithdrawIdempotencyKey,
+  normalizeWithdrawAmountUsdt,
   verifyWithdrawStepUp,
   type WithdrawStepUpMethod,
 } from "@aipo/sdk/wallet";
@@ -102,7 +103,14 @@ export function WithdrawLiveForm({
   const onSubmit = useCallback(async () => {
     if (submitInFlight.current) return;
     if (!allowForm) return;
-    const normalizedAmount = amountUsdt.trim();
+    let normalizedAmount: string;
+    try {
+      normalizedAmount = normalizeWithdrawAmountUsdt(amountUsdt);
+    } catch {
+      setFlowState("denied");
+      setStatus("출금 금액을 다시 확인해 주세요.");
+      return;
+    }
     const normalizedDestination = asset === "USDT" ? destination.trim() : "";
     if (!normalizedAmount || !stepUpToken) return;
     if (requirePrincipalConfirm && !principalConfirmToken) return;

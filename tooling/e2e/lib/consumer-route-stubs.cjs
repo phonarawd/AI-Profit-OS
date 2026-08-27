@@ -604,12 +604,19 @@ async function stubDeposit(page, mode) {
 }
 
 /** DEV/TEST withdraw stub. production money mutation 0. */
-async function stubWithdraw(page, mode) {
+async function stubWithdraw(page, mode, opts = {}) {
+  let withdrawAttempts = 0;
   await page.route("**/api/v1/**", async (route) => {
     const url = route.request().url();
     const method = route.request().method();
     if (url.includes("/api/v1/me/home-read")) {
       return json(route, 200, AUTHENTICATED_EMPTY_HOME);
+    }
+    if (url.includes("/api/v1/compliance/kyc/status")) {
+      return json(route, 200, {
+        userId: TEST_WALLET_BUCKETS.userId,
+        kycStatus: "approved",
+      });
     }
     if (url.includes("/api/v1/wallet/buckets")) {
       if (mode === "unauthorized") {
@@ -641,6 +648,11 @@ async function stubWithdraw(page, mode) {
       url.includes("/api/v1/wallet/withdraw") &&
       !url.includes("step-up")
     ) {
+      withdrawAttempts += 1;
+      const body = route.request().postDataJSON();
+      if (typeof opts.onWithdrawRequest === "function") {
+        opts.onWithdrawRequest(body);
+      }
       if (mode === "unauthorized") {
         return json(route, 401, { error: "unauthorized" });
       }
@@ -649,6 +661,9 @@ async function stubWithdraw(page, mode) {
       }
       if (mode === "error") {
         return json(route, 500, { error: "upstream_failed" });
+      }
+      if (mode === "ambiguous_retry" && withdrawAttempts === 1) {
+        return json(route, 500, { error: "response_lost" });
       }
       return json(route, 200, { status: "accepted" });
     }
