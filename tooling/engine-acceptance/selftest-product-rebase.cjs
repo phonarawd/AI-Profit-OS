@@ -447,17 +447,17 @@ function run() {
     // Regression snapshot of the live ledger/baseline at the time this file was
     // written, NOT a policy that forbids a rebase — the real policy is enforced
     // by validateRebaseEntry/verifyRebaseLedgerAgainstBaseline/verifyWashing
-    // above and below. Updated with REL-502 rebase after REL-508
-    // (ea-rebase-229e7777f9b0-2d4567b3a2c8 · eval MATCH predecessor).
-    check("no_new_epoch_created", liveLedger.rebases.length === 8, `rebases=${liveLedger.rebases.length}`);
+    // above and below. Updated with the Auth + Wallet REL-502 rebase
+    // (ea-rebase-cc627efc3ee2-defdfa5b6ac4 · eval MATCH predecessor).
+    check("no_new_epoch_created", liveLedger.rebases.length === 9, `rebases=${liveLedger.rebases.length}`);
     check(
       "live_baseline_unchanged",
-      liveBaseline.id === "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+      liveBaseline.id === "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
       liveBaseline.id,
     );
-    // qa9-result is only ever written by run-qa9.cjs. After REL-508 rebase,
-    // current-epoch QA1-QA8 reran and QA9 re-aggregated on
-    // ea-baseline-229e7777f9b0-2d4567b3a2c8. Predecessor ISSUED is history.
+    // qa9-result is only ever written by run-qa9.cjs. After this rebase,
+    // the on-disk file remains predecessor history until current-epoch
+    // QA1-QA8 rerun and QA9 re-aggregation complete.
     check(
       "live_verdict_unchanged",
       qa9.verdict === "ENGINE_ACCEPTED_FOR_UI" &&

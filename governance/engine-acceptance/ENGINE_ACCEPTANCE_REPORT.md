@@ -1,150 +1,57 @@
 # ENGINE ACCEPTANCE REPORT
 
-> **QA phase:** QA-9 `qa9-acceptance-report` (FINAL aggregation / verdict issuance — not a new discovery suite)
-> **Measured:** 2026-08-24T09:45:35.015Z
-> **baseline_id:** `ea-baseline-04ef3c7de4dd-2ff1760b7d72`
-> **qa9_run_id:** `qa9-acceptance-report-20260824`
-> **qa9_result_checksum:** `e410ad596403ea8eef40bfb3e5d0fd3beb525fcb9b70d9cd4f76c906d76a9f00`
-> **aggregation_only:** `true` — consumes QA0-QA8 evidence exactly as recorded, invents no scenarios
+> **QA phase:** QA-0 `ENGINE_ACCEPTANCE_REBASE_V1`
+> **Measured:** 2026-08-27T19:01:36.174Z
+> **baseline_id:** `ea-baseline-cc627efc3ee2-defdfa5b6ac4`
+> **predecessor_baseline_id:** `ea-baseline-04ef3c7de4dd-2ff1760b7d72`
+> **rebase_id:** `ea-rebase-cc627efc3ee2-defdfa5b6ac4`
+> **rebase_policy_version:** `ENGINE_ACCEPTANCE_REBASE_POLICY_V2`
 
 ## Status banner
 
 ```text
 ACCEPTANCE CONTRACT = LOCKED
-BASELINE = FROZEN
-QA0 = COMPLETE
-QA1 = COMPLETE
-QA2 = COMPLETE
-QA3 = COMPLETE
-QA4 = COMPLETE
-QA5 = COMPLETE
-QA6 = COMPLETE
-QA7 = COMPLETE
-QA8 = COMPLETE
-QA9 = COMPLETE
-QA HARNESS TARGET = SAFE
-NEXT = 03_ui_entry_unlocked
-PRODUCT MUTATION = 0
-03 UI = UNLOCKED
-ENGINE_ACCEPTED_FOR_UI = ISSUED
-UI_UX_ENTRY_GATE = OPEN
+DECISION = ENGINE_ACCEPTANCE_REBASE_V1
+BASELINE = NEW_EPOCH
+PREDECESSOR = ea-baseline-04ef3c7de4dd-2ff1760b7d72
+QA0 = COMPLETE (new epoch freeze)
+QA1 = STALE_FOR_CURRENT_EPOCH
+QA2 = STALE_FOR_CURRENT_EPOCH
+QA3 = STALE_FOR_CURRENT_EPOCH
+QA4 = STALE_FOR_CURRENT_EPOCH
+QA5 = STALE_FOR_CURRENT_EPOCH
+QA6 = STALE_FOR_CURRENT_EPOCH
+QA7 = NOT_STARTED
+QA8 = STALE_FOR_CURRENT_EPOCH
+QA9 = STALE_AGGREGATION (not current-authoritative)
+NEXT = QA1_DETERMINISTIC_TRUTH
+BASELINE WASHING = FORBIDDEN
+03 UI = BLOCKED
+ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
 ```
 
-## FINAL_ACCEPTANCE_VERDICT
+## Verdict (after product rebase)
 
 | Field | Value |
 |---|---|
-| verdict | `ENGINE_ACCEPTED_FOR_UI` |
-| reason | QA9 COMPLETE - all acceptance-contract L1 conditions met - ENGINE_ACCEPTED_FOR_UI |
+| verdict | `ENGINE_QA_INCOMPLETE` |
+| reason | ENGINE_ACCEPTANCE_REBASE_V1 · predecessor discovery is historical COMPLETE / current-epoch STALE · required rerun QA1-QA8 then QA9 aggregation · do not fabricate a verdict at rebase time |
 | evidence_integrity | `VALID` |
 | baseline.valid | `true` |
-| working_tree_clean | `false` (fact only, not forced clean) |
+| working_tree_clean | `true` (fact only — not forced clean) |
 | protected_scope_clean | `true` |
-| acceptance_scope.unchanged | `true` |
+| prompt_hash | live pinned (`ff6edf9fb8d7cf5b298a1ff34169fdd3e1746316e320a0363d237f95f5ea42d3`) |
+| eval_dataset_hash | MATCH predecessor (`710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d`) |
+| acceptance_workflow_hash | MATCH current approved (`b8e724ba3af9e2d240f4daeefd53d4330972afdb942396698389825167752aa7`) |
 
-**Prohibited-state check:** `ENGINE_ACCEPTED_FOR_UI` is `ISSUED`. `UI_UX_ENTRY_GATE = OPEN`.
-
-## ACCEPTANCE_FORMULA_INPUTS
-
-| Input | Value |
-|---|---|
-| mandatory_suite.QA1..QA8.status == COMPLETE | `true` |
-| critical_invariant.blocked | `0` |
-| critical_invariant.skipped | `0` |
-| critical_invariant.uncovered | `0` |
-| defects.P0 | `0` |
-| defects.P1 | `0` |
-| defects.P2 | `0` |
-| defects.P3 | `0` |
-| baseline.valid | `true` |
-| acceptance_scope.unchanged | `true` |
-| report.baseline_id == baseline.id | `true` |
-| report.evidence_integrity == VALID | `true` |
-
-### Mandatory suite status (QA1-QA8)
-
-| suite | completion_status |
-|---|---|
-| `QA1` | `COMPLETE` |
-| `QA2` | `COMPLETE` |
-| `QA3` | `COMPLETE` |
-| `QA4` | `COMPLETE` |
-| `QA5` | `COMPLETE` |
-| `QA6` | `COMPLETE` |
-| `QA7` | `COMPLETE` |
-| `QA8` | `COMPLETE` |
-
-## P0_SECURITY_FINDINGS (must remain visible — not buried in defects.v1.json only)
-
-- (none currently recorded)
-
-## OTHER_DEFECTS
-
-- (none currently recorded)
-
-## REMAINING_BLOCKED (critical_invariant.blocked cumulative = 0)
-
-No BLOCKED critical_invariant entries currently recorded across QA4/QA5/QA6/QA8.
-
-### Performance World (k6, CI only heavy) — QA6 record retained
-
-QA6 record retained unchanged through QA7/QA8/QA9. suite status `PASS` — budget
-SPECIFIED (Human/PO ACK, perf-budget.v1.json V1) — k6 scenario-mix + tag threshold mechanism
-locked — numeric SLO invention forbidden — tags: `feed_read`:`PASS`, `participate`:`PASS`, `wallet_read`:`PASS`, `auth_profile`:`PASS` — heavy k6 remains CI
-only — artifact retention >= 90 days — aggregator `if: always()`.
-
-### Security and Privacy World (QA8, ASVS 5.0.0 subset)
-
-admin-boundary / user-isolation / JWT-token-validation / privacy-delete-account / error-disclosure -
-dynamic adversarial scenario(s): `SEC-DYNAMIC-ADVERSARIAL-01`:`PASS`.
-QA8 is a discovery suite: any finding it records in defects.v1.json is not repaired by QA8 or QA9
-themselves - repairs happen in a dedicated round (see REPAIR_ENTRY_POINT). QA9 remains aggregation
-only and invents no new ASVS scenarios.
-
-## REPAIR_ENTRY_POINT (governance state)
-
-No outstanding P0/P1 defects and no BLOCKED critical_invariant rows are currently recorded.
-
-1. **Protected product repair** (touches `services/api-nest/src/**` or other
-   `protected-scope.v1.json` roots) uses the already-governed pattern: change protected
-   bytes as an ordinary commit, then trigger `ENGINE_ACCEPTANCE_REBASE_V1`
-   (`tooling/engine-acceptance/rebase-acceptance-baseline.cjs`, Human/PO ACK required) to
-   open a new acceptance epoch, then re-run QA1-QA8 then QA9.
-2. **Harness-only repair** = `tooling/engine-acceptance/**` changes with zero product-byte
-   impact. Uses normal T0/T1 commit gates; no rebase needed since protected scope is
-   untouched.
-3. **Governance-only repair** = `governance/engine-acceptance/**` bookkeeping.
-4. **Workflow L7 amendment** = `.github/workflows/engine-acceptance.yml` change under
-   `POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1` (Human/PO ACK, exact-diff QA0-QA6
-   semantics-unchanged proof).
-5. **Performance budget Human/PO approval** = QA6's numeric p95/error-rate budget can only
-   exist once Human/PO supplies it; `perf-budget.v1.json`'s `numeric_invention_forbidden`
-   lock means the harness cannot self-supply these.
-6. **L8 `ENGINE_ACCEPTANCE_REBASE_V1`** = required for any protected-product mutation
-   (`services/api-nest/src/**`) needed to clear a remaining P0/P1/BLOCKED item.
-
-## REBASE_GOVERNANCE_GAP — repaired as `ENGINE_ACCEPTANCE_REBASE_POLICY_V2`
-
-Human/PO ACK APPROVED the policy-versioned repair (`amendment_id=rebase-policy-qa8-qa9-topology-20260814`,
-codename `L8_REBASE_GOVERNANCE_GAP_REPAIR`). Historical V1 approvals remain valid; future rebases use V2:
-
-- discovery invalidate/rerun includes **QA8** (STALE + historical provenance + washing)
-- **QA9** is aggregation-only: `stale_aggregation_phases`, not a discovery suite; predecessor
-  QA9 verdict/report is not current-authoritative; aggregation reruns only after current-epoch
-  discovery evidence exists
-- V1 shape cannot authorize a new rebase
-- this repair created **no** new acceptance epoch and did **not** invalidate current evidence
-
-## RECOMMENDED_REPAIR_BATCH (planning only — product items not executed by QA9)
-
-No outstanding defects or BLOCKED critical_invariant rows are currently recorded — nothing queued here.
+**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued**. Predecessor discovery/aggregation results were **not** rewritten as current-epoch COMPLETE. Predecessor QA9 verdict is **not** current-authoritative.
 
 ## Dual Dirty
 
-- working_tree_clean=`false`
+- working_tree_clean=`true`
 - protected_scope_clean=`true`
-- forced clean / stash laundry = forbidden
+- forced clean / stash laundry = **forbidden**
 
-## NEXT_CANONICAL_WAVE
+## Next
 
-`03_ui_entry_unlocked` — verdict `ENGINE_ACCEPTED_FOR_UI` unlocks 03 UI. All acceptance-contract L1 conditions are met on this evidence.
+`QA1_DETERMINISTIC_TRUTH` only. Full ACCEPTED · product mutation to chase green · 03 UI — **금지**.

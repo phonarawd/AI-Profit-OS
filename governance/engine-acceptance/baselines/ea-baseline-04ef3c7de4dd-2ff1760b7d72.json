@@ -1,11 +1,11 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
+  "id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
   "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-08-27T19:01:36.174Z",
-  "commit_sha": "cc627efc3ee20e43df4888692e346dca2414e399",
-  "tree_sha": "3146b9231fff9fee82713a49156f21957a45fb3c",
+  "measuredAt": "2026-08-24T08:50:46.120Z",
+  "commit_sha": "04ef3c7de4dda0d0d5f8a2ef403dfa25bd0e9318",
+  "tree_sha": "1f134c9dc7d6cf3fae89af199eaac97b320748bb",
   "working_tree_clean": true,
   "protected_scope_clean": true,
   "dirty_paths_all": [],
@@ -15,14 +15,14 @@
   "prompt_hash": "ff6edf9fb8d7cf5b298a1ff34169fdd3e1746316e320a0363d237f95f5ea42d3",
   "eval_dataset_hash": "710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d",
   "acceptance_workflow_hash": "b8e724ba3af9e2d240f4daeefd53d4330972afdb942396698389825167752aa7",
-  "node_version": "v22.14.0",
+  "node_version": "v22.23.2",
   "package_manager_version": "pnpm@10.14.0",
   "hash_rules_ref": "governance/engine-acceptance/protected-scope.v1.json",
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "defdfa5b6ac45ce3ea03ee2f392b9f8c1a89f84ec5826dede5def6c08b479d23",
-    "pathCount": 452,
+    "aggregate": "2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8",
+    "pathCount": 450,
     "entries": [
       {
         "path": "eval/coach_redteam.jsonl",
@@ -606,11 +606,11 @@
       },
       {
         "path": "services/api-nest/src/auth/auth.controller.ts",
-        "sha256": "9c325318b61c6bdd68e4ef2a68355cefd3a223e160dc827b4a45034d0d6d249d"
+        "sha256": "05234ff2a112b097e68e1dbf44b513904b73efb9792bce54fd326df773276829"
       },
       {
         "path": "services/api-nest/src/auth/auth.module.ts",
-        "sha256": "5de935fe07f6e66e386dee83b3809e8d8c8bcb531b2bc8d48a121c62f875af64"
+        "sha256": "b1546d35a9a14fde1a6f66b99d9e40e6f61c4c83eb356792d0fde740aa1939fb"
       },
       {
         "path": "services/api-nest/src/auth/auth.routes.ts",
@@ -618,7 +618,7 @@
       },
       {
         "path": "services/api-nest/src/auth/auth.service.ts",
-        "sha256": "e155e152b6eee9bbfdb5a59083a637408b8100650f25a9738a36c795d9088b13"
+        "sha256": "ee4efaf8c517eea736dc7d907832d3dd8d4a975d93de95dfba2279124ca2e112"
       },
       {
         "path": "services/api-nest/src/auth/auth.stage.ts",
@@ -725,10 +725,6 @@
         "sha256": "277408cefbc7ddf474e9a0be5e862d7ad8082c772885376c91ead95560c70ea5"
       },
       {
-        "path": "services/api-nest/src/config/nest-provenance.ts",
-        "sha256": "b22893ce3d383b5875847fc0401d45efbceff011c3d436845bd1520639960837"
-      },
-      {
         "path": "services/api-nest/src/config/phase0.env.ts",
         "sha256": "fde2915fb0d9181f288b4c84db7e5be6758c6ad692a809f474ab3c50c3a6efca"
       },
@@ -798,7 +794,7 @@
       },
       {
         "path": "services/api-nest/src/health.controller.ts",
-        "sha256": "31c8c491e92ee4ea695ed54e411d28cbeb5abad30f7182c40a53ab8035537fa4"
+        "sha256": "ff95da740800372d884f5e2fe8d01bc7223d160b4d8fa1372d9b9b3bd42659c8"
       },
       {
         "path": "services/api-nest/src/home-read/home-read.mi.ts",
@@ -1490,7 +1486,7 @@
       },
       {
         "path": "services/api-nest/src/wallet/krw-deposit.service.ts",
-        "sha256": "097bb4c0e6af95a054d1031158b5277245e547acc57781abb4dca4acf25084c9"
+        "sha256": "1ee55a18cd849b33e6e431dbabe5ff0fbed568a487cf86da6f764226a0147fb4"
       },
       {
         "path": "services/api-nest/src/wallet/min-holding.service.ts",
@@ -1506,7 +1502,7 @@
       },
       {
         "path": "services/api-nest/src/wallet/resend-email.provider.ts",
-        "sha256": "6c982402a2c20617256a3a4c6c10ce7fbae2810b4083316d2533b6f831b86db2"
+        "sha256": "cece6aa9d9b3ca131f2a49a15c64f5cf5c40e6c79f20b41b990f467b5fe7ca2a"
       },
       {
         "path": "services/api-nest/src/wallet/tron-address.ts",
@@ -1515,10 +1511,6 @@
       {
         "path": "services/api-nest/src/wallet/usdt-deposit.service.ts",
         "sha256": "8f6d4ac341ef729f83f5d69a9053dedc320d0c52e91850ab1d3f611c12418dfe"
-      },
-      {
-        "path": "services/api-nest/src/wallet/wallet-idempotency.selftest.ts",
-        "sha256": "3d1a45a831fe84da3fa1704975192863c18f6307cd11cc664ae9e59142a074b2"
       },
       {
         "path": "services/api-nest/src/wallet/wallet.controller.ts",
@@ -1558,7 +1550,7 @@
       },
       {
         "path": "services/api-nest/src/wallet/withdraw-intent.service.ts",
-        "sha256": "02961df2128cee31c57e4512eddff7ab7daced3d06acd9b9e940cfd441934406"
+        "sha256": "e41e35e5749ba463df927f7578e62afe2eccda9a6dcab59becd105732309d461"
       },
       {
         "path": "services/api-nest/src/wallet/withdraw-kyc.guard.ts",
@@ -1840,8 +1832,8 @@
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-cc627efc3ee2-defdfa5b6ac4",
-    "predecessor_baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+    "rebase_id": "ea-rebase-ffffb4808987-2ff1760b7d72",
+    "predecessor_baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
     "kind": "product_rebase"
   }
 }
