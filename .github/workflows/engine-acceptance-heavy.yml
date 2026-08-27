@@ -29,6 +29,9 @@
 #   commit deliberately.
 name: engine-acceptance-heavy
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
@@ -78,11 +81,11 @@ jobs:
       AIPO_QA_PGPORT: "5432"
       AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa4-clock
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           version: 10.14.0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: "22"
           cache: "pnpm"
@@ -114,7 +117,7 @@ jobs:
         # suites' exact report shape, not QA4's).
       - name: Upload QA4 clock harness raw evidence
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: engine-acceptance-heavy-QA4-clock-harness
           path: /tmp/aipo-harness/qa4-clock/
@@ -122,7 +125,7 @@ jobs:
           if-no-files-found: warn
       - name: Upload cumulative governance evidence (after QA4)
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: heavy-evidence-after-qa4
           path: governance/engine-acceptance/
@@ -155,18 +158,18 @@ jobs:
       AIPO_QA_PGPORT: "5432"
       AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa5-fault
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           version: 10.14.0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: "22"
           cache: "pnpm"
       - name: Install
         run: pnpm install --frozen-lockfile
       - name: Download QA4 cumulative evidence
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: heavy-evidence-after-qa4
           path: governance/engine-acceptance/
@@ -193,7 +196,7 @@ jobs:
         # verify:engine-acceptance intentionally NOT run here — same reason as QA4 above.
       - name: Upload QA5 fault harness raw evidence
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: engine-acceptance-heavy-QA5-fault-harness
           path: /tmp/aipo-harness/qa5-fault/
@@ -201,7 +204,7 @@ jobs:
           if-no-files-found: warn
       - name: Upload cumulative governance evidence (after QA5)
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: heavy-evidence-after-qa5
           path: governance/engine-acceptance/
@@ -234,18 +237,18 @@ jobs:
       AIPO_QA_PGPORT: "5432"
       AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa6-threshold
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           version: 10.14.0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: "22"
           cache: "pnpm"
       - name: Install
         run: pnpm install --frozen-lockfile
       - name: Download QA5 cumulative evidence
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: heavy-evidence-after-qa5
           path: governance/engine-acceptance/
@@ -278,7 +281,7 @@ jobs:
           pnpm verify:engine-acceptance
       - name: Upload QA6 threshold harness raw evidence
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: engine-acceptance-heavy-QA6-threshold-harness
           path: /tmp/aipo-harness/qa6-threshold/
@@ -286,7 +289,7 @@ jobs:
           if-no-files-found: warn
       - name: Upload cumulative governance evidence (after QA6)
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: heavy-evidence-after-qa6
           path: governance/engine-acceptance/
@@ -305,18 +308,18 @@ jobs:
       GEMINI_API_KEY: ${{ secrets.QA7_GEMINI_API_KEY }}
       QA7_LOCAL_HTTP: "1"
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           version: 10.14.0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: "22"
           cache: "pnpm"
       - name: Install
         run: pnpm install --frozen-lockfile
       - name: Download QA6 cumulative evidence
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: heavy-evidence-after-qa6
           path: governance/engine-acceptance/
@@ -362,7 +365,7 @@ jobs:
           fi
       - name: Upload cumulative governance evidence (after QA7)
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: heavy-evidence-after-qa7
           path: governance/engine-acceptance/
@@ -396,18 +399,18 @@ jobs:
       AIPO_QA_PGPORT: "5432"
       AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa8-adversarial
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           version: 10.14.0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: "22"
           cache: "pnpm"
       - name: Install
         run: pnpm install --frozen-lockfile
       - name: Download prior cumulative evidence (QA7 if it ran, else QA6)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: ${{ needs.qa7-heavy.result == 'success' && 'heavy-evidence-after-qa7' || 'heavy-evidence-after-qa6' }}
           path: governance/engine-acceptance/
@@ -434,7 +437,7 @@ jobs:
           pnpm verify:engine-acceptance
       - name: Upload QA8 adversarial harness raw evidence
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: engine-acceptance-heavy-QA8-adversarial-harness
           path: /tmp/aipo-harness/qa8-adversarial/
@@ -442,7 +445,7 @@ jobs:
           if-no-files-found: warn
       - name: Upload cumulative governance evidence (after QA8, FINAL)
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: heavy-evidence-final
           path: governance/engine-acceptance/
