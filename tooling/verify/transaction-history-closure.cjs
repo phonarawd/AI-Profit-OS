@@ -40,6 +40,7 @@ const stubs = read("tooling/e2e/lib/consumer-route-stubs.cjs");
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
 const domain = read("tooling/verify/domain-by-path.cjs");
+const sdkLedger = read("packages/sdk/src/ledger/fetch.ts");
 
 if (!page.includes("HistoryClient")) fail("history page must mount HistoryClient");
 if (!client.includes("fetchUserJournalList")) {
@@ -65,6 +66,20 @@ if (!catalog.includes("transaction-history-closure")) {
 }
 if (!domain.includes("transaction-history-closure.cjs")) {
   fail("domain-by-path must trigger transaction-history-closure");
+}
+
+if (/direction:\s*o\.direction\s*===\s*"debit"\s*\?\s*"debit"\s*:\s*"credit"/.test(sdkLedger)) {
+  fail("ledger SDK must not coerce unknown direction to credit");
+}
+for (const needle of [
+  "exactListShape",
+  "JOURNAL_KEYS",
+  "ENTRY_KEYS",
+  'raw.direction === "debit" || raw.direction === "credit"',
+  "if (!entry) return null",
+  'throw new LedgerRequestError(502, "ledger item shape")',
+]) {
+  if (!sdkLedger.includes(needle)) fail("ledger SDK strict parser missing " + needle);
 }
 
 function finish(extra) {
