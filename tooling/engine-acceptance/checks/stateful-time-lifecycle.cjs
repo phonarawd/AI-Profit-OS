@@ -10,6 +10,12 @@
 const { probeClockHook } = require("../lib/clock-hook.cjs");
 const { buildRichFailureEvidence } = require("../lib/rich-failure-evidence.cjs");
 const { probeQa4ClockHarness } = require("../lib/qa4-clock-evidence.cjs");
+const {
+  expectedIdsForMode,
+  evaluateScenarioSet,
+  evaluateQa4FullScenarioSet,
+  hasDynamicRealExecution,
+} = require("../lib/qa4-scenario-set.cjs");
 
 /** Asia/Seoul fixed offset +09:00 (DST 없음) */
 const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
@@ -143,14 +149,17 @@ function runStatefulTimeLifecycle(opts) {
   const scenariosDef = buildTimeScenarios({ mode });
 
   // run-qa4-clock.cjs (in-process booted Nest + isolated Postgres) may have
-  // just produced fresh, non-canonical real-execution evidence for all
-  // three canonical scenarios in this same job. Absence/staleness changes
+  // just produced fresh, non-canonical real-execution evidence for the
+  // exact full scenario set. Absence/staleness/set-mismatch changes
   // nothing below (fixture never promoted to runtime PASS).
   const harnessProbe = probeQa4ClockHarness();
   const harnessData = harnessProbe.available ? harnessProbe.data : null;
   const harnessScenarioById = new Map(
     harnessData ? harnessData.scenarios.map((s) => [s.scenario_id, s]) : [],
   );
+  const expectedIds = expectedIdsForMode(mode);
+  const harnessSet = evaluateScenarioSet(harnessData ? harnessData.scenarios : [], expectedIds);
+  const fullSet = mode === "full" ? evaluateQa4FullScenarioSet(harnessData ? harnessData.scenarios : []) : null;
 
   /** @type {any[]} */
   const scenarios = [];
@@ -160,7 +169,7 @@ function runStatefulTimeLifecycle(opts) {
 
   for (const def of scenariosDef) {
     const dynamic = harnessScenarioById.get(def.scenario_id);
-    if (dynamic && (dynamic.status === "PASS" || dynamic.status === "FAIL")) {
+    if (dynamic && hasDynamicRealExecution(dynamic)) {
       if (dynamic.status === "PASS") passed += 1;
       else failed += 1;
       scenarios.push({
@@ -263,8 +272,11 @@ function runStatefulTimeLifecycle(opts) {
       ],
       rich_evidence: buildRichFailureEvidence({
         seed,
+        suite_id: "QA4",
+        invariant_id: def.invariant_id,
         clock_as_of: def.clock_as_of,
         baseline_id: opts.baseline_id,
+        mode,
         request_sequence: [
           { step: "probe_clock_hook", result: "present", adapter: probe.adapter_rel },
           { step: "execute_scenario", result: "not_wired" },
@@ -347,6 +359,11 @@ function runStatefulTimeLifecycle(opts) {
       probed_path: harnessProbe.probed_path,
       reason: harnessProbe.reason || null,
     },
+    scenario_set: {
+      expected: [...expectedIds],
+      harness: harnessSet,
+      full: fullSet,
+    },
     scenarioCount: scenarios.length,
     passed,
     failed,
@@ -367,4 +384,5 @@ module.exports = {
   buildTimeScenarios,
   kstLocalToUtcIso,
   addDaysUtcIso,
+  evaluateQa4FullScenarioSet,
 };

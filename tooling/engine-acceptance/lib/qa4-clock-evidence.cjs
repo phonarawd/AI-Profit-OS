@@ -2,9 +2,9 @@
  * QA4 real clock-execution evidence reader — harness only · 제품 mutation 0.
  *
  * `run-qa4-clock.cjs`는 실제 in-process booted Nest + isolated Postgres로
- * 3개 canonical clock 시나리오를 실행하고 `qa4-clock-harness.v1.json`을
+ * full 6개 canonical clock 시나리오를 실행하고 `qa4-clock-harness.v1.json`을
  * 남긴다. 이 모듈은 그 파일이 (같은 CI job 안에서) 신선하게 존재할 때만
- * canonical QA4가 그 결과를 소비하게 한다.
+ * canonical QA4가 그 결과를 소비하게 한다. 세트 누락/중복/교체는 소비 거부.
  *
  * fixture 결과를 runtime result처럼 쓰지 않는다: harness가 안 돌았으면
  * BLOCKED_NO_CLOCK_HOOK/FAIL 그대로 — 이 모듈은 evidence 존재+신선도만
@@ -15,6 +15,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { ROOT } = require("./hash-scope.cjs");
+const { evaluateQa4FullScenarioSet } = require("./qa4-scenario-set.cjs");
 
 const DEFAULT_MAX_AGE_MS = 6 * 60 * 60 * 1000; // 6h — same-CI-job freshness window
 
@@ -78,7 +79,29 @@ function probeQa4ClockHarness(opts = {}) {
     };
   }
 
-  return { available: true, probed_path, age_ms: ageMs, data };
+  const setCheck = evaluateQa4FullScenarioSet(data.scenarios);
+  if (!setCheck.ok) {
+    return {
+      available: false,
+      reason: `harness_scenario_set_mismatch missing=${setCheck.missing.join(",") || "none"} unexpected=${setCheck.unexpected.join(",") || "none"} duplicates=${setCheck.duplicates.join(",") || "none"}`,
+      probed_path,
+      harness_failed: true,
+      scenario_set: setCheck,
+      data,
+    };
+  }
+  if (!setCheck.all_real) {
+    return {
+      available: false,
+      reason: `harness_missing_real_execution ids=${setCheck.missing_real_execution.join(",") || "none"}`,
+      probed_path,
+      harness_failed: true,
+      scenario_set: setCheck,
+      data,
+    };
+  }
+
+  return { available: true, probed_path, age_ms: ageMs, data, scenario_set: setCheck };
 }
 
 module.exports = { probeQa4ClockHarness, harnessOutDir, DEFAULT_MAX_AGE_MS };

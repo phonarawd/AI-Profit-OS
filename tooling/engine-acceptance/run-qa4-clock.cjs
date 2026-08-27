@@ -5,14 +5,12 @@
  * checks/stateful-time-lifecycle.cjs for the consumer) — this harness only
  * produces non-canonical, real-execution evidence.
  *
- * Three canonical scenarios, three different real domain decisions:
- *  - TIME-KST-DAY-BOUNDARY: DayPulseService "today" filter across a real
- *    KST midnight, with a real trade_executions row.
- *  - TIME-PLUS-30D: the SAME DayPulseService filter, but a +30d long-distance
- *    offset instead of a boundary-precision crossing.
- *  - TIME-MULTI-DAY-LIFECYCLE: participate -> synthetic clock +3d -> real
- *    execute-tick -> settlement truth (ledger unlock), via
- *    TradeExecutionService.
+ * Full = exactly six real domain executions (not fixture, not hook-presence):
+ *  - TIME-KST-DAY-BOUNDARY / MONTH-END / YEAR-END: generic KST boundary
+ *    DayPulse "today" filter across three distinct midnights.
+ *  - TIME-PLUS-30D / TIME-PLUS-365D: generic +N-day DayPulse offset.
+ *  - TIME-MULTI-DAY-LIFECYCLE: participate -> +3d -> execute-tick ->
+ *    settlement truth (ledger unlock).
  *
  * Security: the fail-closed synthetic-clock gate matrix is proven via the
  * existing tooling/verify/domain-clock.cjs (already a real, dynamic,
@@ -40,6 +38,10 @@ const {
 const { prepareIsolatedPostgres } = require("./harness/ci-postgres.cjs");
 const nest = require("./harness/ci-nest-boot.cjs");
 const clockControl = require("./harness/clock-control.cjs");
+const {
+  FULL_QA4_SCENARIO_IDS,
+  evaluateQa4FullScenarioSet,
+} = require("./lib/qa4-scenario-set.cjs");
 
 const nestPgRequire = createRequire(path.join(ROOT, "services/api-nest/package.json"));
 const ADMIN_API_PREFIX = "/api/v1/admin";
@@ -106,33 +108,102 @@ function httpCall(baseUrl, method, pth, headers, body, timeoutMs = 12_000) {
   });
 }
 
-/**
- * TIME-KST-DAY-BOUNDARY — boundary-precision proof. One real
- * trade_executions row placed just before a real KST midnight; the SAME row
- * must be visible from DayPulseService just before the boundary and
- * invisible just after — driven purely by the installed synthetic clock,
- * nothing else changes between the two calls.
- */
-async function runKstDayBoundaryScenario(ctx) {
-  const core = clockControl.loadClockCore();
-  const realNowMs = Date.now();
-  const kstMidnightMs = core.kstDayStartMs(realNowMs) + core.DAY_MS;
+function kstYmd(core, ms) {
+  const key = core.kstDayKey(ms);
+  const [y, m, d] = key.split("-").map(Number);
+  return { y, m, d, key };
+}
 
-  const oppId = await withPgClient(ctx.databaseUrl, async (client) => {
+function kstLocalToUtcMs(y, m, d) {
+  return Date.UTC(y, m - 1, d, 0, 0, 0, 0) - 9 * 60 * 60 * 1000;
+}
+
+/** 다음 KST 자정 중 월초(1일)가 아닌 날 — day-boundary가 month/year로 위장하지 않게. */
+function nextKstDayBoundaryMs(core, nowMs) {
+  let t = core.kstDayStartMs(nowMs) + core.DAY_MS;
+  for (let i = 0; i < 40; i += 1) {
+    if (kstYmd(core, t).d !== 1) return t;
+    t += core.DAY_MS;
+  }
+  throw new Error("no non-month-start KST midnight within 40 days");
+}
+
+/** 다음 KST 월초 자정 중 연초(1/1)가 아닌 날. */
+function nextKstMonthEndBoundaryMs(core, nowMs) {
+  const { y, m } = kstYmd(core, nowMs);
+  let ny = y;
+  let nm = m + 1;
+  if (nm > 12) {
+    ny += 1;
+    nm = 1;
+  }
+  let candidate = kstLocalToUtcMs(ny, nm, 1);
+  if (candidate <= nowMs) {
+    nm += 1;
+    if (nm > 12) {
+      ny += 1;
+      nm = 1;
+    }
+    candidate = kstLocalToUtcMs(ny, nm, 1);
+  }
+  if (nm === 1) {
+    candidate = kstLocalToUtcMs(ny, 2, 1);
+  }
+  return candidate;
+}
+
+/** 다음 KST 1월 1일 00:00. */
+function nextKstYearEndBoundaryMs(core, nowMs) {
+  const { y } = kstYmd(core, nowMs);
+  let jan1 = kstLocalToUtcMs(y, 1, 1);
+  if (jan1 <= nowMs) jan1 = kstLocalToUtcMs(y + 1, 1, 1);
+  return jan1;
+}
+
+function calendarKindAt(core, ms) {
+  const { m, d } = kstYmd(core, ms);
+  if (d === 1 && m === 1) return "year_start";
+  if (d === 1) return "month_start";
+  return "day_start";
+}
+
+async function deleteTradeByIdempotencyKey(databaseUrl, key) {
+  await withPgClient(databaseUrl, (client) =>
+    client.query("DELETE FROM public.trade_executions WHERE idempotency_key = $1", [key]),
+  );
+}
+
+async function loadAnyOpportunityId(databaseUrl) {
+  return withPgClient(databaseUrl, async (client) => {
     const r = await client.query("SELECT id::text FROM public.opportunities LIMIT 1");
     return r.rows[0] ? r.rows[0].id : null;
   });
+}
+
+/**
+ * Generic KST midnight Proof: 같은 trade_executions 행이 경계 직전에는
+ * DayPulse "today"에 보이고, 경계 직후에는 사라진다. day/month/year 가
+ * 서로 다른 boundaryMs 를 쓰므로 한 자정이 다른 시나리오로 위장할 수 없다.
+ */
+async function runKstBoundaryScenario(ctx, spec) {
+  const core = clockControl.loadClockCore();
+  const boundaryMs = spec.boundaryMs;
+  const scenario_id = spec.scenario_id;
+  const expectedKind = spec.expectedCalendarKind;
+  const oppId = await loadAnyOpportunityId(ctx.databaseUrl);
   if (!oppId) {
     return {
-      scenario_id: "TIME-KST-DAY-BOUNDARY",
+      scenario_id,
       status: "BLOCKED",
       blocked_code: "BLOCKED_ENV_CAPABILITY",
+      real_execution: false,
+      clock_injected: false,
       findings: ["no opportunities row exists to satisfy trade_executions.opportunity_id FK"],
     };
   }
 
-  const rowCreatedAt = new Date(kstMidnightMs - 5_000).toISOString();
-  const idemKey = `qa4-kst-boundary-${crypto.randomUUID()}`;
+  const rowCreatedAt = new Date(boundaryMs - 5_000).toISOString();
+  const idemKey = `qa4-kst-boundary-${scenario_id.toLowerCase()}-${crypto.randomUUID()}`;
   await withPgClient(ctx.databaseUrl, (client) =>
     client.query(
       `INSERT INTO public.trade_executions
@@ -142,62 +213,76 @@ async function runKstDayBoundaryScenario(ctx) {
     ),
   );
 
-  clockControl.installSyntheticClock(kstMidnightMs - 2_000, ctx.clockEnvOpts);
+  clockControl.installSyntheticClock(boundaryMs - 2_000, ctx.clockEnvOpts);
   const beforeRes = await httpCall(ctx.baseUrl, "GET", "/api/v1/me/day-pulse", { authorization: ctx.userBearer });
-  clockControl.installSyntheticClock(kstMidnightMs + 2_000, ctx.clockEnvOpts);
+  clockControl.installSyntheticClock(boundaryMs + 2_000, ctx.clockEnvOpts);
   const afterRes = await httpCall(ctx.baseUrl, "GET", "/api/v1/me/day-pulse", { authorization: ctx.userBearer });
   clockControl.clearSyntheticClock();
+  await deleteTradeByIdempotencyKey(ctx.databaseUrl, idemKey);
 
   const beforeCount = beforeRes.parsed ? Number(beforeRes.parsed.settlementCompletedToday) : null;
   const afterCount = afterRes.parsed ? Number(afterRes.parsed.settlementCompletedToday) : null;
   const rowVisibleBefore = beforeRes.status === 200 && Number.isFinite(beforeCount) && beforeCount >= 1;
   const rowInvisibleAfter =
     afterRes.status === 200 && Number.isFinite(afterCount) && Number.isFinite(beforeCount) && afterCount === beforeCount - 1;
+  const beforeDay = core.kstDayKey(boundaryMs - 2_000);
+  const afterDay = core.kstDayKey(boundaryMs + 2_000);
+  const calendarCrossed = beforeDay !== afterDay;
+  const actualKind = calendarKindAt(core, boundaryMs);
+  const calendarKindOk = actualKind === expectedKind;
 
-  const pass = rowVisibleBefore && rowInvisibleAfter;
+  const pass = rowVisibleBefore && rowInvisibleAfter && calendarCrossed && calendarKindOk;
   return {
-    scenario_id: "TIME-KST-DAY-BOUNDARY",
+    scenario_id,
     status: pass ? "PASS" : "FAIL",
-    kst_midnight_ms: kstMidnightMs,
-    kst_midnight_iso: new Date(kstMidnightMs).toISOString(),
-    before: { clock_ms: kstMidnightMs - 2_000, http_status: beforeRes.status, settlementCompletedToday: beforeCount },
-    after: { clock_ms: kstMidnightMs + 2_000, http_status: afterRes.status, settlementCompletedToday: afterCount },
+    real_execution: true,
+    clock_injected: true,
+    source: "run-qa4-clock.cjs",
+    executor: "kst_boundary",
+    expected_calendar_kind: expectedKind,
+    actual_calendar_kind: actualKind,
+    kst_midnight_ms: boundaryMs,
+    kst_midnight_iso: new Date(boundaryMs).toISOString(),
+    kst_day_before: beforeDay,
+    kst_day_after: afterDay,
+    before: { clock_ms: boundaryMs - 2_000, http_status: beforeRes.status, settlementCompletedToday: beforeCount },
+    after: { clock_ms: boundaryMs + 2_000, http_status: afterRes.status, settlementCompletedToday: afterCount },
     row_visible_before_boundary: rowVisibleBefore,
     row_invisible_after_boundary: rowInvisibleAfter,
+    calendar_crossed: calendarCrossed,
+    calendar_kind_ok: calendarKindOk,
     findings: pass
       ? []
       : [
-          `KST boundary proof FAIL: before=${beforeCount} (status=${beforeRes.status}) after=${afterCount} (status=${afterRes.status})`,
+          `KST ${scenario_id} proof FAIL: before=${beforeCount} (status=${beforeRes.status}) after=${afterCount} (status=${afterRes.status}) days=${beforeDay}->${afterDay} kind=${actualKind} expected=${expectedKind}`,
         ],
   };
 }
 
 /**
- * TIME-PLUS-30D — long-distance offset proof (distinct from boundary
- * precision above): a row created "now" is visible at the anchor and must
- * become invisible exactly because the synthetic clock moved +30 real days
- * forward, proving the domain decision genuinely consults the clock value
- * rather than any hardcoded window.
+ * Generic +N-day proof: 지금 만든 행이 앵커에서 보이고, 시계만 +N일이면
+ * DayPulse today 카운트에서 사라진다. +30d / +365d 가 같은 실행기를 쓴다.
  */
-async function runPlus30dScenario(ctx) {
+async function runPlusNDaysScenario(ctx, spec) {
   const core = clockControl.loadClockCore();
+  const days = spec.days;
+  const scenario_id = spec.scenario_id;
   const anchorMs = Date.now();
-  const plus30dMs = core.addDaysMs(anchorMs, 30);
+  const plusMs = core.addDaysMs(anchorMs, days);
 
-  const oppId = await withPgClient(ctx.databaseUrl, async (client) => {
-    const r = await client.query("SELECT id::text FROM public.opportunities LIMIT 1");
-    return r.rows[0] ? r.rows[0].id : null;
-  });
+  const oppId = await loadAnyOpportunityId(ctx.databaseUrl);
   if (!oppId) {
     return {
-      scenario_id: "TIME-PLUS-30D",
+      scenario_id,
       status: "BLOCKED",
       blocked_code: "BLOCKED_ENV_CAPABILITY",
+      real_execution: false,
+      clock_injected: false,
       findings: ["no opportunities row exists to satisfy trade_executions.opportunity_id FK"],
     };
   }
 
-  const idemKey = `qa4-plus30d-${crypto.randomUUID()}`;
+  const idemKey = `qa4-plus${days}d-${crypto.randomUUID()}`;
   await withPgClient(ctx.databaseUrl, (client) =>
     client.query(
       `INSERT INTO public.trade_executions
@@ -209,37 +294,43 @@ async function runPlus30dScenario(ctx) {
 
   clockControl.installSyntheticClock(anchorMs, ctx.clockEnvOpts);
   const anchorRes = await httpCall(ctx.baseUrl, "GET", "/api/v1/me/day-pulse", { authorization: ctx.userBearer });
-  clockControl.installSyntheticClock(plus30dMs, ctx.clockEnvOpts);
-  const plus30Res = await httpCall(ctx.baseUrl, "GET", "/api/v1/me/day-pulse", { authorization: ctx.userBearer });
+  clockControl.installSyntheticClock(plusMs, ctx.clockEnvOpts);
+  const plusRes = await httpCall(ctx.baseUrl, "GET", "/api/v1/me/day-pulse", { authorization: ctx.userBearer });
   clockControl.clearSyntheticClock();
+  await deleteTradeByIdempotencyKey(ctx.databaseUrl, idemKey);
 
   const anchorCount = anchorRes.parsed ? Number(anchorRes.parsed.platformSafeStopToday) : null;
-  const plus30Count = plus30Res.parsed ? Number(plus30Res.parsed.platformSafeStopToday) : null;
+  const plusCount = plusRes.parsed ? Number(plusRes.parsed.platformSafeStopToday) : null;
   const rowVisibleAtAnchor = anchorRes.status === 200 && Number.isFinite(anchorCount) && anchorCount >= 1;
-  const rowInvisibleAt30d =
-    plus30Res.status === 200 && Number.isFinite(plus30Count) && Number.isFinite(anchorCount) && plus30Count === anchorCount - 1;
+  const rowInvisibleAtPlus =
+    plusRes.status === 200 && Number.isFinite(plusCount) && Number.isFinite(anchorCount) && plusCount === anchorCount - 1;
 
   const kstAnchorDay = core.kstDayKey(anchorMs);
-  const kstPlus30Day = core.kstDayKey(plus30dMs);
-  const calendarArithmeticOk = kstAnchorDay !== kstPlus30Day;
+  const kstPlusDay = core.kstDayKey(plusMs);
+  const calendarArithmeticOk = kstAnchorDay !== kstPlusDay;
 
-  const pass = rowVisibleAtAnchor && rowInvisibleAt30d && calendarArithmeticOk;
+  const pass = rowVisibleAtAnchor && rowInvisibleAtPlus && calendarArithmeticOk;
   return {
-    scenario_id: "TIME-PLUS-30D",
+    scenario_id,
     status: pass ? "PASS" : "FAIL",
+    real_execution: true,
+    clock_injected: true,
+    source: "run-qa4-clock.cjs",
+    executor: "plus_n_days",
+    days,
     anchor_ms: anchorMs,
-    plus30d_ms: plus30dMs,
+    plus_ms: plusMs,
     kst_anchor_day: kstAnchorDay,
-    kst_plus30d_day: kstPlus30Day,
+    kst_plus_day: kstPlusDay,
     anchor: { http_status: anchorRes.status, platformSafeStopToday: anchorCount },
-    plus30d: { http_status: plus30Res.status, platformSafeStopToday: plus30Count },
+    plus: { http_status: plusRes.status, platformSafeStopToday: plusCount },
     row_visible_at_anchor: rowVisibleAtAnchor,
-    row_invisible_at_plus30d: rowInvisibleAt30d,
+    row_invisible_at_plus: rowInvisibleAtPlus,
     calendar_arithmetic_ok: calendarArithmeticOk,
     findings: pass
       ? []
       : [
-          `+30d proof FAIL: anchor=${anchorCount} (status=${anchorRes.status}) plus30d=${plus30Count} (status=${plus30Res.status}) kst_days=${kstAnchorDay}->${kstPlus30Day}`,
+          `+${days}d proof FAIL: anchor=${anchorCount} (status=${anchorRes.status}) plus=${plusCount} (status=${plusRes.status}) kst_days=${kstAnchorDay}->${kstPlusDay}`,
         ],
   };
 }
@@ -276,6 +367,8 @@ async function runMultiDayLifecycleScenario(ctx) {
       scenario_id: "TIME-MULTI-DAY-LIFECYCLE",
       status: "BLOCKED",
       blocked_code: "BLOCKED_ENV_CAPABILITY",
+      real_execution: false,
+      clock_injected: false,
       findings: [
         "no available/orchestrate opportunity with capital_band micro/null exists (CatalogRuntimeSeedService did not seed one reachable by a default sprout-membership synthetic user)",
       ],
@@ -319,7 +412,15 @@ async function runMultiDayLifecycleScenario(ctx) {
   );
   if (!(credit.status >= 200 && credit.status < 300)) {
     findings.push(`principal credit setup FAIL: status=${credit.status}`);
-    return { scenario_id: "TIME-MULTI-DAY-LIFECYCLE", status: "FAIL", findings };
+    return {
+      scenario_id: "TIME-MULTI-DAY-LIFECYCLE",
+      status: "FAIL",
+      real_execution: true,
+      clock_injected: false,
+      source: "run-qa4-clock.cjs",
+      executor: "multi_day_lifecycle",
+      findings,
+    };
   }
 
   const preflight = await httpCall(
@@ -332,7 +433,15 @@ async function runMultiDayLifecycleScenario(ctx) {
   const preflightToken = preflight.parsed ? preflight.parsed.preflightToken : null;
   if (!preflightToken) {
     findings.push(`preflight FAIL: status=${preflight.status} body=${preflight.body.slice(0, 200)}`);
-    return { scenario_id: "TIME-MULTI-DAY-LIFECYCLE", status: "FAIL", findings };
+    return {
+      scenario_id: "TIME-MULTI-DAY-LIFECYCLE",
+      status: "FAIL",
+      real_execution: true,
+      clock_injected: false,
+      source: "run-qa4-clock.cjs",
+      executor: "multi_day_lifecycle",
+      findings,
+    };
   }
 
   const participateKey = `qa4-lifecycle-participate-${crypto.randomUUID()}`;
@@ -353,7 +462,15 @@ async function runMultiDayLifecycleScenario(ctx) {
   const tradeId = participate.parsed ? participate.parsed.tradeId : null;
   if (!tradeId) {
     findings.push(`participate FAIL: status=${participate.status} body=${participate.body.slice(0, 300)}`);
-    return { scenario_id: "TIME-MULTI-DAY-LIFECYCLE", status: "FAIL", findings };
+    return {
+      scenario_id: "TIME-MULTI-DAY-LIFECYCLE",
+      status: "FAIL",
+      real_execution: true,
+      clock_injected: false,
+      source: "run-qa4-clock.cjs",
+      executor: "multi_day_lifecycle",
+      findings,
+    };
   }
 
   const walletBefore = await httpCall(ctx.baseUrl, "GET", "/api/v1/wallet/buckets", { authorization: ctx.userBearer });
@@ -402,6 +519,10 @@ async function runMultiDayLifecycleScenario(ctx) {
   return {
     scenario_id: "TIME-MULTI-DAY-LIFECYCLE",
     status: pass ? "PASS" : "FAIL",
+    real_execution: true,
+    clock_injected: true,
+    source: "run-qa4-clock.cjs",
+    executor: "multi_day_lifecycle",
     opportunity_id: opp.id,
     trade_id: tradeId,
     accepted_at_ms: acceptedAtMs,
@@ -462,9 +583,29 @@ async function runQa4Clock(opts = {}) {
 
   let scenarios = [];
   if (!skipBoot) {
+    const core = clockControl.loadClockCore();
+    const nowMs = Date.now();
+    const dayBoundaryMs = nextKstDayBoundaryMs(core, nowMs);
+    const monthBoundaryMs = nextKstMonthEndBoundaryMs(core, nowMs);
+    const yearBoundaryMs = nextKstYearEndBoundaryMs(core, nowMs);
     scenarios = [
-      await runKstDayBoundaryScenario(ctx),
-      await runPlus30dScenario(ctx),
+      await runKstBoundaryScenario(ctx, {
+        scenario_id: "TIME-KST-DAY-BOUNDARY",
+        boundaryMs: dayBoundaryMs,
+        expectedCalendarKind: "day_start",
+      }),
+      await runKstBoundaryScenario(ctx, {
+        scenario_id: "TIME-KST-MONTH-END",
+        boundaryMs: monthBoundaryMs,
+        expectedCalendarKind: "month_start",
+      }),
+      await runKstBoundaryScenario(ctx, {
+        scenario_id: "TIME-KST-YEAR-END",
+        boundaryMs: yearBoundaryMs,
+        expectedCalendarKind: "year_start",
+      }),
+      await runPlusNDaysScenario(ctx, { scenario_id: "TIME-PLUS-30D", days: 30 }),
+      await runPlusNDaysScenario(ctx, { scenario_id: "TIME-PLUS-365D", days: 365 }),
       await runMultiDayLifecycleScenario(ctx),
     ];
   }
@@ -472,9 +613,18 @@ async function runQa4Clock(opts = {}) {
   const passCount = scenarios.filter((s) => s.status === "PASS").length;
   const failCount = scenarios.filter((s) => s.status === "FAIL").length;
   const blockedCount = scenarios.filter((s) => s.status === "BLOCKED").length;
-  const allPass = scenarios.length === 3 && passCount === 3;
+  const scenarioSet = evaluateQa4FullScenarioSet(scenarios);
+  const allPass =
+    !skipBoot &&
+    scenarioSet.ok &&
+    scenarioSet.all_real &&
+    scenarios.length === 6 &&
+    passCount === 6 &&
+    failCount === 0 &&
+    blockedCount === 0;
 
-  const harness_status = gateChild.ok && (skipBoot || scenarios.length === 3) ? "PASS" : "HARNESS_FAILURE";
+  const harness_status =
+    gateChild.ok && (skipBoot || (scenarioSet.ok && scenarios.length === 6)) ? "PASS" : "HARNESS_FAILURE";
 
   const result = {
     schema: "harness.qa4-clock.v1",
@@ -492,6 +642,8 @@ async function runQa4Clock(opts = {}) {
       exitCode: gateChild.exitCode,
       summary: gateChild.summary,
     },
+    required_scenario_ids: [...FULL_QA4_SCENARIO_IDS],
+    scenario_set: scenarioSet,
     scenarios,
     all_scenarios_pass: allPass,
     counts: { pass: passCount, fail: failCount, blocked: blockedCount, total: scenarios.length },
@@ -550,4 +702,11 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { runQa4Clock };
+module.exports = {
+  runQa4Clock,
+  nextKstDayBoundaryMs,
+  nextKstMonthEndBoundaryMs,
+  nextKstYearEndBoundaryMs,
+  evaluateQa4FullScenarioSet,
+  FULL_QA4_SCENARIO_IDS,
+};

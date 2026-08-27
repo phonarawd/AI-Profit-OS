@@ -20,6 +20,11 @@ const {
   syncLockfileHashOnly,
 } = require("./lib/workflow-amendment.cjs");
 const { runFailureWorld } = require("./checks/failure-world.cjs");
+const {
+  mergeCriticalInvariant,
+  countBySeverity,
+  buildCumulativeAcceptanceMessaging,
+} = require("./lib/critical-invariant.cjs");
 
 const RESULT_REL = "governance/engine-acceptance/qa5-result.v1.json";
 const EVIDENCE_REL = "governance/engine-acceptance/evidence-manifest.v1.json";
@@ -42,14 +47,6 @@ function syncAggregateHashes(baseline, scope) {
   // POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1 — workflow hash auto-sync forbidden
   assertAcceptanceWorkflowHashMatch(baseline, scope);
   syncLockfileHashOnly(baseline, scope, (b) => writeJson(BASELINE_REL, b));
-}
-
-function countBySeverity(defects) {
-  const counts = { P0: 0, P1: 0, P2: 0, P3: 0 };
-  for (const d of defects) {
-    if (counts[d.severity] !== undefined) counts[d.severity] += 1;
-  }
-  return counts;
 }
 
 /**
@@ -78,28 +75,6 @@ function collectDefects(checks, baselineId, measuredAt) {
     });
   }
   return defects;
-}
-
-function mergeCriticalInvariant(prior, current) {
-  const p = prior || { blocked: 0, skipped: 0, uncovered: 0 };
-  const c = current || { blocked: 0, skipped: 0, uncovered: 0 };
-  return {
-    blocked: (p.blocked || 0) + (c.blocked || 0),
-    skipped: (p.skipped || 0) + (c.skipped || 0),
-    uncovered: (p.uncovered || 0) + (c.uncovered || 0),
-    sources: {
-      QA4: {
-        blocked: p.blocked || 0,
-        skipped: p.skipped || 0,
-        uncovered: p.uncovered || 0,
-      },
-      QA5: {
-        blocked: c.blocked || 0,
-        skipped: c.skipped || 0,
-        uncovered: c.uncovered || 0,
-      },
-    },
-  };
 }
 
 function buildReport({
@@ -166,6 +141,7 @@ PRODUCT MUTATION = 0
 | critical_invariant.blocked (cumulative QA4+QA5) | ${ci.blocked ?? 0} |
 | critical_invariant.skipped | ${ci.skipped ?? 0} |
 | critical_invariant.uncovered | ${ci.uncovered ?? 0} |
+| critical_invariant.failed | ${ci.failed ?? 0} |
 | mandatory suites COMPLETE | QA0..QA5 only · QA6..QA8 NOT_STARTED |
 
 **금지 확인:** \`ENGINE_ACCEPTED_FOR_UI\` **not issued** (critical BLOCKED and/or QA6..QA8 incomplete).
@@ -247,34 +223,37 @@ function runQa5(opts = {}) {
     blocked: 0,
     skipped: 0,
     uncovered: 0,
+    failed: 0,
   };
 
-  let priorCi = { blocked: 0, skipped: 0, uncovered: 0 };
+  let priorCi = { blocked: 0, skipped: 0, uncovered: 0, failed: 0 };
   try {
     const qa4 = readJson(QA4_REL);
     priorCi = qa4.critical_invariant || priorCi;
   } catch {
     /* optional */
   }
-  const criticalMerged = mergeCriticalInvariant(priorCi, ciQa5);
+  const criticalMerged = mergeCriticalInvariant(priorCi, ciQa5, {
+    priorLabel: "QA4",
+    currentLabel: "QA5",
+  });
 
-  let verdict;
-  let verdictReason;
-  if (defectsCounts.P0 > 0 || defectsCounts.P1 > 0) {
-    verdict = "ENGINE_NOT_ACCEPTED";
-    verdictReason = `QA5 found P0=${defectsCounts.P0} P1=${defectsCounts.P1} · 03 blocked · product mutation 0`;
-  } else if (
-    (criticalMerged.blocked || 0) > 0 ||
-    (criticalMerged.skipped || 0) > 0 ||
-    (criticalMerged.uncovered || 0) > 0
-  ) {
-    verdict = "ENGINE_QA_INCOMPLETE";
-    verdictReason = `QA5 COMPLETE · critical_invariant.blocked=${criticalMerged.blocked} (incl. BLOCKED_NO_FAULT_HOOK / prior BLOCKED_NO_CLOCK_HOOK) · P0/P1=0 · ACCEPTED 불가 · QA6..QA8 not executed`;
-  } else {
-    verdict = "ENGINE_QA_INCOMPLETE";
-    verdictReason =
-      "QA5 COMPLETE · P0/P1=0 · mandatory suites QA6..QA8 not executed · ENGINE_ACCEPTED_FOR_UI forbidden";
+  let prior = { defects: [] };
+  try {
+    prior = readJson(DEFECTS_REL);
+  } catch {
+    /* empty */
   }
+  const kept = (prior.defects || []).filter((d) => d.suite_id !== "QA5");
+  const merged = [...kept, ...defects];
+  const mergedCounts = countBySeverity(merged);
+
+  const { verdict, verdictReason } = buildCumulativeAcceptanceMessaging({
+    suiteLabel: "QA5",
+    mergedCounts,
+    criticalMerged,
+    remainingSuitesNote: "QA6..QA8 not executed",
+  });
 
   const result = {
     schema: "governance.engine-acceptance.qa5-result.v1",
@@ -329,15 +308,6 @@ function runQa5(opts = {}) {
   result.checksum = resultChecksum;
   writeJson(RESULT_REL, result);
 
-  let prior = { defects: [] };
-  try {
-    prior = readJson(DEFECTS_REL);
-  } catch {
-    /* empty */
-  }
-  const kept = (prior.defects || []).filter((d) => d.suite_id !== "QA5");
-  const merged = [...kept, ...defects];
-  const mergedCounts = countBySeverity(merged);
   writeJson(DEFECTS_REL, {
     schema: "governance.engine-acceptance.defects.v1",
     version: "1.0.0",
@@ -372,6 +342,7 @@ function runQa5(opts = {}) {
     blocked: criticalMerged.blocked || 0,
     skipped: criticalMerged.skipped || 0,
     uncovered: criticalMerged.uncovered || 0,
+    failed: criticalMerged.failed || 0,
   };
   evidence.dual_dirty = {
     working_tree_clean: dual.working_tree_clean,
@@ -437,7 +408,7 @@ function runQa5(opts = {}) {
     runId,
     resultChecksum,
     checks,
-    defectsCounts,
+    defectsCounts: mergedCounts,
     verdict,
     verdictReason,
     dual,
@@ -454,6 +425,7 @@ function runQa5(opts = {}) {
     mode,
     all_checks_pass: result.all_checks_pass,
     defects_counts: defectsCounts,
+    cumulative_defects_counts: mergedCounts,
     critical_invariant: ciQa5,
     critical_invariant_cumulative: criticalMerged,
     blocked_codes_observed: result.blocked_codes_observed,
@@ -497,4 +469,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { runQa5 };
+module.exports = { runQa5, mergeCriticalInvariant };

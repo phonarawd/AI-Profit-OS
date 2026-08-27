@@ -7,6 +7,20 @@ const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
 
+function isRel502Qa4Integrity(f) {
+  return (
+    f === "tooling/engine-acceptance/run-qa4-clock.cjs" ||
+    f === "tooling/engine-acceptance/run-qa5.cjs" ||
+    f === "tooling/engine-acceptance/run-qa6.cjs" ||
+    f === "tooling/engine-acceptance/checks/stateful-time-lifecycle.cjs" ||
+    f === "tooling/engine-acceptance/lib/qa4-clock-evidence.cjs" ||
+    f === "tooling/engine-acceptance/lib/qa4-scenario-set.cjs" ||
+    f === "tooling/engine-acceptance/lib/critical-invariant.cjs" ||
+    f === "tooling/engine-acceptance/selftest-qa4-evidence-integrity.cjs" ||
+    f === "tooling/verify/lib/rel-502-persist-pass.cjs"
+  );
+}
+
 /** @type {{ test: (file: string) => boolean, scripts: string[] }[]} */
 const RULES = [
   {
@@ -55,7 +69,8 @@ const RULES = [
         !/^governance\/engine-acceptance\/FINAL_ACCEPTANCE\.md$/.test(f) &&
         !/^governance\/engine-acceptance\/PROTECTED_SCOPE_STALE_WATCH\.md$/.test(f)) ||
       (/^tooling\/engine-acceptance\//.test(f) &&
-        !/^tooling\/engine-acceptance\/protected-scope-watch\.cjs$/.test(f)) ||
+        !/^tooling\/engine-acceptance\/protected-scope-watch\.cjs$/.test(f) &&
+        !isRel502Qa4Integrity(f)) ||
       /^tooling\/verify\/engine-acceptance\.cjs$/.test(f) ||
       /^\.github\/workflows\/engine-acceptance\.yml$/.test(f),
     scripts: ["engine-acceptance.cjs"],
@@ -674,8 +689,11 @@ const RULES = [
     test: (f) =>
       /^\.github\/workflows\/rel-502-auth-wallet-current-epoch-once\.yml$/.test(f) ||
       /^tooling\/verify\/rel-502-current-epoch-once\.cjs$/.test(f) ||
+      /^tooling\/verify\/lib\/rel-502-persist-pass\.cjs$/.test(f) ||
+      /^tooling\/verify\/domain-by-path\.cjs$/.test(f) ||
       /^tooling\/verify\/CATALOG\.md$/.test(f) ||
-      /^package\.json$/.test(f),
+      /^package\.json$/.test(f) ||
+      isRel502Qa4Integrity(f),
     scripts: ["rel-502-current-epoch-once.cjs"],
   },
   {

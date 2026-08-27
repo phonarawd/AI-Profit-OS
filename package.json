@@ -364,7 +364,8 @@
     "engine-acceptance:rebase-baseline": "node tooling/engine-acceptance/rebase-acceptance-baseline.cjs",
     "engine-acceptance:selftest-workflow-amendment": "node tooling/engine-acceptance/selftest-workflow-amendment.cjs",
     "engine-acceptance:selftest-product-rebase": "node tooling/engine-acceptance/selftest-product-rebase.cjs",
-    "engine-acceptance:selftest-pre-rebase-harness": "node tooling/engine-acceptance/selftest-pre-rebase-harness.cjs"
+    "engine-acceptance:selftest-pre-rebase-harness": "node tooling/engine-acceptance/selftest-pre-rebase-harness.cjs",
+    "engine-acceptance:selftest-qa4-evidence-integrity": "node tooling/engine-acceptance/selftest-qa4-evidence-integrity.cjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

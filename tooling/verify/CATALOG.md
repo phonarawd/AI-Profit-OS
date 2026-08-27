@@ -95,7 +95,7 @@
 | 경로 패턴 | verify |
 |-----------|--------|
 | `governance/platform-redesign/**` · `schemas/governance-observation.v1.json` · `tooling/verify/platform-redesign-inventory.cjs` · `tooling/verify/platform-fact-state-registry.cjs` · `tooling/verify/platform-change-control.cjs` · `tooling/verify/governance-observation-registry.cjs` · `tooling/verify/lib/platform-redesign-measure.cjs` | platform-redesign-inventory · platform-fact-state-registry · platform-change-control · governance-observation-registry |
-| `governance/engine-acceptance/**` (FINAL_ACCEPTANCE.md 제외) · `tooling/engine-acceptance/**` · `tooling/verify/engine-acceptance.cjs` · `.github/workflows/engine-acceptance.yml` | engine-acceptance |
+| `governance/engine-acceptance/**` (FINAL_ACCEPTANCE.md 제외) · `tooling/engine-acceptance/**` (protected-scope-watch · REL-502 QA4 integrity carve-out 제외) · `tooling/verify/engine-acceptance.cjs` · `.github/workflows/engine-acceptance.yml` | engine-acceptance |
 | `governance/figma/**` · `tooling/verify/figma-project-registry.cjs` | figma-project-registry |
 | `governance/visual-reconciliation/**` · `tooling/verify/locked-visual-reconciliation.cjs` · locked Account Hub `/me` | locked-visual-reconciliation |
 | `tooling/e2e/**` · `tooling/verify/qa-env-isolation-guard.cjs` | qa-env-isolation-guard |
@@ -129,7 +129,7 @@
 | `tooling/e2e/expansion/**` · `tooling/e2e/lib/qa-lab-expansion.cjs` · `tooling/verify/rel-500-qa-lab-expansion.cjs` | rel-500-qa-lab-expansion |
 | `tooling/e2e/money/**` · `tooling/e2e/lib/money-red-team.cjs` · `tooling/verify/rel-501-money-red-team.cjs` | rel-501-money-red-team |
 | `governance/engine-acceptance/FINAL_ACCEPTANCE.md` · `tooling/verify/rel-502-final-engine-acceptance.cjs` · `tooling/verify/lib/rel-502-psm.cjs` | rel-502-final-engine-acceptance |
-| `.github/workflows/rel-502-auth-wallet-current-epoch-once.yml` · `tooling/verify/rel-502-current-epoch-once.cjs` · `package.json` | rel-502-current-epoch-once · rel-502-publication-safety |
+| `.github/workflows/rel-502-auth-wallet-current-epoch-once.yml` · `tooling/verify/rel-502-current-epoch-once.cjs` · `tooling/verify/lib/rel-502-persist-pass.cjs` · REL-502 QA4 integrity runners · `package.json` | rel-502-current-epoch-once · rel-502-publication-safety |
 | `governance/engine-acceptance/PROTECTED_SCOPE_STALE_WATCH.md` · `tooling/engine-acceptance/protected-scope-watch.cjs` · `tooling/verify/rel-503-protected-scope-watch.cjs` | rel-503-protected-scope-watch |
 | `governance/release-master/MIGRATION_READINESS.md` · `tooling/verify/rel-504-migration-readiness.cjs` | rel-504-migration-readiness |
 | `governance/release-master/R7_BACKEND_ALIGNMENT.md` · `tooling/verify/backend-data-alignment.cjs` · `tooling/verify/rel-505-r7-backend-alignment.cjs` | backend-data-alignment · rel-505-r7-backend-alignment |

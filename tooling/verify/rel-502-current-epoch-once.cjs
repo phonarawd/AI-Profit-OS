@@ -28,6 +28,9 @@ const REBASE_REL = "governance/engine-acceptance/product-rebases.v1.json";
 const PKG_REL = "package.json";
 const CATALOG_REL = "tooling/verify/CATALOG.md";
 const DOMAIN_REL = "tooling/verify/domain-by-path.cjs";
+const {
+  inspectCurrentEpochPersistPass,
+} = require("./lib/rel-502-persist-pass.cjs");
 
 const REPOSITORY = "phonarawd/AI-Profit-OS";
 const BRANCH = "release/auth-wallet-rel502-v1-20260828";
@@ -440,6 +443,28 @@ function verifyStatic() {
   if (!/rel-502-auth-wallet-current-epoch-once/.test(domain)) {
     fail("domain-by-path must trigger on one-shot workflow");
   }
+  if (!pkg.includes("engine-acceptance:selftest-qa4-evidence-integrity")) {
+    fail("package.json missing engine-acceptance:selftest-qa4-evidence-integrity");
+  }
+  if (!domain.includes("isRel502Qa4Integrity")) {
+    fail("domain-by-path must carve REL-502 QA4 integrity files out of verify:engine-acceptance");
+  }
+  const selftestRel = "tooling/engine-acceptance/selftest-qa4-evidence-integrity.cjs";
+  if (!fs.existsSync(path.join(ROOT, selftestRel))) {
+    fail("missing " + selftestRel);
+  } else {
+    const child = spawnSync(process.execPath, [path.join(ROOT, selftestRel)], {
+      cwd: ROOT,
+      encoding: "utf8",
+      timeout: 90_000,
+    });
+    if (child.status !== 0) {
+      fail(
+        "selftest-qa4-evidence-integrity failed: " +
+          String(child.stderr || child.stdout || "").slice(0, 800),
+      );
+    }
+  }
 }
 
 function verifyRuntimePins() {
@@ -760,6 +785,23 @@ function verifyPersistSafety(cached) {
     }
   }
 
+  const persistResults = {};
+  for (const spec of required) {
+    persistResults[spec.id] = readEvidenceJson(suiteResultRel(spec.id), cached);
+  }
+  const defectsDoc = readEvidenceJson("governance/engine-acceptance/defects.v1.json", cached);
+  const reportText = readEvidenceText("governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md", cached);
+  for (const msg of inspectCurrentEpochPersistPass({
+    required,
+    results: persistResults,
+    evidence,
+    defects: defectsDoc,
+    reportText,
+    baselineId: BASELINE_ID,
+  })) {
+    fail(msg);
+  }
+
   for (const id of ["QA7", "QA8", "QA9"]) {
     const result = readEvidenceJson(suiteResultRel(id), cached);
     const slot = (evidence.suites || []).find((s) => s.suite_id === id);
@@ -823,4 +865,12 @@ function main(argv) {
   console.log("[verify:rel-502-current-epoch-once] PASS (" + mode + ")");
 }
 
-main(process.argv.slice(2));
+if (require.main === module) {
+  main(process.argv.slice(2));
+}
+
+module.exports = {
+  inspectCurrentEpochPersistPass,
+  verifyPersistSafety,
+  main,
+};
