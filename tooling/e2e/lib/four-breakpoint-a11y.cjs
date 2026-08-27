@@ -28,15 +28,52 @@ async function assertFourBreakpointA11y({ page, open, label }) {
     throw new Error("assertFourBreakpointA11y requires page + open(viewport)");
   }
 
+  // Install before navigation so every Next document receives axe during
+  // document creation. This avoids addScriptTag racing client-side redirects.
+  await page.addInitScript({ path: require.resolve("axe-core") });
+
   for (const viewport of FOUR_BREAKPOINTS) {
     await open(viewport);
-    await page.addScriptTag({ path: require.resolve("axe-core") });
-
-    const results = await page.evaluate(async () =>
-      window.axe.run(document, {
-        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },
-      }),
+    await page.waitForFunction(
+      () => Boolean(window.axe && typeof window.axe.run === "function"),
+      null,
+      { timeout: 10000 },
     );
+
+    let results;
+    let lastContextError = null;
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        results = await page.evaluate(async () =>
+          window.axe.run(document, {
+            runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },
+          }),
+        );
+        lastContextError = null;
+        break;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        if (!/Execution context was destroyed|Cannot find context/i.test(message)) {
+          throw error;
+        }
+        lastContextError = error;
+        await page.waitForLoadState("domcontentloaded").catch(() => {});
+        await page.waitForFunction(
+          () => Boolean(window.axe && typeof window.axe.run === "function"),
+          null,
+          { timeout: 10000 },
+        );
+      }
+    }
+    if (!results) {
+      const detail =
+        lastContextError instanceof Error
+          ? lastContextError.message
+          : String(lastContextError || "unknown context error");
+      throw new Error(
+        `[${label}] unstable navigation ${viewport.name}: ${detail}`,
+      );
+    }
     const blocking = blockingViolations(results);
     if (blocking.length) {
       throw new Error(
