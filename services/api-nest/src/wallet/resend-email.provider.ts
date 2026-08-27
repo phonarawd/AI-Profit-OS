@@ -23,6 +23,15 @@ export class ResendEmailProvider {
     return Boolean(env.resendApiKey && env.resendFromEmail);
   }
 
+  private escapeHtml(value: string): string {
+    return value
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   /** From-domain must be present (verified domain in Resend dashboard). */
   assertFromConfigured(): void {
     const env = loadPhase0Env();
@@ -34,6 +43,49 @@ export class ResendEmailProvider {
     }
   }
 
+  async sendMagicLink(input: {
+    to: string;
+    loginUrl: string;
+  }): Promise<ResendSendResult> {
+    const env = loadPhase0Env();
+    this.assertFromConfigured();
+    if (!env.resendApiKey) {
+      if (env.nodeEnv === "production") {
+        return { ok: false, provider: "resend", reason: "resend_not_configured" };
+      }
+      this.log.warn("RESEND_API_KEY unset — magic link accepted_dev (not sent)");
+      return { ok: true, provider: "resend", status: "accepted_dev" };
+    }
+
+    const safeUrl = this.escapeHtml(input.loginUrl);
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: env.resendFromEmail,
+        to: [input.to],
+        subject: "퍼뜩 로그인 링크",
+        html:
+          `<p>퍼뜩 로그인을 요청하셨다면 아래 버튼을 눌러 주세요.</p>` +
+          `<p><a href="${safeUrl}">퍼뜩 로그인하기</a></p>` +
+          `<p>본인이 요청하지 않았다면 이 메일을 무시해 주세요.</p>`,
+      }),
+    });
+
+    if (!res.ok) {
+      this.log.error(`Resend magic-link send failed ${res.status}`);
+      return {
+        ok: false,
+        provider: "resend",
+        reason: `resend_http_${res.status}`,
+      };
+    }
+    return { ok: true, provider: "resend", status: "sent" };
+  }
+
   async sendOtp(input: {
     to: string;
     code: string;
@@ -42,6 +94,9 @@ export class ResendEmailProvider {
     const env = loadPhase0Env();
     this.assertFromConfigured();
     if (!env.resendApiKey) {
+      if (env.nodeEnv === "production") {
+        return { ok: false, provider: "resend", reason: "resend_not_configured" };
+      }
       // Dev without key: accept without network (never log OTP)
       this.log.warn("RESEND_API_KEY unset — OTP accepted_dev (not sent)");
       return { ok: true, provider: "resend", status: "accepted_dev" };
