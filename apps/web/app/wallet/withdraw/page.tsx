@@ -32,7 +32,6 @@ function WithdrawContent() {
   );
 
   const gate = useWithdrawKycGate({
-    userId: null,
     returnPath: "/wallet/withdraw",
   });
 
@@ -87,6 +86,15 @@ function WithdrawContent() {
           {T.withdrawMode.tabKrw}
         </Link>
       </div>
+      {gate.authority === "loading" ? (
+        <p className="mt-3 text-sm" role="status">본인 확인 상태를 확인하는 중…</p>
+      ) : null}
+      {gate.authority === "unauthorized" ? (
+        <p className="mt-3 text-sm" role="status">로그인하면 출금을 신청할 수 있어요.</p>
+      ) : null}
+      {gate.authority === "unavailable" ? (
+        <p className="mt-3 text-sm" role="status">본인 확인 상태를 확인할 수 없음</p>
+      ) : null}
       {gate.toastMessage ? (
         <p
           className="mt-3 text-sm"
@@ -120,7 +128,7 @@ function WithdrawContent() {
         mode={mode}
         principalConfirmToken={principalConfirmToken}
         requirePrincipalConfirm={requirePrincipalConfirm}
-        allowForm={gate.allowWithdrawForm || !gate.toastMessage}
+        allowForm={gate.allowWithdrawForm}
       />
 
       {principalConfirmToken ? (

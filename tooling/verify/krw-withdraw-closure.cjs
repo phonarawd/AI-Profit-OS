@@ -34,6 +34,7 @@ for (const f of files) {
 }
 
 const page = read("apps/web/app/wallet/withdraw/krw/page.tsx");
+const kycGate = read("apps/web/lib/use-withdraw-kyc-gate.ts");
 const form = read("apps/web/components/WithdrawLiveForm.tsx");
 const spec = read("tooling/e2e/specs/krw-withdraw-closure.spec.cjs");
 const pkg = read("package.json");
@@ -59,6 +60,26 @@ if (!catalog.includes("krw-withdraw-closure")) {
 }
 if (!domain.includes("krw-withdraw-closure.cjs")) {
   fail("domain-by-path must trigger krw-withdraw-closure");
+}
+
+if (page.includes("userId: null")) {
+  fail("KRW withdraw must not bypass session-owned KYC status");
+}
+if (page.includes("allowWithdrawForm || !gate.toastMessage")) {
+  fail("KRW withdraw must not fail open before KYC authority loads");
+}
+if (!page.includes("allowForm={gate.allowWithdrawForm}")) {
+  fail("KRW withdraw form must require authoritative approved KYC");
+}
+for (const needle of [
+  '"/api/v1/compliance/kyc/status"',
+  'credentials: "include"',
+  '"loading"',
+  '"unauthorized"',
+  '"unavailable"',
+  'authority === "ready" && kycStatus === "approved"',
+]) {
+  if (!kycGate.includes(needle)) fail("KYC gate missing " + needle);
 }
 
 function finish(extra) {
