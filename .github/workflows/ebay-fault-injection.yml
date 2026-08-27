@@ -3,6 +3,9 @@
 # T2, same convention as engine-acceptance.yml's heavy QA suites.
 name: ebay-fault-injection
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch: {}
   pull_request:
@@ -60,11 +63,11 @@ jobs:
       AIPO_QA_SYNTHETIC_NS: qa-synth-ci
       AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/ebay-fault-injection
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           version: 10.14.0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: "22"
           cache: "pnpm"
@@ -90,7 +93,7 @@ jobs:
             --synthetic-ns qa-synth-ci
       - name: Upload eBay fault-injection evidence
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ebay-fault-injection-evidence
           path: /tmp/aipo-harness/ebay-fault-injection/
