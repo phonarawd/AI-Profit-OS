@@ -66,6 +66,57 @@ if (!part.includes("participateSemantic")) {
   fails.push("participate must use participateSemantic");
 }
 
+const krw = read("services/api-nest/src/wallet/krw-deposit.service.ts");
+const withdraw = read("services/api-nest/src/wallet/withdraw-intent.service.ts");
+const depositClient = read("apps/web/app/wallet/deposit/DepositClient.tsx");
+const withdrawClient = read("apps/web/components/WithdrawLiveForm.tsx");
+const walletSdk = read("packages/sdk/src/wallet/fetch.ts");
+
+for (const needle of [
+  "assertIdempotentRequest",
+  "row.user_id === input.userId",
+  "row.requested_amount_krw === input.requestedAmountKrw",
+  "IDEMPOTENCY_KEY_CONFLICT",
+]) {
+  if (!krw.includes(needle)) fails.push(`KRW idempotency missing ${needle}`);
+}
+if (
+  krw.indexOf("WHERE idempotency_key = $1") >
+  krw.indexOf('await this.killSwitch.assertPath("deposit")')
+) {
+  fails.push("KRW durable recovery lookup must precede create-only kill switch");
+}
+
+for (const needle of [
+  "assertIdempotentIntent",
+  "row.user_id === intent.userId",
+  "row.mode === intent.mode",
+  "row.amount_usdt === intent.amountUsdt",
+  "(row.destination ?? \"\") === intent.destination",
+  "IDEMPOTENCY_KEY_CONFLICT",
+]) {
+  if (!withdraw.includes(needle)) fails.push(`withdraw idempotency missing ${needle}`);
+}
+if (
+  withdraw.indexOf("WHERE idempotency_key = $1") >
+  withdraw.indexOf("await this.assertNotApplyBlocked(input.userId)")
+) {
+  fails.push("withdraw durable recovery lookup must precede create-only guards");
+}
+
+if (/idempotencyKey:[^\n]*Date\.now\(\)|Math\.random\(\)/.test(depositClient)) {
+  fails.push("KRW client must not mint weak per-submit idempotency keys");
+}
+for (const needle of ["krwSubmitInFlight", "krwIntent", "crypto.randomUUID"]) {
+  if (!depositClient.includes(needle)) fails.push(`KRW client retry lifecycle missing ${needle}`);
+}
+for (const needle of ["submitInFlight", "withdrawIntent", "fingerprint"]) {
+  if (!withdrawClient.includes(needle)) fails.push(`withdraw client retry lifecycle missing ${needle}`);
+}
+if (walletSdk.includes("Math.random()") || walletSdk.includes("Date.now()")) {
+  fails.push("withdraw SDK idempotency key must require cryptographic randomness");
+}
+
 const pkg = JSON.parse(read("package.json"));
 if (!pkg.scripts?.["verify:idempotency-conflict-detection"]) {
   fails.push("package.json missing verify:idempotency-conflict-detection");
@@ -81,5 +132,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:idempotency-conflict-detection] PASS (fingerprint helper · mig · ledger+participate conflict path · catalog)",
+  "[verify:idempotency-conflict-detection] PASS (ledger+participate fingerprints · wallet owner/semantic recovery · cryptographic client retry keys)",
 );
