@@ -109,6 +109,56 @@ for (const deco of [
   if (!controller.includes(deco)) fails.push(`controller missing ${deco}`);
 }
 
+const authService = read("services/api-nest/src/auth/auth.service.ts");
+const signupRuntime = read("apps/web/app/auth/signup/SignupRuntime.tsx");
+const magicRuntime = read("apps/web/app/auth/magic-link/MagicLinkRuntime.tsx");
+const resend = read("services/api-nest/src/wallet/resend-email.provider.ts");
+
+for (const needle of [
+  "IDENTITY_PROOF_REQUIRED",
+  "OAUTH_IDENTITY_PROOF_NOT_READY",
+  "PASSKEY_IDENTITY_PROOF_NOT_READY",
+]) {
+  if (!controller.includes(needle)) {
+    fails.push(`AuthController must fail closed with ${needle}`);
+  }
+}
+if (!controller.includes("this.auth.magicLinkVerify(body")) {
+  fails.push("magic-link verify must call proof verifier, not raw signupStageA");
+}
+
+for (const needle of [
+  "auth_magic_link_challenges",
+  'createHash("sha256")',
+  'createHmac("sha256"',
+  "timingSafeEqual",
+  "consumed_at IS NULL",
+  "expires_at > now()",
+  "RETURNING email, purpose",
+]) {
+  if (!authService.includes(needle)) {
+    fails.push(`magic-link identity proof missing ${needle}`);
+  }
+}
+if (!authService.includes("sendMagicLink")) {
+  fails.push("magic-link request must deliver the actual proof link through Resend");
+}
+if (!resend.includes("sendMagicLink") || !resend.includes("loginUrl")) {
+  fails.push("Resend provider must send a real login URL");
+}
+if (resend.includes("accepted_dev (not sent)") && !resend.includes('env.nodeEnv === "production"')) {
+  fails.push("Resend dev fallback must never be accepted in production");
+}
+if (!signupRuntime.includes("requestSignupMagicLink")) {
+  fails.push("signup UI must request an email proof instead of minting a raw session");
+}
+if (signupRuntime.includes("await signupStageA(")) {
+  fails.push("signup UI must not call raw signupStageA session mint");
+}
+if (!magicRuntime.includes("verifyMagicLink") || !magicRuntime.includes("started.current")) {
+  fails.push("magic-link callback UI must verify once and guard duplicate consumption");
+}
+
 const appMod = read("services/api-nest/src/app.module.ts");
 if (!appMod.includes("AuthModule")) {
   fails.push("AppModule must import AuthModule");
@@ -254,5 +304,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:auth-flows] PASS (Nest JWT · Stage A/B · OAuth/Passkey · session · 탈퇴 · Supabase Auth 0)",
+  "[verify:auth-flows] PASS (Nest JWT · identity-proof-gated magic link · unsafe OAuth/Passkey fail-closed · session · Supabase Auth 0)",
 );
