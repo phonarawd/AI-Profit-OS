@@ -8,6 +8,15 @@ on:
       - "packages/ui/**"
       - "tooling/e2e/lib/local-web-runtime.cjs"
       - "tooling/e2e/specs/consumer-spark-worldclass.spec.cjs"
+      - "tooling/e2e/lib/four-breakpoint-a11y.cjs"
+      - "tooling/e2e/specs/wallet-closure.spec.cjs"
+      - "tooling/e2e/specs/usdt-deposit-closure.spec.cjs"
+      - "tooling/e2e/specs/krw-deposit-closure.spec.cjs"
+      - "tooling/e2e/specs/usdt-withdraw-closure.spec.cjs"
+      - "tooling/e2e/specs/krw-withdraw-closure.spec.cjs"
+      - "tooling/e2e/specs/transaction-history-closure.spec.cjs"
+      - "tooling/e2e/specs/transaction-detail-closure.spec.cjs"
+      - "tooling/e2e/specs/kyc-closure.spec.cjs"
       - "tooling/verify/pwa-native-shell.cjs"
       - ".github/workflows/consumer-spark-worldclass.yml"
 
@@ -53,3 +62,22 @@ jobs:
           pnpm exec playwright test
           --config=tooling/e2e/playwright.config.cjs
           tooling/e2e/specs/consumer-spark-worldclass.spec.cjs
+      - name: Money four-breakpoint A11Y closure
+        env:
+          CI: "1"
+          API_HOST: "127.0.0.1:4010"
+          LOCAL_WEB_RUNTIME_MODE: "production"
+          LOCAL_WEB_RUNTIME_API_STUB: "1"
+        run: >-
+          pnpm exec playwright test
+          --config=tooling/e2e/playwright.config.cjs
+          --workers=1
+          --grep "390/768/1024/1440"
+          tooling/e2e/specs/wallet-closure.spec.cjs
+          tooling/e2e/specs/usdt-deposit-closure.spec.cjs
+          tooling/e2e/specs/krw-deposit-closure.spec.cjs
+          tooling/e2e/specs/usdt-withdraw-closure.spec.cjs
+          tooling/e2e/specs/krw-withdraw-closure.spec.cjs
+          tooling/e2e/specs/transaction-history-closure.spec.cjs
+          tooling/e2e/specs/transaction-detail-closure.spec.cjs
+          tooling/e2e/specs/kyc-closure.spec.cjs
