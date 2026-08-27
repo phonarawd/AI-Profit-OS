@@ -2,10 +2,10 @@
   "schema": "governance.engine-acceptance.qa1-result.v1",
   "version": "1.0.0",
   "suite_id": "QA1",
-  "run_id": "qa1-deterministic-truth-20260824",
+  "run_id": "qa1-deterministic-truth-20260827",
   "todoId": "qa1-deterministic-truth",
-  "measuredAt": "2026-08-24T09:41:36.008Z",
-  "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+  "measuredAt": "2026-08-27T22:44:29.045Z",
+  "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
   "kill_switch": {
     "verified_before_checks": true,
     "target_env": "ci",
@@ -193,9 +193,9 @@
               "exitCode": 0,
               "signal": null,
               "ok": true,
-              "stdout": "[verify:idempotency-conflict-detection] PASS (fingerprint helper · mig · ledger+participate conflict path · catalog)\n",
+              "stdout": "PASS - KRW exact retry reuses durable row before create-only gates ({\"id\":\"33333333-3333-4333-8333-333333333333\",\"counters\":{\"killSwitch\":0,\"emits\":0,\"kyc\":0,\"stepUp\":0,\"fee\":0,\"risk\":0,\"holding\":0}})\nPASS - KRW changed amount conflicts without leaking row ({\"code\":\"IDEMPOTENCY_KEY_CONFLICT\",\"message\":\"idempotency key is already bound to another request\",\"statusCode\":409})\nPASS - KRW foreign owner conflicts without leaking row ({\"code\":\"IDEMPOTENCY_KEY_CONFLICT\",\"message\":\"idempotency key is already bound to another request\",\"statusCode\":409})\nPASS - withdraw exact economic retry canonicalizes and bypasses create-only gates ({\"id\":\"44444444-4444-4444-8444-444444444444\",\"counters\":{\"killSwitch\":0,\"emits\":0,\"kyc\":0,\"stepUp\":0,\"fee\":0,\"risk\":0,\"holding\":0}})\nPASS - withdraw changed destination conflicts ({\"code\":\"IDEMPOTENCY_KEY_CONFLICT\",\"message\":\"idempotency key is already bound to another request\",\"statusCode\":409})\nPASS - withdraw foreign owner conflicts without leaking row ({\"code\":\"IDEMPOTENCY_KEY_CONFLICT\",\"message\":\"idempotency key is already bound to another request\",\"statusCode\":409})\nPASS - KRW concurrent insert race converges on committed row without duplicate event ({\"id\":\"33333333-3333-4333-8333-333333333333\",\"selectCount\":2,\"counters\":{\"killSwitch\":1,\"emits\":0,\"kyc\":0,\"stepUp\":0,\"fee\":0,\"risk\":0,\"holding\":0}})\nPASS - withdraw concurrent insert race converges on committed row without duplicate event ({\"id\":\"44444444-4444-4444-8444-444444444444\",\"selectCount\":2,\"counters\":{\"killSwitch\":0,\"emits\":0,\"kyc\":1,\"stepUp\":1,\"fee\":1,\"risk\":1,\"holding\":1}})\n[wallet-idempotency.selftest] ALL PASS - 8 runtime checks\n[verify:idempotency-conflict-detection] PASS (ledger+participate fingerprints · wallet runtime owner/semantic/race recovery · canonical cryptographic client retries)\n",
               "stderr": "",
-              "summary": "[verify:idempotency-conflict-detection] PASS (fingerprint helper · mig · ledger+participate conflict path · catalog)"
+              "summary": "PASS - withdraw concurrent insert race converges on committed row without duplicate event ({\"id\":\"44444444-4444-4444-8444-444444444444\",\"selectCount\":2,\"counters\":{\"killSwitch\":0,\"emits\":0,\"kyc\":1,\"stepUp\":1,\"fee\":1,\"risk\":1,\"holding\":1}}) | [wallet-idempotency.selftest] ALL PASS - 8 runtime checks | [verify:idempotency-conflict-detection] PASS (ledger+participate fingerprints · wallet runtime owner/semantic/race recovery · canonical cryptographic client retries)"
             }
           ]
         }
@@ -219,5 +219,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "Idempotency INV-01 and INV-03 kept separate."
   ],
-  "checksum": "f9d733bf34b5462ecf62ccb53cf890fae189e44c61a6725c95a6244edaa9cb69"
+  "checksum": "c4f190a86a8c10863b265277376a8f0454f830ab4669e3403272029ab2f4aabf"
 }

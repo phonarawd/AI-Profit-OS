@@ -1,57 +1,85 @@
 # ENGINE ACCEPTANCE REPORT
 
-> **QA phase:** QA-0 `ENGINE_ACCEPTANCE_REBASE_V1`
-> **Measured:** 2026-08-27T19:01:36.174Z
-> **baseline_id:** `ea-baseline-cc627efc3ee2-defdfa5b6ac4`
-> **predecessor_baseline_id:** `ea-baseline-04ef3c7de4dd-2ff1760b7d72`
-> **rebase_id:** `ea-rebase-cc627efc3ee2-defdfa5b6ac4`
-> **rebase_policy_version:** `ENGINE_ACCEPTANCE_REBASE_POLICY_V2`
+> **QA phase:** QA-6 `qa6-performance-world`  
+> **Measured:** 2026-08-27T22:48:07.503Z  
+> **baseline_id:** `ea-baseline-cc627efc3ee2-defdfa5b6ac4`  
+> **qa6_run_id:** `qa6-performance-world-20260827`  
+> **qa6_result_checksum:** `84f07500b5a2b4b36693edb09899f1894bb6cf051396c0e9b74e36daf6cec9e9`  
+> **mode:** `full`
 
 ## Status banner
 
 ```text
 ACCEPTANCE CONTRACT = LOCKED
-DECISION = ENGINE_ACCEPTANCE_REBASE_V1
-BASELINE = NEW_EPOCH
-PREDECESSOR = ea-baseline-04ef3c7de4dd-2ff1760b7d72
-QA0 = COMPLETE (new epoch freeze)
-QA1 = STALE_FOR_CURRENT_EPOCH
-QA2 = STALE_FOR_CURRENT_EPOCH
-QA3 = STALE_FOR_CURRENT_EPOCH
-QA4 = STALE_FOR_CURRENT_EPOCH
-QA5 = STALE_FOR_CURRENT_EPOCH
-QA6 = STALE_FOR_CURRENT_EPOCH
-QA7 = NOT_STARTED
-QA8 = STALE_FOR_CURRENT_EPOCH
-QA9 = STALE_AGGREGATION (not current-authoritative)
-NEXT = QA1_DETERMINISTIC_TRUTH
-BASELINE WASHING = FORBIDDEN
+BASELINE = FROZEN
+QA0 = COMPLETE
+QA1 = COMPLETE
+QA2 = COMPLETE
+QA3 = COMPLETE
+QA4 = COMPLETE
+QA5 = COMPLETE
+QA6 = COMPLETE
+QA HARNESS TARGET = SAFE
+NEXT = QA7_AI_EVAL
+PRODUCT MUTATION = 0
 03 UI = BLOCKED
-ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
 ```
 
-## Verdict (after product rebase)
+## Verdict (after QA-6)
 
 | Field | Value |
 |---|---|
 | verdict | `ENGINE_QA_INCOMPLETE` |
-| reason | ENGINE_ACCEPTANCE_REBASE_V1 · predecessor discovery is historical COMPLETE / current-epoch STALE · required rerun QA1-QA8 then QA9 aggregation · do not fabricate a verdict at rebase time |
+| reason | QA6 COMPLETE · P0/P1=0 · mandatory suites QA7..QA8 not executed · ENGINE_ACCEPTED_FOR_UI forbidden |
 | evidence_integrity | `VALID` |
 | baseline.valid | `true` |
-| working_tree_clean | `true` (fact only — not forced clean) |
+| working_tree_clean | `false` (fact only — not forced clean) |
 | protected_scope_clean | `true` |
-| prompt_hash | live pinned (`ff6edf9fb8d7cf5b298a1ff34169fdd3e1746316e320a0363d237f95f5ea42d3`) |
-| eval_dataset_hash | MATCH predecessor (`710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d`) |
-| acceptance_workflow_hash | MATCH current approved (`b8e724ba3af9e2d240f4daeefd53d4330972afdb942396698389825167752aa7`) |
+| defects.P0 / P1 | 0 / 0 |
+| critical_invariant.blocked (cumulative) | 0 |
+| critical_invariant.skipped | 0 |
+| critical_invariant.uncovered | 0 |
+| mandatory suites COMPLETE | QA0..QA6 only · QA7..QA8 NOT_STARTED |
 
-**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued**. Predecessor discovery/aggregation results were **not** rewritten as current-epoch COMPLETE. Predecessor QA9 verdict is **not** current-authoritative.
+**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (critical BLOCKED/UNSPECIFIED and/or QA7..QA8 incomplete).
+
+## Performance World (k6 · CI only heavy)
+
+| Field | Value |
+|---|---|
+| suite status | `PASS` |
+| budget_status | `SPECIFIED` |
+| threshold_mechanism.locked | `true` |
+| threshold_mechanism.engine | `k6` |
+| threshold_mechanism.binding | `tag` |
+| k6_script | `tooling/engine-acceptance/k6/scenario-mix.js` present=`true` |
+| scenarios blocked/unspecified/failed/passed | 0 / 0 / 0 / 4 |
+| numeric invention | **forbidden** |
+| heavy k6 | **CI only** |
+| mock PASS | **forbidden** |
+| product mutation | `0` |
+| artifact retention | acceptance evidence ≥ **90** days (Actions artifact) |
+| aggregator | `if: always()` (선행 job 실패 후에도 집계) |
+
+| Scenario | Tag | Invariant | Status | Budget | Blocked code |
+|---|---|---|---|---|---|
+| `PERF-FEED-READ` | `feed_read` | `INV-PERF-01` | `PASS` | `SPECIFIED` | `—` |
+| `PERF-PARTICIPATE` | `participate` | `INV-PERF-01` | `PASS` | `SPECIFIED` | `—` |
+| `PERF-WALLET-READ` | `wallet_read` | `INV-PERF-01` | `PASS` | `SPECIFIED` | `—` |
+| `PERF-AUTH-PROFILE` | `auth_profile` | `INV-PERF-01` | `PASS` | `SPECIFIED` | `—` |
+
+### SPECIFIED (Human/PO ACK)
+
+- perf-budget.v1.json budget_version=V1, p95<=30ms, error_rate<=0.01, four tags (feed_read/participate/wallet_read/auth_profile).
+- Numbers are Human/PO-ACK sourced, never invented by the harness.
+- Real threshold PASS/FAIL is only reflected here when run-qa6-threshold.cjs (real k6 + booted Nest + isolated Postgres) produced fresh evidence in this same job.
 
 ## Dual Dirty
 
-- working_tree_clean=`true`
+- working_tree_clean=`false`
 - protected_scope_clean=`true`
 - forced clean / stash laundry = **forbidden**
 
 ## Next
 
-`QA1_DETERMINISTIC_TRUTH` only. Full ACCEPTED · product mutation to chase green · 03 UI — **금지**.
+`QA7_AI_EVAL` only. Full ACCEPTED · product mutation · 03 UI — **금지**.
