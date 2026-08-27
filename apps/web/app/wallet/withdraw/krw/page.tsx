@@ -20,7 +20,6 @@ function KrwWithdrawContent() {
   }, [searchParams]);
 
   const gate = useWithdrawKycGate({
-    userId: null,
     returnPath: "/wallet/withdraw/krw",
   });
 
@@ -37,6 +36,15 @@ function KrwWithdrawContent() {
         <a href="/wallet">지갑</a>
       </p>
       <h1 className={styles.title}>{T.withdrawMode.pageTitleKrw}</h1>
+      {gate.authority === "loading" ? (
+        <p className="mt-3 text-sm" role="status">본인 확인 상태를 확인하는 중…</p>
+      ) : null}
+      {gate.authority === "unauthorized" ? (
+        <p className="mt-3 text-sm" role="status">로그인하면 출금을 신청할 수 있어요.</p>
+      ) : null}
+      {gate.authority === "unavailable" ? (
+        <p className="mt-3 text-sm" role="status">본인 확인 상태를 확인할 수 없음</p>
+      ) : null}
       {gate.toastMessage ? (
         <p
           className="mt-3 text-sm"
@@ -55,7 +63,7 @@ function KrwWithdrawContent() {
         asset="KRW"
         mode={mode}
         requirePrincipalConfirm={requirePrincipalConfirm}
-        allowForm={gate.allowWithdrawForm || !gate.toastMessage}
+        allowForm={gate.allowWithdrawForm}
       />
       <p className={styles.nav}>
         <a

@@ -34,6 +34,7 @@ for (const f of files) {
 }
 
 const page = read("apps/web/app/wallet/withdraw/usdt/page.tsx");
+const kycGate = read("apps/web/lib/use-withdraw-kyc-gate.ts");
 const form = read("apps/web/components/WithdrawLiveForm.tsx");
 const spec = read("tooling/e2e/specs/usdt-withdraw-closure.spec.cjs");
 const stubs = read("tooling/e2e/lib/consumer-route-stubs.cjs");
@@ -68,6 +69,26 @@ if (!catalog.includes("usdt-withdraw-closure")) {
 }
 if (!domain.includes("usdt-withdraw-closure.cjs")) {
   fail("domain-by-path must trigger usdt-withdraw-closure");
+}
+
+if (page.includes("userId: null")) {
+  fail("USDT withdraw must not bypass session-owned KYC status");
+}
+if (page.includes("allowWithdrawForm || !gate.toastMessage")) {
+  fail("USDT withdraw must not fail open before KYC authority loads");
+}
+if (!page.includes("allowForm={gate.allowWithdrawForm}")) {
+  fail("USDT withdraw form must require authoritative approved KYC");
+}
+for (const needle of [
+  '"/api/v1/compliance/kyc/status"',
+  'credentials: "include"',
+  '"loading"',
+  '"unauthorized"',
+  '"unavailable"',
+  'authority === "ready" && kycStatus === "approved"',
+]) {
+  if (!kycGate.includes(needle)) fail("KYC gate missing " + needle);
 }
 
 function finish(extra) {
