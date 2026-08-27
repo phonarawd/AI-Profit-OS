@@ -38,7 +38,7 @@ env:
   PORT: 4000
   AIPO_EPOCH_REPOSITORY: phonarawd/AI-Profit-OS
   AIPO_EPOCH_BRANCH: release/auth-wallet-rel502-v1-20260828
-  AIPO_EPOCH_MARKER: "fix(rel-502): repair current-epoch one-shot execution"
+  AIPO_EPOCH_MARKER: "fix(rel-502): use qa6 intermediate persist-safety"
   AIPO_EPOCH_PERSIST_SUBJECT: "chore(rel-502): persist current-epoch qa1-qa6 evidence"
   AIPO_EPOCH_BASE_MAIN: 2e75a13be17f32ff5337851f426f22aa777d86b9
   AIPO_EPOCH_BASELINE_ID: ea-baseline-cc627efc3ee2-defdfa5b6ac4
@@ -88,7 +88,7 @@ jobs:
       github.repository == 'phonarawd/AI-Profit-OS' &&
       github.ref == 'refs/heads/release/auth-wallet-rel502-v1-20260828' &&
       github.event_name == 'push' &&
-      startsWith(github.event.head_commit.message, 'fix(rel-502): repair current-epoch one-shot execution')
+      startsWith(github.event.head_commit.message, 'fix(rel-502): use qa6 intermediate persist-safety')
     runs-on: ubuntu-latest
     timeout-minutes: 40
     needs: [guard]
@@ -114,7 +114,6 @@ jobs:
           test "$(git log -1 --pretty=%s)" = "${AIPO_EPOCH_MARKER}"
           node tooling/verify/rel-502-current-epoch-once.cjs --runtime-pins
           node tooling/verify/rel-502-current-epoch-once.cjs --publication-safety
-          pnpm verify:engine-acceptance
           pnpm verify:rel-502-final-engine-acceptance
       - name: Kill-switch before QA1-QA3
         run: node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
@@ -387,7 +386,7 @@ jobs:
         run: |
           set -euo pipefail
           node tooling/engine-acceptance/run-qa6.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
-          pnpm verify:engine-acceptance
+          node tooling/verify/rel-502-current-epoch-once.cjs --persist-safety
       - name: Upload QA6 threshold harness raw evidence
         if: ${{ always() }}
         uses: actions/upload-artifact@v4

@@ -31,7 +31,7 @@ const DOMAIN_REL = "tooling/verify/domain-by-path.cjs";
 
 const REPOSITORY = "phonarawd/AI-Profit-OS";
 const BRANCH = "release/auth-wallet-rel502-v1-20260828";
-const MARKER = "fix(rel-502): repair current-epoch one-shot execution";
+const MARKER = "fix(rel-502): use qa6 intermediate persist-safety";
 const PERSIST_SUBJECT = "chore(rel-502): persist current-epoch qa1-qa6 evidence";
 const BASE_MAIN = "2e75a13be17f32ff5337851f426f22aa777d86b9";
 const BASELINE_ID = "ea-baseline-cc627efc3ee2-defdfa5b6ac4";
@@ -276,6 +276,8 @@ function verifyStatic() {
   forbid(wf, "git add governance/engine-acceptance", "no blind evidence staging");
   forbid(wf, "epoch-once-evidence-after-qa8", "persist must not consume QA8 formal tree");
   forbid(wf, "chore(rel-502): harden auth-wallet current-epoch evidence once", "stale failed marker must not remain");
+  forbid(wf, "fix(rel-502): repair current-epoch one-shot execution", "stale previous marker must not remain");
+  forbid(wf, "verify:engine-acceptance", "one-shot must not run global engine-acceptance");
 
   const qa123Match = wf.match(/\n  qa123:\r?\n([\s\S]*?)\r?\n  qa4:/);
   if (!qa123Match) {
@@ -310,6 +312,28 @@ function verifyStatic() {
     }
   }
 
+  const qa6Match = wf.match(/\n  qa6:\r?\n([\s\S]*?)\r?\n  qa8:/);
+  if (!qa6Match) {
+    fail("qa6 job missing before qa8");
+  } else {
+    const qa6 = qa6Match[1];
+    want(qa6, "run-qa6.cjs --mode full", "qa6 canonical full");
+    want(qa6, "rel-502-current-epoch-once.cjs --persist-safety", "qa6 intermediate persist-safety");
+    want(qa6, "--persist-safety", "qa6 persist-safety flag");
+    forbid(qa6, "verify:engine-acceptance", "qa6 must not run global engine-acceptance");
+  }
+
+  const qa8Match = wf.match(/\n  qa8:\r?\n([\s\S]*?)\r?\n  persist:/);
+  if (!qa8Match) {
+    fail("qa8 job missing before persist");
+  } else {
+    const qa8 = qa8Match[1];
+    want(qa8, "--qa8-preflight", "qa8 preflight verifier");
+    want(qa8, "AIPO_QA6_SNAPSHOT", "qa8 snapshot restore");
+    want(qa8, "rel-502-current-epoch-once.cjs --persist-safety", "qa8 persist-safety after restore");
+    want(qa8, "QA8 formal persist forbidden", "qa8 formal persist forbidden");
+  }
+
   const persistIdx = wf.search(/\n  persist:/);
   if (persistIdx < 0) {
     fail("persist job missing");
@@ -321,6 +345,17 @@ function verifyStatic() {
       .join("\n");
     if (beforePersistActive.includes("--no-verify")) {
       fail("non-persist job must not use --no-verify");
+    }
+    const persistJob = wf.slice(persistIdx);
+    want(persistJob, "--runtime-pins", "persist runtime-pins");
+    want(persistJob, "--publication-safety", "persist publication-safety");
+    want(persistJob, "--persist-safety", "persist persist-safety");
+    want(persistJob, "--persist-safety --cached", "persist persist-safety cached");
+    want(persistJob, "pnpm verify:secrets", "persist secret scan");
+    want(persistJob, "GITHUB_SHA", "persist race GITHUB_SHA");
+    want(persistJob, 'git ls-remote --heads origin', "persist ls-remote race");
+    for (const rel of ALLOWLIST) {
+      want(persistJob, rel, "persist exact allowlist");
     }
   }
 
