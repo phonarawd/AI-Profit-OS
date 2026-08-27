@@ -346,6 +346,84 @@ export async function requestMagicLink(
   return { ok: true };
 }
 
+export async function requestSignupMagicLink(
+  input: StageASignupInput,
+  opts: AuthRequestOpts = {},
+): Promise<{ ok: true }> {
+  const email = input.email.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    throw new AuthError(400, "VALIDATION_ERROR");
+  }
+  if (!input.termsAcceptedAt || !input.privacyAcceptedAt) {
+    throw new AuthError(400, "TERMS_REQUIRED");
+  }
+  const headers = await authHeaders(opts);
+  headers["Content-Type"] = "application/json";
+  const body: Record<string, unknown> = {
+    email,
+    purpose: "signup",
+    termsAcceptedAt: input.termsAcceptedAt,
+    privacyAcceptedAt: input.privacyAcceptedAt,
+    marketingConsent: input.marketingConsent === true,
+  };
+  if (input.referralCode?.trim()) body.referralCode = input.referralCode.trim();
+
+  let res: Response;
+  try {
+    res = await fetch(
+      apiUrl(opts.apiBase ?? "", "/api/v1/auth/magic-link/request"),
+      {
+        method: "POST",
+        headers,
+        credentials: "include",
+        cache: "no-store",
+        signal: opts.signal,
+        body: JSON.stringify(body),
+      },
+    );
+  } catch (err) {
+    if (isAbortError(err)) throw err;
+    throw new AuthError(0, "NETWORK_ERROR");
+  }
+  const raw = await readJson(res);
+  if (!res.ok) throwHttp(res.status, raw);
+  return { ok: true };
+}
+
+export async function verifyMagicLink(
+  token: string,
+  opts: AuthRequestOpts = {},
+): Promise<AuthSession> {
+  const trimmed = token.trim();
+  if (!trimmed) throw new AuthError(400, "VALIDATION_ERROR");
+  const headers = await authHeaders(opts);
+  headers["Content-Type"] = "application/json";
+  let res: Response;
+  try {
+    res = await fetch(
+      apiUrl(opts.apiBase ?? "", "/api/v1/auth/magic-link/verify"),
+      {
+        method: "POST",
+        headers,
+        credentials: "include",
+        cache: "no-store",
+        signal: opts.signal,
+        body: JSON.stringify({ token: trimmed }),
+      },
+    );
+  } catch (err) {
+    if (isAbortError(err)) throw err;
+    throw new AuthError(0, "NETWORK_ERROR");
+  }
+  const raw = await readJson(res);
+  if (!res.ok) throwHttp(res.status, raw);
+  const sessionRaw =
+    raw && typeof raw === "object"
+      ? (raw as Record<string, unknown>).session
+      : null;
+  return normalizeAuthSession(sessionRaw);
+}
+
 export async function logoutAuth(
   opts: AuthRequestOpts = {},
 ): Promise<LogoutResult> {
