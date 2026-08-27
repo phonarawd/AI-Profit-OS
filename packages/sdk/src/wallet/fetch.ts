@@ -31,24 +31,61 @@ async function authHeaders(
   return headers;
 }
 
-function asAmount(v: unknown): string {
-  return typeof v === "string" && v.trim() ? v : "0";
+const MONEY_RE = /^-?[0-9]+(\\.[0-9]+)?$/;
+const WALLET_BUCKET_KEYS = [
+  "userId",
+  "principalUsdt",
+  "profitUsdt",
+  "lockedUsdt",
+  "practiceUsdt",
+  "liabilityUsdt",
+  "asOfLedgerEntryId",
+] as const;
+
+function walletShapeError(): Error {
+  return new Error("wallet_buckets_shape");
 }
 
-export function normalizeWalletBuckets(
-  raw: Partial<WalletBucketsResponse> & Record<string, unknown>,
-): WalletBucketsResponse {
+function requiredText(raw: Record<string, unknown>, key: string): string {
+  const value = raw[key];
+  if (typeof value !== "string" || !value.trim()) throw walletShapeError();
+  return value;
+}
+
+function requiredMoney(raw: Record<string, unknown>, key: string): string {
+  const value = raw[key];
+  if (typeof value !== "string" || !MONEY_RE.test(value)) {
+    throw walletShapeError();
+  }
+  return value;
+}
+
+export function normalizeWalletBuckets(raw: unknown): WalletBucketsResponse {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    throw walletShapeError();
+  }
+  const value = raw as Record<string, unknown>;
+  const keys = Object.keys(value);
+  if (
+    keys.length !== WALLET_BUCKET_KEYS.length ||
+    keys.some(
+      (key) =>
+        !WALLET_BUCKET_KEYS.includes(
+          key as (typeof WALLET_BUCKET_KEYS)[number],
+        ),
+    )
+  ) {
+    throw walletShapeError();
+  }
+
   return {
-    userId: typeof raw.userId === "string" ? raw.userId : "",
-    principalUsdt: asAmount(raw.principalUsdt),
-    profitUsdt: asAmount(raw.profitUsdt),
-    lockedUsdt: asAmount(raw.lockedUsdt),
-    practiceUsdt: asAmount(raw.practiceUsdt),
-    liabilityUsdt: asAmount(raw.liabilityUsdt),
-    asOfLedgerEntryId:
-      typeof raw.asOfLedgerEntryId === "string"
-        ? raw.asOfLedgerEntryId
-        : "none",
+    userId: requiredText(value, "userId"),
+    principalUsdt: requiredMoney(value, "principalUsdt"),
+    profitUsdt: requiredMoney(value, "profitUsdt"),
+    lockedUsdt: requiredMoney(value, "lockedUsdt"),
+    practiceUsdt: requiredMoney(value, "practiceUsdt"),
+    liabilityUsdt: requiredMoney(value, "liabilityUsdt"),
+    asOfLedgerEntryId: requiredText(value, "asOfLedgerEntryId"),
   };
 }
 
@@ -68,9 +105,7 @@ export async function fetchWalletBuckets(
   if (!res.ok) {
     throw new Error(`wallet_buckets_${res.status}`);
   }
-  const raw = (await res.json()) as Partial<WalletBucketsResponse> &
-    Record<string, unknown>;
-  return normalizeWalletBuckets(raw);
+  return normalizeWalletBuckets(await res.json());
 }
 
 async function postJson(
