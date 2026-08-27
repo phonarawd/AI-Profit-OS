@@ -38,7 +38,7 @@ env:
   PORT: 4000
   AIPO_EPOCH_REPOSITORY: phonarawd/AI-Profit-OS
   AIPO_EPOCH_BRANCH: release/auth-wallet-rel502-v1-20260828
-  AIPO_EPOCH_MARKER: "chore(rel-502): harden auth-wallet current-epoch evidence once"
+  AIPO_EPOCH_MARKER: "fix(rel-502): repair current-epoch one-shot execution"
   AIPO_EPOCH_PERSIST_SUBJECT: "chore(rel-502): persist current-epoch qa1-qa6 evidence"
   AIPO_EPOCH_BASE_MAIN: 2e75a13be17f32ff5337851f426f22aa777d86b9
   AIPO_EPOCH_BASELINE_ID: ea-baseline-cc627efc3ee2-defdfa5b6ac4
@@ -83,7 +83,12 @@ jobs:
 
   qa123:
     # QA1 = full · QA2 = full · QA3 = full
-    if: ${{ needs.guard.outputs.run_qa == 'true' && github.repository == 'phonarawd/AI-Profit-OS' && github.ref == 'refs/heads/release/auth-wallet-rel502-v1-20260828' && github.event_name == 'push' && startsWith(github.event.head_commit.message, 'chore(rel-502): harden auth-wallet current-epoch evidence once') }}
+    if: >-
+      needs.guard.outputs.run_qa == 'true' &&
+      github.repository == 'phonarawd/AI-Profit-OS' &&
+      github.ref == 'refs/heads/release/auth-wallet-rel502-v1-20260828' &&
+      github.event_name == 'push' &&
+      startsWith(github.event.head_commit.message, 'fix(rel-502): repair current-epoch one-shot execution')
     runs-on: ubuntu-latest
     timeout-minutes: 40
     needs: [guard]
@@ -515,6 +520,13 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Attach exact release branch at workflow start SHA
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git checkout -B "${AIPO_EPOCH_BRANCH}" "${GITHUB_SHA}"
+          test "$(git rev-parse --abbrev-ref HEAD)" = "${AIPO_EPOCH_BRANCH}"
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
       - uses: pnpm/action-setup@v6
         with:
           version: 10.14.0
@@ -614,8 +626,13 @@ jobs:
             END { exit bad }
           '
 
-          git fetch origin "${AIPO_EPOCH_BRANCH}"
-          remote_tip="$(git rev-parse "refs/remotes/origin/${AIPO_EPOCH_BRANCH}")"
+          git fetch --no-tags origin "${AIPO_EPOCH_BRANCH}"
+          remote_tip="$(
+            git ls-remote --heads origin \
+              "refs/heads/${AIPO_EPOCH_BRANCH}" |
+            awk 'NR==1 {print $1}'
+          )"
+          test -n "${remote_tip}"
           if [ "${remote_tip}" != "${GITHUB_SHA}" ]; then
             echo "remote branch tip raced away from GITHUB_SHA"
             exit 1

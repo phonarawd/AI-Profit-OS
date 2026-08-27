@@ -31,7 +31,7 @@ const DOMAIN_REL = "tooling/verify/domain-by-path.cjs";
 
 const REPOSITORY = "phonarawd/AI-Profit-OS";
 const BRANCH = "release/auth-wallet-rel502-v1-20260828";
-const MARKER = "chore(rel-502): harden auth-wallet current-epoch evidence once";
+const MARKER = "fix(rel-502): repair current-epoch one-shot execution";
 const PERSIST_SUBJECT = "chore(rel-502): persist current-epoch qa1-qa6 evidence";
 const BASE_MAIN = "2e75a13be17f32ff5337851f426f22aa777d86b9";
 const BASELINE_ID = "ea-baseline-cc627efc3ee2-defdfa5b6ac4";
@@ -243,7 +243,10 @@ function verifyStatic() {
   want(wf, "--persist-safety --cached", "persist safety cached");
   want(wf, "pnpm verify:secrets", "secret scan");
   want(wf, "GITHUB_SHA", "race check against GITHUB_SHA");
-  want(wf, "git fetch origin", "race check fetch");
+  want(wf, 'git fetch --no-tags origin "${AIPO_EPOCH_BRANCH}"', "race check fetch");
+  want(wf, 'git ls-remote --heads origin', "authoritative ls-remote race read");
+  want(wf, 'git checkout -B "${AIPO_EPOCH_BRANCH}" "${GITHUB_SHA}"', "exact branch attachment");
+  want(wf, 'test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"', "HEAD == GITHUB_SHA after attach");
   want(wf, "HEAD:refs/heads/" + BRANCH, "pinned FF push ref");
   for (const rel of ALLOWLIST) {
     want(wf, rel, "exact staging allowlist");
@@ -272,6 +275,40 @@ function verifyStatic() {
   forbid(wf, 'git add -- "governance/engine-acceptance"', "no blind evidence staging");
   forbid(wf, "git add governance/engine-acceptance", "no blind evidence staging");
   forbid(wf, "epoch-once-evidence-after-qa8", "persist must not consume QA8 formal tree");
+  forbid(wf, "chore(rel-502): harden auth-wallet current-epoch evidence once", "stale failed marker must not remain");
+
+  const qa123Match = wf.match(/\n  qa123:\r?\n([\s\S]*?)\r?\n  qa4:/);
+  if (!qa123Match) {
+    fail("qa123 job missing before qa4");
+  } else {
+    const qa123 = qa123Match[1];
+    want(qa123, "if: >-", "qa123 YAML-safe folded if");
+    want(qa123, "needs.guard.outputs.run_qa == 'true' &&", "qa123 run_qa");
+    want(qa123, "github.repository == '" + REPOSITORY + "' &&", "qa123 repository");
+    want(qa123, "github.ref == 'refs/heads/" + BRANCH + "' &&", "qa123 branch");
+    want(qa123, "github.event_name == 'push' &&", "qa123 push-only");
+    want(qa123, "startsWith(github.event.head_commit.message, '" + MARKER + "')", "qa123 marker startsWith");
+    if (/^ {4}if:\s*\$\{\{/m.test(qa123)) {
+      fail("qa123 must not use job-level if: ${{ }} wrapper");
+    }
+  }
+
+  const wfMarkerEnv = 'AIPO_EPOCH_MARKER: "' + MARKER + '"';
+  want(wf, wfMarkerEnv, "workflow marker env matches verifier");
+
+  const wfLines = wf.split(/\r?\n/);
+  for (let i = 0; i < wfLines.length; i += 1) {
+    const line = wfLines[i];
+    if (/^\s*#/.test(line)) continue;
+    if (!/^ {4}if:\s+\$\{\{/.test(line)) continue;
+    const value = line.replace(/^ {4}if:\s+/, "");
+    if (value.includes(": ")) {
+      fail(
+        "unsafe job-level if: ${{ }} plain scalar contains ': ' at L" +
+          (i + 1),
+      );
+    }
+  }
 
   const persistIdx = wf.search(/\n  persist:/);
   if (persistIdx < 0) {
@@ -288,7 +325,6 @@ function verifyStatic() {
   }
 
   const nvMatches = [];
-  const wfLines = wf.split(/\r?\n/);
   for (let i = 0; i < wfLines.length; i += 1) {
     if (/^\s*#/.test(wfLines[i])) continue;
     if (wfLines[i].includes("--no-verify")) nvMatches.push(i);
