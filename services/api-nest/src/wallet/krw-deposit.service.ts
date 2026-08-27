@@ -78,16 +78,20 @@ export class KrwDepositService {
       throw new BadRequestException("idempotencyKey minLength 8");
     }
 
-    await this.killSwitch.assertPath("deposit");
-    await this.expireStale();
-
+    // Recovery comes before create-only gates. A committed request whose response
+    // was lost must remain recoverable even if policy changes afterwards.
     const existing = await this.db.query<RequestRow>(
       `SELECT ${this.columns()}
          FROM public.krw_deposit_requests
         WHERE idempotency_key = $1`,
       [input.idempotencyKey],
     );
-    if (existing.rows[0]) return this.toV1(existing.rows[0]);
+    if (existing.rows[0]) {
+      return this.assertIdempotentRequest(existing.rows[0], input, name);
+    }
+
+    await this.killSwitch.assertPath("deposit");
+    await this.expireStale();
 
     for (let attempt = 0; attempt < 12; attempt += 1) {
       const uniqueSuffixKrw = this.randomSuffix();
@@ -136,13 +140,40 @@ export class KrwDepositService {
               WHERE idempotency_key = $1`,
             [input.idempotencyKey],
           );
-          if (again.rows[0]) return this.toV1(again.rows[0]);
+          if (again.rows[0]) {
+            return this.assertIdempotentRequest(again.rows[0], input, name);
+          }
         }
         if (/payable_amount|unique/i.test(msg)) continue;
         throw e;
       }
     }
     throw new ConflictException("unable to allocate unique payableAmountKrw");
+  }
+
+  private assertIdempotentRequest(
+    row: RequestRow,
+    input: {
+      userId: string;
+      requestedAmountKrw: number;
+      depositorName: string;
+      idempotencyKey: string;
+    },
+    normalizedDepositorName: string,
+  ): KrwDepositRequestV1 {
+    const sameOwner = row.user_id === input.userId;
+    const sameEconomicIntent =
+      row.requested_amount_krw === input.requestedAmountKrw &&
+      row.depositor_name.trim() === normalizedDepositorName;
+
+    if (!sameOwner || !sameEconomicIntent) {
+      throw new ConflictException({
+        code: "IDEMPOTENCY_KEY_CONFLICT",
+        message: "idempotency key is already bound to another request",
+        statusCode: 409,
+      });
+    }
+    return this.toV1(row);
   }
 
   /** GET /admin/wallet/krw-deposit-requests */
