@@ -1,0 +1,58 @@
+name: cloudflare-compat-dry-run
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "infra/**/wrangler.toml"
+      - "workers/**/wrangler.toml"
+      - "workers/**/src/**"
+      - "apps/web/**"
+      - "apps/admin/**"
+      - "tooling/cloudflare/compat-dry-run.cjs"
+      - ".github/workflows/cloudflare-compat-dry-run.yml"
+  workflow_dispatch: {}
+
+concurrency:
+  group: cloudflare-compat-dry-run-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        with:
+          version: 10.14.0
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Non-secret build env
+        run: |
+          cat > .env <<'EOF'
+          ROOT_DOMAIN=example.invalid
+          APP_HOST=app.example.invalid
+          OPS_HOST=ops.example.invalid
+          API_HOST=localhost:4000
+          EOF
+
+      - name: Build OpenNext web
+        run: pnpm --filter @aipo/web build:cf
+
+      - name: Build OpenNext ops
+        run: pnpm --filter @aipo/admin build:cf
+
+      - name: Compatibility-date dry-run matrix
+        run: node tooling/cloudflare/compat-dry-run.cjs
