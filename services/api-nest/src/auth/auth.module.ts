@@ -6,11 +6,12 @@ import { AuthController } from "./auth.controller";
 import { AuthRateLimitGuard } from "./auth-rate-limit.guard";
 import { AuthService } from "./auth.service";
 import { PrivacyAccountService } from "./privacy-account.service";
+import { ResendEmailProvider } from "../wallet/resend-email.provider";
 
 @Module({
   imports: [EventsModule, LedgerModule, InboxModule],
   controllers: [AuthController],
-  providers: [AuthService, PrivacyAccountService, AuthRateLimitGuard],
+  providers: [AuthService, PrivacyAccountService, AuthRateLimitGuard, ResendEmailProvider],
   exports: [AuthService],
 })
 export class AuthModule {}
