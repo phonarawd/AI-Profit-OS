@@ -22,6 +22,22 @@ const FILTERS: { id: InboxChannel; label: string }[] = [
   { id: "wallet", label: T.inbox.filterWallet },
 ];
 
+function safeInboxHref(value: string | null | undefined): string | null {
+  if (value == null) return null;
+  const href = String(value).trim();
+  if (
+    !href ||
+    href.length > 512 ||
+    !href.startsWith("/") ||
+    href.startsWith("//") ||
+    href.includes("\\") ||
+    /[\u0000-\u001f\u007f]/.test(href)
+  ) {
+    return null;
+  }
+  return href;
+}
+
 function relativeKo(iso: string, now = Date.now()): string {
   const t = Date.parse(iso);
   if (!Number.isFinite(t)) return "";
@@ -111,6 +127,7 @@ export function OpsInbox({
             {list.map((item) => {
               const unread = !item.readAt;
               const open = openId === item.id;
+              const safeHref = safeInboxHref(item.href);
               return (
                 <li
                   key={item.id}
@@ -160,9 +177,9 @@ export function OpsInbox({
                   {open ? (
                     <div className="mt-3 border-t border-lux-border pt-3 text-sm">
                       <p className="whitespace-pre-wrap">{item.bodyKo}</p>
-                      {item.href ? (
+                      {safeHref ? (
                         <Link
-                          href={item.href}
+                          href={safeHref}
                           className="mt-2 inline-block text-lux-accent underline"
                         >
                           {T.inbox.openBody}

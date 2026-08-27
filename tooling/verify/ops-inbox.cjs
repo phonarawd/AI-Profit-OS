@@ -103,6 +103,21 @@ if (svc && !svc.includes("hidden_at") && !svc.includes("hardDelete: false")) {
 if (svc && /DELETE FROM public\.ops_inbox/i.test(svc)) {
   fails.push("hard DELETE of ops_inbox_messages FORBIDDEN");
 }
+if (svc && !svc.includes("requireInternalHref(input.href)")) {
+  fails.push("OpsInboxService must reject non-internal href before insert");
+}
+if (svc && !svc.includes("href: safeInternalHref(row.href)")) {
+  fails.push("OpsInboxService must suppress unsafe legacy href on read");
+}
+if (svc && svc.includes("input.href ?? null")) {
+  fails.push("OpsInboxService must not persist raw admin href");
+}
+if (ui && !ui.includes("safeInboxHref(item.href)")) {
+  fails.push("OpsInbox UI must validate href before rendering a Link");
+}
+if (ui && ui.includes("href={item.href}")) {
+  fails.push("OpsInbox UI must never render raw item.href");
+}
 
 const admin = read("services/api-nest/src/inbox/ops-inbox.admin.controller.ts");
 if (admin && !admin.includes("ops-messages")) {

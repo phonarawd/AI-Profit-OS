@@ -186,6 +186,36 @@ test("Founder-locked and native Spark surfaces keep their dedicated presentation
   }
 });
 
+test("inbox suppresses unsafe external deeplinks from API data", async ({ page }) => {
+  await page.route("**/api/v1/me/inbox", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        items: [
+          {
+            id: "qa-worldclass-unsafe-href",
+            channel: "ops",
+            titleKo: "안내",
+            bodyKo: "외부 링크 차단 회귀",
+            createdAt: "2026-08-27T00:00:00.000Z",
+            readAt: null,
+            href: "https://evil.example/phish",
+          },
+        ],
+      }),
+    }),
+  );
+
+  await open(page, "/me/inbox", 390, 844);
+  await expect(page.getByTestId("inbox-page")).toHaveAttribute(
+    "data-account-view",
+    "ready",
+  );
+  await page.getByTestId("ops-inbox-row").getByRole("button").first().click();
+  await expect(page.locator('a[href="https://evil.example/phish"]')).toHaveCount(0);
+});
+
 test("responsive sanity holds at minimum and wide supported widths", async ({ page }) => {
   const criticalRoutes = ["/wallet", "/me/settings", "/auth/signup"];
   for (const width of [320, 360, 430, 1280, 1366, 1920]) {

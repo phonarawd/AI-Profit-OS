@@ -78,6 +78,37 @@ test("ready inbox stays server-owned", async ({ page }) => {
   });
 });
 
+test("unsafe external inbox href is never rendered as a user link", async ({ page }) => {
+  await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
+  await page.route("**/api/v1/me/inbox", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        items: [
+          {
+            id: "qa-unsafe-href",
+            channel: "ops",
+            titleKo: "안내",
+            bodyKo: "안전한 내부 화면만 열어요.",
+            createdAt: "2026-08-27T00:00:00.000Z",
+            readAt: null,
+            href: "https://evil.example/phish",
+          },
+        ],
+      }),
+    }),
+  );
+  await page.setViewportSize({ width: 390, height: 693 });
+  await page.goto(`${runtime.baseUrl}/me/inbox`, { waitUntil: "load" });
+  await expect(page.getByTestId("inbox-page")).toHaveAttribute(
+    "data-account-view",
+    "ready",
+  );
+  await page.getByTestId("ops-inbox-row").getByRole("button").first().click();
+  await expect(page.locator('a[href="https://evil.example/phish"]')).toHaveCount(0);
+});
+
 test("inbox a11y has no new critical/serious axe violations", async ({
   page,
 }) => {

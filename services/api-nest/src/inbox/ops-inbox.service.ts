@@ -21,6 +21,31 @@ const TEMPLATES = [
 
 export type OpsInboxTemplate = (typeof TEMPLATES)[number];
 
+const INTERNAL_HREF_MAX = 512;
+
+function safeInternalHref(value: unknown): string | null {
+  if (value == null) return null;
+  const href = String(value).trim();
+  if (!href) return null;
+  if (
+    href.length > INTERNAL_HREF_MAX ||
+    !href.startsWith("/") ||
+    href.startsWith("//") ||
+    href.includes("\\") ||
+    /[\u0000-\u001f\u007f]/.test(href)
+  ) {
+    return null;
+  }
+  return href;
+}
+
+function requireInternalHref(value: unknown): string | null {
+  if (value == null || String(value).trim() === "") return null;
+  const href = safeInternalHref(value);
+  if (!href) throw new BadRequestException("href must be an internal path");
+  return href;
+}
+
 export type SendOpsMessageInput = {
   template: OpsInboxTemplate | string;
   titleKo: string;
@@ -91,7 +116,7 @@ export class OpsInboxService {
           template,
           titleKo,
           bodyKo,
-          input.href ?? null,
+          requireInternalHref(input.href),
           adminId,
           input.sourceEventId ?? null,
         ],
@@ -168,7 +193,7 @@ export class OpsInboxService {
       channel: "ops" as const,
       titleKo: row.title_ko,
       bodyKo: row.body_ko,
-      href: row.href,
+      href: safeInternalHref(row.href),
       createdAt: row.created_at?.toISOString?.() ?? String(row.created_at),
       readAt: row.read_at ? row.read_at.toISOString() : null,
       template: row.template,
