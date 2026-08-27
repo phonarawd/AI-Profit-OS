@@ -4,7 +4,7 @@ import {
   continuePathAfterAuth,
   fetchAuthSession,
   isKakaoOAuthReady,
-  signupStageA,
+  requestSignupMagicLink,
   startKakaoOAuth,
 } from "@aipo/sdk/auth";
 import {
@@ -69,7 +69,7 @@ export function SignupRuntime() {
     setNote(null);
     setBusy(true);
     try {
-      const session = await signupStageA(
+      await requestSignupMagicLink(
         {
           method: "email_magic",
           termsAcceptedAt: input.termsAcceptedAt,
@@ -80,7 +80,7 @@ export function SignupRuntime() {
         },
         { apiBase: "" },
       );
-      router.replace(continuePathAfterAuth(session.onboardingStage));
+      setNote("메일함의 가입 링크를 눌러 주세요.");
     } catch (caught) {
       setError(authUserMessage(caught));
     } finally {
