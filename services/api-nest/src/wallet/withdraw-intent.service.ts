@@ -36,6 +36,7 @@ type IntentRow = {
   mode: WithdrawMode;
   amount_usdt: string;
   asset: WithdrawAsset;
+  destination: string | null;
   debit_profit_usdt: string;
   debit_principal_usdt: string;
   require_principal_confirm: boolean;
@@ -124,6 +125,35 @@ export class WithdrawIntentService {
       throw new BadRequestException("amountUsdt must be > 0");
     }
 
+    const { debitProfitUsdt, debitPrincipalUsdt, requirePrincipalConfirm } =
+      this.resolveDebits(mode, amountUsdt, input);
+    const destination =
+      input.asset === "USDT" ? (input.destination ?? "").trim() : "";
+    if (input.asset === "USDT" && !destination) {
+      throw new BadRequestException("destination required for USDT");
+    }
+
+    // Recovery is checked before create-only authorization/policy gates.
+    // It can return only the exact durable request bound to this user+intent.
+    const existing = await this.db.query<IntentRow>(
+      `SELECT ${this.columns()}
+         FROM public.withdraw_intents
+        WHERE idempotency_key = $1`,
+      [input.idempotencyKey],
+    );
+    if (existing.rows[0]) {
+      return this.assertIdempotentIntent(existing.rows[0], {
+        userId: input.userId,
+        mode,
+        amountUsdt,
+        asset: input.asset,
+        debitProfitUsdt,
+        debitPrincipalUsdt,
+        requirePrincipalConfirm,
+        destination,
+      });
+    }
+
     // ── Guard #1 · Admin §9.8.4a ─────────────────────────────
     await this.assertNotApplyBlocked(input.userId);
 
@@ -135,9 +165,6 @@ export class WithdrawIntentService {
       userId: input.userId,
       stepUpToken: input.stepUpToken,
     });
-
-    const { debitProfitUsdt, debitPrincipalUsdt, requirePrincipalConfirm } =
-      this.resolveDebits(mode, amountUsdt, input);
 
     // ── §49.9 / §51.7 P1 — practice path 403 PRACTICE_NOT_WITHDRAWABLE ──
     await this.risk.assertBeforeWithdraw({
@@ -184,16 +211,6 @@ export class WithdrawIntentService {
       mode,
     });
 
-    const existing = await this.db.query<IntentRow>(
-      `SELECT ${this.columns()}
-         FROM public.withdraw_intents
-        WHERE idempotency_key = $1`,
-      [input.idempotencyKey],
-    );
-    if (existing.rows[0]) {
-      return this.toV1(existing.rows[0], feeQuote.withdrawFeeUsdt);
-    }
-
     try {
       const ins = await this.db.query<IntentRow>(
         `INSERT INTO public.withdraw_intents (
@@ -219,7 +236,7 @@ export class WithdrawIntentService {
           debitPrincipalUsdt,
           requirePrincipalConfirm,
           input.principalConfirmToken ?? null,
-          input.destination ?? null,
+          destination || null,
           input.idempotencyKey,
           feeQuote.withdrawFeeUsdt,
           step.method,
@@ -247,12 +264,54 @@ export class WithdrawIntentService {
           [input.idempotencyKey],
         );
         if (again.rows[0]) {
-          return this.toV1(again.rows[0], feeQuote.withdrawFeeUsdt);
+          return this.assertIdempotentIntent(again.rows[0], {
+            userId: input.userId,
+            mode,
+            amountUsdt,
+            asset: input.asset,
+            debitProfitUsdt,
+            debitPrincipalUsdt,
+            requirePrincipalConfirm,
+            destination,
+          });
         }
         throw new ConflictException("idempotency conflict");
       }
       throw e;
     }
+  }
+
+  private assertIdempotentIntent(
+    row: IntentRow,
+    intent: {
+      userId: string;
+      mode: WithdrawMode;
+      amountUsdt: string;
+      asset: WithdrawAsset;
+      debitProfitUsdt: string;
+      debitPrincipalUsdt: string;
+      requirePrincipalConfirm: boolean;
+      destination: string;
+    },
+  ): WithdrawIntentV1 {
+    const sameOwner = row.user_id === intent.userId;
+    const sameEconomicIntent =
+      row.mode === intent.mode &&
+      row.amount_usdt === intent.amountUsdt &&
+      row.asset === intent.asset &&
+      row.debit_profit_usdt === intent.debitProfitUsdt &&
+      row.debit_principal_usdt === intent.debitPrincipalUsdt &&
+      row.require_principal_confirm === intent.requirePrincipalConfirm &&
+      (row.destination ?? "") === intent.destination;
+
+    if (!sameOwner || !sameEconomicIntent) {
+      throw new ConflictException({
+        code: "IDEMPOTENCY_KEY_CONFLICT",
+        message: "idempotency key is already bound to another request",
+        statusCode: 409,
+      });
+    }
+    return this.toV1(row);
   }
 
   /** Guard #1 only — used by adapters / verify */
@@ -328,14 +387,18 @@ export class WithdrawIntentService {
   }
 
   private columns(): string {
-    return `id, user_id, mode, amount_usdt::text, asset,
+    return `id, user_id, mode, amount_usdt::text, asset, destination,
             debit_profit_usdt::text, debit_principal_usdt::text,
             require_principal_confirm, principal_confirm_token,
             status, idempotency_key, withdraw_fee_usdt::text,
             step_up_method, step_up_verified_at, created_at`;
   }
 
-  private toV1(row: IntentRow, feeFallback: string): WithdrawIntentV1 {
+  private toV1(row: IntentRow, feeFallback?: string): WithdrawIntentV1 {
+    const withdrawFeeUsdt = row.withdraw_fee_usdt ?? feeFallback;
+    if (!withdrawFeeUsdt) {
+      throw new ConflictException("withdraw intent fee unavailable");
+    }
     return {
       id: row.id,
       userId: row.user_id,
@@ -347,7 +410,7 @@ export class WithdrawIntentService {
       requirePrincipalConfirm: row.require_principal_confirm,
       principalConfirmToken: row.principal_confirm_token ?? undefined,
       idempotencyKey: row.idempotency_key,
-      withdrawFeeUsdt: row.withdraw_fee_usdt ?? feeFallback,
+      withdrawFeeUsdt,
       status: row.status,
       stepUpMethod: row.step_up_method ?? undefined,
       createdAt: new Date(row.created_at).toISOString(),
