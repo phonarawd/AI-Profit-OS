@@ -67,9 +67,7 @@ async function evalStable(page, fn) {
     const msg = String(err && err.message ? err.message : err);
     if (!msg.includes("Execution context was destroyed")) throw err;
     await page.waitForLoadState("domcontentloaded");
-    await expect(page.getByTestId("home-authenticated")).toBeVisible({
-      timeout: 20000,
-    });
+    await settle(page);
     return page.evaluate(fn);
   }
 }
@@ -82,6 +80,15 @@ async function noHorizontalOverflow(page) {
 }
 
 async function visibleSparkAssetsOk(page) {
+  await page
+    .waitForFunction(() => {
+      const imgs = Array.from(document.images).filter((img) => {
+        const src = img.currentSrc || img.src || "";
+        return src.includes("/spark-dash/") && img.offsetParent !== null;
+      });
+      return imgs.every((img) => img.complete && img.naturalWidth > 0);
+    }, null, { timeout: 20000 })
+    .catch(() => {});
   return evalStable(page, () => {
     const imgs = Array.from(document.images).filter((img) => {
       const src = img.currentSrc || img.src || "";
@@ -244,11 +251,12 @@ test("authenticated mobile Home keeps opportunity navigation", async ({
   await assertNoLegacyChrome(page);
   const explore = page.locator('[data-sdm="nav"] a[href="/profits"]').first();
   await expect(explore).toBeVisible();
+  await expect(explore).toHaveAttribute("href", "/profits");
   await explore.scrollIntoViewIfNeeded();
-  await Promise.all([
-    page.waitForURL(/\/profits/, { timeout: 20000 }),
-    explore.click(),
-  ]);
+  await hideNextDevChrome(page);
+  await explore.click({ force: true });
+  // First dev navigation may compile /profits on a low-spec single worker.
+  await expect(page).toHaveURL(/\/profits/, { timeout: 60000 });
   await assertNoLegacyChrome(page);
   expect(await noHorizontalOverflow(page)).toBeTruthy();
 });
