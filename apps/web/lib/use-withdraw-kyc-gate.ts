@@ -128,7 +128,7 @@ export function useWithdrawKycGate(opts: {
 
   useEffect(() => {
     const ac = new AbortController();
-    let redirectTimer: ReturnType<typeof window.setTimeout> | null = null;
+    let redirectTimer: number | null = null;
     setAuthority("loading");
     setKycStatus(null);
     setToastMessage(null);
