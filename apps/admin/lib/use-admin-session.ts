@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   ADMIN_SESSION_CHANGE_EVENT,
-  hasAdminToken,
+  hasAdminSession,
 } from "./admin-session";
 
 /**
@@ -27,7 +27,14 @@ export function useAdminConnected(): boolean {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    setConnected(hasAdminToken());
+    let alive = true;
+    setConnected(false);
+    void hasAdminSession().then((next) => {
+      if (alive) setConnected(next);
+    });
+    return () => {
+      alive = false;
+    };
   }, [revision]);
 
   return connected;

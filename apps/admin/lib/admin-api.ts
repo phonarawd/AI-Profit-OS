@@ -1,5 +1,3 @@
-import { getAdminToken } from "./admin-session";
-
 export type AdminFailureKind =
   | "unauthorized"
   | "forbidden"
@@ -17,18 +15,10 @@ export type AdminResult<T> =
   | { ok: true; data: T }
   | { ok: false; failure: AdminFailure };
 
-function apiBase(): string {
-  const env = process.env.NEXT_PUBLIC_API_BASE;
-  if (typeof env === "string" && env.trim()) {
-    return env.replace(/\/$/, "");
-  }
-  return "";
-}
-
-function adminUrl(path: string): string {
+function adminUrl(path: string): string | null {
   const p = path.startsWith("/") ? path : `/${path}`;
-  const base = apiBase();
-  return base ? `${base}${p}` : p;
+  if (p !== "/api/v1/admin" && !p.startsWith("/api/v1/admin/")) return null;
+  return `/api/admin-bff/proxy?target=${encodeURIComponent(p)}`;
 }
 
 function classify(status: number | null): AdminFailureKind {
@@ -70,16 +60,23 @@ export async function adminRequest<T>(
       headers[k] = v;
     }
   }
-  const token = getAdminToken();
-  if (token) headers.Authorization = `Bearer ${token}`;
+  delete headers.Authorization;
+  delete headers.authorization;
+  const url = adminUrl(path);
+  if (!url) {
+    return {
+      ok: false,
+      failure: { kind: "error", status: 400, code: "ADMIN_BFF_TARGET_INVALID" },
+    };
+  }
 
   let res: Response;
   try {
-    res = await fetch(adminUrl(path), {
+    res = await fetch(url, {
       ...init,
       headers,
       cache: "no-store",
-      credentials: "omit",
+      credentials: "include",
     });
   } catch {
     return {
