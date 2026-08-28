@@ -1,0 +1,229 @@
+name: rel-502-qa8-canonical-amend-once
+
+on:
+  push:
+    branches:
+      - release/auth-wallet-rel502-v1-20260828
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rel-502-qa8-canonical-amend-once
+  cancel-in-progress: false
+
+env:
+  AIPO_MARKER: "chore(rel-502): start canonical QA8 L7 repair"
+  AIPO_BRANCH: "release/auth-wallet-rel502-v1-20260828"
+  AIPO_BASELINE_ID: "ea-baseline-cc627efc3ee2-defdfa5b6ac4"
+  AIPO_OLD_WORKFLOW_HASH: "3f2588e695902e989b5c56f0dd193f9e6fd693846a52ced90ae44173a72cbcf2"
+  AIPO_COMMIT_SUBJECT: "chore(engine-acceptance): repair canonical QA8 dispatch identity"
+
+jobs:
+  amend:
+    if: >-
+      github.repository == 'phonarawd/AI-Profit-OS' &&
+      github.ref == 'refs/heads/release/auth-wallet-rel502-v1-20260828' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'chore(rel-502): start canonical QA8 L7 repair'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact trigger
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Fail-closed final-epoch guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REPOSITORY}" = "phonarawd/AI-Profit-OS"
+          test "${GITHUB_REF}" = "refs/heads/${AIPO_BRANCH}"
+          test "$(git log -1 --pretty=%s)" = "${AIPO_MARKER}"
+          test -z "$(git status --porcelain)"
+          node <<'NODE'
+          const fs=require('fs');
+          const b=JSON.parse(fs.readFileSync('governance/engine-acceptance/baseline.v1.json','utf8'));
+          const e=JSON.parse(fs.readFileSync('governance/engine-acceptance/evidence-manifest.v1.json','utf8'));
+          const q9=JSON.parse(fs.readFileSync('governance/engine-acceptance/qa9-result.v1.json','utf8'));
+          const bad=m=>{throw new Error(m)};
+          if(b.id!==process.env.AIPO_BASELINE_ID||b.acceptance_workflow_hash!==process.env.AIPO_OLD_WORKFLOW_HASH||b.valid!==true||b.protected_scope_clean!==true) bad('baseline');
+          if(e.qa_phase!=='QA-9'||e.verdict!=='ENGINE_ACCEPTED_FOR_UI'||e.next!=='03_ui_entry_unlocked'||e.evidence_integrity!=='VALID') bad('final evidence');
+          if(q9.baseline_id!==b.id||q9.verdict!=='ENGINE_ACCEPTED_FOR_UI'||q9.engine_accepted_for_ui!=='ISSUED'||q9.ui_ux_entry_gate!=='OPEN') bad('final QA9');
+          NODE
+          pnpm verify:engine-acceptance
+
+      - name: Patch canonical QA8 path and runner identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+          wf_path=Path('.github/workflows/engine-acceptance.yml')
+          wf=wf_path.read_text()
+          assert '  qa8-security-privacy:\n' not in wf
+          anchor='\n  qa8-adversarial:\n'
+          assert wf.count(anchor)==1
+          job=r'''
+  # QA8 canonical standalone dispatch. Additive: QA0-QA6 jobs/matrix unchanged.
+  qa8-security-privacy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa8' }}
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: aipo_qa_synth
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d aipo_qa_synth"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      TMPDIR: /tmp
+      PORT: 4000
+      AIPO_QA_PGHOST: 127.0.0.1
+      AIPO_QA_PGUSER: postgres
+      AIPO_QA_PGPASSWORD: postgres
+      AIPO_QA_PGDATABASE: aipo_qa_synth
+      AIPO_QA_PGPORT: "5432"
+      AIPO_QA_TARGET_ENV: ci
+      AIPO_QA_HOSTNAME: localhost
+      AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+      AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa8-adversarial
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Verify current checkpoint
+        run: pnpm verify:engine-acceptance
+      - name: Kill-switch + isolated DB target
+        run: node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+      - name: Build @aipo/api-nest
+        run: |
+          set -euo pipefail
+          pnpm --filter @aipo/api-nest build
+          test -f services/api-nest/dist/main.js
+      - name: Run QA8 booted-Nest adversarial HTTP
+        run: node tooling/engine-acceptance/run-qa8-adversarial.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+      - name: Run canonical QA8 full
+        run: node tooling/engine-acceptance/run-qa8.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+      - name: Verify post-QA8 checkpoint
+        run: pnpm verify:engine-acceptance
+      - name: Upload canonical QA8 formal evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-acceptance-QA8-formal
+          path: |
+            governance/engine-acceptance/qa8-result.v1.json
+            governance/engine-acceptance/evidence-manifest.v1.json
+            governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
+            governance/engine-acceptance/defects.v1.json
+            governance/engine-acceptance/coverage.v1.json
+            /tmp/aipo-harness/qa8-adversarial/
+          retention-days: 90
+          if-no-files-found: error
+'''
+          wf=wf.replace(anchor,'\n'+job+anchor,1)
+          wf_path.write_text(wf)
+
+          q8p=Path('tooling/engine-acceptance/run-qa8.cjs')
+          q8=q8p.read_text()
+          old='  const runId = `qa8-security-privacy-${measuredAt.slice(0, 10).replace(/-/g, "")}`;'
+          new='  const actionIdentity = process.env.GITHUB_RUN_ID ? `${process.env.GITHUB_RUN_ID}-${process.env.GITHUB_RUN_ATTEMPT || "1"}` : measuredAt.replace(/[^0-9]/g, "");\n  const runId = `qa8-security-privacy-${actionIdentity}`;'
+          assert q8.count(old)==1
+          q8=q8.replace(old,new,1)
+          old_phrase='**Prohibited state confirmed:** `ENGINE_ACCEPTED_FOR_UI` is **not issued** (P0 defect present and/or critical BLOCKED > 0).'
+          new_phrase='**Prohibited state confirmed:** `ENGINE_ACCEPTED_FOR_UI` is **not issued** until QA9 applies the locked L1 formula to the completed QA1-QA8 evidence.'
+          assert q8.count(old_phrase)==1
+          q8=q8.replace(old_phrase,new_phrase,1)
+          assert 'does not repair the P0/P2 findings above' in q8
+          q8=q8.replace('does not repair the P0/P2 findings above','does not alter any recorded findings')
+          q8p.write_text(q8)
+
+          q9p=Path('tooling/engine-acceptance/run-qa9.cjs')
+          q9=q9p.read_text()
+          old='  const runId = `qa9-acceptance-report-${measuredAt.slice(0, 10).replace(/-/g, "")}`;'
+          new='  const actionIdentity = process.env.GITHUB_RUN_ID ? `${process.env.GITHUB_RUN_ID}-${process.env.GITHUB_RUN_ATTEMPT || "1"}` : measuredAt.replace(/[^0-9]/g, "");\n  const runId = `qa9-acceptance-report-${actionIdentity}`;'
+          assert q9.count(old)==1
+          q9=q9.replace(old,new,1)
+          q9p.write_text(q9)
+          PY
+          git diff --check
+
+      - name: Build and apply L7 proposal
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs=require('fs');
+          const {readJson,hashPathList}=require('./tooling/engine-acceptance/lib/hash-scope.cjs');
+          const b=readJson('governance/engine-acceptance/baseline.v1.json');
+          const s=readJson('governance/engine-acceptance/protected-scope.v1.json');
+          const newHash=hashPathList(s.aggregateHashes.acceptance_workflow_hash,s);
+          if(b.acceptance_workflow_hash!==process.env.AIPO_OLD_WORKFLOW_HASH) throw new Error('old workflow hash drift');
+          const p={
+            amendment_id:'qa8-canonical-standalone-dispatch-20260828',
+            reason:'Add a QA8-only canonical workflow_dispatch path using the approved isolated-CI adversarial executor and full QA8 scorer. Existing QA0-QA6 jobs, commands, artifacts, env and pass/fail semantics remain unchanged. Harden QA8/QA9 run identities and QA8 report wording in tooling-only files.',
+            human_po_ack:{by:'Founder/PO user directive (via ChatGPT)',at:new Date().toISOString(),statement:'ACK APPROVED QA8_CANONICAL_DISPATCH_WIRING_AMENDMENT. User directed the next work to proceed completely; repair the QA8-only canonical dispatch route and rerun QA8 before final QA9 re-aggregation.'},
+            old_acceptance_workflow_hash:b.acceptance_workflow_hash,
+            new_acceptance_workflow_hash:newHash,
+            workflow_diff_scope:{files:['.github/workflows/engine-acceptance.yml'],exact_diff_summary:'Additive qa8-security-privacy job runs only for workflow_dispatch qa_phase=qa8 with isolated pgvector Postgres, kill-switch, api-nest build, run-qa8-adversarial, run-qa8 --mode full, verifier, and 90-day artifact. Existing QA0-QA6 jobs/matrix/case bodies are unchanged.',qa0_qa6_semantics_changed:false,checks:{command_changes:false,artifact_upload_changes:false,env_permission_changes:false,pass_fail_semantics_changes:false}},
+            affected_qa_suites:['QA8'],
+            unaffected_completed_suites:['QA0','QA1','QA2','QA3','QA4','QA5','QA6','QA7'],
+            baseline_id:b.id,
+            commit_sha_or_pending:process.env.GITHUB_SHA,
+            timestamp:new Date().toISOString()
+          };
+          fs.writeFileSync('/tmp/qa8-l7.json',JSON.stringify(p,null,2)+'\n');
+          NODE
+          node tooling/engine-acceptance/amend-acceptance-workflow-hash.cjs --proposal /tmp/qa8-l7.json --dry-run
+          node tooling/engine-acceptance/amend-acceptance-workflow-hash.cjs --proposal /tmp/qa8-l7.json --apply
+          node tooling/engine-acceptance/selftest-workflow-amendment.cjs
+          node tooling/engine-acceptance/selftest-product-rebase.cjs
+          pnpm verify:engine-acceptance
+
+      - name: Persist exact amendment diff and remove one-shot
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected=(.github/workflows/engine-acceptance.yml governance/engine-acceptance/baseline.v1.json governance/engine-acceptance/workflow-amendments.v1.json tooling/engine-acceptance/run-qa8.cjs tooling/engine-acceptance/run-qa9.cjs)
+          mapfile -t got < <(git diff --name-only | sort)
+          mapfile -t want < <(printf '%s\n' "${expected[@]}" | sort)
+          test "${#got[@]}" -eq "${#want[@]}"
+          for i in "${!want[@]}"; do test "${got[$i]}" = "${want[$i]}"; done
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${expected[@]}"
+          git rm .github/workflows/rel-502-qa8-canonical-amend-once.yml
+          git diff --cached --check
+          remote_head="$(git ls-remote origin "refs/heads/${AIPO_BRANCH}" | awk '{print $1}')"
+          test "${remote_head}" = "${GITHUB_SHA}"
+          git commit -m "${AIPO_COMMIT_SUBJECT}"
+          git push origin "HEAD:${AIPO_BRANCH}"
