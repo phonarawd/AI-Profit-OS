@@ -77,78 +77,78 @@ jobs:
           anchor='\n  qa8-adversarial:\n'
           assert wf.count(anchor)==1
           job=r'''
-  # QA8 canonical standalone dispatch. Additive: QA0-QA6 jobs/matrix unchanged.
-  qa8-security-privacy:
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa8' }}
-    services:
-      postgres:
-        image: pgvector/pgvector:pg16
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: aipo_qa_synth
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres -d aipo_qa_synth"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 12
-    env:
-      TMPDIR: /tmp
-      PORT: 4000
-      AIPO_QA_PGHOST: 127.0.0.1
-      AIPO_QA_PGUSER: postgres
-      AIPO_QA_PGPASSWORD: postgres
-      AIPO_QA_PGDATABASE: aipo_qa_synth
-      AIPO_QA_PGPORT: "5432"
-      AIPO_QA_TARGET_ENV: ci
-      AIPO_QA_HOSTNAME: localhost
-      AIPO_QA_SYNTHETIC_NS: qa-synth-ci
-      AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa8-adversarial
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6
-        with:
-          version: 10.14.0
-      - uses: actions/setup-node@v6
-        with:
-          node-version: "22"
-          cache: "pnpm"
-      - name: Install
-        run: pnpm install --frozen-lockfile
-      - name: Verify current checkpoint
-        run: pnpm verify:engine-acceptance
-      - name: Kill-switch + isolated DB target
-        run: node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
-      - name: Build @aipo/api-nest
-        run: |
-          set -euo pipefail
-          pnpm --filter @aipo/api-nest build
-          test -f services/api-nest/dist/main.js
-      - name: Run QA8 booted-Nest adversarial HTTP
-        run: node tooling/engine-acceptance/run-qa8-adversarial.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
-      - name: Run canonical QA8 full
-        run: node tooling/engine-acceptance/run-qa8.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
-      - name: Verify post-QA8 checkpoint
-        run: pnpm verify:engine-acceptance
-      - name: Upload canonical QA8 formal evidence
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: engine-acceptance-QA8-formal
-          path: |
-            governance/engine-acceptance/qa8-result.v1.json
-            governance/engine-acceptance/evidence-manifest.v1.json
-            governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
-            governance/engine-acceptance/defects.v1.json
-            governance/engine-acceptance/coverage.v1.json
-            /tmp/aipo-harness/qa8-adversarial/
-          retention-days: 90
-          if-no-files-found: error
-'''
+            # QA8 canonical standalone dispatch. Additive: QA0-QA6 jobs/matrix unchanged.
+            qa8-security-privacy:
+              runs-on: ubuntu-latest
+              timeout-minutes: 40
+              if: ${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa8' }}
+              services:
+                postgres:
+                  image: pgvector/pgvector:pg16
+                  env:
+                    POSTGRES_USER: postgres
+                    POSTGRES_PASSWORD: postgres
+                    POSTGRES_DB: aipo_qa_synth
+                  ports:
+                    - 5432:5432
+                  options: >-
+                    --health-cmd "pg_isready -U postgres -d aipo_qa_synth"
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 12
+              env:
+                TMPDIR: /tmp
+                PORT: 4000
+                AIPO_QA_PGHOST: 127.0.0.1
+                AIPO_QA_PGUSER: postgres
+                AIPO_QA_PGPASSWORD: postgres
+                AIPO_QA_PGDATABASE: aipo_qa_synth
+                AIPO_QA_PGPORT: "5432"
+                AIPO_QA_TARGET_ENV: ci
+                AIPO_QA_HOSTNAME: localhost
+                AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+                AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa8-adversarial
+              steps:
+                - uses: actions/checkout@v6
+                - uses: pnpm/action-setup@v6
+                  with:
+                    version: 10.14.0
+                - uses: actions/setup-node@v6
+                  with:
+                    node-version: "22"
+                    cache: "pnpm"
+                - name: Install
+                  run: pnpm install --frozen-lockfile
+                - name: Verify current checkpoint
+                  run: pnpm verify:engine-acceptance
+                - name: Kill-switch + isolated DB target
+                  run: node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+                - name: Build @aipo/api-nest
+                  run: |
+                    set -euo pipefail
+                    pnpm --filter @aipo/api-nest build
+                    test -f services/api-nest/dist/main.js
+                - name: Run QA8 booted-Nest adversarial HTTP
+                  run: node tooling/engine-acceptance/run-qa8-adversarial.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+                - name: Run canonical QA8 full
+                  run: node tooling/engine-acceptance/run-qa8.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+                - name: Verify post-QA8 checkpoint
+                  run: pnpm verify:engine-acceptance
+                - name: Upload canonical QA8 formal evidence
+                  if: ${{ always() }}
+                  uses: actions/upload-artifact@v4
+                  with:
+                    name: engine-acceptance-QA8-formal
+                    path: |
+                      governance/engine-acceptance/qa8-result.v1.json
+                      governance/engine-acceptance/evidence-manifest.v1.json
+                      governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
+                      governance/engine-acceptance/defects.v1.json
+                      governance/engine-acceptance/coverage.v1.json
+                      /tmp/aipo-harness/qa8-adversarial/
+                    retention-days: 90
+                    if-no-files-found: error
+          '''
           wf=wf.replace(anchor,'\n'+job+anchor,1)
           wf_path.write_text(wf)
 
