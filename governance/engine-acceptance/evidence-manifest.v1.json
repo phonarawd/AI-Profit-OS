@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-8",
+  "qa_phase": "QA-9",
   "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-  "verdict": "ENGINE_QA_INCOMPLETE",
-  "verdict_reason": "QA8 COMPLETE - P0/P1=0 - mandatory suite QA9 report not yet issued",
+  "verdict": "ENGINE_ACCEPTED_FOR_UI",
+  "verdict_reason": "QA9 COMPLETE - all acceptance-contract L1 conditions met - ENGINE_ACCEPTED_FOR_UI",
   "evidence_integrity": "VALID",
-  "next": "QA9_ACCEPTANCE_REPORT",
+  "next": "03_ui_entry_unlocked",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -111,22 +111,12 @@
     },
     {
       "suite_id": "QA9",
-      "run_id": null,
+      "run_id": "qa9-acceptance-report-20260828",
       "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "checksum": null,
-      "completion_status": "NOT_STARTED",
-      "epoch_status": "STALE_AGGREGATION_FOR_CURRENT_EPOCH",
-      "aggregation_only": true,
-      "discovery_suite": false,
-      "current_epoch_authoritative": false,
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
-      "historical_run_id": "qa9-acceptance-report-20260824",
-      "historical_checksum": "e410ad596403ea8eef40bfb3e5d0fd3beb525fcb9b70d9cd4f76c906d76a9f00",
-      "historical_verdict": "ENGINE_ACCEPTED_FOR_UI",
+      "checksum": "a07ac19e71c173b0798af004fd5a27890577d8575b8e98e0e62a3ece14dfc087",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa9-result.v1.json",
-      "predecessor_result_preserved": true,
-      "rerun_after_current_epoch_discovery": true
+      "aggregation_only": true
     }
   ],
   "kill_switch": {
@@ -139,7 +129,8 @@
     "verified_before_qa5": true,
     "verified_before_qa6": true,
     "verified_before_qa7": true,
-    "verified_before_qa8": true
+    "verified_before_qa8": true,
+    "verified_before_qa9": true
   },
   "dual_dirty": {
     "working_tree_clean": true,

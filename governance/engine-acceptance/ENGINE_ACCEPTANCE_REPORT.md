@@ -1,12 +1,11 @@
 # ENGINE ACCEPTANCE REPORT
 
-> **QA phase:** QA-8 `qa8-security-privacy`
-> **Measured:** 2026-08-28T09:32:36.225Z
+> **QA phase:** QA-9 `qa9-acceptance-report` (FINAL aggregation / verdict issuance — not a new discovery suite)
+> **Measured:** 2026-08-28T09:42:12.385Z
 > **baseline_id:** `ea-baseline-cc627efc3ee2-defdfa5b6ac4`
-> **qa8_run_id:** `qa8-security-privacy-20260828`
-> **qa8_result_checksum:** `9ff9bbebc49f971fc5345f7903c06b9f655f619aee9ae51caccc1143fe33a7ef`
-> **mode:** `full`
-> **asvs_version:** `5.0.0` (subset - exhaustive_certification_claim=false)
+> **qa9_run_id:** `qa9-acceptance-report-20260828`
+> **qa9_result_checksum:** `a07ac19e71c173b0798af004fd5a27890577d8575b8e98e0e62a3ece14dfc087`
+> **aggregation_only:** `true` — consumes QA0-QA8 evidence exactly as recorded, invents no scenarios
 
 ## Status banner
 
@@ -22,71 +21,123 @@ QA5 = COMPLETE
 QA6 = COMPLETE
 QA7 = COMPLETE
 QA8 = COMPLETE
+QA9 = COMPLETE
 QA HARNESS TARGET = SAFE
-NEXT = QA9_ACCEPTANCE_REPORT
+NEXT = 03_ui_entry_unlocked
 PRODUCT MUTATION = 0
-EVAL_MUTATION = 0
-GRADER_MUTATION = 0
-03 UI = BLOCKED
-ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
+03 UI = UNLOCKED
+ENGINE_ACCEPTED_FOR_UI = ISSUED
+UI_UX_ENTRY_GATE = OPEN
 ```
 
-## Verdict (after QA-8)
+## FINAL_ACCEPTANCE_VERDICT
 
 | Field | Value |
 |---|---|
-| verdict | `ENGINE_QA_INCOMPLETE` |
-| reason | QA8 COMPLETE - P0/P1=0 - mandatory suite QA9 report not yet issued |
+| verdict | `ENGINE_ACCEPTED_FOR_UI` |
+| reason | QA9 COMPLETE - all acceptance-contract L1 conditions met - ENGINE_ACCEPTED_FOR_UI |
 | evidence_integrity | `VALID` |
 | baseline.valid | `true` |
 | working_tree_clean | `true` (fact only, not forced clean) |
 | protected_scope_clean | `true` |
-| defects.P0 / P1 / P2 / P3 | 0 / 0 / 0 / 0 |
-| critical_invariant.blocked (cumulative, QA4-QA6 + QA8) | 0 |
-| critical_invariant.skipped | 0 |
-| critical_invariant.uncovered | 0 |
-| mandatory suites COMPLETE | QA0..QA8 |
+| acceptance_scope.unchanged | `true` |
 
-**Prohibited state confirmed:** `ENGINE_ACCEPTED_FOR_UI` is **not issued** (P0 defect present and/or critical BLOCKED > 0).
+**Prohibited-state check:** `ENGINE_ACCEPTED_FOR_UI` is `ISSUED`. `UI_UX_ENTRY_GATE = OPEN`.
 
-## QA8 Security and Privacy World (ASVS 5.0.0 subset)
+## ACCEPTANCE_FORMULA_INPUTS
 
-| check_id | ASVS IDs | invariant | status |
-|---|---|---|---|
-| `QA8_ADMIN_BOUNDARY` | v5.0.0-8.2.1, v5.0.0-8.4.2 | `INV-ISOLATION-01` | `PASS` |
-| `QA8_USER_ISOLATION_SHARED_WITH_QA2` | v5.0.0-8.2.2, v5.0.0-8.3.1 | `INV-ISOLATION-01` | `PASS` |
-| `QA8_JWT_TOKEN_VALIDATION` | v5.0.0-9.1.1, v5.0.0-9.1.2, v5.0.0-9.2.1, v5.0.0-9.2.3 | `INV-ISOLATION-01` | `PASS` |
-| `QA8_PRIVACY_DELETE_ACCOUNT` | v5.0.0-14.2.7 | `INV-PRIVACY-01` | `PASS` |
-| `QA8_ERROR_DISCLOSURE_AND_LOGGING` | v5.0.0-16.5.1, v5.0.0-16.2.5 | `INV-PRIVACY-01` | `PASS` |
+| Input | Value |
+|---|---|
+| mandatory_suite.QA1..QA8.status == COMPLETE | `true` |
+| critical_invariant.blocked | `0` |
+| critical_invariant.skipped | `0` |
+| critical_invariant.uncovered | `0` |
+| defects.P0 | `0` |
+| defects.P1 | `0` |
+| defects.P2 | `0` |
+| defects.P3 | `0` |
+| baseline.valid | `true` |
+| acceptance_scope.unchanged | `true` |
+| report.baseline_id == baseline.id | `true` |
+| report.evidence_integrity == VALID | `true` |
 
-### PASS - QA8_ADMIN_BOUNDARY
+### Mandatory suite status (QA1-QA8)
 
-25 admin controllers scanned, 0 unguarded (static @UseGuards scan). Dynamic Nest+HTTP adversarial round-trip (tooling/verify/admin-boundary.cjs) PASS: PASS - missing admin signing secret -> 401 (admin routes stay closed) (status=401) | [admin-guard.selftest] ALL PASS — real Nest HTTP admin boundary verified (25 checks) | [verify:admin-boundary] PASS (25 admin controllers · 115 routes classified · global APP_GUARD · real Nest HTTP adversarial round-trip)
+| suite | completion_status |
+|---|---|
+| `QA1` | `COMPLETE` |
+| `QA2` | `COMPLETE` |
+| `QA3` | `COMPLETE` |
+| `QA4` | `COMPLETE` |
+| `QA5` | `COMPLETE` |
+| `QA6` | `COMPLETE` |
+| `QA7` | `COMPLETE` |
+| `QA8` | `COMPLETE` |
 
-### PASS - QA8_PRIVACY_DELETE_ACCOUNT
+## P0_SECURITY_FINDINGS (must remain visible — not buried in defects.v1.json only)
 
-delete_mode=purge_and_tombstone; purge_table_count=26; sessions_purged=true; KYC retention (§42.2.1) excluded from this finding. Dynamic proof (run-qa8-adversarial.cjs privacy_delete (isolated CI Postgres + booted Nest)): tombstone=true purge=true retain=true control_user_unaffected=true invalid_confirm_no_mutation=true.
+- (none currently recorded)
 
-### PASS - QA8_USER_ISOLATION_SHARED_WITH_QA2, QA8_JWT_TOKEN_VALIDATION, QA8_ERROR_DISCLOSURE_AND_LOGGING
+## OTHER_DEFECTS
 
-### PASS - SEC-DYNAMIC-ADVERSARIAL-01
+- (none currently recorded)
 
-Real adversarial HTTP evidence against a booted api-nest instance (isolated CI Postgres). No findings.
+## REMAINING_BLOCKED (critical_invariant.blocked cumulative = 0)
 
-This QA8 run is discovery/aggregation only - any current or future FAIL finding is recorded honestly and is not repaired in this wave.
+No BLOCKED critical_invariant entries currently recorded across QA4/QA5/QA6/QA8.
 
-## Performance World (k6, CI only heavy) - QA6 record retained
+### Performance World (k6, CI only heavy) — QA6 record retained
 
-QA6 record retained unchanged. suite status `PASS` - budget SPECIFIED (Human/PO ACK) -
-tags evaluated: `feed_read`, `participate`, `wallet_read`, `auth_profile` - threshold mechanism locked - numeric invention forbidden -
-heavy k6 CI only - artifact retention >= 90 days - aggregator if: always().
+QA6 record retained unchanged through QA7/QA8/QA9. suite status `PASS` — budget
+SPECIFIED (Human/PO ACK, perf-budget.v1.json V1) — k6 scenario-mix + tag threshold mechanism
+locked — numeric SLO invention forbidden — tags: `feed_read`:`PASS`, `participate`:`PASS`, `wallet_read`:`PASS`, `auth_profile`:`PASS` — heavy k6 remains CI
+only — artifact retention >= 90 days — aggregator `if: always()`.
 
-| tag | status | blocked_code |
-|---|---|---|
-| `feed_read` | `PASS` | `-` |
-| `participate` | `PASS` | `-` |
-| `wallet_read` | `PASS` | `-` |
-| `auth_profile` | `PASS` | `-` |
+### Security and Privacy World (QA8, ASVS 5.0.0 subset)
+
+admin-boundary / user-isolation / JWT-token-validation / privacy-delete-account / error-disclosure -
+dynamic adversarial scenario(s): `SEC-DYNAMIC-ADVERSARIAL-01`:`PASS`.
+QA8 is a discovery suite: any finding it records in defects.v1.json is not repaired by QA8 or QA9
+themselves - repairs happen in a dedicated round (see REPAIR_ENTRY_POINT). QA9 remains aggregation
+only and invents no new ASVS scenarios.
+
+## REPAIR_ENTRY_POINT (governance state)
+
+No outstanding P0/P1 defects and no BLOCKED critical_invariant rows are currently recorded.
+
+1. **Protected product repair** (touches `services/api-nest/src/**` or other
+   `protected-scope.v1.json` roots) uses the already-governed pattern: change protected
+   bytes as an ordinary commit, then trigger `ENGINE_ACCEPTANCE_REBASE_V1`
+   (`tooling/engine-acceptance/rebase-acceptance-baseline.cjs`, Human/PO ACK required) to
+   open a new acceptance epoch, then re-run QA1-QA8 then QA9.
+2. **Harness-only repair** = `tooling/engine-acceptance/**` changes with zero product-byte
+   impact. Uses normal T0/T1 commit gates; no rebase needed since protected scope is
+   untouched.
+3. **Governance-only repair** = `governance/engine-acceptance/**` bookkeeping.
+4. **Workflow L7 amendment** = `.github/workflows/engine-acceptance.yml` change under
+   `POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1` (Human/PO ACK, exact-diff QA0-QA6
+   semantics-unchanged proof).
+5. **Performance budget Human/PO approval** = QA6's numeric p95/error-rate budget can only
+   exist once Human/PO supplies it; `perf-budget.v1.json`'s `numeric_invention_forbidden`
+   lock means the harness cannot self-supply these.
+6. **L8 `ENGINE_ACCEPTANCE_REBASE_V1`** = required for any protected-product mutation
+   (`services/api-nest/src/**`) needed to clear a remaining P0/P1/BLOCKED item.
+
+## REBASE_GOVERNANCE_GAP — repaired as `ENGINE_ACCEPTANCE_REBASE_POLICY_V2`
+
+Human/PO ACK APPROVED the policy-versioned repair (`amendment_id=rebase-policy-qa8-qa9-topology-20260814`,
+codename `L8_REBASE_GOVERNANCE_GAP_REPAIR`). Historical V1 approvals remain valid; future rebases use V2:
+
+- discovery invalidate/rerun includes **QA8** (STALE + historical provenance + washing)
+- **QA9** is aggregation-only: `stale_aggregation_phases`, not a discovery suite; predecessor
+  QA9 verdict/report is not current-authoritative; aggregation reruns only after current-epoch
+  discovery evidence exists
+- V1 shape cannot authorize a new rebase
+- this repair created **no** new acceptance epoch and did **not** invalidate current evidence
+
+## RECOMMENDED_REPAIR_BATCH (planning only — product items not executed by QA9)
+
+No outstanding defects or BLOCKED critical_invariant rows are currently recorded — nothing queued here.
 
 ## Dual Dirty
 
@@ -94,8 +145,6 @@ heavy k6 CI only - artifact retention >= 90 days - aggregator if: always().
 - protected_scope_clean=`true`
 - forced clean / stash laundry = forbidden
 
-## Next
+## NEXT_CANONICAL_WAVE
 
-`QA9_ACCEPTANCE_REPORT` per the 02.5 plan file-serial order. This wave does not start
-QA9, does not repair the P0/P2 findings above, and does not issue
-`ENGINE_ACCEPTED_FOR_UI`.
+`03_ui_entry_unlocked` — verdict `ENGINE_ACCEPTED_FOR_UI` unlocks 03 UI. All acceptance-contract L1 conditions are met on this evidence.
