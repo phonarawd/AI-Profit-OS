@@ -6,7 +6,8 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const { ROOT } = require("./lib/hash-scope.cjs");
+const crypto = require("node:crypto");
+const { ROOT, git, hashPathList } = require("./lib/hash-scope.cjs");
 const {
   DECISION_ID,
   INVALIDATED_SUITES,
@@ -31,6 +32,9 @@ const {
   stampEvalDatasetOnEntry,
   currentPolicy,
   isPendingRerun,
+  isCurrentEpochPreQa7Checkpoint,
+  verifyCurrentEpochPreQa7Checkpoint,
+  CURRENT_EPOCH_REBASE_SNAPSHOT,
 } = require("./lib/product-rebase.cjs");
 
 function readGov(name) {
@@ -104,6 +108,423 @@ function makeV1ShapeEntry(over = {}) {
     commit_sha_or_pending: "pending:v1-shape",
     qa7_complete: false,
     ...over,
+  };
+}
+
+function cloneJson(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function sealResult(obj) {
+  const result = { ...obj };
+  result.checksum = crypto
+    .createHash("sha256")
+    .update(`${JSON.stringify(result)}\n`, "utf8")
+    .digest("hex");
+  return result;
+}
+
+const FIX_CUR = "ea-baseline-new";
+const FIX_PRED = "ea-baseline-old";
+const FIX_WF = "66".repeat(32);
+const FIX_QA7_BYTES = '{"schema":"governance.engine-acceptance.qa7-result.v1","suite_id":"QA7"}';
+const FIX_QA8_BYTES = '{"schema":"governance.engine-acceptance.qa8-result.v1","suite_id":"QA8"}';
+const FIX_QA9_BYTES = '{"schema":"governance.engine-acceptance.qa9-result.v1","suite_id":"QA9"}';
+const FIX_CS = {
+  QA1: "c1".repeat(32),
+  QA2: "c2".repeat(32),
+  QA3: "c3".repeat(32),
+  QA4: "c4".repeat(32),
+  QA5: "c5".repeat(32),
+  QA6: "c6".repeat(32),
+};
+
+function makeCompleteResult(id, checksum, runId, extra) {
+  return {
+    suite_id: id,
+    completion_status: "COMPLETE",
+    baseline_id: FIX_CUR,
+    checksum,
+    run_id: runId,
+    ...(extra || {}),
+  };
+}
+
+function makeCheckpointCtx(over) {
+  const historicalQa7 = sealResult({
+    schema: "governance.engine-acceptance.qa7-result.v1",
+    suite_id: "QA7",
+    completion_status: "COMPLETE",
+    qa7_completion_status: "COMPLETE",
+    baseline_id: FIX_PRED,
+    formal_actions_evidence: true,
+    local_validation_only: false,
+    engine_accepted_for_ui: "NOT_ISSUED",
+    ui_ux_entry_gate: "CLOSED",
+    next: "QA8_SECURITY_PRIVACY",
+    run_id: "32713082605",
+    actions: {
+      run_id: "32713082605",
+      workflow: "engine-acceptance",
+      event: "workflow_dispatch",
+      qa_phase: "qa7",
+      conclusion: "success",
+    },
+  });
+  const historicalQa8 = sealResult({
+    schema: "governance.engine-acceptance.qa8-result.v1",
+    suite_id: "QA8",
+    completion_status: "COMPLETE",
+    baseline_id: FIX_PRED,
+    run_id: "qa8-hist",
+    asvs_version: "5.0.0",
+    exhaustive_certification_claim: false,
+    kill_switch: { verified_before_checks: true },
+    product_mutation: 0,
+    kpi_forbidden: true,
+    mock_pass_forbidden: true,
+    mode: "full",
+    next: "QA9_ACCEPTANCE_REPORT",
+    checks: {
+      security_privacy_world: {
+        checks: [
+          { check_id: "QA8_ADMIN_BOUNDARY" },
+          { check_id: "QA8_USER_ISOLATION_SHARED_WITH_QA2" },
+          { check_id: "QA8_JWT_TOKEN_VALIDATION" },
+          { check_id: "QA8_PRIVACY_DELETE_ACCOUNT" },
+          { check_id: "QA8_ERROR_DISCLOSURE_AND_LOGGING" },
+        ],
+      },
+    },
+    critical_invariant_cumulative: { blocked: 0, skipped: 0, uncovered: 0, failed: 0 },
+  });
+  const historicalQa9 = sealResult({
+    schema: "governance.engine-acceptance.qa9-result.v1",
+    suite_id: "QA9",
+    completion_status: "COMPLETE",
+    baseline_id: FIX_PRED,
+    run_id: "qa9-hist",
+    aggregation_only: true,
+    discovery_suite: false,
+    kill_switch: { verified_before_checks: true },
+    product_mutation: 0,
+    kpi_forbidden: true,
+    mock_pass_forbidden: true,
+    verdict: "ENGINE_ACCEPTED_FOR_UI",
+    engine_accepted_for_ui: "ISSUED",
+    ui_ux_entry_gate: "OPEN",
+    formula_inputs: {
+      defects_P0: 0,
+      defects_P1: 0,
+      mandatory_suite_complete: true,
+      critical_invariant_blocked: 0,
+      critical_invariant_skipped: 0,
+      critical_invariant_uncovered: 0,
+      baseline_valid: true,
+      acceptance_scope_unchanged: true,
+      report_baseline_id_match: true,
+      evidence_integrity_valid: true,
+    },
+  });
+  const tip = makeValidEntry({
+    predecessor_baseline_id: FIX_PRED,
+    new_baseline_id: FIX_CUR,
+    predecessor_suite_checksums: {
+      QA1: "old1",
+      QA2: "old2",
+      QA3: "old3",
+      QA4: "old4",
+      QA5: "old5",
+      QA6: "old6",
+      QA8: historicalQa8.checksum,
+      QA9: historicalQa9.checksum,
+    },
+  });
+  const ctx = {
+    baseline: {
+      id: FIX_CUR,
+      valid: true,
+      protected_scope_clean: true,
+      acceptance_workflow_hash: FIX_WF,
+      prompt_hash: "22".repeat(32),
+      eval_dataset_hash: "55".repeat(32),
+    },
+    evidence: {
+      baseline_id: FIX_CUR,
+      qa_phase: "QA-6",
+      next: "QA7_AI_EVAL",
+      verdict: "ENGINE_QA_INCOMPLETE",
+      engine_accepted_for_ui: null,
+      ui_ux_entry_gate: null,
+      evidence_integrity: "VALID",
+      critical_invariant: { blocked: 0, skipped: 0, uncovered: 0, failed: 0 },
+      kill_switch: {
+        verified_before_qa3: true,
+        verified_before_qa4: true,
+        verified_before_qa5: true,
+        verified_before_qa6: true,
+      },
+      current_epoch: {
+        decision_id: DECISION_ID,
+        rebase_id: tip.rebase_id,
+        baseline_id: FIX_CUR,
+        predecessor_baseline_id: FIX_PRED,
+        rebase_policy_version: POLICY_V2_ID,
+        qa1_qa6_status: CURRENT_EPOCH_REBASE_SNAPSHOT.qa1_qa6_status,
+        qa8_status: CURRENT_EPOCH_REBASE_SNAPSHOT.qa8_status,
+        qa9_status: CURRENT_EPOCH_REBASE_SNAPSHOT.qa9_status,
+      },
+      suites: [
+        {
+          suite_id: "QA0",
+          completion_status: "COMPLETE",
+          baseline_id: FIX_CUR,
+          run_id: "qa0",
+          checksum: "qa0c",
+        },
+        { suite_id: "QA1", completion_status: "COMPLETE", baseline_id: FIX_CUR, run_id: "r1", checksum: FIX_CS.QA1 },
+        { suite_id: "QA2", completion_status: "COMPLETE", baseline_id: FIX_CUR, run_id: "r2", checksum: FIX_CS.QA2 },
+        { suite_id: "QA3", completion_status: "COMPLETE", baseline_id: FIX_CUR, run_id: "r3", checksum: FIX_CS.QA3 },
+        { suite_id: "QA4", completion_status: "COMPLETE", baseline_id: FIX_CUR, run_id: "r4", checksum: FIX_CS.QA4 },
+        { suite_id: "QA5", completion_status: "COMPLETE", baseline_id: FIX_CUR, run_id: "r5", checksum: FIX_CS.QA5 },
+        { suite_id: "QA6", completion_status: "COMPLETE", baseline_id: FIX_CUR, run_id: "r6", checksum: FIX_CS.QA6 },
+        {
+          suite_id: "QA7",
+          completion_status: "NOT_STARTED",
+          baseline_id: FIX_CUR,
+          run_id: null,
+          checksum: null,
+          predecessor_baseline_id: FIX_PRED,
+        },
+        {
+          suite_id: "QA8",
+          completion_status: "NOT_STARTED",
+          baseline_id: FIX_CUR,
+          run_id: null,
+          checksum: null,
+          epoch_status: "STALE_FOR_CURRENT_EPOCH",
+          predecessor_result_preserved: true,
+          historical_completion_status: "COMPLETE",
+          historical_baseline_id: FIX_PRED,
+          historical_run_id: "qa8-hist",
+          historical_checksum: historicalQa8.checksum,
+        },
+        {
+          suite_id: "QA9",
+          completion_status: "NOT_STARTED",
+          baseline_id: FIX_CUR,
+          run_id: null,
+          checksum: null,
+          epoch_status: "STALE_AGGREGATION_FOR_CURRENT_EPOCH",
+          aggregation_only: true,
+          discovery_suite: false,
+          current_epoch_authoritative: false,
+          predecessor_result_preserved: true,
+          historical_completion_status: "COMPLETE",
+          historical_baseline_id: FIX_PRED,
+          historical_run_id: "qa9-hist",
+          historical_checksum: historicalQa9.checksum,
+          historical_verdict: "ENGINE_ACCEPTED_FOR_UI",
+        },
+      ],
+    },
+    rebaseLedger: {
+      schema: "governance.engine-acceptance.product-rebases.v1",
+      decision_id: DECISION_ID,
+      rebase_policy: { current_version: POLICY_V2_ID },
+      rebases: [tip],
+    },
+    amendmentLedger: {
+      schema: "governance.engine-acceptance.workflow-amendments.v1",
+      decision_id: "POST_QA0_CONTROLLED_WORKFLOW_AMENDMENT_V1",
+      baseline_id: FIX_PRED,
+      frozen_at_qa0: {
+        acceptance_workflow_hash: "aa".repeat(32),
+        prompt_hash: "11".repeat(32),
+        eval_dataset_hash: "55".repeat(32),
+      },
+      policies: {
+        baseline_id: "STABLE",
+        prompt_hash: "IMMUTABLE",
+        eval_dataset_hash: "IMMUTABLE",
+        acceptance_workflow_hash: "CONTROLLED_AMENDMENT_ONLY",
+      },
+      amendments: [
+        {
+          amendment_id: "fixture-qa7-obs",
+          reason: "fixture",
+          human_po_ack: { by: "Human/PO", at: "2026-08-28T00:00:00.000Z", statement: "ACK APPROVED fixture" },
+          old_acceptance_workflow_hash: "aa".repeat(32),
+          new_acceptance_workflow_hash: FIX_WF,
+          workflow_diff_scope: {
+            files: [".github/workflows/engine-acceptance.yml"],
+            exact_diff_summary: "fixture",
+            qa0_qa6_semantics_changed: false,
+            checks: {
+              command_changes: false,
+              artifact_upload_changes: false,
+              env_permission_changes: false,
+              pass_fail_semantics_changes: false,
+            },
+          },
+          affected_qa_suites: ["QA7"],
+          unaffected_completed_suites: ["QA0", "QA1", "QA2", "QA3", "QA4", "QA5", "QA6"],
+          baseline_id: FIX_CUR,
+          commit_sha_or_pending: "pending",
+          timestamp: "2026-08-28T00:00:00.000Z",
+        },
+      ],
+    },
+    defects: { counts: { P0: 0, P1: 0 } },
+    results: {
+      QA1: makeCompleteResult("QA1", FIX_CS.QA1, "r1"),
+      QA2: makeCompleteResult("QA2", FIX_CS.QA2, "r2"),
+      QA3: makeCompleteResult("QA3", FIX_CS.QA3, "r3"),
+      QA4: makeCompleteResult("QA4", FIX_CS.QA4, "r4"),
+      QA5: makeCompleteResult("QA5", FIX_CS.QA5, "r5"),
+      QA6: makeCompleteResult("QA6", FIX_CS.QA6, "r6", {
+        critical_invariant_cumulative: { blocked: 0, skipped: 0, uncovered: 0, failed: 0 },
+      }),
+      QA7: historicalQa7,
+      QA8: historicalQa8,
+      QA9: historicalQa9,
+    },
+    liveWorkflowHash: FIX_WF,
+    headQa7Bytes: FIX_QA7_BYTES,
+    liveQa7Bytes: FIX_QA7_BYTES,
+    qa7ResultDirty: false,
+    headQa8Bytes: FIX_QA8_BYTES,
+    liveQa8Bytes: FIX_QA8_BYTES,
+    qa8ResultDirty: false,
+    headQa9Bytes: FIX_QA9_BYTES,
+    liveQa9Bytes: FIX_QA9_BYTES,
+    qa9ResultDirty: false,
+  };
+  return over ? Object.assign(ctx, over) : ctx;
+}
+
+function suiteIn(ctx, id) {
+  return ctx.evidence.suites.find((s) => s.suite_id === id);
+}
+
+function patched(ctx, fn) {
+  const copy = cloneJson(ctx);
+  fn(copy);
+  return copy;
+}
+
+function expectCheckpointFail(name, ctx, needle, check) {
+  const f = [];
+  const pred = isCurrentEpochPreQa7Checkpoint(ctx);
+  verifyCurrentEpochPreQa7Checkpoint(ctx, f);
+  check(
+    name,
+    pred === false && f.some((x) => needle.test(x)),
+    `predicate=${pred} fails=${f.join("; ")}`,
+  );
+}
+
+function existingFinalQa9ChecksumBindingHolds(ctx) {
+  for (const id of ["QA7", "QA8", "QA9"]) {
+    const s = ctx.evidence.suites.find((x) => x.suite_id === id);
+    const r = ctx.results[id];
+    if (!s || !r) return false;
+    if (s.checksum !== r.checksum) return false;
+    if (String(s.run_id) !== String(r.run_id)) return false;
+  }
+  return true;
+}
+
+function existingFinalQa9FormulaAllowsAccepted(ctx) {
+  const p0p1 = (ctx.defects.counts.P0 || 0) + (ctx.defects.counts.P1 || 0);
+  if (p0p1 > 0) return false;
+  const ci = ctx.evidence.critical_invariant || {};
+  if ((ci.blocked || 0) > 0 || (ci.skipped || 0) > 0 || (ci.uncovered || 0) > 0) return false;
+  const mandatory = ["QA1", "QA2", "QA3", "QA4", "QA5", "QA6", "QA7", "QA8"];
+  if (
+    !mandatory.every((id) => {
+      const s = ctx.evidence.suites.find((x) => x.suite_id === id);
+      return s && s.completion_status === "COMPLETE";
+    })
+  ) {
+    return false;
+  }
+  if (ctx.evidence.evidence_integrity !== "VALID") return false;
+  if (!ctx.baseline || ctx.baseline.valid !== true) return false;
+  return true;
+}
+
+function makeFinalQa9Ctx() {
+  const ctx = makeCheckpointCtx();
+  ctx.evidence.qa_phase = "QA-9";
+  ctx.evidence.next = "03_ui_entry_unlocked";
+  ctx.evidence.verdict = "ENGINE_ACCEPTED_FOR_UI";
+  for (const id of ["QA7", "QA8", "QA9"]) {
+    const s = suiteIn(ctx, id);
+    s.completion_status = "COMPLETE";
+    s.run_id = `cur-${id.toLowerCase()}`;
+    s.checksum = `cur-${id.toLowerCase()}-cs`;
+    s.baseline_id = FIX_CUR;
+  }
+  ctx.results.QA7 = {
+    ...ctx.results.QA7,
+    baseline_id: FIX_CUR,
+    run_id: "cur-qa7",
+    checksum: "cur-qa7-cs",
+  };
+  ctx.results.QA8 = {
+    ...ctx.results.QA8,
+    baseline_id: FIX_CUR,
+    run_id: "cur-qa8",
+    checksum: "cur-qa8-cs",
+  };
+  ctx.results.QA9 = {
+    ...ctx.results.QA9,
+    baseline_id: FIX_CUR,
+    run_id: "cur-qa9",
+    checksum: "cur-qa9-cs",
+    verdict: "ENGINE_ACCEPTED_FOR_UI",
+  };
+  return ctx;
+}
+
+function loadLiveCheckpointCtx() {
+  const scope = readGov("protected-scope.v1.json");
+  const resultBytes = {};
+  for (const id of ["QA7", "QA8", "QA9"]) {
+    const lower = id.toLowerCase();
+    const title = `${id[0]}${id.slice(1).toLowerCase()}`;
+    const rel = `governance/engine-acceptance/${lower}-result.v1.json`;
+    try {
+      resultBytes[`head${title}Bytes`] = git(`git show HEAD:${rel}`).replace(/\r\n/g, "\n").trim();
+    } catch {
+      resultBytes[`head${title}Bytes`] = null;
+    }
+    resultBytes[`live${title}Bytes`] = fs
+      .readFileSync(path.join(ROOT, rel), "utf8")
+      .replace(/\r\n/g, "\n")
+      .trim();
+    resultBytes[`${lower}ResultDirty`] = false;
+  }
+  return {
+    baseline: readGov("baseline.v1.json"),
+    evidence: readGov("evidence-manifest.v1.json"),
+    rebaseLedger: readGov("product-rebases.v1.json"),
+    amendmentLedger: readGov("workflow-amendments.v1.json"),
+    defects: readGov("defects.v1.json"),
+    results: {
+      QA1: readGov("qa1-result.v1.json"),
+      QA2: readGov("qa2-result.v1.json"),
+      QA3: readGov("qa3-result.v1.json"),
+      QA4: readGov("qa4-result.v1.json"),
+      QA5: readGov("qa5-result.v1.json"),
+      QA6: readGov("qa6-result.v1.json"),
+      QA7: readGov("qa7-result.v1.json"),
+      QA8: readGov("qa8-result.v1.json"),
+      QA9: readGov("qa9-result.v1.json"),
+    },
+    liveWorkflowHash: hashPathList(scope.aggregateHashes.acceptance_workflow_hash, scope),
+    ...resultBytes,
   };
 }
 
@@ -749,6 +1170,21 @@ function run() {
       "pending_rebuild_true_while_qa1_stale",
       isPendingRerun({ id: "ea-baseline-new" }, evidence, { rebases: [entry] }) === true,
     );
+    check(
+      "pending_rerun_is_not_current_epoch_pre_qa7",
+      isCurrentEpochPreQa7Checkpoint({
+        baseline: { id: "ea-baseline-new", valid: true, protected_scope_clean: true },
+        evidence,
+        rebaseLedger: { rebases: [entry], rebase_policy: { current_version: POLICY_V2_ID } },
+        amendmentLedger: null,
+        defects: { counts: { P0: 0, P1: 0 } },
+        results: {},
+        liveWorkflowHash: "x",
+        headQa7Bytes: "a",
+        liveQa7Bytes: "a",
+        qa7ResultDirty: false,
+      }) === false,
+    );
   }
 
   {
@@ -820,6 +1256,388 @@ function run() {
       "v1_tip_cannot_bind_new_baseline",
       f.some((x) => /old policy cannot authorize/i.test(x) || /invalidation ledger/i.test(x)),
       f.join("; "),
+    );
+  }
+
+  {
+    const live = loadLiveCheckpointCtx();
+    const f = [];
+    verifyCurrentEpochPreQa7Checkpoint(live, f);
+    check(
+      "live_persisted_qa6_complete_qa7_pending_predicate_true",
+      isCurrentEpochPreQa7Checkpoint(live) === true && f.length === 0,
+      f.join("; "),
+    );
+    check(
+      "current_epoch_snapshot_is_rebase_time_not_live_authority",
+      live.evidence.current_epoch.qa1_qa6_status === CURRENT_EPOCH_REBASE_SNAPSHOT.qa1_qa6_status &&
+        live.evidence.suites.find((s) => s.suite_id === "QA1").completion_status === "COMPLETE",
+    );
+  }
+
+  {
+    const ctx = makeCheckpointCtx();
+    const f = [];
+    verifyCurrentEpochPreQa7Checkpoint(ctx, f);
+    check(
+      "fixture_qa6_complete_qa7_pending_true",
+      isCurrentEpochPreQa7Checkpoint(ctx) === true && f.length === 0,
+      f.join("; "),
+    );
+    check(
+      "historical_qa9_accepted_preserved_as_history_only",
+      ctx.results.QA9.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
+        ctx.results.QA9.engine_accepted_for_ui === "ISSUED" &&
+        ctx.evidence.verdict === "ENGINE_QA_INCOMPLETE" &&
+        suiteIn(ctx, "QA9").current_epoch_authoritative === false,
+    );
+    const explicitClosed = patched(ctx, (c) => {
+      c.evidence.ui_ux_entry_gate = "CLOSED";
+      c.evidence.engine_accepted_for_ui = "NOT_ISSUED";
+    });
+    check(
+      "current_gate_explicit_closed_not_issued_true",
+      isCurrentEpochPreQa7Checkpoint(explicitClosed) === true,
+    );
+    const qa8Stale = patched(ctx, (c) => {
+      suiteIn(c, "QA8").completion_status = "STALE";
+    });
+    const f8 = [];
+    verifyCurrentEpochPreQa7Checkpoint(qa8Stale, f8);
+    check(
+      "qa8_exact_stale_form_true",
+      isCurrentEpochPreQa7Checkpoint(qa8Stale) === true && f8.length === 0,
+      f8.join("; "),
+    );
+    check(
+      "qa8_not_started_stale_discovery_true",
+      isCurrentEpochPreQa7Checkpoint(ctx) === true,
+    );
+  }
+
+  {
+    const ephQa6 = patched(makeCheckpointCtx(), (c) => {
+      c.results.QA7.baseline_id = FIX_CUR;
+    });
+    check("ephemeral_qa6_like_predicate_false", isCurrentEpochPreQa7Checkpoint(ephQa6) === false);
+    const ephPreQa9 = patched(makeCheckpointCtx(), (c) => {
+      c.evidence.qa_phase = "QA-8";
+      c.evidence.next = "QA9_ACCEPTANCE_REPORT";
+    });
+    check("ephemeral_pre_qa9_like_predicate_false", isCurrentEpochPreQa7Checkpoint(ephPreQa9) === false);
+    const finalQa9 = makeFinalQa9Ctx();
+    check("final_qa9_complete_predicate_false", isCurrentEpochPreQa7Checkpoint(finalQa9) === false);
+    check("final_qa9_existing_checksum_path_holds", existingFinalQa9ChecksumBindingHolds(finalQa9) === true);
+    check("final_qa9_existing_formula_path_holds", existingFinalQa9FormulaAllowsAccepted(finalQa9) === true);
+    const mismatch = patched(finalQa9, (c) => {
+      suiteIn(c, "QA7").checksum = "wrong-final";
+    });
+    check("final_qa9_checksum_mismatch_existing_branch_fails", existingFinalQa9ChecksumBindingHolds(mismatch) === false);
+    check("final_qa9_checksum_mismatch_still_not_checkpoint", isCurrentEpochPreQa7Checkpoint(mismatch) === false);
+    const unsatisfied = patched(finalQa9, (c) => {
+      suiteIn(c, "QA7").completion_status = "NOT_STARTED";
+    });
+    check(
+      "final_qa9_accepted_without_formula_existing_branch_fails",
+      existingFinalQa9FormulaAllowsAccepted(unsatisfied) === false &&
+        isCurrentEpochPreQa7Checkpoint(unsatisfied) === false,
+    );
+  }
+
+  {
+    const base = makeCheckpointCtx();
+    expectCheckpointFail("neg_wrong_qa_phase", patched(base, (c) => { c.evidence.qa_phase = "QA-9"; }), /qa_phase/, check);
+    expectCheckpointFail("neg_wrong_next", patched(base, (c) => { c.evidence.next = "QA9_ACCEPTANCE_REPORT"; }), /next/, check);
+    expectCheckpointFail(
+      "neg_current_verdict_accepted",
+      patched(base, (c) => { c.evidence.verdict = "ENGINE_ACCEPTED_FOR_UI"; }),
+      /verdict|ACCEPTED/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_current_ui_gate_open",
+      patched(base, (c) => { c.evidence.ui_ux_entry_gate = "OPEN"; }),
+      /UI gate/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_current_ui_gate_arbitrary_value",
+      patched(base, (c) => { c.evidence.ui_ux_entry_gate = "CORRUPT"; }),
+      /UI gate.*absent\/null or CLOSED/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_current_engine_accepted_arbitrary_value",
+      patched(base, (c) => { c.evidence.engine_accepted_for_ui = "CORRUPT"; }),
+      /ENGINE_ACCEPTED_FOR_UI.*absent\/null or NOT_ISSUED/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_p0p1_zero_but_not_accepted_verdict",
+      patched(base, (c) => { c.evidence.verdict = "ENGINE_NOT_ACCEPTED"; }),
+      /ENGINE_QA_INCOMPLETE/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa3_wrong_baseline",
+      patched(base, (c) => { suiteIn(c, "QA3").baseline_id = FIX_PRED; }),
+      /QA3.*baseline/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa2_missing_run_id",
+      patched(base, (c) => { suiteIn(c, "QA2").run_id = null; }),
+      /QA2 suite.run_id/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa4_missing_checksum",
+      patched(base, (c) => { suiteIn(c, "QA4").checksum = null; }),
+      /QA4 suite.checksum/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa5_result_checksum_mismatch",
+      patched(base, (c) => { c.results.QA5.checksum = "nope"; }),
+      /QA5 result checksum/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa7_not_started_with_run_id",
+      patched(base, (c) => { suiteIn(c, "QA7").run_id = "copied"; }),
+      /run_id=null/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa7_not_started_with_checksum",
+      patched(base, (c) => { suiteIn(c, "QA7").checksum = "copied"; }),
+      /checksum=null/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa7_predecessor_copied_to_current",
+      patched(base, (c) => {
+        suiteIn(c, "QA7").run_id = c.results.QA7.run_id;
+        suiteIn(c, "QA7").checksum = c.results.QA7.checksum;
+      }),
+      /copy predecessor QA7/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa7_complete_without_formal_current",
+      patched(base, (c) => { suiteIn(c, "QA7").completion_status = "COMPLETE"; }),
+      /NOT_STARTED|formal current/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa7_result_baseline_current",
+      patched(base, (c) => { c.results.QA7.baseline_id = FIX_CUR; }),
+      /predecessor baseline, not current/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa7_result_differs_from_head",
+      patched(base, (c) => { c.liveQa7Bytes = "dirty-bytes"; }),
+      /HEAD:governance\/engine-acceptance\/qa7-result/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_latest_amendment_missing_qa7_affected",
+      patched(base, (c) => { c.amendmentLedger.amendments[0].affected_qa_suites = ["QA8"]; }),
+      /affected_qa_suites/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_latest_amendment_qa7_unaffected",
+      patched(base, (c) => { c.amendmentLedger.amendments[0].unaffected_completed_suites.push("QA7"); }),
+      /unaffected_completed/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa8_predecessor_preservation_removed",
+      patched(base, (c) => { delete suiteIn(c, "QA8").predecessor_result_preserved; }),
+      /predecessor_result_preserved/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa8_historical_checksum_mismatch",
+      patched(base, (c) => { suiteIn(c, "QA8").historical_checksum = "wrong8"; }),
+      /QA8 historical_checksum/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa8_schema_corrupt",
+      patched(base, (c) => { c.results.QA8.schema = "CORRUPT"; }),
+      /qa8-result schema/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa8_suite_id_corrupt",
+      patched(base, (c) => { c.results.QA8.suite_id = "CORRUPT"; }),
+      /qa8-result\.suite_id/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa8_completion_corrupt",
+      patched(base, (c) => { c.results.QA8.completion_status = "CORRUPT"; }),
+      /qa8-result\.completion_status/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa8_historical_run_id_mismatch",
+      patched(base, (c) => { c.results.QA8.run_id = "CORRUPT"; }),
+      /qa8-result\.run_id.*historical_run_id/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa8_result_self_checksum_mismatch",
+      patched(base, (c) => { c.results.QA8.audit_tamper = true; }),
+      /QA8 result self-checksum mismatch/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa8_current_baseline_mismatch",
+      patched(base, (c) => { suiteIn(c, "QA8").baseline_id = FIX_PRED; }),
+      /current QA8 suite\.baseline_id/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa8_historical_completion_missing",
+      patched(base, (c) => { delete suiteIn(c, "QA8").historical_completion_status; }),
+      /QA8 historical_completion_status/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa8_result_differs_from_head",
+      patched(base, (c) => { c.liveQa8Bytes = "dirty-bytes"; }),
+      /HEAD:governance\/engine-acceptance\/qa8-result/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa9_stale_aggregation_marker_removed",
+      patched(base, (c) => { delete suiteIn(c, "QA9").epoch_status; }),
+      /STALE_AGGREGATION_FOR_CURRENT_EPOCH/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa9_current_epoch_authoritative_true",
+      patched(base, (c) => { suiteIn(c, "QA9").current_epoch_authoritative = true; }),
+      /current_epoch_authoritative/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa9_historical_verdict_missing",
+      patched(base, (c) => { delete suiteIn(c, "QA9").historical_verdict; }),
+      /historical_verdict/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa9_schema_corrupt",
+      patched(base, (c) => { c.results.QA9.schema = "CORRUPT"; }),
+      /qa9-result schema/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa9_suite_id_corrupt",
+      patched(base, (c) => { c.results.QA9.suite_id = "CORRUPT"; }),
+      /qa9-result\.suite_id/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa9_completion_corrupt",
+      patched(base, (c) => { c.results.QA9.completion_status = "CORRUPT"; }),
+      /qa9-result\.completion_status/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa9_historical_run_id_mismatch",
+      patched(base, (c) => { c.results.QA9.run_id = "CORRUPT"; }),
+      /qa9-result\.run_id.*historical_run_id/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa9_result_self_checksum_mismatch",
+      patched(base, (c) => { c.results.QA9.audit_tamper = true; }),
+      /QA9 result self-checksum mismatch/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa9_formula_missing",
+      patched(base, (c) => { delete c.results.QA9.formula_inputs; }),
+      /qa9-result\.formula_inputs required/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa9_formula_inconsistent_with_verdict",
+      patched(base, (c) => { c.results.QA9.formula_inputs.mandatory_suite_complete = false; }),
+      /verdict must match its own formula_inputs/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa9_current_baseline_mismatch",
+      patched(base, (c) => { suiteIn(c, "QA9").baseline_id = FIX_PRED; }),
+      /current QA9 suite\.baseline_id/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa9_historical_completion_missing",
+      patched(base, (c) => { delete suiteIn(c, "QA9").historical_completion_status; }),
+      /QA9 historical_completion_status/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa9_result_differs_from_head",
+      patched(base, (c) => { c.liveQa9Bytes = "dirty-bytes"; }),
+      /HEAD:governance\/engine-acceptance\/qa9-result/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_promote_historical_qa9_accepted",
+      patched(base, (c) => { c.evidence.verdict = "ENGINE_ACCEPTED_FOR_UI"; }),
+      /promote historical QA9 ACCEPTED|ENGINE_QA_INCOMPLETE/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_current_epoch_snapshot_deleted",
+      patched(base, (c) => { delete c.evidence.current_epoch.qa1_qa6_status; }),
+      /snapshot field must not be deleted/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_current_epoch_snapshot_mutated",
+      patched(base, (c) => { c.evidence.current_epoch.qa8_status = "COMPLETE"; }),
+      /rebase-time snapshot/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_amendment_hash_chain_break",
+      patched(base, (c) => { c.amendmentLedger.amendments[0].old_acceptance_workflow_hash = "ff".repeat(32); }),
+      /frozen_at_qa0|hash chain/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_baseline_workflow_hash_vs_ledger_tip",
+      patched(base, (c) => { c.baseline.acceptance_workflow_hash = "ee".repeat(32); }),
+      /amendment ledger tip|live canonical/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_baseline_workflow_hash_vs_live",
+      patched(base, (c) => { c.liveWorkflowHash = "dd".repeat(32); }),
+      /live canonical workflow hash/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_rebase_tip_not_bound_to_current",
+      patched(base, (c) => { c.rebaseLedger.rebases[0].new_baseline_id = "ea-baseline-other"; }),
+      /new_baseline_id must equal current/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_policy_not_v2",
+      patched(base, (c) => { c.rebaseLedger.rebases[0].rebase_policy_version = POLICY_V1_ID; }),
+      /ENGINE_ACCEPTANCE_REBASE_POLICY_V2/,
+      check,
     );
   }
 

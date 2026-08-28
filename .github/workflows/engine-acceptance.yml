@@ -332,6 +332,24 @@ jobs:
               *) kill "$pid" || true ;;
             esac
           fi
+      - name: Print QA7 filtered server diagnostics
+        if: ${{ always() }}
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          if [ ! -f /tmp/aipo-qa7-api.log ]; then
+            echo "qa7_server_diagnostic=log_not_found"
+            exit 0
+          fi
+
+          grep -E '"event":"http_5xx"|\[postgres\] background client error' \
+            /tmp/aipo-qa7-api.log \
+            | sed -E \
+                -e 's#(postgres(ql)?://)[^/@[:space:]]+:[^/@[:space:]]+@#\1[REDACTED]@#g' \
+                -e 's#([?&]key=)[^&[:space:]"]+#\1[REDACTED]#g' \
+                -e 's#([?&](token|access_token|api_key)=)[^&[:space:]"]+#\1[REDACTED]#gi' \
+            || true
 
   # Pre-rebase harness jobs (additive) — QA0-QA6 matrix bodies unchanged.
   # HARNESS_VALIDATION vs CURRENT_PRODUCT_SECURITY_VERDICT are separate.

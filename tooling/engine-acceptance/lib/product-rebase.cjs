@@ -13,7 +13,12 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const crypto = require("node:crypto");
 const { ROOT, readJson } = require("./hash-scope.cjs");
+const {
+  expectedWorkflowHash,
+  validateLedgerShape,
+} = require("./workflow-amendment.cjs");
 
 const DECISION_ID = "ENGINE_ACCEPTANCE_REBASE_V1";
 const LEDGER_REL = "governance/engine-acceptance/product-rebases.v1.json";
@@ -941,6 +946,658 @@ ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
 `;
 }
 
+const QA1_TO_QA6 = Object.freeze(["QA1", "QA2", "QA3", "QA4", "QA5", "QA6"]);
+
+/**
+ * evidence.current_epoch 의 qa1_qa6/qa8/qa9 status 는 live suite authority 가 아니다.
+ * rebase 시점 snapshot 이며, 값을 바꾸려면 별도 governance mutation 이 필요하다.
+ */
+const CURRENT_EPOCH_REBASE_SNAPSHOT = Object.freeze({
+  qa1_qa6_status: "STALE_PENDING_RERUN",
+  qa8_status: "STALE_PENDING_RERUN",
+  qa9_status: "STALE_AGGREGATION_PENDING_DISCOVERY",
+});
+
+function suiteOf(evidence, id) {
+  return ((evidence && evidence.suites) || []).find((s) => s.suite_id === id) || null;
+}
+
+function latestSameBaselineAmendment(amendmentLedger, baselineId) {
+  const amends =
+    amendmentLedger && Array.isArray(amendmentLedger.amendments)
+      ? amendmentLedger.amendments
+      : [];
+  const same = amends.filter((a) => a && a.baseline_id === baselineId);
+  return same.length ? same[same.length - 1] : null;
+}
+
+function canonicalResultChecksum(result) {
+  if (!result || typeof result !== "object") return null;
+  const payload = { ...result };
+  delete payload.checksum;
+  return crypto
+    .createHash("sha256")
+    .update(`${JSON.stringify(payload)}\n`, "utf8")
+    .digest("hex");
+}
+
+function verifyHistoricalResultBytes(ctx, id, fails) {
+  const lower = id.toLowerCase();
+  const title = `${id[0]}${id.slice(1).toLowerCase()}`;
+  if (ctx[`${lower}ResultDirty`] === true) {
+    fails.push(`${lower}-result.v1.json must not be dirty during this checkpoint`);
+  }
+  const head = ctx[`head${title}Bytes`];
+  const live = ctx[`live${title}Bytes`];
+  if (head == null || live == null) {
+    fails.push(`${lower}-result HEAD and live bytes are required`);
+  } else if (head !== live) {
+    fails.push(`${lower}-result live bytes must equal HEAD:governance/engine-acceptance/${lower}-result.v1.json`);
+  }
+}
+
+function verifyHistoricalResultChecksum(result, id, fails) {
+  if (!result || typeof result !== "object" || !result.checksum) {
+    fails.push(`historical ${id} result checksum required`);
+    return;
+  }
+  const expected = canonicalResultChecksum(result);
+  if (result.checksum !== expected) {
+    fails.push(`historical ${id} result self-checksum mismatch`);
+  }
+}
+
+function verifyHistoricalQa7Intrinsic(qa7Result, fails) {
+  if (qa7Result.schema !== "governance.engine-acceptance.qa7-result.v1") {
+    fails.push("historical qa7-result schema must be preserved");
+  }
+  if (qa7Result.suite_id !== "QA7") {
+    fails.push("historical qa7-result.suite_id must be QA7");
+  }
+  if (qa7Result.completion_status !== "COMPLETE" || qa7Result.qa7_completion_status !== "COMPLETE") {
+    fails.push("historical qa7-result completion fields must be COMPLETE");
+  }
+  if (qa7Result.formal_actions_evidence !== true || qa7Result.local_validation_only !== false) {
+    fails.push("historical qa7-result formal evidence shape must be preserved");
+  }
+  if (qa7Result.engine_accepted_for_ui !== "NOT_ISSUED" || qa7Result.ui_ux_entry_gate !== "CLOSED") {
+    fails.push("historical qa7-result must keep ENGINE_ACCEPTED_FOR_UI not issued and UI gate closed");
+  }
+  if (qa7Result.next !== "QA8_SECURITY_PRIVACY") {
+    fails.push("historical qa7-result.next must be QA8_SECURITY_PRIVACY");
+  }
+  if (!/^[0-9]+$/.test(String(qa7Result.run_id || ""))) {
+    fails.push("historical qa7-result.run_id must be a numeric Actions run id");
+  }
+  const actions = qa7Result.actions || {};
+  if (
+    String(actions.run_id) !== String(qa7Result.run_id) ||
+    actions.workflow !== "engine-acceptance" ||
+    actions.event !== "workflow_dispatch" ||
+    actions.qa_phase !== "qa7" ||
+    actions.conclusion !== "success"
+  ) {
+    fails.push("historical qa7-result Actions metadata must remain internally consistent");
+  }
+  verifyHistoricalResultChecksum(qa7Result, "QA7", fails);
+}
+
+function verifyHistoricalQa8Intrinsic(qa8Result, fails) {
+  if (qa8Result.schema !== "governance.engine-acceptance.qa8-result.v1") {
+    fails.push("historical qa8-result schema must be preserved");
+  }
+  if (qa8Result.suite_id !== "QA8") {
+    fails.push("historical qa8-result.suite_id must be QA8");
+  }
+  if (qa8Result.completion_status !== "COMPLETE") {
+    fails.push("historical qa8-result.completion_status must be COMPLETE");
+  }
+  if (qa8Result.asvs_version !== "5.0.0" || qa8Result.exhaustive_certification_claim !== false) {
+    fails.push("historical qa8-result must preserve its ASVS 5.0.0 subset shape");
+  }
+  if (!qa8Result.kill_switch || qa8Result.kill_switch.verified_before_checks !== true) {
+    fails.push("historical qa8-result kill switch evidence required");
+  }
+  if (qa8Result.product_mutation !== 0 || qa8Result.kpi_forbidden !== true || qa8Result.mock_pass_forbidden !== true) {
+    fails.push("historical qa8-result safety flags must be preserved");
+  }
+  if (!['tiny', 'full'].includes(qa8Result.mode) || qa8Result.next !== "QA9_ACCEPTANCE_REPORT") {
+    fails.push("historical qa8-result mode/next shape invalid");
+  }
+  const world = ((qa8Result.checks || {}).security_privacy_world || {});
+  if (!Array.isArray(world.checks) || world.checks.length < 5) {
+    fails.push("historical qa8-result security/privacy checks must remain auditable");
+  }
+  if (!qa8Result.critical_invariant_cumulative || typeof qa8Result.critical_invariant_cumulative.blocked !== "number") {
+    fails.push("historical qa8-result critical invariant cumulative required");
+  }
+  verifyHistoricalResultChecksum(qa8Result, "QA8", fails);
+}
+
+function historicalQa9ExpectedVerdict(formulaInputs) {
+  if (!formulaInputs || typeof formulaInputs !== "object") return null;
+  const p0p1 = (formulaInputs.defects_P0 || 0) + (formulaInputs.defects_P1 || 0);
+  if (p0p1 > 0) return "ENGINE_NOT_ACCEPTED";
+  if (
+    !formulaInputs.mandatory_suite_complete ||
+    (formulaInputs.critical_invariant_blocked || 0) > 0 ||
+    (formulaInputs.critical_invariant_skipped || 0) > 0 ||
+    (formulaInputs.critical_invariant_uncovered || 0) > 0 ||
+    !formulaInputs.baseline_valid ||
+    !formulaInputs.acceptance_scope_unchanged ||
+    !formulaInputs.report_baseline_id_match ||
+    !formulaInputs.evidence_integrity_valid
+  ) {
+    return "ENGINE_QA_INCOMPLETE";
+  }
+  return "ENGINE_ACCEPTED_FOR_UI";
+}
+
+function verifyHistoricalQa9Intrinsic(qa9Result, fails) {
+  if (qa9Result.schema !== "governance.engine-acceptance.qa9-result.v1") {
+    fails.push("historical qa9-result schema must be preserved");
+  }
+  if (qa9Result.suite_id !== "QA9") {
+    fails.push("historical qa9-result.suite_id must be QA9");
+  }
+  if (qa9Result.completion_status !== "COMPLETE") {
+    fails.push("historical qa9-result.completion_status must be COMPLETE");
+  }
+  if (qa9Result.aggregation_only !== true || qa9Result.discovery_suite !== false) {
+    fails.push("historical qa9-result must remain aggregation-only");
+  }
+  if (!qa9Result.kill_switch || qa9Result.kill_switch.verified_before_checks !== true) {
+    fails.push("historical qa9-result kill switch evidence required");
+  }
+  if (qa9Result.product_mutation !== 0 || qa9Result.kpi_forbidden !== true || qa9Result.mock_pass_forbidden !== true) {
+    fails.push("historical qa9-result safety flags must be preserved");
+  }
+  const allowedVerdicts = ["ENGINE_ACCEPTED_FOR_UI", "ENGINE_NOT_ACCEPTED", "ENGINE_QA_INCOMPLETE"];
+  if (!allowedVerdicts.includes(qa9Result.verdict)) {
+    fails.push("historical qa9-result verdict must use the locked 3-state values");
+  }
+  const expected = historicalQa9ExpectedVerdict(qa9Result.formula_inputs);
+  if (!expected) {
+    fails.push("historical qa9-result.formula_inputs required");
+  } else if (qa9Result.verdict !== expected) {
+    fails.push("historical qa9-result verdict must match its own formula_inputs");
+  }
+  if (qa9Result.verdict === "ENGINE_ACCEPTED_FOR_UI") {
+    if (qa9Result.engine_accepted_for_ui !== "ISSUED" || qa9Result.ui_ux_entry_gate !== "OPEN") {
+      fails.push("historical accepted QA9 result must remain internally ISSUED/OPEN");
+    }
+  } else if (qa9Result.engine_accepted_for_ui !== "NOT_ISSUED" || qa9Result.ui_ux_entry_gate !== "CLOSED") {
+    fails.push("historical non-accepted QA9 result must remain internally NOT_ISSUED/CLOSED");
+  }
+  verifyHistoricalResultChecksum(qa9Result, "QA9", fails);
+}
+
+function verifyPreQa7RebaseBinding(baseline, evidence, rebaseLedger, tip, fails) {
+  if (tip.new_baseline_id !== baseline.id) {
+    fails.push("rebase tip.new_baseline_id must equal current baseline.id");
+  }
+  if (evidence.baseline_id !== baseline.id) {
+    fails.push("evidence.baseline_id must equal current baseline.id");
+  }
+  if (!tip.predecessor_baseline_id) {
+    fails.push("rebase tip.predecessor_baseline_id required");
+  }
+  if (resolvePolicyId(tip) !== POLICY_V2_ID) {
+    fails.push(`rebase tip applied policy must be ${POLICY_V2_ID}`);
+  }
+  if (!rebaseLedger.rebase_policy || rebaseLedger.rebase_policy.current_version !== POLICY_V2_ID) {
+    fails.push(`rebase ledger applied policy must be ${POLICY_V2_ID}`);
+  }
+  if (tip.predecessor_baseline_id && tip.predecessor_baseline_id === baseline.id) {
+    fails.push("current baseline must differ from predecessor baseline");
+  }
+  if (baseline.valid !== true) {
+    fails.push("current-epoch pre-QA7 checkpoint requires baseline.valid=true");
+  }
+  if (baseline.protected_scope_clean !== true) {
+    fails.push("current-epoch pre-QA7 checkpoint requires baseline.protected_scope_clean=true");
+  }
+  if (baseline.valid !== baseline.protected_scope_clean) {
+    fails.push("baseline.valid must equal protected_scope_clean");
+  }
+}
+
+function verifyPreQa7Qa0ToQa6(baseline, evidence, results, fails) {
+  const qa0 = suiteOf(evidence, "QA0");
+  if (!qa0 || qa0.completion_status !== "COMPLETE") {
+    fails.push("QA0 must be COMPLETE on the current baseline");
+  } else if (qa0.baseline_id !== baseline.id) {
+    fails.push("QA0 suite.baseline_id must equal current baseline.id");
+  }
+  for (const id of QA1_TO_QA6) {
+    const s = suiteOf(evidence, id);
+    if (!s || s.completion_status !== "COMPLETE") {
+      fails.push(`${id} completion_status must be COMPLETE`);
+      continue;
+    }
+    if (s.baseline_id !== baseline.id) {
+      fails.push(`${id} suite.baseline_id must equal current baseline`);
+    }
+    if (s.run_id == null || s.run_id === "") {
+      fails.push(`${id} suite.run_id required`);
+    }
+    if (s.checksum == null || s.checksum === "") {
+      fails.push(`${id} suite.checksum required`);
+    }
+    const result = results[id];
+    if (!result) {
+      fails.push(`${id} result file required`);
+      continue;
+    }
+    if (result.completion_status !== "COMPLETE") {
+      fails.push(`${id} result.completion_status must be COMPLETE`);
+    }
+    if (result.baseline_id !== baseline.id) {
+      fails.push(`${id} result.baseline_id must equal current baseline`);
+    }
+    if (result.checksum !== s.checksum) {
+      fails.push(`${id} result checksum must match evidence suite checksum`);
+    }
+    if (String(result.run_id) !== String(s.run_id)) {
+      fails.push(`${id} result run_id must match evidence suite run_id`);
+    }
+  }
+}
+
+function verifyPreQa7PendingSlot(baseline, evidence, tip, results, ctx, fails) {
+  const qa7 = suiteOf(evidence, "QA7");
+  const qa7Result = results.QA7;
+  const predChecksums = tip.predecessor_suite_checksums || {};
+  if (!qa7) {
+    fails.push("QA7 evidence slot required");
+  } else {
+    if (qa7.completion_status !== "NOT_STARTED") {
+      fails.push("current QA7 completion_status must be NOT_STARTED");
+    }
+    if (qa7.baseline_id !== baseline.id) {
+      fails.push("current QA7 suite.baseline_id must equal current baseline");
+    }
+    if (qa7.run_id != null) {
+      fails.push("current QA7 NOT_STARTED slot must keep run_id=null");
+    }
+    if (qa7.checksum != null) {
+      fails.push("current QA7 NOT_STARTED slot must keep checksum=null");
+    }
+    if (qa7.predecessor_baseline_id !== tip.predecessor_baseline_id) {
+      fails.push("QA7 predecessor_baseline_id must equal tip.predecessor_baseline_id");
+    }
+  }
+  if (Object.prototype.hasOwnProperty.call(predChecksums, "QA7")) {
+    fails.push("predecessor_suite_checksums must not invent a QA7 checksum");
+  }
+  if (!qa7Result) {
+    fails.push("historical qa7-result.v1.json required");
+  } else {
+    if (qa7Result.baseline_id === baseline.id) {
+      fails.push("qa7-result must stay bound to the predecessor baseline, not current");
+    }
+    if (qa7Result.baseline_id !== tip.predecessor_baseline_id) {
+      fails.push("qa7-result.baseline_id must equal exact predecessor baseline");
+    }
+    verifyHistoricalQa7Intrinsic(qa7Result, fails);
+    if (qa7 && qa7.run_id != null && String(qa7.run_id) === String(qa7Result.run_id)) {
+      fails.push("must not copy predecessor QA7 run_id into the current slot");
+    }
+    if (qa7 && qa7.checksum != null && qa7.checksum === qa7Result.checksum) {
+      fails.push("must not copy predecessor QA7 checksum into the current slot");
+    }
+    if (
+      qa7 &&
+      qa7.completion_status === "COMPLETE" &&
+      qa7Result.baseline_id !== baseline.id
+    ) {
+      fails.push("must not claim current QA7 COMPLETE without formal current evidence");
+    }
+  }
+  verifyHistoricalResultBytes(ctx, "QA7", fails);
+}
+
+function verifyPreQa7Qa8Stale(baseline, evidence, tip, results, ctx, fails) {
+  const qa8 = suiteOf(evidence, "QA8");
+  const predChecksums = tip.predecessor_suite_checksums || {};
+  if (!qa8) {
+    fails.push("QA8 evidence slot required");
+    return;
+  }
+  if (qa8.completion_status !== "NOT_STARTED" && qa8.completion_status !== "STALE") {
+    fails.push("current QA8 completion_status must be NOT_STARTED or exact STALE");
+  }
+  if (qa8.baseline_id !== baseline.id) {
+    fails.push("current QA8 suite.baseline_id must equal current baseline");
+  }
+  if (qa8.run_id != null) {
+    fails.push("current QA8 run_id must be null");
+  }
+  if (qa8.checksum != null) {
+    fails.push("current QA8 checksum must be null");
+  }
+  if (qa8.epoch_status !== "STALE_FOR_CURRENT_EPOCH") {
+    fails.push("QA8 epoch_status must be STALE_FOR_CURRENT_EPOCH");
+  }
+  if (qa8.predecessor_result_preserved !== true) {
+    fails.push("QA8 predecessor_result_preserved must be true");
+  }
+  if (qa8.historical_baseline_id !== tip.predecessor_baseline_id) {
+    fails.push("QA8 historical_baseline_id must equal tip.predecessor_baseline_id");
+  }
+  if (qa8.historical_completion_status !== "COMPLETE") {
+    fails.push("QA8 historical_completion_status must be COMPLETE");
+  }
+  if (!qa8.historical_run_id) {
+    fails.push("QA8 historical_run_id required");
+  }
+  if (!qa8.historical_checksum) {
+    fails.push("QA8 historical_checksum required");
+  }
+  if (qa8.historical_checksum !== predChecksums.QA8) {
+    fails.push("QA8 historical_checksum must match tip.predecessor_suite_checksums.QA8");
+  }
+  if (qa8.completion_status === "COMPLETE") {
+    fails.push("must not promote current QA8 to COMPLETE");
+  }
+  const qa8Result = results.QA8;
+  if (!qa8Result) {
+    fails.push("qa8-result.v1.json required");
+    return;
+  }
+  if (qa8Result.baseline_id !== qa8.historical_baseline_id) {
+    fails.push("qa8-result.baseline_id must match QA8 historical_baseline_id");
+  }
+  if (qa8Result.checksum !== qa8.historical_checksum) {
+    fails.push("qa8-result.checksum must match QA8 historical_checksum");
+  }
+  if (String(qa8Result.run_id) !== String(qa8.historical_run_id)) {
+    fails.push("qa8-result.run_id must match QA8 historical_run_id");
+  }
+  if (qa8Result.baseline_id === baseline.id) {
+    fails.push("must not bind predecessor QA8 result to the current baseline");
+  }
+  verifyHistoricalQa8Intrinsic(qa8Result, fails);
+  verifyHistoricalResultBytes(ctx, "QA8", fails);
+}
+
+function verifyPreQa7Qa9Stale(baseline, evidence, tip, results, ctx, fails) {
+  const qa9 = suiteOf(evidence, "QA9");
+  const predChecksums = tip.predecessor_suite_checksums || {};
+  if (!qa9) {
+    fails.push("QA9 evidence slot required");
+    return;
+  }
+  if (qa9.completion_status !== "NOT_STARTED" && qa9.completion_status !== "STALE") {
+    fails.push("current QA9 completion_status must be NOT_STARTED or exact STALE");
+  }
+  if (qa9.baseline_id !== baseline.id) {
+    fails.push("current QA9 suite.baseline_id must equal current baseline");
+  }
+  if (qa9.run_id != null) {
+    fails.push("current QA9 run_id must be null");
+  }
+  if (qa9.checksum != null) {
+    fails.push("current QA9 checksum must be null");
+  }
+  if (qa9.epoch_status !== "STALE_AGGREGATION_FOR_CURRENT_EPOCH") {
+    fails.push("QA9 epoch_status must be STALE_AGGREGATION_FOR_CURRENT_EPOCH");
+  }
+  if (qa9.aggregation_only !== true) {
+    fails.push("QA9 aggregation_only must be true");
+  }
+  if (qa9.discovery_suite !== false) {
+    fails.push("QA9 discovery_suite must be false");
+  }
+  if (qa9.current_epoch_authoritative !== false) {
+    fails.push("QA9 current_epoch_authoritative must be false");
+  }
+  if (qa9.predecessor_result_preserved !== true) {
+    fails.push("QA9 predecessor_result_preserved must be true");
+  }
+  if (qa9.historical_baseline_id !== tip.predecessor_baseline_id) {
+    fails.push("QA9 historical_baseline_id must equal tip.predecessor_baseline_id");
+  }
+  if (qa9.historical_completion_status !== "COMPLETE") {
+    fails.push("QA9 historical_completion_status must be COMPLETE");
+  }
+  if (!qa9.historical_run_id) {
+    fails.push("QA9 historical_run_id required");
+  }
+  if (!qa9.historical_checksum) {
+    fails.push("QA9 historical_checksum required");
+  }
+  if (!qa9.historical_verdict) {
+    fails.push("QA9 historical_verdict required");
+  }
+  if (qa9.historical_checksum !== predChecksums.QA9) {
+    fails.push("QA9 historical_checksum must match tip.predecessor_suite_checksums.QA9");
+  }
+  const qa9Result = results.QA9;
+  if (!qa9Result) {
+    fails.push("qa9-result.v1.json required");
+    return;
+  }
+  if (qa9Result.baseline_id !== qa9.historical_baseline_id) {
+    fails.push("qa9-result.baseline_id must match QA9 historical fields");
+  }
+  if (qa9Result.checksum !== qa9.historical_checksum) {
+    fails.push("qa9-result.checksum must match QA9 historical_checksum");
+  }
+  if (qa9Result.verdict !== qa9.historical_verdict) {
+    fails.push("qa9-result.verdict must match QA9 historical_verdict");
+  }
+  if (String(qa9Result.run_id) !== String(qa9.historical_run_id)) {
+    fails.push("qa9-result.run_id must match QA9 historical_run_id");
+  }
+  if (qa9Result.baseline_id === baseline.id) {
+    fails.push("must not bind predecessor QA9 result to the current baseline");
+  }
+  if (qa9Result.verdict === "ENGINE_ACCEPTED_FOR_UI" && evidence.verdict === "ENGINE_ACCEPTED_FOR_UI") {
+    fails.push("must not promote historical QA9 ACCEPTED into the current verdict");
+  }
+  if (
+    qa9Result.engine_accepted_for_ui === "ISSUED" &&
+    (evidence.engine_accepted_for_ui === "ISSUED" || evidence.ui_ux_entry_gate === "OPEN")
+  ) {
+    fails.push("must not promote historical QA9 ISSUED/OPEN into current evidence authority");
+  }
+  verifyHistoricalQa9Intrinsic(qa9Result, fails);
+  verifyHistoricalResultBytes(ctx, "QA9", fails);
+}
+
+function verifyPreQa7CheckpointFields(evidence, fails) {
+  if (evidence.qa_phase !== "QA-6") {
+    fails.push("evidence.qa_phase must be QA-6");
+  }
+  if (evidence.next !== "QA7_AI_EVAL") {
+    fails.push("evidence.next must be QA7_AI_EVAL");
+  }
+  if (evidence.verdict !== "ENGINE_QA_INCOMPLETE") {
+    fails.push("evidence.verdict must be ENGINE_QA_INCOMPLETE");
+  }
+  if (evidence.evidence_integrity !== "VALID") {
+    fails.push("evidence.evidence_integrity must be VALID");
+  }
+  if (evidence.ui_ux_entry_gate != null && evidence.ui_ux_entry_gate !== "CLOSED") {
+    fails.push("current UI gate must be absent/null or CLOSED");
+  }
+  if (evidence.engine_accepted_for_ui != null && evidence.engine_accepted_for_ui !== "NOT_ISSUED") {
+    fails.push("current ENGINE_ACCEPTED_FOR_UI must be absent/null or NOT_ISSUED");
+  }
+  const epoch = evidence.current_epoch;
+  if (!epoch || typeof epoch !== "object") {
+    fails.push("evidence.current_epoch rebase snapshot required");
+    return;
+  }
+  for (const [key, exact] of Object.entries(CURRENT_EPOCH_REBASE_SNAPSHOT)) {
+    if (!Object.prototype.hasOwnProperty.call(epoch, key)) {
+      fails.push(`evidence.current_epoch.${key} snapshot field must not be deleted`);
+    } else if (epoch[key] !== exact) {
+      fails.push(`evidence.current_epoch.${key} is a rebase-time snapshot and must remain ${exact}`);
+    }
+  }
+}
+
+function verifyPreQa7DefectsAndCritical(evidence, defects, results, fails) {
+  if (
+    !defects ||
+    !defects.counts ||
+    typeof defects.counts.P0 !== "number" ||
+    typeof defects.counts.P1 !== "number"
+  ) {
+    fails.push("defects.counts.P0/P1 must be read");
+  } else if (defects.counts.P0 + defects.counts.P1 > 0) {
+    fails.push("current-epoch pre-QA7 checkpoint is not allowed while P0/P1 > 0");
+  }
+  const ci = evidence.critical_invariant;
+  const qa6Cum = results.QA6 && results.QA6.critical_invariant_cumulative;
+  if (!ci || typeof ci.blocked !== "number") {
+    fails.push("evidence.critical_invariant.blocked required");
+  } else if (!qa6Cum || typeof qa6Cum.blocked !== "number") {
+    fails.push("QA6 critical_invariant_cumulative required as current critical truth");
+  } else {
+    for (const k of ["blocked", "skipped", "uncovered", "failed"]) {
+      if (ci[k] !== qa6Cum[k]) {
+        fails.push(
+          `evidence.critical_invariant.${k} must equal QA6 cumulative (must not use QA8 predecessor cumulative)`,
+        );
+      }
+    }
+  }
+}
+
+function verifyPreQa7KillAndAmendment(ctx, baseline, evidence, tip, amendmentLedger, fails) {
+  const ks = evidence.kill_switch || {};
+  for (const k of [
+    "verified_before_qa3",
+    "verified_before_qa4",
+    "verified_before_qa5",
+    "verified_before_qa6",
+  ]) {
+    if (ks[k] !== true) {
+      fails.push(`kill_switch.${k} must be true`);
+    }
+  }
+  amendmentHashChainHolds(amendmentLedger, fails);
+  if (amendmentLedger && baseline.acceptance_workflow_hash) {
+    const tipHash = expectedWorkflowHash(amendmentLedger);
+    if (baseline.acceptance_workflow_hash !== tipHash) {
+      fails.push("baseline.acceptance_workflow_hash must equal amendment ledger tip");
+    }
+  }
+  if (!ctx.liveWorkflowHash) {
+    fails.push("live canonical workflow hash required");
+  } else if (baseline.acceptance_workflow_hash !== ctx.liveWorkflowHash) {
+    fails.push("baseline.acceptance_workflow_hash must equal live canonical workflow hash");
+  }
+  if (baseline.prompt_hash !== tip.new_prompt_hash) {
+    fails.push("prompt_hash must remain immutable vs rebase tip");
+  }
+  if (baseline.eval_dataset_hash !== tip.eval_dataset_hash) {
+    fails.push("eval_dataset_hash must remain immutable vs rebase tip");
+  }
+  const latestAmend = latestSameBaselineAmendment(amendmentLedger, baseline.id);
+  if (!latestAmend) {
+    fails.push("latest same-baseline workflow amendment required");
+    return;
+  }
+  const affected = Array.isArray(latestAmend.affected_qa_suites) ? latestAmend.affected_qa_suites : [];
+  const unaffected = Array.isArray(latestAmend.unaffected_completed_suites)
+    ? latestAmend.unaffected_completed_suites
+    : [];
+  if (!affected.includes("QA7")) {
+    fails.push("latest same-baseline amendment must list QA7 in affected_qa_suites");
+  }
+  if (unaffected.includes("QA7")) {
+    fails.push("latest same-baseline amendment must not list QA7 as unaffected_completed");
+  }
+  const checks = (latestAmend.workflow_diff_scope && latestAmend.workflow_diff_scope.checks) || {};
+  for (const k of [
+    "command_changes",
+    "artifact_upload_changes",
+    "env_permission_changes",
+    "pass_fail_semantics_changes",
+  ]) {
+    if (checks[k] !== false) {
+      fails.push(`latest same-baseline amendment QA0-QA6 impact check ${k} must be false`);
+    }
+  }
+  if (latestAmend.workflow_diff_scope && latestAmend.workflow_diff_scope.qa0_qa6_semantics_changed !== false) {
+    fails.push("latest same-baseline amendment qa0_qa6_semantics_changed must be false");
+  }
+}
+
+function verifyCurrentEpochPreQa7CheckpointBody(ctx, fails, parts) {
+  const { baseline, evidence, rebaseLedger, amendmentLedger, defects, results, tip } = parts;
+  verifyPreQa7RebaseBinding(baseline, evidence, rebaseLedger, tip, fails);
+  verifyPreQa7Qa0ToQa6(baseline, evidence, results, fails);
+  verifyPreQa7PendingSlot(baseline, evidence, tip, results, ctx, fails);
+  verifyPreQa7Qa8Stale(baseline, evidence, tip, results, ctx, fails);
+  verifyPreQa7Qa9Stale(baseline, evidence, tip, results, ctx, fails);
+  verifyPreQa7CheckpointFields(evidence, fails);
+  verifyPreQa7DefectsAndCritical(evidence, defects, results, fails);
+  verifyPreQa7KillAndAmendment(ctx, baseline, evidence, tip, amendmentLedger, fails);
+}
+
+function amendmentHashChainHolds(amendmentLedger, fails) {
+  if (!amendmentLedger) {
+    fails.push("workflow-amendments ledger required");
+    return;
+  }
+  validateLedgerShape(amendmentLedger, fails);
+  const amends = amendmentLedger.amendments || [];
+  for (let i = 0; i < amends.length; i++) {
+    if (i === 0) {
+      if (
+        amends[i].old_acceptance_workflow_hash !==
+        (amendmentLedger.frozen_at_qa0 && amendmentLedger.frozen_at_qa0.acceptance_workflow_hash)
+      ) {
+        fails.push("amendments[0].old_acceptance_workflow_hash must equal frozen_at_qa0");
+      }
+    } else if (amends[i].old_acceptance_workflow_hash !== amends[i - 1].new_acceptance_workflow_hash) {
+      fails.push(`amendments[${i}] hash chain broken (old !== previous new)`);
+    }
+  }
+}
+
+function verifyCurrentEpochPreQa7Checkpoint(ctx, fails) {
+  if (!fails || !Array.isArray(fails)) {
+    throw new Error("verifyCurrentEpochPreQa7Checkpoint requires a fails array");
+  }
+  const baseline = ctx && ctx.baseline;
+  const evidence = ctx && ctx.evidence;
+  const rebaseLedger = ctx && ctx.rebaseLedger;
+  const amendmentLedger = ctx && ctx.amendmentLedger;
+  const defects = ctx && ctx.defects;
+  const results = (ctx && ctx.results) || {};
+  if (!baseline || !evidence || !rebaseLedger) {
+    fails.push("current-epoch pre-QA7 checkpoint requires baseline, evidence, rebase ledger");
+    return;
+  }
+
+  const tip = latestRebase(rebaseLedger);
+  if (!tip) {
+    fails.push("current-epoch pre-QA7 checkpoint requires a latest rebase");
+    return;
+  }
+  verifyCurrentEpochPreQa7CheckpointBody(ctx, fails, {
+    baseline,
+    evidence,
+    rebaseLedger,
+    amendmentLedger,
+    defects,
+    results,
+    tip,
+  });
+}
+
+function isCurrentEpochPreQa7Checkpoint(ctx) {
+  const fails = [];
+  verifyCurrentEpochPreQa7Checkpoint(ctx, fails);
+  return fails.length === 0;
+}
+
 module.exports = {
   DECISION_ID,
   LEDGER_REL,
@@ -972,6 +1629,9 @@ module.exports = {
   detectProtectedScopeWash,
   assertNoInPlaceHashRewrite,
   isPendingRerun,
+  isCurrentEpochPreQa7Checkpoint,
+  verifyCurrentEpochPreQa7Checkpoint,
+  CURRENT_EPOCH_REBASE_SNAPSHOT,
   verifyWashing,
   verifyPendingRerunEpoch,
   verifyRebaseLedgerAgainstBaseline,

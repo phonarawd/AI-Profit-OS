@@ -234,6 +234,46 @@
         "QA6",
         "QA8"
       ]
+    },
+    {
+      "amendment_id": "qa7-filtered-5xx-observability-20260828",
+      "reason": "QA7-only filtered server diagnostic for intermittent HTTP 500 root-cause observation. Adds a non-failing, secret-conscious filtered diagnostic step after Stop api-nest. QA0-QA6 execution semantics, QA7 executor/scoring, QA8/QA9, aggregator, publisher, product, prompt and eval remain unchanged.",
+      "human_po_ack": {
+        "by": "Human/PO",
+        "at": "2026-08-28T05:39:51.849Z",
+        "statement": "ACK APPROVED 승인 QA7_FILTERED_5XX_OBSERVABILITY_AMENDMENT_APPLY"
+      },
+      "old_acceptance_workflow_hash": "b8e724ba3af9e2d240f4daeefd53d4330972afdb942396698389825167752aa7",
+      "new_acceptance_workflow_hash": "3f2588e695902e989b5c56f0dd193f9e6fd693846a52ced90ae44173a72cbcf2",
+      "workflow_diff_scope": {
+        "files": [
+          ".github/workflows/engine-acceptance.yml"
+        ],
+        "exact_diff_summary": "QA7-only observability amendment. In .github/workflows/engine-acceptance.yml, qa7-ai-eval gains one diagnostic-only, always-run, continue-on-error bash step after existing Stop api-nest. The step reads the already-existing /tmp/aipo-qa7-api.log, selects only structured http_5xx and Postgres background-client diagnostic lines, applies credential/query-secret redaction, and emits filtered diagnostics to the GitHub Actions job log. No new artifact is added. QA7 Start api-nest, health check, run-qa7 command, raw-traces artifact, Stop api-nest, executor, dataset, grader, aggregate semantics and publisher remain unchanged. QA0-QA6 jobs/commands/artifacts/env/pass-fail semantics are unchanged. QA8, QA9, aggregator, secrets, env, permissions, on:, timeout, concurrency, product code, prompt/eval files and engine-acceptance-heavy.yml are unchanged.",
+        "qa0_qa6_semantics_changed": false,
+        "checks": {
+          "command_changes": false,
+          "artifact_upload_changes": false,
+          "env_permission_changes": false,
+          "pass_fail_semantics_changes": false
+        }
+      },
+      "affected_qa_suites": [
+        "QA7"
+      ],
+      "unaffected_completed_suites": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6"
+      ],
+      "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
+      "commit_sha_or_pending": "pending",
+      "timestamp": "2026-08-28T05:39:51.849Z",
+      "applied_at": "2026-08-28T05:40:46.489Z"
     }
   ],
   "epoch_bindings": [
