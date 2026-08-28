@@ -1261,16 +1261,45 @@ function run() {
 
   {
     const live = loadLiveCheckpointCtx();
-    const f = [];
-    verifyCurrentEpochPreQa7Checkpoint(live, f);
-    check(
-      "live_persisted_qa6_complete_qa7_pending_predicate_true",
-      isCurrentEpochPreQa7Checkpoint(live) === true && f.length === 0,
-      f.join("; "),
-    );
+    if (live.evidence.qa_phase === "QA-6") {
+      const f = [];
+      verifyCurrentEpochPreQa7Checkpoint(live, f);
+      check(
+        "live_persisted_qa6_complete_qa7_pending_predicate_true",
+        isCurrentEpochPreQa7Checkpoint(live) === true && f.length === 0,
+        f.join("; "),
+      );
+    } else if (
+      live.evidence.qa_phase === "QA-7" &&
+      live.evidence.next === "QA8_SECURITY_PRIVACY"
+    ) {
+      const qa7 = suiteIn(live, "QA7");
+      const qa8 = suiteIn(live, "QA8");
+      check(
+        "live_persisted_qa7_complete_qa8_pending_state_true",
+        isCurrentEpochPreQa7Checkpoint(live) === false &&
+          qa7 &&
+          qa7.completion_status === "COMPLETE" &&
+          qa7.baseline_id === live.baseline.id &&
+          qa7.formal_actions_evidence === true &&
+          Boolean(qa7.run_id && qa7.checksum) &&
+          qa8 &&
+          qa8.completion_status === "NOT_STARTED" &&
+          qa8.run_id === null &&
+          qa8.checksum === null,
+      );
+    } else {
+      check(
+        "live_current_epoch_checkpoint_state_known",
+        false,
+        `unexpected qa_phase/next=${live.evidence.qa_phase}/${live.evidence.next}`,
+      );
+    }
     check(
       "current_epoch_snapshot_is_rebase_time_not_live_authority",
       live.evidence.current_epoch.qa1_qa6_status === CURRENT_EPOCH_REBASE_SNAPSHOT.qa1_qa6_status &&
+        live.evidence.current_epoch.qa8_status === CURRENT_EPOCH_REBASE_SNAPSHOT.qa8_status &&
+        live.evidence.current_epoch.qa9_status === CURRENT_EPOCH_REBASE_SNAPSHOT.qa9_status &&
         live.evidence.suites.find((s) => s.suite_id === "QA1").completion_status === "COMPLETE",
     );
   }

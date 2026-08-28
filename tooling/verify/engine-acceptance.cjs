@@ -54,6 +54,7 @@ const {
   verifyRebaseLedgerAgainstBaseline,
   assertNoInPlaceHashRewrite,
   findBridgingAmendment,
+  CURRENT_EPOCH_REBASE_SNAPSHOT,
 } = require("../engine-acceptance/lib/product-rebase.cjs");
 const { run: selftestProductRebase } = require("../engine-acceptance/selftest-product-rebase.cjs");
 const { loadEvalDataset } = require("../engine-acceptance/lib/qa7-dataset.cjs");
@@ -194,6 +195,180 @@ function buildPreQa7CheckpointCtx(baselineObj, evidenceObj, rebaseObj, defectsOb
     liveQa9Bytes: liveFileText(qa9Rel),
     qa9ResultDirty: dirtyAll.includes(qa9Rel),
   };
+}
+
+function isCurrentEpochPostQa7PreQa8Checkpoint(evidenceObj) {
+  return Boolean(
+    evidenceObj &&
+      evidenceObj.qa_phase === "QA-7" &&
+      evidenceObj.next === "QA8_SECURITY_PRIVACY",
+  );
+}
+
+function verifyCurrentEpochPostQa7PreQa8Checkpoint(
+  evidenceObj,
+  baselineObj,
+  qa7File,
+  defectsObj,
+  failFn,
+) {
+  const suites = (evidenceObj && evidenceObj.suites) || [];
+  const qa7 = suites.find((s) => s.suite_id === "QA7");
+  const qa8 = suites.find((s) => s.suite_id === "QA8");
+  const qa9 = suites.find((s) => s.suite_id === "QA9");
+  const epoch = evidenceObj && evidenceObj.current_epoch;
+  const p0 = (defectsObj && defectsObj.counts && defectsObj.counts.P0) || 0;
+  const p1 = (defectsObj && defectsObj.counts && defectsObj.counts.P1) || 0;
+
+  if (!baselineObj || baselineObj.valid !== true) {
+    failFn("post-QA7 checkpoint requires baseline.valid=true");
+  }
+  if (!evidenceObj || evidenceObj.qa_phase !== "QA-7") {
+    failFn("post-QA7 checkpoint requires evidence.qa_phase=QA-7");
+  }
+  if (!evidenceObj || evidenceObj.next !== "QA8_SECURITY_PRIVACY") {
+    failFn("post-QA7 checkpoint requires evidence.next=QA8_SECURITY_PRIVACY");
+  }
+  if (!evidenceObj || evidenceObj.verdict !== "ENGINE_QA_INCOMPLETE") {
+    failFn("post-QA7 checkpoint requires verdict=ENGINE_QA_INCOMPLETE");
+  }
+  if (!evidenceObj || evidenceObj.evidence_integrity !== "VALID") {
+    failFn("post-QA7 checkpoint requires evidence_integrity=VALID");
+  }
+  if (p0 !== 0 || p1 !== 0) {
+    failFn(`post-QA7 checkpoint publisher requires defects.P0/P1=0/0 (got ${p0}/${p1})`);
+  }
+  if (
+    evidenceObj &&
+    evidenceObj.engine_accepted_for_ui != null &&
+    evidenceObj.engine_accepted_for_ui !== "NOT_ISSUED"
+  ) {
+    failFn("post-QA7 checkpoint must not issue ENGINE_ACCEPTED_FOR_UI");
+  }
+  if (
+    evidenceObj &&
+    evidenceObj.ui_ux_entry_gate != null &&
+    evidenceObj.ui_ux_entry_gate !== "CLOSED"
+  ) {
+    failFn("post-QA7 checkpoint UI gate must remain CLOSED");
+  }
+
+  if (!qa7 || qa7.completion_status !== "COMPLETE") {
+    failFn("post-QA7 checkpoint requires QA7 COMPLETE");
+  } else {
+    if (!qa7.run_id || !qa7.checksum) {
+      failFn("post-QA7 checkpoint QA7 requires run_id + checksum");
+    }
+    if (qa7.formal_actions_evidence !== true) {
+      failFn("post-QA7 checkpoint QA7 requires formal_actions_evidence=true");
+    }
+    if (baselineObj && qa7.baseline_id !== baselineObj.id) {
+      failFn("post-QA7 checkpoint QA7 baseline_id must match current baseline");
+    }
+  }
+
+  if (!qa7File) {
+    failFn("post-QA7 checkpoint requires qa7-result.v1.json");
+  } else {
+    if (
+      qa7File.completion_status !== "COMPLETE" ||
+      qa7File.qa7_completion_status !== "COMPLETE"
+    ) {
+      failFn("post-QA7 checkpoint qa7-result completion fields must be COMPLETE");
+    }
+    if (
+      qa7File.formal_actions_evidence !== true ||
+      qa7File.local_validation_only !== false
+    ) {
+      failFn("post-QA7 checkpoint qa7-result must be formal Actions evidence");
+    }
+    if (qa7File.suite_status !== "PASS") {
+      failFn("post-QA7 checkpoint qa7-result.suite_status must be PASS");
+    }
+    if (baselineObj && qa7File.baseline_id !== baselineObj.id) {
+      failFn("post-QA7 checkpoint qa7-result baseline_id must match current baseline");
+    }
+    if (qa7 && String(qa7.run_id) !== String(qa7File.run_id)) {
+      failFn("post-QA7 checkpoint QA7 run_id must match qa7-result");
+    }
+    if (qa7 && qa7.checksum !== qa7File.checksum) {
+      failFn("post-QA7 checkpoint QA7 checksum must match qa7-result");
+    }
+  }
+
+  if (!qa8 || qa8.completion_status !== "NOT_STARTED") {
+    failFn("post-QA7 checkpoint requires current QA8 NOT_STARTED");
+  } else {
+    if (baselineObj && qa8.baseline_id !== baselineObj.id) {
+      failFn("post-QA7 checkpoint QA8 baseline_id must match current baseline");
+    }
+    if (qa8.run_id !== null || qa8.checksum !== null) {
+      failFn("post-QA7 checkpoint QA8 run_id/checksum must remain null");
+    }
+  }
+
+  if (!qa9 || qa9.completion_status !== "NOT_STARTED") {
+    failFn("post-QA7 checkpoint requires current QA9 NOT_STARTED");
+  } else {
+    if (baselineObj && qa9.baseline_id !== baselineObj.id) {
+      failFn("post-QA7 checkpoint QA9 baseline_id must match current baseline");
+    }
+    if (qa9.run_id !== null || qa9.checksum !== null) {
+      failFn("post-QA7 checkpoint QA9 run_id/checksum must remain null");
+    }
+    if (qa9.current_epoch_authoritative !== false) {
+      failFn("post-QA7 checkpoint QA9 must remain non-authoritative for current epoch");
+    }
+  }
+
+  if (!epoch) {
+    failFn("post-QA7 checkpoint requires current_epoch rebase snapshot");
+  } else {
+    for (const [key, expected] of Object.entries(CURRENT_EPOCH_REBASE_SNAPSHOT)) {
+      if (epoch[key] !== expected) {
+        failFn(
+          `post-QA7 checkpoint current_epoch.${key} must remain rebase snapshot ${expected}`,
+        );
+      }
+    }
+  }
+  if (!evidenceObj.kill_switch || evidenceObj.kill_switch.verified_before_qa7 !== true) {
+    failFn("post-QA7 checkpoint requires kill_switch.verified_before_qa7=true");
+  }
+}
+
+function assertCurrentEpochPostQa7PreQa8Report(reportText, failFn) {
+  for (const line of [
+    "QA6 = COMPLETE",
+    "QA7 = COMPLETE",
+    "QA8 = NOT_STARTED",
+    "NEXT = QA8_SECURITY_PRIVACY",
+  ]) {
+    if (!reportText.includes(line)) failFn(`REPORT must declare ${line}`);
+  }
+  if (!reportText.includes("ENGINE_QA_INCOMPLETE")) {
+    failFn("REPORT must declare ENGINE_QA_INCOMPLETE after QA7");
+  }
+  const notIssued =
+    /ENGINE_ACCEPTED_FOR_UI\s*=\s*NOT_ISSUED/i.test(reportText) ||
+    /ENGINE_ACCEPTED_FOR_UI[`'*\s]+not issued/i.test(reportText);
+  if (!notIssued) {
+    failFn("REPORT must declare ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED after QA7");
+  }
+  const banner = /```text([\s\S]*?)```/.exec(reportText);
+  const bannerText = banner ? banner[1] : "";
+  if (
+    /^QA8\s*=\s*COMPLETE\s*$/m.test(bannerText) ||
+    /^QA9\s*=\s*COMPLETE\s*$/m.test(bannerText)
+  ) {
+    failFn("REPORT must not claim QA8/QA9 COMPLETE before current-epoch QA8 runs");
+  }
+  if (
+    /UI_UX_ENTRY_GATE\s*=\s*OPEN/i.test(reportText) ||
+    /03 UI = OPEN/.test(bannerText)
+  ) {
+    failFn("REPORT must not claim current UI gate OPEN after QA7");
+  }
 }
 
 function assertCurrentEpochPreQa7Report(reportText, failFn) {
@@ -603,6 +778,7 @@ try {
 let ephemeralQa6Rewrite = false;
 let ephemeralPreQa9Rewrite = false;
 let currentEpochPreQa7Checkpoint = false;
+let currentEpochPostQa7PreQa8Checkpoint = false;
 let preQa7CheckpointCtx = null;
 
 const pendingRerun = isPendingRerun(baseline, evidence, rebaseLedger);
@@ -675,6 +851,13 @@ if (evidence) {
     !ephemeralPreQa9RewriteNow &&
     isCurrentEpochPreQa7Checkpoint(preQa7CheckpointCtx);
   currentEpochPreQa7Checkpoint = currentEpochPreQa7CheckpointNow;
+  const currentEpochPostQa7PreQa8CheckpointNow =
+    !pendingRerun &&
+    !ephemeralQa6RewriteNow &&
+    !ephemeralPreQa9RewriteNow &&
+    !currentEpochPreQa7CheckpointNow &&
+    isCurrentEpochPostQa7PreQa8Checkpoint(evidence);
+  currentEpochPostQa7PreQa8Checkpoint = currentEpochPostQa7PreQa8CheckpointNow;
 
   // Independently re-derive the L1 formula and require evidence.verdict to
   // match exactly - stronger than (and a superset of) a blanket "never
@@ -718,9 +901,16 @@ if (evidence) {
   // this part of the guard stays unconditional regardless of ephemeral state.
   if (
     evidence.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
-    (pendingRerun || ephemeralQa6RewriteNow || currentEpochPreQa7CheckpointNow)
+    (
+      pendingRerun ||
+      ephemeralQa6RewriteNow ||
+      currentEpochPreQa7CheckpointNow ||
+      currentEpochPostQa7PreQa8CheckpointNow
+    )
   ) {
-    fail("must not issue ENGINE_ACCEPTED_FOR_UI during a pending rebase rerun, ephemeral QA6 rewrite, or current-epoch pre-QA7 checkpoint");
+    fail(
+      "must not issue ENGINE_ACCEPTED_FOR_UI during a pending rebase rerun, ephemeral QA6 rewrite, pre-QA7 checkpoint, or post-QA7/pre-QA8 checkpoint",
+    );
   }
 
   if (pendingRerun) {
@@ -746,6 +936,14 @@ if (evidence) {
       }
     } else if (currentEpochPreQa7CheckpointNow) {
       verifyCurrentEpochPreQa7Checkpoint(preQa7CheckpointCtx, fails);
+    } else if (currentEpochPostQa7PreQa8CheckpointNow) {
+      verifyCurrentEpochPostQa7PreQa8Checkpoint(
+        evidence,
+        baseline,
+        qa7Peek,
+        defects,
+        fail,
+      );
     } else {
       if (evidence.qa_phase !== "QA-9") {
         fail("evidence-manifest.qa_phase must be QA-9 after qa9-acceptance-report completion");
@@ -856,9 +1054,27 @@ if (evidence) {
         fail("evidence.kill_switch.verified_before_qa8 must be true");
       }
     } else if (currentEpochPreQa7CheckpointNow) {
-      // Current-epoch pre-QA7 checkpoint: QA7/QA8/QA9 current COMPLETE and
-      // kill-switch QA7~QA9 must not be required. Predecessor preservation
-      // is enforced by verifyCurrentEpochPreQa7Checkpoint.
+      // Current-epoch pre-QA7 checkpoint: QA7/QA8/QA9 are not current COMPLETE.
+      // Predecessor preservation is enforced by verifyCurrentEpochPreQa7Checkpoint.
+    } else if (currentEpochPostQa7PreQa8CheckpointNow) {
+      if (!qa7 || qa7.completion_status !== "COMPLETE") {
+        fail("post-QA7 checkpoint requires QA7 COMPLETE");
+      } else {
+        if (!qa7.run_id || !qa7.checksum) {
+          fail("post-QA7 checkpoint QA7 requires run_id + checksum");
+        }
+        if (qa7.formal_actions_evidence !== true) {
+          fail("post-QA7 checkpoint QA7 requires formal_actions_evidence=true");
+        }
+      }
+      if (!qa8 || qa8.completion_status !== "NOT_STARTED") {
+        fail("post-QA7 checkpoint requires QA8 NOT_STARTED");
+      } else if (qa8.run_id !== null || qa8.checksum !== null) {
+        fail("post-QA7 checkpoint QA8 run_id/checksum must remain null");
+      }
+      if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa7 !== true) {
+        fail("post-QA7 checkpoint requires evidence.kill_switch.verified_before_qa7=true");
+      }
     } else {
       if (!qa7 || qa7.completion_status !== "COMPLETE") {
         fail("QA7 suite must be COMPLETE after formal Actions publication");
@@ -899,7 +1115,11 @@ if (evidence) {
         fail("evidence.kill_switch.verified_before_qa9 must be true");
       }
     }
-    if (ephemeralQa6RewriteNow || currentEpochPreQa7CheckpointNow) {
+    if (
+      ephemeralQa6RewriteNow ||
+      currentEpochPreQa7CheckpointNow ||
+      currentEpochPostQa7PreQa8CheckpointNow
+    ) {
       // run-qa6.cjs recomputes its own cumulative from QA5's on-disk result
       // only — it has no knowledge of QA8 in this ephemeral CI recompute.
       // The persisted pre-QA7 checkpoint also uses QA6 cumulative as current
@@ -1703,7 +1923,12 @@ try {
 } catch {
   fail("qa8-result.v1.json invalid JSON");
 }
-if (qa8Result && !pendingRerun && !currentEpochPreQa7Checkpoint) {
+if (
+  qa8Result &&
+  !pendingRerun &&
+  !currentEpochPreQa7Checkpoint &&
+  !currentEpochPostQa7PreQa8Checkpoint
+) {
   if (qa8Result.schema !== "governance.engine-acceptance.qa8-result.v1") {
     fail("qa8-result.schema mismatch");
   }
@@ -1842,7 +2067,12 @@ try {
 } catch {
   fail("qa9-result.v1.json invalid JSON");
 }
-if (qa9Result && !pendingRerun && !currentEpochPreQa7Checkpoint) {
+if (
+  qa9Result &&
+  !pendingRerun &&
+  !currentEpochPreQa7Checkpoint &&
+  !currentEpochPostQa7PreQa8Checkpoint
+) {
   if (qa9Result.schema !== "governance.engine-acceptance.qa9-result.v1") {
     fail("qa9-result.schema mismatch");
   }
@@ -2057,6 +2287,8 @@ if (report) {
     }
   } else if (currentEpochPreQa7Checkpoint) {
     assertCurrentEpochPreQa7Report(report, fail);
+  } else if (currentEpochPostQa7PreQa8Checkpoint) {
+    assertCurrentEpochPostQa7PreQa8Report(report, fail);
   } else {
     if (!report.includes("QA9 = COMPLETE")) {
       fail("REPORT banner must include QA9 = COMPLETE");
@@ -2470,6 +2702,14 @@ if (pendingRerun) {
   console.log("  QA8 = NOT_STARTED");
   console.log("  QA9 = NOT_STARTED / STALE_AGGREGATION");
   console.log("  NEXT = QA7_AI_EVAL");
+  console.log("  VERDICT = ENGINE_QA_INCOMPLETE");
+  console.log("  ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED");
+  console.log("  UI_UX_ENTRY_GATE = CLOSED");
+} else if (currentEpochPostQa7PreQa8Checkpoint) {
+  console.log("  QA0-QA7 = COMPLETE");
+  console.log("  QA8 = NOT_STARTED");
+  console.log("  QA9 = NOT_STARTED / STALE_AGGREGATION");
+  console.log("  NEXT = QA8_SECURITY_PRIVACY");
   console.log("  VERDICT = ENGINE_QA_INCOMPLETE");
   console.log("  ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED");
   console.log("  UI_UX_ENTRY_GATE = CLOSED");

@@ -537,9 +537,8 @@ function publishQa7Formal(opts) {
     verified_before_qa7: true,
     production_like_aborts: true,
   };
-  if (evidence.current_epoch) {
-    evidence.current_epoch.qa1_qa6_status = "COMPLETE";
-  }
+  // evidence.current_epoch is a rebase-time snapshot, not live suite authority.
+  // QA7 publication advances evidence.suites only; preserve the snapshot bytes.
   evidence.suites = (evidence.suites || []).map((s) => {
     if (s.suite_id === "QA7") {
       return {
