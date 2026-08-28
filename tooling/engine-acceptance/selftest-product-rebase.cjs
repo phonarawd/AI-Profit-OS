@@ -1311,6 +1311,47 @@ function run() {
           qa9.checksum === null &&
           qa9.current_epoch_authoritative === false,
       );
+    } else if (
+      live.evidence.qa_phase === "QA-9" &&
+      ["03_blocked_fix_round", "03_blocked_incomplete", "03_ui_entry_unlocked"].includes(
+        live.evidence.next,
+      )
+    ) {
+      const qa9 = suiteIn(live, "QA9");
+      const r9 = live.results.QA9;
+      const verdict = live.evidence.verdict;
+      const allowedVerdict = [
+        "ENGINE_ACCEPTED_FOR_UI",
+        "ENGINE_NOT_ACCEPTED",
+        "ENGINE_QA_INCOMPLETE",
+      ].includes(verdict);
+      const acceptedShape =
+        verdict !== "ENGINE_ACCEPTED_FOR_UI" ||
+        (
+          existingFinalQa9FormulaAllowsAccepted(live) === true &&
+          r9 &&
+          r9.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
+          r9.engine_accepted_for_ui === "ISSUED" &&
+          r9.ui_ux_entry_gate === "OPEN" &&
+          live.evidence.next === "03_ui_entry_unlocked"
+        );
+      check(
+        "live_persisted_qa9_final_state_true",
+        allowedVerdict &&
+          qa9 &&
+          qa9.completion_status === "COMPLETE" &&
+          qa9.baseline_id === live.baseline.id &&
+          qa9.aggregation_only === true &&
+          Boolean(qa9.run_id && qa9.checksum) &&
+          r9 &&
+          r9.baseline_id === live.baseline.id &&
+          r9.completion_status === "COMPLETE" &&
+          r9.aggregation_only === true &&
+          r9.discovery_suite === false &&
+          r9.verdict === verdict &&
+          existingFinalQa9ChecksumBindingHolds(live) === true &&
+          acceptedShape,
+      );
     } else {
       check(
         "live_current_epoch_checkpoint_state_known",

@@ -1,0 +1,187 @@
+name: rel-502-qa9-final-once
+
+on:
+  push:
+    branches:
+      - release/auth-wallet-rel502-v1-20260828
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rel-502-qa9-final-once
+  cancel-in-progress: false
+
+env:
+  AIPO_QA9_MARKER: "chore(rel-502): start QA9 final aggregation"
+  AIPO_QA9_PERSIST_SUBJECT: "chore(engine-acceptance): issue current-epoch QA9 verdict"
+  AIPO_BASELINE_ID: "ea-baseline-cc627efc3ee2-defdfa5b6ac4"
+  AIPO_QA7_CHECKSUM: "5fd75a148c3ad125be041410d1cabd2e1ffe0c4642164410aca3883530354896"
+  AIPO_QA8_CHECKSUM: "9ff9bbebc49f971fc5345f7903c06b9f655f619aee9ae51caccc1143fe33a7ef"
+  AIPO_QA_TARGET_ENV: ci
+  AIPO_QA_HOSTNAME: localhost
+  AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+
+jobs:
+  qa9-final:
+    if: >-
+      github.repository == 'phonarawd/AI-Profit-OS' &&
+      github.ref == 'refs/heads/release/auth-wallet-rel502-v1-20260828' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'chore(rel-502): start QA9 final aggregation'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact trigger commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Fail-closed pre-QA9 acceptance inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REPOSITORY}" = "phonarawd/AI-Profit-OS"
+          test "${GITHUB_REF}" = "refs/heads/release/auth-wallet-rel502-v1-20260828"
+          test "$(git log -1 --pretty=%s)" = "${AIPO_QA9_MARKER}"
+          test -z "$(git status --porcelain)"
+          node <<'NODE'
+          const fs=require('fs');
+          const b=JSON.parse(fs.readFileSync('governance/engine-acceptance/baseline.v1.json','utf8'));
+          const e=JSON.parse(fs.readFileSync('governance/engine-acceptance/evidence-manifest.v1.json','utf8'));
+          const d=JSON.parse(fs.readFileSync('governance/engine-acceptance/defects.v1.json','utf8'));
+          const q7=JSON.parse(fs.readFileSync('governance/engine-acceptance/qa7-result.v1.json','utf8'));
+          const q8=JSON.parse(fs.readFileSync('governance/engine-acceptance/qa8-result.v1.json','utf8'));
+          const by=Object.fromEntries((e.suites||[]).map(x=>[x.suite_id,x]));
+          const bad=m=>{throw new Error(m)};
+          if(b.id!==process.env.AIPO_BASELINE_ID||b.valid!==true||b.protected_scope_clean!==true) bad('baseline');
+          if(e.baseline_id!==b.id||e.qa_phase!=='QA-8'||e.next!=='QA9_ACCEPTANCE_REPORT'||e.verdict!=='ENGINE_QA_INCOMPLETE'||e.evidence_integrity!=='VALID') bad('evidence pre-QA9');
+          for(const id of ['QA1','QA2','QA3','QA4','QA5','QA6','QA7','QA8']) {
+            if(!by[id]||by[id].completion_status!=='COMPLETE'||by[id].baseline_id!==b.id) bad('mandatory '+id);
+          }
+          if(by.QA7.checksum!==process.env.AIPO_QA7_CHECKSUM||q7.checksum!==process.env.AIPO_QA7_CHECKSUM||q7.formal_actions_evidence!==true) bad('QA7 binding');
+          if(by.QA8.checksum!==process.env.AIPO_QA8_CHECKSUM||q8.checksum!==process.env.AIPO_QA8_CHECKSUM||q8.mode!=='full'||q8.completion_status!=='COMPLETE') bad('QA8 binding');
+          if(!by.QA9||by.QA9.completion_status!=='NOT_STARTED'||by.QA9.run_id!==null||by.QA9.checksum!==null) bad('QA9 pending');
+          const counts=d.counts||{};
+          for(const k of ['P0','P1','P2','P3']) if((counts[k]||0)!==0) bad('defect '+k);
+          if((d.defects||[]).length!==0) bad('defect rows');
+          const ci=e.critical_invariant||{};
+          for(const k of ['blocked','skipped','uncovered']) if((ci[k]||0)!==0) bad('critical '+k);
+          const snap=e.current_epoch||{};
+          if(snap.qa1_qa6_status!=='STALE_PENDING_RERUN'||snap.qa8_status!=='STALE_PENDING_RERUN'||snap.qa9_status!=='STALE_AGGREGATION_PENDING_DISCOVERY') bad('snapshot');
+          NODE
+          pnpm verify:engine-acceptance
+
+      - name: Kill-switch before QA9 aggregation
+        run: node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+
+      - name: Run canonical QA9 final aggregation
+        run: node tooling/engine-acceptance/run-qa9.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+
+      - name: Validate final acceptance formula and verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs=require('fs'),crypto=require('crypto');
+          const b=JSON.parse(fs.readFileSync('governance/engine-acceptance/baseline.v1.json','utf8'));
+          const e=JSON.parse(fs.readFileSync('governance/engine-acceptance/evidence-manifest.v1.json','utf8'));
+          const d=JSON.parse(fs.readFileSync('governance/engine-acceptance/defects.v1.json','utf8'));
+          const q9=JSON.parse(fs.readFileSync('governance/engine-acceptance/qa9-result.v1.json','utf8'));
+          const report=fs.readFileSync('governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md','utf8');
+          const by=Object.fromEntries((e.suites||[]).map(x=>[x.suite_id,x]));
+          const bad=m=>{throw new Error(m)};
+          const copy={...q9}; delete copy.checksum;
+          const sum=crypto.createHash('sha256').update(JSON.stringify(copy)+'\n','utf8').digest('hex');
+          if(sum!==q9.checksum) bad('QA9 checksum');
+          if(q9.baseline_id!==b.id||q9.completion_status!=='COMPLETE'||q9.aggregation_only!==true||q9.discovery_suite!==false||q9.product_mutation!==0) bad('QA9 shape');
+          const fi=q9.formula_inputs||{};
+          const required={
+            mandatory_suite_complete:true,
+            critical_invariant_blocked:0,
+            critical_invariant_skipped:0,
+            critical_invariant_uncovered:0,
+            defects_P0:0,
+            defects_P1:0,
+            defects_P2:0,
+            defects_P3:0,
+            baseline_valid:true,
+            acceptance_scope_unchanged:true,
+            report_baseline_id_match:true,
+            evidence_integrity_valid:true,
+            verdict_reason_code:'ALL_FORMULA_CONDITIONS_MET',
+            next:'03_ui_entry_unlocked',
+          };
+          for(const [k,val] of Object.entries(required)) if(fi[k]!==val) bad('formula '+k+'='+fi[k]);
+          if(q9.verdict!=='ENGINE_ACCEPTED_FOR_UI'||q9.engine_accepted_for_ui!=='ISSUED'||q9.ui_ux_entry_gate!=='OPEN'||q9.next!=='03_ui_entry_unlocked') bad('final verdict');
+          if(e.qa_phase!=='QA-9'||e.verdict!=='ENGINE_ACCEPTED_FOR_UI'||e.next!=='03_ui_entry_unlocked'||e.evidence_integrity!=='VALID') bad('final evidence');
+          if(!by.QA9||by.QA9.completion_status!=='COMPLETE'||by.QA9.aggregation_only!==true||by.QA9.checksum!==q9.checksum||String(by.QA9.run_id)!==String(q9.run_id)||by.QA9.baseline_id!==b.id) bad('QA9 slot');
+          for(const id of ['QA1','QA2','QA3','QA4','QA5','QA6','QA7','QA8']) if(!by[id]||by[id].completion_status!=='COMPLETE'||by[id].baseline_id!==b.id) bad('preserve '+id);
+          const counts=d.counts||{};
+          for(const k of ['P0','P1','P2','P3']) if((counts[k]||0)!==0) bad('live defects '+k);
+          const ci=e.critical_invariant||{};
+          for(const k of ['blocked','skipped','uncovered']) if((ci[k]||0)!==0) bad('live critical '+k);
+          const snap=e.current_epoch||{};
+          if(snap.qa1_qa6_status!=='STALE_PENDING_RERUN'||snap.qa8_status!=='STALE_PENDING_RERUN'||snap.qa9_status!=='STALE_AGGREGATION_PENDING_DISCOVERY') bad('snapshot changed');
+          for(const phrase of ['QA9 = COMPLETE','ENGINE_ACCEPTED_FOR_UI = ISSUED','UI_UX_ENTRY_GATE = OPEN','NEXT = 03_ui_entry_unlocked','PRODUCT MUTATION = 0']) if(!report.includes(phrase)) bad('report '+phrase);
+          NODE
+          pnpm verify:engine-acceptance
+
+      - name: Upload final QA9 governance evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: rel-502-QA9-final-governance
+          path: |
+            governance/engine-acceptance/qa9-result.v1.json
+            governance/engine-acceptance/evidence-manifest.v1.json
+            governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
+          retention-days: 90
+          if-no-files-found: error
+
+      - name: Enforce aggregation-only diff, persist, remove one-shot
+        shell: bash
+        run: |
+          set -euo pipefail
+          allowed=(
+            governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
+            governance/engine-acceptance/baseline.v1.json
+            governance/engine-acceptance/evidence-manifest.v1.json
+            governance/engine-acceptance/qa9-result.v1.json
+          )
+          declare -A ok=()
+          for p in "${allowed[@]}"; do ok["$p"]=1; done
+          mapfile -t changed < <(git diff --name-only | sort)
+          test "${#changed[@]}" -ge 3
+          for p in "${changed[@]}"; do
+            test -n "${ok[$p]:-}" || { echo "forbidden QA9 diff: $p"; exit 1; }
+          done
+          for required in \
+            governance/engine-acceptance/qa9-result.v1.json \
+            governance/engine-acceptance/evidence-manifest.v1.json \
+            governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
+          do
+            printf '%s\n' "${changed[@]}" | grep -Fx "$required" >/dev/null
+          done
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${allowed[@]}"
+          git rm .github/workflows/rel-502-qa9-final-once.yml
+          git diff --cached --check
+          git commit -m "${AIPO_QA9_PERSIST_SUBJECT}"
+          git push origin "HEAD:release/auth-wallet-rel502-v1-20260828"

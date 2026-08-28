@@ -2347,8 +2347,26 @@ const qa8SecWorld = qa8Result && qa8Result.checks && qa8Result.checks.security_p
 const qa8DynScenario = qa8SecWorld && (qa8SecWorld.dynamic_scenarios || [])[0];
 const qa8DynamicBlocked = Boolean(qa8DynScenario && qa8DynScenario.blocked_code === "BLOCKED_ENV_CAPABILITY");
 if (report) {
-  if (/verdict\s*[:=]\s*`?ENGINE_ACCEPTED_FOR_UI/i.test(report)) {
-    fail("REPORT must not claim ENGINE_ACCEPTED_FOR_UI before full suites");
+  const finalQa9AcceptedReportAllowed = Boolean(
+    !pendingRerun &&
+      !ephemeralQa6Rewrite &&
+      !ephemeralPreQa9Rewrite &&
+      !currentEpochPreQa7Checkpoint &&
+      !currentEpochPostQa7PreQa8Checkpoint &&
+      !currentEpochPostQa8PreQa9Checkpoint &&
+      evidence &&
+      evidence.qa_phase === "QA-9" &&
+      evidence.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
+      qa9Result &&
+      qa9Result.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
+      qa9Result.engine_accepted_for_ui === "ISSUED" &&
+      qa9Result.ui_ux_entry_gate === "OPEN",
+  );
+  if (
+    /verdict\s*[:=]\s*`?ENGINE_ACCEPTED_FOR_UI/i.test(report) &&
+    !finalQa9AcceptedReportAllowed
+  ) {
+    fail("REPORT must not claim ENGINE_ACCEPTED_FOR_UI before a formula-consistent current QA9 acceptance");
   }
   if (pendingRerun) {
     if (!report.includes("ENGINE_ACCEPTANCE_REBASE_V1")) {
