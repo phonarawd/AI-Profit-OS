@@ -36,9 +36,9 @@ jobs:
       - name: Checkout exact trigger commit
         uses: actions/checkout@v6
         with:
-          ref: \${{ github.sha }}
+          ref: ${{ github.sha }}
           fetch-depth: 0
-          token: \${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: pnpm/action-setup@v6
         with:
@@ -51,11 +51,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "\${GITHUB_REPOSITORY}" = "phonarawd/AI-Profit-OS"
-          test "\${GITHUB_REF}" = "refs/heads/\${AIPO_QA7_SOURCE_BRANCH}"
-          test "$(git log -1 --pretty=%s)" = "\${AIPO_QA7_MARKER}"
+          test "${GITHUB_REPOSITORY}" = "phonarawd/AI-Profit-OS"
+          test "${GITHUB_REF}" = "refs/heads/${AIPO_QA7_SOURCE_BRANCH}"
+          test "$(git log -1 --pretty=%s)" = "${AIPO_QA7_MARKER}"
           test -z "$(git status --porcelain)"
-          test "$(node -p "require('./governance/engine-acceptance/baseline.v1.json').id")" = "\${AIPO_QA7_BASELINE_ID}"
+          test "$(node -p "require('./governance/engine-acceptance/baseline.v1.json').id")" = "${AIPO_QA7_BASELINE_ID}"
           test "$(node -p "require('./governance/engine-acceptance/evidence-manifest.v1.json').qa_phase")" = "QA-6"
           test "$(node -p "require('./governance/engine-acceptance/evidence-manifest.v1.json').next")" = "QA7_AI_EVAL"
           test "$(node -p "require('./governance/engine-acceptance/evidence-manifest.v1.json').suites.find(x=>x.suite_id==='QA7').completion_status")" = "NOT_STARTED"
@@ -65,7 +65,7 @@ jobs:
         with:
           repository: phonarawd/AI-Profit-OS
           run-id: 33155687092
-          github-token: \${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           name: engine-acceptance-QA7-raw-traces
           path: /tmp/aipo-qa7-source
 
@@ -75,34 +75,34 @@ jobs:
         run: |
           set -euo pipefail
           summary="$(find /tmp/aipo-qa7-source -type f -name qa7-local-summary.json -print -quit)"
-          test -n "\${summary}"
-          dir="$(dirname "\${summary}")"
-          test "$(find "\${dir}" -maxdepth 1 -type f -name '*.trace.json' | wc -l | tr -d ' ')" = "26"
-          test "$(node -p "require('\${summary}').baseline_id")" = "\${AIPO_QA7_BASELINE_ID}"
-          test "$(node -p "require('\${summary}').suite_status")" = "PASS"
-          test "$(node -p "require('\${summary}').counts.total")" = "26"
-          test "$(node -p "require('\${summary}').counts.pass")" = "26"
-          test "$(node -p "require('\${summary}').counts.fail")" = "0"
-          test "$(node -p "require('\${summary}').counts.blocked")" = "0"
-          test "$(node -p "require('\${summary}').counts.graded")" = "26"
-          printf 'artifact_dir=%s\n' "\${dir}" >> "\${GITHUB_OUTPUT}"
+          test -n "${summary}"
+          dir="$(dirname "${summary}")"
+          test "$(find "${dir}" -maxdepth 1 -type f -name '*.trace.json' | wc -l | tr -d ' ')" = "26"
+          test "$(node -p "require('${summary}').baseline_id")" = "${AIPO_QA7_BASELINE_ID}"
+          test "$(node -p "require('${summary}').suite_status")" = "PASS"
+          test "$(node -p "require('${summary}').counts.total")" = "26"
+          test "$(node -p "require('${summary}').counts.pass")" = "26"
+          test "$(node -p "require('${summary}').counts.fail")" = "0"
+          test "$(node -p "require('${summary}').counts.blocked")" = "0"
+          test "$(node -p "require('${summary}').counts.graded")" = "26"
+          printf 'artifact_dir=%s\n' "${dir}" >> "${GITHUB_OUTPUT}"
 
       - name: Run official QA7 formal publisher
         shell: bash
         run: |
           set -euo pipefail
           node tooling/engine-acceptance/publish-qa7-formal.cjs \
-            --actions-run-id "\${AIPO_QA7_SOURCE_RUN_ID}" \
-            --artifact-dir "\${{ steps.artifact.outputs.artifact_dir }}" \
-            --head-sha "\${AIPO_QA7_SOURCE_HEAD_SHA}" \
-            --head-branch "\${AIPO_QA7_SOURCE_BRANCH}" \
+            --actions-run-id "${AIPO_QA7_SOURCE_RUN_ID}" \
+            --artifact-dir "${{ steps.artifact.outputs.artifact_dir }}" \
+            --head-sha "${AIPO_QA7_SOURCE_HEAD_SHA}" \
+            --head-branch "${AIPO_QA7_SOURCE_BRANCH}" \
             --workflow-name engine-acceptance \
             --event workflow_dispatch \
             --qa-phase qa7 \
             --conclusion success \
-            --artifact-id "\${AIPO_QA7_ARTIFACT_ID}" \
-            --artifact-expires-at "\${AIPO_QA7_ARTIFACT_EXPIRES_AT}" \
-            --run-url "https://github.com/phonarawd/AI-Profit-OS/actions/runs/\${AIPO_QA7_SOURCE_RUN_ID}"
+            --artifact-id "${AIPO_QA7_ARTIFACT_ID}" \
+            --artifact-expires-at "${AIPO_QA7_ARTIFACT_EXPIRES_AT}" \
+            --run-url "https://github.com/phonarawd/AI-Profit-OS/actions/runs/${AIPO_QA7_SOURCE_RUN_ID}"
 
       - name: Validate formal publication
         shell: bash
@@ -143,13 +143,13 @@ jobs:
             governance/engine-acceptance/evidence-manifest.v1.json
             governance/engine-acceptance/qa7-result.v1.json
           )
-          test "\${#changed[@]}" -eq "\${#expected[@]}"
-          for i in "\${!expected[@]}"; do test "\${changed[$i]}" = "\${expected[$i]}"; done
+          test "${#changed[@]}" -eq "${#expected[@]}"
+          for i in "${!expected[@]}"; do test "${changed[$i]}" = "${expected[$i]}"; done
           git diff --check
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "\${expected[@]}"
+          git add "${expected[@]}"
           git rm .github/workflows/rel-502-qa7-formal-publish-once.yml
           git diff --cached --check
-          git commit -m "\${AIPO_QA7_PUBLISH_SUBJECT}"
-          git push origin "HEAD:\${AIPO_QA7_SOURCE_BRANCH}"
+          git commit -m "${AIPO_QA7_PUBLISH_SUBJECT}"
+          git push origin "HEAD:${AIPO_QA7_SOURCE_BRANCH}"
