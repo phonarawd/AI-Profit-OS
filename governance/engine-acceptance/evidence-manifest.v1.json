@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-6",
+  "qa_phase": "QA-7",
   "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
   "verdict": "ENGINE_QA_INCOMPLETE",
-  "verdict_reason": "QA6 COMPLETE · P0/P1=0/0 · mandatory suites QA7..QA8 not executed · ENGINE_ACCEPTED_FOR_UI forbidden",
+  "verdict_reason": "QA7 COMPLETE (formal Actions) · critical_invariant.blocked=0 (QA4-QA6 clean for current epoch) · P0/P1=0 · QA8 NOT_STARTED (mandatory suite incomplete) · ENGINE_ACCEPTED_FOR_UI forbidden",
   "evidence_integrity": "VALID",
-  "next": "QA7_AI_EVAL",
+  "next": "QA8_SECURITY_PRIVACY",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -16,6 +16,7 @@
       "baseline.v1.json",
       "ENGINE_ACCEPTANCE_REPORT.md",
       "qa6-result.v1.json",
+      "qa7-result.v1.json",
       "perf-budget.v1.json"
     ]
   },
@@ -88,15 +89,14 @@
     },
     {
       "suite_id": "QA7",
-      "run_id": null,
+      "run_id": "33155687092",
       "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "checksum": null,
-      "completion_status": "NOT_STARTED",
+      "checksum": "5fd75a148c3ad125be041410d1cabd2e1ffe0c4642164410aca3883530354896",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa7-result.v1.json",
       "mode": "full",
       "formal_actions_evidence": true,
-      "artifact": "engine-acceptance-QA7-raw-traces",
-      "predecessor_baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72"
+      "artifact": "engine-acceptance-QA7-raw-traces"
     },
     {
       "suite_id": "QA8",
@@ -143,10 +143,11 @@
     "verified_before_qa3": true,
     "verified_before_qa4": true,
     "verified_before_qa5": true,
-    "verified_before_qa6": true
+    "verified_before_qa6": true,
+    "verified_before_qa7": true
   },
   "dual_dirty": {
-    "working_tree_clean": false,
+    "working_tree_clean": true,
     "protected_scope_clean": true,
     "forced_clean_forbidden": true
   },

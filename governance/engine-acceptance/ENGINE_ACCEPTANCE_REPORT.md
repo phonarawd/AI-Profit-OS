@@ -1,10 +1,12 @@
 # ENGINE ACCEPTANCE REPORT
 
-> **QA phase:** QA-6 `qa6-performance-world`  
-> **Measured:** 2026-08-28T02:08:46.893Z  
-> **baseline_id:** `ea-baseline-cc627efc3ee2-defdfa5b6ac4`  
-> **qa6_run_id:** `qa6-performance-world-20260828`  
-> **qa6_result_checksum:** `771ebb08977426d21d6d8665d0713dcc612050e1a74a83765673de1c938c051a`  
+> **QA phase:** QA-7 `qa7-ai-eval`
+> **Measured:** 2026-08-28T08:32:12.117Z
+> **Published:** 2026-08-28T09:24:16.413Z
+> **baseline_id:** `ea-baseline-cc627efc3ee2-defdfa5b6ac4`
+> **qa7_run_id:** `33155687092`
+> **qa7_harness_run_id:** `qa7-local-full-20260828-8648df`
+> **qa7_result_checksum:** `5fd75a148c3ad125be041410d1cabd2e1ffe0c4642164410aca3883530354896`
 > **mode:** `full`
 
 ## Status banner
@@ -19,68 +21,75 @@ QA3 = COMPLETE
 QA4 = COMPLETE
 QA5 = COMPLETE
 QA6 = COMPLETE
+QA7 = COMPLETE
+QA8 = NOT_STARTED
 QA HARNESS TARGET = SAFE
-NEXT = QA7_AI_EVAL
+NEXT = QA8_SECURITY_PRIVACY
 PRODUCT MUTATION = 0
+EVAL_MUTATION = 0
+GRADER_MUTATION = 0
 03 UI = BLOCKED
+ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
 ```
 
-## Verdict (after QA-6)
+## Verdict (after QA-7 formal Actions publication)
 
 | Field | Value |
 |---|---|
 | verdict | `ENGINE_QA_INCOMPLETE` |
-| reason | QA6 COMPLETE · P0/P1=0/0 · mandatory suites QA7..QA8 not executed · ENGINE_ACCEPTED_FOR_UI forbidden |
+| reason | QA7 COMPLETE (formal Actions) · critical_invariant.blocked=0 (QA4-QA6 clean for current epoch) · P0/P1=0 · QA8 NOT_STARTED (mandatory suite incomplete) · ENGINE_ACCEPTED_FOR_UI forbidden |
 | evidence_integrity | `VALID` |
 | baseline.valid | `true` |
-| working_tree_clean | `false` (fact only — not forced clean) |
+| working_tree_clean | `true` (fact only — not forced clean) |
 | protected_scope_clean | `true` |
 | defects.P0 / P1 | 0 / 0 |
 | critical_invariant.blocked (cumulative) | 0 |
 | critical_invariant.skipped | 0 |
 | critical_invariant.uncovered | 0 |
-| critical_invariant.failed | 0 |
-| mandatory suites COMPLETE | QA0..QA6 only · QA7..QA8 NOT_STARTED |
+| mandatory suites COMPLETE | QA0..QA7 · QA8 NOT_STARTED |
 
-**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (critical BLOCKED/UNSPECIFIED and/or QA7..QA8 incomplete).
+**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (critical BLOCKED/UNSPECIFIED and/or QA8 incomplete).
 
-## Performance World (k6 · CI only heavy)
+## QA7 AI Eval (formal GitHub Actions)
 
 | Field | Value |
 |---|---|
-| suite status | `PASS` |
-| budget_status | `SPECIFIED` |
-| threshold_mechanism.locked | `true` |
-| threshold_mechanism.engine | `k6` |
-| threshold_mechanism.binding | `tag` |
-| k6_script | `tooling/engine-acceptance/k6/scenario-mix.js` present=`true` |
-| scenarios blocked/unspecified/failed/passed | 0 / 0 / 0 / 4 |
-| numeric invention | **forbidden** |
-| heavy k6 | **CI only** |
-| mock PASS | **forbidden** |
-| product mutation | `0` |
-| artifact retention | acceptance evidence ≥ **90** days (Actions artifact) |
-| aggregator | `if: always()` (선행 job 실패 후에도 집계) |
+| formal_actions_evidence | `true` |
+| local_validation_only | `false` |
+| actions.run_id | `33155687092` |
+| workflow | `engine-acceptance` |
+| event | `workflow_dispatch` |
+| qa_phase | `qa7` |
+| head_sha | `5becf28a55f72a47636948d05f69f3bafbca9f70` |
+| conclusion | `success` |
+| CASES / PASS / FAIL / BLOCKED | 26 / 26 / 0 / 0 |
+| suite_status | `PASS` |
+| trace_id_provenance | `RUNTIME` |
+| no_expectation_leakage | `true` |
+| no_fake_trace | `true` |
+| secret_exposure | `NONE` |
+| artifact | `engine-acceptance-QA7-raw-traces` retention=90d raw_in_repo=false |
+| deterministic_grader | sole oracle · `PASS` |
+| quality_grader | NOT_USED (sole oracle 금지) |
+| prompt/eval/workflow hashes | MATCH |
+
+## Performance World (k6 · CI only heavy)
+
+QA6 기록 유지. suite status `PASS` — budget SPECIFIED (Human/PO ACK, perf-budget.v1.json V1) · threshold mechanism locked · numeric invention **forbidden** · heavy k6 **CI only** · artifact retention ≥ **90** days · aggregator `if: always()`.
 
 | Scenario | Tag | Invariant | Status | Budget | Blocked code |
 |---|---|---|---|---|---|
-| `PERF-FEED-READ` | `feed_read` | `INV-PERF-01` | `PASS` | `SPECIFIED` | `—` |
-| `PERF-PARTICIPATE` | `participate` | `INV-PERF-01` | `PASS` | `SPECIFIED` | `—` |
-| `PERF-WALLET-READ` | `wallet_read` | `INV-PERF-01` | `PASS` | `SPECIFIED` | `—` |
-| `PERF-AUTH-PROFILE` | `auth_profile` | `INV-PERF-01` | `PASS` | `SPECIFIED` | `—` |
-
-### SPECIFIED (Human/PO ACK)
-
-- perf-budget.v1.json budget_version=V1, p95<=30ms, error_rate<=0.01, four tags (feed_read/participate/wallet_read/auth_profile).
-- Numbers are Human/PO-ACK sourced, never invented by the harness.
-- Real threshold PASS/FAIL is only reflected here when run-qa6-threshold.cjs (real k6 + booted Nest + isolated Postgres) produced fresh evidence in this same job.
+| `PERF-FEED-READ` | `feed_read` | `INV-PERF-01` | `PASS` | `PASS` | `-` |
+| `PERF-PARTICIPATE` | `participate` | `INV-PERF-01` | `PASS` | `PASS` | `-` |
+| `PERF-WALLET-READ` | `wallet_read` | `INV-PERF-01` | `PASS` | `PASS` | `-` |
+| `PERF-AUTH-PROFILE` | `auth_profile` | `INV-PERF-01` | `PASS` | `PASS` | `-` |
 
 ## Dual Dirty
 
-- working_tree_clean=`false`
+- working_tree_clean=`true`
 - protected_scope_clean=`true`
 - forced clean / stash laundry = **forbidden**
 
 ## Next
 
-`QA7_AI_EVAL` only. Full ACCEPTED · product mutation · 03 UI — **금지**.
+`QA8_SECURITY_PRIVACY` only. QA7_AI_EVAL formal evidence is published. Full ACCEPTED · product mutation · 03 UI — **금지**. QA4–QA6 carry forward critical_invariant.blocked=0 (clean) but QA8 (mandatory suite) has not run yet — still blocks `ENGINE_ACCEPTED_FOR_UI`.
