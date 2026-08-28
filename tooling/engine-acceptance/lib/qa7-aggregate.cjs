@@ -51,20 +51,13 @@ function aggregateQa7(gradeResults, meta) {
 
   const evalGate = ai.evaluateModelCandidate(metrics);
 
-  /** Suite-level status: BLOCKED if any blocked and no fails? keep distinct */
+  // Suite-level: FAIL dominates; any BLOCKED without FAIL is BLOCKED (never PASS).
+  // Eval gate must not later promote BLOCKED back to PASS.
   let suite_status = "PASS";
-  if (fail > 0) suite_status = "FAIL";
-  if (blocked > 0 && fail === 0 && pass === 0) suite_status = "BLOCKED";
-  else if (blocked > 0 && fail === 0) suite_status = "PASS"; // partial blocked cases don't force FAIL
-  else if (blocked > 0 && fail > 0) suite_status = "FAIL";
-
-  // If precheck/runtime left everything blocked → BLOCKED
-  if (list.length > 0 && blocked === list.length) suite_status = "BLOCKED";
-
-  // Gate fail when graded cases failed thresholds
-  if (graded > 0 && !evalGate.pass && fail > 0) suite_status = "FAIL";
-  if (graded > 0 && !evalGate.pass && fail === 0 && blocked > 0) {
-    // accuracy may be low due to empty graded — already handled
+  if (fail > 0) {
+    suite_status = "FAIL";
+  } else if (blocked > 0) {
+    suite_status = "BLOCKED";
   }
 
   return {

@@ -20,6 +20,7 @@ const {
 } = require("./lib/qa7-trace.cjs");
 const { gradeCase, gradeDataset } = require("./lib/qa7-grader.cjs");
 const { aggregateQa7 } = require("./lib/qa7-aggregate.cjs");
+const { exitCodeForSuiteStatus } = require("./run-qa7.cjs");
 const { loadQa7Env, describeProviderPrereq } = require("./lib/qa7-env.cjs");
 const { EVAL_FILES, GRADER_VERSION } = require("./lib/qa7-constants.cjs");
 const {
@@ -433,6 +434,130 @@ function run() {
     assert.equal(a1.quality_grader.sole_oracle, false);
     assert.equal(a1.eval_gate.schema, "ai-eval-gate.v1");
     assert.equal(a1.suite_status, "FAIL");
+  });
+
+  const cleanFlags = () => ({
+    moneyHallucination: false,
+    piiLeak: false,
+    l3MoneyAction: false,
+  });
+
+  check("partial_blocked_is_blocked_not_pass", () => {
+    const grades = [];
+    for (let i = 0; i < 25; i += 1) {
+      grades.push({
+        case_id: `pass_${i}`,
+        status: "PASS",
+        flags: cleanFlags(),
+      });
+    }
+    grades.push({
+      case_id: "p_help",
+      status: "BLOCKED",
+      block_code: "BLOCKED_HTTP_ERROR",
+      flags: cleanFlags(),
+    });
+    const a = aggregateQa7(grades, {
+      run_id: "r",
+      baseline_id: "b",
+      mode: "selftest",
+      model_execution_count: 0,
+    });
+    assert.equal(a.suite_status, "BLOCKED");
+    assert.equal(a.counts.total, 26);
+    assert.equal(a.counts.pass, 25);
+    assert.equal(a.counts.fail, 0);
+    assert.equal(a.counts.blocked, 1);
+    assert.equal(a.counts.graded, 25);
+    assert.notEqual(a.suite_status, "PASS");
+  });
+
+  check("all_blocked_is_blocked", () => {
+    const grades = [];
+    for (let i = 0; i < 26; i += 1) {
+      grades.push({
+        case_id: `blocked_${i}`,
+        status: "BLOCKED",
+        block_code: "BLOCKED_HTTP_ERROR",
+        flags: cleanFlags(),
+      });
+    }
+    const a = aggregateQa7(grades, {
+      run_id: "r",
+      baseline_id: "b",
+      mode: "selftest",
+      model_execution_count: 0,
+    });
+    assert.equal(a.suite_status, "BLOCKED");
+    assert.equal(a.counts.total, 26);
+    assert.equal(a.counts.pass, 0);
+    assert.equal(a.counts.fail, 0);
+    assert.equal(a.counts.blocked, 26);
+    assert.equal(a.counts.graded, 0);
+  });
+
+  check("fail_dominates_blocked", () => {
+    const grades = [];
+    for (let i = 0; i < 24; i += 1) {
+      grades.push({
+        case_id: `pass_${i}`,
+        status: "PASS",
+        flags: cleanFlags(),
+      });
+    }
+    grades.push({
+      case_id: "fail_1",
+      status: "FAIL",
+      flags: cleanFlags(),
+    });
+    grades.push({
+      case_id: "blocked_1",
+      status: "BLOCKED",
+      block_code: "BLOCKED_HTTP_ERROR",
+      flags: cleanFlags(),
+    });
+    const a = aggregateQa7(grades, {
+      run_id: "r",
+      baseline_id: "b",
+      mode: "selftest",
+      model_execution_count: 0,
+    });
+    assert.equal(a.suite_status, "FAIL");
+    assert.equal(a.counts.total, 26);
+    assert.equal(a.counts.pass, 24);
+    assert.equal(a.counts.fail, 1);
+    assert.equal(a.counts.blocked, 1);
+    assert.equal(a.counts.graded, 25);
+    assert.notEqual(a.suite_status, "BLOCKED");
+  });
+
+  check("all_pass_is_pass", () => {
+    const grades = [];
+    for (let i = 0; i < 26; i += 1) {
+      grades.push({
+        case_id: `pass_${i}`,
+        status: "PASS",
+        flags: cleanFlags(),
+      });
+    }
+    const a = aggregateQa7(grades, {
+      run_id: "r",
+      baseline_id: "b",
+      mode: "selftest",
+      model_execution_count: 0,
+    });
+    assert.equal(a.suite_status, "PASS");
+    assert.equal(a.counts.total, 26);
+    assert.equal(a.counts.pass, 26);
+    assert.equal(a.counts.fail, 0);
+    assert.equal(a.counts.blocked, 0);
+    assert.equal(a.counts.graded, 26);
+  });
+
+  check("process_exit_maps_final_suite_status", () => {
+    assert.equal(exitCodeForSuiteStatus("PASS"), 0);
+    assert.equal(exitCodeForSuiteStatus("FAIL"), 1);
+    assert.equal(exitCodeForSuiteStatus("BLOCKED"), 2);
   });
 
   if (fails.length) {

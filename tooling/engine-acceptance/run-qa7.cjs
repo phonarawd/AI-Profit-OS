@@ -44,6 +44,13 @@ function hasFlag(argv, name) {
   return argv.includes(name);
 }
 
+/** Final process exit: PASS=0 · FAIL=1 · BLOCKED=2 (all BLOCKED, no block_code allowlist). */
+function exitCodeForSuiteStatus(status) {
+  if (status === "FAIL") return 1;
+  if (status === "BLOCKED") return 2;
+  return 0;
+}
+
 async function runQa7(opts = {}) {
   const mode = opts.mode || "smoke";
   const skipLlm = opts.skipLlm === true;
@@ -397,15 +404,7 @@ async function main() {
     ),
   );
 
-  if (result.suite_status === "FAIL") process.exitCode = 1;
-  if (
-    result.suite_status === "BLOCKED" &&
-    (result.block_code === "BLOCKED_PRECHECK" ||
-      result.block_code === "BLOCKED_NO_HTTP_CANONICAL" ||
-      result.block_code === "EXPECTATION_LEAKAGE")
-  ) {
-    process.exitCode = 2;
-  }
+  process.exitCode = exitCodeForSuiteStatus(result.suite_status);
 }
 
 if (require.main === module) {
@@ -415,4 +414,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { runQa7 };
+module.exports = { runQa7, exitCodeForSuiteStatus };
