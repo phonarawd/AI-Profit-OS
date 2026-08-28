@@ -2,9 +2,9 @@
   "schema": "governance.engine-acceptance.qa5-result.v1",
   "version": "1.0.0",
   "suite_id": "QA5",
-  "run_id": "qa5-failure-world-20260827",
+  "run_id": "qa5-failure-world-20260828",
   "todoId": "qa5-failure-world",
-  "measuredAt": "2026-08-27T22:46:55.391Z",
+  "measuredAt": "2026-08-28T02:07:19.167Z",
   "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
   "mode": "tiny",
   "kill_switch": {
@@ -24,7 +24,7 @@
       "check_id": "QA5_FAILURE_WORLD",
       "status": "PASS",
       "mode": "tiny",
-      "measuredAt": "2026-08-27T22:46:55.391Z",
+      "measuredAt": "2026-08-28T02:07:19.167Z",
       "seed": 20260812,
       "fault_hook": {
         "available": true,
@@ -101,7 +101,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-27T22:46:50.918Z",
+            "clock_as_of": "2026-08-28T02:07:14.637Z",
             "request_sequence": [
               {
                 "step": "probe_fault_hook",
@@ -160,7 +160,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-27T22:46:50.918Z",
+            "clock_as_of": "2026-08-28T02:07:14.637Z",
             "request_sequence": [
               {
                 "step": "probe_fault_hook",
@@ -262,16 +262,19 @@
     "blocked": 0,
     "skipped": 0,
     "uncovered": 0,
+    "failed": 0,
     "sources": {
       "QA4": {
         "blocked": 0,
         "skipped": 0,
-        "uncovered": 0
+        "uncovered": 0,
+        "failed": 0
       },
       "QA5": {
         "blocked": 0,
         "skipped": 0,
-        "uncovered": 0
+        "uncovered": 0,
+        "failed": 0
       }
     }
   },
@@ -301,5 +304,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "CI aggregator uses if: always(); artifact retention ≥ 90 days."
   ],
-  "checksum": "bfb0472a32e3843b69ed219991d4ee88115bb8d460b8caa8995e13d779ad58dc"
+  "checksum": "71a59ab3073ad030b2441ccfa31f2144c2f088cc748c614283c553a129040ab1"
 }

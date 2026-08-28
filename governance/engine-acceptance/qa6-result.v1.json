@@ -2,9 +2,9 @@
   "schema": "governance.engine-acceptance.qa6-result.v1",
   "version": "1.0.0",
   "suite_id": "QA6",
-  "run_id": "qa6-performance-world-20260827",
+  "run_id": "qa6-performance-world-20260828",
   "todoId": "qa6-performance-world",
-  "measuredAt": "2026-08-27T22:48:07.503Z",
+  "measuredAt": "2026-08-28T02:08:46.893Z",
   "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
   "mode": "full",
   "kill_switch": {
@@ -24,7 +24,7 @@
       "check_id": "QA6_PERFORMANCE_WORLD",
       "status": "PASS",
       "mode": "full",
-      "measuredAt": "2026-08-27T22:48:07.503Z",
+      "measuredAt": "2026-08-28T02:08:46.893Z",
       "seed": 20260812,
       "perf_oracle": {
         "available": true,
@@ -99,10 +99,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 7.9330295,
-              "p95": 10.911919899999997,
-              "p99": 16.61364335000001,
-              "avg": 8.283245953125
+              "p50": 8.077391,
+              "p95": 11.0678179,
+              "p99": 16.00041557000002,
+              "avg": 8.433058130208336
             },
             "error_rate": 0
           },
@@ -112,7 +112,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-27T22:48:07.286Z",
+            "clock_as_of": "2026-08-28T02:08:46.681Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -135,10 +135,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 7.9330295,
-                  "p95": 10.911919899999997,
-                  "p99": 16.61364335000001,
-                  "avg": 8.283245953125
+                  "p50": 8.077391,
+                  "p95": 11.0678179,
+                  "p99": 16.00041557000002,
+                  "avg": 8.433058130208336
                 },
                 "error_rate": 0
               },
@@ -187,10 +187,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 5.072453,
-              "p95": 7.698786,
-              "p99": 13.710094899999923,
-              "avg": 5.498285969696968
+              "p50": 5.0038005000000005,
+              "p95": 7.8376105,
+              "p99": 15.553453799999929,
+              "avg": 5.49407918181818
             },
             "error_rate": 0
           },
@@ -200,7 +200,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-27T22:48:07.286Z",
+            "clock_as_of": "2026-08-28T02:08:46.681Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -223,10 +223,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 5.072453,
-                  "p95": 7.698786,
-                  "p99": 13.710094899999923,
-                  "avg": 5.498285969696968
+                  "p50": 5.0038005000000005,
+                  "p95": 7.8376105,
+                  "p99": 15.553453799999929,
+                  "avg": 5.49407918181818
                 },
                 "error_rate": 0
               },
@@ -275,10 +275,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 2.856296,
-              "p95": 3.817899299999999,
-              "p99": 5.620921239999976,
-              "avg": 2.915137727272728
+              "p50": 2.313385,
+              "p95": 3.7119612999999996,
+              "p99": 8.404693459999987,
+              "avg": 2.6691722121212127
             },
             "error_rate": 0
           },
@@ -288,7 +288,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-27T22:48:07.286Z",
+            "clock_as_of": "2026-08-28T02:08:46.681Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -311,10 +311,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 2.856296,
-                  "p95": 3.817899299999999,
-                  "p99": 5.620921239999976,
-                  "avg": 2.915137727272728
+                  "p50": 2.313385,
+                  "p95": 3.7119612999999996,
+                  "p99": 8.404693459999987,
+                  "avg": 2.6691722121212127
                 },
                 "error_rate": 0
               },
@@ -363,10 +363,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 2.465457,
-              "p95": 3.7334746999999977,
-              "p99": 6.012946459999993,
-              "avg": 2.6691568080808072
+              "p50": 2.399466,
+              "p95": 3.3532771,
+              "p99": 5.144642839999965,
+              "avg": 2.552575272727272
             },
             "error_rate": 0
           },
@@ -376,7 +376,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-27T22:48:07.286Z",
+            "clock_as_of": "2026-08-28T02:08:46.681Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -399,10 +399,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 2.465457,
-                  "p95": 3.7334746999999977,
-                  "p99": 6.012946459999993,
-                  "avg": 2.6691568080808072
+                  "p50": 2.399466,
+                  "p95": 3.3532771,
+                  "p99": 5.144642839999965,
+                  "avg": 2.552575272727272
                 },
                 "error_rate": 0
               },
@@ -490,16 +490,25 @@
     "blocked": 0,
     "skipped": 0,
     "uncovered": 0,
+    "failed": 0,
     "sources": {
-      "QA5_cumulative": {
+      "QA4": {
         "blocked": 0,
         "skipped": 0,
-        "uncovered": 0
+        "uncovered": 0,
+        "failed": 0
+      },
+      "QA5": {
+        "blocked": 0,
+        "skipped": 0,
+        "uncovered": 0,
+        "failed": 0
       },
       "QA6": {
         "blocked": 0,
         "skipped": 0,
-        "uncovered": 0
+        "uncovered": 0,
+        "failed": 0
       }
     }
   },
@@ -533,5 +542,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "CI aggregator uses if: always(); artifact retention ≥ 90 days."
   ],
-  "checksum": "84f07500b5a2b4b36693edb09899f1894bb6cf051396c0e9b74e36daf6cec9e9"
+  "checksum": "771ebb08977426d21d6d8665d0713dcc612050e1a74a83765673de1c938c051a"
 }

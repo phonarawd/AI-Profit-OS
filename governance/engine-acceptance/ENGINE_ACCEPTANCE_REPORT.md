@@ -1,10 +1,10 @@
 # ENGINE ACCEPTANCE REPORT
 
 > **QA phase:** QA-6 `qa6-performance-world`  
-> **Measured:** 2026-08-27T22:48:07.503Z  
+> **Measured:** 2026-08-28T02:08:46.893Z  
 > **baseline_id:** `ea-baseline-cc627efc3ee2-defdfa5b6ac4`  
-> **qa6_run_id:** `qa6-performance-world-20260827`  
-> **qa6_result_checksum:** `84f07500b5a2b4b36693edb09899f1894bb6cf051396c0e9b74e36daf6cec9e9`  
+> **qa6_run_id:** `qa6-performance-world-20260828`  
+> **qa6_result_checksum:** `771ebb08977426d21d6d8665d0713dcc612050e1a74a83765673de1c938c051a`  
 > **mode:** `full`
 
 ## Status banner
@@ -30,7 +30,7 @@ PRODUCT MUTATION = 0
 | Field | Value |
 |---|---|
 | verdict | `ENGINE_QA_INCOMPLETE` |
-| reason | QA6 COMPLETE · P0/P1=0 · mandatory suites QA7..QA8 not executed · ENGINE_ACCEPTED_FOR_UI forbidden |
+| reason | QA6 COMPLETE · P0/P1=0/0 · mandatory suites QA7..QA8 not executed · ENGINE_ACCEPTED_FOR_UI forbidden |
 | evidence_integrity | `VALID` |
 | baseline.valid | `true` |
 | working_tree_clean | `false` (fact only — not forced clean) |
@@ -39,6 +39,7 @@ PRODUCT MUTATION = 0
 | critical_invariant.blocked (cumulative) | 0 |
 | critical_invariant.skipped | 0 |
 | critical_invariant.uncovered | 0 |
+| critical_invariant.failed | 0 |
 | mandatory suites COMPLETE | QA0..QA6 only · QA7..QA8 NOT_STARTED |
 
 **금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (critical BLOCKED/UNSPECIFIED and/or QA7..QA8 incomplete).

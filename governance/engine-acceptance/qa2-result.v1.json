@@ -2,9 +2,9 @@
   "schema": "governance.engine-acceptance.qa2-result.v1",
   "version": "1.0.0",
   "suite_id": "QA2",
-  "run_id": "qa2-synthetic-personas-20260827",
+  "run_id": "qa2-synthetic-personas-20260828",
   "todoId": "qa2-synthetic-personas",
-  "measuredAt": "2026-08-27T22:44:34.736Z",
+  "measuredAt": "2026-08-28T02:04:41.375Z",
   "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
   "mode": "full",
   "kill_switch": {
@@ -194,7 +194,7 @@
           "attack_face": null,
           "seed": 2523962496,
           "rng_version": "aipo-ea-rng-v1",
-          "clock_as_of": "2026-08-27T22:44:34.736Z",
+          "clock_as_of": "2026-08-28T02:04:41.375Z",
           "clock_source": "wall_clock_iso",
           "request_sequence": [
             {
@@ -254,7 +254,7 @@
           "attack_face": "interleave",
           "seed": 778511907,
           "rng_version": "aipo-ea-rng-v1",
-          "clock_as_of": "2026-08-27T22:44:34.736Z",
+          "clock_as_of": "2026-08-28T02:04:41.375Z",
           "clock_source": "wall_clock_iso",
           "request_sequence": [
             {
@@ -328,7 +328,7 @@
           "attack_face": "token_cross",
           "seed": 1414880402,
           "rng_version": "aipo-ea-rng-v1",
-          "clock_as_of": "2026-08-27T22:44:34.736Z",
+          "clock_as_of": "2026-08-28T02:04:41.375Z",
           "clock_source": "wall_clock_iso",
           "request_sequence": [
             {
@@ -402,7 +402,7 @@
           "attack_face": "object_id_swap",
           "seed": 1744503618,
           "rng_version": "aipo-ea-rng-v1",
-          "clock_as_of": "2026-08-27T22:44:34.736Z",
+          "clock_as_of": "2026-08-28T02:04:41.375Z",
           "clock_source": "wall_clock_iso",
           "request_sequence": [
             {
@@ -462,7 +462,7 @@
           "attack_face": null,
           "seed": 1013830727,
           "rng_version": "aipo-ea-rng-v1",
-          "clock_as_of": "2026-08-27T22:44:34.736Z",
+          "clock_as_of": "2026-08-28T02:04:41.375Z",
           "clock_source": "wall_clock_iso",
           "request_sequence": [
             {
@@ -635,5 +635,5 @@
     "Local default mode=tiny smoke. Case counts are not KPIs.",
     "Does not issue ENGINE_ACCEPTED_FOR_UI."
   ],
-  "checksum": "07fc37ec2a1400b2b27039751bcfdf26cf64c4d9593b3fa28e70c2ae87883b88"
+  "checksum": "cecc79d6aa0c8218fcdf88ffc18136d006a0fcf87168a638c0c91db92228d082"
 }

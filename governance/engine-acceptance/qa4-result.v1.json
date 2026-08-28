@@ -2,9 +2,9 @@
   "schema": "governance.engine-acceptance.qa4-result.v1",
   "version": "1.0.0",
   "suite_id": "QA4",
-  "run_id": "qa4-stateful-time-20260827",
+  "run_id": "qa4-stateful-time-20260828",
   "todoId": "qa4-stateful-time",
-  "measuredAt": "2026-08-27T22:45:28.452Z",
+  "measuredAt": "2026-08-28T02:05:48.486Z",
   "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
   "mode": "full",
   "kill_switch": {
@@ -22,9 +22,9 @@
   "checks": {
     "stateful_time": {
       "check_id": "QA4_STATEFUL_TIME_LIFECYCLE",
-      "status": "FAIL",
+      "status": "PASS",
       "mode": "full",
-      "measuredAt": "2026-08-27T22:45:28.452Z",
+      "measuredAt": "2026-08-28T02:05:48.486Z",
       "seed": 20260812,
       "clock_hook": {
         "available": true,
@@ -43,9 +43,65 @@
         "probed_path": "../../../../../tmp/aipo-harness/qa4-clock/qa4-clock-harness.v1.json",
         "reason": null
       },
+      "scenario_set": {
+        "expected": [
+          "TIME-KST-DAY-BOUNDARY",
+          "TIME-KST-MONTH-END",
+          "TIME-KST-YEAR-END",
+          "TIME-PLUS-30D",
+          "TIME-PLUS-365D",
+          "TIME-MULTI-DAY-LIFECYCLE"
+        ],
+        "harness": {
+          "ok": true,
+          "expected": [
+            "TIME-KST-DAY-BOUNDARY",
+            "TIME-KST-MONTH-END",
+            "TIME-KST-YEAR-END",
+            "TIME-PLUS-30D",
+            "TIME-PLUS-365D",
+            "TIME-MULTI-DAY-LIFECYCLE"
+          ],
+          "actual": [
+            "TIME-KST-DAY-BOUNDARY",
+            "TIME-KST-MONTH-END",
+            "TIME-KST-YEAR-END",
+            "TIME-PLUS-30D",
+            "TIME-PLUS-365D",
+            "TIME-MULTI-DAY-LIFECYCLE"
+          ],
+          "missing": [],
+          "unexpected": [],
+          "duplicates": []
+        },
+        "full": {
+          "ok": true,
+          "expected": [
+            "TIME-KST-DAY-BOUNDARY",
+            "TIME-KST-MONTH-END",
+            "TIME-KST-YEAR-END",
+            "TIME-PLUS-30D",
+            "TIME-PLUS-365D",
+            "TIME-MULTI-DAY-LIFECYCLE"
+          ],
+          "actual": [
+            "TIME-KST-DAY-BOUNDARY",
+            "TIME-KST-MONTH-END",
+            "TIME-KST-YEAR-END",
+            "TIME-PLUS-30D",
+            "TIME-PLUS-365D",
+            "TIME-MULTI-DAY-LIFECYCLE"
+          ],
+          "missing": [],
+          "unexpected": [],
+          "duplicates": [],
+          "missing_real_execution": [],
+          "all_real": true
+        }
+      },
       "scenarioCount": 6,
-      "passed": 3,
-      "failed": 3,
+      "passed": 6,
+      "failed": 0,
       "blocked": 0,
       "scenarios": [
         {
@@ -65,7 +121,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-27T22:45:28.244Z",
+            "clock_as_of": "2026-08-28T02:05:48.367Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -82,8 +138,16 @@
             "sanitized_response": {
               "scenario_id": "TIME-KST-DAY-BOUNDARY",
               "status": "PASS",
+              "real_execution": true,
+              "clock_injected": true,
+              "source": "run-qa4-clock.cjs",
+              "executor": "kst_boundary",
+              "expected_calendar_kind": "day_start",
+              "actual_calendar_kind": "day_start",
               "kst_midnight_ms": 1787929200000,
               "kst_midnight_iso": "2026-08-28T15:00:00.000Z",
+              "kst_day_before": "2026-08-28",
+              "kst_day_after": "2026-08-29",
               "before": {
                 "clock_ms": 1787929198000,
                 "http_status": 200,
@@ -96,6 +160,8 @@
               },
               "row_visible_before_boundary": true,
               "row_invisible_after_boundary": true,
+              "calendar_crossed": true,
+              "calendar_kind_ok": true,
               "findings": []
             },
             "counterexample": null,
@@ -117,15 +183,15 @@
           "clock_as_of": "2026-01-31T14:59:59.000Z",
           "kst_label": "2026-01-31T23:59:59+09:00",
           "kind": "kst_month_end",
-          "status": "FAIL",
+          "status": "PASS",
           "blocked_code": null,
           "findings": [
-            "Clock hook module present but harness multi-day executor not wired in this slice — record as FAIL (not laundry PASS)."
+            "Real execution via run-qa4-clock.cjs (in-process booted Nest + isolated Postgres, real domain services) — not a static/fixture result."
           ],
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-01-31T14:59:59.000Z",
+            "clock_as_of": "2026-08-28T02:05:48.367Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -134,17 +200,47 @@
               },
               {
                 "step": "execute_scenario",
-                "result": "not_wired"
+                "result": "real_execution",
+                "source": "run-qa4-clock.cjs"
               }
             ],
             "sanitized_request": null,
-            "sanitized_response": null,
+            "sanitized_response": {
+              "scenario_id": "TIME-KST-MONTH-END",
+              "status": "PASS",
+              "real_execution": true,
+              "clock_injected": true,
+              "source": "run-qa4-clock.cjs",
+              "executor": "kst_boundary",
+              "expected_calendar_kind": "month_start",
+              "actual_calendar_kind": "month_start",
+              "kst_midnight_ms": 1788188400000,
+              "kst_midnight_iso": "2026-08-31T15:00:00.000Z",
+              "kst_day_before": "2026-08-31",
+              "kst_day_after": "2026-09-01",
+              "before": {
+                "clock_ms": 1788188398000,
+                "http_status": 200,
+                "settlementCompletedToday": 1
+              },
+              "after": {
+                "clock_ms": 1788188402000,
+                "http_status": 200,
+                "settlementCompletedToday": 0
+              },
+              "row_visible_before_boundary": true,
+              "row_invisible_after_boundary": true,
+              "calendar_crossed": true,
+              "calendar_kind_ok": true,
+              "findings": []
+            },
             "counterexample": null,
             "error_message": null,
             "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "9993184581e92b4077aa971742243ec2ae99d7f7c2fc8110471b4ddfb52e8cbc",
-            "suite_id": "QA3",
+            "configuration_fingerprint": "83dc45a74f9b79b2e7c158884d14a402b57cc2f1495d55f10a04ecaeb7fd83a6",
+            "invariant_id": "INV-TIME-01",
+            "suite_id": "QA4",
             "live_http": false
           }
         },
@@ -157,15 +253,15 @@
           "clock_as_of": "2026-12-31T14:59:59.000Z",
           "kst_label": "2026-12-31T23:59:59+09:00",
           "kind": "kst_year_end",
-          "status": "FAIL",
+          "status": "PASS",
           "blocked_code": null,
           "findings": [
-            "Clock hook module present but harness multi-day executor not wired in this slice — record as FAIL (not laundry PASS)."
+            "Real execution via run-qa4-clock.cjs (in-process booted Nest + isolated Postgres, real domain services) — not a static/fixture result."
           ],
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-12-31T14:59:59.000Z",
+            "clock_as_of": "2026-08-28T02:05:48.367Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -174,17 +270,47 @@
               },
               {
                 "step": "execute_scenario",
-                "result": "not_wired"
+                "result": "real_execution",
+                "source": "run-qa4-clock.cjs"
               }
             ],
             "sanitized_request": null,
-            "sanitized_response": null,
+            "sanitized_response": {
+              "scenario_id": "TIME-KST-YEAR-END",
+              "status": "PASS",
+              "real_execution": true,
+              "clock_injected": true,
+              "source": "run-qa4-clock.cjs",
+              "executor": "kst_boundary",
+              "expected_calendar_kind": "year_start",
+              "actual_calendar_kind": "year_start",
+              "kst_midnight_ms": 1798729200000,
+              "kst_midnight_iso": "2026-12-31T15:00:00.000Z",
+              "kst_day_before": "2026-12-31",
+              "kst_day_after": "2027-01-01",
+              "before": {
+                "clock_ms": 1798729198000,
+                "http_status": 200,
+                "settlementCompletedToday": 1
+              },
+              "after": {
+                "clock_ms": 1798729202000,
+                "http_status": 200,
+                "settlementCompletedToday": 0
+              },
+              "row_visible_before_boundary": true,
+              "row_invisible_after_boundary": true,
+              "calendar_crossed": true,
+              "calendar_kind_ok": true,
+              "findings": []
+            },
             "counterexample": null,
             "error_message": null,
             "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "9993184581e92b4077aa971742243ec2ae99d7f7c2fc8110471b4ddfb52e8cbc",
-            "suite_id": "QA3",
+            "configuration_fingerprint": "83dc45a74f9b79b2e7c158884d14a402b57cc2f1495d55f10a04ecaeb7fd83a6",
+            "invariant_id": "INV-TIME-01",
+            "suite_id": "QA4",
             "live_http": false
           }
         },
@@ -205,7 +331,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-27T22:45:28.244Z",
+            "clock_as_of": "2026-08-28T02:05:48.367Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -222,20 +348,25 @@
             "sanitized_response": {
               "scenario_id": "TIME-PLUS-30D",
               "status": "PASS",
-              "anchor_ms": 1787870728134,
-              "plus30d_ms": 1790462728134,
+              "real_execution": true,
+              "clock_injected": true,
+              "source": "run-qa4-clock.cjs",
+              "executor": "plus_n_days",
+              "days": 30,
+              "anchor_ms": 1787882748058,
+              "plus_ms": 1790474748058,
               "kst_anchor_day": "2026-08-28",
-              "kst_plus30d_day": "2026-09-27",
+              "kst_plus_day": "2026-09-27",
               "anchor": {
                 "http_status": 200,
                 "platformSafeStopToday": 1
               },
-              "plus30d": {
+              "plus": {
                 "http_status": 200,
                 "platformSafeStopToday": 0
               },
               "row_visible_at_anchor": true,
-              "row_invisible_at_plus30d": true,
+              "row_invisible_at_plus": true,
               "calendar_arithmetic_ok": true,
               "findings": []
             },
@@ -258,15 +389,15 @@
           "clock_as_of": "2027-03-15T03:00:00.000Z",
           "kst_label": "+365d from 2026-03-15T12:00:00+09:00",
           "kind": "plus_365d",
-          "status": "FAIL",
+          "status": "PASS",
           "blocked_code": null,
           "findings": [
-            "Clock hook module present but harness multi-day executor not wired in this slice — record as FAIL (not laundry PASS)."
+            "Real execution via run-qa4-clock.cjs (in-process booted Nest + isolated Postgres, real domain services) — not a static/fixture result."
           ],
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2027-03-15T03:00:00.000Z",
+            "clock_as_of": "2026-08-28T02:05:48.367Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -275,17 +406,43 @@
               },
               {
                 "step": "execute_scenario",
-                "result": "not_wired"
+                "result": "real_execution",
+                "source": "run-qa4-clock.cjs"
               }
             ],
             "sanitized_request": null,
-            "sanitized_response": null,
+            "sanitized_response": {
+              "scenario_id": "TIME-PLUS-365D",
+              "status": "PASS",
+              "real_execution": true,
+              "clock_injected": true,
+              "source": "run-qa4-clock.cjs",
+              "executor": "plus_n_days",
+              "days": 365,
+              "anchor_ms": 1787882748097,
+              "plus_ms": 1819418748097,
+              "kst_anchor_day": "2026-08-28",
+              "kst_plus_day": "2027-08-28",
+              "anchor": {
+                "http_status": 200,
+                "platformSafeStopToday": 1
+              },
+              "plus": {
+                "http_status": 200,
+                "platformSafeStopToday": 0
+              },
+              "row_visible_at_anchor": true,
+              "row_invisible_at_plus": true,
+              "calendar_arithmetic_ok": true,
+              "findings": []
+            },
             "counterexample": null,
             "error_message": null,
             "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
             "model_identifier": "harness-static-oracle",
-            "configuration_fingerprint": "9993184581e92b4077aa971742243ec2ae99d7f7c2fc8110471b4ddfb52e8cbc",
-            "suite_id": "QA3",
+            "configuration_fingerprint": "83dc45a74f9b79b2e7c158884d14a402b57cc2f1495d55f10a04ecaeb7fd83a6",
+            "invariant_id": "INV-TIME-01",
+            "suite_id": "QA4",
             "live_http": false
           }
         },
@@ -306,7 +463,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-27T22:45:28.244Z",
+            "clock_as_of": "2026-08-28T02:05:48.367Z",
             "request_sequence": [
               {
                 "step": "probe_clock_hook",
@@ -323,10 +480,14 @@
             "sanitized_response": {
               "scenario_id": "TIME-MULTI-DAY-LIFECYCLE",
               "status": "PASS",
-              "opportunity_id": "15191e43-e534-435d-892c-67c4f84b03a7",
-              "trade_id": "0a2a1c1e-b2b1-4c4d-85cc-a9de5fd5e85c",
-              "accepted_at_ms": 1787870728213,
-              "clock_at_tick_ms": 1788129928213,
+              "real_execution": true,
+              "clock_injected": true,
+              "source": "run-qa4-clock.cjs",
+              "executor": "multi_day_lifecycle",
+              "opportunity_id": "2e1db0d2-7e97-49c8-b025-eec3d2a51ea4",
+              "trade_id": "b3f124eb-b35a-4d46-bf4f-5cffdc938bce",
+              "accepted_at_ms": 1787882748326,
+              "clock_at_tick_ms": 1788141948326,
               "tick_response": {
                 "status": "safe_stop",
                 "resultCode": "MATCH_TIMEOUT"
@@ -358,12 +519,12 @@
         "blocked": 0,
         "skipped": 0,
         "uncovered": 0,
-        "failed": 1,
+        "failed": 0,
         "details": [
           {
             "invariant_id": "INV-TIME-01",
             "critical": true,
-            "status": "FAIL",
+            "status": "PASS",
             "blocked_code": null,
             "scenario_ids": [
               "TIME-KST-DAY-BOUNDARY",
@@ -396,12 +557,12 @@
     "blocked": 0,
     "skipped": 0,
     "uncovered": 0,
-    "failed": 1,
+    "failed": 0,
     "details": [
       {
         "invariant_id": "INV-TIME-01",
         "critical": true,
-        "status": "FAIL",
+        "status": "PASS",
         "blocked_code": null,
         "scenario_ids": [
           "TIME-KST-DAY-BOUNDARY",
@@ -422,15 +583,15 @@
       }
     ]
   },
-  "all_checks_pass": false,
-  "defects_found": 3,
+  "all_checks_pass": true,
+  "defects_found": 0,
   "defects_counts": {
     "P0": 0,
-    "P1": 3,
+    "P1": 0,
     "P2": 0,
     "P3": 0
   },
-  "verdict_contribution": "ENGINE_NOT_ACCEPTED",
+  "verdict_contribution": "ENGINE_QA_INCOMPLETE",
   "next": "QA5_FAILURE_WORLD",
   "product_mutation": 0,
   "kpi_forbidden": true,
@@ -445,5 +606,5 @@
     "critical INV-TIME-01 BLOCKED → ENGINE_QA_INCOMPLETE (ACCEPTED 불가).",
     "Does not issue ENGINE_ACCEPTED_FOR_UI."
   ],
-  "checksum": "2a5e5c14c61e1c36cfb0a515e12677c1dba5ea9efb7ea7f7d05a4f9e1cda3576"
+  "checksum": "15b97fa25c80131b57f7045ded4069351e3a15d9eff6d8ea7e44c03cd1deaee1"
 }

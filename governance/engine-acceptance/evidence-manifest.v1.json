@@ -4,7 +4,7 @@
   "qa_phase": "QA-6",
   "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
   "verdict": "ENGINE_QA_INCOMPLETE",
-  "verdict_reason": "QA6 COMPLETE · P0/P1=0 · mandatory suites QA7..QA8 not executed · ENGINE_ACCEPTED_FOR_UI forbidden",
+  "verdict_reason": "QA6 COMPLETE · P0/P1=0/0 · mandatory suites QA7..QA8 not executed · ENGINE_ACCEPTED_FOR_UI forbidden",
   "evidence_integrity": "VALID",
   "next": "QA7_AI_EVAL",
   "artifact_policy": {
@@ -31,35 +31,35 @@
     },
     {
       "suite_id": "QA1",
-      "run_id": "qa1-deterministic-truth-20260827",
+      "run_id": "qa1-deterministic-truth-20260828",
       "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "checksum": "c4f190a86a8c10863b265277376a8f0454f830ab4669e3403272029ab2f4aabf",
+      "checksum": "e096a727e0d799c7a9bd521021cfc2c019dd63591dfa3dc813bc2e4facb6cbd9",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa1-result.v1.json"
     },
     {
       "suite_id": "QA2",
-      "run_id": "qa2-synthetic-personas-20260827",
+      "run_id": "qa2-synthetic-personas-20260828",
       "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "checksum": "07fc37ec2a1400b2b27039751bcfdf26cf64c4d9593b3fa28e70c2ae87883b88",
+      "checksum": "cecc79d6aa0c8218fcdf88ffc18136d006a0fcf87168a638c0c91db92228d082",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa2-result.v1.json",
       "mode": "full"
     },
     {
       "suite_id": "QA3",
-      "run_id": "qa3-generative-fuzz-20260827",
+      "run_id": "qa3-generative-fuzz-20260828",
       "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "checksum": "69973d6454278943fc7f8ad9a22691159d093fb8f0a213fc01aab4cc5116fcd0",
+      "checksum": "d5603d6f9f38252416550b8148175746c494901507731dc1f39d74c9146de3b9",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa3-result.v1.json",
       "mode": "full"
     },
     {
       "suite_id": "QA4",
-      "run_id": "qa4-stateful-time-20260827",
+      "run_id": "qa4-stateful-time-20260828",
       "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "checksum": "2a5e5c14c61e1c36cfb0a515e12677c1dba5ea9efb7ea7f7d05a4f9e1cda3576",
+      "checksum": "15b97fa25c80131b57f7045ded4069351e3a15d9eff6d8ea7e44c03cd1deaee1",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa4-result.v1.json",
       "mode": "full",
@@ -67,9 +67,9 @@
     },
     {
       "suite_id": "QA5",
-      "run_id": "qa5-failure-world-20260827",
+      "run_id": "qa5-failure-world-20260828",
       "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "checksum": "bfb0472a32e3843b69ed219991d4ee88115bb8d460b8caa8995e13d779ad58dc",
+      "checksum": "71a59ab3073ad030b2441ccfa31f2144c2f088cc748c614283c553a129040ab1",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa5-result.v1.json",
       "mode": "tiny",
@@ -77,9 +77,9 @@
     },
     {
       "suite_id": "QA6",
-      "run_id": "qa6-performance-world-20260827",
+      "run_id": "qa6-performance-world-20260828",
       "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "checksum": "84f07500b5a2b4b36693edb09899f1894bb6cf051396c0e9b74e36daf6cec9e9",
+      "checksum": "771ebb08977426d21d6d8665d0713dcc612050e1a74a83765673de1c938c051a",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa6-result.v1.json",
       "mode": "full",
@@ -153,7 +153,8 @@
   "critical_invariant": {
     "blocked": 0,
     "skipped": 0,
-    "uncovered": 0
+    "uncovered": 0,
+    "failed": 0
   },
   "current_epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
