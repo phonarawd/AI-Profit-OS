@@ -1288,6 +1288,29 @@ function run() {
           qa8.run_id === null &&
           qa8.checksum === null,
       );
+    } else if (
+      live.evidence.qa_phase === "QA-8" &&
+      live.evidence.next === "QA9_ACCEPTANCE_REPORT"
+    ) {
+      const qa7 = suiteIn(live, "QA7");
+      const qa8 = suiteIn(live, "QA8");
+      const qa9 = suiteIn(live, "QA9");
+      check(
+        "live_persisted_qa8_complete_qa9_pending_state_true",
+        isCurrentEpochPreQa7Checkpoint(live) === false &&
+          qa7 &&
+          qa7.completion_status === "COMPLETE" &&
+          qa7.baseline_id === live.baseline.id &&
+          qa8 &&
+          qa8.completion_status === "COMPLETE" &&
+          qa8.baseline_id === live.baseline.id &&
+          Boolean(qa8.run_id && qa8.checksum) &&
+          qa9 &&
+          qa9.completion_status === "NOT_STARTED" &&
+          qa9.run_id === null &&
+          qa9.checksum === null &&
+          qa9.current_epoch_authoritative === false,
+      );
     } else {
       check(
         "live_current_epoch_checkpoint_state_known",
