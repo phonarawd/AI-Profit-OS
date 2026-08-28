@@ -876,15 +876,30 @@ function run() {
       liveBaseline.id === "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
       liveBaseline.id,
     );
-    // qa9-result is only ever written by run-qa9.cjs. After this rebase,
-    // the on-disk file remains predecessor history until current-epoch
-    // QA1-QA8 rerun and QA9 re-aggregation complete.
+    // qa9-result is predecessor history until current-epoch QA9 aggregation
+    // completes. Once evidence.qa_phase=QA-9, the file must instead be bound
+    // to the current baseline and match the newly-issued current verdict.
+    const currentQa9Published = liveEvidence.qa_phase === "QA-9";
     check(
-      "live_verdict_unchanged",
-      qa9.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
-        qa9.engine_accepted_for_ui === "ISSUED" &&
-        qa9.baseline_id === "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
-      qa9.verdict,
+      "live_qa9_epoch_binding",
+      currentQa9Published
+        ? qa9.baseline_id === liveBaseline.id &&
+          qa9.completion_status === "COMPLETE" &&
+          qa9.aggregation_only === true &&
+          qa9.discovery_suite === false &&
+          qa9.verdict === liveEvidence.verdict &&
+          (
+            qa9.verdict === "ENGINE_ACCEPTED_FOR_UI"
+              ? qa9.engine_accepted_for_ui === "ISSUED" &&
+                qa9.ui_ux_entry_gate === "OPEN" &&
+                liveEvidence.next === "03_ui_entry_unlocked"
+              : qa9.engine_accepted_for_ui === "NOT_ISSUED" &&
+                qa9.ui_ux_entry_gate === "CLOSED"
+          )
+        : qa9.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
+          qa9.engine_accepted_for_ui === "ISSUED" &&
+          qa9.baseline_id === "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+      `phase=${liveEvidence.qa_phase} qa9_baseline=${qa9.baseline_id} verdict=${qa9.verdict}`,
     );
     // evidence-manifest.verdict is rewritten ephemerally by run-qa3/4/5/6/8.cjs in every
     // CI qa-matrix job that reruns one of those suites without immediately re-running QA9
