@@ -1,13 +1,12 @@
 # ENGINE ACCEPTANCE REPORT
 
-> **QA phase:** QA-7 `qa7-ai-eval`
-> **Measured:** 2026-08-28T08:32:12.117Z
-> **Published:** 2026-08-28T09:24:16.413Z
+> **QA phase:** QA-8 `qa8-security-privacy`
+> **Measured:** 2026-08-28T09:32:36.225Z
 > **baseline_id:** `ea-baseline-cc627efc3ee2-defdfa5b6ac4`
-> **qa7_run_id:** `33155687092`
-> **qa7_harness_run_id:** `qa7-local-full-20260828-8648df`
-> **qa7_result_checksum:** `5fd75a148c3ad125be041410d1cabd2e1ffe0c4642164410aca3883530354896`
+> **qa8_run_id:** `qa8-security-privacy-20260828`
+> **qa8_result_checksum:** `9ff9bbebc49f971fc5345f7903c06b9f655f619aee9ae51caccc1143fe33a7ef`
 > **mode:** `full`
+> **asvs_version:** `5.0.0` (subset - exhaustive_certification_claim=false)
 
 ## Status banner
 
@@ -22,9 +21,9 @@ QA4 = COMPLETE
 QA5 = COMPLETE
 QA6 = COMPLETE
 QA7 = COMPLETE
-QA8 = NOT_STARTED
+QA8 = COMPLETE
 QA HARNESS TARGET = SAFE
-NEXT = QA8_SECURITY_PRIVACY
+NEXT = QA9_ACCEPTANCE_REPORT
 PRODUCT MUTATION = 0
 EVAL_MUTATION = 0
 GRADER_MUTATION = 0
@@ -32,64 +31,71 @@ GRADER_MUTATION = 0
 ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
 ```
 
-## Verdict (after QA-7 formal Actions publication)
+## Verdict (after QA-8)
 
 | Field | Value |
 |---|---|
 | verdict | `ENGINE_QA_INCOMPLETE` |
-| reason | QA7 COMPLETE (formal Actions) · critical_invariant.blocked=0 (QA4-QA6 clean for current epoch) · P0/P1=0 · QA8 NOT_STARTED (mandatory suite incomplete) · ENGINE_ACCEPTED_FOR_UI forbidden |
+| reason | QA8 COMPLETE - P0/P1=0 - mandatory suite QA9 report not yet issued |
 | evidence_integrity | `VALID` |
 | baseline.valid | `true` |
-| working_tree_clean | `true` (fact only — not forced clean) |
+| working_tree_clean | `true` (fact only, not forced clean) |
 | protected_scope_clean | `true` |
-| defects.P0 / P1 | 0 / 0 |
-| critical_invariant.blocked (cumulative) | 0 |
+| defects.P0 / P1 / P2 / P3 | 0 / 0 / 0 / 0 |
+| critical_invariant.blocked (cumulative, QA4-QA6 + QA8) | 0 |
 | critical_invariant.skipped | 0 |
 | critical_invariant.uncovered | 0 |
-| mandatory suites COMPLETE | QA0..QA7 · QA8 NOT_STARTED |
+| mandatory suites COMPLETE | QA0..QA8 |
 
-**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (critical BLOCKED/UNSPECIFIED and/or QA8 incomplete).
+**Prohibited state confirmed:** `ENGINE_ACCEPTED_FOR_UI` is **not issued** (P0 defect present and/or critical BLOCKED > 0).
 
-## QA7 AI Eval (formal GitHub Actions)
+## QA8 Security and Privacy World (ASVS 5.0.0 subset)
 
-| Field | Value |
-|---|---|
-| formal_actions_evidence | `true` |
-| local_validation_only | `false` |
-| actions.run_id | `33155687092` |
-| workflow | `engine-acceptance` |
-| event | `workflow_dispatch` |
-| qa_phase | `qa7` |
-| head_sha | `5becf28a55f72a47636948d05f69f3bafbca9f70` |
-| conclusion | `success` |
-| CASES / PASS / FAIL / BLOCKED | 26 / 26 / 0 / 0 |
-| suite_status | `PASS` |
-| trace_id_provenance | `RUNTIME` |
-| no_expectation_leakage | `true` |
-| no_fake_trace | `true` |
-| secret_exposure | `NONE` |
-| artifact | `engine-acceptance-QA7-raw-traces` retention=90d raw_in_repo=false |
-| deterministic_grader | sole oracle · `PASS` |
-| quality_grader | NOT_USED (sole oracle 금지) |
-| prompt/eval/workflow hashes | MATCH |
+| check_id | ASVS IDs | invariant | status |
+|---|---|---|---|
+| `QA8_ADMIN_BOUNDARY` | v5.0.0-8.2.1, v5.0.0-8.4.2 | `INV-ISOLATION-01` | `PASS` |
+| `QA8_USER_ISOLATION_SHARED_WITH_QA2` | v5.0.0-8.2.2, v5.0.0-8.3.1 | `INV-ISOLATION-01` | `PASS` |
+| `QA8_JWT_TOKEN_VALIDATION` | v5.0.0-9.1.1, v5.0.0-9.1.2, v5.0.0-9.2.1, v5.0.0-9.2.3 | `INV-ISOLATION-01` | `PASS` |
+| `QA8_PRIVACY_DELETE_ACCOUNT` | v5.0.0-14.2.7 | `INV-PRIVACY-01` | `PASS` |
+| `QA8_ERROR_DISCLOSURE_AND_LOGGING` | v5.0.0-16.5.1, v5.0.0-16.2.5 | `INV-PRIVACY-01` | `PASS` |
 
-## Performance World (k6 · CI only heavy)
+### PASS - QA8_ADMIN_BOUNDARY
 
-QA6 기록 유지. suite status `PASS` — budget SPECIFIED (Human/PO ACK, perf-budget.v1.json V1) · threshold mechanism locked · numeric invention **forbidden** · heavy k6 **CI only** · artifact retention ≥ **90** days · aggregator `if: always()`.
+25 admin controllers scanned, 0 unguarded (static @UseGuards scan). Dynamic Nest+HTTP adversarial round-trip (tooling/verify/admin-boundary.cjs) PASS: PASS - missing admin signing secret -> 401 (admin routes stay closed) (status=401) | [admin-guard.selftest] ALL PASS — real Nest HTTP admin boundary verified (25 checks) | [verify:admin-boundary] PASS (25 admin controllers · 115 routes classified · global APP_GUARD · real Nest HTTP adversarial round-trip)
 
-| Scenario | Tag | Invariant | Status | Budget | Blocked code |
-|---|---|---|---|---|---|
-| `PERF-FEED-READ` | `feed_read` | `INV-PERF-01` | `PASS` | `PASS` | `-` |
-| `PERF-PARTICIPATE` | `participate` | `INV-PERF-01` | `PASS` | `PASS` | `-` |
-| `PERF-WALLET-READ` | `wallet_read` | `INV-PERF-01` | `PASS` | `PASS` | `-` |
-| `PERF-AUTH-PROFILE` | `auth_profile` | `INV-PERF-01` | `PASS` | `PASS` | `-` |
+### PASS - QA8_PRIVACY_DELETE_ACCOUNT
+
+delete_mode=purge_and_tombstone; purge_table_count=26; sessions_purged=true; KYC retention (§42.2.1) excluded from this finding. Dynamic proof (run-qa8-adversarial.cjs privacy_delete (isolated CI Postgres + booted Nest)): tombstone=true purge=true retain=true control_user_unaffected=true invalid_confirm_no_mutation=true.
+
+### PASS - QA8_USER_ISOLATION_SHARED_WITH_QA2, QA8_JWT_TOKEN_VALIDATION, QA8_ERROR_DISCLOSURE_AND_LOGGING
+
+### PASS - SEC-DYNAMIC-ADVERSARIAL-01
+
+Real adversarial HTTP evidence against a booted api-nest instance (isolated CI Postgres). No findings.
+
+This QA8 run is discovery/aggregation only - any current or future FAIL finding is recorded honestly and is not repaired in this wave.
+
+## Performance World (k6, CI only heavy) - QA6 record retained
+
+QA6 record retained unchanged. suite status `PASS` - budget SPECIFIED (Human/PO ACK) -
+tags evaluated: `feed_read`, `participate`, `wallet_read`, `auth_profile` - threshold mechanism locked - numeric invention forbidden -
+heavy k6 CI only - artifact retention >= 90 days - aggregator if: always().
+
+| tag | status | blocked_code |
+|---|---|---|
+| `feed_read` | `PASS` | `-` |
+| `participate` | `PASS` | `-` |
+| `wallet_read` | `PASS` | `-` |
+| `auth_profile` | `PASS` | `-` |
 
 ## Dual Dirty
 
 - working_tree_clean=`true`
 - protected_scope_clean=`true`
-- forced clean / stash laundry = **forbidden**
+- forced clean / stash laundry = forbidden
 
 ## Next
 
-`QA8_SECURITY_PRIVACY` only. QA7_AI_EVAL formal evidence is published. Full ACCEPTED · product mutation · 03 UI — **금지**. QA4–QA6 carry forward critical_invariant.blocked=0 (clean) but QA8 (mandatory suite) has not run yet — still blocks `ENGINE_ACCEPTED_FOR_UI`.
+`QA9_ACCEPTANCE_REPORT` per the 02.5 plan file-serial order. This wave does not start
+QA9, does not repair the P0/P2 findings above, and does not issue
+`ENGINE_ACCEPTED_FOR_UI`.

@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-7",
+  "qa_phase": "QA-8",
   "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
   "verdict": "ENGINE_QA_INCOMPLETE",
-  "verdict_reason": "QA7 COMPLETE (formal Actions) · critical_invariant.blocked=0 (QA4-QA6 clean for current epoch) · P0/P1=0 · QA8 NOT_STARTED (mandatory suite incomplete) · ENGINE_ACCEPTED_FOR_UI forbidden",
+  "verdict_reason": "QA8 COMPLETE - P0/P1=0 - mandatory suite QA9 report not yet issued",
   "evidence_integrity": "VALID",
-  "next": "QA8_SECURITY_PRIVACY",
+  "next": "QA9_ACCEPTANCE_REPORT",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -100,20 +100,14 @@
     },
     {
       "suite_id": "QA8",
-      "run_id": null,
+      "run_id": "qa8-security-privacy-20260828",
       "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "checksum": null,
-      "completion_status": "NOT_STARTED",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
-      "historical_run_id": "qa8-security-privacy-20260824",
-      "historical_checksum": "7fc1296402dcce7eafbad9da90e7ce96c5d7af1b5f149ffb2190577880ce84c0",
+      "checksum": "9ff9bbebc49f971fc5345f7903c06b9f655f619aee9ae51caccc1143fe33a7ef",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa8-result.v1.json",
-      "predecessor_result_preserved": true,
-      "historical_mode": "full",
-      "historical_blocked_codes": [],
-      "historical_asvs_version": "5.0.0"
+      "mode": "full",
+      "asvs_version": "5.0.0",
+      "blocked_codes": []
     },
     {
       "suite_id": "QA9",
@@ -144,7 +138,8 @@
     "verified_before_qa4": true,
     "verified_before_qa5": true,
     "verified_before_qa6": true,
-    "verified_before_qa7": true
+    "verified_before_qa7": true,
+    "verified_before_qa8": true
   },
   "dual_dirty": {
     "working_tree_clean": true,
@@ -154,8 +149,7 @@
   "critical_invariant": {
     "blocked": 0,
     "skipped": 0,
-    "uncovered": 0,
-    "failed": 0
+    "uncovered": 0
   },
   "current_epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
