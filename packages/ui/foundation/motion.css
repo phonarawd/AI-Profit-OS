@@ -1,0 +1,45 @@
+:root {
+  --pd-motion-fast: 150ms;
+  --pd-motion-standard: 200ms;
+  --pd-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pd-motion-cta {
+  position: relative;
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--pd-brand-accent) 18%, transparent),
+    0 6px 16px color-mix(in srgb, var(--pd-brand-accent) 22%, transparent);
+  transition:
+    transform var(--pd-motion-standard) var(--pd-motion-ease),
+    filter var(--pd-motion-standard) var(--pd-motion-ease),
+    box-shadow var(--pd-motion-standard) var(--pd-motion-ease);
+}
+
+.pd-motion-cta:hover,
+.pd-motion-cta:focus-visible {
+  transform: scale(1.02);
+  filter: brightness(1.04);
+}
+
+.pd-motion-cta:active {
+  transform: scale(0.98);
+}
+
+html[data-tier="b"] .pd-motion-cta {
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--pd-brand-accent) 16%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pd-motion-cta,
+  .pd-motion-any {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .pd-motion-cta:hover,
+  .pd-motion-cta:focus-visible,
+  .pd-motion-cta:active {
+    transform: none;
+    filter: none;
+  }
+}

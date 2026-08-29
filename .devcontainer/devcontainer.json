@@ -1,0 +1,21 @@
+{
+  "name": "AI Profit OS cloud verify",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/rust:1": {
+      "version": "1.85.0"
+    }
+  },
+  "postCreateCommand": "corepack enable && corepack prepare pnpm@10.14.0 --activate",
+  "remoteEnv": {
+    "NODE_OPTIONS": "--max-old-space-size=4096"
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "git.ignoreLimitWarning": true
+      }
+    }
+  }
+}

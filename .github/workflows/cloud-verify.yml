@@ -1,0 +1,82 @@
+name: Cloud verify
+
+on:
+  workflow_call:
+    inputs:
+      suite:
+        description: "fast | push | full | ui"
+        type: string
+        default: ui
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: "fast=T0 · push=T1 · full=T2+cf · ui=T2+cf+responsive"
+        type: choice
+        options: [fast, push, full, ui]
+        default: ui
+  pull_request:
+    branches: ["release/**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloud-verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      CLOUD_VERIFY_SUITE: ${{ inputs.suite || 'ui' }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.85.0"
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: T0 fast gate
+        if: env.CLOUD_VERIFY_SUITE == 'fast'
+        run: pnpm verify:gate:fast
+      - name: T1 push gate
+        if: env.CLOUD_VERIFY_SUITE == 'push'
+        run: pnpm verify:gate:push
+      - name: T2 full gate
+        if: env.CLOUD_VERIFY_SUITE == 'full' || env.CLOUD_VERIFY_SUITE == 'ui'
+        run: pnpm verify:gate
+      - name: Rust engine check
+        if: env.CLOUD_VERIFY_SUITE == 'full' || env.CLOUD_VERIFY_SUITE == 'ui'
+        working-directory: services/engine-rust
+        run: |
+          cargo check --locked
+          cargo test --locked
+      - name: Cloudflare build outputs
+        if: env.CLOUD_VERIFY_SUITE == 'full' || env.CLOUD_VERIFY_SUITE == 'ui'
+        run: |
+          pnpm --filter @aipo/web build:cf
+          pnpm --filter @aipo/admin build:cf
+          test -f apps/web/.open-next/worker.js
+          test -d apps/web/.open-next/assets
+          test -f apps/admin/.open-next/worker.js
+          test -d apps/admin/.open-next/assets
+      - name: Responsive browser structure harness
+        if: env.CLOUD_VERIFY_SUITE == 'ui'
+        run: |
+          pnpm exec playwright install --with-deps chromium
+          RESPONSIVE_PW=1 pnpm verify:responsive
+      - name: Cloud verify does not mean release ready
+        if: always()
+        run: |
+          echo "CLOUD_VERIFY finished suite=$CLOUD_VERIFY_SUITE"
+          echo "NOT RUN here: auth ops smoke, axe live, Lighthouse/CWV live, AI Chat V2"
+          echo "AI_CHAT_RELEASE_READY=NO"
+          echo "This job must not deploy, migrate, or change secrets."

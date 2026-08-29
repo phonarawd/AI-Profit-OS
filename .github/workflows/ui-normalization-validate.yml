@@ -1,0 +1,21 @@
+name: UI normalization validation
+
+on:
+  push:
+    branches: [cursor/putduk-ui-normalization-20260829]
+  pull_request:
+    branches: [release/auth-wallet-rel502-v1-20260828]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ui-normalization-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    uses: ./.github/workflows/cloud-verify.yml
+    with:
+      suite: ui

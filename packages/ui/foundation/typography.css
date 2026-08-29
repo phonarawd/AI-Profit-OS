@@ -1,0 +1,12 @@
+:root {
+  --pd-font-sans: "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", ui-sans-serif, system-ui, sans-serif;
+  --pd-font-display: var(--pd-font-sans);
+  --pd-tracking-tight: -0.04em;
+  --pd-body-max-ch: 65ch;
+}
+
+html,
+body {
+  font-family: var(--pd-font-sans);
+}

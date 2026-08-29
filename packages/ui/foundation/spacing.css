@@ -1,0 +1,11 @@
+:root {
+  --pd-space-xs: 4px;
+  --pd-space-sm: 8px;
+  --pd-space-md: 16px;
+  --pd-space-lg: 24px;
+  --pd-space-xl: 32px;
+  --pd-touch-min: 48px;
+  --pd-header: 64px;
+  --pd-sidebar: 220px;
+  --pd-content-rail-max: 1680px;
+}

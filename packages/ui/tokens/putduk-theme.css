@@ -1,0 +1,69 @@
+/**
+ * Tailwind v4 @theme — PUTDUK foundation 거울.
+ * 유틸 접두사 pd-* 는 여기 --color-pd-* / --radius-pd-* / --shadow-pd-* 에서만 나온다.
+ */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
+@import "tailwindcss";
+
+@source "../components";
+@source "../primitives";
+@source "../patterns";
+@source "../shell";
+@source "../brand";
+
+@import "../foundation/index.css";
+@import "./component.css";
+@import "./motion.css";
+@import "../responsive/fluid-type.css";
+@import "../responsive/touch-target.css";
+@import "../responsive/container.css";
+
+@theme {
+  --breakpoint-lg: 1280px;
+  --breakpoint-xl: 1920px;
+
+  --color-pd-bg: var(--pd-canvas);
+  --color-pd-canvas: var(--pd-canvas);
+  --color-pd-surface: var(--pd-surface);
+  --color-pd-elevated: var(--pd-surface-elevated);
+  --color-pd-surface-elevated: var(--pd-surface-elevated);
+  --color-pd-border: var(--pd-border);
+  --color-pd-text: var(--pd-text);
+  --color-pd-text-muted: var(--pd-text-muted);
+  --color-pd-accent: var(--pd-brand-accent);
+  --color-pd-brand-accent: var(--pd-brand-accent);
+  --color-pd-brand-navy: var(--pd-brand-navy);
+  --color-pd-accent-muted: var(--pd-brand-accent-muted);
+  --color-pd-danger: var(--pd-danger);
+  --color-pd-warning: var(--pd-warning);
+  --color-pd-profit: var(--pd-success);
+  --color-pd-success: var(--pd-success);
+  --color-pd-principal: var(--pd-brand-accent);
+  --color-pd-hero-from: var(--pd-hero-from);
+  --color-pd-hero-to: var(--pd-hero-to);
+
+  --radius-pd-sm: var(--pd-radius-sm);
+  --radius-pd-md: var(--pd-radius-md);
+  --radius-pd-lg: var(--pd-radius-lg);
+  --radius-pd-xl: var(--pd-radius-xl);
+  --radius-pd-pill: var(--pd-radius-pill);
+
+  --space-pd-xs: var(--pd-space-xs);
+  --space-pd-sm: var(--pd-space-sm);
+  --space-pd-md: var(--pd-space-md);
+  --space-pd-lg: var(--pd-space-lg);
+  --space-pd-xl: var(--pd-space-xl);
+
+  --shadow-pd-card: var(--pd-shadow-card);
+  --shadow-pd-soft: var(--pd-shadow-soft);
+  --shadow-pd-floating: var(--pd-shadow-floating);
+
+  --layout-pd-sidebar: var(--pd-sidebar);
+  --layout-pd-right-rail-min: 320px;
+  --layout-pd-right-rail-max: 360px;
+  --layout-pd-header: var(--pd-header);
+
+  --font-pd-sans: var(--pd-font-sans);
+  --font-pd-display: var(--pd-font-display);
+}

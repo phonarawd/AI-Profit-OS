@@ -1,0 +1,7 @@
+:root {
+  --pd-radius-sm: 8px;
+  --pd-radius-md: 12px;
+  --pd-radius-lg: 16px;
+  --pd-radius-xl: 20px;
+  --pd-radius-pill: 999px;
+}

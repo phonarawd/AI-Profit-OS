@@ -1,0 +1,40 @@
+/**
+ * PUTDUK color authority — --pd-* only.
+ * Spark identity (navy / accent) + premium financial surfaces.
+ */
+:root {
+  --pd-brand-navy: #07101d;
+  --pd-brand-navy-soft: #08111f;
+  --pd-brand-accent: #ff2d6b;
+  --pd-brand-accent-muted: #ff6a91;
+
+  --pd-canvas: #f6f7fb;
+  --pd-surface: #ffffff;
+  --pd-surface-elevated: #ffffff;
+  --pd-text: #121721;
+  --pd-text-muted: #5d6675;
+  --pd-border: #e1e6ee;
+
+  --pd-success: #12b76a;
+  --pd-warning: #f79009;
+  --pd-danger: #f04438;
+
+  --pd-hero-from: #07101d;
+  --pd-hero-to: #ff2d6b;
+
+  --pd-canvas-inverse: #08111f;
+  --pd-surface-inverse: #0d1726;
+  --pd-surface-elevated-inverse: #111d2d;
+  --pd-text-inverse: #ffffff;
+  --pd-text-muted-inverse: #b7c3d3;
+  --pd-border-inverse: #1a2a40;
+}
+
+[data-pd-scheme="inverse"] {
+  --pd-canvas: var(--pd-canvas-inverse);
+  --pd-surface: var(--pd-surface-inverse);
+  --pd-surface-elevated: var(--pd-surface-elevated-inverse);
+  --pd-text: var(--pd-text-inverse);
+  --pd-text-muted: var(--pd-text-muted-inverse);
+  --pd-border: var(--pd-border-inverse);
+}
