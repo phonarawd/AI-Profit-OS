@@ -223,6 +223,26 @@ function evaluateKillSwitch(input = {}) {
   return { ok: true };
 }
 
+function maybeWireQa4ClockHarness(input) {
+  // Matrix yml keeps `node run-qa4.cjs --mode full` so WORKFLOW_HASH does
+  // not move. CI sets MATRIX_SUITE=QA4 in the same job; local default stays
+  // fail-closed (not_wired) unless AIPO_QA_WIRE_QA4_CLOCK=1.
+  if (process.env.MATRIX_SUITE !== "QA4" && process.env.AIPO_QA_WIRE_QA4_CLOCK !== "1") {
+    return;
+  }
+  const { ensureQa4ClockHarness } = require("./lib/qa4-same-job-clock.cjs");
+  const wired = ensureQa4ClockHarness({
+    mode: "full",
+    target_env: (input && input.target_env) || process.env.AIPO_QA_TARGET_ENV || "ci",
+    hostname: (input && input.hostname) || process.env.AIPO_QA_HOSTNAME,
+    synthetic_account_namespace:
+      (input && input.synthetic_account_namespace) || process.env.AIPO_QA_SYNTHETIC_NS,
+  });
+  if (wired.reason && wired.reason !== "already_fresh" && wired.reason !== "tiny_mode_skips_clock_boot") {
+    console.warn(`[engine-acceptance:kill-switch] QA4 clock harness: ${wired.reason}`);
+  }
+}
+
 function assertKillSwitch(input) {
   const result = evaluateKillSwitch(input);
   if (!result.ok) {
@@ -230,6 +250,7 @@ function assertKillSwitch(input) {
     err.code = "AIPO_QA_KILL_SWITCH";
     throw err;
   }
+  maybeWireQa4ClockHarness(input);
   return result;
 }
 
