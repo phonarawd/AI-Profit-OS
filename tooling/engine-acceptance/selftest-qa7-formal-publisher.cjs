@@ -444,7 +444,22 @@ function run() {
     assert.equal(String(result.artifact.artifact_id), qa7.artifact_id);
     assert.equal(result.checksum, qa7.checksum);
     assert.equal(evidence.suites.find((s) => s.suite_id === "QA8").completion_status, "NOT_STARTED");
-    assert.notEqual(evidence.suites.find((s) => s.suite_id === "QA9").completion_status, "COMPLETE");
+    const qa9 = evidence.suites.find((s) => s.suite_id === "QA9");
+    assert.equal(qa9.completion_status, "STALE");
+    assert.equal(qa9.epoch_status, "STALE_AGGREGATION_FOR_CURRENT_EPOCH");
+    assert.equal(qa9.current_epoch_authoritative, false);
+    assert.equal(qa9.run_id, null);
+    assert.equal(qa9.checksum, null);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("publisher_does_not_mutate_qa9_result_bytes", () => {
+    const sb = makeSandbox();
+    const qa9Rel = `${GOV}/qa9-result.v1.json`;
+    const before = fs.readFileSync(path.join(sb.dir, qa9Rel));
+    publishQa7Formal(happyOpts(sb));
+    const after = fs.readFileSync(path.join(sb.dir, qa9Rel));
+    assert.ok(before.equals(after), "QA7 publisher mutated qa9-result.v1.json");
     fs.rmSync(sb.dir, { recursive: true, force: true });
   });
 
@@ -553,4 +568,4 @@ if (require.main === module) {
   run();
 }
 
-module.exports = { run };
+module.exports = { run, makeSandbox, happyOpts, snapshotOfficial };

@@ -24,6 +24,7 @@ const {
   hasOfficialQa1Qa6CheckpointShape,
   verifyOfficialQa1Qa6CheckpointPublication,
 } = require("./official-qa1-qa6-checkpoint.cjs");
+const { assertQa9StaleAggregation } = require("./qa9-stale-aggregation.cjs");
 
 const DECISION_ID = "ENGINE_ACCEPTANCE_REBASE_V1";
 const LEDGER_REL = "governance/engine-acceptance/product-rebases.v1.json";
@@ -1340,29 +1341,16 @@ function verifyPreQa7Qa9Stale(baseline, evidence, tip, results, ctx, fails) {
     fails.push("QA9 evidence slot required");
     return;
   }
-  if (qa9.completion_status !== "NOT_STARTED" && qa9.completion_status !== "STALE") {
-    fails.push("current QA9 completion_status must be NOT_STARTED or exact STALE");
-  }
-  if (qa9.baseline_id !== baseline.id) {
-    fails.push("current QA9 suite.baseline_id must equal current baseline");
-  }
-  if (qa9.run_id != null) {
-    fails.push("current QA9 run_id must be null");
-  }
-  if (qa9.checksum != null) {
-    fails.push("current QA9 checksum must be null");
-  }
-  if (qa9.epoch_status !== "STALE_AGGREGATION_FOR_CURRENT_EPOCH") {
-    fails.push("QA9 epoch_status must be STALE_AGGREGATION_FOR_CURRENT_EPOCH");
-  }
+  assertQa9StaleAggregation(qa9, (m) => fails.push(m), {
+    baselineId: baseline.id,
+    label: "pre-QA7 checkpoint QA9",
+    qa9Result: results.QA9,
+  });
   if (qa9.aggregation_only !== true) {
     fails.push("QA9 aggregation_only must be true");
   }
   if (qa9.discovery_suite !== false) {
     fails.push("QA9 discovery_suite must be false");
-  }
-  if (qa9.current_epoch_authoritative !== false) {
-    fails.push("QA9 current_epoch_authoritative must be false");
   }
   if (qa9.predecessor_result_preserved !== true) {
     fails.push("QA9 predecessor_result_preserved must be true");

@@ -330,7 +330,7 @@ function makeCheckpointCtx(over) {
         },
         {
           suite_id: "QA9",
-          completion_status: "NOT_STARTED",
+          completion_status: "STALE",
           baseline_id: FIX_CUR,
           run_id: null,
           checksum: null,
@@ -1344,7 +1344,8 @@ function run() {
           qa8.baseline_id === live.baseline.id &&
           Boolean(qa8.run_id && qa8.checksum) &&
           qa9 &&
-          qa9.completion_status === "NOT_STARTED" &&
+          qa9.completion_status === "STALE" &&
+          qa9.epoch_status === "STALE_AGGREGATION_FOR_CURRENT_EPOCH" &&
           qa9.run_id === null &&
           qa9.checksum === null &&
           qa9.current_epoch_authoritative === false,
@@ -1750,7 +1751,7 @@ function run() {
     expectCheckpointFail(
       "neg_qa9_current_baseline_mismatch",
       patched(base, (c) => { suiteIn(c, "QA9").baseline_id = FIX_PRED; }),
-      /current QA9 suite\.baseline_id/,
+      /baseline_id must match current baseline|current QA9 suite\.baseline_id/,
       check,
     );
     expectCheckpointFail(
@@ -1868,7 +1869,7 @@ function run() {
     expectCheckpointFail(
       "neg_qa9_early_aggregation",
       patched(base, (c) => { suiteIn(c, "QA9").completion_status = "COMPLETE"; }),
-      /NOT_STARTED or exact STALE/,
+      /STALE|COMPLETE is forbidden/,
       check,
     );
     check(

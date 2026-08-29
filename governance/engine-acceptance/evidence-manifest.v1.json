@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-6",
+  "qa_phase": "QA-7",
   "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
   "verdict": "ENGINE_QA_INCOMPLETE",
-  "verdict_reason": "QA1-QA6 COMPLETE from official current-SHA Actions artifacts · QA7 NOT_STARTED · QA8 STALE · QA9 STALE_AGGREGATION · ENGINE_ACCEPTED_FOR_UI forbidden",
+  "verdict_reason": "QA7 COMPLETE (formal Actions) · critical_invariant.blocked=0 (QA4-QA6 clean for current epoch) · P0/P1=0 · QA8 NOT_STARTED (mandatory suite incomplete) · ENGINE_ACCEPTED_FOR_UI forbidden",
   "evidence_integrity": "VALID",
-  "next": "QA7_AI_EVAL",
+  "next": "QA8_SECURITY_PRIVACY",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -85,22 +85,23 @@
     },
     {
       "suite_id": "QA7",
-      "run_id": null,
+      "run_id": "33266426310",
       "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
-      "checksum": null,
-      "completion_status": "NOT_STARTED",
+      "checksum": "afb27bb13bfcce87be868cf69c48363e15a026c8fff0a005a0d1ce1a40e1ba19",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa7-result.v1.json",
       "mode": "full",
       "formal_actions_evidence": true,
       "artifact": "engine-acceptance-QA7-raw-traces",
-      "predecessor_baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4"
+      "artifact_id": "9718793972",
+      "head_sha": "a158f9d1d5a0bc07ca8e435e5c383ec1ac7a64d0"
     },
     {
       "suite_id": "QA8",
       "run_id": null,
       "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
       "checksum": null,
-      "completion_status": "STALE",
+      "completion_status": "NOT_STARTED",
       "epoch_status": "STALE_FOR_CURRENT_EPOCH",
       "historical_completion_status": "COMPLETE",
       "historical_baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
@@ -141,7 +142,8 @@
     "verified_before_qa5": true,
     "verified_before_qa6": true,
     "production_like_aborts": true,
-    "predecessor_epoch_had_kill_switch": true
+    "predecessor_epoch_had_kill_switch": true,
+    "verified_before_qa7": true
   },
   "dual_dirty": {
     "working_tree_clean": false,

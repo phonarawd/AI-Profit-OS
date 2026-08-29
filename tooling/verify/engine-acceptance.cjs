@@ -59,6 +59,9 @@ const {
 } = require("../engine-acceptance/lib/product-rebase.cjs");
 const { run: selftestProductRebase } = require("../engine-acceptance/selftest-product-rebase.cjs");
 const { loadEvalDataset } = require("../engine-acceptance/lib/qa7-dataset.cjs");
+const {
+  assertQa9StaleAggregation,
+} = require("../engine-acceptance/lib/qa9-stale-aggregation.cjs");
 
 const fails = [];
 function fail(msg) {
@@ -349,19 +352,11 @@ function verifyCurrentEpochPostQa7PreQa8Checkpoint(
     }
   }
 
-  if (!qa9 || qa9.completion_status !== "NOT_STARTED") {
-    failFn("post-QA7 checkpoint requires current QA9 NOT_STARTED");
-  } else {
-    if (baselineObj && qa9.baseline_id !== baselineObj.id) {
-      failFn("post-QA7 checkpoint QA9 baseline_id must match current baseline");
-    }
-    if (qa9.run_id !== null || qa9.checksum !== null) {
-      failFn("post-QA7 checkpoint QA9 run_id/checksum must remain null");
-    }
-    if (qa9.current_epoch_authoritative !== false) {
-      failFn("post-QA7 checkpoint QA9 must remain non-authoritative for current epoch");
-    }
-  }
+  assertQa9StaleAggregation(qa9, failFn, {
+    baselineId: baselineObj && baselineObj.id,
+    label: "post-QA7 checkpoint QA9",
+    qa9Result: peekGovJson("qa9-result.v1.json"),
+  });
 
   if (!epoch) {
     failFn("post-QA7 checkpoint requires current_epoch rebase snapshot");
@@ -456,12 +451,11 @@ function verifyCurrentEpochPostQa8PreQa9Checkpoint(
     }
   }
 
-  if (!qa9 || qa9.completion_status !== "NOT_STARTED" || qa9.run_id !== null || qa9.checksum !== null) {
-    failFn("post-QA8 checkpoint requires QA9 NOT_STARTED with null run_id/checksum");
-  } else {
-    if (baselineObj && qa9.baseline_id !== baselineObj.id) failFn("post-QA8 QA9 baseline mismatch");
-    if (qa9.current_epoch_authoritative !== false) failFn("post-QA8 QA9 must remain non-authoritative");
-  }
+  assertQa9StaleAggregation(qa9, failFn, {
+    baselineId: baselineObj && baselineObj.id,
+    label: "post-QA8 checkpoint QA9",
+    qa9Result: peekGovJson("qa9-result.v1.json"),
+  });
 
   if (!epoch) {
     failFn("post-QA8 checkpoint requires current_epoch snapshot");
@@ -601,6 +595,8 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/selftest-qa1-qa6-checkpoint.cjs",
   "tooling/engine-acceptance/selftest-qa-pipeline-contract.cjs",
   "tooling/engine-acceptance/selftest-qa7-formal-publisher.cjs",
+  "tooling/engine-acceptance/selftest-qa9-stale-aggregation.cjs",
+  "tooling/engine-acceptance/lib/qa9-stale-aggregation.cjs",
   "tooling/engine-acceptance/lib/publication-sha-inheritance.cjs",
   "tooling/engine-acceptance/lib/qa-phase-routing.cjs",
   "tooling/engine-acceptance/lib/qa7-github-provenance.cjs",
@@ -1264,6 +1260,12 @@ if (evidence) {
       } else if (qa8.run_id !== null || qa8.checksum !== null) {
         fail("post-QA7 checkpoint QA8 run_id/checksum must remain null");
       }
+      const qa9Post7 = (evidence.suites || []).find((x) => x.suite_id === "QA9");
+      assertQa9StaleAggregation(qa9Post7, fail, {
+        baselineId: baseline && baseline.id,
+        label: "post-QA7 checkpoint QA9",
+        qa9Result: peekGovJson("qa9-result.v1.json"),
+      });
       if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa7 !== true) {
         fail("post-QA7 checkpoint requires evidence.kill_switch.verified_before_qa7=true");
       }
@@ -1275,9 +1277,11 @@ if (evidence) {
         fail("post-QA8 checkpoint requires QA8 COMPLETE full with run_id + checksum");
       }
       const qa9 = (evidence.suites || []).find((x) => x.suite_id === "QA9");
-      if (!qa9 || qa9.completion_status !== "NOT_STARTED" || qa9.run_id !== null || qa9.checksum !== null) {
-        fail("post-QA8 checkpoint requires QA9 NOT_STARTED with null run_id/checksum");
-      }
+      assertQa9StaleAggregation(qa9, fail, {
+        baselineId: baseline && baseline.id,
+        label: "post-QA8 checkpoint QA9",
+        qa9Result: peekGovJson("qa9-result.v1.json"),
+      });
       if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa7 !== true) {
         fail("post-QA8 checkpoint requires verified_before_qa7=true");
       }
@@ -2904,6 +2908,12 @@ try {
   fail(`qa7-formal-publisher selftest threw: ${e && e.message ? e.message : e}`);
 }
 try {
+  const { run: selftestQa9StaleAggregation } = require("../engine-acceptance/selftest-qa9-stale-aggregation.cjs");
+  selftestQa9StaleAggregation();
+} catch (e) {
+  fail(`qa9-stale-aggregation selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
   const harnessSelf = require("../engine-acceptance/selftest-pre-rebase-harness.cjs");
   const out = harnessSelf.run();
   if (out && Array.isArray(out.fails) && out.fails.length) {
@@ -2950,7 +2960,7 @@ if (pendingRerun) {
   console.log("  QA0-QA6 = COMPLETE");
   console.log("  QA7 = NOT_STARTED");
   console.log("  QA8 = NOT_STARTED");
-  console.log("  QA9 = NOT_STARTED / STALE_AGGREGATION");
+  console.log("  QA9 = STALE_AGGREGATION");
   console.log("  NEXT = QA7_AI_EVAL");
   console.log("  VERDICT = ENGINE_QA_INCOMPLETE");
   console.log("  ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED");
@@ -2958,14 +2968,14 @@ if (pendingRerun) {
 } else if (currentEpochPostQa7PreQa8Checkpoint) {
   console.log("  QA0-QA7 = COMPLETE");
   console.log("  QA8 = NOT_STARTED");
-  console.log("  QA9 = NOT_STARTED / STALE_AGGREGATION");
+  console.log("  QA9 = STALE_AGGREGATION");
   console.log("  NEXT = QA8_SECURITY_PRIVACY");
   console.log("  VERDICT = ENGINE_QA_INCOMPLETE");
   console.log("  ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED");
   console.log("  UI_UX_ENTRY_GATE = CLOSED");
 } else if (currentEpochPostQa8PreQa9Checkpoint) {
   console.log("  QA0-QA8 = COMPLETE");
-  console.log("  QA9 = NOT_STARTED / STALE_AGGREGATION");
+  console.log("  QA9 = STALE_AGGREGATION");
   console.log("  NEXT = QA9_ACCEPTANCE_REPORT");
   console.log(`  VERDICT = ${(evidence && evidence.verdict) || "UNKNOWN"}`);
   console.log("  ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED");

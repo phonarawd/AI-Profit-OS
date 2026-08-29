@@ -263,8 +263,11 @@ function defineChecks() {
       const qa9 = evidence.suites.find((s) => s.suite_id === "QA9");
       assert.equal(qa7.completion_status, "NOT_STARTED");
       assert.ok(qa8.completion_status === "STALE" || qa8.completion_status === "NOT_STARTED");
-      assert.ok(qa9.completion_status === "STALE" || qa9.completion_status === "NOT_STARTED");
+      assert.equal(qa9.completion_status, "STALE");
       assert.equal(qa9.epoch_status, "STALE_AGGREGATION_FOR_CURRENT_EPOCH");
+      assert.equal(qa9.current_epoch_authoritative, false);
+      assert.equal(qa9.run_id, null);
+      assert.equal(qa9.checksum, null);
       assert.deepEqual(evidence.current_epoch.qa1_qa6_status, CURRENT_EPOCH_REBASE_SNAPSHOT.qa1_qa6_status);
       for (const id of ["QA7", "QA8", "QA9"]) {
         const rel = `${GOV}/qa${id.slice(2).toLowerCase()}-result.v1.json`;

@@ -147,6 +147,19 @@ function run() {
     assert.match(src, /isEphemeralOfficialQa8Rewrite/);
   });
 
+  check("qa9_stale_aggregation_is_canonical_before_qa9_runner", () => {
+    const src = fs.readFileSync(path.join(ROOT, "tooling/verify/engine-acceptance.cjs"), "utf8");
+    const lib = fs.readFileSync(
+      path.join(ROOT, "tooling/engine-acceptance/lib/qa9-stale-aggregation.cjs"),
+      "utf8",
+    );
+    assert.match(src, /assertQa9StaleAggregation/);
+    assert.doesNotMatch(src, /post-QA7 checkpoint requires current QA9 NOT_STARTED/);
+    assert.doesNotMatch(src, /post-QA8 checkpoint requires QA9 NOT_STARTED with null run_id\/checksum/);
+    assert.match(lib, /STALE_AGGREGATION_FOR_CURRENT_EPOCH/);
+    assert.match(lib, /NOT_STARTED is not canonical/);
+  });
+
   check("phase_aware_qa8_verifier_uses_post_qa7_head", () => {
     const src = fs.readFileSync(path.join(ROOT, "tooling/verify/engine-acceptance.cjs"), "utf8");
     assert.match(src, /headObj\.qa_phase !== "QA-7"/);
