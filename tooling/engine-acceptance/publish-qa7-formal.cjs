@@ -3,7 +3,8 @@
  *
  * 로컬 run-qa7.cjs 는 formal_actions_evidence=false 고정.
  * 이 스크립트만 qa7-result.v1.json / evidence-manifest / REPORT 를 갱신한다.
- * eval/grader/workflow/제품 바이트는 읽기만 하고 변경하지 않는다.
+ * CLI 값은 expected only. 진실은 공식 GitHub metadata + zip digest.
+ * 쓰기는 검증 전부 PASS 후 atomic multi-file replace. dry-run은 저장 0.
  */
 "use strict";
 
@@ -15,17 +16,26 @@ const {
   evaluatePublicationInheritance,
   isInheritanceAllowed,
 } = require("./lib/publication-sha-inheritance.cjs");
+const {
+  OFFICIAL_QA7_ARTIFACT,
+  OFFICIAL_QA7_JOB,
+  OFFICIAL_QA7_WORKFLOW_NAME,
+  defaultGithubClient,
+  evaluateQa7Provenance,
+  sha256File,
+} = require("./lib/qa7-github-provenance.cjs");
+const { atomicReplace } = require("./lib/atomic-publication.cjs");
 const { runQa7Precheck } = require("./lib/qa7-precheck.cjs");
 const { loadEvalDataset } = require("./lib/qa7-dataset.cjs");
 const { indexAndValidateTraces } = require("./lib/qa7-trace.cjs");
 const { GRADER_VERSION } = require("./lib/qa7-constants.cjs");
 
-const GOV = path.join(ROOT, "governance/engine-acceptance");
 const RESULT_REL = "governance/engine-acceptance/qa7-result.v1.json";
 const EVIDENCE_REL = "governance/engine-acceptance/evidence-manifest.v1.json";
 const REPORT_REL = "governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md";
 const SCOPE_REL = "governance/engine-acceptance/protected-scope.v1.json";
 const QA6_REL = "governance/engine-acceptance/qa6-result.v1.json";
+const OFFICIAL_RELS = Object.freeze([RESULT_REL, EVIDENCE_REL, REPORT_REL]);
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const EXPECT_KEYS = Object.freeze([
@@ -53,9 +63,8 @@ function sha256Json(obj) {
   return crypto.createHash("sha256").update(text, "utf8").digest("hex");
 }
 
-function writeJson(rel, obj) {
-  const abs = path.join(ROOT, rel);
-  fs.writeFileSync(abs, `${JSON.stringify(obj, null, 2)}\n`, "utf8");
+function readJsonRoot(root, rel) {
+  return JSON.parse(fs.readFileSync(path.join(root, rel), "utf8"));
 }
 
 function fail(message, code) {
@@ -127,10 +136,10 @@ function observationFrom(artifact, grade) {
  * carries at publish time, since a Human/PO-approved budget can turn
  * UNSPECIFIED into SPECIFIED between epochs.
  */
-function renderPerformanceWorldSection() {
+function renderPerformanceWorldSection(root) {
   let qa6 = null;
   try {
-    qa6 = readJson(QA6_REL);
+    qa6 = readJsonRoot(root, QA6_REL);
   } catch {
     qa6 = null;
   }
@@ -175,6 +184,7 @@ function renderPerformanceWorldSection() {
 }
 
 function buildReport({
+  root,
   baseline,
   result,
   dual,
@@ -257,7 +267,7 @@ ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
 | quality_grader | NOT_USED (sole oracle 금지) |
 | prompt/eval/workflow hashes | MATCH |
 
-${renderPerformanceWorldSection()}
+${renderPerformanceWorldSection(root)}
 
 ## Dual Dirty
 
@@ -271,15 +281,89 @@ ${renderPerformanceWorldSection()}
 `;
 }
 
-function publishQa7Formal(opts) {
-  const actionsRunId = String(opts.actionsRunId || "");
-  if (!/^[0-9]+$/.test(actionsRunId)) {
-    fail("actions run id must be numeric GitHub Actions run id");
+function assertRawBinding(summary, artifacts, baseline, run) {
+  if (summary.baseline_id !== baseline.id) {
+    fail(
+      `artifact baseline_id ${summary.baseline_id} != current ${baseline.id}`,
+      "EPOCH_MISMATCH",
+    );
   }
+  const pinned = (summary.hashes && summary.hashes.pinned) || {};
+  if (pinned.acceptance_workflow_hash && pinned.acceptance_workflow_hash !== baseline.acceptance_workflow_hash) {
+    fail("raw result workflow hash does not match current baseline", "RAW_BINDING");
+  }
+  if (pinned.prompt_hash && pinned.prompt_hash !== baseline.prompt_hash) {
+    fail("raw result prompt hash does not match current baseline", "RAW_BINDING");
+  }
+  if (pinned.eval_dataset_hash && pinned.eval_dataset_hash !== baseline.eval_dataset_hash) {
+    fail("raw result eval hash does not match current baseline", "RAW_BINDING");
+  }
+  const summarySha =
+    summary.head_sha ||
+    summary.commit_sha ||
+    (summary.actions && summary.actions.head_sha) ||
+    null;
+  if (summarySha && String(summarySha).toLowerCase() !== String(run.head_sha).toLowerCase()) {
+    fail("raw result head SHA does not match official run", "RAW_BINDING");
+  }
+  const summaryRun =
+    summary.github_run_id ||
+    summary.actions_run_id ||
+    (summary.actions && summary.actions.run_id) ||
+    null;
+  if (summaryRun && String(summaryRun) !== String(run.id)) {
+    fail("raw result run id does not match official run", "RAW_BINDING");
+  }
+  for (const art of artifacts) {
+    if (art.baseline_id && art.baseline_id !== baseline.id) {
+      fail(`trace ${art.case_id} baseline_id mismatch`, "RAW_BINDING");
+    }
+    if (art.head_sha && String(art.head_sha).toLowerCase() !== String(run.head_sha).toLowerCase()) {
+      fail(`trace ${art.case_id} head SHA mismatch`, "RAW_BINDING");
+    }
+  }
+}
+
+function resolveDownloadedZipSha256(opts) {
+  if (opts.downloadedZipSha256) return opts.downloadedZipSha256;
+  if (opts.artifactZipPath) {
+    if (!fs.existsSync(opts.artifactZipPath)) {
+      fail("official artifact zip missing", "ARTIFACT_DIGEST_MISSING");
+    }
+    return sha256File(opts.artifactZipPath);
+  }
+  fail("downloaded official zip digest missing", "ARTIFACT_DIGEST_MISSING");
+}
+
+function publishQa7Formal(opts) {
+  const root = opts.root || ROOT;
+  const dryRun = opts.dryRun === true || opts.validateOnly === true;
+  const expected = {
+    actionsRunId: opts.actionsRunId,
+    artifactId: opts.artifactId,
+    headSha: opts.headSha,
+    headBranch: opts.headBranch,
+    workflowName: opts.workflowName || null,
+    workflowPath: opts.workflowPath || null,
+    event: opts.event || null,
+    conclusion: opts.conclusion || null,
+    artifactName: opts.artifactName || null,
+    artifactDigest: opts.artifactDigest || null,
+    artifactExpiresAt: opts.artifactExpiresAt || null,
+  };
+
+  const githubClient = opts.githubClient || defaultGithubClient();
+  const { run, artifact } = evaluateQa7Provenance({
+    expected,
+    githubClient,
+    downloadedZipSha256: resolveDownloadedZipSha256(opts),
+    nowMs: Number.isFinite(opts.nowMs) ? opts.nowMs : Date.now(),
+  });
+
   const artifactDir = opts.artifactDir;
   const { summary, artifacts } = loadTraceDir(artifactDir);
 
-  const pre = runQa7Precheck();
+  const pre = opts.precheck || runQa7Precheck();
   if (!pre.ok) {
     fail(`QA7 precheck failed: ${pre.findings.join("; ")}`);
   }
@@ -292,17 +376,12 @@ function publishQa7Formal(opts) {
   }
 
   const baseline = pre.baseline;
-  if (summary.baseline_id !== baseline.id) {
-    fail(
-      `artifact baseline_id ${summary.baseline_id} != current ${baseline.id}`,
-      "EPOCH_MISMATCH",
-    );
-  }
+  assertRawBinding(summary, artifacts, baseline, run);
   if (summary.mode !== "full") fail("formal QA7 requires mode=full");
   if (summary.suite_status !== "PASS") {
     fail(`cannot publish non-PASS suite_status=${summary.suite_status}`);
   }
-  const dataset = loadEvalDataset({});
+  const dataset = opts.dataset || loadEvalDataset({});
   const expectedCount = dataset.count;
   if (!Number.isInteger(expectedCount) || expectedCount < 1) {
     fail(`dataset count invalid: ${expectedCount}`);
@@ -371,14 +450,13 @@ function publishQa7Formal(opts) {
     fail("duplicate runtime trace_id");
   }
 
-  const scope = readJson(SCOPE_REL);
-  const dual = dualDirty(scope);
+  const dual = opts.dual || dualDirty(readJson(SCOPE_REL));
   if (dual.protected_scope_clean !== true) {
     fail("protected_scope_clean must be true for publication");
   }
 
-  const publishedAt = new Date().toISOString();
-  const evidence = readJson(EVIDENCE_REL);
+  const publishedAt = opts.publishedAt || new Date().toISOString();
+  const evidence = readJsonRoot(root, EVIDENCE_REL);
   const critical = evidence.critical_invariant || {
     blocked: 1,
     skipped: 0,
@@ -398,12 +476,20 @@ function publishQa7Formal(opts) {
       "refusing to publish QA7 formal evidence — QA4-QA6 are not COMPLETE for the current baseline (critical_invariant would be stale)",
     );
   }
+  const qa8 = (evidence.suites || []).find((s) => s.suite_id === "QA8");
+  const qa9 = (evidence.suites || []).find((s) => s.suite_id === "QA9");
+  if (qa8 && qa8.completion_status === "COMPLETE") {
+    fail("publisher must not promote QA8 to COMPLETE", "QA8_EARLY");
+  }
+  if (qa9 && qa9.completion_status === "COMPLETE") {
+    fail("publisher must not promote QA9 to COMPLETE", "QA9_EARLY");
+  }
   const subjectSha =
     evidence.publication && evidence.publication.qa1_qa6_subject_sha
       ? evidence.publication.qa1_qa6_subject_sha
       : null;
   if (subjectSha) {
-    let currentHead = opts.headSha || null;
+    let currentHead = run.head_sha;
     if (!currentHead) {
       try {
         currentHead = git("git rev-parse HEAD");
@@ -422,6 +508,7 @@ function publishQa7Formal(opts) {
       liveEvalHash: baseline.eval_dataset_hash,
       workflowHash: baseline.acceptance_workflow_hash,
       liveWorkflowHash: baseline.acceptance_workflow_hash,
+      isAncestor: opts.inheritanceIsAncestor,
     });
     if (!isInheritanceAllowed(inherit)) {
       fail(
@@ -441,7 +528,7 @@ function publishQa7Formal(opts) {
     schema: "governance.engine-acceptance.qa7-result.v1",
     version: "1.0.0",
     suite_id: "QA7",
-    run_id: actionsRunId,
+    run_id: String(run.id),
     harness_run_id: summary.run_id,
     todoId: "qa7-ai-eval",
     measuredAt: summary.measured_at,
@@ -456,23 +543,25 @@ function publishQa7Formal(opts) {
     engine_accepted_for_ui: "NOT_ISSUED",
     ui_ux_entry_gate: "CLOSED",
     actions: {
-      run_id: actionsRunId,
-      workflow: opts.workflowName || "engine-acceptance",
-      event: opts.event || "workflow_dispatch",
-      qa_phase: opts.qaPhase || "qa7",
-      head_sha: opts.headSha,
-      head_branch: opts.headBranch || "main",
-      conclusion: opts.conclusion || "success",
+      run_id: String(run.id),
+      workflow: run.name || OFFICIAL_QA7_WORKFLOW_NAME,
+      workflow_path: run.path,
+      event: run.event,
+      qa_phase: "qa7",
+      head_sha: run.head_sha,
+      head_branch: run.head_branch,
+      conclusion: run.conclusion,
       url:
-        opts.runUrl ||
-        `https://github.com/phonarawd/AI-Profit-OS/actions/runs/${actionsRunId}`,
-      job: "qa7-ai-eval",
+        run.html_url ||
+        `https://github.com/phonarawd/AI-Profit-OS/actions/runs/${run.id}`,
+      job: OFFICIAL_QA7_JOB,
     },
     artifact: {
-      name: "engine-acceptance-QA7-raw-traces",
-      artifact_id: opts.artifactId || null,
+      name: artifact.name || OFFICIAL_QA7_ARTIFACT,
+      artifact_id: String(artifact.id),
+      digest: String(artifact.digest || "").replace(/^sha256:/i, "").toLowerCase(),
       retention_days: 90,
-      expires_at: opts.artifactExpiresAt || null,
+      expires_at: artifact.expires_at,
       raw_in_repo: false,
     },
     kill_switch: {
@@ -534,21 +623,21 @@ function publishQa7Formal(opts) {
   scanSecrets(result, "qa7-result");
   const resultChecksum = sha256Json(result);
   result.checksum = resultChecksum;
-  writeJson(RESULT_REL, result);
 
-  evidence.qa_phase = "QA-7";
-  evidence.baseline_id = baseline.id;
-  evidence.verdict = verdict;
-  evidence.verdict_reason = verdictReason;
-  evidence.evidence_integrity = "VALID";
-  evidence.next = "QA8_SECURITY_PRIVACY";
-  evidence.critical_invariant = critical;
-  evidence.dual_dirty = {
+  const nextEvidence = JSON.parse(JSON.stringify(evidence));
+  nextEvidence.qa_phase = "QA-7";
+  nextEvidence.baseline_id = baseline.id;
+  nextEvidence.verdict = verdict;
+  nextEvidence.verdict_reason = verdictReason;
+  nextEvidence.evidence_integrity = "VALID";
+  nextEvidence.next = "QA8_SECURITY_PRIVACY";
+  nextEvidence.critical_invariant = critical;
+  nextEvidence.dual_dirty = {
     working_tree_clean: dual.working_tree_clean,
     protected_scope_clean: dual.protected_scope_clean,
     forced_clean_forbidden: true,
   };
-  evidence.artifact_policy = {
+  nextEvidence.artifact_policy = {
     raw_traces: "github_actions_artifact",
     retention_days_min: 90,
     repo_keeps: [
@@ -561,8 +650,8 @@ function publishQa7Formal(opts) {
       "perf-budget.v1.json",
     ],
   };
-  evidence.kill_switch = {
-    ...(evidence.kill_switch || {}),
+  nextEvidence.kill_switch = {
+    ...(nextEvidence.kill_switch || {}),
     verified_before_smoke: true,
     verified_before_qa1: true,
     verified_before_qa2: true,
@@ -575,18 +664,20 @@ function publishQa7Formal(opts) {
   };
   // evidence.current_epoch is a rebase-time snapshot, not live suite authority.
   // QA7 publication advances evidence.suites only; preserve the snapshot bytes.
-  evidence.suites = (evidence.suites || []).map((s) => {
+  nextEvidence.suites = (nextEvidence.suites || []).map((s) => {
     if (s.suite_id === "QA7") {
       return {
         suite_id: "QA7",
-        run_id: actionsRunId,
+        run_id: String(run.id),
         baseline_id: baseline.id,
         checksum: resultChecksum,
         completion_status: "COMPLETE",
         result_ref: RESULT_REL,
         mode: "full",
         formal_actions_evidence: true,
-        artifact: "engine-acceptance-QA7-raw-traces",
+        artifact: OFFICIAL_QA7_ARTIFACT,
+        artifact_id: String(artifact.id),
+        head_sha: run.head_sha,
       };
     }
     if (s.suite_id === "QA8") {
@@ -600,9 +691,9 @@ function publishQa7Formal(opts) {
     }
     return s;
   });
-  writeJson(EVIDENCE_REL, evidence);
 
   const report = buildReport({
+    root,
     baseline,
     result,
     dual,
@@ -610,17 +701,65 @@ function publishQa7Formal(opts) {
     verdict,
     verdictReason,
   });
-  fs.writeFileSync(path.join(ROOT, REPORT_REL), report, "utf8");
 
-  return {
-    status: "QA7_FORMAL_PUBLISHED",
-    run_id: actionsRunId,
+  const writes = {
+    [RESULT_REL]: Buffer.from(`${JSON.stringify(result, null, 2)}\n`, "utf8"),
+    [EVIDENCE_REL]: Buffer.from(`${JSON.stringify(nextEvidence, null, 2)}\n`, "utf8"),
+    [REPORT_REL]: Buffer.from(report, "utf8"),
+  };
+
+  if (opts.failBeforeStaging === true) {
+    fail("injected failBeforeStaging — destination files must stay unchanged", "INJECTED_FAIL");
+  }
+
+  const out = {
+    status: dryRun ? "QA7_FORMAL_VALIDATED" : "QA7_FORMAL_PUBLISHED",
+    dry_run: dryRun,
+    run_id: String(run.id),
+    artifact_id: String(artifact.id),
+    head_sha: run.head_sha,
     checksum: resultChecksum,
     counts: result.counts,
     next: result.next,
     qa7_completion_status: result.qa7_completion_status,
     formal_actions_evidence: true,
+    engine_accepted_for_ui: "NOT_ISSUED",
   };
+
+  if (dryRun) return out;
+
+  atomicReplace(root, writes, {
+    failBeforeReplace: opts.failBeforeReplace === true,
+    failDuringReplace: opts.failDuringReplace === true,
+    failDuringReplaceAfter: opts.failDuringReplaceAfter,
+    verifyStaged(staged) {
+      const byRel = new Map(staged.map((s) => [s.rel, s]));
+      for (const rel of OFFICIAL_RELS) {
+        if (!byRel.has(rel)) fail(`staged official file missing: ${rel}`, "ATOMIC");
+      }
+      const stagedResult = JSON.parse(fs.readFileSync(byRel.get(RESULT_REL).tmp, "utf8"));
+      const stagedEvidence = JSON.parse(fs.readFileSync(byRel.get(EVIDENCE_REL).tmp, "utf8"));
+      const stagedReport = fs.readFileSync(byRel.get(REPORT_REL).tmp, "utf8");
+      if (stagedResult.run_id !== String(run.id) || stagedResult.actions.head_sha !== run.head_sha) {
+        fail("staged QA7 result binding mismatch", "ATOMIC");
+      }
+      if (String(stagedResult.artifact.artifact_id) !== String(artifact.id)) {
+        fail("staged QA7 artifact binding mismatch", "ATOMIC");
+      }
+      const qa7 = (stagedEvidence.suites || []).find((s) => s.suite_id === "QA7");
+      if (!qa7 || qa7.run_id !== String(run.id) || qa7.checksum !== resultChecksum) {
+        fail("staged evidence QA7 binding mismatch", "ATOMIC");
+      }
+      if (qa7.artifact_id !== String(artifact.id) || qa7.head_sha !== run.head_sha) {
+        fail("staged evidence subject/run/artifact binding mismatch", "ATOMIC");
+      }
+      if (!stagedReport.includes(String(run.id)) || !stagedReport.includes(resultChecksum)) {
+        fail("staged report binding mismatch", "ATOMIC");
+      }
+    },
+  });
+
+  return out;
 }
 
 function main() {
@@ -629,17 +768,21 @@ function main() {
     const out = publishQa7Formal({
       actionsRunId: getArg(argv, "--actions-run-id"),
       artifactDir: getArg(argv, "--artifact-dir"),
-      headSha: getArg(argv, "--head-sha"),
-      headBranch: getArg(argv, "--head-branch") || "main",
-      workflowName: getArg(argv, "--workflow-name") || "engine-acceptance",
-      event: getArg(argv, "--event") || "workflow_dispatch",
-      qaPhase: getArg(argv, "--qa-phase") || "qa7",
-      conclusion: getArg(argv, "--conclusion") || "success",
+      artifactZipPath: getArg(argv, "--artifact-zip"),
       artifactId: getArg(argv, "--artifact-id"),
+      artifactDigest: getArg(argv, "--artifact-digest"),
+      artifactName: getArg(argv, "--artifact-name"),
       artifactExpiresAt: getArg(argv, "--artifact-expires-at"),
-      runUrl: getArg(argv, "--run-url"),
+      headSha: getArg(argv, "--head-sha"),
+      headBranch: getArg(argv, "--head-branch"),
+      workflowName: getArg(argv, "--workflow-name"),
+      workflowPath: getArg(argv, "--workflow-path"),
+      event: getArg(argv, "--event"),
+      conclusion: getArg(argv, "--conclusion"),
+      dryRun: argv.includes("--dry-run") || argv.includes("--validate-only"),
+      validateOnly: argv.includes("--validate-only"),
     });
-    console.log("[engine-acceptance:publish-qa7-formal] QA7_FORMAL_PUBLISHED");
+    console.log("[engine-acceptance:publish-qa7-formal] " + out.status);
     console.log(JSON.stringify(out, null, 2));
   } catch (e) {
     console.error(
@@ -653,4 +796,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { publishQa7Formal };
+module.exports = { publishQa7Formal, OFFICIAL_RELS };

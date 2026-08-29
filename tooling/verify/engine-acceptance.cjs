@@ -589,8 +589,11 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/publish-qa1-qa6-checkpoint.cjs",
   "tooling/engine-acceptance/selftest-qa1-qa6-checkpoint.cjs",
   "tooling/engine-acceptance/selftest-qa-pipeline-contract.cjs",
+  "tooling/engine-acceptance/selftest-qa7-formal-publisher.cjs",
   "tooling/engine-acceptance/lib/publication-sha-inheritance.cjs",
   "tooling/engine-acceptance/lib/qa-phase-routing.cjs",
+  "tooling/engine-acceptance/lib/qa7-github-provenance.cjs",
+  "tooling/engine-acceptance/lib/atomic-publication.cjs",
   "tooling/engine-acceptance/run-qa8.cjs",
   "tooling/engine-acceptance/run-qa9.cjs",
   "tooling/engine-acceptance/checks/security-privacy-world.cjs",
@@ -2875,6 +2878,12 @@ try {
   selftestQaPipelineContract();
 } catch (e) {
   fail(`qa-pipeline-contract selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
+  const { run: selftestQa7FormalPublisher } = require("../engine-acceptance/selftest-qa7-formal-publisher.cjs");
+  selftestQa7FormalPublisher();
+} catch (e) {
+  fail(`qa7-formal-publisher selftest threw: ${e && e.message ? e.message : e}`);
 }
 try {
   const harnessSelf = require("../engine-acceptance/selftest-pre-rebase-harness.cjs");
