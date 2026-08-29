@@ -1561,6 +1561,176 @@ function amendmentHashChainHolds(amendmentLedger, fails) {
   }
 }
 
+function isSameBaselineHistoricalReevidence(results, baselineId) {
+  return ["QA7", "QA8", "QA9"].every((id) => {
+    const r = results && results[id];
+    return Boolean(r && r.baseline_id === baselineId && r.completion_status === "COMPLETE");
+  });
+}
+
+function stampCurrentEpochPendingSuite(suite, currentBaseline, pred, historical) {
+  const id = suite && suite.suite_id ? suite.suite_id : "";
+  const hist = historical && typeof historical === "object" ? historical : null;
+  const predId = pred && pred.id ? pred.id : null;
+  const epochStatus =
+    id === "QA9"
+      ? "STALE_AGGREGATION_FOR_CURRENT_EPOCH"
+      : id === "QA8"
+        ? "STALE_FOR_CURRENT_EPOCH"
+        : "PENDING_CURRENT_EPOCH";
+  return {
+    ...suite,
+    suite_id: id || suite.suite_id,
+    baseline_id: currentBaseline && currentBaseline.id,
+    run_id: null,
+    checksum: null,
+    completion_status: "NOT_STARTED",
+    predecessor_baseline_id: predId,
+    epoch_status: epochStatus,
+    current_epoch_authoritative: false,
+    predecessor_result_preserved: Boolean(hist),
+    historical_baseline_id: hist && hist.baseline_id ? hist.baseline_id : predId,
+    historical_run_id: hist && hist.run_id != null ? hist.run_id : null,
+    historical_checksum: hist && hist.checksum ? hist.checksum : null,
+    historical_completion_status:
+      hist && hist.completion_status ? hist.completion_status : "COMPLETE",
+    ...(id === "QA9"
+      ? {
+          aggregation_only: true,
+          discovery_suite: false,
+          historical_verdict: hist && hist.verdict ? hist.verdict : null,
+        }
+      : {}),
+  };
+}
+
+function evaluateLiveQa9EpochBinding({ evidence, qa9, baseline }) {
+  if (!evidence || !qa9 || !baseline) {
+    return { ok: false, reason: "missing evidence, qa9-result, or baseline" };
+  }
+  if (evidence.qa_phase === "QA-9") {
+    const acceptedShape =
+      qa9.verdict === "ENGINE_ACCEPTED_FOR_UI"
+        ? qa9.engine_accepted_for_ui === "ISSUED" &&
+          qa9.ui_ux_entry_gate === "OPEN" &&
+          evidence.next === "03_ui_entry_unlocked"
+        : qa9.engine_accepted_for_ui === "NOT_ISSUED" && qa9.ui_ux_entry_gate === "CLOSED";
+    const ok =
+      qa9.baseline_id === baseline.id &&
+      qa9.completion_status === "COMPLETE" &&
+      qa9.aggregation_only === true &&
+      qa9.discovery_suite === false &&
+      qa9.verdict === evidence.verdict &&
+      acceptedShape;
+    return {
+      ok,
+      reason: ok
+        ? null
+        : `published qa9 must bind current baseline ${baseline.id} and match evidence verdict`,
+    };
+  }
+  if (evidence.verdict === "ENGINE_ACCEPTED_FOR_UI") {
+    return {
+      ok: false,
+      reason: "mid-chain evidence must not reuse ENGINE_ACCEPTED_FOR_UI",
+    };
+  }
+  const slot = suiteOf(evidence, "QA9");
+  if (!slot) {
+    return { ok: false, reason: "QA9 slot missing" };
+  }
+  const pending =
+    (slot.completion_status === "NOT_STARTED" || slot.completion_status === "STALE") &&
+    slot.current_epoch_authoritative === false &&
+    slot.run_id == null &&
+    slot.checksum == null;
+  if (!pending) {
+    return {
+      ok: false,
+      reason: `mid-chain QA9 slot must be non-authoritative pending/stale (status=${slot.completion_status} authoritative=${slot.current_epoch_authoritative})`,
+    };
+  }
+  if (!qa9.baseline_id) {
+    return { ok: false, reason: "qa9-result missing baseline_id" };
+  }
+  return { ok: true, reason: null };
+}
+
+function verifySameBaselinePendingSlot(id, baseline, evidence, tip, result, ctx, fails) {
+  const slot = suiteOf(evidence, id);
+  if (!slot) {
+    fails.push(`${id} evidence slot required`);
+    return;
+  }
+  if (slot.completion_status !== "NOT_STARTED" && slot.completion_status !== "STALE") {
+    fails.push(`current ${id} completion_status must be NOT_STARTED or STALE`);
+  }
+  if (slot.baseline_id !== baseline.id) {
+    fails.push(`current ${id} suite.baseline_id must equal current baseline`);
+  }
+  if (slot.run_id != null) {
+    fails.push(`current ${id} NOT_STARTED slot must keep run_id=null`);
+  }
+  if (slot.checksum != null) {
+    fails.push(`current ${id} NOT_STARTED slot must keep checksum=null`);
+  }
+  if (slot.predecessor_baseline_id !== tip.predecessor_baseline_id) {
+    fails.push(`${id} predecessor_baseline_id must equal tip.predecessor_baseline_id`);
+  }
+  if (slot.current_epoch_authoritative !== false) {
+    fails.push(`${id} current_epoch_authoritative must be false`);
+  }
+  if (!result) {
+    fails.push(`historical ${id.toLowerCase()}-result.v1.json required`);
+    return;
+  }
+  if (result.completion_status !== "COMPLETE") {
+    fails.push(`${id} historical result.completion_status must be COMPLETE`);
+  }
+  if (slot.historical_baseline_id !== result.baseline_id) {
+    fails.push(`${id} historical_baseline_id must match result.baseline_id`);
+  }
+  if (slot.historical_run_id != null && String(slot.historical_run_id) !== String(result.run_id)) {
+    fails.push(`${id} historical_run_id must match result.run_id`);
+  }
+  if (slot.historical_checksum && result.checksum && slot.historical_checksum !== result.checksum) {
+    fails.push(`${id} historical_checksum must match result.checksum`);
+  }
+  if (id === "QA9") {
+    if (slot.historical_verdict && slot.historical_verdict !== result.verdict) {
+      fails.push("QA9 historical_verdict must match qa9-result.verdict");
+    }
+    if (result.verdict === "ENGINE_ACCEPTED_FOR_UI" && evidence.verdict === "ENGINE_ACCEPTED_FOR_UI") {
+      fails.push("must not promote historical QA9 ACCEPTED into the current verdict");
+    }
+    if (
+      result.engine_accepted_for_ui === "ISSUED" &&
+      (evidence.engine_accepted_for_ui === "ISSUED" || evidence.ui_ux_entry_gate === "OPEN")
+    ) {
+      fails.push("must not promote historical QA9 ISSUED/OPEN into current evidence authority");
+    }
+  }
+  if (slot.run_id != null && String(slot.run_id) === String(result.run_id)) {
+    fails.push(`must not copy historical ${id} run_id into the current slot`);
+  }
+  verifyHistoricalResultBytes(ctx, id, fails);
+}
+
+function verifySameBaselineMidChainQa6(ctx, fails, parts) {
+  const { baseline, evidence, rebaseLedger, amendmentLedger, defects, results, tip } = parts;
+  verifyPreQa7RebaseBinding(baseline, evidence, rebaseLedger, tip, fails);
+  verifyPreQa7Qa0ToQa6(baseline, evidence, results, fails);
+  verifySameBaselinePendingSlot("QA7", baseline, evidence, tip, results.QA7, ctx, fails);
+  verifySameBaselinePendingSlot("QA8", baseline, evidence, tip, results.QA8, ctx, fails);
+  verifySameBaselinePendingSlot("QA9", baseline, evidence, tip, results.QA9, ctx, fails);
+  if (results.QA7) verifyHistoricalQa7Intrinsic(results.QA7, fails);
+  if (results.QA8) verifyHistoricalQa8Intrinsic(results.QA8, fails);
+  if (results.QA9) verifyHistoricalQa9Intrinsic(results.QA9, fails);
+  verifyPreQa7CheckpointFields(evidence, fails);
+  verifyPreQa7DefectsAndCritical(evidence, defects, results, fails);
+  verifyPreQa7KillAndAmendment(ctx, baseline, evidence, tip, amendmentLedger, fails);
+}
+
 function verifyCurrentEpochPreQa7Checkpoint(ctx, fails) {
   if (!fails || !Array.isArray(fails)) {
     throw new Error("verifyCurrentEpochPreQa7Checkpoint requires a fails array");
@@ -1581,7 +1751,7 @@ function verifyCurrentEpochPreQa7Checkpoint(ctx, fails) {
     fails.push("current-epoch pre-QA7 checkpoint requires a latest rebase");
     return;
   }
-  verifyCurrentEpochPreQa7CheckpointBody(ctx, fails, {
+  const parts = {
     baseline,
     evidence,
     rebaseLedger,
@@ -1589,7 +1759,12 @@ function verifyCurrentEpochPreQa7Checkpoint(ctx, fails) {
     defects,
     results,
     tip,
-  });
+  };
+  if (isSameBaselineHistoricalReevidence(results, baseline.id)) {
+    verifySameBaselineMidChainQa6(ctx, fails, parts);
+    return;
+  }
+  verifyCurrentEpochPreQa7CheckpointBody(ctx, fails, parts);
 }
 
 function isCurrentEpochPreQa7Checkpoint(ctx) {
@@ -1631,6 +1806,9 @@ module.exports = {
   isPendingRerun,
   isCurrentEpochPreQa7Checkpoint,
   verifyCurrentEpochPreQa7Checkpoint,
+  isSameBaselineHistoricalReevidence,
+  stampCurrentEpochPendingSuite,
+  evaluateLiveQa9EpochBinding,
   CURRENT_EPOCH_REBASE_SNAPSHOT,
   verifyWashing,
   verifyPendingRerunEpoch,

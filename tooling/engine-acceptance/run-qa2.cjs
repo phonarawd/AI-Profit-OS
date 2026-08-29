@@ -14,6 +14,7 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 const { assertKillSwitch } = require("./kill-switch.cjs");
 const { ROOT, readJson, dualDirty, hashPathList } = require("./lib/hash-scope.cjs");
+const { buildResultProvenance } = require("./lib/qa1-qa2-artifact-contract.cjs");
 const {
   assertAcceptanceWorkflowHashMatch,
   syncLockfileHashOnly,
@@ -304,6 +305,7 @@ function runQa2(opts = {}) {
     ],
   };
 
+  result.provenance = buildResultProvenance("QA2", process.env, measuredAt);
   const resultChecksum = sha256Json(result);
   result.checksum = resultChecksum;
   writeJson(RESULT_REL, result);

@@ -13,6 +13,7 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 const { assertKillSwitch } = require("./kill-switch.cjs");
 const { ROOT, readJson, dualDirty } = require("./lib/hash-scope.cjs");
+const { buildResultProvenance } = require("./lib/qa1-qa2-artifact-contract.cjs");
 const { runSchemasRoutesContract } = require("./checks/schemas-routes-contract.cjs");
 const { runDbConsistency } = require("./checks/db-consistency.cjs");
 const { runIdempotencySplit } = require("./checks/idempotency-split.cjs");
@@ -252,6 +253,7 @@ function runQa1(opts = {}) {
       "Does not issue ENGINE_ACCEPTED_FOR_UI.",
       "Idempotency INV-01 and INV-03 kept separate.",
     ],
+    provenance: buildResultProvenance("QA1", process.env, measuredAt),
   };
 
   const resultChecksum = sha256Json(result);

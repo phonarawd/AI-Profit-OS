@@ -53,6 +53,7 @@ const {
   verifyPendingRerunEpoch,
   verifyRebaseLedgerAgainstBaseline,
   assertNoInPlaceHashRewrite,
+  evaluateLiveQa9EpochBinding,
   findBridgingAmendment,
   CURRENT_EPOCH_REBASE_SNAPSHOT,
 } = require("../engine-acceptance/lib/product-rebase.cjs");
@@ -124,6 +125,10 @@ function isEphemeralQa6Rewrite(evidenceObj, qa7File) {
 function isEphemeralPreQa9Rewrite(evidenceObj, qa9File) {
   if (!qa9File || qa9File.completion_status !== "COMPLETE") return false;
   if (evidenceObj.qa_phase === "QA-9") return false;
+  const qa9 = (evidenceObj.suites || []).find((s) => s.suite_id === "QA9");
+  if (!qa9 || qa9.completion_status !== "COMPLETE" || qa9.current_epoch_authoritative === false) {
+    return false;
+  }
   const rel = `${GOV}/evidence-manifest.v1.json`;
   const head = gitShowHead(rel);
   const live = liveFileText(rel);
@@ -944,12 +949,6 @@ if (evidence) {
   } catch {
     qa9Peek = null;
   }
-  const ephemeralQa6RewriteNow =
-    !pendingRerun && isEphemeralQa6Rewrite(evidence, qa7Peek);
-  ephemeralQa6Rewrite = ephemeralQa6RewriteNow;
-  const ephemeralPreQa9RewriteNow =
-    !pendingRerun && !ephemeralQa6RewriteNow && isEphemeralPreQa9Rewrite(evidence, qa9Peek);
-  ephemeralPreQa9Rewrite = ephemeralPreQa9RewriteNow;
   preQa7CheckpointCtx = buildPreQa7CheckpointCtx(
     baseline,
     evidence,
@@ -958,26 +957,34 @@ if (evidence) {
     scope,
   );
   const currentEpochPreQa7CheckpointNow =
-    !pendingRerun &&
-    !ephemeralQa6RewriteNow &&
-    !ephemeralPreQa9RewriteNow &&
-    isCurrentEpochPreQa7Checkpoint(preQa7CheckpointCtx);
+    !pendingRerun && isCurrentEpochPreQa7Checkpoint(preQa7CheckpointCtx);
   currentEpochPreQa7Checkpoint = currentEpochPreQa7CheckpointNow;
+  const ephemeralQa6RewriteNow =
+    !pendingRerun &&
+    !currentEpochPreQa7CheckpointNow &&
+    isEphemeralQa6Rewrite(evidence, qa7Peek);
+  ephemeralQa6Rewrite = ephemeralQa6RewriteNow;
   const currentEpochPostQa7PreQa8CheckpointNow =
     !pendingRerun &&
     !ephemeralQa6RewriteNow &&
-    !ephemeralPreQa9RewriteNow &&
     !currentEpochPreQa7CheckpointNow &&
     isCurrentEpochPostQa7PreQa8Checkpoint(evidence);
   currentEpochPostQa7PreQa8Checkpoint = currentEpochPostQa7PreQa8CheckpointNow;
   const currentEpochPostQa8PreQa9CheckpointNow =
     !pendingRerun &&
     !ephemeralQa6RewriteNow &&
-    !ephemeralPreQa9RewriteNow &&
     !currentEpochPreQa7CheckpointNow &&
     !currentEpochPostQa7PreQa8CheckpointNow &&
     isCurrentEpochPostQa8PreQa9Checkpoint(evidence);
   currentEpochPostQa8PreQa9Checkpoint = currentEpochPostQa8PreQa9CheckpointNow;
+  const ephemeralPreQa9RewriteNow =
+    !pendingRerun &&
+    !currentEpochPreQa7CheckpointNow &&
+    !ephemeralQa6RewriteNow &&
+    !currentEpochPostQa7PreQa8CheckpointNow &&
+    !currentEpochPostQa8PreQa9CheckpointNow &&
+    isEphemeralPreQa9Rewrite(evidence, qa9Peek);
+  ephemeralPreQa9Rewrite = ephemeralPreQa9RewriteNow;
 
   // Independently re-derive the L1 formula and require evidence.verdict to
   // match exactly - stronger than (and a superset of) a blanket "never
@@ -2214,6 +2221,14 @@ try {
 } catch {
   fail("qa9-result.v1.json invalid JSON");
 }
+if (qa9Result && evidence && baseline && !pendingRerun) {
+  const qa9Bind = evaluateLiveQa9EpochBinding({
+    evidence,
+    qa9: qa9Result,
+    baseline,
+  });
+  if (!qa9Bind.ok) fail(`live_qa9_epoch_binding: ${qa9Bind.reason}`);
+}
 if (
   qa9Result &&
   !pendingRerun &&
@@ -2829,6 +2844,24 @@ try {
   }
 } catch (e) {
   fail(`pre-rebase harness selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
+  const { run: selftestHelp } = require("../engine-acceptance/selftest-qa7-help-runtime.cjs");
+  selftestHelp();
+} catch (e) {
+  fail(`p-help runtime selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
+  const { run: selftestQa1Qa2 } = require("../engine-acceptance/selftest-qa1-qa2-artifact-contract.cjs");
+  selftestQa1Qa2();
+} catch (e) {
+  fail(`qa1/qa2 artifact selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
+  const { run: selftestQa5Formal } = require("../engine-acceptance/selftest-qa5-formal-chain-contract.cjs");
+  selftestQa5Formal();
+} catch (e) {
+  fail(`qa5 formal-chain selftest threw: ${e && e.message ? e.message : e}`);
 }
 if (amendmentLedger && amendmentLedger.decision_id !== DECISION_ID) {
   fail(`decision_id must be ${DECISION_ID}`);

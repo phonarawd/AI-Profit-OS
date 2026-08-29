@@ -34,6 +34,8 @@ const {
   isPendingRerun,
   isCurrentEpochPreQa7Checkpoint,
   verifyCurrentEpochPreQa7Checkpoint,
+  evaluateLiveQa9EpochBinding,
+  stampCurrentEpochPendingSuite,
   CURRENT_EPOCH_REBASE_SNAPSHOT,
 } = require("./lib/product-rebase.cjs");
 
@@ -528,6 +530,40 @@ function loadLiveCheckpointCtx() {
   };
 }
 
+
+function stripChecksum(obj) {
+  const copy = { ...obj };
+  delete copy.checksum;
+  return copy;
+}
+
+function makeSameBaselineQa6Ctx() {
+  const ctx = makeCheckpointCtx();
+  ctx.results.QA7 = sealResult({ ...stripChecksum(ctx.results.QA7), baseline_id: FIX_CUR });
+  ctx.results.QA8 = sealResult({ ...stripChecksum(ctx.results.QA8), baseline_id: FIX_CUR });
+  ctx.results.QA9 = sealResult({ ...stripChecksum(ctx.results.QA9), baseline_id: FIX_CUR });
+  const q7 = suiteIn(ctx, "QA7");
+  q7.current_epoch_authoritative = false;
+  q7.epoch_status = "PENDING_CURRENT_EPOCH";
+  q7.historical_baseline_id = FIX_CUR;
+  q7.historical_run_id = ctx.results.QA7.run_id;
+  q7.historical_checksum = ctx.results.QA7.checksum;
+  const q8 = suiteIn(ctx, "QA8");
+  q8.predecessor_baseline_id = FIX_PRED;
+  q8.current_epoch_authoritative = false;
+  q8.historical_baseline_id = FIX_CUR;
+  q8.historical_run_id = ctx.results.QA8.run_id;
+  q8.historical_checksum = ctx.results.QA8.checksum;
+  const q9 = suiteIn(ctx, "QA9");
+  q9.predecessor_baseline_id = FIX_PRED;
+  q9.current_epoch_authoritative = false;
+  q9.historical_baseline_id = FIX_CUR;
+  q9.historical_run_id = ctx.results.QA9.run_id;
+  q9.historical_checksum = ctx.results.QA9.checksum;
+  q9.historical_verdict = ctx.results.QA9.verdict;
+  return ctx;
+}
+
 function predBaseline() {
   return {
     id: "ea-baseline-old",
@@ -879,27 +915,15 @@ function run() {
     // qa9-result is predecessor history until current-epoch QA9 aggregation
     // completes. Once evidence.qa_phase=QA-9, the file must instead be bound
     // to the current baseline and match the newly-issued current verdict.
-    const currentQa9Published = liveEvidence.qa_phase === "QA-9";
+    const qa9Bind = evaluateLiveQa9EpochBinding({
+      evidence: liveEvidence,
+      qa9,
+      baseline: liveBaseline,
+    });
     check(
       "live_qa9_epoch_binding",
-      currentQa9Published
-        ? qa9.baseline_id === liveBaseline.id &&
-          qa9.completion_status === "COMPLETE" &&
-          qa9.aggregation_only === true &&
-          qa9.discovery_suite === false &&
-          qa9.verdict === liveEvidence.verdict &&
-          (
-            qa9.verdict === "ENGINE_ACCEPTED_FOR_UI"
-              ? qa9.engine_accepted_for_ui === "ISSUED" &&
-                qa9.ui_ux_entry_gate === "OPEN" &&
-                liveEvidence.next === "03_ui_entry_unlocked"
-              : qa9.engine_accepted_for_ui === "NOT_ISSUED" &&
-                qa9.ui_ux_entry_gate === "CLOSED"
-          )
-        : qa9.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
-          qa9.engine_accepted_for_ui === "ISSUED" &&
-          qa9.baseline_id === "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
-      `phase=${liveEvidence.qa_phase} qa9_baseline=${qa9.baseline_id} verdict=${qa9.verdict}`,
+      qa9Bind.ok === true,
+      qa9Bind.reason || `phase=${liveEvidence.qa_phase} qa9_baseline=${qa9.baseline_id} verdict=${qa9.verdict}`,
     );
     // evidence-manifest.verdict is rewritten ephemerally by run-qa3/4/5/6/8.cjs in every
     // CI qa-matrix job that reruns one of those suites without immediately re-running QA9
@@ -1428,6 +1452,83 @@ function run() {
       c.results.QA7.baseline_id = FIX_CUR;
     });
     check("ephemeral_qa6_like_predicate_false", isCurrentEpochPreQa7Checkpoint(ephQa6) === false);
+
+    const sameBaseline = makeSameBaselineQa6Ctx();
+    const sameFails = [];
+    verifyCurrentEpochPreQa7Checkpoint(sameBaseline, sameFails);
+    check(
+      "same_baseline_historical_qa6_pending_true",
+      isCurrentEpochPreQa7Checkpoint(sameBaseline) === true && sameFails.length === 0,
+      sameFails.join("; "),
+    );
+    check(
+      "same_baseline_qa9_accepted_file_does_not_issue_current",
+      sameBaseline.results.QA9.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
+        sameBaseline.evidence.verdict === "ENGINE_QA_INCOMPLETE" &&
+        suiteIn(sameBaseline, "QA9").current_epoch_authoritative === false,
+    );
+    const dirtySame = patched(sameBaseline, (c) => {
+      c.liveQa7Bytes = "dirty-bytes";
+    });
+    check("same_baseline_dirty_qa7_bytes_false", isCurrentEpochPreQa7Checkpoint(dirtySame) === false);
+
+    const midQa8 = evaluateLiveQa9EpochBinding({
+      evidence: sameBaseline.evidence,
+      qa9: sameBaseline.results.QA9,
+      baseline: sameBaseline.baseline,
+    });
+    check("mid_chain_qa6_qa9_binding_true", midQa8.ok === true, midQa8.reason);
+
+    const authoritativeReuse = evaluateLiveQa9EpochBinding({
+      evidence: {
+        ...sameBaseline.evidence,
+        qa_phase: "QA-8",
+        next: "QA9_ACCEPTANCE_REPORT",
+        suites: sameBaseline.evidence.suites.map((x) =>
+          x.suite_id === "QA9"
+            ? { ...x, completion_status: "COMPLETE", current_epoch_authoritative: true, run_id: "stale", checksum: "stale" }
+            : x,
+        ),
+      },
+      qa9: sameBaseline.results.QA9,
+      baseline: sameBaseline.baseline,
+    });
+    check("mid_chain_authoritative_qa9_complete_binding_false", authoritativeReuse.ok === false);
+
+    const published = evaluateLiveQa9EpochBinding({
+      evidence: {
+        qa_phase: "QA-9",
+        next: "03_ui_entry_unlocked",
+        verdict: "ENGINE_ACCEPTED_FOR_UI",
+      },
+      qa9: {
+        baseline_id: FIX_CUR,
+        completion_status: "COMPLETE",
+        aggregation_only: true,
+        discovery_suite: false,
+        verdict: "ENGINE_ACCEPTED_FOR_UI",
+        engine_accepted_for_ui: "ISSUED",
+        ui_ux_entry_gate: "OPEN",
+      },
+      baseline: { id: FIX_CUR },
+    });
+    check("published_qa9_binding_true", published.ok === true, published.reason);
+
+    const stamped = stampCurrentEpochPendingSuite(
+      { suite_id: "QA9", baseline_id: FIX_CUR, completion_status: "COMPLETE", run_id: "keep-file", checksum: "keep-file" },
+      { id: FIX_CUR },
+      { id: FIX_PRED },
+      sameBaseline.results.QA9,
+    );
+    check(
+      "stamp_pending_does_not_copy_result_into_slot",
+      stamped.completion_status === "NOT_STARTED" &&
+        stamped.run_id === null &&
+        stamped.checksum === null &&
+        stamped.current_epoch_authoritative === false &&
+        stamped.historical_baseline_id === FIX_CUR &&
+        sameBaseline.results.QA9.verdict === "ENGINE_ACCEPTED_FOR_UI",
+    );
     const ephPreQa9 = patched(makeCheckpointCtx(), (c) => {
       c.evidence.qa_phase = "QA-8";
       c.evidence.next = "QA9_ACCEPTANCE_REPORT";

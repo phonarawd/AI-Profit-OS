@@ -26,7 +26,9 @@ const { runSecurityPrivacyWorld } = require("./checks/security-privacy-world.cjs
 const {
   LEDGER_REL: REBASE_LEDGER_REL,
   loadRebaseLedger,
+  latestRebase,
   isPendingRerun,
+  stampCurrentEpochPendingSuite,
 } = require("./lib/product-rebase.cjs");
 
 const RESULT_REL = "governance/engine-acceptance/qa8-result.v1.json";
@@ -38,6 +40,15 @@ const BASELINE_REL = "governance/engine-acceptance/baseline.v1.json";
 const COVERAGE_REL = "governance/engine-acceptance/coverage.v1.json";
 const QA7_REL = "governance/engine-acceptance/qa7-result.v1.json";
 const QA6_REL = "governance/engine-acceptance/qa6-result.v1.json";
+const QA9_REL = "governance/engine-acceptance/qa9-result.v1.json";
+
+function peekResult(rel) {
+  try {
+    return readJson(rel);
+  } catch {
+    return null;
+  }
+}
 
 function sha256Json(obj) {
   return crypto.createHash("sha256").update(`${JSON.stringify(obj)}\n`, "utf8").digest("hex");
@@ -593,6 +604,10 @@ function runQa8(opts = {}) {
     ...(evidence.kill_switch || {}),
     verified_before_qa8: true,
   };
+  const rebaseLedger = loadRebaseLedgerSafe();
+  const tip = rebaseLedger ? latestRebase(rebaseLedger) : null;
+  const pred = { id: (tip && tip.predecessor_baseline_id) || baseline.id };
+  const historicalQa9 = peekResult(QA9_REL);
   evidence.suites = (evidence.suites || []).map((s) => {
     if (s.suite_id === "QA8") {
       return {
@@ -607,6 +622,9 @@ function runQa8(opts = {}) {
         blocked_codes: blockedCodes,
       };
     }
+    if (s.suite_id === "QA9") {
+      return stampCurrentEpochPendingSuite(s, baseline, pred, historicalQa9);
+    }
     return { ...s, baseline_id: baseline.id };
   });
 
@@ -614,7 +632,6 @@ function runQa8(opts = {}) {
   // writing this suite's own QA8 slot above, so a rebase landing between
   // isolated CI jobs can never look like "QA1-QA8 all COMPLETE" just because
   // QA8 itself finished. See buildReport()'s pendingRerun branch.
-  const rebaseLedger = loadRebaseLedgerSafe();
   const pendingRerun = isPendingRerun(baseline, evidence, rebaseLedger);
   evidence.qa_phase = pendingRerun ? "QA-0" : "QA-8";
   evidence.next = pendingRerun ? "QA1_DETERMINISTIC_TRUTH" : "QA9_ACCEPTANCE_REPORT";

@@ -28,7 +28,9 @@ const {
 const {
   LEDGER_REL: REBASE_LEDGER_REL,
   loadRebaseLedger,
+  latestRebase,
   isPendingRerun,
+  stampCurrentEpochPendingSuite,
 } = require("./lib/product-rebase.cjs");
 
 const RESULT_REL = "governance/engine-acceptance/qa6-result.v1.json";
@@ -39,6 +41,17 @@ const SCOPE_REL = "governance/engine-acceptance/protected-scope.v1.json";
 const BASELINE_REL = "governance/engine-acceptance/baseline.v1.json";
 const COVERAGE_REL = "governance/engine-acceptance/coverage.v1.json";
 const QA5_REL = "governance/engine-acceptance/qa5-result.v1.json";
+const QA7_REL = "governance/engine-acceptance/qa7-result.v1.json";
+const QA8_REL = "governance/engine-acceptance/qa8-result.v1.json";
+const QA9_REL = "governance/engine-acceptance/qa9-result.v1.json";
+
+function peekResult(rel) {
+  try {
+    return readJson(rel);
+  } catch {
+    return null;
+  }
+}
 
 function sha256Json(obj) {
   return crypto.createHash("sha256").update(`${JSON.stringify(obj)}\n`, "utf8").digest("hex");
@@ -436,6 +449,14 @@ function runQa6(opts = {}) {
     verified_before_qa6: true,
     production_like_aborts: true,
   };
+  const rebaseLedger = loadRebaseLedgerSafe();
+  const tip = rebaseLedger ? latestRebase(rebaseLedger) : null;
+  const pred = { id: (tip && tip.predecessor_baseline_id) || baseline.id };
+  const historical = {
+    QA7: peekResult(QA7_REL),
+    QA8: peekResult(QA8_REL),
+    QA9: peekResult(QA9_REL),
+  };
   evidence.suites = (evidence.suites || []).map((s) => {
     if (
       s.suite_id === "QA0" ||
@@ -460,6 +481,9 @@ function runQa6(opts = {}) {
         blocked_codes: result.blocked_codes_observed,
       };
     }
+    if (s.suite_id === "QA7" || s.suite_id === "QA8" || s.suite_id === "QA9") {
+      return stampCurrentEpochPendingSuite(s, baseline, pred, historical[s.suite_id]);
+    }
     return {
       ...s,
       baseline_id: baseline.id,
@@ -473,7 +497,6 @@ function runQa6(opts = {}) {
   // writing this suite's own QA6 slot above, so a rebase landing between
   // isolated CI jobs can never look like "QA1-QA6 all COMPLETE" just because
   // QA6 itself finished. See buildReport()'s pendingRerun branch.
-  const rebaseLedger = loadRebaseLedgerSafe();
   const pendingRerun = isPendingRerun(baseline, evidence, rebaseLedger);
   evidence.qa_phase = pendingRerun ? "QA-0" : "QA-6";
   evidence.next = pendingRerun ? "QA1_DETERMINISTIC_TRUTH" : "QA7_AI_EVAL";
