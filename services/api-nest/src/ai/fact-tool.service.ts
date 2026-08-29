@@ -610,8 +610,19 @@ export class FactToolService {
     };
   }
 
-  private async loadHelp(query: string): Promise<FactToolLoadResult> {
-    const chunks = await this.help.search(query, 3);
+  private failClosedHelpFacts(query: string): FactToolLoadResult {
+    const q = String(query || "이용법").trim() || "이용법";
+    let helpText = "이용법·약관은 도움말에서 확인할 수 있어요.";
+    let chunkIds: Array<string | null> = [];
+    try {
+      const seed = this.help.seedCorpus().slice(0, 3);
+      if (seed.length > 0) {
+        helpText = seed.map((c) => c.text).join(" ");
+        chunkIds = seed.map((c) => c.id);
+      }
+    } catch {
+      /* keep template */
+    }
     return {
       tool: "searchHelp",
       facts: [
@@ -620,12 +631,41 @@ export class FactToolService {
           ttlSec: TTL_GUIDE_SEC,
           confidence: 1,
           payload: {
-            helpText: chunks.map((c) => c.text).join(" "),
-            chunkIds: chunks.map((c) => c.id),
-            summary: chunks[0]?.text || "이용법·약관은 도움말에서 확인할 수 있어요.",
+            helpText,
+            chunkIds,
+            summary: helpText,
+            failClosed: true,
+            query: q,
           },
         },
       ],
     };
+  }
+
+  private async loadHelp(query: string): Promise<FactToolLoadResult> {
+    try {
+      const chunks = await this.help.search(query || "이용법", 3);
+      const list = Array.isArray(chunks) ? chunks : [];
+      if (list.length === 0) {
+        return this.failClosedHelpFacts(query);
+      }
+      return {
+        tool: "searchHelp",
+        facts: [
+          {
+            source: "other",
+            ttlSec: TTL_GUIDE_SEC,
+            confidence: 1,
+            payload: {
+              helpText: list.map((c) => c.text).join(" "),
+              chunkIds: list.map((c) => c.id),
+              summary: list[0] && list[0].text ? list[0].text : "이용법·약관은 도움말에서 확인할 수 있어요.",
+            },
+          },
+        ],
+      };
+    } catch {
+      return this.failClosedHelpFacts(query);
+    }
   }
 }

@@ -117,29 +117,52 @@ export class LlmAdapterService {
     }
 
     const adapter = createLlmAdapter(providerId, this.adapterConfig());
-    let result = await llmAdapterChat(adapter, {
+    const chatInput = {
       messages: input.messages,
       tools: lane === "G" ? [] : input.tools,
       stream: input.stream,
       maxTokens: input.maxTokens,
       temperature: input.temperature,
-    });
+    };
+    // P_HELP_FAIL_CLOSED — adapter/fetch throw를 degrade로 닫음 (HTTP 500 금지)
+    let result: Awaited<ReturnType<typeof llmAdapterChat>>;
+    try {
+      result = await llmAdapterChat(adapter, chatInput);
+    } catch {
+      const hint = degradeAnswerPath(lane, true);
+      return {
+        degraded: true,
+        provider_id: providerId,
+        provider_effective: "none",
+        text: hint?.text ?? "",
+        finish_reason: "error",
+        answer_path: hint?.path ?? "template",
+        degrade_reason: "llm_adapter_throw",
+      };
+    }
 
     if (!result.degraded) {
       await this.bumpQuota(providerId);
     }
 
     if (result.degraded && result.finish_reason === "quota") {
-      const retry = await llmAdapterChat(createLlmAdapter(providerId, this.adapterConfig()), {
-        messages: input.messages,
-        tools: lane === "G" ? [] : input.tools,
-        stream: false,
-        maxTokens: input.maxTokens,
-        temperature: input.temperature,
-      });
-      if (!retry.degraded) {
-        result = retry;
-        await this.bumpQuota(providerId);
+      try {
+        const retry = await llmAdapterChat(
+          createLlmAdapter(providerId, this.adapterConfig()),
+          {
+            messages: input.messages,
+            tools: lane === "G" ? [] : input.tools,
+            stream: false,
+            maxTokens: input.maxTokens,
+            temperature: input.temperature,
+          },
+        );
+        if (!retry.degraded) {
+          result = retry;
+          await this.bumpQuota(providerId);
+        }
+      } catch {
+        /* 기존 degrade 유지 */
       }
     }
 

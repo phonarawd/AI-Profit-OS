@@ -107,6 +107,31 @@ if (!pkg.includes("verify:ai-coach-fact-only")) {
   fails.push("package.json missing verify:ai-coach-fact-only");
 }
 
+const pHelpInput = "\uC774\uC6A9\uBC95 FAQ \uC54C\uB824\uC918";
+if (ai.classifyLane(pHelpInput) !== "P") {
+  fails.push("p_help input must classify as P");
+}
+const pHelpRoute = ai.routeAssistant({ text: pHelpInput });
+if (!pHelpRoute.tools_called.includes("searchHelp")) {
+  fails.push("p_help must route searchHelp");
+}
+try {
+  ai.rankHelpChunks("faq", [{ text: "faq guide" }], 1);
+} catch (e) {
+  fails.push("rankHelpChunks must not throw without tags: " + e.message);
+}
+const helpSrc = fs.readFileSync(path.join(root, "services/api-nest/src/ai/help-rag.service.ts"), "utf8");
+const llmSrc = fs.readFileSync(path.join(root, "services/api-nest/src/ai/llm.adapter.service.ts"), "utf8");
+const ctrlSrc = fs.readFileSync(path.join(root, "services/api-nest/src/ai/coach.controller.ts"), "utf8");
+const orchSrc = fs.readFileSync(path.join(root, "services/api-nest/src/ai/coach.orchestrator.ts"), "utf8");
+if (!helpSrc.includes("P_HELP_FAIL_CLOSED")) fails.push("HelpRagService missing P_HELP_FAIL_CLOSED");
+if (!nestFact.includes("failClosedHelpFacts")) fails.push("FactToolService missing failClosedHelpFacts");
+if (!llmSrc.includes("P_HELP_FAIL_CLOSED")) fails.push("LlmAdapterService missing P_HELP_FAIL_CLOSED");
+if (!ctrlSrc.includes("P_HELP_FAIL_CLOSED") || !/fail_closed/.test(ctrlSrc)) {
+  fails.push("CoachController chatOnce must fail-closed");
+}
+if (!orchSrc.includes("P_HELP_FAIL_CLOSED")) fails.push("CoachOrchestrator missing P_HELP_FAIL_CLOSED");
+
 if (fails.length) {
   console.error("[verify:ai-coach-fact-only] FAIL\n- " + fails.join("\n- "));
   process.exit(1);

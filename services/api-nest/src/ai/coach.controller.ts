@@ -56,13 +56,42 @@ export class CoachController {
       body.conversationId != null ? String(body.conversationId) : undefined;
 
     if (!stream) {
-      const out = await this.coach.chatOnce(userId, {
-        text,
-        stream: false,
-        llm,
-        conversationId,
-      });
-      return res.status(200).json(out);
+      // P_HELP_FAIL_CLOSED — chatOnce 예외를 HTTP 500으로 올리지 않는다
+      try {
+        const out = await this.coach.chatOnce(userId, {
+          text,
+          stream: false,
+          llm,
+          conversationId,
+        });
+        return res.status(200).json(out);
+      } catch {
+        try {
+          const out = await this.coach.chatOnce(userId, {
+            text,
+            stream: false,
+            llm: false,
+            conversationId,
+          });
+          return res.status(200).json({
+            ...out,
+            fail_closed: true,
+            degraded: true,
+          });
+        } catch {
+          return res.status(200).json({
+            answer_text:
+              "지금 그 답은 안전하게 안내할 수 없어요. 다른 질문을 해 주세요.",
+            fail_closed: true,
+            degraded: true,
+            lane: "P",
+            answer_path: "template",
+            provider_id: "none",
+            provider_effective: "none",
+            tools_called: [],
+          });
+        }
+      }
     }
 
     res.status(200);

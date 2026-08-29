@@ -106,7 +106,10 @@ export class HelpRagService {
 
   async search(query: string, limit = 3): Promise<HelpChunk[]> {
     const q = String(query || "").trim();
-    if (!q) return [];
+    const n = Math.max(1, Number(limit) || 3);
+    const fallback = () => this.corpus.slice(0, n);
+    // P_HELP_FAIL_CLOSED
+    if (!q) return fallback();
 
     if (this.db.configured()) {
       try {
@@ -131,13 +134,19 @@ export class HelpRagService {
                 tags: Array.isArray(r.metadata?.tags) ? r.metadata.tags : [],
               }) as HelpChunk,
           );
-          return rankHelpChunks(q, chunks, limit) as HelpChunk[];
+          const ranked = rankHelpChunks(q, chunks, limit) as HelpChunk[];
+          if (ranked.length > 0) return ranked;
         }
       } catch {
         /* fall through to seed */
       }
     }
 
-    return rankHelpChunks(q, this.corpus, limit) as HelpChunk[];
+    try {
+      const ranked = rankHelpChunks(q, this.corpus, limit) as HelpChunk[];
+      return ranked.length > 0 ? ranked : fallback();
+    } catch {
+      return fallback();
+    }
   }
 }

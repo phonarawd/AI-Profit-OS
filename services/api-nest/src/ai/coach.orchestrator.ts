@@ -212,10 +212,16 @@ export class CoachOrchestrator {
         toolsForLoad = [...toolsForLoad, "getExecution"];
       }
       // Ownership re-verified inside FactToolService (user_id + id).
-      const loaded = await this.facts.loadTools(userId, toolsForLoad, {
-        query: text,
-        executionId,
-      });
+      // P_HELP_FAIL_CLOSED
+      let loaded;
+      try {
+        loaded = await this.facts.loadTools(userId, toolsForLoad, {
+          query: text,
+          executionId,
+        });
+      } catch {
+        loaded = { facts: [], toolsCalled: [...toolsForLoad], stale: true };
+      }
       factsUsed = loaded.facts;
       toolsCalled = loaded.toolsCalled;
       convState = await this.persistResultRefsFromFacts(convState, factsUsed);
@@ -245,12 +251,22 @@ export class CoachOrchestrator {
           referenceResolution,
           referencePromptLine: referenceLine,
         });
-        const llmOut = await this.llm.chat({
-          messages: [...messages],
-          tools: [],
-          stream: false,
-          lane: "P",
-        });
+        let llmOut;
+        try {
+          llmOut = await this.llm.chat({
+            messages: [...messages],
+            tools: [],
+            stream: false,
+            lane: "P",
+          });
+        } catch {
+          llmOut = {
+            provider_id: "none",
+            provider_effective: "none",
+            degraded: true,
+            text: "",
+          };
+        }
         providerId = String(llmOut.provider_id);
         providerEffective = String(llmOut.provider_effective);
         degraded = llmOut.degraded;

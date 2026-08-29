@@ -52,7 +52,8 @@ function rankHelpChunks(query, chunks, limit = 3) {
   const q = String(query || "").toLowerCase();
   const list = Array.isArray(chunks) ? chunks : [];
   const scored = list.map((c) => {
-    const hay = `${c.text} ${c.tags.join(" ")}`.toLowerCase();
+    const tags = Array.isArray(c?.tags) ? c.tags : [];
+    const hay = `${c?.text || ""} ${tags.join(" ")}`.toLowerCase();
     let score = 0;
     for (const tok of q.split(/\s+/).filter(Boolean)) {
       if (hay.includes(tok)) score += 1;
