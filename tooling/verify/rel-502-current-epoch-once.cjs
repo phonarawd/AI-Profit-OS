@@ -183,6 +183,21 @@ function isCurrentComplete(slot, result, id) {
   return result.completion_status === "COMPLETE" && result.baseline_id === BASELINE_ID;
 }
 
+function isDescendantEpochOfPinnedOneShot(baseline, rebaseLedger) {
+  if (!baseline || !baseline.id || baseline.id === BASELINE_ID) return false;
+  const rebases = rebaseLedger && Array.isArray(rebaseLedger.rebases) ? rebaseLedger.rebases : [];
+  let id = baseline.id;
+  const seen = new Set();
+  while (id && id !== BASELINE_ID) {
+    if (seen.has(id)) return false;
+    seen.add(id);
+    const entry = rebases.filter((r) => r && r.new_baseline_id === id).pop();
+    if (!entry || !entry.predecessor_baseline_id) return false;
+    id = entry.predecessor_baseline_id;
+  }
+  return id === BASELINE_ID;
+}
+
 function isCurrentCompletePair(slot, result) {
   const slotCurrent = !!(slot && slot.completion_status === "COMPLETE" && slot.baseline_id === BASELINE_ID);
   const resultCurrent = !!(
@@ -406,7 +421,7 @@ function verifyStatic() {
     }
   }
 
-  if (baseline) {
+  if (baseline && !isDescendantEpochOfPinnedOneShot(baseline, readJson(REBASE_REL))) {
     if (baseline.id !== BASELINE_ID) fail("live baseline.id != pinned current epoch");
     if (!baseline.protected_scope_manifest || baseline.protected_scope_manifest.aggregate !== AGGREGATE) {
       fail("live baseline aggregate != pinned current epoch");

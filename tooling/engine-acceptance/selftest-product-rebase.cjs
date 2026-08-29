@@ -1798,6 +1798,93 @@ function run() {
     );
   }
 
+  {
+    const inherited = patched(makeCheckpointCtx(), (c) => {
+      c.amendmentLedger.amendments[0].baseline_id = FIX_PRED;
+    });
+    check(
+      "legacy_same_baseline_amendment_is_the_pre_qa7_reject_cause",
+      inherited.amendmentLedger.amendments.every((a) => a.baseline_id !== FIX_CUR) === true &&
+        isCurrentEpochPreQa7Checkpoint(makeCheckpointCtx()) === true,
+    );
+    const f = [];
+    verifyCurrentEpochPreQa7Checkpoint(inherited, f);
+    check(
+      "rebase_inherited_hash_match_exception_true",
+      isCurrentEpochPreQa7Checkpoint(inherited) === true && f.length === 0,
+      f.join("; "),
+    );
+    expectCheckpointFail(
+      "neg_rebase_inherited_wrong_baseline",
+      patched(inherited, (c) => {
+        c.baseline.id = "ea-baseline-other";
+        c.evidence.baseline_id = "ea-baseline-other";
+      }),
+      /new_baseline_id must equal current|current baseline/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_rebase_inherited_workflow_drift",
+      patched(inherited, (c) => {
+        c.rebaseLedger.rebases[0].acceptance_workflow_hash = "ee".repeat(32);
+      }),
+      /inherited hash-MATCH|workflow drift/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_rebase_inherited_prompt_drift",
+      patched(inherited, (c) => {
+        c.baseline.prompt_hash = "99".repeat(32);
+      }),
+      /prompt_hash must remain immutable/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_rebase_inherited_eval_drift",
+      patched(inherited, (c) => {
+        c.baseline.eval_dataset_hash = "aa".repeat(32);
+      }),
+      /eval_dataset_hash must remain immutable/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_rebase_inherited_qa7_washed_from_rerun",
+      patched(inherited, (c) => {
+        c.rebaseLedger.rebases[0].required_rerun_suites = ["QA1", "QA2", "QA3", "QA4", "QA5", "QA6", "QA8"];
+      }),
+      /washing QA7 out of required_rerun/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_rebase_inherited_qa7_complete_washed",
+      patched(inherited, (c) => {
+        c.rebaseLedger.rebases[0].qa7_complete = true;
+      }),
+      /washed qa7_complete/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_rebase_inherited_qa7_early_complete",
+      patched(inherited, (c) => {
+        suiteIn(c, "QA7").completion_status = "COMPLETE";
+        suiteIn(c, "QA7").run_id = "early";
+        suiteIn(c, "QA7").checksum = "early";
+      }),
+      /QA7 completion_status must be NOT_STARTED|requires QA7 NOT_STARTED/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_rebase_inherited_qa8_early_complete",
+      patched(inherited, (c) => {
+        suiteIn(c, "QA8").completion_status = "COMPLETE";
+        suiteIn(c, "QA8").run_id = "early";
+        suiteIn(c, "QA8").checksum = "early";
+      }),
+      /must not promote current QA8|QA8 STALE|QA8 run_id must be null/,
+      check,
+    );
+  }
+
   if (fails.length) {
     console.error("[selftest-product-rebase] FAIL");
     for (const f of fails) console.error(`  - ${f}`);

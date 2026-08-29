@@ -555,6 +555,8 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/run-qa6.cjs",
   "tooling/engine-acceptance/run-qa7.cjs",
   "tooling/engine-acceptance/publish-qa7-formal.cjs",
+  "tooling/engine-acceptance/publish-qa1-qa6-checkpoint.cjs",
+  "tooling/engine-acceptance/selftest-qa1-qa6-checkpoint.cjs",
   "tooling/engine-acceptance/run-qa8.cjs",
   "tooling/engine-acceptance/run-qa9.cjs",
   "tooling/engine-acceptance/checks/security-privacy-world.cjs",
@@ -2820,6 +2822,12 @@ try {
   selftestQa7();
 } catch (e) {
   fail(`qa7 selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
+  const { run: selftestQa1Qa6Checkpoint } = require("../engine-acceptance/selftest-qa1-qa6-checkpoint.cjs");
+  selftestQa1Qa6Checkpoint();
+} catch (e) {
+  fail(`qa1-qa6-checkpoint selftest threw: ${e && e.message ? e.message : e}`);
 }
 try {
   const harnessSelf = require("../engine-acceptance/selftest-pre-rebase-harness.cjs");

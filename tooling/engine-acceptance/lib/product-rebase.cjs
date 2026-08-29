@@ -1498,10 +1498,16 @@ function verifyPreQa7KillAndAmendment(ctx, baseline, evidence, tip, amendmentLed
     fails.push("eval_dataset_hash must remain immutable vs rebase tip");
   }
   const latestAmend = latestSameBaselineAmendment(amendmentLedger, baseline.id);
-  if (!latestAmend) {
-    fails.push("latest same-baseline workflow amendment required");
+  if (latestAmend) {
+    verifySameBaselineAmendmentDoesNotWashQa7(latestAmend, fails);
     return;
   }
+  // 현재 baseline에 amendment가 없으면 rebase-inherited hash-MATCH 예외만 허용.
+  // 일반 same-baseline 우회가 아니다. 다른 baseline·hash drift·QA7 wash는 계속 실패.
+  verifyRebaseInheritedHashMatchException(baseline, evidence, tip, fails);
+}
+
+function verifySameBaselineAmendmentDoesNotWashQa7(latestAmend, fails) {
   const affected = Array.isArray(latestAmend.affected_qa_suites) ? latestAmend.affected_qa_suites : [];
   const unaffected = Array.isArray(latestAmend.unaffected_completed_suites)
     ? latestAmend.unaffected_completed_suites
@@ -1525,6 +1531,35 @@ function verifyPreQa7KillAndAmendment(ctx, baseline, evidence, tip, amendmentLed
   }
   if (latestAmend.workflow_diff_scope && latestAmend.workflow_diff_scope.qa0_qa6_semantics_changed !== false) {
     fails.push("latest same-baseline amendment qa0_qa6_semantics_changed must be false");
+  }
+}
+
+function verifyRebaseInheritedHashMatchException(baseline, evidence, tip, fails) {
+  if (tip.acceptance_workflow_hash !== baseline.acceptance_workflow_hash) {
+    fails.push(
+      "rebase-inherited hash-MATCH exception requires tip.acceptance_workflow_hash to MATCH current baseline (workflow drift is not inherited MATCH)",
+    );
+  }
+  if (tip.eval_dataset_status && tip.eval_dataset_status !== "MATCH") {
+    fails.push("rebase-inherited hash-MATCH exception requires tip.eval_dataset_status=MATCH");
+  }
+  if (!(tip.required_rerun_suites || []).includes("QA7")) {
+    fails.push("rebase-inherited hash-MATCH exception forbids washing QA7 out of required_rerun_suites");
+  }
+  if (tip.qa7_complete === true) {
+    fails.push("rebase-inherited hash-MATCH exception forbids washed qa7_complete=true");
+  }
+  const qa7 = suiteOf(evidence, "QA7");
+  if (!qa7 || qa7.completion_status !== "NOT_STARTED") {
+    fails.push("rebase-inherited hash-MATCH exception requires QA7 NOT_STARTED");
+  }
+  const qa8 = suiteOf(evidence, "QA8");
+  if (
+    !qa8 ||
+    (qa8.completion_status !== "STALE" && qa8.completion_status !== "NOT_STARTED") ||
+    qa8.epoch_status !== "STALE_FOR_CURRENT_EPOCH"
+  ) {
+    fails.push("rebase-inherited hash-MATCH exception requires QA8 STALE");
   }
 }
 
