@@ -31,7 +31,7 @@ Backend Fact > Product Contract > IA > Implementation Contract > Visual Contract
 | Header | `AppHeader` | Adapt · DayPulse chip · no live FSM |
 | Hero | `HomeHero` · `HomeHeroIllustration` | Polish · Contract timeline/copy |
 | Right rail | `HomeRightRail` | Adapt · COUNT settle · no donut · no scan/confirm/progress |
-| Counter | `HomePayoutCounter` / lux | Adapt · **COUNT semantics** · never USDT |
+| Counter | `HomePayoutCounter` / pd | Adapt · **COUNT semantics** · never USDT |
 | Session | `HomeSessionBanner` | Keep/Adapt copy |
 | Footer | `SiteFooter` · `MarketPartnerTrustStrip` | Adapt · Brand ready only |
 | DayPulse / Ticker | existing slots | Keep verify slots · visual Owns → Header |
@@ -78,7 +78,7 @@ Backend Fact > Product Contract > IA > Implementation Contract > Visual Contract
 - `verify:no-it-jargon`
 - `verify:cta-earn-profit`
 - `verify:brand-consumer`
-- `verify:lux-theme-sync`
+- `verify:putduk-theme-sync`
 - `verify:mockup-governance`
 - `verify:gate:fast` (T0)
 - **Manual C01:** no `ledgerTotal`+`USDT` string bind on Home

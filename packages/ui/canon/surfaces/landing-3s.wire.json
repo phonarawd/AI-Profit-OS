@@ -28,7 +28,7 @@
       "role": "primary",
       "copyKey": "T.landing.ctaOpenPriceMap",
       "disclaimerCopyKey": "T.landing.utilityDisclaimer",
-      "note": "CTA 직하 disclaimer repeat · text-xs text-lux-text-muted · opacity stack 0"
+      "note": "CTA 직하 disclaimer repeat · text-xs text-pd-text-muted · opacity stack 0"
     },
     {
       "id": "trust",

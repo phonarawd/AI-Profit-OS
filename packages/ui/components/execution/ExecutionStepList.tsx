@@ -39,10 +39,10 @@ export function ExecutionStepList({
             className={[
               "flex items-center gap-2 text-sm",
               done
-                ? "text-lux-accent"
+                ? "text-pd-accent"
                 : active
-                  ? "text-lux-text"
-                  : "text-lux-text-muted",
+                  ? "text-pd-text"
+                  : "text-pd-text-muted",
               active ? "font-medium" : "",
             ]
               .filter(Boolean)

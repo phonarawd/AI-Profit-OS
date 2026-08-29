@@ -105,19 +105,19 @@ export default function Page() {
   const rows = health?.ok && Array.isArray(health.data.items) ? health.data.items : null;
 
   return (
-    <main className="p-6 text-lux-text" data-surface="admin-adapters" data-testid="admin-adapters-page">
+    <main className="p-6 text-pd-text" data-surface="admin-adapters" data-testid="admin-adapters-page">
       <h1 className="text-xl font-semibold">{T.admin.navigation.adapters}</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">
+      <p className="mt-2 text-sm text-pd-text-muted">
         해외 가격이 잘 들어오는지, 같은 상품끼리 정확히 연결되는지 확인합니다.
       </p>
 
       <section
-        className="mt-6 rounded-md border border-lux-border p-3"
+        className="mt-6 rounded-md border border-pd-border p-3"
         data-kpi="matching"
         data-testid="adapter-matching-kpi"
       >
         <h2 className="text-sm font-medium">상품 연결 정확도 (최근 24시간)</h2>
-        <p className="mt-1 text-xs text-lux-text-muted">
+        <p className="mt-1 text-xs text-pd-text-muted">
           기준을 넘으면 자동 공개 범위를 줄이고 관리자에게 알려 줍니다.
         </p>
         <ul className="mt-3 space-y-2 text-sm">
@@ -127,7 +127,7 @@ export default function Page() {
             data-threshold={KPI_THRESHOLDS.skuMatchFailRateMax}
           >
             <span>상품 번호를 연결하지 못한 비율</span>
-            <span className="text-lux-text-muted">
+            <span className="text-pd-text-muted">
               실제 <AdminTruth value={percentLabel(kpi?.ok ? kpi.data.skuMatchFailureRate : null)} />
               · 기준 {(KPI_THRESHOLDS.skuMatchFailRateMax * 100).toFixed(0)}% 초과 시
               알림 · 자동 공개 축소
@@ -139,7 +139,7 @@ export default function Page() {
             data-pipeline="51.12"
           >
             <span>상품 정보가 다른 수</span>
-            <span className="text-lux-text-muted">
+            <span className="text-pd-text-muted">
               실제 <AdminTruth value={readText(kpi?.ok ? kpi.data.gradeMismatchCount : null)} />
               · 해외 상품 등급과 내부 상품 등급이 다르면 비교하지 않습니다.
             </span>
@@ -150,7 +150,7 @@ export default function Page() {
             data-threshold={KPI_THRESHOLDS.compareReadyFalseRatioMax}
           >
             <span>가격 비교를 준비하지 못한 비율</span>
-            <span className="text-lux-text-muted">
+            <span className="text-pd-text-muted">
               실제 <AdminTruth value={percentLabel(kpi?.ok ? kpi.data.compareReadyFalseRatio : null)} />
               · 기준 {(KPI_THRESHOLDS.compareReadyFalseRatioMax * 100).toFixed(0)}%
               초과 시 상품 정보를 다시 확인합니다.
@@ -163,7 +163,7 @@ export default function Page() {
             data-threshold={KPI_THRESHOLDS.s4AdapterMatchFailureRateMax}
           >
             <span>행사 시작 전 가격 확인 항목</span>
-            <span className="text-lux-text-muted">
+            <span className="text-pd-text-muted">
               실제 <AdminTruth value={percentLabel(kpi?.ok ? kpi.data.adapterMatchFailureRate : null)} />
               · 허용 기준{" "}
               {(KPI_THRESHOLDS.s4AdapterMatchFailureRateMax * 100).toFixed(0)}%
@@ -171,17 +171,17 @@ export default function Page() {
           </li>
         </ul>
         <div
-          className="mt-3 rounded border border-lux-border/60 px-3 py-2 text-sm"
+          className="mt-3 rounded border border-pd-border/60 px-3 py-2 text-sm"
           data-role="adapter-alerts"
           data-event="adapter.health.changed"
         >
           <p className="font-medium">가격 확인 알림</p>
-          <p className="mt-1 text-xs text-lux-text-muted">
+          <p className="mt-1 text-xs text-pd-text-muted">
             상품을 연결하지 못했거나 가격이 오래된 경우 한곳에서 알려 줍니다.
           </p>
         </div>
         <p
-          className="mt-2 text-xs text-lux-text-muted"
+          className="mt-2 text-xs text-pd-text-muted"
           data-lock="yahoo0"
           data-day1-auto-publish-yahoo-jp="false"
         >
@@ -190,17 +190,17 @@ export default function Page() {
       </section>
 
       <section
-        className="mt-6 rounded-md border border-lux-border p-3"
+        className="mt-6 rounded-md border border-pd-border p-3"
         data-testid="identity-review-queue"
         data-surface="identity-review-queue"
       >
         <h2 className="text-sm font-medium">상품 연결 확인 요청</h2>
-        <p className="mt-1 text-xs text-lux-text-muted">
+        <p className="mt-1 text-xs text-pd-text-muted">
           이베이 상품을 내부 상품과 정확히 연결하지 못하면 여기에 남깁니다.
           확인하지 못한 상품을 조용히 버리지 않습니다.
         </p>
         <div
-          className="mt-2 text-xs text-lux-text-muted"
+          className="mt-2 text-xs text-pd-text-muted"
           data-field="identityReviewCount"
           data-silent-drop="false"
         >
@@ -231,14 +231,14 @@ export default function Page() {
             <li
               key={c.id}
               data-adapter={c.id}
-              className="flex items-center justify-between rounded-md border border-lux-border px-3 py-2 text-sm"
+              className="flex items-center justify-between rounded-md border border-pd-border px-3 py-2 text-sm"
             >
               <span>
                 {c.label}
-                <span className="ml-2 text-lux-text-muted">{c.role}</span>
+                <span className="ml-2 text-pd-text-muted">{c.role}</span>
               </span>
               <span
-                className="text-lux-text-muted"
+                className="text-pd-text-muted"
                 data-field="skuMatchFailureRate"
               >
                 <AdminTruth
@@ -255,7 +255,7 @@ export default function Page() {
 
       <section className="mt-8">
         <h2 className="text-sm font-medium">{T.admin.adaptersListingLegs}</h2>
-        <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-lux-text-muted">
+        <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-pd-text-muted">
           {LISTING_LEGS.map((leg) => (
             <li key={leg}>{leg}</li>
           ))}
@@ -264,7 +264,7 @@ export default function Page() {
 
       <section className="mt-8">
         <h2 className="text-sm font-medium">공식 협력 가격 제공처 (연결 준비 중)</h2>
-        <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-lux-text-muted">
+        <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-pd-text-muted">
           {PHASE1_PARTNER_LEGS.map((leg) => (
             <li key={leg}>{leg}</li>
           ))}
@@ -272,19 +272,19 @@ export default function Page() {
       </section>
 
       <p
-        className="mt-8 text-xs text-lux-text-muted"
+        className="mt-8 text-xs text-pd-text-muted"
         data-forbid="day1_yahoo_jp_auto_publish"
       >
         당일 기회 자동 공개는 이베이·운영자 기준가만 씁니다. 아마존·야후 일본은
         공식 가격은 연결을 마친 뒤에만 자동 공개에 사용합니다.
       </p>
       {!health ? (
-        <p className="mt-4 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+        <p className="mt-4 text-sm text-pd-text-muted">{T.admin.state.loading}</p>
       ) : !health.ok ? (
         <AdminFetchNote failure={health.failure} />
       ) : null}
       <p
-        className="mt-2 text-xs text-lux-text-muted"
+        className="mt-2 text-xs text-pd-text-muted"
         data-lock="proximity-limit-owns"
         data-owns="execution-policy"
       >

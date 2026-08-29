@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { T } from "../../copy/ko";
-import { TouchButton } from "../lux/TouchButton";
+import { TouchButton } from "../../primitives/Button";
 import type { InboxChannel, InboxItemModel } from "./inbox-types";
 
 export type OpsInboxProps = {
@@ -55,7 +55,7 @@ export function OpsInbox({
 
   return (
     <main
-      className={`text-lux-text ${className}`.trim()}
+      className={`text-pd-text ${className}`.trim()}
       data-testid="ops-inbox"
       data-canon="ops-inbox"
       data-hard-delete="false"
@@ -69,7 +69,7 @@ export function OpsInbox({
         </h1>
         <Link
           href="/me/settings#notify"
-          className="text-sm text-lux-accent underline"
+          className="text-sm text-pd-accent underline"
           data-canon-block="prefsLink"
         >
           {T.inbox.prefsLink}
@@ -89,10 +89,10 @@ export function OpsInbox({
             aria-selected={filter === f.id}
             data-inbox-filter={f.id}
             className={[
-              "touch-target rounded-lux-md border px-3 py-2 text-sm",
+              "touch-target rounded-pd-md border px-3 py-2 text-sm",
               filter === f.id
-                ? "border-lux-accent text-lux-accent"
-                : "border-lux-border text-lux-text-muted",
+                ? "border-pd-accent text-pd-accent"
+                : "border-pd-border text-pd-text-muted",
             ].join(" ")}
             onClick={() => setFilter(f.id)}
           >
@@ -103,7 +103,7 @@ export function OpsInbox({
 
       <section className="mt-6" data-canon-block="list">
         {list.length === 0 ? (
-          <p className="text-sm text-lux-text-muted" role="status">
+          <p className="text-sm text-pd-text-muted" role="status">
             {T.inbox.empty}
           </p>
         ) : (
@@ -114,7 +114,7 @@ export function OpsInbox({
               return (
                 <li
                   key={item.id}
-                  className="rounded-lux-md border border-lux-border bg-lux-surface p-3"
+                  className="rounded-pd-md border border-pd-border bg-pd-surface p-3"
                   data-canon-block="row"
                   data-testid="ops-inbox-row"
                   data-inbox-channel={item.channel}
@@ -144,26 +144,26 @@ export function OpsInbox({
                         </span>
                         {unread ? (
                           <span
-                            className="inline-block h-2 w-2 rounded-full bg-lux-accent"
+                            className="inline-block h-2 w-2 rounded-full bg-pd-accent"
                             aria-label={T.inbox.unreadDot}
                           />
                         ) : null}
                       </span>
-                      <span className="mt-0.5 block truncate text-sm text-lux-text-muted">
+                      <span className="mt-0.5 block truncate text-sm text-pd-text-muted">
                         {item.bodyKo}
                       </span>
-                      <span className="mt-1 block text-xs text-lux-text-muted">
+                      <span className="mt-1 block text-xs text-pd-text-muted">
                         {relativeKo(item.createdAt)}
                       </span>
                     </span>
                   </button>
                   {open ? (
-                    <div className="mt-3 border-t border-lux-border pt-3 text-sm">
+                    <div className="mt-3 border-t border-pd-border pt-3 text-sm">
                       <p className="whitespace-pre-wrap">{item.bodyKo}</p>
                       {item.href ? (
                         <Link
                           href={item.href}
-                          className="mt-2 inline-block text-lux-accent underline"
+                          className="mt-2 inline-block text-pd-accent underline"
                         >
                           {T.inbox.openBody}
                         </Link>
@@ -178,7 +178,7 @@ export function OpsInbox({
                         </TouchButton>
                         <Link
                           href="/me/settings"
-                          className="touch-target inline-flex items-center text-sm text-lux-text-muted underline"
+                          className="touch-target inline-flex items-center text-sm text-pd-text-muted underline"
                         >
                           {T.inbox.supportCta}
                         </Link>
@@ -193,7 +193,7 @@ export function OpsInbox({
       </section>
 
       <section
-        className="mt-8 space-y-1 text-xs text-lux-text-muted"
+        className="mt-8 space-y-1 text-xs text-pd-text-muted"
         data-canon-block="blockedToasts"
         data-toast-match-blocked="MATCH_BLOCKED"
         data-toast-withdraw-blocked="WITHDRAW_APPLY_BLOCKED"

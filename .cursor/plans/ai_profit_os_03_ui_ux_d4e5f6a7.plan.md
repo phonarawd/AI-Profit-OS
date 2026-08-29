@@ -3,7 +3,7 @@ name: AI Profit OS — UI & UX
 overview: v7.23.0 PART0~9 completed 불변 · 00 R0→01 Money R1→02 Engine R1→02.5 QA(ENGINE_ACCEPTED_FOR_UI·UI_UX_ENTRY_GATE=OPEN) 후 Redesign R1 Home→spotcheck→R2 Acquisition→R3 Wallet→R4 Core Loop→R5 Account Hub · ADR-017 Light+Purple·새 5탭 라벨·PART9 binding 보존 · v7.24.0(2026-08-16) ADR-018 Peotteok Visual Master Reset — R1 Home 시각(geometry) authority가 ADR-017→ADR-018로 승계, STEP5 Slice5/6(RightRail/Partner) SUPERSEDED/STOPPED, Founder Home Visual Master intake 대기(구현코드0) · v7.24.1(2026-08-16) ADR-018 PENDING TODO REBASE — H1/H5/H6 신규 todo(Visual Master intake/Visual Contract/Implementation Contract) 삽입, H0~H11 실행 큐 SSOT 명시, Legacy Replacement Safety Gate 신설, R2~R5 하이브리드 상태모델, §33.8 ADR-013/018 정합, 02.5 UI_UX_ENTRY_GATE=CLOSED 기록(구현코드0 · completed 이력 불변) · v7.24.2(2026-08-16) ENGINE ACCEPTANCE GATE RESYNC — v7.24.1 기록 시점의 02.5 verdict=ENGINE_NOT_ACCEPTED(QA8_ADMIN_BOUNDARY P0)는 **이력**이다; 이후 admin 인증/RBAC repair(services/api-nest/src/common/admin.guard.ts 등) 완료 + QA1-8 재실행 + QA9 재판정으로 verdict=ENGINE_ACCEPTED_FOR_UI(ISSUED)·UI_UX_ENTRY_GATE=OPEN(baseline ea-baseline-64b0f8a6d984-3657543f36b5 · governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md · pnpm verify:engine-acceptance 라이브 재확인)로 전환됐음을 본 patch가 반영 — **Engine Gate(H7 등 실행 전 UI_UX_ENTRY_GATE 조건)는 충족**되었으나 **H1/H4/H5/H6/H6.5 Visual Master 계약 선행조건 및 R2~R5 화면별 Visual Master 규칙은 불변**(Visual Master 없이 실제 runtime 착수 불가) · 구현코드0 · completed 이력 불변 · v7.24.3(2026-08-16) H1 HOME VISUAL MASTER INTAKE COMPLETE — Founder가 Desktop/Mobile Home Visual Master 이미지 2장을 `APPROVED VISUAL MASTER`로 명시 지정, `packages/ui/canon/contracts/peotteok-home-visual-master-intake.v1.md` 신설(provenance+hash+dimensions+functional conflict matrix+legacy forensic preview+asset production candidates 기록) + `home-visual-v2.wire.json`에 `visualMasterIntakeRef` pointer 추가 · `redesign-r1-home-visual-master-intake`(H1) pending→**completed** · Visual Contract(H5)/Implementation Contract(H6)/Visual Lock 착수 **0** · 원본 이미지 파일 레포 저장 **0** · 발견된 미해결 blocking conflict **0**(NOT_SUPPORTED/VISUAL_FUNCTIONAL_CONTRACT_CONFLICT 항목은 H4/H5에서 Founder 결정 대기로 기록만) · runtime/CSS/API/DB 변경 **0** · 다음 File-Serial pending=`redesign-r1-home-brand-assets`(R1-2 Part A) · v7.24.4(2026-08-16) REDESIGN-R1-HOME-BRAND-ASSETS PART A COMPLETE — Brand Kit+markets+membership manifest 전수 SHA-256/mirror 검증(21 assets·17/17 mirror-consistent·중복0) + `tooling/verify/brand-asset-provenance.cjs` 신설+CATALOG · ADR-018 §13 legacy candidate 표에 `avatar-512.png` 보완 · Part B/H4~H7/runtime/신규 asset 생성 = 착수 0 · todo status는 Part B 미완료로 **pending 유지**(스키마 3번째 값 전례 0 확인) · content에 Part A 증거 append. · v7.24.5(2026-08-16) BRAND-ASSETS SPLIT RESOLUTION + H4 START — `redesign-r1-home-brand-assets`를 Part A(completed)로 확정하고 Part B를 신규 `redesign-r1-home-visual-asset-production`(YAML 목록상 H6.5 다음·H7 앞으로 실제 이동)으로 SPLIT(원문 이전만·재작성 0) → File-Serial first pending이 `redesign-r1-home-product-contract`(H4)로 정상화됨을 확인 → H4 Home Product Contract(`packages/ui/canon/contracts/peotteok-home-product-contract.v1.md`) 작성 착수. · v7.24.6(2026-08-16) H4 HOME PRODUCT CONTRACT COMPLETE — 15섹션 Functional Truth Contract 완성. 핵심 발견: (1) `WalletBuckets.profitUsdt`=출금가능 누적수익이나 Home 응답에 `FORBIDDEN_RESPONSE_KEYS` 하드 가드 존재 → "실제 수익" name-match binding 거부, `FUNCTIONAL_BINDING_UNRESOLVED`로 확정(Founder/Money-owner 결정 대기) (2) `estimatedDurationSec`/KRW FX 인프라는 실존하나 Home 미배선(FUNCTIONAL_BINDING_REQUIRED) (3) 다음 업데이트 리터럴 시각=`NOT_SUPPORTED_AS_LITERAL_RUNTIME_TRUTH`(대체 slot 3종 제시) · blocking conflict=0 · fake binding=0 · 신규 backend 발명=0 · `verify:home-product-contract.cjs` 신설+CATALOG · runtime/H5/H6/H7 착수=0. · v7.24.7(2026-08-16) H5 HOME VISUAL CONTRACT COMPLETE — Desktop(`home-visual-desktop`)+Mobile(`home-visual-mobile`) 시각 계약 완성(`packages/ui/canon/contracts/peotteok-home-visual-contract.v2.md` 20절: authority refs·Desktop/Mobile composition·shared design language·layout/typo/card/color hierarchy·money/opportunity/AI visual hierarchy·update-trust·nav·responsive intent·accessibility·asset matrix·VISUAL_ONLY_EXAMPLE 처리·H4 unresolved carry-forward·legacy forbidden reuse·H6 handoff) · geometry/색/spacing는 관계·범위로만 계약, 옛 ADR-017 px 미재사용(`PENDING_CALIBRATION_FROM_MASTER`로 명시) · 실제 수익 슬롯=APPROVED/바인딩=UNRESOLVED 유지 · 다음 업데이트 리터럴=NOT_SUPPORTED 유지(대체안 3종 제시) · 영구 emoji(👋/✨) 리터럴 미계약(타이포/색으로 강조 대체) · asset 6종 매트릭스 식별(제작 0) · `home-visual-v2.wire.json` newVisualContractRef pointer 추가 · runtime/CSS/API/DB/H6/H6.5/H7/Brand Assets Part B/Visual Lock 착수=0. · v7.24.8(2026-08-16) H6 HOME IMPLEMENTATION CONTRACT COMPLETE — `packages/ui/canon/contracts/peotteok-home-implementation-contract.v2.md` 신설(실제 코드 재실측 기반 KEEP/REWIRE/REMOVE_FROM_RUNTIME/REPLACE/INVESTIGATE 최종 분류, H1 preview 3건 정정: SiteFooter INVESTIGATE→KEEP·BalanceAwareHome 단일분류→세분화 INVESTIGATE·BrandMark.tsx는 Home 렌더경로 밖 발견) · Desktop/Mobile 구현 매핑 · actual-profit=H7_PREREQUISITE_DECISION_REQUIRED(FORBIDDEN_RESPONSE_KEYS guard 위치 실측 확인) · KRW=기존 fail-safe(USDT-primary) READY 확인 · itemCount/estimatedDurationSec=gap-only READY(백엔드 변경 0, 코드 실측 확인) · 평균수익률=서버 필드 0건 BLOCKED · update슬롯=asOf/scanIdle/scanEmpty 폴백 체인 확정 · CTA 중복위험(4곳 후보) 식별 · asset 매트릭스 최종화(생성 0) · H7 file-level plan(CREATE/MODIFY/DELETE/NO_CHANGE) 작성 · H6.5 handoff 12항목 · H7 entry gates 8항목 분류 · runtime/H6.5/H7/Brand Assets Part B/Visual Lock 착수=0. · v7.24.9(2026-08-16) H6.5 CONTRACT SYNC COMPLETE — `packages/ui/canon/contracts/peotteok-home-contract-sync.v1.md` 신설(H4/H5/H6 3문서 + 실제 코드/verify script 재대조, 추측 0) · blocking contradiction=0, non-blocking gap 4건 발견·해소(Right Rail Zone B origin 오귀속 H5→H4를 H1로 정정 · Actual Profit 이중가드(Money 런타임 FORBIDDEN_RESPONSE_KEYS + Canon wire forbiddenWithoutContract:cumulativeProfitUsdt) 동시해제 명시 · verify:home-live-wire→verify:balance-aware-feed 오귀속 정정 · 카테고리별 처리시간 Engine 재확인 미이행 DEFERRED_BY_CONTRACT 이관) · KRW=`KRW_BINDING_REQUIRED_BEFORE_VISUAL_CERTIFICATION`(구현착수 허용·Visual Lock/H11 인증은 KRW 실배선 전까지 불허, "fail-safe 있으니 문제없음" 결론 명시 거부) · Actual Profit 데이터=`PRE_H7_BINDING_REQUIRED`/슬롯=`SYNCED_READY` · Average Return=`REQUIRED_AND_SERVER_PREREQUISITE` · CategoryFilterChips Home 호출부=`REMOVE_FROM_H7_SCOPE`(컴포넌트 파일은 KEEP) · CTA 중복위험 4후보→실제 1곳(Hero↔discovery-teaser, Hero REMOVE_FROM_RUNTIME과 동시해소)로 정리 · Sync Matrix 26행 전부 6분류 확정(모호표기 0) · **H7_CONTRACT_READY=YES · H7_RUNTIME_START_ALLOWED=NO**(Asset Part B 미착수, 정상) · runtime/CSS/asset생성/DB/Money/FX/서버집계/H7 착수=0 · 다음 pending=`redesign-r1-home-visual-asset-production`. · v7.24.10(2026-08-16) HOME VISUAL MASTER V2 REBASE + DELTA SYNC COMPLETE — Founder가 H6.5 완료 직후 Home visual direction 업그레이드, 이미지 3장(Desktop Primary/Desktop Secondary Reference/Mobile Primary) 첨부 · 이미지 픽셀 직접 확인으로 role 판정(추측 0, 파일명이 아니라 실제 내용으로 식별) · `packages/ui/canon/contracts/peotteok-home-visual-master-intake.v2.md`(V2 registry: SHA-256/dimensions/role) + `packages/ui/canon/contracts/peotteok-home-v2-delta-sync.v1.md`(H5/H6/H6.5 delta) 신설 · V1 intake는 SUPERSEDED banner만 추가(ADR-018이 ADR-017에 한 방식과 동일, 본문 삭제 0) · Secondary Reference에서 위반 사례 발견·배제: "총자산"(원금+수익 합산 표시, 3-슬롯 분리 원칙 위반) · "글로벌 시장 동향"(시장지수/가짜통계) · 구버전 IA "내거래" 라벨 · H4 functional truth 보존 확인 · H5 OBSOLETED_BY_V2=0(전부 UNCHANGED/DELTA_REQUIRED) · H6 지정 8파일 재분류 필요=0건 · H6.5 기존 결론(KRW/Actual Profit/Average Return prerequisite·Update Slot synced·CategoryFilter removal·RightRail Zone B defer·Desktop/Mobile 분리) 반전=0 · 신규 발견: Mobile AI summary=itemCount 단일요구라 즉시 SYNCED_READY(Desktop만 2개 prerequisite 유지) · Mobile "최근확인" health-ish 3행=Fact 0→static Trust copy로 흡수 · 국가 flag emoji 위험 발견(MarketPartnerLeg.tsx 실측: 파트너 로고만 사용, flag 자산 0)→텍스트 corridor 유지 권고 · Asset Part B V2 매트릭스(로봇 2종+support graphic=MODIFY_REQUIREMENT, 상품이미지/Trust/인사이트=KEEP_REQUIREMENT, 신규 INVESTIGATE 2건) · HOME_VISUAL_MASTER_V2_REBASE=PASS · H7_CONTRACT_READY_AFTER_V2=YES · ASSET_PART_B_V2_READY=YES · H7_RUNTIME_START_ALLOWED=NO(Part B 미착수) · runtime/CSS/API/DB/Money/FX/asset생성/이미지생성/H7착수=0 · 다음 pending=`redesign-r1-home-visual-asset-production`(§20 매트릭스 입력). · v7.24.11(2026-08-16) HOME ASSET PRODUCTION PART B V2 COMPLETE — 8행 종결 · ASSET_PART_B_V2_COMPLETE=YES · H7_RUNTIME_START_ALLOWED=YES · 다음 pending=`redesign-r1-home-implementation`.
 todos:
   - id: ui-preflight-constitution
-    content: "[grok-4.5|256K] PART0 착수게이트 · **선행: Engine 02 Pre-UI Runtime Gate(§0.9 E-R1~E-R8) pending0 + Money money-user-benefits-read completed 필수(미충족 시 본 todo·이하 전부 착수 금지)** · BOOTSTRAP §0.6 실측기록(DB76/mig28/fn5·Canon·routes·Admin교차·verify live/pending) · **v7.22.50 감사 3정정 기록 흡수(§0.6 U13~U15·색토큰=lux-fintech·§29.6 Phase1+·eBay query: gap=Engine follow-up)** · File-Serial 재정렬 0 · 구현코드0 · 다음=market-partner-trust-surfaces"
+    content: "[grok-4.5|256K] PART0 착수게이트 · **선행: Engine 02 Pre-UI Runtime Gate(§0.9 E-R1~E-R8) pending0 + Money money-user-benefits-read completed 필수(미충족 시 본 todo·이하 전부 착수 금지)** · BOOTSTRAP §0.6 실측기록(DB76/mig28/fn5·Canon·routes·Admin교차·verify live/pending) · **v7.22.50 감사 3정정 기록 흡수(§0.6 U13~U15·색토큰=pd-fintech·§29.6 Phase1+·eBay query: gap=Engine follow-up)** · File-Serial 재정렬 0 · 구현코드0 · 다음=market-partner-trust-surfaces"
     status: completed
   - id: match-tension-ux-surfaces
     content: "[grok-4.5|256K] v7.22.30 §48.3b 긴장감 UX·등급≠대기 · Index §20.2 · verify:match-tension-surface"
@@ -24,7 +24,7 @@ todos:
     content: "[grok-4.5|256K] PART1c §33.8 Canon 권위·사진PNG0·archive INTENT ONLY · admin-execution-policy.wire=Admin Owns확인(UI앱구현0) · verify:mockup-governance/canon-surfaces/brand-logo-single · CLOSE: 3 verify PASS · photo0 · owns=Admin · appsWebImplement=false · apps/web/admin 0 · 갭코드0"
     status: completed
   - id: ux-design-system
-    content: "[grok-4.5|256K] PART1d Lux tokens + fontScale md/lg/xl + spacing/line-height senior · MotionCTA · reduced-motion · Light테마토글0 · verify:lux-theme-sync · CLOSE: lux-theme-sync+ux-design-system+font-scale-three PASS · hex=#3DDC97/#7AA2FF 재발명0 · 갭코드0"
+    content: "[grok-4.5|256K] PART1d PUTDUK tokens + fontScale md/lg/xl + spacing/line-height senior · MotionCTA · reduced-motion · Light테마토글0 · verify:putduk-theme-sync · CLOSE: pd-theme-sync+ux-design-system+font-scale-three PASS · hex=#3DDC97/#7AA2FF 재발명0 · 갭코드0"
     status: completed
   - id: onboarding-experiential
     content: "[grok-4.5|256K] PART2a §6.4(+v7.22.55 supersede) 체험형 온보딩 · Guest/광고유입=utility 톤 · 첫화면 `T.landing.transitionDisclosure` 1줄(전환고지≠capital허가) · ACTION CTA=`시작하기`/`시세 맵 계속`(「수익 벌기」0) · 수익|투자|USDT|테더|보장|차익|괴리율 0 · Partner strip 1slide · Canon wires · verify:onboarding-experiential/canon-surfaces · CLOSE: compareMiniUtility·utilityDisclaimer wire · demo +$제거 · practice banner 수익0 · verify 잠금"
@@ -123,7 +123,7 @@ todos:
     content: "[grok-4.5|256K] [밀도:무거움·체감최우선] PART9c 홈 / live feed+DayPulse · HomePageClient · 401 graceful(9-pre2 세션쿠키 배선 선행 필수) · verify:home-live-wire PASS · 선행=9a·9b · **단독 세션 권장**"
     status: completed
   - id: part9d-home-principal-slots
-    content: "[grok-4.5|256K] [밀도:무거움] PART9d §5.3 B/D HomePrincipalRail + Canon wire + lux-feed-grid · verify:home-principal-slots · 선행=9c · **단독 세션 권장**"
+    content: "[grok-4.5|256K] [밀도:무거움] PART9d §5.3 B/D HomePrincipalRail + Canon wire + pd-feed-grid · verify:home-principal-slots · 선행=9c · **단독 세션 권장**"
     status: completed
   - id: part9e-profits-detail-wire
     content: "[grok-4.5|256K] [밀도:가벼움] PART9e /profits + /profits/[id] live · verify:profits-live-wire PASS · 선행=9a · **2~3개 연속 묶기 OK**(9e·9f)"
@@ -150,7 +150,7 @@ todos:
     content: "[grok-4.5|256K] Redesign R1 · ADR-018 §9 H1 · Founder-provided Home Visual Master intake 등록 — 절차: candidate(원본 이미지 파일 레포 저장 0·세션 참고만) → functional conflict check(Canon `factSurface`/`forbidden`·legal·a11y·security 스캔 · 충돌 시 `VISUAL_FUNCTIONAL_CONTRACT_CONFLICT`) → Founder가 'APPROVED VISUAL MASTER'로 명시 지정(confirmation) → 해당 화면 Visual Authority(ADR-018 §3) 최상단 registration(텍스트 pointer만 · 이미지 파일 커밋 0) · **Desktop/Mobile 별도 authority**(ADR-018 §10 · 한쪽만 제공 시 나머지는 register/LOCK 없이 구조적 provisional만 유지) · 일반 미승인 mockup과 Founder-approved Visual Master 구분(ADR-013 mockup 규칙은 미승인 이미지에만 적용) · **Founder 이미지가 실제 제공되기 전에는 본 todo status=pending 유지 · geometry/색/spacing/hero 추측 절대 금지** · 절차 SSOT=`.cursor/rules/visual-master-intake.mdc` · 완료조건=등록된 Visual Authority pointer+conflict check 기록(이미지 파일 0) · 다음=H5 New Visual Contract · **2026-08-16 COMPLETE:** Founder가 Desktop+Mobile Home 이미지 2장을 APPROVED VISUAL MASTER로 명시 지정 → `packages/ui/canon/contracts/peotteok-home-visual-master-intake.v1.md`(provenance/hash/dimensions + functional conflict matrix + legacy forensic preview + asset production candidates) + `home-visual-v2.wire.json visualMasterIntakeRef` 등록 완료 · Visual Contract/Implementation Contract/Visual Lock 착수 0 · runtime/CSS/API/DB 변경 0"
     status: completed
   - id: redesign-r1-home-brand-assets
-    content: "[grok-4.5|256K] Redesign R1-2 · SPLIT(2026-08-16 ADR-018): (A) 착수 가능 — Brand Kit+markets manifest provenance/hash/public mirror · third-party logo AI재현0 · blocked/ready lifecycle · partner logo validation · 현재 ready 재사용 우선·중복에셋0 · verify:brand-assets/market-partner-trust + verify:brand-asset-provenance 신설+CATALOG · (B) 착수 금지(H5 New Visual Contract·H6 New Implementation Contract 이전) — Home Hero 신규 생성 · avatar 신규 시각 확정 · Home illustration 선택 · Home 배치용 시각 자산 확정 · 기존 robot+globe hero illustration/`wordmark-dark`/`BrandMark ✦`/legacy dark tokens(`lux-dark`)는 `LEGACY VISUAL CANDIDATE — NOT NEW MASTER AUTHORITY`로 취급(ADR-018 §13 개념 · 삭제·교체 금지·새 Master 근거 없는 재사용 금지) · **2026-08-16 PART A COMPLETE(Part B는 여전히 BLOCKED_UNTIL_H5_H6 · status는 의도적으로 pending 유지 — 스키마 전수 확인 결과 이 플랜 7개 파일 어디에도 `pending`/`completed` 외 3번째 값 전례 0·Part B 미완료를 completed로 표기하지 않음):** Brand Kit 6종(appIcon/maskableSource/wordmarkDark/aiAvatar/ogDefault/heroIllustration 4변형)+markets manifest 7 logos+membership manifest 5 badges 전수 SHA-256/size/PNG dims 계산 · canonical↔`apps/web/public/brand` mirror 17/17 byte-identical(icons 4종 appIcon/maskableSource/wordmarkDark/ogDefault는 리사이즈 export 대상이라 1:1 비교 제외) · 중복/stale 등록 0(단 `appIcon`==`maskableSource` 동일 바이트 NOTE 기록 · 의도 확인 필요) · ADR-018 §13 Legacy Visual Candidates 표에 `avatar-512.png` 행 누락 발견→보완(원표는 hero-illustration만 등재) · PWA icon export(`maskable-512.png`/`apple-touch-180.png`) 미생성 확인 → ADVISORY로만 기록(생성 0 · out-of-scope) · `tooling/verify/brand-asset-provenance.cjs` 신설(standalone·market-partner-trust와 동일 축·T0/T1/T2 gate 미배선)+`package.json`+CATALOG 등록 · verify:brand-assets/market-partner-trust/membership-badge-assets/brand-logo-single/brand-asset-provenance 전부 PASS · Part B(Home Hero 신규 생성·avatar 신규 시각 확정 등)·H4·H5·H6·H7·runtime·신규 asset 생성 = 착수 0 · **2026-08-16 SPLIT RESOLUTION(governance amendment · Part A 재실행/취소 아님 · Part B 삭제 아님·이전만):** File-Serial first-pending이 본 todo 자기 자신(Part B 잔여)에 묶여 순환하는 구조 문제를 해소하기 위해, 위 문단의 (B) 범위 전체를 신규 todo `redesign-r1-home-visual-asset-production`으로 이전한다(YAML 목록상 실제 위치 = H6.5 `redesign-r1-home-contract-sync` 바로 다음·H7 `redesign-r1-home-implementation` 바로 앞 · 원문 그대로 이전, 내용 재작성 0). 본 todo(`redesign-r1-home-brand-assets`)는 이 이전 이후로는 **Part A 범위만** 나타내며, Part A가 이미 완료됐으므로 지금 `completed`로 확정한다. 이 변경은 문서 구조 정리(governance amendment)일 뿐이며 Part A 재검증·재작업이 아니다."
+    content: "[grok-4.5|256K] Redesign R1-2 · SPLIT(2026-08-16 ADR-018): (A) 착수 가능 — Brand Kit+markets manifest provenance/hash/public mirror · third-party logo AI재현0 · blocked/ready lifecycle · partner logo validation · 현재 ready 재사용 우선·중복에셋0 · verify:brand-assets/market-partner-trust + verify:brand-asset-provenance 신설+CATALOG · (B) 착수 금지(H5 New Visual Contract·H6 New Implementation Contract 이전) — Home Hero 신규 생성 · avatar 신규 시각 확정 · Home illustration 선택 · Home 배치용 시각 자산 확정 · 기존 robot+globe hero illustration/`wordmark-dark`/`BrandMark ✦`/legacy dark tokens(`pd-dark`)는 `LEGACY VISUAL CANDIDATE — NOT NEW MASTER AUTHORITY`로 취급(ADR-018 §13 개념 · 삭제·교체 금지·새 Master 근거 없는 재사용 금지) · **2026-08-16 PART A COMPLETE(Part B는 여전히 BLOCKED_UNTIL_H5_H6 · status는 의도적으로 pending 유지 — 스키마 전수 확인 결과 이 플랜 7개 파일 어디에도 `pending`/`completed` 외 3번째 값 전례 0·Part B 미완료를 completed로 표기하지 않음):** Brand Kit 6종(appIcon/maskableSource/wordmarkDark/aiAvatar/ogDefault/heroIllustration 4변형)+markets manifest 7 logos+membership manifest 5 badges 전수 SHA-256/size/PNG dims 계산 · canonical↔`apps/web/public/brand` mirror 17/17 byte-identical(icons 4종 appIcon/maskableSource/wordmarkDark/ogDefault는 리사이즈 export 대상이라 1:1 비교 제외) · 중복/stale 등록 0(단 `appIcon`==`maskableSource` 동일 바이트 NOTE 기록 · 의도 확인 필요) · ADR-018 §13 Legacy Visual Candidates 표에 `avatar-512.png` 행 누락 발견→보완(원표는 hero-illustration만 등재) · PWA icon export(`maskable-512.png`/`apple-touch-180.png`) 미생성 확인 → ADVISORY로만 기록(생성 0 · out-of-scope) · `tooling/verify/brand-asset-provenance.cjs` 신설(standalone·market-partner-trust와 동일 축·T0/T1/T2 gate 미배선)+`package.json`+CATALOG 등록 · verify:brand-assets/market-partner-trust/membership-badge-assets/brand-logo-single/brand-asset-provenance 전부 PASS · Part B(Home Hero 신규 생성·avatar 신규 시각 확정 등)·H4·H5·H6·H7·runtime·신규 asset 생성 = 착수 0 · **2026-08-16 SPLIT RESOLUTION(governance amendment · Part A 재실행/취소 아님 · Part B 삭제 아님·이전만):** File-Serial first-pending이 본 todo 자기 자신(Part B 잔여)에 묶여 순환하는 구조 문제를 해소하기 위해, 위 문단의 (B) 범위 전체를 신규 todo `redesign-r1-home-visual-asset-production`으로 이전한다(YAML 목록상 실제 위치 = H6.5 `redesign-r1-home-contract-sync` 바로 다음·H7 `redesign-r1-home-implementation` 바로 앞 · 원문 그대로 이전, 내용 재작성 0). 본 todo(`redesign-r1-home-brand-assets`)는 이 이전 이후로는 **Part A 범위만** 나타내며, Part A가 이미 완료됐으므로 지금 `completed`로 확정한다. 이 변경은 문서 구조 정리(governance amendment)일 뿐이며 Part A 재검증·재작업이 아니다."
     status: completed
   - id: redesign-r1-home-product-contract
     content: "[grok-4.5|256K] Redesign R1-3 · packages/ui/canon/contracts/peotteok-home-product-contract.v1.md 신설 · Facts/types/units/source/asOf/states/actions/allowlist/forbidden/zero-vs-absent/guest-auth 명시 · R0 fact-state registry와 1:1 · Visual/Implementation 섞기0 · verify:home-product-contract 신설+CATALOG · 2026-08-16 ADR-018: 본 Product Contract는 Functional Authority(ADR-018 §3)이며 시각 authority(Visual Master)와 여전히 분리 — 착수 시점 변경 없음 · **H-mapping:** H2(Home screen forensic)+H3(functional truth check)는 completed `redesign-r1-home-truth-preflight`가 이미 충족(재실행 금지) · 본 todo=**H4** · Visual Master의 geometry/색/spacing/hero는 결정하지 않음(H5 Owns) · 다음=H5 New Visual Contract(신규 todo) · **2026-08-16 COMPLETE:** `packages/ui/canon/contracts/peotteok-home-product-contract.v1.md` 신설(15섹션: route/state truth·data source matrix·Money semantics·KRW/USDT binding·actual-vs-estimated profit·opportunity binding·processing-time·AI summary·CTA ownership·states·update-schedule·conflicts·H5/H6 handoff·blocker count) · Money `WalletBuckets.profitUsdt`(실측: `trades.execution.service.ts` MATCH_SUCCESS 정산 시 profit bucket credit=출금가능 누적수익) 발견하되 `home-money-read.map.ts`의 `FORBIDDEN_RESPONSE_KEYS`(profitUsdt 포함) 하드 가드 확인 → name-match binding 대신 `FUNCTIONAL_BINDING_UNRESOLVED`로 정정 기록(가짜 binding 0) · `estimatedDurationSec`(Engine per-item, 초 단위) wire엔 도달하나 `opportunity-card-map.ts` 미매핑 발견 · KRW FX(Frankfurter fx-snapshot, fail-closed) 존재하나 `principalKrwApprox` 미배선 발견 · `verify:home-product-contract.cjs` 신설(standalone)+`package.json`+CATALOG 등록 · blocking conflict=0 · runtime/API/DB/Engine/Money/Auth 변경=0 · H5/H6/H7 착수=0"
@@ -162,13 +162,13 @@ todos:
     content: "[grok-4.5|256K] Redesign R1 · ADR-018 H6 · New Home Implementation Contract — 새 Visual Contract(H5)와 기존 Functional/Product Contract(H4)를 실제 코드 구조에 매핑 · **선행: H5 completed** · **작성 전 의무(Legacy Replacement Safety Gate Safety-A):** 기존 Home 화면 component/hook/handler 전수를 `KEEP`/`REWIRE`/`REMOVE_FROM_RUNTIME`/`REPLACE`/`INVESTIGATE` 5분류(구 `keep|adapt|new|remove` 데이터 forensic=H2/H3와는 별개 축·혼동 금지) · 분류 없이 새 컴포넌트 추가 금지 · 이 단계에서만 keep/adapt/replace/remove(정확히는 위 5분류) 최종 결정 · Home Visual Master intake(H1) 완료 전 착수 금지(geometry/색/spacing/hero 추측 금지) · 다음=H6.5 contract sync · **2026-08-16 COMPLETE:** `packages/ui/canon/contracts/peotteok-home-implementation-contract.v2.md` 신설 — 실제 코드 25개 파일/자산 재실측(H1 preview 그대로 복사 금지, 3건 정정: `SiteFooter.tsx` INVESTIGATE→KEEP[파트너 스트립 실재 없음 확인]·`BalanceAwareHome.tsx` 단일 REWIRE→내부 세분화 INVESTIGATE[verify:balance-aware-feed 리터럴 하드 검사 발견]·`BrandMark.tsx`는 Home 렌더 경로 자체에 없음[실제 ✦ 마크는 BottomNav5 인라인]) · Desktop(`home-visual-desktop`)/Mobile(`home-visual-mobile`) 구현 매핑 완료 · **실제 수익=`H7_PREREQUISITE_DECISION_REQUIRED`**(`services/api-nest/src/wallet/home-money-read.map.ts` FORBIDDEN_RESPONSE_KEYS guard 실측 확인, WalletBuckets.profitUsdt 미바인딩 유지) · KRW=기존 USDT-primary fail-safe로 즉시 READY(서버 principalKrwApprox 필드 부재 확인, Money-adjacent 별도 트랙) · itemCount·estimatedDurationSec=gap-only READY(Nest 응답에 실도달·클라 매핑 누락만 확인, 백엔드 변경 0) · 평균수익률/평균처리시간 집계=서버 필드 0건 BLOCKED(신규 서버 집계 필요, H6/H7 권한 밖 flag만) · update슬롯=asOf/scanIdle/scanEmpty 결정적 폴백 체인 확정(오늘 오후 2:00 미사용) · CTA 중복위험 4곳(Hero/sticky/discovery티저/카드) 식별→H7 단일화 의무 · Asset 매트릭스 6항목 최종화(생성 0) · H7 file-level plan(CREATE/MODIFY/DELETE_RUNTIME_REF/NO_CHANGE) 작성 · H6.5 handoff 12항목 · H7 entry gates 8항목(READY/READY_WITH_PRE_H7_DECISION/BLOCKED) 분류 · React/CSS/API/SDK/DB/Money/Engine/Auth 변경=0 · scheduler 생성=0 · 자산 생성=0 · H6.5/H7/Brand Assets Part B/Visual Lock 착수=0"
     status: completed
   - id: redesign-r1-home-contract-sync
-    content: "[grok-4.5|256K] Redesign R1-4 · Product→ADR-017→conflict-resolution→Implementation→Visual→wire→token SPEC→mapping→implementation-gate→manifest 전수 sync · semantic change면 v2 생성+before/after+affected gates, v1 in-place overwrite0 · 320~2560+ responsive/state truth/C01 COUNT lock · verify:canon-surfaces/home-product-contract/lux-theme-sync · 2026-08-16 ADR-018 SUPERSEDE: sync 대상에서 ADR-017/conflict-resolution/Visual/mapping/implementation-gate(구 시각 체인)는 HISTORICAL로 제외하고 대신 ADR-018 §9 intake로 생성될 신규 Visual Contract/Implementation Contract를 sync 대상으로 삼는다 · Product Contract→Canon wire functional 필드(route/state/factSurface/forbidden)→manifest 동기는 유지 · **선행조건(2026-08-16 정정): H5 New Visual Contract completed + H6 New Implementation Contract completed 둘 다 충족 전 착수 금지**(H1 intake만으로는 착수 불가) · 본 todo=**H6.5** · **2026-08-16 COMPLETE:** `packages/ui/canon/contracts/peotteok-home-contract-sync.v1.md` 신설 — H4/H5/H6 실제 재대조(코드/verify script 실측 포함) 완료, blocking contradiction=0 확인 · 발견·해소한 non-blocking gap 4건: (1) Right Rail Zone B 개별 스테퍼 FUNCTIONAL_BINDING_REQUIRED origin이 H5가 서술한 'H4'가 아니라 실제로는 H1임(인용 오류, 판단 내용 무모순 · H4 소급수정 안 함) (2) Actual Profit 해소 경로가 Money 런타임 가드(`home-money-read.map.ts FORBIDDEN_RESPONSE_KEYS`)만 명시되고 Canon wire `home-visual-v2.wire.json factSurface.forbiddenWithoutContract: cumulativeProfitUsdt` 가드(2번째 독립 gate)와 명시적으로 연결 안 됨 → 두 가드 동시 해제 필요로 봉합 (3) H6이 `verify:home-live-wire`를 HomeExperience↔BalanceAwareHome 리터럴 검사 주체로 오귀속 — 실제로는 `verify:balance-aware-feed.cjs`(정정 기록, 검사 내용 자체는 정확) (4) H4 §7이 요청한 카테고리별 처리시간 Engine 재확인이 H5/H6 어디서도 미이행 → DEFERRED_BY_CONTRACT로 명시 이관 · **KRW 최종:** `KRW_BINDING_REQUIRED_BEFORE_VISUAL_CERTIFICATION`(fail-safe로 H7 구현 착수는 허용하나 Asset Summary money 카드 Visual Lock/H11 인증은 KRW 실배선 전까지 불허 — 'fail-safe 있으니 문제없음' 결론 명시 거부) · **Actual Profit 최종:** 데이터=`PRE_H7_BINDING_REQUIRED`(Founder/Money-owner 결정, 이중 가드 동시 해제 필요) · 슬롯 레이아웃=`SYNCED_READY`(기존 absent 패턴 재사용) · **Average Return 최종:** `REQUIRED_AND_SERVER_PREREQUISITE`(신규 서버 집계 없이는 실데이터 표시 불가, AI summary 3-stat row는 H5 기존 scanIdle/scanEmpty 폴백으로 카드 자체는 진행 가능) · **CategoryFilterChips:** 컴포넌트 파일=KEEP(`/profits` 공유 재확인) · Home 호출부=REMOVE_FROM_H7_SCOPE(Desktop 3-동시노출·Mobile 1-지배카드 둘 다 단일선택 필터와 불일치, H5 텍스트 근거로 확정) · **CTA ownership 최종:** 4후보 중 실제 중복위험은 discovery-teaser↔Hero CTA 1곳뿐(Hero REMOVE_FROM_RUNTIME과 동시 해소) · 카드/sticky 참여 CTA는 기존에도 뷰포트 배타 설계 확인 · mutation 신규 0 · **Sync Matrix 26행 완성**(6분류 SYNCED_READY/PRE_H7_PREREQUISITE/ASSET_PART_B_REQUIRED/DEFERRED_BY_CONTRACT/REMOVE_FROM_H7_SCOPE/BLOCKED, 모호표기 0) · **H7_CONTRACT_READY=YES · H7_RUNTIME_START_ALLOWED=NO**(Asset Part B 미착수) · 03 plan 다음 pending=`redesign-r1-home-visual-asset-production` · React/CSS/API/DB/Money/Engine/Auth/asset 생성/H7 착수=0"
+    content: "[grok-4.5|256K] Redesign R1-4 · Product→ADR-017→conflict-resolution→Implementation→Visual→wire→token SPEC→mapping→implementation-gate→manifest 전수 sync · semantic change면 v2 생성+before/after+affected gates, v1 in-place overwrite0 · 320~2560+ responsive/state truth/C01 COUNT lock · verify:canon-surfaces/home-product-contract/pd-theme-sync · 2026-08-16 ADR-018 SUPERSEDE: sync 대상에서 ADR-017/conflict-resolution/Visual/mapping/implementation-gate(구 시각 체인)는 HISTORICAL로 제외하고 대신 ADR-018 §9 intake로 생성될 신규 Visual Contract/Implementation Contract를 sync 대상으로 삼는다 · Product Contract→Canon wire functional 필드(route/state/factSurface/forbidden)→manifest 동기는 유지 · **선행조건(2026-08-16 정정): H5 New Visual Contract completed + H6 New Implementation Contract completed 둘 다 충족 전 착수 금지**(H1 intake만으로는 착수 불가) · 본 todo=**H6.5** · **2026-08-16 COMPLETE:** `packages/ui/canon/contracts/peotteok-home-contract-sync.v1.md` 신설 — H4/H5/H6 실제 재대조(코드/verify script 실측 포함) 완료, blocking contradiction=0 확인 · 발견·해소한 non-blocking gap 4건: (1) Right Rail Zone B 개별 스테퍼 FUNCTIONAL_BINDING_REQUIRED origin이 H5가 서술한 'H4'가 아니라 실제로는 H1임(인용 오류, 판단 내용 무모순 · H4 소급수정 안 함) (2) Actual Profit 해소 경로가 Money 런타임 가드(`home-money-read.map.ts FORBIDDEN_RESPONSE_KEYS`)만 명시되고 Canon wire `home-visual-v2.wire.json factSurface.forbiddenWithoutContract: cumulativeProfitUsdt` 가드(2번째 독립 gate)와 명시적으로 연결 안 됨 → 두 가드 동시 해제 필요로 봉합 (3) H6이 `verify:home-live-wire`를 HomeExperience↔BalanceAwareHome 리터럴 검사 주체로 오귀속 — 실제로는 `verify:balance-aware-feed.cjs`(정정 기록, 검사 내용 자체는 정확) (4) H4 §7이 요청한 카테고리별 처리시간 Engine 재확인이 H5/H6 어디서도 미이행 → DEFERRED_BY_CONTRACT로 명시 이관 · **KRW 최종:** `KRW_BINDING_REQUIRED_BEFORE_VISUAL_CERTIFICATION`(fail-safe로 H7 구현 착수는 허용하나 Asset Summary money 카드 Visual Lock/H11 인증은 KRW 실배선 전까지 불허 — 'fail-safe 있으니 문제없음' 결론 명시 거부) · **Actual Profit 최종:** 데이터=`PRE_H7_BINDING_REQUIRED`(Founder/Money-owner 결정, 이중 가드 동시 해제 필요) · 슬롯 레이아웃=`SYNCED_READY`(기존 absent 패턴 재사용) · **Average Return 최종:** `REQUIRED_AND_SERVER_PREREQUISITE`(신규 서버 집계 없이는 실데이터 표시 불가, AI summary 3-stat row는 H5 기존 scanIdle/scanEmpty 폴백으로 카드 자체는 진행 가능) · **CategoryFilterChips:** 컴포넌트 파일=KEEP(`/profits` 공유 재확인) · Home 호출부=REMOVE_FROM_H7_SCOPE(Desktop 3-동시노출·Mobile 1-지배카드 둘 다 단일선택 필터와 불일치, H5 텍스트 근거로 확정) · **CTA ownership 최종:** 4후보 중 실제 중복위험은 discovery-teaser↔Hero CTA 1곳뿐(Hero REMOVE_FROM_RUNTIME과 동시 해소) · 카드/sticky 참여 CTA는 기존에도 뷰포트 배타 설계 확인 · mutation 신규 0 · **Sync Matrix 26행 완성**(6분류 SYNCED_READY/PRE_H7_PREREQUISITE/ASSET_PART_B_REQUIRED/DEFERRED_BY_CONTRACT/REMOVE_FROM_H7_SCOPE/BLOCKED, 모호표기 0) · **H7_CONTRACT_READY=YES · H7_RUNTIME_START_ALLOWED=NO**(Asset Part B 미착수) · 03 plan 다음 pending=`redesign-r1-home-visual-asset-production` · React/CSS/API/DB/Money/Engine/Auth/asset 생성/H7 착수=0"
     status: completed
   - id: redesign-r1-home-visual-master-v2-rebase
     content: "[grok-4.5|256K] Redesign R1-4.5 · 2026-08-16 신규 · Founder가 H6.5 completed 직후 Home visual direction을 업그레이드(V2) · Founder가 첨부한 이미지 3장을 프롬프트 원문 role 그대로 등록(추측/합성/authority 변경 0): DESKTOP_HOME_VISUAL_MASTER_V2=PRIMARY(sha256 a5c0f191…c7cab·1024x768) · DESKTOP_OPPORTUNITY_REFERENCE=SECONDARY REFERENCE ONLY(sha256 5689ccec…cd88e·1024x768, 전체레이아웃/Hero geometry/RightRail구조/시장지수 authority 0) · MOBILE_HOME_VISUAL_MASTER_V2=PRIMARY MOBILE(sha256 f8b1568e…6e07f·576x1024) · **2026-08-16 COMPLETE:** `packages/ui/canon/contracts/peotteok-home-visual-master-intake.v2.md`(V2 intake registry) + `packages/ui/canon/contracts/peotteok-home-v2-delta-sync.v1.md`(H5/H6/H6.5 delta) 신설 · V1 intake(`peotteok-home-visual-master-intake.v1.md`)에 SUPERSEDED banner 추가(본문 삭제 0) · **H4 functional truth 보존 확인**(Money/Engine/Auth/Session/Wallet/FSM/mutation 변경 0) · **H5 delta**: OBSOLETED_BY_V2=0, 전부 UNCHANGED 또는 DELTA_REQUIRED(AI summary 시각요소·RightRail Zone순서·Mobile 2열 콘텐츠·Opportunity 구체성) · **H6 delta**: 지정 8파일(HomeExperience/HomePrincipalRail/BalanceAwareHome/OpportunityCard/HomeRightRail/ProductImage/BottomNav5/AppHeader) 재분류 필요=0건(전부 KEEP/REWIRE/REPLACE/INVESTIGATE 분류 불변) · **H6.5 delta**: 기존 결론(KRW prerequisite·Actual Profit prerequisite·Average Return prerequisite·Update Slot synced·CategoryFilter Home removal·RightRail Zone B defer·Desktop/Mobile separate authority) 반전 0 · 신규 발견: Mobile AI summary=itemCount 단일요구라 Average Return/Processing-time 2개 prerequisite에 안 걸림(즉시 SYNCED_READY) · Mobile '최근확인' 3행(시장데이터/처리시스템/보안시스템)=Fact 근거 0→static Trust copy로 흡수(live status 채택 금지) · Secondary Reference의 '총자산' 합산 표시=3-슬롯 분리 원칙 위반 발견·배제 · 국가 flag emoji 표기 위험 발견(MarketPartnerLeg.tsx 실측 결과 파트너 로고만 사용, flag 자산 0)→기존 텍스트 corridor 유지 권고 · **Asset Part B V2 매트릭스**: peotteok-ai-robot-home-summary-v1/cta-v1/hero-support-graphic-v1=MODIFY_REQUIREMENT(포즈 구체화, identity 불변) · 상품이미지/Trust일러스트/인사이트아이콘=KEEP_REQUIREMENT · 신규 INVESTIGATE 후보 2건(flag 아이콘·AI summary 3종 아이콘) · **HOME_VISUAL_MASTER_V2_REBASE=PASS** · **H7_CONTRACT_READY_AFTER_V2=YES · ASSET_PART_B_V2_READY=YES · H7_RUNTIME_START_ALLOWED=NO**(Part B 미착수) · runtime/CSS/API/DB/Money/FX/asset생성/이미지생성/H7착수=0"
     status: completed
   - id: redesign-r1-home-visual-asset-production
-    content: "[grok-4.5|256K] Redesign R1-2B · 2026-08-16 SPLIT from `redesign-r1-home-brand-assets`(구 Part B 원문 그대로 이전 · governance amendment · 신규 발명 아님) — Home Hero 신규 생성 · avatar 신규 시각 확정 · Home illustration 선택 · Home 배치용 시각 자산 확정. 기존 robot+globe hero illustration/`wordmark-dark`/`BrandMark ✦`/legacy dark tokens(`lux-dark`)/`avatar-512.png`는 `LEGACY VISUAL CANDIDATE — NOT NEW MASTER AUTHORITY`로 취급(ADR-018 §13 · H1 intake `peotteok-home-visual-master-intake.v1.md` §10/§11 Asset Production Candidates와 동일 축) · 삭제·교체 금지 · 새 Master 근거 없는 임의 재사용 금지 · **착수 금지(선행 미충족):** New Implementation Contract(H6) completed 전 착수 금지 · H6.5 contract sync 완료 권장 · H7 presentation implementation 착수 전에 completed 필요(H7은 이 asset의 존재를 전제) · **위치(고정):** H6.5 이후 · H7 이전 · 다음(본 todo completed 후)=H7 · **2026-08-16 V2 GATE 추가:** Founder Visual V2 Rebase(`redesign-r1-home-visual-master-v2-rebase`) completed — 착수 시 반드시 `peotteok-home-v2-delta-sync.v1.md` §20 Asset Part B V2 Matrix를 입력으로 사용(MODIFY_REQUIREMENT 3건: 로봇 summary/cta 포즈+hero support graphic는 V2 포즈로 구체화, identity 불변 · KEEP_REQUIREMENT 3건 · 신규 INVESTIGATE 2건: 국가 flag 아이콘·AI summary 3종 아이콘, 기본값=제작 아님) · ASSET_PART_B_V2_READY=YES이나 본 todo 실제 착수는 여전히 별도 세션 · **2026-08-16 COMPLETE(Part B V2):** §20 8행 종결(NEW_ASSET_PRODUCED 4슬롯/7파일 · APPROVED_EXISTING_ASSET_REUSED 1 · NO_ASSET_REQUIRED 3 · FOUNDER_REVIEW_REQUIRED 0) · 보고서 `packages/ui/canon/contracts/peotteok-home-asset-production-part-b.v2.md` · legacy 승격/삭제 0 · placeholder 0 · H7 착수 0 · ASSET_PART_B_V2_COMPLETE=YES · H7_RUNTIME_START_ALLOWED=YES · **2026-08-16 SSOT ALIGN(H7 runtime 0):** SVG 3종 root `width=64 height=64 viewBox=0 0 64 64` · SHA search=`6db9648d4cee688639c3f3bb38aa4951ee81af71eed64be652aec10397682740` chart=`64772e6058279b64e55e129d46056481fa08cfb61b8e8288141f43b72ead7935` clock=`e666b86365913f9a70a71b82336129758b15edfcf5c38f111439aaab7e6698b1` · `home-visual-v2.wire.json` V2 intake/H5/H6/H6.5/delta-sync pointer 정합 · H7_STARTED=NO"
+    content: "[grok-4.5|256K] Redesign R1-2B · 2026-08-16 SPLIT from `redesign-r1-home-brand-assets`(구 Part B 원문 그대로 이전 · governance amendment · 신규 발명 아님) — Home Hero 신규 생성 · avatar 신규 시각 확정 · Home illustration 선택 · Home 배치용 시각 자산 확정. 기존 robot+globe hero illustration/`wordmark-dark`/`BrandMark ✦`/legacy dark tokens(`pd-dark`)/`avatar-512.png`는 `LEGACY VISUAL CANDIDATE — NOT NEW MASTER AUTHORITY`로 취급(ADR-018 §13 · H1 intake `peotteok-home-visual-master-intake.v1.md` §10/§11 Asset Production Candidates와 동일 축) · 삭제·교체 금지 · 새 Master 근거 없는 임의 재사용 금지 · **착수 금지(선행 미충족):** New Implementation Contract(H6) completed 전 착수 금지 · H6.5 contract sync 완료 권장 · H7 presentation implementation 착수 전에 completed 필요(H7은 이 asset의 존재를 전제) · **위치(고정):** H6.5 이후 · H7 이전 · 다음(본 todo completed 후)=H7 · **2026-08-16 V2 GATE 추가:** Founder Visual V2 Rebase(`redesign-r1-home-visual-master-v2-rebase`) completed — 착수 시 반드시 `peotteok-home-v2-delta-sync.v1.md` §20 Asset Part B V2 Matrix를 입력으로 사용(MODIFY_REQUIREMENT 3건: 로봇 summary/cta 포즈+hero support graphic는 V2 포즈로 구체화, identity 불변 · KEEP_REQUIREMENT 3건 · 신규 INVESTIGATE 2건: 국가 flag 아이콘·AI summary 3종 아이콘, 기본값=제작 아님) · ASSET_PART_B_V2_READY=YES이나 본 todo 실제 착수는 여전히 별도 세션 · **2026-08-16 COMPLETE(Part B V2):** §20 8행 종결(NEW_ASSET_PRODUCED 4슬롯/7파일 · APPROVED_EXISTING_ASSET_REUSED 1 · NO_ASSET_REQUIRED 3 · FOUNDER_REVIEW_REQUIRED 0) · 보고서 `packages/ui/canon/contracts/peotteok-home-asset-production-part-b.v2.md` · legacy 승격/삭제 0 · placeholder 0 · H7 착수 0 · ASSET_PART_B_V2_COMPLETE=YES · H7_RUNTIME_START_ALLOWED=YES · **2026-08-16 SSOT ALIGN(H7 runtime 0):** SVG 3종 root `width=64 height=64 viewBox=0 0 64 64` · SHA search=`6db9648d4cee688639c3f3bb38aa4951ee81af71eed64be652aec10397682740` chart=`64772e6058279b64e55e129d46056481fa08cfb61b8e8288141f43b72ead7935` clock=`e666b86365913f9a70a71b82336129758b15edfcf5c38f111439aaab7e6698b1` · `home-visual-v2.wire.json` V2 intake/H5/H6/H6.5/delta-sync pointer 정합 · H7_STARTED=NO"
     status: completed
   - id: redesign-r1-home-implementation
     content: "[grok-4.5|256K] Redesign R1 · ADR-018 H7 presentation implementation · **SUPERSEDED ORDERING(더 이상 사용 금지):** ~~C01 semantic binding→Shell/Header/Nav→Hero→Money→Opportunity→RightRail→Partner/Footer 순서~~ · ~~STEP5 Slice 0~6 번호체계~~ · ~~ADR-017 시각 가정(구 peotteok-light geometry/Hero/RightRail/Sidebar 비율)~~ — 위 3항목은 새 구현의 근거로 재사용하지 않는다(ADR-018 §1.2/§6) · **새 정의:** Founder-approved Home Visual Master + New Visual Contract(H5) + New Implementation Contract(H6) 기반 **presentation replacement**(ADDITION 아님 · Legacy Replacement Safety Gate 전수 준수 · Safety-A KEEP/REWIRE/REMOVE_FROM_RUNTIME/REPLACE/INVESTIGATE 분류 없이 컴포넌트 추가 금지 · Safety-B runtime/interaction/data uniqueness=0 · Safety-C old+new 동시 렌더 금지) · 기존 functional runtime(HomePageClient fetch/세션/401 처리·SDK·Nest·ledger binding·C01 `ledgerTotal`=COUNT semantic fix)은 보존 · HomePageV2·병렬 fetch/SDK/Nest 재작성 0 · peotteok-light token은 새 Visual Contract가 재확정하기 전까지 임시 참고만(자동 상속 금지) · responsive/a11y/reduced-motion/perf · **선행:** H1 completed + H5 completed + H6 completed + H6.5 completed · **게이트:** 본 todo의 실제 runtime 변경 착수는 `UI_UX_ENTRY_GATE=OPEN`(02.5 verdict=`ENGINE_ACCEPTED_FOR_UI`) 이후에만 가능 — **현재 UI_UX_ENTRY_GATE=OPEN**(02.5 verdict=ENGINE_ACCEPTED_FOR_UI ISSUED · baseline ea-baseline-64b0f8a6d984-3657543f36b5 · 이력: 최초 판정 P0=QA8_ADMIN_BOUNDARY는 admin 인증/RBAC repair 후 재검증 PASS로 해소됨) · **Engine Gate는 충족되었으나 위 H1/H5/H6/H6.5 completed 선행조건은 불변이므로 Visual Master 없이 본 todo 착수는 여전히 금지**"
@@ -266,7 +266,7 @@ SUPERSEDED_BY = PUTDUK_RELEASE_MASTER.plan.md
 > **v7.22.47 (Founder 흡수):** **§27.10** — 유저 **도움말·쉬운말·퍼뜩 말투·빈화면·힌트** 전면 **한글친화 + 귀여운 이모지** · 한국 **20~70대** 공통 호감 · 표면별 캡/팔레트 · 「이모지 전부」=전 표면 적용(폭탄·카지노·면책과다 **0**) · Owns=`korean-first-copy` · 배선=`ai-coach-ui`·`plain-korean-surfaces`·`toast-notification`  
 > **v7.22.48 (Pre-UI Runtime Gate 흡수 · Engine §0.9 pointer):** 실측 재검증에서 `participate`/`execute`/유저 기회 피드 API가 **코드 0**임이 확인 → Engine `02`가 REOPEN(가산 `engine-runtime-preflight-gap`~`engine-pre-ui-close`) · Money `money-user-benefits-read` 가산 · **본 파일 전 todo 착수는 그 완료 후만**(§0.6 갱신) · `trade.execution.step`는 Phase0=**polling**(`execute-tick`) 채택(SSE 가정 폐기·Phase1+ 전환 시 응답채널만 교체) · 기존 stub 페이지 미배선 버튼(§0.6 실측 표) pointer 신설  
 > **v7.22.49:** **§27.8a** Store listing 한글 short/full 카피 Owns=UI · APK/AAB·Console 절차=PWA §24 **pointer only** · UI todo 가산 **0**  
-> **v7.22.50 (UI preflight 감사 흡수 · `ui-preflight-constitution` 기록):** 마스터감사 3정정만 SSOT에 반영 · **File-Serial/PART0→8 순서·todo 가산 0** · (1) §6.2/§33.1 색 hex 표 → shipped `lux-fintech.ts`(visual_kit_v1) 미러 · (2) §29.6 `realtime-service` = Phase1+ 인터페이스(Phase0=polling 훅 계약) · (3) eBay `assetId: query:*` ingest drop = Engine-owned backend gap 로그(§0.6·§48.3a pointer) · UI는 `ProductImage` source-agnostic만  
+> **v7.22.50 (UI preflight 감사 흡수 · `ui-preflight-constitution` 기록):** 마스터감사 3정정만 SSOT에 반영 · **File-Serial/PART0→8 순서·todo 가산 0** · (1) §6.2/§33.1 색 hex 표 → shipped `pd-fintech.ts`(visual_kit_v1) 미러 · (2) §29.6 `realtime-service` = Phase1+ 인터페이스(Phase0=polling 훅 계약) · (3) eBay `assetId: query:*` ingest drop = Engine-owned backend gap 로그(§0.6·§48.3a pointer) · UI는 `ProductImage` source-agnostic만  
 > **v7.22.52 (종합 실물 재검증 · 5관점 감사 · `§0.8` 신설):** 유저 요청형 "DB·마이그레이션·함수·SQL·테이블·엔진·Supabase·폴더·기술스택·파일·헌법·기술코드 전수 확인" 감사 · Supabase MCP 재실측 + 레포 FS 전수 + 04 Admin/01 Money/05 PWA/06 Infra 전문 재확인 · **File-Serial/PART0→8 순서·모델배정 변경 0**(적합 판정) · 발견 5건: (1) migration 파일명 버전 drift(로컬≠원격) → **즉시 rename 해소** (2) `verify:benefit-hub-surfaces`="live" 표기가 Money API 존재만 검사·§5.9.5 딥 UI 미검증(실제 페이지=1줄 골격)인데 "완료"로 오독될 위험 → 문서+todo content 경고 (3) `verify:margin-compare-surface` 3개 플랜 인용·실물 스크립트/컴포넌트 0(고아 참조) → todo content에 신설요건 명시 (4) Engine §51.20 Weekly Market Briefing이 유저 라우트 요구하나 UI Owns 절·PART배정·route등록 0(고아 게이트) → PART8b 범위 확장+§51.20 신설 (5) PART1~PART8 다수가 YAML `pending`인데 레포엔 이미 우량 구현체 존재(우량 드리프트) → PART별 실측 착수가이드(§0.8.3) 신설로 중복구현 방지  
 > **v7.22.53 (`§0.8.2~3` 문서 패치 · 코드0):** §0.8.2 표에 **감사 세션 조치 / 구현 시점** 열 분리(동급 "해소" 혼동 제거) · §0.8.3 표에 **verify 검사 범위 1줄** 열 추가(스크립트 헤더+실측 대조) · **실행 밀도** 지침(1a~1d·5a~6c=갭-only·1채팅 목표 · 3c·4a·7b·8b=무거운 구현 · 4a·7b=유저 체감 최우선 부채 · File-Serial 순서 **유지**) · §51.20 "고아 게이트 해소"→**Owns 재배정·verify 미착수** wording 정정  
 
@@ -281,7 +281,7 @@ SUPERSEDED_BY = PUTDUK_RELEASE_MASTER.plan.md
 
 ### Authority
 
-- 출시 Consumer theme는 ADR-017 `peotteok-light` **Light+Purple 단일 테마**다. Lux Dark는 archive/legacy이며 dual toggle을 만들지 않는다. *(theme mode 방향 자체는 유지 · 정확한 시각 값은 아래 2026-08-16 ADR-018 참고)*
+- 출시 Consumer theme는 ADR-017 `peotteok-light` **Light+Purple 단일 테마**다. PUTDUK Dark는 archive/legacy이며 dual toggle을 만들지 않는다. *(theme mode 방향 자체는 유지 · 정확한 시각 값은 아래 2026-08-16 ADR-018 참고)*
 - 5탭 라벨은 **홈 · 기회 · 수익 · 지갑 · 내정보**다. href는 기존 `/`, `/profits`, `/trades`, `/wallet`, `/me`를 보존한다. *(IA/Functional authority — ADR-018 대상 아님)*
 - Backend Fact > Product Contract > IA > Implementation Contract > Visual Contract > Reference 순서다. *(2026-08-16부터: "Implementation Contract > Visual Contract > Reference" 구간은 화면별로 ADR-018 §3의 Visual Authority 사다리로 대체되며, 앞의 "Backend Fact > Product Contract > IA" 구간은 ADR-018 §3 Functional Authority 사다리로 계속 유효 — 두 사다리를 섞지 않는다.)*
 - PART9 `HomePageClient`·SDK·session/auth·Nest/ledger binding은 보존한다. `HomePageV2`와 병렬 fetch/data mapper를 금지한다.
@@ -438,7 +438,7 @@ feature flag·임시 비교가 필요해도 별도 승인 없이 production rout
 ## 0.6 UI 착수 전 실측 (v7.22.48 · `ui-preflight-constitution` · **PASS v7.22.50** · 예측0 · 감사 3정정 흡수)
 
 > **Owns:** 본 절 + BOOTSTRAP §0.6 동기 · **구현 코드 0** (기록·갭표만) · v7.22 이력=`market-partner-trust-surfaces`→`part9-pre…9i`→`trust-age-spotcheck`; v7.23 현재는 00 R0부터다.
-> **방법(2026-08-10 CLOSE 재실측):** 레포 FS(`CONSTITUTION/`29·Canon 28 wires·`apps/web`·`packages/ui`·ebay-adapter·catalog-runtime-seed·`lux-fintech.ts`) + Money/Engine YAML completed + Supabase MCP `list_tables`(public **76**) + CATALOG live 게이트 · `execute_sql`/`list_migrations`는 본 세션 MCP hook fail-closed로 차단 → mig/함수 수는 FS+§0.5.1 CLOSE 인용  
+> **방법(2026-08-10 CLOSE 재실측):** 레포 FS(`CONSTITUTION/`29·Canon 28 wires·`apps/web`·`packages/ui`·ebay-adapter·catalog-runtime-seed·`pd-fintech.ts`) + Money/Engine YAML completed + Supabase MCP `list_tables`(public **76**) + CATALOG live 게이트 · `execute_sql`/`list_migrations`는 본 세션 MCP hook fail-closed로 차단 → mig/함수 수는 FS+§0.5.1 CLOSE 인용  
 > **선행(v7.22.49 충족 · 재확인):** Money CLOSED(15/15+`money-user-benefits-read` **completed**) · Engine CLOSED(26/26+E-R1~E-R8 **completed** · `engine-pre-ui-close` **completed**) · Pre-UI Runtime Gate **CLOSED**  
 > **v7.22.50 감사 기록(본 todo Owns · File-Serial 재정렬 0):** 색토큰 drift(U13) · realtime-service Phase0 reframe(U14) · eBay `query:` ingest gap(U15) — 아래 표·§0.6.2·본문 §6.2/§33.1/§29.6/§48.3a pointer에 **텍스트만** 반영 · **앱 구현코드 0**
 
@@ -453,7 +453,7 @@ feature flag·임시 비교가 필요해도 별도 승인 없이 production rout
 | **Engine — Gate CLOSE 후 (v7.22.49→50 · 오차0)** | E-R1~E-R8 **completed** · FS: `OpportunitiesUserController`·`BenefitsUserController`·`trades/:id/execute-tick` **live** · CATALOG `user-opportunity-feed`/`participate-http`/`execute-rule-loop` **live** | PART3~4 배선 **허용**(대상 API 존재) · completed Engine/Money todo 재실행 **금지** |
 | **E-R1 이력 pointer (v7.22.48 · 해소됨)** | 당시 MCP 행0·유저 `@Controller` 코드0 → §0.9 가산으로 **해소**(위 Gate CLOSE 행) | 이력만 유지 · 「착수 금지」문구 **폐기** |
 | 실행실 실시간 채널 (**v7.22.50 U14 정정**) | `services/realtime-service` 폴더 **0**(Engine §0.9.2 동일) · Phase0=`POST /trades/:id/execute-tick` **polling live** | §29.6 = **Phase1+ 인터페이스 계약만**(지금 폴더/WS 가정 **금지**) · PART4a=`useTradeExecution` 훅이 Phase0 polling · Phase1+ SSE 교체 시 훅 내부만 · §48.3 SSE 전제 **보류 유지** |
-| **색 토큰 SSOT drift (v7.22.50 U13 · CONFLICT RESOLVED)** | 구 §6.2/§33.1 표=`#00FF87`/`#FF2E63`/`#F59E0B`/`#00D294`/`#1A56FF` · **shipped** `packages/ui/tokens/lux-fintech.ts`=`accent/profit:#3DDC97` · `principal:#7AA2FF` · `danger:#FF5C7A` · `warning:#F5C542` · Brand Kit(§5.9.2b)·Canon `tokenRef`와 일치 | 권위=§33.8.1 tokens>plan · **plan hex 표는 코드 미러로 정정**(아래 §6.2/§33.1) · PART1d `ux-design-system`은 이 hex를 재발명 **금지** |
+| **색 토큰 SSOT drift (v7.22.50 U13 · CONFLICT RESOLVED)** | 구 §6.2/§33.1 표=`#00FF87`/`#FF2E63`/`#F59E0B`/`#00D294`/`#1A56FF` · **shipped** `packages/ui/tokens/putduk.ts`=`accent/profit:#3DDC97` · `principal:#7AA2FF` · `danger:#FF5C7A` · `warning:#F5C542` · Brand Kit(§5.9.2b)·Canon `tokenRef`와 일치 | 권위=§33.8.1 tokens>plan · **plan hex 표는 코드 미러로 정정**(아래 §6.2/§33.1) · PART1d `ux-design-system`은 이 hex를 재발명 **금지** |
 | **eBay 실사진 ingest gap (v7.22.50 U15 · Engine Owns · UI 수정0)** | `workers/ebay-adapter`가 `assetId:\`query:${query}\`` placeholder · `normalizeIngestListingsForPersist()`가 `query:` prefix **drop** · matchers(`watch/card/bag-match`)는 존재하나 ingest **미배선** · `public.opportunities` 현재 행=시드(~40–80 SKU)·`imageSource=admin_r2` 템플릿 URL · 실 eBay CDN URL은 fetch되나 **DB 미도달** | **UI 차단 아님** · PART3d=`ProductImage`/`assetImageUrl` source-agnostic(`ebay`\|`pokemontcg`\|`ygoprodeck`\|`admin_r2`) · 데이터 수정=Engine `engine-ebay-identity-match-ingest`(§0.10 · Index 예외2 · UI todo/File-Serial 재정렬 **0**) · §48.3a pointer |
 | 기존 stub 페이지 버튼 배선 (실측 · 이 게이트 범위 밖 pointer) | `/wallet/deposit`(주소복사·계속) · `/me/kyc`(시작하기) 버튼 `onClick` **미정의** · `/wallet/withdraw` 제출은 `onClick` 있으나 네트워크 호출 **0**(주석 처리) · `/me/support` wrong-chain 제출은 `setSubmitted(true)`만 실행하고 실제 `POST /api/v1/wallet/deposit-disputes` **미호출**(거짓 성공) | 버그로 확인·수정은 해당 PART todo(§5.7~5.8·§51.6) 배선 시 필수 · **본 todo에서 코드 수정 금지**(기록만) |
 | Brand | *(PART0 CLOSE 시점 `assets/markets/` 0 → §0.8.3·BOOTSTRAP §0.6.4 재실측: scaffold 실물 · SVG 7=blocked)* | PART1a=**로고 SVG 갭-only** · 전면 재작성 금지 |
@@ -472,7 +472,7 @@ feature flag·임시 비교가 필요해도 별도 승인 없이 production rout
 | `CONSTITUTION/22_UX_AND_COPY_SSOT.md` | ✅ 5탭·레이아웃 |
 | `CONSTITUTION/25_KOREAN_FIRST_UX_POLICY.md` | ✅ ko·금지어 |
 | `CONSTITUTION/26_PERFORMANCE_AND_RESPONSIVE_UX.md` | ✅ fluid·tier |
-| `CONSTITUTION/28_LUX_FINTECH_DESIGN_AND_MOTION.md` | ✅ Lux·motion |
+| `CONSTITUTION/28_LUX_FINTECH_DESIGN_AND_MOTION.md` | ✅ PUTDUK·motion |
 | `CONSTITUTION/38_TRUST_EDUCATION_AND_REVENUE_TRANSPARENCY.md` | ✅ 신뢰·면책 |
 | `CONSTITUTION/48_AI_EXECUTION_ROOM_AND_POLICY.md` | ✅ 실행실 |
 | `CONSTITUTION/50_SETTINGS_LEGAL_AND_PLAIN_KOREAN.md` | ✅ 설정·약관·DET |
@@ -496,7 +496,7 @@ feature flag·임시 비교가 필요해도 별도 승인 없이 production rout
 | U10 | BOOTSTRAP 다음=UI `yahoo-jp-copy-ban` stale | → `ui-preflight-constitution` |
 | U11 | 「귀여운 이모지 전부」해석이 폭탄/면책과다/Admin귀여움과 충돌 가능 | → **§27.10** = 유저 전 표면 **적용** + 표면별 **캡/팔레트** · toast수치=§50.2 · Admin=§27.5(귀여움0) · 면책·약관 본문 이모지0 |
 | U12 | Engine "todos 26/26 CLOSED"를 "participate/execute API 있음"으로 오독 → 03 UI가 대상 없는 API에 배선을 시도할 뻔함(실측: app.module.ts에 Trades/Execution/Participate 모듈 0) | → Engine `§0.9 Pre-UI Runtime Gate`(가산 E-R1~E-R8) + Money `money-user-benefits-read` 신설 · 본 파일 착수 선행조건에 추가(위 §0.6 선행) · 홈 미러 단독 플랜(`pre-ui_engine_gate_8f59a783.plan.md`) 전량 흡수 후 원본 삭제(중복0) |
-| U13 | §6.2/§33.1 색 hex 표(`#00FF87` 등) ≠ shipped `lux-fintech.ts`/`brand.manifest` visual_kit_v1(`#3DDC97`·`#7AA2FF`…) — 플랜 이중 SSOT | → **CONFLICT RESOLVED** · 권위=§33.8.1 tokens>plan · §6.2/§33.1 표를 코드 미러로 정정(v7.22.50) · 구 neon/coral/amber/actionNeon 표기 **폐기** |
+| U13 | §6.2/§33.1 색 hex 표(`#00FF87` 등) ≠ shipped `pd-fintech.ts`/`brand.manifest` visual_kit_v1(`#3DDC97`·`#7AA2FF`…) — 플랜 이중 SSOT | → **CONFLICT RESOLVED** · 권위=§33.8.1 tokens>plan · §6.2/§33.1 표를 코드 미러로 정정(v7.22.50) · 구 neon/coral/amber/actionNeon 표기 **폐기** |
 | U14 | §29.6이 `services/realtime-service`를 Phase0 도달 가능처럼 서술 · Engine §0.9.2는 폴더 **0**·Phase0=polling | → **CONFLICT RESOLVED** · §29.6 = Phase1+ 배치/티어 인터페이스 · Phase0=`useTradeExecution`/`useOpportunityFeed` polling이 동일 계약 준수 · 폴더 신설 전 WS/SSE 클라 가정 **금지** |
 | U15 | 실 eBay 사진이 유저 카드에 안 보이는 원인 미기록 · `assetId: query:*` → persist drop · matchers 미배선 | → **EXTEND(문서)** · §0.6 표 + §48.3a pointer · Owns=Engine todo `engine-ebay-identity-match-ingest`(§0.10 filed v7.22.51) · UI todo/File-Serial **가산·재정렬 0** · PART3d는 URL 소스 무관 렌더만 |
 
@@ -541,7 +541,7 @@ feature flag·임시 비교가 필요해도 별도 승인 없이 production rout
 | `apps/admin/app/admin/growth/{content,deposit,whale,ticker}/page.tsx` | 개별 폴더 존재하나 **전부 `redirect("/admin/growth?tab=…")` 1줄만** · 실화면은 `growth/page.tsx`의 `?tab=` 분기 렌더 | ✅ 이중 IA 아님(§35.6 규칙 실물 준수 확인) |
 | `apps/web/routes.ts` | `USER_NESTED_ROUTES` 34행 · 5탭 불변 | ⚠️→기록 **§51.20 라우트 미등재**(0.8.2 #4) |
 | `packages/ui/components/execution/` | **`ProductThumb.tsx` 1개만** — `AiProgressRoom`·`ExecutionSuccessReceipt`·`ExecutionSafeStop`·`ExecutionStepList` **0건** | ⚠️→기록(0.8.3 PART4a) |
-| `packages/ui/components/{trust,toast,lux,auth,kyc,onboarding,legal,settings,shell,brand,product,landing}` | 다수 실물 컴포넌트 확인(우량) | ✅ |
+| `packages/ui/components/{trust,toast,pd,auth,kyc,onboarding,legal,settings,shell,brand,product,landing}` | 다수 실물 컴포넌트 확인(우량) | ✅ |
 | `tooling/verify/*.cjs`(UI 신설분) + `CATALOG.md` | 신규 스크립트 다수 실존 + 다수 **"live"** 등재 | ⚠️→기록 **verify=live ≠ 화면완성 오독 위험 구체 사례**(0.8.2 #2) |
 | git 상태 | 위 신규 파일 대부분 **미커밋**(uncommitted) · YAML todo는 대부분 `pending` 유지 | 기록만 — **커밋 여부는 본 감사 범위 밖**(운영자 판단) |
 
@@ -572,7 +572,7 @@ feature flag·임시 비교가 필요해도 별도 승인 없이 production rout
 | 1a | market-partner-trust-surfaces | — | `market-partner-trust`: Canon+copy+route+MarketPartner*+guide **page** · 로고 SVG **7/7 ready** · BLOCKER **0** | Grid/Leg/Strip+`brand/markets.ts`+Canon+`/me/guide/partners`+7 SVG **CLOSED** | **COMPLETED** · `MARKET_PARTNER_LOGOS_REQUIRE_READY=1` PASS · 전면 재작성 금지 유지 |
 | 1b | korean-first-copy | — | `korean-ui`/`toast-emoji`/`cute-emoji-palette`: copy/ko 필수 파일·voice·retired brand·landing utility키·Guest금지어0 (**페이지 UX 깊이 0**) | `copy/ko/*` 15+ · verify live · auth Guest drift 해소 | **COMPLETED** · 파일 재생성 금지 유지 · 본문깊이=PART2a/2c |
 | 1c | mockup-governance-adr013 | — | `mockup-governance`/`canon-surfaces`/`brand-logo-single`: ADR-013·Canon manifest·단일 Brand Kit | 거버넌스·CI 정착 · Admin wire Owns 확인 | **COMPLETED** · 갭코드0 · 재작성 금지 |
-| 1d | ux-design-system | — | `lux-theme-sync`+`ux-design-system`+`font-scale-three`: tokens/breakpoints/motion/font-scale/PPE/MotionCTA | 전부 live · hex visual_kit_v1 일치 | **COMPLETED** · 갭코드0 · hex 재발명 금지 |
+| 1d | ux-design-system | — | `pd-theme-sync`+`ux-design-system`+`font-scale-three`: tokens/breakpoints/motion/font-scale/PPE/MotionCTA | 전부 live · hex visual_kit_v1 일치 | **COMPLETED** · 갭코드0 · hex 재발명 금지 |
 | 2a | onboarding-experiential | — | `onboarding-experiential`: Canon+OnboardingFlow+page · Guest utility CTA0·transitionDisclosure·compareMiniUtility | live · capital drift **해소** | **COMPLETED** · wire/demo/practice 갭 닫음 |
 | 2b | auth-login-signup-ui | — | `auth-surfaces`: auth 3면+Kakao ENABLED가드 · Guest=utility(§6.4c.1 F) · landing Kakao0 | live · GuestChrome 3면 · tone=utility wire | **COMPLETED** · Infra callback 전 `NEXT_PUBLIC_OAUTH_KAKAO_ENABLED=0` |
 | 2c-pre | operator-entity-support-email | — | schema JSON Schema valid · instance `supportEmail` · **§0.8.2 #5** | v1 `required`+instance `support@hiptk.app` 실물 | **COMPLETED** · 갭-only |
@@ -605,7 +605,7 @@ feature flag·임시 비교가 필요해도 별도 승인 없이 production rout
 | 9a | part9a-sdk-user-feed | **가벼움** | `sdk-user-feed`: exports+fetchOpportunity* · nearMissCount→nearMissExtraCount | `@aipo/sdk` peotteok/execution-stream만 | SDK 신설 · **9a·9b 묶기 OK** |
 | 9b | part9b-verify-live-wire | **가벼움** | home/profits/wallet-live-wire + 9-pre2 verify 2종 CATALOG/domain-by-path | live-wire verify **0** | CATALOG 등재 · **9a·9b 묶기 OK** |
 | 9c | part9c-home-live-wire | **무거움·체감최우선** | `home-live-wire`: page↔SDK↔DayPulse·401 graceful | `page.tsx` stub `items={[]}` | HomePageClient live · **단독 권장** |
-| 9d | part9d-home-principal-slots | **무거움** | `home-principal-slots`: HomePrincipalRail+Canon+lux-feed-grid | B/D 슬롯 **0** | **COMPLETED** · verify:home-principal-slots PASS · 재작성 금지 |
+| 9d | part9d-home-principal-slots | **무거움** | `home-principal-slots`: HomePrincipalRail+Canon+pd-feed-grid | B/D 슬롯 **0** | **COMPLETED** · verify:home-principal-slots PASS · 재작성 금지 |
 | 9e | part9e-profits-detail-wire | **가벼움** | `profits-live-wire`: /profits·/profits/[id] | 골격 위주 | **COMPLETED** · verify PASS · 재작성 금지 |
 | 9f | part9f-wallet-live-wire | **가벼움** | `wallet-live-wire`: buckets 조회+sdk/wallet | buckets 미배선 | **COMPLETED** · verify PASS · 재작성 금지 |
 | 9f2 | part9f2-withdraw-flow-wire | **무거움·신규화면** | `withdraw-flow-wire`: 금액·수수료·step-up·POST withdraw | 출금 3페이지 UI **0** | **COMPLETED** · verify PASS · 재작성 금지 |
@@ -660,7 +660,7 @@ feature flag·임시 비교가 필요해도 별도 승인 없이 production rout
 | 앱 카드 "수익 확정" | **금지** · "예상 수익" SSOT |
 | Product Identity 미주장 | **헌법 잠금 유지** (§1) · G1~G2 copy surface 예외 |
 | fake JSON-LD 별점 | **금지** · real reviews only |
-| 카지노 sfx / 슬롯 metaphor | **금지** · Lux chime only (티커 기본 무음) |
+| 카지노 sfx / 슬롯 metaphor | **금지** · PUTDUK chime only (티커 기본 무음) |
 | 티커 PII | email·legalName·원본 displayName·userId **유저 DTO 0** · 라벨=서버 마스킹만 |
 
 ### §35 Growth Conversion (G1~G4 — Admin ON)
@@ -694,7 +694,7 @@ feature flag·임시 비교가 필요해도 별도 승인 없이 production rout
 - **좌측 사이드바:** 동일 5메뉴 (순서·라벨·route 동일)
 - **우측 메인:** 카드 3~4열 그리드, 홈=추천+피드+지급현황
 
-### 5.3 홈 `/` — Lux 레이아웃 (5탭·IA 불변)
+### 5.3 홈 `/` — PUTDUK 레이아웃 (5탭·IA 불변)
 
 > **ADR-018 pointer(2026-08-16):** 아래 ASCII는 **현재 runtime 레이아웃의 기록**(슬롯 A~G의 존재·데이터 바인딩=Functional Authority·불변)이다. 슬롯의 **정확한 geometry·비중·Hero 크기 등 시각 값**은 새 Home Visual Contract(ADR-018 H5)의 **자동 입력값이 아니다** — Founder Visual Master 등록 후 재추출한다(H1→H5). 슬롯 존재 자체는 Product Contract(H4) Owns로 계속 유효.
 
@@ -1081,7 +1081,7 @@ T.feed = {
 | 안 | 내용 | 판정 |
 |----|------|------|
 | A | 유니코드 이모지 단독 (🌱➡️👑) | 보조 라벨만 허용 · OS별 글리프 달라 **주 배지 불가** |
-| **B** | `packages/ui/brand/assets/membership/{sprout,entry,core,high,vip}.svg`(+png 2x) · Lux mint/principal 톤 · 플래시 마크 DNA | **✅ Day-1 SSOT** |
+| **B** | `packages/ui/brand/assets/membership/{sprout,entry,core,high,vip}.svg`(+png 2x) · PUTDUK mint/principal 톤 · 플래시 마크 DNA | **✅ Day-1 SSOT** |
 | C | AI/사진으로 실사 배지 목업 제작 | ❌ `docs/mockups`·사진목업 재도입 · 픽셀 QA 금지 |
 
 **구현 규칙:**
@@ -1249,11 +1249,11 @@ interface UserNotificationPrefs {
 ### 6.2 Peotteok Light 색상 · 타이포 · 반응형 SSOT
 
 > **테마:** Consumer = **ADR-017 `peotteok-light` Light+Purple 단일 출시 테마** · Admin = **Ops Light**
-> **SSOT:** `packages/ui/tokens/peotteok-light.specification.md` → runtime `lux-fintech.ts` + `lux-theme.css`
+> **SSOT:** `packages/ui/tokens/peotteok-light.specification.md` → runtime `pd-fintech.ts` + `pd-theme.css`
 > **legacy:** 아래 v7.22 dark hex 표는 이력 설명이며 신규 Consumer 구현 입력이 아니다. 실행값은 Token SPEC만 사용한다.
-> **ADR-018 pointer(2026-08-16):** 위 실행값(Token SPEC/`lux-fintech.ts`)은 **현재 runtime 색 미러로 계속 유효**하나, Home 등 ADR-018 §9 신규 Visual Master가 등록되는 화면에는 **자동 입력값이 아니다** — 방향(Light+Purple)은 유지되어도 정확한 hex 적용 규칙은 새 Home Visual Contract(H5)가 Master에서 재확정한다(ADR-018 §6·§14).
+> **ADR-018 pointer(2026-08-16):** 위 실행값(Token SPEC/`pd-fintech.ts`)은 **현재 runtime 색 미러로 계속 유효**하나, Home 등 ADR-018 §9 신규 Visual Master가 등록되는 화면에는 **자동 입력값이 아니다** — 방향(Light+Purple)은 유지되어도 정확한 hex 적용 규칙은 새 Home Visual Contract(H5)가 Master에서 재확정한다(ADR-018 §6·§14).
 
-| 역할 | token (lux-fintech) | hex | 용도 |
+| 역할 | token (pd-fintech) | hex | 용도 |
 |------|-------|-----|------|
 | 배경 | `color.bg` | `#F6F4FC` | App background |
 | 표면 | `color.surface` | `#FFFFFF` | 카드·시트 |
@@ -1394,7 +1394,7 @@ Canon `landing-3s` · `firstViewportMaxBlocks=5`: 브랜드 · 정체성 1줄 ·
 
 | # | 위치 | 스타일 |
 |---|------|--------|
-| 1 | Primary CTA **직하** | `text-xs text-lux-text-muted` · **opacity-* 중첩 0** (WCAG 이중 감쇠 금지) |
+| 1 | Primary CTA **직하** | `text-xs text-pd-text-muted` · **opacity-* 중첩 0** (WCAG 이중 감쇠 금지) |
 | 2 | `LandingOperatorFooter` **직상** | 동일 카피 1줄 반복(숨김 아님 · 구조적 2중) |
 | 3 | Google variant (`senior`) | `text-caption` fluid token (min **12px** · §38.9) |
 
@@ -1451,7 +1451,7 @@ Canon `landing-3s` · `firstViewportMaxBlocks=5`: 브랜드 · 정체성 1줄 ·
 
 ### 6.4d KYC surface (UI owns wire · 규칙 SSOT=Money §42)
 
-Canon: `kyc-guide` → `kyc-doc-capture` → `kyc-confirm` · Lux 금융 톤 · **주민번호 타이핑 0**  
+Canon: `kyc-guide` → `kyc-doc-capture` → `kyc-confirm` · PUTDUK 금융 톤 · **주민번호 타이핑 0**  
 **CI:** `verify:kyc-surfaces`
 
 ---
@@ -1617,7 +1617,7 @@ Canon: `kyc-guide` → `kyc-doc-capture` → `kyc-confirm` · Lux 금융 톤 · 
 ## 33. Peotteok Light Design · Motion · FOMO
 
 > **SSOT:** `CONSTITUTION/28_LUX_FINTECH_DESIGN_AND_MOTION.md`  
-> **토큰:** `packages/ui/tokens/lux-fintech.ts` + `lux-theme.css` (`@theme` · Tailwind v4)  
+> **토큰:** `packages/ui/tokens/putduk.ts` + `pd-theme.css` (`@theme` · Tailwind v4)  
 > **성능 tier 수치:** §29/26 SSOT (여기서 재정의 ❌)  
 > **ADR-018 pointer(2026-08-16 · §33 전체 적용):** 본 §33(33.0~33.8)의 hex·모션·컴포넌트 수치는 **현재 runtime 코드의 기록**이며 코드는 미변경이다. 그러나 Home 등 ADR-018 §9로 새 Visual Master가 등록되는 화면에게는 이 절의 값이 **자동 입력값이 아니다** — 새 화면은 Visual Master → Visual Contract(H5) → Implementation Contract(H6)에서 값을 재추출한다(§33.1/§33.5 개별 pointer 참고 · Motion 방향성(§33.2~33.4 절대 윤리 금지 항목)은 계속 유효, 정확한 수치만 재확인 대상).
 
@@ -1637,22 +1637,22 @@ Canon: `kyc-guide` → `kyc-doc-capture` → `kyc-confirm` · Lux 금융 톤 · 
 | Market Radar ping | ✅ 동의 | `/profits?view=radar` |
 | Receipt print + TronScan | ✅ 동의 | `ReceiptCard` |
 | **Live 익명 지급 ticker** | ✅ **G4 Admin** | `ticker_mode`: off / live / demo / hybrid |
-| **카지노 칩 사운드** | ❌ **금지** | **Lux chime** (§23.7) |
+| **카지노 칩 사운드** | ❌ **금지** | **PUTDUK chime** (§23.7) |
 | **카지노 슬롯 Count-Up 톤** | ⚠️ **수정** | fintech count-up · slot metaphor ❌ |
 | **폭죽 Confetti 3중** | ⚠️ **수정** | tier S/A: light burst · B: flash only · reduced-motion: none |
 | **"3초 차익 수령" CTA** | ❌ **금지** | ko SSOT **"수익 벌기"** (sticky **"수익 벌기"**) |
-| **고급 카지노 심리 연출** | ❌ **금지** | **명품관 Lux-Fintech** reframe |
+| **고급 카지노 심리 연출** | ❌ **금지** | **명품관 PUTDUK-Fintech** reframe |
 | **CONSTITUTION 23** | ❌ **충돌** | **`28`** (23=PWA) |
 | DopamineButton name | ⚠️ **rename** | **`MotionCTA`** (카지노 연상 ↓) |
-| 구 `#00FF87`/`#FF2E63`/`#1A56FF`/`#8B5CF6` plan 표 | ❌ **폐기(v7.22.50 U13)** | shipped `lux-fintech.ts` only |
+| 구 `#00FF87`/`#FF2E63`/`#1A56FF`/`#8B5CF6` plan 표 | ❌ **폐기(v7.22.50 U13)** | shipped `pd-fintech.ts` only |
 
 ### 33.1 Visual Identity Lock (중복0 · ADR-017 · **2026-08-16 ADR-018 pointer**)
 
-> **ADR-018:** 아래 `luxFintech.color` 값은 **현재 runtime 코드 미러로 계속 유효**(코드 미변경)하나, Home 등 새 Visual Master가 등록되는 화면의 **자동 기본값이 아니다**(ADR-018 §1.2 "old color treatment 자동 채택 금지"). 새 Home Visual Contract(H5)는 이 표를 그대로 복사하지 않고 Master에서 재추출한다.
+> **ADR-018:** 아래 `putdukTokens.color` 값은 **현재 runtime 코드 미러로 계속 유효**(코드 미변경)하나, Home 등 새 Visual Master가 등록되는 화면의 **자동 기본값이 아니다**(ADR-018 §1.2 "old color treatment 자동 채택 금지"). 새 Home Visual Contract(H5)는 이 표를 그대로 복사하지 않고 Master에서 재추출한다.
 
 ```typescript
-// peotteok-light.specification.md → lux-fintech.ts runtime mirror
-export const luxFintech = {
+// peotteok-light.specification.md → pd-fintech.ts runtime mirror
+export const putdukTokens = {
   color: {
     bg: '#F6F4FC',
     surface: '#FFFFFF',
@@ -1682,7 +1682,7 @@ export const luxFintech = {
 | 1 | **Count-Up** | `CountUpNumber` | **ledger only** (settlement.completed) · 티커 demo **무관** |
 | 2 | **Live Ticker** | `LivePayoutTicker` | Admin **§35.4** Organic Hybrid · surface=**§33.2a** |
 | 3 | **Motion CTA** | `MotionCTA` | CSS 200~300ms one-shot · 무한 glow 0 |
-| 4 | **Tri-Sensation** | `MotionCTA` + `feedback.ts` | vibrate + lux chime + tier particle |
+| 4 | **Tri-Sensation** | `MotionCTA` + `feedback.ts` | vibrate + pd chime + tier particle |
 
 **홈 [F] counter:** `counter_mode` ledger / demo / blended — Admin `/admin/growth?tab=ticker` · **DayPulse[A2]와 숫자·카피 분리**
 
@@ -1690,7 +1690,7 @@ export const luxFintech = {
 
 #### 33.2a PublicTicker surface (v7.22.40 · Owns=UI 화면 · 스케줄=Admin §35.4)
 
-> **목표:** “전 세계가 쓰는 활기” · 유저가 **연출 존재를 알 수 없게** · Lux 명품관 톤(카지노❌).  
+> **목표:** “전 세계가 쓰는 활기” · 유저가 **연출 존재를 알 수 없게** · PUTDUK 명품관 톤(카지노❌).  
 > **중복0:** mode·곡선·corpus·마스킹·caps·audit = **Admin §35.4** · 본 절 = 슬롯·컴포넌트·카피·모션·PII 표시 가드만.
 
 | 잠금 | 내용 |
@@ -1700,7 +1700,7 @@ export const luxFintech = {
 | 카피 SSOT | `T.ticker.justSettled` / `justReflected` / `participantAmt` — `{name}`=`displayLabel` |
 | 예시 | `방금 {name}님이 +{amount} 정산했어요` · 티커 본문에 `100만`/`대박`/`당첨` **0** |
 | 모션 | 한 줄 fade 150~220ms · S/A · B=교체만 · reduced-motion=즉시 · **가상리스트 max 50** |
-| 사운드 | 기본 **OFF** · Lux chime은 세션당 극희소(설정 ON 시에만) |
+| 사운드 | 기본 **OFF** · PUTDUK chime은 세션당 극희소(설정 ON 시에만) |
 | World Pulse | 옵션 strip · 도시명만 · 숫자0 · flag · G4와 슬롯 분리 |
 | 규모 문장 | G1 또는 랜딩 3s **1곳** (Admin/랜딩 Owns) · 홈 Hero에 상시 100만 배너 **금지** |
 | SSE batch | device-tier §29 — B 3s / A 1s / S 0.5s · 홈 전체 리렌더 금지 |
@@ -1733,7 +1733,7 @@ interface LivePayoutTickerProps {
 ### 33.4 핵심 컴포넌트 SSOT
 
 ```
-packages/ui/components/lux/
+packages/ui/components/pd/
 ├── CountUpNumber.tsx       # requestAnimationFrame, tier duration
 ├── LivePayoutTicker.tsx    # Virtual scroll · ticker_mode §35 G4
 ├── MotionCTA.tsx           # Pulse + onSuccess feedback hook
@@ -1763,7 +1763,7 @@ interface HomePayoutCounterProps {
 > **ADR-018 pointer(2026-08-16):** 아래 token mirror는 **현재 runtime 코드**로 계속 유효하나, 새 Home Visual Contract(H5)가 이 값을 자동으로 상속하지 않는다 — Visual Master에서 재확인 후 필요 시 새 token 확장을 별도 L2 변경으로 추가한다(임의 확장은 여전히 금지).
 
 ```typescript
-// packages/ui/tokens/lux-theme.css (@theme · Tailwind v4) — hex는 lux-fintech.ts 미러만
+// packages/ui/tokens/putduk-theme.css (@theme · Tailwind v4) — hex는 pd-fintech.ts 미러만
 extend: {
   colors: { background: '#F6F4FC', surface: '#FFFFFF', accent: '#6B3CFF', profit: '#12B76A', danger: '#F04438', warning: '#F79009', ... },
   keyframes: {
@@ -1776,7 +1776,7 @@ extend: {
 }
 ```
 
-### 33.6 Lux UX Abuse · 오류
+### 33.6 PUTDUK UX Abuse · 오류
 
 | # | 시나리오 | 방어 |
 |---|----------|------|
@@ -1793,7 +1793,7 @@ extend: {
 
 ### 33.7 CI Gates (§34)
 
-- `verify:lux-tokens` — no hardcoded hex outside lux-fintech.ts
+- `verify:pd-tokens` — no hardcoded hex outside pd-fintech.ts
 - `verify:ticker-mode-audit` — demo/hybrid modes emit audit events
 - `verify:ticker-pii-0` — public ticker payload PII 0
 - `verify:ticker-organic-hybrid` — live우선·caps·곡선 규칙 (Admin/Nest · pointer)
@@ -1814,7 +1814,7 @@ extend: {
 
 | 순위 | SSOT | 용도 |
 |------|------|------|
-| 1 | `packages/ui/tokens` · Lux · Brand Kit | 색·타입·로고·아이콘·간격 토큰 |
+| 1 | `packages/ui/tokens` · PUTDUK · Brand Kit | 색·타입·로고·아이콘·간격 토큰 |
 | 2 | `packages/ui` 컴포넌트 · 5탭 IA · §8 toast · copy/ko | 재사용 UI·카피 |
 | 3 | 본 플랜 절(§5/§7/§48…) + Canon wire | 화면 위계·필수 블록·CTA |
 | — | ~~사진 PNG 목업~~ | **레포 삭제됨** · 재추가 금지 · 인덱싱 제외 |
@@ -1829,7 +1829,7 @@ extend: {
 에이전트/구현이 사진에서 **절대 가져오면 안 되는 것 (미승인 mockup 기준):**
 
 - 로고·워드마크·파비콘·스플래시 (→ Brand Kit만)
-- 색 헥스·그라데이션·그림자·블러 (→ Lux tokens)
+- 색 헥스·그라데이션·그림자·블러 (→ PUTDUK tokens)
 - 폰트 패밀리·크기 px (→ fluid type tokens)
 - 여백·카드 radius·아이콘 세트 (→ spacing/radius/icon SSOT)
 - 잘못된 하단 탭·영문 헤더·타사 마크·난수 성공률 UI
@@ -1875,7 +1875,7 @@ packages/ui/canon/
 #### 33.8.5 에이전트 운영 규칙 (중복0)
 
 1. UI 작업 시 **사진 목업을 열지 않음** (기본). 열어도 구조 의도만.  
-2. 구현 전 Canon wire + Brand + Lux 확인.  
+2. 구현 전 Canon wire + Brand + PUTDUK 확인.  
 3. “목업이랑 똑같이” 요청 → **Canon/토큰 기준으로 재해석** 후 구현 (픽셀 맞추기 거부).  
 4. 리뷰 지적에 사진-픽셀 불일치 = **비결함** (ADR-013). Canon/플랜 불일치만 결함.  
 5. **예외(ADR-018):** 대상 화면이 Founder-approved Visual Master로 등록되어 있으면 위 1~4가 아니라 `visual-master-intake.mdc`의 pixel-accurate 구현 규칙을 따른다 — 그 화면의 Visual Contract 불일치는 **결함**이다.
@@ -1886,14 +1886,14 @@ packages/ui/canon/
 
 > **ADR-018 pointer(2026-08-16):** 아래 체크리스트는 **현재 runtime의 ADR-017 `peotteok-light` 이력**이며, ADR-018 §9로 새 Visual Master가 등록되는 화면(Home 등)의 **자동 입력값이 아니다**. 값 자체는 코드 미변경으로 계속 유효하되, 새 Home Visual Contract는 이 표를 복사하지 않고 Master에서 재추출한다(ADR-018 §6). 신규 등록 화면은 이 표와 별개로 자신의 Visual Contract 게이트를 추가로 통과해야 한다.
 
-- [ ] ADR-017 Peotteok Light applied · Lux Dark runtime path 0
+- [ ] ADR-017 Peotteok Light applied · PUTDUK Dark runtime path 0
 - [ ] CountUp fires only on real settlement E2E
 - [ ] `ticker_mode=live`: LivePayoutTicker = ledger only
 - [ ] `ticker_mode=demo`: Admin queue renders · audit logged
 - [ ] `counter_mode=blended`: ledger+demo sum · admin preview matches user
 - [ ] MotionCTA opportunity Primary = ko SSOT **"수익 벌기"** (sticky **"수익 벌기"** · PC 전폭 sticky 금지)
 - [ ] B-tier: no blur, no particle, 45fps+ scroll
-- [ ] reduced-motion: all lux motion OFF
+- [ ] reduced-motion: all pd motion OFF
 - [ ] 320px sticky CTA clears 5-tab nav
 - [ ] **ADR-013:** 사진목업 시각복제 0 · Canon 4면+Brand 단일 로고 · `verify:mockup-governance` PASS
 
@@ -2007,7 +2007,7 @@ flowchart LR
 | surface | 블록 | 내용 |
 |---------|------|------|
 | **랜딩 3s** | 신뢰 1줄 (§6.4c) | Tier-A 로고 **4~6개** 가로 · `공식 협력` 1줄 · firstViewport≤5 유지 |
-| **홈 `/`** | PartnerTrustStrip | Hero 아래 얇은 strip · Tier-A 전체 · Lux monochrome · **G4 ticker와 슬롯 분리** |
+| **홈 `/`** | PartnerTrustStrip | Hero 아래 얇은 strip · Tier-A 전체 · PUTDUK monochrome · **G4 ticker와 슬롯 분리** |
 | **기회 카드·상세** | `MarketPartnerLeg` | **해당 opportunity leg만** 로고2+LabelKo+화살표 · PriceCompareMargin 위 |
 | **실행실** | step 2 active | leg 로고2 · `시세 불러오는 중...` · LabelKo 동적 |
 | **성공 영수증** | log row | `{buyLabel} ↔ {sellLabel} 시세 반영` · **「○○ 판매 완료」금지** |
@@ -2638,7 +2638,7 @@ problem.code (영어, 내부) → glossary.ts → toast/inline (한글)
 | SW update | "새 버전으로 새로고침" |
 | Push title | `T.push.*` · §8.3 — 예: "🤖 AI 추천 — +18.5 USDT" |
 
-manifest `lang: ko-KR` · `description` 한국어 only · **theme/bg 색=Lux·PWA §23.1** (카피 절에서 hex 재정의 금지)  
+manifest `lang: ko-KR` · `description` 한국어 only · **theme/bg 색=PUTDUK·PWA §23.1** (카피 절에서 hex 재정의 금지)  
 **Canon:** `install-ios` · `install-android` · `offline-banner` (PWA 구현 todo)
 
 ### 27.8a Store listing 한글 (카피 Owns=UI · 절차 Owns=PWA §24 · v7.22.49)
@@ -2798,7 +2798,7 @@ scripts/verify-toast-emoji.mjs     # 기존
 ## 48. AI 진행실 · 성공/안전중단 · Admin 진행정책 (v7.18) — Canon 4면 SSOT
 
 > **ADR-013:** 사진 PNG 목업 **레포 삭제됨** · 재추가 금지 · **픽셀 SSOT 아님**.  
-> **시각·구조 SSOT:** `packages/ui/canon/surfaces/execution-*.wire.json` + Lux + Brand Kit only  
+> **시각·구조 SSOT:** `packages/ui/canon/surfaces/execution-*.wire.json` + PUTDUK + Brand Kit only  
 > **헌법:** `CONSTITUTION/48_AI_EXECUTION_ROOM_AND_POLICY.md`  
 > **카피:** `packages/ui/copy/ko/execution.ts` = `T.execution.*`  
 > **스키마:** `schemas/execution-policy.v1.json` · `schemas/trade-execution-state.v1.json`  
@@ -2808,7 +2808,7 @@ scripts/verify-toast-emoji.mjs     # 기존
 
 | 사진목업에 보이는 현상 | 구현 잠금 (사진 무시) |
 |-----------|-----------|
-| 화면마다 로고·톤 다름 | **Brand Kit + Lux만** · 사진 로고/색 복제 금지 |
+| 화면마다 로고·톤 다름 | **Brand Kit + PUTDUK만** · 사진 로고/색 복제 금지 |
 | 성공 화면 하단 탭이 분석/상품/알림 등으로 보임 | **5탭 불변:** 홈·기회·수익·지갑·내정보 · 성공 후 **지갑 탭 하이라이트**만 |
 | 안전중단 영문 `MATCH FAILURE` | 유저 노출 **`매칭 중단`** (ko) · 블록 위계는 Canon wire |
 | 추천 카드 `AI 매칭 성공률 92%` | 필드는 **`aiConfidenceScore`** · 라벨 **`AI 매칭 적합도 92%`** (난수 당첨·판매성공률 아님) |
@@ -2929,7 +2929,7 @@ Soft=목표 60s · Hard=wall 90s · **전 등급 동일** · presentation 8~15s�
 | 노출면 | 홈 카드 · 상세 · 확인 · **진행실** · **성공** · 안전중단 추천카드 — **동일 실물 이미지** |
 | 카테고리 | `watch`→**해당 레퍼런스** 시계 사진 · `trading_card`→**해당** 포켓몬/유희왕 카드 사진 · `luxury_bag`→**해당** 가방 사진 |
 | 필터 칩 | `전체` `시계` `카드` `가방` (Engine §0.0.5 pointer) |
-| 로드 실패 | Lux 플레이스홀더 + `assetIcon`(⌚/🃏/👜) · 깨진 URL 빈칸 **금지** |
+| 로드 실패 | PUTDUK 플레이스홀더 + `assetIcon`(⌚/🃏/👜) · 깨진 URL 빈칸 **금지** |
 | 금지 | 사진 목업 픽셀 복제 · 교차 카테고리 이미지 · “판매 완료/내가 팜” 암시 · 성별 분기 · UI에서 eBay identity-match/ingest **수정 시도** |
 | 캡션 | **`공식 협력 · 시세·데이터 연동`** (`T.trust.partners.legCaption`) · §38.10 |
 
@@ -3245,7 +3245,7 @@ CONSTITUTION/46b_ASSET_IMAGE_SSOT.md
 | `lg` 크게 | ≥1.15 | +0.05 |
 | `xl` 더 크게 | ≥1.30 | +0.10 |
 
-**결함:** 설정에 `Theme`/`System`/`Dark Mode` 영문 노출 · Lux Dark runtime 재활성 · 글자 2단만 제공 · 성별 토글
+**결함:** 설정에 `Theme`/`System`/`Dark Mode` 영문 노출 · PUTDUK Dark runtime 재활성 · 글자 2단만 제공 · 성별 토글
 
 ### 50.1b 본인 진행 확인 카피 (공유 기기 · 중복0)
 
@@ -3432,7 +3432,7 @@ scripts/verify-operator-footer.mjs
 | L2 | 유저 화면에 API 에러 영문 | glossary + toast resolver |
 | L3 | 어드민에 DLQ/NATS 노출 | verify:no-it-jargon |
 | L4 | 토스트 이모지 과다/없음 | verify:toast-emoji |
-| L5 | 설정에 dual theme/Lux Dark 재활성 | 토글 코드경로 v1 삭제 · ADR-017 단일 테마 |
+| L5 | 설정에 dual theme/PUTDUK Dark 재활성 | 토글 코드경로 v1 삭제 · ADR-017 단일 테마 |
 | L6 | 약관 영문 템플릿 복붙 | legal.ts ko only |
 | L7 | OSS 목록 누락 | NOTICE 생성 CI |
 | L8 | 운영사 면허번호·법인명 drift | operator-entity.v1 + verify:operator-footer |

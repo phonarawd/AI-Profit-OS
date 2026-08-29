@@ -13,7 +13,7 @@
 | Status | **SUPERSEDED (Visual Authority) · HISTORICAL** — superseded by ADR-018 (2026-08-16) · 비시각 의사결정 이력만 보존 |
 | ~~Status (원본)~~ | ~~Accepted · STEP 4.1 amended (Home Visual Upgrade)~~ |
 | Date | 2026-08-10 |
-| Supersedes (partial) | ADR-013 (PNG absolute ban → **Reference allowed, SSOT 아님**) · theme note (`lux-dark` only → Light 출시 SSOT) |
+| Supersedes (partial) | ADR-013 (PNG absolute ban → **Reference allowed, SSOT 아님**) · theme note (`pd-dark` only → Light 출시 SSOT) |
 | Does not supersede | ADR-002 Brand 3-layer · PART9 live wire · Money ledger Truth |
 | Visual Contract | [`peotteok-home-visual-contract.v1.md`](./peotteok-home-visual-contract.v1.md) (v1.4 Fact amend) |
 | Implementation Contract | [`peotteok-home-visual-implementation-contract.v1.md`](./peotteok-home-visual-implementation-contract.v1.md) (**STEP 3 APPROVED / LOCKED**) |
@@ -22,14 +22,14 @@
 
 ## Context
 
-PART9 Live Wiring은 CLOSED다. 출시 인지(20~70대 · Capital Participant)를 위해 Home Experience를 Light+Purple로 올린다. Lux Dark는 개발자/트레이딩 느낌이 강해 타겟과 충돌한다.
+PART9 Live Wiring은 CLOSED다. 출시 인지(20~70대 · Capital Participant)를 위해 Home Experience를 Light+Purple로 올린다. PUTDUK Dark는 개발자/트레이딩 느낌이 강해 타겟과 충돌한다.
 
 Forensic → Conflict → Implementation Contract 이후, STEP 0.5에서 `ledgerTotal`이 **정산 완료 COUNT**임이 잠겼다. UI가 이를 USDT 금액으로 보이면 **semantic data-binding defect**다. STEP 4는 이 Fact 표면을 ADR/Contract/Wire/Token에 고정하고, STEP 5 코드는 그 후에만 허용한다.
 
 ## Decision
 
 1. **출시 Theme SSOT = Light + Purple** (`peotteok-light` SPEC → runtime theme 적용 유지).
-2. **Lux Dark = archive/legacy** (Day-1 dual toggle 0).
+2. **PUTDUK Dark = archive/legacy** (Day-1 dual toggle 0).
 3. **PNG = Geometry Reference only** — 레이아웃·밀도·비율·시각 위계만.
    - 목업 숫자·상태·FSM·VIP·차트·도넛·Fact **복제 금지**.
    - `docs/mockups/**` · `*mockup*.png` 레포 재반입 **금지**.

@@ -18,9 +18,9 @@ export function TaxDisclaimerBlock({ className = "" }: TaxDisclaimerBlockProps) 
       data-ci-locked="tax-disclaimer"
       data-admin-override="false"
       role="note"
-      className={`rounded-lux-md border border-lux-border bg-lux-elevated p-3 text-sm text-lux-text-muted ${className}`.trim()}
+      className={`rounded-pd-md border border-pd-border bg-pd-elevated p-3 text-sm text-pd-text-muted ${className}`.trim()}
     >
-      <p className="font-medium text-lux-text">{d.title}</p>
+      <p className="font-medium text-pd-text">{d.title}</p>
       <ul className="mt-2 list-none space-y-1.5">
         <li data-testid="tax-disclaimer-line1">{d.line1}</li>
         <li data-testid="tax-disclaimer-line2">{d.line2}</li>

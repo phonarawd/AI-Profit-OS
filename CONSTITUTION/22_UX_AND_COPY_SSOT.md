@@ -10,7 +10,7 @@
 |------|------|
 | 5탭 IA | **홈 · 수익 · 내거래 · 지갑 · 내정보** · mobile=PC 동일 · 6번째 탭 **금지** |
 | 레이아웃·버튼 inventory | sticky CTA · 카드 위계 · Primary/Secondary 역할 |
-| 색·표면 역할 | Lux palette **역할** 배정 (토큰 값 → `28`) |
+| 색·표면 역할 | PUTDUK palette **역할** 배정 (토큰 값 → `28`) |
 | Copy 교차 규칙 | **문자열 본문 owns = `25`** · 본 파일은 IA/레이아웃/버튼만 |
 | 유저 역할 UX | capital provider · Primary CTA=`수익 벌기` · 구매/판매 CTA **0** |
 
@@ -20,7 +20,7 @@
 |------|------|
 | 5탭·홈·카드·Canon | UI `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` §5~§8 · `packages/ui/canon` |
 | 한글 문자열·금지어·CI | → `25_KOREAN_FIRST_UX_POLICY.md` · `packages/ui/copy/ko/*` |
-| Lux·motion·G4 비주얼 | → `28_LUX_FINTECH_DESIGN_AND_MOTION.md` |
+| PUTDUK·motion·G4 비주얼 | → `governance/ui/PUTDUK_UI_AUTHORITY_V1.md` |
 | CTA·자본참여자 모델 | Index §20.2 · UI §5.3b·§48 |
 | PWA shell | → `23` |
 | Trust/면책 카피 | → `38` · `50`(이후 todo) |

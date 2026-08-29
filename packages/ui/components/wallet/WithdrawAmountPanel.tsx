@@ -39,7 +39,7 @@ export function WithdrawAmountPanel({
       data-asset={asset}
       className={["mt-4 space-y-3", className].filter(Boolean).join(" ")}
     >
-      <label className="block text-sm text-lux-text-muted">
+      <label className="block text-sm text-pd-text-muted">
         {T.withdrawMode.amountLabel}
         <input
           data-testid="withdraw-amount-input"
@@ -48,12 +48,12 @@ export function WithdrawAmountPanel({
           disabled={disabled}
           value={amountUsdt}
           onChange={(e) => onAmountChange(e.target.value)}
-          className="mt-1 w-full rounded-lux-md border border-lux-border bg-transparent px-3 py-2 text-lux-text"
+          className="mt-1 w-full rounded-pd-md border border-pd-border bg-transparent px-3 py-2 text-pd-text"
         />
       </label>
 
       <p
-        className="text-xs text-lux-text-muted"
+        className="text-xs text-pd-text-muted"
         data-testid="withdraw-fee-hint"
       >
         {fee
@@ -62,7 +62,7 @@ export function WithdrawAmountPanel({
       </p>
 
       {showDestination && asset === "USDT" ? (
-        <label className="block text-sm text-lux-text-muted">
+        <label className="block text-sm text-pd-text-muted">
           {T.withdrawMode.destinationLabel}
           <input
             data-testid="withdraw-destination-input"
@@ -72,14 +72,14 @@ export function WithdrawAmountPanel({
             placeholder={T.withdrawMode.destinationPlaceholder}
             value={destination}
             onChange={(e) => onDestinationChange?.(e.target.value)}
-            className="mt-1 w-full rounded-lux-md border border-lux-border bg-transparent px-3 py-2 text-lux-text"
+            className="mt-1 w-full rounded-pd-md border border-pd-border bg-transparent px-3 py-2 text-pd-text"
           />
         </label>
       ) : null}
 
       {asset === "USDT" ? (
         <p
-          className="text-sm text-lux-text-muted"
+          className="text-sm text-pd-text-muted"
           data-testid="withdraw-network-hint"
           data-network-label={T.wallet.networkName}
         >

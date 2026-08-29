@@ -119,7 +119,7 @@ function fixtureHtml(surface) {
   <title>canon-structure:${surface.id}</title>
   <style>
     html, body { margin: 0; background: #090a10; color: #f4f6fb; font-family: sans-serif; }
-    .lux-app-main {
+    .pd-app-main {
       width: 100%;
       max-width: 1680px;
       margin-inline: auto;
@@ -130,7 +130,7 @@ function fixtureHtml(surface) {
   </style>
 </head>
 <body>
-<main class="lux-app-main" ${SURFACE_ATTR}="${surface.id}" data-testid="canon-fixture">
+<main class="pd-app-main" ${SURFACE_ATTR}="${surface.id}" data-testid="canon-fixture">
 ${blocks}
 </main>
 </body>

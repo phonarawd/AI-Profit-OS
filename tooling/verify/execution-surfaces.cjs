@@ -201,7 +201,7 @@ for (const src of [room, success, safe, page, client]) {
   if (/successRatePercent|Math\.random\s*\(/.test(src)) {
     fails.push("execution surfaces must not use successRatePercent / Math.random");
   }
-  if (/\bSLA\b|\btimeout\b/i.test(src) && /text-lux|children|\{T\./.test(src)) {
+  if (/\bSLA\b|\btimeout\b/i.test(src) && /text-pd|children|\{T\./.test(src)) {
     // only fail if IT words appear as user-facing string literals
   }
   if (/"timeout"|"SLA"|"hard queue"/i.test(src)) {

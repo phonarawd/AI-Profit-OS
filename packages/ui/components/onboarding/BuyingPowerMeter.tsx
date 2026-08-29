@@ -16,7 +16,7 @@ export function BuyingPowerMeter() {
       <h2 className="mt-2 text-center text-base font-semibold">
         {T.onboarding.buyingPowerTitle}
       </h2>
-      <p className="mt-2 text-center text-sm text-lux-text-muted">
+      <p className="mt-2 text-center text-sm text-pd-text-muted">
         {T.onboarding.buyingPowerBody}
       </p>
       <div
@@ -26,7 +26,7 @@ export function BuyingPowerMeter() {
       >
         <div className="acq-meter-fill" />
       </div>
-      <p className="mt-2 text-center text-sm font-medium text-lux-text">
+      <p className="mt-2 text-center text-sm font-medium text-pd-text">
         {T.onboarding.buyingPowerUnavailable}
       </p>
     </section>

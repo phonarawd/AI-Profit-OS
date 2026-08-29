@@ -17,14 +17,14 @@ HOME_GEOMETRY_DIFF = 0
 - 문서: `governance/responsive/DEVICE_TIER.md`
 - 대형화면 안전 항목: overflow/clip/absurd-stretch/interaction-break/performance @ 2560/3440/3840
 - Home CSS 재작성 0. 실행 QA는 REL-105/601
-- `verify:ux-design-system` 재사용 + `verify:device-tier-system`
+- `verify:putduk-design-system` 재사용 + `verify:device-tier-system`
 
 ## VERIFY
 
 | command | result |
 |---|---|
 | `node tooling/verify/device-tier-system.cjs` | PASS |
-| `node tooling/verify/ux-design-system.cjs` | PASS |
+| `node tooling/verify/putduk-design-system.cjs` | PASS |
 | `CI=true node tooling/verify/gate-fast.cjs` | PASS |
 
 ## ACCEPTANCE

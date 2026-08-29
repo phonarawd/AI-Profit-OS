@@ -124,24 +124,24 @@ function OpportunitiesInner() {
 
   return (
     <main
-      className="p-6 text-lux-text"
+      className="p-6 text-pd-text"
       data-testid="admin-opportunities-page"
     >
       <h1 className="text-xl font-semibold">{T.admin.navigation.opportunities}</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">
+      <p className="mt-2 text-sm text-pd-text-muted">
         회원에게 보여 줄 상품, 필요한 원금, 예상 수익과 사진을 확인합니다.
       </p>
 
       <div className="mt-4 flex gap-3 text-sm">
         <a
           href="/admin/opportunities"
-          className={tab === "pricing" ? "font-semibold" : "text-lux-text-muted"}
+          className={tab === "pricing" ? "font-semibold" : "text-pd-text-muted"}
         >
           가격·예상 수익
         </a>
         <a
           href="/admin/opportunities?tab=assets"
-          className={tab === "assets" ? "font-semibold" : "text-lux-text-muted"}
+          className={tab === "assets" ? "font-semibold" : "text-pd-text-muted"}
         >
           상품·사진
         </a>
@@ -156,8 +156,8 @@ function OpportunitiesInner() {
               data-category="all"
               className={
                 !activeCategory
-                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
-                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+                  ? "rounded border border-pd-border bg-pd-surface px-2 py-1 font-semibold"
+                  : "rounded border border-pd-border px-2 py-1 text-pd-text-muted"
               }
             >
               전체
@@ -169,8 +169,8 @@ function OpportunitiesInner() {
               data-category="watch"
               className={
                 activeCategory === "watch"
-                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
-                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+                  ? "rounded border border-pd-border bg-pd-surface px-2 py-1 font-semibold"
+                  : "rounded border border-pd-border px-2 py-1 text-pd-text-muted"
               }
             >
               시계
@@ -182,8 +182,8 @@ function OpportunitiesInner() {
               data-category="trading_card"
               className={
                 activeCategory === "trading_card"
-                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
-                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+                  ? "rounded border border-pd-border bg-pd-surface px-2 py-1 font-semibold"
+                  : "rounded border border-pd-border px-2 py-1 text-pd-text-muted"
               }
             >
               카드
@@ -195,8 +195,8 @@ function OpportunitiesInner() {
               data-category="luxury_bag"
               className={
                 activeCategory === "luxury_bag"
-                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
-                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+                  ? "rounded border border-pd-border bg-pd-surface px-2 py-1 font-semibold"
+                  : "rounded border border-pd-border px-2 py-1 text-pd-text-muted"
               }
             >
               가방
@@ -218,8 +218,8 @@ function OpportunitiesInner() {
               data-capital-band="all"
               className={
                 !activeBand
-                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
-                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+                  ? "rounded border border-pd-border bg-pd-surface px-2 py-1 font-semibold"
+                  : "rounded border border-pd-border px-2 py-1 text-pd-text-muted"
               }
             >
               전체
@@ -231,8 +231,8 @@ function OpportunitiesInner() {
               data-capital-band="micro"
               className={
                 activeBand === "micro"
-                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
-                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+                  ? "rounded border border-pd-border bg-pd-surface px-2 py-1 font-semibold"
+                  : "rounded border border-pd-border px-2 py-1 text-pd-text-muted"
               }
             >
               소액(10~)
@@ -244,8 +244,8 @@ function OpportunitiesInner() {
               data-capital-band="small"
               className={
                 activeBand === "small"
-                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
-                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+                  ? "rounded border border-pd-border bg-pd-surface px-2 py-1 font-semibold"
+                  : "rounded border border-pd-border px-2 py-1 text-pd-text-muted"
               }
             >
               입문(100~)
@@ -257,8 +257,8 @@ function OpportunitiesInner() {
               data-capital-band="mid"
               className={
                 activeBand === "mid"
-                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
-                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+                  ? "rounded border border-pd-border bg-pd-surface px-2 py-1 font-semibold"
+                  : "rounded border border-pd-border px-2 py-1 text-pd-text-muted"
               }
             >
               중급(1천~)
@@ -270,8 +270,8 @@ function OpportunitiesInner() {
               data-capital-band="high"
               className={
                 activeBand === "high"
-                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
-                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+                  ? "rounded border border-pd-border bg-pd-surface px-2 py-1 font-semibold"
+                  : "rounded border border-pd-border px-2 py-1 text-pd-text-muted"
               }
             >
               고액(1만~)
@@ -284,8 +284,8 @@ function OpportunitiesInner() {
               data-contract-label="웨일(10만~)"
               className={
                 activeBand === "whale"
-                  ? "rounded border border-lux-border bg-lux-surface px-2 py-1 font-semibold"
-                  : "rounded border border-lux-border px-2 py-1 text-lux-text-muted"
+                  ? "rounded border border-pd-border bg-pd-surface px-2 py-1 font-semibold"
+                  : "rounded border border-pd-border px-2 py-1 text-pd-text-muted"
               }
             >
               초고액(10만~)
@@ -296,7 +296,7 @@ function OpportunitiesInner() {
 
       {tab === "pricing" ? (
         <section className="mt-6 space-y-3">
-          <p className="text-sm text-lux-text-muted">
+          <p className="text-sm text-pd-text-muted">
             실제로 연결된 상품만 표시합니다. 가격이나 수익을 확인하지 못한 경우 숫자를 꾸며 넣지 않습니다.
           </p>
           <ul className="flex flex-wrap gap-2 text-sm">
@@ -304,14 +304,14 @@ function OpportunitiesInner() {
               <li
                 key={f.key}
                 data-filter={f.key}
-                className="rounded border border-lux-border px-2 py-1"
+                className="rounded border border-pd-border px-2 py-1"
               >
                 {f.label}
               </li>
             ))}
           </ul>
           <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
-            <span className="text-lux-text-muted">표시 기준:</span>
+            <span className="text-pd-text-muted">표시 기준:</span>
             <span
               data-badge="gradeMismatch"
               className="rounded bg-amber-100 px-2 py-0.5 text-amber-900"
@@ -321,33 +321,33 @@ function OpportunitiesInner() {
             </span>
             <span
               data-badge="compareReady"
-              className="rounded border border-lux-border px-2 py-0.5 text-lux-text-muted"
+              className="rounded border border-pd-border px-2 py-0.5 text-pd-text-muted"
             >
               가격 비교 가능
             </span>
             <span
               data-badge="image_missing"
-              className="rounded border border-lux-border px-2 py-0.5 text-lux-text-muted"
+              className="rounded border border-pd-border px-2 py-0.5 text-pd-text-muted"
             >
               사진 없음
             </span>
           </div>
-          <p className="text-xs text-lux-text-muted">
+          <p className="text-xs text-pd-text-muted">
             카드 등급, 가방의 브랜드·모델·크기·색상, 시계의 브랜드·제품 번호를 확인해 같은 상품끼리 연결합니다.
           </p>
 
           {!list ? (
-            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !list.ok ? (
             <AdminFetchNote failure={list.failure} />
           ) : oppItems && oppItems.length === 0 ? (
-            <p className="text-sm text-lux-text-muted">해당 기회가 없습니다.</p>
+            <p className="text-sm text-pd-text-muted">해당 기회가 없습니다.</p>
           ) : oppItems ? (
             <ul className="mt-3 space-y-3" data-testid="opportunities-live-list">
               {oppItems.map((item, idx) => {
                 const id = readText(item.id);
                 return (
-                  <li key={id ?? String(idx)} className="rounded border border-lux-border p-3 text-sm">
+                  <li key={id ?? String(idx)} className="rounded border border-pd-border p-3 text-sm">
                     <p><AdminTruth value={readText(item.assetLabel)} /></p>
                     <p>예상 수익 <AdminTruth value={readAmount(item.expectedProfitUsdt)} /></p>
                     <p>필요 원금 <AdminTruth value={readAmount(item.requiredCapitalUsdt)} /></p>
@@ -370,64 +370,64 @@ function OpportunitiesInner() {
           data-watch-contract-brand="Patek"
         >
           <h2 className="font-medium">상품과 사진</h2>
-          <p className="text-lux-text-muted">
+          <p className="text-pd-text-muted">
             상품마다 사진 하나를 정확하게 연결합니다. 다른 종류의 상품 사진은 서로 섞지 않습니다.
           </p>
           <ul className="flex flex-wrap gap-2">
             <li
               data-filter="image_missing"
-              className="rounded border border-lux-border px-2 py-1"
+              className="rounded border border-pd-border px-2 py-1"
             >
               사진 없음
             </li>
             <li
               data-field="imageUrl"
-              className="rounded border border-lux-border px-2 py-1"
+              className="rounded border border-pd-border px-2 py-1"
             >
               사진 주소
             </li>
             <li
               data-field="imageSource"
-              className="rounded border border-lux-border px-2 py-1"
+              className="rounded border border-pd-border px-2 py-1"
             >
               사진 출처
             </li>
             <li
               data-r2-upload="asset-images"
-              className="rounded border border-lux-border px-2 py-1"
+              className="rounded border border-pd-border px-2 py-1"
             >
               사진 올리기
             </li>
           </ul>
           <div
             data-preview="assetImageUrl"
-            className="rounded border border-dashed border-lux-border p-3 text-lux-text-muted"
+            className="rounded border border-dashed border-pd-border p-3 text-pd-text-muted"
           >
             회원 화면에 보이는 것과 같은 사진을 미리 확인합니다.
           </div>
           <p
             data-sku="1:1"
             data-contract="SKU 1:1"
-            className="text-xs text-lux-text-muted"
+            className="text-xs text-pd-text-muted"
           >
             상품 하나에는 해당 상품의 사진만 연결합니다.
           </p>
-          <p className="text-xs text-lux-text-muted">
+          <p className="text-xs text-pd-text-muted">
             상품과 사진은 이 화면에서 함께 관리합니다.
           </p>
 
           {!assets ? (
-            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !assets.ok ? (
             <AdminFetchNote failure={assets.failure} />
           ) : assetItems && assetItems.length === 0 ? (
-            <p className="text-sm text-lux-text-muted">아직 등록된 상품이 없습니다.</p>
+            <p className="text-sm text-pd-text-muted">아직 등록된 상품이 없습니다.</p>
           ) : assetItems ? (
             <ul className="mt-3 space-y-3" data-testid="opportunities-assets-list">
               {assetItems.map((item, idx) => {
                 const id = readText(item.assetId);
                 return (
-                  <li key={id ?? String(idx)} className="rounded border border-lux-border p-3 text-sm">
+                  <li key={id ?? String(idx)} className="rounded border border-pd-border p-3 text-sm">
                     <p><AdminTruth value={readText(item.assetLabel)} /></p>
                     <p>사진 출처 <AdminTruth value={readText(item.imageSource)} /></p>
                     <p>사진 주소 <AdminTruth value={readText(item.imageUrl)} /></p>

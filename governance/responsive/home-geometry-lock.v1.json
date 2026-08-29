@@ -8,16 +8,16 @@
       "bytes": 198
     },
     "apps/web/app/HomePageClient.tsx": {
-      "sha256": "e29dc8af1caa4aaac2fe34ab1b9d7e21656ac9c3b926201e49c8ea87e45bc9f2",
-      "bytes": 10120
+      "sha256": "209e3c3db0096035d85281de399e558725aa4f182acf1a0dea4231d0ecaa2cae",
+      "bytes": 10115
     },
     "apps/web/app/HomeDesktopClient.tsx": {
-      "sha256": "f915c547a8fce30b9fc211148480ba61633562ae2aa4042f512b907122767680",
-      "bytes": 2246
+      "sha256": "ae9b15d3f59f4fc1a0ac738b24343d5576c7a14f0592f2094946e537e1c2ccc0",
+      "bytes": 3099
     },
     "apps/web/app/globals.css": {
-      "sha256": "15bc0df228d1b37b9578b8abf46338dde7f624f4a9112fd821786601d064a4cf",
-      "bytes": 190
+      "sha256": "c970fe8abb10005abcb59e18d18f22144e7ba28c4dc059e313aac754354a7c71",
+      "bytes": 252
     },
     "apps/web/components/spark-dash-home/HomeDesktop.tsx": {
       "sha256": "84cbbc21883a85c6929ce9f1bed5335e874e67782ec28b83e1f52d378353d719",
@@ -28,12 +28,12 @@
       "bytes": 15234
     },
     "apps/web/components/spark-dash-home/spark-dash-home.css": {
-      "sha256": "0b0c6c16752c1667c2088f3c7a2591df4bff8b59ed27c58f6d75217f31c24f32",
-      "bytes": 27773
+      "sha256": "54d8ad3e1bf9d71f86191ed433dcb536d8c5c9ef8da77f231379941af4c851b7",
+      "bytes": 27944
     },
     "apps/web/components/spark-dash-home/spark-dash-mobile.css": {
-      "sha256": "d2b87e03df4f4627603973734d30296b864790fdb78cc92c8d34ffa311118ca7",
-      "bytes": 15625
+      "sha256": "9f85fc104fa2163219afa37eca9448508ca815f654d38a401eb8b9355d221756",
+      "bytes": 15709
     },
     "apps/web/components/spark-dash-home/assets.ts": {
       "sha256": "a1260ff6707455ceb5b45012149f6088e82ee1497ba6e919a898df9b4089e694",
@@ -55,5 +55,7 @@
       "sha256": "912bcc7135ce8d8a1a26b1f4bad7b18307b55e0a4a6334f77757ebf4bc5403c6",
       "bytes": 5112
     }
-  }
+  },
+  "remeasuredAt": "2026-08-29",
+  "remeasureNote": "PUTDUK token/import remap only; geometry rewrite remains FORBIDDEN."
 }

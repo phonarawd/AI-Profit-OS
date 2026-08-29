@@ -1089,7 +1089,7 @@ IMPLEMENTATION_STEPS:
   - S/A/B + reduced-motion + saveData 계약을 문서/토큰으로 고정
   - "대형화면 안전: overflow/clip/absurd-stretch/interaction-break/성능저하 검사 항목을 문서화"
   - Home CSS를 이 작업에서 재작성하지 않음
-  - "verify:ux-design-system이 있으면 재사용, 없으면 최소 verify 추가"
+  - "verify:putduk-design-system이 있으면 재사용, 없으면 최소 verify 추가"
 VERIFY: 티어 함수/문서 존재. Home visual redesign diff 0.
 ACCEPTANCE: 후속 화면이 티어 정책을 공유. Home은 안전 QA만 별도 REL에서 수행.
 EVIDENCE: device-tier 문서 + 기존 함수 경로

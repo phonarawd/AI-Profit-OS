@@ -7,7 +7,7 @@ import {
   LivePayoutTicker,
   type HomePayoutCounterMode,
   type PublicTickerEvent,
-} from "../lux";
+} from "../pd";
 import {
   BalanceAwareHome,
   HomePrincipalRail,
@@ -109,7 +109,7 @@ export function HomeExperience({
       data-testid="home-experience"
       data-view-state={viewState}
       data-session-status={sessionStatus}
-      className="text-lux-text"
+      className="text-pd-text"
     >
       <div data-home-slot="ticker" data-canon-block="tickerSlot">
         <LivePayoutTicker

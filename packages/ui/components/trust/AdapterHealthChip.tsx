@@ -59,10 +59,10 @@ export function AdapterHealthChip({
       data-canon-block="adapterHealth"
       data-stale={stale ? "1" : "0"}
       data-compare-ready={health?.compareReady === true ? "1" : "0"}
-      className={`mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-lux-text-muted ${className}`.trim()}
+      className={`mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-pd-text-muted ${className}`.trim()}
     >
       {stale ? (
-        <span data-testid="adapter-health-pending" className="text-lux-warning">
+        <span data-testid="adapter-health-pending" className="text-pd-warning">
           {c.comparePending}
         </span>
       ) : relative ? (
@@ -80,7 +80,7 @@ export function AdapterHealthChip({
       {stale && health?.ctaLockReasonKo ? (
         <span
           data-testid="adapter-health-lock-reason"
-          className="w-full text-lux-warning"
+          className="w-full text-pd-warning"
         >
           {health.ctaLockReasonKo}
         </span>

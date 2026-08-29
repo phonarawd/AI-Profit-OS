@@ -25,6 +25,15 @@ function isRel502Qa4Integrity(f) {
 const RULES = [
   {
     test: (f) =>
+      /^\.github\/workflows\/cloud-verify\.yml$/.test(f) ||
+      /^\.github\/workflows\/ui-normalization-validate\.yml$/.test(f) ||
+      /^tooling\/verify\/cloud-dispatch\.cjs$/.test(f) ||
+      /^tooling\/verify\/cloud-verify-lock\.cjs$/.test(f) ||
+      /^\.devcontainer\/devcontainer\.json$/.test(f),
+    scripts: ["cloud-verify-lock.cjs"],
+  },
+  {
+    test: (f) =>
       /^\.cursor\/hooks(\/|$)/.test(f) ||
       /^\.cursor\/hooks\.json$/.test(f) ||
       /^\.cursor\/rules\/project-isolation/.test(f) ||
@@ -1047,14 +1056,18 @@ const RULES = [
   {
     test: (f) =>
       /packages\/ui\/responsive\//.test(f) ||
-      /packages\/ui\/components\/lux\/(VirtualList|VirtualTicker|FluidCard|TouchButton|LivePayoutTicker)\./.test(
+      /packages\/ui\/components\/pd\/(VirtualList|VirtualTicker|FluidCard|TouchButton|LivePayoutTicker)\./.test(
         f,
       ) ||
+      /packages\/ui\/primitives\/(Button|Card|PrimaryCta|LivePayoutTicker|HomePayoutCounter|CountUpNumber)\./.test(
+        f,
+      ) ||
+      /packages\/ui\/performance\/(VirtualList|VirtualTicker)\./.test(f) ||
       /packages\/ui\/components\/opportunity\/VirtualOpportunityList\./.test(f) ||
       /packages\/sdk\/src\/device-tier\.ts/.test(f) ||
       /apps\/web\/components\/DeviceTierApply\./.test(f) ||
       /tooling\/verify\/responsive(\.cjs|\/)/.test(f),
-    scripts: ["responsive.cjs", "ux-design-system.cjs"],
+    scripts: ["responsive.cjs", "putduk-design-system.cjs"],
   },
 
   {
@@ -1101,8 +1114,9 @@ const RULES = [
       /^packages\/ui\/tokens\/device-tier-contract\.ts$/.test(f) ||
       /^governance\/responsive\//.test(f) ||
       /^tooling\/verify\/device-tier-system\.cjs$/.test(f) ||
+      /^tooling\/verify\/putduk-design-system\.cjs$/.test(f) ||
       /^tooling\/verify\/ux-design-system\.cjs$/.test(f),
-    scripts: ["device-tier-system.cjs", "ux-design-system.cjs"],
+    scripts: ["device-tier-system.cjs", "putduk-design-system.cjs"],
   },
   {
     test: (f) =>

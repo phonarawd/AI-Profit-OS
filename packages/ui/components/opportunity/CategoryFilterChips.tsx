@@ -42,10 +42,10 @@ export function CategoryFilterChips({
             data-category={chip.key === "all" ? "all" : chip.key}
             data-active={active ? "1" : "0"}
             className={[
-              "rounded-lux-sm border px-3 py-1.5 text-sm",
+              "rounded-pd-sm border px-3 py-1.5 text-sm",
               active
-                ? "border-lux-accent bg-lux-accent/15 text-lux-accent"
-                : "border-lux-border text-lux-text-muted",
+                ? "border-pd-accent bg-pd-accent/15 text-pd-accent"
+                : "border-pd-border text-pd-text-muted",
             ].join(" ")}
             onClick={() => onChange?.(chip.key)}
           >

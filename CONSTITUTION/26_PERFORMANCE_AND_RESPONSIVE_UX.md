@@ -20,7 +20,7 @@
 | Responsive · fluid · virtual | UI `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` §29~§30 계열 |
 | packages | `packages/ui/responsive/*` · `packages/sdk/device-tier.ts` |
 | PWA Lighthouse 게이트 | PWA §26 · `verify:lighthouse-pwa` |
-| Lux motion | → `28` |
+| PUTDUK motion | → `28` |
 | Copy/IA | → `22` · `25` |
 
 ## Forbidden

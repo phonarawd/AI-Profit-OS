@@ -19,12 +19,12 @@ export function PreCTA({
       data-preflight-ready={preflightToken ? "true" : "false"}
       data-skip-forbidden="true"
       aria-label={T.loop.preflightAria}
-      className={`rounded-lux-md border border-lux-border bg-lux-elevated px-3 py-2 text-sm ${className}`.trim()}
+      className={`rounded-pd-md border border-pd-border bg-pd-elevated px-3 py-2 text-sm ${className}`.trim()}
     >
       <p data-testid="precta-may-stop" data-copy-key="T.loop.mayStop">
         {T.loop.mayStop}
       </p>
-      <p className="mt-1 text-xs text-lux-text-muted">{T.loop.preflightHint}</p>
+      <p className="mt-1 text-xs text-pd-text-muted">{T.loop.preflightHint}</p>
     </aside>
   );
 }

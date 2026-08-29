@@ -75,8 +75,8 @@ if (!img.includes("product-image-fallback")) {
 if (!img.includes("Skeleton")) {
   fails.push("ProductImage loading state must use Skeleton (CLS=0)");
 }
-if (!img.includes("lux-card-image")) {
-  fails.push("ProductImage must use lux-card-image aspect token");
+if (!img.includes("pd-card-image")) {
+  fails.push("ProductImage must use pd-card-image aspect token");
 }
 
 // --- performance contract ---

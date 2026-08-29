@@ -39,7 +39,7 @@ export function AppHeader({
     <header
       data-testid="app-header"
       aria-label={T.home.header.aria}
-      className="app-header sticky top-0 z-30 grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-lux-border bg-lux-surface/95 backdrop-blur-sm"
+      className="app-header sticky top-0 z-30 grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-pd-border bg-pd-surface/95 backdrop-blur-sm"
     >
       <div className="min-w-0" />
 
@@ -47,14 +47,14 @@ export function AppHeader({
         {scan ? (
           <span
             data-testid="app-header-scan"
-            className="truncate rounded-lux-md bg-lux-accent/10 px-3 py-1.5 text-xs font-medium text-lux-accent"
+            className="truncate rounded-pd-md bg-pd-accent/10 px-3 py-1.5 text-xs font-medium text-pd-accent"
           >
             {scan}
           </span>
         ) : (
           <span
             data-testid="app-header-scan-idle"
-            className="truncate text-sm font-medium text-lux-text-muted"
+            className="truncate text-sm font-medium text-pd-text-muted"
           >
             {T.brand.consumer}
           </span>
@@ -67,7 +67,7 @@ export function AppHeader({
             href={tierHref}
             data-testid="app-header-tier"
             aria-label={T.home.header.tierAria}
-            className="touch-target rounded-lux-md border border-lux-border px-2.5 py-1 text-xs font-medium text-lux-text"
+            className="touch-target rounded-pd-md border border-pd-border px-2.5 py-1 text-xs font-medium text-pd-text"
           >
             {tier}
           </Link>
@@ -78,7 +78,7 @@ export function AppHeader({
             href={notificationHref}
             data-testid="app-header-notification"
             aria-label={T.home.header.notificationAria}
-            className="touch-target relative inline-flex h-10 w-10 items-center justify-center rounded-lux-md text-lux-text-muted hover:bg-lux-bg hover:text-lux-text"
+            className="touch-target relative inline-flex h-10 w-10 items-center justify-center rounded-pd-md text-pd-text-muted hover:bg-pd-bg hover:text-pd-text"
           >
             <svg
               aria-hidden
@@ -93,7 +93,7 @@ export function AppHeader({
             </svg>
             {notificationUnread ? (
               <span
-                className="absolute right-2 top-2 h-2 w-2 rounded-full bg-lux-accent"
+                className="absolute right-2 top-2 h-2 w-2 rounded-full bg-pd-accent"
                 aria-hidden
               />
             ) : null}
@@ -104,7 +104,7 @@ export function AppHeader({
           href={avatarHref}
           data-testid="app-header-avatar"
           aria-label={T.home.header.avatarAria}
-          className="touch-target inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-lux-border bg-lux-bg p-0.5"
+          className="touch-target inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-pd-border bg-pd-bg p-0.5"
         >
           <img
             src={avatarSrc}

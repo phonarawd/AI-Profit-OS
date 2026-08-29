@@ -33,26 +33,26 @@ export function MarketDiffDemo() {
     >
       {phase === "scan" ? <span className="acq-scan is-on" aria-hidden /> : null}
       <p className="acq-demo-label">{T.onboarding.demoLabel}</p>
-      <h2 className="mt-2 text-center text-base font-semibold text-lux-text">
+      <h2 className="mt-2 text-center text-base font-semibold text-pd-text">
         {T.onboarding.marketDiffTitle}
       </h2>
       <div className="acq-markets">
         <article className={`acq-market ${phase !== "idle" ? "is-in" : ""}`}>
-          <p className="text-xs text-lux-text-muted">{T.onboarding.marketA}</p>
+          <p className="text-xs text-pd-text-muted">{T.onboarding.marketA}</p>
           <p className="mt-1 text-lg font-semibold">120</p>
         </article>
         <article
           className={`acq-market ${phase === "shown" ? "is-in" : ""}`}
           style={{ animationDelay: "80ms" }}
         >
-          <p className="text-xs text-lux-text-muted">{T.onboarding.marketB}</p>
+          <p className="text-xs text-pd-text-muted">{T.onboarding.marketB}</p>
           <p className="mt-1 text-lg font-semibold">135</p>
         </article>
       </div>
-      <p className="mt-3 text-center text-xs text-lux-text-muted">
+      <p className="mt-3 text-center text-xs text-pd-text-muted">
         {T.onboarding.marketDiffHint}
       </p>
-      <p className="mt-1 text-center text-xs text-lux-text-muted">
+      <p className="mt-1 text-center text-xs text-pd-text-muted">
         {T.onboarding.demoNotLive}
       </p>
     </section>

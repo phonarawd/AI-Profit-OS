@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { T } from "../../copy/ko";
-import { TouchButton } from "../lux/TouchButton";
+import { TouchButton } from "../../primitives/Button";
 
 export type KycStep = "guide" | "doc" | "confirm";
 export type IdDocType = "kr_id" | "driver" | "passport";
@@ -37,7 +37,7 @@ const DOC_OPTIONS: { id: IdDocType; label: string }[] = [
 ];
 
 /**
- * Money §42 · UI §6.4d — Lux 3-step KYC (guide → doc → confirm).
+ * Money §42 · UI §6.4d — PUTDUK 3-step KYC (guide → doc → confirm).
  * Forbidden: national-id type-in · gender · public object URLs · address Day-1.
  */
 export function KycFlow({
@@ -59,6 +59,7 @@ export function KycFlow({
   const [birthDate, setBirthDate] = useState(initialBirthDate);
   const [pending, setPending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const canonId = useMemo(() => {
     if (step === "guide") return "kyc-guide";
@@ -85,6 +86,7 @@ export function KycFlow({
     e.preventDefault();
     if (pending) return;
     setPending(true);
+    setSubmitError(null);
     try {
       await onSubmit?.({
         legalName: legalName.trim(),
@@ -97,6 +99,8 @@ export function KycFlow({
         selfieFile,
       });
       setSubmitted(true);
+    } catch {
+      setSubmitError("본인 확인을 제출하지 못했어요. 다시 시도해 주세요.");
     } finally {
       setPending(false);
     }
@@ -108,13 +112,13 @@ export function KycFlow({
         data-testid="kyc-flow"
         data-canon="kyc-confirm"
         data-kyc-state="pending"
-        className={`flex flex-1 flex-col gap-4 text-lux-text ${className}`.trim()}
+        className={`flex flex-1 flex-col gap-4 text-pd-text ${className}`.trim()}
       >
         <h1 className="text-xl font-semibold">{T.kyc.pageTitle}</h1>
         <p className="text-sm" data-testid="kyc-pending-inline">
           {T.kyc.pendingInline}
         </p>
-        <p className="text-sm text-lux-text-muted">{T.kyc.submittedHint}</p>
+        <p className="text-sm text-pd-text-muted">{T.kyc.submittedHint}</p>
       </main>
     );
   }
@@ -124,20 +128,20 @@ export function KycFlow({
       data-testid="kyc-flow"
       data-canon={canonId}
       data-kyc-step={step}
-      className={`flex flex-1 flex-col gap-5 text-lux-text ${className}`.trim()}
+      className={`flex flex-1 flex-col gap-5 text-pd-text ${className}`.trim()}
     >
       {step === "guide" ? (
         <section data-canon-block="title" className="space-y-3">
           <h1 className="text-xl font-semibold" data-canon-block="title">
             {T.kyc.pageTitle}
           </h1>
-          <p className="text-sm text-lux-text-muted">{T.kyc.pageSubtitle}</p>
+          <p className="text-sm text-pd-text-muted">{T.kyc.pageSubtitle}</p>
           <p data-canon-block="why" className="text-sm">
             {T.kyc.whyOnce}
           </p>
           <p
             data-canon-block="privacy"
-            className="text-sm text-lux-text-muted"
+            className="text-sm text-pd-text-muted"
           >
             {T.kyc.storagePlain}
           </p>
@@ -159,7 +163,7 @@ export function KycFlow({
         <section className="space-y-4">
           <h1 className="text-xl font-semibold">{T.kyc.pageTitle}</h1>
           <fieldset data-canon-block="docType">
-            <legend className="mb-2 text-sm text-lux-text-muted">
+            <legend className="mb-2 text-sm text-pd-text-muted">
               {T.kyc.docType}
             </legend>
             <div
@@ -177,8 +181,8 @@ export function KycFlow({
                   data-active={docType === opt.id ? "true" : "false"}
                   className={
                     docType === opt.id
-                      ? "touch-target rounded-lux-md border border-lux-accent bg-lux-elevated px-3 text-sm text-lux-accent"
-                      : "touch-target rounded-lux-md border border-lux-border px-3 text-sm text-lux-text"
+                      ? "touch-target rounded-pd-md border border-pd-accent bg-pd-elevated px-3 text-sm text-pd-accent"
+                      : "touch-target rounded-pd-md border border-pd-border px-3 text-sm text-pd-text"
                   }
                   onClick={() => setDocType(opt.id)}
                 >
@@ -191,7 +195,7 @@ export function KycFlow({
           <div
             data-canon-block="frame"
             data-testid="kyc-capture-frame"
-            className="flex min-h-48 flex-col items-center justify-center rounded-lux-md border border-dashed border-lux-border bg-lux-elevated p-4"
+            className="flex min-h-48 flex-col items-center justify-center rounded-pd-md border border-dashed border-pd-border bg-pd-elevated p-4"
           >
             {previewUrl ? (
               <img
@@ -199,14 +203,14 @@ export function KycFlow({
                 alt={T.kyc.preview}
                 data-canon-block="preview"
                 data-testid="kyc-preview"
-                className="max-h-56 w-auto rounded-lux-sm object-contain"
+                className="max-h-56 w-auto rounded-pd-sm object-contain"
               />
             ) : (
-              <p className="text-center text-sm text-lux-text-muted">
+              <p className="text-center text-sm text-pd-text-muted">
                 {T.kyc.captureHint}
               </p>
             )}
-            <label className="mt-3 cursor-pointer text-sm text-lux-accent underline">
+            <label className="mt-3 cursor-pointer text-sm text-pd-accent underline">
               {T.kyc.capturePick}
               <input
                 type="file"
@@ -243,6 +247,11 @@ export function KycFlow({
         </section>
       ) : null}
 
+      {submitError ? (
+        <p className="text-sm text-pd-danger" role="alert" data-testid="kyc-submit-error">
+          {submitError}
+        </p>
+      ) : null}
       {step === "confirm" ? (
         <form className="space-y-4" onSubmit={handleSubmit} noValidate>
           <h1 className="text-xl font-semibold">{T.kyc.pageTitle}</h1>
@@ -252,7 +261,7 @@ export function KycFlow({
             data-canon-block="legalName"
             data-testid="kyc-field-legalName"
           >
-            <span className="text-lux-text-muted">{T.kyc.legalName}</span>
+            <span className="text-pd-text-muted">{T.kyc.legalName}</span>
             <input
               name="legalName"
               required
@@ -261,7 +270,7 @@ export function KycFlow({
               value={legalName}
               onChange={(e) => setLegalName(e.target.value)}
               autoComplete="name"
-              className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
+              className="touch-target rounded-pd-md border border-pd-border bg-pd-surface px-3 text-pd-text"
             />
           </label>
 
@@ -270,7 +279,7 @@ export function KycFlow({
             data-canon-block="phone"
             data-testid="kyc-field-phone"
           >
-            <span className="text-lux-text-muted">{T.kyc.phone}</span>
+            <span className="text-pd-text-muted">{T.kyc.phone}</span>
             <input
               name="phone"
               type="tel"
@@ -278,7 +287,7 @@ export function KycFlow({
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               autoComplete="tel"
-              className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
+              className="touch-target rounded-pd-md border border-pd-border bg-pd-surface px-3 text-pd-text"
             />
           </label>
 
@@ -287,14 +296,14 @@ export function KycFlow({
             data-canon-block="birthDate"
             data-testid="kyc-field-birthDate"
           >
-            <span className="text-lux-text-muted">{T.kyc.birthDate}</span>
+            <span className="text-pd-text-muted">{T.kyc.birthDate}</span>
             <input
               name="birthDate"
               type="date"
               required
               value={birthDate}
               onChange={(e) => setBirthDate(e.target.value)}
-              className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
+              className="touch-target rounded-pd-md border border-pd-border bg-pd-surface px-3 text-pd-text"
             />
           </label>
 
@@ -304,7 +313,7 @@ export function KycFlow({
               data-canon-block="selfie"
               data-testid="kyc-field-selfie"
             >
-              <span className="text-lux-text-muted">
+              <span className="text-pd-text-muted">
                 {T.kyc.selfieOptional}
               </span>
               <input
@@ -317,7 +326,7 @@ export function KycFlow({
                   setSelfieFileName(f?.name);
                   setSelfieFile(f);
                 }}
-                className="text-sm text-lux-text-muted"
+                className="text-sm text-pd-text-muted"
               />
             </label>
           ) : null}
@@ -335,7 +344,7 @@ export function KycFlow({
 
           <p
             data-canon-block="security"
-            className="text-xs text-lux-text-muted"
+            className="text-xs text-pd-text-muted"
           >
             {T.kyc.securityFooter}
           </p>

@@ -25,7 +25,7 @@
 
 | ID | 잠금 |
 |---|---|
-| Q1 | Theme = **Light + Purple** 출시 SSOT · Lux Dark = **legacy/archive** |
+| Q1 | Theme = **Light + Purple** 출시 SSOT · PUTDUK Dark = **legacy/archive** |
 | Q2 | 1차 = Home + Shell only (탭 라벨 IA는 셸 계약에 포함) |
 | PNG | Reference only · SSOT 아님 · 수치/카피 Truth 아님 |
 | PART9 | `HomePageClient` 등 **확장·재스킨** · 평행 홈 금지 · 데이터 계층 유지 + Experience Layer 교체 |
@@ -65,7 +65,7 @@
 | Accent | Purple (hex는 STEP3 Token) |
 | Profit | Green / positive emphasis |
 | Surface | White / light gray cards · soft elevation |
-| Legacy | Lux Dark → archive after STEP3 · Day-1 dual toggle **0** |
+| Legacy | PUTDUK Dark → archive after STEP3 · Day-1 dual toggle **0** |
 | Type | Pretendard · fontScale 3단(md/lg/xl) 유지 방향 |
 
 ---
@@ -448,7 +448,7 @@ Phase0 로컬: web 1프로세스 (`phase0-ram.mdc`) — 제품 Visual Master bas
 
 Founder가 **v1.2** 승인 시 허용 순서:
 
-1. ADR unlock (Light SSOT · Lux Dark legacy · Reference · 본 Contract pointer)  
+1. ADR unlock (Light SSOT · PUTDUK Dark legacy · Reference · 본 Contract pointer)  
 2. Canon **home wire v2** (`blocks[]` ↔ 본 문서 1:1 · empty/CTA/hero weight 블록 포함)  
 3. Design Token Light+Purple + theme mirror  
 4. Component mapping + **구현 큐** (셸→Hero→Money→Opportunity→Rail→polish)  

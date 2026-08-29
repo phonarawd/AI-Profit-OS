@@ -212,11 +212,11 @@ export default function Page() {
 
   return (
     <main
-      className="p-6 text-lux-text"
+      className="p-6 text-pd-text"
       data-testid="admin-execution-policy-page"
     >
       <h1 className="text-xl font-semibold">{T.admin.navigation.executionPolicy}</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">
+      <p className="mt-2 text-sm text-pd-text-muted">
         수익 기회를 고르는 기준과 기다리는 시간을 안전하게 조절합니다.
       </p>
 
@@ -228,22 +228,22 @@ export default function Page() {
         data-change-reason-min={CHANGE_REASON_MIN}
       >
         {!policyRes ? (
-          <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+          <p className="text-sm text-pd-text-muted">{T.admin.state.loading}</p>
         ) : !policyRes.ok ? (
           <AdminFetchNote failure={policyRes.failure} />
         ) : !payload?.policy ? (
-          <p className="text-sm text-lux-text-muted">
+          <p className="text-sm text-pd-text-muted">
             저장된 진행 기준이 없습니다.
           </p>
         ) : (
           <>
             <div
-              className="rounded border border-lux-border p-3"
+              className="rounded border border-pd-border p-3"
               data-field="matchStrictness"
               data-testid="match-strictness"
             >
               <p className="text-sm font-medium">{T.admin.matchSuccessControl}</p>
-              <p className="mt-1 text-sm text-lux-text-muted">
+              <p className="mt-1 text-sm text-pd-text-muted">
                 선택 기준을 바꾸면 최소 수익, 가격 확인 시간, 다시 찾는 횟수와
                 하루 한도가 함께 조정됩니다. 임의 확률은 사용하지 않습니다.
               </p>
@@ -256,8 +256,8 @@ export default function Page() {
                     aria-pressed={strictness === opt.value}
                     className={
                       strictness === opt.value
-                        ? "rounded border border-lux-border bg-lux-elevated px-3 py-1.5 text-sm"
-                        : "rounded border border-lux-border px-3 py-1.5 text-sm"
+                        ? "rounded border border-pd-border bg-pd-elevated px-3 py-1.5 text-sm"
+                        : "rounded border border-pd-border px-3 py-1.5 text-sm"
                     }
                     onClick={() => setStrictness(opt.value)}
                   >
@@ -266,7 +266,7 @@ export default function Page() {
                 ))}
               </div>
               <ul
-                className="mt-3 space-y-1 text-xs text-lux-text-muted"
+                className="mt-3 space-y-1 text-xs text-pd-text-muted"
                 data-map="matchStrictness-presets"
               >
                 <li data-preset="lenient">
@@ -335,11 +335,11 @@ export default function Page() {
             </div>
 
             {strictness === "custom" ? (
-              <div className="grid max-w-xl gap-3 rounded border border-lux-border p-3 text-sm">
+              <div className="grid max-w-xl gap-3 rounded border border-pd-border p-3 text-sm">
                 <label>
                   최소 수익 (테더)
                   <input
-                    className="mt-1 w-full rounded border border-lux-border bg-transparent px-3 py-2"
+                    className="mt-1 w-full rounded border border-pd-border bg-transparent px-3 py-2"
                     value={minProfitUsdt}
                     onChange={(e) => setMinProfitUsdt(e.target.value)}
                     inputMode="decimal"
@@ -348,7 +348,7 @@ export default function Page() {
                 <label>
                   가격이 바뀌어도 허용할 시간 (초)
                   <input
-                    className="mt-1 w-full rounded border border-lux-border bg-transparent px-3 py-2"
+                    className="mt-1 w-full rounded border border-pd-border bg-transparent px-3 py-2"
                     value={staleAllowanceSec}
                     onChange={(e) => setStaleAllowanceSec(e.target.value)}
                     inputMode="numeric"
@@ -357,7 +357,7 @@ export default function Page() {
                 <label>
                   다시 찾는 횟수
                   <input
-                    className="mt-1 w-full rounded border border-lux-border bg-transparent px-3 py-2"
+                    className="mt-1 w-full rounded border border-pd-border bg-transparent px-3 py-2"
                     value={maxRematchCount}
                     onChange={(e) => setMaxRematchCount(e.target.value)}
                     inputMode="numeric"
@@ -366,7 +366,7 @@ export default function Page() {
                 <label>
                   허용할 가격 차이 (0.01% 단위)
                   <input
-                    className="mt-1 w-full rounded border border-lux-border bg-transparent px-3 py-2"
+                    className="mt-1 w-full rounded border border-pd-border bg-transparent px-3 py-2"
                     value={slippageBoundBps}
                     onChange={(e) => setSlippageBoundBps(e.target.value)}
                     inputMode="numeric"
@@ -375,7 +375,7 @@ export default function Page() {
                 <label>
                   회원 한 명의 하루 진행 한도
                   <input
-                    className="mt-1 w-full rounded border border-lux-border bg-transparent px-3 py-2"
+                    className="mt-1 w-full rounded border border-pd-border bg-transparent px-3 py-2"
                     value={dailyUserMatchCap}
                     onChange={(e) => setDailyUserMatchCap(e.target.value)}
                     inputMode="numeric"
@@ -384,7 +384,7 @@ export default function Page() {
                 <label>
                   하루에 보여 줄 기본 기회 수
                   <input
-                    className="mt-1 w-full rounded border border-lux-border bg-transparent px-3 py-2"
+                    className="mt-1 w-full rounded border border-pd-border bg-transparent px-3 py-2"
                     value={dailyOppSlotsDefault}
                     onChange={(e) => setDailyOppSlotsDefault(e.target.value)}
                     inputMode="numeric"
@@ -394,14 +394,14 @@ export default function Page() {
             ) : null}
 
             <div
-              className="rounded border border-lux-border p-3 text-sm"
+              className="rounded border border-pd-border p-3 text-sm"
               data-lock="soft-hard"
               data-soft-sec="60"
               data-hard-sec="90"
               data-membership-uniform="true"
             >
               <p className="font-medium">기다리는 시간 (모든 회원에게 동일)</p>
-              <p className="mt-1 text-lux-text-muted">
+              <p className="mt-1 text-pd-text-muted">
                 안내 후 다시 찾기 <AdminTruth value={readText(payload.softHard?.softSec)} />초
                 · 전체 종료 <AdminTruth value={readText(payload.softHard?.hardSec)} />
                 초 · 회원 등급에 따라 달라지지 않습니다.
@@ -410,7 +410,7 @@ export default function Page() {
 
             <label className="block text-sm" data-field="feed.nearMissCapUsdt">
               <span className="font-medium">{T.admin.nearMissCapUsdt}</span>
-              <span className="mt-1 block text-lux-text-muted">
+              <span className="mt-1 block text-pd-text-muted">
                 예상 수익이 이 금액까지 부족하면 아쉽게 놓친 기회로 분류합니다.
                 기본값은 50테더와 원금의 25% 중 큰 금액입니다.
               </span>
@@ -419,14 +419,14 @@ export default function Page() {
                 inputMode="decimal"
                 name="feed.nearMissCapUsdt"
                 data-testid="near-miss-cap-usdt"
-                className="mt-2 w-full max-w-xs rounded border border-lux-border bg-transparent px-3 py-2"
+                className="mt-2 w-full max-w-xs rounded border border-pd-border bg-transparent px-3 py-2"
                 value={nearMissCap}
                 onChange={(e) => setNearMissCap(e.target.value)}
                 placeholder=""
               />
             </label>
             <p
-              className="text-sm text-lux-text-muted"
+              className="text-sm text-pd-text-muted"
               data-lock="nearMissCap-owns"
               data-owns="execution-policy"
             >
@@ -440,20 +440,20 @@ export default function Page() {
               id="execution-policy-reason"
               value={changeReason}
               onChange={(e) => setChangeReason(e.target.value)}
-              className="w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+              className="w-full max-w-md rounded border border-pd-border bg-pd-bg px-2 py-1 text-sm"
             />
             <button
               type="button"
-              className="rounded bg-lux-elevated px-3 py-1.5 text-sm"
+              className="rounded bg-pd-elevated px-3 py-1.5 text-sm"
               disabled={saving}
               onClick={() => void savePolicy()}
             >
               {T.admin.savePolicy}
             </button>
             {actionNote ? (
-              <p className="text-sm text-lux-text-muted" role="status">{actionNote}</p>
+              <p className="text-sm text-pd-text-muted" role="status">{actionNote}</p>
             ) : null}
-            <p className="text-xs text-lux-text-muted">
+            <p className="text-xs text-pd-text-muted">
               마지막으로 바꾼 시각{" "}
               <AdminTruth value={readText(policy?.updatedAt)} />
             </p>
@@ -461,20 +461,20 @@ export default function Page() {
         )}
 
         <div
-          className="rounded border border-lux-border p-3"
+          className="rounded border border-pd-border p-3"
           data-kpi="observedSuccessRate"
           data-readonly="true"
         >
           <p className="text-sm font-medium">{T.admin.observedSuccessRate}</p>
-          <p className="mt-1 text-sm text-lux-text-muted">
+          <p className="mt-1 text-sm text-pd-text-muted">
             자동 목표값으로 바꾸지 않고, 실제로 끝난 건의 결과만 보여 줍니다.
           </p>
           {!statsRes ? (
-            <p className="mt-2 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="mt-2 text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !statsRes.ok ? (
             <AdminFetchNote failure={statsRes.failure} />
           ) : noObservedToday ? (
-            <p className="mt-2 text-sm text-lux-text-muted">
+            <p className="mt-2 text-sm text-pd-text-muted">
               오늘 끝난 진행이 없습니다.
             </p>
           ) : (
@@ -502,7 +502,7 @@ export default function Page() {
         </div>
 
         <p
-          className="text-sm text-lux-text-muted"
+          className="text-sm text-pd-text-muted"
           data-forbid="successRatePercent"
         >
           임의 확률이나 목표 성공률은 사용하지 않습니다.

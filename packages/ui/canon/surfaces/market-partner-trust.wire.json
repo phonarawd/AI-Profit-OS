@@ -50,7 +50,7 @@
       "copyKeySub": "T.trust.partners.stripSub",
       "tierFilter": "A",
       "minLogos": 4,
-      "note": "홈 Hero 아래 · 랜딩 3s · 온보딩 DEMO · Lux monochrome · G4 ticker 슬롯 분리",
+      "note": "홈 Hero 아래 · 랜딩 3s · 온보딩 DEMO · PUTDUK monochrome · G4 ticker 슬롯 분리",
       "surfaces": ["/", "/l/[variant]", "/onboarding"]
     },
     {

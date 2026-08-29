@@ -74,11 +74,11 @@ export function ToastHost({ children }: { children: ReactNode }) {
           aria-live="polite"
           className="fixed inset-x-0 bottom-20 z-50 mx-auto max-w-md px-4 md:bottom-6"
         >
-          <div className="rounded-lux-md border border-lux-border bg-lux-elevated px-4 py-3 text-sm text-lux-text shadow-lg">
+          <div className="rounded-pd-md border border-pd-border bg-pd-elevated px-4 py-3 text-sm text-pd-text shadow-lg">
             <p>{current.message}</p>
             <button
               type="button"
-              className="mt-2 text-xs text-lux-text-muted underline"
+              className="mt-2 text-xs text-pd-text-muted underline"
               onClick={dismiss}
             >
               {T.common.close}

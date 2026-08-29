@@ -3,7 +3,7 @@ import "./globals.css";
 import "./pwa-shell.css";
 import { ToastHost } from "@aipo/ui/components/toast";
 import { DeviceTierApply } from "../components/DeviceTierApply";
-import { ConsumerSparkRoot } from "../components/spark-shell/ConsumerSparkRoot";
+import { ConsumerAppShell } from "@aipo/ui/shell/ConsumerAppShell";
 import { PwaRuntime } from "../components/pwa/PwaRuntime";
 import { ObsRuntime } from "../components/observability/ObsRuntime";
 
@@ -47,11 +47,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
         <link rel="preload" href={PRETENDARD_CSS} as="style" />
       </head>
-      <body className="min-h-dvh bg-lux-bg text-lux-text">
+      <body className="min-h-dvh bg-pd-bg text-pd-text">
         <DeviceTierApply />
-        <ConsumerSparkRoot>
+        <ConsumerAppShell>
           <ToastHost>{children}</ToastHost>
-        </ConsumerSparkRoot>
+        </ConsumerAppShell>
         <PwaRuntime />
         <ObsRuntime />
       </body>

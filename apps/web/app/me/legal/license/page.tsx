@@ -41,33 +41,33 @@ export default function Page() {
     <AccountFrame title={L.pageTitle} view="ready" testId="legal-license" hideTitle>
     <main className={styles.surface}>
       <h1 className="text-xl font-semibold">{L.pageTitle}</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">
+      <p className="mt-2 text-sm text-pd-text-muted">
         {L.pageSubtitle}
       </p>
-      <p className="mt-4 rounded-lg border border-lux-border bg-lux-surface p-3 text-xs leading-relaxed text-lux-text-muted">
+      <p className="mt-4 rounded-lg border border-pd-border bg-pd-surface p-3 text-xs leading-relaxed text-pd-text-muted">
         {L.disclaimer}
       </p>
 
-      <section className="mt-6 space-y-4 rounded-xl border border-lux-border bg-lux-surface p-4">
+      <section className="mt-6 space-y-4 rounded-xl border border-pd-border bg-pd-surface p-4">
         <dl className="grid gap-3 text-sm">
           <div>
-            <dt className="text-lux-text-muted">{L.fields.legalName}</dt>
+            <dt className="text-pd-text-muted">{L.fields.legalName}</dt>
             <dd className="mt-1 font-semibold">{entity.legalName}</dd>
           </div>
           <div>
-            <dt className="text-lux-text-muted">{L.fields.legalForm}</dt>
+            <dt className="text-pd-text-muted">{L.fields.legalForm}</dt>
             <dd className="mt-1">{entity.legalForm}</dd>
           </div>
           <div>
-            <dt className="text-lux-text-muted">{L.fields.licenseNumber}</dt>
+            <dt className="text-pd-text-muted">{L.fields.licenseNumber}</dt>
             <dd className="mt-1 font-semibold tracking-wide">{entity.licenseNumber}</dd>
           </div>
           <div>
-            <dt className="text-lux-text-muted">{L.fields.issuingAuthority}</dt>
+            <dt className="text-pd-text-muted">{L.fields.issuingAuthority}</dt>
             <dd className="mt-1">{entity.issuingAuthority}</dd>
           </div>
           <div>
-            <dt className="text-lux-text-muted">{L.fields.licenseStatus}</dt>
+            <dt className="text-pd-text-muted">{L.fields.licenseStatus}</dt>
             <dd className="mt-1">
               <span className={styles.statusBadge}>
                 {statusLabel}
@@ -75,29 +75,29 @@ export default function Page() {
             </dd>
           </div>
           <div>
-            <dt className="text-lux-text-muted">{L.fields.primaryActivity}</dt>
+            <dt className="text-pd-text-muted">{L.fields.primaryActivity}</dt>
             <dd className="mt-1">
               {entity.primaryActivityKo}
-              <span className="mt-1 block text-xs text-lux-text-muted">
+              <span className="mt-1 block text-xs text-pd-text-muted">
                 {entity.primaryActivityEn}
               </span>
             </dd>
           </div>
           {entity.tradingBrand ? (
             <div>
-              <dt className="text-lux-text-muted">{L.fields.tradingBrand}</dt>
+              <dt className="text-pd-text-muted">{L.fields.tradingBrand}</dt>
               <dd className="mt-1">{entity.tradingBrand}</dd>
             </div>
           ) : null}
           {entity.relatedWebsite ? (
             <div>
-              <dt className="text-lux-text-muted">{L.fields.relatedWebsite}</dt>
+              <dt className="text-pd-text-muted">{L.fields.relatedWebsite}</dt>
               <dd className="mt-1">
                 <a
                   href={entity.relatedWebsite}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-lux-accent underline"
+                  className="text-pd-accent underline"
                 >
                   {entity.relatedWebsite.replace(/^https?:\/\//, "")}
                 </a>
@@ -113,10 +113,10 @@ export default function Page() {
           {entity.licensedActivities.map((item) => (
             <li
               key={item.activityEn}
-              className="rounded-lg border border-lux-border bg-lux-surface p-3 text-sm"
+              className="rounded-lg border border-pd-border bg-pd-surface p-3 text-sm"
             >
               <p>{item.activityKo}</p>
-              <p className="mt-1 text-xs text-lux-text-muted">
+              <p className="mt-1 text-xs text-pd-text-muted">
                 {item.activityEn}
               </p>
             </li>
@@ -130,9 +130,9 @@ export default function Page() {
           {entity.addresses.map((address) => (
             <div
               key={address.label}
-              className="rounded-lg border border-lux-border bg-lux-surface p-3 text-sm"
+              className="rounded-lg border border-pd-border bg-pd-surface p-3 text-sm"
             >
-              <p className="text-xs font-semibold uppercase tracking-wide text-lux-text-muted">
+              <p className="text-xs font-semibold uppercase tracking-wide text-pd-text-muted">
                 {address.label}
               </p>
               <p className="mt-2 leading-relaxed">
@@ -154,7 +154,7 @@ export default function Page() {
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-lux-accent underline"
+                className="text-pd-accent underline"
               >
                 {item.label}
               </a>
@@ -168,13 +168,13 @@ export default function Page() {
           href="/kyb/trade-license-1135431.html"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center rounded-lg border border-lux-border px-4 py-3 text-sm font-medium"
+          className="inline-flex items-center justify-center rounded-lg border border-pd-border px-4 py-3 text-sm font-medium"
         >
           {L.printLink}
         </a>
         <Link
           href="/me/legal"
-          className="text-center text-sm text-lux-accent underline"
+          className="text-center text-sm text-pd-accent underline"
         >
           {L.backToLegal}
         </Link>

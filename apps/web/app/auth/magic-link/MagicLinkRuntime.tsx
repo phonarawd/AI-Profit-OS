@@ -40,13 +40,13 @@ export function MagicLinkRuntime() {
       className="flex flex-1 flex-col items-center justify-center gap-4 text-center"
       data-testid="auth-magic-link-verify"
     >
-      <h1 className="text-xl font-semibold text-lux-text">로그인 확인</h1>
-      <p className="text-sm text-lux-text-muted" role="status">
+      <h1 className="text-xl font-semibold text-pd-text">로그인 확인</h1>
+      <p className="text-sm text-pd-text-muted" role="status">
         {message}
       </p>
       <a
         href="/auth/login"
-        className="text-sm text-lux-principal underline-offset-2 hover:underline"
+        className="text-sm text-pd-principal underline-offset-2 hover:underline"
       >
         로그인 화면으로
       </a>

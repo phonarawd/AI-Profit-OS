@@ -78,7 +78,7 @@ SUPERSEDED_BY = PUTDUK_RELEASE_MASTER.plan.md
 > **정산 SSOT:** **§48.13 + §51.2** MATCH_SUCCESS Rule Engine (난수·연출타이머 금지)  
 > **잔액·출금 SSOT:** **§49** 원금 유지 · 수익 출금 기본 · 버킷 원장  
 > **화면 언어 SSOT:** **§50 + §27** — 유저·어드민 **쉬운 한글만** · 테스트/개발/IT/문서 용어 **화면 노출 0** · 유저 토스트 **한글+이모지**  
-> **설정·약관 SSOT:** **§50** Lux다크 고정 · 글자크기 · 약관/개인정보/오픈소스/라이선스 대본  
+> **설정·약관 SSOT:** **§50** PUTDUK다크 고정 · 글자크기 · 약관/개인정보/오픈소스/라이선스 대본  
 > **운영사·사업자 SSOT:** **§50.9** PRE-OWNED WATCHES L.L.C · DET **1135431** · 푸터·약관·JSON-LD 단일 schema  
 > **브랜드 3층 SSOT:** **§51.1 ADR-002** Platform=AI Profit OS · Consumer app=**퍼뜩** · AI=**퍼뜩** · Legal=§50.9 · retired=`오늘수익`·`바로번다`  
 > **DB SSOT:** **§51.1 ADR-001** PostgreSQL **단일 인스턴스**(Supabase-managed 권장) · 이중 Postgres SoT **금지**  
@@ -326,7 +326,7 @@ expectedProfitUsdt  = grossSpreadUsdt − costBufferUsdt − platformMarginUsdt
 | 앱 카드 "수익 확정" | **금지** · "예상 수익" SSOT |
 | Product Identity 미주장 | **헌법 잠금 유지** (§1) · G1~G2 copy surface 예외 |
 | fake JSON-LD 별점 | **금지** · real reviews only |
-| 카지노 sfx / 슬롯 metaphor | **금지** · Lux chime only |
+| 카지노 sfx / 슬롯 metaphor | **금지** · PUTDUK chime only |
 
 ### §35 Growth Conversion (G1~G4 — Admin ON)
 
@@ -363,7 +363,7 @@ expectedProfitUsdt  = grossSpreadUsdt − costBufferUsdt − platformMarginUsdt
 | **반응형·성능** | 320px~4K fluid CSS + Device S/A/B tier + 60fps **목표** |
 | **어드민 TOP5** | 원클릭 검수·마진·사기방지·돈줄·긴급정지 |
 | **마케팅·SEO** | 매체별 랜딩·Server CAPI·UTM→입금·IndexNow |
-| **Lux-Fintech** | Deep Obsidian · Tier Motion · G4 ticker/counter |
+| **PUTDUK-Fintech** | Deep Obsidian · Tier Motion · G4 ticker/counter |
 | **신뢰 교육** | **§38** — USDT 입금 납득 · 원화 비교 · **플랫폼 수익 투명** · 20~70대 ko |
 | **어드민 Ops** | **§40** 분리 배포 · RBAC · **§39** 유저별 금융 전수 |
 | **USDT 온체인** | **§41+§43** 유저별 TRC20 · **이벤트 스트림** · 1conf UI/19conf ledger · sweeper · **폴링 폐지** |
@@ -380,7 +380,7 @@ expectedProfitUsdt  = grossSpreadUsdt − costBufferUsdt − platformMarginUsdt
 | **v7.22.1 drift 흡수** | **ADR-006/007** — 원화 `payableAmountKrw` · PRICE_STALE=§43 soft match · CTA · 온보딩≤15초 · tier/WS · manifest · Auth · orchestrate≠실체결 |
 | **v7.22.2 스펙 완성 흡수** | **ADR-008~010** — 수수료·FX·platform_reserve · v1 orchestrate-only · ROOT_DOMAIN · 출금수수료·minHolding · Resend·R2 KYC · TRX stake · KRW CSV Day-1 · 승률정의 · 내정보3면 · Phase0 in-process · next@15 · DET verifiedAt-only · 2인Confirm필수 · §21 라벨교정 |
 | **v7.22.3 성장·공지·브랜드 흡수** | **ADR-011/012** — notice≠campaign · Viral Ladder L1/L2/L3 · clawback·시즌·공유카드 · Brand Kit `packages/ui/brand` · Admin growth 자식탭(보류큐) · R*/N*/B* 전수 · toast REFERRAL_*/CAMPAIGN_* · deep link/CAPI · verify:* 전수 |
-| **v7.22.4 목업 거버넌스 흡수** | **ADR-013** — 사진목업=intent archive only · 시각복제 금지 · Canon=Lux+Brand+컴포넌트+구조와이어 · 충돌시 코드/토큰>플랜>Canon>사진 · `verify:mockup-governance` · Cursor rule alwaysApply |
+| **v7.22.4 목업 거버넌스 흡수** | **ADR-013** — 사진목업=intent archive only · 시각복제 금지 · Canon=PUTDUK+Brand+컴포넌트+구조와이어 · 충돌시 코드/토큰>플랜>Canon>사진 · `verify:mockup-governance` · Cursor rule alwaysApply |
 | **v7.22.5 Cursor·PG사0 흡수** | **ADR-014** — Cursor=집행기·스택 재설계 금지 · Phase0=NATS0 · next@15/Nest/Rust/단일Postgres/CF only · **PG사(결제대행)0 확정** · 용어 Postgres≠PG사 · `stack-lock.mdc`+`AGENTS.md` · `verify:pg-module-scan`·`verify:stack-lock` |
 | **v7.22.6 그린필드 툴체인 흡수** | **ADR-015** — next@16 · Tailwind v4 · pnpm@10.14 · Node22 · rust-toolchain · Compose/원격 DB · `TOOLCHAIN.md` · `verify:stack-lock` |
 | **v7.22.7 소비자 브랜드 개정** | **ADR-002** Consumer=**퍼뜩** (구 `오늘수익`·`바로번다` 폐기) · Platform=AI Profit OS · Legal=§50.9 불변 · Brand Kit SSOT |
@@ -403,7 +403,7 @@ expectedProfitUsdt  = grossSpreadUsdt − costBufferUsdt − platformMarginUsdt
 | Admin 원클릭 TOP5 | 9.3 |
 | Marketing Attribution | 9.0 (consent-first CAPI) |
 | SEO / Organic | 8.5 |
-| Lux-Fintech Motion | 9.0 (tier + reduced-motion) |
+| PUTDUK-Fintech Motion | 9.0 (tier + reduced-motion) |
 | 초기 실행 가능성 | 8.5+ ($0 bootstrap) |
 | 규제/금융 리스크 | 8.5+ |
 
@@ -447,7 +447,7 @@ expectedProfitUsdt  = grossSpreadUsdt − costBufferUsdt − platformMarginUsdt
 - `25` — ko copy·금지어
 - `26` — performance·device tier 수치
 - `27` — marketing·SEO
-- `28` — Lux-Fintech visual·motion (**G4 ticker/counter · §35**)
+- `28` — PUTDUK-Fintech visual·motion (**G4 ticker/counter · §35**)
 
 ---
 
@@ -702,10 +702,10 @@ sequenceDiagram
 - **좌측 사이드바:** 동일 5메뉴 (순서·라벨·route 동일)
 - **우측 메인:** 카드 3~4열 그리드, 홈=추천+피드+지급현황
 
-### 5.3 홈 `/` — Lux 레이아웃 (5탭·IA 불변)
+### 5.3 홈 `/` — PUTDUK 레이아웃 (5탭·IA 불변)
 
 ```
-🏠 홈 (Lux Dark)
+🏠 홈 (PUTDUK Dark)
  ├─ [A] LivePayoutTicker     `ticker_mode` §35 G4 (off/live/demo/hybrid)
  ├─ [B] 내 USDT 잔액 (대형) + ≈원화
  ├─ [C] 🔥 오늘 추천 Hero     카운트다운 (engine staleAt · G4 boost)
@@ -738,7 +738,7 @@ sequenceDiagram
 
 → 알림: "당신 전략에 맞는 기회 3건"
 
-### 5.5 내거래 `/trades` — Lux Receipt
+### 5.5 내거래 `/trades` — PUTDUK Receipt
 
 ```
 💼 내거래
@@ -963,10 +963,10 @@ sequenceDiagram
 6. 📦 **상품명** (작게, 하단)
 7. 📎 **마진 footnote** (§38 — "포함 운영 수수료", 작게)
 
-### 6.2 Lux-Fintech 색상 · 타이포 · 반응형 SSOT
+### 6.2 PUTDUK-Fintech 색상 · 타이포 · 반응형 SSOT
 
-> **테마:** User App = **Lux Dark default** · Admin = **Ops Light default** (가독성)  
-> **SSOT:** `packages/ui/tokens/lux-fintech.ts` + `CONSTITUTION/28`
+> **테마:** User App = **PUTDUK Dark default** · Admin = **Ops Light default** (가독성)  
+> **SSOT:** `packages/ui/tokens/putduk.ts` + `CONSTITUTION/28`
 
 | 역할 | token | hex | 용도 |
 |------|-------|-----|------|
@@ -1556,7 +1556,7 @@ GET /admin/api/v1/users/:id/finance/export.csv?type=all|deposits|withdrawals|pro
 | B2 | 런타임 AI 아이콘 | 금지 · manifest만 | web |
 | B3 | 타사/Chrono24 로고 | CI 금지어·에셋 스캔 | ci |
 | B4 | wordmark drift (퍼뜩≠코드) | ADR-002 + brand manifest | marketing |
-| B5 | splash/manifest 색 불일치 | lux tokens + `#090A10` | pwa |
+| B5 | splash/manifest 색 불일치 | pd tokens + `#090A10` | pwa |
 | M2 | UTM injection / steal | signed attribution cookie + server validate | marketing-attribution |
 | M3 | Fake JSON-LD ratings | verify:seo-schema — no aggregateRating without source |
 | M4 | Consent-less CAPI | consent log required before dispatch | marketing + compliance |
@@ -1869,8 +1869,8 @@ AI_PROFIT_OS
 
 ### 선행 순서
 1. CONSTITUTION 28 + ADR
-2. schemas + manifest + **lux-fintech tokens**
-3. packages/ui (**lux components** + responsive + copy/ko)
+2. schemas + manifest + **pd-fintech tokens**
+3. packages/ui (**pd components** + responsive + copy/ko)
 4. packages/ui/copy/ko + useCopy + ESLint
 5. M0.5 simulation (**§51.4** — Growth ON 전 필수)
 6. Money Core
@@ -1884,7 +1884,7 @@ AI_PROFIT_OS
 
 | MS | 내용 |
 |----|------|
-| M0 | Constitution 28 + Lux tokens + monorepo |
+| M0 | Constitution 28 + PUTDUK tokens + monorepo |
 | M0.5 | Simulation pass |
 | M1 | Ledger + wallet + **§41 TronGrid·유저별 TRC20·원화 대기승인** + withdraw |
 | M2 | Engine + adapters + **§36 pricing** + 홈/수익 실시간 피드 |
@@ -1949,7 +1949,7 @@ AI_PROFIT_OS
 - [ ] **§42:** participate without KYC **200**
 - [ ] **§37:** freeze/ban → login·거래·출금 block E2E
 - [ ] 전역 마진 저장 → bulk recalc + SSE fanout
-- [ ] **verify:lux-tokens + verify:ticker-mode-audit PASS**
+- [ ] **verify:pd-tokens + verify:ticker-mode-audit PASS**
 - [ ] verify:marketing-compliance PASS
 - [ ] **UTM→first_deposit attribution E2E**
 - [ ] **CAPI consent-before-send 100%**
@@ -2047,7 +2047,7 @@ Rust Engine, NestJS, NATS, PostgreSQL Ledger, Temporal, AI L1/L2, Cloudflare, OT
 - **CONSTITUTION 25 + ko copy**
 - **CONSTITUTION 26 + fluid CSS + device tier + TanStack Virtual**
 - **Admin TOP5 + TOP6 광고 성과 위젯**
-- **CONSTITUTION 28 + Lux components + tier motion**
+- **CONSTITUTION 28 + PUTDUK components + tier motion**
 - **CONSTITUTION 48 + AI 진행실/성공/안전중단/Admin 진행정책 (§48)**
 - **CONSTITUTION 49 + 원금유지·수익출금·버킷원장·P/E방어 (§49)**
 - **CONSTITUTION 50 + 설정·약관대본·쉬운한글·토스트이모지 (§50)**
@@ -2068,7 +2068,7 @@ Rust Engine, NestJS, NATS, PostgreSQL Ledger, Temporal, AI L1/L2, Cloudflare, OT
 - **단일 balance 필드만으로 출금 분기** (버킷 무시)
 - **원금 출금 시 수익 몰수**
 - 유저·어드민 화면 **테스트/개발/IT/문서 용어** (API, Staging, DLQ, JSON, Mock, Beta…)
-- v1 **다크/밝은/시스템 테마 토글** (Lux 다크 고정 · §50.1)
+- v1 **다크/밝은/시스템 테마 토글** (PUTDUK 다크 고정 · §50.1)
 - 유저 토스트 **이모지 0개** 또는 **3개 이상** / 영어 문장
 - 약관·안내에 **투자 원금 보장·확정 수익** 허위 문구
 - **전역 user-select:none** (입금주소·거래ID 복사 불가 = 결함)
@@ -2087,7 +2087,7 @@ Rust Engine, NestJS, NATS, PostgreSQL Ledger, Temporal, AI L1/L2, Cloudflare, OT
 - **FinancialProduct 허위 스키마** (투자상품 오인 유발)
 - **IndexNow = 상위노출 보장** 주장 (크롤 알림만)
 - **"3초 차익 수령" / 수익 확정 CTA** (앱 카드·정산 UI)
-- **User App white background default** (Lux Dark SSOT)
+- **User App white background default** (PUTDUK Dark SSOT)
 - **규제·법무 추가 절·Legal Sign-off·KR 규제 전용 절·Growth 법무 2단·Whale AML EDD 전용 스펙을 제품 플랜 잔여과제로 재도입** (§51 ADR-005 — 영구 배제 · 에이전트 언급 금지)
 
 **§35 Admin (기본 OFF):** G1~G4 — fake ticker · demo counter · 연혁 · 입금 FOMO · whale
@@ -2315,10 +2315,10 @@ services/marketing-attribution/
 
 ---
 
-## 33. Lux-Fintech Design · Motion · FOMO (v7 신규)
+## 33. PUTDUK-Fintech Design · Motion · FOMO (v7 신규)
 
 > **SSOT:** `CONSTITUTION/28_LUX_FINTECH_DESIGN_AND_MOTION.md`  
-> **토큰:** `packages/ui/tokens/lux-fintech.ts` + `tailwind.preset.lux.ts`  
+> **토큰:** `packages/ui/tokens/putduk.ts` + `tailwind.preset.pd.ts`  
 > **성능 tier 수치:** §29/26 SSOT (여기서 재정의 ❌)
 
 ### 33.0 피드백 검토 — 동의 vs 수정 (오차0)
@@ -2337,19 +2337,19 @@ services/marketing-attribution/
 | Market Radar ping | ✅ 동의 | `/profits?view=radar` |
 | Receipt print + TronScan | ✅ 동의 | `ReceiptCard` |
 | **Live 익명 지급 ticker** | ✅ **G4 Admin** | `ticker_mode`: off / live / demo / hybrid |
-| **카지노 칩 사운드** | ❌ **금지** | **Lux chime** (§23.7) |
+| **카지노 칩 사운드** | ❌ **금지** | **PUTDUK chime** (§23.7) |
 | **카지노 슬롯 Count-Up 톤** | ⚠️ **수정** | fintech count-up · slot metaphor ❌ |
 | **폭죽 Confetti 3중** | ⚠️ **수정** | tier S/A: light burst · B: flash only · reduced-motion: none |
 | **"3초 차익 수령" CTA** | ❌ **금지** | ko SSOT **"이 상품으로 수익 벌기"** (sticky 단축 **"수익 벌기"**) |
-| **고급 카지노 심리 연출** | ❌ **금지** | **명품관 Lux-Fintech** reframe |
+| **고급 카지노 심리 연출** | ❌ **금지** | **명품관 PUTDUK-Fintech** reframe |
 | **CONSTITUTION 23** | ❌ **충돌** | **`28`** (23=PWA) |
 | DopamineButton name | ⚠️ **rename** | **`MotionCTA`** (카지노 연상 ↓) |
 
 ### 33.1 Visual Identity Lock (중복0)
 
 ```typescript
-// packages/ui/tokens/lux-fintech.ts — SSOT
-export const luxFintech = {
+// packages/ui/tokens/putduk.ts — SSOT
+export const putdukTokens = {
   bgObsidian: '#090A10',
   surfaceElevated: '#12131A',
   profitEmerald: '#00FF87',
@@ -2362,7 +2362,7 @@ export const luxFintech = {
 ```
 
 **테마 적용:**
-- `apps/web` → `class="theme-lux-dark"` on `<html>`
+- `apps/web` → `class="theme-pd-dark"` on `<html>`
 - `apps/admin` → `theme-ops-light` (운영 가독성, §9)
 
 ### 33.2 도파민 · FOMO 4대 모션 (G4 Admin-configurable)
@@ -2372,7 +2372,7 @@ export const luxFintech = {
 | 1 | **Count-Up** | `CountUpNumber` | **ledger only** (settlement.completed) |
 | 2 | **Live Ticker** | `LivePayoutTicker` | live=SSE · demo=Admin queue · hybrid=blend |
 | 3 | **Pulse CTA** | `MotionCTA` | CSS `@keyframes pulse-glow` |
-| 4 | **Tri-Sensation** | `MotionCTA` + `feedback.ts` | vibrate + lux chime + tier particle |
+| 4 | **Tri-Sensation** | `MotionCTA` + `feedback.ts` | vibrate + pd chime + tier particle |
 
 **LivePayoutTicker ko 예:**
 > live: "방금 ○○○님이 +420,000원 정산" (`settlement_id`)  
@@ -2399,7 +2399,7 @@ export const luxFintech = {
 ### 33.4 핵심 컴포넌트 SSOT
 
 ```
-packages/ui/components/lux/
+packages/ui/components/pd/
 ├── CountUpNumber.tsx       # requestAnimationFrame, tier duration
 ├── LivePayoutTicker.tsx    # Virtual scroll · ticker_mode §35 G4
 ├── MotionCTA.tsx           # Pulse + onSuccess feedback hook
@@ -2427,7 +2427,7 @@ interface HomePayoutCounterProps {
 ### 33.5 Tailwind / Animation Tokens
 
 ```typescript
-// tailwind.preset.lux.ts
+// tailwind.preset.pd.ts
 extend: {
   colors: { obsidian: '#090A10', profit: '#00FF87', ... },
   keyframes: {
@@ -2440,7 +2440,7 @@ extend: {
 }
 ```
 
-### 33.6 Lux UX Abuse · 오류
+### 33.6 PUTDUK UX Abuse · 오류
 
 | # | 시나리오 | 방어 |
 |---|----------|------|
@@ -2453,7 +2453,7 @@ extend: {
 
 ### 33.7 CI Gates (§34)
 
-- `verify:lux-tokens` — no hardcoded hex outside lux-fintech.ts
+- `verify:pd-tokens` — no hardcoded hex outside pd-fintech.ts
 - `verify:ticker-mode-audit` — demo/hybrid modes emit audit events
 - `verify:motion-tier` — B-tier screenshot: no backdrop-filter
 - `verify:cta-copy` — no "차익 수령"/"수익 확정" in **앱 카드·진행 중** (성공 화면 `확정 지급` 배지만 §48 허용)
@@ -2469,7 +2469,7 @@ extend: {
 
 | 순위 | SSOT | 용도 |
 |------|------|------|
-| 1 | `packages/ui/tokens` · Lux · Brand Kit | 색·타입·로고·아이콘·간격 토큰 |
+| 1 | `packages/ui/tokens` · PUTDUK · Brand Kit | 색·타입·로고·아이콘·간격 토큰 |
 | 2 | `packages/ui` 컴포넌트 · 5탭 IA · §8 toast · copy/ko | 재사용 UI·카피 |
 | 3 | 본 플랜 절(§5/§7/§48…) + Canon wire | 화면 위계·필수 블록·CTA |
 | 4 | `docs/mockups/_archive/**` 사진 목업 | **intent only** · 시각 무시 |
@@ -2481,7 +2481,7 @@ extend: {
 에이전트/구현이 사진에서 **절대 가져오면 안 되는 것:**
 
 - 로고·워드마크·파비콘·스플래시 (→ Brand Kit만)
-- 색 헥스·그라데이션·그림자·블러 (→ Lux tokens)
+- 색 헥스·그라데이션·그림자·블러 (→ PUTDUK tokens)
 - 폰트 패밀리·크기 px (→ fluid type tokens)
 - 여백·카드 radius·아이콘 세트 (→ spacing/radius/icon SSOT)
 - 잘못된 하단 탭·영문 헤더·타사 마크·난수 성공률 UI
@@ -2524,7 +2524,7 @@ docs/mockups/_archive/          # 기존 PNG — README: INTENT ONLY · DO NOT P
 #### 33.8.5 에이전트 운영 규칙 (중복0)
 
 1. UI 작업 시 **사진 목업을 열지 않음** (기본). 열어도 구조 의도만.  
-2. 구현 전 Canon wire + Brand + Lux 확인.  
+2. 구현 전 Canon wire + Brand + PUTDUK 확인.  
 3. “목업이랑 똑같이” 요청 → **Canon/토큰 기준으로 재해석** 후 구현 (픽셀 맞추기 거부).  
 4. 리뷰 지적에 사진-픽셀 불일치 = **비결함** (ADR-013). Canon/플랜 불일치만 결함.
 
@@ -2532,16 +2532,16 @@ docs/mockups/_archive/          # 기존 PNG — README: INTENT ONLY · DO NOT P
 
 ---
 
-## 34. Lux-Fintech 출시 게이트
+## 34. PUTDUK-Fintech 출시 게이트
 
-- [ ] User app Lux Dark theme applied
+- [ ] User app PUTDUK Dark theme applied
 - [ ] CountUp fires only on real settlement E2E
 - [ ] `ticker_mode=live`: LivePayoutTicker = ledger only
 - [ ] `ticker_mode=demo`: Admin queue renders · audit logged
 - [ ] `counter_mode=blended`: ledger+demo sum · admin preview matches user
 - [ ] MotionCTA opportunity Primary = ko SSOT **"이 상품으로 수익 벌기"** (sticky 단축 **"수익 벌기"** · PC 전폭 sticky 금지)
 - [ ] B-tier: no blur, no particle, 45fps+ scroll
-- [ ] reduced-motion: all lux motion OFF
+- [ ] reduced-motion: all pd motion OFF
 - [ ] 320px sticky CTA clears 5-tab nav
 
 ---
@@ -4236,8 +4236,8 @@ workers/push-dispatcher/          # CF Worker, VAPID, web-push
 | `packages/ui/components/trust/` | WhyUsdt · RevenueExplainer · FAQ |
 | `schemas/deposit-config.v1.json` | 원화 대표계좌 + TronGrid/onchain 설정 (§37·§41) |
 | `packages/sdk/wallet-config/` | useDepositConfig SSE |
-| `packages/ui/tokens/lux-fintech.ts` | color SSOT |
-| `packages/ui/components/lux/` | CountUp, Ticker, MotionCTA, Receipt |
+| `packages/ui/tokens/putduk.ts` | color SSOT |
+| `packages/ui/components/pd/` | CountUp, Ticker, MotionCTA, Receipt |
 | `27_MARKETING_AND_SEO_ENGINE.md` | Ad Funnel, CAPI, UTM, SEO |
 | `packages/sdk/marketing/` | utm, consent, capi client hooks |
 | `workers/marketing-capi-dispatcher/` | Meta/TikTok/Google server events |
@@ -4658,7 +4658,7 @@ Model:  자체 ML 및/또는 LLM Adapter — 데이터 계층 불변
 > 2. User 진행: `assets/ai-profit-os-mobile-ai-progress.png`  
 > 3. User 성공: `assets/ai-profit-os-mobile-success.png`  
 > 4. User 안전중단: `assets/ai-profit-os-mobile-match-fail.png`  
-> **시각·구조 SSOT:** `packages/ui/canon/surfaces/execution-*.wire.json` + Lux + Brand Kit  
+> **시각·구조 SSOT:** `packages/ui/canon/surfaces/execution-*.wire.json` + PUTDUK + Brand Kit  
 > **헌법:** `CONSTITUTION/48_AI_EXECUTION_ROOM_AND_POLICY.md`  
 > **카피:** `packages/ui/copy/ko/execution.ts` = `T.execution.*`  
 > **스키마:** `schemas/execution-policy.v1.json` · `schemas/trade-execution-state.v1.json`  
@@ -4668,7 +4668,7 @@ Model:  자체 ML 및/또는 LLM Adapter — 데이터 계층 불변
 
 | 사진목업에 보이는 현상 | 구현 잠금 (사진 무시) |
 |-----------|-----------|
-| 화면마다 로고·톤 다름 | **Brand Kit + Lux만** · 사진 로고/색 복제 금지 |
+| 화면마다 로고·톤 다름 | **Brand Kit + PUTDUK만** · 사진 로고/색 복제 금지 |
 | 성공 화면 하단 탭이 분석/상품/알림 등으로 보임 | **5탭 불변:** 홈·수익·내거래·지갑·내정보 · 성공 후 **지갑 탭 하이라이트**만 |
 | 안전중단 영문 `MATCH FAILURE` | 유저 노출 **`매칭 중단`** (ko) · 블록 위계는 Canon wire |
 | 추천 카드 `AI 매칭 성공률 92%` | 필드는 **`aiConfidenceScore`** · 라벨 **`AI 추천도 92%`** (난수 당첨률 아님) |
@@ -4710,7 +4710,7 @@ type ExecutionResultCode =
 ### 48.3 화면 A — AI 진행실 (`running`) — Canon wire 100%
 
 **Route:** `/trades/[id]/execute` · `status=running|requeue`  
-**테마:** Lux Dark (`#090A10`) · accent mint/emerald
+**테마:** PUTDUK Dark (`#090A10`) · accent mint/emerald
 
 | 영역 | 잠금 (ko) |
 |------|-----------|
@@ -5249,7 +5249,7 @@ services/risk-service/rules/p49_*.ts
 | 구역 | v1 | 비고 |
 |------|----|------|
 | 글자 크기 보통/크게 | ✅ | fluid 스케일 토큰 연동 |
-| 화면 다크/밝은/시스템 | ❌ | **Lux 어두운 화면 고정** · 토글 UI 없음 |
+| 화면 다크/밝은/시스템 | ❌ | **PUTDUK 어두운 화면 고정** · 토글 UI 없음 |
 | 알림 세분화 | ✅ | 기회·충전출금·공지 |
 | 기본 출금=수익만 | ✅ | §49 · 토글로 원금기본 바꾸기 **비권장**(숨김 가능) |
 | 약관 4종 링크 | ✅ | §50.3 |
@@ -5525,7 +5525,7 @@ interface OperatorEntityV1 {
 
 **선택 링크:** DET → Invest in Dubai (새 탭 · `rel=noopener`)
 
-**스타일:** `text-xs` · muted · Lux 다크 토큰 · 5탭·sticky CTA 가리지 않음 (§5.3)
+**스타일:** `text-xs` · muted · PUTDUK 다크 토큰 · 5탭·sticky CTA 가리지 않음 (§5.3)
 
 **외부 WordPress (preownedwatches.ae · EN · pointer):**
 ```
@@ -5613,7 +5613,7 @@ export const T = {
 | **ADR-010 Domain+Pin** | `ROOT_DOMAIN` 필수 · hosts app/ops/api · `next@15` pin · Phase0=in-process | prod `{domain}` 잔존 · Phase0 NATS 필수화 |
 | **ADR-011 Brand Kit** | 에셋 SSOT=`packages/ui/brand` + manifest · AI 산출은 리뷰 후 등록만 · `verify:brand-assets` | 런타임 AI 아이콘 · 미등록 CDN · 타사 로고 |
 | **ADR-012 Notice≠Campaign** | notice=운영사실(보상문구0) · campaign=예산 프로모 · G1 FOMO와 스키마/탭 분리 · Viral Ladder=Money §51.5 | notice에 reward · L1만 티어 가산 · sidebar 13번째 |
-| **ADR-013 Mockup Governance** | 사진/PNG 목업 = **intent archive only** · 구현 시각 SSOT = Lux tokens + Brand Kit + `packages/ui` + Canon wire · 충돌 시 **코드/토큰 > 플랜 > Canon > 사진목업** · UI §33.8 | 사진 픽셀 복제 · 목업별 로고/색/탭 drift · “목업이랑 똑같이” 픽셀 QA |
+| **ADR-013 Mockup Governance** | 사진/PNG 목업 = **intent archive only** · 구현 시각 SSOT = PUTDUK tokens + Brand Kit + `packages/ui` + Canon wire · 충돌 시 **코드/토큰 > 플랜 > Canon > 사진목업** · UI §33.8 | 사진 픽셀 복제 · 목업별 로고/색/탭 drift · “목업이랑 똑같이” 픽셀 QA |
 | **ADR-014 Cursor Stack Lock** | Cursor=**플랜 집행기** · Nest+Rust+단일 PG+CF · **PG사0** · rules · `AGENTS.md` · Infra §15.0b · 버전핀=ADR-015 | 스택 재제안 · Vercel+CF · Supabase Auth · PG사 SDK |
 | **ADR-015 Greenfield Toolchain** | Node22 · pnpm@10.14 · **next@16** · Tailwind v4 · Rust · OpenNext/CF · `TOOLCHAIN.md` | next@15·TW3 · npm/bun SSOT |
 | **ADR-016 Agent Automation** | Rules+hooks+Husky+`verify:gate`+GH Actions · Docker-less=Supabase+Upstash · Vercel 금지 · 8GB Phase0 · `docs/ADR-016-AGENT-AUTOMATION.md` | `--no-verify` · Vercel · Docker 필수화 · Husky/CI 생략 |

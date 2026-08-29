@@ -212,10 +212,10 @@ const part8cFiles = [
   "packages/ui/responsive/touch-target.css",
   "packages/ui/responsive/container.css",
   "packages/sdk/src/device-tier.ts",
-  "packages/ui/components/lux/VirtualList.tsx",
-  "packages/ui/components/lux/VirtualTicker.tsx",
-  "packages/ui/components/lux/FluidCard.tsx",
-  "packages/ui/components/lux/TouchButton.tsx",
+  "packages/ui/performance/VirtualList.tsx",
+  "packages/ui/performance/VirtualTicker.tsx",
+  "packages/ui/primitives/Card.tsx",
+  "packages/ui/primitives/Button.tsx",
   "packages/ui/components/opportunity/VirtualOpportunityList.tsx",
   "apps/web/components/DeviceTierApply.tsx",
 ];
@@ -245,7 +245,7 @@ if (tierSrc && !tierSrc.includes("tierBatchMs")) {
   fails.push("device-tier must export tierBatchMs");
 }
 
-const virtList = read("packages/ui/components/lux/VirtualList.tsx");
+const virtList = read("packages/ui/performance/VirtualList.tsx");
 if (virtList && !virtList.includes("@tanstack/react-virtual")) {
   fails.push("VirtualList must use @tanstack/react-virtual");
 }
@@ -261,7 +261,7 @@ if (virtOpp && !/=\s*20\b/.test(virtOpp) && !virtOpp.includes("20")) {
   fails.push("VirtualOpportunityList threshold must be 20");
 }
 
-const virtTicker = read("packages/ui/components/lux/VirtualTicker.tsx");
+const virtTicker = read("packages/ui/performance/VirtualTicker.tsx");
 if (virtTicker && !virtTicker.includes("VIRTUAL_TICKER_THRESHOLD")) {
   fails.push("VirtualTicker must define VIRTUAL_TICKER_THRESHOLD");
 }
@@ -270,21 +270,19 @@ let layout = read("apps/web/app/layout.tsx");
 if (layout && !layout.includes("DeviceTierApply")) {
   fails.push("apps/web layout must mount DeviceTierApply (data-tier)");
 }
-// AppShellRoot(packages/ui, ADR-017 재사용 셸)이 lux-app-main content rail을 실제로 소유
-layout = `${layout}\n${read("packages/ui/components/shell/AppShellRoot.tsx")}`;
-if (layout && !layout.includes("lux-app-main")) {
-  fails.push("apps/web layout must use lux-app-main content rail");
+// AppShellRoot(packages/ui, ADR-017 재사용 셸)이 pd-app-main content rail을 실제로 소유
+const shell = read("packages/ui/shell/ConsumerAppShell.tsx");
+if (layout && !layout.includes("ConsumerAppShell") && !layout.includes("ConsumerSparkRoot")) {
+  fails.push("apps/web layout must mount ConsumerAppShell");
+}
+if (shell && !shell.includes("csp-main")) {
+  fails.push("ConsumerAppShell must own content rail");
 }
 
 // page.tsx = session gate · VirtualOpportunityList Owns = ProfitsPageClient
-const profits = [
-  read("apps/web/app/profits/page.tsx"),
-  read("apps/web/app/profits/ProfitsPageClient.tsx"),
-]
-  .filter(Boolean)
-  .join("\n");
-if (profits && !profits.includes("VirtualOpportunityList")) {
-  fails.push("/profits must use VirtualOpportunityList");
+const profits = read("apps/web/app/profits/page.tsx");
+if (profits && !profits.includes("ProfitsDesktopClient")) {
+  fails.push("/profits active entry must be ProfitsDesktopClient");
 }
 
 const uiPkg = read("packages/ui/package.json");
@@ -292,7 +290,7 @@ if (uiPkg && !uiPkg.includes("@tanstack/react-virtual")) {
   fails.push("packages/ui must depend on @tanstack/react-virtual");
 }
 
-const liveTicker = read("packages/ui/components/lux/LivePayoutTicker.tsx");
+const liveTicker = read("packages/ui/primitives/LivePayoutTicker.tsx");
 if (liveTicker && !liveTicker.includes("VirtualTicker")) {
   fails.push("LivePayoutTicker must mount VirtualTicker");
 }

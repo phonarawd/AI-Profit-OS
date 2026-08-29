@@ -23,22 +23,22 @@ function Card({ logo }: { logo: MarketLogoEntry }) {
       data-testid="market-partner-grid-card"
       data-partner-logo={logo.id}
       data-status={logo.status}
-      className="rounded-lux-md border border-lux-border bg-lux-elevated p-3"
+      className="rounded-pd-md border border-pd-border bg-pd-elevated p-3"
     >
       <div className="flex items-center gap-2" style={{ minHeight: 32 }}>
         {ready ? (
           <img src={`/brand/${logo.path}`} alt="" height={32} />
         ) : (
           <span
-            className="text-xs text-lux-text-muted"
+            className="text-xs text-pd-text-muted"
             data-testid="market-partner-logo-pending"
           >
             {logo.labelKo}
           </span>
         )}
       </div>
-      <h3 className="mt-2 text-sm font-medium text-lux-text">{logo.labelKo}</h3>
-      <p className="mt-1 text-xs text-lux-text-muted">
+      <h3 className="mt-2 text-sm font-medium text-pd-text">{logo.labelKo}</h3>
+      <p className="mt-1 text-xs text-pd-text-muted">
         {BLURB_BY_ID[logo.id] ?? T.trust.partners.legFootnote}
       </p>
     </article>
@@ -57,10 +57,10 @@ export function MarketPartnerGrid({ className = "" }: { className?: string }) {
       className={className}
       aria-label={T.trust.partners.gridSection}
     >
-      <h2 className="text-lg font-semibold text-lux-text">
+      <h2 className="text-lg font-semibold text-pd-text">
         {T.trust.partners.guideHeadline}
       </h2>
-      <p className="mt-1 text-sm text-lux-text-muted">
+      <p className="mt-1 text-sm text-pd-text-muted">
         {T.trust.partners.guideSub}
       </p>
       <div className="mt-4 grid grid-cols-2 gap-3">
@@ -68,7 +68,7 @@ export function MarketPartnerGrid({ className = "" }: { className?: string }) {
           <Card key={logo.id} logo={logo} />
         ))}
       </div>
-      <div className="mt-4 flex flex-wrap gap-2 text-xs text-lux-text-muted">
+      <div className="mt-4 flex flex-wrap gap-2 text-xs text-pd-text-muted">
         <span>{T.execution.badgeNoBuy}</span>
         <span>{T.execution.badgeNoSell}</span>
       </div>

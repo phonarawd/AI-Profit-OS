@@ -24,9 +24,9 @@ export function SuccessBucketCtas({
   const mergePrimary = emphasis === "merge";
 
   const primaryCls =
-    "rounded-lux-md bg-lux-accent px-4 py-3 text-center text-sm font-semibold text-lux-bg";
+    "rounded-pd-md bg-pd-accent px-4 py-3 text-center text-sm font-semibold text-pd-bg";
   const secondaryCls =
-    "rounded-lux-md border border-lux-border px-4 py-3 text-center text-sm text-lux-text";
+    "rounded-pd-md border border-pd-border px-4 py-3 text-center text-sm text-pd-text";
 
   return (
     <div

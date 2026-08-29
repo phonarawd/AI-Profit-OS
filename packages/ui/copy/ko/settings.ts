@@ -22,7 +22,7 @@ export const settings = {
   },
   viewStyle: {
     label: "화면 스타일",
-    darkFixed: "어두운 화면으로 고정돼 있어요. 밝은 화면 전환은 없어요.",
+    darkFixed: "밝은 화면을 쓰고 있어요. 어두운 화면으로 바꾸지 않아요.",
   },
   notify: {
     label: "알림",

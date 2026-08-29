@@ -33,18 +33,18 @@ export function DayPulse({ data = null, className = "" }: DayPulseProps) {
       data-engine-pointer={T.loop.enginePointer}
       data-admin-pointer={T.loop.adminPointer}
       aria-label={T.loop.dayPulseAria}
-      className={`border-b border-lux-border bg-lux-surface px-3 py-2 text-sm text-lux-text ${className}`.trim()}
+      className={`border-b border-pd-border bg-pd-surface px-3 py-2 text-sm text-pd-text ${className}`.trim()}
     >
-      <p className="font-medium text-lux-text">{T.loop.dayPulseTitle}</p>
+      <p className="font-medium text-pd-text">{T.loop.dayPulseTitle}</p>
       {empty ? (
         <p
           data-testid="day-pulse-empty"
-          className="mt-1 text-lux-text-muted"
+          className="mt-1 text-pd-text-muted"
         >
           {T.loop.emptyToday}
         </p>
       ) : (
-        <ul className="mt-1 space-y-0.5 text-lux-text-muted">
+        <ul className="mt-1 space-y-0.5 text-pd-text-muted">
           {safeStop > 0 ? (
             <li data-testid="day-pulse-safe-stop" data-field="platformSafeStopToday">
               {T.loop.safeStopToday.replace("{n}", String(safeStop))}
@@ -65,7 +65,7 @@ export function DayPulse({ data = null, className = "" }: DayPulseProps) {
         <p
           data-testid="day-pulse-presence"
           data-presence-live="true"
-          className="mt-1 text-xs text-lux-text-muted"
+          className="mt-1 text-xs text-pd-text-muted"
         >
           {T.loop.presenceWatching.replace(
             "{n}",

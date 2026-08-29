@@ -10,7 +10,7 @@
 |------|------|
 | 설정 IA | `/me/settings` · 글자·톤·충전탭·알림·약관 링크 |
 | fontScale | **md / lg / xl** 3단 필수 (보통/크게/더 크게) |
-| 테마 | **Lux 다크 고정** · 다크/밝은/시스템 토글 **v1 0** |
+| 테마 | **PUTDUK 다크 고정** · 다크/밝은/시스템 토글 **v1 0** |
 | toneBand | 설정에서 변경 가능 · 성별 UI 분기 **금지** |
 | depositPref | `usdt\|krw` **표시 기본만** · 엔진 추천 USDT 불변 |
 | 알림 기본 (§50.1n) | 가입 시 notificationPrefs **전부 ON** · OFF=Push 스킵 |

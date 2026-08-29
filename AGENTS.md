@@ -11,7 +11,7 @@ Cursor는 **플랜 집행기**다. 스택을 ADR 없이 바꾸지 않는다.
 5. 도메인 `01`~`06` **해시 파일만** · **File-Serial:** 한 파일 todos 전부 완료 후 다음 번호 · 한 채팅=한 todo · 접두사 `[grok-4.5|256K]` / `[composer-2.5|200K]`
 6. 직렬 번호: **01 Money** · **02 Engine** · **02.5 Engine Acceptance QA** · 03 UI · 04 Admin · 05 PWA · 06 Infra · 03=`ENGINE_ACCEPTED_FOR_UI` 전 BLOCKED
 7. launch = **ARCHIVE** (`ai_profit_os_launch_54c1261e.plan.md`)
-8. UI → Canon + Brand + Lux · AI 이름=**퍼뜩** (앱명과 동일 · §47 Personal AI · 타프로젝트 코치명 금지)
+8. UI → Canon + Brand + PUTDUK · AI 이름=**퍼뜩** (앱명과 동일 · §47 Personal AI · 타프로젝트 코치명 금지)
 
 ## 연동 SSOT (ADR-016)
 
@@ -33,7 +33,8 @@ Cursor는 **플랜 집행기**다. 스택을 ADR 없이 바꾸지 않는다.
 - Node22 · pnpm@10.14 · next@16 · Tailwind v4 · Nest · Rust
 - **commit/push 시점** = 3-tier (`git-auto-commit-push.mdc`) · **슬라이스=todo 완료→T0 commit** · **push=세션 stop/명시→T1** · atomic
 - commit → `pnpm verify:gate:fast` · push → `pnpm verify:gate:push` · CI/main → `pnpm verify:gate` (T2)
-- push 후 **`gh run watch`로 GitHub `gate` CI 감시** · FAIL이면 즉시 수정→재푸시→green까지 (`.cursor/rules/git-safety.mdc`)
+- 이 PC에서 node_modules 없음/RAM 부족이면 로컬 install·gate **금지** · 대체 = `node tooling/verify/cloud-dispatch.cjs` (`.github/workflows/cloud-verify.yml`)
+- push 후 **`gh run watch`로 GitHub `Cloud verify` + `gate` CI 감시** · FAIL이면 즉시 수정→재푸시→green까지 (`.cursor/rules/git-safety.mdc`)
 - GitHub 도착물 = **오류0 · 오차0 · 결함0 · 중복0** (로컬 T1 + 원격 T2 CI green)
 - **슬라이스 done** = domain verify PASS + T0 commit · **세션 done** = cleanup (+ push 시 CI green)
 

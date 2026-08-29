@@ -4,9 +4,9 @@
 .acq-demo-panel {
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius-lux-md, 16px);
-  border: 1px solid var(--color-lux-border);
-  background: var(--color-lux-surface);
+  border-radius: var(--radius-pd-md, 16px);
+  border: 1px solid var(--color-pd-border);
+  background: var(--color-pd-surface);
   padding: 1rem;
 }
 
@@ -17,8 +17,8 @@
   padding: 0.2rem 0.6rem;
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--color-lux-accent);
-  background: color-mix(in srgb, var(--color-lux-accent) 12%, transparent);
+  color: var(--color-pd-accent);
+  background: color-mix(in srgb, var(--color-pd-accent) 12%, transparent);
 }
 
 .acq-markets {
@@ -30,8 +30,8 @@
 
 .acq-market {
   border-radius: 12px;
-  border: 1px solid var(--color-lux-border);
-  background: var(--color-lux-elevated);
+  border: 1px solid var(--color-pd-border);
+  background: var(--color-pd-elevated);
   padding: 0.75rem;
   opacity: 0;
   transform: translateY(10px);
@@ -45,7 +45,7 @@
   position: absolute;
   inset: 0 auto 0 0;
   width: 2px;
-  background: var(--color-lux-accent);
+  background: var(--color-pd-accent);
   opacity: 0;
 }
 
@@ -58,7 +58,7 @@
   margin: 0.75rem 12%;
   transform: scaleX(0);
   transform-origin: left center;
-  background: var(--color-lux-accent);
+  background: var(--color-pd-accent);
 }
 
 .acq-connect.is-on {
@@ -69,7 +69,7 @@
   width: 14px;
   height: 14px;
   border-radius: 999px;
-  background: var(--color-lux-accent);
+  background: var(--color-pd-accent);
 }
 
 .acq-pulse.is-on {
@@ -79,7 +79,7 @@
 .acq-meter {
   height: 10px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-lux-border) 70%, transparent);
+  background: color-mix(in srgb, var(--color-pd-border) 70%, transparent);
   overflow: hidden;
 }
 
@@ -87,7 +87,7 @@
   width: 0;
   height: 100%;
   border-radius: inherit;
-  background: color-mix(in srgb, var(--color-lux-text-muted) 55%, transparent);
+  background: color-mix(in srgb, var(--color-pd-text-muted) 55%, transparent);
 }
 
 .acq-fade-in {

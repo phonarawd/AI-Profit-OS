@@ -14,7 +14,7 @@ const {
   isImageMissing,
 } = require("./asset-master.cjs");
 
-/** Lux placeholder icons · load-fail fallback only (UI §48.3a) */
+/** PUTDUK placeholder icons · load-fail fallback only (UI §48.3a) */
 const ASSET_ICON_BY_CATEGORY = Object.freeze({
   watch: "⌚",
   trading_card: "🃏",

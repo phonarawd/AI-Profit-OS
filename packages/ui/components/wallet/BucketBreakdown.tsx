@@ -60,11 +60,11 @@ export function BucketBreakdown({
       className="mt-4 space-y-3"
     >
       <div className="flex items-baseline justify-between">
-        <span className="text-sm text-lux-text-muted">
+        <span className="text-sm text-pd-text-muted">
           {T.walletBuckets.totalLabel}
         </span>
         <span
-          className="text-2xl font-semibold text-lux-text"
+          className="text-2xl font-semibold text-pd-text"
           data-testid="bucket-liability"
         >
           {liabilityUsdt}{" "}
@@ -80,19 +80,19 @@ export function BucketBreakdown({
             data-bucket={row.key}
             className="flex items-center justify-between text-sm"
           >
-            <span className="text-lux-text-muted">
+            <span className="text-pd-text-muted">
               {row.label}
             </span>
-            <span className="text-lux-text">
+            <span className="text-pd-text">
               {row.amount} {T.walletBuckets.usdtSuffix}
             </span>
           </li>
         ))}
       </ul>
-      <p className="text-sm text-lux-text-muted">
+      <p className="text-sm text-pd-text-muted">
         {T.walletBuckets.defaultProfitHint}
       </p>
-      <p className="text-sm text-lux-text">
+      <p className="text-sm text-pd-text">
         {T.walletBuckets.principalAlways}
       </p>
     </section>

@@ -32,16 +32,16 @@ export function WithdrawModeCards({
         data-testid="withdraw-mode-profit"
         aria-pressed={profitActive}
         onClick={() => onModeChange("profit")}
-        className={`rounded-lux-md border px-4 py-3 text-left ${
+        className={`rounded-pd-md border px-4 py-3 text-left ${
           profitActive
-            ? "border-lux-accent bg-lux-elevated"
-            : "border-lux-border bg-lux-surface"
+            ? "border-pd-accent bg-pd-elevated"
+            : "border-pd-border bg-pd-surface"
         }`}
       >
-        <span className="block text-sm font-semibold text-lux-text">
+        <span className="block text-sm font-semibold text-pd-text">
           {T.withdrawMode.modeProfit}
         </span>
-        <span className="mt-1 block text-xs text-lux-text-muted">
+        <span className="mt-1 block text-xs text-pd-text-muted">
           {T.withdrawMode.modeProfitHint}
         </span>
       </button>
@@ -53,16 +53,16 @@ export function WithdrawModeCards({
         data-principal-reachable="true"
         aria-pressed={principalActive}
         onClick={() => onModeChange("principal")}
-        className={`rounded-lux-md border px-4 py-3 text-left ${
+        className={`rounded-pd-md border px-4 py-3 text-left ${
           principalActive
-            ? "border-lux-principal bg-lux-elevated"
-            : "border-lux-border bg-lux-surface"
+            ? "border-pd-principal bg-pd-elevated"
+            : "border-pd-border bg-pd-surface"
         }`}
       >
-        <span className="block text-sm font-semibold text-lux-text">
+        <span className="block text-sm font-semibold text-pd-text">
           {T.withdrawMode.modePrincipal}
         </span>
-        <span className="mt-1 block text-xs text-lux-text-muted">
+        <span className="mt-1 block text-xs text-pd-text-muted">
           {T.withdrawMode.modePrincipalHint}
         </span>
       </button>

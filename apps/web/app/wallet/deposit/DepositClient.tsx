@@ -227,7 +227,7 @@ function DepositContent() {
       <h1 className={styles.title}>{T.deposit.pageTitle}</h1>
       <div className={styles.trust}>
         <WhyUsdtCard />
-        <UsdtVsKrwCompareTable className="bg-lux-elevated" />
+        <UsdtVsKrwCompareTable className="bg-pd-elevated" />
       </div>
       <div className={styles.tabs} role="tablist" data-testid="deposit-tabs">
         <Link
@@ -351,19 +351,23 @@ function DepositContent() {
       <TaxDisclaimerBlock className="mt-4" />
       <div className={styles.actions}>
         {tab === "usdt" ? (
-          <button
-            type="button"
-            data-testid="deposit-continue"
-            data-force-deposit="false"
-            data-credited="false"
-            onClick={() => {
-              if (addressState !== "ready") {
-                setDenyCopy("입금 주소가 준비되기 전에는 다음으로 가지 않아요.");
-              }
-            }}
-          >
-            {T.deposit.ctaContinue}
-          </button>
+          addressState === "ready" ? (
+            <Link
+              className={styles.secondary}
+              href="/wallet"
+              data-testid="deposit-continue"
+              data-force-deposit="false"
+              data-credited="false"
+            >
+              입금했어요
+            </Link>
+          ) : (
+            <p className={styles.note} data-testid="deposit-continue-wait">
+              {addressState === "loading"
+                ? "입금 주소를 불러오는 중이에요."
+                : "주소가 준비되면 지갑으로 돌아갈 수 있어요."}
+            </p>
+          )
         ) : (
           <button
             type="button"

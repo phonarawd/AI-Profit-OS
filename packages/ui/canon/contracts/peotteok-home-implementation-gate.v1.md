@@ -122,7 +122,7 @@ AFTER (required):
 - `apps/web/app/HomePageClient.tsx` (binding only)
 - `packages/ui/components/home/HomeExperience.tsx`
 - `packages/ui/components/home/HomeRightRail.tsx`
-- `HomePayoutCounter` / 관련 lux counter 표시
+- `HomePayoutCounter` / 관련 pd counter 표시
 - `packages/ui/copy/ko/home*` (count 라벨)
 
 금지 (Slice 0 포함 전 STEP 5):
@@ -145,7 +145,7 @@ AFTER (required):
 | `verify:no-it-jargon` | copy |
 | `verify:cta-earn-profit` | card CTA |
 | `verify:brand-consumer` | 퍼뜩 |
-| `verify:lux-theme-sync` | tokens (theme edit 시) |
+| `verify:putduk-theme-sync` | tokens (theme edit 시) |
 | `verify:mockup-governance` | PNG |
 | `verify:gate:fast` | T0 commit |
 | Manual C01 | Home surface에 `ledgerTotal`+`USDT` 결합 **0** |

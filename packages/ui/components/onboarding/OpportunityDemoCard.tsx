@@ -1,5 +1,5 @@
 import { T } from "../../copy/ko";
-import { Badge } from "../lux/Badge";
+import { Badge } from "../../primitives/Badge";
 
 type Props = {
   open: boolean;
@@ -14,37 +14,37 @@ export function OpportunityDemoCard({ open, onOpen }: Props) {
         type="button"
         data-testid="demo-opportunity-card"
         data-flags="demo,practice_only"
-        className="w-full rounded-lux-md border border-lux-border bg-lux-elevated p-4 text-left"
+        className="w-full rounded-pd-md border border-pd-border bg-pd-elevated p-4 text-left"
         onClick={onOpen}
       >
         <div className="mb-2 flex items-center gap-2">
           <Badge>{T.practice.badge}</Badge>
           <span className="acq-demo-label">{T.onboarding.demoLabel}</span>
         </div>
-        <p className="text-sm font-medium text-lux-text">
+        <p className="text-sm font-medium text-pd-text">
           {T.onboarding.opportunityDemoTitle}
         </p>
-        <p className="mt-2 text-sm text-lux-text-muted">
+        <p className="mt-2 text-sm text-pd-text-muted">
           {T.margin.compareMiniUtility}
         </p>
-        <p className="mt-2 text-lg font-semibold text-lux-text">
+        <p className="mt-2 text-lg font-semibold text-pd-text">
           {T.onboarding.demoPriceExample}
         </p>
-        <p className="mt-3 text-sm font-medium text-lux-principal">
+        <p className="mt-3 text-sm font-medium text-pd-principal">
           {T.onboarding.tryDemoCard}
         </p>
       </button>
       {open ? (
         <aside
           data-testid="demo-preview"
-          className="mt-3 rounded-lux-md border border-lux-accent/40 bg-lux-surface px-4 py-3"
+          className="mt-3 rounded-pd-md border border-pd-accent/40 bg-pd-surface px-4 py-3"
           role="status"
         >
           <p className="font-medium">{T.onboarding.demoPreviewTitle}</p>
-          <p className="mt-1 text-sm text-lux-text-muted">
+          <p className="mt-1 text-sm text-pd-text-muted">
             {T.onboarding.demoPreviewBody}
           </p>
-          <p className="mt-1 text-xs text-lux-text-muted">
+          <p className="mt-1 text-xs text-pd-text-muted">
             {T.onboarding.demoNotLive}
           </p>
         </aside>

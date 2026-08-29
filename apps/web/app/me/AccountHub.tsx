@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { fetchWalletBuckets } from "@aipo/sdk/wallet";
 import { SD_ASSETS } from "../../components/spark-dash-home/assets";
 import { AccountAuthActions, type AccountView } from "./AccountFrame";
 import { HUB_ASSETS } from "./account-hub-assets";
@@ -65,8 +66,6 @@ const MANAGE = [
 const COMPAT = [
   { href: "/me/benefits", title: "혜택", icon: HUB_ASSETS.gift },
   { href: "/me/membership", title: "멤버십", icon: HUB_ASSETS.card },
-  { href: "/me/events", title: "이벤트", icon: HUB_ASSETS.cal },
-  { href: "/me/strategies", title: "내 전략", icon: HUB_ASSETS.target },
 ] as const;
 
 function Glyph({
@@ -107,6 +106,30 @@ export function AccountHub({
   const desktop = useSyncExternalStore(subscribeDesktop, desktopSnapshot, () => false);
   const line = profileLine(stage, view);
   const ready = view === "ready";
+  const [walletView, setWalletView] = useState<"loading" | "ready" | "error">("loading");
+  const [walletUsdt, setWalletUsdt] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (view !== "ready") {
+      setWalletView(view === "loading" ? "loading" : "error");
+      setWalletUsdt(null);
+      return;
+    }
+    const ac = new AbortController();
+    setWalletView("loading");
+    void fetchWalletBuckets({ getAccessToken: () => null, signal: ac.signal })
+      .then((buckets) => {
+        setWalletUsdt(buckets.principalUsdt);
+        setWalletView("ready");
+      })
+      .catch(() => {
+        if (!ac.signal.aborted) {
+          setWalletUsdt(null);
+          setWalletView("error");
+        }
+      });
+    return () => ac.abort();
+  }, [view]);
 
   return (
     <div
@@ -283,7 +306,15 @@ export function AccountHub({
           </nav>
           <div className={styles.walletQuick}>
             <h2>내 자산 요약</h2>
-            <p>잔액을 확인할 수 없음</p>
+            <p data-wallet-view={walletView}>
+              {walletView === "loading"
+                ? "잔액을 불러오는 중…"
+                : walletView === "ready" && walletUsdt
+                  ? walletUsdt + " USDT"
+                  : walletView === "ready"
+                    ? "잔액 정보가 아직 없어요."
+                    : "잔액을 확인할 수 없어요."}
+            </p>
             <Link className={styles.deposit} href="/wallet/deposit">
               입금하기
             </Link>

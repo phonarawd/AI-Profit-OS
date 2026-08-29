@@ -6,8 +6,6 @@ import { applyFontScale, type FontScaleKey } from "../../tokens/font-scale";
 import { T } from "../../copy/ko";
 import { useOptionalToast } from "../toast";
 
-type ToneBand = "young" | "mid" | "senior";
-type DepositPref = "usdt" | "krw";
 
 type NotifyPrefs = {
   master: boolean;
@@ -45,9 +43,8 @@ const DEFAULT_PREFS: NotifyPrefs = {
 export function SettingsPanel() {
   const toast = useOptionalToast();
   const [fontScale, setFontScale] = useState<FontScaleKey>("md");
-  const [toneBand, setToneBand] = useState<ToneBand>("mid");
-  const [depositPref, setDepositPref] = useState<DepositPref>("usdt");
   const [notify, setNotify] = useState<NotifyPrefs>(DEFAULT_PREFS);
+  const [saveView, setSaveView] = useState<"idle" | "saving" | "success" | "save_failed">("idle");
 
   useEffect(() => {
     let cancelled = false;
@@ -88,6 +85,7 @@ export function SettingsPanel() {
   async function toggleNotify(key: keyof NotifyPrefs) {
     const prev = notify;
     const next = { ...notify, [key]: !notify[key] };
+    setSaveView("saving");
     setNotify(next);
     try {
       const res = await fetch("/api/v1/me/notification-prefs", {
@@ -99,19 +97,41 @@ export function SettingsPanel() {
         },
         body: JSON.stringify(next),
       });
-      if (!res.ok) setNotify(prev);
+      if (!res.ok) {
+        setNotify(prev);
+        setSaveView("save_failed");
+        toast?.showToast({ code: "NETWORK_ERROR" });
+        return;
+      }
+      setSaveView("success");
     } catch {
       setNotify(prev);
+      setSaveView("save_failed");
+      toast?.showToast({ code: "NETWORK_ERROR" });
     }
   }
 
   return (
     <main
-      className="p-6 text-lux-text"
+      className="p-6 text-pd-text"
       data-testid="settings-panel"
       data-theme-toggle-allowed="false"
     >
       <h1 className="text-xl font-semibold">{T.settings.title}</h1>
+      <p className="sr-only" aria-live="polite" data-testid="settings-save-status">
+        {saveView === "saving"
+          ? "저장 중"
+          : saveView === "save_failed"
+            ? "저장하지 못했어요"
+            : saveView === "success"
+              ? "저장했어요"
+              : ""}
+      </p>
+      {saveView === "save_failed" ? (
+        <p className="mt-3 text-sm text-pd-danger" role="alert">
+          저장하지 못했어요. 다시 시도해 주세요.
+        </p>
+      ) : null}
 
       <section
         className="mt-6"
@@ -120,7 +140,7 @@ export function SettingsPanel() {
         data-notify-default-all-on={String(T.settings.notify.defaultAllOn)}
       >
         <h2 className="text-sm font-semibold">{T.settings.notify.label}</h2>
-        <p className="mt-1 text-xs text-lux-text-muted">
+        <p className="mt-1 text-xs text-pd-text-muted">
           {T.settings.notify.offPushOnlyNote}
         </p>
         <ul className="mt-3 space-y-2">
@@ -133,10 +153,10 @@ export function SettingsPanel() {
                 aria-checked={notify[key]}
                 data-notify-channel={key}
                 className={[
-                  "touch-target rounded-lux-md border px-3 py-2 text-sm",
+                  "touch-target rounded-pd-md border px-3 py-2 text-sm",
                   notify[key]
-                    ? "border-lux-accent text-lux-accent"
-                    : "border-lux-border text-lux-text-muted",
+                    ? "border-pd-accent text-pd-accent"
+                    : "border-pd-border text-pd-text-muted",
                 ].join(" ")}
                 onClick={() => void toggleNotify(key)}
               >
@@ -164,10 +184,10 @@ export function SettingsPanel() {
               aria-checked={fontScale === key}
               data-font-scale-option={key}
               className={[
-                "touch-target rounded-lux-md border px-3 py-2 text-sm",
+                "touch-target rounded-pd-md border px-3 py-2 text-sm",
                 fontScale === key
-                  ? "border-lux-accent text-lux-accent"
-                  : "border-lux-border text-lux-text",
+                  ? "border-pd-accent text-pd-accent"
+                  : "border-pd-border text-pd-text",
               ].join(" ")}
               onClick={() => onFont(key)}
             >
@@ -177,64 +197,9 @@ export function SettingsPanel() {
         </div>
       </section>
 
-      <section className="mt-6" data-testid="settings-tone-band">
-        <h2 className="text-sm font-semibold">{T.settings.toneBand.label}</h2>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {(
-            [
-              ["young", T.settings.toneBand.young],
-              ["mid", T.settings.toneBand.mid],
-              ["senior", T.settings.toneBand.senior],
-            ] as const
-          ).map(([key, label]) => (
-            <button
-              key={key}
-              type="button"
-              data-tone-band={key}
-              className={[
-                "touch-target rounded-lux-md border px-3 py-2 text-sm",
-                toneBand === key
-                  ? "border-lux-accent text-lux-accent"
-                  : "border-lux-border",
-              ].join(" ")}
-              onClick={() => setToneBand(key)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section className="mt-6" data-testid="settings-deposit-pref">
-        <h2 className="text-sm font-semibold">{T.settings.depositPref.label}</h2>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {(
-            [
-              ["usdt", T.settings.depositPref.usdt],
-              ["krw", T.settings.depositPref.krw],
-            ] as const
-          ).map(([key, label]) => (
-            <button
-              key={key}
-              type="button"
-              data-deposit-pref={key}
-              className={[
-                "touch-target rounded-lux-md border px-3 py-2 text-sm",
-                depositPref === key
-                  ? "border-lux-accent text-lux-accent"
-                  : "border-lux-border",
-              ].join(" ")}
-              onClick={() => setDepositPref(key)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </section>
-
       <section className="mt-6">
         <h2 className="text-sm font-semibold">{T.settings.viewStyle.label}</h2>
-        <p className="mt-2 text-sm text-lux-text-muted">
+        <p className="mt-2 text-sm text-pd-text-muted">
           {T.settings.viewStyle.darkFixed}
         </p>
       </section>
@@ -243,22 +208,22 @@ export function SettingsPanel() {
         <h2 className="text-sm font-semibold">{T.settings.legalLinks}</h2>
         <ul className="mt-2 space-y-2 text-sm">
           <li>
-            <Link href="/me/legal/terms" className="text-lux-accent underline">
+            <Link href="/me/legal/terms" className="text-pd-accent underline">
               {T.legal.termsTitle}
             </Link>
           </li>
           <li>
-            <Link href="/me/legal/privacy" className="text-lux-accent underline">
+            <Link href="/me/legal/privacy" className="text-pd-accent underline">
               {T.legal.privacyTitle}
             </Link>
           </li>
           <li>
-            <Link href="/me/legal/oss" className="text-lux-accent underline">
+            <Link href="/me/legal/oss" className="text-pd-accent underline">
               {T.legal.ossTitle}
             </Link>
           </li>
           <li>
-            <Link href="/me/legal/license" className="text-lux-accent underline">
+            <Link href="/me/legal/license" className="text-pd-accent underline">
               {T.legal.licenseTitle}
             </Link>
           </li>

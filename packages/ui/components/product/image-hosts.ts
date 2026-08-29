@@ -20,7 +20,7 @@ export const ASSET_CATEGORIES = [
 
 export type AssetCategory = (typeof ASSET_CATEGORIES)[number];
 
-/** Lux placeholder icons · load-fail / missing only (Engine ASSET_ICON_BY_CATEGORY mirror) */
+/** PUTDUK placeholder icons · load-fail / missing only (Engine ASSET_ICON_BY_CATEGORY mirror) */
 export const ASSET_ICON_BY_CATEGORY: Record<AssetCategory, string> = {
   watch: "⌚",
   trading_card: "🃏",

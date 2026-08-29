@@ -77,7 +77,7 @@ if (doc) {
     if (!doc.includes(k)) fail(`missing supersession field keyword: ${k}`);
   }
   mustInclude(doc, "dual toggle", "dual toggle 0");
-  mustInclude(doc, "lux-dark", "lux-dark archive");
+  mustInclude(doc, "pd-dark", "pd-dark archive");
 
   // IA labels
   mustInclude(doc, "홈 · 기회 · 수익 · 지갑 · 내정보", "IA new labels");

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { MEMBERSHIP_BADGES, type MembershipGradeId } from "../../brand/membership";
 import { T } from "../../copy/ko";
-import { TouchButton } from "../lux/TouchButton";
+import { TouchButton } from "../../primitives/Button";
 import { MembershipBadge } from "./MembershipBadge";
 import type { MembershipMeModel } from "./membership-types";
 
@@ -71,7 +71,7 @@ export function MembershipHome({
 
   return (
     <main
-      className={`text-lux-text ${className}`.trim()}
+      className={`text-pd-text ${className}`.trim()}
       data-testid="membership-home"
       data-canon="membership-home"
       data-fulfill-rate-rule-input="false"
@@ -92,7 +92,7 @@ export function MembershipHome({
       >
         <MembershipBadge grade={grade} size="lg" />
         <div>
-          <p className="text-sm text-lux-text-muted">
+          <p className="text-sm text-pd-text-muted">
             {T.membership.currentBadge}
           </p>
           <p className="text-lg font-semibold">{labelKo}</p>
@@ -100,14 +100,14 @@ export function MembershipHome({
       </section>
 
       <p
-        className="mt-3 text-sm text-lux-text-muted"
+        className="mt-3 text-sm text-pd-text-muted"
         data-canon-block="nextHint"
       >
         {data ? nextHint(data) : T.membership.nextHint}
       </p>
 
       <section
-        className="mt-6 rounded-lux-md border border-lux-border bg-lux-surface p-4"
+        className="mt-6 rounded-pd-md border border-pd-border bg-pd-surface p-4"
         data-canon-block="fulfillRate"
         data-testid="membership-fulfill-rate"
         data-read-only="true"
@@ -115,10 +115,10 @@ export function MembershipHome({
         <p className="text-sm font-semibold">
           {T.membership.fulfillRateLabel}
         </p>
-        <p className="mt-1 text-2xl font-semibold text-lux-accent">
+        <p className="mt-1 text-2xl font-semibold text-pd-accent">
           {fulfill != null ? `${fulfill}%` : "—"}
         </p>
-        <p className="mt-1 text-xs text-lux-text-muted">
+        <p className="mt-1 text-xs text-pd-text-muted">
           {fulfill != null
             ? T.membership.fulfillRateHint
             : T.membership.fulfillRateEmpty}
@@ -134,7 +134,7 @@ export function MembershipHome({
           {T.membership.aiUnlockList}
         </h2>
         {flags.length === 0 ? (
-          <p className="mt-2 text-sm text-lux-text-muted">
+          <p className="mt-2 text-sm text-pd-text-muted">
             {T.membership.aiUnlockEmpty}
           </p>
         ) : (
@@ -174,15 +174,15 @@ export function MembershipHome({
                 <li
                   key={id}
                   className={[
-                    "flex items-start gap-3 rounded-lux-md border p-3",
+                    "flex items-start gap-3 rounded-pd-md border p-3",
                     active
-                      ? "border-lux-accent bg-lux-accent/10"
-                      : "border-lux-border bg-lux-surface",
+                      ? "border-pd-accent bg-pd-accent/10"
+                      : "border-pd-border bg-pd-surface",
                   ].join(" ")}
                   data-ladder-grade={id}
                 >
                   <MembershipBadge grade={id} size="sm" showLabel />
-                  <div className="text-xs text-lux-text-muted">
+                  <div className="text-xs text-pd-text-muted">
                     {"dailyUserMatchCap" in rung &&
                     rung.dailyUserMatchCap != null ? (
                       <p>
@@ -210,7 +210,7 @@ export function MembershipHome({
           {T.membership.faq.map((item) => (
             <li key={item.q}>
               <p className="font-medium">Q. {item.q}</p>
-              <p className="mt-1 text-lux-text-muted">A. {item.a}</p>
+              <p className="mt-1 text-pd-text-muted">A. {item.a}</p>
             </li>
           ))}
         </ul>

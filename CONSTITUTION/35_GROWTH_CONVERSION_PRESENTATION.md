@@ -23,7 +23,7 @@
 | PublicTicker surface | UI `ai_profit_os_03_ui_ux_d4e5f6a7.plan.md` §33.2a |
 | Rule fanout 경계 | Engine §48.13 — ticker 투영은 분개 후 async · Rule 범위 **0** |
 | Simulation gate (Growth ON 전) | → `51_PLATFORM_COMPLETENESS_AND_RULE_ENGINE.md` · Engine §51.4 |
-| Lux ticker/counter 비주얼 | → `28` |
+| PUTDUK ticker/counter 비주얼 | → `28` |
 | Marketing landings/CAPI | → `27` |
 | notice≠campaign | ADR-012 · Money/Admin growth tabs |
 | Abuse A8/A10 | → `20` |

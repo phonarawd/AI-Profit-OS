@@ -1,8 +1,8 @@
 "use client";
 
 import { T } from "../../copy/ko";
-import { Badge } from "../lux/Badge";
-import { MotionCTA } from "../lux/MotionCTA";
+import { Badge } from "../../primitives/Badge";
+import { MotionCTA } from "../../primitives/PrimaryCta";
 import { ProductImage } from "../product/ProductImage";
 import { MarketPartnerLeg } from "../trust/MarketPartnerLeg";
 import { OpportunityScanBadge } from "./OpportunityScanBadge";
@@ -62,11 +62,11 @@ export function OpportunityDetail({
         variant="detail"
       />
 
-      <h1 className="text-xl font-semibold text-lux-text">{corridorText(o)}</h1>
-      <p className="text-sm text-lux-text-muted">{o.assetLabel}</p>
+      <h1 className="text-xl font-semibold text-pd-text">{corridorText(o)}</h1>
+      <p className="text-sm text-pd-text-muted">{o.assetLabel}</p>
 
       <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
-        <dt className="text-lux-text-muted">
+        <dt className="text-pd-text-muted">
           {T.opportunity.labelRequiredCapital}
         </dt>
         <dd
@@ -77,25 +77,25 @@ export function OpportunityDetail({
         >
           {formatUsdtOrUnavailable(o.requiredCapitalUsdt).text}
         </dd>
-        <dt className="text-lux-text-muted">
+        <dt className="text-pd-text-muted">
           {T.opportunity.labelExpectedProfit}
         </dt>
         <dd
-          className="text-right text-lg font-semibold text-lux-accent"
+          className="text-right text-lg font-semibold text-pd-accent"
           data-money-state={
             formatUsdtOrUnavailable(o.expectedProfitUsdt, true).state
           }
         >
           {formatUsdtOrUnavailable(o.expectedProfitUsdt, true).text}
         </dd>
-        <dt className="text-lux-text-muted">
+        <dt className="text-pd-text-muted">
           {T.opportunity.labelAiConfidence}
         </dt>
         <dd className="text-right">{o.aiConfidenceScore}%</dd>
       </dl>
 
       {o.sellSuccessRate != null ? (
-        <p className="text-sm text-lux-text-muted" data-testid="historical-match">
+        <p className="text-sm text-pd-text-muted" data-testid="historical-match">
           {T.opportunity.historicalMatchHint}
           {o.sellSuccessWindowDays != null
             ? ` · ${T.opportunity.historicalWindow.replace("{n}", String(o.sellSuccessWindowDays))}`
@@ -119,7 +119,7 @@ export function OpportunityDetail({
         platformMarginUsdt={o.platformMarginUsdt}
       />
 
-      <p className="text-sm text-lux-text-muted">
+      <p className="text-sm text-pd-text-muted">
         {T.execution.executionModeHint} · {T.execution.executionModeBody}
       </p>
 
@@ -127,8 +127,8 @@ export function OpportunityDetail({
         <Badge tone="muted">{T.execution.badgeNoBuy}</Badge>
         <Badge tone="muted">{T.execution.badgeNoSell}</Badge>
       </div>
-      <p className="text-xs text-lux-text-muted">{T.execution.disclaimerResult}</p>
-      <p className="text-xs text-lux-text-muted">{T.execution.imageRightsNote}</p>
+      <p className="text-xs text-pd-text-muted">{T.execution.disclaimerResult}</p>
+      <p className="text-xs text-pd-text-muted">{T.execution.imageRightsNote}</p>
 
       <MotionCTA
         className="w-full"
@@ -141,7 +141,7 @@ export function OpportunityDetail({
       {/* 모바일 sticky · PC 전폭 sticky 금지 (§5.3) */}
       <div
         data-testid="sticky-cta-earn"
-        className="fixed inset-x-0 z-40 border-t border-lux-border bg-lux-bg p-3 md:hidden"
+        className="fixed inset-x-0 z-40 border-t border-pd-border bg-pd-bg p-3 md:hidden"
         style={{ bottom: "calc(3.5rem + env(safe-area-inset-bottom, 0px))" }}
       >
         <MotionCTA

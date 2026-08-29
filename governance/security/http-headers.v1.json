@@ -33,7 +33,7 @@
   "forbiddenCspSources": ["*", "https:", "http:", "'unsafe-eval'"],
   "notes": {
     "scriptUnsafeInline": "Next/OpenNext hydration. Not a host wildcard.",
-    "jsdelivr": "Current Pretendard @import in lux-theme.css.",
+    "jsdelivr": "Current Pretendard @import in pd-theme.css.",
     "r2Wildcard": "Same REL-013 exception as image-hosts **.r2.cloudflarestorage.com.",
     "sw": "worker-src 'self' keeps /sw.js registration."
   }

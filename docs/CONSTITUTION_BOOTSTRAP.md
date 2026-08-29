@@ -214,7 +214,7 @@
 2. ACTIVE Index: `.cursor/plans/ai_profit_os_00_index_a1b2c3d4.plan.md`  
 3. 도메인 플랜 **하나만** (`01`~`06` 실제 파일명 해시 포함) — **File-Serial:** 파일 N의 todos가 전부 `completed`되기 전 파일 N+1 착수 금지 · 파일 내 todos 위→아래  
 4. launch (`ai_profit_os_launch_54c1261e.plan.md`) = **ARCHIVE** (편집 시 분리 플랜 우선)  
-5. UI면 Canon wire + Brand Kit + Lux  
+5. UI면 Canon wire + Brand Kit + PUTDUK  
 6. Money면 `money-ledger.mdc` + bucket gates  
 
 ### 실제 플랜 파일명 (이름 drift 금지 · v7.22.35 File-Serial)
@@ -251,7 +251,7 @@
 | 25 | `25_KOREAN_FIRST_UX_POLICY.md` | ko copy·금지어·CI |
 | 26 | `26_PERFORMANCE_AND_RESPONSIVE_UX.md` | fluid·tier |
 | 27 | `27_MARKETING_AND_SEO_ENGINE.md` | CAPI·SEO |
-| 28 | `28_LUX_FINTECH_DESIGN_AND_MOTION.md` | Lux·motion·G4 |
+| 28 | `28_LUX_FINTECH_DESIGN_AND_MOTION.md` | PUTDUK·motion·G4 |
 | 35 | `35_GROWTH_CONVERSION_PRESENTATION.md` | G1~G4 |
 | 36 | `36_ADMIN_PRICE_AND_PROFIT_SYNC.md` | Admin 가격 SSE |
 | 37 | `37_WALLET_AND_USER_ADMIN_OPS.md` | 입금설정·회원 |
@@ -345,7 +345,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | 플랜 | `ai_profit_os_05_pwa_f6a7b8c9.plan.md` **v7.22.25** |
 | next | **next@16** + Serwist · next@15 0 |
 | Push 버스 | Phase0 **in-process** → push-dispatcher · NATS=Phase1+ |
-| 색 | Lux bg/principal · `#1A56FF` 금지 |
+| 색 | PUTDUK bg/principal · `#1A56FF` 금지 |
 | WebAuthn | 정책=Money §43.6 · UX=PWA §23.6 |
 | §24 | Store Bridge only · Infra pointer |
 | Admin | `pushEnabled` @ system-control |
@@ -414,7 +414,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | principal · 입금 딥링크 | Money **§49.2a** |
 | 홈 섹션·카피 | UI **§5.3a** · `T.feed.*` |
 | 유저별 숨김/핀/마진/수익 | Admin **§9.8.9** · `user-opportunity-override.v1` |
-| 시각 SSOT | Canon + Lux + Brand Kit ready **만** · `docs/mockups` **0** · `assets/ai-profit-os-*.png` **0** |
+| 시각 SSOT | Canon + PUTDUK + Brand Kit ready **만** · `docs/mockups` **0** · `assets/ai-profit-os-*.png` **0** |
 | 검증 | `verify:balance-aware-feed` · `verify:admin-user-opportunity-override` |
 
 ### 5k. 매칭 성공 조절 (v7.22.23 · 중복0)
@@ -503,7 +503,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | Stage A/B 필드 | Infra §51.9.1 | withdraw/KYC 게이트 |
 | `/ads` alias | Infra §31.2a | `/l/*` canonical |
 | 3초 랜딩 예산 | Infra §31.2b + Canon `landing-3s` | CAPI §31 |
-| KYC Lux 3면·제출 | Money §42 + Canon `kyc-*` | UI wire only |
+| KYC PUTDUK 3면·제출 | Money §42 + Canon `kyc-*` | UI wire only |
 | 금지 | RRN 타이핑 · 성별 필드 · `/ads` 이중 페이지 | — |
 
 ---
@@ -646,7 +646,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 ### 0.6 UI 착수 전 실측 (v7.22.46 골격 · **v7.22.50 PASS** · `ui-preflight-constitution`)
 
 > **Owns:** UI 플랜 §0.6 = v7.22 상세 이력 · `market-partner-trust-surfaces`→PART9→`trust-age-spotcheck` 포인터는 v7.23 R0가 supersede.
-> **방법(2026-08-10):** Supabase MCP `list_tables` + 레포 FS(CONSTITUTION 29·Canon 28·lux-fintech·ebay-adapter gap) + Money/Engine YAML + CATALOG  
+> **방법(2026-08-10):** Supabase MCP `list_tables` + 레포 FS(CONSTITUTION 29·Canon 28·pd-fintech·ebay-adapter gap) + Money/Engine YAML + CATALOG  
 > **선행(v7.22.49 충족 · 재확인):** 01 Money `money-user-benefits-read` **completed** + 02 Engine Pre-UI Gate(E-R1~E-R8) **pending 0**
 
 | 대상 | 실측 (2026-08-10 CLOSE) | UI 함의 |
@@ -677,7 +677,7 @@ CI: `pnpm verify:brand-consumer` (apps/web · packages/ui/copy 에서 retired **
 | U3 | composer mega todo | → Grok 256K PART0~8 |
 | U4 | Admin missions/partners/G4/coach todo 공백 | → Admin YAML 4 todo 추가 |
 | U5 | BOOTSTRAP 다음 todo stale | → `ui-preflight-constitution`(본 CLOSE로 해소) |
-| U13 | §6.2/§33.1 hex ≠ `lux-fintech.ts` | → plan 표=코드 미러 · 구 neon 표 폐기 |
+| U13 | §6.2/§33.1 hex ≠ `pd-fintech.ts` | → plan 표=코드 미러 · 구 neon 표 폐기 |
 | U14 | §29.6이 realtime-service Phase0 가정 | → Phase1+ 인터페이스 · Phase0=polling 훅 |
 | U15 | eBay 실사진 DB 미도달 미기록 | → Engine YAML `engine-ebay-identity-match-ingest` + §0.10 · v7.22 예외2 이력 · v7.23 R1 선행 |
 

@@ -11,26 +11,26 @@ export default function Page() {
     <AccountFrame title={T.legal.hubTitle} view="ready" testId="legal-hub" hideTitle>
     <main className={styles.surface}>
       <h1 className="text-xl font-semibold">{T.legal.hubTitle}</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">{T.operator.legal.body}</p>
-      <p className="mt-3 text-sm text-lux-text-muted">{T.operator.legal.licenseLine}</p>
+      <p className="mt-2 text-sm text-pd-text-muted">{T.operator.legal.body}</p>
+      <p className="mt-3 text-sm text-pd-text-muted">{T.operator.legal.licenseLine}</p>
       <ul className="mt-6 space-y-2 text-sm">
         <li>
-          <Link href="/me/legal/terms" className="text-lux-accent underline">
+          <Link href="/me/legal/terms" className="text-pd-accent underline">
             {T.legal.termsTitle}
           </Link>
         </li>
         <li>
-          <Link href="/me/legal/privacy" className="text-lux-accent underline">
+          <Link href="/me/legal/privacy" className="text-pd-accent underline">
             {T.legal.privacyTitle}
           </Link>
         </li>
         <li>
-          <Link href="/me/legal/oss" className="text-lux-accent underline">
+          <Link href="/me/legal/oss" className="text-pd-accent underline">
             {T.legal.ossTitle}
           </Link>
         </li>
         <li>
-          <Link href="/me/legal/license" className="text-lux-accent underline">
+          <Link href="/me/legal/license" className="text-pd-accent underline">
             {T.legal.licenseTitle}
           </Link>
         </li>

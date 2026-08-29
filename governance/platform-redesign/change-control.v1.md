@@ -83,7 +83,7 @@ R0 종료 시 아래 10항목은 **변경 시 최소 L2** (해당 시 L3) 절차
 | 2 | Fact inventory | L2 | `00` · `fact-state-registry` |
 | 3 | API boundary | L2→L3(money/auth) | `01`/`02`/`06` |
 | 4 | state model (view ⊥ domain FSM) | L2 | `00` + domain |
-| 5 | token hierarchy | L2 | `03` · Lux / `peotteok-light` |
+| 5 | token hierarchy | L2 | `03` · PUTDUK / `peotteok-light` |
 | 6 | asset pipeline | L2 | `03` · Brand Kit |
 | 7 | auth boundary | L3 | `06` · Nest JWT |
 | 8 | money invariant | L3 | `01` · ledger / buckets |
@@ -185,12 +185,12 @@ change reason
 |---|---|
 | changeId | `cc.adr017.peotteok-light` |
 | level | **L3** |
-| before | Lux Dark(`lux-dark`) 중심 개발자/트레이딩 톤 · dual theme/toggle 잔존 가능 가정 |
-| after | 출시 SSOT = **`peotteok-light` Light+Purple 단일 테마** · Lux Dark = archive/legacy · dual toggle **0** |
-| 영향 | tokens/`peotteok-light` · PWA theme · `verify:dark-leak-guard` · `verify:lux-theme-sync` · Home Visual/Impl Contract · prefers-color-scheme 강제 0 |
-| rollback | archive `lux-dark` 참조 재활성 **금지 기본** · 필요 시 L3 재승인 후에만 · known-good = ADR-017 Accepted + Contract STEP3 LOCK |
+| before | PUTDUK Dark(`pd-dark`) 중심 개발자/트레이딩 톤 · dual theme/toggle 잔존 가능 가정 |
+| after | 출시 SSOT = **`peotteok-light` Light+Purple 단일 테마** · PUTDUK Dark = archive/legacy · dual toggle **0** |
+| 영향 | tokens/`peotteok-light` · PWA theme · `verify:dark-leak-guard` · `verify:putduk-theme-sync` · Home Visual/Impl Contract · prefers-color-scheme 강제 0 |
+| rollback | archive `pd-dark` 참조 재활성 **금지 기본** · 필요 시 L3 재승인 후에만 · known-good = ADR-017 Accepted + Contract STEP3 LOCK |
 | 승인 증거 | `packages/ui/canon/contracts/ADR-017-peotteok-home-light-theme.md` Status=Accepted · Founder 3 LOCKS (A/B/C) · Conflict Resolution Founder ACK · Implementation Contract STEP3 APPROVED/LOCKED · Index v7.23 §2 표 |
-| relatedVerify | `dark-leak-guard` · `lux-theme-sync` · `canon-surfaces` · `mockup-governance` |
+| relatedVerify | `dark-leak-guard` · `pd-theme-sync` · `canon-surfaces` · `mockup-governance` |
 
 ### 6.2 IA — 5탭 새 라벨
 

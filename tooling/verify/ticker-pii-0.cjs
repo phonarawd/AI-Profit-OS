@@ -31,7 +31,7 @@ if (!fs.existsSync(schemaPath)) {
   }
 }
 
-const tickerComp = read("packages/ui/components/lux/LivePayoutTicker.tsx");
+const tickerComp = read("packages/ui/components/pd/LivePayoutTicker.tsx");
 for (const needle of [
   "LivePayoutTicker",
   "displayLabel",
@@ -56,7 +56,7 @@ if (/export type PublicTickerEvent[\s\S]*?\n};/.test(tickerComp)) {
   }
 }
 
-const countUp = read("packages/ui/components/lux/CountUpNumber.tsx");
+const countUp = read("packages/ui/components/pd/CountUpNumber.tsx");
 if (!countUp.includes('source: "settlement.completed"')) {
   fails.push("CountUpNumber must require source settlement.completed");
 }
@@ -64,7 +64,7 @@ if (!countUp.includes("data-countup-source")) {
   fails.push("CountUpNumber missing data-countup-source");
 }
 
-const counter = read("packages/ui/components/lux/HomePayoutCounter.tsx");
+const counter = read("packages/ui/components/pd/HomePayoutCounter.tsx");
 for (const needle of [
   "HomePayoutCounter",
   'data-testid="home-payout-counter"',

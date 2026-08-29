@@ -127,7 +127,7 @@ export function PeotteokChat({
       data-canon="peotteok-chat"
       data-font-scale={fontScale}
       data-tone-band={toneBand ?? "mid"}
-      className={`mx-auto flex max-w-lg flex-col gap-4 text-lux-text ${className}`.trim()}
+      className={`mx-auto flex max-w-lg flex-col gap-4 text-pd-text ${className}`.trim()}
     >
       <div data-block="brand">
         <BrandMark size="compact" />
@@ -138,14 +138,14 @@ export function PeotteokChat({
           {T.peotteok.chatTitle}
         </h1>
         <p
-          className="text-xs text-lux-text-muted"
+          className="text-xs text-pd-text-muted"
           data-block="disclaimer"
           data-emoji-cap="0"
         >
           {T.peotteok.laneDisclaimer}
         </p>
         <p
-          className="text-xs text-lux-text-muted"
+          className="text-xs text-pd-text-muted"
           data-voice-pace={toneBand ?? "mid"}
         >
           {paceLine(toneBand)}
@@ -155,7 +155,7 @@ export function PeotteokChat({
       <div
         data-block="log"
         data-testid="peotteok-log"
-        className="min-h-[220px] space-y-3 rounded-lux-md border border-lux-border bg-lux-elevated/40 p-3"
+        className="min-h-[220px] space-y-3 rounded-pd-md border border-pd-border bg-pd-elevated/40 p-3"
         aria-label={T.peotteok.log}
       >
         {showGreeting ? (
@@ -175,10 +175,10 @@ export function PeotteokChat({
             data-lane={m.lane ?? ""}
             data-degraded={m.degraded ? "1" : "0"}
             className={[
-              "rounded-lux-md px-3 py-2 text-sm",
+              "rounded-pd-md px-3 py-2 text-sm",
               m.role === "user"
-                ? "ml-8 bg-lux-accent/15"
-                : "mr-4 bg-lux-bg/60",
+                ? "ml-8 bg-pd-accent/15"
+                : "mr-4 bg-pd-bg/60",
             ].join(" ")}
           >
             <p className="whitespace-pre-wrap">
@@ -192,14 +192,14 @@ export function PeotteokChat({
                 href={m.deepLink}
                 data-testid="peotteok-s-deeplink"
                 data-action="withdraw-ui"
-                className="mt-2 inline-block text-sm font-medium text-lux-accent underline"
+                className="mt-2 inline-block text-sm font-medium text-pd-accent underline"
               >
                 {T.peotteok.voice.refuseS}
               </a>
             ) : null}
             {m.degraded && m.text ? (
               <p
-                className="mt-1 text-xs text-lux-warning"
+                className="mt-1 text-xs text-pd-warning"
                 data-degrade="busy"
                 data-copy="T.peotteok.llmBusy"
               >
@@ -220,7 +220,7 @@ export function PeotteokChat({
             data-chip-id={chip.id}
             data-lane="P"
             disabled={busy}
-            className="rounded-lux-md border border-lux-border px-3 py-1.5 text-xs text-lux-text disabled:opacity-50"
+            className="rounded-pd-md border border-pd-border px-3 py-1.5 text-xs text-pd-text disabled:opacity-50"
             onClick={() => submit(chip.prompt)}
           >
             {chipLabel(chip.labelKey)}
@@ -243,14 +243,14 @@ export function PeotteokChat({
           placeholder={T.peotteok.placeholder}
           disabled={busy}
           data-testid="peotteok-input"
-          className="min-w-0 flex-1 rounded-lux-md border border-lux-border bg-lux-bg px-3 py-2 text-sm text-lux-text placeholder:text-lux-text-muted"
+          className="min-w-0 flex-1 rounded-pd-md border border-pd-border bg-pd-bg px-3 py-2 text-sm text-pd-text placeholder:text-pd-text-muted"
           autoComplete="off"
         />
         <button
           type="submit"
           disabled={busy || !draft.trim()}
           data-testid="peotteok-send"
-          className="rounded-lux-md bg-lux-accent px-4 py-2 text-sm font-semibold text-lux-bg disabled:opacity-50"
+          className="rounded-pd-md bg-pd-accent px-4 py-2 text-sm font-semibold text-pd-bg disabled:opacity-50"
         >
           {T.peotteok.send}
         </button>

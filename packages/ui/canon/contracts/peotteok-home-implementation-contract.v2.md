@@ -105,9 +105,9 @@ old presentation runtime reference = 0 · new Home presentation runtime = 1
 | 13 | `packages/ui/components/shell/BottomNav5.tsx` | **전역** 반응형 sidebar(desktop)↔bottomnav(mobile) 단일 컴포넌트, IA 5탭, 인라인 `✦` 브랜드 마크, invite 카드 | `usePathname` | 없음 | **REWIRE** | H1과 동일. 실측 확인: `BrandMark.tsx`를 import하지 않고 **자체 인라인 `✦` span**을 그림(별도 파일) — legacy 마크 위치는 이 파일 67~78행, `BrandMark.tsx`가 아님(정정) | 반응형 골격/IA: NO_CHANGE(MATCH) · `✦` 인라인 마크: §19 결정 대기, 대체 전까지 유지 |
 | 14 | `packages/ui/components/shell/SiteFooter.tsx` | **전역** 푸터: operator 법적 고지 2줄만 | `T.operator.footer`, `T.legal.operator` | 없음 | **KEEP** | H1은 INVESTIGATE(파트너 스트립 포함 추정)였으나 실측 결과 **파트너 스트립은 이 파일에 없음**(그건 `BalanceAwareHome`의 `MarketPartnerTrustStrip`) — SiteFooter는 순수 법적 텍스트뿐, Home Visual Master 스크린샷 범위와 무관(정정: INVESTIGATE→KEEP) | NO_CHANGE |
 | 15 | `packages/ui/components/shell/HomeChromeContext.tsx` | scanStatus 값을 `AppHeader`↔`HomeExperience` 사이에 전달하는 Context | 없음 | 없음 | **KEEP** | 순수 유틸리티, 시각 요소 0, 로직 정확 | NO_CHANGE(단, §9 AI summary 신규 도입 시 scan-status 중복 표시 위험은 §17에서 별도 확인) |
-| 16 | `packages/ui/components/home/HomeSessionBanner.tsx` | guest/expired 배너(제목+본문+로그인 CTA) | `T.home.session.*` | 없음 | **REWIRE** | H1 미언급 파일(직접 실측으로 발견) — 로직 단순·정확, 현재 스타일(`rounded-lux-xl`/`shadow-lux-soft`)이 새 카드 지오메트리 방향과 충돌 없어 보임 | 로직 보존, 카드 시각만 새 카드 스타일과 정합 확인(경미) |
+| 16 | `packages/ui/components/home/HomeSessionBanner.tsx` | guest/expired 배너(제목+본문+로그인 CTA) | `T.home.session.*` | 없음 | **REWIRE** | H1 미언급 파일(직접 실측으로 발견) — 로직 단순·정확, 현재 스타일(`rounded-pd-xl`/`shadow-pd-soft`)이 새 카드 지오메트리 방향과 충돌 없어 보임 | 로직 보존, 카드 시각만 새 카드 스타일과 정합 확인(경미) |
 | 17 | `packages/ui/lib/format-usdt.ts` | 순수 포맷터 | 없음 | 없음 | **KEEP** | 순수 함수, 시각/기능 변경 대상 아님 | NO_CHANGE |
-| 18 | `packages/ui/components/lux/HomePayoutCounter.tsx` / `LivePayoutTicker.tsx` | 카운터/티커(현재 `mode="off"`) | Growth 도메인, C01 lock | 없음 | **KEEP** | H1과 동일. `verify:home-live-wire`가 `data-ledger-unit="count"`·USDT suffix 금지를 하드 검사 — 절대 건드리지 않음 | NO_CHANGE |
+| 18 | `packages/ui/components/pd/HomePayoutCounter.tsx` / `LivePayoutTicker.tsx` | 카운터/티커(현재 `mode="off"`) | Growth 도메인, C01 lock | 없음 | **KEEP** | H1과 동일. `verify:home-live-wire`가 `data-ledger-unit="count"`·USDT suffix 금지를 하드 검사 — 절대 건드리지 않음 | NO_CHANGE |
 | 19 | `packages/ui/components/loop/DayPulse.tsx`(sr-only 렌더) | DayPulse 데이터 sr-only 표시 | `DayPulseModel` | 없음 | **KEEP** | 시각 영향 0(`sr-only`), 기능 유지 | NO_CHANGE |
 | 20 | `packages/ui/components/product/ProductImage.tsx` | 상품 이미지 adapter(카드/썸네일 variant) | `assetImageUrl`/`assetIcon`/`assetImageSource` | 없음 | **KEEP**(H5 §16 REUSE) | 신규 제작 불필요, 기존 adapter로 충분 | NO_CHANGE |
 | 21 | `packages/ui/components/trust/MarketPartnerTrustStrip.tsx` | 파트너 신뢰 스트립(§38.10) | Brand markets manifest | 없음 | **REWIRE** | 존재·로직 보존, `BalanceAwareHome` 내 배치 위치만 새 레이아웃에 맞게 이동 가능 | 보존, 배치 위치만 H7 결정 |
@@ -125,7 +125,7 @@ apps/web/app/page.tsx
 packages/ui/components/shell/SiteFooter.tsx                 (H1: INVESTIGATE → 정정: KEEP)
 packages/ui/components/shell/HomeChromeContext.tsx
 packages/ui/lib/format-usdt.ts
-packages/ui/components/lux/HomePayoutCounter.tsx / LivePayoutTicker.tsx
+packages/ui/components/pd/HomePayoutCounter.tsx / LivePayoutTicker.tsx
 packages/ui/components/loop/DayPulse.tsx (sr-only render)
 packages/ui/components/product/ProductImage.tsx
 packages/ui/components/opportunity/CategoryFilterChips.tsx (파일 자체만 — /profits 공유)
@@ -389,7 +389,7 @@ Brand Assets Part B(`redesign-r1-home-visual-asset-production`)는 본 문서 �
 | Old opportunity cards(스킨) | **REPLACE**(스킨) / **REWIRE**(바인딩) | §3 #8 |
 | Old Mobile 프레젠테이션(단일 그리드, 캐러셀 없음) | **REPLACE** | §10 |
 | Old BottomNav 중복 위험 | **없음 확인**(단일 반응형 컴포넌트, 중복 인스턴스 없음) | §3 #13 |
-| Old CSS/classes(`home-hero__*`, `home-dashboard-grid` 등) | **INVESTIGATE**(H7이 재사용 가능한 이름은 유지, Hero 전용 클래스는 REMOVE 대상) | 실제 CSS 파일(`lux-theme.css`/`component.css`) 정밀 대조는 H7 |
+| Old CSS/classes(`home-hero__*`, `home-dashboard-grid` 등) | **INVESTIGATE**(H7이 재사용 가능한 이름은 유지, Hero 전용 클래스는 REMOVE 대상) | 실제 CSS 파일(`pd-theme.css`/`component.css`) 정밀 대조는 H7 |
 | Old imports(`HomeHero`/`HomeHeroIllustration` import 문) | **REMOVE**(HomeExperience 교체 시 자동 제거) | §3 #3/#4/#5 |
 | Old actions bound only to legacy presentation | **없음 확인** — 실측 결과 모든 액션(deposit/participate/notification)이 데이터 계층에 바인딩되어 있고 legacy presentation에만 종속된 액션은 발견되지 않음 | §15 |
 

@@ -8,7 +8,7 @@
 | 주제 | 잠금 |
 |------|------|
 | KYC 목적 | **출금 1회 게이트** only · 가입 필수 KYC 아님 |
-| Surfaces | `/me/kyc` · Canon `kyc-*` · Lux 3면 |
+| Surfaces | `/me/kyc` · Canon `kyc-*` · PUTDUK 3면 |
 | Toast / redirect | 미완료 출금 시 KYC로 자동 이동 |
 | 서류 | R2 only · RRN 타이핑 **금지** · 성별 필드 **금지** |
 | Admin | `/admin/compliance?tab=kyc` 승인/거절 큐 |

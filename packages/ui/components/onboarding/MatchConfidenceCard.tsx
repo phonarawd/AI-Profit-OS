@@ -34,7 +34,7 @@ export function MatchConfidenceCard() {
       <h2 className="mt-3 text-center text-base font-semibold">
         {T.onboarding.matchTitle}
       </h2>
-      <p className="mt-1 text-center text-sm text-lux-text-muted">
+      <p className="mt-1 text-center text-sm text-pd-text-muted">
         {T.onboarding.matchHint}
       </p>
     </section>

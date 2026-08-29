@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { T } from "../../copy/ko";
 import { BrandMark } from "../brand/BrandMark";
-import { TouchButton } from "../lux/TouchButton";
+import { TouchButton } from "../../primitives/Button";
 import { isKakaoOAuthReady, kakaoStartHref } from "./kakao-ready";
 
 export type AuthSignupRuntimeInput = {
@@ -76,10 +76,10 @@ export function AuthSignup({
     >
       <BrandMark size="compact" />
       <header className="space-y-2 text-center">
-        <h1 className="text-xl font-semibold text-lux-text">
+        <h1 className="text-xl font-semibold text-pd-text">
           {T.auth.signupHeadline}
         </h1>
-        <p className="text-sm text-lux-text-muted">{T.auth.signupSub}</p>
+        <p className="text-sm text-pd-text-muted">{T.auth.signupSub}</p>
       </header>
 
       <div className="flex flex-col gap-3">
@@ -109,14 +109,14 @@ export function AuthSignup({
             </TouchButton>
             {!kakaoReady ? (
               <p
-                className="text-center text-xs text-lux-text-muted"
+                className="text-center text-xs text-pd-text-muted"
                 data-testid="auth-kakao-unavailable"
               >
                 {T.auth.kakaoUnavailable}
               </p>
             ) : (
               <p
-                className="text-center text-xs text-lux-text-muted"
+                className="text-center text-xs text-pd-text-muted"
                 data-testid="auth-terms-needed"
               >
                 {T.auth.termsNeeded}
@@ -152,7 +152,7 @@ export function AuthSignup({
             className="flex flex-col gap-1 text-sm"
             data-testid="auth-email-fields"
           >
-            <span className="text-lux-text-muted">{T.auth.emailForm}</span>
+            <span className="text-pd-text-muted">{T.auth.emailForm}</span>
             <input
               type="email"
               name="email"
@@ -161,7 +161,7 @@ export function AuthSignup({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={T.auth.emailPlaceholder}
-              className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
+              className="touch-target rounded-pd-md border border-pd-border bg-pd-surface px-3 text-pd-text"
             />
           </label>
           <TouchButton
@@ -190,7 +190,7 @@ export function AuthSignup({
             {T.auth.termsRequired}{" "}
             <a
               href="/me/legal"
-              className="text-lux-principal underline-offset-2 hover:underline"
+              className="text-pd-principal underline-offset-2 hover:underline"
             >
               {T.legal.termsTitle}
             </a>
@@ -207,25 +207,25 @@ export function AuthSignup({
           <span>{T.auth.marketingOptional}</span>
         </label>
         <label className="flex flex-col gap-1" data-testid="auth-referral">
-          <span className="text-lux-text-muted">{T.auth.referralCode}</span>
+          <span className="text-pd-text-muted">{T.auth.referralCode}</span>
           <input
             type="text"
             name="referralCode"
             value={referral}
             onChange={(e) => setReferral(e.target.value)}
             autoComplete="off"
-            className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
+            className="touch-target rounded-pd-md border border-pd-border bg-pd-surface px-3 text-pd-text"
           />
         </label>
       </div>
 
       {error ? (
-        <p role="alert" aria-live="assertive" className="text-center text-sm text-lux-text">
+        <p role="alert" aria-live="assertive" className="text-center text-sm text-pd-text">
           {error}
         </p>
       ) : null}
       {note ? (
-        <p role="status" aria-live="polite" className="text-center text-sm text-lux-text-muted">
+        <p role="status" aria-live="polite" className="text-center text-sm text-pd-text-muted">
           {note}
         </p>
       ) : null}
@@ -233,7 +233,7 @@ export function AuthSignup({
       <p className="text-center text-sm">
         <a
           href="/auth/login"
-          className="text-lux-principal underline-offset-2 hover:underline"
+          className="text-pd-principal underline-offset-2 hover:underline"
         >
           {T.auth.toLogin}
         </a>

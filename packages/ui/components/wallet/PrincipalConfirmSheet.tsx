@@ -35,23 +35,23 @@ export function PrincipalConfirmSheet({
       role="dialog"
       aria-modal="true"
       data-testid="principal-confirm-sheet"
-      className="fixed inset-x-0 bottom-0 z-50 rounded-t-lux-lg border border-lux-border bg-lux-surface p-6 shadow-lg"
+      className="fixed inset-x-0 bottom-0 z-50 rounded-t-pd-lg border border-pd-border bg-pd-surface p-6 shadow-lg"
     >
-      <h2 className="text-lg font-semibold text-lux-text">
+      <h2 className="text-lg font-semibold text-pd-text">
         {T.withdrawMode.confirmTitle}
       </h2>
-      <p className="mt-2 text-sm text-lux-text-muted">
+      <p className="mt-2 text-sm text-pd-text-muted">
         {T.withdrawMode.confirmBody}
       </p>
       {nearMissCount > 0 ? (
         <p
-          className="mt-2 text-sm text-lux-warning"
+          className="mt-2 text-sm text-pd-warning"
           data-testid="principal-near-miss"
         >
           {nearMissCount}
         </p>
       ) : null}
-      <p className="mt-3 text-sm text-lux-text">
+      <p className="mt-3 text-sm text-pd-text">
         {T.withdrawMode.confirmSelfOnly}
       </p>
       <div className="mt-6 flex flex-col gap-2">
@@ -59,7 +59,7 @@ export function PrincipalConfirmSheet({
           type="button"
           data-testid="cta-profit-only"
           onClick={onChooseProfitOnly}
-          className="rounded-lux-md bg-lux-accent px-4 py-3 text-sm font-semibold text-lux-bg"
+          className="rounded-pd-md bg-pd-accent px-4 py-3 text-sm font-semibold text-pd-bg"
         >
           {T.withdrawMode.ctaProfitOnly}
         </button>
@@ -68,7 +68,7 @@ export function PrincipalConfirmSheet({
           data-testid="cta-still-principal"
           data-principal-reachable="true"
           onClick={() => onConfirmPrincipal(makePrincipalConfirmToken())}
-          className="rounded-lux-md border border-lux-border px-4 py-3 text-sm text-lux-text"
+          className="rounded-pd-md border border-pd-border px-4 py-3 text-sm text-pd-text"
         >
           {T.withdrawMode.ctaStillPrincipal}
         </button>

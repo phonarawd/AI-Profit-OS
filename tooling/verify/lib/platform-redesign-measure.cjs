@@ -80,10 +80,26 @@ function measure(root) {
   const tabBlock = webRoutesSrc.match(
     /export const USER_TABS\s*=\s*\[([\s\S]*?)\]\s*as const/,
   );
-  if (!tabBlock) throw new Error("USER_TABS missing");
-  const userTabs = [...tabBlock[1].matchAll(/href:\s*"([^"]+)"/g)].map(
-    (m) => m[1],
-  );
+  let userTabs = tabBlock
+    ? [...tabBlock[1].matchAll(/href:\s*"([^"]+)"/g)].map((m) => m[1])
+    : [];
+  if (userTabs.length === 0) {
+    if (!webRoutesSrc.includes("USER_TABS")) throw new Error("USER_TABS missing");
+    const navSrc = fs.readFileSync(
+      path.join(root, "packages/ui/navigation/consumer-navigation.ts"),
+      "utf8",
+    );
+    const dest = {};
+    for (const m of navSrc.matchAll(
+      /(\w+):\s*\{\s*id:\s*"[^"]+",\s*href:\s*"([^"]+)"/g,
+    )) {
+      dest[m[1]] = m[2];
+    }
+    userTabs = [...navSrc.matchAll(/href:\s*CONSUMER_DESTINATIONS\.(\w+)\.href/g)]
+      .map((m) => dest[m[1]])
+      .filter(Boolean);
+  }
+  if (userTabs.length === 0) throw new Error("USER_TABS missing");
   const nestedMatch = webRoutesSrc.match(
     /USER_NESTED_ROUTES\s*=\s*\[([\s\S]*?)\]\s*as const/,
   );

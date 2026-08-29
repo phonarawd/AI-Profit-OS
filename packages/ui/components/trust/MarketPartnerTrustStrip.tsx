@@ -40,9 +40,9 @@ export function MarketPartnerTrustStrip({
       role="group"
       aria-label={headline}
     >
-      <p className="text-sm text-lux-text">{headline}</p>
+      <p className="text-sm text-pd-text">{headline}</p>
       {variant === "default" ? (
-        <p className="text-xs text-lux-text-muted">{T.trust.partners.stripSub}</p>
+        <p className="text-xs text-pd-text-muted">{T.trust.partners.stripSub}</p>
       ) : null}
       <ul
         className="flex flex-wrap items-center gap-3"
@@ -61,7 +61,7 @@ export function MarketPartnerTrustStrip({
               />
             ) : (
               <span
-                className="rounded-full border border-lux-border px-2.5 py-1 text-xs font-medium text-lux-text"
+                className="rounded-full border border-pd-border px-2.5 py-1 text-xs font-medium text-pd-text"
                 data-testid="market-partner-name-fallback"
               >
                 {logo.labelKo}
@@ -72,7 +72,7 @@ export function MarketPartnerTrustStrip({
       </ul>
       {readyCount === 0 ? (
         <p
-          className="text-xs text-lux-text-muted"
+          className="text-xs text-pd-text-muted"
           data-testid="market-partner-logos-blocked"
         >
           {T.trust.partners.legFootnote}

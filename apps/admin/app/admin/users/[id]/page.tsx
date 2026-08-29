@@ -143,12 +143,12 @@ function UserDetailInner() {
   }
 
   return (
-    <main className="p-6 text-lux-text" data-testid="admin-user-detail">
+    <main className="p-6 text-pd-text" data-testid="admin-user-detail">
       <h1 className="text-xl font-semibold">회원 정보</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">
+      <p className="mt-2 text-sm text-pd-text-muted">
         선택한 회원의 이용 상태와 서비스 설정을 확인합니다.
       </p>
-      <p className="mt-1 text-xs text-lux-text-muted">
+      <p className="mt-1 text-xs text-pd-text-muted">
         <a className="underline" href={`/admin/users/${userId}/finance`}>
           회원 입출금·수익 보기
         </a>
@@ -157,14 +157,14 @@ function UserDetailInner() {
       <div className="mt-4 flex gap-3 text-sm">
         <a
           href={`/admin/users/${userId}`}
-          className={tab === "summary" ? "font-semibold" : "text-lux-text-muted"}
+          className={tab === "summary" ? "font-semibold" : "text-pd-text-muted"}
         >
           요약
         </a>
         <a
           href={`/admin/users/${userId}?tab=opportunities`}
           className={
-            tab === "opportunities" ? "font-semibold" : "text-lux-text-muted"
+            tab === "opportunities" ? "font-semibold" : "text-pd-text-muted"
           }
           data-tab="opportunities"
         >
@@ -173,7 +173,7 @@ function UserDetailInner() {
         <a
           href={`/admin/users/${userId}?tab=membership`}
           className={
-            tab === "membership" ? "font-semibold" : "text-lux-text-muted"
+            tab === "membership" ? "font-semibold" : "text-pd-text-muted"
           }
           data-tab="membership"
         >
@@ -185,7 +185,7 @@ function UserDetailInner() {
         <section className="mt-6 space-y-3" data-surface="user-opportunity-override">
           <h2 className="text-base font-medium">이 회원에게 보여 줄 수익 기회</h2>
           <p
-            className="text-sm text-lux-text-muted"
+            className="text-sm text-pd-text-muted"
             data-lock="ledger-immutable"
             data-audit="admin.user.opportunity_override.upsert"
           >
@@ -196,26 +196,26 @@ function UserDetailInner() {
               <li
                 key={b.key}
                 data-override-field={b.key}
-                className="rounded border border-lux-border px-2 py-1"
+                className="rounded border border-pd-border px-2 py-1"
               >
                 {b.label}
               </li>
             ))}
           </ul>
-          <p className="text-sm text-lux-text-muted" data-rbac="userOpportunityOverride">
+          <p className="text-sm text-pd-text-muted" data-rbac="userOpportunityOverride">
             변경은 허용된 관리자만 할 수 있습니다. 고객지원 담당자는 확인만 할 수 있습니다.
           </p>
           {!overrides ? (
-            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : overrides.ok ? (
             overrideItems.length === 0 ? (
-              <p className="text-sm text-lux-text-muted">조정 항목이 없습니다.</p>
+              <p className="text-sm text-pd-text-muted">조정 항목이 없습니다.</p>
             ) : (
               <ul className="space-y-2 text-sm">
                 {overrideItems.map((item, idx) => (
                   <li
                     key={String(item.opportunityId ?? idx)}
-                    className="rounded border border-lux-border p-2"
+                    className="rounded border border-pd-border p-2"
                   >
                     <AdminTruth value={readText(item.opportunityId)} />
                   </li>
@@ -228,7 +228,7 @@ function UserDetailInner() {
         </section>
       ) : tab === "membership" ? (
         <section className="mt-6 space-y-4" data-surface="user-membership">
-          <p className="text-sm text-lux-text-muted">
+          <p className="text-sm text-pd-text-muted">
             회원 등급과 이 회원에게 수익 기회를 보여 줄 기준을 확인합니다.
           </p>
 
@@ -253,7 +253,7 @@ function UserDetailInner() {
                 <li
                   key={m.id}
                   data-membership={m.id}
-                  className="rounded border border-lux-border px-2 py-1"
+                  className="rounded border border-pd-border px-2 py-1"
                 >
                   {m.label}
                 </li>
@@ -267,7 +267,7 @@ function UserDetailInner() {
                 id="force-membership"
                 value={forceTarget}
                 onChange={(e) => setForceTarget(e.target.value)}
-                className="rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+                className="rounded border border-pd-border bg-pd-bg px-2 py-1 text-sm"
               >
                 {membershipIds.map((m) => (
                   <option key={m.id} value={m.id}>
@@ -282,38 +282,38 @@ function UserDetailInner() {
                 id="force-reason"
                 value={forceReason}
                 onChange={(e) => setForceReason(e.target.value)}
-                className="w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+                className="w-full max-w-md rounded border border-pd-border bg-pd-bg px-2 py-1 text-sm"
               />
               <button
                 type="submit"
-                className="rounded bg-lux-elevated px-3 py-1 text-sm"
+                className="rounded bg-pd-elevated px-3 py-1 text-sm"
               >
                 등급 반영
               </button>
               {forceNote ? (
-                <p className="text-sm text-lux-text-muted" role="status">{forceNote}</p>
+                <p className="text-sm text-pd-text-muted" role="status">{forceNote}</p>
               ) : null}
             </form>
             <p
-              className="text-sm text-lux-text-muted"
+              className="text-sm text-pd-text-muted"
               data-field="adminForce"
               data-audit="admin.user.membership.force"
             >
               바꾸기 전에 한 번 더 확인하며, 이유를 10자 이상 남겨야 합니다. 등급은 자동으로 내려가지 않습니다.
             </p>
-            <p className="text-sm text-lux-text-muted" data-rbac="userMembershipForce">
+            <p className="text-sm text-pd-text-muted" data-rbac="userMembershipForce">
               등급 변경은 허용된 관리자만 할 수 있습니다.
             </p>
           </div>
 
           <div className="space-y-2" data-block="membershipObserve">
             <h2 className="text-base font-medium">최근 이용 정보</h2>
-            <p className="text-sm text-lux-text-muted">아래 정보는 확인만 할 수 있습니다.</p>
+            <p className="text-sm text-pd-text-muted">아래 정보는 확인만 할 수 있습니다.</p>
             <ul className="flex flex-wrap gap-2 text-sm">
               <li
                 data-kpi="fulfillRate7d"
                 data-readonly="true"
-                className="rounded border border-lux-border px-2 py-1"
+                className="rounded border border-pd-border px-2 py-1"
               >
                 요즘 조건이 맞은 비율{" "}
                 <AdminTruth
@@ -326,7 +326,7 @@ function UserDetailInner() {
               </li>
               <li
                 data-field="dailyMatchesUsed"
-                className="rounded border border-lux-border px-2 py-1"
+                className="rounded border border-pd-border px-2 py-1"
               >
                 오늘 보여 준 기회 / 하루 한도{" "}
                 <AdminTruth
@@ -341,14 +341,14 @@ function UserDetailInner() {
               </li>
               <li
                 data-field="maxCapitalBand"
-                className="rounded border border-lux-border px-2 py-1"
+                className="rounded border border-pd-border px-2 py-1"
               >
                 이용 가능한 금액 범위{" "}
                 <AdminTruth value={readText(membershipRow?.maxCapitalBand)} />
               </li>
             </ul>
             <p
-              className="text-sm text-lux-text-muted"
+              className="text-sm text-pd-text-muted"
               data-forbid="fulfillRate_as_rule_input"
             >
               최근 조건이 맞은 비율은 참고 정보이며 수익 기회를 자동으로 결정하는 데 쓰지 않습니다.
@@ -364,21 +364,21 @@ function UserDetailInner() {
                   key={s.id}
                   data-field="matchStrictnessOverride"
                   data-strictness={s.id}
-                  className="rounded border border-lux-border px-2 py-1"
+                  className="rounded border border-pd-border px-2 py-1"
                 >
                   {s.label}
                 </li>
               ))}
             </ul>
             <p
-              className="text-sm text-lux-text-muted"
+              className="text-sm text-pd-text-muted"
               data-preview="effectivePolicy"
               data-audit="admin.user.match_policy.updated"
             >
               적용될 최소 수익, 가격 확인 시간, 하루 기회 수를 바꾸기 전에 미리 확인합니다.
             </p>
             <p
-              className="text-sm text-lux-text-muted"
+              className="text-sm text-pd-text-muted"
               data-forbid="successRatePercent"
               data-rbac="userMatchPolicy"
             >
@@ -386,13 +386,13 @@ function UserDetailInner() {
             </p>
           </div>
 
-          <p className="text-sm text-lux-text-muted" data-lock="ledger-immutable">
+          <p className="text-sm text-pd-text-muted" data-lock="ledger-immutable">
             회원 등급을 바꿔도 실제 잔액과 돈의 이동 기록은 바뀌지 않으며, 수익 성공을 보장하지 않습니다.
           </p>
         </section>
       ) : (
         <section className="mt-6 space-y-3 text-sm">
-          <p className="text-lux-text-muted">
+          <p className="text-pd-text-muted">
             위 메뉴에서 이 회원에게 보여 줄 수익 기회와 회원 등급을 확인할 수 있습니다.
           </p>
           <div>

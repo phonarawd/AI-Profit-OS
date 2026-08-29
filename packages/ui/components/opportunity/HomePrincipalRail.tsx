@@ -119,7 +119,7 @@ export function HomePrincipalRail({
             </p>
           ) : (
             <p
-              className="home-money__value home-money__value--balance text-lux-text-muted"
+              className="home-money__value home-money__value--balance text-pd-text-muted"
               data-testid="home-principal-absent"
             >
               {principal.text}
@@ -142,7 +142,7 @@ export function HomePrincipalRail({
             </p>
           ) : (
             <p
-              className="home-money__value home-money__value--profit text-lux-text-muted"
+              className="home-money__value home-money__value--profit text-pd-text-muted"
               data-testid="home-today-possible-absent"
             >
               {profit.text}

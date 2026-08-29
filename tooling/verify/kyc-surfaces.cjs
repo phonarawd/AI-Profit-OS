@@ -1,6 +1,6 @@
 /**
  * verify:kyc-surfaces — UI §6.4d PART6a · Money §42 pointer
- * Canon kyc-guide / kyc-doc-capture / kyc-confirm · Lux 3면 · RRN type-in 0
+ * Canon kyc-guide / kyc-doc-capture / kyc-confirm · PUTDUK 3면 · RRN type-in 0
  */
 const fs = require("fs");
 const path = require("path");

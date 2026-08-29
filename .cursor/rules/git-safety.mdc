@@ -17,6 +17,7 @@ alwaysApply: true
 | T0 | `verify:gate:fast` · Husky pre-commit · Cursor commit | 빠른 차단 |
 | T1 | `verify:gate:push` · Husky pre-push · Cursor push | 슬라이스 품질 |
 | T2 | `verify:gate` · GitHub `gate.yml` | main 최종 판정 |
+| **이 PC 대체** | `node tooling/verify/cloud-dispatch.cjs` · `Cloud verify` | 로컬 install/gate 불가 시 T0~T2+cf+responsive |
 
 시점 판단 = `git-auto-commit-push.mdc` (슬라이스=commit · push=stop/명시).
 
@@ -32,7 +33,7 @@ alwaysApply: true
 
 에이전트가 `git push`를 실행했으면 **같은 턴에서** 끊지 말고:
 
-1. `gh run list --branch <현재브랜치> --workflow gate.yml --limit 1` 로 run id 확인  
+1. `gh run list --branch <현재브랜치> --workflow cloud-verify.yml --limit 1` 와 `gate.yml` run id 확인  
 2. `gh run watch <id> --exit-status` 로 **끝날 때까지** 감시  
 3. **success** → 유저에게 CI green 보고  
 4. **failure/cancelled** → 즉시 수정 → T1 push gate → commit → push → **다시 2번**

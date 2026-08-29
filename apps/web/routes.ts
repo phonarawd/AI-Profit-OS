@@ -1,19 +1,8 @@
-/**
- * User IA lock — ADR-017 · peotteok-home-visual-contract §2.2
- * verify:ia-tabs reads this file.
- * Routes kept for PART9 compatibility; labels replaced (내거래 → 수익).
- */
-export const USER_TABS = [
-  { order: 1, icon: "🏠", label: "홈", href: "/" },
-  { order: 2, icon: "✨", label: "기회", href: "/profits" },
-  { order: 3, icon: "📈", label: "수익", href: "/trades" },
-  { order: 4, icon: "💰", label: "지갑", href: "/wallet" },
-  { order: 5, icon: "👤", label: "내정보", href: "/me" },
-] as const;
+import { USER_TABS as NAV_TABS, LAUNCH_HIDDEN_HREFS } from "@aipo/ui/navigation/consumer-navigation";
 
+export const USER_TABS = NAV_TABS;
 export type UserTabHref = (typeof USER_TABS)[number]["href"];
 
-/** Nested routes (5탭 밖 · 탭 추가 금지) · PART5b lock */
 export const USER_NESTED_ROUTES = [
   "/wallet/deposit",
   "/wallet/withdraw",
@@ -31,8 +20,6 @@ export const USER_NESTED_ROUTES = [
   "/me/membership",
   "/me/inbox",
   "/me/invite",
-  "/me/events",
-  "/me/strategies",
   "/me/support",
   "/me/benefits",
   "/me/guide/usdt",
@@ -41,7 +28,6 @@ export const USER_NESTED_ROUTES = [
   "/me/guide/faq",
   "/me/guide/principal",
   "/me/guide/partners",
-  "/me/guide/market-weekly",
   "/trades/[id]/execute",
   "/profits/[id]",
   "/onboarding",
@@ -53,5 +39,5 @@ export const USER_NESTED_ROUTES = [
   "/ads/[variant]",
 ] as const;
 
-/** Forbidden in apps/web (Admin §40) */
 export const WEB_FORBIDDEN_PREFIXES = ["/admin"] as const;
+export { LAUNCH_HIDDEN_HREFS };

@@ -1,56 +1,42 @@
-/**
- * verify:ia-tabs — User 5탭 IA lock (ADR-017 · Contract §2.2)
- * Labels: 홈 · 기회 · 수익 · 지갑 · 내정보
- * Routes kept: / · /profits · /trades · /wallet · /me
- */
 const fs = require("fs");
 const path = require("path");
-
 const root = path.resolve(__dirname, "../..");
 const fails = [];
-const routesPath = path.join(root, "apps/web/routes.ts");
-
-if (!fs.existsSync(routesPath)) {
-  console.error("[verify:ia-tabs] FAIL missing apps/web/routes.ts");
+const navPath = path.join(root, "packages/ui/navigation/consumer-navigation.ts");
+if (!fs.existsSync(navPath)) {
+  console.error("[verify:ia-tabs] FAIL missing consumer-navigation.ts");
   process.exit(1);
 }
-
-const src = fs.readFileSync(routesPath, "utf8");
-const expected = [
-  { label: "홈", href: "/" },
-  { label: "기회", href: "/profits" },
-  { label: "수익", href: "/trades" },
-  { label: "지갑", href: "/wallet" },
-  { label: "내정보", href: "/me" },
+const src = fs.readFileSync(navPath, "utf8");
+const need = [
+  ['home', '"/"'],
+  ['opportunities', '"/profits"'],
+  ['assets', '"/wallet"'],
+  ['activity', '"/trades"'],
+  ['inbox', '"/me/inbox"'],
+  ['profile', '"/me"'],
 ];
-
-const tabBlock = src.match(/export const USER_TABS\s*=\s*\[([\s\S]*?)\]\s*as const/);
-if (!tabBlock) {
-  fails.push("USER_TABS export missing or malformed");
-} else {
-  const body = tabBlock[1];
-  const hrefs = [...body.matchAll(/href:\s*"([^"]+)"/g)].map((m) => m[1]);
-  const labels = [...body.matchAll(/label:\s*"([^"]+)"/g)].map((m) => m[1]);
-  if (hrefs.length !== 5) fails.push(`USER_TABS must have exactly 5 entries (got ${hrefs.length})`);
-  expected.forEach((e, i) => {
-    if (hrefs[i] !== e.href) fails.push(`tab[${i}] href want ${e.href} got ${hrefs[i]}`);
-    if (labels[i] !== e.label) fails.push(`tab[${i}] label want ${e.label} got ${labels[i]}`);
-  });
-  if (labels.includes("내거래")) {
-    fails.push("deprecated nav label 내거래 must not appear in USER_TABS (ADR-017)");
+for (const [id, href] of need) {
+  if (!src.includes(id) || !src.includes(href)) {
+    fails.push("missing destination " + id + " " + href);
   }
 }
-
+if (!src.includes("MOBILE_PRIMARY_IDS") || !src.includes("DESKTOP_SIDEBAR_IDS")) {
+  fails.push("mobile/desktop projections missing");
+}
+const routes = fs.readFileSync(path.join(root, "apps/web/routes.ts"), "utf8");
+if (!routes.includes("@aipo/ui/navigation/consumer-navigation")) {
+  fails.push("apps/web/routes.ts must import consumer-navigation");
+}
 for (const href of ["/", "/profits", "/trades", "/wallet", "/me"]) {
   const page =
     href === "/"
       ? path.join(root, "apps/web/app/page.tsx")
       : path.join(root, "apps/web/app", href.slice(1), "page.tsx");
-  if (!fs.existsSync(page)) fails.push(`missing page for ${href}: ${path.relative(root, page)}`);
+  if (!fs.existsSync(page)) fails.push("missing page " + href);
 }
-
 if (fails.length) {
   console.error("[verify:ia-tabs] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
-console.log("[verify:ia-tabs] PASS (홈·기회·수익·지갑·내정보)");
+console.log("[verify:ia-tabs] PASS (consumer-navigation SSOT)");

@@ -45,7 +45,7 @@ export function ParticipateProofPanel({
       data-testid="participate-proof-panel"
       data-canon-block="participateProof"
       data-proof-hash={proof.proofHash}
-      className={`rounded-lux-md border border-lux-border p-3 text-sm text-lux-text ${className}`.trim()}
+      className={`rounded-pd-md border border-pd-border p-3 text-sm text-pd-text ${className}`.trim()}
     >
       <button
         type="button"
@@ -55,16 +55,16 @@ export function ParticipateProofPanel({
         onClick={() => setOpen((v) => !v)}
       >
         <span>{c.title}</span>
-        <span className="text-lux-text-muted">{open ? "▲" : "▼"}</span>
+        <span className="text-pd-text-muted">{open ? "▲" : "▼"}</span>
       </button>
       {open ? (
-        <dl className="mt-3 space-y-2 text-lux-text-muted" data-testid="participate-proof-body">
+        <dl className="mt-3 space-y-2 text-pd-text-muted" data-testid="participate-proof-body">
           <div className="flex justify-between gap-2">
             <dt>{c.buy}</dt>
             <dd
               data-field="buyPriceUsdt"
               data-money-state={formatUsdtOrUnavailable(proof.buyPriceUsdt).state}
-              className="text-lux-text"
+              className="text-pd-text"
             >
               {formatUsdtOrUnavailable(proof.buyPriceUsdt).text}
             </dd>
@@ -74,7 +74,7 @@ export function ParticipateProofPanel({
             <dd
               data-field="sellPriceUsdt"
               data-money-state={formatUsdtOrUnavailable(proof.sellPriceUsdt).state}
-              className="text-lux-text"
+              className="text-pd-text"
             >
               {formatUsdtOrUnavailable(proof.sellPriceUsdt).text}
             </dd>
@@ -86,21 +86,21 @@ export function ParticipateProofPanel({
               data-money-state={
                 formatUsdtOrUnavailable(proof.expectedProfitUsdt, true).state
               }
-              className="text-lux-accent"
+              className="text-pd-accent"
             >
               {formatUsdtOrUnavailable(proof.expectedProfitUsdt, true).text}
             </dd>
           </div>
           <div className="flex items-center justify-between gap-2">
             <dt>{c.hash}</dt>
-            <dd className="flex items-center gap-2 font-mono text-xs text-lux-text">
+            <dd className="flex items-center gap-2 font-mono text-xs text-pd-text">
               <span data-testid="participate-proof-hash-trunc">
                 {truncateHash(proof.proofHash)}
               </span>
               <button
                 type="button"
                 data-testid="participate-proof-copy"
-                className="text-lux-accent"
+                className="text-pd-accent"
                 onClick={copyHash}
               >
                 {copied ? c.copied : c.copy}

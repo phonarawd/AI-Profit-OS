@@ -462,7 +462,7 @@ SSOT: `packages/ui/tokens/breakpoints.ts`
 
 ## 16 — Color / Token Mapping
 
-SSOT: `peotteok-light.specification.md` → runtime `lux-fintech.ts` + `lux-theme.css`
+SSOT: `peotteok-light.specification.md` → runtime `pd-fintech.ts` + `pd-theme.css`
 
 | Token | Hex | Use |
 |---|---|---|
@@ -480,7 +480,7 @@ SSOT: `peotteok-light.specification.md` → runtime `lux-fintech.ts` + `lux-them
 | Forbidden | |
 |---|---|
 | JSX ad-hoc hex | ❌ |
-| Lux neon / glow aesthetic 복귀 | ❌ |
+| PUTDUK neon / glow aesthetic 복귀 | ❌ |
 | Day-1 dual theme toggle | ❌ |
 
 ---
@@ -537,7 +537,7 @@ SSOT: `peotteok-light.specification.md` → runtime `lux-fintech.ts` + `lux-them
 | `HomePageClient.tsx` | C01 binding fix · banner kind · props pass-through |
 | `HomeExperience.tsx` | RightRail progress = settle-only · scan/confirm/progress 제거 |
 | `HomeRightRail.tsx` | UI slots per §10 |
-| `HomePayoutCounter` / lux counter | count semantics · USDT 오인 제거 |
+| `HomePayoutCounter` / pd counter | count semantics · USDT 오인 제거 |
 | copy `ko/home*` | settle count labels · header idle |
 
 SDK/Nest **호출 추가·변경 금지** (새 Fact 없으면 UI 숨김).
@@ -612,7 +612,7 @@ SDK/Nest **호출 추가·변경 금지** (새 Fact 없으면 UI 숨김).
 | `verify:no-it-jargon` | 유저 surface |
 | `verify:cta-earn-profit` | 카드 CTA |
 | `verify:brand-consumer` | 퍼뜩 |
-| `verify:lux-theme-sync` | token mirror |
+| `verify:putduk-theme-sync` | token mirror |
 | `verify:mockup-governance` | PNG SSOT화 방지 |
 | `verify:gate:fast` | T0 commit |
 

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { T } from "../../copy/ko";
 import { BrandMark } from "../brand/BrandMark";
-import { TouchButton } from "../lux/TouchButton";
+import { TouchButton } from "../../primitives/Button";
 
 export type AuthCompleteProfilePayload = {
   displayName: string;
@@ -61,15 +61,15 @@ export function AuthCompleteProfile({
     >
       <BrandMark size="compact" />
       <header className="space-y-2 text-center">
-        <h1 className="text-xl font-semibold text-lux-text">
+        <h1 className="text-xl font-semibold text-pd-text">
           {T.auth.completeHeadline}
         </h1>
-        <p className="text-sm text-lux-text-muted">{T.auth.completeSub}</p>
+        <p className="text-sm text-pd-text-muted">{T.auth.completeSub}</p>
       </header>
 
       <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
         <label className="flex flex-col gap-1 text-sm" data-testid="field-displayName">
-          <span className="text-lux-text-muted">{T.auth.displayName}</span>
+          <span className="text-pd-text-muted">{T.auth.displayName}</span>
           <input
             name="displayName"
             required
@@ -78,12 +78,12 @@ export function AuthCompleteProfile({
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
             autoComplete="nickname"
-            className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
+            className="touch-target rounded-pd-md border border-pd-border bg-pd-surface px-3 text-pd-text"
           />
         </label>
 
         <label className="flex flex-col gap-1 text-sm" data-testid="field-phone">
-          <span className="text-lux-text-muted">{T.auth.phone}</span>
+          <span className="text-pd-text-muted">{T.auth.phone}</span>
           <input
             name="phone"
             type="tel"
@@ -93,13 +93,13 @@ export function AuthCompleteProfile({
             onChange={(e) => setPhone(e.target.value)}
             autoComplete="tel"
             placeholder="+82"
-            className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
+            className="touch-target rounded-pd-md border border-pd-border bg-pd-surface px-3 text-pd-text"
           />
         </label>
 
         {emailMissing ? (
           <label className="flex flex-col gap-1 text-sm" data-testid="field-email">
-            <span className="text-lux-text-muted">{T.auth.email}</span>
+            <span className="text-pd-text-muted">{T.auth.email}</span>
             <input
               name="email"
               type="email"
@@ -108,13 +108,13 @@ export function AuthCompleteProfile({
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
               placeholder={T.auth.emailPlaceholder}
-              className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
+              className="touch-target rounded-pd-md border border-pd-border bg-pd-surface px-3 text-pd-text"
             />
           </label>
         ) : null}
 
         <label className="flex flex-col gap-1 text-sm" data-testid="field-birthDate">
-          <span className="text-lux-text-muted">{T.auth.birthDate}</span>
+          <span className="text-pd-text-muted">{T.auth.birthDate}</span>
           <input
             name="birthDate"
             type="date"
@@ -122,16 +122,16 @@ export function AuthCompleteProfile({
             value={birthDate}
             onChange={(e) => setBirthDate(e.target.value)}
             autoComplete="bday"
-            className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
+            className="touch-target rounded-pd-md border border-pd-border bg-pd-surface px-3 text-pd-text"
           />
         </label>
 
-        <p className="text-sm text-lux-text-muted" data-testid="complete-hint">
+        <p className="text-sm text-pd-text-muted" data-testid="complete-hint">
           {T.auth.completeHintWithdraw}
         </p>
 
         {error ? (
-          <p role="alert" aria-live="assertive" className="text-sm text-lux-text">
+          <p role="alert" aria-live="assertive" className="text-sm text-pd-text">
             {error}
           </p>
         ) : null}

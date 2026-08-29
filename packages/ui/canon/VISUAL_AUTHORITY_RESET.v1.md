@@ -12,7 +12,7 @@
 RESET means: keep product wiring, remove old visual authority,
 ready for a new Peotteok visual system.
 
-Old screens, logo, hero, and lux hex are runtime only.
+Old screens, logo, hero, and pd hex are runtime only.
 They are not the new Visual Master.
 New foundation: packages/ui/tokens/peotteok-visual-foundation.v0.md
 Audit: packages/ui/tokens/VISUAL_RESET_REPORT.md

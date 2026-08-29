@@ -1,5 +1,5 @@
 /**
- * verify:tailwind-v4 — Tailwind CSS v4 + PostCSS + Lux @theme SSOT (ADR-015)
+ * verify:tailwind-v4 — Tailwind CSS v4 + PostCSS + PUTDUK @theme SSOT (ADR-015)
  */
 const fs = require("fs");
 const path = require("path");
@@ -53,27 +53,27 @@ for (const app of apps) {
     continue;
   }
   const globals = read(globalsPath);
-  if (!globals.includes("@aipo/ui/tokens/lux-theme.css")) {
-    fails.push(`${globalsPath}: must import @aipo/ui/tokens/lux-theme.css`);
+  if (!globals.includes("@aipo/ui/tokens/putduk-theme.css")) {
+    fails.push(`${globalsPath}: must import @aipo/ui/tokens/putduk-theme.css`);
   }
 }
 
-const luxThemePath = "packages/ui/tokens/lux-theme.css";
-if (!fs.existsSync(path.join(root, luxThemePath))) {
-  fails.push(`missing ${luxThemePath}`);
+const pdThemePath = "packages/ui/tokens/putduk-theme.css";
+if (!fs.existsSync(path.join(root, pdThemePath))) {
+  fails.push(`missing ${pdThemePath}`);
 } else {
-  const luxTheme = read(luxThemePath);
-  if (!luxTheme.includes('@import "tailwindcss"')) {
-    fails.push(`${luxThemePath}: must @import "tailwindcss"`);
+  const pdTheme = read(pdThemePath);
+  if (!pdTheme.includes('@import "tailwindcss"')) {
+    fails.push(`${pdThemePath}: must @import "tailwindcss"`);
   }
-  if (!luxTheme.includes("@theme")) {
-    fails.push(`${luxThemePath}: must declare @theme Lux tokens`);
+  if (!pdTheme.includes("@theme")) {
+    fails.push(`${pdThemePath}: must declare @theme PUTDUK tokens`);
   }
-  if (!luxTheme.includes('@source "../components"')) {
-    fails.push(`${luxThemePath}: must @source "../components" for monorepo UI scan`);
+  if (!pdTheme.includes('@source "../components"')) {
+    fails.push(`${pdThemePath}: must @source "../components" for monorepo UI scan`);
   }
-  if (!luxTheme.includes("pretendardvariable-dynamic-subset.min.css")) {
-    fails.push(`${luxThemePath}: must load Pretendard webfont`);
+  if (!pdTheme.includes("pretendardvariable-dynamic-subset.min.css")) {
+    fails.push(`${pdThemePath}: must load Pretendard webfont`);
   }
 }
 
@@ -103,4 +103,4 @@ if (fails.length) {
   process.exit(1);
 }
 
-console.log("[verify:tailwind-v4] PASS (Tailwind v4 · @tailwindcss/postcss · lux-theme @source)");
+console.log("[verify:tailwind-v4] PASS (Tailwind v4 · @tailwindcss/postcss · pd-theme @source)");

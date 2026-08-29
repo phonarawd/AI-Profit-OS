@@ -41,9 +41,9 @@
   },
   "visual": {
     "direction": "peotteok_light_fintech",
-    "summary": "Light + purple fintech (ADR-017). Shipping theme peotteok-light. Gender-neutral. No casino. Lux Dark archived.",
+    "summary": "Light + purple fintech (ADR-017). Shipping theme peotteok-light. Gender-neutral. No casino. PUTDUK Dark archived.",
     "adrTheme": "ADR-017",
-    "colorsFromLux": {
+    "colorsFromFoundation": {
       "bg": "#F6F4FC",
       "text": "#14121F",
       "accent": "#6B3CFF",
@@ -55,7 +55,7 @@
       "photo_mockup_logo_clone",
       "per_screen_different_logo",
       "gender_split_assets",
-      "neon_lux_dark_shipping",
+      "neon_pd_dark_shipping",
       "dual_theme_toggle"
     ]
   },

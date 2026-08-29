@@ -128,12 +128,12 @@ function SystemControlContent() {
 
   return (
     <main
-      className="p-6 text-lux-text"
+      className="p-6 text-pd-text"
       data-admin-system-control-tab={tab}
       data-testid="admin-system-control-page"
     >
       <h1 className="text-xl font-semibold">{T.admin.navigation.systemControl}</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">
+      <p className="mt-2 text-sm text-pd-text-muted">
         문제가 생겼을 때 필요한 기능만 안전하게 멈추고, 확인 후 다시 시작합니다.
       </p>
       <nav
@@ -151,8 +151,8 @@ function SystemControlContent() {
             data-tab={t}
             className={
               tab === t
-                ? "rounded px-2 py-1 bg-lux-elevated text-lux-accent"
-                : "rounded px-2 py-1 text-lux-text-muted"
+                ? "rounded px-2 py-1 bg-pd-elevated text-pd-accent"
+                : "rounded px-2 py-1 text-pd-text-muted"
             }
           >
             {TAB_LABEL[t]}
@@ -171,24 +171,24 @@ function SystemControlContent() {
           data-audit-api={reserveAuditApi}
           data-s2-input="true"
         >
-          <p className="text-sm text-lux-text-muted">
+          <p className="text-sm text-pd-text-muted">
             혜택과 행사를 시작하기 전에 반드시 지켜야 할 운영 준비금입니다.
           </p>
           <div
-            className="rounded border border-lux-border p-3 space-y-2"
+            className="rounded border border-pd-border p-3 space-y-2"
             data-field="targetUsdt"
           >
             <p className="text-sm font-medium">목표 잔액 (테더)</p>
-            <p className="text-xs text-lux-text-muted">
+            <p className="text-xs text-pd-text-muted">
               한 번에 예상되는 최대 지출이 운영 준비금의 10%를 넘지 않아야 합니다.
             </p>
           </div>
           <div
-            className="rounded border border-lux-border p-3 text-sm"
+            className="rounded border border-pd-border p-3 text-sm"
             data-field="audit"
           >
             <p className="font-medium">변경 기록</p>
-            <p className="mt-1 text-xs text-lux-text-muted">
+            <p className="mt-1 text-xs text-pd-text-muted">
               누가, 언제, 왜 준비금 목표를 바꿨는지 확인합니다.
             </p>
           </div>
@@ -199,8 +199,8 @@ function SystemControlContent() {
           data-testid="system-control-circuit-panel"
           data-forbid="client_ledger_edit"
         >
-          <p className="text-sm text-lux-text-muted">실제로 확인된 상태만 표시합니다. 확인하지 못한 상태를 정상으로 꾸미지 않습니다.</p>
-          <p className="text-xs text-lux-text-muted">잔액은 이 화면에서 바꾸지 않습니다</p>
+          <p className="text-sm text-pd-text-muted">실제로 확인된 상태만 표시합니다. 확인하지 못한 상태를 정상으로 꾸미지 않습니다.</p>
+          <p className="text-xs text-pd-text-muted">잔액은 이 화면에서 바꾸지 않습니다</p>
 
           <SwitchCard
             switchId="push_kill"
@@ -344,19 +344,19 @@ function SystemControlContent() {
           />
 
           <article
-            className="rounded border border-lux-border p-3"
+            className="rounded border border-pd-border p-3"
             data-switch="GLOBAL_ALL_PAUSE" data-admin-api={switchesApi} hidden />
-          <article className="rounded border border-lux-border p-3" data-switch="GLOBAL_MATCHING_PAUSE" hidden />
-          <article className="rounded border border-lux-border p-3" data-switch="GLOBAL_WITHDRAW_PAUSE" hidden />
-          <article className="rounded border border-lux-border p-3" data-switch="GLOBAL_DEPOSIT_PAUSE" hidden />
-          <article className="rounded border border-lux-border p-3" data-switch="GLOBAL_OPPORTUNITY_PAUSE"
+          <article className="rounded border border-pd-border p-3" data-switch="GLOBAL_MATCHING_PAUSE" hidden />
+          <article className="rounded border border-pd-border p-3" data-switch="GLOBAL_WITHDRAW_PAUSE" hidden />
+          <article className="rounded border border-pd-border p-3" data-switch="GLOBAL_DEPOSIT_PAUSE" hidden />
+          <article className="rounded border border-pd-border p-3" data-switch="GLOBAL_OPPORTUNITY_PAUSE"
             data-unpublished="true"
           >
             <h2 className="text-sm font-medium">전체 기회 잠시 멈춤</h2>
-            <p className="mt-2 text-sm text-lux-text-muted">모든 회원에게 즉시 적용됩니다.</p>
+            <p className="mt-2 text-sm text-pd-text-muted">모든 회원에게 즉시 적용됩니다.</p>
           </article>
           <p
-            className="text-sm text-lux-text-muted"
+            className="text-sm text-pd-text-muted"
             data-testid="system-control-unpublished-rest"
           >
             긴급 멈춤은 관련된 모든 기능에 즉시 적용됩니다.
@@ -369,12 +369,12 @@ function SystemControlContent() {
             id="system-control-reason"
             value={actionReason}
             onChange={(e) => setActionReason(e.target.value)}
-            className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+            className="mt-1 w-full max-w-md rounded border border-pd-border bg-pd-bg px-2 py-1 text-sm"
           />
 
           {preview ? (
             <div
-              className="rounded border border-lux-border p-3 text-sm"
+              className="rounded border border-pd-border p-3 text-sm"
               data-testid="system-control-preview"
               data-preview={preview.id}
             >
@@ -385,7 +385,7 @@ function SystemControlContent() {
               <div className="mt-2 flex flex-wrap gap-2">
                 <button
                   type="button"
-                  className="rounded bg-lux-elevated px-2 py-1"
+                  className="rounded bg-pd-elevated px-2 py-1"
                   data-tone={preview.to === "멈춤" ? "danger" : "default"}
                   onClick={() => void runPreview()}
                 >
@@ -393,7 +393,7 @@ function SystemControlContent() {
                 </button>
                 <button
                   type="button"
-                  className="rounded px-2 py-1 text-lux-text-muted"
+                  className="rounded px-2 py-1 text-pd-text-muted"
                   onClick={() => setPreview(null)}
                 >
                   취소
@@ -404,7 +404,7 @@ function SystemControlContent() {
             <div data-testid="system-control-preview" hidden />
           )}
           {actionNote ? (
-            <p className="text-sm text-lux-text-muted" role="status">{actionNote}</p>
+            <p className="text-sm text-pd-text-muted" role="status">{actionNote}</p>
           ) : null}
         </section>
       )}
@@ -431,13 +431,13 @@ function SwitchCard({
 }) {
   return (
     <article
-      className="rounded border border-lux-border p-3"
+      className="rounded border border-pd-border p-3"
       data-switch={switchId}
       data-admin-api={api}
     >
       <h2 className="text-sm font-medium">{title}</h2>
       {!result ? (
-        <p className="mt-2 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+        <p className="mt-2 text-sm text-pd-text-muted">{T.admin.state.loading}</p>
       ) : !result.ok ? (
         <div className="mt-2">
           <AdminFetchNote failure={result.failure} />
@@ -448,13 +448,13 @@ function SwitchCard({
             <AdminTruth value={value} />
           </p>
           {hint ? (
-            <p className="mt-1 text-xs text-lux-text-muted">{hint}</p>
+            <p className="mt-1 text-xs text-pd-text-muted">{hint}</p>
           ) : null}
           {actions.map((action) => (
             <button
               key={action.label}
               type="button"
-              className="mt-2 mr-2 rounded bg-lux-elevated px-2 py-1 text-sm"
+              className="mt-2 mr-2 rounded bg-pd-elevated px-2 py-1 text-sm"
               data-tone={/멈추기|끄기/.test(action.label) ? "danger" : "default"}
               onClick={action.onClick}
             >

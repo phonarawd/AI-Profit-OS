@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { T } from "../../copy/ko";
-import { Badge } from "../lux/Badge";
-import { MotionCTA } from "../lux/MotionCTA";
+import { Badge } from "../../primitives/Badge";
+import { MotionCTA } from "../../primitives/PrimaryCta";
 import { ProductImage } from "../product/ProductImage";
 import { AdapterHealthChip } from "../trust/AdapterHealthChip";
 import { MarketPartnerLeg } from "../trust/MarketPartnerLeg";
@@ -58,7 +58,7 @@ export function OpportunityCard({
       data-bucket={o.bucket || "none"}
       data-compare-ready={o.compareReady === true ? "1" : "0"}
       className={[
-        "opportunity-card overflow-hidden rounded-lux-xl border border-lux-border bg-lux-surface shadow-[var(--shadow-lux-card)]",
+        "opportunity-card overflow-hidden rounded-pd-xl border border-pd-border bg-pd-surface shadow-[var(--shadow-pd-card)]",
         className,
       ]
         .filter(Boolean)
@@ -76,7 +76,7 @@ export function OpportunityCard({
 
       <div className="p-4">
         {/* Mobile primary: 상품명 · 필요 금액 · 가능 수익 · CTA */}
-        <p className="truncate text-base font-semibold text-lux-text md:hidden">
+        <p className="truncate text-base font-semibold text-pd-text md:hidden">
           {o.assetLabel}
         </p>
         <div className="mt-2 flex flex-wrap items-center gap-1">
@@ -103,15 +103,15 @@ export function OpportunityCard({
           ) : null}
         </div>
 
-        <h2 className="mt-2 hidden text-base font-semibold text-lux-text md:block">
+        <h2 className="mt-2 hidden text-base font-semibold text-pd-text md:block">
           {corridorText(o)}
         </h2>
-        <p className="hidden truncate text-xs text-lux-text-muted md:block">
+        <p className="hidden truncate text-xs text-pd-text-muted md:block">
           {o.assetLabel}
         </p>
 
         <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
-          <dt className="text-lux-text-muted">
+          <dt className="text-pd-text-muted">
             {T.opportunity.labelRequiredCapital}
           </dt>
           <dd
@@ -119,11 +119,11 @@ export function OpportunityCard({
             data-money-state={
               formatUsdtOrUnavailable(o.requiredCapitalUsdt).state
             }
-            className="text-right font-medium text-lux-text"
+            className="text-right font-medium text-pd-text"
           >
             {formatUsdtOrUnavailable(o.requiredCapitalUsdt).text}
           </dd>
-          <dt className="text-lux-text-muted">
+          <dt className="text-pd-text-muted">
             {T.opportunity.labelExpectedProfit}
           </dt>
           <dd
@@ -131,16 +131,16 @@ export function OpportunityCard({
             data-money-state={
               formatUsdtOrUnavailable(o.expectedProfitUsdt, true).state
             }
-            className="text-right text-base font-semibold text-lux-profit"
+            className="text-right text-base font-semibold text-pd-profit"
           >
             {formatUsdtOrUnavailable(o.expectedProfitUsdt, true).text}
           </dd>
-          <dt className="hidden text-lux-text-muted md:block">
+          <dt className="hidden text-pd-text-muted md:block">
             {T.opportunity.labelAiConfidence}
           </dt>
           <dd
             data-field="aiConfidenceScore"
-            className="hidden text-right text-lux-text md:block"
+            className="hidden text-right text-pd-text md:block"
           >
             {o.aiConfidenceScore}%
           </dd>
@@ -181,10 +181,10 @@ export function OpportunityCard({
             <Badge tone="muted">{T.execution.badgeNoBuy}</Badge>
             <Badge tone="muted">{T.execution.badgeNoSell}</Badge>
           </div>
-          <p className="mt-2 text-xs text-lux-text-muted">
+          <p className="mt-2 text-xs text-pd-text-muted">
             {T.execution.disclaimerResult}
           </p>
-          <p className="mt-1 text-xs text-lux-text-muted">
+          <p className="mt-1 text-xs text-pd-text-muted">
             {T.execution.imageRightsNote}
           </p>
         </div>
@@ -198,13 +198,13 @@ export function OpportunityCard({
           <Link
             href={`/wallet/deposit?tab=usdt&suggest=${encodeURIComponent(o.suggestDepositUsdt)}&oppId=${encodeURIComponent(o.id)}`}
             data-testid="cta-deposit-suggest"
-            className="mt-3 flex w-full items-center justify-center rounded-lux-md border border-lux-accent px-4 py-3 text-sm font-semibold text-lux-accent"
+            className="mt-3 flex w-full items-center justify-center rounded-pd-md border border-pd-accent px-4 py-3 text-sm font-semibold text-pd-accent"
           >
             {T.feed.ctaDepositSuggest.replace("{n}", o.suggestDepositUsdt)}
           </Link>
         ) : primaryDisabled ? (
           <p
-            className="mt-3 text-center text-sm text-lux-text-muted"
+            className="mt-3 text-center text-sm text-pd-text-muted"
             data-testid="cta-locked"
           >
             {lockBadge}

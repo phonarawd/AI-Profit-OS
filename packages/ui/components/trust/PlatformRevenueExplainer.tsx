@@ -24,22 +24,22 @@ export function PlatformRevenueExplainer({
       className={`space-y-4 ${className}`.trim()}
     >
       <header className="space-y-1">
-        <h1 className="text-xl font-semibold text-lux-text">{r.headline}</h1>
-        <p className="text-sm text-lux-text-muted">{r.body}</p>
+        <h1 className="text-xl font-semibold text-pd-text">{r.headline}</h1>
+        <p className="text-sm text-pd-text-muted">{r.body}</p>
       </header>
       <dl className="space-y-3">
         {rows.map((row) => (
           <div
             key={row.q}
-            className="rounded-lux-md border border-lux-border bg-lux-elevated p-3"
+            className="rounded-pd-md border border-pd-border bg-pd-elevated p-3"
           >
-            <dt className="text-sm font-medium text-lux-text">{row.q}</dt>
-            <dd className="mt-1 text-sm text-lux-text-muted">{row.a}</dd>
+            <dt className="text-sm font-medium text-pd-text">{row.q}</dt>
+            <dd className="mt-1 text-sm text-pd-text-muted">{row.a}</dd>
           </div>
         ))}
       </dl>
       <p
-        className="text-xs text-lux-text-muted"
+        className="text-xs text-pd-text-muted"
         data-testid="revenue-margin-footnote"
       >
         {r.marginLabel}: {r.opportunityFootnote}

@@ -25,7 +25,7 @@ export function HomeHero({
       data-testid="home-hero"
       data-canon-block="hero"
       data-hero-timeline-steps={steps.length}
-      className={["home-hero relative isolate overflow-hidden rounded-lux-xl", className]
+      className={["home-hero relative isolate overflow-hidden rounded-pd-xl", className]
         .filter(Boolean)
         .join(" ")}
     >
@@ -33,10 +33,10 @@ export function HomeHero({
 
       <div className="home-hero__inner relative z-10">
         <div className="home-hero__copy">
-          <h1 className="home-hero__title text-balance font-semibold tracking-tight text-lux-surface">
+          <h1 className="home-hero__title text-balance font-semibold tracking-tight text-pd-surface">
             {T.home.hero.title}
           </h1>
-          <p className="home-hero__subtitle text-pretty text-lux-surface/90">
+          <p className="home-hero__subtitle text-pretty text-pd-surface/90">
             {T.home.hero.subtitle}
           </p>
 

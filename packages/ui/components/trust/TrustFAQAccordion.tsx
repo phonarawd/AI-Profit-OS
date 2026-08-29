@@ -17,10 +17,10 @@ export function TrustFAQAccordion({ className = "" }: TrustFAQAccordionProps) {
       className={`space-y-6 ${className}`.trim()}
     >
       <header className="space-y-1">
-        <h1 className="text-xl font-semibold text-lux-text">
+        <h1 className="text-xl font-semibold text-pd-text">
           {T.trust.faq.title}
         </h1>
-        <p className="text-sm text-lux-text-muted">{T.trust.faq.lead}</p>
+        <p className="text-sm text-pd-text-muted">{T.trust.faq.lead}</p>
       </header>
       <ObjectionFourAccordion defaultOpen="q1" />
       <CapitalVsWageCompare />

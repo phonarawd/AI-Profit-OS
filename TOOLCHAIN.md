@@ -9,7 +9,7 @@
 | Runtime | **Node.js 22.14+** (engines `<23`) | Node 18/20로 다운 |
 | Package manager | **pnpm@10.14.0** (`packageManager` 필드) | npm/yarn/**bun install SSOT** |
 | Web/Admin | **Next.js 16** (App Router) + React 19.2 | next@15 잔존 · next@17 무단 |
-| CSS | **Tailwind CSS v4** + Lux `@theme` | Tailwind v3 신규 · 헥스 하드코딩 |
+| CSS | **Tailwind CSS v4** + PUTDUK `@theme` | Tailwind v3 신규 · 헥스 하드코딩 |
 | API | NestJS (Node) | Supabase Auth |
 | Engine | Rust (`rust-toolchain.toml`) | JS 원장 핵심 |
 | DB | PostgreSQL **17** (Compose) / managed 단일 | 두 번째 Postgres · **PG사(결제대행)** |
@@ -76,9 +76,10 @@ pnpm exec wrangler -v
 ## 자동화 게이트 (ADR-016)
 
 ```powershell
-pnpm verify:gate:fast      # commit 전 (T0 · ~30s)
+pnpm verify:gate:fast      # commit 전 (T0 · ~30s) · 이 PC는 node_modules 없으면 BLOCKED
 pnpm verify:gate:push      # push 전 (T1 · infra+stubs)
 pnpm verify:gate           # CI / main (T2 · next+opennext 포함)
+node tooling/verify/cloud-dispatch.cjs --suite ui   # 이 PC 대체 · GitHub Cloud verify · install 0
 pnpm cursor:sync-plans    # Plan SSOT → %USERPROFILE%\.cursor\plans hardlink (todo UI drift 방지)
 pnpm cleanup:lowspec      # 작업 후 렉 방지
 pnpm lowspec:status       # RAM/Docker/Cursor 압력 확인 (이 PC=Celeron 2C/8GB)
@@ -89,6 +90,7 @@ pnpm lowspec:status       # RAM/Docker/Cursor 압력 확인 (이 PC=Celeron 2C/8
 - Plan SSOT: 워크스페이스 `.cursor/plans` only · `verify:plans-ssot` in T0 · stale home aliases quarantine
 - Husky: pre-commit → `verify:gate:fast` · pre-push → `verify:gate:push`
 - CI: `.github/workflows/gate.yml` → T2 `verify:gate`
+- 이 PC 대체 CI: `.github/workflows/cloud-verify.yml` → `node tooling/verify/cloud-dispatch.cjs` · 로컬 install 0 · RELEASE_READY 아님
 - Rules: always ≤7 + domain globs · catalog `tooling/verify/CATALOG.md`
 - Git: **슬라이스=T0 commit** · **push=세션 stop/명시** = `.cursor/rules/git-auto-commit-push.mdc`
 

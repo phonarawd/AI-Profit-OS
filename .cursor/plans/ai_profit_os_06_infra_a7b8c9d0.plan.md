@@ -109,7 +109,7 @@ SUPERSEDED_BY = PUTDUK_RELEASE_MASTER.plan.md
 | 층 | SSOT | 금지 |
 |----|------|------|
 | Runtime | Node **22** · **pnpm@10.14.0** (`packageManager`) | npm/yarn/bun install SSOT |
-| Frontend | **`next@16`** App Router · Lux · Serwist · **Tailwind v4** | next@15·TW3 신규 · Vercel 병행 · next@17 무단 |
+| Frontend | **`next@16`** App Router · PUTDUK · Serwist · **Tailwind v4** | next@15·TW3 신규 · Vercel 병행 · next@17 무단 |
 | API | NestJS `api-nest` JWT + OAuth/Passkey | Supabase Auth 병행 |
 | Engine | Rust `engine-rust` (`rust-toolchain.toml`) | JS로 원장/정산 핵심 대체 |
 | DB | PostgreSQL **단일** · **Supabase Seoul 기본** (Compose 옵션·8GB OFF) | 두 번째 Postgres SoT · Docker 필수화 |

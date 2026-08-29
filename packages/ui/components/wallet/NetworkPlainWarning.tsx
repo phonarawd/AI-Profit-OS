@@ -23,12 +23,12 @@ export function NetworkPlainWarning({
     <aside
       data-testid="network-plain-warning"
       data-network-label={T.wallet.networkName}
-      className={`rounded-lux-md border border-lux-border bg-lux-elevated p-3 text-sm text-lux-text ${className}`.trim()}
+      className={`rounded-pd-md border border-pd-border bg-pd-elevated p-3 text-sm text-pd-text ${className}`.trim()}
       role="note"
     >
       <p data-testid="network-warning-line1">{T.wallet.networkWarning}</p>
       <p
-        className="mt-1 text-lux-text-muted"
+        className="mt-1 text-pd-text-muted"
         data-testid="network-warning-line2"
       >
         {T.wallet.networkWarningLine2}
@@ -37,14 +37,14 @@ export function NetworkPlainWarning({
         <a
           href={detailHref}
           data-testid="network-warning-detail"
-          className="text-lux-accent underline"
+          className="text-pd-accent underline"
         >
           {T.wallet.networkWarningDetail}
         </a>
         <a
           href={wrongSentHref}
           data-testid="network-warning-wrong-sent"
-          className="text-lux-accent underline"
+          className="text-pd-accent underline"
         >
           {T.wallet.networkWarningWrongSent}
         </a>

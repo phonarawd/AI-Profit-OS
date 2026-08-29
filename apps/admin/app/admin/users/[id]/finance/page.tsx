@@ -127,13 +127,13 @@ function FinanceContent() {
 
   return (
     <main
-      className="p-6 text-lux-text"
+      className="p-6 text-pd-text"
       data-admin-finance-tab={tab}
       data-user-id={userId}
       data-testid="admin-user-finance"
     >
       <h1 className="text-xl font-semibold">회원 입출금·수익</h1>
-      <p className="mt-2 text-sm text-lux-text-muted" data-forbid="balance-update">
+      <p className="mt-2 text-sm text-pd-text-muted" data-forbid="balance-update">
         안전을 위해 이 화면에서 회원 잔액을 직접 고칠 수 없습니다.
       </p>
       <nav
@@ -148,8 +148,8 @@ function FinanceContent() {
             data-tab={t}
             className={
               tab === t
-                ? "rounded px-2 py-1 bg-lux-elevated text-lux-accent"
-                : "rounded px-2 py-1 text-lux-text-muted"
+                ? "rounded px-2 py-1 bg-pd-elevated text-pd-accent"
+                : "rounded px-2 py-1 text-pd-text-muted"
             }
           >
             {TAB_LABEL[t]}
@@ -164,17 +164,17 @@ function FinanceContent() {
           data-buckets-api={bucketsApi}
           data-practice-visible="true"
         >
-          <p className="mt-1 text-sm text-lux-text-muted">
+          <p className="mt-1 text-sm text-pd-text-muted">
             {T.walletBuckets.defaultProfitHint}
           </p>
           <p
-            className="mt-1 text-sm text-lux-text-muted"
+            className="mt-1 text-sm text-pd-text-muted"
             data-testid="finance-practice-note"
           >
             {T.practice.adminNote}
           </p>
           {!buckets ? (
-            <p className="mt-4 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="mt-4 text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !buckets.ok ? (
             <AdminFetchNote failure={buckets.failure} />
           ) : liveBuckets ? (
@@ -195,18 +195,18 @@ function FinanceContent() {
       ) : tab === "ledger" ? (
         <section className="mt-6 space-y-2">
           {!journals ? (
-            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !journals.ok ? (
             <AdminFetchNote failure={journals.failure} />
           ) : Array.isArray(journals.data.items) &&
             journals.data.items.length === 0 ? (
-            <p className="text-sm text-lux-text-muted">아직 돈의 이동 기록이 없습니다.</p>
+            <p className="text-sm text-pd-text-muted">아직 돈의 이동 기록이 없습니다.</p>
           ) : Array.isArray(journals.data.items) ? (
             <ul className="space-y-2 text-sm">
               {journals.data.items.map((row, idx) => (
                 <li
                   key={String(row.id ?? idx)}
-                  className="rounded border border-lux-border p-2"
+                  className="rounded border border-pd-border p-2"
                 >
                   <AdminTruth value={readMoneyRecordLabel(row.journalType)} />
                 </li>
@@ -219,7 +219,7 @@ function FinanceContent() {
       ) : tab === "summary" ? (
         <section className="mt-6 text-sm">
           {!buckets ? (
-            <p className="text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !buckets.ok ? (
             <AdminFetchNote failure={buckets.failure} />
           ) : (
@@ -230,7 +230,7 @@ function FinanceContent() {
           )}
         </section>
       ) : (
-        <p className="mt-6 text-sm text-lux-text-muted">
+        <p className="mt-6 text-sm text-pd-text-muted">
           이 항목은 아직 확인 기능이 준비되지 않았습니다. <AdminTruth value={null} />
         </p>
       )}

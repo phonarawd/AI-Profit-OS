@@ -15,7 +15,6 @@ import { AdminFetchNote, AdminTruth } from "../../../components/AdminTruth";
 
 const TABS = [
   "deposit-settings",
-  "review",
   "krw-pending",
   "disputes",
 ] as const;
@@ -23,7 +22,6 @@ type WalletTab = (typeof TABS)[number];
 
 const TAB_LABEL: Record<WalletTab, string> = {
   "deposit-settings": "입금 설정",
-  review: "출금 확인",
   "krw-pending": "원화 입금 확인",
   disputes: "잘못 보낸 입금",
 };
@@ -164,12 +162,12 @@ function WalletContent() {
 
   return (
     <main
-      className="p-6 text-lux-text"
+      className="p-6 text-pd-text"
       data-admin-wallet-tab={tab}
       data-testid="admin-wallet-page"
     >
       <h1 className="text-xl font-semibold">{T.admin.navigation.wallet}</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">
+      <p className="mt-2 text-sm text-pd-text-muted">
         입금 설정과 확인 요청, 출금 확인, 잘못 보낸 입금을 한곳에서 관리합니다.
       </p>
       <nav
@@ -183,8 +181,8 @@ function WalletContent() {
             data-tab={t}
             className={
               tab === t
-                ? "rounded px-2 py-1 bg-lux-elevated text-lux-accent"
-                : "rounded px-2 py-1 text-lux-text-muted"
+                ? "rounded px-2 py-1 bg-pd-elevated text-pd-accent"
+                : "rounded px-2 py-1 text-pd-text-muted"
             }
           >
             {TAB_LABEL[t]}
@@ -202,7 +200,7 @@ function WalletContent() {
           data-kind="wrong_chain"
           data-audit-required="true"
         >
-          <p className="text-sm text-lux-text-muted">
+          <p className="text-sm text-pd-text-muted">
             트론이 아닌 곳으로 보낸 입금이나 확인이 필요한 입금을 처리합니다. 모든 결정은 관리자 기록에 남습니다.
           </p>
           <label className="mt-4 block text-sm" htmlFor="dispute-reason">
@@ -212,7 +210,7 @@ function WalletContent() {
             id="dispute-reason"
             value={actionReason}
             onChange={(e) => setActionReason(e.target.value)}
-            className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+            className="mt-1 w-full max-w-md rounded border border-pd-border bg-pd-bg px-2 py-1 text-sm"
           />
           <label className="mt-3 block text-sm" htmlFor="dispute-amount">
             입금 처리할 금액 (테더)
@@ -221,15 +219,15 @@ function WalletContent() {
             id="dispute-amount"
             value={creditAmount}
             onChange={(e) => setCreditAmount(e.target.value)}
-            className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+            className="mt-1 w-full max-w-md rounded border border-pd-border bg-pd-bg px-2 py-1 text-sm"
           />
           {!disputes ? (
-            <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="mt-3 text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !disputes.ok ? (
             <AdminFetchNote failure={disputes.failure} />
           ) : Array.isArray(disputes.data.items) &&
             disputes.data.items.length === 0 ? (
-            <p className="mt-3 text-sm text-lux-text-muted">확인할 잘못된 입금이 없습니다.</p>
+            <p className="mt-3 text-sm text-pd-text-muted">확인할 잘못된 입금이 없습니다.</p>
           ) : Array.isArray(disputes.data.items) ? (
             <ul className="mt-3 space-y-3">
               {disputes.data.items.map((item, idx) => {
@@ -237,7 +235,7 @@ function WalletContent() {
                 return (
                   <li
                     key={id ?? String(idx)}
-                    className="rounded border border-lux-border p-3 text-sm"
+                    className="rounded border border-pd-border p-3 text-sm"
                   >
                     <p>
                       상태 <AdminTruth value={readStatusLabel(item.status)} />
@@ -249,14 +247,14 @@ function WalletContent() {
                       <form className="mt-2 flex gap-2">
                         <button
                           type="submit"
-                          className="rounded bg-lux-elevated px-2 py-1"
+                          className="rounded bg-pd-elevated px-2 py-1"
                           onClick={(e) => void decideDispute(e, id, "credit")}
                         >
                           입금 처리
                         </button>
                         <button
                           type="submit"
-                          className="rounded px-2 py-1 text-lux-text-muted"
+                          className="rounded px-2 py-1 text-pd-text-muted"
                           data-tone="danger"
                           onClick={(e) => void decideDispute(e, id, "reject")}
                         >
@@ -272,13 +270,13 @@ function WalletContent() {
             <AdminTruth value={null} />
           )}
           {actionNote ? (
-            <p className="mt-2 text-sm text-lux-text-muted" role="status">{actionNote}</p>
+            <p className="mt-2 text-sm text-pd-text-muted" role="status">{actionNote}</p>
           ) : null}
         </section>
       ) : tab === "deposit-settings" ? (
         <section className="mt-6 space-y-2" data-testid="wallet-deposit-settings-panel">
           {!config ? (
-            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !config.ok ? (
             <AdminFetchNote failure={config.failure} />
           ) : (
@@ -319,14 +317,14 @@ function WalletContent() {
             id="krw-reason"
             value={actionReason}
             onChange={(e) => setActionReason(e.target.value)}
-            className="w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+            className="w-full max-w-md rounded border border-pd-border bg-pd-bg px-2 py-1 text-sm"
           />
           {!krw ? (
-            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !krw.ok ? (
             <AdminFetchNote failure={krw.failure} />
           ) : Array.isArray(krw.data.items) && krw.data.items.length === 0 ? (
-            <p className="text-sm text-lux-text-muted">대기 건이 없습니다.</p>
+            <p className="text-sm text-pd-text-muted">대기 건이 없습니다.</p>
           ) : Array.isArray(krw.data.items) ? (
             <ul className="space-y-3">
               {krw.data.items.map((item, idx) => {
@@ -334,7 +332,7 @@ function WalletContent() {
                 return (
                   <li
                     key={id ?? String(idx)}
-                    className="rounded border border-lux-border p-3 text-sm"
+                    className="rounded border border-pd-border p-3 text-sm"
                   >
                     <p>
                       입금자 <AdminTruth value={readText(item.depositorName)} />
@@ -347,14 +345,14 @@ function WalletContent() {
                       <div className="mt-2 flex gap-2">
                         <button
                           type="button"
-                          className="rounded bg-lux-elevated px-2 py-1"
+                          className="rounded bg-pd-elevated px-2 py-1"
                           onClick={() => void decideKrw(id, "approve")}
                         >
                           승인
                         </button>
                         <button
                           type="button"
-                          className="rounded px-2 py-1 text-lux-text-muted"
+                          className="rounded px-2 py-1 text-pd-text-muted"
                           data-tone="danger"
                           onClick={() => void decideKrw(id, "reject")}
                         >
@@ -370,12 +368,12 @@ function WalletContent() {
             <AdminTruth value={null} />
           )}
           {actionNote ? (
-            <p className="text-sm text-lux-text-muted" role="status">{actionNote}</p>
+            <p className="text-sm text-pd-text-muted" role="status">{actionNote}</p>
           ) : null}
         </section>
       ) : (
         <section className="mt-6" data-testid={`wallet-${tab}-panel`}>
-          <p className="text-sm text-lux-text-muted">
+          <p className="text-sm text-pd-text-muted">
             출금 확인 목록이 아직 연결되지 않았습니다.
           </p>
           <AdminTruth value={null} />

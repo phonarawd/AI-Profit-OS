@@ -8,7 +8,7 @@
 | 주제 | 잠금 |
 |------|------|
 | Manifest / App Shell | name/short_name=**퍼뜩** · `display: standalone` · Serwist · next@16 |
-| Theme colors | Lux only · `background=#090A10` · `theme=#7AA2FF` · `#1A56FF` **금지** |
+| Theme colors | PUTDUK only · `background=#090A10` · `theme=#7AA2FF` · `#1A56FF` **금지** |
 | Install · Offline · SW update UX | Day-1 게이트 · Canon install/offline wires |
 | Web Push + Badge | VAPID · Phase0 bus=**in-process** · iOS installed-only |
 | §23.5a 자동 Push | notice/campaign/opportunity(+ops inbox) · prefs 채널 필터 |

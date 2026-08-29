@@ -47,7 +47,7 @@ function PartnerMarkOrName({
 
   return (
     <span
-      className="text-xs font-semibold text-lux-text"
+      className="text-xs font-semibold text-pd-text"
       data-testid="market-partner-name-fallback"
     >
       {label}
@@ -92,7 +92,7 @@ export function MarketPartnerLeg({
     <div
       data-testid="market-partner-leg"
       data-logos-ready={String(readyCount)}
-      className={`flex flex-col gap-1 text-sm text-lux-text ${className}`.trim()}
+      className={`flex flex-col gap-1 text-sm text-pd-text ${className}`.trim()}
     >
       <div className="flex min-h-5 items-center gap-2">
         <PartnerMarkOrName partner={buy} fallback={buyName} />
@@ -101,7 +101,7 @@ export function MarketPartnerLeg({
       </div>
       <p data-testid="market-partner-leg-caption">{caption}</p>
       <p
-        className="text-xs text-lux-text-muted"
+        className="text-xs text-pd-text-muted"
         data-testid="market-partner-leg-footnote"
       >
         {T.trust.partners.legFootnote}

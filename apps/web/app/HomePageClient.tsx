@@ -25,7 +25,7 @@ import {
 import {
   type HomePayoutCounterMode,
   type PublicTickerEvent,
-} from "@aipo/ui/components/lux";
+} from "@aipo/ui/primitives";
 import { type OpportunityCardModel } from "@aipo/ui/components/opportunity";
 import { T } from "@aipo/ui/copy/ko";
 import { toOpportunityCardModel } from "../lib/opportunity-card-map";
@@ -291,7 +291,7 @@ export function HomePageClient({ hasSession = false }: HomePageClientProps) {
       : null;
 
   return (
-    <main className="text-lux-text" data-testid="home-shell">
+    <main className="text-pd-text" data-testid="home-shell">
       <HomeExperience
         viewState={truth.viewState}
         sessionStatus={truth.sessionStatus}

@@ -72,15 +72,15 @@ export function HomeRightRail({
     >
       <section
         data-testid="home-right-rail-total"
-        className="rounded-lux-xl border border-lux-border bg-lux-surface p-5 home-money-card"
+        className="rounded-pd-xl border border-pd-border bg-pd-surface p-5 home-money-card"
       >
         <div className="flex items-center justify-between gap-2">
-          <p className="text-sm text-lux-text-muted">
+          <p className="text-sm text-pd-text-muted">
             {totalResultLabel?.trim() || T.home.rightRail.totalResult}
           </p>
           <a
             href="/trades"
-            className="touch-target text-xs font-medium text-lux-accent"
+            className="touch-target text-xs font-medium text-pd-accent"
             data-testid="home-right-rail-total-link"
           >
             {T.common.viewAll}
@@ -88,19 +88,19 @@ export function HomeRightRail({
         </div>
         {total ? (
           <p
-            className="mt-2 text-3xl font-semibold tabular-nums text-lux-text md:text-4xl"
+            className="mt-2 text-3xl font-semibold tabular-nums text-pd-text md:text-4xl"
             data-ledger-unit="count"
             data-testid="home-right-rail-total-value"
           >
             {total}
           </p>
         ) : (
-          <p className="mt-2 text-sm text-lux-text-muted">
+          <p className="mt-2 text-sm text-pd-text-muted">
             {T.home.rightRail.totalEmpty}
           </p>
         )}
         {todayPossible ? (
-          <p className="mt-2 text-sm tabular-nums text-lux-profit">
+          <p className="mt-2 text-sm tabular-nums text-pd-profit">
             {T.feed.todayPossibleProfitUsdt.replace("{n}", todayPossible)}
           </p>
         ) : null}
@@ -108,9 +108,9 @@ export function HomeRightRail({
 
       <section
         data-testid="home-right-rail-top"
-        className="rounded-lux-xl border border-lux-border bg-lux-surface p-4 home-money-card"
+        className="rounded-pd-xl border border-pd-border bg-pd-surface p-4 home-money-card"
       >
-        <p className="text-sm font-semibold text-lux-text">
+        <p className="text-sm font-semibold text-pd-text">
           {T.home.rightRail.topOpportunities}
         </p>
         {tops.length > 0 ? (
@@ -118,7 +118,7 @@ export function HomeRightRail({
             {tops.map((o) => (
               <li
                 key={o.id}
-                className="flex items-center gap-3 rounded-lux-md bg-lux-bg p-2"
+                className="flex items-center gap-3 rounded-pd-md bg-pd-bg p-2"
               >
                 <ProductImage
                   src={o.assetImageUrl}
@@ -127,13 +127,13 @@ export function HomeRightRail({
                   imageSource={o.assetImageSource}
                   assetIcon={o.assetIcon}
                   variant="thumb"
-                  className="h-12 w-12 rounded-lux-sm"
+                  className="h-12 w-12 rounded-pd-sm"
                 />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-lux-text">
+                  <p className="truncate text-sm font-medium text-pd-text">
                     {o.assetLabel}
                   </p>
-                  <p className="tabular-nums text-xs text-lux-profit">
+                  <p className="tabular-nums text-xs text-pd-profit">
                     {T.feed.todayPossibleProfitUsdt.replace(
                       "{n}",
                       o.expectedProfitUsdt,
@@ -144,7 +144,7 @@ export function HomeRightRail({
             ))}
           </ul>
         ) : (
-          <p className="mt-2 text-sm text-lux-text-muted">
+          <p className="mt-2 text-sm text-pd-text-muted">
             {T.home.rightRail.topEmpty}
           </p>
         )}
@@ -152,23 +152,23 @@ export function HomeRightRail({
 
       <section
         data-testid="home-right-rail-progress"
-        className="rounded-lux-xl border border-lux-border bg-lux-surface p-4 home-money-card"
+        className="rounded-pd-xl border border-pd-border bg-pd-surface p-4 home-money-card"
       >
-        <p className="text-sm font-semibold text-lux-text">
+        <p className="text-sm font-semibold text-pd-text">
           {T.home.rightRail.progressTitle}
         </p>
         <ul className="mt-3 grid grid-cols-2 gap-2">
           {statusRows.map(([label, cell]) => (
             <li
               key={label}
-              className="rounded-lux-md bg-lux-bg px-3 py-3 text-center"
+              className="rounded-pd-md bg-pd-bg px-3 py-3 text-center"
               data-fact-state={cell.ready ? "ready" : "absent"}
             >
-              <p className="text-xs text-lux-text-muted">{label}</p>
+              <p className="text-xs text-pd-text-muted">{label}</p>
               <p
                 className={[
                   "mt-1 text-xl font-semibold tabular-nums",
-                  cell.ready ? "text-lux-text" : "text-lux-text-muted",
+                  cell.ready ? "text-pd-text" : "text-pd-text-muted",
                 ].join(" ")}
               >
                 {cell.text}

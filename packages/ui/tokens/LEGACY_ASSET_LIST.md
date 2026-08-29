@@ -14,5 +14,5 @@ USED_MARKETING: og-default
 USED_METADATA: brand.manifest.json slots
 PARTNER: 7 market SVG (CoinGecko = crypto-adjacent, not opp main art)
 MEMBERSHIP: 5 badge SVG
-LEGACY look (= LEGACY VISUAL CANDIDATE — DO NOT USE AS NEW MASTER AUTHORITY): wordmark-dark, BrandMark star (✦), BottomNav5 inline star, robot+globe hero, legacy dark tokens (lux-dark / luxFintechLegacyDark)
+LEGACY look (= LEGACY VISUAL CANDIDATE — DO NOT USE AS NEW MASTER AUTHORITY): wordmark-dark, BrandMark star (✦), BottomNav5 inline star, robot+globe hero, legacy dark tokens (pd-dark / putdukTokensLegacyDark)
 UNUSED: none proven (no ripgrep this session)

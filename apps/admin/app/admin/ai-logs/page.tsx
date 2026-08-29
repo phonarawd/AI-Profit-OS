@@ -141,9 +141,9 @@ function AiLogsContent() {
   const pickItems = picks?.ok && Array.isArray(picks.data.items) ? picks.data.items : null;
 
   return (
-    <main className="p-6 text-lux-text" data-canon="admin-ai-logs" data-testid="admin-ai-logs-page">
+    <main className="p-6 text-pd-text" data-canon="admin-ai-logs" data-testid="admin-ai-logs-page">
       <h1 className="text-xl font-semibold">{T.admin.navigation.aiLogs}</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">
+      <p className="mt-2 text-sm text-pd-text-muted">
         퍼뜩이 어떤 근거로 답하고 추천했는지 확인합니다. 실제 판단 결과는 이 화면에서 바꾸지 않습니다.
       </p>
 
@@ -155,8 +155,8 @@ function AiLogsContent() {
             data-tab={t}
             className={
               t === tab
-                ? "rounded px-3 py-1 text-sm bg-lux-surface-elevated"
-                : "rounded px-3 py-1 text-sm text-lux-text-muted"
+                ? "rounded px-3 py-1 text-sm bg-pd-surface-elevated"
+                : "rounded px-3 py-1 text-sm text-pd-text-muted"
             }
           >
             {TAB_LABEL[t]}
@@ -167,24 +167,24 @@ function AiLogsContent() {
       {tab === "traces" && (
         <section className="mt-6" data-panel="answer_traces" data-testid="ai-logs-traces-panel" data-list-api={listApi}>
           <h2 className="text-base font-medium">{T.admin.aiLogsTraces}</h2>
-          <p className="mt-1 text-sm text-lux-text-muted">
+          <p className="mt-1 text-sm text-pd-text-muted">
             사용자가 입력한 전체 내용은 개인정보 보호를 위해 보여 주지 않습니다.
           </p>
-          <p className="mt-2 text-xs text-lux-text-muted" data-forbid="l3_money_execute">
+          <p className="mt-2 text-xs text-pd-text-muted" data-forbid="l3_money_execute">
             이 화면에서는 출금이나 지급을 실행할 수 없습니다.
           </p>
           {!logs ? (
-            <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="mt-3 text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !logs.ok ? (
             <AdminFetchNote failure={logs.failure} />
           ) : logItems && logItems.length === 0 ? (
-            <p className="mt-3 text-sm text-lux-text-muted" data-testid="ai-logs-empty-traces">
+            <p className="mt-3 text-sm text-pd-text-muted" data-testid="ai-logs-empty-traces">
               표시할 기록이 없습니다.
             </p>
           ) : logItems ? (
             <ul className="mt-3 space-y-3">
               {logItems.map((item, idx) => (
-                <li key={readText(item.id) ?? String(idx)} className="rounded border border-lux-border p-3 text-sm">
+                <li key={readText(item.id) ?? String(idx)} className="rounded border border-pd-border p-3 text-sm">
                   <p>답변 종류 <AdminTruth value={laneLabel(item.lane)} /></p>
                   <p>안전 확인 <AdminTruth value={guardLabel(item.guard_result ?? item.guardResult)} /></p>
                   <p>미리보기 <AdminTruth value={maskLogPreview(item.answer_preview ?? item.answerPreview)} /></p>
@@ -207,23 +207,23 @@ function AiLogsContent() {
         <section className="mt-6" data-panel="ai_pick_readonly" data-testid="ai-logs-pick-panel" data-pick-api={pickApi}>
           <h2 className="text-base font-medium">{T.admin.aiPickScores}</h2>
           <p
-            className="mt-2 text-xs text-lux-text-muted"
+            className="mt-2 text-xs text-pd-text-muted"
             data-forbid="ai_score_admin_override"
           >
             추천 점수는 퍼뜩의 실제 판단 결과이며 이 화면에서 바꿀 수 없습니다.
           </p>
           {!picks ? (
-            <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="mt-3 text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !picks.ok ? (
             <AdminFetchNote failure={picks.failure} />
           ) : pickItems && pickItems.length === 0 ? (
-            <p className="mt-3 text-sm text-lux-text-muted" data-testid="ai-logs-empty-pick">
+            <p className="mt-3 text-sm text-pd-text-muted" data-testid="ai-logs-empty-pick">
               표시할 점수가 없습니다.
             </p>
           ) : pickItems ? (
             <ul className="mt-3 space-y-3">
               {pickItems.map((item, idx) => (
-                <li key={readText(item.opportunity_id ?? item.opportunityId) ?? String(idx)} className="rounded border border-lux-border p-3 text-sm">
+                <li key={readText(item.opportunity_id ?? item.opportunityId) ?? String(idx)} className="rounded border border-pd-border p-3 text-sm">
                   <p>추천 확신 정도 <AdminTruth value={readText(item.ai_confidence_score ?? item.aiConfidenceScore)} /></p>
                   <p>추천 결과 <AdminTruth value={recommendationLabel(item.is_ai_pick ?? item.isAiPick)} /></p>
                   <details className="admin-details">
@@ -250,7 +250,7 @@ function AiLogsContent() {
             안전 확인을 마친 답변 기준만 서비스에 반영합니다.
           </p>
           {!evalStatus ? (
-            <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="mt-3 text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !evalStatus.ok ? (
             <AdminFetchNote failure={evalStatus.failure} />
           ) : (
@@ -265,7 +265,7 @@ function AiLogsContent() {
         <section className="mt-6" data-panel="coach" data-testid="ai-logs-coach-panel" data-coach-api={coachApi}>
           <h2 className="text-base font-medium">{T.admin.aiCoach}</h2>
           {!coach ? (
-            <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="mt-3 text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !coach.ok ? (
             <AdminFetchNote failure={coach.failure} />
           ) : (
@@ -278,7 +278,7 @@ function AiLogsContent() {
               </p>
               <details className="admin-details">
                 <summary>자세한 확인 기준</summary>
-                <ul className="mt-2 list-disc pl-5 text-sm text-lux-text-muted">
+                <ul className="mt-2 list-disc pl-5 text-sm text-pd-text-muted">
                   {asList(coach.data.factTools).map((tool) => (
                     <li key={tool} data-field="factTools">{tool}</li>
                   ))}
@@ -295,10 +295,10 @@ function AiLogsContent() {
       {tab === "spotcheck" && (
         <section className="mt-6" data-panel="spotcheck" data-testid="ai-logs-spotcheck-panel">
           <h2 className="text-base font-medium">사람 사용성 점검</h2>
-          <p className="mt-2 text-sm text-lux-text-muted">
+          <p className="mt-2 text-sm text-pd-text-muted">
             사람이 직접 확인한 결과만 표시합니다. 자동 점검 결과로 대신하지 않습니다.
           </p>
-          <p className="mt-3 text-sm text-lux-text-muted" data-testid="ai-logs-empty-spotcheck">
+          <p className="mt-3 text-sm text-pd-text-muted" data-testid="ai-logs-empty-spotcheck">
             아직 사람이 직접 확인한 결과가 없습니다.
           </p>
         </section>

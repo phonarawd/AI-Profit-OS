@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge } from "../lux/Badge";
+import { Badge } from "../../primitives/Badge";
 import { T } from "../../copy/ko";
 
 export type OpportunityScanBadgeProps = {

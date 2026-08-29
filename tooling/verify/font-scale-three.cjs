@@ -7,16 +7,16 @@ const path = require("path");
 const root = path.resolve(__dirname, "../..");
 const fails = [];
 
-const lux = fs.readFileSync(
-  path.join(root, "packages/ui/tokens/lux-fintech.ts"),
+const pd = fs.readFileSync(
+  path.join(root, "packages/ui/tokens/putduk.ts"),
   "utf8"
 );
-if (!lux.includes("fontScale:")) fails.push("lux-fintech missing fontScale");
+if (!pd.includes("fontScale:")) fails.push("pd-fintech missing fontScale");
 for (const k of ["md:", "lg:", "xl:"]) {
-  if (!lux.includes(k)) fails.push(`lux-fintech.fontScale missing ${k}`);
+  if (!pd.includes(k)) fails.push(`pd-fintech.fontScale missing ${k}`);
 }
-if (!lux.includes("lightToggleAllowed: false")) {
-  fails.push("lux-fintech.theme.lightToggleAllowed must be false");
+if (!pd.includes("lightToggleAllowed: false")) {
+  fails.push("pd-fintech.theme.lightToggleAllowed must be false");
 }
 
 const componentCss = fs.readFileSync(
@@ -63,4 +63,4 @@ if (fails.length) {
   console.error("[verify:font-scale-three] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
-console.log("[verify:font-scale-three] PASS (md/lg/xl · Lux dark lock)");
+console.log("[verify:font-scale-three] PASS (md/lg/xl · PUTDUK dark lock)");

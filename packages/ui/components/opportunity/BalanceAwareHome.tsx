@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { MotionCTA } from "../lux/MotionCTA";
+import { MotionCTA } from "../../primitives/PrimaryCta";
 import { MarketPartnerTrustStrip } from "../trust/MarketPartnerTrustStrip";
 import { T } from "../../copy/ko";
 import { CategoryFilterChips, type CategoryFilterKey } from "./CategoryFilterChips";
@@ -127,8 +127,8 @@ export function BalanceAwareHome({
       >
         {!hideScanHero ? (
           <header data-home-slot="scanHero">
-            <h1 className="text-xl font-semibold text-lux-text">{scanTitle}</h1>
-            <p className="mt-1 text-sm text-lux-text-muted">{scanSub}</p>
+            <h1 className="text-xl font-semibold text-pd-text">{scanTitle}</h1>
+            <p className="mt-1 text-sm text-pd-text-muted">{scanSub}</p>
           </header>
         ) : (
           <header data-home-slot="scanHero" className="sr-only">
@@ -138,11 +138,11 @@ export function BalanceAwareHome({
         )}
 
         <section data-home-slot="affordable" data-testid="section-affordable">
-          <h2 className="text-base font-semibold text-lux-text">
+          <h2 className="text-base font-semibold text-pd-text">
             {T.home.opportunity.sectionTitle}
           </h2>
           {personal ? (
-            <p className="mt-1 text-sm text-lux-text-muted">
+            <p className="mt-1 text-sm text-pd-text-muted">
               {T.feed.sectionAffordableCount.replace("{n}", String(nAffordable))}
             </p>
           ) : null}
@@ -173,26 +173,26 @@ export function BalanceAwareHome({
 
           {empty || !personal ? (
             <div
-              className="mt-4 space-y-3 rounded-lux-xl border border-lux-border bg-lux-surface p-5 home-money-card"
+              className="mt-4 space-y-3 rounded-pd-xl border border-pd-border bg-pd-surface p-5 home-money-card"
               role="status"
               data-testid="home-opportunity-empty"
               data-empty-kind={!personal ? "guest-or-absent" : "ready-empty"}
             >
-              <p className="text-base font-semibold text-lux-text">
+              <p className="text-base font-semibold text-pd-text">
                 {emptyCopy.title}
               </p>
               {emptyCopy.next ? (
-                <p className="text-sm text-lux-text-muted">{emptyCopy.next}</p>
+                <p className="text-sm text-pd-text-muted">{emptyCopy.next}</p>
               ) : null}
               {emptyCopy.why ? (
-                <p className="text-sm text-lux-text-muted">{emptyCopy.why}</p>
+                <p className="text-sm text-pd-text-muted">{emptyCopy.why}</p>
               ) : null}
               {personal ? (
                 <div className="pt-1">
                   <a
                     href="/wallet/deposit"
                     data-testid="home-empty-cta-deposit"
-                    className="inline-flex min-h-12 w-full items-center justify-center rounded-lux-md bg-lux-accent px-4 py-2 text-sm font-semibold text-lux-surface sm:w-auto"
+                    className="inline-flex min-h-12 w-full items-center justify-center rounded-pd-md bg-pd-accent px-4 py-2 text-sm font-semibold text-pd-surface sm:w-auto"
                   >
                     {T.home.opportunity.emptyCtaDeposit}
                   </a>
@@ -204,7 +204,7 @@ export function BalanceAwareHome({
 
         {personal && nearMiss.length > 0 ? (
           <section data-home-slot="nearMiss" data-testid="section-near-miss">
-            <h2 className="text-base font-semibold text-lux-text">
+            <h2 className="text-base font-semibold text-pd-text">
               {T.feed.sectionNearMiss}
             </h2>
             <ul className="mt-3 space-y-3">
@@ -222,12 +222,12 @@ export function BalanceAwareHome({
         <details
           data-home-slot="lockedHigh"
           data-testid="section-locked-high"
-          className="rounded-lux-xl border border-lux-border bg-lux-surface p-4 shadow-[var(--shadow-lux-soft)]"
+          className="rounded-pd-xl border border-pd-border bg-pd-surface p-4 shadow-[var(--shadow-pd-soft)]"
         >
-          <summary className="cursor-pointer text-sm font-medium text-lux-text">
+          <summary className="cursor-pointer text-sm font-medium text-pd-text">
             {T.feed.sectionLockedHigh}
             {personal && lockedHigh[0] ? (
-              <span className="ml-2 text-lux-text-muted">
+              <span className="ml-2 text-pd-text-muted">
                 · {lockedHigh[0].assetLabel}
               </span>
             ) : null}
@@ -251,7 +251,7 @@ export function BalanceAwareHome({
           <p
             data-home-slot="peotteok"
             data-testid="peotteok-balance-line"
-            className="text-sm text-lux-text"
+            className="text-sm text-pd-text"
           >
             {peotteok}
           </p>
@@ -267,7 +267,7 @@ export function BalanceAwareHome({
       {hero ? (
         <div
           data-testid="home-sticky-cta"
-          className="fixed inset-x-0 z-40 border-t border-lux-border bg-lux-surface p-3 md:hidden"
+          className="fixed inset-x-0 z-40 border-t border-pd-border bg-pd-surface p-3 md:hidden"
           style={{ bottom: "calc(3.5rem + env(safe-area-inset-bottom, 0px))" }}
         >
           <MotionCTA
@@ -296,7 +296,7 @@ export function BalanceAwareHome({
     <main
       data-testid="balance-aware-home"
       data-canon="opportunity-card"
-      className={`text-lux-text ${className}`.trim()}
+      className={`text-pd-text ${className}`.trim()}
     >
       {body}
     </main>

@@ -6,33 +6,33 @@
   margin: 0;
   padding: 0;
   background: transparent;
-  color: var(--color-lux-text);
+  color: var(--color-pd-text);
 }
 
 .nav { margin: 0 0 1rem; }
-.nav a { color: var(--color-lux-accent); font-weight: 800; text-decoration: none; }
+.nav a { color: var(--color-pd-accent); font-weight: 800; text-decoration: none; }
 .title { margin: 0 0 0.5rem; font-size: clamp(1.75rem, 4vw, 2.4rem); font-weight: 900; letter-spacing: -0.04em; }
 .lead,
 .note,
 .err { margin: 0 0 1.25rem; line-height: 1.6; }
 .lead,
 .note,
-.itemMeta { color: var(--color-lux-text-muted); }
-.err { color: var(--color-lux-danger); }
+.itemMeta { color: var(--color-pd-text-muted); }
+.err { color: var(--color-pd-danger); }
 .earnings { margin: 0 0 1.25rem; }
 .facts {
   display: grid;
   gap: 0.75rem;
   margin: 0;
   padding: 1rem 1.1rem;
-  border: 1px solid var(--color-lux-border);
+  border: 1px solid var(--color-pd-border);
   border-radius: 1rem;
-  background: var(--color-lux-surface);
-  color: var(--color-lux-text);
-  box-shadow: var(--shadow-lux-soft);
+  background: var(--color-pd-surface);
+  color: var(--color-pd-text);
+  box-shadow: var(--shadow-pd-soft);
 }
 .facts div { display: grid; gap: 0.2rem; }
-.facts dt { font-size: 0.8125rem; color: var(--color-lux-text-muted); }
+.facts dt { font-size: 0.8125rem; color: var(--color-pd-text-muted); }
 .facts dd { margin: 0; font-size: 1.35rem; font-weight: 900; }
 .list { list-style: none; margin: 0 0 1.25rem; padding: 0; display: grid; gap: 0.75rem; }
 .item {
@@ -40,11 +40,11 @@
   gap: 0.25rem;
   padding: 1rem 1.1rem;
   border-radius: 1rem;
-  background: var(--color-lux-surface);
-  border: 1px solid var(--color-lux-border);
+  background: var(--color-pd-surface);
+  border: 1px solid var(--color-pd-border);
   color: inherit;
   text-decoration: none;
-  box-shadow: var(--shadow-lux-soft);
+  box-shadow: var(--shadow-pd-soft);
 }
 .itemName { font-size: 1.125rem; font-weight: 900; }
 .itemMeta { font-size: 0.9375rem; line-height: 1.5; }
@@ -64,7 +64,7 @@
   font-size: 1rem;
   font-weight: 800;
 }
-.secondary { background: transparent; border: 1px solid var(--color-lux-border); color: var(--color-lux-text); }
+.secondary { background: transparent; border: 1px solid var(--color-pd-border); color: var(--color-pd-text); }
 
 @media (min-width: 768px) {
   .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }

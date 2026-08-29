@@ -1,11 +1,11 @@
 /**
  * Component-token layer (PART1d · audit §15)
- * Primitives = lux-fintech.ts · Semantic = lux-theme.css · Component = here
+ * Primitives = pd-fintech.ts · Semantic = pd-theme.css · Component = here
  */
 :root {
   --touch-min: 48px;
-  --card-pad: var(--space-lux-md, 16px);
-  --card-gap: var(--space-lux-sm, 8px);
+  --card-pad: var(--space-pd-md, 16px);
+  --card-gap: var(--space-pd-sm, 8px);
   --card-opportunity-estimate: 180px;
   --ticker-row-estimate: 28px;
   --image-card-aspect: 1 / 1;
@@ -14,10 +14,10 @@
   --font-scale: 1;
   --line-height-boost: 0;
   --text-body-lh: calc(1.5 + var(--line-height-boost));
-  --layout-sidebar: var(--layout-lux-sidebar, 240px);
-  --layout-header: var(--layout-lux-header, 64px);
-  --layout-right-rail-min: var(--layout-lux-right-rail-min, 320px);
-  --layout-right-rail-max: var(--layout-lux-right-rail-max, 360px);
+  --layout-sidebar: var(--layout-pd-sidebar, 240px);
+  --layout-header: var(--layout-pd-header, 64px);
+  --layout-right-rail-min: var(--layout-pd-right-rail-min, 320px);
+  --layout-right-rail-max: var(--layout-pd-right-rail-max, 360px);
   --layout-right-rail-default: 352px;
   /* breakpoints.ts SSOT (§29.2) — raw CSS는 Tailwind lg:/xl: 대신 이 값을 직접 사용 (v1.3 근본 수정) */
   --bp-desktop: 1280px;
@@ -45,17 +45,17 @@ html[data-font-scale="xl"] {
   letter-spacing: 0.01em;
 }
 
-.lux-content-rail {
+.pd-content-rail {
   max-width: var(--content-rail-max);
   margin-inline: auto;
   width: 100%;
 }
 
-.lux-prose {
+.pd-prose {
   max-width: var(--body-max-ch);
 }
 
-.lux-card-image {
+.pd-card-image {
   aspect-ratio: var(--image-card-aspect);
   object-fit: cover;
   width: 100%;
@@ -69,9 +69,9 @@ html[data-font-scale="xl"] {
 .home-hero {
   background: linear-gradient(
     135deg,
-    var(--color-lux-hero-from) 0%,
-    var(--color-lux-accent) 48%,
-    var(--color-lux-hero-to) 100%
+    var(--color-pd-hero-from) 0%,
+    var(--color-pd-accent) 48%,
+    var(--color-pd-hero-to) 100%
   );
   /**
    * Mobile: content-driven height · Founder capture 320–430 geometry.
@@ -81,14 +81,14 @@ html[data-font-scale="xl"] {
    */
   min-height: 320px;
   max-height: none;
-  padding: var(--space-lux-md, 16px);
+  padding: var(--space-pd-md, 16px);
 }
 
 @media (min-width: 768px) {
   .home-hero {
     min-height: 480px;
     max-height: 600px;
-    padding: var(--space-lux-xl, 32px) var(--space-lux-xl, 32px);
+    padding: var(--space-pd-xl, 32px) var(--space-pd-xl, 32px);
   }
 }
 
@@ -96,12 +96,12 @@ html[data-font-scale="xl"] {
   background:
     radial-gradient(
       ellipse 60% 50% at 75% 40%,
-      color-mix(in srgb, var(--color-lux-surface) 22%, transparent),
+      color-mix(in srgb, var(--color-pd-surface) 22%, transparent),
       transparent 70%
     ),
     radial-gradient(
       ellipse 40% 35% at 18% 82%,
-      color-mix(in srgb, var(--color-lux-accent-muted) 40%, transparent),
+      color-mix(in srgb, var(--color-pd-accent-muted) 40%, transparent),
       transparent 65%
     );
 }
@@ -110,7 +110,7 @@ html[data-font-scale="xl"] {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: var(--space-lux-md, 16px);
+  gap: var(--space-pd-md, 16px);
   /* Mobile: content 높이 따라 성장 · fixed box에 욱여넣지 않음 */
   min-height: 0;
   height: auto;
@@ -121,7 +121,7 @@ html[data-font-scale="xl"] {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: var(--space-lux-xl, 32px);
+    gap: var(--space-pd-xl, 32px);
     min-height: inherit;
     height: 100%;
   }
@@ -134,13 +134,13 @@ html[data-font-scale="xl"] {
   flex: 1 1 auto;
   flex-direction: column;
   justify-content: center;
-  gap: var(--space-lux-sm, 8px);
+  gap: var(--space-pd-sm, 8px);
 }
 
 @media (min-width: 768px) {
   .home-hero__copy {
     max-width: 54%;
-    gap: var(--space-lux-lg, 24px);
+    gap: var(--space-pd-lg, 24px);
   }
 }
 
@@ -188,7 +188,7 @@ html[data-font-scale="xl"] {
 .home-hero__timeline {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-lux-xs, 4px) var(--space-lux-sm, 8px);
+  gap: var(--space-pd-xs, 4px) var(--space-pd-sm, 8px);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -200,8 +200,8 @@ html[data-font-scale="xl"] {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    column-gap: var(--space-lux-sm, 8px);
-    row-gap: var(--space-lux-sm, 8px);
+    column-gap: var(--space-pd-sm, 8px);
+    row-gap: var(--space-pd-sm, 8px);
   }
 }
 
@@ -210,13 +210,13 @@ html[data-font-scale="xl"] {
   align-items: center;
   gap: 0.35rem;
   min-width: 0;
-  color: color-mix(in srgb, var(--color-lux-surface) 95%, transparent);
+  color: color-mix(in srgb, var(--color-pd-surface) 95%, transparent);
   font-size: 0.8125rem;
 }
 
 @media (min-width: 768px) {
   .home-hero__timeline-item {
-    gap: var(--space-lux-sm, 8px);
+    gap: var(--space-pd-sm, 8px);
     font-size: 0.875rem;
   }
 }
@@ -229,7 +229,7 @@ html[data-font-scale="xl"] {
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-lux-surface) 15%, transparent);
+  background: color-mix(in srgb, var(--color-pd-surface) 15%, transparent);
   padding-inline: 0.35rem;
   font-size: 0.6875rem;
   font-weight: 600;
@@ -253,7 +253,7 @@ html[data-font-scale="xl"] {
 .home-hero__timeline-arrow {
   display: none;
   margin-inline: 0.15rem;
-  color: color-mix(in srgb, var(--color-lux-surface) 40%, transparent);
+  color: color-mix(in srgb, var(--color-pd-surface) 40%, transparent);
 }
 
 @media (min-width: 768px) {
@@ -263,7 +263,7 @@ html[data-font-scale="xl"] {
 }
 
 .home-hero__cta-wrap {
-  margin-top: var(--space-lux-xs, 4px);
+  margin-top: var(--space-pd-xs, 4px);
   width: 100%;
 }
 
@@ -279,13 +279,13 @@ html[data-font-scale="xl"] {
   min-height: var(--touch-min, 48px);
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-lux-md, 12px);
-  background: var(--color-lux-surface);
+  border-radius: var(--radius-pd-md, 12px);
+  background: var(--color-pd-surface);
   padding: 0.75rem 1.25rem;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-lux-accent);
-  box-shadow: var(--shadow-lux-card);
+  color: var(--color-pd-accent);
+  box-shadow: var(--shadow-pd-card);
   transition: transform 200ms ease, filter 200ms ease;
 }
 
@@ -350,7 +350,7 @@ html[data-font-scale="xl"] {
   height: auto;
   aspect-ratio: 1 / 1;
   overflow: visible;
-  border-radius: var(--radius-lux-lg, 16px);
+  border-radius: var(--radius-pd-lg, 16px);
   animation: home-hero-float 6s ease-in-out infinite;
 }
 
@@ -365,7 +365,7 @@ html[data-font-scale="xl"] {
 @media (min-width: 768px) {
   .home-hero__illustration-frame {
     aspect-ratio: 3 / 2;
-    border-radius: var(--radius-lux-xl, 20px);
+    border-radius: var(--radius-pd-xl, 20px);
   }
 
   .home-hero__illustration-frame img {
@@ -391,7 +391,7 @@ html[data-font-scale="xl"] {
 
 /* Hero CTA → opportunity 앵커 · sticky header 보정 */
 #home-opportunity {
-  scroll-margin-top: calc(var(--layout-header) + var(--space-lux-md, 16px));
+  scroll-margin-top: calc(var(--layout-header) + var(--space-pd-md, 16px));
 }
 
 /**
@@ -404,9 +404,9 @@ html[data-font-scale="xl"] {
   height: var(--layout-header);
   min-height: var(--layout-header);
   padding-inline: clamp(
-    var(--space-lux-md, 16px),
+    var(--space-pd-md, 16px),
     2vw,
-    var(--space-lux-xl, 32px)
+    var(--space-pd-xl, 32px)
   );
 }
 
@@ -422,16 +422,16 @@ html[data-font-scale="xl"] {
 .home-dashboard-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-lux-lg, 24px);
+  gap: var(--space-pd-lg, 24px);
   width: 100%;
   max-width: var(--content-rail-max);
   margin-inline: auto;
   padding-inline: clamp(
-    var(--space-lux-md, 16px),
+    var(--space-pd-md, 16px),
     2vw,
-    var(--space-lux-xl, 32px)
+    var(--space-pd-xl, 32px)
   );
-  padding-block: var(--space-lux-lg, 24px);
+  padding-block: var(--space-pd-lg, 24px);
 }
 
 @media (min-width: 1280px) {
@@ -439,8 +439,8 @@ html[data-font-scale="xl"] {
     /* Main flex + RightRail 352 (계약 320–360) */
     grid-template-columns: minmax(0, 1fr) var(--layout-right-rail-default);
     align-items: start;
-    column-gap: var(--space-lux-lg, 24px);
-    row-gap: var(--space-lux-lg, 24px);
+    column-gap: var(--space-pd-lg, 24px);
+    row-gap: var(--space-pd-lg, 24px);
   }
 }
 
@@ -448,7 +448,7 @@ html[data-font-scale="xl"] {
   display: flex;
   flex-direction: column;
   /* § spacing.lg — Hero / Money / Opportunity vertical rhythm */
-  gap: var(--space-lux-lg, 24px);
+  gap: var(--space-pd-lg, 24px);
   min-width: 0;
   width: 100%;
 }
@@ -461,7 +461,7 @@ html[data-font-scale="xl"] {
 .home-money-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-lux-sm, 8px);
+  gap: var(--space-pd-sm, 8px);
   width: 100%;
   min-width: 0;
 }
@@ -470,19 +470,19 @@ html[data-font-scale="xl"] {
   .home-money-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: stretch;
-    gap: var(--space-lux-md, 16px);
+    gap: var(--space-pd-md, 16px);
   }
 }
 
 @media (min-width: 1280px) {
   .home-money-grid {
-    gap: var(--space-lux-lg, 24px);
+    gap: var(--space-pd-lg, 24px);
   }
 }
 
 /* Shared card shadow (RightRail / near-miss 등) · composition은 Money grid만 */
 .home-money-card {
-  box-shadow: var(--shadow-lux-card);
+  box-shadow: var(--shadow-pd-card);
 }
 
 .home-money-grid .home-money-card {
@@ -490,15 +490,15 @@ html[data-font-scale="xl"] {
   flex-direction: column;
   min-width: 0;
   height: 100%;
-  padding: var(--space-lux-md, 16px);
-  border-radius: var(--radius-lux-xl, 20px);
-  border: 1px solid var(--color-lux-border);
-  background: var(--color-lux-surface);
+  padding: var(--space-pd-md, 16px);
+  border-radius: var(--radius-pd-xl, 20px);
+  border: 1px solid var(--color-pd-border);
+  background: var(--color-pd-surface);
 }
 
 @media (min-width: 1280px) {
   .home-money-grid .home-money-card {
-    padding: var(--space-lux-lg, 24px);
+    padding: var(--space-pd-lg, 24px);
     min-height: 148px;
   }
 }
@@ -507,21 +507,21 @@ html[data-font-scale="xl"] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-lux-sm, 8px);
+  gap: var(--space-pd-sm, 8px);
 }
 
 .home-money__label {
   margin: 0;
   font-size: 0.875rem;
   line-height: 1.35;
-  color: var(--color-lux-text-muted);
+  color: var(--color-pd-text-muted);
 }
 
 .home-money__value-stack {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lux-xs, 4px);
-  margin-top: var(--space-lux-sm, 8px);
+  gap: var(--space-pd-xs, 4px);
+  margin-top: var(--space-pd-sm, 8px);
   flex: 1 1 auto;
 }
 
@@ -541,18 +541,18 @@ html[data-font-scale="xl"] {
 
 /* Trust: balance = 본문색 · profit = 초록 (glow/neon 장식선 금지) */
 .home-money__value--balance {
-  color: var(--color-lux-text);
+  color: var(--color-pd-text);
 }
 
 .home-money__value--profit {
-  color: var(--color-lux-profit);
+  color: var(--color-pd-profit);
 }
 
 .home-money__secondary {
   margin: 0;
   font-size: 0.875rem;
   line-height: 1.4;
-  color: var(--color-lux-text-muted);
+  color: var(--color-pd-text-muted);
 }
 
 .home-money__cta {
@@ -562,9 +562,9 @@ html[data-font-scale="xl"] {
   flex-shrink: 0;
   min-height: 40px;
   padding: 0.4rem 0.9rem;
-  border-radius: var(--radius-lux-md, 12px);
-  background: var(--color-lux-accent);
-  color: var(--color-lux-surface);
+  border-radius: var(--radius-pd-md, 12px);
+  background: var(--color-pd-accent);
+  color: var(--color-pd-surface);
   font-size: 0.8125rem;
   font-weight: 600;
   text-decoration: none;
@@ -573,7 +573,7 @@ html[data-font-scale="xl"] {
 
 .home-money__cta:hover,
 .home-money__cta:focus-visible {
-  background: var(--color-lux-accent-muted, var(--color-lux-accent));
+  background: var(--color-pd-accent-muted, var(--color-pd-accent));
 }
 
 .home-money__cta:active {
@@ -594,7 +594,7 @@ html[data-font-scale="xl"] {
  * track min = max(카드최소, (100% − 2×gap) / 3) → 4열 이상 금지.
  */
 .home-opportunity-grid {
-  --home-opp-gap: var(--space-lux-md, 16px);
+  --home-opp-gap: var(--space-pd-md, 16px);
   --home-opp-min: 260px;
   display: grid;
   gap: var(--home-opp-gap);
@@ -620,15 +620,15 @@ html[data-font-scale="xl"] {
   .home-right-rail {
     display: flex;
     flex-direction: column;
-    gap: var(--space-lux-lg, 24px);
+    gap: var(--space-pd-lg, 24px);
     width: var(--layout-right-rail-default);
     min-width: var(--layout-right-rail-min);
     max-width: var(--layout-right-rail-max);
     flex-shrink: 0;
     position: sticky;
-    top: calc(var(--layout-header) + var(--space-lux-md, 16px));
+    top: calc(var(--layout-header) + var(--space-pd-md, 16px));
     align-self: start;
-    max-height: calc(100dvh - var(--layout-header) - var(--space-lux-lg, 24px));
+    max-height: calc(100dvh - var(--layout-header) - var(--space-pd-lg, 24px));
     overflow-y: auto;
   }
 }

@@ -53,7 +53,7 @@ export function DepositAmountPanel({
       data-force-deposit="false"
       className="mt-4 space-y-3"
     >
-      <label className="block text-sm text-lux-text-muted">
+      <label className="block text-sm text-pd-text-muted">
         {T.deposit.amountLabel}
         <input
           data-testid="deposit-amount-input"
@@ -61,13 +61,13 @@ export function DepositAmountPanel({
           inputMode="decimal"
           value={amount}
           onChange={(e) => setAmountSafe(e.target.value)}
-          className="mt-1 w-full rounded-lux-md border border-lux-border bg-transparent px-3 py-2 text-lux-text"
+          className="mt-1 w-full rounded-pd-md border border-pd-border bg-transparent px-3 py-2 text-pd-text"
         />
       </label>
 
       {suggest > 0 ? (
         <p
-          className="text-sm text-lux-text-muted"
+          className="text-sm text-pd-text-muted"
           data-testid="deposit-suggest-prefill-hint"
         >
           {tab === "krw"
@@ -76,7 +76,7 @@ export function DepositAmountPanel({
         </p>
       ) : null}
 
-      <p className="text-xs text-lux-text-muted">
+      <p className="text-xs text-pd-text-muted">
         {T.deposit.quickHint}
       </p>
       <div
@@ -90,7 +90,7 @@ export function DepositAmountPanel({
             type="button"
             data-testid="deposit-suggest-chip"
             data-suggest-chip="true"
-            className="rounded-lux-md border border-lux-accent px-3 py-2 text-sm text-lux-text"
+            className="rounded-pd-md border border-pd-accent px-3 py-2 text-sm text-pd-text"
             onClick={() => setAmountSafe(String(suggest))}
           >
             {formatChipLabel(suggest, true)}
@@ -102,7 +102,7 @@ export function DepositAmountPanel({
             type="button"
             data-testid={`deposit-quick-${n}`}
             data-suggest-chip="false"
-            className="rounded-lux-md border border-lux-border px-3 py-2 text-sm text-lux-text"
+            className="rounded-pd-md border border-pd-border px-3 py-2 text-sm text-pd-text"
             onClick={() => setAmountSafe(String(n))}
           >
             {formatChipLabel(n, false)}
@@ -110,7 +110,7 @@ export function DepositAmountPanel({
         ))}
       </div>
 
-      <p className="text-xs text-lux-text-muted">
+      <p className="text-xs text-pd-text-muted">
         {T.deposit.optionalHint}
       </p>
     </section>

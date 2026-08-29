@@ -328,14 +328,14 @@ AI 매칭 적합도  N%     ← ≠당첨/보장 (문서 필드 aiConfidenceScor
 ### 조사한 것
 - ACTIVE 플랜 `00`~`06` · ARCHIVE launch  
 - `docs/CONSTITUTION_BOOTSTRAP.md` · ADR-016 · `AGENTS.md` · `TOOLCHAIN.md` · rules  
-- Canon / Brand / Lux · `tooling/verify/CATALOG.md`
+- Canon / Brand / PUTDUK · `tooling/verify/CATALOG.md`
 
 ### 하지 않은 것
 - 앱 코드·migration · 플랜 TODO status 변경(본 Audit A3는 이 파일만)
 
 ### 실물 (BOOTSTRAP CONFIRMED)
 - `CONSTITUTION/` 0 · `schemas/` 0 · apps 0 · migrations 없음  
-- Brand·Lux·Canon 일부·verify·workers scaffold만
+- Brand·PUTDUK·Canon 일부·verify·workers scaffold만
 
 ---
 

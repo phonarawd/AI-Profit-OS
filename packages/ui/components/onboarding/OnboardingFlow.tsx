@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { applyFontScale } from "../../tokens/font-scale";
 import { T } from "../../copy/ko";
 import { BrandMark } from "../brand/BrandMark";
-import { MotionCTA } from "../lux/MotionCTA";
-import { TouchButton } from "../lux/TouchButton";
+import { MotionCTA } from "../../primitives/PrimaryCta";
+import { TouchButton } from "../../primitives/Button";
 import { DemoWalletBanner } from "../wallet/DemoWalletBanner";
 import { MarketPartnerTrustStrip } from "../trust/MarketPartnerTrustStrip";
 import { BuyingPowerMeter } from "./BuyingPowerMeter";
@@ -102,7 +102,7 @@ export function OnboardingFlow() {
     } catch {
       /* ignore */
     }
-    window.location.href = "/";
+    window.location.href = "/auth/signup?from=onboarding";
   }
 
   const toneCopy = T.onboarding[tone];
@@ -118,7 +118,7 @@ export function OnboardingFlow() {
         <section data-testid="onboarding-tone" className="space-y-4">
           <BrandMark size="hero" />
           <p
-            className="text-center text-xs text-lux-text-muted"
+            className="text-center text-xs text-pd-text-muted"
             data-testid="onboarding-transition-disclosure"
           >
             {T.landing.transitionDisclosure}
@@ -165,28 +165,28 @@ export function OnboardingFlow() {
           <h1 className="text-center text-xl font-semibold">
             {T.onboarding.identityHeadline}
           </h1>
-          <p className="text-center text-sm text-lux-text-muted">
+          <p className="text-center text-sm text-pd-text-muted">
             {toneCopy.identityBody}
           </p>
           <MarketDiffDemo />
           <div
             data-testid="compare-mini"
-            className="rounded-lux-md border border-lux-border bg-lux-surface px-4 py-3 text-center text-sm"
+            className="rounded-pd-md border border-pd-border bg-pd-surface px-4 py-3 text-center text-sm"
           >
             {T.margin.compareMiniUtility}
           </div>
-          <p className="text-center text-xs text-lux-text-muted">
+          <p className="text-center text-xs text-pd-text-muted">
             {T.landing.utilityDisclaimer}
           </p>
           <p className="text-center text-sm">{toneCopy.tip}</p>
           <p
-            className="text-center text-sm font-medium text-lux-text"
+            className="text-center text-sm font-medium text-pd-text"
             data-testid="onboarding-objection-slide"
           >
             {T.objections.onboardingSlide}
           </p>
           {"nextConfirm" in toneCopy && toneCopy.nextConfirm ? (
-            <p className="text-center text-xs text-lux-text-muted">
+            <p className="text-center text-xs text-pd-text-muted">
               {toneCopy.nextConfirm}
             </p>
           ) : null}
@@ -243,10 +243,10 @@ export function OnboardingFlow() {
           <h1 className="text-center text-xl font-semibold">
             {T.onboarding.demoHeadline}
           </h1>
-          <p className="text-center text-sm text-lux-text-muted">
+          <p className="text-center text-sm text-pd-text-muted">
             {T.onboarding.demoHint}
           </p>
-          <p className="text-center text-xs text-lux-text-muted">
+          <p className="text-center text-xs text-pd-text-muted">
             {T.onboarding.demoPriceExample}
           </p>
           {/* Guest utility — amount/USDT ticker 0 · practice_only */}
@@ -282,24 +282,24 @@ export function OnboardingFlow() {
           <h1 className="text-center text-xl font-semibold">
             {T.onboarding.usdtHeadline}
           </h1>
-          <p className="text-center text-sm text-lux-text-muted">
+          <p className="text-center text-sm text-pd-text-muted">
             {T.onboarding.usdtBody}
           </p>
           <p
-            className="text-center text-sm text-lux-text"
+            className="text-center text-sm text-pd-text"
             data-testid="onboarding-objection-slide"
           >
             {T.objections.onboardingSlide}
           </p>
           <a
             href="/me/guide/usdt"
-            className="block text-center text-sm text-lux-principal underline-offset-2 hover:underline"
+            className="block text-center text-sm text-pd-principal underline-offset-2 hover:underline"
           >
             {T.onboarding.usdtWhyLink}
           </a>
           <a
             href="/me/guide/get-usdt"
-            className="block text-center text-sm text-lux-text-muted underline-offset-2 hover:underline"
+            className="block text-center text-sm text-pd-text-muted underline-offset-2 hover:underline"
           >
             {T.onboarding.usdtNoTether}
           </a>
@@ -358,7 +358,7 @@ export function OnboardingFlow() {
           <h1 className="text-center text-xl font-semibold">
             {T.onboarding.payoutHeadline}
           </h1>
-          <p className="text-center text-sm text-lux-text-muted">
+          <p className="text-center text-sm text-pd-text-muted">
             {T.onboarding.payoutBody}
           </p>
           {/* Guest utility — amount/USDT ticker 0 (§6.4c.1 F) */}
@@ -373,7 +373,7 @@ export function OnboardingFlow() {
           </TouchButton>
           <a
             href="/"
-            className="block text-center text-sm text-lux-principal underline-offset-2 hover:underline"
+            className="block text-center text-sm text-pd-principal underline-offset-2 hover:underline"
             data-testid="onboarding-continue-real"
           >
             {T.onboarding.continueReal}

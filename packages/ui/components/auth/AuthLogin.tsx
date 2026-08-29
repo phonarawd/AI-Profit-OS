@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { T } from "../../copy/ko";
 import { BrandMark } from "../brand/BrandMark";
-import { TouchButton } from "../lux/TouchButton";
+import { TouchButton } from "../../primitives/Button";
 import { isKakaoOAuthReady, kakaoStartHref } from "./kakao-ready";
 import {
   isWebAuthnSupported,
@@ -65,10 +65,10 @@ export function AuthLogin({
     >
       <BrandMark size="compact" />
       <header className="space-y-2 text-center">
-        <h1 className="text-xl font-semibold text-lux-text">
+        <h1 className="text-xl font-semibold text-pd-text">
           {T.auth.loginHeadline}
         </h1>
-        <p className="text-sm text-lux-text-muted">{T.auth.loginSub}</p>
+        <p className="text-sm text-pd-text-muted">{T.auth.loginSub}</p>
       </header>
 
       <div className="flex flex-col gap-3">
@@ -97,7 +97,7 @@ export function AuthLogin({
               {T.auth.kakaoStart}
             </TouchButton>
             <p
-              className="text-center text-xs text-lux-text-muted"
+              className="text-center text-xs text-pd-text-muted"
               data-testid="auth-kakao-unavailable"
             >
               {T.auth.kakaoUnavailable}
@@ -133,7 +133,7 @@ export function AuthLogin({
         </TouchButton>
         {showPasskeyFallback ? (
           <p
-            className="text-center text-xs text-lux-text-muted"
+            className="text-center text-xs text-pd-text-muted"
             data-testid="auth-passkey-fallback"
           >
             {T.auth.passkeyFallback}
@@ -158,7 +158,7 @@ export function AuthLogin({
           data-testid="auth-email-form"
         >
           <label className="flex flex-col gap-1 text-sm">
-            <span className="text-lux-text-muted">{T.auth.emailForm}</span>
+            <span className="text-pd-text-muted">{T.auth.emailForm}</span>
             <input
               type="email"
               name="email"
@@ -167,7 +167,7 @@ export function AuthLogin({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={T.auth.emailPlaceholder}
-              className="touch-target rounded-lux-md border border-lux-border bg-lux-surface px-3 text-lux-text"
+              className="touch-target rounded-pd-md border border-pd-border bg-pd-surface px-3 text-pd-text"
             />
           </label>
           <TouchButton
@@ -183,12 +183,12 @@ export function AuthLogin({
       ) : null}
 
       {error ? (
-        <p role="alert" aria-live="assertive" className="text-center text-sm text-lux-text">
+        <p role="alert" aria-live="assertive" className="text-center text-sm text-pd-text">
           {error}
         </p>
       ) : null}
       {note ? (
-        <p role="status" aria-live="polite" className="text-center text-sm text-lux-text-muted">
+        <p role="status" aria-live="polite" className="text-center text-sm text-pd-text-muted">
           {note}
         </p>
       ) : null}
@@ -196,13 +196,13 @@ export function AuthLogin({
       <p className="text-center text-sm">
         <a
           href="/auth/signup"
-          className="text-lux-principal underline-offset-2 hover:underline"
+          className="text-pd-principal underline-offset-2 hover:underline"
         >
           {T.auth.toSignup}
         </a>
       </p>
 
-      <footer className="mt-auto pt-6 text-center text-xs text-lux-text-muted">
+      <footer className="mt-auto pt-6 text-center text-xs text-pd-text-muted">
         {T.legal.operator.footerLine}
       </footer>
     </main>

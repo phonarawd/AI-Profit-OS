@@ -48,7 +48,7 @@ const consumerCss = read("apps/web/components/spark-shell/consumer-spark-shell.c
 for (const needle of [
   ".csp-root",
   ".csp-immersive",
-  "--color-lux-bg: #08111f",
+  "--color-pd-bg: #08111f",
   "@media (min-width: 1280px)",
 ]) {
   if (!consumerCss.includes(needle)) fails.push(`consumer Spark CSS missing ${needle}`);

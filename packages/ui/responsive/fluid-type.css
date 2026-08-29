@@ -9,21 +9,21 @@
   --text-title: clamp(1.125rem, 0.9rem + 1.2vw, 1.5rem);
 }
 
-.lux-text-body {
+.pd-text-body {
   font-size: calc(var(--text-body) * var(--font-scale, 1));
   line-height: var(--text-body-lh, 1.5);
 }
 
-.lux-text-profit {
+.pd-text-profit {
   font-size: calc(var(--text-profit) * var(--font-scale, 1));
   font-variant-numeric: tabular-nums;
   font-weight: 700;
-  color: var(--color-lux-profit);
+  color: var(--color-pd-profit);
 }
 
-.lux-text-caption {
+.pd-text-caption {
   font-size: calc(var(--text-caption) * var(--font-scale, 1));
-  color: var(--color-lux-text-muted);
+  color: var(--color-pd-text-muted);
 }
 
 .opportunity-card {

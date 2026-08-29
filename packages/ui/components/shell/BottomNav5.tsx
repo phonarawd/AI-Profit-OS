@@ -60,17 +60,17 @@ export function BottomNav5({ tabs }: { tabs: readonly BottomNavTab[] }) {
   return (
     <aside
       data-testid="app-sidebar"
-      className="app-sidebar md:sticky md:top-0 md:flex md:h-dvh md:shrink-0 md:flex-col md:border-r md:border-lux-border md:bg-lux-surface"
+      className="app-sidebar md:sticky md:top-0 md:flex md:h-dvh md:shrink-0 md:flex-col md:border-r md:border-pd-border md:bg-pd-surface"
     >
       <div className="hidden px-4 pb-3 pt-5 md:block">
         <Link
           href="/"
-          className="flex items-center gap-2.5 text-lg font-semibold tracking-tight text-lux-text"
+          className="flex items-center gap-2.5 text-lg font-semibold tracking-tight text-pd-text"
           data-testid="sidebar-brand"
         >
           <span
             aria-hidden
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lux-md bg-lux-accent text-lux-surface"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-pd-md bg-pd-accent text-pd-surface"
           >
             ✦
           </span>
@@ -83,7 +83,7 @@ export function BottomNav5({ tabs }: { tabs: readonly BottomNavTab[] }) {
         data-testid="bottom-nav-5"
         data-tab-count={tabs.length}
         data-result-indicator="absent"
-        className="fixed inset-x-0 bottom-0 z-40 flex border-t border-lux-border bg-lux-surface md:static md:flex-1 md:flex-col md:gap-1 md:border-t-0 md:px-3 md:py-2"
+        className="fixed inset-x-0 bottom-0 z-40 flex border-t border-pd-border bg-pd-surface md:static md:flex-1 md:flex-col md:gap-1 md:border-t-0 md:px-3 md:py-2"
       >
         {tabs.map((tab) => {
           const active =
@@ -97,10 +97,10 @@ export function BottomNav5({ tabs }: { tabs: readonly BottomNavTab[] }) {
               data-tab-href={tab.href}
               data-active={active ? "true" : "false"}
               className={[
-                "touch-target flex flex-1 flex-col items-center gap-0.5 px-2 py-2 text-xs md:flex-none md:flex-row md:gap-3 md:rounded-lux-md md:px-3 md:py-3 md:text-sm",
+                "touch-target flex flex-1 flex-col items-center gap-0.5 px-2 py-2 text-xs md:flex-none md:flex-row md:gap-3 md:rounded-pd-md md:px-3 md:py-3 md:text-sm",
                 active
-                  ? "text-lux-accent md:bg-lux-accent md:text-lux-surface"
-                  : "text-lux-text-muted md:hover:bg-lux-bg md:hover:text-lux-text",
+                  ? "text-pd-accent md:bg-pd-accent md:text-pd-surface"
+                  : "text-pd-text-muted md:hover:bg-pd-bg md:hover:text-pd-text",
               ].join(" ")}
             >
               <NavGlyph label={tab.label} />
@@ -113,12 +113,12 @@ export function BottomNav5({ tabs }: { tabs: readonly BottomNavTab[] }) {
       <div className="mt-auto hidden p-3 md:block" data-testid="sidebar-invite">
         <Link
           href="/me/invite"
-          className="block rounded-lux-lg border border-lux-border bg-lux-bg p-3 shadow-[var(--shadow-lux-soft)] transition-colors hover:border-lux-accent/40"
+          className="block rounded-pd-lg border border-pd-border bg-pd-bg p-3 shadow-[var(--shadow-pd-soft)] transition-colors hover:border-pd-accent/40"
         >
-          <p className="text-sm font-semibold text-lux-text">
+          <p className="text-sm font-semibold text-pd-text">
             {T.home.sidebar.inviteCta}
           </p>
-          <p className="mt-1 line-clamp-2 text-xs text-lux-text-muted">
+          <p className="mt-1 line-clamp-2 text-xs text-pd-text-muted">
             {T.invite.oneLiner}
           </p>
         </Link>

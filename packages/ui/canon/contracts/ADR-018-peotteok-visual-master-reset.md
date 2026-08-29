@@ -254,7 +254,7 @@ LEGACY VISUAL CANDIDATE — DO NOT USE AS NEW MASTER AUTHORITY
 | `wordmark-dark` | `packages/ui/brand/assets/wordmark/wordmark-dark.png` |
 | robot+globe hero illustration | `packages/ui/brand/assets/ai/hero-illustration-*` |
 | AI avatar(dark/추상 스파클 마크) *(2026-08-16 추가 — 원표에서 누락, H1 intake 이미지 확인으로 보완)* | `packages/ui/brand/assets/ai/avatar-512.png` |
-| legacy dark tokens (`lux-dark`/`luxFintechLegacyDark`) | `packages/ui/tokens/lux-fintech.ts` |
+| legacy dark tokens (`pd-dark`/`putdukTokensLegacyDark`) | `packages/ui/tokens/putduk.ts` |
 
 실제 교체는 새 Visual Master 화면 구현 단계에서, 해당 화면의 새 Implementation Contract가 명시할 때만 진행한다.
 

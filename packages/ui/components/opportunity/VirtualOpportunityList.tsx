@@ -2,8 +2,8 @@
 
 import { OpportunityCard, type OpportunityCardProps } from "./OpportunityCard";
 import type { OpportunityCardModel } from "./opportunity-types";
-import { VirtualList } from "../lux/VirtualList";
-import { Skeleton } from "../lux/Skeleton";
+import { VirtualList } from "../../performance/VirtualList";
+import { Skeleton } from "../../primitives/Skeleton";
 
 /** PPE Level 2 · §29.1 Law 4 — virtualize when count > threshold */
 export const VIRTUAL_OPPORTUNITY_THRESHOLD = 20;

@@ -39,7 +39,7 @@ const dayPulse = read("packages/ui/components/loop/DayPulse.tsx");
 const precta = read("packages/ui/components/loop/PreCTA.tsx");
 const loopCopy = read("packages/ui/copy/ko/loop.ts");
 const daySvc = read("services/api-nest/src/loop/day-pulse.service.ts");
-const ticker = read("packages/ui/components/lux/LivePayoutTicker.tsx");
+const ticker = read("packages/ui/components/pd/LivePayoutTicker.tsx");
 /** PART9c — home slots may live in HomePageClient */
 let home = read("apps/web/app/page.tsx");
 for (const rel of [

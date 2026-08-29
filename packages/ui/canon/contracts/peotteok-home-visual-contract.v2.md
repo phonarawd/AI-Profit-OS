@@ -8,7 +8,7 @@
 | Authority class | **Visual Authority** (ADR-018 §3 사다리 2단계) — Functional Authority(H4)와 분리 유지 |
 | Governs | Home(`/`) 화면의 **Desktop(`home-visual-desktop`) + Mobile(`home-visual-mobile`) 시각 계약**(구성·위계·타이포·색·카드·네비·반응형·접근성). API/DB/Money/Engine/Auth는 범위 밖 |
 | Supersedes (시각 authority만) | [`peotteok-home-visual-contract.v1.md`](./peotteok-home-visual-contract.v1.md) — v1은 삭제하지 않고 HISTORICAL로 보존(이미 ADR-018 §4 배너 적용됨). 본 v2가 Home 시각 authority의 **현재 활성 Contract**다 |
-| Inputs | `peotteok-home-visual-master-intake.v1.md`(H1) §1/§3/§4/§5/§6/§9/§11 · `peotteok-home-product-contract.v1.md`(H4) 전체 · `home-visual-v2.wire.json` functional fields · `home-principal-slots.wire.json` · `packages/ui/tokens/peotteok-light.specification.md` · `packages/ui/tokens/lux-fintech.ts` · `packages/ui/tokens/breakpoints.ts` · ADR-018 §1~§14 |
+| Inputs | `peotteok-home-visual-master-intake.v1.md`(H1) §1/§3/§4/§5/§6/§9/§11 · `peotteok-home-product-contract.v1.md`(H4) 전체 · `home-visual-v2.wire.json` functional fields · `home-principal-slots.wire.json` · `packages/ui/tokens/peotteok-light.specification.md` · `packages/ui/tokens/putduk.ts` · `packages/ui/tokens/breakpoints.ts` · ADR-018 §1~§14 |
 | Runtime code changed by this document | **0** |
 | Next step | H6 New Implementation Contract(`redesign-r1-home-implementation-contract`) — 본 문서는 그 착수를 승인하지 않으며 요구사항만 넘긴다(§20) |
 
@@ -38,7 +38,7 @@
 | Master 등록 | `packages/ui/canon/contracts/peotteok-home-visual-master-intake.v1.md`(H1) §1.1 `PEOTTEOK_HOME_DESKTOP_VISUAL_MASTER_V1` · §1.2 `PEOTTEOK_HOME_MOBILE_VISUAL_MASTER_V1` | 본 문서가 파생하는 원천(§9 intake 완료 기록) |
 | Functional Authority | `packages/ui/canon/contracts/peotteok-home-product-contract.v1.md`(H4) | 본 문서와 분리되나 모든 데이터 바인딩 판정의 SSOT — 본 문서는 H4가 확정한 판정을 재확정하지 않는다 |
 | Canon wire(기능) | `packages/ui/canon/surfaces/home-visual-v2.wire.json`(`route`/`navLabels`/`navHrefs`/`heroTimeline`/`factSurface`/`forbidden`) · `packages/ui/canon/surfaces/home-principal-slots.wire.json` | 참조만, 재정의 금지(H5 todo 명시) |
-| 기존 승인 토큰(Layer 1) | `packages/ui/tokens/peotteok-light.specification.md`(색·spacing·radius·shadow·fontScale 스케일) · `packages/ui/tokens/lux-fintech.ts` · `packages/ui/tokens/breakpoints.ts`(일반 viewport tier) | "existing approved design tokens" — 본 문서가 인용 가능한 유일한 수치 근거. **Home 전용 적용값**(sidebar/rightRail/hero px 등)은 ADR-018 §1.2로 금지되어 인용하지 않음 |
+| 기존 승인 토큰(Layer 1) | `packages/ui/tokens/peotteok-light.specification.md`(색·spacing·radius·shadow·fontScale 스케일) · `packages/ui/tokens/putduk.ts` · `packages/ui/tokens/breakpoints.ts`(일반 viewport tier) | "existing approved design tokens" — 본 문서가 인용 가능한 유일한 수치 근거. **Home 전용 적용값**(sidebar/rightRail/hero px 등)은 ADR-018 §1.2로 금지되어 인용하지 않음 |
 | 절차 SSOT | `.cursor/rules/visual-master-intake.mdc` · `.cursor/rules/mockup-governance.mdc` | Emoji/Missing Asset/LOCK 절차 |
 | Change Control | `governance/platform-redesign/change-control.v1.md` §6.5 `cc.adr018.peotteok-visual-master-reset`(L3) — 본 문서는 그 §17 NEXT AUTHORIZED STEP 계열의 연속이며 별도 L3 변경을 새로 열지 않음(§4.2 L2 Contract 절차로 충분) |
 
@@ -145,7 +145,7 @@ crypto exchange / trading terminal / admin dashboard / casino
 dark-first / neon / candlestick-centric / order book / BUY-SELL interface
 ```
 
-이 방향은 현재 `theme-peotteok-light`(`apps/web/app/layout.tsx`) · `lux-fintech.ts` Light 토큰 방향과 상충하지 않는다(MATCH, H1 §3 재확인). 정확한 hex/spacing/radius 수치는 §7~§8에서 기존 토큰 스케일 범위 내로만 다룬다.
+이 방향은 현재 `theme-peotteok-light`(`apps/web/app/layout.tsx`) · `pd-fintech.ts` Light 토큰 방향과 상충하지 않는다(MATCH, H1 §3 재확인). 정확한 hex/spacing/radius 수치는 §7~§8에서 기존 토큰 스케일 범위 내로만 다룬다.
 
 ---
 
@@ -445,7 +445,7 @@ Money/backend 계약은 본 문서로 변경되지 않는다(Task 지시 재확�
 | `wordmark-dark` | 동일 — 재사용 금지 |
 | robot+globe hero illustration(`hero-illustration-*`) | 동일 — §16 신규 자산으로 대체(제작은 미착수) |
 | AI avatar(`avatar-512.png`, 다크/추상) | 동일 — §11/§16 신규 자산으로 대체(제작은 미착수) |
-| `lux-dark`/`luxFintechLegacyDark` 토큰 | 동일 — §8 색 계약에서 인용하지 않음 |
+| `pd-dark`/`putdukTokensLegacyDark` 토큰 | 동일 — §8 색 계약에서 인용하지 않음 |
 
 ### 19.2 ADR-018 §1.2 옛 Home geometry 값(재확인 — §5~§8 어디에도 미사용)
 

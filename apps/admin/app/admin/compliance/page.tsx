@@ -180,12 +180,12 @@ function ComplianceContent() {
 
   return (
     <main
-      className="p-6 text-lux-text"
+      className="p-6 text-pd-text"
       data-admin-compliance-tab={tab}
       data-testid="admin-compliance-page"
     >
       <h1 className="text-xl font-semibold">{T.admin.navigation.compliance}</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">
+      <p className="mt-2 text-sm text-pd-text-muted">
         출금 전 본인 확인 요청을 살펴보고 승인하거나 다시 요청합니다.
       </p>
       <nav
@@ -199,8 +199,8 @@ function ComplianceContent() {
             data-tab={t}
             className={
               tab === t
-                ? "rounded px-2 py-1 bg-lux-elevated text-lux-accent"
-                : "rounded px-2 py-1 text-lux-text-muted"
+                ? "rounded px-2 py-1 bg-pd-elevated text-pd-accent"
+                : "rounded px-2 py-1 text-pd-text-muted"
             }
           >
             {TAB_LABEL[t]}
@@ -218,7 +218,7 @@ function ComplianceContent() {
           data-doc-url-api={docUrlApi}
           data-reject-reason-min={REJECT_REASON_MIN}
         >
-          <p className="text-sm text-lux-text-muted">
+          <p className="text-sm text-pd-text-muted">
             제출된 이름과 서류를 직접 확인해 주세요. 회원 잔액은 이 화면에서 바꿀 수 없습니다.
           </p>
           <div className="mt-4 flex flex-wrap gap-2 text-sm">
@@ -229,8 +229,8 @@ function ComplianceContent() {
                 data-queue-status={status}
                 className={
                   queueStatus === status
-                    ? "rounded px-2 py-1 bg-lux-elevated"
-                    : "rounded px-2 py-1 text-lux-text-muted"
+                    ? "rounded px-2 py-1 bg-pd-elevated"
+                    : "rounded px-2 py-1 text-pd-text-muted"
                 }
               >
                 {STATUS_LABEL[status]}
@@ -244,14 +244,14 @@ function ComplianceContent() {
             id="kyc-reject-reason"
             value={rejectReason}
             onChange={(e) => setRejectReason(e.target.value)}
-            className="mt-1 w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+            className="mt-1 w-full max-w-md rounded border border-pd-border bg-pd-bg px-2 py-1 text-sm"
           />
           {!queue ? (
-            <p className="mt-3 text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="mt-3 text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !queue.ok ? (
             <AdminFetchNote failure={queue.failure} />
           ) : items && items.length === 0 ? (
-            <p className="mt-3 text-sm text-lux-text-muted">
+            <p className="mt-3 text-sm text-pd-text-muted">
               {queueStatus === "pending"
                 ? "대기 중인 본인 확인이 없습니다."
                 : "해당 목록이 없습니다."}
@@ -264,7 +264,7 @@ function ComplianceContent() {
                 return (
                   <li
                     key={readText(item.submissionId) ?? userId ?? String(idx)}
-                    className="rounded border border-lux-border p-3 text-sm"
+                    className="rounded border border-pd-border p-3 text-sm"
                   >
                     <p>
                       이름 <AdminTruth value={readText(item.legalName)} />
@@ -313,14 +313,14 @@ function ComplianceContent() {
                       <div className="mt-2 flex flex-wrap gap-2">
                         <button
                           type="button"
-                          className="rounded px-2 py-1 text-lux-text-muted"
+                          className="rounded px-2 py-1 text-pd-text-muted"
                           onClick={() => void openDoc(userId, "id")}
                         >
                           신분증 보기
                         </button>
                         <button
                           type="button"
-                          className="rounded px-2 py-1 text-lux-text-muted"
+                          className="rounded px-2 py-1 text-pd-text-muted"
                           onClick={() => void openDoc(userId, "selfie")}
                         >
                           얼굴 사진 보기
@@ -329,14 +329,14 @@ function ComplianceContent() {
                           <>
                             <button
                               type="button"
-                              className="rounded bg-lux-elevated px-2 py-1"
+                              className="rounded bg-pd-elevated px-2 py-1"
                               onClick={() => void decide(userId, "approve")}
                             >
                               승인
                             </button>
                             <button
                               type="button"
-                              className="rounded px-2 py-1 text-lux-text-muted"
+                              className="rounded px-2 py-1 text-pd-text-muted"
                               data-tone="danger"
                               onClick={() => void decide(userId, "reject")}
                             >
@@ -352,7 +352,7 @@ function ComplianceContent() {
                       <img
                         alt="본인 확인 서류"
                         src={preview.objectUrl}
-                        className="mt-3 max-h-64 rounded border border-lux-border"
+                        className="mt-3 max-h-64 rounded border border-pd-border"
                       />
                     ) : null}
                   </li>
@@ -363,7 +363,7 @@ function ComplianceContent() {
             <AdminTruth value={null} />
           )}
           {actionNote ? (
-            <p className="mt-2 text-sm text-lux-text-muted" role="status">
+            <p className="mt-2 text-sm text-pd-text-muted" role="status">
               {actionNote}
             </p>
           ) : null}

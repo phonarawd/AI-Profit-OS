@@ -135,7 +135,7 @@ SUPERSEDED_BY = PUTDUK_RELEASE_MASTER.plan.md
 
 | 축 | v7.23 실행값 | 폐기·보존 |
 |---|---|---|
-| Consumer theme | **ADR-017 `peotteok-light` Light+Purple 단일 출시 테마** | Lux Dark=archive/legacy · dual toggle 0 |
+| Consumer theme | **ADR-017 `peotteok-light` Light+Purple 단일 출시 테마** | PUTDUK Dark=archive/legacy · dual toggle 0 |
 | 5탭 라벨 | **홈 · 기회 · 수익 · 지갑 · 내정보** | href `/`, `/profits`, `/trades`, `/wallet`, `/me` 보존 · `내거래` 라벨 폐기 |
 | Web/Ops host | **OpenNext Cloudflare Workers only** | `infra/domain.manifest.json openNext` origin SSOT · `wrangler pages deploy`/pages.dev origin 금지 |
 | PART9 | fetch→SDK→Nest→DB/ledger/auth binding 보존 | `HomePageV2`·병렬 데이터 파이프라인 금지 |
@@ -289,7 +289,7 @@ flowchart TD
 > **결제 SSOT:** **PG사(결제대행) 0** — Toss/Nice/Inicis/PortOne/iamport/Stripe Checkout 등 wallet path **영구 배제** · §41  
 > **용어 잠금:** **PostgreSQL(ADR-001)** ≠ **PG사/결제대행(§41 PG 0)** — 혼용 금지  
 > **에이전트 SSOT:** **ADR-014** — Cursor rules로 스택·Phase·PG사0 잠금 · “더 좋은 스택” 재제안 금지  
-> **툴체인 SSOT:** **ADR-015** — Node22 · **pnpm only** · **next@16** · **Tailwind v4**+Lux `@theme` · Rust · Compose=옵션 · npm/bun install 금지  
+> **툴체인 SSOT:** **ADR-015** — Node22 · **pnpm only** · **next@16** · **Tailwind v4**+PUTDUK `@theme` · Rust · Compose=옵션 · npm/bun install 금지  
 > **자동화 SSOT:** **ADR-016** — Docker-less 기본 · Vercel 금지 · 8GB Phase0 · `verify:gate`  
 > **Personal AI / 퍼뜩(AI) SSOT:** **§47 + §47.12~14** · P/G/S · Adapter · 유저 AI 이름=**퍼뜩**(앱명과 동일 · 타프로젝트 코치명 금지) · GitHub=코드만  
 > **PWA SSOT:** **§23~26** (`05`) · next@16·Serwist · Runtime P0 Push in-process · §23.5a 자동Push · ADR-017 Peotteok Light · WebAuthn 정책=Money §43 · Store=v2 · **Uptodown APK Owns=`05` §24**
@@ -318,7 +318,7 @@ flowchart TD
 | **반응형·성능** | 320px~4K fluid CSS + Device S/A/B tier + 60fps **목표** |
 | **어드민 TOP5** | 원클릭 검수·마진·사기방지·돈줄·긴급정지 |
 | **마케팅·SEO** | 매체별 랜딩·Server CAPI·UTM→입금·IndexNow |
-| **Lux-Fintech** | Deep Obsidian · Tier Motion · G4 ticker/counter |
+| **PUTDUK-Fintech** | Deep Obsidian · Tier Motion · G4 ticker/counter |
 | **신뢰 교육** | **§38** — USDT 입금 납득 · 원화 비교 · **플랫폼 수익 투명** · 20~70대 ko |
 | **어드민 Ops** | **§40** 분리 배포 · RBAC · **§39** 유저별 금융 전수 |
 | **USDT 온체인** | **§41+§43** 유저별 TRC20 · **이벤트 스트림** · 1conf UI/19conf ledger · sweeper · **폴링 폐지** |
@@ -335,20 +335,20 @@ flowchart TD
 | **v7.22.1 drift 흡수** | **ADR-006/007** — 원화 `payableAmountKrw` · PRICE_STALE=§43 soft match · CTA · 온보딩≤15초 · tier/WS · manifest · Auth · orchestrate≠실체결 |
 | **v7.22.2 스펙 완성 흡수** | **ADR-008~010** — 수수료·FX·platform_reserve · v1 orchestrate-only · ROOT_DOMAIN · 출금수수료·minHolding · Resend·R2 KYC · TRX stake · KRW CSV Day-1 · 승률정의 · 내정보3면 · Phase0 in-process · next@15 · DET verifiedAt-only · 2인Confirm필수 · §21 라벨교정 |
 | **v7.22.3 성장·공지·브랜드 흡수** | **ADR-011/012** — notice≠campaign · Viral Ladder L1/L2/L3 · clawback·시즌·공유카드 · Brand Kit `packages/ui/brand` · Admin growth 자식탭(보류큐) · R*/N*/B* 전수 · toast REFERRAL_*/CAMPAIGN_* · deep link/CAPI · verify:* 전수 |
-| **v7.22.4 목업 거버넌스 흡수** | **ADR-013** — 사진목업=intent archive only · 시각복제 금지 · Canon=Lux+Brand+컴포넌트+구조와이어 · 충돌시 코드/토큰>플랜>Canon>사진 · `verify:mockup-governance` · Cursor rule alwaysApply |
+| **v7.22.4 목업 거버넌스 흡수** | **ADR-013** — 사진목업=intent archive only · 시각복제 금지 · Canon=PUTDUK+Brand+컴포넌트+구조와이어 · 충돌시 코드/토큰>플랜>Canon>사진 · `verify:mockup-governance` · Cursor rule alwaysApply |
 | **v7.22.5 Cursor·PG사0 흡수** | **ADR-014** — Cursor=집행기·스택 재설계 금지 · Phase0=NATS0 · Nest/Rust/단일Postgres/CF only · **PG사(결제대행)0 확정**(유저 확인) · 용어 Postgres≠PG사 · `stack-lock.mdc`+`AGENTS.md` · `verify:pg-module-scan`·`verify:stack-lock` |
-| **v7.22.6 그린필드 툴체인 흡수** | **ADR-015** — **next@16**(15 pin 폐기) · **Tailwind v4**+Lux `@theme` · **pnpm@10.14** only · Node22 · rust-toolchain · Compose PG17/Redis · `TOOLCHAIN.md` · `verify:stack-lock` 작업전 PASS · npm/bun install 금지 |
+| **v7.22.6 그린필드 툴체인 흡수** | **ADR-015** — **next@16**(15 pin 폐기) · **Tailwind v4**+PUTDUK `@theme` · **pnpm@10.14** only · Node22 · rust-toolchain · Compose PG17/Redis · `TOOLCHAIN.md` · `verify:stack-lock` 작업전 PASS · npm/bun install 금지 |
 | **v7.22.7 소비자 브랜드 개정** | **ADR-002** Consumer=**바로번다** (당시) · 구 `오늘수익` 폐기 — **→ v7.22.9에서 퍼뜩으로 승계** |
 | **v7.22.8 에이전트 자동화 흡수** | **ADR-016** — rules(always≤7+globs) · hooks(git deny·stop cleanup) · Husky+`verify:gate` · GH Actions · Docker-less=Supabase+Upstash · Vercel 금지 · 8GB Phase0 · `docs/ADR-016-AGENT-AUTOMATION.md` |
 | **v7.22.9 실물감사·퍼뜩(AI)·모델분할** | 레포/DB/브랜드/어드민 **실측** · Consumer=**퍼뜩** · `docs/CONSTITUTION_BOOTSTRAP.md` · 퍼뜩(AI)=§47.12 · Admin 자식route 잠금 · Phase0 bus=in-process · todo=`[grok-4.5\|256K]`/`[composer-2.5\|200K]` · 플랜 실파일명 교정 |
 | **v7.22.10 KR 20~70 유저 완성** | toneBand 배선 · fontScale 3단 · `/me/guide/get-usdt` · 입금 네트워크 한글경고 · depositPref · landing→tone 시드 · 본인진행 카피 · spot-check todo · **성별 UI 분기 금지** · verify:* 추가 |
-| **v7.22.11 온보딩·인증·광고·KYC 흡수** | UI §6.4 체험형+Canon · Infra §31.2a `/ads` alias · §31.2b 3초 예산 · §51.9.1 Stage A/B 필드 · Money §42 Lux 3면+`kyc-submission.v1` · **주민번호 타이핑 0** · 소유권 SSOT 1곳+pointer |
+| **v7.22.11 온보딩·인증·광고·KYC 흡수** | UI §6.4 체험형+Canon · Infra §31.2a `/ads` alias · §31.2b 3초 예산 · §51.9.1 Stage A/B 필드 · Money §42 PUTDUK 3면+`kyc-submission.v1` · **주민번호 타이핑 0** · 소유권 SSOT 1곳+pointer |
 | **v7.22.12 원화 Day-1 운영 단순화** | CSV 필수 폐기 · Admin 통장확인 후 **[승인]=잔액반영 / [거절]=내역+토스트** · Money §41.3·§43.3 · Admin TOP1 · UI 카피 |
 | **v7.22.13 Admin 유저360** | §9.8.7 **순유입**=입금−출금 · finance 탭+버킷+추천보상 · §9.8.8 추천/유입/CS/prefs/등급/운영알림 · schema `netInflowUsdt` · `verify:admin-user-360` · **중복0 pointer** |
 | **v7.22.14 Engine 결함 0화** | Engine 단일본 동기화 · §2.0 Phase0 in-process · ADR-009 `orchestrate` only · §48.13.1 participate↔Rule · §48.13.2 golden 6건 · §0.0.4 Owns · §47.12 KRW상태·실체결금지 · UI pointer 해시파일 |
 | **v7.22.15 UI 유령§51.24·퍼뜩·StageB** | UI에 **§51.24 Loop/DayPulse/PreCTA/L1~L24** Owns 복원 · §8.2 KRW_REJECTED · Canon peotteok-chat+complete-profile · `/me` 진입 · PriceCompare pointer · verify:loop-psychology* |
 | **v7.22.16 퍼뜩 P/G/S·LLM Adapter** | Engine §47 P/G/S · Day-1=`gemini_free`+쿼터 degrade · Fact tools · Help RAG · `verify:ai-general-no-money-tools`/`ai-lane-router`/`llm-quota-degrade` · UI stream+`PEOTTEOK_LLM_BUSY` · Canon peotteok 1.3 |
-| **v7.22.17 PWA 결함 0화** | PWA `05` next@16 · Push Phase0 in-process · Lux theme · WebAuthn Owns=Money §43 · §24 Infra pointer · Admin push kill · CATALOG `verify:pwa-*` · 이중본 sync · Canon install/offline |
+| **v7.22.17 PWA 결함 0화** | PWA `05` next@16 · Push Phase0 in-process · PUTDUK theme · WebAuthn Owns=Money §43 · §24 Infra pointer · Admin push kill · CATALOG `verify:pwa-*` · 이중본 sync · Canon install/offline |
 | **v7.22.18 로드맵·KR 표기 정렬** | §18 선행=Milestone 쪼개기 일치 · Rule을 Money/Engine 직후 · §21 NATS/Temporal=Phase1+ 명시 · spot-check 20·40·**60~70** · Canon gender forbid 전면 |
 | **v7.22.19 Brand Visual Kit v1** | 퍼뜩 플래시 마크·워드마크·AI아바타·OG · `brand.manifest` assets · `verify:brand-assets` · 메탈헥스 archive · UI §5.9.2b |
 | **v7.22.20 카테고리 상품 이미지·가방** | Engine §0.0.6 `assetImageUrl` hydrate·공개가드 · `luxury_bag` · 필터 `가방` · UI §48.3a 썸네일 · 스텝 active **`시세 불러오는 중...`** · Canon productThumb · `verify:asset-image-surface` |
@@ -403,7 +403,7 @@ flowchart TD
 | Admin 원클릭 TOP5 | 9.3 |
 | Marketing Attribution | 9.0 (consent-first CAPI) |
 | SEO / Organic | 8.5 |
-| Lux-Fintech Motion | 9.0 (tier + reduced-motion) |
+| PUTDUK-Fintech Motion | 9.0 (tier + reduced-motion) |
 | 초기 실행 가능성 | 8.5+ ($0 bootstrap) |
 | 규제/금융 리스크 | 8.5+ |
 
@@ -448,7 +448,7 @@ flowchart TD
 - `25` — ko copy·금지어
 - `26` — performance·device tier 수치 · **PO LOCK** = `.cursor/rules/peotteok-performance-target.mdc` (개발 PC ≠ 제품 baseline · GLOBAL AVERAGE→HIGH-END · 프리미엄 시각+생산 성능)
 - `27` — marketing·SEO
-- `28` — Lux-Fintech visual·motion (**G4 ticker/counter · §35**)
+- `28` — PUTDUK-Fintech visual·motion (**G4 ticker/counter · §35**)
 
 ---
 
@@ -503,8 +503,8 @@ flowchart TD
 0b. **`docs/CONSTITUTION_BOOTSTRAP.md` PASS**  
 0c. **M0 todo 순서 잠금 (Audit A5/A9 · BOOTSTRAP §9.1 · File-Serial · 건너뛰기 금지 · Grok 위→아래):**  
    `constitution-28-core` → `constitution-28-ai-money-ops` → `schemas-contracts-core` → `schemas-migrations-supabase` → `monorepo-skeleton`(Admin=§9.1.1) → `copy-canon-cta-sla-lock`*(done)* → `auth-ssot`*(done)* → `phase0-bootstrap-hosts`*(done)* → **Index CLOSED** → **01 Money**
-1. **M0** — CONSTITUTION 22~28·35~51 (+§47.12~14 · §50.9) + schemas + **supabase/migrations**(+vector) + brand + Lux `@theme` + monorepo-skeleton  
-2. **M0+UI 기초** — `copy-canon-cta-sla-lock` + packages/ui (lux · responsive · **copy/ko** · toneBand/fontScale) + Canon wires  
+1. **M0** — CONSTITUTION 22~28·35~51 (+§47.12~14 · §50.9) + schemas + **supabase/migrations**(+vector) + brand + PUTDUK `@theme` + monorepo-skeleton  
+2. **M0+UI 기초** — `copy-canon-cta-sla-lock` + packages/ui (pd · responsive · **copy/ko** · toneBand/fontScale) + Canon wires  
 3. **M0.5** — simulation (**§51.4** · Growth ON 전 필수) + Admin `growth?tab=simulation`  
 4. **M1** — Money Core (**PG사 0** · ledger/buckets · USDT · KRW Admin 승인/거절 · withdraw) + Nest Auth JWT (§51.9)  
 5. **M1↔M2 정산 핵** — **§48.13 MATCH_SUCCESS Rule** + golden traces (participate/settlement와 동시 · Admin 뒤로 미루지 **않음**)  
@@ -521,7 +521,7 @@ flowchart TD
 
 | MS | 내용 |
 |----|------|
-| M0 | Constitution + schemas/migrations + Lux + monorepo |
+| M0 | Constitution + schemas/migrations + PUTDUK + monorepo |
 | M0.5 | Simulation pass (Growth 전) |
 | M1 | Ledger + wallet + §41/§43 + Auth JWT + **§48.13 Rule 핵**(golden) |
 | M2 | Engine + adapters + §36 + 5탭 피드 |
@@ -586,7 +586,7 @@ flowchart TD
 - [ ] **§42:** participate without KYC **200**
 - [ ] **§37:** freeze/ban → login·거래·출금 block E2E
 - [ ] 전역 마진 저장 → bulk recalc + SSE fanout
-- [ ] **verify:lux-tokens + verify:ticker-mode-audit PASS**
+- [ ] **verify:pd-tokens + verify:ticker-mode-audit PASS**
 - [ ] verify:marketing-compliance PASS
 - [ ] **UTM→first_deposit attribution E2E** · **D1~D3 dedup** (Infra §31.3b · `verify:attribution-chain`)
 - [ ] **CAPI consent-before-send 100%** · **`verify:capi-config` always · `verify:capi-smoke` staging**
@@ -882,7 +882,7 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 - **CONSTITUTION 25 + ko copy**
 - **CONSTITUTION 26 + fluid CSS + device tier + TanStack Virtual**
 - **Admin TOP5 + TOP6 광고 성과 위젯**
-- **CONSTITUTION 28 + Lux components + tier motion**
+- **CONSTITUTION 28 + PUTDUK components + tier motion**
 - **CONSTITUTION 48 + AI 진행실/성공/안전중단/Admin 진행정책 (§48)**
 - **CONSTITUTION 49 + 원금유지·수익출금·버킷원장·P/E방어 (§49)**
 - **CONSTITUTION 50 + 설정·약관대본·쉬운한글·토스트이모지 (§50)**
@@ -963,8 +963,8 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | `packages/ui/components/trust/` | WhyUsdt · RevenueExplainer · FAQ |
 | `schemas/deposit-config.v1.json` | 원화 대표계좌 + TronGrid/onchain 설정 (§37·§41) |
 | `packages/sdk/wallet-config/` | useDepositConfig SSE |
-| `packages/ui/tokens/lux-fintech.ts` | color SSOT |
-| `packages/ui/components/lux/` | CountUp, Ticker, MotionCTA, Receipt |
+| `packages/ui/tokens/putduk.ts` | color SSOT |
+| `packages/ui/components/pd/` | CountUp, Ticker, MotionCTA, Receipt |
 | `27_MARKETING_AND_SEO_ENGINE.md` | Ad Funnel, CAPI, UTM, SEO |
 | `packages/sdk/marketing/` | utm, consent, capi client hooks |
 | `workers/marketing-capi-dispatcher/` | Meta/TikTok/Google server events |
@@ -1059,9 +1059,9 @@ Deposit → [수익 벌기] → AI Matching → Process → Settlement credit �
 | **ADR-010 Domain+Pin** | `ROOT_DOMAIN` 필수 · hosts app/ops/api · Phase0=in-process · **next major → ADR-015가 승계** | prod `{domain}` 잔존 · Phase0 NATS 필수화 |
 | **ADR-011 Brand Kit** | 에셋 SSOT=`packages/ui/brand` + manifest · AI 산출은 리뷰 후 등록만 · `verify:brand-assets` | 런타임 AI 아이콘 · 미등록 CDN · 타사 로고 |
 | **ADR-012 Notice≠Campaign** | notice=운영사실(보상문구0) · campaign=예산 프로모 · G1 FOMO와 스키마/탭 분리 · Viral Ladder=Money §51.5 | notice에 reward · L1만 티어 가산 · sidebar 13번째 |
-| **ADR-013 Mockup Governance** | 사진/PNG 목업 = **intent archive only** · 구현 시각 SSOT = Lux tokens + Brand Kit + `packages/ui` + Canon wire · 충돌 시 **코드/토큰 > 플랜 > Canon > 사진목업** · UI §33.8 | 사진 픽셀 복제 · 목업별 로고/색/탭 drift · “목업이랑 똑같이” 픽셀 QA |
+| **ADR-013 Mockup Governance** | 사진/PNG 목업 = **intent archive only** · 구현 시각 SSOT = PUTDUK tokens + Brand Kit + `packages/ui` + Canon wire · 충돌 시 **코드/토큰 > 플랜 > Canon > 사진목업** · UI §33.8 | 사진 픽셀 복제 · 목업별 로고/색/탭 drift · “목업이랑 똑같이” 픽셀 QA |
 | **ADR-014 Cursor Stack Lock** | Cursor=**플랜 집행기** · rules=`stack-lock`·`phase-activation`·`mockup-governance` · `AGENTS.md` · Infra §15.0b · **구체 버전 핀=ADR-015** | ADR 없는 스택 재제안 · Vercel+CF · Supabase Auth · PG사 SDK · Phase0 NATS 필수화 · Postgres↔PG사 혼동 |
-| **ADR-015 Greenfield Toolchain** | **Node22** · **pnpm@10.14.0 only** · **next@16** · **Tailwind v4**+Lux `@theme` · Rust · OpenNext/CF · `TOOLCHAIN.md` · Compose=옵션 | next@15·TW3 · npm/bun SSOT |
+| **ADR-015 Greenfield Toolchain** | **Node22** · **pnpm@10.14.0 only** · **next@16** · **Tailwind v4**+PUTDUK `@theme` · Rust · OpenNext/CF · `TOOLCHAIN.md` · Compose=옵션 | next@15·TW3 · npm/bun SSOT |
 | **ADR-016 Agent Automation** | Rules+hooks+Husky+`verify:gate`+GH Actions · **Docker-less 기본**(Supabase Seoul+Upstash) · Vercel 금지 · 8GB Phase0 · commit=`verify:gate` · stop=cleanup · `docs/ADR-016-AGENT-AUTOMATION.md` | always 규칙 과다 · `--no-verify` · Vercel 연동 · Docker 필수화 · 훅만 믿고 Husky/CI 생략 |
 
 ### 51.22 CI · 출시 게이트 (pointer §19)

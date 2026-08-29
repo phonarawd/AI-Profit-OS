@@ -73,6 +73,7 @@ push 전: `pnpm verify:gate:push` (T1) → push → **같은 턴** `gh run watch
 
 - gate 비용 큼 → **같은 슬라이스 todo 2~3개 묶어 1커밋** 허용
 - push는 **세션 stop / 명시 푸시**에 집중 (todo마다 push+CI watch 금지)
+- 이 PC에서 `node_modules` 없거나 RAM <1.5GB면 로컬 `pnpm install` / local gate **금지**. T0/T1 대체 = `node tooling/verify/cloud-dispatch.cjs`. 클라우드 PASS 전 commit/push 금지. `--no-verify` 금지.
 
 ## done 정의
 

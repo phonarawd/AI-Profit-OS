@@ -21,13 +21,13 @@ export function UsdtVsKrwCompareTable({
   return (
     <div
       data-testid="usdt-vs-krw-compare"
-      className={`overflow-x-auto rounded-lux-md border border-lux-border ${className}`.trim()}
+      className={`overflow-x-auto rounded-pd-md border border-pd-border ${className}`.trim()}
     >
-      <table className="w-full min-w-[280px] border-collapse text-sm text-lux-text">
+      <table className="w-full min-w-[280px] border-collapse text-sm text-pd-text">
         <thead>
-          <tr className="bg-lux-elevated text-left">
+          <tr className="bg-pd-elevated text-left">
             <th className="p-3 font-medium" scope="col" />
-            <th className="p-3 font-medium text-lux-accent" scope="col">
+            <th className="p-3 font-medium text-pd-accent" scope="col">
               {c.colUsdt} {T.trust.usdt.recommendBadge}
             </th>
             <th className="p-3 font-medium" scope="col">
@@ -37,12 +37,12 @@ export function UsdtVsKrwCompareTable({
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.label} className="border-t border-lux-border">
-              <th className="p-3 text-left font-normal text-lux-text-muted" scope="row">
+            <tr key={row.label} className="border-t border-pd-border">
+              <th className="p-3 text-left font-normal text-pd-text-muted" scope="row">
                 {row.label}
               </th>
               <td className="p-3">{row.usdt}</td>
-              <td className="p-3 text-lux-text-muted">{row.krw}</td>
+              <td className="p-3 text-pd-text-muted">{row.krw}</td>
             </tr>
           ))}
         </tbody>

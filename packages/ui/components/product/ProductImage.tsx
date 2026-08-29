@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Skeleton } from "../lux/Skeleton";
+import { Skeleton } from "../../primitives/Skeleton";
 import {
   assetIconForCategory,
   type AssetCategory,
@@ -80,7 +80,7 @@ export function ProductImage({
       data-variant={variant}
       data-priority={priority ? "1" : "0"}
       className={[
-        "lux-card-image relative overflow-hidden bg-lux-elevated",
+        "pd-card-image relative overflow-hidden bg-pd-elevated",
         variantBox[variant],
         className,
       ]
@@ -99,7 +99,7 @@ export function ProductImage({
           role="img"
           aria-label={alt}
           data-testid="product-image-fallback"
-          className="absolute inset-0 flex items-center justify-center text-3xl text-lux-text-muted"
+          className="absolute inset-0 flex items-center justify-center text-3xl text-pd-text-muted"
         >
           <span aria-hidden>{icon}</span>
         </div>

@@ -11,19 +11,19 @@ export default function Page() {
     <AccountFrame title={T.principalGuide.pageTitle} view="ready" testId="guide-principal" hideTitle>
     <main className={styles.surface}>
       <h1 className="text-xl font-semibold">{T.principalGuide.pageTitle}</h1>
-      <p className="mt-3 text-sm text-lux-text-muted">
+      <p className="mt-3 text-sm text-pd-text-muted">
         {T.principalGuide.whyKeep}
       </p>
-      <p className="mt-3 text-sm text-lux-text">
+      <p className="mt-3 text-sm text-pd-text">
         {T.principalGuide.alwaysWithdraw}
       </p>
-      <p className="mt-3 text-sm text-lux-text-muted">
+      <p className="mt-3 text-sm text-pd-text-muted">
         {T.principalGuide.mergeHint}
       </p>
       <Link
         href="/wallet/withdraw?mode=principal"
         data-principal-reachable="true"
-        className="mt-6 inline-block text-sm text-lux-accent underline"
+        className="mt-6 inline-block text-sm text-pd-accent underline"
       >
         {T.withdrawMode.ctaOpenPrincipal}
       </Link>

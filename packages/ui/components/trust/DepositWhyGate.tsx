@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { T } from "../../copy/ko";
-import { TouchButton } from "../lux/TouchButton";
+import { TouchButton } from "../../primitives/Button";
 
 const STORAGE_KEY = "peotteok_deposit_why_ack";
 
@@ -65,22 +65,22 @@ export function DepositWhyGate({
       aria-labelledby="deposit-why-gate-title"
       className={`fixed inset-0 z-40 flex items-end justify-center bg-black/50 p-4 sm:items-center ${className}`.trim()}
     >
-      <div className="w-full max-w-md rounded-lux-md border border-lux-border bg-lux-surface p-4 text-lux-text shadow-lg">
+      <div className="w-full max-w-md rounded-pd-md border border-pd-border bg-pd-surface p-4 text-pd-text shadow-lg">
         <h2
           id="deposit-why-gate-title"
           className="text-lg font-semibold"
         >
           {g.title}
         </h2>
-        <p className="mt-2 text-sm text-lux-text-muted">{g.body}</p>
-        <ul className="mt-3 space-y-2 text-sm text-lux-text-muted">
+        <p className="mt-2 text-sm text-pd-text-muted">{g.body}</p>
+        <ul className="mt-3 space-y-2 text-sm text-pd-text-muted">
           <li>
-            <strong className="text-lux-text">{T.objections.q2.q}</strong>
+            <strong className="text-pd-text">{T.objections.q2.q}</strong>
             <br />
             {T.objections.q2.a}
           </li>
           <li>
-            <strong className="text-lux-text">{T.objections.q4.q}</strong>
+            <strong className="text-pd-text">{T.objections.q4.q}</strong>
             <br />
             {T.objections.q4.a}
           </li>

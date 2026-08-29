@@ -330,7 +330,7 @@ pushEnabled(kill) → user.master → user[channel] → push_subscriptions 존�
 
 ```typescript
 export function profitTapFeedback() {
-  if (prefersReducedMotion()) return; // Lux · §26
+  if (prefersReducedMotion()) return; // PUTDUK · §26
   if ('vibrate' in navigator) navigator.vibrate([30, 50, 30]);
   playSfx('profit-tap');
 }
@@ -532,7 +532,7 @@ schemas/push-subscription.v1.json
 - [ ] 입금주소 long-press 복사
 - [ ] OfflineBanner + SW update 1버튼
 - [ ] Install iOS/Android E2E
-- [ ] theme/background = Lux 토큰 일치
+- [ ] theme/background = PUTDUK 토큰 일치
 
 ### 오차0
 - [ ] Push `source_event_id` dedup 100%

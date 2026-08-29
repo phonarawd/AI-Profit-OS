@@ -6,7 +6,7 @@
   margin: 0;
   padding: 0;
   background: transparent;
-  color: var(--color-lux-text);
+  color: var(--color-pd-text);
 }
 
 .nav {
@@ -17,7 +17,7 @@
 }
 
 .nav a {
-  color: var(--color-lux-accent);
+  color: var(--color-pd-accent);
   font-weight: 800;
   text-decoration: none;
 }
@@ -36,8 +36,8 @@
   line-height: 1.6;
 }
 
-.note { color: var(--color-lux-text-muted); }
-.err { color: var(--color-lux-danger); }
+.note { color: var(--color-pd-text-muted); }
+.err { color: var(--color-pd-danger); }
 
 .actions {
   display: grid;
@@ -81,16 +81,16 @@
 .card {
   display: block;
   padding: 1rem 1.05rem;
-  border: 1px solid var(--color-lux-border);
+  border: 1px solid var(--color-pd-border);
   border-radius: 1rem;
-  background: var(--color-lux-surface);
-  color: var(--color-lux-text);
+  background: var(--color-pd-surface);
+  color: var(--color-pd-text);
   text-decoration: none;
-  box-shadow: var(--shadow-lux-soft);
+  box-shadow: var(--shadow-pd-soft);
 }
 
 .cardTitle { margin: 0; font-size: 1.05rem; font-weight: 800; }
-.cardBody { margin: 0.35rem 0 0; color: var(--color-lux-text-muted); line-height: 1.5; }
+.cardBody { margin: 0.35rem 0 0; color: var(--color-pd-text-muted); line-height: 1.5; }
 .statusBadge {
   display: inline-block;
   border-radius: 999px;
@@ -101,15 +101,15 @@
   color: #fff;
 }
 
-.surface { color: var(--color-lux-text); }
-.surface :global(.text-lux-text) { color: var(--color-lux-text); }
-.surface :global(.text-lux-text-muted) { color: var(--color-lux-text-muted); }
-.surface :global(.text-lux-accent) { color: var(--color-lux-accent); }
-.surface :global(.border-lux-border),
-.surface :global(.bg-lux-surface),
-.surface :global(.bg-lux-elevated) {
-  border-color: var(--color-lux-border);
-  background: var(--color-lux-surface);
+.surface { color: var(--color-pd-text); }
+.surface :global(.text-pd-text) { color: var(--color-pd-text); }
+.surface :global(.text-pd-text-muted) { color: var(--color-pd-text-muted); }
+.surface :global(.text-pd-accent) { color: var(--color-pd-accent); }
+.surface :global(.border-pd-border),
+.surface :global(.bg-pd-surface),
+.surface :global(.bg-pd-elevated) {
+  border-color: var(--color-pd-border);
+  background: var(--color-pd-surface);
 }
 
 .field {
@@ -121,10 +121,10 @@
 .field input {
   min-height: 3rem;
   padding: 0.75rem 1rem;
-  border: 1px solid var(--color-lux-border);
+  border: 1px solid var(--color-pd-border);
   border-radius: 0.875rem;
-  background: var(--color-lux-elevated);
-  color: var(--color-lux-text);
+  background: var(--color-pd-elevated);
+  color: var(--color-pd-text);
   font: inherit;
 }
 

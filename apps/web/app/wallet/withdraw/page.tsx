@@ -73,7 +73,7 @@ function WithdrawContent() {
           href={`/wallet/withdraw/usdt?mode=${mode}`}
           role="tab"
           data-tab="usdt"
-          className="rounded-lux-md border border-lux-border px-3 py-2 text-sm"
+          className="rounded-pd-md border border-pd-border px-3 py-2 text-sm"
         >
           {T.withdrawMode.tabUsdt}
         </Link>
@@ -81,7 +81,7 @@ function WithdrawContent() {
           href={`/wallet/withdraw/krw?mode=${mode}`}
           role="tab"
           data-tab="krw"
-          className="rounded-lux-md border border-lux-border px-3 py-2 text-sm"
+          className="rounded-pd-md border border-pd-border px-3 py-2 text-sm"
         >
           {T.withdrawMode.tabKrw}
         </Link>
@@ -105,7 +105,7 @@ function WithdrawContent() {
         </p>
       ) : null}
       {gate.pendingReview ? (
-        <p className="mt-2 text-sm text-lux-text-muted">
+        <p className="mt-2 text-sm text-pd-text-muted">
           {T.kyc.pendingInline}
         </p>
       ) : null}
@@ -116,7 +116,7 @@ function WithdrawContent() {
         <button
           type="button"
           data-testid="withdraw-open-principal-sheet"
-          className="mt-4 w-full rounded-lux-md border border-lux-border px-4 py-3 text-sm text-lux-text"
+          className="mt-4 w-full rounded-pd-md border border-pd-border px-4 py-3 text-sm text-pd-text"
           onClick={() => setSheetOpen(true)}
         >
           {T.withdrawMode.ctaOpenPrincipal}

@@ -255,13 +255,27 @@ if (baseline && live) {
   ) {
     fail("migrations.remoteVersions drift vs live");
   }
-  if (
-    !sortedEq(
-      baseline.migrations?.localVersions || [],
-      baseline.migrations?.remoteVersions || [],
-    )
-  ) {
-    fail("baseline local/remote migration versions not 1:1");
+  try {
+    const fixture = JSON.parse(
+      fs.readFileSync(path.join(root, live.migrations.remoteFixturePath), "utf8"),
+    );
+    const applied = fixture.versions || [];
+    const pending = (fixture.committedUnapplied || []).map((item) =>
+      typeof item === "string"
+        ? item
+        : String(item && item.version ? item.version : ""),
+    );
+    const accounted = [...applied, ...pending].filter(Boolean);
+    if (!sortedEq(live.migrations.localVersions, accounted)) {
+      fail(
+        "live local migration versions must equal fixture.versions + committedUnapplied",
+      );
+    }
+    if (!sortedEq(live.migrations.remoteVersions, applied)) {
+      fail("live remoteVersions must equal fixture.versions (applied canonical only)");
+    }
+  } catch (e) {
+    fail(`migrations fixture reconcile failed: ${e.message}`);
   }
 }
 

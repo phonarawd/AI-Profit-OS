@@ -35,7 +35,7 @@ const main = read("services/api-nest/src/main.ts");
 const mw = read("services/api-nest/src/common/security-headers.middleware.ts");
 const sw = read("apps/web/public/sw.js");
 const pwa = read("apps/web/components/pwa/PwaRuntime.tsx");
-const theme = read("packages/ui/tokens/lux-theme.css");
+const theme = read("packages/ui/tokens/putduk-theme.css");
 
 for (const name of spec.requiredHeaderNames) {
   if (!spec.staticHeaders[name] && name !== "Content-Security-Policy") {
@@ -119,7 +119,7 @@ if (!sw.includes("putduk-shell-v1")) {
   fails.push("sw.js must stay the native shell worker");
 }
 if (!theme.includes("cdn.jsdelivr.net/gh/orioncactus/pretendard")) {
-  fails.push("lux-theme Pretendard host must stay listed in CSP via spec");
+  fails.push("pd-theme Pretendard host must stay listed in CSP via spec");
 }
 
 if (!pkg.includes("verify:rel-401-security-headers")) {

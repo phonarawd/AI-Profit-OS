@@ -58,9 +58,9 @@ async function expectAdminTheme(page, route) {
   const values = await page.evaluate(() => {
     const style = getComputedStyle(document.body);
     return {
-      bg: style.getPropertyValue("--color-lux-bg").trim(),
-      accent: style.getPropertyValue("--color-lux-accent").trim(),
-      text: style.getPropertyValue("--color-lux-text").trim(),
+      bg: style.getPropertyValue("--color-pd-bg").trim(),
+      accent: style.getPropertyValue("--color-pd-accent").trim(),
+      text: style.getPropertyValue("--color-pd-text").trim(),
     };
   });
   expect(values.bg, route).toBe("#0b0f17");

@@ -138,7 +138,7 @@ if (!wiredViaSdk && !wiredViaClient) {
   }
 }
 
-const counterSrc = read("packages/ui/components/lux/HomePayoutCounter.tsx");
+const counterSrc = read("packages/ui/components/pd/HomePayoutCounter.tsx");
 if (
   counterSrc &&
   /T\.ticker\.usdtSuffix/.test(counterSrc) &&

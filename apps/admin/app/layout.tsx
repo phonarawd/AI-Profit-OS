@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
         <link rel="preload" href={PRETENDARD_CSS} as="style" />
       </head>
-      <body className="min-h-dvh bg-lux-bg text-lux-text">
+      <body className="min-h-dvh bg-pd-bg text-pd-text">
         <AdminShell>{children}</AdminShell>
       </body>
     </html>

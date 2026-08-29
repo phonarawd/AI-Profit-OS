@@ -50,7 +50,7 @@ export function MembershipBadge({
       />
       <span className="sr-only">{labelKo}</span>
       {showLabel ? (
-        <span className="text-sm font-medium text-lux-text" aria-hidden>
+        <span className="text-sm font-medium text-pd-text" aria-hidden>
           {labelKo}
         </span>
       ) : null}

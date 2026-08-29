@@ -37,17 +37,17 @@ export function HomeSessionBanner({
       }
       data-session-banner={kind}
       className={[
-        "mx-4 mt-3 rounded-lux-xl border border-lux-border bg-lux-surface p-4 shadow-[var(--shadow-lux-soft)]",
+        "mx-4 mt-3 rounded-pd-xl border border-pd-border bg-pd-surface p-4 shadow-[var(--shadow-pd-soft)]",
         className,
       ]
         .filter(Boolean)
         .join(" ")}
     >
-      <p className="text-sm font-semibold text-lux-text">{copy.title}</p>
-      <p className="mt-1 text-sm text-lux-text-muted">{copy.body}</p>
+      <p className="text-sm font-semibold text-pd-text">{copy.title}</p>
+      <p className="mt-1 text-sm text-pd-text-muted">{copy.body}</p>
       <Link
         href="/auth/login"
-        className="mt-3 inline-flex min-h-12 items-center justify-center rounded-lux-md bg-lux-accent px-4 py-2 text-sm font-semibold text-lux-surface"
+        className="mt-3 inline-flex min-h-12 items-center justify-center rounded-pd-md bg-pd-accent px-4 py-2 text-sm font-semibold text-pd-surface"
       >
         {copy.cta}
       </Link>

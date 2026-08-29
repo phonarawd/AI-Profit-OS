@@ -12,39 +12,39 @@
 }
 
 /* Mobile-first shell: bottom nav; md+ sidebar promotion (audit §21) */
-.lux-app-shell {
+.pd-app-shell {
   min-height: 100dvh;
   min-height: 100svh;
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
-.lux-feed-grid {
+.pd-feed-grid {
   display: grid;
-  gap: var(--space-lux-md, 16px);
+  gap: var(--space-pd-md, 16px);
   grid-template-columns: 1fr;
 }
 
 @media (min-width: 768px) {
-  .lux-feed-grid {
+  .pd-feed-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1280px) {
-  .lux-feed-grid {
+  .pd-feed-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1920px) {
-  .lux-feed-grid {
+  .pd-feed-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 /* Ultrawide — main column content rail (sidebar 밖 · 합 ≈ 1920 with 240 sidebar) */
 @media (min-width: 1920px) {
-  .lux-app-main {
+  .pd-app-main {
     max-width: var(--content-rail-max, 1680px);
     width: 100%;
     margin-inline: auto;

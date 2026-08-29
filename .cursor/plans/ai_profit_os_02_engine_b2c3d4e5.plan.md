@@ -539,7 +539,7 @@ sequenceDiagram
 
 ### 0.9.7 UI 03에 남기는 것 (이 게이트에서 구현 금지)
 
-- Canon/Brand/Lux/copy · `assets/markets` SVG · `market-partner-trust.wire`
+- Canon/Brand/PUTDUK/copy · `assets/markets` SVG · `market-partner-trust.wire`
 - 홈/실행실/퍼뜩 **화면** · routes에 `/me/benefits`·`/me/guide/partners` 잠금
 - 이미 존재하는 stub 페이지의 미배선 버튼(예: `/wallet/deposit` 주소복사·계속, `/me/kyc` 시작하기, `/wallet/withdraw` 제출, `/me/support` wrong-chain 제출이 로컬 state만 바꾸고 실제 POST 미호출) — **버그로 확인됨 · 본 게이트 범위 밖** · UI PART별 todo가 실제 배선 시 재검증 필수(UI §0.6에 pointer 기록)
 - `ui-preflight-constitution` — **E-R8 + `money-user-benefits-read` 완료 후** 첫 채팅만
@@ -1220,7 +1220,7 @@ interface AssetMasterImage {
 | `assetImageUrl` | **공개 시 필수** | 카테고리·SKU에 맞는 상품 사진 URL |
 | `assetImageSource` | ✅ | hydrate 출처 |
 | `assetImageAltKo` | ✅ | 스크린리더 · 기본=`assetLabel` |
-| `assetIcon` | fallback | 이미지 로드 실패 시 Lux 플레이스홀더 중앙 아이콘 (⌚/🃏/👜) |
+| `assetIcon` | fallback | 이미지 로드 실패 시 PUTDUK 플레이스홀더 중앙 아이콘 (⌚/🃏/👜) |
 
 #### hydrate 우선순위 (오차0 · 코드 1곳)
 

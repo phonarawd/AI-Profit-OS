@@ -55,7 +55,7 @@ function KrwWithdrawContent() {
         </p>
       ) : null}
       {gate.pendingReview ? (
-        <p className="mt-2 text-sm text-lux-text-muted">
+        <p className="mt-2 text-sm text-pd-text-muted">
           {T.kyc.pendingInline}
         </p>
       ) : null}

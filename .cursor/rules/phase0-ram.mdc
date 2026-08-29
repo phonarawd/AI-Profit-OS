@@ -20,12 +20,31 @@ alwaysApply: true
 | Disk | Kingston SSD · Docker **OFF** |
 | 판정 | monorepo 풀스택 로컬 동시 기동 **불가** · CI에 무거운 일 위임 |
 
+## 클라우드 검증 대체 (이 PC 필수)
+
+이 워크스테이션에서는 무거운 검증을 로컬에서 돌리지 않는다. 대체 SSOT = GitHub `Cloud verify`.
+
+| 로컬에서 금지 | 클라우드 대체 |
+|---|---|
+| `pnpm install` / `pnpm install --frozen-lockfile` | `Cloud verify` job `Install locked dependencies` |
+| `pnpm verify:gate:fast` · `verify:gate:push` · `verify:gate` | `node tooling/verify/cloud-dispatch.cjs --suite fast\|push\|full` |
+| `pnpm --filter @aipo/web build:cf` · admin `build:cf` | suite `full` 또는 `ui` |
+| Playwright / `pnpm verify:responsive` | suite `ui` |
+| `cargo test` / `cargo build --release` | suite `full` 또는 `ui` |
+
+호출: `node tooling/verify/cloud-dispatch.cjs --suite ui` (`pnpm verify:cloud`와 동일 · **node_modules 불필요**).  
+브랜치가 `origin`에 있고 `.github/workflows/cloud-verify.yml`이 그 ref에 있어야 한다. 없으면 먼저 이 파일을 포함한 브랜치를 push한 뒤 다시 호출.
+
+**BLOCKED를 PASS로 바꾸지 않는다.** 로컬 T0가 node_modules 없어서 BLOCKED이면 클라우드 결과가 올 때까지 commit하지 않는다. `--no-verify` 금지.
+
+클라우드 green ≠ RELEASE_READY. 인증 운영 스모크 · axe live · Lighthouse/CWV live · AI Chat V2는 별도이며 이 워크플로가 대신하지 않는다.
+
 ## 필수 (에이전트+유저)
 
 - DB/Redis = **원격만** (Supabase Seoul + Upstash) · Docker Desktop **기동 금지**
 - 동시 기동 **1개만**: `web` **또는** `api` (둘 다·admin 병행 금지)
 - `NODE_OPTIONS=--max-old-space-size=1536` (이 PC 기본 · 2048은 OOM 유발)
-- 로컬: `cargo check`만 · `cargo build --release` / E2E / 풀 test = **GitHub Actions**
+- 로컬: `cargo check`만 · `cargo build --release` / E2E / 풀 test / `pnpm install` / full gate = **GitHub `Cloud verify`**
 - Agent: 서브에이전트 **병렬 0** · Task/explore **최대 1** · `best-of-n` 금지
 - 컨텍스트: Index + **해당 도메인 플랜 1개만** · launch/헌법 전문 대량 로드 금지
 - 터미널 동시 실행 명령 **1개** · `pnpm -r` 전체 빌드 로컬 금지

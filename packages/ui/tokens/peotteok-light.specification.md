@@ -5,17 +5,17 @@
 > ADR-017 Home Visual 시각 권위를 종료·승계했다. 본 SPEC 중 **Home-geometry 값**(Hero 480–600px·illustration ≤46%·
 > sidebar 240px·rightRail 320–360px 등, §"Hero proportions"·`layout.*`)은 **NON-AUTHORITATIVE for new visual
 > implementation**이며 새 Home Visual Master에서 다시 추출해야 한다(ADR-018 §6).
-> 반면 **Color 표(§Color)는 현재 런타임 미러(`lux-fintech.ts`)로 계속 작동 중**이다 — 이번 마이그레이션은 실행 코드를
+> 반면 **Color 표(§Color)는 현재 런타임 미러(`pd-fintech.ts`)로 계속 작동 중**이다 — 이번 마이그레이션은 실행 코드를
 > 바꾸지 않으므로 색 hex는 그대로 shipping 상태다. 새 Visual Master가 새 색을 확정하기 전까지 색 표는 "현재 shipping
 > 값"으로만 참고하고, Home 화면 시각 기준(권위)으로는 인용하지 않는다. 이 결정은 당시에는 유효했지만, 새 Visual
 > Master Reset(ADR-018)에 의해 시각 권위가 **superseded**되었다.
 
 > **Status:** APPLIED runtime + **STEP 4.3 contract amend** (코드 변경 0 · SPEC 정합만).  
-> **Runtime SSOT:** `lux-fintech.ts` + `lux-theme.css`.  
+> **Runtime SSOT:** `pd-fintech.ts` + `pd-theme.css`.  
 > **Order lock:** Canon Wire (`home-visual-v2`) ↔ Implementation Contract (STEP 3 ACK).  
 > **ADR:** `packages/ui/canon/contracts/ADR-017-peotteok-home-light-theme.md`  
 > **Contracts:** Visual v1.4 · Implementation Contract v1.1  
-> **Legacy:** `luxFintechLegacyDark` / `luxDarkArchive` · dual theme Day-1 = 0.
+> **Legacy:** `putdukTokensLegacyDark` / `pdDarkArchive` · dual theme Day-1 = 0.
 
 ## Mode
 
@@ -24,7 +24,7 @@
 | `theme.mode` | `peotteok-light` |
 | `theme.lightToggleAllowed` | `false` (single shipping theme) |
 | `theme.systemToggleAllowed` | `false` |
-| Legacy | `lux-dark` archived · dual theme Day-1 **0** |
+| Legacy | `pd-dark` archived · dual theme Day-1 **0** |
 
 ## Color
 
@@ -123,7 +123,7 @@
 
 ## STEP 4.3 / STEP 5 notes
 
-- STEP 4.3 = **SPEC 문서 amend only** · `lux-fintech.ts` / `lux-theme.css` 추가 편집은 STEP 5에서 필요할 때만 (무단 hex 확장 금지).
+- STEP 4.3 = **SPEC 문서 amend only** · `pd-fintech.ts` / `pd-theme.css` 추가 편집은 STEP 5에서 필요할 때만 (무단 hex 확장 금지).
 - Geometry는 PC Reference rhythm에 맞추되 Fact 값은 Token으로 “만들어내지” 않음.
 - Mobile hero height 토큰은 provisional · Reference B 후 amend.
 

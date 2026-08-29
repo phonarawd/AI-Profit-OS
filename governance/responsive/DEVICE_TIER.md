@@ -7,7 +7,7 @@
 - Owner: `packages/sdk/src/device-tier.ts` `detectDeviceTier`
 - Export: `@aipo/sdk`
 - 토큰 미러: `packages/ui/tokens/device-tier-contract.ts`
-- 기존 verify: `verify:ux-design-system`
+- 기존 verify: `verify:putduk-design-system`
 
 티어를 새로 발명하지 않는다.
 

@@ -10,7 +10,8 @@ alwaysApply: true
 1. 해당 도메인 `verify:*` PASS (`tooling/verify/CATALOG.md`)
 2. money면 `bucket-invariant` · `pg-module-scan` (해당 시)
 3. UI면 `no-it-jargon` · canon/mockup 게이트 (해당 시)
-4. `pnpm verify:gate:fast` PASS → **commit (T0)**
+4. `pnpm verify:gate:fast` PASS → **commit (T0)**  
+   이 PC에서 node_modules 없음/RAM 부족이면 로컬 T0 = **BLOCKED**. `node tooling/verify/cloud-dispatch.cjs --suite fast` PASS 전에는 commit하지 않는다. `--no-verify` 금지.
 5. **push 하지 않음** (세션 stop / “푸시해”까지 보류)
 
 ## 세션 stop 전

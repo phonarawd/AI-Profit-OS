@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { T } from "../../copy/ko";
-import { Badge } from "../lux/Badge";
+import { Badge } from "../../primitives/Badge";
 import { MarketPartnerLeg } from "../trust/MarketPartnerLeg";
 import type { ExecutionUiState } from "./execution-types";
 import { ProductThumb } from "./ProductThumb";
@@ -109,7 +109,7 @@ export function AiProgressRoom({
       data-canon="execution-running"
       data-execution-status={state.status}
       data-result-code={state.resultCode ?? ""}
-      className={`space-y-4 text-lux-text ${className}`.trim()}
+      className={`space-y-4 text-pd-text ${className}`.trim()}
     >
       <div className="flex items-start gap-3">
         <ProductThumb
@@ -124,12 +124,12 @@ export function AiProgressRoom({
             {state.asset.label}
           </p>
           {state.asset.ref ? (
-            <p className="truncate text-xs text-lux-text-muted">{state.asset.ref}</p>
+            <p className="truncate text-xs text-pd-text-muted">{state.asset.ref}</p>
           ) : null}
           <Badge tone="muted" data-block="noBidBadge">
             {T.execution.badgeNoBid}
           </Badge>
-          <p className="text-xs text-lux-text-muted" data-block="imageRights">
+          <p className="text-xs text-pd-text-muted" data-block="imageRights">
             {T.execution.imageRightsNote}
           </p>
         </div>
@@ -139,16 +139,16 @@ export function AiProgressRoom({
         <h1 className="text-xl font-semibold" data-block="title">
           {T.execution.progressTitle}
         </h1>
-        <p className="text-sm text-lux-text-muted" data-block="handsFree">
+        <p className="text-sm text-pd-text-muted" data-block="handsFree">
           · {T.execution.progressHandsFree}
         </p>
-        <p className="text-sm text-lux-text-muted" data-block="executionModeHint">
+        <p className="text-sm text-pd-text-muted" data-block="executionModeHint">
           {T.execution.executionModeHint}
         </p>
       </header>
 
       {showWaitingFact && matchWaitersCount != null ? (
-        <p className="text-xs text-lux-text-muted" data-block="progressWaiters">
+        <p className="text-xs text-pd-text-muted" data-block="progressWaiters">
           {T.execution.progressWaiters.replace(
             "{n}",
             String(matchWaitersCount),
@@ -157,7 +157,7 @@ export function AiProgressRoom({
       ) : null}
       {showWaitingFact && matchableOpportunityCount != null ? (
         <p
-          className="text-xs text-lux-text-muted"
+          className="text-xs text-pd-text-muted"
           data-block="progressMatchable"
         >
           {T.execution.progressMatchable.replace(
@@ -167,18 +167,18 @@ export function AiProgressRoom({
         </p>
       ) : null}
 
-      <p className="text-sm text-lux-accent" data-block="slaSoftHint">
+      <p className="text-sm text-pd-accent" data-block="slaSoftHint">
         {T.execution.slaSoftHint}
       </p>
 
       {isRequeue ? (
-        <p className="text-sm font-medium text-lux-warning" data-block="requeueHint">
+        <p className="text-sm font-medium text-pd-warning" data-block="requeueHint">
           {T.execution.requeueHint}
         </p>
       ) : null}
 
       {showSlaAlmost ? (
-        <p className="text-sm text-lux-accent" data-block="slaAlmost">
+        <p className="text-sm text-pd-accent" data-block="slaAlmost">
           {T.execution.slaAlmost}
         </p>
       ) : null}
@@ -192,14 +192,14 @@ export function AiProgressRoom({
       <div
         data-block="tensionBeats"
         data-tension="fact"
-        className="h-2 overflow-hidden rounded-full bg-lux-border"
+        className="h-2 overflow-hidden rounded-full bg-pd-border"
         role="progressbar"
         aria-valuenow={progressPct}
         aria-valuemin={0}
         aria-valuemax={100}
       >
         <div
-          className="h-full rounded-full bg-lux-accent transition-[width] duration-500"
+          className="h-full rounded-full bg-pd-accent transition-[width] duration-500"
           style={{ width: `${progressPct}%` }}
         />
       </div>
@@ -212,7 +212,7 @@ export function AiProgressRoom({
             buyLabel={buyLabel}
             sellLabel={sellLabel}
           />
-          <p className="mt-1 text-xs text-lux-text-muted">
+          <p className="mt-1 text-xs text-pd-text-muted">
             {T.trust.partners.legCaption
               .replace("{buyLabel}", buyLabel || "")
               .replace("{sellLabel}", sellLabel || "")}
@@ -223,7 +223,7 @@ export function AiProgressRoom({
       <ExecutionStepList stepIndex={state.stepIndex} />
 
       <p
-        className="font-mono text-xs text-lux-text-muted"
+        className="font-mono text-xs text-pd-text-muted"
         data-block="log"
         data-testid="execution-log-line"
       >
@@ -234,7 +234,7 @@ export function AiProgressRoom({
         type="button"
         data-block="cancel"
         data-testid="execution-cancel"
-        className="w-full rounded-lux-md border border-lux-border px-4 py-3 text-sm text-lux-text"
+        className="w-full rounded-pd-md border border-pd-border px-4 py-3 text-sm text-pd-text"
         onClick={onCancel}
       >
         {T.execution.cancel}

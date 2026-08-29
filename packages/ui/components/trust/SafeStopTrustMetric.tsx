@@ -26,17 +26,17 @@ export function SafeStopTrustMetric({
       data-source="ledger"
       data-demo="false"
       data-fail-framing="false"
-      className={`rounded-lux-md border border-lux-border bg-lux-surface p-3 text-sm text-lux-text ${className}`.trim()}
+      className={`rounded-pd-md border border-pd-border bg-pd-surface p-3 text-sm text-pd-text ${className}`.trim()}
     >
       <p className="font-medium">{c.title}</p>
       <p
-        className="mt-1 text-lux-text-muted"
+        className="mt-1 text-pd-text-muted"
         data-field="safeStopCount"
         data-testid="safe-stop-trust-count"
       >
         {c.line.replace("{n}", String(n))}
       </p>
-      <p className="mt-1 text-xs text-lux-text-muted">{c.hint}</p>
+      <p className="mt-1 text-xs text-pd-text-muted">{c.hint}</p>
     </section>
   );
 }

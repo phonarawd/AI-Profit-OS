@@ -1,7 +1,7 @@
 "use client";
 
 import { T } from "../../copy/ko";
-import { Badge } from "../lux/Badge";
+import { Badge } from "../../primitives/Badge";
 import { ParticipateProofPanel } from "../trust/ParticipateProofPanel";
 import type { ParticipateProofModel } from "../trust/trust-types";
 import type { AiProgressRoomAsset } from "./AiProgressRoom";
@@ -82,7 +82,7 @@ export function ExecutionSafeStop({
       data-canon="execution-safe-stop"
       data-execution-status="safe_stop"
       data-result-code={code ?? ""}
-      className={`space-y-4 text-lux-text ${className}`.trim()}
+      className={`space-y-4 text-pd-text ${className}`.trim()}
     >
       <Badge tone="warning" data-block="chip">
         {T.execution.safeMatchInterrupted}
@@ -92,7 +92,7 @@ export function ExecutionSafeStop({
         {title}
       </h1>
 
-      <p className="text-sm text-lux-text-muted" data-block="reason">
+      <p className="text-sm text-pd-text-muted" data-block="reason">
         {isNearMiss ? (
           <>
             <span data-block="priceNearMiss">{T.execution.priceNearMiss}</span>
@@ -121,16 +121,16 @@ export function ExecutionSafeStop({
 
       <div
         data-block="balance"
-        className="rounded-lux-md border border-lux-accent/40 bg-lux-accent/10 p-3 shadow-[0_0_24px_rgba(52,211,153,0.15)]"
+        className="rounded-pd-md border border-pd-accent/40 bg-pd-accent/10 p-3 shadow-[0_0_24px_rgba(52,211,153,0.15)]"
       >
-        <p className="text-sm font-semibold text-lux-accent">
+        <p className="text-sm font-semibold text-pd-accent">
           {T.execution.balanceUnchanged}
         </p>
       </div>
 
-      <p className="text-sm text-lux-text-muted">
+      <p className="text-sm text-pd-text-muted">
         {expectedLine}{" "}
-        <span className="text-lux-warning">({T.execution.safeExpectedNotPaid})</span>
+        <span className="text-pd-warning">({T.execution.safeExpectedNotPaid})</span>
       </p>
 
       <ParticipateProofPanel proof={proof} />
@@ -139,14 +139,14 @@ export function ExecutionSafeStop({
         href={similarHref}
         data-testid="execution-safe-primary"
         data-block="primary"
-        className="block w-full rounded-lux-md bg-lux-accent px-4 py-3 text-center text-sm font-semibold text-lux-bg"
+        className="block w-full rounded-pd-md bg-pd-accent px-4 py-3 text-center text-sm font-semibold text-pd-bg"
       >
         {T.execution.browseOther}
       </a>
       <a
         href="/"
         data-testid="execution-safe-home"
-        className="block w-full rounded-lux-md border border-lux-border px-4 py-3 text-center text-sm text-lux-text"
+        className="block w-full rounded-pd-md border border-pd-border px-4 py-3 text-center text-sm text-pd-text"
       >
         {T.execution.safeSecondary}
       </a>
@@ -155,7 +155,7 @@ export function ExecutionSafeStop({
         <div
           data-block="recommend"
           data-testid="execution-safe-recommend"
-          className="space-y-2 rounded-lux-md border border-lux-border p-3"
+          className="space-y-2 rounded-pd-md border border-pd-border p-3"
         >
           <p className="text-sm font-medium">{T.execution.recommendCards}</p>
           <div className="flex items-center gap-3">
@@ -171,7 +171,7 @@ export function ExecutionSafeStop({
             />
             <div className="min-w-0 flex-1 space-y-1">
               <p className="truncate text-sm">{recommend.assetLabel}</p>
-              <p className="text-sm text-lux-accent">
+              <p className="text-sm text-pd-accent">
                 {T.execution.safeRecommendProfit.replace(
                   "{n}",
                   recommend.expectedProfitUsdt,

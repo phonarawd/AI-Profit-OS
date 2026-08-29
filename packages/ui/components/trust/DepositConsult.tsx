@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { T } from "../../copy/ko";
-import { TouchButton } from "../lux/TouchButton";
+import { TouchButton } from "../../primitives/Button";
 import type { DepositConsultFact } from "./trust-types";
 
 const STORAGE_KEY = "peotteok_deposit_consult_ack";
@@ -89,46 +89,46 @@ export function DepositConsult({
       aria-labelledby="deposit-consult-title"
       className={`fixed inset-0 z-40 flex items-end justify-center bg-black/50 p-4 sm:items-center ${className}`.trim()}
     >
-      <div className="w-full max-w-md rounded-lux-md border border-lux-border bg-lux-surface p-4 text-lux-text shadow-lg">
+      <div className="w-full max-w-md rounded-pd-md border border-pd-border bg-pd-surface p-4 text-pd-text shadow-lg">
         <h2 id="deposit-consult-title" className="text-lg font-semibold">
           {c.title}
         </h2>
-        <p className="mt-1 text-xs text-lux-text-muted">{c.sixtySec}</p>
+        <p className="mt-1 text-xs text-pd-text-muted">{c.sixtySec}</p>
 
         <div
           data-testid="deposit-consult-fact"
           data-canon-block="factCard"
-          className="mt-3 rounded-lux-md border border-lux-border p-3 text-sm"
+          className="mt-3 rounded-pd-md border border-pd-border p-3 text-sm"
         >
           <p data-field="balanceUsdt">
             {c.factBalance.replace("{n}", balance)}
           </p>
           {previewN != null ? (
-            <p data-field="opportunityPreviewCount" className="mt-1 text-lux-text-muted">
+            <p data-field="opportunityPreviewCount" className="mt-1 text-pd-text-muted">
               {c.factPreview.replace("{n}", String(previewN))}
             </p>
           ) : (
-            <p data-field="opportunityPreviewCount" className="mt-1 text-lux-text-muted">
+            <p data-field="opportunityPreviewCount" className="mt-1 text-pd-text-muted">
               미리보기 수를 확인할 수 없음
             </p>
           )}
         </div>
 
         {senior && step === 0 ? (
-          <p className="mt-3 text-sm text-lux-text-muted" data-testid="deposit-consult-senior-q2">
-            <strong className="text-lux-text">{T.objections.q2.q}</strong>
+          <p className="mt-3 text-sm text-pd-text-muted" data-testid="deposit-consult-senior-q2">
+            <strong className="text-pd-text">{T.objections.q2.q}</strong>
             <br />
             {T.objections.q2.a}
           </p>
         ) : (
-          <ul className="mt-3 space-y-2 text-sm text-lux-text-muted">
+          <ul className="mt-3 space-y-2 text-sm text-pd-text-muted">
             <li data-testid="deposit-consult-q2" data-template="q2">
-              <strong className="text-lux-text">{T.objections.q2.q}</strong>
+              <strong className="text-pd-text">{T.objections.q2.q}</strong>
               <br />
               {T.objections.q2.a}
             </li>
             <li data-testid="deposit-consult-q4" data-template="q4">
-              <strong className="text-lux-text">{T.objections.q4.q}</strong>
+              <strong className="text-pd-text">{T.objections.q4.q}</strong>
               <br />
               {T.objections.q4.a}
             </li>
@@ -159,11 +159,11 @@ export function DepositConsult({
         </TouchButton>
 
         {fact?.depositPref === "krw" ? (
-          <p className="mt-2 text-center text-xs text-lux-text-muted">
+          <p className="mt-2 text-center text-xs text-pd-text-muted">
             {c.krwPreferHint}
           </p>
         ) : (
-          <p className="mt-2 text-center text-xs text-lux-text-muted">
+          <p className="mt-2 text-center text-xs text-pd-text-muted">
             {c.usdtPreferHint}
           </p>
         )}

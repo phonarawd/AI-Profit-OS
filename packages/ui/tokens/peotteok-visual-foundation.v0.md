@@ -9,7 +9,7 @@
 ---
 
 > PRE-MASTER DRAFT · 2026-08-15 · PHASE 0 Visual Reset
-> Not shipping CSS. Not Visual Master. Runtime remains `lux-fintech.ts`.
+> Not shipping CSS. Not Visual Master. Runtime remains `pd-fintech.ts`.
 
 ## Direction
 

@@ -20,7 +20,7 @@ const steps = [
   "opennext-workers-origin.cjs",
   "next-major-pin.cjs",
   "tailwind-v4.cjs",
-  "lux-theme-sync.cjs",
+  "putduk-theme-sync.cjs",
   "cf-deploy-packages.cjs",
   "no-admin-in-web.cjs",
   "ia-tabs.cjs",

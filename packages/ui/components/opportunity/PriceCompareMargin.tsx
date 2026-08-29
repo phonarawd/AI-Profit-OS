@@ -53,7 +53,7 @@ export function PriceCompareMargin({
         data-testid="price-compare-margin"
         data-variant="utility"
         data-compare-ready={ready ? "1" : "0"}
-        className={`text-sm text-lux-text-muted ${className}`.trim()}
+        className={`text-sm text-pd-text-muted ${className}`.trim()}
       >
         <p>{T.margin.compareMiniUtility}</p>
         {ready ? (
@@ -69,7 +69,7 @@ export function PriceCompareMargin({
   }
 
   const body = !ready ? (
-    <p data-testid="price-compare-pending" className="text-sm text-lux-text-muted">
+    <p data-testid="price-compare-pending" className="text-sm text-pd-text-muted">
       {T.margin.comparePending}
     </p>
   ) : (
@@ -77,33 +77,33 @@ export function PriceCompareMargin({
       data-testid="price-compare-ready"
       className="grid grid-cols-2 gap-x-3 gap-y-1 text-sm"
     >
-      <dt className="text-lux-text-muted">{T.opportunity.labelPriceLow}</dt>
-      <dd data-field="buyPriceUsdt" className="text-right text-lux-text">
+      <dt className="text-pd-text-muted">{T.opportunity.labelPriceLow}</dt>
+      <dd data-field="buyPriceUsdt" className="text-right text-pd-text">
         {fmtUsdt(buyPriceUsdt)}
       </dd>
-      <dt className="text-lux-text-muted">{T.opportunity.labelPriceHigh}</dt>
-      <dd data-field="sellPriceUsdt" className="text-right text-lux-text">
+      <dt className="text-pd-text-muted">{T.opportunity.labelPriceHigh}</dt>
+      <dd data-field="sellPriceUsdt" className="text-right text-pd-text">
         {fmtUsdt(sellPriceUsdt)}
       </dd>
       {variant === "full" ? (
         <>
-          <dt className="text-lux-text-muted">{T.margin.labelUserMargin}</dt>
+          <dt className="text-pd-text-muted">{T.margin.labelUserMargin}</dt>
           <dd
             data-field="expectedProfitUsdt"
-            className="text-right font-medium text-lux-accent"
+            className="text-right font-medium text-pd-accent"
           >
             {fmtUsdt(expectedProfitUsdt)}
           </dd>
-          <dt className="text-lux-text-muted">{T.margin.labelPlatformMargin}</dt>
+          <dt className="text-pd-text-muted">{T.margin.labelPlatformMargin}</dt>
           <dd
             data-field="platformMarginUsdt"
-            className="text-right text-lux-text-muted"
+            className="text-right text-pd-text-muted"
           >
             {fmtUsdt(platformMarginUsdt)}
           </dd>
         </>
       ) : (
-        <dd className="col-span-2 text-xs text-lux-text-muted">
+        <dd className="col-span-2 text-xs text-pd-text-muted">
           {T.margin.compareMini}
         </dd>
       )}
@@ -121,7 +121,7 @@ export function PriceCompareMargin({
       >
         <button
           type="button"
-          className="text-sm text-lux-accent underline"
+          className="text-sm text-pd-accent underline"
           data-testid="price-compare-toggle"
           onClick={() => setOpen((v) => !v)}
         >
@@ -139,7 +139,7 @@ export function PriceCompareMargin({
       data-compare-ready={ready ? "1" : "0"}
       className={className}
     >
-      <p className="mb-1 text-xs text-lux-text-muted">{T.margin.evidenceToggle}</p>
+      <p className="mb-1 text-xs text-pd-text-muted">{T.margin.evidenceToggle}</p>
       {body}
     </div>
   );

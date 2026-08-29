@@ -18,9 +18,9 @@ const stubPage = (title, note = "골격 · 본구현은 도메인 todo") => `"us
 
 export default function Page() {
   return (
-    <main className="p-6 text-[var(--color-lux-text)]">
+    <main className="p-6 text-[var(--color-pd-text)]">
       <h1 className="text-xl font-semibold">${title}</h1>
-      <p className="mt-2 text-sm text-[var(--color-lux-text-muted)]">${note}</p>
+      <p className="mt-2 text-sm text-[var(--color-pd-text-muted)]">${note}</p>
     </main>
   );
 }
@@ -203,14 +203,14 @@ const config = {
 export default config;
 `;
 
-const globals = `@import "@aipo/ui/tokens/lux-theme.css";
+const globals = `@import "@aipo/ui/tokens/putduk-theme.css";
 
 html,
 body {
   min-height: 100%;
-  background: var(--color-lux-bg);
-  color: var(--color-lux-text);
-  font-family: var(--font-lux-sans);
+  background: var(--color-pd-bg);
+  color: var(--color-pd-text);
+  font-family: var(--font-pd-sans);
 }
 `;
 
@@ -283,17 +283,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body className="min-h-dvh bg-[var(--color-lux-bg)] text-[var(--color-lux-text)]">
+      <body className="min-h-dvh bg-[var(--color-pd-bg)] text-[var(--color-pd-text)]">
         <div className="mx-auto flex min-h-dvh max-w-5xl flex-col pb-20 md:flex-row md:pb-0">
           <nav
             aria-label="주요 메뉴"
-            className="fixed inset-x-0 bottom-0 z-40 flex border-t border-[var(--color-lux-border)] bg-[var(--color-lux-surface)] md:static md:w-52 md:flex-col md:border-r md:border-t-0"
+            className="fixed inset-x-0 bottom-0 z-40 flex border-t border-[var(--color-pd-border)] bg-[var(--color-pd-surface)] md:static md:w-52 md:flex-col md:border-r md:border-t-0"
           >
             {USER_TABS.map((tab) => (
               <a
                 key={tab.href}
                 href={tab.href}
-                className="flex flex-1 flex-col items-center gap-0.5 px-2 py-2 text-xs text-[var(--color-lux-text-muted)] md:flex-row md:gap-2 md:px-4 md:py-3 md:text-sm"
+                className="flex flex-1 flex-col items-center gap-0.5 px-2 py-2 text-xs text-[var(--color-pd-text-muted)] md:flex-row md:gap-2 md:px-4 md:py-3 md:text-sm"
               >
                 <span aria-hidden>{tab.icon}</span>
                 <span>{tab.label}</span>
@@ -325,17 +325,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body className="min-h-dvh bg-[var(--color-lux-bg)] text-[var(--color-lux-text)]">
+      <body className="min-h-dvh bg-[var(--color-pd-bg)] text-[var(--color-pd-text)]">
         <div className="mx-auto flex min-h-dvh max-w-5xl flex-col pb-20 md:flex-row md:pb-0">
           <nav
             aria-label="주요 메뉴"
-            className="fixed inset-x-0 bottom-0 z-40 flex border-t border-[var(--color-lux-border)] bg-[var(--color-lux-surface)] md:static md:w-52 md:flex-col md:border-r md:border-t-0"
+            className="fixed inset-x-0 bottom-0 z-40 flex border-t border-[var(--color-pd-border)] bg-[var(--color-pd-surface)] md:static md:w-52 md:flex-col md:border-r md:border-t-0"
           >
             {USER_TABS.map((tab) => (
               <a
                 key={tab.href}
                 href={tab.href}
-                className="flex flex-1 flex-col items-center gap-0.5 px-2 py-2 text-xs text-[var(--color-lux-text-muted)] md:flex-row md:gap-2 md:px-4 md:py-3 md:text-sm"
+                className="flex flex-1 flex-col items-center gap-0.5 px-2 py-2 text-xs text-[var(--color-pd-text-muted)] md:flex-row md:gap-2 md:px-4 md:py-3 md:text-sm"
               >
                 <span aria-hidden>{tab.icon}</span>
                 <span>{tab.label}</span>
@@ -496,23 +496,23 @@ const child2b = ADMIN_MODULES.find((m) => m.id === "2b");
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body className="min-h-dvh bg-[var(--color-lux-bg)] text-[var(--color-lux-text)]">
+      <body className="min-h-dvh bg-[var(--color-pd-bg)] text-[var(--color-pd-text)]">
         <div className="mx-auto flex min-h-dvh max-w-7xl">
-          <aside className="hidden w-60 shrink-0 border-r border-[var(--color-lux-border)] bg-[var(--color-lux-surface)] p-3 md:block">
+          <aside className="hidden w-60 shrink-0 border-r border-[var(--color-pd-border)] bg-[var(--color-pd-surface)] p-3 md:block">
             <p className="mb-4 px-2 text-sm font-semibold">운영</p>
             <nav aria-label="운영 메뉴" className="flex flex-col gap-1 text-sm">
               {sidebar.map((m) => (
                 <div key={String(m.id)}>
                   <a
                     href={m.href}
-                    className="block rounded-md px-2 py-2 text-[var(--color-lux-text-muted)] hover:bg-[var(--color-lux-elevated)] hover:text-[var(--color-lux-text)]"
+                    className="block rounded-md px-2 py-2 text-[var(--color-pd-text-muted)] hover:bg-[var(--color-pd-elevated)] hover:text-[var(--color-pd-text)]"
                   >
                     {m.label}
                   </a>
                   {m.id === 2 && child2b ? (
                     <a
                       href={child2b.href}
-                      className="ml-3 block rounded-md px-2 py-1.5 text-xs text-[var(--color-lux-text-muted)] hover:bg-[var(--color-lux-elevated)]"
+                      className="ml-3 block rounded-md px-2 py-1.5 text-xs text-[var(--color-pd-text-muted)] hover:bg-[var(--color-pd-elevated)]"
                     >
                       {child2b.label}
                     </a>

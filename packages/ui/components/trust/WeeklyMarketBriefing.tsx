@@ -30,17 +30,17 @@ export function WeeklyMarketBriefing({
       data-investment-advice="false"
       data-engine-read-only="true"
       data-ui-recompute="false"
-      className={`space-y-4 text-lux-text ${className}`.trim()}
+      className={`space-y-4 text-pd-text ${className}`.trim()}
     >
       <header data-canon-block="headline">
         <h1 className="text-xl font-semibold">{g.title}</h1>
-        <p className="mt-1 text-sm text-lux-text-muted">{g.lead}</p>
+        <p className="mt-1 text-sm text-pd-text-muted">{g.lead}</p>
       </header>
 
       <p
         data-canon-block="eduPurpose"
         data-testid="market-weekly-edu"
-        className="rounded-lux-md border border-lux-border bg-lux-surface p-3 text-sm text-lux-text-muted"
+        className="rounded-pd-md border border-pd-border bg-pd-surface p-3 text-sm text-pd-text-muted"
       >
         {g.eduPurpose}
       </p>
@@ -48,7 +48,7 @@ export function WeeklyMarketBriefing({
       {!hasDist ? (
         <p
           data-testid="market-weekly-empty"
-          className="text-sm text-lux-text-muted"
+          className="text-sm text-pd-text-muted"
         >
           {g.empty}
         </p>
@@ -56,7 +56,7 @@ export function WeeklyMarketBriefing({
         <ul
           data-testid="market-weekly-senior"
           data-canon-block="spreadLines"
-          className="space-y-2 text-sm text-lux-text-muted"
+          className="space-y-2 text-sm text-pd-text-muted"
         >
           <li>
             {g.p10Label}: {dist!.p10}
@@ -72,7 +72,7 @@ export function WeeklyMarketBriefing({
         <ul
           data-testid="market-weekly-young"
           data-canon-block="spreadBullets"
-          className="list-disc space-y-1 pl-5 text-sm text-lux-text-muted"
+          className="list-disc space-y-1 pl-5 text-sm text-pd-text-muted"
         >
           <li>
             {g.bulletP50.replace("{v}", dist!.p50)}
@@ -91,7 +91,7 @@ export function WeeklyMarketBriefing({
           className="w-full text-left text-sm"
         >
           <thead>
-            <tr className="text-lux-text-muted">
+            <tr className="text-pd-text-muted">
               <th className="py-1 font-medium">{g.colBand}</th>
               <th className="py-1 font-medium">{g.colValue}</th>
             </tr>
@@ -122,7 +122,7 @@ export function WeeklyMarketBriefing({
       <p
         data-canon-block="disclaimer"
         data-testid="market-weekly-disclaimer"
-        className="text-xs text-lux-text-muted"
+        className="text-xs text-pd-text-muted"
       >
         {g.disclaimer}
       </p>

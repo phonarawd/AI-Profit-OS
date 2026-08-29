@@ -417,7 +417,7 @@ sequenceDiagram
 
 ---
 
-## 42. 출금 KYC 1회 게이트 — Lux 금융 UX + 자동 이동 (v7.22.11)
+## 42. 출금 KYC 1회 게이트 — PUTDUK 금융 UX + 자동 이동 (v7.22.11)
 
 > **SSOT:** `CONSTITUTION/42_KYC_WITHDRAW_ONE_TIME_GATE.md` · §5.8 · §8.2 · `/me/kyc`  
 > **원칙:** **출금할 때만** 1회 · 거래/입금 **KYC 불필요** · toast 이모지 → **자동 /me/kyc**  
@@ -456,7 +456,7 @@ function assertWithdrawKyc(user: User) {
       출금 폼 정상 · **다시 KYC 요청 없음**
 ```
 
-### 42.2.0 `/me/kyc` Lux 3-step IA (규칙 SSOT · wire=UI Canon)
+### 42.2.0 `/me/kyc` PUTDUK 3-step IA (규칙 SSOT · wire=UI Canon)
 
 | Step | Canon | 내용 |
 |------|-------|------|

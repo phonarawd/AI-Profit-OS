@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { T } from "../../copy/ko";
-import { Badge } from "../lux/Badge";
-import { TouchButton } from "../lux/TouchButton";
+import { Badge } from "../../primitives/Badge";
+import { TouchButton } from "../../primitives/Button";
 import type {
   BenefitCardStatus,
   BenefitMissionCardModel,
@@ -135,7 +135,7 @@ export function BenefitMissionCard({
       data-reward-kind={card.rewardKind}
       data-credits-currency="false"
       data-auto-claim={card.autoClaim === false ? "false" : "true"}
-      className={`rounded-lux-md border border-lux-border bg-lux-surface p-4 ${className}`.trim()}
+      className={`rounded-pd-md border border-pd-border bg-pd-surface p-4 ${className}`.trim()}
     >
       <div className="flex items-start gap-3">
         <span
@@ -149,7 +149,7 @@ export function BenefitMissionCard({
           <div className="flex flex-wrap items-center gap-2">
             <h3
               data-canon-slot="title"
-              className="text-sm font-semibold text-lux-text"
+              className="text-sm font-semibold text-pd-text"
             >
               {card.titleKo}
             </h3>
@@ -161,21 +161,21 @@ export function BenefitMissionCard({
           </div>
           <p
             data-canon-slot="body"
-            className="text-sm text-lux-text-muted"
+            className="text-sm text-pd-text-muted"
           >
             {card.bodyKo}
           </p>
           {reward ? (
             <p
               data-canon-slot="rewardAmount"
-              className="text-sm font-medium text-lux-accent"
+              className="text-sm font-medium text-pd-accent"
             >
               {reward}
             </p>
           ) : null}
           <p
             data-canon-slot="statusLabel"
-            className="text-xs text-lux-text-muted"
+            className="text-xs text-pd-text-muted"
             role="status"
           >
             {label}
@@ -190,13 +190,13 @@ export function BenefitMissionCard({
               aria-valuemax={100}
               role="progressbar"
             >
-              <div className="h-1.5 overflow-hidden rounded-full bg-lux-elevated">
+              <div className="h-1.5 overflow-hidden rounded-full bg-pd-elevated">
                 <div
-                  className="h-full rounded-full bg-lux-accent"
+                  className="h-full rounded-full bg-pd-accent"
                   style={{ width: `${pct}%` }}
                 />
               </div>
-              <p className="mt-1 text-xs text-lux-text-muted">
+              <p className="mt-1 text-xs text-pd-text-muted">
                 {card.progress!.current}/{card.progress!.target}
               </p>
             </div>
@@ -218,7 +218,7 @@ export function BenefitMissionCard({
             ) : null}
             {ctaPool ? (
               <div className="space-y-1">
-                <p className="text-xs text-lux-text-muted">
+                <p className="text-xs text-pd-text-muted">
                   {T.benefits.poolWaitNote}
                 </p>
                 <Link href="/me/guide/faq" className="inline-block">

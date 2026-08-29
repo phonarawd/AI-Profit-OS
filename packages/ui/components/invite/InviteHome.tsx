@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { T } from "../../copy/ko";
-import { TouchButton } from "../lux/TouchButton";
+import { TouchButton } from "../../primitives/Button";
 
 export type InviteToneBand = "young" | "mid" | "senior";
 
@@ -139,7 +139,7 @@ export function InviteHome({
       data-tone-band={tone}
       data-money-pointer={T.invite.moneyPointer}
       data-copy-owner="UI §5.9.1a"
-      className={`space-y-5 text-lux-text ${className}`.trim()}
+      className={`space-y-5 text-pd-text ${className}`.trim()}
     >
       <header className="space-y-2">
         <h1
@@ -150,14 +150,14 @@ export function InviteHome({
           {T.invite.title}
         </h1>
         <p
-          className="text-sm text-lux-text-muted"
+          className="text-sm text-pd-text-muted"
           data-canon-block="oneLiner"
           data-block="oneLiner"
         >
           {oneLiner}
         </p>
         <p
-          className="text-sm font-medium text-lux-accent"
+          className="text-sm font-medium text-pd-accent"
           data-canon-block="noCap"
           data-block="noCap"
         >
@@ -168,7 +168,7 @@ export function InviteHome({
       <section
         data-testid="invite-explain"
         data-explain-open={explainOpen ? "true" : "false"}
-        className="rounded-lux-md border border-lux-border p-3"
+        className="rounded-pd-md border border-pd-border p-3"
       >
         <button
           type="button"
@@ -178,7 +178,7 @@ export function InviteHome({
           onClick={toggleExplain}
         >
           <span>{T.invite.explainToggle}</span>
-          <span className="text-lux-text-muted">
+          <span className="text-pd-text-muted">
             {explainOpen ? T.invite.explainHide : T.invite.explainToggle}
           </span>
         </button>
@@ -199,7 +199,7 @@ export function InviteHome({
 
             {tone === "mid" ? (
               <p
-                className="text-sm text-lux-text-muted"
+                className="text-sm text-pd-text-muted"
                 data-canon-block="steps3"
                 data-block="steps3"
               >
@@ -213,7 +213,7 @@ export function InviteHome({
                 data-canon-block="steps3"
                 data-block="steps3"
               >
-                <p className="text-base text-lux-text">
+                <p className="text-base text-pd-text">
                   {T.invite.senior.stepLines[seniorStep]}
                 </p>
                 <TouchButton
@@ -234,42 +234,42 @@ export function InviteHome({
             ) : null}
 
             <p
-              className="text-sm text-lux-text-muted"
+              className="text-sm text-pd-text-muted"
               data-canon-block="whenMoney"
               data-block="whenMoney"
             >
               {whenMoney}
             </p>
             <p
-              className="text-sm text-lux-text-muted"
+              className="text-sm text-pd-text-muted"
               data-canon-block="practiceNote"
               data-block="practiceNote"
             >
               {T.invite.practiceNote}
             </p>
             <p
-              className="text-sm text-lux-text-muted"
+              className="text-sm text-pd-text-muted"
               data-canon-block="shareLimitNote"
               data-block="shareLimitNote"
             >
               {T.invite.shareLimitNote}
             </p>
             <p
-              className="text-sm text-lux-text-muted"
+              className="text-sm text-pd-text-muted"
               data-canon-block="holdNote"
               data-block="holdNote"
             >
               {T.invite.holdNote}
             </p>
             <p
-              className="text-sm text-lux-text-muted"
+              className="text-sm text-pd-text-muted"
               data-canon-block="poolWaitNote"
               data-block="poolWaitNote"
             >
               {T.invite.poolWaitNote}
             </p>
             <p
-              className="text-sm text-lux-text-muted"
+              className="text-sm text-pd-text-muted"
               data-canon-block="abuseNote"
               data-block="abuseNote"
             >
@@ -278,15 +278,15 @@ export function InviteHome({
 
             {tone === "mid" || tone === "senior" ? (
               <ul
-                className="space-y-2 border-t border-lux-border pt-3"
+                className="space-y-2 border-t border-pd-border pt-3"
                 data-canon-block="faq"
                 data-block="faq"
                 data-testid="invite-faq"
               >
                 {T.invite.faq.map((item) => (
                   <li key={item.q} className="text-sm">
-                    <strong className="text-lux-text">Q. {item.q}</strong>
-                    <p className="mt-0.5 text-lux-text-muted">A. {item.a}</p>
+                    <strong className="text-pd-text">Q. {item.q}</strong>
+                    <p className="mt-0.5 text-pd-text-muted">A. {item.a}</p>
                   </li>
                 ))}
               </ul>
@@ -299,30 +299,30 @@ export function InviteHome({
         data-canon-block="stats"
         data-block="stats"
         data-testid="invite-stats"
-        className="rounded-lux-md border border-lux-border p-3"
+        className="rounded-pd-md border border-pd-border p-3"
       >
         <h2 className="text-sm font-semibold">{T.invite.stats}</h2>
         <dl className="mt-2 grid grid-cols-2 gap-2 text-sm">
           <div>
-            <dt className="text-lux-text-muted">{T.invite.statsJoined}</dt>
+            <dt className="text-pd-text-muted">{T.invite.statsJoined}</dt>
             <dd className="font-medium" data-stat="joined">
               {joined}
             </dd>
           </div>
           <div>
-            <dt className="text-lux-text-muted">{T.invite.statsProgress}</dt>
+            <dt className="text-pd-text-muted">{T.invite.statsProgress}</dt>
             <dd className="font-medium" data-stat="progress">
               {progress}
             </dd>
           </div>
           <div>
-            <dt className="text-lux-text-muted">{T.invite.statsHold}</dt>
+            <dt className="text-pd-text-muted">{T.invite.statsHold}</dt>
             <dd className="font-medium" data-stat="hold">
               {hold}
             </dd>
           </div>
           <div>
-            <dt className="text-lux-text-muted">{T.invite.statsBonus}</dt>
+            <dt className="text-pd-text-muted">{T.invite.statsBonus}</dt>
             <dd className="font-medium" data-stat="bonus">
               {bonusLabel}
             </dd>
@@ -332,9 +332,9 @@ export function InviteHome({
 
       <section className="space-y-2" data-testid="invite-share-block">
         <div data-canon-block="ctaCode" data-block="ctaCode">
-          <p className="text-xs text-lux-text-muted">{T.invite.codeLabel}</p>
+          <p className="text-xs text-pd-text-muted">{T.invite.codeLabel}</p>
           <div className="mt-1 flex gap-2">
-            <code className="flex-1 rounded-lux-md border border-lux-border bg-lux-elevated px-3 py-2 text-sm">
+            <code className="flex-1 rounded-pd-md border border-pd-border bg-pd-elevated px-3 py-2 text-sm">
               {displayCode}
             </code>
             <TouchButton
@@ -350,8 +350,8 @@ export function InviteHome({
           </div>
         </div>
         <div>
-          <p className="text-xs text-lux-text-muted">{T.invite.linkLabel}</p>
-          <p className="mt-1 break-all text-sm text-lux-text-muted">
+          <p className="text-xs text-pd-text-muted">{T.invite.linkLabel}</p>
+          <p className="mt-1 break-all text-sm text-pd-text-muted">
             {displayLink}
           </p>
         </div>
@@ -368,7 +368,7 @@ export function InviteHome({
         </TouchButton>
       </section>
 
-      <p className="text-xs text-lux-text-muted" data-testid="invite-money-pointer">
+      <p className="text-xs text-pd-text-muted" data-testid="invite-money-pointer">
         {T.invite.moneyPointer}
       </p>
     </main>

@@ -104,7 +104,7 @@ const live = [
   "canon-surfaces.cjs",
   "brand-logo-single.cjs",
   "font-scale-three.cjs",
-  "ux-design-system.cjs",
+  "putduk-design-system.cjs",
   // PART2 onboarding · auth · landing
   "onboarding-experiential.cjs",
   "auth-surfaces.cjs",

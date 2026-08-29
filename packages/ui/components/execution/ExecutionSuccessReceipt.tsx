@@ -1,8 +1,8 @@
 "use client";
 
 import { T } from "../../copy/ko";
-import { Badge } from "../lux/Badge";
-import { CountUpNumber } from "../lux/CountUpNumber";
+import { Badge } from "../../primitives/Badge";
+import { CountUpNumber } from "../../primitives/CountUpNumber";
 import { PriceCompareMargin } from "../opportunity/PriceCompareMargin";
 import { ParticipateProofPanel } from "../trust/ParticipateProofPanel";
 import type { ParticipateProofModel } from "../trust/trust-types";
@@ -67,7 +67,7 @@ export function ExecutionSuccessReceipt({
       data-testid="execution-success-receipt"
       data-canon="execution-success"
       data-execution-status="success"
-      className={`space-y-4 text-lux-text ${className}`.trim()}
+      className={`space-y-4 text-pd-text ${className}`.trim()}
     >
       <Badge tone="accent" data-block="badge">
         {T.execution.settledBadge}
@@ -89,13 +89,13 @@ export function ExecutionSuccessReceipt({
           <p className="truncate text-sm font-medium" data-field="assetLabel">
             {state.asset.label}
           </p>
-          <p className="text-xs text-lux-text-muted" data-block="systemStatus">
+          <p className="text-xs text-pd-text-muted" data-block="systemStatus">
             {T.execution.successSystemStatus}
           </p>
           <Badge tone="muted" data-block="trust">
             {T.execution.noBidBadge}
           </Badge>
-          <p className="text-xs text-lux-text-muted">
+          <p className="text-xs text-pd-text-muted">
             {T.execution.imageRightsNote}
           </p>
         </div>
@@ -113,7 +113,7 @@ export function ExecutionSuccessReceipt({
       </div>
 
       <div data-block="amount" className="space-y-1">
-        <p className="text-2xl font-semibold text-lux-accent">
+        <p className="text-2xl font-semibold text-pd-accent">
           <CountUpNumber
             value={amountSafe}
             source="settlement.completed"
@@ -125,7 +125,7 @@ export function ExecutionSuccessReceipt({
         <Badge tone="accent">{T.execution.successBadge}</Badge>
       </div>
 
-      <p className="text-sm text-lux-text-muted" data-block="successLegLog">
+      <p className="text-sm text-pd-text-muted" data-block="successLegLog">
         {legLog}
       </p>
 
@@ -133,9 +133,9 @@ export function ExecutionSuccessReceipt({
         <ParticipateProofPanel proof={proof} />
       </div>
 
-      <div className="rounded-lux-md border border-lux-accent/30 bg-lux-accent/10 p-3">
+      <div className="rounded-pd-md border border-pd-accent/30 bg-pd-accent/10 p-3">
         <p className="text-sm font-medium">{T.execution.successBalance}</p>
-        <p className="text-xs text-lux-text-muted">
+        <p className="text-xs text-pd-text-muted">
           {T.execution.successBalanceSub}
         </p>
       </div>
@@ -152,14 +152,14 @@ export function ExecutionSuccessReceipt({
         <a
           href="/wallet"
           data-testid="execution-success-wallet"
-          className="rounded-lux-md border border-lux-border px-4 py-3 text-center text-sm text-lux-text"
+          className="rounded-pd-md border border-pd-border px-4 py-3 text-center text-sm text-pd-text"
         >
           {T.execution.successPrimary}
         </a>
         <a
           href="/profits"
           data-testid="execution-success-other"
-          className="rounded-lux-md border border-lux-border px-4 py-3 text-center text-sm text-lux-text"
+          className="rounded-pd-md border border-pd-border px-4 py-3 text-center text-sm text-pd-text"
         >
           {T.execution.successSecondary}
         </a>

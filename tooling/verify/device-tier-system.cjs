@@ -128,14 +128,14 @@ for (const [rel, meta] of Object.entries(locked)) {
   }
 }
 
-const ux = spawnSync(process.execPath, [path.join(root, "tooling/verify/ux-design-system.cjs")], {
+const ux = spawnSync(process.execPath, [path.join(root, "tooling/verify/putduk-design-system.cjs")], {
   encoding: "utf8",
   cwd: root,
   timeout: 30_000,
 });
 process.stdout.write(ux.stdout || "");
 process.stderr.write(ux.stderr || "");
-if (ux.status !== 0) fails.push("verify:ux-design-system reuse FAIL");
+if (ux.status !== 0) fails.push("verify:putduk-design-system reuse FAIL");
 
 const pkg = read("package.json");
 if (!pkg.includes('"verify:device-tier-system"')) {

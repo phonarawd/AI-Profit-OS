@@ -37,10 +37,10 @@ export function CapitalBandJourney({
       data-canon-block="capitalBandJourney"
       data-current-band={current}
       data-deposit-only-paywall="false"
-      className={`rounded-lux-md border border-lux-border p-3 text-sm text-lux-text ${className}`.trim()}
+      className={`rounded-pd-md border border-pd-border p-3 text-sm text-pd-text ${className}`.trim()}
     >
       <h2 className="font-semibold">{c.title}</h2>
-      <p className="mt-1 text-lux-text-muted">{c.lead}</p>
+      <p className="mt-1 text-pd-text-muted">{c.lead}</p>
       <ol className="mt-3 space-y-2">
         {BAND_ORDER.map((band) => {
           const unlocked =
@@ -53,16 +53,16 @@ export function CapitalBandJourney({
               className="flex items-start justify-between gap-2"
             >
               <span>
-                <span className="font-medium text-lux-text">
+                <span className="font-medium text-pd-text">
                   {labels[band]}
                 </span>
-                <span className="mt-0.5 block text-xs text-lux-text-muted">
+                <span className="mt-0.5 block text-xs text-pd-text-muted">
                   {c.unlock[band]}
                 </span>
               </span>
               <span
                 className={
-                  unlocked ? "text-lux-accent" : "text-lux-text-muted"
+                  unlocked ? "text-pd-accent" : "text-pd-text-muted"
                 }
               >
                 {unlocked ? c.unlocked : c.locked}
@@ -71,7 +71,7 @@ export function CapitalBandJourney({
           );
         })}
       </ol>
-      <p className="mt-3 text-xs text-lux-text-muted">{c.progressNote}</p>
+      <p className="mt-3 text-xs text-pd-text-muted">{c.progressNote}</p>
     </section>
   );
 }

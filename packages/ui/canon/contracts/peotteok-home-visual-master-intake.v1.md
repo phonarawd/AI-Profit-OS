@@ -113,7 +113,7 @@ crypto exchange / trading terminal / admin dashboard / casino
 dark-first / neon / candlestick-centric / order book / BUY-SELL interface
 ```
 
-이 방향은 현재 코드의 `theme-peotteok-light`(`apps/web/app/layout.tsx`)·`lux-fintech.ts` Light 토큰 방향과 **상충하지 않는다**(MATCH) — 정확한 hex/spacing/radius 수치는 ADR-018 §6 원칙에 따라 새로 추출해야 하며 본 문서가 확정하지 않는다.
+이 방향은 현재 코드의 `theme-peotteok-light`(`apps/web/app/layout.tsx`)·`pd-fintech.ts` Light 토큰 방향과 **상충하지 않는다**(MATCH) — 정확한 hex/spacing/radius 수치는 ADR-018 §6 원칙에 따라 새로 추출해야 하며 본 문서가 확정하지 않는다.
 
 ---
 
@@ -239,7 +239,7 @@ H6 Implementation Contract가 사용할 **presentation-component forensic 후보
 | `packages/ui/components/opportunity/OpportunityCard.tsx` | 카드 시각(3단 위계) | REPLACE | 시각 skin 전면 교체 대상 — 내부 필드 바인딩(requiredCapital/expectedProfit/aiConfidence 등)은 REWIRE로 보존 |
 | `packages/ui/components/opportunity/CategoryFilterChips.tsx` | 카테고리 칩(전체/시계/카드/가방) | KEEP | 카테고리 키·라벨 그대로 MATCH |
 | `packages/ui/components/home/HomeRightRail.tsx` | 우측 레일(정산 카운트/TOP3/진행현황 COUNT) | INVESTIGATE | C01 COUNT 시맨틱은 KEEP 필수, "개별 진행 스테퍼"는 §9 대로 새 데이터축 필요 — 컴포넌트 분리(KEEP 부분 + REPLACE 부분) 검토는 H6 |
-| `packages/ui/components/lux/LivePayoutTicker.tsx` / `HomePayoutCounter.tsx` | 티커/카운터(현재 `mode="off"`) | KEEP | 시각 영향 없음(숨김 모드), Growth Owns 로직 그대로 |
+| `packages/ui/components/pd/LivePayoutTicker.tsx` / `HomePayoutCounter.tsx` | 티커/카운터(현재 `mode="off"`) | KEEP | 시각 영향 없음(숨김 모드), Growth Owns 로직 그대로 |
 | `packages/ui/components/shell/SiteFooter.tsx` | 하단 푸터+파트너 스트립 | INVESTIGATE | Visual Master 스크린샷 범위 밖(스크롤 하단) — 별도 확인 필요 |
 | `packages/ui/brand/assets/ai/avatar-512.png` | AI 아바타 아이콘 | REPLACE(§11 asset) | 다크/추상 — 새 Master 3D 로봇과 스타일 불일치(ADR-018 §13 기록과 일치) |
 | `packages/ui/brand/assets/ai/hero-illustration-*.{webp,avif}` | Hero robot+globe illustration | REPLACE(§11 asset) | 위와 동일 사유 |

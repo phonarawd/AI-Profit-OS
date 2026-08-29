@@ -69,13 +69,13 @@ export function ProfitsPageClient({
       : items.filter((i) => i.category === category);
 
   return (
-    <main className="space-y-4 p-6 text-lux-text" data-testid="profits-shell">
+    <main className="space-y-4 p-6 text-pd-text" data-testid="profits-shell">
       <h1 className="text-xl font-semibold">{T.user.profits.title}</h1>
-      <p className="text-sm text-lux-text-muted">{T.user.profits.subtitle}</p>
+      <p className="text-sm text-pd-text-muted">{T.user.profits.subtitle}</p>
 
       {sessionExpired ? (
-        <p className="text-sm text-lux-text-muted" role="status">
-          <Link href="/auth/login" className="text-lux-accent underline">
+        <p className="text-sm text-pd-text-muted" role="status">
+          <Link href="/auth/login" className="text-pd-accent underline">
             {T.toast.SESSION_EXPIRED}
           </Link>
         </p>
@@ -92,7 +92,7 @@ export function ProfitsPageClient({
           </p>
           <Link
             href="/wallet/deposit"
-            className="mt-4 inline-block text-sm text-lux-accent underline"
+            className="mt-4 inline-block text-sm text-pd-accent underline"
           >
             {T.user.empty.opportunitiesCta}
           </Link>

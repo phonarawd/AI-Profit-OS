@@ -7,6 +7,7 @@
 | **T0** | `pnpm verify:gate:fast` | commit · Husky pre-commit | `gate-fast.cjs` · `domain-by-path.cjs` |
 | **T1** | `pnpm verify:gate:push` | push · Husky pre-push | `gate-push.cjs` (= T0 + infra + stubs) |
 | **T2** | `pnpm verify:gate` | CI · main merge | `gate.cjs` (= T1 + next-build + opennext-build) |
+| **CLOUD** | `node tooling/verify/cloud-dispatch.cjs` | this PC substitute | `cloud-verify.yml` suite fast|push|full|ui |
 
 경로 기반 T0 도메인 = `tooling/verify/domain-by-path.cjs` (변경 파일 → 해당 `verify:*`만).
 
@@ -14,6 +15,7 @@
 
 | id | 스크립트 | tier | 상태 |
 |----|----------|------|------|
+| cloud-verify-lock | `verify:cloud-verify-lock` | T0 path + T1 | live |
 | stack-lock | `verify:stack-lock` | T0 | ✅ live |
 | secrets | `verify:secrets` | T0 | ✅ live |
 | plans-ssot | `verify:plans-ssot` | T0 | ✅ live |
@@ -31,8 +33,8 @@
 | opennext-workers-origin | `verify:opennext-workers-origin` | T1 | ✅ live (Workers SSOT · pages deploy 0 · proxy/manifest lock · deploy smoke hook) |
 | next-major-pin | `verify:next-major-pin` | T1 | ✅ live |
 | tailwind-v4 | `verify:tailwind-v4` | T1 | ✅ live |
-| lux-theme-sync | `verify:lux-theme-sync` | T1 | ✅ live |
-| dark-leak-guard | `verify:dark-leak-guard` | T1 | ✅ live (peotteok-light 단일 출시 · prefers-color-scheme 0 · lux-dark archive 활성참조 0) |
+| pd-theme-sync | `verify:putduk-theme-sync` | T1 | ✅ live |
+| dark-leak-guard | `verify:dark-leak-guard` | T1 | ✅ live (peotteok-light 단일 출시 · prefers-color-scheme 0 · pd-dark archive 활성참조 0) |
 | cf-deploy-packages | `verify:cf-deploy-packages` | T1 | ✅ live |
 | no-admin-in-web | `verify:no-admin-in-web` | T1 | ✅ live |
 | ia-tabs | `verify:ia-tabs` | T1 | ✅ live |
@@ -112,7 +114,7 @@
 | `governance/observability/**` · `packages/observability/**` · `services/api-nest/src/observability/**` · `apps/web/components/observability/**` · `tooling/verify/observability.cjs` | observability |
 | `governance/legacy-plan-migration/**` · `tooling/legacy-plan-stamp.cjs` · `tooling/verify/legacy-plan-migration.cjs` · `.cursor/plans/*.plan.md` | legacy-plan-migration |
 | `apps/web/scripts/asset-pipeline/**` · `tooling/verify/asset-production-pipeline.cjs` | asset-production-pipeline |
-| `packages/sdk/src/device-tier.ts` · `packages/ui/tokens/device-tier-contract.ts` · `governance/responsive/**` · `tooling/verify/device-tier-system.cjs` · `tooling/verify/ux-design-system.cjs` | device-tier-system · ux-design-system |
+| `packages/sdk/src/device-tier.ts` · `packages/ui/tokens/device-tier-contract.ts` · `governance/responsive/**` · `tooling/verify/device-tier-system.cjs` · `tooling/verify/putduk-design-system.cjs` | device-tier-system · ux-design-system |
 | `governance/admin/**` · `tooling/verify/rel-400-admin-control-plane.cjs` | rel-400-admin-control-plane |
 | `governance/security/http-headers` · `tooling/security/http-headers.cjs` · web/admin next.config · api-nest security-headers | rel-401-security-headers |
 | `governance/security/dependency-audit` · `governance/security/AUDIT_EXCEPTIONS.md` · `tooling/security/dependency-audit.cjs` · `.github/workflows/gate.yml` | rel-402-dependency-audit |
@@ -174,7 +176,7 @@
 | no-it-jargon · toast-emoji · korean-ui · cute-emoji-palette | UI §50 · §27.10 — **live** (copy/ko skeleton · voice.* · toast 1~2 · palette/caps) |
 | ticker-pii-0 · legal-plain-ko · part5-shell-toast | UI PART5 §33.2a·§50.1/§50.3·§8.2 — **live** (LivePayoutTicker PII0 · CountUp ledger-only · 약관4종 · BottomNav5+ToastHost+nested routes) |
 | age-tone-surfaces · font-scale-three · deposit-network-plain-ko | UI §38.9·§50.1 · Money §41.6 — **age-tone-surfaces · font-scale-three live** · **deposit-network-plain-ko live** (트론 경고 · TRC20 유저0 · wrong-chain→CS+disputes) (v7.22.10) |
-| ux-design-system | UI PART1d — Lux fontScale/spacing · MotionCTA · PPE ladder · breakpoints/test-points · device-tier S/A/B — **live** |
+| ux-design-system | UI PART1d — PUTDUK fontScale/spacing · MotionCTA · PPE ladder · breakpoints/test-points · device-tier S/A/B — **live** |
 | responsive | UI audit §45 · PART8c — Playwright multi-viewport harness `390/430/768/1024/1366/1440/1920/2560/3440/3840` · Canon structure diff (`data-canon-block` vs wire `blocks[]`) · fluid/touch-target/device-tier S/A/B · VirtualList/VirtualOpportunityList/VirtualTicker · `DeviceTierApply` `data-tier` · pixel/screenshot QA 0 by default (ADR-013) · **Owner-approved Visual Master + LOCK 예외** = `packages/ui/canon/visual-locks.v1.json`(`visual-master-intake.mdc`, 레지스트리 비면 예외 0) · local=Node structure · `RESPONSIVE_PW=1`=browsers — **live** |
 | onboarding-experiential · auth-surfaces · landing-3s · kyc-surfaces | UI §6.4~6.4d · Infra §31.2a/b · Money §42 (v7.22.11) — **onboarding-experiential · auth-surfaces · landing-3s · kyc-surfaces live** (Canon Lux3면 · RRN0) |
 | trust-copy · tax-disclaimer · objection4 | UI §38 PART6b — **live** (금지어0 · 면책 입금/guide · Guest onboarding 면책0=v7.22.55 utility · Admin content 잠금 · Objection Q1~Q4 온보딩·입금게이트·FAQ·상세) |
@@ -182,7 +184,7 @@
 | auth-session-cookie | UI PART9-pre2 — httpOnly `aipo_session` Set-Cookie · cookie-parser · JwtAuthGuard cookie fallback · JSON accessToken 유지 — **live** |
 | wallet-kyc-session-auth | UI PART9-pre2 — Wallet/Kyc 유저 라우트 JwtAuthGuard + session userId (IDOR query/body userId 0) — **live** |
 | home-live-wire | UI PART9b/9c — `/` page↔`@aipo/sdk/user-feed`↔DayPulse · nearMissExtraCount · 401 graceful — **live** |
-| home-principal-slots | UI PART9d — §5.3 B/D `HomePrincipalRail` + Canon `home-principal-slots` + `home-money-grid`(v1.3, 구 `lux-feed-grid` 공유 분리) · principalUsdt/todayPossibleProfitUsdt — **live** |
+| home-principal-slots | UI PART9d — §5.3 B/D `HomePrincipalRail` + Canon `home-principal-slots` + `home-money-grid`(v1.3, 구 `pd-feed-grid` 공유 분리) · principalUsdt/todayPossibleProfitUsdt — **live** |
 | profits-live-wire | REL-106 — `/profits` live feed · error≠empty · requiredCapital · Playwright profits-closure — **live** |
 | opportunity-detail-live-wire | REL-107 — `/profits/[id]` live detail · error≠empty/404 · requiredCapital continuity · preflight before execute · Playwright opportunity-detail-closure — **live** |
 | participate-web-wire | REL-107 — `@aipo/sdk/participate` issuePreflight+postParticipate · `/profits/[id]` 실연결 · amountUsdt=requiredCapitalUsdt · 목록 POST 0 — **live** |
@@ -309,3 +311,6 @@
 **P0-2 (v7.22.50):** `user-opportunity-feed` · `participate-http` · `execute-rule-loop` · `catalog-runtime-seed` · `benefit-hub-surfaces` were implemented but never enforced by `verify:gate` (only reachable via manual `pnpm verify:<id>`). Now wired into `tooling/verify/stubs/run-all.cjs`'s `live` array alongside `auth-jwt-runtime` — a future regression in any of the six now fails CI, not just a one-time manual claim.
 
 Stub = `tooling/verify/stubs/*.cjs` — 해당 코드 경로가 생기면 FAIL로 승격.
+
+| no-lux | current-tree PUTDUK design-system lux identifiers = 0 |
+| putduk-design-system | foundation + tokens + primitives |

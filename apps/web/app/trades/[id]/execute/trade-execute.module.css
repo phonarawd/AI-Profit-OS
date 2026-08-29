@@ -6,12 +6,12 @@
   margin: 0;
   padding: 0;
   background: transparent;
-  color: var(--color-lux-text);
+  color: var(--color-pd-text);
 }
 .nav { margin: 0 0 1rem; }
-.nav a { color: var(--color-lux-accent); font-weight: 800; text-decoration: none; }
+.nav a { color: var(--color-pd-accent); font-weight: 800; text-decoration: none; }
 .title { margin: 0 0 0.5rem; font-size: clamp(1.75rem, 4vw, 2.4rem); font-weight: 900; letter-spacing: -0.04em; }
-.lead { margin: 0 0 1.25rem; line-height: 1.6; color: var(--color-lux-text-muted); }
+.lead { margin: 0 0 1.25rem; line-height: 1.6; color: var(--color-pd-text-muted); }
 .motion { position: relative; width: 7.5rem; height: 7.5rem; margin: 1.5rem auto; }
 .orbit,
 .spark { position: absolute; inset: 0; border-radius: 999px; }
@@ -24,23 +24,23 @@
   gap: .75rem;
   margin: 0 0 1.25rem;
   padding: 1rem 1.1rem;
-  border: 1px solid var(--color-lux-border);
+  border: 1px solid var(--color-pd-border);
   border-radius: 1rem;
-  background: var(--color-lux-surface);
-  color: var(--color-lux-text);
-  box-shadow: var(--shadow-lux-soft);
+  background: var(--color-pd-surface);
+  color: var(--color-pd-text);
+  box-shadow: var(--shadow-pd-soft);
 }
 .facts div { display: grid; gap: .2rem; }
-.facts dt { font-size: .8125rem; color: var(--color-lux-text-muted); }
+.facts dt { font-size: .8125rem; color: var(--color-pd-text-muted); }
 .facts dd { margin: 0; font-size: 1.35rem; font-weight: 900; }
 .note,
 .warn,
 .err { margin: 0 0 1rem; line-height: 1.6; }
-.note { color: var(--color-lux-text-muted); }
-.err { color: var(--color-lux-danger); }
+.note { color: var(--color-pd-text-muted); }
+.err { color: var(--color-pd-danger); }
 .actions { display: grid; gap: .6rem; }
 .actions a { display: inline-flex; justify-content: center; align-items: center; min-height: 3rem; padding: .75rem 1rem; border: 0; border-radius: .875rem; background: #c81d55; color: #fff; text-decoration: none; font: inherit; font-size: 1rem; font-weight: 800; }
-.secondary { background: transparent; border: 1px solid var(--color-lux-border); color: var(--color-lux-text); }
+.secondary { background: transparent; border: 1px solid var(--color-pd-border); color: var(--color-pd-text); }
 @media (min-width: 768px) { .facts { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media (min-width: 1280px) { .page { padding: 6px 0 24px; } .facts { grid-template-columns: repeat(4,minmax(0,1fr)); } .actions { grid-template-columns: repeat(2,minmax(0,220px)); } }
 @media (prefers-reduced-motion: reduce) { .orbit,.spark { animation: none; } }

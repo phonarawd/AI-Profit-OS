@@ -26,9 +26,9 @@ export function LandingOperatorFooter({ className = "" }: { className?: string }
     <footer
       data-testid="landing-operator-footer"
       data-canon-block="operator-footer"
-      className={`mt-8 border-t border-lux-border px-2 pt-4 pb-2 text-center text-xs text-lux-text-muted ${className}`.trim()}
+      className={`mt-8 border-t border-pd-border px-2 pt-4 pb-2 text-center text-xs text-pd-text-muted ${className}`.trim()}
     >
-      <p data-operator-field="legalName" className="font-medium text-lux-text">
+      <p data-operator-field="legalName" className="font-medium text-pd-text">
         {entity.legalName}
       </p>
       <p data-operator-field="licenseNumber" className="mt-1">
@@ -37,7 +37,7 @@ export function LandingOperatorFooter({ className = "" }: { className?: string }
       <p data-operator-field="supportEmail" className="mt-1">
         <a
           href={`mailto:${entity.supportEmail}`}
-          className="text-lux-principal underline-offset-2 hover:underline"
+          className="text-pd-principal underline-offset-2 hover:underline"
         >
           {entity.supportEmail}
         </a>
@@ -48,7 +48,7 @@ export function LandingOperatorFooter({ className = "" }: { className?: string }
       <p className="mt-2">
         <Link
           href="/me/legal"
-          className="text-lux-principal underline-offset-2 hover:underline"
+          className="text-pd-principal underline-offset-2 hover:underline"
         >
           {T.landing.legalLink}
         </Link>

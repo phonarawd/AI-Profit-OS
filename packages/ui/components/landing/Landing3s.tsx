@@ -2,7 +2,7 @@
 
 import { T } from "../../copy/ko";
 import { BrandMark } from "../brand/BrandMark";
-import { TouchButton } from "../lux/TouchButton";
+import { TouchButton } from "../../primitives/Button";
 import { LandingOperatorFooter } from "../shell/LandingOperatorFooter";
 import { MarketPartnerTrustStrip } from "../trust/MarketPartnerTrustStrip";
 import { emitLandingLeadIfConsented } from "./emitLandingLead";
@@ -49,7 +49,7 @@ export function Landing3s({ variant = "meta" }: Landing3sProps) {
 
         {/* block 2 — identity */}
         <h1
-          className="text-center text-xl font-semibold text-lux-text"
+          className="text-center text-xl font-semibold text-pd-text"
           data-landing-block="headline"
         >
           {identity}
@@ -57,7 +57,7 @@ export function Landing3s({ variant = "meta" }: Landing3sProps) {
 
         {/* block 3 — utility disclaimer */}
         <p
-          className="text-center text-sm text-lux-text-muted"
+          className="text-center text-sm text-pd-text-muted"
           data-landing-block="reassure"
         >
           {T.landing.utilityDisclaimer}
@@ -75,18 +75,18 @@ export function Landing3s({ variant = "meta" }: Landing3sProps) {
           </TouchButton>
           {/* §6.4c.1 C #1 — CTA 직하 · opacity stack 0 */}
           <p
-            className="text-center text-xs text-lux-text-muted"
+            className="text-center text-xs text-pd-text-muted"
             data-landing-disclaimer="cta"
           >
             {T.landing.utilityDisclaimer}
           </p>
-          <p className="text-center text-sm text-lux-text-muted">
+          <p className="text-center text-sm text-pd-text-muted">
             {T.landing.ctaHint}
           </p>
           <p className="text-center text-sm">
             <a
               href="/auth/login"
-              className="text-lux-principal underline-offset-2 hover:underline"
+              className="text-pd-principal underline-offset-2 hover:underline"
             >
               {T.auth.loginHeadline}
             </a>
@@ -103,7 +103,7 @@ export function Landing3s({ variant = "meta" }: Landing3sProps) {
       <div data-landing-scroll="true" className="mt-10 space-y-3">
         {/* §6.4c.1 C #2 — LandingOperatorFooter 직상 */}
         <p
-          className="text-center text-xs text-lux-text-muted"
+          className="text-center text-xs text-pd-text-muted"
           data-landing-disclaimer="pre-footer"
         >
           {T.landing.utilityDisclaimer}

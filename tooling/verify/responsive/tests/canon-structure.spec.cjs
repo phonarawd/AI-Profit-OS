@@ -64,7 +64,7 @@ for (const surface of surfaces) {
       const vp = page.viewportSize();
       if (vp && vp.width >= 1920) {
         const maxW = await page
-          .locator(".lux-app-main")
+          .locator(".pd-app-main")
           .evaluate((el) => getComputedStyle(el).maxWidth);
         expect(maxW).toBe("1680px");
       }

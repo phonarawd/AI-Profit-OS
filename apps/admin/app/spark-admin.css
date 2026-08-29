@@ -1,25 +1,25 @@
 body {
-  --color-lux-bg: #0b0f17;
-  --color-lux-surface: #121826;
-  --color-lux-elevated: #1a2030;
-  --color-lux-border: #2b3548;
-  --color-lux-text: #f6f7fa;
-  --color-lux-text-muted: #b7c0d2;
-  --color-lux-accent: #ff2d6b;
-  --color-lux-accent-muted: #ff6a98;
-  --color-lux-danger: #ff6b6b;
-  --color-lux-warning: #f7b955;
-  --color-lux-profit: #35d07f;
-  --color-lux-principal: #ff2d6b;
-  --shadow-lux-card: 0 20px 52px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.035) inset;
-  --shadow-lux-soft: 0 10px 30px rgba(0, 0, 0, 0.22);
+  --color-pd-bg: #0b0f17;
+  --color-pd-surface: #121826;
+  --color-pd-elevated: #1a2030;
+  --color-pd-border: #2b3548;
+  --color-pd-text: #f6f7fa;
+  --color-pd-text-muted: #b7c0d2;
+  --color-pd-accent: #ff2d6b;
+  --color-pd-accent-muted: #ff6a98;
+  --color-pd-danger: #ff6b6b;
+  --color-pd-warning: #f7b955;
+  --color-pd-profit: #35d07f;
+  --color-pd-principal: #ff2d6b;
+  --shadow-pd-card: 0 20px 52px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.035) inset;
+  --shadow-pd-soft: 0 10px 30px rgba(0, 0, 0, 0.22);
 
   color-scheme: dark;
   background:
     radial-gradient(circle at 85% -8%, rgba(255, 45, 107, 0.2), transparent 32rem),
     radial-gradient(circle at 12% 8%, rgba(94, 74, 255, 0.12), transparent 28rem),
     #0b0f17;
-  color: var(--color-lux-text);
+  color: var(--color-pd-text);
   font-family:
     "Pretendard Variable",
     "Pretendard",
@@ -35,7 +35,7 @@ body {
 }
 
 .admin-sidebar {
-  border-color: var(--color-lux-border);
+  border-color: var(--color-pd-border);
   background: linear-gradient(180deg, rgba(16, 22, 36, 0.98), rgba(11, 15, 23, 0.98));
   box-shadow: 16px 0 42px rgba(0, 0, 0, 0.22);
   backdrop-filter: blur(20px);
@@ -43,7 +43,7 @@ body {
 
 .admin-brand-block,
 .admin-session-bar {
-  border-color: var(--color-lux-border);
+  border-color: var(--color-pd-border);
 }
 
 .admin-brand-name {
@@ -87,8 +87,8 @@ body {
 .admin-session-toggle,
 .admin-session-disconnect,
 .admin-session-form button {
-  border-color: var(--color-lux-border);
-  color: var(--color-lux-text);
+  border-color: var(--color-pd-border);
+  color: var(--color-pd-text);
 }
 
 .admin-session-toggle,
@@ -100,29 +100,29 @@ body {
 
 .admin-content > main > section,
 .admin-content article {
-  border-color: var(--color-lux-border);
-  background: color-mix(in srgb, var(--color-lux-surface) 96%, transparent);
-  box-shadow: var(--shadow-lux-card);
+  border-color: var(--color-pd-border);
+  background: color-mix(in srgb, var(--color-pd-surface) 96%, transparent);
+  box-shadow: var(--shadow-pd-card);
 }
 
 .admin-content button {
-  border-color: var(--color-lux-border);
-  background: var(--color-lux-elevated);
-  color: var(--color-lux-text);
+  border-color: var(--color-pd-border);
+  background: var(--color-pd-elevated);
+  color: var(--color-pd-text);
 }
 
 .admin-content button:hover:not(:disabled) {
-  border-color: color-mix(in srgb, #ff2d6b 46%, var(--color-lux-border));
-  background: color-mix(in srgb, #ff2d6b 9%, var(--color-lux-elevated));
+  border-color: color-mix(in srgb, #ff2d6b 46%, var(--color-pd-border));
+  background: color-mix(in srgb, #ff2d6b 9%, var(--color-pd-elevated));
 }
 
 .admin-content input,
 .admin-content textarea,
 .admin-content select,
 .admin-session-form input {
-  border-color: var(--color-lux-border);
+  border-color: var(--color-pd-border);
   background: #101624;
-  color: var(--color-lux-text);
+  color: var(--color-pd-text);
 }
 
 .admin-content input::placeholder,
@@ -155,7 +155,7 @@ body {
 
 @media (max-width: 767px) {
   .admin-mobile-header {
-    border-bottom: 1px solid var(--color-lux-border);
+    border-bottom: 1px solid var(--color-pd-border);
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
   }
 

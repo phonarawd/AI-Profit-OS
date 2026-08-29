@@ -76,7 +76,7 @@ function formatKrwOrUsdt(
 function renderMissionCards(cards: BenefitMissionCardModel[]) {
   if (cards.length === 0) {
     return (
-      <p className="text-sm text-lux-text-muted" role="status">
+      <p className="text-sm text-pd-text-muted" role="status">
         {T.benefits.sectionEmpty}
       </p>
     );
@@ -157,7 +157,7 @@ export function BenefitHub({
       data-engine-pointer={T.benefits.enginePointer}
       data-admin-pointer={T.benefits.adminPointer}
       data-rewards-enabled={rewardsEnabled ? "true" : "false"}
-      className={`space-y-6 text-lux-text ${className}`.trim()}
+      className={`space-y-6 text-pd-text ${className}`.trim()}
     >
       <header className="space-y-1">
         <h1
@@ -166,7 +166,7 @@ export function BenefitHub({
         >
           {T.benefits.title}
         </h1>
-        <p className="text-xs text-lux-text-muted">
+        <p className="text-xs text-pd-text-muted">
           {T.benefits.noVirtualCurrencyNote}
         </p>
       </header>
@@ -175,25 +175,25 @@ export function BenefitHub({
         data-testid="benefit-hub-hero"
         data-canon-block="hero"
         data-canon-section="hero"
-        className="rounded-lux-md border border-lux-border bg-lux-elevated p-4"
+        className="rounded-pd-md border border-pd-border bg-pd-elevated p-4"
         aria-label={T.benefits.title}
       >
         {rewardsEnabled ? (
           <div className="space-y-3">
             <div>
-              <p className="text-xs text-lux-text-muted">
+              <p className="text-xs text-pd-text-muted">
                 {T.benefits.heroMonthly}
               </p>
               <p
                 data-testid="benefit-hero-monthly"
-                className="text-2xl font-semibold text-lux-accent"
+                className="text-2xl font-semibold text-pd-accent"
               >
                 {monthLabel}
               </p>
             </div>
             <div className="flex flex-wrap gap-4 text-sm">
               <p>
-                <span className="text-lux-text-muted">
+                <span className="text-pd-text-muted">
                   {T.benefits.heroClaimable}{" "}
                 </span>
                 <span
@@ -204,7 +204,7 @@ export function BenefitHub({
                 </span>
               </p>
               <p>
-                <span className="text-lux-text-muted">
+                <span className="text-pd-text-muted">
                   {T.benefits.heroPending}{" "}
                 </span>
                 <span
@@ -218,7 +218,7 @@ export function BenefitHub({
           </div>
         ) : (
           <div className="space-y-2">
-            <p className="text-xs text-lux-text-muted">
+            <p className="text-xs text-pd-text-muted">
               {T.benefits.heroEducation}
             </p>
             <p
@@ -227,14 +227,14 @@ export function BenefitHub({
             >
               {educationCount}
             </p>
-            <p className="text-sm text-lux-text-muted">
+            <p className="text-sm text-pd-text-muted">
               {T.benefits.heroEducationHint}
             </p>
           </div>
         )}
         <p
           data-testid="benefit-kst-countdown"
-          className="mt-3 text-xs text-lux-text-muted"
+          className="mt-3 text-xs text-pd-text-muted"
         >
           {T.benefits.dailyReset.replace(
             "{time}",
@@ -254,7 +254,7 @@ export function BenefitHub({
         </h2>
         {slides.length === 0 ? (
           <p
-            className="rounded-lux-md border border-dashed border-lux-border px-3 py-4 text-sm text-lux-text-muted"
+            className="rounded-pd-md border border-dashed border-pd-border px-3 py-4 text-sm text-pd-text-muted"
             role="status"
           >
             {T.benefits.carouselEmpty}
@@ -269,20 +269,20 @@ export function BenefitHub({
                 {slide.href ? (
                   <Link
                     href={slide.href}
-                    className="block rounded-lux-md border border-lux-border bg-lux-surface p-4"
+                    className="block rounded-pd-md border border-pd-border bg-pd-surface p-4"
                   >
                     <p className="text-sm font-semibold">{slide.title}</p>
                     {slide.body ? (
-                      <p className="mt-1 text-xs text-lux-text-muted">
+                      <p className="mt-1 text-xs text-pd-text-muted">
                         {slide.body}
                       </p>
                     ) : null}
                   </Link>
                 ) : (
-                  <div className="rounded-lux-md border border-lux-border bg-lux-surface p-4">
+                  <div className="rounded-pd-md border border-pd-border bg-pd-surface p-4">
                     <p className="text-sm font-semibold">{slide.title}</p>
                     {slide.body ? (
-                      <p className="mt-1 text-xs text-lux-text-muted">
+                      <p className="mt-1 text-xs text-pd-text-muted">
                         {slide.body}
                       </p>
                     ) : null}
@@ -345,12 +345,12 @@ export function BenefitHub({
         data-testid="benefit-hub-footer"
         data-canon-block="footerLinks"
         data-canon-section="footerLinks"
-        className="space-y-2 border-t border-lux-border pt-4 text-sm"
+        className="space-y-2 border-t border-pd-border pt-4 text-sm"
       >
         <p>
           <Link
             href="/me/invite"
-            className="text-lux-accent underline-offset-2 hover:underline"
+            className="text-pd-accent underline-offset-2 hover:underline"
           >
             {T.benefits.footerInvite}
           </Link>
@@ -358,7 +358,7 @@ export function BenefitHub({
         <p>
           <Link
             href="/me/events"
-            className="text-lux-accent underline-offset-2 hover:underline"
+            className="text-pd-accent underline-offset-2 hover:underline"
           >
             {T.benefits.footerEvents}
           </Link>

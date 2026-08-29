@@ -2,8 +2,8 @@
 
 import { T } from "../../copy/ko";
 import { PreCTA } from "../loop/PreCTA";
-import { Badge } from "../lux/Badge";
-import { MotionCTA } from "../lux/MotionCTA";
+import { Badge } from "../../primitives/Badge";
+import { MotionCTA } from "../../primitives/PrimaryCta";
 import { ProductThumb } from "../execution/ProductThumb";
 import { PriceCompareMargin } from "./PriceCompareMargin";
 import type { OpportunityCardModel } from "./opportunity-types";
@@ -43,7 +43,7 @@ export function OpportunityConfirm({
           <Badge tone="accent" data-field="arbitrageTypeKo">
             {o.arbitrageTypeKo}
           </Badge>
-          <p className="mt-1 text-sm text-lux-text">{o.assetLabel}</p>
+          <p className="mt-1 text-sm text-pd-text">{o.assetLabel}</p>
         </div>
       </div>
 
@@ -56,7 +56,7 @@ export function OpportunityConfirm({
         platformMarginUsdt={o.platformMarginUsdt}
       />
 
-      <p className="text-xs text-lux-text-muted">{T.execution.disclaimerResult}</p>
+      <p className="text-xs text-pd-text-muted">{T.execution.disclaimerResult}</p>
 
       <PreCTA preflightToken={preflightToken} />
 

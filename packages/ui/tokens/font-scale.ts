@@ -1,4 +1,4 @@
-import { luxFintech, type FontScaleKey } from "./lux-fintech";
+import { putdukTokens, type FontScaleKey } from "./putduk";
 
 export type { FontScaleKey };
 
@@ -8,7 +8,7 @@ export const FONT_SCALE_KEYS: FontScaleKey[] = ["md", "lg", "xl"];
 export function applyFontScale(scale: FontScaleKey, el: HTMLElement = document.documentElement) {
   if (!FONT_SCALE_KEYS.includes(scale)) return;
   el.dataset.fontScale = scale;
-  const tok = luxFintech.fontScale[scale];
+  const tok = putdukTokens.fontScale[scale];
   el.style.setProperty("--font-scale", String(tok.factor));
   el.style.setProperty("--line-height-boost", String(tok.lineHeightBoost));
   // theme lock

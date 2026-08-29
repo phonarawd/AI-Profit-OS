@@ -26,8 +26,8 @@ mustExist(".cursor/rules/mockup-governance.mdc");
 mustExist(".cursor/rules/phase0-ram.mdc");
 mustExist(".cursor/rules/git-safety.mdc");
 mustExist(".cursor/hooks.json");
-mustExist("packages/ui/tokens/lux-fintech.ts");
-mustExist("packages/ui/tokens/lux-theme.css");
+mustExist("packages/ui/tokens/putduk.ts");
+mustExist("packages/ui/tokens/putduk-theme.css");
 mustExist("packages/ui/brand/brand.manifest.json");
 mustExist("packages/sdk/package.json");
 mustExist("packages/schemas/package.json");
@@ -44,6 +44,8 @@ mustExist("infra/ops/wrangler.toml");
 mustExist("infra/workers.manifest.json");
 mustExist("workers/tsconfig.base.json");
 mustExist(".github/workflows/deploy-cloudflare.yml");
+mustExist(".github/workflows/cloud-verify.yml");
+mustExist("tooling/verify/cloud-dispatch.cjs");
 
 const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
 if (pkg.packageManager !== "pnpm@10.14.0") {

@@ -351,7 +351,7 @@ Fact claim 없이 **모양만** 가져갈 수 있는 것:
 | Money 카드 비율·여백 | 사용가능/참여중 구조 |
 | RightRail 블록 간격 | 도넛·단계 카운트 풀세트 |
 | Partner strip 정렬감 | 미승인 로고 |
-| Light + Purple 분위기 (기존 Theme lock과 정합) | Lux Dark 복귀 · 픽셀 복제 |
+| Light + Purple 분위기 (기존 Theme lock과 정합) | PUTDUK Dark 복귀 · 픽셀 복제 |
 
 ---
 

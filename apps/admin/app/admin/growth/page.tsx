@@ -130,12 +130,12 @@ function GrowthContent() {
 
   return (
     <main
-      className="p-6 text-lux-text"
+      className="p-6 text-pd-text"
       data-admin-growth-tab={tab}
       data-testid="admin-growth-page"
     >
       <h1 className="text-xl font-semibold">{T.admin.navigation.growth}</h1>
-      <p className="mt-2 text-sm text-lux-text-muted">
+      <p className="mt-2 text-sm text-pd-text-muted">
         공지, 행사, 친구 초대와 혜택을 시작하기 전에 안전 상태를 확인합니다.
       </p>
       <nav
@@ -149,8 +149,8 @@ function GrowthContent() {
             data-tab={t}
             className={
               tab === t
-                ? "rounded px-2 py-1 bg-lux-elevated text-lux-accent"
-                : "rounded px-2 py-1 text-lux-text-muted"
+                ? "rounded px-2 py-1 bg-pd-elevated text-pd-accent"
+                : "rounded px-2 py-1 text-pd-text-muted"
             }
           >
             {TAB_LABEL[t]}
@@ -168,12 +168,12 @@ function GrowthContent() {
           data-growth-gate-api={simGrowthGateApi}
           data-growth-enabled-api={growthEnabledApi}
         >
-          <p className="text-sm text-lux-text-muted">
+          <p className="text-sm text-pd-text-muted">
             혜택과 행사를 시작하려면 최근 24시간 안의 안전 점검 통과와 운영 준비금 설정이 필요합니다.
           </p>
 
           <div
-            className="rounded border border-lux-border p-3 space-y-2"
+            className="rounded border border-pd-border p-3 space-y-2"
             data-field="gates"
           >
             <p className="text-sm font-medium">반드시 확인할 네 가지</p>
@@ -188,7 +188,7 @@ function GrowthContent() {
                   <span>
                     {g.label}
                   </span>
-                  <span className="text-xs text-lux-text-muted">
+                  <span className="text-xs text-pd-text-muted">
                     {g.rule} · 기준을 넘으면 {g.fail}
                   </span>
                 </li>
@@ -197,11 +197,11 @@ function GrowthContent() {
           </div>
 
           <div
-            className="rounded border border-lux-border p-3 text-sm space-y-1"
+            className="rounded border border-pd-border p-3 text-sm space-y-1"
             data-field="kpi-inputs"
           >
             <p className="font-medium">점검에 사용하는 실제 정보</p>
-            <ul className="text-xs text-lux-text-muted list-disc pl-5 space-y-1">
+            <ul className="text-xs text-pd-text-muted list-disc pl-5 space-y-1">
               <li data-kpi="S1">회원 화면에 표시되는 금액과 안내의 정확도</li>
               <li data-kpi="S2">
                 한 번에 나갈 수 있는 최대 금액과 운영 준비금
@@ -214,18 +214,18 @@ function GrowthContent() {
           </div>
 
           <div
-            className="rounded border border-lux-border p-3 text-sm"
+            className="rounded border border-pd-border p-3 text-sm"
             data-field="growth-enabled"
             data-gate="admin.growth.enabled"
           >
             <p className="font-medium">혜택·행사 시작</p>
-            <p className="mt-1 text-xs text-lux-text-muted">
+            <p className="mt-1 text-xs text-pd-text-muted">
               최근 안전 점검을 통과했고 운영 준비금이 설정된 경우에만 시작할 수 있습니다.
             </p>
           </div>
 
           {!simLatest ? (
-            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !simLatest.ok ? (
             <AdminFetchNote failure={simLatest.failure} />
           ) : (
@@ -256,17 +256,17 @@ function GrowthContent() {
           data-invite-cap-ui="0"
           data-forbid-monthly-invite-cap="true"
         >
-          <p className="text-sm text-lux-text-muted">
+          <p className="text-sm text-pd-text-muted">
             친구 초대 횟수에는 제한이 없습니다. 혜택 예산이 부족하거나 의심 활동이 있으면 지급만 잠시 보류합니다.
           </p>
-          <ul className="text-xs text-lux-text-muted list-disc pl-5 space-y-1">
+          <ul className="text-xs text-pd-text-muted list-disc pl-5 space-y-1">
             <li>출시 시 초대 혜택은 기본으로 멈춰 있습니다.</li>
             <li>남은 혜택 예산과 지급 대기 순서를 확인합니다.</li>
             <li>보류한 혜택의 지급 또는 취소 사유를 기록합니다.</li>
             <li>과도한 공유만 막고, 친구를 초대하는 횟수는 제한하지 않습니다.</li>
           </ul>
           {!program ? (
-            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+            <p className="text-sm text-pd-text-muted">{T.admin.state.loading}</p>
           ) : !program.ok ? (
             <AdminFetchNote failure={program.failure} />
           ) : (
@@ -300,7 +300,7 @@ function GrowthContent() {
           data-admin-override="false"
         >
           <h2 className="text-base font-medium">{T.admin.contentTab}</h2>
-          <p className="text-sm text-lux-text-muted">
+          <p className="text-sm text-pd-text-muted">
             {T.admin.taxDisclaimerLockedHint}
           </p>
           <div
@@ -308,7 +308,7 @@ function GrowthContent() {
             data-editable="false"
             aria-readonly="true"
           >
-            <p className="mb-2 text-xs font-medium text-lux-warning">
+            <p className="mb-2 text-xs font-medium text-pd-warning">
               {T.admin.taxDisclaimerLocked}
             </p>
             <TaxDisclaimerBlock />
@@ -316,7 +316,7 @@ function GrowthContent() {
         </section>
       ) : (
         <section className="mt-6" data-testid={`growth-${tab}-panel`} data-admin-api="none">
-          <p className="text-sm text-lux-text-muted">
+          <p className="text-sm text-pd-text-muted">
             이 메뉴는 아직 관리 화면이 준비되지 않았습니다.
           </p>
         </section>

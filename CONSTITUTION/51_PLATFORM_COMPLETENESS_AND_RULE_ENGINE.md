@@ -46,7 +46,7 @@
 | ADR-007 | CTA=`수익 벌기` · Soft60/Hard90 전등급 · yahoo_jp FORBIDDEN · orchestrate≠실체결 |
 | ADR-009 | `executionMode=orchestrate` only |
 | ADR-012 | Notice ≠ Campaign |
-| ADR-013 | Canon/Lux/Brand > 사진목업 |
+| ADR-013 | Canon/PUTDUK/Brand > 사진목업 |
 | ADR-014~016 | Cursor=집행기 · Node22·pnpm@10.14·next@16 · hooks/Husky/CI · Docker-less 기본 |
 
 ## Pointer
