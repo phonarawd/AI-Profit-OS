@@ -34,6 +34,8 @@ const {
   isPendingRerun,
   isCurrentEpochPreQa7Checkpoint,
   verifyCurrentEpochPreQa7Checkpoint,
+  isCurrentEpochPostQa7PreQa8Checkpoint,
+  verifyCurrentEpochPostQa7PreQa8Checkpoint,
   CURRENT_EPOCH_REBASE_SNAPSHOT,
 } = require("./lib/product-rebase.cjs");
 
@@ -422,6 +424,61 @@ function expectCheckpointFail(name, ctx, needle, check) {
     pred === false && f.some((x) => needle.test(x)),
     `predicate=${pred} fails=${f.join("; ")}`,
   );
+}
+
+function makePostQa7Ctx() {
+  const ctx = makeCheckpointCtx();
+  const checksum = "q7-current-checksum";
+  const runId = "33155687092";
+  const qa7 = suiteIn(ctx, "QA7");
+  Object.assign(qa7, {
+    completion_status: "COMPLETE",
+    run_id: runId,
+    checksum,
+    result_ref: "governance/engine-acceptance/qa7-result.v1.json",
+    mode: "full",
+    formal_actions_evidence: true,
+    artifact: "engine-acceptance-QA7-raw-traces",
+  });
+  ctx.results.QA7 = {
+    schema: "governance.engine-acceptance.qa7-result.v1",
+    suite_id: "QA7",
+    completion_status: "COMPLETE",
+    qa7_completion_status: "COMPLETE",
+    baseline_id: FIX_CUR,
+    run_id: runId,
+    checksum,
+    formal_actions_evidence: true,
+    local_validation_only: false,
+    engine_accepted_for_ui: "NOT_ISSUED",
+    ui_ux_entry_gate: "CLOSED",
+    next: "QA8_SECURITY_PRIVACY",
+    mode: "full",
+    suite_status: "PASS",
+    counts: { total: 2, pass: 2, fail: 0, blocked: 0, graded: 2 },
+    actions: {
+      run_id: runId,
+      workflow: "engine-acceptance",
+      event: "workflow_dispatch",
+      qa_phase: "qa7",
+      conclusion: "success",
+      job: "qa7-ai-eval",
+    },
+    hashes: { prompt_hash: "MATCH", eval_dataset_hash: "MATCH", acceptance_workflow_hash: "MATCH" },
+    artifact: { name: "engine-acceptance-QA7-raw-traces", raw_in_repo: false, retention_days: 90 },
+  };
+  ctx.evidence.qa_phase = "QA-7";
+  ctx.evidence.next = "QA8_SECURITY_PRIVACY";
+  ctx.evidence.current_epoch.qa1_qa6_status = "COMPLETE";
+  ctx.evidence.kill_switch.verified_before_qa7 = true;
+  return ctx;
+}
+
+function expectPostQa7CheckpointFail(name, ctx, needle, check) {
+  const f = [];
+  const pred = isCurrentEpochPostQa7PreQa8Checkpoint(ctx);
+  verifyCurrentEpochPostQa7PreQa8Checkpoint(ctx, f);
+  check(name, pred === false && f.some((x) => needle.test(x)), `predicate=${pred} fails=${f.join("; ")}`);
 }
 
 function existingFinalQa9ChecksumBindingHolds(ctx) {
@@ -1262,16 +1319,41 @@ function run() {
   {
     const live = loadLiveCheckpointCtx();
     const f = [];
-    verifyCurrentEpochPreQa7Checkpoint(live, f);
+    verifyCurrentEpochPostQa7PreQa8Checkpoint(live, f);
     check(
-      "live_persisted_qa6_complete_qa7_pending_predicate_true",
-      isCurrentEpochPreQa7Checkpoint(live) === true && f.length === 0,
+      "live_persisted_qa7_formal_pre_qa8_predicate_true",
+      isCurrentEpochPostQa7PreQa8Checkpoint(live) === true && f.length === 0,
       f.join("; "),
     );
     check(
-      "current_epoch_snapshot_is_rebase_time_not_live_authority",
-      live.evidence.current_epoch.qa1_qa6_status === CURRENT_EPOCH_REBASE_SNAPSHOT.qa1_qa6_status &&
+      "current_epoch_snapshot_records_completed_qa1_qa6_after_formal_qa7",
+      live.evidence.current_epoch.qa1_qa6_status === "COMPLETE" &&
         live.evidence.suites.find((s) => s.suite_id === "QA1").completion_status === "COMPLETE",
+    );
+  }
+
+  {
+    const ctx = makePostQa7Ctx();
+    const f = [];
+    verifyCurrentEpochPostQa7PreQa8Checkpoint(ctx, f);
+    check("fixture_qa7_formal_pre_qa8_true", isCurrentEpochPostQa7PreQa8Checkpoint(ctx) === true && f.length === 0, f.join("; "));
+    expectPostQa7CheckpointFail(
+      "neg_post_qa7_requires_formal_actions_evidence",
+      patched(ctx, (c) => { c.results.QA7.formal_actions_evidence = false; }),
+      /formal_actions_evidence/,
+      check,
+    );
+    expectPostQa7CheckpointFail(
+      "neg_post_qa7_rejects_qa8_promotion",
+      patched(ctx, (c) => { suiteIn(c, "QA8").completion_status = "COMPLETE"; }),
+      /QA8 completion_status|promote current QA8/,
+      check,
+    );
+    expectPostQa7CheckpointFail(
+      "neg_post_qa7_requires_qa8_next",
+      patched(ctx, (c) => { c.evidence.next = "QA9_ACCEPTANCE_REPORT"; }),
+      /QA8_SECURITY_PRIVACY/,
+      check,
     );
   }
 

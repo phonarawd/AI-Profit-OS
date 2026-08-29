@@ -1540,6 +1540,126 @@ function verifyCurrentEpochPreQa7CheckpointBody(ctx, fails, parts) {
   verifyPreQa7KillAndAmendment(ctx, baseline, evidence, tip, amendmentLedger, fails);
 }
 
+/**
+ * QA7 formal publication is a persisted, current-epoch checkpoint of its own.
+ * It is neither the pre-QA7 snapshot nor a final QA9 verdict: QA8/QA9 remain
+ * historical-only until their current-epoch work is actually completed.
+ */
+function verifyPostQa7CurrentSlot(baseline, evidence, results, fails) {
+  const qa7 = suiteOf(evidence, "QA7");
+  const result = results.QA7;
+  if (!qa7 || qa7.completion_status !== "COMPLETE") {
+    fails.push("current QA7 formal checkpoint requires QA7 COMPLETE");
+    return;
+  }
+  for (const [key, expected] of Object.entries({
+    baseline_id: baseline.id,
+    result_ref: RESULT_RELS.QA7,
+    mode: "full",
+    formal_actions_evidence: true,
+    artifact: "engine-acceptance-QA7-raw-traces",
+  })) {
+    if (qa7[key] !== expected) fails.push(`current QA7 suite.${key} must be ${expected}`);
+  }
+  if (!qa7.run_id || !qa7.checksum) {
+    fails.push("current QA7 formal checkpoint requires suite run_id and checksum");
+  }
+  if (!result) {
+    fails.push("current qa7-result.v1.json required");
+    return;
+  }
+  for (const [key, expected] of Object.entries({
+    schema: "governance.engine-acceptance.qa7-result.v1",
+    suite_id: "QA7",
+    completion_status: "COMPLETE",
+    qa7_completion_status: "COMPLETE",
+    baseline_id: baseline.id,
+    formal_actions_evidence: true,
+    local_validation_only: false,
+    engine_accepted_for_ui: "NOT_ISSUED",
+    ui_ux_entry_gate: "CLOSED",
+    next: "QA8_SECURITY_PRIVACY",
+    mode: "full",
+    suite_status: "PASS",
+  })) {
+    if (result[key] !== expected) fails.push(`current qa7-result.${key} must be ${expected}`);
+  }
+  if (String(result.run_id) !== String(qa7.run_id) || result.checksum !== qa7.checksum) {
+    fails.push("current QA7 result run_id/checksum must match evidence suite");
+  }
+  const counts = result.counts || {};
+  if (!Number.isInteger(counts.total) || counts.total < 1 || counts.pass !== counts.total || counts.fail !== 0 || counts.blocked !== 0 || counts.graded !== counts.total) {
+    fails.push("current QA7 formal counts must be all PASS with no fail/blocked cases");
+  }
+  const actions = result.actions || {};
+  for (const [key, expected] of Object.entries({ workflow: "engine-acceptance", event: "workflow_dispatch", qa_phase: "qa7", conclusion: "success", job: "qa7-ai-eval" })) {
+    if (actions[key] !== expected) fails.push(`current qa7-result.actions.${key} must be ${expected}`);
+  }
+  if (String(actions.run_id) !== String(result.run_id)) {
+    fails.push("current qa7-result.actions.run_id must match result.run_id");
+  }
+  const hashes = result.hashes || {};
+  for (const key of ["prompt_hash", "eval_dataset_hash", "acceptance_workflow_hash"]) {
+    if (hashes[key] !== "MATCH") fails.push(`current qa7-result.hashes.${key} must be MATCH`);
+  }
+  const artifact = result.artifact || {};
+  if (artifact.name !== "engine-acceptance-QA7-raw-traces" || artifact.raw_in_repo !== false || !(artifact.retention_days >= 90)) {
+    fails.push("current QA7 formal artifact must be retained Actions raw traces, never repo raw data");
+  }
+}
+
+function verifyPostQa7CheckpointFields(evidence, fails) {
+  if (evidence.qa_phase !== "QA-7") fails.push("post-QA7 checkpoint evidence.qa_phase must be QA-7");
+  if (evidence.next !== "QA8_SECURITY_PRIVACY") fails.push("post-QA7 checkpoint evidence.next must be QA8_SECURITY_PRIVACY");
+  if (evidence.verdict !== "ENGINE_QA_INCOMPLETE") fails.push("post-QA7 checkpoint evidence.verdict must be ENGINE_QA_INCOMPLETE");
+  if (evidence.evidence_integrity !== "VALID") fails.push("post-QA7 checkpoint evidence.evidence_integrity must be VALID");
+  if (evidence.ui_ux_entry_gate != null && evidence.ui_ux_entry_gate !== "CLOSED") fails.push("post-QA7 checkpoint UI gate must be absent/null or CLOSED");
+  if (evidence.engine_accepted_for_ui != null && evidence.engine_accepted_for_ui !== "NOT_ISSUED") fails.push("post-QA7 checkpoint engine acceptance must be absent/null or NOT_ISSUED");
+  const epoch = evidence.current_epoch;
+  if (!epoch || epoch.qa1_qa6_status !== "COMPLETE") {
+    fails.push("post-QA7 checkpoint current_epoch.qa1_qa6_status must be COMPLETE");
+  }
+  if (!epoch || epoch.qa8_status !== CURRENT_EPOCH_REBASE_SNAPSHOT.qa8_status || epoch.qa9_status !== CURRENT_EPOCH_REBASE_SNAPSHOT.qa9_status) {
+    fails.push("post-QA7 checkpoint must preserve QA8 stale and QA9 stale-aggregation epoch markers");
+  }
+}
+
+function verifyCurrentEpochPostQa7PreQa8Checkpoint(ctx, fails) {
+  if (!fails || !Array.isArray(fails)) throw new Error("verifyCurrentEpochPostQa7PreQa8Checkpoint requires a fails array");
+  const baseline = ctx && ctx.baseline;
+  const evidence = ctx && ctx.evidence;
+  const rebaseLedger = ctx && ctx.rebaseLedger;
+  const amendmentLedger = ctx && ctx.amendmentLedger;
+  const defects = ctx && ctx.defects;
+  const results = (ctx && ctx.results) || {};
+  if (!baseline || !evidence || !rebaseLedger) {
+    fails.push("post-QA7 checkpoint requires baseline, evidence, rebase ledger");
+    return;
+  }
+  const tip = latestRebase(rebaseLedger);
+  if (!tip) {
+    fails.push("post-QA7 checkpoint requires a latest rebase");
+    return;
+  }
+  verifyPreQa7RebaseBinding(baseline, evidence, rebaseLedger, tip, fails);
+  verifyPreQa7Qa0ToQa6(baseline, evidence, results, fails);
+  verifyPostQa7CurrentSlot(baseline, evidence, results, fails);
+  verifyPreQa7Qa8Stale(baseline, evidence, tip, results, ctx, fails);
+  verifyPreQa7Qa9Stale(baseline, evidence, tip, results, ctx, fails);
+  verifyPostQa7CheckpointFields(evidence, fails);
+  verifyPreQa7DefectsAndCritical(evidence, defects, results, fails);
+  verifyPreQa7KillAndAmendment(ctx, baseline, evidence, tip, amendmentLedger, fails);
+  if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa7 !== true) {
+    fails.push("post-QA7 checkpoint kill_switch.verified_before_qa7 must be true");
+  }
+}
+
+function isCurrentEpochPostQa7PreQa8Checkpoint(ctx) {
+  const fails = [];
+  verifyCurrentEpochPostQa7PreQa8Checkpoint(ctx, fails);
+  return fails.length === 0;
+}
+
 function amendmentHashChainHolds(amendmentLedger, fails) {
   if (!amendmentLedger) {
     fails.push("workflow-amendments ledger required");
@@ -1631,6 +1751,8 @@ module.exports = {
   isPendingRerun,
   isCurrentEpochPreQa7Checkpoint,
   verifyCurrentEpochPreQa7Checkpoint,
+  isCurrentEpochPostQa7PreQa8Checkpoint,
+  verifyCurrentEpochPostQa7PreQa8Checkpoint,
   CURRENT_EPOCH_REBASE_SNAPSHOT,
   verifyWashing,
   verifyPendingRerunEpoch,

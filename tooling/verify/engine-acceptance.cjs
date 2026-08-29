@@ -50,6 +50,8 @@ const {
   isPendingRerun,
   isCurrentEpochPreQa7Checkpoint,
   verifyCurrentEpochPreQa7Checkpoint,
+  isCurrentEpochPostQa7PreQa8Checkpoint,
+  verifyCurrentEpochPostQa7PreQa8Checkpoint,
   verifyPendingRerunEpoch,
   verifyRebaseLedgerAgainstBaseline,
   assertNoInPlaceHashRewrite,
@@ -603,6 +605,7 @@ try {
 let ephemeralQa6Rewrite = false;
 let ephemeralPreQa9Rewrite = false;
 let currentEpochPreQa7Checkpoint = false;
+let currentEpochPostQa7PreQa8Checkpoint = false;
 let preQa7CheckpointCtx = null;
 
 const pendingRerun = isPendingRerun(baseline, evidence, rebaseLedger);
@@ -675,6 +678,13 @@ if (evidence) {
     !ephemeralPreQa9RewriteNow &&
     isCurrentEpochPreQa7Checkpoint(preQa7CheckpointCtx);
   currentEpochPreQa7Checkpoint = currentEpochPreQa7CheckpointNow;
+  const currentEpochPostQa7PreQa8CheckpointNow =
+    !pendingRerun &&
+    !ephemeralQa6RewriteNow &&
+    !ephemeralPreQa9RewriteNow &&
+    !currentEpochPreQa7CheckpointNow &&
+    isCurrentEpochPostQa7PreQa8Checkpoint(preQa7CheckpointCtx);
+  currentEpochPostQa7PreQa8Checkpoint = currentEpochPostQa7PreQa8CheckpointNow;
 
   // Independently re-derive the L1 formula and require evidence.verdict to
   // match exactly - stronger than (and a superset of) a blanket "never
@@ -718,9 +728,9 @@ if (evidence) {
   // this part of the guard stays unconditional regardless of ephemeral state.
   if (
     evidence.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
-    (pendingRerun || ephemeralQa6RewriteNow || currentEpochPreQa7CheckpointNow)
+    (pendingRerun || ephemeralQa6RewriteNow || currentEpochPreQa7CheckpointNow || currentEpochPostQa7PreQa8CheckpointNow)
   ) {
-    fail("must not issue ENGINE_ACCEPTED_FOR_UI during a pending rebase rerun, ephemeral QA6 rewrite, or current-epoch pre-QA7 checkpoint");
+    fail("must not issue ENGINE_ACCEPTED_FOR_UI during a pending rebase rerun, ephemeral QA6 rewrite, pre-QA7 checkpoint, or post-QA7/pre-QA8 checkpoint");
   }
 
   if (pendingRerun) {
@@ -746,6 +756,8 @@ if (evidence) {
       }
     } else if (currentEpochPreQa7CheckpointNow) {
       verifyCurrentEpochPreQa7Checkpoint(preQa7CheckpointCtx, fails);
+    } else if (currentEpochPostQa7PreQa8CheckpointNow) {
+      verifyCurrentEpochPostQa7PreQa8Checkpoint(preQa7CheckpointCtx, fails);
     } else {
       if (evidence.qa_phase !== "QA-9") {
         fail("evidence-manifest.qa_phase must be QA-9 after qa9-acceptance-report completion");
@@ -859,6 +871,19 @@ if (evidence) {
       // Current-epoch pre-QA7 checkpoint: QA7/QA8/QA9 current COMPLETE and
       // kill-switch QA7~QA9 must not be required. Predecessor preservation
       // is enforced by verifyCurrentEpochPreQa7Checkpoint.
+    } else if (currentEpochPostQa7PreQa8CheckpointNow) {
+      if (!qa7 || qa7.completion_status !== "COMPLETE" || !qa7.run_id || !qa7.checksum) {
+        fail("post-QA7 checkpoint requires current QA7 COMPLETE with run_id + checksum");
+      }
+      if (qa7 && qa7.formal_actions_evidence !== true) {
+        fail("post-QA7 checkpoint requires formal Actions QA7 evidence");
+      }
+      if (!qa8 || !["NOT_STARTED", "STALE"].includes(qa8.completion_status)) {
+        fail("post-QA7 checkpoint requires current QA8 to remain NOT_STARTED or STALE");
+      }
+      if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa7 !== true) {
+        fail("post-QA7 checkpoint requires evidence.kill_switch.verified_before_qa7");
+      }
     } else {
       if (!qa7 || qa7.completion_status !== "COMPLETE") {
         fail("QA7 suite must be COMPLETE after formal Actions publication");
@@ -899,7 +924,7 @@ if (evidence) {
         fail("evidence.kill_switch.verified_before_qa9 must be true");
       }
     }
-    if (ephemeralQa6RewriteNow || currentEpochPreQa7CheckpointNow) {
+    if (ephemeralQa6RewriteNow || currentEpochPreQa7CheckpointNow || currentEpochPostQa7PreQa8CheckpointNow) {
       // run-qa6.cjs recomputes its own cumulative from QA5's on-disk result
       // only — it has no knowledge of QA8 in this ephemeral CI recompute.
       // The persisted pre-QA7 checkpoint also uses QA6 cumulative as current
@@ -1703,7 +1728,7 @@ try {
 } catch {
   fail("qa8-result.v1.json invalid JSON");
 }
-if (qa8Result && !pendingRerun && !currentEpochPreQa7Checkpoint) {
+if (qa8Result && !pendingRerun && !currentEpochPreQa7Checkpoint && !currentEpochPostQa7PreQa8Checkpoint) {
   if (qa8Result.schema !== "governance.engine-acceptance.qa8-result.v1") {
     fail("qa8-result.schema mismatch");
   }
@@ -1817,14 +1842,14 @@ if (qa8Result && !pendingRerun && !currentEpochPreQa7Checkpoint) {
       fail("qa8-result P0/P1 defects present must set verdict_contribution=ENGINE_NOT_ACCEPTED");
     }
   }
-  if (defects && !ephemeralQa6Rewrite && !ephemeralPreQa9Rewrite && !currentEpochPreQa7Checkpoint) {
+  if (defects && !ephemeralQa6Rewrite && !ephemeralPreQa9Rewrite && !currentEpochPreQa7Checkpoint && !currentEpochPostQa7PreQa8Checkpoint) {
     if (defects.counts.P0 > 0 || defects.counts.P1 > 0) {
       if (evidence && evidence.verdict !== "ENGINE_NOT_ACCEPTED") {
         fail("evidence-manifest.verdict must be ENGINE_NOT_ACCEPTED when defects.P0/P1 > 0");
       }
     }
   }
-  if (evidence && !ephemeralQa6Rewrite && !currentEpochPreQa7Checkpoint) {
+  if (evidence && !ephemeralQa6Rewrite && !currentEpochPreQa7Checkpoint && !currentEpochPostQa7PreQa8Checkpoint) {
     const qa8 = (evidence.suites || []).find((s) => s.suite_id === "QA8");
     if (qa8 && qa8.checksum !== qa8Result.checksum) {
       fail("evidence QA8.checksum must match qa8-result.checksum");
@@ -1842,7 +1867,7 @@ try {
 } catch {
   fail("qa9-result.v1.json invalid JSON");
 }
-if (qa9Result && !pendingRerun && !currentEpochPreQa7Checkpoint) {
+if (qa9Result && !pendingRerun && !currentEpochPreQa7Checkpoint && !currentEpochPostQa7PreQa8Checkpoint) {
   if (qa9Result.schema !== "governance.engine-acceptance.qa9-result.v1") {
     fail("qa9-result.schema mismatch");
   }
@@ -1910,7 +1935,7 @@ if (qa9Result && !pendingRerun && !currentEpochPreQa7Checkpoint) {
     // "pending re-aggregation" means, not a staleness violation. Once QA9
     // itself re-runs it will either match or the run fails on its own
     // internal-consistency check above.
-    if (defects && !ephemeralQa6Rewrite && !ephemeralPreQa9Rewrite && !currentEpochPreQa7Checkpoint) {
+    if (defects && !ephemeralQa6Rewrite && !ephemeralPreQa9Rewrite && !currentEpochPreQa7Checkpoint && !currentEpochPostQa7PreQa8Checkpoint) {
       if ((fi.defects_P0 || 0) !== (defects.counts.P0 || 0)) {
         fail("qa9-result.formula_inputs.defects_P0 must match live defects.v1.json counts.P0");
       }
@@ -1941,7 +1966,7 @@ if (qa9Result && !pendingRerun && !currentEpochPreQa7Checkpoint) {
       fail("qa9-result.ui_ux_entry_gate must be CLOSED when verdict is not ACCEPTED");
     }
   }
-  if (evidence && !ephemeralQa6Rewrite && !ephemeralPreQa9Rewrite && !currentEpochPreQa7Checkpoint) {
+  if (evidence && !ephemeralQa6Rewrite && !ephemeralPreQa9Rewrite && !currentEpochPreQa7Checkpoint && !currentEpochPostQa7PreQa8Checkpoint) {
     const qa9 = (evidence.suites || []).find((s) => s.suite_id === "QA9");
     if (qa9 && qa9.checksum !== qa9Result.checksum) {
       fail("evidence QA9.checksum must match qa9-result.checksum");
@@ -2057,6 +2082,16 @@ if (report) {
     }
   } else if (currentEpochPreQa7Checkpoint) {
     assertCurrentEpochPreQa7Report(report, fail);
+  } else if (currentEpochPostQa7PreQa8Checkpoint) {
+    if (!report.includes("QA7 = COMPLETE")) {
+      fail("post-QA7 checkpoint REPORT must include QA7 = COMPLETE");
+    }
+    if (!report.includes("QA8_SECURITY_PRIVACY")) {
+      fail("post-QA7 checkpoint REPORT must declare NEXT=QA8_SECURITY_PRIVACY");
+    }
+    if (!report.includes("ENGINE_QA_INCOMPLETE")) {
+      fail("post-QA7 checkpoint REPORT must keep verdict ENGINE_QA_INCOMPLETE");
+    }
   } else {
     if (!report.includes("QA9 = COMPLETE")) {
       fail("REPORT banner must include QA9 = COMPLETE");
@@ -2470,6 +2505,14 @@ if (pendingRerun) {
   console.log("  QA8 = NOT_STARTED");
   console.log("  QA9 = NOT_STARTED / STALE_AGGREGATION");
   console.log("  NEXT = QA7_AI_EVAL");
+  console.log("  VERDICT = ENGINE_QA_INCOMPLETE");
+  console.log("  ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED");
+  console.log("  UI_UX_ENTRY_GATE = CLOSED");
+} else if (currentEpochPostQa7PreQa8Checkpoint) {
+  console.log("  QA0-QA7 = COMPLETE");
+  console.log("  QA8 = NOT_STARTED / STALE");
+  console.log("  QA9 = NOT_STARTED / STALE_AGGREGATION");
+  console.log("  NEXT = QA8_SECURITY_PRIVACY");
   console.log("  VERDICT = ENGINE_QA_INCOMPLETE");
   console.log("  ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED");
   console.log("  UI_UX_ENTRY_GATE = CLOSED");
