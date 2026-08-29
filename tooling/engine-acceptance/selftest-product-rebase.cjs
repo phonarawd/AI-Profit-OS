@@ -43,6 +43,10 @@ function readGov(name) {
   );
 }
 
+function readGovHead(name) {
+  return JSON.parse(git(`git show HEAD:governance/engine-acceptance/${name}`).replace(/\r\n/g, "\n"));
+}
+
 function makeAck() {
   return {
     by: "Human/PO",
@@ -489,39 +493,41 @@ function makeFinalQa9Ctx() {
 }
 
 function loadLiveCheckpointCtx() {
+  // live_persisted_* 검사는 committed epoch authority 만 본다.
+  // run-qa6/qa8.cjs 는 같은 CI job에서 evidence/result 를 임시로 다시 쓰며,
+  // 그 working-tree 쓰기는 persisted QA-0 pending-rerun 이 아니다.
   const scope = readGov("protected-scope.v1.json");
   const resultBytes = {};
   for (const id of ["QA7", "QA8", "QA9"]) {
     const lower = id.toLowerCase();
     const title = `${id[0]}${id.slice(1).toLowerCase()}`;
     const rel = `governance/engine-acceptance/${lower}-result.v1.json`;
+    let headBytes = null;
     try {
-      resultBytes[`head${title}Bytes`] = git(`git show HEAD:${rel}`).replace(/\r\n/g, "\n").trim();
+      headBytes = git(`git show HEAD:${rel}`).replace(/\r\n/g, "\n").trim();
     } catch {
-      resultBytes[`head${title}Bytes`] = null;
+      headBytes = null;
     }
-    resultBytes[`live${title}Bytes`] = fs
-      .readFileSync(path.join(ROOT, rel), "utf8")
-      .replace(/\r\n/g, "\n")
-      .trim();
+    resultBytes[`head${title}Bytes`] = headBytes;
+    resultBytes[`live${title}Bytes`] = headBytes;
     resultBytes[`${lower}ResultDirty`] = false;
   }
   return {
-    baseline: readGov("baseline.v1.json"),
-    evidence: readGov("evidence-manifest.v1.json"),
-    rebaseLedger: readGov("product-rebases.v1.json"),
-    amendmentLedger: readGov("workflow-amendments.v1.json"),
-    defects: readGov("defects.v1.json"),
+    baseline: readGovHead("baseline.v1.json"),
+    evidence: readGovHead("evidence-manifest.v1.json"),
+    rebaseLedger: readGovHead("product-rebases.v1.json"),
+    amendmentLedger: readGovHead("workflow-amendments.v1.json"),
+    defects: readGovHead("defects.v1.json"),
     results: {
-      QA1: readGov("qa1-result.v1.json"),
-      QA2: readGov("qa2-result.v1.json"),
-      QA3: readGov("qa3-result.v1.json"),
-      QA4: readGov("qa4-result.v1.json"),
-      QA5: readGov("qa5-result.v1.json"),
-      QA6: readGov("qa6-result.v1.json"),
-      QA7: readGov("qa7-result.v1.json"),
-      QA8: readGov("qa8-result.v1.json"),
-      QA9: readGov("qa9-result.v1.json"),
+      QA1: readGovHead("qa1-result.v1.json"),
+      QA2: readGovHead("qa2-result.v1.json"),
+      QA3: readGovHead("qa3-result.v1.json"),
+      QA4: readGovHead("qa4-result.v1.json"),
+      QA5: readGovHead("qa5-result.v1.json"),
+      QA6: readGovHead("qa6-result.v1.json"),
+      QA7: readGovHead("qa7-result.v1.json"),
+      QA8: readGovHead("qa8-result.v1.json"),
+      QA9: readGovHead("qa9-result.v1.json"),
     },
     liveWorkflowHash: hashPathList(scope.aggregateHashes.acceptance_workflow_hash, scope),
     ...resultBytes,
@@ -1334,20 +1340,36 @@ function run() {
       const qa7 = suiteIn(live, "QA7");
       const qa8 = suiteIn(live, "QA8");
       const qa9 = suiteIn(live, "QA9");
+      const qa0Reasons = [];
+      if (live.evidence.verdict !== "ENGINE_QA_INCOMPLETE") {
+        qa0Reasons.push(`verdict=${live.evidence.verdict}`);
+      }
+      if (isCurrentEpochPreQa7Checkpoint(live) !== false) {
+        qa0Reasons.push("preQa7Checkpoint=true");
+      }
+      if (!qa1 || qa1.completion_status !== "STALE") {
+        qa0Reasons.push(`qa1=${qa1 && qa1.completion_status}`);
+      }
+      if (!qa7 || qa7.completion_status !== "NOT_STARTED") {
+        qa0Reasons.push(`qa7=${qa7 && qa7.completion_status}`);
+      }
+      if (!qa8 || qa8.completion_status !== "STALE") {
+        qa0Reasons.push(`qa8=${qa8 && qa8.completion_status}`);
+      }
+      if (!qa9 || qa9.current_epoch_authoritative === true) {
+        qa0Reasons.push(`qa9.authoritative=${qa9 && qa9.current_epoch_authoritative}`);
+      }
+      if (
+        !qa9 ||
+        (qa9.completion_status !== "STALE" &&
+          qa9.epoch_status !== "STALE_AGGREGATION_FOR_CURRENT_EPOCH")
+      ) {
+        qa0Reasons.push(`qa9.status=${qa9 && qa9.completion_status}/${qa9 && qa9.epoch_status}`);
+      }
       check(
         "live_persisted_qa0_pending_rerun_state_true",
-        live.evidence.verdict === "ENGINE_QA_INCOMPLETE" &&
-          isCurrentEpochPreQa7Checkpoint(live) === false &&
-          qa1 &&
-          qa1.completion_status === "STALE" &&
-          qa7 &&
-          qa7.completion_status === "NOT_STARTED" &&
-          qa8 &&
-          qa8.completion_status === "STALE" &&
-          qa9 &&
-          qa9.current_epoch_authoritative !== true &&
-          (qa9.completion_status === "STALE" ||
-            qa9.epoch_status === "STALE_AGGREGATION_FOR_CURRENT_EPOCH"),
+        qa0Reasons.length === 0,
+        qa0Reasons.join("; ") || "failed",
       );
     } else if (
       live.evidence.qa_phase === "QA-9" &&
