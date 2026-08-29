@@ -227,6 +227,14 @@ function maybeWireQa4ClockHarness(input) {
   // Matrix yml keeps `node run-qa4.cjs --mode full` so WORKFLOW_HASH does
   // not move. CI sets MATRIX_SUITE=QA4 in the same job; local default stays
   // fail-closed (not_wired) unless AIPO_QA_WIRE_QA4_CLOCK=1.
+  // run-qa4-clock.cjs also calls assertKillSwitch — must not spawn itself.
+  if (process.env.AIPO_QA_QA4_CLOCK_INNER === "1") {
+    return;
+  }
+  const entry = String(process.argv[1] || "").replace(/\\/g, "/");
+  if (entry.endsWith("run-qa4-clock.cjs")) {
+    return;
+  }
   if (process.env.MATRIX_SUITE !== "QA4" && process.env.AIPO_QA_WIRE_QA4_CLOCK !== "1") {
     return;
   }

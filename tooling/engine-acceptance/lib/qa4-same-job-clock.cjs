@@ -71,7 +71,7 @@ function startIsolatedPostgres() {
       `${PG.port}:5432`,
       PG.image,
     ],
-    { encoding: "utf8", timeout: 180_000, windowsHide: true },
+    { encoding: "utf8", timeout: 180_000, windowsHide: true, maxBuffer: 64 * 1024 * 1024 },
   );
   if (run.status !== 0) {
     const err = new Error(`docker run isolated postgres failed: ${(run.stderr || run.stdout || "").slice(0, 800)}`);
@@ -135,6 +135,13 @@ function ensureQa4ClockHarness(opts = {}) {
   if (mode !== "full") {
     return { invoked: false, reason: "tiny_mode_skips_clock_boot" };
   }
+  if (process.env.AIPO_QA_QA4_CLOCK_INNER === "1") {
+    return { invoked: false, reason: "inner_clock_runner" };
+  }
+  const entry = String(process.argv[1] || "").replace(/\\/g, "/");
+  if (entry.endsWith("run-qa4-clock.cjs")) {
+    return { invoked: false, reason: "inner_clock_runner" };
+  }
 
   const already = probeQa4ClockHarness();
   if (already.available) {
@@ -142,7 +149,10 @@ function ensureQa4ClockHarness(opts = {}) {
   }
 
   if (!process.env.AIPO_QA_HARNESS_OUT) {
-    process.env.AIPO_QA_HARNESS_OUT = path.join(ROOT, "_tmp_qa_harness", "qa4-clock");
+    process.env.AIPO_QA_HARNESS_OUT =
+      process.env.GITHUB_ACTIONS === "true"
+        ? "/tmp/aipo-harness/qa4-clock"
+        : path.join(ROOT, "_tmp_qa_harness", "qa4-clock");
   }
 
   try {
@@ -161,6 +171,7 @@ function ensureQa4ClockHarness(opts = {}) {
 
     ensureNestDist();
 
+    const inheritLogs = process.env.GITHUB_ACTIONS === "true";
     const child = spawnSync(
       process.execPath,
       [
@@ -174,10 +185,12 @@ function ensureQa4ClockHarness(opts = {}) {
       ],
       {
         cwd: ROOT,
-        encoding: "utf8",
+        encoding: inheritLogs ? undefined : "utf8",
+        stdio: inheritLogs ? "inherit" : "pipe",
+        maxBuffer: 64 * 1024 * 1024,
         timeout: 12 * 60 * 1000,
         windowsHide: true,
-        env: process.env,
+        env: { ...process.env, AIPO_QA_QA4_CLOCK_INNER: "1" },
       },
     );
     return {
@@ -202,11 +215,17 @@ function selfcheck() {
   const prevGa = process.env.GITHUB_ACTIONS;
   const prevWire = process.env.AIPO_QA_WIRE_QA4_CLOCK;
   const prevSuite = process.env.MATRIX_SUITE;
+  const prevInner = process.env.AIPO_QA_QA4_CLOCK_INNER;
   delete process.env.GITHUB_ACTIONS;
   delete process.env.AIPO_QA_WIRE_QA4_CLOCK;
   delete process.env.MATRIX_SUITE;
+  delete process.env.AIPO_QA_QA4_CLOCK_INNER;
   const tiny = ensureQa4ClockHarness({ mode: "tiny", target_env: "ci" });
   const full = ensureQa4ClockHarness({ mode: "full", target_env: "ci" });
+  process.env.AIPO_QA_QA4_CLOCK_INNER = "1";
+  const inner = ensureQa4ClockHarness({ mode: "full", target_env: "ci" });
+  if (prevInner === undefined) delete process.env.AIPO_QA_QA4_CLOCK_INNER;
+  else process.env.AIPO_QA_QA4_CLOCK_INNER = prevInner;
   if (prevGa === undefined) delete process.env.GITHUB_ACTIONS;
   else process.env.GITHUB_ACTIONS = prevGa;
   if (prevWire === undefined) delete process.env.AIPO_QA_WIRE_QA4_CLOCK;
@@ -218,6 +237,9 @@ function selfcheck() {
   }
   if (full.invoked !== false || full.reason !== "no_isolated_postgres") {
     throw new Error(`full without isolated pg must stay fail-closed, got ${JSON.stringify(full)}`);
+  }
+  if (inner.reason !== "inner_clock_runner") {
+    throw new Error(`inner runner must skip re-wire, got ${JSON.stringify(inner)}`);
   }
   console.log("[qa4-same-job-clock] selfcheck PASS");
 }
