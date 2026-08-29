@@ -121,6 +121,37 @@ function isEphemeralQa6Rewrite(evidenceObj, qa7File) {
  * drift - qa9-result.v1.json itself (never touched by run-qa8.cjs) still
  * proves QA9 COMPLETE.
  */
+/**
+ * Official QA8 job rewrites evidence to QA-8 in the runner workspace.
+ * Apply post-QA8 rules only when HEAD is already the post-QA7 checkpoint.
+ * Pre-QA7 / pending-rerun HEAD must not be treated as a successful QA8 phase.
+ */
+function isEphemeralOfficialQa8Rewrite(evidenceObj, qa7File) {
+  if (!evidenceObj || evidenceObj.qa_phase !== "QA-8") return false;
+  if (evidenceObj.next !== "QA9_ACCEPTANCE_REPORT") return false;
+  if (
+    !qa7File ||
+    qa7File.formal_actions_evidence !== true ||
+    qa7File.completion_status !== "COMPLETE"
+  ) {
+    return false;
+  }
+  const rel = `${GOV}/evidence-manifest.v1.json`;
+  const head = gitShowHead(rel);
+  const live = liveFileText(rel);
+  if (head == null || live == null || head === live) return false;
+  let headObj = null;
+  try {
+    headObj = JSON.parse(head);
+  } catch {
+    return false;
+  }
+  if (headObj.qa_phase !== "QA-7" || headObj.next !== "QA8_SECURITY_PRIVACY") return false;
+  const qa7 = (headObj.suites || []).find((s) => s.suite_id === "QA7");
+  if (!qa7 || qa7.completion_status !== "COMPLETE") return false;
+  return true;
+}
+
 function isEphemeralPreQa9Rewrite(evidenceObj, qa9File) {
   if (!qa9File || qa9File.completion_status !== "COMPLETE") return false;
   if (evidenceObj.qa_phase === "QA-9") return false;
@@ -557,6 +588,9 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/publish-qa7-formal.cjs",
   "tooling/engine-acceptance/publish-qa1-qa6-checkpoint.cjs",
   "tooling/engine-acceptance/selftest-qa1-qa6-checkpoint.cjs",
+  "tooling/engine-acceptance/selftest-qa-pipeline-contract.cjs",
+  "tooling/engine-acceptance/lib/publication-sha-inheritance.cjs",
+  "tooling/engine-acceptance/lib/qa-phase-routing.cjs",
   "tooling/engine-acceptance/run-qa8.cjs",
   "tooling/engine-acceptance/run-qa9.cjs",
   "tooling/engine-acceptance/checks/security-privacy-world.cjs",
@@ -952,6 +986,11 @@ if (evidence) {
   const ephemeralPreQa9RewriteNow =
     !pendingRerun && !ephemeralQa6RewriteNow && isEphemeralPreQa9Rewrite(evidence, qa9Peek);
   ephemeralPreQa9Rewrite = ephemeralPreQa9RewriteNow;
+  const ephemeralOfficialQa8RewriteNow =
+    !pendingRerun &&
+    !ephemeralQa6RewriteNow &&
+    !ephemeralPreQa9RewriteNow &&
+    isEphemeralOfficialQa8Rewrite(evidence, qa7Peek);
   preQa7CheckpointCtx = buildPreQa7CheckpointCtx(
     baseline,
     evidence,
@@ -963,12 +1002,14 @@ if (evidence) {
     !pendingRerun &&
     !ephemeralQa6RewriteNow &&
     !ephemeralPreQa9RewriteNow &&
+    !ephemeralOfficialQa8RewriteNow &&
     isCurrentEpochPreQa7Checkpoint(preQa7CheckpointCtx);
   currentEpochPreQa7Checkpoint = currentEpochPreQa7CheckpointNow;
   const currentEpochPostQa7PreQa8CheckpointNow =
     !pendingRerun &&
     !ephemeralQa6RewriteNow &&
     !ephemeralPreQa9RewriteNow &&
+    !ephemeralOfficialQa8RewriteNow &&
     !currentEpochPreQa7CheckpointNow &&
     isCurrentEpochPostQa7PreQa8Checkpoint(evidence);
   currentEpochPostQa7PreQa8Checkpoint = currentEpochPostQa7PreQa8CheckpointNow;
@@ -978,7 +1019,7 @@ if (evidence) {
     !ephemeralPreQa9RewriteNow &&
     !currentEpochPreQa7CheckpointNow &&
     !currentEpochPostQa7PreQa8CheckpointNow &&
-    isCurrentEpochPostQa8PreQa9Checkpoint(evidence);
+    (ephemeralOfficialQa8RewriteNow || isCurrentEpochPostQa8PreQa9Checkpoint(evidence));
   currentEpochPostQa8PreQa9Checkpoint = currentEpochPostQa8PreQa9CheckpointNow;
 
   // Independently re-derive the L1 formula and require evidence.verdict to
@@ -2828,6 +2869,12 @@ try {
   selftestQa1Qa6Checkpoint();
 } catch (e) {
   fail(`qa1-qa6-checkpoint selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
+  const { run: selftestQaPipelineContract } = require("../engine-acceptance/selftest-qa-pipeline-contract.cjs");
+  selftestQaPipelineContract();
+} catch (e) {
+  fail(`qa-pipeline-contract selftest threw: ${e && e.message ? e.message : e}`);
 }
 try {
   const harnessSelf = require("../engine-acceptance/selftest-pre-rebase-harness.cjs");

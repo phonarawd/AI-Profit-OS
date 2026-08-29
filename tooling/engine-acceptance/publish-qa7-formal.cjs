@@ -10,7 +10,11 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
-const { ROOT, readJson, dualDirty } = require("./lib/hash-scope.cjs");
+const { ROOT, readJson, dualDirty, git } = require("./lib/hash-scope.cjs");
+const {
+  evaluatePublicationInheritance,
+  isInheritanceAllowed,
+} = require("./lib/publication-sha-inheritance.cjs");
 const { runQa7Precheck } = require("./lib/qa7-precheck.cjs");
 const { loadEvalDataset } = require("./lib/qa7-dataset.cjs");
 const { indexAndValidateTraces } = require("./lib/qa7-trace.cjs");
@@ -393,6 +397,38 @@ function publishQa7Formal(opts) {
     fail(
       "refusing to publish QA7 formal evidence — QA4-QA6 are not COMPLETE for the current baseline (critical_invariant would be stale)",
     );
+  }
+  const subjectSha =
+    evidence.publication && evidence.publication.qa1_qa6_subject_sha
+      ? evidence.publication.qa1_qa6_subject_sha
+      : null;
+  if (subjectSha) {
+    let currentHead = opts.headSha || null;
+    if (!currentHead) {
+      try {
+        currentHead = git("git rev-parse HEAD");
+      } catch {
+        currentHead = null;
+      }
+    }
+    const inherit = evaluatePublicationInheritance({
+      subjectSha,
+      currentHead,
+      baselineId: evidence.baseline_id,
+      liveBaselineId: baseline.id,
+      promptHash: baseline.prompt_hash,
+      livePromptHash: baseline.prompt_hash,
+      evalHash: baseline.eval_dataset_hash,
+      liveEvalHash: baseline.eval_dataset_hash,
+      workflowHash: baseline.acceptance_workflow_hash,
+      liveWorkflowHash: baseline.acceptance_workflow_hash,
+    });
+    if (!isInheritanceAllowed(inherit)) {
+      fail(
+        `QA1-QA6 subject SHA cannot be inherited onto this HEAD: ${inherit.reasons.join("; ")}`,
+        "PUBLICATION_SHA_INHERITANCE",
+      );
+    }
   }
 
   const verdict = "ENGINE_QA_INCOMPLETE";

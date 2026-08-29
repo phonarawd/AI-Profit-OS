@@ -15,6 +15,11 @@ const {
   isCurrentEpochPreQa7Checkpoint,
   verifyCurrentEpochPreQa7Checkpoint,
 } = require("./lib/product-rebase.cjs");
+const {
+  evaluatePublicationInheritance,
+  isInheritanceAllowed,
+  DENY,
+} = require("./lib/publication-sha-inheritance.cjs");
 const { publishQa1Qa6Checkpoint } = require("./publish-qa1-qa6-checkpoint.cjs");
 
 const GOV = "governance/engine-acceptance";
@@ -332,6 +337,8 @@ function run() {
     const evidence = JSON.parse(fs.readFileSync(path.join(root, `${GOV}/evidence-manifest.v1.json`), "utf8"));
     assert.equal(evidence.qa_phase, "QA-6");
     assert.equal(evidence.next, "QA7_AI_EVAL");
+    assert.equal(evidence.publication.qa1_qa6_subject_sha, happy.head);
+    assert.equal(evidence.publication.kind, "official_qa1_qa6_checkpoint");
     assert.equal(evidence.verdict, "ENGINE_QA_INCOMPLETE");
     for (const id of QA1_TO_QA6) {
       const s = evidence.suites.find((x) => x.suite_id === id);
@@ -386,6 +393,34 @@ function run() {
     assert.equal(f.join("; "), "");
     assert.equal(isCurrentEpochPreQa7Checkpoint(ctx), true);
     assert.ok(legacyVerifierRejectsPreQa7(evidence));
+    const inheritOk = evaluatePublicationInheritance({
+      subjectSha: evidence.publication.qa1_qa6_subject_sha,
+      currentHead: "cccccccccccccccccccccccccccccccccccccccc",
+      baselineId: happy.baseline.id,
+      liveBaselineId: happy.baseline.id,
+      promptHash: happy.baseline.prompt_hash,
+      livePromptHash: happy.baseline.prompt_hash,
+      evalHash: happy.baseline.eval_dataset_hash,
+      liveEvalHash: happy.baseline.eval_dataset_hash,
+      workflowHash: happy.pin,
+      liveWorkflowHash: happy.pin,
+      isAncestor: () => true,
+    });
+    assert.equal(isInheritanceAllowed(inheritOk), true);
+    const inheritBad = evaluatePublicationInheritance({
+      subjectSha: evidence.publication.qa1_qa6_subject_sha,
+      currentHead: "dddddddddddddddddddddddddddddddddddddddd",
+      baselineId: happy.baseline.id,
+      liveBaselineId: "other-baseline",
+      promptHash: happy.baseline.prompt_hash,
+      livePromptHash: happy.baseline.prompt_hash,
+      evalHash: happy.baseline.eval_dataset_hash,
+      liveEvalHash: happy.baseline.eval_dataset_hash,
+      workflowHash: happy.pin,
+      liveWorkflowHash: happy.pin,
+      isAncestor: () => true,
+    });
+    assert.equal(inheritBad.status, DENY);
     fs.rmSync(root, { recursive: true, force: true });
   });
 
@@ -527,6 +562,16 @@ function run() {
     fs.rmSync(path.join(happy.input.suites.QA5.dir, "tmp"), { recursive: true, force: true });
     const snap = snapshotGov(root);
     expectReject(() => publishOn(root, happy), /fault harness file missing/);
+    assert.equal(unchanged(root, snap), true);
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  check("reject_missing_qa4_clock_harness", () => {
+    const root = makeSandbox();
+    const happy = buildHappy(root);
+    fs.rmSync(path.join(happy.input.suites.QA4.dir, "tmp"), { recursive: true, force: true });
+    const snap = snapshotGov(root);
+    expectReject(() => publishOn(root, happy), /clock harness file missing/);
     assert.equal(unchanged(root, snap), true);
     fs.rmSync(root, { recursive: true, force: true });
   });

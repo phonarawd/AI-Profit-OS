@@ -18,6 +18,7 @@ const { ROOT, readJson } = require("./hash-scope.cjs");
 const {
   expectedWorkflowHash,
   validateLedgerShape,
+  qa0Qa6ImpactExceptionAllowed,
 } = require("./workflow-amendment.cjs");
 
 const DECISION_ID = "ENGINE_ACCEPTANCE_REBASE_V1";
@@ -1508,6 +1509,12 @@ function verifyPreQa7KillAndAmendment(ctx, baseline, evidence, tip, amendmentLed
 }
 
 function verifySameBaselineAmendmentDoesNotWashQa7(latestAmend, fails) {
+  if (qa0Qa6ImpactExceptionAllowed(latestAmend)) {
+    if (latestAmend.qa7_complete === true || latestAmend.qa7_status === "COMPLETE") {
+      fails.push("parent-exception amendment must not claim QA7 complete");
+    }
+    return;
+  }
   const affected = Array.isArray(latestAmend.affected_qa_suites) ? latestAmend.affected_qa_suites : [];
   const unaffected = Array.isArray(latestAmend.unaffected_completed_suites)
     ? latestAmend.unaffected_completed_suites

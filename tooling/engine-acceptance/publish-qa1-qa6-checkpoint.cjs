@@ -405,7 +405,7 @@ function cloneJson(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-function buildEvidence({ evidence, baseline, accepted, qa6 }) {
+function buildEvidence({ evidence, baseline, accepted, qa6, subjectSha }) {
   const next = cloneJson(evidence);
   next.qa_phase = "QA-6";
   next.next = "QA7_AI_EVAL";
@@ -430,6 +430,10 @@ function buildEvidence({ evidence, baseline, accepted, qa6 }) {
     verified_before_qa5: true,
     verified_before_qa6: true,
     production_like_aborts: true,
+  };
+  next.publication = {
+    kind: "official_qa1_qa6_checkpoint",
+    qa1_qa6_subject_sha: subjectSha,
   };
   if (next.current_epoch && typeof next.current_epoch === "object") {
     next.current_epoch = cloneJson(evidence.current_epoch);
@@ -664,6 +668,7 @@ function publishQa1Qa6Checkpoint(opts) {
     baseline,
     accepted,
     qa6: accepted.QA6.result,
+    subjectSha: input.expected_head_sha,
   });
   const plannedResults = {
     QA1: accepted.QA1.result,

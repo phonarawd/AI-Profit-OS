@@ -321,6 +321,53 @@
         "QA1",
         "QA2"
       ]
+    },
+    {
+      "amendment_id": "a5023-qa-infra-freeze-20260830",
+      "reason": "A5023_QA_INFRA_FREEZE_CANDIDATE: qa_phase=qa6 excludes QA8 from the official matrix so a green QA1-QA6 pre-QA7 checkpoint can conclude success; QA4 same-job clock harness is generated and uploaded into engine-acceptance-QA4 with fail-closed missing-file assert. qa8/full/qa8-adversarial meanings unchanged.",
+      "human_po_ack": {
+        "by": "Founder",
+        "at": "2026-08-30T00:00:00.000Z",
+        "statement": "ACK APPROVED A5023_QA_INFRA_FREEZE_AMENDMENT_DECISION_V1: Founder authorized A5023_QA_PIPELINE_LOOP_BREAK_FINAL_INFRA_FREEZE_V1. Exact required_rerun_suites [QA4, QA8]. Do not rewrite FINAL pin or FINAL_ACCEPTANCE. Do not treat BLOCKED as PASS."
+      },
+      "old_acceptance_workflow_hash": "a5002df3c0b85ce0b1ff57d630779ff88e15d0b9862c05fdb9bac84715b00c68",
+      "new_acceptance_workflow_hash": "7afb7a8c599af390b5239f95ae47bb1146cccee4f2af84c3601082006f361f1f",
+      "workflow_diff_scope": {
+        "files": [
+          ".github/workflows/engine-acceptance.yml"
+        ],
+        "exact_diff_summary": "A) qa-matrix exclude QA8 when workflow_dispatch qa_phase=qa6 so pre-QA7 checkpoint evaluates QA1-QA6 only; qa8/full still include QA8. B) QA4 case: same-job isolated Postgres + run-qa4-clock.cjs + run-qa4.cjs --mode full + test -f qa4-clock-harness.v1.json. C) Upload path += /tmp/aipo-harness/qa4-clock/. QA1/QA2/QA3/QA5/QA6/QA7/QA8-adversarial job ifs unchanged. No secret/permission/on: changes.",
+        "qa0_qa6_semantics_changed": true,
+        "checks": {
+          "command_changes": true,
+          "artifact_upload_changes": true,
+          "env_permission_changes": true,
+          "pass_fail_semantics_changes": true
+        }
+      },
+      "affected_qa_suites": [
+        "QA4",
+        "QA8"
+      ],
+      "unaffected_completed_suites": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA5",
+        "QA6",
+        "QA7"
+      ],
+      "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
+      "commit_sha_or_pending": "pending",
+      "timestamp": "2026-08-30T00:00:00.000Z",
+      "applied_at": "2026-08-29T15:45:36.696Z",
+      "allow_qa0_qa6_impact": true,
+      "parent_decision_id": "A5023_QA_INFRA_FREEZE_AMENDMENT_DECISION_V1",
+      "required_rerun_suites": [
+        "QA4",
+        "QA8"
+      ]
     }
   ],
   "epoch_bindings": [

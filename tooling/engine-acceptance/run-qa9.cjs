@@ -508,6 +508,23 @@ function runQa9(opts = {}) {
     ? coverage.mandatorySuites
     : ["QA1", "QA2", "QA3", "QA4", "QA5", "QA6", "QA7", "QA8"];
   const suiteById = new Map((evidenceBefore.suites || []).map((s) => [s.suite_id, s]));
+  const qa8Slot = suiteById.get("QA8");
+  if (
+    !qa8Slot ||
+    qa8Slot.completion_status !== "COMPLETE" ||
+    qa8Slot.baseline_id !== baseline.id ||
+    qa8Slot.epoch_status === "STALE_FOR_CURRENT_EPOCH"
+  ) {
+    const err = new Error("QA9 aggregation requires current-epoch QA8 COMPLETE");
+    err.code = "AIPO_QA9_REQUIRES_QA8_COMPLETE";
+    throw err;
+  }
+  const qa7Slot = suiteById.get("QA7");
+  if (!qa7Slot || qa7Slot.completion_status !== "COMPLETE" || qa7Slot.baseline_id !== baseline.id) {
+    const err = new Error("QA9 aggregation requires current-epoch QA7 COMPLETE");
+    err.code = "AIPO_QA9_REQUIRES_QA7_COMPLETE";
+    throw err;
+  }
   const suiteStatus = mandatorySuiteIds.map((id) => ({
     suite_id: id,
     completion_status: (suiteById.get(id) || {}).completion_status || "MISSING",

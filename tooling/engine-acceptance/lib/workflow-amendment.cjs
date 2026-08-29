@@ -40,9 +40,11 @@ const QA0_QA6_IMPACT_CHECK_KEYS = [
 ];
 const QA5_QA6_QA8_WIRING_PARENT_DECISION_ID = "QA5_QA6_QA8_WORKFLOW_AMENDMENT_DECISION_V1";
 const QA1_QA2_ARTIFACT_UPLOAD_PARENT_DECISION_ID = "QA1_QA2_ARTIFACT_UPLOAD_AMENDMENT_DECISION_V1";
+const A5023_QA_INFRA_FREEZE_PARENT_DECISION_ID = "A5023_QA_INFRA_FREEZE_AMENDMENT_DECISION_V1";
 const PARENT_SUITE_BINDING = Object.freeze({
   [QA5_QA6_QA8_WIRING_PARENT_DECISION_ID]: Object.freeze(["QA5", "QA6", "QA8"]),
   [QA1_QA2_ARTIFACT_UPLOAD_PARENT_DECISION_ID]: Object.freeze(["QA1", "QA2"]),
+  [A5023_QA_INFRA_FREEZE_PARENT_DECISION_ID]: Object.freeze(["QA4", "QA8"]),
 });
 const PARENT_CHECK_BINDING = Object.freeze({
   [QA5_QA6_QA8_WIRING_PARENT_DECISION_ID]: Object.freeze({
@@ -55,6 +57,12 @@ const PARENT_CHECK_BINDING = Object.freeze({
     command_changes: false,
     artifact_upload_changes: true,
     env_permission_changes: false,
+    pass_fail_semantics_changes: true,
+  }),
+  [A5023_QA_INFRA_FREEZE_PARENT_DECISION_ID]: Object.freeze({
+    command_changes: true,
+    artifact_upload_changes: true,
+    env_permission_changes: true,
     pass_fail_semantics_changes: true,
   }),
 });
@@ -434,6 +442,7 @@ module.exports = {
   REQUIRED_AMENDMENT_FIELDS,
   QA5_QA6_QA8_WIRING_PARENT_DECISION_ID,
   QA1_QA2_ARTIFACT_UPLOAD_PARENT_DECISION_ID,
+  A5023_QA_INFRA_FREEZE_PARENT_DECISION_ID,
   PARENT_SUITE_BINDING,
   PARENT_CHECK_BINDING,
   writeJson,

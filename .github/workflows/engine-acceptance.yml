@@ -153,6 +153,10 @@ jobs:
       fail-fast: false
       matrix:
         suite: [QA3, QA4, QA5, QA6, QA8]
+        exclude:
+          # qa_phase=qa6 = pre-QA7 checkpoint. QA8 stays unrun so a green
+          # QA1-QA6 matrix can conclude success. qa8/full keep QA8.
+          - suite: ${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa6' && 'QA8' || '___never___' }}
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -183,7 +187,23 @@ jobs:
               node tooling/engine-acceptance/run-qa3.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
               ;;
             QA4)
+              # Approved same-job clock harness → canonical full scorer.
+              docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true
+              docker run -d --name aipo-qa-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=aipo_qa_synth -p 5432:5432 pgvector/pgvector:pg16 >/dev/null
+              trap 'docker rm -f aipo-qa-postgres >/dev/null 2>&1 || true' EXIT
+              for i in $(seq 1 60); do
+                if docker exec aipo-qa-postgres pg_isready -U postgres -d aipo_qa_synth >/dev/null 2>&1; then break; fi
+                if [ "$i" -eq 60 ]; then echo "isolated postgres readiness timeout"; exit 1; fi
+                sleep 1
+              done
+              export AIPO_QA_PGHOST=127.0.0.1 AIPO_QA_PGUSER=postgres AIPO_QA_PGPASSWORD=postgres AIPO_QA_PGDATABASE=aipo_qa_synth AIPO_QA_PGPORT=5432
+              export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa4-clock
+              node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+              pnpm --filter @aipo/api-nest build
+              test -f services/api-nest/dist/main.js
+              node tooling/engine-acceptance/run-qa4-clock.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
               node tooling/engine-acceptance/run-qa4.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+              test -f /tmp/aipo-harness/qa4-clock/qa4-clock-harness.v1.json
               ;;
             QA5)
               # Approved same-job fault harness → canonical tiny scorer. QA4 and other suites unchanged.
@@ -266,6 +286,7 @@ jobs:
             governance/engine-acceptance/defects.v1.json
             governance/engine-acceptance/evidence-manifest.v1.json
             governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md
+            /tmp/aipo-harness/qa4-clock/
             /tmp/aipo-harness/qa5-fault/
             /tmp/aipo-harness/qa6-threshold/
             /tmp/aipo-harness/qa8-adversarial/

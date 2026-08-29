@@ -13,6 +13,7 @@ const {
   DECISION_ID,
   QA5_QA6_QA8_WIRING_PARENT_DECISION_ID,
   QA1_QA2_ARTIFACT_UPLOAD_PARENT_DECISION_ID,
+  A5023_QA_INFRA_FREEZE_PARENT_DECISION_ID,
   SCHEMA,
   validateLedgerShape,
   validateAmendmentEntry,
@@ -126,6 +127,39 @@ function makeQa1Qa2ArtifactExceptionAmendment(oldHash, newHash, baselineId) {
     allow_qa0_qa6_impact: true,
     parent_decision_id: QA1_QA2_ARTIFACT_UPLOAD_PARENT_DECISION_ID,
     required_rerun_suites: ["QA1", "QA2"],
+  };
+}
+
+function makeA5023FreezeExceptionAmendment(oldHash, newHash, baselineId) {
+  return {
+    amendment_id: "test-amend-a5023-qa-infra-freeze",
+    reason: "fixture: approved QA4 clock harness + qa6 excludes QA8",
+    human_po_ack: {
+      by: "Founder",
+      at: "2026-08-30T00:00:00.000Z",
+      statement: `ACK APPROVED 승인 ${A5023_QA_INFRA_FREEZE_PARENT_DECISION_ID}: exact QA4 QA8 rerun.`,
+    },
+    old_acceptance_workflow_hash: oldHash,
+    new_acceptance_workflow_hash: newHash,
+    workflow_diff_scope: {
+      files: [".github/workflows/engine-acceptance.yml"],
+      exact_diff_summary: "fixture: QA4 clock harness + qa6 QA8 exclude",
+      qa0_qa6_semantics_changed: true,
+      checks: {
+        command_changes: true,
+        artifact_upload_changes: true,
+        env_permission_changes: true,
+        pass_fail_semantics_changes: true,
+      },
+    },
+    affected_qa_suites: ["QA4", "QA8"],
+    unaffected_completed_suites: ["QA0", "QA1", "QA2", "QA3", "QA5", "QA6", "QA7"],
+    baseline_id: baselineId,
+    commit_sha_or_pending: "pending:fixture",
+    timestamp: "2026-08-30T00:00:00.000Z",
+    allow_qa0_qa6_impact: true,
+    parent_decision_id: A5023_QA_INFRA_FREEZE_PARENT_DECISION_ID,
+    required_rerun_suites: ["QA4", "QA8"],
   };
 }
 
@@ -405,6 +439,36 @@ function run() {
       persisted.allow_qa0_qa6_impact === true &&
         persisted.parent_decision_id === QA1_QA2_ARTIFACT_UPLOAD_PARENT_DECISION_ID &&
         JSON.stringify(persisted.required_rerun_suites) === JSON.stringify(["QA1", "QA2"]),
+      JSON.stringify(persisted),
+    );
+  }
+
+  // 11) Exact approved A5023 infra-freeze exception → PASS; suite drift stays BLOCKED.
+  {
+    const good = makeA5023FreezeExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    check("a5023_freeze_exact_exception_allowed", qa0Qa6ImpactExceptionAllowed(good) === true, "expected exact exception");
+    check("a5023_freeze_exact_exception_not_blocked", qa0Qa6ImpactBlocked(good) === null, qa0Qa6ImpactBlocked(good));
+
+    const wrongSuite = { ...good, affected_qa_suites: ["QA4"] };
+    check("a5023_freeze_qa8_required_in_affected", Boolean(qa0Qa6ImpactBlocked(wrongSuite)), "QA8 omission must block");
+
+    const missingRerun = { ...good, required_rerun_suites: ["QA4"] };
+    check("a5023_freeze_required_rerun_exact_set", Boolean(qa0Qa6ImpactBlocked(missingRerun)), "missing QA8 rerun must block");
+
+    const dishonestChecks = JSON.parse(JSON.stringify(good));
+    dishonestChecks.workflow_diff_scope.checks.command_changes = false;
+    check("a5023_freeze_dishonest_command_false_blocked", Boolean(qa0Qa6ImpactBlocked(dishonestChecks)), "command_changes=false must block");
+
+    const persisted = toLedgerAmendment(good, baselineId, "2026-08-30T00:00:00.000Z");
+    check(
+      "a5023_freeze_exception_metadata_persisted",
+      persisted.allow_qa0_qa6_impact === true &&
+        persisted.parent_decision_id === A5023_QA_INFRA_FREEZE_PARENT_DECISION_ID &&
+        JSON.stringify(persisted.required_rerun_suites) === JSON.stringify(["QA4", "QA8"]),
       JSON.stringify(persisted),
     );
   }

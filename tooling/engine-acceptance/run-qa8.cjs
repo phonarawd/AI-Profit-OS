@@ -415,6 +415,32 @@ function runQa8(opts = {}) {
     process.env.AIPO_QA_SYNTHETIC_NS ||
     "qa-synth-local";
 
+  const evidenceAtStart = readJson(EVIDENCE_REL);
+  const rebaseAtStart = loadRebaseLedgerSafe();
+  const pendingAtStart = isPendingRerun(baseline, evidenceAtStart, rebaseAtStart);
+  if (!pendingAtStart) {
+    const qa7Slot = (evidenceAtStart.suites || []).find((s) => s.suite_id === "QA7");
+    let qa7File = null;
+    try {
+      qa7File = readJson(QA7_REL);
+    } catch {
+      qa7File = null;
+    }
+    const qa7Formal =
+      qa7Slot &&
+      qa7Slot.completion_status === "COMPLETE" &&
+      qa7Slot.baseline_id === baseline.id &&
+      qa7File &&
+      qa7File.formal_actions_evidence === true &&
+      qa7File.completion_status === "COMPLETE" &&
+      qa7File.baseline_id === baseline.id;
+    if (!qa7Formal) {
+      const err = new Error("QA8 official run requires current-epoch QA7 formal COMPLETE");
+      err.code = "AIPO_QA8_REQUIRES_QA7_FORMAL";
+      throw err;
+    }
+  }
+
   const secResult = runSecurityPrivacyWorld({
     mode,
     baseline_id: baseline.id,
