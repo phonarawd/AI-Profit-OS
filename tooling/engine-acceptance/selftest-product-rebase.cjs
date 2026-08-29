@@ -868,12 +868,12 @@ function run() {
     // Regression snapshot of the live ledger/baseline at the time this file was
     // written, NOT a policy that forbids a rebase — the real policy is enforced
     // by validateRebaseEntry/verifyRebaseLedgerAgainstBaseline/verifyWashing
-    // above and below. Updated with the Auth + Wallet REL-502 rebase
-    // (ea-rebase-cc627efc3ee2-defdfa5b6ac4 · eval MATCH predecessor).
-    check("no_new_epoch_created", liveLedger.rebases.length === 9, `rebases=${liveLedger.rebases.length}`);
+    // above and below. Updated with the Nest p_help L8 rebase
+    // (ea-rebase-51df73ef6c25-2139dba09588 · eval MATCH predecessor).
+    check("no_new_epoch_created", liveLedger.rebases.length === 10, `rebases=${liveLedger.rebases.length}`);
     check(
       "live_baseline_unchanged",
-      liveBaseline.id === "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
+      liveBaseline.id === "ea-baseline-51df73ef6c25-2139dba09588",
       liveBaseline.id,
     );
     // qa9-result is predecessor history until current-epoch QA9 aggregation
@@ -898,7 +898,7 @@ function run() {
           )
         : qa9.verdict === "ENGINE_ACCEPTED_FOR_UI" &&
           qa9.engine_accepted_for_ui === "ISSUED" &&
-          qa9.baseline_id === "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+          qa9.baseline_id === "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
       `phase=${liveEvidence.qa_phase} qa9_baseline=${qa9.baseline_id} verdict=${qa9.verdict}`,
     );
     // evidence-manifest.verdict is rewritten ephemerally by run-qa3/4/5/6/8.cjs in every
@@ -1327,6 +1327,29 @@ function run() {
           qa9.current_epoch_authoritative === false,
       );
     } else if (
+      live.evidence.qa_phase === "QA-0" &&
+      live.evidence.next === "QA1_DETERMINISTIC_TRUTH"
+    ) {
+      const qa1 = suiteIn(live, "QA1");
+      const qa7 = suiteIn(live, "QA7");
+      const qa8 = suiteIn(live, "QA8");
+      const qa9 = suiteIn(live, "QA9");
+      check(
+        "live_persisted_qa0_pending_rerun_state_true",
+        live.evidence.verdict === "ENGINE_QA_INCOMPLETE" &&
+          isCurrentEpochPreQa7Checkpoint(live) === false &&
+          qa1 &&
+          qa1.completion_status === "STALE" &&
+          qa7 &&
+          qa7.completion_status === "NOT_STARTED" &&
+          qa8 &&
+          qa8.completion_status === "STALE" &&
+          qa9 &&
+          qa9.current_epoch_authoritative !== true &&
+          (qa9.completion_status === "STALE" ||
+            qa9.epoch_status === "STALE_AGGREGATION_FOR_CURRENT_EPOCH"),
+      );
+    } else if (
       live.evidence.qa_phase === "QA-9" &&
       ["03_blocked_fix_round", "03_blocked_incomplete", "03_ui_entry_unlocked"].includes(
         live.evidence.next,
@@ -1374,12 +1397,16 @@ function run() {
         `unexpected qa_phase/next=${live.evidence.qa_phase}/${live.evidence.next}`,
       );
     }
+    const qa1Live = live.evidence.suites.find((s) => s.suite_id === "QA1");
     check(
       "current_epoch_snapshot_is_rebase_time_not_live_authority",
       live.evidence.current_epoch.qa1_qa6_status === CURRENT_EPOCH_REBASE_SNAPSHOT.qa1_qa6_status &&
         live.evidence.current_epoch.qa8_status === CURRENT_EPOCH_REBASE_SNAPSHOT.qa8_status &&
         live.evidence.current_epoch.qa9_status === CURRENT_EPOCH_REBASE_SNAPSHOT.qa9_status &&
-        live.evidence.suites.find((s) => s.suite_id === "QA1").completion_status === "COMPLETE",
+        qa1Live &&
+        (live.evidence.qa_phase === "QA-0"
+          ? qa1Live.completion_status === "STALE"
+          : qa1Live.completion_status === "COMPLETE"),
     );
   }
 

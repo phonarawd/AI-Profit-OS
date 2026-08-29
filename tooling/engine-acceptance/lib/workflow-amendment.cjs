@@ -39,8 +39,24 @@ const QA0_QA6_IMPACT_CHECK_KEYS = [
   "pass_fail_semantics_changes",
 ];
 const QA5_QA6_QA8_WIRING_PARENT_DECISION_ID = "QA5_QA6_QA8_WORKFLOW_AMENDMENT_DECISION_V1";
+const QA1_QA2_ARTIFACT_UPLOAD_PARENT_DECISION_ID = "QA1_QA2_ARTIFACT_UPLOAD_AMENDMENT_DECISION_V1";
 const PARENT_SUITE_BINDING = Object.freeze({
   [QA5_QA6_QA8_WIRING_PARENT_DECISION_ID]: Object.freeze(["QA5", "QA6", "QA8"]),
+  [QA1_QA2_ARTIFACT_UPLOAD_PARENT_DECISION_ID]: Object.freeze(["QA1", "QA2"]),
+});
+const PARENT_CHECK_BINDING = Object.freeze({
+  [QA5_QA6_QA8_WIRING_PARENT_DECISION_ID]: Object.freeze({
+    command_changes: true,
+    artifact_upload_changes: true,
+    env_permission_changes: true,
+    pass_fail_semantics_changes: true,
+  }),
+  [QA1_QA2_ARTIFACT_UPLOAD_PARENT_DECISION_ID]: Object.freeze({
+    command_changes: false,
+    artifact_upload_changes: true,
+    env_permission_changes: false,
+    pass_fail_semantics_changes: true,
+  }),
 });
 
 function allowedSuitesForParent(parentDecisionId) {
@@ -187,22 +203,28 @@ function qa0Qa6ImpactOverlap(entry) {
   return affected.filter((s) => QA0_QA6.includes(s));
 }
 
+function checksMatchParent(entry) {
+  const expected = PARENT_CHECK_BINDING[entry && entry.parent_decision_id];
+  if (!expected) return false;
+  const checks = (entry.workflow_diff_scope && entry.workflow_diff_scope.checks) || {};
+  return QA0_QA6_IMPACT_CHECK_KEYS.every((k) => checks[k] === expected[k]);
+}
+
 function qa0Qa6ImpactExceptionAllowed(entry) {
   if (!entry || typeof entry !== "object") return false;
   if (entry.allow_qa0_qa6_impact !== true) return false;
-  if (entry.parent_decision_id !== QA5_QA6_QA8_WIRING_PARENT_DECISION_ID) return false;
+  const parentId = entry.parent_decision_id;
+  if (!PARENT_SUITE_BINDING[parentId]) return false;
   const statement = String((entry.human_po_ack && entry.human_po_ack.statement) || "");
-  if (!statement.includes(QA5_QA6_QA8_WIRING_PARENT_DECISION_ID)) return false;
+  if (!statement.includes(parentId)) return false;
   if (!/ACK|APPROVED|승인/i.test(statement)) return false;
   if (!parentSuiteBindingHolds(entry)) return false;
   const scope = entry.workflow_diff_scope || {};
   if (scope.qa0_qa6_semantics_changed !== true) return false;
-  const checks = scope.checks || {};
-  for (const k of QA0_QA6_IMPACT_CHECK_KEYS) {
-    if (checks[k] !== true) return false;
-  }
+  if (!checksMatchParent(entry)) return false;
   if (qa0Qa6ImpactOverlap(entry).length < 1) return false;
-  if (!sameSuiteSet(entry.required_rerun_suites, ["QA5", "QA6", "QA8"])) return false;
+  const allowed = allowedSuitesForParent(parentId);
+  if (!sameSuiteSet(entry.required_rerun_suites, allowed)) return false;
   return true;
 }
 
@@ -411,7 +433,9 @@ module.exports = {
   SCHEMA,
   REQUIRED_AMENDMENT_FIELDS,
   QA5_QA6_QA8_WIRING_PARENT_DECISION_ID,
+  QA1_QA2_ARTIFACT_UPLOAD_PARENT_DECISION_ID,
   PARENT_SUITE_BINDING,
+  PARENT_CHECK_BINDING,
   writeJson,
   loadLedger,
   expectedWorkflowHash,

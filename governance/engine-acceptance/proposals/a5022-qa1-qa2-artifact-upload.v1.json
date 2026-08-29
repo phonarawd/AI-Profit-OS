@@ -1,0 +1,53 @@
+{
+  "amendment_id": "qa1-qa2-artifact-upload-20260829",
+  "reason": "A-502-2: QA1/QA2 jobs currently succeed without Actions artifacts. Add upload-artifact@v4 (retention 90, if-no-files-found: error) and aggregator download so job green + missing artifact is FAIL. Honest QA0-QA6 impact: artifact upload + pass/fail semantics change.",
+  "human_po_ack": {
+    "by": "Founder",
+    "at": "2026-08-29T09:52:00.000Z",
+    "statement": "ACK APPROVED QA1_QA2_ARTIFACT_UPLOAD_AMENDMENT_DECISION_V1: Founder authorized QA1/QA2 result JSON artifact upload with if-no-files-found:error, required_rerun_suites [QA1, QA2], and L7 exception expansion. Do not rewrite WORKFLOW_HASH pin, baseline id, or FINAL_ACCEPTANCE in place. Do not treat BLOCKED/UNKNOWN as PASS."
+  },
+  "old_acceptance_workflow_hash": "3f2588e695902e989b5c56f0dd193f9e6fd693846a52ced90ae44173a72cbcf2",
+  "new_acceptance_workflow_hash": "a5002df3c0b85ce0b1ff57d630779ff88e15d0b9862c05fdb9bac84715b00c68",
+  "workflow_diff_scope": {
+    "files": [
+      ".github/workflows/engine-acceptance.yml"
+    ],
+    "exact_diff_summary": "qa1-deterministic: add Upload QA1 evidence (actions/upload-artifact@v4, name engine-acceptance-QA1, path governance/engine-acceptance/qa1-result.v1.json, retention-days 90, if-no-files-found: error, if always()). qa2-synthetic-personas: add Upload QA2 evidence (same pattern, name engine-acceptance-QA2, path qa2-result.v1.json). aggregator: add Download QA1/QA2 artifacts (actions/download-artifact@v4, pattern engine-acceptance-QA*, merge-multiple true, continue-on-error true) and copy downloaded qa1/qa2 result JSON into _tmp_engine_acceptance_evidence before existing checkout cp || true. QA1/QA2 run commands, env, secrets, permissions, triggers, QA0/QA3-QA8 job bodies unchanged. if-no-files-found: error changes pass/fail: missing QA1/QA2 result file fails that job.",
+    "qa0_qa6_semantics_changed": true,
+    "checks": {
+      "command_changes": false,
+      "artifact_upload_changes": true,
+      "env_permission_changes": false,
+      "pass_fail_semantics_changes": true
+    }
+  },
+  "affected_qa_suites": [
+    "QA1",
+    "QA2"
+  ],
+  "unaffected_completed_suites": [
+    "QA0",
+    "QA3",
+    "QA4",
+    "QA5",
+    "QA6",
+    "QA7",
+    "QA8"
+  ],
+  "required_rerun_suites": [
+    "QA1",
+    "QA2"
+  ],
+  "allow_qa0_qa6_impact": true,
+  "parent_decision_id": "QA1_QA2_ARTIFACT_UPLOAD_AMENDMENT_DECISION_V1",
+  "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
+  "commit_sha_or_pending": "pending",
+  "timestamp": "2026-08-29T09:52:00.000Z",
+  "pin_policy": {
+    "start_pin_0a72b27": "b8e724ba3af9e2d240f4daeefd53d4330972afdb942396698389825167752aa7",
+    "current_ledger_tip": "3f2588e695902e989b5c56f0dd193f9e6fd693846a52ced90ae44173a72cbcf2",
+    "proposed_new": "a5002df3c0b85ce0b1ff57d630779ff88e15d0b9862c05fdb9bac84715b00c68",
+    "forbidden_current_pin": "acb3dc379fdf6365ba096109cd2ce8edea897712d9f1e0d5b8f290b485637ab6",
+    "silent_rewrite": "FORBIDDEN"
+  }
+}

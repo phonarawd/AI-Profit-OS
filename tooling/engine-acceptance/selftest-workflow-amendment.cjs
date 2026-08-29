@@ -12,6 +12,7 @@ const { ROOT } = require("./lib/hash-scope.cjs");
 const {
   DECISION_ID,
   QA5_QA6_QA8_WIRING_PARENT_DECISION_ID,
+  QA1_QA2_ARTIFACT_UPLOAD_PARENT_DECISION_ID,
   SCHEMA,
   validateLedgerShape,
   validateAmendmentEntry,
@@ -92,6 +93,39 @@ function makeQa5Qa6Qa8ImpactExceptionAmendment(oldHash, newHash, baselineId) {
     allow_qa0_qa6_impact: true,
     parent_decision_id: QA5_QA6_QA8_WIRING_PARENT_DECISION_ID,
     required_rerun_suites: ["QA5", "QA6", "QA8"],
+  };
+}
+
+function makeQa1Qa2ArtifactExceptionAmendment(oldHash, newHash, baselineId) {
+  return {
+    amendment_id: "test-amend-qa1-qa2-artifact-upload",
+    reason: "fixture: approved QA1/QA2 result JSON artifact upload",
+    human_po_ack: {
+      by: "Founder",
+      at: "2026-08-29T09:52:00.000Z",
+      statement: `ACK APPROVED 승인 ${QA1_QA2_ARTIFACT_UPLOAD_PARENT_DECISION_ID}: exact QA1 QA2 rerun.`,
+    },
+    old_acceptance_workflow_hash: oldHash,
+    new_acceptance_workflow_hash: newHash,
+    workflow_diff_scope: {
+      files: [".github/workflows/engine-acceptance.yml"],
+      exact_diff_summary: "fixture: QA1/QA2 artifact upload only",
+      qa0_qa6_semantics_changed: true,
+      checks: {
+        command_changes: false,
+        artifact_upload_changes: true,
+        env_permission_changes: false,
+        pass_fail_semantics_changes: true,
+      },
+    },
+    affected_qa_suites: ["QA1", "QA2"],
+    unaffected_completed_suites: ["QA0", "QA3", "QA4", "QA5", "QA6", "QA7", "QA8"],
+    baseline_id: baselineId,
+    commit_sha_or_pending: "pending:fixture",
+    timestamp: "2026-08-29T09:52:00.000Z",
+    allow_qa0_qa6_impact: true,
+    parent_decision_id: QA1_QA2_ARTIFACT_UPLOAD_PARENT_DECISION_ID,
+    required_rerun_suites: ["QA1", "QA2"],
   };
 }
 
@@ -337,6 +371,40 @@ function run() {
       persisted.allow_qa0_qa6_impact === true &&
         persisted.parent_decision_id === QA5_QA6_QA8_WIRING_PARENT_DECISION_ID &&
         JSON.stringify(persisted.required_rerun_suites) === JSON.stringify(["QA5", "QA6", "QA8"]),
+      JSON.stringify(persisted),
+    );
+  }
+
+  // 10) Exact approved QA1/QA2 artifact-upload exception → PASS; dishonest or drifted scope stays BLOCKED.
+  {
+    const good = makeQa1Qa2ArtifactExceptionAmendment(
+      ledger.frozen_at_qa0.acceptance_workflow_hash,
+      newHash,
+      baselineId,
+    );
+    check("qa1_qa2_exact_exception_allowed", qa0Qa6ImpactExceptionAllowed(good) === true, "expected exact exception");
+    check("qa1_qa2_exact_exception_not_blocked", qa0Qa6ImpactBlocked(good) === null, qa0Qa6ImpactBlocked(good));
+
+    const wrongSuite = { ...good, affected_qa_suites: ["QA1", "QA2", "QA3"] };
+    check("qa3_cannot_enter_qa1_qa2_parent", Boolean(qa0Qa6ImpactBlocked(wrongSuite)), "QA3 scope injection must block");
+
+    const missingRerun = { ...good, required_rerun_suites: ["QA1"] };
+    check("qa1_qa2_required_rerun_exact_set", Boolean(qa0Qa6ImpactBlocked(missingRerun)), "missing QA2 rerun must block");
+
+    const dishonestChecks = JSON.parse(JSON.stringify(good));
+    dishonestChecks.workflow_diff_scope.checks.command_changes = true;
+    check("qa1_qa2_dishonest_command_change_blocked", Boolean(qa0Qa6ImpactBlocked(dishonestChecks)), "command_changes=true must block");
+
+    const wrongAck = JSON.parse(JSON.stringify(good));
+    wrongAck.human_po_ack.statement = "ACK APPROVED generic workflow change";
+    check("qa1_qa2_parent_id_must_be_in_ack", Boolean(qa0Qa6ImpactBlocked(wrongAck)), "parent decision id omission must block");
+
+    const persisted = toLedgerAmendment(good, baselineId, "2026-08-29T09:52:00.000Z");
+    check(
+      "qa1_qa2_exception_metadata_persisted",
+      persisted.allow_qa0_qa6_impact === true &&
+        persisted.parent_decision_id === QA1_QA2_ARTIFACT_UPLOAD_PARENT_DECISION_ID &&
+        JSON.stringify(persisted.required_rerun_suites) === JSON.stringify(["QA1", "QA2"]),
       JSON.stringify(persisted),
     );
   }

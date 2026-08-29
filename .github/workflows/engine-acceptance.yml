@@ -97,6 +97,14 @@ jobs:
           AIPO_QA_HOSTNAME: localhost
           AIPO_QA_SYNTHETIC_NS: qa-synth-ci
         run: node tooling/engine-acceptance/run-qa1.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+      - name: Upload QA1 evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-acceptance-QA1
+          path: governance/engine-acceptance/qa1-result.v1.json
+          retention-days: 90
+          if-no-files-found: error
 
   qa2-synthetic-personas:
     runs-on: ubuntu-latest
@@ -126,6 +134,14 @@ jobs:
           AIPO_QA_HOSTNAME: localhost
           AIPO_QA_SYNTHETIC_NS: qa-synth-ci
         run: node tooling/engine-acceptance/run-qa2.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+      - name: Upload QA2 evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-acceptance-QA2
+          path: governance/engine-acceptance/qa2-result.v1.json
+          retention-days: 90
+          if-no-files-found: error
 
   # QA3+ matrix — fail-fast:false (전수 조사 · 조기 취소 금지)
   qa-matrix:
@@ -577,9 +593,21 @@ jobs:
           cache: "pnpm"
       - name: Install
         run: pnpm install --frozen-lockfile
+      - name: Download QA1/QA2 artifacts
+        if: ${{ always() }}
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          pattern: engine-acceptance-QA*
+          path: _tmp_engine_acceptance_artifacts
+          merge-multiple: true
       - name: Aggregate evidence (always)
         run: |
           mkdir -p _tmp_engine_acceptance_evidence
+          if [ -d _tmp_engine_acceptance_artifacts ]; then
+            cp -f _tmp_engine_acceptance_artifacts/qa1-result.v1.json _tmp_engine_acceptance_evidence/ 2>/dev/null || true
+            cp -f _tmp_engine_acceptance_artifacts/qa2-result.v1.json _tmp_engine_acceptance_evidence/ 2>/dev/null || true
+          fi
           cp governance/engine-acceptance/evidence-manifest.v1.json _tmp_engine_acceptance_evidence/ || true
           cp governance/engine-acceptance/ENGINE_ACCEPTANCE_REPORT.md _tmp_engine_acceptance_evidence/ || true
           cp governance/engine-acceptance/baseline.v1.json _tmp_engine_acceptance_evidence/ || true

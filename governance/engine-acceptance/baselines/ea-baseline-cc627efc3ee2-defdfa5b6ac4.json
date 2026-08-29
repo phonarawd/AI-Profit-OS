@@ -1,24 +1,18 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-51df73ef6c25-2139dba09588",
+  "id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
   "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-08-29T09:59:34.713Z",
-  "commit_sha": "51df73ef6c2542b0d56ea6002e796c88e0de9729",
-  "tree_sha": "50ec8773bd6319b07ebd3431fa4e89ce19c37434",
-  "working_tree_clean": false,
+  "measuredAt": "2026-08-27T19:01:36.174Z",
+  "commit_sha": "cc627efc3ee20e43df4888692e346dca2414e399",
+  "tree_sha": "3146b9231fff9fee82713a49156f21957a45fb3c",
+  "working_tree_clean": true,
   "protected_scope_clean": true,
-  "dirty_paths_all": [
-    "governance/engine-acceptance/baseline.v1.json",
-    "governance/engine-acceptance/workflow-amendments.v1.json",
-    "tooling/engine-acceptance/lib/workflow-amendment.cjs",
-    "tooling/engine-acceptance/selftest-workflow-amendment.cjs",
-    "governance/engine-acceptance/proposals/"
-  ],
+  "dirty_paths_all": [],
   "dirty_paths_protected": [],
   "lockfile_hash": "faf4c73927d1b92cbe8bc9b8ffb57000e9d630c920ca98fdea2ebf55182f820c",
   "schema_migration_hash": "7d79073fee241c9abcd259ae76e0ab792513a40123ecd78c1abbc6b94e161356",
-  "prompt_hash": "4f201642352210cdce525eeaad53ed2e5d3198786f56a7dd401e6c561fc379b5",
+  "prompt_hash": "ff6edf9fb8d7cf5b298a1ff34169fdd3e1746316e320a0363d237f95f5ea42d3",
   "eval_dataset_hash": "710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d",
   "acceptance_workflow_hash": "a5002df3c0b85ce0b1ff57d630779ff88e15d0b9862c05fdb9bac84715b00c68",
   "node_version": "v22.14.0",
@@ -27,7 +21,7 @@
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "2139dba095889c24655b2bdb579dda9a7c9910ed6bd368bf2e8cf9a016dbb524",
+    "aggregate": "defdfa5b6ac45ce3ea03ee2f392b9f8c1a89f84ec5826dede5def6c08b479d23",
     "pathCount": 452,
     "entries": [
       {
@@ -528,11 +522,11 @@
       },
       {
         "path": "services/api-nest/src/ai/coach.controller.ts",
-        "sha256": "4431f523fda5075edf68f8b9c8b180e893f1a4c644f89a3757de450676164f20"
+        "sha256": "4e0217180eb7fdf195baea948439065548179eb27df1dce74dabf0cec972c5b0"
       },
       {
         "path": "services/api-nest/src/ai/coach.orchestrator.ts",
-        "sha256": "5886538a00e1a095af2250fc2a5ec6760534000739060f3a08389127070ceb6f"
+        "sha256": "ab87a4b1a1eb4692bc61fbe049e21239df0874f23e231c4359e981a1d40b5481"
       },
       {
         "path": "services/api-nest/src/ai/coach.routes.ts",
@@ -544,7 +538,7 @@
       },
       {
         "path": "services/api-nest/src/ai/fact-tool.service.ts",
-        "sha256": "6029f3f30faa410ca9b0274d2f52a8d854f32b81be33a7116b422f2c0e8faeca"
+        "sha256": "ef0dfdd1edceeeb5212baf8fb88bd8458d686b46aace463947093cd8db2eabbf"
       },
       {
         "path": "services/api-nest/src/ai/fact-tool.types.ts",
@@ -552,7 +546,7 @@
       },
       {
         "path": "services/api-nest/src/ai/help-rag.service.ts",
-        "sha256": "7a2d52e64eff86d1a71e576c6adc678d4cc0743ad90e65055f6de9e984b8fb8c"
+        "sha256": "95d8288a40a8906516333ba2a63858fea1d401d743ec66f52d0fef97d31e4bf9"
       },
       {
         "path": "services/api-nest/src/ai/index.ts",
@@ -560,7 +554,7 @@
       },
       {
         "path": "services/api-nest/src/ai/llm.adapter.service.ts",
-        "sha256": "7105252f1a3ce1732aed1d6a962d9496c71e4383692d8b7e7cc3f8b4028c8806"
+        "sha256": "8147b38997abad541885364b6ab1e4c4ceb8a63dadb2ab05ec04a7f309a67559"
       },
       {
         "path": "services/api-nest/src/ai/memory.service.ts",
@@ -1846,8 +1840,8 @@
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-51df73ef6c25-2139dba09588",
-    "predecessor_baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
+    "rebase_id": "ea-rebase-cc627efc3ee2-defdfa5b6ac4",
+    "predecessor_baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
     "kind": "product_rebase"
   }
 }
