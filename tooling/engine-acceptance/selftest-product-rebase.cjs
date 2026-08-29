@@ -131,6 +131,8 @@ function sealResult(obj) {
 const FIX_CUR = "ea-baseline-new";
 const FIX_PRED = "ea-baseline-old";
 const FIX_WF = "66".repeat(32);
+const FIX_HEAD = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+const FIX_OFFICIAL_RUN = "90000000001";
 const FIX_QA7_BYTES = '{"schema":"governance.engine-acceptance.qa7-result.v1","suite_id":"QA7"}';
 const FIX_QA8_BYTES = '{"schema":"governance.engine-acceptance.qa8-result.v1","suite_id":"QA8"}';
 const FIX_QA9_BYTES = '{"schema":"governance.engine-acceptance.qa9-result.v1","suite_id":"QA9"}';
@@ -278,6 +280,19 @@ function makeCheckpointCtx(over) {
         qa8_status: CURRENT_EPOCH_REBASE_SNAPSHOT.qa8_status,
         qa9_status: CURRENT_EPOCH_REBASE_SNAPSHOT.qa9_status,
       },
+      publication: {
+        kind: "official_qa1_qa6_checkpoint",
+        qa1_qa6_subject_sha: FIX_HEAD,
+        official_run_id: FIX_OFFICIAL_RUN,
+        suites: {
+          QA1: { artifact_id: "1001", artifact_name: "engine-acceptance-QA1", digest: `sha256:${"ab".repeat(32)}`, checksum: FIX_CS.QA1, actions_run_id: FIX_OFFICIAL_RUN },
+          QA2: { artifact_id: "1002", artifact_name: "engine-acceptance-QA2", digest: `sha256:${"ab".repeat(32)}`, checksum: FIX_CS.QA2, actions_run_id: FIX_OFFICIAL_RUN },
+          QA3: { artifact_id: "1003", artifact_name: "engine-acceptance-QA3", digest: `sha256:${"ab".repeat(32)}`, checksum: FIX_CS.QA3, actions_run_id: FIX_OFFICIAL_RUN },
+          QA4: { artifact_id: "1004", artifact_name: "engine-acceptance-QA4", digest: `sha256:${"ab".repeat(32)}`, checksum: FIX_CS.QA4, actions_run_id: FIX_OFFICIAL_RUN },
+          QA5: { artifact_id: "1005", artifact_name: "engine-acceptance-QA5", digest: `sha256:${"ab".repeat(32)}`, checksum: FIX_CS.QA5, actions_run_id: FIX_OFFICIAL_RUN },
+          QA6: { artifact_id: "1006", artifact_name: "engine-acceptance-QA6", digest: `sha256:${"ab".repeat(32)}`, checksum: FIX_CS.QA6, actions_run_id: FIX_OFFICIAL_RUN },
+        },
+      },
       suites: [
         {
           suite_id: "QA0",
@@ -394,6 +409,7 @@ function makeCheckpointCtx(over) {
       QA9: historicalQa9,
     },
     liveWorkflowHash: FIX_WF,
+    currentHead: FIX_HEAD,
     headQa7Bytes: FIX_QA7_BYTES,
     liveQa7Bytes: FIX_QA7_BYTES,
     qa7ResultDirty: false,
@@ -530,6 +546,7 @@ function loadLiveCheckpointCtx() {
       QA9: readGovHead("qa9-result.v1.json"),
     },
     liveWorkflowHash: hashPathList(scope.aggregateHashes.acceptance_workflow_hash, scope),
+    currentHead: git("git rev-parse HEAD"),
     ...resultBytes,
   };
 }
@@ -1795,6 +1812,75 @@ function run() {
       patched(base, (c) => { c.rebaseLedger.rebases[0].rebase_policy_version = POLICY_V1_ID; }),
       /ENGINE_ACCEPTANCE_REBASE_POLICY_V2/,
       check,
+    );
+    expectCheckpointFail(
+      "neg_unsigned_manual_complete",
+      patched(base, (c) => { delete c.evidence.publication; }),
+      /publication metadata/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_publisher_metadata_missing",
+      patched(base, (c) => { c.evidence.publication = { kind: "official_qa1_qa6_checkpoint" }; }),
+      /qa1_qa6_subject_sha|official run\/artifact/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_wrong_subject_sha",
+      patched(base, (c) => {
+        c.evidence.publication.qa1_qa6_subject_sha = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+        c.isAncestor = () => false;
+      }),
+      /subject SHA inheritance denied/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_subject_not_ancestor",
+      patched(base, (c) => {
+        c.currentHead = "cccccccccccccccccccccccccccccccccccccccc";
+        c.isAncestor = () => false;
+      }),
+      /subject SHA inheritance denied|NOT_ANCESTOR/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_official_binding_missing",
+      patched(base, (c) => { delete c.evidence.publication.suites.QA3; }),
+      /QA3 official publication binding missing/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_predecessor_result_reuse",
+      patched(base, (c) => {
+        c.results.QA1.checksum = c.rebaseLedger.rebases[0].predecessor_suite_checksums.QA1;
+        suiteIn(c, "QA1").checksum = c.rebaseLedger.rebases[0].predecessor_suite_checksums.QA1;
+        c.evidence.publication.suites.QA1.checksum = c.rebaseLedger.rebases[0].predecessor_suite_checksums.QA1;
+      }),
+      /reuses predecessor checksum/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa8_early_complete",
+      patched(base, (c) => { suiteIn(c, "QA8").completion_status = "COMPLETE"; }),
+      /NOT_STARTED or exact STALE|must not promote current QA8/,
+      check,
+    );
+    expectCheckpointFail(
+      "neg_qa9_early_aggregation",
+      patched(base, (c) => { suiteIn(c, "QA9").completion_status = "COMPLETE"; }),
+      /NOT_STARTED or exact STALE/,
+      check,
+    );
+    check(
+      "historical_qa7_file_does_not_reclassify_checkpoint",
+      isCurrentEpochPreQa7Checkpoint(base) === true &&
+        base.results.QA7.completion_status === "COMPLETE" &&
+        suiteIn(base, "QA7").completion_status === "NOT_STARTED",
+    );
+    check(
+      "current_result_not_mistaken_for_predecessor",
+      base.results.QA4.checksum !== base.rebaseLedger.rebases[0].predecessor_suite_checksums.QA4 &&
+        isCurrentEpochPreQa7Checkpoint(base) === true,
     );
   }
 

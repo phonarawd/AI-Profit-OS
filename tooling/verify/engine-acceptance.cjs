@@ -54,6 +54,7 @@ const {
   verifyRebaseLedgerAgainstBaseline,
   assertNoInPlaceHashRewrite,
   findBridgingAmendment,
+  hasOfficialQa1Qa6CheckpointShape,
   CURRENT_EPOCH_REBASE_SNAPSHOT,
 } = require("../engine-acceptance/lib/product-rebase.cjs");
 const { run: selftestProductRebase } = require("../engine-acceptance/selftest-product-rebase.cjs");
@@ -84,6 +85,9 @@ function liveFileText(rel) {
  * required when the working tree matches HEAD.
  */
 function isEphemeralQa6Rewrite(evidenceObj, qa7File) {
+  // Official publisher checkpoint is current-epoch authority, not an
+  // ephemeral CI rewrite. Historical qa7-result COMPLETE must not win.
+  if (hasOfficialQa1Qa6CheckpointShape(evidenceObj)) return false;
   // Scoped to an ACTUAL QA6 rewrite (qa_phase set by run-qa6.cjs itself) —
   // without this, any earlier suite's rewrite that also resets QA7 to
   // NOT_STARTED (e.g. a real QA4/QA5/QA8 CI-heavy rerun) would be
@@ -225,6 +229,13 @@ function buildPreQa7CheckpointCtx(baselineObj, evidenceObj, rebaseObj, defectsOb
     headQa9Bytes: gitShowHead(qa9Rel),
     liveQa9Bytes: liveFileText(qa9Rel),
     qa9ResultDirty: dirtyAll.includes(qa9Rel),
+    currentHead: (() => {
+      try {
+        return git("git rev-parse HEAD");
+      } catch {
+        return null;
+      }
+    })(),
   };
 }
 
@@ -930,6 +941,7 @@ let ephemeralPreQa9Rewrite = false;
 let currentEpochPreQa7Checkpoint = false;
 let currentEpochPostQa7PreQa8Checkpoint = false;
 let currentEpochPostQa8PreQa9Checkpoint = false;
+let officialQa1Qa6CheckpointShape = false;
 let preQa7CheckpointCtx = null;
 
 const pendingRerun = isPendingRerun(baseline, evidence, rebaseLedger);
@@ -983,17 +995,6 @@ if (evidence) {
   } catch {
     qa9Peek = null;
   }
-  const ephemeralQa6RewriteNow =
-    !pendingRerun && isEphemeralQa6Rewrite(evidence, qa7Peek);
-  ephemeralQa6Rewrite = ephemeralQa6RewriteNow;
-  const ephemeralPreQa9RewriteNow =
-    !pendingRerun && !ephemeralQa6RewriteNow && isEphemeralPreQa9Rewrite(evidence, qa9Peek);
-  ephemeralPreQa9Rewrite = ephemeralPreQa9RewriteNow;
-  const ephemeralOfficialQa8RewriteNow =
-    !pendingRerun &&
-    !ephemeralQa6RewriteNow &&
-    !ephemeralPreQa9RewriteNow &&
-    isEphemeralOfficialQa8Rewrite(evidence, qa7Peek);
   preQa7CheckpointCtx = buildPreQa7CheckpointCtx(
     baseline,
     evidence,
@@ -1001,13 +1002,28 @@ if (evidence) {
     defects,
     scope,
   );
+  officialQa1Qa6CheckpointShape = hasOfficialQa1Qa6CheckpointShape(evidence);
   const currentEpochPreQa7CheckpointNow =
+    !pendingRerun && isCurrentEpochPreQa7Checkpoint(preQa7CheckpointCtx);
+  currentEpochPreQa7Checkpoint = currentEpochPreQa7CheckpointNow;
+  const ephemeralQa6RewriteNow =
     !pendingRerun &&
+    !currentEpochPreQa7CheckpointNow &&
+    !officialQa1Qa6CheckpointShape &&
+    isEphemeralQa6Rewrite(evidence, qa7Peek);
+  ephemeralQa6Rewrite = ephemeralQa6RewriteNow;
+  const ephemeralPreQa9RewriteNow =
+    !pendingRerun &&
+    !currentEpochPreQa7CheckpointNow &&
+    !ephemeralQa6RewriteNow &&
+    isEphemeralPreQa9Rewrite(evidence, qa9Peek);
+  ephemeralPreQa9Rewrite = ephemeralPreQa9RewriteNow;
+  const ephemeralOfficialQa8RewriteNow =
+    !pendingRerun &&
+    !currentEpochPreQa7CheckpointNow &&
     !ephemeralQa6RewriteNow &&
     !ephemeralPreQa9RewriteNow &&
-    !ephemeralOfficialQa8RewriteNow &&
-    isCurrentEpochPreQa7Checkpoint(preQa7CheckpointCtx);
-  currentEpochPreQa7Checkpoint = currentEpochPreQa7CheckpointNow;
+    isEphemeralOfficialQa8Rewrite(evidence, qa7Peek);
   const currentEpochPostQa7PreQa8CheckpointNow =
     !pendingRerun &&
     !ephemeralQa6RewriteNow &&
@@ -1101,7 +1117,7 @@ if (evidence) {
       if (evidence.next !== "QA9_ACCEPTANCE_REPORT") {
         fail("ephemeral pre-QA9 rewrite must keep evidence-manifest.next QA9_ACCEPTANCE_REPORT");
       }
-    } else if (currentEpochPreQa7CheckpointNow) {
+    } else if (currentEpochPreQa7CheckpointNow || officialQa1Qa6CheckpointShape) {
       verifyCurrentEpochPreQa7Checkpoint(preQa7CheckpointCtx, fails);
     } else if (currentEpochPostQa7PreQa8CheckpointNow) {
       verifyCurrentEpochPostQa7PreQa8Checkpoint(
@@ -1229,7 +1245,7 @@ if (evidence) {
       if (!evidence.kill_switch || evidence.kill_switch.verified_before_qa8 !== true) {
         fail("evidence.kill_switch.verified_before_qa8 must be true");
       }
-    } else if (currentEpochPreQa7CheckpointNow) {
+    } else if (currentEpochPreQa7CheckpointNow || officialQa1Qa6CheckpointShape) {
       // Current-epoch pre-QA7 checkpoint: QA7/QA8/QA9 are not current COMPLETE.
       // Predecessor preservation is enforced by verifyCurrentEpochPreQa7Checkpoint.
     } else if (currentEpochPostQa7PreQa8CheckpointNow) {
@@ -1920,7 +1936,7 @@ try {
 } catch {
   fail("qa7-result.v1.json invalid JSON");
 }
-if (qa7Result && !pendingRerun && !currentEpochPreQa7Checkpoint) {
+if (qa7Result && !pendingRerun && !currentEpochPreQa7Checkpoint && !officialQa1Qa6CheckpointShape) {
   if (qa7Result.schema !== "governance.engine-acceptance.qa7-result.v1") {
     fail("qa7-result.schema mismatch");
   }
@@ -2098,7 +2114,7 @@ if (qa7Result && !pendingRerun && !currentEpochPreQa7Checkpoint) {
   // A real CI-heavy QA4->QA5->QA6->QA8 chain resets QA7's evidence entry to
   // NOT_STARTED (via QA6's generic fallthrough) before QA8 ever runs, same
   // as the QA9 entry - tolerate it the same way in this state.
-  if (evidence && !ephemeralQa6Rewrite && !ephemeralPreQa9Rewrite && !currentEpochPreQa7Checkpoint) {
+  if (evidence && !ephemeralQa6Rewrite && !ephemeralPreQa9Rewrite && !currentEpochPreQa7Checkpoint && !officialQa1Qa6CheckpointShape) {
     const qa7 = (evidence.suites || []).find((s) => s.suite_id === "QA7");
     if (qa7 && qa7.checksum !== qa7Result.checksum) {
       fail("evidence QA7.checksum must match qa7-result.checksum");
@@ -2120,6 +2136,7 @@ if (
   qa8Result &&
   !pendingRerun &&
   !currentEpochPreQa7Checkpoint &&
+  !officialQa1Qa6CheckpointShape &&
   !currentEpochPostQa7PreQa8Checkpoint
 ) {
   if (qa8Result.schema !== "governance.engine-acceptance.qa8-result.v1") {
@@ -2235,14 +2252,14 @@ if (
       fail("qa8-result P0/P1 defects present must set verdict_contribution=ENGINE_NOT_ACCEPTED");
     }
   }
-  if (defects && !ephemeralQa6Rewrite && !ephemeralPreQa9Rewrite && !currentEpochPreQa7Checkpoint) {
+  if (defects && !ephemeralQa6Rewrite && !ephemeralPreQa9Rewrite && !currentEpochPreQa7Checkpoint && !officialQa1Qa6CheckpointShape) {
     if (defects.counts.P0 > 0 || defects.counts.P1 > 0) {
       if (evidence && evidence.verdict !== "ENGINE_NOT_ACCEPTED") {
         fail("evidence-manifest.verdict must be ENGINE_NOT_ACCEPTED when defects.P0/P1 > 0");
       }
     }
   }
-  if (evidence && !ephemeralQa6Rewrite && !currentEpochPreQa7Checkpoint) {
+  if (evidence && !ephemeralQa6Rewrite && !currentEpochPreQa7Checkpoint && !officialQa1Qa6CheckpointShape) {
     const qa8 = (evidence.suites || []).find((s) => s.suite_id === "QA8");
     if (qa8 && qa8.checksum !== qa8Result.checksum) {
       fail("evidence QA8.checksum must match qa8-result.checksum");
@@ -2264,6 +2281,7 @@ if (
   qa9Result &&
   !pendingRerun &&
   !currentEpochPreQa7Checkpoint &&
+  !officialQa1Qa6CheckpointShape &&
   !currentEpochPostQa7PreQa8Checkpoint &&
   !currentEpochPostQa8PreQa9Checkpoint
 ) {

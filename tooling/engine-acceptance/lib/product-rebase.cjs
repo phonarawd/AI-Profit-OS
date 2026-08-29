@@ -20,6 +20,10 @@ const {
   validateLedgerShape,
   qa0Qa6ImpactExceptionAllowed,
 } = require("./workflow-amendment.cjs");
+const {
+  hasOfficialQa1Qa6CheckpointShape,
+  verifyOfficialQa1Qa6CheckpointPublication,
+} = require("./official-qa1-qa6-checkpoint.cjs");
 
 const DECISION_ID = "ENGINE_ACCEPTANCE_REBASE_V1";
 const LEDGER_REL = "governance/engine-acceptance/product-rebases.v1.json";
@@ -1163,7 +1167,7 @@ function verifyPreQa7RebaseBinding(baseline, evidence, rebaseLedger, tip, fails)
   }
 }
 
-function verifyPreQa7Qa0ToQa6(baseline, evidence, results, fails) {
+function verifyPreQa7Qa0ToQa6(baseline, evidence, results, fails, tip) {
   const qa0 = suiteOf(evidence, "QA0");
   if (!qa0 || qa0.completion_status !== "COMPLETE") {
     fails.push("QA0 must be COMPLETE on the current baseline");
@@ -1201,6 +1205,13 @@ function verifyPreQa7Qa0ToQa6(baseline, evidence, results, fails) {
     }
     if (String(result.run_id) !== String(s.run_id)) {
       fails.push(`${id} result run_id must match evidence suite run_id`);
+    }
+    const predCs = (tip && tip.predecessor_suite_checksums) || {};
+    if (predCs[id] && result.checksum === predCs[id]) {
+      fails.push(`${id} result reuses predecessor checksum`);
+    }
+    if (predCs[id] && s.checksum === predCs[id]) {
+      fails.push(`${id} current COMPLETE must not reuse predecessor checksum as current`);
     }
   }
 }
@@ -1573,13 +1584,14 @@ function verifyRebaseInheritedHashMatchException(baseline, evidence, tip, fails)
 function verifyCurrentEpochPreQa7CheckpointBody(ctx, fails, parts) {
   const { baseline, evidence, rebaseLedger, amendmentLedger, defects, results, tip } = parts;
   verifyPreQa7RebaseBinding(baseline, evidence, rebaseLedger, tip, fails);
-  verifyPreQa7Qa0ToQa6(baseline, evidence, results, fails);
+  verifyPreQa7Qa0ToQa6(baseline, evidence, results, fails, tip);
   verifyPreQa7PendingSlot(baseline, evidence, tip, results, ctx, fails);
   verifyPreQa7Qa8Stale(baseline, evidence, tip, results, ctx, fails);
   verifyPreQa7Qa9Stale(baseline, evidence, tip, results, ctx, fails);
   verifyPreQa7CheckpointFields(evidence, fails);
   verifyPreQa7DefectsAndCritical(evidence, defects, results, fails);
   verifyPreQa7KillAndAmendment(ctx, baseline, evidence, tip, amendmentLedger, fails);
+  verifyOfficialQa1Qa6CheckpointPublication(ctx, fails);
 }
 
 function amendmentHashChainHolds(amendmentLedger, fails) {
@@ -1673,6 +1685,7 @@ module.exports = {
   isPendingRerun,
   isCurrentEpochPreQa7Checkpoint,
   verifyCurrentEpochPreQa7Checkpoint,
+  hasOfficialQa1Qa6CheckpointShape,
   CURRENT_EPOCH_REBASE_SNAPSHOT,
   verifyWashing,
   verifyPendingRerunEpoch,

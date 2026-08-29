@@ -2,10 +2,10 @@
   "schema": "governance.engine-acceptance.qa6-result.v1",
   "version": "1.0.0",
   "suite_id": "QA6",
-  "run_id": "qa6-performance-world-20260828",
+  "run_id": "qa6-performance-world-20260829",
   "todoId": "qa6-performance-world",
-  "measuredAt": "2026-08-28T02:08:46.893Z",
-  "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
+  "measuredAt": "2026-08-29T16:32:44.713Z",
+  "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
   "mode": "full",
   "kill_switch": {
     "verified_before_checks": true,
@@ -14,7 +14,7 @@
     "synthetic_account_namespace": "qa-synth-ci"
   },
   "dual_dirty": {
-    "working_tree_clean": false,
+    "working_tree_clean": true,
     "protected_scope_clean": true,
     "forced_clean_forbidden": true
   },
@@ -24,7 +24,7 @@
       "check_id": "QA6_PERFORMANCE_WORLD",
       "status": "PASS",
       "mode": "full",
-      "measuredAt": "2026-08-28T02:08:46.893Z",
+      "measuredAt": "2026-08-29T16:32:44.713Z",
       "seed": 20260812,
       "perf_oracle": {
         "available": true,
@@ -99,10 +99,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 8.077391,
-              "p95": 11.0678179,
-              "p99": 16.00041557000002,
-              "avg": 8.433058130208336
+              "p50": 7.682455,
+              "p95": 10.9888722,
+              "p99": 15.526140970000043,
+              "avg": 8.230150270833333
             },
             "error_rate": 0
           },
@@ -112,7 +112,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-28T02:08:46.681Z",
+            "clock_as_of": "2026-08-29T16:32:44.499Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -135,10 +135,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 8.077391,
-                  "p95": 11.0678179,
-                  "p99": 16.00041557000002,
-                  "avg": 8.433058130208336
+                  "p50": 7.682455,
+                  "p95": 10.9888722,
+                  "p99": 15.526140970000043,
+                  "avg": 8.230150270833333
                 },
                 "error_rate": 0
               },
@@ -160,7 +160,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
+            "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "09067cecfda7e58408f05bcc559348721770ffd844fbb659e5612e3799a62114",
             "invariant_id": "INV-PERF-01",
@@ -187,10 +187,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 5.0038005000000005,
-              "p95": 7.8376105,
-              "p99": 15.553453799999929,
-              "avg": 5.49407918181818
+              "p50": 5.052388499999999,
+              "p95": 9.38245925,
+              "p99": 17.5552534999999,
+              "avg": 5.7040293787878795
             },
             "error_rate": 0
           },
@@ -200,7 +200,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-28T02:08:46.681Z",
+            "clock_as_of": "2026-08-29T16:32:44.499Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -223,10 +223,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 5.0038005000000005,
-                  "p95": 7.8376105,
-                  "p99": 15.553453799999929,
-                  "avg": 5.49407918181818
+                  "p50": 5.052388499999999,
+                  "p95": 9.38245925,
+                  "p99": 17.5552534999999,
+                  "avg": 5.7040293787878795
                 },
                 "error_rate": 0
               },
@@ -248,7 +248,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
+            "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "98101ee617d2c2c12c8a80906d836573a0d78b6ba56225663d13496e42a6f4b0",
             "invariant_id": "INV-PERF-01",
@@ -275,10 +275,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 2.313385,
-              "p95": 3.7119612999999996,
-              "p99": 8.404693459999987,
-              "avg": 2.6691722121212127
+              "p50": 2.56283,
+              "p95": 3.732457799999999,
+              "p99": 5.8994154399999434,
+              "avg": 2.838270323232323
             },
             "error_rate": 0
           },
@@ -288,7 +288,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-28T02:08:46.681Z",
+            "clock_as_of": "2026-08-29T16:32:44.499Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -311,10 +311,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 2.313385,
-                  "p95": 3.7119612999999996,
-                  "p99": 8.404693459999987,
-                  "avg": 2.6691722121212127
+                  "p50": 2.56283,
+                  "p95": 3.732457799999999,
+                  "p99": 5.8994154399999434,
+                  "avg": 2.838270323232323
                 },
                 "error_rate": 0
               },
@@ -336,7 +336,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
+            "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "15b6ea799edccaa59e56b2b7c3734ff60ca5b699cc0039f055838213416a677f",
             "invariant_id": "INV-PERF-01",
@@ -363,10 +363,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 2.399466,
-              "p95": 3.3532771,
-              "p99": 5.144642839999965,
-              "avg": 2.552575272727272
+              "p50": 2.487879,
+              "p95": 3.3085309999999994,
+              "p99": 6.733182619999971,
+              "avg": 2.704417232323233
             },
             "error_rate": 0
           },
@@ -376,7 +376,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-28T02:08:46.681Z",
+            "clock_as_of": "2026-08-29T16:32:44.499Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -399,10 +399,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 2.399466,
-                  "p95": 3.3532771,
-                  "p99": 5.144642839999965,
-                  "avg": 2.552575272727272
+                  "p50": 2.487879,
+                  "p95": 3.3085309999999994,
+                  "p99": 6.733182619999971,
+                  "avg": 2.704417232323233
                 },
                 "error_rate": 0
               },
@@ -424,7 +424,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
+            "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "46f24e679dcca8e62ee864299a617afadd002f652133c3a49bcad3904493feec",
             "invariant_id": "INV-PERF-01",
@@ -542,5 +542,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "CI aggregator uses if: always(); artifact retention ≥ 90 days."
   ],
-  "checksum": "771ebb08977426d21d6d8665d0713dcc612050e1a74a83765673de1c938c051a"
+  "checksum": "72e67ae97748817ef8556c84807bbbe186f282a9ba7a5592f83cfea8ac47648e"
 }

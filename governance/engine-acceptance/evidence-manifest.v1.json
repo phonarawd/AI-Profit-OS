@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-0",
+  "qa_phase": "QA-6",
   "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
   "verdict": "ENGINE_QA_INCOMPLETE",
-  "verdict_reason": "ENGINE_ACCEPTANCE_REBASE_V1 · ENGINE_ACCEPTANCE_REBASE_POLICY_V2 · predecessor discovery historical COMPLETE / current-epoch STALE · required rerun QA1-QA8 then QA9 aggregation · QA9 verdict not fabricated",
+  "verdict_reason": "QA1-QA6 COMPLETE from official current-SHA Actions artifacts · QA7 NOT_STARTED · QA8 STALE · QA9 STALE_AGGREGATION · ENGINE_ACCEPTED_FOR_UI forbidden",
   "evidence_integrity": "VALID",
-  "next": "QA1_DETERMINISTIC_TRUTH",
+  "next": "QA7_AI_EVAL",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -32,96 +32,56 @@
     },
     {
       "suite_id": "QA1",
-      "run_id": null,
+      "run_id": "qa1-deterministic-truth-20260829",
       "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "historical_run_id": "qa1-deterministic-truth-20260828",
-      "historical_checksum": "e096a727e0d799c7a9bd521021cfc2c019dd63591dfa3dc813bc2e4facb6cbd9",
-      "result_ref": "governance/engine-acceptance/qa1-result.v1.json",
-      "predecessor_result_preserved": true
+      "checksum": "0ae681b77879556a2c81e6f472dc0991af7088988624b4c0e07a424f4a8e4fa4",
+      "completion_status": "COMPLETE",
+      "result_ref": "governance/engine-acceptance/qa1-result.v1.json"
     },
     {
       "suite_id": "QA2",
-      "run_id": null,
+      "run_id": "qa2-synthetic-personas-20260829",
       "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "historical_run_id": "qa2-synthetic-personas-20260828",
-      "historical_checksum": "cecc79d6aa0c8218fcdf88ffc18136d006a0fcf87168a638c0c91db92228d082",
+      "checksum": "9f78c78c9ba1e167ad82873e060e3d15d56a1b131e42805632cc49ce6c848c9b",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa2-result.v1.json",
-      "predecessor_result_preserved": true,
-      "historical_mode": "full"
+      "mode": "full"
     },
     {
       "suite_id": "QA3",
-      "run_id": null,
+      "run_id": "qa3-generative-fuzz-20260829",
       "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "historical_run_id": "qa3-generative-fuzz-20260828",
-      "historical_checksum": "d5603d6f9f38252416550b8148175746c494901507731dc1f39d74c9146de3b9",
+      "checksum": "ab2dbb00f6e517daa051993c2a5a2dbd72b64d037109fc471230013185b9ba0e",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa3-result.v1.json",
-      "predecessor_result_preserved": true,
-      "historical_mode": "full"
+      "mode": "full"
     },
     {
       "suite_id": "QA4",
-      "run_id": null,
+      "run_id": "qa4-stateful-time-20260829",
       "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "historical_run_id": "qa4-stateful-time-20260828",
-      "historical_checksum": "15b97fa25c80131b57f7045ded4069351e3a15d9eff6d8ea7e44c03cd1deaee1",
+      "checksum": "94387d0640f7a58fdfbd78e6bbcd44ec29ff3396a30d40442a7fce923420e0d6",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa4-result.v1.json",
-      "predecessor_result_preserved": true,
-      "historical_mode": "full",
-      "historical_blocked_codes": []
+      "mode": "full"
     },
     {
       "suite_id": "QA5",
-      "run_id": null,
+      "run_id": "qa5-failure-world-20260829",
       "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "historical_run_id": "qa5-failure-world-20260828",
-      "historical_checksum": "71a59ab3073ad030b2441ccfa31f2144c2f088cc748c614283c553a129040ab1",
+      "checksum": "1c5d2ce3c373503d5ffb4c11284db125dc9f57544d11df659e97602e0b2aa2e3",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa5-result.v1.json",
-      "predecessor_result_preserved": true,
-      "historical_mode": "tiny",
-      "historical_blocked_codes": []
+      "mode": "tiny"
     },
     {
       "suite_id": "QA6",
-      "run_id": null,
+      "run_id": "qa6-performance-world-20260829",
       "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "historical_run_id": "qa6-performance-world-20260828",
-      "historical_checksum": "771ebb08977426d21d6d8665d0713dcc612050e1a74a83765673de1c938c051a",
+      "checksum": "72e67ae97748817ef8556c84807bbbe186f282a9ba7a5592f83cfea8ac47648e",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa6-result.v1.json",
-      "predecessor_result_preserved": true,
-      "historical_mode": "full",
-      "historical_blocked_codes": [],
-      "historical_budget_status": "SPECIFIED"
+      "mode": "full"
     },
     {
       "suite_id": "QA7",
@@ -174,12 +134,12 @@
   ],
   "kill_switch": {
     "verified_before_smoke": true,
-    "verified_before_qa1": false,
-    "verified_before_qa2": false,
-    "verified_before_qa3": false,
-    "verified_before_qa4": false,
-    "verified_before_qa5": false,
-    "verified_before_qa6": false,
+    "verified_before_qa1": true,
+    "verified_before_qa2": true,
+    "verified_before_qa3": true,
+    "verified_before_qa4": true,
+    "verified_before_qa5": true,
+    "verified_before_qa6": true,
     "production_like_aborts": true,
     "predecessor_epoch_had_kill_switch": true
   },
@@ -189,11 +149,10 @@
     "forced_clean_forbidden": true
   },
   "critical_invariant": {
-    "blocked": null,
-    "skipped": null,
-    "uncovered": null,
-    "epoch_status": "PENDING_CURRENT_EPOCH_RERUN",
-    "predecessor_blocked": 0
+    "blocked": 0,
+    "skipped": 0,
+    "uncovered": 0,
+    "failed": 0
   },
   "current_epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
@@ -209,5 +168,60 @@
     "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
     "historical_status": "COMPLETE_UNDER_PREDECESSOR",
     "current_epoch_status": "STALE"
+  },
+  "publication": {
+    "kind": "official_qa1_qa6_checkpoint",
+    "qa1_qa6_subject_sha": "3d04fa91efffba84196a40247c08d0614fc5623d",
+    "official_run_id": "33263176074",
+    "suites": {
+      "QA1": {
+        "artifact_id": "9717843355",
+        "artifact_name": "engine-acceptance-QA1",
+        "digest": "sha256:defe8bc03c65e7e50a550b30b83dd379e0fbd47248e1339b7d8a090de88ad051",
+        "checksum": "0ae681b77879556a2c81e6f472dc0991af7088988624b4c0e07a424f4a8e4fa4",
+        "file_digest": "e37c8166030ebc3b9d7a09791b3615da735795adc36b33a502e606af12df6f6b",
+        "actions_run_id": "33263176074"
+      },
+      "QA2": {
+        "artifact_id": "9717848895",
+        "artifact_name": "engine-acceptance-QA2",
+        "digest": "sha256:30e6f89e73d0a80022affe179d0365cafafb50f7c1691e45ea5ceb1f991419e4",
+        "checksum": "9f78c78c9ba1e167ad82873e060e3d15d56a1b131e42805632cc49ce6c848c9b",
+        "file_digest": "e39f578e38ebcd4ac3f1995bb8c236c87ffdaafbdce3c33da5f95da1b830c2d9",
+        "actions_run_id": "33263176074"
+      },
+      "QA3": {
+        "artifact_id": "9717854595",
+        "artifact_name": "engine-acceptance-QA3",
+        "digest": "sha256:ba0ed7f5256067a81a6de56cd3b71177c844e8c3fc9dd238069eb3c471de19cb",
+        "checksum": "ab2dbb00f6e517daa051993c2a5a2dbd72b64d037109fc471230013185b9ba0e",
+        "file_digest": "dcdcf155adc184a4ab35704574819003dc7e463b1452308b29b98757b1e4e163",
+        "actions_run_id": "33263176074"
+      },
+      "QA4": {
+        "artifact_id": "9717858183",
+        "artifact_name": "engine-acceptance-QA4",
+        "digest": "sha256:f2f1cea0ee1b26384638e7286b3fd0ffd45d7672cf950551ffb3dffbb49bf41f",
+        "checksum": "94387d0640f7a58fdfbd78e6bbcd44ec29ff3396a30d40442a7fce923420e0d6",
+        "file_digest": "d0320ce79c438b229913f42e9d786ef57ce71eb0b38a6184f2a93ec9d81cd7f7",
+        "actions_run_id": "33263176074"
+      },
+      "QA5": {
+        "artifact_id": "9717867726",
+        "artifact_name": "engine-acceptance-QA5",
+        "digest": "sha256:72ff217a0746be97a1979fecafc95b7d7d2f1b85136eda225ce8522388223a1e",
+        "checksum": "1c5d2ce3c373503d5ffb4c11284db125dc9f57544d11df659e97602e0b2aa2e3",
+        "file_digest": "f6c3c02d9565a74f6b10025f36a7d8108677712c5a9b9dc62ac41d7c51ffafb4",
+        "actions_run_id": "33263176074"
+      },
+      "QA6": {
+        "artifact_id": "9717862679",
+        "artifact_name": "engine-acceptance-QA6",
+        "digest": "sha256:7b04b4a3c2062f54d852943d048582ce76ed5039bddcf09718a68c8497584067",
+        "checksum": "72e67ae97748817ef8556c84807bbbe186f282a9ba7a5592f83cfea8ac47648e",
+        "file_digest": "eb887b3e5a3b3076519dbba5742626b37dbfedb813711cdd2a3e2b0b863504da",
+        "actions_run_id": "33263176074"
+      }
+    }
   }
 }

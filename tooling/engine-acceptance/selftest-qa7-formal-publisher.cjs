@@ -6,11 +6,9 @@
 
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
-const os = require("node:os");
 const path = require("node:path");
-const crypto = require("node:crypto");
-const { ROOT } = require("./lib/hash-scope.cjs");
 const { buildQa7TraceArtifact } = require("./lib/qa7-trace.cjs");
+const { GOV, makeQa7FormalSandbox } = require("./lib/qa-checkpoint-fixtures.cjs");
 const {
   OFFICIAL_QA7_ARTIFACT,
   OFFICIAL_QA7_WORKFLOW_NAME,
@@ -25,7 +23,6 @@ const {
   DENY,
 } = require("./lib/publication-sha-inheritance.cjs");
 
-const GOV = "governance/engine-acceptance";
 const COPY_RELS = [
   `${GOV}/baseline.v1.json`,
   `${GOV}/evidence-manifest.v1.json`,
@@ -134,31 +131,7 @@ function writeArtifactDir(dir, baseline, caseIds, over = {}) {
 }
 
 function makeSandbox() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "aipo-qa7-formal-"));
-  for (const rel of COPY_RELS) {
-    const dest = path.join(dir, rel);
-    fs.mkdirSync(path.dirname(dest), { recursive: true });
-    fs.copyFileSync(path.join(ROOT, rel), dest);
-  }
-  const evidence = JSON.parse(fs.readFileSync(path.join(dir, `${GOV}/evidence-manifest.v1.json`), "utf8"));
-  const baseline = JSON.parse(fs.readFileSync(path.join(dir, `${GOV}/baseline.v1.json`), "utf8"));
-  evidence.suites = (evidence.suites || []).map((s) => {
-    if (["QA4", "QA5", "QA6"].includes(s.suite_id)) {
-      return { ...s, completion_status: "COMPLETE", baseline_id: baseline.id };
-    }
-    if (s.suite_id === "QA7") {
-      return { ...s, completion_status: "NOT_STARTED", run_id: null, checksum: null };
-    }
-    if (s.suite_id === "QA8") {
-      return { ...s, completion_status: "STALE" };
-    }
-    if (s.suite_id === "QA9") {
-      return { ...s, completion_status: "STALE" };
-    }
-    return s;
-  });
-  writeJsonAbs(path.join(dir, `${GOV}/evidence-manifest.v1.json`), evidence);
-  return { dir, baseline, evidence };
+  return makeQa7FormalSandbox();
 }
 
 function snapshotOfficial(root) {
@@ -305,6 +278,19 @@ function run() {
   };
 
   console.log("[selftest-qa7-formal-publisher] start");
+
+  check("sandbox_is_isolated_fixture_not_live_gov", () => {
+    const src = fs.readFileSync(
+      path.join(__dirname, "selftest-qa7-formal-publisher.cjs"),
+      "utf8",
+    );
+    assert.match(src, /makeQa7FormalSandbox/);
+    assert.doesNotMatch(src, /copyFileSync\(path\.join\(ROOT/);
+    const sb = makeSandbox();
+    const baseline = JSON.parse(fs.readFileSync(path.join(sb.dir, `${GOV}/baseline.v1.json`), "utf8"));
+    assert.equal(baseline.id, "ea-baseline-fixture-current");
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
 
   check("official_run_owned_artifact_matching_digest_pass", () => {
     const sb = makeSandbox();

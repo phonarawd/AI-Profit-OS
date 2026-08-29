@@ -153,6 +153,14 @@ function run() {
     assert.match(src, /QA8_SECURITY_PRIVACY/);
   });
 
+  check("official_checkpoint_classified_before_ephemeral", () => {
+    const src = fs.readFileSync(path.join(ROOT, "tooling/verify/engine-acceptance.cjs"), "utf8");
+    const shapeIdx = src.indexOf("hasOfficialQa1Qa6CheckpointShape(evidence)");
+    const ephCall = src.indexOf("isEphemeralQa6Rewrite(evidence, qa7Peek)");
+    assert.ok(shapeIdx > 0 && ephCall > shapeIdx, "official shape must be computed before ephemeral QA6 rewrite");
+    assert.match(src, /if \(hasOfficialQa1Qa6CheckpointShape\(evidenceObj\)\) return false/);
+  });
+
   check("inheritance_same_sha_allowed", () => {
     const sha = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
     const out = evaluatePublicationInheritance({

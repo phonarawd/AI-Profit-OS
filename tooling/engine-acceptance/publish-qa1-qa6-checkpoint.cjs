@@ -19,6 +19,7 @@ const {
   latestRebase,
   verifyCurrentEpochPreQa7Checkpoint,
 } = require("./lib/product-rebase.cjs");
+const { officialSuiteBindings } = require("./lib/official-qa1-qa6-checkpoint.cjs");
 
 const GOV_REL = "governance/engine-acceptance";
 const EVIDENCE_REL = `${GOV_REL}/evidence-manifest.v1.json`;
@@ -431,10 +432,22 @@ function buildEvidence({ evidence, baseline, accepted, qa6, subjectSha }) {
     verified_before_qa6: true,
     production_like_aborts: true,
   };
-  next.publication = {
-    kind: "official_qa1_qa6_checkpoint",
-    qa1_qa6_subject_sha: subjectSha,
-  };
+  const officialRunId = String(accepted.QA1.spec.run_id);
+  const officialSuites = {};
+  for (const id of QA1_TO_QA6) {
+    officialSuites[id] = {
+      artifact_id: String(accepted[id].spec.artifact_id),
+      artifact_name: accepted[id].spec.artifact_name,
+      digest: accepted[id].spec.digest,
+      checksum: accepted[id].result.checksum,
+      file_digest: accepted[id].spec.file_digest || null,
+      actions_run_id: String(accepted[id].spec.run_id),
+    };
+    if (String(accepted[id].spec.run_id) !== officialRunId) {
+      fail("QA1-QA6 official Actions run_id must be shared", "RUN_ID");
+    }
+  }
+  next.publication = officialSuiteBindings(subjectSha, officialRunId, officialSuites);
   if (next.current_epoch && typeof next.current_epoch === "object") {
     next.current_epoch = cloneJson(evidence.current_epoch);
     for (const [key, exact] of Object.entries(CURRENT_EPOCH_REBASE_SNAPSHOT)) {
@@ -554,6 +567,8 @@ function buildCheckpointCtx(root, planned, extra) {
     headQa9Bytes: extra.headQa9Bytes,
     liveQa9Bytes: extra.liveQa9Bytes,
     qa9ResultDirty: false,
+    currentHead: extra.currentHead || null,
+    isAncestor: extra.isAncestor,
     _root: root,
     _qa7Rel: qa7Rel,
     _qa8Rel: qa8Rel,
@@ -704,6 +719,7 @@ function publishQa1Qa6Checkpoint(opts) {
       liveQa8Bytes: histText.QA8,
       headQa9Bytes: histText.QA9,
       liveQa9Bytes: histText.QA9,
+      currentHead: input.expected_head_sha,
     },
   );
   const checkpointFails = [];
