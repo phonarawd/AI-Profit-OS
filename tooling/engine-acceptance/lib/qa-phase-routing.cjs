@@ -34,20 +34,190 @@ function extractJobIf(yaml, jobId) {
 
 function evalDispatchIf(expr, phase) {
   if (!expr) return true;
-  if (expr.includes("always()")) return true;
-  if (expr.includes("github.event_name == 'workflow_dispatch' &&")) {
-    const inner = expr.replace(/^github\.event_name == 'workflow_dispatch' && \((.+)\)\s*$/, "$1");
-    if (inner === expr) {
-      return /inputs\.qa_phase == '([^']+)'/.test(expr)
-        ? [...expr.matchAll(/inputs\.qa_phase == '([^']+)'/g)].some((x) => x[1] === phase)
-        : false;
+  const phases = [...String(expr).matchAll(/inputs\.qa_phase == '([^']+)'/g)].map((x) => x[1]);
+  // aggregator `always()` has no phase gate. A job that wraps always()
+  // around phase/needs checks must still be routed by those phase gates —
+  // do not treat always() as "every qa_phase is selected".
+  if (phases.length === 0) return true;
+  return phases.includes(phase);
+}
+
+const ALLOWED_MEMBERS = Object.freeze({
+  "github.event_name": "eventName",
+  "inputs.qa_phase": "qaPhase",
+  "needs.qa2-synthetic-personas.result": "qa2Result",
+});
+
+function tokenizeGha(src) {
+  const tokens = [];
+  const s = String(src || "");
+  let i = 0;
+  while (i < s.length) {
+    const ch = s[i];
+    if (/\s/.test(ch)) {
+      i += 1;
+      continue;
     }
-    return [...inner.matchAll(/inputs\.qa_phase == '([^']+)'/g)].some((x) => x[1] === phase);
+    if (s.startsWith("&&", i)) {
+      tokens.push({ t: "AND" });
+      i += 2;
+      continue;
+    }
+    if (s.startsWith("||", i)) {
+      tokens.push({ t: "OR" });
+      i += 2;
+      continue;
+    }
+    if (s.startsWith("==", i)) {
+      tokens.push({ t: "EQ" });
+      i += 2;
+      continue;
+    }
+    if (s.startsWith("!=", i)) {
+      tokens.push({ t: "NEQ" });
+      i += 2;
+      continue;
+    }
+    if (ch === "!") {
+      tokens.push({ t: "NOT" });
+      i += 1;
+      continue;
+    }
+    if (ch === "(") {
+      tokens.push({ t: "LPAREN" });
+      i += 1;
+      continue;
+    }
+    if (ch === ")") {
+      tokens.push({ t: "RPAREN" });
+      i += 1;
+      continue;
+    }
+    if (ch === "'") {
+      const end = s.indexOf("'", i + 1);
+      if (end < 0) throw new Error("unterminated GHA string");
+      tokens.push({ t: "STRING", v: s.slice(i + 1, end) });
+      i = end + 1;
+      continue;
+    }
+    if (/[A-Za-z_]/.test(ch)) {
+      let j = i + 1;
+      while (j < s.length && /[A-Za-z0-9_.-]/.test(s[j])) j += 1;
+      const name = s.slice(i, j);
+      i = j;
+      let k = i;
+      while (k < s.length && /\s/.test(s[k])) k += 1;
+      if (s[k] === "(") {
+        let n = k + 1;
+        while (n < s.length && /\s/.test(s[n])) n += 1;
+        if (s[n] !== ")") throw new Error(`GHA function ${name} must be ()`);
+        tokens.push({ t: "FUNC", v: name });
+        i = n + 1;
+      } else {
+        tokens.push({ t: "MEMBER", v: name });
+      }
+      continue;
+    }
+    throw new Error(`unexpected GHA char ${ch}`);
   }
-  if (expr.includes("github.event_name != 'workflow_dispatch' ||")) {
-    return [...expr.matchAll(/inputs\.qa_phase == '([^']+)'/g)].some((x) => x[1] === phase);
+  tokens.push({ t: "EOF" });
+  return tokens;
+}
+
+function evalGhaExpr(expr, ctx) {
+  const tokens = tokenizeGha(expr);
+  let i = 0;
+  const peek = () => tokens[i];
+  const eat = (t) => {
+    const cur = tokens[i];
+    if (!cur || cur.t !== t) throw new Error(`expected ${t} got ${cur && cur.t}`);
+    i += 1;
+    return cur;
+  };
+  function parseOr() {
+    let left = parseAnd();
+    while (peek().t === "OR") {
+      eat("OR");
+      const right = parseAnd();
+      left = left || right;
+    }
+    return left;
   }
-  return false;
+  function parseAnd() {
+    let left = parseUnary();
+    while (peek().t === "AND") {
+      eat("AND");
+      const right = parseUnary();
+      left = left && right;
+    }
+    return left;
+  }
+  function parseUnary() {
+    if (peek().t === "NOT") {
+      eat("NOT");
+      return !parseUnary();
+    }
+    return parsePrimary();
+  }
+  function parsePrimary() {
+    const cur = peek();
+    if (cur.t === "LPAREN") {
+      eat("LPAREN");
+      const inner = parseOr();
+      eat("RPAREN");
+      return inner;
+    }
+    if (cur.t === "FUNC") {
+      eat("FUNC");
+      if (cur.v === "always") return true;
+      if (cur.v === "cancelled") return ctx.cancelled === true;
+      throw new Error(`unexpected GHA function ${cur.v}`);
+    }
+    if (cur.t === "MEMBER") {
+      eat("MEMBER");
+      const op = peek();
+      if (op.t !== "EQ" && op.t !== "NEQ") {
+        throw new Error(`expected EQ or NEQ got ${op.t}`);
+      }
+      eat(op.t);
+      const lit = eat("STRING").v;
+      const key = ALLOWED_MEMBERS[cur.v];
+      if (!key) throw new Error(`unexpected GHA member ${cur.v}`);
+      return op.t === "EQ" ? ctx[key] === lit : ctx[key] !== lit;
+    }
+    throw new Error(`unexpected GHA token ${cur.t}`);
+  }
+  const value = parseOr();
+  if (peek().t !== "EOF") throw new Error("trailing GHA tokens");
+  return value;
+}
+
+const KNOWN_QA2_RESULTS = Object.freeze(["success", "failure", "cancelled", "skipped"]);
+
+function evaluateQaMatrixJobEligibility(yaml, ctx) {
+  const expr = extractJobIf(yaml, "qa-matrix");
+  if (!expr) {
+    return { eligible: false, reason: "missing_qa_matrix_if", expr: null };
+  }
+  const qa2 = ctx.qa2Result;
+  if (qa2 != null && !KNOWN_QA2_RESULTS.includes(qa2)) {
+    return { eligible: false, reason: "unexpected_needs_result", expr };
+  }
+  try {
+    const eligible = evalGhaExpr(expr, {
+      eventName: ctx.eventName,
+      qaPhase: ctx.qaPhase,
+      qa2Result: qa2,
+      cancelled: ctx.cancelled === true,
+    });
+    return { eligible, reason: eligible ? "allow" : "deny", expr };
+  } catch (e) {
+    return {
+      eligible: false,
+      reason: `unexpected_expr:${e instanceof Error ? e.message : e}`,
+      expr,
+    };
+  }
 }
 
 function parseMatrixSuiteList(yaml) {
@@ -149,4 +319,9 @@ module.exports = {
   qa4UploadIncludesClockHarness,
   qa8CasePreservedForFull,
   qa8ExcludedForQa6,
+  extractJobIf,
+  evalDispatchIf,
+  evalGhaExpr,
+  evaluateQaMatrixJobEligibility,
+  KNOWN_QA2_RESULTS,
 };

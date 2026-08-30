@@ -591,15 +591,19 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/run-qa6.cjs",
   "tooling/engine-acceptance/run-qa7.cjs",
   "tooling/engine-acceptance/publish-qa7-formal.cjs",
+  "tooling/engine-acceptance/publish-qa8-formal.cjs",
   "tooling/engine-acceptance/publish-qa1-qa6-checkpoint.cjs",
   "tooling/engine-acceptance/selftest-qa1-qa6-checkpoint.cjs",
   "tooling/engine-acceptance/selftest-qa-pipeline-contract.cjs",
   "tooling/engine-acceptance/selftest-qa7-formal-publisher.cjs",
+  "tooling/engine-acceptance/selftest-qa8-formal-publisher.cjs",
+  "tooling/engine-acceptance/selftest-qa8-job-eligibility.cjs",
   "tooling/engine-acceptance/selftest-qa9-stale-aggregation.cjs",
   "tooling/engine-acceptance/lib/qa9-stale-aggregation.cjs",
   "tooling/engine-acceptance/lib/publication-sha-inheritance.cjs",
   "tooling/engine-acceptance/lib/qa-phase-routing.cjs",
   "tooling/engine-acceptance/lib/qa7-github-provenance.cjs",
+  "tooling/engine-acceptance/lib/qa8-github-provenance.cjs",
   "tooling/engine-acceptance/lib/atomic-publication.cjs",
   "tooling/engine-acceptance/run-qa8.cjs",
   "tooling/engine-acceptance/run-qa9.cjs",
@@ -2906,6 +2910,18 @@ try {
   selftestQa7FormalPublisher();
 } catch (e) {
   fail(`qa7-formal-publisher selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
+  const { run: selftestQa8JobEligibility } = require("../engine-acceptance/selftest-qa8-job-eligibility.cjs");
+  selftestQa8JobEligibility();
+} catch (e) {
+  fail(`qa8-job-eligibility selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
+  const { run: selftestQa8FormalPublisher } = require("../engine-acceptance/selftest-qa8-formal-publisher.cjs");
+  selftestQa8FormalPublisher();
+} catch (e) {
+  fail(`qa8-formal-publisher selftest threw: ${e && e.message ? e.message : e}`);
 }
 try {
   const { run: selftestQa9StaleAggregation } = require("../engine-acceptance/selftest-qa9-stale-aggregation.cjs");

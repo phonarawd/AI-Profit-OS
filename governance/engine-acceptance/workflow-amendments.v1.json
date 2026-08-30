@@ -409,6 +409,47 @@
       "commit_sha_or_pending": "pending",
       "timestamp": "2026-08-30T01:50:00.000Z",
       "applied_at": "2026-08-30T01:54:48.383Z"
+    },
+    {
+      "amendment_id": "a5023-qa8-matrix-needs-skip-repair-20260830",
+      "reason": "A5023_QA8_MATRIX_NEEDS_SKIP_REPAIR_AND_OFFICIAL_PUBLISHER_V1: QA8-dependency-only repair. qa_phase=qa8 skips qa1/qa2 on purpose, but qa-matrix needs qa2-synthetic-personas with no job-level continuation, so GitHub skips the QA8 matrix cell too. Change only the qa-matrix if expression so a qa8 dispatch may continue when QA2 is skipped or success. QA2 failure/cancelled/unknown stay fail-closed. qa3/qa4/qa5/qa6/full and pull_request/push still require QA2 success. QA1–QA7 job ifs/bodies/artifacts/secrets/permissions, matrix.exclude, QA8 case body, standalone qa8-adversarial, aggregator, on:/concurrency unchanged. This amendment does not dispatch QA8, does not run the QA8 publisher actual path, and does not publish QA8 evidence.",
+      "human_po_ack": {
+        "by": "Founder",
+        "at": "2026-08-30T03:10:00.000Z",
+        "statement": "ACK APPROVED A5023_QA8_MATRIX_NEEDS_SKIP_REPAIR_AND_OFFICIAL_PUBLISHER_V1: Founder authorized the official QA8 matrix needs-skip repair and QA8 formal publisher implementation. Repair the qa-matrix job condition so qa_phase=qa8 can run the [QA8] cell after intentional QA2 skip. Do not treat QA2 failure or cancelled as success. Do not change QA1–QA7 semantics. Do not rerun QA1–QA7. Do not dispatch or publish official QA8. Do not rewrite QA7 formal evidence. Do not change baseline ID, prompt hash, or eval hash. Do not treat BLOCKED as PASS."
+      },
+      "old_acceptance_workflow_hash": "93a9d5dbcd2984b23f782e7f2ae628f7283bc0ecd927865ecd292fe2a2db4fde",
+      "new_acceptance_workflow_hash": "7eb0c52b550f3aadc58b29a029687c0720bc15a6c7efbee82c69df4ca20ba0b0",
+      "workflow_diff_scope": {
+        "files": [
+          ".github/workflows/engine-acceptance.yml"
+        ],
+        "exact_diff_summary": "qa-matrix if only. Before: event!=workflow_dispatch OR qa_phase in {qa3,qa4,qa5,qa6,qa8,full} (no needs-result gate). After: always() && !cancelled() && ((workflow_dispatch && qa_phase==qa8 && (QA2 skipped|success)) || ((event!=workflow_dispatch || qa_phase in {qa3,qa4,qa5,qa6,full}) && QA2 success)). Comments document that always() unwraps the intentional QA8 skip only and is not aggregator always(). QA1/QA2/QA7 job ifs, matrix.exclude, suite list, case bodies, upload paths, standalone qa8-adversarial if, aggregator, secrets, permissions, triggers unchanged. qa3/qa4/qa5/qa6/full still require QA2 success. pull_request/push still require QA2 success.",
+        "qa0_qa6_semantics_changed": false,
+        "checks": {
+          "command_changes": false,
+          "artifact_upload_changes": false,
+          "env_permission_changes": false,
+          "pass_fail_semantics_changes": false
+        }
+      },
+      "affected_qa_suites": [
+        "QA8"
+      ],
+      "unaffected_completed_suites": [
+        "QA0",
+        "QA1",
+        "QA2",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA6",
+        "QA7"
+      ],
+      "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
+      "commit_sha_or_pending": "pending",
+      "timestamp": "2026-08-30T03:10:00.000Z",
+      "applied_at": "2026-08-30T03:03:49.840Z"
     }
   ],
   "epoch_bindings": [

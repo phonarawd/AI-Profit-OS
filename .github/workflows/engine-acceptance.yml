@@ -148,7 +148,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [qa2-synthetic-personas]
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'qa8' || inputs.qa_phase == 'full' }}
+    # QA8 dispatch skips QA2 on purpose. always() only unwraps that skip;
+    # failure/cancelled/unknown stay fail-closed. qa3-qa6/full and
+    # pull_request/push still require QA2 success. Not aggregator always().
+    if: ${{ always() && !cancelled() && ((github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa8' && (needs.qa2-synthetic-personas.result == 'skipped' || needs.qa2-synthetic-personas.result == 'success')) || ((github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full') && needs.qa2-synthetic-personas.result == 'success')) }}
     strategy:
       fail-fast: false
       matrix:

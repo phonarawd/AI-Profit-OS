@@ -17,6 +17,9 @@ const {
   qa4CaseHasClockHarness,
   qa4UploadIncludesClockHarness,
   qa8CasePreservedForFull,
+  extractJobIf,
+  evalDispatchIf,
+  evaluateQaMatrixJobEligibility,
 } = require("./lib/qa-phase-routing.cjs");
 const {
   evaluatePublicationInheritance,
@@ -320,6 +323,33 @@ function run() {
     });
     assert.equal(out.status, DENY);
     assert.match(out.reasons.join(" "), /workflow/);
+  });
+
+  check("qa8_matrix_eligibility_skipped_qa2_allows_cell", () => {
+    const out = evaluateQaMatrixJobEligibility(yaml, {
+      eventName: "workflow_dispatch",
+      qaPhase: "qa8",
+      qa2Result: "skipped",
+    });
+    assert.equal(out.eligible, true, out.reason);
+  });
+
+  check("qa8_matrix_eligibility_fail_closed_on_qa2_failure", () => {
+    const out = evaluateQaMatrixJobEligibility(yaml, {
+      eventName: "workflow_dispatch",
+      qaPhase: "qa8",
+      qa2Result: "failure",
+    });
+    assert.equal(out.eligible, false);
+  });
+
+  check("qa_matrix_always_wrapper_is_not_aggregator_always", () => {
+    assert.equal(extractJobIf(yaml, "aggregator"), "always()");
+    const matrixIf = extractJobIf(yaml, "qa-matrix");
+    assert.notEqual(matrixIf, "always()");
+    assert.equal(evalDispatchIf(matrixIf, "qa8"), true);
+    assert.equal(evalDispatchIf(matrixIf, "qa7"), false);
+    assert.equal(evalDispatchIf("always()", "qa7"), true);
   });
 
   check("rel502_qa8_amend_once_not_rewritten_to_always_succeed", () => {

@@ -435,6 +435,116 @@ function makeIsolatedGovTree(over = {}) {
   };
 }
 
+function makeQa8FormalSandbox() {
+  const iso = makeIsolatedGovTree();
+  const current = {};
+  for (const id of QA1_TO_QA6) {
+    current[id] = currentResult(id);
+    writeJsonAbs(
+      path.join(iso.dir, `${GOV}/qa${id.slice(2).toLowerCase()}-result.v1.json`),
+      current[id],
+    );
+  }
+  const qa7 = seal({
+    schema: "governance.engine-acceptance.qa7-result.v1",
+    version: "1.0.0",
+    suite_id: "QA7",
+    run_id: "9001002003",
+    completion_status: "COMPLETE",
+    formal_actions_evidence: true,
+    local_validation_only: false,
+    qa7_completion_status: "COMPLETE",
+    baseline_id: FIX_CUR,
+    engine_accepted_for_ui: "NOT_ISSUED",
+    ui_ux_entry_gate: "CLOSED",
+    next: "QA8_SECURITY_PRIVACY",
+    actions: {
+      run_id: "9001002003",
+      workflow: "engine-acceptance",
+      workflow_path: ".github/workflows/engine-acceptance.yml",
+      event: "workflow_dispatch",
+      qa_phase: "qa7",
+      head_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      head_branch: FIX_BRANCH,
+      conclusion: "success",
+    },
+    artifact: {
+      name: "engine-acceptance-QA7-raw-traces",
+      artifact_id: "8001002003",
+      digest: "b".repeat(64),
+      retention_days: 90,
+    },
+    hashes: {
+      prompt_hash: "MATCH",
+      eval_dataset_hash: "MATCH",
+      acceptance_workflow_hash: "MATCH",
+      pinned: {
+        acceptance_workflow_hash: FIX_WF,
+        prompt_hash: FIX_PROMPT,
+        eval_dataset_hash: FIX_EVAL,
+      },
+    },
+  });
+  writeJsonAbs(path.join(iso.dir, `${GOV}/qa7-result.v1.json`), qa7);
+  const evidence = JSON.parse(
+    fs.readFileSync(path.join(iso.dir, `${GOV}/evidence-manifest.v1.json`), "utf8"),
+  );
+  evidence.qa_phase = "QA-7";
+  evidence.next = "QA8_SECURITY_PRIVACY";
+  evidence.suites = evidence.suites.map((s) => {
+    if (QA1_TO_QA6.includes(s.suite_id)) {
+      const r = current[s.suite_id];
+      return {
+        ...s,
+        completion_status: "COMPLETE",
+        baseline_id: FIX_CUR,
+        run_id: r.run_id,
+        checksum: r.checksum,
+      };
+    }
+    if (s.suite_id === "QA7") {
+      return {
+        suite_id: "QA7",
+        completion_status: "COMPLETE",
+        baseline_id: FIX_CUR,
+        run_id: qa7.run_id,
+        checksum: qa7.checksum,
+        formal_actions_evidence: true,
+        artifact: qa7.artifact.name,
+        artifact_id: qa7.artifact.artifact_id,
+        head_sha: qa7.actions.head_sha,
+        result_ref: `${GOV}/qa7-result.v1.json`,
+      };
+    }
+    if (s.suite_id === "QA8") {
+      return {
+        ...s,
+        completion_status: "NOT_STARTED",
+        run_id: null,
+        checksum: null,
+        baseline_id: FIX_CUR,
+      };
+    }
+    if (s.suite_id === "QA9") {
+      return {
+        ...s,
+        completion_status: "STALE",
+        epoch_status: "STALE_AGGREGATION_FOR_CURRENT_EPOCH",
+        current_epoch_authoritative: false,
+        run_id: null,
+        checksum: null,
+        aggregation_only: true,
+        discovery_suite: false,
+        baseline_id: FIX_CUR,
+        predecessor_result_preserved: true,
+      };
+    }
+    return s;
+  });
+  writeJsonAbs(path.join(iso.dir, `${GOV}/evidence-manifest.v1.json`), evidence);
+  return { dir: iso.dir, baseline: iso.baseline, evidence, qa7 };
+}
+
 function makeQa7FormalSandbox() {
   const iso = makeIsolatedGovTree();
   const current = {};
@@ -507,6 +617,7 @@ module.exports = {
   makeHarness,
   makeIsolatedGovTree,
   makeQa7FormalSandbox,
+  makeQa8FormalSandbox,
   copyRels,
   historicalQa7,
   historicalQa8,
