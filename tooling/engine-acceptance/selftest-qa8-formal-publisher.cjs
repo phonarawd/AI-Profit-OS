@@ -15,6 +15,9 @@ const {
   OFFICIAL_QA8_WORKFLOW_PATH,
   AGGREGATOR_ARTIFACT,
   REPO,
+  OFFICIAL_RETENTION_MS,
+  extractQa8MatrixUploadRetentionDays,
+  officialRunRetentionReferenceMs,
 } = require("./lib/qa8-github-provenance.cjs");
 const { publishQa8Formal, OFFICIAL_RELS } = require("./publish-qa8-formal.cjs");
 
@@ -25,6 +28,33 @@ const ART_ID = "8008008008";
 const DIGEST = "c".repeat(64);
 const EXPIRES = "2099-01-01T00:00:00.000Z";
 const CREATED = "2026-08-30T00:00:00.000Z";
+const LIVE_RUN_START = "2026-08-30T03:45:22Z";
+const LIVE_ART_CREATED = "2026-08-30T03:46:12Z";
+const LIVE_EXPIRES = "2026-11-28T03:45:23Z";
+const EXACT_90_EXPIRES = new Date(Date.parse(LIVE_RUN_START) + OFFICIAL_RETENTION_MS).toISOString();
+const UNDER_90_EXPIRES = new Date(Date.parse(LIVE_RUN_START) + OFFICIAL_RETENTION_MS - 1000).toISOString();
+
+// 공식 QA8 matrix upload 선언. ${{ matrix.suite }} 는 워크플로 원문이며 JS 보간이 아니다.
+const VALID_QA8_WORKFLOW_YAML = [
+  "jobs:",
+  "  qa-matrix:",
+  "    steps:",
+  "      - name: Upload suite evidence",
+  "        if: ${{ always() && (matrix.suite == 'QA8') }}",
+  "        uses: actions/upload-artifact@v4",
+  "        with:",
+  "          name: engine-acceptance-${{ matrix.suite }}",
+  "          retention-days: 90",
+  "",
+].join("\n");
+
+function workflowYamlWithRetention(days) {
+  return VALID_QA8_WORKFLOW_YAML.replace("retention-days: 90", `retention-days: ${days}`);
+}
+
+function workflowYamlMissingRetention() {
+  return VALID_QA8_WORKFLOW_YAML.replace("          retention-days: 90\n", "");
+}
 
 function writeArtifactDir(dir, result, harnessOver = {}) {
   writeJsonAbs(path.join(dir, `${GOV}/qa8-result.v1.json`), result);
@@ -91,6 +121,8 @@ function officialRun(over = {}) {
     head_branch: FIX_BRANCH,
     repository: REPO,
     html_url: `https://github.com/${REPO}/actions/runs/${RUN_ID}`,
+    created_at: CREATED,
+    run_started_at: CREATED,
     ...over,
   };
 }
@@ -181,6 +213,7 @@ function happyOpts(sandbox, extra = {}) {
     githubClient: extra.githubClient || makeGh(extra.ghOver || {}),
     nowMs: Date.parse("2026-08-30T00:00:00.000Z"),
     publishedAt: "2026-08-30T00:00:00.000Z",
+    workflowYaml: extra.workflowYaml || VALID_QA8_WORKFLOW_YAML,
     actual: extra.actual !== false,
     isAncestor: extra.isAncestor || ((a, d) => a === SUBJECT && d === HEAD),
     dual: { working_tree_clean: true, protected_scope_clean: true },
@@ -492,6 +525,232 @@ function run() {
     assert.equal(out.dry_run, true);
     assert.equal(unchanged(sb.dir, snap), true);
     fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("retention_policy_uses_run_created_at_not_looser_started_at", () => {
+    assert.equal(officialRunRetentionReferenceMs({ created_at: LIVE_RUN_START, run_started_at: LIVE_RUN_START }), Date.parse(LIVE_RUN_START));
+    assert.equal(
+      officialRunRetentionReferenceMs({
+        created_at: LIVE_RUN_START,
+        run_started_at: LIVE_ART_CREATED,
+      }),
+      Date.parse(LIVE_RUN_START),
+    );
+    assert.equal(officialRunRetentionReferenceMs({ run_started_at: LIVE_RUN_START }), Date.parse(LIVE_RUN_START));
+    assert.equal(rejectCode(() => officialRunRetentionReferenceMs({})), "RUN_RETENTION_REFERENCE");
+    assert.equal(
+      rejectCode(() =>
+        officialRunRetentionReferenceMs({ created_at: LIVE_ART_CREATED, run_started_at: LIVE_RUN_START }),
+      ),
+      "RUN_RETENTION_REFERENCE",
+    );
+  });
+
+  check("retention_exact_run_start_plus_90_days_pass", () => {
+    const sb = makeQa8FormalSandbox();
+    const out = publishQa8Formal(
+      happyOpts(sb, {
+        ghOver: {
+          runOver: { created_at: LIVE_RUN_START, run_started_at: LIVE_RUN_START },
+          artOver: { created_at: LIVE_RUN_START, expires_at: EXACT_90_EXPIRES },
+        },
+        opts: { nowMs: Date.parse("2026-08-30T04:00:00.000Z") },
+      }),
+    );
+    assert.equal(out.status, "QA8_FORMAL_PUBLISHED");
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("retention_live_form_50s_upload_lag_exact_90_days_pass", () => {
+    const sb = makeQa8FormalSandbox();
+    const out = publishQa8Formal(
+      happyOpts(sb, {
+        ghOver: {
+          runOver: { created_at: LIVE_RUN_START, run_started_at: LIVE_RUN_START },
+          artOver: { created_at: LIVE_ART_CREATED, expires_at: EXACT_90_EXPIRES },
+        },
+        opts: { nowMs: Date.parse("2026-08-30T04:00:00.000Z") },
+      }),
+    );
+    assert.equal(out.status, "QA8_FORMAL_PUBLISHED");
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("retention_live_90d_plus_1s_pass", () => {
+    const sb = makeQa8FormalSandbox();
+    const out = publishQa8Formal(
+      happyOpts(sb, {
+        ghOver: {
+          runOver: { created_at: LIVE_RUN_START, run_started_at: LIVE_RUN_START },
+          artOver: { created_at: LIVE_ART_CREATED, expires_at: LIVE_EXPIRES },
+        },
+        opts: { nowMs: Date.parse("2026-08-30T04:00:00.000Z") },
+      }),
+    );
+    assert.equal(out.status, "QA8_FORMAL_PUBLISHED");
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("retention_longer_than_90_days_pass", () => {
+    const sb = makeQa8FormalSandbox();
+    const out = publishQa8Formal(
+      happyOpts(sb, {
+        ghOver: {
+          runOver: { created_at: LIVE_RUN_START, run_started_at: LIVE_RUN_START },
+          artOver: { created_at: LIVE_ART_CREATED, expires_at: "2099-01-01T00:00:00.000Z" },
+        },
+      }),
+    );
+    assert.equal(out.status, "QA8_FORMAL_PUBLISHED");
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("retention_under_90_days_from_run_start_fail", () => {
+    const sb = makeQa8FormalSandbox();
+    const snap = snapshot(sb.dir);
+    const got = rejectCode(() =>
+      publishQa8Formal(
+        happyOpts(sb, {
+          ghOver: {
+            runOver: { created_at: LIVE_RUN_START, run_started_at: LIVE_RUN_START },
+            artOver: { created_at: LIVE_ART_CREATED, expires_at: UNDER_90_EXPIRES },
+          },
+          opts: { nowMs: Date.parse("2026-08-30T04:00:00.000Z") },
+        }),
+      ),
+    );
+    assert.equal(got, "ARTIFACT_RETENTION");
+    assert.equal(unchanged(sb.dir, snap), true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("retention_89d_23h_59m_59s_fail", () => {
+    const sb = makeQa8FormalSandbox();
+    const snap = snapshot(sb.dir);
+    const got = rejectCode(() =>
+      publishQa8Formal(
+        happyOpts(sb, {
+          ghOver: {
+            runOver: { created_at: LIVE_RUN_START, run_started_at: LIVE_RUN_START },
+            artOver: { created_at: LIVE_ART_CREATED, expires_at: UNDER_90_EXPIRES },
+          },
+          opts: { nowMs: Date.parse("2026-08-30T04:00:00.000Z") },
+        }),
+      ),
+    );
+    assert.equal(got, "ARTIFACT_RETENTION");
+    assert.equal(unchanged(sb.dir, snap), true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("retention_expiry_in_the_past_fail", () => {
+    const sb = makeQa8FormalSandbox();
+    const snap = snapshot(sb.dir);
+    const got = rejectCode(() =>
+      publishQa8Formal(
+        happyOpts(sb, {
+          ghOver: { artOver: { expires_at: "2026-08-29T00:00:00.000Z" } },
+          opts: { nowMs: Date.parse("2026-08-30T00:00:00.000Z") },
+        }),
+      ),
+    );
+    assert.equal(got, "ARTIFACT_EXPIRED");
+    assert.equal(unchanged(sb.dir, snap), true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("retention_missing_expires_at_fail", () => {
+    const sb = makeQa8FormalSandbox();
+    const snap = snapshot(sb.dir);
+    const got = rejectCode(() =>
+      publishQa8Formal(happyOpts(sb, { ghOver: { artOver: { expires_at: null } } })),
+    );
+    assert.equal(got, "ARTIFACT_EXPIRED");
+    assert.equal(unchanged(sb.dir, snap), true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("retention_missing_run_created_start_fail", () => {
+    const sb = makeQa8FormalSandbox();
+    const snap = snapshot(sb.dir);
+    const got = rejectCode(() =>
+      publishQa8Formal(
+        happyOpts(sb, { ghOver: { runOver: { created_at: null, run_started_at: null } } }),
+      ),
+    );
+    assert.equal(got, "RUN_RETENTION_REFERENCE");
+    assert.equal(unchanged(sb.dir, snap), true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("retention_artifact_created_before_run_start_fail", () => {
+    const sb = makeQa8FormalSandbox();
+    const snap = snapshot(sb.dir);
+    const got = rejectCode(() =>
+      publishQa8Formal(
+        happyOpts(sb, {
+          ghOver: {
+            runOver: { created_at: LIVE_ART_CREATED, run_started_at: LIVE_ART_CREATED },
+            artOver: { created_at: LIVE_RUN_START, expires_at: LIVE_EXPIRES },
+          },
+        }),
+      ),
+    );
+    assert.equal(got, "ARTIFACT_CREATED");
+    assert.equal(unchanged(sb.dir, snap), true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("retention_workflow_days_below_90_fail", () => {
+    const sb = makeQa8FormalSandbox();
+    const snap = snapshot(sb.dir);
+    const got = rejectCode(() =>
+      publishQa8Formal(happyOpts(sb, { workflowYaml: workflowYamlWithRetention(89) })),
+    );
+    assert.equal(got, "WORKFLOW_RETENTION");
+    assert.equal(unchanged(sb.dir, snap), true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("retention_workflow_declaration_missing_fail", () => {
+    const sb = makeQa8FormalSandbox();
+    const snap = snapshot(sb.dir);
+    const got = rejectCode(() =>
+      publishQa8Formal(happyOpts(sb, { workflowYaml: workflowYamlMissingRetention() })),
+    );
+    assert.equal(got, "WORKFLOW_RETENTION");
+    assert.equal(unchanged(sb.dir, snap), true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("retention_cli_expiry_mismatch_fail", () => {
+    const sb = makeQa8FormalSandbox();
+    const snap = snapshot(sb.dir);
+    const got = rejectCode(() =>
+      publishQa8Formal(
+        happyOpts(sb, {
+          ghOver: {
+            runOver: { created_at: LIVE_RUN_START, run_started_at: LIVE_RUN_START },
+            artOver: { created_at: LIVE_ART_CREATED, expires_at: LIVE_EXPIRES },
+          },
+          opts: {
+            nowMs: Date.parse("2026-08-30T04:00:00.000Z"),
+            artifactExpiresAt: "2026-11-28T00:00:00.000Z",
+          },
+        }),
+      ),
+    );
+    assert.equal(got, "ARTIFACT_EXPIRED");
+    assert.equal(unchanged(sb.dir, snap), true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("live_workflow_yaml_declares_qa8_matrix_retention_90", () => {
+    const yaml = fs.readFileSync(path.join(__dirname, "../../.github/workflows/engine-acceptance.yml"), "utf8");
+    const extracted = extractQa8MatrixUploadRetentionDays(yaml);
+    assert.equal(extracted.foundStep, true);
+    assert.equal(extracted.declared, true);
+    assert.equal(extracted.days, 90);
   });
 
   check("publisher_cannot_issue_ui_gate_or_a_branch_formal", () => {

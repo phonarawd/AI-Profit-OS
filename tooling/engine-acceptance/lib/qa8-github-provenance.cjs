@@ -16,6 +16,8 @@ const OFFICIAL_QA8_SUITE = "QA8";
 const AGGREGATOR_ARTIFACT = "engine-acceptance-evidence";
 const STANDALONE_ADVERSARIAL_JOB = "qa8-adversarial";
 const REPO = "phonarawd/AI-Profit-OS";
+const OFFICIAL_RETENTION_DAYS = 90;
+const OFFICIAL_RETENTION_MS = OFFICIAL_RETENTION_DAYS * 24 * 60 * 60 * 1000;
 const ALLOWED_ALWAYS_JOBS = Object.freeze(["qa0-baseline", "aggregator"]);
 const FORBIDDEN_EXECUTED_JOBS = Object.freeze([
   "qa1-deterministic",
@@ -72,6 +74,8 @@ function defaultGithubClient() {
         head_branch: r.head_branch,
         html_url: r.html_url || null,
         repository: repo,
+        created_at: r.created_at || null,
+        run_started_at: r.run_started_at || null,
       };
     },
     getArtifact(id) {
@@ -114,6 +118,72 @@ function matrixSuiteOf(name) {
 
 function jobExecuted(job) {
   return Boolean(job && EXECUTED.has(job.conclusion));
+}
+
+/**
+ * 공식 retention 기준점 = GitHub run `created_at`.
+ *
+ * GitHub Actions 의 artifact `expires_at` 은 workflow run 시작 시각
+ * (`created_at` / `run_started_at`) 에 가깝게 계산된다.
+ * `artifact.created_at` 은 업로드 완료 관측값일 뿐이며 retention 시작점으로
+ * 단독 사용하지 않는다. created_at 과 run_started_at 중 더 느슨한 값을
+ * 비교·선택하지 않는다.
+ *
+ * `run_started_at` 은 GitHub metadata 에 직접 있고 created_at 이 없을 때만
+ * fallback 한다. 둘 다 있으면 created_at 이 공식 기준이고, run_started_at 은
+ * created_at 이후(또는 동일)인지 정합성만 검사한다.
+ */
+function officialRunRetentionReferenceMs(run) {
+  const created = Date.parse(run && run.created_at ? run.created_at : "");
+  const started = Date.parse(run && run.run_started_at ? run.run_started_at : "");
+  if (Number.isFinite(created) && Number.isFinite(started) && started < created) {
+    fail("run_started_at precedes created_at", "RUN_RETENTION_REFERENCE");
+  }
+  if (Number.isFinite(created)) return created;
+  if (Number.isFinite(started)) return started;
+  fail("missing run created/start reference", "RUN_RETENTION_REFERENCE");
+}
+
+function sliceYamlStepAround(text, nameIndex) {
+  const before = text.slice(0, nameIndex);
+  const stepMarks = ["\n      - name:", "\n    - name:", "\n  - name:", "\n- name:"];
+  let start = 0;
+  for (const mark of stepMarks) {
+    const idx = before.lastIndexOf(mark);
+    if (idx > start) start = idx;
+  }
+  const after = text.slice(nameIndex);
+  const next = after.search(/\n\s+-\s+name:|\n  [A-Za-z][A-Za-z0-9_-]*:\s*$/m);
+  const end = nameIndex + (next >= 0 ? next : Math.min(after.length, 4000));
+  return text.slice(start, end);
+}
+
+function extractQa8MatrixUploadRetentionDays(workflowYaml) {
+  const text = String(workflowYaml || "").replace(/\r\n/g, "\n");
+  const needle = /name:\s*engine-acceptance-\$\{\{\s*matrix\.suite\s*\}\}/g;
+  let match;
+  while ((match = needle.exec(text))) {
+    const step = sliceYamlStepAround(text, match.index);
+    if (!/upload-artifact@/.test(step)) continue;
+    if (!/\bQA8\b/.test(step)) continue;
+    const ret = step.match(/retention-days:\s*(\d+)/);
+    if (!ret) return { foundStep: true, declared: false, days: null };
+    return { foundStep: true, declared: true, days: Number(ret[1]) };
+  }
+  return { foundStep: false, declared: false, days: null };
+}
+
+function assertQa8WorkflowRetentionDeclaration(workflowYaml) {
+  const info = extractQa8MatrixUploadRetentionDays(workflowYaml);
+  if (!info.foundStep || !info.declared) {
+    fail("QA8 workflow upload retention-days declaration missing", "WORKFLOW_RETENTION");
+  }
+  if (!(Number.isFinite(info.days) && info.days >= OFFICIAL_RETENTION_DAYS)) {
+    fail(
+      `QA8 workflow upload retention-days must be >= ${OFFICIAL_RETENTION_DAYS} (got ${info.days})`,
+      "WORKFLOW_RETENTION",
+    );
+  }
 }
 
 function assertOfficialQa8Workflow(run) {
@@ -251,15 +321,23 @@ function assertOfficialQa8Artifact(artifact, expected, run, nowMs) {
   }
   if (artifact.expired === true) fail("artifact is expired", "ARTIFACT_EXPIRED");
   const exp = Date.parse(artifact.expires_at || "");
-  if (!Number.isFinite(exp) || exp <= nowMs) {
+  if (!Number.isFinite(exp)) {
+    fail("artifact expires_at missing", "ARTIFACT_EXPIRED");
+  }
+  if (exp <= nowMs) {
     fail("artifact expires_at must be in the future", "ARTIFACT_EXPIRED");
   }
-  const created = Date.parse(artifact.created_at || "");
-  if (Number.isFinite(created)) {
-    const retentionMs = exp - created;
-    if (retentionMs < 90 * 24 * 60 * 60 * 1000) {
-      fail("artifact retention must be >= 90 days", "ARTIFACT_RETENTION");
-    }
+  const refMs = officialRunRetentionReferenceMs(run);
+  const createdArt = Date.parse(artifact.created_at || "");
+  if (!Number.isFinite(createdArt)) {
+    fail("artifact created_at missing", "ARTIFACT_CREATED");
+  }
+  if (createdArt < refMs) {
+    fail("artifact created_at precedes official run retention reference", "ARTIFACT_CREATED");
+  }
+  const retentionMs = exp - refMs;
+  if (retentionMs < OFFICIAL_RETENTION_MS) {
+    fail("artifact retention must be >= 90 days from official run start", "ARTIFACT_RETENTION");
   }
   if (!normalizeDigest(artifact.digest)) {
     fail("GitHub artifact digest missing", "ARTIFACT_DIGEST_MISSING");
@@ -320,6 +398,7 @@ function evaluateQa8Provenance(opts) {
     fail("requested QA8 subject SHA must be 40-char hex", "RUN_SHA");
   }
   if (!expected.headBranch) fail("requested head branch required", "RUN_BRANCH");
+  assertQa8WorkflowRetentionDeclaration(opts.workflowYaml);
 
   const github = opts.githubClient;
   if (!github || typeof github.getRun !== "function" || typeof github.getArtifact !== "function") {
@@ -371,6 +450,8 @@ module.exports = {
   AGGREGATOR_ARTIFACT,
   STANDALONE_ADVERSARIAL_JOB,
   REPO,
+  OFFICIAL_RETENTION_DAYS,
+  OFFICIAL_RETENTION_MS,
   normalizeDigest,
   sha256File,
   defaultGithubClient,
@@ -378,4 +459,7 @@ module.exports = {
   workflowHashReachable,
   matrixSuiteOf,
   assertOfficialQa8Jobs,
+  officialRunRetentionReferenceMs,
+  extractQa8MatrixUploadRetentionDays,
+  assertQa8WorkflowRetentionDeclaration,
 };

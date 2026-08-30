@@ -425,11 +425,19 @@ function publishQa8Formal(opts = {}) {
     conclusion: opts.conclusion,
   };
   const githubClient = opts.githubClient || defaultGithubClient();
+  const workflowRel = ".github/workflows/engine-acceptance.yml";
+  const workflowYaml =
+    typeof opts.workflowYaml === "string"
+      ? opts.workflowYaml
+      : fs.existsSync(path.join(root, workflowRel))
+        ? fs.readFileSync(path.join(root, workflowRel), "utf8")
+        : "";
   const { run, artifact } = evaluateQa8Provenance({
     expected,
     githubClient,
     downloadedZipSha256: opts.downloadedZipSha256,
     nowMs: opts.nowMs,
+    workflowYaml,
   });
 
   const payload = loadArtifactPayload(opts.artifactDir);
