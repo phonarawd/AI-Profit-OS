@@ -10,6 +10,10 @@ const path = require("node:path");
 const { ROOT } = require("./lib/hash-scope.cjs");
 const {
   dispatchRouting,
+  matrixSuitesForPhase,
+  parseMatrixSuiteList,
+  parseExcludeSuiteRules,
+  excludedSuitesForPhase,
   qa4CaseHasClockHarness,
   qa4UploadIncludesClockHarness,
   qa8CasePreservedForFull,
@@ -93,11 +97,63 @@ function run() {
     assert.equal(qa8CasePreservedForFull(yaml), true);
   });
 
-  check("qa8_phase_still_runs_matrix_qa8", () => {
+  check("qa8_phase_matrix_is_exactly_qa8", () => {
     const r = dispatchRouting(yaml, "qa8");
     assert.equal(r.jobs["qa-matrix"], true);
+    assert.deepEqual(r.matrix_suites, ["QA8"]);
     assert.equal(r.runs_qa8_matrix, true);
     assert.equal(r.runs_qa7, false);
+    assert.equal(r.runs_qa8_adversarial, false);
+    assert.equal(r.jobs["qa1-deterministic"], false);
+    assert.equal(r.jobs["qa2-synthetic-personas"], false);
+  });
+
+  check("qa8_phase_excludes_qa3_qa4_qa5_qa6_each", () => {
+    const r = dispatchRouting(yaml, "qa8");
+    assert.equal(r.matrix_suites.includes("QA3"), false);
+    assert.equal(r.matrix_suites.includes("QA4"), false);
+    assert.equal(r.matrix_suites.includes("QA5"), false);
+    assert.equal(r.matrix_suites.includes("QA6"), false);
+    const excluded = excludedSuitesForPhase(yaml, "qa8");
+    assert.deepEqual(excluded.slice().sort(), ["QA3", "QA4", "QA5", "QA6"]);
+  });
+
+  check("qa3_qa4_qa5_full_matrix_unchanged", () => {
+    const expected = ["QA3", "QA4", "QA5", "QA6", "QA8"];
+    for (const phase of ["qa3", "qa4", "qa5", "full"]) {
+      const r = dispatchRouting(yaml, phase);
+      assert.equal(r.jobs["qa-matrix"], true, `${phase} must run qa-matrix`);
+      assert.deepEqual(r.matrix_suites, expected, `${phase} matrix drifted`);
+    }
+    const full = dispatchRouting(yaml, "full");
+    assert.equal(full.runs_qa8_adversarial, true);
+    assert.equal(full.runs_qa7, true);
+  });
+
+  check("phase_routing_evaluates_yaml_excludes_not_hardcoded", () => {
+    const jobIf =
+      "github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'qa8' || inputs.qa_phase == 'full'";
+    const before = [
+      "  qa-matrix:",
+      `    if: \${{ ${jobIf} }}`,
+      "    strategy:",
+      "      fail-fast: false",
+      "      matrix:",
+      "        suite: [QA3, QA4, QA5, QA6, QA8]",
+      "        exclude:",
+      "          - suite: ${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa6' && 'QA8' || '___never___' }}",
+      "",
+    ].join("\n");
+    assert.deepEqual(parseMatrixSuiteList(before), ["QA3", "QA4", "QA5", "QA6", "QA8"]);
+    assert.deepEqual(parseExcludeSuiteRules(before), [{ phase: "qa6", suite: "QA8" }]);
+    assert.deepEqual(matrixSuitesForPhase(before, "qa8"), ["QA3", "QA4", "QA5", "QA6", "QA8"]);
+    assert.deepEqual(matrixSuitesForPhase(before, "qa6"), ["QA3", "QA4", "QA5", "QA6"]);
+    const after = `${before}          - suite: \${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa8' && 'QA3' || '___never___' }}\n          - suite: \${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa8' && 'QA4' || '___never___' }}\n          - suite: \${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa8' && 'QA5' || '___never___' }}\n          - suite: \${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa8' && 'QA6' || '___never___' }}\n`;
+    assert.deepEqual(matrixSuitesForPhase(after, "qa8"), ["QA8"]);
+    assert.deepEqual(matrixSuitesForPhase(after, "qa6"), ["QA3", "QA4", "QA5", "QA6"]);
+    assert.deepEqual(matrixSuitesForPhase(after, "full"), ["QA3", "QA4", "QA5", "QA6", "QA8"]);
+    assert.equal(matrixSuitesForPhase(after, "qa8").includes("QA3"), false);
+    assert.equal(matrixSuitesForPhase(after, "qa6").includes("QA8"), false);
   });
 
   check("qa8_adversarial_phase_isolated", () => {

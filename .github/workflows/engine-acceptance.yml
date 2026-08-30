@@ -157,6 +157,12 @@ jobs:
           # qa_phase=qa6 = pre-QA7 checkpoint. QA8 stays unrun so a green
           # QA1-QA6 matrix can conclude success. qa8/full keep QA8.
           - suite: ${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa6' && 'QA8' || '___never___' }}
+          # qa_phase=qa8 = isolated QA8 only. QA3-QA6 stay unrun.
+          # qa3/qa4/qa5/qa6/full meanings are unchanged.
+          - suite: ${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa8' && 'QA3' || '___never___' }}
+          - suite: ${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa8' && 'QA4' || '___never___' }}
+          - suite: ${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa8' && 'QA5' || '___never___' }}
+          - suite: ${{ github.event_name == 'workflow_dispatch' && inputs.qa_phase == 'qa8' && 'QA6' || '___never___' }}
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6

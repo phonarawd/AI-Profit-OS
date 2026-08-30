@@ -16,8 +16,10 @@ const JOB_ORDER = Object.freeze([
   "aggregator",
 ]);
 
-const MATRIX_SUITES_ALWAYS = Object.freeze(["QA3", "QA4", "QA5", "QA6"]);
 const QA8_MATRIX = "QA8";
+const EXCLUDE_NEVER = "___never___";
+const EXCLUDE_RULE_RE =
+  /inputs\.qa_phase == '([^']+)' && '([^']+)' \|\| '___never___'/g;
 
 function extractJobIf(yaml, jobId) {
   const norm = yaml.replace(/\r\n/g, "\n");
@@ -48,31 +50,45 @@ function evalDispatchIf(expr, phase) {
   return false;
 }
 
+function parseMatrixSuiteList(yaml) {
+  const m = String(yaml || "").match(/^\s+suite:\s*\[([^\]]+)\]/m);
+  if (!m) return [];
+  return m[1]
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function parseExcludeSuiteRules(yaml) {
+  const rules = [];
+  const src = String(yaml || "");
+  EXCLUDE_RULE_RE.lastIndex = 0;
+  let m = EXCLUDE_RULE_RE.exec(src);
+  while (m) {
+    if (m[2] && m[2] !== EXCLUDE_NEVER) {
+      rules.push({ phase: m[1], suite: m[2] });
+    }
+    m = EXCLUDE_RULE_RE.exec(src);
+  }
+  return rules;
+}
+
+function excludedSuitesForPhase(yaml, phase) {
+  return parseExcludeSuiteRules(yaml)
+    .filter((r) => r.phase === phase)
+    .map((r) => r.suite);
+}
+
 function qa8ExcludedForQa6(yaml, phase) {
   if (phase !== "qa6") return false;
-  return (
-    yaml.includes("inputs.qa_phase == 'qa6' && 'QA8'") ||
-    yaml.includes("inputs.qa_phase == 'qa6' && \"QA8\"")
-  );
+  return excludedSuitesForPhase(yaml, phase).includes(QA8_MATRIX);
 }
 
 function matrixSuitesForPhase(yaml, phase) {
-  const suites = MATRIX_SUITES_ALWAYS.slice();
   const matrixRuns = evalDispatchIf(extractJobIf(yaml, "qa-matrix"), phase);
   if (!matrixRuns) return [];
-  if (phase === "qa6" && qa8ExcludedForQa6(yaml, phase)) return suites;
-  if (
-    phase === "qa3" ||
-    phase === "qa4" ||
-    phase === "qa5" ||
-    phase === "qa6" ||
-    phase === "qa8" ||
-    phase === "full"
-  ) {
-    if (phase !== "qa6") suites.push(QA8_MATRIX);
-    else if (!qa8ExcludedForQa6(yaml, phase)) suites.push(QA8_MATRIX);
-  }
-  return suites;
+  const excluded = new Set(excludedSuitesForPhase(yaml, phase));
+  return parseMatrixSuiteList(yaml).filter((suite) => !excluded.has(suite));
 }
 
 function dispatchRouting(yaml, phase) {
@@ -126,6 +142,9 @@ module.exports = {
   JOB_ORDER,
   dispatchRouting,
   matrixSuitesForPhase,
+  parseMatrixSuiteList,
+  parseExcludeSuiteRules,
+  excludedSuitesForPhase,
   qa4CaseHasClockHarness,
   qa4UploadIncludesClockHarness,
   qa8CasePreservedForFull,

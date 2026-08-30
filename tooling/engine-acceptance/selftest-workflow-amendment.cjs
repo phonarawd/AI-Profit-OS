@@ -23,6 +23,7 @@ const {
   expectedWorkflowHash,
   verifyGovernanceAgainstBaseline,
   assertAcceptanceWorkflowHashMatch,
+  assertQa7NotInFlight,
 } = require("./lib/workflow-amendment.cjs");
 
 function sha256Text(text) {
@@ -494,6 +495,29 @@ function run() {
     const f = [];
     verifyGovernanceAgainstBaseline(baseline2, null, ledger2, { suites: [] }, f);
     check("approved_amendment_tip_pass", f.length === 0, f.join("; "));
+  }
+
+  // QA7 formal COMPLETE is not in-flight — amendment remains allowed.
+  {
+    let completeOk = true;
+    try {
+      assertQa7NotInFlight({
+        suites: [{ suite_id: "QA7", completion_status: "COMPLETE", formal_actions_evidence: true }],
+      });
+    } catch {
+      completeOk = false;
+    }
+    check("qa7_formal_complete_allows_amendment", completeOk, "COMPLETE must not trip in-flight forbid");
+
+    let inFlightBlocked = false;
+    try {
+      assertQa7NotInFlight({
+        suites: [{ suite_id: "QA7", completion_status: "IN_PROGRESS" }],
+      });
+    } catch (e) {
+      inFlightBlocked = e && e.code === "AIPO_QA7_IN_FLIGHT_AMENDMENT_FORBIDDEN";
+    }
+    check("qa7_in_flight_still_forbids_amendment", inFlightBlocked, "IN_PROGRESS must remain forbidden");
   }
 
   // live runner guard export exists

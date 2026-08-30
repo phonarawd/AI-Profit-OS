@@ -20,7 +20,7 @@
   "schema_migration_hash": "7d79073fee241c9abcd259ae76e0ab792513a40123ecd78c1abbc6b94e161356",
   "prompt_hash": "4f201642352210cdce525eeaad53ed2e5d3198786f56a7dd401e6c561fc379b5",
   "eval_dataset_hash": "710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d",
-  "acceptance_workflow_hash": "7afb7a8c599af390b5239f95ae47bb1146cccee4f2af84c3601082006f361f1f",
+  "acceptance_workflow_hash": "93a9d5dbcd2984b23f782e7f2ae628f7283bc0ecd927865ecd292fe2a2db4fde",
   "node_version": "v22.14.0",
   "package_manager_version": "pnpm@10.14.0",
   "hash_rules_ref": "governance/engine-acceptance/protected-scope.v1.json",
