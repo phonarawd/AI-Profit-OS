@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-8",
+  "qa_phase": "QA-9",
   "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
-  "verdict": "ENGINE_QA_INCOMPLETE",
-  "verdict_reason": "QA1–QA8 COMPLETE (formal Actions) · QA9 STALE_AGGREGATION_FOR_CURRENT_EPOCH · ENGINE_ACCEPTED_FOR_UI forbidden · A_BRANCH_FORMAL=NO · RC_FORMAL=NO · RELEASE_READY=NO",
+  "verdict": "ENGINE_ACCEPTED_FOR_UI",
+  "verdict_reason": "QA9 COMPLETE - all acceptance-contract L1 conditions met - ENGINE_ACCEPTED_FOR_UI",
   "evidence_integrity": "VALID",
-  "next": "QA9_ACCEPTANCE_REPORT",
+  "next": "03_ui_entry_unlocked",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -122,22 +122,12 @@
     },
     {
       "suite_id": "QA9",
-      "run_id": null,
+      "run_id": "qa9-acceptance-report-20260830",
       "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
-      "checksum": null,
-      "completion_status": "STALE",
-      "epoch_status": "STALE_AGGREGATION_FOR_CURRENT_EPOCH",
-      "aggregation_only": true,
-      "discovery_suite": false,
-      "current_epoch_authoritative": false,
-      "historical_completion_status": "COMPLETE",
-      "historical_baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
-      "historical_run_id": "qa9-acceptance-report-20260828",
-      "historical_checksum": "a07ac19e71c173b0798af004fd5a27890577d8575b8e98e0e62a3ece14dfc087",
-      "historical_verdict": "ENGINE_ACCEPTED_FOR_UI",
+      "checksum": "5bf04ab4eab1216e20db1798fe56da75e18f3b4f3d196ae6d208a70f7fe01bb9",
+      "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa9-result.v1.json",
-      "predecessor_result_preserved": true,
-      "rerun_after_current_epoch_discovery": true
+      "aggregation_only": true
     }
   ],
   "kill_switch": {
@@ -151,7 +141,8 @@
     "production_like_aborts": true,
     "predecessor_epoch_had_kill_switch": true,
     "verified_before_qa7": true,
-    "verified_before_qa8": true
+    "verified_before_qa8": true,
+    "verified_before_qa9": true
   },
   "dual_dirty": {
     "working_tree_clean": false,
