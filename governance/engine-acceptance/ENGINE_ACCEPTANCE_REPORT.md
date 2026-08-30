@@ -1,12 +1,10 @@
 # ENGINE ACCEPTANCE REPORT
 
-> **QA phase:** QA-7 `qa7-ai-eval`
-> **Measured:** 2026-08-29T17:45:11.805Z
-> **Published:** 2026-08-29T17:52:12.713Z
+> **QA phase:** QA-8 `qa-matrix (QA8)`
+> **Published:** 2026-08-30T05:07:43.096Z
 > **baseline_id:** `ea-baseline-51df73ef6c25-2139dba09588`
-> **qa7_run_id:** `33266426310`
-> **qa7_harness_run_id:** `qa7-local-full-20260829-9627a4`
-> **qa7_result_checksum:** `afb27bb13bfcce87be868cf69c48363e15a026c8fff0a005a0d1ce1a40e1ba19`
+> **qa8_run_id:** `33290985931`
+> **qa8_result_checksum:** `78aa44cb0549997df143aacfb40b38cc51ddfd9adb8c006d7eae83458d1e7b3c`
 > **mode:** `full`
 
 ## Status banner
@@ -22,74 +20,33 @@ QA4 = COMPLETE
 QA5 = COMPLETE
 QA6 = COMPLETE
 QA7 = COMPLETE
-QA8 = NOT_STARTED
-QA HARNESS TARGET = SAFE
-NEXT = QA8_SECURITY_PRIVACY
-PRODUCT MUTATION = 0
-EVAL_MUTATION = 0
-GRADER_MUTATION = 0
-03 UI = BLOCKED
+QA8 = COMPLETE
+QA9 = STALE
+QA9_EPOCH = STALE_AGGREGATION_FOR_CURRENT_EPOCH
+QA9_AUTHORITATIVE = false
+NEXT = QA9_ACCEPTANCE_REPORT
 ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED
+A_BRANCH_FORMAL = NO
+RC_FORMAL = NO
+RELEASE_READY = NO
+PRODUCT MUTATION = 0
 ```
 
-## Verdict (after QA-7 formal Actions publication)
+## Verdict (after QA-8 formal Actions publication)
 
 | Field | Value |
 |---|---|
 | verdict | `ENGINE_QA_INCOMPLETE` |
-| reason | QA7 COMPLETE (formal Actions) · critical_invariant.blocked=0 (QA4-QA6 clean for current epoch) · P0/P1=0 · QA8 NOT_STARTED (mandatory suite incomplete) · ENGINE_ACCEPTED_FOR_UI forbidden |
+| reason | QA1–QA8 COMPLETE (formal Actions) · QA9 STALE_AGGREGATION_FOR_CURRENT_EPOCH · ENGINE_ACCEPTED_FOR_UI forbidden · A_BRANCH_FORMAL=NO · RELEASE_READY=NO |
 | evidence_integrity | `VALID` |
-| baseline.valid | `true` |
-| working_tree_clean | `false` (fact only — not forced clean) |
-| protected_scope_clean | `true` |
-| defects.P0 / P1 | 0 / 0 |
-| critical_invariant.blocked (cumulative) | 0 |
-| critical_invariant.skipped | 0 |
-| critical_invariant.uncovered | 0 |
-| mandatory suites COMPLETE | QA0..QA7 · QA8 NOT_STARTED |
+| qa8_run | `33290985931` |
+| qa8_artifact | `9725954902` |
+| qa8_digest | `a1341d26b973a636726ce416b121f4a93f911407e987feaf1646926b14c152ae` |
+| qa9_run_id | `null` |
+| qa9_checksum | `null` |
 
-**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued** (critical BLOCKED/UNSPECIFIED and/or QA8 incomplete).
+**금지 확인:** `ENGINE_ACCEPTED_FOR_UI` **not issued**. `A_BRANCH_FORMAL=NO`. `RC_FORMAL=NO`. `RELEASE_READY=NO`. QA9 result bytes unchanged.
 
-## QA7 AI Eval (formal GitHub Actions)
+## Security and Privacy World (QA8)
 
-| Field | Value |
-|---|---|
-| formal_actions_evidence | `true` |
-| local_validation_only | `false` |
-| actions.run_id | `33266426310` |
-| workflow | `engine-acceptance` |
-| event | `workflow_dispatch` |
-| qa_phase | `qa7` |
-| head_sha | `a158f9d1d5a0bc07ca8e435e5c383ec1ac7a64d0` |
-| conclusion | `success` |
-| CASES / PASS / FAIL / BLOCKED | 26 / 26 / 0 / 0 |
-| suite_status | `PASS` |
-| trace_id_provenance | `RUNTIME` |
-| no_expectation_leakage | `true` |
-| no_fake_trace | `true` |
-| secret_exposure | `NONE` |
-| artifact | `engine-acceptance-QA7-raw-traces` retention=90d raw_in_repo=false |
-| deterministic_grader | sole oracle · `PASS` |
-| quality_grader | NOT_USED (sole oracle 금지) |
-| prompt/eval/workflow hashes | MATCH |
-
-## Performance World (k6 · CI only heavy)
-
-QA6 기록 유지. suite status `PASS` — budget SPECIFIED (Human/PO ACK, perf-budget.v1.json V1) · threshold mechanism locked · numeric invention **forbidden** · heavy k6 **CI only** · artifact retention ≥ **90** days · aggregator `if: always()`.
-
-| Scenario | Tag | Invariant | Status | Budget | Blocked code |
-|---|---|---|---|---|---|
-| `PERF-FEED-READ` | `feed_read` | `INV-PERF-01` | `PASS` | `PASS` | `-` |
-| `PERF-PARTICIPATE` | `participate` | `INV-PERF-01` | `PASS` | `PASS` | `-` |
-| `PERF-WALLET-READ` | `wallet_read` | `INV-PERF-01` | `PASS` | `PASS` | `-` |
-| `PERF-AUTH-PROFILE` | `auth_profile` | `INV-PERF-01` | `PASS` | `PASS` | `-` |
-
-## Dual Dirty
-
-- working_tree_clean=`false`
-- protected_scope_clean=`true`
-- forced clean / stash laundry = **forbidden**
-
-## Next
-
-`QA8_SECURITY_PRIVACY` only. QA7_AI_EVAL formal evidence is published. Full ACCEPTED · product mutation · 03 UI — **금지**. QA4–QA6 carry forward critical_invariant.blocked=0 (clean) but QA8 (mandatory suite) has not run yet — still blocks `ENGINE_ACCEPTED_FOR_UI`.
+QA8 formal publication binds the official Actions security/privacy suite against **ASVS 5.0.0** (admin boundary, user isolation, JWT validation, privacy delete, error disclosure). This is a subset evaluation, not an exhaustive ASVS certification claim.

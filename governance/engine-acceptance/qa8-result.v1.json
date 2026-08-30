@@ -2,10 +2,10 @@
   "schema": "governance.engine-acceptance.qa8-result.v1",
   "version": "1.0.0",
   "suite_id": "QA8",
-  "run_id": "qa8-security-privacy-20260828",
+  "run_id": "qa8-security-privacy-20260830",
   "todoId": "qa8-security-privacy",
-  "measuredAt": "2026-08-28T09:32:36.225Z",
-  "baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
+  "measuredAt": "2026-08-30T03:46:04.825Z",
+  "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
   "mode": "full",
   "asvs_version": "5.0.0",
   "exhaustive_certification_claim": false,
@@ -26,7 +26,7 @@
       "check_id": "QA8_SECURITY_PRIVACY_WORLD",
       "status": "PASS",
       "mode": "full",
-      "measuredAt": "2026-08-28T09:32:36.225Z",
+      "measuredAt": "2026-08-30T03:46:04.825Z",
       "seed": 20260813,
       "asvs_version": "5.0.0",
       "exhaustive_certification_claim": false,
@@ -228,11 +228,11 @@
           "harness_probe": {
             "available": true,
             "probed_path": "../../../../../tmp/aipo-harness/qa8-adversarial/qa8-adversarial.v1.json",
-            "age_ms": 1323
+            "age_ms": 193
           },
           "evidence": {
             "source": "run-qa8-adversarial.cjs (isolated CI Postgres + booted Nest, real HTTP)",
-            "measuredAt": "2026-08-28T09:32:34.902Z",
+            "measuredAt": "2026-08-30T03:46:04.635Z",
             "case_count": 41,
             "product_security_verdict": "PASS",
             "unknown_product_failures": 0,
@@ -340,5 +340,5 @@
     "Real defects recorded in defects.v1.json - discovery only, not repaired this wave.",
     "Does not issue ENGINE_ACCEPTED_FOR_UI. Does not start QA9."
   ],
-  "checksum": "9ff9bbebc49f971fc5345f7903c06b9f655f619aee9ae51caccc1143fe33a7ef"
+  "checksum": "78aa44cb0549997df143aacfb40b38cc51ddfd9adb8c006d7eae83458d1e7b3c"
 }

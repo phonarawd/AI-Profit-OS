@@ -1,12 +1,12 @@
 {
   "schema": "governance.engine-acceptance.evidence-manifest.v1",
   "version": "1.0.0",
-  "qa_phase": "QA-7",
+  "qa_phase": "QA-8",
   "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
   "verdict": "ENGINE_QA_INCOMPLETE",
-  "verdict_reason": "QA7 COMPLETE (formal Actions) · critical_invariant.blocked=0 (QA4-QA6 clean for current epoch) · P0/P1=0 · QA8 NOT_STARTED (mandatory suite incomplete) · ENGINE_ACCEPTED_FOR_UI forbidden",
+  "verdict_reason": "QA1–QA8 COMPLETE (formal Actions) · QA9 STALE_AGGREGATION_FOR_CURRENT_EPOCH · ENGINE_ACCEPTED_FOR_UI forbidden · A_BRANCH_FORMAL=NO · RC_FORMAL=NO · RELEASE_READY=NO",
   "evidence_integrity": "VALID",
-  "next": "QA8_SECURITY_PRIVACY",
+  "next": "QA9_ACCEPTANCE_REPORT",
   "artifact_policy": {
     "raw_traces": "github_actions_artifact",
     "retention_days_min": 90,
@@ -98,11 +98,10 @@
     },
     {
       "suite_id": "QA8",
-      "run_id": null,
+      "run_id": "qa8-security-privacy-20260830",
       "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
-      "checksum": null,
-      "completion_status": "NOT_STARTED",
-      "epoch_status": "STALE_FOR_CURRENT_EPOCH",
+      "checksum": "78aa44cb0549997df143aacfb40b38cc51ddfd9adb8c006d7eae83458d1e7b3c",
+      "completion_status": "COMPLETE",
       "historical_completion_status": "COMPLETE",
       "historical_baseline_id": "ea-baseline-cc627efc3ee2-defdfa5b6ac4",
       "historical_run_id": "qa8-security-privacy-20260828",
@@ -111,7 +110,15 @@
       "predecessor_result_preserved": true,
       "historical_mode": "full",
       "historical_blocked_codes": [],
-      "historical_asvs_version": "5.0.0"
+      "historical_asvs_version": "5.0.0",
+      "actions_run_id": "33290985931",
+      "mode": "full",
+      "formal_actions_evidence": true,
+      "artifact": "engine-acceptance-QA8",
+      "artifact_id": "9725954902",
+      "digest": "a1341d26b973a636726ce416b121f4a93f911407e987feaf1646926b14c152ae",
+      "head_sha": "81f4bbe83091f08c457faa74ef2b312baf28eb59",
+      "asvs_version": "5.0.0"
     },
     {
       "suite_id": "QA9",
@@ -143,7 +150,8 @@
     "verified_before_qa6": true,
     "production_like_aborts": true,
     "predecessor_epoch_had_kill_switch": true,
-    "verified_before_qa7": true
+    "verified_before_qa7": true,
+    "verified_before_qa8": true
   },
   "dual_dirty": {
     "working_tree_clean": false,
@@ -172,9 +180,9 @@
     "current_epoch_status": "STALE"
   },
   "publication": {
-    "kind": "official_qa1_qa6_checkpoint",
+    "kind": "official_qa8_formal",
     "qa1_qa6_subject_sha": "3d04fa91efffba84196a40247c08d0614fc5623d",
-    "official_run_id": "33263176074",
+    "official_run_id": "33290985931",
     "suites": {
       "QA1": {
         "artifact_id": "9717843355",
@@ -224,6 +232,18 @@
         "file_digest": "eb887b3e5a3b3076519dbba5742626b37dbfedb813711cdd2a3e2b0b863504da",
         "actions_run_id": "33263176074"
       }
+    },
+    "qa8_subject_sha": "81f4bbe83091f08c457faa74ef2b312baf28eb59",
+    "qa8": {
+      "artifact_id": "9725954902",
+      "artifact_name": "engine-acceptance-QA8",
+      "digest": "sha256:a1341d26b973a636726ce416b121f4a93f911407e987feaf1646926b14c152ae",
+      "checksum": "78aa44cb0549997df143aacfb40b38cc51ddfd9adb8c006d7eae83458d1e7b3c",
+      "actions_run_id": "33290985931"
     }
-  }
+  },
+  "a_branch_formal": "NO",
+  "rc_formal": "NO",
+  "release_ready": "NO",
+  "engine_accepted_for_ui": "NOT_ISSUED"
 }
