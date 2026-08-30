@@ -13,6 +13,7 @@
  */
 "use strict";
 
+const { execSync } = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
@@ -68,6 +69,74 @@ function fail(message, code) {
   const err = new Error(message);
   err.code = code || "AIPO_QA8_PUBLISH_REJECT";
   throw err;
+}
+
+/**
+ * 읽기 전용 ancestor 검증. exit 0 만 PASS.
+ * nonzero / git 오류 / 실행 불가 = fail-closed.
+ */
+function gitMergeBaseIsAncestor(ancestorSha, descendantSha, cwd) {
+  if (!ancestorSha || !descendantSha) {
+    fail("QA7 predecessor subject SHA missing", "QA7_PREDECESSOR");
+  }
+  if (!/^[0-9a-f]{40}$/i.test(ancestorSha) || !/^[0-9a-f]{40}$/i.test(descendantSha)) {
+    fail("QA7 predecessor subject SHA invalid", "QA7_PREDECESSOR");
+  }
+  const repo = cwd || ROOT;
+  const env = { ...process.env };
+  delete env.GIT_DIR;
+  delete env.GIT_WORK_TREE;
+  delete env.GIT_INDEX_FILE;
+  delete env.GIT_OBJECT_DIRECTORY;
+  delete env.GIT_ALTERNATE_OBJECT_DIRECTORIES;
+  env.GIT_DIR = path.join(repo, ".git");
+  env.GIT_WORK_TREE = repo;
+  try {
+    execSync(`git merge-base --is-ancestor ${ancestorSha} ${descendantSha}`, {
+      cwd: repo,
+      encoding: "utf8",
+      env,
+      stdio: ["ignore", "ignore", "pipe"],
+    });
+    return true;
+  } catch {
+    fail("QA7 predecessor subject is not an ancestor of QA8 publication SHA", "QA7_PREDECESSOR");
+  }
+  return false;
+}
+
+function resolveQa7Ancestor(subject, publicationSha, opts) {
+  const same = String(subject).toLowerCase() === String(publicationSha).toLowerCase();
+  if (same) return true;
+  if (typeof opts.isAncestor === "function") {
+    const ok = opts.isAncestor(subject, publicationSha);
+    if (!ok) {
+      fail("QA7 predecessor subject is not an ancestor of QA8 run SHA", "QA7_PREDECESSOR");
+    }
+    return true;
+  }
+  return gitMergeBaseIsAncestor(subject, publicationSha, opts.gitCwd || opts.root || ROOT);
+}
+
+function assertDistinctQa8RunIds(suiteRunId, actionsRunId) {
+  const suite = String(suiteRunId || "");
+  const actions = String(actionsRunId || "");
+  if (!suite) fail("QA8 raw suite run_id missing", "QA8_RUN_ID");
+  if (!/^[0-9]+$/.test(actions)) {
+    fail("GitHub Actions run id must be numeric", "RUN_ID");
+  }
+  if (suite === actions) {
+    fail("QA8 suite run_id must not be the GitHub Actions run id", "RUN_ID_MIXED");
+  }
+}
+
+function assertQa8KillSwitch(result) {
+  if (!result || !result.kill_switch || result.kill_switch.verified_before_checks !== true) {
+    fail(
+      "QA8 kill_switch.verified_before_checks must be true to publish verified_before_qa8",
+      "KILL_SWITCH",
+    );
+  }
 }
 
 function findFile(dir, name) {
@@ -194,12 +263,7 @@ function assertQa7Predecessor(root, baseline, run, opts) {
   if (!subject || !/^[0-9a-f]{40}$/i.test(subject)) {
     fail("QA7 predecessor subject SHA missing", "QA7_PREDECESSOR");
   }
-  const ancestorFn = opts.isAncestor;
-  const same = String(subject).toLowerCase() === String(run.head_sha).toLowerCase();
-  const ancestor = typeof ancestorFn === "function" ? ancestorFn(subject, run.head_sha) : same;
-  if (!same && !ancestor) {
-    fail("QA7 predecessor subject is not an ancestor of QA8 run SHA", "QA7_PREDECESSOR");
-  }
+  resolveQa7Ancestor(subject, run.head_sha, opts);
   return { qa7, qa7Slot, subject };
 }
 
@@ -258,11 +322,14 @@ function assertGatesStayClosed(result, evidence) {
   }
 }
 
-function alreadyPublished(evidence, run, artifact, checksum) {
+function alreadyPublished(evidence, run, artifact, checksum, suiteRunId) {
   const qa8 = (evidence.suites || []).find((s) => s.suite_id === "QA8");
   if (!qa8 || qa8.completion_status !== "COMPLETE") return false;
+  const pub = evidence.publication && evidence.publication.qa8;
+  const actionsId = String((qa8.actions_run_id || (pub && pub.actions_run_id) || ""));
   return (
-    String(qa8.run_id) === String(run.id) &&
+    String(qa8.run_id) === String(suiteRunId) &&
+    actionsId === String(run.id) &&
     String(qa8.artifact_id) === String(artifact.id) &&
     normalizeDigest(qa8.digest || "") === normalizeDigest(artifact.digest || "") &&
     qa8.checksum === checksum
@@ -319,11 +386,17 @@ PRODUCT MUTATION = 0
 | qa9_checksum | \`${qa9 && qa9.checksum}\` |
 
 **금지 확인:** \`ENGINE_ACCEPTED_FOR_UI\` **not issued**. \`A_BRANCH_FORMAL=NO\`. \`RC_FORMAL=NO\`. \`RELEASE_READY=NO\`. QA9 result bytes unchanged.
+
+## Security and Privacy World (QA8)
+
+QA8 formal publication binds the official Actions security/privacy suite against **ASVS 5.0.0** (admin boundary, user isolation, JWT validation, privacy delete, error disclosure). This is a subset evaluation, not an exhaustive ASVS certification claim.
 `;
 }
 
-function nextEvidence(evidence, baseline, run, artifact, checksum, dual) {
+function nextEvidence(evidence, baseline, run, artifact, checksum, dual, rawResult) {
   const next = JSON.parse(JSON.stringify(evidence));
+  const suiteRunId = String(rawResult.run_id);
+  assertDistinctQa8RunIds(suiteRunId, run.id);
   next.qa_phase = "QA-8";
   next.baseline_id = baseline.id;
   next.verdict = "ENGINE_QA_INCOMPLETE";
@@ -335,6 +408,10 @@ function nextEvidence(evidence, baseline, run, artifact, checksum, dual) {
   next.rc_formal = "NO";
   next.release_ready = "NO";
   next.engine_accepted_for_ui = "NOT_ISSUED";
+  next.kill_switch = {
+    ...(next.kill_switch || {}),
+    verified_before_qa8: true,
+  };
   if (dual) {
     next.dual_dirty = {
       working_tree_clean: dual.working_tree_clean,
@@ -344,10 +421,13 @@ function nextEvidence(evidence, baseline, run, artifact, checksum, dual) {
   }
   next.suites = (next.suites || []).map((s) => {
     if (s.suite_id === "QA8") {
+      const { epoch_status: _staleEpochStatus, ...rest } = s;
+      void _staleEpochStatus;
       return {
-        ...s,
+        ...rest,
         suite_id: "QA8",
-        run_id: String(run.id),
+        run_id: suiteRunId,
+        actions_run_id: String(run.id),
         baseline_id: baseline.id,
         checksum,
         completion_status: "COMPLETE",
@@ -358,6 +438,7 @@ function nextEvidence(evidence, baseline, run, artifact, checksum, dual) {
         artifact_id: String(artifact.id),
         digest: normalizeDigest(artifact.digest),
         head_sha: run.head_sha,
+        asvs_version: rawResult.asvs_version || null,
       };
     }
     if (s.suite_id === "QA9") {
@@ -442,6 +523,8 @@ function publishQa8Formal(opts = {}) {
 
   const payload = loadArtifactPayload(opts.artifactDir);
   assertHarnessComplete(payload.harnessFiles);
+  assertQa8KillSwitch(payload.result);
+  assertDistinctQa8RunIds(payload.result.run_id, run.id);
   const checked = assertQa8Result(payload.result, baseline, run);
   const pred = assertQa7Predecessor(root, baseline, run, opts);
   assertWorkflowAndHashes(baseline, pred.qa7, checked.pinnedWorkflowHash, ledger);
@@ -452,7 +535,7 @@ function publishQa8Formal(opts = {}) {
     fail("CLI baseline id is not current baseline", "QA8_BASELINE");
   }
 
-  if (alreadyPublished(evidence, run, artifact, checked.checksum)) {
+  if (alreadyPublished(evidence, run, artifact, checked.checksum, payload.result.run_id)) {
     return {
       status: "QA8_FORMAL_ALREADY_PUBLISHED",
       dry_run: dryRun,
@@ -474,7 +557,15 @@ function publishQa8Formal(opts = {}) {
   const publishedAt = opts.publishedAt || new Date().toISOString();
   const publishedResult = { ...payload.result, publishedAt, engine_accepted_for_ui: "NOT_ISSUED" };
   // publication metadata must not break the artifact checksum; keep artifact bytes.
-  const nextEv = nextEvidence(evidence, baseline, run, artifact, checked.checksum, opts.dual);
+  const nextEv = nextEvidence(
+    evidence,
+    baseline,
+    run,
+    artifact,
+    checked.checksum,
+    opts.dual,
+    payload.result,
+  );
   assertQa9StaleAfterQa8(nextEv, qa9Result, baseline.id);
   assertGatesStayClosed(publishedResult, nextEv);
   const report = buildReport({
@@ -531,11 +622,21 @@ function publishQa8Formal(opts = {}) {
         fail("staged QA8 result binding mismatch", "ATOMIC");
       }
       const qa8 = (stagedEvidence.suites || []).find((s) => s.suite_id === "QA8");
-      if (!qa8 || qa8.run_id !== String(run.id) || qa8.checksum !== checked.checksum) {
+      if (!qa8 || qa8.run_id !== String(payload.result.run_id) || qa8.checksum !== checked.checksum) {
         fail("staged evidence QA8 binding mismatch", "ATOMIC");
       }
-      if (qa8.artifact_id !== String(artifact.id) || qa8.head_sha !== run.head_sha) {
+      if (qa8.run_id === String(run.id)) {
+        fail("staged QA8 mixed suite run_id with Actions run id", "RUN_ID_MIXED");
+      }
+      if (
+        qa8.actions_run_id !== String(run.id) ||
+        qa8.artifact_id !== String(artifact.id) ||
+        qa8.head_sha !== run.head_sha
+      ) {
         fail("staged evidence subject/run/artifact binding mismatch", "ATOMIC");
+      }
+      if (!stagedEvidence.kill_switch || stagedEvidence.kill_switch.verified_before_qa8 !== true) {
+        fail("staged evidence missing kill_switch.verified_before_qa8", "KILL_SWITCH");
       }
       const qa9 = (stagedEvidence.suites || []).find((s) => s.suite_id === "QA9");
       if (
@@ -597,4 +698,12 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { publishQa8Formal, OFFICIAL_RELS, HARNESS_FILES };
+module.exports = {
+  publishQa8Formal,
+  OFFICIAL_RELS,
+  HARNESS_FILES,
+  gitMergeBaseIsAncestor,
+  resolveQa7Ancestor,
+  assertDistinctQa8RunIds,
+  assertQa8KillSwitch,
+};

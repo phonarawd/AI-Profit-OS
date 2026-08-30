@@ -6,6 +6,7 @@
 "use strict";
 
 const assert = require("node:assert/strict");
+const { execSync } = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 const { GOV, FIX_CUR, FIX_WF, FIX_BRANCH, seal, writeJsonAbs, makeQa8FormalSandbox, copyRels } = require("./lib/qa-checkpoint-fixtures.cjs");
@@ -101,6 +102,11 @@ function makeQa8Result(over = {}) {
     },
     all_checks_pass: over.all_checks_pass !== false,
     defects_counts: over.defects_counts || { P0: 0, P1: 0, P2: 0, P3: 0 },
+    asvs_version: over.asvs_version === undefined ? "5.0.0" : over.asvs_version,
+    kill_switch:
+      over.kill_switch === undefined
+        ? { verified_before_checks: true, target_env: "ci" }
+        : over.kill_switch,
     engine_accepted_for_ui: "NOT_ISSUED",
     next: "QA9_ACCEPTANCE_REPORT",
     ...(over.extra || {}),
@@ -202,7 +208,7 @@ function happyOpts(sandbox, extra = {}) {
   const result = extra.result || makeQa8Result(extra.resultOver || {});
   const artDir = extra.artDir || path.join(sandbox.dir, "artifact");
   if (!extra.skipWriteArtifact) writeArtifactDir(artDir, result, extra.harnessOver || {});
-  return {
+  const opts = {
     root: sandbox.dir,
     actionsRunId: RUN_ID,
     artifactId: ART_ID,
@@ -215,10 +221,66 @@ function happyOpts(sandbox, extra = {}) {
     publishedAt: "2026-08-30T00:00:00.000Z",
     workflowYaml: extra.workflowYaml || VALID_QA8_WORKFLOW_YAML,
     actual: extra.actual !== false,
-    isAncestor: extra.isAncestor || ((a, d) => a === SUBJECT && d === HEAD),
     dual: { working_tree_clean: true, protected_scope_clean: true },
     ...extra.opts,
   };
+  if (!extra.omitAncestor) {
+    opts.isAncestor = extra.isAncestor || ((a, d) => a === SUBJECT && d === HEAD);
+  }
+  return opts;
+}
+
+function isolatedGitEnv(repoDir) {
+  const env = { ...process.env };
+  delete env.GIT_DIR;
+  delete env.GIT_WORK_TREE;
+  delete env.GIT_INDEX_FILE;
+  delete env.GIT_OBJECT_DIRECTORY;
+  delete env.GIT_ALTERNATE_OBJECT_DIRECTORIES;
+  env.GIT_DIR = path.join(repoDir, ".git");
+  env.GIT_WORK_TREE = repoDir;
+  env.HUSKY = "0";
+  env.GIT_CONFIG_COUNT = "1";
+  env.GIT_CONFIG_KEY_0 = "core.hooksPath";
+  env.GIT_CONFIG_VALUE_0 = path.join(repoDir, ".no-hooks");
+  return env;
+}
+
+function gitInRepo(repoDir, args, stdio) {
+  return execSync(`git ${args}`, {
+    cwd: repoDir,
+    encoding: "utf8",
+    env: isolatedGitEnv(repoDir),
+    stdio: stdio || ["ignore", "pipe", "pipe"],
+  });
+}
+
+function initGitRepo(dir) {
+  fs.mkdirSync(dir, { recursive: true });
+  fs.mkdirSync(path.join(dir, ".no-hooks"), { recursive: true });
+  gitInRepo(dir, "init", ["ignore", "ignore", "pipe"]);
+  gitInRepo(dir, 'config user.email "qa8-selftest@example.com"');
+  gitInRepo(dir, 'config user.name "qa8-selftest"');
+}
+
+function commitFile(dir, name, body, message) {
+  fs.writeFileSync(path.join(dir, name), body);
+  gitInRepo(dir, `add ${name}`);
+  gitInRepo(dir, `commit -m ${JSON.stringify(message)}`);
+  return gitInRepo(dir, "rev-parse HEAD").trim();
+}
+
+function setQa7Subject(sandbox, subjectSha) {
+  const qa7Abs = path.join(sandbox.dir, `${GOV}/qa7-result.v1.json`);
+  const qa7 = JSON.parse(fs.readFileSync(qa7Abs, "utf8"));
+  qa7.actions.head_sha = subjectSha;
+  writeJsonAbs(qa7Abs, qa7);
+  const evAbs = path.join(sandbox.dir, `${GOV}/evidence-manifest.v1.json`);
+  const evidence = JSON.parse(fs.readFileSync(evAbs, "utf8"));
+  evidence.suites = evidence.suites.map((s) =>
+    s.suite_id === "QA7" ? { ...s, head_sha: subjectSha } : s,
+  );
+  writeJsonAbs(evAbs, evidence);
 }
 
 function rejectCode(fn) {
@@ -270,9 +332,13 @@ function run() {
     const qa9 = evidence.suites.find((s) => s.suite_id === "QA9");
     const qa7 = evidence.suites.find((s) => s.suite_id === "QA7");
     assert.equal(qa8.completion_status, "COMPLETE");
-    assert.equal(qa8.run_id, RUN_ID);
+    assert.equal(qa8.run_id, "qa8-security-privacy-fixture");
+    assert.equal(qa8.actions_run_id, RUN_ID);
+    assert.notEqual(qa8.run_id, RUN_ID);
     assert.equal(qa8.artifact_id, ART_ID);
     assert.equal(qa8.head_sha, HEAD);
+    assert.equal(evidence.publication.qa8.actions_run_id, RUN_ID);
+    assert.equal(evidence.kill_switch.verified_before_qa8, true);
     assert.equal(qa9.completion_status, "STALE");
     assert.equal(qa9.epoch_status, "STALE_AGGREGATION_FOR_CURRENT_EPOCH");
     assert.equal(qa9.current_epoch_authoritative, false);
@@ -287,6 +353,7 @@ function run() {
     const report = fs.readFileSync(path.join(sb.dir, `${GOV}/ENGINE_ACCEPTANCE_REPORT.md`), "utf8");
     assert.match(report, /A_BRANCH_FORMAL = NO/);
     assert.match(report, /ENGINE_ACCEPTED_FOR_UI = NOT_ISSUED/);
+    assert.match(report, /ASVS 5\.0\.0/);
     fs.rmSync(sb.dir, { recursive: true, force: true });
   });
 
@@ -781,6 +848,183 @@ function run() {
     publishQa8Formal(happyOpts(sb));
     const after = fs.readFileSync(path.join(sb.dir, `${GOV}/qa9-result.v1.json`));
     assert.ok(before.equals(after));
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("suite_run_id_matches_raw_and_actions_id_stays_in_provenance", () => {
+    const sb = makeQa8FormalSandbox();
+    const result = makeQa8Result();
+    const artDir = path.join(sb.dir, "artifact-ids");
+    writeArtifactDir(artDir, result);
+    const rawBytes = fs.readFileSync(path.join(artDir, `${GOV}/qa8-result.v1.json`));
+    const qa7Before = fs.readFileSync(path.join(sb.dir, `${GOV}/qa7-result.v1.json`));
+    const qa9Before = fs.readFileSync(path.join(sb.dir, `${GOV}/qa9-result.v1.json`));
+    const out = publishQa8Formal(happyOpts(sb, { artDir, skipWriteArtifact: true, result }));
+    assert.equal(out.status, "QA8_FORMAL_PUBLISHED");
+    const evidence = JSON.parse(fs.readFileSync(path.join(sb.dir, `${GOV}/evidence-manifest.v1.json`), "utf8"));
+    const qa8 = evidence.suites.find((s) => s.suite_id === "QA8");
+    const qa9 = evidence.suites.find((s) => s.suite_id === "QA9");
+    assert.equal(qa8.run_id, result.run_id);
+    assert.equal(qa8.actions_run_id, RUN_ID);
+    assert.equal(evidence.publication.qa8.actions_run_id, RUN_ID);
+    assert.equal(evidence.publication.official_run_id, RUN_ID);
+    assert.notEqual(qa8.run_id, qa8.actions_run_id);
+    assert.equal(qa9.completion_status, "STALE");
+    assert.equal(qa9.epoch_status, "STALE_AGGREGATION_FOR_CURRENT_EPOCH");
+    assert.equal(qa9.current_epoch_authoritative, false);
+    assert.equal(qa9.run_id, null);
+    assert.equal(qa9.checksum, null);
+    assert.ok(rawBytes.equals(fs.readFileSync(path.join(artDir, `${GOV}/qa8-result.v1.json`))));
+    assert.ok(qa7Before.equals(fs.readFileSync(path.join(sb.dir, `${GOV}/qa7-result.v1.json`))));
+    assert.ok(qa9Before.equals(fs.readFileSync(path.join(sb.dir, `${GOV}/qa9-result.v1.json`))));
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("mixed_suite_and_actions_run_id_rejected", () => {
+    const sb = makeQa8FormalSandbox();
+    const snap = snapshot(sb.dir);
+    const got = rejectCode(() =>
+      publishQa8Formal(happyOpts(sb, { resultOver: { extra: { run_id: RUN_ID } } })),
+    );
+    assert.equal(got, "RUN_ID_MIXED");
+    assert.equal(unchanged(sb.dir, snap), true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("kill_switch_true_publishes_verified_before_qa8", () => {
+    const sb = makeQa8FormalSandbox();
+    publishQa8Formal(
+      happyOpts(sb, { resultOver: { kill_switch: { verified_before_checks: true } } }),
+    );
+    const evidence = JSON.parse(fs.readFileSync(path.join(sb.dir, `${GOV}/evidence-manifest.v1.json`), "utf8"));
+    assert.equal(evidence.kill_switch.verified_before_qa8, true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("kill_switch_false_rejected", () => {
+    const sb = makeQa8FormalSandbox();
+    const snap = snapshot(sb.dir);
+    const got = rejectCode(() =>
+      publishQa8Formal(
+        happyOpts(sb, { resultOver: { kill_switch: { verified_before_checks: false } } }),
+      ),
+    );
+    assert.equal(got, "KILL_SWITCH");
+    assert.equal(unchanged(sb.dir, snap), true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("kill_switch_missing_rejected", () => {
+    const sb = makeQa8FormalSandbox();
+    const snap = snapshot(sb.dir);
+    const got = rejectCode(() =>
+      publishQa8Formal(happyOpts(sb, { resultOver: { kill_switch: null } })),
+    );
+    assert.equal(got, "KILL_SWITCH");
+    assert.equal(unchanged(sb.dir, snap), true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("report_contains_asvs_5_0_0", () => {
+    const sb = makeQa8FormalSandbox();
+    publishQa8Formal(happyOpts(sb));
+    const report = fs.readFileSync(path.join(sb.dir, `${GOV}/ENGINE_ACCEPTANCE_REPORT.md`), "utf8");
+    assert.match(report, /ASVS 5\.0\.0/);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("isolated_git_does_not_use_ambient_git_dir", () => {
+    const src = fs.readFileSync(path.join(__dirname, "selftest-qa8-formal-publisher.cjs"), "utf8");
+    assert.match(src, /delete env\.GIT_DIR/);
+    assert.match(src, /delete env\.GIT_WORK_TREE/);
+    assert.match(src, /HUSKY/);
+    const beforeHead = execSync("git rev-parse HEAD", { encoding: "utf8" }).trim();
+    const sb = makeQa8FormalSandbox();
+    const gitDir = path.join(sb.dir, "git-iso");
+    initGitRepo(gitDir);
+    commitFile(gitDir, "qa7.txt", "qa7", "qa7");
+    commitFile(gitDir, "qa8.txt", "qa8", "qa8");
+    assert.equal(execSync("git rev-parse HEAD", { encoding: "utf8" }).trim(), beforeHead);
+    assert.equal(fs.existsSync(path.join(process.cwd(), "qa7.txt")), false);
+    assert.equal(fs.existsSync(path.join(process.cwd(), "qa8.txt")), false);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("cli_main_path_uses_git_merge_base_without_injection", () => {
+    const src = fs.readFileSync(path.join(__dirname, "publish-qa8-formal.cjs"), "utf8");
+    assert.match(src, /git merge-base --is-ancestor/);
+    const main = src.slice(src.indexOf("function main("));
+    assert.doesNotMatch(main, /isAncestor\s*:/);
+  });
+
+  check("cli_ancestor_pass_without_injection", () => {
+    const sb = makeQa8FormalSandbox();
+    const gitDir = path.join(sb.dir, "git-pass");
+    initGitRepo(gitDir);
+    const subject = commitFile(gitDir, "qa7.txt", "qa7", "qa7");
+    const head = commitFile(gitDir, "qa8.txt", "qa8", "qa8");
+    setQa7Subject(sb, subject);
+    const out = publishQa8Formal(
+      happyOpts(sb, {
+        omitAncestor: true,
+        ghOver: { runOver: { head_sha: head } },
+        opts: { gitCwd: gitDir, headSha: head },
+      }),
+    );
+    assert.equal(out.status, "QA8_FORMAL_PUBLISHED");
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("cli_non_ancestor_fail_closed", () => {
+    const sb = makeQa8FormalSandbox();
+    const gitDir = path.join(sb.dir, "git-non");
+    initGitRepo(gitDir);
+    const subject = commitFile(gitDir, "qa7.txt", "qa7", "qa7");
+    gitInRepo(gitDir, "checkout --orphan other", ["ignore", "ignore", "pipe"]);
+    const head = commitFile(gitDir, "other.txt", "other", "other");
+    setQa7Subject(sb, subject);
+    const snap = snapshot(sb.dir);
+    const got = rejectCode(() =>
+      publishQa8Formal(
+        happyOpts(sb, {
+          omitAncestor: true,
+          ghOver: { runOver: { head_sha: head } },
+          opts: { gitCwd: gitDir, headSha: head },
+        }),
+      ),
+    );
+    assert.equal(got, "QA7_PREDECESSOR");
+    assert.equal(unchanged(sb.dir, snap), true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("cli_git_error_fail_closed", () => {
+    const sb = makeQa8FormalSandbox();
+    const empty = path.join(sb.dir, "not-a-git");
+    fs.mkdirSync(empty, { recursive: true });
+    const snap = snapshot(sb.dir);
+    const got = rejectCode(() =>
+      publishQa8Formal(happyOpts(sb, { omitAncestor: true, opts: { gitCwd: empty } })),
+    );
+    assert.equal(got, "QA7_PREDECESSOR");
+    assert.equal(unchanged(sb.dir, snap), true);
+    fs.rmSync(sb.dir, { recursive: true, force: true });
+  });
+
+  check("official_shaped_fixture_dry_run_pass", () => {
+    const sb = makeQa8FormalSandbox();
+    const snap = snapshot(sb.dir);
+    const result = makeQa8Result({
+      extra: { run_id: "qa8-security-privacy-20260830" },
+      asvs_version: "5.0.0",
+      kill_switch: { verified_before_checks: true },
+    });
+    const out = publishQa8Formal(
+      happyOpts(sb, { result, actual: false, opts: { actual: false, dryRun: true } }),
+    );
+    assert.equal(out.status, "QA8_FORMAL_VALIDATED");
+    assert.equal(out.dry_run, true);
+    assert.equal(unchanged(sb.dir, snap), true);
     fs.rmSync(sb.dir, { recursive: true, force: true });
   });
 
