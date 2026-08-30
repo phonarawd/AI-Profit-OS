@@ -231,10 +231,36 @@
       "digest": "sha256:a1341d26b973a636726ce416b121f4a93f911407e987feaf1646926b14c152ae",
       "checksum": "78aa44cb0549997df143aacfb40b38cc51ddfd9adb8c006d7eae83458d1e7b3c",
       "actions_run_id": "33290985931"
+    },
+    "a_branch_formal": {
+      "kind": "official_a_branch_formal",
+      "formalization_id": "a-branch-formal-17a5a3a07e36-5bf04ab4eab1",
+      "formal_subject_sha": "17a5a3a07e36b21c7316e196a9906a381b8f3163",
+      "publisher_commit_sha": "f44276d951182e12de6ed89fc0fac960c82d8451",
+      "publisher_id": "official_a_branch_formal_publisher",
+      "publisher_version": "A_BRANCH_FORMAL_PUBLISHER_V1",
+      "issued_at": "2026-08-30T06:49:58.776Z",
+      "checksum": "14bd5891d6b10d9acf9fd4f5dd771d6914453d278a3981004d862dd75bd9f8c9"
     }
   },
-  "a_branch_formal": "NO",
+  "a_branch_formal": "YES",
   "rc_formal": "NO",
   "release_ready": "NO",
-  "engine_accepted_for_ui": "NOT_ISSUED"
+  "engine_accepted_for_ui": "ISSUED",
+  "current_state": {
+    "authority": "official_a_branch_formal_publisher",
+    "owner": "evidence.current_state+normalized_top_level_gates",
+    "manifest_footer_classification": "current_authoritative_normalized_by_a_branch_formal_publisher",
+    "manifest_state_conflict_root_cause": "QA8_PUBLISHER_CURRENT_GATE_FOOTER_LEFT_STALE_AFTER_QA9",
+    "current_epoch_classification": "historical_rebase_snapshot",
+    "engine_accepted_for_ui": "ISSUED",
+    "a_branch_formal": "YES",
+    "rc_formal": "NO",
+    "release_ready": "NO",
+    "next_release_step": "RC_TRAIN_PREFLIGHT",
+    "formal_subject_sha": "17a5a3a07e36b21c7316e196a9906a381b8f3163",
+    "publisher_commit_sha": "f44276d951182e12de6ed89fc0fac960c82d8451",
+    "qa9_run_id": "qa9-acceptance-report-20260830",
+    "qa9_checksum": "5bf04ab4eab1216e20db1798fe56da75e18f3b4f3d196ae6d208a70f7fe01bb9"
+  }
 }

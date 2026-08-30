@@ -1,0 +1,36 @@
+{
+  "schema": "governance.engine-acceptance.a-branch-formal-result.v1",
+  "version": "1.0.0",
+  "formalization_id": "a-branch-formal-17a5a3a07e36-5bf04ab4eab1",
+  "completion_status": "COMPLETE",
+  "a_branch_formal": true,
+  "branch": "rel502/a-502-1-p-help-fail-closed",
+  "formal_subject_sha": "17a5a3a07e36b21c7316e196a9906a381b8f3163",
+  "publisher_commit_sha": "f44276d951182e12de6ed89fc0fac960c82d8451",
+  "publication": {
+    "kind": "official_a_branch_formal",
+    "publisher_id": "official_a_branch_formal_publisher",
+    "publisher_version": "A_BRANCH_FORMAL_PUBLISHER_V1",
+    "issued_at": "2026-08-30T06:49:58.776Z"
+  },
+  "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
+  "acceptance_workflow_hash": "7eb0c52b550f3aadc58b29a029687c0720bc15a6c7efbee82c69df4ca20ba0b0",
+  "prompt_hash": "4f201642352210cdce525eeaad53ed2e5d3198786f56a7dd401e6c561fc379b5",
+  "eval_dataset_hash": "710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d",
+  "qa9_run_id": "qa9-acceptance-report-20260830",
+  "qa9_checksum": "5bf04ab4eab1216e20db1798fe56da75e18f3b4f3d196ae6d208a70f7fe01bb9",
+  "engine_accepted_for_ui": "ISSUED",
+  "current_epoch_binding": {
+    "baseline_id": "ea-baseline-51df73ef6c25-2139dba09588",
+    "qa9_run_id": "qa9-acceptance-report-20260830",
+    "qa9_checksum": "5bf04ab4eab1216e20db1798fe56da75e18f3b4f3d196ae6d208a70f7fe01bb9",
+    "qa9_verdict": "ENGINE_ACCEPTED_FOR_UI"
+  },
+  "issued_at": "2026-08-30T06:49:58.776Z",
+  "publisher_id": "official_a_branch_formal_publisher",
+  "publisher_version": "A_BRANCH_FORMAL_PUBLISHER_V1",
+  "rc_formal": false,
+  "release_ready": false,
+  "next_release_step": "RC_TRAIN_PREFLIGHT",
+  "checksum": "14bd5891d6b10d9acf9fd4f5dd771d6914453d278a3981004d862dd75bd9f8c9"
+}

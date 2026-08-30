@@ -27,6 +27,10 @@ NEXT = 03_ui_entry_unlocked
 PRODUCT MUTATION = 0
 03 UI = UNLOCKED
 ENGINE_ACCEPTED_FOR_UI = ISSUED
+A_BRANCH_FORMAL = YES
+RC_FORMAL = NO
+RELEASE_READY = NO
+NEXT_RELEASE_STEP = RC_TRAIN_PREFLIGHT
 UI_UX_ENTRY_GATE = OPEN
 ```
 
@@ -148,3 +152,21 @@ No outstanding defects or BLOCKED critical_invariant rows are currently recorded
 ## NEXT_CANONICAL_WAVE
 
 `03_ui_entry_unlocked` — verdict `ENGINE_ACCEPTED_FOR_UI` unlocks 03 UI. All acceptance-contract L1 conditions are met on this evidence.
+
+## A_BRANCH_FORMAL
+
+| Field | Value |
+|---|---|
+| a_branch_formal | `YES` |
+| formalization_id | `a-branch-formal-17a5a3a07e36-5bf04ab4eab1` |
+| formal_subject_sha | `17a5a3a07e36b21c7316e196a9906a381b8f3163` |
+| publisher_commit_sha | `f44276d951182e12de6ed89fc0fac960c82d8451` |
+| qa9_run_id | `qa9-acceptance-report-20260830` |
+| qa9_checksum | `5bf04ab4eab1216e20db1798fe56da75e18f3b4f3d196ae6d208a70f7fe01bb9` |
+| ENGINE_ACCEPTED_FOR_UI | `ISSUED` |
+| RC_FORMAL | `NO` |
+| RELEASE_READY | `NO` |
+| next_release_step | `RC_TRAIN_PREFLIGHT` |
+| publisher | `official_a_branch_formal_publisher@A_BRANCH_FORMAL_PUBLISHER_V1` |
+
+A_BRANCH_FORMAL ≠ RC_FORMAL. This issuance is not train merge, main merge, or RELEASE_READY.
