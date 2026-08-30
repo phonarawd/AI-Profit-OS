@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/spark-toss-tokens.v1.json",
+  "title": "SparkTossTokensV1",
+  "description": "UI-1 Spark+Toss semantic token contract. Not a visual pass.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "namespace",
+    "designDirection",
+    "color",
+    "typography",
+    "layout",
+    "motion"
+  ],
+  "properties": {
+    "version": { "type": "string", "minLength": 1 },
+    "namespace": { "type": "string", "const": "spark-toss" },
+    "designDirection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sparkDash", "tossPremium"],
+      "properties": {
+        "sparkDash": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "tossPremium": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+      }
+    },
+    "color": {
+      "type": "object",
+      "required": [
+        "canvas",
+        "surface",
+        "elevatedSurface",
+        "textPrimary",
+        "textSecondary",
+        "textMuted",
+        "brandPrimary",
+        "brandAccent",
+        "borderSubtle",
+        "borderStrong",
+        "positive",
+        "caution",
+        "critical",
+        "information",
+        "focusRing",
+        "disabled",
+        "overlay"
+      ]
+    },
+    "typography": {
+      "type": "object",
+      "required": [
+        "display",
+        "pageTitle",
+        "sectionTitle",
+        "body",
+        "supporting",
+        "label",
+        "number",
+        "caption",
+        "fontFamily"
+      ]
+    },
+    "layout": {
+      "type": "object",
+      "required": [
+        "spacing",
+        "container",
+        "gutter",
+        "radius",
+        "elevation",
+        "touchTargetPx",
+        "safeArea",
+        "density"
+      ]
+    },
+    "motion": {
+      "type": "object",
+      "required": ["duration", "easing", "reducedMotion"]
+    }
+  }
+}

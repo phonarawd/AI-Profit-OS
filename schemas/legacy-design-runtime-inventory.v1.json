@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/legacy-design-runtime-inventory.v1.json",
+  "title": "LegacyDesignRuntimeInventoryV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "version",
+    "authorizationScope",
+    "baseSha",
+    "goal",
+    "zeroLuxComplete",
+    "rows"
+  ],
+  "properties": {
+    "schema": { "type": "string" },
+    "version": { "type": "string" },
+    "authorizationScope": { "type": "string" },
+    "baseSha": { "type": "string" },
+    "goal": { "type": "string" },
+    "zeroLuxComplete": { "type": "boolean" },
+    "homeResidualNote": { "type": "string" },
+    "accountHubResidualNote": { "type": "string" },
+    "nextApproval": { "type": "string" },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "file",
+          "lineOrSymbol",
+          "classification",
+          "surface",
+          "productionRuntime",
+          "home",
+          "accountHub",
+          "removalMethod",
+          "requiredApproval",
+          "blocker"
+        ],
+        "properties": {
+          "file": { "type": "string" },
+          "lineOrSymbol": { "type": "string" },
+          "classification": { "type": "string" },
+          "surface": { "type": "string" },
+          "productionRuntime": { "type": "boolean" },
+          "home": { "type": "boolean" },
+          "accountHub": { "type": "boolean" },
+          "removalMethod": { "type": "string" },
+          "requiredApproval": { "type": "string" },
+          "blocker": { "type": "string" }
+        }
+      }
+    }
+  }
+}

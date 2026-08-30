@@ -1,0 +1,78 @@
+/**
+ * Spark Dash × Toss Premium CSS 변수.
+ * 앱 globals에 아직 연결하지 않는다. 레거시 --*-lux-* 를 alias로 쓰지 않는다.
+ */
+
+:root {
+  --st-color-canvas: #f4f6f8;
+  --st-color-surface: #ffffff;
+  --st-color-elevated: #ffffff;
+  --st-color-text-primary: #191f28;
+  --st-color-text-secondary: #4e5968;
+  --st-color-text-muted: #8b95a1;
+  --st-color-brand-primary: #2f6bff;
+  --st-color-brand-accent: #00b4a6;
+  --st-color-border-subtle: #e5e8eb;
+  --st-color-border-strong: #c9d0d8;
+  --st-color-positive: #009a6a;
+  --st-color-caution: #e69500;
+  --st-color-critical: #e11d48;
+  --st-color-information: #2f6bff;
+  --st-color-focus-ring: #2f6bff;
+  --st-color-disabled: #b8bfc8;
+  --st-color-overlay: rgba(25, 31, 40, 0.48);
+
+  --st-font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", ui-sans-serif,
+    system-ui, sans-serif;
+  --st-type-display: 32px;
+  --st-type-page-title: 24px;
+  --st-type-section-title: 18px;
+  --st-type-body: 16px;
+  --st-type-supporting: 14px;
+  --st-type-label: 13px;
+  --st-type-number: 22px;
+  --st-type-caption: 12px;
+
+  --st-space-2: 2px;
+  --st-space-4: 4px;
+  --st-space-8: 8px;
+  --st-space-12: 12px;
+  --st-space-16: 16px;
+  --st-space-20: 20px;
+  --st-space-24: 24px;
+  --st-space-32: 32px;
+  --st-space-40: 40px;
+  --st-space-48: 48px;
+
+  --st-container-narrow: 480px;
+  --st-container-readable: 720px;
+  --st-container-page: 1080px;
+  --st-container-wide: 1280px;
+  --st-gutter-compact: 16px;
+  --st-gutter-default: 20px;
+  --st-gutter-comfortable: 24px;
+
+  --st-radius-sm: 6px;
+  --st-radius-md: 10px;
+  --st-radius-lg: 14px;
+  --st-radius-xl: 18px;
+  --st-radius-pill: 999px;
+
+  --st-elevation-rest: 0 1px 2px rgba(25, 31, 40, 0.06);
+  --st-elevation-raised: 0 4px 14px rgba(25, 31, 40, 0.08);
+  --st-elevation-overlay: 0 12px 32px rgba(25, 31, 40, 0.14);
+
+  --st-touch-target: 44px;
+  --st-motion-feedback: 140ms;
+  --st-motion-enter: 180ms;
+  --st-motion-exit: 140ms;
+  --st-motion-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --st-motion-feedback: 1ms;
+    --st-motion-enter: 1ms;
+    --st-motion-exit: 1ms;
+  }
+}

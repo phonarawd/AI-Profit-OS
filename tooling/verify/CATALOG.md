@@ -32,6 +32,7 @@
 | next-major-pin | `verify:next-major-pin` | T1 | ✅ live |
 | tailwind-v4 | `verify:tailwind-v4` | T1 | ✅ live |
 | lux-theme-sync | `verify:lux-theme-sync` | T1 | ✅ live |
+| no-lux | `verify:no-lux` | T0 path + T1 | live (UI-1 selftest + inventory lock · remaining != ZERO_LUX_COMPLETE · luxury_bag KEEP) |
 | dark-leak-guard | `verify:dark-leak-guard` | T1 | ✅ live (peotteok-light 단일 출시 · prefers-color-scheme 0 · lux-dark archive 활성참조 0) |
 | cf-deploy-packages | `verify:cf-deploy-packages` | T1 | ✅ live |
 | no-admin-in-web | `verify:no-admin-in-web` | T1 | ✅ live |
@@ -97,6 +98,7 @@
 | `governance/platform-redesign/**` · `schemas/governance-observation.v1.json` · `tooling/verify/platform-redesign-inventory.cjs` · `tooling/verify/platform-fact-state-registry.cjs` · `tooling/verify/platform-change-control.cjs` · `tooling/verify/governance-observation-registry.cjs` · `tooling/verify/lib/platform-redesign-measure.cjs` | platform-redesign-inventory · platform-fact-state-registry · platform-change-control · governance-observation-registry |
 | `governance/engine-acceptance/**` (FINAL_ACCEPTANCE.md 제외) · `tooling/engine-acceptance/**` (protected-scope-watch · REL-502 QA4 integrity carve-out 제외) · `tooling/verify/engine-acceptance.cjs` · `.github/workflows/engine-acceptance.yml` | engine-acceptance |
 | `governance/figma/**` · `tooling/verify/figma-project-registry.cjs` | figma-project-registry |
+| `governance/visual-authority/**` · `governance/design-system/**` · spark-toss tokens · no-lux verifier/selftest/fixtures · spark-toss schemas | no-lux |
 | `governance/visual-reconciliation/**` · `tooling/verify/locked-visual-reconciliation.cjs` · locked Account Hub `/me` | locked-visual-reconciliation |
 | `tooling/e2e/**` · `tooling/verify/qa-env-isolation-guard.cjs` | qa-env-isolation-guard |
 | `tooling/e2e/lib/axe-scan.cjs` · `tooling/e2e/specs/axe-a11y.spec.cjs` · `tooling/verify/axe-harness.cjs` | axe-harness |

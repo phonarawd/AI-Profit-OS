@@ -1,0 +1,123 @@
+{
+  "schema": "governance.design-system.no-lux-allowlist.v1",
+  "version": "1.0.0",
+  "note": "Explicit files only. Folder-wide exclude is forbidden.",
+  "entries": [
+    {
+      "path": "tooling/verify/no-lux.cjs",
+      "reason": "NO_LUX_VERIFIER_KEEP: production detector entry"
+    },
+    {
+      "path": "tooling/verify/selftest-no-lux.cjs",
+      "reason": "NO_LUX_VERIFIER_KEEP: hermetic selftest entry"
+    },
+    {
+      "path": "tooling/verify/lib/no-lux-detector.cjs",
+      "reason": "NO_LUX_VERIFIER_KEEP: detector implementation"
+    },
+    {
+      "path": "tooling/verify/lux-theme-sync.cjs",
+      "reason": "NO_LUX_VERIFIER_KEEP: existing legacy-theme sync verifier until UI-2 removal"
+    },
+    {
+      "path": "tooling/verify/dark-leak-guard.cjs",
+      "reason": "NO_LUX_VERIFIER_KEEP: archive-reference guard, not a design runtime"
+    },
+    {
+      "path": "tooling/verify/ux-design-system.cjs",
+      "reason": "NO_LUX_VERIFIER_KEEP: current gate still names legacy token files"
+    },
+    {
+      "path": "tooling/verify/luxury-bag-vertical.cjs",
+      "reason": "DOMAIN_LUXURY_BAG_KEEP: product vertical verifier"
+    },
+    {
+      "path": "tooling/verify/CATALOG.md",
+      "reason": "NO_LUX_VERIFIER_KEEP: catalog documents both detector and luxury_bag"
+    },
+    {
+      "path": "tooling/verify/gate-tiers.cjs",
+      "reason": "NO_LUX_VERIFIER_KEEP: wires verify:lux-theme-sync and verify:no-lux"
+    },
+    {
+      "path": "package.json",
+      "reason": "NO_LUX_VERIFIER_KEEP: script names only; design exports live in packages/ui/package.json"
+    },
+    {
+      "path": "packages/ui/tokens/SPARK_TOSS_FOUNDATION.md",
+      "reason": "HISTORICAL_DOCUMENT_KEEP: foundation doc states the prohibition"
+    },
+    {
+      "path": "packages/ui/tokens/peotteok-light.specification.md",
+      "reason": "HISTORICAL_DOCUMENT_KEEP: superseded shipping-spec pointer"
+    },
+    {
+      "path": "packages/ui/tokens/peotteok-visual-foundation.v0.md",
+      "reason": "HISTORICAL_DOCUMENT_KEEP: absorbed draft, not runtime"
+    },
+    {
+      "path": "packages/ui/tokens/LEGACY_ASSET_LIST.md",
+      "reason": "HISTORICAL_DOCUMENT_KEEP: names archived dark tokens"
+    },
+    {
+      "path": "governance/visual-authority/spark-toss-visual-authority.v1.json",
+      "reason": "HISTORICAL_DOCUMENT_KEEP: authority manifest records legacy sources"
+    },
+    {
+      "path": "governance/design-system/legacy-design-runtime-inventory.v1.json",
+      "reason": "HISTORICAL_DOCUMENT_KEEP: migration inventory"
+    },
+    {
+      "path": "governance/design-system/no-lux-allowlist.v1.json",
+      "reason": "NO_LUX_VERIFIER_KEEP: this allowlist"
+    },
+    {
+      "path": "schemas/spark-toss-visual-authority.v1.json",
+      "reason": "NO_LUX_VERIFIER_KEEP: schema only"
+    },
+    {
+      "path": "schemas/legacy-design-runtime-inventory.v1.json",
+      "reason": "NO_LUX_VERIFIER_KEEP: inventory schema"
+    },
+    {
+      "path": "tooling/verify/fixtures/no-lux/runtime-import.tsx",
+      "reason": "NO_LUX_VERIFIER_KEEP: negative fixture"
+    },
+    {
+      "path": "tooling/verify/fixtures/no-lux/renamed-alias.ts",
+      "reason": "NO_LUX_VERIFIER_KEEP: negative fixture"
+    },
+    {
+      "path": "tooling/verify/fixtures/no-lux/css-var-alias.css",
+      "reason": "NO_LUX_VERIFIER_KEEP: negative fixture"
+    },
+    {
+      "path": "tooling/verify/fixtures/no-lux/package-export.json",
+      "reason": "NO_LUX_VERIFIER_KEEP: negative fixture"
+    },
+    {
+      "path": "tooling/verify/fixtures/no-lux/dynamic-import.ts",
+      "reason": "NO_LUX_VERIFIER_KEEP: negative fixture"
+    },
+    {
+      "path": "tooling/verify/fixtures/no-lux/luxury-bag-keep.ts",
+      "reason": "DOMAIN_LUXURY_BAG_KEEP: positive fixture"
+    },
+    {
+      "path": "tooling/verify/fixtures/no-lux/historical-keep.md",
+      "reason": "HISTORICAL_DOCUMENT_KEEP: positive fixture"
+    },
+    {
+      "path": "tooling/verify/fixtures/no-lux/false-positive.ts",
+      "reason": "NO_LUX_VERIFIER_KEEP: false-positive fixture"
+    },
+    {
+      "path": "services/market-intelligence/src/luxury-bag-seed.cjs",
+      "reason": "DOMAIN_LUXURY_BAG_KEEP: seed"
+    },
+    {
+      "path": "services/market-intelligence/src/bag-match.cjs",
+      "reason": "DOMAIN_LUXURY_BAG_KEEP: match"
+    }
+  ]
+}

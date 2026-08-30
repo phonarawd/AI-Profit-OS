@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-profit-os.local/schemas/spark-toss-visual-authority.v1.json",
+  "title": "SparkTossVisualAuthorityV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "version",
+    "designDirection",
+    "codeTokenSource",
+    "figma",
+    "approvedNodes",
+    "unapprovedSurfaces",
+    "homeLock",
+    "accountHubLock",
+    "legacyDesignRuntimePolicy",
+    "luxuryBagPreservation",
+    "visualBaselinePolicy",
+    "authorityStatus",
+    "owner",
+    "nextApprovalRequirement"
+  ],
+  "properties": {
+    "schema": { "type": "string" },
+    "version": { "type": "string" },
+    "designDirection": { "type": "object" },
+    "codeTokenSource": { "type": "object" },
+    "figma": { "type": "object" },
+    "approvedNodes": { "type": "array" },
+    "unapprovedSurfaces": { "type": "array" },
+    "homeLock": { "type": "object" },
+    "accountHubLock": { "type": "object" },
+    "legacyDesignRuntimePolicy": { "type": "object" },
+    "luxuryBagPreservation": { "type": "object" },
+    "visualBaselinePolicy": { "type": "object" },
+    "authorityStatus": { "type": "object" },
+    "owner": { "type": "string" },
+    "nextApprovalRequirement": { "type": "string" }
+  }
+}

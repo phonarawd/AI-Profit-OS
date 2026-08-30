@@ -51,6 +51,21 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/visual-authority\//.test(f) ||
+      /^governance\/design-system\//.test(f) ||
+      /^packages\/ui\/tokens\/spark-toss/.test(f) ||
+      /^packages\/ui\/tokens\/SPARK_TOSS_FOUNDATION\.md$/.test(f) ||
+      /^tooling\/verify\/no-lux\.cjs$/.test(f) ||
+      /^tooling\/verify\/selftest-no-lux\.cjs$/.test(f) ||
+      /^tooling\/verify\/lib\/no-lux-detector\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/no-lux\//.test(f) ||
+      /^schemas\/spark-toss-/.test(f) ||
+      /^schemas\/legacy-design-runtime-inventory\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/CATALOG\.md$/.test(f),
+    scripts: ["no-lux.cjs"],
+  },
+  {
+    test: (f) =>
       /^governance\/figma\//.test(f) ||
       /^tooling\/verify\/figma-project-registry\.cjs$/.test(f) ||
       /^governance\/release-master\/rel-131-account-figma/.test(f) ||

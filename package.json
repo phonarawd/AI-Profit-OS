@@ -30,6 +30,8 @@
     "verify:next-major-pin": "node tooling/verify/next-major-pin.cjs",
     "verify:tailwind-v4": "node tooling/verify/tailwind-v4.cjs",
     "verify:lux-theme-sync": "node tooling/verify/lux-theme-sync.cjs",
+    "verify:no-lux": "node tooling/verify/no-lux.cjs",
+    "verify:no-lux:selftest": "node tooling/verify/selftest-no-lux.cjs",
     "verify:dark-leak-guard": "node tooling/verify/dark-leak-guard.cjs",
     "verify:cf-deploy-packages": "node tooling/verify/cf-deploy-packages.cjs",
     "verify:ebay-worker-deploy-path": "node tooling/verify/ebay-worker-deploy-path.cjs",

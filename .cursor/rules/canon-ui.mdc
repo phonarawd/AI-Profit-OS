@@ -6,8 +6,10 @@ alwaysApply: false
 
 # Canon UI (ADR-013)
 
-권위: Lux/Brand → ui 컴포넌트 → 플랜+Canon wire → 사진(intent only)
+권위: Spark+Toss tokens/Brand → ui 컴포넌트 → 플랜+Canon wire → 사진(intent only)
+레거시 LUX 디자인 런타임은 신규 UI에 재사용 금지. luxury_bag은 상품 도메인이며 LUX가 아니다.
 
 - 새 화면 = Canon wire 먼저
 - 사진 픽셀 복제 금지 · Brand Kit 단일 로고
 - `_archive` import 금지
+- 신규 토큰 = `spark-toss-tokens.ts` · 레거시 `lux-fintech.ts` 값 복사/alias 금지

@@ -1,0 +1,101 @@
+{
+  "schema": "governance.visual-authority.spark-toss.v1",
+  "version": "1.0.0",
+  "designDirection": {
+    "name": "Spark Dash x Toss Premium",
+    "sparkDash": ["energy", "progress", "living-data-rhythm", "restrained-accent"],
+    "tossPremium": ["wide-space", "one-judgment", "trust", "plain-korean"],
+    "forbidden": [
+      "black-gold-luxury-finance",
+      "excessive-glow",
+      "casino-exaggeration",
+      "fake-profit-emphasis",
+      "glassmorphism-spam",
+      "gradient-on-every-card",
+      "motion-hiding-uncertainty"
+    ]
+  },
+  "codeTokenSource": {
+    "tokens": "packages/ui/tokens/spark-toss-tokens.ts",
+    "themeCss": "packages/ui/tokens/spark-toss-theme.css",
+    "states": "packages/ui/tokens/spark-toss-states.ts",
+    "foundationDoc": "packages/ui/tokens/SPARK_TOSS_FOUNDATION.md",
+    "appliedToProductRoutes": false,
+    "legacyRuntimeStillShipping": true,
+    "legacySources": [
+      "packages/ui/tokens/lux-fintech.ts",
+      "packages/ui/tokens/lux-theme.css"
+    ]
+  },
+  "figma": {
+    "fileKey": "w7Yg8j2x9evuheOSSLqFw5",
+    "fileName": "퍼뜩 · PUTDUK — Spark Dash Consumer UI",
+    "registry": "governance/figma/PUTDUK_FIGMA_PROJECT_REGISTRY.json",
+    "approvedAuthorityCount": 2,
+    "codeConnectApplied": 0
+  },
+  "approvedNodes": [
+    {
+      "key": "account_hub_desktop",
+      "nodeId": "192:194",
+      "status": "FOUNDER_APPROVED_LOCKED",
+      "route": "/me"
+    },
+    {
+      "key": "account_hub_mobile",
+      "nodeId": "192:434",
+      "status": "FOUNDER_APPROVED_LOCKED",
+      "route": "/me"
+    }
+  ],
+  "unapprovedSurfaces": [
+    "consumer-non-home",
+    "admin",
+    "ai-chat",
+    "spark-toss-design-system"
+  ],
+  "homeLock": {
+    "status": "LOCKED",
+    "authority": "SCREENSHOT_FREEZE",
+    "freezeFile": "governance/consumer-home-approval/home-approval-freeze.v1.json",
+    "newImplementationLocked": true,
+    "figmaFramesAreNotAuthority": true
+  },
+  "accountHubLock": {
+    "status": "FOUNDER_APPROVED_LOCKED",
+    "desktopNodeId": "192:194",
+    "mobileNodeId": "192:434",
+    "unauthorizedChange": "FORBIDDEN"
+  },
+  "legacyDesignRuntimePolicy": {
+    "goal": "LEGACY_LUX_DESIGN_RUNTIME_PATHS = 0",
+    "stringZeroIsNotTheGoal": true,
+    "detector": "verify:no-lux",
+    "thisSliceRemovesRuntime": false,
+    "reintroduction": "FAIL"
+  },
+  "luxuryBagPreservation": {
+    "domain": "luxury_bag",
+    "deleteRenameBlock": "FORBIDDEN",
+    "verify": "verify:luxury-bag-vertical"
+  },
+  "visualBaselinePolicy": {
+    "thisSliceMayChangeBaseline": false,
+    "photoPngIsNotDesignSsot": true,
+    "unapprovedFrameIsNotAuthority": true
+  },
+  "authorityStatus": {
+    "accountHubDesktop": "FOUNDER_APPROVED_LOCKED",
+    "accountHubMobile": "FOUNDER_APPROVED_LOCKED",
+    "sparkTossDesignSystem": "PENDING_FOUNDER_AUTHORITY",
+    "consumerNonHome": "NO_APPROVED_FRAME",
+    "admin": "NO_APPROVED_FRAME",
+    "aiChat": "NO_APPROVED_FRAME",
+    "home": "SCREENSHOT_FREEZE_LOCKED",
+    "figmaAuthority": "PARTIAL_CONFLICTING",
+    "visualVerified": false,
+    "visualPass": false
+  },
+  "owner": "Founder",
+  "nextApprovalRequirement": "UI2_ZERO_LUX_RUNTIME_MIGRATION_NON_HOME_V1"
+}
