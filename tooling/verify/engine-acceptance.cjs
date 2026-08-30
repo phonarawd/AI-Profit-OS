@@ -592,7 +592,10 @@ const REQUIRED_FILES = [
   "tooling/engine-acceptance/run-qa7.cjs",
   "tooling/engine-acceptance/publish-qa7-formal.cjs",
   "tooling/engine-acceptance/publish-qa8-formal.cjs",
+  "tooling/engine-acceptance/publish-a-branch-formal.cjs",
   "tooling/engine-acceptance/publish-qa1-qa6-checkpoint.cjs",
+  "tooling/engine-acceptance/lib/a-branch-formal.cjs",
+  "tooling/engine-acceptance/selftest-a-branch-formal-publisher.cjs",
   "tooling/engine-acceptance/selftest-qa1-qa6-checkpoint.cjs",
   "tooling/engine-acceptance/selftest-qa-pipeline-contract.cjs",
   "tooling/engine-acceptance/selftest-qa7-formal-publisher.cjs",
@@ -2928,6 +2931,18 @@ try {
   selftestQa9StaleAggregation();
 } catch (e) {
   fail(`qa9-stale-aggregation selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
+  const { run: selftestABranchFormalPublisher } = require("../engine-acceptance/selftest-a-branch-formal-publisher.cjs");
+  selftestABranchFormalPublisher();
+} catch (e) {
+  fail(`a-branch-formal-publisher selftest threw: ${e && e.message ? e.message : e}`);
+}
+try {
+  const { verifyABranchFormalLive } = require("../engine-acceptance/lib/a-branch-formal.cjs");
+  verifyABranchFormalLive(ROOT);
+} catch (e) {
+  fail(`a-branch-formal live verifier: ${e && e.message ? e.message : e}`);
 }
 try {
   const harnessSelf = require("../engine-acceptance/selftest-pre-rebase-harness.cjs");

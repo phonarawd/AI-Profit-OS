@@ -581,6 +581,207 @@ function makeQa7FormalSandbox() {
   return { dir: iso.dir, baseline: iso.baseline, evidence };
 }
 
+function currentQa9Accepted() {
+  return seal({
+    schema: "governance.engine-acceptance.qa9-result.v1",
+    version: "1.0.0",
+    suite_id: "QA9",
+    run_id: "qa9-acceptance-report-fixture",
+    todoId: "qa9-acceptance-report",
+    baseline_id: FIX_CUR,
+    completion_status: "COMPLETE",
+    aggregation_only: true,
+    discovery_suite: false,
+    invents_no_scenarios: true,
+    kill_switch: { verified_before_checks: true, target_env: "local" },
+    product_mutation: 0,
+    kpi_forbidden: true,
+    mock_pass_forbidden: true,
+    verdict: "ENGINE_ACCEPTED_FOR_UI",
+    verdict_reason_code: "ALL_FORMULA_CONDITIONS_MET",
+    engine_accepted_for_ui: "ISSUED",
+    ui_ux_entry_gate: "OPEN",
+    next: "03_ui_entry_unlocked",
+    formula_inputs: {
+      mandatory_suite_complete: true,
+      defects_P0: 0,
+      defects_P1: 0,
+      critical_invariant_blocked: 0,
+      critical_invariant_skipped: 0,
+      critical_invariant_uncovered: 0,
+      baseline_valid: true,
+      acceptance_scope_unchanged: true,
+      report_baseline_id_match: true,
+      evidence_integrity_valid: true,
+    },
+  });
+}
+
+function makeABranchFormalSandbox() {
+  const sb = makeQa8FormalSandbox();
+  const current = {};
+  for (const id of QA1_TO_QA6) {
+    current[id] = currentResult(id);
+    writeJsonAbs(
+      path.join(sb.dir, `${GOV}/qa${id.slice(2).toLowerCase()}-result.v1.json`),
+      current[id],
+    );
+  }
+  const qa7Abs = path.join(sb.dir, `${GOV}/qa7-result.v1.json`);
+  const qa7 = JSON.parse(fs.readFileSync(qa7Abs, "utf8"));
+  qa7.counts = { total: 26, pass: 26, fail: 0, blocked: 0, graded: 26 };
+  qa7.formal_actions_evidence = true;
+  qa7.local_validation_only = false;
+  qa7.qa7_completion_status = "COMPLETE";
+  qa7.completion_status = "COMPLETE";
+  const sealedQa7 = seal(qa7);
+  writeJsonAbs(qa7Abs, sealedQa7);
+
+  const qa8 = seal({
+    schema: "governance.engine-acceptance.qa8-result.v1",
+    version: "1.0.0",
+    suite_id: "QA8",
+    run_id: "qa8-security-privacy-fixture",
+    baseline_id: FIX_CUR,
+    completion_status: "COMPLETE",
+    mode: "full",
+    asvs_version: "5.0.0",
+    product_mutation: 0,
+    next: "QA9_ACCEPTANCE_REPORT",
+    engine_accepted_for_ui: "NOT_ISSUED",
+    kill_switch: { verified_before_checks: true },
+    critical_invariant_cumulative: { blocked: 0, skipped: 0, uncovered: 0, failed: 0 },
+  });
+  writeJsonAbs(path.join(sb.dir, `${GOV}/qa8-result.v1.json`), qa8);
+
+  const qa9 = currentQa9Accepted();
+  writeJsonAbs(path.join(sb.dir, `${GOV}/qa9-result.v1.json`), qa9);
+
+  const evidence = JSON.parse(fs.readFileSync(path.join(sb.dir, `${GOV}/evidence-manifest.v1.json`), "utf8"));
+  evidence.qa_phase = "QA-9";
+  evidence.verdict = "ENGINE_ACCEPTED_FOR_UI";
+  evidence.verdict_reason = "QA9 COMPLETE - all acceptance-contract L1 conditions met - ENGINE_ACCEPTED_FOR_UI";
+  evidence.evidence_integrity = "VALID";
+  evidence.next = "03_ui_entry_unlocked";
+  evidence.a_branch_formal = "NO";
+  evidence.rc_formal = "NO";
+  evidence.release_ready = "NO";
+  evidence.engine_accepted_for_ui = "NOT_ISSUED";
+  evidence.publication = {
+    kind: "official_qa8_formal",
+    qa8_subject_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  };
+  evidence.suites = evidence.suites.map((s) => {
+    if (QA1_TO_QA6.includes(s.suite_id)) {
+      const r = current[s.suite_id];
+      return {
+        ...s,
+        completion_status: "COMPLETE",
+        baseline_id: FIX_CUR,
+        run_id: r.run_id,
+        checksum: r.checksum,
+      };
+    }
+    if (s.suite_id === "QA7") {
+      return {
+        ...s,
+        completion_status: "COMPLETE",
+        baseline_id: FIX_CUR,
+        run_id: sealedQa7.run_id,
+        checksum: sealedQa7.checksum,
+        formal_actions_evidence: true,
+        result_ref: `${GOV}/qa7-result.v1.json`,
+      };
+    }
+    if (s.suite_id === "QA8") {
+      return {
+        suite_id: "QA8",
+        completion_status: "COMPLETE",
+        baseline_id: FIX_CUR,
+        run_id: qa8.run_id,
+        checksum: qa8.checksum,
+        result_ref: `${GOV}/qa8-result.v1.json`,
+        mode: "full",
+        formal_actions_evidence: true,
+        predecessor_result_preserved: true,
+        historical_completion_status: "COMPLETE",
+        historical_baseline_id: FIX_PRED,
+      };
+    }
+    if (s.suite_id === "QA9") {
+      return {
+        suite_id: "QA9",
+        completion_status: "COMPLETE",
+        baseline_id: FIX_CUR,
+        run_id: qa9.run_id,
+        checksum: qa9.checksum,
+        result_ref: `${GOV}/qa9-result.v1.json`,
+        aggregation_only: true,
+      };
+    }
+    return s;
+  });
+  writeJsonAbs(path.join(sb.dir, `${GOV}/evidence-manifest.v1.json`), evidence);
+  writeTextAbs(
+    path.join(sb.dir, `${GOV}/ENGINE_ACCEPTANCE_REPORT.md`),
+    `# ENGINE ACCEPTANCE REPORT
+
+> **QA phase:** QA-9 \`qa9-acceptance-report\`
+> **baseline_id:** \`${FIX_CUR}\`
+
+## Status banner
+
+\`\`\`text
+ACCEPTANCE CONTRACT = LOCKED
+BASELINE = FROZEN
+QA0 = COMPLETE
+QA1 = COMPLETE
+QA2 = COMPLETE
+QA3 = COMPLETE
+QA4 = COMPLETE
+QA5 = COMPLETE
+QA6 = COMPLETE
+QA7 = COMPLETE
+QA8 = COMPLETE
+QA9 = COMPLETE
+QA HARNESS TARGET = SAFE
+NEXT = 03_ui_entry_unlocked
+PRODUCT MUTATION = 0
+03 UI = UNLOCKED
+ENGINE_ACCEPTED_FOR_UI = ISSUED
+UI_UX_ENTRY_GATE = OPEN
+\`\`\`
+
+## FINAL_ACCEPTANCE_VERDICT
+
+| Field | Value |
+|---|---|
+| verdict | \`ENGINE_ACCEPTED_FOR_UI\` |
+
+## P0_SECURITY_FINDINGS
+
+- (none)
+
+## REPAIR_ENTRY_POINT
+
+No outstanding P0/P1.
+
+QA6 record retained — budget SPECIFIED — threshold mechanism locked — CI only — retention 90 — aggregator always().
+QA8 ASVS 5.0.0 subset — SEC-DYNAMIC-ADVERSARIAL-01 — findings are not repaired this wave (discovery only).
+`,
+  );
+  return {
+    dir: sb.dir,
+    baseline: JSON.parse(fs.readFileSync(path.join(sb.dir, `${GOV}/baseline.v1.json`), "utf8")),
+    evidence,
+    qa7: sealedQa7,
+    qa8,
+    qa9,
+    pin: FIX_WF,
+    branch: FIX_BRANCH,
+  };
+}
+
 function copyRels() {
   return [
     `${GOV}/baseline.v1.json`,
@@ -608,6 +809,8 @@ module.exports = {
   FIX_CUR,
   FIX_PRED,
   FIX_WF,
+  FIX_PROMPT,
+  FIX_EVAL,
   FIX_HEAD,
   FIX_BRANCH,
   seal,
@@ -618,6 +821,8 @@ module.exports = {
   makeIsolatedGovTree,
   makeQa7FormalSandbox,
   makeQa8FormalSandbox,
+  makeABranchFormalSandbox,
+  currentQa9Accepted,
   copyRels,
   historicalQa7,
   historicalQa8,

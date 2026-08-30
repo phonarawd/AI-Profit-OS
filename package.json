@@ -300,6 +300,7 @@
     "engine-acceptance:qa8-adversarial": "node tooling/engine-acceptance/run-qa8-adversarial.cjs",
     "engine-acceptance:publish-qa7": "node tooling/engine-acceptance/publish-qa7-formal.cjs",
     "engine-acceptance:publish-qa8": "node tooling/engine-acceptance/publish-qa8-formal.cjs",
+    "engine-acceptance:publish-a-branch-formal": "node tooling/engine-acceptance/publish-a-branch-formal.cjs",
     "engine-acceptance:publish-qa1-qa6-checkpoint": "node tooling/engine-acceptance/publish-qa1-qa6-checkpoint.cjs",
     "verify:mockup-governance": "node tooling/verify/mockup-governance.cjs",
     "verify:canon-surfaces": "node tooling/verify/canon-surfaces.cjs",
@@ -369,7 +370,8 @@
     "engine-acceptance:selftest-pre-rebase-harness": "node tooling/engine-acceptance/selftest-pre-rebase-harness.cjs",
     "engine-acceptance:selftest-qa4-evidence-integrity": "node tooling/engine-acceptance/selftest-qa4-evidence-integrity.cjs",
     "engine-acceptance:selftest-qa8-job-eligibility": "node tooling/engine-acceptance/selftest-qa8-job-eligibility.cjs",
-    "engine-acceptance:selftest-qa8-formal-publisher": "node tooling/engine-acceptance/selftest-qa8-formal-publisher.cjs"
+    "engine-acceptance:selftest-qa8-formal-publisher": "node tooling/engine-acceptance/selftest-qa8-formal-publisher.cjs",
+    "engine-acceptance:selftest-a-branch-formal": "node tooling/engine-acceptance/selftest-a-branch-formal-publisher.cjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
