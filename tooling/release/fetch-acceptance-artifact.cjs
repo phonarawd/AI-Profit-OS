@@ -44,7 +44,7 @@ function main(argv) {
   ]);
   const runs = JSON.parse(raw);
   if (!Array.isArray(runs) || runs.length === 0) {
-    process.stderr.write("no engine-acceptance run for this SHA\n");
+    process.stderr.write("no release-acceptance run for this SHA\n");
     process.exit(1);
   }
   const tmp = fs.mkdtempSync(path.join(require("os").tmpdir(), "aipo-acc-"));
@@ -61,14 +61,21 @@ function main(argv) {
     const verdictPath = path.join(tmp, "verdict.json");
     if (!fs.existsSync(verdictPath)) continue;
     const verdict = JSON.parse(fs.readFileSync(verdictPath, "utf8"));
-    if (verdict.verdict === "PASS" && verdict.kind === "PRODUCTION_RELEASE" && String(verdict.sha).toLowerCase() === args.sha.toLowerCase()) {
+    if (
+      verdict.verdict === "PASS" &&
+      verdict.kind === "PRODUCTION_RELEASE" &&
+      String(verdict.sha).toLowerCase() === args.sha.toLowerCase() &&
+      /^[0-9a-f]{64}$/i.test(String(verdict.artifact_digest || ""))
+    ) {
+      const artSha = String(verdict.artifact_source_sha || "").toLowerCase();
+      if (artSha && artSha !== args.sha.toLowerCase()) continue;
       fs.mkdirSync(path.dirname(args.out), { recursive: true });
       fs.writeFileSync(args.out, JSON.stringify(verdict, null, 2) + "\n");
       process.stdout.write("fetched release-acceptance PASS for " + args.sha.slice(0, 12) + "\n");
       return;
     }
   }
-  process.stderr.write("no PRODUCTION_RELEASE PASS artifact for this SHA\n");
+  process.stderr.write("no PRODUCTION_RELEASE PASS artifact with digest for this SHA\n");
   process.exit(1);
 }
 

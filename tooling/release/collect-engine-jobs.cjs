@@ -94,13 +94,26 @@ function isFullSha(sha) {
   return /^[0-9a-f]{40}$/.test(sha);
 }
 
-function workflowOk(run) {
-  const name = String(run.name || run.workflow_name || "").trim();
-  const wfPath = String(run.path || "")
+function normalizeWorkflowPath(wfPath) {
+  return String(wfPath || "")
     .replace(/\\/g, "/")
+    .replace(/^\.\//, "")
     .trim();
-  if (name === ENGINE_WORKFLOW_NAME) return true;
+}
+
+function workflowPathOk(run) {
+  const wfPath = normalizeWorkflowPath(run.path);
   return wfPath === ENGINE_WORKFLOW_PATH || wfPath.endsWith("/" + ENGINE_WORKFLOW_PATH);
+}
+
+function workflowNameMatches(run) {
+  const name = String(run.name || run.workflow_name || "").trim();
+  return name === ENGINE_WORKFLOW_NAME;
+}
+
+function workflowOk(run) {
+  // path = authoritative identity. name is auxiliary evidence only.
+  return workflowPathOk(run);
 }
 
 function extractQaPhaseFromInputs(run) {
@@ -170,8 +183,9 @@ function assertEngineRunBinding(run, requested) {
     qa_phase: phase.qa_phase,
     qa_phase_proof: phase.qa_phase_proof,
     status,
-    workflow: String(run.name || ENGINE_WORKFLOW_NAME),
-    path: String(run.path || ENGINE_WORKFLOW_PATH),
+    workflow: workflowNameMatches(run) ? ENGINE_WORKFLOW_NAME : String(run.name || ""),
+    workflow_name_auxiliary: true,
+    path: normalizeWorkflowPath(run.path) || ENGINE_WORKFLOW_PATH,
     id: run.id || run.databaseId || null,
   };
 }
@@ -190,6 +204,7 @@ function collectFromRun(opts) {
   out.engine_run = {
     id: bound.id,
     workflow: bound.workflow,
+    workflow_name_auxiliary: bound.workflow_name_auxiliary === true,
     path: bound.path,
     head_sha: bound.sha,
     event: bound.event,
@@ -261,6 +276,9 @@ module.exports = {
   canonicalizeJobName,
   assertEngineRunBinding,
   resolveQaPhase,
+  workflowOk,
+  workflowPathOk,
+  workflowNameMatches,
   JOB_IDS,
   MATRIX_JOB_IDS,
   MATRIX_SUITES,

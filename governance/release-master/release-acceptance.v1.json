@@ -29,6 +29,8 @@
   "engine_run_binding": {
     "workflow": "engine-acceptance",
     "workflow_path": ".github/workflows/engine-acceptance.yml",
+    "workflow_path_authoritative": true,
+    "workflow_name_auxiliary_only": true,
     "head_sha_equals_requested_sha": true,
     "event": "workflow_dispatch",
     "qa_phase": "full",
@@ -36,6 +38,14 @@
     "caller_event_name_untrusted": true,
     "caller_qa_phase_untrusted": true,
     "bare_qa_matrix_not_a_job": true
+  },
+  "artifact_provenance": {
+    "contract": "governance/release-master/release-artifact.v1.json",
+    "build_once": true,
+    "qa_must_record_digest": true,
+    "verdict_must_include_digest": true,
+    "deploy_must_pass_expected_digest": true,
+    "deploy_rebuild_forbidden": true
   },
   "allowlisted_skip": [
     {
@@ -48,7 +58,9 @@
     "qa_phase": "full",
     "verdict": "PASS",
     "kind": "PRODUCTION_RELEASE",
-    "accepted_sha_equals_deploy_sha": true
+    "accepted_sha_equals_deploy_sha": true,
+    "artifact_digest": true,
+    "accepted_digest_equals_deploy_digest": true
   },
   "fail_results": ["failure", "cancelled", "timed_out", "missing"],
   "unexpected_skip": "FAIL"

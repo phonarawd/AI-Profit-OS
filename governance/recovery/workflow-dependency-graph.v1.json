@@ -74,6 +74,10 @@
   "required_after_patch": {
     "evidence_job": "acceptance-evidence (always collect)",
     "verdict_job": "release-acceptance (fail-closed, all mandatory QA in needs)",
-    "production_deploy": "ACCEPTED_SHA == DEPLOY_SHA + artifact digest + release-acceptance success"
+    "production_deploy": "ACCEPTED_SHA == DEPLOY_SHA + artifact digest + release-acceptance success",
+    "build_once": true,
+    "artifact_digest_required": true,
+    "deploy_rebuild_forbidden": true,
+    "workflow_path_authoritative": true
   }
 }

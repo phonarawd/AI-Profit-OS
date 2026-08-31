@@ -41,6 +41,34 @@ if (contract.engine_run_binding.event !== "workflow_dispatch") {
 if (contract.engine_run_binding.qa_phase !== "full") {
   fail("engine_run_binding.qa_phase must be full");
 }
+if (contract.engine_run_binding.workflow_path_authoritative !== true) {
+  fail("workflow path must be authoritative");
+}
+if (contract.engine_run_binding.workflow_name_auxiliary_only !== true) {
+  fail("workflow name must be auxiliary only");
+}
+if (!contract.artifact_provenance || contract.artifact_provenance.build_once !== true) {
+  fail("artifact provenance must require build once");
+}
+if (contract.artifact_provenance.deploy_rebuild_forbidden !== true) {
+  fail("deploy rebuild must be forbidden");
+}
+if (contract.production_release_requires.artifact_digest !== true) {
+  fail("production release must require artifact digest");
+}
+
+const ARTIFACT_DIGEST = "c".repeat(64);
+function withQa(input) {
+  return {
+    ...input,
+    artifact_qa: {
+      verified: true,
+      source_sha: input.sha,
+      artifact_digest: ARTIFACT_DIGEST,
+      built_once: true,
+    },
+  };
+}
 
 const successJobs = {
   "qa0-baseline": "success",
@@ -67,21 +95,30 @@ function check(name, got, expectVerdict) {
 check(
   "all_success_full",
   evaluateVerdict(
-    { sha: "a".repeat(40), event_name: "workflow_dispatch", qa_phase: "full", jobs: successJobs },
+    withQa({ sha: "a".repeat(40), event_name: "workflow_dispatch", qa_phase: "full", jobs: successJobs }),
     contract,
   ),
   "PASS",
 );
 
 check(
+  "full_without_artifact_qa",
+  evaluateVerdict(
+    { sha: "a".repeat(40), event_name: "workflow_dispatch", qa_phase: "full", jobs: successJobs },
+    contract,
+  ),
+  "FAIL",
+);
+
+check(
   "qa7_fail_full",
   evaluateVerdict(
-    {
+    withQa({
       sha: "a".repeat(40),
       event_name: "workflow_dispatch",
       qa_phase: "full",
       jobs: { ...successJobs, "qa7-ai-eval": "failure" },
-    },
+    }),
     contract,
   ),
   "FAIL",
@@ -90,12 +127,12 @@ check(
 check(
   "qa6_matrix_fail",
   evaluateVerdict(
-    {
+    withQa({
       sha: "a".repeat(40),
       event_name: "workflow_dispatch",
       qa_phase: "full",
       jobs: { ...successJobs, "qa-matrix:QA6": "failure" },
-    },
+    }),
     contract,
   ),
   "FAIL",
@@ -104,12 +141,12 @@ check(
 check(
   "qa3_matrix_missing",
   evaluateVerdict(
-    {
+    withQa({
       sha: "a".repeat(40),
       event_name: "workflow_dispatch",
       qa_phase: "full",
       jobs: { ...successJobs, "qa-matrix:QA3": "missing" },
-    },
+    }),
     contract,
   ),
   "FAIL",
@@ -118,12 +155,12 @@ check(
 check(
   "qa8_fail",
   evaluateVerdict(
-    {
+    withQa({
       sha: "a".repeat(40),
       event_name: "workflow_dispatch",
       qa_phase: "full",
       jobs: { ...successJobs, "qa8-adversarial": "failure" },
-    },
+    }),
     contract,
   ),
   "FAIL",
@@ -132,12 +169,12 @@ check(
 check(
   "unexpected_skip",
   evaluateVerdict(
-    {
+    withQa({
       sha: "a".repeat(40),
       event_name: "workflow_dispatch",
       qa_phase: "full",
       jobs: { ...successJobs, "qa5-fault": "skipped" },
-    },
+    }),
     contract,
   ),
   "FAIL",
@@ -158,12 +195,12 @@ check(
 );
 
 const aggregatorGreen = evaluateVerdict(
-  {
+  withQa({
     sha: "a".repeat(40),
     event_name: "workflow_dispatch",
     qa_phase: "full",
     jobs: { ...successJobs, "qa7-ai-eval": "failure", aggregator: "success" },
-  },
+  }),
   contract,
 );
 if (aggregatorGreen.verdict !== "FAIL") {
@@ -175,6 +212,8 @@ const passVerdict = {
   verdict: "PASS",
   kind: "PRODUCTION_RELEASE",
   sha,
+  artifact_digest: ARTIFACT_DIGEST,
+  artifact_source_sha: sha,
 };
 const tmp = path.join(root, "tooling/release/_tmp_verdict.json");
 fs.writeFileSync(tmp, JSON.stringify(passVerdict));
@@ -191,7 +230,7 @@ if (g.ok || g.reason !== "sha_mismatch") fail("sha mismatch must block");
 g = evaluateGuard({
   target: "production",
   sha,
-  verdict: { verdict: "FAIL", kind: "PRODUCTION_RELEASE", sha },
+  verdict: { verdict: "FAIL", kind: "PRODUCTION_RELEASE", sha, artifact_digest: ARTIFACT_DIGEST },
 });
 if (g.ok) fail("failed acceptance must block production");
 
@@ -199,7 +238,24 @@ g = evaluateGuard({ target: "production", sha });
 if (g.ok) fail("missing acceptance artifact must block production");
 
 g = evaluateGuard({ target: "production", sha, artifact: tmp });
-if (!g.ok) fail("matching accepted sha must allow production guard");
+if (g.ok || g.reason !== "expected_digest_missing") fail("production must require expected digest");
+
+g = evaluateGuard({ target: "production", sha, artifact: tmp, expectedDigest: ARTIFACT_DIGEST });
+if (!g.ok) fail("matching accepted sha+digest must allow production guard");
+
+g = evaluateGuard({ target: "production", sha, artifact: tmp, expectedDigest: "d".repeat(64) });
+if (g.ok || g.reason !== "artifact_digest_mismatch") fail("digest mismatch must block");
+
+const noDigest = path.join(root, "tooling/release/_tmp_verdict_nodigest.json");
+fs.writeFileSync(noDigest, JSON.stringify({ verdict: "PASS", kind: "PRODUCTION_RELEASE", sha }));
+g = evaluateGuard({
+  target: "production",
+  sha,
+  artifact: noDigest,
+  expectedDigest: ARTIFACT_DIGEST,
+});
+if (g.ok || g.reason !== "artifact_digest_missing") fail("missing verdict digest must block");
+fs.unlinkSync(noDigest);
 
 fs.unlinkSync(tmp);
 
@@ -316,6 +372,35 @@ expectClosed(
 );
 
 expectClosed(
+  "same_name_wrong_path",
+  () =>
+    collectFromRun({
+      run: { ...boundRun, name: "engine-acceptance", path: ".github/workflows/gate.yml" },
+      jobs: apiJobs,
+      requestedSha: fullSha,
+    }),
+  "engine_workflow_mismatch",
+);
+
+expectClosed(
+  "missing_path_name_only",
+  () =>
+    collectFromRun({
+      run: { ...boundRun, name: "engine-acceptance", path: "" },
+      jobs: apiJobs,
+      requestedSha: fullSha,
+    }),
+  "engine_workflow_mismatch",
+);
+
+const pathAuthoritative = collectFromRun({
+  run: { ...boundRun, name: "not-the-display-name", path: ".github/workflows/engine-acceptance.yml" },
+  jobs: apiJobs,
+  requestedSha: fullSha,
+});
+if (pathAuthoritative.sha !== fullSha) fail("correct workflow path must bind even if display name differs");
+
+expectClosed(
   "pr_event",
   () =>
     collectFromRun({
@@ -389,10 +474,72 @@ if (/--event-name/.test(wf)) fail("release-acceptance.yml must not pass caller e
 if (!/workflow_run\.event == 'workflow_dispatch'/.test(wf)) {
   fail("release-acceptance.yml must ignore non-dispatch engine runs");
 }
+if (!/bind-qa-artifact\.cjs/.test(wf) || !/fetch-release-bundle\.cjs/.test(wf)) {
+  fail("release-acceptance.yml must bind release artifact digest");
+}
+if (!/--artifact-qa/.test(wf)) fail("release-acceptance.yml must pass artifact-qa into verdict");
 
 const deploy = fs.readFileSync(path.join(root, ".github/workflows/deploy-cloudflare.yml"), "utf8");
 if (!/require-accepted-sha\.cjs/.test(deploy)) {
   fail("deploy-cloudflare.yml must invoke require-accepted-sha.cjs");
+}
+if (!/--expected-digest/.test(deploy)) {
+  fail("deploy-cloudflare.yml must pass expected digest");
+}
+if (!/deploy-from-artifact\.cjs/.test(deploy) || !/fetch-release-bundle\.cjs/.test(deploy)) {
+  fail("deploy-cloudflare.yml must deploy the accepted artifact");
+}
+if (/inputs\.target == 'production'[\s\S]*build:cf/.test(deploy)) {
+  fail("production deploy must not rebuild");
+}
+
+const buildWf = fs.readFileSync(path.join(root, ".github/workflows/release-build.yml"), "utf8");
+if (!/workflow_dispatch:/.test(buildWf)) fail("release-build.yml must be workflow_dispatch");
+if (/\npull_request:|\npush:/.test(buildWf)) fail("release-build.yml must not auto-build on push/PR");
+if (!/build-once-artifact\.cjs/.test(buildWf)) fail("release-build.yml must pack once");
+if (!/name: release-bundle/.test(buildWf)) fail("release-build.yml must upload release-bundle");
+
+const deployFrom = fs.readFileSync(path.join(root, "tooling/release/deploy-from-artifact.cjs"), "utf8");
+if (/--filter[\s\S]{0,40}build:cf/.test(deployFrom)) fail("deploy-from-artifact must not rebuild");
+if (!/--no-rebuild/.test(deployFrom)) fail("deploy-from-artifact must force --no-rebuild");
+
+const os = require("os");
+const { packFromPayload, verifyBundle } = require("../release/artifact-provenance.cjs");
+const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "aipo-relart-"));
+try {
+  const payloadSrc = path.join(tmpRoot, "src");
+  fs.mkdirSync(path.join(payloadSrc, "apps/web/.open-next/assets"), { recursive: true });
+  fs.writeFileSync(path.join(payloadSrc, "apps/web/.open-next/worker.js"), "web-worker");
+  fs.writeFileSync(path.join(payloadSrc, "apps/web/.open-next/assets/a.txt"), "asset");
+  const bundle = path.join(tmpRoot, "bundle");
+  const packed = packFromPayload(payloadSrc, bundle, fullSha);
+  if (!/^[0-9a-f]{64}$/.test(packed.artifact_digest)) fail("pack must emit sha256 digest");
+  const verified = verifyBundle(bundle, { sourceSha: fullSha, digest: packed.artifact_digest });
+  if (verified.digest !== packed.artifact_digest) fail("qa digest must match packed digest");
+  try {
+    packFromPayload(payloadSrc, bundle, fullSha);
+    fail("second pack must be forbidden");
+  } catch (err) {
+    const text = ((err && err.fails) || []).join(" ");
+    if (!text.includes("artifact_rebuild_forbidden")) fail("rebuild must be artifact_rebuild_forbidden");
+  }
+  try {
+    verifyBundle(bundle, { sourceSha: "c".repeat(40), digest: packed.artifact_digest });
+    fail("other sha artifact must fail");
+  } catch (err) {
+    const text = ((err && err.fails) || []).join(" ");
+    if (!text.includes("artifact_source_sha_mismatch")) fail("other sha must be artifact_source_sha_mismatch");
+  }
+  fs.writeFileSync(path.join(bundle, "payload", "apps/web/.open-next/worker.js"), "tampered");
+  try {
+    verifyBundle(bundle, { sourceSha: fullSha, digest: packed.artifact_digest });
+    fail("tampered digest must fail");
+  } catch (err) {
+    const text = ((err && err.fails) || []).join(" ");
+    if (!text.includes("digest_mismatch")) fail("tamper must be digest_mismatch");
+  }
+} finally {
+  fs.rmSync(tmpRoot, { recursive: true, force: true });
 }
 
 const pkg = fs.readFileSync(path.join(root, "package.json"), "utf8");

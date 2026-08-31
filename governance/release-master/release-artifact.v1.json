@@ -1,0 +1,25 @@
+{
+  "schema": "governance.release-master.release-artifact.v1",
+  "id": "release-artifact",
+  "production_apply": 0,
+  "build_once": true,
+  "source_sha_full": true,
+  "digest_alg": "sha256",
+  "artifact_name": "release-bundle",
+  "workflow": "release-build",
+  "workflow_path": ".github/workflows/release-build.yml",
+  "workflow_event": "workflow_dispatch",
+  "successful_builds_per_sha": 1,
+  "qa_must_record_digest": true,
+  "verdict_must_include_digest": true,
+  "deploy_must_pass_expected_digest": true,
+  "deploy_rebuild_forbidden": true,
+  "fail_closed": {
+    "artifact_missing": "FAIL",
+    "digest_missing": "FAIL",
+    "digest_mismatch": "FAIL",
+    "other_sha_artifact": "FAIL",
+    "rebuild_at_deploy": "FAIL",
+    "built_more_than_once": "FAIL"
+  }
+}

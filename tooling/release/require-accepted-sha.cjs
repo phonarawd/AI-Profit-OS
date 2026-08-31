@@ -6,13 +6,15 @@
  * Does not deploy. Does not mutate production.
  */
 const fs = require("fs");
+const { isFullSha, isSha256, normalizeHex } = require("./artifact-provenance.cjs");
 
 function parseArgs(argv) {
-  const out = { sha: "", target: "", artifact: "" };
+  const out = { sha: "", target: "", artifact: "", expectedDigest: "" };
   for (let i = 2; i < argv.length; i += 1) {
     if (argv[i] === "--sha") out.sha = argv[i + 1] || "";
     if (argv[i] === "--target") out.target = argv[i + 1] || "";
     if (argv[i] === "--artifact") out.artifact = argv[i + 1] || "";
+    if (argv[i] === "--expected-digest") out.expectedDigest = argv[i + 1] || "";
   }
   return out;
 }
@@ -28,7 +30,7 @@ function evaluateGuard(opts) {
   if (target !== "production") {
     return { ok: true, reason: "non_production_target", target, deploySha };
   }
-  if (!/^[0-9a-f]{40}$/i.test(deploySha)) {
+  if (!isFullSha(normalizeHex(deploySha))) {
     return { ok: false, reason: "deploy_sha_not_full", deploySha };
   }
   if (!opts.artifact) {
@@ -52,10 +54,33 @@ function evaluateGuard(opts) {
   if (accepted !== deploySha.toLowerCase()) {
     return { ok: false, reason: "sha_mismatch", acceptedSha: accepted, deploySha };
   }
-  if (opts.expectedDigest && verdict.artifact_digest && opts.expectedDigest !== verdict.artifact_digest) {
-    return { ok: false, reason: "artifact_digest_mismatch" };
+  const expectedDigest = normalizeHex(opts.expectedDigest);
+  const artifactDigest = normalizeHex(verdict.artifact_digest);
+  if (!expectedDigest) {
+    return { ok: false, reason: "expected_digest_missing", deploySha };
   }
-  return { ok: true, reason: "accepted_sha_matches", deploySha };
+  if (!isSha256(expectedDigest)) {
+    return { ok: false, reason: "expected_digest_not_full", deploySha };
+  }
+  if (!artifactDigest) {
+    return { ok: false, reason: "artifact_digest_missing", deploySha };
+  }
+  if (!isSha256(artifactDigest)) {
+    return { ok: false, reason: "artifact_digest_not_full", deploySha };
+  }
+  if (expectedDigest !== artifactDigest) {
+    return { ok: false, reason: "artifact_digest_mismatch", deploySha };
+  }
+  const artifactSource = normalizeHex(verdict.artifact_source_sha);
+  if (artifactSource && artifactSource !== normalizeHex(deploySha)) {
+    return { ok: false, reason: "artifact_source_sha_mismatch", deploySha };
+  }
+  return {
+    ok: true,
+    reason: "accepted_sha_and_digest_match",
+    deploySha,
+    artifactDigest,
+  };
 }
 
 function main(argv) {

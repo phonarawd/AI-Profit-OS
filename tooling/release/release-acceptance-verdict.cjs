@@ -5,6 +5,7 @@
  */
 const fs = require("fs");
 const path = require("path");
+const { isFullSha, isSha256, normalizeHex } = require("./artifact-provenance.cjs");
 
 const CONTRACT_REL = "governance/release-master/release-acceptance.v1.json";
 
@@ -61,8 +62,28 @@ function evaluateVerdict(input, contract) {
   }
 
   const kind = isFullDispatch ? "PRODUCTION_RELEASE" : "CI_PATH_GATE";
-  const verdict = fails.length ? "FAIL" : "PASS";
   const sha = String((bound && bound.head_sha) || input.sha || "");
+  const qa = input.artifact_qa && typeof input.artifact_qa === "object" ? input.artifact_qa : null;
+  let artifact_digest = "";
+  let artifact_source_sha = "";
+  let artifact_built_once = false;
+  if (kind === "PRODUCTION_RELEASE") {
+    if (!qa) {
+      fails.push("artifact_qa_missing");
+    } else {
+      if (qa.verified !== true) fails.push("artifact_qa_unverified");
+      artifact_digest = normalizeHex(qa.artifact_digest);
+      artifact_source_sha = normalizeHex(qa.source_sha);
+      artifact_built_once = qa.built_once === true;
+      if (!isSha256(artifact_digest)) fails.push("artifact_digest_missing");
+      if (!isFullSha(artifact_source_sha)) fails.push("artifact_source_sha_missing");
+      if (isFullSha(artifact_source_sha) && isFullSha(normalizeHex(sha)) && artifact_source_sha !== normalizeHex(sha)) {
+        fails.push("artifact_source_sha_mismatch");
+      }
+      if (!artifact_built_once) fails.push("artifact_not_built_once");
+    }
+  }
+  const verdict = fails.length ? "FAIL" : "PASS";
   return {
     schema: "release-acceptance-verdict.v1",
     sha,
@@ -73,6 +94,9 @@ function evaluateVerdict(input, contract) {
     fails,
     aggregator_is_not_verdict: true,
     engine_run: bound,
+    artifact_digest: artifact_digest || null,
+    artifact_source_sha: artifact_source_sha || null,
+    artifact_built_once,
   };
 }
 
@@ -80,14 +104,21 @@ function main(argv) {
   const root = path.resolve(__dirname, "../..");
   const contract = loadContract(root);
   let inputPath = "";
+  let artifactQaPath = "";
   for (let i = 2; i < argv.length; i += 1) {
     if (argv[i] === "--input") inputPath = argv[i + 1] || "";
+    if (argv[i] === "--artifact-qa") artifactQaPath = argv[i + 1] || "";
   }
   if (!inputPath) {
-    process.stderr.write("usage: release-acceptance-verdict.cjs --input <jobs.json>\n");
+    process.stderr.write(
+      "usage: release-acceptance-verdict.cjs --input <jobs.json> [--artifact-qa <file>]\n",
+    );
     process.exit(2);
   }
   const input = JSON.parse(fs.readFileSync(inputPath, "utf8"));
+  if (artifactQaPath) {
+    input.artifact_qa = JSON.parse(fs.readFileSync(artifactQaPath, "utf8"));
+  }
   const out = evaluateVerdict(input, contract);
   process.stdout.write(JSON.stringify(out, null, 2) + "\n");
   if (out.verdict !== "PASS") process.exit(1);

@@ -58,19 +58,31 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Production same-SHA acceptance
+      - name: Production same-SHA + digest acceptance
         if: inputs.target == 'production'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          SHA="${{ github.sha }}"
+          test "${#SHA}" -eq 40
+          mkdir -p _tmp_release_acceptance _tmp_release_bundle
           node tooling/release/fetch-acceptance-artifact.cjs \
-            --sha "${{ github.sha }}" \
+            --sha "$SHA" \
             --out _tmp_release_acceptance/verdict.json
+          node tooling/release/fetch-release-bundle.cjs \
+            --sha "$SHA" \
+            --out _tmp_release_bundle
+          node tooling/release/bind-qa-artifact.cjs \
+            --sha "$SHA" \
+            --bundle _tmp_release_bundle \
+            --out _tmp_release_acceptance/artifact-qa.json
+          DIGEST="$(node -e "const v=require('./_tmp_release_acceptance/verdict.json'); if(!/^[0-9a-f]{64}$/i.test(v.artifact_digest||'')) process.exit(2); process.stdout.write(String(v.artifact_digest).toLowerCase())")"
           node tooling/release/require-accepted-sha.cjs \
             --target production \
-            --sha "${{ github.sha }}" \
-            --artifact _tmp_release_acceptance/verdict.json
+            --sha "$SHA" \
+            --artifact _tmp_release_acceptance/verdict.json \
+            --expected-digest "$DIGEST"
 
       - name: verify:root-domain-env
         if: inputs.target == 'production'
@@ -99,26 +111,43 @@ jobs:
       - name: Guard worker_set / surface
         run: node tooling/deploy/cf-workers.cjs --check-surface "${{ inputs.worker_set }}" "${{ inputs.surface }}"
 
+      - name: Production deploy from accepted artifact
+        if: inputs.target == 'production'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          SHA="${{ github.sha }}"
+          DIGEST="$(node -e "const v=require('./_tmp_release_acceptance/verdict.json'); process.stdout.write(String(v.artifact_digest).toLowerCase())")"
+          node tooling/release/deploy-from-artifact.cjs \
+            --target production \
+            --sha "$SHA" \
+            --expected-digest "$DIGEST" \
+            --bundle _tmp_release_bundle \
+            --surface "${{ inputs.surface }}" \
+            --worker-set "${{ inputs.worker_set }}"
+
       - name: Deploy workers
-        if: inputs.surface == 'workers' || inputs.surface == 'all'
+        if: inputs.target != 'production' && (inputs.surface == 'workers' || inputs.surface == 'all')
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: node tooling/deploy/cf-workers.cjs "${{ inputs.target }}" "${{ inputs.worker_set }}"
 
       - name: Origin lock (OpenNext → Workers)
-        if: inputs.surface == 'web' || inputs.surface == 'ops' || inputs.surface == 'all'
+        if: inputs.target != 'production' && (inputs.surface == 'web' || inputs.surface == 'ops' || inputs.surface == 'all')
         run: pnpm verify:opennext-workers-origin
 
       - name: Deploy web (apps/web required)
-        if: inputs.surface == 'web' || inputs.surface == 'all'
+        if: inputs.target != 'production' && (inputs.surface == 'web' || inputs.surface == 'all')
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: node tooling/deploy/cf-preflight.cjs ${{ inputs.target }} web && node tooling/deploy/cf-pages-web.cjs ${{ inputs.target }}
 
       - name: Deploy ops (apps/admin required)
-        if: inputs.surface == 'ops' || inputs.surface == 'all'
+        if: inputs.target != 'production' && (inputs.surface == 'ops' || inputs.surface == 'all')
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

@@ -1,0 +1,98 @@
+"use strict";
+
+/**
+ * 검증된 출시 산출물을 재빌드 없이 배포한다.
+ * production에서 OpenNext/앱 재빌드 금지.
+ */
+const { spawnSync } = require("child_process");
+const path = require("path");
+const { extractPayload, verifyBundle } = require("./artifact-provenance.cjs");
+
+function parseArgs(argv) {
+  const out = {
+    target: "",
+    sha: "",
+    expectedDigest: "",
+    bundle: "",
+    surface: "all",
+    workerSet: "phase0",
+    dryRun: false,
+  };
+  for (let i = 2; i < argv.length; i += 1) {
+    if (argv[i] === "--target") out.target = argv[i + 1] || "";
+    if (argv[i] === "--sha") out.sha = argv[i + 1] || "";
+    if (argv[i] === "--expected-digest") out.expectedDigest = argv[i + 1] || "";
+    if (argv[i] === "--bundle") out.bundle = argv[i + 1] || "";
+    if (argv[i] === "--surface") out.surface = argv[i + 1] || "all";
+    if (argv[i] === "--worker-set") out.workerSet = argv[i + 1] || "phase0";
+    if (argv[i] === "--dry-run") out.dryRun = true;
+  }
+  return out;
+}
+
+function fail(reason) {
+  process.stderr.write("[deploy-from-artifact] FAIL_CLOSED:" + reason + "\n");
+  process.exit(1);
+}
+
+function runNode(rel, args) {
+  const root = path.resolve(__dirname, "../..");
+  const result = spawnSync(process.execPath, [path.join(root, rel), ...args], {
+    cwd: root,
+    stdio: "inherit",
+  });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
+
+function main(argv) {
+  const args = parseArgs(argv);
+  if (args.target !== "production") {
+    fail("non_production_must_not_use_artifact_deploy");
+  }
+  if (!args.bundle) fail("artifact_missing");
+  if (!args.expectedDigest) fail("expected_digest_missing");
+  if (!args.sha) fail("deploy_sha_not_full");
+  let bound;
+  try {
+    bound = verifyBundle(path.resolve(args.bundle), {
+      sourceSha: args.sha,
+      digest: args.expectedDigest,
+    });
+  } catch (err) {
+    const fails = err && err.fails ? err.fails : ["FAIL_CLOSED:" + (err && err.message ? err.message : err)];
+    process.stderr.write("[deploy-from-artifact] FAIL_CLOSED\n- " + fails.join("\n- ") + "\n");
+    process.exit(1);
+  }
+  const plan = {
+    target: "production",
+    source_sha: bound.source_sha,
+    artifact_digest: bound.digest,
+    surface: args.surface,
+    worker_set: args.workerSet,
+    rebuild: false,
+  };
+  process.stdout.write(JSON.stringify(plan, null, 2) + "\n");
+  if (args.dryRun) {
+    process.stdout.write("[deploy-from-artifact] DRY-RUN · mutation=0 · rebuild=0\n");
+    return;
+  }
+  const root = path.resolve(__dirname, "../..");
+  extractPayload(path.resolve(args.bundle), root);
+  if (args.surface === "workers" || args.surface === "all") {
+    runNode("tooling/deploy/cf-workers.cjs", [args.target, args.workerSet]);
+  }
+  if (args.surface === "web" || args.surface === "all") {
+    runNode("tooling/deploy/cf-preflight.cjs", [args.target, "web"]);
+    runNode("tooling/deploy/cf-pages-web.cjs", [args.target, "--no-rebuild"]);
+  }
+  if (args.surface === "ops" || args.surface === "all") {
+    runNode("tooling/deploy/cf-preflight.cjs", [args.target, "ops"]);
+    runNode("tooling/deploy/cf-pages-ops.cjs", [args.target, "--no-rebuild"]);
+  }
+}
+
+if (require.main === module) {
+  main(process.argv);
+}
+
+module.exports = { parseArgs };
