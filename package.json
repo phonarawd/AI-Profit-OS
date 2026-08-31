@@ -165,6 +165,7 @@
     "verify:withdraw-mode-default": "node tooling/verify/withdraw-mode-default.cjs",
     "verify:principal-withdraw-reachable": "node tooling/verify/principal-withdraw-reachable.cjs",
     "verify:withdraw-fee-ledger": "node tooling/verify/withdraw-fee-ledger.cjs",
+    "verify:deposit-config-fail-closed": "node tooling/verify/deposit-config-fail-closed.cjs",
     "verify:min-holding-scope": "node tooling/verify/min-holding-scope.cjs",
     "verify:krw-admin-decide": "node tooling/verify/krw-admin-decide.cjs",
     "verify:kyc-withdraw-only": "node tooling/verify/kyc-withdraw-only.cjs",

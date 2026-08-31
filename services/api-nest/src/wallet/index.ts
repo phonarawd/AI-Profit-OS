@@ -1,5 +1,9 @@
 export { WalletModule } from "./wallet.module";
 export { DepositConfigService } from "./deposit-config.service";
+export {
+  CONFIG_NOT_READY,
+  parsePersistedDepositConfig,
+} from "./deposit-config.ready";
 export { DepositAddressService } from "./deposit-address.service";
 export { DepositDisputeService } from "./deposit-dispute.service";
 export { KrwDepositService } from "./krw-deposit.service";

@@ -168,7 +168,7 @@
 | idempotency-conflict-detection | Money post-r0 — **live** (same key+different payload → 409 · fingerprint · ledger+participate · mig request_fingerprint) |
 | committed-event-publication-durability | Money post-r0 — **live** (ledger TX outbox intent · emit≠ack · poller replay · Phase0 Postgres) |
 | money-wallet-auth-remediation | Money post-r0 Finding A+B — **live** (practiceWelcome JWT+sessionUserId · practiceExpireTick fail-closed machine-auth · Adapters fail-open 복제0) |
-| withdraw-fee-ledger · min-holding-scope | Money §11.1/§11.2 — **live** (deposit-config fee/minHolding · FEE_REVENUE · profit-only exempt) |
+| withdraw-fee-ledger · min-holding-scope · deposit-config-fail-closed | Money §11.1/§11.2 — **live** (deposit-config fee/minHolding · FEE_REVENUE · profit-only exempt) |
 | match-success-rule · simulation-gate | Engine §48/§51 — match-success-rule **live** · simulation-gate **live** (M0.5 S1~S4 · platform_reserve · Growth ON ≤24h · Admin growth?tab=simulation · system-control?tab=reserve) |
 | ai-feature-platform · shadow-replay-drift · no-success-rate-as-rule · no-ai-data-in-git | Engine ai-feature-platform — feature-platform + ai-platform L1/L2 · AI PICK · AI_LOG/Eval · L3 money0 · offline shadow-replay drift **0.000%** · failAction=`block_settlement`(persisted) + `ADVISORY_LABEL`=`drift_advisory_only`(settlement unwired · §47.16.6) · sellSuccessRate≠Rule/PICK · GitHub AI data0 — **live** |
 | twin-fact-separation | Engine §47 Personal AI — Twin≠money Fact · Memory+pgvector · Fact freshness · Answer Guard · P/G/S router — **live** |

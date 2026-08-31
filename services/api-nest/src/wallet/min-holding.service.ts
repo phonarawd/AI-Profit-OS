@@ -52,7 +52,7 @@ export class MinHoldingService {
       "debitPrincipalUsdt",
     );
 
-    const cfg = await this.depositConfig.get();
+    const cfg = await this.depositConfig.requirePersisted();
     const minHoldingHours = cfg.withdrawGuards.minHoldingHours;
     const now = input.now ?? new Date();
 

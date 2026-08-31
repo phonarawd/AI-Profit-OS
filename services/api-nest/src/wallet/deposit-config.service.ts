@@ -1,13 +1,14 @@
 /**
- * Admin §37 deposit-config singleton (Money Owns).
- * Keys: usdtWithdrawNetworkFeeUsdt · krwWithdrawFeeKrw · minHoldingHours · sweeper pause.
- * Alias `compliance.minHoldingHours` FORBIDDEN — only withdrawGuards.minHoldingHours.
+ * Admin deposit-config singleton (Money Owns).
+ * Keys: usdtWithdrawNetworkFeeUsdt / krwWithdrawFeeKrw / minHoldingHours / sweeper pause.
+ * Alias compliance.minHoldingHours FORBIDDEN — only withdrawGuards.minHoldingHours.
+ * Money runtime: requirePersisted only. Silent DAY1 defaults are forbidden.
  */
 
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
+  ServiceUnavailableException,
 } from "@nestjs/common";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { PostgresService } from "../db/postgres";
@@ -17,6 +18,12 @@ import {
   type DepositConfigPatchInput,
   type DepositConfigV1,
 } from "./wallet.types";
+import {
+  CONFIG_NOT_READY,
+  DepositConfigNotReadyError,
+  configNotReadyBody,
+  parsePersistedDepositConfig,
+} from "./deposit-config.ready";
 
 type DepositConfigRow = {
   config_version: number;
@@ -35,7 +42,10 @@ export class DepositConfigService {
     private readonly bus: InProcessEventBus,
   ) {}
 
-  /** Day-1 defaults when singleton not yet persisted. */
+  /**
+   * Explicit fixture / Admin first-PATCH template only.
+   * Money runtime must not call this.
+   */
   day1Defaults(updatedByAdminId = "system:bootstrap"): DepositConfigV1 {
     return {
       ...structuredClone(DAY1_DEPOSIT_CONFIG_DEFAULTS),
@@ -44,10 +54,22 @@ export class DepositConfigService {
     };
   }
 
+  /** Production-safe alias — same as requirePersisted. */
   async get(): Promise<DepositConfigV1> {
+    return this.requirePersisted();
+  }
+
+  async requirePersisted(): Promise<DepositConfigV1> {
     const row = await this.fetchRow();
-    if (!row) return this.day1Defaults();
-    return this.toV1(row);
+    if (!row) this.throwNotReady("missing_row");
+    try {
+      return parsePersistedDepositConfig(row);
+    } catch (err) {
+      if (err instanceof DepositConfigNotReadyError) {
+        this.throwNotReady(err.reason);
+      }
+      throw err;
+    }
   }
 
   async patch(input: DepositConfigPatchInput): Promise<DepositConfigV1> {
@@ -58,7 +80,7 @@ export class DepositConfigService {
       throw new BadRequestException("changeReason minLength 4");
     }
 
-    const current = await this.get();
+    const current = await this.loadForAdminWrite();
     const next = this.mergePatch(current, input);
     this.assertConfig(next);
 
@@ -130,7 +152,7 @@ export class DepositConfigService {
         [
           row.config_version,
           JSON.stringify(current),
-          JSON.stringify(this.toV1(row)),
+          JSON.stringify(this.toV1Lenient(row)),
           input.updatedByAdminId,
           input.changeReason.trim(),
         ],
@@ -139,7 +161,7 @@ export class DepositConfigService {
       return row;
     });
 
-    const v1 = this.toV1(saved);
+    const v1 = parsePersistedDepositConfig(saved);
     this.bus.emit(WALLET_EVENTS.depositConfigUpdated, {
       configVersion: v1.configVersion,
       updatedByAdminId: v1.updatedByAdminId,
@@ -198,7 +220,22 @@ export class DepositConfigService {
     return r.rows[0] ?? null;
   }
 
-  private toV1(row: DepositConfigRow): DepositConfigV1 {
+  /**
+   * Admin write merge only. Missing row uses explicit day1Defaults template.
+   * Does not keep money runtime running.
+   */
+  private async loadForAdminWrite(): Promise<DepositConfigV1> {
+    const row = await this.fetchRow();
+    if (!row) return this.day1Defaults();
+    try {
+      return parsePersistedDepositConfig(row);
+    } catch {
+      return this.toV1Lenient(row);
+    }
+  }
+
+  /** Lenient fill for Admin repair merge only. */
+  private toV1Lenient(row: DepositConfigRow): DepositConfigV1 {
     const defaults = DAY1_DEPOSIT_CONFIG_DEFAULTS;
     const krw = {
       ...defaults.krw,
@@ -292,7 +329,7 @@ export class DepositConfigService {
       !Number.isInteger(cfg.krw.krwWithdrawFeeKrw) ||
       cfg.krw.krwWithdrawFeeKrw < 0
     ) {
-      throw new BadRequestException("krw.krwWithdrawFeeKrw must be integer ≥0");
+      throw new BadRequestException("krw.krwWithdrawFeeKrw must be integer >=0");
     }
     if (!/^[0-9]+(\.[0-9]+)?$/.test(cfg.usdtOnchain.usdtWithdrawNetworkFeeUsdt)) {
       throw new BadRequestException(
@@ -309,7 +346,7 @@ export class DepositConfigService {
       cfg.withdrawGuards.minHoldingHours < 0
     ) {
       throw new BadRequestException(
-        "withdrawGuards.minHoldingHours must be integer ≥0",
+        "withdrawGuards.minHoldingHours must be integer >=0",
       );
     }
     if (
@@ -317,7 +354,7 @@ export class DepositConfigService {
       cfg.pricingGuards.priceStaleMaxSec < 1
     ) {
       throw new BadRequestException(
-        "pricingGuards.priceStaleMaxSec must be integer ≥1",
+        "pricingGuards.priceStaleMaxSec must be integer >=1",
       );
     }
     if (cfg.usdtOnchain.chainWatcherMode !== "event_stream") {
@@ -326,14 +363,18 @@ export class DepositConfigService {
     if (!cfg.usdtOnchain.hotWalletXpubRef || !cfg.usdtOnchain.treasuryHotAddressRef) {
       throw new BadRequestException("hotWalletXpubRef and treasuryHotAddressRef required");
     }
+    if (typeof cfg.usdtOnchain.sweeperPaused !== "boolean") {
+      throw new BadRequestException("usdtOnchain.sweeperPaused must be boolean");
+    }
   }
 
   /**
-   * §43.2.1 system auto-pause when Treasury TRX < min.
+   * System auto-pause when Treasury TRX < min.
    * Admin resume = PATCH sweeperPaused:false + changeReason (audit).
+   * Missing config => CONFIG_NOT_READY (no insert).
    */
   async systemPauseSweeper(input: { reason: string }): Promise<DepositConfigV1> {
-    const current = await this.get();
+    const current = await this.requirePersisted();
     if (current.usdtOnchain.sweeperPaused === true) {
       return current;
     }
@@ -344,10 +385,9 @@ export class DepositConfigService {
     });
   }
 
-  /** Test helper — throws if singleton missing after expected seed. */
-  async requirePersisted(): Promise<DepositConfigV1> {
-    const row = await this.fetchRow();
-    if (!row) throw new NotFoundException("deposit_config not persisted");
-    return this.toV1(row);
+  private throwNotReady(reason: string): never {
+    throw new ServiceUnavailableException(configNotReadyBody(reason));
   }
 }
+
+export { CONFIG_NOT_READY };

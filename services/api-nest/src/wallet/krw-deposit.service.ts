@@ -19,6 +19,7 @@ import { LedgerPostingService } from "../ledger/ledger.posting.service";
 import { LedgerProvisionService } from "../ledger/ledger.provision.service";
 import { SYSTEM_ACCOUNT_CODES } from "../ledger/ledger.types";
 import { KillSwitchService } from "../kill-switch/kill-switch.service";
+import { DepositConfigService } from "./deposit-config.service";
 import { WALLET_EVENTS } from "./wallet.events";
 import {
   KRW_DEPOSIT_TTL_MIN,
@@ -54,6 +55,7 @@ export class KrwDepositService {
     private readonly provision: LedgerProvisionService,
     private readonly bus: InProcessEventBus,
     private readonly killSwitch: KillSwitchService,
+    private readonly depositConfig: DepositConfigService,
   ) {}
 
   /** POST /wallet/krw-deposit-requests */
@@ -79,6 +81,7 @@ export class KrwDepositService {
     }
 
     await this.killSwitch.assertPath("deposit");
+    await this.depositConfig.requirePersisted();
     await this.expireStale();
 
     const existing = await this.db.query<RequestRow>(
@@ -172,6 +175,7 @@ export class KrwDepositService {
     fxSnapshotId?: string;
   }): Promise<KrwDepositDecideResult> {
     if (!input.adminId) throw new BadRequestException("adminId required");
+    await this.depositConfig.requirePersisted();
     if (!input.idempotencyKey || input.idempotencyKey.length < 8) {
       throw new BadRequestException("idempotencyKey minLength 8");
     }

@@ -62,6 +62,7 @@ export const toast = {
     "🔐 패스키가 해제됐어요. 이메일·비밀번호로 본인 확인해 주세요",
   STEP_UP_CHALLENGE_EXPIRED: "⏱️ 확인 시간이 지났어요. 다시 시도해 주세요",
   BALANCE_ADJUSTED: "💰 잔액이 조정됐어요",
+  CONFIG_NOT_READY: "⏸️ 지금은 입금과 출금을 받을 수 없어요. 잠시 후 다시 시도해 주세요",
   DEPOSIT_CONFIG_UPDATED: "🔄 입금 정보가 업데이트됐어요",
   MIN_HOLDING: "⏳ 원금은 충전 후 {hours}시간이 지나야 출금할 수 있어요",
   WITHDRAW_FEE_HINT: "💸 이체 수수료 {fee} USDT가 빠져요",

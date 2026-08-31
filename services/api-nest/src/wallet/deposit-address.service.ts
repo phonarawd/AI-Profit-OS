@@ -38,6 +38,7 @@ export class DepositAddressService {
     }
 
     await this.killSwitch.assertPath("deposit");
+    await this.depositConfig.requirePersisted();
     const existing = await this.fetch(userId);
     if (existing) return this.toV1(existing);
 
@@ -75,7 +76,7 @@ export class DepositAddressService {
   }
 
   private async createForUser(userId: string): Promise<UserDepositAddressV1> {
-    const cfg = await this.depositConfig.get();
+    const cfg = await this.depositConfig.requirePersisted();
     const secretRef = cfg.usdtOnchain.hotWalletXpubRef;
 
     for (let attempt = 0; attempt < 5; attempt += 1) {

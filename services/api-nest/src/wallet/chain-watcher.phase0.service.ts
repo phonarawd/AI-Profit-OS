@@ -71,7 +71,7 @@ export class ChainWatcherPhase0Service {
     processed: number;
     fingerprint: string | null;
   }> {
-    const cfg = await this.depositConfig.get();
+    const cfg = await this.depositConfig.requirePersisted();
     const onchain = cfg.usdtOnchain;
     if (onchain.chainWatcherMode !== CHAIN_WATCHER_MODE) {
       throw new Error("chainWatcherMode must be event_stream");

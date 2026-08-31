@@ -374,6 +374,11 @@
         "code": "PEOTTEOK_LLM_BUSY",
         "toastKo": "🤖 퍼뜩이 잠시 바빠요. 조금 뒤 다시 물어봐 주세요",
         "trigger": "§47.13 G degrade"
+      },
+      {
+        "code": "CONFIG_NOT_READY",
+        "toastKo": "⏸️ 지금은 입금과 출금을 받을 수 없어요. 잠시 후 다시 시도해 주세요",
+        "trigger": "deposit_config missing/partial/malformed money path"
       }
     ]
   }
