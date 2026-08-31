@@ -182,9 +182,15 @@ export function parsePersistedDepositConfig(
   const parsed: PersistedDepositConfigV1 = {
     configVersion,
     krw: {
-      bankName: requireString(krw.bankName, "krw.bankName"),
-      accountNumber: requireString(krw.accountNumber, "krw.accountNumber"),
-      accountHolder: requireString(krw.accountHolder, "krw.accountHolder"),
+      bankName: requireNonEmptyTrimmedString(krw.bankName, "krw.bankName"),
+      accountNumber: requireNonEmptyTrimmedString(
+        krw.accountNumber,
+        "krw.accountNumber",
+      ),
+      accountHolder: requireNonEmptyTrimmedString(
+        krw.accountHolder,
+        "krw.accountHolder",
+      ),
       noticeKo: requireString(krw.noticeKo, "krw.noticeKo"),
       krwWithdrawFeeKrw,
     },
@@ -254,6 +260,32 @@ function requireNonEmptyString(value: unknown, path: string): string {
   return s;
 }
 
+function requireNonEmptyTrimmedString(value: unknown, path: string): string {
+  const s = requireString(value, path).trim();
+  if (s.length < 1) notReady("partial", path);
+  return s;
+}
+
+export function toDepositConfigRow(cfg: PersistedDepositConfigV1): {
+  config_version: number;
+  krw: PersistedDepositConfigV1["krw"];
+  usdt_onchain: PersistedDepositConfigV1["usdtOnchain"];
+  withdraw_guards: PersistedDepositConfigV1["withdrawGuards"];
+  pricing_guards: PersistedDepositConfigV1["pricingGuards"];
+  updated_at: Date;
+  updated_by_admin_id: string;
+} {
+  return {
+    config_version: cfg.configVersion,
+    krw: cfg.krw,
+    usdt_onchain: cfg.usdtOnchain,
+    withdraw_guards: cfg.withdrawGuards,
+    pricing_guards: cfg.pricingGuards,
+    updated_at: new Date(cfg.updatedAt),
+    updated_by_admin_id: cfg.updatedByAdminId,
+  };
+}
+
 function requireBoolean(value: unknown, path: string): boolean {
   if (typeof value !== "boolean") {
     if (value == null) notReady("partial", path);
@@ -292,4 +324,378 @@ function toIso(value: unknown, path: string): string {
   }
   if (value == null) notReady("partial", path);
   notReady("malformed", path);
+}
+
+export type DepositConfigRow = {
+  config_version: number;
+  krw: PersistedDepositConfigV1["krw"];
+  usdt_onchain: PersistedDepositConfigV1["usdtOnchain"];
+  withdraw_guards: PersistedDepositConfigV1["withdrawGuards"];
+  pricing_guards: PersistedDepositConfigV1["pricingGuards"];
+  updated_at: Date;
+  updated_by_admin_id: string;
+};
+
+export type DepositConfigAuthoritativePatch = {
+  updatedByAdminId: string;
+  changeReason: string;
+  krw?: Partial<PersistedDepositConfigV1["krw"]>;
+  usdtOnchain?: Partial<
+    Omit<
+      PersistedDepositConfigV1["usdtOnchain"],
+      | "network"
+      | "chainWatcherMode"
+      | "usdtUiConfirmations"
+      | "usdtLedgerConfirmations"
+      | "usdtContract"
+    >
+  >;
+  withdrawGuards?: Partial<PersistedDepositConfigV1["withdrawGuards"]>;
+  pricingGuards?: Partial<
+    Omit<PersistedDepositConfigV1["pricingGuards"], "requireMinProfitUsdt">
+  >;
+};
+
+export type DepositConfigQuerier = {
+  query: (
+    text: string,
+    params?: unknown[],
+  ) => Promise<{ rows: unknown[]; rowCount?: number | null }>;
+};
+
+export type DepositConfigDb = {
+  query: DepositConfigQuerier["query"];
+  withTransaction: <T>(
+    fn: (client: DepositConfigQuerier) => Promise<T>,
+  ) => Promise<T>;
+};
+
+export class DepositConfigWriteError extends Error {
+  readonly status = 400;
+  constructor(message: string) {
+    super(message);
+    this.name = "DepositConfigWriteError";
+  }
+}
+
+export class DepositConfigWriteCore {
+  private readonly db: DepositConfigDb;
+  constructor(db: DepositConfigDb) {
+    this.db = db;
+  }
+
+  async requirePersisted(): Promise<PersistedDepositConfigV1> {
+    const row = await this.fetchRow();
+    if (!row) throw new DepositConfigNotReadyError("missing_row");
+    return parsePersistedDepositConfig(row);
+  }
+
+  async patch(
+    input: DepositConfigAuthoritativePatch,
+  ): Promise<PersistedDepositConfigV1> {
+    if (!input.updatedByAdminId || input.updatedByAdminId.length < 1) {
+      throw new DepositConfigWriteError("updatedByAdminId required");
+    }
+    if (!input.changeReason || input.changeReason.trim().length < 4) {
+      throw new DepositConfigWriteError("changeReason minLength 4");
+    }
+
+    const existingRow = await this.fetchRow();
+    const inspected = inspectPersistedRow(existingRow);
+    const next =
+      inspected.kind === "valid"
+        ? mergePatch(inspected.parsed, input)
+        : buildExplicitAuthoritativeConfig(
+            input,
+            nextAuthoritativeVersion(existingRow),
+          );
+    assertConfig(next);
+    assertAuthoritativePersist(next);
+
+    const saved = await this.db.withTransaction(async (client) => {
+      const existing = await client.query(
+        `SELECT id FROM public.deposit_config WHERE id = 1 FOR UPDATE`,
+      );
+      const params = [
+        next.configVersion,
+        JSON.stringify(next.krw),
+        JSON.stringify(next.usdtOnchain),
+        JSON.stringify(next.withdrawGuards),
+        JSON.stringify(next.pricingGuards),
+        input.updatedByAdminId,
+      ];
+
+      let row: DepositConfigRow;
+      if (existing.rows[0]) {
+        const upd = await client.query(
+          `UPDATE public.deposit_config SET
+             config_version = $1,
+             krw = $2::jsonb,
+             usdt_onchain = $3::jsonb,
+             withdraw_guards = $4::jsonb,
+             pricing_guards = $5::jsonb,
+             updated_at = now(),
+             updated_by_admin_id = $6::uuid
+           WHERE id = 1
+           RETURNING config_version, krw, usdt_onchain, withdraw_guards,
+                     pricing_guards, updated_at, updated_by_admin_id::text`,
+          params,
+        );
+        row = upd.rows[0] as DepositConfigRow;
+      } else {
+        const ins = await client.query(
+          `INSERT INTO public.deposit_config (
+             id, config_version, krw, usdt_onchain, withdraw_guards,
+             pricing_guards, updated_by_admin_id
+           ) VALUES (
+             1, $1, $2::jsonb, $3::jsonb, $4::jsonb, $5::jsonb, $6::uuid
+           )
+           RETURNING config_version, krw, usdt_onchain, withdraw_guards,
+                     pricing_guards, updated_at, updated_by_admin_id::text`,
+          params,
+        );
+        row = ins.rows[0] as DepositConfigRow;
+      }
+
+      await client.query(
+        `INSERT INTO public.deposit_config_audit (
+           config_version, previous_payload, next_payload,
+           changed_by_admin_id, change_reason
+         ) VALUES ($1, $2::jsonb, $3::jsonb, $4::uuid, $5)`,
+        [
+          row.config_version,
+          JSON.stringify(inspected.kind === "valid" ? inspected.parsed : null),
+          JSON.stringify(next),
+          input.updatedByAdminId,
+          input.changeReason.trim(),
+        ],
+      );
+      return row;
+    });
+
+    return parsePersistedDepositConfig(saved);
+  }
+
+  async fetchRow(): Promise<DepositConfigRow | null> {
+    const r = await this.db.query(
+      `SELECT config_version, krw, usdt_onchain, withdraw_guards,
+              pricing_guards, updated_at, updated_by_admin_id::text
+         FROM public.deposit_config WHERE id = 1`,
+    );
+    return (r.rows[0] as DepositConfigRow | undefined) ?? null;
+  }
+}
+
+export function inspectPersistedRow(
+  row: DepositConfigRow | null,
+):
+  | { kind: "missing" }
+  | { kind: "unusable" }
+  | { kind: "valid"; parsed: PersistedDepositConfigV1 } {
+  if (!row) return { kind: "missing" };
+  try {
+    return { kind: "valid", parsed: parsePersistedDepositConfig(row) };
+  } catch (err) {
+    if (err instanceof DepositConfigNotReadyError) {
+      return { kind: "unusable" };
+    }
+    throw err;
+  }
+}
+
+export function nextAuthoritativeVersion(row: DepositConfigRow | null): number {
+  const n = Number(row?.config_version);
+  if (!Number.isInteger(n) || n < 1) return 1;
+  return n + 1;
+}
+
+export function requireExplicit<T>(value: T | undefined, path: string): T {
+  if (value === undefined) {
+    throw new DepositConfigWriteError(
+      "explicit " + path + " required to persist authoritative deposit_config",
+    );
+  }
+  return value;
+}
+
+export function buildExplicitAuthoritativeConfig(
+  input: DepositConfigAuthoritativePatch,
+  configVersion: number,
+): PersistedDepositConfigV1 {
+  const krwIn = requireExplicit(input.krw, "krw");
+  const usdtIn = requireExplicit(input.usdtOnchain, "usdtOnchain");
+  const wgIn = requireExplicit(input.withdrawGuards, "withdrawGuards");
+  const pgIn = requireExplicit(input.pricingGuards, "pricingGuards");
+  const next: PersistedDepositConfigV1 = {
+    configVersion,
+    krw: {
+      bankName: requireExplicit(krwIn.bankName, "krw.bankName"),
+      accountNumber: requireExplicit(krwIn.accountNumber, "krw.accountNumber"),
+      accountHolder: requireExplicit(krwIn.accountHolder, "krw.accountHolder"),
+      noticeKo: requireExplicit(krwIn.noticeKo, "krw.noticeKo"),
+      krwWithdrawFeeKrw: requireExplicit(
+        krwIn.krwWithdrawFeeKrw,
+        "krw.krwWithdrawFeeKrw",
+      ),
+    },
+    usdtOnchain: {
+      network: "TRC20",
+      tronGridBaseUrl: requireExplicit(
+        usdtIn.tronGridBaseUrl,
+        "usdtOnchain.tronGridBaseUrl",
+      ),
+      chainWatcherMode: "event_stream",
+      usdtUiConfirmations: 1,
+      usdtLedgerConfirmations: 19,
+      usdtContract: USDT_CONTRACT_TRC20,
+      hotWalletXpubRef: requireExplicit(
+        usdtIn.hotWalletXpubRef,
+        "usdtOnchain.hotWalletXpubRef",
+      ),
+      treasuryHotAddressRef: requireExplicit(
+        usdtIn.treasuryHotAddressRef,
+        "usdtOnchain.treasuryHotAddressRef",
+      ),
+      energyDelegateEnabled: requireExplicit(
+        usdtIn.energyDelegateEnabled,
+        "usdtOnchain.energyDelegateEnabled",
+      ),
+      usdtWithdrawNetworkFeeUsdt: requireExplicit(
+        usdtIn.usdtWithdrawNetworkFeeUsdt,
+        "usdtOnchain.usdtWithdrawNetworkFeeUsdt",
+      ),
+      minTrxStakeForSweeper: requireExplicit(
+        usdtIn.minTrxStakeForSweeper,
+        "usdtOnchain.minTrxStakeForSweeper",
+      ),
+      sweeperPaused: requireExplicit(
+        usdtIn.sweeperPaused,
+        "usdtOnchain.sweeperPaused",
+      ),
+    },
+    withdrawGuards: {
+      minHoldingHours: requireExplicit(
+        wgIn.minHoldingHours,
+        "withdrawGuards.minHoldingHours",
+      ),
+    },
+    pricingGuards: {
+      priceStaleMaxSec: requireExplicit(
+        pgIn.priceStaleMaxSec,
+        "pricingGuards.priceStaleMaxSec",
+      ),
+      requireMinProfitUsdt: true,
+    },
+    updatedAt: new Date().toISOString(),
+    updatedByAdminId: input.updatedByAdminId,
+  };
+  if (usdtIn.tronGridApiKey !== undefined) {
+    next.usdtOnchain.tronGridApiKey = usdtIn.tronGridApiKey;
+  }
+  return next;
+}
+
+export function assertAuthoritativePersist(cfg: PersistedDepositConfigV1): void {
+  try {
+    parsePersistedDepositConfig(toDepositConfigRow(cfg));
+  } catch (err) {
+    if (err instanceof DepositConfigNotReadyError) {
+      throw new DepositConfigWriteError(
+        "deposit_config not authoritative: " + err.reason,
+      );
+    }
+    throw err;
+  }
+}
+
+export function mergePatch(
+  current: PersistedDepositConfigV1,
+  input: DepositConfigAuthoritativePatch,
+): PersistedDepositConfigV1 {
+  return {
+    configVersion: current.configVersion + 1,
+    krw: { ...current.krw, ...(input.krw ?? {}) },
+    usdtOnchain: {
+      ...current.usdtOnchain,
+      ...(input.usdtOnchain ?? {}),
+      network: "TRC20",
+      chainWatcherMode: "event_stream",
+      usdtUiConfirmations: 1,
+      usdtLedgerConfirmations: 19,
+      usdtContract: USDT_CONTRACT_TRC20,
+    },
+    withdrawGuards: {
+      ...current.withdrawGuards,
+      ...(input.withdrawGuards ?? {}),
+    },
+    pricingGuards: {
+      priceStaleMaxSec:
+        input.pricingGuards?.priceStaleMaxSec ??
+        current.pricingGuards.priceStaleMaxSec,
+      requireMinProfitUsdt: true,
+    },
+    updatedAt: new Date().toISOString(),
+    updatedByAdminId: input.updatedByAdminId,
+  };
+}
+
+export function assertConfig(cfg: PersistedDepositConfigV1): void {
+  if (!cfg.krw.bankName || cfg.krw.bankName.trim().length < 1) {
+    throw new DepositConfigWriteError("krw.bankName required");
+  }
+  if (!cfg.krw.accountNumber || cfg.krw.accountNumber.trim().length < 1) {
+    throw new DepositConfigWriteError("krw.accountNumber required");
+  }
+  if (!cfg.krw.accountHolder || cfg.krw.accountHolder.trim().length < 1) {
+    throw new DepositConfigWriteError("krw.accountHolder required");
+  }
+  if (typeof cfg.krw.noticeKo !== "string") {
+    throw new DepositConfigWriteError("krw.noticeKo required");
+  }
+  cfg.krw.bankName = cfg.krw.bankName.trim();
+  cfg.krw.accountNumber = cfg.krw.accountNumber.trim();
+  cfg.krw.accountHolder = cfg.krw.accountHolder.trim();
+  if (
+    !Number.isInteger(cfg.krw.krwWithdrawFeeKrw) ||
+    cfg.krw.krwWithdrawFeeKrw < 0
+  ) {
+    throw new DepositConfigWriteError("krw.krwWithdrawFeeKrw must be integer >=0");
+  }
+  if (!/^[0-9]+(\.[0-9]+)?$/.test(cfg.usdtOnchain.usdtWithdrawNetworkFeeUsdt)) {
+    throw new DepositConfigWriteError(
+      "usdtOnchain.usdtWithdrawNetworkFeeUsdt must be decimal string",
+    );
+  }
+  if (!/^[0-9]+(\.[0-9]+)?$/.test(cfg.usdtOnchain.minTrxStakeForSweeper)) {
+    throw new DepositConfigWriteError(
+      "usdtOnchain.minTrxStakeForSweeper must be decimal string",
+    );
+  }
+  if (
+    !Number.isInteger(cfg.withdrawGuards.minHoldingHours) ||
+    cfg.withdrawGuards.minHoldingHours < 0
+  ) {
+    throw new DepositConfigWriteError(
+      "withdrawGuards.minHoldingHours must be integer >=0",
+    );
+  }
+  if (
+    !Number.isInteger(cfg.pricingGuards.priceStaleMaxSec) ||
+    cfg.pricingGuards.priceStaleMaxSec < 1
+  ) {
+    throw new DepositConfigWriteError(
+      "pricingGuards.priceStaleMaxSec must be integer >=1",
+    );
+  }
+  if (cfg.usdtOnchain.chainWatcherMode !== "event_stream") {
+    throw new DepositConfigWriteError("chainWatcherMode must be event_stream");
+  }
+  if (!cfg.usdtOnchain.hotWalletXpubRef || !cfg.usdtOnchain.treasuryHotAddressRef) {
+    throw new DepositConfigWriteError(
+      "hotWalletXpubRef and treasuryHotAddressRef required",
+    );
+  }
+  if (typeof cfg.usdtOnchain.sweeperPaused !== "boolean") {
+    throw new DepositConfigWriteError("usdtOnchain.sweeperPaused must be boolean");
+  }
 }

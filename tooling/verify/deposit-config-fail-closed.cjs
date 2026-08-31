@@ -31,7 +31,9 @@ const files = [
   "services/api-nest/src/wallet/krw-deposit.service.ts",
   "services/api-nest/src/ai/fact-tool.service.ts",
   "schemas/toast-codes.v1.json",
+  "schemas/deposit-config.v1.json",
   "packages/ui/copy/ko/toast.ts",
+  "tooling/verify/deposit-config-bootstrap-fail-closed.runtime.mts",
 ];
 for (const f of files) mustExist(f);
 
@@ -74,8 +76,11 @@ if (!getFn || !getFn[0].includes("return this.requirePersisted()")) {
 if (getFn && getFn[0].includes("day1Defaults")) {
   fails.push("get() must not return day1Defaults");
 }
-if (!svc.includes("parsePersistedDepositConfig")) {
-  fails.push("service must parse persisted rows via parsePersistedDepositConfig");
+if (!ready.includes("parsePersistedDepositConfig")) {
+  fails.push("ready.ts must parse persisted rows via parsePersistedDepositConfig");
+}
+if (!svc.includes("DepositConfigWriteCore") || !svc.includes("this.write.patch")) {
+  fails.push("service PATCH must delegate to DepositConfigWriteCore");
 }
 if (!svc.includes("ServiceUnavailableException")) {
   fails.push("missing config must throw ServiceUnavailableException");
@@ -83,11 +88,39 @@ if (!svc.includes("ServiceUnavailableException")) {
 if (!svc.includes("CONFIG_NOT_READY") && !svc.includes("configNotReadyBody")) {
   fails.push("service must emit CONFIG_NOT_READY");
 }
-if (!svc.includes("loadForAdminWrite")) {
-  fails.push("PATCH must use explicit loadForAdminWrite, not silent get() defaults");
+if (svc.includes("loadForAdminWrite")) {
+  fails.push("loadForAdminWrite default-merge is forbidden");
 }
-if (!svc.includes("toV1Lenient")) {
-  fails.push("lenient default fill must be Admin-write only (toV1Lenient)");
+if (svc.includes("toV1Lenient")) {
+  fails.push("toV1Lenient silent default fill is forbidden");
+}
+if (!ready.includes("buildExplicitAuthoritativeConfig")) {
+  fails.push("missing/unusable row must require buildExplicitAuthoritativeConfig");
+}
+if (!ready.includes("assertAuthoritativePersist")) {
+  fails.push("persist must re-validate via assertAuthoritativePersist before write");
+}
+if (ready.includes("DAY1_DEPOSIT_CONFIG_DEFAULTS")) {
+  fails.push("ready/write core must not merge DAY1_DEPOSIT_CONFIG_DEFAULTS");
+}
+if (ready.includes("toV1Lenient") || ready.includes("loadForAdminWrite")) {
+  fails.push("ready/write core must not silently default-fill");
+}
+if (svc.includes("day1Defaults") && /async patch\([\s\S]*?day1Defaults/.test(svc)) {
+  fails.push("patch() must not call day1Defaults");
+}
+if (ready.includes("requireString(krw.bankName")) {
+  fails.push("krw.bankName must reject empty strings");
+}
+const schema = JSON.parse(read("schemas/deposit-config.v1.json"));
+const krwProps = schema.properties?.krw?.properties ?? {};
+for (const key of ["bankName", "accountNumber", "accountHolder"]) {
+  if (krwProps[key]?.minLength !== 1) {
+    fails.push("schema krw." + key + " must have minLength 1");
+  }
+}
+if (krwProps.noticeKo?.minLength) {
+  fails.push("schema krw.noticeKo must allow empty string");
 }
 if (svc.includes("async systemPauseSweeper") && !svc.includes("requirePersisted")) {
   fails.push("systemPauseSweeper must requirePersisted (no insert on missing row)");
@@ -135,10 +168,12 @@ if (fs.existsSync(migDir)) {
   }
 }
 
-const runtime = path.join(__dirname, "deposit-config-fail-closed.runtime.mts");
-if (!fs.existsSync(runtime)) {
-  fails.push("missing deposit-config-fail-closed.runtime.mts");
-} else {
+function runRuntime(rel) {
+  const runtime = path.join(__dirname, rel);
+  if (!fs.existsSync(runtime)) {
+    fails.push("missing " + rel);
+    return;
+  }
   const run = spawnSync(
     process.execPath,
     ["--experimental-strip-types", runtime],
@@ -146,11 +181,15 @@ if (!fs.existsSync(runtime)) {
   );
   if (run.status !== 0) {
     fails.push(
-      "runtime parse tests failed: " +
-        String(run.stderr || run.stdout || "exit " + run.status).slice(0, 800),
+      rel +
+        " failed: " +
+        String(run.stderr || run.stdout || "exit " + run.status).slice(0, 1200),
     );
   }
 }
+
+runRuntime("deposit-config-fail-closed.runtime.mts");
+runRuntime("deposit-config-bootstrap-fail-closed.runtime.mts");
 
 if (fails.length) {
   console.error("[verify:deposit-config-fail-closed] FAIL");

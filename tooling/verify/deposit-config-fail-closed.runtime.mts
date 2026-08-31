@@ -88,4 +88,24 @@ const emptyXpub = validRow();
 (emptyXpub.usdt_onchain as { hotWalletXpubRef: string }).hotWalletXpubRef = "";
 expectBlock(emptyXpub, "partial");
 
+const emptyBank = validRow();
+(emptyBank.krw as { bankName: string }).bankName = "";
+expectBlock(emptyBank, "partial");
+
+const emptyAccount = validRow();
+(emptyAccount.krw as { accountNumber: string }).accountNumber = "";
+expectBlock(emptyAccount, "partial");
+
+const emptyHolder = validRow();
+(emptyHolder.krw as { accountHolder: string }).accountHolder = "";
+expectBlock(emptyHolder, "partial");
+
+const whitespaceBank = validRow();
+(whitespaceBank.krw as { bankName: string }).bankName = "   ";
+expectBlock(whitespaceBank, "partial");
+
+const emptyNotice = validRow();
+(emptyNotice.krw as { noticeKo: string }).noticeKo = "";
+expectReady(emptyNotice);
+
 console.log("[deposit-config-fail-closed.runtime] PASS");

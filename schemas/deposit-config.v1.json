@@ -31,16 +31,20 @@
       ],
       "properties": {
         "bankName": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "accountNumber": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "accountHolder": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "noticeKo": {
-          "type": "string"
+          "type": "string",
+          "description": "KRW notice copy. Field is required; empty string is valid."
         },
         "krwWithdrawFeeKrw": {
           "type": "integer",
