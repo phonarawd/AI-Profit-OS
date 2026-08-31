@@ -49,6 +49,10 @@ function documentConnectSrc(spec, production) {
 function documentCsp(spec, production) {
   const h = spec.hosts;
   const script = ["'self'", "'unsafe-inline'"];
+  if (!production) {
+    // next dest webpack/turbopack hydrate uses eval(). Production CSP stays fail-closed.
+    script.push("'unsafe-eval'");
+  }
   const directives = {
     "default-src": ["'self'"],
     "script-src": script,

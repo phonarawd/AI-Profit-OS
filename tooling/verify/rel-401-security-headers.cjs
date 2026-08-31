@@ -83,6 +83,17 @@ if (!prodCsp.includes("frame-ancestors 'none'")) {
 if (prodCsp.includes("'unsafe-eval'")) {
   fails.push("production CSP must not add unsafe-eval");
 }
+const destCsp = headerMap("document", { production: false })[
+  "Content-Security-Policy"
+];
+if (!destCsp.includes("'unsafe-eval'")) {
+  fails.push("non-production CSP must allow unsafe-eval for next dest hydrate");
+}
+if (assertNoWildcardAbuse(destCsp).some((a) => a !== "unsafe-eval")) {
+  fails.push(
+    "non-production CSP may only add dest unsafe-eval, not other wildcard abuse",
+  );
+}
 
 const sources = nextSecurityHeaderSources({ production: true });
 if (!Array.isArray(sources) || sources.length < 1) {
