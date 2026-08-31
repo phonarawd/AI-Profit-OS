@@ -1,0 +1,14 @@
+{
+  "observed_at": "2026-08-31T20:15:00+09:00",
+  "id": "b-3-promotion",
+  "apply": 0,
+  "production_db_apply": 0,
+  "isolated_verify_db": "EXISTS=NO",
+  "usable_isolated_verify_env": "NO",
+  "create_attempt": "MCP create_branch FAIL (confirm_cost blocked by project isolation)",
+  "promotion_path": "CLOSED",
+  "staging_e2e": "NOT_RUN (RC_FORMAL=NO)",
+  "prod_apply": "Founder + ledger only",
+  "ledger": "governance/db-recon/b3-promotion-ledger.v1.json",
+  "artifact": "governance/release-master/rel-b3-promotion/b3-promotion.v1.json"
+}

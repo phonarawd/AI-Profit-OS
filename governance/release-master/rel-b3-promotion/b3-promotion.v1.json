@@ -1,0 +1,99 @@
+{
+  "schema": "production-release.b3-promotion.v1",
+  "id": "b-3-promotion",
+  "observed_at": "2026-08-31T20:15:00+09:00",
+  "status": "CLOSED",
+  "promotion_path_closed": true,
+  "production_project_ref": "mgsytcetsiecllmhcyox",
+  "production_db_apply_this_slice": 0,
+  "apply_migration_on_production": 0,
+  "reapply": 0,
+  "dashboard_ddl": 0,
+  "history_rewrite": 0,
+  "merge_branch_to_production": 0,
+  "rc_formal": "NO",
+  "release_ready": "NO",
+  "home_geometry": "LOCKED",
+  "path": [
+    "1_isolated_verify_db_apply",
+    "2_staging_e2e_rc_sha_plus_exact_schema",
+    "3_per_migration_order_compat_rollback_record",
+    "4_founder_only_production_apply"
+  ],
+  "isolated_verify_db": {
+    "exists": "NO",
+    "usable": "NO",
+    "parent_production_ref": "mgsytcetsiecllmhcyox",
+    "branch_name_intended": "verify-b3",
+    "branch_project_ref": null,
+    "customer_data": 0,
+    "create_attempt": {
+      "at": "2026-08-31T20:12:00+09:00",
+      "method": "MCP create_branch name=verify-b3",
+      "list_branches_before": [],
+      "result": "FAIL",
+      "error": "Cost confirmation ID does not match the expected cost of creating a branch.",
+      "confirm_cost_available": false,
+      "confirm_cost_blocked_by": "project-boundary-policy DENY get_cost/confirm_cost (project-scoped MCP only)",
+      "agent_create": "IMPOSSIBLE_UNDER_ISOLATION",
+      "assumed_exists": false
+    },
+    "safe_alternative": {
+      "kind": "FOUNDER_DASHBOARD_BRANCH_THEN_LEDGER",
+      "note": "Agent cannot confirm_cost. Founder creates Dashboard preview branch (customer data 0), records branch project_ref in ledger/allowlist, then verify-DB apply only.",
+      "steps": [
+        "Supabase Dashboard project mgsytcetsiecllmhcyox Branches Create name=verify-b3 with-data=false",
+        "Confirm branch project_ref != mgsytcetsiecllmhcyox",
+        "Add branch ref to tooling/e2e/fixtures/qa-allowlist.v1.json allowedProjectRefs",
+        "Update governance/db-recon/b3-promotion-ledger.v1.json isolated_verify_db",
+        "Apply committedUnapplied migrations on verify DB only in order; prod apply 0",
+        "After RC_FORMAL, staging E2E = that RC SHA + that schema version only"
+      ]
+    }
+  },
+  "staging_e2e": {
+    "status": "NOT_RUN",
+    "reason": "RC_FORMAL=NO · isolated verify DB ABSENT · schema version unbound",
+    "requires": {
+      "rc_formal": "PASS",
+      "rc_sha": "bound",
+      "schema_version": "exact match to that RC",
+      "isolated_verify_db_exists": "YES",
+      "rel_601_live_substitute": false
+    },
+    "forbidden": [
+      "prod schema as implicit staging baseline",
+      "A_BRANCH_FORMAL alone as RC",
+      "REL-601 NOT_RUN as live PASS",
+      "app SHA != RC SHA"
+    ]
+  },
+  "gateBProd": {
+    "owner": "Founder only",
+    "requires": [
+      "isolated_verify_db apply PASS for each row",
+      "staging E2E PASS on RC SHA + exact schema",
+      "ledger row complete (no blank required fields)",
+      "rollback or forward-fix recorded",
+      "compatibility window recorded"
+    ],
+    "blank_cell_prod_apply": "FORBIDDEN",
+    "agent_prod_apply": "FORBIDDEN"
+  },
+  "ledger_path": "governance/db-recon/b3-promotion-ledger.v1.json",
+  "inventory_path": "governance/release-inventory/b3-promotion.v1.json",
+  "evidence": {
+    "mcp_get_project_url": "https://mgsytcetsiecllmhcyox.supabase.co",
+    "mcp_list_branches": [],
+    "mcp_list_migrations_remote_count": 42,
+    "local_migration_files": 51,
+    "committed_unapplied_candidates": 10,
+    "b0_recon": "governance/db-recon/b0-recon-matrix.v1.json"
+  },
+  "forbidden_claims": [
+    "production ref is isolated verify DB",
+    "hidden usable verify env",
+    "staging PASS without RC SHA+schema",
+    "prod apply without Founder+ledger"
+  ]
+}
