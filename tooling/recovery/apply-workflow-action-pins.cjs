@@ -5,7 +5,7 @@ const path = require("path");
 
 const ROOT = path.resolve(__dirname, "../..");
 const PINS = require("../../governance/security/workflow-action-pins.v1.json");
-const HOLD = new Set(["engine-acceptance.yml", "ebay-fault-injection.yml"]);
+const HOLD = new Set(["engine-acceptance.yml"]);
 
 const REPLACERS = [
   ["actions/checkout@v6", `actions/checkout@${PINS.pins["actions/checkout@v6"]} # v6`],

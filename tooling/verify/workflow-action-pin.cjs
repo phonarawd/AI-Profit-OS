@@ -10,7 +10,7 @@ const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
-const HOLDS = new Set(["engine-acceptance.yml", "ebay-fault-injection.yml"]);
+const HOLDS = new Set(["engine-acceptance.yml"]);
 const SHA = /@[0-9a-f]{40}(?:\s|#|"|'|$)/i;
 const MUTABLE = /uses:\s*([^\s]+@(?:v\d+|stable|main|master|latest))\b/;
 const WRITE_ALL = /permissions:\s*write-all/;
@@ -26,7 +26,7 @@ function must(cond, msg) {
 const pins = JSON.parse(read("governance/security/workflow-action-pins.v1.json"));
 must(pins.engine_acceptance_yml === "HOLD_CONTROLLED_AMENDMENT", "engine-acceptance HOLD lock");
 must(pins.holds && pins.holds["engine-acceptance.yml"] === "HOLD_CONTROLLED_AMENDMENT", "holds.engine-acceptance");
-must(pins.holds && pins.holds["ebay-fault-injection.yml"] === "HOLD_WORKTREE_NEST_TSC", "holds.ebay-fault-injection");
+must(!pins.holds || !pins.holds["ebay-fault-injection.yml"], "ebay-fault-injection HOLD must be lifted");
 must(pins.pins["actions/checkout@v6"] === "d23441a48e516b6c34aea4fa41551a30e30af803", "checkout pin");
 must(pins.pins["pnpm/action-setup@v6"] === "f520eceda224fe1a4aed5a2a27a194379a409996", "pnpm pin");
 must(pins.pins["github/codeql-action@v3"] === "5ba2889ada762081db2c4f32a729827dce632c7b", "codeql pin");
@@ -71,5 +71,5 @@ if (fails.length) {
 }
 console.log("[verify:workflow-action-pin] PASS");
 console.log("  engine-acceptance.yml = HOLD_CONTROLLED_AMENDMENT");
-console.log("  ebay-fault-injection.yml = HOLD_WORKTREE_NEST_TSC");
+console.log("  ebay-fault-injection.yml = SHA pinned");
 console.log("  dependabot = github-actions only");

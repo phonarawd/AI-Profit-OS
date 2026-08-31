@@ -6,8 +6,7 @@
   "engine_acceptance_yml": "HOLD_CONTROLLED_AMENDMENT",
   "engine_acceptance_reason": "acceptance_workflow_hash is CONTROLLED_AMENDMENT_ONLY",
   "holds": {
-    "engine-acceptance.yml": "HOLD_CONTROLLED_AMENDMENT",
-    "ebay-fault-injection.yml": "HOLD_WORKTREE_NEST_TSC"
+    "engine-acceptance.yml": "HOLD_CONTROLLED_AMENDMENT"
   },
   "pins": {
     "actions/checkout@v6": "d23441a48e516b6c34aea4fa41551a30e30af803",
