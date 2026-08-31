@@ -126,6 +126,28 @@ if (/inputs:\s*\n\s*target:/.test(stagingWorkflow) && stagingWorkflow.includes("
 if (stagingWorkflow.includes("environment: production")) {
   fails.push("staging workflow must not use production GitHub environment");
 }
+if (
+  stagingWorkflow.includes("ai-profit-os.onrender.com") ||
+  /API_HOST:-\s*https:\/\/ai-profit-os\.onrender\.com/.test(stagingWorkflow) ||
+  /API="\$\{API_HOST:-/.test(stagingWorkflow)
+) {
+  fails.push("staging workflow must not default API_HOST to production Render");
+}
+if (stagingWorkflow.includes("secrets.API_HOST")) {
+  fails.push("staging workflow must not inherit production API_HOST secret");
+}
+if (!stagingWorkflow.includes("STAGING_API_HOST")) {
+  fails.push("staging workflow must require STAGING_API_HOST");
+}
+if (!stagingWorkflow.includes("forbiddenHosts")) {
+  fails.push("staging workflow must deny manifest forbiddenHosts");
+}
+if (!((staging && staging.forbiddenHosts) || []).includes("ai-profit-os.onrender.com")) {
+  fails.push("staging.forbiddenHosts must include production Render API host");
+}
+if (!((staging && staging.forbiddenHosts) || []).includes("api.hiptk.app")) {
+  fails.push("staging.forbiddenHosts must include api.hiptk.app");
+}
 if (prodWorkflow.includes("workflow_dispatch") === false) {
   fails.push("production workflow_dispatch must remain on deploy-cloudflare.yml");
 }

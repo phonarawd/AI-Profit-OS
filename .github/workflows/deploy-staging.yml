@@ -50,16 +50,36 @@ jobs:
       - name: Origin lock
         run: pnpm verify:opennext-workers-origin
 
-      # rewrite 전용 — NEXT_PUBLIC_API_BASE 비움(브라우저 same-origin /api/v1 → Worker fetch Render)
+      # rewrite 전용 — production API_HOST/Render 기본값 금지. 명시적 STAGING_API_HOST만.
       - name: Preview API proxy env
         env:
-          API_HOST: ${{ secrets.API_HOST }}
+          STAGING_API_HOST: ${{ secrets.STAGING_API_HOST }}
         run: |
-          API="${API_HOST:-https://ai-profit-os.onrender.com}"
+          set -euo pipefail
+          test -n "${STAGING_API_HOST:-}" || {
+            echo "Missing STAGING_API_HOST — staging must not inherit production API_HOST"
+            exit 1
+          }
+          API="$STAGING_API_HOST"
           case "$API" in
             http://*|https://*) ;;
             *) API="https://$API" ;;
           esac
+          node -e '
+            const fs = require("fs");
+            const manifest = JSON.parse(fs.readFileSync("infra/domain.manifest.json", "utf8"));
+            const denied = new Set(manifest.openNext.staging.forbiddenHosts || []);
+            const raw = process.argv[1];
+            let host;
+            try { host = new URL(raw).hostname; } catch {
+              console.error("STAGING_API_HOST is not a valid URL");
+              process.exit(1);
+            }
+            if (denied.has(host)) {
+              console.error("STAGING_API_HOST targets production host: " + host);
+              process.exit(1);
+            }
+          ' "$API"
           printf 'API_HOST=%s\n' "$API" >> .env
 
       - name: Deploy web staging
