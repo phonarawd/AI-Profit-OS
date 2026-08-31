@@ -68,6 +68,14 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/db-recon\//.test(f) ||
+      /^governance\/release-inventory\/b1-push-rls-design\.v1\.json$/.test(f) ||
+      /^governance\/release-inventory\/b2-ownership-design\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/db-recon-inventory\.cjs$/.test(f),
+    scripts: ["db-recon-inventory.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/lib\/opportunity-card-map\.ts$/.test(f) ||
       /^apps\/web\/components\/spark-dash-home\/format\.ts$/.test(f) ||
       /^packages\/ui\/components\/opportunity\/money-display\.ts$/.test(f) ||
