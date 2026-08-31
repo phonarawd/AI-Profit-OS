@@ -74,6 +74,9 @@ test-results/
 playwright-report/
 blob-report/
 
+# Nested git worktrees (recovery integration · never commit)
+_worktree-*/
+
 # Misc
 .claude/
 _docx_extract.txt
