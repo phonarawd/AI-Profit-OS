@@ -45,6 +45,13 @@ jobs:
           test -f apps/admin/.open-next/worker.js
           test -d apps/admin/.open-next/assets
 
+      - name: Prebuild workers (exact bundle, no upload)
+        run: |
+          set -euo pipefail
+          node tooling/release/prebuild-workers.cjs --from-repo
+          test -f workers/push-dispatcher/.release-prebuilt/index.js
+          test -f workers/ebay-adapter/.release-prebuilt/index.js
+
       - name: Pack immutable artifact + digest
         run: |
           set -euo pipefail

@@ -23,7 +23,7 @@ jobs:
   release-acceptance:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.event == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -63,6 +63,17 @@ jobs:
           node tooling/release/bind-qa-artifact.cjs \
             --sha "$SHA" \
             --bundle _tmp_release_acceptance/bundle \
+            --out _tmp_release_acceptance/artifact-qa.json \
+            --optional
+      - name: Artifact runtime acceptance
+        env:
+          SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          set -euo pipefail
+          node tooling/release/artifact-runtime-qa.cjs \
+            --sha "$SHA" \
+            --bundle _tmp_release_acceptance/bundle \
+            --extract-root . \
             --out _tmp_release_acceptance/artifact-qa.json \
             --optional
       - name: Fail-closed release verdict

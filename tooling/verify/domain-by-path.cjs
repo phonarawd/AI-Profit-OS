@@ -88,14 +88,15 @@ const RULES = [
     test: (f) =>
       /^governance\/release-master\/release-acceptance\.v1\.json$/.test(f) ||
       /^governance\/release-master\/release-artifact\.v1\.json$/.test(f) ||
-      /^tooling\/release\/(release-acceptance-verdict|collect-engine-jobs|require-accepted-sha|fetch-acceptance-artifact|fetch-release-bundle|artifact-provenance|build-once-artifact|bind-qa-artifact|deploy-from-artifact)\.cjs$/.test(
+      /^tooling\/release\/(release-acceptance-verdict|collect-engine-jobs|require-accepted-sha|fetch-acceptance-artifact|fetch-release-bundle|artifact-provenance|build-once-artifact|bind-qa-artifact|deploy-from-artifact|artifact-runtime-qa|prebuild-workers)\.cjs$/.test(
         f,
       ) ||
       /^tooling\/verify\/release-acceptance\.cjs$/.test(f) ||
       /^\.github\/workflows\/release-acceptance\.yml$/.test(f) ||
       /^\.github\/workflows\/release-build\.yml$/.test(f) ||
       /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
-      /^tooling\/deploy\/cf-pages-(web|ops)\.cjs$/.test(f),
+      /^tooling\/deploy\/cf-pages-(web|ops)\.cjs$/.test(f) ||
+      /^tooling\/deploy\/cf-workers\.cjs$/.test(f),
     scripts: ["release-acceptance.cjs"],
   },
   {

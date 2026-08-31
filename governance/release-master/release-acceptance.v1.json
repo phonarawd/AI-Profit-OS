@@ -45,7 +45,11 @@
     "qa_must_record_digest": true,
     "verdict_must_include_digest": true,
     "deploy_must_pass_expected_digest": true,
-    "deploy_rebuild_forbidden": true
+    "deploy_rebuild_forbidden": true,
+    "runtime_qa_required": true,
+    "worker_prebuilt": true,
+    "worker_deploy_no_bundle": true,
+    "successful_builds_pagination": true
   },
   "allowlisted_skip": [
     {
@@ -60,7 +64,8 @@
     "kind": "PRODUCTION_RELEASE",
     "accepted_sha_equals_deploy_sha": true,
     "artifact_digest": true,
-    "accepted_digest_equals_deploy_digest": true
+    "accepted_digest_equals_deploy_digest": true,
+    "runtime_qa": true
   },
   "fail_results": ["failure", "cancelled", "timed_out", "missing"],
   "unexpected_skip": "FAIL"

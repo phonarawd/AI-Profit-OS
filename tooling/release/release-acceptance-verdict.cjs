@@ -81,6 +81,15 @@ function evaluateVerdict(input, contract) {
         fails.push("artifact_source_sha_mismatch");
       }
       if (!artifact_built_once) fails.push("artifact_not_built_once");
+      if (!qa.runtime || qa.runtime.verified !== true) {
+        fails.push("artifact_runtime_qa_missing");
+      } else if (
+        artifact_digest &&
+        qa.runtime.artifact_digest &&
+        normalizeHex(qa.runtime.artifact_digest) !== artifact_digest
+      ) {
+        fails.push("artifact_runtime_digest_mismatch");
+      }
     }
   }
   const verdict = fails.length ? "FAIL" : "PASS";

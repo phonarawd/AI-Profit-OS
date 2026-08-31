@@ -23,6 +23,8 @@ const REQUIRED_DIRS = [
   "apps/admin/.open-next/assets",
 ];
 const WORKER_SNAPSHOTS = ["push-dispatcher", "ebay-adapter"];
+const PREBUILT_DIR = ".release-prebuilt";
+const PREFERRED_PREBUILT_ENTRIES = ["index.js", "worker.js", "main.js"];
 
 function isFullSha(value) {
   return /^[0-9a-f]{40}$/.test(String(value || "").toLowerCase());
@@ -44,6 +46,82 @@ function failClosed(code, extra) {
   err.code = "FAIL_CLOSED";
   err.fails = [message];
   return err;
+}
+
+function fileSha256(abs) {
+  return crypto.createHash("sha256").update(fs.readFileSync(abs)).digest("hex");
+}
+
+function findPrebuiltEntry(prebuiltDir) {
+  if (!fs.existsSync(prebuiltDir)) {
+    throw failClosed("FAIL_CLOSED:worker_prebuilt_missing", prebuiltDir);
+  }
+  const metaPath = path.join(prebuiltDir, "entry.json");
+  if (fs.existsSync(metaPath)) {
+    let meta;
+    try {
+      meta = JSON.parse(fs.readFileSync(metaPath, "utf8"));
+    } catch {
+      throw failClosed("FAIL_CLOSED:worker_prebuilt_entry_missing", "entry.json");
+    }
+    const rel = String((meta && meta.entry) || "").replace(/\\/g, "/");
+    if (!rel || rel.includes("..") || path.isAbsolute(rel)) {
+      throw failClosed("FAIL_CLOSED:worker_prebuilt_entry_missing", "entry");
+    }
+    const abs = path.join(prebuiltDir, rel);
+    if (!fs.existsSync(abs)) throw failClosed("FAIL_CLOSED:worker_prebuilt_entry_missing", rel);
+    return abs;
+  }
+  for (const name of PREFERRED_PREBUILT_ENTRIES) {
+    const abs = path.join(prebuiltDir, name);
+    if (fs.existsSync(abs)) return abs;
+  }
+  const js = fs
+    .readdirSync(prebuiltDir)
+    .filter((name) => name.endsWith(".js") && !name.endsWith(".map.js") && !name.endsWith(".map"));
+  if (js.length === 1) return path.join(prebuiltDir, js[0]);
+  throw failClosed("FAIL_CLOSED:worker_prebuilt_entry_missing", prebuiltDir);
+}
+
+function collectWorkerPrebuilts(payloadAbs) {
+  const out = {};
+  for (const name of WORKER_SNAPSHOTS) {
+    const dir = path.join(payloadAbs, "workers", name, PREBUILT_DIR);
+    const entry = findPrebuiltEntry(dir);
+    out[name] = {
+      entry: path.basename(entry),
+      sha256: fileSha256(entry),
+      bundled_once: true,
+    };
+  }
+  return out;
+}
+
+function assertWorkerPrebuilts(payloadAbs, manifest) {
+  const listed = manifest && manifest.worker_prebuilts;
+  if (!listed || typeof listed !== "object") {
+    throw failClosed("FAIL_CLOSED:worker_prebuilt_missing");
+  }
+  const fails = [];
+  for (const name of WORKER_SNAPSHOTS) {
+    const meta = listed[name];
+    if (!meta || meta.bundled_once !== true) {
+      fails.push("FAIL_CLOSED:worker_prebuilt_missing:" + name);
+      continue;
+    }
+    let entry;
+    try {
+      entry = findPrebuiltEntry(path.join(payloadAbs, "workers", name, PREBUILT_DIR));
+    } catch (err) {
+      fails.push(((err && err.fails) || ["FAIL_CLOSED:worker_prebuilt_missing:" + name])[0]);
+      continue;
+    }
+    const digest = fileSha256(entry);
+    if (normalizeHex(meta.sha256) !== digest) {
+      fails.push("FAIL_CLOSED:worker_prebuilt_digest_mismatch:" + name);
+    }
+  }
+  if (fails.length) throwFails(fails);
 }
 
 function throwFails(fails) {
@@ -142,11 +220,13 @@ function verifyBundle(bundleDir, expected) {
   }
   if (manifest.built_once !== true) fails.push("FAIL_CLOSED:artifact_not_built_once");
   if (fails.length) throwFails(fails);
+  assertWorkerPrebuilts(payload, manifest);
   return {
     digest,
     source_sha: sourceSha,
     manifest,
     built_once: true,
+    worker_prebuilts: manifest.worker_prebuilts,
   };
 }
 
@@ -156,6 +236,11 @@ function assertRequiredOutputs(repoRoot) {
   }
   for (const rel of REQUIRED_DIRS) {
     if (!fs.existsSync(path.join(repoRoot, rel))) throw failClosed("FAIL_CLOSED:artifact_missing", rel);
+  }
+  for (const worker of WORKER_SNAPSHOTS) {
+    const toml = path.join(repoRoot, "workers", worker, "wrangler.toml");
+    if (!fs.existsSync(toml)) throw failClosed("FAIL_CLOSED:artifact_missing", "workers/" + worker + "/wrangler.toml");
+    findPrebuiltEntry(path.join(repoRoot, "workers", worker, PREBUILT_DIR));
   }
 }
 
@@ -171,9 +256,14 @@ function packFromRepo(repoRoot, outDir, sourceSha) {
   copyTree(path.join(repoRoot, "apps/web/.open-next"), path.join(payload, "apps/web/.open-next"));
   copyTree(path.join(repoRoot, "apps/admin/.open-next"), path.join(payload, "apps/admin/.open-next"));
   for (const worker of WORKER_SNAPSHOTS) {
-    const src = path.join(repoRoot, "workers", worker);
-    if (!fs.existsSync(src)) throw failClosed("FAIL_CLOSED:artifact_missing", "workers/" + worker);
-    copyTree(src, path.join(payload, "workers", worker));
+    const toml = path.join(repoRoot, "workers", worker, "wrangler.toml");
+    const prebuilt = path.join(repoRoot, "workers", worker, PREBUILT_DIR);
+    if (!fs.existsSync(toml)) throw failClosed("FAIL_CLOSED:artifact_missing", "workers/" + worker + "/wrangler.toml");
+    findPrebuiltEntry(prebuilt);
+    const dest = path.join(payload, "workers", worker);
+    fs.mkdirSync(dest, { recursive: true });
+    fs.copyFileSync(toml, path.join(dest, "wrangler.toml"));
+    copyTree(prebuilt, path.join(dest, PREBUILT_DIR));
   }
   return writeManifest(outDir, sha);
 }
@@ -193,6 +283,7 @@ function packFromPayload(payloadSrc, outDir, sourceSha) {
 
 function writeManifest(outDir, sourceSha) {
   const payload = path.join(outDir, PAYLOAD_DIR);
+  const worker_prebuilts = collectWorkerPrebuilts(payload);
   const digest = canonicalDigest(payload);
   const manifest = {
     schema: SCHEMA,
@@ -202,6 +293,9 @@ function writeManifest(outDir, sourceSha) {
     artifact_digest: digest,
     digest_alg: "sha256",
     rebuild_forbidden_at_deploy: true,
+    worker_prebuilt: true,
+    worker_deploy_no_bundle: true,
+    worker_prebuilts,
   };
   fs.writeFileSync(path.join(outDir, MANIFEST_FILE), JSON.stringify(manifest, null, 2) + "\n");
   return manifest;
@@ -230,11 +324,16 @@ module.exports = {
   REQUIRED_FILES,
   REQUIRED_DIRS,
   WORKER_SNAPSHOTS,
+  PREBUILT_DIR,
   isFullSha,
   isSha256,
   normalizeHex,
   failClosed,
   throwFails,
+  fileSha256,
+  findPrebuiltEntry,
+  collectWorkerPrebuilts,
+  assertWorkerPrebuilts,
   canonicalDigest,
   readManifest,
   verifyBundle,

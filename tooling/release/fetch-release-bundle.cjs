@@ -2,12 +2,16 @@
 
 /**
  * 동일 SHA의 release-build 산출물을 받는다.
- * 성공 빌드가 0이면 missing, 2개 이상이면 built_more_than_once.
+ * 해당 SHA의 workflow run을 끝까지 페이지네이션한 뒤
+ * successful_release_build_count === 1 만 허용한다.
  */
 const { execFileSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const { ARTIFACT_NAME, RELEASE_BUILD_WORKFLOW } = require("./artifact-provenance.cjs");
+
+const DEFAULT_PAGE_SIZE = 100;
+const MAX_PAGES = 200;
 
 function parseArgs(argv) {
   const out = { sha: "", out: "", optional: false };
@@ -26,42 +30,89 @@ function gh(args) {
   });
 }
 
+function ghFetchPage({ sha, workflow, page, perPage }) {
+  const raw = gh([
+    "api",
+    "-H",
+    "Accept: application/vnd.github+json",
+    `repos/{owner}/{repo}/actions/workflows/${workflow}/runs?head_sha=${sha}&per_page=${perPage}&page=${page}`,
+  ]);
+  return JSON.parse(raw);
+}
+
+function listReleaseBuildRuns(sha, opts) {
+  const fetchPage = opts && opts.fetchPage ? opts.fetchPage : ghFetchPage;
+  const workflow = (opts && opts.workflow) || RELEASE_BUILD_WORKFLOW;
+  const perPage = (opts && opts.perPage) || DEFAULT_PAGE_SIZE;
+  const all = [];
+  let page = 1;
+  for (;;) {
+    const payload = fetchPage({ sha, workflow, page, perPage });
+    const batch = Array.isArray(payload) ? payload : (payload && payload.workflow_runs) || [];
+    all.push(...batch);
+    const total = payload && typeof payload.total_count === "number" ? payload.total_count : null;
+    if (batch.length === 0) break;
+    if (total != null && all.length >= total) break;
+    if (batch.length < perPage) break;
+    page += 1;
+    if (page > MAX_PAGES) {
+      const err = new Error("FAIL_CLOSED:release_build_pagination_runaway");
+      err.code = "PAGINATION_RUNAWAY";
+      throw err;
+    }
+  }
+  return all;
+}
+
+function selectSuccessfulReleaseBuild(runs) {
+  const successes = (Array.isArray(runs) ? runs : []).filter((run) => {
+    if (!run) return false;
+    const status = String(run.status || "");
+    const conclusion = String(run.conclusion || "");
+    return status === "completed" && conclusion === "success";
+  });
+  if (successes.length === 0) {
+    const err = new Error("no release-build success for this SHA");
+    err.code = "MISSING";
+    err.count = 0;
+    throw err;
+  }
+  if (successes.length !== 1) {
+    const err = new Error("FAIL_CLOSED:artifact_built_more_than_once");
+    err.code = "BUILT_MORE_THAN_ONCE";
+    err.count = successes.length;
+    throw err;
+  }
+  return successes[0];
+}
+
+function runId(run) {
+  return run && (run.databaseId != null ? run.databaseId : run.id);
+}
+
 function main(argv) {
   const args = parseArgs(argv);
   if (!/^[0-9a-f]{40}$/i.test(args.sha) || !args.out) {
     process.stderr.write("usage: fetch-release-bundle.cjs --sha <40hex> --out <dir> [--optional]\n");
     process.exit(2);
   }
-  const raw = gh([
-    "run",
-    "list",
-    "--workflow",
-    RELEASE_BUILD_WORKFLOW,
-    "--commit",
-    args.sha,
-    "--limit",
-    "20",
-    "--json",
-    "databaseId,conclusion,event,status",
-  ]);
-  const runs = JSON.parse(raw);
-  const successes = (Array.isArray(runs) ? runs : []).filter(
-    (run) => run && run.status === "completed" && run.conclusion === "success",
-  );
-  if (successes.length === 0) {
+  let run;
+  try {
+    const runs = listReleaseBuildRuns(args.sha);
+    run = selectSuccessfulReleaseBuild(runs);
+  } catch (err) {
+    if (err && err.code === "BUILT_MORE_THAN_ONCE") {
+      process.stderr.write("FAIL_CLOSED:artifact_built_more_than_once\n");
+      process.exit(1);
+    }
     process.stderr.write("no release-build success for this SHA\n");
     if (args.optional) process.exit(0);
     process.exit(1);
   }
-  if (successes.length > 1) {
-    process.stderr.write("FAIL_CLOSED:artifact_built_more_than_once\n");
-    process.exit(1);
-  }
-  const run = successes[0];
   const dest = path.resolve(args.out);
   fs.mkdirSync(dest, { recursive: true });
   try {
-    execFileSync("gh", ["run", "download", String(run.databaseId), "-n", ARTIFACT_NAME, "-D", dest], {
+    execFileSync("gh", ["run", "download", String(runId(run)), "-n", ARTIFACT_NAME, "-D", dest], {
       stdio: ["ignore", "pipe", "pipe"],
     });
   } catch {
@@ -81,4 +132,10 @@ if (require.main === module) {
   main(process.argv);
 }
 
-module.exports = { parseArgs, ARTIFACT_NAME };
+module.exports = {
+  parseArgs,
+  ARTIFACT_NAME,
+  listReleaseBuildRuns,
+  selectSuccessfulReleaseBuild,
+  ghFetchPage,
+};

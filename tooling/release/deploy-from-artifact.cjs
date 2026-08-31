@@ -79,7 +79,7 @@ function main(argv) {
   const root = path.resolve(__dirname, "../..");
   extractPayload(path.resolve(args.bundle), root);
   if (args.surface === "workers" || args.surface === "all") {
-    runNode("tooling/deploy/cf-workers.cjs", [args.target, args.workerSet]);
+    runNode("tooling/deploy/cf-workers.cjs", [args.target, args.workerSet, "--no-bundle"]);
   }
   if (args.surface === "web" || args.surface === "all") {
     runNode("tooling/deploy/cf-preflight.cjs", [args.target, "web"]);

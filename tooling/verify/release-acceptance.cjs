@@ -56,6 +56,32 @@ if (contract.artifact_provenance.deploy_rebuild_forbidden !== true) {
 if (contract.production_release_requires.artifact_digest !== true) {
   fail("production release must require artifact digest");
 }
+if (contract.production_release_requires.runtime_qa !== true) {
+  fail("production release must require artifact runtime QA");
+}
+if (!contract.artifact_provenance || contract.artifact_provenance.runtime_qa_required !== true) {
+  fail("artifact provenance must require runtime QA");
+}
+if (contract.artifact_provenance.worker_prebuilt !== true) {
+  fail("artifact provenance must require worker prebuilt");
+}
+if (contract.artifact_provenance.worker_deploy_no_bundle !== true) {
+  fail("artifact provenance must require worker no-bundle deploy");
+}
+if (contract.artifact_provenance.successful_builds_pagination !== true) {
+  fail("artifact provenance must paginate successful builds");
+}
+const artifactContract = JSON.parse(
+  fs.readFileSync(path.join(root, "governance/release-master/release-artifact.v1.json"), "utf8"),
+);
+if (artifactContract.runtime_qa_required !== true) fail("release-artifact contract must require runtime QA");
+if (artifactContract.worker_prebuilt !== true) fail("release-artifact contract must require worker prebuilt");
+if (artifactContract.worker_deploy_no_bundle !== true) {
+  fail("release-artifact contract must require worker no-bundle");
+}
+if (artifactContract.successful_builds_pagination !== true) {
+  fail("release-artifact contract must paginate successful builds");
+}
 
 const ARTIFACT_DIGEST = "c".repeat(64);
 function withQa(input) {
@@ -66,6 +92,11 @@ function withQa(input) {
       source_sha: input.sha,
       artifact_digest: ARTIFACT_DIGEST,
       built_once: true,
+      runtime: {
+        verified: true,
+        artifact_digest: ARTIFACT_DIGEST,
+        no_bundle: true,
+      },
     },
   };
 }
@@ -109,6 +140,46 @@ check(
   ),
   "FAIL",
 );
+
+check(
+  "full_without_runtime_qa",
+  evaluateVerdict(
+    {
+      sha: "a".repeat(40),
+      event_name: "workflow_dispatch",
+      qa_phase: "full",
+      jobs: successJobs,
+      artifact_qa: {
+        verified: true,
+        source_sha: "a".repeat(40),
+        artifact_digest: ARTIFACT_DIGEST,
+        built_once: true,
+      },
+    },
+    contract,
+  ),
+  "FAIL",
+);
+
+const runtimeDigestLie = evaluateVerdict(
+  {
+    sha: "a".repeat(40),
+    event_name: "workflow_dispatch",
+    qa_phase: "full",
+    jobs: successJobs,
+    artifact_qa: {
+      verified: true,
+      source_sha: "a".repeat(40),
+      artifact_digest: ARTIFACT_DIGEST,
+      built_once: true,
+      runtime: { verified: true, artifact_digest: "d".repeat(64) },
+    },
+  },
+  contract,
+);
+if (runtimeDigestLie.verdict !== "FAIL" || !runtimeDigestLie.fails.includes("artifact_runtime_digest_mismatch")) {
+  fail("runtime digest mismatch must fail verdict");
+}
 
 check(
   "qa7_fail_full",
@@ -477,6 +548,9 @@ if (!/workflow_run\.event == 'workflow_dispatch'/.test(wf)) {
 if (!/bind-qa-artifact\.cjs/.test(wf) || !/fetch-release-bundle\.cjs/.test(wf)) {
   fail("release-acceptance.yml must bind release artifact digest");
 }
+if (!/artifact-runtime-qa\.cjs/.test(wf)) {
+  fail("release-acceptance.yml must run artifact runtime QA");
+}
 if (!/--artifact-qa/.test(wf)) fail("release-acceptance.yml must pass artifact-qa into verdict");
 
 const deploy = fs.readFileSync(path.join(root, ".github/workflows/deploy-cloudflare.yml"), "utf8");
@@ -497,22 +571,75 @@ const buildWf = fs.readFileSync(path.join(root, ".github/workflows/release-build
 if (!/workflow_dispatch:/.test(buildWf)) fail("release-build.yml must be workflow_dispatch");
 if (/\npull_request:|\npush:/.test(buildWf)) fail("release-build.yml must not auto-build on push/PR");
 if (!/build-once-artifact\.cjs/.test(buildWf)) fail("release-build.yml must pack once");
+if (!/prebuild-workers\.cjs/.test(buildWf)) fail("release-build.yml must prebuild workers");
+if (buildWf.indexOf("prebuild-workers.cjs") > buildWf.indexOf("build-once-artifact.cjs")) {
+  fail("release-build.yml must prebuild workers before packing");
+}
 if (!/name: release-bundle/.test(buildWf)) fail("release-build.yml must upload release-bundle");
 
 const deployFrom = fs.readFileSync(path.join(root, "tooling/release/deploy-from-artifact.cjs"), "utf8");
 if (/--filter[\s\S]{0,40}build:cf/.test(deployFrom)) fail("deploy-from-artifact must not rebuild");
 if (!/--no-rebuild/.test(deployFrom)) fail("deploy-from-artifact must force --no-rebuild");
+if (!/--no-bundle/.test(deployFrom)) fail("deploy-from-artifact must force worker --no-bundle");
+
+const webDeploy = fs.readFileSync(path.join(root, "tooling/deploy/cf-pages-web.cjs"), "utf8");
+const opsDeploy = fs.readFileSync(path.join(root, "tooling/deploy/cf-pages-ops.cjs"), "utf8");
+if (!/deployArgs = noRebuild[\s\S]*--no-bundle/.test(webDeploy)) {
+  fail("web no-rebuild deploy must pass --no-bundle");
+}
+if (!/deployArgs = noRebuild[\s\S]*--no-bundle/.test(opsDeploy)) {
+  fail("ops no-rebuild deploy must pass --no-bundle");
+}
+const workerDeploy = fs.readFileSync(path.join(root, "tooling/deploy/cf-workers.cjs"), "utf8");
+if (!/--no-bundle/.test(workerDeploy) || !/findPrebuiltEntry/.test(workerDeploy)) {
+  fail("cf-workers must deploy prebuilt workers with --no-bundle");
+}
+const prebuildSrc = fs.readFileSync(path.join(root, "tooling/release/prebuild-workers.cjs"), "utf8");
+if (!/--dry-run/.test(prebuildSrc) || !/--outdir/.test(prebuildSrc)) {
+  fail("prebuild-workers must use wrangler dry-run --outdir");
+}
+const runtimeSrc = fs.readFileSync(path.join(root, "tooling/release/artifact-runtime-qa.cjs"), "utf8");
+if (!/unstable_dev/.test(runtimeSrc) || !/noBundle:\s*true/.test(runtimeSrc)) {
+  fail("artifact-runtime-qa must start the exact artifact with wrangler noBundle");
+}
 
 const os = require("os");
-const { packFromPayload, verifyBundle } = require("../release/artifact-provenance.cjs");
+const {
+  packFromPayload,
+  verifyBundle,
+  WORKER_SNAPSHOTS,
+  PREBUILT_DIR,
+} = require("../release/artifact-provenance.cjs");
+const { listReleaseBuildRuns, selectSuccessfulReleaseBuild } = require("../release/fetch-release-bundle.cjs");
+const { evaluateSurfaceResult, summarizeRuntime } = require("../release/artifact-runtime-qa.cjs");
 const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "aipo-relart-"));
+function writeFakeWorker(payloadSrc, name) {
+  const pre = path.join(payloadSrc, "workers", name, PREBUILT_DIR);
+  fs.mkdirSync(pre, { recursive: true });
+  fs.writeFileSync(path.join(payloadSrc, "workers", name, "wrangler.toml"), 'name = "' + name + '"\nmain = "src/index.ts"\n');
+  fs.writeFileSync(
+    path.join(pre, "index.js"),
+    'export default { fetch() { return new Response(JSON.stringify({ ok: true }), { status: 200 }); } }\n',
+  );
+  fs.writeFileSync(
+    path.join(pre, "entry.json"),
+    JSON.stringify({ schema: "release-worker-prebuilt.v1", entry: "index.js", bundled_once: true }) + "\n",
+  );
+}
 try {
   const payloadSrc = path.join(tmpRoot, "src");
   fs.mkdirSync(path.join(payloadSrc, "apps/web/.open-next/assets"), { recursive: true });
+  fs.mkdirSync(path.join(payloadSrc, "apps/admin/.open-next/assets"), { recursive: true });
   fs.writeFileSync(path.join(payloadSrc, "apps/web/.open-next/worker.js"), "web-worker");
   fs.writeFileSync(path.join(payloadSrc, "apps/web/.open-next/assets/a.txt"), "asset");
+  fs.writeFileSync(path.join(payloadSrc, "apps/admin/.open-next/worker.js"), "ops-worker");
+  fs.writeFileSync(path.join(payloadSrc, "apps/admin/.open-next/assets/a.txt"), "asset");
+  for (const name of WORKER_SNAPSHOTS) writeFakeWorker(payloadSrc, name);
   const bundle = path.join(tmpRoot, "bundle");
   const packed = packFromPayload(payloadSrc, bundle, fullSha);
+  if (!packed.worker_prebuilt || !packed.worker_prebuilts || !packed.worker_prebuilts["push-dispatcher"]) {
+    fail("pack must record worker prebuilt digests");
+  }
   if (!/^[0-9a-f]{64}$/.test(packed.artifact_digest)) fail("pack must emit sha256 digest");
   const verified = verifyBundle(bundle, { sourceSha: fullSha, digest: packed.artifact_digest });
   if (verified.digest !== packed.artifact_digest) fail("qa digest must match packed digest");
@@ -538,8 +665,105 @@ try {
     const text = ((err && err.fails) || []).join(" ");
     if (!text.includes("digest_mismatch")) fail("tamper must be digest_mismatch");
   }
+
+  const pagesCalled = [];
+  const twentyOne = Array.from({ length: 21 }, (_, i) => ({
+    id: 1000 + i,
+    status: "completed",
+    conclusion: i === 20 ? "success" : "failure",
+    head_sha: fullSha,
+  }));
+  const found = listReleaseBuildRuns(fullSha, {
+    perPage: 10,
+    fetchPage: ({ page, perPage }) => {
+      pagesCalled.push(page);
+      const start = (page - 1) * perPage;
+      return {
+        total_count: twentyOne.length,
+        workflow_runs: twentyOne.slice(start, start + perPage),
+      };
+    },
+  });
+  if (pagesCalled.join(",") !== "1,2,3") fail("release-build listing must paginate past 20 runs");
+  if (found.length !== 21) fail("pagination must return every run for the SHA");
+  const only = selectSuccessfulReleaseBuild(found);
+  if (only.id !== 1020) fail("pagination must see the success beyond the first 20 runs");
+
+  const twoSuccessPages = [];
+  try {
+    const two = listReleaseBuildRuns(fullSha, {
+      perPage: 10,
+      fetchPage: ({ page, perPage }) => {
+        twoSuccessPages.push(page);
+        const start = (page - 1) * perPage;
+        return {
+          total_count: 21,
+          workflow_runs: Array.from({ length: 21 }, (_, i) => ({
+            id: i,
+            status: "completed",
+            conclusion: "success",
+          })).slice(start, start + perPage),
+        };
+      },
+    });
+    selectSuccessfulReleaseBuild(two);
+    fail("two successful builds must fail closed");
+  } catch (err) {
+    if (!err || err.code !== "BUILT_MORE_THAN_ONCE" || err.count !== 21) {
+      fail("more than one success must be artifact_built_more_than_once with full count");
+    }
+  }
+  if (twoSuccessPages.length < 3) fail("duplicate-success check must not stop at 20 runs");
+
+  const fetchSrc = fs.readFileSync(path.join(root, "tooling/release/fetch-release-bundle.cjs"), "utf8");
+  if (/--limit/.test(fetchSrc)) fail("fetch-release-bundle must not cap runs with --limit");
+  if (!/page/.test(fetchSrc) || !/workflow_runs/.test(fetchSrc)) {
+    fail("fetch-release-bundle must paginate GitHub workflow runs");
+  }
+
+  const healthOk = evaluateSurfaceResult(
+    { id: "ebay-adapter", kind: "worker", accept: [200] },
+    { status: 200, json: { ok: true } },
+  );
+  if (!healthOk.ok) fail("worker /health 200 ok:true must pass");
+  const healthBad = evaluateSurfaceResult(
+    { id: "web", kind: "opennext", accept: [200, 307] },
+    { status: 500 },
+  );
+  if (healthBad.ok) fail("OpenNext 500 must fail runtime QA");
+
+  const runtime = summarizeRuntime(packed.artifact_digest, [
+    { id: "web", kind: "opennext", route: "/", status: 200, ok: true },
+    { id: "ops", kind: "opennext", route: "/", status: 307, ok: true },
+    { id: "push-dispatcher", kind: "worker", route: "/health", status: 200, ok: true },
+    { id: "ebay-adapter", kind: "worker", route: "/health", status: 200, ok: true },
+  ]);
+  if (!runtime.verified) fail("runtime summary must pass when every surface is ok");
+  if (runtime.artifact_digest !== packed.artifact_digest) fail("runtime evidence must reuse packed digest");
+  if (runtime.surfaces.length !== 4) fail("runtime QA must cover web/ops/workers");
+  const runtimeFail = summarizeRuntime(packed.artifact_digest, [
+    { id: "web", kind: "opennext", route: "/", status: 500, ok: false },
+  ]);
+  if (runtimeFail.verified) fail("failed surface must not verify runtime QA");
 } finally {
   fs.rmSync(tmpRoot, { recursive: true, force: true });
+}
+
+const missingWorkers = fs.mkdtempSync(path.join(os.tmpdir(), "aipo-relart-noworker-"));
+try {
+  const src = path.join(missingWorkers, "src");
+  fs.mkdirSync(path.join(src, "apps/web/.open-next/assets"), { recursive: true });
+  fs.writeFileSync(path.join(src, "apps/web/.open-next/worker.js"), "web-worker");
+  fs.writeFileSync(path.join(src, "apps/web/.open-next/assets/a.txt"), "asset");
+  try {
+    packFromPayload(src, path.join(missingWorkers, "bundle"), fullSha);
+    fail("pack without worker prebuilt must fail");
+  } catch (err) {
+    const text = ((err && err.fails) || []).join(" ") + " " + (err && err.message ? err.message : "");
+    if (!/worker_prebuilt/.test(text)) fail("missing worker prebuilt must be worker_prebuilt_*");
+  }
+} finally {
+  fs.rmSync(missingWorkers, { recursive: true, force: true });
 }
 
 const pkg = fs.readFileSync(path.join(root, "package.json"), "utf8");

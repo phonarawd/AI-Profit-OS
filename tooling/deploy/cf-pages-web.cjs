@@ -56,7 +56,7 @@ if (noRebuild) {
 }
 
 const deployArgs = noRebuild
-  ? ["exec", "wrangler", "deploy", "--config", configPath, "--env=" + envFlag]
+  ? ["exec", "wrangler", "deploy", "--no-bundle", "--config", configPath, "--env=" + envFlag]
   : [
       "exec",
       "opennextjs-cloudflare",
