@@ -23,8 +23,9 @@ function loadContract(root) {
 function evaluateVerdict(input, contract) {
   const jobs = input.jobs || {};
   const fails = [];
-  const eventName = String(input.event_name || "");
-  const phase = String(input.qa_phase || "");
+  const bound = input.engine_run && typeof input.engine_run === "object" ? input.engine_run : null;
+  const eventName = String((bound && bound.event) || input.event_name || "");
+  const phase = String((bound && bound.qa_phase) || input.qa_phase || "");
   const isFullDispatch = eventName === "workflow_dispatch" && phase === "full";
 
   const mandatory = [...contract.mandatory_core];
@@ -61,15 +62,17 @@ function evaluateVerdict(input, contract) {
 
   const kind = isFullDispatch ? "PRODUCTION_RELEASE" : "CI_PATH_GATE";
   const verdict = fails.length ? "FAIL" : "PASS";
+  const sha = String((bound && bound.head_sha) || input.sha || "");
   return {
     schema: "release-acceptance-verdict.v1",
-    sha: input.sha || "",
+    sha,
     event_name: eventName,
     qa_phase: phase,
     kind,
     verdict,
     fails,
     aggregator_is_not_verdict: true,
+    engine_run: bound,
   };
 }
 

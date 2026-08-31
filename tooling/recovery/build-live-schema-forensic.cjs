@@ -64,6 +64,27 @@ const VERDICTS = [
   "UNVERIFIED",
 ];
 
+const CHILD_KEYS = [
+  "columns",
+  "indexes",
+  "triggers",
+  "rls",
+  "policies",
+  "grants",
+  "constraints",
+  "seed",
+  "comment",
+  "functions",
+];
+
+const VERDICT_RANK = {
+  EXACT_EQUIVALENT: 0,
+  EQUIVALENT_WITH_NON_SEMANTIC_DIFFERENCE: 1,
+  UNVERIFIED: 2,
+  DATA_DRIFT: 3,
+  STRUCTURAL_DRIFT: 4,
+};
+
 function parseCreateColumns(sql, table) {
   const re = new RegExp(
     `CREATE TABLE IF NOT EXISTS public\\.${table}\\s*\\(([\\s\\S]*?)\\n\\);`,
@@ -159,14 +180,18 @@ function sameList(a, b) {
 }
 
 function worst(list) {
-  const rank = {
-    EXACT_EQUIVALENT: 0,
-    EQUIVALENT_WITH_NON_SEMANTIC_DIFFERENCE: 1,
-    DATA_DRIFT: 2,
-    STRUCTURAL_DRIFT: 3,
-    UNVERIFIED: 4,
-  };
-  return list.reduce((acc, v) => (rank[v] > rank[acc] ? v : acc), "EXACT_EQUIVALENT");
+  return (list || []).reduce((acc, v) => {
+    const next = VERDICT_RANK[v] == null ? 2 : VERDICT_RANK[v];
+    const cur = VERDICT_RANK[acc] == null ? 0 : VERDICT_RANK[acc];
+    return next > cur ? v : acc;
+  }, "EXACT_EQUIVALENT");
+}
+
+function childVerdicts(obj) {
+  return CHILD_KEYS.map((k) => {
+    const child = obj && obj[k];
+    return child && child.verdict ? child.verdict : null;
+  }).filter(Boolean);
 }
 
 function gitFiles() {
@@ -235,19 +260,7 @@ function main() {
     const constraintVerdict = live.constraints_match_git
       ? "EXACT_EQUIVALENT"
       : "UNVERIFIED";
-    const objectVerdict = worst([
-      colVerdict,
-      idxVerdict,
-      trigVerdict,
-      rlsVerdict,
-      policyVerdict,
-      grantVerdict,
-      seedVerdict,
-      commentVerdict,
-      constraintVerdict,
-    ]);
-    // 함수 본문 미비교는 객체 판정을 가리지 않는다. 존재는 catalog에 기록한다.
-    objects[table] = {
+    const record = {
       source_file: rel,
       apply_this_slice: parseApplyNo(sql) ? "NO" : "UNKNOWN",
       history_version: null,
@@ -296,8 +309,9 @@ function main() {
       seed: live.seed || { verdict: "EXACT_EQUIVALENT", note: "no seed in Git" },
       comment: live.comment || { verdict: "EXACT_EQUIVALENT" },
       functions: live.functions || { verdict: "UNVERIFIED" },
-      verdict: objectVerdict,
     };
+    record.verdict = worst(childVerdicts(record));
+    objects[table] = record;
   }
 
   const git = gitFiles().map(parseGitName).filter(Boolean);
@@ -532,6 +546,7 @@ function renderMd(forensic, recon) {
   lines.push("5. admin_policy_heads seed row는 Git INSERT가 없고 live도 0행. DATA_DRIFT 아님.");
   lines.push("6. deposit_config live row count = 0 (13객체 밖, money path 후속 슬라이스).");
   lines.push("7. history repair / 10 SQL 재실행 / Production apply 는 승인하지 않는다.");
+  lines.push("8. 자식 fingerprint가 UNVERIFIED이면 객체 verdict는 EXACT_EQUIVALENT가 될 수 없다 (worst-child).");
   lines.push("");
   lines.push("## Repair (문서만 · 실행 금지)");
   lines.push("");
@@ -543,4 +558,8 @@ function renderMd(forensic, recon) {
   return lines.join("\n") + "\n";
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = { worst, childVerdicts, CHILD_KEYS, VERDICT_RANK, VERDICTS };

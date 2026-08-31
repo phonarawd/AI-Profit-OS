@@ -9,12 +9,34 @@
     "qa0-baseline",
     "qa1-deterministic",
     "qa2-synthetic-personas",
-    "qa-matrix",
+    "qa-matrix:QA3",
+    "qa-matrix:QA4",
+    "qa-matrix:QA5",
+    "qa-matrix:QA6",
+    "qa-matrix:QA8",
     "qa5-fault",
     "qa6-measure",
     "qa8-adversarial"
   ],
   "mandatory_when_full_dispatch": ["qa7-ai-eval"],
+  "matrix_jobs": [
+    "qa-matrix:QA3",
+    "qa-matrix:QA4",
+    "qa-matrix:QA5",
+    "qa-matrix:QA6",
+    "qa-matrix:QA8"
+  ],
+  "engine_run_binding": {
+    "workflow": "engine-acceptance",
+    "workflow_path": ".github/workflows/engine-acceptance.yml",
+    "head_sha_equals_requested_sha": true,
+    "event": "workflow_dispatch",
+    "qa_phase": "full",
+    "status": "completed",
+    "caller_event_name_untrusted": true,
+    "caller_qa_phase_untrusted": true,
+    "bare_qa_matrix_not_a_job": true
+  },
   "allowlisted_skip": [
     {
       "job": "qa7-ai-eval",

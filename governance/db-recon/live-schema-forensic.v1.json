@@ -475,7 +475,7 @@
         "body_compared": false,
         "verdict": "UNVERIFIED"
       },
-      "verdict": "EXACT_EQUIVALENT"
+      "verdict": "UNVERIFIED"
     },
     "push_control": {
       "source_file": "supabase/migrations/20260821090000_push_subscriptions_and_control.sql",
@@ -1333,11 +1333,11 @@
     }
   },
   "object_verdict_counts": {
-    "EXACT_EQUIVALENT": 4,
+    "EXACT_EQUIVALENT": 3,
     "EQUIVALENT_WITH_NON_SEMANTIC_DIFFERENCE": 2,
     "STRUCTURAL_DRIFT": 7,
     "DATA_DRIFT": 0,
-    "UNVERIFIED": 0
+    "UNVERIFIED": 1
   },
   "unresolved": {
     "no_history_live_objects": [

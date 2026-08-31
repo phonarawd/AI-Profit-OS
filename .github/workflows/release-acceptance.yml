@@ -21,6 +21,7 @@ concurrency:
 
 jobs:
   release-acceptance:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.event == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -41,14 +42,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           ENGINE_RUN_ID: ${{ github.event.workflow_run.id || inputs.engine_run_id }}
           SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
-          EVENT_NAME: ${{ github.event.workflow_run.event || github.event_name }}
         run: |
           set -euo pipefail
           mkdir -p _tmp_release_acceptance
           node tooling/release/collect-engine-jobs.cjs \
             --run-id "$ENGINE_RUN_ID" \
             --sha "$SHA" \
-            --event-name "$EVENT_NAME" \
             --out _tmp_release_acceptance/jobs.json
       - name: Fail-closed release verdict
         run: node tooling/release/release-acceptance-verdict.cjs --input _tmp_release_acceptance/jobs.json | tee _tmp_release_acceptance/verdict.json

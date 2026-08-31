@@ -4,6 +4,12 @@ const fs = require("fs");
 const path = require("path");
 const { evaluateVerdict, loadContract } = require("../release/release-acceptance-verdict.cjs");
 const { evaluateGuard } = require("../release/require-accepted-sha.cjs");
+const {
+  collectFromJobs,
+  collectFromRun,
+  canonicalizeJobName,
+  MATRIX_JOB_IDS,
+} = require("../release/collect-engine-jobs.cjs");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
@@ -14,18 +20,37 @@ function fail(msg) {
 
 const contract = loadContract(root);
 if (contract.aggregator_is_not_verdict !== true) fail("contract must separate aggregator");
-if (!Array.isArray(contract.mandatory_core) || contract.mandatory_core.length < 7) {
+if (!Array.isArray(contract.mandatory_core) || contract.mandatory_core.length < 11) {
   fail("mandatory_core incomplete");
+}
+if (contract.mandatory_core.includes("qa-matrix")) {
+  fail("bare qa-matrix is not a GitHub job name");
+}
+for (const id of MATRIX_JOB_IDS) {
+  if (!contract.mandatory_core.includes(id)) fail("mandatory_core missing " + id);
 }
 if (!contract.mandatory_when_full_dispatch.includes("qa7-ai-eval")) {
   fail("qa7 must be mandatory on full dispatch");
+}
+if (!contract.engine_run_binding || contract.engine_run_binding.head_sha_equals_requested_sha !== true) {
+  fail("engine_run_binding must force same SHA");
+}
+if (contract.engine_run_binding.event !== "workflow_dispatch") {
+  fail("engine_run_binding.event must be workflow_dispatch");
+}
+if (contract.engine_run_binding.qa_phase !== "full") {
+  fail("engine_run_binding.qa_phase must be full");
 }
 
 const successJobs = {
   "qa0-baseline": "success",
   "qa1-deterministic": "success",
   "qa2-synthetic-personas": "success",
-  "qa-matrix": "success",
+  "qa-matrix:QA3": "success",
+  "qa-matrix:QA4": "success",
+  "qa-matrix:QA5": "success",
+  "qa-matrix:QA6": "success",
+  "qa-matrix:QA8": "success",
   "qa5-fault": "success",
   "qa6-measure": "success",
   "qa8-adversarial": "success",
@@ -63,13 +88,27 @@ check(
 );
 
 check(
-  "qa6_fail",
+  "qa6_matrix_fail",
   evaluateVerdict(
     {
       sha: "a".repeat(40),
       event_name: "workflow_dispatch",
       qa_phase: "full",
-      jobs: { ...successJobs, "qa-matrix": "failure" },
+      jobs: { ...successJobs, "qa-matrix:QA6": "failure" },
+    },
+    contract,
+  ),
+  "FAIL",
+);
+
+check(
+  "qa3_matrix_missing",
+  evaluateVerdict(
+    {
+      sha: "a".repeat(40),
+      event_name: "workflow_dispatch",
+      qa_phase: "full",
+      jobs: { ...successJobs, "qa-matrix:QA3": "missing" },
     },
     contract,
   ),
@@ -164,8 +203,39 @@ if (!g.ok) fail("matching accepted sha must allow production guard");
 
 fs.unlinkSync(tmp);
 
-const { collectFromJobs } = require("../release/collect-engine-jobs.cjs");
-const collected = collectFromJobs(
+if (canonicalizeJobName("qa-matrix (QA3)") !== "qa-matrix:QA3") {
+  fail("canonicalize qa-matrix (QA3)");
+}
+if (canonicalizeJobName("qa-matrix (QA8)") !== "qa-matrix:QA8") {
+  fail("canonicalize qa-matrix (QA8)");
+}
+if (canonicalizeJobName("qa-matrix") !== "qa-matrix") {
+  fail("bare qa-matrix must stay bare so it cannot fill a cell");
+}
+
+const apiJobs = [
+  { name: "qa0-baseline", conclusion: "success" },
+  { name: "qa1-deterministic", conclusion: "success" },
+  { name: "qa2-synthetic-personas", conclusion: "success" },
+  { name: "qa-matrix (QA3)", conclusion: "success" },
+  { name: "qa-matrix (QA4)", conclusion: "success" },
+  { name: "qa-matrix (QA5)", conclusion: "success" },
+  { name: "qa-matrix (QA6)", conclusion: "success" },
+  { name: "qa-matrix (QA8)", conclusion: "success" },
+  { name: "qa7-ai-eval", conclusion: "success" },
+  { name: "qa5-fault", conclusion: "success" },
+  { name: "qa6-measure", conclusion: "success" },
+  { name: "qa8-adversarial", conclusion: "success" },
+  { name: "aggregator", conclusion: "success" },
+];
+
+const collectedNames = collectFromJobs(apiJobs, { sha: "a".repeat(40), eventName: "", qaPhase: "" });
+for (const id of MATRIX_JOB_IDS) {
+  if (collectedNames.jobs[id] !== "success") fail("matrix cell " + id + " must map from 'qa-matrix (QAn)'");
+}
+if (collectedNames.jobs["qa-matrix"] != null) fail("collector must not emit bare qa-matrix key");
+
+const absent = collectFromJobs(
   [
     { name: "qa0-baseline", conclusion: "success" },
     { name: "qa7-ai-eval", conclusion: "success" },
@@ -173,14 +243,152 @@ const collected = collectFromJobs(
   ],
   { sha: "a".repeat(40), eventName: "workflow_dispatch" },
 );
-if (collected.qa_phase !== "full") fail("dispatch + qa7 ran must infer qa_phase=full");
-if (collected.jobs["qa-matrix"] !== "missing") fail("absent jobs must be missing");
+if (absent.jobs["qa-matrix:QA3"] !== "missing") fail("absent matrix cells must be missing");
+if (absent.qa_phase === "full") fail("collectFromJobs must not infer qa_phase=full from caller/event");
+
+const collapsed = collectFromJobs(
+  [
+    { name: "qa-matrix", conclusion: "success" },
+    { name: "qa0-baseline", conclusion: "success" },
+  ],
+  { sha: "a".repeat(40) },
+);
+if (collapsed.jobs["qa-matrix:QA3"] !== "missing") {
+  fail("bare qa-matrix success must not satisfy qa-matrix:QA3");
+}
+
+const fullSha = "b92ed8b889254e0f2f71b602b142d7d410ca5201";
+const boundRun = {
+  id: 33240856583,
+  name: "engine-acceptance",
+  path: ".github/workflows/engine-acceptance.yml",
+  head_sha: fullSha,
+  event: "workflow_dispatch",
+  status: "completed",
+  inputs: { qa_phase: "full" },
+};
+
+const bound = collectFromRun({ run: boundRun, jobs: apiJobs, requestedSha: fullSha });
+if (bound.sha !== fullSha) fail("bound sha must come from run.head_sha");
+if (bound.event_name !== "workflow_dispatch") fail("bound event must come from run");
+if (bound.qa_phase !== "full") fail("bound qa_phase must be full");
+if (!bound.engine_run || bound.engine_run.head_sha !== fullSha) fail("engine_run metadata missing");
+
+const signatureOnly = collectFromRun({
+  run: { ...boundRun, inputs: undefined },
+  jobs: apiJobs,
+  requestedSha: fullSha,
+});
+if (signatureOnly.qa_phase !== "full" || signatureOnly.engine_run.qa_phase_proof !== "full_job_signature") {
+  fail("missing run.inputs must still prove full via job signature");
+}
+
+function expectClosed(name, fn, needle) {
+  try {
+    fn();
+    fail(name + " should FAIL_CLOSED");
+  } catch (err) {
+    const text = ((err && err.fails) || []).join(" ") + " " + (err && err.message ? err.message : "");
+    if (!text.includes(needle)) fail(name + " expected " + needle + " got " + text);
+  }
+}
+
+expectClosed(
+  "sha_spoof",
+  () =>
+    collectFromRun({
+      run: boundRun,
+      jobs: apiJobs,
+      requestedSha: "c".repeat(40),
+    }),
+  "engine_head_sha_mismatch",
+);
+
+expectClosed(
+  "wrong_workflow",
+  () =>
+    collectFromRun({
+      run: { ...boundRun, name: "engine-acceptance-heavy", path: ".github/workflows/engine-acceptance-heavy.yml" },
+      jobs: apiJobs,
+      requestedSha: fullSha,
+    }),
+  "engine_workflow_mismatch",
+);
+
+expectClosed(
+  "pr_event",
+  () =>
+    collectFromRun({
+      run: { ...boundRun, event: "pull_request" },
+      jobs: apiJobs,
+      requestedSha: fullSha,
+    }),
+  "engine_event_not_workflow_dispatch",
+);
+
+expectClosed(
+  "qa6_only",
+  () =>
+    collectFromRun({
+      run: { ...boundRun, inputs: { qa_phase: "qa6" } },
+      jobs: apiJobs,
+      requestedSha: fullSha,
+    }),
+  "engine_qa_phase_not_full",
+);
+
+expectClosed(
+  "in_progress",
+  () =>
+    collectFromRun({
+      run: { ...boundRun, status: "in_progress" },
+      jobs: apiJobs,
+      requestedSha: fullSha,
+    }),
+  "engine_status_not_completed",
+);
+
+expectClosed(
+  "unproven_phase",
+  () =>
+    collectFromRun({
+      run: { ...boundRun, inputs: undefined },
+      jobs: [
+        { name: "qa0-baseline", conclusion: "success" },
+        { name: "qa-matrix (QA3)", conclusion: "success" },
+        { name: "aggregator", conclusion: "success" },
+      ],
+      requestedSha: fullSha,
+    }),
+  "engine_qa_phase_not_full",
+);
+
+const callerLie = evaluateVerdict(
+  {
+    sha: "d".repeat(40),
+    event_name: "pull_request",
+    qa_phase: "",
+    jobs: successJobs,
+    engine_run: {
+      head_sha: fullSha,
+      event: "workflow_dispatch",
+      qa_phase: "full",
+    },
+  },
+  contract,
+);
+if (callerLie.sha !== fullSha) fail("verdict sha must prefer engine_run.head_sha over caller");
+if (callerLie.kind !== "PRODUCTION_RELEASE") fail("verdict must prefer engine_run event/phase over caller");
 
 const wf = fs.readFileSync(path.join(root, ".github/workflows/release-acceptance.yml"), "utf8");
 if (!/release-acceptance-verdict\.cjs/.test(wf)) {
   fail("release-acceptance.yml must invoke release-acceptance-verdict.cjs");
 }
 if (!/workflow_run:/.test(wf)) fail("release-acceptance.yml must follow engine-acceptance via workflow_run");
+if (/--event-name/.test(wf)) fail("release-acceptance.yml must not pass caller event-name to collector");
+if (!/workflow_run\.event == 'workflow_dispatch'/.test(wf)) {
+  fail("release-acceptance.yml must ignore non-dispatch engine runs");
+}
 
 const deploy = fs.readFileSync(path.join(root, ".github/workflows/deploy-cloudflare.yml"), "utf8");
 if (!/require-accepted-sha\.cjs/.test(deploy)) {

@@ -28,7 +28,7 @@ PTF 4개는 재실행 금지. `20260810212231` idempotency row는 Git 파일 ver
 | `source_observations` | `EXACT_EQUIVALENT` | absent | ON | `EXACT_EQUIVALENT` |
 | `canonical_products` | `EXACT_EQUIVALENT` | absent | ON | `EXACT_EQUIVALENT` |
 | `canonical_product_source_links` | `EXACT_EQUIVALENT` | absent | ON | `EXACT_EQUIVALENT` |
-| `match_results` | `EXACT_EQUIVALENT` | absent | ON | `EXACT_EQUIVALENT` |
+| `match_results` | `UNVERIFIED` | absent | ON | `EXACT_EQUIVALENT` |
 | `push_control` | `EQUIVALENT_WITH_NON_SEMANTIC_DIFFERENCE` | absent | OFF | `EQUIVALENT_WITH_NON_SEMANTIC_DIFFERENCE` |
 | `push_subscriptions` | `EQUIVALENT_WITH_NON_SEMANTIC_DIFFERENCE` | absent | OFF | `EQUIVALENT_WITH_NON_SEMANTIC_DIFFERENCE` |
 | `admin_audit_events` | `STRUCTURAL_DRIFT` | absent | ON | `STRUCTURAL_DRIFT` |
@@ -48,6 +48,7 @@ PTF 4개는 재실행 금지. `20260810212231` idempotency row는 Git 파일 ver
 5. admin_policy_heads seed row는 Git INSERT가 없고 live도 0행. DATA_DRIFT 아님.
 6. deposit_config live row count = 0 (13객체 밖, money path 후속 슬라이스).
 7. history repair / 10 SQL 재실행 / Production apply 는 승인하지 않는다.
+8. 자식 fingerprint가 UNVERIFIED이면 객체 verdict는 EXACT_EQUIVALENT가 될 수 없다 (worst-child).
 
 ## Repair (문서만 · 실행 금지)
 

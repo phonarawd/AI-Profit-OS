@@ -8,6 +8,7 @@
 const fs = require("fs");
 const path = require("path");
 const { execFileSync } = require("child_process");
+const { worst, childVerdicts, VERDICT_RANK } = require("../recovery/build-live-schema-forensic.cjs");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
@@ -65,6 +66,22 @@ function must(cond, msg) {
   if (!cond) fails.push(msg);
 }
 
+must(worst(["EXACT_EQUIVALENT", "UNVERIFIED"]) === "UNVERIFIED", "worst UNVERIFIED over EXACT");
+must(
+  worst(["UNVERIFIED", "STRUCTURAL_DRIFT"]) === "STRUCTURAL_DRIFT",
+  "worst STRUCTURAL over UNVERIFIED",
+);
+must(worst(["DATA_DRIFT", "UNVERIFIED"]) === "DATA_DRIFT", "worst DATA over UNVERIFIED");
+must(
+  worst(["EXACT_EQUIVALENT", "EQUIVALENT_WITH_NON_SEMANTIC_DIFFERENCE"]) ===
+    "EQUIVALENT_WITH_NON_SEMANTIC_DIFFERENCE",
+  "worst equivalent over exact",
+);
+must(
+  worst(["STRUCTURAL_DRIFT", "DATA_DRIFT", "UNVERIFIED"]) === "STRUCTURAL_DRIFT",
+  "worst rank STRUCTURAL > DATA > UNVERIFIED",
+);
+
 const forensic = readJson("governance/db-recon/live-schema-forensic.v1.json");
 const recon = readJson("governance/db-recon/migration-reconciliation.v1.json");
 const hist = readJson("governance/db-recon/live-history-snapshot.v1.json");
@@ -106,6 +123,30 @@ if (forensic) {
     must(
       !THIRTEEN.every((n) => forensic.objects[n] && forensic.objects[n].verdict === "EXACT_EQUIVALENT"),
       "cannot claim all 13 EXACT_EQUIVALENT while grants/history unresolved",
+    );
+    for (const name of THIRTEEN) {
+      const obj = forensic.objects[name];
+      if (!obj) continue;
+      const children = childVerdicts(obj);
+      must(obj.verdict === worst(children), "worst-child mismatch " + name + "=" + obj.verdict);
+      if (children.includes("UNVERIFIED")) {
+        must(
+          obj.verdict !== "EXACT_EQUIVALENT",
+          "child UNVERIFIED forbids parent EXACT " + name,
+        );
+        must(
+          VERDICT_RANK[obj.verdict] >= VERDICT_RANK.UNVERIFIED,
+          "child UNVERIFIED must propagate " + name,
+        );
+      }
+    }
+    must(
+      forensic.objects.match_results && forensic.objects.match_results.functions.verdict === "UNVERIFIED",
+      "match_results functions must stay UNVERIFIED until body compared",
+    );
+    must(
+      forensic.objects.match_results.verdict !== "EXACT_EQUIVALENT",
+      "match_results cannot be EXACT while functions.verdict=UNVERIFIED",
     );
   }
 }

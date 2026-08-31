@@ -88,6 +88,7 @@ const RULES = [
     test: (f) =>
       /^governance\/release-master\/release-acceptance\.v1\.json$/.test(f) ||
       /^tooling\/release\/release-acceptance-verdict\.cjs$/.test(f) ||
+      /^tooling\/release\/collect-engine-jobs\.cjs$/.test(f) ||
       /^tooling\/release\/require-accepted-sha\.cjs$/.test(f) ||
       /^tooling\/release\/fetch-acceptance-artifact\.cjs$/.test(f) ||
       /^tooling\/verify\/release-acceptance\.cjs$/.test(f) ||
