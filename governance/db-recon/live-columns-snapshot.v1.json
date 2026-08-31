@@ -1,0 +1,159 @@
+{
+  "schema": "governance.db-recon.live-columns-snapshot.v1",
+  "observed_at": "2026-08-31T15:05:00.000Z",
+  "project_ref": "mgsytcetsiecllmhcyox",
+  "query": "information_schema.columns SELECT only",
+  "production_mutation": 0,
+  "tables": {
+    "admin_audit_events": [
+      {"column_name": "id", "udt_name": "uuid", "is_nullable": "NO"},
+      {"column_name": "actor_key", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "actor_id", "udt_name": "uuid", "is_nullable": "YES"},
+      {"column_name": "role", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "action", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "target_type", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "target_id", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "occurred_at", "udt_name": "timestamptz", "is_nullable": "NO"},
+      {"column_name": "mode", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "result", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "reason", "udt_name": "text", "is_nullable": "YES"},
+      {"column_name": "idempotency_key", "udt_name": "text", "is_nullable": "YES"},
+      {"column_name": "payload", "udt_name": "jsonb", "is_nullable": "NO"},
+      {"column_name": "created_at", "udt_name": "timestamptz", "is_nullable": "NO"}
+    ],
+    "admin_kill_switches": [
+      {"column_name": "id", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "engaged", "udt_name": "bool", "is_nullable": "NO"},
+      {"column_name": "reason", "udt_name": "text", "is_nullable": "YES"},
+      {"column_name": "updated_by_admin_id", "udt_name": "uuid", "is_nullable": "YES"},
+      {"column_name": "updated_at", "udt_name": "timestamptz", "is_nullable": "NO"}
+    ],
+    "admin_match_controls": [
+      {"column_name": "id", "udt_name": "uuid", "is_nullable": "NO"},
+      {"column_name": "verb", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "kind", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "mode", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "stage", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "confirmed", "udt_name": "bool", "is_nullable": "NO"},
+      {"column_name": "previewed", "udt_name": "bool", "is_nullable": "NO"},
+      {"column_name": "impact_count", "udt_name": "int4", "is_nullable": "NO"},
+      {"column_name": "target_id", "udt_name": "uuid", "is_nullable": "YES"},
+      {"column_name": "reason", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "updated_by_admin_id", "udt_name": "uuid", "is_nullable": "YES"},
+      {"column_name": "updated_at", "udt_name": "timestamptz", "is_nullable": "NO"}
+    ],
+    "admin_ops_intents": [
+      {"column_name": "id", "udt_name": "uuid", "is_nullable": "NO"},
+      {"column_name": "family", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "mode", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "stage", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "confirmed", "udt_name": "bool", "is_nullable": "NO"},
+      {"column_name": "impact_count", "udt_name": "int4", "is_nullable": "NO"},
+      {"column_name": "reason", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "updated_by_admin_id", "udt_name": "uuid", "is_nullable": "YES"},
+      {"column_name": "updated_at", "udt_name": "timestamptz", "is_nullable": "NO"}
+    ],
+    "admin_policy_heads": [
+      {"column_name": "policy_key", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "current_label", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "updated_by_admin_id", "udt_name": "uuid", "is_nullable": "YES"},
+      {"column_name": "updated_at", "udt_name": "timestamptz", "is_nullable": "NO"}
+    ],
+    "admin_policy_versions": [
+      {"column_name": "policy_key", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "version_label", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "payload", "udt_name": "jsonb", "is_nullable": "NO"},
+      {"column_name": "reason", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "severity", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "created_by_admin_id", "udt_name": "uuid", "is_nullable": "YES"},
+      {"column_name": "created_at", "udt_name": "timestamptz", "is_nullable": "NO"}
+    ],
+    "canonical_product_source_links": [
+      {"column_name": "id", "udt_name": "int8", "is_nullable": "NO"},
+      {"column_name": "canonical_product_id", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "source", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "source_item_id", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "source_url", "udt_name": "text", "is_nullable": "YES"},
+      {"column_name": "latest_observation_ref", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "matching_decision", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "matcher_version", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "evidence", "udt_name": "jsonb", "is_nullable": "NO"},
+      {"column_name": "created_at", "udt_name": "timestamptz", "is_nullable": "NO"},
+      {"column_name": "updated_at", "udt_name": "timestamptz", "is_nullable": "NO"}
+    ],
+    "canonical_products": [
+      {"column_name": "canonical_product_id", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "putduk_product_code", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "category_profile", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "canonical_identity_key", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "canonical_attributes", "udt_name": "jsonb", "is_nullable": "NO"},
+      {"column_name": "status", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "identity_evidence_summary", "udt_name": "jsonb", "is_nullable": "NO"},
+      {"column_name": "payload", "udt_name": "jsonb", "is_nullable": "NO"},
+      {"column_name": "created_at", "udt_name": "timestamptz", "is_nullable": "NO"},
+      {"column_name": "updated_at", "udt_name": "timestamptz", "is_nullable": "NO"}
+    ],
+    "match_results": [
+      {"column_name": "match_result_id", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "pair_lo", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "pair_hi", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "left_observation_id", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "right_observation_id", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "left_source", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "right_source", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "matcher_version", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "category_profile", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "decision", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "match_path", "udt_name": "text", "is_nullable": "YES"},
+      {"column_name": "matching_decision_eligible", "udt_name": "bool", "is_nullable": "NO"},
+      {"column_name": "final_truth_eligible", "udt_name": "bool", "is_nullable": "NO"},
+      {"column_name": "evidence", "udt_name": "jsonb", "is_nullable": "NO"},
+      {"column_name": "conflicts", "udt_name": "jsonb", "is_nullable": "NO"},
+      {"column_name": "semantics_fingerprint", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "payload", "udt_name": "jsonb", "is_nullable": "NO"},
+      {"column_name": "evaluated_at", "udt_name": "timestamptz", "is_nullable": "NO"},
+      {"column_name": "created_at", "udt_name": "timestamptz", "is_nullable": "NO"}
+    ],
+    "opportunity_price_overrides": [
+      {"column_name": "opportunity_id", "udt_name": "uuid", "is_nullable": "NO"},
+      {"column_name": "engaged", "udt_name": "bool", "is_nullable": "NO"},
+      {"column_name": "admin_buy_usdt", "udt_name": "numeric", "is_nullable": "YES"},
+      {"column_name": "admin_sell_usdt", "udt_name": "numeric", "is_nullable": "YES"},
+      {"column_name": "admin_margin_pct", "udt_name": "numeric", "is_nullable": "YES"},
+      {"column_name": "reason_code", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "reason", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "updated_by_admin_id", "udt_name": "uuid", "is_nullable": "YES"},
+      {"column_name": "updated_at", "udt_name": "timestamptz", "is_nullable": "NO"}
+    ],
+    "push_control": [
+      {"column_name": "id", "udt_name": "int4", "is_nullable": "NO"},
+      {"column_name": "push_enabled", "udt_name": "bool", "is_nullable": "NO"},
+      {"column_name": "reason", "udt_name": "text", "is_nullable": "YES"},
+      {"column_name": "updated_by_admin_id", "udt_name": "uuid", "is_nullable": "YES"},
+      {"column_name": "updated_at", "udt_name": "timestamptz", "is_nullable": "NO"}
+    ],
+    "push_subscriptions": [
+      {"column_name": "id", "udt_name": "uuid", "is_nullable": "NO"},
+      {"column_name": "user_id", "udt_name": "uuid", "is_nullable": "NO"},
+      {"column_name": "endpoint", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "p256dh", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "auth", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "platform", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "user_agent", "udt_name": "text", "is_nullable": "YES"},
+      {"column_name": "created_at", "udt_name": "timestamptz", "is_nullable": "NO"},
+      {"column_name": "updated_at", "udt_name": "timestamptz", "is_nullable": "NO"}
+    ],
+    "source_observations": [
+      {"column_name": "id", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "source", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "external_item_id", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "observation_purpose", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "source_status", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "url", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "observed_at", "udt_name": "timestamptz", "is_nullable": "NO"},
+      {"column_name": "payload", "udt_name": "jsonb", "is_nullable": "NO"},
+      {"column_name": "content_fingerprint", "udt_name": "text", "is_nullable": "NO"},
+      {"column_name": "created_at", "udt_name": "timestamptz", "is_nullable": "NO"}
+    ]
+  }
+}

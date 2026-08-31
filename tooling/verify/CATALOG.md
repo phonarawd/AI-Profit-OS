@@ -97,7 +97,7 @@
 | `governance/figma/**` · `tooling/verify/figma-project-registry.cjs` | figma-project-registry |
 | `governance/visual-reconciliation/**` · `tooling/verify/locked-visual-reconciliation.cjs` · locked Account Hub `/me` | locked-visual-reconciliation |
 | `tooling/e2e/**` · `tooling/verify/qa-env-isolation-guard.cjs` | qa-env-isolation-guard |
-| `governance/db-recon/**` · b1-push-rls-design · b2-ownership-design · `tooling/verify/db-recon-inventory.cjs` | db-recon-inventory |
+| `governance/db-recon/**` · b1-push-rls-design · b2-ownership-design · `tooling/verify/db-recon-inventory.cjs` · `tooling/verify/live-schema-forensic.cjs` | db-recon-inventory · live-schema-forensic |
 | `governance/release-master/rel-b3-promotion/**` · `b3-promotion-ledger` · `tooling/verify/b3-promotion.cjs` | b3-promotion |
 | `release-acceptance.v1.json` · `tooling/release/*acceptance*` · `engine-acceptance.yml` · `deploy-cloudflare.yml` | release-acceptance |
 | `tooling/e2e/lib/axe-scan.cjs` · `tooling/e2e/specs/axe-a11y.spec.cjs` · `tooling/verify/axe-harness.cjs` | axe-harness |

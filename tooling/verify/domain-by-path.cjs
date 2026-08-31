@@ -71,8 +71,10 @@ const RULES = [
       /^governance\/db-recon\//.test(f) ||
       /^governance\/release-inventory\/b1-push-rls-design\.v1\.json$/.test(f) ||
       /^governance\/release-inventory\/b2-ownership-design\.v1\.json$/.test(f) ||
-      /^tooling\/verify\/db-recon-inventory\.cjs$/.test(f),
-    scripts: ["db-recon-inventory.cjs"],
+      /^tooling\/verify\/db-recon-inventory\.cjs$/.test(f) ||
+      /^tooling\/verify\/live-schema-forensic\.cjs$/.test(f) ||
+      /^tooling\/recovery\/(compare-sql-columns|build-live-schema-forensic)\.cjs$/.test(f),
+    scripts: ["db-recon-inventory.cjs", "live-schema-forensic.cjs"],
   },
   {
     test: (f) =>

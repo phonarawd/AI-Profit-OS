@@ -1,0 +1,1381 @@
+{
+  "schema": "governance.db-recon.live-schema-forensic.v1",
+  "observed_at": "2026-08-31T15:20:00.000Z",
+  "project_ref": "mgsytcetsiecllmhcyox",
+  "production_mutation": 0,
+  "query_mode": "SELECT / information_schema / pg_catalog only",
+  "apply": 0,
+  "reapply": 0,
+  "history_rewrite": 0,
+  "history_repair_approved": false,
+  "pitr": {
+    "status": "BLOCKED_EXTERNAL_EVIDENCE",
+    "enabled": "UNVERIFIED",
+    "retention": "UNVERIFIED",
+    "latest_restore_point": "UNVERIFIED",
+    "rehearsal": "NOT_RUN"
+  },
+  "production_release": "NO_GO_BACKUP_UNVERIFIED",
+  "objects": {
+    "source_observations": {
+      "source_file": "supabase/migrations/20260819210000_source_observations.sql",
+      "apply_this_slice": "NO",
+      "history_version": null,
+      "history_present": false,
+      "exists_live": true,
+      "owner": "postgres",
+      "columns": {
+        "git": [
+          "id",
+          "source",
+          "external_item_id",
+          "observation_purpose",
+          "source_status",
+          "url",
+          "observed_at",
+          "payload",
+          "content_fingerprint",
+          "created_at"
+        ],
+        "live": [
+          "id",
+          "source",
+          "external_item_id",
+          "observation_purpose",
+          "source_status",
+          "url",
+          "observed_at",
+          "payload",
+          "content_fingerprint",
+          "created_at"
+        ],
+        "order_and_names": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "indexes": {
+        "git_non_pk": [
+          "source_observations_observed_at_idx",
+          "source_observations_source_item_observed_idx"
+        ],
+        "live_non_pk": [
+          "source_observations_observed_at_idx",
+          "source_observations_source_item_observed_idx"
+        ],
+        "named_indexes_present": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "triggers": {
+        "git": [
+          "source_observations_forbid_mutation"
+        ],
+        "live": [
+          "source_observations_forbid_mutation"
+        ],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "rls": {
+        "git_enable": true,
+        "live_enabled": true,
+        "live_forced": false,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "policies": {
+        "live_count": 0,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "grants": {
+        "git_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_anon": [],
+        "live_authenticated": [],
+        "verdict": "EXACT_EQUIVALENT",
+        "note": ""
+      },
+      "constraints": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "PK + 4 CHECK including source_observations_no_yahoo_chk present"
+      },
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "no singleton seed in Git"
+      },
+      "comment": {
+        "live": null,
+        "git": null,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "functions": {
+        "existence": [
+          "source_observations_forbid_mutation"
+        ],
+        "body_compared": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "verdict": "EXACT_EQUIVALENT"
+    },
+    "canonical_products": {
+      "source_file": "supabase/migrations/20260819220000_canonical_products.sql",
+      "apply_this_slice": "NO",
+      "history_version": null,
+      "history_present": false,
+      "exists_live": true,
+      "owner": "postgres",
+      "columns": {
+        "git": [
+          "canonical_product_id",
+          "putduk_product_code",
+          "category_profile",
+          "canonical_identity_key",
+          "canonical_attributes",
+          "status",
+          "identity_evidence_summary",
+          "payload",
+          "created_at",
+          "updated_at"
+        ],
+        "live": [
+          "canonical_product_id",
+          "putduk_product_code",
+          "category_profile",
+          "canonical_identity_key",
+          "canonical_attributes",
+          "status",
+          "identity_evidence_summary",
+          "payload",
+          "created_at",
+          "updated_at"
+        ],
+        "order_and_names": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "indexes": {
+        "git_non_pk": [
+          "canonical_products_identity_idx"
+        ],
+        "live_non_pk": [
+          "canonical_products_identity_idx",
+          "canonical_products_identity_unique",
+          "canonical_products_pd_unique"
+        ],
+        "named_indexes_present": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "triggers": {
+        "git": [
+          "canonical_products_protect_immutable"
+        ],
+        "live": [
+          "canonical_products_protect_immutable"
+        ],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "rls": {
+        "git_enable": true,
+        "live_enabled": true,
+        "live_forced": false,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "policies": {
+        "live_count": 0,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "grants": {
+        "git_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_anon": [],
+        "live_authenticated": [],
+        "verdict": "EXACT_EQUIVALENT",
+        "note": ""
+      },
+      "constraints": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "PK + PD unique + identity unique + PD format CHECK"
+      },
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "no singleton seed in Git"
+      },
+      "comment": {
+        "live": null,
+        "git": null,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "functions": {
+        "existence": [
+          "canonical_products_protect_immutable"
+        ],
+        "body_compared": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "verdict": "EXACT_EQUIVALENT"
+    },
+    "canonical_product_source_links": {
+      "source_file": "supabase/migrations/20260819220000_canonical_products.sql",
+      "apply_this_slice": "NO",
+      "history_version": null,
+      "history_present": false,
+      "exists_live": true,
+      "owner": "postgres",
+      "columns": {
+        "git": [
+          "id",
+          "canonical_product_id",
+          "source",
+          "source_item_id",
+          "source_url",
+          "latest_observation_ref",
+          "matching_decision",
+          "matcher_version",
+          "evidence",
+          "created_at",
+          "updated_at"
+        ],
+        "live": [
+          "id",
+          "canonical_product_id",
+          "source",
+          "source_item_id",
+          "source_url",
+          "latest_observation_ref",
+          "matching_decision",
+          "matcher_version",
+          "evidence",
+          "created_at",
+          "updated_at"
+        ],
+        "order_and_names": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "indexes": {
+        "git_non_pk": [],
+        "live_non_pk": [
+          "canonical_product_source_links_observation_uq",
+          "canonical_product_source_links_product_source_item_uq"
+        ],
+        "named_indexes_present": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "triggers": {
+        "git": [],
+        "live": [],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "rls": {
+        "git_enable": true,
+        "live_enabled": true,
+        "live_forced": false,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "policies": {
+        "live_count": 0,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "grants": {
+        "git_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_anon": [],
+        "live_authenticated": [],
+        "verdict": "EXACT_EQUIVALENT",
+        "note": ""
+      },
+      "constraints": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "PK + 2 UNIQUE + 2 FK NO ACTION"
+      },
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "no singleton seed in Git"
+      },
+      "comment": {
+        "live": null,
+        "git": null,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "functions": {
+        "existence": [],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "verdict": "EXACT_EQUIVALENT"
+    },
+    "match_results": {
+      "source_file": "supabase/migrations/20260820013000_match_results.sql",
+      "apply_this_slice": "NO",
+      "history_version": null,
+      "history_present": false,
+      "exists_live": true,
+      "owner": "postgres",
+      "columns": {
+        "git": [
+          "match_result_id",
+          "pair_lo",
+          "pair_hi",
+          "left_observation_id",
+          "right_observation_id",
+          "left_source",
+          "right_source",
+          "matcher_version",
+          "category_profile",
+          "decision",
+          "match_path",
+          "matching_decision_eligible",
+          "final_truth_eligible",
+          "evidence",
+          "conflicts",
+          "semantics_fingerprint",
+          "payload",
+          "evaluated_at",
+          "created_at"
+        ],
+        "live": [
+          "match_result_id",
+          "pair_lo",
+          "pair_hi",
+          "left_observation_id",
+          "right_observation_id",
+          "left_source",
+          "right_source",
+          "matcher_version",
+          "category_profile",
+          "decision",
+          "match_path",
+          "matching_decision_eligible",
+          "final_truth_eligible",
+          "evidence",
+          "conflicts",
+          "semantics_fingerprint",
+          "payload",
+          "evaluated_at",
+          "created_at"
+        ],
+        "order_and_names": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "indexes": {
+        "git_non_pk": [
+          "match_results_decision_idx",
+          "match_results_left_idx"
+        ],
+        "live_non_pk": [
+          "match_results_decision_idx",
+          "match_results_left_idx",
+          "match_results_pair_version_uq",
+          "match_results_right_idx"
+        ],
+        "named_indexes_present": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "triggers": {
+        "git": [
+          "match_results_forbid_mutation"
+        ],
+        "live": [
+          "match_results_forbid_mutation"
+        ],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "rls": {
+        "git_enable": true,
+        "live_enabled": true,
+        "live_forced": false,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "policies": {
+        "live_count": 0,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "grants": {
+        "git_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_anon": [],
+        "live_authenticated": [],
+        "verdict": "EXACT_EQUIVALENT",
+        "note": ""
+      },
+      "constraints": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "PK + UNIQUE pair/version + 4 FK NO ACTION + decision/path CHECKs"
+      },
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "no singleton seed in Git"
+      },
+      "comment": {
+        "live": null,
+        "git": null,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "functions": {
+        "existence": [
+          "match_results_forbid_mutation"
+        ],
+        "body_compared": false,
+        "verdict": "UNVERIFIED"
+      },
+      "verdict": "EXACT_EQUIVALENT"
+    },
+    "push_control": {
+      "source_file": "supabase/migrations/20260821090000_push_subscriptions_and_control.sql",
+      "apply_this_slice": "NO",
+      "history_version": null,
+      "history_present": false,
+      "exists_live": true,
+      "owner": "postgres",
+      "columns": {
+        "git": [
+          "id",
+          "push_enabled",
+          "reason",
+          "updated_by_admin_id",
+          "updated_at"
+        ],
+        "live": [
+          "id",
+          "push_enabled",
+          "reason",
+          "updated_by_admin_id",
+          "updated_at"
+        ],
+        "order_and_names": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "indexes": {
+        "git_non_pk": [],
+        "live_non_pk": [],
+        "named_indexes_present": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "triggers": {
+        "git": [],
+        "live": [],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "rls": {
+        "git_enable": false,
+        "live_enabled": false,
+        "live_forced": false,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "policies": {
+        "live_count": 0,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "grants": {
+        "git_service_role": null,
+        "live_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_anon": [],
+        "live_authenticated": [],
+        "verdict": "EQUIVALENT_WITH_NON_SEMANTIC_DIFFERENCE",
+        "note": "Git SQL에 GRANT 없음. live는 anon/authenticated 공백 + service_role ALL."
+      },
+      "constraints": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "PK id + CHECK id=1"
+      },
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "row id=1 push_enabled=true matches Git INSERT ON CONFLICT DO NOTHING"
+      },
+      "comment": {
+        "live": "REL-020 Admin pushEnabled kill · UI=REL-213",
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "functions": {
+        "existence": [],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "verdict": "EQUIVALENT_WITH_NON_SEMANTIC_DIFFERENCE"
+    },
+    "push_subscriptions": {
+      "source_file": "supabase/migrations/20260821090000_push_subscriptions_and_control.sql",
+      "apply_this_slice": "NO",
+      "history_version": null,
+      "history_present": false,
+      "exists_live": true,
+      "owner": "postgres",
+      "columns": {
+        "git": [
+          "id",
+          "user_id",
+          "endpoint",
+          "p256dh",
+          "auth",
+          "platform",
+          "user_agent",
+          "created_at",
+          "updated_at"
+        ],
+        "live": [
+          "id",
+          "user_id",
+          "endpoint",
+          "p256dh",
+          "auth",
+          "platform",
+          "user_agent",
+          "created_at",
+          "updated_at"
+        ],
+        "order_and_names": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "indexes": {
+        "git_non_pk": [
+          "push_subscriptions_user_id_idx"
+        ],
+        "live_non_pk": [
+          "push_subscriptions_user_endpoint_uq",
+          "push_subscriptions_user_id_idx"
+        ],
+        "named_indexes_present": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "triggers": {
+        "git": [],
+        "live": [],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "rls": {
+        "git_enable": false,
+        "live_enabled": false,
+        "live_forced": false,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "policies": {
+        "live_count": 0,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "grants": {
+        "git_service_role": null,
+        "live_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_anon": [],
+        "live_authenticated": [],
+        "verdict": "EQUIVALENT_WITH_NON_SEMANTIC_DIFFERENCE",
+        "note": "Git SQL에 GRANT 없음. live는 anon/authenticated 공백 + service_role ALL."
+      },
+      "constraints": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "PK + UNIQUE(user_id,endpoint) + endpoint/platform CHECK + FK users ON DELETE CASCADE"
+      },
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "no singleton seed in Git"
+      },
+      "comment": {
+        "live": "REL-020 Web Push endpoints · schemas/push-subscription.v1",
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "functions": {
+        "existence": [],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "verdict": "EQUIVALENT_WITH_NON_SEMANTIC_DIFFERENCE"
+    },
+    "admin_audit_events": {
+      "source_file": "supabase/migrations/20260823160000_admin_audit_events.sql",
+      "apply_this_slice": "NO",
+      "history_version": null,
+      "history_present": false,
+      "exists_live": true,
+      "owner": "postgres",
+      "columns": {
+        "git": [
+          "id",
+          "actor_key",
+          "actor_id",
+          "role",
+          "action",
+          "target_type",
+          "target_id",
+          "occurred_at",
+          "mode",
+          "result",
+          "reason",
+          "idempotency_key",
+          "payload",
+          "created_at"
+        ],
+        "live": [
+          "id",
+          "actor_key",
+          "actor_id",
+          "role",
+          "action",
+          "target_type",
+          "target_id",
+          "occurred_at",
+          "mode",
+          "result",
+          "reason",
+          "idempotency_key",
+          "payload",
+          "created_at"
+        ],
+        "order_and_names": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "indexes": {
+        "git_non_pk": [
+          "admin_audit_events_occurred_at_idx",
+          "admin_audit_events_result_idx"
+        ],
+        "live_non_pk": [
+          "admin_audit_events_actor_key_idx",
+          "admin_audit_events_idem_uq",
+          "admin_audit_events_occurred_at_idx",
+          "admin_audit_events_result_idx"
+        ],
+        "named_indexes_present": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "triggers": {
+        "git": [
+          "admin_audit_events_forbid_mutation"
+        ],
+        "live": [
+          "admin_audit_events_forbid_mutation"
+        ],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "rls": {
+        "git_enable": true,
+        "live_enabled": true,
+        "live_forced": false,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "policies": {
+        "live_count": 0,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "grants": {
+        "git_service_role": [
+          "INSERT",
+          "SELECT"
+        ],
+        "live_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_anon": [],
+        "live_authenticated": [],
+        "verdict": "STRUCTURAL_DRIFT",
+        "note": "Git service_role=INSERT,SELECT · live service_role=DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE · anon/authenticated 여전히 공백"
+      },
+      "constraints": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "PK + UNIQUE idempotency_key + mode/result CHECK"
+      },
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "no singleton seed in Git"
+      },
+      "comment": {
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "functions": {
+        "existence": [
+          "admin_audit_events_forbid_mutation"
+        ],
+        "body_compared": false,
+        "verdict": "UNVERIFIED"
+      },
+      "verdict": "STRUCTURAL_DRIFT"
+    },
+    "admin_kill_switches": {
+      "source_file": "supabase/migrations/20260823170000_admin_kill_switches.sql",
+      "apply_this_slice": "NO",
+      "history_version": null,
+      "history_present": false,
+      "exists_live": true,
+      "owner": "postgres",
+      "columns": {
+        "git": [
+          "id",
+          "engaged",
+          "reason",
+          "updated_by_admin_id",
+          "updated_at"
+        ],
+        "live": [
+          "id",
+          "engaged",
+          "reason",
+          "updated_by_admin_id",
+          "updated_at"
+        ],
+        "order_and_names": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "indexes": {
+        "git_non_pk": [],
+        "live_non_pk": [],
+        "named_indexes_present": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "triggers": {
+        "git": [
+          "admin_kill_switches_forbid_delete"
+        ],
+        "live": [
+          "admin_kill_switches_forbid_delete"
+        ],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "rls": {
+        "git_enable": true,
+        "live_enabled": true,
+        "live_forced": false,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "policies": {
+        "live_count": 0,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "grants": {
+        "git_service_role": [
+          "INSERT",
+          "SELECT",
+          "UPDATE"
+        ],
+        "live_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_anon": [],
+        "live_authenticated": [],
+        "verdict": "STRUCTURAL_DRIFT",
+        "note": "Git service_role=INSERT,SELECT,UPDATE · live service_role=DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE · anon/authenticated 여전히 공백"
+      },
+      "constraints": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "PK + id CHECK 9 values"
+      },
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "9 ids present, all engaged=false"
+      },
+      "comment": {
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "functions": {
+        "existence": [
+          "admin_kill_switches_forbid_delete"
+        ],
+        "body_compared": false,
+        "verdict": "UNVERIFIED"
+      },
+      "verdict": "STRUCTURAL_DRIFT"
+    },
+    "opportunity_price_overrides": {
+      "source_file": "supabase/migrations/20260823180000_opportunity_price_overrides.sql",
+      "apply_this_slice": "NO",
+      "history_version": null,
+      "history_present": false,
+      "exists_live": true,
+      "owner": "postgres",
+      "columns": {
+        "git": [
+          "opportunity_id",
+          "engaged",
+          "admin_buy_usdt",
+          "admin_sell_usdt",
+          "admin_margin_pct",
+          "reason_code",
+          "reason",
+          "updated_by_admin_id",
+          "updated_at"
+        ],
+        "live": [
+          "opportunity_id",
+          "engaged",
+          "admin_buy_usdt",
+          "admin_sell_usdt",
+          "admin_margin_pct",
+          "reason_code",
+          "reason",
+          "updated_by_admin_id",
+          "updated_at"
+        ],
+        "order_and_names": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "indexes": {
+        "git_non_pk": [],
+        "live_non_pk": [],
+        "named_indexes_present": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "triggers": {
+        "git": [
+          "opportunity_price_overrides_forbid_delete"
+        ],
+        "live": [
+          "opportunity_price_overrides_forbid_delete"
+        ],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "rls": {
+        "git_enable": true,
+        "live_enabled": true,
+        "live_forced": false,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "policies": {
+        "live_count": 0,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "grants": {
+        "git_service_role": [
+          "INSERT",
+          "SELECT",
+          "UPDATE"
+        ],
+        "live_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_anon": [],
+        "live_authenticated": [],
+        "verdict": "STRUCTURAL_DRIFT",
+        "note": "Git service_role=INSERT,SELECT,UPDATE · live service_role=DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE · anon/authenticated 여전히 공백"
+      },
+      "constraints": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "PK + reason_code/reason_min CHECK + FK opportunities ON DELETE CASCADE"
+      },
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "no singleton seed in Git"
+      },
+      "comment": {
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "functions": {
+        "existence": [
+          "opportunity_price_overrides_forbid_delete"
+        ],
+        "body_compared": false,
+        "verdict": "UNVERIFIED"
+      },
+      "verdict": "STRUCTURAL_DRIFT"
+    },
+    "admin_ops_intents": {
+      "source_file": "supabase/migrations/20260823190000_admin_ops_intents.sql",
+      "apply_this_slice": "NO",
+      "history_version": null,
+      "history_present": false,
+      "exists_live": true,
+      "owner": "postgres",
+      "columns": {
+        "git": [
+          "id",
+          "family",
+          "mode",
+          "stage",
+          "confirmed",
+          "impact_count",
+          "reason",
+          "updated_by_admin_id",
+          "updated_at"
+        ],
+        "live": [
+          "id",
+          "family",
+          "mode",
+          "stage",
+          "confirmed",
+          "impact_count",
+          "reason",
+          "updated_by_admin_id",
+          "updated_at"
+        ],
+        "order_and_names": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "indexes": {
+        "git_non_pk": [],
+        "live_non_pk": [],
+        "named_indexes_present": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "triggers": {
+        "git": [
+          "admin_ops_intents_forbid_delete"
+        ],
+        "live": [
+          "admin_ops_intents_forbid_delete"
+        ],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "rls": {
+        "git_enable": true,
+        "live_enabled": true,
+        "live_forced": false,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "policies": {
+        "live_count": 0,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "grants": {
+        "git_service_role": [
+          "INSERT",
+          "SELECT",
+          "UPDATE"
+        ],
+        "live_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_anon": [],
+        "live_authenticated": [],
+        "verdict": "STRUCTURAL_DRIFT",
+        "note": "Git service_role=INSERT,SELECT,UPDATE · live service_role=DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE · anon/authenticated 여전히 공백"
+      },
+      "constraints": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "PK + family/mode/stage/impact/reason CHECK"
+      },
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "no singleton seed in Git"
+      },
+      "comment": {
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "functions": {
+        "existence": [
+          "admin_ops_intents_forbid_delete"
+        ],
+        "body_compared": false,
+        "verdict": "UNVERIFIED"
+      },
+      "verdict": "STRUCTURAL_DRIFT"
+    },
+    "admin_match_controls": {
+      "source_file": "supabase/migrations/20260823200000_admin_match_controls.sql",
+      "apply_this_slice": "NO",
+      "history_version": null,
+      "history_present": false,
+      "exists_live": true,
+      "owner": "postgres",
+      "columns": {
+        "git": [
+          "id",
+          "verb",
+          "kind",
+          "mode",
+          "stage",
+          "confirmed",
+          "previewed",
+          "impact_count",
+          "target_id",
+          "reason",
+          "updated_by_admin_id",
+          "updated_at"
+        ],
+        "live": [
+          "id",
+          "verb",
+          "kind",
+          "mode",
+          "stage",
+          "confirmed",
+          "previewed",
+          "impact_count",
+          "target_id",
+          "reason",
+          "updated_by_admin_id",
+          "updated_at"
+        ],
+        "order_and_names": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "indexes": {
+        "git_non_pk": [],
+        "live_non_pk": [],
+        "named_indexes_present": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "triggers": {
+        "git": [
+          "admin_match_controls_forbid_delete"
+        ],
+        "live": [
+          "admin_match_controls_forbid_delete"
+        ],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "rls": {
+        "git_enable": true,
+        "live_enabled": true,
+        "live_forced": false,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "policies": {
+        "live_count": 0,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "grants": {
+        "git_service_role": [
+          "INSERT",
+          "SELECT",
+          "UPDATE"
+        ],
+        "live_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_anon": [],
+        "live_authenticated": [],
+        "verdict": "STRUCTURAL_DRIFT",
+        "note": "Git service_role=INSERT,SELECT,UPDATE · live service_role=DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE · anon/authenticated 여전히 공백"
+      },
+      "constraints": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "PK + verb/kind/mode/stage/impact/reason/reassign/bulk CHECK"
+      },
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "no singleton seed in Git"
+      },
+      "comment": {
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "functions": {
+        "existence": [
+          "admin_match_controls_forbid_delete"
+        ],
+        "body_compared": false,
+        "verdict": "UNVERIFIED"
+      },
+      "verdict": "STRUCTURAL_DRIFT"
+    },
+    "admin_policy_versions": {
+      "source_file": "supabase/migrations/20260823210000_admin_policy_versions.sql",
+      "apply_this_slice": "NO",
+      "history_version": null,
+      "history_present": false,
+      "exists_live": true,
+      "owner": "postgres",
+      "columns": {
+        "git": [
+          "policy_key",
+          "version_label",
+          "payload",
+          "reason",
+          "severity",
+          "created_by_admin_id",
+          "created_at"
+        ],
+        "live": [
+          "policy_key",
+          "version_label",
+          "payload",
+          "reason",
+          "severity",
+          "created_by_admin_id",
+          "created_at"
+        ],
+        "order_and_names": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "indexes": {
+        "git_non_pk": [],
+        "live_non_pk": [],
+        "named_indexes_present": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "triggers": {
+        "git": [
+          "admin_policy_versions_forbid_update"
+        ],
+        "live": [
+          "admin_policy_versions_forbid_update"
+        ],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "rls": {
+        "git_enable": true,
+        "live_enabled": true,
+        "live_forced": false,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "policies": {
+        "live_count": 0,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "grants": {
+        "git_service_role": [
+          "INSERT",
+          "SELECT"
+        ],
+        "live_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_anon": [],
+        "live_authenticated": [],
+        "verdict": "STRUCTURAL_DRIFT",
+        "note": "Git service_role=INSERT,SELECT · live service_role=DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE · anon/authenticated 여전히 공백"
+      },
+      "constraints": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "composite PK + policy_key/label/severity/reason CHECK"
+      },
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "no singleton seed in Git"
+      },
+      "comment": {
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "functions": {
+        "existence": [
+          "admin_policy_versions_forbid_mutation"
+        ],
+        "body_compared": false,
+        "verdict": "UNVERIFIED"
+      },
+      "verdict": "STRUCTURAL_DRIFT"
+    },
+    "admin_policy_heads": {
+      "source_file": "supabase/migrations/20260823210000_admin_policy_versions.sql",
+      "apply_this_slice": "NO",
+      "history_version": null,
+      "history_present": false,
+      "exists_live": true,
+      "owner": "postgres",
+      "columns": {
+        "git": [
+          "policy_key",
+          "current_label",
+          "updated_by_admin_id",
+          "updated_at"
+        ],
+        "live": [
+          "policy_key",
+          "current_label",
+          "updated_by_admin_id",
+          "updated_at"
+        ],
+        "order_and_names": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "indexes": {
+        "git_non_pk": [],
+        "live_non_pk": [],
+        "named_indexes_present": true,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "triggers": {
+        "git": [],
+        "live": [],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "rls": {
+        "git_enable": true,
+        "live_enabled": true,
+        "live_forced": false,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "policies": {
+        "live_count": 0,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "grants": {
+        "git_service_role": [
+          "INSERT",
+          "SELECT",
+          "UPDATE"
+        ],
+        "live_service_role": [
+          "DELETE",
+          "INSERT",
+          "REFERENCES",
+          "SELECT",
+          "TRIGGER",
+          "TRUNCATE",
+          "UPDATE"
+        ],
+        "live_anon": [],
+        "live_authenticated": [],
+        "verdict": "STRUCTURAL_DRIFT",
+        "note": "Git service_role=INSERT,SELECT,UPDATE · live service_role=DELETE,INSERT,REFERENCES,SELECT,TRIGGER,TRUNCATE,UPDATE · anon/authenticated 여전히 공백"
+      },
+      "constraints": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "PK policy_key + label CHECK"
+      },
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "Git has no INSERT; live row count 0"
+      },
+      "comment": {
+        "live": null,
+        "git": null,
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "functions": {
+        "existence": [],
+        "verdict": "EXACT_EQUIVALENT"
+      },
+      "verdict": "STRUCTURAL_DRIFT"
+    }
+  },
+  "object_verdict_counts": {
+    "EXACT_EQUIVALENT": 4,
+    "EQUIVALENT_WITH_NON_SEMANTIC_DIFFERENCE": 2,
+    "STRUCTURAL_DRIFT": 7,
+    "DATA_DRIFT": 0,
+    "UNVERIFIED": 0
+  },
+  "unresolved": {
+    "no_history_live_objects": [
+      "source_observations",
+      "canonical_products",
+      "canonical_product_source_links",
+      "match_results",
+      "push_control",
+      "push_subscriptions",
+      "admin_audit_events",
+      "admin_kill_switches",
+      "opportunity_price_overrides",
+      "admin_ops_intents",
+      "admin_match_controls",
+      "admin_policy_versions",
+      "admin_policy_heads"
+    ],
+    "grant_wider_than_git": [
+      "admin_audit_events",
+      "admin_kill_switches",
+      "opportunity_price_overrides",
+      "admin_ops_intents",
+      "admin_match_controls",
+      "admin_policy_versions",
+      "admin_policy_heads"
+    ],
+    "function_bodies_compared": [
+      "source_observations_forbid_mutation",
+      "canonical_products_protect_immutable"
+    ],
+    "function_bodies_existence_only": [
+      "match_results_forbid_mutation",
+      "admin_audit_events_forbid_mutation",
+      "admin_kill_switches_forbid_delete",
+      "admin_ops_intents_forbid_delete",
+      "admin_match_controls_forbid_delete",
+      "opportunity_price_overrides_forbid_delete",
+      "admin_policy_versions_forbid_mutation"
+    ]
+  }
+}
