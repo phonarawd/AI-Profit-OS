@@ -55,6 +55,20 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Production same-SHA acceptance
+        if: inputs.target == 'production'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          node tooling/release/fetch-acceptance-artifact.cjs \
+            --sha "${{ github.sha }}" \
+            --out _tmp_release_acceptance/verdict.json
+          node tooling/release/require-accepted-sha.cjs \
+            --target production \
+            --sha "${{ github.sha }}" \
+            --artifact _tmp_release_acceptance/verdict.json
+
       - name: verify:root-domain-env
         if: inputs.target == 'production'
         run: pnpm verify:root-domain-env

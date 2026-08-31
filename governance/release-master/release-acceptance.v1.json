@@ -1,0 +1,33 @@
+{
+  "schema": "governance.release-master.release-acceptance.v1",
+  "id": "release-acceptance",
+  "evidence_job": "aggregator",
+  "verdict_job": "release-acceptance",
+  "aggregator_is_not_verdict": true,
+  "production_apply": 0,
+  "mandatory_core": [
+    "qa0-baseline",
+    "qa1-deterministic",
+    "qa2-synthetic-personas",
+    "qa-matrix",
+    "qa5-fault",
+    "qa6-measure",
+    "qa8-adversarial"
+  ],
+  "mandatory_when_full_dispatch": ["qa7-ai-eval"],
+  "allowlisted_skip": [
+    {
+      "job": "qa7-ai-eval",
+      "when": "event != workflow_dispatch OR qa_phase not in [qa7, full]"
+    }
+  ],
+  "production_release_requires": {
+    "event_name": "workflow_dispatch",
+    "qa_phase": "full",
+    "verdict": "PASS",
+    "kind": "PRODUCTION_RELEASE",
+    "accepted_sha_equals_deploy_sha": true
+  },
+  "fail_results": ["failure", "cancelled", "timed_out", "missing"],
+  "unexpected_skip": "FAIL"
+}

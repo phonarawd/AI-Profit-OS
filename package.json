@@ -266,6 +266,7 @@
     "verify:engine-acceptance": "node tooling/verify/engine-acceptance.cjs",
     "verify:db-recon-inventory": "node tooling/verify/db-recon-inventory.cjs",
     "verify:b3-promotion": "node tooling/verify/b3-promotion.cjs",
+    "verify:release-acceptance": "node tooling/verify/release-acceptance.cjs",
     "verify:qa-env-isolation-guard": "node tooling/verify/qa-env-isolation-guard.cjs",
     "verify:money-unavailable": "node tooling/verify/money-unavailable.cjs",
     "verify:settlement-rule-parity": "node tooling/verify/settlement-rule-parity.cjs",

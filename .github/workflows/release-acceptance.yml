@@ -1,0 +1,58 @@
+name: release-acceptance
+
+on:
+  workflow_run:
+    workflows: [engine-acceptance]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      engine_run_id:
+        description: "engine-acceptance run id to judge"
+        required: true
+        type: string
+
+concurrency:
+  group: release-acceptance-${{ github.event.workflow_run.head_sha || github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  release-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Collect engine-acceptance job results
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ENGINE_RUN_ID: ${{ github.event.workflow_run.id || inputs.engine_run_id }}
+          SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+          EVENT_NAME: ${{ github.event.workflow_run.event || github.event_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p _tmp_release_acceptance
+          node tooling/release/collect-engine-jobs.cjs \
+            --run-id "$ENGINE_RUN_ID" \
+            --sha "$SHA" \
+            --event-name "$EVENT_NAME" \
+            --out _tmp_release_acceptance/jobs.json
+      - name: Fail-closed release verdict
+        run: node tooling/release/release-acceptance-verdict.cjs --input _tmp_release_acceptance/jobs.json | tee _tmp_release_acceptance/verdict.json
+      - name: Upload release verdict
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-acceptance-verdict
+          path: _tmp_release_acceptance/
+          retention-days: 90
+          if-no-files-found: error

@@ -84,6 +84,17 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/release-master\/release-acceptance\.v1\.json$/.test(f) ||
+      /^tooling\/release\/release-acceptance-verdict\.cjs$/.test(f) ||
+      /^tooling\/release\/require-accepted-sha\.cjs$/.test(f) ||
+      /^tooling\/release\/fetch-acceptance-artifact\.cjs$/.test(f) ||
+      /^tooling\/verify\/release-acceptance\.cjs$/.test(f) ||
+      /^\.github\/workflows\/release-acceptance\.yml$/.test(f) ||
+      /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f),
+    scripts: ["release-acceptance.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/lib\/opportunity-card-map\.ts$/.test(f) ||
       /^apps\/web\/components\/spark-dash-home\/format\.ts$/.test(f) ||
       /^packages\/ui\/components\/opportunity\/money-display\.ts$/.test(f) ||
