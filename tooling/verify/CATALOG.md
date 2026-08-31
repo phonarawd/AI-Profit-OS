@@ -100,6 +100,7 @@
 | `governance/db-recon/**` · b1-push-rls-design · b2-ownership-design · `tooling/verify/db-recon-inventory.cjs` · `tooling/verify/live-schema-forensic.cjs` | db-recon-inventory · live-schema-forensic |
 | `governance/release-master/rel-b3-promotion/**` · `b3-promotion-ledger` · `tooling/verify/b3-promotion.cjs` | b3-promotion |
 | `release-acceptance.v1.json` · `tooling/release/*acceptance*` · `engine-acceptance.yml` · `deploy-cloudflare.yml` | release-acceptance |
+| `.github/workflows/**` · `.github/dependabot.yml` · `workflow-action-pins.v1.json` · `tooling/verify/workflow-action-pin.cjs` | workflow-action-pin |
 | `tooling/e2e/lib/axe-scan.cjs` · `tooling/e2e/specs/axe-a11y.spec.cjs` · `tooling/verify/axe-harness.cjs` | axe-harness |
 | `apps/web/lib/opportunity-card-map.ts` · `apps/web/components/spark-dash-home/format.ts` · `packages/ui/components/opportunity/money-display.ts` · `tooling/e2e/lib/money-unavailable.cjs` · `tooling/e2e/specs/money-unavailable.spec.cjs` · `tooling/verify/money-unavailable.cjs` | money-unavailable |
 | `packages/ui/**` · `apps/web/**` | no-it-jargon · mockup-governance · canon-surfaces |

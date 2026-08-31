@@ -97,6 +97,15 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^\.github\/workflows\//.test(f) ||
+      /^\.github\/dependabot\.yml$/.test(f) ||
+      /^governance\/security\/workflow-action-pins\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/workflow-action-pin\.cjs$/.test(f) ||
+      /^tooling\/recovery\/apply-workflow-action-pins\.cjs$/.test(f),
+    scripts: ["workflow-action-pin.cjs"],
+  },
+  {
+    test: (f) =>
       /^apps\/web\/lib\/opportunity-card-map\.ts$/.test(f) ||
       /^apps\/web\/components\/spark-dash-home\/format\.ts$/.test(f) ||
       /^packages\/ui\/components\/opportunity\/money-display\.ts$/.test(f) ||

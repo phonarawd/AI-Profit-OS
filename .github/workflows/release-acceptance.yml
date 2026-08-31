@@ -1,5 +1,9 @@
 name: release-acceptance
 
+permissions:
+  contents: read
+  actions: read
+
 on:
   workflow_run:
     workflows: [engine-acceptance]
@@ -20,13 +24,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
         with:
           version: 10.14.0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: "22"
           cache: "pnpm"
@@ -50,7 +54,7 @@ jobs:
         run: node tooling/release/release-acceptance-verdict.cjs --input _tmp_release_acceptance/jobs.json | tee _tmp_release_acceptance/verdict.json
       - name: Upload release verdict
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: release-acceptance-verdict
           path: _tmp_release_acceptance/
