@@ -14,7 +14,7 @@
   "RLS_OR_DATA_ACCESS_VERIFIED": "INHERITED_I1_PARTIAL_READ_ONLY — no Production mutation.",
   "AUDIT_LOG_VERIFIED": "PARTIAL — I-1 sink fixture only. AI-log view audit NOT_PROVEN.",
   "REAL_DATA_SOURCE_VERIFIED": "PARTIAL — Nest list/redact path exists. No staging Nest.",
-  "E2E_ALLOWED_AND_DENIED_CASES": "PARTIAL — static + local runtime mask tests. Browser AI console NOT_PROVEN.",
+  "E2E_ALLOWED_AND_DENIED_CASES": "PARTIAL — static + local runtime mask tests. Chromium leftover admin /admin/ai-logs showed [숨김] leftover and hid mailbox-like preview. Support-reason audit row still NOT_PROVEN.",
   "RAW_ARTIFACTS": [
     "apps/admin/lib/admin-truth.ts",
     "apps/admin/lib/admin-log-mask.ts",

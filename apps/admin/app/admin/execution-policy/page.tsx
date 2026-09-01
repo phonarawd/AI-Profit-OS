@@ -438,12 +438,14 @@ export default function Page() {
             </label>
             <textarea
               id="execution-policy-reason"
+              data-testid="execution-policy-reason"
               value={changeReason}
               onChange={(e) => setChangeReason(e.target.value)}
               className="w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
             />
             <button
               type="button"
+              data-testid="execution-policy-save"
               className="rounded bg-lux-elevated px-3 py-1.5 text-sm"
               disabled={saving}
               onClick={() => void savePolicy()}

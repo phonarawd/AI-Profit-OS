@@ -105,8 +105,19 @@ async function ensureLocalAdminRuntime(opts = {}) {
   if (!nextBin) {
     throw new Error("local-admin-runtime: next binary missing");
   }
+  const adminNm = path.join(adminRoot, "node_modules");
+  let linkedNm = false;
+  try {
+    linkedNm = fs.lstatSync(adminNm).isSymbolicLink();
+  } catch {
+    linkedNm = false;
+  }
+  const useWebpack =
+    process.env.ADMIN_NEXT_WEBPACK === "1" ||
+    process.env.NEXT_DEV_WEBPACK === "1" ||
+    linkedNm;
   const args = [nextBin, "dev", "--port", String(port), "--hostname", "127.0.0.1"];
-  if (process.env.ADMIN_NEXT_WEBPACK === "1") args.push("--webpack");
+  if (useWebpack) args.push("--webpack");
   const child = spawn(process.execPath, args, {
     cwd: adminRoot,
     env: {
