@@ -63,12 +63,36 @@ if (!svc.includes("magicLinkVerify") || !svc.includes("this.magicLink.prove")) {
   fails.push("AuthService.magicLinkVerify must consume proven token before mint");
 }
 
+const email = read("services/api-nest/src/auth/identity-proof.email.ts");
+if (email.includes("/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/")) {
+  fails.push("email validation must not use polynomial regex");
+}
+if (!email.includes("EMAIL_MAX_LEN") || !email.includes("lastIndexOf(\".\")")) {
+  fails.push("email validation must be a bounded linear scan");
+}
+
 if (fails.length) {
   console.error("[verify:auth-identity-proof] STATIC FAIL");
   for (const f of fails) console.error(" -", f);
   process.exit(1);
 }
 console.log("[verify:auth-identity-proof] STATIC_VERIFIER_PASS");
+
+const emailRuntime = spawnSync(
+  process.execPath,
+  [
+    "--test",
+    "--experimental-strip-types",
+    "services/api-nest/src/auth/identity-proof.email.runtime.test.ts",
+  ],
+  { cwd: root, encoding: "utf8", timeout: 30_000 },
+);
+process.stdout.write(emailRuntime.stdout || "");
+process.stderr.write(emailRuntime.stderr || "");
+if (emailRuntime.status !== 0) {
+  console.error("[verify:auth-identity-proof] EMAIL_RUNTIME failed");
+  process.exit(1);
+}
 
 const tscBin = require.resolve("typescript/bin/tsc");
 const build = spawnSync(

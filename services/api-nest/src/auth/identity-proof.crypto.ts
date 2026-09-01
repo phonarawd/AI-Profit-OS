@@ -51,9 +51,7 @@ export function apiOrigin(nowEnv = loadPhase0Env()): string {
   return hostOrigin(nowEnv.apiHost);
 }
 
-export function isValidEmail(raw: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw);
-}
+export { EMAIL_MAX_LEN, isValidEmail } from "./identity-proof.email";
 
 export type ClientDataJSON = {
   type: string;

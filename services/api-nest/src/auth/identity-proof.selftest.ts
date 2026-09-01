@@ -7,8 +7,10 @@ import { OauthIdentityService, type OauthHttp } from "./oauth-identity.service";
 import { WebauthnAssertService } from "./webauthn-assert.service";
 import { MemoryProofStore } from "./identity-proof.store";
 import {
+  EMAIL_MAX_LEN,
   exportSpkiDer,
   generateTestEs256,
+  isValidEmail,
   signEs256P1363,
   sha256,
 } from "./identity-proof.crypto";
@@ -92,6 +94,53 @@ async function run(): Promise<void> {
   const mint = () => {
     minted += 1;
   };
+
+  {
+    const cases: Array<[string, boolean]> = [
+      ["user@example.com", true],
+      ["user+tag@ex.co.kr", true],
+      ["a@b.c", true],
+      ["@example.com", false],
+      ["user@", false],
+      ["user@example", false],
+      ["user@example.", false],
+      ["user@.com", false],
+      ["user@ex@ample.com", false],
+      ["user example@x.com", false],
+      ["user@exam ple.com", false],
+    ];
+    for (const [email, expected] of cases) {
+      if (isValidEmail(email) === expected) {
+        pass(`email ${expected ? "accept" : "reject"} ${email}`);
+      } else {
+        fail(`email ${email}`, `expected ${expected}`);
+      }
+    }
+    const oversize = `a@b.${"c".repeat(EMAIL_MAX_LEN)}`;
+    if (!isValidEmail(oversize) && oversize.length > EMAIL_MAX_LEN) {
+      pass("email rejects oversize");
+    } else {
+      fail("email oversize", `len=${oversize.length} valid=${isValidEmail(oversize)}`);
+    }
+    const adversarial = `user@${"a.".repeat(10_000)}a`;
+    const t0 = Date.now();
+    const adversarialOk = isValidEmail(adversarial);
+    const adversarialMs = Date.now() - t0;
+    if (adversarialMs <= 20 && adversarialOk === false) {
+      pass("email adversarial long input is linear", `${adversarialMs}ms`);
+    } else {
+      fail("email adversarial", `ms=${adversarialMs} ok=${adversarialOk}`);
+    }
+    const manyDots = `u@${"a.".repeat(80)}a`;
+    const t1 = Date.now();
+    const manyOk = isValidEmail(manyDots);
+    const manyMs = Date.now() - t1;
+    if (manyMs <= 20 && manyOk === true) {
+      pass("email many-dot domain is linear", `${manyMs}ms`);
+    } else {
+      fail("email many-dot", `ms=${manyMs} ok=${manyOk}`);
+    }
+  }
 
   // ── Magic link ──
   {
