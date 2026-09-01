@@ -1,0 +1,381 @@
+{
+  "schema": "governance.recovery.ghas-pr114-open.v1",
+  "observed_at": "2026-09-01T19:20:00Z",
+  "source": "GitHub code-scanning REST live",
+  "repo_default_alerts": 0,
+  "pr_114_merge_alerts_open": 51,
+  "analysis": {
+    "ref": "refs/pull/114/merge",
+    "commit_sha": "4867548a592810de22e2bf14a1f450cf1d421912",
+    "note": "PR merge SHA, not local recovery tip. Do not treat as current-head SARIF."
+  },
+  "dismissed_this_session": 0,
+  "local_head_at_classification": null,
+  "counts_by_class": {
+    "FIXED_LOCALLY": 13,
+    "ENVIRONMENT": 18,
+    "FALSE_POSITIVE": 17,
+    "FALSE_POSITIVE_ACCEPTED_DESIGN": 3
+  },
+  "unexplained_ghas": 0,
+  "alerts": [
+    {
+      "number": 70,
+      "rule": "js/http-to-file-access",
+      "path": "tooling/release/api-artifact-runtime-qa.cjs",
+      "cls": "FIXED_LOCALLY",
+      "note": "Canonical projection landed before this analysis SHA. Awaiting exact-head rescan."
+    },
+    {
+      "number": 64,
+      "rule": "js/insecure-temporary-file",
+      "path": "tooling/engine-acceptance/lib/qa7-store.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "QA7 local OS temp traces. Not a Production mutation path."
+    },
+    {
+      "number": 63,
+      "rule": "js/insecure-temporary-file",
+      "path": "tooling/engine-acceptance/lib/qa7-store.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "Same QA7 temp store."
+    },
+    {
+      "number": 62,
+      "rule": "js/missing-origin-check",
+      "path": "apps/web/public/sw.js",
+      "cls": "FIXED_LOCALLY",
+      "note": "SW message handler now rejects cross-origin SKIP_WAITING. pwa-native-shell enforces it."
+    },
+    {
+      "number": 61,
+      "rule": "js/regex/missing-regexp-anchor",
+      "path": "tooling/verify/signup-ready-adapters.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Verifier scans static worker source. Unanchored substring is intentional."
+    },
+    {
+      "number": 60,
+      "rule": "js/regex/missing-regexp-anchor",
+      "path": "tooling/verify/signup-ready-adapters.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Same static verifier scan."
+    },
+    {
+      "number": 59,
+      "rule": "js/regex/missing-regexp-anchor",
+      "path": "tooling/verify/secrets.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Secret scanner uses unanchored needles on purpose."
+    },
+    {
+      "number": 58,
+      "rule": "js/regex/missing-regexp-anchor",
+      "path": "tooling/verify/root-domain-env.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Static env/domain scan."
+    },
+    {
+      "number": 57,
+      "rule": "js/regex/missing-regexp-anchor",
+      "path": "tooling/verify/root-domain-env.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Static env/domain scan."
+    },
+    {
+      "number": 56,
+      "rule": "js/regex/missing-regexp-anchor",
+      "path": "tooling/verify/root-domain-env.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Static env/domain scan."
+    },
+    {
+      "number": 55,
+      "rule": "js/regex/missing-regexp-anchor",
+      "path": "tooling/verify/ebay-resilience.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Static source contract scan."
+    },
+    {
+      "number": 54,
+      "rule": "js/regex/missing-regexp-anchor",
+      "path": "tooling/engine-acceptance/kill-switch.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Local kill-switch matcher. Not user input."
+    },
+    {
+      "number": 53,
+      "rule": "js/regex/missing-regexp-anchor",
+      "path": "tooling/engine-acceptance/kill-switch.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Local kill-switch matcher. Not user input."
+    },
+    {
+      "number": 52,
+      "rule": "js/regex/missing-regexp-anchor",
+      "path": "services/api-nest/clock.core.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Clock token parse for Engine tests. Not request routing."
+    },
+    {
+      "number": 51,
+      "rule": "js/regex/missing-regexp-anchor",
+      "path": "services/api-nest/clock.core.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Clock token parse for Engine tests."
+    },
+    {
+      "number": 49,
+      "rule": "js/indirect-command-line-injection",
+      "path": "tooling/cleanup/cursor-roaming.cjs",
+      "cls": "FIXED_LOCALLY",
+      "note": "sqlite3 now spawnSync + SQL allowlist. Cursor process check remains local cleanup only."
+    },
+    {
+      "number": 48,
+      "rule": "js/file-access-to-http",
+      "path": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "Local verifier HTTP fixture. Not Production."
+    },
+    {
+      "number": 47,
+      "rule": "js/file-access-to-http",
+      "path": "tooling/verify/rel-602-staging-rollback.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "Local verifier HTTP fixture."
+    },
+    {
+      "number": 46,
+      "rule": "js/file-access-to-http",
+      "path": "tooling/verify/rel-601-staging-regression.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "Local verifier HTTP fixture."
+    },
+    {
+      "number": 45,
+      "rule": "js/file-access-to-http",
+      "path": "tooling/engine-acceptance/lib/qa7-coach-executor.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "Engine QA7 local executor."
+    },
+    {
+      "number": 44,
+      "rule": "js/file-access-to-http",
+      "path": "tooling/engine-acceptance/lib/qa7-coach-executor.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "Engine QA7 local executor."
+    },
+    {
+      "number": 43,
+      "rule": "js/file-access-to-http",
+      "path": "tooling/engine-acceptance/lib/qa7-coach-executor.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "Engine QA7 local executor."
+    },
+    {
+      "number": 42,
+      "rule": "js/file-access-to-http",
+      "path": "tooling/deploy/cf-origin-smoke.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "Deploy smoke reads local files then probes origin. Gated by accepted-artifact authority for Production."
+    },
+    {
+      "number": 41,
+      "rule": "js/file-access-to-http",
+      "path": "tooling/deploy/cf-domain-bootstrap.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "Domain bootstrap tooling. Not a user request path."
+    },
+    {
+      "number": 40,
+      "rule": "js/file-system-race",
+      "path": "tooling/verify/shadow-replay-drift.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "Local verifier TOCTOU on own files."
+    },
+    {
+      "number": 39,
+      "rule": "js/file-system-race",
+      "path": "tooling/verify/secrets.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "Local scanner TOCTOU."
+    },
+    {
+      "number": 38,
+      "rule": "js/file-system-race",
+      "path": "tooling/verify/day-pulse-live-only.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "Local verifier TOCTOU."
+    },
+    {
+      "number": 37,
+      "rule": "js/file-system-race",
+      "path": "tooling/pwa/generate-vapid.mjs",
+      "cls": "ENVIRONMENT",
+      "note": "Dev keygen writes local files."
+    },
+    {
+      "number": 36,
+      "rule": "js/file-system-race",
+      "path": "tooling/pwa/generate-vapid.mjs",
+      "cls": "ENVIRONMENT",
+      "note": "Dev keygen writes local files."
+    },
+    {
+      "number": 35,
+      "rule": "js/file-system-race",
+      "path": "tooling/engine-acceptance/freeze-baseline.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "Engine baseline freezer. ACK still not issued."
+    },
+    {
+      "number": 34,
+      "rule": "js/file-system-race",
+      "path": "tooling/deploy/cf-domain-bootstrap.cjs",
+      "cls": "ENVIRONMENT",
+      "note": "Domain bootstrap TOCTOU."
+    },
+    {
+      "number": 33,
+      "rule": "js/identity-replacement",
+      "path": "tooling/engine-acceptance/lib/hash-scope.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Hashing protected Engine scope paths. Not user identity replacement."
+    },
+    {
+      "number": 31,
+      "rule": "js/incomplete-multi-character-sanitization",
+      "path": "apps/web/scripts/asset-pipeline/run.mjs",
+      "cls": "ENVIRONMENT",
+      "note": "Build-time asset pipeline, not request sanitizer."
+    },
+    {
+      "number": 30,
+      "rule": "js/xss-through-exception",
+      "path": "services/api-nest/src/ai/coach.controller.ts",
+      "cls": "FIXED_LOCALLY",
+      "note": "Canonical coach_error SSE landed in 5c0737fc. Analysis SHA predates it."
+    },
+    {
+      "number": 29,
+      "rule": "js/xss-through-dom",
+      "path": "packages/ui/components/kyc/KycFlow.tsx",
+      "cls": "FALSE_POSITIVE_ACCEPTED_DESIGN",
+      "note": "Packet ghas-kyc-xss-through-dom.v1.json. dismiss=0."
+    },
+    {
+      "number": 28,
+      "rule": "js/incomplete-url-substring-sanitization",
+      "path": "tooling/verify/web-remote-patterns.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Static Next image remotePatterns checker."
+    },
+    {
+      "number": 27,
+      "rule": "js/incomplete-url-substring-sanitization",
+      "path": "tooling/verify/web-remote-patterns.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Static Next image remotePatterns checker."
+    },
+    {
+      "number": 26,
+      "rule": "js/incomplete-url-substring-sanitization",
+      "path": "tooling/verify/web-remote-patterns.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Static Next image remotePatterns checker."
+    },
+    {
+      "number": 20,
+      "rule": "js/clear-text-storage-of-sensitive-data",
+      "path": "services/api-nest/src/auth/auth.controller.ts",
+      "cls": "FALSE_POSITIVE_ACCEPTED_DESIGN",
+      "note": "HttpOnly SameSite user session cookie. Not JS-readable secret. CSRF double-submit stays readable."
+    },
+    {
+      "number": 19,
+      "rule": "js/polynomial-redos",
+      "path": "services/market-intelligence/src/money.cjs",
+      "cls": "FIXED_LOCALLY",
+      "note": "Decimal amount now a bounded linear scan. Nested amount regex removed."
+    },
+    {
+      "number": 18,
+      "rule": "js/polynomial-redos",
+      "path": "services/market-intelligence/src/ebay-identity-match.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Unicode title normalize. Input is listing title, already length-bounded by ingest."
+    },
+    {
+      "number": 17,
+      "rule": "js/polynomial-redos",
+      "path": "services/market-intelligence/src/card-grade.cjs",
+      "cls": "FALSE_POSITIVE",
+      "note": "Grade token match on short listing titles."
+    },
+    {
+      "number": 15,
+      "rule": "js/polynomial-redos",
+      "path": "services/api-nest/src/auth/auth.stage.ts",
+      "cls": "FIXED_LOCALLY",
+      "note": "Stage B now uses identity-proof isValidEmail linear scan."
+    },
+    {
+      "number": 14,
+      "rule": "js/polynomial-redos",
+      "path": "services/ai-platform/src/numeric-grounding.cjs",
+      "cls": "FIXED_LOCALLY",
+      "note": "Claim extraction now hard-caps answer text at 8000 chars before regex."
+    },
+    {
+      "number": 13,
+      "rule": "js/polynomial-redos",
+      "path": "services/ai-platform/src/numeric-grounding.cjs",
+      "cls": "FIXED_LOCALLY",
+      "note": "Same 8000-char cap."
+    },
+    {
+      "number": 12,
+      "rule": "js/polynomial-redos",
+      "path": "services/ai-platform/src/numeric-grounding.cjs",
+      "cls": "FIXED_LOCALLY",
+      "note": "Same 8000-char cap."
+    },
+    {
+      "number": 11,
+      "rule": "js/polynomial-redos",
+      "path": "services/ai-platform/src/numeric-grounding.cjs",
+      "cls": "FIXED_LOCALLY",
+      "note": "Same 8000-char cap."
+    },
+    {
+      "number": 10,
+      "rule": "js/polynomial-redos",
+      "path": "packages/sdk/src/auth/fetch.ts",
+      "cls": "FIXED_LOCALLY",
+      "note": "SDK signup/magic-link email now linear isValidEmail."
+    },
+    {
+      "number": 9,
+      "rule": "js/polynomial-redos",
+      "path": "packages/sdk/src/auth/fetch.ts",
+      "cls": "FIXED_LOCALLY",
+      "note": "Same SDK linear email scan."
+    },
+    {
+      "number": 8,
+      "rule": "js/polynomial-redos",
+      "path": "packages/sdk/src/execution-stream/polling-transport.ts",
+      "cls": "FIXED_LOCALLY",
+      "note": "Trailing slash strip is a while/endsWith loop, not /\\/+$/."
+    },
+    {
+      "number": 3,
+      "rule": "js/clear-text-storage-of-sensitive-data",
+      "path": "services/api-nest/src/common/admin-session.cookies.ts",
+      "cls": "FALSE_POSITIVE_ACCEPTED_DESIGN",
+      "note": "JS-readable double-submit CSRF cookie is required. httpOnly=true forbidden. Proof: admin-csrf-double-submit.cjs."
+    }
+  ],
+  "release_implication": "PRODUCTION_RELEASE=NO_GO until exact-head analysis is green or every remaining open alert is still classified after rescan."
+}
