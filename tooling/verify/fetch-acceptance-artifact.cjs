@@ -14,6 +14,7 @@ const {
 const SHA = "a".repeat(40);
 const DIGEST = "b".repeat(64);
 const verdict = {
+  schema: "release-acceptance-verdict.v1",
   verdict: "PASS",
   kind: "PRODUCTION_RELEASE",
   qa_phase: "full",
@@ -25,6 +26,10 @@ const verdict = {
 };
 
 assert.equal(validProductionPass(verdict, SHA), true);
+assert.equal(
+  validProductionPass({ ...verdict, schema: "forged-verdict.v1" }, SHA),
+  false,
+);
 assert.equal(
   validProductionPass({ ...verdict, artifact_source_sha: "" }, SHA),
   false,
