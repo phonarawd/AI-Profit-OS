@@ -49,6 +49,12 @@ if (!client.includes("requestedAmountKrw") || !client.includes("depositorName"))
 if (!client.includes("idempotencyKey")) {
   fail("KRW deposit must send idempotencyKey");
 }
+if (!client.includes("createIdempotencyLifecycle") || !client.includes("krwDepositFingerprint")) {
+  fail("KRW deposit must keep one idempotency key per economic intent");
+}
+if (client.includes("Date.now()") && client.includes("Math.random()")) {
+  fail("KRW deposit must not mint a new random key on every submit");
+}
 if (!client.includes('json.status === "pending"')) {
   fail("KRW deposit success is server pending only");
 }
@@ -75,6 +81,21 @@ if (!catalog.includes("krw-deposit-closure")) {
 }
 if (!domain.includes("krw-deposit-closure.cjs")) {
   fail("domain-by-path must trigger krw-deposit-closure");
+}
+
+const runtimeTest = spawnSync(
+  process.execPath,
+  [
+    "--test",
+    "--experimental-strip-types",
+    "packages/sdk/src/wallet/idempotency-lifecycle.runtime.test.ts",
+  ],
+  { cwd: root, encoding: "utf8", timeout: 30_000 },
+);
+process.stdout.write(runtimeTest.stdout || "");
+process.stderr.write(runtimeTest.stderr || "");
+if (runtimeTest.status !== 0) {
+  fail("idempotency lifecycle runtime tests failed");
 }
 
 function finish(extra) {

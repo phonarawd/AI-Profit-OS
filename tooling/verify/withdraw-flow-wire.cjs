@@ -91,6 +91,9 @@ for (const needle of [
 ]) {
   if (!form.includes(needle)) fails.push(`WithdrawLiveForm missing ${needle}`);
 }
+if (!form.includes("createIdempotencyLifecycle") || !form.includes("withdrawFingerprint")) {
+  fails.push("WithdrawLiveForm must keep one idempotency key per economic intent");
+}
 
 if (!pages.includes("WithdrawLiveForm") && !pages.includes("WithdrawAmountPanel")) {
   fails.push("withdraw pages must mount WithdrawLiveForm or WithdrawAmountPanel");

@@ -1,6 +1,12 @@
 "use client";
 
-import { fetchWalletBuckets } from "@aipo/sdk/wallet";
+import {
+  classifyIdempotencyHttp,
+  createIdempotencyLifecycle,
+  fetchWalletBuckets,
+  krwDepositFingerprint,
+  mintMoneyIdempotencyKey,
+} from "@aipo/sdk/wallet";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 import {
   DepositConsult,
@@ -13,7 +19,7 @@ import { NetworkPlainWarning } from "@aipo/ui/components/wallet/NetworkPlainWarn
 import { T } from "@aipo/ui/copy/ko";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "../wallet.module.css";
 
 function parseSuggest(raw: string | null): number {
@@ -59,6 +65,9 @@ function DepositContent() {
   const [depositorName, setDepositorName] = useState("");
   const [krwState, setKrwState] = useState<KrwState>("idle");
   const [krwPending, setKrwPending] = useState<KrwPending | null>(null);
+  const krwIdem = useRef(
+    createIdempotencyLifecycle({ mint: () => mintMoneyIdempotencyKey("krw") }),
+  );
 
   useEffect(() => {
     const ac = new AbortController();
@@ -133,6 +142,10 @@ function DepositContent() {
       setDenyCopy("입금 신청에 필요한 값이 부족해요.");
       return;
     }
+    const started = krwIdem.current.begin(
+      krwDepositFingerprint(amount, depositorName),
+    );
+    if ("blocked" in started) return;
     setKrwState("submitting");
     setDenyCopy(null);
     try {
@@ -144,32 +157,44 @@ function DepositContent() {
         body: JSON.stringify({
           requestedAmountKrw: amount,
           depositorName: depositorName.trim(),
-          idempotencyKey: `krw_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+          idempotencyKey: started.key,
         }),
       });
       if (res.status === 401) {
+        krwIdem.current.retire();
         setKrwState("unauthorized");
         setDenyCopy("로그인하면 원화 입금을 신청할 수 있어요.");
         return;
       }
       if (res.status === 403) {
+        krwIdem.current.retire();
         setKrwState("denied");
         setDenyCopy("지금은 원화 입금을 신청할 수 없어요.");
         return;
       }
       if (!res.ok) {
+        if (classifyIdempotencyHttp(res.status) === "retain") krwIdem.current.retain();
+        else krwIdem.current.retire();
         setKrwState("unavailable");
         setDenyCopy("입금 신청을 확인할 수 없음");
         return;
       }
-      const json = (await res.json()) as KrwPending;
+      const json = (await res.json().catch(() => null)) as KrwPending | null;
+      if (!json) {
+        krwIdem.current.retain();
+        setKrwState("unavailable");
+        return;
+      }
       if (json.status === "pending") {
+        krwIdem.current.retire();
         setKrwPending(json);
         setKrwState("pending");
         return;
       }
+      krwIdem.current.retain();
       setKrwState("unavailable");
     } catch {
+      krwIdem.current.retain();
       setKrwState("unavailable");
     }
   }

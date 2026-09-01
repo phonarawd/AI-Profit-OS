@@ -1,11 +1,15 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   createWithdraw,
   createWithdrawStepUpChallenge,
+  classifyIdempotencyHttp,
+  createIdempotencyLifecycle,
   newWithdrawIdempotencyKey,
+  statusFromWalletError,
   verifyWithdrawStepUp,
+  withdrawFingerprint,
   type WithdrawStepUpMethod,
 } from "@aipo/sdk/wallet";
 import { WithdrawAmountPanel } from "@aipo/ui/components/wallet/WithdrawAmountPanel";
@@ -57,6 +61,9 @@ export function WithdrawLiveForm({
   const [flowState, setFlowState] = useState<
     "idle" | "accepted" | "denied" | "unavailable" | "unauthorized"
   >("idle");
+  const wdIdem = useRef(
+    createIdempotencyLifecycle({ mint: newWithdrawIdempotencyKey }),
+  );
 
   const onChallenge = useCallback(async () => {
     setBusy(true);
@@ -103,6 +110,17 @@ export function WithdrawLiveForm({
     if (requirePrincipalConfirm && !principalConfirmToken) return;
     if (asset === "USDT" && !destination.trim()) return;
 
+    const started = wdIdem.current.begin(
+      withdrawFingerprint({
+        mode,
+        asset,
+        amount: amountUsdt,
+        destination: asset === "USDT" ? destination : "",
+        principalConfirm: Boolean(principalConfirmToken),
+        stepUpReady: Boolean(stepUpToken),
+      }),
+    );
+    if ("blocked" in started) return;
     setBusy(true);
     setStatus(null);
     try {
@@ -111,13 +129,19 @@ export function WithdrawLiveForm({
         amountUsdt: amountUsdt.trim(),
         asset,
         destination: asset === "USDT" ? destination.trim() : undefined,
-        idempotencyKey: newWithdrawIdempotencyKey(),
+        idempotencyKey: started.key,
         stepUpToken,
         principalConfirmToken: principalConfirmToken ?? undefined,
       });
+      wdIdem.current.retire();
       setFlowState("accepted");
       setStatus(T.withdrawMode.submitOk);
     } catch (err) {
+      if (classifyIdempotencyHttp(statusFromWalletError(err)) === "retain") {
+        wdIdem.current.retain();
+      } else {
+        wdIdem.current.retire();
+      }
       const next = withdrawErrorView(err);
       setFlowState(next.state);
       setStatus(next.status);

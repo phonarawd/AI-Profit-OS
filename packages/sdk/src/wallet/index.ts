@@ -6,6 +6,14 @@ export {
   normalizeWalletBuckets,
   verifyWithdrawStepUp,
 } from "./fetch";
+export {
+  classifyIdempotencyHttp,
+  createIdempotencyLifecycle,
+  krwDepositFingerprint,
+  mintMoneyIdempotencyKey,
+  statusFromWalletError,
+  withdrawFingerprint,
+} from "./idempotency-lifecycle";
 export type {
   CreateWithdrawInput,
   WalletBucketsResponse,
