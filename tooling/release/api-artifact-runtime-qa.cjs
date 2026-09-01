@@ -187,15 +187,31 @@ async function runApiArtifactRuntimeQa(opts) {
   );
   const judged = evaluateApiHealth(probe, bound.source_sha);
 
+  const probeBody = probe && probe.body && typeof probe.body === "object" ? probe.body : {};
+  const expectedSha = normalizeHex(bound.source_sha);
+  const harness =
+    probe && probe.harness === "node-child-process"
+      ? "node-child-process"
+      : probe && probe.harness === "bundle-health-probe"
+        ? "bundle-health-probe"
+        : "injected";
   return {
     verified: judged.ok,
     reason: judged.ok ? "pass" : judged.reason,
-    harness: probe && probe.harness ? probe.harness : "injected",
+    // HTTP response bytes are decision inputs only. Persist allowlisted
+    // constants/expected provenance so remote data cannot flow into the QA file.
+    harness,
     route: "/api/v1/health",
-    status: probe && probe.status != null ? probe.status : null,
-    service: probe && probe.body ? probe.body.service || null : null,
-    git_sha: probe && probe.body ? normalizeHex(probe.body.gitSha) || null : null,
-    git_sha_source: probe && probe.body ? probe.body.gitShaSource || null : null,
+    status: probe && probe.status === 200 ? 200 : null,
+    service: probeBody.service === "api-nest" ? "api-nest" : null,
+    git_sha:
+      normalizeHex(probeBody.gitSha) === expectedSha
+        ? expectedSha
+        : null,
+    git_sha_source:
+      probeBody.gitShaSource === "RENDER_GIT_COMMIT"
+        ? "RENDER_GIT_COMMIT"
+        : null,
     source_sha: bound.source_sha,
     bundle_digest: bound.digest,
     api_artifact_digest: normalizeHex(bound.api_artifact.artifact_digest),
