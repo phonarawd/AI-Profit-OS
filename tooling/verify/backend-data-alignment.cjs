@@ -208,7 +208,7 @@ if (!cert.includes("REL-701-DB")) fails.push("index/head diverge owner must stay
 const localFiles = fs.readdirSync(migDir).filter((f) => f.endsWith(".sql")).sort();
 const localHead = localFiles[localFiles.length - 1].slice(0, 14);
 const remoteHead = (appliedFx.versions || [])[(appliedFx.versions || []).length - 1];
-if (localHead !== "20260823210000") fails.push("local migration head unexpected " + localHead);
+if (localHead !== "20260901224000") fails.push("local migration head unexpected " + localHead);
 if (remoteHead !== "20260821223109") fails.push("remote applied head unexpected " + remoteHead);
 if (localHead === remoteHead) {
   fails.push("heads unexpectedly equal — update the R7 table, do not hide apply state");
