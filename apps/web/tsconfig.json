@@ -52,6 +52,7 @@
     "../../schemas/operator-entity.instance.json"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/*.runtime.test.ts"
   ]
 }
