@@ -106,6 +106,80 @@ got = evaluateStagingTopology({
 assert.equal(got.ready, false);
 assert.ok(got.blockers.includes("supabase_staging_customer_data_not_proven_zero"));
 
+
+// Evidence completeness is fail-closed: absence must never become READY.
+for (const [mutate, expectedBlocker] of [
+  [
+    (x) => { delete x.production.render.service_id; },
+    "production_render_service_id_missing",
+  ],
+  [
+    (x) => { delete x.production.render.environment_id; },
+    "production_render_environment_id_missing",
+  ],
+  [
+    (x) => { delete x.production.render.url; },
+    "production_render_url_invalid",
+  ],
+  [
+    (x) => { delete x.staging.render.environment_id; },
+    "render_staging_environment_id_missing",
+  ],
+  [
+    (x) => { delete x.staging.render.kind; },
+    "render_staging_not_web_service",
+  ],
+  [
+    (x) => { delete x.staging.render.supabase_project_ref; },
+    "render_staging_db_binding_missing",
+  ],
+]) {
+  const snapshot = structuredClone(READY);
+  mutate(snapshot);
+  got = evaluateStagingTopology(snapshot);
+  assert.equal(got.ready, false);
+  assert.ok(got.blockers.includes(expectedBlocker), expectedBlocker);
+}
+
+got = evaluateStagingTopology({
+  ...structuredClone(READY),
+  staging: {
+    ...structuredClone(READY.staging),
+    render: {
+      ...structuredClone(READY.staging.render),
+      environment_id: READY.production.render.environment_id,
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("render_staging_reuses_production_environment"));
+
+got = evaluateStagingTopology({
+  ...structuredClone(READY),
+  staging: {
+    ...structuredClone(READY.staging),
+    render: {
+      ...structuredClone(READY.staging.render),
+      url: READY.production.render.url,
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("render_staging_reuses_production_url"));
+
+got = evaluateStagingTopology({
+  ...structuredClone(READY),
+  staging: {
+    ...structuredClone(READY.staging),
+    render: {
+      ...structuredClone(READY.staging.render),
+      supabase_project_ref: "different-stage-ref",
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("render_staging_db_binding_mismatch"));
+
 const root = path.resolve(__dirname, "../..");
 const stagingWorkflow = fs.readFileSync(
   path.join(root, ".github/workflows/deploy-staging.yml"),

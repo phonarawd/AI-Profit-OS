@@ -58,32 +58,62 @@ function evaluateStagingTopology(snapshot) {
 
   const blockers = [];
 
-  if (!prodRender) blockers.push("production_render_missing");
+  if (!prodRender) {
+    blockers.push("production_render_missing");
+  } else {
+    if (!nonEmpty(prodRender.service_id)) {
+      blockers.push("production_render_service_id_missing");
+    }
+    if (!nonEmpty(prodRender.environment_id)) {
+      blockers.push("production_render_environment_id_missing");
+    }
+    if (!normalizeUrl(prodRender.url)) {
+      blockers.push("production_render_url_invalid");
+    }
+  }
+
   if (!stageRender) {
     blockers.push("render_staging_missing");
-  } else if (prodRender) {
-    if (!nonEmpty(stageRender.service_id)) blockers.push("render_staging_service_id_missing");
-    if (stageRender.service_id === prodRender.service_id) {
-      blockers.push("render_staging_reuses_production_service");
+  } else {
+    if (!nonEmpty(stageRender.service_id)) {
+      blockers.push("render_staging_service_id_missing");
     }
-    if (
-      nonEmpty(stageRender.environment_id) &&
-      nonEmpty(prodRender.environment_id) &&
-      stageRender.environment_id === prodRender.environment_id
-    ) {
-      blockers.push("render_staging_reuses_production_environment");
+    if (!nonEmpty(stageRender.environment_id)) {
+      blockers.push("render_staging_environment_id_missing");
     }
-    const prodUrl = normalizeUrl(prodRender.url);
     const stageUrl = normalizeUrl(stageRender.url);
     if (!stageUrl) blockers.push("render_staging_url_invalid");
-    if (prodUrl && stageUrl && prodUrl === stageUrl) {
-      blockers.push("render_staging_reuses_production_url");
-    }
+
     const branch = String(stageRender.branch || "").trim();
     if (!branch) blockers.push("render_staging_branch_missing");
     if (branch === "main") blockers.push("render_staging_tracks_main");
-    if (stageRender.kind && stageRender.kind !== "web_service") {
+
+    if (stageRender.kind !== "web_service") {
       blockers.push("render_staging_not_web_service");
+    }
+    if (!nonEmpty(stageRender.supabase_project_ref)) {
+      blockers.push("render_staging_db_binding_missing");
+    }
+
+    if (prodRender) {
+      if (
+        nonEmpty(stageRender.service_id) &&
+        nonEmpty(prodRender.service_id) &&
+        stageRender.service_id === prodRender.service_id
+      ) {
+        blockers.push("render_staging_reuses_production_service");
+      }
+      if (
+        nonEmpty(stageRender.environment_id) &&
+        nonEmpty(prodRender.environment_id) &&
+        stageRender.environment_id === prodRender.environment_id
+      ) {
+        blockers.push("render_staging_reuses_production_environment");
+      }
+      const prodUrl = normalizeUrl(prodRender.url);
+      if (prodUrl && stageUrl && prodUrl === stageUrl) {
+        blockers.push("render_staging_reuses_production_url");
+      }
     }
   }
 
@@ -112,14 +142,14 @@ function evaluateStagingTopology(snapshot) {
     }
   }
 
-  if (stageRender && stageSupabase) {
-    if (
-      nonEmpty(stageRender.supabase_project_ref) &&
-      nonEmpty(stageSupabase.project_ref) &&
-      stageRender.supabase_project_ref !== stageSupabase.project_ref
-    ) {
-      blockers.push("render_staging_db_binding_mismatch");
-    }
+  if (
+    stageRender &&
+    stageSupabase &&
+    nonEmpty(stageRender.supabase_project_ref) &&
+    nonEmpty(stageSupabase.project_ref) &&
+    stageRender.supabase_project_ref !== stageSupabase.project_ref
+  ) {
+    blockers.push("render_staging_db_binding_mismatch");
   }
 
   return {
