@@ -47,6 +47,9 @@ function evaluateGuard(opts) {
   if (!verdict || verdict.verdict !== "PASS") {
     return { ok: false, reason: "acceptance_not_pass", deploySha };
   }
+  if (verdict.schema !== "release-acceptance-verdict.v1") {
+    return { ok: false, reason: "acceptance_schema_invalid", deploySha };
+  }
   if (verdict.kind !== "PRODUCTION_RELEASE") {
     return { ok: false, reason: "acceptance_not_production_kind", deploySha };
   }

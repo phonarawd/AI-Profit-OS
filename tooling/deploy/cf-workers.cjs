@@ -13,6 +13,10 @@ const {
   resolveWranglerEnv,
 } = require("./lib/env.cjs");
 const { PREBUILT_DIR, findPrebuiltEntry } = require("../release/artifact-provenance.cjs");
+const {
+  isProductionTarget,
+  requireAcceptedArtifactAuthority,
+} = require("./lib/accepted-artifact-authority.cjs");
 
 const ALLOWED_WORKER_SETS = Object.freeze(["phase0", "phase1", "p0-ebay"]);
 const DEFAULT_WORKER_SET = "phase0";
@@ -235,6 +239,17 @@ function main() {
   }
 
   const noBundle = flags.has("--no-bundle");
+  if (!dry && isProductionTarget(targetArg)) {
+    try {
+      requireAcceptedArtifactAuthority(targetArg, process.env);
+    } catch (err) {
+      fail(err && err.message ? err.message : String(err));
+    }
+    if (!noBundle) {
+      fail("FAIL_CLOSED:production_bundle_forbidden");
+    }
+  }
+
   const manifest = readWorkersManifest();
   let plan;
   try {

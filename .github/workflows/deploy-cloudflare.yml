@@ -143,6 +143,7 @@ jobs:
             --target production \
             --sha "$SHA" \
             --expected-digest "$DIGEST" \
+            --acceptance _tmp_release_acceptance/verdict.json \
             --bundle _tmp_release_bundle \
             --surface "${{ inputs.surface }}" \
             --worker-set "${{ inputs.worker_set }}"

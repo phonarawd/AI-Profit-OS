@@ -6,6 +6,7 @@ const { evaluateGuard } = require("../release/require-accepted-sha.cjs");
 const SHA = "a".repeat(40);
 const DIGEST = "b".repeat(64);
 const PASS = {
+  schema: "release-acceptance-verdict.v1",
   verdict: "PASS",
   kind: "PRODUCTION_RELEASE",
   qa_phase: "full",
@@ -29,7 +30,11 @@ function guard(verdict, overrides) {
 
 assert.equal(guard(PASS).ok, true);
 
-let got = guard({ ...PASS, qa_phase: "qa6" });
+let got = guard({ ...PASS, schema: "forged-verdict.v1" });
+assert.equal(got.ok, false);
+assert.equal(got.reason, "acceptance_schema_invalid");
+
+got = guard({ ...PASS, qa_phase: "qa6" });
 assert.equal(got.ok, false);
 assert.equal(got.reason, "acceptance_not_full_phase");
 

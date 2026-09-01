@@ -15,10 +15,26 @@ const {
   loadDotEnv,
   resolveWranglerEnv,
 } = require("./lib/env.cjs");
+const {
+  isProductionTarget,
+  requireAcceptedArtifactAuthority,
+} = require("./lib/accepted-artifact-authority.cjs");
 
 const argv = process.argv.slice(2);
 const noRebuild = argv.includes("--no-rebuild");
 const target = argv.find((arg) => !arg.startsWith("--")) || "preview";
+if (isProductionTarget(target)) {
+  try {
+    requireAcceptedArtifactAuthority(target, process.env);
+  } catch (err) {
+    console.error("[cf:deploy:web] " + String(err && err.message ? err.message : err));
+    process.exit(1);
+  }
+  if (!noRebuild) {
+    console.error("[cf:deploy:web] FAIL_CLOSED:production_rebuild_forbidden");
+    process.exit(1);
+  }
+}
 requireRootDomainForProd(target);
 requireCloudflareCreds();
 loadDotEnv();

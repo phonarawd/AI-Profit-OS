@@ -38,6 +38,7 @@ try {
     target: "production",
     sha: "a".repeat(40),
     expectedDigest: "b".repeat(64),
+    acceptance: "/tmp/verdict.json",
     bundle: "/tmp/bundle",
     surface: "all",
     workerSet: "phase0",
@@ -48,6 +49,7 @@ try {
   assert.equal(validateDeployArgs({ ...good, target: "preview" }), "non_production_must_not_use_artifact_deploy");
   assert.equal(validateDeployArgs({ ...good, sha: "deadbeef" }), "deploy_sha_not_full");
   assert.equal(validateDeployArgs({ ...good, expectedDigest: "abc" }), "expected_digest_not_full");
+  assert.equal(validateDeployArgs({ ...good, acceptance: "" }), "acceptance_artifact_missing");
   assert.equal(validateDeployArgs({ ...good, bundle: "" }), "artifact_missing");
 
   const deployWorkflow = fs.readFileSync(
