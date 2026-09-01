@@ -25,11 +25,20 @@ test.afterAll(async () => {
   if (runtime) await runtime.stop();
 });
 
+async function applyOpportunitySearch(page, value) {
+  const search = page.locator(".sd-desktop-only [data-sdp='search']");
+  await expect(search).toBeVisible();
+  await search.click();
+  await search.fill("");
+  await search.pressSequentially(value, { delay: 15 });
+  await expect(search).toHaveValue(value);
+}
+
 async function hideNextDevChrome(page) {
   await page
     .addStyleTag({
       content:
-        "nextjs-portal, [data-next-mark-loading], #__next-build-watcher { display: none !important; pointer-events: none !important; }",
+        "nextjs-portal, [data-next-mark-loading], #__next-build-watcher, .pwa-overlay { display: none !important; pointer-events: none !important; }",
     })
     .catch(() => {});
 }
@@ -115,10 +124,11 @@ test("ready list shows required capital from the feed owner", async ({
     path: "governance/release-master/rel-106-profits/runtime-ready-1440.png",
     fullPage: false,
   });
-  await expect(page.getByLabel("기회 검색")).toBeVisible();
-  await page.locator(".sd-desktop-only [data-sdp='toolbar'] input[type='search']").fill("zzz-no-match");
+  await applyOpportunitySearch(page, "zzz-no-match");
   await expect(page.locator("[data-sdp='filter-empty']")).toBeVisible();
-  await page.locator(".sd-desktop-only [data-sdp='toolbar'] input[type='search']").fill("QA");
+  await expect(page.locator("[data-sdp='card']")).toHaveCount(0);
+  await applyOpportunitySearch(page, "QA");
+  await expect(page.locator("[data-sdp='filter-empty']")).toHaveCount(0);
   await expect(page.locator("[data-sdp='card']")).toHaveCount(1);
   await page.locator("[data-sdp-filter='joinable']").click();
   await expect(page.locator("[data-sdp='card']")).toHaveCount(1);
