@@ -98,6 +98,14 @@ export function parseAuthenticatorData(b64url: string): AuthenticatorData {
   };
 }
 
+export const WEBAUTHN_FLAG_USER_PRESENT = 0x01;
+
+export function hasWebauthnUserPresence(
+  authData: Pick<AuthenticatorData, "flags">,
+): boolean {
+  return (authData.flags & WEBAUTHN_FLAG_USER_PRESENT) !== 0;
+}
+
 export function verifyRpIdHash(authData: AuthenticatorData, rpId: string): boolean {
   return authData.rpIdHash.equals(sha256(rpId));
 }

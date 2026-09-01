@@ -9,6 +9,7 @@ import {
   WEBAUTHN_CHALLENGE_TTL_MS,
   exportSpkiDer,
   hashProofSecret,
+  hasWebauthnUserPresence,
   parseAuthenticatorData,
   parseClientDataJSON,
   randomProofSecret,
@@ -116,6 +117,9 @@ export class WebauthnAssertService {
     }
     if (!verifyRpIdHash(authData, this.rp.rpId)) {
       throw new BadRequestException("webauthn rpId mismatch");
+    }
+    if (!hasWebauthnUserPresence(authData)) {
+      throw new BadRequestException("webauthn user presence required");
     }
 
     const consumed = await this.store.consumeAtomic(
