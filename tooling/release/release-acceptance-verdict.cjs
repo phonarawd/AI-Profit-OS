@@ -67,6 +67,7 @@ function evaluateVerdict(input, contract) {
   let artifact_digest = "";
   let artifact_source_sha = "";
   let artifact_built_once = false;
+  let api_runtime_verified = false;
   if (kind === "PRODUCTION_RELEASE") {
     if (!qa) {
       fails.push("artifact_qa_missing");
@@ -90,6 +91,40 @@ function evaluateVerdict(input, contract) {
       ) {
         fails.push("artifact_runtime_digest_mismatch");
       }
+
+      const apiRuntime =
+        qa.api_runtime && typeof qa.api_runtime === "object"
+          ? qa.api_runtime
+          : null;
+      if (!apiRuntime || apiRuntime.verified !== true) {
+        fails.push("api_artifact_runtime_qa_missing");
+      } else {
+        const apiSource = normalizeHex(apiRuntime.source_sha);
+        const apiGitSha = normalizeHex(apiRuntime.git_sha);
+        const apiBundleDigest = normalizeHex(apiRuntime.bundle_digest);
+        const apiDigest = normalizeHex(apiRuntime.api_artifact_digest);
+        if (!isFullSha(apiSource) || apiSource !== normalizeHex(sha)) {
+          fails.push("api_runtime_source_sha_mismatch");
+        }
+        if (!isFullSha(apiGitSha) || apiGitSha !== normalizeHex(sha)) {
+          fails.push("api_runtime_git_sha_mismatch");
+        }
+        if (!isSha256(apiDigest)) {
+          fails.push("api_runtime_artifact_digest_missing");
+        }
+        if (!isSha256(apiBundleDigest) || apiBundleDigest !== artifact_digest) {
+          fails.push("api_runtime_bundle_digest_mismatch");
+        }
+        if (apiRuntime.service !== "api-nest") {
+          fails.push("api_runtime_service_mismatch");
+        }
+        if (apiRuntime.git_sha_source !== "RENDER_GIT_COMMIT") {
+          fails.push("api_runtime_git_sha_source_mismatch");
+        }
+        api_runtime_verified =
+          !fails.some((item) => String(item).startsWith("api_runtime_")) &&
+          !fails.includes("api_artifact_runtime_qa_missing");
+      }
     }
   }
   const verdict = fails.length ? "FAIL" : "PASS";
@@ -106,6 +141,7 @@ function evaluateVerdict(input, contract) {
     artifact_digest: artifact_digest || null,
     artifact_source_sha: artifact_source_sha || null,
     artifact_built_once,
+    api_runtime_verified,
   };
 }
 
