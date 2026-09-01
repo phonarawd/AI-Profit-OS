@@ -6,6 +6,7 @@
  * CI base unresolved → fail closed (silent SKIP 금지)
  */
 const { execSync } = require("child_process");
+const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
@@ -1392,19 +1393,46 @@ function detectDiffMode(env) {
   return "local";
 }
 
+function readGithubEvent(env) {
+  const eventPath = String((env && env.GITHUB_EVENT_PATH) || "");
+  if (!eventPath) return null;
+  try {
+    return JSON.parse(fs.readFileSync(eventPath, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+function prBaseShaFromEnv(env) {
+  const direct = String(
+    (env && (env.AIPO_PR_BASE_SHA || env.GITHUB_EVENT_PULL_REQUEST_BASE_SHA)) ||
+      "",
+  );
+  if (isSha(direct)) return direct;
+  const event = readGithubEvent(env);
+  const fromEvent =
+    event &&
+    event.pull_request &&
+    event.pull_request.base &&
+    event.pull_request.base.sha;
+  return isSha(fromEvent) ? String(fromEvent) : "";
+}
+
 function resolveCiRange(env, cwd) {
   const event = String((env && env.GITHUB_EVENT_NAME) || "");
   const head = String((env && env.GITHUB_SHA) || "HEAD");
   if (event === "pull_request" || (env && env.AIPO_DOMAIN_DIFF_MODE) === "ci_pr") {
-    const base = String(
-      (env && (env.AIPO_PR_BASE_SHA || env.GITHUB_EVENT_PULL_REQUEST_BASE_SHA)) ||
-        "",
-    );
+    const base = prBaseShaFromEnv(env);
     if (isSha(base)) return { from: base, to: head, spec: base + "..." + head };
     const ref = String((env && env.GITHUB_BASE_REF) || "");
     if (!ref) ciFailClosed("CI_PR_BASE_UNRESOLVED", "missing PR base SHA/ref");
-    const mb = gitLines("git merge-base origin/" + ref + " " + head, cwd, false)[0];
-    if (!isSha(mb)) ciFailClosed("CI_PR_BASE_UNRESOLVED", "merge-base failed");
+    const mb = gitLines("git merge-base origin/" + ref + " " + head, cwd, true)[0];
+    if (!isSha(mb)) {
+      ciFailClosed(
+        "CI_PR_BASE_UNRESOLVED",
+        "origin/" + ref + " missing and event base SHA absent",
+      );
+    }
     return { from: mb, to: head, spec: mb + "..." + head };
   }
   if (event === "push" || (env && env.AIPO_DOMAIN_DIFF_MODE) === "ci_push") {

@@ -265,6 +265,38 @@ const AUTH = "services/api-nest/src/auth/auth.controller.ts";
   expect("5 unknown CI event fail closed", threw === "CI_CONTEXT_UNRESOLVED", threw);
 }
 
+// 5b. PR event payload supplies base SHA when origin/main is absent
+{
+  const cwd = initRepo();
+  const base = sha(cwd);
+  writeFile(cwd, WALLET, "export const wallet = event;\n");
+  git(cwd, "add -- " + WALLET);
+  git(cwd, "commit -m wallet-event");
+  const head = sha(cwd);
+  cleanCheckout(cwd);
+  const eventPath = path.join(cwd, "github-event.json");
+  fs.writeFileSync(
+    eventPath,
+    JSON.stringify({ pull_request: { base: { sha: base } } }),
+  );
+  const files = getChangedFiles({
+    cwd,
+    env: {
+      GITHUB_ACTIONS: "true",
+      GITHUB_EVENT_NAME: "pull_request",
+      GITHUB_SHA: head,
+      GITHUB_BASE_REF: "main",
+      GITHUB_EVENT_PATH: eventPath,
+    },
+  });
+  expect(
+    "5b event-path base without origin/main",
+    files.includes(WALLET),
+    files.join(","),
+  );
+  fs.rmSync(cwd, { recursive: true, force: true });
+}
+
 // 6. local staged
 {
   const cwd = initRepo();
