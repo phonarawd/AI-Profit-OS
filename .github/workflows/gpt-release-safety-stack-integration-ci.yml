@@ -1,0 +1,46 @@
+name: gpt-release-safety-stack-integration
+
+on:
+  pull_request:
+    paths:
+      - "tooling/release/artifact-provenance.cjs"
+      - "tooling/release/release-acceptance-verdict.cjs"
+      - "tooling/release/deploy-from-artifact.cjs"
+      - "tooling/release/fetch-acceptance-artifact.cjs"
+      - "tooling/release/require-accepted-sha.cjs"
+      - "tooling/deploy/**"
+      - "tooling/verify/release-acceptance.cjs"
+      - "tooling/verify/release-manifest-identity-lock.cjs"
+      - "tooling/verify/production-deploy-path-lock.cjs"
+      - "tooling/verify/release-fetch-deploy-hardening.cjs"
+      - "tooling/verify/fetch-acceptance-artifact.cjs"
+      - "tooling/verify/require-accepted-sha.cjs"
+      - ".github/workflows/deploy-cloudflare.yml"
+      - ".github/workflows/gpt-release-safety-stack-integration-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - name: Setup Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: "22.14.0"
+      - name: Production deploy path lock
+        run: node tooling/verify/production-deploy-path-lock.cjs
+      - name: Release fetch deploy hardening
+        run: node tooling/verify/release-fetch-deploy-hardening.cjs
+      - name: Acceptance fetch lock
+        run: node tooling/verify/fetch-acceptance-artifact.cjs
+      - name: Accepted SHA guard
+        run: node tooling/verify/require-accepted-sha.cjs
+      - name: Manifest identity lock
+        run: node tooling/verify/release-manifest-identity-lock.cjs
+      - name: Full release acceptance compatibility
+        run: node tooling/verify/release-acceptance.cjs

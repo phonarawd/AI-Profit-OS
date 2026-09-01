@@ -92,8 +92,24 @@ if (artifactContract.successful_builds_pagination !== true) {
 
 const ARTIFACT_DIGEST = "c".repeat(64);
 function withQa(input) {
+  const engine_run =
+    input.engine_run ||
+    (input.event_name === "workflow_dispatch" && input.qa_phase === "full"
+      ? {
+          id: 123456789,
+          workflow: "engine-acceptance",
+          workflow_name_auxiliary: true,
+          path: ".github/workflows/engine-acceptance.yml",
+          head_sha: input.sha,
+          event: "workflow_dispatch",
+          qa_phase: "full",
+          qa_phase_proof: "full_job_signature",
+          status: "completed",
+        }
+      : undefined);
   return {
     ...input,
+    ...(engine_run ? { engine_run } : {}),
     artifact_qa: {
       verified: true,
       source_sha: input.sha,
@@ -147,6 +163,51 @@ check(
   ),
   "PASS",
 );
+
+const noEngineBinding = withQa({
+  sha: "a".repeat(40),
+  event_name: "workflow_dispatch",
+  qa_phase: "full",
+  jobs: successJobs,
+});
+delete noEngineBinding.engine_run;
+const noEngineVerdict = evaluateVerdict(noEngineBinding, contract);
+if (
+  noEngineVerdict.verdict !== "FAIL" ||
+  !noEngineVerdict.fails.includes("engine_run_binding_missing")
+) {
+  fail("Production release without bound Engine run must FAIL");
+}
+
+const wrongVerdictEnginePath = withQa({
+  sha: "a".repeat(40),
+  event_name: "workflow_dispatch",
+  qa_phase: "full",
+  jobs: successJobs,
+});
+wrongVerdictEnginePath.engine_run.path = ".github/workflows/gate.yml";
+const wrongPathVerdict = evaluateVerdict(wrongVerdictEnginePath, contract);
+if (
+  wrongPathVerdict.verdict !== "FAIL" ||
+  !wrongPathVerdict.fails.includes("engine_run_workflow_path_mismatch")
+) {
+  fail("Production verdict must reject wrong Engine workflow path");
+}
+
+const unprovenVerdictPhase = withQa({
+  sha: "a".repeat(40),
+  event_name: "workflow_dispatch",
+  qa_phase: "full",
+  jobs: successJobs,
+});
+unprovenVerdictPhase.engine_run.qa_phase_proof = "caller_claim";
+const unprovenPhaseVerdict = evaluateVerdict(unprovenVerdictPhase, contract);
+if (
+  unprovenPhaseVerdict.verdict !== "FAIL" ||
+  !unprovenPhaseVerdict.fails.includes("engine_run_phase_proof_invalid")
+) {
+  fail("Production verdict must reject unproven Engine full phase");
+}
 
 check(
   "full_without_artifact_qa",
@@ -312,6 +373,7 @@ if (aggregatorGreen.verdict !== "FAIL") {
 
 const sha = "0a72b27dd0da3c422eca0f931cf668e7a760c8ec";
 const passVerdict = {
+  schema: "release-acceptance-verdict.v1",
   verdict: "PASS",
   kind: "PRODUCTION_RELEASE",
   qa_phase: "full",
@@ -356,6 +418,7 @@ const noDigest = path.join(root, "tooling/release/_tmp_verdict_nodigest.json");
 fs.writeFileSync(
   noDigest,
   JSON.stringify({
+    schema: "release-acceptance-verdict.v1",
     verdict: "PASS",
     kind: "PRODUCTION_RELEASE",
     qa_phase: "full",
@@ -572,9 +635,15 @@ const callerLie = evaluateVerdict(
     qa_phase: "",
     jobs: successJobs,
     engine_run: {
+      id: 33240856583,
+      workflow: "engine-acceptance",
+      workflow_name_auxiliary: true,
+      path: ".github/workflows/engine-acceptance.yml",
       head_sha: fullSha,
       event: "workflow_dispatch",
       qa_phase: "full",
+      qa_phase_proof: "full_job_signature",
+      status: "completed",
     },
   },
   contract,
@@ -673,7 +742,12 @@ function writeFakeWorker(payloadSrc, name) {
   );
   fs.writeFileSync(
     path.join(pre, "entry.json"),
-    JSON.stringify({ schema: "release-worker-prebuilt.v1", entry: "index.js", bundled_once: true }) + "\n",
+    JSON.stringify({
+      schema: "release-worker-prebuilt.v1",
+      entry: "index.js",
+      bundled_once: true,
+      wrangler_no_upload: true,
+    }) + "\n",
   );
 }
 try {

@@ -1,0 +1,38 @@
+name: gpt-production-deploy-path-lock
+
+on:
+  pull_request:
+    paths:
+      - "tooling/deploy/lib/accepted-artifact-authority.cjs"
+      - "tooling/deploy/cf-pages-web.cjs"
+      - "tooling/deploy/cf-pages-ops.cjs"
+      - "tooling/deploy/cf-workers.cjs"
+      - "tooling/release/deploy-from-artifact.cjs"
+      - ".github/workflows/deploy-cloudflare.yml"
+      - "tooling/verify/production-deploy-path-lock.cjs"
+      - ".github/workflows/gpt-production-deploy-path-lock-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - name: Setup Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: "22.14.0"
+      - name: Verify Production deploy path lock
+        run: node tooling/verify/production-deploy-path-lock.cjs
+      - name: Verify existing release fetch/deploy hardening
+        run: node tooling/verify/release-fetch-deploy-hardening.cjs
+      - name: Verify acceptance fetch schema lock
+        run: node tooling/verify/fetch-acceptance-artifact.cjs
+      - name: Verify accepted SHA guard schema lock
+        run: node tooling/verify/require-accepted-sha.cjs
+      - name: Verify release acceptance compatibility
+        run: node tooling/verify/release-acceptance.cjs

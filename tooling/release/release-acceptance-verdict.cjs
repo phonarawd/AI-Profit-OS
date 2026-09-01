@@ -62,6 +62,46 @@ function evaluateVerdict(input, contract) {
   }
 
   const kind = isFullDispatch ? "PRODUCTION_RELEASE" : "CI_PATH_GATE";
+  if (kind === "PRODUCTION_RELEASE") {
+    if (!bound) {
+      fails.push("engine_run_binding_missing");
+    } else {
+      const enginePath = String(bound.path || "")
+        .replace(/\\/g, "/")
+        .replace(/^\.\//, "");
+      const expectedPath = String(
+        (contract.engine_run_binding && contract.engine_run_binding.workflow_path) ||
+          ".github/workflows/engine-acceptance.yml",
+      )
+        .replace(/\\/g, "/")
+        .replace(/^\.\//, "");
+      if (enginePath !== expectedPath) {
+        fails.push("engine_run_workflow_path_mismatch");
+      }
+      if (!isFullSha(normalizeHex(bound.head_sha))) {
+        fails.push("engine_run_head_sha_invalid");
+      }
+      if (String(bound.event || "") !== "workflow_dispatch") {
+        fails.push("engine_run_event_invalid");
+      }
+      if (String(bound.qa_phase || "") !== "full") {
+        fails.push("engine_run_phase_invalid");
+      }
+      if (String(bound.status || "") !== "completed") {
+        fails.push("engine_run_status_invalid");
+      }
+      if (
+        !["run.inputs.qa_phase", "full_job_signature"].includes(
+          String(bound.qa_phase_proof || ""),
+        )
+      ) {
+        fails.push("engine_run_phase_proof_invalid");
+      }
+      if (bound.workflow_name_auxiliary !== true) {
+        fails.push("engine_run_path_authority_unproven");
+      }
+    }
+  }
   const sha = String((bound && bound.head_sha) || input.sha || "");
   const qa = input.artifact_qa && typeof input.artifact_qa === "object" ? input.artifact_qa : null;
   let artifact_digest = "";
