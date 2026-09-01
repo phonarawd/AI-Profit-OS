@@ -4,6 +4,7 @@
  */
 const fs = require("fs");
 const path = require("path");
+const { spawnSync } = require("child_process");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
@@ -30,6 +31,8 @@ for (const n of [
   "ledgerJournalSemantic",
   "participateSemantic",
   "IDEMPOTENCY_KEY_CONFLICT",
+  "krwDepositSemantic",
+  "withdrawIntentSemantic",
 ]) {
   if (!fp.includes(n)) fails.push(`idempotency-fingerprint missing ${n}`);
 }
@@ -55,6 +58,18 @@ if (!posting.includes("fingerprintPayload")) {
   fails.push("ledger.posting must compute fingerprintPayload");
 }
 
+const krw = read("services/api-nest/src/wallet/krw-deposit.service.ts");
+if (!krw.includes("assertFingerprintMatch") || !krw.includes("krwDepositSemantic")) {
+  fails.push("KRW deposit must conflict when the same key carries a different amount or name");
+}
+const withdraw = read("services/api-nest/src/wallet/withdraw-intent.service.ts");
+if (
+  !withdraw.includes("assertFingerprintMatch") ||
+  !withdraw.includes("withdrawIntentSemantic")
+) {
+  fails.push("withdraw intent must conflict when the same key carries a different payload");
+}
+
 const part = read("services/api-nest/src/opportunities/participate.service.ts");
 if (!part.includes("request_fingerprint")) {
   fails.push("participate must persist request_fingerprint");
@@ -73,6 +88,22 @@ if (!pkg.scripts?.["verify:idempotency-conflict-detection"]) {
 const catalog = read("tooling/verify/CATALOG.md");
 if (!catalog.includes("idempotency-conflict-detection")) {
   fails.push("CATALOG.md missing idempotency-conflict-detection");
+}
+
+mustExist("services/api-nest/src/ledger/idempotency-fingerprint.runtime.test.ts");
+const runtime = spawnSync(
+  process.execPath,
+  [
+    "--test",
+    "--experimental-strip-types",
+    "services/api-nest/src/ledger/idempotency-fingerprint.runtime.test.ts",
+  ],
+  { cwd: root, encoding: "utf8", timeout: 30_000 },
+);
+process.stdout.write(runtime.stdout || "");
+process.stderr.write(runtime.stderr || "");
+if (runtime.status !== 0) {
+  fails.push("wallet idempotency semantic runtime tests failed");
 }
 
 if (fails.length) {

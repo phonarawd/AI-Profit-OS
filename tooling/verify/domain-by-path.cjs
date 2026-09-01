@@ -1164,6 +1164,8 @@ const RULES = [
   {
     test: (f) =>
       /^services\/api-nest\/src\/ledger\/idempotency-fingerprint\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/krw-deposit\.service\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/withdraw-intent\.service\.ts$/.test(f) ||
       /^supabase\/migrations\/.*idempotency_request_fingerprint\.sql$/.test(f) ||
       /^tooling\/verify\/idempotency-conflict-detection\.cjs$/.test(f),
     scripts: [

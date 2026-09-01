@@ -14,6 +14,11 @@ import {
 import { randomBytes } from "node:crypto";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { PostgresService } from "../db/postgres";
+import {
+  assertFingerprintMatch,
+  fingerprintPayload,
+  krwDepositSemantic,
+} from "../ledger/idempotency-fingerprint";
 import { formatAmount, parseAmount } from "../ledger/ledger.money";
 import { LedgerPostingService } from "../ledger/ledger.posting.service";
 import { LedgerProvisionService } from "../ledger/ledger.provision.service";
@@ -90,7 +95,10 @@ export class KrwDepositService {
         WHERE idempotency_key = $1`,
       [input.idempotencyKey],
     );
-    if (existing.rows[0]) return this.toV1(existing.rows[0]);
+    if (existing.rows[0]) {
+      this.assertSameKrwIntent(existing.rows[0], input, name);
+      return this.toV1(existing.rows[0]);
+    }
 
     for (let attempt = 0; attempt < 12; attempt += 1) {
       const uniqueSuffixKrw = this.randomSuffix();
@@ -139,7 +147,10 @@ export class KrwDepositService {
               WHERE idempotency_key = $1`,
             [input.idempotencyKey],
           );
-          if (again.rows[0]) return this.toV1(again.rows[0]);
+          if (again.rows[0]) {
+            this.assertSameKrwIntent(again.rows[0], input, name);
+            return this.toV1(again.rows[0]);
+          }
         }
         if (/payable_amount|unique/i.test(msg)) continue;
         throw e;
@@ -440,6 +451,28 @@ export class KrwDepositService {
 
   private randomDepositCode(): string {
     return randomBytes(4).toString("hex").slice(0, 8);
+  }
+
+  private assertSameKrwIntent(
+    row: RequestRow,
+    input: { userId: string; requestedAmountKrw: number },
+    name: string,
+  ): void {
+    const stored = fingerprintPayload(
+      krwDepositSemantic({
+        userId: String(row.user_id),
+        requestedAmountKrw: Number(row.requested_amount_krw),
+        depositorName: String(row.depositor_name ?? ""),
+      }),
+    );
+    const incoming = fingerprintPayload(
+      krwDepositSemantic({
+        userId: input.userId,
+        requestedAmountKrw: input.requestedAmountKrw,
+        depositorName: name,
+      }),
+    );
+    assertFingerprintMatch({ stored, incoming });
   }
 
   private columns(): string {
