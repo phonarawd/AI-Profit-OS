@@ -5,6 +5,20 @@ permissions:
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/release-build.yml"
+      - "apps/web/**"
+      - "apps/admin/**"
+      - "services/api-nest/**"
+      - "workers/push-dispatcher/**"
+      - "workers/ebay-adapter/**"
+      - "packages/**"
+      - "tooling/release/**"
+      - "tooling/verify/api-artifact-provenance.cjs"
+      - "pnpm-lock.yaml"
+      - "package.json"
 
 concurrency:
   group: release-build-${{ github.sha }}
