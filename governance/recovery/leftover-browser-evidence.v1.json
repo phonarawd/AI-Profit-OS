@@ -1,0 +1,23 @@
+{
+  "schema": "governance.recovery.leftover-browser-evidence.v1",
+  "observed_at": "2026-09-01T08:15:00Z",
+  "source_sha": "a38920b3d5beec23614cd78d0e4c851886285ce2",
+  "STATIC_NE_LOCAL_RUNTIME_NE_BROWSER_NE_REMOTE_CI_NE_RELEASE_READY": true,
+  "TICKETS": {
+    "93_double_click_idempotency": "LOCAL_RUNTIME_PARTIAL — withdraw form busy/disabled exists. Browser double-click NOT_PROVEN this session.",
+    "94_ledger_detail": "BROWSER_NOT_RERUN_THIS_SESSION — prior Chromium selected flows only.",
+    "95_save_rollback_rapid_intent": "BROWSER_NOT_PROVEN",
+    "96_sse_eof_trailing_abort": "BROWSER_NOT_PROVEN",
+    "99_admin_session_csrf_logout": "LOCAL_RUNTIME_PASS — planAdminLogout fail-closed tests. Browser CSRF/logout NOT_PROVEN.",
+    "65_admin_withdraw_review": "BROWSER_NOT_PROVEN — admin-entry-closure static only this session.",
+    "67_krw_safe_instructions": "STATIC_PRESENT — deposit-config.safe-krw. Browser NOT_PROVEN.",
+    "100_axe": "NOT_CLOSED_VERIFIED — html harness exists; AXE_BROWSER full route sweep not run this session."
+  },
+  "FIREFOX": "NOT_INSTALLED — ms-playwright has chromium-1234 only",
+  "WEBKIT": "NOT_INSTALLED — ms-playwright has chromium-1234 only",
+  "CHROMIUM": "PRIOR_SELECTED_ONLY — security-change rerun not completed this session",
+  "VIEWPORTS": "390/768/1024/1440 leftover browser coverage NOT_PROVEN this session",
+  "BROWSERSTACK": "BLOCKED_EXTERNAL_ACTION",
+  "HOME": "LOCKED",
+  "STATUS": "PARTIAL"
+}
