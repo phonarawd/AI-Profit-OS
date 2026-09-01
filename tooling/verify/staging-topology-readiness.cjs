@@ -149,6 +149,19 @@ assert.ok(got.blockers.includes("render_staging_environment_id_missing"));
 
 got = evaluateStagingTopology({
   ...READY,
+  staging: {
+    ...READY.staging,
+    render: {
+      ...READY.staging.render,
+      kind: "",
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("render_staging_kind_missing"));
+
+got = evaluateStagingTopology({
+  ...READY,
   production: {
     ...READY.production,
     render: {
