@@ -25,6 +25,8 @@ function v2Token({ userId, method, challengeId, expiresAtSec }) {
 const userId = "00000000-0000-4000-8000-000000000001";
 const challengeId = "00000000-0000-4000-8000-000000000002";
 
+async function main() {
+
 {
   const db = {
     async query(text) {
@@ -159,3 +161,9 @@ const challengeId = "00000000-0000-4000-8000-000000000002";
 console.log(
   "[verify:withdraw-stepup-security-runtime] PASS (WEBAUTHN_DISABLED · SERVER_EMAIL · ATOMIC_CONSUME · TOKEN_EXPIRY)",
 );
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
