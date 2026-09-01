@@ -1,0 +1,43 @@
+name: gpt-engine-rebase-diagnostic-38032da-ci
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/engine-diagnostic-38032da
+
+jobs:
+  diagnose:
+    name: diagnose-${{ matrix.label }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: recovery-head
+            target_sha: 38032dafb04ce61ebdf5bf77e6d37df787ecf046
+          - label: pr114-merge
+            target_sha: 4867548a592810de22e2bf14a1f450cf1d421912
+    steps:
+      - name: Checkout diagnostic source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          path: diagnostic
+      - name: Checkout exact target context
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ matrix.target_sha }}
+          fetch-depth: 1
+          path: target
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: "22"
+      - name: Compute exact Engine context diagnostics
+        env:
+          AIPO_DIAG_ROOT: ${{ github.workspace }}/target
+          AIPO_DIAG_LABEL: ${{ matrix.label }}
+          AIPO_DIAG_SHA: ${{ matrix.target_sha }}
+        run: node diagnostic/tooling/verify/engine-rebase-diagnostic.cjs
