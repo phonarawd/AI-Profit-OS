@@ -30,6 +30,12 @@ const REQUIRED_DIRS = [
 const WORKER_SNAPSHOTS = ["push-dispatcher", "ebay-adapter"];
 const PREBUILT_DIR = ".release-prebuilt";
 const PREFERRED_PREBUILT_ENTRIES = ["index.js", "worker.js", "main.js"];
+const EXTRACTION_OUTPUTS = Object.freeze([
+  "apps/web/.open-next",
+  "apps/admin/.open-next",
+  API_DIST_DIR,
+  ...WORKER_SNAPSHOTS.map((name) => "workers/" + name + "/" + PREBUILT_DIR),
+]);
 
 function isFullSha(value) {
   return /^[0-9a-f]{40}$/.test(String(value || "").toLowerCase());
@@ -428,9 +434,16 @@ function writeManifest(outDir, sourceSha) {
   return manifest;
 }
 
+function prepareExtractionTargets(repoRoot) {
+  for (const rel of EXTRACTION_OUTPUTS) {
+    fs.rmSync(path.join(repoRoot, rel), { recursive: true, force: true });
+  }
+}
+
 function extractPayload(bundleDir, repoRoot) {
   const payload = path.join(bundleDir, PAYLOAD_DIR);
   if (!fs.existsSync(payload)) throw failClosed("FAIL_CLOSED:artifact_missing");
+  prepareExtractionTargets(repoRoot);
   copyTree(payload, repoRoot);
 }
 
@@ -455,6 +468,7 @@ module.exports = {
   REQUIRED_DIRS,
   WORKER_SNAPSHOTS,
   PREBUILT_DIR,
+  EXTRACTION_OUTPUTS,
   isFullSha,
   isSha256,
   normalizeHex,
@@ -471,6 +485,7 @@ module.exports = {
   verifyBundle,
   packFromRepo,
   packFromPayload,
+  prepareExtractionTargets,
   extractPayload,
   qaRecord,
   assertRequiredOutputs,
