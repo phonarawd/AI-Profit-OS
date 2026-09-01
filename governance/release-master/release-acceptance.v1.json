@@ -18,7 +18,9 @@
     "qa6-measure",
     "qa8-adversarial"
   ],
-  "mandatory_when_full_dispatch": ["qa7-ai-eval"],
+  "mandatory_when_full_dispatch": [
+    "qa7-ai-eval"
+  ],
   "matrix_jobs": [
     "qa-matrix:QA3",
     "qa-matrix:QA4",
@@ -49,7 +51,8 @@
     "runtime_qa_required": true,
     "worker_prebuilt": true,
     "worker_deploy_no_bundle": true,
-    "successful_builds_pagination": true
+    "successful_builds_pagination": true,
+    "api_runtime_qa_required": true
   },
   "allowlisted_skip": [
     {
@@ -65,8 +68,14 @@
     "accepted_sha_equals_deploy_sha": true,
     "artifact_digest": true,
     "accepted_digest_equals_deploy_digest": true,
-    "runtime_qa": true
+    "runtime_qa": true,
+    "api_runtime_qa": true
   },
-  "fail_results": ["failure", "cancelled", "timed_out", "missing"],
+  "fail_results": [
+    "failure",
+    "cancelled",
+    "timed_out",
+    "missing"
+  ],
   "unexpected_skip": "FAIL"
 }

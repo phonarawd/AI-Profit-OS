@@ -103,7 +103,7 @@ const RULES = [
     test: (f) =>
       /^governance\/release-master\/release-acceptance\.v1\.json$/.test(f) ||
       /^governance\/release-master\/release-artifact\.v1\.json$/.test(f) ||
-      /^tooling\/release\/(release-acceptance-verdict|collect-engine-jobs|require-accepted-sha|fetch-acceptance-artifact|fetch-release-bundle|artifact-provenance|build-once-artifact|bind-qa-artifact|deploy-from-artifact|artifact-runtime-qa|prebuild-workers)\.cjs$/.test(
+      /^tooling\/release\/(release-acceptance-verdict|collect-engine-jobs|require-accepted-sha|fetch-acceptance-artifact|fetch-release-bundle|artifact-provenance|build-once-artifact|bind-qa-artifact|deploy-from-artifact|artifact-runtime-qa|api-artifact-runtime-qa|api-artifact-provenance|prebuild-workers)\.cjs$/.test(
         f,
       ) ||
       /^tooling\/verify\/release-acceptance\.cjs$/.test(f) ||
@@ -112,13 +112,19 @@ const RULES = [
       /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
       /^tooling\/deploy\/cf-pages-(web|ops)\.cjs$/.test(f) ||
       /^tooling\/deploy\/cf-workers\.cjs$/.test(f),
-    scripts: ["release-acceptance.cjs"],
+    scripts: [
+      "release-acceptance.cjs",
+      "api-artifact-provenance.cjs",
+      "api-artifact-runtime-qa.cjs",
+    ],
   },
   {
     test: (f) =>
       /^tooling\/release\/api-artifact-provenance\.cjs$/.test(f) ||
-      /^tooling\/verify\/api-artifact-provenance\.cjs$/.test(f),
-    scripts: ["api-artifact-provenance.cjs"],
+      /^tooling\/release\/api-artifact-runtime-qa\.cjs$/.test(f) ||
+      /^tooling\/verify\/api-artifact-provenance\.cjs$/.test(f) ||
+      /^tooling\/verify\/api-artifact-runtime-qa\.cjs$/.test(f),
+    scripts: ["api-artifact-provenance.cjs", "api-artifact-runtime-qa.cjs"],
   },
   {
     test: (f) =>
