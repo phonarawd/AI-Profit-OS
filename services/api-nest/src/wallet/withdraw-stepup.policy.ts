@@ -37,7 +37,7 @@ export const ADMIN_CREDENTIAL_AUDIT = {
   webauthnRevoke: "admin.user.webauthn.revoke",
 } as const;
 
-/** Normalize APP_HOST → origin allowlist entry (host[:port], no scheme) */
+/** Normalize APP_HOST → origin allowlist entry (host[:port], no scheme). */
 export function normalizeAppHost(appHost: string): string {
   const raw = (appHost || "").trim().toLowerCase();
   if (!raw) return "";
@@ -47,9 +47,16 @@ export function normalizeAppHost(appHost: string): string {
       return u.host;
     }
   } catch {
-    /* fall through */
+    /* fall through to bounded delimiter parsing */
   }
-  return raw.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+
+  // Avoid regex over caller-controlled host/origin text. Preserve the previous
+  // fallback semantics: strip an optional HTTP(S) prefix, then drop path data.
+  let host = raw;
+  if (host.startsWith("https://")) host = host.slice(8);
+  else if (host.startsWith("http://")) host = host.slice(7);
+  const slash = host.indexOf("/");
+  return slash >= 0 ? host.slice(0, slash) : host;
 }
 
 export function originAllowed(
