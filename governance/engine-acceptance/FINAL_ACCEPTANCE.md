@@ -27,27 +27,27 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-04ef3c7de4dd-2ff1760b7d72
 PREDECESSOR_BASELINE_ID = ea-baseline-229e7777f9b0-2d4567b3a2c8
 REBASE_ID = pending
-LIVE_AGGREGATE = 783c814b51c32440813d0dea821290d1093e63bfa7ff12b4914bf36b3347e7e0
+LIVE_AGGREGATE = d091614bdc85b6a0f3c8294660a13a2baabb0e0a3bfac5daeae3a05b04c70164
 BASELINE_AGGREGATE = 2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8
-PATH_COUNT_LIVE = 472
+PATH_COUNT_LIVE = 474
 PATH_COUNT_BASELINE = 450
-CHANGED_PATHS = 55
-ADDED_PATHS = 22
+CHANGED_PATHS = 57
+ADDED_PATHS = 24
 MUTATED_PATHS = 33
 MISSING_PATHS = 0
-EXIT_GATE = recovery/release-provenance-20260831 @ 8be2e1fd1178c5d722bba2276c2f5785a96a0806 · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 QA0-QA9 재실행 전까지 ISSUED 금지
+EXIT_GATE = recovery/release-provenance-20260831 @ 28fb416c7401c13ace42a5e1e0ea10e53d9a1be1 · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 QA0-QA9 재실행 전까지 ISSUED 금지
 ```
 
 ## 판정
 
-recovery candidate `8be2e1fd1178c5d722bba2276c2f5785a96a0806` 의 live protected-scope 는 baseline 과 다르다.
-`LIVE_AGGREGATE = 783c814b51c32440813d0dea821290d1093e63bfa7ff12b4914bf36b3347e7e0`
-`PATH_COUNT_LIVE = 472` · `CHANGED_PATHS = 55` (added 22 · mutated 33 · missing 0).
+recovery candidate `28fb416c7401c13ace42a5e1e0ea10e53d9a1be1` 의 live protected-scope 는 baseline 과 다르다.
+`LIVE_AGGREGATE = d091614bdc85b6a0f3c8294660a13a2baabb0e0a3bfac5daeae3a05b04c70164`
+`PATH_COUNT_LIVE = 474` · `CHANGED_PATHS = 57` (added 24 · mutated 33 · missing 0).
 live aggregate ≠ baseline → 이전 ISSUED 인증은 current-authoritative 가 아니다.
 은폐 금지 · `STATUS = NOT_ISSUED` · `CERT_ISSUED = 0` · `PROTECTED_SCOPE_DRIFT = 1` · `REBASE_REQUIRED = 1`.
 엔진 수락 workflow 는 HOLD_CONTROLLED_AMENDMENT · applied = 0.
 
-변경 경로 집합은 `tooling/verify/lib/rel-502-psm.cjs` `compareProtectedScope()` 실측이다. 대표 추가: identity-proof / admin-session / withdraw-review / referral own-code / deposit-config ready. 대표 변경: auth·wallet·admin-guard·ledger fingerprint.
+변경 경로 집합은 `tooling/verify/lib/rel-502-psm.cjs` `compareProtectedScope()` 실측이다. 대표 추가: identity-proof.email / admin-session / withdraw-review / referral own-code / deposit-config ready. 대표 변경: auth·wallet·admin-guard·ledger fingerprint.
 
 재발급 조건: Human/PO `ENGINE_ACCEPTANCE_REBASE_V1` ACK → rebase apply → current-epoch QA1-QA8 COMPLETE → QA9 `ENGINE_ACCEPTED_FOR_UI` → 그때만 인증서 재발급(ISSUED).
 Local fake QA0-QA9 PASS = 0.
