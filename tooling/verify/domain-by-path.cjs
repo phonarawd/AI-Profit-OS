@@ -1,6 +1,9 @@
 /**
  * T0 — 변경 경로 기준 도메인 verify (슬라이스 빠른 차단)
- * staged → unstaged → HEAD 대비 순으로 파일 목록 수집
+ * LOCAL: staged → unstaged → HEAD
+ * CI PR: merge-base/base SHA → HEAD (committed)
+ * CI PUSH: before SHA → HEAD (committed)
+ * CI base unresolved → fail closed (silent SKIP 금지)
  */
 const { execSync } = require("child_process");
 const path = require("path");
@@ -1281,34 +1284,134 @@ const RULES = [
     scripts: ["wallet-kyc-session-auth.cjs"],
   },
   {
+    test: (f) =>
+      /^tooling\/verify\/domain-by-path\.cjs$/.test(f) ||
+      /^tooling\/verify\/domain-by-path\.selftest\.cjs$/.test(f) ||
+      /^tooling\/verify\/domain-by-path-ci\.cjs$/.test(f) ||
+      /^\.github\/workflows\/gate\.yml$/.test(f),
+    scripts: ["domain-by-path-ci.cjs"],
+  },
+  {
     test: (f) => /^tooling\/verify\//.test(f),
     scripts: [],
   },
 ];
 
-function gitLines(cmd) {
+function normalizePath(file) {
+  return String(file || "").replace(/\\/g, "/");
+}
+
+function gitExecEnv(cwd) {
+  const env = { ...process.env };
+  if (cwd && path.resolve(cwd) !== path.resolve(root)) {
+    delete env.GIT_DIR;
+    delete env.GIT_WORK_TREE;
+    delete env.GIT_INDEX_FILE;
+    delete env.GIT_OBJECT_DIRECTORY;
+    delete env.GIT_ALTERNATE_OBJECT_DIRECTORIES;
+    delete env.GIT_PREFIX;
+  }
+  return env;
+}
+
+function gitLines(cmd, cwd, swallow) {
   try {
-    return execSync(cmd, { cwd: root, encoding: "utf8" })
+    return execSync(cmd, {
+      cwd: cwd || root,
+      encoding: "utf8",
+      env: gitExecEnv(cwd),
+    })
       .split(/\r?\n/)
       .map((line) => line.trim())
       .filter(Boolean);
-  } catch {
-    return [];
+  } catch (err) {
+    if (swallow) return [];
+    const wrapped = new Error(
+      "CI_DIFF_UNRESOLVED: " + cmd + " :: " + String(err && err.message),
+    );
+    wrapped.code = "CI_DIFF_UNRESOLVED";
+    throw wrapped;
   }
 }
 
-function getChangedFiles() {
-  const staged = gitLines("git diff --cached --name-only");
-  if (staged.length > 0) return staged.map(normalizePath);
-
-  const unstaged = gitLines("git diff --name-only");
-  if (unstaged.length > 0) return unstaged.map(normalizePath);
-
-  return gitLines("git diff --name-only HEAD").map(normalizePath);
+function isZeroSha(sha) {
+  return /^0+$/.test(String(sha || ""));
 }
 
-function normalizePath(file) {
-  return file.replace(/\\/g, "/");
+function isSha(sha) {
+  return /^[0-9a-f]{7,40}$/i.test(String(sha || "")) && !isZeroSha(sha);
+}
+
+function ciFailClosed(code, detail) {
+  const err = new Error(code + (detail ? ": " + detail : ""));
+  err.code = code;
+  throw err;
+}
+
+function detectDiffMode(env) {
+  const forced = String((env && env.AIPO_DOMAIN_DIFF_MODE) || "");
+  if (forced === "local") return "local";
+  if (forced === "ci_pr") return "ci_pr";
+  if (forced === "ci_push") return "ci_push";
+  const actions = String((env && env.GITHUB_ACTIONS) || "") === "true";
+  const event = String((env && env.GITHUB_EVENT_NAME) || "");
+  if (actions) {
+    if (event === "pull_request") return "ci_pr";
+    if (event === "push") return "ci_push";
+    return "ci_unknown";
+  }
+  return "local";
+}
+
+function resolveCiRange(env, cwd) {
+  const event = String((env && env.GITHUB_EVENT_NAME) || "");
+  const head = String((env && env.GITHUB_SHA) || "HEAD");
+  if (event === "pull_request" || (env && env.AIPO_DOMAIN_DIFF_MODE) === "ci_pr") {
+    const base = String(
+      (env && (env.AIPO_PR_BASE_SHA || env.GITHUB_EVENT_PULL_REQUEST_BASE_SHA)) ||
+        "",
+    );
+    if (isSha(base)) return { from: base, to: head, spec: base + "..." + head };
+    const ref = String((env && env.GITHUB_BASE_REF) || "");
+    if (!ref) ciFailClosed("CI_PR_BASE_UNRESOLVED", "missing PR base SHA/ref");
+    const mb = gitLines("git merge-base origin/" + ref + " " + head, cwd, false)[0];
+    if (!isSha(mb)) ciFailClosed("CI_PR_BASE_UNRESOLVED", "merge-base failed");
+    return { from: mb, to: head, spec: mb + "..." + head };
+  }
+  if (event === "push" || (env && env.AIPO_DOMAIN_DIFF_MODE) === "ci_push") {
+    const before = String(
+      (env && (env.AIPO_PUSH_BEFORE_SHA || env.GITHUB_EVENT_BEFORE)) || "",
+    );
+    if (!isSha(before)) {
+      ciFailClosed("CI_PUSH_BASE_UNRESOLVED", "missing/invalid before SHA");
+    }
+    return { from: before, to: head, spec: before + " " + head };
+  }
+  ciFailClosed("CI_CONTEXT_UNRESOLVED", "event=" + event);
+}
+
+function getLocalChangedFiles(cwd) {
+  const staged = gitLines("git diff --cached --name-only", cwd, true);
+  if (staged.length > 0) return staged.map(normalizePath);
+
+  const unstaged = gitLines("git diff --name-only", cwd, true);
+  if (unstaged.length > 0) return unstaged.map(normalizePath);
+
+  return gitLines("git diff --name-only HEAD", cwd, true).map(normalizePath);
+}
+
+function getChangedFiles(opts) {
+  const env = (opts && opts.env) || process.env;
+  const cwd = (opts && opts.cwd) || root;
+  const mode = detectDiffMode(env);
+  if (mode === "local") return getLocalChangedFiles(cwd);
+  if (mode === "ci_unknown") {
+    ciFailClosed("CI_CONTEXT_UNRESOLVED", "GITHUB_ACTIONS without event");
+  }
+  const range = resolveCiRange(env, cwd);
+  return gitLines("git diff --name-only " + range.spec, cwd, false).map(
+    normalizePath,
+  );
 }
 
 function scriptsForChangedFiles(files) {
@@ -1324,20 +1427,41 @@ function scriptsForChangedFiles(files) {
 }
 
 if (require.main === module) {
-  const files = getChangedFiles();
-  const scripts = scriptsForChangedFiles(files);
-  if (files.length === 0) {
-    console.log("[verify:domain-by-path] SKIP (no changed files)");
-    process.exit(0);
+  try {
+    const files = getChangedFiles({
+      cwd: process.env.AIPO_DOMAIN_DIFF_CWD || root,
+      env: process.env,
+    });
+    const scripts = scriptsForChangedFiles(files);
+    if (process.env.AIPO_DOMAIN_BY_PATH_LIST_ONLY === "1") {
+      process.stdout.write(JSON.stringify({ files, scripts }) + "\n");
+      process.exit(0);
+    }
+    if (files.length === 0) {
+      console.log("[verify:domain-by-path] SKIP (no changed files)");
+      process.exit(0);
+    }
+    console.log(
+      `[verify:domain-by-path] ${files.length} file(s) → ${scripts.length} domain check(s)`,
+    );
+    if (scripts.length === 0) {
+      process.exit(0);
+    }
+    const { runGateSteps } = require("./gate-runner.cjs");
+    runGateSteps(scripts, "verify:domain-by-path");
+  } catch (err) {
+    const code = err && err.code ? String(err.code) : "";
+    if (/^CI_/.test(code)) {
+      console.error("[verify:domain-by-path] FAIL " + err.message);
+      process.exit(1);
+    }
+    throw err;
   }
-  console.log(
-    `[verify:domain-by-path] ${files.length} file(s) → ${scripts.length} domain check(s)`,
-  );
-  if (scripts.length === 0) {
-    process.exit(0);
-  }
-  const { runGateSteps } = require("./gate-runner.cjs");
-  runGateSteps(scripts, "verify:domain-by-path");
 } else {
-  module.exports = { getChangedFiles, scriptsForChangedFiles };
+  module.exports = {
+    getChangedFiles,
+    scriptsForChangedFiles,
+    detectDiffMode,
+    resolveCiRange,
+  };
 }

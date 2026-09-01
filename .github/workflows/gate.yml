@@ -19,6 +19,8 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
       - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
         with:
           version: 10.14.0
@@ -89,6 +91,9 @@ jobs:
           cargo check --locked
           cargo test --locked
       - name: verify:gate
+        env:
+          AIPO_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          AIPO_PUSH_BEFORE_SHA: ${{ github.event.before }}
         run: pnpm verify:gate
       - name: OpenNext build:cf (Linux — Workers deploy output SSOT)
         run: |
