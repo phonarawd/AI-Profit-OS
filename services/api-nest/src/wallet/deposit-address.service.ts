@@ -7,11 +7,17 @@ import {
   BadRequestException,
   Injectable,
   ConflictException,
+  ServiceUnavailableException,
 } from "@nestjs/common";
 import { KillSwitchService } from "../kill-switch/kill-switch.service";
 import { PostgresService } from "../db/postgres";
 import { DepositConfigService } from "./deposit-config.service";
-import { deriveTrc20Address, isTrc20AddressFormat } from "./tron-address";
+import {
+  deriveTrc20Address,
+  isTrc20AddressFormat,
+  TronHdDerivationUnavailableError,
+  TRON_HD_DERIVATION_UNAVAILABLE,
+} from "./tron-address";
 import type { UserDepositAddressV1 } from "./wallet.types";
 
 type AddressRow = {
@@ -85,10 +91,26 @@ export class DepositAddressService {
       if (raced) return this.toV1(raced);
 
       const nextIdx = await this.nextDerivationIndex();
-      const derived = deriveTrc20Address({
-        secretRef,
-        derivationIndex: nextIdx,
-      });
+      let derived: {
+        trc20Address: string;
+        hdPath: string;
+        qrPayload: string;
+      };
+      try {
+        derived = deriveTrc20Address({
+          secretRef,
+          derivationIndex: nextIdx,
+        });
+      } catch (err) {
+        if (err instanceof TronHdDerivationUnavailableError) {
+          throw new ServiceUnavailableException({
+            code: TRON_HD_DERIVATION_UNAVAILABLE,
+            statusCode: 503,
+            message: "TRC20 deposit address generation unavailable",
+          });
+        }
+        throw err;
+      }
       if (!isTrc20AddressFormat(derived.trc20Address)) {
         throw new BadRequestException("derived address failed format check");
       }
