@@ -312,6 +312,7 @@ if (aggregatorGreen.verdict !== "FAIL") {
 
 const sha = "0a72b27dd0da3c422eca0f931cf668e7a760c8ec";
 const passVerdict = {
+  schema: "release-acceptance-verdict.v1",
   verdict: "PASS",
   kind: "PRODUCTION_RELEASE",
   qa_phase: "full",
@@ -356,6 +357,7 @@ const noDigest = path.join(root, "tooling/release/_tmp_verdict_nodigest.json");
 fs.writeFileSync(
   noDigest,
   JSON.stringify({
+    schema: "release-acceptance-verdict.v1",
     verdict: "PASS",
     kind: "PRODUCTION_RELEASE",
     qa_phase: "full",
