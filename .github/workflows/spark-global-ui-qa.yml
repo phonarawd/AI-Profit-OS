@@ -9,6 +9,7 @@ on:
     paths:
       - "apps/admin/**"
       - "packages/ui/brand/**"
+      - "packages/ui/copy/ko/admin.ts"
       - "packages/ui/components/trust/**"
       - "tooling/e2e/specs/admin-spark-shell.spec.cjs"
       - "tooling/e2e/specs/admin-entry-closure.spec.cjs"

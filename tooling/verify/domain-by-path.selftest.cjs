@@ -333,6 +333,24 @@ expect(
   realHeadBefore + " → " + realHeadAfter,
 );
 
+{
+  const adminCopy = "packages/ui/copy/ko/admin.ts";
+  const scripts = scriptsForChangedFiles([adminCopy]);
+  expect(
+    "admin copy maps only admin-novice-ui",
+    scripts.includes("admin-novice-ui.cjs") &&
+      !scripts.includes("rel-201-admin-dashboard.cjs") &&
+      !scripts.includes("rel-213-admin-system-control.cjs"),
+    scripts.join(","),
+  );
+  const verifierScripts = scriptsForChangedFiles(["tooling/verify/admin-novice-ui.cjs"]);
+  expect(
+    "admin-novice verifier still self-runs",
+    verifierScripts.includes("admin-novice-ui.cjs"),
+    verifierScripts.join(","),
+  );
+}
+
 expect("detect local default", detectDiffMode({}) === "local");
 expect(
   "detect ci_pr",

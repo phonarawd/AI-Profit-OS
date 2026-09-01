@@ -69,8 +69,17 @@ const RULES = [
   {
     test: (f) =>
       /^tooling\/e2e\//.test(f) ||
-      /^tooling\/verify\/qa-env-isolation-guard\.cjs$/.test(f),
-    scripts: ["qa-env-isolation-guard.cjs", "auth-rate-limit.cjs", "axe-harness.cjs", "leftover-browser-harness.cjs"],
+      /^tooling\/verify\/qa-env-isolation-guard\.cjs$/.test(f) ||
+      /^tooling\/verify\/critical-cross-browser\.cjs$/.test(f) ||
+      /^\.github\/workflows\/critical-cross-browser\.yml$/.test(f) ||
+      /^\.github\/workflows\/critical-axe\.yml$/.test(f),
+    scripts: [
+      "qa-env-isolation-guard.cjs",
+      "auth-rate-limit.cjs",
+      "axe-harness.cjs",
+      "leftover-browser-harness.cjs",
+      "critical-cross-browser.cjs",
+    ],
   },
   {
     test: (f) =>
@@ -104,6 +113,12 @@ const RULES = [
       /^tooling\/deploy\/cf-pages-(web|ops)\.cjs$/.test(f) ||
       /^tooling\/deploy\/cf-workers\.cjs$/.test(f),
     scripts: ["release-acceptance.cjs"],
+  },
+  {
+    test: (f) =>
+      /^tooling\/release\/api-artifact-provenance\.cjs$/.test(f) ||
+      /^tooling\/verify\/api-artifact-provenance\.cjs$/.test(f),
+    scripts: ["api-artifact-provenance.cjs"],
   },
   {
     test: (f) =>
@@ -169,6 +184,8 @@ const RULES = [
   {
     test: (f) =>
       /^services\/api-nest\/src\/health\.controller\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/health\.public\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/health\.public\.runtime\.test\.ts$/.test(f) ||
       /^services\/api-nest\/src\/config\/nest-provenance\.ts$/.test(f) ||
       /^tooling\/verify\/nest-production-provenance\.cjs$/.test(f),
     scripts: ["nest-production-provenance.cjs", "api-nest-build.cjs"],
@@ -419,6 +436,9 @@ const RULES = [
     test: (f) =>
       /^apps\/web\/app\/me\/settings\//.test(f) ||
       /^packages\/ui\/components\/settings\//.test(f) ||
+      /^services\/api-nest\/src\/ux-prefs\//.test(f) ||
+      /^apps\/web\/app\/wallet\/deposit\/deposit-tab\.ts$/.test(f) ||
+      /^apps\/web\/components\/FontScaleApply\.tsx$/.test(f) ||
       /^tooling\/e2e\/specs\/settings-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/settings-closure\.cjs$/.test(f),
     scripts: ["settings-closure.cjs"],
@@ -499,6 +519,12 @@ const RULES = [
       "krw-deposit-closure.cjs",
       "support-closure.cjs",
     ],
+  },
+  {
+    test: (f) =>
+      /^packages\/ui\/copy\/ko\/admin\.ts$/.test(f) ||
+      /^tooling\/verify\/admin-novice-ui\.cjs$/.test(f),
+    scripts: ["admin-novice-ui.cjs"],
   },
   {
     test: (f) => /^apps\/admin\//.test(f),
