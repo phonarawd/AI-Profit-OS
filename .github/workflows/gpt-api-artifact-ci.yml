@@ -48,6 +48,9 @@ jobs:
       - name: Static API provenance verifier
         run: pnpm verify:api-artifact-provenance
 
+      - name: Release contract integration verifier
+        run: pnpm verify:release-acceptance
+
       - name: Build release surfaces
         run: |
           set -euo pipefail

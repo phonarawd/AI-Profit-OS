@@ -604,6 +604,7 @@ if (!/unstable_dev/.test(runtimeSrc) || !/noBundle:\s*true/.test(runtimeSrc)) {
 }
 
 const os = require("os");
+const { writeApiManifest } = require("../release/api-artifact-provenance.cjs");
 const {
   packFromPayload,
   verifyBundle,
@@ -634,6 +635,11 @@ try {
   fs.writeFileSync(path.join(payloadSrc, "apps/web/.open-next/assets/a.txt"), "asset");
   fs.writeFileSync(path.join(payloadSrc, "apps/admin/.open-next/worker.js"), "ops-worker");
   fs.writeFileSync(path.join(payloadSrc, "apps/admin/.open-next/assets/a.txt"), "asset");
+  const apiDist = path.join(payloadSrc, "services/api-nest/dist");
+  fs.mkdirSync(apiDist, { recursive: true });
+  const apiEntry = path.join(apiDist, "main.js");
+  fs.writeFileSync(apiEntry, "api-main");
+  writeApiManifest(apiDist, fullSha, apiEntry);
   for (const name of WORKER_SNAPSHOTS) writeFakeWorker(payloadSrc, name);
   const bundle = path.join(tmpRoot, "bundle");
   const packed = packFromPayload(payloadSrc, bundle, fullSha);
@@ -643,6 +649,12 @@ try {
   if (!/^[0-9a-f]{64}$/.test(packed.artifact_digest)) fail("pack must emit sha256 digest");
   const verified = verifyBundle(bundle, { sourceSha: fullSha, digest: packed.artifact_digest });
   if (verified.digest !== packed.artifact_digest) fail("qa digest must match packed digest");
+  if (!verified.api_artifact || verified.api_artifact.artifact_kind !== "api-nest") {
+    fail("verified bundle must carry api-nest artifact metadata");
+  }
+  if (verified.api_artifact.source_sha !== fullSha) {
+    fail("verified api artifact source SHA must match release SHA");
+  }
   try {
     packFromPayload(payloadSrc, bundle, fullSha);
     fail("second pack must be forbidden");
