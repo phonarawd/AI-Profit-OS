@@ -1,0 +1,138 @@
+name: gpt-release-readiness-integration-ci
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/release-readiness-integration-e4961df
+
+concurrency:
+  group: gpt-release-readiness-integration-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Static release-readiness invariants
+        run: |
+          set -euo pipefail
+          pnpm verify:api-artifact-provenance
+          pnpm verify:release-acceptance
+          node tooling/verify/api-artifact-runtime-qa.cjs
+          node tooling/verify/fetch-acceptance-artifact.cjs
+          node tooling/verify/require-accepted-sha.cjs
+          node tooling/verify/release-fetch-deploy-hardening.cjs
+          node tooling/verify/render-rollback-provenance.cjs
+          node tooling/verify/render-api-promotion-readiness.cjs
+          node tooling/verify/db-hardening-readiness.cjs
+          node tooling/verify/staging-topology-readiness.cjs
+
+      - name: Build release surfaces
+        run: |
+          set -euo pipefail
+          pnpm --filter @aipo/web build:cf
+          pnpm --filter @aipo/admin build:cf
+          pnpm --filter @aipo/api-nest... build
+          test -f apps/web/.open-next/worker.js
+          test -d apps/web/.open-next/assets
+          test -f apps/admin/.open-next/worker.js
+          test -d apps/admin/.open-next/assets
+          test -f services/api-nest/dist/main.js
+
+      - name: Bind API artifact manifest
+        run: |
+          set -euo pipefail
+          node tooling/release/api-artifact-provenance.cjs --source-sha "${{ github.sha }}"
+          test -f services/api-nest/dist/api-release-manifest.json
+
+      - name: Prebuild worker snapshots
+        run: |
+          set -euo pipefail
+          node tooling/release/prebuild-workers.cjs --from-repo
+          test -f workers/push-dispatcher/.release-prebuilt/index.js
+          test -f workers/ebay-adapter/.release-prebuilt/index.js
+
+      - name: Pack immutable release bundle
+        run: |
+          set -euo pipefail
+          rm -rf _tmp_release_integration
+          node tooling/release/build-once-artifact.cjs \
+            --source-sha "${{ github.sha }}" \
+            --from-repo \
+            --out _tmp_release_integration
+          test -f _tmp_release_integration/release-manifest.json
+          test -f _tmp_release_integration/payload/services/api-nest/dist/main.js
+          test -f _tmp_release_integration/payload/services/api-nest/dist/api-release-manifest.json
+
+      - name: Exact bundled API runtime acceptance
+        run: |
+          set -euo pipefail
+          node tooling/release/api-artifact-runtime-qa.cjs \
+            --sha "${{ github.sha }}" \
+            --bundle _tmp_release_integration \
+            --extract-root . \
+            --out _tmp_release_api_runtime.json
+          node - <<'NODE'
+          const r = require("./_tmp_release_api_runtime.json");
+          if (!r.api_runtime || r.api_runtime.verified !== true) process.exit(2);
+          if (r.api_runtime.git_sha !== process.env.GITHUB_SHA) process.exit(3);
+          if (r.api_runtime.git_sha_source !== "RENDER_GIT_COMMIT") process.exit(4);
+          console.log("[gpt-release-readiness-integration] API_RUNTIME_REMOTE_CI_PASS");
+          NODE
+
+      - name: Bundle tamper and wrong SHA fail closed
+        run: |
+          set -euo pipefail
+          cp -R _tmp_release_integration _tmp_release_integration_tampered
+          printf '\n// tamper-proof\n' >> _tmp_release_integration_tampered/payload/services/api-nest/dist/main.js
+          node - <<'NODE'
+          const path = require("node:path");
+          const { verifyBundle } = require("./tooling/release/artifact-provenance.cjs");
+
+          let tamperFailed = false;
+          try {
+            verifyBundle(path.resolve("_tmp_release_integration_tampered"), {
+              sourceSha: process.env.GITHUB_SHA,
+            });
+          } catch (err) {
+            tamperFailed = /digest_mismatch|api_artifact_digest_mismatch/.test(
+              String((err && err.fails) || (err && err.message) || err),
+            );
+          }
+          if (!tamperFailed) throw new Error("tampered API artifact was not rejected");
+
+          const wrongSha =
+            process.env.GITHUB_SHA[0] === "a"
+              ? "b" + process.env.GITHUB_SHA.slice(1)
+              : "a" + process.env.GITHUB_SHA.slice(1);
+          let shaFailed = false;
+          try {
+            verifyBundle(path.resolve("_tmp_release_integration"), { sourceSha: wrongSha });
+          } catch (err) {
+            shaFailed = /artifact_source_sha_mismatch/.test(
+              String((err && err.fails) || (err && err.message) || err),
+            );
+          }
+          if (!shaFailed) throw new Error("wrong source SHA was not rejected");
+          console.log("[gpt-release-readiness-integration] TAMPER_WRONG_SHA_FAIL_CLOSED_PASS");
+          NODE
