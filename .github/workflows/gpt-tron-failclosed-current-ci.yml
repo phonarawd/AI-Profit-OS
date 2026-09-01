@@ -1,0 +1,39 @@
+name: gpt-tron-failclosed-current-ci
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/verify-tron-failclosed-305c4e3
+    paths:
+      - ".github/workflows/gpt-tron-failclosed-current-ci.yml"
+      - "services/api-nest/src/wallet/tron-address.ts"
+      - "services/api-nest/src/wallet/deposit-address.service.ts"
+      - "tooling/verify/tron-address-fail-closed.cjs"
+      - "tooling/verify/tron-address-fail-closed.runtime.cjs"
+      - "services/api-nest/package.json"
+      - "pnpm-lock.yaml"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Static TRON fail-closed proof
+        run: node tooling/verify/tron-address-fail-closed.cjs
+      - name: Build Nest API
+        run: pnpm --filter @aipo/api-nest... build
+      - name: Runtime TRON fail-closed proof
+        run: node tooling/verify/tron-address-fail-closed.runtime.cjs
