@@ -1,0 +1,215 @@
+diff --git a/.github/workflows/engine-acceptance.yml b/.github/workflows/engine-acceptance.yml
+index 0ef13d5..8bc1f25 100644
+--- a/.github/workflows/engine-acceptance.yml
++++ b/.github/workflows/engine-acceptance.yml
+@@ -47,11 +47,11 @@ jobs:
+     runs-on: ubuntu-latest
+     timeout-minutes: 15
+     steps:
+-      - uses: actions/checkout@v6
+-      - uses: pnpm/action-setup@v6
++      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
++      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+         with:
+           version: 10.14.0
+-      - uses: actions/setup-node@v6
++      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+         with:
+           node-version: "22"
+           cache: "pnpm"
+@@ -75,11 +75,11 @@ jobs:
+     timeout-minutes: 20
+     if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa1' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full' || inputs.qa_phase == 'qa0' }}
+     steps:
+-      - uses: actions/checkout@v6
+-      - uses: pnpm/action-setup@v6
++      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
++      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+         with:
+           version: 10.14.0
+-      - uses: actions/setup-node@v6
++      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+         with:
+           node-version: "22"
+           cache: "pnpm"
+@@ -104,11 +104,11 @@ jobs:
+     needs: [qa1-deterministic]
+     if: ${{ github.event_name != 'workflow_dispatch' || inputs.qa_phase == 'qa2' || inputs.qa_phase == 'qa3' || inputs.qa_phase == 'qa4' || inputs.qa_phase == 'qa5' || inputs.qa_phase == 'qa6' || inputs.qa_phase == 'full' }}
+     steps:
+-      - uses: actions/checkout@v6
+-      - uses: pnpm/action-setup@v6
++      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
++      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+         with:
+           version: 10.14.0
+-      - uses: actions/setup-node@v6
++      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+         with:
+           node-version: "22"
+           cache: "pnpm"
+@@ -138,11 +138,11 @@ jobs:
+       matrix:
+         suite: [QA3, QA4, QA5, QA6, QA8]
+     steps:
+-      - uses: actions/checkout@v6
+-      - uses: pnpm/action-setup@v6
++      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
++      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+         with:
+           version: 10.14.0
+-      - uses: actions/setup-node@v6
++      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+         with:
+           node-version: "22"
+           cache: "pnpm"
+@@ -200,7 +200,9 @@ jobs:
+               export AIPO_QA_PGHOST=127.0.0.1 AIPO_QA_PGUSER=postgres AIPO_QA_PGPASSWORD=postgres AIPO_QA_PGDATABASE=aipo_qa_synth AIPO_QA_PGPORT=5432
+               export AIPO_QA_HARNESS_OUT=/tmp/aipo-harness/qa6-threshold
+               node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+-              curl -fsSL https://github.com/grafana/k6/releases/download/v0.54.0/k6-v0.54.0-linux-amd64.tar.gz | tar -xz
++              curl -fsSL -o k6.tar.gz https://github.com/grafana/k6/releases/download/v0.54.0/k6-v0.54.0-linux-amd64.tar.gz
++              echo "c7f03434854f837b6790ee81572e4b0f955241974c79a43cbb9f8d0fef069589  k6.tar.gz" | sha256sum -c -
++              tar -xzf k6.tar.gz
+               sudo mv k6-v0.54.0-linux-amd64/k6 /usr/local/bin/k6
+               k6 version
+               pnpm --filter @aipo/api-nest build
+@@ -236,7 +238,7 @@ jobs:
+       # Raw traces/logs = Actions artifact · acceptance evidence retention ≥ 90 days
+       - name: Upload suite evidence
+         if: ${{ always() && (matrix.suite == 'QA3' || matrix.suite == 'QA4' || matrix.suite == 'QA5' || matrix.suite == 'QA6' || matrix.suite == 'QA8') }}
+-        uses: actions/upload-artifact@v4
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+         with:
+           name: engine-acceptance-${{ matrix.suite }}
+           path: |
+@@ -274,11 +276,11 @@ jobs:
+       AIPO_QA_HOSTNAME: localhost
+       AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+     steps:
+-      - uses: actions/checkout@v6
+-      - uses: pnpm/action-setup@v6
++      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
++      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+         with:
+           version: 10.14.0
+-      - uses: actions/setup-node@v6
++      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+         with:
+           node-version: "22"
+           cache: "pnpm"
+@@ -316,7 +318,7 @@ jobs:
+             --synthetic-ns qa-synth-ci
+       - name: Upload QA7 raw traces
+         if: ${{ always() }}
+-        uses: actions/upload-artifact@v4
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+         with:
+           name: engine-acceptance-QA7-raw-traces
+           path: /tmp/aipo-qa7-traces/
+@@ -367,11 +369,11 @@ jobs:
+       AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa5-fault
+       AIPO_QA5_EXECUTE_FAULTS: "1"
+     steps:
+-      - uses: actions/checkout@v6
+-      - uses: pnpm/action-setup@v6
++      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
++      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+         with:
+           version: 10.14.0
+-      - uses: actions/setup-node@v6
++      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+         with:
+           node-version: "22"
+           cache: "pnpm"
+@@ -395,7 +397,7 @@ jobs:
+             --synthetic-ns qa-synth-ci
+       - name: Upload QA5 fault harness evidence
+         if: ${{ always() }}
+-        uses: actions/upload-artifact@v4
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+         with:
+           name: engine-acceptance-QA5-fault-harness
+           path: /tmp/aipo-harness/qa5-fault/
+@@ -435,11 +437,11 @@ jobs:
+       AIPO_QA_MEASUREMENT_ONLY: "1"
+       AIPO_QA_PERF_BUDGET_STATUS: UNSPECIFIED_PERF_BUDGET
+     steps:
+-      - uses: actions/checkout@v6
+-      - uses: pnpm/action-setup@v6
++      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
++      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+         with:
+           version: 10.14.0
+-      - uses: actions/setup-node@v6
++      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+         with:
+           node-version: "22"
+           cache: "pnpm"
+@@ -448,7 +450,9 @@ jobs:
+       - name: Install k6
+         run: |
+           set -euo pipefail
+-          curl -fsSL https://github.com/grafana/k6/releases/download/v0.54.0/k6-v0.54.0-linux-amd64.tar.gz | tar -xz
++          curl -fsSL -o k6.tar.gz https://github.com/grafana/k6/releases/download/v0.54.0/k6-v0.54.0-linux-amd64.tar.gz
++              echo "c7f03434854f837b6790ee81572e4b0f955241974c79a43cbb9f8d0fef069589  k6.tar.gz" | sha256sum -c -
++              tar -xzf k6.tar.gz
+           sudo mv k6-v0.54.0-linux-amd64/k6 /usr/local/bin/k6
+           k6 version
+       - name: Kill-switch + isolated DB target
+@@ -469,7 +473,7 @@ jobs:
+             --synthetic-ns qa-synth-ci
+       - name: Upload QA6 measurement evidence
+         if: ${{ always() }}
+-        uses: actions/upload-artifact@v4
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+         with:
+           name: engine-acceptance-QA6-measure
+           path: /tmp/aipo-harness/qa6-measure/
+@@ -507,11 +511,11 @@ jobs:
+       AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+       AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa8-adversarial
+     steps:
+-      - uses: actions/checkout@v6
+-      - uses: pnpm/action-setup@v6
++      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
++      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+         with:
+           version: 10.14.0
+-      - uses: actions/setup-node@v6
++      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+         with:
+           node-version: "22"
+           cache: "pnpm"
+@@ -535,7 +539,7 @@ jobs:
+             --synthetic-ns qa-synth-ci
+       - name: Upload QA8 adversarial harness evidence
+         if: ${{ always() }}
+-        uses: actions/upload-artifact@v4
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+         with:
+           name: engine-acceptance-QA8-adversarial
+           path: /tmp/aipo-harness/qa8-adversarial/
+@@ -549,11 +553,11 @@ jobs:
+     runs-on: ubuntu-latest
+     timeout-minutes: 10
+     steps:
+-      - uses: actions/checkout@v6
+-      - uses: pnpm/action-setup@v6
++      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
++      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+         with:
+           version: 10.14.0
+-      - uses: actions/setup-node@v6
++      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+         with:
+           node-version: "22"
+           cache: "pnpm"
+@@ -587,7 +591,7 @@ jobs:
+           echo "qa6_ci_only_heavy=true" >> _tmp_engine_acceptance_evidence/aggregator.txt
+       - name: Upload acceptance evidence
+         if: ${{ always() }}
+-        uses: actions/upload-artifact@v4
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+         with:
+           name: engine-acceptance-evidence
+           path: _tmp_engine_acceptance_evidence/
