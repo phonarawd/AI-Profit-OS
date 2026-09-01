@@ -1,0 +1,22 @@
+{
+  "schema": "governance.recovery.i5-ux-language-evidence.v1",
+  "observed_at": "2026-09-01T08:25:00Z",
+  "source_sha": "PENDING_COMMIT",
+  "I5_SCOPE": "Operator language on Admin rendered surface. Source identifiers not in scope. Home 0.",
+  "COPY_SSOT": "packages/ui/copy/ko/admin.ts — no API/QA/E2E/staging/production/workflow/pipeline/SSE/SHA/RLS/GitHub/Supabase/acceptance literals observed.",
+  "EXISTING_GATE": "verify:admin-novice-ui already blocks beginner-hostile visible terms including SSE, JWT, KYC, 게이트.",
+  "I5_TERM_EXPANSION": "NOT_APPLIED_THIS_SLICE — hook blocked a verify list edit. Existing novice gate remains the live check.",
+  "ADMIN_ROLE": "LOCKED_5 — inherited from I-1.",
+  "SERVER_SIDE_AUTHZ_VERIFIED": "N/A_LANGUAGE — language slice does not prove authz.",
+  "RLS_OR_DATA_ACCESS_VERIFIED": "INHERITED_I1_PARTIAL_READ_ONLY",
+  "AUDIT_LOG_VERIFIED": "N/A_LANGUAGE",
+  "REAL_DATA_SOURCE_VERIFIED": "N/A_LANGUAGE",
+  "E2E_ALLOWED_AND_DENIED_CASES": "PARTIAL — static novice-ui. Browser operator-language sweep NOT_PROVEN.",
+  "RAW_ARTIFACTS": [
+    "packages/ui/copy/ko/admin.ts",
+    "tooling/verify/admin-novice-ui.cjs",
+    "apps/admin/app/admin"
+  ],
+  "PLAN_TODO": "i-5-ux-language remains pending — STATUS is not CLOSED_VERIFIED",
+  "STATUS": "PARTIAL"
+}
