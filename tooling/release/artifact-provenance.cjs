@@ -69,6 +69,15 @@ function findPrebuiltEntry(prebuiltDir) {
     } catch {
       throw failClosed("FAIL_CLOSED:worker_prebuilt_entry_missing", "entry.json");
     }
+    if (meta.schema !== "release-worker-prebuilt.v1") {
+      throw failClosed("FAIL_CLOSED:worker_prebuilt_schema_mismatch", "entry.json");
+    }
+    if (meta.bundled_once !== true) {
+      throw failClosed("FAIL_CLOSED:worker_prebuilt_not_bundled_once", "entry.json");
+    }
+    if (meta.wrangler_no_upload !== true) {
+      throw failClosed("FAIL_CLOSED:worker_prebuilt_upload_guard_missing", "entry.json");
+    }
     const rel = String((meta && meta.entry) || "").replace(/\\/g, "/");
     if (!rel || rel.includes("..") || path.isAbsolute(rel)) {
       throw failClosed("FAIL_CLOSED:worker_prebuilt_entry_missing", "entry");
@@ -120,8 +129,32 @@ function collectApiArtifact(payloadAbs, expectedSourceSha) {
   const sourceSha = normalizeHex(api && api.source_sha);
   const wantSha = normalizeHex(expectedSourceSha);
   const digest = fileSha256(entryAbs);
+  if (api.schema !== "api-nest-artifact-manifest.v1") {
+    throw failClosed("FAIL_CLOSED:api_artifact_schema_mismatch");
+  }
   if (api.artifact_kind !== "api-nest") {
     throw failClosed("FAIL_CLOSED:api_artifact_kind_mismatch");
+  }
+  if (api.not_web_kind !== "web-open-next") {
+    throw failClosed("FAIL_CLOSED:api_artifact_web_kind_guard_missing");
+  }
+  if (api.deploy_forbidden_here !== true) {
+    throw failClosed("FAIL_CLOSED:api_artifact_deploy_guard_missing");
+  }
+  if (api.render_config_mutation !== 0) {
+    throw failClosed("FAIL_CLOSED:api_artifact_render_mutation_invalid");
+  }
+  if (api.registry !== "BLOCKED_EXTERNAL_ACTION") {
+    throw failClosed("FAIL_CLOSED:api_artifact_registry_state_invalid");
+  }
+  const acceptance = api.acceptance && typeof api.acceptance === "object" ? api.acceptance : null;
+  if (
+    !acceptance ||
+    acceptance.WEB_ARTIFACT_ACCEPTED !== false ||
+    acceptance.API_ARTIFACT_ACCEPTED !== false ||
+    acceptance.inequality !== "WEB_ARTIFACT_ACCEPTED != API_ARTIFACT_ACCEPTED"
+  ) {
+    throw failClosed("FAIL_CLOSED:api_artifact_acceptance_guard_invalid");
   }
   if (api.entry !== API_ENTRY) {
     throw failClosed("FAIL_CLOSED:api_artifact_entry_mismatch");
