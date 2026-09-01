@@ -92,8 +92,24 @@ if (artifactContract.successful_builds_pagination !== true) {
 
 const ARTIFACT_DIGEST = "c".repeat(64);
 function withQa(input) {
+  const engine_run =
+    input.engine_run ||
+    (input.event_name === "workflow_dispatch" && input.qa_phase === "full"
+      ? {
+          id: 123456789,
+          workflow: "engine-acceptance",
+          workflow_name_auxiliary: true,
+          path: ".github/workflows/engine-acceptance.yml",
+          head_sha: input.sha,
+          event: "workflow_dispatch",
+          qa_phase: "full",
+          qa_phase_proof: "full_job_signature",
+          status: "completed",
+        }
+      : undefined);
   return {
     ...input,
+    ...(engine_run ? { engine_run } : {}),
     artifact_qa: {
       verified: true,
       source_sha: input.sha,
@@ -147,6 +163,111 @@ check(
   ),
   "PASS",
 );
+
+const noEngineBinding = withQa({
+  sha: "a".repeat(40),
+  event_name: "workflow_dispatch",
+  qa_phase: "full",
+  jobs: successJobs,
+});
+delete noEngineBinding.engine_run;
+const noEngineVerdict = evaluateVerdict(noEngineBinding, contract);
+if (
+  noEngineVerdict.verdict !== "FAIL" ||
+  !noEngineVerdict.fails.includes("engine_run_binding_missing")
+) {
+  fail("Production release without bound Engine run must FAIL");
+}
+
+const wrongVerdictEnginePath = withQa({
+  sha: "a".repeat(40),
+  event_name: "workflow_dispatch",
+  qa_phase: "full",
+  jobs: successJobs,
+});
+wrongVerdictEnginePath.engine_run.path = ".github/workflows/gate.yml";
+const wrongPathVerdict = evaluateVerdict(wrongVerdictEnginePath, contract);
+if (
+  wrongPathVerdict.verdict !== "FAIL" ||
+  !wrongPathVerdict.fails.includes("engine_run_workflow_path_mismatch")
+) {
+  fail("Production verdict must reject wrong Engine workflow path");
+}
+
+const unprovenVerdictPhase = withQa({
+  sha: "a".repeat(40),
+  event_name: "workflow_dispatch",
+  qa_phase: "full",
+  jobs: successJobs,
+});
+unprovenVerdictPhase.engine_run.qa_phase_proof = "caller_claim";
+const unprovenPhaseVerdict = evaluateVerdict(unprovenVerdictPhase, contract);
+if (
+  unprovenPhaseVerdict.verdict !== "FAIL" ||
+  !unprovenPhaseVerdict.fails.includes("engine_run_phase_proof_invalid")
+) {
+  fail("Production verdict must reject unproven Engine full phase");
+}
+
+const shortEngineHead = withQa({
+  sha: "a".repeat(40),
+  event_name: "workflow_dispatch",
+  qa_phase: "full",
+  jobs: successJobs,
+});
+shortEngineHead.engine_run.head_sha = "deadbeef";
+const shortHeadVerdict = evaluateVerdict(shortEngineHead, contract);
+if (
+  shortHeadVerdict.verdict !== "FAIL" ||
+  !shortHeadVerdict.fails.includes("engine_run_head_sha_invalid")
+) {
+  fail("Production verdict must reject short Engine head SHA");
+}
+
+const wrongEngineEvent = withQa({
+  sha: "a".repeat(40),
+  event_name: "workflow_dispatch",
+  qa_phase: "full",
+  jobs: successJobs,
+});
+wrongEngineEvent.engine_run.event = "";
+const wrongEventVerdict = evaluateVerdict(wrongEngineEvent, contract);
+if (
+  wrongEventVerdict.verdict !== "FAIL" ||
+  !wrongEventVerdict.fails.includes("engine_run_event_invalid")
+) {
+  fail("Production verdict must reject Engine run without workflow_dispatch");
+}
+
+const incompleteEngine = withQa({
+  sha: "a".repeat(40),
+  event_name: "workflow_dispatch",
+  qa_phase: "full",
+  jobs: successJobs,
+});
+incompleteEngine.engine_run.status = "in_progress";
+const incompleteVerdict = evaluateVerdict(incompleteEngine, contract);
+if (
+  incompleteVerdict.verdict !== "FAIL" ||
+  !incompleteVerdict.fails.includes("engine_run_status_invalid")
+) {
+  fail("Production verdict must reject incomplete Engine run");
+}
+
+const nameOnlyAuthority = withQa({
+  sha: "a".repeat(40),
+  event_name: "workflow_dispatch",
+  qa_phase: "full",
+  jobs: successJobs,
+});
+nameOnlyAuthority.engine_run.workflow_name_auxiliary = false;
+const nameOnlyVerdict = evaluateVerdict(nameOnlyAuthority, contract);
+if (
+  nameOnlyVerdict.verdict !== "FAIL" ||
+  !nameOnlyVerdict.fails.includes("engine_run_path_authority_unproven")
+) {
+  fail("Production verdict must require path authority over workflow name");
+}
 
 check(
   "full_without_artifact_qa",
