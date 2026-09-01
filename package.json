@@ -91,6 +91,7 @@
     "verify:rel-506-r8-infra-core": "node tooling/verify/rel-506-r8-infra-core.cjs",
     "verify:rel-507-production-e2e": "node tooling/verify/rel-507-production-e2e.cjs",
     "verify:rel-600-staging": "node tooling/verify/rel-600-staging.cjs",
+    "verify:staging-db-hardening": "node tooling/verify/staging-db-hardening.cjs",
     "verify:rel-601-staging-regression": "node tooling/verify/rel-601-staging-regression.cjs",
     "verify:rel-602-staging-rollback": "node tooling/verify/rel-602-staging-rollback.cjs",
     "verify:rel-603-age-usability-spotcheck": "node tooling/verify/rel-603-age-usability-spotcheck.cjs",
