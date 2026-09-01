@@ -9,6 +9,7 @@ import {
   WEBAUTHN_CHALLENGE_TTL_MS,
   exportSpkiDer,
   hashProofSecret,
+  hasWebauthnUserPresence,
   parseAuthenticatorData,
   parseClientDataJSON,
   randomProofSecret,
@@ -114,8 +115,14 @@ export class WebauthnAssertService {
     if (clientData.origin !== this.rp.origin) {
       throw new BadRequestException("webauthn origin mismatch");
     }
+    if (clientData.crossOrigin) {
+      throw new BadRequestException("webauthn cross-origin ceremony forbidden");
+    }
     if (!verifyRpIdHash(authData, this.rp.rpId)) {
       throw new BadRequestException("webauthn rpId mismatch");
+    }
+    if (!hasWebauthnUserPresence(authData)) {
+      throw new BadRequestException("webauthn user presence required");
     }
 
     const consumed = await this.store.consumeAtomic(
