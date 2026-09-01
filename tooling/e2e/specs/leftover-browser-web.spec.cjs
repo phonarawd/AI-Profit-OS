@@ -402,12 +402,18 @@ test("ticket95 latest intent B remains after late A", async ({ page }) => {
     "ready",
   );
   await page.locator("[data-font-scale-option='lg']").click();
+  await expect.poll(() => puts, { timeout: 5000 }).toBe(1);
+  expect(bodies[0]?.fontScale).toBe("lg");
+
+  // Prove a real late-A/latest-B race: B is submitted only after A is
+  // already in flight and blocked by the route handler above.
   await page.locator("[data-font-scale-option='xl']").click();
   releaseA();
+
   await expect(page.locator("[data-font-scale-confirmed='true']")).toHaveAttribute(
     "data-font-scale-option",
     "xl",
   );
-  expect(puts).toBeGreaterThanOrEqual(2);
-  expect(bodies[bodies.length - 1].fontScale).toBe("xl");
+  expect(puts).toBe(2);
+  expect(bodies[1]?.fontScale).toBe("xl");
 });
