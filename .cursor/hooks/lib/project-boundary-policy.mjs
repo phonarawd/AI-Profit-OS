@@ -114,12 +114,20 @@ function forceAddSecrets(cmd) {
   );
 }
 
+function isWindowsAbs(p) {
+  return /^[A-Za-z]:[\\/]/.test(String(p || ""));
+}
+
 function normPath(p) {
   if (!p) return "";
+  const s = String(p);
+  if (isWindowsAbs(s)) {
+    return s.replace(/\//g, "\\");
+  }
   try {
-    return path.resolve(String(p));
+    return path.resolve(s);
   } catch {
-    return String(p);
+    return s;
   }
 }
 
@@ -131,6 +139,9 @@ function isUnder(absPath, root) {
   const a = lower(normPath(absPath));
   const r = lower(normPath(root));
   if (!a || !r) return false;
+  const aWin = /^[a-z]:[\\/]/.test(a);
+  const rWin = /^[a-z]:[\\/]/.test(r);
+  if (aWin !== rWin) return false;
   return (
     a === r ||
     a.startsWith(r + path.sep.toLowerCase()) ||
@@ -197,14 +208,17 @@ export function createPolicy(opts = {}) {
     opts.workspaceRoot || DEFAULT_WORKSPACE_ROOT
   );
   const home = homeDir(opts);
-  const globalPlansRoot = home
-    ? path.resolve(home, ".cursor", "plans")
-    : "";
+  const joinHome = (...parts) => {
+    if (!home) return "";
+    if (isWindowsAbs(home)) {
+      return [String(home).replace(/[\\/]+$/, ""), ...parts].join("\\");
+    }
+    return path.resolve(home, ...parts);
+  };
+  const globalPlansRoot = home ? joinHome(".cursor", "plans") : "";
   const projectSlugs = cursorProjectSlugs(workspaceRoot);
   const allowedProjectCaches = home
-    ? projectSlugs.map((slug) =>
-        path.resolve(home, ".cursor", "projects", slug)
-      )
+    ? projectSlugs.map((slug) => joinHome(".cursor", "projects", slug))
     : [];
   const allowedProjectCache = allowedProjectCaches[0] || "";
   const repoPlansRoot = path.resolve(workspaceRoot, ".cursor", "plans");
