@@ -1,0 +1,45 @@
+name: gpt-render-rollback-plan-ci
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/render-rollback-provenance-649368a
+    paths:
+      - ".github/workflows/gpt-render-rollback-plan-ci.yml"
+      - "tooling/release/render-rollback-plan.cjs"
+      - "tooling/verify/render-rollback-provenance.cjs"
+      - "tooling/release/render-api-promotion-readiness.cjs"
+      - "tooling/verify/render-api-promotion-readiness.cjs"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+      - name: Verify exact rollback provenance planner
+        run: node tooling/verify/render-rollback-provenance.cjs
+      - name: Verify Render API promotion readiness
+        run: node tooling/verify/render-api-promotion-readiness.cjs
+      - name: Verify CLI emits mutation-free plan
+        run: |
+          set -euo pipefail
+          node tooling/release/render-rollback-plan.cjs \
+            --service-id srv-example123 \
+            --live-deploy-id dep-live123 \
+            --live-source-sha aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa \
+            --target-deploy-id dep-target456 \
+            --target-source-sha bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb \
+            --out _tmp/render-rollback-plan.json
+          node - <<'NODE'
+          const p = require("./_tmp/render-rollback-plan.json");
+          if (p.mutation !== 0 || p.apply !== false) process.exit(2);
+          if (p.rollback_execution !== "BLOCKED_FOUNDER_ACTION") process.exit(3);
+          console.log("[gpt-render-rollback-plan-ci] REMOTE_STATIC_PASS");
+          NODE
