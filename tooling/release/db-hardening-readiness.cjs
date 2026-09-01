@@ -15,6 +15,7 @@ const EXPECTED = Object.freeze({
     rls_forced: false,
     service_role: ["INSERT", "SELECT"],
     policies: [],
+    required_triggers: ["admin_audit_events_forbid_truncate"],
   },
   push_control: {
     rls_enabled: true,
@@ -24,6 +25,7 @@ const EXPECTED = Object.freeze({
       { name: "push_control_deny_anon", roles: ["anon"], cmd: "ALL", qual: "false", with_check: "false" },
       { name: "push_control_deny_authenticated", roles: ["authenticated"], cmd: "ALL", qual: "false", with_check: "false" },
     ],
+    required_triggers: [],
   },
   push_subscriptions: {
     rls_enabled: true,
@@ -33,6 +35,7 @@ const EXPECTED = Object.freeze({
       { name: "push_subscriptions_deny_anon", roles: ["anon"], cmd: "ALL", qual: "false", with_check: "false" },
       { name: "push_subscriptions_deny_authenticated", roles: ["authenticated"], cmd: "ALL", qual: "false", with_check: "false" },
     ],
+    required_triggers: [],
   },
 });
 
@@ -46,9 +49,34 @@ select jsonb_build_object(
       'rls_enabled', c.relrowsecurity,
       'rls_forced', c.relforcerowsecurity,
       'service_role', coalesce(priv.privileges, '[]'::jsonb),
-      'policies', coalesce(pol.policies, '[]'::jsonb)
+      'policies', coalesce(pol.policies, '[]'::jsonb),
+      'forbidden_grants', coalesce(forbidden.grants, '[]'::jsonb),
+      'triggers', coalesce(trg.triggers, '[]'::jsonb)
     )
-  )
+  ),
+  'default_acl_forbidden',
+  coalesce((
+    select jsonb_agg(
+      jsonb_build_object(
+        'owner', owner_role.rolname,
+        'grantee', coalesce(grantee_role.rolname, 'public'),
+        'privilege_type', acl.privilege_type
+      )
+      order by owner_role.rolname, coalesce(grantee_role.rolname, 'public'), acl.privilege_type
+    )
+    from pg_default_acl d
+    join pg_roles owner_role on owner_role.oid = d.defaclrole
+    join pg_namespace dns on dns.oid = d.defaclnamespace
+    cross join lateral aclexplode(d.defaclacl) acl
+    left join pg_roles grantee_role on grantee_role.oid = acl.grantee
+    where dns.nspname='public'
+      and d.defaclobjtype='r'
+      and owner_role.rolname in ('postgres','supabase_admin')
+      and (
+        acl.grantee = 0
+        or grantee_role.rolname in ('anon','authenticated')
+      )
+  ), '[]'::jsonb)
 )
 from pg_class c
 join pg_namespace n on n.oid = c.relnamespace
@@ -74,6 +102,25 @@ left join lateral (
   where p.schemaname='public'
     and p.tablename=c.relname
 ) pol on true
+left join lateral (
+  select jsonb_agg(
+    jsonb_build_object(
+      'grantee', lower(g.grantee),
+      'privilege_type', g.privilege_type
+    )
+    order by lower(g.grantee), g.privilege_type
+  ) as grants
+  from information_schema.table_privileges g
+  where g.table_schema='public'
+    and g.table_name=c.relname
+    and lower(g.grantee) in ('public','anon','authenticated')
+) forbidden on true
+left join lateral (
+  select jsonb_agg(t.tgname order by t.tgname) as triggers
+  from pg_trigger t
+  where t.tgrelid=c.oid
+    and not t.tgisinternal
+) trg on true
 where n.nspname='public'
   and c.relkind='r'
   and c.relname in ('admin_audit_events','push_control','push_subscriptions');
@@ -176,6 +223,37 @@ function compareSnapshot(snapshot) {
           actualPolicies.join(";"),
       );
     }
+
+    if (!Array.isArray(got.forbidden_grants)) {
+      fails.push("forbidden_grant_evidence_missing:" + table);
+    } else if (got.forbidden_grants.length > 0) {
+      fails.push(
+        "forbidden_table_grant:" +
+          table +
+          ":" +
+          JSON.stringify(got.forbidden_grants),
+      );
+    }
+
+    if (!Array.isArray(got.triggers)) {
+      fails.push("trigger_evidence_missing:" + table);
+    } else {
+      const triggers = new Set(got.triggers.map(String));
+      for (const required of expected.required_triggers || []) {
+        if (!triggers.has(required)) {
+          fails.push("required_trigger_missing:" + table + ":" + required);
+        }
+      }
+    }
+  }
+
+  if (!snapshot || !Array.isArray(snapshot.default_acl_forbidden)) {
+    fails.push("default_acl_evidence_missing");
+  } else if (snapshot.default_acl_forbidden.length > 0) {
+    fails.push(
+      "default_acl_forbidden_grant:" +
+        JSON.stringify(snapshot.default_acl_forbidden),
+    );
   }
 
   return {
