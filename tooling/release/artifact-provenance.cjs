@@ -272,6 +272,23 @@ function verifyBundle(bundleDir, expected) {
     if (err && err.code === "FAIL_CLOSED") throw err;
     throw failClosed("FAIL_CLOSED:digest_missing");
   }
+  if (manifest.schema !== SCHEMA) fails.push("FAIL_CLOSED:manifest_schema_mismatch");
+  if (manifest.artifact_name !== ARTIFACT_NAME) {
+    fails.push("FAIL_CLOSED:manifest_artifact_name_mismatch");
+  }
+  if (manifest.digest_alg !== "sha256") {
+    fails.push("FAIL_CLOSED:manifest_digest_alg_mismatch");
+  }
+  if (manifest.rebuild_forbidden_at_deploy !== true) {
+    fails.push("FAIL_CLOSED:manifest_rebuild_guard_missing");
+  }
+  if (manifest.worker_prebuilt !== true) {
+    fails.push("FAIL_CLOSED:manifest_worker_prebuilt_missing");
+  }
+  if (manifest.worker_deploy_no_bundle !== true) {
+    fails.push("FAIL_CLOSED:manifest_worker_no_bundle_missing");
+  }
+
   const digest = canonicalDigest(payload);
   const manDigest = normalizeHex(manifest.artifact_digest);
   if (!isSha256(manDigest)) fails.push("FAIL_CLOSED:digest_missing");
