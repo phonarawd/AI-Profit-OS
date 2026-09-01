@@ -147,7 +147,6 @@ export class ChainWatcherPhase0Service {
         toAddress: parsed.toAddress,
         amountUsdt: parsed.amountUsdt,
         confirmations: parsed.confirmations,
-        userId,
       });
       processed += 1;
     }
