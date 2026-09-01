@@ -100,7 +100,9 @@ function evaluateStagingTopology(snapshot) {
     const branch = String(stageRender.branch || "").trim();
     if (!branch) blockers.push("render_staging_branch_missing");
     if (branch === "main") blockers.push("render_staging_tracks_main");
-    if (stageRender.kind && stageRender.kind !== "web_service") {
+    if (!nonEmpty(stageRender.kind)) {
+      blockers.push("render_staging_kind_missing");
+    } else if (stageRender.kind !== "web_service") {
       blockers.push("render_staging_not_web_service");
     }
   }

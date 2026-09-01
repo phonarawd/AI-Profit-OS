@@ -126,6 +126,84 @@ got = evaluateStagingTopology({
     ...READY.staging,
     render: {
       ...READY.staging.render,
+      environment_id: READY.production.render.environment_id,
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("render_staging_reuses_production_environment"));
+
+got = evaluateStagingTopology({
+  ...READY,
+  staging: {
+    ...READY.staging,
+    render: {
+      ...READY.staging.render,
+      url: READY.production.render.url,
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("render_staging_reuses_production_url"));
+
+got = evaluateStagingTopology({
+  ...READY,
+  staging: {
+    ...READY.staging,
+    render: {
+      ...READY.staging.render,
+      kind: "",
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("render_staging_kind_missing"));
+
+got = evaluateStagingTopology({
+  ...READY,
+  staging: {
+    ...READY.staging,
+    render: {
+      ...READY.staging.render,
+      kind: "static_site",
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("render_staging_not_web_service"));
+
+got = evaluateStagingTopology({
+  ...READY,
+  staging: {
+    ...READY.staging,
+    render: {
+      ...READY.staging.render,
+      supabase_project_ref: "otherref1234567",
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("render_staging_db_binding_mismatch"));
+
+got = evaluateStagingTopology({
+  ...READY,
+  staging: {
+    ...READY.staging,
+    supabase: {
+      ...READY.staging.supabase,
+      project_ref: "",
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("supabase_staging_ref_missing"));
+
+got = evaluateStagingTopology({
+  ...READY,
+  staging: {
+    ...READY.staging,
+    render: {
+      ...READY.staging.render,
       supabase_project_ref: "",
     },
   },
