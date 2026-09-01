@@ -25,7 +25,16 @@ const catalog = read("tooling/verify/CATALOG.md");
 const domain = read("tooling/verify/domain-by-path.cjs");
 
 if (!web.includes("LEFTOVER_BROWSER")) fails.push("web spec must gate LEFTOVER_BROWSER");
+if (!web.includes("expect(keys.size).toBe(1)") || web.includes("keys.size <= 1")) {
+  fails.push("ticket93 must require exactly one non-empty idempotency identity");
+}
+if (!web.includes("ticket95 latest intent") || !web.includes("late A")) {
+  fails.push("ticket95 must prove latest intent B after late A");
+}
 if (!admin.includes("LEFTOVER_BROWSER")) fails.push("admin spec must gate LEFTOVER_BROWSER");
+if (!admin.includes("ticketI5 beginner language")) {
+  fails.push("ticketI5 must sweep beginner language on operator surfaces");
+}
 if (!web.includes("ensureLocalWebRuntime")) fails.push("web spec must use local web runtime");
 if (!admin.includes("ensureLocalAdminRuntime")) fails.push("admin spec must use local admin runtime");
 if (/hiptk\.app|pages\.dev|ai-profit-os\.onrender\.com/.test(web + admin)) {

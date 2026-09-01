@@ -224,6 +224,32 @@ test("ticketI3 AI console preview masks mailbox-like leftover", async ({ page })
 });
 
 
+test("ticketI5 beginner language stays off operator surfaces", async ({ page }) => {
+  test.skip(!ENABLED, "LEFTOVER_BROWSER=1");
+  const banned = [
+    "JWT",
+    "KYC",
+    "SSE",
+    "GitHub",
+    "Supabase",
+    "workflow",
+    "pipeline",
+    "acceptance",
+    "CI/CD",
+    "E2E",
+  ];
+  for (const path of ["/admin", "/admin/system-control", "/admin/ai-logs"]) {
+    await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
+    await stubAdminCommon(page, { connected: true });
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await page.goto(runtime.baseUrl + path, { waitUntil: "domcontentloaded" });
+    const text = await page.locator("body").innerText();
+    for (const term of banned) {
+      expect(text.includes(term), path + " " + term).toBe(false);
+    }
+  }
+});
+
 test("ticketI4 release readout never paints service reflection complete", async ({ page }) => {
   test.skip(!ENABLED, "LEFTOVER_BROWSER=1");
   await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});

@@ -112,7 +112,10 @@ test("ticket93 double-click withdraw posts once and stays uncredited", async ({ 
     "false",
   );
   expect(posts).toBe(1);
-  expect(keys.size <= 1).toBeTruthy();
+  expect(keys.size).toBe(1);
+  const idem = [...keys][0];
+  expect(typeof idem).toBe("string");
+  expect(String(idem).trim().length).toBeGreaterThan(0);
 });
 
 test("ticket67 KRW safe instructions at leftover viewports", async ({ page }) => {
@@ -346,4 +349,65 @@ test("official AXE_SCAN_TARGETS browser sweep", async ({ page }) => {
     const blocking = blockingViolations(results).filter((v) => !allow.has(v.id));
     expect(blocking, target.name + " a11y").toEqual([]);
   }
+});
+
+test("ticket95 latest intent B remains after late A", async ({ page }) => {
+  test.skip(!ENABLED, "LEFTOVER_BROWSER=1");
+  const { stubSettings } = require("../lib/account-route-stubs.cjs");
+  let stored = {
+    userId: "qa-account-user",
+    toneBand: "mid",
+    fontScale: "md",
+    depositPref: "usdt",
+    updatedAt: "2026-08-21T00:00:00.000Z",
+  };
+  let releaseA;
+  const first = new Promise((resolve) => {
+    releaseA = resolve;
+  });
+  let puts = 0;
+  const bodies = [];
+  await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
+  await stubSettings(page, "ready");
+  await page.route("**/api/v1/me/ux-prefs**", async (route) => {
+    if (route.request().method() !== "PUT") {
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(stored),
+      });
+    }
+    puts += 1;
+    const body = route.request().postDataJSON() || {};
+    bodies.push(body);
+    if (puts === 1) {
+      await first;
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ...stored, ...body, fontScale: "lg" }),
+      });
+    }
+    stored = { ...stored, ...body };
+    return route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(stored),
+    });
+  });
+  await page.setViewportSize({ width: 1440, height: 1080 });
+  await page.goto(runtime.baseUrl + "/me/settings", { waitUntil: "load" });
+  await expect(page.getByTestId("settings-panel")).toHaveAttribute(
+    "data-ux-prefs-view",
+    "ready",
+  );
+  await page.locator("[data-font-scale-option='lg']").click();
+  await page.locator("[data-font-scale-option='xl']").click();
+  releaseA();
+  await expect(page.locator("[data-font-scale-confirmed='true']")).toHaveAttribute(
+    "data-font-scale-option",
+    "xl",
+  );
+  expect(puts).toBeGreaterThanOrEqual(2);
+  expect(bodies[bodies.length - 1].fontScale).toBe("xl");
 });
