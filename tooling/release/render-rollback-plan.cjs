@@ -10,6 +10,8 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
+const CANONICAL_PRODUCTION_SERVICE_ID = "srv-da5r1tqjobas73fl16dg";
+
 function isFullSha(value) {
   return /^[0-9a-f]{40}$/i.test(String(value || ""));
 }
@@ -50,6 +52,9 @@ function fail(code) {
 
 function buildPlan(input) {
   if (!isRenderServiceId(input.serviceId)) fail("render_service_id_invalid");
+  if (input.serviceId !== CANONICAL_PRODUCTION_SERVICE_ID) {
+    fail("render_service_not_canonical_production");
+  }
   if (!isRenderDeployId(input.liveDeployId)) fail("live_deploy_id_invalid");
   if (!isRenderDeployId(input.targetDeployId)) fail("target_deploy_id_invalid");
   if (!isFullSha(input.liveSourceSha)) fail("live_source_sha_invalid");
@@ -117,4 +122,5 @@ module.exports = {
   parseArgs,
   buildPlan,
   writePlan,
+  CANONICAL_PRODUCTION_SERVICE_ID,
 };

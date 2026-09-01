@@ -1,0 +1,29 @@
+name: gpt-render-production-identity-lock
+
+on:
+  pull_request:
+    paths:
+      - "tooling/release/render-api-promotion-readiness.cjs"
+      - "tooling/verify/render-api-promotion-readiness.cjs"
+      - "tooling/release/render-rollback-plan.cjs"
+      - "tooling/verify/render-rollback-provenance.cjs"
+      - ".github/workflows/gpt-render-production-identity-lock-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - name: Setup Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: "22.14.0"
+      - name: Verify canonical Render Production identity lock
+        run: node tooling/verify/render-api-promotion-readiness.cjs
+      - name: Verify canonical Render rollback identity lock
+        run: node tooling/verify/render-rollback-provenance.cjs

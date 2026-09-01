@@ -45,6 +45,18 @@ assert.equal(plan.target.source_sha, TARGET);
 assert.throws(
   () =>
     buildPlan({
+      serviceId: "srv-other123",
+      liveDeployId: "dep-live123",
+      liveSourceSha: LIVE,
+      targetDeployId: "dep-target456",
+      targetSourceSha: TARGET,
+    }),
+  /FAIL_CLOSED:render_service_not_canonical_production/,
+);
+
+assert.throws(
+  () =>
+    buildPlan({
       serviceId: "srv-da5r1tqjobas73fl16dg",
       liveDeployId: "dep-same",
       liveSourceSha: LIVE,
