@@ -279,6 +279,7 @@
     "verify:release-acceptance": "node tooling/verify/release-acceptance.cjs",
     "verify:fetch-acceptance-artifact": "node tooling/verify/fetch-acceptance-artifact.cjs",
     "verify:require-accepted-sha": "node tooling/verify/require-accepted-sha.cjs",
+    "verify:release-fetch-deploy-hardening": "node tooling/verify/release-fetch-deploy-hardening.cjs",
     "verify:workflow-action-pin": "node tooling/verify/workflow-action-pin.cjs",
     "verify:qa-env-isolation-guard": "node tooling/verify/qa-env-isolation-guard.cjs",
     "verify:money-unavailable": "node tooling/verify/money-unavailable.cjs",

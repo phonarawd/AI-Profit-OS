@@ -109,6 +109,7 @@ const RULES = [
       /^tooling\/verify\/release-acceptance\.cjs$/.test(f) ||
       /^tooling\/verify\/fetch-acceptance-artifact\.cjs$/.test(f) ||
       /^tooling\/verify\/require-accepted-sha\.cjs$/.test(f) ||
+      /^tooling\/verify\/release-fetch-deploy-hardening\.cjs$/.test(f) ||
       /^\.github\/workflows\/release-acceptance\.yml$/.test(f) ||
       /^\.github\/workflows\/release-build\.yml$/.test(f) ||
       /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
@@ -120,6 +121,7 @@ const RULES = [
       "api-artifact-runtime-qa.cjs",
       "fetch-acceptance-artifact.cjs",
       "require-accepted-sha.cjs",
+      "release-fetch-deploy-hardening.cjs",
     ],
   },
   {
