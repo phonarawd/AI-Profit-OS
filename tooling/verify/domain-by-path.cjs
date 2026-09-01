@@ -103,13 +103,17 @@ const RULES = [
     test: (f) =>
       /^governance\/release-master\/release-acceptance\.v1\.json$/.test(f) ||
       /^governance\/release-master\/release-artifact\.v1\.json$/.test(f) ||
-      /^tooling\/release\/(release-acceptance-verdict|collect-engine-jobs|require-accepted-sha|fetch-acceptance-artifact|fetch-release-bundle|artifact-provenance|build-once-artifact|bind-qa-artifact|deploy-from-artifact|artifact-runtime-qa|api-artifact-runtime-qa|api-artifact-provenance|prebuild-workers)\.cjs$/.test(
+      /^tooling\/release\/(release-acceptance-verdict|collect-engine-jobs|require-accepted-sha|fetch-acceptance-artifact|fetch-release-bundle|artifact-provenance|build-once-artifact|bind-qa-artifact|deploy-from-artifact|artifact-runtime-qa|api-artifact-runtime-qa|api-artifact-provenance|prebuild-workers|render-rollback-plan|render-api-promotion-readiness|db-hardening-readiness)\.cjs$/.test(
         f,
       ) ||
       /^tooling\/verify\/release-acceptance\.cjs$/.test(f) ||
       /^tooling\/verify\/fetch-acceptance-artifact\.cjs$/.test(f) ||
       /^tooling\/verify\/require-accepted-sha\.cjs$/.test(f) ||
       /^tooling\/verify\/release-fetch-deploy-hardening\.cjs$/.test(f) ||
+      /^tooling\/verify\/render-rollback-provenance\.cjs$/.test(f) ||
+      /^tooling\/verify\/render-api-promotion-readiness\.cjs$/.test(f) ||
+      /^tooling\/verify\/db-hardening-readiness\.cjs$/.test(f) ||
+      /^supabase\/staging\/20260901120/.test(f) ||
       /^\.github\/workflows\/release-acceptance\.yml$/.test(f) ||
       /^\.github\/workflows\/release-build\.yml$/.test(f) ||
       /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
@@ -122,6 +126,9 @@ const RULES = [
       "fetch-acceptance-artifact.cjs",
       "require-accepted-sha.cjs",
       "release-fetch-deploy-hardening.cjs",
+      "render-rollback-provenance.cjs",
+      "render-api-promotion-readiness.cjs",
+      "db-hardening-readiness.cjs",
     ],
   },
   {
