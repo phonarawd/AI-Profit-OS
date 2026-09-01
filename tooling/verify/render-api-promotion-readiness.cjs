@@ -10,6 +10,11 @@ const ACCEPTED = "a".repeat(40);
 const OLD = "b".repeat(40);
 const SERVICE = {
   id: "srv-da5r1tqjobas73fl16dg",
+  environmentId: "evm-da5r1tjbc2fs73a0b7hg",
+  name: "AI-Profit-OS",
+  repo: "https://github.com/phonarawd/AI-Profit-OS",
+  url: "https://ai-profit-os.onrender.com",
+  type: "web_service",
   branch: "main",
   autoDeploy: "no",
 };
@@ -45,6 +50,38 @@ got = evaluatePromotionReadiness({
 });
 assert.equal(got.ready, false);
 assert.ok(got.blockers.includes("service_branch_not_main"));
+
+got = evaluatePromotionReadiness({
+  mode: "preflight",
+  accepted_sha: ACCEPTED,
+  service: { ...SERVICE, id: "srv-other123" },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("service_id_not_canonical_production"));
+
+got = evaluatePromotionReadiness({
+  mode: "preflight",
+  accepted_sha: ACCEPTED,
+  service: { ...SERVICE, environmentId: "evm-other123" },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("service_environment_not_canonical_production"));
+
+got = evaluatePromotionReadiness({
+  mode: "preflight",
+  accepted_sha: ACCEPTED,
+  service: { ...SERVICE, repo: "https://github.com/phonarawd/not-production" },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("service_repo_not_canonical_production"));
+
+got = evaluatePromotionReadiness({
+  mode: "preflight",
+  accepted_sha: ACCEPTED,
+  service: { ...SERVICE, url: "https://another-service.onrender.com" },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("service_url_not_canonical_production"));
 
 got = evaluatePromotionReadiness({
   mode: "postflight",
@@ -90,8 +127,7 @@ const currentProductionLike = evaluatePromotionReadiness({
   mode: "postflight",
   accepted_sha: "9af5781689c72d082c839b5a1366c1da9154774a",
   service: {
-    id: "srv-da5r1tqjobas73fl16dg",
-    branch: "main",
+    ...SERVICE,
     autoDeploy: "yes",
   },
   live_deploy: {
