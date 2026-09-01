@@ -94,8 +94,8 @@ if (!acl.includes("ALTER DEFAULT PRIVILEGES FOR ROLE postgres")) {
 if (!acl.includes("ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin")) {
   fails.push("default ACL SQL must cover supabase_admin-owned future public objects");
 }
-if (!acl.includes("REVOKE ALL ON TABLES FROM anon, authenticated")) {
-  fails.push("default ACL SQL must revoke anon/authenticated defaults");
+if (!acl.includes("REVOKE ALL ON TABLES FROM PUBLIC, anon, authenticated")) {
+  fails.push("default ACL SQL must revoke PUBLIC/anon/authenticated defaults");
 }
 
 if (fs.existsSync(path.join(root, "supabase/migrations/20260901120000_admin_audit_append_only.sql"))) {

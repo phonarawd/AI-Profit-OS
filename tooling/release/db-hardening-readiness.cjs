@@ -38,9 +38,8 @@ const EXPECTED = Object.freeze({
 
 function snapshotSql() {
   return `
-select jsonb_build_object(
-  'tables',
-  jsonb_object_agg(
+with table_state as (
+  select jsonb_object_agg(
     c.relname,
     jsonb_build_object(
       'rls_enabled', c.relrowsecurity,
@@ -48,35 +47,62 @@ select jsonb_build_object(
       'service_role', coalesce(priv.privileges, '[]'::jsonb),
       'policies', coalesce(pol.policies, '[]'::jsonb)
     )
-  )
+  ) as tables
+  from pg_class c
+  join pg_namespace n on n.oid = c.relnamespace
+  left join lateral (
+    select jsonb_agg(g.privilege_type order by g.privilege_type) as privileges
+    from information_schema.role_table_grants g
+    where g.table_schema='public'
+      and g.table_name=c.relname
+      and g.grantee='service_role'
+  ) priv on true
+  left join lateral (
+    select jsonb_agg(
+      jsonb_build_object(
+        'name', p.policyname,
+        'roles', to_jsonb(p.roles),
+        'cmd', p.cmd,
+        'qual', p.qual,
+        'with_check', p.with_check
+      )
+      order by p.policyname
+    ) as policies
+    from pg_policies p
+    where p.schemaname='public'
+      and p.tablename=c.relname
+  ) pol on true
+  where n.nspname='public'
+    and c.relkind='r'
+    and c.relname in ('admin_audit_events','push_control','push_subscriptions')
+),
+default_acl_state as (
+  select coalesce(
+    jsonb_object_agg(owner, to_jsonb(grantees)),
+    '{}'::jsonb
+  ) as default_acl_public_tables
+  from (
+    select
+      pg_get_userbyid(d.defaclrole) as owner,
+      array_agg(
+        distinct case when x.grantee = 0 then 'PUBLIC' else pg_get_userbyid(x.grantee) end
+        order by case when x.grantee = 0 then 'PUBLIC' else pg_get_userbyid(x.grantee) end
+      ) as grantees
+    from pg_default_acl d
+    join pg_namespace n on n.oid = d.defaclnamespace
+    cross join lateral aclexplode(d.defaclacl) x
+    where n.nspname='public'
+      and d.defaclobjtype='r'
+    group by d.defaclrole
+  ) q
 )
-from pg_class c
-join pg_namespace n on n.oid = c.relnamespace
-left join lateral (
-  select jsonb_agg(g.privilege_type order by g.privilege_type) as privileges
-  from information_schema.role_table_grants g
-  where g.table_schema='public'
-    and g.table_name=c.relname
-    and g.grantee='service_role'
-) priv on true
-left join lateral (
-  select jsonb_agg(
-    jsonb_build_object(
-      'name', p.policyname,
-      'roles', to_jsonb(p.roles),
-      'cmd', p.cmd,
-      'qual', p.qual,
-      'with_check', p.with_check
-    )
-    order by p.policyname
-  ) as policies
-  from pg_policies p
-  where p.schemaname='public'
-    and p.tablename=c.relname
-) pol on true
-where n.nspname='public'
-  and c.relkind='r'
-  and c.relname in ('admin_audit_events','push_control','push_subscriptions');
+select jsonb_build_object(
+  'tables', coalesce((select tables from table_state), '{}'::jsonb),
+  'default_acl_public_tables', coalesce(
+    (select default_acl_public_tables from default_acl_state),
+    '{}'::jsonb
+  )
+);
 `.trim();
 }
 
@@ -180,6 +206,26 @@ function compareSnapshot(snapshot) {
           ":got=" +
           actualPolicies.join(";"),
       );
+    }
+  }
+
+  const defaultAcl =
+    snapshot &&
+    typeof snapshot === "object" &&
+    snapshot.default_acl_public_tables &&
+    typeof snapshot.default_acl_public_tables === "object"
+      ? snapshot.default_acl_public_tables
+      : null;
+  if (!defaultAcl) {
+    fails.push("default_acl_snapshot_missing");
+  } else {
+    for (const owner of ["postgres", "supabase_admin"]) {
+      const grantees = sortedUnique(defaultAcl[owner]);
+      for (const banned of ["PUBLIC", "anon", "authenticated"]) {
+        if (grantees.includes(banned)) {
+          fails.push("forbidden_default_acl_grantee:" + owner + ":" + banned);
+        }
+      }
     }
   }
 

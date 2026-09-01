@@ -6,6 +6,6 @@
 -- Future public objects created by supabase_admin inherit anon/authenticated ALL.
 
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public
-  REVOKE ALL ON TABLES FROM anon, authenticated;
+  REVOKE ALL ON TABLES FROM PUBLIC, anon, authenticated;
 ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public
-  REVOKE ALL ON TABLES FROM anon, authenticated;
+  REVOKE ALL ON TABLES FROM PUBLIC, anon, authenticated;
