@@ -1,0 +1,24 @@
+name: gpt-withdraw-origin-security-ci
+permissions:
+  contents: read
+on:
+  push:
+    branches: [gpt/security-origin-normalize-72ca41f]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996
+        with: { version: 10.14.0 }
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with: { node-version: "22", cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: node tooling/verify/withdraw-origin-normalize-security.cjs
+      - run: pnpm --filter @aipo/api-nest... build
+      - name: CodeQL no-upload
+        uses: github/codeql-action/init@5ba2889ada762081db2c4f32a729827dce632c7b
+        with: { languages: javascript-typescript, queries: security-extended }
+      - uses: github/codeql-action/analyze@5ba2889ada762081db2c4f32a729827dce632c7b
+        with: { upload: never, upload-database: false }
