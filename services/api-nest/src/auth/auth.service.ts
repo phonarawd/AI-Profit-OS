@@ -54,6 +54,10 @@ import {
 import { MagicLinkService } from "./magic-link.service";
 import { OauthIdentityService } from "./oauth-identity.service";
 import { WebauthnAssertService } from "./webauthn-assert.service";
+import {
+  assertPasskeyCredentialUnclaimed,
+  rejectPasskeyCredentialInsertRace,
+} from "./passkey-registration.policy";
 
 const req = createRequire(__filename);
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -566,15 +570,13 @@ export class AuthService {
     publicKeySpki: Buffer,
     signCount: number,
   ): Promise<{ userId: string; isNew: boolean }> {
+    // Registration proves possession of the *submitted* public key. It does
+    // NOT prove ownership of an already-registered credentialId. An existing
+    // credential must only enter through passkeyAuthVerify(), where the
+    // signature is verified against the stored public key.
     const existing = await this.lookupPasskey(credentialId);
-    if (existing) {
-      const row = await this.db.query<{ user_id: string }>(
-        `SELECT user_id::text FROM public.auth_passkeys
-          WHERE credential_id = $1 AND revoked_at IS NULL`,
-        [credentialId],
-      );
-      if (row.rows[0]) return { userId: row.rows[0].user_id, isNew: false };
-    }
+    assertPasskeyCredentialUnclaimed(existing);
+
     const userId = await this.insertBareUser();
     try {
       await this.db.query(
@@ -584,13 +586,9 @@ export class AuthService {
       );
     } catch (e) {
       if (isUniqueViolation(e)) {
-        const again = await this.db.query<{ user_id: string }>(
-          `SELECT user_id::text FROM public.auth_passkeys WHERE credential_id = $1`,
-          [credentialId],
-        );
-        if (again.rows[0]) {
-          return { userId: again.rows[0].user_id, isNew: false };
-        }
+        // A concurrent registration may have claimed the credential after the
+        // pre-check. Never resolve that race by returning the winner's userId.
+        rejectPasskeyCredentialInsertRace();
       }
       throw e;
     }

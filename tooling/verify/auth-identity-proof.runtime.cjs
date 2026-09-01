@@ -56,6 +56,40 @@ if (!webauthn.includes("webauthn origin mismatch")) {
 if (ctrl.includes('credentialId: String(body?.credentialId ?? body?.id ?? "session")')) {
   fails.push("passkeyAuthVerify must not mint from credentialId alone");
 }
+const authService = read("services/api-nest/src/auth/auth.service.ts");
+const passkeyPolicy = read("services/api-nest/src/auth/passkey-registration.policy.ts");
+if (!authService.includes("assertPasskeyCredentialUnclaimed(existing)")) {
+  fails.push("passkey register must reject an already-registered credentialId");
+}
+if (!authService.includes("rejectPasskeyCredentialInsertRace()")) {
+  fails.push("passkey register unique-race must fail closed");
+}
+const registerStart = authService.indexOf("private async registerPasskey(");
+const registerEnd =
+  registerStart >= 0
+    ? authService.indexOf("\n  private async sessionMintView", registerStart)
+    : -1;
+const registerBody =
+  registerStart >= 0 && registerEnd > registerStart
+    ? authService.slice(registerStart, registerEnd)
+    : "";
+if (!registerBody) {
+  fails.push("registerPasskey body missing");
+} else {
+  if (/return \{ userId: row\.rows\[0\]\.user_id, isNew: false \}/.test(registerBody)) {
+    fails.push("passkey register must never reuse pre-existing credential userId");
+  }
+  if (/return \{ userId: again\.rows\[0\]\.user_id, isNew: false \}/.test(registerBody)) {
+    fails.push("passkey insert race must never reuse winner userId");
+  }
+}
+if (!passkeyPolicy.includes("WEBAUTHN_CREDENTIAL_ALREADY_REGISTERED")) {
+  fails.push("passkey registration conflict reason missing");
+}
+if (!passkeyPolicy.includes("ConflictException")) {
+  fails.push("duplicate passkey registration must be an explicit conflict");
+}
+
 if (!resend.includes("sendMagicLink")) {
   fails.push("Resend must send an actual magic-link URL");
 }
