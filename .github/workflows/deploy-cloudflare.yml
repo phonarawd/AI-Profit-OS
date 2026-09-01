@@ -108,6 +108,15 @@ jobs:
           printf 'ROOT_DOMAIN=%s\nAPP_HOST=%s\nOPS_HOST=%s\nAPI_HOST=%s\n' \
             "$ROOT_DOMAIN" "${APP_HOST:-app.$ROOT_DOMAIN}" "${OPS_HOST:-ops.$ROOT_DOMAIN}" "${API_HOST:-api.$ROOT_DOMAIN}" >> .env
 
+      # GitHub environment 이름은 바꾸지 않는다. preview는 Production API_HOST를 상속하지 않는다.
+      - name: Preview API fail-closed
+        if: inputs.target != 'production'
+        env:
+          STAGING_API_HOST: ${{ secrets.STAGING_API_HOST }}
+        run: |
+          set -euo pipefail
+          node tooling/deploy/lib/non-prod-api-host.cjs --write-env
+
       - name: Guard worker_set / surface
         run: node tooling/deploy/cf-workers.cjs --check-surface "${{ inputs.worker_set }}" "${{ inputs.surface }}"
 

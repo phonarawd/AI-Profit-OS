@@ -136,6 +136,13 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^supabase\/staging\//.test(f) ||
+      /^governance\/db-recon\/staging-hardening\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/staging-db-hardening\.cjs$/.test(f),
+    scripts: ["staging-db-hardening.cjs"],
+  },
+  {
+    test: (f) =>
       /^infra\/(web|ops)\//.test(f) ||
       /^infra\/domain\.manifest\.json$/.test(f) ||
       /^tooling\/deploy\/cf-(pages-web|pages-ops|preflight|origin-smoke)/.test(f) ||
@@ -775,8 +782,10 @@ const RULES = [
     test: (f) =>
       /^governance\/release-master\/REL-600-STAGING\.md$/.test(f) ||
       /^infra\/domain\.manifest\.json$/.test(f) ||
-      /^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|origin-smoke)\.cjs$/.test(f) ||
+      /^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|origin-smoke|preflight)\.cjs$/.test(f) ||
+      /^tooling\/deploy\/lib\/non-prod-api-host(\.runtime\.test)?\.cjs$/.test(f) ||
       /^tooling\/verify\/rel-600-staging\.cjs$/.test(f) ||
+      /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-600-staging\.v1\.json$/.test(f) ||
       /^\.github\/workflows\/deploy-staging\.yml$/.test(f),
     scripts: ["rel-600-staging.cjs"],

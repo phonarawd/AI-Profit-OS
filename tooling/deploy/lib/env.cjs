@@ -1,6 +1,7 @@
 /** Shared env helpers for Cloudflare deploy scripts (ADR-016) */
 const fs = require("fs");
 const path = require("path");
+const { requireNonProdApiIsolation } = require("./non-prod-api-host.cjs");
 
 const root = path.resolve(__dirname, "../../..");
 
@@ -98,4 +99,5 @@ module.exports = {
   requireCloudflareCreds,
   mustExist,
   readWorkersManifest,
+  requireNonProdApiIsolation,
 };
