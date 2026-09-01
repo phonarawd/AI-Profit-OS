@@ -1,0 +1,70 @@
+name: gpt-ghas-sarif-diagnostic-38032da
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/ghas-diagnostic-38032da
+    paths:
+      - ".github/workflows/gpt-ghas-sarif-diagnostic-38032da.yml"
+
+jobs:
+  analyze:
+    name: codeql-sarif-${{ matrix.label }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: main-base
+            target_sha: 2e75a13be17f32ff5337851f426f22aa777d86b9
+          - label: recovery-head
+            target_sha: 38032dafb04ce61ebdf5bf77e6d37df787ecf046
+          - label: pr114-merge
+            target_sha: 4867548a592810de22e2bf14a1f450cf1d421912
+    steps:
+      - name: Checkout exact target
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ matrix.target_sha }}
+          fetch-depth: 1
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@5ba2889ada762081db2c4f32a729827dce632c7b
+        with:
+          languages: javascript-typescript
+          queries: security-extended
+      - name: Analyze without uploading
+        id: analyze
+        uses: github/codeql-action/analyze@5ba2889ada762081db2c4f32a729827dce632c7b
+        with:
+          category: "/language:javascript-typescript"
+          output: "/tmp/codeql-sarif"
+          upload: never
+          upload-database: false
+      - name: Emit sanitized SARIF summary
+        env:
+          LABEL: ${{ matrix.label }}
+          TARGET_SHA: ${{ matrix.target_sha }}
+          SARIF_DIR: ${{ steps.analyze.outputs.sarif-output }}
+        run: |
+          node <<'NODE'
+          const fs=require("node:fs"), path=require("node:path");
+          const root=process.env.SARIF_DIR||"/tmp/codeql-sarif", findings=[];
+          for(const file of fs.readdirSync(root).filter(f=>f.endsWith(".sarif")).sort()){
+            const sarif=JSON.parse(fs.readFileSync(path.join(root,file),"utf8"));
+            for(const run of sarif.runs||[]) for(const result of run.results||[]){
+              const loc=result.locations?.[0]?.physicalLocation||{}, region=loc.region||{};
+              findings.push({
+                ruleId:result.ruleId||null,
+                file:loc.artifactLocation?.uri||null,
+                line:region.startLine||null,
+                fingerprint:result.partialFingerprints?.primaryLocationLineHash??result.partialFingerprints?.primaryLocationStartColumnFingerprint??null
+              });
+            }
+          }
+          findings.sort((a,b)=>String(a.ruleId).localeCompare(String(b.ruleId))||String(a.file).localeCompare(String(b.file))||Number(a.line||0)-Number(b.line||0));
+          console.log(JSON.stringify({label:process.env.LABEL,targetSha:process.env.TARGET_SHA,count:findings.length,findings},null,2));
+          NODE
