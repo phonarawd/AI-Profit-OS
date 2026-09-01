@@ -85,8 +85,14 @@ function classifyBucket(relPath) {
 
 function secretScanFlags(relPath) {
   const abs = path.join(ROOT, relPath);
-  if (!fs.existsSync(abs) || !fs.statSync(abs).isFile()) return [];
-  const text = fs.readFileSync(abs, "utf8");
+  let text;
+  try {
+    text = fs.readFileSync(abs, "utf8");
+  } catch (err) {
+    const code = err && typeof err === "object" && "code" in err ? err.code : "";
+    if (code === "ENOENT" || code === "EISDIR" || code === "ENOTDIR") return [];
+    throw err;
+  }
   const flags = [];
   const checks = [
     { id: "service_role_literal", re: /service_role[^\n]{0,40}(eyJ|[A-Za-z0-9_-]{40,})/i },
@@ -226,4 +232,11 @@ function main() {
   process.stdout.write(`secret_flagged=${summary.secret_flagged.length}\n`);
 }
 
-main();
+module.exports = {
+  classifyBucket,
+  secretScanFlags,
+};
+
+if (require.main === module) {
+  main();
+}
