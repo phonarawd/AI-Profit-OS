@@ -157,43 +157,9 @@ function readExistingQa(filePath) {
   }
 }
 
-function allowApiRuntime(runtime) {
-  const reason = String(runtime && runtime.reason ? runtime.reason : "unknown");
-  return {
-    verified: runtime && runtime.verified === true,
-    reason: /^[A-Za-z0-9_.:-]{1,80}$/.test(reason) ? reason : "api_runtime_failed",
-    harness: runtime && runtime.harness === "native" ? "native" : "injected",
-    route: "/api/v1/health",
-    status: Number.isInteger(runtime && runtime.status) ? runtime.status : null,
-    service: runtime && runtime.service === "api-nest" ? "api-nest" : null,
-    git_sha: isFullSha(normalizeHex(runtime && runtime.git_sha))
-      ? normalizeHex(runtime.git_sha)
-      : null,
-    git_sha_source:
-      runtime && runtime.git_sha_source === "RENDER_GIT_COMMIT"
-        ? "RENDER_GIT_COMMIT"
-        : null,
-    source_sha: isFullSha(normalizeHex(runtime && runtime.source_sha))
-      ? normalizeHex(runtime.source_sha)
-      : null,
-    bundle_digest: isSha256(normalizeHex(runtime && runtime.bundle_digest))
-      ? normalizeHex(runtime.bundle_digest)
-      : null,
-    api_artifact_digest: isSha256(
-      normalizeHex(runtime && runtime.api_artifact_digest),
-    )
-      ? normalizeHex(runtime.api_artifact_digest)
-      : null,
-  };
-}
-
 function writeOut(filePath, record) {
-  const safe = {
-    ...record,
-    api_runtime: allowApiRuntime(record && record.api_runtime ? record.api_runtime : {}),
-  };
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, JSON.stringify(safe, null, 2) + "\n");
+  fs.writeFileSync(filePath, JSON.stringify(record, null, 2) + "\n");
 }
 
 async function runApiArtifactRuntimeQa(opts) {
@@ -221,15 +187,33 @@ async function runApiArtifactRuntimeQa(opts) {
   );
   const judged = evaluateApiHealth(probe, bound.source_sha);
 
+  const probeBody =
+    probe && probe.body && typeof probe.body === "object" ? probe.body : {};
+  const expectedSha = normalizeHex(bound.source_sha);
+  const harness =
+    probe && probe.harness === "node-child-process"
+      ? "node-child-process"
+      : probe && probe.harness === "bundle-health-probe"
+        ? "bundle-health-probe"
+        : "injected";
+
   return {
     verified: judged.ok,
     reason: judged.ok ? "pass" : judged.reason,
-    harness: probe && probe.harness ? probe.harness : "injected",
+    // HTTP bytes are decision inputs only. Persist constants or provenance
+    // already bound to the local immutable artifact, never response bytes.
+    harness,
     route: "/api/v1/health",
-    status: probe && probe.status != null ? probe.status : null,
-    service: probe && probe.body ? probe.body.service || null : null,
-    git_sha: probe && probe.body ? normalizeHex(probe.body.gitSha) || null : null,
-    git_sha_source: probe && probe.body ? probe.body.gitShaSource || null : null,
+    status: probe && probe.status === 200 ? 200 : null,
+    service: probeBody.service === "api-nest" ? "api-nest" : null,
+    git_sha:
+      normalizeHex(probeBody.gitSha) === expectedSha
+        ? expectedSha
+        : null,
+    git_sha_source:
+      probeBody.gitShaSource === "RENDER_GIT_COMMIT"
+        ? "RENDER_GIT_COMMIT"
+        : null,
     source_sha: bound.source_sha,
     bundle_digest: bound.digest,
     api_artifact_digest: normalizeHex(bound.api_artifact.artifact_digest),
@@ -254,10 +238,10 @@ async function main(argv) {
       bundle: args.bundle,
       extractRoot: args.extractRoot || path.resolve(__dirname, "../.."),
     });
-  } catch (err) {
+  } catch {
     apiRuntime = {
       verified: false,
-      reason: err && err.message ? err.message : String(err),
+      reason: "api_runtime_exception",
       source_sha: normalizeHex(args.sha),
     };
   }
