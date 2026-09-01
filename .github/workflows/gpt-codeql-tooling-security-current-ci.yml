@@ -1,0 +1,42 @@
+name: gpt-codeql-tooling-security-current-ci
+permissions:
+  contents: read
+on:
+  push:
+    branches:
+      - gpt/security-codeql-tooling-72ca41f-v2
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: "22"
+      - name: Release API runtime QA verifier
+        run: node tooling/verify/api-artifact-runtime-qa.cjs
+      - name: Security headers verifier
+        run: node tooling/verify/rel-401-security-headers.cjs
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@5ba2889ada762081db2c4f32a729827dce632c7b
+        with:
+          languages: javascript-typescript
+          queries: security-extended
+      - name: Analyze without upload
+        id: codeql
+        uses: github/codeql-action/analyze@5ba2889ada762081db2c4f32a729827dce632c7b
+        with:
+          output: /tmp/codeql-sarif
+          upload: never
+          upload-database: false
+      - name: Assert targeted findings absent
+        env:
+          SARIF_DIR: ${{ steps.codeql.outputs.sarif-output }}
+        run: |
+          node <<'NODE'
+          const fs=require('node:fs'),path=require('node:path');
+          const targets=new Set(['js/http-to-file-access|tooling/release/api-artifact-runtime-qa.cjs','js/log-injection|tooling/verify/rel-401-security-headers.cjs']);
+          const hits=[];for(const f of fs.readdirSync(process.env.SARIF_DIR).filter(x=>x.endsWith('.sarif'))){const s=JSON.parse(fs.readFileSync(path.join(process.env.SARIF_DIR,f),'utf8'));for(const r of s.runs||[])for(const x of r.results||[]){const u=x.locations?.[0]?.physicalLocation?.artifactLocation?.uri||'';const k=String(x.ruleId||'')+'|'+u.replace(/^file:\/\//,'');if(targets.has(k))hits.push(k);}}
+          if(hits.length){console.error(JSON.stringify(hits));process.exit(1);}console.log('[gpt-codeql-tooling-security-current] PASS');
+          NODE
