@@ -1,0 +1,82 @@
+name: gpt-codeql-tooling-security-ci
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/security-codeql-tooling-ea73c85
+    paths:
+      - ".github/workflows/gpt-codeql-tooling-security-ci.yml"
+      - "tooling/release/api-artifact-runtime-qa.cjs"
+      - "tooling/verify/api-artifact-runtime-qa.cjs"
+      - "tooling/verify/rel-401-security-headers.cjs"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+
+      - name: Release API runtime QA verifier
+        run: node tooling/verify/api-artifact-runtime-qa.cjs
+
+      - name: Security headers verifier
+        run: node tooling/verify/rel-401-security-headers.cjs
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@5ba2889ada762081db2c4f32a729827dce632c7b # v3
+        with:
+          languages: javascript-typescript
+          queries: security-extended
+
+      - name: Analyze without upload
+        id: codeql
+        uses: github/codeql-action/analyze@5ba2889ada762081db2c4f32a729827dce632c7b # v3
+        with:
+          output: "/tmp/codeql-sarif"
+          upload: never
+          upload-database: false
+
+      - name: Assert targeted CodeQL flows are gone
+        env:
+          SARIF_DIR: ${{ steps.codeql.outputs.sarif-output }}
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const root = process.env.SARIF_DIR || "/tmp/codeql-sarif";
+          const targets = new Set([
+            "js/http-to-file-access|tooling/release/api-artifact-runtime-qa.cjs",
+            "js/log-injection|tooling/verify/rel-401-security-headers.cjs",
+          ]);
+          const hits = [];
+          for (const file of fs.readdirSync(root).filter((f) => f.endsWith(".sarif"))) {
+            const sarif = JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
+            for (const run of sarif.runs || []) {
+              for (const result of run.results || []) {
+                const uri = result.locations?.[0]?.physicalLocation?.artifactLocation?.uri || "";
+                const key = String(result.ruleId || "") + "|" + uri.replace(/^file:\/\//, "");
+                if (targets.has(key)) {
+                  hits.push({
+                    ruleId: result.ruleId,
+                    file: uri,
+                    line: result.locations?.[0]?.physicalLocation?.region?.startLine || null,
+                  });
+                }
+              }
+            }
+          }
+          if (hits.length) {
+            console.error(JSON.stringify({ targeted_codeql_findings: hits }, null, 2));
+            process.exit(1);
+          }
+          console.log("[gpt-codeql-tooling-security] PASS targeted findings absent");
+          NODE
