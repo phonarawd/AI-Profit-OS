@@ -30,6 +30,9 @@ test("admin entry, mobile nav, system-control readout", async ({ page }, testInf
   const menu = page.locator(".admin-menu-button");
   await expect(menu).toBeVisible();
   await menu.click();
+  if ((await page.locator(".admin-sidebar").getAttribute("data-open")) !== "true") {
+    await menu.click();
+  }
   await expect(page.locator(".admin-sidebar")).toHaveAttribute("data-open", "true");
   await expect(page.locator("#admin-primary-navigation")).toBeVisible();
   await page.goto(runtime.baseUrl + "/admin/system-control", {

@@ -15,7 +15,7 @@ const {
   stubGuestApis,
 } = require("../lib/consumer-route-stubs.cjs");
 const { stubSettings, stubAccountHub } = require("../lib/account-route-stubs.cjs");
-const { blockingViolations } = require("../lib/axe-scan.cjs");
+const { blockingViolations, scanPageAxe } = require("../lib/axe-scan.cjs");
 
 const inventory = require("../fixtures/full-product-axe-inventory.v1.json");
 const known = require("../fixtures/axe-known-issues.v1.json");
@@ -65,12 +65,7 @@ test("full product consumer axe inventory has no serious/critical", async ({ pag
       ? page.getByTestId(route.testId)
       : page.locator(route.selector).first();
     await expect(surface, route.path).toBeVisible({ timeout: 45000 });
-    await page.addScriptTag({ path: require.resolve("axe-core") });
-    const results = await page.evaluate(async () =>
-      window.axe.run(document, {
-        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },
-      }),
-    );
+    const results = await scanPageAxe(page);
     const blocking = blockingViolations(results);
     if (route.homeLocked) {
       const unexpected = blocking.filter((v) => !homeAllow.has(v.id));

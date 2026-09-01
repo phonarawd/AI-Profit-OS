@@ -4,7 +4,7 @@
 const { test, expect } = require("@playwright/test");
 const { assertQaIsolation } = require("../lib/qa-env-isolation-guard.cjs");
 const { ensureLocalAdminRuntime } = require("../lib/local-admin-runtime.cjs");
-const { blockingViolations } = require("../lib/axe-scan.cjs");
+const { blockingViolations, scanPageAxe } = require("../lib/axe-scan.cjs");
 const inventory = require("../fixtures/full-product-axe-inventory.v1.json");
 
 test.describe.configure({ timeout: 240000 });
@@ -27,12 +27,7 @@ test("admin inventory axe has no serious/critical", async ({ page }) => {
     if (route.path.includes("system-control")) {
       await expect(page.getByText("반영 완료")).toHaveCount(0);
     }
-    await page.addScriptTag({ path: require.resolve("axe-core") });
-    const results = await page.evaluate(async () =>
-      window.axe.run(document, {
-        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },
-      }),
-    );
+    const results = await scanPageAxe(page);
     const blocking = blockingViolations(results);
     expect(blocking, `${route.path} ${JSON.stringify(blocking.map((v) => v.id))}`).toEqual([]);
   }
