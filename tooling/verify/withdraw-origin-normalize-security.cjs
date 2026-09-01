@@ -1,0 +1,15 @@
+"use strict";
+const assert=require("node:assert/strict");
+const fs=require("node:fs");
+const path=require("node:path");
+const src=fs.readFileSync(path.resolve(__dirname,"../../services/api-nest/src/wallet/withdraw-stepup.policy.ts"),"utf8");
+const start=src.indexOf("export function normalizeAppHost");
+const end=src.indexOf("\n}\n\nexport function originAllowed",start);
+assert.ok(start>=0&&end>start,"normalizeAppHost missing");
+const body=src.slice(start,end);
+assert.doesNotMatch(body,/\.replace\s*\(/,"normalizer must not regex-replace caller-controlled input");
+assert.match(body,/startsWith\("https:\/\/"\)/);
+assert.match(body,/startsWith\("http:\/\/"\)/);
+assert.match(body,/indexOf\("\/"\)/);
+assert.match(src,/const got = normalizeAppHost\(requestOrigin\);\s*return got === allowed;/s);
+console.log("[verify:withdraw-origin-normalize-security] PASS");
