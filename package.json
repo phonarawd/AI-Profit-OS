@@ -304,6 +304,7 @@
     "verify:api-runtime-qa-canonical": "node tooling/verify/api-runtime-qa-canonical.cjs",
     "verify:production-release-decision": "node tooling/verify/production-release-decision.cjs",
     "verify:admin-csrf-double-submit": "node tooling/verify/admin-csrf-double-submit.cjs",
+    "verify:coach-sse-error-canonical": "node tooling/verify/coach-sse-error-canonical.cjs",
     "verify:leftover-browser-harness": "node tooling/verify/leftover-browser-harness.cjs",
     "verify:full-product-axe-inventory": "node tooling/verify/full-product-axe-inventory.cjs",
     "verify:web-remote-patterns": "node tooling/verify/web-remote-patterns.cjs",

@@ -1,0 +1,14 @@
+{
+  "schema": "governance.recovery.ghas-judgment.v1",
+  "alert": 30,
+  "rule": "js/xss-through-exception",
+  "path": "services/api-nest/src/ai/coach.controller.ts",
+  "class": "CONFIRMED_HARDENED",
+  "dismissed_on_github": 0,
+  "before": "catch (e) wrote e.message into SSE data JSON",
+  "after": "catch writes constant message coach_error only",
+  "verifier": "tooling/verify/coach-sse-error-canonical.cjs",
+  "client": "packages/sdk/src/peotteok/sse-consume.ts parses JSON and constructs Error(message); UI text node, not innerHTML",
+  "exact_head_rescan": "REQUIRED after push. Current GHAS analysis is PR merge SHA, not this candidate.",
+  "dismiss": 0
+}

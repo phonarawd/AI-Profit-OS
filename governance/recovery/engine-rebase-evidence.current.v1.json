@@ -1,13 +1,13 @@
 {
   "schema": "governance.recovery.engine-rebase-evidence.v1",
-  "computed_at": "2026-09-01T17:39:29.209Z",
-  "predecessor_head_sha": "38032dafb04ce61ebdf5bf77e6d37df787ecf046",
+  "computed_at": "2026-09-01T17:50:22.098Z",
+  "predecessor_head_sha": "40754bc32b2586f6c3c844813134bc6eb1ad1f91",
   "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
-  "live_aggregate": "5e39e792a027e29142348cb77e0a0b5ef8f25eadadbc8faa05cac74bc6fe6953",
+  "live_aggregate": "eafb536e0626bec056da06fb84fac5552c4c314848312c9229aff6320d42a092",
   "baseline_aggregate": "2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8",
   "path_count_live": 489,
   "path_count_baseline": 450,
-  "changed_paths": 78,
+  "changed_paths": 79,
   "added_paths": [
     "services/api-nest/src/auth/identity-proof.crypto.ts",
     "services/api-nest/src/auth/identity-proof.email.runtime.test.ts",
@@ -54,6 +54,7 @@
     "schemas/toast-codes.v1.json",
     "services/api-nest/admin-audit.core.cjs",
     "services/api-nest/src/adapters/adapters.ingest.controller.ts",
+    "services/api-nest/src/ai/coach.controller.ts",
     "services/api-nest/src/ai/fact-tool.service.ts",
     "services/api-nest/src/app.module.ts",
     "services/api-nest/src/audit/admin-audit.service.ts",
@@ -136,5 +137,5 @@
     "QA9"
   ],
   "baseline_washing_check": "PASS_NO_IN_PLACE_HASH_REWRITE",
-  "note": "Evidence only. ACK is not issued. Baseline hashes were not rewritten."
+  "note": "Evidence only. ACK is not issued. Baseline hashes were not rewritten. coach.controller.ts newly mutated this tip (SSE error constant)."
 }

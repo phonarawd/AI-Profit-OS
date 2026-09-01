@@ -81,10 +81,11 @@ export class CoachController {
         res.write(`event: ${ev.event}\n`);
         res.write(`data: ${JSON.stringify(ev.data)}\n\n`);
       }
-    } catch (e) {
-      const message = e instanceof Error ? e.message : "coach_error";
+    } catch {
+      // 예외 원문(사용자 입력·내부 스택)을 SSE에 투사하지 않는다.
+      // GHAS js/xss-through-exception — 상수 코드만 허용.
       res.write(`event: error\n`);
-      res.write(`data: ${JSON.stringify({ message })}\n\n`);
+      res.write(`data: ${JSON.stringify({ message: "coach_error" })}\n\n`);
     }
     res.end();
   }

@@ -1,0 +1,30 @@
+{
+  "schema": "governance.recovery.blocked-webkit-fetch.v1",
+  "status": "BLOCKED_WEBKIT_FETCH",
+  "class": "EXTERNAL_RUNTIME_BLOCKER",
+  "product_defect": 0,
+  "observed_sha": "38032dafb04ce61ebdf5bf77e6d37df787ecf046",
+  "same_origin_middleware_sha": "8218297297741e770cea455e66005fb2dab10474",
+  "same_origin_files": [
+    "apps/web/middleware.ts"
+  ],
+  "fetch": "GET /api/v1/me/home-read (same origin)",
+  "webkit": {
+    "sameOriginError": "Load failed",
+    "dom": "home-session-loading",
+    "guest": "same",
+    "authenticated": "same"
+  },
+  "chromium": "consumer-engines PASS on observed_sha",
+  "firefox": "consumer-engines PASS on observed_sha",
+  "forbidden": [
+    "further Home product patches to hide this",
+    "assertion weakening",
+    "converting failure to success exit"
+  ],
+  "allowed": [
+    "keep browser-independent session contract strict",
+    "reopen only if new evidence proves an application defect"
+  ],
+  "release_implication": "WebKit Home session is not a product green. Do not claim WebKit product surfaces PASS for Home session."
+}

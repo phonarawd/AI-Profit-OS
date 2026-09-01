@@ -67,6 +67,7 @@
 | api-runtime-qa-canonical | `verify:api-runtime-qa-canonical` | T0 path | live (HTTP decision-only, canonical evidence persist) |
 | production-release-decision | `verify:production-release-decision` | T0 path | live (acceptance is necessary-not-sufficient, current NO_GO) |
 | admin-csrf-double-submit | `verify:admin-csrf-double-submit` | T0 path | live (session HttpOnly, CSRF readable, dismiss 0) |
+| coach-sse-error-canonical | `verify:coach-sse-error-canonical` | T0 path | live (SSE error is constant coach_error; raw exception 0) |
 | rel-508-current-fx-approx | `verify:rel-508-current-fx-approx` | T0 path + CI | live (REL-508 · Nest approx · null not 0 · STALE pending REL-502) |
 | rel-506-r8-infra-core | `verify:rel-506-r8-infra-core` | T0 path + CI | live (REL-506 · R8 Core · pages deploy 0 · Ads excluded · rum/tag deferred) |
 | rel-507-production-e2e | `verify:rel-507-production-e2e` | T0 path + CI | live (REL-507 · production-loop · isolation · invented success 0) |
@@ -147,6 +148,7 @@
 | `tooling/verify/api-runtime-qa-canonical.cjs` | api-runtime-qa-canonical |
 | `tooling/release/production-release-decision.cjs` · `tooling/verify/production-release-decision.cjs` | production-release-decision |
 | `tooling/verify/admin-csrf-double-submit.cjs` | admin-csrf-double-submit |
+| `tooling/verify/coach-sse-error-canonical.cjs` | coach-sse-error-canonical |
 | `governance/release-master/REL-508-CURRENT-FX-APPROX.md` · `services/api-nest/src/opportunities/current-fx-approx*` · `schemas/current-fx-approx.v1.json` | rel-508-current-fx-approx |
 | `governance/release-master/R8_INFRA_CORE.md` · `governance/release-master/r8-cache-inventory.v1.json` · `tooling/verify/rel-506-r8-infra-core.cjs` | rel-506-r8-infra-core |
 | `tooling/e2e/specs/production-loop.spec.cjs` · `tooling/e2e/lib/production-loop.cjs` · `tooling/verify/rel-507-production-e2e.cjs` | rel-507-production-e2e |

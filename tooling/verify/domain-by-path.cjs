@@ -157,6 +157,15 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/api-nest\/src\/ai\/coach\.controller\.ts$/.test(f) ||
+      /^tooling\/verify\/coach-sse-error-canonical\.cjs$/.test(f) ||
+      /^governance\/recovery\/ghas-coach-xss-through-exception\.v1\.json$/.test(
+        f,
+      ),
+    scripts: ["coach-sse-error-canonical.cjs"],
+  },
+  {
+    test: (f) =>
       /^tooling\/release\/api-artifact-provenance\.cjs$/.test(f) ||
       /^tooling\/release\/api-artifact-runtime-qa\.cjs$/.test(f) ||
       /^tooling\/verify\/api-artifact-provenance\.cjs$/.test(f) ||

@@ -39,6 +39,22 @@
       "note": "Canonical projection landed in 0a57f1cb. This analysis predates that SHA."
     }
   ],
+  "classified_this_session_no_dismiss": [
+    {
+      "number": 29,
+      "rule": "js/xss-through-dom",
+      "class": "FALSE_POSITIVE_ACCEPTED_DESIGN",
+      "packet": "governance/recovery/ghas-kyc-xss-through-dom.v1.json",
+      "dismiss": 0
+    },
+    {
+      "number": 30,
+      "rule": "js/xss-through-exception",
+      "class": "CONFIRMED_HARDENED",
+      "packet": "governance/recovery/ghas-coach-xss-through-exception.v1.json",
+      "dismiss": 0
+    }
+  ],
   "open_unclassified_counts": {
     "js/regex/missing-regexp-anchor": 10,
     "js/file-system-race": 7,
@@ -48,8 +64,6 @@
     "js/missing-origin-check": 1,
     "js/indirect-command-line-injection": 1,
     "js/incomplete-multi-character-sanitization": 1,
-    "js/xss-through-exception": 1,
-    "js/xss-through-dom": 1,
     "js/incomplete-url-substring-sanitization": 3,
     "js/identity-replacement": 1
   },
