@@ -27,22 +27,22 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-04ef3c7de4dd-2ff1760b7d72
 PREDECESSOR_BASELINE_ID = ea-baseline-229e7777f9b0-2d4567b3a2c8
 REBASE_ID = pending
-LIVE_AGGREGATE = d091614bdc85b6a0f3c8294660a13a2baabb0e0a3bfac5daeae3a05b04c70164
+LIVE_AGGREGATE = 266aca36a20ef3b8a77487456b0e3c686c249897c5c49a120db4c509c417f51b
 BASELINE_AGGREGATE = 2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8
-PATH_COUNT_LIVE = 474
+PATH_COUNT_LIVE = 476
 PATH_COUNT_BASELINE = 450
-CHANGED_PATHS = 57
-ADDED_PATHS = 24
-MUTATED_PATHS = 33
+CHANGED_PATHS = 60
+ADDED_PATHS = 26
+MUTATED_PATHS = 34
 MISSING_PATHS = 0
-EXIT_GATE = recovery/release-provenance-20260831 @ 28fb416c7401c13ace42a5e1e0ea10e53d9a1be1 · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 QA0-QA9 재실행 전까지 ISSUED 금지
+EXIT_GATE = recovery/release-provenance-20260831 @ d3e7326f8cebf4bb62e4971d7db9d24a1ed377b2 · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 QA0-QA9 재실행 전까지 ISSUED 금지
 ```
 
 ## 판정
 
-recovery candidate `28fb416c7401c13ace42a5e1e0ea10e53d9a1be1` 의 live protected-scope 는 baseline 과 다르다.
-`LIVE_AGGREGATE = d091614bdc85b6a0f3c8294660a13a2baabb0e0a3bfac5daeae3a05b04c70164`
-`PATH_COUNT_LIVE = 474` · `CHANGED_PATHS = 57` (added 24 · mutated 33 · missing 0).
+recovery candidate `d3e7326f8cebf4bb62e4971d7db9d24a1ed377b2` 의 live protected-scope 는 baseline 과 다르다.
+`LIVE_AGGREGATE = 266aca36a20ef3b8a77487456b0e3c686c249897c5c49a120db4c509c417f51b`
+`PATH_COUNT_LIVE = 476` · `CHANGED_PATHS = 60` (added 26 · mutated 34 · missing 0).
 live aggregate ≠ baseline → 이전 ISSUED 인증은 current-authoritative 가 아니다.
 은폐 금지 · `STATUS = NOT_ISSUED` · `CERT_ISSUED = 0` · `PROTECTED_SCOPE_DRIFT = 1` · `REBASE_REQUIRED = 1`.
 엔진 수락 workflow 는 HOLD_CONTROLLED_AMENDMENT · applied = 0.
