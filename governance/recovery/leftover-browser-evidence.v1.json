@@ -1,6 +1,6 @@
 {
   "schema": "governance.recovery.leftover-browser-evidence.v1",
-  "observed_at": "2026-09-01T09:20:00Z",
+  "observed_at": "2026-09-01T09:33:00Z",
   "source_sha": "PENDING_COMMIT",
   "STATIC_NE_LOCAL_RUNTIME_NE_BROWSER_NE_REMOTE_CI_NE_RELEASE_READY": true,
   "TICKETS": {
@@ -11,6 +11,7 @@
     "99_admin_session_csrf_logout": "BROWSER_PASS — Chromium logout sent x-admin-csrf matching readable cookie. Nest revoke remains LOCAL_RUNTIME_PASS, not a live Nest browser.",
     "65_admin_withdraw_review": "BROWSER_PASS — Chromium 768 review queue showed pending row; approve dblclick=1; no credited-cash copy.",
     "67_krw_safe_instructions": "BROWSER_PASS — Chromium 390/768/1024/1440 showed bank/account/holder/notice; no 입금 완료.",
+    "i4_release_readout": "BROWSER_PASS — Chromium 1024 /admin/system-control readout visible; data-forbid=fake_release_complete; 반영 완료 count 0.",
     "100_axe": "NOT_CLOSED_VERIFIED — AXE_BROWSER official Home/login/signup/onboarding matrix PASS this session plus leftover consumer/admin routes. Full product-route sweep still not claimed."
   },
   "FIREFOX": "NOT_INSTALLED — ms-playwright has chromium-1234 only",

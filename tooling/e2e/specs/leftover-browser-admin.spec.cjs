@@ -223,6 +223,22 @@ test("ticketI3 AI console preview masks mailbox-like leftover", async ({ page })
   await expect(page.getByText("출금이나 지급을 실행할 수 없습니다")).toBeVisible();
 });
 
+
+test("ticketI4 release readout never paints service reflection complete", async ({ page }) => {
+  test.skip(!ENABLED, "LEFTOVER_BROWSER=1");
+  await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
+  await stubAdminCommon(page, { connected: true });
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.goto(runtime.baseUrl + "/admin/system-control", {
+    waitUntil: "domcontentloaded",
+  });
+  await expect(page.getByTestId("admin-system-control-page")).toBeVisible();
+  const readout = page.getByTestId("system-control-release-readout");
+  await expect(readout).toBeVisible();
+  await expect(readout).toHaveAttribute("data-forbid", "fake_release_complete");
+  await expect(page.getByText("반영 완료")).toHaveCount(0);
+  await expect(readout).toContainText("완료로 표시하지 않습니다");
+});
 test("leftover admin axe has no new critical/serious", async ({ page }) => {
   test.skip(!ENABLED, "LEFTOVER_BROWSER=1");
   const targets = [
