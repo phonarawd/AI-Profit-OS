@@ -27,7 +27,7 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-04ef3c7de4dd-2ff1760b7d72
 PREDECESSOR_BASELINE_ID = ea-baseline-229e7777f9b0-2d4567b3a2c8
 REBASE_ID = pending
-LIVE_AGGREGATE = c7d9a2cb713afc74e05ee3101ed393366c8f27cbcce012514ef21ddc2a0991d4
+LIVE_AGGREGATE = 5e39e792a027e29142348cb77e0a0b5ef8f25eadadbc8faa05cac74bc6fe6953
 BASELINE_AGGREGATE = 2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8
 PATH_COUNT_LIVE = 489
 PATH_COUNT_BASELINE = 450
@@ -41,7 +41,7 @@ EXIT_GATE = recovery/release-provenance-20260831 @ ea73c85962609c3c88faf0fefe1a1
 ## 판정
 
 recovery candidate `ea73c85962609c3c88faf0fefe1a18d32247e3c6` 의 live protected-scope 는 baseline 과 다르다.
-`LIVE_AGGREGATE = c7d9a2cb713afc74e05ee3101ed393366c8f27cbcce012514ef21ddc2a0991d4`
+`LIVE_AGGREGATE = 5e39e792a027e29142348cb77e0a0b5ef8f25eadadbc8faa05cac74bc6fe6953`
 `PATH_COUNT_LIVE = 489` · `CHANGED_PATHS = 78` (added 39 · mutated 39 · missing 0).
 live aggregate ≠ baseline → 이전 ISSUED 인증은 current-authoritative 가 아니다.
 은폐 금지 · `STATUS = NOT_ISSUED` · `CERT_ISSUED = 0` · `PROTECTED_SCOPE_DRIFT = 1` · `REBASE_REQUIRED = 1`.
