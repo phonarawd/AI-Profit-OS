@@ -25,5 +25,7 @@ CREATE POLICY push_subscriptions_deny_authenticated ON public.push_subscriptions
 
 REVOKE ALL ON TABLE public.push_control FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON TABLE public.push_subscriptions FROM PUBLIC, anon, authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.push_control TO service_role;
+REVOKE ALL ON TABLE public.push_control FROM service_role;
+REVOKE ALL ON TABLE public.push_subscriptions FROM service_role;
+GRANT SELECT, UPDATE ON TABLE public.push_control TO service_role;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.push_subscriptions TO service_role;

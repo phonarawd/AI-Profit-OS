@@ -60,6 +60,34 @@ if (/ENABLE ROW LEVEL SECURITY/.test(push) && !push.includes("CREATE POLICY")) {
   fails.push("push SQL must not enable RLS without policies");
 }
 
+const pushNorm = push.replace(/\s+/g, " ");
+if (!/REVOKE ALL ON TABLE public\.push_control FROM service_role/.test(pushNorm)) {
+  fails.push("push SQL must revoke existing service_role grants on push_control before new grants");
+}
+if (!/REVOKE ALL ON TABLE public\.push_subscriptions FROM service_role/.test(pushNorm)) {
+  fails.push("push SQL must revoke existing service_role grants on push_subscriptions before new grants");
+}
+const controlRevokeIdx = pushNorm.indexOf("REVOKE ALL ON TABLE public.push_control FROM service_role");
+const controlGrantIdx = pushNorm.indexOf("GRANT SELECT, UPDATE ON TABLE public.push_control TO service_role");
+if (controlRevokeIdx < 0 || controlGrantIdx < 0 || controlRevokeIdx > controlGrantIdx) {
+  fails.push("push_control service_role REVOKE ALL must precede the exact SELECT, UPDATE grant");
+}
+if (/GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public\.push_control/.test(pushNorm)) {
+  fails.push("old broad push_control DML grant must not survive");
+}
+if (/GRANT ALL ON TABLE public\.push_control/.test(pushNorm) || /GRANT ALL ON TABLE public\.push_subscriptions/.test(pushNorm)) {
+  fails.push("push SQL must not grant ALL to service_role");
+}
+if (!/GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public\.push_subscriptions TO service_role/.test(pushNorm)) {
+  fails.push("push_subscriptions must grant exactly SELECT, INSERT, UPDATE, DELETE");
+}
+if (/GRANT[^;]*TRUNCATE[^;]*push_control/.test(pushNorm) || /GRANT[^;]*REFERENCES[^;]*push_/.test(pushNorm) || /GRANT[^;]*TRIGGER[^;]*push_/.test(pushNorm)) {
+  fails.push("push SQL must not grant TRUNCATE/REFERENCES/TRIGGER");
+}
+if (/GRANT[^;]*INSERT[^;]*push_control/.test(pushNorm) || /GRANT[^;]*DELETE[^;]*push_control/.test(pushNorm)) {
+  fails.push("push_control must not grant INSERT or DELETE");
+}
+
 if (!acl.includes("ALTER DEFAULT PRIVILEGES FOR ROLE postgres")) {
   fails.push("default ACL SQL must cover postgres-owned future public objects");
 }
