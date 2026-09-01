@@ -122,6 +122,13 @@ try {
     path.join(extractRoot, "apps/web/.open-next/assets/stale.txt"),
     "stale",
   );
+  fs.mkdirSync(path.join(extractRoot, "apps/admin/.open-next/assets"), {
+    recursive: true,
+  });
+  fs.writeFileSync(
+    path.join(extractRoot, "apps/admin/.open-next/assets/stale.txt"),
+    "stale",
+  );
   fs.mkdirSync(path.join(extractRoot, "services/api-nest/dist"), {
     recursive: true,
   });
@@ -150,6 +157,10 @@ try {
 
   assert.equal(
     fs.existsSync(path.join(extractRoot, "apps/web/.open-next/assets/stale.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(extractRoot, "apps/admin/.open-next/assets/stale.txt")),
     false,
   );
   assert.equal(
@@ -224,6 +235,23 @@ try {
         SHA,
       ),
     /worker_prebuilt_upload_guard_missing/,
+  );
+
+  assert.throws(
+    () =>
+      verifyBundle(goodBundle, {
+        sourceSha: "c".repeat(40),
+        digest: good.artifact_digest,
+      }),
+    /artifact_source_sha_mismatch/,
+  );
+  assert.throws(
+    () =>
+      verifyBundle(goodBundle, {
+        sourceSha: SHA,
+        digest: "d".repeat(64),
+      }),
+    /digest_mismatch/,
   );
 
   console.log(
