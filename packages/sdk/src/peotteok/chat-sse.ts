@@ -3,18 +3,15 @@
  * GET  /api/v1/me/peotteok/chips
  */
 
-import type {
-  PeotteokChatDone,
-  PeotteokChatMeta,
-  PeotteokChipsResponse,
-} from "./types";
+import {
+  createPeotteokSseState,
+  feedPeotteokSse,
+  finishPeotteokSse,
+  type PeotteokSseHandlers,
+} from "./sse-consume";
+import type { PeotteokChipsResponse } from "./types";
 
-export type PeotteokChatStreamHandlers = {
-  onMeta?: (meta: PeotteokChatMeta) => void;
-  onChunk?: (text: string) => void;
-  onDone?: (done: PeotteokChatDone) => void;
-  onError?: (err: Error) => void;
-};
+export type PeotteokChatStreamHandlers = PeotteokSseHandlers;
 
 function apiUrl(apiBase: string, path: string): string {
   const base = (apiBase || "").replace(/\/$/, "");
@@ -86,45 +83,30 @@ export function streamPeotteokChat(opts: {
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let buf = "";
+      const sse = createPeotteokSseState();
+      const handlers: PeotteokSseHandlers = {
+        onMeta: opts.onMeta,
+        onChunk: opts.onChunk,
+        onDone: opts.onDone,
+        onError: opts.onError,
+        onAbort: opts.onAbort,
+      };
 
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        const parts = buf.split("\n\n");
-        buf = parts.pop() ?? "";
-        for (const part of parts) {
-          const lines = part.split("\n");
-          let event = "message";
-          let data = "";
-          for (const line of lines) {
-            if (line.startsWith("event:")) event = line.slice(6).trim();
-            if (line.startsWith("data:")) data += line.slice(5).trim();
-          }
-          if (!data) continue;
-          let parsed: unknown = {};
-          try {
-            parsed = JSON.parse(data);
-          } catch {
-            continue;
-          }
-          if (event === "meta") {
-            opts.onMeta?.(parsed as PeotteokChatMeta);
-          } else if (event === "chunk") {
-            const t = (parsed as { text?: string }).text ?? "";
-            if (t) opts.onChunk?.(t);
-          } else if (event === "done") {
-            opts.onDone?.(parsed as PeotteokChatDone);
-          } else if (event === "error") {
-            const message =
-              (parsed as { message?: string }).message || "peotteok_error";
-            opts.onError?.(new Error(message));
-          }
+        if (done) {
+          feedPeotteokSse(sse, decoder.decode(), handlers);
+          finishPeotteokSse(sse, handlers, signal.aborted ? "abort" : "eof");
+          break;
         }
+        feedPeotteokSse(sse, decoder.decode(value, { stream: true }), handlers);
+        if (sse.terminated) break;
       }
     } catch (e) {
-      if (signal.aborted) return;
+      if (signal.aborted) {
+        opts.onAbort?.();
+        return;
+      }
       opts.onError?.(e instanceof Error ? e : new Error(String(e)));
     }
   })();

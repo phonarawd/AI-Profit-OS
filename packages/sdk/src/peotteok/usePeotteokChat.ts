@@ -57,6 +57,7 @@ export function usePeotteokChat(
   const getTokenRef = useRef(getAccessToken);
   getTokenRef.current = getAccessToken;
   const stopRef = useRef<(() => void) | null>(null);
+  const streamGenRef = useRef(0);
   /** Engine §47.16.2 — kept in a ref (not state) so mid-stream updates from
    * `onMeta` don't need a re-render, and the next `send()` always reads the
    * latest value even while a previous stream is still closing. */
@@ -85,6 +86,7 @@ export function usePeotteokChat(
   useEffect(() => {
     void refreshChips();
     return () => {
+      streamGenRef.current += 1;
       stopRef.current?.();
       stopRef.current = null;
     };
@@ -93,9 +95,10 @@ export function usePeotteokChat(
   const send = useCallback(
     (raw: string) => {
       const text = raw.trim();
-      if (!text || busy) return;
+      if (!enabled || !text || busy) return;
 
       stopRef.current?.();
+      const gen = ++streamGenRef.current;
       setBusy(true);
       setError(null);
       setLastDone(null);
@@ -140,6 +143,7 @@ export function usePeotteokChat(
           );
         },
         onDone: (done) => {
+          if (gen !== streamGenRef.current) return;
           setLastDone(done);
           if (done.conversation_id) {
             conversationIdRef.current = done.conversation_id;
@@ -166,6 +170,7 @@ export function usePeotteokChat(
           stopRef.current = null;
         },
         onError: (err) => {
+          if (gen !== streamGenRef.current) return;
           setError(err);
           setMessages((prev) =>
             prev.map((m) =>
@@ -182,9 +187,19 @@ export function usePeotteokChat(
           setBusy(false);
           stopRef.current = null;
         },
+        onAbort: () => {
+          if (gen !== streamGenRef.current) return;
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === asstId ? { ...m, streaming: false } : m,
+            ),
+          );
+          setBusy(false);
+          stopRef.current = null;
+        },
       });
     },
-    [apiBase, busy],
+    [apiBase, busy, enabled],
   );
 
   return {

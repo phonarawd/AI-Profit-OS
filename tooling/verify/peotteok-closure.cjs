@@ -38,6 +38,12 @@ const domain = read("tooling/verify/domain-by-path.cjs");
 if (!page.includes("usePeotteokChat") || !page.includes("PeotteokChat")) {
   fail("peotteok must keep existing chat owner");
 }
+if (!page.includes("AccountAuthActions")) {
+  fail("peotteok must keep auth recovery actions");
+}
+if (!page.includes("enabled: view ===")) {
+  fail("peotteok must not start chat before session ready");
+}
 if (!page.includes("/spark-dash/ai-orb.svg")) {
   fail("peotteok must reuse public/spark-dash/ai-orb.svg");
 }
@@ -53,9 +59,27 @@ if (layout.includes("LegacyAppShell") || layout.includes("AppShellRoot")) {
 if (!spec.includes("peotteok-ai-orb") || !spec.includes("app-shell")) {
   fail("committed spec must cover orb reuse and leftover chrome 0");
 }
+if (!spec.includes("unauthorized") || !spec.includes("peotteok-chat")) {
+  fail("committed spec must cover unauthorized chat hide");
+}
 if (!pkg.includes('"verify:peotteok-closure"')) fail("package.json missing verify:peotteok-closure");
 if (!catalog.includes("peotteok-closure")) fail("CATALOG.md must list peotteok-closure");
 if (!domain.includes("peotteok-closure.cjs")) fail("domain-by-path must trigger peotteok-closure");
+
+const runtimeTest = spawnSync(
+  process.execPath,
+  [
+    "--test",
+    "--experimental-strip-types",
+    "packages/sdk/src/peotteok/sse-consume.runtime.test.ts",
+  ],
+  { cwd: root, encoding: "utf8", timeout: 30_000 },
+);
+process.stdout.write(runtimeTest.stdout || "");
+process.stderr.write(runtimeTest.stderr || "");
+if (runtimeTest.status !== 0) {
+  fail("peotteok SSE runtime tests failed");
+}
 
 function finish(extra) {
   if (fails.length) {
