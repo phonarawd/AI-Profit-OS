@@ -1,0 +1,28 @@
+{
+  "schema": "governance.recovery.i3-ai-console-evidence.v1",
+  "observed_at": "2026-09-01T08:05:00Z",
+  "source_sha": "PENDING_COMMIT",
+  "I3_SCOPE": "Admin AI console minimum-exposure + masking. Home geometry 0. I-2 kill-switch tile not mutated.",
+  "MASKING": "PARTIAL — Admin preview maskLogPreview hides resident, phone, Bearer, sk-, JWT, and bounded mailbox-like text. Engine redactConversationPii remains resident/phone only. Engine file not changed (HOLD_CONTROLLED_AMENDMENT).",
+  "RAW_PROMPT_DEFAULT": "HIDDEN — operator traces show preview only; full user input copy states it is not shown.",
+  "OPERATOR_MUTATION": "FORBIDDEN_OBSERVED — page has no adminSend, no score override input, no fail-to-pass control. verify:rel-215-admin-ai-logs static + local runtime.",
+  "SUPPORT_REASON_CAPABILITY_AUDIT": "PARTIAL — AdminGuard on ai-logs and ai-pick controllers. Dedicated support-reason capture + audit row for each view NOT_PROVEN. I-1 authz remains PARTIAL.",
+  "KILL_SWITCH_AND_LIMITS": "POINTER_ONLY — push/circuit tiles live on Admin operations home. I-2 = BLOCKED_HOME_LOCK. This slice does not change Home.",
+  "DEVELOPER_VS_OPERATOR": "PARTIAL — provider/path/hash stay inside details. Operator headings use Korean. Staging Nest E2E 0.",
+  "ADMIN_ROLE": "LOCKED_5 — inherited from I-1. Invented roles 0.",
+  "SERVER_SIDE_AUTHZ_VERIFIED": "PARTIAL — AdminGuard present. Browser privileged AI path NOT_PROVEN.",
+  "RLS_OR_DATA_ACCESS_VERIFIED": "INHERITED_I1_PARTIAL_READ_ONLY — no Production mutation.",
+  "AUDIT_LOG_VERIFIED": "PARTIAL — I-1 sink fixture only. AI-log view audit NOT_PROVEN.",
+  "REAL_DATA_SOURCE_VERIFIED": "PARTIAL — Nest list/redact path exists. No staging Nest.",
+  "E2E_ALLOWED_AND_DENIED_CASES": "PARTIAL — static + local runtime mask tests. Browser AI console NOT_PROVEN.",
+  "RAW_ARTIFACTS": [
+    "apps/admin/lib/admin-truth.ts",
+    "apps/admin/lib/admin-log-mask.ts",
+    "apps/admin/lib/admin-truth.runtime.test.ts",
+    "apps/admin/app/admin/ai-logs/page.tsx",
+    "tooling/verify/rel-215-admin-ai-logs.cjs",
+    "services/api-nest/src/ai/ai-logs.admin.service.ts"
+  ],
+  "PLAN_TODO": "i-3-ai-console remains pending — STATUS is not CLOSED_VERIFIED",
+  "STATUS": "PARTIAL"
+}
