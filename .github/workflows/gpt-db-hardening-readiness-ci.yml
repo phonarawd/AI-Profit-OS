@@ -11,6 +11,9 @@ on:
       - ".github/workflows/gpt-db-hardening-readiness-ci.yml"
       - "tooling/release/db-hardening-readiness.cjs"
       - "tooling/verify/db-hardening-readiness.cjs"
+      - "supabase/staging/20260901120000_admin_audit_append_only.sql"
+      - "supabase/staging/20260901120100_push_rls.sql"
+      - "supabase/staging/20260901120200_default_acl.sql"
 
 jobs:
   verify:
