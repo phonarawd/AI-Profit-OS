@@ -107,8 +107,16 @@ if (rebaseRequired) {
   if (!/STATUS = NOT_ISSUED/.test(cert) || !/CERT_ISSUED = 0/.test(cert)) {
     fails.push("rebase-required cert must be NOT_ISSUED");
   }
-} else if (!/STATUS = ISSUED/.test(cert) || !/CERT_ISSUED = 1/.test(cert)) {
-  fails.push("REL-502 cert must be ISSUED before READY");
+  if (!ready.includes("REL_502_ISSUED = 0")) {
+    fails.push("readiness doc must mirror REL-502 NOT_ISSUED");
+  }
+} else {
+  if (!/STATUS = ISSUED/.test(cert) || !/CERT_ISSUED = 1/.test(cert)) {
+    fails.push("REL-502 cert must be ISSUED before READY");
+  }
+  if (!ready.includes("REL_502_ISSUED = 1")) {
+    fails.push("readiness doc must mirror REL-502 ISSUED");
+  }
 }
 
 if (!pkg.includes("verify:rel-504-migration-readiness")) fails.push("package.json missing verify:rel-504-migration-readiness");
