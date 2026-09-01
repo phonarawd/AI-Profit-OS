@@ -110,3 +110,10 @@ test("KRW withdraw a11y has no new critical/serious", async ({ page }) => {
     })),
   ).toEqual([]);
 });
+
+test("unauthorized must reach login", async ({ page }) => {
+  await openKrw(page, "unauthorized");
+  await expect(page.getByTestId("withdraw-login-cta")).toBeVisible();
+  await expect(page.getByTestId("withdraw-login-cta")).toHaveAttribute("href", "/auth/login");
+  await expect(page.getByTestId("withdraw-live-form")).toHaveCount(0);
+});

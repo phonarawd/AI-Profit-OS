@@ -15,6 +15,7 @@ import {
 import { WithdrawAmountPanel } from "@aipo/ui/components/wallet/WithdrawAmountPanel";
 import { WithdrawStepUpPanel } from "@aipo/ui/components/wallet/WithdrawStepUpPanel";
 import { T } from "@aipo/ui/copy/ko";
+import { WithdrawUnauthorizedNote } from "./WithdrawUnauthorized";
 
 function withdrawErrorView(err: unknown): {
   state: "denied" | "unavailable" | "unauthorized";
@@ -222,7 +223,8 @@ export function WithdrawLiveForm({
         {T.withdrawMode.ctaSubmit}
       </button>
 
-      {status ? (
+      {flowState === "unauthorized" ? <WithdrawUnauthorizedNote /> : null}
+      {status && flowState !== "unauthorized" ? (
         <p
           className="mt-3 text-sm"
           role="status"
