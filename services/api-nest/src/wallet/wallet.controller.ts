@@ -15,6 +15,7 @@ import { PracticeGrantService } from "../ledger/practice-grant.service";
 import { ChainSweeperPhase0Service } from "./chain-sweeper.phase0.service";
 import { ChainWatcherPhase0Service } from "./chain-watcher.phase0.service";
 import { DepositAddressService } from "./deposit-address.service";
+import { DepositConfigService } from "./deposit-config.service";
 import { DepositDisputeService } from "./deposit-dispute.service";
 import { KrwDepositService } from "./krw-deposit.service";
 import { ProfitMergeService } from "./profit-merge.service";
@@ -41,6 +42,7 @@ type SessionReq = {
 export class WalletController {
   constructor(
     private readonly depositAddress: DepositAddressService,
+    private readonly depositConfig: DepositConfigService,
     private readonly krwDeposit: KrwDepositService,
     private readonly depositDisputes: DepositDisputeService,
     private readonly usdtDeposit: UsdtDepositService,
@@ -141,6 +143,13 @@ export class WalletController {
   @Get(WALLET_USER_ROUTES.chainSweeperStatus)
   chainSweeperStatus() {
     return this.chainSweeper.describe();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(WALLET_USER_ROUTES.krwDepositInstructions)
+  getKrwDepositInstructions(@Req() req: SessionReq) {
+    this.sessionUserId(req);
+    return this.depositConfig.getSafeKrwDepositInstructions();
   }
 
   @UseGuards(JwtAuthGuard)

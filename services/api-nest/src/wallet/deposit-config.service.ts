@@ -25,6 +25,10 @@ import {
   DepositConfigWriteError,
   configNotReadyBody,
 } from "./deposit-config.ready";
+import {
+  projectSafeKrwDepositInstructions,
+  type SafeKrwDepositInstructions,
+} from "./deposit-config.safe-krw";
 
 @Injectable()
 export class DepositConfigService {
@@ -62,6 +66,16 @@ export class DepositConfigService {
         this.throwNotReady(err.reason);
       }
       throw err;
+    }
+  }
+
+  /** 세션 유저 전용. Production insert/backfill 0. 행 없으면 CONFIG_NOT_READY. */
+  async getSafeKrwDepositInstructions(): Promise<SafeKrwDepositInstructions> {
+    const cfg = await this.requirePersisted();
+    try {
+      return projectSafeKrwDepositInstructions(cfg);
+    } catch {
+      this.throwNotReady("partial:krw.safe_instructions");
     }
   }
 

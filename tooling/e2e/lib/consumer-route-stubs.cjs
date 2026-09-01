@@ -583,6 +583,20 @@ async function stubDeposit(page, mode) {
       }
       return json(route, 200, { trc20Address: "TQADEPOSITADDRESSREL1140000001" });
     }
+    if (url.includes("/api/v1/wallet/krw-deposit-instructions")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      return json(route, 200, {
+        bankName: "QA Bank",
+        accountNumber: "QA-000",
+        accountHolder: "Peotteok",
+        noticeKo: "qa-notice",
+      });
+    }
     if (url.includes("/api/v1/wallet/krw-deposit-requests")) {
       if (mode === "unauthorized") {
         return json(route, 401, { error: "unauthorized" });
@@ -732,6 +746,14 @@ async function stubMoneyLoop(page) {
     }
     if (url.includes("/api/v1/wallet/my-deposit-address")) {
       return json(route, 200, { trc20Address: "TQADEPOSITADDRESSREL1140000001" });
+    }
+    if (url.includes("/api/v1/wallet/krw-deposit-instructions")) {
+      return json(route, 200, {
+        bankName: "QA Bank",
+        accountNumber: "QA-000",
+        accountHolder: "Peotteok",
+        noticeKo: "qa-notice",
+      });
     }
     if (url.includes("/api/v1/wallet/krw-deposit-requests")) {
       return json(route, 200, {

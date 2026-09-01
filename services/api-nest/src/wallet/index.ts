@@ -4,6 +4,10 @@ export {
   CONFIG_NOT_READY,
   parsePersistedDepositConfig,
 } from "./deposit-config.ready";
+export {
+  projectSafeKrwDepositInstructions,
+} from "./deposit-config.safe-krw";
+export type { SafeKrwDepositInstructions } from "./deposit-config.safe-krw";
 export { DepositAddressService } from "./deposit-address.service";
 export { DepositDisputeService } from "./deposit-dispute.service";
 export { KrwDepositService } from "./krw-deposit.service";

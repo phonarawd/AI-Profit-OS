@@ -22,6 +22,7 @@ function mustExist(rel) {
 const files = [
   "services/api-nest/src/wallet/deposit-config.ready.ts",
   "services/api-nest/src/wallet/deposit-config.service.ts",
+  "services/api-nest/src/wallet/deposit-config.safe-krw.ts",
   "services/api-nest/src/wallet/withdraw-fee.service.ts",
   "services/api-nest/src/wallet/min-holding.service.ts",
   "services/api-nest/src/wallet/deposit-address.service.ts",
@@ -47,6 +48,19 @@ if (!ready.includes('export const CONFIG_NOT_READY = "CONFIG_NOT_READY"')) {
 }
 if (!ready.includes("parsePersistedDepositConfig")) {
   fails.push("ready.ts must export parsePersistedDepositConfig");
+}
+const safeKrw = read("services/api-nest/src/wallet/deposit-config.safe-krw.ts");
+if (!safeKrw.includes("projectSafeKrwDepositInstructions")) {
+  fails.push("safe-krw must export projectSafeKrwDepositInstructions");
+}
+if (!safeKrw.includes("bankName") || !safeKrw.includes("noticeKo")) {
+  fails.push("safe-krw must project the four user instruction fields");
+}
+if (safeKrw.includes("hotWalletXpubRef") || safeKrw.includes("tronGridApiKey")) {
+  fails.push("safe-krw must not mention secret refs");
+}
+if (!svc.includes("getSafeKrwDepositInstructions")) {
+  fails.push("service must expose getSafeKrwDepositInstructions");
 }
 if (!ready.includes("DEPOSIT_CONFIG_REQUIRED_PATHS")) {
   fails.push("ready.ts must list DEPOSIT_CONFIG_REQUIRED_PATHS");

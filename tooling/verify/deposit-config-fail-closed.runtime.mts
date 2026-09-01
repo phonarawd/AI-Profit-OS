@@ -3,6 +3,7 @@ import {
   DepositConfigNotReadyError,
   parsePersistedDepositConfig,
 } from "../../services/api-nest/src/wallet/deposit-config.ready.ts";
+import { projectSafeKrwDepositInstructions } from "../../services/api-nest/src/wallet/deposit-config.safe-krw.ts";
 
 function validRow(over: Record<string, unknown> = {}) {
   return {
@@ -107,5 +108,29 @@ expectBlock(whitespaceBank, "partial");
 const emptyNotice = validRow();
 (emptyNotice.krw as { noticeKo: string }).noticeKo = "";
 expectReady(emptyNotice);
+
+const safe = projectSafeKrwDepositInstructions(parsePersistedDepositConfig(validRow()));
+if (
+  safe.bankName !== "KB" ||
+  safe.accountNumber !== "123" ||
+  safe.accountHolder !== "A" ||
+  safe.noticeKo !== "n"
+) {
+  throw new Error("safe KRW projection must keep persisted bank fields");
+}
+const safeKeys = Object.keys(safe).sort().join(",");
+if (safeKeys !== "accountHolder,accountNumber,bankName,noticeKo") {
+  throw new Error("safe KRW projection leaked extra keys: " + safeKeys);
+}
+const safeJson = JSON.stringify(safe);
+if (safeJson.includes("secret:") || safeJson.includes("xpub") || safeJson.includes("Fee")) {
+  throw new Error("safe KRW projection must not leak admin or secret fields");
+}
+const emptyNoticeSafe = projectSafeKrwDepositInstructions(
+  parsePersistedDepositConfig(emptyNotice),
+);
+if (emptyNoticeSafe.noticeKo !== "") {
+  throw new Error("empty noticeKo must remain an empty string");
+}
 
 console.log("[deposit-config-fail-closed.runtime] PASS");

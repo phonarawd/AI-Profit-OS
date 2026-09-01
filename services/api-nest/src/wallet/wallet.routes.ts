@@ -3,6 +3,8 @@
 export const WALLET_USER_ROUTES = {
   myDepositAddress: "my-deposit-address",
   krwDepositRequests: "krw-deposit-requests",
+  /** 유저 전용 KRW 안내 — Admin deposit-config 전체 노출 금지 */
+  krwDepositInstructions: "krw-deposit-instructions",
   /**
    * §43.1 Phase0/1 ingest — Transfer observation (worker or phase0 tick).
    * Not a user UI surface.

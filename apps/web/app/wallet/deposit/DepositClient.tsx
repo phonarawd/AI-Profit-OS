@@ -18,6 +18,12 @@ import { DepositAmountPanel } from "@aipo/ui/components/wallet/DepositAmountPane
 import { NetworkPlainWarning } from "@aipo/ui/components/wallet/NetworkPlainWarning";
 import { T } from "@aipo/ui/copy/ko";
 import Link from "next/link";
+import {
+  classifyKrwInstructionsHttp,
+  parseSafeKrwDepositInstructions,
+  type KrwInstructionsView,
+  type SafeKrwDepositInstructions,
+} from "./krw-deposit-instructions";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "../wallet.module.css";
@@ -65,6 +71,8 @@ function DepositContent() {
   const [depositorName, setDepositorName] = useState("");
   const [krwState, setKrwState] = useState<KrwState>("idle");
   const [krwPending, setKrwPending] = useState<KrwPending | null>(null);
+  const [instrState, setInstrState] = useState<KrwInstructionsView>("loading");
+  const [instructions, setInstructions] = useState<SafeKrwDepositInstructions | null>(null);
   const krwIdem = useRef(
     createIdempotencyLifecycle({ mint: () => mintMoneyIdempotencyKey("krw") }),
   );
@@ -123,6 +131,38 @@ function DepositContent() {
     return () => ac.abort();
   }, [tab]);
 
+  useEffect(() => {
+    if (tab !== "krw") return;
+    const ac = new AbortController();
+    setInstrState("loading");
+    setInstructions(null);
+    void (async () => {
+      try {
+        const res = await fetch("/api/v1/wallet/krw-deposit-instructions", {
+          credentials: "include",
+          cache: "no-store",
+          signal: ac.signal,
+        });
+        if (!res.ok) {
+          setInstrState(classifyKrwInstructionsHttp(res.status));
+          return;
+        }
+        const parsed = parseSafeKrwDepositInstructions(
+          await res.json().catch(() => null),
+        );
+        if (!parsed) {
+          setInstrState("unavailable");
+          return;
+        }
+        setInstructions(parsed);
+        setInstrState("ready");
+      } catch {
+        if (!ac.signal.aborted) setInstrState("unavailable");
+      }
+    })();
+    return () => ac.abort();
+  }, [tab]);
+
   const usdtHref = useMemo(() => {
     const q = new URLSearchParams(searchParams.toString());
     q.set("tab", "usdt");
@@ -136,6 +176,15 @@ function DepositContent() {
   }, [searchParams]);
 
   async function submitKrw() {
+    if (instrState !== "ready" || !instructions) {
+      setKrwState(instrState === "unauthorized" ? "unauthorized" : "unavailable");
+      setDenyCopy(
+        instrState === "unauthorized"
+          ? "로그인하면 원화 입금을 신청할 수 있어요."
+          : "입금 안내를 확인할 수 없음",
+      );
+      return;
+    }
     const amount = Number(krwAmount);
     if (!Number.isInteger(amount) || amount < 1 || depositorName.trim().length < 1) {
       setKrwState("denied");
@@ -207,6 +256,7 @@ function DepositContent() {
       data-deposit-suggest={suggestUsdt > 0 ? String(suggestUsdt) : undefined}
       data-address-state={tab === "usdt" ? addressState : undefined}
       data-krw-state={tab === "krw" ? krwState : undefined}
+      data-krw-instr-state={tab === "krw" ? instrState : undefined}
       data-classification-owner="engine:§0.0.5.1"
     >
       <DepositConsult
@@ -294,6 +344,33 @@ function DepositContent() {
           <p className={styles.note}>
             원화는 신청만 받아요. 확인되기 전에는 잔액이 늘지 않아요.
           </p>
+          {instrState === "unauthorized" ? (
+            <p className={styles.lead} data-testid="krw-instr-unauthorized">
+              로그인하면 입금 안내를 볼 수 있어요.
+            </p>
+          ) : null}
+          {instrState === "unavailable" ? (
+            <p className={styles.err} data-testid="krw-instr-unavailable">
+              입금 안내를 확인할 수 없음
+            </p>
+          ) : null}
+          {instrState === "ready" && instructions ? (
+            <div
+              className={styles.addressBox}
+              data-testid="krw-deposit-instructions"
+            >
+              <p data-testid="krw-instr-bank">{instructions.bankName}</p>
+              <p className={styles.mono} data-testid="krw-instr-account">
+                {instructions.accountNumber}
+              </p>
+              <p data-testid="krw-instr-holder">{instructions.accountHolder}</p>
+              {instructions.noticeKo ? (
+                <p className={styles.note} data-testid="krw-instr-notice">
+                  {instructions.noticeKo}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
           <label className={styles.field}>
             입금자 이름
             <input
@@ -366,7 +443,11 @@ function DepositContent() {
             data-testid="deposit-continue"
             data-force-deposit="false"
             data-credited="false"
-            disabled={krwState === "submitting" || krwState === "pending"}
+            disabled={
+              krwState === "submitting" ||
+              krwState === "pending" ||
+              instrState !== "ready"
+            }
             onClick={() => {
               void submitKrw();
             }}

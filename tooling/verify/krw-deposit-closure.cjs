@@ -26,6 +26,7 @@ function read(rel) {
 
 const files = [
   "apps/web/app/wallet/deposit/DepositClient.tsx",
+  "apps/web/app/wallet/deposit/krw-deposit-instructions.ts",
   "tooling/e2e/specs/krw-deposit-closure.spec.cjs",
   "tooling/e2e/lib/consumer-route-stubs.cjs",
 ];
@@ -42,6 +43,15 @@ const domain = read("tooling/verify/domain-by-path.cjs");
 
 if (!client.includes("/api/v1/wallet/krw-deposit-requests")) {
   fail("KRW deposit must POST /api/v1/wallet/krw-deposit-requests");
+}
+if (!client.includes("/api/v1/wallet/krw-deposit-instructions")) {
+  fail("KRW deposit must GET /api/v1/wallet/krw-deposit-instructions");
+}
+if (!client.includes("parseSafeKrwDepositInstructions")) {
+  fail("KRW deposit must parse the four-field instruction payload");
+}
+if (!client.includes("data-krw-instr-state")) {
+  fail("KRW deposit must expose instruction view state");
 }
 if (!client.includes("requestedAmountKrw") || !client.includes("depositorName")) {
   fail("KRW deposit must send requestedAmountKrw + depositorName");
@@ -67,11 +77,17 @@ if (/PG|toss|iamport|nicepay/i.test(client)) {
 if (!spec.includes("krw_deny") || !spec.includes("pending")) {
   fail("committed spec must cover KRW pending + deny");
 }
+if (!spec.includes("data-krw-instr-state") || !spec.includes("krw-deposit-instructions")) {
+  fail("committed spec must cover KRW instruction authority");
+}
 if (!spec.includes("잔액에 넣지 않았어요")) {
   fail("committed spec must prove pending ≠ credit");
 }
 if (!stubs.includes("krw-deposit-requests") || !stubs.includes("krw_deny")) {
   fail("stubDeposit must cover KRW pending and deny");
+}
+if (!stubs.includes("krw-deposit-instructions")) {
+  fail("stubDeposit must cover KRW instruction authority");
 }
 if (!pkg.includes('"verify:krw-deposit-closure"')) {
   fail("package.json missing verify:krw-deposit-closure");
@@ -89,6 +105,7 @@ const runtimeTest = spawnSync(
     "--test",
     "--experimental-strip-types",
     "packages/sdk/src/wallet/idempotency-lifecycle.runtime.test.ts",
+    "apps/web/app/wallet/deposit/krw-deposit-instructions.runtime.test.ts",
   ],
   { cwd: root, encoding: "utf8", timeout: 30_000 },
 );
