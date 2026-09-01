@@ -70,17 +70,24 @@ function buildFetchStubScript(mode) {
         }),
       );
     };
-    window.fetch = stub;
-    try {
-      Object.defineProperty(window, "fetch", {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        value: stub,
-      });
-    } catch (_err) {
-      window.fetch = stub;
-    }
+    const lockFetch = (target) => {
+      try {
+        Object.defineProperty(target, "fetch", {
+          configurable: false,
+          enumerable: true,
+          writable: false,
+          value: stub,
+        });
+      } catch (_err) {
+        try {
+          target.fetch = stub;
+        } catch (_assignErr) {
+          /* Next may have locked a hanging fetch; keep going. */
+        }
+      }
+    };
+    lockFetch(window);
+    if (typeof globalThis !== "undefined") lockFetch(globalThis);
     window.__aipoHomeReadStubMode = mode;
   })();`;
 }
