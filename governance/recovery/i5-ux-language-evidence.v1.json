@@ -1,7 +1,7 @@
 {
   "schema": "governance.recovery.i5-ux-language-evidence.v1",
-  "observed_at": "2026-09-01T09:22:00Z",
-  "source_sha": "PENDING_COMMIT",
+  "observed_at": "2026-09-01T10:45:00Z",
+  "source_sha": "3d930bfedebc0479e85ad559837de5aaed0c6b08",
   "I5_SCOPE": "Operator language on Admin rendered surface. Source identifiers not in scope. Home 0.",
   "COPY_SSOT": "packages/ui/copy/ko/admin.ts — no API/QA/E2E/staging/production/workflow/pipeline/SSE/SHA/RLS/GitHub/Supabase/acceptance literals observed.",
   "EXISTING_GATE": "verify:admin-novice-ui blocks beginner-hostile visible terms including SSE, JWT, KYC, GitHub, Supabase, workflow, pipeline, acceptance, staging, CI/CD, E2E.",
@@ -11,7 +11,7 @@
   "RLS_OR_DATA_ACCESS_VERIFIED": "INHERITED_I1_PARTIAL_READ_ONLY",
   "AUDIT_LOG_VERIFIED": "N/A_LANGUAGE",
   "REAL_DATA_SOURCE_VERIFIED": "N/A_LANGUAGE",
-  "E2E_ALLOWED_AND_DENIED_CASES": "PARTIAL — static novice-ui PASS. Browser operator-language sweep NOT_PROVEN.",
+  "E2E_ALLOWED_AND_DENIED_CASES": "PARTIAL — static novice-ui PASS. leftover-admin ticketI5 + critical-admin jargon deny are STATIC_VERIFIER_PASS. LEFTOVER_BROWSER not executed this train (BROWSER_PASS=NOT_PROVEN). REMOTE_CI_PASS=NOT_PROVEN.",
   "RAW_ARTIFACTS": [
     "packages/ui/copy/ko/admin.ts",
     "tooling/verify/admin-novice-ui.cjs",

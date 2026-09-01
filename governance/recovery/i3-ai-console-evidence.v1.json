@@ -1,7 +1,7 @@
 {
   "schema": "governance.recovery.i3-ai-console-evidence.v1",
-  "observed_at": "2026-09-01T08:05:00Z",
-  "source_sha": "PENDING_COMMIT",
+  "observed_at": "2026-09-01T10:45:00Z",
+  "source_sha": "3d930bfedebc0479e85ad559837de5aaed0c6b08",
   "I3_SCOPE": "Admin AI console minimum-exposure + masking. Home geometry 0. I-2 kill-switch tile not mutated.",
   "MASKING": "PARTIAL — Admin preview maskLogPreview hides resident, phone, Bearer, sk-, JWT, and bounded mailbox-like text. Engine redactConversationPii remains resident/phone only. Engine file not changed (HOLD_CONTROLLED_AMENDMENT).",
   "RAW_PROMPT_DEFAULT": "HIDDEN — operator traces show preview only; full user input copy states it is not shown.",

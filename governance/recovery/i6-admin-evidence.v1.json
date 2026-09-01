@@ -1,7 +1,7 @@
 {
   "schema": "governance.recovery.i6-admin-evidence.v1",
-  "observed_at": "2026-09-01T08:28:00Z",
-  "source_sha": "PENDING_COMMIT",
+  "observed_at": "2026-09-01T10:45:00Z",
+  "source_sha": "3d930bfedebc0479e85ad559837de5aaed0c6b08",
   "I6_SCOPE": "Index of I-1..I-5 evidence. UI visibility alone is not PASS.",
   "SLICES": {
     "I1": { "file": "governance/recovery/i1-authz-evidence.v1.json", "status": "PARTIAL" },
