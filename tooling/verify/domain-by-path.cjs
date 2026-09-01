@@ -15,9 +15,11 @@ const RULES = [
       /^\.cursor\/hooks\.json$/.test(f) ||
       /^\.cursor\/rules\/project-isolation/.test(f) ||
       /^scripts\/verify-project-boundary\.mjs$/.test(f) ||
+      /^scripts\/verify-night-guard\.mjs$/.test(f) ||
       /^tooling\/verify\/project-boundary\.cjs$/.test(f) ||
+      /^tooling\/verify\/night-guard\.cjs$/.test(f) ||
       /^docs\/ops\/project-isolation-boundary-checklist\.md$/.test(f),
-    scripts: ["project-boundary.cjs"],
+    scripts: ["project-boundary.cjs", "night-guard.cjs"],
   },
   {
     test: (f) =>

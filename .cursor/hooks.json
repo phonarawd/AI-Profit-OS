@@ -4,7 +4,7 @@
     "preToolUse": [
       {
         "command": "node .cursor/hooks/project-boundary.mjs",
-        "matcher": "^(Shell|Read|Write|Grep|Glob|Delete|StrReplace|EditNotebook|WebFetch|FetchMcpResource|CallMcpTool|MCP:)",
+        "matcher": "^(Shell|Read|Write|Grep|Glob|Delete|StrReplace|EditNotebook|WebFetch|FetchMcpResource|CallMcpTool|CallDynamicTool|MCP:)",
         "timeout": 45,
         "failClosed": true
       }

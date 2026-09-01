@@ -15,6 +15,7 @@
     "cursor:sync-plans": "node tooling/cursor/sync-plans-ssot.cjs",
     "verify:plans-ssot": "node tooling/verify/plans-ssot.cjs",
     "verify:project-boundary": "node scripts/verify-project-boundary.mjs",
+    "verify:night-guard": "node scripts/verify-night-guard.mjs",
     "verify:hook-stability": "node scripts/hook-stability-stress.mjs",
     "verify:stack-lock": "node tooling/verify/stack-lock.cjs",
     "verify:secrets": "node tooling/verify/secrets.cjs",
