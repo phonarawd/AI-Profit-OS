@@ -83,6 +83,15 @@ if (!adminCookies.includes('ADMIN_SESSION_COOKIE_NAME = "aipo_admin_session"')) 
 if (!adminCookies.includes("httpOnly: true") || !adminCookies.includes('sameSite: "strict"')) {
   fails.push("admin session cookie must be HttpOnly + SameSite=strict");
 }
+const bearer = read("services/api-nest/src/common/bearer-header.ts");
+const adminToken = read("services/api-nest/src/common/admin-token.ts");
+const userGuard = read("services/api-nest/src/auth/jwt-auth.guard.ts");
+if (adminToken.includes("/^Bearer") || userGuard.includes("/^Bearer")) {
+  fails.push("bearer extraction must not use a polynomial Bearer regex");
+}
+if (!bearer.includes("BEARER_HEADER_MAX") || !bearer.includes("foldAscii")) {
+  fails.push("bearer-header must stay a bounded linear scan");
+}
 if (adminBar.includes("sessionStorage") || adminApi.includes("sessionStorage")) {
   fails.push("admin UI must not store a privileged bearer in sessionStorage");
 }
@@ -101,6 +110,7 @@ const runtime = spawnSync(
     "--test",
     "--experimental-strip-types",
     "services/api-nest/src/common/admin-session.runtime.test.ts",
+    "services/api-nest/src/common/bearer-header.runtime.test.ts",
   ],
   { cwd: root, encoding: "utf8", timeout: 30_000 },
 );

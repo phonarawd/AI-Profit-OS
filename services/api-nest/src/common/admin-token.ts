@@ -12,6 +12,9 @@ import { createRequire } from "node:module";
 import { join } from "node:path";
 import { loadPhase0Env } from "../config/phase0.env";
 import { ADMIN_JWT_AUDIENCE, ADMIN_JWT_ISSUER } from "../auth/auth.constants";
+import { extractBearerToken } from "./bearer-header";
+
+export { extractBearerToken };
 
 const requireCjs = createRequire(__filename);
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -42,13 +45,6 @@ export class AdminTokenError extends Error {
     super(code);
     this.name = "AdminTokenError";
   }
-}
-
-export function extractBearerToken(headerValue: unknown): string | null {
-  const raw = Array.isArray(headerValue) ? headerValue[0] : headerValue;
-  if (typeof raw !== "string") return null;
-  const m = /^Bearer\s+(.+)$/i.exec(raw.trim());
-  return m ? m[1].trim() : null;
 }
 
 function isoFromEpochSeconds(value: unknown): string | null {

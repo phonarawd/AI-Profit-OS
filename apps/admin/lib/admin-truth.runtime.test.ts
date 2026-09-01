@@ -23,12 +23,7 @@ test("maskLogPreview does not invent a pass from empty or missing preview", () =
 
 test("maskLogPreview hides a bounded long mailbox without inventing success", () => {
   const local = "a".repeat(64);
-  const host = "example.com";
-  const raw = `${local}${String.fromCharCode(64)}${host} leftover`;
+  const raw = `${local}${String.fromCharCode(64)}maskhost.tld leftover`;
   const masked = maskLogPreview(raw);
-  assert.ok(masked);
-  assert.equal(masked?.includes(local), false);
-  assert.equal(masked?.includes(host), false);
-  assert.equal(masked?.includes("leftover"), true);
-  assert.match(masked ?? "", /\[숨김\]/);
+  assert.equal(masked, "[숨김] leftover");
 });

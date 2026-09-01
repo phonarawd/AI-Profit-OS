@@ -14,6 +14,7 @@ import {
 import { createRequire } from "node:module";
 import { join } from "node:path";
 import { loadPhase0Env } from "../config/phase0.env";
+import { extractBearerToken } from "../common/bearer-header";
 import {
   USER_JWT_AUDIENCE,
   USER_JWT_ISSUER,
@@ -44,13 +45,6 @@ type RequestWithUser = {
   cookies?: Record<string, string | undefined>;
   user?: SessionUser;
 };
-
-function extractBearerToken(headerValue: unknown): string | null {
-  const raw = Array.isArray(headerValue) ? headerValue[0] : headerValue;
-  if (typeof raw !== "string") return null;
-  const m = /^Bearer\s+(.+)$/i.exec(raw.trim());
-  return m ? m[1].trim() : null;
-}
 
 /**
  * Apply via `@UseGuards(JwtAuthGuard)` on any session-protected controller.
