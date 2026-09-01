@@ -17,6 +17,10 @@ import { WithdrawStepUpPanel } from "@aipo/ui/components/wallet/WithdrawStepUpPa
 import { T } from "@aipo/ui/copy/ko";
 import { WithdrawUnauthorizedNote } from "./WithdrawUnauthorized";
 
+const withdrawIdempotency = createIdempotencyLifecycle({
+  mint: newWithdrawIdempotencyKey,
+});
+
 function withdrawErrorView(err: unknown): {
   state: "denied" | "unavailable" | "unauthorized";
   status: string;
@@ -62,9 +66,7 @@ export function WithdrawLiveForm({
   const [flowState, setFlowState] = useState<
     "idle" | "accepted" | "denied" | "unavailable" | "unauthorized"
   >("idle");
-  const wdIdem = useRef(
-    createIdempotencyLifecycle({ mint: newWithdrawIdempotencyKey }),
-  );
+  const wdIdem = useRef(withdrawIdempotency);
 
   const onChallenge = useCallback(async () => {
     setBusy(true);
