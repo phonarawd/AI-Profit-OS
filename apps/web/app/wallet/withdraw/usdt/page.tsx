@@ -32,6 +32,9 @@ function UsdtWithdrawContent() {
       data-withdraw-default-mode="profit"
       data-withdraw-mode={mode}
       data-testid="wallet-withdraw-usdt"
+      data-kyc-authority={gate.authority}
+      data-kyc-status={gate.kycStatus ?? ""}
+      data-kyc-form={gate.allowWithdrawForm ? "1" : "0"}
     >
       <p className={styles.nav}>
         <a href="/wallet">지갑</a>
