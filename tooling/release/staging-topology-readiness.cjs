@@ -58,11 +58,21 @@ function evaluateStagingTopology(snapshot) {
 
   const blockers = [];
 
-  if (!prodRender) blockers.push("production_render_missing");
+  if (!prodRender) {
+    blockers.push("production_render_missing");
+  } else {
+    if (!nonEmpty(prodRender.service_id)) blockers.push("production_render_service_id_missing");
+    if (!nonEmpty(prodRender.environment_id)) blockers.push("production_render_environment_id_missing");
+    if (!normalizeUrl(prodRender.url)) blockers.push("production_render_url_invalid");
+  }
   if (!stageRender) {
     blockers.push("render_staging_missing");
   } else if (prodRender) {
     if (!nonEmpty(stageRender.service_id)) blockers.push("render_staging_service_id_missing");
+    if (!nonEmpty(stageRender.environment_id)) blockers.push("render_staging_environment_id_missing");
+    if (!nonEmpty(stageRender.supabase_project_ref)) {
+      blockers.push("render_staging_db_binding_missing");
+    }
     if (stageRender.service_id === prodRender.service_id) {
       blockers.push("render_staging_reuses_production_service");
     }
@@ -139,7 +149,7 @@ function evaluateStagingTopology(snapshot) {
 
   const ready = blockers.length === 0;
   const missingInfra = blockers.some((b) =>
-    /_missing$|reuses_production|tracks_main|not_staging|customer_data_not_proven|db_binding_mismatch/.test(
+    /_missing$|reuses_production|tracks_main|not_staging|customer_data_not_proven|db_binding_/.test(
       b,
     ),
   );
