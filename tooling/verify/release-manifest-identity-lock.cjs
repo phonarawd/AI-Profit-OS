@@ -30,6 +30,7 @@ function writeFakeWorker(payload, name) {
       schema: "release-worker-prebuilt.v1",
       entry: "index.js",
       bundled_once: true,
+      wrangler_no_upload: true,
     }) + "\n",
   );
 }
@@ -54,6 +55,24 @@ function buildBundle(bundle) {
 
   for (const name of WORKER_SNAPSHOTS) writeFakeWorker(payload, name);
   return packFromPayload(payload, bundle, SHA);
+}
+
+function buildPayload(label) {
+  const payload = path.join(root, "source-" + label);
+  fs.mkdirSync(path.join(payload, "apps/web/.open-next/assets"), { recursive: true });
+  fs.mkdirSync(path.join(payload, "apps/admin/.open-next/assets"), { recursive: true });
+  fs.writeFileSync(path.join(payload, "apps/web/.open-next/worker.js"), "web");
+  fs.writeFileSync(path.join(payload, "apps/admin/.open-next/worker.js"), "ops");
+  fs.writeFileSync(path.join(payload, "apps/web/.open-next/assets/a.txt"), "a");
+  fs.writeFileSync(path.join(payload, "apps/admin/.open-next/assets/a.txt"), "a");
+
+  const apiDist = path.join(payload, "services/api-nest/dist");
+  fs.mkdirSync(apiDist, { recursive: true });
+  const apiEntry = path.join(apiDist, "main.js");
+  fs.writeFileSync(apiEntry, "api");
+  writeApiManifest(apiDist, SHA, apiEntry);
+  for (const name of WORKER_SNAPSHOTS) writeFakeWorker(payload, name);
+  return payload;
 }
 
 function tamperAndExpect(field, value, needle) {
@@ -83,6 +102,35 @@ try {
   tamperAndExpect("rebuild_forbidden_at_deploy", false, "manifest_rebuild_guard_missing");
   tamperAndExpect("worker_prebuilt", false, "manifest_worker_prebuilt_missing");
   tamperAndExpect("worker_deploy_no_bundle", false, "manifest_worker_no_bundle_missing");
+
+  const badApiPayload = buildPayload("bad-api-schema");
+  const apiManifestPath = path.join(
+    badApiPayload,
+    "services/api-nest/dist/api-release-manifest.json",
+  );
+  const apiManifest = JSON.parse(fs.readFileSync(apiManifestPath, "utf8"));
+  apiManifest.schema = "forged-api-manifest.v1";
+  fs.writeFileSync(apiManifestPath, JSON.stringify(apiManifest, null, 2) + "\n");
+  assert.throws(
+    () => packFromPayload(badApiPayload, path.join(root, "bundle-bad-api"), SHA),
+    /api_artifact_schema_mismatch/,
+  );
+
+  const badWorkerPayload = buildPayload("bad-worker-meta");
+  const workerMetaPath = path.join(
+    badWorkerPayload,
+    "workers",
+    WORKER_SNAPSHOTS[0],
+    PREBUILT_DIR,
+    "entry.json",
+  );
+  const workerMeta = JSON.parse(fs.readFileSync(workerMetaPath, "utf8"));
+  workerMeta.wrangler_no_upload = false;
+  fs.writeFileSync(workerMetaPath, JSON.stringify(workerMeta, null, 2) + "\n");
+  assert.throws(
+    () => packFromPayload(badWorkerPayload, path.join(root, "bundle-bad-worker"), SHA),
+    /worker_prebuilt_upload_guard_missing/,
+  );
 
   console.log(
     "[verify:release-manifest-identity-lock] PASS (manifest identity + deploy invariants fail closed)",
