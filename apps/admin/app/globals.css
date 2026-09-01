@@ -656,6 +656,7 @@ summary {
 
   .admin-sidebar {
     position: fixed;
+    z-index: 36;
     left: 0;
     width: min(20rem, calc(100vw - 3rem));
     transform: translateX(-105%);
@@ -687,6 +688,7 @@ summary {
     inset: 0;
     display: block;
     visibility: hidden;
+    pointer-events: none;
     border: 0;
     background: color-mix(in srgb, var(--color-lux-text) 38%, transparent);
     opacity: 0;
@@ -696,11 +698,12 @@ summary {
   .admin-nav-backdrop[data-open="true"] {
     visibility: visible;
     opacity: 1;
+    pointer-events: auto;
   }
 
   .admin-mobile-header {
     position: sticky;
-    z-index: 29;
+    z-index: 37;
     top: 0;
     display: flex;
     min-height: 4.25rem;
