@@ -9,6 +9,12 @@ const path = require("path");
 const root = path.resolve(__dirname, "../..");
 const fails = [];
 
+function sanitizeLogLine(value) {
+  return String(value || "")
+    .replace(/[\r\n\u0000\u2028\u2029]/g, " ")
+    .slice(0, 300);
+}
+
 function read(rel) {
   const p = path.join(root, rel);
   if (!fs.existsSync(p)) {
@@ -176,13 +182,13 @@ function smoke() {
               resolve();
             })
             .on("error", (err) => {
-              fails.push("api smoke error " + err.message);
+              fails.push("api smoke error " + sanitizeLogLine(err.message));
               server.close();
               resolve();
             });
         })
         .on("error", (err) => {
-          fails.push("http smoke error " + err.message);
+          fails.push("http smoke error " + sanitizeLogLine(err.message));
           server.close();
           resolve();
         });
@@ -193,7 +199,7 @@ function smoke() {
 void smoke().then(() => {
   if (fails.length) {
     console.error("[verify:rel-401-security-headers] FAIL");
-    for (const f of fails) console.error(" -", f);
+    for (const f of fails) console.error(" -", sanitizeLogLine(f));
     process.exit(1);
   }
   console.log("[verify:rel-401-security-headers] PASS");

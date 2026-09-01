@@ -24,8 +24,9 @@ src = src
   .replace(/from\s+["']\.\/errors["']/, `from ${JSON.stringify(errorsUrl)}`)
   .replace(/from\s+["']\.\/types["']/, `from ${JSON.stringify(typesUrl)}`);
 
-const tmp = path.join(os.tmpdir(), "aipo-ledger-fetch.runtime.mts");
-fs.writeFileSync(tmp, src);
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "aipo-ledger-fetch-"));
+const tmp = path.join(tmpDir, "runtime.mts");
+fs.writeFileSync(tmp, src, { encoding: "utf8", mode: 0o600 });
 
 const runner = `
 import {
@@ -264,7 +265,7 @@ const run = spawnSync(
 process.stdout.write(run.stdout || "");
 process.stderr.write(run.stderr || "");
 try {
-  fs.unlinkSync(tmp);
+  fs.rmSync(tmpDir, { recursive: true, force: true });
 } catch {
   /* ignore */
 }

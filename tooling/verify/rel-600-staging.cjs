@@ -57,6 +57,50 @@ function yamlCompleted(relId) {
   return /STATUS:\s*COMPLETED/.test(plan.slice(idx, idx + 240));
 }
 
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/** YAML/증거 텍스트에서 host가 다른 호스트의 부분문자열이 아닌지 확인한다. */
+function textContainsExactHost(text, host) {
+  const body = String(text || "");
+  const token = String(host || "").toLowerCase();
+  if (!token) return false;
+  const re = new RegExp(
+    "(?:^|[\\s\"'`=:@(,/>])(?:https?://)?" +
+      escapeRegExp(token) +
+      "(?:[\\s\"'`?#),/<]|$)",
+    "i",
+  );
+  return re.test(body);
+}
+
+function listContainsExactHost(list, host) {
+  const expected = String(host || "").toLowerCase();
+  return (list || []).some((item) => String(item || "").toLowerCase() === expected);
+}
+
+function textContainsExactOrigin(text, origin) {
+  let expected;
+  try {
+    expected = new URL(origin);
+  } catch {
+    return false;
+  }
+  if (expected.protocol !== "https:" && expected.protocol !== "http:") return false;
+  const body = String(text || "");
+  const found = body.match(/https?:\/\/[^\s"'<>]+/g) || [];
+  for (const raw of found) {
+    try {
+      const parsed = new URL(raw);
+      if (parsed.origin === expected.origin) return true;
+    } catch {
+      /* skip malformed token */
+    }
+  }
+  return false;
+}
+
 if (fixture.productionDomainMutation !== 0) {
   fails.push("fixture productionDomainMutation must be 0");
 }
@@ -128,7 +172,7 @@ if (stagingWorkflow.includes("environment: production")) {
   fails.push("staging workflow must not use production GitHub environment");
 }
 if (
-  stagingWorkflow.includes("ai-profit-os.onrender.com") ||
+  textContainsExactHost(stagingWorkflow, "ai-profit-os.onrender.com") ||
   /API_HOST:-\s*https:\/\/ai-profit-os\.onrender\.com/.test(stagingWorkflow) ||
   /API="\$\{API_HOST:-/.test(stagingWorkflow)
 ) {
@@ -143,10 +187,10 @@ if (!stagingWorkflow.includes("STAGING_API_HOST")) {
 if (!stagingWorkflow.includes("forbiddenHosts")) {
   fails.push("staging workflow must deny manifest forbiddenHosts");
 }
-if (!((staging && staging.forbiddenHosts) || []).includes("ai-profit-os.onrender.com")) {
+if (!listContainsExactHost((staging && staging.forbiddenHosts) || [], "ai-profit-os.onrender.com")) {
   fails.push("staging.forbiddenHosts must include production Render API host");
 }
-if (!((staging && staging.forbiddenHosts) || []).includes("api.hiptk.app")) {
+if (!listContainsExactHost((staging && staging.forbiddenHosts) || [], "api.hiptk.app")) {
   fails.push("staging.forbiddenHosts must include api.hiptk.app");
 }
 if (prodWorkflow.includes("workflow_dispatch") === false) {
@@ -217,10 +261,10 @@ if (closed) {
   if (!evidence.includes("PRODUCTION_WORKFLOW_DISPATCH = 0")) {
     fails.push("evidence missing PRODUCTION_WORKFLOW_DISPATCH");
   }
-  if (!evidence.includes("https://ai-profit-web-preview.ebay-adapter.workers.dev")) {
+  if (!textContainsExactOrigin(evidence, "https://ai-profit-web-preview.ebay-adapter.workers.dev")) {
     fails.push("evidence missing staging web URL");
   }
-  if (!evidence.includes("https://ai-profit-ops-preview.ebay-adapter.workers.dev")) {
+  if (!textContainsExactOrigin(evidence, "https://ai-profit-ops-preview.ebay-adapter.workers.dev")) {
     fails.push("evidence missing staging ops URL");
   }
   if (/CLOUDFLARE_API_TOKEN\s*=\s*[A-Za-z0-9_-]{20,}/.test(evidence)) {

@@ -80,8 +80,9 @@ export function withdrawFormAllowed(authority, kycStatus) {
 }
 `;
 
-const tmp = path.join(os.tmpdir(), "aipo-withdraw-kyc-gate.runtime.mts");
-fs.writeFileSync(tmp, core);
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "aipo-withdraw-kyc-gate-"));
+const tmp = path.join(tmpDir, "runtime.mts");
+fs.writeFileSync(tmp, core, { encoding: "utf8", mode: 0o600 });
 const coreUrl = pathToFileURL(tmp).href;
 
 const runner = `
@@ -196,7 +197,7 @@ const run = spawnSync(
   { cwd: root, encoding: "utf8", timeout: 20_000 },
 );
 try {
-  fs.unlinkSync(tmp);
+  fs.rmSync(tmpDir, { recursive: true, force: true });
 } catch {
   /* ignore */
 }

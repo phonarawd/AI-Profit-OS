@@ -5,7 +5,7 @@
  * CI PUSH: before SHA → HEAD (committed)
  * CI base unresolved → fail closed (silent SKIP 금지)
  */
-const { execSync } = require("child_process");
+const { execFileSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
@@ -1383,7 +1383,15 @@ function normalizePath(file) {
 }
 
 function gitExecEnv(cwd) {
-  const env = { ...process.env };
+  const env = {
+    PATH: process.env.PATH,
+    SystemRoot: process.env.SystemRoot,
+    windir: process.env.windir,
+    HOME: process.env.HOME,
+    USERPROFILE: process.env.USERPROFILE,
+    GIT_CONFIG_NOSYSTEM: "1",
+    GIT_TERMINAL_PROMPT: "0",
+  };
   if (cwd && path.resolve(cwd) !== path.resolve(root)) {
     delete env.GIT_DIR;
     delete env.GIT_WORK_TREE;
@@ -1395,12 +1403,32 @@ function gitExecEnv(cwd) {
   return env;
 }
 
-function gitLines(cmd, cwd, swallow) {
+const SAFE_GIT_REF = /^(?:refs\/heads\/)?[A-Za-z0-9](?:[A-Za-z0-9._/-]*[A-Za-z0-9])?$/;
+
+function assertSafeGitRef(value, label) {
+  const raw = String(value || "");
+  if (!SAFE_GIT_REF.test(raw) || raw.includes("..") || raw.includes("\\") || raw.includes("@{")) {
+    ciFailClosed("CI_GIT_ARG_REJECTED", label);
+  }
+  return raw.replace(/^refs\/heads\//, "");
+}
+
+function assertSafeGitRev(value, label) {
+  const raw = String(value || "");
+  if (raw === "HEAD" || isSha(raw)) return raw;
+  ciFailClosed("CI_GIT_ARG_REJECTED", label);
+}
+
+function gitLines(args, cwd, swallow) {
+  if (!Array.isArray(args) || args.length === 0 || args.some((part) => typeof part !== "string")) {
+    ciFailClosed("CI_GIT_ARG_REJECTED", "argv");
+  }
   try {
-    return execSync(cmd, {
+    return execFileSync("git", args, {
       cwd: cwd || root,
       encoding: "utf8",
       env: gitExecEnv(cwd),
+      windowsHide: true,
     })
       .split(/\r?\n/)
       .map((line) => line.trim())
@@ -1408,7 +1436,7 @@ function gitLines(cmd, cwd, swallow) {
   } catch (err) {
     if (swallow) return [];
     const wrapped = new Error(
-      "CI_DIFF_UNRESOLVED: " + cmd + " :: " + String(err && err.message),
+      "CI_DIFF_UNRESOLVED: git " + args.join(" ") + " :: " + String(err && err.message),
     );
     wrapped.code = "CI_DIFF_UNRESOLVED";
     throw wrapped;
@@ -1475,9 +1503,11 @@ function resolveCiRange(env, cwd) {
   if (event === "pull_request" || (env && env.AIPO_DOMAIN_DIFF_MODE) === "ci_pr") {
     const base = prBaseShaFromEnv(env);
     if (isSha(base)) return { from: base, to: head, spec: base + "..." + head };
-    const ref = String((env && env.GITHUB_BASE_REF) || "");
-    if (!ref) ciFailClosed("CI_PR_BASE_UNRESOLVED", "missing PR base SHA/ref");
-    const mb = gitLines("git merge-base origin/" + ref + " " + head, cwd, true)[0];
+    const rawRef = String((env && env.GITHUB_BASE_REF) || "");
+    if (!rawRef) ciFailClosed("CI_PR_BASE_UNRESOLVED", "missing PR base SHA/ref");
+    const ref = assertSafeGitRef(rawRef, "GITHUB_BASE_REF");
+    const headRev = assertSafeGitRev(head, "GITHUB_SHA");
+    const mb = gitLines(["merge-base", "origin/" + ref, headRev], cwd, true)[0];
     if (!isSha(mb)) {
       ciFailClosed(
         "CI_PR_BASE_UNRESOLVED",
@@ -1499,13 +1529,13 @@ function resolveCiRange(env, cwd) {
 }
 
 function getLocalChangedFiles(cwd) {
-  const staged = gitLines("git diff --cached --name-only", cwd, true);
+  const staged = gitLines(["diff", "--cached", "--name-only"], cwd, true);
   if (staged.length > 0) return staged.map(normalizePath);
 
-  const unstaged = gitLines("git diff --name-only", cwd, true);
+  const unstaged = gitLines(["diff", "--name-only"], cwd, true);
   if (unstaged.length > 0) return unstaged.map(normalizePath);
 
-  return gitLines("git diff --name-only HEAD", cwd, true).map(normalizePath);
+  return gitLines(["diff", "--name-only", "HEAD"], cwd, true).map(normalizePath);
 }
 
 function getChangedFiles(opts) {
@@ -1517,7 +1547,12 @@ function getChangedFiles(opts) {
     ciFailClosed("CI_CONTEXT_UNRESOLVED", "GITHUB_ACTIONS without event");
   }
   const range = resolveCiRange(env, cwd);
-  return gitLines("git diff --name-only " + range.spec, cwd, false).map(
+  const from = assertSafeGitRev(range.from, "diff.from");
+  const to = assertSafeGitRev(range.to, "diff.to");
+  const spec = String(range.spec || "").includes("...")
+    ? [from + "..." + to]
+    : [from, to];
+  return gitLines(["diff", "--name-only", ...spec], cwd, false).map(
     normalizePath,
   );
 }
