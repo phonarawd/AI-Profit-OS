@@ -11,7 +11,7 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { randomBytes } from "node:crypto";
+import { randomBytes, randomInt } from "node:crypto";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { PostgresService } from "../db/postgres";
 import {
@@ -417,14 +417,12 @@ export class KrwDepositService {
       if (!r.rows[0]) throw new BadRequestException("fxSnapshotId not found");
       return { id: r.rows[0].id, usdKrw: r.rows[0].usd_krw };
     }
-    const latest = await this.db.query<{ id: string; usd_krw: string }>(
+    const r = await this.db.query<{ id: string; usd_krw: string }>(
       `SELECT id, usd_krw::text FROM public.fx_snapshots
         ORDER BY captured_at DESC LIMIT 1`,
     );
-    if (!latest.rows[0]) {
-      throw new BadRequestException("FX_SNAPSHOT_REQUIRED");
-    }
-    return { id: latest.rows[0].id, usdKrw: latest.rows[0].usd_krw };
+    if (!r.rows[0]) throw new ConflictException("FX snapshot unavailable");
+    return { id: r.rows[0].id, usdKrw: r.rows[0].usd_krw };
   }
 
   /** USDT ≈ USD · amountUsdt = payableKrw / usd_krw (오차0 decimal string). */
@@ -445,8 +443,8 @@ export class KrwDepositService {
   }
 
   private randomSuffix(): number {
-    // 1..99 — unique end digits for bank statement matching
-    return (randomBytes(1)[0] % 99) + 1;
+    // 1..99 — crypto.randomInt uses rejection sampling, avoiding modulo bias.
+    return randomInt(1, 100);
   }
 
   private randomDepositCode(): string {
@@ -472,33 +470,34 @@ export class KrwDepositService {
         depositorName: name,
       }),
     );
-    assertFingerprintMatch({ stored, incoming });
+    assertFingerprintMatch(stored, incoming, "krw_deposit_request");
   }
 
   private columns(): string {
-    return `id::text, user_id::text, requested_amount_krw, payable_amount_krw,
-            unique_suffix_krw, deposit_code, depositor_name, status,
-            expires_at, admin_note, ledger_journal_id::text, idempotency_key,
-            decided_at, decided_by_admin_id::text, created_at`;
+    return `id, user_id, requested_amount_krw, payable_amount_krw,
+      unique_suffix_krw, deposit_code, depositor_name, status, expires_at,
+      admin_note, ledger_journal_id, idempotency_key,
+      decided_at, decided_by_admin_id, created_at`;
   }
 
   private toV1(row: RequestRow, ledgerEntryId?: string): KrwDepositRequestV1 {
     return {
       id: row.id,
       userId: row.user_id,
-      requestedAmountKrw: row.requested_amount_krw,
-      payableAmountKrw: row.payable_amount_krw,
-      uniqueSuffixKrw: row.unique_suffix_krw,
+      requestedAmountKrw: Number(row.requested_amount_krw),
+      payableAmountKrw: Number(row.payable_amount_krw),
+      uniqueSuffixKrw: Number(row.unique_suffix_krw),
       depositCode: row.deposit_code,
       depositorName: row.depositor_name,
       status: row.status,
       expiresAt: row.expires_at.toISOString(),
       adminNote: row.admin_note ?? undefined,
-      ledgerEntryId: ledgerEntryId,
+      ledgerJournalId: row.ledger_journal_id ?? undefined,
+      ledgerEntryId,
       idempotencyKey: row.idempotency_key,
-      createdAt: row.created_at.toISOString(),
-      decidedAt: row.decided_at ? row.decided_at.toISOString() : undefined,
+      decidedAt: row.decided_at?.toISOString(),
       decidedByAdminId: row.decided_by_admin_id ?? undefined,
+      createdAt: row.created_at.toISOString(),
     };
   }
 }
