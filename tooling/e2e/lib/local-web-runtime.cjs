@@ -168,6 +168,17 @@ function startApiStub() {
   return new Promise((resolve, reject) => {
     server.once("error", reject);
     server.listen(endpoint.port, endpoint.host, () => resolve(server));
+  }).then(async (server) => {
+    const ok = await probe(
+      `http://${endpoint.host}:${endpoint.port}/api/v1/me/home-read`,
+    );
+    if (!ok) {
+      server.close();
+      throw new Error(
+        `local-web-runtime: API stub did not answer on ${endpoint.host}:${endpoint.port}`,
+      );
+    }
+    return server;
   });
 }
 

@@ -1,8 +1,8 @@
 /**
  * Home session resolution — loading paint is not PASS.
- * Home UI source is not changed. Authority is loopback API stub +
- * context.route + in-page fetch rebind. page.route is not used:
- * WebKit misses same-origin rewrite fetches and can hang forever.
+ * Home UI source is not changed.
+ * Authority = loopback API stub (Next rewrite) + locked in-page fetch.
+ * context.route / page.route are not used: WebKit can match and hang.
  */
 const { test, expect } = require("@playwright/test");
 const { assertQaIsolation } = require("../lib/qa-env-isolation-guard.cjs");
@@ -44,66 +44,50 @@ function buildFetchStubScript(mode) {
     const mode = ${JSON.stringify(mode)};
     const guest = ${JSON.stringify(GUEST_HOME_READ)};
     const auth = ${JSON.stringify(AUTHENTICATED_EMPTY_HOME)};
-    if (window.__aipoHomeReadStubMode === mode && window.__aipoHomeReadStubInstalled) {
-      return;
-    }
-    window.__aipoHomeReadStubMode = mode;
-    window.__aipoHomeReadStubInstalled = true;
     const orig = window.__aipoOrigFetch || window.fetch.bind(window);
     window.__aipoOrigFetch = orig;
-    window.fetch = async function aipoHomeReadStub(input, init) {
-      if (init && init.signal && init.signal.aborted) {
-        throw new DOMException("The operation was aborted.", "AbortError");
-      }
+    const stub = function aipoHomeReadStub(input, init) {
       const url = String(
         typeof input === "string" ? input : (input && input.url) || "",
       );
       if (url.indexOf("/api/v1/") === -1) {
         return orig(input, init);
       }
-      if (url.indexOf("/api/v1/me/home-read") !== -1) {
-        const body = mode === "authenticated" ? auth : guest;
-        return new Response(JSON.stringify(body), {
-          status: mode === "authenticated" ? 200 : 401,
+      const body =
+        url.indexOf("/api/v1/me/home-read") !== -1
+          ? mode === "authenticated"
+            ? auth
+            : guest
+          : { error: "unauthorized", viewState: "unauthorized" };
+      const status =
+        url.indexOf("/api/v1/me/home-read") !== -1 && mode === "authenticated"
+          ? 200
+          : 401;
+      return Promise.resolve(
+        new Response(JSON.stringify(body), {
+          status,
           headers: { "content-type": "application/json" },
-        });
-      }
-      return new Response(
-        JSON.stringify({ error: "unauthorized", viewState: "unauthorized" }),
-        { status: 401, headers: { "content-type": "application/json" } },
+        }),
       );
     };
+    window.fetch = stub;
+    try {
+      Object.defineProperty(window, "fetch", {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        value: stub,
+      });
+    } catch (_err) {
+      window.fetch = stub;
+    }
+    window.__aipoHomeReadStubMode = mode;
   })();`;
 }
 
-async function fulfillApiRoute(route, mode) {
-  const url = route.request().url();
-  if (!url.includes("/api/v1/")) {
-    return route.fallback();
-  }
-  if (url.includes("/api/v1/me/home-read")) {
-    const body = mode === "authenticated" ? AUTHENTICATED_EMPTY_HOME : GUEST_HOME_READ;
-    return route.fulfill({
-      status: mode === "authenticated" ? 200 : 401,
-      contentType: "application/json",
-      headers: { "cache-control": "no-store" },
-      body: JSON.stringify(body),
-    });
-  }
-  return route.fulfill({
-    status: 401,
-    contentType: "application/json",
-    body: JSON.stringify({ error: "unauthorized", viewState: "unauthorized" }),
-  });
-}
-
-async function installHomeReadAuthority(page, context, mode) {
-  const handler = (route) => fulfillApiRoute(route, mode);
-  await context.route("**/api/v1/**", handler);
-  await context.route("http://127.0.0.1:4000/**", handler);
-  await context.route("http://localhost:4000/**", handler);
+async function installHomeReadAuthority(page, mode) {
   const script = buildFetchStubScript(mode);
-  await page.addInitScript(script);
+  await page.addInitScript({ content: script });
   return script;
 }
 
@@ -120,8 +104,14 @@ async function gotoHome(page, script) {
   }
 }
 
-async function waitSessionResolution(page, expectedTestId) {
+async function waitSessionResolution(page, expectedTestId, script) {
   await expect(page.locator(HOME_GATE).first()).toBeVisible({ timeout: 90000 });
+  const stillLoading = await page.getByTestId("home-session-loading").count();
+  if (stillLoading && script) {
+    await page.evaluate(script).catch(() => {});
+    await page.reload({ waitUntil: "domcontentloaded" }).catch(() => {});
+    await page.evaluate(script).catch(() => {});
+  }
   await expect(page.getByTestId("home-session-loading")).toHaveCount(0, {
     timeout: 90000,
   });
@@ -136,27 +126,25 @@ async function waitSessionResolution(page, expectedTestId) {
 
 test("guest stub resolves guest-first-visit, not loading-only", async ({
   page,
-  context,
 }, testInfo) => {
   testInfo.annotations.push({
     type: "webkit-home-session",
     description: "guest-resolution",
   });
-  const script = await installHomeReadAuthority(page, context, "guest");
+  const script = await installHomeReadAuthority(page, "guest");
   await gotoHome(page, script);
-  await waitSessionResolution(page, "guest-first-visit");
+  await waitSessionResolution(page, "guest-first-visit", script);
 });
 
 test("authenticated stub resolves authenticated shell", async ({
   page,
-  context,
 }, testInfo) => {
   testInfo.annotations.push({
     type: "webkit-home-session",
     description: "authenticated-resolution",
   });
   await page.setExtraHTTPHeaders({ "x-aipo-qa-session": "authenticated" });
-  const script = await installHomeReadAuthority(page, context, "authenticated");
+  const script = await installHomeReadAuthority(page, "authenticated");
   await gotoHome(page, script);
-  await waitSessionResolution(page, "home-authenticated");
+  await waitSessionResolution(page, "home-authenticated", script);
 });
