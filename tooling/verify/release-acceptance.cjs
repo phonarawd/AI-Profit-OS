@@ -59,8 +59,14 @@ if (contract.production_release_requires.artifact_digest !== true) {
 if (contract.production_release_requires.runtime_qa !== true) {
   fail("production release must require artifact runtime QA");
 }
+if (contract.production_release_requires.api_runtime_qa !== true) {
+  fail("production release must require API runtime QA");
+}
 if (!contract.artifact_provenance || contract.artifact_provenance.runtime_qa_required !== true) {
   fail("artifact provenance must require runtime QA");
+}
+if (contract.artifact_provenance.api_runtime_qa_required !== true) {
+  fail("artifact provenance must require API runtime QA");
 }
 if (contract.artifact_provenance.worker_prebuilt !== true) {
   fail("artifact provenance must require worker prebuilt");
@@ -75,6 +81,7 @@ const artifactContract = JSON.parse(
   fs.readFileSync(path.join(root, "governance/release-master/release-artifact.v1.json"), "utf8"),
 );
 if (artifactContract.runtime_qa_required !== true) fail("release-artifact contract must require runtime QA");
+if (artifactContract.api_runtime_qa_required !== true) fail("release-artifact contract must require API runtime QA");
 if (artifactContract.worker_prebuilt !== true) fail("release-artifact contract must require worker prebuilt");
 if (artifactContract.worker_deploy_no_bundle !== true) {
   fail("release-artifact contract must require worker no-bundle");
@@ -96,6 +103,15 @@ function withQa(input) {
         verified: true,
         artifact_digest: ARTIFACT_DIGEST,
         no_bundle: true,
+      },
+      api_runtime: {
+        verified: true,
+        source_sha: input.sha,
+        git_sha: input.sha,
+        git_sha_source: "RENDER_GIT_COMMIT",
+        bundle_digest: ARTIFACT_DIGEST,
+        api_artifact_digest: "e".repeat(64),
+        service: "api-nest",
       },
     },
   };
@@ -160,6 +176,22 @@ check(
   ),
   "FAIL",
 );
+
+
+const noApiRuntime = withQa({
+  sha: "a".repeat(40),
+  event_name: "workflow_dispatch",
+  qa_phase: "full",
+  jobs: successJobs,
+});
+delete noApiRuntime.artifact_qa.api_runtime;
+const noApiVerdict = evaluateVerdict(noApiRuntime, contract);
+if (
+  noApiVerdict.verdict !== "FAIL" ||
+  !noApiVerdict.fails.includes("api_artifact_runtime_qa_missing")
+) {
+  fail("full release without API runtime QA must FAIL");
+}
 
 const runtimeDigestLie = evaluateVerdict(
   {
@@ -551,6 +583,9 @@ if (!/bind-qa-artifact\.cjs/.test(wf) || !/fetch-release-bundle\.cjs/.test(wf)) 
 if (!/artifact-runtime-qa\.cjs/.test(wf)) {
   fail("release-acceptance.yml must run artifact runtime QA");
 }
+if (!/api-artifact-runtime-qa\.cjs/.test(wf)) {
+  fail("release-acceptance.yml must run exact bundled API runtime QA");
+}
 if (!/--artifact-qa/.test(wf)) fail("release-acceptance.yml must pass artifact-qa into verdict");
 
 const deploy = fs.readFileSync(path.join(root, ".github/workflows/deploy-cloudflare.yml"), "utf8");
@@ -604,6 +639,7 @@ if (!/unstable_dev/.test(runtimeSrc) || !/noBundle:\s*true/.test(runtimeSrc)) {
 }
 
 const os = require("os");
+const { writeApiManifest } = require("../release/api-artifact-provenance.cjs");
 const {
   packFromPayload,
   verifyBundle,
@@ -634,6 +670,11 @@ try {
   fs.writeFileSync(path.join(payloadSrc, "apps/web/.open-next/assets/a.txt"), "asset");
   fs.writeFileSync(path.join(payloadSrc, "apps/admin/.open-next/worker.js"), "ops-worker");
   fs.writeFileSync(path.join(payloadSrc, "apps/admin/.open-next/assets/a.txt"), "asset");
+  const apiDist = path.join(payloadSrc, "services/api-nest/dist");
+  fs.mkdirSync(apiDist, { recursive: true });
+  const apiEntry = path.join(apiDist, "main.js");
+  fs.writeFileSync(apiEntry, "api-main");
+  writeApiManifest(apiDist, fullSha, apiEntry);
   for (const name of WORKER_SNAPSHOTS) writeFakeWorker(payloadSrc, name);
   const bundle = path.join(tmpRoot, "bundle");
   const packed = packFromPayload(payloadSrc, bundle, fullSha);
@@ -643,6 +684,12 @@ try {
   if (!/^[0-9a-f]{64}$/.test(packed.artifact_digest)) fail("pack must emit sha256 digest");
   const verified = verifyBundle(bundle, { sourceSha: fullSha, digest: packed.artifact_digest });
   if (verified.digest !== packed.artifact_digest) fail("qa digest must match packed digest");
+  if (!verified.api_artifact || verified.api_artifact.artifact_kind !== "api-nest") {
+    fail("verified bundle must carry api-nest artifact metadata");
+  }
+  if (verified.api_artifact.source_sha !== fullSha) {
+    fail("verified api artifact source SHA must match release SHA");
+  }
   try {
     packFromPayload(payloadSrc, bundle, fullSha);
     fail("second pack must be forbidden");
