@@ -19,7 +19,15 @@
       167,
       168,
       169,
-      170
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178
     ]
   },
   "render": {
@@ -52,13 +60,20 @@
   "blockers": [
     "ISOLATED_STAGING_NOT_READY",
     "PRODUCTION_DB_HARDENING_NOT_READY",
+    "PRODUCTION_DEFAULT_ACL_UNSAFE_FOR_FUTURE_TABLES",
     "RENDER_AUTODEPLOY_ENABLED",
     "PRODUCTION_LIVE_SHA_DIFFERS_FROM_RECOVERY",
     "TRON_HD_VAULT_NOT_PROVEN",
     "ENGINE_NOT_ISSUED",
     "ENGINE_REBASE_REQUIRED",
     "ENGINE_ACK_MISSING",
-    "FINAL_PRODUCTION_DECISION_ENFORCEMENT_NOT_WIRED"
+    "FINAL_PRODUCTION_DECISION_ENFORCEMENT_NOT_WIRED",
+    "PRODUCTION_DEPLOY_PATH_BYPASS_PRESENT_IN_RECOVERY",
+    "RELEASE_MANIFEST_METADATA_NOT_LOCKED_IN_RECOVERY",
+    "PRODUCTION_VERDICT_ENGINE_BINDING_NOT_ENFORCED_IN_RECOVERY",
+    "STAGING_RENDER_DB_BINDING_EVIDENCE_NOT_STRICT_IN_RECOVERY",
+    "RENDER_PRODUCTION_IDENTITY_NOT_PINNED_IN_RECOVERY",
+    "DB_DEFAULT_ACL_READINESS_NOT_CHECKED_IN_RECOVERY"
   ],
   "next_actions": [
     {
@@ -102,6 +117,66 @@
       "id": "FINAL_DECISION_ENFORCEMENT",
       "action": "Wire an exact-SHA machine-generated GO_CANDIDATE decision into every Production deploy path before release authorization.",
       "production_mutation": false
+    },
+    {
+      "order": 8,
+      "id": "RECOVERY_SAFETY_TRANSPLANT",
+      "action": "Review #172/#174/#178 and the reconciled #177 integration proof, then manually transplant only accepted minimal diffs onto the then-current recovery head; rerun exact-head CI after every protected-scope change.",
+      "production_mutation": false
     }
-  ]
+  ],
+  "night_safety_work": {
+    "integration_policy": "DRAFT_ONLY_MANUAL_TRANSPLANT_AFTER_REVIEW",
+    "production_mutation": 0,
+    "provider_mutation": 0,
+    "engine_ack_mutation": 0,
+    "ghas_dismissal": 0,
+    "prs": [
+      {
+        "pr": 170,
+        "area": "final production decision gate",
+        "ci": "SUCCESS"
+      },
+      {
+        "pr": 171,
+        "area": "current Founder packet",
+        "ci": "SUCCESS"
+      },
+      {
+        "pr": 172,
+        "area": "staging Render-to-Supabase binding fail-closed",
+        "ci": "SUCCESS"
+      },
+      {
+        "pr": 173,
+        "area": "Production deploy path acceptance lock",
+        "ci": "SUCCESS"
+      },
+      {
+        "pr": 174,
+        "area": "canonical Render Production identity",
+        "ci": "SUCCESS"
+      },
+      {
+        "pr": 175,
+        "area": "release/API/worker manifest identity + stale extraction cleanup",
+        "ci": "SUCCESS"
+      },
+      {
+        "pr": 176,
+        "area": "Production verdict authoritative Engine binding",
+        "ci": "SUCCESS"
+      },
+      {
+        "pr": 177,
+        "area": "combined #173/#175/#176 integration proof",
+        "ci": "SUCCESS"
+      },
+      {
+        "pr": 178,
+        "area": "DB default ACL readiness + staging SQL",
+        "ci": "SUCCESS"
+      }
+    ]
+  }
 }
