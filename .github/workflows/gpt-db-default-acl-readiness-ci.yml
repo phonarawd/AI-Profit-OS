@@ -5,6 +5,8 @@ on:
     paths:
       - "tooling/release/db-hardening-readiness.cjs"
       - "tooling/verify/db-hardening-readiness.cjs"
+      - "tooling/verify/staging-db-hardening.cjs"
+      - "supabase/staging/20260901120200_default_acl.sql"
       - ".github/workflows/gpt-db-default-acl-readiness-ci.yml"
   workflow_dispatch:
 
@@ -23,3 +25,5 @@ jobs:
           node-version: "22.14.0"
       - name: Verify DB hardening including default ACL
         run: node tooling/verify/db-hardening-readiness.cjs
+      - name: Verify staging hardening SQL contract
+        run: node tooling/verify/staging-db-hardening.cjs
