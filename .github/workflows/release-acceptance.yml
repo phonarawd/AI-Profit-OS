@@ -76,6 +76,17 @@ jobs:
             --extract-root . \
             --out _tmp_release_acceptance/artifact-qa.json \
             --optional
+      - name: API artifact runtime acceptance
+        env:
+          SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          set -euo pipefail
+          node tooling/release/api-artifact-runtime-qa.cjs \
+            --sha "$SHA" \
+            --bundle _tmp_release_acceptance/bundle \
+            --extract-root . \
+            --out _tmp_release_acceptance/artifact-qa.json \
+            --optional
       - name: Fail-closed release verdict
         run: >
           node tooling/release/release-acceptance-verdict.cjs
