@@ -1,0 +1,143 @@
+{
+  "schema": "governance.recovery.founder-action-packet.v1",
+  "observed_at": "2026-09-01T06:50:00Z",
+  "implementation_sha": "78ae47931f8b06c96a152122f44db5df613365b2",
+  "DO_NOT_EXECUTE_WITHOUT_FOUNDER": true,
+  "actions": [
+    {
+      "id": 1,
+      "title": "Do not merge PR 114",
+      "why": "Draft recovery evidence only. Production release not authorized.",
+      "exact_action": "Keep PR 114 draft. No merge. No auto-merge.",
+      "changes_production": false,
+      "reversible": true,
+      "DO_NOT_EXECUTE": true
+    },
+    {
+      "id": 2,
+      "title": "Engine-acceptance controlled amendment",
+      "why": "qa-matrix QA6/QA8 fail hash_precheck MISMATCH while HOLD_CONTROLLED_AMENDMENT applied=0. Official k6 checksum verified. Workflow file must not be applied until authorized.",
+      "exact_action": "Review governance/recovery/engine-acceptance-amendment-packet.v1.json. Approve or reject apply.",
+      "changes_production": false,
+      "reversible": true,
+      "DO_NOT_EXECUTE": true
+    },
+    {
+      "id": 3,
+      "title": "Put release-build.yml on default branch or authorize dispatch path",
+      "why": "workflow_dispatch 404: workflow not on default branch. CURRENT_RECOVERY_RELEASE_ARTIFACT cannot be produced.",
+      "exact_action": "Founder-authorized path to publish release-build workflow on main without merging the whole recovery train, or accept recovery merge later.",
+      "changes_production": false,
+      "reversible": true,
+      "DO_NOT_EXECUTE": true
+    },
+    {
+      "id": 4,
+      "title": "GitHub preview vs production environment split",
+      "why": "deploy-cloudflare.yml uses environment: production even for preview.",
+      "exact_action": "Create/protect preview environment. Point preview jobs at it. Do not mutate rulesets without review.",
+      "changes_production": false,
+      "reversible": true,
+      "DO_NOT_EXECUTE": true
+    },
+    {
+      "id": 5,
+      "title": "Provision real non-production Nest/API + STAGING_API_HOST",
+      "why": "No confirmed staging Nest. Preview must fail closed rather than call Production API.",
+      "exact_action": "Confirm Render workspace or other host. Set STAGING_API_HOST. Never inherit Production API.",
+      "changes_production": false,
+      "reversible": true,
+      "DO_NOT_EXECUTE": true
+    },
+    {
+      "id": 6,
+      "title": "Production referral_code backfill",
+      "why": "users=3, referral_code populated=0.",
+      "exact_action": "Approved backfill only. Do not invent codes from edges.",
+      "changes_production": true,
+      "reversible": false,
+      "DO_NOT_EXECUTE": true
+    },
+    {
+      "id": 7,
+      "title": "Production deposit_config provisioning",
+      "why": "rows=0. No placeholder bank account.",
+      "exact_action": "Insert authoritative 4-field config when ready.",
+      "changes_production": true,
+      "reversible": true,
+      "DO_NOT_EXECUTE": true
+    },
+    {
+      "id": 8,
+      "title": "Production migration provenance decision",
+      "why": "Ledger tip 20260821223109_beginner_onboarding_experience. Later objects exist. DB_PROVENANCE FAIL/NOT_PROVEN.",
+      "exact_action": "Decide cause and repair path. History repair forbidden until approved.",
+      "changes_production": true,
+      "reversible": false,
+      "DO_NOT_EXECUTE": true
+    },
+    {
+      "id": 9,
+      "title": "admin_audit_events Production privilege correction",
+      "why": "RLS ON but service_role UPDATE/DELETE/TRUNCATE + BYPASSRLS. Append-only unresolved.",
+      "exact_action": "Apply approved privilege delta. Staging SQL exists under supabase/staging/ — Production apply forbidden here.",
+      "changes_production": true,
+      "reversible": true,
+      "DO_NOT_EXECUTE": true
+    },
+    {
+      "id": 10,
+      "title": "Production push RLS + deny policies + ALTER DEFAULT PRIVILEGES",
+      "why": "push_control and push_subscriptions RLS OFF. service_role broad DML remains.",
+      "exact_action": "Approved RLS/deny/default privileges. Not anonymous public exposure without evidence.",
+      "changes_production": true,
+      "reversible": true,
+      "DO_NOT_EXECUTE": true
+    },
+    {
+      "id": 11,
+      "title": "Render workspace confirmation",
+      "why": "RENDER = BLOCKED_EXTERNAL_ACTION(workspace confirmation).",
+      "exact_action": "Confirm exact workspace. Do not pick arbitrarily.",
+      "changes_production": false,
+      "reversible": true,
+      "DO_NOT_EXECUTE": true
+    },
+    {
+      "id": 12,
+      "title": "Production secrets: Resend, OAuth, CoinGecko license",
+      "why": "External providers. #98 CoinGecko commercial decision still external.",
+      "exact_action": "Provision secrets/config. License decision for CoinGecko.",
+      "changes_production": true,
+      "reversible": true,
+      "DO_NOT_EXECUTE": true
+    },
+    {
+      "id": 13,
+      "title": "BrowserStack / real-device matrix if required for H-AQA-2",
+      "why": "Desktop Chromium != BrowserStack.",
+      "exact_action": "Connect BrowserStack or accept UNKNOWN.",
+      "changes_production": false,
+      "reversible": true,
+      "DO_NOT_EXECUTE": true
+    },
+    {
+      "id": 14,
+      "title": "Classify GitHub default CodeQL 3s check",
+      "why": "Workflow analyze PASS. Separate CodeQL check fails in ~3s.",
+      "exact_action": "Inspect GitHub code scanning check configuration. Do not weaken analyze job.",
+      "changes_production": false,
+      "reversible": true,
+      "DO_NOT_EXECUTE": true
+    },
+    {
+      "id": 15,
+      "title": "RC formal + release acceptance + Production deploy",
+      "why": "No current recovery artifact digest, no acceptance, no deploy binding.",
+      "exact_action": "Only after RC SHA + schema + staging E2E + Founder GO.",
+      "changes_production": true,
+      "reversible": false,
+      "DO_NOT_EXECUTE": true
+    }
+  ]
+}

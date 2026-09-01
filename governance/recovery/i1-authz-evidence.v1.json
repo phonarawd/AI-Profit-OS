@@ -1,0 +1,20 @@
+{
+  "schema": "governance.recovery.i1-authz-evidence.v1",
+  "observed_at": "2026-09-01T06:45:00Z",
+  "source_sha": "78ae47931f8b06c96a152122f44db5df613365b2",
+  "ADMIN_ROLE": "LOCKED_5 — super, finance, cs, marketing, risk. Invented roles 0.",
+  "SERVER_SIDE_AUTHZ_VERIFIED": "PARTIAL — admin-guard.selftest 25/25 Nest HTTP; rel-405-rbac-audit PASS; UI hide is not authz.",
+  "RLS_OR_DATA_ACCESS_VERIFIED": "PARTIAL_READ_ONLY — Production SELECT facts only. admin_audit_events RLS ON; push_control/push_subscriptions RLS OFF; service_role BYPASSRLS=true. No Production GRANT/RLS mutation.",
+  "AUDIT_LOG_VERIFIED": "PARTIAL — schema+sink fixture persist/denied. Production admin_audit_events rows=0. Privilege invariant unresolved.",
+  "REAL_DATA_SOURCE_VERIFIED": "PARTIAL — Nest admin routes classified; no staging Nest E2E.",
+  "E2E_ALLOWED_AND_DENIED_CASES": "PARTIAL — Nest HTTP allow/deny 25. Browser admin privileged path NOT_PROVEN. Staging E2E BLOCKED_EXTERNAL_ACTION.",
+  "RAW_ARTIFACTS": [
+    "services/api-nest admin-guard.selftest",
+    "tooling/verify/rel-405-rbac-audit.cjs",
+    "schemas/admin-rbac.v1.json",
+    "schemas/admin-audit.v1.json"
+  ],
+  "MFA": "UNKNOWN",
+  "STATUS": "PARTIAL",
+  "I2_OPERATIONS_HOME": "BLOCKED_HOME_LOCK"
+}
