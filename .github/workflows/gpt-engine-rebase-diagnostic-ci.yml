@@ -13,18 +13,37 @@ on:
 
 jobs:
   diagnose:
+    name: diagnose-${{ matrix.label }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: recovery-head
+            target_sha: 305c4e32a58254ab5987c60d42816dee26239895
+          - label: pr114-merge
+            target_sha: 7cf57b814ac3cbe4162750a8aae3a05d4f1e7c67
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+      - name: Checkout diagnostic source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          version: 10.14.0
+          path: diagnostic
+
+      - name: Checkout exact target context
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ matrix.target_sha }}
+          fetch-depth: 1
+          path: target
+
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: "22"
-          cache: "pnpm"
-      - name: Install
-        run: pnpm install --frozen-lockfile
-      - name: Compute exact Engine rebase diagnostics
-        run: node tooling/verify/engine-rebase-diagnostic.cjs
+
+      - name: Compute exact Engine context diagnostics
+        env:
+          AIPO_DIAG_ROOT: ${{ github.workspace }}/target
+          AIPO_DIAG_LABEL: ${{ matrix.label }}
+          AIPO_DIAG_SHA: ${{ matrix.target_sha }}
+        run: node diagnostic/tooling/verify/engine-rebase-diagnostic.cjs
