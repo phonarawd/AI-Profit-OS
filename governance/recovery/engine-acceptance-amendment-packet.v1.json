@@ -19,7 +19,10 @@
     "url": "https://github.com/grafana/k6/releases/download/v0.54.0/k6-v0.54.0-linux-amd64.tar.gz",
     "sha256": "c7f03434854f837b6790ee81572e4b0f955241974c79a43cbb9f8d0fef069589",
     "checksum_source": "https://github.com/cashapp/hermit-packages/blob/master/k6.hcl",
-    "official_checksums_txt": "NOT_PROVEN",
+    "official_checksums_txt": "K6_OFFICIAL_CHECKSUM_VERIFIED",
+    "official_checksums_url": "https://github.com/grafana/k6/releases/download/v0.54.0/k6-v0.54.0-checksums.txt",
+    "official_checksums_asset_id": 195857275,
+    "official_linux_amd64_tar_gz_sha256": "c7f03434854f837b6790ee81572e4b0f955241974c79a43cbb9f8d0fef069589",
     "mismatch_behavior": "sha256sum -c fails the job"
   },
   "artifacts": {
