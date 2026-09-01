@@ -6,6 +6,7 @@ import {
   Body,
   Controller,
   Get,
+  Header,
   Post,
   Req,
   Res,
@@ -16,9 +17,12 @@ import {
   verifyAdminAccessToken,
 } from "./admin-token";
 import {
+  ADMIN_CSRF_COOKIE_NAME,
   ADMIN_SESSION_COOKIE_NAME,
+  attachAdminCsrfCookie,
   attachAdminSessionCookies,
   clearAdminSessionCookies,
+  mintAdminCsrfSecret,
   planAdminLogout,
   requestHasQueryBearer,
 } from "./admin-session.cookies";
@@ -46,6 +50,7 @@ type CookieResponse = {
 @Controller("admin-session")
 export class AdminSessionController {
   @Post()
+  @Header("Cache-Control", "no-store")
   exchange(
     @Body() body: Record<string, unknown>,
     @Req() req: CookieRequest,
@@ -67,16 +72,21 @@ export class AdminSessionController {
         err instanceof AdminTokenError ? err.code : "ADMIN_AUTH_INVALID",
       );
     }
-    attachAdminSessionCookies(res, token);
+    const csrfToken = attachAdminSessionCookies(res, token);
     return {
       connected: true,
       adminId: principal.adminId,
       role: principal.role,
+      csrfToken,
     };
   }
 
   @Get()
-  status(@Req() req: CookieRequest) {
+  @Header("Cache-Control", "no-store")
+  status(
+    @Req() req: CookieRequest,
+    @Res({ passthrough: true }) res: CookieResponse,
+  ) {
     if (requestHasQueryBearer(req.url ?? req.originalUrl)) {
       return { connected: false };
     }
@@ -86,10 +96,20 @@ export class AdminSessionController {
     }
     try {
       const principal = verifyAdminAccessToken(token);
+      let csrfToken = String(
+        req.cookies?.[ADMIN_CSRF_COOKIE_NAME] ?? "",
+      ).trim();
+      if (csrfToken.length < 32) {
+        csrfToken = mintAdminCsrfSecret();
+      }
+      // Re-set on every authenticated status read so legacy JS-readable cookies
+      // are upgraded to HttpOnly without rotating the admin bearer.
+      attachAdminCsrfCookie(res, csrfToken);
       return {
         connected: true,
         adminId: principal.adminId,
         role: principal.role,
+        csrfToken,
       };
     } catch {
       return { connected: false };
@@ -97,6 +117,7 @@ export class AdminSessionController {
   }
 
   @Post("logout")
+  @Header("Cache-Control", "no-store")
   logout(
     @Req() req: CookieRequest,
     @Res({ passthrough: true }) res: CookieResponse,

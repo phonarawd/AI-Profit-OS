@@ -45,21 +45,31 @@ function cookieBase() {
   };
 }
 
+export function attachAdminCsrfCookie(
+  res: CookieResponse,
+  csrf: string,
+): void {
+  const base = cookieBase();
+  res.cookie(ADMIN_CSRF_COOKIE_NAME, csrf, {
+    ...base,
+    httpOnly: true,
+  });
+}
+
 export function attachAdminSessionCookies(
   res: CookieResponse,
   accessToken: string,
   csrf = mintAdminCsrfSecret(),
-): void {
+): string {
   const base = cookieBase();
   res.cookie(ADMIN_SESSION_COOKIE_NAME, accessToken, {
     ...base,
     httpOnly: true,
   });
-  // 더블서브밋 동기화 토큰 — 세션 비밀이 아니다. HttpOnly로 바꾸면 JS가 헤더를 못 채운다.
-  res.cookie(ADMIN_CSRF_COOKIE_NAME, csrf, {
-    ...base,
-    httpOnly: false,
-  });
+  // CSRF token은 HttpOnly cookie에 보관하고 same-origin session 응답으로
+  // JS 메모리에 bootstrap한다. document.cookie 저장은 사용하지 않는다.
+  attachAdminCsrfCookie(res, csrf);
+  return csrf;
 }
 
 export function clearAdminSessionCookies(res: CookieResponse): void {

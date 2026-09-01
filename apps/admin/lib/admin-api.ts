@@ -1,4 +1,4 @@
-import { ADMIN_CSRF_HEADER, getAdminCsrf } from "./admin-session";
+import { ADMIN_CSRF_HEADER, ensureAdminCsrf } from "./admin-session";
 
 export type AdminFailureKind =
   | "unauthorized"
@@ -72,7 +72,7 @@ export async function adminRequest<T>(
   }
   const method = String(init.method ?? "GET").toUpperCase();
   if (method !== "GET" && method !== "HEAD") {
-    const csrf = getAdminCsrf();
+    const csrf = await ensureAdminCsrf();
     if (csrf) headers[ADMIN_CSRF_HEADER] = csrf;
   }
 

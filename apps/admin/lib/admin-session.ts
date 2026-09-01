@@ -4,25 +4,29 @@ export const ADMIN_SESSION_CHANGE_EVENT = "aipo.admin.session.change";
 export const ADMIN_CSRF_COOKIE_NAME = "aipo_admin_csrf";
 export const ADMIN_CSRF_HEADER = "X-Admin-CSRF";
 
+let adminCsrfToken: string | null = null;
+
+function readCsrfToken(body: unknown): string | null {
+  if (!body || typeof body !== "object") return null;
+  const value = (body as { csrfToken?: unknown }).csrfToken;
+  if (typeof value !== "string") return null;
+  const token = value.trim();
+  return token.length >= 32 ? token : null;
+}
+
 function notifyAdminSessionChange(): void {
   if (typeof window === "undefined") return;
   window.dispatchEvent(new Event(ADMIN_SESSION_CHANGE_EVENT));
 }
 
-function readCookie(name: string): string | null {
-  if (typeof document === "undefined") return null;
-  const parts = document.cookie.split(";");
-  for (const part of parts) {
-    const trimmed = part.trim();
-    if (!trimmed.startsWith(name + "=")) continue;
-    const value = decodeURIComponent(trimmed.slice(name.length + 1));
-    return value.trim() || null;
-  }
-  return null;
+export function getAdminCsrf(): string | null {
+  return adminCsrfToken;
 }
 
-export function getAdminCsrf(): string | null {
-  return readCookie(ADMIN_CSRF_COOKIE_NAME);
+export async function ensureAdminCsrf(): Promise<string | null> {
+  if (adminCsrfToken) return adminCsrfToken;
+  await fetchAdminSessionConnected();
+  return adminCsrfToken;
 }
 
 export async function connectAdminSession(token: string): Promise<boolean> {
@@ -36,14 +40,17 @@ export async function connectAdminSession(token: string): Promise<boolean> {
     body: JSON.stringify({ token: next }),
   });
   if (!res.ok) return false;
-  const body = (await res.json().catch(() => null)) as { connected?: unknown } | null;
+  const body = (await res.json().catch(() => null)) as
+    | { connected?: unknown; csrfToken?: unknown }
+    | null;
   const ok = body?.connected === true;
+  adminCsrfToken = ok ? readCsrfToken(body) : null;
   if (ok) notifyAdminSessionChange();
   return ok;
 }
 
 export async function disconnectAdminSession(): Promise<void> {
-  const csrf = getAdminCsrf();
+  const csrf = await ensureAdminCsrf();
   await fetch("/api/v1/admin-session/logout", {
     method: "POST",
     credentials: "include",
@@ -53,6 +60,7 @@ export async function disconnectAdminSession(): Promise<void> {
       ...(csrf ? { [ADMIN_CSRF_HEADER]: csrf } : {}),
     },
   }).catch(() => undefined);
+  adminCsrfToken = null;
   notifyAdminSessionChange();
 }
 
@@ -64,9 +72,14 @@ export async function fetchAdminSessionConnected(): Promise<boolean> {
       headers: { Accept: "application/json" },
     });
     if (!res.ok) return false;
-    const body = (await res.json().catch(() => null)) as { connected?: unknown } | null;
-    return body?.connected === true;
+    const body = (await res.json().catch(() => null)) as
+      | { connected?: unknown; csrfToken?: unknown }
+      | null;
+    const connected = body?.connected === true;
+    adminCsrfToken = connected ? readCsrfToken(body) : null;
+    return connected;
   } catch {
+    adminCsrfToken = null;
     return false;
   }
 }

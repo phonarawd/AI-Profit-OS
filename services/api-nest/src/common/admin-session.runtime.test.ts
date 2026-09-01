@@ -119,15 +119,15 @@ test("planned revoke_and_clear invalidates that token", () => {
   assert.equal(isAdminAccessTokenRevoked(token), true);
 });
 
-test("double-submit CSRF cookie stays readable and is not the session secret", () => {
+test("CSRF cookie is HttpOnly and remains distinct from the session secret", () => {
   const src = fs.readFileSync(
     path.join(import.meta.dirname, "admin-session.cookies.ts"),
     "utf8",
   );
   assert.match(src, /httpOnly:\s*true/);
-  assert.match(src, /httpOnly:\s*false/);
+  assert.doesNotMatch(src, /httpOnly:\s*false/);
   assert.match(src, /sameSite:\s*"strict"/);
-  assert.match(src, /더블서브밋/);
+  assert.match(src, /HttpOnly cookie/);
   const session = "admin-access-token-fixture";
   const csrf = mintAdminCsrfSecret();
   assert.notEqual(session, csrf);
