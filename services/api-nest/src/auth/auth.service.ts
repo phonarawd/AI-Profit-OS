@@ -23,6 +23,7 @@ import { join } from "node:path";
 import { loadPhase0Env } from "../config/phase0.env";
 import { PostgresService } from "../db/postgres";
 import { NotificationPrefsService } from "../inbox/notification-prefs.service";
+import { UserUxPrefsService } from "../ux-prefs/user-ux-prefs.service";
 import { LedgerProvisionService } from "../ledger/ledger.provision.service";
 import { PracticeGrantService } from "../ledger/practice-grant.service";
 import {
@@ -96,6 +97,7 @@ export class AuthService {
     private readonly ledgerProvision: LedgerProvisionService,
     private readonly practiceGrant: PracticeGrantService,
     private readonly notificationPrefs: NotificationPrefsService,
+    private readonly uxPrefs: UserUxPrefsService,
     private readonly privacy: PrivacyAccountService,
     private readonly magicLink: MagicLinkService,
     private readonly oauthIdentity: OauthIdentityService,
@@ -112,6 +114,7 @@ export class AuthService {
     await this.practiceGrant.grantWelcome(userId);
     /** UI §50.1n — 가입 시 알림 prefs 전부 ON */
     await this.notificationPrefs.ensureDefaultsForUser(userId);
+    await this.uxPrefs.ensureDefaultsForUser(userId);
   }
 
   /** Fail-closed: admin issuer must never mint user sessions */

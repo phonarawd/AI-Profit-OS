@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { EventsModule } from "../events/events.module";
 import { InboxModule } from "../inbox/inbox.module";
+import { UserUxPrefsModule } from "../ux-prefs/user-ux-prefs.module";
 import { LedgerModule } from "../ledger/ledger.module";
 import { PostgresService } from "../db/postgres";
 import { ResendEmailProvider } from "../wallet/resend-email.provider";
@@ -14,7 +15,7 @@ import { WebauthnAssertService } from "./webauthn-assert.service";
 import { PostgresProofStore } from "./identity-proof.store";
 
 @Module({
-  imports: [EventsModule, LedgerModule, InboxModule],
+  imports: [EventsModule, LedgerModule, InboxModule, UserUxPrefsModule],
   controllers: [AuthController],
   providers: [
     AuthService,

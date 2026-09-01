@@ -17,6 +17,11 @@ import {
 import { DepositAmountPanel } from "@aipo/ui/components/wallet/DepositAmountPanel";
 import { NetworkPlainWarning } from "@aipo/ui/components/wallet/NetworkPlainWarning";
 import { T } from "@aipo/ui/copy/ko";
+import {
+  classifyPrefsHttp,
+  parseUserUxPrefs,
+  resolveDepositTab,
+} from "./deposit-tab";
 import Link from "next/link";
 import {
   classifyKrwInstructionsHttp,
@@ -56,7 +61,18 @@ type KrwPending = {
 
 function DepositContent() {
   const searchParams = useSearchParams();
-  const tab = searchParams.get("tab") === "krw" ? "krw" : "usdt";
+  const urlTab = searchParams.get("tab");
+  const [storedDeposit, setStoredDeposit] = useState<
+    import("./deposit-tab").UxDepositPref | null
+  >(null);
+  const [uxView, setUxView] = useState<import("./deposit-tab").PrefsReadView>("loading");
+  const [uxPrefs, setUxPrefs] = useState<import("./deposit-tab").UserUxPrefs | null>(null);
+  const resolvedTab = resolveDepositTab({
+    urlTab,
+    stored: storedDeposit,
+    prefsView: uxView,
+  });
+  const tab = resolvedTab.tab;
   const suggestUsdt = useMemo(
     () => parseSuggest(searchParams.get("suggest")),
     [searchParams],
@@ -76,6 +92,43 @@ function DepositContent() {
   const krwIdem = useRef(
     createIdempotencyLifecycle({ mint: () => mintMoneyIdempotencyKey("krw") }),
   );
+
+  useEffect(() => {
+    const ac = new AbortController();
+    void (async () => {
+      try {
+        const res = await fetch("/api/v1/me/ux-prefs", {
+          credentials: "include",
+          cache: "no-store",
+          headers: { Accept: "application/json" },
+          signal: ac.signal,
+        });
+        if (!res.ok) {
+          setUxPrefs(null);
+          setStoredDeposit(null);
+          setUxView(classifyPrefsHttp(res.status));
+          return;
+        }
+        const parsed = parseUserUxPrefs(await res.json().catch(() => null));
+        if (!parsed) {
+          setUxPrefs(null);
+          setStoredDeposit(null);
+          setUxView("unavailable");
+          return;
+        }
+        setUxPrefs(parsed);
+        setStoredDeposit(parsed.depositPref);
+        setUxView("ready");
+      } catch {
+        if (!ac.signal.aborted) {
+          setUxPrefs(null);
+          setStoredDeposit(null);
+          setUxView("unavailable");
+        }
+      }
+    })();
+    return () => ac.abort();
+  }, []);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -253,6 +306,7 @@ function DepositContent() {
       className={styles.page}
       data-testid="wallet-deposit-page"
       data-deposit-tab={tab}
+      data-deposit-tab-source={resolvedTab.source}
       data-deposit-suggest={suggestUsdt > 0 ? String(suggestUsdt) : undefined}
       data-address-state={tab === "usdt" ? addressState : undefined}
       data-krw-state={tab === "krw" ? krwState : undefined}
@@ -262,8 +316,9 @@ function DepositContent() {
       <DepositConsult
         fact={{
           ...(principalUsdt ? { balanceUsdt: principalUsdt } : {}),
-          toneBand: "mid",
-          fontScale: "md",
+          ...(uxPrefs
+            ? { toneBand: uxPrefs.toneBand, fontScale: uxPrefs.fontScale }
+            : {}),
           depositPref: tab,
         }}
       />

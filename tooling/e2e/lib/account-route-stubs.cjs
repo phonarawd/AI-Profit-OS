@@ -47,6 +47,14 @@ const TEST_PREFS = {
   strategyMatch: true,
 };
 
+const TEST_UX_PREFS = {
+  userId: "qa-account-user",
+  toneBand: "mid",
+  fontScale: "md",
+  depositPref: "usdt",
+  updatedAt: "2026-08-21T00:00:00.000Z",
+};
+
 const TEST_SESSION = {
   sessionId: "qa-account-session",
   userId: "qa-account-user",
@@ -128,6 +136,24 @@ async function stubSettings(page, mode) {
       }
       return json(route, 200, TEST_PREFS);
     }
+    if (url.includes("/api/v1/me/ux-prefs")) {
+      if (mode === "unauthorized") {
+        return json(route, 401, { error: "unauthorized" });
+      }
+      if (mode === "error") {
+        return json(route, 500, { error: "upstream_failed" });
+      }
+      if (method === "PUT") {
+        const posted = route.request().postDataJSON() || {};
+        return json(route, 200, {
+          ...TEST_UX_PREFS,
+          toneBand: posted.toneBand || TEST_UX_PREFS.toneBand,
+          fontScale: posted.fontScale || TEST_UX_PREFS.fontScale,
+          depositPref: posted.depositPref || TEST_UX_PREFS.depositPref,
+        });
+      }
+      return json(route, 200, TEST_UX_PREFS);
+    }
     if (url.includes("/api/v1/auth/logout")) {
       return json(route, 200, { ok: true, revoked: true });
     }
@@ -186,6 +212,7 @@ module.exports = {
   TEST_REFERRAL_ME,
   TEST_INBOX,
   TEST_PREFS,
+  TEST_UX_PREFS,
   TEST_SESSION,
   TEST_KYC_NONE,
   stubInvite,

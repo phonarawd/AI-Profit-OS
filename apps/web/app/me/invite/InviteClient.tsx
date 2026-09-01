@@ -6,6 +6,7 @@ import {
   parseReferralMe,
   type ReferralMeReady,
 } from "@aipo/ui/components/invite";
+import { parseUserUxPrefs, type UxToneBand } from "@aipo/ui/components/settings/ux-prefs-state";
 import { T } from "@aipo/ui/copy/ko";
 import { useEffect, useState } from "react";
 import {
@@ -26,6 +27,7 @@ export function InviteClient() {
   const [bindView, setBindView] = useState<
     "idle" | "saving" | "success" | "unavailable"
   >("idle");
+  const [toneBand, setToneBand] = useState<UxToneBand | null>(null);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -34,6 +36,16 @@ export function InviteClient() {
         const headers: Record<string, string> = { Accept: "application/json" };
         const token = sessionToken();
         if (token) headers.Authorization = `Bearer ${token}`;
+        const uxRes = await fetch("/api/v1/me/ux-prefs", {
+          credentials: "include",
+          cache: "no-store",
+          headers,
+          signal: ac.signal,
+        }).catch(() => null);
+        if (uxRes && uxRes.ok) {
+          const uxParsed = parseUserUxPrefs(await uxRes.json().catch(() => null));
+          if (uxParsed) setToneBand(uxParsed.toneBand);
+        }
         const res = await fetch("/api/v1/referral/me", {
           credentials: "include",
           cache: "no-store",
@@ -146,6 +158,7 @@ export function InviteClient() {
       >
       <div className={styles.surface}>
         <InviteHome
+          toneBand={toneBand}
           inviteCode={data.referralCode}
           shareUrl=""
           codeUnavailable={false}
