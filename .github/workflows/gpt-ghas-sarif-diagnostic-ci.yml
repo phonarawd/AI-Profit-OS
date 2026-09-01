@@ -23,6 +23,8 @@ jobs:
             target_sha: 2e75a13be17f32ff5337851f426f22aa777d86b9
           - label: recovery-head
             target_sha: 305c4e32a58254ab5987c60d42816dee26239895
+          - label: pr114-merge
+            target_sha: 7cf57b814ac3cbe4162750a8aae3a05d4f1e7c67
     steps:
       - name: Checkout exact target
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
