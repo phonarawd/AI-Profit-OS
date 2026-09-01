@@ -8,6 +8,7 @@ const { writeApiManifest } = require("../release/api-artifact-provenance.cjs");
 const {
   packFromPayload,
   verifyBundle,
+  extractPayload,
   WORKER_SNAPSHOTS,
   PREBUILT_DIR,
 } = require("../release/artifact-provenance.cjs");
@@ -95,6 +96,72 @@ try {
     digest: good.artifact_digest,
   });
   assert.equal(verified.source_sha, SHA);
+
+  const extractRoot = path.join(root, "extract-root");
+  fs.mkdirSync(
+    path.join(extractRoot, "apps/web/.open-next/assets"),
+    { recursive: true },
+  );
+  fs.writeFileSync(
+    path.join(extractRoot, "apps/web/.open-next/assets/stale.txt"),
+    "stale",
+  );
+  fs.mkdirSync(path.join(extractRoot, "services/api-nest/dist"), {
+    recursive: true,
+  });
+  fs.writeFileSync(
+    path.join(extractRoot, "services/api-nest/dist/stale.js"),
+    "stale",
+  );
+  for (const name of WORKER_SNAPSHOTS) {
+    fs.mkdirSync(path.join(extractRoot, "workers", name, PREBUILT_DIR), {
+      recursive: true,
+    });
+    fs.writeFileSync(
+      path.join(extractRoot, "workers", name, PREBUILT_DIR, "stale.js"),
+      "stale",
+    );
+    fs.mkdirSync(path.join(extractRoot, "workers", name, "src"), {
+      recursive: true,
+    });
+    fs.writeFileSync(
+      path.join(extractRoot, "workers", name, "src", "keep.ts"),
+      "keep",
+    );
+  }
+
+  extractPayload(goodBundle, extractRoot);
+
+  assert.equal(
+    fs.existsSync(
+      path.join(extractRoot, "apps/web/.open-next/assets/stale.txt"),
+    ),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(extractRoot, "services/api-nest/dist/stale.js")),
+    false,
+  );
+  for (const name of WORKER_SNAPSHOTS) {
+    assert.equal(
+      fs.existsSync(
+        path.join(extractRoot, "workers", name, PREBUILT_DIR, "stale.js"),
+      ),
+      false,
+    );
+    assert.equal(
+      fs.existsSync(path.join(extractRoot, "workers", name, "src", "keep.ts")),
+      true,
+    );
+  }
+  assert.equal(
+    fs.existsSync(path.join(extractRoot, "apps/web/.open-next/worker.js")),
+    true,
+  );
+  assert.equal(
+    fs.existsSync(path.join(extractRoot, "services/api-nest/dist/main.js")),
+    true,
+  );
 
   tamperAndExpect("schema", "forged-manifest.v1", "manifest_schema_mismatch");
   tamperAndExpect("artifact_name", "other-artifact", "manifest_artifact_name_mismatch");
