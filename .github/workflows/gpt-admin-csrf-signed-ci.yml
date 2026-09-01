@@ -1,0 +1,70 @@
+name: gpt-admin-csrf-signed-ci
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/security-admin-csrf-signed-38032da
+    paths:
+      - ".github/workflows/gpt-admin-csrf-signed-ci.yml"
+      - "services/api-nest/src/common/admin-session.csrf.ts"
+      - "services/api-nest/src/common/admin-session.cookies.ts"
+      - "services/api-nest/src/common/admin-session.runtime.test.ts"
+      - "tooling/verify/admin-csrf-signed.cjs"
+      - "tooling/verify/auth-session-cookie.cjs"
+      - "pnpm-lock.yaml"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: "22"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Signed CSRF static proof
+        run: node tooling/verify/admin-csrf-signed.cjs
+      - name: Existing session-cookie runtime proof
+        run: node tooling/verify/auth-session-cookie.cjs
+      - name: Nest API build
+        run: pnpm --filter @aipo/api-nest... build
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@5ba2889ada762081db2c4f32a729827dce632c7b
+        with:
+          languages: javascript-typescript
+          queries: security-extended
+      - name: Analyze without upload
+        id: codeql
+        uses: github/codeql-action/analyze@5ba2889ada762081db2c4f32a729827dce632c7b
+        with:
+          output: /tmp/codeql-sarif
+          upload: never
+          upload-database: false
+      - name: Report targeted clear-text cookie finding
+        env:
+          SARIF_DIR: ${{ steps.codeql.outputs.sarif-output }}
+        run: |
+          node <<'NODE'
+          const fs=require("node:fs"),path=require("node:path");
+          const root=process.env.SARIF_DIR||"/tmp/codeql-sarif";
+          const hits=[];
+          for(const f of fs.readdirSync(root).filter(x=>x.endsWith(".sarif"))){
+            const s=JSON.parse(fs.readFileSync(path.join(root,f),"utf8"));
+            for(const run of s.runs||[]) for(const r of run.results||[]){
+              const file=r.locations?.[0]?.physicalLocation?.artifactLocation?.uri||"";
+              if(r.ruleId==="js/clear-text-storage-of-sensitive-data" &&
+                 file.endsWith("services/api-nest/src/common/admin-session.cookies.ts")){
+                hits.push({ruleId:r.ruleId,file,line:r.locations?.[0]?.physicalLocation?.region?.startLine||null});
+              }
+            }
+          }
+          console.log(JSON.stringify({targeted_cleartext_cookie_findings:hits},null,2));
+          NODE
