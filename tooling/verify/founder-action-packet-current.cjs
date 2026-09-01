@@ -65,12 +65,18 @@ if (packet) {
     "ENGINE_REBASE_REQUIRED",
     "ENGINE_ACK_MISSING",
     "FINAL_PRODUCTION_DECISION_ENFORCEMENT_NOT_WIRED",
+    "PRODUCTION_DEPLOY_PATH_BYPASS_PRESENT_IN_RECOVERY",
+    "RELEASE_MANIFEST_METADATA_NOT_LOCKED_IN_RECOVERY",
+    "PRODUCTION_VERDICT_ENGINE_BINDING_NOT_ENFORCED_IN_RECOVERY",
+    "STAGING_RENDER_DB_BINDING_EVIDENCE_NOT_STRICT_IN_RECOVERY",
+    "RENDER_PRODUCTION_IDENTITY_NOT_PINNED_IN_RECOVERY",
+    "DB_DEFAULT_ACL_READINESS_NOT_CHECKED_IN_RECOVERY",
   ]) {
     if (!blockers.includes(required)) fail("missing_blocker:" + required);
   }
 
   const actions = Array.isArray(packet.next_actions) ? packet.next_actions : [];
-  if (actions.length < 7) fail("founder_actions_incomplete");
+  if (actions.length < 8) fail("founder_actions_incomplete");
   const ids = new Set(actions.map((x) => x && x.id));
   for (const id of [
     "ISOLATED_STAGING",
@@ -80,8 +86,35 @@ if (packet) {
     "ENGINE_REBASE_ACK",
     "GHAS_COOKIE_CLASSIFICATION",
     "FINAL_DECISION_ENFORCEMENT",
+    "RECOVERY_SAFETY_TRANSPLANT",
   ]) {
     if (!ids.has(id)) fail("missing_action:" + id);
+  const night = packet.night_safety_work;
+  if (!night || typeof night !== "object") {
+    fail("night_safety_work_missing");
+  } else {
+    if (night.integration_policy !== "DRAFT_ONLY_MANUAL_TRANSPLANT_AFTER_REVIEW") {
+      fail("night_integration_policy_invalid");
+    }
+    for (const field of [
+      "production_mutation",
+      "provider_mutation",
+      "engine_ack_mutation",
+      "ghas_dismissal",
+    ]) {
+      if (night[field] !== 0) fail("night_safety_mutation_invalid:" + field);
+    }
+    const prs = Array.isArray(night.prs) ? night.prs : [];
+    for (const pr of [170,171,172,173,174,175,176,177,178]) {
+      const row = prs.find((x) => x && x.pr === pr);
+      if (!row) {
+        fail("night_safety_pr_missing:" + pr);
+      } else if (row.ci !== "SUCCESS") {
+        fail("night_safety_pr_not_success:" + pr);
+      }
+    }
+  }
+
   }
 }
 
