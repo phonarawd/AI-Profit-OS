@@ -136,6 +136,14 @@ function SystemControlContent() {
       <p className="mt-2 text-sm text-lux-text-muted">
         문제가 생겼을 때 필요한 기능만 안전하게 멈추고, 확인 후 다시 시작합니다.
       </p>
+      <p
+        className="mt-2 text-sm text-lux-text-muted"
+        data-testid="system-control-release-readout"
+        data-forbid="fake_release_complete"
+      >
+        서비스 반영이 준비됐는지는 이 화면에서 완료로 표시하지 않습니다. 권한 없이
+        반영했다고 꾸미지 않습니다.
+      </p>
       <nav
         className="mt-4 flex flex-wrap gap-2 text-sm"
         data-testid="system-control-tabs"

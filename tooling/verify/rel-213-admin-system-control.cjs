@@ -29,6 +29,20 @@ if (page.includes("골격")) fails.push("system-control leftover stub chrome");
 if (!page.includes('data-testid="admin-system-control-page"')) {
   fails.push("system-control missing page testid");
 }
+if (!page.includes('data-testid="system-control-release-readout"')) {
+  fails.push("system-control missing honest release readout");
+}
+if (!page.includes('data-forbid="fake_release_complete"')) {
+  fails.push("system-control must forbid fake release complete");
+}
+if (page.includes("반영 완료")) {
+  fails.push("system-control must not paint service reflection as complete");
+}
+for (const banned of ["REL-502", "workflow", "pipeline", "GitHub", "acceptance"]) {
+  if (page.includes(banned)) {
+    fails.push("system-control operator surface leaked " + banned);
+  }
+}
 if (!page.includes('data-testid="system-control-circuit-panel"')) {
   fails.push("system-control missing circuit panel");
 }
