@@ -34,8 +34,11 @@ function writeFakeWorker(payload, name) {
   );
 }
 
+let bundleCounter = 0;
+
 function buildBundle(bundle) {
-  const payload = path.join(root, "payload-src-" + Math.random().toString(16).slice(2));
+  bundleCounter += 1;
+  const payload = path.join(root, "payload-src-" + String(bundleCounter));
   fs.mkdirSync(path.join(payload, "apps/web/.open-next/assets"), { recursive: true });
   fs.mkdirSync(path.join(payload, "apps/admin/.open-next/assets"), { recursive: true });
   fs.writeFileSync(path.join(payload, "apps/web/.open-next/worker.js"), "web");
