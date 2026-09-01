@@ -13,10 +13,15 @@ const ARTIFACT_NAME = "release-bundle";
 const MANIFEST_FILE = "release-manifest.json";
 const PAYLOAD_DIR = "payload";
 const RELEASE_BUILD_WORKFLOW = "release-build.yml";
+const API_DIST_DIR = "services/api-nest/dist";
+const API_ENTRY = API_DIST_DIR + "/main.js";
+const API_MANIFEST = API_DIST_DIR + "/api-release-manifest.json";
 
 const REQUIRED_FILES = [
   "apps/web/.open-next/worker.js",
   "apps/admin/.open-next/worker.js",
+  API_ENTRY,
+  API_MANIFEST,
 ];
 const REQUIRED_DIRS = [
   "apps/web/.open-next/assets",
@@ -97,6 +102,71 @@ function collectWorkerPrebuilts(payloadAbs) {
   return out;
 }
 
+function collectApiArtifact(payloadAbs, expectedSourceSha) {
+  const entryAbs = path.join(payloadAbs, API_ENTRY);
+  const manifestAbs = path.join(payloadAbs, API_MANIFEST);
+  if (!fs.existsSync(entryAbs)) {
+    throw failClosed("FAIL_CLOSED:api_artifact_missing", API_ENTRY);
+  }
+  if (!fs.existsSync(manifestAbs)) {
+    throw failClosed("FAIL_CLOSED:api_artifact_manifest_missing", API_MANIFEST);
+  }
+  let api;
+  try {
+    api = JSON.parse(fs.readFileSync(manifestAbs, "utf8"));
+  } catch {
+    throw failClosed("FAIL_CLOSED:api_artifact_manifest_invalid");
+  }
+  const sourceSha = normalizeHex(api && api.source_sha);
+  const wantSha = normalizeHex(expectedSourceSha);
+  const digest = fileSha256(entryAbs);
+  if (api.artifact_kind !== "api-nest") {
+    throw failClosed("FAIL_CLOSED:api_artifact_kind_mismatch");
+  }
+  if (api.entry !== API_ENTRY) {
+    throw failClosed("FAIL_CLOSED:api_artifact_entry_mismatch");
+  }
+  if (!isFullSha(sourceSha) || sourceSha !== wantSha) {
+    throw failClosed("FAIL_CLOSED:api_artifact_source_sha_mismatch");
+  }
+  if (normalizeHex(api.artifact_digest) !== digest) {
+    throw failClosed("FAIL_CLOSED:api_artifact_digest_mismatch");
+  }
+  if (api.digest_alg !== "sha256" || api.built_once !== true) {
+    throw failClosed("FAIL_CLOSED:api_artifact_not_built_once");
+  }
+  return {
+    artifact_kind: "api-nest",
+    entry: API_ENTRY,
+    source_sha: sourceSha,
+    artifact_digest: digest,
+    digest_alg: "sha256",
+    built_once: true,
+  };
+}
+
+function assertApiArtifact(payloadAbs, manifest) {
+  const listed = manifest && manifest.api_artifact;
+  if (!listed || typeof listed !== "object") {
+    throw failClosed("FAIL_CLOSED:api_artifact_missing");
+  }
+  const actual = collectApiArtifact(payloadAbs, manifest.source_sha);
+  const keys = [
+    "artifact_kind",
+    "entry",
+    "source_sha",
+    "artifact_digest",
+    "digest_alg",
+    "built_once",
+  ];
+  for (const key of keys) {
+    if (listed[key] !== actual[key]) {
+      throw failClosed("FAIL_CLOSED:api_artifact_manifest_mismatch", key);
+    }
+  }
+  return actual;
+}
+
 function assertWorkerPrebuilts(payloadAbs, manifest) {
   const listed = manifest && manifest.worker_prebuilts;
   if (!listed || typeof listed !== "object") {
@@ -137,10 +207,12 @@ function toPosix(rel) {
 
 function shouldSkipRel(rel) {
   const p = toPosix(rel);
+  const isCanonicalApiDist =
+    p === API_DIST_DIR || p.startsWith(API_DIST_DIR + "/");
   return (
     /(^|\/)node_modules(\/|$)/.test(p) ||
     /(^|\/)\.wrangler(\/|$)/.test(p) ||
-    /(^|\/)dist(\/|$)/.test(p) ||
+    (!isCanonicalApiDist && /(^|\/)dist(\/|$)/.test(p)) ||
     /(^|\/)dist-selftest(\/|$)/.test(p) ||
     /(^|\/)\.open-next\/cache(\/|$)/.test(p) ||
     /(^|\/)\.git(\/|$)/.test(p)
@@ -221,12 +293,14 @@ function verifyBundle(bundleDir, expected) {
   if (manifest.built_once !== true) fails.push("FAIL_CLOSED:artifact_not_built_once");
   if (fails.length) throwFails(fails);
   assertWorkerPrebuilts(payload, manifest);
+  const api_artifact = assertApiArtifact(payload, manifest);
   return {
     digest,
     source_sha: sourceSha,
     manifest,
     built_once: true,
     worker_prebuilts: manifest.worker_prebuilts,
+    api_artifact,
   };
 }
 
@@ -255,6 +329,7 @@ function packFromRepo(repoRoot, outDir, sourceSha) {
   fs.mkdirSync(payload, { recursive: true });
   copyTree(path.join(repoRoot, "apps/web/.open-next"), path.join(payload, "apps/web/.open-next"));
   copyTree(path.join(repoRoot, "apps/admin/.open-next"), path.join(payload, "apps/admin/.open-next"));
+  copyTree(path.join(repoRoot, API_DIST_DIR), path.join(payload, API_DIST_DIR));
   for (const worker of WORKER_SNAPSHOTS) {
     const toml = path.join(repoRoot, "workers", worker, "wrangler.toml");
     const prebuilt = path.join(repoRoot, "workers", worker, PREBUILT_DIR);
@@ -284,6 +359,7 @@ function packFromPayload(payloadSrc, outDir, sourceSha) {
 function writeManifest(outDir, sourceSha) {
   const payload = path.join(outDir, PAYLOAD_DIR);
   const worker_prebuilts = collectWorkerPrebuilts(payload);
+  const api_artifact = collectApiArtifact(payload, sourceSha);
   const digest = canonicalDigest(payload);
   const manifest = {
     schema: SCHEMA,
@@ -296,6 +372,7 @@ function writeManifest(outDir, sourceSha) {
     worker_prebuilt: true,
     worker_deploy_no_bundle: true,
     worker_prebuilts,
+    api_artifact,
   };
   fs.writeFileSync(path.join(outDir, MANIFEST_FILE), JSON.stringify(manifest, null, 2) + "\n");
   return manifest;
@@ -321,6 +398,9 @@ module.exports = {
   MANIFEST_FILE,
   PAYLOAD_DIR,
   RELEASE_BUILD_WORKFLOW,
+  API_DIST_DIR,
+  API_ENTRY,
+  API_MANIFEST,
   REQUIRED_FILES,
   REQUIRED_DIRS,
   WORKER_SNAPSHOTS,
@@ -334,6 +414,8 @@ module.exports = {
   findPrebuiltEntry,
   collectWorkerPrebuilts,
   assertWorkerPrebuilts,
+  collectApiArtifact,
+  assertApiArtifact,
   canonicalDigest,
   readManifest,
   verifyBundle,

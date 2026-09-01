@@ -40,10 +40,19 @@ jobs:
           set -euo pipefail
           pnpm --filter @aipo/web build:cf
           pnpm --filter @aipo/admin build:cf
+          pnpm --filter @aipo/api-nest... build
           test -f apps/web/.open-next/worker.js
           test -d apps/web/.open-next/assets
           test -f apps/admin/.open-next/worker.js
           test -d apps/admin/.open-next/assets
+          test -f services/api-nest/dist/main.js
+
+      - name: Bind Nest API artifact to source SHA
+        run: |
+          set -euo pipefail
+          node tooling/release/api-artifact-provenance.cjs --source-sha "${{ github.sha }}"
+          test -f services/api-nest/dist/api-release-manifest.json
+          pnpm verify:api-artifact-provenance
 
       - name: Prebuild workers (exact bundle, no upload)
         run: |
