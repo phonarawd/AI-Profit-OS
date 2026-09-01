@@ -1,0 +1,107 @@
+{
+  "schema": "governance.recovery.founder-action-packet.current.v1",
+  "recorded_on": "2026-09-02",
+  "source": "independent read-only GitHub + Render + Supabase revalidation",
+  "recovery_sha": "38032dafb04ce61ebdf5bf77e6d37df787ecf046",
+  "production_release": "NO_GO",
+  "invariants": {
+    "pr_114": "DRAFT_DO_NOT_MERGE",
+    "production_mutation": 0,
+    "engine_ack_mutation": 0,
+    "ghas_dismissal": 0
+  },
+  "github": {
+    "main_sha": "2e75a13be17f32ff5337851f426f22aa777d86b9",
+    "recovery_sha": "38032dafb04ce61ebdf5bf77e6d37df787ecf046",
+    "open_draft_prs": [
+      114,
+      163,
+      167,
+      168,
+      169,
+      170
+    ]
+  },
+  "render": {
+    "workspace_id": "tea-da5qqo3m8hqs73djpvvg",
+    "production_service_id": "srv-da5r1tqjobas73fl16dg",
+    "production_environment_id": "evm-da5r1tjbc2fs73a0b7hg",
+    "production_url": "https://ai-profit-os.onrender.com",
+    "branch": "main",
+    "autoDeploy": "yes",
+    "autoDeployTrigger": "commit",
+    "previews_generation": "off",
+    "production_live_deploy_id": "dep-da938o142hec73eipre0",
+    "production_live_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec",
+    "isolated_staging_service_count": 0
+  },
+  "supabase": {
+    "production_project_ref": "mgsytcetsiecllmhcyox",
+    "status": "ACTIVE_HEALTHY",
+    "postgres_version": "17.6.1.155",
+    "development_branches": 0,
+    "applied_migrations": 42,
+    "latest_applied_migration": "20260821223109_beginner_onboarding_experience",
+    "isolated_staging_ready": false
+  },
+  "engine": {
+    "final_acceptance": "NOT_ISSUED",
+    "rebase_required": true,
+    "ack_received": false
+  },
+  "blockers": [
+    "ISOLATED_STAGING_NOT_READY",
+    "PRODUCTION_DB_HARDENING_NOT_READY",
+    "RENDER_AUTODEPLOY_ENABLED",
+    "PRODUCTION_LIVE_SHA_DIFFERS_FROM_RECOVERY",
+    "TRON_HD_VAULT_NOT_PROVEN",
+    "ENGINE_NOT_ISSUED",
+    "ENGINE_REBASE_REQUIRED",
+    "ENGINE_ACK_MISSING",
+    "FINAL_PRODUCTION_DECISION_ENFORCEMENT_NOT_WIRED"
+  ],
+  "next_actions": [
+    {
+      "order": 1,
+      "id": "ISOLATED_STAGING",
+      "action": "Provision a Render API service and Supabase ref distinct from Production, then prove binding and customer-data isolation.",
+      "production_mutation": false
+    },
+    {
+      "order": 2,
+      "id": "DB_HARDENING",
+      "action": "Apply and rollback-test committed hardening SQL on isolated staging first; Production apply only after exact staging proof.",
+      "production_mutation": false
+    },
+    {
+      "order": 3,
+      "id": "RENDER_RELEASE_CONTROL",
+      "action": "Disable Production autoDeploy and require accepted exact-SHA promotion with rollback provenance.",
+      "production_mutation": true
+    },
+    {
+      "order": 4,
+      "id": "TRON_HD_VAULT",
+      "action": "Provide real BIP32 secp256k1 authority for m/44'/195'/0'/0/{index}; retain fail-closed 503 until proven.",
+      "production_mutation": false
+    },
+    {
+      "order": 5,
+      "id": "ENGINE_REBASE_ACK",
+      "action": "Review exact protected-scope drift, complete required reruns, then issue formal ACK only if every prerequisite passes.",
+      "production_mutation": false
+    },
+    {
+      "order": 6,
+      "id": "GHAS_COOKIE_CLASSIFICATION",
+      "action": "Preserve JS-readable double-submit CSRF design; dismiss only with complete invariant evidence and authorized security disposition.",
+      "production_mutation": false
+    },
+    {
+      "order": 7,
+      "id": "FINAL_DECISION_ENFORCEMENT",
+      "action": "Wire an exact-SHA machine-generated GO_CANDIDATE decision into every Production deploy path before release authorization.",
+      "production_mutation": false
+    }
+  ]
+}
