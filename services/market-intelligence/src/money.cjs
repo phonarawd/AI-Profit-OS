@@ -3,9 +3,39 @@
  * Scale = 18 (matches ledger / opportunity pricing numeric(36,18)).
  */
 
-const AMOUNT_RE = /^-?[0-9]+(\.[0-9]+)?$/;
+const AMOUNT_MAX_LEN = 80;
 const SCALE = 18n;
 const TEN = 10n;
+
+function isDecimalAmount(raw) {
+  if (typeof raw !== "string") return false;
+  const n = raw.length;
+  if (n < 1 || n > AMOUNT_MAX_LEN) return false;
+  let i = 0;
+  if (raw.charCodeAt(0) === 45) {
+    if (n === 1) return false;
+    i = 1;
+  }
+  let digits = 0;
+  let frac = 0;
+  let dot = false;
+  for (; i < n; i += 1) {
+    const c = raw.charCodeAt(i);
+    if (c >= 48 && c <= 57) {
+      if (dot) frac += 1;
+      else digits += 1;
+      continue;
+    }
+    if (c === 46 && !dot && digits > 0) {
+      dot = true;
+      continue;
+    }
+    return false;
+  }
+  if (digits < 1) return false;
+  if (dot && frac < 1) return false;
+  return true;
+}
 
 function pow10(n) {
   let r = 1n;
@@ -16,7 +46,7 @@ function pow10(n) {
 const SCALE_FACTOR = pow10(SCALE);
 
 function assertAmount(raw, field = "amount") {
-  if (typeof raw !== "string" || !AMOUNT_RE.test(raw)) {
+  if (typeof raw !== "string" || !isDecimalAmount(raw)) {
     throw new Error(`${field} must be decimal string`);
   }
   return raw;
@@ -40,7 +70,8 @@ function formatAmount(n) {
   const abs = neg ? -n : n;
   const s = abs.toString().padStart(Number(SCALE) + 1, "0");
   const whole = s.slice(0, -Number(SCALE)) || "0";
-  let frac = s.slice(-Number(SCALE)).replace(/0+$/, "");
+  let frac = s.slice(-Number(SCALE));
+  while (frac.endsWith("0")) frac = frac.slice(0, -1);
   const body = frac.length ? `${whole}.${frac}` : whole;
   return neg ? `-${body}` : body;
 }
@@ -98,7 +129,7 @@ function divAmount(a, b) {
 }
 
 function isNonNegAmount(raw) {
-  return AMOUNT_RE.test(raw) && parseAmount(raw) >= 0n;
+  return isDecimalAmount(raw) && parseAmount(raw) >= 0n;
 }
 
 function absDiff(a, b) {
@@ -112,7 +143,8 @@ function withinTolerance(actual, expected, tolUsdt = "0.000001") {
 }
 
 module.exports = {
-  AMOUNT_RE,
+  AMOUNT_RE: { test: isDecimalAmount },
+  isDecimalAmount,
   SCALE: Number(SCALE),
   assertAmount,
   parseAmount,
