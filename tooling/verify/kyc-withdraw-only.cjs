@@ -193,6 +193,32 @@ if (!copy.includes("출금하려면 본인 확인이 필요해요")) {
   fails.push("T.kyc.withdrawRequired copy missing");
 }
 
+const { spawnSync } = require("child_process");
+function runRuntime(rel) {
+  const r = spawnSync(process.execPath, [path.join(root, rel)], {
+    cwd: root,
+    encoding: "utf8",
+    timeout: 30_000,
+  });
+  process.stdout.write(r.stdout || "");
+  process.stderr.write(r.stderr || "");
+  if (r.status !== 0) {
+    fails.push(rel + " runtime failed");
+  } else if (
+    rel.includes("withdraw-kyc-gate") &&
+    !(r.stdout || "").includes("withdraw-kyc-gate-behavior PASS")
+  ) {
+    fails.push("withdraw KYC gate behavior missing PASS");
+  } else if (
+    rel.includes("wallet-reader-http") &&
+    !(r.stdout || "").includes("wallet-reader-http-behavior PASS")
+  ) {
+    fails.push("wallet reader HTTP behavior missing PASS");
+  }
+}
+runRuntime("tooling/verify/withdraw-kyc-gate.runtime.cjs");
+runRuntime("tooling/verify/wallet-reader-http.runtime.cjs");
+
 if (fails.length) {
   console.error("[verify:kyc-withdraw-only] FAIL");
   for (const f of fails) console.error(" -", f);

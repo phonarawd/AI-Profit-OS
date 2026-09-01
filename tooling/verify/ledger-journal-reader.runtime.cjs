@@ -28,7 +28,12 @@ const tmp = path.join(os.tmpdir(), "aipo-ledger-fetch.runtime.mts");
 fs.writeFileSync(tmp, src);
 
 const runner = `
-import { readUserJournal } from ${JSON.stringify(pathToFileURL(tmp).href)};
+import {
+  readUserJournal,
+  fetchUserJournalList,
+  fetchUserJournal,
+} from ${JSON.stringify(pathToFileURL(tmp).href)};
+import { LedgerRequestError } from ${JSON.stringify(errorsUrl)};
 
 function baseEntry(amountUsdt) {
   return {
@@ -95,6 +100,158 @@ expectBlock("extra entry key", {
   ...baseJournal("1.00"),
   entries: [{ ...baseEntry("1.00"), extra: "1" }],
 });
+expectBlock("empty entries", { ...baseJournal("1.00"), entries: [] });
+expectBlock("missing entries", ((o) => { const x = { ...o }; delete x.entries; return x; })(baseJournal("1.00")));
+
+function httpRes(status, body) {
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    json: async () => body,
+    text: async () => (typeof body === "string" ? body : JSON.stringify(body)),
+  };
+}
+
+function mockFetch(impl) {
+  globalThis.fetch = impl;
+}
+
+async function expectLedgerCode(name, impl, fn, code) {
+  mockFetch(impl);
+  try {
+    await fn();
+    throw new Error("EXPECTED_THROW:" + name);
+  } catch (err) {
+    if (String(err && err.message).startsWith("EXPECTED_THROW:")) throw err;
+    if (!(err instanceof LedgerRequestError) || err.code !== code) {
+      throw new Error(
+        name +
+          " code=" +
+          (err && err.code) +
+          " status=" +
+          (err && err.status) +
+          " expected " +
+          code,
+      );
+    }
+  }
+}
+
+const validList = {
+  items: [baseJournal("1.00")],
+  total: 1,
+  limit: 20,
+  offset: 0,
+};
+const emptyList = { items: [], total: 0, limit: 20, offset: 0 };
+
+mockFetch(async () => httpRes(200, emptyList));
+const empty = await fetchUserJournalList({ limit: 20, offset: 0 });
+if (empty.total !== 0 || empty.items.length !== 0) {
+  throw new Error("valid empty list must stay empty");
+}
+
+mockFetch(async () => httpRes(200, validList));
+const listed = await fetchUserJournalList({ limit: 20, offset: 0 });
+if (listed.items[0].entries[0].amountUsdt !== "1.00") {
+  throw new Error("valid list decimal was rejected");
+}
+
+mockFetch(async () =>
+  httpRes(200, {
+    items: [baseJournal("1.00"), { id: "bad" }],
+    total: 2,
+    limit: 20,
+    offset: 0,
+  }),
+);
+try {
+  await fetchUserJournalList({ limit: 20, offset: 0 });
+  throw new Error("EXPECTED_THROW:malformed list item");
+} catch (err) {
+  if (String(err && err.message).startsWith("EXPECTED_THROW:")) throw err;
+  if (!(err instanceof LedgerRequestError) || err.status !== 502) {
+    throw new Error("one malformed journal must fail the whole list");
+  }
+}
+
+await expectLedgerCode(
+  "list 401",
+  async () => httpRes(401, { error: "unauthorized" }),
+  () => fetchUserJournalList(),
+  "AUTH_REQUIRED",
+);
+await expectLedgerCode(
+  "list 403",
+  async () => httpRes(403, { error: "forbidden" }),
+  () => fetchUserJournalList(),
+  "FORBIDDEN",
+);
+await expectLedgerCode(
+  "list 404",
+  async () => httpRes(404, { error: "missing" }),
+  () => fetchUserJournalList(),
+  "NOT_FOUND",
+);
+await expectLedgerCode(
+  "list 5xx",
+  async () => httpRes(500, { error: "boom" }),
+  () => fetchUserJournalList(),
+  "REQUEST_FAILED",
+);
+await expectLedgerCode(
+  "list network",
+  async () => {
+    throw new Error("ECONNRESET");
+  },
+  () => fetchUserJournalList(),
+  "NETWORK_ERROR",
+);
+
+mockFetch(async () => httpRes(200, { journal: baseJournal("250.00") }));
+const detail = await fetchUserJournal("j1");
+if (detail.entries[0].amountUsdt !== "250.00") {
+  throw new Error("valid detail decimal was rejected");
+}
+
+await expectLedgerCode(
+  "detail 401",
+  async () => httpRes(401, { error: "unauthorized" }),
+  () => fetchUserJournal("j1"),
+  "AUTH_REQUIRED",
+);
+await expectLedgerCode(
+  "detail 403",
+  async () => httpRes(403, { error: "forbidden" }),
+  () => fetchUserJournal("j1"),
+  "FORBIDDEN",
+);
+await expectLedgerCode(
+  "detail 404",
+  async () => httpRes(404, { error: "missing" }),
+  () => fetchUserJournal("j1"),
+  "NOT_FOUND",
+);
+await expectLedgerCode(
+  "detail 5xx",
+  async () => httpRes(503, { error: "boom" }),
+  () => fetchUserJournal("j1"),
+  "REQUEST_FAILED",
+);
+await expectLedgerCode(
+  "detail network",
+  async () => {
+    throw new Error("ECONNRESET");
+  },
+  () => fetchUserJournal("j1"),
+  "NETWORK_ERROR",
+);
+await expectLedgerCode(
+  "detail malformed 200",
+  async () => httpRes(200, { journal: { ...baseJournal("1.00"), extra: "1" } }),
+  () => fetchUserJournal("j1"),
+  "REQUEST_FAILED",
+);
 
 console.log("ledger-journal-reader-behavior PASS");
 `;

@@ -1292,6 +1292,14 @@ const RULES = [
     scripts: ["domain-by-path-ci.cjs"],
   },
   {
+    test: (f) =>
+      /^tooling\/verify\/kyc-withdraw-only\.cjs$/.test(f) ||
+      /^tooling\/verify\/withdraw-kyc-gate\.runtime\.cjs$/.test(f) ||
+      /^tooling\/verify\/wallet-reader-http\.runtime\.cjs$/.test(f) ||
+      /^apps\/web\/lib\/use-withdraw-kyc-gate\.ts$/.test(f),
+    scripts: ["kyc-withdraw-only.cjs"],
+  },
+  {
     test: (f) => /^tooling\/verify\//.test(f),
     scripts: [],
   },
