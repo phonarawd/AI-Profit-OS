@@ -389,6 +389,7 @@ const RULES = [
   {
     test: (f) =>
       /^apps\/web\/app\/me\/inbox\//.test(f) ||
+      /^packages\/ui\/components\/inbox\//.test(f) ||
       /^tooling\/e2e\/specs\/inbox-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/inbox-closure\.cjs$/.test(f),
     scripts: ["inbox-closure.cjs", "ops-inbox.cjs"],

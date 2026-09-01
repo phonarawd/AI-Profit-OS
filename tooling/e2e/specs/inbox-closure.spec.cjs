@@ -23,6 +23,59 @@ test.afterAll(async () => {
   if (runtime) await runtime.stop();
 });
 
+async function overlayInbox(page, mode) {
+  if (mode === "empty") {
+    await page.route("**/api/v1/me/inbox**", (route) => {
+      if (route.request().url().includes("notification-prefs")) return route.fallback();
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ items: [] }),
+      });
+    });
+    return;
+  }
+  if (mode === "malformed") {
+    await page.route("**/api/v1/me/inbox**", (route) => {
+      if (route.request().url().includes("notification-prefs")) return route.fallback();
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({}),
+      });
+    });
+    return;
+  }
+  if (mode === "malformed-items-null") {
+    await page.route("**/api/v1/me/inbox**", (route) => {
+      if (route.request().url().includes("notification-prefs")) return route.fallback();
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ items: null }),
+      });
+    });
+    return;
+  }
+  if (mode === "forbidden") {
+    await page.route("**/api/v1/me/inbox**", (route) => {
+      if (route.request().url().includes("notification-prefs")) return route.fallback();
+      return route.fulfill({
+        status: 403,
+        contentType: "application/json",
+        body: JSON.stringify({ error: "forbidden" }),
+      });
+    });
+    return;
+  }
+  if (mode === "network") {
+    await page.route("**/api/v1/me/inbox**", (route) => {
+      if (route.request().url().includes("notification-prefs")) return route.fallback();
+      return route.abort("failed");
+    });
+  }
+}
+
 async function hideNextDevChrome(page) {
   await page
     .addStyleTag({
@@ -34,7 +87,8 @@ async function hideNextDevChrome(page) {
 
 async function openInbox(page, mode, width = 1440, height = 1080) {
   await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
-  await stubInbox(page, mode);
+  await stubInbox(page, mode === "empty" || mode === "error" || mode === "unauthorized" || mode === "ready" ? mode : "ready");
+  await overlayInbox(page, mode);
   await page.setViewportSize({ width, height });
   await page.goto(`${runtime.baseUrl}/me/inbox`, { waitUntil: "load" });
   await expect(page.getByTestId("inbox-page")).toBeVisible({ timeout: 20000 });
@@ -57,6 +111,62 @@ test("401 is unauthorized, not an empty inbox", async ({ page }) => {
   await expect(page.getByText("로그인하면 알림을 볼 수 있어요.")).toBeVisible();
   await expect(page.getByTestId("ops-inbox")).toHaveCount(0);
   await expect(page.getByTestId("app-shell")).toHaveCount(0);
+});
+
+test("valid empty list is ready, not unavailable", async ({ page }) => {
+  await openInbox(page, "empty");
+  await expect(page.getByTestId("inbox-page")).toHaveAttribute(
+    "data-account-view",
+    "ready",
+  );
+  await expect(page.getByTestId("ops-inbox")).toBeVisible();
+});
+
+test("malformed 200 stays unavailable and does not invent an empty inbox", async ({
+  page,
+}) => {
+  await openInbox(page, "malformed");
+  await expect(page.getByTestId("inbox-page")).toHaveAttribute(
+    "data-account-view",
+    "unavailable",
+  );
+  await expect(page.getByTestId("ops-inbox")).toHaveCount(0);
+});
+
+test("items null is unavailable, not empty ready", async ({ page }) => {
+  await openInbox(page, "malformed-items-null");
+  await expect(page.getByTestId("inbox-page")).toHaveAttribute(
+    "data-account-view",
+    "unavailable",
+  );
+  await expect(page.getByTestId("ops-inbox")).toHaveCount(0);
+});
+
+test("403 is unauthorized, not an empty inbox", async ({ page }) => {
+  await openInbox(page, "forbidden");
+  await expect(page.getByTestId("inbox-page")).toHaveAttribute(
+    "data-account-view",
+    "unauthorized",
+  );
+  await expect(page.getByTestId("ops-inbox")).toHaveCount(0);
+});
+
+test("5xx is unavailable, not an empty inbox", async ({ page }) => {
+  await openInbox(page, "error");
+  await expect(page.getByTestId("inbox-page")).toHaveAttribute(
+    "data-account-view",
+    "unavailable",
+  );
+  await expect(page.getByTestId("ops-inbox")).toHaveCount(0);
+});
+
+test("network failure is unavailable", async ({ page }) => {
+  await openInbox(page, "network");
+  await expect(page.getByTestId("inbox-page")).toHaveAttribute(
+    "data-account-view",
+    "unavailable",
+  );
+  await expect(page.getByTestId("ops-inbox")).toHaveCount(0);
 });
 
 test("ready inbox stays server-owned", async ({ page }) => {

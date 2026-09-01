@@ -28,6 +28,8 @@ const files = [
   "apps/web/app/me/inbox/page.tsx",
   "apps/web/app/me/inbox/InboxClient.tsx",
   "apps/web/app/me/layout.tsx",
+  "packages/ui/components/inbox/inbox-list-state.ts",
+  "packages/ui/components/inbox/inbox-list.runtime.test.ts",
   "tooling/e2e/specs/inbox-closure.spec.cjs",
 ];
 for (const f of files) {
@@ -49,6 +51,12 @@ if (!client.includes("/api/v1/me/inbox")) {
 if (!client.includes("unauthorized") || !client.includes("unavailable")) {
   fail("InboxClient must distinguish unauthorized/unavailable");
 }
+if (!client.includes("parseInboxList") || !client.includes("classifyInboxHttp")) {
+  fail("InboxClient must parse inbox lists fail-closed");
+}
+if (client.includes("Array.isArray(json.items)")) {
+  fail("InboxClient must not invent empty ready from a missing items array");
+}
 if (/setItems\(\[\]\)/.test(client) && /401/.test(client)) {
   fail("inbox must not turn 401 into an empty list");
 }
@@ -58,6 +66,13 @@ if (layout.includes("LegacyAppShell") || layout.includes("AppShellRoot")) {
 if (!spec.includes("unauthorized") || !spec.includes("ready")) {
   fail("committed spec must cover unauthorized/ready");
 }
+if (
+  !spec.includes("items: []") ||
+  !spec.includes("malformed") ||
+  !spec.includes("unavailable")
+) {
+  fail("committed spec must cover empty-valid vs malformed unavailable");
+}
 if (!pkg.includes('"verify:inbox-closure"')) {
   fail("package.json missing verify:inbox-closure");
 }
@@ -66,6 +81,21 @@ if (!catalog.includes("inbox-closure")) {
 }
 if (!domain.includes("inbox-closure.cjs")) {
   fail("domain-by-path must trigger inbox-closure");
+}
+
+const runtimeTest = spawnSync(
+  process.execPath,
+  [
+    "--test",
+    "--experimental-strip-types",
+    "packages/ui/components/inbox/inbox-list.runtime.test.ts",
+  ],
+  { cwd: root, encoding: "utf8", timeout: 30_000 },
+);
+process.stdout.write(runtimeTest.stdout || "");
+process.stderr.write(runtimeTest.stderr || "");
+if (runtimeTest.status !== 0) {
+  fail("inbox list runtime tests failed");
 }
 
 function finish(extra) {

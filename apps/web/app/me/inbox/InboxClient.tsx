@@ -2,6 +2,8 @@
 
 import {
   OpsInbox,
+  classifyInboxHttp,
+  parseInboxList,
   type InboxItemModel,
 } from "@aipo/ui/components/inbox";
 import { T } from "@aipo/ui/copy/ko";
@@ -12,10 +14,6 @@ import {
   type AccountView,
 } from "../AccountFrame";
 import styles from "../account.module.css";
-
-type InboxListResponse = {
-  items?: InboxItemModel[];
-};
 
 function sessionToken(): string | null {
   return null;
@@ -37,19 +35,20 @@ export function InboxClient() {
         signal,
       });
       if (signal?.aborted) return;
-      if (res.status === 401 || res.status === 403) {
+      if (!res.ok) {
         setItems(null);
-        setView("unauthorized");
+        setView(classifyInboxHttp(res.status));
         return;
       }
-      if (!res.ok) {
+      const json = await res.json().catch(() => null);
+      if (signal?.aborted) return;
+      const parsed = parseInboxList(json);
+      if (!parsed) {
         setItems(null);
         setView("unavailable");
         return;
       }
-      const json = (await res.json()) as InboxListResponse;
-      if (signal?.aborted) return;
-      setItems(Array.isArray(json.items) ? json.items : []);
+      setItems(parsed.items);
       setView("ready");
     } catch (err) {
       if (signal?.aborted) return;
