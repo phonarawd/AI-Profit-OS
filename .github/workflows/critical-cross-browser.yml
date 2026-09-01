@@ -77,4 +77,4 @@ jobs:
         run: >-
           pnpm exec playwright test
           --config=tooling/e2e/playwright.config.cjs
-          tooling/e2e/specs/critical-admin-cross-browser.spec.cjs
+          tooling/e2e/specs/admin-entry-closure.spec.cjs

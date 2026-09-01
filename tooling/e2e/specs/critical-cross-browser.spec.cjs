@@ -11,6 +11,7 @@ const {
   stubHistory,
   stubWithdraw,
   stubOpportunityRoom,
+  stubGuestApis,
 } = require("../lib/consumer-route-stubs.cjs");
 const { stubSettings, stubAccountHub } = require("../lib/account-route-stubs.cjs");
 
@@ -22,7 +23,7 @@ const VIEWPORTS = [
 ];
 
 const ROUTES = [
-  { path: "/", testId: "home-shell", cta: "home-shell" },
+  { path: "/", testId: "guest-first-visit", cta: "guest-cta-signup" },
   { path: "/profits", testId: "profits-shell", cta: "profits-shell" },
   {
     path: "/profits/00000000-0000-4000-8000-000000000001",
@@ -50,7 +51,8 @@ test.afterAll(async () => {
 });
 
 async function stubRoute(page, path) {
-  if (path.startsWith("/profits/")) await stubOpportunityRoom(page, "ready");
+  if (path === "/") await stubGuestApis(page);
+  else if (path.startsWith("/profits/")) await stubOpportunityRoom(page, "ready");
   else if (path.startsWith("/wallet/deposit")) await stubDeposit(page, "ready");
   else if (path.startsWith("/wallet/withdraw")) await stubWithdraw(page, "ready");
   else if (path.startsWith("/wallet/history")) await stubHistory(page, "ready");
@@ -90,8 +92,9 @@ test("critical consumer routes load without fatal overflow", async ({ page }, te
   }
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize({ width: 390, height: 693 });
+  await stubGuestApis(page);
   await page.goto(runtime.baseUrl + "/", { waitUntil: "load" });
-  await expect(page.getByTestId("home-shell")).toBeVisible();
+  await expect(page.getByTestId("guest-first-visit")).toBeVisible();
   const motion = await page.evaluate(() =>
     window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   );

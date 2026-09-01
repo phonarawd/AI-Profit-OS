@@ -5,12 +5,12 @@
 const { test, expect } = require("@playwright/test");
 const { assertQaIsolation } = require("../lib/qa-env-isolation-guard.cjs");
 const { ensureLocalWebRuntime } = require("../lib/local-web-runtime.cjs");
-const { stubWallet, stubDeposit } = require("../lib/consumer-route-stubs.cjs");
+const { stubWallet, stubDeposit, stubGuestApis } = require("../lib/consumer-route-stubs.cjs");
 const { stubSettings, stubAccountHub } = require("../lib/account-route-stubs.cjs");
 const { blockingViolations } = require("../lib/axe-scan.cjs");
 
 const ROUTES = [
-  { path: "/", testId: "home-shell" },
+  { path: "/", testId: "guest-first-visit" },
   { path: "/profits", testId: "profits-shell" },
   { path: "/wallet", testId: "wallet-home" },
   { path: "/wallet/deposit?tab=usdt", testId: "wallet-deposit-page" },
@@ -40,7 +40,8 @@ test("live axe critical consumer routes", async ({ page }, testInfo) => {
   const allow = new Set(known.homeFreezeAllowlistedIds || []);
   for (const route of ROUTES) {
     await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
-    if (route.path.startsWith("/wallet/deposit")) await stubDeposit(page, "ready");
+    if (route.path === "/") await stubGuestApis(page);
+    else if (route.path.startsWith("/wallet/deposit")) await stubDeposit(page, "ready");
     else if (route.path.startsWith("/wallet")) await stubWallet(page, "ready");
     else if (route.path.startsWith("/me/settings")) await stubSettings(page, "ready");
     else if (route.path === "/me") await stubAccountHub(page, "ready");
