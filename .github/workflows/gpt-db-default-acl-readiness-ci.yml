@@ -1,0 +1,25 @@
+name: gpt-db-default-acl-readiness
+
+on:
+  pull_request:
+    paths:
+      - "tooling/release/db-hardening-readiness.cjs"
+      - "tooling/verify/db-hardening-readiness.cjs"
+      - ".github/workflows/gpt-db-default-acl-readiness-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - name: Setup Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: "22.14.0"
+      - name: Verify DB hardening including default ACL
+        run: node tooling/verify/db-hardening-readiness.cjs
