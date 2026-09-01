@@ -9,6 +9,7 @@ import { ReferralLadderService } from "./referral.ladder.service";
 import { ReferralPoolService } from "./referral.pool.service";
 import { ReferralProgramService } from "./referral.program.service";
 import { ReferralHooks } from "./referral.hooks";
+import { ReferralOwnCodeService } from "./referral.own-code.service";
 import { ReferralShareService } from "./referral.share.service";
 
 /**
@@ -25,6 +26,7 @@ import { ReferralShareService } from "./referral.share.service";
     ReferralLadderService,
     ReferralClawbackService,
     ReferralShareService,
+    ReferralOwnCodeService,
     ReferralHooks,
   ],
   exports: [
@@ -34,6 +36,7 @@ import { ReferralShareService } from "./referral.share.service";
     ReferralLadderService,
     ReferralClawbackService,
     ReferralShareService,
+    ReferralOwnCodeService,
   ],
 })
 export class ReferralModule {}

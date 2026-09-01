@@ -377,6 +377,9 @@ const RULES = [
       /^apps\/web\/app\/me\/account\.module\.css$/.test(f) ||
       /^apps\/web\/app\/me\/invite\//.test(f) ||
       /^packages\/ui\/components\/invite\//.test(f) ||
+      /^services\/api-nest\/src\/referral\/referral-code\.util/.test(f) ||
+      /^services\/api-nest\/src\/referral\/referral\.own-code\.service\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/referral\/referral\.controller\.ts$/.test(f) ||
       /^tooling\/e2e\/lib\/account-route-stubs\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/invite-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/invite-closure\.cjs$/.test(f),

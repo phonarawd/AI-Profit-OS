@@ -35,6 +35,10 @@ import {
   type OauthProvider,
   type OnboardingStage,
 } from "./auth.constants";
+import {
+  mintReferralCode,
+  uniqueViolationTarget,
+} from "../referral/referral-code.util";
 import type { SessionUser } from "./jwt-auth.guard";
 import { PrivacyAccountService } from "./privacy-account.service";
 import {
@@ -509,15 +513,9 @@ export class AuthService {
       return { userId: existing.rows[0].id, isNew: false };
     }
     try {
-      const created = await this.db.query<{ id: string }>(
-        `INSERT INTO public.users (email) VALUES ($1) RETURNING id::text`,
-        [email],
-      );
-      const userId = created.rows[0]?.id;
-      if (!userId) throw new ServiceUnavailableException("user insert failed");
-      return { userId, isNew: true };
+      return await this.insertUserWithEmail(email);
     } catch (e) {
-      if (isUniqueViolation(e)) {
+      if (isUniqueViolation(e) && uniqueViolationTarget(e) !== "referral_code") {
         const again = await this.db.query<{ id: string }>(
           `SELECT id::text FROM public.users WHERE email = $1`,
           [email],
@@ -611,13 +609,43 @@ export class AuthService {
     };
   }
 
+  private async insertUserWithEmail(
+    email: string,
+  ): Promise<{ userId: string; isNew: boolean }> {
+    for (let attempt = 0; attempt < 8; attempt++) {
+      try {
+        const created = await this.db.query<{ id: string }>(
+          `INSERT INTO public.users (email, referral_code) VALUES ($1, $2)
+           RETURNING id::text`,
+          [email, mintReferralCode()],
+        );
+        const userId = created.rows[0]?.id;
+        if (!userId) throw new ServiceUnavailableException("user insert failed");
+        return { userId, isNew: true };
+      } catch (e) {
+        if (uniqueViolationTarget(e) === "referral_code") continue;
+        throw e;
+      }
+    }
+    throw new ServiceUnavailableException("referral code mint failed");
+  }
+
   private async insertBareUser(): Promise<string> {
-    const created = await this.db.query<{ id: string }>(
-      `INSERT INTO public.users DEFAULT VALUES RETURNING id::text`,
-    );
-    const userId = created.rows[0]?.id;
-    if (!userId) throw new ServiceUnavailableException("user insert failed");
-    return userId;
+    for (let attempt = 0; attempt < 8; attempt++) {
+      try {
+        const created = await this.db.query<{ id: string }>(
+          `INSERT INTO public.users (referral_code) VALUES ($1) RETURNING id::text`,
+          [mintReferralCode()],
+        );
+        const userId = created.rows[0]?.id;
+        if (!userId) throw new ServiceUnavailableException("user insert failed");
+        return userId;
+      } catch (e) {
+        if (uniqueViolationTarget(e) === "referral_code") continue;
+        throw e;
+      }
+    }
+    throw new ServiceUnavailableException("referral code mint failed");
   }
 
   private async upsertStageAProfile(

@@ -24,6 +24,37 @@ test.afterAll(async () => {
   if (runtime) await runtime.stop();
 });
 
+async function overlayInvite(page, mode) {
+  if (mode === "own-code-empty-edges") {
+    await page.route("**/api/v1/referral/me**", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          enabled: true,
+          referralCode: "QA120INVITE",
+          referralCodeStatus: "ready",
+          edges: [],
+          myBinding: null,
+        }),
+      }),
+    );
+    return;
+  }
+  if (mode === "malformed") {
+    await page.route("**/api/v1/referral/me**", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          enabled: true,
+          edges: [{ code: "EDGEONLY1" }],
+        }),
+      }),
+    );
+  }
+}
+
 async function hideNextDevChrome(page) {
   await page
     .addStyleTag({
@@ -35,7 +66,13 @@ async function hideNextDevChrome(page) {
 
 async function openInvite(page, mode, width = 1440, height = 1080) {
   await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
-  await stubInvite(page, mode);
+  await stubInvite(
+    page,
+    mode === "unauthorized" || mode === "error" || mode === "disabled"
+      ? mode
+      : "ready",
+  );
+  await overlayInvite(page, mode);
   await page.setViewportSize({ width, height });
   await page.goto(`${runtime.baseUrl}/me/invite`, { waitUntil: "load" });
   await expect(page.getByTestId("invite-home-page")).toBeVisible({
@@ -60,6 +97,29 @@ test("401 is unauthorized, not an empty invite win", async ({ page }) => {
   await expect(page.getByText("로그인하면 초대를 볼 수 있어요.")).toBeVisible();
   await expect(page.getByTestId("invite-home")).toHaveCount(0);
   await expect(page.getByTestId("app-shell")).toHaveCount(0);
+});
+
+test("own referralCode still displays when edges are empty", async ({
+  page,
+}) => {
+  await openInvite(page, "own-code-empty-edges");
+  await expect(page.getByTestId("invite-home-page")).toHaveAttribute(
+    "data-account-view",
+    "ready",
+  );
+  await expect(page.getByText("QA120INVITE")).toBeVisible();
+});
+
+test("missing referralCode is unavailable even if an edge code exists", async ({
+  page,
+}) => {
+  await openInvite(page, "malformed");
+  await expect(page.getByTestId("invite-home-page")).toHaveAttribute(
+    "data-account-view",
+    "unavailable",
+  );
+  await expect(page.getByTestId("invite-home")).toHaveCount(0);
+  await expect(page.getByText("EDGEONLY1")).toHaveCount(0);
 });
 
 test("ready invite stays server-owned", async ({ page }) => {

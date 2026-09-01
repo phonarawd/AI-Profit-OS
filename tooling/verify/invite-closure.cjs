@@ -29,6 +29,10 @@ const files = [
   "apps/web/app/me/invite/InviteClient.tsx",
   "apps/web/app/me/layout.tsx",
   "apps/web/app/me/AccountFrame.tsx",
+  "packages/ui/components/invite/referral-me-state.ts",
+  "packages/ui/components/invite/referral-me.runtime.test.ts",
+  "services/api-nest/src/referral/referral-code.util.ts",
+  "services/api-nest/src/referral/referral.own-code.service.ts",
   "tooling/e2e/specs/invite-closure.spec.cjs",
 ];
 for (const f of files) {
@@ -51,8 +55,26 @@ if (!client.includes("/api/v1/referral/me")) {
 if (!client.includes("unauthorized") || !client.includes("unavailable")) {
   fail("InviteClient must distinguish unauthorized/unavailable");
 }
+if (!client.includes("parseReferralMe") || !client.includes("referralCode")) {
+  fail("InviteClient must use authoritative referralCode");
+}
+if (
+  client.includes("edges[0]") ||
+  client.includes("edges?.map((e) => e.code)") ||
+  /ownCode = edges/.test(client)
+) {
+  fail("InviteClient must not derive own code from outgoing edges");
+}
 if (/joined:\s*0|statsJoined.*0/.test(client) && /catch/.test(client)) {
   fail("invite must not invent joined=0 on error");
+}
+const controller = read("services/api-nest/src/referral/referral.controller.ts");
+if (!controller.includes("referralCode") || !controller.includes("ownCode")) {
+  fail("/api/v1/referral/me must return session-owned referralCode");
+}
+const util = read("services/api-nest/src/referral/referral-code.util.ts");
+if (!util.includes("mgsytcetsiecllmhcyox") || !util.includes("allowsReferralCodeEnsure")) {
+  fail("referral code ensure must deny the production project ref");
 }
 if (layout.includes("LegacyAppShell") || layout.includes("AppShellRoot")) {
   fail("me layout must not remount leftover 5-tab chrome");
@@ -63,6 +85,12 @@ if (home.includes('?? 0') || /stats\?\.joined \?\? 0/.test(home)) {
 if (!spec.includes("unauthorized") || !spec.includes("ready")) {
   fail("committed spec must cover unauthorized/ready");
 }
+if (!spec.includes("edges: []") || !spec.includes("referralCode")) {
+  fail("committed spec must cover own code with empty edges");
+}
+if (!spec.includes("malformed") || !spec.includes("unavailable")) {
+  fail("committed spec must cover missing referralCode as unavailable");
+}
 if (!pkg.includes('"verify:invite-closure"')) {
   fail("package.json missing verify:invite-closure");
 }
@@ -71,6 +99,22 @@ if (!catalog.includes("invite-closure")) {
 }
 if (!domain.includes("invite-closure.cjs")) {
   fail("domain-by-path must trigger invite-closure");
+}
+
+for (const rel of [
+  "packages/ui/components/invite/referral-me.runtime.test.ts",
+  "services/api-nest/src/referral/referral-code.util.runtime.test.ts",
+]) {
+  const runtimeTest = spawnSync(
+    process.execPath,
+    ["--test", "--experimental-strip-types", rel],
+    { cwd: root, encoding: "utf8", timeout: 30_000 },
+  );
+  process.stdout.write(runtimeTest.stdout || "");
+  process.stderr.write(runtimeTest.stderr || "");
+  if (runtimeTest.status !== 0) {
+    fail(`${rel} failed`);
+  }
 }
 
 function finish(extra) {

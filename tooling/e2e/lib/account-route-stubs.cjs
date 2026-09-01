@@ -16,6 +16,8 @@ const TEST_REFERRAL_ME = {
   rewardsEnabled: false,
   inviteCountUnlimited: true,
   copyOwner: "UI §5.9.1a",
+  referralCode: "QA120INVITE",
+  referralCodeStatus: "ready",
   edges: [{ code: "QA120INVITE", status: "bound" }],
   myBinding: null,
   poolWaitToast: "REFERRAL_POOL_WAIT",

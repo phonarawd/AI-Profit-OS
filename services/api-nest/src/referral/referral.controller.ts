@@ -11,6 +11,7 @@ import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { ReferralEdgeService } from "./referral.edge.service";
 import { ReferralProgramService } from "./referral.program.service";
 import { REFERRAL_USER_ROUTES } from "./referral.routes";
+import { ReferralOwnCodeService } from "./referral.own-code.service";
 import { ReferralShareService } from "./referral.share.service";
 
 type SessionReq = {
@@ -32,6 +33,7 @@ export class ReferralController {
     private readonly program: ReferralProgramService,
     private readonly edges: ReferralEdgeService,
     private readonly shareService: ReferralShareService,
+    private readonly ownCode: ReferralOwnCodeService,
   ) {}
 
   @Get(REFERRAL_USER_ROUTES.me)
@@ -40,6 +42,7 @@ export class ReferralController {
     const cfg = await this.program.get();
     const asReferrer = await this.edges.listByReferrer(userId);
     const asReferee = await this.edges.getByReferee(userId);
+    const own = await this.ownCode.ensureForUser(userId);
     return {
       enabled: cfg.enabled,
       rewardsEnabled: cfg.rewardsEnabled,
@@ -47,6 +50,8 @@ export class ReferralController {
       copyOwner: "UI §5.9.1a",
       inviteCountUnlimited: true,
       sharePerUserPerDay: cfg.sharePerUserPerDay,
+      referralCode: own.referralCode,
+      referralCodeStatus: own.policy,
       edges: asReferrer,
       myBinding: asReferee,
       /** Pool empty → show REFERRAL_POOL_WAIT copy · not invite failure */
