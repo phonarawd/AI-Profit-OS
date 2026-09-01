@@ -115,6 +115,9 @@ export class WebauthnAssertService {
     if (clientData.origin !== this.rp.origin) {
       throw new BadRequestException("webauthn origin mismatch");
     }
+    if (clientData.crossOrigin) {
+      throw new BadRequestException("webauthn cross-origin ceremony forbidden");
+    }
     if (!verifyRpIdHash(authData, this.rp.rpId)) {
       throw new BadRequestException("webauthn rpId mismatch");
     }
