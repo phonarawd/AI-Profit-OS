@@ -11,6 +11,8 @@ on:
       - ".github/workflows/gpt-release-acceptance-fetch-ci.yml"
       - "tooling/release/fetch-acceptance-artifact.cjs"
       - "tooling/verify/fetch-acceptance-artifact.cjs"
+      - "tooling/release/require-accepted-sha.cjs"
+      - "tooling/verify/require-accepted-sha.cjs"
 
 jobs:
   verify:
@@ -23,3 +25,5 @@ jobs:
           node-version: "22"
       - name: Verify acceptance artifact fetch fail-closed rules
         run: node tooling/verify/fetch-acceptance-artifact.cjs
+      - name: Verify production accepted-SHA guard
+        run: node tooling/verify/require-accepted-sha.cjs

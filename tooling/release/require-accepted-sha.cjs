@@ -50,6 +50,12 @@ function evaluateGuard(opts) {
   if (verdict.kind !== "PRODUCTION_RELEASE") {
     return { ok: false, reason: "acceptance_not_production_kind", deploySha };
   }
+  if (verdict.qa_phase !== "full") {
+    return { ok: false, reason: "acceptance_not_full_phase", deploySha };
+  }
+  if (verdict.artifact_built_once !== true) {
+    return { ok: false, reason: "artifact_not_built_once", deploySha };
+  }
   const accepted = String(verdict.sha || "").toLowerCase();
   if (accepted !== deploySha.toLowerCase()) {
     return { ok: false, reason: "sha_mismatch", acceptedSha: accepted, deploySha };
@@ -72,7 +78,10 @@ function evaluateGuard(opts) {
     return { ok: false, reason: "artifact_digest_mismatch", deploySha };
   }
   const artifactSource = normalizeHex(verdict.artifact_source_sha);
-  if (artifactSource && artifactSource !== normalizeHex(deploySha)) {
+  if (!isFullSha(artifactSource)) {
+    return { ok: false, reason: "artifact_source_sha_missing", deploySha };
+  }
+  if (artifactSource !== normalizeHex(deploySha)) {
     return { ok: false, reason: "artifact_source_sha_mismatch", deploySha };
   }
   return {
