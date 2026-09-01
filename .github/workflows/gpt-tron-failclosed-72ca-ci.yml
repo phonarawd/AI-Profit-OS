@@ -1,0 +1,20 @@
+name: gpt-tron-failclosed-72ca-ci
+permissions:
+  contents: read
+on:
+  push:
+    branches: [gpt/verify-tron-failclosed-72ca41f]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996
+        with: { version: 10.14.0 }
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with: { node-version: "22", cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: node tooling/verify/tron-address-fail-closed.cjs
+      - run: pnpm --filter @aipo/api-nest... build
+      - run: node tooling/verify/tron-address-fail-closed.runtime.cjs
