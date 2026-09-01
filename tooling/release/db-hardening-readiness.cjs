@@ -2,8 +2,8 @@
 
 /**
  * Production DB hardening readiness comparator.
- * It consumes a READ-ONLY privilege/RLS snapshot and compares it with the
- * already-approved staging hardening contract. It never connects or mutates DB.
+ * It consumes a READ-ONLY privilege/RLS/policy snapshot and compares it with
+ * the canonical staging hardening contract. It never connects or mutates DB.
  */
 
 const fs = require("node:fs");
@@ -11,16 +11,28 @@ const path = require("node:path");
 
 const EXPECTED = Object.freeze({
   admin_audit_events: {
-    rls: true,
+    rls_enabled: true,
+    rls_forced: false,
     service_role: ["INSERT", "SELECT"],
+    policies: [],
   },
   push_control: {
-    rls: true,
+    rls_enabled: true,
+    rls_forced: true,
     service_role: ["SELECT", "UPDATE"],
+    policies: [
+      { name: "push_control_deny_anon", roles: ["anon"], cmd: "ALL", qual: "false", with_check: "false" },
+      { name: "push_control_deny_authenticated", roles: ["authenticated"], cmd: "ALL", qual: "false", with_check: "false" },
+    ],
   },
   push_subscriptions: {
-    rls: true,
+    rls_enabled: true,
+    rls_forced: true,
     service_role: ["DELETE", "INSERT", "SELECT", "UPDATE"],
+    policies: [
+      { name: "push_subscriptions_deny_anon", roles: ["anon"], cmd: "ALL", qual: "false", with_check: "false" },
+      { name: "push_subscriptions_deny_authenticated", roles: ["authenticated"], cmd: "ALL", qual: "false", with_check: "false" },
+    ],
   },
 });
 
@@ -29,28 +41,77 @@ function snapshotSql() {
 select jsonb_build_object(
   'tables',
   jsonb_object_agg(
-    t.tablename,
+    c.relname,
     jsonb_build_object(
-      'rls', t.rowsecurity,
-      'service_role', coalesce(p.privileges, '[]'::jsonb)
+      'rls_enabled', c.relrowsecurity,
+      'rls_forced', c.relforcerowsecurity,
+      'service_role', coalesce(priv.privileges, '[]'::jsonb),
+      'policies', coalesce(pol.policies, '[]'::jsonb)
     )
   )
 )
-from pg_tables t
+from pg_class c
+join pg_namespace n on n.oid = c.relnamespace
 left join lateral (
   select jsonb_agg(g.privilege_type order by g.privilege_type) as privileges
   from information_schema.role_table_grants g
   where g.table_schema='public'
-    and g.table_name=t.tablename
+    and g.table_name=c.relname
     and g.grantee='service_role'
-) p on true
-where t.schemaname='public'
-  and t.tablename in ('admin_audit_events','push_control','push_subscriptions');
+) priv on true
+left join lateral (
+  select jsonb_agg(
+    jsonb_build_object(
+      'name', p.policyname,
+      'roles', to_jsonb(p.roles),
+      'cmd', p.cmd,
+      'qual', p.qual,
+      'with_check', p.with_check
+    )
+    order by p.policyname
+  ) as policies
+  from pg_policies p
+  where p.schemaname='public'
+    and p.tablename=c.relname
+) pol on true
+where n.nspname='public'
+  and c.relkind='r'
+  and c.relname in ('admin_audit_events','push_control','push_subscriptions');
 `.trim();
 }
 
 function sortedUnique(values) {
   return [...new Set((Array.isArray(values) ? values : []).map(String))].sort();
+}
+
+function normalizeExpr(value) {
+  let s = String(value == null ? "" : value).trim().toLowerCase().replace(/\s+/g, " ");
+  while (s.startsWith("(") && s.endsWith(")")) {
+    s = s.slice(1, -1).trim();
+  }
+  return s;
+}
+
+function normalizePolicy(policy) {
+  const p = policy && typeof policy === "object" ? policy : {};
+  return {
+    name: String(p.name || p.policyname || ""),
+    roles: sortedUnique(p.roles),
+    cmd: String(p.cmd || "").toUpperCase(),
+    qual: normalizeExpr(p.qual),
+    with_check: normalizeExpr(p.with_check),
+  };
+}
+
+function policySignature(policy) {
+  const p = normalizePolicy(policy);
+  return [
+    p.name,
+    p.roles.join(","),
+    p.cmd,
+    p.qual,
+    p.with_check,
+  ].join("|");
 }
 
 function compareSnapshot(snapshot) {
@@ -59,17 +120,35 @@ function compareSnapshot(snapshot) {
     snapshot && typeof snapshot === "object" && snapshot.tables
       ? snapshot.tables
       : {};
+
   for (const [table, expected] of Object.entries(EXPECTED)) {
     const got = tables[table];
     if (!got || typeof got !== "object") {
       fails.push("missing_table:" + table);
       continue;
     }
-    if (got.rls !== expected.rls) {
+
+    if (got.rls_enabled !== expected.rls_enabled) {
       fails.push(
-        "rls_mismatch:" + table + ":expected=" + expected.rls + ":got=" + got.rls,
+        "rls_enabled_mismatch:" +
+          table +
+          ":expected=" +
+          expected.rls_enabled +
+          ":got=" +
+          got.rls_enabled,
       );
     }
+    if (got.rls_forced !== expected.rls_forced) {
+      fails.push(
+        "rls_forced_mismatch:" +
+          table +
+          ":expected=" +
+          expected.rls_forced +
+          ":got=" +
+          got.rls_forced,
+      );
+    }
+
     const actualPrivileges = sortedUnique(got.service_role);
     const expectedPrivileges = sortedUnique(expected.service_role);
     if (JSON.stringify(actualPrivileges) !== JSON.stringify(expectedPrivileges)) {
@@ -82,10 +161,26 @@ function compareSnapshot(snapshot) {
           actualPrivileges.join(","),
       );
     }
+
+    const actualPolicies = (Array.isArray(got.policies) ? got.policies : [])
+      .map(policySignature)
+      .sort();
+    const expectedPolicies = expected.policies.map(policySignature).sort();
+    if (JSON.stringify(actualPolicies) !== JSON.stringify(expectedPolicies)) {
+      fails.push(
+        "policy_mismatch:" +
+          table +
+          ":expected=" +
+          expectedPolicies.join(";") +
+          ":got=" +
+          actualPolicies.join(";"),
+      );
+    }
   }
+
   return {
     ok: fails.length === 0,
-    schema: "db-hardening-readiness.v1",
+    schema: "db-hardening-readiness.v2",
     production_mutation: 0,
     expected: EXPECTED,
     fails,
@@ -127,6 +222,9 @@ module.exports = {
   EXPECTED,
   snapshotSql,
   sortedUnique,
+  normalizeExpr,
+  normalizePolicy,
+  policySignature,
   compareSnapshot,
   parseArgs,
 };
