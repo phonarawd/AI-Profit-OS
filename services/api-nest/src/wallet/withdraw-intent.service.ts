@@ -137,7 +137,7 @@ export class WithdrawIntentService {
     await this.kycGuard.assertBeforeWithdraw(input.userId);
 
     // ── Guard #3 · WebAuthn/OTP/PIN §43.6 ────────────────────
-    const step = this.stepUp.assertStepUpToken({
+    this.stepUp.assertStepUpToken({
       userId: input.userId,
       stepUpToken: input.stepUpToken,
     });
@@ -208,6 +208,11 @@ export class WithdrawIntentService {
       });
       return this.toV1(existing.rows[0], feeQuote.withdrawFeeUsdt);
     }
+
+    const step = await this.stepUp.consumeStepUpToken({
+      userId: input.userId,
+      stepUpToken: input.stepUpToken,
+    });
 
     try {
       const ins = await this.db.query<IntentRow>(

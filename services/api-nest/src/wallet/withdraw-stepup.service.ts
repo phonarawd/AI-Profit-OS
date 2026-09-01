@@ -5,6 +5,7 @@
 
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   HttpException,
   HttpStatus,
@@ -281,6 +282,10 @@ export class WithdrawStepUpService {
         statusCode: 403,
       });
     }
+    await this.consumeStepUpToken({
+      userId: input.userId,
+      stepUpToken: input.enrollmentStepUpToken,
+    });
     const hash = this.hashPin(input.pin, input.userId);
     await this.db.query(
       `INSERT INTO public.withdraw_pin_verifiers (
@@ -304,7 +309,11 @@ export class WithdrawStepUpService {
   assertStepUpToken(input: {
     userId: string;
     stepUpToken: string;
-  }): { method: WithdrawStepUpMethod } {
+  }): {
+    method: WithdrawStepUpMethod;
+    challengeId: string;
+    expiresAtSec: number;
+  } {
     const raw = (input.stepUpToken || "").trim();
     if (!raw.startsWith("v2.")) {
       throw new ForbiddenException({
@@ -355,7 +364,37 @@ export class WithdrawStepUpService {
         statusCode: 403,
       });
     }
-    return { method: method as WithdrawStepUpMethod };
+    return {
+      method: method as WithdrawStepUpMethod,
+      challengeId: challengeId!,
+      expiresAtSec,
+    };
+  }
+
+  async consumeStepUpToken(input: {
+    userId: string;
+    stepUpToken: string;
+  }): Promise<{ method: WithdrawStepUpMethod }> {
+    const claims = this.assertStepUpToken(input);
+    const consumed = await this.db.query<{ id: string }>(
+      `UPDATE public.withdraw_stepup_challenges
+          SET token_consumed_at = now()
+        WHERE id = $1::uuid
+          AND user_id = $2::uuid
+          AND method = $3
+          AND consumed_at IS NOT NULL
+          AND token_consumed_at IS NULL
+        RETURNING id::text AS id`,
+      [claims.challengeId, input.userId, claims.method],
+    );
+    if (!consumed.rows[0]) {
+      throw new ForbiddenException({
+        code: WITHDRAW_STEP_UP_CODES.STEP_UP_TOKEN_REPLAYED,
+        toastCode: WITHDRAW_STEP_UP_CODES.STEP_UP_TOKEN_REPLAYED,
+        statusCode: 403,
+      });
+    }
+    return { method: claims.method };
   }
 
   async requirePinReadyOrThrow(userId: string): Promise<void> {
@@ -559,7 +598,7 @@ function safeEq(a: string, b: string): boolean {
   return timingSafeEqual(ba, bb);
 }
 
-class ConflictConsumed extends BadRequestException {
+class ConflictConsumed extends ConflictException {
   constructor() {
     super("challenge already consumed");
   }

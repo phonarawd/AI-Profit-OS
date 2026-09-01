@@ -16,6 +16,17 @@ const controller = fs.readFileSync(
   path.join(root, "services/api-nest/src/wallet/wallet.controller.ts"),
   "utf8",
 );
+const intent = fs.readFileSync(
+  path.join(root, "services/api-nest/src/wallet/withdraw-intent.service.ts"),
+  "utf8",
+);
+const migration = fs.readFileSync(
+  path.join(
+    root,
+    "supabase/migrations/20260901224000_withdraw_stepup_token_single_use.sql",
+  ),
+  "utf8",
+);
 
 assert.doesNotMatch(service, /proof\.includes\(["']id["']\)/);
 assert.doesNotMatch(service, /phase0-dev-stepup-hmac/);
@@ -38,7 +49,27 @@ assert.match(service, /if \(!consumed\.rows\[0\]\)/);
 assert.match(service, /enrollmentStepUpToken/);
 assert.match(controller, /enrollmentStepUpToken: String\(body\.stepUpToken/);
 assert.match(service, /enrollment\.method === "pin"/);
+assert.match(service, /await this\.consumeStepUpToken\(/);
+assert.match(service, /async consumeStepUpToken/);
+assert.match(service, /SET token_consumed_at = now\(\)/);
+assert.match(service, /token_consumed_at IS NULL/);
+assert.match(service, /STEP_UP_TOKEN_REPLAYED/);
+assert.match(service, /class ConflictConsumed extends ConflictException/);
+assert.match(intent, /await this\.stepUp\.consumeStepUpToken\(/);
+assert.match(migration, /ADD COLUMN IF NOT EXISTS token_consumed_at timestamptz/);
+
+const existingIntentLookup = intent.indexOf(
+  "const existing = await this.db.query<IntentRow>",
+);
+const tokenConsume = intent.indexOf(
+  "const step = await this.stepUp.consumeStepUpToken",
+);
+assert.ok(existingIntentLookup >= 0, "idempotent existing-intent lookup missing");
+assert.ok(
+  tokenConsume > existingIntentLookup,
+  "step-up token must not be consumed before exact idempotent replay is resolved",
+);
 
 console.log(
-  "[verify:withdraw-stepup-security] PASS (NO_FAKE_WEBAUTHN · VERIFIED_EMAIL_ONLY · EXPIRING_HMAC_TOKEN · ATOMIC_CONSUME · PROVEN_PIN_ENROLLMENT)",
+  "[verify:withdraw-stepup-security] PASS (NO_FAKE_WEBAUTHN · VERIFIED_EMAIL_ONLY · EXPIRING_HMAC_TOKEN · SINGLE_USE_TOKEN · IDEMPOTENT_RETRY_PRESERVED · ATOMIC_CONSUME · PROVEN_PIN_ENROLLMENT)",
 );

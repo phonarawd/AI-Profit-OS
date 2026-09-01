@@ -306,6 +306,11 @@
         "trigger": "expiring step-up token"
       },
       {
+        "code": "STEP_UP_TOKEN_REPLAYED",
+        "toastKo": "🔐 이 확인은 이미 사용됐어요. 다시 확인해 주세요",
+        "trigger": "single-use step-up token replay"
+      },
+      {
         "code": "BALANCE_ADJUSTED",
         "toastKo": "💰 잔액이 조정됐어요",
         "trigger": "admin ledger adjust"
