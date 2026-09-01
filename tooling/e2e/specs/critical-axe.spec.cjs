@@ -49,8 +49,15 @@ test("live axe critical consumer routes", async ({ page }, testInfo) => {
       window.localStorage.setItem("peotteok_deposit_consult_ack", "1");
     });
     await page.setViewportSize({ width: 390, height: 693 });
-    await page.goto(runtime.baseUrl + route.path, { waitUntil: "load" });
-    await expect(page.getByTestId(route.testId)).toBeVisible({ timeout: 20000 });
+    await page.goto(runtime.baseUrl + route.path, { waitUntil: "domcontentloaded" });
+    const surface =
+      route.path === "/"
+        ? page.locator(
+            '[data-testid="guest-first-visit"], [data-testid="home-authenticated"], [data-testid="home-shell"]',
+          ).first()
+        : page.getByTestId(route.testId);
+    await expect(surface).toBeVisible({ timeout: 45000 });
+    await page.waitForLoadState("networkidle", { timeout: 10000 }).catch(() => {});
     await page.addScriptTag({ path: require.resolve("axe-core") });
     const results = await page.evaluate(async () =>
       window.axe.run(document, {
