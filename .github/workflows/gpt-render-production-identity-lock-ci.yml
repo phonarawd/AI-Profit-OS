@@ -5,6 +5,8 @@ on:
     paths:
       - "tooling/release/render-api-promotion-readiness.cjs"
       - "tooling/verify/render-api-promotion-readiness.cjs"
+      - "tooling/release/render-rollback-plan.cjs"
+      - "tooling/verify/render-rollback-provenance.cjs"
       - ".github/workflows/gpt-render-production-identity-lock-ci.yml"
   workflow_dispatch:
 
@@ -23,3 +25,5 @@ jobs:
           node-version: "22.14.0"
       - name: Verify canonical Render Production identity lock
         run: node tooling/verify/render-api-promotion-readiness.cjs
+      - name: Verify canonical Render rollback identity lock
+        run: node tooling/verify/render-rollback-provenance.cjs
