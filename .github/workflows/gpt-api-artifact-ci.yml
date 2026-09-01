@@ -1,0 +1,104 @@
+name: gpt-api-artifact-ci
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/release-api-immutable-649368a
+    paths:
+      - ".github/workflows/gpt-api-artifact-ci.yml"
+      - ".github/workflows/release-build.yml"
+      - "services/api-nest/**"
+      - "tooling/release/api-artifact-provenance.cjs"
+      - "tooling/release/artifact-provenance.cjs"
+      - "tooling/verify/api-artifact-provenance.cjs"
+      - "apps/web/**"
+      - "apps/admin/**"
+      - "workers/push-dispatcher/**"
+      - "workers/ebay-adapter/**"
+      - "packages/**"
+      - "pnpm-lock.yaml"
+      - "package.json"
+
+concurrency:
+  group: gpt-api-artifact-ci-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  verify-release-bundle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Static API provenance verifier
+        run: pnpm verify:api-artifact-provenance
+
+      - name: Build release surfaces
+        run: |
+          set -euo pipefail
+          pnpm --filter @aipo/web build:cf
+          pnpm --filter @aipo/admin build:cf
+          pnpm --filter @aipo/api-nest... build
+          test -f apps/web/.open-next/worker.js
+          test -d apps/web/.open-next/assets
+          test -f apps/admin/.open-next/worker.js
+          test -d apps/admin/.open-next/assets
+          test -f services/api-nest/dist/main.js
+
+      - name: Bind API artifact manifest
+        run: |
+          set -euo pipefail
+          node tooling/release/api-artifact-provenance.cjs --source-sha "${{ github.sha }}"
+          test -f services/api-nest/dist/api-release-manifest.json
+
+      - name: Prebuild worker snapshots
+        run: |
+          set -euo pipefail
+          node tooling/release/prebuild-workers.cjs --from-repo
+          test -f workers/push-dispatcher/.release-prebuilt/index.js
+          test -f workers/ebay-adapter/.release-prebuilt/index.js
+
+      - name: Pack immutable release bundle
+        run: |
+          set -euo pipefail
+          rm -rf _tmp_gpt_release_bundle
+          node tooling/release/build-once-artifact.cjs \
+            --source-sha "${{ github.sha }}" \
+            --from-repo \
+            --out _tmp_gpt_release_bundle
+          test -f _tmp_gpt_release_bundle/release-manifest.json
+          test -f _tmp_gpt_release_bundle/payload/services/api-nest/dist/main.js
+          test -f _tmp_gpt_release_bundle/payload/services/api-nest/dist/api-release-manifest.json
+
+      - name: Verify packed bundle fail-closed
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const path = require("node:path");
+          const { verifyBundle } = require("./tooling/release/artifact-provenance.cjs");
+          const got = verifyBundle(path.resolve("_tmp_gpt_release_bundle"), {
+            sourceSha: process.env.GITHUB_SHA,
+          });
+          if (!got.api_artifact || got.api_artifact.artifact_kind !== "api-nest") {
+            throw new Error("api artifact missing from verified bundle");
+          }
+          if (got.api_artifact.source_sha !== process.env.GITHUB_SHA) {
+            throw new Error("api source sha mismatch");
+          }
+          console.log("[gpt-api-artifact-ci] API_BUNDLE_REMOTE_CI_PASS");
+          NODE
