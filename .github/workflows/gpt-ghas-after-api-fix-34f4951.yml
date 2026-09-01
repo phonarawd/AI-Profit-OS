@@ -1,0 +1,56 @@
+name: gpt-ghas-after-api-fix-34f4951
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/ghas-after-api-fix-34f4951
+
+jobs:
+  analyze:
+    name: codeql-sarif-api-fix
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout exact API-fix candidate
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: 34f4951c198b91429517876b05443a923090484e
+          fetch-depth: 1
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@5ba2889ada762081db2c4f32a729827dce632c7b
+        with:
+          languages: javascript-typescript
+          queries: security-extended
+      - name: Analyze without upload
+        id: analyze
+        uses: github/codeql-action/analyze@5ba2889ada762081db2c4f32a729827dce632c7b
+        with:
+          category: "/language:javascript-typescript"
+          output: "/tmp/codeql-sarif"
+          upload: never
+          upload-database: false
+      - name: Emit sanitized SARIF summary
+        env:
+          SARIF_DIR: ${{ steps.analyze.outputs.sarif-output }}
+        run: |
+          node <<'NODE'
+          const fs=require("node:fs"), path=require("node:path");
+          const root=process.env.SARIF_DIR||"/tmp/codeql-sarif", findings=[];
+          for(const file of fs.readdirSync(root).filter(f=>f.endsWith(".sarif")).sort()){
+            const sarif=JSON.parse(fs.readFileSync(path.join(root,file),"utf8"));
+            for(const run of sarif.runs||[]) for(const result of run.results||[]){
+              const loc=result.locations?.[0]?.physicalLocation||{}, region=loc.region||{};
+              findings.push({
+                ruleId:result.ruleId||null,
+                file:loc.artifactLocation?.uri||null,
+                line:region.startLine||null,
+                fingerprint:result.partialFingerprints?.primaryLocationLineHash??result.partialFingerprints?.primaryLocationStartColumnFingerprint??null
+              });
+            }
+          }
+          findings.sort((a,b)=>String(a.ruleId).localeCompare(String(b.ruleId))||String(a.file).localeCompare(String(b.file))||Number(a.line||0)-Number(b.line||0));
+          console.log(JSON.stringify({targetSha:"34f4951c198b91429517876b05443a923090484e",count:findings.length,findings},null,2));
+          NODE
