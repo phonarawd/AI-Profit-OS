@@ -1,0 +1,29 @@
+name: gpt-release-acceptance-fetch-ci
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/release-acceptance-fetch-hardening-354c7bc
+    paths:
+      - ".github/workflows/gpt-release-acceptance-fetch-ci.yml"
+      - "tooling/release/fetch-acceptance-artifact.cjs"
+      - "tooling/verify/fetch-acceptance-artifact.cjs"
+      - "tooling/release/require-accepted-sha.cjs"
+      - "tooling/verify/require-accepted-sha.cjs"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+      - name: Verify acceptance artifact fetch fail-closed rules
+        run: node tooling/verify/fetch-acceptance-artifact.cjs
+      - name: Verify production accepted-SHA guard
+        run: node tooling/verify/require-accepted-sha.cjs
