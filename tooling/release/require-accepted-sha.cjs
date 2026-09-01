@@ -56,6 +56,9 @@ function evaluateGuard(opts) {
   if (verdict.artifact_built_once !== true) {
     return { ok: false, reason: "artifact_not_built_once", deploySha };
   }
+  if (verdict.api_runtime_verified !== true) {
+    return { ok: false, reason: "api_runtime_not_verified", deploySha };
+  }
   const accepted = String(verdict.sha || "").toLowerCase();
   if (accepted !== deploySha.toLowerCase()) {
     return { ok: false, reason: "sha_mismatch", acceptedSha: accepted, deploySha };

@@ -21,6 +21,7 @@ const verdict = {
   artifact_source_sha: SHA,
   artifact_digest: DIGEST,
   artifact_built_once: true,
+  api_runtime_verified: true,
 };
 
 assert.equal(validProductionPass(verdict, SHA), true);
@@ -38,6 +39,14 @@ assert.equal(
 );
 assert.equal(
   validProductionPass({ ...verdict, qa_phase: "qa6" }, SHA),
+  false,
+);
+assert.equal(
+  validProductionPass({ ...verdict, api_runtime_verified: false }, SHA),
+  false,
+);
+assert.equal(
+  validProductionPass({ ...verdict, api_runtime_verified: undefined }, SHA),
   false,
 );
 

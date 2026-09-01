@@ -13,6 +13,7 @@ const PASS = {
   artifact_digest: DIGEST,
   artifact_source_sha: SHA,
   artifact_built_once: true,
+  api_runtime_verified: true,
 };
 
 function guard(verdict, overrides) {
@@ -35,6 +36,14 @@ assert.equal(got.reason, "acceptance_not_full_phase");
 got = guard({ ...PASS, artifact_built_once: false });
 assert.equal(got.ok, false);
 assert.equal(got.reason, "artifact_not_built_once");
+
+got = guard({ ...PASS, api_runtime_verified: false });
+assert.equal(got.ok, false);
+assert.equal(got.reason, "api_runtime_not_verified");
+
+got = guard({ ...PASS, api_runtime_verified: undefined });
+assert.equal(got.ok, false);
+assert.equal(got.reason, "api_runtime_not_verified");
 
 got = guard({ ...PASS, artifact_source_sha: "" });
 assert.equal(got.ok, false);
@@ -60,5 +69,5 @@ assert.equal(got.ok, true);
 assert.equal(got.reason, "non_production_target");
 
 console.log(
-  "[verify:require-accepted-sha] PASS (FULL_PHASE · BUILT_ONCE · EXACT SOURCE SHA · EXACT DIGEST · FAIL_CLOSED)",
+  "[verify:require-accepted-sha] PASS (FULL_PHASE · BUILT_ONCE · API_RUNTIME_VERIFIED · EXACT SOURCE SHA · EXACT DIGEST · FAIL_CLOSED)",
 );

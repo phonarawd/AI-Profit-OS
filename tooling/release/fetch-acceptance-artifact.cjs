@@ -113,7 +113,8 @@ function validProductionPass(verdict, requestedSha) {
     isFullSha(source) &&
     source === want &&
     isSha256(verdict.artifact_digest) &&
-    verdict.artifact_built_once === true
+    verdict.artifact_built_once === true &&
+    verdict.api_runtime_verified === true
   );
 }
 
