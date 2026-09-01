@@ -61,6 +61,42 @@ function writeApiManifest(outDir, sourceSha, entryAbs) {
   return manifest;
 }
 
+function parseArgs(argv) {
+  const out = { sourceSha: "" };
+  for (let i = 2; i < argv.length; i += 1) {
+    if (argv[i] === "--source-sha") out.sourceSha = argv[i + 1] || "";
+  }
+  return out;
+}
+
+function main(argv) {
+  const args = parseArgs(argv);
+  if (!isFullSha(args.sourceSha)) {
+    process.stderr.write(
+      "usage: api-artifact-provenance.cjs --source-sha <40hex>\n",
+    );
+    process.exit(2);
+  }
+  const repoRoot = path.resolve(__dirname, "../..");
+  const entryAbs = path.join(repoRoot, ENTRY);
+  const outDir = path.dirname(entryAbs);
+  const manifest = writeApiManifest(outDir, args.sourceSha, entryAbs);
+  process.stdout.write(JSON.stringify(manifest, null, 2) + "\n");
+}
+
+if (require.main === module) {
+  try {
+    main(process.argv);
+  } catch (err) {
+    process.stderr.write(
+      "[api-artifact-provenance] " +
+        (err && err.message ? err.message : String(err)) +
+        "\n",
+    );
+    process.exit(1);
+  }
+}
+
 module.exports = {
   SCHEMA,
   ARTIFACT_KIND,
@@ -69,4 +105,5 @@ module.exports = {
   isFullSha,
   apiArtifactAcceptedNeverEqualsWeb,
   writeApiManifest,
+  parseArgs,
 };
