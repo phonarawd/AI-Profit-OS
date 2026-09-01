@@ -179,6 +179,36 @@ if (
   fail("Production release without bound Engine run must FAIL");
 }
 
+const wrongVerdictEnginePath = withQa({
+  sha: "a".repeat(40),
+  event_name: "workflow_dispatch",
+  qa_phase: "full",
+  jobs: successJobs,
+});
+wrongVerdictEnginePath.engine_run.path = ".github/workflows/gate.yml";
+const wrongPathVerdict = evaluateVerdict(wrongVerdictEnginePath, contract);
+if (
+  wrongPathVerdict.verdict !== "FAIL" ||
+  !wrongPathVerdict.fails.includes("engine_run_workflow_path_mismatch")
+) {
+  fail("Production verdict must reject wrong Engine workflow path");
+}
+
+const unprovenVerdictPhase = withQa({
+  sha: "a".repeat(40),
+  event_name: "workflow_dispatch",
+  qa_phase: "full",
+  jobs: successJobs,
+});
+unprovenVerdictPhase.engine_run.qa_phase_proof = "caller_claim";
+const unprovenPhaseVerdict = evaluateVerdict(unprovenVerdictPhase, contract);
+if (
+  unprovenPhaseVerdict.verdict !== "FAIL" ||
+  !unprovenPhaseVerdict.fails.includes("engine_run_phase_proof_invalid")
+) {
+  fail("Production verdict must reject unproven Engine full phase");
+}
+
 check(
   "full_without_artifact_qa",
   evaluateVerdict(
