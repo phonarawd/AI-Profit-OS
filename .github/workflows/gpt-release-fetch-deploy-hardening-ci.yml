@@ -1,0 +1,27 @@
+name: gpt-release-fetch-deploy-hardening-ci
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/release-fetch-deploy-hardening-9af5781
+    paths:
+      - ".github/workflows/gpt-release-fetch-deploy-hardening-ci.yml"
+      - "tooling/release/fetch-release-bundle.cjs"
+      - "tooling/release/deploy-from-artifact.cjs"
+      - "tooling/verify/release-fetch-deploy-hardening.cjs"
+      - ".github/workflows/deploy-cloudflare.yml"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+      - name: Verify release fetch/deploy fail-closed hardening
+        run: node tooling/verify/release-fetch-deploy-hardening.cjs
