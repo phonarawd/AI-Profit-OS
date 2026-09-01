@@ -11,6 +11,8 @@ on:
       - ".github/workflows/gpt-render-rollback-plan-ci.yml"
       - "tooling/release/render-rollback-plan.cjs"
       - "tooling/verify/render-rollback-provenance.cjs"
+      - "tooling/release/render-api-promotion-readiness.cjs"
+      - "tooling/verify/render-api-promotion-readiness.cjs"
 
 jobs:
   verify:
@@ -23,6 +25,8 @@ jobs:
           node-version: "22"
       - name: Verify exact rollback provenance planner
         run: node tooling/verify/render-rollback-provenance.cjs
+      - name: Verify Render API promotion readiness
+        run: node tooling/verify/render-api-promotion-readiness.cjs
       - name: Verify CLI emits mutation-free plan
         run: |
           set -euo pipefail
