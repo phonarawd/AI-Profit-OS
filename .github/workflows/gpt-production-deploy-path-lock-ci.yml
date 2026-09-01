@@ -28,3 +28,5 @@ jobs:
           node-version: "22.14.0"
       - name: Verify Production deploy path lock
         run: node tooling/verify/production-deploy-path-lock.cjs
+      - name: Verify existing release fetch/deploy hardening
+        run: node tooling/verify/release-fetch-deploy-hardening.cjs
