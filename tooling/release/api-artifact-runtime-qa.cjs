@@ -187,10 +187,34 @@ function allowApiRuntime(runtime) {
   };
 }
 
+function allowWorkerRuntime(runtime) {
+  if (!runtime || typeof runtime !== "object") return null;
+  const reason = String(runtime.reason || "");
+  return {
+    verified: runtime.verified === true,
+    reason: /^[A-Za-z0-9_.:-]{1,80}$/.test(reason) ? reason : undefined,
+    artifact_digest: isSha256(normalizeHex(runtime.artifact_digest))
+      ? normalizeHex(runtime.artifact_digest)
+      : null,
+  };
+}
+
 function writeOut(filePath, record) {
+  const src = record && typeof record === "object" ? record : {};
+  const reason = String(src.reason || "");
   const safe = {
-    ...record,
-    api_runtime: allowApiRuntime(record && record.api_runtime ? record.api_runtime : {}),
+    schema: "release-artifact-qa.v1",
+    verified: src.verified === true,
+    source_sha: isFullSha(normalizeHex(src.source_sha))
+      ? normalizeHex(src.source_sha)
+      : null,
+    artifact_digest: isSha256(normalizeHex(src.artifact_digest))
+      ? normalizeHex(src.artifact_digest)
+      : null,
+    built_once: src.built_once === true,
+    reason: /^[A-Za-z0-9_.:-]{1,80}$/.test(reason) ? reason : undefined,
+    runtime: allowWorkerRuntime(src.runtime),
+    api_runtime: allowApiRuntime(src.api_runtime || {}),
   };
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, JSON.stringify(safe, null, 2) + "\n");

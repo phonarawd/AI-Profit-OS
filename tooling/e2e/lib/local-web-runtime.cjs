@@ -122,30 +122,10 @@ const AUTHENTICATED_EMPTY_HOME = {
   domainFsm: null,
 };
 
-function applyLoopbackCors(req, res) {
-  const origin = String(req.headers.origin || "");
-  if (!origin) return;
-  try {
-    const url = new URL(origin);
-    if (!LOOPBACK_HOSTS.has(url.hostname.toLowerCase())) return;
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Vary", "Origin");
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "accept, authorization, content-type, x-aipo-qa-session",
-    );
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
-  } catch {
-    /* ignore malformed Origin */
-  }
-}
-
 function startApiStub() {
   if (process.env.LOCAL_WEB_RUNTIME_API_STUB !== "1") return Promise.resolve(null);
   const endpoint = localApiEndpoint(process.env.API_HOST);
   const server = http.createServer((req, res) => {
-    applyLoopbackCors(req, res);
     if (req.method === "OPTIONS") {
       res.statusCode = 204;
       res.end();
