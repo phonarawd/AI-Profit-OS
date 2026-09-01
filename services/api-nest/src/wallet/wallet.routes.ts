@@ -45,4 +45,9 @@ export const WALLET_ADMIN_ROUTES = {
   /** §43.6a · Admin §9.8.10E */
   withdrawPinReset: "users/:id/withdraw-pin/reset",
   webauthnRevoke: "users/:id/webauthn/revoke",
+  /** Admin wallet?tab=review · withdraw_intents auth_ok queue */
+  withdrawReviewList: "wallet/withdraw-intents",
+  withdrawReviewGet: "wallet/withdraw-intents/:id",
+  withdrawReviewApprove: "wallet/withdraw-intents/:id/approve",
+  withdrawReviewReject: "wallet/withdraw-intents/:id/reject",
 } as const;

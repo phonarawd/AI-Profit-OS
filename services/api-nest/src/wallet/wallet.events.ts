@@ -16,6 +16,8 @@ export const WALLET_EVENTS = {
   krwDepositExpired: "wallet.krw_deposit.expired",
   /** §49.3 */
   withdrawIntentCreated: "wallet.withdraw_intent.created",
+  withdrawAdminApproved: "wallet.withdraw_intent.admin_approved",
+  withdrawAdminRejected: "wallet.withdraw_intent.admin_rejected",
   /** §49.7 profit→principal */
   profitMerged: "wallet.profit.merged",
   /** §43.6a */
