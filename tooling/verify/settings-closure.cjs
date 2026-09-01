@@ -24,6 +24,8 @@ for (const f of [
   "apps/web/app/me/settings/page.tsx",
   "apps/web/app/me/settings/SettingsClient.tsx",
   "packages/ui/components/settings/SettingsPanel.tsx",
+  "packages/ui/components/settings/notification-prefs-state.ts",
+  "packages/ui/components/settings/notification-prefs.runtime.test.ts",
   "tooling/e2e/specs/settings-closure.spec.cjs",
 ]) {
   if (!fs.existsSync(path.join(root, f))) fail(`missing: ${f}`);
@@ -52,15 +54,39 @@ if (!panel.includes("/api/v1/me/notification-prefs")) {
 if (!panel.includes("setNotify(prev)")) {
   fail("SettingsPanel must revert prefs when PUT fails");
 }
+if (!panel.includes("parseNotificationPrefs") || !panel.includes("createPrefsWriteController")) {
+  fail("SettingsPanel must parse prefs fail-closed and queue one in-flight PUT");
+}
+if (panel.includes("!== false")) {
+  fail("SettingsPanel must not coerce missing prefs to true");
+}
 if (layout.includes("LegacyAppShell") || layout.includes("AppShellRoot")) {
   fail("me layout must not remount leftover 5-tab chrome");
 }
 if (!spec.includes("unauthorized") || !spec.includes("settings-panel")) {
   fail("committed spec must cover unauthorized/ready prefs");
 }
+if (!spec.includes("prefs-malformed") || !spec.includes("data-prefs-view")) {
+  fail("committed spec must cover malformed prefs fail-closed");
+}
 if (!pkg.includes('"verify:settings-closure"')) fail("package.json missing verify:settings-closure");
 if (!catalog.includes("settings-closure")) fail("CATALOG.md must list settings-closure");
 if (!domain.includes("settings-closure.cjs")) fail("domain-by-path must trigger settings-closure");
+
+const runtimeTest = spawnSync(
+  process.execPath,
+  [
+    "--test",
+    "--experimental-strip-types",
+    "packages/ui/components/settings/notification-prefs.runtime.test.ts",
+  ],
+  { cwd: root, encoding: "utf8", timeout: 30_000 },
+);
+process.stdout.write(runtimeTest.stdout || "");
+process.stderr.write(runtimeTest.stderr || "");
+if (runtimeTest.status !== 0) {
+  fail("notification prefs runtime tests failed");
+}
 
 function finish(extra) {
   if (fails.length) {

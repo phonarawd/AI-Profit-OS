@@ -17,9 +17,32 @@ test.afterAll(async () => {
   if (runtime) await runtime.stop();
 });
 
+async function overlayPrefs(page, mode) {
+  if (mode === "prefs-malformed") {
+    await page.route("**/api/v1/me/notification-prefs**", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ master: "true", opportunity: 1 }),
+      }),
+    );
+    return;
+  }
+  if (mode === "prefs-401") {
+    await page.route("**/api/v1/me/notification-prefs**", (route) =>
+      route.fulfill({
+        status: 401,
+        contentType: "application/json",
+        body: JSON.stringify({ error: "unauthorized" }),
+      }),
+    );
+  }
+}
+
 async function openSettings(page, mode, width = 1440, height = 1080) {
   await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
   await stubSettings(page, mode);
+  await overlayPrefs(page, mode);
   await page.setViewportSize({ width, height });
   await page.goto(`${runtime.baseUrl}/me/settings`, { waitUntil: "load" });
   await expect(page.getByTestId("settings-page")).toBeVisible({ timeout: 20000 });
@@ -53,6 +76,30 @@ test("ready settings keep isolated prefs and leftover chrome off", async ({
     path: "governance/release-master/rel-125-settings/runtime-ready-390.png",
     fullPage: false,
   });
+});
+
+test("malformed prefs stay unavailable and do not render all-true switches", async ({
+  page,
+}) => {
+  await openSettings(page, "prefs-malformed");
+  await expect(page.getByTestId("settings-panel")).toBeVisible();
+  await expect(page.getByTestId("settings-panel")).toHaveAttribute(
+    "data-prefs-view",
+    "unavailable",
+  );
+  await expect(page.getByTestId("settings-notify")).toBeVisible();
+  await expect(page.locator("[data-notify-channel]")).toHaveCount(0);
+});
+
+test("prefs 401 is unauthorized, not an all-true ready panel", async ({
+  page,
+}) => {
+  await openSettings(page, "prefs-401");
+  await expect(page.getByTestId("settings-panel")).toHaveAttribute(
+    "data-prefs-view",
+    "unauthorized",
+  );
+  await expect(page.locator("[data-notify-channel]")).toHaveCount(0);
 });
 
 test("settings a11y has no new critical/serious axe violations", async ({

@@ -1,23 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { applyFontScale, type FontScaleKey } from "../../tokens/font-scale";
 import { T } from "../../copy/ko";
 import { useOptionalToast } from "../toast";
+import {
+  classifyPrefsHttp,
+  createPrefsWriteController,
+  parseNotificationPrefs,
+  type NotifyPrefs,
+  type PrefsReadView,
+} from "./notification-prefs-state";
 
 type ToneBand = "young" | "mid" | "senior";
 type DepositPref = "usdt" | "krw";
-
-type NotifyPrefs = {
-  master: boolean;
-  opportunity: boolean;
-  wallet: boolean;
-  notice: boolean;
-  campaign: boolean;
-  opsMessage: boolean;
-  strategyMatch: boolean;
-};
 
 const NOTIFY_KEYS: { key: keyof NotifyPrefs; label: string }[] = [
   { key: "master", label: T.settings.notify.master },
@@ -29,16 +26,6 @@ const NOTIFY_KEYS: { key: keyof NotifyPrefs; label: string }[] = [
   { key: "strategyMatch", label: T.settings.notify.strategyMatch },
 ];
 
-const DEFAULT_PREFS: NotifyPrefs = {
-  master: true,
-  opportunity: true,
-  wallet: true,
-  notice: true,
-  campaign: true,
-  opsMessage: true,
-  strategyMatch: true,
-};
-
 /**
  * SettingsPanel — §50.1 fontScale 3단 · toneBand · depositPref · §50.1n 알림 · Light 토글 0
  */
@@ -47,7 +34,36 @@ export function SettingsPanel() {
   const [fontScale, setFontScale] = useState<FontScaleKey>("md");
   const [toneBand, setToneBand] = useState<ToneBand>("mid");
   const [depositPref, setDepositPref] = useState<DepositPref>("usdt");
-  const [notify, setNotify] = useState<NotifyPrefs>(DEFAULT_PREFS);
+  const [notify, setNotify] = useState<NotifyPrefs | null>(null);
+  const [prefsView, setPrefsView] = useState<PrefsReadView>("loading");
+  const writerRef = useRef(
+    createPrefsWriteController({
+      put: async (prefs) => {
+        try {
+          const res = await fetch("/api/v1/me/notification-prefs", {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(prefs),
+          });
+          if (!res.ok) return { ok: false };
+          return { ok: true, body: await res.json().catch(() => null) };
+        } catch {
+          return { ok: false };
+        }
+      },
+      onConfirmed: (prefs) => {
+        setNotify(prefs);
+        setPrefsView("ready");
+      },
+      onRollback: (prefs) => {
+        setNotify(prefs);
+      },
+    }),
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -57,20 +73,27 @@ export function SettingsPanel() {
           credentials: "include",
           headers: { Accept: "application/json" },
         });
-        if (!res.ok || cancelled) return;
-        const json = (await res.json()) as Partial<NotifyPrefs>;
         if (cancelled) return;
-        setNotify({
-          master: json.master !== false,
-          opportunity: json.opportunity !== false,
-          wallet: json.wallet !== false,
-          notice: json.notice !== false,
-          campaign: json.campaign !== false,
-          opsMessage: json.opsMessage !== false,
-          strategyMatch: json.strategyMatch !== false,
-        });
+        if (!res.ok) {
+          setNotify(null);
+          setPrefsView(classifyPrefsHttp(res.status));
+          return;
+        }
+        const parsed = parseNotificationPrefs(await res.json().catch(() => null));
+        if (cancelled) return;
+        if (!parsed) {
+          setNotify(null);
+          setPrefsView("unavailable");
+          return;
+        }
+        writerRef.current.setConfirmed(parsed);
+        setNotify(parsed);
+        setPrefsView("ready");
       } catch {
-        /* keep defaults ALL ON */
+        if (!cancelled) {
+          setNotify(null);
+          setPrefsView("unavailable");
+        }
       }
     }
     void loadPrefs();
@@ -86,23 +109,12 @@ export function SettingsPanel() {
   };
 
   async function toggleNotify(key: keyof NotifyPrefs) {
+    if (prefsView !== "ready" || !notify) return;
     const prev = notify;
     const next = { ...notify, [key]: !notify[key] };
     setNotify(next);
-    try {
-      const res = await fetch("/api/v1/me/notification-prefs", {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(next),
-      });
-      if (!res.ok) setNotify(prev);
-    } catch {
-      setNotify(prev);
-    }
+    const result = await writerRef.current.submit(next);
+    if (result === "failed") setNotify(prev);
   }
 
   return (
@@ -110,6 +122,7 @@ export function SettingsPanel() {
       className="p-6 text-lux-text"
       data-testid="settings-panel"
       data-theme-toggle-allowed="false"
+      data-prefs-view={prefsView}
     >
       <h1 className="text-xl font-semibold">{T.settings.title}</h1>
 
@@ -123,6 +136,20 @@ export function SettingsPanel() {
         <p className="mt-1 text-xs text-lux-text-muted">
           {T.settings.notify.offPushOnlyNote}
         </p>
+        {prefsView === "loading" ? (
+          <p className="mt-3 text-sm text-lux-text-muted">불러오는 중…</p>
+        ) : null}
+        {prefsView === "unauthorized" ? (
+          <p className="mt-3 text-sm text-lux-text-muted">
+            로그인하면 알림 설정을 볼 수 있어요.
+          </p>
+        ) : null}
+        {prefsView === "unavailable" ? (
+          <p className="mt-3 text-sm text-lux-text-muted">
+            알림 설정을 확인할 수 없음
+          </p>
+        ) : null}
+        {prefsView === "ready" && notify ? (
         <ul className="mt-3 space-y-2">
           {NOTIFY_KEYS.map(({ key, label }) => (
             <li key={key} className="flex items-center justify-between gap-3">
@@ -145,6 +172,7 @@ export function SettingsPanel() {
             </li>
           ))}
         </ul>
+        ) : null}
       </section>
 
       <section className="mt-6" data-testid="settings-font-scale">
