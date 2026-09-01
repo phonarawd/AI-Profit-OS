@@ -96,6 +96,9 @@ const sw = read("apps/web/public/sw.js");
 if (!sw.includes("SKIP_WAITING")) {
   fails.push("SW must honor SKIP_WAITING for update UX");
 }
+if (!sw.includes("event.origin") || !sw.includes("self.location.origin")) {
+  fails.push("SW message handler must reject cross-origin SKIP_WAITING");
+}
 if (!sw.includes("cache.addAll") && !sw.includes("caches.open")) {
   fails.push("SW must cache shell assets (CacheFirst equivalent)");
 }
