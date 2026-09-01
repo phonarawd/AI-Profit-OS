@@ -6,6 +6,7 @@ import {
   isProductionDbTarget,
   mintReferralCode,
   normalizeReferralCode,
+  REFERRAL_CODE_ALPHABET,
   uniqueViolationTarget,
 } from "./referral-code.util.ts";
 
@@ -15,6 +16,23 @@ describe("own referral code authority", () => {
     const b = mintReferralCode(Uint8Array.from([9, 8, 7, 6, 5, 4, 3, 2]));
     assert.equal(a.length, 8);
     assert.notEqual(a, b);
+  });
+  it("proves 256 divides by alphabet 32 so byte mapping is uniform", () => {
+    assert.equal(REFERRAL_CODE_ALPHABET.length, 32);
+    assert.equal(256 % REFERRAL_CODE_ALPHABET.length, 0);
+    const counts = Array.from({ length: 32 }, () => 0);
+    for (let b = 0; b < 256; b++) {
+      counts[b & 31] += 1;
+    }
+    assert.ok(counts.every((n) => n === 8));
+  });
+  it("maps each CSPRNG byte with a 5-bit mask, not a biased remainder", () => {
+    const code = mintReferralCode(Uint8Array.from([0, 31, 32, 255, 1, 2, 3, 4]));
+    assert.equal(code[0], REFERRAL_CODE_ALPHABET[0]);
+    assert.equal(code[1], REFERRAL_CODE_ALPHABET[31]);
+    assert.equal(code[2], REFERRAL_CODE_ALPHABET[0]);
+    assert.equal(code[3], REFERRAL_CODE_ALPHABET[31]);
+    assert.throws(() => mintReferralCode(Uint8Array.from([1, 2, 3])), /8 CSPRNG bytes/);
   });
   it("rejects blank codes", () => {
     assert.equal(normalizeReferralCode("  "), null);

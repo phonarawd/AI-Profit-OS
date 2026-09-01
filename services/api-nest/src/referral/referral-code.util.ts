@@ -7,14 +7,22 @@ import { randomBytes } from "node:crypto";
 
 export const PRODUCTION_SUPABASE_REF = "mgsytcetsiecllmhcyox";
 export const REFERRAL_CODE_LEN = 8;
-const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+/** 32자 · 256의 약수라 바이트→인덱스 사상이 균일하다. 길이를 바꾸면 mint가 거절한다. */
+export const REFERRAL_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const ALPHABET_MASK = 31;
 
 export type ReferralCodePolicy = "ready" | "missing" | "banned" | "deleted";
 
 export function mintReferralCode(bytes: Uint8Array = randomBytes(REFERRAL_CODE_LEN)): string {
+  if (REFERRAL_CODE_ALPHABET.length !== 32) {
+    throw new Error("referral alphabet must stay 32 chars so 256 maps uniformly");
+  }
+  if (bytes.length < REFERRAL_CODE_LEN) {
+    throw new Error("referral mint requires 8 CSPRNG bytes");
+  }
   let out = "";
   for (let i = 0; i < REFERRAL_CODE_LEN; i++) {
-    out += ALPHABET[bytes[i % bytes.length]! % ALPHABET.length];
+    out += REFERRAL_CODE_ALPHABET[bytes[i]! & ALPHABET_MASK];
   }
   return out;
 }
