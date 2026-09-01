@@ -12,6 +12,7 @@ on:
       - "tooling/release/fetch-release-bundle.cjs"
       - "tooling/release/deploy-from-artifact.cjs"
       - "tooling/verify/release-fetch-deploy-hardening.cjs"
+      - ".github/workflows/deploy-cloudflare.yml"
 
 jobs:
   verify:

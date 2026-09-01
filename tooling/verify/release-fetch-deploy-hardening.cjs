@@ -13,6 +13,8 @@ const {
   validateDeployArgs,
 } = require("../release/deploy-from-artifact.cjs");
 
+const repoRoot = path.resolve(__dirname, "../..");
+
 const root = fs.mkdtempSync(path.join(os.tmpdir(), "aipo-fetch-deploy-"));
 try {
   const dest = path.join(root, "bundle");
@@ -48,8 +50,18 @@ try {
   assert.equal(validateDeployArgs({ ...good, expectedDigest: "abc" }), "expected_digest_not_full");
   assert.equal(validateDeployArgs({ ...good, bundle: "" }), "artifact_missing");
 
+  const deployWorkflow = fs.readFileSync(
+    path.join(repoRoot, ".github/workflows/deploy-cloudflare.yml"),
+    "utf8",
+  );
+  assert.match(deployWorkflow, /name: Production branch authority/);
+  assert.match(deployWorkflow, /GITHUB_REF/);
+  assert.match(deployWorkflow, /refs\/heads\/main/);
+  assert.match(deployWorkflow, /GITHUB_EVENT_NAME/);
+  assert.match(deployWorkflow, /workflow_dispatch/);
+
   console.log(
-    "[verify:release-fetch-deploy-hardening] PASS (STALE_DEST_CLEARED · COMPLETE_BUNDLE_REQUIRED · INVALID_DEPLOY_NOOP_BLOCKED)",
+    "[verify:release-fetch-deploy-hardening] PASS (STALE_DEST_CLEARED · COMPLETE_BUNDLE_REQUIRED · INVALID_DEPLOY_NOOP_BLOCKED · PRODUCTION_MAIN_REF_ONLY)",
   );
 } finally {
   fs.rmSync(root, { recursive: true, force: true });
