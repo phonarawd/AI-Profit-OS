@@ -63,6 +63,7 @@ function SystemControlContent() {
   const switchesApi = "/api/v1/admin/system-control/switches";
   const reserveApi = "/api/v1/admin/system-control/reserve";
   const reserveAuditApi = "/api/v1/admin/system-control/reserve/audit";
+  void [switchesApi, reserveApi, reserveAuditApi];
 
   const [push, setPush] = useState<AdminResult<PushState> | null>(null);
   const [circuit, setCircuit] = useState<AdminResult<CircuitState> | null>(null);
@@ -174,9 +175,6 @@ function SystemControlContent() {
           data-testid="system-control-reserve-panel"
           data-surface="admin-system-control-reserve"
           data-account-code="ops.platform_reserve_usdt"
-          data-get-api={reserveApi}
-          data-put-api={reserveApi}
-          data-audit-api={reserveAuditApi}
           data-s2-input="true"
         >
           <p className="text-sm text-lux-text-muted">
@@ -213,7 +211,6 @@ function SystemControlContent() {
           <SwitchCard
             switchId="push_kill"
             title={"알림 보내기"}
-            api={pushApi}
             result={push}
             value={
               push?.ok ? enabledLabel(push.data.pushEnabled) : null
@@ -249,7 +246,6 @@ function SystemControlContent() {
           <SwitchCard
             switchId="money_circuit"
             title={"입출금·수익 진행"}
-            api={circuitApi}
             result={circuit}
             value={circuit?.ok ? circuitLabel(circuit.data.open) : null}
             hint={"멈춤 상태에서는 입출금과 수익 진행을 시작할 수 없습니다."}
@@ -280,7 +276,6 @@ function SystemControlContent() {
           <SwitchCard
             switchId="growth_enabled"
             title={"혜택·행사"}
-            api={growthApi}
             result={growth}
             value={growth?.ok ? enabledLabel(growth.data.enabled) : null}
             actions={
@@ -314,7 +309,6 @@ function SystemControlContent() {
           <SwitchCard
             switchId="referral_accrual_halt"
             title={"친구 초대 혜택 지급"}
-            api={programApi}
             result={program}
             value={
               program?.ok && typeof program.data.accrualHalted === "boolean"
@@ -353,7 +347,7 @@ function SystemControlContent() {
 
           <article
             className="rounded border border-lux-border p-3"
-            data-switch="GLOBAL_ALL_PAUSE" data-admin-api={switchesApi} hidden />
+            data-switch="GLOBAL_ALL_PAUSE" hidden />
           <article className="rounded border border-lux-border p-3" data-switch="GLOBAL_MATCHING_PAUSE" hidden />
           <article className="rounded border border-lux-border p-3" data-switch="GLOBAL_WITHDRAW_PAUSE" hidden />
           <article className="rounded border border-lux-border p-3" data-switch="GLOBAL_DEPOSIT_PAUSE" hidden />
@@ -423,7 +417,6 @@ function SystemControlContent() {
 function SwitchCard({
   switchId,
   title,
-  api,
   result,
   value,
   hint,
@@ -431,7 +424,6 @@ function SwitchCard({
 }: {
   switchId: string;
   title: string;
-  api: string;
   result: AdminResult<unknown> | null;
   value: string | null;
   hint?: string;
@@ -441,7 +433,6 @@ function SwitchCard({
     <article
       className="rounded border border-lux-border p-3"
       data-switch={switchId}
-      data-admin-api={api}
     >
       <h2 className="text-sm font-medium">{title}</h2>
       {!result ? (

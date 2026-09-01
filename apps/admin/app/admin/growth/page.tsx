@@ -315,7 +315,7 @@ function GrowthContent() {
           </div>
         </section>
       ) : (
-        <section className="mt-6" data-testid={`growth-${tab}-panel`} data-admin-api="none">
+        <section className="mt-6" data-testid={`growth-${tab}-panel`}>
           <p className="text-sm text-lux-text-muted">
             이 메뉴는 아직 관리 화면이 준비되지 않았습니다.
           </p>

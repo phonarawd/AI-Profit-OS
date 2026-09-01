@@ -143,21 +143,18 @@ export default function Page() {
           title={T.admin.dashboard.push}
           tile={push}
           testId="admin-kill-switch"
-          api="/api/v1/admin/system-control/push"
           detailHref="/admin/system-control"
         />
         <MetricCard
           title={T.admin.dashboard.moneyFlow}
           tile={circuit}
           testId="admin-circuit"
-          api="/api/v1/admin/risk/circuit"
           detailHref="/admin/risk?tab=overview"
         />
         <MetricCard
           title={T.admin.dashboard.queue}
           tile={queue}
           testId="admin-risk-queue"
-          api="/api/v1/admin/risk/queue"
           detailHref="/admin/risk?tab=queue"
         />
       </section>
@@ -169,13 +166,11 @@ function MetricCard({
   title,
   tile,
   testId,
-  api,
   detailHref,
 }: {
   title: string;
   tile: Tile | null;
   testId: string;
-  api: string;
   detailHref: string;
 }) {
   const stateLabel =
@@ -186,7 +181,7 @@ function MetricCard({
         : "정보 확인 중";
 
   return (
-    <article className="admin-status-card" data-admin-api={api}>
+    <article className="admin-status-card">
       <div className="admin-status-card-header">
         <h2>{title}</h2>
         <span
