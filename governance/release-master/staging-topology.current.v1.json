@@ -1,7 +1,12 @@
 {
   "schema": "staging-topology-provider-snapshot.v1",
-  "recorded_at": "2026-09-01",
+  "recorded_at": "2026-09-02",
   "source": "read-only provider reality · mutation=0",
+  "this_session": {
+    "supabase_branches": 0,
+    "render_mcp": "UNAUTHORIZED",
+    "gpt_172_service_ids": "NOT_ADOPTED_UNREVALIDATED"
+  },
   "production": {
     "render": {
       "service_name": "AI-Profit-OS",

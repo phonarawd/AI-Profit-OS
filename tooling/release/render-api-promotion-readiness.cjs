@@ -16,12 +16,31 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
+const CANONICAL_PRODUCTION_RENDER = Object.freeze({
+  service_id: "srv-da5r1tqjobas73fl16dg",
+  environment_id: "evm-da5r1tjbc2fs73a0b7hg",
+  name: "AI-Profit-OS",
+  repo: "https://github.com/phonarawd/AI-Profit-OS",
+  url: "https://ai-profit-os.onrender.com",
+  type: "web_service",
+});
+
 function isFullSha(value) {
   return /^[0-9a-f]{40}$/i.test(String(value || ""));
 }
 
 function isServiceId(value) {
   return /^srv-[a-z0-9]+$/i.test(String(value || ""));
+}
+
+function normalizeUrl(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  try {
+    return new URL(raw).origin.toLowerCase();
+  } catch {
+    return "";
+  }
 }
 
 function normalizeAutoDeploy(value) {
@@ -52,6 +71,34 @@ function evaluatePromotionReadiness(input) {
     blockers.push("service_missing");
   } else {
     if (!isServiceId(service.id)) blockers.push("service_id_invalid");
+    if (service.id !== CANONICAL_PRODUCTION_RENDER.service_id) {
+      blockers.push("service_id_not_canonical_production");
+    }
+    const environmentId = String(
+      service.environmentId || service.environment_id || "",
+    );
+    if (!environmentId) {
+      blockers.push("service_environment_id_missing");
+    } else if (environmentId !== CANONICAL_PRODUCTION_RENDER.environment_id) {
+      blockers.push("service_environment_not_canonical_production");
+    }
+    if (String(service.name || "") !== CANONICAL_PRODUCTION_RENDER.name) {
+      blockers.push("service_name_not_canonical_production");
+    }
+    if (String(service.repo || "") !== CANONICAL_PRODUCTION_RENDER.repo) {
+      blockers.push("service_repo_not_canonical_production");
+    }
+    const serviceUrl = normalizeUrl(
+      service.url || (service.serviceDetails && service.serviceDetails.url),
+    );
+    if (!serviceUrl) {
+      blockers.push("service_url_missing");
+    } else if (serviceUrl !== normalizeUrl(CANONICAL_PRODUCTION_RENDER.url)) {
+      blockers.push("service_url_not_canonical_production");
+    }
+    if (String(service.type || "") !== CANONICAL_PRODUCTION_RENDER.type) {
+      blockers.push("service_type_not_web_service");
+    }
     if (String(service.branch || "") !== "main") {
       blockers.push("service_branch_not_main");
     }
@@ -131,7 +178,9 @@ if (require.main === module) main(process.argv);
 module.exports = {
   isFullSha,
   isServiceId,
+  normalizeUrl,
   normalizeAutoDeploy,
+  CANONICAL_PRODUCTION_RENDER,
   evaluatePromotionReadiness,
   parseArgs,
 };
