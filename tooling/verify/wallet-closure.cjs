@@ -87,6 +87,11 @@ if (layout.includes("LegacyAppShell") || layout.includes("AppShellRoot")) {
 if (!spec.includes("unauthorized") || !spec.includes("ready")) {
   fail("committed spec must cover unauthorized/ready");
 }
+for (const needle of ["zero", "hang", "malformed", "error", "network", "768"]) {
+  if (!spec.includes(needle)) {
+    fail("committed spec must cover wallet state " + needle);
+  }
+}
 if (!pkg.includes('"verify:wallet-closure"')) {
   fail("package.json missing verify:wallet-closure");
 }
