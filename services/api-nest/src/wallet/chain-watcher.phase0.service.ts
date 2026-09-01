@@ -139,15 +139,13 @@ export class ChainWatcherPhase0Service {
     for (const row of rows) {
       const parsed = parseTransferRow(row);
       if (!parsed) continue;
-      const userId = byAddr.get(parsed.toAddress);
-      if (!userId) continue;
+      if (!byAddr.has(parsed.toAddress)) continue;
       matched += 1;
       await this.usdtDeposit.observe({
         txHash: parsed.txHash,
         toAddress: parsed.toAddress,
         amountUsdt: parsed.amountUsdt,
         confirmations: parsed.confirmations,
-        userId,
       });
       processed += 1;
     }
