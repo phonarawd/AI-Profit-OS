@@ -157,9 +157,43 @@ function readExistingQa(filePath) {
   }
 }
 
+function allowApiRuntime(runtime) {
+  const reason = String(runtime && runtime.reason ? runtime.reason : "unknown");
+  return {
+    verified: runtime && runtime.verified === true,
+    reason: /^[A-Za-z0-9_.:-]{1,80}$/.test(reason) ? reason : "api_runtime_failed",
+    harness: runtime && runtime.harness === "native" ? "native" : "injected",
+    route: "/api/v1/health",
+    status: Number.isInteger(runtime && runtime.status) ? runtime.status : null,
+    service: runtime && runtime.service === "api-nest" ? "api-nest" : null,
+    git_sha: isFullSha(normalizeHex(runtime && runtime.git_sha))
+      ? normalizeHex(runtime.git_sha)
+      : null,
+    git_sha_source:
+      runtime && runtime.git_sha_source === "RENDER_GIT_COMMIT"
+        ? "RENDER_GIT_COMMIT"
+        : null,
+    source_sha: isFullSha(normalizeHex(runtime && runtime.source_sha))
+      ? normalizeHex(runtime.source_sha)
+      : null,
+    bundle_digest: isSha256(normalizeHex(runtime && runtime.bundle_digest))
+      ? normalizeHex(runtime.bundle_digest)
+      : null,
+    api_artifact_digest: isSha256(
+      normalizeHex(runtime && runtime.api_artifact_digest),
+    )
+      ? normalizeHex(runtime.api_artifact_digest)
+      : null,
+  };
+}
+
 function writeOut(filePath, record) {
+  const safe = {
+    ...record,
+    api_runtime: allowApiRuntime(record && record.api_runtime ? record.api_runtime : {}),
+  };
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, JSON.stringify(record, null, 2) + "\n");
+  fs.writeFileSync(filePath, JSON.stringify(safe, null, 2) + "\n");
 }
 
 async function runApiArtifactRuntimeQa(opts) {

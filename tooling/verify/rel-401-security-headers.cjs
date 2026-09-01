@@ -181,14 +181,14 @@ function smoke() {
               server.close();
               resolve();
             })
-            .on("error", (err) => {
-              fails.push("api smoke error " + sanitizeLogLine(err.message));
+            .on("error", () => {
+              fails.push("api_smoke_error");
               server.close();
               resolve();
             });
         })
-        .on("error", (err) => {
-          fails.push("http smoke error " + sanitizeLogLine(err.message));
+        .on("error", () => {
+          fails.push("http_smoke_error");
           server.close();
           resolve();
         });

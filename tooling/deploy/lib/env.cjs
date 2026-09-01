@@ -52,7 +52,21 @@ function requireRootDomainForProd(target) {
     console.error("  Set ROOT_DOMAIN=your-domain.com in .env (local) or CI secrets");
     process.exit(1);
   }
-  if (/\{.*\}/.test(rootDomain) || rootDomain.includes("domain.com")) {
+  let host = rootDomain;
+  try {
+    host = new URL(
+      rootDomain.includes("://") ? rootDomain : "https://" + rootDomain,
+    ).hostname;
+  } catch {
+    host = rootDomain;
+  }
+  const token = String(host || "").toLowerCase();
+  if (
+    /\{.*\}/.test(rootDomain) ||
+    token === "domain.com" ||
+    token === "your-domain.com" ||
+    token === "example.com"
+  ) {
     console.error("[cf-deploy] FAIL: ROOT_DOMAIN still contains placeholder");
     process.exit(1);
   }
