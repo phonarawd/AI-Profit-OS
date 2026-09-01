@@ -1,0 +1,162 @@
+name: gpt-final-safe-integration-ci
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/final-safe-integration-e4961df
+
+concurrency:
+  group: gpt-final-safe-integration-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Security and money static invariants
+        run: |
+          set -euo pipefail
+          node tooling/verify/tron-address-fail-closed.cjs
+          node tooling/verify/withdraw-stepup-security.cjs
+          node tooling/verify/usdt-ingest-machine-auth.cjs
+          pnpm verify:money-wallet-auth-remediation
+          pnpm verify:auth-identity-proof
+
+      - name: Release readiness static invariants
+        run: |
+          set -euo pipefail
+          pnpm verify:api-artifact-provenance
+          pnpm verify:release-acceptance
+          node tooling/verify/api-artifact-runtime-qa.cjs
+          node tooling/verify/fetch-acceptance-artifact.cjs
+          node tooling/verify/require-accepted-sha.cjs
+          node tooling/verify/release-fetch-deploy-hardening.cjs
+          node tooling/verify/render-rollback-provenance.cjs
+          node tooling/verify/render-api-promotion-readiness.cjs
+          node tooling/verify/db-hardening-readiness.cjs
+          node tooling/verify/staging-topology-readiness.cjs
+
+      - name: Build Nest security integration
+        run: pnpm --filter @aipo/api-nest... build
+
+      - name: Security and money runtime proofs
+        run: |
+          set -euo pipefail
+          node tooling/verify/passkey-registration-hijack.runtime.cjs
+          node tooling/verify/webauthn-user-presence.runtime.cjs
+          node tooling/verify/tron-address-fail-closed.runtime.cjs
+          node tooling/verify/withdraw-stepup-security.runtime.cjs
+
+      - name: Build release surfaces
+        run: |
+          set -euo pipefail
+          pnpm --filter @aipo/web build:cf
+          pnpm --filter @aipo/admin build:cf
+          pnpm --filter @aipo/api-nest... build
+          test -f apps/web/.open-next/worker.js
+          test -d apps/web/.open-next/assets
+          test -f apps/admin/.open-next/worker.js
+          test -d apps/admin/.open-next/assets
+          test -f services/api-nest/dist/main.js
+
+      - name: Bind API artifact manifest
+        run: |
+          set -euo pipefail
+          node tooling/release/api-artifact-provenance.cjs --source-sha "${{ github.sha }}"
+          test -f services/api-nest/dist/api-release-manifest.json
+
+      - name: Prebuild worker snapshots
+        run: |
+          set -euo pipefail
+          node tooling/release/prebuild-workers.cjs --from-repo
+          test -f workers/push-dispatcher/.release-prebuilt/index.js
+          test -f workers/ebay-adapter/.release-prebuilt/index.js
+
+      - name: Pack immutable release bundle
+        run: |
+          set -euo pipefail
+          rm -rf _tmp_final_safe_bundle
+          node tooling/release/build-once-artifact.cjs \
+            --source-sha "${{ github.sha }}" \
+            --from-repo \
+            --out _tmp_final_safe_bundle
+          test -f _tmp_final_safe_bundle/release-manifest.json
+          test -f _tmp_final_safe_bundle/payload/services/api-nest/dist/main.js
+          test -f _tmp_final_safe_bundle/payload/services/api-nest/dist/api-release-manifest.json
+
+      - name: Exact bundled API runtime acceptance
+        run: |
+          set -euo pipefail
+          node tooling/release/api-artifact-runtime-qa.cjs \
+            --sha "${{ github.sha }}" \
+            --bundle _tmp_final_safe_bundle \
+            --extract-root . \
+            --out _tmp_final_safe_api_runtime.json
+          node - <<'NODE'
+          const r = require("./_tmp_final_safe_api_runtime.json");
+          if (!r.api_runtime || r.api_runtime.verified !== true) process.exit(2);
+          if (r.api_runtime.git_sha !== process.env.GITHUB_SHA) process.exit(3);
+          if (r.api_runtime.git_sha_source !== "RENDER_GIT_COMMIT") process.exit(4);
+          console.log("[gpt-final-safe-integration] API_RUNTIME_REMOTE_CI_PASS");
+          NODE
+
+      - name: Bundle tamper and wrong SHA fail closed
+        run: |
+          set -euo pipefail
+          cp -R _tmp_final_safe_bundle _tmp_final_safe_bundle_tampered
+          printf '\n// tamper-proof\n' >> _tmp_final_safe_bundle_tampered/payload/services/api-nest/dist/main.js
+          node - <<'NODE'
+          const path = require("node:path");
+          const { verifyBundle } = require("./tooling/release/artifact-provenance.cjs");
+          let tamperFailed = false;
+          try {
+            verifyBundle(path.resolve("_tmp_final_safe_bundle_tampered"), {
+              sourceSha: process.env.GITHUB_SHA,
+            });
+          } catch (err) {
+            tamperFailed = /digest_mismatch|api_artifact_digest_mismatch/.test(
+              String((err && err.fails) || (err && err.message) || err),
+            );
+          }
+          if (!tamperFailed) throw new Error("tampered API artifact was not rejected");
+
+          const wrongSha =
+            process.env.GITHUB_SHA[0] === "a"
+              ? "b" + process.env.GITHUB_SHA.slice(1)
+              : "a" + process.env.GITHUB_SHA.slice(1);
+          let shaFailed = false;
+          try {
+            verifyBundle(path.resolve("_tmp_final_safe_bundle"), { sourceSha: wrongSha });
+          } catch (err) {
+            shaFailed = /artifact_source_sha_mismatch/.test(
+              String((err && err.fails) || (err && err.message) || err),
+            );
+          }
+          if (!shaFailed) throw new Error("wrong source SHA was not rejected");
+          console.log("[gpt-final-safe-integration] TAMPER_WRONG_SHA_FAIL_CLOSED_PASS");
+          NODE
+
+      - name: Gate-fast across full integration delta
+        env:
+          AIPO_PUSH_BEFORE_SHA: e4961df96c02d62ac13d5e77b05367e9c5b1a878
+        run: pnpm verify:gate:fast
