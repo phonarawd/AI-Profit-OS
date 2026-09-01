@@ -114,6 +114,14 @@ if (!email.includes("EMAIL_MAX_LEN") || !email.includes("lastIndexOf(\".\")")) {
   fails.push("email validation must be a bounded linear scan");
 }
 
+const stageSrc = read("services/api-nest/src/auth/auth.stage.ts");
+if (!stageSrc.includes("isValidEmail")) {
+  fails.push("auth.stage.ts must use isValidEmail");
+}
+if (stageSrc.includes(".test(input.email)")) {
+  fails.push("auth.stage.ts must not regex-test email");
+}
+
 if (fails.length) {
   console.error("[verify:auth-identity-proof] STATIC FAIL");
   for (const f of fails) console.error(" -", f);
