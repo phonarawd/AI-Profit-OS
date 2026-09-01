@@ -104,7 +104,7 @@ const RULES = [
     test: (f) =>
       /^governance\/release-master\/release-acceptance\.v1\.json$/.test(f) ||
       /^governance\/release-master\/release-artifact\.v1\.json$/.test(f) ||
-      /^tooling\/release\/(release-acceptance-verdict|collect-engine-jobs|require-accepted-sha|fetch-acceptance-artifact|fetch-release-bundle|artifact-provenance|build-once-artifact|bind-qa-artifact|deploy-from-artifact|artifact-runtime-qa|api-artifact-runtime-qa|api-artifact-provenance|prebuild-workers|render-rollback-plan|render-api-promotion-readiness|db-hardening-readiness)\.cjs$/.test(
+      /^tooling\/release\/(release-acceptance-verdict|collect-engine-jobs|require-accepted-sha|fetch-acceptance-artifact|fetch-release-bundle|artifact-provenance|build-once-artifact|bind-qa-artifact|deploy-from-artifact|artifact-runtime-qa|api-artifact-runtime-qa|api-artifact-provenance|prebuild-workers|render-rollback-plan|render-api-promotion-readiness|db-hardening-readiness|production-release-decision)\.cjs$/.test(
         f,
       ) ||
       /^tooling\/verify\/release-acceptance\.cjs$/.test(f) ||
@@ -130,15 +130,43 @@ const RULES = [
       "render-rollback-provenance.cjs",
       "render-api-promotion-readiness.cjs",
       "db-hardening-readiness.cjs",
+      "production-release-decision.cjs",
     ],
+  },
+  {
+    test: (f) =>
+      /^tooling\/release\/production-release-decision\.cjs$/.test(f) ||
+      /^tooling\/verify\/production-release-decision\.cjs$/.test(f),
+    scripts: ["production-release-decision.cjs"],
+  },
+  {
+    test: (f) =>
+      /^tooling\/verify\/release-engine-truth-consistency\.cjs$/.test(f) ||
+      /^governance\/release-master\/MIGRATION_READINESS\.md$/.test(f) ||
+      /^governance\/release-master\/R7_BACKEND_ALIGNMENT\.md$/.test(f) ||
+      /^governance\/release-master\/R8_INFRA_CORE\.md$/.test(f) ||
+      /^governance\/engine-acceptance\/FINAL_ACCEPTANCE\.md$/.test(f),
+    scripts: ["release-engine-truth-consistency.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/common\/admin-session\.(cookies|csrf|runtime\.test)\.ts$/.test(f) ||
+      /^tooling\/verify\/admin-csrf-double-submit\.cjs$/.test(f) ||
+      /^governance\/recovery\/csrf-double-submit-judgment\.v1\.json$/.test(f),
+    scripts: ["admin-csrf-double-submit.cjs"],
   },
   {
     test: (f) =>
       /^tooling\/release\/api-artifact-provenance\.cjs$/.test(f) ||
       /^tooling\/release\/api-artifact-runtime-qa\.cjs$/.test(f) ||
       /^tooling\/verify\/api-artifact-provenance\.cjs$/.test(f) ||
-      /^tooling\/verify\/api-artifact-runtime-qa\.cjs$/.test(f),
-    scripts: ["api-artifact-provenance.cjs", "api-artifact-runtime-qa.cjs"],
+      /^tooling\/verify\/api-artifact-runtime-qa\.cjs$/.test(f) ||
+      /^tooling\/verify\/api-runtime-qa-canonical\.cjs$/.test(f),
+    scripts: [
+      "api-artifact-provenance.cjs",
+      "api-artifact-runtime-qa.cjs",
+      "api-runtime-qa-canonical.cjs",
+    ],
   },
   {
     test: (f) =>
@@ -773,7 +801,7 @@ const RULES = [
       /^tooling\/verify\/rel-502-final-engine-acceptance\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-502-final-engine-acceptance\.v1\.json$/.test(f) ||
       /^tooling\/verify\/lib\/rel-502-psm\.cjs$/.test(f),
-    scripts: ["rel-502-final-engine-acceptance.cjs"],
+    scripts: ["rel-502-final-engine-acceptance.cjs", "release-engine-truth-consistency.cjs"],
   },
   {
     test: (f) =>
@@ -788,7 +816,7 @@ const RULES = [
       /^governance\/release-master\/MIGRATION_READINESS\.md$/.test(f) ||
       /^tooling\/verify\/rel-504-migration-readiness\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-504-migration-readiness\.v1\.json$/.test(f),
-    scripts: ["rel-504-migration-readiness.cjs"],
+    scripts: ["rel-504-migration-readiness.cjs", "release-engine-truth-consistency.cjs"],
   },
   {
     test: (f) =>
@@ -797,7 +825,7 @@ const RULES = [
       /^tooling\/verify\/rel-505-r7-backend-alignment\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/backend-data-alignment\.v1\.json$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-505-r7-backend-alignment\.v1\.json$/.test(f),
-    scripts: ["rel-505-r7-backend-alignment.cjs"],
+    scripts: ["rel-505-r7-backend-alignment.cjs", "release-engine-truth-consistency.cjs"],
   },
   {
     test: (f) =>
@@ -814,7 +842,7 @@ const RULES = [
       /^governance\/release-master\/r8-cache-inventory\.v1\.json$/.test(f) ||
       /^tooling\/verify\/rel-506-r8-infra-core\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-506-r8-infra-core\.v1\.json$/.test(f),
-    scripts: ["rel-506-r8-infra-core.cjs"],
+    scripts: ["rel-506-r8-infra-core.cjs", "release-engine-truth-consistency.cjs"],
   },
   {
     test: (f) =>

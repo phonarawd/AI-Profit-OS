@@ -56,12 +56,17 @@ function yamlStatus(relId) {
 if (fixture.protectedScopeMutation !== true) {
   fails.push("REL-508 must declare protectedScopeMutation true");
 }
-if (fixture.certIssued !== 1) fails.push("R7 certIssued must be 1 after REL-502 ISSUED");
-if (fixture.stalePendingRebase !== false) fails.push("stalePendingRebase must be false after rebase ISSUED");
 
 const rebaseRequired = /REBASE_REQUIRED = 1/.test(
   read("governance/engine-acceptance/FINAL_ACCEPTANCE.md"),
 );
+if (rebaseRequired) {
+  if (fixture.certIssued !== 0) fails.push("fixture certIssued must be 0 while REL-502 rebase is required");
+  if (fixture.stalePendingRebase !== true) fails.push("stalePendingRebase must be true while REL-502 is NOT_ISSUED");
+} else {
+  if (fixture.certIssued !== 1) fails.push("R7 certIssued must be 1 after REL-502 ISSUED");
+  if (fixture.stalePendingRebase !== false) fails.push("stalePendingRebase must be false after rebase ISSUED");
+}
 for (const dep of fixture.deps || []) {
   if (dep === "REL-502" && rebaseRequired) continue;
   if (!todoCompleted(dep)) fails.push("dep todo not completed " + dep);
@@ -79,7 +84,11 @@ for (const needle of [
 ]) {
   if (!evidence.includes(needle)) fails.push("evidence missing " + needle);
 }
-if (!r7.includes("STALE_PENDING_REBASE = 0") || !/CERT_ISSUED = 1/.test(r7)) {
+if (rebaseRequired) {
+  if (!r7.includes("STALE_PENDING_REBASE = 1") || !/CERT_ISSUED = 0/.test(r7)) {
+    fails.push("R7 must mirror REL-502 NOT_ISSUED while rebase is required");
+  }
+} else if (!r7.includes("STALE_PENDING_REBASE = 0") || !/CERT_ISSUED = 1/.test(r7)) {
   fails.push("R7 must be CERT_ISSUED=1 and STALE_PENDING_REBASE=0 after ISSUED");
 }
 
