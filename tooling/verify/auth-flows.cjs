@@ -92,6 +92,15 @@ for (const p of needPaths) {
   if (!routes.includes(p)) fails.push(`AUTH_ROUTES missing ${p}`);
 }
 
+for (const rel of [
+  "services/api-nest/src/auth/magic-link.service.ts",
+  "services/api-nest/src/auth/oauth-identity.service.ts",
+  "services/api-nest/src/auth/webauthn-assert.service.ts",
+  "services/api-nest/src/auth/identity-proof.store.ts",
+]) {
+  mustExist(rel);
+}
+
 const controller = read("services/api-nest/src/auth/auth.controller.ts");
 if (!controller.includes('@Controller("auth")')) {
   fails.push('AuthController must be @Controller("auth")');

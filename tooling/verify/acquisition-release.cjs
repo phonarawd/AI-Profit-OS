@@ -85,8 +85,11 @@ for (const rel of [
 }
 
 const signup = read("apps/web/app/auth/signup/SignupRuntime.tsx");
-if (!signup.includes("startKakaoOAuth") || !signup.includes("signupStageA")) {
-  fail("signup runtime must call Nest signup via SDK");
+if (!signup.includes("startKakaoOAuth") || !signup.includes("requestMagicLink")) {
+  fail("signup runtime must start Kakao and request a magic link via SDK");
+}
+if (signup.includes("signupStageA(")) {
+  fail("signup runtime must not mint a session from email via signupStageA");
 }
 
 const profile = read("apps/web/app/auth/complete-profile/CompleteProfileRuntime.tsx");

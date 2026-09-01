@@ -830,11 +830,16 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^services\/api-nest\/src\/auth\/(privacy-account\.service|auth\.service|auth\.controller|auth\.stage)\.ts$/.test(
+      /^services\/api-nest\/src\/auth\/(privacy-account\.service|auth\.service|auth\.controller|auth\.stage|magic-link\.service|oauth-identity\.service|webauthn-assert\.service|identity-proof\.)/.test(
         f,
       ) ||
       /^tooling\/verify\/privacy-purge\.cjs$/.test(f),
-    scripts: ["privacy-purge.cjs", "auth-flows.cjs", "auth-jwt-runtime.cjs"],
+    scripts: [
+      "privacy-purge.cjs",
+      "auth-flows.cjs",
+      "auth-jwt-runtime.cjs",
+      "auth-identity-proof.runtime.cjs",
+    ],
   },
   {
     test: (f) =>
@@ -1255,6 +1260,7 @@ const RULES = [
       "auth-flows.cjs",
       "auth-session-cookie.cjs",
       "auth-rate-limit.cjs",
+      "auth-identity-proof.runtime.cjs",
     ],
   },
   {

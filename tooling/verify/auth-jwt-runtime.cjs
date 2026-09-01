@@ -224,6 +224,24 @@ if (build.status !== 0) {
       fails.push("jwt-guard.selftest did not report ALL PASS (real Nest HTTP round-trip failed)");
     }
   }
+  const proofJs = path.join(
+    root,
+    "services/api-nest/dist/auth/identity-proof.selftest.js",
+  );
+  if (!fs.existsSync(proofJs)) {
+    fails.push("missing compiled identity-proof.selftest");
+  } else {
+    const proof = spawnSync(process.execPath, [proofJs], {
+      cwd: root,
+      encoding: "utf8",
+      timeout: 30_000,
+    });
+    process.stdout.write(proof.stdout || "");
+    process.stderr.write(proof.stderr || "");
+    if (proof.status !== 0 || !(proof.stdout || "").includes("ALL PASS")) {
+      fails.push("identity-proof.selftest did not report ALL PASS");
+    }
+  }
 }
 
 if (fails.length) {
