@@ -59,6 +59,9 @@ if (
 ) {
   fails.push("webauthn must require authenticator user-presence flag");
 }
+if (!webauthn.includes("webauthn cross-origin ceremony forbidden")) {
+  fails.push("webauthn must reject unexpected cross-origin ceremony");
+}
 if (ctrl.includes('credentialId: String(body?.credentialId ?? body?.id ?? "session")')) {
   fails.push("passkeyAuthVerify must not mint from credentialId alone");
 }
