@@ -8,6 +8,9 @@ const { spawnSync } = require("child_process");
 const path = require("path");
 const { extractPayload, verifyBundle } = require("./artifact-provenance.cjs");
 
+const VALID_SURFACES = new Set(["workers", "web", "ops", "all"]);
+const VALID_WORKER_SETS = new Set(["phase0", "p0-ebay"]);
+
 function parseArgs(argv) {
   const out = {
     target: "",
@@ -35,6 +38,27 @@ function fail(reason) {
   process.exit(1);
 }
 
+function validateDeployArgs(args) {
+  if (args.target !== "production") {
+    return "non_production_must_not_use_artifact_deploy";
+  }
+  if (!VALID_SURFACES.has(args.surface)) {
+    return "surface_invalid";
+  }
+  if (!VALID_WORKER_SETS.has(args.workerSet)) {
+    return "worker_set_invalid";
+  }
+  if (!args.bundle) return "artifact_missing";
+  if (!args.expectedDigest) return "expected_digest_missing";
+  if (!/^[0-9a-f]{40}$/i.test(String(args.sha || ""))) {
+    return "deploy_sha_not_full";
+  }
+  if (!/^[0-9a-f]{64}$/i.test(String(args.expectedDigest || ""))) {
+    return "expected_digest_not_full";
+  }
+  return "";
+}
+
 function runNode(rel, args) {
   const root = path.resolve(__dirname, "../..");
   const result = spawnSync(process.execPath, [path.join(root, rel), ...args], {
@@ -46,12 +70,8 @@ function runNode(rel, args) {
 
 function main(argv) {
   const args = parseArgs(argv);
-  if (args.target !== "production") {
-    fail("non_production_must_not_use_artifact_deploy");
-  }
-  if (!args.bundle) fail("artifact_missing");
-  if (!args.expectedDigest) fail("expected_digest_missing");
-  if (!args.sha) fail("deploy_sha_not_full");
+  const invalid = validateDeployArgs(args);
+  if (invalid) fail(invalid);
   let bound;
   try {
     bound = verifyBundle(path.resolve(args.bundle), {
@@ -95,4 +115,9 @@ if (require.main === module) {
   main(process.argv);
 }
 
-module.exports = { parseArgs };
+module.exports = {
+  parseArgs,
+  validateDeployArgs,
+  VALID_SURFACES,
+  VALID_WORKER_SETS,
+};
