@@ -36,6 +36,10 @@ const READY = {
       ],
     },
   },
+  default_acl_public_tables: {
+    postgres: ["postgres", "service_role"],
+    supabase_admin: ["postgres", "service_role"],
+  },
 };
 
 const ready = compareSnapshot(READY);
@@ -92,6 +96,28 @@ assert.ok(
   got.fails.some((x) => x.startsWith("policy_mismatch:push_subscriptions")),
 );
 
+const missingDefaultAcl = structuredClone(READY);
+delete missingDefaultAcl.default_acl_public_tables;
+got = compareSnapshot(missingDefaultAcl);
+assert.equal(got.ok, false);
+assert.ok(got.fails.includes("default_acl_snapshot_missing"));
+
+const unsafeDefaultAcl = structuredClone(READY);
+unsafeDefaultAcl.default_acl_public_tables.supabase_admin = [
+  "anon",
+  "authenticated",
+  "postgres",
+  "service_role",
+];
+got = compareSnapshot(unsafeDefaultAcl);
+assert.equal(got.ok, false);
+assert.ok(
+  got.fails.includes("forbidden_default_acl_grantee:supabase_admin:anon"),
+);
+assert.ok(
+  got.fails.includes("forbidden_default_acl_grantee:supabase_admin:authenticated"),
+);
+
 assert.equal(
   policySignature({
     name: "x",
@@ -109,6 +135,9 @@ assert.match(sql, /pg_policies/);
 assert.match(sql, /relforcerowsecurity/);
 assert.match(sql, /service_role/);
 assert.match(sql, /push_control/);
+assert.match(sql, /pg_default_acl/);
+assert.match(sql, /aclexplode/);
+assert.match(sql, /default_acl_public_tables/);
 assert.doesNotMatch(sql, /\b(update|delete|insert|alter|grant|revoke|truncate)\b\s+/i);
 
 const root = path.resolve(__dirname, "../..");
