@@ -95,7 +95,11 @@ export {
 export { WALLET_EVENTS } from "./wallet.events";
 export { WALLET_ADMIN_ROUTES, WALLET_USER_ROUTES } from "./wallet.routes";
 export {
+  allocateCanonicalTrc20Address,
   deriveTrc20Address,
+  requireCanonicalTrc20Deriver,
+  resolveCanonicalTrc20Deriver,
+  TRON_HD_DERIVATION_UNAVAILABLE,
   TRON_HD_PATH_PREFIX,
   isTrc20AddressFormat,
 } from "./tron-address";

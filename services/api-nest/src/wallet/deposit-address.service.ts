@@ -7,11 +7,17 @@ import {
   BadRequestException,
   Injectable,
   ConflictException,
+  ServiceUnavailableException,
 } from "@nestjs/common";
 import { KillSwitchService } from "../kill-switch/kill-switch.service";
 import { PostgresService } from "../db/postgres";
 import { DepositConfigService } from "./deposit-config.service";
-import { deriveTrc20Address, isTrc20AddressFormat } from "./tron-address";
+import {
+  TRON_HD_DERIVATION_UNAVAILABLE,
+  allocateCanonicalTrc20Address,
+  requireCanonicalTrc20Deriver,
+  TronHdDerivationUnavailableError,
+} from "./tron-address";
 import type { UserDepositAddressV1 } from "./wallet.types";
 
 type AddressRow = {
@@ -78,6 +84,18 @@ export class DepositAddressService {
   private async createForUser(userId: string): Promise<UserDepositAddressV1> {
     const cfg = await this.depositConfig.requirePersisted();
     const secretRef = cfg.usdtOnchain.hotWalletXpubRef;
+    if (!secretRef) {
+      throw new ServiceUnavailableException(TRON_HD_DERIVATION_UNAVAILABLE);
+    }
+
+    try {
+      requireCanonicalTrc20Deriver();
+    } catch (e) {
+      if (e instanceof TronHdDerivationUnavailableError) {
+        throw new ServiceUnavailableException(TRON_HD_DERIVATION_UNAVAILABLE);
+      }
+      throw e;
+    }
 
     for (let attempt = 0; attempt < 5; attempt += 1) {
       // Re-check race
@@ -85,12 +103,17 @@ export class DepositAddressService {
       if (raced) return this.toV1(raced);
 
       const nextIdx = await this.nextDerivationIndex();
-      const derived = deriveTrc20Address({
-        secretRef,
-        derivationIndex: nextIdx,
-      });
-      if (!isTrc20AddressFormat(derived.trc20Address)) {
-        throw new BadRequestException("derived address failed format check");
+      let derived;
+      try {
+        derived = allocateCanonicalTrc20Address({
+          derivationIndex: nextIdx,
+          persist: (row) => row,
+        });
+      } catch (e) {
+        if (e instanceof TronHdDerivationUnavailableError) {
+          throw new ServiceUnavailableException(TRON_HD_DERIVATION_UNAVAILABLE);
+        }
+        throw e;
       }
 
       try {
