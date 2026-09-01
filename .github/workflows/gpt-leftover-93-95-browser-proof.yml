@@ -1,0 +1,47 @@
+name: gpt-leftover-93-95-browser-proof
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/leftover-93-95-browser-proof-e4961df
+    paths:
+      - ".github/workflows/gpt-leftover-93-95-browser-proof.yml"
+      - "tooling/e2e/specs/leftover-browser-web.spec.cjs"
+      - "tooling/e2e/lib/**"
+      - "apps/web/**"
+      - "packages/ui/**"
+      - "packages/sdk/**"
+      - "pnpm-lock.yaml"
+      - "package.json"
+
+jobs:
+  chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CI: "true"
+      LEFTOVER_BROWSER: "1"
+      AXE_BROWSER: "0"
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Prove ticket 93 and 95 in real Chromium
+        run: |
+          set -euo pipefail
+          pnpm exec playwright test \
+            --config tooling/e2e/playwright.config.cjs \
+            leftover-browser-web.spec.cjs \
+            --grep "ticket93|ticket95"
