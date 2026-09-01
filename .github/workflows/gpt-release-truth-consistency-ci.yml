@@ -1,0 +1,29 @@
+name: gpt-release-truth-consistency-ci
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/release-truth-consistency-ca93c2a
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: node tooling/verify/release-engine-truth-consistency.cjs
+      - run: node tooling/verify/rel-502-final-engine-acceptance.cjs
+      - run: node tooling/verify/rel-504-migration-readiness.cjs
+      - run: node tooling/verify/backend-data-alignment.cjs
+      - run: node tooling/verify/rel-505-r7-backend-alignment.cjs
