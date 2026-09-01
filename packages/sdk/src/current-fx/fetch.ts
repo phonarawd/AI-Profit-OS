@@ -3,6 +3,7 @@
  * Client multiplication 0. Number(amount)*rate 0. Raw GET 0.
  */
 
+import { resolveSdkApiBase } from "../internal/qa-loopback-api-base.js";
 import type {
   CurrentFxApproxRequest,
   CurrentFxApproxResponse,
@@ -59,7 +60,7 @@ export async function fetchCurrentFxApprox(
   opts: CurrentFxRequestOpts = {},
 ): Promise<CurrentFxApproxResponse> {
   const res = await fetch(
-    apiUrl(opts.apiBase ?? "", "/api/v1/me/current-fx/approx"),
+    apiUrl(resolveSdkApiBase(opts.apiBase), "/api/v1/me/current-fx/approx"),
     {
       method: "POST",
       headers: await authHeaders(opts),

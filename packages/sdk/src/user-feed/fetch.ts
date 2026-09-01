@@ -4,6 +4,7 @@
  * nearMissCount → nearMissExtraCount (BalanceAwareHome prop) 매핑 Owns=본 모듈
  */
 
+import { resolveSdkApiBase } from "../internal/qa-loopback-api-base.js";
 import {
   OpportunityFeedError,
   type DayPulseResponse,
@@ -173,7 +174,7 @@ export async function fetchOpportunityFeed(
 ): Promise<OpportunityFeedResponse> {
   let res: Response;
   try {
-    res = await fetch(apiUrl(opts.apiBase ?? "", "/api/v1/opportunities"), {
+    res = await fetch(apiUrl(resolveSdkApiBase(opts.apiBase), "/api/v1/opportunities"), {
       method: "GET",
       headers: await authHeaders(opts),
       credentials: "include",
@@ -208,7 +209,7 @@ export async function fetchOpportunityDetail(
   let res: Response;
   try {
     res = await fetch(
-      apiUrl(opts.apiBase ?? "", `/api/v1/opportunities/${id}`),
+      apiUrl(resolveSdkApiBase(opts.apiBase), `/api/v1/opportunities/${id}`),
       {
         method: "GET",
         headers: await authHeaders(opts),
@@ -249,7 +250,7 @@ export async function fetchOpportunityDetail(
 export async function fetchDayPulse(
   opts: UserFeedRequestOpts = {},
 ): Promise<DayPulseResponse> {
-  const res = await fetch(apiUrl(opts.apiBase ?? "", "/api/v1/me/day-pulse"), {
+  const res = await fetch(apiUrl(resolveSdkApiBase(opts.apiBase), "/api/v1/me/day-pulse"), {
     method: "GET",
     headers: await authHeaders(opts),
     credentials: "include",
