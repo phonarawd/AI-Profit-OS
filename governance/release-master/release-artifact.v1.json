@@ -28,6 +28,8 @@
     "worker_prebuilt_missing": "FAIL",
     "worker_rebundle_at_deploy": "FAIL",
     "runtime_qa_missing": "FAIL",
-    "pagination_incomplete": "FAIL"
-  }
+    "pagination_incomplete": "FAIL",
+    "api_runtime_qa_missing": "FAIL"
+  },
+  "api_runtime_qa_required": true
 }

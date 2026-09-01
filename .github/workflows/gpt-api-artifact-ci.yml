@@ -13,6 +13,11 @@ on:
       - "services/api-nest/**"
       - "tooling/release/api-artifact-provenance.cjs"
       - "tooling/release/artifact-provenance.cjs"
+      - "tooling/release/api-artifact-runtime-qa.cjs"
+      - "tooling/release/release-acceptance-verdict.cjs"
+      - "tooling/verify/api-artifact-runtime-qa.cjs"
+      - "governance/release-master/release-acceptance.v1.json"
+      - "governance/release-master/release-artifact.v1.json"
       - "tooling/verify/api-artifact-provenance.cjs"
       - "apps/web/**"
       - "apps/admin/**"
@@ -87,6 +92,23 @@ jobs:
           test -f _tmp_gpt_release_bundle/release-manifest.json
           test -f _tmp_gpt_release_bundle/payload/services/api-nest/dist/main.js
           test -f _tmp_gpt_release_bundle/payload/services/api-nest/dist/api-release-manifest.json
+
+      - name: Exact bundled API runtime acceptance
+        run: |
+          set -euo pipefail
+          node tooling/verify/api-artifact-runtime-qa.cjs
+          node tooling/release/api-artifact-runtime-qa.cjs \
+            --sha "${{ github.sha }}" \
+            --bundle _tmp_gpt_release_bundle \
+            --extract-root . \
+            --out _tmp_gpt_api_runtime.json
+          node - <<'NODE'
+          const r = require("./_tmp_gpt_api_runtime.json");
+          if (!r.api_runtime || r.api_runtime.verified !== true) process.exit(2);
+          if (r.api_runtime.git_sha !== process.env.GITHUB_SHA) process.exit(3);
+          if (r.api_runtime.git_sha_source !== "RENDER_GIT_COMMIT") process.exit(4);
+          console.log("[gpt-api-artifact-ci] API_RUNTIME_REMOTE_CI_PASS");
+          NODE
 
       - name: Verify packed bundle fail-closed
         run: |
