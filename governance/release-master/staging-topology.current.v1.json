@@ -1,0 +1,26 @@
+{
+  "schema": "staging-topology-provider-snapshot.v1",
+  "recorded_at": "2026-09-01",
+  "source": "read-only provider reality · mutation=0",
+  "production": {
+    "render": {
+      "service_name": "AI-Profit-OS",
+      "service_id": "production-only-observed",
+      "environment_id": "production-only-observed",
+      "url": "https://ai-profit-os.onrender.com",
+      "branch": "main",
+      "autoDeploy": "yes"
+    },
+    "supabase": {
+      "project_ref": "mgsytcetsiecllmhcyox",
+      "branches": 0
+    }
+  },
+  "staging": {},
+  "cloudflare_preview": {
+    "exists": true,
+    "dedicated_staging_api": false,
+    "dedicated_staging_db": false,
+    "note": "Cloudflare preview without isolated Render API + Supabase staging branch is NOT_STAGING"
+  }
+}

@@ -812,10 +812,13 @@ const RULES = [
       /^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|origin-smoke|preflight)\.cjs$/.test(f) ||
       /^tooling\/deploy\/lib\/non-prod-api-host(\.runtime\.test)?\.cjs$/.test(f) ||
       /^tooling\/verify\/rel-600-staging\.cjs$/.test(f) ||
+      /^tooling\/verify\/staging-topology-readiness\.cjs$/.test(f) ||
+      /^tooling\/release\/staging-topology-readiness\.cjs$/.test(f) ||
+      /^governance\/release-master\/staging-topology\.current\.v1\.json$/.test(f) ||
       /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-600-staging\.v1\.json$/.test(f) ||
       /^\.github\/workflows\/deploy-staging\.yml$/.test(f),
-    scripts: ["rel-600-staging.cjs"],
+    scripts: ["rel-600-staging.cjs", "staging-topology-readiness.cjs"],
   },
   {
     test: (f) =>

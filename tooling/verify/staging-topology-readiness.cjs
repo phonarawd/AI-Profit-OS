@@ -8,6 +8,7 @@ const {
   normalizeUrl,
 } = require("../release/staging-topology-readiness.cjs");
 
+const root = path.resolve(__dirname, "../..");
 const PROD_REF = "mgsytcetsiecllmhcyox";
 const READY = {
   production: {
@@ -41,6 +42,8 @@ assert.equal(normalizeUrl("ai-profit-os.onrender.com"), "https://ai-profit-os.on
 
 let got = evaluateStagingTopology(READY);
 assert.equal(got.ready, true);
+assert.equal(got.status, "READY");
+assert.equal(got.classification, "TRUE_ISOLATED_STAGING");
 assert.deepEqual(got.blockers, []);
 assert.equal(got.production_mutation, 0);
 assert.equal(got.create_resources, false);
@@ -51,8 +54,45 @@ const currentProviderReality = {
 };
 got = evaluateStagingTopology(currentProviderReality);
 assert.equal(got.ready, false);
+assert.equal(got.status, "NOT_READY");
+assert.equal(got.classification, "BLOCKED_EXTERNAL_ACTION");
 assert.ok(got.blockers.includes("render_staging_missing"));
 assert.ok(got.blockers.includes("supabase_staging_missing"));
+
+got = evaluateStagingTopology({
+  ...READY,
+  cloudflare_preview: {
+    uses_production_api: true,
+    uses_production_db: false,
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("cloudflare_preview_not_staging"));
+
+got = evaluateStagingTopology({
+  ...READY,
+  cloudflare_preview: {
+    dedicated_staging_api: false,
+    dedicated_staging_db: false,
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("cloudflare_preview_not_staging"));
+
+const currentSnapshot = JSON.parse(
+  fs.readFileSync(
+    path.join(
+      root,
+      "governance/release-master/staging-topology.current.v1.json",
+    ),
+    "utf8",
+  ),
+);
+got = evaluateStagingTopology(currentSnapshot);
+assert.equal(got.ready, false);
+assert.equal(got.status, "NOT_READY");
+assert.equal(got.classification, "BLOCKED_EXTERNAL_ACTION");
+assert.equal(got.verdict, "STAGING_TOPOLOGY=NOT_READY");
 
 got = evaluateStagingTopology({
   ...READY,
@@ -106,7 +146,6 @@ got = evaluateStagingTopology({
 assert.equal(got.ready, false);
 assert.ok(got.blockers.includes("supabase_staging_customer_data_not_proven_zero"));
 
-const root = path.resolve(__dirname, "../..");
 const stagingWorkflow = fs.readFileSync(
   path.join(root, ".github/workflows/deploy-staging.yml"),
   "utf8",

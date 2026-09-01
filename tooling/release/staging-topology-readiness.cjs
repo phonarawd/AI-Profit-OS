@@ -122,9 +122,38 @@ function evaluateStagingTopology(snapshot) {
     }
   }
 
+  const cloudflare =
+    s.cloudflare_preview && typeof s.cloudflare_preview === "object"
+      ? s.cloudflare_preview
+      : null;
+  if (cloudflare) {
+    if (
+      cloudflare.uses_production_api === true ||
+      cloudflare.uses_production_db === true ||
+      cloudflare.dedicated_staging_api === false ||
+      cloudflare.dedicated_staging_db === false
+    ) {
+      blockers.push("cloudflare_preview_not_staging");
+    }
+  }
+
+  const ready = blockers.length === 0;
+  const missingInfra = blockers.some((b) =>
+    /_missing$|reuses_production|tracks_main|not_staging|customer_data_not_proven|db_binding_mismatch/.test(
+      b,
+    ),
+  );
+
   return {
     schema: "staging-topology-readiness.v1",
-    ready: blockers.length === 0,
+    ready,
+    status: ready ? "READY" : "NOT_READY",
+    classification: ready
+      ? "TRUE_ISOLATED_STAGING"
+      : missingInfra
+        ? "BLOCKED_EXTERNAL_ACTION"
+        : "NOT_READY",
+    verdict: ready ? "STAGING_TOPOLOGY=READY" : "STAGING_TOPOLOGY=NOT_READY",
     blockers,
     production_mutation: 0,
     create_resources: false,
