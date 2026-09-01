@@ -58,6 +58,16 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Production branch authority
+        if: inputs.target == 'production'
+        run: |
+          set -euo pipefail
+          test "$GITHUB_EVENT_NAME" = "workflow_dispatch"
+          test "$GITHUB_REF" = "refs/heads/main" || {
+            echo "FAIL_CLOSED:production_deploy_ref_not_main:$GITHUB_REF"
+            exit 1
+          }
+
       - name: Production same-SHA + digest acceptance
         if: inputs.target == 'production'
         env:
