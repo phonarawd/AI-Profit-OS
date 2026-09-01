@@ -5,6 +5,7 @@ on:
     paths:
       - "tooling/release/artifact-provenance.cjs"
       - "tooling/verify/release-manifest-identity-lock.cjs"
+      - "tooling/verify/release-acceptance.cjs"
       - ".github/workflows/gpt-release-manifest-identity-lock-ci.yml"
   workflow_dispatch:
 
@@ -23,3 +24,5 @@ jobs:
           node-version: "22.14.0"
       - name: Verify release manifest identity lock
         run: node tooling/verify/release-manifest-identity-lock.cjs
+      - name: Verify release acceptance compatibility
+        run: node tooling/verify/release-acceptance.cjs
