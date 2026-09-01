@@ -20,6 +20,8 @@ function read(rel) {
 const files = [
   "tooling/e2e/lib/axe-scan.cjs",
   "tooling/e2e/specs/axe-a11y.spec.cjs",
+  "tooling/e2e/specs/critical-axe.spec.cjs",
+  ".github/workflows/critical-axe.yml",
   "tooling/e2e/fixtures/axe-known-issues.v1.json",
 ];
 for (const f of files) {
@@ -44,6 +46,13 @@ if (!spec.includes("/auth/login") && !spec.includes("/profits")) {
 }
 if (!spec.includes("AXE_BROWSER")) {
   fails.push("browser full matrix must be gated (AXE_BROWSER)");
+}
+const liveAxe = read("tooling/e2e/specs/critical-axe.spec.cjs");
+if (liveAxe.includes("test.skip(")) {
+  fails.push("critical-axe live scan must not skip and still count as PASS");
+}
+if (!liveAxe.includes("live axe critical")) {
+  fails.push("critical-axe must run a live browser scan");
 }
 if (/playwright mcp|browser_navigate/i.test(spec + lib)) {
   fails.push("MCP-only evidence is not DONE");
