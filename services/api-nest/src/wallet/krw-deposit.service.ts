@@ -11,7 +11,7 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { randomBytes } from "node:crypto";
+import { randomBytes, randomInt } from "node:crypto";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { PostgresService } from "../db/postgres";
 import {
@@ -446,7 +446,7 @@ export class KrwDepositService {
 
   private randomSuffix(): number {
     // 1..99 — unique end digits for bank statement matching
-    return (randomBytes(1)[0] % 99) + 1;
+    return randomInt(1, 100);
   }
 
   private randomDepositCode(): string {
