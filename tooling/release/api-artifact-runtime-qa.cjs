@@ -302,5 +302,6 @@ module.exports = {
   runtimeEnv,
   probeApi,
   evaluateApiHealth,
+  allowApiRuntime,
   runApiArtifactRuntimeQa,
 };
