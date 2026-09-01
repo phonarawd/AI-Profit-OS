@@ -41,6 +41,15 @@ function isStagingSlot(slot) {
   return slot === "staging" || slot === "preview";
 }
 
+function isPlaceholderRootDomain(value) {
+  let domain = String(value || "").trim().toLowerCase();
+  if (domain.endsWith(".")) domain = domain.slice(0, -1);
+  if (domain.includes("{") || domain.includes("}")) return true;
+  const labels = domain.split(".").filter(Boolean);
+  const registrable = labels.slice(-2).join(".");
+  return registrable === "domain.com" || registrable === "your-domain.com";
+}
+
 function requireRootDomainForProd(target) {
   if (!isProdTarget(target)) return;
   loadDotEnv();
@@ -52,7 +61,7 @@ function requireRootDomainForProd(target) {
     console.error("  Set ROOT_DOMAIN=your-domain.com in .env (local) or CI secrets");
     process.exit(1);
   }
-  if (/\{.*\}/.test(rootDomain) || rootDomain.includes("domain.com")) {
+  if (isPlaceholderRootDomain(rootDomain)) {
     console.error("[cf-deploy] FAIL: ROOT_DOMAIN still contains placeholder");
     process.exit(1);
   }
@@ -96,6 +105,7 @@ module.exports = {
   resolveWranglerEnv,
   isStagingSlot,
   requireRootDomainForProd,
+  isPlaceholderRootDomain,
   requireCloudflareCreds,
   mustExist,
   readWorkersManifest,
