@@ -53,7 +53,7 @@ for (const needle of [
   'type="password"',
   "관리자 연결 코드",
   'role="status"',
-  "hasAdminToken",
+  "connectAdminSession",
 ]) {
   requireText(session, needle, "AdminSessionBar");
 }

@@ -6,9 +6,11 @@
 
 import { Global, Module } from "@nestjs/common";
 import { CLOCK_PROVIDER } from "./clock";
+import { AdminSessionController } from "./admin-session.controller";
 
 @Global()
 @Module({
+  controllers: [AdminSessionController],
   providers: [CLOCK_PROVIDER],
   exports: [CLOCK_PROVIDER.provide],
 })

@@ -5,6 +5,7 @@
  */
 const fs = require("fs");
 const path = require("path");
+const { spawnSync } = require("child_process");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
@@ -71,9 +72,42 @@ if (!guard.includes("cookies?")) {
   fails.push("jwt-auth.guard.ts Request type must include cookies");
 }
 
+const adminCookies =
+  read("services/api-nest/src/common/admin-session.cookies.ts") +
+  read("services/api-nest/src/common/admin-session.csrf.ts");
+const adminBar = read("apps/admin/components/AdminSessionBar.tsx");
+const adminApi = read("apps/admin/lib/admin-api.ts");
+if (!adminCookies.includes('ADMIN_SESSION_COOKIE_NAME = "aipo_admin_session"')) {
+  fails.push("admin session cookie must be aipo_admin_session");
+}
+if (!adminCookies.includes("httpOnly: true") || !adminCookies.includes('sameSite: "strict"')) {
+  fails.push("admin session cookie must be HttpOnly + SameSite=strict");
+}
+if (adminBar.includes("sessionStorage") || adminApi.includes("sessionStorage")) {
+  fails.push("admin UI must not store a privileged bearer in sessionStorage");
+}
+if (adminApi.includes("Authorization") && adminApi.includes("Bearer")) {
+  fails.push("admin-api must not attach a JS-held Authorization bearer");
+}
+
 const pkg = read("services/api-nest/package.json");
 if (!pkg.includes('"cookie-parser"')) {
   fails.push("services/api-nest/package.json must depend on cookie-parser");
+}
+
+const runtime = spawnSync(
+  process.execPath,
+  [
+    "--test",
+    "--experimental-strip-types",
+    "services/api-nest/src/common/admin-session.runtime.test.ts",
+  ],
+  { cwd: root, encoding: "utf8", timeout: 30_000 },
+);
+process.stdout.write(runtime.stdout || "");
+process.stderr.write(runtime.stderr || "");
+if (runtime.status !== 0) {
+  fails.push("admin session runtime tests failed");
 }
 
 if (fails.length) {

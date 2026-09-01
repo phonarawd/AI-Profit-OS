@@ -61,12 +61,7 @@ function isoFromEpochSeconds(value: unknown): string | null {
  * Authentication time stays REAL (`Date.now()` inside jwt.core.cjs) — the QA
  * domain Clock seam must never be able to resurrect an expired admin token.
  */
-export function verifyAdminAuthorizationHeader(
-  headerValue: unknown,
-): AdminPrincipal {
-  const token = extractBearerToken(headerValue);
-  if (!token) throw new AdminTokenError("ADMIN_AUTH_REQUIRED");
-
+export function verifyAdminAccessToken(token: string): AdminPrincipal {
   const secret = loadPhase0Env().jwtAdminSecret;
   if (!secret) {
     // Never open admin routes because the deployment forgot the secret.
@@ -98,4 +93,12 @@ export function verifyAdminAuthorizationHeader(
     issuedAt,
     expiresAt,
   };
+}
+
+export function verifyAdminAuthorizationHeader(
+  headerValue: unknown,
+): AdminPrincipal {
+  const token = extractBearerToken(headerValue);
+  if (!token) throw new AdminTokenError("ADMIN_AUTH_REQUIRED");
+  return verifyAdminAccessToken(token);
 }
