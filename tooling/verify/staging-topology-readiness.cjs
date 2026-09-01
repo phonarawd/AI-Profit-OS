@@ -124,6 +124,72 @@ got = evaluateStagingTopology({
   ...READY,
   staging: {
     ...READY.staging,
+    render: {
+      ...READY.staging.render,
+      supabase_project_ref: "",
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.equal(got.classification, "BLOCKED_EXTERNAL_ACTION");
+assert.ok(got.blockers.includes("render_staging_db_binding_missing"));
+
+got = evaluateStagingTopology({
+  ...READY,
+  staging: {
+    ...READY.staging,
+    render: {
+      ...READY.staging.render,
+      environment_id: "",
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("render_staging_environment_id_missing"));
+
+got = evaluateStagingTopology({
+  ...READY,
+  staging: {
+    ...READY.staging,
+    render: {
+      ...READY.staging.render,
+      kind: "",
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("render_staging_kind_missing"));
+
+got = evaluateStagingTopology({
+  ...READY,
+  production: {
+    ...READY.production,
+    render: {
+      ...READY.production.render,
+      service_id: "",
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("production_render_service_id_missing"));
+
+got = evaluateStagingTopology({
+  ...READY,
+  production: {
+    ...READY.production,
+    render: {
+      ...READY.production.render,
+      environment_id: "",
+    },
+  },
+});
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("production_render_environment_id_missing"));
+
+got = evaluateStagingTopology({
+  ...READY,
+  staging: {
+    ...READY.staging,
     supabase: {
       ...READY.staging.supabase,
       project_ref: PROD_REF,
