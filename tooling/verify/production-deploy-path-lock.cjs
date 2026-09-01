@@ -116,6 +116,66 @@ assert.match(
 );
 assert.match(workflow, /--expected-digest "\$DIGEST"/);
 
+const workersDir = path.join(root, "workers");
+const workerNames = fs
+  .readdirSync(workersDir, { withFileTypes: true })
+  .filter((d) => d.isDirectory())
+  .map((d) => d.name)
+  .filter((name) => fs.existsSync(path.join(workersDir, name, "package.json")));
+
+assert.ok(workerNames.length > 0, "workers packages missing");
+
+const forbidRel = "tooling/deploy/forbid-direct-wrangler-prod.cjs";
+const previewRel = "tooling/deploy/wrangler-worker-preview-only.cjs";
+assert.match(read(forbidRel), /direct_worker_production_wrangler_forbidden/);
+assert.match(read(previewRel), /--env", "preview"/);
+
+for (const name of workerNames) {
+  const pkg = JSON.parse(read(`workers/${name}/package.json`));
+  const scripts = pkg.scripts || {};
+  for (const [key, value] of Object.entries(scripts)) {
+    if (
+      typeof value === "string" &&
+      /wrangler\s+deploy/.test(value) &&
+      /--env[=\s]+production/.test(value)
+    ) {
+      assert.fail(`${name} ${key} invokes wrangler deploy --env production`);
+    }
+  }
+  const deployProd = scripts["deploy:prod"] || "";
+  assert.match(
+    deployProd,
+    /forbid-direct-wrangler-prod\.cjs/,
+    `${name} deploy:prod must fail-close through forbid helper`,
+  );
+  const deploy = scripts.deploy || "";
+  const toml = read(`workers/${name}/wrangler.toml`);
+  if (/\[env\.preview\]/.test(toml)) {
+    assert.match(
+      deploy,
+      /wrangler-worker-preview-only\.cjs/,
+      `${name} deploy must use preview-only wrapper`,
+    );
+  } else {
+    assert.match(
+      deploy,
+      /forbid-direct-wrangler-prod\.cjs/,
+      `${name} without preview env must not expose a wrangler deploy script`,
+    );
+  }
+}
+
+const forbid = require("child_process").spawnSync(
+  process.execPath,
+  [path.join(root, forbidRel)],
+  { encoding: "utf8" },
+);
+assert.notEqual(forbid.status, 0);
+assert.match(
+  String(forbid.stderr || ""),
+  /direct_worker_production_wrangler_forbidden/,
+);
+
 console.log(
-  "[verify:production-deploy-path-lock] PASS (direct prod helpers gated · rebuild/bundle forbidden · deploy-from-artifact requires acceptance)",
+  "[verify:production-deploy-path-lock] PASS (direct prod helpers gated · worker package wrangler prod forbidden · rebuild/bundle forbidden · deploy-from-artifact requires acceptance)",
 );

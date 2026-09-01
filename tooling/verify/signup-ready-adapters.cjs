@@ -68,8 +68,11 @@ for (const name of workers) {
     if (/echo 'Phase1\+ only'/.test(pkg) || /echo \"Phase1\+ only\"/.test(pkg)) {
       fails.push(`${name} package.json deploy must use wrangler (not echo stub)`);
     }
-    if (!/"deploy":\s*"wrangler deploy/.test(pkg)) {
-      fails.push(`${name} package.json missing wrangler deploy script`);
+    if (!/wrangler-worker-preview-only\.cjs/.test(pkg)) {
+      fails.push(`${name} package.json deploy must use preview-only wrangler wrapper`);
+    }
+    if (/wrangler\s+deploy/.test(pkg) && /--env[=\s]+production/.test(pkg)) {
+      fails.push(`${name} package.json must not invoke wrangler deploy --env production`);
     }
   }
   const wr = read(`workers/${name}/wrangler.toml`);
