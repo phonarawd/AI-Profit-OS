@@ -175,9 +175,6 @@ export class WithdrawStepUpService {
       origin,
       priority: WITHDRAW_STEP_UP_PRIORITY,
     };
-    if (input.method === "webauthn") {
-      view.rpId = normalizeAppHost(env.appHost);
-    }
     if (input.method === "email_otp") {
       view.delivery = "resend";
     }
