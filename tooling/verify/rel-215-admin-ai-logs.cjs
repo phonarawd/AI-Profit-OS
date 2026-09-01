@@ -71,6 +71,11 @@ if (!svc.includes("publicLogRow")) {
   fails.push("ai-logs service must map public rows");
 }
 
+const tsconfig = read("apps/admin/tsconfig.json");
+if (!tsconfig.includes("**/*.runtime.test.ts")) {
+  fails.push("admin tsconfig must exclude runtime tests from Next tsc");
+}
+
 const pkg = read("package.json");
 if (!pkg.includes("verify:rel-215-admin-ai-logs")) {
   fails.push("package.json missing verify:rel-215-admin-ai-logs");
