@@ -48,4 +48,6 @@ jobs:
           node tooling/verify/withdraw-stepup-security.runtime.cjs
 
       - name: Gate fast integration
+        env:
+          AIPO_PUSH_BEFORE_SHA: ${{ github.event.before }}
         run: pnpm verify:gate:fast
