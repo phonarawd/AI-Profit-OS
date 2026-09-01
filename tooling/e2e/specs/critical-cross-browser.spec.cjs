@@ -128,6 +128,17 @@ test("critical consumer routes load without fatal overflow", async ({ page }, te
   testInfo.annotations.push({ type: "browser-engine", description: engine });
   await page.addInitScript(() => {
     window.localStorage.setItem("peotteok_deposit_consult_ack", "1");
+    const orig = window.fetch.bind(window);
+    window.fetch = (input, init) => {
+      const url = String(typeof input === "string" ? input : (input && input.url) || "");
+      if (url.indexOf("/api/v1/") === -1) return orig(input, init);
+      return orig(input, init).catch(() =>
+        new Response(JSON.stringify({ error: "unauthorized", viewState: "unauthorized" }), {
+          status: 401,
+          headers: { "content-type": "application/json" },
+        }),
+      );
+    };
   });
   let lastPath = "";
   for (const route of ROUTES) {
