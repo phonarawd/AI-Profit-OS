@@ -673,7 +673,12 @@ function writeFakeWorker(payloadSrc, name) {
   );
   fs.writeFileSync(
     path.join(pre, "entry.json"),
-    JSON.stringify({ schema: "release-worker-prebuilt.v1", entry: "index.js", bundled_once: true }) + "\n",
+    JSON.stringify({
+      schema: "release-worker-prebuilt.v1",
+      entry: "index.js",
+      bundled_once: true,
+      wrangler_no_upload: true,
+    }) + "\n",
   );
 }
 try {
