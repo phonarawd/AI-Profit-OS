@@ -9,9 +9,11 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  ServiceUnavailableException,
 } from "@nestjs/common";
 import {
   createHash,
+  createHmac,
   randomBytes,
   randomInt,
   scryptSync,
@@ -92,11 +94,17 @@ export class WithdrawStepUpService {
     userId: string;
     method: WithdrawStepUpMethod;
     origin: string;
-    email?: string;
   }): Promise<StepUpChallengeView> {
     if (!input.userId) throw new BadRequestException("userId required");
     if (!WITHDRAW_STEP_UP_PRIORITY.includes(input.method)) {
       throw new BadRequestException("invalid step-up method");
+    }
+    if (input.method === "webauthn") {
+      throw new ServiceUnavailableException({
+        code: WITHDRAW_STEP_UP_CODES.WEBAUTHN_STEP_UP_NOT_READY,
+        toastCode: WITHDRAW_STEP_UP_CODES.WEBAUTHN_STEP_UP_NOT_READY,
+        statusCode: 503,
+      });
     }
     const env = loadPhase0Env();
     if (!originAllowed(input.origin, env.appHost)) {
@@ -105,6 +113,18 @@ export class WithdrawStepUpService {
         toastCode: WITHDRAW_STEP_UP_CODES.ORIGIN_REJECTED,
         statusCode: 403,
       });
+    }
+
+    let verifiedEmail: string | null = null;
+    if (input.method === "email_otp") {
+      verifiedEmail = await this.getVerifiedEmail(input.userId);
+      if (!verifiedEmail) {
+        throw new ForbiddenException({
+          code: WITHDRAW_STEP_UP_CODES.EMAIL_STEP_UP_VERIFICATION_REQUIRED,
+          toastCode: WITHDRAW_STEP_UP_CODES.EMAIL_STEP_UP_VERIFICATION_REQUIRED,
+          statusCode: 403,
+        });
+      }
     }
 
     if (input.method === "pin") {
@@ -137,10 +157,8 @@ export class WithdrawStepUpService {
     const row = ins.rows[0]!;
 
     if (input.method === "email_otp") {
-      const email = (input.email || "").trim();
-      if (!email) throw new BadRequestException("email required for email_otp");
       const sent = await this.resend.sendOtp({
-        to: email,
+        to: verifiedEmail!,
         code: secret,
         purpose: "withdraw_stepup",
       });
@@ -208,21 +226,32 @@ export class WithdrawStepUpService {
 
     await this.verifyProof(input.userId, input.method, input.proof, row);
 
-    await this.db.query(
+    const consumed = await this.db.query<{ id: string }>(
       `UPDATE public.withdraw_stepup_challenges
           SET consumed_at = now()
-        WHERE id = $1::uuid AND consumed_at IS NULL`,
+        WHERE id = $1::uuid
+          AND consumed_at IS NULL
+          AND expires_at > now()
+        RETURNING id::text AS id`,
       [row.id],
     );
+    if (!consumed.rows[0]) {
+      throw new ConflictConsumed();
+    }
 
-    const token = this.issueStepUpToken(input.userId, input.method, row.id);
+    const expiresAtSec =
+      Math.floor(Date.now() / 1000) + WITHDRAW_STEP_UP_TTL_SEC;
+    const token = this.issueStepUpToken(
+      input.userId,
+      input.method,
+      row.id,
+      expiresAtSec,
+    );
     return {
       ok: true,
       stepUpToken: token,
       method: input.method,
-      expiresAt: new Date(
-        Date.now() + WITHDRAW_STEP_UP_TTL_SEC * 1000,
-      ).toISOString(),
+      expiresAt: new Date(expiresAtSec * 1000).toISOString(),
     };
   }
 
@@ -230,10 +259,30 @@ export class WithdrawStepUpService {
   async setPin(input: {
     userId: string;
     pin: string;
+    enrollmentStepUpToken: string;
   }): Promise<{ ok: true; toastCode: "PIN_SET" }> {
     if (!input.userId) throw new BadRequestException("userId required");
     if (!/^\d{6}$/.test(input.pin)) {
       throw new BadRequestException("pin must be 6 digits");
+    }
+    const enrollment = this.assertStepUpToken({
+      userId: input.userId,
+      stepUpToken: input.enrollmentStepUpToken,
+    });
+    if (enrollment.method === "pin") {
+      throw new ForbiddenException({
+        code: WITHDRAW_STEP_UP_CODES.PIN_ENROLLMENT_STEP_UP_REQUIRED,
+        toastCode: WITHDRAW_STEP_UP_CODES.PIN_ENROLLMENT_STEP_UP_REQUIRED,
+        statusCode: 403,
+      });
+    }
+    const current = await this.getPinRow(input.userId);
+    if (current && !current.must_reset) {
+      throw new ForbiddenException({
+        code: WITHDRAW_STEP_UP_CODES.PIN_ENROLLMENT_STEP_UP_REQUIRED,
+        toastCode: WITHDRAW_STEP_UP_CODES.PIN_ENROLLMENT_STEP_UP_REQUIRED,
+        statusCode: 403,
+      });
     }
     const hash = this.hashPin(input.pin, input.userId);
     await this.db.query(
@@ -253,14 +302,14 @@ export class WithdrawStepUpService {
 
   /**
    * Assert a previously issued stepUpToken for withdraw create.
-   * Format: v1.<userId>.<method>.<challengeId>.<hmac>
+   * Format: v2.<userId>.<method>.<challengeId>.<expiresAtSec>.<hmac>
    */
   assertStepUpToken(input: {
     userId: string;
     stepUpToken: string;
   }): { method: WithdrawStepUpMethod } {
     const raw = (input.stepUpToken || "").trim();
-    if (!raw.startsWith("v1.")) {
+    if (!raw.startsWith("v2.")) {
       throw new ForbiddenException({
         code: WITHDRAW_STEP_UP_CODES.STEP_UP_REQUIRED,
         toastCode: WITHDRAW_STEP_UP_CODES.STEP_UP_REQUIRED,
@@ -268,14 +317,14 @@ export class WithdrawStepUpService {
       });
     }
     const parts = raw.split(".");
-    if (parts.length !== 5) {
+    if (parts.length !== 6) {
       throw new ForbiddenException({
         code: WITHDRAW_STEP_UP_CODES.STEP_UP_REQUIRED,
         toastCode: WITHDRAW_STEP_UP_CODES.STEP_UP_REQUIRED,
         statusCode: 403,
       });
     }
-    const [, userId, method, challengeId, mac] = parts;
+    const [, userId, method, challengeId, expiresAtRaw, mac] = parts;
     if (userId !== input.userId) {
       throw new ForbiddenException({
         code: WITHDRAW_STEP_UP_CODES.STEP_UP_REQUIRED,
@@ -290,7 +339,23 @@ export class WithdrawStepUpService {
         statusCode: 403,
       });
     }
-    const expect = this.macToken(userId!, method!, challengeId!);
+    const expiresAtSec = Number(expiresAtRaw);
+    if (
+      !Number.isInteger(expiresAtSec) ||
+      expiresAtSec <= Math.floor(Date.now() / 1000)
+    ) {
+      throw new ForbiddenException({
+        code: WITHDRAW_STEP_UP_CODES.STEP_UP_TOKEN_EXPIRED,
+        toastCode: WITHDRAW_STEP_UP_CODES.STEP_UP_TOKEN_EXPIRED,
+        statusCode: 403,
+      });
+    }
+    const expect = this.macToken(
+      userId!,
+      method!,
+      challengeId!,
+      expiresAtSec,
+    );
     if (!safeEq(mac!, expect)) {
       throw new ForbiddenException({
         code: WITHDRAW_STEP_UP_CODES.STEP_UP_REQUIRED,
@@ -339,6 +404,23 @@ export class WithdrawStepUpService {
     return safeEq(expect, stored);
   }
 
+  private async getVerifiedEmail(userId: string): Promise<string | null> {
+    const r = await this.db.query<{ email: string }>(
+      `SELECT u.email
+         FROM public.users u
+        WHERE u.id = $1::uuid
+          AND u.email IS NOT NULL
+          AND EXISTS (
+            SELECT 1
+              FROM public.auth_magic_link_challenges m
+             WHERE m.email = u.email
+               AND m.consumed_at IS NOT NULL
+          )`,
+      [userId],
+    );
+    return r.rows[0]?.email ?? null;
+  }
+
   private async getPinRow(userId: string): Promise<PinRow | null> {
     const r = await this.db.query<PinRow>(
       `SELECT user_id, pin_hash, must_reset, failed_attempts, locked_until
@@ -369,13 +451,11 @@ export class WithdrawStepUpService {
     row: ChallengeRow,
   ): Promise<void> {
     if (method === "webauthn") {
-      // Full assertion verify lands with @simplewebauthn/server wiring.
-      // Day-1: challenge secret proof OR non-empty assertion JSON bound to hash.
-      const ok =
-        this.hashSecret(proof) === row.challenge_hash ||
-        (proof.length >= 16 && proof.includes("id"));
-      if (!ok) throw new ForbiddenException("webauthn_verify_failed");
-      return;
+      throw new ServiceUnavailableException({
+        code: WITHDRAW_STEP_UP_CODES.WEBAUTHN_STEP_UP_NOT_READY,
+        toastCode: WITHDRAW_STEP_UP_CODES.WEBAUTHN_STEP_UP_NOT_READY,
+        statusCode: 503,
+      });
     }
 
     if (method === "email_otp") {
@@ -456,20 +536,26 @@ export class WithdrawStepUpService {
     userId: string,
     method: WithdrawStepUpMethod,
     challengeId: string,
+    expiresAtSec: number,
   ): string {
-    const mac = this.macToken(userId, method, challengeId);
-    return `v1.${userId}.${method}.${challengeId}.${mac}`;
+    const mac = this.macToken(userId, method, challengeId, expiresAtSec);
+    return `v2.${userId}.${method}.${challengeId}.${expiresAtSec}.${mac}`;
   }
 
   private macToken(
     userId: string,
     method: string,
     challengeId: string,
+    expiresAtSec: number,
   ): string {
-    const secret =
-      loadPhase0Env().jwtUserSecret || "phase0-dev-stepup-hmac";
-    return createHash("sha256")
-      .update(`${secret}|${userId}|${method}|${challengeId}`)
+    const secret = loadPhase0Env().jwtUserSecret;
+    if (!secret) {
+      throw new ServiceUnavailableException(
+        "JWT_USER_SECRET unset — withdraw step-up unavailable",
+      );
+    }
+    return createHmac("sha256", secret)
+      .update(`${userId}|${method}|${challengeId}|${expiresAtSec}`)
       .digest("base64url");
   }
 }
