@@ -8,6 +8,7 @@ import {
   ADMIN_CSRF_COOKIE_NAME,
   ADMIN_SESSION_COOKIE_NAME,
   mintAdminCsrfSecret,
+  mintAdminCsrfToken,
 } from "./admin-session.csrf";
 
 export {
@@ -16,6 +17,7 @@ export {
   ADMIN_SESSION_COOKIE_NAME,
   assertAdminCsrf,
   mintAdminCsrfSecret,
+  mintAdminCsrfToken,
   planAdminLogout,
   requestHasQueryBearer,
 } from "./admin-session.csrf";
@@ -48,7 +50,7 @@ function cookieBase() {
 export function attachAdminSessionCookies(
   res: CookieResponse,
   accessToken: string,
-  csrf = mintAdminCsrfSecret(),
+  csrf = mintAdminCsrfToken(accessToken),
 ): void {
   const base = cookieBase();
   res.cookie(ADMIN_SESSION_COOKIE_NAME, accessToken, {
