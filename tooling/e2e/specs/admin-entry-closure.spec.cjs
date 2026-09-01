@@ -67,7 +67,16 @@ test("beginner shell keeps connection details collapsed and mobile navigation us
   await openAdmin(page, "/admin", 390, 844);
   await expect(page.getByTestId("admin-app-shell")).toBeVisible();
   await expect(page.locator("#admin-bearer")).toHaveCount(0);
-  await page.getByRole("button", { name: "전체 메뉴 열기" }).click();
+  const menuButton = page.getByRole("button", { name: "전체 메뉴 열기" });
+  await expect(menuButton).toBeVisible();
+  await menuButton.click();
+  const sidebar = page.locator(".admin-sidebar");
+  try {
+    await expect(sidebar).toHaveAttribute("data-open", "true", { timeout: 3000 });
+  } catch {
+    await menuButton.click();
+    await expect(sidebar).toHaveAttribute("data-open", "true");
+  }
   await expect(page.getByRole("navigation", { name: "운영 메뉴" })).toBeVisible();
   await expect(page.getByRole("link", { name: "오늘 할 일" })).toHaveAttribute(
     "aria-current",

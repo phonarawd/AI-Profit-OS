@@ -115,7 +115,7 @@ async function ensureLocalAdminRuntime(opts = {}) {
   const useWebpack =
     process.env.ADMIN_NEXT_WEBPACK === "1" ||
     process.env.NEXT_DEV_WEBPACK === "1" ||
-    linkedNm;
+    (process.platform === "win32" && linkedNm);
   const args = [nextBin, "dev", "--port", String(port), "--hostname", "127.0.0.1"];
   if (useWebpack) args.push("--webpack");
   const child = spawn(process.execPath, args, {

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { T } from "@aipo/ui/copy/ko";
 import { ADMIN_MODULES } from "../routes";
 import { AdminSessionBar } from "./AdminSessionBar";
@@ -29,8 +29,14 @@ function isActive(pathname: string, href: string, id: number | string) {
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const previousPathname = useRef(pathname);
 
+  // 마운트·동일 경로 effect 재실행은 닫지 않는다. 첫 클릭과 레이스가 난다.
   useEffect(() => {
+    if (previousPathname.current === pathname) {
+      return;
+    }
+    previousPathname.current = pathname;
     setMenuOpen(false);
   }, [pathname]);
 
