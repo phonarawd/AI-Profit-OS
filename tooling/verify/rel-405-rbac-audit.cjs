@@ -87,6 +87,7 @@ const events = [];
 core.resetAuditSink();
 core.setAuditSink((event) => {
   events.push(event);
+  return true;
 });
 
 const denied = core.buildDeniedEvent({
@@ -101,8 +102,8 @@ const denied = core.buildDeniedEvent({
 
 (async () => {
   const written = await core.writeAuditEvent(denied);
-  if (!written.ok || written.event.result !== "denied") {
-    fails.push("audit write fixture must persist result=denied");
+  if (!written.ok || written.event.result !== "denied" || written.persisted !== true) {
+    fails.push("audit write fixture must report persisted=true only when sink confirms durable write");
   }
   if (events.length !== 1 || events[0].result !== "denied") {
     fails.push("deny fixture sink must receive one denied event");
@@ -110,6 +111,34 @@ const denied = core.buildDeniedEvent({
   if ((events[0] || {}).role !== "marketing") {
     fails.push("deny fixture must record marketing role");
   }
+
+  core.setAuditSink(() => false);
+  const notPersisted = await core.writeAuditEvent(denied);
+  if (!notPersisted.ok || notPersisted.persisted !== false) {
+    fails.push("audit sink=false must report persisted=false");
+  }
+
+  core.resetAuditSink();
+  const noSink = await core.writeAuditEvent(denied);
+  if (!noSink.ok || noSink.persisted !== false) {
+    fails.push("audit without sink must report persisted=false");
+  }
+
+  core.setAuditSink(() => {
+    throw new Error("sink_boom");
+  });
+  const threw = await core.writeAuditEvent(denied);
+  if (!threw.ok || threw.persisted !== false) {
+    fails.push("audit sink throw must report persisted=false");
+  }
+
+  core.setAuditSink(() => undefined);
+  const implicit = await core.writeAuditEvent(denied);
+  if (!implicit.ok || implicit.persisted !== false) {
+    fails.push("audit sink implicit undefined must report persisted=false");
+  }
+
+  core.setAuditSink(() => true);
 
   const forbidden = await core.writeAuditEvent({
     ...denied,
@@ -120,6 +149,15 @@ const denied = core.buildDeniedEvent({
   }
 
   core.resetAuditSink();
+
+  const coreSrc = read("services/api-nest/admin-audit.core.cjs");
+  if (!coreSrc.includes("persisted === true")) {
+    fails.push("writeAuditEvent must set persisted true only on explicit sink success");
+  }
+  const svc = read("services/api-nest/src/audit/admin-audit.service.ts");
+  if (!svc.includes("if (!this.db.configured()) return false")) {
+    fails.push("audit sink must not claim persist when DB is unconfigured");
+  }
 
   const mig = read("supabase/migrations/20260823160000_admin_audit_events.sql");
   for (const needle of [

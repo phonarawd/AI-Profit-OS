@@ -19,7 +19,7 @@ const requireCjs = createRequire(__filename);
 const auditCore = requireCjs(
   join(__dirname, "..", "..", "admin-audit.core.cjs"),
 ) as {
-  setAuditSink: (fn: ((event: AdminAuditEvent) => void | Promise<void>) | null) => void;
+  setAuditSink: (fn: ((event: AdminAuditEvent) => boolean | Promise<boolean>) | null) => void;
   resetAuditSink: () => void;
   writeAuditEvent: (
     raw: unknown,
@@ -60,11 +60,13 @@ export class AdminAuditService implements OnModuleInit, OnModuleDestroy {
 
   onModuleInit(): void {
     auditCore.setAuditSink(async (event) => {
-      if (!this.db.configured()) return;
+      if (!this.db.configured()) return false;
       try {
         await this.insert(event);
+        return true;
       } catch {
-        // deny 경로는 403을 유지한다. persist 실패가 허용으로 바뀌면 안 된다.
+        // 인가 결과는 유지한다. durable 성공으로 위장하지 않는다.
+        return false;
       }
     });
   }
