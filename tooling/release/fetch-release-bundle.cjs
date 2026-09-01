@@ -90,6 +90,19 @@ function runId(run) {
   return run && (run.databaseId != null ? run.databaseId : run.id);
 }
 
+function prepareDestination(dest) {
+  fs.rmSync(dest, { recursive: true, force: true });
+  fs.mkdirSync(dest, { recursive: true });
+}
+
+function hasCompleteBundleShape(dest) {
+  return (
+    fs.existsSync(path.join(dest, "release-manifest.json")) &&
+    fs.existsSync(path.join(dest, "payload")) &&
+    fs.statSync(path.join(dest, "payload")).isDirectory()
+  );
+}
+
 function main(argv) {
   const args = parseArgs(argv);
   if (!/^[0-9a-f]{40}$/i.test(args.sha) || !args.out) {
@@ -110,7 +123,7 @@ function main(argv) {
     process.exit(1);
   }
   const dest = path.resolve(args.out);
-  fs.mkdirSync(dest, { recursive: true });
+  prepareDestination(dest);
   try {
     execFileSync("gh", ["run", "download", String(runId(run)), "-n", ARTIFACT_NAME, "-D", dest], {
       stdio: ["ignore", "pipe", "pipe"],
@@ -120,8 +133,9 @@ function main(argv) {
     if (args.optional) process.exit(0);
     process.exit(1);
   }
-  if (!fs.existsSync(path.join(dest, "release-manifest.json")) && !fs.existsSync(path.join(dest, "payload"))) {
-    process.stderr.write("FAIL_CLOSED:artifact_missing\n");
+  if (!hasCompleteBundleShape(dest)) {
+    fs.rmSync(dest, { recursive: true, force: true });
+    process.stderr.write("FAIL_CLOSED:artifact_incomplete\n");
     if (args.optional) process.exit(0);
     process.exit(1);
   }
@@ -138,4 +152,7 @@ module.exports = {
   listReleaseBuildRuns,
   selectSuccessfulReleaseBuild,
   ghFetchPage,
+  prepareDestination,
+  hasCompleteBundleShape,
+  runId,
 };
