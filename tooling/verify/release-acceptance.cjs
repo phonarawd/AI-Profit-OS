@@ -314,9 +314,12 @@ const sha = "0a72b27dd0da3c422eca0f931cf668e7a760c8ec";
 const passVerdict = {
   verdict: "PASS",
   kind: "PRODUCTION_RELEASE",
+  qa_phase: "full",
   sha,
   artifact_digest: ARTIFACT_DIGEST,
   artifact_source_sha: sha,
+  artifact_built_once: true,
+  api_runtime_verified: true,
 };
 const tmp = path.join(root, "tooling/release/_tmp_verdict.json");
 fs.writeFileSync(tmp, JSON.stringify(passVerdict));
@@ -350,7 +353,18 @@ g = evaluateGuard({ target: "production", sha, artifact: tmp, expectedDigest: "d
 if (g.ok || g.reason !== "artifact_digest_mismatch") fail("digest mismatch must block");
 
 const noDigest = path.join(root, "tooling/release/_tmp_verdict_nodigest.json");
-fs.writeFileSync(noDigest, JSON.stringify({ verdict: "PASS", kind: "PRODUCTION_RELEASE", sha }));
+fs.writeFileSync(
+  noDigest,
+  JSON.stringify({
+    verdict: "PASS",
+    kind: "PRODUCTION_RELEASE",
+    qa_phase: "full",
+    sha,
+    artifact_source_sha: sha,
+    artifact_built_once: true,
+    api_runtime_verified: true,
+  }),
+);
 g = evaluateGuard({
   target: "production",
   sha,
