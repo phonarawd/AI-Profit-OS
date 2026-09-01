@@ -306,6 +306,7 @@
     "verify:admin-csrf-double-submit": "node tooling/verify/admin-csrf-double-submit.cjs",
     "verify:coach-sse-error-canonical": "node tooling/verify/coach-sse-error-canonical.cjs",
     "verify:release-manifest-identity-lock": "node tooling/verify/release-manifest-identity-lock.cjs",
+    "verify:production-deploy-path-lock": "node tooling/verify/production-deploy-path-lock.cjs",
     "verify:leftover-browser-harness": "node tooling/verify/leftover-browser-harness.cjs",
     "verify:full-product-axe-inventory": "node tooling/verify/full-product-axe-inventory.cjs",
     "verify:web-remote-patterns": "node tooling/verify/web-remote-patterns.cjs",

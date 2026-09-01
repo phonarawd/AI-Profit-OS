@@ -109,6 +109,8 @@ const RULES = [
       ) ||
       /^tooling\/verify\/release-acceptance\.cjs$/.test(f) ||
       /^tooling\/verify\/release-manifest-identity-lock\.cjs$/.test(f) ||
+      /^tooling\/verify\/production-deploy-path-lock\.cjs$/.test(f) ||
+      /^tooling\/deploy\/lib\/accepted-artifact-authority\.cjs$/.test(f) ||
       /^tooling\/verify\/fetch-acceptance-artifact\.cjs$/.test(f) ||
       /^tooling\/verify\/require-accepted-sha\.cjs$/.test(f) ||
       /^tooling\/verify\/release-fetch-deploy-hardening\.cjs$/.test(f) ||
@@ -124,6 +126,7 @@ const RULES = [
     scripts: [
       "release-acceptance.cjs",
       "release-manifest-identity-lock.cjs",
+      "production-deploy-path-lock.cjs",
       "api-artifact-provenance.cjs",
       "api-artifact-runtime-qa.cjs",
       "fetch-acceptance-artifact.cjs",
