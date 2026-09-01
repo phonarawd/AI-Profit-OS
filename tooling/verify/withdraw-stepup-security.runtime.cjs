@@ -158,8 +158,54 @@ async function main() {
   );
 }
 
+{
+  let tokenConsumeAttempts = 0;
+  const db = {
+    async query(text, params) {
+      if (text.includes("SET token_consumed_at = now()")) {
+        tokenConsumeAttempts += 1;
+        assert.deepEqual(params, [challengeId, userId, "email_otp"]);
+        return tokenConsumeAttempts === 1
+          ? { rows: [{ id: challengeId }] }
+          : { rows: [] };
+      }
+      throw new Error("unexpected query: " + text);
+    },
+  };
+  const resend = {
+    provider: "resend",
+    async sendOtp() {
+      return { ok: true };
+    },
+  };
+  const svc = new WithdrawStepUpService(db, resend);
+  const future = Math.floor(Date.now() / 1000) + 30;
+  const token = v2Token({
+    userId,
+    method: "email_otp",
+    challengeId,
+    expiresAtSec: future,
+  });
+
+  const first = await svc.consumeStepUpToken({
+    userId,
+    stepUpToken: token,
+  });
+  assert.equal(first.method, "email_otp");
+
+  await assert.rejects(
+    () =>
+      svc.consumeStepUpToken({
+        userId,
+        stepUpToken: token,
+      }),
+    (err) => err && err.status === 403,
+  );
+  assert.equal(tokenConsumeAttempts, 2);
+}
+
 console.log(
-  "[verify:withdraw-stepup-security-runtime] PASS (WEBAUTHN_DISABLED · SERVER_EMAIL · ATOMIC_CONSUME · TOKEN_EXPIRY)",
+  "[verify:withdraw-stepup-security-runtime] PASS (WEBAUTHN_DISABLED · SERVER_EMAIL · ATOMIC_CONSUME · TOKEN_EXPIRY · TOKEN_REPLAY_REJECTED)",
 );
 }
 
