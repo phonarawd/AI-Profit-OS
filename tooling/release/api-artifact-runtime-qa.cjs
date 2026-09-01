@@ -158,24 +158,23 @@ function readExistingQa(filePath) {
 }
 
 function allowApiRuntime(runtime) {
+  const verified = Boolean(runtime && runtime.verified === true);
   const reason = String(runtime && runtime.reason ? runtime.reason : "unknown");
+  const sourceSha = isFullSha(normalizeHex(runtime && runtime.source_sha))
+    ? normalizeHex(runtime.source_sha)
+    : null;
   return {
-    verified: runtime && runtime.verified === true,
+    verified,
     reason: /^[A-Za-z0-9_.:-]{1,80}$/.test(reason) ? reason : "api_runtime_failed",
     harness: runtime && runtime.harness === "native" ? "native" : "injected",
     route: "/api/v1/health",
-    status: Number.isInteger(runtime && runtime.status) ? runtime.status : null,
-    service: runtime && runtime.service === "api-nest" ? "api-nest" : null,
-    git_sha: isFullSha(normalizeHex(runtime && runtime.git_sha))
-      ? normalizeHex(runtime.git_sha)
-      : null,
-    git_sha_source:
-      runtime && runtime.git_sha_source === "RENDER_GIT_COMMIT"
-        ? "RENDER_GIT_COMMIT"
-        : null,
-    source_sha: isFullSha(normalizeHex(runtime && runtime.source_sha))
-      ? normalizeHex(runtime.source_sha)
-      : null,
+    // Persist only canonical values after the health/provenance predicate passed.
+    // Never copy HTTP response fields into the QA artifact.
+    status: verified ? 200 : null,
+    service: verified ? "api-nest" : null,
+    git_sha: verified ? sourceSha : null,
+    git_sha_source: verified ? "RENDER_GIT_COMMIT" : null,
+    source_sha: sourceSha,
     bundle_digest: isSha256(normalizeHex(runtime && runtime.bundle_digest))
       ? normalizeHex(runtime.bundle_digest)
       : null,
@@ -224,12 +223,14 @@ async function runApiArtifactRuntimeQa(opts) {
   return {
     verified: judged.ok,
     reason: judged.ok ? "pass" : judged.reason,
-    harness: probe && probe.harness ? probe.harness : "injected",
+    harness: probe && probe.harness === "native" ? "native" : "injected",
     route: "/api/v1/health",
-    status: probe && probe.status != null ? probe.status : null,
-    service: probe && probe.body ? probe.body.service || null : null,
-    git_sha: probe && probe.body ? normalizeHex(probe.body.gitSha) || null : null,
-    git_sha_source: probe && probe.body ? probe.body.gitShaSource || null : null,
+    // The HTTP payload is used only to decide pass/fail. Evidence records use
+    // canonical expected values so response bytes can never flow to disk.
+    status: judged.ok ? 200 : null,
+    service: judged.ok ? "api-nest" : null,
+    git_sha: judged.ok ? normalizeHex(bound.source_sha) : null,
+    git_sha_source: judged.ok ? "RENDER_GIT_COMMIT" : null,
     source_sha: bound.source_sha,
     bundle_digest: bound.digest,
     api_artifact_digest: normalizeHex(bound.api_artifact.artifact_digest),
