@@ -59,7 +59,6 @@ export class UsdtDepositService {
     toAddress: string;
     amountUsdt: string;
     confirmations: number;
-    userId?: string;
     reorg?: boolean;
   }): Promise<UsdtDepositObserveResult> {
     const txHash = (input.txHash ?? "").trim();
@@ -84,9 +83,7 @@ export class UsdtDepositService {
       };
     }
 
-    const resolved =
-      input.userId ||
-      (await this.addresses.resolveUserIdByAddress(toAddress));
+    const resolved = await this.addresses.resolveUserIdByAddress(toAddress);
     if (!resolved) {
       return {
         ok: true,
