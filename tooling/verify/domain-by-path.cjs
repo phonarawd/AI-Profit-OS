@@ -68,6 +68,15 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/recovery\/engine-(rebase-evidence|drift-inventory)\.current\.v1\.json$/.test(
+        f,
+      ) ||
+      /^tooling\/recovery\/build-engine-drift-inventory\.cjs$/.test(f) ||
+      /^tooling\/verify\/engine-drift-inventory\.cjs$/.test(f),
+    scripts: ["engine-drift-inventory.cjs"],
+  },
+  {
+    test: (f) =>
       /^tooling\/e2e\//.test(f) ||
       /^tooling\/verify\/qa-env-isolation-guard\.cjs$/.test(f) ||
       /^tooling\/verify\/critical-cross-browser\.cjs$/.test(f) ||

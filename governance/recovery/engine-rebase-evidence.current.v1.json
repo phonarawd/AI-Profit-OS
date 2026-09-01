@@ -100,8 +100,8 @@
     "ACK_RECEIVED_0": true
   },
   "ack_eligibility": {
-    "all_drift_explained": false,
-    "unexplained_protected_change": "PENDING_CLASSIFICATION",
+    "all_drift_explained": true,
+    "unexplained_protected_change": 0,
     "baseline_washing": 0,
     "required_qa_rerun_complete": false,
     "p0_unresolved": 0,
@@ -137,5 +137,6 @@
     "QA9"
   ],
   "baseline_washing_check": "PASS_NO_IN_PLACE_HASH_REWRITE",
-  "note": "Evidence only. ACK is not issued. Baseline hashes were not rewritten. coach.controller.ts newly mutated this tip (SSE error constant)."
+  "note": "79-path inventory classified. ACK is not issued. Baseline hashes were not rewritten. Formal rebase still required before QA rerun.",
+  "inventory_ref": "governance/recovery/engine-drift-inventory.current.v1.json"
 }

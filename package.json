@@ -279,6 +279,7 @@
     "verify:platform-change-control": "node tooling/verify/platform-change-control.cjs",
     "verify:governance-observation-registry": "node tooling/verify/governance-observation-registry.cjs",
     "verify:engine-acceptance": "node tooling/verify/engine-acceptance.cjs",
+    "verify:engine-drift-inventory": "node tooling/verify/engine-drift-inventory.cjs",
     "verify:db-recon-inventory": "node tooling/verify/db-recon-inventory.cjs",
     "verify:live-schema-forensic": "node tooling/verify/live-schema-forensic.cjs",
     "verify:b3-promotion": "node tooling/verify/b3-promotion.cjs",
