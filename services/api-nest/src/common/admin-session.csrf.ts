@@ -37,6 +37,29 @@ export function assertAdminCsrf(input: {
   }
 }
 
+export type AdminLogoutPlan =
+  | { action: "reject_csrf" }
+  | { action: "revoke_and_clear"; token: string }
+  | { action: "clear_only" }
+  | { action: "noop" };
+
+/** 세션/CSRF 쿠키가 있으면 CSRF 통과 전에 Clear-Cookie를 보내지 않는다. */
+export function planAdminLogout(input: {
+  cookies?: Record<string, string | undefined>;
+  headers?: Record<string, unknown>;
+}): AdminLogoutPlan {
+  const token = String(input.cookies?.[ADMIN_SESSION_COOKIE_NAME] ?? "").trim();
+  const csrfCookie = String(input.cookies?.[ADMIN_CSRF_COOKIE_NAME] ?? "").trim();
+  if (!token && !csrfCookie) return { action: "noop" };
+  try {
+    assertAdminCsrf(input);
+  } catch {
+    return { action: "reject_csrf" };
+  }
+  if (token) return { action: "revoke_and_clear", token };
+  return { action: "clear_only" };
+}
+
 export function requestHasQueryBearer(url: string | undefined): boolean {
   if (!url) return false;
   return /[?&](access_token|token|bearer)=/i.test(url);

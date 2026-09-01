@@ -17,9 +17,9 @@ import {
 } from "./admin-token";
 import {
   ADMIN_SESSION_COOKIE_NAME,
-  assertAdminCsrf,
   attachAdminSessionCookies,
   clearAdminSessionCookies,
+  planAdminLogout,
   requestHasQueryBearer,
 } from "./admin-session.cookies";
 import {
@@ -101,21 +101,21 @@ export class AdminSessionController {
     @Req() req: CookieRequest,
     @Res({ passthrough: true }) res: CookieResponse,
   ) {
-    const token = String(req.cookies?.[ADMIN_SESSION_COOKIE_NAME] ?? "").trim();
-    if (token) {
-      try {
-        assertAdminCsrf(req);
-      } catch {
-        throw new UnauthorizedException("ADMIN_CSRF_INVALID");
-      }
-      try {
-        const principal = verifyAdminAccessToken(token);
-        revokeAdminAccessToken(token, Date.parse(principal.expiresAt));
-      } catch {
-        revokeAdminAccessToken(token, Date.now() + 15 * 60 * 1000);
-      }
+    const plan = planAdminLogout(req);
+    if (plan.action === "reject_csrf") {
+      throw new UnauthorizedException("ADMIN_CSRF_INVALID");
     }
-    clearAdminSessionCookies(res);
+    if (plan.action === "revoke_and_clear") {
+      try {
+        const principal = verifyAdminAccessToken(plan.token);
+        revokeAdminAccessToken(plan.token, Date.parse(principal.expiresAt));
+      } catch {
+        revokeAdminAccessToken(plan.token, Date.now() + 15 * 60 * 1000);
+      }
+      clearAdminSessionCookies(res);
+    } else if (plan.action === "clear_only") {
+      clearAdminSessionCookies(res);
+    }
     return { connected: false };
   }
 }
