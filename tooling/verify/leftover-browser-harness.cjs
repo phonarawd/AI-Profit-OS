@@ -37,6 +37,9 @@ if (!web.includes("ticket95 latest intent") || !web.includes("late A")) {
 if (!web.includes("expect(puts).toBeGreaterThanOrEqual(2)")) {
   fails.push("ticket95 must require at least two PUTs");
 }
+if (!web.includes("expect.poll(() => puts") || !web.includes("toBe(1)")) {
+  fails.push("ticket95 must wait for in-flight late A PUT before B");
+}
 if (!admin.includes("LEFTOVER_BROWSER")) fails.push("admin spec must gate LEFTOVER_BROWSER");
 if (!admin.includes("ticketI5 beginner language")) {
   fails.push("ticketI5 must sweep beginner language on operator surfaces");

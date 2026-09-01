@@ -13,6 +13,9 @@ const {
 test.describe.configure({ timeout: 240000 });
 let runtime;
 
+const HOME_GATE =
+  '[data-testid="home-session-loading"], [data-testid="guest-first-visit"], [data-testid="home-authenticated"], [data-testid="home-session-unavailable"]';
+
 test.beforeAll(async () => {
   assertQaIsolation({ purpose: "e2e", databaseUrl: "", projectRef: "" });
   process.env.LOCAL_WEB_RUNTIME_API_STUB = "1";
@@ -34,6 +37,20 @@ async function gotoHome(page) {
   }
 }
 
+async function waitSessionResolution(page, expectedTestId) {
+  await expect(page.locator(HOME_GATE).first()).toBeVisible({ timeout: 90000 });
+  await expect(page.getByTestId("home-session-loading")).toHaveCount(0, {
+    timeout: 90000,
+  });
+  const unavailable = await page.getByTestId("home-session-unavailable").count();
+  if (unavailable) {
+    throw new Error(
+      "WEBKIT_HOME_SESSION_UNAVAILABLE — proxy/stub miss, not a loading-paint PASS",
+    );
+  }
+  await expect(page.getByTestId(expectedTestId)).toBeVisible({ timeout: 15000 });
+}
+
 test("guest stub resolves guest-first-visit, not loading-only", async ({ page }, testInfo) => {
   testInfo.annotations.push({
     type: "webkit-home-session",
@@ -42,10 +59,7 @@ test("guest stub resolves guest-first-visit, not loading-only", async ({ page },
   await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
   await stubGuestApis(page);
   await gotoHome(page);
-  await expect(page.getByTestId("guest-first-visit")).toBeVisible({
-    timeout: 45000,
-  });
-  await expect(page.getByTestId("home-session-loading")).toHaveCount(0);
+  await waitSessionResolution(page, "guest-first-visit");
 });
 
 test("authenticated stub resolves authenticated shell", async ({ page }, testInfo) => {
@@ -57,8 +71,5 @@ test("authenticated stub resolves authenticated shell", async ({ page }, testInf
   await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
   await stubAuthenticatedEmptyHome(page);
   await gotoHome(page);
-  await expect(page.getByTestId("home-authenticated")).toBeVisible({
-    timeout: 45000,
-  });
-  await expect(page.getByTestId("home-session-loading")).toHaveCount(0);
+  await waitSessionResolution(page, "home-authenticated");
 });

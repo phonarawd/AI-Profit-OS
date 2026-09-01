@@ -62,6 +62,7 @@ jobs:
       AIPO_QA_HOSTNAME: localhost
       AIPO_QA_SYNTHETIC_NS: qa-synth-ci
       AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/ebay-fault-injection
+      ADAPTER_INGEST_TOKEN: qa-adapter-ingest-ci
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6

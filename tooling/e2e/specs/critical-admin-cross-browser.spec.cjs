@@ -27,8 +27,10 @@ test("admin entry, mobile nav, system-control readout", async ({ page }, testInf
   await page.setViewportSize({ width: 390, height: 693 });
   await page.goto(runtime.baseUrl + "/admin", { waitUntil: "domcontentloaded" });
   await expect(page.getByTestId("admin-session-bar")).toBeVisible({ timeout: 20000 });
-  await expect(page.getByRole("button", { name: /메뉴|닫기/ })).toBeVisible();
-  await page.getByRole("button", { name: /메뉴/ }).click();
+  const menu = page.locator(".admin-menu-button");
+  await expect(menu).toBeVisible();
+  await menu.click();
+  await expect(page.locator(".admin-sidebar")).toHaveAttribute("data-open", "true");
   await expect(page.locator("#admin-primary-navigation")).toBeVisible();
   await page.goto(runtime.baseUrl + "/admin/system-control", {
     waitUntil: "domcontentloaded",

@@ -403,7 +403,9 @@ test("ticket95 latest intent B remains after late A", async ({ page }) => {
     "ready",
   );
   await page.locator("[data-font-scale-option='lg']").click();
+  await expect.poll(() => puts, { timeout: 15000 }).toBe(1);
   await page.locator("[data-font-scale-option='xl']").click();
+  await expect.poll(() => puts, { timeout: 15000 }).toBe(2);
   releaseA();
   await expect(page.locator("[data-font-scale-confirmed='true']")).toHaveAttribute(
     "data-font-scale-option",
