@@ -220,16 +220,20 @@ async function runApiArtifactRuntimeQa(opts) {
     opts.probeOptions,
   );
   const judged = evaluateApiHealth(probe, bound.source_sha);
+  const verified = judged.ok === true;
+  const expectedSha = normalizeHex(bound.source_sha);
 
   return {
-    verified: judged.ok,
-    reason: judged.ok ? "pass" : judged.reason,
-    harness: probe && probe.harness ? probe.harness : "injected",
+    verified,
+    reason: verified ? "pass" : judged.reason,
+    // HTTP response bytes are decision inputs only. Persist only values that are
+    // fixed by the successful verifier decision or by immutable bundle provenance.
+    harness: opts.probeApi ? "injected" : "node-child-process",
     route: "/api/v1/health",
-    status: probe && probe.status != null ? probe.status : null,
-    service: probe && probe.body ? probe.body.service || null : null,
-    git_sha: probe && probe.body ? normalizeHex(probe.body.gitSha) || null : null,
-    git_sha_source: probe && probe.body ? probe.body.gitShaSource || null : null,
+    status: verified ? 200 : null,
+    service: verified ? "api-nest" : null,
+    git_sha: verified ? expectedSha : null,
+    git_sha_source: verified ? "RENDER_GIT_COMMIT" : null,
     source_sha: bound.source_sha,
     bundle_digest: bound.digest,
     api_artifact_digest: normalizeHex(bound.api_artifact.artifact_digest),
