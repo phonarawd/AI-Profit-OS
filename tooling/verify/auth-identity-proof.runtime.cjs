@@ -164,6 +164,24 @@ if (run.status !== 0 || !(run.stdout || "").includes("ALL PASS")) {
   console.error("[verify:auth-identity-proof] RUNTIME_BEHAVIOR missing");
   process.exit(1);
 }
+
+for (const extra of [
+  "tooling/verify/passkey-registration-hijack.runtime.cjs",
+  "tooling/verify/webauthn-user-presence.runtime.cjs",
+]) {
+  const extraRun = spawnSync(process.execPath, [path.join(root, extra)], {
+    cwd: root,
+    encoding: "utf8",
+    timeout: 30_000,
+  });
+  process.stdout.write(extraRun.stdout || "");
+  process.stderr.write(extraRun.stderr || "");
+  if (extraRun.status !== 0) {
+    console.error("[verify:auth-identity-proof] " + extra + " failed");
+    process.exit(1);
+  }
+}
+
 console.log(
   "[verify:auth-identity-proof] RUNTIME_BEHAVIOR_PASS · BROWSER_PASS=NOT_RUN · REMOTE_CI_PASS=NOT_PROVEN",
 );

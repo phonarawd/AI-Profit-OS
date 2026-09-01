@@ -870,7 +870,7 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^services\/api-nest\/src\/auth\/(privacy-account\.service|auth\.service|auth\.controller|auth\.stage|magic-link\.service|oauth-identity\.service|webauthn-assert\.service|identity-proof\.)/.test(
+      /^services\/api-nest\/src\/auth\/(privacy-account\.service|auth\.service|auth\.controller|auth\.stage|magic-link\.service|oauth-identity\.service|webauthn-assert\.service|passkey-registration\.policy|identity-proof\.)/.test(
         f,
       ) ||
       /^tooling\/verify\/privacy-purge\.cjs$/.test(f),

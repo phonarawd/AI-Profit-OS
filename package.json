@@ -226,6 +226,8 @@
     "verify:catalog-runtime-seed": "node tooling/verify/catalog-runtime-seed.cjs",
     "verify:auth-jwt-runtime": "node tooling/verify/auth-jwt-runtime.cjs",
     "verify:auth-identity-proof": "node tooling/verify/auth-identity-proof.runtime.cjs",
+    "verify:passkey-registration-hijack": "node tooling/verify/passkey-registration-hijack.runtime.cjs",
+    "verify:webauthn-user-presence": "node tooling/verify/webauthn-user-presence.runtime.cjs",
     "verify:api-nest-build": "node tooling/verify/api-nest-build.cjs",
     "seed:catalog-runtime": "node tooling/seed/catalog-runtime.cjs",
     "verify:admin-user-opportunity-override": "node tooling/verify/admin-user-opportunity-override.cjs",

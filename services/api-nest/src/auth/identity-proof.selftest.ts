@@ -71,22 +71,41 @@ function buildAssertion(input: {
   rpId: string;
   signCount: number;
   privateKey: ReturnType<typeof generateTestEs256>["privateKey"];
+  flags?: number;
+  crossOrigin?: boolean;
 }) {
-  const clientData = {
+  const clientData: Record<string, unknown> = {
     type: input.type,
     challenge: input.challenge,
     origin: input.origin,
   };
+  if (input.crossOrigin === true) clientData.crossOrigin = true;
   const clientDataJSON = Buffer.from(JSON.stringify(clientData)).toString("base64url");
   const count = Buffer.alloc(4);
   count.writeUInt32BE(input.signCount);
-  const authData = Buffer.concat([sha256(input.rpId), Buffer.from([0x05]), count]);
+  const flags = input.flags ?? 0x05;
+  const authData = Buffer.concat([sha256(input.rpId), Buffer.from([flags]), count]);
   const signed = Buffer.concat([authData, sha256(Buffer.from(clientDataJSON, "base64url"))]);
   return {
     clientDataJSON,
     authenticatorData: authData.toString("base64url"),
     signature: signEs256P1363(input.privateKey, signed).toString("base64url"),
   };
+}
+
+async function expectThrowMessage(
+  name: string,
+  expected: string,
+  fn: () => Promise<unknown>,
+): Promise<void> {
+  try {
+    await fn();
+    fail(name, "expected throw");
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    if (message.includes(expected)) pass(name, message);
+    else fail(name, `expected ${expected} got ${message}`);
+  }
 }
 
 async function run(): Promise<void> {
@@ -504,6 +523,58 @@ async function run(): Promise<void> {
           }),
         },
       ),
+    );
+
+    const noUpOpts = await webauthn.options("authenticate");
+    const noUp = buildAssertion({
+      type: "webauthn.get",
+      challenge: noUpOpts.challenge,
+      origin: TEST_RP.origin,
+      rpId: TEST_RP.rpId,
+      signCount: 5,
+      privateKey: keys.privateKey,
+      flags: 0x04,
+    });
+    await expectThrowMessage(
+      "webauthn user presence required",
+      "webauthn user presence required",
+      () =>
+        webauthn.prove(
+          "authenticate",
+          { credentialId: "cred-1", ...noUp },
+          {
+            findByCredentialId: async () => ({
+              credentialId: "cred-1",
+              publicKeySpki: pub,
+              signCount: 2,
+            }),
+          },
+        ),
+    );
+
+    const crossOriginOpts = await webauthn.options("register");
+    const crossOrigin = buildAssertion({
+      type: "webauthn.create",
+      challenge: crossOriginOpts.challenge,
+      origin: TEST_RP.origin,
+      rpId: TEST_RP.rpId,
+      signCount: 1,
+      privateKey: keys.privateKey,
+      crossOrigin: true,
+    });
+    await expectThrowMessage(
+      "webauthn cross-origin ceremony forbidden",
+      "webauthn cross-origin ceremony forbidden",
+      () =>
+        webauthn.prove(
+          "register",
+          {
+            credentialId: "cred-cross",
+            publicKey: pub.toString("base64url"),
+            ...crossOrigin,
+          },
+          { findByCredentialId: async () => null },
+        ),
     );
   }
 
