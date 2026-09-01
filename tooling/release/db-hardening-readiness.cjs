@@ -161,6 +161,11 @@ function compareSnapshot(snapshot) {
           actualPrivileges.join(","),
       );
     }
+    for (const banned of ["TRUNCATE", "REFERENCES", "TRIGGER"]) {
+      if (actualPrivileges.includes(banned)) {
+        fails.push("forbidden_privilege:" + table + ":" + banned);
+      }
+    }
 
     const actualPolicies = (Array.isArray(got.policies) ? got.policies : [])
       .map(policySignature)
@@ -181,7 +186,9 @@ function compareSnapshot(snapshot) {
   return {
     ok: fails.length === 0,
     schema: "db-hardening-readiness.v2",
+    status: fails.length === 0 ? "READY" : "NOT_READY",
     production_mutation: 0,
+    apply: false,
     expected: EXPECTED,
     fails,
   };

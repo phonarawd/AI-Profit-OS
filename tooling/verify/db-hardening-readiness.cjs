@@ -40,18 +40,23 @@ const READY = {
 
 const ready = compareSnapshot(READY);
 assert.equal(ready.ok, true);
+assert.equal(ready.status, "READY");
 assert.deepEqual(ready.fails, []);
 assert.equal(ready.production_mutation, 0);
 
 const broad = structuredClone(READY);
-broad.tables.push_control.service_role.push("TRUNCATE");
+broad.tables.push_control.service_role.push("TRUNCATE", "REFERENCES", "TRIGGER", "INSERT");
 let got = compareSnapshot(broad);
 assert.equal(got.ok, false);
+assert.equal(got.status, "NOT_READY");
 assert.ok(
   got.fails.some((x) =>
     x.startsWith("service_role_privilege_mismatch:push_control"),
   ),
 );
+assert.ok(got.fails.includes("forbidden_privilege:push_control:TRUNCATE"));
+assert.ok(got.fails.includes("forbidden_privilege:push_control:REFERENCES"));
+assert.ok(got.fails.includes("forbidden_privilege:push_control:TRIGGER"));
 
 const noRls = structuredClone(READY);
 noRls.tables.push_subscriptions.rls_enabled = false;
