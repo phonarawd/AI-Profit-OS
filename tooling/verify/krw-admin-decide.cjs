@@ -87,6 +87,12 @@ const rejectFn = svc.match(/async reject\([\s\S]*?\n  async /);
 if (rejectFn && /postJournal/.test(rejectFn[0])) {
   fails.push("reject() must not call postJournal (credit 0)");
 }
+if (svc.includes("% 99") || svc.includes("%99")) {
+  fails.push("KRW suffix must not use modulo-biased randomBytes");
+}
+if (!svc.includes("randomInt(1, 100)")) {
+  fails.push("KRW suffix must use randomInt(1, 100) for the 1..99 domain");
+}
 if (!svc.includes("async reject(")) {
   fails.push("krw-deposit.service must expose reject()");
 }
