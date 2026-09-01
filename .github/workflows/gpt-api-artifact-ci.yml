@@ -102,3 +102,49 @@ jobs:
           }
           console.log("[gpt-api-artifact-ci] API_BUNDLE_REMOTE_CI_PASS");
           NODE
+
+      - name: Tamper and wrong-SHA must fail closed
+        run: |
+          set -euo pipefail
+          cp -R _tmp_gpt_release_bundle _tmp_gpt_release_bundle_tampered
+          printf '\n// tamper-proof\n' >> _tmp_gpt_release_bundle_tampered/payload/services/api-nest/dist/main.js
+          node - <<'NODE'
+          const path = require("node:path");
+          const { verifyBundle } = require("./tooling/release/artifact-provenance.cjs");
+
+          let tamperFailed = false;
+          try {
+            verifyBundle(path.resolve("_tmp_gpt_release_bundle_tampered"), {
+              sourceSha: process.env.GITHUB_SHA,
+            });
+          } catch (err) {
+            tamperFailed = /digest_mismatch|api_artifact_digest_mismatch/.test(
+              String((err && err.fails) || (err && err.message) || err),
+            );
+          }
+          if (!tamperFailed) {
+            throw new Error("tampered API artifact was not rejected");
+          }
+
+          const wrongSha =
+            process.env.GITHUB_SHA[0] === "a"
+              ? "b" + process.env.GITHUB_SHA.slice(1)
+              : "a" + process.env.GITHUB_SHA.slice(1);
+          let shaFailed = false;
+          try {
+            verifyBundle(path.resolve("_tmp_gpt_release_bundle"), {
+              sourceSha: wrongSha,
+            });
+          } catch (err) {
+            shaFailed = /artifact_source_sha_mismatch/.test(
+              String((err && err.fails) || (err && err.message) || err),
+            );
+          }
+          if (!shaFailed) {
+            throw new Error("wrong source SHA was not rejected");
+          }
+
+          console.log(
+            "[gpt-api-artifact-ci] TAMPER_AND_WRONG_SHA_FAIL_CLOSED_PASS",
+          );
+          NODE
