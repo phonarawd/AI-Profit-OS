@@ -5,6 +5,7 @@ on:
     paths:
       - "tooling/release/staging-topology-readiness.cjs"
       - "tooling/verify/staging-topology-readiness.cjs"
+      - "governance/release-master/staging-topology.current.v1.json"
       - ".github/workflows/gpt-staging-binding-failclosed-ci.yml"
   workflow_dispatch:
 
