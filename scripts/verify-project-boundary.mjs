@@ -408,7 +408,13 @@ expect(
   "hook 5 MCP ALLOW",
   hookMcp.status === 0 && hookMcp.permission === "allow"
 );
-const hookCache = runHook(preTool("Read", { path: cacheTerminals }));
+const livePolicy = createPolicy({ workspaceRoot: ROOT });
+const liveCacheTerminals = path.join(
+  livePolicy.allowedProjectCache,
+  "terminals",
+  "3.txt"
+);
+const hookCache = runHook(preTool("Read", { path: liveCacheTerminals }));
 expect(
   "hook 6 cache Read ALLOW",
   hookCache.status === 0 && hookCache.permission === "allow",
