@@ -27,26 +27,27 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-04ef3c7de4dd-2ff1760b7d72
 PREDECESSOR_BASELINE_ID = ea-baseline-229e7777f9b0-2d4567b3a2c8
 REBASE_ID = pending
-LIVE_AGGREGATE = d75d47ee595c0788140f0be66f657b6fbae60fc8153e591bea77a791171a74bb
+LIVE_AGGREGATE = 783c814b51c32440813d0dea821290d1093e63bfa7ff12b4914bf36b3347e7e0
 BASELINE_AGGREGATE = 2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8
-PATH_COUNT_LIVE = 451
+PATH_COUNT_LIVE = 472
 PATH_COUNT_BASELINE = 450
-CHANGED_PATHS = 2
-ADDED_PATHS = 1
-MUTATED_PATHS = 1
+CHANGED_PATHS = 55
+ADDED_PATHS = 22
+MUTATED_PATHS = 33
 MISSING_PATHS = 0
-EXIT_GATE = P0-B Nest RENDER_GIT_COMMIT provenance · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 QA0-QA9 재실행 전까지 ISSUED 금지
+EXIT_GATE = recovery/release-provenance-20260831 @ 8be2e1fd1178c5d722bba2276c2f5785a96a0806 · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 QA0-QA9 재실행 전까지 ISSUED 금지
 ```
 
 ## 판정
 
-P0-B (`p0/p0-b-runtime-preflight`) 가 Nest protected-scope 2경로를 변경했다.
+recovery candidate `8be2e1fd1178c5d722bba2276c2f5785a96a0806` 의 live protected-scope 는 baseline 과 다르다.
+`LIVE_AGGREGATE = 783c814b51c32440813d0dea821290d1093e63bfa7ff12b4914bf36b3347e7e0`
+`PATH_COUNT_LIVE = 472` · `CHANGED_PATHS = 55` (added 22 · mutated 33 · missing 0).
 live aggregate ≠ baseline → 이전 ISSUED 인증은 current-authoritative 가 아니다.
 은폐 금지 · `STATUS = NOT_ISSUED` · `CERT_ISSUED = 0` · `PROTECTED_SCOPE_DRIFT = 1` · `REBASE_REQUIRED = 1`.
+엔진 수락 workflow 는 HOLD_CONTROLLED_AMENDMENT · applied = 0.
 
-변경 경로 (2):
-- services/api-nest/src/health.controller.ts
-- services/api-nest/src/config/nest-provenance.ts (added)
+변경 경로 집합은 `tooling/verify/lib/rel-502-psm.cjs` `compareProtectedScope()` 실측이다. 대표 추가: identity-proof / admin-session / withdraw-review / referral own-code / deposit-config ready. 대표 변경: auth·wallet·admin-guard·ledger fingerprint.
 
 재발급 조건: Human/PO `ENGINE_ACCEPTANCE_REBASE_V1` ACK → rebase apply → current-epoch QA1-QA8 COMPLETE → QA9 `ENGINE_ACCEPTED_FOR_UI` → 그때만 인증서 재발급(ISSUED).
 Local fake QA0-QA9 PASS = 0.
