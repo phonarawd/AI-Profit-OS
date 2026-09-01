@@ -21,9 +21,9 @@ jobs:
       matrix:
         include:
           - label: recovery-head
-            target_sha: 305c4e32a58254ab5987c60d42816dee26239895
+            target_sha: ea73c85962609c3c88faf0fefe1a18d32247e3c6
           - label: pr114-merge
-            target_sha: 7cf57b814ac3cbe4162750a8aae3a05d4f1e7c67
+            target_sha: 4fdc6f94714eed273790047fdd0b532598d5e451
     steps:
       - name: Checkout diagnostic source
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
