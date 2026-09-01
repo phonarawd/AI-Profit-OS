@@ -1,7 +1,8 @@
 /**
  * Home session resolution — loading paint is not PASS.
  * Home UI source is not changed.
- * Authority = loopback API stub via SDK QA base (bypasses Next rewrite / page.route).
+ * Authority = same-origin /api/v1 via QA middleware (LOCAL_WEB_RUNTIME_API_STUB=1).
+ * Cross-origin :4000 is not used: WebKit reports Load failed to other loopback ports.
  * context.route / page.route are not used: WebKit can match and hang.
  */
 const { test, expect } = require("@playwright/test");
@@ -14,13 +15,6 @@ let runtime;
 const HOME_GATE =
   '[data-testid="home-session-loading"], [data-testid="guest-first-visit"], [data-testid="home-authenticated"], [data-testid="home-session-unavailable"]';
 
-function qaApiOrigin() {
-  const raw = process.env.API_HOST || "127.0.0.1:4000";
-  return raw.startsWith("http://") || raw.startsWith("https://")
-    ? raw.replace(/\/$/, "")
-    : `http://${raw}`;
-}
-
 test.beforeAll(async () => {
   assertQaIsolation({ purpose: "e2e", databaseUrl: "", projectRef: "" });
   process.env.LOCAL_WEB_RUNTIME_API_STUB = "1";
@@ -32,25 +26,18 @@ test.afterAll(async () => {
   if (runtime) await runtime.stop();
 });
 
-async function installQaApiBase(page) {
-  const origin = qaApiOrigin();
-  await page.addInitScript((apiBase) => {
-    window.__AIPO_QA_API_BASE = apiBase;
-  }, origin);
-}
-
 async function gotoHome(page) {
   try {
-    await page.goto(runtime.baseUrl + "/", { waitUntil: "domcontentloaded" });
+    await page.goto(runtime.baseUrl + "/", { waitUntil: "load" });
   } catch (err) {
     const msg = String(err && err.message ? err.message : err);
     if (!/NS_BINDING_ABORTED|interrupted|destroyed/i.test(msg)) throw err;
-    await page.goto(runtime.baseUrl + "/", { waitUntil: "domcontentloaded" });
+    await page.goto(runtime.baseUrl + "/", { waitUntil: "load" });
   }
 }
 
 async function sessionEvidence(page) {
-  return page.evaluate(async (apiBase) => {
+  return page.evaluate(async () => {
     const ids = [
       "home-session-loading",
       "guest-first-visit",
@@ -61,25 +48,28 @@ async function sessionEvidence(page) {
     for (const id of ids) {
       counts[id] = document.querySelectorAll(`[data-testid="${id}"]`).length;
     }
-    let stubStatus = null;
-    let stubError = null;
+    let sameOriginStatus = null;
+    let sameOriginError = null;
     try {
-      const res = await fetch(`${apiBase}/api/v1/me/home-read`, {
+      const res = await fetch("/api/v1/me/home-read", {
         credentials: "include",
         cache: "no-store",
       });
-      stubStatus = res.status;
+      sameOriginStatus = res.status;
     } catch (err) {
-      stubError = String(err && err.message ? err.message : err);
+      sameOriginError = String(err && err.message ? err.message : err);
     }
     return {
-      qaBase: window.__AIPO_QA_API_BASE || null,
       readyState: document.readyState,
       counts,
-      stubStatus,
-      stubError,
+      sameOriginStatus,
+      sameOriginError,
+      resources: performance
+        .getEntriesByType("resource")
+        .map((e) => e.name)
+        .filter((n) => n.includes("/api/v1/") || n.includes("home-read")),
     };
-  }, qaApiOrigin());
+  });
 }
 
 async function waitSessionResolution(page, expectedTestId) {
@@ -111,7 +101,6 @@ test("guest stub resolves guest-first-visit, not loading-only", async ({
     type: "webkit-home-session",
     description: "guest-resolution",
   });
-  await installQaApiBase(page);
   await gotoHome(page);
   await waitSessionResolution(page, "guest-first-visit");
 });
@@ -124,7 +113,6 @@ test("authenticated stub resolves authenticated shell", async ({
     description: "authenticated-resolution",
   });
   await page.setExtraHTTPHeaders({ "x-aipo-qa-session": "authenticated" });
-  await installQaApiBase(page);
   await gotoHome(page);
   await waitSessionResolution(page, "home-authenticated");
 });
