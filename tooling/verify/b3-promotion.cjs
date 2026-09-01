@@ -162,10 +162,12 @@ if (ledger) {
       return;
     }
     const sql = fs.readFileSync(fp);
-    if (!/APPLY_THIS_SLICE\s*=\s*NO/.test(sql.toString("utf8"))) {
+    const sqlText = sql.toString("utf8");
+    if (!/APPLY_THIS_SLICE\s*=\s*NO/.test(sqlText)) {
       fails.push(row.id + " must keep APPLY_THIS_SLICE = NO");
     }
-    const hash = crypto.createHash("sha256").update(sql).digest("hex");
+    const canonical = Buffer.from(sqlText.replace(/\r\n/g, "\n"), "utf8");
+    const hash = crypto.createHash("sha256").update(canonical).digest("hex");
     if (hash !== row.sql_hash) {
       fails.push("sql_hash drift " + row.id);
     }
