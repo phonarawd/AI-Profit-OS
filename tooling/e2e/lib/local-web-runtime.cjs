@@ -135,12 +135,31 @@ function startApiStub() {
     const qaSession = String(req.headers["x-aipo-qa-session"] || "");
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     res.setHeader("Cache-Control", "no-store");
-    if (
-      pathName.includes("/api/v1/me/home-read") &&
-      qaSession === "authenticated"
-    ) {
-      res.statusCode = 200;
-      res.end(JSON.stringify(AUTHENTICATED_EMPTY_HOME));
+    if (pathName.includes("/api/v1/me/home-read")) {
+      if (qaSession === "authenticated") {
+        res.statusCode = 200;
+        res.end(JSON.stringify(AUTHENTICATED_EMPTY_HOME));
+        return;
+      }
+      res.statusCode = 401;
+      res.end(
+        JSON.stringify({
+          viewState: "unauthorized",
+          reasonCode: "home.read.auth_required",
+          session: { status: "guest" },
+          money: null,
+          opportunity: null,
+          growth: null,
+          ledgerTotal: null,
+          todayPossibleProfitUsdt: null,
+          provenance: {
+            todayPossibleProfitUsdt: null,
+            ledgerTotal: null,
+          },
+          domainFsm: null,
+          error: "unauthorized",
+        }),
+      );
       return;
     }
     res.statusCode = 401;
