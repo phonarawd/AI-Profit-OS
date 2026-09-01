@@ -282,6 +282,8 @@
     "verify:auth-rate-limit": "node tooling/verify/auth-rate-limit.cjs",
     "verify:web-lint": "node tooling/verify/web-lint.cjs",
     "verify:axe-harness": "node tooling/verify/axe-harness.cjs",
+    "verify:critical-cross-browser": "node tooling/verify/critical-cross-browser.cjs",
+    "verify:api-artifact-provenance": "node tooling/verify/api-artifact-provenance.cjs",
     "verify:leftover-browser-harness": "node tooling/verify/leftover-browser-harness.cjs",
     "verify:web-remote-patterns": "node tooling/verify/web-remote-patterns.cjs",
     "verify:pwa-native-shell": "node tooling/verify/pwa-native-shell.cjs",

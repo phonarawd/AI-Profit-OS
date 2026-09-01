@@ -1,0 +1,80 @@
+name: critical-cross-browser
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "apps/web/**"
+      - "apps/admin/**"
+      - "packages/ui/**"
+      - "tooling/e2e/specs/critical-cross-browser.spec.cjs"
+      - "tooling/e2e/specs/critical-admin-cross-browser.spec.cjs"
+      - "tooling/e2e/playwright.cross-browser.config.cjs"
+      - ".github/workflows/critical-cross-browser.yml"
+
+concurrency:
+  group: critical-cross-browser-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  consumer-engines:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Install browser engine
+        run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+      - name: Critical consumer ${{ matrix.browser }}
+        env:
+          CI: "1"
+          NEXT_DEV_WEBPACK: "1"
+        run: >-
+          pnpm exec playwright test
+          --config=tooling/e2e/playwright.cross-browser.config.cjs
+          --project=${{ matrix.browser }}
+          tooling/e2e/specs/critical-cross-browser.spec.cjs
+
+  admin-chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Admin critical Chromium
+        env:
+          CI: "1"
+          NEXT_DEV_WEBPACK: "1"
+        run: >-
+          pnpm exec playwright test
+          --config=tooling/e2e/playwright.config.cjs
+          tooling/e2e/specs/critical-admin-cross-browser.spec.cjs
