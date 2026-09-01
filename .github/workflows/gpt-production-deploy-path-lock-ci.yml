@@ -30,6 +30,8 @@ jobs:
         run: node tooling/verify/production-deploy-path-lock.cjs
       - name: Verify existing release fetch/deploy hardening
         run: node tooling/verify/release-fetch-deploy-hardening.cjs
+      - name: Verify acceptance fetch schema lock
+        run: node tooling/verify/fetch-acceptance-artifact.cjs
       - name: Verify accepted SHA guard schema lock
         run: node tooling/verify/require-accepted-sha.cjs
       - name: Verify release acceptance compatibility
