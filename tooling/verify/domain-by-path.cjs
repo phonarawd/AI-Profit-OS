@@ -1334,6 +1334,8 @@ const RULES = [
       /^services\/api-nest\/src\/wallet\/min-holding\.service\.ts$/.test(f) ||
       /^services\/api-nest\/src\/wallet\/deposit-address\.service\.ts$/.test(f) ||
       /^services\/api-nest\/src\/wallet\/tron-address\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/withdraw-stepup\./.test(f) ||
+      /^tooling\/verify\/withdraw-stepup-security/.test(f) ||
       /^tooling\/verify\/tron-hd-derivation-fail-closed/.test(f) ||
       /^services\/api-nest\/src\/wallet\/chain-sweeper/.test(f) ||
       /^services\/api-nest\/src\/wallet\/chain-watcher/.test(f) ||
@@ -1344,6 +1346,7 @@ const RULES = [
       /^schemas\/toast-codes\.v1\.json$/.test(f),
     scripts: [
       "deposit-config-fail-closed.cjs",
+      "withdraw-stepup-security.cjs",
       "tron-hd-derivation-fail-closed.runtime.cjs",
       "withdraw-fee-ledger.cjs",
       "min-holding-scope.cjs",
