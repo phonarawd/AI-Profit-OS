@@ -42,14 +42,11 @@ export function normalizeAppHost(appHost: string): string {
   const raw = (appHost || "").trim().toLowerCase();
   if (!raw) return "";
   try {
-    if (raw.includes("://")) {
-      const u = new URL(raw);
-      return u.host;
-    }
+    const parsed = new URL(raw.includes("://") ? raw : "https://" + raw);
+    return parsed.host;
   } catch {
-    /* fall through */
+    return "";
   }
-  return raw.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
 }
 
 export function originAllowed(
