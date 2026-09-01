@@ -39,6 +39,9 @@ assert.equal(plan.apply, false);
 assert.equal(plan.founder_approval_required, true);
 assert.equal(plan.production_release_authorized, false);
 assert.equal(plan.rollback_execution, "BLOCKED_FOUNDER_ACTION");
+assert.equal(plan.identity_class, "LAST_CONFIRMED_IDENTITY");
+assert.equal(plan.live_status, "UNCONFIRMED");
+assert.equal(plan.ready, false);
 assert.equal(plan.live.source_sha, LIVE);
 assert.equal(plan.target.source_sha, TARGET);
 
@@ -64,6 +67,18 @@ assert.throws(
       targetSourceSha: LIVE,
     }),
   /FAIL_CLOSED:target_equals_live_source/,
+);
+
+assert.throws(
+  () =>
+    buildPlan({
+      serviceId: "srv-other123",
+      liveDeployId: "dep-live123",
+      liveSourceSha: LIVE,
+      targetDeployId: "dep-target456",
+      targetSourceSha: TARGET,
+    }),
+  /FAIL_CLOSED:service_id_not_last_confirmed_production/,
 );
 
 console.log(

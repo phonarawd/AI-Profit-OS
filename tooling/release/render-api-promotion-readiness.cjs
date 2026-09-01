@@ -16,7 +16,9 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-const CANONICAL_PRODUCTION_RENDER = Object.freeze({
+const LAST_CONFIRMED_PRODUCTION_RENDER = Object.freeze({
+  identity_class: "LAST_CONFIRMED_IDENTITY",
+  live_status: "UNCONFIRMED",
   service_id: "srv-da5r1tqjobas73fl16dg",
   environment_id: "evm-da5r1tjbc2fs73a0b7hg",
   name: "AI-Profit-OS",
@@ -24,6 +26,7 @@ const CANONICAL_PRODUCTION_RENDER = Object.freeze({
   url: "https://ai-profit-os.onrender.com",
   type: "web_service",
 });
+const CANONICAL_PRODUCTION_RENDER = LAST_CONFIRMED_PRODUCTION_RENDER;
 
 function isFullSha(value) {
   return /^[0-9a-f]{40}$/i.test(String(value || ""));
@@ -62,6 +65,17 @@ function evaluatePromotionReadiness(input) {
     ? input.live_deploy
     : null;
   const blockers = [];
+  const liveIdentity =
+    input && input.live_identity && typeof input.live_identity === "object"
+      ? input.live_identity
+      : null;
+  const liveConfirmed =
+    liveIdentity &&
+    liveIdentity.status === "LIVE_PROVIDER_CONFIRMED" &&
+    liveIdentity.confirmed === true;
+  if (!liveConfirmed) {
+    blockers.push("production_identity_unconfirmed");
+  }
 
   if (mode !== "preflight" && mode !== "postflight") {
     blockers.push("mode_invalid");
@@ -71,32 +85,32 @@ function evaluatePromotionReadiness(input) {
     blockers.push("service_missing");
   } else {
     if (!isServiceId(service.id)) blockers.push("service_id_invalid");
-    if (service.id !== CANONICAL_PRODUCTION_RENDER.service_id) {
-      blockers.push("service_id_not_canonical_production");
+    if (service.id !== LAST_CONFIRMED_PRODUCTION_RENDER.service_id) {
+      blockers.push("service_id_not_last_confirmed_production");
     }
     const environmentId = String(
       service.environmentId || service.environment_id || "",
     );
     if (!environmentId) {
       blockers.push("service_environment_id_missing");
-    } else if (environmentId !== CANONICAL_PRODUCTION_RENDER.environment_id) {
-      blockers.push("service_environment_not_canonical_production");
+    } else if (environmentId !== LAST_CONFIRMED_PRODUCTION_RENDER.environment_id) {
+      blockers.push("service_environment_not_last_confirmed_production");
     }
-    if (String(service.name || "") !== CANONICAL_PRODUCTION_RENDER.name) {
-      blockers.push("service_name_not_canonical_production");
+    if (String(service.name || "") !== LAST_CONFIRMED_PRODUCTION_RENDER.name) {
+      blockers.push("service_name_not_last_confirmed_production");
     }
-    if (String(service.repo || "") !== CANONICAL_PRODUCTION_RENDER.repo) {
-      blockers.push("service_repo_not_canonical_production");
+    if (String(service.repo || "") !== LAST_CONFIRMED_PRODUCTION_RENDER.repo) {
+      blockers.push("service_repo_not_last_confirmed_production");
     }
     const serviceUrl = normalizeUrl(
       service.url || (service.serviceDetails && service.serviceDetails.url),
     );
     if (!serviceUrl) {
       blockers.push("service_url_missing");
-    } else if (serviceUrl !== normalizeUrl(CANONICAL_PRODUCTION_RENDER.url)) {
-      blockers.push("service_url_not_canonical_production");
+    } else if (serviceUrl !== normalizeUrl(LAST_CONFIRMED_PRODUCTION_RENDER.url)) {
+      blockers.push("service_url_not_last_confirmed_production");
     }
-    if (String(service.type || "") !== CANONICAL_PRODUCTION_RENDER.type) {
+    if (String(service.type || "") !== LAST_CONFIRMED_PRODUCTION_RENDER.type) {
       blockers.push("service_type_not_web_service");
     }
     if (String(service.branch || "") !== "main") {
@@ -140,6 +154,8 @@ function evaluatePromotionReadiness(input) {
     apply: false,
     founder_approval_required: true,
     production_release_authorized: false,
+    identity_class: "LAST_CONFIRMED_IDENTITY",
+    live_status: liveConfirmed ? "LIVE_PROVIDER_CONFIRMED" : "UNCONFIRMED",
   };
 }
 
@@ -180,6 +196,7 @@ module.exports = {
   isServiceId,
   normalizeUrl,
   normalizeAutoDeploy,
+  LAST_CONFIRMED_PRODUCTION_RENDER,
   CANONICAL_PRODUCTION_RENDER,
   evaluatePromotionReadiness,
   parseArgs,

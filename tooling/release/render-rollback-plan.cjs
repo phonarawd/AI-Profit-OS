@@ -9,6 +9,9 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const {
+  LAST_CONFIRMED_PRODUCTION_RENDER,
+} = require("./render-api-promotion-readiness.cjs");
 
 function isFullSha(value) {
   return /^[0-9a-f]{40}$/i.test(String(value || ""));
@@ -50,6 +53,9 @@ function fail(code) {
 
 function buildPlan(input) {
   if (!isRenderServiceId(input.serviceId)) fail("render_service_id_invalid");
+  if (input.serviceId !== LAST_CONFIRMED_PRODUCTION_RENDER.service_id) {
+    fail("service_id_not_last_confirmed_production");
+  }
   if (!isRenderDeployId(input.liveDeployId)) fail("live_deploy_id_invalid");
   if (!isRenderDeployId(input.targetDeployId)) fail("target_deploy_id_invalid");
   if (!isFullSha(input.liveSourceSha)) fail("live_source_sha_invalid");
@@ -62,10 +68,22 @@ function buildPlan(input) {
     fail("target_equals_live_source");
   }
 
+  const liveIdentity =
+    (input.liveIdentity && typeof input.liveIdentity === "object" && input.liveIdentity) ||
+    (input.live_identity && typeof input.live_identity === "object" && input.live_identity) ||
+    null;
+  const liveConfirmed =
+    liveIdentity &&
+    liveIdentity.status === "LIVE_PROVIDER_CONFIRMED" &&
+    liveIdentity.confirmed === true;
+
   return {
     schema: "render-rollback-plan.v1",
     provider: "render",
     service_id: input.serviceId,
+    identity_class: "LAST_CONFIRMED_IDENTITY",
+    live_status: liveConfirmed ? "LIVE_PROVIDER_CONFIRMED" : "UNCONFIRMED",
+    ready: false,
     live: {
       deploy_id: input.liveDeployId,
       source_sha: String(input.liveSourceSha).toLowerCase(),

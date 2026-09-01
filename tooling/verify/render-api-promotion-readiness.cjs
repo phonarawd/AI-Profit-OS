@@ -18,6 +18,10 @@ const SERVICE = {
   branch: "main",
   autoDeploy: "no",
 };
+const LIVE_IDENTITY = {
+  status: "LIVE_PROVIDER_CONFIRMED",
+  confirmed: true,
+};
 
 assert.equal(normalizeAutoDeploy("yes"), "yes");
 assert.equal(normalizeAutoDeploy(true), "yes");
@@ -29,7 +33,19 @@ let got = evaluatePromotionReadiness({
   accepted_sha: ACCEPTED,
   service: SERVICE,
 });
+assert.equal(got.ready, false);
+assert.ok(got.blockers.includes("production_identity_unconfirmed"));
+assert.equal(got.identity_class, "LAST_CONFIRMED_IDENTITY");
+assert.equal(got.live_status, "UNCONFIRMED");
+
+got = evaluatePromotionReadiness({
+  mode: "preflight",
+  accepted_sha: ACCEPTED,
+  service: SERVICE,
+  live_identity: LIVE_IDENTITY,
+});
 assert.equal(got.ready, true);
+assert.equal(got.live_status, "LIVE_PROVIDER_CONFIRMED");
 assert.equal(got.mutation, 0);
 assert.equal(got.apply, false);
 assert.equal(got.production_release_authorized, false);
@@ -39,6 +55,7 @@ got = evaluatePromotionReadiness({
   mode: "preflight",
   accepted_sha: ACCEPTED,
   service: { ...SERVICE, autoDeploy: "yes" },
+  live_identity: LIVE_IDENTITY,
 });
 assert.equal(got.ready, false);
 assert.ok(got.blockers.includes("auto_deploy_enabled"));
@@ -47,6 +64,7 @@ got = evaluatePromotionReadiness({
   mode: "preflight",
   accepted_sha: ACCEPTED,
   service: { ...SERVICE, branch: "recovery/release-provenance-20260831" },
+  live_identity: LIVE_IDENTITY,
 });
 assert.equal(got.ready, false);
 assert.ok(got.blockers.includes("service_branch_not_main"));
@@ -55,38 +73,43 @@ got = evaluatePromotionReadiness({
   mode: "preflight",
   accepted_sha: ACCEPTED,
   service: { ...SERVICE, id: "srv-other123" },
+  live_identity: LIVE_IDENTITY,
 });
 assert.equal(got.ready, false);
-assert.ok(got.blockers.includes("service_id_not_canonical_production"));
+assert.ok(got.blockers.includes("service_id_not_last_confirmed_production"));
 
 got = evaluatePromotionReadiness({
   mode: "preflight",
   accepted_sha: ACCEPTED,
   service: { ...SERVICE, environmentId: "evm-other123" },
+  live_identity: LIVE_IDENTITY,
 });
 assert.equal(got.ready, false);
-assert.ok(got.blockers.includes("service_environment_not_canonical_production"));
+assert.ok(got.blockers.includes("service_environment_not_last_confirmed_production"));
 
 got = evaluatePromotionReadiness({
   mode: "preflight",
   accepted_sha: ACCEPTED,
   service: { ...SERVICE, repo: "https://github.com/phonarawd/not-production" },
+  live_identity: LIVE_IDENTITY,
 });
 assert.equal(got.ready, false);
-assert.ok(got.blockers.includes("service_repo_not_canonical_production"));
+assert.ok(got.blockers.includes("service_repo_not_last_confirmed_production"));
 
 got = evaluatePromotionReadiness({
   mode: "preflight",
   accepted_sha: ACCEPTED,
   service: { ...SERVICE, url: "https://another-service.onrender.com" },
+  live_identity: LIVE_IDENTITY,
 });
 assert.equal(got.ready, false);
-assert.ok(got.blockers.includes("service_url_not_canonical_production"));
+assert.ok(got.blockers.includes("service_url_not_last_confirmed_production"));
 
 got = evaluatePromotionReadiness({
   mode: "postflight",
   accepted_sha: ACCEPTED,
   service: SERVICE,
+  live_identity: LIVE_IDENTITY,
   live_deploy: {
     status: "live",
     commit: { id: ACCEPTED },
@@ -99,6 +122,7 @@ got = evaluatePromotionReadiness({
   mode: "postflight",
   accepted_sha: ACCEPTED,
   service: SERVICE,
+  live_identity: LIVE_IDENTITY,
   live_deploy: {
     status: "live",
     commit: { id: OLD },
@@ -111,6 +135,7 @@ got = evaluatePromotionReadiness({
   mode: "postflight",
   accepted_sha: ACCEPTED,
   service: SERVICE,
+  live_identity: LIVE_IDENTITY,
 });
 assert.equal(got.ready, false);
 assert.ok(got.blockers.includes("live_deploy_missing"));
@@ -119,6 +144,7 @@ got = evaluatePromotionReadiness({
   mode: "preflight",
   accepted_sha: "deadbeef",
   service: SERVICE,
+  live_identity: LIVE_IDENTITY,
 });
 assert.equal(got.ready, false);
 assert.ok(got.blockers.includes("accepted_sha_invalid"));
