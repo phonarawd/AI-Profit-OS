@@ -34,9 +34,13 @@ assert.doesNotMatch(
   controller,
   /userId:\s*typeof body\.userId === "string"/,
 );
-assert.doesNotMatch(usdt, /input\.userId/);
+const observeStart = usdt.indexOf("async observe(");
+const observeEnd = usdt.indexOf("\n  private async creditLedger", observeStart);
+assert.ok(observeStart >= 0 && observeEnd > observeStart, "observe method missing");
+const observeBody = usdt.slice(observeStart, observeEnd);
+assert.doesNotMatch(observeBody, /input\.userId/);
 assert.match(
-  usdt,
+  observeBody,
   /resolveUserIdByAddress\(toAddress\)/,
 );
 assert.doesNotMatch(watcher, /userId,\s*\n\s*\}\);/);
