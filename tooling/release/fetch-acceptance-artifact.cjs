@@ -106,6 +106,7 @@ function validProductionPass(verdict, requestedSha) {
   const sha = String(verdict.sha || "").toLowerCase();
   return (
     isFullSha(want) &&
+    verdict.schema === "release-acceptance-verdict.v1" &&
     verdict.verdict === "PASS" &&
     verdict.kind === "PRODUCTION_RELEASE" &&
     verdict.qa_phase === "full" &&
