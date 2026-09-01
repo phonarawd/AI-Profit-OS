@@ -12,6 +12,21 @@ const service = fs.readFileSync(
   path.join(root, "services/api-nest/src/wallet/withdraw-stepup.service.ts"),
   "utf8",
 );
+const policy = fs.readFileSync(
+  path.join(root, "services/api-nest/src/wallet/withdraw-stepup.policy.ts"),
+  "utf8",
+);
+assert.ok(
+  !policy.includes("replace(/^https?:"),
+  "step-up host must not use scheme-strip regex",
+);
+assert.ok(
+  !policy.includes("replace(/\\/.*$"),
+  "step-up host must not use polynomial path regex",
+);
+assert.match(policy, /host\.startsWith\("http:\/\/"\)/);
+assert.match(policy, /host\.startsWith\("https:\/\/"\)/);
+assert.match(policy, /const slash = host\.indexOf\("\/"\)/);
 const controller = fs.readFileSync(
   path.join(root, "services/api-nest/src/wallet/wallet.controller.ts"),
   "utf8",

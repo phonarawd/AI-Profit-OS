@@ -49,7 +49,11 @@ export function normalizeAppHost(appHost: string): string {
   } catch {
     /* fall through */
   }
-  return raw.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+  let host = raw;
+  if (host.startsWith("http://")) host = host.slice("http://".length);
+  else if (host.startsWith("https://")) host = host.slice("https://".length);
+  const slash = host.indexOf("/");
+  return slash >= 0 ? host.slice(0, slash) : host;
 }
 
 export function originAllowed(
