@@ -57,6 +57,7 @@ export type ClientDataJSON = {
   type: string;
   challenge: string;
   origin: string;
+  crossOrigin: boolean;
 };
 
 export function parseClientDataJSON(b64url: string): ClientDataJSON {
@@ -77,7 +78,12 @@ export function parseClientDataJSON(b64url: string): ClientDataJSON {
   ) {
     throw new Error("malformed_client_data");
   }
-  return { type: o.type, challenge: o.challenge, origin: o.origin };
+  return {
+    type: o.type,
+    challenge: o.challenge,
+    origin: o.origin,
+    crossOrigin: o.crossOrigin === true,
+  };
 }
 
 export type AuthenticatorData = {
@@ -96,6 +102,14 @@ export function parseAuthenticatorData(b64url: string): AuthenticatorData {
     signCount: raw.readUInt32BE(33),
     raw,
   };
+}
+
+export const WEBAUTHN_FLAG_USER_PRESENT = 0x01;
+
+export function hasWebauthnUserPresence(
+  authData: Pick<AuthenticatorData, "flags">,
+): boolean {
+  return (authData.flags & WEBAUTHN_FLAG_USER_PRESENT) !== 0;
 }
 
 export function verifyRpIdHash(authData: AuthenticatorData, rpId: string): boolean {
