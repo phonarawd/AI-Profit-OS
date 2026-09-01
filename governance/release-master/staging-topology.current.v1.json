@@ -1,19 +1,27 @@
 {
   "schema": "staging-topology-provider-snapshot.v1",
-  "recorded_at": "2026-09-01",
-  "source": "read-only provider reality · mutation=0",
+  "recorded_at": "2026-09-02",
+  "source": "read-only provider reality · GitHub/Render/Supabase revalidated · mutation=0",
   "production": {
     "render": {
       "service_name": "AI-Profit-OS",
-      "service_id": "production-only-observed",
-      "environment_id": "production-only-observed",
+      "service_id": "srv-da5r1tqjobas73fl16dg",
+      "environment_id": "evm-da5r1tjbc2fs73a0b7hg",
       "url": "https://ai-profit-os.onrender.com",
+      "repo": "https://github.com/phonarawd/AI-Profit-OS",
+      "type": "web_service",
       "branch": "main",
-      "autoDeploy": "yes"
+      "autoDeploy": "yes",
+      "autoDeployTrigger": "commit",
+      "live_deploy_id": "dep-da938o142hec73eipre0",
+      "live_source_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec"
     },
     "supabase": {
       "project_ref": "mgsytcetsiecllmhcyox",
-      "branches": 0
+      "status": "ACTIVE_HEALTHY",
+      "branches": 0,
+      "applied_migrations": 42,
+      "latest_applied_migration": "20260821223109_beginner_onboarding_experience"
     }
   },
   "staging": {},
