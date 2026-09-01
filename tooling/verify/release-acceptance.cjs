@@ -92,8 +92,24 @@ if (artifactContract.successful_builds_pagination !== true) {
 
 const ARTIFACT_DIGEST = "c".repeat(64);
 function withQa(input) {
+  const engine_run =
+    input.engine_run ||
+    (input.event_name === "workflow_dispatch" && input.qa_phase === "full"
+      ? {
+          id: 123456789,
+          workflow: "engine-acceptance",
+          workflow_name_auxiliary: true,
+          path: ".github/workflows/engine-acceptance.yml",
+          head_sha: input.sha,
+          event: "workflow_dispatch",
+          qa_phase: "full",
+          qa_phase_proof: "full_job_signature",
+          status: "completed",
+        }
+      : undefined);
   return {
     ...input,
+    ...(engine_run ? { engine_run } : {}),
     artifact_qa: {
       verified: true,
       source_sha: input.sha,
@@ -147,6 +163,21 @@ check(
   ),
   "PASS",
 );
+
+const noEngineBinding = withQa({
+  sha: "a".repeat(40),
+  event_name: "workflow_dispatch",
+  qa_phase: "full",
+  jobs: successJobs,
+});
+delete noEngineBinding.engine_run;
+const noEngineVerdict = evaluateVerdict(noEngineBinding, contract);
+if (
+  noEngineVerdict.verdict !== "FAIL" ||
+  !noEngineVerdict.fails.includes("engine_run_binding_missing")
+) {
+  fail("Production release without bound Engine run must FAIL");
+}
 
 check(
   "full_without_artifact_qa",
@@ -572,9 +603,15 @@ const callerLie = evaluateVerdict(
     qa_phase: "",
     jobs: successJobs,
     engine_run: {
+      id: 33240856583,
+      workflow: "engine-acceptance",
+      workflow_name_auxiliary: true,
+      path: ".github/workflows/engine-acceptance.yml",
       head_sha: fullSha,
       event: "workflow_dispatch",
       qa_phase: "full",
+      qa_phase_proof: "full_job_signature",
+      status: "completed",
     },
   },
   contract,
