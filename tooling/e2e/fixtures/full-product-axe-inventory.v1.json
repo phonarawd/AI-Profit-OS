@@ -1,0 +1,25 @@
+{
+  "schema": "governance.recovery.full-product-axe-inventory.v1",
+  "seriousCriticalMustBeZero": true,
+  "homeLocked": true,
+  "web": [
+    { "path": "/", "testId": "guest-first-visit", "homeLocked": true },
+    { "path": "/profits", "testId": "profits-shell" },
+    {
+      "path": "/profits/00000000-0000-4000-8000-000000000001",
+      "testId": "opportunity-detail"
+    },
+    { "path": "/wallet", "testId": "wallet-home" },
+    { "path": "/wallet/deposit?tab=usdt", "testId": "wallet-deposit-page" },
+    { "path": "/wallet/withdraw", "testId": "wallet-withdraw" },
+    { "path": "/wallet/history", "testId": "wallet-history" },
+    { "path": "/me/settings", "testId": "settings-page" },
+    { "path": "/me", "testId": "me-hub" },
+    { "path": "/onboarding", "testId": "onboarding-flow" },
+    { "path": "/auth/login", "selector": "main, form, [data-testid]" }
+  ],
+  "admin": [
+    { "path": "/admin", "testId": "admin-dashboard" },
+    { "path": "/admin/system-control", "testId": "admin-system-control-page" }
+  ]
+}

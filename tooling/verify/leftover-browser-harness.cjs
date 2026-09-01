@@ -28,8 +28,14 @@ if (!web.includes("LEFTOVER_BROWSER")) fails.push("web spec must gate LEFTOVER_B
 if (!web.includes("expect(keys.size).toBe(1)") || web.includes("keys.size <= 1")) {
   fails.push("ticket93 must require exactly one non-empty idempotency identity");
 }
+if (!web.includes("Promise.all") || !web.includes("withdraw-submit")) {
+  fails.push("ticket93 must race concurrent submit clicks, not idle no-op");
+}
 if (!web.includes("ticket95 latest intent") || !web.includes("late A")) {
   fails.push("ticket95 must prove latest intent B after late A");
+}
+if (!web.includes("expect(puts).toBeGreaterThanOrEqual(2)")) {
+  fails.push("ticket95 must require at least two PUTs");
 }
 if (!admin.includes("LEFTOVER_BROWSER")) fails.push("admin spec must gate LEFTOVER_BROWSER");
 if (!admin.includes("ticketI5 beginner language")) {

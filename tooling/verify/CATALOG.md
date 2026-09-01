@@ -44,6 +44,7 @@
 | web-lint | `verify:web-lint` | T0 path | ✅ live (REL-011 · apps/web eslint 실검사 · no-op echo 0 · 구문 오류 FAIL) |
 | axe-harness | `verify:axe-harness` | T0 path | ✅ live (REL-012 · axe-core committed Playwright spec · Home 390/1440+login · MCP 0 · Home freeze 0) |
 | leftover-browser-harness | `verify:leftover-browser-harness` | T0 path | live (leftover Chromium evidence specs gated LEFTOVER_BROWSER) |
+| full-product-axe-inventory | Axe inventory -- unlocked product + admin system-control serious/critical 0, Home locked defects separated -- **live** |
 | rel-402-dependency-audit | `verify:rel-402-dependency-audit` | T0 path + CI | ✅ live (REL-402 · pnpm audit high+ · local full scan 0 · exception ledger) |
 | rel-403-versioning | `verify:rel-403-versioning` | T0 path | ✅ live (REL-403 · semver + manual tag · HUMAN deploy · REL-602) |
 | rel-404-lighthouse-budget | `verify:rel-404-lighthouse-budget` | T0 path + CI | ✅ live (REL-404 · bundle/image/lazy budget · local full LH 0 · Home freeze) |

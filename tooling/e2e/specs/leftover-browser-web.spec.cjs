@@ -102,7 +102,8 @@ test("ticket93 double-click withdraw posts once and stays uncredited", async ({ 
   });
   await hideNextDevChrome(page);
   await readyUsdtWithdraw(page);
-  await page.getByTestId("withdraw-submit").dblclick();
+  const submit = page.getByTestId("withdraw-submit");
+  await Promise.all([submit.click(), submit.click(), submit.dblclick()]);
   await expect(page.getByTestId("withdraw-live-form")).toHaveAttribute(
     "data-withdraw-state",
     "accepted",

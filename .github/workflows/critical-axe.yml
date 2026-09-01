@@ -11,6 +11,9 @@ on:
       - "apps/admin/**"
       - "packages/ui/**"
       - "tooling/e2e/specs/critical-axe.spec.cjs"
+      - "tooling/e2e/specs/full-product-axe.spec.cjs"
+      - "tooling/e2e/specs/full-product-axe-admin.spec.cjs"
+      - "tooling/e2e/fixtures/full-product-axe-inventory.v1.json"
       - "tooling/e2e/lib/axe-scan.cjs"
       - ".github/workflows/critical-axe.yml"
 
@@ -45,3 +48,59 @@ jobs:
           pnpm exec playwright test
           --config=tooling/e2e/playwright.config.cjs
           tooling/e2e/specs/critical-axe.spec.cjs
+
+  full-product-web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Full-product consumer Axe
+        env:
+          CI: "1"
+          NEXT_DEV_WEBPACK: "1"
+          LOCAL_WEB_RUNTIME_API_STUB: "1"
+          API_HOST: "127.0.0.1:4000"
+        run: >-
+          pnpm exec playwright test
+          --config=tooling/e2e/playwright.config.cjs
+          tooling/e2e/specs/full-product-axe.spec.cjs
+
+  full-product-admin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Full-product admin Axe
+        env:
+          CI: "1"
+          NEXT_DEV_WEBPACK: "1"
+        run: >-
+          pnpm exec playwright test
+          --config=tooling/e2e/playwright.config.cjs
+          tooling/e2e/specs/full-product-axe-admin.spec.cjs

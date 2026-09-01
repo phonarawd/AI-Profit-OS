@@ -40,6 +40,18 @@ if (!axeWf.includes("critical-axe.spec.cjs") || axeSpec.includes("test.skip(")) 
 if (!axeSpec.includes("REMOTE_AXE_PASS") || !axeSpec.includes("LOCAL_AXE_PASS")) {
   fails.push("Axe spec must distinguish local vs remote layers");
 }
+if (!wf.includes("webkit-home-session.spec.cjs")) {
+  fails.push("workflow must run WebKit home session resolution, not loading paint");
+}
+if (!wf.includes("ticket93|ticket95")) {
+  fails.push("workflow must run leftover 93/95 concurrent race");
+}
+if (!wf.includes("critical-admin-cross-browser.spec.cjs")) {
+  fails.push("admin job must run system-control truthful readout");
+}
+if (!axeWf.includes("full-product-axe.spec.cjs")) {
+  fails.push("critical-axe must run full-product inventory sweep");
+}
 
 if (fails.length) {
   console.error("[verify:critical-cross-browser] FAIL");

@@ -78,6 +78,7 @@ const RULES = [
       "auth-rate-limit.cjs",
       "axe-harness.cjs",
       "leftover-browser-harness.cjs",
+      "full-product-axe-inventory.cjs",
       "critical-cross-browser.cjs",
     ],
   },

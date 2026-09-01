@@ -301,6 +301,7 @@
     "verify:api-artifact-provenance": "node tooling/verify/api-artifact-provenance.cjs",
     "verify:api-artifact-runtime-qa": "node tooling/verify/api-artifact-runtime-qa.cjs",
     "verify:leftover-browser-harness": "node tooling/verify/leftover-browser-harness.cjs",
+    "verify:full-product-axe-inventory": "node tooling/verify/full-product-axe-inventory.cjs",
     "verify:web-remote-patterns": "node tooling/verify/web-remote-patterns.cjs",
     "verify:pwa-native-shell": "node tooling/verify/pwa-native-shell.cjs",
     "verify:pwa-push-badge": "node tooling/verify/pwa-push-badge.cjs",
