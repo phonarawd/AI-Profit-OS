@@ -53,6 +53,12 @@ if (!webauthn.includes("verifyEs256P1363") || !webauthn.includes("verifyRpIdHash
 if (!webauthn.includes("webauthn origin mismatch")) {
   fails.push("webauthn must verify expected origin");
 }
+if (
+  !webauthn.includes("hasWebauthnUserPresence") ||
+  !webauthn.includes("webauthn user presence required")
+) {
+  fails.push("webauthn must require authenticator user-presence flag");
+}
 if (ctrl.includes('credentialId: String(body?.credentialId ?? body?.id ?? "session")')) {
   fails.push("passkeyAuthVerify must not mint from credentialId alone");
 }

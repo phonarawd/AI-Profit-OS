@@ -10,9 +10,12 @@ on:
     paths:
       - ".github/workflows/gpt-passkey-registration-security-ci.yml"
       - "services/api-nest/src/auth/auth.service.ts"
+      - "services/api-nest/src/auth/identity-proof.crypto.ts"
+      - "services/api-nest/src/auth/webauthn-assert.service.ts"
       - "services/api-nest/src/auth/passkey-registration.policy.ts"
       - "tooling/verify/auth-identity-proof.runtime.cjs"
       - "tooling/verify/passkey-registration-hijack.runtime.cjs"
+      - "tooling/verify/webauthn-user-presence.runtime.cjs"
       - "services/api-nest/package.json"
       - "pnpm-lock.yaml"
 
@@ -37,3 +40,5 @@ jobs:
         run: pnpm --filter @aipo/api-nest... build
       - name: Duplicate passkey registration runtime proof
         run: node tooling/verify/passkey-registration-hijack.runtime.cjs
+      - name: WebAuthn user-presence runtime proof
+        run: node tooling/verify/webauthn-user-presence.runtime.cjs
