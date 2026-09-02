@@ -39,12 +39,12 @@ jobs:
           toolchain: "1.85.0"
       - name: Install
         run: pnpm install --frozen-lockfile
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
       - name: T1 push gate
         env:
           AIPO_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: pnpm verify:gate:push
-      - name: Install Chromium
-        run: pnpm exec playwright install --with-deps chromium
       - name: Spark Dash admin browser regression
         env:
           CI: "1"
