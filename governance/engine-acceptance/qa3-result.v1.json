@@ -4,8 +4,8 @@
   "suite_id": "QA3",
   "run_id": "qa3-generative-fuzz-20260902",
   "todoId": "qa3-generative-fuzz",
-  "measuredAt": "2026-09-02T05:26:47.381Z",
-  "baseline_id": "ea-baseline-74683b6e39a7-590263f0f273",
+  "measuredAt": "2026-09-02T17:53:17.820Z",
+  "baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
   "mode": "full",
   "kill_switch": {
     "verified_before_checks": true,
@@ -145,5 +145,5 @@
     "Failure → rich evidence + defects · product mutation 0.",
     "Does not issue ENGINE_ACCEPTED_FOR_UI."
   ],
-  "checksum": "04d0d4752805f019f01b1294a8b0a4870d0353fe30a34f406966de60a382cc33"
+  "checksum": "cb8f94c6a5326164e1611b6d6f157c8ee8101abbe1236b3a80617315a0cad8ac"
 }

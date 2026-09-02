@@ -4,8 +4,8 @@
   "suite_id": "QA9",
   "run_id": "qa9-acceptance-report-20260902",
   "todoId": "qa9-acceptance-report",
-  "measuredAt": "2026-09-02T05:29:02.048Z",
-  "baseline_id": "ea-baseline-74683b6e39a7-590263f0f273",
+  "measuredAt": "2026-09-02T17:55:37.007Z",
+  "baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
   "kill_switch": {
     "verified_before_checks": true,
     "target_env": "ci",
@@ -89,5 +89,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI while defects.P0/P1 > 0.",
     "Every report section is derived from the current qa4/5/6/8-result files at run time - no hardcoded historical defect name."
   ],
-  "checksum": "bbdfd4dcc4403b6f5feb2fef18bc800b85043438d7c4dcf8006ad39650d64fce"
+  "checksum": "f239ba488510435a9588fd802640550a733291193c9734597c596134ffc9f80a"
 }
