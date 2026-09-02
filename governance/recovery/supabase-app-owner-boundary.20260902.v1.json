@@ -1,0 +1,42 @@
+{
+  "schema": "supabase-app-owner-boundary.v1",
+  "observed_at": "2026-09-02",
+  "production": {
+    "project_ref": "mgsytcetsiecllmhcyox",
+    "public_table_count": 93,
+    "public_table_owners": {
+      "postgres": 93
+    },
+    "default_acl_public_tables": {
+      "postgres": [
+        "postgres",
+        "service_role"
+      ],
+      "supabase_admin": [
+        "anon",
+        "authenticated",
+        "postgres",
+        "service_role"
+      ]
+    }
+  },
+  "staging": {
+    "project_ref": "uluzxvdpynytytduuryy",
+    "public_table_count": 93,
+    "public_table_owners": {
+      "postgres": 93
+    }
+  },
+  "sql_session": {
+    "current_user": "postgres",
+    "can_assume_supabase_admin": false
+  },
+  "decision": {
+    "app_owned_default_acl_scope": [
+      "postgres"
+    ],
+    "unexpected_public_table_owner": "BLOCK_RELEASE",
+    "managed_default_acl_outside_app_owner_scope": "REPORT_NOT_SILENCE",
+    "production_mutation": 0
+  }
+}

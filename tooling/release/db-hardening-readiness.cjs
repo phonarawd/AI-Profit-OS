@@ -76,6 +76,22 @@ with table_state as (
     and c.relkind='r'
     and c.relname in ('admin_audit_events','push_control','push_subscriptions')
 ),
+table_owner_state as (
+  select coalesce(
+    jsonb_object_agg(owner, table_count),
+    '{}'::jsonb
+  ) as public_table_owners
+  from (
+    select
+      pg_get_userbyid(c.relowner) as owner,
+      count(*)::int as table_count
+    from pg_class c
+    join pg_namespace n on n.oid = c.relnamespace
+    where n.nspname='public'
+      and c.relkind='r'
+    group by c.relowner
+  ) q
+),
 default_acl_state as (
   select coalesce(
     jsonb_object_agg(owner, to_jsonb(grantees)),
@@ -98,6 +114,10 @@ default_acl_state as (
 )
 select jsonb_build_object(
   'tables', coalesce((select tables from table_state), '{}'::jsonb),
+  'public_table_owners', coalesce(
+    (select public_table_owners from table_owner_state),
+    '{}'::jsonb
+  ),
   'default_acl_public_tables', coalesce(
     (select default_acl_public_tables from default_acl_state),
     '{}'::jsonb
@@ -209,6 +229,13 @@ function compareSnapshot(snapshot) {
     }
   }
 
+  const publicTableOwners =
+    snapshot &&
+    typeof snapshot === "object" &&
+    snapshot.public_table_owners &&
+    typeof snapshot.public_table_owners === "object"
+      ? snapshot.public_table_owners
+      : null;
   const defaultAcl =
     snapshot &&
     typeof snapshot === "object" &&
@@ -216,10 +243,32 @@ function compareSnapshot(snapshot) {
     typeof snapshot.default_acl_public_tables === "object"
       ? snapshot.default_acl_public_tables
       : null;
+  const warnings = [];
+  const appOwners = [];
+
+  if (!publicTableOwners) {
+    fails.push("public_table_owner_snapshot_missing");
+  } else {
+    for (const [owner, rawCount] of Object.entries(publicTableOwners)) {
+      const count = Number(rawCount);
+      if (!Number.isInteger(count) || count < 1) {
+        fails.push("public_table_owner_count_invalid:" + owner);
+        continue;
+      }
+      appOwners.push(owner);
+      if (owner !== "postgres") {
+        fails.push("unexpected_public_table_owner:" + owner);
+      }
+    }
+    if (!appOwners.includes("postgres")) {
+      fails.push("postgres_public_table_owner_missing");
+    }
+  }
+
   if (!defaultAcl) {
     fails.push("default_acl_snapshot_missing");
-  } else {
-    for (const owner of ["postgres", "supabase_admin"]) {
+  } else if (publicTableOwners) {
+    for (const owner of appOwners) {
       const grantees = sortedUnique(defaultAcl[owner]);
       for (const banned of ["PUBLIC", "anon", "authenticated"]) {
         if (grantees.includes(banned)) {
@@ -227,15 +276,29 @@ function compareSnapshot(snapshot) {
         }
       }
     }
+
+    for (const [owner, values] of Object.entries(defaultAcl)) {
+      if (appOwners.includes(owner)) continue;
+      const grantees = sortedUnique(values);
+      for (const banned of ["PUBLIC", "anon", "authenticated"]) {
+        if (grantees.includes(banned)) {
+          warnings.push(
+            "managed_default_acl_outside_app_owner_scope:" + owner + ":" + banned,
+          );
+        }
+      }
+    }
   }
 
   return {
     ok: fails.length === 0,
-    schema: "db-hardening-readiness.v2",
+    schema: "db-hardening-readiness.v3",
     status: fails.length === 0 ? "READY" : "NOT_READY",
     production_mutation: 0,
     apply: false,
+    app_default_acl_owners: appOwners.sort(),
     expected: EXPECTED,
+    warnings,
     fails,
   };
 }
