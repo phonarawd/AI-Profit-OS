@@ -67,6 +67,7 @@ export function WithdrawLiveForm({
     "idle" | "accepted" | "denied" | "unavailable" | "unauthorized"
   >("idle");
   const wdIdem = useRef(withdrawIdempotency);
+  const acceptedRef = useRef(false);
 
   const onChallenge = useCallback(async () => {
     setBusy(true);
@@ -108,7 +109,7 @@ export function WithdrawLiveForm({
   }, [challengeId, method, proof]);
 
   const onSubmit = useCallback(async () => {
-    if (!allowForm) return;
+    if (!allowForm || acceptedRef.current) return;
     if (!amountUsdt.trim() || !stepUpToken) return;
     if (requirePrincipalConfirm && !principalConfirmToken) return;
     if (asset === "USDT" && !destination.trim()) return;
@@ -136,6 +137,7 @@ export function WithdrawLiveForm({
         stepUpToken,
         principalConfirmToken: principalConfirmToken ?? undefined,
       });
+      acceptedRef.current = true;
       wdIdem.current.retire();
       setFlowState("accepted");
       setStatus(T.withdrawMode.submitOk);
@@ -212,6 +214,7 @@ export function WithdrawLiveForm({
         data-mode={mode}
         disabled={
           busy ||
+          flowState === "accepted" ||
           !stepUpToken ||
           !amountUsdt.trim() ||
           (requirePrincipalConfirm && !principalConfirmToken) ||
