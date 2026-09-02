@@ -1,4 +1,5 @@
 # rerun-v3: epoch-aware QA9 selftest
+# rerun-v4: whitelist audited formal QA7 producer provenance
 name: engine-current-epoch-publish-once
 
 on:

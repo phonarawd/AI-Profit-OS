@@ -1426,11 +1426,17 @@ if (qa7Result && !pendingRerun) {
   if (!qa7Result.actions || qa7Result.actions.run_id !== qa7Result.run_id) {
     fail("qa7-result.actions.run_id must match run_id");
   }
-  if (qa7Result.actions.workflow !== "engine-acceptance") {
-    fail("qa7-result.actions.workflow must be engine-acceptance");
-  }
-  if (qa7Result.actions.event !== "workflow_dispatch") {
-    fail("qa7-result.actions.event must be workflow_dispatch");
+  const formalQa7ProducerEvents = {
+    "engine-acceptance": ["workflow_dispatch"],
+    "engine-current-epoch-publish-once": ["push"],
+  };
+  const allowedQa7Events = formalQa7ProducerEvents[qa7Result.actions.workflow];
+  if (!allowedQa7Events) {
+    fail("qa7-result.actions.workflow must be an approved formal QA7 producer");
+  } else if (!allowedQa7Events.includes(qa7Result.actions.event)) {
+    fail(
+      `qa7-result.actions.event ${qa7Result.actions.event} not allowed for formal producer ${qa7Result.actions.workflow}`,
+    );
   }
   if (qa7Result.actions.qa_phase !== "qa7") {
     fail("qa7-result.actions.qa_phase must be qa7");
