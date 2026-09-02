@@ -2,7 +2,6 @@
   "schema": "staging-topology-provider-snapshot.v2",
   "recorded_at": "2026-09-02T04:00:29Z",
   "source": "fresh Render/Supabase provider truth + public runtime probe · production mutation=0",
-  "expected_candidate_sha": "52877334c22f074ebe6bc4b280a96b6b896995c0",
   "this_session": {
     "supabase_development_branches": 1,
     "render_workspace_id": "tea-da5qqo3m8hqs73djpvvg",
@@ -46,7 +45,8 @@
         "redis_configured": true,
         "redis_ok": true,
         "warnings_empty": true
-      }
+      },
+      "source_sha_status": "FRESH_CONFIRMED_AT_2026-09-02T04:00:29Z"
     },
     "supabase": {
       "branch_name": "staging-release-20260902",
@@ -87,6 +87,7 @@
     "staging_infra_runtime": "PASS",
     "staging_full_e2e": "NOT_RUN",
     "production_db_mutation": 0,
-    "production_release": "NO_GO"
+    "production_release": "NO_GO",
+    "staging_exact_final_rc": "PENDING_FINAL_RC"
   }
 }
