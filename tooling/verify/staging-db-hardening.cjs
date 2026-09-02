@@ -23,6 +23,7 @@ const audit = read("supabase/staging/20260901120000_admin_audit_append_only.sql"
 const push = read("supabase/staging/20260901120100_push_rls.sql");
 const acl = read("supabase/staging/20260901120200_default_acl.sql");
 const design = read("governance/db-recon/staging-hardening.v1.json");
+const providerSnapshot = read("governance/recovery/staging-db-hardening-snapshot.20260902.v1.json");
 
 for (const [rel, body] of [
   ["admin_audit", audit],
@@ -91,8 +92,11 @@ if (/GRANT[^;]*INSERT[^;]*push_control/.test(pushNorm) || /GRANT[^;]*DELETE[^;]*
 if (!acl.includes("ALTER DEFAULT PRIVILEGES FOR ROLE postgres")) {
   fails.push("default ACL SQL must cover postgres-owned future public objects");
 }
-if (!acl.includes("ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin")) {
-  fails.push("default ACL SQL must cover supabase_admin-owned future public objects");
+if (/ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin/i.test(acl)) {
+  fails.push("default ACL SQL must not mutate managed supabase_admin defaults");
+}
+if (!acl.includes("supabase_admin owns 0 application public tables")) {
+  fails.push("default ACL SQL must document zero supabase_admin application-table ownership");
 }
 if (!acl.includes("REVOKE ALL ON TABLES FROM PUBLIC, anon, authenticated")) {
   fails.push("default ACL SQL must revoke PUBLIC/anon/authenticated defaults");
@@ -111,6 +115,27 @@ if (design) {
     }
   } catch (err) {
     fails.push("staging-hardening.v1.json invalid JSON: " + err.message);
+  }
+}
+
+if (providerSnapshot) {
+  try {
+    const json = JSON.parse(providerSnapshot);
+    if (json.project_ref !== "uluzxvdpynytytduuryy") {
+      fails.push("staging hardening provider snapshot project_ref drift");
+    }
+    if (json.production_mutation !== 0) {
+      fails.push("staging hardening provider snapshot production_mutation must be 0");
+    }
+    const owners = json.public_table_owners || {};
+    if (owners.postgres !== 93) {
+      fails.push("provider snapshot must preserve 93 postgres-owned public tables");
+    }
+    if (Object.prototype.hasOwnProperty.call(owners, "supabase_admin")) {
+      fails.push("provider snapshot must not claim supabase_admin-owned application tables");
+    }
+  } catch (err) {
+    fails.push("staging-db-hardening provider snapshot invalid JSON: " + err.message);
   }
 }
 

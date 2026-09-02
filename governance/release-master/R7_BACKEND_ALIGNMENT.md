@@ -48,7 +48,7 @@ missing snapshot/amount → null. KRW 0 위조 0. client `Number()*rate` 0.
 | auth_permission | Nest `JwtAuthGuard` | `supabase.auth` 0 in api-nest | ALIGNED | REL-405 |
 | rls | REL-408 80/80 ON | `SECURITY_BASELINE.md` | ALIGNED | REL-408 |
 | indexes | applied migration `CREATE INDEX` | unapplied file-only indexes | MEASURED · unapplied owner REL-701-DB | REL-408 / REL-701-DB |
-| migration_head | local `20260901224000` | remote applied `20260821223109` | DIVERGE deferred | REL-701-DB |
+| migration_head | local `20260902032000` | remote applied `20260821223109` | DIVERGE deferred | REL-701-DB |
 | p0_p3_engine | REL-502 `FINAL_ACCEPTANCE` | DEFECTS_P0/P1 = 0 | STALE_PENDING_REBASE (current epoch NOT_ISSUED) | REL-502 |
 | p0_p3_admin | REL-409 R6 cert | KNOWN_P0~P3 = 0 | ALIGNED | REL-409 |
 | ui_truth_home_money | home-money-read contract | Engine todayPossible 0 · fake zero 0 | ALIGNED | money / UI |
