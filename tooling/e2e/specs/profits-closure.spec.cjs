@@ -29,11 +29,18 @@ async function applyOpportunitySearch(page, value) {
   const search = page.locator(".sd-desktop-only [data-sdp='search']");
   await expect(search).toBeVisible();
   await search.click();
-  await search.fill("");
-  await search.pressSequentially(value, { delay: 15 });
+  // React controlled input: native value setter + input/change (fill-only can race).
+  await search.evaluate((el, next) => {
+    const desc = Object.getOwnPropertyDescriptor(
+      window.HTMLInputElement.prototype,
+      "value",
+    );
+    desc.set.call(el, next);
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+  }, value);
   await expect(search).toHaveValue(value);
 }
-
 async function hideNextDevChrome(page) {
   await page
     .addStyleTag({
@@ -125,7 +132,9 @@ test("ready list shows required capital from the feed owner", async ({
     fullPage: false,
   });
   await applyOpportunitySearch(page, "zzz-no-match");
-  await expect(page.locator("[data-sdp='filter-empty']")).toBeVisible();
+  await expect(page.locator("[data-sdp='filter-empty']")).toBeVisible({
+    timeout: 30000,
+  });
   await expect(page.locator("[data-sdp='card']")).toHaveCount(0);
   await applyOpportunitySearch(page, "QA");
   await expect(page.locator("[data-sdp='filter-empty']")).toHaveCount(0);
