@@ -113,7 +113,7 @@
       "suite_id": "QA9",
       "run_id": "qa9-acceptance-report-20260902",
       "baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
-      "checksum": "f239ba488510435a9588fd802640550a733291193c9734597c596134ffc9f80a",
+      "checksum": "ec28c45284345961bc652fb193c3e0130f60bba13b6d862be7d0269b0e0f27cd",
       "completion_status": "COMPLETE",
       "result_ref": "governance/engine-acceptance/qa9-result.v1.json",
       "aggregation_only": true
@@ -133,7 +133,7 @@
     "verified_before_qa9": true
   },
   "dual_dirty": {
-    "working_tree_clean": false,
+    "working_tree_clean": true,
     "protected_scope_clean": true,
     "forced_clean_forbidden": true
   },
@@ -149,8 +149,8 @@
     "predecessor_baseline_id": "ea-baseline-74683b6e39a7-590263f0f273",
     "rebase_policy_version": "ENGINE_ACCEPTANCE_REBASE_POLICY_V2",
     "qa1_qa6_status": "COMPLETE",
-    "qa8_status": "STALE_PENDING_RERUN",
-    "qa9_status": "STALE_AGGREGATION_PENDING_DISCOVERY"
+    "qa8_status": "COMPLETE",
+    "qa9_status": "COMPLETE"
   },
   "predecessor_epoch": {
     "baseline_id": "ea-baseline-74683b6e39a7-590263f0f273",

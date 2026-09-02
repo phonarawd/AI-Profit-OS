@@ -1,10 +1,10 @@
 # ENGINE ACCEPTANCE REPORT
 
 > **QA phase:** QA-9 `qa9-acceptance-report` (FINAL aggregation / verdict issuance — not a new discovery suite)
-> **Measured:** 2026-09-02T17:55:37.007Z
+> **Measured:** 2026-09-02T18:01:01.866Z
 > **baseline_id:** `ea-baseline-0d8825e8f333-5ac0f4291966`
 > **qa9_run_id:** `qa9-acceptance-report-20260902`
-> **qa9_result_checksum:** `f239ba488510435a9588fd802640550a733291193c9734597c596134ffc9f80a`
+> **qa9_result_checksum:** `ec28c45284345961bc652fb193c3e0130f60bba13b6d862be7d0269b0e0f27cd`
 > **aggregation_only:** `true` — consumes QA0-QA8 evidence exactly as recorded, invents no scenarios
 
 ## Status banner
@@ -38,7 +38,7 @@ UI_UX_ENTRY_GATE = OPEN
 | reason | QA9 COMPLETE - all acceptance-contract L1 conditions met - ENGINE_ACCEPTED_FOR_UI |
 | evidence_integrity | `VALID` |
 | baseline.valid | `true` |
-| working_tree_clean | `false` (fact only, not forced clean) |
+| working_tree_clean | `true` (fact only, not forced clean) |
 | protected_scope_clean | `true` |
 | acceptance_scope.unchanged | `true` |
 
@@ -141,7 +141,7 @@ No outstanding defects or BLOCKED critical_invariant rows are currently recorded
 
 ## Dual Dirty
 
-- working_tree_clean=`false`
+- working_tree_clean=`true`
 - protected_scope_clean=`true`
 - forced clean / stash laundry = forbidden
 
