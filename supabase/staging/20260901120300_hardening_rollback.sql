@@ -32,7 +32,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER
 GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER
   ON TABLE public.push_subscriptions TO service_role;
 
--- Only supabase_admin had anon/authenticated defaults for future public tables
--- in the fresh pre-hardening snapshot. postgres did not, so do not broaden it.
-ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public
-  GRANT ALL ON TABLES TO anon, authenticated;
+-- Default ACL rollback is intentionally absent here.
+-- Fresh 2026-09-02 provider truth: all 93 application public tables are owned by postgres.
+-- The normal SQL session cannot assume Supabase-managed role supabase_admin.
+-- Owner-scoped default ACL handling is separated into PR #183; this table rollback
+-- must remain executable in isolated staging without managed-role escalation.
