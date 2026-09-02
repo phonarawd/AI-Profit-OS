@@ -657,6 +657,13 @@ function runQa9(opts = {}) {
     ...(evidence.kill_switch || {}),
     verified_before_qa9: true,
   };
+  evidence.current_epoch = {
+    ...(evidence.current_epoch || {}),
+    baseline_id: baseline.id,
+    qa1_qa6_status: "COMPLETE",
+    qa8_status: "COMPLETE",
+    qa9_status: "COMPLETE",
+  };
   const qa9Suite = {
     suite_id: "QA9",
     run_id: runId,

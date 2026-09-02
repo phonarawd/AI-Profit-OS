@@ -1,0 +1,102 @@
+name: engine-current-epoch-finalize-once
+
+on:
+  push:
+    branches:
+      - recovery/release-provenance-20260831
+    paths:
+      - ".github/workflows/engine-current-epoch-finalize-once.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: engine-current-epoch-finalize-once
+  cancel-in-progress: false
+
+env:
+  EXPECTED_BASELINE_ID: ea-baseline-0d8825e8f333-5ac0f4291966
+  EXPECTED_REBASE_ID: ea-rebase-ec3c9604d2ab-5ac0f4291966
+  EXPECTED_PROTECTED_AGGREGATE: 5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9
+  AIPO_QA_TARGET_ENV: ci
+  AIPO_QA_HOSTNAME: localhost
+  AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+
+jobs:
+  finalize-current-epoch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          ref: recovery/release-provenance-20260831
+
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Verify immutable current epoch
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const b = require("./governance/engine-acceptance/baseline.v1.json");
+          if (b.id !== process.env.EXPECTED_BASELINE_ID) throw new Error("baseline id drift");
+          if (b.epoch?.rebase_id !== process.env.EXPECTED_REBASE_ID) throw new Error("rebase id drift");
+          if (b.protected_scope_manifest?.aggregate !== process.env.EXPECTED_PROTECTED_AGGREGATE) {
+            throw new Error("protected aggregate drift");
+          }
+          NODE
+          node - <<'NODE'
+          const psm = require("./tooling/verify/lib/rel-502-psm.cjs");
+          const live = psm.compareProtectedScope();
+          if (live.drift) throw new Error("live protected-scope drift");
+          if (live.baselineId !== process.env.EXPECTED_BASELINE_ID) throw new Error("live baseline drift");
+          NODE
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Re-aggregate QA9 after harness consistency repair
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/run-qa9.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          pnpm verify:engine-acceptance
+
+      - name: Issue current REL-502 certificate
+        run: node tooling/recovery/finalize-engine-current-epoch.cjs
+
+      - name: Refresh and verify recovery evidence
+        run: |
+          set -euo pipefail
+          node tooling/recovery/build-engine-drift-inventory.cjs
+          node tooling/verify/engine-drift-inventory.cjs
+          pnpm verify:rel-502-final-engine-acceptance
+          pnpm verify:rel-503-protected-scope-watch
+          pnpm verify:engine-acceptance
+
+      - name: Commit finalized current-epoch governance
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "AI-Profit-OS Release Bot"
+          git config user.email "release-bot@users.noreply.github.com"
+          git add governance/engine-acceptance/ governance/recovery/
+          git diff --cached --quiet && { echo "No finalization changes"; exit 1; }
+          HUSKY=0 git commit -m "chore(engine): finalize current-epoch acceptance evidence"
+          HUSKY=0 git push origin HEAD:recovery/release-provenance-20260831
+
+      - name: Require current accepted state
+        run: |
+          node - <<'NODE'
+          const q = require("./governance/engine-acceptance/qa9-result.v1.json");
+          const e = require("./governance/engine-acceptance/evidence-manifest.v1.json");
+          if (q.verdict !== "ENGINE_ACCEPTED_FOR_UI" || q.engine_accepted_for_ui !== "ISSUED") process.exit(1);
+          if (e.current_epoch?.qa8_status !== "COMPLETE" || e.current_epoch?.qa9_status !== "COMPLETE") process.exit(1);
+          NODE

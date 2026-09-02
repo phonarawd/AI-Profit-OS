@@ -640,6 +640,20 @@ if (evidence) {
       if (evidence.qa_phase !== "QA-9") {
         fail("evidence-manifest.qa_phase must be QA-9 after qa9-acceptance-report completion");
       }
+      const currentEpoch = evidence.current_epoch;
+      if (!currentEpoch || currentEpoch.baseline_id !== baseline.id) {
+        fail("evidence.current_epoch must bind the current baseline after QA9");
+      } else {
+        if (currentEpoch.qa1_qa6_status !== "COMPLETE") {
+          fail("evidence.current_epoch.qa1_qa6_status must be COMPLETE after QA9");
+        }
+        if (currentEpoch.qa8_status !== "COMPLETE") {
+          fail("evidence.current_epoch.qa8_status must be COMPLETE after QA9");
+        }
+        if (currentEpoch.qa9_status !== "COMPLETE") {
+          fail("evidence.current_epoch.qa9_status must be COMPLETE after QA9");
+        }
+      }
       if (
         !["03_blocked_fix_round", "03_blocked_incomplete", "03_ui_entry_unlocked"].includes(
           evidence.next,
