@@ -1,0 +1,61 @@
+name: gpt-staging-runtime-probe
+
+on:
+  pull_request:
+    branches:
+      - recovery/release-provenance-20260831
+    paths:
+      - .github/workflows/gpt-staging-runtime-probe.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  staging-health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe Render staging public health
+        env:
+          STAGING_HEALTH_URL: "https://ai-profit-os-staging.onrender.com/api/v1/health"
+          EXPECTED_SHA: "6798ae4e64f4a4a53642811f89b743735c1878af"
+        run: |
+          set -euo pipefail
+          ok=0
+          for attempt in $(seq 1 12); do
+            if curl --fail --silent --show-error --max-time 25 "$STAGING_HEALTH_URL" -o health.json; then
+              ok=1
+              break
+            fi
+            sleep 5
+          done
+          test "$ok" = "1"
+          node <<'NODE'
+          const fs = require("node:fs");
+          const body = JSON.parse(fs.readFileSync("health.json","utf8"));
+          const expected = process.env.EXPECTED_SHA;
+          const fails = [];
+          if (body.ok !== true) fails.push("ok!=true");
+          if (body.service !== "api-nest") fails.push("service!=" + body.service);
+          if (body.db?.configured !== true) fails.push("db.configured!=true");
+          if (body.db?.ok !== true) fails.push("db.ok!=true");
+          if (body.gitSha !== expected) fails.push("gitSha=" + body.gitSha);
+          if (body.gitShaSource !== "RENDER_GIT_COMMIT") fails.push("gitShaSource=" + body.gitShaSource);
+          if (Array.isArray(body.warnings) && body.warnings.length) {
+            fails.push("warnings=" + JSON.stringify(body.warnings));
+          }
+          if (fails.length) {
+            console.error("[staging-runtime-probe] FAIL");
+            for (const f of fails) console.error(" - " + f);
+            console.error("body=" + JSON.stringify(body));
+            process.exit(1);
+          }
+          console.log("[staging-runtime-probe] PASS");
+          console.log(JSON.stringify({
+            service: body.service,
+            gitSha: body.gitSha,
+            db: body.db,
+            redis: body.redis,
+            warnings: body.warnings
+          }, null, 2));
+          NODE
