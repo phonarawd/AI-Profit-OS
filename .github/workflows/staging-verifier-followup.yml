@@ -1,0 +1,32 @@
+name: staging-verifier-followup
+
+on:
+  pull_request:
+    branches:
+      - recovery/release-provenance-20260831
+    paths:
+      - "tooling/verify/staging-db-hardening.cjs"
+      - "governance/recovery/supabase-app-owner-boundary.20260902.v1.json"
+      - "supabase/staging/20260901120200_default_acl.sql"
+      - "tooling/verify/b3-promotion.cjs"
+      - "tooling/verify/rel-504-migration-readiness.cjs"
+      - ".github/workflows/staging-verifier-followup.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-staging-db:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+      - name: Verify app-owner-scoped staging DB hardening
+        run: node tooling/verify/staging-db-hardening.cjs
+      - name: Verify B3 isolated staging truth
+        run: node tooling/verify/b3-promotion.cjs
+      - name: Verify REL-504 migration readiness
+        run: node tooling/verify/rel-504-migration-readiness.cjs
