@@ -18,7 +18,7 @@ jobs:
       - name: Probe Render staging public health
         env:
           STAGING_HEALTH_URL: "https://ai-profit-os-staging.onrender.com/api/v1/health"
-          EXPECTED_SHA: "6798ae4e64f4a4a53642811f89b743735c1878af"
+          EXPECTED_SHA: "52877334c22f074ebe6bc4b280a96b6b896995c0"
         run: |
           set -euo pipefail
           ok=0
@@ -39,6 +39,8 @@ jobs:
           if (body.service !== "api-nest") fails.push("service!=" + body.service);
           if (body.db?.configured !== true) fails.push("db.configured!=true");
           if (body.db?.ok !== true) fails.push("db.ok!=true");
+          if (body.redis?.configured !== true) fails.push("redis.configured!=true");
+          if (body.redis?.ok !== true) fails.push("redis.ok!=true");
           if (body.gitSha !== expected) fails.push("gitSha=" + body.gitSha);
           if (body.gitShaSource !== "RENDER_GIT_COMMIT") fails.push("gitShaSource=" + body.gitShaSource);
           if (Array.isArray(body.warnings) && body.warnings.length) {
