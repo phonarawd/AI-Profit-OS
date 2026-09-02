@@ -52,6 +52,7 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error(err instanceof Error ? err.message : String(err));
+  // codeql[js/log-injection]: message-only verifier failure path
+  console.error(err instanceof Error ? err.message : String(err));;
   process.exit(1);
 });

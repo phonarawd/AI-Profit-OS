@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Admin HttpOnly 세션 쿠키. 브라우저 JS는 privileged bearer를 저장하지 않는다.
  */
 
@@ -56,6 +56,7 @@ export function attachAdminSessionCookies(
     httpOnly: true,
   });
   // 더블서브밋 동기화 토큰 — 세션 비밀이 아니다. HttpOnly로 바꾸면 JS가 헤더를 못 채운다.
+  // codeql[js/clear-text-storage-of-sensitive-data]: double-submit CSRF must be JS-readable (HttpOnly would break header sync)
   res.cookie(ADMIN_CSRF_COOKIE_NAME, csrf, {
     ...base,
     httpOnly: false,

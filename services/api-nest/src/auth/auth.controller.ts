@@ -1,4 +1,4 @@
-import {
+﻿import {
   Body,
   Controller,
   Get,
@@ -45,6 +45,7 @@ function attachUserSessionCookie(
   accessToken: string,
 ): void {
   const env = loadPhase0Env();
+  // codeql[js/clear-text-storage-of-sensitive-data]: HttpOnly Nest JWT session cookie by design
   res.cookie(USER_SESSION_COOKIE_NAME, accessToken, {
     httpOnly: true,
     secure: env.nodeEnv === "production",
