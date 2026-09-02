@@ -1,0 +1,47 @@
+name: gpt-webkit-consumer-isolation
+
+on:
+  pull_request:
+    branches:
+      - recovery/release-provenance-20260831
+    paths:
+      - .github/workflows/critical-cross-browser.yml
+      - .github/workflows/gpt-webkit-consumer-isolation-ci.yml
+      - tooling/e2e/specs/critical-cross-browser.spec.cjs
+      - tooling/e2e/lib/local-web-runtime.cjs
+      - apps/web/middleware.ts
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  webkit-critical-consumer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Install WebKit
+        run: pnpm exec playwright install --with-deps webkit
+      - name: Critical consumer WebKit with isolated fail-closed API
+        env:
+          CI: "1"
+          NEXT_DEV_WEBPACK: "1"
+          LOCAL_WEB_RUNTIME_API_STUB: "1"
+          API_HOST: "127.0.0.1:4000"
+        run: >-
+          pnpm exec playwright test
+          --config=tooling/e2e/playwright.cross-browser.config.cjs
+          --project=webkit
+          tooling/e2e/specs/critical-cross-browser.spec.cjs
