@@ -27,24 +27,25 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-04ef3c7de4dd-2ff1760b7d72
 PREDECESSOR_BASELINE_ID = ea-baseline-229e7777f9b0-2d4567b3a2c8
 REBASE_ID = pending
-LIVE_AGGREGATE = d75d47ee595c0788140f0be66f657b6fbae60fc8153e591bea77a791171a74bb
+LIVE_AGGREGATE = 3d89753bde5d99865c57e860dd291e44330d84397c2bd0afb1c8f954d6200eb0
 BASELINE_AGGREGATE = 2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8
 PATH_COUNT_LIVE = 451
 PATH_COUNT_BASELINE = 450
-CHANGED_PATHS = 2
+CHANGED_PATHS = 3
 ADDED_PATHS = 1
-MUTATED_PATHS = 1
+MUTATED_PATHS = 2
 MISSING_PATHS = 0
-EXIT_GATE = P0-B Nest RENDER_GIT_COMMIT provenance · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 QA0-QA9 재실행 전까지 ISSUED 금지
+EXIT_GATE = P0-B Nest RENDER_GIT_COMMIT provenance + POST-007 operator entity schema · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 QA0-QA9 재실행 전까지 ISSUED 금지
 ```
 
 ## 판정
 
-P0-B (`p0/p0-b-runtime-preflight`) 가 Nest protected-scope 2경로를 변경했다.
+P0-B (`p0/p0-b-runtime-preflight`) 가 Nest protected-scope 2경로를 변경했고, POST-007이 `schemas/operator-entity.instance.json` 1경로를 추가 변경했다.
 live aggregate ≠ baseline → 이전 ISSUED 인증은 current-authoritative 가 아니다.
 은폐 금지 · `STATUS = NOT_ISSUED` · `CERT_ISSUED = 0` · `PROTECTED_SCOPE_DRIFT = 1` · `REBASE_REQUIRED = 1`.
 
-변경 경로 (2):
+변경 경로 (3):
+- schemas/operator-entity.instance.json
 - services/api-nest/src/health.controller.ts
 - services/api-nest/src/config/nest-provenance.ts (added)
 
