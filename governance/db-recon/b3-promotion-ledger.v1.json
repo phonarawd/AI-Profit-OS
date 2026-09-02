@@ -1,13 +1,18 @@
 {
   "schema": "governance.db-recon.b3-promotion-ledger.v1",
-  "observed_at": "2026-08-31T20:15:00+09:00",
+  "observed_at": "2026-09-02T04:00:29Z",
   "production_project_ref": "mgsytcetsiecllmhcyox",
   "isolated_verify_db": {
-    "exists": "NO",
-    "usable": "NO",
-    "branch_project_ref": null,
-    "branch_name_intended": "verify-b3",
-    "customer_data": 0
+    "exists": "YES",
+    "usable": "YES",
+    "branch_project_ref": "uluzxvdpynytytduuryy",
+    "branch_name": "staging-release-20260902",
+    "parent_project_ref": "mgsytcetsiecllmhcyox",
+    "customer_data": 0,
+    "public_table_count": 93,
+    "production_public_table_count": 93,
+    "schema_parity": "PASS",
+    "note": "Current Production schema is reproduced in isolated staging via committed production_schema_parity migration; original promotion candidate rows below remain historical per-file records and are not retroactively marked individually applied."
   },
   "production_db_apply": 0,
   "reapply": 0,
@@ -226,6 +231,18 @@
     "status": "NOT_RUN",
     "rc_formal": "NO",
     "rc_sha": null,
-    "schema_version": null
+    "schema_version": null,
+    "infra_runtime": "PASS",
+    "current_backend_sha": "52877334c22f074ebe6bc4b280a96b6b896995c0",
+    "blocker": "final RC + Cloudflare frontend staging binding + full user-flow E2E"
+  },
+  "schema_parity_recovery": {
+    "migration": "supabase/migrations/20260902032000_production_schema_parity.sql",
+    "staging_apply": "PASS",
+    "production_table_count": 93,
+    "staging_table_count": 93,
+    "missing_in_staging": 0,
+    "staging_only": 0,
+    "production_mutation": 0
   }
 }
