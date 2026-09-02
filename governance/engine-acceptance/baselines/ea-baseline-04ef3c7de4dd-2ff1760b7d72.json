@@ -1,18 +1,18 @@
 {
   "schema": "governance.engine-acceptance.baseline.v1",
   "version": "1.0.0",
-  "id": "ea-baseline-74683b6e39a7-590263f0f273",
+  "id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
   "todoId": "engine-acceptance-rebase-v1",
-  "measuredAt": "2026-09-02T05:06:12.953Z",
-  "commit_sha": "74683b6e39a73069caeade902e7600a352690f67",
-  "tree_sha": "a49b41bd450e61e5fed9f6205e1284a1fe115913",
+  "measuredAt": "2026-08-24T08:50:46.120Z",
+  "commit_sha": "04ef3c7de4dda0d0d5f8a2ef403dfa25bd0e9318",
+  "tree_sha": "1f134c9dc7d6cf3fae89af199eaac97b320748bb",
   "working_tree_clean": true,
   "protected_scope_clean": true,
   "dirty_paths_all": [],
   "dirty_paths_protected": [],
-  "lockfile_hash": "c81a1297ee0bd7f8379dcd798daa868351a0827ec1f5d537b557d0e68af61f15",
-  "schema_migration_hash": "7867cb4e78671b4f5b0a6162f1b2461a2474c78e00f9677b582e34987519fc97",
-  "prompt_hash": "b58b3f2c15d0234e13ac617f26f41acbd41e8b3186218b7e652f8ae36ec6dafb",
+  "lockfile_hash": "faf4c73927d1b92cbe8bc9b8ffb57000e9d630c920ca98fdea2ebf55182f820c",
+  "schema_migration_hash": "7d79073fee241c9abcd259ae76e0ab792513a40123ecd78c1abbc6b94e161356",
+  "prompt_hash": "ff6edf9fb8d7cf5b298a1ff34169fdd3e1746316e320a0363d237f95f5ea42d3",
   "eval_dataset_hash": "710cc5f7e3f1ac7ad6ee934eb9028d7bb8f0adbce38e94c44c1c6445cda0a47d",
   "acceptance_workflow_hash": "b8e724ba3af9e2d240f4daeefd53d4330972afdb942396698389825167752aa7",
   "node_version": "v22.23.2",
@@ -21,8 +21,8 @@
   "protected_scope_manifest": {
     "pathSeparator": "/",
     "hashAlgorithm": "sha256",
-    "aggregate": "590263f0f273f214f14c8a8ad8489f79d21fbb0e71f71d480a94cbd026f82230",
-    "pathCount": 490,
+    "aggregate": "2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8",
+    "pathCount": 450,
     "entries": [
       {
         "path": "eval/coach_redteam.jsonl",
@@ -110,7 +110,7 @@
       },
       {
         "path": "schemas/deposit-config.v1.json",
-        "sha256": "37eafa4721d4b3d07c2a0ee973cf8fab3cc4060e0a98bdc79dcf14928361a8ce"
+        "sha256": "ee475d1106586173310de5426634babe65d46af130d0535d1bdc1c72bca78d03"
       },
       {
         "path": "schemas/deposit-dispute.v1.json",
@@ -306,7 +306,7 @@
       },
       {
         "path": "schemas/toast-codes.v1.json",
-        "sha256": "38ede2af789c39c94823abc47bd1e122a78b8184b182e5514d6f654c3fbff08a"
+        "sha256": "c2530c8d7d83d35e50adf9de7135e9990f1ecff8e284607b4b85e1271479eb4e"
       },
       {
         "path": "schemas/trade-execution-state.v1.json",
@@ -378,7 +378,7 @@
       },
       {
         "path": "services/api-nest/admin-audit.core.cjs",
-        "sha256": "64c1b936aac25d8bc31df2d12b8e358e87aa4a416c43e58de663cd31e5c07fd9"
+        "sha256": "d6b64918d74bb89420b04423f0623faa1b5c441161df3b1aa6a5d4026eb3fa9f"
       },
       {
         "path": "services/api-nest/admin-kill-switch.core.cjs",
@@ -434,7 +434,7 @@
       },
       {
         "path": "services/api-nest/src/adapters/adapters.ingest.controller.ts",
-        "sha256": "57f3f8490f196fb7c074f3fb9e9f4225c20d2dd3324b51f819b7d64e796ff1f0"
+        "sha256": "8ca18a2a35125e6d5855ff3a3cec7562e6a27636ca8b0b2c0b6edfcf2d901688"
       },
       {
         "path": "services/api-nest/src/adapters/adapters.mi.ts",
@@ -522,7 +522,7 @@
       },
       {
         "path": "services/api-nest/src/ai/coach.controller.ts",
-        "sha256": "046f8326a4928e32f98e3b79e51c5429eb7e4f40afb48bfefb710f78c3e7bc30"
+        "sha256": "4e0217180eb7fdf195baea948439065548179eb27df1dce74dabf0cec972c5b0"
       },
       {
         "path": "services/api-nest/src/ai/coach.orchestrator.ts",
@@ -538,7 +538,7 @@
       },
       {
         "path": "services/api-nest/src/ai/fact-tool.service.ts",
-        "sha256": "31b2b16b712d358fa7672d224b47c76f2688f7151c90c9555b2f2d8b6b74d904"
+        "sha256": "ef0dfdd1edceeeb5212baf8fb88bd8458d686b46aace463947093cd8db2eabbf"
       },
       {
         "path": "services/api-nest/src/ai/fact-tool.types.ts",
@@ -574,7 +574,7 @@
       },
       {
         "path": "services/api-nest/src/app.module.ts",
-        "sha256": "d47aa1ec42e57f6dfd4383eaf9eb113a1ee6f278b264aa27b67e909d2f1b1e75"
+        "sha256": "81a81e6381e5b759fed206d8e59d87827907d52615410545a3fca93787287f0f"
       },
       {
         "path": "services/api-nest/src/audit/admin-audit.module.ts",
@@ -582,7 +582,7 @@
       },
       {
         "path": "services/api-nest/src/audit/admin-audit.service.ts",
-        "sha256": "005c5c61a3283a468a1afb05856b3e70ff6e313e3b0f76215200bd24ac8df8f2"
+        "sha256": "6acbd55d63647be90af09ae946170f1bf9863dbf5c93cff451296a217b78f1c1"
       },
       {
         "path": "services/api-nest/src/audit/audit-events.admin.controller.ts",
@@ -606,11 +606,11 @@
       },
       {
         "path": "services/api-nest/src/auth/auth.controller.ts",
-        "sha256": "ef53cb20dc946c5225874d92d43487a1a5cf703508cbb77d3832393baaa3b56f"
+        "sha256": "05234ff2a112b097e68e1dbf44b513904b73efb9792bce54fd326df773276829"
       },
       {
         "path": "services/api-nest/src/auth/auth.module.ts",
-        "sha256": "73bd4109fbf80b6ff6a49b9b993b407de67f07efe9ba268e768715e6de3df28f"
+        "sha256": "b1546d35a9a14fde1a6f66b99d9e40e6f61c4c83eb356792d0fde740aa1939fb"
       },
       {
         "path": "services/api-nest/src/auth/auth.routes.ts",
@@ -618,31 +618,11 @@
       },
       {
         "path": "services/api-nest/src/auth/auth.service.ts",
-        "sha256": "74b255b4f01c8c74131261592a06638851ff5d114ea613b4617010f7ee9ab7b1"
+        "sha256": "ee4efaf8c517eea736dc7d907832d3dd8d4a975d93de95dfba2279124ca2e112"
       },
       {
         "path": "services/api-nest/src/auth/auth.stage.ts",
-        "sha256": "f805986e9701682dd1a2867d23ad3cd2e0de877650f35227dc1af172c6f4d69a"
-      },
-      {
-        "path": "services/api-nest/src/auth/identity-proof.crypto.ts",
-        "sha256": "d62fc63783b3d20fae07d9465b5fb48d5a5101eed550aed56ed9402123a86318"
-      },
-      {
-        "path": "services/api-nest/src/auth/identity-proof.email.runtime.test.ts",
-        "sha256": "d3ab0d9d0f870b66515876f94cbece259e38dd3133e67afdbf5ae58657baf663"
-      },
-      {
-        "path": "services/api-nest/src/auth/identity-proof.email.ts",
-        "sha256": "7fe0ee9114fb7243850434ddaaeffa730a4367290265c86d4dbdd65d119aaf3a"
-      },
-      {
-        "path": "services/api-nest/src/auth/identity-proof.selftest.ts",
-        "sha256": "31a79eb984792d5c7e874b6a4fe1cf98c1fcefe0d7d345daa7e7a1c0bf049509"
-      },
-      {
-        "path": "services/api-nest/src/auth/identity-proof.store.ts",
-        "sha256": "392899b296966be9ff4b6756ee12acd58df30a4a8c9d3022b1bb651e4e9ce6d6"
+        "sha256": "8d8fd2d686902bf4451aa5efc0cb2d979c04e4f591bd473c64b1d8dc49452162"
       },
       {
         "path": "services/api-nest/src/auth/index.ts",
@@ -650,31 +630,15 @@
       },
       {
         "path": "services/api-nest/src/auth/jwt-auth.guard.ts",
-        "sha256": "45546c8f054efca408cb124d36b92403df355f2e226816d6d20d662f5915f017"
+        "sha256": "467fd2257aaffdf792a6585aa25f986ca312c945cb82dd2fffb5b238a789fba0"
       },
       {
         "path": "services/api-nest/src/auth/jwt-guard.selftest.ts",
         "sha256": "feb32404a583f11771392f49daadd873d84649d6357fa1d47f6576141165e098"
       },
       {
-        "path": "services/api-nest/src/auth/magic-link.service.ts",
-        "sha256": "6001fe1b5db60d23dde46409bc0ac47b9a79eacac8db5f1edf25938c4a40200e"
-      },
-      {
-        "path": "services/api-nest/src/auth/oauth-identity.service.ts",
-        "sha256": "14724491d0536c7f80ac85d5a42bd1ca82587054ac7110963546004f22867117"
-      },
-      {
-        "path": "services/api-nest/src/auth/passkey-registration.policy.ts",
-        "sha256": "e5217b0d999635b5efd62caf1139bc7122aa89fbf4eb66e02128371638e836fb"
-      },
-      {
         "path": "services/api-nest/src/auth/privacy-account.service.ts",
         "sha256": "54f17c4f0e8963b5c9d531818c23037fdc44b63a4d6221fb395e5ccbda771f5e"
-      },
-      {
-        "path": "services/api-nest/src/auth/webauthn-assert.service.ts",
-        "sha256": "bb27d8baca832d01aa00240769568990acfe510969f48af9ab09d441b2fffabd"
       },
       {
         "path": "services/api-nest/src/auth/webauthn-rp.ts",
@@ -682,7 +646,7 @@
       },
       {
         "path": "services/api-nest/src/common/admin-capabilities.ts",
-        "sha256": "92ac9e8c436157c69d7b855faa361b633e83ebe860c1dda712996c8d368af2ce"
+        "sha256": "60c1edb93caf678e61743ef7b93ce01260fa10879ab7fb15a4671ba4a8a3217b"
       },
       {
         "path": "services/api-nest/src/common/admin-guard.selftest.ts",
@@ -697,40 +661,12 @@
         "sha256": "b57bf418e1fce3f69d9ae47ab4b96944f654494eb012cde2360678e854d89ab1"
       },
       {
-        "path": "services/api-nest/src/common/admin-session.controller.ts",
-        "sha256": "7293f5ff6a79213dc65e5f9a9a0e3dd410165e60b20b04088fd7420a641eb32f"
-      },
-      {
-        "path": "services/api-nest/src/common/admin-session.cookies.ts",
-        "sha256": "8967868637847e967e5dfb4dc0b17f7bee6499926fb0613b0825ba1e7ffa85ec"
-      },
-      {
-        "path": "services/api-nest/src/common/admin-session.csrf.ts",
-        "sha256": "cea3a93bbf803a34bf1558e015c9a8092df13036b30b41aa1997bed8484e1a0b"
-      },
-      {
-        "path": "services/api-nest/src/common/admin-session.revoke.ts",
-        "sha256": "4d24c3e5bc5d43276fbc5f90469cfd00d4518a121693ec555e856c5ea1c0e6e2"
-      },
-      {
-        "path": "services/api-nest/src/common/admin-session.runtime.test.ts",
-        "sha256": "e1448951d95209342cfdb0acd143c45d3da3c68d813b93caece779f6c8d0a98d"
-      },
-      {
         "path": "services/api-nest/src/common/admin-token.ts",
-        "sha256": "ac01ecf624e046d06388873d8e2560516d496e31b10155f7c0c62d46459d874f"
+        "sha256": "2a4fcbb7d9cb80a851f491d71505af5a27e41e7619615c08b1c789ffd8f2f047"
       },
       {
         "path": "services/api-nest/src/common/admin.guard.ts",
-        "sha256": "ccbc3aaf1a5a06482fdf8ef90e9840e0dbe3cf2fdddd0583850086a235fa7e3b"
-      },
-      {
-        "path": "services/api-nest/src/common/bearer-header.runtime.test.ts",
-        "sha256": "e8ff605c18d065fe86f4ad2276f45d793a2c65b3fcef8eaa7a7ae95c10209e84"
-      },
-      {
-        "path": "services/api-nest/src/common/bearer-header.ts",
-        "sha256": "6d49601fb1b7ea3d34f81b0409cfcba743f78bcad5b7c342f1de6a3cce41c824"
+        "sha256": "423041bd3fa9f2b36ae7897f351f3fb6e6ce30f900c0f09ce798fdaf4ff8ce41"
       },
       {
         "path": "services/api-nest/src/common/clock.ts",
@@ -738,7 +674,7 @@
       },
       {
         "path": "services/api-nest/src/common/common.module.ts",
-        "sha256": "71a7044946e30d64f4379c99bc61eac9f44eccdf11bcc9dc2d0a749f4b028476"
+        "sha256": "2d9ad6bbed9c6d4035b882df7f34c117c267c4a76c80e9627257ed4e56ac75a2"
       },
       {
         "path": "services/api-nest/src/common/index.ts",
@@ -787,10 +723,6 @@
       {
         "path": "services/api-nest/src/compliance/kyc.service.ts",
         "sha256": "277408cefbc7ddf474e9a0be5e862d7ad8082c772885376c91ead95560c70ea5"
-      },
-      {
-        "path": "services/api-nest/src/config/nest-provenance.ts",
-        "sha256": "b22893ce3d383b5875847fc0401d45efbceff011c3d436845bd1520639960837"
       },
       {
         "path": "services/api-nest/src/config/phase0.env.ts",
@@ -862,15 +794,7 @@
       },
       {
         "path": "services/api-nest/src/health.controller.ts",
-        "sha256": "baa562bb35ec1cb8ba89d30e68198930bcc0755526aff8c4c1c1e02aeb7921cd"
-      },
-      {
-        "path": "services/api-nest/src/health.public.runtime.test.ts",
-        "sha256": "56894ee4c376084b3beb9e148cb51a14c95db8a1634eb90be5af7b2f890100b9"
-      },
-      {
-        "path": "services/api-nest/src/health.public.ts",
-        "sha256": "2601aea6e369da1cc9e1a208eb4ba4a547cd2135d9977de8b9f6c7f75a55827f"
+        "sha256": "ff95da740800372d884f5e2fe8d01bc7223d160b4d8fa1372d9b9b3bd42659c8"
       },
       {
         "path": "services/api-nest/src/home-read/home-read.mi.ts",
@@ -945,12 +869,8 @@
         "sha256": "709b7501094aae344cc0c4ab74edcf8945a2162e0873482807f389145dcdee47"
       },
       {
-        "path": "services/api-nest/src/ledger/idempotency-fingerprint.runtime.test.ts",
-        "sha256": "8dd60dfc51721525d6cccc73722814a258cee1069181e399ac3fe68e4b45c536"
-      },
-      {
         "path": "services/api-nest/src/ledger/idempotency-fingerprint.ts",
-        "sha256": "3341830728e6ab7b0a2ff704fa81bd01f952038ea2bc3ade9a670702cd0de18b"
+        "sha256": "20f5dc712ddc9b806c2878e6ea6552da3a2edc037165e7734c5cddcb50861b89"
       },
       {
         "path": "services/api-nest/src/ledger/index.ts",
@@ -978,7 +898,7 @@
       },
       {
         "path": "services/api-nest/src/ledger/ledger.money.ts",
-        "sha256": "b5beeb328fec02ed69742fbb0fd1673338e64f47ddc5a15171f697126cd232c1"
+        "sha256": "9d01e9def1efd7515d04f29a779261467e4199967e0e36a518ed598b51365928"
       },
       {
         "path": "services/api-nest/src/ledger/ledger.outbox.service.ts",
@@ -1297,14 +1217,6 @@
         "sha256": "32b123c4d758b4abe50f4f180667ebe722b4fe329746c64e3d093f3a0b86b94a"
       },
       {
-        "path": "services/api-nest/src/referral/referral-code.util.runtime.test.ts",
-        "sha256": "162bb93bec73aa2fc2d40b6a60e9fcc2e85bad0812018c3a20f1de12b7fe0591"
-      },
-      {
-        "path": "services/api-nest/src/referral/referral-code.util.ts",
-        "sha256": "995bf4e1a7cff737e05cf19893368e7d228c5afd944726d5c22c59ad7a7ca52b"
-      },
-      {
         "path": "services/api-nest/src/referral/referral.admin.controller.ts",
         "sha256": "ee07adc6daf2e0f277d41fdb96ed74ac2c5937454a804aaf859b34f645475e0c"
       },
@@ -1318,7 +1230,7 @@
       },
       {
         "path": "services/api-nest/src/referral/referral.controller.ts",
-        "sha256": "606750ba5632e37646272f755223ed12d444289bcec830ff1965e6b664250ffc"
+        "sha256": "a24c79dae384848b44cedf45a294decd5acc39b3961076c4670d31e8ec52236d"
       },
       {
         "path": "services/api-nest/src/referral/referral.edge.service.ts",
@@ -1338,11 +1250,7 @@
       },
       {
         "path": "services/api-nest/src/referral/referral.module.ts",
-        "sha256": "861568a455517d478ef48da328b10820d2e07e329cb11958b5bc3764daed472b"
-      },
-      {
-        "path": "services/api-nest/src/referral/referral.own-code.service.ts",
-        "sha256": "498313627c028f3408e4a514296f4003aecd4dd4812117baa96522b23bd4088c"
+        "sha256": "0c469c25fe062e062eca9b047797bdcbb2655af843b5b36cc4ca7971a7b1adb9"
       },
       {
         "path": "services/api-nest/src/referral/referral.pool.service.ts",
@@ -1501,38 +1409,6 @@
         "sha256": "77da8d9aaecf88285c14a545cbfa90baff9badf9c5535284a22b36e1feea7426"
       },
       {
-        "path": "services/api-nest/src/ux-prefs/user-ux-prefs.defaults.ts",
-        "sha256": "8c606992c47cf5d465adbd66e16ae1375a25f8a35d7ccf6a5020e6e41b5f46ed"
-      },
-      {
-        "path": "services/api-nest/src/ux-prefs/user-ux-prefs.module.ts",
-        "sha256": "4de73241ef93cff86029ad1ff8133a75fb3ccd209af2cc7bd76dd8f87d1450e7"
-      },
-      {
-        "path": "services/api-nest/src/ux-prefs/user-ux-prefs.parse.ts",
-        "sha256": "2cd758d5488d8fb8f2e7dc6050da68ea84f007840e7407a8ae3e1099c45e3c14"
-      },
-      {
-        "path": "services/api-nest/src/ux-prefs/user-ux-prefs.runtime.test.ts",
-        "sha256": "0146698cc1de61ff1ce84809b6e8aa38538f37b817d3d80e8f7e30168910b1ce"
-      },
-      {
-        "path": "services/api-nest/src/ux-prefs/user-ux-prefs.service.ts",
-        "sha256": "24662e8143b055762aae0630a92acb7b02a0c539752e23e03f1c911739b7e1b2"
-      },
-      {
-        "path": "services/api-nest/src/ux-prefs/user-ux-prefs.store.ts",
-        "sha256": "10cd9dd826a210deea216d4302dbdd1d25cac5b0e124dc51b18b0c1b7f1aa465"
-      },
-      {
-        "path": "services/api-nest/src/ux-prefs/user-ux-prefs.user.controller.ts",
-        "sha256": "fbd2147863fe1d4b39ceeb3d160714b6ba89c9712dcc213a1b8a09d5ab82d676"
-      },
-      {
-        "path": "services/api-nest/src/ux-prefs/user-ux-prefs.user.routes.ts",
-        "sha256": "c293847baf0cb9c0ed346c068cb70323d064b52626bd16c64d24c66d3b5899ba"
-      },
-      {
         "path": "services/api-nest/src/wallet/balance-aware-fact.ts",
         "sha256": "2bc34d8571cd4e2c7f1bb9a55bb1c3d52c70238e635d13d6d4bb95ef93fb56f7"
       },
@@ -1542,11 +1418,11 @@
       },
       {
         "path": "services/api-nest/src/wallet/chain-sweeper.phase0.service.ts",
-        "sha256": "195515f583b089a08136a7d4690ce4d6a8fcba97ab6374440d3ff757b828ebd6"
+        "sha256": "a3a15d1fec06c7e6d4a8fec6cbf7f1ee1e1dee6191c48dbd776357bdd77cd0f9"
       },
       {
         "path": "services/api-nest/src/wallet/chain-watcher.phase0.service.ts",
-        "sha256": "69ea5b02b4c22f1a4a61890141242d1664386cd2e9384c2172a0a61705802f75"
+        "sha256": "b1b903c04c50d0989af29c9552529740ac9521ecb6f4292f7f2c85b5fa86f9c9"
       },
       {
         "path": "services/api-nest/src/wallet/chain-watcher.stages.ts",
@@ -1554,23 +1430,15 @@
       },
       {
         "path": "services/api-nest/src/wallet/deposit-address.service.ts",
-        "sha256": "eaf08c4e0baa954d7f6c7fba25089bc63d9cbe9462a09d2e5bf6fa7cd69fc330"
+        "sha256": "d7209ec1da2c0b832b73d8e55d9677f337eb24f4e29bf9da6e40456eb87c6395"
       },
       {
         "path": "services/api-nest/src/wallet/deposit-config.admin.controller.ts",
         "sha256": "7f72058cf84ff30089023539b04cf14b2dbb3619056dade67bc95886556945aa"
       },
       {
-        "path": "services/api-nest/src/wallet/deposit-config.ready.ts",
-        "sha256": "7f86e60bf95f512fce24e62336da046d991f1046533714ea3fb6793132656233"
-      },
-      {
-        "path": "services/api-nest/src/wallet/deposit-config.safe-krw.ts",
-        "sha256": "eca2191d27ef5c0ec3ac49ef3bbbe6f1cffe22cac106c8af89434fd6329750ad"
-      },
-      {
         "path": "services/api-nest/src/wallet/deposit-config.service.ts",
-        "sha256": "590eee71ab72949c0e9fda4d824dcf2720ed73e3182097abcff07e6add23860b"
+        "sha256": "e3545db4f3b05b30c5da1a755759f182cf27f18750cfc357e081f123f99f526e"
       },
       {
         "path": "services/api-nest/src/wallet/deposit-dispute.admin.controller.ts",
@@ -1610,7 +1478,7 @@
       },
       {
         "path": "services/api-nest/src/wallet/index.ts",
-        "sha256": "a20172f5535a4c24395557c2be3b1336b75d6c4c809f7618fcbd368a42ba8513"
+        "sha256": "6fa4e206fee6f0e6bc4dc884f9d781e0705dcd70a013854881ea217b8373735e"
       },
       {
         "path": "services/api-nest/src/wallet/krw-deposit.admin.controller.ts",
@@ -1618,11 +1486,11 @@
       },
       {
         "path": "services/api-nest/src/wallet/krw-deposit.service.ts",
-        "sha256": "55f72909c2556f54077147b5511aebb31b2ea9690944b5d372ee29ebb6efa238"
+        "sha256": "1ee55a18cd849b33e6e431dbabe5ff0fbed568a487cf86da6f764226a0147fb4"
       },
       {
         "path": "services/api-nest/src/wallet/min-holding.service.ts",
-        "sha256": "3b8a0c9bd028d646fd5a0bca0c50d77b928bd6fe825001db81795768e5461891"
+        "sha256": "47622f6efdc8ad0dbe183499fa4231489e8dbe4a5a1af88972621bbe4da9f4a1"
       },
       {
         "path": "services/api-nest/src/wallet/network-plain-ko.ts",
@@ -1634,39 +1502,35 @@
       },
       {
         "path": "services/api-nest/src/wallet/resend-email.provider.ts",
-        "sha256": "5093d535acb9af8febe3e3c087433e5a1187d5ec6ae4e7b11b16450c07ac8eee"
-      },
-      {
-        "path": "services/api-nest/src/wallet/tron-address.runtime.test.ts",
-        "sha256": "4322aef16a5221fcd2abdd8477489fc60df6b7a9600248038cf87594f93213ce"
+        "sha256": "cece6aa9d9b3ca131f2a49a15c64f5cf5c40e6c79f20b41b990f467b5fe7ca2a"
       },
       {
         "path": "services/api-nest/src/wallet/tron-address.ts",
-        "sha256": "aa990fb6ae172c264b1c06d11bdf25d810db7e72a10b365403fef88392fa004b"
+        "sha256": "62660ac156d574955c4b7c9b6977aebfe29d1e2f91a20729c83cadd191f87b4f"
       },
       {
         "path": "services/api-nest/src/wallet/usdt-deposit.service.ts",
-        "sha256": "4332e9fbae80c12242c82de90319a0d4b53817d64fcc39c2e012e2e0b26acfda"
+        "sha256": "8f6d4ac341ef729f83f5d69a9053dedc320d0c52e91850ab1d3f611c12418dfe"
       },
       {
         "path": "services/api-nest/src/wallet/wallet.controller.ts",
-        "sha256": "8072294fdcce4cccd4aa7bbff7c2a92628e955fda9ab55bc12503949d07c1199"
+        "sha256": "2330ee3648cfa51f5b87a0af16de6f3d34e8c0010bc46a7431afc8a7904e6bf6"
       },
       {
         "path": "services/api-nest/src/wallet/wallet.events.ts",
-        "sha256": "84638a4d23408a8c056daa3c053cb1ff61ea1ca5895cea6250d6ae4c52e1c265"
+        "sha256": "0d0db47ebcef2aecd5ca38564ea5f92edd746915fa0a9376f515fb0197461763"
       },
       {
         "path": "services/api-nest/src/wallet/wallet.module.ts",
-        "sha256": "9adb9e685fd9382aaf421670ecf6db4ea1e0a4c10e9603827c6fb3b7fea089ff"
+        "sha256": "6e18a52f94c064bb8204e3657444c4a18aae6e67800ee9b998724cecbcc9dd86"
       },
       {
         "path": "services/api-nest/src/wallet/wallet.routes.ts",
-        "sha256": "3f90fceee13d17b732b0b57e05288b7a7af4e0a80dccf4da2fb91ae0c00e2962"
+        "sha256": "fc2d813cdf97fca3a004c49be0b264ca9107542dc9a0d84697caf8a6963c05f8"
       },
       {
         "path": "services/api-nest/src/wallet/wallet.types.ts",
-        "sha256": "c2730526965a7d963e1fcea91a72eba4e041036a79448a2f29b211576e262060"
+        "sha256": "250e6723e863f1c758d948693c05390c281b1ba5465db0e6887eee55ac88c161"
       },
       {
         "path": "services/api-nest/src/wallet/withdraw-apply-block.ts",
@@ -1682,43 +1546,27 @@
       },
       {
         "path": "services/api-nest/src/wallet/withdraw-fee.service.ts",
-        "sha256": "03aff7ae2a56d44b9618d11df6344cf66b701341a8891a2620a3ffdfa4a561d9"
+        "sha256": "d4c6d9ac58d119dcb33f3bf7851f7212635253058f0e551f631b83b5e4f0a3e6"
       },
       {
         "path": "services/api-nest/src/wallet/withdraw-intent.service.ts",
-        "sha256": "2360e37fe27b6677d1146976475c7c55e29011298dd088bd17cba4bddcd2850a"
+        "sha256": "e41e35e5749ba463df927f7578e62afe2eccda9a6dcab59becd105732309d461"
       },
       {
         "path": "services/api-nest/src/wallet/withdraw-kyc.guard.ts",
         "sha256": "351a7bd4fb7662266bb5ec5981437ba5217a97144f62a14b071142dd3970cd4f"
       },
       {
-        "path": "services/api-nest/src/wallet/withdraw-review.admin.controller.ts",
-        "sha256": "764d72aa965c8dcfb21bb4426b5faccd2e3a688bfedd2b61f0a191b06cbff397"
-      },
-      {
-        "path": "services/api-nest/src/wallet/withdraw-review.policy.runtime.test.ts",
-        "sha256": "eba87bbd829511a40268eaad86fc0df0c5ee748c704823a71ff334471bec39ef"
-      },
-      {
-        "path": "services/api-nest/src/wallet/withdraw-review.policy.ts",
-        "sha256": "d258bcd450c9cf1f728abd6aef0d8e6e8dd6d93f7caaf8221ff86123a17bca0f"
-      },
-      {
-        "path": "services/api-nest/src/wallet/withdraw-review.service.ts",
-        "sha256": "bb0449d96518240c33bc04f739d88f3948adda34298cc7e5ff5b827126e94d1d"
-      },
-      {
         "path": "services/api-nest/src/wallet/withdraw-stepup.policy.ts",
-        "sha256": "7c81d58924834353253b23ef8f1409a2f7a79b090110cd299765bd2d3d06ca6d"
+        "sha256": "a80e4d18cf8dfb6ff04be283f00c7aac1214679e31c97f30926449085bf645a8"
       },
       {
         "path": "services/api-nest/src/wallet/withdraw-stepup.service.ts",
-        "sha256": "19013dc540c1eb889d9b30f72428d7712f387b593900e0d05b434aee60c571b9"
+        "sha256": "8b754a883111135e41cd3f6941cdb7fb0c9e7fc42568ebc919afa85825707774"
       },
       {
         "path": "services/api-nest/tsconfig.json",
-        "sha256": "2fd2dee8e478ea0277a04aa519afe73072f8f6b59fb9b82d7c3b74d693ae139a"
+        "sha256": "f94411c11a5c9b4ad5a0cd676ff3f86b4974785f3705660b411f1aa2f53dd077"
       },
       {
         "path": "services/engine-rust/Cargo.lock",
@@ -1975,14 +1823,6 @@
       {
         "path": "supabase/migrations/20260823210000_admin_policy_versions.sql",
         "sha256": "ee45736b5dd3897712850a5805be13b1cc427981fa7f0232d1bcb25da862d162"
-      },
-      {
-        "path": "supabase/migrations/20260901224000_withdraw_stepup_token_single_use.sql",
-        "sha256": "6bb89ec9da04ef6dd655aa9817ff3f17731affaf7f101850ec6395df3342a537"
-      },
-      {
-        "path": "supabase/migrations/20260902032000_production_schema_parity.sql",
-        "sha256": "06285c202721b301a0ff1a0c4e91fd6b85b91ff77d09ff7669b68961fd0650bd"
       }
     ]
   },
@@ -1992,8 +1832,8 @@
   "next": "QA1_DETERMINISTIC_TRUTH",
   "epoch": {
     "decision_id": "ENGINE_ACCEPTANCE_REBASE_V1",
-    "rebase_id": "ea-rebase-3c46ac2daaf9-590263f0f273",
-    "predecessor_baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+    "rebase_id": "ea-rebase-ffffb4808987-2ff1760b7d72",
+    "predecessor_baseline_id": "ea-baseline-229e7777f9b0-2d4567b3a2c8",
     "kind": "product_rebase"
   }
 }
