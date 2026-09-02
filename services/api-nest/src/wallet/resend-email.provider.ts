@@ -42,6 +42,10 @@ export class ResendEmailProvider {
     const env = loadPhase0Env();
     this.assertFromConfigured();
     if (!env.resendApiKey) {
+      if (env.nodeEnv === "production") {
+        this.log.error("RESEND_API_KEY unset in production — OTP delivery unavailable");
+        return { ok: false, provider: "resend", reason: "resend_api_key_missing" };
+      }
       // Dev without key: accept without network (never log OTP)
       this.log.warn("RESEND_API_KEY unset — OTP accepted_dev (not sent)");
       return { ok: true, provider: "resend", status: "accepted_dev" };
@@ -90,6 +94,10 @@ export class ResendEmailProvider {
     const env = loadPhase0Env();
     this.assertFromConfigured();
     if (!env.resendApiKey) {
+      if (env.nodeEnv === "production") {
+        this.log.error("RESEND_API_KEY unset in production — magic-link delivery unavailable");
+        return { ok: false, provider: "resend", reason: "resend_api_key_missing" };
+      }
       this.log.warn("RESEND_API_KEY unset — magic link accepted_dev (not sent)");
       return { ok: true, provider: "resend", status: "accepted_dev" };
     }
