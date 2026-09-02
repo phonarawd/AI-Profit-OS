@@ -1,0 +1,277 @@
+name: engine-current-epoch-publish-once
+
+on:
+  push:
+    branches:
+      - recovery/release-provenance-20260831
+    paths:
+      - ".github/workflows/engine-current-epoch-publish-once.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: engine-current-epoch-publish-once
+  cancel-in-progress: false
+
+env:
+  AIPO_QA_TARGET_ENV: ci
+  AIPO_QA_HOSTNAME: localhost
+  AIPO_QA_SYNTHETIC_NS: qa-synth-ci
+  AIPO_QA_PGHOST: 127.0.0.1
+  AIPO_QA_PGUSER: postgres
+  AIPO_QA_PGPASSWORD: postgres
+  AIPO_QA_PGDATABASE: aipo_qa_synth
+  AIPO_QA_PGPORT: "5432"
+  EXPECTED_BASELINE_ID: ea-baseline-0d8825e8f333-5ac0f4291966
+  EXPECTED_REBASE_ID: ea-rebase-ec3c9604d2ab-5ac0f4291966
+  EXPECTED_PROTECTED_AGGREGATE: 5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9
+  APPROVED_PRODUCT_SHA: ec3c9604d2ab7bb40338e45131a052f9b058b2c3
+  TMPDIR: /tmp
+  PORT: "4000"
+
+jobs:
+  publish-current-epoch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: aipo_qa_synth
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d aipo_qa_synth"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          ref: recovery/release-provenance-20260831
+
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Verify current epoch and protected scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const b = require("./governance/engine-acceptance/baseline.v1.json");
+          if (b.id !== process.env.EXPECTED_BASELINE_ID) throw new Error("baseline id drift");
+          if (b.epoch?.rebase_id !== process.env.EXPECTED_REBASE_ID) throw new Error("rebase id drift");
+          if (b.epoch?.decision_id !== "ENGINE_ACCEPTANCE_REBASE_V1") throw new Error("rebase decision drift");
+          if (b.protected_scope_manifest?.aggregate !== process.env.EXPECTED_PROTECTED_AGGREGATE) throw new Error("protected aggregate drift");
+          if (b.protected_scope_manifest?.pathCount !== 491) throw new Error("protected path count drift");
+          NODE
+          changed="$(git diff --name-only "$APPROVED_PRODUCT_SHA"..HEAD -- services/api-nest services/engine-rust schemas eval supabase/migrations)"
+          if [ -n "$changed" ]; then
+            echo "Protected scope changed after approved SHA:"
+            echo "$changed"
+            exit 1
+          fi
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Install verified k6
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL -o k6.tar.gz https://github.com/grafana/k6/releases/download/v0.54.0/k6-v0.54.0-linux-amd64.tar.gz
+          echo "c7f03434854f837b6790ee81572e4b0f955241974c79a43cbb9f8d0fef069589  k6.tar.gz" | sha256sum -c -
+          tar -xzf k6.tar.gz
+          sudo mv k6-v0.54.0-linux-amd64/k6 /usr/local/bin/k6
+          k6 version
+
+      - name: QA0 baseline smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/tiny-smoke.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+
+      - name: QA1 deterministic truth
+        run: node tooling/engine-acceptance/run-qa1.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+
+      - name: QA2 synthetic personas
+        run: node tooling/engine-acceptance/run-qa2.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+
+      - name: QA3 deterministic generative checks
+        run: node tooling/engine-acceptance/run-qa3.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+
+      - name: Build api-nest
+        run: |
+          set -euo pipefail
+          pnpm --filter @aipo/api-nest build
+          test -f services/api-nest/dist/main.js
+
+      - name: QA4 real clock plus canonical scorer
+        env:
+          AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa4-clock
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+          node tooling/engine-acceptance/run-qa4-clock.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa4.cjs --mode tiny --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+
+      - name: QA5 live fault plus canonical scorer
+        env:
+          AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa5-fault
+          AIPO_QA5_EXECUTE_FAULTS: "1"
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+          node tooling/engine-acceptance/run-qa5-fault.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa5.cjs --mode tiny --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+
+      - name: QA6 real threshold plus canonical scorer
+        env:
+          AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa6-threshold
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+          node tooling/engine-acceptance/run-qa6-threshold.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa6.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          pnpm verify:engine-acceptance
+
+      - name: Start api-nest for QA7
+        env:
+          LLM_PROVIDER: gemini_free
+          DATABASE_URL: ${{ secrets.QA7_DATABASE_URL }}
+          JWT_USER_SECRET: ${{ secrets.QA7_JWT_USER_SECRET }}
+          GEMINI_API_KEY: ${{ secrets.QA7_GEMINI_API_KEY }}
+          QA7_LOCAL_HTTP: "1"
+        run: |
+          set -euo pipefail
+          nohup node services/api-nest/dist/main.js > /tmp/aipo-qa7-api.log 2>&1 &
+          echo $! > /tmp/aipo-qa7-api.pid
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:4000/api/v1/health >/dev/null; then
+              echo "api-nest ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          cat /tmp/aipo-qa7-api.log || true
+          exit 1
+
+      - name: QA7 full real HTTP AI eval
+        env:
+          LLM_PROVIDER: gemini_free
+          DATABASE_URL: ${{ secrets.QA7_DATABASE_URL }}
+          JWT_USER_SECRET: ${{ secrets.QA7_JWT_USER_SECRET }}
+          GEMINI_API_KEY: ${{ secrets.QA7_GEMINI_API_KEY }}
+          QA7_LOCAL_HTTP: "1"
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/aipo-qa7-traces
+          node tooling/engine-acceptance/run-qa7.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          summary="$(find /tmp/aipo-qa7-traces -type f -name qa7-local-summary.json -print -quit)"
+          test -n "$summary"
+          node -e 'const s=require(process.argv[1]); if(s.suite_status!=="PASS") { console.error(s); process.exit(1) }' "$summary"
+
+      - name: Publish QA7 formal evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          summary="$(find /tmp/aipo-qa7-traces -type f -name qa7-local-summary.json -print -quit)"
+          trace_dir="$(dirname "$summary")"
+          node tooling/engine-acceptance/publish-qa7-formal.cjs \
+            --actions-run-id "$GITHUB_RUN_ID" \
+            --artifact-dir "$trace_dir" \
+            --head-sha "$GITHUB_SHA" \
+            --head-branch "recovery/release-provenance-20260831" \
+            --workflow-name "engine-current-epoch-publish-once" \
+            --event "push" \
+            --qa-phase "qa7" \
+            --conclusion "success" \
+            --run-url "https://github.com/phonarawd/AI-Profit-OS/actions/runs/$GITHUB_RUN_ID"
+
+      - name: Stop QA7 api-nest
+        if: ${{ always() }}
+        run: |
+          if [ -f /tmp/aipo-qa7-api.pid ]; then
+            pid="$(cat /tmp/aipo-qa7-api.pid)"
+            case "$pid" in ''|*[!0-9]*) ;; *) kill "$pid" || true ;; esac
+          fi
+
+      - name: QA8 real adversarial plus canonical scorer
+        env:
+          AIPO_QA_HARNESS_OUT: /tmp/aipo-harness/qa8-adversarial
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
+          node tooling/engine-acceptance/run-qa8-adversarial.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          node tooling/engine-acceptance/run-qa8.cjs --mode tiny --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          pnpm verify:engine-acceptance
+
+      - name: QA9 deterministic final aggregation
+        run: |
+          set -euo pipefail
+          node tooling/engine-acceptance/run-qa9.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
+          pnpm verify:engine-acceptance
+
+      - name: Capture final verdict
+        id: verdict
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const q = require("./governance/engine-acceptance/qa9-result.v1.json");
+          const e = require("./governance/engine-acceptance/evidence-manifest.v1.json");
+          console.log("QA9 verdict=" + q.verdict);
+          console.log("engine_accepted_for_ui=" + q.engine_accepted_for_ui);
+          console.log("critical=" + JSON.stringify(q.formula_inputs));
+          if (q.baseline_id !== process.env.EXPECTED_BASELINE_ID) process.exit(2);
+          if (e.baseline_id !== process.env.EXPECTED_BASELINE_ID) process.exit(2);
+          NODE
+          verdict="$(node -p "require('./governance/engine-acceptance/qa9-result.v1.json').verdict")"
+          echo "verdict=$verdict" >> "$GITHUB_OUTPUT"
+
+      - name: Commit formal current-epoch evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "AI-Profit-OS Release Bot"
+          git config user.email "release-bot@users.noreply.github.com"
+          git add governance/engine-acceptance/
+          git diff --cached --quiet && { echo "No evidence changes"; exit 1; }
+          HUSKY=0 git commit -m "chore(engine): publish current-epoch QA0-QA9 evidence"
+          HUSKY=0 git push origin HEAD:recovery/release-provenance-20260831
+
+      - name: Upload QA7 raw traces
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: engine-current-epoch-QA7-raw-traces
+          path: /tmp/aipo-qa7-traces/
+          retention-days: 90
+          if-no-files-found: warn
+
+      - name: Upload heavy harness evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: engine-current-epoch-heavy-harness
+          path: /tmp/aipo-harness/
+          retention-days: 90
+          if-no-files-found: warn
+
+      - name: Require accepted verdict
+        if: ${{ steps.verdict.outputs.verdict != 'ENGINE_ACCEPTED_FOR_UI' }}
+        run: |
+          echo "Current-epoch QA9 did not issue ENGINE_ACCEPTED_FOR_UI."
+          exit 1
