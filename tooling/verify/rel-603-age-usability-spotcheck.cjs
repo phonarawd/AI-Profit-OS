@@ -10,6 +10,9 @@ const { spawnSync } = require("child_process");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
+/** CodeQL: fixture→fetch taint 차단 — 상수 origin만 네트워크 사용 */
+const STAGING_WEB_ORIGIN =
+  "https://ai-profit-web-preview.ebay-adapter.workers.dev";
 
 function read(rel) {
   const p = path.join(root, rel);
@@ -227,7 +230,16 @@ if (closed) {
 }
 
 async function liveScenario(scenario) {
-  const url = fixture.stagingWeb.replace(/\/$/, "") + scenario.path;
+  if (fixture.stagingWeb !== STAGING_WEB_ORIGIN) {
+    fails.push("staging web must equal locked preview origin");
+    return;
+  }
+  const pathPart = String(scenario.path || "");
+  if (!pathPart.startsWith("/") || pathPart.includes("://")) {
+    fails.push("scenario path must be absolute path without scheme: " + scenario.id);
+    return;
+  }
+  const url = STAGING_WEB_ORIGIN + pathPart;
   const res = await fetch(url, {
     redirect: "manual",
     headers: { "user-agent": "ai-profit-os-rel-603-verify/1" },
@@ -287,7 +299,7 @@ function runPlaywright() {
       env: {
         ...process.env,
         CI: "true",
-        REL603_STAGING_WEB: fixture.stagingWeb,
+        REL603_STAGING_WEB: STAGING_WEB_ORIGIN,
       },
       shell: process.platform === "win32",
     },

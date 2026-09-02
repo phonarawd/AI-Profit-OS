@@ -1,0 +1,57 @@
+{
+  "schema": "governance.recovery.ghas-pr114-open.v1",
+  "observed_at": "2026-09-02T17:45:00+09:00",
+  "head_sha_at_observation": "7b72ed9a06e5a452d14d4fb276445bc44067aa47",
+  "final_rc_sha": "84cb2ea05ddea0406d9b1f13cbe0b0781a744630",
+  "check_run_id": 100240456138,
+  "ghas_title": "4 new alerts including 2 high severity security vulnerabilities",
+  "branch_open_alerts_api": 0,
+  "required_actions_ci_on_tip": "ALL_GREEN",
+  "alerts": [
+    {
+      "path": "services/api-nest/src/auth/auth.controller.ts",
+      "line": 48,
+      "rule": "js/clear-text-storage-of-sensitive-data",
+      "title": "Clear text storage of sensitive information",
+      "severity": "high",
+      "class": "FALSE_POSITIVE_DESIGN_ACCEPTED",
+      "reason": "Nest JWT access token is intentionally stored in HttpOnly Secure(SameSite=lax) cookie — session authority (ADR-006). Not clear-text log or DB store of raw secrets.",
+      "action": "FOUNDER_DISMISS_ONLY",
+      "dismissal_reason": "Won't fix — design-accepted session cookie storage"
+    },
+    {
+      "path": "services/api-nest/src/common/admin-session.cookies.ts",
+      "line": 59,
+      "rule": "js/clear-text-storage-of-sensitive-data",
+      "title": "Clear text storage of sensitive information",
+      "severity": "high",
+      "class": "FALSE_POSITIVE_DESIGN_ACCEPTED",
+      "reason": "Admin double-submit CSRF cookie must be JS-readable (httpOnly=false). Session cookie remains HttpOnly. CSRF compared via timingSafeEqual — not a session secret.",
+      "action": "FOUNDER_DISMISS_ONLY",
+      "dismissal_reason": "False positive — intentional CSRF double-submit cookie"
+    },
+    {
+      "path": "tooling/verify/rel-602-staging-rollback.cjs",
+      "line": 203,
+      "rule": "js/file-network-to-network",
+      "title": "File data in outbound network request",
+      "severity": "medium",
+      "class": "SAFE_HARDENING",
+      "reason": "Live fetch now uses hardcoded STAGING_WEB_ORIGIN / STAGING_OPS_ORIGIN constants; fixture values are equality-gated only.",
+      "action": "CODE_FIX_IN_THIS_SESSION"
+    },
+    {
+      "path": "tooling/verify/rel-603-age-usability-spotcheck.cjs",
+      "line": 231,
+      "rule": "js/file-network-to-network",
+      "title": "File data in outbound network request",
+      "severity": "medium",
+      "class": "SAFE_HARDENING",
+      "reason": "Live fetch URL built from STAGING_WEB_ORIGIN constant + path-only scenario.path; fixture stagingWeb equality-gated.",
+      "action": "CODE_FIX_IN_THIS_SESSION"
+    }
+  ],
+  "protected_scope_inline_suppression": 0,
+  "baseline_washing": 0,
+  "note": "Do not reintroduce Nest inline CodeQL suppressions — prior attempt caused PROTECTED_SCOPE_DRIFT=2."
+}

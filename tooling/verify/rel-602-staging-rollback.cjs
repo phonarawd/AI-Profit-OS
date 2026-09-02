@@ -13,6 +13,11 @@ const fails = [];
 const LIVE_FETCH_ATTEMPTS = 3;
 const LIVE_FETCH_TIMEOUT_MS = 12000;
 const LIVE_FETCH_RETRY_DELAY_MS = 750;
+/** CodeQL: fixture 파일 문자열을 fetch에 직접 흘리지 않음 — 상수 origin만 네트워크 사용 */
+const STAGING_WEB_ORIGIN =
+  "https://ai-profit-web-preview.ebay-adapter.workers.dev";
+const STAGING_OPS_ORIGIN =
+  "https://ai-profit-ops-preview.ebay-adapter.workers.dev";
 
 function read(rel) {
   const p = path.join(root, rel);
@@ -122,8 +127,12 @@ if (rel603Closed && rel700Closed && rel701PreClosed) {
 
 const staging = manifest.openNext && manifest.openNext.staging;
 if (!staging || staging.wranglerEnv !== "preview") fails.push("manifest staging wranglerEnv must be preview");
-if (!fixture.stagingWeb.includes("ai-profit-web-preview")) fails.push("staging web must be preview");
-if (!fixture.stagingOps.includes("ai-profit-ops-preview")) fails.push("staging ops must be preview");
+if (fixture.stagingWeb !== STAGING_WEB_ORIGIN) {
+  fails.push("staging web must equal locked preview origin");
+}
+if (fixture.stagingOps !== STAGING_OPS_ORIGIN) {
+  fails.push("staging ops must equal locked preview origin");
+}
 if (!staging || staging.web.workersDev !== "ai-profit-web-preview.ebay-adapter.workers.dev") fails.push("staging web origin drift");
 if (!staging || staging.ops.workersDev !== "ai-profit-ops-preview.ebay-adapter.workers.dev") fails.push("staging ops origin drift");
 if (manifest.openNext.web.workersDev !== "ai-profit-web.ebay-adapter.workers.dev") fails.push("production web origin drift");
@@ -260,8 +269,9 @@ function runVerify(script) {
 (async function main() {
   if (fails.length === 0) {
     try {
-      await live(fixture.stagingWeb + "/", [200]);
-      await live(fixture.stagingOps + "/", [200, 307, 308]);
+      // 상수 origin만 사용 (fixture 값은 equality gate에서만 검증)
+      await live(STAGING_WEB_ORIGIN + "/", [200]);
+      await live(STAGING_OPS_ORIGIN + "/", [200, 307, 308]);
     } catch (e) {
       fails.push("live fetch error after bounded retries: " + (e.message || e));
     }
