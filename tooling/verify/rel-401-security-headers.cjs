@@ -89,9 +89,25 @@ if (!prodCsp.includes("frame-ancestors 'none'")) {
 if (prodCsp.includes("'unsafe-eval'")) {
   fails.push("production CSP must not add unsafe-eval");
 }
+if (!prodCsp.includes("upgrade-insecure-requests")) {
+  fails.push("production CSP must upgrade insecure requests");
+}
 const destCsp = headerMap("document", { production: false })[
   "Content-Security-Policy"
 ];
+if (destCsp.includes("upgrade-insecure-requests")) {
+  fails.push("non-production loopback CSP must not upgrade HTTP requests to HTTPS");
+}
+for (const loopback of [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "http://localhost:4000",
+  "http://127.0.0.1:4000",
+]) {
+  if (!destCsp.includes(loopback)) {
+    fails.push("non-production CSP missing loopback connect-src " + loopback);
+  }
+}
 if (!destCsp.includes("'unsafe-eval'")) {
   fails.push("non-production CSP must allow unsafe-eval for next dest hydrate");
 }

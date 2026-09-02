@@ -79,7 +79,11 @@ function documentCsp(spec, production) {
   const parts = Object.entries(directives).map(
     ([name, values]) => name + " " + unique(values).join(" "),
   );
-  parts.push("upgrade-insecure-requests");
+  // Production HTTPS should upgrade any stray HTTP subresource URL.
+  // Local QA/dev runs on loopback HTTP and has no loopback TLS endpoint; applying
+  // this directive there makes compliant browsers rewrite same-origin HTTP fetches
+  // to HTTPS and fail before the QA session stub can resolve.
+  if (production) parts.push("upgrade-insecure-requests");
   return parts.join("; ");
 }
 
