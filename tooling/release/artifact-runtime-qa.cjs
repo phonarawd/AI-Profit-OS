@@ -71,12 +71,15 @@ function surfacesForRoot(root) {
 }
 
 function withTimeout(promise, ms, label) {
+  let timer;
   return Promise.race([
-    promise,
+    Promise.resolve(promise),
     new Promise((_, reject) => {
-      setTimeout(() => reject(new Error("timeout:" + label)), ms);
+      timer = setTimeout(() => reject(new Error("timeout:" + label)), ms);
     }),
-  ]);
+  ]).finally(() => {
+    if (timer) clearTimeout(timer);
+  });
 }
 
 async function startDefaultWorker(surface) {
@@ -125,7 +128,11 @@ async function probeSurface(surface, startWorker) {
   let session;
   try {
     session = await withTimeout(startWorker(surface), 120000, "start:" + surface.id);
-    const res = await withTimeout(session.fetch("http://artifact.local" + surface.route), 20000, "fetch:" + surface.id);
+    const res = await withTimeout(
+      session.fetch("http://artifact.local" + surface.route, { redirect: "manual" }),
+      20000,
+      "fetch:" + surface.id,
+    );
     const status = res.status;
     let json = null;
     let text = "";
