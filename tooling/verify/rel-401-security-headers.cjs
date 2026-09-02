@@ -89,11 +89,23 @@ if (!prodCsp.includes("frame-ancestors 'none'")) {
 if (prodCsp.includes("'unsafe-eval'")) {
   fails.push("production CSP must not add unsafe-eval");
 }
-const destCsp = headerMap("document", { production: false })[
-  "Content-Security-Policy"
-];
+if (!prodCsp.includes("upgrade-insecure-requests")) {
+  fails.push("production CSP must keep upgrade-insecure-requests");
+}
+const destDoc = headerMap("document", { production: false });
+const destCsp = destDoc["Content-Security-Policy"];
 if (!destCsp.includes("'unsafe-eval'")) {
   fails.push("non-production CSP must allow unsafe-eval for next dest hydrate");
+}
+if (destCsp.includes("upgrade-insecure-requests")) {
+  fails.push(
+    "non-production CSP must not upgrade-insecure-requests (WebKit loopback /api fetch)",
+  );
+}
+if (destDoc["Strict-Transport-Security"]) {
+  fails.push(
+    "non-production must not send HSTS (WebKit honors it on 127.0.0.1)",
+  );
 }
 if (assertNoWildcardAbuse(destCsp).some((a) => a !== "unsafe-eval")) {
   fails.push(

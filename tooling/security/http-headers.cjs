@@ -79,7 +79,11 @@ function documentCsp(spec, production) {
   const parts = Object.entries(directives).map(
     ([name, values]) => name + " " + unique(values).join(" "),
   );
-  parts.push("upgrade-insecure-requests");
+  // Production only. WebKit honors UIR/HSTS on 127.0.0.1 and upgrades
+  // same-origin HTTP /api/v1 fetch to HTTPS → Load failed → Home loading hang.
+  if (production) {
+    parts.push("upgrade-insecure-requests");
+  }
   return parts.join("; ");
 }
 
@@ -91,9 +95,13 @@ function headerMap(profile, opts) {
   const spec = loadSpec();
   const production = isProduction(opts);
   const csp = profile === "api" ? apiCsp() : documentCsp(spec, production);
+  const staticHeaders = { ...spec.staticHeaders };
+  if (!production) {
+    delete staticHeaders["Strict-Transport-Security"];
+  }
   return {
     "Content-Security-Policy": csp,
-    ...spec.staticHeaders,
+    ...staticHeaders,
   };
 }
 
