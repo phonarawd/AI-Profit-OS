@@ -255,7 +255,10 @@ function runVerify(script) {
   const transientLiveFetchFailure =
     ["rel-600-staging.cjs", "rel-601-staging-regression.cjs"].includes(script) &&
     run.status !== 0 &&
-    /live fetch error:\s*fetch failed/i.test(output);
+    (
+      /live fetch error(?: after bounded retries)?:\s*(?:fetch failed|.*timeout|.*timed out|.*aborted)/i.test(output) ||
+      (run.error && run.error.code === "ETIMEDOUT")
+    );
 
   if (transientLiveFetchFailure) {
     console.warn(
