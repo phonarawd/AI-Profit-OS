@@ -303,8 +303,8 @@ todos:
     content: "[QA-Expansion] 금융/red-team -- DONE 7 modes + guard abort + product codes + ledger write 0"
     status: completed
   - id: rel-502
-    content: "[QA-Expansion][A2] FINAL ENGINE ACCEPTANCE: PROTECTED_SCOPE_MUTATION=TRUE 태그가 달린 모든 REL(고정 range 아님, §C 자동수집) 완료 후 QA0-QA9 재베이스+재인증"
-    status: pending
+    content: "[QA-Expansion][A2] FINAL ENGINE ACCEPTANCE -- DONE formal rebase + current-epoch QA0-QA9 + FINAL_ACCEPTANCE ISSUED"
+    status: completed
   - id: rel-503
     content: "[QA-Expansion] protected-scope STALE 감시 메커니즘 상시화"
     status: completed
@@ -3400,7 +3400,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-502
 TITLE: FINAL ENGINE ACCEPTANCE
-STATUS: REBASE_REQUIRED
+STATUS: COMPLETED
 SOURCE_PLAN: ai_profit_os_02_5_engine_acceptance_c3d4e5f6.plan.md
 SOURCE_TODO_IDS:
   - rel-502
