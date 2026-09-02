@@ -88,11 +88,12 @@ jobs:
             --out _tmp_release_acceptance/artifact-qa.json \
             --optional
       - name: Fail-closed release verdict
-        run: >
-          node tooling/release/release-acceptance-verdict.cjs
-          --input _tmp_release_acceptance/jobs.json
-          --artifact-qa _tmp_release_acceptance/artifact-qa.json
-          | tee _tmp_release_acceptance/verdict.json
+        run: |
+          set -euo pipefail
+          node tooling/release/release-acceptance-verdict.cjs \
+            --input _tmp_release_acceptance/jobs.json \
+            --artifact-qa _tmp_release_acceptance/artifact-qa.json \
+            | tee _tmp_release_acceptance/verdict.json
       - name: Upload release verdict
         if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
