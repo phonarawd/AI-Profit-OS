@@ -5,6 +5,12 @@
     "mgsytcetsiecllmhcyox",
     ".supabase.co"
   ],
-  "allowedHosts": ["127.0.0.1", "localhost", "::1"],
-  "allowedProjectRefs": []
+  "allowedHosts": [
+    "127.0.0.1",
+    "localhost",
+    "::1"
+  ],
+  "allowedProjectRefs": [
+    "uluzxvdpynytytduuryy"
+  ]
 }
