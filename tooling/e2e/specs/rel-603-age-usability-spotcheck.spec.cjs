@@ -1,4 +1,4 @@
-/**
+﻿/**
  * REL-603 — automated age-band usability cohort runs on staging preview.
  * 9 cohorts × 4 scenarios (signup · opportunity · participate entry · wallet).
  * Human participants 0 · production mutation 0 · MCP-only evidence 0.
@@ -312,6 +312,39 @@ async function runOpportunity(page, cohort, scenario) {
   });
   const card = profitsCard(page, cohort.viewport.width);
   await expect(card).toBeVisible({ timeout: 20_000 });
+  await expect(card).toHaveAttribute(
+    "href",
+    `/profits/${TEST_OPPORTUNITY_ITEM.id}`,
+  );
+  await expect(card).toContainText(TEST_OPPORTUNITY_ITEM.requiredCapitalUsdt);
+
+  await assertSurfaceSafety(page, cohort, scenario);
+}
+
+async function runParticipateEntry(page, cohort, scenario) {
+  let preflightRequests = 0;
+  let participateRequests = 0;
+  page.on("request", (request) => {
+    const url = request.url();
+    if (url.includes("/preflight")) preflightRequests += 1;
+    if (url.includes("/participate") && !url.includes("/preflight")) {
+      participateRequests += 1;
+    }
+  });
+
+  await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
+  await stubCoreOpportunityJourney(page);
+  await gotoStaging(page, cohort, scenario);
+
+  await waitForScenarioRoot(page, cohort, scenario, async () => {
+    await expect(page.getByTestId("profits-shell")).toHaveAttribute(
+      "data-profits-state",
+      "READY",
+      { timeout: 20_000 },
+    );
+  });
+  const card = profitsCard(page, cohort.viewport.width);
+  await expect(card).toBeVisible({ timeout: 20_000 });
   const detailPath = "/profits/" + TEST_OPPORTUNITY_ITEM.id;
   const detailUrl = new RegExp("/profits/" + TEST_OPPORTUNITY_ITEM.id + "$");
   const href = await card.getAttribute("href");
@@ -324,7 +357,7 @@ async function runOpportunity(page, cohort, scenario) {
     });
   }
   await expect(page).toHaveURL(detailUrl);
-  // Re-bind stubs after navigation (route handlers can drop on cross-document nav).
+  // Re-bind stubs after navigation (handlers can drop on cross-document nav).
   await stubCoreOpportunityJourney(page);
   await expect(page.getByTestId("opportunity-detail")).toHaveAttribute(
     "data-detail-state",
@@ -351,7 +384,6 @@ async function runOpportunity(page, cohort, scenario) {
 
   await assertSurfaceSafety(page, cohort, scenario);
 }
-
 async function runWallet(page, cohort, scenario) {
   await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
   await stubWallet(page, "ready");
