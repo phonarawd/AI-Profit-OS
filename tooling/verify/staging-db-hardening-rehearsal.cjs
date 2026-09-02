@@ -43,8 +43,8 @@ for (const policy of [
 }
 if (!rollback.includes("NO FORCE ROW LEVEL SECURITY")) fails.push("rollback:no_force_missing");
 if (!rollback.includes("DISABLE ROW LEVEL SECURITY")) fails.push("rollback:disable_rls_missing");
-if (!rollback.includes("ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin")) {
-  fails.push("rollback:supabase_admin_default_acl_missing");
+if (/ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin/i.test(rollback)) {
+  fails.push("rollback:managed_role_acl_mutation_forbidden");
 }
 if (/ALTER DEFAULT PRIVILEGES FOR ROLE postgres[\s\S]*GRANT ALL ON TABLES TO anon/i.test(rollback)) {
   fails.push("rollback:must_not_broaden_postgres_defaults");
