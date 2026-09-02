@@ -118,6 +118,9 @@ export function readAuthErrorCode(status: number, raw: unknown): string | null {
     if (message.includes("TERMS_REQUIRED") || message.includes("termsAccepted")) {
       return "TERMS_REQUIRED";
     }
+    if (message.includes("MAGIC_LINK_DELIVERY_UNAVAILABLE")) {
+      return "MAGIC_LINK_DELIVERY_UNAVAILABLE";
+    }
     if (message.includes("birthDate")) return "AGE_REQUIRED";
     if (message.includes("phoneE164")) return "PHONE_INVALID";
     if (message.includes("displayName")) return "NAME_INVALID";
