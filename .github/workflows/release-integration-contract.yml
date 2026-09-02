@@ -7,12 +7,15 @@ on:
       - main
     paths:
       - ".github/workflows/release-integration-contract.yml"
+      - ".github/workflows/release-build.yml"
+      - ".github/workflows/release-acceptance.yml"
       - ".github/workflows/critical-cross-browser.yml"
       - "tooling/e2e/specs/critical-cross-browser.spec.cjs"
       - "tooling/e2e/lib/qa-env-isolation-guard.cjs"
       - "tooling/e2e/fixtures/qa-allowlist.v1.json"
       - "tooling/release/db-hardening-readiness.cjs"
       - "tooling/release/staging-topology-readiness.cjs"
+      - "tooling/verify/release-artifact-workflow-contract.cjs"
       - "tooling/verify/db-hardening-readiness.cjs"
       - "tooling/verify/staging-db-hardening-rehearsal.cjs"
       - "tooling/verify/production-schema-parity.cjs"
@@ -38,6 +41,9 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: "22"
+
+      - name: Release artifact workflow fail-closed contract
+        run: node tooling/verify/release-artifact-workflow-contract.cjs
 
       - name: Production schema parity migration contract
         run: node tooling/verify/production-schema-parity.cjs
