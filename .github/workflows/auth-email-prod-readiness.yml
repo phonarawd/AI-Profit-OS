@@ -10,6 +10,7 @@ on:
       - "apps/web/app/auth/auth-messages.ts"
       - "packages/sdk/src/auth/auth-release.test.ts"
       - "packages/sdk/src/auth/fetch.ts"
+      - "services/api-nest/src/auth/magic-link.delivery.runtime.test.ts"
       - "services/api-nest/src/auth/magic-link.service.ts"
       - "services/api-nest/src/wallet/resend-email.provider.ts"
       - "tooling/verify/email-provider-resend.cjs"
@@ -39,6 +40,9 @@ jobs:
 
       - name: Auth flow contract
         run: pnpm verify:auth-flows
+
+      - name: Magic-link delivery runtime regression
+        run: node --test services/api-nest/src/auth/magic-link.delivery.runtime.test.ts
 
       - name: Nest auth compile
         run: pnpm --filter @aipo/api-nest... build
