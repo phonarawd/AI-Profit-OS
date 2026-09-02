@@ -1,0 +1,26 @@
+{
+  "schema": "governance.release-master.rc-formal.v1",
+  "id": "rc-formal",
+  "status": "LOCKED",
+  "source_sha_binding": "LIVE_RECOVERY_HEAD",
+  "engine_final_acceptance": "ISSUED",
+  "engine_baseline": "ea-baseline-74683b6e39a7-590263f0f273",
+  "engine_rebase_id": "ea-rebase-3c46ac2daaf9-590263f0f273",
+  "engine_qa9": "ENGINE_ACCEPTED_FOR_UI",
+  "protected_scope_drift": 0,
+  "historical_82_path_evidence": "PRESERVED",
+  "baseline_washing": 0,
+  "one_shot_acceptance_workflows": "REMOVED",
+  "production_db_apply": 0,
+  "production_deploy": 0,
+  "production_schema_parity_migration": "UNAPPLIED",
+  "apply_owner": "REL-701-DB",
+  "next": "REL-701-DB_FOUNDER_AUTHORIZATION",
+  "b3_production_promotion": "CLOSED",
+  "removed_one_shot_workflows": [
+    ".github/workflows/engine-rebase-approved-once.yml",
+    ".github/workflows/engine-current-epoch-publish-once.yml"
+  ],
+  "historical_inventory_ref": "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json",
+  "historical_evidence_ref": "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json"
+}

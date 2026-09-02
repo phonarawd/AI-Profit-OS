@@ -80,6 +80,13 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/release-master\/RC_FORMAL\.md$/.test(f) ||
+      /^governance\/release-master\/rc-formal\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/rc-formal\.cjs$/.test(f),
+    scripts: ["rc-formal.cjs"],
+  },
+  {
+    test: (f) =>
       /^tooling\/e2e\//.test(f) ||
       /^tooling\/verify\/qa-env-isolation-guard\.cjs$/.test(f) ||
       /^tooling\/verify\/critical-cross-browser\.cjs$/.test(f) ||

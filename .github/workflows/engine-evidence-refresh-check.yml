@@ -1,7 +1,7 @@
 name: engine-evidence-refresh-check
 
 on:
-  pull_request:
+  push:
     branches:
       - recovery/release-provenance-20260831
     paths:
@@ -15,6 +15,26 @@ on:
       - "tooling/verify/rel-502-final-engine-acceptance.cjs"
       - "tooling/verify/rel-503-protected-scope-watch.cjs"
       - "tooling/verify/b3-promotion.cjs"
+      - "governance/release-master/RC_FORMAL.md"
+      - "governance/release-master/rc-formal.v1.json"
+  pull_request:
+    branches:
+      - recovery/release-provenance-20260831
+      - main
+    paths:
+      - "governance/recovery/engine-rebase-evidence.current.v1.json"
+      - "governance/recovery/engine-drift-inventory.current.v1.json"
+      - "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json"
+      - "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json"
+      - "governance/engine-acceptance/FINAL_ACCEPTANCE.md"
+      - ".github/workflows/engine-evidence-refresh-check.yml"
+      - "tooling/verify/engine-drift-inventory.cjs"
+      - "tooling/verify/rel-502-final-engine-acceptance.cjs"
+      - "tooling/verify/rel-503-protected-scope-watch.cjs"
+      - "tooling/verify/b3-promotion.cjs"
+      - "governance/release-master/RC_FORMAL.md"
+      - "governance/release-master/rc-formal.v1.json"
+      - "tooling/verify/rc-formal.cjs"
   workflow_dispatch:
 
 permissions:
@@ -42,6 +62,9 @@ jobs:
 
       - name: Verify B3 isolated staging truth
         run: node tooling/verify/b3-promotion.cjs
+
+      - name: Verify RC_FORMAL lock
+        run: node tooling/verify/rc-formal.cjs
 
       - name: Verify current Engine acceptance evidence
         run: |

@@ -1,4 +1,4 @@
-# verify:* Catalog (ADR-016 · §19 pointer)
+﻿# verify:* Catalog (ADR-016 · §19 pointer)
 
 **3-tier gate** — commit/push/CI 분리.
 
@@ -61,6 +61,7 @@
 | rel-501-money-red-team | `verify:rel-501-money-red-team` | T0 path + CI | live (REL-501 · 7 money modes · guard abort · ledger write 0) |
 | rel-502-final-engine-acceptance | `verify:rel-502-final-engine-acceptance` | T0 path + CI | live (REL-502 · PSM collect · drift fail-closed · REL-004 substitute 0) |
 | rel-503-protected-scope-watch | `verify:rel-503-protected-scope-watch` | T0 path + CI | live (REL-503 · ISSUED+drift=STALE · simulated 1-file · concealment 0) |
+| rc-formal | `verify:rc-formal` | T0 path | live (RC_FORMAL lock · ISSUED · drift 0 · history 82 · one-shot removed · prod apply 0) |
 | rel-504-migration-readiness | `verify:rel-504-migration-readiness` | T0 path + CI | live (REL-504 · READY · apply 0 · Track A files · REL-701-DB owner) |
 | backend-data-alignment | `verify:backend-data-alignment` | T0 path | live (R7 table · blank cell FAIL) |
 | rel-505-r7-backend-alignment | `verify:rel-505-r7-backend-alignment` | T0 path + CI | live (REL-505 · CERT_ISSUED 0 · current-fx wired · STALE pending rebase) |
