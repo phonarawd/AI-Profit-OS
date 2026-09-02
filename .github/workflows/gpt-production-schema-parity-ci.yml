@@ -1,0 +1,25 @@
+name: gpt-production-schema-parity
+
+on:
+  pull_request:
+    branches:
+      - recovery/release-provenance-20260831
+    paths:
+      - supabase/migrations/20260902032000_production_schema_parity.sql
+      - tooling/verify/production-schema-parity.cjs
+      - .github/workflows/gpt-production-schema-parity-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  schema-parity-static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+      - name: Verify Production schema parity migration
+        run: node tooling/verify/production-schema-parity.cjs
