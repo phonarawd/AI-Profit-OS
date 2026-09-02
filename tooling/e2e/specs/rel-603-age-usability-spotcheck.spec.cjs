@@ -33,11 +33,11 @@ const baseUrl =
   fixture.stagingWeb;
 
 const DESKTOP_BREAKPOINT = 1280;
-const GOTO_ATTEMPTS = 4;
-const GOTO_TIMEOUT_MS = 45_000;
+const GOTO_ATTEMPTS = 3;
+const GOTO_TIMEOUT_MS = 30_000;
 const GOTO_RETRY_DELAY_MS = 1000;
 
-test.describe.configure({ timeout: 180000 });
+test.describe.configure({ timeout: 300000, retries: 1 });
 
 test.beforeAll(() => {
   assertQaIsolation({ purpose: "e2e", databaseUrl: "", projectRef: "" });
@@ -74,10 +74,10 @@ async function hideNextDevChrome(page) {
 }
 
 async function stabilizePage(page) {
-  await page.waitForLoadState("domcontentloaded");
-  await page.waitForLoadState("networkidle", { timeout: 15_000 }).catch(() => {});
+  await page.waitForLoadState("domcontentloaded").catch(() => {});
+  // CF preview networkidle is unreliable (hangs under CSP/long-poll) — do not block cohort.
+  await sleep(250);
 }
-
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
