@@ -1,4 +1,4 @@
-﻿/**
+/**
  * REL-603 — automated age-band usability cohort runs on staging preview.
  * 9 cohorts × 4 scenarios (signup · opportunity · participate entry · wallet).
  * Human participants 0 · production mutation 0 · MCP-only evidence 0.
@@ -286,11 +286,12 @@ async function runSignup(page, cohort, scenario) {
   await expect(emailForm).toBeVisible({ timeout: 20_000 });
   await expect(emailSubmit).toBeDisabled();
   await stabilizePage(page);
-  await page
+  const termsCheckbox = page
     .getByTestId("auth-terms")
-    .locator('input[type="checkbox"]')
-    .check({ force: true });
-  await expect(emailSubmit).toBeEnabled();
+    .locator('input[type="checkbox"]');
+  await termsCheckbox.check({ force: true });
+  await expect(termsCheckbox).toBeChecked({ timeout: 20_000 });
+  await expect(emailSubmit).toBeEnabled({ timeout: 20_000 });
 
   const html = await assertSurfaceSafety(page, cohort, scenario);
   const axe = await runAxeOnHtml(html);
@@ -349,13 +350,10 @@ async function runParticipateEntry(page, cohort, scenario) {
   const detailUrl = new RegExp("/profits/" + TEST_OPPORTUNITY_ITEM.id + "$");
   const href = await card.getAttribute("href");
   expect(href, cohort.id + " card href").toMatch(detailUrl);
-  await card.click();
-  if (!detailUrl.test(page.url())) {
-    await page.goto(baseUrl.replace(/\/$/, "") + detailPath, {
-      waitUntil: "domcontentloaded",
-      timeout: GOTO_TIMEOUT_MS,
-    });
-  }
+  await Promise.all([
+    page.waitForURL(detailUrl, { timeout: GOTO_TIMEOUT_MS }),
+    card.click(),
+  ]);
   await expect(page).toHaveURL(detailUrl);
   // Re-bind stubs after navigation (handlers can drop on cross-document nav).
   await stubCoreOpportunityJourney(page);
