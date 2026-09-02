@@ -12,10 +12,10 @@ APPLY_MIGRATION = 0
 APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
-LOCAL_MIGRATION_FILES = 52
+LOCAL_MIGRATION_FILES = 53
 REMOTE_APPLIED_SNAPSHOT = 41
 REMOTE_RAW_APPLIED = 42
-COMMITTED_UNAPPLIED = 11
+COMMITTED_UNAPPLIED = 12
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
 REL_502_ISSUED = 0
@@ -33,10 +33,10 @@ REL_502_ISSUED = 0
 
 ## REVIEW
 
-- 로컬 `supabase/migrations/*.sql` 52 · filename `YYYYMMDDHHMMSS_*.sql`
+- 로컬 `supabase/migrations/*.sql` 53 · filename `YYYYMMDDHHMMSS_*.sql`
 - 원격 applied canonical snapshot `tooling/verify/fixtures/migrations-applied.v1.json` versions = 41 (asOf 2026-08-24, ref `mgsytcetsiecllmhcyox`)
 - 실제 remote raw applied rows = 42; alias/duplicate history를 fixture에 명시해 숨기지 않는다
-- file-only `committedUnapplied` 11 — 원격 apply 전. 이 단계에서 versions 로 옮기지 않는다
+- file-only `committedUnapplied` 12 — 원격 apply 전. 이 단계에서 versions 로 옮기지 않는다
 - Track A (REL-003) file restore 3: `20260819210000` · `20260819220000` · `20260820013000` + `opportunity-reprice.service.ts` 존재
 - REL-408 `SECURITY_BASELINE.md` · `REL-408-SECURITY-BASELINE.md` COMPLETED · APPLY_MIGRATION = 0
 - REL-502 `FINAL_ACCEPTANCE.md` STATUS = NOT_ISSUED · REBASE_REQUIRED = 1 · ACK_RECEIVED = 0
@@ -45,7 +45,7 @@ REL_502_ISSUED = 0
 
 | command | expected |
 |---|---|
-| `pnpm verify:migrations-applied-parity` | PASS (52 local · 41 canonical applied · 42 raw remote rows · 11 pending) |
+| `pnpm verify:migrations-applied-parity` | PASS (53 local · 41 canonical applied · 42 raw remote rows · 12 pending) |
 | `pnpm verify:rel-408-security-baseline` | PASS |
 | `pnpm verify:rel-504-migration-readiness` | PASS |
 
