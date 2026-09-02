@@ -20,9 +20,17 @@ for (const app of apps) {
     fails.push(`${app}: next dependency missing`);
     continue;
   }
-  const major = String(next).replace(/^[\^~>=<\s]*/, "").split(".")[0];
+  const raw = String(next).replace(/^[\^~>=<\s]*/, "");
+  const major = raw.split(".")[0];
   if (major !== "16") {
     fails.push(`${app}: next major must be 16 (got ${next})`);
+  }
+  const parts = raw.split(".").map((n) => Number(n));
+  const minor = parts[1] || 0;
+  const patch = parts[2] || 0;
+  // August 2026 critical RCE floor: 16.3.3 (GHSA-p293-qw3h-jr36, GHSA-2xp9-vwfh-vxw4)
+  if (minor < 3 || (minor === 3 && patch < 3)) {
+    fails.push(`${app}: next must be >= 16.3.3 (got ${next})`);
   }
 }
 
@@ -30,4 +38,4 @@ if (fails.length) {
   console.error("[verify:next-major-pin] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
-console.log("[verify:next-major-pin] PASS (next@16)");
+console.log("[verify:next-major-pin] PASS (next@16 · >=16.3.3)");
