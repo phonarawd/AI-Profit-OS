@@ -35,6 +35,11 @@ const inventory = readJson(INV_REL);
 const evidence = readJson(EV_REL);
 const cert = parseCert(fs.readFileSync(path.join(root, CERT_REL), "utf8"));
 const live = psm.compareProtectedScope();
+const rebaseLedger = readJson("governance/engine-acceptance/product-rebases.v1.json");
+const currentRebase = [...(rebaseLedger.rebases || [])]
+  .reverse()
+  .find((entry) => entry.new_baseline_id === live.baselineId);
+const qa = psm.currentEpochQaReady(root, live.baselineId);
 
 if (inventory.schema !== "governance.recovery.engine-drift-inventory.v1") {
   fail("inventory schema");
@@ -99,13 +104,23 @@ if (archiveEv.ack_eligibility.FINAL_ACCEPTANCE !== "NOT_ISSUED") {
 const issued =
   cert.STATUS === "ISSUED" &&
   cert.CERT_ISSUED === "1" &&
-  cert.REBASE_REQUIRED === "0";
-const preRebase = cert.REBASE_REQUIRED === "1";
+  cert.REBASE_REQUIRED === "0" &&
+  cert.BASELINE_ID === live.baselineId &&
+  Boolean(currentRebase) &&
+  cert.REBASE_ID === currentRebase.rebase_id &&
+  !live.drift &&
+  qa.ready;
+const preRebase = live.drift;
 
 if (issued) {
   if (inventory.ACK_RECEIVED !== 1) fail("issued: inventory ACK_RECEIVED must be 1");
   if (inventory.FINAL_ACCEPTANCE !== "ISSUED") fail("issued: inventory FINAL_ACCEPTANCE");
   if (inventory.REBASE_REQUIRED !== 0) fail("issued: inventory REBASE_REQUIRED must be 0");
+  if (inventory.current_baseline_id !== live.baselineId) fail("issued: inventory current_baseline_id");
+  if (inventory.rebase_id !== currentRebase.rebase_id) fail("issued: inventory rebase_id");
+  if (evidence.baseline_id !== live.baselineId) fail("issued: evidence baseline_id");
+  if (evidence.current_baseline_id !== live.baselineId) fail("issued: evidence current_baseline_id");
+  if (evidence.rebase_id !== currentRebase.rebase_id) fail("issued: evidence rebase_id");
   if (!evidence.ack_eligibility || evidence.ack_eligibility.ACK_RECEIVED !== 1) {
     fail("issued: evidence ACK_RECEIVED must be 1");
   }

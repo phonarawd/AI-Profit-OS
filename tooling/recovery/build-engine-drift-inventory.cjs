@@ -49,7 +49,16 @@ const certIssued =
   cert.STATUS === "ISSUED" &&
   cert.CERT_ISSUED === "1" &&
   cert.REBASE_REQUIRED === "0";
-const issued = certIssued && !live.drift;
+const rebaseLedger = JSON.parse(fs.readFileSync(path.join(root, REBASE_LEDGER_REL), "utf8"));
+const currentRebase = [...(rebaseLedger.rebases || [])]
+  .reverse()
+  .find((entry) => entry.new_baseline_id === live.baselineId);
+const qa = psm.currentEpochQaReady(root, live.baselineId);
+const certCurrent =
+  cert.BASELINE_ID === live.baselineId &&
+  Boolean(currentRebase) &&
+  cert.REBASE_ID === currentRebase.rebase_id;
+const issued = certIssued && certCurrent && !live.drift && qa.ready;
 
 if (issued) {
   if (!fs.existsSync(path.join(root, ARCHIVE_INV_REL))) {
@@ -65,10 +74,6 @@ if (issued) {
     process.exit(1);
   }
   const archiveEv = JSON.parse(fs.readFileSync(path.join(root, ARCHIVE_EV_REL), "utf8"));
-  const rebaseLedger = JSON.parse(fs.readFileSync(path.join(root, REBASE_LEDGER_REL), "utf8"));
-  const currentRebase = [...(rebaseLedger.rebases || [])]
-    .reverse()
-    .find((entry) => entry.new_baseline_id === live.baselineId);
   if (!currentRebase) {
     throw new Error("current baseline has no matching product rebase ledger entry");
   }
@@ -176,6 +181,11 @@ if (issued) {
       " · ACK_RECEIVED=1 · ISSUED · history.preserved",
   );
   process.exit(0);
+}
+if (!live.drift) {
+  throw new Error(
+    "protected scope matches baseline but current acceptance is not fully issued; refuse to classify zero drift as pre-rebase",
+  );
 }
 const predecessor = baseline.commit_sha || evidence.predecessor_head_sha;
 const added = live.added.slice();
