@@ -1,0 +1,66 @@
+{
+  "schema": "governance.recovery.ghas-pr114-open.v1",
+  "observed_at": "2026-09-02T08:45:00Z",
+  "head_sha_at_observation": "cfafcc631c7ee4a232da6807f03509690b0d103b",
+  "check_run_id": 100176619767,
+  "ghas_title": "6 new alerts including 5 high severity security vulnerabilities",
+  "alerts": [
+    {
+      "path": "services/api-nest/src/auth/auth.controller.ts",
+      "line": 48,
+      "rule": "Clear text storage of sensitive information",
+      "severity": "high",
+      "class": "FALSE_POSITIVE_DESIGN_ACCEPTED",
+      "reason": "Nest JWT access token is intentionally stored in HttpOnly Secure SameSite cookie. This is the session authority surface (ADR-006). Not a clear-text log or DB store of raw secrets. Founder GHAS dismissal required — no protected-scope inline suppression.",
+      "action": "FOUNDER_DISMISS_ONLY"
+    },
+    {
+      "path": "services/api-nest/src/common/admin-session.cookies.ts",
+      "line": 59,
+      "rule": "Clear text storage of sensitive information",
+      "severity": "high",
+      "class": "FALSE_POSITIVE_DESIGN_ACCEPTED",
+      "reason": "Admin double-submit CSRF cookie must be JS-readable (httpOnly=false). Session cookie remains HttpOnly. CSRF value is compared via timingSafeEqual to header — not a session secret. Founder GHAS dismissal required — no protected-scope inline suppression.",
+      "action": "FOUNDER_DISMISS_ONLY"
+    },
+    {
+      "path": "tooling/verify/signup-ready-adapters.cjs",
+      "line": 116,
+      "rule": "Incomplete URL substring sanitization",
+      "severity": "high",
+      "class": "SAFE_HARDENING",
+      "reason": "Static source-text host check replaced with URL hostname equality via sourceDeclaresHost().",
+      "action": "CODE_FIX_IN_THIS_SESSION"
+    },
+    {
+      "path": "tooling/verify/signup-ready-adapters.cjs",
+      "line": 121,
+      "rule": "Incomplete URL substring sanitization",
+      "severity": "high",
+      "class": "SAFE_HARDENING",
+      "reason": "Same host-equality hardening for ygoprodeck.",
+      "action": "CODE_FIX_IN_THIS_SESSION"
+    },
+    {
+      "path": "tooling/verify/signup-ready-adapters.cjs",
+      "line": 136,
+      "rule": "Incomplete URL substring sanitization",
+      "severity": "high",
+      "class": "SAFE_HARDENING",
+      "reason": "Same host-equality hardening for coingecko.",
+      "action": "CODE_FIX_IN_THIS_SESSION"
+    },
+    {
+      "path": "tooling/verify/adapter-ingest-fail-closed.runtime.cjs",
+      "line": 56,
+      "rule": "Log injection",
+      "severity": "medium",
+      "class": "SAFE_HARDENING",
+      "reason": "Verifier failure path now strips CR/LF/U+2028/U+2029 before console.error.",
+      "action": "CODE_FIX_IN_THIS_SESSION"
+    }
+  ],
+  "protected_scope_inline_suppression": 0,
+  "baseline_washing": 0,
+  "note": "Do not reintroduce Nest inline CodeQL suppressions — prior attempt caused PROTECTED_SCOPE_DRIFT=2 and invalidated Engine acceptance."
+}

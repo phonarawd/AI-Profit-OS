@@ -52,7 +52,7 @@ async function main() {
 }
 
 main().catch((err) => {
-  // codeql[js/log-injection]: message-only verifier failure path
-  console.error(err instanceof Error ? err.message : String(err));
+  const raw = err instanceof Error ? err.message : String(err);
+  console.error(raw.replace(/[\r\n\u2028\u2029]/g, " "));
   process.exit(1);
 });

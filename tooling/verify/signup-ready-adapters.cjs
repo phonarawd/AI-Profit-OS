@@ -25,6 +25,21 @@ function mustExist(rel) {
   if (!fs.existsSync(path.join(root, rel))) fails.push(`missing ${rel}`);
 }
 
+/** Static source must declare an absolute URL whose hostname equals `host`. */
+function sourceDeclaresHost(source, host) {
+  if (!source) return false;
+  const re = /https?:\/\/[^\s"'`\\]+/g;
+  let match;
+  while ((match = re.exec(source)) !== null) {
+    try {
+      if (new URL(match[0]).hostname === host) return true;
+    } catch {
+      // ignore malformed candidate literals in source text
+    }
+  }
+  return false;
+}
+
 const workers = [
   "ebay-adapter",
   "pokemontcg-adapter",
@@ -111,14 +126,20 @@ if (ebayBrowse && !/X-EBAY-C-MARKETPLACE-ID/.test(ebayBrowse)) {
 // B: pokemontcg + ygoprodeck
 const poke = read("workers/pokemontcg-adapter/src/index.ts");
 const ygo = read("workers/ygoprodeck-adapter/src/index.ts");
-// codeql[js/incomplete-url-substring-sanitization]: static source-text host presence, not runtime URL parsing
 const pokeBundle = poke + (read("workers/pokemontcg-adapter/src/constants.ts") || "");
-if (poke && !(pokeBundle.includes("pokemontcg.io") || pokeBundle.includes("api.pokemontcg"))) {
+if (
+  poke &&
+  !sourceDeclaresHost(pokeBundle, "api.pokemontcg.io") &&
+  !sourceDeclaresHost(pokeBundle, "pokemontcg.io")
+) {
   fails.push("pokemontcg-adapter must target api.pokemontcg.io");
 }
 const ygoBundle = ygo + (read("workers/ygoprodeck-adapter/src/constants.ts") || "");
-// codeql[js/incomplete-url-substring-sanitization]
-if (ygo && !ygoBundle.includes("ygoprodeck.com")) {
+if (
+  ygo &&
+  !sourceDeclaresHost(ygoBundle, "db.ygoprodeck.com") &&
+  !sourceDeclaresHost(ygoBundle, "ygoprodeck.com")
+) {
   fails.push("ygoprodeck-adapter must target db.ygoprodeck.com");
 }
 if (poke && !/catalog_ref|listingLeg:\s*false/.test(poke)) {
@@ -132,13 +153,14 @@ if (ygo && !/catalog_ref|listingLeg:\s*false/.test(ygo)) {
 const cg = read("workers/coingecko-adapter/src/constants.ts") || "";
 const fr = read("workers/frankfurter-adapter/src/constants.ts") || "";
 const cgBundle = cg + (read("workers/coingecko-adapter/src/client.ts") || "");
-// codeql[js/incomplete-url-substring-sanitization]
-if (!cgBundle.includes("api.coingecko.com")) {
+if (!sourceDeclaresHost(cgBundle, "api.coingecko.com")) {
   fails.push("coingecko-adapter must call api.coingecko.com");
 }
 const frBundle = fr + (read("workers/frankfurter-adapter/src/client.ts") || "");
-// codeql[js/incomplete-url-substring-sanitization]
-if (!frBundle.includes("frankfurter.dev")) {
+if (
+  !sourceDeclaresHost(frBundle, "api.frankfurter.dev") &&
+  !sourceDeclaresHost(frBundle, "frankfurter.dev")
+) {
   fails.push("frankfurter-adapter must call api.frankfurter.dev");
 }
 // KR / non-partner scrapers still forbidden
