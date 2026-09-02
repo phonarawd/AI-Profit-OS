@@ -1,7 +1,7 @@
 {
   "schema": "production-release.b3-promotion.v1",
   "id": "b-3-promotion",
-  "observed_at": "2026-08-31T20:15:00+09:00",
+  "observed_at": "2026-09-02T04:00:29Z",
   "status": "CLOSED",
   "promotion_path_closed": true,
   "production_project_ref": "mgsytcetsiecllmhcyox",
@@ -21,51 +21,43 @@
     "4_founder_only_production_apply"
   ],
   "isolated_verify_db": {
-    "exists": "NO",
-    "usable": "NO",
+    "exists": "YES",
+    "usable": "YES",
     "parent_production_ref": "mgsytcetsiecllmhcyox",
-    "branch_name_intended": "verify-b3",
-    "branch_project_ref": null,
+    "branch_name": "staging-release-20260902",
+    "branch_project_ref": "uluzxvdpynytytduuryy",
+    "with_data": false,
     "customer_data": 0,
-    "create_attempt": {
-      "at": "2026-08-31T20:12:00+09:00",
-      "method": "MCP create_branch name=verify-b3",
-      "list_branches_before": [],
-      "result": "FAIL",
-      "error": "Cost confirmation ID does not match the expected cost of creating a branch.",
-      "confirm_cost_available": false,
-      "confirm_cost_blocked_by": "project-boundary-policy DENY get_cost/confirm_cost (project-scoped MCP only)",
-      "agent_create": "IMPOSSIBLE_UNDER_ISOLATION",
-      "assumed_exists": false
-    },
-    "safe_alternative": {
-      "kind": "FOUNDER_DASHBOARD_BRANCH_THEN_LEDGER",
-      "note": "Agent cannot confirm_cost. Founder creates Dashboard preview branch (customer data 0), records branch project_ref in ledger/allowlist, then verify-DB apply only.",
-      "steps": [
-        "Supabase Dashboard project mgsytcetsiecllmhcyox Branches Create name=verify-b3 with-data=false",
-        "Confirm branch project_ref != mgsytcetsiecllmhcyox",
-        "Add branch ref to tooling/e2e/fixtures/qa-allowlist.v1.json allowedProjectRefs",
-        "Update governance/db-recon/b3-promotion-ledger.v1.json isolated_verify_db",
-        "Apply committedUnapplied migrations on verify DB only in order; prod apply 0",
-        "After RC_FORMAL, staging E2E = that RC SHA + that schema version only"
-      ]
+    "preview_project_status": "ACTIVE_HEALTHY",
+    "public_table_count": 93,
+    "production_public_table_count": 93,
+    "schema_parity": "PASS",
+    "hardening_rehearsal": "APPLY_PASS_ROLLBACK_PASS_REAPPLY_PASS",
+    "creation": {
+      "method": "Supabase branch create after explicit hourly cost confirmation",
+      "result": "SUCCESS",
+      "production_mutation": 0
     }
   },
   "staging_e2e": {
     "status": "NOT_RUN",
-    "reason": "RC_FORMAL=NO · isolated verify DB ABSENT · schema version unbound",
+    "reason": "RC_FORMAL=NO · full frontend/user-flow staging E2E not yet executed",
+    "infra_runtime": "PASS",
+    "exact_backend_sha": "52877334c22f074ebe6bc4b280a96b6b896995c0",
     "requires": {
       "rc_formal": "PASS",
       "rc_sha": "bound",
       "schema_version": "exact match to that RC",
       "isolated_verify_db_exists": "YES",
+      "cloudflare_frontend_bound_to_staging": "YES",
       "rel_601_live_substitute": false
     },
     "forbidden": [
       "prod schema as implicit staging baseline",
       "A_BRANCH_FORMAL alone as RC",
       "REL-601 NOT_RUN as live PASS",
-      "app SHA != RC SHA"
+      "app SHA != RC SHA",
+      "Cloudflare preview bound to Production API/DB"
     ]
   },
   "gateBProd": {
@@ -84,11 +76,18 @@
   "inventory_path": "governance/release-inventory/b3-promotion.v1.json",
   "evidence": {
     "mcp_get_project_url": "https://mgsytcetsiecllmhcyox.supabase.co",
-    "mcp_list_branches": [],
+    "mcp_list_branches": [
+      "main:mgsytcetsiecllmhcyox",
+      "staging-release-20260902:uluzxvdpynytytduuryy"
+    ],
     "mcp_list_migrations_remote_count": 42,
     "local_migration_files": 51,
     "committed_unapplied_candidates": 10,
-    "b0_recon": "governance/db-recon/b0-recon-matrix.v1.json"
+    "b0_recon": "governance/db-recon/b0-recon-matrix.v1.json",
+    "staging_runtime_probe_run_id": 33589004158,
+    "staging_render_service_id": "srv-dabph32fngtc73esj8rg",
+    "staging_render_deploy_id": "dep-dabptdjtqb8s73d6r5m0",
+    "staging_schema_parity": "93/93"
   },
   "forbidden_claims": [
     "production ref is isolated verify DB",
