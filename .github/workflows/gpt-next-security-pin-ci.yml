@@ -34,3 +34,7 @@ jobs:
         run: node tooling/verify/next-security-pin.cjs
       - name: Verify repository Next major contract
         run: pnpm verify:next-major-pin
+      - name: Build web + admin with patched Next
+        run: pnpm verify:next-build
+      - name: Build canonical OpenNext artifacts
+        run: pnpm verify:opennext-build
