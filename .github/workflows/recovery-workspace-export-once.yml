@@ -75,11 +75,35 @@ jobs:
           tar -czf /tmp/ai-profit-os-recovery-workspace.tar.gz \
             --exclude='./.recovery-toolchain/recovery-workspace-export.tar.gz' \
             .
+          split -b 250M -d -a 2 \
+            /tmp/ai-profit-os-recovery-workspace.tar.gz \
+            /tmp/recovery-workspace.part-
+          test -s /tmp/recovery-workspace.part-00
+          test -s /tmp/recovery-workspace.part-01
+          test -s /tmp/recovery-workspace.part-02
+          test ! -e /tmp/recovery-workspace.part-03
+          rm /tmp/ai-profit-os-recovery-workspace.tar.gz
 
-      - name: Upload recovery workspace
+      - name: Upload recovery workspace part 00
         uses: actions/upload-artifact@v4
         with:
-          name: recovery-workspace-ec3c9604
-          path: /tmp/ai-profit-os-recovery-workspace.tar.gz
+          name: recovery-workspace-ec3c9604-part-00
+          path: /tmp/recovery-workspace.part-00
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Upload recovery workspace part 01
+        uses: actions/upload-artifact@v4
+        with:
+          name: recovery-workspace-ec3c9604-part-01
+          path: /tmp/recovery-workspace.part-01
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Upload recovery workspace part 02
+        uses: actions/upload-artifact@v4
+        with:
+          name: recovery-workspace-ec3c9604-part-02
+          path: /tmp/recovery-workspace.part-02
           if-no-files-found: error
           retention-days: 1
