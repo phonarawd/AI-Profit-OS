@@ -26,10 +26,11 @@
   "release_artifact": {
     "name": "release-bundle",
     "digest_alg": "sha256",
-    "artifact_digest": "PENDING_EXACT_HEAD_REBUILD",
-    "release_build_run_id": null,
-    "release_acceptance_run_id": null,
-    "release_acceptance_verdict": "PENDING_EXACT_HEAD"
+    "artifact_digest": "c5c56d320d33b015e84f403d83765f1c32c3422f076a7fc8e48c99d6fcfac988",
+    "release_build_run_id": 33617601225,
+    "release_acceptance_run_id": 33618547918,
+    "release_acceptance_verdict": "PASS",
+    "api_artifact_digest": "bfbaab67e0358e2eddf1d0e53ad2ac5c790766be2c26eec6400a8c57553b669d"
   },
-  "note": "source_sha_binding is exact immutable FINAL RC SHA for this freeze commit (filled at commit amend)."
+  "note": "source_sha_binding is exact immutable FINAL RC SHA (staging+artifact+acceptance proven). Tip may add governance/plans evidence-only."
 }
