@@ -1,7 +1,7 @@
 "use strict";
 
 /**
- * Admin CSRF double-submit design proof.
+ * Admin signed, session-bound CSRF double-submit design proof.
  * Does not change cookie flags. HttpOnly=true on the CSRF cookie is forbidden here.
  */
 
@@ -30,11 +30,16 @@ assert.match(cookies, /sameSite:\s*"strict"/);
 assert.match(cookies, /더블서브밋/);
 assert.doesNotMatch(cookies, /ADMIN_CSRF_COOKIE_NAME[\s\S]{0,120}httpOnly:\s*true/);
 assert.match(csrf, /timingSafeEqual/);
+assert.match(csrf, /createHmac/);
+assert.match(csrf, /mintAdminCsrfToken/);
+assert.match(csrf, /verifyAdminCsrfToken/);
 assert.match(csrf, /ADMIN_CSRF_HEADER/);
 assert.match(csrf, /aipo_admin_session/);
 assert.match(csrf, /aipo_admin_csrf/);
 assert.match(csrf, /planAdminLogout/);
-assert.match(runtimeTest, /double-submit CSRF cookie stays readable and is not the session secret/);
+assert.match(runtimeTest, /signed double-submit CSRF cookie stays readable but is session-bound/);
+assert.match(runtimeTest, /raw csrf nonce cannot authorize a session-bound mutation/);
+assert.match(runtimeTest, /signed csrf must match cookie\/header and the HttpOnly session/);
 assert.match(runtimeTest, /logout with CSRF cookie only and no header is fail-closed/);
 assert.match(runtimeTest, /logout with admin session cookie and no CSRF is fail-closed/);
 
@@ -54,5 +59,5 @@ if (run.status !== 0) {
 }
 
 console.log(
-  "[verify:admin-csrf-double-submit] PASS (session HttpOnly · CSRF readable token · both required · HTTPONLY_CSRF_COOKIE=NOT_APPLIED)",
+  "[verify:admin-csrf-double-submit] PASS (session HttpOnly · signed session-bound CSRF readable token · both required · HTTPONLY_CSRF_COOKIE=NOT_APPLIED)",
 );
