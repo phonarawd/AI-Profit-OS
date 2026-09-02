@@ -51,8 +51,7 @@ async function main() {
   );
 }
 
-main().catch((err) => {
-  const raw = err instanceof Error ? err.message : String(err);
-  console.error(raw.replace(/[\r\n\u2028\u2029]/g, " "));
+main().catch(() => {
+  console.error("[verify:adapter-ingest-runtime] FAIL");
   process.exit(1);
 });
