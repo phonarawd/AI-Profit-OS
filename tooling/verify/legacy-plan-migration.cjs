@@ -97,6 +97,14 @@ for (const entry of registry.files || []) {
   if (!text.includes("EXECUTION_AUTHORITY = NO")) {
     fails.push(`${entry.file}: EXECUTION_AUTHORITY=NO missing`);
   }
+  if (entry.group === "legacy9") {
+    const historicalPending = (text.match(/^\s*status:\s*pending\s*$/gm) || []).length;
+    if (historicalPending !== 0) {
+      fails.push(
+        `${entry.file}: historical plan must expose zero executable pending todos (got ${historicalPending})`,
+      );
+    }
+  }
   if (entry.contentAuthority === "YES") {
     if (!text.includes("CONTENT_AUTHORITY = YES")) {
       fails.push(`${entry.file}: CONTENT_AUTHORITY=YES missing`);

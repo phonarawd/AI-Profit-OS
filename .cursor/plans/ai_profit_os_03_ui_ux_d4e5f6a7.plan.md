@@ -171,50 +171,50 @@ todos:
     content: "[grok-4.5|256K] Redesign R1-2B · 2026-08-16 SPLIT from `redesign-r1-home-brand-assets`(구 Part B 원문 그대로 이전 · governance amendment · 신규 발명 아님) — Home Hero 신규 생성 · avatar 신규 시각 확정 · Home illustration 선택 · Home 배치용 시각 자산 확정. 기존 robot+globe hero illustration/`wordmark-dark`/`BrandMark ✦`/legacy dark tokens(`lux-dark`)/`avatar-512.png`는 `LEGACY VISUAL CANDIDATE — NOT NEW MASTER AUTHORITY`로 취급(ADR-018 §13 · H1 intake `peotteok-home-visual-master-intake.v1.md` §10/§11 Asset Production Candidates와 동일 축) · 삭제·교체 금지 · 새 Master 근거 없는 임의 재사용 금지 · **착수 금지(선행 미충족):** New Implementation Contract(H6) completed 전 착수 금지 · H6.5 contract sync 완료 권장 · H7 presentation implementation 착수 전에 completed 필요(H7은 이 asset의 존재를 전제) · **위치(고정):** H6.5 이후 · H7 이전 · 다음(본 todo completed 후)=H7 · **2026-08-16 V2 GATE 추가:** Founder Visual V2 Rebase(`redesign-r1-home-visual-master-v2-rebase`) completed — 착수 시 반드시 `peotteok-home-v2-delta-sync.v1.md` §20 Asset Part B V2 Matrix를 입력으로 사용(MODIFY_REQUIREMENT 3건: 로봇 summary/cta 포즈+hero support graphic는 V2 포즈로 구체화, identity 불변 · KEEP_REQUIREMENT 3건 · 신규 INVESTIGATE 2건: 국가 flag 아이콘·AI summary 3종 아이콘, 기본값=제작 아님) · ASSET_PART_B_V2_READY=YES이나 본 todo 실제 착수는 여전히 별도 세션 · **2026-08-16 COMPLETE(Part B V2):** §20 8행 종결(NEW_ASSET_PRODUCED 4슬롯/7파일 · APPROVED_EXISTING_ASSET_REUSED 1 · NO_ASSET_REQUIRED 3 · FOUNDER_REVIEW_REQUIRED 0) · 보고서 `packages/ui/canon/contracts/peotteok-home-asset-production-part-b.v2.md` · legacy 승격/삭제 0 · placeholder 0 · H7 착수 0 · ASSET_PART_B_V2_COMPLETE=YES · H7_RUNTIME_START_ALLOWED=YES · **2026-08-16 SSOT ALIGN(H7 runtime 0):** SVG 3종 root `width=64 height=64 viewBox=0 0 64 64` · SHA search=`6db9648d4cee688639c3f3bb38aa4951ee81af71eed64be652aec10397682740` chart=`64772e6058279b64e55e129d46056481fa08cfb61b8e8288141f43b72ead7935` clock=`e666b86365913f9a70a71b82336129758b15edfcf5c38f111439aaab7e6698b1` · `home-visual-v2.wire.json` V2 intake/H5/H6/H6.5/delta-sync pointer 정합 · H7_STARTED=NO"
     status: completed
   - id: redesign-r1-home-implementation
-    content: "[grok-4.5|256K] Redesign R1 · ADR-018 H7 presentation implementation · **SUPERSEDED ORDERING(더 이상 사용 금지):** ~~C01 semantic binding→Shell/Header/Nav→Hero→Money→Opportunity→RightRail→Partner/Footer 순서~~ · ~~STEP5 Slice 0~6 번호체계~~ · ~~ADR-017 시각 가정(구 peotteok-light geometry/Hero/RightRail/Sidebar 비율)~~ — 위 3항목은 새 구현의 근거로 재사용하지 않는다(ADR-018 §1.2/§6) · **새 정의:** Founder-approved Home Visual Master + New Visual Contract(H5) + New Implementation Contract(H6) 기반 **presentation replacement**(ADDITION 아님 · Legacy Replacement Safety Gate 전수 준수 · Safety-A KEEP/REWIRE/REMOVE_FROM_RUNTIME/REPLACE/INVESTIGATE 분류 없이 컴포넌트 추가 금지 · Safety-B runtime/interaction/data uniqueness=0 · Safety-C old+new 동시 렌더 금지) · 기존 functional runtime(HomePageClient fetch/세션/401 처리·SDK·Nest·ledger binding·C01 `ledgerTotal`=COUNT semantic fix)은 보존 · HomePageV2·병렬 fetch/SDK/Nest 재작성 0 · peotteok-light token은 새 Visual Contract가 재확정하기 전까지 임시 참고만(자동 상속 금지) · responsive/a11y/reduced-motion/perf · **선행:** H1 completed + H5 completed + H6 completed + H6.5 completed · **게이트:** 본 todo의 실제 runtime 변경 착수는 `UI_UX_ENTRY_GATE=OPEN`(02.5 verdict=`ENGINE_ACCEPTED_FOR_UI`) 이후에만 가능 — **현재 UI_UX_ENTRY_GATE=OPEN**(02.5 verdict=ENGINE_ACCEPTED_FOR_UI ISSUED · baseline ea-baseline-64b0f8a6d984-3657543f36b5 · 이력: 최초 판정 P0=QA8_ADMIN_BOUNDARY는 admin 인증/RBAC repair 후 재검증 PASS로 해소됨) · **Engine Gate는 충족되었으나 위 H1/H5/H6/H6.5 completed 선행조건은 불변이므로 Visual Master 없이 본 todo 착수는 여전히 금지**"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R1 · ADR-018 H7 presentation implementation · **SUPERSEDED ORDERING(더 이상 사용 금지):** ~~C01 semantic binding→Shell/Header/Nav→Hero→Money→Opportunity→RightRail→Partner/Footer 순서~~ · ~~STEP5 Slice 0~6 번호체계~~ · ~~ADR-017 시각 가정(구 peotteok-light geometry/Hero/RightRail/Sidebar 비율)~~ — 위 3항목은 새 구현의 근거로 재사용하지 않는다(ADR-018 §1.2/§6) · **새 정의:** Founder-approved Home Visual Master + New Visual Contract(H5) + New Implementation Contract(H6) 기반 **presentation replacement**(ADDITION 아님 · Legacy Replacement Safety Gate 전수 준수 · Safety-A KEEP/REWIRE/REMOVE_FROM_RUNTIME/REPLACE/INVESTIGATE 분류 없이 컴포넌트 추가 금지 · Safety-B runtime/interaction/data uniqueness=0 · Safety-C old+new 동시 렌더 금지) · 기존 functional runtime(HomePageClient fetch/세션/401 처리·SDK·Nest·ledger binding·C01 `ledgerTotal`=COUNT semantic fix)은 보존 · HomePageV2·병렬 fetch/SDK/Nest 재작성 0 · peotteok-light token은 새 Visual Contract가 재확정하기 전까지 임시 참고만(자동 상속 금지) · responsive/a11y/reduced-motion/perf · **선행:** H1 completed + H5 completed + H6 completed + H6.5 completed · **게이트:** 본 todo의 실제 runtime 변경 착수는 `UI_UX_ENTRY_GATE=OPEN`(02.5 verdict=`ENGINE_ACCEPTED_FOR_UI`) 이후에만 가능 — **현재 UI_UX_ENTRY_GATE=OPEN**(02.5 verdict=ENGINE_ACCEPTED_FOR_UI ISSUED · baseline ea-baseline-64b0f8a6d984-3657543f36b5 · 이력: 최초 판정 P0=QA8_ADMIN_BOUNDARY는 admin 인증/RBAC repair 후 재검증 PASS로 해소됨) · **Engine Gate는 충족되었으나 위 H1/H5/H6/H6.5 completed 선행조건은 불변이므로 Visual Master 없이 본 todo 착수는 여전히 금지** · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-105"
+    status: completed
   - id: trust-age-spotcheck
-    content: "[grok-4.5|256K] Redesign R1-6 수동실사 · **위치: H9(Founder review) 이후 · H11(certification) 이전**(ADR-018 H0~H11 실행 큐 SSOT) · R1 Home H7 implementation 완료 후 20·40·60~70대 각3명 · **Founder-approved new Home Visual Master 기반 화면** 가독성/새 5탭/3초 질문/C01 count/도움말이모지/퍼뜩첫인사/면책이모지0/성별중성 · 결과 evidence+Admin ai-logs?tab=spotcheck pointer · 자동 verify0 · 코드 수정과 분리"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R1-6 수동실사 · **위치: H9(Founder review) 이후 · H11(certification) 이전**(ADR-018 H0~H11 실행 큐 SSOT) · R1 Home H7 implementation 완료 후 20·40·60~70대 각3명 · **Founder-approved new Home Visual Master 기반 화면** 가독성/새 5탭/3초 질문/C01 count/도움말이모지/퍼뜩첫인사/면책이모지0/성별중성 · 결과 evidence+Admin ai-logs?tab=spotcheck pointer · 자동 verify0 · 코드 수정과 분리 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-603"
+    status: completed
   - id: redesign-r1-home-certification
-    content: "[grok-4.5|256K] Redesign R1-7 · ADR-018 H11 certification · **인증 authority = New Visual Contract(H5) + New Implementation Contract(H6)** — historical `home-visual-implementation-mapping.v1.md`는 인증 근거로 재사용 금지(ADR-018 §4) · 필수 항목: New Visual Contract 충족+New Implementation Contract 충족+functional verification+responsive verification(320~2560+)+accessibility+Founder review(H9 증거)+visual lock 등록(H10 · `visual-locks.v1.json`)+Legacy Replacement Safety Gate 전수(Runtime/Interaction/Data uniqueness=0) · 기존 home-live-wire/home-principal-slots/home-state-truth/no-fake-zero-status/brand-asset-provenance + 신규 bottom-nav-result-indicator/home-horizontal-overflow 스크립트+package+CATALOG · T0/T1/T2 · known P0~P3 defect0 · governance observation snapshot · **선행: UI_UX_ENTRY_GATE=OPEN 필수 — 현재 OPEN**(02.5 verdict=ENGINE_ACCEPTED_FOR_UI · baseline ea-baseline-64b0f8a6d984-3657543f36b5 · 위 필수 항목 H7+H9+H10 completed 등은 불변) · 다음=R2"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R1-7 · ADR-018 H11 certification · **인증 authority = New Visual Contract(H5) + New Implementation Contract(H6)** — historical `home-visual-implementation-mapping.v1.md`는 인증 근거로 재사용 금지(ADR-018 §4) · 필수 항목: New Visual Contract 충족+New Implementation Contract 충족+functional verification+responsive verification(320~2560+)+accessibility+Founder review(H9 증거)+visual lock 등록(H10 · `visual-locks.v1.json`)+Legacy Replacement Safety Gate 전수(Runtime/Interaction/Data uniqueness=0) · 기존 home-live-wire/home-principal-slots/home-state-truth/no-fake-zero-status/brand-asset-provenance + 신규 bottom-nav-result-indicator/home-horizontal-overflow 스크립트+package+CATALOG · T0/T1/T2 · known P0~P3 defect0 · governance observation snapshot · **선행: UI_UX_ENTRY_GATE=OPEN 필수 — 현재 OPEN**(02.5 verdict=ENGINE_ACCEPTED_FOR_UI · baseline ea-baseline-64b0f8a6d984-3657543f36b5 · 위 필수 항목 H7+H9+H10 completed 등은 불변) · 다음=R2 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-105 + REL-603"
+    status: completed
   - id: redesign-r2-acquisition-contract
-    content: "[grok-4.5|256K] Redesign R2-1 · /l/[variant]·/ads*·/auth/login|signup|complete-profile·/onboarding Product/Visual/Implementation Contract+wire+copy/API mapping · utility→capital disclosure·Nest JWT/Kakao/Passkey·consent·recovery · existing PART2/Infra contracts keep|adapt · 새 route0"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R2-1 · /l/[variant]·/ads*·/auth/login|signup|complete-profile·/onboarding Product/Visual/Implementation Contract+wire+copy/API mapping · utility→capital disclosure·Nest JWT/Kakao/Passkey·consent·recovery · existing PART2/Infra contracts keep|adapt · 새 route0 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-100~104"
+    status: completed
   - id: redesign-r2-acquisition-implementation
-    content: "[grok-4.5|256K] Redesign R2-2 · R2 contracts 기준 Landing/Auth/Profile/Onboarding gap-only 구현 · existing GuestChrome/utility copy/consent/session-cookie/PART9 보존 · duplicate landing/auth component0 · 320~2560+/a11y/perf"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R2-2 · R2 contracts 기준 Landing/Auth/Profile/Onboarding gap-only 구현 · existing GuestChrome/utility copy/consent/session-cookie/PART9 보존 · duplicate landing/auth component0 · 320~2560+/a11y/perf · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-100~104"
+    status: completed
   - id: redesign-r2-acquisition-certification
-    content: "[grok-4.5|256K] Redesign R2-3 · onboarding-experiential/auth-surfaces/landing-3s/marketing-compliance/operator-footer/auth-session-cookie + verify:acquisition-release 신설+CATALOG · actual guest/auth/error/resume · known P0~P3 defect0"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R2-3 · onboarding-experiential/auth-surfaces/landing-3s/marketing-compliance/operator-footer/auth-session-cookie + verify:acquisition-release 신설+CATALOG · actual guest/auth/error/resume · known P0~P3 defect0 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-100~104"
+    status: completed
   - id: redesign-r3-wallet-contract
-    content: "[grok-4.5|256K] Redesign R3-1 · /wallet·deposit·withdraw*·history·/me/kyc·get-usdt Product/Visual/Implementation Contract+wire · Money completed ledger/mutation API pointer only · principal/profit/locked/practice·1/19conf·KRW승인·KYC/step-up·error recovery"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R3-1 · /wallet·deposit·withdraw*·history·/me/kyc·get-usdt Product/Visual/Implementation Contract+wire · Money completed ledger/mutation API pointer only · principal/profit/locked/practice·1/19conf·KRW승인·KYC/step-up·error recovery · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-113~119 + REL-124"
+    status: completed
   - id: redesign-r3-wallet-implementation
-    content: "[grok-4.5|256K] Redesign R3-2 · wallet/deposit/withdraw/history/KYC gap-only · PART9 wallet/withdraw/stub-action wire 보존 · balance UPDATE0·offline money queue0·duplicate mutation0 · peotteok-light/a11y/responsive"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R3-2 · wallet/deposit/withdraw/history/KYC gap-only · PART9 wallet/withdraw/stub-action wire 보존 · balance UPDATE0·offline money queue0·duplicate mutation0 · peotteok-light/a11y/responsive · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-113~119 + REL-124"
+    status: completed
   - id: redesign-r3-wallet-certification
-    content: "[grok-4.5|256K] Redesign R3-3 · wallet-live-wire/withdraw-flow-wire/bucket-invariant/withdraw-mode-default/kyc/deposit-confirm/plain-ko/webauthn + verify:wallet-release 신설+CATALOG · money/security 100% · known P0~P3 defect0"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R3-3 · wallet-live-wire/withdraw-flow-wire/bucket-invariant/withdraw-mode-default/kyc/deposit-confirm/plain-ko/webauthn + verify:wallet-release 신설+CATALOG · money/security 100% · known P0~P3 defect0 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-113~119 + REL-124"
+    status: completed
   - id: redesign-r4-core-loop-contract
-    content: "[grok-4.5|256K] Redesign R4-1 · /profits·/profits/[id]·/trades·/trades/[id]/execute Product/Visual/Implementation Contract+wire · object identity·preflight·running/requeue/success/safe_stop·proof/freshness/recovery · Engine Rule 재정의0"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R4-1 · /profits·/profits/[id]·/trades·/trades/[id]/execute Product/Visual/Implementation Contract+wire · object identity·preflight·running/requeue/success/safe_stop·proof/freshness/recovery · Engine Rule 재정의0 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-106~112"
+    status: completed
   - id: redesign-r4-core-loop-implementation
-    content: "[grok-4.5|256K] Redesign R4-2 · discovery→detail→preflight→participate→execution→receipt/safe-stop gap-only · existing SDK/feed/polling/PART9 보존 · trader semantics/random/fake progress0 · peotteok-light/a11y/responsive"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R4-2 · discovery→detail→preflight→participate→execution→receipt/safe-stop gap-only · existing SDK/feed/polling/PART9 보존 · trader semantics/random/fake progress0 · peotteok-light/a11y/responsive · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-106~112"
+    status: completed
   - id: redesign-r4-core-loop-certification
-    content: "[grok-4.5|256K] Redesign R4-3 · profits-live-wire/execution-surfaces/match-success-rule/preflight-may-stop/participate-proof/cta/jargon/margin/image + verify:core-loop-release 신설+CATALOG · success/safe-stop 실제 E2E CI · known P0~P3 defect0"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R4-3 · profits-live-wire/execution-surfaces/match-success-rule/preflight-may-stop/participate-proof/cta/jargon/margin/image + verify:core-loop-release 신설+CATALOG · success/safe-stop 실제 E2E CI · known P0~P3 defect0 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-106~112"
+    status: completed
   - id: redesign-r5-account-hub-contract
-    content: "[grok-4.5|256K] Redesign R5-1 · /me·settings·membership·invite·inbox·benefits·events·strategies·peotteok·support·guide·legal Product/Visual/Implementation Contract+wire matrix · 4그룹 profile/security/money/help · existing domain SSOT pointer"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R5-1 · /me·settings·membership·invite·inbox·benefits·events·strategies·peotteok·support·guide·legal Product/Visual/Implementation Contract+wire matrix · 4그룹 profile/security/money/help · existing domain SSOT pointer · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-120~130"
+    status: completed
   - id: redesign-r5-account-hub-implementation
-    content: "[grok-4.5|256K] Redesign R5-2 · Account Hub route 전수 gap-only 통합 · existing BenefitHub/Invite/Inbox/Membership/Peotteok/Guide/Legal 재사용 · duplicate hub/copy/fact path0 · peotteok-light/a11y/responsive"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R5-2 · Account Hub route 전수 gap-only 통합 · existing BenefitHub/Invite/Inbox/Membership/Peotteok/Guide/Legal 재사용 · duplicate hub/copy/fact path0 · peotteok-light/a11y/responsive · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-120~130"
+    status: completed
   - id: redesign-r5-account-hub-certification
-    content: "[grok-4.5|256K] Redesign R5-3 · benefits/invite/membership/inbox/ai-coach/trust/legal/notification/support/market-weekly + verify:account-hub-release 신설+CATALOG · route-contract matrix 100% · known P0~P3 defect0 · 03 pending0 후 04 Admin"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R5-3 · benefits/invite/membership/inbox/ai-coach/trust/legal/notification/support/market-weekly + verify:account-hub-release 신설+CATALOG · route-contract matrix 100% · known P0~P3 defect0 · 03 pending0 후 04 Admin · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-120~130"
+    status: completed
 isProject: false
 ---
 <!-- REL-017-AUTHORITY-STAMP -->

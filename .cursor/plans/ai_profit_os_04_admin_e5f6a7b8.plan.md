@@ -6,56 +6,56 @@ todos:
     content: "[grok-4.5|256K] v7.22.33 §9.1.1 자식 route/tab 전수 잠금 · sidebar13 0 · BOOTSTRAP §6 sync · monorepo routes 선행 SSOT"
     status: completed
   - id: admin-ops
-    content: "[grok-4.5|256K] R6 PART0 task-first shell · 12모듈+2b · 첫화면=오늘처리/막힘/위험/최근변경 · 왕초보한글·IT0 · TOP5 · wallet/growth/reports shell · deep≠여기(missions/partners/ticker/coach=전용todo) · verify:admin-routes/admin-plain-language"
-    status: pending
+    content: "[grok-4.5|256K] R6 PART0 task-first shell · 12모듈+2b · 첫화면=오늘처리/막힘/위험/최근변경 · 왕초보한글·IT0 · TOP5 · wallet/growth/reports shell · deep≠여기(missions/partners/ticker/coach=전용todo) · verify:admin-routes/admin-plain-language · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-200~224 + REL-409"
+    status: completed
   - id: admin-user-ops
-    content: "[grok-4.5|256K] PART1 §37·§39·§9.8.7/8 유저360 + finance KPI + referral/attribution/CS + OAuth Kakao표시 + Passkey + export + RBAC · verify:admin-user-360"
-    status: pending
+    content: "[grok-4.5|256K] PART1 §37·§39·§9.8.7/8 유저360 + finance KPI + referral/attribution/CS + OAuth Kakao표시 + Passkey + export + RBAC · verify:admin-user-360 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-200~224 + REL-409"
+    status: completed
   - id: admin-price-sync
-    content: "[grok-4.5|256K] PART2 §36 가격·마진 UI + opportunity.price.updated Runtime P0 in-process + 유저 surface 반영 · verify 해당 게이트"
-    status: pending
+    content: "[grok-4.5|256K] PART2 §36 가격·마진 UI + opportunity.price.updated Runtime P0 in-process + 유저 surface 반영 · verify 해당 게이트 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-200~224 + REL-407 + REL-409"
+    status: completed
   - id: admin-execution-policy
-    content: "[grok-4.5|256K] PART3 §48.6 매칭성공조절 프리셋·실조건·관측KPI·난수0·audit · Engine §48.13.3 · Canon admin-execution-policy · UI apps/admin Owns여기 · verify:match-strictness/no-success-rate-percent"
-    status: pending
+    content: "[grok-4.5|256K] PART3 §48.6 매칭성공조절 프리셋·실조건·관측KPI·난수0·audit · Engine §48.13.3 · Canon admin-execution-policy · UI apps/admin Owns여기 · verify:match-strictness/no-success-rate-percent · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-209 + REL-407 + REL-409"
+    status: completed
   - id: admin-user-opportunity-override
-    content: "[grok-4.5|256K] PART4a §9.8.9 유저별 노출/핀/마진·수익 override + audit · verify:admin-user-opportunity-override"
-    status: pending
+    content: "[grok-4.5|256K] PART4a §9.8.9 유저별 노출/핀/마진·수익 override + audit · verify:admin-user-opportunity-override · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-200~224 + REL-409"
+    status: completed
   - id: admin-user-membership-credentials
-    content: "[grok-4.5|256K] PART4b §9.8.10 등급표시/강제·성향메모·밴·로그인비번·출금PIN·프로필전수·유저별엄격도 · verify:admin-user-credentials"
-    status: pending
+    content: "[grok-4.5|256K] PART4b §9.8.10 등급표시/강제·성향메모·밴·로그인비번·출금PIN·프로필전수·유저별엄격도 · verify:admin-user-credentials · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-200~224 + REL-409"
+    status: completed
   - id: admin-user-block-notify
-    content: "[grok-4.5|256K] PART4c §9.8.4a 매칭/출금신청 차단 · §9.8.8d 1인쪽지 · §9.8.8e fanout pointer(PWA) · UI §5.9.4 · verify:admin-user-capability-block/ops-inbox"
-    status: pending
+    content: "[grok-4.5|256K] PART4c §9.8.4a 매칭/출금신청 차단 · §9.8.8d 1인쪽지 · §9.8.8e fanout pointer(PWA) · UI §5.9.4 · verify:admin-user-capability-block/ops-inbox · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-200~224 + REL-409"
+    status: completed
   - id: admin-growth-missions
-    content: "[grok-4.5|256K] PART5a §35.7 growth?tab=missions · D/M/W/S catalog·budget·accrualHalt·queued_pool · 유저별수동지급0 · Money §51.8a · UI §5.9.5 pointer · verify:mission-no-manual-grant/admin-growth-tabs"
-    status: pending
+    content: "[grok-4.5|256K] PART5a §35.7 growth?tab=missions · D/M/W/S catalog·budget·accrualHalt·queued_pool · 유저별수동지급0 · Money §51.8a · UI §5.9.5 pointer · verify:mission-no-manual-grant/admin-growth-tabs · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=POST-013"
+    status: completed
   - id: admin-growth-partners
-    content: "[grok-4.5|256K] PART5b growth?tab=partners §38.10 Tier-A 순서·ON/OFF·audit · 로고교체금지(Brand markets manifest) · yahoo_jp adapter Day1=0≠표기OFF · UI MarketPartner* pointer · verify:market-partner-trust(Admin면)+admin-growth-tabs"
-    status: pending
+    content: "[grok-4.5|256K] PART5b growth?tab=partners §38.10 Tier-A 순서·ON/OFF·audit · 로고교체금지(Brand markets manifest) · yahoo_jp adapter Day1=0≠표기OFF · UI MarketPartner* pointer · verify:market-partner-trust(Admin면)+admin-growth-tabs · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=POST-014"
+    status: completed
   - id: admin-growth-ticker-organic
-    content: "[grok-4.5|256K] PART5c §35.4 growth?tab=ticker Organic Hybrid · live우선·침묵메움·24h곡선·지터·corpus · DayPulse편집UI0 · UI §33.2a pointer · **선행 pointer: UI PART9g가 만든 `growth_ticker_config`(ticker_mode/counter_mode)에 PATCH+Organic Hybrid 연출 로직 추가**(테이블 신설≠본 todo·UI 9g Owns) · verify:ticker-organic-hybrid/ticker-pii-0/ticker-mode-audit"
-    status: pending
+    content: "[grok-4.5|256K] PART5c §35.4 growth?tab=ticker Organic Hybrid · live우선·침묵메움·24h곡선·지터·corpus · DayPulse편집UI0 · UI §33.2a pointer · **선행 pointer: UI PART9g가 만든 `growth_ticker_config`(ticker_mode/counter_mode)에 PATCH+Organic Hybrid 연출 로직 추가**(테이블 신설≠본 todo·UI 9g Owns) · verify:ticker-organic-hybrid/ticker-pii-0/ticker-mode-audit · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-217~221 + REL-409"
+    status: completed
   - id: admin-ai-peotteok-ops
-    content: "[grok-4.5|256K] PART5d §9.5.7 ai-logs?tab=coach|eval|pick|spotcheck · P/G/S Eval·trace·degrade · AI PICK 읽기전용·Admin mutate0 · spotcheck=UI §38.6b · Engine §47.15 · verify:ai-coach-*/admin routes"
-    status: pending
+    content: "[grok-4.5|256K] PART5d §9.5.7 ai-logs?tab=coach|eval|pick|spotcheck · P/G/S Eval·trace·degrade · AI PICK 읽기전용·Admin mutate0 · spotcheck=UI §38.6b · Engine §47.15 · verify:ai-coach-*/admin routes · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-215 + REL-409"
+    status: completed
   - id: abuse-error-matrix
-    content: "[grok-4.5|256K] PART6 risk A1~ + §49 P1~P24/E1~E12 + UI §51.24 L1~L24 + rate limit + circuit + toast 100% 커버"
-    status: pending
+    content: "[grok-4.5|256K] PART6 risk A1~ + §49 P1~P24/E1~E12 + UI §51.24 L1~L24 + rate limit + circuit + toast 100% 커버 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-400~409 + REL-500~501"
+    status: completed
   - id: customer-support-ops
-    content: "[grok-4.5|256K] PART7 §51.6 support 큐·SLA·dispute(§51.11) + 유저상세 링크 · UI /me/support pointer · verify:support-surfaces"
-    status: pending
+    content: "[grok-4.5|256K] PART7 §51.6 support 큐·SLA·dispute(§51.11) + 유저상세 링크 · UI /me/support pointer · verify:support-surfaces · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-212 + REL-409"
+    status: completed
   - id: product-analytics
-    content: "[grok-4.5|256K] PART8 §51.10 D1/D7·입금→2회·퍼널 OTel + Admin 리텐션 위젯"
-    status: pending
+    content: "[grok-4.5|256K] PART8 §51.10 D1/D7·입금→2회·퍼널 OTel + Admin 리텐션 위젯 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=POST-015"
+    status: completed
   - id: redesign-r6-admin-three-mode-ops
-    content: "[grok-4.5|256K] Redesign R6-3mode · policy/bulk mutation/execution rule/wallet operation/risk threshold에 LIVE|DRY_RUN|SIMULATION 명시 · preview→confirm→apply→result→rollback · mode별 권한/audit/idempotency/impact count · simulation이 live write0 · 쉬운한글 · verify:admin-operation-modes 신설+CATALOG"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R6-3mode · policy/bulk mutation/execution rule/wallet operation/risk threshold에 LIVE|DRY_RUN|SIMULATION 명시 · preview→confirm→apply→result→rollback · mode별 권한/audit/idempotency/impact count · simulation이 live write0 · 쉬운한글 · verify:admin-operation-modes 신설+CATALOG · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-222~224 + REL-409"
+    status: completed
   - id: admin-isolated-deploy
-    content: "[grok-4.5|256K] PART9 §40 별도 OpenNext Ops Worker·ops도메인·Admin JWT·IP allowlist·유저앱 분리 · origin=infra/domain.manifest.json openNext.ops · pages deploy/pages.dev origin0 (shell/기능/3-mode 이후)"
-    status: pending
+    content: "[grok-4.5|256K] PART9 §40 별도 OpenNext Ops Worker·ops도메인·Admin JWT·IP allowlist·유저앱 분리 · origin=infra/domain.manifest.json openNext.ops · pages deploy/pages.dev origin0 (shell/기능/3-mode 이후) · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=POST-016"
+    status: completed
   - id: redesign-r6-admin-certification
-    content: "[grok-4.5|256K] Redesign R6 certification · 12모듈+2b/child route 전수·task-first·3-mode·RBAC/MFA/IP/audit/rollback·Money/Engine/UI field mapping·Ops Worker/noindex · admin-routes/plain-language/user360/growth/mission/partner/ticker/coach/support/analytics/no-admin-in-web/admin-operation-modes + T0/T1/T2 · known P0~P3 defect0"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R6 certification · 12모듈+2b/child route 전수·task-first·3-mode·RBAC/MFA/IP/audit/rollback·Money/Engine/UI field mapping·Ops Worker/noindex · admin-routes/plain-language/user360/growth/mission/partner/ticker/coach/support/analytics/no-admin-in-web/admin-operation-modes + T0/T1/T2 · known P0~P3 defect0 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-409"
+    status: completed
 isProject: false
 ---
 <!-- REL-017-AUTHORITY-STAMP -->
