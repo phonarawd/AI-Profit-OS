@@ -33,9 +33,9 @@ const baseUrl =
   fixture.stagingWeb;
 
 const DESKTOP_BREAKPOINT = 1280;
-const GOTO_ATTEMPTS = 3;
-const GOTO_TIMEOUT_MS = 60_000;
-const GOTO_RETRY_DELAY_MS = 750;
+const GOTO_ATTEMPTS = 4;
+const GOTO_TIMEOUT_MS = 45_000;
+const GOTO_RETRY_DELAY_MS = 1000;
 
 test.describe.configure({ timeout: 180000 });
 
@@ -130,7 +130,8 @@ async function isRetryableRootError(page, scenario, error) {
 async function gotoOnce(page, cohort, scenario) {
   const url = baseUrl.replace(/\/$/, "") + scenario.path;
   const res = await page.goto(url, {
-    waitUntil: "load",
+    // CF preview may hang on full load (CSP/third-party). DOM+stubs suffice.
+    waitUntil: "domcontentloaded",
     timeout: GOTO_TIMEOUT_MS,
   });
   expect(res, cohort.id + " " + scenario.id + " response").not.toBeNull();
@@ -175,7 +176,7 @@ async function waitForScenarioRoot(page, cohort, scenario, check) {
       `[REL-603] transient root retry ${cohort.id} ${scenario.id} ${scenario.path}`,
     );
     await page.goto("about:blank", { timeout: 10_000 }).catch(() => {});
-    await gotoOnce(page, cohort, scenario);
+    await gotoStaging(page, cohort, scenario);
     await check();
   }
 }
