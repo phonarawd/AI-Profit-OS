@@ -42,7 +42,7 @@ jobs:
         run: pnpm verify:auth-flows
 
       - name: Magic-link delivery runtime regression
-        run: node --test services/api-nest/src/auth/magic-link.delivery.runtime.test.ts
+        run: node --experimental-transform-types --test services/api-nest/src/auth/magic-link.delivery.runtime.test.ts
 
       - name: Nest auth compile
         run: pnpm --filter @aipo/api-nest... build
