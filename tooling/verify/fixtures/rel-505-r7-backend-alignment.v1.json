@@ -1,8 +1,11 @@
 {
   "rel": "REL-505",
-  "deps": ["REL-504", "REL-502"],
+  "deps": [
+    "REL-504",
+    "REL-502"
+  ],
   "protectedScopeMutation": false,
   "applyMigration": 0,
-  "certIssued": 0,
+  "certIssued": 1,
   "additiveRel": "REL-508"
 }
