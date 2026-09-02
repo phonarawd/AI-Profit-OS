@@ -1,13 +1,13 @@
 {
   "schema": "governance.recovery.engine-rebase-evidence.v1",
-  "computed_at": "2026-09-02T03:08:51.222Z",
+  "computed_at": "2026-09-02T04:20:21Z",
   "predecessor_head_sha": "40754bc32b2586f6c3c844813134bc6eb1ad1f91",
   "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
-  "live_aggregate": "e3c805fbee82d80b7e320d2f8b28bce0ec589a9adad76a86e50078c286de48aa",
+  "live_aggregate": "590263f0f273f214f14c8a8ad8489f79d21fbb0e71f71d480a94cbd026f82230",
   "baseline_aggregate": "2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8",
-  "path_count_live": 489,
+  "path_count_live": 490,
   "path_count_baseline": 450,
-  "changed_paths": 81,
+  "changed_paths": 82,
   "added_paths": [
     "services/api-nest/src/auth/identity-proof.crypto.ts",
     "services/api-nest/src/auth/identity-proof.email.runtime.test.ts",
@@ -47,7 +47,8 @@
     "services/api-nest/src/wallet/withdraw-review.policy.runtime.test.ts",
     "services/api-nest/src/wallet/withdraw-review.policy.ts",
     "services/api-nest/src/wallet/withdraw-review.service.ts",
-    "supabase/migrations/20260901224000_withdraw_stepup_token_single_use.sql"
+    "supabase/migrations/20260901224000_withdraw_stepup_token_single_use.sql",
+    "supabase/migrations/20260902032000_production_schema_parity.sql"
   ],
   "mutated_paths": [
     "schemas/deposit-config.v1.json",
@@ -111,7 +112,7 @@
     "p2_release_blocking_unresolved": "UNPROVEN",
     "money_safety": "TRON_FAIL_CLOSED_PASS",
     "auth_security": "CSRF_DESIGN_PROVEN_GHAS_NOT_DISMISSED",
-    "migration_staging": "STAGING_NOT_READY",
+    "migration_staging": "STAGING_TOPOLOGY_READY_FULL_E2E_PENDING",
     "ACK_RECEIVED": 0,
     "FINAL_ACCEPTANCE": "NOT_ISSUED"
   },
@@ -139,6 +140,7 @@
     "QA9"
   ],
   "baseline_washing_check": "PASS_NO_IN_PLACE_HASH_REWRITE",
-  "note": "81-path inventory classified. ACK is not issued. Baseline hashes were not rewritten. Formal rebase still required before QA rerun.",
-  "inventory_ref": "governance/recovery/engine-drift-inventory.current.v1.json"
+  "note": "82-path inventory scope measured on recovery 23a46bd... . ACK is not issued. Baseline hashes were not rewritten. Formal rebase and current-epoch QA0-QA9 are still required.",
+  "inventory_ref": "governance/recovery/engine-drift-inventory.current.v1.json",
+  "scope_head_sha": "23a46bd029feff5dcc4dafab463ca6f406970564"
 }
