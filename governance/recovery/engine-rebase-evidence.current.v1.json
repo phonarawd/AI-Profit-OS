@@ -1,13 +1,13 @@
 {
   "schema": "governance.recovery.engine-rebase-evidence.v1",
-  "computed_at": "2026-09-01T17:50:22.098Z",
+  "computed_at": "2026-09-02T03:08:51.222Z",
   "predecessor_head_sha": "40754bc32b2586f6c3c844813134bc6eb1ad1f91",
   "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
-  "live_aggregate": "eafb536e0626bec056da06fb84fac5552c4c314848312c9229aff6320d42a092",
+  "live_aggregate": "e3c805fbee82d80b7e320d2f8b28bce0ec589a9adad76a86e50078c286de48aa",
   "baseline_aggregate": "2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8",
   "path_count_live": 489,
   "path_count_baseline": 450,
-  "changed_paths": 79,
+  "changed_paths": 81,
   "added_paths": [
     "services/api-nest/src/auth/identity-proof.crypto.ts",
     "services/api-nest/src/auth/identity-proof.email.runtime.test.ts",
@@ -61,6 +61,7 @@
     "services/api-nest/src/auth/auth.controller.ts",
     "services/api-nest/src/auth/auth.module.ts",
     "services/api-nest/src/auth/auth.service.ts",
+    "services/api-nest/src/auth/auth.stage.ts",
     "services/api-nest/src/auth/jwt-auth.guard.ts",
     "services/api-nest/src/common/admin-capabilities.ts",
     "services/api-nest/src/common/admin-token.ts",
@@ -68,6 +69,7 @@
     "services/api-nest/src/common/common.module.ts",
     "services/api-nest/src/health.controller.ts",
     "services/api-nest/src/ledger/idempotency-fingerprint.ts",
+    "services/api-nest/src/ledger/ledger.money.ts",
     "services/api-nest/src/referral/referral.controller.ts",
     "services/api-nest/src/referral/referral.module.ts",
     "services/api-nest/src/wallet/chain-sweeper.phase0.service.ts",
@@ -137,6 +139,6 @@
     "QA9"
   ],
   "baseline_washing_check": "PASS_NO_IN_PLACE_HASH_REWRITE",
-  "note": "79-path inventory classified. ACK is not issued. Baseline hashes were not rewritten. Formal rebase still required before QA rerun.",
+  "note": "81-path inventory classified. ACK is not issued. Baseline hashes were not rewritten. Formal rebase still required before QA rerun.",
   "inventory_ref": "governance/recovery/engine-drift-inventory.current.v1.json"
 }

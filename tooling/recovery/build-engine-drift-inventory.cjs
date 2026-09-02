@@ -63,6 +63,7 @@ function classify(rel) {
     p.includes("auth.controller") ||
     p.includes("auth.service") ||
     p.includes("auth.module") ||
+    p.includes("auth.stage") ||
     p.includes("jwt-auth.guard")
   ) {
     return {
@@ -297,7 +298,8 @@ if (unexplained.length === 0 && inventory.count_match) {
   evidence.ack_eligibility.FINAL_ACCEPTANCE = "NOT_ISSUED";
   evidence.inventory_ref = "governance/recovery/engine-drift-inventory.current.v1.json";
   evidence.note =
-    "79-path inventory classified. ACK is not issued. Baseline hashes were not rewritten. Formal rebase still required before QA rerun.";
+    inventory.changed_paths +
+    "-path inventory classified. ACK is not issued. Baseline hashes were not rewritten. Formal rebase still required before QA rerun.";
   fs.writeFileSync(evidencePath, JSON.stringify(evidence, null, 2) + "\n");
 }
 

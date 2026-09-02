@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const psm = require("./lib/rel-502-psm.cjs");
 
 const root = path.resolve(__dirname, "../..");
 const inventory = JSON.parse(
@@ -16,6 +17,7 @@ const evidence = JSON.parse(
     "utf8",
   ),
 );
+const live = psm.compareProtectedScope();
 
 function fail(msg) {
   console.error("[verify:engine-drift-inventory] FAIL " + msg);
@@ -25,12 +27,27 @@ function fail(msg) {
 if (inventory.schema !== "governance.recovery.engine-drift-inventory.v1") {
   fail("inventory schema");
 }
-if (inventory.changed_paths !== 79 || inventory.expected_changed_paths !== 79) {
-  fail("changed_paths must stay 79 until a formal Engine rebase");
+if (inventory.changed_paths !== live.changedPathCount) {
+  fail(
+    "changed_paths must match live protected-scope count " +
+      live.changedPathCount +
+      " (got " +
+      inventory.changed_paths +
+      ")",
+  );
+}
+if (inventory.expected_changed_paths !== live.changedPathCount) {
+  fail("expected_changed_paths must match live protected-scope count");
+}
+if (evidence.changed_paths !== live.changedPathCount) {
+  fail("evidence.changed_paths must match live protected-scope count");
+}
+if (evidence.live_aggregate !== live.liveAggregate) {
+  fail("evidence.live_aggregate stale vs live hash");
 }
 if (inventory.count_match !== true) fail("count_match");
 if (inventory.unexplained_count !== 0) fail("unexplained_count must be 0");
-if (!Array.isArray(inventory.paths) || inventory.paths.length !== 79) {
+if (!Array.isArray(inventory.paths) || inventory.paths.length !== live.changedPathCount) {
   fail("paths length");
 }
 if (inventory.ACK_RECEIVED !== 0) fail("ACK_RECEIVED must stay 0");
@@ -61,5 +78,7 @@ if (evidence.inventory_ref !== "governance/recovery/engine-drift-inventory.curre
 }
 
 console.log(
-  "[verify:engine-drift-inventory] PASS (79 classified · unexplained=0 · ACK_RECEIVED=0 · NOT_ISSUED)",
+  "[verify:engine-drift-inventory] PASS (" +
+    live.changedPathCount +
+    " classified · unexplained=0 · ACK_RECEIVED=0 · NOT_ISSUED)",
 );
