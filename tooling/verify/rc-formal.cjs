@@ -79,6 +79,7 @@ if (art) {
             !p.startsWith("governance/") &&
             !p.startsWith(".cursor/plans/") &&
             !p.startsWith("tooling/verify/") &&
+            !p.startsWith("tooling/e2e/") &&
             !p.startsWith(".github/workflows/"),
         );
         if (disallowed.length) {
