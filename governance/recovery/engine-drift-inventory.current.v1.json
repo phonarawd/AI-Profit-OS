@@ -1,10 +1,10 @@
 {
   "schema": "governance.recovery.engine-drift-inventory.v1",
-  "computed_at": "2026-09-02T03:09:35.828Z",
+  "computed_at": "2026-09-02T04:20:21Z",
   "predecessor_head_sha": "40754bc32b2586f6c3c844813134bc6eb1ad1f91",
-  "inventory_head_sha": "f06c757d7f15b3a905f7cb88137cac07fc6d7189",
-  "changed_paths": 81,
-  "expected_changed_paths": 81,
+  "inventory_head_sha": "23a46bd029feff5dcc4dafab463ca6f406970564",
+  "changed_paths": 82,
+  "expected_changed_paths": 82,
   "count_match": true,
   "by_category": {
     "AUTH_SECURITY": 14,
@@ -15,7 +15,7 @@
     "REFERRAL": 5,
     "UX_PREFS": 8,
     "MONEY_WALLET": 26,
-    "DB_MIGRATION": 1,
+    "DB_MIGRATION": 2,
     "CONTRACT_SCHEMA": 2,
     "ADAPTER_INGEST": 1,
     "AI_COACH": 2
@@ -24,7 +24,7 @@
   "ACK_RECEIVED": 0,
   "FINAL_ACCEPTANCE": "NOT_ISSUED",
   "REBASE_REQUIRED": 1,
-  "note": "Classification only. Formal rebase + QA0-QA9 rerun are still required. Do not treat this file as an ACK.",
+  "note": "Classification only. 82 protected-scope paths, unexplained=0. Formal rebase + QA0-QA9 rerun are still required. Do not treat this file as an ACK.",
   "required_rerun_matrix": {
     "QA0": [
       "services/api-nest/src/config/nest-provenance.ts",
@@ -36,7 +36,8 @@
       "services/api-nest/src/app.module.ts",
       "services/api-nest/src/common/common.module.ts",
       "services/api-nest/src/health.controller.ts",
-      "services/api-nest/tsconfig.json"
+      "services/api-nest/tsconfig.json",
+      "supabase/migrations/20260902032000_production_schema_parity.sql"
     ],
     "QA1": [
       "services/api-nest/src/auth/identity-proof.crypto.ts",
@@ -143,7 +144,8 @@
       "services/api-nest/src/wallet/withdraw-fee.service.ts",
       "services/api-nest/src/wallet/withdraw-intent.service.ts",
       "services/api-nest/src/wallet/withdraw-stepup.policy.ts",
-      "services/api-nest/src/wallet/withdraw-stepup.service.ts"
+      "services/api-nest/src/wallet/withdraw-stepup.service.ts",
+      "supabase/migrations/20260902032000_production_schema_parity.sql"
     ],
     "QA4": [
       "services/api-nest/src/ledger/idempotency-fingerprint.runtime.test.ts",
@@ -177,7 +179,8 @@
       "services/api-nest/src/wallet/withdraw-fee.service.ts",
       "services/api-nest/src/wallet/withdraw-intent.service.ts",
       "services/api-nest/src/wallet/withdraw-stepup.policy.ts",
-      "services/api-nest/src/wallet/withdraw-stepup.service.ts"
+      "services/api-nest/src/wallet/withdraw-stepup.service.ts",
+      "supabase/migrations/20260902032000_production_schema_parity.sql"
     ],
     "QA5": [
       "services/api-nest/src/wallet/deposit-config.ready.ts",
@@ -207,7 +210,8 @@
       "services/api-nest/src/wallet/withdraw-fee.service.ts",
       "services/api-nest/src/wallet/withdraw-intent.service.ts",
       "services/api-nest/src/wallet/withdraw-stepup.policy.ts",
-      "services/api-nest/src/wallet/withdraw-stepup.service.ts"
+      "services/api-nest/src/wallet/withdraw-stepup.service.ts",
+      "supabase/migrations/20260902032000_production_schema_parity.sql"
     ],
     "QA6": [
       "services/api-nest/src/ai/coach.controller.ts",
@@ -279,7 +283,8 @@
       "services/api-nest/src/wallet/withdraw-fee.service.ts",
       "services/api-nest/src/wallet/withdraw-intent.service.ts",
       "services/api-nest/src/wallet/withdraw-stepup.policy.ts",
-      "services/api-nest/src/wallet/withdraw-stepup.service.ts"
+      "services/api-nest/src/wallet/withdraw-stepup.service.ts",
+      "supabase/migrations/20260902032000_production_schema_parity.sql"
     ],
     "QA9": [
       "services/api-nest/src/ai/coach.controller.ts",
@@ -1210,6 +1215,31 @@
         {
           "sha": "ea73c85962609c3c88faf0fefe1a18d32247e3c6",
           "subject": "fix(wallet): make withdraw step-up proof single-use"
+        }
+      ],
+      "category": "DB_MIGRATION",
+      "reason": "Schema/ledger change after Engine baseline. Formal rebase must re-prove money invariants.",
+      "security_impact": "HIGH",
+      "schema_impact": true,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA0",
+        "QA3",
+        "QA4",
+        "QA5",
+        "QA8"
+      ]
+    },
+    {
+      "path": "supabase/migrations/20260902032000_production_schema_parity.sql",
+      "kind": "added",
+      "owning_commit": "bdfc114c1eb02781eb4c4220b7af2b15981390a2",
+      "owning_subject": "infra(db): record production schema parity recovery",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "bdfc114c1eb02781eb4c4220b7af2b15981390a2",
+          "subject": "infra(db): record production schema parity recovery"
         }
       ],
       "category": "DB_MIGRATION",
