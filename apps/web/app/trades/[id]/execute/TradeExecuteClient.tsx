@@ -6,6 +6,7 @@ import {
   type ExecutionTransportKind,
   type TradeExecutionState,
 } from "@aipo/sdk/execution-stream";
+import { PermissionDenied } from "@aipo/ui/components/primitives";
 import Link from "next/link";
 import { useCallback, type ReactNode } from "react";
 import styles from "./trade-execute.module.css";
@@ -139,6 +140,7 @@ export function TradeExecuteClient({ tradeId }: { tradeId: string }) {
   if (isTradeExecutionRequestError(error) && error.code === "AUTH_REQUIRED") {
     return (
       <Shell transport={transport}>
+        <PermissionDenied>
         <h1 className={styles.title}>{TITLE}</h1>
         <p className={styles.lead}>로그인하면 이 진행을 확인할 수 있어요.</p>
         <div className={styles.actions}>
@@ -147,6 +149,7 @@ export function TradeExecuteClient({ tradeId }: { tradeId: string }) {
             홈으로
           </Link>
         </div>
+        </PermissionDenied>
       </Shell>
     );
   }

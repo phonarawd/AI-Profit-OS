@@ -1,0 +1,20 @@
+{
+  "schema": "governance.recovery.leftover-shared-states-evidence.v1",
+  "observed_at": "2026-09-02T02:30:00Z",
+  "branch": "recovery/release-provenance-20260831",
+  "HOME": "LOCKED",
+  "impl_closed_previous": false,
+  "impl_closed_now": "PARTIAL",
+  "app_error_tsx": "PRESENT",
+  "offline_banner_retry": "RecoveryRetry",
+  "permission_denied": "PRESENT",
+  "common_retry": "RecoveryRetry",
+  "kyc_unavailable_retry": "DEFERRED_LOCAL_KRW_FANOUT",
+  "me_loading_skeleton": "PRESENT",
+  "success_receipt_component": "PRESENT_UNUSED_BY_DESIGN",
+  "success_receipt_on_live_execute": "SUPERSEDED_BY_EXECUTE_WEB_WIRE",
+  "live_execute_settled_owner": "data-sdr-settled",
+  "session_token_stub": "COOKIE_CREDENTIALS_INCLUDE",
+  "kyc_live_enable": "FOUNDER_F6",
+  "STATUS": "PARTIAL"
+}

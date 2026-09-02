@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  PermissionDenied,
+  RecoveryRetry,
+  SurfaceSkeleton,
+} from "@aipo/ui/components/primitives";
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import { SD_ASSETS } from "../../components/spark-dash-home/assets";
@@ -85,7 +90,7 @@ function NativeGlyph({ kind }: { kind: "list" | "receipt" }) {
 }
 
 function profileLine(stage: string | null, view: AccountView) {
-  if (view === "loading") return "불러오는 중…";
+  if (view === "loading") return "";
   if (view === "unauthorized") return "로그인하면 계정을 볼 수 있어요.";
   if (view === "unavailable") return "계정 상태를 확인할 수 없음";
   return stage === "B_complete"
@@ -152,13 +157,24 @@ export function AccountHub({
             </button>
           ) : null}
         </div>
+        {view === "loading" ? (
+          <SurfaceSkeleton
+            testId="me-hub-loading-skeleton"
+            sizes={["title", "line", "button"]}
+          />
+        ) : null}
         {view === "unauthorized" ? (
-          <div>
+          <PermissionDenied>
             <AccountAuthActions />
-          </div>
+          </PermissionDenied>
         ) : null}
         {view === "unavailable" ? (
-          <p className={styles.err}>계정 상태를 확인할 수 없음</p>
+          <div>
+            <p className={styles.err}>계정 상태를 확인할 수 없음</p>
+            <div className={styles.actions}>
+              <RecoveryRetry onRetry={() => window.location.reload()} />
+            </div>
+          </div>
         ) : null}
         {ready && stage && stage !== "B_complete" ? (
           <div className={styles.actions}>
@@ -344,10 +360,24 @@ export function AccountHub({
             <div className={styles.rule} />
             {!ready ? (
               <div className={styles.stateBox}>
-                {view === "loading" ? <p className={styles.stateLead}>불러오는 중…</p> : null}
-                {view === "unauthorized" ? <AccountAuthActions /> : null}
+                {view === "loading" ? (
+                  <SurfaceSkeleton
+                    testId="me-hub-desktop-loading-skeleton"
+                    sizes={["title", "line", "button"]}
+                  />
+                ) : null}
+                {view === "unauthorized" ? (
+                  <PermissionDenied>
+                    <AccountAuthActions />
+                  </PermissionDenied>
+                ) : null}
                 {view === "unavailable" ? (
-                  <p className={styles.err}>계정 상태를 확인할 수 없음</p>
+                  <div>
+                    <p className={styles.err}>계정 상태를 확인할 수 없음</p>
+                    <div className={styles.actions}>
+                      <RecoveryRetry onRetry={() => window.location.reload()} />
+                    </div>
+                  </div>
                 ) : null}
               </div>
             ) : null}

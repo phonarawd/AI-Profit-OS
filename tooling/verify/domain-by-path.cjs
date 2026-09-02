@@ -93,6 +93,17 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^apps\/web\/app\/error\.tsx$/.test(f) ||
+      /^apps\/web\/app\/me\/AccountHub\.tsx$/.test(f) ||
+      /^apps\/web\/components\/pwa\/OfflineBanner\.tsx$/.test(f) ||
+      /^apps\/web\/app\/trades\/\[id\]\/execute\/TradeExecuteClient\.tsx$/.test(f) ||
+      /^packages\/ui\/components\/primitives\//.test(f) ||
+      /^tooling\/verify\/leftover-shared-states\.cjs$/.test(f) ||
+      /^governance\/recovery\/leftover-shared-states-evidence\.v1\.json$/.test(f),
+    scripts: ["leftover-shared-states.cjs"],
+  },
+  {
+    test: (f) =>
       /^governance\/db-recon\//.test(f) ||
       /^governance\/release-inventory\/b1-push-rls-design\.v1\.json$/.test(f) ||
       /^governance\/release-inventory\/b2-ownership-design\.v1\.json$/.test(f) ||
