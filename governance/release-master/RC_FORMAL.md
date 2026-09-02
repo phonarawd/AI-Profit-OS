@@ -6,7 +6,7 @@ This record locks the recovery candidate. It does not authorize Production DB ap
 ```text
 RC = RC_FORMAL
 STATUS = LOCKED
-RC_SOURCE_SHA_BINDING = 27de644bab8c37dca54ad5e6bd465c7b6c9c7eaf
+RC_SOURCE_SHA_BINDING = 84cb2ea05ddea0406d9b1f13cbe0b0781a744630
 ENGINE_FINAL_ACCEPTANCE = ISSUED
 ENGINE_BASELINE = ea-baseline-74683b6e39a7-590263f0f273
 ENGINE_REBASE_ID = ea-rebase-3c46ac2daaf9-590263f0f273
@@ -22,7 +22,7 @@ APPLY_OWNER = REL-701-DB
 NEXT = REL-701-DB_FOUNDER_AUTHORIZATION
 ```
 
-CI fields are bound to the exact source SHA above (and evidence-only tip commits that do not change protected product scope).
+CI fields are bound to the exact source SHA above.
 They are not a substitute for Production authorization.
 
 ```text

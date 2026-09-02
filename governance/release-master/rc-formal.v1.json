@@ -2,7 +2,7 @@
   "schema": "governance.release-master.rc-formal.v1",
   "id": "rc-formal",
   "status": "LOCKED",
-  "source_sha_binding": "27de644bab8c37dca54ad5e6bd465c7b6c9c7eaf",
+  "source_sha_binding": "84cb2ea05ddea0406d9b1f13cbe0b0781a744630",
   "engine_final_acceptance": "ISSUED",
   "engine_baseline": "ea-baseline-74683b6e39a7-590263f0f273",
   "engine_rebase_id": "ea-rebase-3c46ac2daaf9-590263f0f273",
@@ -23,5 +23,14 @@
   ],
   "historical_inventory_ref": "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json",
   "historical_evidence_ref": "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json",
-  "note": "source_sha_binding is the exact staging-proven recovery SHA. Tip may add governance/tooling/verify/.github evidence-only locks on top."
+  "release_artifact": {
+    "name": "release-bundle",
+    "digest_alg": "sha256",
+    "artifact_digest": "c5c56d320d33b015e84f403d83765f1c32c3422f076a7fc8e48c99d6fcfac988",
+    "release_build_run_id": 33617601225,
+    "release_acceptance_run_id": 33618547918,
+    "release_acceptance_verdict": "PASS",
+    "api_artifact_digest": "bfbaab67e0358e2eddf1d0e53ad2ac5c790766be2c26eec6400a8c57553b669d"
+  },
+  "note": "source_sha_binding is exact immutable FINAL RC SHA (staging+artifact+acceptance proven). Tip may add governance/plans evidence-only."
 }

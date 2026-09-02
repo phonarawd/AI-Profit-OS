@@ -1,12 +1,16 @@
 {
   "schema": "staging-topology-provider-snapshot.v2",
-  "recorded_at": "2026-09-02T09:15:00Z",
-  "source": "Render API + Cloudflare deploy-staging 33612215285 + staging health + Resend domains/emails",
+  "recorded_at": "2026-09-02T10:25:00Z",
+  "source": "Render API + Cloudflare deploy-staging 33617609393 + staging /api/v1/health + Resend magic-link request",
   "this_session": {
     "render_workspace_id": "tea-da5qqo3m8hqs73djpvvg",
-    "cf_deploy_run_id": 33612215285,
+    "cf_deploy_run_id": 33617609393,
     "cf_deploy_result": "PASS",
-    "magic_link_delivery": "PASS_DELIVERED_GMAIL",
+    "release_build_run_id": 33617601225,
+    "release_acceptance_run_id": 33618547918,
+    "release_acceptance_verdict": "PASS",
+    "artifact_digest_sha256": "c5c56d320d33b015e84f403d83765f1c32c3422f076a7fc8e48c99d6fcfac988",
+    "magic_link_delivery": "PASS_REQUEST_ACCEPTED_RESEND",
     "production_mutation": 0
   },
   "production": {
@@ -43,8 +47,8 @@
       "branch": "recovery/release-provenance-20260831",
       "kind": "web_service",
       "autoDeploy": "no",
-      "source_sha": "27de644bab8c37dca54ad5e6bd465c7b6c9c7eaf",
-      "live_deploy_id": "dep-dabudmafngtc73fb6nk0",
+      "source_sha": "84cb2ea05ddea0406d9b1f13cbe0b0781a744630",
+      "live_deploy_id": "dep-dabv9sifngtc73fdsu20",
       "supabase_project_ref": "uluzxvdpynytytduuryy",
       "redis_resource_id": "red-dabpllv40ujc73a0ddcg",
       "runtime_health": {
@@ -55,7 +59,7 @@
         "warnings_empty": true
       },
       "env_auth_resend_configured": true,
-      "source_sha_status": "EXACT_RC_LIVE_AT_2026-09-02T09:07:40Z"
+      "source_sha_status": "EXACT_RC_LIVE"
     },
     "supabase": {
       "branch_name": "staging-release-20260902",
@@ -82,17 +86,17 @@
     "web_workers_dev": "ai-profit-web-preview.ebay-adapter.workers.dev",
     "ops_workers_dev": "ai-profit-ops-preview.ebay-adapter.workers.dev",
     "binding_status": "BOUND_TO_STAGING",
-    "proxy_health_git_sha": "27de644bab8c37dca54ad5e6bd465c7b6c9c7eaf",
+    "proxy_health_git_sha": "84cb2ea05ddea0406d9b1f13cbe0b0781a744630",
     "staging_api_host": "ai-profit-os-staging.onrender.com",
     "production_hosts_used": 0,
-    "deploy_run_id": 33612215285
+    "deploy_run_id": 33617609393
   },
   "release_boundary": {
     "staging_topology": "READY",
     "staging_infra_runtime": "PASS",
-    "staging_full_e2e": "MAGIC_LINK_API_PASS_DELIVERED",
+    "staging_full_e2e": "MAGIC_LINK_API_PASS_RESEND_ACCEPTED",
     "production_db_mutation": 0,
     "production_release": "NO_GO",
-    "staging_exact_final_rc": "BOUND_27de644"
+    "staging_exact_final_rc": "BOUND_84cb2ea05ddea0406d9b1f13cbe0b0781a744630"
   }
 }
