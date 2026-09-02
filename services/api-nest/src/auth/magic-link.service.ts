@@ -52,8 +52,8 @@ export class MagicLinkService {
     const url = `${consumerOrigin()}/auth/magic?token=${token}`;
     const sent = await this.resend.sendMagicLink({ to: email, url });
     if (!sent.ok) {
-      // 전송 실패여도 세션은 발급하지 않음. raw token 은 응답에 없음.
-      return { ok: true, delivery: "resend", status: "accepted" };
+      // 전송 실패를 성공처럼 표시하지 않는다. raw token/provider reason 은 응답에 노출하지 않음.
+      throw new ServiceUnavailableException("MAGIC_LINK_DELIVERY_UNAVAILABLE");
     }
     return { ok: true, delivery: "resend", status: "accepted" };
   }
