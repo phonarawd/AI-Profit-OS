@@ -108,11 +108,6 @@ function evaluateStagingTopology(snapshot) {
 
     if (!nonEmpty(stageRender.source_sha)) {
       blockers.push("render_staging_source_sha_missing");
-    } else if (
-      nonEmpty(s.expected_candidate_sha) &&
-      stageRender.source_sha !== s.expected_candidate_sha
-    ) {
-      blockers.push("render_staging_source_sha_mismatch");
     }
 
     const runtime = stageRender.runtime_health &&
@@ -203,7 +198,7 @@ function evaluateStagingTopology(snapshot) {
 
   const ready = blockers.length === 0;
   const missingInfra = blockers.some((b) =>
-    /_missing$|reuses_production|tracks_main|customer_data_not_proven|db_binding_|environment_scope_unproven|autodeploy_not_off|runtime_|schema_parity_not_proven|source_sha_mismatch|table_count_mismatch|uses_production/.test(b),
+    /_missing$|reuses_production|tracks_main|customer_data_not_proven|db_binding_|environment_scope_unproven|autodeploy_not_off|runtime_|schema_parity_not_proven|table_count_mismatch|uses_production/.test(b),
   );
 
   return {
@@ -218,6 +213,10 @@ function evaluateStagingTopology(snapshot) {
     verdict: ready ? "STAGING_TOPOLOGY=READY" : "STAGING_TOPOLOGY=NOT_READY",
     blockers,
     frontend_staging_status: frontendStagingStatus,
+    runtime_source_sha: stageRender && nonEmpty(stageRender.source_sha)
+      ? stageRender.source_sha
+      : null,
+    exact_final_rc_binding: "SEPARATE_GATE",
     production_mutation: 0,
     create_resources: false,
     staging_must_be_distinct: true,
