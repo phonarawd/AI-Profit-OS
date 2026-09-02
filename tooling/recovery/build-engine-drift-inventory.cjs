@@ -22,13 +22,15 @@ const outPath = path.join(
   "governance/recovery/engine-drift-inventory.current.v1.json",
 );
 const CERT_REL = "governance/engine-acceptance/FINAL_ACCEPTANCE.md";
+const BASELINE_REL = "governance/engine-acceptance/baseline.v1.json";
+const REBASE_LEDGER_REL = "governance/engine-acceptance/product-rebases.v1.json";
 const ARCHIVE_INV_REL =
   "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json";
 const ARCHIVE_EV_REL =
   "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json";
 const CURRENT_INV_REL = "governance/recovery/engine-drift-inventory.current.v1.json";
 const CURRENT_NOTE =
-  "The predecessor 82-path drift is preserved in historical archive. Current epoch was formally rebased under ENGINE_ACCEPTANCE_REBASE_V1. QA0-QA9 were rerun on the current epoch. FINAL_ACCEPTANCE is ISSUED. No in-place predecessor hash washing occurred.";
+  "Historical pre-rebase drift is preserved in archive. Current epoch was formally rebased under ENGINE_ACCEPTANCE_REBASE_V1. QA0-QA9 were rerun on the current epoch. FINAL_ACCEPTANCE is ISSUED. No in-place predecessor hash washing occurred.";
 
 function parseCert(text) {
   const out = {};
@@ -41,10 +43,13 @@ function parseCert(text) {
 
 const evidence = JSON.parse(fs.readFileSync(evidencePath, "utf8"));
 const cert = parseCert(fs.readFileSync(path.join(root, CERT_REL), "utf8"));
-const issued =
+const baseline = JSON.parse(fs.readFileSync(path.join(root, BASELINE_REL), "utf8"));
+const live = psm.compareProtectedScope();
+const certIssued =
   cert.STATUS === "ISSUED" &&
   cert.CERT_ISSUED === "1" &&
   cert.REBASE_REQUIRED === "0";
+const issued = certIssued && !live.drift;
 
 if (issued) {
   if (!fs.existsSync(path.join(root, ARCHIVE_INV_REL))) {
@@ -60,12 +65,29 @@ if (issued) {
     process.exit(1);
   }
   const archiveEv = JSON.parse(fs.readFileSync(path.join(root, ARCHIVE_EV_REL), "utf8"));
-  const live = psm.compareProtectedScope();
+  const rebaseLedger = JSON.parse(fs.readFileSync(path.join(root, REBASE_LEDGER_REL), "utf8"));
+  const currentRebase = [...(rebaseLedger.rebases || [])]
+    .reverse()
+    .find((entry) => entry.new_baseline_id === live.baselineId);
+  if (!currentRebase) {
+    throw new Error("current baseline has no matching product rebase ledger entry");
+  }
+  const predecessorBaseline = JSON.parse(
+    fs.readFileSync(
+      path.join(
+        root,
+        "governance/engine-acceptance/baselines",
+        `${currentRebase.predecessor_baseline_id}.json`,
+      ),
+      "utf8",
+    ),
+  );
+  const predecessorHeadSha = predecessorBaseline.commit_sha;
   const head = git(["rev-parse", "HEAD"]);
   const inventory = {
     schema: "governance.recovery.engine-drift-inventory.v1",
     computed_at: new Date().toISOString(),
-    predecessor_head_sha: archiveEv.predecessor_head_sha,
+    predecessor_head_sha: predecessorHeadSha,
     inventory_head_sha: head,
     changed_paths: live.changedPathCount,
     expected_changed_paths: live.changedPathCount,
@@ -76,9 +98,9 @@ if (issued) {
     FINAL_ACCEPTANCE: "ISSUED",
     REBASE_REQUIRED: 0,
     REBASE_APPLIED: 1,
-    predecessor_baseline_id: "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+    predecessor_baseline_id: currentRebase.predecessor_baseline_id,
     current_baseline_id: live.baselineId,
-    rebase_id: "ea-rebase-3c46ac2daaf9-590263f0f273",
+    rebase_id: currentRebase.rebase_id,
     historical_inventory_ref: ARCHIVE_INV_REL,
     historical_evidence_ref: ARCHIVE_EV_REL,
     CURRENT_AUTHORITATIVE: true,
@@ -101,7 +123,7 @@ if (issued) {
   const nextEvidence = {
     schema: "governance.recovery.engine-rebase-evidence.v1",
     computed_at: inventory.computed_at,
-    predecessor_head_sha: archiveEv.predecessor_head_sha,
+    predecessor_head_sha: predecessorHeadSha,
     baseline_id: live.baselineId,
     live_aggregate: live.liveAggregate,
     baseline_aggregate: live.baselineAggregate,
@@ -139,9 +161,9 @@ if (issued) {
     inventory_ref: CURRENT_INV_REL,
     historical_inventory_ref: ARCHIVE_INV_REL,
     historical_evidence_ref: ARCHIVE_EV_REL,
-    predecessor_baseline_id: "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+    predecessor_baseline_id: currentRebase.predecessor_baseline_id,
     current_baseline_id: live.baselineId,
-    rebase_id: "ea-rebase-3c46ac2daaf9-590263f0f273",
+    rebase_id: currentRebase.rebase_id,
     CURRENT_AUTHORITATIVE: true,
     HISTORICAL_PRE_REBASE_EVIDENCE: false,
     scope_head_sha: head,
@@ -155,10 +177,10 @@ if (issued) {
   );
   process.exit(0);
 }
-const predecessor = evidence.predecessor_head_sha;
-const added = evidence.added_paths || [];
-const mutated = evidence.mutated_paths || [];
-const missing = evidence.missing_paths || [];
+const predecessor = baseline.commit_sha || evidence.predecessor_head_sha;
+const added = live.added.slice();
+const mutated = live.changed.slice();
+const missing = live.missing.slice();
 
 function git(args) {
   return execFileSync("git", args, {
@@ -402,8 +424,8 @@ const inventory = {
   predecessor_head_sha: predecessor,
   inventory_head_sha: git(["rev-parse", "HEAD"]),
   changed_paths: paths.length,
-  expected_changed_paths: evidence.changed_paths,
-  count_match: paths.length === evidence.changed_paths,
+  expected_changed_paths: live.changedPathCount,
+  count_match: paths.length === live.changedPathCount,
   by_category: byCategory,
   unexplained_count: unexplained.length,
   ACK_RECEIVED: 0,
@@ -428,10 +450,25 @@ const inventory = {
 fs.writeFileSync(outPath, JSON.stringify(inventory, null, 2) + "\n");
 
 if (unexplained.length === 0 && inventory.count_match) {
+  evidence.computed_at = inventory.computed_at;
+  evidence.predecessor_head_sha = predecessor;
+  evidence.baseline_id = live.baselineId;
+  evidence.live_aggregate = live.liveAggregate;
+  evidence.baseline_aggregate = live.baselineAggregate;
+  evidence.path_count_live = live.livePathCount;
+  evidence.path_count_baseline = live.baselinePathCount;
+  evidence.changed_paths = live.changedPathCount;
+  evidence.added_paths = live.added.slice();
+  evidence.mutated_paths = live.changed.slice();
+  evidence.missing_paths = live.missing.slice();
+  evidence.drift = live.drift;
   evidence.ack_eligibility.all_drift_explained = true;
   evidence.ack_eligibility.unexplained_protected_change = 0;
+  evidence.ack_eligibility.required_qa_rerun_complete = false;
   evidence.ack_eligibility.ACK_RECEIVED = 0;
   evidence.ack_eligibility.FINAL_ACCEPTANCE = "NOT_ISSUED";
+  evidence.required_reruns = ["QA0", "QA1", "QA2", "QA3", "QA4", "QA5", "QA6", "QA7", "QA8", "QA9"];
+  evidence.invalidated_suites = ["QA1", "QA2", "QA3", "QA4", "QA5", "QA6", "QA7", "QA8", "QA9"];
   evidence.inventory_ref = "governance/recovery/engine-drift-inventory.current.v1.json";
   evidence.note =
     inventory.changed_paths +
