@@ -18,10 +18,10 @@ REMOTE_RAW_APPLIED = 42
 COMMITTED_UNAPPLIED = 12
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
-REL_502_ISSUED = 0
+REL_502_ISSUED = 1
 ```
 
-이 문서는 migration-plan READY 신호다. Production release authorization 이 아니다. REL-502가 NOT_ISSUED인 동안 Production release 근거로 승격 금지. 원격 스키마 변경 명령이 아니며 production DDL = 0. apply owner 는 REL-701-DB 그대로다.
+이 문서는 migration-plan READY 신호다. Production release authorization 이 아니다. REL-502 ISSUED는 migration readiness 선행조건 충족만 의미하며 Production release authorization은 아니다. 원격 스키마 변경 명령이 아니며 production DDL = 0. apply owner 는 REL-701-DB 그대로다.
 
 ## 2026-08-24 LIVE TRUTH RECONCILIATION
 
@@ -39,7 +39,7 @@ REL_502_ISSUED = 0
 - file-only `committedUnapplied` 12 — 원격 apply 전. 이 단계에서 versions 로 옮기지 않는다
 - Track A (REL-003) file restore 3: `20260819210000` · `20260819220000` · `20260820013000` + `opportunity-reprice.service.ts` 존재
 - REL-408 `SECURITY_BASELINE.md` · `REL-408-SECURITY-BASELINE.md` COMPLETED · APPLY_MIGRATION = 0
-- REL-502 `FINAL_ACCEPTANCE.md` STATUS = NOT_ISSUED · REBASE_REQUIRED = 1 · ACK_RECEIVED = 0
+- REL-502 `FINAL_ACCEPTANCE.md` STATUS = ISSUED · REBASE_REQUIRED = 0 · ACK_RECEIVED = 1
 
 ## VERIFY
 
