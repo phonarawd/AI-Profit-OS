@@ -13,6 +13,12 @@ const fails = [];
 /** CodeQL: fixture→fetch taint 차단 — 상수 origin만 네트워크 사용 */
 const STAGING_WEB_ORIGIN =
   "https://ai-profit-web-preview.ebay-adapter.workers.dev";
+const ALLOWED_SCENARIO_PATHS = Object.freeze({
+  S1: "/auth/signup",
+  S2: "/profits",
+  S3: "/profits",
+  S4: "/wallet",
+});
 
 function read(rel) {
   const p = path.join(root, rel);
@@ -234,9 +240,9 @@ async function liveScenario(scenario) {
     fails.push("staging web must equal locked preview origin");
     return;
   }
-  const pathPart = String(scenario.path || "");
-  if (!pathPart.startsWith("/") || pathPart.includes("://")) {
-    fails.push("scenario path must be absolute path without scheme: " + scenario.id);
+  const pathPart = ALLOWED_SCENARIO_PATHS[scenario.id];
+  if (!pathPart || pathPart !== String(scenario.path || "")) {
+    fails.push("scenario path must equal locked allowlist for " + scenario.id);
     return;
   }
   const url = STAGING_WEB_ORIGIN + pathPart;

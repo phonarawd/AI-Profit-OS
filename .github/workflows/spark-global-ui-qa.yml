@@ -41,10 +41,12 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
-      - name: T1 push gate
+      - name: T0 fast gate (admin workflow scope)
         env:
           AIPO_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        run: pnpm verify:gate:push
+        run: pnpm verify:gate:fast
+        # Full T1 + REL-603 staging cohort are owned by gate.yml / consumer-spark-worldclass.
+        # Re-running them here contended CF preview and produced false reds.
       - name: Spark Dash admin browser regression
         env:
           CI: "1"
