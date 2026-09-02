@@ -1,13 +1,13 @@
 {
   "schema": "staging-topology-provider-snapshot.v2",
-  "recorded_at": "2026-09-02T04:00:29Z",
-  "source": "fresh Render/Supabase provider truth + public runtime probe · production mutation=0",
+  "recorded_at": "2026-09-02T09:15:00Z",
+  "source": "Render API + Cloudflare deploy-staging 33612215285 + staging health + Resend domains/emails",
   "this_session": {
-    "supabase_development_branches": 1,
     "render_workspace_id": "tea-da5qqo3m8hqs73djpvvg",
-    "render_workspace_name": "My Workspace",
-    "runtime_probe_run_id": 33589004158,
-    "runtime_probe_result": "PASS"
+    "cf_deploy_run_id": 33612215285,
+    "cf_deploy_result": "PASS",
+    "magic_link_delivery": "PASS_DELIVERED_GMAIL",
+    "production_mutation": 0
   },
   "production": {
     "render": {
@@ -17,6 +17,14 @@
       "url": "https://ai-profit-os.onrender.com",
       "branch": "main",
       "autoDeploy": "yes",
+      "buildFilter": {
+        "paths": [
+          "services/api-nest/**",
+          "packages/**",
+          "pnpm-lock.yaml",
+          "package.json"
+        ]
+      },
       "live_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec",
       "live_deploy_id": "dep-da938o142hec73eipre0",
       "fresh_confirmed": true
@@ -35,8 +43,8 @@
       "branch": "recovery/release-provenance-20260831",
       "kind": "web_service",
       "autoDeploy": "no",
-      "source_sha": "52877334c22f074ebe6bc4b280a96b6b896995c0",
-      "live_deploy_id": "dep-dabptdjtqb8s73d6r5m0",
+      "source_sha": "27de644bab8c37dca54ad5e6bd465c7b6c9c7eaf",
+      "live_deploy_id": "dep-dabudmafngtc73fb6nk0",
       "supabase_project_ref": "uluzxvdpynytytduuryy",
       "redis_resource_id": "red-dabpllv40ujc73a0ddcg",
       "runtime_health": {
@@ -46,7 +54,8 @@
         "redis_ok": true,
         "warnings_empty": true
       },
-      "source_sha_status": "FRESH_CONFIRMED_AT_2026-09-02T04:00:29Z"
+      "env_auth_resend_configured": true,
+      "source_sha_status": "EXACT_RC_LIVE_AT_2026-09-02T09:07:40Z"
     },
     "supabase": {
       "branch_name": "staging-release-20260902",
@@ -58,36 +67,32 @@
       "preview_project_status": "ACTIVE_HEALTHY",
       "public_table_count": 93,
       "schema_parity_with_production": true,
-      "customer_row_checks": {
-        "auth_users": 0,
-        "public_users": 0,
-        "ledger_journals": 0,
-        "withdraw_intents": 0,
-        "krw_deposit_requests": 0,
-        "usdt_deposit_events": 0
-      }
-    },
-    "db_hardening": {
-      "admin_audit_events": "INSERT+SELECT only · truncate guard present",
-      "push_control": "RLS+FORCE · service_role SELECT+UPDATE",
-      "push_subscriptions": "RLS+FORCE · service_role SELECT+INSERT+UPDATE+DELETE",
-      "rollback_reapply_rehearsal": "PASS"
+      "staging_ne_production": true
     }
   },
   "cloudflare_preview": {
     "exists": true,
-    "required_for_current_topology": false,
-    "dedicated_staging_api": false,
-    "dedicated_staging_db": false,
-    "binding_status": "NOT_YET_BOUND_TO_STAGING",
-    "note": "Core isolated backend staging is ready. Cloudflare frontend staging binding remains a later STAGING_E2E prerequisite and is not claimed PASS here."
+    "required_for_current_topology": true,
+    "dedicated_staging_api": true,
+    "dedicated_staging_db": true,
+    "uses_production_api": false,
+    "uses_production_db": false,
+    "web_worker": "ai-profit-web-preview",
+    "ops_worker": "ai-profit-ops-preview",
+    "web_workers_dev": "ai-profit-web-preview.ebay-adapter.workers.dev",
+    "ops_workers_dev": "ai-profit-ops-preview.ebay-adapter.workers.dev",
+    "binding_status": "BOUND_TO_STAGING",
+    "proxy_health_git_sha": "27de644bab8c37dca54ad5e6bd465c7b6c9c7eaf",
+    "staging_api_host": "ai-profit-os-staging.onrender.com",
+    "production_hosts_used": 0,
+    "deploy_run_id": 33612215285
   },
   "release_boundary": {
     "staging_topology": "READY",
     "staging_infra_runtime": "PASS",
-    "staging_full_e2e": "NOT_RUN",
+    "staging_full_e2e": "MAGIC_LINK_API_PASS_DELIVERED",
     "production_db_mutation": 0,
     "production_release": "NO_GO",
-    "staging_exact_final_rc": "PENDING_FINAL_RC"
+    "staging_exact_final_rc": "BOUND_27de644"
   }
 }

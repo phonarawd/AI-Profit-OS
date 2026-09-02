@@ -51,8 +51,8 @@ async function main() {
   );
 }
 
-main().catch((err) => {
-  const raw = err instanceof Error ? err.message : String(err);
-  console.error(raw.replace(/[\r\n\u2028\u2029]/g, " "));
+main().catch(() => {
+  // 고정 문구만 출력 — user-controlled Error.message 를 로그에 넣지 않는다.
+  console.error("[verify:adapter-ingest-runtime] FAIL");
   process.exit(1);
 });

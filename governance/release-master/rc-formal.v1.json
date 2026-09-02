@@ -2,7 +2,7 @@
   "schema": "governance.release-master.rc-formal.v1",
   "id": "rc-formal",
   "status": "LOCKED",
-  "source_sha_binding": "LIVE_RECOVERY_HEAD",
+  "source_sha_binding": "27de644bab8c37dca54ad5e6bd465c7b6c9c7eaf",
   "engine_final_acceptance": "ISSUED",
   "engine_baseline": "ea-baseline-74683b6e39a7-590263f0f273",
   "engine_rebase_id": "ea-rebase-3c46ac2daaf9-590263f0f273",
@@ -22,5 +22,6 @@
     ".github/workflows/engine-current-epoch-publish-once.yml"
   ],
   "historical_inventory_ref": "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json",
-  "historical_evidence_ref": "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json"
+  "historical_evidence_ref": "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json",
+  "note": "source_sha_binding is the exact staging-proven recovery SHA. Tip may add governance/tooling/verify/.github evidence-only locks on top."
 }

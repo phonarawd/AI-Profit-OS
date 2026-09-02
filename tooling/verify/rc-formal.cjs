@@ -43,8 +43,52 @@ if (art) {
     fails.push("schema lock");
   }
   if (art.status !== "LOCKED") fails.push("status must be LOCKED");
-  if (art.source_sha_binding !== "LIVE_RECOVERY_HEAD") {
-    fails.push("source_sha_binding must stay LIVE_RECOVERY_HEAD");
+  const binding = String(art.source_sha_binding || "");
+  if (!/^[0-9a-f]{40}$/.test(binding)) {
+    fails.push("source_sha_binding must be exact 40-char lowercase SHA");
+  } else {
+    const { spawnSync } = require("node:child_process");
+    const head = spawnSync("git", ["rev-parse", "HEAD"], {
+      cwd: root,
+      encoding: "utf8",
+    })
+      .stdout.trim()
+      .toLowerCase();
+    if (!/^[0-9a-f]{40}$/.test(head)) {
+      fails.push("cannot resolve git HEAD");
+    } else if (binding === head) {
+      // exact tip freeze
+    } else {
+      const mb = spawnSync("git", ["merge-base", binding, head], {
+        cwd: root,
+        encoding: "utf8",
+      }).stdout.trim().toLowerCase();
+      if (mb !== binding) {
+        fails.push("source_sha_binding must be HEAD or an ancestor of HEAD");
+      } else {
+        const diff = spawnSync(
+          "git",
+          ["diff", "--name-only", binding, head],
+          { cwd: root, encoding: "utf8" },
+        )
+          .stdout.split(/\r?\n/)
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const disallowed = diff.filter(
+          (p) =>
+            !p.startsWith("governance/") &&
+            !p.startsWith(".cursor/plans/") &&
+            !p.startsWith("tooling/verify/") &&
+            !p.startsWith(".github/workflows/"),
+        );
+        if (disallowed.length) {
+          fails.push(
+            "HEAD diverges from RC binding outside governance/evidence: " +
+              disallowed.slice(0, 8).join(","),
+          );
+        }
+      }
+    }
   }
   if (art.engine_final_acceptance !== "ISSUED") fails.push("engine_final_acceptance");
   if (art.engine_baseline !== "ea-baseline-74683b6e39a7-590263f0f273") {
@@ -72,7 +116,6 @@ if (art) {
 
 for (const needle of [
   "STATUS = LOCKED",
-  "RC_SOURCE_SHA_BINDING = LIVE_RECOVERY_HEAD",
   "ENGINE_FINAL_ACCEPTANCE = ISSUED",
   "ENGINE_QA9 = ENGINE_ACCEPTED_FOR_UI",
   "PRODUCTION_DB_APPLY = 0",
@@ -81,6 +124,9 @@ for (const needle of [
   "NEXT = REL-701-DB_FOUNDER_AUTHORIZATION",
 ]) {
   if (!doc.includes(needle)) fails.push("doc missing " + needle);
+}
+if (!/RC_SOURCE_SHA_BINDING = [0-9a-f]{40}/.test(doc)) {
+  fails.push("doc missing exact RC_SOURCE_SHA_BINDING SHA");
 }
 
 if (!cert.includes("STATUS = ISSUED") || !cert.includes("CERT_ISSUED = 1")) {
