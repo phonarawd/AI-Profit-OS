@@ -2,10 +2,10 @@
   "schema": "governance.engine-acceptance.qa6-result.v1",
   "version": "1.0.0",
   "suite_id": "QA6",
-  "run_id": "qa6-performance-world-20260824",
+  "run_id": "qa6-performance-world-20260902",
   "todoId": "qa6-performance-world",
-  "measuredAt": "2026-08-24T09:43:02.085Z",
-  "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+  "measuredAt": "2026-09-02T05:27:55.568Z",
+  "baseline_id": "ea-baseline-74683b6e39a7-590263f0f273",
   "mode": "full",
   "kill_switch": {
     "verified_before_checks": true,
@@ -24,7 +24,7 @@
       "check_id": "QA6_PERFORMANCE_WORLD",
       "status": "PASS",
       "mode": "full",
-      "measuredAt": "2026-08-24T09:43:02.085Z",
+      "measuredAt": "2026-09-02T05:27:55.568Z",
       "seed": 20260812,
       "perf_oracle": {
         "available": true,
@@ -99,10 +99,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 8.123922499999999,
-              "p95": 11.647647249999997,
-              "p99": 21.689869200000004,
-              "avg": 8.59676090625
+              "p50": 8.6780425,
+              "p95": 11.051678499999996,
+              "p99": 20.0829147,
+              "avg": 8.942703572916665
             },
             "error_rate": 0
           },
@@ -112,7 +112,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-24T09:43:02.020Z",
+            "clock_as_of": "2026-09-02T05:27:55.500Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -135,10 +135,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 8.123922499999999,
-                  "p95": 11.647647249999997,
-                  "p99": 21.689869200000004,
-                  "avg": 8.59676090625
+                  "p50": 8.6780425,
+                  "p95": 11.051678499999996,
+                  "p99": 20.0829147,
+                  "avg": 8.942703572916665
                 },
                 "error_rate": 0
               },
@@ -160,7 +160,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+            "baseline_id": "ea-baseline-74683b6e39a7-590263f0f273",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "09067cecfda7e58408f05bcc559348721770ffd844fbb659e5612e3799a62114",
             "invariant_id": "INV-PERF-01",
@@ -187,10 +187,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 5.0647590000000005,
-              "p95": 7.320919,
-              "p99": 14.208575549999912,
-              "avg": 5.443810878787882
+              "p50": 5.492761,
+              "p95": 7.180932250000001,
+              "p99": 12.814449349999949,
+              "avg": 5.85166462121212
             },
             "error_rate": 0
           },
@@ -200,7 +200,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-24T09:43:02.020Z",
+            "clock_as_of": "2026-09-02T05:27:55.500Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -223,10 +223,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 5.0647590000000005,
-                  "p95": 7.320919,
-                  "p99": 14.208575549999912,
-                  "avg": 5.443810878787882
+                  "p50": 5.492761,
+                  "p95": 7.180932250000001,
+                  "p99": 12.814449349999949,
+                  "avg": 5.85166462121212
                 },
                 "error_rate": 0
               },
@@ -248,7 +248,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+            "baseline_id": "ea-baseline-74683b6e39a7-590263f0f273",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "98101ee617d2c2c12c8a80906d836573a0d78b6ba56225663d13496e42a6f4b0",
             "invariant_id": "INV-PERF-01",
@@ -275,10 +275,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 2.679876,
-              "p95": 3.475684599999997,
-              "p99": 5.454883459999988,
-              "avg": 2.7437209191919205
+              "p50": 3.075438,
+              "p95": 4.0584171999999965,
+              "p99": 5.345453139999985,
+              "avg": 3.0978874949494943
             },
             "error_rate": 0
           },
@@ -288,7 +288,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-24T09:43:02.020Z",
+            "clock_as_of": "2026-09-02T05:27:55.500Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -311,10 +311,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 2.679876,
-                  "p95": 3.475684599999997,
-                  "p99": 5.454883459999988,
-                  "avg": 2.7437209191919205
+                  "p50": 3.075438,
+                  "p95": 4.0584171999999965,
+                  "p99": 5.345453139999985,
+                  "avg": 3.0978874949494943
                 },
                 "error_rate": 0
               },
@@ -336,7 +336,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+            "baseline_id": "ea-baseline-74683b6e39a7-590263f0f273",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "15b6ea799edccaa59e56b2b7c3734ff60ca5b699cc0039f055838213416a677f",
             "invariant_id": "INV-PERF-01",
@@ -363,10 +363,10 @@
           },
           "observed": {
             "percentiles": {
-              "p50": 2.44617,
-              "p95": 3.7646506,
-              "p99": 6.010805279999984,
-              "avg": 2.6530198484848486
+              "p50": 2.607882,
+              "p95": 3.4482692,
+              "p99": 5.542460399999977,
+              "avg": 2.7989847373737384
             },
             "error_rate": 0
           },
@@ -376,7 +376,7 @@
           "rich_evidence": {
             "seed": 20260812,
             "rng_version": "aipo-ea-rng-v1",
-            "clock_as_of": "2026-08-24T09:43:02.020Z",
+            "clock_as_of": "2026-09-02T05:27:55.500Z",
             "request_sequence": [
               {
                 "step": "probe_perf_oracle",
@@ -399,10 +399,10 @@
               },
               "observed": {
                 "percentiles": {
-                  "p50": 2.44617,
-                  "p95": 3.7646506,
-                  "p99": 6.010805279999984,
-                  "avg": 2.6530198484848486
+                  "p50": 2.607882,
+                  "p95": 3.4482692,
+                  "p99": 5.542460399999977,
+                  "avg": 2.7989847373737384
                 },
                 "error_rate": 0
               },
@@ -424,7 +424,7 @@
             },
             "counterexample": null,
             "error_message": null,
-            "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+            "baseline_id": "ea-baseline-74683b6e39a7-590263f0f273",
             "model_identifier": "harness-static-oracle",
             "configuration_fingerprint": "46f24e679dcca8e62ee864299a617afadd002f652133c3a49bcad3904493feec",
             "invariant_id": "INV-PERF-01",
@@ -533,5 +533,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "CI aggregator uses if: always(); artifact retention ≥ 90 days."
   ],
-  "checksum": "3b199e63b384d851fb7a38bca5b49d0f8aaec689568ef64d093f6071d8ba8d67"
+  "checksum": "503d7548e4bd5046815254d9570c2f19d2e91ea67a57d99a803c134006c6561a"
 }
