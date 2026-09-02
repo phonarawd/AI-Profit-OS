@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { ServiceUnavailableException } from "@nestjs/common";
-import { MagicLinkService } from "./magic-link.service.ts";
-import type { ResendEmailProvider } from "../wallet/resend-email.provider.ts";
+import { MagicLinkService } from "./magic-link.service";
+import type { ResendEmailProvider } from "../wallet/resend-email.provider";
 
 function providerWith(
   sendMagicLink: ResendEmailProvider["sendMagicLink"],
