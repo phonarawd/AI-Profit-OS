@@ -1,4 +1,4 @@
-name: codeql
+﻿name: codeql
 
 permissions:
   contents: read
@@ -23,7 +23,7 @@ jobs:
       - uses: github/codeql-action/init@5ba2889ada762081db2c4f32a729827dce632c7b # v3
         with:
           languages: javascript-typescript
-          queries: security-extended
+          config-file: .github/codeql/codeql-config.yml
       - uses: github/codeql-action/analyze@5ba2889ada762081db2c4f32a729827dce632c7b # v3
         with:
           category: "/language:javascript-typescript"
