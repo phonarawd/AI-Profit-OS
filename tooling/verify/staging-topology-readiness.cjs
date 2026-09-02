@@ -12,10 +12,7 @@ const {
 const root = path.resolve(__dirname, "../..");
 const PROD_REF = "mgsytcetsiecllmhcyox";
 const STAGE_REF = "uluzxvdpynytytduuryy";
-const CANDIDATE = "52877334c22f074ebe6bc4b280a96b6b896995c0";
-
 const READY = {
-  expected_candidate_sha: CANDIDATE,
   production: {
     render: {
       service_id: "srv-prod123",
@@ -37,7 +34,7 @@ const READY = {
       kind: "web_service",
       autoDeploy: "no",
       supabase_project_ref: STAGE_REF,
-      source_sha: CANDIDATE,
+      source_sha: "52877334c22f074ebe6bc4b280a96b6b896995c0",
       runtime_health: {
         db_configured: true,
         db_ok: true,
@@ -162,11 +159,11 @@ got = evaluateStagingTopology(runtimeFail);
 assert.equal(got.ready, false);
 assert.ok(got.blockers.includes("render_staging_runtime_redis_ok_not_true"));
 
-const shaMismatch = structuredClone(READY);
-shaMismatch.staging.render.source_sha = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-got = evaluateStagingTopology(shaMismatch);
+const sourceMissing = structuredClone(READY);
+sourceMissing.staging.render.source_sha = "";
+got = evaluateStagingTopology(sourceMissing);
 assert.equal(got.ready, false);
-assert.ok(got.blockers.includes("render_staging_source_sha_mismatch"));
+assert.ok(got.blockers.includes("render_staging_source_sha_missing"));
 
 const cfUsesProd = structuredClone(READY);
 cfUsesProd.cloudflare_preview.uses_production_api = true;
@@ -211,5 +208,5 @@ assert.equal(b3.staging_e2e.status, "NOT_RUN");
 assert.equal(b3.staging_e2e.requires.isolated_verify_db_exists, "YES");
 
 console.log(
-  "[verify:staging-topology-readiness] PASS (TRUE_ISOLATED_RUNTIME · EXACT_SHA · DB+REDIS_HEALTH · production mutation 0)",
+  "[verify:staging-topology-readiness] PASS (TRUE_ISOLATED_RUNTIME · DB+REDIS_HEALTH · final RC SHA is a separate gate · production mutation 0)",
 );
