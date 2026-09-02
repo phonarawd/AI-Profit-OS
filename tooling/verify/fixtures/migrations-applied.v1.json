@@ -1,6 +1,6 @@
 {
   "projectRef": "mgsytcetsiecllmhcyox",
-  "asOf": "2026-08-24",
+  "asOf": "2026-09-02",
   "source": "Supabase connector execute_sql on supabase_migrations.schema_migrations",
   "remoteRawAppliedCount": 42,
   "remoteHistoricalMappings": [
@@ -19,7 +19,7 @@
       "rawCountDelta": 0
     }
   ],
-  "note": "versions[] = canonical local version prefixes corresponding to remote-applied schema truth. committedUnapplied[] = repo-only migrations awaiting their authorized production apply. remoteRawAppliedCount preserves the actual schema_migrations row count. remoteHistoricalMappings explicitly records remote version aliases/history that must not be hidden by canonical local prefixes. 2026-08-24 reconciliation restored the exact remote-applied SQL for krw_deposit_fx_facts and beginner_onboarding_experience into the repo; production DB mutation = 0.",
+  "note": "versions[] = canonical local version prefixes corresponding to remote-applied Production schema truth. committedUnapplied[] = repo-only migrations awaiting authorized Production apply. remoteRawAppliedCount preserves actual Production schema_migrations row count. The 20260902032000 production_schema_parity migration was applied only to isolated staging to reconstruct current Production schema; it remains committedUnapplied for Production. Production DB mutation by this reconciliation = 0.",
   "versions": [
     "20260808205842",
     "20260808205844",
@@ -74,6 +74,7 @@
     "20260823190000",
     "20260823200000",
     "20260823210000",
-    "20260901224000"
+    "20260901224000",
+    "20260902032000"
   ]
 }
