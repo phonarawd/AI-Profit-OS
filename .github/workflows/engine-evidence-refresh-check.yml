@@ -1,0 +1,66 @@
+name: engine-evidence-refresh-check
+
+on:
+  pull_request:
+    branches:
+      - recovery/release-provenance-20260831
+    paths:
+      - "governance/recovery/engine-rebase-evidence.current.v1.json"
+      - "governance/recovery/engine-drift-inventory.current.v1.json"
+      - "governance/engine-acceptance/FINAL_ACCEPTANCE.md"
+      - ".github/workflows/engine-evidence-refresh-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evidence-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+
+      - name: Verify exact live protected-scope inventory
+        run: node tooling/verify/engine-drift-inventory.cjs
+
+      - name: Verify ACK and acceptance remain unissued
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require("node:fs");
+          const ev = JSON.parse(fs.readFileSync("governance/recovery/engine-rebase-evidence.current.v1.json","utf8"));
+          const inv = JSON.parse(fs.readFileSync("governance/recovery/engine-drift-inventory.current.v1.json","utf8"));
+          const cert = fs.readFileSync("governance/engine-acceptance/FINAL_ACCEPTANCE.md","utf8");
+          const expectedAggregate = "590263f0f273f214f14c8a8ad8489f79d21fbb0e71f71d480a94cbd026f82230";
+          const fails = [];
+          if (ev.changed_paths !== 82) fails.push("evidence changed_paths");
+          if (inv.changed_paths !== 82) fails.push("inventory changed_paths");
+          if (ev.live_aggregate !== expectedAggregate) fails.push("evidence live aggregate");
+          if (ev.ack_eligibility?.ACK_RECEIVED !== 0) fails.push("evidence ACK");
+          if (ev.ack_eligibility?.FINAL_ACCEPTANCE !== "NOT_ISSUED") fails.push("evidence acceptance");
+          if (inv.ACK_RECEIVED !== 0) fails.push("inventory ACK");
+          if (inv.FINAL_ACCEPTANCE !== "NOT_ISSUED") fails.push("inventory acceptance");
+          for (const needle of [
+            "STATUS = NOT_ISSUED",
+            "CERT_ISSUED = 0",
+            "REBASE_REQUIRED = 1",
+            "REBASE_APPLIED = 0",
+            "ACK_RECEIVED = 0",
+            "LOCAL_QA0_QA9_RERUN = 0",
+            "CHANGED_PATHS = 82",
+            "LIVE_AGGREGATE = " + expectedAggregate
+          ]) {
+            if (!cert.includes(needle)) fails.push("cert:" + needle);
+          }
+          if (fails.length) {
+            console.error("[engine-evidence-refresh] FAIL");
+            for (const f of fails) console.error(" - " + f);
+            process.exit(1);
+          }
+          console.log("[engine-evidence-refresh] PASS · 82 paths · unexplained=0 · ACK=0 · NOT_ISSUED");
+          NODE
