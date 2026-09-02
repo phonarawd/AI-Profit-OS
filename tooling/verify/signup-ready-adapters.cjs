@@ -25,6 +25,22 @@ function mustExist(rel) {
   if (!fs.existsSync(path.join(root, rel))) fails.push(`missing ${rel}`);
 }
 
+function declaredApiBase(source) {
+  if (!source) return null;
+  const match = source.match(/\bAPI_BASE\s*=\s*["']([^"']+)["']/);
+  if (!match) return null;
+  try {
+    return new URL(match[1]);
+  } catch {
+    return null;
+  }
+}
+
+function hasExactHttpsApiHost(constantsSource, expectedHost) {
+  const url = declaredApiBase(constantsSource);
+  return url?.protocol === "https:" && url.hostname === expectedHost;
+}
+
 const workers = [
   "ebay-adapter",
   "pokemontcg-adapter",
@@ -111,15 +127,22 @@ if (ebayBrowse && !/X-EBAY-C-MARKETPLACE-ID/.test(ebayBrowse)) {
 // B: pokemontcg + ygoprodeck
 const poke = read("workers/pokemontcg-adapter/src/index.ts");
 const ygo = read("workers/ygoprodeck-adapter/src/index.ts");
-// codeql[js/incomplete-url-substring-sanitization]: static source-text host presence, not runtime URL parsing
-const pokeBundle = poke + (read("workers/pokemontcg-adapter/src/constants.ts") || "");
-if (poke && !(pokeBundle.includes("pokemontcg.io") || pokeBundle.includes("api.pokemontcg"))) {
-  fails.push("pokemontcg-adapter must target api.pokemontcg.io");
+const pokeConstants = read("workers/pokemontcg-adapter/src/constants.ts");
+const ygoConstants = read("workers/ygoprodeck-adapter/src/constants.ts");
+const pokeClient = read("workers/pokemontcg-adapter/src/client.ts");
+const ygoClient = read("workers/ygoprodeck-adapter/src/client.ts");
+
+if (!hasExactHttpsApiHost(pokeConstants, "api.pokemontcg.io")) {
+  fails.push("pokemontcg-adapter API_BASE must be exact https://api.pokemontcg.io host");
 }
-const ygoBundle = ygo + (read("workers/ygoprodeck-adapter/src/constants.ts") || "");
-// codeql[js/incomplete-url-substring-sanitization]
-if (ygo && !ygoBundle.includes("ygoprodeck.com")) {
-  fails.push("ygoprodeck-adapter must target db.ygoprodeck.com");
+if (!pokeClient?.includes("API_BASE")) {
+  fails.push("pokemontcg-adapter client must use API_BASE");
+}
+if (!hasExactHttpsApiHost(ygoConstants, "db.ygoprodeck.com")) {
+  fails.push("ygoprodeck-adapter API_BASE must be exact https://db.ygoprodeck.com host");
+}
+if (!ygoClient?.includes("API_BASE")) {
+  fails.push("ygoprodeck-adapter client must use API_BASE");
 }
 if (poke && !/catalog_ref|listingLeg:\s*false/.test(poke)) {
   fails.push("pokemontcg must mark catalog_ref (not listing leg)");
@@ -129,17 +152,22 @@ if (ygo && !/catalog_ref|listingLeg:\s*false/.test(ygo)) {
 }
 
 // C: coingecko + frankfurter
-const cg = read("workers/coingecko-adapter/src/constants.ts") || "";
-const fr = read("workers/frankfurter-adapter/src/constants.ts") || "";
-const cgBundle = cg + (read("workers/coingecko-adapter/src/client.ts") || "");
-// codeql[js/incomplete-url-substring-sanitization]
-if (!cgBundle.includes("api.coingecko.com")) {
-  fails.push("coingecko-adapter must call api.coingecko.com");
+const cg = read("workers/coingecko-adapter/src/constants.ts");
+const fr = read("workers/frankfurter-adapter/src/constants.ts");
+const cgClient = read("workers/coingecko-adapter/src/client.ts");
+const frClient = read("workers/frankfurter-adapter/src/client.ts");
+
+if (!hasExactHttpsApiHost(cg, "api.coingecko.com")) {
+  fails.push("coingecko-adapter API_BASE must be exact https://api.coingecko.com host");
 }
-const frBundle = fr + (read("workers/frankfurter-adapter/src/client.ts") || "");
-// codeql[js/incomplete-url-substring-sanitization]
-if (!frBundle.includes("frankfurter.dev")) {
-  fails.push("frankfurter-adapter must call api.frankfurter.dev");
+if (!cgClient?.includes("API_BASE")) {
+  fails.push("coingecko-adapter client must use API_BASE");
+}
+if (!hasExactHttpsApiHost(fr, "api.frankfurter.dev")) {
+  fails.push("frankfurter-adapter API_BASE must be exact https://api.frankfurter.dev host");
+}
+if (!frClient?.includes("API_BASE")) {
+  fails.push("frankfurter-adapter client must use API_BASE");
 }
 // KR / non-partner scrapers still forbidden
 for (const banned of ["rolex-adapter", "chrono24-adapter", "tcgplayer-adapter"]) {

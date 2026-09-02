@@ -51,8 +51,7 @@ async function main() {
   );
 }
 
-main().catch((err) => {
-  // codeql[js/log-injection]: message-only verifier failure path
-  console.error(err instanceof Error ? err.message : String(err));
+main().catch(() => {
+  console.error("[verify:adapter-ingest-runtime] FAIL");
   process.exit(1);
 });
