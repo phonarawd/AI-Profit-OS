@@ -125,7 +125,11 @@ async function probeSurface(surface, startWorker) {
   let session;
   try {
     session = await withTimeout(startWorker(surface), 120000, "start:" + surface.id);
-    const res = await withTimeout(session.fetch("http://artifact.local" + surface.route), 20000, "fetch:" + surface.id);
+    const res = await withTimeout(
+      session.fetch("http://artifact.local" + surface.route, { redirect: "manual" }),
+      20000,
+      "fetch:" + surface.id,
+    );
     const status = res.status;
     let json = null;
     let text = "";
