@@ -30,3 +30,6 @@ RELEASE_READINESS = GO_PENDING_FOUNDER_PRODUCTION_AUTHORIZATION_IF_REQUIRED_CI_G
 
 빨간 항목(미증명 required CI / GHAS blocking / acceptance FAIL)이 있으면 REL-701 진입 금지.
 Production mutation은 Founder 명시 승인 전 0.
+
+RECORD_SYNC = 2026-09-02T10:43:00Z
+
