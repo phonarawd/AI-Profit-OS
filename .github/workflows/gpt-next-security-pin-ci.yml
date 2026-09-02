@@ -1,0 +1,28 @@
+name: gpt-next-security-pin
+
+on:
+  pull_request:
+    branches:
+      - recovery/release-provenance-20260831
+    paths:
+      - apps/admin/package.json
+      - apps/web/package.json
+      - packages/ui/package.json
+      - pnpm-lock.yaml
+      - tooling/verify/next-security-pin.cjs
+      - .github/workflows/gpt-next-security-pin-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  next-security-pin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22.20.0"
+      - name: Verify exact Next security pin
+        run: node tooling/verify/next-security-pin.cjs
