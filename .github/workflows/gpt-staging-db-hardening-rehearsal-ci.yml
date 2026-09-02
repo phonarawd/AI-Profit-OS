@@ -1,0 +1,26 @@
+name: gpt-staging-db-hardening-rehearsal
+
+on:
+  pull_request:
+    branches:
+      - recovery/release-provenance-20260831
+    paths:
+      - supabase/staging/20260901120300_hardening_rollback.sql
+      - supabase/staging/20260901120400_hardening_verify.sql
+      - tooling/verify/staging-db-hardening-rehearsal.cjs
+      - .github/workflows/gpt-staging-db-hardening-rehearsal-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-rehearsal-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+      - name: Verify rollback + read-only snapshot contract
+        run: node tooling/verify/staging-db-hardening-rehearsal.cjs
