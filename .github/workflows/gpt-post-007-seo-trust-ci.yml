@@ -1,0 +1,70 @@
+name: gpt-post-007-seo-trust
+
+on:
+  pull_request:
+    paths:
+      - "apps/web/app/robots.ts"
+      - "apps/web/app/sitemap.ts"
+      - "apps/web/app/page.tsx"
+      - "apps/web/app/layout.tsx"
+      - "apps/web/app/ads/**"
+      - "apps/web/app/l/**"
+      - "apps/web/app/components/GuestChrome.tsx"
+      - "apps/web/app/GuestFirstVisit.tsx"
+      - "apps/web/app/me/legal/license/page.tsx"
+      - "apps/web/public/manifest.webmanifest"
+      - "apps/web/public/kyb/trade-license-1135431.html"
+      - "packages/ui/copy/ko/landing.ts"
+      - "packages/ui/copy/ko/trust.ts"
+      - "packages/ui/copy/ko/onboarding.ts"
+      - "packages/ui/copy/ko/operator.ts"
+      - "packages/ui/brand/markets.ts"
+      - "packages/ui/brand/assets/markets/manifest.json"
+      - "packages/ui/components/trust/MarketPartnerTrustStrip.tsx"
+      - "packages/ui/canon/surfaces/market-partner-trust.wire.json"
+      - "schemas/operator-entity.instance.json"
+      - "tooling/verify/seo-schema.cjs"
+      - "tooling/verify/market-partner-trust.cjs"
+      - "tooling/verify/domain-by-path.cjs"
+      - "tooling/verify/gate-tiers.cjs"
+      - ".github/workflows/gpt-post-007-seo-trust-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.85.0"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Docker-less stack-lock fixture
+        run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
+      - name: Verify SEO schema
+        run: pnpm verify:seo-schema
+      - name: Verify operator footer
+        run: pnpm verify:operator-footer
+      - name: Verify marketing compliance
+        run: pnpm verify:marketing-compliance
+      - name: Verify trust copy
+        run: pnpm verify:trust-copy
+      - name: Verify market source trust
+        run: pnpm verify:market-partner-trust
+      - name: Verify fast gate
+        run: pnpm verify:gate:fast
+      - name: Web TypeScript smoke
+        run: pnpm --filter @aipo/web exec tsc --noEmit
+      - name: Web build smoke
+        run: pnpm --filter @aipo/web build
