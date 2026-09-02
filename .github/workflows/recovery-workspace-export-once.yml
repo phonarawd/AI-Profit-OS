@@ -29,8 +29,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "ec3c9604d2ab7bb40338e45131a052f9b058b2c3"
-          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/recovery-workspace-export-once.yml"
+          base="ec3c9604d2ab7bb40338e45131a052f9b058b2c3"
+          test "$(git merge-base HEAD "$base")" = "$base"
+          test "$(git diff --name-only "$base" HEAD)" = ".github/workflows/recovery-workspace-export-once.yml"
           test -z "$(git status --porcelain)"
           test "$(node --version)" = "v22.23.0"
           test "$(pnpm --version)" = "10.14.0"
