@@ -3,7 +3,7 @@
 ```text
 REL = REL-016
 TITLE = observability 도입 (error tracking, 구조화 로그, alerting)
-STATUS = IN_PROGRESS
+STATUS = COMPLETED
 PLAN_LOCKED = TRUE
 PROTECTED_SCOPE_MUTATION = TRUE
 PRODUCTION_TOKEN_HELD = 0
