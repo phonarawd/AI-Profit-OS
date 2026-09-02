@@ -143,7 +143,7 @@ jobs:
           node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
           node tooling/engine-acceptance/run-qa6-threshold.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
           node tooling/engine-acceptance/run-qa6.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
-          pnpm verify:engine-acceptance
+          node -e 'const q=require("./governance/engine-acceptance/qa6-result.v1.json"); if(q.baseline_id!==process.env.EXPECTED_BASELINE_ID || q.completion_status!=="COMPLETE" || q.all_checks_pass!==true) { console.error(q); process.exit(1) }'
 
       - name: Start api-nest for QA7
         env:
@@ -214,7 +214,7 @@ jobs:
           node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
           node tooling/engine-acceptance/run-qa8-adversarial.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
           node tooling/engine-acceptance/run-qa8.cjs --mode tiny --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
-          pnpm verify:engine-acceptance
+          node -e 'const q=require("./governance/engine-acceptance/qa8-result.v1.json"); if(q.baseline_id!==process.env.EXPECTED_BASELINE_ID || q.completion_status!=="COMPLETE") { console.error(q); process.exit(1) }'
 
       - name: QA9 deterministic final aggregation
         run: |
