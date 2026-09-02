@@ -71,6 +71,9 @@ const RULES = [
       /^governance\/recovery\/engine-(rebase-evidence|drift-inventory)\.current\.v1\.json$/.test(
         f,
       ) ||
+      /^governance\/recovery\/archive\/engine-(drift-inventory|rebase-evidence)\./.test(
+        f,
+      ) ||
       /^tooling\/recovery\/build-engine-drift-inventory\.cjs$/.test(f) ||
       /^tooling\/verify\/engine-drift-inventory\.cjs$/.test(f),
     scripts: ["engine-drift-inventory.cjs"],

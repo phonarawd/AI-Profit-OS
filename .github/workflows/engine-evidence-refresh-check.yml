@@ -7,8 +7,13 @@ on:
     paths:
       - "governance/recovery/engine-rebase-evidence.current.v1.json"
       - "governance/recovery/engine-drift-inventory.current.v1.json"
+      - "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json"
+      - "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json"
       - "governance/engine-acceptance/FINAL_ACCEPTANCE.md"
       - ".github/workflows/engine-evidence-refresh-check.yml"
+      - "tooling/verify/engine-drift-inventory.cjs"
+      - "tooling/verify/rel-502-final-engine-acceptance.cjs"
+      - "tooling/verify/rel-503-protected-scope-watch.cjs"
       - "tooling/verify/b3-promotion.cjs"
   workflow_dispatch:
 
@@ -26,45 +31,49 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Verify exact live protected-scope inventory
+      - name: Verify current Engine drift inventory
         run: node tooling/verify/engine-drift-inventory.cjs
+
+      - name: Verify REL-502 final engine acceptance
+        run: node tooling/verify/rel-502-final-engine-acceptance.cjs
+
+      - name: Verify REL-503 protected-scope watch
+        run: node tooling/verify/rel-503-protected-scope-watch.cjs
 
       - name: Verify B3 isolated staging truth
         run: node tooling/verify/b3-promotion.cjs
 
-      - name: Verify ACK and acceptance remain unissued
+      - name: Verify current Engine acceptance evidence
         run: |
           set -euo pipefail
           node - <<'NODE'
           const fs = require("node:fs");
+          const psm = require("./tooling/verify/lib/rel-502-psm.cjs");
           const ev = JSON.parse(fs.readFileSync("governance/recovery/engine-rebase-evidence.current.v1.json","utf8"));
           const inv = JSON.parse(fs.readFileSync("governance/recovery/engine-drift-inventory.current.v1.json","utf8"));
           const cert = fs.readFileSync("governance/engine-acceptance/FINAL_ACCEPTANCE.md","utf8");
-          const expectedAggregate = "590263f0f273f214f14c8a8ad8489f79d21fbb0e71f71d480a94cbd026f82230";
+          const live = psm.compareProtectedScope();
+          const archiveInv = "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json";
+          const archiveEv = "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json";
           const fails = [];
-          if (ev.changed_paths !== 82) fails.push("evidence changed_paths");
-          if (inv.changed_paths !== 82) fails.push("inventory changed_paths");
-          if (ev.live_aggregate !== expectedAggregate) fails.push("evidence live aggregate");
-          if (ev.ack_eligibility?.ACK_RECEIVED !== 0) fails.push("evidence ACK");
-          if (ev.ack_eligibility?.FINAL_ACCEPTANCE !== "NOT_ISSUED") fails.push("evidence acceptance");
-          if (inv.ACK_RECEIVED !== 0) fails.push("inventory ACK");
-          if (inv.FINAL_ACCEPTANCE !== "NOT_ISSUED") fails.push("inventory acceptance");
-          for (const needle of [
-            "STATUS = NOT_ISSUED",
-            "CERT_ISSUED = 0",
-            "REBASE_REQUIRED = 1",
-            "REBASE_APPLIED = 0",
-            "ACK_RECEIVED = 0",
-            "LOCAL_QA0_QA9_RERUN = 0",
-            "CHANGED_PATHS = 82",
-            "LIVE_AGGREGATE = " + expectedAggregate
-          ]) {
-            if (!cert.includes(needle)) fails.push("cert:" + needle);
-          }
+          if (!fs.existsSync(archiveInv)) fails.push("predecessor inventory archive missing");
+          if (!fs.existsSync(archiveEv)) fails.push("predecessor evidence archive missing");
+          if (!cert.includes("BASELINE_ID = " + live.baselineId)) fails.push("cert baseline id");
+          if (inv.changed_paths !== live.changedPathCount) fails.push("current changed_paths vs live");
+          if (ev.changed_paths !== live.changedPathCount) fails.push("evidence changed_paths vs live");
+          if (ev.live_aggregate !== live.liveAggregate) fails.push("evidence live aggregate");
+          if (ev.baseline_aggregate !== live.baselineAggregate) fails.push("evidence baseline aggregate");
+          if (ev.live_aggregate !== ev.baseline_aggregate) fails.push("current aggregate mismatch");
           if (fails.length) {
             console.error("[engine-evidence-refresh] FAIL");
             for (const f of fails) console.error(" - " + f);
             process.exit(1);
           }
-          console.log("[engine-evidence-refresh] PASS · 82 paths · unexplained=0 · ACK=0 · NOT_ISSUED");
+          console.log(
+            "[engine-evidence-refresh] PASS · live.changed_paths=" +
+              live.changedPathCount +
+              " · baseline=" +
+              live.baselineId +
+              " · history.preserved",
+          );
           NODE
