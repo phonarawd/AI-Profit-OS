@@ -71,12 +71,15 @@ function surfacesForRoot(root) {
 }
 
 function withTimeout(promise, ms, label) {
+  let timer;
   return Promise.race([
-    promise,
+    Promise.resolve(promise),
     new Promise((_, reject) => {
-      setTimeout(() => reject(new Error("timeout:" + label)), ms);
+      timer = setTimeout(() => reject(new Error("timeout:" + label)), ms);
     }),
-  ]);
+  ]).finally(() => {
+    if (timer) clearTimeout(timer);
+  });
 }
 
 async function startDefaultWorker(surface) {
