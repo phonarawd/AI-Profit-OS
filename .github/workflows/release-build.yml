@@ -74,5 +74,6 @@ jobs:
         with:
           name: release-bundle
           path: _tmp_release_bundle/
+          include-hidden-files: true
           retention-days: 90
           if-no-files-found: error
