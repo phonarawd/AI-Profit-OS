@@ -36,9 +36,14 @@ const READY = {
       ],
     },
   },
+  public_table_owners: {
+    postgres: 93,
+  },
   default_acl_public_tables: {
     postgres: ["postgres", "service_role"],
-    supabase_admin: ["postgres", "service_role"],
+    // Supabase-managed role defaults may be broader; they are informational
+    // unless that role actually owns an app table in public.
+    supabase_admin: ["anon", "authenticated", "postgres", "service_role"],
   },
 };
 
@@ -102,21 +107,51 @@ got = compareSnapshot(missingDefaultAcl);
 assert.equal(got.ok, false);
 assert.ok(got.fails.includes("default_acl_snapshot_missing"));
 
-const unsafeDefaultAcl = structuredClone(READY);
-unsafeDefaultAcl.default_acl_public_tables.supabase_admin = [
+const managedDefaultAcl = structuredClone(READY);
+got = compareSnapshot(managedDefaultAcl);
+assert.equal(got.ok, true);
+assert.deepEqual(got.app_default_acl_owners, ["postgres"]);
+assert.ok(
+  got.warnings.includes(
+    "managed_default_acl_outside_app_owner_scope:supabase_admin:anon",
+  ),
+);
+assert.ok(
+  got.warnings.includes(
+    "managed_default_acl_outside_app_owner_scope:supabase_admin:authenticated",
+  ),
+);
+
+const unsafeAppOwnerDefaultAcl = structuredClone(READY);
+unsafeAppOwnerDefaultAcl.default_acl_public_tables.postgres = [
   "anon",
   "authenticated",
   "postgres",
   "service_role",
 ];
-got = compareSnapshot(unsafeDefaultAcl);
+got = compareSnapshot(unsafeAppOwnerDefaultAcl);
 assert.equal(got.ok, false);
+assert.ok(
+  got.fails.includes("forbidden_default_acl_grantee:postgres:anon"),
+);
+assert.ok(
+  got.fails.includes("forbidden_default_acl_grantee:postgres:authenticated"),
+);
+
+const unexpectedOwner = structuredClone(READY);
+unexpectedOwner.public_table_owners.supabase_admin = 1;
+got = compareSnapshot(unexpectedOwner);
+assert.equal(got.ok, false);
+assert.ok(got.fails.includes("unexpected_public_table_owner:supabase_admin"));
 assert.ok(
   got.fails.includes("forbidden_default_acl_grantee:supabase_admin:anon"),
 );
-assert.ok(
-  got.fails.includes("forbidden_default_acl_grantee:supabase_admin:authenticated"),
-);
+
+const missingOwnerSnapshot = structuredClone(READY);
+delete missingOwnerSnapshot.public_table_owners;
+got = compareSnapshot(missingOwnerSnapshot);
+assert.equal(got.ok, false);
+assert.ok(got.fails.includes("public_table_owner_snapshot_missing"));
 
 assert.equal(
   policySignature({
@@ -138,6 +173,8 @@ assert.match(sql, /push_control/);
 assert.match(sql, /pg_default_acl/);
 assert.match(sql, /aclexplode/);
 assert.match(sql, /default_acl_public_tables/);
+assert.match(sql, /relowner/);
+assert.match(sql, /public_table_owners/);
 assert.doesNotMatch(sql, /\b(update|delete|insert|alter|grant|revoke|truncate)\b\s+/i);
 
 const root = path.resolve(__dirname, "../..");
