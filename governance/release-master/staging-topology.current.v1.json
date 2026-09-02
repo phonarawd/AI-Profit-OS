@@ -1,31 +1,92 @@
 {
-  "schema": "staging-topology-provider-snapshot.v1",
-  "recorded_at": "2026-09-02",
-  "source": "read-only provider reality · mutation=0",
+  "schema": "staging-topology-provider-snapshot.v2",
+  "recorded_at": "2026-09-02T04:00:29Z",
+  "source": "fresh Render/Supabase provider truth + public runtime probe · production mutation=0",
+  "expected_candidate_sha": "52877334c22f074ebe6bc4b280a96b6b896995c0",
   "this_session": {
-    "supabase_branches": 0,
-    "render_mcp": "UNAUTHORIZED",
-    "gpt_172_service_ids": "NOT_ADOPTED_UNREVALIDATED"
+    "supabase_development_branches": 1,
+    "render_workspace_id": "tea-da5qqo3m8hqs73djpvvg",
+    "render_workspace_name": "My Workspace",
+    "runtime_probe_run_id": 33589004158,
+    "runtime_probe_result": "PASS"
   },
   "production": {
     "render": {
       "service_name": "AI-Profit-OS",
-      "service_id": "production-only-observed",
-      "environment_id": "production-only-observed",
+      "service_id": "srv-da5r1tqjobas73fl16dg",
+      "environment_id": "evm-da5r1tjbc2fs73a0b7hg",
       "url": "https://ai-profit-os.onrender.com",
       "branch": "main",
-      "autoDeploy": "yes"
+      "autoDeploy": "yes",
+      "live_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec",
+      "live_deploy_id": "dep-da938o142hec73eipre0",
+      "fresh_confirmed": true
     },
     "supabase": {
       "project_ref": "mgsytcetsiecllmhcyox",
-      "branches": 0
+      "public_table_count": 93
     }
   },
-  "staging": {},
+  "staging": {
+    "render": {
+      "service_name": "AI-Profit-OS-Staging",
+      "service_id": "srv-dabph32fngtc73esj8rg",
+      "environment_scope": "service-scoped",
+      "url": "https://ai-profit-os-staging.onrender.com",
+      "branch": "recovery/release-provenance-20260831",
+      "kind": "web_service",
+      "autoDeploy": "no",
+      "source_sha": "52877334c22f074ebe6bc4b280a96b6b896995c0",
+      "live_deploy_id": "dep-dabptdjtqb8s73d6r5m0",
+      "supabase_project_ref": "uluzxvdpynytytduuryy",
+      "redis_resource_id": "red-dabpllv40ujc73a0ddcg",
+      "runtime_health": {
+        "db_configured": true,
+        "db_ok": true,
+        "redis_configured": true,
+        "redis_ok": true,
+        "warnings_empty": true
+      }
+    },
+    "supabase": {
+      "branch_name": "staging-release-20260902",
+      "project_ref": "uluzxvdpynytytduuryy",
+      "parent_project_ref": "mgsytcetsiecllmhcyox",
+      "with_data": false,
+      "customer_data": false,
+      "ready": true,
+      "preview_project_status": "ACTIVE_HEALTHY",
+      "public_table_count": 93,
+      "schema_parity_with_production": true,
+      "customer_row_checks": {
+        "auth_users": 0,
+        "public_users": 0,
+        "ledger_journals": 0,
+        "withdraw_intents": 0,
+        "krw_deposit_requests": 0,
+        "usdt_deposit_events": 0
+      }
+    },
+    "db_hardening": {
+      "admin_audit_events": "INSERT+SELECT only · truncate guard present",
+      "push_control": "RLS+FORCE · service_role SELECT+UPDATE",
+      "push_subscriptions": "RLS+FORCE · service_role SELECT+INSERT+UPDATE+DELETE",
+      "rollback_reapply_rehearsal": "PASS"
+    }
+  },
   "cloudflare_preview": {
     "exists": true,
+    "required_for_current_topology": false,
     "dedicated_staging_api": false,
     "dedicated_staging_db": false,
-    "note": "Cloudflare preview without isolated Render API + Supabase staging branch is NOT_STAGING"
+    "binding_status": "NOT_YET_BOUND_TO_STAGING",
+    "note": "Core isolated backend staging is ready. Cloudflare frontend staging binding remains a later STAGING_E2E prerequisite and is not claimed PASS here."
+  },
+  "release_boundary": {
+    "staging_topology": "READY",
+    "staging_infra_runtime": "PASS",
+    "staging_full_e2e": "NOT_RUN",
+    "production_db_mutation": 0,
+    "production_release": "NO_GO"
   }
 }
