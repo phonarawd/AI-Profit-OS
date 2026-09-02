@@ -145,7 +145,12 @@ jobs:
           node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
           node tooling/engine-acceptance/run-qa6-threshold.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
           node tooling/engine-acceptance/run-qa6.cjs --mode full --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
-          pnpm verify:engine-acceptance
+          node - <<'NODE'
+          const q = require("./governance/engine-acceptance/qa6-result.v1.json");
+          if (q.baseline_id !== process.env.EXPECTED_BASELINE_ID) throw new Error("QA6 baseline drift");
+          if (q.completion_status !== "COMPLETE") throw new Error("QA6 incomplete");
+          if (q.all_checks_pass !== true) throw new Error("QA6 checks failed");
+          NODE
 
       - name: Start api-nest for QA7
         env:
@@ -216,7 +221,11 @@ jobs:
           node tooling/engine-acceptance/kill-switch.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci --assert-db-target
           node tooling/engine-acceptance/run-qa8-adversarial.cjs --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
           node tooling/engine-acceptance/run-qa8.cjs --mode tiny --target-env ci --hostname localhost --synthetic-ns qa-synth-ci
-          pnpm verify:engine-acceptance
+          node - <<'NODE'
+          const q = require("./governance/engine-acceptance/qa8-result.v1.json");
+          if (q.baseline_id !== process.env.EXPECTED_BASELINE_ID) throw new Error("QA8 baseline drift");
+          if (q.completion_status !== "COMPLETE") throw new Error("QA8 incomplete");
+          NODE
 
       - name: QA9 deterministic final aggregation
         run: |
