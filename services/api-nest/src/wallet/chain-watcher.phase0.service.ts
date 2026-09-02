@@ -14,6 +14,9 @@ import {
   USDT_LEDGER_CONFIRMATIONS,
   USDT_UI_CONFIRMATIONS,
 } from "./chain-watcher.stages";
+import { resolveTronGridAuth, tronGridHeaders } from "./tron-grid.secret";
+import { classifyDepositAddressAuthority } from "./tron-address-quarantine";
+import { resolveCanonicalTrc20Deriver } from "./tron-address";
 
 type BudgetState = {
   windowStartMs: number;
@@ -93,7 +96,8 @@ export class ChainWatcherPhase0Service {
       };
     }
 
-    const base = onchain.tronGridBaseUrl.replace(/\/$/, "");
+    const tronAuth = resolveTronGridAuth({ configBaseUrl: onchain.tronGridBaseUrl });
+    const base = tronAuth.baseUrl;
     const contract = onchain.usdtContract;
     const limit = Math.min(200, Math.max(1, opts?.limit ?? 50));
     const url = new URL(`${base}/v1/contracts/${contract}/events`);
@@ -104,10 +108,7 @@ export class ChainWatcherPhase0Service {
       url.searchParams.set("fingerprint", this.fingerprint);
     }
 
-    const headers: Record<string, string> = { Accept: "application/json" };
-    if (onchain.tronGridApiKey) {
-      headers["TRON-PRO-API-KEY"] = onchain.tronGridApiKey;
-    }
+    const headers = tronGridHeaders(tronAuth.apiKey);
 
     const fetchImpl = opts?.fetchImpl ?? fetch;
     const res = await fetchImpl(url.toString(), { headers });

@@ -39,8 +39,14 @@ if (!tron.includes("TRON_HD_DERIVATION_UNAVAILABLE")) {
 if (!tron.includes("m/44'/195'/0'/0/")) {
   fails.push("canonical Tron HD path must stay locked");
 }
-if (!/return null;/.test(tron) || !tron.includes("resolveCanonicalTrc20Deriver")) {
-  fails.push("unbound vault must resolve to null — do not invent a deriver");
+if (!tron.includes("resolveCanonicalTrc20Deriver")) {
+  fails.push("resolveCanonicalTrc20Deriver required");
+}
+if (!tron.includes("TRON_HOT_WALLET_XPUB") || !tron.includes("createXpubTrc20Deriver")) {
+  fails.push("approved authority must be TRON_HOT_WALLET_XPUB BIP32 xpub deriver");
+}
+if (!tron.includes("return null")) {
+  fails.push("missing xpub must still resolve to null (fail-closed)");
 }
 
 const gateIdx = addr.indexOf("requireCanonicalTrc20Deriver()");

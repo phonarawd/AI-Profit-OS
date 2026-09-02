@@ -66,7 +66,6 @@ export type PersistedDepositConfigV1 = {
   usdtOnchain: {
     network: "TRC20";
     tronGridBaseUrl: string;
-    tronGridApiKey?: string;
     chainWatcherMode: "event_stream";
     usdtUiConfirmations: 1;
     usdtLedgerConfirmations: 19;
@@ -229,11 +228,12 @@ export function parsePersistedDepositConfig(
     ),
   };
 
-  if (onchain.tronGridApiKey !== undefined) {
-    parsed.usdtOnchain.tronGridApiKey = requireString(
-      onchain.tronGridApiKey,
-      "usdt_onchain.tronGridApiKey",
-    );
+  if (
+    onchain.tronGridApiKey !== undefined &&
+    onchain.tronGridApiKey !== null &&
+    String(onchain.tronGridApiKey).trim() !== ""
+  ) {
+    notReady("malformed", "usdt_onchain.tronGridApiKey_forbidden");
   }
   return parsed;
 }
@@ -589,8 +589,12 @@ export function buildExplicitAuthoritativeConfig(
     updatedAt: new Date().toISOString(),
     updatedByAdminId: input.updatedByAdminId,
   };
-  if (usdtIn.tronGridApiKey !== undefined) {
-    next.usdtOnchain.tronGridApiKey = usdtIn.tronGridApiKey;
+  if (
+    usdtIn.tronGridApiKey !== undefined &&
+    usdtIn.tronGridApiKey !== null &&
+    String(usdtIn.tronGridApiKey).trim() !== ""
+  ) {
+    throw new Error("usdt_onchain.tronGridApiKey_forbidden");
   }
   return next;
 }

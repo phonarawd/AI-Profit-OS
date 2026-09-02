@@ -66,18 +66,20 @@ export class DepositAddressService {
 
   /** Full depositAddress → userId set for single-stream matcher */
   async loadAddressIndex(): Promise<
-    Array<{ trc20Address: string; userId: string }>
+    Array<{ trc20Address: string; userId: string; derivationIndex: number }>
   > {
     const r = await this.db.query<{
       trc20_address: string;
       user_id: string;
+      derivation_index: number;
     }>(
-      `SELECT trc20_address, user_id::text AS user_id
+      `SELECT trc20_address, user_id::text AS user_id, derivation_index
          FROM public.user_deposit_addresses`,
     );
     return r.rows.map((row) => ({
       trc20Address: row.trc20_address,
       userId: row.user_id,
+      derivationIndex: Number(row.derivation_index),
     }));
   }
 
