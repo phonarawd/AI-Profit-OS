@@ -1,68 +1,109 @@
 #Requires -Version 5.1
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Continue"
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..\..")
-$KmsHome = if ($env:AIPO_TRON_KMS_HOME) { $env:AIPO_TRON_KMS_HOME } else { Join-Path $env:LOCALAPPDATA "AI-Profit-OS\tatum-kms" }
-$WalletDir = Join-Path $KmsHome "wallet"
-$EnvFile = Join-Path $KmsHome "kms.env"
+Set-Location $Root
+
+$prepOut = & node "tooling/tron/prepare-kms-env.cjs" 2>&1
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "TATUM_API_KEY_MISSING — run pnpm tron:setup first"
+  exit 2
+}
+$prep = ($prepOut | Out-String).Trim() | ConvertFrom-Json
+$KmsHome = $prep.kmsHome
+$WalletDir = $prep.walletDir
+$EnvFile = $prep.envFile
 $Readiness = Join-Path $KmsHome "readiness.json"
-$LocalEnv = Join-Path $Root ".env.tron.local"
-function Write-Status($obj) { $obj | ConvertTo-Json -Depth 6 | Set-Content -Path $Readiness -Encoding UTF8 }
-if (-not (Get-Command docker -ErrorAction SilentlyContinue)) { throw "DOCKER_NOT_INSTALLED" }
+$network = $prep.network
+# Image runs as uid=node; Windows HOST env HOME must not leak into container.
+$TatumnRc = "/home/node/.tatumrc"
+
+function Write-Status($obj) {
+  $obj | ConvertTo-Json -Depth 6 | Set-Content -Path $Readiness -Encoding UTF8
+}
+
+if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
+  Write-Host "DOCKER_NOT_INSTALLED"
+  exit 3
+}
 docker info 1>$null 2>$null
-if ($LASTEXITCODE -ne 0) { throw "DOCKER_ENGINE_NOT_READY — Docker Desktop을 켠 뒤 다시 pnpm tron:bootstrap" }
-New-Item -ItemType Directory -Force -Path $WalletDir | Out-Null
-$apiKey = $null; $network = "mainnet"
-if (Test-Path $LocalEnv) {
-  Get-Content $LocalEnv | ForEach-Object {
-    if ($_ -match '^\s*TATUM_MAINNET_API_KEY=(.+)$') { $apiKey = $Matches[1].Trim() }
-    if ($_ -match '^\s*TATUM_NETWORK=(.+)$') { $network = $Matches[1].Trim().ToLower() }
-    if ($_ -match '^\s*TATUM_TESTNET_API_KEY=(.+)$' -and $network -eq "testnet") { $apiKey = $Matches[1].Trim() }
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "DOCKER_ENGINE_NOT_READY"
+  exit 4
+}
+
+docker image inspect tatumio/tatum-kms:latest 1>$null 2>$null
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "Pulling tatumio/tatum-kms ..."
+  docker pull tatumio/tatum-kms:latest
+  if ($LASTEXITCODE -ne 0) {
+    Write-Status @{ ok = $false; error = "DOCKER_PULL_FAILED" }
+    exit 5
   }
 }
-if (-not $apiKey) { throw "TATUM_API_KEY_MISSING — 먼저 pnpm tron:setup" }
-$pwdFile = Join-Path $KmsHome "kms.password"
-if (-not (Test-Path $pwdFile)) {
-  $bytes = New-Object byte[] 24
-  [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
-  Set-Content -Path $pwdFile -Value ([Convert]::ToBase64String($bytes)) -Encoding ASCII
-}
-$kmsPass = (Get-Content $pwdFile -Raw).Trim()
-@"
-TATUM_API_KEY=$apiKey
-TATUM_KMS_PASSWORD=$kmsPass
-"@ | Set-Content -Path $EnvFile -Encoding ASCII
+
+New-Item -ItemType Directory -Force -Path $WalletDir | Out-Null
 $walletDat = Join-Path $WalletDir "wallet.dat"
-$sigId = $null; $xpub = $null
+
+# Orphan guard: signatureId/xpub without wallet.dat cannot sign — regenerate.
 if (-not (Test-Path $walletDat)) {
-  $args = @("run","--rm","-i","--env-file",$EnvFile,"-v","${WalletDir}:/root/.tatumrc","tatumio/tatum-kms","generatemanagedwallet","TRON")
-  if ($network -eq "testnet") { $args += "--testnet" }
-  $out = & docker @args 2>&1 | Out-String
-  if ($LASTEXITCODE -ne 0) { Write-Status @{ ok=$false; error="KMS_GENERATE_FAILED" }; throw "KMS_GENERATE_FAILED" }
+  & node -e "const {LOCAL_ENV_FILE,readEnvFile,writeEnvFile}=require('./tooling/tron/lib/local-env.cjs'); const m=readEnvFile(LOCAL_ENV_FILE); delete m.TATUM_KMS_SIGNATURE_ID; delete m.TRON_HOT_WALLET_XPUB; writeEnvFile(LOCAL_ENV_FILE,m);"
+  $dockerArgs = @(
+    "run", "--rm", "-i",
+    "-e", "HOME=/home/node",
+    "--env-file", $EnvFile,
+    "-v", "${WalletDir}:${TatumnRc}",
+    "tatumio/tatum-kms",
+    "generatemanagedwallet", "TRON"
+  )
+  if ($network -eq "testnet") { $dockerArgs += "--testnet" }
+  $out = & docker @dockerArgs 2>&1 | Out-String
+  if ($LASTEXITCODE -ne 0) {
+    Write-Status @{ ok = $false; stage = "generatemanagedwallet"; error = "KMS_GENERATE_FAILED" }
+    Write-Host "KMS_GENERATE_FAILED"
+    exit 6
+  }
+  if (-not (Test-Path $walletDat)) {
+    Write-Status @{ ok = $false; error = "WALLET_DAT_MISSING_AFTER_GENERATE" }
+    Write-Host "WALLET_DAT_MISSING_AFTER_GENERATE"
+    exit 8
+  }
+  $sigId = $null
+  $xpub = $null
   if ($out -match '\{[\s\S]*"signatureId"[\s\S]*\}') {
     $parsed = $Matches[0] | ConvertFrom-Json
-    $sigId = $parsed.signatureId; $xpub = $parsed.xpub
+    $sigId = [string]$parsed.signatureId
+    $xpub = [string]$parsed.xpub
   }
-  if (-not $sigId -or -not $xpub) { throw "KMS_OUTPUT_PARSE_FAILED" }
-  $map = @{}
-  if (Test-Path $LocalEnv) {
-    Get-Content $LocalEnv | ForEach-Object {
-      if ($_ -match '^\s*([^=]+)=(.*)$' -and $_ -notmatch '^\s*#') { $map[$Matches[1].Trim()] = $Matches[2].Trim() }
-    }
+  if (-not $sigId -or -not $xpub) {
+    Write-Status @{ ok = $false; error = "KMS_OUTPUT_PARSE_FAILED" }
+    Write-Host "KMS_OUTPUT_PARSE_FAILED"
+    exit 7
   }
-  $map["TATUM_KMS_SIGNATURE_ID"] = $sigId
-  $map["TRON_HOT_WALLET_XPUB"] = $xpub
-  if (-not $map.ContainsKey("TRONGRID_BASE_URL")) { $map["TRONGRID_BASE_URL"] = "https://api.trongrid.io" }
-  $outLines = @("# AI Profit OS — TRON local secrets (NEVER commit)", "# updated by tron:bootstrap", "")
-  foreach ($k in $map.Keys) { $outLines += "$k=$($map[$k])" }
-  Set-Content -Path $LocalEnv -Value $outLines -Encoding UTF8
+  $env:AIPO_SIG = $sigId
+  $env:AIPO_XPUB = $xpub
+  & node -e "const {LOCAL_ENV_FILE,readEnvFile,writeEnvFile,maskStatus}=require('./tooling/tron/lib/local-env.cjs'); const map=readEnvFile(LOCAL_ENV_FILE); map.TATUM_KMS_SIGNATURE_ID=process.env.AIPO_SIG; map.TRON_HOT_WALLET_XPUB=process.env.AIPO_XPUB; if(!map.TRONGRID_BASE_URL) map.TRONGRID_BASE_URL='https://api.trongrid.io'; writeEnvFile(LOCAL_ENV_FILE,map); process.stdout.write(JSON.stringify(maskStatus(map)));"
+  Remove-Item Env:AIPO_SIG -ErrorAction SilentlyContinue
+  Remove-Item Env:AIPO_XPUB -ErrorAction SilentlyContinue
 } else {
-  if (Test-Path $LocalEnv) {
-    Get-Content $LocalEnv | ForEach-Object {
-      if ($_ -match '^\s*TATUM_KMS_SIGNATURE_ID=(.+)$') { $sigId = $Matches[1].Trim() }
-      if ($_ -match '^\s*TRON_HOT_WALLET_XPUB=(.+)$') { $xpub = $Matches[1].Trim() }
-    }
-  }
+  Write-Host "wallet.dat already present — skipping generate"
 }
-if (-not (Test-Path $walletDat)) { throw "WALLET_DAT_MISSING" }
-Write-Status @{ ok=$true; stage="bootstrap"; walletDat=$true; signatureIdSet=[bool]$sigId; xpubSet=[bool]$xpub; inboundPublicPort=$false; at=(Get-Date).ToUniversalTime().ToString("o") }
-Write-Host "KMS bootstrap OK (secrets not printed)"
+
+if (-not (Test-Path $walletDat)) {
+  Write-Status @{ ok = $false; error = "WALLET_DAT_MISSING" }
+  Write-Host "WALLET_DAT_MISSING"
+  exit 8
+}
+
+Write-Status @{
+  ok = $true
+  stage = "bootstrap"
+  kmsHome = $KmsHome
+  walletDat = $true
+  signatureIdSet = $true
+  xpubSet = $true
+  inboundPublicPort = $false
+  mount = $TatumnRc
+  at = (Get-Date).ToUniversalTime().ToString("o")
+}
+Write-Host "KMS bootstrap OK (wallet.dat persisted; secrets not printed)"
+exit 0

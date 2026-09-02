@@ -86,13 +86,20 @@ export class ChainSweeperPhase0Service {
     const cfg = await this.depositConfig.requirePersisted();
     const onchain = cfg.usdtOnchain;
     const adminPaused = onchain.sweeperPaused === true;
+    // Env Treasury public address wins over deposit_config ref (secret: refs are not T...).
+    const envTreasury = (process.env.TRON_TREASURY_ADDRESS ?? "").trim();
+    const treasuryHotAddressRef =
+      /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(envTreasury)
+        ? envTreasury
+        : onchain.treasuryHotAddressRef;
+    const envTronGridKey = (process.env.TRONGRID_API_KEY ?? "").trim();
 
     const treasuryTrx =
       opts?.treasuryTrxBalance ??
       (await this.fetchTreasuryTrxBalance({
-        treasuryHotAddressRef: onchain.treasuryHotAddressRef,
+        treasuryHotAddressRef,
         tronGridBaseUrl: onchain.tronGridBaseUrl,
-        tronGridApiKey: onchain.tronGridApiKey,
+        tronGridApiKey: envTronGridKey || onchain.tronGridApiKey,
         fetchImpl: opts?.fetchImpl,
       }));
 
@@ -194,7 +201,7 @@ export class ChainSweeperPhase0Service {
       const plan = buildEnergySweepPlan({
         depositEventId: row.id,
         userDepositAddress: row.to_address,
-        treasuryHotAddressRef: onchain.treasuryHotAddressRef,
+        treasuryHotAddressRef,
         amountUsdt: row.amount_usdt,
         energyDelegateEnabled: onchain.energyDelegateEnabled !== false,
       });

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * pnpm tron:setup — Windows-safe (no raw-mode).
- * Secrets are written only to .env.tron.local (gitignored).
+ * Fill ONLY missing TRON local secrets (keeps existing).
+ * Never echoes secret values.
  */
 const readline = require("readline");
 const crypto = require("crypto");
@@ -14,12 +14,9 @@ const {
   ROOT,
 } = require("./lib/local-env.cjs");
 
-function ask(rl, prompt, { secret = false } = {}) {
+function ask(rl, prompt) {
   return new Promise((resolve) => {
-    if (!secret) {
-      rl.question(prompt, (ans) => resolve(String(ans || "").trim()));
-      return;
-    }
+    // Prefer muted stdin on Windows terminals (avoid echo into transcript/logs).
     const stdin = process.stdin;
     const wasRaw = stdin.isRaw;
     const mute =
@@ -57,46 +54,31 @@ function ask(rl, prompt, { secret = false } = {}) {
 }
 
 async function main() {
-  console.log("=== 퍼뜩 TRON setup ===");
-  console.log("저장 위치:", LOCAL_ENV_FILE);
+  console.log("=== 퍼뜩 TRON setup (missing only) ===");
   console.log("repo:", ROOT);
-  const existing = readEnvFile(LOCAL_ENV_FILE);
-  console.log("현재 상태:", JSON.stringify(maskStatus(existing)));
+  console.log("file:", LOCAL_ENV_FILE);
+  const next = { ...readEnvFile(LOCAL_ENV_FILE) };
+  if (!next.TRONGRID_BASE_URL) next.TRONGRID_BASE_URL = "https://api.trongrid.io";
+  if (!next.WALLET_TICK_SCHEDULER) next.WALLET_TICK_SCHEDULER = "1";
+  if (!next.INTERNAL_WALLET_TICK_TOKEN) {
+    next.INTERNAL_WALLET_TICK_TOKEN = crypto.randomBytes(24).toString("hex");
+  }
+  console.log("현재:", JSON.stringify(maskStatus(next)));
 
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
 
-  const next = { ...existing };
-  if (!next.TRONGRID_BASE_URL) next.TRONGRID_BASE_URL = "https://api.trongrid.io";
-  if (!next.WALLET_TICK_SCHEDULER) next.WALLET_TICK_SCHEDULER = "1";
-  if (!next.INTERNAL_WALLET_TICK_TOKEN) {
-    next.INTERNAL_WALLET_TICK_TOKEN = crypto.randomBytes(24).toString("hex");
-  }
-
-  const hasAny = Object.values(maskStatus(existing)).some((v) => v === "set");
-  const overwrite =
-    hasAny &&
-    (await ask(rl, "이미 값이 있습니다. 빈 입력=유지, yes=덮어쓰기: ")) ===
-      "yes";
-
-  async function fill(
-    key,
-    prompt,
-    { required = true, validate, secret = true } = {},
-  ) {
-    if (next[key] && !overwrite) {
-      console.log(`- ${key}: 유지(set)`);
+  async function need(key, prompt, validate) {
+    if (next[key]) {
+      console.log(`- ${key}: 이미 set (유지)`);
       return;
     }
-    const v = await ask(rl, prompt, { secret });
+    const v = await ask(rl, prompt);
     if (!v) {
-      if (required && !next[key]) {
-        console.error(`필수 값 없음: ${key}`);
-        process.exit(1);
-      }
-      return;
+      console.error(`필수: ${key}`);
+      process.exit(1);
     }
     if (validate && !validate(v)) {
       console.error(`형식 오류: ${key}`);
@@ -105,31 +87,23 @@ async function main() {
     next[key] = v;
   }
 
-  await fill("TRONGRID_API_KEY", "1/4 TronGrid Production API Key: ");
-  await fill("TATUM_MAINNET_API_KEY", "2/4 Tatum Mainnet API Key: ", {
-    validate: (v) => /^t-/i.test(v),
-  });
-  await fill("TATUM_TESTNET_API_KEY", "3/4 Tatum Testnet API Key: ", {
-    validate: (v) => /^t-/i.test(v),
-  });
-  await fill(
+  await need("TRONGRID_API_KEY", "TronGrid Production API Key: ");
+  await need("TATUM_MAINNET_API_KEY", "Tatum Mainnet API Key (t-...): ", (v) =>
+    /^t-/i.test(v),
+  );
+  await need("TATUM_TESTNET_API_KEY", "Tatum Testnet API Key (t-...): ", (v) =>
+    /^t-/i.test(v),
+  );
+  await need(
     "TRON_TREASURY_ADDRESS",
-    "4/4 TronLink Treasury 공개 주소(T...): ",
-    {
-      secret: false,
-      validate: (v) => /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(v),
-    },
+    "TronLink Treasury 공개 주소 (T...): ",
+    (v) => /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(v),
   );
 
   rl.close();
   writeEnvFile(LOCAL_ENV_FILE, next);
-  if (!require("fs").existsSync(LOCAL_ENV_FILE)) {
-    console.error("WRITE_FAILED:", LOCAL_ENV_FILE);
-    process.exit(1);
-  }
   console.log("gitignore:", assertGitIgnored(".env.tron.local").split("\n")[0]);
-  console.log("저장 완료:", LOCAL_ENV_FILE);
-  console.log("상태:", JSON.stringify(maskStatus(next)));
+  console.log("저장 완료:", JSON.stringify(maskStatus(next)));
   console.log("다음: pnpm tron:bootstrap");
 }
 

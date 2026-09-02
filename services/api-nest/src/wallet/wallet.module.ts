@@ -21,7 +21,9 @@ import { MinHoldingService } from "./min-holding.service";
 import { ProfitMergeService } from "./profit-merge.service";
 import { ResendEmailProvider } from "./resend-email.provider";
 import { UsdtDepositService } from "./usdt-deposit.service";
+import { UsdtWithdrawBroadcastService } from "./usdt-withdraw-broadcast.service";
 import { WalletController } from "./wallet.controller";
+import { WalletTickSchedulerService } from "./wallet-tick.scheduler";
 import { WithdrawCredentialsAdminController } from "./withdraw-credentials.admin.controller";
 import { WithdrawCredentialsAdminService } from "./withdraw-credentials.admin.service";
 import { WithdrawFeeService } from "./withdraw-fee.service";
@@ -57,6 +59,8 @@ import { WithdrawStepUpService } from "./withdraw-stepup.service";
     UsdtDepositService,
     ChainWatcherPhase0Service,
     ChainSweeperPhase0Service,
+    UsdtWithdrawBroadcastService,
+    WalletTickSchedulerService,
     WithdrawFeeService,
     MinHoldingService,
     WithdrawKycGuard,
@@ -77,6 +81,8 @@ import { WithdrawStepUpService } from "./withdraw-stepup.service";
     UsdtDepositService,
     ChainWatcherPhase0Service,
     ChainSweeperPhase0Service,
+    UsdtWithdrawBroadcastService,
+    WalletTickSchedulerService,
     WithdrawFeeService,
     MinHoldingService,
     WithdrawKycGuard,

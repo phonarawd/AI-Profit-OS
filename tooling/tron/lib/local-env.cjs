@@ -6,7 +6,8 @@ const path = require("path");
 const { spawnSync } = require("child_process");
 const os = require("os");
 
-const ROOT = path.resolve(__dirname, "../..");
+// tooling/tron/lib → repo root = ../../..
+const ROOT = path.resolve(__dirname, "../../..");
 const LOCAL_ENV_FILE = path.join(ROOT, ".env.tron.local");
 const KMS_HOME =
   process.env.AIPO_TRON_KMS_HOME ||
@@ -58,6 +59,7 @@ function writeEnvFile(filePath, map) {
     if (!KEYS.includes(k) && v) lines.push(`${k}=${v}`);
   }
   lines.push("");
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, lines.join("\n"), { encoding: "utf8", mode: 0o600 });
 }
 
