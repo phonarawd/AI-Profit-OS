@@ -97,7 +97,20 @@ for (const dep of fixture.deps || []) {
 if (todoStatus("REL-602") !== "completed") fails.push("rel-602 todo must be completed");
 if (yamlStatus("REL-602") !== "COMPLETED") fails.push("REL-602 YAML must be COMPLETED");
 const rel603Closed = todoStatus("REL-603") === "completed" && yamlStatus("REL-603") === "COMPLETED";
-if (rel603Closed) {
+const rel700Closed = todoStatus("REL-700") === "completed" && yamlStatus("REL-700") === "COMPLETED";
+const rel701PreClosed =
+  todoStatus("REL-701-PRE") === "completed" && yamlStatus("REL-701-PRE") === "COMPLETED";
+if (rel603Closed && rel700Closed && rel701PreClosed) {
+  if (!plan.includes("FIRST_EXECUTION_TODO = REL-701-DB")) {
+    fails.push("FIRST_EXECUTION_TODO must advance to REL-701-DB after REL-701-PRE");
+  }
+  if (!plan.includes("LAST_COMPLETED_TODO = REL-701-PRE")) {
+    fails.push("LAST_COMPLETED_TODO must be REL-701-PRE after REL-701-PRE close");
+  }
+  if (!plan.includes("HARD_STOP_AFTER = REL-603")) {
+    fails.push("HARD_STOP_AFTER must remain REL-603 (staging hard-stop) until Founder prod auth");
+  }
+} else if (rel603Closed) {
   if (!plan.includes("FIRST_EXECUTION_TODO = REL-700")) fails.push("FIRST_EXECUTION_TODO must advance to REL-700 after REL-603");
   if (!plan.includes("LAST_COMPLETED_TODO = REL-603")) fails.push("LAST_COMPLETED_TODO must be REL-603 after REL-603 close");
   if (!plan.includes("HARD_STOP_AFTER = REL-603")) fails.push("HARD_STOP_AFTER must be REL-603 after REL-603 close");
