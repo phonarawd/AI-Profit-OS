@@ -18,7 +18,7 @@ jobs:
       - name: Probe Render staging public health
         env:
           STAGING_HEALTH_URL: "https://ai-profit-os-staging.onrender.com/api/v1/health"
-          EXPECTED_SHA: "52877334c22f074ebe6bc4b280a96b6b896995c0"
+          EXPECTED_SHA: "23a46bd029feff5dcc4dafab463ca6f406970564"
         run: |
           set -euo pipefail
           ok=0
