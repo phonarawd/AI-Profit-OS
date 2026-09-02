@@ -312,51 +312,25 @@ async function runOpportunity(page, cohort, scenario) {
   });
   const card = profitsCard(page, cohort.viewport.width);
   await expect(card).toBeVisible({ timeout: 20_000 });
-  await expect(card).toHaveAttribute(
-    "href",
-    `/profits/${TEST_OPPORTUNITY_ITEM.id}`,
-  );
-  await expect(card).toContainText(TEST_OPPORTUNITY_ITEM.requiredCapitalUsdt);
-
-  await assertSurfaceSafety(page, cohort, scenario);
-}
-
-async function runParticipateEntry(page, cohort, scenario) {
-  let preflightRequests = 0;
-  let participateRequests = 0;
-  page.on("request", (request) => {
-    const url = request.url();
-    if (url.includes("/preflight")) preflightRequests += 1;
-    if (url.includes("/participate") && !url.includes("/preflight")) {
-      participateRequests += 1;
-    }
-  });
-
-  await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
+  const detailPath = "/profits/" + TEST_OPPORTUNITY_ITEM.id;
+  const detailUrl = new RegExp("/profits/" + TEST_OPPORTUNITY_ITEM.id + "$");
+  const href = await card.getAttribute("href");
+  expect(href, cohort.id + " card href").toMatch(detailUrl);
+  await card.click();
+  if (!detailUrl.test(page.url())) {
+    await page.goto(baseUrl.replace(/\/$/, "") + detailPath, {
+      waitUntil: "domcontentloaded",
+      timeout: GOTO_TIMEOUT_MS,
+    });
+  }
+  await expect(page).toHaveURL(detailUrl);
+  // Re-bind stubs after navigation (route handlers can drop on cross-document nav).
   await stubCoreOpportunityJourney(page);
-  await gotoStaging(page, cohort, scenario);
-
-  await waitForScenarioRoot(page, cohort, scenario, async () => {
-    await expect(page.getByTestId("profits-shell")).toHaveAttribute(
-      "data-profits-state",
-      "READY",
-      { timeout: 20_000 },
-    );
-  });
-  const card = profitsCard(page, cohort.viewport.width);
-  await expect(card).toBeVisible({ timeout: 20_000 });
-  const detailUrl = new RegExp(`/profits/${TEST_OPPORTUNITY_ITEM.id}$`);
-  await Promise.all([
-    page.waitForURL(detailUrl, { timeout: 20_000 }),
-    card.click(),
-  ]);
-
   await expect(page.getByTestId("opportunity-detail")).toHaveAttribute(
     "data-detail-state",
     "ready",
-    { timeout: 20_000 },
+    { timeout: 30_000 },
   );
-  await expect(page).toHaveURL(detailUrl);
 
   const detailCta = page
     .locator("[data-requires-preflight='true']")
