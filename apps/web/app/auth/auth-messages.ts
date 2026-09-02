@@ -7,6 +7,9 @@ export function authUserMessage(err: unknown): string {
     if (err.code === "KAKAO_UNAVAILABLE") {
       return "지금은 카카오로 연결할 수 없어요.";
     }
+    if (err.code === "MAGIC_LINK_DELIVERY_UNAVAILABLE") {
+      return "로그인 메일을 보내지 못했어요. 잠시 후 다시 시도해 주세요.";
+    }
     if (err.code === "AGE_REQUIRED") {
       return "만 19세 이상만 이용할 수 있어요.";
     }
