@@ -1,0 +1,47 @@
+name: auth-email-prod-readiness
+
+on:
+  pull_request:
+    branches:
+      - recovery/release-provenance-20260831
+      - main
+    paths:
+      - ".github/workflows/auth-email-prod-readiness.yml"
+      - "apps/web/app/auth/auth-messages.ts"
+      - "packages/sdk/src/auth/auth-release.test.ts"
+      - "packages/sdk/src/auth/fetch.ts"
+      - "services/api-nest/src/auth/magic-link.service.ts"
+      - "services/api-nest/src/wallet/resend-email.provider.ts"
+      - "tooling/verify/email-provider-resend.cjs"
+
+permissions:
+  contents: read
+
+jobs:
+  auth-email-fail-closed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Resend production fail-closed contract
+        run: pnpm verify:email-provider-resend
+
+      - name: Auth flow contract
+        run: pnpm verify:auth-flows
+
+      - name: Nest auth compile
+        run: pnpm --filter @aipo/api-nest... build
+
+      - name: SDK auth regression
+        run: node --test packages/sdk/src/auth/auth-release.test.ts
