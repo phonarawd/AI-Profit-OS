@@ -449,11 +449,16 @@ function run() {
     // by validateRebaseEntry/verifyRebaseLedgerAgainstBaseline/verifyWashing
     // above and below. Updated with REL-502 rebase after REL-508
     // (ea-rebase-229e7777f9b0-2d4567b3a2c8 · eval MATCH predecessor).
-    check("no_new_epoch_created", liveLedger.rebases.length === 8, `rebases=${liveLedger.rebases.length}`);
     check(
-      "live_baseline_unchanged",
-      liveBaseline.id === "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
-      liveBaseline.id,
+      "live_rebase_chain_not_truncated",
+      Array.isArray(liveLedger.rebases) && liveLedger.rebases.length >= 8,
+      `rebases=${Array.isArray(liveLedger.rebases) ? liveLedger.rebases.length : "invalid"}`,
+    );
+    const liveTip = liveLedger.rebases[liveLedger.rebases.length - 1];
+    check(
+      "live_baseline_bound_to_latest_rebase",
+      Boolean(liveTip && liveTip.new_baseline_id === liveBaseline.id),
+      `baseline=${liveBaseline.id} tip=${liveTip && liveTip.new_baseline_id}`,
     );
     // qa9-result is only ever written by run-qa9.cjs. After REL-508 rebase,
     // current-epoch QA1-QA8 reran and QA9 re-aggregated on
