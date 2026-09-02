@@ -48,7 +48,9 @@ function surfacesForRoot(root) {
       kind: "opennext",
       script: path.join(root, "apps/admin/.open-next/worker.js"),
       config: path.join(root, "infra/ops/wrangler.toml"),
-      route: "/",
+      // ops `/` → 307 `/admin`; local unstable_dev에서 `/` fetch 실패가
+      // 재현되므로 실제 렌더 경로 `/admin`을 직접 검증한다 (CF smoke=307/200).
+      route: "/admin",
       accept: OPENNEXT_ACCEPT,
     },
     {
@@ -121,11 +123,38 @@ function evaluateSurfaceResult(surface, result) {
   return { ok: true };
 }
 
+function formatFetchError(err) {
+  if (!err) return "runtime_error";
+  const parts = [err.message || String(err)];
+  if (err.cause && err.cause.message) parts.push("cause:" + err.cause.message);
+  if (err.code) parts.push("code:" + err.code);
+  return parts.join("|");
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchWithReadyRetries(session, route, attempts) {
+  let lastErr;
+  for (let i = 0; i < attempts; i += 1) {
+    try {
+      return await withTimeout(session.fetch("http://artifact.local" + route), 20000, "fetch:" + route);
+    } catch (err) {
+      lastErr = err;
+      await sleep(400 * (i + 1));
+    }
+  }
+  throw lastErr || new Error("fetch failed");
+}
+
 async function probeSurface(surface, startWorker) {
   let session;
   try {
     session = await withTimeout(startWorker(surface), 120000, "start:" + surface.id);
-    const res = await withTimeout(session.fetch("http://artifact.local" + surface.route), 20000, "fetch:" + surface.id);
+    // miniflare 기동 직후 첫 요청 race 방지
+    await sleep(250);
+    const res = await fetchWithReadyRetries(session, surface.route, 5);
     const status = res.status;
     let json = null;
     let text = "";
@@ -152,7 +181,7 @@ async function probeSurface(surface, startWorker) {
       kind: surface.kind,
       route: surface.route,
       ok: false,
-      reason: err && err.message ? err.message : String(err),
+      reason: formatFetchError(err),
       no_bundle: true,
     };
   } finally {
@@ -163,6 +192,8 @@ async function probeSurface(surface, startWorker) {
         /* 기동 실패 후 정리는 무시 */
       }
     }
+    // surface 간 port/registry 잔여 race 방지
+    await sleep(300);
   }
 }
 
