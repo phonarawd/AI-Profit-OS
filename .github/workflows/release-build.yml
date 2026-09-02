@@ -1,0 +1,78 @@
+name: release-build
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: release-build-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  build-once:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Source SHA must be 40
+        run: |
+          set -euo pipefail
+          SHA="${{ github.sha }}"
+          test "${#SHA}" -eq 40
+
+      - name: Build once
+        run: |
+          set -euo pipefail
+          pnpm --filter @aipo/web build:cf
+          pnpm --filter @aipo/admin build:cf
+          pnpm --filter @aipo/api-nest... build
+          test -f apps/web/.open-next/worker.js
+          test -d apps/web/.open-next/assets
+          test -f apps/admin/.open-next/worker.js
+          test -d apps/admin/.open-next/assets
+          test -f services/api-nest/dist/main.js
+
+      - name: Bind Nest API artifact to source SHA
+        run: |
+          set -euo pipefail
+          node tooling/release/api-artifact-provenance.cjs --source-sha "${{ github.sha }}"
+          test -f services/api-nest/dist/api-release-manifest.json
+          pnpm verify:api-artifact-provenance
+
+      - name: Prebuild workers (exact bundle, no upload)
+        run: |
+          set -euo pipefail
+          node tooling/release/prebuild-workers.cjs --from-repo
+          test -f workers/push-dispatcher/.release-prebuilt/index.js
+          test -f workers/ebay-adapter/.release-prebuilt/index.js
+
+      - name: Pack immutable artifact + digest
+        run: |
+          set -euo pipefail
+          node tooling/release/build-once-artifact.cjs \
+            --source-sha "${{ github.sha }}" \
+            --from-repo \
+            --out _tmp_release_bundle
+
+      - name: Upload release-bundle
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: release-bundle
+          path: _tmp_release_bundle/
+          retention-days: 90
+          if-no-files-found: error
