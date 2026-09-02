@@ -1,0 +1,85 @@
+name: recovery-workspace-export-once
+
+on:
+  push:
+    branches:
+      - gpt/workspace-export-ec3c9604
+
+permissions:
+  contents: read
+
+jobs:
+  export-workspace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22.23.0"
+          cache: pnpm
+
+      - name: Verify bootstrap provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "ec3c9604d2ab7bb40338e45131a052f9b058b2c3"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/recovery-workspace-export-once.yml"
+          test -z "$(git status --porcelain)"
+          test "$(node --version)" = "v22.23.0"
+          test "$(pnpm --version)" = "10.14.0"
+
+      - name: Install exact workspace dependencies
+        shell: bash
+        env:
+          NODE_OPTIONS: --max-old-space-size=1536
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify no repository secret material
+        shell: bash
+        env:
+          NODE_OPTIONS: --max-old-space-size=1536
+        run: pnpm verify:secrets
+
+      - name: Prepare credential-free recovery workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # actions/checkout is configured with persist-credentials=false. Enforce
+          # that invariant again before packaging .git for local recovery.
+          while IFS= read -r key; do
+            [ -n "$key" ] || continue
+            git config --local --unset-all "$key" || true
+          done < <(git config --local --name-only --get-regexp '^http\\..*\\.extraheader$' || true)
+          git config --local --unset-all credential.helper || true
+
+          if git config --local --get-regexp '(^http\\..*\\.extraheader$|credential\\.helper)' >/tmp/recovery-git-auth.txt 2>/dev/null; then
+            cat /tmp/recovery-git-auth.txt >&2
+            echo "credential-bearing git config remains" >&2
+            exit 1
+          fi
+
+          mkdir -p .recovery-toolchain
+          node_root="$(dirname "$(dirname "$(command -v node)")")"
+          cp -a "$node_root" .recovery-toolchain/node22.23.0
+          cp -a "$PNPM_HOME" .recovery-toolchain/pnpm-home
+
+          git fsck --full --no-reflogs
+          tar -czf /tmp/ai-profit-os-recovery-workspace.tar.gz \
+            --exclude='./.recovery-toolchain/recovery-workspace-export.tar.gz' \
+            .
+
+      - name: Upload recovery workspace
+        uses: actions/upload-artifact@v4
+        with:
+          name: recovery-workspace-ec3c9604
+          path: /tmp/ai-profit-os-recovery-workspace.tar.gz
+          if-no-files-found: error
+          retention-days: 1
