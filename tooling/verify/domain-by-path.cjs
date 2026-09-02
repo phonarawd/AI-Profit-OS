@@ -119,6 +119,27 @@ const RULES = [
     scripts: ["nest-production-provenance.cjs", "api-nest-build.cjs"],
   },
   {
+    test: (f) =>
+      /^apps\/web\/app\/(robots|sitemap)\.ts$/.test(f) ||
+      /^apps\/web\/app\/(page|layout)\.tsx$/.test(f) ||
+      /^apps\/web\/app\/(ads|l)\//.test(f) ||
+      /^apps\/web\/app\/components\/GuestChrome\.tsx$/.test(f) ||
+      /^apps\/web\/app\/GuestFirstVisit\.tsx$/.test(f) ||
+      /^apps\/web\/public\/manifest\.webmanifest$/.test(f) ||
+      /^apps\/web\/public\/kyb\/trade-license-1135431\.html$/.test(f) ||
+      /^schemas\/operator-entity\.instance\.json$/.test(f) ||
+      /^packages\/ui\/copy\/ko\/(landing|trust|onboarding|operator)\.ts$/.test(f) ||
+      /^tooling\/verify\/seo-schema\.cjs$/.test(f),
+    scripts: [
+      "seo-schema.cjs",
+      "operator-footer.cjs",
+      "marketing-compliance.cjs",
+      "trust-copy.cjs",
+      "market-partner-trust.cjs",
+      "landing-3s.cjs",
+    ],
+  },
+  {
     test: (f) => /^(packages\/ui\/|apps\/web\/)/.test(f),
     scripts: ["no-it-jargon.cjs", "mockup-governance.cjs", "canon-surfaces.cjs"],
   },

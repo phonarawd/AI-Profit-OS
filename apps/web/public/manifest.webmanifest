@@ -2,7 +2,7 @@
   "name": "퍼뜩",
   "short_name": "퍼뜩",
   "id": "/",
-  "description": "AI가 찾아주는 글로벌 수익 기회",
+  "description": "AI 기반 글로벌 시세·가격 비교 및 동일상품 매칭 플랫폼",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
