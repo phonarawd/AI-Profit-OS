@@ -110,88 +110,97 @@ test("critical consumer routes load without fatal overflow", async ({ page }, te
   const engine = testInfo.project.name;
   expect(engine === "chromium" || engine === "firefox" || engine === "webkit").toBeTruthy();
   testInfo.annotations.push({ type: "browser-engine", description: engine });
-  await page.addInitScript(() => {
-    window.localStorage.setItem("peotteok_deposit_consult_ack", "1");
-    const orig = window.fetch.bind(window);
-    window.fetch = (input, init) => {
-      const url = String(typeof input === "string" ? input : (input && input.url) || "");
-      if (url.indexOf("/api/v1/") === -1) return orig(input, init);
-      const live =
-        window.sessionStorage && window.sessionStorage.getItem("aipo-qa-stub") === "live";
-      if (!live) {
-        return Promise.resolve(
-          new Response(JSON.stringify({ error: "unauthorized", viewState: "unauthorized" }), {
-            status: 401,
-            headers: { "content-type": "application/json" },
-          }),
-        );
-      }
-      return orig(input, init);
-    };
-  });
-  let lastPath = "";
+
+  // Each route × viewport gets a fresh page. This preserves every assertion while
+  // preventing an earlier Next-dev navigation/HMR fetch from leaking an aborted
+  // promise into the next surface on WebKit.
+  const context = page.context();
+
+  async function makePage(stubKind) {
+    const scoped = await context.newPage();
+    await scoped.addInitScript((kind) => {
+      window.localStorage.setItem("peotteok_deposit_consult_ack", "1");
+      window.sessionStorage.setItem("aipo-qa-stub", kind);
+      const orig = window.fetch.bind(window);
+      window.fetch = (input, init) => {
+        const url = String(typeof input === "string" ? input : (input && input.url) || "");
+        if (url.indexOf("/api/v1/") === -1) return orig(input, init);
+        const live =
+          window.sessionStorage && window.sessionStorage.getItem("aipo-qa-stub") === "live";
+        if (!live) {
+          return Promise.resolve(
+            new Response(JSON.stringify({ error: "unauthorized", viewState: "unauthorized" }), {
+              status: 401,
+              headers: { "content-type": "application/json" },
+            }),
+          );
+        }
+        return orig(input, init);
+      };
+    }, stubKind);
+    return scoped;
+  }
+
   for (const route of ROUTES) {
     const stubKind = route.path === "/" ? "guest" : "live";
-    if (lastPath) {
-      await page.evaluate((kind) => {
-        window.sessionStorage.setItem("aipo-qa-stub", kind);
-      }, stubKind);
-    }
-    if (lastPath !== route.path) {
-      await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
-      await stubRoute(page, route.path);
-      lastPath = route.path;
-    }
     for (const vp of VIEWPORTS) {
-      const pageErrors = [];
-      page.removeAllListeners("pageerror");
-      page.on("pageerror", (err) => pageErrors.push(String(err?.message || err)));
-      await page.setViewportSize(vp);
-      await gotoSafe(page, runtime.baseUrl + route.path);
-      if (route.path === "/") {
-        const resolved = await waitHomePainted(page);
-        if (resolved) {
-          await expect(
-            page
-              .locator(
-                '[data-testid="guest-cta-signup"], [data-testid="home-authenticated"], [data-testid="home-session-unavailable"]',
-              )
-              .first(),
-          ).toBeVisible();
+      const scoped = await makePage(stubKind);
+      try {
+        await stubRoute(scoped, route.path);
+        const pageErrors = [];
+        scoped.on("pageerror", (err) => pageErrors.push(String(err?.message || err)));
+        await scoped.setViewportSize(vp);
+        await gotoSafe(scoped, runtime.baseUrl + route.path);
+        if (route.path === "/") {
+          const resolved = await waitHomePainted(scoped);
+          if (resolved) {
+            await expect(
+              scoped
+                .locator(
+                  '[data-testid="guest-cta-signup"], [data-testid="home-authenticated"], [data-testid="home-session-unavailable"]',
+                )
+                .first(),
+            ).toBeVisible();
+          } else {
+            await expect(scoped.getByTestId("home-session-loading")).toBeVisible();
+            testInfo.annotations.push({
+              type: "home-session-gate",
+              description: `${engine} painted loading only`,
+            });
+          }
         } else {
-          await expect(page.getByTestId("home-session-loading")).toBeVisible();
-          testInfo.annotations.push({
-            type: "home-session-gate",
-            description: `${engine} painted loading only`,
-          });
+          await expect(scoped.getByTestId(route.testId)).toBeVisible({ timeout: 45000 });
+          await expect(scoped.getByTestId(route.cta)).toBeVisible();
         }
-      } else {
-        await expect(page.getByTestId(route.testId)).toBeVisible({ timeout: 45000 });
-        await expect(page.getByTestId(route.cta)).toBeVisible();
-      }
-      const overflow = await page.evaluate(() => {
-        const root = document.scrollingElement || document.documentElement;
-        return root.scrollWidth > root.clientWidth + 1;
-      });
-      expect(overflow, `${engine} ${route.path} ${vp.width} overflow`).toBe(false);
-      expect(pageErrors, `${engine} ${route.path} pageerror`).toEqual([]);
-      const hasControl = await page.getByRole("link").or(page.getByRole("button")).count();
-      if (hasControl > 0) {
-        await assertVisibleControlFocused(page, engine, route.path, vp.width);
+        const overflow = await scoped.evaluate(() => {
+          const root = document.scrollingElement || document.documentElement;
+          return root.scrollWidth > root.clientWidth + 1;
+        });
+        expect(overflow, `${engine} ${route.path} ${vp.width} overflow`).toBe(false);
+        expect(pageErrors, `${engine} ${route.path} pageerror`).toEqual([]);
+        const hasControl = await scoped.getByRole("link").or(scoped.getByRole("button")).count();
+        if (hasControl > 0) {
+          await assertVisibleControlFocused(scoped, engine, route.path, vp.width);
+        }
+      } finally {
+        await scoped.close();
       }
     }
   }
-  await page.evaluate(() => {
-    window.sessionStorage.setItem("aipo-qa-stub", "guest");
-  });
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.setViewportSize({ width: 390, height: 693 });
-  await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
-  await stubGuestApis(page);
-  await gotoSafe(page, runtime.baseUrl + "/");
-  await waitHomePainted(page);
-  const motion = await page.evaluate(() =>
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-  );
-  expect(motion, `${engine} reduced-motion`).toBe(true);
+
+  const reduced = await makePage("guest");
+  try {
+    await reduced.emulateMedia({ reducedMotion: "reduce" });
+    await reduced.setViewportSize({ width: 390, height: 693 });
+    await stubGuestApis(reduced);
+    await gotoSafe(reduced, runtime.baseUrl + "/");
+    await waitHomePainted(reduced);
+    const motion = await reduced.evaluate(() =>
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    );
+    expect(motion, `${engine} reduced-motion`).toBe(true);
+  } finally {
+    await reduced.close();
+  }
 });
+
