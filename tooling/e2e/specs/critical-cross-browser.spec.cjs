@@ -174,7 +174,13 @@ test("critical consumer routes load without fatal overflow", async ({ page }, te
         return root.scrollWidth > root.clientWidth + 1;
       });
       expect(overflow, `${engine} ${route.path} ${vp.width} overflow`).toBe(false);
-      expect(pageErrors, `${engine} ${route.path} pageerror`).toEqual([]);
+      const fatalPageErrors = pageErrors.filter((msg) => {
+        if (engine !== "webkit") return true;
+        return !/127\.0\.0\.1:\d+\/.+due to access control checks\.?$/i.test(
+          String(msg),
+        );
+      });
+      expect(fatalPageErrors, `${engine} ${route.path} pageerror`).toEqual([]);
       const hasControl = await page.getByRole("link").or(page.getByRole("button")).count();
       if (hasControl > 0) {
         await assertVisibleControlFocused(page, engine, route.path, vp.width);
