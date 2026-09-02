@@ -38,8 +38,6 @@ jobs:
           toolchain: "1.85.0"
       - name: Install
         run: pnpm install --frozen-lockfile
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps
       - name: T1 push gate
         env:
           AIPO_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -50,6 +48,8 @@ jobs:
           # The production bundle still exercises the same Worker rewrite contract.
           API_HOST: "127.0.0.1:4010"
         run: pnpm --filter @aipo/web build:cf
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
       - name: Spark Dash all-route responsive continuity
         env:
           CI: "1"
