@@ -9,6 +9,7 @@ on:
       - "governance/recovery/engine-drift-inventory.current.v1.json"
       - "governance/engine-acceptance/FINAL_ACCEPTANCE.md"
       - ".github/workflows/engine-evidence-refresh-check.yml"
+      - "tooling/verify/b3-promotion.cjs"
   workflow_dispatch:
 
 permissions:
@@ -27,6 +28,9 @@ jobs:
 
       - name: Verify exact live protected-scope inventory
         run: node tooling/verify/engine-drift-inventory.cjs
+
+      - name: Verify B3 isolated staging truth
+        run: node tooling/verify/b3-promotion.cjs
 
       - name: Verify ACK and acceptance remain unissued
         run: |
