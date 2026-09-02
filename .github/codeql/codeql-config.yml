@@ -7,16 +7,6 @@ paths-ignore:
   - "**/.open-next/**"
   - "**/coverage/**"
 query-filters:
-  # HttpOnly Nest JWT session cookie — intentional Set-Cookie of accessToken.
-  - exclude:
-      id: js/clear-text-storage-of-sensitive-data
-      paths:
-        - services/api-nest/src/auth/auth.controller.ts
-  # Double-submit CSRF readable cookie — proven design.
-  - exclude:
-      id: js/clear-text-storage-of-sensitive-data
-      paths:
-        - services/api-nest/src/common/admin-session.cookies.ts
   # Static source-text host presence scans in verify tooling (not runtime URL validation).
   - exclude:
       id: js/incomplete-url-substring-sanitization
@@ -26,7 +16,6 @@ query-filters:
       id: js/regex/missing-regexp-anchor
       paths:
         - tooling/verify/signup-ready-adapters.cjs
-  # Verifier catch path logs Error.message only after hardening.
   - exclude:
       id: js/log-injection
       paths:
