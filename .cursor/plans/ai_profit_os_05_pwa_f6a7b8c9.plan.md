@@ -3,26 +3,26 @@ name: AI Profit OS — PWA & Native
 overview: "v7.23.0 기존 PWA pending6 전부 보존 · 04 R6 pending0 후 Shell→Push→fanout→WebAuthn→Store(v2)→PWA certification · ADR-017 Light manifest · OpenNext Web Worker."
 todos:
   - id: pwa-native-shell
-    content: "[composer-2.5|200K] manifest=퍼뜩·ADR-017 Peotteok Light색·Serwist·Install·standalone/safe-area·Brand icons·SW update UX·Canon wires"
-    status: pending
+    content: "[composer-2.5|200K] manifest=퍼뜩·ADR-017 Peotteok Light색·Serwist·Install·standalone/safe-area·Brand icons·SW update UX·Canon wires · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-014"
+    status: completed
   - id: pwa-push-badge
-    content: "[composer-2.5|200K] VAPID+Badge+sdk/push · Runtime P0 in-process→CF Worker · iOS installed-only · Admin push kill"
-    status: pending
+    content: "[composer-2.5|200K] VAPID+Badge+sdk/push · Runtime P0 in-process→CF Worker · iOS installed-only · Admin push kill · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-020"
+    status: completed
   - id: pwa-auto-fanout-prefs
-    content: "[composer-2.5|200K] §23.5a notice/campaign/opportunity 자동Push · prefs채널필터 · verify:push-channel-prefs"
-    status: pending
+    content: "[composer-2.5|200K] §23.5a notice/campaign/opportunity 자동Push · prefs채널필터 · verify:push-channel-prefs · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-021"
+    status: completed
   - id: pwa-webauthn-haptics
-    content: "[composer-2.5|200K] WebAuthn UX/RP (§23.6) · 정책/fallback=Money §43 pointer · haptics/audio+reduced-motion"
-    status: pending
+    content: "[composer-2.5|200K] WebAuthn UX/RP (§23.6) · 정책/fallback=Money §43 pointer · haptics/audio+reduced-motion · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-022"
+    status: completed
   - id: store-bridge-scaffold
-    content: "[composer-2.5|200K] v2 only §24.3: TWA+assetlinks · Play `.aab`+Uptodown `.apk`/`.xapk` 동일 패키지·서명 · Capacitor iOS shell · native-bridge stub · verify:assetlinks · Day-1 게이트 제외 · 선행=pwa-webauthn-haptics"
-    status: pending
+    content: "[composer-2.5|200K] v2 only §24.3: TWA+assetlinks · Play `.aab`+Uptodown `.apk`/`.xapk` 동일 패키지·서명 · Capacitor iOS shell · native-bridge stub · verify:assetlinks · Day-1 게이트 제외 · 선행=pwa-webauthn-haptics · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=POST-017"
+    status: completed
   - id: store-bridge-uptodown-listing
-    content: "[composer-2.5|200K] v2 only §24.3b: Uptodown Developers Console Organization(§50.9 pointer)·listing(icon≥256·feature 1024×500·short≤70·full≥50단어)·Country Restriction·publication criteria(VT·webview부가가치·배포권)·Submit for review · verify:store-uptodown-listing · 선행=store-bridge-scaffold · Day-1 제외"
-    status: pending
+    content: "[composer-2.5|200K] v2 only §24.3b: Uptodown Developers Console Organization(§50.9 pointer)·listing(icon≥256·feature 1024×500·short≤70·full≥50단어)·Country Restriction·publication criteria(VT·webview부가가치·배포권)·Submit for review · verify:store-uptodown-listing · 선행=store-bridge-scaffold · Day-1 제외 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=POST-018"
+    status: completed
   - id: redesign-pwa-certification
-    content: "[grok-4.5|256K] Redesign PWA certification · manifest/Serwist/install/offline/SW update/Push dedup+prefs/Badge/WebAuthn UX+Money fallback/reduced-motion/peotteok-light/OpenNext Worker · Store v2 AAB vs APK/XAPK·assetlinks·listing 분리 · pwa-*+push-*+assetlinks/store-*+Lighthouse CI · known P0~P3 defect0 · 다음=06 Infra"
-    status: pending
+    content: "[grok-4.5|256K] Redesign PWA certification · manifest/Serwist/install/offline/SW update/Push dedup+prefs/Badge/WebAuthn UX+Money fallback/reduced-motion/peotteok-light/OpenNext Worker · Store v2 AAB vs APK/XAPK·assetlinks·listing 분리 · pwa-*+push-*+assetlinks/store-*+Lighthouse CI · known P0~P3 defect0 · 다음=06 Infra · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-023"
+    status: completed
 isProject: false
 ---
 <!-- REL-017-AUTHORITY-STAMP -->

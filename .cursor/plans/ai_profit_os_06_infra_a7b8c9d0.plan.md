@@ -6,41 +6,41 @@ todos:
     content: "[grok-4.5|256K] ADR-014/015/016 stack-lock·AGENTS·verify:stack-lock — Index cursor-stack-lock과 동기(완료)·재실행 금지"
     status: completed
   - id: marketing-attribution-chain-fixture
-    content: "[composer-2.5|200K] verify:attribution-chain fixture 선행(TDD·얇은 fixture 금지) · D1 동일 deposit_event_id/tx_hash 웹훅 2회→first_deposit+CAPI Purchase 각 1회 · D2 동일 idempotency key 재시도→no-op · D3 동시 first_deposit 경쟁→승 1건 · consent=false→CAPI enqueue 0 · hooks/capi-wire 착수 전 본 verify PASS 필수 · 구현=fixture+verify 스크립트+package.json"
-    status: pending
+    content: "[composer-2.5|200K] verify:attribution-chain fixture 선행(TDD·얇은 fixture 금지) · D1 동일 deposit_event_id/tx_hash 웹훅 2회→first_deposit+CAPI Purchase 각 1회 · D2 동일 idempotency key 재시도→no-op · D3 동시 first_deposit 경쟁→승 1건 · consent=false→CAPI enqueue 0 · hooks/capi-wire 착수 전 본 verify PASS 필수 · 구현=fixture+verify 스크립트+package.json · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=POST-001"
+    status: completed
   - id: marketing-sdk-attribution
-    content: "[composer-2.5|200K] packages/sdk/marketing(utm-capture·consent·attribution-store·platform-cookies _fbc/_fbp/_ttp·landing-pixel-publisher.ts manual-only) · apps/web middleware /l+/ads · POST /api/v1/marketing/touch · attr_id httpOnly cookie 90d · §31.3c:/l/*·/ads/* auto Advanced Matching OFF·Lead|ViewContent|CompleteRegistration only·consent=false inject0 · **§6.4c.1 G:** GuestChrome consent UI Owns=본 sdk · UI Lead emit only if consentMarketing===true · 미실장=emit0 · OAuth state=CSRF nonce only · verify:attribution-chain+verify:marketing-compliance(/l/* auto fbq|ttq 0)"
-    status: pending
+    content: "[composer-2.5|200K] packages/sdk/marketing(utm-capture·consent·attribution-store·platform-cookies _fbc/_fbp/_ttp·landing-pixel-publisher.ts manual-only) · apps/web middleware /l+/ads · POST /api/v1/marketing/touch · attr_id httpOnly cookie 90d · §31.3c:/l/*·/ads/* auto Advanced Matching OFF·Lead|ViewContent|CompleteRegistration only·consent=false inject0 · **§6.4c.1 G:** GuestChrome consent UI Owns=본 sdk · UI Lead emit only if consentMarketing===true · 미실장=emit0 · OAuth state=CSRF nonce only · verify:attribution-chain+verify:marketing-compliance(/l/* auto fbq|ttq 0) · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=POST-002"
+    status: completed
   - id: marketing-signup-deposit-hooks
-    content: "[composer-2.5|200K] signupStageA→user_attributions merge · first USDT deposit→first_deposit_at/usdt+Purchase enqueue(1회) · DB계약=txn+partial unique index OR SELECT FOR UPDATE(hooks todo 본문·fixture D3 쌍) · consent=false send0 · verify:attribution-chain D1~D3 PASS 후에만 다음 todo"
-    status: pending
+    content: "[composer-2.5|200K] signupStageA→user_attributions merge · first USDT deposit→first_deposit_at/usdt+Purchase enqueue(1회) · DB계약=txn+partial unique index OR SELECT FOR UPDATE(hooks todo 본문·fixture D3 쌍) · consent=false send0 · verify:attribution-chain D1~D3 PASS 후에만 다음 todo · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=POST-003"
+    status: completed
   - id: marketing-capi-metrics-spec
-    content: "[composer-2.5|200K] METRICS SSOT(services/marketing-attribution/METRICS.md) · Meta/TikTok/Google success/dedup=어느 API response field · parameter coverage minimum 기준선(em OR fbc/fbp 등) vs recommended 가산 score · platform_match_rate 통합명 금지 · verify:capi-config(always·env key·wrangler binding·placeholder 패턴 금지·.env.example 동기)"
-    status: pending
+    content: "[composer-2.5|200K] METRICS SSOT(services/marketing-attribution/METRICS.md) · Meta/TikTok/Google success/dedup=어느 API response field · parameter coverage minimum 기준선(em OR fbc/fbp 등) vs recommended 가산 score · platform_match_rate 통합명 금지 · verify:capi-config(always·env key·wrangler binding·placeholder 패턴 금지·.env.example 동기) · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=POST-004"
+    status: completed
   - id: marketing-capi-dispatcher-wire
-    content: "[composer-2.5|200K] workers/marketing-capi-dispatcher Meta/TikTok/Google adapters · event_id dedup Client Pixel+Server CAPI · PII SHA256 · §31.4.0 landing sanitizer=UI §6.4c.1 A 금지어 1:1(수익|투자|USDT|테더|보장|차익|괴리율|재테크|알바 + EN profit|arbitrage|investment|deposit) · custom_data allowlist · ledger Purchase=app bucket·landing Purchase enqueue 0 · Nest→Worker · verify:capi-consent · staging=verify:capi-smoke(CAPI_SMOKE=1·PR daily 3사 금지)"
-    status: pending
+    content: "[composer-2.5|200K] workers/marketing-capi-dispatcher Meta/TikTok/Google adapters · event_id dedup Client Pixel+Server CAPI · PII SHA256 · §31.4.0 landing sanitizer=UI §6.4c.1 A 금지어 1:1(수익|투자|USDT|테더|보장|차익|괴리율|재테크|알바 + EN profit|arbitrage|investment|deposit) · custom_data allowlist · ledger Purchase=app bucket·landing Purchase enqueue 0 · Nest→Worker · verify:capi-consent · staging=verify:capi-smoke(CAPI_SMOKE=1·PR daily 3사 금지) · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=POST-005"
+    status: completed
   - id: marketing-admin-roas-health
-    content: "[composer-2.5|200K] Admin §9.5.6 pointer · 기본=Worker 실시간만(meta_/tiktok_/google_*_events_accepted_rate·*_parameter_minimum_met_rate·click_id_present_rate·consent_marketing_rate·분모 SSOT=METRICS.md) · 48h 대조=접힌 섹션/별도 탭(동급 나란히 금지) · ROAS=user_attribution+spend import"
-    status: pending
+    content: "[composer-2.5|200K] Admin §9.5.6 pointer · 기본=Worker 실시간만(meta_/tiktok_/google_*_events_accepted_rate·*_parameter_minimum_met_rate·click_id_present_rate·consent_marketing_rate·분모 SSOT=METRICS.md) · 48h 대조=접힌 섹션/별도 탭(동급 나란히 금지) · ROAS=user_attribution+spend import · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=POST-006"
+    status: completed
   - id: marketing-seo-sitemap-jsonld
-    content: "[composer-2.5|200K] sitemap.ts·robots.ts·JSON-LD=퍼뜩·/profits generateMetadata · IndexNow Runtime P0=in-process pointer · verify:seo-schema·verify:marketing-compliance(landing 금지어=§6.4c.1 A 1:1·괴리율 포함·/l/* auto pixel 0)·verify:operator-footer(supportEmail·LandingOperatorFooter) · UI landing-3s+§6.4c.1 pointer · /ads alias=§31.2a · **소재 Human Review=§31.2d 체크리스트**(업로드 전)"
-    status: pending
+    content: "[composer-2.5|200K] sitemap.ts·robots.ts·JSON-LD=퍼뜩·/profits generateMetadata · IndexNow Runtime P0=in-process pointer · verify:seo-schema·verify:marketing-compliance(landing 금지어=§6.4c.1 A 1:1·괴리율 포함·/l/* auto pixel 0)·verify:operator-footer(supportEmail·LandingOperatorFooter) · UI landing-3s+§6.4c.1 pointer · /ads alias=§31.2a · **소재 Human Review=§31.2d 체크리스트**(업로드 전) · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=POST-007"
+    status: completed
   - id: auth-kakao-oauth-runtime
-    content: "[composer-2.5|200K] §51.9 Kakao code→token→profile(scope profile_nickname) → auth_oauth_identities(raw_profile·linked_at) · GET /auth/oauth/kakao/callback · 성별0 · verify:auth-flows Kakao E2E"
-    status: pending
+    content: "[composer-2.5|200K] §51.9 Kakao code→token→profile(scope profile_nickname) → auth_oauth_identities(raw_profile·linked_at) · GET /auth/oauth/kakao/callback · 성별0 · verify:auth-flows Kakao E2E · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-102 + REL-701-PRE"
+    status: completed
   - id: phase1-adapter-ingest-host-binding
-    content: "[composer-2.5|200K] Runtime P1 adapter host · §51.13 NEST_ADAPTER_INGEST_URL=API_HOST/api/v1/internal/adapters/ingest · ADAPTER_INGEST_TOKEN wrangler+Nest SSOT · dev=cloudflared · prod secret 재등록 · ebay-adapter tick→ingest E2E"
-    status: pending
+    content: "[composer-2.5|200K] Runtime P1 adapter host · §51.13 NEST_ADAPTER_INGEST_URL=API_HOST/api/v1/internal/adapters/ingest · ADAPTER_INGEST_TOKEN wrangler+Nest SSOT · dev=cloudflared · prod secret 재등록 · ebay-adapter tick→ingest E2E · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=POST-019"
+    status: completed
   - id: redesign-r7-backend-data-certification
-    content: "[grok-4.5|256K] Redesign R7 certification · R0 route-contract/fact-state baseline 기준 API·SDK·Nest AppModule imports·Engine FSM·local/remote migration head·indexes/RLS/idempotency/auth permission/money units/source/asOf/reasonCode 1:1 · UI Truth 역대조 · semantic conflict면 owner 가산 todo+version bump, adapter 은폐0 · verify:backend-data-alignment 신설+CATALOG · known P0~P3 defect0"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R7 certification · R0 route-contract/fact-state baseline 기준 API·SDK·Nest AppModule imports·Engine FSM·local/remote migration head·indexes/RLS/idempotency/auth permission/money units/source/asOf/reasonCode 1:1 · UI Truth 역대조 · semantic conflict면 owner 가산 todo+version bump, adapter 은폐0 · verify:backend-data-alignment 신설+CATALOG · known P0~P3 defect0 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-505"
+    status: completed
   - id: infra-observability-late
-    content: "[composer-2.5|200K] Redesign R8 implementation · OpenNext Workers static/dynamic cache inventory·R2 images·Web Vitals·browser/API/DB/engine correlation·PII redaction·gradual deploy·rollback·DR drill · Runtime P3 EKS/OTel full은 activation 조건 충족 시만 · PWA/E2E heavy=CI"
-    status: pending
+    content: "[composer-2.5|200K] Redesign R8 implementation · OpenNext Workers static/dynamic cache inventory·R2 images·Web Vitals·browser/API/DB/engine correlation·PII redaction·gradual deploy·rollback·DR drill · Runtime P3 EKS/OTel full은 activation 조건 충족 시만 · PWA/E2E heavy=CI · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-016 + REL-506"
+    status: completed
   - id: redesign-r8-infra-release-certification
-    content: "[grok-4.5|256K] Redesign R8 final · infra/domain.manifest openNext Workers origin·pages deploy0·web/ops/api host·cache/R2/Web Vitals/error/session/rollback/known-good · Marketing CAPI/SEO/Auth/adapter/PWA/Admin/User journeys + security/a11y/perf/money + T0/T1/T2 · route-contract matrix100% · governance observations closed · known P0~P3 defect0"
-    status: pending
+    content: "[grok-4.5|256K] Redesign R8 final · infra/domain.manifest openNext Workers origin·pages deploy0·web/ops/api host·cache/R2/Web Vitals/error/session/rollback/known-good · Marketing CAPI/SEO/Auth/adapter/PWA/Admin/User journeys + security/a11y/perf/money + T0/T1/T2 · route-contract matrix100% · governance observations closed · known P0~P3 defect0 · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=REL-506"
+    status: completed
 isProject: false
 ---
 <!-- REL-017-AUTHORITY-STAMP -->
