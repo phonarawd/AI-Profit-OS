@@ -402,7 +402,17 @@
     "engine-acceptance:rebase-baseline": "node tooling/engine-acceptance/rebase-acceptance-baseline.cjs",
     "engine-acceptance:selftest-workflow-amendment": "node tooling/engine-acceptance/selftest-workflow-amendment.cjs",
     "engine-acceptance:selftest-product-rebase": "node tooling/engine-acceptance/selftest-product-rebase.cjs",
-    "engine-acceptance:selftest-pre-rebase-harness": "node tooling/engine-acceptance/selftest-pre-rebase-harness.cjs"
+    "engine-acceptance:selftest-pre-rebase-harness": "node tooling/engine-acceptance/selftest-pre-rebase-harness.cjs",
+    "tron:setup": "node tooling/tron/setup.cjs",
+    "tron:bootstrap": "powershell -NoProfile -ExecutionPolicy Bypass -File tooling/tron/bootstrap-kms.ps1",
+    "tron:start": "powershell -NoProfile -ExecutionPolicy Bypass -File tooling/tron/start-kms.ps1",
+    "tron:stop": "powershell -NoProfile -ExecutionPolicy Bypass -File tooling/tron/stop-kms.ps1",
+    "tron:verify": "powershell -NoProfile -ExecutionPolicy Bypass -File tooling/tron/verify-kms.ps1",
+    "tron:backup": "powershell -NoProfile -ExecutionPolicy Bypass -File tooling/tron/backup-kms.ps1",
+    "tron:config:dry-run": "node tooling/tron/deposit-config-bootstrap.cjs --mode dry-run",
+    "tron:config:staging": "node tooling/tron/deposit-config-bootstrap.cjs --mode staging",
+    "tron:config:production": "node tooling/tron/deposit-config-bootstrap.cjs --mode production",
+    "verify:tron-production": "node tooling/verify/tron-production.cjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

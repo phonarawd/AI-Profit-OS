@@ -38,8 +38,7 @@ function stagedNames() {
     .filter(Boolean);
 }
 
-const SECRET_PATH =
-  /(^|\/)\.env($|\.)|(^|\/)\.env\.[^/]+$|\.(pem|key)$|(^|\/)credentials\.json$|(^|\/)service_account\.json$|(^|\/)secrets?\//i;
+const SECRET_PATH = /(^|\/)\.env($|\.)|(^|\/)\.env\.[^/]+$|\.(pem|key)$|(^|\/)credentials\.json$|(^|\/)service_account\.json$|(^|\/)secrets?\/|(^|\/)wallet\.dat$|(^|\/)\.env\.tron\.local$/i;
 
 function isEnvExample(f) {
   return /(^|\/)\.env\.example$|(^|\/)\.env\.[^/]+\.example$/i.test(f);
@@ -87,7 +86,7 @@ function hasLiveSecret(text) {
 
 // Docs may write KEY=... as ellipsis; scanner source must not self-match.
 const SECRET_CONTENT =
-  /(?:DATABASE_URL|REDIS_URL|SUPABASE_SERVICE_ROLE|JWT_USER_SECRET|JWT_ADMIN_SECRET|RESEND_API_KEY|GEMINI_API_KEY|LLM_API_KEY)\s*=\s*(?!your-|change_me|YOUR_|\.\.\.|xxxx|<|https:\/\/your-project|postgresql:\/\/postgres\.your-ref)[^\s."'`]+|(?:postgres(?:ql)?:\/\/[^:\s]+:(?!YOUR_PASSWORD)[^@\s]+@)|(?:rediss?:\/\/default:(?!YOUR_UPSTASH_TOKEN)[^@\s]+@[^/\s]*upstash\.io)|(?:-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)|(?:AIza[0-9A-Za-z_-]{20,})/i;
+  /(?:(?:DATABASE_URL|REDIS_URL|SUPABASE_SERVICE_ROLE|JWT_USER_SECRET|JWT_ADMIN_SECRET|RESEND_API_KEY|GEMINI_API_KEY|LLM_API_KEY|TRONGRID_API_KEY|TATUM_MAINNET_API_KEY|TATUM_TESTNET_API_KEY|TATUM_KMS_PASSWORD))\s*=\s*(?!your-|change_me|YOUR_|\.\.\.|xxxx|<|https:\/\/your-project|postgresql:\/\/postgres\.your-ref)[^\s."'`]+|(?:postgres(?:ql)?:\/\/[^:\s]+:(?!YOUR_PASSWORD)[^@\s]+@)|(?:rediss?:\/\/default:(?!YOUR_UPSTASH_TOKEN)[^@\s]+@[^/\s]*upstash\.io)|(?:-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)|(?:AIza[0-9A-Za-z_-]{20,})/i;
 
 const staged = stagedNames();
 const badPaths = staged.filter((f) => SECRET_PATH.test(f) && !isEnvExample(f));

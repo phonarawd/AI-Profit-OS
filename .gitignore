@@ -81,3 +81,11 @@ _worktree-*/
 # Misc
 .claude/
 _docx_extract.txt
+
+# TRON / Tatum KMS local (never commit)
+.env.tron.local
+**/wallet.dat
+.tatumrc/
+tooling/tron/.kms-data/
+tooling/tron/readiness.json
+*.kms-backup/

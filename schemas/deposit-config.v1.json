@@ -79,9 +79,6 @@
           "format": "uri",
           "default": "https://api.trongrid.io"
         },
-        "tronGridApiKey": {
-          "type": "string"
-        },
         "chainWatcherMode": {
           "const": "event_stream"
         },
