@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Leftover browser evidence — consumer Chromium.
  * LEFTOVER_BROWSER=1 에서만 Next를 기동한다. CI 기본 실행 0.
  * Firefox/WebKit 설치·Home geometry 변경 0. Production URL fallback 0.
@@ -103,7 +103,12 @@ test("ticket93 double-click withdraw posts once and stays uncredited", async ({ 
   await hideNextDevChrome(page);
   await readyUsdtWithdraw(page);
   const submit = page.getByTestId("withdraw-submit");
-  await Promise.all([submit.click(), submit.click(), submit.dblclick()]);
+  // force: accept/busy disables mid-race; Playwright actionability wait would hang parallel clicks
+  await Promise.all([
+    submit.click({ force: true }),
+    submit.click({ force: true }),
+    submit.dblclick({ force: true }),
+  ]);
   await expect(page.getByTestId("withdraw-live-form")).toHaveAttribute(
     "data-withdraw-state",
     "accepted",

@@ -111,10 +111,12 @@ if (ebayBrowse && !/X-EBAY-C-MARKETPLACE-ID/.test(ebayBrowse)) {
 // B: pokemontcg + ygoprodeck
 const poke = read("workers/pokemontcg-adapter/src/index.ts");
 const ygo = read("workers/ygoprodeck-adapter/src/index.ts");
-if (poke && !/pokemontcg\.io|api\.pokemontcg/.test(poke + (read("workers/pokemontcg-adapter/src/constants.ts") || ""))) {
+const pokeBundle = poke + (read("workers/pokemontcg-adapter/src/constants.ts") || "");
+if (poke && !(pokeBundle.includes("pokemontcg.io") || pokeBundle.includes("api.pokemontcg"))) {
   fails.push("pokemontcg-adapter must target api.pokemontcg.io");
 }
-if (ygo && !/ygoprodeck\.com/.test(ygo + (read("workers/ygoprodeck-adapter/src/constants.ts") || ""))) {
+const ygoBundle = ygo + (read("workers/ygoprodeck-adapter/src/constants.ts") || "");
+if (ygo && !ygoBundle.includes("ygoprodeck.com")) {
   fails.push("ygoprodeck-adapter must target db.ygoprodeck.com");
 }
 if (poke && !/catalog_ref|listingLeg:\s*false/.test(poke)) {
@@ -127,10 +129,12 @@ if (ygo && !/catalog_ref|listingLeg:\s*false/.test(ygo)) {
 // C: coingecko + frankfurter
 const cg = read("workers/coingecko-adapter/src/constants.ts") || "";
 const fr = read("workers/frankfurter-adapter/src/constants.ts") || "";
-if (!/api\.coingecko\.com/.test(cg + (read("workers/coingecko-adapter/src/client.ts") || ""))) {
+const cgBundle = cg + (read("workers/coingecko-adapter/src/client.ts") || "");
+if (!cgBundle.includes("api.coingecko.com")) {
   fails.push("coingecko-adapter must call api.coingecko.com");
 }
-if (!/frankfurter\.dev/.test(fr + (read("workers/frankfurter-adapter/src/client.ts") || ""))) {
+const frBundle = fr + (read("workers/frankfurter-adapter/src/client.ts") || "");
+if (!frBundle.includes("frankfurter.dev")) {
   fails.push("frankfurter-adapter must call api.frankfurter.dev");
 }
 
