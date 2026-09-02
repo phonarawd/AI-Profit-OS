@@ -1,11 +1,11 @@
 {
   "rel": "REL-505",
   "version": "1.0.1",
-  "certIssued": 0,
+  "certIssued": 1,
   "protectedScopeMutation": false,
   "applyMigration": 0,
   "projectRef": "mgsytcetsiecllmhcyox",
-  "stalePendingRebase": true,
+  "stalePendingRebase": false,
   "openConflicts": [],
   "additiveRel": "REL-508",
   "sdkPairs": [
@@ -122,7 +122,12 @@
       "nestNeedle": "me/current-fx/approx"
     }
   ],
-  "engineFsmCore": ["running", "requeue", "success", "safe_stop"],
+  "engineFsmCore": [
+    "running",
+    "requeue",
+    "success",
+    "safe_stop"
+  ],
   "extraVerifies": [
     "migrations-applied-parity.cjs",
     "rel-408-security-baseline.cjs",
