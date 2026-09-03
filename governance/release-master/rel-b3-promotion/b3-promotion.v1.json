@@ -1,7 +1,7 @@
 {
   "schema": "production-release.b3-promotion.v1",
   "id": "b-3-promotion",
-  "observed_at": "2026-09-03T11:22:24.747Z",
+  "observed_at": "2026-09-03T11:26:35.709Z",
   "status": "BLOCKED",
   "promotion_path_closed": false,
   "production_project_ref": "mgsytcetsiecllmhcyox",
@@ -35,7 +35,7 @@
   },
   "staging_e2e": {
     "status": "PARTIAL",
-    "reason": "Cloudflare web/ops preview same-origin API binding to exact runtime is proven; live Chromium smoke reached the correct runtime but must rerun after expected-SHA evidence refresh; authenticated money mutation remains not run.",
+    "reason": "Cloudflare web/ops preview same-origin API binding to exact runtime 072616d744a188872d8b7f652475ace319d0893a is proven; live Chromium smoke rerun is pending against refreshed expected-SHA evidence; authenticated money mutation remains not run.",
     "requires": {
       "rc_formal": "PASS",
       "rc_sha": "bound",
@@ -54,10 +54,10 @@
     "render_staging_service_id": "srv-dacjnnm1egvs73cuh190",
     "render_staging_url": "https://ai-profit-os-staging-exact-1f3b36f.onrender.com",
     "render_staging_branch": "chatgpt/staging-exact-1f3b36f-20260903",
-    "render_live_deploy_id": "dep-daclc4uk1f9s73coji7g",
-    "render_live_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+    "render_live_deploy_id": "dep-daclhn0n74is73djo39g",
+    "render_live_sha": "072616d744a188872d8b7f652475ace319d0893a",
     "render_exact_candidate_bound": true,
-    "render_runtime_health_observed_at": "2026-09-03T11:22:24.747Z",
+    "render_runtime_health_observed_at": "2026-09-03T11:26:35.709Z",
     "render_database_url_configured": true,
     "render_db_ok": true,
     "render_redis_configured": true,
@@ -65,8 +65,8 @@
     "render_warnings_empty": true,
     "supabase_branch_status": "FUNCTIONS_DEPLOYED",
     "supabase_with_data": false,
-    "current_candidate_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
-    "governance_parent_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "current_candidate_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "governance_parent_sha": "801dbf1b7711004b6d2e74528b802f829313ed2e",
     "production_mutation": 0,
     "supabase_preview_project_status": "ACTIVE_HEALTHY",
     "current_schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
@@ -80,8 +80,8 @@
     "backend_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
     "frontend_web_api_status": 200,
     "frontend_ops_api_status": 200,
-    "frontend_proxy_exact_runtime_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+    "frontend_proxy_exact_runtime_sha": "072616d744a188872d8b7f652475ace319d0893a",
     "frontend_proxy_binding": "CLOSED_VERIFIED",
-    "browser_smoke": "RERUN_REQUIRED_AFTER_EVIDENCE_REFRESH"
+    "browser_smoke": "RERUN_PENDING_CURRENT_EXPECTED_SHA"
   }
 }
