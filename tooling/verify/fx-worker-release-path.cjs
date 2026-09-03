@@ -62,7 +62,7 @@ assert.match(nestIngest, /FX_SNAPSHOT_PERSIST_FAILED:/);
 assert.match(nestIngest, /markFxIngestFailure/);
 assert.match(nestIngest, /ingestStatus = "red"/);
 assert.match(nestIngest, /throw new ServiceUnavailableException/);
-assert.match(fxSnapshot, /ON CONFLICT \(id\) DO NOTHING[\\s\\S]*RETURNING id/);
+assert.match(fxSnapshot, /ON CONFLICT \(id\) DO NOTHING[\s\S]*RETURNING id/);
 assert.match(fxSnapshot, /FX_SNAPSHOT_ID_COLLISION/);
 assert.match(fxSnapshot, /IS NOT DISTINCT FROM \$13::jsonb/);
 assert.match(fxSnapshot, /return \{ ok: true, snapshotId: id, created: false \}/);
