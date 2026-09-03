@@ -48,8 +48,15 @@ if (!/return null;/.test(tron) || !tron.includes("resolveCanonicalTrc20Deriver")
 }
 
 const gateIdx = addr.indexOf("requireCanonicalTrc20Deriver()");
-const requireIdx = addr.indexOf("allocateCanonicalTrc20Address(");
-const insertIdx = addr.indexOf("INSERT INTO public.user_deposit_addresses");
+const createStart = addr.indexOf("private async createForUser(");
+const createEnd = addr.indexOf("private canonicalDeriver(", createStart);
+const createForUser =
+  createStart >= 0 && createEnd > createStart
+    ? addr.slice(createStart, createEnd)
+    : "";
+const createAuthorityIdx = createForUser.indexOf("this.assertCanonicalAddressAuthority()");
+const createAllocateIdx = createForUser.indexOf("allocateCanonicalTrc20Address(");
+const createInsertIdx = createForUser.indexOf("INSERT INTO public.user_deposit_addresses");
 const getOrCreateStart = addr.indexOf("async getOrCreate(");
 const getOrCreateEnd = addr.indexOf("/** §43.1", getOrCreateStart);
 const getOrCreate =
@@ -73,17 +80,25 @@ if (
 if (!getOrCreate.includes("this.assertCanonicalAddressRow(existing)")) {
   fails.push("getOrCreate must rederive-match existing address before serving it");
 }
-if (requireIdx < 0) {
+if (createAllocateIdx < 0) {
   fails.push("deposit-address must allocate only through the canonical deriver");
 }
-if (insertIdx < 0) {
+if (createInsertIdx < 0) {
   fails.push("deposit-address INSERT site missing — cannot prove order");
 }
-if (requireIdx >= 0 && insertIdx >= 0 && requireIdx > insertIdx) {
-  fails.push("INSERT must not appear before canonical deriver allocate");
+if (
+  createAuthorityIdx < 0 ||
+  createInsertIdx < 0 ||
+  createAuthorityIdx > createInsertIdx
+) {
+  fails.push("createForUser must gate canonical authority before INSERT");
 }
-if (gateIdx >= 0 && insertIdx >= 0 && gateIdx > insertIdx) {
-  fails.push("INSERT must not appear before the 503 derivation gate");
+if (
+  createAllocateIdx < 0 ||
+  createInsertIdx < 0 ||
+  createAllocateIdx > createInsertIdx
+) {
+  fails.push("createForUser must canonical-derive before INSERT");
 }
 if (!addr.includes("ServiceUnavailableException") || !addr.includes("TRON_HD_DERIVATION_UNAVAILABLE")) {
   fails.push("missing deriver must map to HTTP 503 TRON_HD_DERIVATION_UNAVAILABLE");
