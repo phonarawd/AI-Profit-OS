@@ -6,6 +6,8 @@
  */
 
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const {
   buildPlan,
   isFullSha,
@@ -45,6 +47,35 @@ assert.equal(plan.ready, false);
 assert.equal(plan.live.source_sha, LIVE);
 assert.equal(plan.target.source_sha, TARGET);
 
+
+const root = path.resolve(__dirname, "../..");
+const currentAnchor = JSON.parse(
+  fs.readFileSync(
+    path.join(
+      root,
+      "governance/recovery/render-rollback-anchor.current.v1.json",
+    ),
+    "utf8",
+  ),
+);
+assert.equal(currentAnchor.schema, "render-pre-promotion-rollback-anchor.v1");
+assert.equal(currentAnchor.provider, "render");
+assert.equal(currentAnchor.service.id, "srv-da5r1tqjobas73fl16dg");
+assert.equal(currentAnchor.service.environment_id, "evm-da5r1tjbc2fs73a0b7hg");
+assert.equal(currentAnchor.service.branch, "main");
+assert.equal(currentAnchor.service.url, "https://ai-profit-os.onrender.com");
+assert.equal(currentAnchor.anchor.role, "PRE_PROMOTION_ROLLBACK_TARGET");
+assert.equal(isRenderDeployId(currentAnchor.anchor.deploy_id), true);
+assert.equal(isFullSha(currentAnchor.anchor.source_sha), true);
+assert.equal(currentAnchor.anchor.status, "live");
+assert.equal(currentAnchor.anchor.provider_confirmed, true);
+assert.equal(currentAnchor.target_bound, true);
+assert.equal(currentAnchor.mutation, 0);
+assert.equal(currentAnchor.apply, false);
+assert.equal(currentAnchor.production_release_authorized, false);
+assert.equal(currentAnchor.founder_approval_required, true);
+assert.equal(currentAnchor.rollback_execution, "BLOCKED_FOUNDER_ACTION");
+
 assert.throws(
   () =>
     buildPlan({
@@ -82,5 +113,5 @@ assert.throws(
 );
 
 console.log(
-  "[verify:render-rollback-provenance] PASS (STATIC_VERIFIER_PASS · exact deploy/SHA binding · mutation=0 · Founder-gated execution)",
+  "[verify:render-rollback-provenance] PASS (CURRENT_PRE_PROMOTION_TARGET_BOUND · exact deploy/SHA · mutation=0 · Founder-gated execution)",
 );
