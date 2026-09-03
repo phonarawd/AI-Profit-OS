@@ -113,6 +113,12 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^\.github\/workflows\/release-(build|acceptance)\.yml$/.test(f) ||
+      /^tooling\/verify\/release-artifact-workflow-contract\.cjs$/.test(f),
+    scripts: ["release-artifact-workflow-contract.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/health\.controller\.ts$/.test(f) ||
       /^services\/api-nest\/src\/config\/nest-provenance\.ts$/.test(f) ||
       /^tooling\/verify\/nest-production-provenance\.cjs$/.test(f),
