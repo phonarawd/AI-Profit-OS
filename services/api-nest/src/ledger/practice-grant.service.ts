@@ -184,10 +184,6 @@ export class PracticeGrantService {
       };
     }
 
-    const expiresAt = new Date(
-      Date.now() + input.expireDays * 24 * 60 * 60 * 1000,
-    );
-
     const journal = await this.posting.postJournal({
       idempotencyKey: input.idempotencyKey,
       journalType: "practice_grant",
@@ -208,6 +204,16 @@ export class PracticeGrantService {
         },
       ],
     });
+
+    const journalCreatedAtMs = Date.parse(journal.createdAt);
+    if (!Number.isFinite(journalCreatedAtMs)) {
+      throw new BadRequestException("practice grant journal createdAt invalid");
+    }
+    // Recovery of a reused journal must preserve the original 7-day window;
+    // never grant a fresh +7 days merely because projection-row repair was late.
+    const expiresAt = new Date(
+      journalCreatedAtMs + input.expireDays * 24 * 60 * 60 * 1000,
+    );
 
     if (journal.reused) {
       const again = await this.db.query<GrantRow>(

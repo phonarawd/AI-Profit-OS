@@ -24,6 +24,31 @@ for(const [method,side] of [
   ["async refresh(", "await this.revokeSession(sessionUser)"],
 ]) assertPreflightBefore(method,side);
 if(!auth.includes("private requireUserSessionMintSecret(): string")) fails.push("session mint secret preflight helper missing");
+function methodSlice(startNeedle,endNeedle){
+  const start=auth.indexOf(startNeedle);
+  const end=start>=0?auth.indexOf(endNeedle,start):-1;
+  return start>=0&&end>start?auth.slice(start,end):"";
+}
+for(const [start,end] of [
+  ["async oauthCallback(", "passkeyOptions("],
+  ["async passkeyRegisterVerify(", "async passkeyAuthVerify("],
+  ["async magicLinkVerify(", "logout(sessionUser"],
+]){
+  const s=methodSlice(start,end);
+  const profile=s.indexOf("await this.upsertStageAProfile");
+  const provision=s.indexOf("await this.provisionLedgerBucketsForUser(userId)");
+  const mint=Math.max(s.indexOf("await this.mintSession(userId)"),s.indexOf("return this.sessionMintView(userId)"));
+  if(profile<0||provision<0||mint<0||profile>provision||provision>mint){
+    fails.push("new-user auth must persist profile -> repair onboarding invariants -> mint: "+start);
+  }
+}
+const passAuthSlice=methodSlice("async passkeyAuthVerify(", "magicLinkRequest(");
+if(
+  passAuthSlice.indexOf("await this.provisionLedgerBucketsForUser(userId)")<0 ||
+  passAuthSlice.indexOf("await this.provisionLedgerBucketsForUser(userId)") >
+    passAuthSlice.indexOf("return this.sessionMintView(userId)")
+) fails.push("passkey auth must repair onboarding invariants before mint");
+
 if(!/const jwtUserSecret = this\.requireUserSessionMintSecret\(\);[\s\S]{0,500}jwtCore\.sign\(\{ sub: userId \}, jwtUserSecret,/.test(auth)){
   fails.push("mintSession must use the same preflighted strong secret");
 }
@@ -64,5 +89,5 @@ if(runtime.status!==0){
   console.error("[verify:auth-runtime-readiness] JWT strength runtime selftest failed");
   process.exit(1);
 }
-console.log("[verify:auth-runtime-readiness] PASS (JWT >=256-bit · auth proof/mutation preflighted before session mint · Kakao/Resend boolean-only readiness)");
+console.log("[verify:auth-runtime-readiness] PASS (JWT >=256-bit · proof preflight · profile-before-practice · idempotent onboarding repair before mint)");
 

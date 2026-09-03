@@ -287,7 +287,7 @@
 | adapter-worker-machine-auth | Adapter Workers — public manual `/tick` requires x-adapter-token · Nest ingest token optional-spread forbidden · missing token fail-closed — **live** |
 | chain-worker-machine-auth | Chain Watcher/Sweeper — manual `/tick` requires x-chain-worker-token · Nest watcher ingest token required when forwarding · scheduled cron remains internal — **live** |
 | marketing-capi-worker-machine-auth | Marketing CAPI Worker — `/health` public · every POST requires dedicated x-marketing-capi-token · token unset=503 / invalid=401 · current stub side effect 0 — **live** |
-| auth-runtime-readiness | API health — user JWT requires HS256 >=32 bytes · OAuth/WebAuthn/magic-link proof+mutation paths preflight session mint before one-time consume/user-ledger writes · Kakao/Resend readiness boolean-only — **live** |
+| auth-runtime-readiness | API health — user JWT HS256 >=32 bytes · proof/mutation preflight · new-user profile before practice grant · every successful identity path idempotently repairs buckets/welcome/defaults before session mint — **live** |
 | database-tls-strict | PostgreSQL — Supabase direct+Supavisor hostname lock · Root CA required · rejectUnauthorized=true · connection-string TLS override removed — **live** |
 | adapter-matching-kpi | Engine §51.12+§51.15 — 등급매칭·SKU실패율 KPI(>15%/24h 알림·자동공개축소) · compareReady false>40% 시드점검 · stale>TTL 적색 · Admin `/admin/adapters` KPI·알림 · yahoo0 · Simulation S4 `adapterMatchFailureRate` 선행 — **live** |
 | kyc-withdraw-only · kyc-redirect · kyc-r2-only | Money §42 — **live** (출금1회게이트 · toast→/me/kyc@800ms · R2 kyc-docs private) |

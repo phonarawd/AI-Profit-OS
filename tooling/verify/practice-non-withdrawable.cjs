@@ -45,6 +45,8 @@ for (const needle of [
   "expireDue",
   "PRACTICE_EXPIRED",
   "PRACTICE_GRANTED",
+  "Date.parse(journal.createdAt)",
+  "journalCreatedAtMs + input.expireDays",
 ]) {
   if (!grant.includes(needle)) {
     fails.push(`practice-grant.service missing: ${needle}`);

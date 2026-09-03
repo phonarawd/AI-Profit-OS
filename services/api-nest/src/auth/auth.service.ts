@@ -248,7 +248,6 @@ export class AuthService {
       proven.email,
     );
     if (isNew) {
-      await this.provisionLedgerBucketsForUser(userId);
       await this.upsertStageAProfile(userId, {
         method: provider === "kakao" ? "oauth_kakao" : "oauth_google",
         termsAcceptedAt: terms,
@@ -259,6 +258,9 @@ export class AuthService {
         oauth: { provider, providerSubject: proven.providerSubject, email: proven.email },
       });
     }
+    // Idempotent for existing users too: repairs a prior partial onboarding
+    // (for example journal committed but practice_grants row failed to persist).
+    await this.provisionLedgerBucketsForUser(userId);
     const { accessToken, session } = await this.mintSession(userId);
     return {
       ok: true as const,
@@ -297,7 +299,6 @@ export class AuthService {
       proven.signCount,
     );
     if (isNew) {
-      await this.provisionLedgerBucketsForUser(userId);
       await this.upsertStageAProfile(userId, {
         method: "passkey",
         termsAcceptedAt: terms,
@@ -308,6 +309,7 @@ export class AuthService {
         passkey: { credentialId: proven.credentialId },
       });
     }
+    await this.provisionLedgerBucketsForUser(userId);
     return this.sessionMintView(userId);
   }
 
@@ -335,6 +337,7 @@ export class AuthService {
     );
     const userId = row.rows[0]?.user_id;
     if (!userId) throw new BadRequestException("webauthn credential unknown");
+    await this.provisionLedgerBucketsForUser(userId);
     return this.sessionMintView(userId);
   }
 
@@ -357,7 +360,6 @@ export class AuthService {
     const proven = await this.magicLink.prove(body ?? {}, { userExists: exists });
     const { userId, isNew } = await this.findOrCreateUserByEmail(proven.email);
     if (isNew) {
-      await this.provisionLedgerBucketsForUser(userId);
       await this.upsertStageAProfile(userId, {
         method: "email_magic",
         termsAcceptedAt: String(body.termsAcceptedAt ?? ""),
@@ -368,6 +370,7 @@ export class AuthService {
         email: proven.email,
       });
     }
+    await this.provisionLedgerBucketsForUser(userId);
     return this.sessionMintView(userId);
   }
 
