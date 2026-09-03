@@ -1,0 +1,107 @@
+{
+  "schema": "staging-db-hardening-provider-snapshot.v1",
+  "observed_at": "2026-09-02T04:00:29Z",
+  "project_ref": "uluzxvdpynytytduuryy",
+  "parent_project_ref": "mgsytcetsiecllmhcyox",
+  "source_sha": "52877334c22f074ebe6bc4b280a96b6b896995c0",
+  "production_mutation": 0,
+  "public_table_count": 93,
+  "tables": {
+    "push_control": {
+      "policies": [
+        {
+          "cmd": "ALL",
+          "name": "push_control_deny_anon",
+          "qual": "false",
+          "roles": [
+            "anon"
+          ],
+          "with_check": "false"
+        },
+        {
+          "cmd": "ALL",
+          "name": "push_control_deny_authenticated",
+          "qual": "false",
+          "roles": [
+            "authenticated"
+          ],
+          "with_check": "false"
+        }
+      ],
+      "rls_forced": true,
+      "rls_enabled": true,
+      "service_role": [
+        "SELECT",
+        "UPDATE"
+      ]
+    },
+    "admin_audit_events": {
+      "policies": [],
+      "rls_forced": false,
+      "rls_enabled": true,
+      "service_role": [
+        "INSERT",
+        "SELECT"
+      ]
+    },
+    "push_subscriptions": {
+      "policies": [
+        {
+          "cmd": "ALL",
+          "name": "push_subscriptions_deny_anon",
+          "qual": "false",
+          "roles": [
+            "anon"
+          ],
+          "with_check": "false"
+        },
+        {
+          "cmd": "ALL",
+          "name": "push_subscriptions_deny_authenticated",
+          "qual": "false",
+          "roles": [
+            "authenticated"
+          ],
+          "with_check": "false"
+        }
+      ],
+      "rls_forced": true,
+      "rls_enabled": true,
+      "service_role": [
+        "DELETE",
+        "INSERT",
+        "SELECT",
+        "UPDATE"
+      ]
+    }
+  },
+  "customer_rows": {
+    "auth_users": 0,
+    "public_users": 0,
+    "ledger_journals": 0,
+    "withdraw_intents": 0,
+    "usdt_deposit_events": 0,
+    "krw_deposit_requests": 0
+  },
+  "public_table_owners": {
+    "postgres": 93
+  },
+  "default_acl_public_tables": {
+    "postgres": [
+      "postgres",
+      "service_role"
+    ],
+    "supabase_admin": [
+      "anon",
+      "authenticated",
+      "postgres",
+      "service_role"
+    ]
+  },
+  "rehearsal": {
+    "apply": "PASS",
+    "rollback": "PASS",
+    "reapply": "PASS",
+    "final_hardened_state": "PASS"
+  }
+}

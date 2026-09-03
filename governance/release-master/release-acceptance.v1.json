@@ -1,0 +1,81 @@
+{
+  "schema": "governance.release-master.release-acceptance.v1",
+  "id": "release-acceptance",
+  "evidence_job": "aggregator",
+  "verdict_job": "release-acceptance",
+  "aggregator_is_not_verdict": true,
+  "production_apply": 0,
+  "mandatory_core": [
+    "qa0-baseline",
+    "qa1-deterministic",
+    "qa2-synthetic-personas",
+    "qa-matrix:QA3",
+    "qa-matrix:QA4",
+    "qa-matrix:QA5",
+    "qa-matrix:QA6",
+    "qa-matrix:QA8",
+    "qa5-fault",
+    "qa6-measure",
+    "qa8-adversarial"
+  ],
+  "mandatory_when_full_dispatch": [
+    "qa7-ai-eval"
+  ],
+  "matrix_jobs": [
+    "qa-matrix:QA3",
+    "qa-matrix:QA4",
+    "qa-matrix:QA5",
+    "qa-matrix:QA6",
+    "qa-matrix:QA8"
+  ],
+  "engine_run_binding": {
+    "workflow": "engine-acceptance",
+    "workflow_path": ".github/workflows/engine-acceptance.yml",
+    "workflow_path_authoritative": true,
+    "workflow_name_auxiliary_only": true,
+    "head_sha_equals_requested_sha": true,
+    "event": "workflow_dispatch",
+    "qa_phase": "full",
+    "status": "completed",
+    "caller_event_name_untrusted": true,
+    "caller_qa_phase_untrusted": true,
+    "bare_qa_matrix_not_a_job": true
+  },
+  "artifact_provenance": {
+    "contract": "governance/release-master/release-artifact.v1.json",
+    "build_once": true,
+    "qa_must_record_digest": true,
+    "verdict_must_include_digest": true,
+    "deploy_must_pass_expected_digest": true,
+    "deploy_rebuild_forbidden": true,
+    "runtime_qa_required": true,
+    "worker_prebuilt": true,
+    "worker_deploy_no_bundle": true,
+    "successful_builds_pagination": true,
+    "api_runtime_qa_required": true
+  },
+  "allowlisted_skip": [
+    {
+      "job": "qa7-ai-eval",
+      "when": "event != workflow_dispatch OR qa_phase not in [qa7, full]"
+    }
+  ],
+  "production_release_requires": {
+    "event_name": "workflow_dispatch",
+    "qa_phase": "full",
+    "verdict": "PASS",
+    "kind": "PRODUCTION_RELEASE",
+    "accepted_sha_equals_deploy_sha": true,
+    "artifact_digest": true,
+    "accepted_digest_equals_deploy_digest": true,
+    "runtime_qa": true,
+    "api_runtime_qa": true
+  },
+  "fail_results": [
+    "failure",
+    "cancelled",
+    "timed_out",
+    "missing"
+  ],
+  "unexpected_skip": "FAIL"
+}

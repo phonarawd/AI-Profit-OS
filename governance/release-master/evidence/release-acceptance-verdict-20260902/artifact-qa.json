@@ -1,0 +1,26 @@
+{
+  "schema": "release-artifact-qa.v1",
+  "verified": false,
+  "source_sha": "33308c183b8f954b316822b0e3421f19bea84f60",
+  "artifact_digest": null,
+  "built_once": false,
+  "reason": "FAIL_CLOSED:digest_mismatch",
+  "runtime": {
+    "verified": false,
+    "reason": "FAIL_CLOSED:digest_mismatch",
+    "artifact_digest": null
+  },
+  "api_runtime": {
+    "verified": false,
+    "reason": "FAIL_CLOSED:digest_mismatch",
+    "harness": "injected",
+    "route": "/api/v1/health",
+    "status": null,
+    "service": null,
+    "git_sha": null,
+    "git_sha_source": null,
+    "source_sha": "33308c183b8f954b316822b0e3421f19bea84f60",
+    "bundle_digest": null,
+    "api_artifact_digest": null
+  }
+}
