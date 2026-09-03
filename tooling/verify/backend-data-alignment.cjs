@@ -214,10 +214,34 @@ if (!cert.includes("REL-701-DB")) fails.push("index/head diverge owner must stay
 const localFiles = fs.readdirSync(migDir).filter((f) => f.endsWith(".sql")).sort();
 const localHead = localFiles[localFiles.length - 1].slice(0, 14);
 const remoteHead = (appliedFx.versions || [])[(appliedFx.versions || []).length - 1];
-if (localHead !== "20260902032000") fails.push("local migration head unexpected " + localHead);
-if (remoteHead !== "20260821223109") fails.push("remote applied head unexpected " + remoteHead);
+// migration_head 진실 = R7 표(사람이 갱신) ↔ 실측(로컬 파일 head · fixture remote head) 1:1.
+// 하드코딩 금지: 표가 갱신되지 않으면 여기서 FAIL 하고, 표가 거짓이면 실측과 어긋나 FAIL 한다.
+const r7Head = cert.match(
+  /\|\s*migration_head\s*\|\s*local\s*`(\d{14})`\s*\|\s*remote applied\s*`(\d{14})`\s*\|/,
+);
+if (!r7Head) {
+  fails.push("R7 table missing migration_head row (local `X` | remote applied `Y`)");
+} else {
+  if (localHead !== r7Head[1]) {
+    fails.push("local migration head " + localHead + " ≠ R7 table " + r7Head[1]);
+  }
+  if (remoteHead !== r7Head[2]) {
+    fails.push("remote applied head " + remoteHead + " ≠ R7 table " + r7Head[2]);
+  }
+}
+// head가 같아도 remote head보다 오래된 unapplied 파일이 있으면 plain `db push`가 건너뛴다 →
+// R7 표에 `--include-all`(또는 rename) apply 계획이 명시돼 있어야 한다. 숨기지 않는다.
+const preHeadUnapplied = (appliedFx.committedUnapplied || []).filter((v) => v < remoteHead);
 if (localHead === remoteHead) {
-  fails.push("heads unexpectedly equal — update the R7 table, do not hide apply state");
+  if (preHeadUnapplied.length === 0) {
+    fails.push("heads unexpectedly equal — update the R7 table, do not hide apply state");
+  } else if (!/include-all/.test(cert)) {
+    fails.push(
+      "pre-head unapplied migrations " +
+        preHeadUnapplied.join(",") +
+        " require an explicit --include-all apply plan in the R7 table",
+    );
+  }
 }
 
 if (!/DEFECTS_P0 = 0/.test(engineCert)) {
