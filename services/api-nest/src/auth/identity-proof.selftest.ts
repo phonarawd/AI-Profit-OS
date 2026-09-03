@@ -238,11 +238,15 @@ async function run(): Promise<void> {
     resend.failNext = true;
     const magic = new MagicLinkService(store, resend as never);
     minted = 0;
-    const out = await magic.request({ email: "fail@example.com" });
-    if (out.status === "accepted" && minted === 0) {
+    await expectThrowMessage(
+      "magic send failure fails closed",
+      "MAGIC_LINK_DELIVERY_UNAVAILABLE",
+      () => magic.request({ email: "fail@example.com" }),
+    );
+    if (minted === 0) {
       pass("magic send failure does not mint");
     } else {
-      fail("magic send failure", JSON.stringify(out));
+      fail("magic send failure minted", String(minted));
     }
   }
 
