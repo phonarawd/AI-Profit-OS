@@ -1,8 +1,8 @@
 {
   "schema": "governance.recovery.founder-action-packet.current.v2",
   "recorded_on": "2026-09-03",
-  "source": "read-only GitHub + Render + Supabase revalidation",
-  "subject_integration_sha": "82183fc240a2f860205b90dcfe53116f50f25ad2",
+  "source": "GitHub + Render + Supabase current revalidation + scoped staging provider rehearsal evidence",
+  "subject_integration_sha": "46e9a25d04ae4a394a175f3d768f57bcd567333c",
   "production_release": "NO_GO",
   "invariants": {
     "integration_pr": 209,
@@ -10,14 +10,21 @@
     "main_sha": "98730b8c71a8c4c0b5e474460a6a24bea43e6966",
     "production_mutation": 0,
     "production_db_apply": 0,
-    "provider_mutation": 0,
+    "production_provider_mutation": 0,
+    "staging_provider_mutation_performed": true,
+    "staging_provider_mutation_scope": [
+      "SUPABASE_PREVIEW_REBASE",
+      "SUPABASE_PREVIEW_RESET",
+      "SUPABASE_PREVIEW_BASELINE_PARITY",
+      "SUPABASE_PREVIEW_HARDENING_APPLY_ROLLBACK_REAPPLY"
+    ],
     "engine_ack_mutation": 0,
     "ghas_dismissal": 0
   },
   "github": {
     "main_sha": "98730b8c71a8c4c0b5e474460a6a24bea43e6966",
     "rescue_checkpoint_sha": "e312119582036ab1367ede74dd4c08ff3b22a951",
-    "integration_subject_sha": "82183fc240a2f860205b90dcfe53116f50f25ad2",
+    "integration_subject_sha": "46e9a25d04ae4a394a175f3d768f57bcd567333c",
     "integration_pr": 209,
     "integration_pr_draft": true
   },
@@ -54,7 +61,11 @@
       "project_ref": "uluzxvdpynytytduuryy",
       "preview_project_status": "ACTIVE_HEALTHY",
       "with_data": false,
-      "schema_parity_currently_proven": false,
+      "customer_data_zero_proven": true,
+      "baseline_schema_parity_proven": true,
+      "final_schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
+      "hardening_rehearsal_proven": true,
+      "hardening_evidence": "governance/recovery/staging-db-hardening-snapshot.20260903.v2.json",
       "render_binding_currently_proven": false
     }
   },
@@ -78,7 +89,7 @@
   "blockers": [
     "STAGING_CURRENT_CANDIDATE_NOT_BOUND",
     "STAGING_RENDER_DB_BINDING_NOT_PROVEN_CURRENT",
-    "STAGING_SCHEMA_PARITY_NOT_PROVEN_CURRENT",
+    "STAGING_RENDER_RUNTIME_HEALTH_NOT_PROVEN_CURRENT",
     "PRODUCTION_DB_HARDENING_NOT_APPLIED",
     "RENDER_AUTODEPLOY_ENABLED",
     "PRODUCTION_LIVE_SHA_DIFFERS_FROM_INTEGRATION",
@@ -87,67 +98,84 @@
     "ENGINE_REBASE_REQUIRED",
     "ENGINE_ACK_MISSING",
     "RELEASE_ACCEPTANCE_MISSING",
-    "CURRENT_SHA_SECURITY_EVIDENCE_INCOMPLETE",
-    "ROLLBACK_TARGET_NOT_BOUND"
+    "CURRENT_SHA_SECURITY_EVIDENCE_INCOMPLETE"
   ],
   "next_actions": [
     {
       "order": 1,
       "id": "CI_EXACT_HEAD",
-      "action": "Finish exact-head PR CI and resolve only semantic failures.",
-      "production_mutation": false
+      "action": "Finish exact-head PR CI for the current integration tip and resolve only semantic failures.",
+      "production_mutation": false,
+      "status": "IN_PROGRESS"
     },
     {
       "order": 2,
       "id": "STAGING_BINDING",
-      "action": "Bind the exact final candidate to isolated Render staging and the existing Supabase preview branch; prove DB/runtime/schema isolation.",
+      "action": "Supabase isolation/schema relation is proven; bind exact candidate to existing Render staging and prove Render→preview DB/runtime isolation.",
       "production_mutation": false,
-      "provider_mutation_required": true
+      "provider_mutation_required": true,
+      "status": "PARTIAL"
     },
     {
       "order": 3,
       "id": "DB_HARDENING_REHEARSAL",
-      "action": "Rehearse the current reviewed hardening source against isolated staging and capture exact before/after/rollback evidence.",
+      "action": "Current reviewed hardening source was rehearsed on isolated staging with baseline parity, apply, rollback, reapply, and zero customer data proven.",
       "production_mutation": false,
-      "provider_mutation_required": true
+      "provider_mutation_required": true,
+      "status": "CLOSED_VERIFIED"
     },
     {
       "order": 4,
       "id": "TRON_HD_VAULT",
       "action": "Provide and prove canonical BIP32 secp256k1 authority for m/44'/195'/0'/0/{index}; keep 503 fail-closed until proven.",
-      "production_mutation": false
+      "production_mutation": false,
+      "status": "BLOCKED"
     },
     {
       "order": 5,
       "id": "SECURITY_AND_ROLLBACK",
-      "action": "Close current-SHA security evidence and bind an exact Render rollback deploy/SHA target.",
-      "production_mutation": false
+      "action": "Pre-promotion Render rollback target is bound; close current exact-SHA security evidence.",
+      "production_mutation": false,
+      "status": "PARTIAL"
     },
     {
       "order": 6,
       "id": "REL_502_CURRENT_EPOCH",
       "action": "After all tracked mutations stop, rerun protected-scope verification and reissue REL-502 only for the exact final SHA.",
-      "production_mutation": false
+      "production_mutation": false,
+      "status": "PENDING"
     },
     {
       "order": 7,
       "id": "RENDER_RELEASE_CONTROL",
       "action": "Disable Production autoDeploy before accepted exact-SHA promotion.",
       "production_mutation": true,
-      "founder_action_required": true
+      "founder_action_required": true,
+      "status": "PENDING"
     },
     {
       "order": 8,
       "id": "PRODUCTION_DB_APPLY",
       "action": "Apply reviewed hardening migration to Production only after staging proof and explicit Founder authorization.",
       "production_mutation": true,
-      "founder_action_required": true
+      "founder_action_required": true,
+      "status": "PENDING"
     },
     {
       "order": 9,
       "id": "RELEASE_ACCEPTANCE",
       "action": "Build once, bind authoritative Engine run, obtain release acceptance, then evaluate final GO_CANDIDATE.",
-      "production_mutation": false
+      "production_mutation": false,
+      "status": "PENDING"
     }
-  ]
+  ],
+  "rollback": {
+    "target_bound": true,
+    "role": "PRE_PROMOTION_ROLLBACK_TARGET",
+    "service_id": "srv-da5r1tqjobas73fl16dg",
+    "deploy_id": "dep-da938o142hec73eipre0",
+    "source_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec",
+    "provider_confirmed": true,
+    "execution": "BLOCKED_FOUNDER_ACTION"
+  }
 }

@@ -21,9 +21,17 @@ if (packet) {
   if (packet.production_release !== "NO_GO") fail("release_must_remain_no_go");
   const inv = packet.invariants || {};
   if (inv.integration_pr !== 209 || inv.integration_pr_state !== "DRAFT_DO_NOT_MERGE") fail("integration_pr_guard_missing");
-  for (const k of ["production_mutation","production_db_apply","provider_mutation","engine_ack_mutation","ghas_dismissal"]) {
-    if (inv[k] !== 0) fail("mutation_must_be_zero:" + k);
+  for (const k of ["production_mutation","production_db_apply","production_provider_mutation","engine_ack_mutation","ghas_dismissal"]) {
+    if (inv[k] !== 0) fail("production_or_authority_mutation_must_be_zero:" + k);
   }
+  if (inv.staging_provider_mutation_performed !== true) fail("staging_provider_mutation_truth_missing");
+  const stagingMutationScope = new Set(Array.isArray(inv.staging_provider_mutation_scope) ? inv.staging_provider_mutation_scope : []);
+  for (const x of [
+    "SUPABASE_PREVIEW_REBASE",
+    "SUPABASE_PREVIEW_RESET",
+    "SUPABASE_PREVIEW_BASELINE_PARITY",
+    "SUPABASE_PREVIEW_HARDENING_APPLY_ROLLBACK_REAPPLY",
+  ]) if (!stagingMutationScope.has(x)) fail("staging_provider_scope_missing:" + x);
   const render = packet.render || {};
   if (!render.production || render.production.service_id !== "srv-da5r1tqjobas73fl16dg") fail("production_render_identity_drift");
   if (!render.production || render.production.autoDeploy !== "yes") fail("render_autodeploy_fact_stale");
@@ -37,6 +45,12 @@ if (packet) {
   if (!sb.staging_branch || sb.staging_branch.project_ref !== "uluzxvdpynytytduuryy") fail("staging_branch_ref_drift");
   if (sb.staging_branch.preview_project_status !== "ACTIVE_HEALTHY") fail("staging_branch_status_stale");
   if (sb.staging_branch.with_data !== false) fail("staging_branch_with_data_stale");
+
+  if (sb.staging_branch.customer_data_zero_proven !== true) fail("staging_customer_data_truth_stale");
+  if (sb.staging_branch.baseline_schema_parity_proven !== true) fail("staging_baseline_parity_truth_stale");
+  if (sb.staging_branch.final_schema_relation !== "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING") fail("staging_schema_relation_truth_stale");
+  if (sb.staging_branch.hardening_rehearsal_proven !== true) fail("staging_hardening_rehearsal_truth_stale");
+  if (sb.staging_branch.render_binding_currently_proven !== false) fail("staging_render_binding_truth_stale");
 
   const engine = packet.engine || {};
   if (engine.final_acceptance !== "NOT_ISSUED" || engine.rebase_required !== true || engine.ack_received !== false) {
@@ -62,6 +76,8 @@ if (packet) {
   const blockers = new Set(Array.isArray(packet.blockers) ? packet.blockers : []);
   for (const x of [
     "STAGING_CURRENT_CANDIDATE_NOT_BOUND",
+    "STAGING_RENDER_DB_BINDING_NOT_PROVEN_CURRENT",
+    "STAGING_RENDER_RUNTIME_HEALTH_NOT_PROVEN_CURRENT",
     "PRODUCTION_DB_HARDENING_NOT_APPLIED",
     "RENDER_AUTODEPLOY_ENABLED",
     "TRON_HD_VAULT_NOT_PROVEN",
@@ -69,8 +85,22 @@ if (packet) {
     "ENGINE_REBASE_REQUIRED",
     "ENGINE_ACK_MISSING",
     "RELEASE_ACCEPTANCE_MISSING",
-    "ROLLBACK_TARGET_NOT_BOUND",
+    "CURRENT_SHA_SECURITY_EVIDENCE_INCOMPLETE",
   ]) if (!blockers.has(x)) fail("missing_blocker:" + x);
+
+  for (const closedNow of [
+    "STAGING_SCHEMA_PARITY_NOT_PROVEN_CURRENT",
+    "ROLLBACK_TARGET_NOT_BOUND",
+  ]) if (blockers.has(closedNow)) fail("closed_current_blocker_reintroduced:" + closedNow);
+
+  const rollback = packet.rollback || {};
+  if (rollback.target_bound !== true) fail("rollback_target_not_bound");
+  if (rollback.role !== "PRE_PROMOTION_ROLLBACK_TARGET") fail("rollback_role_invalid");
+  if (rollback.service_id !== "srv-da5r1tqjobas73fl16dg") fail("rollback_service_drift");
+  if (rollback.deploy_id !== "dep-da938o142hec73eipre0") fail("rollback_deploy_drift");
+  if (rollback.source_sha !== "0a72b27dd0da3c422eca0f931cf668e7a760c8ec") fail("rollback_sha_drift");
+  if (rollback.provider_confirmed !== true) fail("rollback_provider_confirmation_missing");
+  if (rollback.execution !== "BLOCKED_FOUNDER_ACTION") fail("rollback_execution_guard_missing");
 
   for (const staleClosed of [
     "FINAL_PRODUCTION_DECISION_ENFORCEMENT_NOT_WIRED",
@@ -84,6 +114,13 @@ if (packet) {
   for (const id of ["CI_EXACT_HEAD","STAGING_BINDING","DB_HARDENING_REHEARSAL","TRON_HD_VAULT","REL_502_CURRENT_EPOCH","RENDER_RELEASE_CONTROL","PRODUCTION_DB_APPLY","RELEASE_ACCEPTANCE"]) {
     if (!actions.has(id)) fail("missing_action:" + id);
   }
+
+  const dbAction = (packet.next_actions || []).find((x) => x && x.id === "DB_HARDENING_REHEARSAL");
+  if (!dbAction || dbAction.status !== "CLOSED_VERIFIED") fail("db_rehearsal_action_not_closed_verified");
+  const stagingAction = (packet.next_actions || []).find((x) => x && x.id === "STAGING_BINDING");
+  if (!stagingAction || stagingAction.status !== "PARTIAL") fail("staging_binding_action_truth_stale");
+  const securityRollback = (packet.next_actions || []).find((x) => x && x.id === "SECURITY_AND_ROLLBACK");
+  if (!securityRollback || securityRollback.status !== "PARTIAL") fail("security_rollback_action_truth_stale");
 }
 
 const releaseDecision = read("tooling/release/production-release-decision.cjs");
@@ -108,4 +145,4 @@ if (fails.length) {
   for (const f of fails) console.error(" - " + f);
   process.exit(1);
 }
-console.log("[verify:founder-action-packet-current] PASS (current NO_GO truth · restored guards · mutation=0)");
+console.log("[verify:founder-action-packet-current] PASS (current NO_GO truth · Production mutation=0 · scoped staging provider writes recorded · rollback target bound)");
