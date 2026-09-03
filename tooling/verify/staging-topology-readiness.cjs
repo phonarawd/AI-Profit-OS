@@ -3,10 +3,12 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
+const { createHash } = require("node:crypto");
 const {
   evaluateStagingTopology,
   normalizeUrl,
   autoDeployIsOff,
+  stagingSchemaReady,
 } = require("../release/staging-topology-readiness.cjs");
 
 const root = path.resolve(__dirname, "../..");
@@ -74,6 +76,35 @@ assert.equal(got.verdict, "STAGING_TOPOLOGY=READY");
 assert.deepEqual(got.blockers, []);
 assert.equal(got.frontend_staging_status, "PENDING_NOT_CORE_TOPOLOGY");
 
+const HARDENED = structuredClone(READY);
+HARDENED.staging.supabase.schema_parity_with_production = false;
+HARDENED.staging.supabase.baseline_schema_parity_proven = true;
+HARDENED.staging.supabase.schema_relation =
+  "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING";
+HARDENED.staging.supabase.hardening_rehearsal = {
+  evidence_path: "governance/recovery/staging-db-hardening-snapshot.20260903.v2.json",
+  evidence_blob_sha: "a".repeat(40),
+  source_path: "supabase/migrations/20260903092000_production_db_hardening.sql",
+  source_blob_sha: "b".repeat(40),
+  rollback_source_path: "supabase/staging/20260903151500_preview_baseline_parity.sql",
+  rollback_source_blob_sha: "c".repeat(40),
+  baseline_diff_count: 0,
+  function_authority_diff_count: 0,
+  customer_data_zero: true,
+  expected_delta_only: true,
+  apply: "PASS",
+  rollback: "PASS",
+  reapply: "PASS",
+  final_state: "PASS",
+};
+assert.equal(stagingSchemaReady(HARDENED.staging.supabase), true);
+got = evaluateStagingTopology(HARDENED);
+assert.equal(got.ready, true);
+assert.equal(
+  got.staging_schema_relation,
+  "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
+);
+
 const currentSnapshot = JSON.parse(
   fs.readFileSync(
     path.join(root, "governance/release-master/staging-topology.current.v1.json"),
@@ -88,9 +119,63 @@ assert.equal(got.verdict, "STAGING_TOPOLOGY=NOT_READY");
 assert.ok(got.blockers.includes("render_staging_db_binding_missing"));
 assert.ok(got.blockers.includes("render_staging_runtime_health_missing"));
 assert.ok(got.blockers.includes("render_staging_source_sha_mismatch"));
-assert.ok(got.blockers.includes("supabase_staging_not_ready"));
-assert.ok(got.blockers.includes("supabase_staging_customer_data_not_proven_zero"));
-assert.ok(got.blockers.includes("supabase_staging_schema_parity_not_proven"));
+assert.ok(!got.blockers.includes("supabase_staging_not_ready"));
+assert.ok(!got.blockers.includes("supabase_staging_customer_data_not_proven_zero"));
+assert.ok(!got.blockers.includes("supabase_staging_schema_parity_not_proven"));
+assert.equal(
+  got.staging_schema_relation,
+  "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
+);
+
+const currentDbEvidencePath =
+  "governance/recovery/staging-db-hardening-snapshot.20260903.v2.json";
+const currentDbEvidenceRaw = fs.readFileSync(
+  path.join(root, currentDbEvidencePath),
+  "utf8",
+);
+const currentDbEvidence = JSON.parse(currentDbEvidenceRaw);
+const hardeningSourcePath =
+  "supabase/migrations/20260903092000_production_db_hardening.sql";
+const rollbackSourcePath =
+  "supabase/staging/20260903151500_preview_baseline_parity.sql";
+
+function gitBlobSha(raw) {
+  const body = Buffer.from(raw, "utf8");
+  return createHash("sha1")
+    .update(Buffer.from(`blob ${body.length}\0`, "utf8"))
+    .update(body)
+    .digest("hex");
+}
+
+const currentStageDb = currentSnapshot.staging.supabase;
+assert.equal(currentStageDb.customer_data, false);
+assert.equal(currentStageDb.ready, true);
+assert.equal(currentStageDb.public_table_count, 93);
+assert.equal(currentStageDb.baseline_schema_parity_proven, true);
+assert.equal(
+  currentStageDb.schema_relation,
+  "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
+);
+assert.equal(currentDbEvidence.baseline.public_table_column_rls_diff_count, 0);
+assert.equal(currentDbEvidence.baseline.function_authority_diff_count, 0);
+assert.equal(currentDbEvidence.baseline.customer_data_proven_zero, true);
+assert.equal(currentDbEvidence.rehearsal.apply, "PASS");
+assert.equal(currentDbEvidence.rehearsal.rollback, "PASS");
+assert.equal(currentDbEvidence.rehearsal.reapply, "PASS");
+assert.equal(currentDbEvidence.rehearsal.final_state, "PASS");
+assert.equal(currentDbEvidence.rehearsal.expected_delta_only, true);
+assert.equal(
+  currentStageDb.hardening_rehearsal.evidence_blob_sha,
+  gitBlobSha(currentDbEvidenceRaw),
+);
+assert.equal(
+  currentStageDb.hardening_rehearsal.source_blob_sha,
+  gitBlobSha(fs.readFileSync(path.join(root, hardeningSourcePath), "utf8")),
+);
+assert.equal(
+  currentStageDb.hardening_rehearsal.rollback_source_blob_sha,
+  gitBlobSha(fs.readFileSync(path.join(root, rollbackSourcePath), "utf8")),
+);
 
 const reuseService = structuredClone(READY);
 reuseService.staging.render.service_id = READY.production.render.service_id;
@@ -215,5 +300,5 @@ assert.equal(b3.staging_e2e.status, "NOT_RUN");
 assert.equal(b3.staging_e2e.requires.isolated_verify_db_exists, "YES");
 
 console.log(
-  "[verify:staging-topology-readiness] PASS (TRUE_ISOLATED_RUNTIME · DB+REDIS_HEALTH · final RC SHA is a separate gate · production mutation 0)",
+  "[verify:staging-topology-readiness] PASS (BASELINE_PARITY_OR_EXACT_REHEARSED_HARDENING · TRUE_ISOLATED_RUNTIME · DB+REDIS_HEALTH · final RC SHA separate · production mutation 0)",
 );

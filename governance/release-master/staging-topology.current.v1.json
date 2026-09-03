@@ -1,8 +1,8 @@
 {
   "schema": "staging-topology-provider-snapshot.v2",
   "recorded_at": "2026-09-03",
-  "source": "read-only GitHub/Supabase revalidation + last-known Render identifiers · Render current binding/runtime not revalidated · mutation=0",
-  "candidate_sha": "1aa71bb62bd171b53c15f2401a73e0ef0d4f884c",
+  "source": "read-only GitHub/Render/Supabase revalidation + current staging DB hardening rehearsal evidence · Production mutation=0",
+  "candidate_sha": "fceb124eeb633438d4551f168ebc18df2df49c1d",
   "production": {
     "render": {
       "service_name": "AI-Profit-OS",
@@ -49,18 +49,36 @@
       "parent_project_ref": "mgsytcetsiecllmhcyox",
       "with_data": false,
       "preview_project_status": "ACTIVE_HEALTHY",
-      "customer_data": null,
-      "ready": false,
+      "customer_data": false,
+      "ready": true,
+      "public_table_count": 93,
       "schema_parity_with_production": false,
-      "current_detail_evidence": "UNPROVEN_CURRENTLY"
+      "baseline_schema_parity_proven": true,
+      "schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
+      "hardening_rehearsal": {
+        "evidence_path": "governance/recovery/staging-db-hardening-snapshot.20260903.v2.json",
+        "evidence_blob_sha": "3ab390a2356eba293bf674ff85350da802f880c1",
+        "source_path": "supabase/migrations/20260903092000_production_db_hardening.sql",
+        "source_blob_sha": "827448e4c86cf14aca31c4f23151ceabb43dafb4",
+        "rollback_source_path": "supabase/staging/20260903151500_preview_baseline_parity.sql",
+        "rollback_source_blob_sha": "59a2097f1decfc854fe44d805faf67ec6d4feac5",
+        "baseline_diff_count": 0,
+        "function_authority_diff_count": 0,
+        "customer_data_zero": true,
+        "expected_delta_only": true,
+        "apply": "PASS",
+        "rollback": "PASS",
+        "reapply": "PASS",
+        "final_state": "PASS"
+      },
+      "current_detail_evidence": "governance/recovery/staging-db-hardening-snapshot.20260903.v2.json"
     }
   },
   "cloudflare_preview": null,
   "blockers_observed": [
     "staging Render is not running the recorded integration candidate",
     "current Render→Supabase staging binding is not readable/proven in this session",
-    "staging Supabase branch exists and is ACTIVE_HEALTHY, but customer-row/schema-parity evidence is not current",
-    "current staging runtime health evidence is not recorded"
+    "current staging Render runtime health evidence is not recorded"
   ],
   "production_mutation": 0
 }

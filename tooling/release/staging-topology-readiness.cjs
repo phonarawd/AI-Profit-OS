@@ -39,6 +39,44 @@ function autoDeployIsOff(value) {
   return v === "no" || v === "off" || v === "false";
 }
 
+function isGitBlobSha(value) {
+  return /^[0-9a-f]{40}$/i.test(String(value || ""));
+}
+
+function stagingSchemaReady(stageSupabase) {
+  if (!stageSupabase || typeof stageSupabase !== "object") return false;
+  if (stageSupabase.schema_parity_with_production === true) return true;
+
+  const proof =
+    stageSupabase.hardening_rehearsal &&
+    typeof stageSupabase.hardening_rehearsal === "object"
+      ? stageSupabase.hardening_rehearsal
+      : null;
+
+  return (
+    stageSupabase.baseline_schema_parity_proven === true &&
+    stageSupabase.schema_relation ===
+      "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING" &&
+    proof !== null &&
+    nonEmpty(proof.evidence_path) &&
+    isGitBlobSha(proof.evidence_blob_sha) &&
+    proof.source_path ===
+      "supabase/migrations/20260903092000_production_db_hardening.sql" &&
+    isGitBlobSha(proof.source_blob_sha) &&
+    proof.rollback_source_path ===
+      "supabase/staging/20260903151500_preview_baseline_parity.sql" &&
+    isGitBlobSha(proof.rollback_source_blob_sha) &&
+    proof.baseline_diff_count === 0 &&
+    proof.function_authority_diff_count === 0 &&
+    proof.customer_data_zero === true &&
+    proof.expected_delta_only === true &&
+    proof.apply === "PASS" &&
+    proof.rollback === "PASS" &&
+    proof.reapply === "PASS" &&
+    proof.final_state === "PASS"
+  );
+}
+
 function evaluateStagingTopology(snapshot) {
   const s = snapshot && typeof snapshot === "object" ? snapshot : {};
   const production = s.production && typeof s.production === "object" ? s.production : {};
@@ -160,7 +198,7 @@ function evaluateStagingTopology(snapshot) {
     if (stageSupabase.ready !== true) {
       blockers.push("supabase_staging_not_ready");
     }
-    if (stageSupabase.schema_parity_with_production !== true) {
+    if (!stagingSchemaReady(stageSupabase)) {
       blockers.push("supabase_staging_schema_parity_not_proven");
     }
 
@@ -219,6 +257,12 @@ function evaluateStagingTopology(snapshot) {
     verdict: ready ? "STAGING_TOPOLOGY=READY" : "STAGING_TOPOLOGY=NOT_READY",
     blockers,
     frontend_staging_status: frontendStagingStatus,
+    staging_schema_relation:
+      stageSupabase && stagingSchemaReady(stageSupabase)
+        ? stageSupabase.schema_parity_with_production === true
+          ? "PRODUCTION_PARITY"
+          : "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING"
+        : "NOT_PROVEN",
     runtime_source_sha: stageRender && nonEmpty(stageRender.source_sha)
       ? stageRender.source_sha
       : null,
@@ -266,6 +310,8 @@ module.exports = {
   nonEmpty,
   normalizeUrl,
   autoDeployIsOff,
+  isGitBlobSha,
+  stagingSchemaReady,
   evaluateStagingTopology,
   parseArgs,
 };
