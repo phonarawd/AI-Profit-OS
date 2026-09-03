@@ -1,27 +1,27 @@
 {
   "schema": "production-release-evidence.current.v1",
-  "observed_at": "2026-09-03T11:22:24.747Z",
-  "candidate_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+  "observed_at": "2026-09-03T11:26:35.709Z",
+  "candidate_sha": "072616d744a188872d8b7f652475ace319d0893a",
   "release_acceptance": null,
   "engine": {
     "final_acceptance": "NOT_ISSUED",
     "rebase_required": true,
     "ack_received": false,
-    "candidate_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c"
+    "candidate_sha": "072616d744a188872d8b7f652475ace319d0893a"
   },
   "staging": {
     "ready": false,
     "status": "NOT_READY",
     "verdict": "STAGING_TOPOLOGY=READY",
     "blockers": [
-      "frontend_browser_smoke_rerun_required",
+      "frontend_browser_smoke_rerun_pending",
       "staging_fx_runtime_feed_inactive"
     ],
     "backend_topology_ready": true,
     "backend_db_health": true,
     "backend_db_tls_verified": true,
     "backend_db_backed_read": "PASS",
-    "frontend_e2e": "RERUN_REQUIRED_AFTER_EVIDENCE_REFRESH",
+    "frontend_e2e": "RERUN_PENDING_CURRENT_EXPECTED_SHA",
     "frontend_proxy_binding": "CLOSED_VERIFIED"
   },
   "db_hardening": {
@@ -38,7 +38,7 @@
   "render_preflight": {
     "ready": false,
     "status": "NOT_READY",
-    "accepted_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+    "accepted_sha": "072616d744a188872d8b7f652475ace319d0893a",
     "blockers": [
       "auto_deploy_enabled",
       "production_live_sha_mismatch"
@@ -46,7 +46,7 @@
     "auto_deploy_required": "disabled"
   },
   "security": {
-    "exact_head_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+    "exact_head_sha": "072616d744a188872d8b7f652475ace319d0893a",
     "codeql_workflow": "success",
     "unresolved_p0": null,
     "unresolved_p1": null,
@@ -75,7 +75,7 @@
     "status": "NOT_PROVEN_CURRENT"
   },
   "production_mutation": 0,
-  "governance_parent_sha": "072616d744a188872d8b7f652475ace319d0893a",
+  "governance_parent_sha": "1223e3b6aca295858409770788fd89ec9b5cec8d",
   "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
   "migration_effect_reconciliation": {
     "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
