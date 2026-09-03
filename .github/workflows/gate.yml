@@ -49,6 +49,8 @@ jobs:
         run: |
           pnpm verify:fx-worker-release-path
           pnpm exec tsc -p services/api-nest/tsconfig.json --noEmit
+      - name: Price denomination and FX contract
+        run: pnpm verify:price-denomination-contract
       - name: Chain worker machine auth
         run: |
           pnpm verify:chain-worker-machine-auth
@@ -60,6 +62,8 @@ jobs:
           pnpm exec tsc -p workers/marketing-capi-dispatcher/tsconfig.json
       - name: Auth runtime readiness signal
         run: pnpm verify:auth-runtime-readiness
+      - name: Auth JWT crypto runtime
+        run: pnpm verify:auth-jwt-runtime
       - name: REL-102 Kakao closure
         run: pnpm verify:login-kakao-closure
       - name: Database TLS strict
