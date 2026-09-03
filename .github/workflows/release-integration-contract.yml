@@ -1,0 +1,100 @@
+name: release-integration-contract
+
+on:
+  pull_request:
+    branches:
+      - recovery/release-provenance-20260831
+      - main
+    paths:
+      - ".github/workflows/release-integration-contract.yml"
+      - ".github/workflows/critical-cross-browser.yml"
+      - "tooling/e2e/specs/critical-cross-browser.spec.cjs"
+      - "tooling/e2e/lib/qa-env-isolation-guard.cjs"
+      - "tooling/e2e/fixtures/qa-allowlist.v1.json"
+      - "tooling/release/artifact-runtime-qa.cjs"
+      - "tooling/release/db-hardening-readiness.cjs"
+      - "tooling/release/staging-topology-readiness.cjs"
+      - "tooling/verify/artifact-runtime-redirect-manual.cjs"
+      - "tooling/verify/db-hardening-readiness.cjs"
+      - "tooling/verify/staging-db-hardening-rehearsal.cjs"
+      - "tooling/verify/production-schema-parity.cjs"
+      - "tooling/verify/staging-topology-readiness.cjs"
+      - "tooling/verify/qa-env-isolation-staging.cjs"
+      - "supabase/migrations/20260902032000_production_schema_parity.sql"
+      - "supabase/staging/**"
+      - "governance/recovery/staging-db-hardening-snapshot.20260902.v1.json"
+      - "governance/release-master/staging-topology.current.v1.json"
+      - "governance/release-master/rel-b3-promotion/b3-promotion.v1.json"
+      - "governance/db-recon/b3-promotion-ledger.v1.json"
+      - "governance/release-inventory/b3-promotion.v1.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release-contract-static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+
+      - name: Artifact runtime redirect probe contract
+        run: node tooling/verify/artifact-runtime-redirect-manual.cjs
+
+      - name: Production schema parity migration contract
+        run: node tooling/verify/production-schema-parity.cjs
+
+      - name: DB hardening source contract
+        run: node tooling/verify/db-hardening-readiness.cjs
+
+      - name: DB hardening fresh staging snapshot
+        run: >-
+          node tooling/release/db-hardening-readiness.cjs
+          --input governance/recovery/staging-db-hardening-snapshot.20260902.v1.json
+
+      - name: DB hardening rollback rehearsal contract
+        run: node tooling/verify/staging-db-hardening-rehearsal.cjs
+
+      - name: Staging topology source contract
+        run: node tooling/verify/staging-topology-readiness.cjs
+
+      - name: Staging topology current provider snapshot
+        run: >-
+          node tooling/release/staging-topology-readiness.cjs
+          --input governance/release-master/staging-topology.current.v1.json
+
+      - name: QA environment isolation for real staging
+        run: node tooling/verify/qa-env-isolation-staging.cjs
+
+  strict-webkit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Install WebKit
+        run: pnpm exec playwright install --with-deps webkit
+      - name: Strict critical consumer WebKit
+        env:
+          CI: "1"
+          NEXT_DEV_WEBPACK: "1"
+          LOCAL_WEB_RUNTIME_API_STUB: "1"
+          API_HOST: "127.0.0.1:4000"
+        run: >-
+          pnpm exec playwright test
+          --config=tooling/e2e/playwright.cross-browser.config.cjs
+          --project=webkit
+          tooling/e2e/specs/critical-cross-browser.spec.cjs

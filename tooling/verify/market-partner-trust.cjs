@@ -142,9 +142,9 @@ for (const [rel, needId] of [
 const trustSrc = read("packages/ui/copy/ko/trust.ts");
 if (trustSrc) {
   const locks = {
-    stripHeadline: "🤝 공식 협력 · 글로벌 시세·데이터 연동",
-    stripSub: "대형 쇼핑몰·도소매 시장과 연동해 시세를 가져와요",
-    legFootnote: "공식 협력 · 시세·데이터 연동",
+    stripHeadline: "🤝 글로벌 시세·데이터 출처",
+    stripSub: "대형 쇼핑몰·도소매 시장에서 제공되는 시세·데이터를 비교해요",
+    legFootnote: "시세·데이터 출처",
     successLegLog: "{buyLabel} ↔ {sellLabel} 시세 반영",
   };
   for (const [key, want] of Object.entries(locks)) {
@@ -160,6 +160,9 @@ if (trustSrc) {
   }
   if (/공식 대리 구매|공식 대리 판매/.test(joined)) {
     fails.push("trust.ts must not claim 공식 대리 구매/판매");
+  }
+  if (/공식 협력|공식 협력사/.test(joined)) {
+    fails.push("trust.ts must not present data sources as official commercial partners");
   }
   if (joined.includes("판매 완료")) {
     fails.push("trust.ts must not use 판매 완료 leg copy");
@@ -219,7 +222,7 @@ if (markets) {
       blockedFiles.push(f);
       // Invented placeholder SVGs are forbidden while blocked — file may be absent.
       if (fs.existsSync(abs)) {
-        notes.push(`WARN ${f} status=blocked but file exists — confirm official mark before status=ready`);
+        notes.push(`WARN ${f} status=blocked but file exists — confirm approved mark rights before status=ready`);
       }
     }
   }

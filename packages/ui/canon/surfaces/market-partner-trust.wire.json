@@ -40,7 +40,7 @@
         "T.execution.badgeNoBuy",
         "T.execution.badgeNoSell"
       ],
-      "note": "공식 협력과 양립 · 대리 구매/판매 암시 0"
+      "note": "시세·데이터 출처 표기와 양립 · 대리 구매/판매 암시 0"
     },
     {
       "id": "trustStrip",
@@ -85,7 +85,7 @@
       "variant": "compact",
       "copyKey": "T.trust.partners.footerCompact",
       "partners": ["ebay", "amazon", "yahoo-jp"],
-      "note": "로고 small + 공식 협력"
+      "note": "로고 small + 데이터 출처"
     }
   ],
   "adminPointer": {
@@ -114,7 +114,7 @@
   ],
   "blockingSubDeliverable": {
     "id": "market-partner-logo-svgs",
-    "status": "unblocked",
+    "status": "blocked",
     "assets": [
       "ebay.svg",
       "amazon.svg",
@@ -124,6 +124,6 @@
       "coingecko.svg",
       "frankfurter.svg"
     ],
-    "note": "ADR-011 Brand Kit · 7 monochrome/light marks ready on disk · verify:market-partner-trust PASS without BLOCKER"
+    "note": "ADR-011 Brand Kit · 사용 권리·검증 완료 전 blocked · verify:market-partner-trust가 ready 상태와 파일을 함께 검증"
   }
 }
