@@ -1,7 +1,7 @@
 {
   "schema": "governance.recovery.staging-runtime-db-binding.v1",
-  "recorded_at": "2026-09-03T11:34:01.149Z",
-  "candidate_sha": "072616d744a188872d8b7f652475ace319d0893a",
+  "recorded_at": "2026-09-03T12:05:06.940Z",
+  "candidate_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
   "production_mutation": 0,
   "production_db_mutation": 0,
   "secrets_recorded": false,
@@ -9,9 +9,9 @@
     "service_id": "srv-dacjnnm1egvs73cuh190",
     "url": "https://ai-profit-os-staging-exact-1f3b36f.onrender.com",
     "branch": "chatgpt/staging-exact-1f3b36f-20260903",
-    "deploy_id": "dep-daclhn0n74is73djo39g",
+    "deploy_id": "dep-dacm2vmk1f9s73cqsv9g",
     "deploy_status": "LIVE",
-    "source_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "source_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
     "autoDeploy": "no"
   },
   "supabase_preview": {
@@ -38,23 +38,21 @@
   },
   "health": {
     "status_code": 200,
-    "git_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "git_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
     "git_sha_source": "RENDER_GIT_COMMIT",
-    "db_configured": true,
-    "db_ok": true,
-    "db_detail": "up",
-    "redis_configured": true,
-    "redis_ok": true,
-    "redis_detail": "up",
-    "warnings_empty": true,
+    "db_configured": null,
+    "db_ok": null,
+    "db_detail": "RECHECK_PENDING_AFTER_SHA_ADVANCE",
+    "redis_configured": null,
+    "redis_ok": null,
+    "redis_detail": "RECHECK_PENDING_AFTER_SHA_ADVANCE",
+    "warnings_empty": null,
     "observed_via": [
-      "direct_render",
-      "cloudflare_web_preview_proxy",
-      "cloudflare_ops_preview_proxy"
+      "cloudflare_web_preview_proxy"
     ],
-    "direct_status_code": 200,
+    "direct_status_code": null,
     "web_proxy_status_code": 200,
-    "ops_proxy_status_code": 200
+    "ops_proxy_status_code": null
   },
   "db_backed_public_read": {
     "route": "GET /api/v1/growth/public-surface",
@@ -97,25 +95,26 @@
     "growth_ticker_config": 1,
     "trade_executions": 0
   },
-  "verdict": "CLOSED_VERIFIED",
+  "verdict": "PARTIAL",
   "frontend_proxy_binding": {
     "web_preview": "https://ai-profit-web-preview.ebay-adapter.workers.dev",
     "ops_preview": "https://ai-profit-ops-preview.ebay-adapter.workers.dev",
-    "frontend_source_sha": "072616d744a188872d8b7f652475ace319d0893a",
-    "backend_runtime_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "frontend_source_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "backend_runtime_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
     "web_api_health_status": 200,
-    "ops_api_health_status": 200,
-    "exact_backend_match": true,
-    "cloudflare_deploy_run": 33749478728,
-    "verdict": "CLOSED_VERIFIED"
+    "ops_api_health_status": null,
+    "exact_backend_match": false,
+    "cloudflare_deploy_run": 33752631548,
+    "verdict": "PARTIAL_WEB_CONFIRMED_RECHECK_PENDING"
   },
   "browser_smoke": {
     "workflow": "staging-browser-smoke",
-    "last_run": 33750291160,
-    "status": "PASS",
-    "result": "web+login+ops + Chromium exact API",
-    "expected_backend_sha": "072616d744a188872d8b7f652475ace319d0893a",
-    "observed_backend_sha": "072616d744a188872d8b7f652475ace319d0893a",
-    "product_failure_proven": false
+    "last_run": 33752394187,
+    "status": "RECHECK_PENDING",
+    "result": "runtime_advance_observed_web_sha_mismatch old_expected=072616d744a188872d8b7f652475ace319d0893a",
+    "expected_backend_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "observed_backend_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "product_failure_proven": false,
+    "recheck_required": true
   }
 }
