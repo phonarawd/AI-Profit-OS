@@ -17,6 +17,10 @@ for(const rel of workers){
   if(!src.includes("headers: requireAdapterIngestHeaders(env)")) fails.push(rel+" ingest token header not required");
   if(/\.\.\.\(env\.ADAPTER_INGEST_TOKEN\s*\?/.test(src)) fails.push(rel+" optional ingest token pattern forbidden");
 }
+const coingecko=read("workers/coingecko-adapter/src/index.ts");
+const frankfurter=read("workers/frankfurter-adapter/src/index.ts");
+if(!coingecko.includes("env.COINGECKO_DEMO_API_KEY && env.ADAPTER_INGEST_TOKEN")) fails.push("CoinGecko health readiness must require provider key + ingest token");
+if(!frankfurter.includes("credentialsConfigured: Boolean(env.ADAPTER_INGEST_TOKEN)")) fails.push("Frankfurter health readiness must require ingest token");
 const pkg=JSON.parse(read("package.json")||"{}");
 if(!pkg.scripts?.["verify:adapter-worker-machine-auth"]) fails.push("package script missing");
 if(!read("tooling/verify/CATALOG.md").includes("adapter-worker-machine-auth")) fails.push("catalog missing");

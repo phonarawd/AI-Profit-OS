@@ -35,7 +35,7 @@ export default {
         role: "fx",
         cacheHintSec: CACHE_HINT_SEC,
         yahooJp: false,
-        credentialsConfigured: true,
+        credentialsConfigured: Boolean(env.ADAPTER_INGEST_TOKEN),
       });
     }
     if (url.pathname === "/tick" && request.method === "POST") {

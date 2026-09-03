@@ -193,10 +193,10 @@ jobs:
         run: node tooling/deploy/cf-preflight.cjs staging ops && node tooling/deploy/cf-pages-ops.cjs staging
 
 
-      # FX preview is fail-closed: no worker mutation unless the repository
-      # token is proven equal to the exact staging Nest token and CoinGecko
-      # credentials are present. Empty body reaches auth, then fails validation
-      # before any adapter state/DB write.
+      # FX preview is fail-closed: core Workers are always deployable for
+      # health/auth proof, but provider-secret binding and authenticated ticks
+      # remain blocked until repository credentials are present and the ingest
+      # token is proven equal to the exact staging Nest token.
       - name: FX preview credential parity
         env:
           ADAPTER_INGEST_TOKEN: ${{ secrets.ADAPTER_INGEST_TOKEN }}
@@ -241,11 +241,50 @@ jobs:
           echo "FX_PREVIEW_CLASSIFICATION=BLOCKED_PARITY_NOT_PROVEN"
 
       - name: Deploy FX core preview
-        if: env.FX_PREVIEW_READY == 'yes'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: node tooling/deploy/cf-workers.cjs preview fx-core
+
+      - name: FX core preview fail-closed smoke
+        run: |
+          set -euo pipefail
+          for WORKER in coingecko-adapter frankfurter-adapter; do
+            BASE="https://${WORKER}-preview.ebay-adapter.workers.dev"
+            OUT="/tmp/${WORKER}-health.json"
+            rm -f "$OUT"
+            for ATTEMPT in 1 2 3 4 5; do
+              if curl --fail --silent --show-error --max-time 20 "$BASE/health" > "$OUT"; then
+                break
+              fi
+              if [ "$ATTEMPT" -eq 5 ]; then
+                echo "FX_CORE_HEALTH_UNAVAILABLE worker=$WORKER"
+                exit 1
+              fi
+              sleep 2
+            done
+            CODE="$(curl --silent --show-error --output "/tmp/${WORKER}-unauth-tick.json" --write-out '%{http_code}' --max-time 20 -X POST "$BASE/tick")"
+            if [ "$CODE" != "401" ]; then
+              echo "FX_CORE_UNAUTH_TICK_NOT_FAIL_CLOSED worker=$WORKER status=$CODE"
+              exit 1
+            fi
+          done
+          node - <<'NODE'
+          const fs = require("fs");
+          for (const worker of ["coingecko-adapter", "frankfurter-adapter"]) {
+            const v = JSON.parse(fs.readFileSync("/tmp/" + worker + "-health.json", "utf8"));
+            if (v?.ok !== true || v?.role !== "fx" || typeof v?.credentialsConfigured !== "boolean") {
+              console.error("FX_CORE_HEALTH_INVALID", worker, JSON.stringify({
+                ok: v?.ok,
+                role: v?.role,
+                credentialsConfigured: v?.credentialsConfigured,
+              }));
+              process.exit(1);
+            }
+            console.log("[fx-core-health] PASS " + worker + " credentialsConfigured=" + v.credentialsConfigured);
+          }
+          console.log("[fx-core-auth] PASS unauthenticated /tick => 401");
+          NODE
 
       - name: Bind FX preview secrets
         if: env.FX_PREVIEW_READY == 'yes'
@@ -279,6 +318,33 @@ jobs:
             )
           done
 
+      - name: FX preview credential health
+        if: env.FX_PREVIEW_READY == 'yes'
+        run: |
+          set -euo pipefail
+          for WORKER in coingecko-adapter frankfurter-adapter; do
+            URL="https://${WORKER}-preview.ebay-adapter.workers.dev/health"
+            OK=no
+            for ATTEMPT in 1 2 3 4 5; do
+              BODY="$(curl --fail --silent --show-error --max-time 20 "$URL")" || BODY=""
+              if printf '%s' "$BODY" | node -e '
+                let raw=""; process.stdin.on("data",c=>raw+=c).on("end",()=>{
+                  try { const v=JSON.parse(raw); process.exit(v?.ok===true && v?.credentialsConfigured===true ? 0 : 1); }
+                  catch { process.exit(1); }
+                });
+              '; then
+                OK=yes
+                break
+              fi
+              sleep 2
+            done
+            if [ "$OK" != "yes" ]; then
+              echo "FX_PREVIEW_CREDENTIAL_HEALTH_NOT_READY worker=$WORKER"
+              exit 1
+            fi
+          done
+          echo "FX_PREVIEW_CREDENTIAL_HEALTH=PASS"
+
       - name: FX preview authenticated tick
         if: env.FX_PREVIEW_READY == 'yes'
         env:
@@ -308,6 +374,10 @@ jobs:
           set -euo pipefail
           if [ "${{ steps.auth_provider_readiness.outcome }}" != "success" ]; then
             echo "[staging-readiness] BLOCKED Kakao/Resend provider readiness"
+            exit 1
+          fi
+          if [ "${FX_PREVIEW_READY:-no}" != "yes" ]; then
+            echo "[staging-readiness] BLOCKED FX provider readiness"
             exit 1
           fi
           echo "[staging-readiness] PASS"

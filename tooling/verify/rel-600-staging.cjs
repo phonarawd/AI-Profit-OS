@@ -215,6 +215,33 @@ if (
 ) {
   fails.push("staging final verdict must fail closed when auth providers are unavailable");
 }
+const fxCoreStart = stagingWorkflow.indexOf("- name: Deploy FX core preview");
+const fxBindStart = stagingWorkflow.indexOf("- name: Bind FX preview secrets", fxCoreStart);
+const fxCoreSlice =
+  fxCoreStart >= 0 && fxBindStart > fxCoreStart
+    ? stagingWorkflow.slice(fxCoreStart, fxBindStart)
+    : "";
+if (!fxCoreSlice || /if:\s*env\.FX_PREVIEW_READY\s*==/.test(fxCoreSlice)) {
+  fails.push("staging FX core preview must deploy independently of provider-secret readiness");
+}
+if (
+  !stagingWorkflow.includes("FX core preview fail-closed smoke") ||
+  !stagingWorkflow.includes("[fx-core-auth] PASS unauthenticated /tick => 401")
+) {
+  fails.push("staging FX core preview must prove health + unauthenticated tick fail-closed");
+}
+if (
+  !stagingWorkflow.includes("FX preview credential health") ||
+  !stagingWorkflow.includes("FX_PREVIEW_CREDENTIAL_HEALTH=PASS")
+) {
+  fails.push("staging FX credential-ready path must prove live worker credential health");
+}
+if (
+  !stagingWorkflow.includes('if [ "${FX_PREVIEW_READY:-no}" != "yes" ]') ||
+  !stagingWorkflow.includes("[staging-readiness] BLOCKED FX provider readiness")
+) {
+  fails.push("staging final verdict must fail closed when FX providers are unavailable");
+}
 if (!stagingWorkflow.includes("app_host_not_staging_web") || !stagingWorkflow.includes("ops_host_not_staging_ops")) {
   fails.push("staging workflow must reject localhost/wrong auth origins");
 }
