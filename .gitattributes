@@ -1,0 +1,32 @@
+# 줄바꿈 SSOT: 저장소 = LF (Windows 개발 PC + Linux CI · ADR-016)
+# core.autocrlf 개별 설정과 무관하게 모든 clone에서 동일하게 동작한다.
+* text=auto eol=lf
+
+# 바이너리 (줄바꿈 변환·diff 금지)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.svgz binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tgz binary
+*.wasm binary
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.mp3 binary
+*.mp4 binary
+*.webm binary
+
+# lockfile: 병합 충돌 시 재생성 (수동 병합 금지)
+pnpm-lock.yaml merge=binary -diff
