@@ -164,6 +164,24 @@ if (stagingWorkflow.includes("secrets.API_HOST")) {
 if (!stagingWorkflow.includes("STAGING_API_HOST")) {
   fails.push("staging workflow must require STAGING_API_HOST");
 }
+if (stagingWorkflow.includes("secrets.STAGING_API_HOST")) {
+  fails.push("staging workflow must not depend on a stale STAGING_API_HOST secret");
+}
+if (
+  !staging ||
+  staging.apiOrigin !== "https://ai-profit-os-staging-exact-1f3b36f.onrender.com"
+) {
+  fails.push("staging.apiOrigin must bind the exact isolated Render service");
+}
+if (!stagingWorkflow.includes("manifest.openNext?.staging?.apiOrigin")) {
+  fails.push("staging workflow must source API origin from manifest SSOT");
+}
+if (!stagingWorkflow.includes("chatgpt/staging-exact-1f3b36f-20260903")) {
+  fails.push("staging workflow push trigger must be restricted to exact staging branch");
+}
+if (!stagingWorkflow.includes("github.event_name == 'push'")) {
+  fails.push("staging workflow push trigger must deploy both preview surfaces");
+}
 if (!stagingWorkflow.includes("forbiddenHosts")) {
   fails.push("staging workflow must deny manifest forbiddenHosts");
 }
