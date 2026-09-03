@@ -1,6 +1,6 @@
 {
   "schema": "governance.recovery.founder-action-packet.current.v2",
-  "recorded_on": "2026-09-03T11:26:35.709Z",
+  "recorded_on": "2026-09-03T11:34:01.149Z",
   "source": "GitHub + Render + Supabase + Cloudflare preview current revalidation; exact runtime 072616d7 + TLS DB binding + web/ops same-origin proxy proof + DB-backed read; Production mutation=0",
   "subject_integration_sha": "072616d744a188872d8b7f652475ace319d0893a",
   "production_release": "NO_GO",
@@ -55,7 +55,7 @@
       "mutation": 0,
       "founder_action_required": true
     },
-    "integration_governance_head_at_recording": "169af44ee0bc60cfd78ed1a1f78e2cbfe904af2a"
+    "integration_governance_head_at_recording": "6185cfa6f6061f9381823da66b2d8adb79dcbcf1"
   },
   "render": {
     "workspace_id": "tea-da5qqo3m8hqs73djpvvg",
@@ -189,10 +189,10 @@
     {
       "order": 3,
       "id": "STAGING_FRONTEND_E2E",
-      "action": "Cloudflare web/ops preview is bound to exact staging API 072616d7; live browser smoke rerun is pending against refreshed expected-SHA evidence.",
+      "action": "Live Chromium smoke PASS for web+login+ops and same-origin exact API 072616d7; authenticated user/money staging E2E remains pending before release.",
       "production_mutation": false,
       "provider_mutation_required": false,
-      "status": "PARTIAL"
+      "status": "BLOCKED"
     },
     {
       "order": 4,
@@ -329,7 +329,7 @@
     "codeql_evidence_sha": "072616d744a188872d8b7f652475ace319d0893a",
     "full_ghas_open_alert_inventory": "NOT_PROVEN"
   },
-  "governance_parent_sha": "169af44ee0bc60cfd78ed1a1f78e2cbfe904af2a",
+  "governance_parent_sha": "6185cfa6f6061f9381823da66b2d8adb79dcbcf1",
   "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
   "migration_effect_reconciliation": {
     "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
@@ -348,6 +348,7 @@
     "web_api_status": 200,
     "ops_api_status": 200,
     "same_origin_api_binding": "CLOSED_VERIFIED",
-    "browser_smoke": "RERUN_PENDING_CURRENT_EXPECTED_SHA"
+    "browser_smoke": "PASS",
+    "browser_smoke_run": 33750291160
   }
 }
