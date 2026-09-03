@@ -16,6 +16,18 @@ try {
   fail("packet_unreadable:" + String(e && e.message || e));
 }
 
+let stagingBinding;
+try {
+  stagingBinding = JSON.parse(read("governance/recovery/staging-runtime-db-binding.20260903.v1.json"));
+} catch (e) {
+  fail("staging_binding_unreadable:" + String(e && e.message || e));
+}
+const expectedRuntimeSha = stagingBinding && stagingBinding.candidate_sha;
+if (!/^[0-9a-f]{40}$/.test(expectedRuntimeSha || "")) fail("staging_binding_candidate_sha_invalid");
+if (stagingBinding && stagingBinding.health?.git_sha !== expectedRuntimeSha) fail("staging_binding_health_sha_stale");
+if (stagingBinding && stagingBinding.frontend_proxy_binding?.backend_runtime_sha !== expectedRuntimeSha) fail("staging_binding_frontend_sha_stale");
+if (stagingBinding && stagingBinding.browser_smoke?.status !== "PASS") fail("staging_browser_smoke_truth_stale");
+
 if (packet) {
   if (packet.schema !== "governance.recovery.founder-action-packet.current.v2") fail("schema_invalid");
   if (packet.production_release !== "NO_GO") fail("release_must_remain_no_go");
@@ -47,13 +59,13 @@ if (packet) {
     "CLOUDFLARE_STAGING_OPS_PREVIEW_REDEPLOY",
     "CLOUDFLARE_STAGING_API_ORIGIN_BINDING",
   ]) if (!stagingMutationScope.has(x)) fail("staging_provider_scope_missing:" + x);
-  if (packet.subject_integration_sha !== "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c") fail("subject_integration_sha_stale");
+  if (packet.subject_integration_sha !== expectedRuntimeSha) fail("subject_integration_sha_stale");
   const render = packet.render || {};
   if (!render.production || render.production.service_id !== "srv-da5r1tqjobas73fl16dg") fail("production_render_identity_drift");
   if (!render.production || render.production.autoDeploy !== "yes") fail("render_autodeploy_fact_stale");
   if (!render.staging || render.staging.service_id !== "srv-dacjnnm1egvs73cuh190") fail("staging_render_identity_drift");
   if (render.staging.current_candidate_bound !== true) fail("staging_candidate_truth_stale");
-  if (render.staging.live_sha !== "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c") fail("staging_live_sha_truth_stale");
+  if (render.staging.live_sha !== expectedRuntimeSha) fail("staging_live_sha_truth_stale");
   if (render.staging.database_url_configured !== true || render.staging.database_ok !== true) fail("staging_db_runtime_truth_stale");
   if (render.staging.database_tls_verified !== true) fail("staging_db_tls_truth_stale");
   if (render.staging.db_backed_public_read_status !== 200) fail("staging_db_backed_read_truth_stale");
@@ -143,7 +155,8 @@ if (packet) {
   if (sec.current_production_public_tables !== 93) fail("current_production_table_count_truth_stale");
   if (!Array.isArray(sec.current_production_known_rls_off) || !sec.current_production_known_rls_off.includes("push_control") || !sec.current_production_known_rls_off.includes("push_subscriptions")) fail("current_production_rls_truth_stale");
   if (sec.current_sha_codeql_or_equivalent_run !== "SUCCESS") fail("current_codeql_truth_stale");
-  if (sec.current_runtime_subject_sha !== "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c") fail("current_security_subject_sha_stale");
+  if (sec.current_runtime_subject_sha !== expectedRuntimeSha) fail("current_security_subject_sha_stale");
+  if (sec.codeql_evidence_sha !== expectedRuntimeSha) fail("codeql_evidence_sha_stale");
   if (sec.full_ghas_open_alert_inventory !== "NOT_PROVEN") fail("full_ghas_inventory_must_fail_closed");
   if (sec.status !== "PARTIAL") fail("security_evidence_status_must_remain_partial");
 
