@@ -53,9 +53,8 @@ export class MagicLinkService {
     try {
       const sent = await this.resend.sendMagicLink({ to: email, url });
       if (!sent.ok) {
-        // Delivery failed after the challenge was persisted. Invalidate it
-        // immediately so an undelivered proof can never remain usable.
-        await this.store.consumeAtomic("magic_link", hash, this.nowMs());
+        // Normalize explicit provider rejection through the catch path below
+        // so every failed delivery invalidates the challenge exactly once.
         throw new ServiceUnavailableException("MAGIC_LINK_DELIVERY_UNAVAILABLE");
       }
     } catch (error) {
