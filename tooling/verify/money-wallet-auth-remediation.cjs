@@ -1,7 +1,7 @@
 /**
  * verify:money-wallet-auth-remediation — Money post-r0 Finding A+B
  * A: practiceWelcome JWT + sessionUserId · body.userId 무시
- * B: practiceExpireTick fail-closed machine-auth · Adapters fail-open 복제0
+ * B: practice/chain internal routes fail-closed machine-auth · unauthenticated money mutation 0
  */
 const fs = require("fs");
 const path = require("path");
@@ -43,7 +43,7 @@ if (welcomeIdx < 0) {
   }
 }
 
-// Finding B — fail-closed
+// Finding B — all internal wallet mutation/control routes fail closed
 if (!wallet.includes("assertInternalWalletTickAuth")) {
   fails.push("missing assertInternalWalletTickAuth");
 }
@@ -63,7 +63,39 @@ if (!envExample.includes("INTERNAL_WALLET_TICK_TOKEN")) {
   fails.push(".env.example must document INTERNAL_WALLET_TICK_TOKEN");
 }
 
-// Adapters fail-open pattern must NOT be copied for wallet tick
+for (const method of [
+  "practiceExpireTick",
+  "observeUsdtDeposit",
+  "chainWatcherTick",
+  "chainWatcherStatus",
+  "chainSweeperTick",
+  "chainSweeperStatus",
+]) {
+  const idx = wallet.search(new RegExp("\\b" + method + "\\s*\\("));
+  if (idx < 0) {
+    fails.push(method + " missing");
+    continue;
+  }
+  const before = wallet.slice(Math.max(0, idx - 220), idx + 900);
+  if (!before.includes('@Headers("x-internal-wallet-token")')) {
+    fails.push(method + " must require x-internal-wallet-token");
+  }
+  if (!before.includes("this.assertInternalWalletTickAuth(headerToken)")) {
+    fails.push(method + " must authenticate before operation");
+  }
+}
+
+const observeIdx = wallet.search(/\bobserveUsdtDeposit\s*\(/);
+if (observeIdx >= 0) {
+  const observeFn = wallet.slice(observeIdx, observeIdx + 1100);
+  const authAt = observeFn.indexOf("this.assertInternalWalletTickAuth(headerToken)");
+  const mutateAt = observeFn.indexOf("this.usdtDeposit.observe");
+  if (authAt < 0 || mutateAt < 0 || authAt > mutateAt) {
+    fails.push("observeUsdtDeposit must authenticate before deposit/ledger mutation");
+  }
+}
+
+// Fail-open token checks must NOT be used for wallet machine routes
 const tickIdx = wallet.search(/\bpracticeExpireTick\s*\(/);
 if (tickIdx >= 0) {
   const tickFn = wallet.slice(tickIdx, tickIdx + 600);
@@ -73,8 +105,8 @@ if (tickIdx >= 0) {
     );
   }
 }
-if (adapters.includes("if (token)")) {
-  // adapters may still be fail-open (Engine Finding C) — wallet must not mirror
+if (/if\s*\(\s*token\s*\)/.test(adapters)) {
+  fails.push("adapter ingest fail-open token pattern reintroduced");
 }
 
 const pkg = JSON.parse(read("package.json"));
@@ -92,5 +124,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:money-wallet-auth-remediation] PASS (A session binding · B fail-closed machine-auth · catalog)",
+  "[verify:money-wallet-auth-remediation] PASS (A session binding · B all internal wallet chain/tick routes fail closed · catalog)",
 );
