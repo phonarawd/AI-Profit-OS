@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-const {
+import {
   allocateCanonicalTrc20Address,
   deriveTrc20Address,
   requireCanonicalTrc20Deriver,
   resolveCanonicalTrc20Deriver,
   TRON_HD_DERIVATION_UNAVAILABLE,
   TronHdDerivationUnavailableError,
-} = require("./tron-address.ts");
+} from "./tron-address.ts";
 
 function isUnavailable(
   err: unknown,
