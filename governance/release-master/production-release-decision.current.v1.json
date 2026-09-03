@@ -1,6 +1,6 @@
 {
   "schema": "production-release-evidence.current.v1",
-  "observed_at": "2026-09-03T11:26:35.709Z",
+  "observed_at": "2026-09-03T11:34:01.149Z",
   "candidate_sha": "072616d744a188872d8b7f652475ace319d0893a",
   "release_acceptance": null,
   "engine": {
@@ -14,14 +14,14 @@
     "status": "NOT_READY",
     "verdict": "STAGING_TOPOLOGY=READY",
     "blockers": [
-      "frontend_browser_smoke_rerun_pending",
+      "authenticated_staging_e2e_not_proven",
       "staging_fx_runtime_feed_inactive"
     ],
     "backend_topology_ready": true,
     "backend_db_health": true,
     "backend_db_tls_verified": true,
     "backend_db_backed_read": "PASS",
-    "frontend_e2e": "RERUN_PENDING_CURRENT_EXPECTED_SHA",
+    "frontend_e2e": "BROWSER_PASS_AUTHENTICATED_E2E_NOT_PROVEN",
     "frontend_proxy_binding": "CLOSED_VERIFIED"
   },
   "db_hardening": {
@@ -75,7 +75,7 @@
     "status": "NOT_PROVEN_CURRENT"
   },
   "production_mutation": 0,
-  "governance_parent_sha": "1223e3b6aca295858409770788fd89ec9b5cec8d",
+  "governance_parent_sha": "a3c49f748579d603f1b57a0f1a11f7869ec1d1f9",
   "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
   "migration_effect_reconciliation": {
     "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
