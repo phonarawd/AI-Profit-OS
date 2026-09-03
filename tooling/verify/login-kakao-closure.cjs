@@ -40,6 +40,48 @@ if (kakao && /\bOAuth\b|\bJWT\b|\bcallback\b/.test(kakao)) {
   fail("kakao start page must not show developer terms");
 }
 
+const callbackPage = read("apps/web/app/auth/oauth/[provider]/callback/page.tsx");
+const callbackRuntime = read(
+  "apps/web/app/auth/oauth/[provider]/callback/OauthCallbackRuntime.tsx",
+);
+const signup = read("apps/web/app/auth/signup/SignupRuntime.tsx");
+const sdkProof = read("packages/sdk/src/auth/proof.ts");
+const authController = read("services/api-nest/src/auth/auth.controller.ts");
+
+if (
+  !callbackPage.includes("OauthCallbackRuntime") ||
+  !callbackPage.includes("params: Promise<{ provider: string }>")
+) {
+  fail("web OAuth callback route must dispatch provider to OauthCallbackRuntime");
+}
+for (const needle of [
+  "finishOauth",
+  'sessionStorage.getItem("aipo.oauth.terms")',
+  'provider !== "kakao" && provider !== "google"',
+  "continuePathAfterAuth",
+]) {
+  if (!callbackRuntime.includes(needle)) {
+    fail("OAuth callback runtime missing: " + needle);
+  }
+}
+const storeIdx = signup.indexOf('sessionStorage.setItem(\n          "aipo.oauth.terms"');
+const redirectIdx = signup.indexOf("window.location.assign(out.authorizeUrl)");
+if (storeIdx < 0 || redirectIdx < 0 || storeIdx > redirectIdx) {
+  fail("signup Kakao terms must be stored before redirect to provider");
+}
+if (
+  !sdkProof.includes('"/api/v1/auth/oauth/" + input.provider + "/callback"') ||
+  !sdkProof.includes("return postSession(")
+) {
+  fail("SDK OAuth finish must POST code+state to the Nest callback route");
+}
+if (
+  !authController.includes("@Post(AUTH_ROUTES.oauthCallback)") ||
+  !authController.includes("this.auth.oauthCallback")
+) {
+  fail("Nest OAuth callback must remain a POST server-verification route");
+}
+
 const notePath = path.join(root, "governance/release-master/REL-102-LOGIN-KAKAO.md");
 if (fs.existsSync(notePath)) {
   const note = fs.readFileSync(notePath, "utf8");
@@ -54,7 +96,7 @@ function finish() {
     process.exit(1);
   }
   console.log(
-    "[verify:login-kakao-closure] PASS (login wired · Kakao live NOT_RUN)",
+    "[verify:login-kakao-closure] PASS (login + web callback + terms handoff + Nest POST finish wired · Kakao live NOT_RUN)",
   );
 }
 

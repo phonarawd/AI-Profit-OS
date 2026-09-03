@@ -248,7 +248,7 @@
 | landing-guest-closure | REL-100 — **live** (guest `/` empty money truth · Landing3s CTA · Home freeze · Playwright landing-guest) |
 | home-closure | REL-105 — **live** (Home freeze · root legacy chrome 0 · guest+member single chrome · /dev isolation · 390/1440 + 2560/3440/3840 overflow · axe REL-012 · missing money ≠ 0 · /profits nav · production URL 0) |
 | acquisition-release | REL-101 — **live** (Canon signup/login/profile wired to Nest SDK · Kakao live NOT_RUN · PendingFigma 0) |
-| login-kakao-closure | REL-102 — **live** (login session/magic-link · LIVE_KAKAO_HUMAN_E2E=NOT_RUN 위조 0) |
+| login-kakao-closure | REL-102 — **live · CI Gate** (login session/magic-link · web callback · signup terms handoff · Nest POST OAuth finish · LIVE_KAKAO_HUMAN_E2E=NOT_RUN 위조 0) |
 | complete-profile-closure | REL-103 — **live** (Stage B PATCH · gender 0) |
 | onboarding-journey-closure | REL-104 — **live** (experiential OnboardingFlow · demo label · deposit funnel 0) |
 | settlement-rule-parity | REL-008 — **live** (`settlement_rule.rs` == `settlement_rule.cjs` on golden vectors · T0 path + T1 · `cargo build --release` 0 · REL-502 대체 0) |
