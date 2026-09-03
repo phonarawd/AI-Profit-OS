@@ -3,14 +3,18 @@
 // selftest with a mocked global.fetch (no live eBay call). Deployed Worker
 // bundling is unaffected — that still goes through wrangler/esbuild using
 // tsconfig.json's Bundler resolution + noEmit.
+// rootDir=.. intentionally includes workers/_shared machine-auth used by index.ts.
 {
   "compilerOptions": {
     "target": "ES2022",
     "module": "CommonJS",
     "moduleResolution": "Node10",
-    "lib": ["ES2022", "DOM"],
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
     "outDir": "dist-selftest",
-    "rootDir": "src",
+    "rootDir": "..",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
@@ -18,5 +22,8 @@
     "noEmit": false,
     "declaration": false
   },
-  "include": ["src/**/*.ts", "src/**/*.cts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.cts"
+  ]
 }

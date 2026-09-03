@@ -391,15 +391,16 @@ if (fails.length === 0) {
     );
   } else {
     const distSelftest = path.join(root, "workers/ebay-adapter/dist-selftest");
+    const compiledWorkerSrc = path.join(distSelftest, "ebay-adapter", "src");
     try {
       fs.copyFileSync(
         path.join(root, "workers/ebay-adapter/src/retry-policy.cjs"),
-        path.join(distSelftest, "retry-policy.cjs"),
+        path.join(compiledWorkerSrc, "retry-policy.cjs"),
       );
     } catch (e) {
       fails.push(`could not stage retry-policy.cjs into dist-selftest: ${e.message}`);
     }
-    const selftestJs = path.join(distSelftest, "fault-injection.selftest.js");
+    const selftestJs = path.join(compiledWorkerSrc, "fault-injection.selftest.js");
     if (fails.length === 0) {
       if (!fs.existsSync(selftestJs)) {
         fails.push(`missing compiled selftest: ${selftestJs}`);
