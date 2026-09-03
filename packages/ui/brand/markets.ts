@@ -60,7 +60,7 @@ export const MARKET_LOGOS: readonly MarketLogoEntry[] = [
     path: "assets/markets/pokemontcg.svg",
     status: "blocked",
     partnerIds: ["pokemontcg"],
-    labelKo: "포켓몬 TCG 공식 API",
+    labelKo: "포켓몬 TCG API",
     tier: "B",
     displayOrder: 4,
     variant: "official_monochrome_dark",
