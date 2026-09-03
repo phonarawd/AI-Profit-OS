@@ -22,6 +22,7 @@ import { isPositiveAmount } from "../ledger/ledger.money";
 import { composeFxSnapshot, deriveMarketplaceLegs } from "./opportunities.mi";
 import {
   carryMarketplaceLeg,
+  validateFxObservedAt,
   type RateProvenance,
 } from "./fx-marketplace-freshness";
 
@@ -135,10 +136,17 @@ export class FxSnapshotService {
       return { ok: false, snapshotId: null, created: false, reason: "DATABASE_URL_UNSET" };
     }
     const fx = input.fx && typeof input.fx === "object" ? input.fx : {};
-    const observedAt = this.isIsoDate(input.observedAt)
-      ? input.observedAt
-      : new Date().toISOString();
-    const nowMs = Date.parse(observedAt);
+    const observed = validateFxObservedAt(input.observedAt, Date.now());
+    if (!observed.ok) {
+      return {
+        ok: false,
+        snapshotId: null,
+        created: false,
+        reason: observed.reason,
+      };
+    }
+    const observedAt = observed.observedAt;
+    const nowMs = observed.observedMs;
 
     const raw = this.readAdapterFields(input.adapterId, fx);
     if (Object.keys(raw).length === 0) {
@@ -383,7 +391,4 @@ export class FxSnapshotService {
     return merged;
   }
 
-  private isIsoDate(v: string | null | undefined): v is string {
-    return typeof v === "string" && !Number.isNaN(Date.parse(v));
-  }
 }

@@ -20,6 +20,36 @@ export type RateProvenance = Record<string, LegProvenance>;
 export const COINGECKO_MARKETPLACE_TTL_MS = 15 * 60 * 1000;
 export const FRANKFURTER_MARKETPLACE_TTL_MS = 6 * 60 * 60 * 1000;
 
+export const FX_OBSERVED_AT_MAX_FUTURE_SKEW_MS = 5 * 60 * 1000;
+
+export type FxObservedAtValidation =
+  | { ok: true; observedAt: string; observedMs: number }
+  | {
+      ok: false;
+      reason: "FX_OBSERVED_AT_INVALID" | "FX_OBSERVED_AT_FUTURE";
+    };
+
+export function validateFxObservedAt(
+  observedAt: string | null | undefined,
+  serverNowMs: number,
+): FxObservedAtValidation {
+  if (typeof observedAt !== "string" || !observedAt.trim()) {
+    return { ok: false, reason: "FX_OBSERVED_AT_INVALID" };
+  }
+  const observedMs = Date.parse(observedAt);
+  if (!Number.isFinite(observedMs) || !Number.isFinite(serverNowMs)) {
+    return { ok: false, reason: "FX_OBSERVED_AT_INVALID" };
+  }
+  if (observedMs > serverNowMs + FX_OBSERVED_AT_MAX_FUTURE_SKEW_MS) {
+    return { ok: false, reason: "FX_OBSERVED_AT_FUTURE" };
+  }
+  return {
+    ok: true,
+    observedAt: new Date(observedMs).toISOString(),
+    observedMs,
+  };
+}
+
 const EXPECTED_SOURCE: Record<MarketplaceFxLeg, "coingecko" | "frankfurter"> = {
   gbpUsd: "frankfurter",
   eurUsd: "frankfurter",

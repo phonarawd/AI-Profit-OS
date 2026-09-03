@@ -3,7 +3,9 @@ import { test } from "node:test";
 import {
   COINGECKO_MARKETPLACE_TTL_MS,
   FRANKFURTER_MARKETPLACE_TTL_MS,
+  FX_OBSERVED_AT_MAX_FUTURE_SKEW_MS,
   carryMarketplaceLeg,
+  validateFxObservedAt,
   type RateProvenance,
 } from "./fx-marketplace-freshness.ts";
 
@@ -110,4 +112,27 @@ test("missing malformed or future provenance fails closed", () => {
     ),
     null,
   );
+});
+
+test("FX observedAt rejects malformed and far-future timestamps", () => {
+  assert.deepEqual(validateFxObservedAt("not-a-date", NOW), {
+    ok: false,
+    reason: "FX_OBSERVED_AT_INVALID",
+  });
+  assert.deepEqual(
+    validateFxObservedAt(
+      new Date(NOW + FX_OBSERVED_AT_MAX_FUTURE_SKEW_MS + 1).toISOString(),
+      NOW,
+    ),
+    { ok: false, reason: "FX_OBSERVED_AT_FUTURE" },
+  );
+});
+
+test("FX observedAt allows bounded clock skew and canonicalizes ISO", () => {
+  const raw = new Date(NOW + FX_OBSERVED_AT_MAX_FUTURE_SKEW_MS).toISOString();
+  assert.deepEqual(validateFxObservedAt(raw, NOW), {
+    ok: true,
+    observedAt: raw,
+    observedMs: Date.parse(raw),
+  });
 });

@@ -81,6 +81,11 @@ assert.match(fxFreshness, /EXPECTED_SOURCE/);
 assert.match(fxFreshness, /COINGECKO_MARKETPLACE_TTL_MS = 15 \* 60 \* 1000/);
 assert.match(fxFreshness, /FRANKFURTER_MARKETPLACE_TTL_MS = 6 \* 60 \* 60 \* 1000/);
 assert.match(fxFreshness, /capturedMs > nowMs/);
+assert.match(fxFreshness, /FX_OBSERVED_AT_MAX_FUTURE_SKEW_MS = 5 \* 60 \* 1000/);
+assert.match(fxFreshness, /FX_OBSERVED_AT_INVALID/);
+assert.match(fxFreshness, /FX_OBSERVED_AT_FUTURE/);
+assert.match(fxSnapshot, /validateFxObservedAt\(input\.observedAt, Date\.now\(\)\)/);
+assert.doesNotMatch(fxSnapshot, /isIsoDate\(/);
 
 const freshnessRuntime = spawnSync(
   process.execPath,
