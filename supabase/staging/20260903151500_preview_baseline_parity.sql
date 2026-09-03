@@ -27,3 +27,9 @@ DROP TRIGGER IF EXISTS admin_audit_events_forbid_truncate
   ON public.admin_audit_events;
 DROP FUNCTION IF EXISTS public.admin_audit_events_forbid_truncate();
 GRANT ALL ON TABLE public.admin_audit_events TO service_role;
+
+-- Match current Production function authority exactly.
+REVOKE ALL ON FUNCTION public.admin_audit_events_forbid_mutation()
+  FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.admin_audit_events_forbid_mutation()
+  TO postgres, service_role;
