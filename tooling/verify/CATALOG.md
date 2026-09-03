@@ -285,6 +285,7 @@
 | listing-legs-day1 | Engine §0.0.1a/§0.0.2 — ebay 멀티marketplace\|admin only · yahoo_jp Day-1 auto-publish FORBIDDEN · §38.10 partner 표기 OK(카피금지 supersede) · KR/Chrono24대체0 — **live** — **live** |
 | signup-ready-adapters | Engine §0.0 — ebay 멀티marketplaceId · pokemontcg+ygoprodeck · coingecko+frankfurter · yahoo-jp경로0 · Phase1 deploy (phase0 0) · Admin `/admin/adapters` health — **live** |
 | adapter-worker-machine-auth | Adapter Workers — public manual `/tick` requires x-adapter-token · Nest ingest token optional-spread forbidden · missing token fail-closed — **live** |
+| chain-worker-machine-auth | Chain Watcher/Sweeper — manual `/tick` requires x-chain-worker-token · Nest watcher ingest token required when forwarding · scheduled cron remains internal — **live** |
 | database-tls-strict | PostgreSQL — Supabase direct+Supavisor hostname lock · Root CA required · rejectUnauthorized=true · connection-string TLS override removed — **live** |
 | adapter-matching-kpi | Engine §51.12+§51.15 — 등급매칭·SKU실패율 KPI(>15%/24h 알림·자동공개축소) · compareReady false>40% 시드점검 · stale>TTL 적색 · Admin `/admin/adapters` KPI·알림 · yahoo0 · Simulation S4 `adapterMatchFailureRate` 선행 — **live** |
 | kyc-withdraw-only · kyc-redirect · kyc-r2-only | Money §42 — **live** (출금1회게이트 · toast→/me/kyc@800ms · R2 kyc-docs private) |
