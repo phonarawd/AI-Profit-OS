@@ -216,6 +216,10 @@ const pushSql = fs.readFileSync(
   path.join(root, "supabase/staging/20260901120100_push_rls.sql"),
   "utf8",
 );
+const productionHardeningSql = fs.readFileSync(
+  path.join(root, "supabase/migrations/20260903092000_production_db_hardening.sql"),
+  "utf8",
+);
 
 for (const needle of [
   "GRANT SELECT, INSERT ON TABLE public.admin_audit_events TO service_role",
@@ -238,6 +242,40 @@ for (const needle of [
 ]) {
   assert.ok(pushSql.includes(needle), "push hardening contract drift: " + needle);
 }
+
+for (const needle of [
+  "ALTER TABLE public.admin_audit_events ENABLE ROW LEVEL SECURITY",
+  "REVOKE UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER",
+  "GRANT SELECT, INSERT ON TABLE public.admin_audit_events TO service_role",
+  "CREATE TRIGGER admin_audit_events_forbid_truncate",
+  "ALTER TABLE public.push_control ENABLE ROW LEVEL SECURITY",
+  "ALTER TABLE public.push_control FORCE ROW LEVEL SECURITY",
+  "ALTER TABLE public.push_subscriptions ENABLE ROW LEVEL SECURITY",
+  "ALTER TABLE public.push_subscriptions FORCE ROW LEVEL SECURITY",
+  "CREATE POLICY push_control_deny_anon",
+  "CREATE POLICY push_control_deny_authenticated",
+  "CREATE POLICY push_subscriptions_deny_anon",
+  "CREATE POLICY push_subscriptions_deny_authenticated",
+  "REVOKE ALL ON TABLE public.push_control FROM service_role",
+  "REVOKE ALL ON TABLE public.push_subscriptions FROM service_role",
+  "GRANT SELECT, UPDATE ON TABLE public.push_control TO service_role",
+  "ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public",
+  "REVOKE ALL ON TABLES FROM PUBLIC, anon, authenticated",
+]) {
+  assert.ok(productionHardeningSql.includes(needle), "production hardening source drift: " + needle);
+}
+assert.match(
+  productionHardeningSql,
+  /GRANT SELECT, INSERT, UPDATE, DELETE\s+ON TABLE public\.push_subscriptions TO service_role/,
+);
+assert.doesNotMatch(
+  productionHardeningSql,
+  /ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin/i,
+);
+assert.doesNotMatch(
+  productionHardeningSql,
+  /GRANT ALL ON TABLE public\.(push_control|push_subscriptions) TO service_role/,
+);
 
 console.log(
   "[verify:db-hardening-readiness] PASS (EXACT_PRIVILEGES · ENABLE+FORCE_RLS · DENY_POLICIES · SOURCE_CONTRACT_BOUND · production mutation 0)",
