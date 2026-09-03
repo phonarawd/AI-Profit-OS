@@ -23,9 +23,19 @@ const fixture = JSON.parse(
   read("tooling/verify/fixtures/rel-408-security-baseline.v1.json") || "{}",
 );
 const baseline = read("governance/release-master/SECURITY_BASELINE.md");
+const rel408Record = read("governance/release-master/REL-408-SECURITY-BASELINE.md");
 const runbook = read("governance/release-master/ROLLBACK_RUNBOOK.md");
 const versioning = read("governance/release-master/VERSIONING.md");
 const plan = read(".cursor/plans/PUTDUK_RELEASE_MASTER.plan.md");
+
+for (const historicalNeedle of [
+  "HISTORICAL_SNAPSHOT_ONLY = 1",
+  "CURRENT_RELEASE_AUTHORITY = governance/recovery/founder-action-packet.current.v2.json",
+  "CURRENT_REUSE_AS_PRODUCTION_SECURITY_PROOF = FORBIDDEN",
+]) {
+  if (!baseline.includes(historicalNeedle)) fails.push("SECURITY_BASELINE historical semantics missing " + historicalNeedle);
+  if (!rel408Record.includes(historicalNeedle)) fails.push("REL-408 evidence historical semantics missing " + historicalNeedle);
+}
 
 if (fixture.projectRef !== "mgsytcetsiecllmhcyox") {
   fails.push("fixture projectRef must stay mgsytcetsiecllmhcyox");
@@ -136,5 +146,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:rel-408-security-baseline] PASS (RLS 80/80 · secrets · runbook lifecycle · apply 0)",
+  "[verify:rel-408-security-baseline] PASS (HISTORICAL 2026-08-23 snapshot only · RLS 80/80 then · current release authority separate · apply 0)",
 );

@@ -1,7 +1,7 @@
 {
   "schema": "governance.recovery.founder-action-packet.current.v2",
   "recorded_on": "2026-09-03",
-  "source": "GitHub + Render + Supabase current revalidation + scoped staging provider rehearsal/reassert evidence",
+  "source": "GitHub + Render + Supabase current revalidation + scoped staging provider rehearsal/reassert + live runtime/ruleset evidence",
   "subject_integration_sha": "529c63e3c38a6101dd52bef2c2ad46937a14c42b",
   "production_release": "NO_GO",
   "invariants": {
@@ -27,7 +27,20 @@
     "rescue_checkpoint_sha": "e312119582036ab1367ede74dd4c08ff3b22a951",
     "integration_subject_sha": "529c63e3c38a6101dd52bef2c2ad46937a14c42b",
     "integration_pr": 209,
-    "integration_pr_draft": true
+    "integration_pr_draft": true,
+    "main_ruleset": {
+      "id": 20576556,
+      "name": "main-gate-required",
+      "enforcement": "active",
+      "required_status_checks": [
+        "verify-gate"
+      ],
+      "required_approving_review_count": 0,
+      "current_user_can_bypass": "always",
+      "release_risk": "BYPASS_PLUS_RENDER_MAIN_AUTODEPLOY",
+      "mutation": 0,
+      "founder_action_required": true
+    }
   },
   "render": {
     "workspace_id": "tea-da5qqo3m8hqs73djpvvg",
@@ -103,7 +116,9 @@
     "ENGINE_REBASE_REQUIRED",
     "ENGINE_ACK_MISSING",
     "RELEASE_ACCEPTANCE_MISSING",
-    "CURRENT_SHA_SECURITY_EVIDENCE_INCOMPLETE"
+    "CURRENT_SHA_SECURITY_EVIDENCE_INCOMPLETE",
+    "PRODUCTION_MAGIC_LINK_DELIVERY_NOT_PROVEN_CURRENT",
+    "MAIN_RULESET_BYPASS_PRESENT"
   ],
   "next_actions": [
     {
@@ -139,27 +154,43 @@
     },
     {
       "order": 5,
+      "id": "AUTH_EMAIL_RUNTIME",
+      "action": "Prove live Resend provider configuration and successful Production-equivalent magic-link delivery before launch; source fail-closed CI is not provider-runtime proof.",
+      "production_mutation": true,
+      "founder_action_required": true,
+      "status": "BLOCKED"
+    },
+    {
+      "order": 6,
       "id": "TRON_HD_VAULT",
       "action": "Provide and prove canonical BIP32 secp256k1 authority for m/44'/195'/0'/0/{index}; keep 503 fail-closed until proven.",
       "production_mutation": false,
       "status": "BLOCKED"
     },
     {
-      "order": 6,
+      "order": 7,
       "id": "SECURITY_AND_ROLLBACK",
       "action": "Pre-promotion Render rollback target is bound; close current exact-SHA security evidence.",
       "production_mutation": false,
       "status": "PARTIAL"
     },
     {
-      "order": 7,
+      "order": 8,
       "id": "REL_502_CURRENT_EPOCH",
       "action": "After all tracked mutations stop, rerun protected-scope verification and reissue REL-502 only for the exact final SHA.",
       "production_mutation": false,
       "status": "PENDING"
     },
     {
-      "order": 8,
+      "order": 9,
+      "id": "MAIN_RELEASE_GOVERNANCE",
+      "action": "Remove or constrain the main ruleset bypass and keep main promotion impossible without explicit Founder authority; coordinate with disabling Render Production autoDeploy.",
+      "production_mutation": true,
+      "founder_action_required": true,
+      "status": "PENDING"
+    },
+    {
+      "order": 10,
       "id": "RENDER_RELEASE_CONTROL",
       "action": "Disable Production autoDeploy before accepted exact-SHA promotion.",
       "production_mutation": true,
@@ -167,7 +198,7 @@
       "status": "PENDING"
     },
     {
-      "order": 9,
+      "order": 11,
       "id": "PRODUCTION_DB_APPLY",
       "action": "Apply reviewed hardening migration to Production only after staging proof and explicit Founder authorization.",
       "production_mutation": true,
@@ -175,7 +206,7 @@
       "status": "PENDING"
     },
     {
-      "order": 10,
+      "order": 12,
       "id": "RELEASE_ACCEPTANCE",
       "action": "Build once, bind authoritative Engine run, obtain release acceptance, then evaluate final GO_CANDIDATE.",
       "production_mutation": false,
@@ -203,5 +234,32 @@
     "production_worker_promotion_performed": false,
     "status": "BLOCKED"
   },
-  "evidence_commit_semantics": "subject_integration_sha is the tested parent candidate; this governance-only evidence commit must rerun CI before becoming a final candidate."
+  "evidence_commit_semantics": "subject_integration_sha is the tested parent candidate; this governance-only evidence commit must rerun CI before becoming a final candidate.",
+  "auth_email_runtime": {
+    "production_live_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec",
+    "observed_window_start": "2026-09-02T08:00:00Z",
+    "observed_window_end": "2026-09-03T08:45:00Z",
+    "magic_link_delivery_503_count": 2,
+    "magic_link_delivery_503_timestamps": [
+      "2026-09-02T16:26:45.800Z",
+      "2026-09-03T05:56:24.503Z"
+    ],
+    "resend_http_failure_log_count": 0,
+    "live_provider_configuration": "NOT_PROVEN",
+    "root_cause": "NOT_PROVEN_PRE_PROVIDER_OR_CONFIGURATION_PATH_LIKELY",
+    "source_ci_scope": "FAIL_CLOSED_CONTRACT_ONLY_NOT_LIVE_PROVIDER",
+    "status": "BLOCKED"
+  },
+  "security_evidence": {
+    "rel_408_role": "HISTORICAL_SNAPSHOT_ONLY",
+    "rel_408_measured_at": "2026-08-23",
+    "current_production_public_tables": 93,
+    "current_production_known_rls_off": [
+      "push_control",
+      "push_subscriptions"
+    ],
+    "current_sha_codeql_or_equivalent_run": "NOT_PROVEN",
+    "current_authority": "FOUNDER_PACKET_PLUS_CURRENT_PROVIDER_EVIDENCE",
+    "status": "PARTIAL"
+  }
 }

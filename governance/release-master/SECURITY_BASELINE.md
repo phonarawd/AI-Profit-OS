@@ -10,10 +10,15 @@ PRODUCTION_DB_APPLY = 0
 APPLY_MIGRATION = 0
 HOME_GEOMETRY_DIFF = 0
 MEASURED_AT = 2026-08-23
+HISTORICAL_SNAPSHOT_ONLY = 1
+CURRENT_RELEASE_AUTHORITY = governance/recovery/founder-action-packet.current.v2.json
+CURRENT_REUSE_AS_PRODUCTION_SECURITY_PROOF = FORBIDDEN
 PROJECT_REF = mgsytcetsiecllmhcyox
 ```
 
 읽기 실측만. 이 REL에서 `apply_migration` / production DDL = 0.
+
+> 이 표의 80/80 값은 **2026-08-23 역사적 측정치**다. 현재 Production table/RLS truth로 재사용하지 않는다.
 실제 apply = REL-701-DB. 롤백 연습 = REL-602.
 
 ## 1. RLS / role (원격 읽기)

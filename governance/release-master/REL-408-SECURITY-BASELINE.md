@@ -9,6 +9,10 @@ PROTECTED_SCOPE_MUTATION = TRUE
 PRODUCTION_DB_APPLY = 0
 APPLY_MIGRATION = 0
 HOME_GEOMETRY_DIFF = 0
+EVIDENCE_EPOCH = 2026-08-23
+HISTORICAL_SNAPSHOT_ONLY = 1
+CURRENT_RELEASE_AUTHORITY = governance/recovery/founder-action-packet.current.v2.json
+CURRENT_REUSE_AS_PRODUCTION_SECURITY_PROOF = FORBIDDEN
 ```
 
 ## IMPLEMENTATION
@@ -28,6 +32,8 @@ HOME_GEOMETRY_DIFF = 0
 ## ACCEPTANCE
 
 보안 baseline 문서화. prod apply 0.
+
+이 문서는 2026-08-23 측정 epoch의 역사적 완료 기록이다. 현재 Production 보안 상태를 증명하지 않으며, 현재 release 판정은 `governance/recovery/founder-action-packet.current.v2.json` 및 최신 provider read-only evidence를 사용한다.
 
 ## EXIT_GATE
 

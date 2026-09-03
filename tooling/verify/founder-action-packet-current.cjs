@@ -82,6 +82,8 @@ if (packet) {
     "PRODUCTION_DB_HARDENING_NOT_APPLIED",
     "RENDER_AUTODEPLOY_ENABLED",
     "FX_RUNTIME_FEED_NOT_ACTIVE_CURRENT",
+    "PRODUCTION_MAGIC_LINK_DELIVERY_NOT_PROVEN_CURRENT",
+    "MAIN_RULESET_BYPASS_PRESENT",
     "TRON_HD_VAULT_NOT_PROVEN",
     "ENGINE_NOT_ISSUED",
     "ENGINE_REBASE_REQUIRED",
@@ -94,6 +96,23 @@ if (packet) {
     "STAGING_SCHEMA_PARITY_NOT_PROVEN_CURRENT",
     "ROLLBACK_TARGET_NOT_BOUND",
   ]) if (blockers.has(closedNow)) fail("closed_current_blocker_reintroduced:" + closedNow);
+
+  const ruleset = packet.github && packet.github.main_ruleset || {};
+  if (ruleset.id !== 20576556 || ruleset.enforcement !== "active") fail("main_ruleset_truth_stale");
+  if (ruleset.required_approving_review_count !== 0) fail("main_ruleset_review_count_truth_stale");
+  if (ruleset.current_user_can_bypass !== "always") fail("main_ruleset_bypass_truth_stale");
+  if (ruleset.release_risk !== "BYPASS_PLUS_RENDER_MAIN_AUTODEPLOY") fail("main_ruleset_release_risk_missing");
+
+  const emailRuntime = packet.auth_email_runtime || {};
+  if (emailRuntime.magic_link_delivery_503_count !== 2) fail("auth_email_runtime_503_truth_stale");
+  if (emailRuntime.resend_http_failure_log_count !== 0) fail("auth_email_runtime_http_failure_truth_stale");
+  if (emailRuntime.live_provider_configuration !== "NOT_PROVEN") fail("auth_email_provider_truth_must_fail_closed");
+  if (emailRuntime.status !== "BLOCKED") fail("auth_email_runtime_must_stay_blocked");
+
+  const sec = packet.security_evidence || {};
+  if (sec.rel_408_role !== "HISTORICAL_SNAPSHOT_ONLY") fail("rel408_current_authority_forbidden");
+  if (sec.current_production_public_tables !== 93) fail("current_production_table_count_truth_stale");
+  if (!Array.isArray(sec.current_production_known_rls_off) || !sec.current_production_known_rls_off.includes("push_control") || !sec.current_production_known_rls_off.includes("push_subscriptions")) fail("current_production_rls_truth_stale");
 
   const rollback = packet.rollback || {};
   if (rollback.target_bound !== true) fail("rollback_target_not_bound");
@@ -113,7 +132,7 @@ if (packet) {
   ]) if (blockers.has(staleClosed)) fail("closed_blocker_reintroduced:" + staleClosed);
 
   const actions = new Set((packet.next_actions || []).map((x) => x && x.id));
-  for (const id of ["CI_EXACT_HEAD","STAGING_BINDING","DB_HARDENING_REHEARSAL","FX_RUNTIME_FEED","TRON_HD_VAULT","REL_502_CURRENT_EPOCH","RENDER_RELEASE_CONTROL","PRODUCTION_DB_APPLY","RELEASE_ACCEPTANCE"]) {
+  for (const id of ["CI_EXACT_HEAD","STAGING_BINDING","DB_HARDENING_REHEARSAL","FX_RUNTIME_FEED","AUTH_EMAIL_RUNTIME","TRON_HD_VAULT","REL_502_CURRENT_EPOCH","MAIN_RELEASE_GOVERNANCE","RENDER_RELEASE_CONTROL","PRODUCTION_DB_APPLY","RELEASE_ACCEPTANCE"]) {
     if (!actions.has(id)) fail("missing_action:" + id);
   }
 
