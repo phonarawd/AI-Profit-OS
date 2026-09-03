@@ -388,6 +388,7 @@
     "verify:fx-worker-release-path": "node tooling/verify/fx-worker-release-path.cjs",
     "verify:adapter-worker-machine-auth": "node tooling/verify/adapter-worker-machine-auth.cjs",
     "verify:chain-worker-machine-auth": "node tooling/verify/chain-worker-machine-auth.cjs",
+    "verify:marketing-capi-worker-machine-auth": "node tooling/verify/marketing-capi-worker-machine-auth.cjs",
     "verify:database-tls-strict": "node tooling/verify/database-tls-strict.cjs"
   },
   "pnpm": {

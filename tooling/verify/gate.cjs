@@ -12,6 +12,7 @@ const steps = [
   "cf-infra.cjs",
   "fx-worker-release-path.cjs",
   "chain-worker-machine-auth.cjs",
+  "marketing-capi-worker-machine-auth.cjs",
   "ebay-worker-deploy-path.cjs",
   "p0-ebay-secret-provisioning.cjs",
   "nest-production-provenance.cjs",
