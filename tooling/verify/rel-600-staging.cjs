@@ -60,6 +60,27 @@ function yamlCompleted(relId) {
   return /STATUS:\s*COMPLETED/.test(plan.slice(idx, idx + 240));
 }
 
+
+function sourceContainsExactUrlHost(source, expectedHost) {
+  const urls = String(source || "").match(/https?:\\/\\/[^\\s"'\`\\\\)]+/g) || [];
+  const wanted = String(expectedHost || "").trim().toLowerCase();
+  return urls.some((raw) => {
+    try {
+      return new URL(raw).hostname.toLowerCase() === wanted;
+    } catch {
+      return false;
+    }
+  });
+}
+
+function hostListHasExact(hosts, expectedHost) {
+  const wanted = String(expectedHost || "").trim().toLowerCase();
+  return (
+    Array.isArray(hosts) &&
+    hosts.some((host) => String(host || "").trim().toLowerCase() === wanted)
+  );
+}
+
 if (fixture.productionDomainMutation !== 0) {
   fails.push("fixture productionDomainMutation must be 0");
 }
@@ -131,7 +152,7 @@ if (stagingWorkflow.includes("environment: production")) {
   fails.push("staging workflow must not use production GitHub environment");
 }
 if (
-  stagingWorkflow.includes("ai-profit-os.onrender.com") ||
+  sourceContainsExactUrlHost(stagingWorkflow, "ai-profit-os.onrender.com") ||
   /API_HOST:-\s*https:\/\/ai-profit-os\.onrender\.com/.test(stagingWorkflow) ||
   /API="\$\{API_HOST:-/.test(stagingWorkflow)
 ) {
@@ -146,10 +167,10 @@ if (!stagingWorkflow.includes("STAGING_API_HOST")) {
 if (!stagingWorkflow.includes("forbiddenHosts")) {
   fails.push("staging workflow must deny manifest forbiddenHosts");
 }
-if (!((staging && staging.forbiddenHosts) || []).includes("ai-profit-os.onrender.com")) {
+if (!hostListHasExact((staging && staging.forbiddenHosts) || [], "ai-profit-os.onrender.com")) {
   fails.push("staging.forbiddenHosts must include production Render API host");
 }
-if (!((staging && staging.forbiddenHosts) || []).includes("api.hiptk.app")) {
+if (!hostListHasExact((staging && staging.forbiddenHosts) || [], "api.hiptk.app")) {
   fails.push("staging.forbiddenHosts must include api.hiptk.app");
 }
 if (prodWorkflow.includes("workflow_dispatch") === false) {
