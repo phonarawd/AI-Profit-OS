@@ -1237,6 +1237,16 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/api-nest\/src\/wallet\/(tron-address(?:\.runtime\.test)?\.ts|deposit-address\.service\.ts)$/.test(f) ||
+      /^tooling\/verify\/tron-hd-derivation-fail-closed\.runtime\.cjs$/.test(f) ||
+      /^tooling\/verify\/krw-admin-decide\.cjs$/.test(f),
+    scripts: [
+      "tron-hd-derivation-fail-closed.runtime.cjs",
+      "krw-admin-decide.cjs",
+    ],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/wallet\//.test(f) ||
       /^services\/api-nest\/src\/compliance\/kyc\.controller\.ts$/.test(f),
     scripts: ["wallet-kyc-session-auth.cjs"],

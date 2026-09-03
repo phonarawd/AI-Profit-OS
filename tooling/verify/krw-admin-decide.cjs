@@ -153,7 +153,8 @@ for (const needle of [
   "user_deposit_addresses",
   "derivation_index",
   "trc20_address",
-  "deriveTrc20Address",
+  "allocateCanonicalTrc20Address",
+  "TRON_HD_DERIVATION_UNAVAILABLE",
   "getOrCreate",
 ]) {
   if (!addrSvc.includes(needle)) {
@@ -167,6 +168,12 @@ if (!tron.includes("m/44'/195'/0'/0/")) {
 }
 if (!tron.includes("0x41") && !tron.includes("[0x41]")) {
   fails.push("tron-address must use Tron 0x41 prefix");
+}
+if (/\bcreateHmac\b/.test(tron)) {
+  fails.push("tron-address must not HMAC a secret ref into a synthetic address");
+}
+if (!tron.includes("TRON_HD_DERIVATION_UNAVAILABLE")) {
+  fails.push("tron-address must fail closed as TRON_HD_DERIVATION_UNAVAILABLE");
 }
 
 const events = read("services/api-nest/src/wallet/wallet.events.ts");
