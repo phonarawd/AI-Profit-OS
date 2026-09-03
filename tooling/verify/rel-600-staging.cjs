@@ -182,6 +182,9 @@ if (!stagingWorkflow.includes("chatgpt/staging-exact-1f3b36f-20260903")) {
 if (!stagingWorkflow.includes("github.event_name == 'push'")) {
   fails.push("staging workflow push trigger must deploy both preview surfaces");
 }
+if (!stagingWorkflow.includes('>> "$GITHUB_ENV"')) {
+  fails.push("staging workflow must propagate STAGING_API_HOST to later deploy steps");
+}
 if (!stagingWorkflow.includes("forbiddenHosts")) {
   fails.push("staging workflow must deny manifest forbiddenHosts");
 }

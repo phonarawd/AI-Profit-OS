@@ -87,6 +87,7 @@ jobs:
               process.exit(1);
             }
           ' "$API"
+          printf 'STAGING_API_HOST=%s\nAPI_HOST=%s\n' "$API" "$API" >> "$GITHUB_ENV"
           printf 'API_HOST=%s\n' "$API" >> .env
 
       - name: Deploy web staging
