@@ -186,17 +186,34 @@ if (!stagingWorkflow.includes("github.event_name == 'push'")) {
 if (!stagingWorkflow.includes('>> "$GITHUB_ENV"')) {
   fails.push("staging workflow must propagate STAGING_API_HOST to later deploy steps");
 }
-if (!stagingWorkflow.includes("Exact staging API auth readiness")) {
-  fails.push("staging workflow must gate deploy on live auth readiness");
+if (!stagingWorkflow.includes("Exact staging API core readiness")) {
+  fails.push("staging workflow must gate preview deploy on exact live core readiness");
+}
+if (!stagingWorkflow.includes("const deadline = Date.now() + 180_000")) {
+  fails.push("staging core readiness must bounded-wait for exact backend deployment");
 }
 if (!stagingWorkflow.includes("body?.auth?.userJwtConfigured !== true")) {
-  fails.push("staging workflow must fail closed when JWT user secret is unavailable");
+  fails.push("staging core readiness must fail closed when JWT user secret is unavailable");
+}
+if (
+  !stagingWorkflow.includes("Staging auth provider readiness") ||
+  !stagingWorkflow.includes("id: auth_provider_readiness") ||
+  !stagingWorkflow.includes("continue-on-error: true")
+) {
+  fails.push("staging workflow must isolate Kakao/Resend provider readiness for diagnostics");
 }
 if (!stagingWorkflow.includes("body?.auth?.kakaoConfigured !== true")) {
-  fails.push("staging workflow must fail closed when Kakao provider is unavailable");
+  fails.push("staging provider readiness must detect unavailable Kakao");
 }
 if (!stagingWorkflow.includes("body?.auth?.resendConfigured !== true")) {
-  fails.push("staging workflow must fail closed when Resend provider is unavailable");
+  fails.push("staging provider readiness must detect unavailable Resend");
+}
+if (
+  !stagingWorkflow.includes("Staging readiness verdict") ||
+  !stagingWorkflow.includes("steps.auth_provider_readiness.outcome") ||
+  !stagingWorkflow.includes("[staging-readiness] BLOCKED Kakao/Resend provider readiness")
+) {
+  fails.push("staging final verdict must fail closed when auth providers are unavailable");
 }
 if (!stagingWorkflow.includes("app_host_not_staging_web") || !stagingWorkflow.includes("ops_host_not_staging_ops")) {
   fails.push("staging workflow must reject localhost/wrong auth origins");
