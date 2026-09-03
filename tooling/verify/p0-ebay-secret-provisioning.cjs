@@ -108,6 +108,16 @@ const p0Set = deploy.validateWorkerSet("p0-ebay");
 if (!p0Set.ok) fail("worker_set=p0-ebay must PASS");
 
 const src = read("tooling/deploy/cf-ebay-secrets.cjs");
+const ingestController = read("services/api-nest/src/adapters/adapters.ingest.controller.ts");
+if (!ingestController.includes("ServiceUnavailableException")) {
+  fail("adapter ingest must fail closed when ADAPTER_INGEST_TOKEN is unavailable");
+}
+if (!ingestController.includes("ADAPTER_INGEST_TOKEN_UNAVAILABLE")) {
+  fail("adapter ingest missing-token failure code must be locked");
+}
+if (!/if\s*\(\s*!token\s*\)/.test(ingestController)) {
+  fail("adapter ingest must reject missing ADAPTER_INGEST_TOKEN before accepting payloads");
+}
 if (/loadDotEnv\s*\(/.test(src)) fail("cf-ebay-secrets.cjs must not load .env");
 if (/readFileSync\([^)]*\.env/.test(src)) fail("cf-ebay-secrets.cjs must not read .env");
 if (/ebay-adapter-preview/.test(src) === false) {
