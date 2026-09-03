@@ -15,7 +15,7 @@ export const onboarding = {
   /** Guest utility — 차익/$ 수익 암시 0 */
   demoPriceExample: "시세 비교 예시",
   practiceHeadline: "🎁 연습 잔액으로 흐름을 익혀 보세요",
-  partnerSlideLead: "🤝 공식 협력사 시세를 참고해요",
+  partnerSlideLead: "🤝 시세·데이터 출처를 확인해요",
   usdtHeadline: "🪙 왜 이 충전 방식인가요?",
   usdtBody: "해외 시세 비교 흐름에 맞춰, 충전·정산 방식을 나중에 안내해요.",
   usdtWhyLink: "충전 안내 이어보기",
