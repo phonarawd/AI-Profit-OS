@@ -14,5 +14,6 @@
     "skipLibCheck": true,
     "strict": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.runtime.test.ts"]
 }

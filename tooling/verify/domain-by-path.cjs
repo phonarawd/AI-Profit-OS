@@ -1233,6 +1233,9 @@ const RULES = [
       "auth-flows.cjs",
       "auth-session-cookie.cjs",
       "auth-rate-limit.cjs",
+      "auth-identity-proof.runtime.cjs",
+      "passkey-registration-hijack.runtime.cjs",
+      "webauthn-user-presence.runtime.cjs",
     ],
   },
   {
