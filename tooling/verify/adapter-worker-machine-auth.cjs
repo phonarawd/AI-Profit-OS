@@ -19,7 +19,10 @@ for(const rel of workers){
 }
 const coingecko=read("workers/coingecko-adapter/src/index.ts");
 const frankfurter=read("workers/frankfurter-adapter/src/index.ts");
+if(!coingecko.includes("providerConfigured: Boolean(env.COINGECKO_DEMO_API_KEY)")) fails.push("CoinGecko health must expose provider readiness boolean");
+if(!coingecko.includes("ingestAuthConfigured: Boolean(env.ADAPTER_INGEST_TOKEN)")) fails.push("CoinGecko health must expose ingest auth readiness boolean");
 if(!coingecko.includes("env.COINGECKO_DEMO_API_KEY && env.ADAPTER_INGEST_TOKEN")) fails.push("CoinGecko health readiness must require provider key + ingest token");
+if(!frankfurter.includes("ingestAuthConfigured: Boolean(env.ADAPTER_INGEST_TOKEN)")) fails.push("Frankfurter health must expose ingest auth readiness boolean");
 if(!frankfurter.includes("credentialsConfigured: Boolean(env.ADAPTER_INGEST_TOKEN)")) fails.push("Frankfurter health readiness must require ingest token");
 for(const cfg of ["workers/coingecko-adapter/tsconfig.json","workers/frankfurter-adapter/tsconfig.json"]){
   const run=spawnSync(process.execPath,[path.join(root,"node_modules/typescript/bin/tsc"),"-p",path.join(root,cfg),"--noEmit"],{cwd:root,encoding:"utf8",timeout:30000});

@@ -35,6 +35,7 @@ export default {
         role: "fx",
         cacheHintSec: CACHE_HINT_SEC,
         yahooJp: false,
+        ingestAuthConfigured: Boolean(env.ADAPTER_INGEST_TOKEN),
         credentialsConfigured: Boolean(env.ADAPTER_INGEST_TOKEN),
       });
     }

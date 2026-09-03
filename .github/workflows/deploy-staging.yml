@@ -264,26 +264,40 @@ jobs:
               sleep 2
             done
             CODE="$(curl --silent --show-error --output "/tmp/${WORKER}-unauth-tick.json" --write-out '%{http_code}' --max-time 20 -X POST "$BASE/tick")"
-            if [ "$CODE" != "401" ]; then
-              echo "FX_CORE_UNAUTH_TICK_NOT_FAIL_CLOSED worker=$WORKER status=$CODE"
-              exit 1
-            fi
+            printf '%s' "$CODE" > "/tmp/${WORKER}-unauth-tick.status"
           done
           node - <<'NODE'
           const fs = require("fs");
           for (const worker of ["coingecko-adapter", "frankfurter-adapter"]) {
             const v = JSON.parse(fs.readFileSync("/tmp/" + worker + "-health.json", "utf8"));
-            if (v?.ok !== true || v?.role !== "fx" || typeof v?.credentialsConfigured !== "boolean") {
+            if (
+              v?.ok !== true ||
+              v?.role !== "fx" ||
+              typeof v?.credentialsConfigured !== "boolean" ||
+              typeof v?.ingestAuthConfigured !== "boolean"
+            ) {
               console.error("FX_CORE_HEALTH_INVALID", worker, JSON.stringify({
                 ok: v?.ok,
                 role: v?.role,
                 credentialsConfigured: v?.credentialsConfigured,
+                ingestAuthConfigured: v?.ingestAuthConfigured,
+              }));
+              process.exit(1);
+            }
+            const status = Number(fs.readFileSync("/tmp/" + worker + "-unauth-tick.status", "utf8").trim());
+            const expected = v.ingestAuthConfigured ? 401 : 503;
+            if (status !== expected) {
+              console.error("FX_CORE_UNAUTH_TICK_NOT_FAIL_CLOSED", worker, JSON.stringify({
+                status,
+                expected,
+                ingestAuthConfigured: v.ingestAuthConfigured,
               }));
               process.exit(1);
             }
             console.log("[fx-core-health] PASS " + worker + " credentialsConfigured=" + v.credentialsConfigured);
+            console.log("[fx-core-auth] PASS " + worker + " status=" + status + " ingestAuthConfigured=" + v.ingestAuthConfigured);
           }
-          console.log("[fx-core-auth] PASS unauthenticated /tick => 401");
+          console.log("[fx-core-auth] PASS fail-closed status contract");
           NODE
 
       - name: Bind FX preview secrets

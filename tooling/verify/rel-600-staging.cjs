@@ -226,7 +226,8 @@ if (!fxCoreSlice || /if:\s*env\.FX_PREVIEW_READY\s*==/.test(fxCoreSlice)) {
 }
 if (
   !stagingWorkflow.includes("FX core preview fail-closed smoke") ||
-  !stagingWorkflow.includes("[fx-core-auth] PASS unauthenticated /tick => 401")
+  !stagingWorkflow.includes("[fx-core-auth] PASS fail-closed status contract") ||
+  !stagingWorkflow.includes("v.ingestAuthConfigured ? 401 : 503")
 ) {
   fails.push("staging FX core preview must prove health + unauthenticated tick fail-closed");
 }

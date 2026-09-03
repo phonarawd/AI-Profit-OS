@@ -31,6 +31,8 @@ export default {
         role: "fx",
         cacheHintSec: CACHE_HINT_SEC,
         yahooJp: false,
+        providerConfigured: Boolean(env.COINGECKO_DEMO_API_KEY),
+        ingestAuthConfigured: Boolean(env.ADAPTER_INGEST_TOKEN),
         credentialsConfigured: Boolean(env.COINGECKO_DEMO_API_KEY && env.ADAPTER_INGEST_TOKEN),
       });
     }
