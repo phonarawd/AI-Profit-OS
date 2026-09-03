@@ -25,6 +25,7 @@ const required = [
   "tooling/pwa/webauthn-rp.cjs",
   "services/api-nest/src/auth/webauthn-rp.ts",
   "services/api-nest/src/auth/auth.service.ts",
+  "services/api-nest/src/auth/webauthn-assert.service.ts",
   "packages/ui/components/auth/webauthn-ready.ts",
   "packages/ui/components/auth/AuthLogin.tsx",
   "packages/ui/copy/ko/auth.ts",
@@ -69,11 +70,15 @@ if (nestRp.includes("withdraw-stepup")) {
 }
 
 const auth = read("services/api-nest/src/auth/auth.service.ts");
-if (!auth.includes("loadAuthWebauthnRp")) {
-  fails.push("passkeyOptions must use loadAuthWebauthnRp");
+const webauthnAssert = read("services/api-nest/src/auth/webauthn-assert.service.ts");
+if (!auth.includes("this.webauthn.options(kind)")) {
+  fails.push("passkeyOptions must delegate to WebauthnAssertService");
 }
-if (!auth.includes("rpId:") || !auth.includes("origin:")) {
-  fails.push("passkeyOptions must return rpId and origin");
+if (!webauthnAssert.includes("loadAuthWebauthnRp")) {
+  fails.push("WebauthnAssertService must use loadAuthWebauthnRp");
+}
+if (!webauthnAssert.includes("rpId: this.rp.rpId") || !webauthnAssert.includes("origin: this.rp.origin")) {
+  fails.push("WebauthnAssertService options must return rpId and origin");
 }
 
 const login = read("packages/ui/components/auth/AuthLogin.tsx");
