@@ -1293,6 +1293,18 @@ const RULES = [
     scripts: ["db-hardening-readiness.cjs", "staging-db-hardening.cjs"],
   },
   {
+    test: (f) =>
+      /^tooling\/release\/(production-release-decision|render-api-promotion-readiness|render-rollback-plan)\.cjs$/.test(f) ||
+      /^tooling\/verify\/(production-release-decision|render-api-promotion-readiness|render-rollback-provenance|release-manifest-identity-lock)\.cjs$/.test(f) ||
+      /^tooling\/release\/(artifact-provenance|release-acceptance-verdict)\.cjs$/.test(f),
+    scripts: [
+      "production-release-decision.cjs",
+      "render-api-promotion-readiness.cjs",
+      "render-rollback-provenance.cjs",
+      "release-manifest-identity-lock.cjs",
+    ],
+  },
+  {
     test: (f) => /^tooling\/verify\//.test(f),
     scripts: [],
   },
