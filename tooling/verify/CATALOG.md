@@ -294,7 +294,7 @@
 | kyc-withdraw-only · kyc-redirect · kyc-r2-only | Money §42 — **live** (출금1회게이트 · toast→/me/kyc@800ms · R2 kyc-docs private) |
 | krw-admin-decide | Money §41.3·§43.3 — **live** approve credit1 / reject0 · TRC20 address · PG사0 · CSV=L2+ (v7.22.12) |
 | deposit-confirm-stages · no-per-address-poll | Money §41·§43.1 — **live** 1conf UI/no ledger · 19conf deposit_usdt · single stream · Phase0 in-process · Phase1 deploy |
-| sweeper-trx-guard | Money §43.2 — **live** Energy+TRX min→sweep 0 · Admin deposit-settings pause · Phase0 in-process ≠NATS |
+| sweeper-trx-guard | Money §43.2 — **live** Energy+TRX min→sweep 0 · Admin deposit-settings pause · no bound executor/no broadcast→DB `swept` mutation 0 · Phase0 in-process ≠NATS |
 | admin-user-360 | Admin §9.8.7·§9.8.8 — netInflowUsdt · 유저360 탭 · notify audit (v7.22.13) |
 | match-success-rule | Engine §48.13.2 golden 6 · Soft60/Hard90 · REQUEUE/MATCH_TIMEOUT · P0b · random/timer 0 · presentation≠credit (v7.22.14) — **live** |
 | pricing-formula · fx-snapshot-formula · market-intel-engine | Engine §0.0 / §0.0.4.1~4.2 — Asset Master·pipeline·FORBIDDEN0 · Admin opportunities §36 · yahoo_jp0 — **live** |

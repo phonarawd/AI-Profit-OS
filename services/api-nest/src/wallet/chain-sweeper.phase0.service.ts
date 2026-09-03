@@ -159,13 +159,9 @@ export class ChainSweeperPhase0Service {
       [cutoff.toISOString(), limit],
     );
 
-    const executor: SweepExecutor =
-      opts?.executor ??
-      (async (plan) => ({
-        ok: true,
-        broadcast: false,
-        sweepTxHash: `dry:${plan.depositEventId}`,
-      }));
+    // No real executor bound = no sweep mutation. A dry/no-broadcast
+    // executor must never make an event look swept on-chain.
+    const executor = opts?.executor;
 
     let eligible = 0;
     let sweepCalls = 0;
@@ -199,9 +195,14 @@ export class ChainSweeperPhase0Service {
         energyDelegateEnabled: onchain.energyDelegateEnabled !== false,
       });
 
+      if (!executor) {
+        skipped += 1;
+        continue;
+      }
+
       sweepCalls += 1;
       const exec = await executor(plan);
-      if (!exec.ok) {
+      if (!exec.ok || !exec.broadcast || !exec.sweepTxHash) {
         skipped += 1;
         continue;
       }

@@ -54,6 +54,7 @@ jobs:
       - name: Chain worker machine auth
         run: |
           pnpm verify:chain-worker-machine-auth
+          pnpm verify:sweeper-trx-guard
           pnpm exec tsc -p workers/chain-watchers/tsconfig.json
           pnpm exec tsc -p workers/chain-sweeper/tsconfig.json
       - name: TRON HD derivation fail closed
