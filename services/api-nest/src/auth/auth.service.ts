@@ -45,6 +45,7 @@ import {
 } from "./auth.constants";
 import type { SessionUser } from "./jwt-auth.guard";
 import { PrivacyAccountService } from "./privacy-account.service";
+import { MagicLinkService } from "./magic-link.service";
 import {
   assertNoForbiddenAuthFields,
   evaluateDeleteAccountGuards,
@@ -98,6 +99,7 @@ export class AuthService {
     private readonly practiceGrant: PracticeGrantService,
     private readonly notificationPrefs: NotificationPrefsService,
     private readonly privacy: PrivacyAccountService,
+    private readonly magicLink: MagicLinkService,
   ) {}
 
   /**
@@ -286,18 +288,53 @@ export class AuthService {
   }
 
   magicLinkRequest(body: Record<string, unknown>) {
-    const email = typeof body.email === "string" ? body.email.trim() : "";
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      throw new BadRequestException("valid email required");
-    }
-    return {
-      ok: true as const,
-      delivery: "resend" as const,
-      status: "accepted" as const,
-      // Never echo magic token
-    };
+    return this.magicLink.request(body ?? {});
   }
 
+  async magicLinkVerify(body: Record<string, unknown>) {
+    this.assertDbConfigured();
+    const token = typeof body.token === "string" ? body.token.trim() : "";
+    if (!token) {
+      throw new BadRequestException("magic link token required");
+    }
+    const previewEmail = await this.magicLink.peekEmail(token);
+    let exists = false;
+    if (previewEmail) {
+      const r = await this.db.query<{ id: string }>(
+        "SELECT id FROM public.users WHERE lower(email) = lower($1) LIMIT 1",
+        [previewEmail],
+      );
+      exists = Boolean(r.rows[0]);
+    }
+    const proven = await this.magicLink.prove(body ?? {}, { userExists: exists });
+    const { userId, isNew } = await this.findOrCreateUserByEmail(proven.email);
+    if (isNew) {
+      await this.provisionLedgerBucketsForUser(userId);
+      await this.upsertStageAProfile(userId, {
+        method: "email_magic",
+        termsAcceptedAt: String(body.termsAcceptedAt ?? ""),
+        privacyAcceptedAt: String(body.privacyAcceptedAt ?? ""),
+        marketingConsent: Boolean(body.marketingConsent),
+        referralCode:
+          typeof body.referralCode === "string" ? body.referralCode : undefined,
+        email: proven.email,
+      } as Parameters<AuthService["upsertStageAProfile"]>[1]);
+    }
+    const { accessToken, session } = await this.mintSession(userId);
+    return {
+      ok: true as const,
+      stage: "A" as const,
+      onboarding:
+        session.onboardingStage === "B_complete"
+          ? ("complete" as const)
+          : ("incomplete" as const),
+      session,
+      accessToken,
+      issuer: USER_JWT_ISSUER,
+      ledgerProvision: "provisionLedgerBucketsForUser" as const,
+      practiceWelcome: "practice_grant_welcome" as const,
+    };
+  }
   logout(sessionUser: SessionUser) {
     return this.revokeSession(sessionUser).then(() => ({
       ok: true as const,

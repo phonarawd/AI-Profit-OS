@@ -42,6 +42,10 @@ export class ResendEmailProvider {
     const env = loadPhase0Env();
     this.assertFromConfigured();
     if (!env.resendApiKey) {
+      if (env.nodeEnv === "production") {
+        this.log.error("RESEND_API_KEY unset in production — OTP delivery unavailable");
+        return { ok: false, provider: "resend", reason: "resend_api_key_missing" };
+      }
       // Dev without key: accept without network (never log OTP)
       this.log.warn("RESEND_API_KEY unset — OTP accepted_dev (not sent)");
       return { ok: true, provider: "resend", status: "accepted_dev" };
@@ -77,6 +81,49 @@ export class ResendEmailProvider {
         ok: false,
         provider: "resend",
         reason: `resend_http_${res.status}:${body.slice(0, 120)}`,
+      };
+    }
+    return { ok: true, provider: "resend", status: "sent" };
+  }
+
+  /** Magic link — 실제 일회용 URL. raw token 을 로그에 남기지 않는다. */
+  async sendMagicLink(input: {
+    to: string;
+    url: string;
+  }): Promise<ResendSendResult> {
+    const env = loadPhase0Env();
+    this.assertFromConfigured();
+    if (!env.resendApiKey) {
+      if (env.nodeEnv === "production") {
+        this.log.error("RESEND_API_KEY unset in production — magic-link delivery unavailable");
+        return { ok: false, provider: "resend", reason: "resend_api_key_missing" };
+      }
+      this.log.warn("RESEND_API_KEY unset — magic link accepted_dev (not sent)");
+      return { ok: true, provider: "resend", status: "accepted_dev" };
+    }
+    const safeUrl = input.url.trim();
+    if (!/^https?:\/\//i.test(safeUrl) || safeUrl.length > 2000) {
+      return { ok: false, provider: "resend", reason: "magic_link_url_invalid" };
+    }
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: env.resendFromEmail,
+        to: [input.to],
+        subject: "퍼뜩 로그인 링크",
+        html: `<p><a href="${safeUrl}">로그인하려면 이 링크를 눌러 주세요.</a></p><p>이 링크는 한 번만 쓸 수 있어요.</p>`,
+      }),
+    });
+    if (!res.ok) {
+      this.log.error(`Resend send failed ${res.status}`);
+      return {
+        ok: false,
+        provider: "resend",
+        reason: `resend_http_${res.status}`,
       };
     }
     return { ok: true, provider: "resend", status: "sent" };

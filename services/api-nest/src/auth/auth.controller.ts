@@ -202,17 +202,7 @@ export class AuthController {
     @Body() body: Record<string, unknown>,
     @Res({ passthrough: true }) res: CookieResponse,
   ) {
-    const out = await this.auth.signupStageA({
-      method: "email_magic",
-      termsAcceptedAt: String(body?.termsAcceptedAt ?? new Date().toISOString()),
-      privacyAcceptedAt: String(
-        body?.privacyAcceptedAt ?? new Date().toISOString(),
-      ),
-      marketingConsent: Boolean(body?.marketingConsent),
-      referralCode:
-        typeof body?.referralCode === "string" ? body.referralCode : undefined,
-      email: typeof body?.email === "string" ? body.email : undefined,
-    });
+    const out = await this.auth.magicLinkVerify(body ?? {});
     if (typeof out.accessToken === "string") {
       attachUserSessionCookie(res, out.accessToken);
     }
