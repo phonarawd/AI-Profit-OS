@@ -1,7 +1,7 @@
 {
   "schema": "staging-db-hardening-provider-snapshot.v2",
   "observed_on": "2026-09-03",
-  "subject_integration_sha": "529c63e3c38a6101dd52bef2c2ad46937a14c42b",
+  "subject_integration_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
   "project_ref": "uluzxvdpynytytduuryy",
   "branch_id": "ebf3d613-fb68-44ab-aa0f-6713682f2d6e",
   "branch_name": "staging-release-20260902",
@@ -129,15 +129,17 @@
     "current_hardening_rehearsal_proven": true,
     "rollback_proven": true,
     "production_hardening_applied": false,
-    "render_staging_current_candidate_bound": false,
+    "render_staging_current_candidate_bound": true,
     "release_ready": false,
     "current_hardening_state_proven": true,
-    "current_expected_delta_only": true
+    "current_expected_delta_only": true,
+    "render_staging_redis_runtime_proven": true,
+    "render_staging_database_url_configured": false,
+    "render_staging_db_binding_proven": false
   },
   "blockers_remaining": [
-    "STAGING_CURRENT_CANDIDATE_NOT_BOUND",
     "STAGING_RENDER_DB_BINDING_NOT_PROVEN_CURRENT",
-    "STAGING_RENDER_RUNTIME_HEALTH_NOT_PROVEN_CURRENT",
+    "STAGING_RENDER_DATABASE_URL_NOT_CONFIGURED_CURRENT",
     "PRODUCTION_DB_HARDENING_NOT_APPLIED",
     "RENDER_AUTODEPLOY_ENABLED",
     "PRODUCTION_LIVE_SHA_DIFFERS_FROM_INTEGRATION",
@@ -149,7 +151,7 @@
     "RELEASE_ACCEPTANCE_MISSING",
     "CURRENT_SHA_SECURITY_EVIDENCE_INCOMPLETE"
   ],
-  "source": "GitHub + Supabase current revalidation after staging-only hardening reassert · Production mutation=0",
+  "source": "GitHub + Supabase current revalidation after staging-only hardening reassert + exact Render staging runtime evidence · Production mutation=0",
   "current_revalidation": {
     "drift_detected_before_reassert": true,
     "observed_pre_reassert_relation": "PRODUCTION_BASELINE",
@@ -177,5 +179,22 @@
     "customer_data_zero_current": true,
     "current_schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
     "current_state": "PASS"
+  },
+  "render_runtime_revalidation": {
+    "service_id": "srv-dacjnnm1egvs73cuh190",
+    "url": "https://ai-profit-os-staging-exact-1f3b36f.onrender.com",
+    "branch": "chatgpt/staging-exact-1f3b36f-20260903",
+    "branch_label_note": "historical branch label; exactness is authoritative from live deploy SHA",
+    "autoDeploy": "no",
+    "live_deploy_id": "dep-dack2n3lpq9s73fs8ea0",
+    "live_source_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
+    "exact_candidate_bound": true,
+    "health_observed_at": "2026-09-03T09:45:28.287012Z",
+    "database_url_configured": false,
+    "database_ok": false,
+    "redis_configured": true,
+    "redis_ok": true,
+    "warnings_empty": true,
+    "adapter_ingest_without_token_status": 401
   }
 }

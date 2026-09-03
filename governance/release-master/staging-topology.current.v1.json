@@ -1,8 +1,8 @@
 {
   "schema": "staging-topology-provider-snapshot.v2",
-  "recorded_at": "2026-09-03",
-  "source": "read-only GitHub/Render/Supabase revalidation + staging-only hardening reassert evidence · Production mutation=0",
-  "candidate_sha": "529c63e3c38a6101dd52bef2c2ad46937a14c42b",
+  "recorded_at": "2026-09-03T09:45:28Z",
+  "source": "read-only GitHub/Render/Supabase revalidation + exact Render staging runtime health + staging DB hardening evidence · Production mutation=0",
+  "candidate_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
   "production": {
     "render": {
       "service_name": "AI-Profit-OS",
@@ -28,20 +28,34 @@
   },
   "staging": {
     "render": {
-      "service_name": "AI-Profit-OS-Staging",
-      "service_id": "srv-dabph32fngtc73esj8rg",
+      "service_name": "AI-Profit-OS-Staging-Exact-1f3b36f",
+      "service_id": "srv-dacjnnm1egvs73cuh190",
       "environment_scope": "service-scoped",
-      "url": "https://ai-profit-os-staging.onrender.com",
+      "url": "https://ai-profit-os-staging-exact-1f3b36f.onrender.com",
       "repo": "https://github.com/phonarawd/AI-Profit-OS",
-      "branch": "recovery/release-provenance-20260831",
+      "branch": "chatgpt/staging-exact-1f3b36f-20260903",
+      "branch_label_note": "historical branch label; exactness is authoritative from live deploy SHA",
       "kind": "web_service",
       "autoDeploy": "no",
       "autoDeployTrigger": "off",
-      "source_sha": "84cb2ea05ddea0406d9b1f13cbe0b0781a744630",
-      "live_deploy_id": "dep-dabv9sifngtc73fdsu20",
+      "source_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
+      "live_deploy_id": "dep-dack2n3lpq9s73fs8ea0",
       "supabase_project_ref": "",
-      "binding_evidence": "UNPROVEN_CURRENTLY",
-      "runtime_health": null
+      "configured_supabase_project_ref_env": "uluzxvdpynytytduuryy",
+      "binding_evidence": "DATABASE_URL_UNSET_CURRENT",
+      "runtime_health": {
+        "observed_at": "2026-09-03T09:45:28.287012Z",
+        "git_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
+        "git_sha_source": "RENDER_GIT_COMMIT",
+        "db_configured": false,
+        "db_ok": false,
+        "db_detail": "DATABASE_URL unset",
+        "redis_configured": true,
+        "redis_ok": true,
+        "redis_detail": "up",
+        "warnings_empty": true,
+        "adapter_ingest_without_token_status": 401
+      }
     },
     "supabase": {
       "branch_name": "staging-release-20260902",
@@ -57,7 +71,7 @@
       "schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
       "hardening_rehearsal": {
         "evidence_path": "governance/recovery/staging-db-hardening-snapshot.20260903.v2.json",
-        "evidence_blob_sha": "745a2c78d61ab38856545517842304b915fa8a18",
+        "evidence_blob_sha": "e5c3c21324f1d5b2fc5c734cd1950a5b85f3d0b0",
         "source_path": "supabase/migrations/20260903092000_production_db_hardening.sql",
         "source_blob_sha": "827448e4c86cf14aca31c4f23151ceabb43dafb4",
         "rollback_source_path": "supabase/staging/20260903151500_preview_baseline_parity.sql",
@@ -88,9 +102,11 @@
   },
   "cloudflare_preview": null,
   "blockers_observed": [
-    "staging Render is not running the recorded integration candidate",
-    "current Render→Supabase staging binding is not readable/proven in this session",
-    "current staging Render runtime health evidence is not recorded"
+    "exact Render staging runtime is bound to the candidate source SHA",
+    "Render DATABASE_URL is unset, so actual Render→Supabase preview DB binding is not proven",
+    "Redis runtime is configured and healthy",
+    "frontend staging E2E remains pending until backend DB binding is proven"
   ],
-  "production_mutation": 0
+  "production_mutation": 0,
+  "governance_parent_sha": "abd6162a763e29a90362cc89590679cb51132f80"
 }

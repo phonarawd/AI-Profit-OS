@@ -263,12 +263,23 @@ for (const blocker of [
   "db_hardening_not_ready",
   "render_not_ready",
   "tron_hd_not_ready",
-  "rollback_not_ready",
-  "stale_release_evidence_open",
+  "security_p0_open",
+  "security_p1_open",
+  "security_unexplained_ghas",
+  "known_errors_open",
+  "known_defects_open",
+  "known_contradictions_open",
+  "known_release_duplicates_open",
 ]) {
   if (!currentDecision.blockers.includes(blocker)) {
     fails.push("current release blocker missing: " + blocker);
   }
+}
+if (currentEvidence.rollback?.ready !== true) {
+  fails.push("current rollback evidence must remain bound/ready");
+}
+if (currentEvidence.quality?.stale_release_evidence !== 0) {
+  fails.push("current release evidence refresh must close stale_release_evidence");
 }
 if (currentEvidence.production_mutation !== 0) {
   fails.push("current release evidence must record production_mutation=0");

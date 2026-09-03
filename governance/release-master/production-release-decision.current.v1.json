@@ -1,13 +1,13 @@
 {
   "schema": "production-release-evidence.current.v1",
-  "observed_at": "2026-09-03",
-  "candidate_sha": "c734af1f1e468c65d11841b03c37b36e030a7000",
+  "observed_at": "2026-09-03T09:45:28Z",
+  "candidate_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
   "release_acceptance": null,
   "engine": {
     "final_acceptance": "NOT_ISSUED",
     "rebase_required": true,
     "ack_received": false,
-    "candidate_sha": "c734af1f1e468c65d11841b03c37b36e030a7000"
+    "candidate_sha": "64757f2c5bd394d359c35483183ad879f5135d23"
   },
   "staging": {
     "ready": false,
@@ -15,11 +15,8 @@
     "verdict": "STAGING_TOPOLOGY=NOT_READY",
     "blockers": [
       "render_staging_db_binding_missing",
-      "render_staging_runtime_health_missing",
-      "render_staging_source_sha_mismatch",
-      "supabase_staging_customer_data_not_proven_zero",
-      "supabase_staging_not_ready",
-      "supabase_staging_schema_parity_not_proven"
+      "render_staging_runtime_db_configured_not_true",
+      "render_staging_runtime_db_ok_not_true"
     ]
   },
   "db_hardening": {
@@ -36,21 +33,22 @@
   "render_preflight": {
     "ready": false,
     "status": "NOT_READY",
-    "accepted_sha": "c734af1f1e468c65d11841b03c37b36e030a7000",
+    "accepted_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
     "blockers": [
-      "production_identity_unconfirmed",
-      "auto_deploy_enabled_last_known"
+      "auto_deploy_enabled",
+      "production_live_sha_mismatch"
     ],
-    "auto_deploy_required": "unproven"
+    "auto_deploy_required": "disabled"
   },
   "security": {
-    "exact_head_sha": "c734af1f1e468c65d11841b03c37b36e030a7000",
-    "codeql_workflow": "NOT_RUN_CURRENT_SHA",
+    "exact_head_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
+    "codeql_workflow": "success",
     "unresolved_p0": null,
     "unresolved_p1": null,
     "release_blocking_p2": null,
     "unexplained_ghas": null,
-    "dismissals_without_evidence": null
+    "dismissals_without_evidence": null,
+    "alert_inventory_status": "NOT_PROVEN"
   },
   "tron_hd": {
     "ready": false,
@@ -59,16 +57,18 @@
     "synthetic_derivation": false
   },
   "rollback": {
-    "ready": false,
-    "target_deploy_id": "",
-    "target_sha": ""
+    "ready": true,
+    "target_deploy_id": "dep-da938o142hec73eipre0",
+    "target_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec"
   },
   "quality": {
-    "known_errors": 0,
-    "known_defects": 0,
-    "known_contradictions": 0,
-    "known_release_duplicates": 0,
-    "stale_release_evidence": 1
+    "known_errors": null,
+    "known_defects": null,
+    "known_contradictions": null,
+    "known_release_duplicates": null,
+    "stale_release_evidence": 0,
+    "status": "NOT_PROVEN_CURRENT"
   },
-  "production_mutation": 0
+  "production_mutation": 0,
+  "governance_parent_sha": "abd6162a763e29a90362cc89590679cb51132f80"
 }

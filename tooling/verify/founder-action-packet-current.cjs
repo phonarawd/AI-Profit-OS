@@ -32,12 +32,18 @@ if (packet) {
     "SUPABASE_PREVIEW_BASELINE_PARITY",
     "SUPABASE_PREVIEW_HARDENING_APPLY_ROLLBACK_REAPPLY",
     "SUPABASE_PREVIEW_HARDENING_REASSERT_CURRENT",
+    "RENDER_EXACT_STAGING_SERVICE_CREATE",
+    "RENDER_STAGING_REDIS_BINDING",
+    "RENDER_STAGING_ADAPTER_INGEST_TOKEN_CONFIG",
   ]) if (!stagingMutationScope.has(x)) fail("staging_provider_scope_missing:" + x);
   const render = packet.render || {};
   if (!render.production || render.production.service_id !== "srv-da5r1tqjobas73fl16dg") fail("production_render_identity_drift");
   if (!render.production || render.production.autoDeploy !== "yes") fail("render_autodeploy_fact_stale");
-  if (!render.staging || render.staging.service_id !== "srv-dabph32fngtc73esj8rg") fail("staging_render_identity_drift");
-  if (render.staging.current_candidate_bound !== false) fail("staging_candidate_truth_stale");
+  if (!render.staging || render.staging.service_id !== "srv-dacjnnm1egvs73cuh190") fail("staging_render_identity_drift");
+  if (render.staging.current_candidate_bound !== true) fail("staging_candidate_truth_stale");
+  if (render.staging.live_sha !== "64757f2c5bd394d359c35483183ad879f5135d23") fail("staging_live_sha_truth_stale");
+  if (render.staging.database_url_configured !== false || render.staging.database_ok !== false) fail("staging_db_runtime_truth_stale");
+  if (render.staging.redis_configured !== true || render.staging.redis_ok !== true) fail("staging_redis_runtime_truth_stale");
 
   const sb = packet.supabase || {};
   if (sb.production_project_ref !== "mgsytcetsiecllmhcyox") fail("supabase_prod_ref_drift");
@@ -52,6 +58,9 @@ if (packet) {
   if (sb.staging_branch.final_schema_relation !== "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING") fail("staging_schema_relation_truth_stale");
   if (sb.staging_branch.hardening_rehearsal_proven !== true) fail("staging_hardening_rehearsal_truth_stale");
   if (sb.staging_branch.render_binding_currently_proven !== false) fail("staging_render_binding_truth_stale");
+  if (sb.staging_branch.render_exact_candidate_runtime_proven !== true) fail("staging_exact_runtime_truth_stale");
+  if (sb.staging_branch.render_redis_runtime_proven !== true) fail("staging_redis_binding_truth_stale");
+  if (sb.staging_branch.render_database_url_configured !== false) fail("staging_database_url_truth_stale");
 
   const engine = packet.engine || {};
   if (engine.final_acceptance !== "NOT_ISSUED" || engine.rebase_required !== true || engine.ack_received !== false) {
@@ -76,9 +85,8 @@ if (packet) {
 
   const blockers = new Set(Array.isArray(packet.blockers) ? packet.blockers : []);
   for (const x of [
-    "STAGING_CURRENT_CANDIDATE_NOT_BOUND",
     "STAGING_RENDER_DB_BINDING_NOT_PROVEN_CURRENT",
-    "STAGING_RENDER_RUNTIME_HEALTH_NOT_PROVEN_CURRENT",
+    "STAGING_RENDER_DATABASE_URL_NOT_CONFIGURED_CURRENT",
     "PRODUCTION_DB_HARDENING_NOT_APPLIED",
     "RENDER_AUTODEPLOY_ENABLED",
     "FX_RUNTIME_FEED_NOT_ACTIVE_CURRENT",
@@ -94,6 +102,8 @@ if (packet) {
 
   for (const closedNow of [
     "STAGING_SCHEMA_PARITY_NOT_PROVEN_CURRENT",
+    "STAGING_CURRENT_CANDIDATE_NOT_BOUND",
+    "STAGING_RENDER_RUNTIME_HEALTH_NOT_PROVEN_CURRENT",
     "ROLLBACK_TARGET_NOT_BOUND",
   ]) if (blockers.has(closedNow)) fail("closed_current_blocker_reintroduced:" + closedNow);
 
@@ -113,6 +123,9 @@ if (packet) {
   if (sec.rel_408_role !== "HISTORICAL_SNAPSHOT_ONLY") fail("rel408_current_authority_forbidden");
   if (sec.current_production_public_tables !== 93) fail("current_production_table_count_truth_stale");
   if (!Array.isArray(sec.current_production_known_rls_off) || !sec.current_production_known_rls_off.includes("push_control") || !sec.current_production_known_rls_off.includes("push_subscriptions")) fail("current_production_rls_truth_stale");
+  if (sec.current_sha_codeql_or_equivalent_run !== "SUCCESS") fail("current_codeql_truth_stale");
+  if (sec.full_ghas_open_alert_inventory !== "NOT_PROVEN") fail("full_ghas_inventory_must_fail_closed");
+  if (sec.status !== "PARTIAL") fail("security_evidence_status_must_remain_partial");
 
   const rollback = packet.rollback || {};
   if (rollback.target_bound !== true) fail("rollback_target_not_bound");
