@@ -31,7 +31,7 @@ export default {
         role: "fx",
         cacheHintSec: CACHE_HINT_SEC,
         yahooJp: false,
-        credentialsConfigured: Boolean(\n          env.COINGECKO_DEMO_API_KEY && env.ADAPTER_INGEST_TOKEN,\n        ),
+        credentialsConfigured: Boolean(env.COINGECKO_DEMO_API_KEY && env.ADAPTER_INGEST_TOKEN),
       });
     }
     if (url.pathname === "/tick" && request.method === "POST") {

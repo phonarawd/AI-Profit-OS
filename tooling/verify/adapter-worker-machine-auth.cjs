@@ -1,5 +1,5 @@
 "use strict";
-const fs=require("fs"), path=require("path");
+const fs=require("fs"), path=require("path"), {spawnSync}=require("child_process");
 const root=path.resolve(__dirname,"../.."), fails=[];
 const workers=["workers/ebay-adapter/src/index.ts","workers/amazon-adapter/src/index.ts","workers/yahoo-jp-adapter/src/index.ts","workers/pokemontcg-adapter/src/index.ts","workers/ygoprodeck-adapter/src/index.ts","workers/coingecko-adapter/src/index.ts","workers/frankfurter-adapter/src/index.ts"];
 function read(rel){const p=path.join(root,rel);if(!fs.existsSync(p)){fails.push("missing: "+rel);return "";}return fs.readFileSync(p,"utf8");}
@@ -21,6 +21,10 @@ const coingecko=read("workers/coingecko-adapter/src/index.ts");
 const frankfurter=read("workers/frankfurter-adapter/src/index.ts");
 if(!coingecko.includes("env.COINGECKO_DEMO_API_KEY && env.ADAPTER_INGEST_TOKEN")) fails.push("CoinGecko health readiness must require provider key + ingest token");
 if(!frankfurter.includes("credentialsConfigured: Boolean(env.ADAPTER_INGEST_TOKEN)")) fails.push("Frankfurter health readiness must require ingest token");
+for(const cfg of ["workers/coingecko-adapter/tsconfig.json","workers/frankfurter-adapter/tsconfig.json"]){
+  const run=spawnSync(process.execPath,[path.join(root,"node_modules/typescript/bin/tsc"),"-p",path.join(root,cfg),"--noEmit"],{cwd:root,encoding:"utf8",timeout:30000});
+  if(run.status!==0) fails.push(cfg+" TypeScript compile failed: "+String(run.stderr||run.stdout||"").split("\n")[0]);
+}
 const pkg=JSON.parse(read("package.json")||"{}");
 if(!pkg.scripts?.["verify:adapter-worker-machine-auth"]) fails.push("package script missing");
 if(!read("tooling/verify/CATALOG.md").includes("adapter-worker-machine-auth")) fails.push("catalog missing");
