@@ -50,6 +50,7 @@ const T1_PUSH = [
   "db-recovery.cjs",
   "privacy-purge.cjs",
   "api-nest-build.cjs",
+  "staging-topology-readiness.cjs",
   "auth-identity-proof.runtime.cjs",
   "passkey-registration-hijack.runtime.cjs",
   "webauthn-user-presence.runtime.cjs",

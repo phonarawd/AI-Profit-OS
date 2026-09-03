@@ -1,0 +1,62 @@
+{
+  "schema": "staging-topology-provider-snapshot.v2",
+  "recorded_at": "2026-09-03",
+  "source": "read-only Render/Supabase revalidation · mutation=0",
+  "candidate_sha": "1aa71bb62bd171b53c15f2401a73e0ef0d4f884c",
+  "production": {
+    "render": {
+      "service_name": "AI-Profit-OS",
+      "service_id": "srv-da5r1tqjobas73fl16dg",
+      "environment_id": "evm-da5r1tjbc2fs73a0b7hg",
+      "url": "https://ai-profit-os.onrender.com",
+      "repo": "https://github.com/phonarawd/AI-Profit-OS",
+      "branch": "main",
+      "autoDeploy": "yes",
+      "autoDeployTrigger": "commit",
+      "live_deploy_id": "dep-da938o142hec73eipre0",
+      "live_source_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec",
+      "fresh_confirmed": true
+    },
+    "supabase": {
+      "project_ref": "mgsytcetsiecllmhcyox",
+      "status": "ACTIVE_HEALTHY",
+      "region": "ap-northeast-2",
+      "public_table_count": 93,
+      "applied_migrations": 43,
+      "latest_applied_migration": "20260902155632_withdraw_broadcast_tron"
+    }
+  },
+  "staging": {
+    "render": {
+      "service_name": "AI-Profit-OS-Staging",
+      "service_id": "srv-dabph32fngtc73esj8rg",
+      "environment_scope": "service-scoped",
+      "url": "https://ai-profit-os-staging.onrender.com",
+      "repo": "https://github.com/phonarawd/AI-Profit-OS",
+      "branch": "recovery/release-provenance-20260831",
+      "kind": "web_service",
+      "autoDeploy": "no",
+      "autoDeployTrigger": "off",
+      "source_sha": "84cb2ea05ddea0406d9b1f13cbe0b0781a744630",
+      "live_deploy_id": "dep-dabv9sifngtc73fdsu20",
+      "supabase_project_ref": "",
+      "binding_evidence": "UNPROVEN_CURRENTLY",
+      "runtime_health": null
+    },
+    "supabase": {
+      "project_ref": "uluzxvdpynytytduuryy",
+      "lookup_status": "NOT_FOUND",
+      "customer_data": null,
+      "ready": false,
+      "schema_parity_with_production": false
+    }
+  },
+  "cloudflare_preview": null,
+  "blockers_observed": [
+    "staging Render is not running the current integration candidate",
+    "current Render→Supabase staging binding is not readable/proven",
+    "historical staging Supabase project ref is no longer found",
+    "current staging runtime health evidence is not recorded"
+  ],
+  "production_mutation": 0
+}

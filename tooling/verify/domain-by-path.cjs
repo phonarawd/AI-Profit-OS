@@ -1279,6 +1279,13 @@ const RULES = [
     ],
   },
   {
+    test: (f) =>
+      /^tooling\/release\/staging-topology-readiness\.cjs$/.test(f) ||
+      /^tooling\/verify\/staging-topology-readiness\.cjs$/.test(f) ||
+      /^governance\/release-master\/staging-topology\.current\.v1\.json$/.test(f),
+    scripts: ["staging-topology-readiness.cjs"],
+  },
+  {
     test: (f) => /^tooling\/verify\//.test(f),
     scripts: [],
   },
