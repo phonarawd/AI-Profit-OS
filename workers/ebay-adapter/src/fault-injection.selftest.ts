@@ -92,6 +92,7 @@ function baseEnv(overrides: Partial<Env> = {}): Env {
     EBAY_MARKETPLACES: "EBAY_US,EBAY_GB",
     EBAY_SEARCH_QUERIES_JSON: JSON.stringify(["q1", "q2", "q3"]),
     NEST_ADAPTER_INGEST_URL: "https://nest.invalid/api/v1/internal/adapters/ingest",
+    ADAPTER_INGEST_TOKEN: "selftest-adapter-token",
     ...overrides,
   };
 }
@@ -418,7 +419,10 @@ async function scenarioHttpTickEndpointSmoke(): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const workerModule = (await import("./index")).default;
     const res = await workerModule.fetch(
-      new Request("https://worker.invalid/tick", { method: "POST" }),
+      new Request("https://worker.invalid/tick", {
+        method: "POST",
+        headers: { "x-adapter-token": "selftest-adapter-token" },
+      }),
       baseEnv(),
     );
     const body = (await res.json()) as { ok: boolean };
