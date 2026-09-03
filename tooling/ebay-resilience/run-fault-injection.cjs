@@ -199,6 +199,8 @@ async function runEbayFaultInjection(opts = {}) {
   if (databaseUrl) assertDbTarget({ databaseUrl, target_env: opts.target_env });
 
   const secrets = createEphemeralSecrets();
+  const adapterIngestToken = crypto.randomBytes(32).toString("base64url");
+  const ingestHeaders = { "x-adapter-token": adapterIngestToken };
   const userBearer = `Bearer ${mintUserToken(secrets.jwtUserSecret, SYNTH_USER_A)}`;
   const adminBearer = `Bearer ${mintAdminToken(
     secrets.jwtAdminSecret,
@@ -216,7 +218,14 @@ async function runEbayFaultInjection(opts = {}) {
     if (!databaseUrl) throw harnessFailure("DATABASE_URL required for the live eBay fault harness");
     pgPrep = await prepareIsolatedPostgres({ databaseUrl, target_env: opts.target_env });
     nest.assertDistPresent();
-    started = nest.startNest({ port, secrets, env: { DATABASE_URL: databaseUrl } });
+    started = nest.startNest({
+      port,
+      secrets,
+      env: {
+        DATABASE_URL: databaseUrl,
+        ADAPTER_INGEST_TOKEN: adapterIngestToken,
+      },
+    });
     await nest.waitForHealth({ port });
   }
 
@@ -258,7 +267,7 @@ async function runEbayFaultInjection(opts = {}) {
       "POST",
       productBaseUrl,
       "/api/v1/internal/adapters/ingest",
-      {},
+      ingestHeaders,
       outageBody(batch),
     );
     outageIngestResponses.push({ batch, status: res.status, ok: res.parsed?.ok === true });
@@ -353,7 +362,7 @@ async function runEbayFaultInjection(opts = {}) {
     "POST",
     productBaseUrl,
     "/api/v1/internal/adapters/ingest",
-    {},
+    ingestHeaders,
     {
       adapterId: "ebay",
       worker: "ebay-adapter",
