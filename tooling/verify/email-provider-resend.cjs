@@ -69,10 +69,12 @@ if (!provider.includes("sendMagicLink")) {
   fails.push("resend-email.provider must send an actual magic-link URL");
 }
 if (
-  !provider.includes('env.nodeEnv === "production"') ||
+  !provider.includes("allowsDevDeliveryFallback") ||
+  !provider.includes('nodeEnv === "development"') ||
+  !provider.includes('nodeEnv === "test"') ||
   !provider.includes('reason: "resend_api_key_missing"')
 ) {
-  fails.push("production Resend delivery must fail closed when API key is missing");
+  fails.push("Resend delivery must fail closed outside development/test when API key is missing");
 }
 
 const magicFailIndex = magic.indexOf("if (!sent.ok)");

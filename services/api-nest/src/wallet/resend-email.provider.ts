@@ -12,6 +12,10 @@ export type ResendSendResult =
   | { ok: true; provider: "resend"; status: "sent" | "accepted_dev" }
   | { ok: false; provider: "resend"; reason: string };
 
+function allowsDevDeliveryFallback(nodeEnv: string): boolean {
+  return nodeEnv === "development" || nodeEnv === "test";
+}
+
 @Injectable()
 export class ResendEmailProvider {
   private readonly log = new Logger(ResendEmailProvider.name);
@@ -42,11 +46,13 @@ export class ResendEmailProvider {
     const env = loadPhase0Env();
     this.assertFromConfigured();
     if (!env.resendApiKey) {
-      if (env.nodeEnv === "production") {
-        this.log.error("RESEND_API_KEY unset in production — OTP delivery unavailable");
+      if (!allowsDevDeliveryFallback(env.nodeEnv)) {
+        this.log.error(
+          `RESEND_API_KEY unset in ${env.nodeEnv} — OTP delivery unavailable`,
+        );
         return { ok: false, provider: "resend", reason: "resend_api_key_missing" };
       }
-      // Dev without key: accept without network (never log OTP)
+      // Local/test only: accept without network (never log OTP).
       this.log.warn("RESEND_API_KEY unset — OTP accepted_dev (not sent)");
       return { ok: true, provider: "resend", status: "accepted_dev" };
     }
@@ -94,8 +100,10 @@ export class ResendEmailProvider {
     const env = loadPhase0Env();
     this.assertFromConfigured();
     if (!env.resendApiKey) {
-      if (env.nodeEnv === "production") {
-        this.log.error("RESEND_API_KEY unset in production — magic-link delivery unavailable");
+      if (!allowsDevDeliveryFallback(env.nodeEnv)) {
+        this.log.error(
+          `RESEND_API_KEY unset in ${env.nodeEnv} — magic-link delivery unavailable`,
+        );
         return { ok: false, provider: "resend", reason: "resend_api_key_missing" };
       }
       this.log.warn("RESEND_API_KEY unset — magic link accepted_dev (not sent)");
