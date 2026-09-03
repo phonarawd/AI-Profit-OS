@@ -1,0 +1,37 @@
+name: gpt-rel-502-current-truth
+
+on:
+  pull_request:
+    paths:
+      - "governance/engine-acceptance/FINAL_ACCEPTANCE.md"
+      - ".github/workflows/gpt-rel-502-current-truth-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - name: Compute REL-502 current truth
+        run: |
+          node - <<'NODE'
+          const psm = require("./tooling/verify/lib/rel-502-psm.cjs");
+          const ev = psm.evaluate(process.cwd());
+          console.log("REL502_CURRENT_TRUTH=" + JSON.stringify({
+            scope: ev.scope,
+            pendingRels: ev.pendingRels,
+            pendingPosts: ev.pendingPosts,
+            qa: ev.qa,
+            plan502Done: ev.plan502Done,
+            canIssue: ev.canIssue,
+            yamlDeps: ev.yamlDeps,
+          }));
+          NODE
+      - name: Verify fail-closed certificate truth
+        run: node tooling/verify/rel-502-final-engine-acceptance.cjs
