@@ -185,6 +185,21 @@ if (!stagingWorkflow.includes("github.event_name == 'push'")) {
 if (!stagingWorkflow.includes('>> "$GITHUB_ENV"')) {
   fails.push("staging workflow must propagate STAGING_API_HOST to later deploy steps");
 }
+if (!stagingWorkflow.includes("Exact staging API auth readiness")) {
+  fails.push("staging workflow must gate deploy on live auth readiness");
+}
+if (!stagingWorkflow.includes("body?.auth?.userJwtConfigured !== true")) {
+  fails.push("staging workflow must fail closed when JWT user secret is unavailable");
+}
+if (!stagingWorkflow.includes("app_host_not_staging_web") || !stagingWorkflow.includes("ops_host_not_staging_ops")) {
+  fails.push("staging workflow must reject localhost/wrong auth origins");
+}
+if (!stagingWorkflow.includes('GITHUB_REF_NAME') || !stagingWorkflow.includes('chatgpt/staging-exact-1f3b36f-20260903')) {
+  fails.push("staging workflow must execute from exact staging branch");
+}
+if (!stagingWorkflow.includes("runtime_sha_mismatch")) {
+  fails.push("staging workflow must require exact Render runtime SHA before frontend deploy");
+}
 if (!stagingWorkflow.includes("forbiddenHosts")) {
   fails.push("staging workflow must deny manifest forbiddenHosts");
 }

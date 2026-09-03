@@ -90,6 +90,51 @@ jobs:
           printf 'STAGING_API_HOST=%s\nAPI_HOST=%s\n' "$API" "$API" >> "$GITHUB_ENV"
           printf 'API_HOST=%s\n' "$API" >> .env
 
+      - name: Exact staging API auth readiness
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = "chatgpt/staging-exact-1f3b36f-20260903" || {
+            echo "staging deploy must run from exact staging branch"
+            exit 1
+          }
+          node - <<'NODE'
+          const fs = require("fs");
+          (async () => {
+            const manifest = JSON.parse(fs.readFileSync("infra/domain.manifest.json", "utf8"));
+            const api = String(process.env.STAGING_API_HOST || "").replace(/\/$/, "");
+            const expectedSha = String(process.env.GITHUB_SHA || "");
+            const expectedWeb = String(manifest.openNext?.staging?.web?.workersDev || "");
+            const expectedOps = String(manifest.openNext?.staging?.ops?.workersDev || "");
+            const host = (value) => {
+              const raw = String(value || "");
+              if (!raw) return "";
+              return new URL(/^https?:\/\//i.test(raw) ? raw : "https://" + raw).hostname;
+            };
+            const res = await fetch(api + "/api/v1/health", {
+              headers: { "user-agent": "aipo-staging-auth-readiness/1" },
+              signal: AbortSignal.timeout(20000),
+            });
+            const body = await res.json().catch(() => null);
+            const fails = [];
+            if (res.status !== 200 || !body) fails.push("health_not_200_json");
+            if (body?.gitSha !== expectedSha) fails.push("runtime_sha_mismatch");
+            if (body?.db?.configured !== true || body?.db?.ok !== true) fails.push("db_not_ready");
+            if (body?.redis?.configured !== true || body?.redis?.ok !== true) fails.push("redis_not_ready");
+            if (body?.auth?.userJwtConfigured !== true) fails.push("jwt_user_secret_not_ready");
+            if (host(body?.hosts?.app) !== expectedWeb) fails.push("app_host_not_staging_web");
+            if (host(body?.hosts?.ops) !== expectedOps) fails.push("ops_host_not_staging_ops");
+            if (host(body?.hosts?.api) !== host(api)) fails.push("api_host_mismatch");
+            if (fails.length) {
+              console.error("[staging-auth-readiness] FAIL " + fails.join(","));
+              process.exit(1);
+            }
+            console.log("[staging-auth-readiness] PASS exact SHA + DB/Redis + JWT + staging origins");
+          })().catch((err) => {
+            console.error("[staging-auth-readiness] FAIL " + (err?.message || err));
+            process.exit(1);
+          });
+          NODE
+
       - name: Deploy web staging
         if: github.event_name == 'push' || inputs.surface == 'web' || inputs.surface == 'all'
         env:
