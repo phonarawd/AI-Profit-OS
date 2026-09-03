@@ -1,5 +1,7 @@
 "use strict";
 
+const fs = require("node:fs");
+const path = require("node:path");
 const {
   evaluateProductionReleaseDecision,
 } = require("../release/production-release-decision.cjs");
@@ -240,6 +242,36 @@ expectNoGo("release_acceptance_alone_is_insufficient", acceptanceOnly, [
     "render_not_ready",
     "tron_hd_not_ready",
   ]);
+}
+
+const currentEvidence = JSON.parse(
+  fs.readFileSync(
+    path.join(process.cwd(), "governance/release-master/production-release-decision.current.v1.json"),
+    "utf8",
+  ),
+);
+const currentDecision = evaluateProductionReleaseDecision(currentEvidence);
+if (currentDecision.ready || currentDecision.decision !== "PRODUCTION_RELEASE=NO_GO") {
+  fails.push("current release evidence must remain NO_GO until all blocking domains close");
+}
+for (const blocker of [
+  "release_acceptance_missing",
+  "engine_not_issued",
+  "engine_rebase_required",
+  "engine_ack_missing",
+  "staging_not_ready",
+  "db_hardening_not_ready",
+  "render_not_ready",
+  "tron_hd_not_ready",
+  "rollback_not_ready",
+  "stale_release_evidence_open",
+]) {
+  if (!currentDecision.blockers.includes(blocker)) {
+    fails.push("current release blocker missing: " + blocker);
+  }
+}
+if (currentEvidence.production_mutation !== 0) {
+  fails.push("current release evidence must record production_mutation=0");
 }
 
 if (fails.length) {
