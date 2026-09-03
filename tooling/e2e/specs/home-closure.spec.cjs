@@ -243,6 +243,77 @@ async function hideNextDevChrome(page) {
     .catch(() => {});
 }
 
+async function readLargeScreenMetricsStable(page) {
+  let metrics;
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    metrics = await evalStable(
+      page,
+      () => {
+        const stage =
+          document.querySelector(
+            ".sd-stage",
+          );
+
+        const cta =
+          document.querySelector(
+            ".sd-desktop-only a.sd-cta-primary",
+          );
+
+        const root =
+          document.querySelector(
+            ".sd-root",
+          );
+
+        const stageBox = stage
+          ? stage.getBoundingClientRect()
+          : null;
+
+        const ctaBox = cta
+          ? cta.getBoundingClientRect()
+          : null;
+
+        return {
+          stageWidth: stageBox
+            ? stageBox.width
+            : 0,
+
+          ctaVisible: !!(
+            ctaBox &&
+            ctaBox.width > 0 &&
+            ctaBox.height > 0
+          ),
+
+          ctaInView: !!(
+            ctaBox &&
+            ctaBox.top >= 0 &&
+            ctaBox.left >= 0 &&
+            ctaBox.right <=
+              window.innerWidth + 1
+          ),
+
+          rootWidth: root
+            ? root.getBoundingClientRect()
+                .width
+            : 0,
+        };
+      },
+    );
+
+    if (
+      metrics.stageWidth > 0 &&
+      metrics.rootWidth > 0 &&
+      metrics.ctaVisible
+    ) {
+      return metrics;
+    }
+
+    await page.waitForTimeout(150);
+  }
+
+  return metrics;
+}
+
 async function assertNoLegacyChrome(page) {
   await expect(
     page.getByTestId("app-shell"),
@@ -460,16 +531,7 @@ test(
       },
     );
 
-    await page.addStyleTag({
-      content:
-        "nextjs-portal, [data-next-mark-loading], #__next-build-watcher { display: none !important; }",
-    });
-
-    await page.evaluate(() => {
-      document
-        .querySelectorAll("nextjs-portal")
-        .forEach((el) => el.remove());
-    });
+    await hideNextDevChrome(page);
 
     await page.screenshot({
       path: path.join(
@@ -1137,57 +1199,8 @@ test(
         await noHorizontalOverflow(page);
 
       const metrics =
-        await evalStable(
+        await readLargeScreenMetricsStable(
           page,
-          () => {
-            const stage =
-              document.querySelector(
-                ".sd-stage",
-              );
-
-            const cta =
-              document.querySelector(
-                ".sd-desktop-only a.sd-cta-primary",
-              );
-
-            const root =
-              document.querySelector(
-                ".sd-root",
-              );
-
-            const stageBox = stage
-              ? stage.getBoundingClientRect()
-              : null;
-
-            const ctaBox = cta
-              ? cta.getBoundingClientRect()
-              : null;
-
-            return {
-              stageWidth: stageBox
-                ? stageBox.width
-                : 0,
-
-              ctaVisible: !!(
-                ctaBox &&
-                ctaBox.width > 0 &&
-                ctaBox.height > 0
-              ),
-
-              ctaInView: !!(
-                ctaBox &&
-                ctaBox.top >= 0 &&
-                ctaBox.left >= 0 &&
-                ctaBox.right <=
-                  window.innerWidth + 1
-              ),
-
-              rootWidth: root
-                ? root.getBoundingClientRect()
-                    .width
-                : 0,
-            };
-          },
         );
 
       report.push({
