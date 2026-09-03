@@ -21,7 +21,10 @@
       "pages_build_output_dir",
       ".open-next/cloudflare as deploy root"
     ],
-    "requiredArtifacts": [".open-next/worker.js", ".open-next/assets"],
+    "requiredArtifacts": [
+      ".open-next/worker.js",
+      ".open-next/assets"
+    ],
     "web": {
       "worker": "ai-profit-web",
       "app": "apps/web",
@@ -43,7 +46,8 @@
         "ops.hiptk.app",
         "api.hiptk.app",
         "hiptk.app",
-        "go.hiptk.app"
+        "go.hiptk.app",
+        "ai-profit-os.onrender.com"
       ],
       "web": {
         "worker": "ai-profit-web-preview",
@@ -74,19 +78,27 @@
     "web-proxy": {
       "worker": "hiptk-web-proxy",
       "path": "workers/web-proxy",
-      "hostnames": ["app.hiptk.app", "hiptk.app", "go.hiptk.app"],
+      "hostnames": [
+        "app.hiptk.app",
+        "hiptk.app",
+        "go.hiptk.app"
+      ],
       "target": "https://ai-profit-web.ebay-adapter.workers.dev"
     },
     "ops-proxy": {
       "worker": "hiptk-ops-proxy",
       "path": "workers/ops-proxy",
-      "hostnames": ["ops.hiptk.app"],
+      "hostnames": [
+        "ops.hiptk.app"
+      ],
       "target": "https://ai-profit-ops.ebay-adapter.workers.dev"
     },
     "api-stub": {
       "worker": "hiptk-api-stub",
       "path": "workers/api-stub",
-      "hostnames": ["api.hiptk.app"],
+      "hostnames": [
+        "api.hiptk.app"
+      ],
       "target": "https://ai-profit-os.onrender.com",
       "note": "Phase0 Nest on Render · workers/_shared/api-origin.ts SSOT · cloudflared 로컬 터널 폐기"
     }
