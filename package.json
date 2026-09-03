@@ -319,6 +319,8 @@
     "verify:complete-profile-closure": "node tooling/verify/complete-profile-closure.cjs",
     "verify:onboarding-journey-closure": "node tooling/verify/onboarding-journey-closure.cjs",
     "verify:seo-schema": "node tooling/verify/seo-schema.cjs",
+    "verify:api-artifact-runtime-qa": "node tooling/verify/api-artifact-runtime-qa.cjs",
+    "verify:api-runtime-qa-canonical": "node tooling/verify/api-runtime-qa-canonical.cjs",
     "verify:production-deploy-path-lock": "node tooling/verify/production-deploy-path-lock.cjs",
     "verify:fetch-acceptance-artifact": "node tooling/verify/fetch-acceptance-artifact.cjs",
     "verify:release-acceptance": "node tooling/verify/release-acceptance.cjs",

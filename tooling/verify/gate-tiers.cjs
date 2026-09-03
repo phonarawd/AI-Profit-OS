@@ -13,6 +13,8 @@ const T0_ALWAYS = [
   "plans-ssot.cjs",
   "brand-consumer.cjs",
   "release-artifact-workflow-contract.cjs",
+  "api-artifact-runtime-qa.cjs",
+  "api-runtime-qa-canonical.cjs",
   "seo-schema.cjs",
   "operator-footer.cjs",
   "marketing-compliance.cjs",

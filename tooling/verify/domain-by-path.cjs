@@ -1262,9 +1262,12 @@ const RULES = [
       /^\.github\/workflows\/(deploy-cloudflare|release-(build|acceptance))\.yml$/.test(f) ||
       /^tooling\/deploy\/(cf-pages-(web|ops)|cf-workers)\.cjs$/.test(f) ||
       /^tooling\/deploy\/lib\/accepted-artifact-authority\.cjs$/.test(f) ||
-      /^tooling\/release\/(artifact-provenance|deploy-from-artifact|fetch-acceptance-artifact|fetch-release-bundle|require-accepted-sha|release-acceptance-verdict)\.cjs$/.test(f) ||
+      /^tooling\/release\/(api-artifact-runtime-qa|artifact-provenance|deploy-from-artifact|fetch-acceptance-artifact|fetch-release-bundle|require-accepted-sha|release-acceptance-verdict)\.cjs$/.test(f) ||
+      /^tooling\/verify\/(api-artifact-runtime-qa|api-runtime-qa-canonical)\.cjs$/.test(f) ||
       /^tooling\/verify\/(production-deploy-path-lock|fetch-acceptance-artifact|release-acceptance|release-fetch-deploy-hardening|require-accepted-sha)\.cjs$/.test(f),
     scripts: [
+      "api-artifact-runtime-qa.cjs",
+      "api-runtime-qa-canonical.cjs",
       "production-deploy-path-lock.cjs",
       "fetch-acceptance-artifact.cjs",
       "release-acceptance.cjs",
