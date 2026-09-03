@@ -1,0 +1,98 @@
+name: staging-browser-e2e-current
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - chatgpt/staging-browser-e2e-20260903
+
+jobs:
+  browser-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: 45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c
+
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Browser exact-staging E2E
+        run: |
+          node <<'NODE'
+          const { chromium } = require("@playwright/test");
+          const expected = "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c";
+          const surfaces = [
+            ["web", "https://ai-profit-web-preview.ebay-adapter.workers.dev/"],
+            ["ops", "https://ai-profit-ops-preview.ebay-adapter.workers.dev/admin"],
+          ];
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            try {
+              for (const [name, url] of surfaces) {
+                const page = await browser.newPage();
+                const pageErrors = [];
+                page.on("pageerror", (e) => pageErrors.push(String(e && e.message || e)));
+                const nav = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
+                if (!nav || !nav.ok()) throw new Error(name + ": navigation failed status=" + (nav && nav.status()));
+                const final = new URL(page.url());
+                if (!final.hostname.endsWith(".ebay-adapter.workers.dev")) {
+                  throw new Error(name + ": escaped preview host to " + final.hostname);
+                }
+                const textLen = await page.locator("body").innerText().then(x => x.trim().length);
+                if (textLen < 20) throw new Error(name + ": body unexpectedly empty");
+
+                const health = await page.evaluate(async () => {
+                  const r = await fetch("/api/v1/health", { headers: { accept: "application/json" } });
+                  return { status: r.status, body: await r.json() };
+                });
+                if (health.status !== 200 || health.body?.gitSha !== expected) {
+                  throw new Error(name + ": health exact-sha mismatch " + JSON.stringify(health));
+                }
+                if (health.body?.db?.configured !== true || health.body?.db?.ok !== true) {
+                  throw new Error(name + ": DB not healthy " + JSON.stringify(health.body?.db));
+                }
+                if (health.body?.redis?.configured !== true || health.body?.redis?.ok !== true) {
+                  throw new Error(name + ": Redis not healthy " + JSON.stringify(health.body?.redis));
+                }
+                if (health.body?.hosts?.api !== "https://ai-profit-os-staging-exact-1f3b36f.onrender.com") {
+                  throw new Error(name + ": API origin mismatch " + health.body?.hosts?.api);
+                }
+
+                if (name === "web") {
+                  const growth = await page.evaluate(async () => {
+                    const r = await fetch("/api/v1/growth/public-surface", { headers: { accept: "application/json" } });
+                    return { status: r.status, body: await r.json() };
+                  });
+                  if (growth.status !== 200 || growth.body?.ledgerTotal !== 0 || !Array.isArray(growth.body?.events)) {
+                    throw new Error("web: DB-backed public read failed " + JSON.stringify(growth));
+                  }
+                }
+                if (pageErrors.length) throw new Error(name + ": pageerror " + pageErrors.join(" | "));
+                console.log("PASS " + name + " " + page.url() + " exact=" + expected);
+                await page.close();
+              }
+              console.log("STAGING_BROWSER_E2E=PASS");
+            } finally {
+              await browser.close();
+            }
+          })().catch((e) => {
+            console.error("STAGING_BROWSER_E2E=FAIL", e);
+            process.exit(1);
+          });
+          NODE
