@@ -55,7 +55,7 @@
       "mutation": 0,
       "founder_action_required": true
     },
-    "integration_governance_head_at_recording": "6185cfa6f6061f9381823da66b2d8adb79dcbcf1"
+    "integration_governance_head_at_recording": "152222bb0272343abb00408cf11c726379b2c24d"
   },
   "render": {
     "workspace_id": "tea-da5qqo3m8hqs73djpvvg",
@@ -221,7 +221,7 @@
     {
       "order": 7,
       "id": "TRON_HD_VAULT",
-      "action": "Provide and prove canonical BIP32 secp256k1 authority for m/44'/195'/0'/0/{index}; keep 503 fail-closed until proven.",
+      "action": "Canonical TRC20 derivation remains fail-closed: no bound BIP32 secp256k1 deriver; Production/staging Vault matching secret metadata=0 and deposit_config singleton rows=0. Provide and prove canonical HSM/Vault xpub authority for m/44'/195'/0'/0/{index}.",
       "production_mutation": false,
       "status": "BLOCKED"
     },
@@ -329,7 +329,7 @@
     "codeql_evidence_sha": "072616d744a188872d8b7f652475ace319d0893a",
     "full_ghas_open_alert_inventory": "NOT_PROVEN"
   },
-  "governance_parent_sha": "6185cfa6f6061f9381823da66b2d8adb79dcbcf1",
+  "governance_parent_sha": "152222bb0272343abb00408cf11c726379b2c24d",
   "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
   "migration_effect_reconciliation": {
     "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
@@ -350,5 +350,16 @@
     "same_origin_api_binding": "CLOSED_VERIFIED",
     "browser_smoke": "PASS",
     "browser_smoke_run": 33750291160
+  },
+  "tron_hd_current": {
+    "observed_at": "2026-09-03T11:44:00Z",
+    "canonical_path": "m/44'/195'/0'/0/{index}",
+    "canonical_deriver_bound": false,
+    "production_vault_matching_secret_metadata_count": 0,
+    "staging_vault_matching_secret_metadata_count": 0,
+    "production_deposit_config_singleton_rows": 0,
+    "staging_deposit_config_singleton_rows": 0,
+    "default_hot_wallet_xpub_ref_is_locator_only": true,
+    "status": "BLOCKED"
   }
 }
