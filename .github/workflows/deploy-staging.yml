@@ -121,6 +121,8 @@ jobs:
             if (body?.db?.configured !== true || body?.db?.ok !== true) fails.push("db_not_ready");
             if (body?.redis?.configured !== true || body?.redis?.ok !== true) fails.push("redis_not_ready");
             if (body?.auth?.userJwtConfigured !== true) fails.push("jwt_user_secret_not_ready");
+            if (body?.auth?.kakaoConfigured !== true) fails.push("kakao_provider_not_ready");
+            if (body?.auth?.resendConfigured !== true) fails.push("resend_provider_not_ready");
             if (host(body?.hosts?.app) !== expectedWeb) fails.push("app_host_not_staging_web");
             if (host(body?.hosts?.ops) !== expectedOps) fails.push("ops_host_not_staging_ops");
             if (host(body?.hosts?.api) !== host(api)) fails.push("api_host_mismatch");
@@ -128,7 +130,7 @@ jobs:
               console.error("[staging-auth-readiness] FAIL " + fails.join(","));
               process.exit(1);
             }
-            console.log("[staging-auth-readiness] PASS exact SHA + DB/Redis + JWT + staging origins");
+            console.log("[staging-auth-readiness] PASS exact SHA + DB/Redis + JWT/Kakao/Resend + staging origins");
           })().catch((err) => {
             console.error("[staging-auth-readiness] FAIL " + (err?.message || err));
             process.exit(1);

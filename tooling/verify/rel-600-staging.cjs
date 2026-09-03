@@ -192,6 +192,12 @@ if (!stagingWorkflow.includes("Exact staging API auth readiness")) {
 if (!stagingWorkflow.includes("body?.auth?.userJwtConfigured !== true")) {
   fails.push("staging workflow must fail closed when JWT user secret is unavailable");
 }
+if (!stagingWorkflow.includes("body?.auth?.kakaoConfigured !== true")) {
+  fails.push("staging workflow must fail closed when Kakao provider is unavailable");
+}
+if (!stagingWorkflow.includes("body?.auth?.resendConfigured !== true")) {
+  fails.push("staging workflow must fail closed when Resend provider is unavailable");
+}
 if (!stagingWorkflow.includes("app_host_not_staging_web") || !stagingWorkflow.includes("ops_host_not_staging_ops")) {
   fails.push("staging workflow must reject localhost/wrong auth origins");
 }
