@@ -1,7 +1,7 @@
 {
   "schema": "staging-topology-provider-snapshot.v2",
   "recorded_at": "2026-09-03",
-  "source": "read-only Render/Supabase revalidation · mutation=0",
+  "source": "read-only GitHub/Supabase revalidation + last-known Render identifiers · Render current binding/runtime not revalidated · mutation=0",
   "candidate_sha": "1aa71bb62bd171b53c15f2401a73e0ef0d4f884c",
   "production": {
     "render": {
@@ -44,18 +44,22 @@
       "runtime_health": null
     },
     "supabase": {
+      "branch_name": "staging-release-20260902",
       "project_ref": "uluzxvdpynytytduuryy",
-      "lookup_status": "NOT_FOUND",
+      "parent_project_ref": "mgsytcetsiecllmhcyox",
+      "with_data": false,
+      "preview_project_status": "ACTIVE_HEALTHY",
       "customer_data": null,
       "ready": false,
-      "schema_parity_with_production": false
+      "schema_parity_with_production": false,
+      "current_detail_evidence": "UNPROVEN_CURRENTLY"
     }
   },
   "cloudflare_preview": null,
   "blockers_observed": [
-    "staging Render is not running the current integration candidate",
-    "current Render→Supabase staging binding is not readable/proven",
-    "historical staging Supabase project ref is no longer found",
+    "staging Render is not running the recorded integration candidate",
+    "current Render→Supabase staging binding is not readable/proven in this session",
+    "staging Supabase branch exists and is ACTIVE_HEALTHY, but customer-row/schema-parity evidence is not current",
     "current staging runtime health evidence is not recorded"
   ],
   "production_mutation": 0

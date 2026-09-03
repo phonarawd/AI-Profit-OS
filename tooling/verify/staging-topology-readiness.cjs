@@ -82,9 +82,9 @@ const currentSnapshot = JSON.parse(
 );
 got = evaluateStagingTopology(currentSnapshot);
 assert.equal(got.ready, false);
-assert.equal(got.status, "BLOCKED");
+assert.equal(got.status, "NOT_READY");
 assert.equal(got.classification, "BLOCKED_EXTERNAL_ACTION");
-assert.equal(got.verdict, "STAGING_TOPOLOGY=BLOCKED");
+assert.equal(got.verdict, "STAGING_TOPOLOGY=NOT_READY");
 assert.ok(got.blockers.includes("render_staging_db_binding_missing"));
 assert.ok(got.blockers.includes("render_staging_runtime_health_missing"));
 assert.ok(got.blockers.includes("render_staging_source_sha_mismatch"));
