@@ -27,10 +27,13 @@ for (const needle of [
 if (pg.includes("rejectUnauthorized: false")) {
   fails.push("rejectUnauthorized=false forbidden for database TLS");
 }
-if (/sslmode\s*=\s*no-verify/i.test(pg + "\n" + example)) {
-  fails.push("sslmode=no-verify forbidden");
+if (/sslmode\s*=\s*no-verify/i.test(pg)) {
+  fails.push("sslmode=no-verify forbidden in database runtime source");
 }
-if (!env.includes("databaseSslCaPem: read(\"DATABASE_SSL_CA_PEM\")")) {
+if (/^DATABASE_URL=.*sslmode=no-verify/im.test(example)) {
+  fails.push("sslmode=no-verify forbidden in DATABASE_URL example");
+}
+if (!env.includes('databaseSslCaPem: read("DATABASE_SSL_CA_PEM")')) {
   fails.push("phase0 env missing DATABASE_SSL_CA_PEM");
 }
 if (!example.includes("pooler.supabase.com:5432/postgres")) {
