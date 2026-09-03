@@ -76,3 +76,5 @@ jobs:
           path: _tmp_release_bundle/
           retention-days: 90
           if-no-files-found: error
+          # .open-next / .release-prebuilt 는 숨김 경로 — 기본 exclude면 digest 깨짐
+          include-hidden-files: true

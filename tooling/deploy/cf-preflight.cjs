@@ -9,6 +9,7 @@ const {
   requireRootDomainForProd,
   requireCloudflareCreds,
   mustExist,
+  requireNonProdApiIsolation,
 } = require("./lib/env.cjs");
 
 const target = process.argv[2] || "preview";
@@ -17,6 +18,8 @@ const surface = process.argv[3] || "all";
 requireRootDomainForProd(target);
 requireCloudflareCreds();
 loadDotEnv();
+// 비프로덕션 타깃은 Production API_HOST를 상속하지 않는다 (STAGING_API_HOST 없으면 fail-closed)
+requireNonProdApiIsolation(target, { root, env: process.env });
 
 const requiredInfra = [
   "infra/web/wrangler.toml",

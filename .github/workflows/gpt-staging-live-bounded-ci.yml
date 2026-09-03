@@ -1,0 +1,33 @@
+name: gpt-staging-live-bounded-ci
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - gpt/staging-live-bounded-38032da
+    paths:
+      - ".github/workflows/gpt-staging-live-bounded-ci.yml"
+      - "tooling/verify/rel-600-staging.cjs"
+      - "tooling/verify/rel-601-staging-regression.cjs"
+      - "tooling/verify/rel-602-staging-rollback.cjs"
+      - "tooling/verify/staging-live-fetch-bounds.cjs"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: "22"
+      - name: Static bounded-retry proof
+        run: node tooling/verify/staging-live-fetch-bounds.cjs
+      - name: REL-600 live staging
+        run: node tooling/verify/rel-600-staging.cjs
+      - name: REL-601 live regression
+        run: node tooling/verify/rel-601-staging-regression.cjs
+      - name: REL-602 rollback verifier
+        run: node tooling/verify/rel-602-staging-rollback.cjs

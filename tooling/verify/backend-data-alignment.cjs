@@ -48,13 +48,17 @@ const engineCert = read("governance/engine-acceptance/FINAL_ACCEPTANCE.md");
 const r6 = read("governance/admin/R6_CERTIFICATION.md");
 const appModule = read("services/api-nest/src/app.module.ts");
 
-if (fixture.certIssued !== 1) fails.push("fixture certIssued must be 1 after REL-502 current-epoch ISSUED");
+const engineRebaseRequired = /REBASE_REQUIRED = 1/.test(engineCert);
+if (engineRebaseRequired) {
+  if (fixture.certIssued !== 0) fails.push("fixture certIssued must be 0 while REL-502 rebase is required");
+  if (fixture.stalePendingRebase !== true) fails.push("stalePendingRebase must be true while REL-502 is NOT_ISSUED");
+} else {
+  if (fixture.certIssued !== 1) fails.push("fixture certIssued must be 1 after REL-502 current-epoch ISSUED");
+  if (fixture.stalePendingRebase !== false) fails.push("stalePendingRebase must clear after REL-502 current-epoch ISSUED");
+}
 if (fixture.applyMigration !== 0) fails.push("R7 applyMigration must be 0");
 if (fixture.projectRef !== "mgsytcetsiecllmhcyox") fails.push("projectRef lock");
 if (fixture.additiveRel !== "REL-508") fails.push("additive owner must be REL-508");
-if (fixture.stalePendingRebase !== false) {
-  fails.push("stalePendingRebase must be false after REL-502 current-epoch ISSUED");
-}
 
 const open = fixture.openConflicts || [];
 if (open.length !== 0) {
@@ -63,17 +67,19 @@ if (open.length !== 0) {
 
 for (const needle of [
   "STATUS = COMPLETED",
-  "CERT_ISSUED = 1",
   "OPEN_CONFLICT = 0",
-  "STALE_PENDING_REBASE = 0",
   "CONCEALMENT = 0",
   "ADDITIVE_REL = REL-508",
   "CONTRACT_VERSION = 1.0.1",
 ]) {
   if (!cert.includes(needle)) fails.push("R7 cert missing " + needle);
 }
-if (/CERT_ISSUED = 0/.test(cert) && /STALE_PENDING_REBASE = 1/.test(cert)) {
-  fails.push("cannot keep R7 STALE after REL-502 current-epoch ISSUED");
+if (engineRebaseRequired) {
+  if (!cert.includes("CERT_ISSUED = 0")) fails.push("R7 must not stay issued while REL-502 is NOT_ISSUED");
+  if (!cert.includes("STALE_PENDING_REBASE = 1")) fails.push("R7 must mirror REL-502 rebase pending");
+} else {
+  if (!cert.includes("CERT_ISSUED = 1")) fails.push("R7 must be issued after REL-502 current-epoch ISSUED");
+  if (!cert.includes("STALE_PENDING_REBASE = 0")) fails.push("R7 stale flag must clear after REL-502 issuance");
 }
 if (/SDK_NEST_CURRENT_FX_APPROX/.test(cert) && /OPEN_CONFLICT = SDK_NEST_CURRENT_FX_APPROX/.test(cert)) {
   fails.push("current-fx conflict must be closed after Nest wire");
@@ -205,11 +211,24 @@ for (const name of fs.readdirSync(migDir).filter((f) => f.endsWith(".sql"))) {
 if (appliedIdx < 1) fails.push("applied migrations have no CREATE INDEX");
 if (!cert.includes("REL-701-DB")) fails.push("index/head diverge owner must stay REL-701-DB");
 
+// migration_head 진실 = R7 표(사람이 갱신) ↔ 실측(로컬 파일 head · fixture remote head) 1:1.
+// 하드코딩 금지: 표가 갱신되지 않으면 여기서 FAIL 하고, 표가 거짓이면 실측과 어긋나 FAIL 한다.
 const localFiles = fs.readdirSync(migDir).filter((f) => f.endsWith(".sql")).sort();
 const localHead = localFiles[localFiles.length - 1].slice(0, 14);
 const remoteHead = (appliedFx.versions || [])[(appliedFx.versions || []).length - 1];
-if (localHead !== "20260823210000") fails.push("local migration head unexpected " + localHead);
-if (remoteHead !== "20260821223109") fails.push("remote applied head unexpected " + remoteHead);
+const r7Head = cert.match(
+  /\|\s*migration_head\s*\|\s*local\s*`(\d{14})`\s*\|\s*remote applied\s*`(\d{14})`\s*\|/,
+);
+if (!r7Head) {
+  fails.push("R7 table missing migration_head row (local `X` | remote applied `Y`)");
+} else {
+  if (localHead !== r7Head[1]) {
+    fails.push("local migration head " + localHead + " ≠ R7 table " + r7Head[1]);
+  }
+  if (remoteHead !== r7Head[2]) {
+    fails.push("remote applied head " + remoteHead + " ≠ R7 table " + r7Head[2]);
+  }
+}
 if (localHead === remoteHead) {
   fails.push("heads unexpectedly equal — update the R7 table, do not hide apply state");
 }
@@ -249,5 +268,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:backend-data-alignment] PASS (table filled · current-fx wired · CERT_ISSUED 1 · rebase cleared)",
+  "[verify:backend-data-alignment] PASS (table filled · current-fx wired · Engine issuance mirrored fail-closed)",
 );
