@@ -192,7 +192,6 @@ export class WalletController {
       userId: this.sessionUserId(req),
       method: String(body.method ?? "") as WithdrawStepUpMethod,
       origin: String(body.origin ?? ""),
-      email: typeof body.email === "string" ? body.email : undefined,
     });
   }
 
@@ -217,6 +216,7 @@ export class WalletController {
     return this.stepUp.setPin({
       userId: this.sessionUserId(req),
       pin: String(body.pin ?? ""),
+      enrollmentStepUpToken: String(body.stepUpToken ?? ""),
     });
   }
 

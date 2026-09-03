@@ -1250,6 +1250,12 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^services\/api-nest\/src\/wallet\/withdraw-stepup\./.test(f) ||
+      /^tooling\/verify\/withdraw-stepup-security/.test(f),
+    scripts: ["withdraw-stepup-security.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/wallet\//.test(f) ||
       /^services\/api-nest\/src\/compliance\/kyc\.controller\.ts$/.test(f),
     scripts: ["wallet-kyc-session-auth.cjs"],

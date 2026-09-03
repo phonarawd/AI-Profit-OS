@@ -286,6 +286,31 @@
         "trigger": "§43.6 challenge TTL 60s"
       },
       {
+        "code": "WEBAUTHN_STEP_UP_NOT_READY",
+        "toastKo": "🔐 이 확인 방법은 아직 쓸 수 없어요. 다른 방법으로 확인해 주세요",
+        "trigger": "webauthn step-up fail-closed"
+      },
+      {
+        "code": "EMAIL_STEP_UP_VERIFICATION_REQUIRED",
+        "toastKo": "📧 이메일 확인이 끝난 뒤에 이 방법을 쓸 수 있어요",
+        "trigger": "email OTP requires verified address"
+      },
+      {
+        "code": "PIN_ENROLLMENT_STEP_UP_REQUIRED",
+        "toastKo": "🔐 출금 비밀번호를 바꾸려면 먼저 다른 본인 확인이 필요해요",
+        "trigger": "PIN set requires proven non-PIN step-up"
+      },
+      {
+        "code": "STEP_UP_TOKEN_EXPIRED",
+        "toastKo": "⏱️ 확인이 만료됐어요. 다시 시도해 주세요",
+        "trigger": "expiring step-up token"
+      },
+      {
+        "code": "STEP_UP_TOKEN_REPLAYED",
+        "toastKo": "🔐 이 확인은 이미 사용됐어요. 다시 확인해 주세요",
+        "trigger": "single-use step-up token replay"
+      },
+      {
         "code": "BALANCE_ADJUSTED",
         "toastKo": "💰 잔액이 조정됐어요",
         "trigger": "admin ledger adjust"
