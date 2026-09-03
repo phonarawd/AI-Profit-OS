@@ -1,0 +1,233 @@
+[
+  {
+    "pr": 163,
+    "sha": "53f1d2396ebcb913c311dcd9dcc5ae1b21b6874f",
+    "importedCount": 9,
+    "files": [
+      ".github/workflows/gpt-release-truth-consistency-ci.yml",
+      "governance/release-master/MIGRATION_READINESS.md",
+      "governance/release-master/R7_BACKEND_ALIGNMENT.md",
+      "tooling/verify/backend-data-alignment.cjs",
+      "tooling/verify/fixtures/backend-data-alignment.v1.json",
+      "tooling/verify/fixtures/rel-505-r7-backend-alignment.v1.json",
+      "tooling/verify/rel-504-migration-readiness.cjs",
+      "tooling/verify/rel-505-r7-backend-alignment.cjs",
+      "tooling/verify/release-engine-truth-consistency.cjs"
+    ]
+  },
+  {
+    "pr": 167,
+    "sha": "1057268b48ea8687a047392579e4034b9bf3be89",
+    "importedCount": 3,
+    "files": [
+      ".github/workflows/gpt-tron-failclosed-38032da-ci.yml",
+      "tooling/verify/tron-address-fail-closed.cjs",
+      "tooling/verify/tron-address-fail-closed.runtime.cjs"
+    ]
+  },
+  {
+    "pr": 168,
+    "sha": "9ef01cd420393a561f4b0557e7983a64ef5698b8",
+    "importedCount": 4,
+    "files": [
+      ".github/workflows/gpt-staging-live-bounded-ci.yml",
+      "tooling/verify/rel-600-staging.cjs",
+      "tooling/verify/rel-602-staging-rollback.cjs",
+      "tooling/verify/staging-live-fetch-bounds.cjs"
+    ]
+  },
+  {
+    "pr": 169,
+    "sha": "7019cea53e6580b7cec502269aaa6543a7910246",
+    "importedCount": 3,
+    "files": [
+      ".github/workflows/gpt-api-qa-canonical-security-ci.yml",
+      "tooling/release/api-artifact-runtime-qa.cjs",
+      "tooling/verify/api-runtime-qa-canonical.cjs"
+    ]
+  },
+  {
+    "pr": 170,
+    "sha": "253f694286ce1388cdd4a1b7965beb5c83ea6891",
+    "importedCount": 3,
+    "files": [
+      ".github/workflows/gpt-production-release-decision-ci.yml",
+      "tooling/release/production-release-decision.cjs",
+      "tooling/verify/production-release-decision.cjs"
+    ]
+  },
+  {
+    "pr": 171,
+    "sha": "8ec3ec25989746cee2116ae248a71cebca03854a",
+    "importedCount": 3,
+    "files": [
+      ".github/workflows/gpt-founder-action-packet-current-ci.yml",
+      "governance/recovery/founder-action-packet.current.v1.json",
+      "tooling/verify/founder-action-packet-current.cjs"
+    ]
+  },
+  {
+    "pr": 172,
+    "sha": "b71fcce507ae151d3c47ebb93e455c03b34f2d91",
+    "importedCount": 4,
+    "files": [
+      ".github/workflows/gpt-staging-binding-failclosed-ci.yml",
+      "governance/release-master/staging-topology.current.v1.json",
+      "tooling/release/staging-topology-readiness.cjs",
+      "tooling/verify/staging-topology-readiness.cjs"
+    ]
+  },
+  {
+    "pr": 177,
+    "sha": "3a0d3b04fffd5bd36512e1fdb8077b97340cf57f",
+    "importedCount": 18,
+    "files": [
+      ".github/workflows/deploy-cloudflare.yml",
+      ".github/workflows/gpt-production-deploy-path-lock-ci.yml",
+      ".github/workflows/gpt-release-safety-stack-integration-ci.yml",
+      "tooling/deploy/cf-pages-ops.cjs",
+      "tooling/deploy/cf-pages-web.cjs",
+      "tooling/deploy/cf-workers.cjs",
+      "tooling/deploy/lib/accepted-artifact-authority.cjs",
+      "tooling/release/artifact-provenance.cjs",
+      "tooling/release/deploy-from-artifact.cjs",
+      "tooling/release/fetch-acceptance-artifact.cjs",
+      "tooling/release/release-acceptance-verdict.cjs",
+      "tooling/release/require-accepted-sha.cjs",
+      "tooling/verify/fetch-acceptance-artifact.cjs",
+      "tooling/verify/production-deploy-path-lock.cjs",
+      "tooling/verify/release-acceptance.cjs",
+      "tooling/verify/release-fetch-deploy-hardening.cjs",
+      "tooling/verify/release-manifest-identity-lock.cjs",
+      "tooling/verify/require-accepted-sha.cjs"
+    ]
+  },
+  {
+    "pr": 174,
+    "sha": "9dc8a4894ce3ae8a66c7191ae08a350c679de748",
+    "importedCount": 5,
+    "files": [
+      ".github/workflows/gpt-render-production-identity-lock-ci.yml",
+      "tooling/release/render-api-promotion-readiness.cjs",
+      "tooling/release/render-rollback-plan.cjs",
+      "tooling/verify/render-api-promotion-readiness.cjs",
+      "tooling/verify/render-rollback-provenance.cjs"
+    ]
+  },
+  {
+    "pr": 178,
+    "sha": "61cf5a3ce530769ccc8b69fbe452286dd0f36584",
+    "importedCount": 5,
+    "files": [
+      ".github/workflows/gpt-db-default-acl-readiness-ci.yml",
+      "supabase/staging/20260901120200_default_acl.sql",
+      "tooling/release/db-hardening-readiness.cjs",
+      "tooling/verify/db-hardening-readiness.cjs",
+      "tooling/verify/staging-db-hardening.cjs"
+    ]
+  },
+  {
+    "pr": 191,
+    "sha": "ed98ae8d68c33c9853c26f2996efd98537ccc829",
+    "importedCount": 3,
+    "files": [
+      ".github/workflows/staging-verifier-followup.yml",
+      "tooling/verify/fixtures/migrations-applied.v1.json",
+      "tooling/verify/staging-db-hardening.cjs"
+    ]
+  },
+  {
+    "pr": 202,
+    "sha": "59b5c9f888bf6f656abde65c105cbae20e93f01e",
+    "importedCount": 2,
+    "files": [
+      ".github/workflows/release-integration-contract.yml",
+      "tooling/verify/release-artifact-workflow-contract.cjs"
+    ]
+  },
+  {
+    "pr": 203,
+    "sha": "8272c4181a134ef6da98acecb346b0e92aa51702",
+    "importedCount": 8,
+    "files": [
+      ".github/workflows/auth-email-prod-readiness.yml",
+      "apps/web/app/auth/auth-messages.ts",
+      "packages/sdk/src/auth/auth-release.test.ts",
+      "packages/sdk/src/auth/fetch.ts",
+      "services/api-nest/src/auth/magic-link.delivery.runtime.test.ts",
+      "services/api-nest/src/auth/magic-link.service.ts",
+      "services/api-nest/src/wallet/resend-email.provider.ts",
+      "tooling/verify/email-provider-resend.cjs"
+    ]
+  },
+  {
+    "pr": 204,
+    "sha": "37df4a3b80e20eedc670af49b18e136da368fc14",
+    "importedCount": 2,
+    "files": [
+      "supabase/migrations/20260902092000_production_db_hardening.sql",
+      "tooling/verify/db-hardening-readiness.cjs"
+    ]
+  },
+  {
+    "pr": 207,
+    "sha": "2eba364882dfbfda4a73b7b5bd54c97924d53439",
+    "importedCount": 3,
+    "files": [
+      ".github/workflows/release-integration-contract.yml",
+      "tooling/release/artifact-runtime-qa.cjs",
+      "tooling/verify/artifact-runtime-redirect-manual.cjs"
+    ]
+  },
+  {
+    "pr": 206,
+    "sha": "35e1dc6fdd85e7b89667a6f013317f2bb316e401",
+    "importedCount": 2,
+    "files": [
+      ".github/workflows/release-acceptance.yml",
+      ".github/workflows/release-build.yml"
+    ]
+  },
+  {
+    "pr": 208,
+    "file": "governance/engine-acceptance/FINAL_ACCEPTANCE.md",
+    "action": "SKIP_KEEP_AUTHORITY"
+  },
+  {
+    "pr": 208,
+    "sha": "550b0d06190334bbbcfe475f41cd7a4bdac091a2",
+    "importedCount": 30,
+    "files": [
+      ".github/workflows/gpt-post-007-seo-trust-ci.yml",
+      "apps/web/app/GuestFirstVisit.tsx",
+      "apps/web/app/ads/[variant]/page.tsx",
+      "apps/web/app/ads/page.tsx",
+      "apps/web/app/components/GuestChrome.tsx",
+      "apps/web/app/l/[variant]/page.tsx",
+      "apps/web/app/layout.tsx",
+      "apps/web/app/me/legal/license/page.tsx",
+      "apps/web/app/page.tsx",
+      "apps/web/app/robots.ts",
+      "apps/web/app/sitemap.ts",
+      "apps/web/public/kyb/trade-license-1135431.html",
+      "apps/web/public/manifest.webmanifest",
+      "docs/kyb/trade-license-1135431.html",
+      "package.json",
+      "packages/ui/brand/assets/markets/manifest.json",
+      "packages/ui/brand/markets.ts",
+      "packages/ui/canon/surfaces/market-partner-trust.wire.json",
+      "packages/ui/components/trust/MarketPartnerTrustStrip.tsx",
+      "packages/ui/copy/ko/landing.ts",
+      "packages/ui/copy/ko/onboarding.ts",
+      "packages/ui/copy/ko/operator.ts",
+      "packages/ui/copy/ko/trust.ts",
+      "schemas/operator-entity.instance.json",
+      "tooling/schemas/_write-trade-license-html.cjs",
+      "tooling/verify/CATALOG.md",
+      "tooling/verify/domain-by-path.cjs",
+      "tooling/verify/gate-tiers.cjs",
+      "tooling/verify/market-partner-trust.cjs",
+      "tooling/verify/seo-schema.cjs"
+    ]
+  }
+]
