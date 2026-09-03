@@ -1,7 +1,7 @@
 {
   "schema": "governance.recovery.staging-runtime-db-binding.v1",
-  "recorded_at": "2026-09-03T11:22:24.747Z",
-  "candidate_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+  "recorded_at": "2026-09-03T11:26:35.709Z",
+  "candidate_sha": "072616d744a188872d8b7f652475ace319d0893a",
   "production_mutation": 0,
   "production_db_mutation": 0,
   "secrets_recorded": false,
@@ -9,9 +9,9 @@
     "service_id": "srv-dacjnnm1egvs73cuh190",
     "url": "https://ai-profit-os-staging-exact-1f3b36f.onrender.com",
     "branch": "chatgpt/staging-exact-1f3b36f-20260903",
-    "deploy_id": "dep-daclc4uk1f9s73coji7g",
+    "deploy_id": "dep-daclhn0n74is73djo39g",
     "deploy_status": "LIVE",
-    "source_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+    "source_sha": "072616d744a188872d8b7f652475ace319d0893a",
     "autoDeploy": "no"
   },
   "supabase_preview": {
@@ -38,7 +38,7 @@
   },
   "health": {
     "status_code": 200,
-    "git_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+    "git_sha": "072616d744a188872d8b7f652475ace319d0893a",
     "git_sha_source": "RENDER_GIT_COMMIT",
     "db_configured": true,
     "db_ok": true,
@@ -70,12 +70,12 @@
       "events": 0
     },
     "verdict": "PASS",
-    "observed_via": "cloudflare_web_preview_proxy",
-    "observed_at": "2026-09-03T11:22:24.747Z"
+    "observed_via": "direct_render",
+    "observed_at": "2026-09-03T11:26:35.709Z"
   },
   "startup_log_window": {
-    "start": "2026-09-03T10:55:30Z",
-    "end": "2026-09-03T11:05:00Z",
+    "start": "2026-09-03T11:25:30Z",
+    "end": "2026-09-03T11:27:30Z",
     "permission_denied_count": 0,
     "warning_count": 0,
     "error_level_count": 0
@@ -101,19 +101,21 @@
   "frontend_proxy_binding": {
     "web_preview": "https://ai-profit-web-preview.ebay-adapter.workers.dev",
     "ops_preview": "https://ai-profit-ops-preview.ebay-adapter.workers.dev",
-    "frontend_source_sha": "35304f87b22af89499c0be78351fa4d9f346dd5e",
-    "backend_runtime_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+    "frontend_source_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "backend_runtime_sha": "072616d744a188872d8b7f652475ace319d0893a",
     "web_api_health_status": 200,
     "ops_api_health_status": 200,
     "exact_backend_match": true,
+    "cloudflare_deploy_run": 33749478728,
     "verdict": "CLOSED_VERIFIED"
   },
   "browser_smoke": {
     "workflow": "staging-browser-smoke",
     "last_run": 33749065052,
-    "status": "REQUIRES_RERUN_AFTER_EVIDENCE_REFRESH",
+    "status": "REQUIRES_RERUN_AFTER_CURRENT_EVIDENCE_REFRESH",
     "last_failure_class": "EXPECTED_SHA_EVIDENCE_STALE",
-    "observed_backend_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+    "last_failure_observed_backend_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+    "current_observed_backend_sha": "072616d744a188872d8b7f652475ace319d0893a",
     "product_failure_proven": false
   }
 }
