@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import {
+const {
   allocateCanonicalTrc20Address,
   deriveTrc20Address,
   requireCanonicalTrc20Deriver,
   resolveCanonicalTrc20Deriver,
   TRON_HD_DERIVATION_UNAVAILABLE,
   TronHdDerivationUnavailableError,
-} from "./tron-address.ts";
+} = require("./tron-address.ts");
 
 test("no approved BIP32 deriver is bound", () => {
   assert.equal(resolveCanonicalTrc20Deriver(), null);
