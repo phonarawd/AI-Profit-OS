@@ -220,7 +220,22 @@ export class FxSnapshotService {
     }
 
     const id = `fx_rt_${Date.parse(observedAt) || Date.now()}_${input.adapterId}`;
-    await this.db.query(
+    const params = [
+      id,
+      usdtKrw,
+      input.adapterId,
+      observedAt,
+      formulaId,
+      sources,
+      usdtUsdOut,
+      usdKrwFrank,
+      gbpUsd,
+      eurUsd,
+      audUsd,
+      usdtPerUsd,
+      JSON.stringify(rateProvenance),
+    ];
+    const inserted = await this.db.query<{ id: string }>(
       `INSERT INTO public.fx_snapshots (
          id, usd_krw, source, captured_at, formula_id, sources,
          usdt_usd, usd_krw_frank, gbp_usd, eur_usd, aud_usd, usdt_per_usd, rate_provenance
@@ -228,23 +243,40 @@ export class FxSnapshotService {
          $1, $2::numeric, $3, $4::timestamptz, $5, $6::text[],
          $7::numeric, $8::numeric, $9::numeric, $10::numeric, $11::numeric, $12::numeric, $13::jsonb
        )
-       ON CONFLICT (id) DO NOTHING`,
-      [
-        id,
-        usdtKrw,
-        input.adapterId,
-        observedAt,
-        formulaId,
-        sources,
-        usdtUsdOut,
-        usdKrwFrank,
-        gbpUsd,
-        eurUsd,
-        audUsd,
-        usdtPerUsd,
-        JSON.stringify(rateProvenance),
-      ],
+       ON CONFLICT (id) DO NOTHING
+       RETURNING id`,
+      params,
     );
+    if (!inserted.rows[0]) {
+      const replay = await this.db.query<{ id: string }>(
+        `SELECT id
+           FROM public.fx_snapshots
+          WHERE id = $1
+            AND usd_krw = $2::numeric
+            AND source = $3
+            AND captured_at = $4::timestamptz
+            AND formula_id = $5
+            AND sources = $6::text[]
+            AND usdt_usd IS NOT DISTINCT FROM $7::numeric
+            AND usd_krw_frank IS NOT DISTINCT FROM $8::numeric
+            AND gbp_usd IS NOT DISTINCT FROM $9::numeric
+            AND eur_usd IS NOT DISTINCT FROM $10::numeric
+            AND aud_usd IS NOT DISTINCT FROM $11::numeric
+            AND usdt_per_usd IS NOT DISTINCT FROM $12::numeric
+            AND rate_provenance IS NOT DISTINCT FROM $13::jsonb`,
+        params,
+      );
+      if (!replay.rows[0]) {
+        this.logger.error(`fx_snapshots id collision id=${id} adapter=${input.adapterId}`);
+        return {
+          ok: false,
+          snapshotId: null,
+          created: false,
+          reason: "FX_SNAPSHOT_ID_COLLISION",
+        };
+      }
+      return { ok: true, snapshotId: id, created: false };
+    }
     this.logger.log(`fx_snapshots +1 id=${id} adapter=${input.adapterId}`);
     return { ok: true, snapshotId: id, created: true };
   }
