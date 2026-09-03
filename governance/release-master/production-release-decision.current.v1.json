@@ -1,6 +1,6 @@
 {
   "schema": "production-release-evidence.current.v1",
-  "observed_at": "2026-09-03T11:34:01.149Z",
+  "observed_at": "2026-09-03T11:44:00Z",
   "candidate_sha": "072616d744a188872d8b7f652475ace319d0893a",
   "release_acceptance": null,
   "engine": {
@@ -59,7 +59,13 @@
     "ready": false,
     "derivation_path": "m/44'/195'/0'/0/{index}",
     "vault_authority_proven": false,
-    "synthetic_derivation": false
+    "synthetic_derivation": false,
+    "canonical_deriver_bound": false,
+    "production_vault_matching_secret_metadata_count": 0,
+    "staging_vault_matching_secret_metadata_count": 0,
+    "production_deposit_config_singleton_rows": 0,
+    "staging_deposit_config_singleton_rows": 0,
+    "status": "BLOCKED"
   },
   "rollback": {
     "ready": true,
@@ -75,7 +81,7 @@
     "status": "NOT_PROVEN_CURRENT"
   },
   "production_mutation": 0,
-  "governance_parent_sha": "a3c49f748579d603f1b57a0f1a11f7869ec1d1f9",
+  "governance_parent_sha": "d14bae2bac1cc5fbe7f05b9599c6eb0240419d2f",
   "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
   "migration_effect_reconciliation": {
     "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
