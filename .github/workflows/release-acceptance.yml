@@ -58,13 +58,12 @@ jobs:
           mkdir -p _tmp_release_acceptance/bundle
           node tooling/release/fetch-release-bundle.cjs \
             --sha "$SHA" \
-            --out _tmp_release_acceptance/bundle \
-            --optional
+            --out _tmp_release_acceptance/bundle
           node tooling/release/bind-qa-artifact.cjs \
             --sha "$SHA" \
             --bundle _tmp_release_acceptance/bundle \
-            --out _tmp_release_acceptance/artifact-qa.json \
-            --optional
+            --out _tmp_release_acceptance/artifact-qa.json
+
       - name: Artifact runtime acceptance
         env:
           SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
@@ -74,8 +73,8 @@ jobs:
             --sha "$SHA" \
             --bundle _tmp_release_acceptance/bundle \
             --extract-root . \
-            --out _tmp_release_acceptance/artifact-qa.json \
-            --optional
+            --out _tmp_release_acceptance/artifact-qa.json
+
       - name: API artifact runtime acceptance
         env:
           SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
@@ -85,14 +84,16 @@ jobs:
             --sha "$SHA" \
             --bundle _tmp_release_acceptance/bundle \
             --extract-root . \
-            --out _tmp_release_acceptance/artifact-qa.json \
-            --optional
+            --out _tmp_release_acceptance/artifact-qa.json
+
       - name: Fail-closed release verdict
-        run: >
-          node tooling/release/release-acceptance-verdict.cjs
-          --input _tmp_release_acceptance/jobs.json
-          --artifact-qa _tmp_release_acceptance/artifact-qa.json
-          | tee _tmp_release_acceptance/verdict.json
+        run: |
+          set -euo pipefail
+          node tooling/release/release-acceptance-verdict.cjs \
+            --input _tmp_release_acceptance/jobs.json \
+            --artifact-qa _tmp_release_acceptance/artifact-qa.json \
+            | tee _tmp_release_acceptance/verdict.json
+          test "$(node -e "process.stdout.write(JSON.parse(require('fs').readFileSync('_tmp_release_acceptance/verdict.json','utf8')).verdict)")" = "PASS"
       - name: Upload release verdict
         if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
