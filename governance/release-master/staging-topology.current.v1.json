@@ -1,34 +1,102 @@
 {
-  "schema": "staging-topology-provider-snapshot.v1",
-  "recorded_at": "2026-09-02",
-  "source": "read-only provider reality · GitHub/Render/Supabase revalidated · mutation=0",
+  "schema": "staging-topology-provider-snapshot.v2",
+  "recorded_at": "2026-09-02T10:25:00Z",
+  "source": "Render API + Cloudflare deploy-staging 33617609393 + staging /api/v1/health + Resend magic-link request",
+  "this_session": {
+    "render_workspace_id": "tea-da5qqo3m8hqs73djpvvg",
+    "cf_deploy_run_id": 33617609393,
+    "cf_deploy_result": "PASS",
+    "release_build_run_id": 33617601225,
+    "release_acceptance_run_id": 33618547918,
+    "release_acceptance_verdict": "PASS",
+    "artifact_digest_sha256": "c5c56d320d33b015e84f403d83765f1c32c3422f076a7fc8e48c99d6fcfac988",
+    "magic_link_delivery": "PASS_REQUEST_ACCEPTED_RESEND",
+    "production_mutation": 0
+  },
   "production": {
     "render": {
       "service_name": "AI-Profit-OS",
       "service_id": "srv-da5r1tqjobas73fl16dg",
       "environment_id": "evm-da5r1tjbc2fs73a0b7hg",
       "url": "https://ai-profit-os.onrender.com",
-      "repo": "https://github.com/phonarawd/AI-Profit-OS",
-      "type": "web_service",
       "branch": "main",
       "autoDeploy": "yes",
-      "autoDeployTrigger": "commit",
+      "buildFilter": {
+        "paths": [
+          "services/api-nest/**",
+          "packages/**",
+          "pnpm-lock.yaml",
+          "package.json"
+        ]
+      },
+      "live_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec",
       "live_deploy_id": "dep-da938o142hec73eipre0",
-      "live_source_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec"
+      "fresh_confirmed": true
     },
     "supabase": {
       "project_ref": "mgsytcetsiecllmhcyox",
-      "status": "ACTIVE_HEALTHY",
-      "branches": 0,
-      "applied_migrations": 42,
-      "latest_applied_migration": "20260821223109_beginner_onboarding_experience"
+      "public_table_count": 93
     }
   },
-  "staging": {},
+  "staging": {
+    "render": {
+      "service_name": "AI-Profit-OS-Staging",
+      "service_id": "srv-dabph32fngtc73esj8rg",
+      "environment_scope": "service-scoped",
+      "url": "https://ai-profit-os-staging.onrender.com",
+      "branch": "recovery/release-provenance-20260831",
+      "kind": "web_service",
+      "autoDeploy": "no",
+      "source_sha": "84cb2ea05ddea0406d9b1f13cbe0b0781a744630",
+      "live_deploy_id": "dep-dabv9sifngtc73fdsu20",
+      "supabase_project_ref": "uluzxvdpynytytduuryy",
+      "redis_resource_id": "red-dabpllv40ujc73a0ddcg",
+      "runtime_health": {
+        "db_configured": true,
+        "db_ok": true,
+        "redis_configured": true,
+        "redis_ok": true,
+        "warnings_empty": true
+      },
+      "env_auth_resend_configured": true,
+      "source_sha_status": "EXACT_RC_LIVE"
+    },
+    "supabase": {
+      "branch_name": "staging-release-20260902",
+      "project_ref": "uluzxvdpynytytduuryy",
+      "parent_project_ref": "mgsytcetsiecllmhcyox",
+      "with_data": false,
+      "customer_data": false,
+      "ready": true,
+      "preview_project_status": "ACTIVE_HEALTHY",
+      "public_table_count": 93,
+      "schema_parity_with_production": true,
+      "staging_ne_production": true
+    }
+  },
   "cloudflare_preview": {
     "exists": true,
-    "dedicated_staging_api": false,
-    "dedicated_staging_db": false,
-    "note": "Cloudflare preview without isolated Render API + Supabase staging branch is NOT_STAGING"
+    "required_for_current_topology": true,
+    "dedicated_staging_api": true,
+    "dedicated_staging_db": true,
+    "uses_production_api": false,
+    "uses_production_db": false,
+    "web_worker": "ai-profit-web-preview",
+    "ops_worker": "ai-profit-ops-preview",
+    "web_workers_dev": "ai-profit-web-preview.ebay-adapter.workers.dev",
+    "ops_workers_dev": "ai-profit-ops-preview.ebay-adapter.workers.dev",
+    "binding_status": "BOUND_TO_STAGING",
+    "proxy_health_git_sha": "84cb2ea05ddea0406d9b1f13cbe0b0781a744630",
+    "staging_api_host": "ai-profit-os-staging.onrender.com",
+    "production_hosts_used": 0,
+    "deploy_run_id": 33617609393
+  },
+  "release_boundary": {
+    "staging_topology": "READY",
+    "staging_infra_runtime": "PASS",
+    "staging_full_e2e": "MAGIC_LINK_API_PASS_RESEND_ACCEPTED",
+    "production_db_mutation": 0,
+    "production_release": "NO_GO",
+    "staging_exact_final_rc": "BOUND_84cb2ea05ddea0406d9b1f13cbe0b0781a744630"
   }
 }

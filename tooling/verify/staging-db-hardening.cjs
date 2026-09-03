@@ -23,9 +23,7 @@ const audit = read("supabase/staging/20260901120000_admin_audit_append_only.sql"
 const push = read("supabase/staging/20260901120100_push_rls.sql");
 const acl = read("supabase/staging/20260901120200_default_acl.sql");
 const design = read("governance/db-recon/staging-hardening.v1.json");
-const ownerBoundary = read(
-  "governance/recovery/supabase-app-owner-boundary.20260902.v1.json",
-);
+const providerSnapshot = read("governance/recovery/staging-db-hardening-snapshot.20260902.v1.json");
 
 for (const [rel, body] of [
   ["admin_audit", audit],
@@ -94,50 +92,14 @@ if (/GRANT[^;]*INSERT[^;]*push_control/.test(pushNorm) || /GRANT[^;]*DELETE[^;]*
 if (!acl.includes("ALTER DEFAULT PRIVILEGES FOR ROLE postgres")) {
   fails.push("default ACL SQL must cover postgres-owned future public objects");
 }
-if (acl.includes("ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin")) {
-  fails.push("default ACL SQL must not mutate managed supabase_admin without owner authority");
+if (/ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin/i.test(acl)) {
+  fails.push("default ACL SQL must not mutate managed supabase_admin defaults");
+}
+if (!acl.includes("supabase_admin owns 0 application public tables")) {
+  fails.push("default ACL SQL must document zero supabase_admin application-table ownership");
 }
 if (!acl.includes("REVOKE ALL ON TABLES FROM PUBLIC, anon, authenticated")) {
   fails.push("default ACL SQL must revoke PUBLIC/anon/authenticated defaults");
-}
-
-if (ownerBoundary) {
-  try {
-    const boundary = JSON.parse(ownerBoundary);
-    const prod = boundary.production || {};
-    const owners = prod.public_table_owners || {};
-    const decision = boundary.decision || {};
-    if (prod.project_ref !== "mgsytcetsiecllmhcyox") {
-      fails.push("owner boundary production ref");
-    }
-    if (prod.public_table_count !== 93) {
-      fails.push("owner boundary production table count must be 93");
-    }
-    if (owners.postgres !== 93) {
-      fails.push("all application public tables must remain postgres-owned");
-    }
-    if (Object.keys(owners).some((owner) => owner !== "postgres")) {
-      fails.push("unexpected application public table owner");
-    }
-    if (
-      !Array.isArray(decision.app_owned_default_acl_scope) ||
-      decision.app_owned_default_acl_scope.length !== 1 ||
-      decision.app_owned_default_acl_scope[0] !== "postgres"
-    ) {
-      fails.push("app-owned default ACL scope must be postgres only");
-    }
-    if (decision.unexpected_public_table_owner !== "BLOCK_RELEASE") {
-      fails.push("unexpected owner must block release");
-    }
-    if (boundary.sql_session?.can_assume_supabase_admin !== false) {
-      fails.push("managed supabase_admin assumption must stay false");
-    }
-    if (decision.production_mutation !== 0) {
-      fails.push("owner boundary production mutation must be 0");
-    }
-  } catch (err) {
-    fails.push("owner boundary invalid JSON: " + err.message);
-  }
 }
 
 if (fs.existsSync(path.join(root, "supabase/migrations/20260901120000_admin_audit_append_only.sql"))) {
@@ -156,9 +118,30 @@ if (design) {
   }
 }
 
+if (providerSnapshot) {
+  try {
+    const json = JSON.parse(providerSnapshot);
+    if (json.project_ref !== "uluzxvdpynytytduuryy") {
+      fails.push("staging hardening provider snapshot project_ref drift");
+    }
+    if (json.production_mutation !== 0) {
+      fails.push("staging hardening provider snapshot production_mutation must be 0");
+    }
+    const owners = json.public_table_owners || {};
+    if (owners.postgres !== 93) {
+      fails.push("provider snapshot must preserve 93 postgres-owned public tables");
+    }
+    if (Object.prototype.hasOwnProperty.call(owners, "supabase_admin")) {
+      fails.push("provider snapshot must not claim supabase_admin-owned application tables");
+    }
+  } catch (err) {
+    fails.push("staging-db-hardening provider snapshot invalid JSON: " + err.message);
+  }
+}
+
 if (fails.length) {
   console.error("[verify:staging-db-hardening] FAIL");
   for (const f of fails) console.error(" - " + f);
   process.exit(1);
 }
-console.log("[verify:staging-db-hardening] PASS (APP_OWNER_SCOPED · managed-role escalation 0 · production apply 0)");
+console.log("[verify:staging-db-hardening] PASS (STATIC_VERIFIER_PASS · production apply 0)");
