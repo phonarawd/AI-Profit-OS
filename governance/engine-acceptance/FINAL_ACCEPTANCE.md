@@ -27,26 +27,27 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-04ef3c7de4dd-2ff1760b7d72
 PREDECESSOR_BASELINE_ID = ea-baseline-229e7777f9b0-2d4567b3a2c8
 REBASE_ID = pending
-LIVE_AGGREGATE = 4eb072c38bcb941927c48bb281e8ae588c873c365757aa0e45de91be862357c7
+LIVE_AGGREGATE = 9549da8c5339cfc391a639bcac0802b8c19e2b63456bf61bf9ea5646689b7b01
 BASELINE_AGGREGATE = 2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8
 PATH_COUNT_LIVE = 464
 PATH_COUNT_BASELINE = 450
-CHANGED_PATHS = 30
+CHANGED_PATHS = 31
 ADDED_PATHS = 14
-MUTATED_PATHS = 16
+MUTATED_PATHS = 17
 MISSING_PATHS = 0
 EXIT_GATE = P0-B Nest RENDER_GIT_COMMIT provenance · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 QA0-QA9 재실행 전까지 ISSUED 금지
 ```
 
 ## 판정
 
-현재 integration은 baseline 이후 protected-scope 30경로(추가 14 · 변경 16)를 변경했다.
+현재 integration은 baseline 이후 protected-scope 31경로(추가 14 · 변경 17)를 변경했다.
 live aggregate ≠ baseline → 이전 ISSUED 인증은 current-authoritative 가 아니다.
 은폐 금지 · `STATUS = NOT_ISSUED` · `CERT_ISSUED = 0` · `PROTECTED_SCOPE_DRIFT = 1` · `REBASE_REQUIRED = 1`.
 
-변경 경로 (30):
+변경 경로 (31):
 - schemas/operator-entity.instance.json
 - schemas/toast-codes.v1.json
+- services/api-nest/src/adapters/adapters.ingest.controller.ts
 - services/api-nest/src/auth/auth.controller.ts
 - services/api-nest/src/auth/auth.module.ts
 - services/api-nest/src/auth/auth.service.ts
