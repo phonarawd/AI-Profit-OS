@@ -27,26 +27,49 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-04ef3c7de4dd-2ff1760b7d72
 PREDECESSOR_BASELINE_ID = ea-baseline-229e7777f9b0-2d4567b3a2c8
 REBASE_ID = pending
-LIVE_AGGREGATE = d75d47ee595c0788140f0be66f657b6fbae60fc8153e591bea77a791171a74bb
+LIVE_AGGREGATE = a0c8b258ceaffb2c4ca74af0d15d516709e1467053d9ce8d501729dc436d1bbf
 BASELINE_AGGREGATE = 2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8
-PATH_COUNT_LIVE = 451
+PATH_COUNT_LIVE = 464
 PATH_COUNT_BASELINE = 450
-CHANGED_PATHS = 2
-ADDED_PATHS = 1
-MUTATED_PATHS = 1
+CHANGED_PATHS = 25
+ADDED_PATHS = 14
+MUTATED_PATHS = 11
 MISSING_PATHS = 0
 EXIT_GATE = P0-B Nest RENDER_GIT_COMMIT provenance · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 QA0-QA9 재실행 전까지 ISSUED 금지
 ```
 
 ## 판정
 
-P0-B (`p0/p0-b-runtime-preflight`) 가 Nest protected-scope 2경로를 변경했다.
+현재 integration은 baseline 이후 protected-scope 25경로(추가 14 · 변경 11)를 변경했다.
 live aggregate ≠ baseline → 이전 ISSUED 인증은 current-authoritative 가 아니다.
 은폐 금지 · `STATUS = NOT_ISSUED` · `CERT_ISSUED = 0` · `PROTECTED_SCOPE_DRIFT = 1` · `REBASE_REQUIRED = 1`.
 
-변경 경로 (2):
-- services/api-nest/src/health.controller.ts
+변경 경로 (25):
+- schemas/operator-entity.instance.json
+- services/api-nest/src/auth/auth.controller.ts
+- services/api-nest/src/auth/auth.module.ts
+- services/api-nest/src/auth/auth.service.ts
+- services/api-nest/src/auth/auth.stage.ts
+- services/api-nest/src/auth/identity-proof.crypto.ts (added)
+- services/api-nest/src/auth/identity-proof.email.runtime.test.ts (added)
+- services/api-nest/src/auth/identity-proof.email.ts (added)
+- services/api-nest/src/auth/identity-proof.selftest.ts (added)
+- services/api-nest/src/auth/identity-proof.store.ts (added)
+- services/api-nest/src/auth/magic-link.delivery.runtime.test.ts (added)
+- services/api-nest/src/auth/magic-link.service.ts (added)
+- services/api-nest/src/auth/oauth-identity.service.ts (added)
+- services/api-nest/src/auth/passkey-registration.policy.ts (added)
+- services/api-nest/src/auth/webauthn-assert.service.ts (added)
 - services/api-nest/src/config/nest-provenance.ts (added)
+- services/api-nest/src/health.controller.ts
+- services/api-nest/src/wallet/deposit-address.service.ts
+- services/api-nest/src/wallet/index.ts
+- services/api-nest/src/wallet/resend-email.provider.ts
+- services/api-nest/src/wallet/tron-address.runtime.test.ts (added)
+- services/api-nest/src/wallet/tron-address.ts
+- services/api-nest/tsconfig.json
+- supabase/migrations/20260902155632_withdraw_broadcast_tron.sql (added)
+- supabase/migrations/20260903092000_production_db_hardening.sql (added)
 
 재발급 조건: Human/PO `ENGINE_ACCEPTANCE_REBASE_V1` ACK → rebase apply → current-epoch QA1-QA8 COMPLETE → QA9 `ENGINE_ACCEPTED_FOR_UI` → 그때만 인증서 재발급(ISSUED).
 Local fake QA0-QA9 PASS = 0.
