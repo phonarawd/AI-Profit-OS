@@ -56,6 +56,8 @@ jobs:
           pnpm verify:chain-worker-machine-auth
           pnpm exec tsc -p workers/chain-watchers/tsconfig.json
           pnpm exec tsc -p workers/chain-sweeper/tsconfig.json
+      - name: TRON HD derivation fail closed
+        run: pnpm verify:tron-hd-derivation-fail-closed
       - name: Marketing CAPI worker machine auth
         run: |
           pnpm verify:marketing-capi-worker-machine-auth

@@ -286,6 +286,7 @@
 | signup-ready-adapters | Engine §0.0 — ebay 멀티marketplaceId · pokemontcg+ygoprodeck · coingecko+frankfurter · yahoo-jp경로0 · Phase1 deploy (phase0 0) · Admin `/admin/adapters` health — **live** |
 | adapter-worker-machine-auth | Adapter Workers — public manual `/tick` requires x-adapter-token · Nest ingest token optional-spread forbidden · missing token fail-closed — **live** |
 | chain-worker-machine-auth | Chain Watcher/Sweeper — manual `/tick` requires x-chain-worker-token · Nest watcher ingest token required when forwarding · scheduled cron remains internal — **live** |
+| tron-hd-derivation-fail-closed | Wallet TRC20 — synthetic HMAC(secretRef,path) forbidden · canonical BIP32/secp256k1 deriver required · unbound vault fails HTTP 503 before INSERT — **live** |
 | marketing-capi-worker-machine-auth | Marketing CAPI Worker — `/health` public · every POST requires dedicated x-marketing-capi-token · token unset=503 / invalid=401 · current stub side effect 0 — **live** |
 | auth-runtime-readiness | API health — user JWT HS256 >=32 bytes · proof/mutation preflight · new-user profile before practice grant · every successful identity path idempotently repairs buckets/welcome/defaults before session mint — **live** |
 | database-tls-strict | PostgreSQL — Supabase direct+Supavisor hostname lock · Root CA required · rejectUnauthorized=true · connection-string TLS override removed — **live** |
