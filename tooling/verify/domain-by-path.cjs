@@ -1258,6 +1258,21 @@ const RULES = [
     scripts: ["staging-live-fetch-bounds.cjs"],
   },
   {
+    test: (f) =>
+      /^\.github\/workflows\/(deploy-cloudflare|release-(build|acceptance))\.yml$/.test(f) ||
+      /^tooling\/deploy\/(cf-pages-(web|ops)|cf-workers)\.cjs$/.test(f) ||
+      /^tooling\/deploy\/lib\/accepted-artifact-authority\.cjs$/.test(f) ||
+      /^tooling\/release\/(artifact-provenance|deploy-from-artifact|fetch-acceptance-artifact|fetch-release-bundle|require-accepted-sha|release-acceptance-verdict)\.cjs$/.test(f) ||
+      /^tooling\/verify\/(production-deploy-path-lock|fetch-acceptance-artifact|release-acceptance|release-fetch-deploy-hardening|require-accepted-sha)\.cjs$/.test(f),
+    scripts: [
+      "production-deploy-path-lock.cjs",
+      "fetch-acceptance-artifact.cjs",
+      "release-acceptance.cjs",
+      "release-fetch-deploy-hardening.cjs",
+      "require-accepted-sha.cjs",
+    ],
+  },
+  {
     test: (f) => /^tooling\/verify\//.test(f),
     scripts: [],
   },
