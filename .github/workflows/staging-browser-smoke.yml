@@ -1,0 +1,40 @@
+name: staging-browser-smoke
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/staging-browser-smoke.yml"
+      - "tooling/e2e/live-staging-browser-smoke.cjs"
+      - "apps/web/**"
+      - "apps/admin/**"
+      - "packages/sdk/**"
+      - "infra/domain.manifest.json"
+      - "governance/recovery/staging-runtime-db-binding.20260903.v1.json"
+
+jobs:
+  live-staging-browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Live staging browser smoke
+        run: node tooling/e2e/live-staging-browser-smoke.cjs
