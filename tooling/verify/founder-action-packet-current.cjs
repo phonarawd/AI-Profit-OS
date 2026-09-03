@@ -31,6 +31,7 @@ if (packet) {
     "SUPABASE_PREVIEW_RESET",
     "SUPABASE_PREVIEW_BASELINE_PARITY",
     "SUPABASE_PREVIEW_HARDENING_APPLY_ROLLBACK_REAPPLY",
+    "SUPABASE_PREVIEW_HARDENING_REASSERT_CURRENT",
   ]) if (!stagingMutationScope.has(x)) fail("staging_provider_scope_missing:" + x);
   const render = packet.render || {};
   if (!render.production || render.production.service_id !== "srv-da5r1tqjobas73fl16dg") fail("production_render_identity_drift");
@@ -80,6 +81,7 @@ if (packet) {
     "STAGING_RENDER_RUNTIME_HEALTH_NOT_PROVEN_CURRENT",
     "PRODUCTION_DB_HARDENING_NOT_APPLIED",
     "RENDER_AUTODEPLOY_ENABLED",
+    "FX_RUNTIME_FEED_NOT_ACTIVE_CURRENT",
     "TRON_HD_VAULT_NOT_PROVEN",
     "ENGINE_NOT_ISSUED",
     "ENGINE_REBASE_REQUIRED",
@@ -111,7 +113,7 @@ if (packet) {
   ]) if (blockers.has(staleClosed)) fail("closed_blocker_reintroduced:" + staleClosed);
 
   const actions = new Set((packet.next_actions || []).map((x) => x && x.id));
-  for (const id of ["CI_EXACT_HEAD","STAGING_BINDING","DB_HARDENING_REHEARSAL","TRON_HD_VAULT","REL_502_CURRENT_EPOCH","RENDER_RELEASE_CONTROL","PRODUCTION_DB_APPLY","RELEASE_ACCEPTANCE"]) {
+  for (const id of ["CI_EXACT_HEAD","STAGING_BINDING","DB_HARDENING_REHEARSAL","FX_RUNTIME_FEED","TRON_HD_VAULT","REL_502_CURRENT_EPOCH","RENDER_RELEASE_CONTROL","PRODUCTION_DB_APPLY","RELEASE_ACCEPTANCE"]) {
     if (!actions.has(id)) fail("missing_action:" + id);
   }
 

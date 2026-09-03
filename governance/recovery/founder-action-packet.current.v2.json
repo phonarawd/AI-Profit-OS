@@ -1,8 +1,8 @@
 {
   "schema": "governance.recovery.founder-action-packet.current.v2",
   "recorded_on": "2026-09-03",
-  "source": "GitHub + Render + Supabase current revalidation + scoped staging provider rehearsal evidence",
-  "subject_integration_sha": "46e9a25d04ae4a394a175f3d768f57bcd567333c",
+  "source": "GitHub + Render + Supabase current revalidation + scoped staging provider rehearsal/reassert evidence",
+  "subject_integration_sha": "529c63e3c38a6101dd52bef2c2ad46937a14c42b",
   "production_release": "NO_GO",
   "invariants": {
     "integration_pr": 209,
@@ -16,7 +16,8 @@
       "SUPABASE_PREVIEW_REBASE",
       "SUPABASE_PREVIEW_RESET",
       "SUPABASE_PREVIEW_BASELINE_PARITY",
-      "SUPABASE_PREVIEW_HARDENING_APPLY_ROLLBACK_REAPPLY"
+      "SUPABASE_PREVIEW_HARDENING_APPLY_ROLLBACK_REAPPLY",
+      "SUPABASE_PREVIEW_HARDENING_REASSERT_CURRENT"
     ],
     "engine_ack_mutation": 0,
     "ghas_dismissal": 0
@@ -24,7 +25,7 @@
   "github": {
     "main_sha": "98730b8c71a8c4c0b5e474460a6a24bea43e6966",
     "rescue_checkpoint_sha": "e312119582036ab1367ede74dd4c08ff3b22a951",
-    "integration_subject_sha": "46e9a25d04ae4a394a175f3d768f57bcd567333c",
+    "integration_subject_sha": "529c63e3c38a6101dd52bef2c2ad46937a14c42b",
     "integration_pr": 209,
     "integration_pr_draft": true
   },
@@ -66,7 +67,10 @@
       "final_schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
       "hardening_rehearsal_proven": true,
       "hardening_evidence": "governance/recovery/staging-db-hardening-snapshot.20260903.v2.json",
-      "render_binding_currently_proven": false
+      "render_binding_currently_proven": false,
+      "current_hardening_state_proven": true,
+      "hardening_reassert_proven": true,
+      "current_expected_delta_only": true
     }
   },
   "engine": {
@@ -93,6 +97,7 @@
     "PRODUCTION_DB_HARDENING_NOT_APPLIED",
     "RENDER_AUTODEPLOY_ENABLED",
     "PRODUCTION_LIVE_SHA_DIFFERS_FROM_INTEGRATION",
+    "FX_RUNTIME_FEED_NOT_ACTIVE_CURRENT",
     "TRON_HD_VAULT_NOT_PROVEN",
     "ENGINE_NOT_ISSUED",
     "ENGINE_REBASE_REQUIRED",
@@ -126,27 +131,35 @@
     },
     {
       "order": 4,
+      "id": "FX_RUNTIME_FEED",
+      "action": "Prove coingecko+frankfurter fx-core worker ingest into the exact candidate/staging path, then promote only through accepted-artifact authority; current Production FX snapshot feed is stale.",
+      "production_mutation": false,
+      "provider_mutation_required": true,
+      "status": "BLOCKED"
+    },
+    {
+      "order": 5,
       "id": "TRON_HD_VAULT",
       "action": "Provide and prove canonical BIP32 secp256k1 authority for m/44'/195'/0'/0/{index}; keep 503 fail-closed until proven.",
       "production_mutation": false,
       "status": "BLOCKED"
     },
     {
-      "order": 5,
+      "order": 6,
       "id": "SECURITY_AND_ROLLBACK",
       "action": "Pre-promotion Render rollback target is bound; close current exact-SHA security evidence.",
       "production_mutation": false,
       "status": "PARTIAL"
     },
     {
-      "order": 6,
+      "order": 7,
       "id": "REL_502_CURRENT_EPOCH",
       "action": "After all tracked mutations stop, rerun protected-scope verification and reissue REL-502 only for the exact final SHA.",
       "production_mutation": false,
       "status": "PENDING"
     },
     {
-      "order": 7,
+      "order": 8,
       "id": "RENDER_RELEASE_CONTROL",
       "action": "Disable Production autoDeploy before accepted exact-SHA promotion.",
       "production_mutation": true,
@@ -154,7 +167,7 @@
       "status": "PENDING"
     },
     {
-      "order": 8,
+      "order": 9,
       "id": "PRODUCTION_DB_APPLY",
       "action": "Apply reviewed hardening migration to Production only after staging proof and explicit Founder authorization.",
       "production_mutation": true,
@@ -162,7 +175,7 @@
       "status": "PENDING"
     },
     {
-      "order": 9,
+      "order": 10,
       "id": "RELEASE_ACCEPTANCE",
       "action": "Build once, bind authoritative Engine run, obtain release acceptance, then evaluate final GO_CANDIDATE.",
       "production_mutation": false,
@@ -177,5 +190,18 @@
     "source_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec",
     "provider_confirmed": true,
     "execution": "BLOCKED_FOUNDER_ACTION"
-  }
+  },
+  "fx_runtime": {
+    "production_fx_snapshot_count": 1,
+    "latest_production_fx_snapshot_captured_at": "2026-08-09T14:48:14.452221Z",
+    "production_marketplace_fx_legs_present": false,
+    "usdt_per_usd_rows": 0,
+    "gbp_usd_rows": 0,
+    "eur_usd_rows": 0,
+    "aud_usd_rows": 0,
+    "source_release_path_restored_at_sha": "529c63e3c38a6101dd52bef2c2ad46937a14c42b",
+    "production_worker_promotion_performed": false,
+    "status": "BLOCKED"
+  },
+  "evidence_commit_semantics": "subject_integration_sha is the tested parent candidate; this governance-only evidence commit must rerun CI before becoming a final candidate."
 }

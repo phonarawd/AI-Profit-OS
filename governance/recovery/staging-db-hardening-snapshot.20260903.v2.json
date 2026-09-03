@@ -1,7 +1,7 @@
 {
   "schema": "staging-db-hardening-provider-snapshot.v2",
   "observed_on": "2026-09-03",
-  "subject_integration_sha": "374d37f492ad1888ed8aa112d0709fa379094e16",
+  "subject_integration_sha": "529c63e3c38a6101dd52bef2c2ad46937a14c42b",
   "project_ref": "uluzxvdpynytytduuryy",
   "branch_id": "ebf3d613-fb68-44ab-aa0f-6713682f2d6e",
   "branch_name": "staging-release-20260902",
@@ -110,14 +110,18 @@
       "ledger_journals": 0,
       "ledger_entries": 0,
       "practice_grants": 0
-    }
+    },
+    "reassert": "PASS",
+    "current_state": "PASS"
   },
   "staging_migration_tail": [
     "20260903072656_preview_baseline_parity",
     "20260903073223_preview_baseline_function_authority",
     "20260903073311_production_db_hardening_rehearsal_current",
     "20260903073356_production_db_hardening_rehearsal_rollback",
-    "20260903073536_production_db_hardening_rehearsal_reapply"
+    "20260903073536_production_db_hardening_rehearsal_reapply",
+    "20260903081000_preview_function_authority_repair_current",
+    "20260903081006_production_db_hardening_rehearsal_reassert_current"
   ],
   "conclusions": {
     "baseline_schema_parity_proven": true,
@@ -126,18 +130,52 @@
     "rollback_proven": true,
     "production_hardening_applied": false,
     "render_staging_current_candidate_bound": false,
-    "release_ready": false
+    "release_ready": false,
+    "current_hardening_state_proven": true,
+    "current_expected_delta_only": true
   },
   "blockers_remaining": [
     "STAGING_CURRENT_CANDIDATE_NOT_BOUND",
     "STAGING_RENDER_DB_BINDING_NOT_PROVEN_CURRENT",
+    "STAGING_RENDER_RUNTIME_HEALTH_NOT_PROVEN_CURRENT",
     "PRODUCTION_DB_HARDENING_NOT_APPLIED",
+    "RENDER_AUTODEPLOY_ENABLED",
+    "PRODUCTION_LIVE_SHA_DIFFERS_FROM_INTEGRATION",
+    "FX_RUNTIME_FEED_NOT_ACTIVE_CURRENT",
     "TRON_HD_VAULT_NOT_PROVEN",
     "ENGINE_NOT_ISSUED",
     "ENGINE_REBASE_REQUIRED",
     "ENGINE_ACK_MISSING",
     "RELEASE_ACCEPTANCE_MISSING",
-    "CURRENT_SHA_SECURITY_EVIDENCE_INCOMPLETE",
-    "ROLLBACK_TARGET_NOT_BOUND"
-  ]
+    "CURRENT_SHA_SECURITY_EVIDENCE_INCOMPLETE"
+  ],
+  "source": "GitHub + Supabase current revalidation after staging-only hardening reassert · Production mutation=0",
+  "current_revalidation": {
+    "drift_detected_before_reassert": true,
+    "observed_pre_reassert_relation": "PRODUCTION_BASELINE",
+    "drift_cause": "NOT_PROVEN",
+    "repair_scope": "STAGING_ONLY",
+    "repair_migrations": [
+      "20260903081000_preview_function_authority_repair_current",
+      "20260903081006_production_db_hardening_rehearsal_reassert_current"
+    ],
+    "current_expected_hardening_delta": {
+      "public_table_count_production": 93,
+      "public_table_count_staging": 93,
+      "columns_production": 931,
+      "columns_staging": 931,
+      "column_diff_count": 0,
+      "indexes_production": 236,
+      "indexes_staging": 236,
+      "index_diff_count": 0,
+      "rls_table_deltas": 2,
+      "added_deny_policies": 4,
+      "service_role_privileges_removed": 13,
+      "added_triggers": 1,
+      "added_functions": 1
+    },
+    "customer_data_zero_current": true,
+    "current_schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
+    "current_state": "PASS"
+  }
 }

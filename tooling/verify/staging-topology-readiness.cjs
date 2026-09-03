@@ -162,6 +162,8 @@ assert.equal(currentDbEvidence.baseline.customer_data_proven_zero, true);
 assert.equal(currentDbEvidence.rehearsal.apply, "PASS");
 assert.equal(currentDbEvidence.rehearsal.rollback, "PASS");
 assert.equal(currentDbEvidence.rehearsal.reapply, "PASS");
+assert.equal(currentDbEvidence.rehearsal.reassert, "PASS");
+assert.equal(currentDbEvidence.rehearsal.current_state, "PASS");
 assert.equal(currentDbEvidence.rehearsal.final_state, "PASS");
 assert.equal(currentDbEvidence.rehearsal.expected_delta_only, true);
 assert.equal(

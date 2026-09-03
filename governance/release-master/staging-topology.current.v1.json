@@ -1,8 +1,8 @@
 {
   "schema": "staging-topology-provider-snapshot.v2",
   "recorded_at": "2026-09-03",
-  "source": "read-only GitHub/Render/Supabase revalidation + current staging DB hardening rehearsal evidence · Production mutation=0",
-  "candidate_sha": "fceb124eeb633438d4551f168ebc18df2df49c1d",
+  "source": "read-only GitHub/Render/Supabase revalidation + staging-only hardening reassert evidence · Production mutation=0",
+  "candidate_sha": "529c63e3c38a6101dd52bef2c2ad46937a14c42b",
   "production": {
     "render": {
       "service_name": "AI-Profit-OS",
@@ -57,7 +57,7 @@
       "schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
       "hardening_rehearsal": {
         "evidence_path": "governance/recovery/staging-db-hardening-snapshot.20260903.v2.json",
-        "evidence_blob_sha": "3ab390a2356eba293bf674ff85350da802f880c1",
+        "evidence_blob_sha": "745a2c78d61ab38856545517842304b915fa8a18",
         "source_path": "supabase/migrations/20260903092000_production_db_hardening.sql",
         "source_blob_sha": "827448e4c86cf14aca31c4f23151ceabb43dafb4",
         "rollback_source_path": "supabase/staging/20260903151500_preview_baseline_parity.sql",
@@ -69,7 +69,19 @@
         "apply": "PASS",
         "rollback": "PASS",
         "reapply": "PASS",
-        "final_state": "PASS"
+        "final_state": "PASS",
+        "reassert": "PASS",
+        "current_state": "PASS",
+        "current_expected_delta_only": true,
+        "current_expected_delta": {
+          "rls_table_deltas": 2,
+          "added_deny_policies": 4,
+          "service_role_privileges_removed": 13,
+          "added_triggers": 1,
+          "added_functions": 1,
+          "column_diff_count": 0,
+          "index_diff_count": 0
+        }
       },
       "current_detail_evidence": "governance/recovery/staging-db-hardening-snapshot.20260903.v2.json"
     }

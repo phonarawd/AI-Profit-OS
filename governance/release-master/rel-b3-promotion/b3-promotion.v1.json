@@ -21,13 +21,15 @@
     "branch_project_ref": "uluzxvdpynytytduuryy",
     "with_data": false,
     "preview_project_status": "ACTIVE_HEALTHY",
-    "current_schema_parity": "UNPROVEN_CURRENTLY",
-    "current_customer_row_proof": "UNPROVEN_CURRENTLY",
-    "historical_hardening_rehearsal": "APPLY_PASS_ROLLBACK_PASS_REAPPLY_PASS"
+    "current_schema_parity": "NO_BY_DESIGN_REVIEWED_HARDENING",
+    "current_customer_row_proof": "ZERO_PROVEN_CURRENT",
+    "historical_hardening_rehearsal": "APPLY_PASS_ROLLBACK_PASS_REAPPLY_PASS",
+    "current_schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
+    "hardening_reassert_current": "PASS"
   },
   "staging_e2e": {
     "status": "NOT_RUN",
-    "reason": "current candidate is not bound to staging Render + exact schema/runtime evidence is incomplete",
+    "reason": "current candidate is not bound to staging Render; schema/customer-data evidence is current, but exact Render→preview DB/runtime evidence is incomplete",
     "requires": {
       "rc_formal": "PASS",
       "rc_sha": "bound",
@@ -45,9 +47,13 @@
   "current_evidence": {
     "render_staging_service_id": "srv-dabph32fngtc73esj8rg",
     "render_live_sha": "84cb2ea05ddea0406d9b1f13cbe0b0781a744630",
-    "supabase_branch_status": "ACTIVE_HEALTHY",
+    "supabase_branch_status": "FUNCTIONS_DEPLOYED",
     "supabase_with_data": false,
-    "current_candidate_sha": "a20dae16b46ff89e3eee739e498e2ef2a2fdb95d",
-    "production_mutation": 0
+    "current_candidate_sha": "529c63e3c38a6101dd52bef2c2ad46937a14c42b",
+    "production_mutation": 0,
+    "supabase_preview_project_status": "ACTIVE_HEALTHY",
+    "current_schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
+    "customer_data_zero_proven": true,
+    "hardening_reassert_current": "PASS"
   }
 }
