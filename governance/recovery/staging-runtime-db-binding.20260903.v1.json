@@ -1,6 +1,6 @@
 {
   "schema": "governance.recovery.staging-runtime-db-binding.v1",
-  "recorded_at": "2026-09-03T11:26:35.709Z",
+  "recorded_at": "2026-09-03T11:34:01.149Z",
   "candidate_sha": "072616d744a188872d8b7f652475ace319d0893a",
   "production_mutation": 0,
   "production_db_mutation": 0,
@@ -111,11 +111,11 @@
   },
   "browser_smoke": {
     "workflow": "staging-browser-smoke",
-    "last_run": 33749065052,
-    "status": "REQUIRES_RERUN_AFTER_CURRENT_EVIDENCE_REFRESH",
-    "last_failure_class": "EXPECTED_SHA_EVIDENCE_STALE",
-    "last_failure_observed_backend_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
-    "current_observed_backend_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "last_run": 33750291160,
+    "status": "PASS",
+    "result": "web+login+ops + Chromium exact API",
+    "expected_backend_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "observed_backend_sha": "072616d744a188872d8b7f652475ace319d0893a",
     "product_failure_proven": false
   }
 }
