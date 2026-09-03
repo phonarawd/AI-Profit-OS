@@ -114,3 +114,110 @@ jobs:
           test -f apps/admin/.open-next/worker.js
           test -d apps/admin/.open-next/assets
 
+  late-release-audit:
+    name: late-release-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.85.0"
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: REL-503 protected-scope STALE watch
+        id: rel503
+        continue-on-error: true
+        run: pnpm verify:rel-503-protected-scope-watch
+      - name: REL-504 migration readiness
+        id: rel504
+        continue-on-error: true
+        run: pnpm verify:rel-504-migration-readiness
+      - name: REL-505 R7 backend alignment
+        id: rel505
+        continue-on-error: true
+        run: pnpm verify:rel-505-r7-backend-alignment
+      - name: REL-508 current-fx Nest wire
+        id: rel508
+        continue-on-error: true
+        run: pnpm verify:rel-508-current-fx-approx
+      - name: REL-506 R8 infra core
+        id: rel506
+        continue-on-error: true
+        run: pnpm verify:rel-506-r8-infra-core
+      - name: REL-507 production E2E
+        id: rel507
+        continue-on-error: true
+        run: pnpm verify:rel-507-production-e2e
+      - name: REL-600 staging
+        id: rel600
+        continue-on-error: true
+        run: pnpm verify:rel-600-staging
+      - name: REL-601 staging regression
+        id: rel601
+        continue-on-error: true
+        run: pnpm verify:rel-601-staging-regression
+      - name: REL-602 staging rollback
+        id: rel602
+        continue-on-error: true
+        run: pnpm verify:rel-602-staging-rollback
+      - name: REL-603 automated age usability cohort
+        id: rel603
+        continue-on-error: true
+        run: |
+          pnpm exec playwright install --with-deps chromium
+          pnpm verify:rel-603-age-usability-spotcheck
+      - name: Stub .env for Docker-less stack-lock
+        run: printf 'SUPABASE_URL=https://mgsytcetsiecllmhcyox.supabase.co\n' > .env
+      - name: cargo test (services/engine-rust — Rule Engine R1-R10 golden unit tests)
+        id: cargo
+        continue-on-error: true
+        working-directory: services/engine-rust
+        run: |
+          cargo check --locked
+          cargo test --locked
+      - name: OpenNext build:cf (Linux — Workers deploy output SSOT)
+        id: opennext
+        continue-on-error: true
+        run: |
+          pnpm --filter @aipo/web build:cf
+          pnpm --filter @aipo/admin build:cf
+          test -f apps/web/.open-next/worker.js
+          test -d apps/web/.open-next/assets
+          test -f apps/admin/.open-next/worker.js
+          test -d apps/admin/.open-next/assets
+      - name: Late release audit verdict
+        env:
+          REL503: ${{ steps.rel503.outcome }}
+          REL504: ${{ steps.rel504.outcome }}
+          REL505: ${{ steps.rel505.outcome }}
+          REL508: ${{ steps.rel508.outcome }}
+          REL506: ${{ steps.rel506.outcome }}
+          REL507: ${{ steps.rel507.outcome }}
+          REL600: ${{ steps.rel600.outcome }}
+          REL601: ${{ steps.rel601.outcome }}
+          REL602: ${{ steps.rel602.outcome }}
+          REL603: ${{ steps.rel603.outcome }}
+          CARGO: ${{ steps.cargo.outcome }}
+          OPENNEXT: ${{ steps.opennext.outcome }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' \
+            "REL503=$REL503" "REL504=$REL504" "REL505=$REL505" \
+            "REL508=$REL508" "REL506=$REL506" "REL507=$REL507" \
+            "REL600=$REL600" "REL601=$REL601" "REL602=$REL602" \
+            "REL603=$REL603" "CARGO=$CARGO" "OPENNEXT=$OPENNEXT"
+          failed=0
+          for value in "$REL503" "$REL504" "$REL505" "$REL508" "$REL506" "$REL507" \
+                       "$REL600" "$REL601" "$REL602" "$REL603" "$CARGO" "$OPENNEXT"; do
+            [ "$value" = "success" ] || failed=1
+          done
+          [ "$failed" -eq 0 ]
+
