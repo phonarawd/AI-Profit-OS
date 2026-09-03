@@ -1,0 +1,84 @@
+name: staging-webops-refresh-current
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - chatgpt/staging-webops-refresh-20260903
+
+concurrency:
+  group: staging-webops-refresh-current
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: 4b9bd9c9be6a878e8558e58a7b59067d756797a0
+
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+        with:
+          version: 10.14.0
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Require staging-only targets
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          STAGING_API_HOST: ${{ secrets.STAGING_API_HOST }}
+        run: |
+          set -euo pipefail
+          test -n "${CLOUDFLARE_API_TOKEN:-}" || { echo "Missing CLOUDFLARE_API_TOKEN"; exit 1; }
+          test -n "${CLOUDFLARE_ACCOUNT_ID:-}" || { echo "Missing CLOUDFLARE_ACCOUNT_ID"; exit 1; }
+          test -n "${STAGING_API_HOST:-}" || { echo "Missing STAGING_API_HOST"; exit 1; }
+          API="$STAGING_API_HOST"
+          case "$API" in
+            http://*|https://*) ;;
+            *) API="https://$API" ;;
+          esac
+          node -e '
+            const raw = process.argv[1];
+            const u = new URL(raw);
+            const expected = "ai-profit-os-staging-exact-1f3b36f.onrender.com";
+            if (u.protocol !== "https:" || u.hostname !== expected || (u.pathname !== "/" && u.pathname !== "")) {
+              console.error("FAIL_CLOSED: STAGING_API_HOST is not the exact isolated Render staging host");
+              process.exit(1);
+            }
+          ' "$API"
+          printf 'API_HOST=%s\n' "${API%/}" > .env
+
+      - name: Staging isolation verifier
+        run: pnpm verify:staging-topology-readiness
+
+      - name: Deploy web preview only
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          node tooling/deploy/cf-preflight.cjs staging web
+          node tooling/deploy/cf-pages-web.cjs staging
+
+      - name: Deploy ops preview only
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          node tooling/deploy/cf-preflight.cjs staging ops
+          node tooling/deploy/cf-pages-ops.cjs staging
+
+      - name: Preview origin smoke
+        run: node tooling/deploy/cf-origin-smoke.cjs all staging
