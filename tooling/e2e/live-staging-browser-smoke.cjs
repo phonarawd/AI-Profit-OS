@@ -125,23 +125,35 @@ async function assertHealth(context, origin, label) {
     // context would make a healthy proxy look flaky.
     await assertHealth(context, web, "web");
 
-    const loginRes = await page.goto(web + "/auth/login", {
-      waitUntil: "domcontentloaded",
-      timeout: 30_000,
-    });
-    if (!loginRes || loginRes.status() !== 200) {
-      throw new Error("web_login_not_200");
+    // Root/session bootstrap may navigate independently. Keep login and ops
+    // checks on isolated pages so one route cannot interrupt another goto.
+    const loginPage = await context.newPage();
+    try {
+      const loginRes = await loginPage.goto(web + "/auth/login", {
+        waitUntil: "domcontentloaded",
+        timeout: 30_000,
+      });
+      if (!loginRes || loginRes.status() !== 200) {
+        throw new Error("web_login_not_200");
+      }
+    } finally {
+      await loginPage.close();
     }
 
-    const opsRes = await page.goto(ops + "/admin", {
-      waitUntil: "domcontentloaded",
-      timeout: 30_000,
-    });
-    if (!opsRes || opsRes.status() !== 200) {
-      throw new Error("ops_admin_not_200");
-    }
-    if (!(await page.title()).includes("퍼뜩 운영센터")) {
-      throw new Error("ops_title_drift:" + (await page.title()));
+    const opsPage = await context.newPage();
+    try {
+      const opsRes = await opsPage.goto(ops + "/admin", {
+        waitUntil: "domcontentloaded",
+        timeout: 30_000,
+      });
+      if (!opsRes || opsRes.status() !== 200) {
+        throw new Error("ops_admin_not_200");
+      }
+      if (!(await opsPage.title()).includes("퍼뜩 운영센터")) {
+        throw new Error("ops_title_drift:" + (await opsPage.title()));
+      }
+    } finally {
+      await opsPage.close();
     }
     await assertHealth(context, ops, "ops");
 
