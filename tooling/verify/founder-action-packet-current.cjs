@@ -43,18 +43,23 @@ if (packet) {
     "RENDER_STAGING_DATABASE_SSL_CA_CONFIG",
     "EXACT_STAGING_BRANCH_FAST_FORWARD",
     "RENDER_EXACT_STAGING_REDEPLOY",
+    "CLOUDFLARE_STAGING_WEB_PREVIEW_REDEPLOY",
+    "CLOUDFLARE_STAGING_OPS_PREVIEW_REDEPLOY",
+    "CLOUDFLARE_STAGING_API_ORIGIN_BINDING",
   ]) if (!stagingMutationScope.has(x)) fail("staging_provider_scope_missing:" + x);
-  if (packet.subject_integration_sha !== "4b9bd9c9be6a878e8558e58a7b59067d756797a0") fail("subject_integration_sha_stale");
+  if (packet.subject_integration_sha !== "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c") fail("subject_integration_sha_stale");
   const render = packet.render || {};
   if (!render.production || render.production.service_id !== "srv-da5r1tqjobas73fl16dg") fail("production_render_identity_drift");
   if (!render.production || render.production.autoDeploy !== "yes") fail("render_autodeploy_fact_stale");
   if (!render.staging || render.staging.service_id !== "srv-dacjnnm1egvs73cuh190") fail("staging_render_identity_drift");
   if (render.staging.current_candidate_bound !== true) fail("staging_candidate_truth_stale");
-  if (render.staging.live_sha !== "4b9bd9c9be6a878e8558e58a7b59067d756797a0") fail("staging_live_sha_truth_stale");
+  if (render.staging.live_sha !== "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c") fail("staging_live_sha_truth_stale");
   if (render.staging.database_url_configured !== true || render.staging.database_ok !== true) fail("staging_db_runtime_truth_stale");
   if (render.staging.database_tls_verified !== true) fail("staging_db_tls_truth_stale");
   if (render.staging.db_backed_public_read_status !== 200) fail("staging_db_backed_read_truth_stale");
   if (render.staging.redis_configured !== true || render.staging.redis_ok !== true) fail("staging_redis_runtime_truth_stale");
+  if (render.staging.frontend_proxy_binding_proven !== true) fail("staging_frontend_proxy_binding_truth_stale");
+  if (render.staging.frontend_web_proxy_status !== 200 || render.staging.frontend_ops_proxy_status !== 200) fail("staging_frontend_proxy_status_truth_stale");
 
   const sb = packet.supabase || {};
   if (sb.production_project_ref !== "mgsytcetsiecllmhcyox") fail("supabase_prod_ref_drift");
@@ -138,7 +143,7 @@ if (packet) {
   if (sec.current_production_public_tables !== 93) fail("current_production_table_count_truth_stale");
   if (!Array.isArray(sec.current_production_known_rls_off) || !sec.current_production_known_rls_off.includes("push_control") || !sec.current_production_known_rls_off.includes("push_subscriptions")) fail("current_production_rls_truth_stale");
   if (sec.current_sha_codeql_or_equivalent_run !== "SUCCESS") fail("current_codeql_truth_stale");
-  if (sec.current_runtime_subject_sha !== "4b9bd9c9be6a878e8558e58a7b59067d756797a0") fail("current_security_subject_sha_stale");
+  if (sec.current_runtime_subject_sha !== "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c") fail("current_security_subject_sha_stale");
   if (sec.full_ghas_open_alert_inventory !== "NOT_PROVEN") fail("full_ghas_inventory_must_fail_closed");
   if (sec.status !== "PARTIAL") fail("security_evidence_status_must_remain_partial");
 

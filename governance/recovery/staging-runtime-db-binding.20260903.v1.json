@@ -1,7 +1,7 @@
 {
   "schema": "governance.recovery.staging-runtime-db-binding.v1",
-  "recorded_at": "2026-09-03T10:58:42.890Z",
-  "candidate_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+  "recorded_at": "2026-09-03T11:22:24.747Z",
+  "candidate_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
   "production_mutation": 0,
   "production_db_mutation": 0,
   "secrets_recorded": false,
@@ -9,9 +9,9 @@
     "service_id": "srv-dacjnnm1egvs73cuh190",
     "url": "https://ai-profit-os-staging-exact-1f3b36f.onrender.com",
     "branch": "chatgpt/staging-exact-1f3b36f-20260903",
-    "deploy_id": "dep-dacl3n95efls73eqhan0",
+    "deploy_id": "dep-daclc4uk1f9s73coji7g",
     "deploy_status": "LIVE",
-    "source_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+    "source_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
     "autoDeploy": "no"
   },
   "supabase_preview": {
@@ -38,7 +38,7 @@
   },
   "health": {
     "status_code": 200,
-    "git_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+    "git_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
     "git_sha_source": "RENDER_GIT_COMMIT",
     "db_configured": true,
     "db_ok": true,
@@ -46,7 +46,15 @@
     "redis_configured": true,
     "redis_ok": true,
     "redis_detail": "up",
-    "warnings_empty": true
+    "warnings_empty": true,
+    "observed_via": [
+      "direct_render",
+      "cloudflare_web_preview_proxy",
+      "cloudflare_ops_preview_proxy"
+    ],
+    "direct_status_code": 200,
+    "web_proxy_status_code": 200,
+    "ops_proxy_status_code": 200
   },
   "db_backed_public_read": {
     "route": "GET /api/v1/growth/public-surface",
@@ -61,7 +69,9 @@
       "ledgerTotal": 0,
       "events": 0
     },
-    "verdict": "PASS"
+    "verdict": "PASS",
+    "observed_via": "cloudflare_web_preview_proxy",
+    "observed_at": "2026-09-03T11:22:24.747Z"
   },
   "startup_log_window": {
     "start": "2026-09-03T10:55:30Z",
@@ -87,5 +97,23 @@
     "growth_ticker_config": 1,
     "trade_executions": 0
   },
-  "verdict": "CLOSED_VERIFIED"
+  "verdict": "CLOSED_VERIFIED",
+  "frontend_proxy_binding": {
+    "web_preview": "https://ai-profit-web-preview.ebay-adapter.workers.dev",
+    "ops_preview": "https://ai-profit-ops-preview.ebay-adapter.workers.dev",
+    "frontend_source_sha": "35304f87b22af89499c0be78351fa4d9f346dd5e",
+    "backend_runtime_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+    "web_api_health_status": 200,
+    "ops_api_health_status": 200,
+    "exact_backend_match": true,
+    "verdict": "CLOSED_VERIFIED"
+  },
+  "browser_smoke": {
+    "workflow": "staging-browser-smoke",
+    "last_run": 33749065052,
+    "status": "REQUIRES_RERUN_AFTER_EVIDENCE_REFRESH",
+    "last_failure_class": "EXPECTED_SHA_EVIDENCE_STALE",
+    "observed_backend_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+    "product_failure_proven": false
+  }
 }

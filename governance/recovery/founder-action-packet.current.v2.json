@@ -1,8 +1,8 @@
 {
   "schema": "governance.recovery.founder-action-packet.current.v2",
-  "recorded_on": "2026-09-03T10:58:42.890Z",
-  "source": "GitHub + Render + Supabase current revalidation + exact staging TLS DB binding + DB-backed runtime read + current CI/security evidence",
-  "subject_integration_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+  "recorded_on": "2026-09-03T11:22:24.747Z",
+  "source": "GitHub + Render + Supabase + Cloudflare preview current revalidation; exact runtime TLS DB binding + web/ops same-origin proxy proof + DB-backed read; Production mutation=0",
+  "subject_integration_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
   "production_release": "NO_GO",
   "invariants": {
     "integration_pr": 209,
@@ -28,7 +28,10 @@
       "RENDER_STAGING_DATABASE_URL_CONFIG",
       "RENDER_STAGING_DATABASE_SSL_CA_CONFIG",
       "EXACT_STAGING_BRANCH_FAST_FORWARD",
-      "RENDER_EXACT_STAGING_REDEPLOY"
+      "RENDER_EXACT_STAGING_REDEPLOY",
+      "CLOUDFLARE_STAGING_WEB_PREVIEW_REDEPLOY",
+      "CLOUDFLARE_STAGING_OPS_PREVIEW_REDEPLOY",
+      "CLOUDFLARE_STAGING_API_ORIGIN_BINDING"
     ],
     "engine_ack_mutation": 0,
     "ghas_dismissal": 0
@@ -36,7 +39,7 @@
   "github": {
     "main_sha": "98730b8c71a8c4c0b5e474460a6a24bea43e6966",
     "rescue_checkpoint_sha": "e312119582036ab1367ede74dd4c08ff3b22a951",
-    "integration_subject_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+    "integration_subject_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
     "integration_pr": 209,
     "integration_pr_draft": true,
     "main_ruleset": {
@@ -52,7 +55,7 @@
       "mutation": 0,
       "founder_action_required": true
     },
-    "integration_governance_head_at_recording": "4b9bd9c9be6a878e8558e58a7b59067d756797a0"
+    "integration_governance_head_at_recording": "072616d744a188872d8b7f652475ace319d0893a"
   },
   "render": {
     "workspace_id": "tea-da5qqo3m8hqs73djpvvg",
@@ -73,10 +76,10 @@
       "branch_label_note": "historical branch label; exactness is authoritative from live deploy SHA",
       "autoDeploy": "no",
       "autoDeployTrigger": "off",
-      "live_deploy_id": "dep-dacl3n95efls73eqhan0",
-      "live_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+      "live_deploy_id": "dep-daclc4uk1f9s73coji7g",
+      "live_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
       "current_candidate_bound": true,
-      "runtime_health_observed_at": "2026-09-03T10:58:42.890Z",
+      "runtime_health_observed_at": "2026-09-03T11:22:24.747Z",
       "database_url_configured": true,
       "database_ok": true,
       "redis_configured": true,
@@ -87,7 +90,11 @@
       "internal_wallet_tick_token_configured": true,
       "internal_wallet_without_token_status": 401,
       "db_backed_public_read_status": 200,
-      "db_backed_public_read_route": "GET /api/v1/growth/public-surface"
+      "db_backed_public_read_route": "GET /api/v1/growth/public-surface",
+      "frontend_web_proxy_status": 200,
+      "frontend_ops_proxy_status": 200,
+      "frontend_proxy_exact_runtime_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+      "frontend_proxy_binding_proven": true
     }
   },
   "supabase": {
@@ -283,7 +290,13 @@
     "aud_usd_rows": 0,
     "source_release_path_restored_at_sha": "529c63e3c38a6101dd52bef2c2ad46937a14c42b",
     "production_worker_promotion_performed": false,
-    "status": "BLOCKED"
+    "status": "BLOCKED",
+    "staging_fx_preview_worker_status": "NOT_DEPLOYED",
+    "staging_fx_activation_run": 33748646155,
+    "staging_fx_activation_classification": "BLOCKED_SECRET_ABSENT",
+    "staging_repository_adapter_ingest_token_present": false,
+    "staging_repository_coingecko_key_present": false,
+    "staging_fx_worker_mutation": 0
   },
   "evidence_commit_semantics": "subject_integration_sha is the tested runtime/source candidate; governance-only evidence commits may sit above it and must rerun CI before final release use.",
   "auth_email_runtime": {
@@ -312,11 +325,11 @@
     "current_sha_codeql_or_equivalent_run": "SUCCESS",
     "current_authority": "FOUNDER_PACKET_PLUS_CURRENT_PROVIDER_EVIDENCE",
     "status": "PARTIAL",
-    "current_runtime_subject_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
-    "codeql_evidence_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+    "current_runtime_subject_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+    "codeql_evidence_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
     "full_ghas_open_alert_inventory": "NOT_PROVEN"
   },
-  "governance_parent_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+  "governance_parent_sha": "072616d744a188872d8b7f652475ace319d0893a",
   "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
   "migration_effect_reconciliation": {
     "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
@@ -324,5 +337,17 @@
     "actual_effect_pending": 1,
     "blind_replay_forbidden": true,
     "production_mutation": 0
+  },
+  "frontend_staging": {
+    "web_preview": "https://ai-profit-web-preview.ebay-adapter.workers.dev",
+    "ops_preview": "https://ai-profit-ops-preview.ebay-adapter.workers.dev",
+    "frontend_source_sha": "35304f87b22af89499c0be78351fa4d9f346dd5e",
+    "api_runtime_sha": "45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c",
+    "web_root_status": 200,
+    "ops_root_status": 200,
+    "web_api_status": 200,
+    "ops_api_status": 200,
+    "same_origin_api_binding": "CLOSED_VERIFIED",
+    "browser_smoke": "RERUN_REQUIRED_AFTER_EVIDENCE_REFRESH"
   }
 }
