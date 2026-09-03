@@ -37,4 +37,8 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Live staging browser smoke
+        env:
+          # A source-controlled SHA can never self-pin the commit that contains it.
+          # For PR runs, exact staging must prove the deployed backend equals this PR HEAD.
+          STAGING_EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
         run: node tooling/e2e/live-staging-browser-smoke.cjs
