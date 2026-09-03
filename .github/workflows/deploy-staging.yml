@@ -140,6 +140,8 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Public build flag only. Backend OAuth credentials remain server-side and fail closed.
+          NEXT_PUBLIC_OAUTH_KAKAO_ENABLED: "1"
         run: node tooling/deploy/cf-preflight.cjs staging web && node tooling/deploy/cf-pages-web.cjs staging
 
       - name: Deploy ops staging

@@ -47,6 +47,23 @@ const callbackRuntime = read(
 const signup = read("apps/web/app/auth/signup/SignupRuntime.tsx");
 const sdkProof = read("packages/sdk/src/auth/proof.ts");
 const authController = read("services/api-nest/src/auth/auth.controller.ts");
+const stagingWorkflow = read(".github/workflows/deploy-staging.yml");
+const releaseBuildWorkflow = read(".github/workflows/release-build.yml");
+
+if (
+  !/name: Deploy web staging[\s\S]{0,500}NEXT_PUBLIC_OAUTH_KAKAO_ENABLED: "1"/.test(
+    stagingWorkflow,
+  )
+) {
+  fail("staging web build must explicitly enable Kakao CTA after callback closure");
+}
+if (
+  !/name: Build once[\s\S]{0,400}NEXT_PUBLIC_OAUTH_KAKAO_ENABLED: "1"/.test(
+    releaseBuildWorkflow,
+  )
+) {
+  fail("immutable release build must explicitly enable Kakao CTA");
+}
 
 if (
   !callbackPage.includes("OauthCallbackRuntime") ||
@@ -96,7 +113,7 @@ function finish() {
     process.exit(1);
   }
   console.log(
-    "[verify:login-kakao-closure] PASS (login + web callback + terms handoff + Nest POST finish wired · Kakao live NOT_RUN)",
+    "[verify:login-kakao-closure] PASS (login + callback + terms handoff + staging/release CTA build flag + Nest POST finish · Kakao live NOT_RUN)",
   );
 }
 

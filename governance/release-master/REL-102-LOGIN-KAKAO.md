@@ -21,6 +21,7 @@ CODE_EQUALS_PROVIDER_SUBJECT = FORBIDDEN
 - Kakao 시작은 `POST /api/v1/auth/oauth/kakao/start` + `/auth/oauth/kakao`.
 - 브라우저 callback은 `apps/web/app/auth/oauth/[provider]/callback`에서 `code+state`를 읽고, SDK `finishOauth`가 `POST /api/v1/auth/oauth/:provider/callback`으로 서버 검증을 완료한다. 별도 Nest GET callback은 사용하지 않는다.
 - 신규 가입의 약관/개인정보/마케팅/추천코드는 provider 이동 전에 `sessionStorage["aipo.oauth.terms"]`에 저장되고 callback에서 회수된다.
+- staging web build와 immutable release build는 `NEXT_PUBLIC_OAUTH_KAKAO_ENABLED=1`을 명시한다. 이 값은 public boolean이며 provider client secret은 artifact에 포함하지 않는다.
 - LIVE_KAKAO_HUMAN_E2E = NOT_RUN. production 완료로 쓰지 않음.
 
 ## VERIFY
