@@ -20,7 +20,7 @@ import {
 import { randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
 import { join } from "node:path";
-import { loadPhase0Env } from "../config/phase0.env";
+import { isUserJwtSecretStrong, loadPhase0Env } from "../config/phase0.env";
 import { PostgresService } from "../db/postgres";
 import { NotificationPrefsService } from "../inbox/notification-prefs.service";
 import { LedgerProvisionService } from "../ledger/ledger.provision.service";
@@ -642,9 +642,9 @@ export class AuthService {
     session: AuthSessionView;
   }> {
     const env = loadPhase0Env();
-    if (!env.jwtUserSecret) {
+    if (!isUserJwtSecretStrong(env.jwtUserSecret)) {
       throw new ServiceUnavailableException(
-        "JWT_USER_SECRET unset — cannot mint session (never fall back to a hardcoded secret)",
+        "JWT_USER_SECRET unavailable — HS256 requires at least 32 bytes",
       );
     }
     const jti = randomUUID();

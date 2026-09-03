@@ -68,6 +68,14 @@ function read(key: string): string | null {
   return t.length ? t : null;
 }
 
+export const USER_JWT_SECRET_MIN_BYTES = 32;
+
+export function isUserJwtSecretStrong(
+  secret: string | null | undefined,
+): secret is string {
+  return typeof secret === "string" && Buffer.byteLength(secret, "utf8") >= USER_JWT_SECRET_MIN_BYTES;
+}
+
 function readInt(key: string, fallback: number): number {
   const raw = read(key);
   if (raw == null) return fallback;

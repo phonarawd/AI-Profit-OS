@@ -2,6 +2,7 @@ import { Controller, Get } from "@nestjs/common";
 import { nestProvenance } from "./config/nest-provenance";
 import {
   assertSupabaseRegionOrWarn,
+  isUserJwtSecretStrong,
   loadPhase0Env,
   oauthConfigured,
 } from "./config/phase0.env";
@@ -47,7 +48,7 @@ export class HealthController {
         ...cache,
       },
       auth: {
-        userJwtConfigured: Boolean(env.jwtUserSecret),
+        userJwtConfigured: isUserJwtSecretStrong(env.jwtUserSecret),
         kakaoConfigured: oauthConfigured(env, "kakao"),
         resendConfigured: Boolean(env.resendApiKey && env.resendFromEmail),
       },

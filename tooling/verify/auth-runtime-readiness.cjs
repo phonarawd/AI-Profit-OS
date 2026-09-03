@@ -6,11 +6,15 @@ const health=read("services/api-nest/src/health.controller.ts");
 const env=read("services/api-nest/src/config/phase0.env.ts");
 for(const n of [
   "auth: {",
-  "userJwtConfigured: Boolean(env.jwtUserSecret)",
+  "userJwtConfigured: isUserJwtSecretStrong(env.jwtUserSecret)",
   'kakaoConfigured: oauthConfigured(env, "kakao")',
   "resendConfigured: Boolean(env.resendApiKey && env.resendFromEmail)",
 ]) if(!health.includes(n)) fails.push("health readiness missing "+n);
 if(!env.includes('jwtUserSecret: read("JWT_USER_SECRET")')) fails.push("JWT_USER_SECRET env binding missing");
+for(const n of [
+  "USER_JWT_SECRET_MIN_BYTES = 32",
+  'Buffer.byteLength(secret, "utf8") >= USER_JWT_SECRET_MIN_BYTES',
+]) if(!env.includes(n)) fails.push("JWT HS256 minimum-strength contract missing "+n);
 if(/jwtUserSecret\s*[:=]\s*["'][^"']+["']/.test(health)) fails.push("health must never expose or hardcode JWT secret");
 if(/resendApiKey\s*:\s*env\.resendApiKey/.test(health)) fails.push("health must never return Resend API key");
 if(/oauthKakaoClientSecret\s*:\s*env\.oauthKakaoClientSecret/.test(health)) fails.push("health must never return Kakao client secret");
@@ -20,4 +24,21 @@ if(!read("tooling/verify/CATALOG.md").includes("auth-runtime-readiness")) fails.
 if(!read(".github/workflows/gate.yml").includes("verify:auth-runtime-readiness")) fails.push("workflow gate missing");
 if(!read("tooling/verify/gate.cjs").includes("auth-runtime-readiness.cjs")) fails.push("local gate missing");
 if(fails.length){console.error("[verify:auth-runtime-readiness] FAIL");for(const f of fails)console.error("  - "+f);process.exit(1);}
-console.log("[verify:auth-runtime-readiness] PASS (health exposes JWT/Kakao/Resend readiness booleans only · secret values never exposed)");
+
+const runtime = require("node:child_process").spawnSync(
+  process.execPath,
+  [
+    "--test",
+    "--experimental-strip-types",
+    "services/api-nest/src/config/phase0.env.runtime.test.ts",
+  ],
+  { cwd: root, encoding: "utf8", timeout: 30000 },
+);
+process.stdout.write(runtime.stdout || "");
+process.stderr.write(runtime.stderr || "");
+if(runtime.status!==0){
+  console.error("[verify:auth-runtime-readiness] JWT strength runtime selftest failed");
+  process.exit(1);
+}
+console.log("[verify:auth-runtime-readiness] PASS (JWT >=256-bit + Kakao/Resend boolean-only readiness · secret values never exposed)");
+
