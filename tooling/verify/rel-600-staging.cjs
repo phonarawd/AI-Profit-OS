@@ -45,6 +45,7 @@ const opsDeploy = read("tooling/deploy/cf-pages-ops.cjs");
 const stagingDeploy = read("tooling/deploy/cf-deploy-staging.cjs");
 const stagingWorkflow = read(".github/workflows/deploy-staging.yml");
 const prodWorkflow = read(".github/workflows/deploy-cloudflare.yml");
+const preflight = read("tooling/deploy/cf-preflight.cjs");
 
 function todoCompleted(relId) {
   const id = relId.replace(/^REL-/i, "rel-").toLowerCase();
@@ -129,8 +130,54 @@ if (/inputs:\s*\n\s*target:/.test(stagingWorkflow) && stagingWorkflow.includes("
 if (stagingWorkflow.includes("environment: production")) {
   fails.push("staging workflow must not use production GitHub environment");
 }
+if (
+  stagingWorkflow.includes("ai-profit-os.onrender.com") ||
+  /API_HOST:-\s*https:\/\/ai-profit-os\.onrender\.com/.test(stagingWorkflow) ||
+  /API="\$\{API_HOST:-/.test(stagingWorkflow)
+) {
+  fails.push("staging workflow must not default API_HOST to production Render");
+}
+if (stagingWorkflow.includes("secrets.API_HOST")) {
+  fails.push("staging workflow must not inherit production API_HOST secret");
+}
+if (!stagingWorkflow.includes("STAGING_API_HOST")) {
+  fails.push("staging workflow must require STAGING_API_HOST");
+}
+if (!stagingWorkflow.includes("forbiddenHosts")) {
+  fails.push("staging workflow must deny manifest forbiddenHosts");
+}
+if (!((staging && staging.forbiddenHosts) || []).includes("ai-profit-os.onrender.com")) {
+  fails.push("staging.forbiddenHosts must include production Render API host");
+}
+if (!((staging && staging.forbiddenHosts) || []).includes("api.hiptk.app")) {
+  fails.push("staging.forbiddenHosts must include api.hiptk.app");
+}
 if (prodWorkflow.includes("workflow_dispatch") === false) {
   fails.push("production workflow_dispatch must remain on deploy-cloudflare.yml");
+}
+if (!prodWorkflow.includes("STAGING_API_HOST")) {
+  fails.push("deploy-cloudflare preview path must require STAGING_API_HOST");
+}
+if (!prodWorkflow.includes("non-prod-api-host.cjs")) {
+  fails.push("deploy-cloudflare preview path must run non-prod API isolation");
+}
+if (/if: inputs.target != 'production'[\s\S]*secrets\.API_HOST/.test(prodWorkflow)) {
+  fails.push("deploy-cloudflare preview must not inherit secrets.API_HOST");
+}
+if (!preflight.includes("requireNonProdApiIsolation")) {
+  fails.push("cf-preflight must isolate non-prod API host");
+}
+
+const isolationTest = spawnSync(
+  process.execPath,
+  ["--test", path.join(root, "tooling/deploy/lib/non-prod-api-host.runtime.test.cjs")],
+  { cwd: root, encoding: "utf8", timeout: 30_000 },
+);
+if (isolationTest.status !== 0) {
+  fails.push(
+    "non-prod API isolation runtime FAIL: " +
+      String(isolationTest.stderr || isolationTest.stdout || "").split("\n")[0],
+  );
 }
 
 for (const rel of [

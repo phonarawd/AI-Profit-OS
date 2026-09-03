@@ -208,8 +208,9 @@ assert.match(stagingWorkflow, /STAGING_API_HOST/);
 assert.doesNotMatch(stagingWorkflow, /secrets\.API_HOST/);
 assert.match(nonProdHost, /production API_HOST inheritance forbidden/);
 assert.equal(b3.isolated_verify_db.exists, "YES");
-assert.equal(b3.isolated_verify_db.usable, "YES");
+assert.equal(b3.isolated_verify_db.usable, "UNPROVEN_CURRENTLY");
 assert.equal(b3.isolated_verify_db.branch_project_ref, STAGE_REF);
+assert.equal(b3.release_ready, "NO");
 assert.equal(b3.staging_e2e.status, "NOT_RUN");
 assert.equal(b3.staging_e2e.requires.isolated_verify_db_exists, "YES");
 
