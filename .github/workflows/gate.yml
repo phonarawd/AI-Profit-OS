@@ -46,7 +46,10 @@ jobs:
       - name: Adapter worker machine auth
         run: pnpm verify:adapter-worker-machine-auth
       - name: Chain worker machine auth
-        run: pnpm verify:chain-worker-machine-auth
+        run: |
+          pnpm verify:chain-worker-machine-auth
+          pnpm exec tsc -p workers/chain-watchers/tsconfig.json
+          pnpm exec tsc -p workers/chain-sweeper/tsconfig.json
       - name: Database TLS strict
         run: pnpm verify:database-tls-strict
       - name: REL-222 admin ops 3-mode
