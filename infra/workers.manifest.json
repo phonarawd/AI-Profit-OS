@@ -1,5 +1,7 @@
 {
-  "phase0": ["push-dispatcher"],
+  "phase0": [
+    "push-dispatcher"
+  ],
   "phase1": [
     "push-dispatcher",
     "marketing-capi-dispatcher",
@@ -13,6 +15,12 @@
     "coingecko-adapter",
     "frankfurter-adapter"
   ],
-  "p0-ebay": ["ebay-adapter"],
-  "notes": "Phase0: Nest in-process → push-dispatcher stub · market adapters NOT in phase0 · NATS/Temporal/EKS 0. Phase1+: signup-ready (ebay·pokemontcg·ygoprodeck·coingecko·frankfurter) + partner listing (amazon·yahoo_jp §0.0.1c). Day-1 auto-publish listing=ebay|admin only."
+  "p0-ebay": [
+    "ebay-adapter"
+  ],
+  "notes": "Phase0: Nest in-process → push-dispatcher stub · market adapters NOT in phase0 · NATS/Temporal/EKS 0. Phase1+: signup-ready (ebay·pokemontcg·ygoprodeck·coingecko·frankfurter) + partner listing (amazon·yahoo_jp §0.0.1c). Day-1 auto-publish listing=ebay|admin only.",
+  "fx-core": [
+    "coingecko-adapter",
+    "frankfurter-adapter"
+  ]
 }

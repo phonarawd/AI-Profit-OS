@@ -1,0 +1,41 @@
+"use strict";
+
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+
+const root = path.resolve(__dirname, "../..");
+const manifest = JSON.parse(fs.readFileSync(path.join(root, "infra/workers.manifest.json"), "utf8"));
+const { ALLOWED_WORKER_SETS, FX_CORE_ONLY, buildPlan } = require("../deploy/cf-workers.cjs");
+const { WORKER_SNAPSHOTS } = require("../release/artifact-provenance.cjs");
+const { VALID_WORKER_SETS, validateDeployArgs } = require("../release/deploy-from-artifact.cjs");
+
+const FX = ["coingecko-adapter", "frankfurter-adapter"];
+assert.deepEqual(FX_CORE_ONLY, FX);
+assert.deepEqual(manifest["fx-core"], FX);
+assert.ok(ALLOWED_WORKER_SETS.includes("fx-core"));
+assert.ok(VALID_WORKER_SETS.has("fx-core"));
+for (const worker of FX) assert.ok(WORKER_SNAPSHOTS.includes(worker));
+
+const plan = buildPlan(manifest, "preview", "fx-core");
+assert.deepEqual(plan.workers, FX);
+assert.equal(plan.workerCount, 2);
+
+const deployArgs = { target: "production", sha: "a".repeat(40), expectedDigest: "b".repeat(64), acceptance: "/tmp/verdict.json", bundle: "/tmp/bundle", surface: "workers", workerSet: "fx-core" };
+assert.equal(validateDeployArgs(deployArgs), "");
+
+const workflow = fs.readFileSync(path.join(root, ".github/workflows/deploy-cloudflare.yml"), "utf8");
+assert.match(workflow, /worker_set:[\s\S]*?- fx-core/);
+const releaseBuild = fs.readFileSync(path.join(root, ".github/workflows/release-build.yml"), "utf8");
+for (const worker of FX) {
+  assert.match(releaseBuild, new RegExp("workers/" + worker + "/\\.release-prebuilt/index\\.js"));
+  const wrangler = fs.readFileSync(path.join(root, "workers", worker, "wrangler.toml"), "utf8");
+  assert.match(wrangler, /\[triggers\]/);
+  assert.match(wrangler, /crons\s*=\s*\[/);
+  const index = fs.readFileSync(path.join(root, "workers", worker, "src/index.ts"), "utf8");
+  assert.match(index, /NEST_ADAPTER_INGEST_URL/);
+  assert.match(index, /ADAPTER_INGEST_TOKEN/);
+}
+const cg = fs.readFileSync(path.join(root, "workers/coingecko-adapter/src/index.ts"), "utf8");
+assert.match(cg, /COINGECKO_DEMO_API_KEY/);
+console.log("[verify:fx-worker-release-path] PASS (FX_CORE_EXACT · BUILD_ONCE_INCLUDED · ACCEPTED_ARTIFACT_DEPLOY · SCHEDULED_INGEST_CONTRACT)");

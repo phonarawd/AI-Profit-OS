@@ -32,6 +32,7 @@ on:
         options:
           - phase0
           - p0-ebay
+          - fx-core
 
 concurrency:
   group: cf-deploy-${{ github.ref }}-${{ inputs.surface }}

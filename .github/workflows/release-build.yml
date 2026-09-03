@@ -60,6 +60,8 @@ jobs:
           node tooling/release/prebuild-workers.cjs --from-repo
           test -f workers/push-dispatcher/.release-prebuilt/index.js
           test -f workers/ebay-adapter/.release-prebuilt/index.js
+          test -f workers/coingecko-adapter/.release-prebuilt/index.js
+          test -f workers/frankfurter-adapter/.release-prebuilt/index.js
 
       - name: Pack immutable artifact + digest
         run: |

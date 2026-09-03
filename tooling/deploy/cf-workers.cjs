@@ -18,12 +18,13 @@ const {
   requireAcceptedArtifactAuthority,
 } = require("./lib/accepted-artifact-authority.cjs");
 
-const ALLOWED_WORKER_SETS = Object.freeze(["phase0", "phase1", "p0-ebay"]);
+const ALLOWED_WORKER_SETS = Object.freeze(["phase0", "phase1", "p0-ebay", "fx-core"]);
 const DEFAULT_WORKER_SET = "phase0";
 const DEFAULT_TARGET = "preview";
 const WORKER_SET_RE = /^[a-z][a-z0-9-]*$/;
 const WORKER_NAME_RE = /^[a-z][a-z0-9-]*$/;
 const P0_EBAY_ONLY = Object.freeze(["ebay-adapter"]);
+const FX_CORE_ONLY = Object.freeze(["coingecko-adapter", "frankfurter-adapter"]);
 const P0_EBAY_FORBIDDEN = Object.freeze([
   "amazon-adapter",
   "yahoo-jp-adapter",
@@ -105,6 +106,16 @@ function resolveWorkers(manifest, workerSet) {
     ) {
       const err = new Error(`invalid worker name ${name}`);
       err.code = "INVALID_WORKER_NAME";
+      throw err;
+    }
+  }
+  if (workerSet === "fx-core") {
+    const exact =
+      list.length === FX_CORE_ONLY.length &&
+      FX_CORE_ONLY.every((name, i) => list[i] === name);
+    if (!exact) {
+      const err = new Error("fx-core must be exactly [coingecko-adapter,frankfurter-adapter]");
+      err.code = "FX_CORE_EXACTNESS";
       throw err;
     }
   }
@@ -300,6 +311,7 @@ const exported = {
   DEFAULT_WORKER_SET,
   P0_EBAY_ONLY,
   P0_EBAY_FORBIDDEN,
+  FX_CORE_ONLY,
   assertSurfaceAllowed,
   buildPlan,
   formatPlan,

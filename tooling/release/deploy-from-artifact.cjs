@@ -10,7 +10,7 @@ const { extractPayload, verifyBundle } = require("./artifact-provenance.cjs");
 const { evaluateGuard } = require("./require-accepted-sha.cjs");
 
 const VALID_SURFACES = new Set(["workers", "web", "ops", "all"]);
-const VALID_WORKER_SETS = new Set(["phase0", "p0-ebay"]);
+const VALID_WORKER_SETS = new Set(["phase0", "p0-ebay", "fx-core"]);
 
 function parseArgs(argv) {
   const out = {

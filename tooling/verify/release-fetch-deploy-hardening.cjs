@@ -44,6 +44,7 @@ try {
     workerSet: "phase0",
   };
   assert.equal(validateDeployArgs(good), "");
+  assert.equal(validateDeployArgs({ ...good, workerSet: "fx-core" }), "");
   assert.equal(validateDeployArgs({ ...good, surface: "garbage" }), "surface_invalid");
   assert.equal(validateDeployArgs({ ...good, workerSet: "garbage" }), "worker_set_invalid");
   assert.equal(validateDeployArgs({ ...good, target: "preview" }), "non_production_must_not_use_artifact_deploy");

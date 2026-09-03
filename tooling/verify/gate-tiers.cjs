@@ -33,6 +33,7 @@ const T1_PUSH = [
   "pg-module-scan.cjs",
   "brand-assets.cjs",
   "cf-infra.cjs",
+  "fx-worker-release-path.cjs",
   "ebay-worker-deploy-path.cjs",
   "p0-ebay-secret-provisioning.cjs",
   "nest-production-provenance.cjs",

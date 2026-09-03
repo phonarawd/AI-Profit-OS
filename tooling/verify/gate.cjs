@@ -10,6 +10,7 @@ const steps = [
   "brand-consumer.cjs",
   "brand-assets.cjs",
   "cf-infra.cjs",
+  "fx-worker-release-path.cjs",
   "ebay-worker-deploy-path.cjs",
   "p0-ebay-secret-provisioning.cjs",
   "nest-production-provenance.cjs",

@@ -27,7 +27,12 @@ const REQUIRED_DIRS = [
   "apps/web/.open-next/assets",
   "apps/admin/.open-next/assets",
 ];
-const WORKER_SNAPSHOTS = ["push-dispatcher", "ebay-adapter"];
+const WORKER_SNAPSHOTS = [
+  "push-dispatcher",
+  "ebay-adapter",
+  "coingecko-adapter",
+  "frankfurter-adapter",
+];
 const PREBUILT_DIR = ".release-prebuilt";
 const PREFERRED_PREBUILT_ENTRIES = ["index.js", "worker.js", "main.js"];
 const EXTRACTION_OUTPUTS = Object.freeze([
