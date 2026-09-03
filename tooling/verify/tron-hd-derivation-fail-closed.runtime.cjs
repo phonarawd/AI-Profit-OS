@@ -37,6 +37,9 @@ if (/createHmac\(\s*["']sha256["']\s*,\s*(opts\.)?secretRef/.test(tron)) {
 if (!tron.includes("TRON_HD_DERIVATION_UNAVAILABLE")) {
   fails.push("tron-address must export TRON_HD_DERIVATION_UNAVAILABLE");
 }
+if (!tron.includes("TRON_DEPOSIT_ADDRESS_PROVENANCE_UNVERIFIED")) {
+  fails.push("tron-address must export legacy-row provenance failure code");
+}
 if (!tron.includes("m/44'/195'/0'/0/")) {
   fails.push("canonical Tron HD path must stay locked");
 }
@@ -67,6 +70,9 @@ if (
     "getOrCreate must require canonical authority before reading/serving any existing address",
   );
 }
+if (!getOrCreate.includes("this.assertCanonicalAddressRow(existing)")) {
+  fails.push("getOrCreate must rederive-match existing address before serving it");
+}
 if (requireIdx < 0) {
   fails.push("deposit-address must allocate only through the canonical deriver");
 }
@@ -88,9 +94,16 @@ for (const method of ["async resolveUserIdByAddress(", "async loadAddressIndex()
   const slice = start >= 0 && end > start ? addr.slice(start, end) : "";
   const authority = slice.indexOf("this.assertCanonicalAddressAuthority()");
   const query = slice.indexOf("this.db.query");
+  const attest = slice.indexOf("this.assertCanonicalAddressRow(");
   if (authority < 0 || query < 0 || authority > query) {
     fails.push(method + " must require canonical authority before address-index DB read");
   }
+  if (attest < 0 || attest < query) {
+    fails.push(method + " must rederive-match stored address after DB read before use");
+  }
+}
+if (!addr.includes("derived.trc20Address !== row.trc20_address")) {
+  fails.push("existing address provenance must compare canonical re-derivation to stored address");
 }
 if (/input\.userId\s*\|\|/.test(deposit)) {
   fails.push("USDT observe must not trust caller userId before address ownership resolution");

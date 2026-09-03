@@ -13,9 +13,11 @@ import { KillSwitchService } from "../kill-switch/kill-switch.service";
 import { PostgresService } from "../db/postgres";
 import { DepositConfigService } from "./deposit-config.service";
 import {
+  TRON_DEPOSIT_ADDRESS_PROVENANCE_UNVERIFIED,
   TRON_HD_DERIVATION_UNAVAILABLE,
   allocateCanonicalTrc20Address,
   requireCanonicalTrc20Deriver,
+  type CanonicalTrc20Deriver,
   TronHdDerivationUnavailableError,
 } from "./tron-address";
 import type { UserDepositAddressV1 } from "./wallet.types";
@@ -50,7 +52,10 @@ export class DepositAddressService {
     // authority is actually bound.
     this.assertCanonicalAddressAuthority();
     const existing = await this.fetch(userId);
-    if (existing) return this.toV1(existing);
+    if (existing) {
+      this.assertCanonicalAddressRow(existing);
+      return this.toV1(existing);
+    }
 
     return this.createForUser(userId);
   }
@@ -62,13 +67,17 @@ export class DepositAddressService {
     // Address ownership is money authority. Never resolve a legacy row while
     // canonical vault/HSM derivation authority is unavailable.
     this.assertCanonicalAddressAuthority();
-    const r = await this.db.query<{ user_id: string }>(
-      `SELECT user_id::text AS user_id
+    const r = await this.db.query<AddressRow>(
+      `SELECT user_id::text, trc20_address, derivation_index, qr_payload,
+              last_seen_tx_at, created_at
          FROM public.user_deposit_addresses
         WHERE trc20_address = $1`,
       [addr],
     );
-    return r.rows[0]?.user_id ?? null;
+    const row = r.rows[0];
+    if (!row) return null;
+    this.assertCanonicalAddressRow(row);
+    return row.user_id;
   }
 
   /** Full depositAddress → userId set for single-stream matcher */
@@ -77,17 +86,18 @@ export class DepositAddressService {
   > {
     // Chain watcher must not bootstrap from legacy/synthetic address rows.
     this.assertCanonicalAddressAuthority();
-    const r = await this.db.query<{
-      trc20_address: string;
-      user_id: string;
-    }>(
-      `SELECT trc20_address, user_id::text AS user_id
+    const r = await this.db.query<AddressRow>(
+      `SELECT user_id::text, trc20_address, derivation_index, qr_payload,
+              last_seen_tx_at, created_at
          FROM public.user_deposit_addresses`,
     );
-    return r.rows.map((row) => ({
-      trc20Address: row.trc20_address,
-      userId: row.user_id,
-    }));
+    return r.rows.map((row) => {
+      this.assertCanonicalAddressRow(row);
+      return {
+        trc20Address: row.trc20_address,
+        userId: row.user_id,
+      };
+    });
   }
 
   private async createForUser(userId: string): Promise<UserDepositAddressV1> {
@@ -102,7 +112,10 @@ export class DepositAddressService {
     for (let attempt = 0; attempt < 5; attempt += 1) {
       // Re-check race
       const raced = await this.fetch(userId);
-      if (raced) return this.toV1(raced);
+      if (raced) {
+        this.assertCanonicalAddressRow(raced);
+        return this.toV1(raced);
+      }
 
       const nextIdx = await this.nextDerivationIndex();
       let derived;
@@ -130,7 +143,10 @@ export class DepositAddressService {
         );
         if (ins.rows[0]) return this.toV1(ins.rows[0]);
         const again = await this.fetch(userId);
-        if (again) return this.toV1(again);
+        if (again) {
+          this.assertCanonicalAddressRow(again);
+          return this.toV1(again);
+        }
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : String(e);
         if (/unique|duplicate/i.test(msg)) continue;
@@ -140,14 +156,31 @@ export class DepositAddressService {
     throw new ConflictException("unable to allocate unique TRC20 address");
   }
 
-  private assertCanonicalAddressAuthority(): void {
+  private canonicalDeriver(): CanonicalTrc20Deriver {
     try {
-      requireCanonicalTrc20Deriver();
+      return requireCanonicalTrc20Deriver();
     } catch (e) {
       if (e instanceof TronHdDerivationUnavailableError) {
         throw new ServiceUnavailableException(TRON_HD_DERIVATION_UNAVAILABLE);
       }
       throw e;
+    }
+  }
+
+  private assertCanonicalAddressAuthority(): void {
+    void this.canonicalDeriver();
+  }
+
+  private assertCanonicalAddressRow(
+    row: Pick<AddressRow, "trc20_address" | "derivation_index">,
+  ): void {
+    const derived = this.canonicalDeriver().derive({
+      derivationIndex: row.derivation_index,
+    });
+    if (derived.trc20Address !== row.trc20_address) {
+      throw new ServiceUnavailableException(
+        TRON_DEPOSIT_ADDRESS_PROVENANCE_UNVERIFIED,
+      );
     }
   }
 
