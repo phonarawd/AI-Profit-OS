@@ -1,13 +1,13 @@
 {
   "schema": "production-release-evidence.current.v1",
-  "observed_at": "2026-09-03T11:44:00Z",
-  "candidate_sha": "072616d744a188872d8b7f652475ace319d0893a",
+  "observed_at": "2026-09-03T12:07:01.851Z",
+  "candidate_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
   "release_acceptance": null,
   "engine": {
     "final_acceptance": "NOT_ISSUED",
     "rebase_required": true,
     "ack_received": false,
-    "candidate_sha": "072616d744a188872d8b7f652475ace319d0893a"
+    "candidate_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60"
   },
   "staging": {
     "ready": false,
@@ -38,7 +38,7 @@
   "render_preflight": {
     "ready": false,
     "status": "NOT_READY",
-    "accepted_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "accepted_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
     "blockers": [
       "auto_deploy_enabled",
       "production_live_sha_mismatch"
@@ -46,7 +46,7 @@
     "auto_deploy_required": "disabled"
   },
   "security": {
-    "exact_head_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "exact_head_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
     "codeql_workflow": "success",
     "unresolved_p0": null,
     "unresolved_p1": null,
@@ -81,7 +81,7 @@
     "status": "NOT_PROVEN_CURRENT"
   },
   "production_mutation": 0,
-  "governance_parent_sha": "d14bae2bac1cc5fbe7f05b9599c6eb0240419d2f",
+  "governance_parent_sha": "2399bcb45a7989101773c60625a80913793b5066",
   "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
   "migration_effect_reconciliation": {
     "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",

@@ -1,8 +1,8 @@
 {
   "schema": "staging-topology-provider-snapshot.v2",
-  "recorded_at": "2026-09-03T11:34:01.149Z",
+  "recorded_at": "2026-09-03T12:07:01.851Z",
   "source": "GitHub/Render/Supabase/Cloudflare current revalidation + exact runtime + Supavisor TLS + DB-backed read + web/ops same-origin API proxy proof · Production mutation=0",
-  "candidate_sha": "072616d744a188872d8b7f652475ace319d0893a",
+  "candidate_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
   "production": {
     "render": {
       "service_name": "AI-Profit-OS",
@@ -38,14 +38,14 @@
       "kind": "web_service",
       "autoDeploy": "no",
       "autoDeployTrigger": "off",
-      "source_sha": "072616d744a188872d8b7f652475ace319d0893a",
-      "live_deploy_id": "dep-daclhn0n74is73djo39g",
+      "source_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+      "live_deploy_id": "dep-dacm2vmk1f9s73cqsv9g",
       "supabase_project_ref": "uluzxvdpynytytduuryy",
       "configured_supabase_project_ref_env": "uluzxvdpynytytduuryy",
       "binding_evidence": "SUPAVISOR_SESSION_POOLER_5432_TLS_CA_VERIFIED",
       "runtime_health": {
         "observed_at": "2026-09-03T11:26:35.709Z",
-        "git_sha": "072616d744a188872d8b7f652475ace319d0893a",
+        "git_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
         "git_sha_source": "RENDER_GIT_COMMIT",
         "db_configured": true,
         "db_ok": true,
@@ -112,8 +112,8 @@
     "required_for_current_topology": true,
     "web_origin": "https://ai-profit-web-preview.ebay-adapter.workers.dev",
     "ops_origin": "https://ai-profit-ops-preview.ebay-adapter.workers.dev",
-    "frontend_source_sha": "072616d744a188872d8b7f652475ace319d0893a",
-    "api_runtime_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "frontend_source_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "api_runtime_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
     "web_root_status": 200,
     "ops_root_status": 200,
     "web_api_health_status": 200,
@@ -125,16 +125,16 @@
     "dedicated_staging_db": true,
     "uses_production_api": false,
     "uses_production_db": false,
-    "browser_smoke_run": 33750291160
+    "browser_smoke_run": 33753302274
   },
   "blockers_observed": [
-    "backend staging topology is READY: runtime 072616d744a188872d8b7f652475ace319d0893a + isolated DB + trusted-CA TLS + Redis + DB-backed read are proven",
-    "Cloudflare web/ops preview same-origin /api/v1 proxy is bound to runtime 072616d744a188872d8b7f652475ace319d0893a",
+    "backend staging topology is READY: runtime 72ea791bf4aa322c96df34bfb52cfc71f7c93b60 + isolated DB + trusted-CA TLS + Redis + DB-backed read are proven",
+    "Cloudflare web/ops preview same-origin /api/v1 proxy is bound to runtime 72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
     "live Chromium smoke PASS for web+login+ops and exact staging API",
     "authenticated user/money staging E2E remains not proven",
     "FX preview workers remain undeployed because staging-safe repository credentials are absent"
   ],
   "production_mutation": 0,
-  "governance_parent_sha": "9b3008c6e2ec628ca8a05d7f6319f1f2a9c9605b",
+  "governance_parent_sha": "2399bcb45a7989101773c60625a80913793b5066",
   "backend_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json"
 }

@@ -1,8 +1,8 @@
 {
   "schema": "governance.recovery.founder-action-packet.current.v2",
-  "recorded_on": "2026-09-03T11:34:01.149Z",
+  "recorded_on": "2026-09-03T12:07:01.851Z",
   "source": "GitHub + Render + Supabase + Cloudflare preview current revalidation; exact runtime 072616d7 + TLS DB binding + web/ops same-origin proxy proof + DB-backed read; Production mutation=0",
-  "subject_integration_sha": "072616d744a188872d8b7f652475ace319d0893a",
+  "subject_integration_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
   "production_release": "NO_GO",
   "invariants": {
     "integration_pr": 209,
@@ -39,7 +39,7 @@
   "github": {
     "main_sha": "98730b8c71a8c4c0b5e474460a6a24bea43e6966",
     "rescue_checkpoint_sha": "e312119582036ab1367ede74dd4c08ff3b22a951",
-    "integration_subject_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "integration_subject_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
     "integration_pr": 209,
     "integration_pr_draft": true,
     "main_ruleset": {
@@ -76,8 +76,8 @@
       "branch_label_note": "historical branch label; exactness is authoritative from live deploy SHA",
       "autoDeploy": "no",
       "autoDeployTrigger": "off",
-      "live_deploy_id": "dep-daclhn0n74is73djo39g",
-      "live_sha": "072616d744a188872d8b7f652475ace319d0893a",
+      "live_deploy_id": "dep-dacm2vmk1f9s73cqsv9g",
+      "live_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
       "current_candidate_bound": true,
       "runtime_health_observed_at": "2026-09-03T11:26:35.709Z",
       "database_url_configured": true,
@@ -93,7 +93,7 @@
       "db_backed_public_read_route": "GET /api/v1/growth/public-surface",
       "frontend_web_proxy_status": 200,
       "frontend_ops_proxy_status": 200,
-      "frontend_proxy_exact_runtime_sha": "072616d744a188872d8b7f652475ace319d0893a",
+      "frontend_proxy_exact_runtime_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
       "frontend_proxy_binding_proven": true
     }
   },
@@ -292,7 +292,7 @@
     "production_worker_promotion_performed": false,
     "status": "BLOCKED",
     "staging_fx_preview_worker_status": "NOT_DEPLOYED",
-    "staging_fx_activation_run": 33749478728,
+    "staging_fx_activation_run": 33752631548,
     "staging_fx_activation_classification": "BLOCKED_SECRET_ABSENT",
     "staging_repository_adapter_ingest_token_present": false,
     "staging_repository_coingecko_key_present": false,
@@ -325,11 +325,11 @@
     "current_sha_codeql_or_equivalent_run": "SUCCESS",
     "current_authority": "FOUNDER_PACKET_PLUS_CURRENT_PROVIDER_EVIDENCE",
     "status": "PARTIAL",
-    "current_runtime_subject_sha": "072616d744a188872d8b7f652475ace319d0893a",
-    "codeql_evidence_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "current_runtime_subject_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "codeql_evidence_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
     "full_ghas_open_alert_inventory": "NOT_PROVEN"
   },
-  "governance_parent_sha": "152222bb0272343abb00408cf11c726379b2c24d",
+  "governance_parent_sha": "2399bcb45a7989101773c60625a80913793b5066",
   "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
   "migration_effect_reconciliation": {
     "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
@@ -341,15 +341,15 @@
   "frontend_staging": {
     "web_preview": "https://ai-profit-web-preview.ebay-adapter.workers.dev",
     "ops_preview": "https://ai-profit-ops-preview.ebay-adapter.workers.dev",
-    "frontend_source_sha": "072616d744a188872d8b7f652475ace319d0893a",
-    "api_runtime_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "frontend_source_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "api_runtime_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
     "web_root_status": 200,
     "ops_root_status": 200,
     "web_api_status": 200,
     "ops_api_status": 200,
     "same_origin_api_binding": "CLOSED_VERIFIED",
     "browser_smoke": "PASS",
-    "browser_smoke_run": 33750291160
+    "browser_smoke_run": 33753302274
   },
   "tron_hd_current": {
     "observed_at": "2026-09-03T11:44:00Z",

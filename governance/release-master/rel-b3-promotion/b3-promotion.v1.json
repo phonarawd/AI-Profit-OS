@@ -1,7 +1,7 @@
 {
   "schema": "production-release.b3-promotion.v1",
   "id": "b-3-promotion",
-  "observed_at": "2026-09-03T11:34:01.149Z",
+  "observed_at": "2026-09-03T12:07:01.851Z",
   "status": "BLOCKED",
   "promotion_path_closed": false,
   "production_project_ref": "mgsytcetsiecllmhcyox",
@@ -35,7 +35,7 @@
   },
   "staging_e2e": {
     "status": "PARTIAL",
-    "reason": "Live Chromium smoke PASS for web+login+ops and same-origin exact API 072616d744a188872d8b7f652475ace319d0893a; authenticated user/money mutation E2E remains not run.",
+    "reason": "Live Chromium smoke PASS for web+login+ops and same-origin exact API 72ea791bf4aa322c96df34bfb52cfc71f7c93b60; authenticated user/money mutation E2E remains not run.",
     "requires": {
       "rc_formal": "PASS",
       "rc_sha": "bound",
@@ -54,8 +54,8 @@
     "render_staging_service_id": "srv-dacjnnm1egvs73cuh190",
     "render_staging_url": "https://ai-profit-os-staging-exact-1f3b36f.onrender.com",
     "render_staging_branch": "chatgpt/staging-exact-1f3b36f-20260903",
-    "render_live_deploy_id": "dep-daclhn0n74is73djo39g",
-    "render_live_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "render_live_deploy_id": "dep-dacm2vmk1f9s73cqsv9g",
+    "render_live_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
     "render_exact_candidate_bound": true,
     "render_runtime_health_observed_at": "2026-09-03T11:26:35.709Z",
     "render_database_url_configured": true,
@@ -65,8 +65,8 @@
     "render_warnings_empty": true,
     "supabase_branch_status": "FUNCTIONS_DEPLOYED",
     "supabase_with_data": false,
-    "current_candidate_sha": "072616d744a188872d8b7f652475ace319d0893a",
-    "governance_parent_sha": "e067544635abf585b7fbe5294080c740129fc0bc",
+    "current_candidate_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "governance_parent_sha": "2399bcb45a7989101773c60625a80913793b5066",
     "production_mutation": 0,
     "supabase_preview_project_status": "ACTIVE_HEALTHY",
     "current_schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
@@ -80,9 +80,9 @@
     "backend_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
     "frontend_web_api_status": 200,
     "frontend_ops_api_status": 200,
-    "frontend_proxy_exact_runtime_sha": "072616d744a188872d8b7f652475ace319d0893a",
+    "frontend_proxy_exact_runtime_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
     "frontend_proxy_binding": "CLOSED_VERIFIED",
     "browser_smoke": "PASS",
-    "browser_smoke_run": 33750291160
+    "browser_smoke_run": 33753302274
   }
 }
