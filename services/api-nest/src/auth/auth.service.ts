@@ -219,11 +219,16 @@ export class AuthService {
   }
 
   oauthStart(providerRaw: string) {
+    // Do not create OAuth state / redirect users when this process cannot mint
+    // the session that the callback is supposed to produce.
+    this.requireUserSessionMintSecret();
     return this.oauthIdentity.startReady(this.parseOauthProvider(providerRaw));
   }
 
   async oauthCallback(providerRaw: string, body: Record<string, unknown>) {
     const provider = this.parseOauthProvider(providerRaw);
+    // Must precede OAuth state consume and every user/ledger mutation.
+    this.requireUserSessionMintSecret();
     const proven = await this.oauthIdentity.prove(provider, body ?? {});
     this.assertDbConfigured();
     const existingOauth = await this.db.query<{ user_id: string }>(
@@ -269,10 +274,14 @@ export class AuthService {
   }
 
   passkeyOptions(kind: "register" | "authenticate") {
+    // Do not issue a one-time challenge if a successful ceremony cannot mint.
+    this.requireUserSessionMintSecret();
     return this.webauthn.options(kind);
   }
 
   async passkeyRegisterVerify(body: Record<string, unknown>) {
+    // Must precede challenge consume, credential insert and welcome practice.
+    this.requireUserSessionMintSecret();
     const proven = await this.webauthn.prove("register", body ?? {}, {
       findByCredentialId: (id) => this.lookupPasskey(id),
     });
@@ -303,6 +312,8 @@ export class AuthService {
   }
 
   async passkeyAuthVerify(body: Record<string, unknown>) {
+    // Must precede challenge consume and sign_count mutation.
+    this.requireUserSessionMintSecret();
     const proven = await this.webauthn.prove("authenticate", body ?? {}, {
       findByCredentialId: (id) => this.lookupPasskey(id),
     });
@@ -328,11 +339,15 @@ export class AuthService {
   }
 
   magicLinkRequest(body: Record<string, unknown>) {
+    // Never send a login link that this runtime cannot turn into a session.
+    this.requireUserSessionMintSecret();
     return this.magicLink.request(body ?? {});
   }
 
   async magicLinkVerify(body: Record<string, unknown>) {
     this.assertDbConfigured();
+    // Must precede one-time token consume and any new-user/practice mutation.
+    this.requireUserSessionMintSecret();
     const token = typeof body.token === "string" ? body.token.trim() : "";
     if (!token) {
       throw new BadRequestException("magic link token required");
@@ -375,6 +390,8 @@ export class AuthService {
     // point (no new blacklist architecture; reuses the existing users.status
     // tombstone this same wave introduces).
     await this.assertAccountActive(sessionUser.userId);
+    // A transient signing-key outage must not revoke a still-valid session.
+    this.requireUserSessionMintSecret();
     await this.revokeSession(sessionUser);
     const minted = await this.mintSession(sessionUser.userId);
     return {
@@ -637,20 +654,25 @@ export class AuthService {
 
   // ── session mint/revoke (real HS256 JWT — see jwt.core.cjs) ──
 
-  private async mintSession(userId: string): Promise<{
-    accessToken: string;
-    session: AuthSessionView;
-  }> {
-    const env = loadPhase0Env();
-    if (!isUserJwtSecretStrong(env.jwtUserSecret)) {
+  private requireUserSessionMintSecret(): string {
+    const secret = loadPhase0Env().jwtUserSecret;
+    if (!isUserJwtSecretStrong(secret)) {
       throw new ServiceUnavailableException(
         "JWT_USER_SECRET unavailable — HS256 requires at least 32 bytes",
       );
     }
+    return secret;
+  }
+
+  private async mintSession(userId: string): Promise<{
+    accessToken: string;
+    session: AuthSessionView;
+  }> {
+    const jwtUserSecret = this.requireUserSessionMintSecret();
     const jti = randomUUID();
     const issuedAt = new Date();
     const expiresAt = new Date(issuedAt.getTime() + ACCESS_TOKEN_TTL_SEC * 1000);
-    const accessToken = jwtCore.sign({ sub: userId }, env.jwtUserSecret, {
+    const accessToken = jwtCore.sign({ sub: userId }, jwtUserSecret, {
       issuer: USER_JWT_ISSUER,
       audience: USER_JWT_AUDIENCE,
       expiresInSec: ACCESS_TOKEN_TTL_SEC,
