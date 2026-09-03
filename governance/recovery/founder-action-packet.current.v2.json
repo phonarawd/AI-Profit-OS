@@ -1,7 +1,7 @@
 {
   "schema": "governance.recovery.founder-action-packet.current.v2",
-  "recorded_on": "2026-09-03T13:04:00.000Z",
-  "source": "GitHub + Render + Supabase current revalidation; exact runtime 72ea791b + browser/proxy proof + JWT/host/Kakao/Resend/FX/TRON probes; Production mutation=0",
+  "recorded_on": "2026-09-03T13:41:16.055685Z",
+  "source": "GitHub + Render + Supabase current revalidation; exact runtime 72ea791b + staging host/JWT fix + authenticated session/wallet/ledger/money-guard proof; Kakao/Resend/FX/TRON remain fail-closed; Production mutation=0",
   "subject_integration_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
   "production_release": "NO_GO",
   "invariants": {
@@ -31,7 +31,10 @@
       "RENDER_EXACT_STAGING_REDEPLOY",
       "CLOUDFLARE_STAGING_WEB_PREVIEW_REDEPLOY",
       "CLOUDFLARE_STAGING_OPS_PREVIEW_REDEPLOY",
-      "CLOUDFLARE_STAGING_API_ORIGIN_BINDING"
+      "CLOUDFLARE_STAGING_API_ORIGIN_BINDING",
+      "RENDER_STAGING_APP_OPS_API_HOST_CONFIG",
+      "RENDER_STAGING_JWT_USER_SECRET_CONFIG",
+      "RENDER_EXACT_STAGING_AUTH_E2E_PROBE_CLEANUP"
     ],
     "engine_ack_mutation": 0,
     "ghas_dismissal": 0
@@ -76,7 +79,7 @@
       "branch_label_note": "historical branch label; exactness is authoritative from live deploy SHA",
       "autoDeploy": "no",
       "autoDeployTrigger": "off",
-      "live_deploy_id": "dep-dacm2vmk1f9s73cqsv9g",
+      "live_deploy_id": "dep-dacnei7qj5pc73dh58t0",
       "live_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
       "current_candidate_bound": true,
       "runtime_health_observed_at": "2026-09-03T11:26:35.709Z",
@@ -96,12 +99,19 @@
       "frontend_proxy_exact_runtime_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
       "frontend_proxy_binding_proven": true,
       "auth_runtime_probe": {
-        "observed_at": "2026-09-03T13:04:00.000Z",
-        "jwt_session_mint_status": 503,
-        "jwt_session_mint_error": "JWT_USER_SECRET unset — cannot mint session",
-        "app_host_observed": "localhost:3000",
-        "ops_host_observed": "localhost:3001",
-        "auth_readiness": "BLOCKED_CONFIG"
+        "observed_at": "2026-09-03T13:41:16.055685Z",
+        "jwt_session_mint_status": 201,
+        "jwt_user_secret_configured": true,
+        "app_host_observed": "ai-profit-web-preview.ebay-adapter.workers.dev",
+        "ops_host_observed": "ai-profit-ops-preview.ebay-adapter.workers.dev",
+        "api_host_observed": "ai-profit-os-staging-exact-1f3b36f.onrender.com",
+        "auth_session_status": 200,
+        "wallet_buckets_status": 200,
+        "ledger_journals_status": 200,
+        "money_guard_status": 403,
+        "money_guard_code": "INSUFFICIENT_PROFIT",
+        "auth_readiness": "CLOSED_VERIFIED_RUNTIME_72EA",
+        "evidence": "governance/recovery/staging-authenticated-e2e.20260903.v1.json"
       }
     }
   },
@@ -166,8 +176,6 @@
   "blockers": [
     "STAGING_RESEND_DELIVERY_UNAVAILABLE",
     "STAGING_KAKAO_NOT_CONFIGURED",
-    "STAGING_AUTH_HOSTS_LOCALHOST_DEFAULTS",
-    "STAGING_JWT_USER_SECRET_UNSET",
     "STAGING_FRONTEND_E2E_NOT_PROVEN_CURRENT",
     "PRODUCTION_DB_HARDENING_NOT_APPLIED",
     "RENDER_AUTODEPLOY_ENABLED",
@@ -201,7 +209,7 @@
     {
       "order": 3,
       "id": "STAGING_FRONTEND_E2E",
-      "action": "Browser/proxy smoke is proven on exact runtime 72ea791b, but real magic-link session mint is blocked by missing staging JWT_USER_SECRET and localhost APP_HOST/OPS_HOST defaults. Authenticated wallet/ledger E2E remains blocked until staging-only config is fixed.",
+      "action": "Authenticated magic-link session mint, session read, zero-balance wallet buckets, empty ledger read and insufficient-profit money guard are CLOSED_VERIFIED on exact runtime 72ea791b. Current integration head is ahead of that runtime, so final exact-head restage is still required; Kakao and Resend provider configuration remain open.",
       "production_mutation": false,
       "provider_mutation_required": true,
       "status": "BLOCKED"
@@ -345,7 +353,8 @@
     "staging_magic_link_request_status": 503,
     "staging_magic_link_error": "MAGIC_LINK_DELIVERY_UNAVAILABLE",
     "staging_probe_recipient_class": "example.test_non_deliverable",
-    "staging_probe_challenge_rows_after_cleanup": 0
+    "staging_probe_challenge_rows_after_cleanup": 0,
+    "staging_probe_after_jwt_host_fix": true
   },
   "security_evidence": {
     "rel_408_role": "HISTORICAL_SNAPSHOT_ONLY",
@@ -362,7 +371,7 @@
     "codeql_evidence_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
     "full_ghas_open_alert_inventory": "NOT_PROVEN"
   },
-  "governance_parent_sha": "5d37d812b6a807090c2558b985b1b42553d32a3e",
+  "governance_parent_sha": "4b5272ba16442a08cb593fd67ab061bbb28ab474",
   "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
   "migration_effect_reconciliation": {
     "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
@@ -404,6 +413,12 @@
     "staging_release_cta_build_flag_verified": true,
     "gate_verifier": "PASS",
     "live_human_e2e": "NOT_RUN",
-    "status": "BLOCKED_CONFIG_AND_HUMAN_E2E"
+    "status": "BLOCKED_CONFIG_AND_HUMAN_E2E",
+    "post_jwt_host_reprobe": true
+  },
+  "staging_authenticated_e2e": {
+    "evidence": "governance/recovery/staging-authenticated-e2e.20260903.v1.json",
+    "status": "CLOSED_VERIFIED_RUNTIME_72EA",
+    "exact_head_restage_required": true
   }
 }
