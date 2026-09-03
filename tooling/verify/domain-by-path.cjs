@@ -1252,6 +1252,12 @@ const RULES = [
     scripts: ["wallet-kyc-session-auth.cjs"],
   },
   {
+    test: (f) =>
+      /^tooling\/verify\/rel-60[012]-staging/.test(f) ||
+      /^tooling\/verify\/staging-live-fetch-bounds\.cjs$/.test(f),
+    scripts: ["staging-live-fetch-bounds.cjs"],
+  },
+  {
     test: (f) => /^tooling\/verify\//.test(f),
     scripts: [],
   },

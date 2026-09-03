@@ -8,6 +8,9 @@ const { spawnSync } = require("child_process");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
+const LIVE_FETCH_ATTEMPTS = 3;
+const LIVE_FETCH_TIMEOUT_MS = 12000;
+const LIVE_FETCH_RETRY_DELAY_MS = 750;
 
 function read(rel) {
   const p = path.join(root, rel);
@@ -183,8 +186,32 @@ if (closed) {
   if (!yamlCompleted("REL-600")) fails.push("REL-600 YAML must be COMPLETED");
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchTransientSafe(url, options) {
+  let lastError;
+  for (let attempt = 1; attempt <= LIVE_FETCH_ATTEMPTS; attempt += 1) {
+    try {
+      return await fetch(url, {
+        ...options,
+        signal: AbortSignal.timeout(LIVE_FETCH_TIMEOUT_MS),
+      });
+    } catch (e) {
+      lastError = e;
+      if (attempt === LIVE_FETCH_ATTEMPTS) break;
+      console.warn(
+        `[verify:rel-600-staging] transient fetch retry ${attempt}/${LIVE_FETCH_ATTEMPTS - 1} ${url}`,
+      );
+      await sleep(LIVE_FETCH_RETRY_DELAY_MS * attempt);
+    }
+  }
+  throw lastError || new Error("live fetch failed after bounded retries");
+}
+
 async function live(url, ok) {
-  const res = await fetch(url, {
+  const res = await fetchTransientSafe(url, {
     redirect: "manual",
     headers: { "user-agent": "ai-profit-os-rel-600-verify/1" },
   });
