@@ -12,38 +12,41 @@ const web = "https://" + manifest.openNext.staging.web.workersDev;
 const ops = "https://" + manifest.openNext.staging.ops.workersDev;
 const expectedSha = binding.candidate_sha;
 
-async function assertHealth(page, label) {
-  const result = await page.evaluate(async () => {
-    const res = await fetch("/api/v1/health", {
-      method: "GET",
-      credentials: "include",
-      cache: "no-store",
+async function assertHealth(context, origin, label) {
+  const page = await context.newPage();
+  try {
+    const res = await page.goto(origin + "/api/v1/health", {
+      waitUntil: "domcontentloaded",
+      timeout: 30_000,
     });
+    if (!res || res.status() !== 200) {
+      throw new Error(label + "_health_status_" + String(res && res.status()));
+    }
     let body = null;
     try {
-      body = await res.json();
-    } catch {}
-    return { status: res.status, body };
-  });
-  if (result.status !== 200) {
-    throw new Error(label + "_health_status_" + result.status);
-  }
-  if (!result.body || result.body.gitSha !== expectedSha) {
-    throw new Error(
-      label +
-        "_health_sha_mismatch:" +
-        String(result.body && result.body.gitSha) +
-        " expected=" +
-        expectedSha,
-    );
-  }
-  if (
-    result.body.db?.configured !== true ||
-    result.body.db?.ok !== true ||
-    result.body.redis?.configured !== true ||
-    result.body.redis?.ok !== true
-  ) {
-    throw new Error(label + "_backend_dependency_health_not_ready");
+      body = JSON.parse(await page.locator("body").innerText());
+    } catch {
+      throw new Error(label + "_health_json_invalid");
+    }
+    if (!body || body.gitSha !== expectedSha) {
+      throw new Error(
+        label +
+          "_health_sha_mismatch:" +
+          String(body && body.gitSha) +
+          " expected=" +
+          expectedSha,
+      );
+    }
+    if (
+      body.db?.configured !== true ||
+      body.db?.ok !== true ||
+      body.redis?.configured !== true ||
+      body.redis?.ok !== true
+    ) {
+      throw new Error(label + "_backend_dependency_health_not_ready");
+    }
+  } finally {
+    await page.close();
   }
 }
 
@@ -63,7 +66,11 @@ async function assertHealth(page, label) {
     if ((await page.title()) !== "퍼뜩") {
       throw new Error("web_title_drift:" + (await page.title()));
     }
-    await assertHealth(page, "web");
+
+    // Use an isolated Chromium page for the API route. The consumer root may
+    // legitimately navigate during session bootstrap; sharing that execution
+    // context would make a healthy proxy look flaky.
+    await assertHealth(context, web, "web");
 
     const loginRes = await page.goto(web + "/auth/login", {
       waitUntil: "domcontentloaded",
@@ -83,10 +90,10 @@ async function assertHealth(page, label) {
     if (!(await page.title()).includes("퍼뜩 운영센터")) {
       throw new Error("ops_title_drift:" + (await page.title()));
     }
-    await assertHealth(page, "ops");
+    await assertHealth(context, ops, "ops");
 
     console.log(
-      "[staging-browser-smoke] PASS web+login+ops + same-origin exact API " +
+      "[staging-browser-smoke] PASS web+login+ops + Chromium exact API " +
         expectedSha,
     );
   } finally {
