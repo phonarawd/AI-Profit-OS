@@ -1,7 +1,7 @@
 {
   "schema": "governance.recovery.founder-action-packet.current.v2",
-  "recorded_on": "2026-09-03T12:07:01.851Z",
-  "source": "GitHub + Render + Supabase + Cloudflare preview current revalidation; exact runtime 072616d7 + TLS DB binding + web/ops same-origin proxy proof + DB-backed read; Production mutation=0",
+  "recorded_on": "2026-09-03T13:04:00.000Z",
+  "source": "GitHub + Render + Supabase current revalidation; exact runtime 72ea791b + browser/proxy proof + JWT/host/Kakao/Resend/FX/TRON probes; Production mutation=0",
   "subject_integration_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
   "production_release": "NO_GO",
   "invariants": {
@@ -55,7 +55,7 @@
       "mutation": 0,
       "founder_action_required": true
     },
-    "integration_governance_head_at_recording": "152222bb0272343abb00408cf11c726379b2c24d"
+    "integration_governance_head_at_recording": "5d37d812b6a807090c2558b985b1b42553d32a3e"
   },
   "render": {
     "workspace_id": "tea-da5qqo3m8hqs73djpvvg",
@@ -94,7 +94,15 @@
       "frontend_web_proxy_status": 200,
       "frontend_ops_proxy_status": 200,
       "frontend_proxy_exact_runtime_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
-      "frontend_proxy_binding_proven": true
+      "frontend_proxy_binding_proven": true,
+      "auth_runtime_probe": {
+        "observed_at": "2026-09-03T13:04:00.000Z",
+        "jwt_session_mint_status": 503,
+        "jwt_session_mint_error": "JWT_USER_SECRET unset — cannot mint session",
+        "app_host_observed": "localhost:3000",
+        "ops_host_observed": "localhost:3001",
+        "auth_readiness": "BLOCKED_CONFIG"
+      }
     }
   },
   "supabase": {
@@ -156,6 +164,10 @@
     "tron_synthetic_derivation_removed": true
   },
   "blockers": [
+    "STAGING_RESEND_DELIVERY_UNAVAILABLE",
+    "STAGING_KAKAO_NOT_CONFIGURED",
+    "STAGING_AUTH_HOSTS_LOCALHOST_DEFAULTS",
+    "STAGING_JWT_USER_SECRET_UNSET",
     "STAGING_FRONTEND_E2E_NOT_PROVEN_CURRENT",
     "PRODUCTION_DB_HARDENING_NOT_APPLIED",
     "RENDER_AUTODEPLOY_ENABLED",
@@ -189,9 +201,9 @@
     {
       "order": 3,
       "id": "STAGING_FRONTEND_E2E",
-      "action": "Live Chromium smoke PASS for web+login+ops and same-origin exact API 072616d7; authenticated user/money staging E2E remains pending before release.",
+      "action": "Browser/proxy smoke is proven on exact runtime 72ea791b, but real magic-link session mint is blocked by missing staging JWT_USER_SECRET and localhost APP_HOST/OPS_HOST defaults. Authenticated wallet/ledger E2E remains blocked until staging-only config is fixed.",
       "production_mutation": false,
-      "provider_mutation_required": false,
+      "provider_mutation_required": true,
       "status": "BLOCKED"
     },
     {
@@ -205,7 +217,7 @@
     {
       "order": 5,
       "id": "FX_RUNTIME_FEED",
-      "action": "Prove coingecko+frankfurter fx-core worker ingest into the exact candidate/staging path, then promote only through accepted-artifact authority; current Production FX snapshot feed is stale.",
+      "action": "Staging FX credentials are absent, so deploy-staging skips fx-core activation. CoinGecko/Frankfurter preview worker health returns 404 and latest staging/Production snapshots lack gbpUsd, eurUsd, audUsd and usdtPerUsd. Provide staging-safe credentials, deploy preview workers, run authenticated ticks, then prove all required legs.",
       "production_mutation": false,
       "provider_mutation_required": true,
       "status": "BLOCKED"
@@ -213,7 +225,7 @@
     {
       "order": 6,
       "id": "AUTH_EMAIL_RUNTIME",
-      "action": "Prove live Resend provider configuration and successful Production-equivalent magic-link delivery before launch; source fail-closed CI is not provider-runtime proof.",
+      "action": "Current exact staging probe returns 503 MAGIC_LINK_DELIVERY_UNAVAILABLE; source remains fail-closed. Configure and prove Resend delivery in staging first, then obtain Production-equivalent delivery evidence before launch.",
       "production_mutation": true,
       "founder_action_required": true,
       "status": "BLOCKED"
@@ -296,7 +308,23 @@
     "staging_fx_activation_classification": "BLOCKED_SECRET_ABSENT",
     "staging_repository_adapter_ingest_token_present": false,
     "staging_repository_coingecko_key_present": false,
-    "staging_fx_worker_mutation": 0
+    "staging_fx_worker_mutation": 0,
+    "staging_fx_preview_worker_health": {
+      "coingecko": "404_NOT_DEPLOYED",
+      "frankfurter": "404_NOT_DEPLOYED"
+    },
+    "staging_latest_snapshot_required_legs": {
+      "gbpUsd": false,
+      "eurUsd": false,
+      "audUsd": false,
+      "usdtPerUsd": false
+    },
+    "production_latest_snapshot_required_legs": {
+      "gbpUsd": false,
+      "eurUsd": false,
+      "audUsd": false,
+      "usdtPerUsd": false
+    }
   },
   "evidence_commit_semantics": "subject_integration_sha is the tested runtime/source candidate; governance-only evidence commits may sit above it and must rerun CI before final release use.",
   "auth_email_runtime": {
@@ -312,7 +340,12 @@
     "live_provider_configuration": "NOT_PROVEN",
     "root_cause": "NOT_PROVEN_PRE_PROVIDER_OR_CONFIGURATION_PATH_LIKELY",
     "source_ci_scope": "FAIL_CLOSED_CONTRACT_ONLY_NOT_LIVE_PROVIDER",
-    "status": "BLOCKED"
+    "status": "BLOCKED",
+    "staging_probe_observed_at": "2026-09-03T12:57:28.479Z",
+    "staging_magic_link_request_status": 503,
+    "staging_magic_link_error": "MAGIC_LINK_DELIVERY_UNAVAILABLE",
+    "staging_probe_recipient_class": "example.test_non_deliverable",
+    "staging_probe_challenge_rows_after_cleanup": 0
   },
   "security_evidence": {
     "rel_408_role": "HISTORICAL_SNAPSHOT_ONLY",
@@ -326,10 +359,10 @@
     "current_authority": "FOUNDER_PACKET_PLUS_CURRENT_PROVIDER_EVIDENCE",
     "status": "PARTIAL",
     "current_runtime_subject_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
-    "codeql_evidence_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "codeql_evidence_sha": "5d37d812b6a807090c2558b985b1b42553d32a3e",
     "full_ghas_open_alert_inventory": "NOT_PROVEN"
   },
-  "governance_parent_sha": "2399bcb45a7989101773c60625a80913793b5066",
+  "governance_parent_sha": "5d37d812b6a807090c2558b985b1b42553d32a3e",
   "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
   "migration_effect_reconciliation": {
     "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
@@ -352,7 +385,7 @@
     "browser_smoke_run": 33753302274
   },
   "tron_hd_current": {
-    "observed_at": "2026-09-03T11:44:00Z",
+    "observed_at": "2026-09-03T13:04:00.000Z",
     "canonical_path": "m/44'/195'/0'/0/{index}",
     "canonical_deriver_bound": false,
     "production_vault_matching_secret_metadata_count": 0,
@@ -361,5 +394,16 @@
     "staging_deposit_config_singleton_rows": 0,
     "default_hot_wallet_xpub_ref_is_locator_only": true,
     "status": "BLOCKED"
+  },
+  "kakao_runtime": {
+    "observed_at": "2026-09-03T13:04:00.000Z",
+    "staging_start_http_status": 201,
+    "staging_provider_status": "not_configured",
+    "staging_oauth_state_rows_after_cleanup": 0,
+    "web_callback_source_verified": true,
+    "staging_release_cta_build_flag_verified": true,
+    "gate_verifier": "PASS",
+    "live_human_e2e": "NOT_RUN",
+    "status": "BLOCKED_CONFIG_AND_HUMAN_E2E"
   }
 }

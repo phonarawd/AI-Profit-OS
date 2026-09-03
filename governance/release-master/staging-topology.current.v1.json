@@ -1,7 +1,7 @@
 {
   "schema": "staging-topology-provider-snapshot.v2",
-  "recorded_at": "2026-09-03T12:07:01.851Z",
-  "source": "GitHub/Render/Supabase/Cloudflare current revalidation + exact runtime + Supavisor TLS + DB-backed read + web/ops same-origin API proxy proof · Production mutation=0",
+  "recorded_at": "2026-09-03T13:04:00.000Z",
+  "source": "GitHub/Render/Supabase current revalidation + exact runtime + Supavisor TLS + browser/proxy proof + staging JWT/host/Kakao/Resend/FX probes · Production mutation=0",
   "candidate_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
   "production": {
     "render": {
@@ -58,6 +58,15 @@
         "database_tls_verified": true,
         "internal_wallet_without_token_status": 401,
         "db_backed_public_read_status": 200
+      },
+      "auth_runtime_probe": {
+        "observed_at": "2026-09-03T13:04:00.000Z",
+        "jwt_session_mint_status": 503,
+        "jwt_user_secret": "UNSET",
+        "app_host": "localhost:3000",
+        "ops_host": "localhost:3001",
+        "kakao_start_status": "not_configured",
+        "resend_magic_link_status": "503_MAGIC_LINK_DELIVERY_UNAVAILABLE"
       }
     },
     "supabase": {
@@ -128,13 +137,15 @@
     "browser_smoke_run": 33753302274
   },
   "blockers_observed": [
-    "backend staging topology is READY: runtime 72ea791bf4aa322c96df34bfb52cfc71f7c93b60 + isolated DB + trusted-CA TLS + Redis + DB-backed read are proven",
-    "Cloudflare web/ops preview same-origin /api/v1 proxy is bound to runtime 72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
-    "live Chromium smoke PASS for web+login+ops and exact staging API",
-    "authenticated user/money staging E2E remains not proven",
-    "FX preview workers remain undeployed because staging-safe repository credentials are absent"
+    "backend staging topology remains READY at exact runtime 72ea791bf4aa322c96df34bfb52cfc71f7c93b60 with isolated DB, trusted-CA TLS and Redis",
+    "Cloudflare web/ops preview same-origin /api/v1 proxy remains bound to runtime 72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "live Chromium browser/proxy smoke is proven for the exact runtime lineage",
+    "authenticated staging E2E is BLOCKED_CONFIG: JWT_USER_SECRET unset; APP_HOST/OPS_HOST still localhost defaults",
+    "Kakao staging start returns not_configured; callback/CTA build wiring is source+Gate verified; live human E2E remains NOT_RUN",
+    "Resend staging magic-link probe returns 503 MAGIC_LINK_DELIVERY_UNAVAILABLE",
+    "FX preview workers are not deployed because staging-safe repository credentials are absent; required normalization legs remain missing"
   ],
   "production_mutation": 0,
-  "governance_parent_sha": "2399bcb45a7989101773c60625a80913793b5066",
+  "governance_parent_sha": "5d37d812b6a807090c2558b985b1b42553d32a3e",
   "backend_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json"
 }

@@ -1,6 +1,6 @@
 {
   "schema": "production-release-evidence.current.v1",
-  "observed_at": "2026-09-03T12:07:01.851Z",
+  "observed_at": "2026-09-03T13:04:00.000Z",
   "candidate_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
   "release_acceptance": null,
   "engine": {
@@ -15,14 +15,25 @@
     "verdict": "STAGING_TOPOLOGY=READY",
     "blockers": [
       "authenticated_staging_e2e_not_proven",
+      "staging_jwt_user_secret_unset",
+      "staging_app_ops_hosts_localhost_defaults",
+      "staging_kakao_not_configured",
+      "staging_resend_delivery_unavailable",
       "staging_fx_runtime_feed_inactive"
     ],
     "backend_topology_ready": true,
     "backend_db_health": true,
     "backend_db_tls_verified": true,
     "backend_db_backed_read": "PASS",
-    "frontend_e2e": "BROWSER_PASS_AUTHENTICATED_E2E_NOT_PROVEN",
-    "frontend_proxy_binding": "CLOSED_VERIFIED"
+    "frontend_e2e": "BROWSER_PASS_AUTHENTICATED_E2E_BLOCKED_CONFIG",
+    "frontend_proxy_binding": "CLOSED_VERIFIED",
+    "runtime_config": {
+      "jwt_user_secret_configured": false,
+      "app_host": "localhost:3000",
+      "ops_host": "localhost:3001",
+      "kakao_provider": "not_configured",
+      "resend_magic_link_delivery": "503_MAGIC_LINK_DELIVERY_UNAVAILABLE"
+    }
   },
   "db_hardening": {
     "ok": false,
@@ -81,7 +92,7 @@
     "status": "NOT_PROVEN_CURRENT"
   },
   "production_mutation": 0,
-  "governance_parent_sha": "2399bcb45a7989101773c60625a80913793b5066",
+  "governance_parent_sha": "5d37d812b6a807090c2558b985b1b42553d32a3e",
   "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
   "migration_effect_reconciliation": {
     "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
