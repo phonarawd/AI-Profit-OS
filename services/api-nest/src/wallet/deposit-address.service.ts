@@ -44,6 +44,11 @@ export class DepositAddressService {
     }
 
     await this.killSwitch.assertPath("deposit");
+    // Existing rows are not automatically trusted. Production historically
+    // contains addresses minted by the removed synthetic HMAC(secretRef,path)
+    // implementation, so no address may be served until canonical vault/HSM
+    // authority is actually bound.
+    this.assertCanonicalAddressAuthority();
     const existing = await this.fetch(userId);
     if (existing) return this.toV1(existing);
 
@@ -87,14 +92,7 @@ export class DepositAddressService {
       throw new ServiceUnavailableException(TRON_HD_DERIVATION_UNAVAILABLE);
     }
 
-    try {
-      requireCanonicalTrc20Deriver();
-    } catch (e) {
-      if (e instanceof TronHdDerivationUnavailableError) {
-        throw new ServiceUnavailableException(TRON_HD_DERIVATION_UNAVAILABLE);
-      }
-      throw e;
-    }
+    this.assertCanonicalAddressAuthority();
 
     for (let attempt = 0; attempt < 5; attempt += 1) {
       // Re-check race
@@ -135,6 +133,17 @@ export class DepositAddressService {
       }
     }
     throw new ConflictException("unable to allocate unique TRC20 address");
+  }
+
+  private assertCanonicalAddressAuthority(): void {
+    try {
+      requireCanonicalTrc20Deriver();
+    } catch (e) {
+      if (e instanceof TronHdDerivationUnavailableError) {
+        throw new ServiceUnavailableException(TRON_HD_DERIVATION_UNAVAILABLE);
+      }
+      throw e;
+    }
   }
 
   private async fetch(userId: string): Promise<AddressRow | null> {

@@ -46,8 +46,25 @@ if (!/return null;/.test(tron) || !tron.includes("resolveCanonicalTrc20Deriver")
 const gateIdx = addr.indexOf("requireCanonicalTrc20Deriver()");
 const requireIdx = addr.indexOf("allocateCanonicalTrc20Address(");
 const insertIdx = addr.indexOf("INSERT INTO public.user_deposit_addresses");
+const getOrCreateStart = addr.indexOf("async getOrCreate(");
+const getOrCreateEnd = addr.indexOf("/** §43.1", getOrCreateStart);
+const getOrCreate =
+  getOrCreateStart >= 0 && getOrCreateEnd > getOrCreateStart
+    ? addr.slice(getOrCreateStart, getOrCreateEnd)
+    : "";
+const existingAuthorityIdx = getOrCreate.indexOf("this.assertCanonicalAddressAuthority()");
+const existingFetchIdx = getOrCreate.indexOf("await this.fetch(userId)");
 if (gateIdx < 0) {
   fails.push("deposit-address must fail closed before any new allocation");
+}
+if (
+  existingAuthorityIdx < 0 ||
+  existingFetchIdx < 0 ||
+  existingAuthorityIdx > existingFetchIdx
+) {
+  fails.push(
+    "getOrCreate must require canonical authority before reading/serving any existing address",
+  );
 }
 if (requireIdx < 0) {
   fails.push("deposit-address must allocate only through the canonical deriver");
