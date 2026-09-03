@@ -12,6 +12,12 @@ const T0_ALWAYS = [
   "secrets.cjs",
   "plans-ssot.cjs",
   "brand-consumer.cjs",
+  "seo-schema.cjs",
+  "operator-footer.cjs",
+  "marketing-compliance.cjs",
+  "trust-copy.cjs",
+  "market-partner-trust.cjs",
+  "landing-3s.cjs",
 ];
 
 /** @type {string[]} */
