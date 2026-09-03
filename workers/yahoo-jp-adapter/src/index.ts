@@ -1,3 +1,8 @@
+import {
+  authorizeManualAdapterTick,
+  requireAdapterIngestHeaders,
+} from "../../_shared/adapter-machine-auth";
+
 /**
  * yahoo-jp-adapter — Engine §0.0.1c ACTIVE (Phase1+)
  * Official partner listing leg · yahoo_jp (Yahoo! JAPAN オークション)
@@ -32,6 +37,8 @@ export default {
     }
 
     if (url.pathname === "/tick" && request.method === "POST") {
+      const denied = authorizeManualAdapterTick(request, env);
+      if (denied) return denied;
       const result = await runTick(env);
       return Response.json(result);
     }
@@ -123,12 +130,7 @@ async function runTick(env: Env) {
   if (ingestUrl && (listings.length > 0 || dryRun)) {
     const res = await fetch(ingestUrl, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        ...(env.ADAPTER_INGEST_TOKEN
-          ? { "x-adapter-token": env.ADAPTER_INGEST_TOKEN }
-          : {}),
-      },
+      headers: requireAdapterIngestHeaders(env),
       body: JSON.stringify({
         adapterId: ADAPTER_ID,
         worker: SERVICE,

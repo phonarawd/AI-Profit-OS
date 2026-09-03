@@ -1,3 +1,8 @@
+import {
+  authorizeManualAdapterTick,
+  requireAdapterIngestHeaders,
+} from "../../_shared/adapter-machine-auth";
+
 /**
  * ebay-adapter — Engine §0.0 ACTIVE
  * Browse API · marketplaceId×N (EBAY_US|GB|DE|AU) · listing legs only
@@ -70,6 +75,8 @@ export default {
     }
 
     if (url.pathname === "/tick" && request.method === "POST") {
+      const denied = authorizeManualAdapterTick(request, env);
+      if (denied) return denied;
       const result = await runTick(env);
       return Response.json(result);
     }
@@ -321,12 +328,7 @@ export async function runTick(env: Env, testOverrides?: { tickBudgetMs?: number 
       try {
         const res = await fetch(ingestUrl, {
           method: "POST",
-          headers: {
-            "content-type": "application/json",
-            ...(env.ADAPTER_INGEST_TOKEN
-              ? { "x-adapter-token": env.ADAPTER_INGEST_TOKEN }
-              : {}),
-          },
+          headers: requireAdapterIngestHeaders(env),
           body: JSON.stringify({
             adapterId: ADAPTER_ID,
             worker: SERVICE,

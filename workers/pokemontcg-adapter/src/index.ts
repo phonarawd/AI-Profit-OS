@@ -1,3 +1,8 @@
+import {
+  authorizeManualAdapterTick,
+  requireAdapterIngestHeaders,
+} from "../../_shared/adapter-machine-auth";
+
 /**
  * pokemontcg-adapter — Engine §0.0 ACTIVE
  * Catalog + reference price hint for trading_card (pokemon) only.
@@ -33,6 +38,8 @@ export default {
       });
     }
     if (url.pathname === "/tick" && request.method === "POST") {
+      const denied = authorizeManualAdapterTick(request, env);
+      if (denied) return denied;
       return Response.json(await runTick(env));
     }
     return Response.json({
@@ -96,12 +103,7 @@ async function runTick(env: Env) {
   if (env.NEST_ADAPTER_INGEST_URL) {
     const res = await fetch(env.NEST_ADAPTER_INGEST_URL, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        ...(env.ADAPTER_INGEST_TOKEN
-          ? { "x-adapter-token": env.ADAPTER_INGEST_TOKEN }
-          : {}),
-      },
+      headers: requireAdapterIngestHeaders(env),
       body: JSON.stringify({
         adapterId: ADAPTER_ID,
         worker: SERVICE,

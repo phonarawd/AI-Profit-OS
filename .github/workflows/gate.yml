@@ -42,6 +42,9 @@ jobs:
         run: pnpm verify:rel-407-price-override
       - name: REL-408 security baseline
         run: pnpm verify:rel-408-security-baseline
+
+      - name: Adapter worker machine auth
+        run: pnpm verify:adapter-worker-machine-auth
       - name: REL-222 admin ops 3-mode
         run: pnpm verify:rel-222-admin-ops
       - name: REL-223 match control verbs
