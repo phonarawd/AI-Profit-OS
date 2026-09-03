@@ -118,6 +118,33 @@ expectThrow("short secret must throw (fail-closed, no weak default)", () =>
     expiresInSec: 900,
   }),
 );
+
+const MULTIBYTE_32_BYTE_SECRET = "🔐".repeat(8);
+let multibyteToken;
+try {
+  multibyteToken = jwtCore.sign(
+    { sub: "user-multibyte" },
+    MULTIBYTE_32_BYTE_SECRET,
+    {
+      issuer: ISSUER,
+      audience: AUDIENCE,
+      expiresInSec: 900,
+    },
+  );
+  const multibytePayload = jwtCore.verify(
+    multibyteToken,
+    MULTIBYTE_32_BYTE_SECRET,
+    { issuer: ISSUER, audience: AUDIENCE },
+  );
+  if (multibytePayload.sub !== "user-multibyte") {
+    fails.push("jwt.core: 32-byte multibyte secret round-trip mismatch");
+  }
+} catch (err) {
+  fails.push(
+    "jwt.core must share phase0 32 UTF-8 byte contract: " +
+      String(err && err.message ? err.message : err),
+  );
+}
 expectThrow("malformed token must throw", () =>
   jwtCore.verify("not-a-jwt", SECRET, { issuer: ISSUER, audience: AUDIENCE }),
 );
@@ -231,5 +258,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:auth-jwt-runtime] PASS (real HS256 sign/verify/tamper/expiry/issuer/audience + real Nest HTTP guard round-trip + 6 controllers wired)",
+  "[verify:auth-jwt-runtime] PASS (real HS256 sign/verify/tamper/expiry/issuer/audience + 32-byte multibyte key parity + real Nest HTTP guard round-trip + 6 controllers wired)",
 );
