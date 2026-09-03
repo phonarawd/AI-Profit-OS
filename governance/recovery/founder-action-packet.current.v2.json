@@ -1,0 +1,153 @@
+{
+  "schema": "governance.recovery.founder-action-packet.current.v2",
+  "recorded_on": "2026-09-03",
+  "source": "read-only GitHub + Render + Supabase revalidation",
+  "subject_integration_sha": "82183fc240a2f860205b90dcfe53116f50f25ad2",
+  "production_release": "NO_GO",
+  "invariants": {
+    "integration_pr": 209,
+    "integration_pr_state": "DRAFT_DO_NOT_MERGE",
+    "main_sha": "98730b8c71a8c4c0b5e474460a6a24bea43e6966",
+    "production_mutation": 0,
+    "production_db_apply": 0,
+    "provider_mutation": 0,
+    "engine_ack_mutation": 0,
+    "ghas_dismissal": 0
+  },
+  "github": {
+    "main_sha": "98730b8c71a8c4c0b5e474460a6a24bea43e6966",
+    "rescue_checkpoint_sha": "e312119582036ab1367ede74dd4c08ff3b22a951",
+    "integration_subject_sha": "82183fc240a2f860205b90dcfe53116f50f25ad2",
+    "integration_pr": 209,
+    "integration_pr_draft": true
+  },
+  "render": {
+    "workspace_id": "tea-da5qqo3m8hqs73djpvvg",
+    "production": {
+      "service_id": "srv-da5r1tqjobas73fl16dg",
+      "environment_id": "evm-da5r1tjbc2fs73a0b7hg",
+      "url": "https://ai-profit-os.onrender.com",
+      "branch": "main",
+      "autoDeploy": "yes",
+      "autoDeployTrigger": "commit",
+      "live_deploy_id": "dep-da938o142hec73eipre0",
+      "live_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec"
+    },
+    "staging": {
+      "service_id": "srv-dabph32fngtc73esj8rg",
+      "url": "https://ai-profit-os-staging.onrender.com",
+      "branch": "recovery/release-provenance-20260831",
+      "autoDeploy": "no",
+      "autoDeployTrigger": "off",
+      "live_deploy_id": "dep-dabv9sifngtc73fdsu20",
+      "live_sha": "84cb2ea05ddea0406d9b1f13cbe0b0781a744630",
+      "current_candidate_bound": false
+    }
+  },
+  "supabase": {
+    "production_project_ref": "mgsytcetsiecllmhcyox",
+    "production_status": "ACTIVE_HEALTHY",
+    "applied_migrations": 43,
+    "latest_applied_migration": "20260902155632_withdraw_broadcast_tron",
+    "staging_branch": {
+      "name": "staging-release-20260902",
+      "project_ref": "uluzxvdpynytytduuryy",
+      "preview_project_status": "ACTIVE_HEALTHY",
+      "with_data": false,
+      "schema_parity_currently_proven": false,
+      "render_binding_currently_proven": false
+    }
+  },
+  "engine": {
+    "final_acceptance": "NOT_ISSUED",
+    "rebase_required": true,
+    "ack_received": false
+  },
+  "integration_safety_restored": {
+    "final_production_decision_gate": true,
+    "accepted_artifact_deploy_lock": true,
+    "release_manifest_identity_lock": true,
+    "authoritative_engine_run_binding": true,
+    "staging_production_api_fallback_blocked": true,
+    "staging_topology_fail_closed": true,
+    "production_db_hardening_source_staged": true,
+    "db_default_acl_readiness_checked": true,
+    "auth_magic_link_delivery_fail_closed": true,
+    "tron_synthetic_derivation_removed": true
+  },
+  "blockers": [
+    "STAGING_CURRENT_CANDIDATE_NOT_BOUND",
+    "STAGING_RENDER_DB_BINDING_NOT_PROVEN_CURRENT",
+    "STAGING_SCHEMA_PARITY_NOT_PROVEN_CURRENT",
+    "PRODUCTION_DB_HARDENING_NOT_APPLIED",
+    "RENDER_AUTODEPLOY_ENABLED",
+    "PRODUCTION_LIVE_SHA_DIFFERS_FROM_INTEGRATION",
+    "TRON_HD_VAULT_NOT_PROVEN",
+    "ENGINE_NOT_ISSUED",
+    "ENGINE_REBASE_REQUIRED",
+    "ENGINE_ACK_MISSING",
+    "RELEASE_ACCEPTANCE_MISSING",
+    "CURRENT_SHA_SECURITY_EVIDENCE_INCOMPLETE",
+    "ROLLBACK_TARGET_NOT_BOUND"
+  ],
+  "next_actions": [
+    {
+      "order": 1,
+      "id": "CI_EXACT_HEAD",
+      "action": "Finish exact-head PR CI and resolve only semantic failures.",
+      "production_mutation": false
+    },
+    {
+      "order": 2,
+      "id": "STAGING_BINDING",
+      "action": "Bind the exact final candidate to isolated Render staging and the existing Supabase preview branch; prove DB/runtime/schema isolation.",
+      "production_mutation": false,
+      "provider_mutation_required": true
+    },
+    {
+      "order": 3,
+      "id": "DB_HARDENING_REHEARSAL",
+      "action": "Rehearse the current reviewed hardening source against isolated staging and capture exact before/after/rollback evidence.",
+      "production_mutation": false,
+      "provider_mutation_required": true
+    },
+    {
+      "order": 4,
+      "id": "TRON_HD_VAULT",
+      "action": "Provide and prove canonical BIP32 secp256k1 authority for m/44'/195'/0'/0/{index}; keep 503 fail-closed until proven.",
+      "production_mutation": false
+    },
+    {
+      "order": 5,
+      "id": "SECURITY_AND_ROLLBACK",
+      "action": "Close current-SHA security evidence and bind an exact Render rollback deploy/SHA target.",
+      "production_mutation": false
+    },
+    {
+      "order": 6,
+      "id": "REL_502_CURRENT_EPOCH",
+      "action": "After all tracked mutations stop, rerun protected-scope verification and reissue REL-502 only for the exact final SHA.",
+      "production_mutation": false
+    },
+    {
+      "order": 7,
+      "id": "RENDER_RELEASE_CONTROL",
+      "action": "Disable Production autoDeploy before accepted exact-SHA promotion.",
+      "production_mutation": true,
+      "founder_action_required": true
+    },
+    {
+      "order": 8,
+      "id": "PRODUCTION_DB_APPLY",
+      "action": "Apply reviewed hardening migration to Production only after staging proof and explicit Founder authorization.",
+      "production_mutation": true,
+      "founder_action_required": true
+    },
+    {
+      "order": 9,
+      "id": "RELEASE_ACCEPTANCE",
+      "action": "Build once, bind authoritative Engine run, obtain release acceptance, then evaluate final GO_CANDIDATE.",
+      "production_mutation": false
+    }
+  ]
+}
