@@ -5,14 +5,10 @@
  * (supabase/migrations/20260808205844_identity_nest_auth.sql +
  * .../20260808224856_auth_oauth_passkey_stage_a_b.sql — no new schema needed).
  *
- * Honesty note (kept intentionally out of scope, same tier as before):
- * OAuth code→token exchange with Kakao/Google and WebAuthn attestation/
- * assertion signature verification are NOT implemented here — both remain
- * Phase1/adapter-level concerns. This service trusts a caller-supplied
- * providerSubject/credentialId as the identity claim (same trust tier the
- * skeleton already had) and focuses the fix on: real DB-backed user
- * resolution + real JWT mint/verify so req.user is populated for every
- * session-protected Engine route.
+ * Identity authority is server-owned only:
+ * Magic link = hashed one-time token · OAuth = state + code exchange ·
+ * WebAuthn = challenge + RP/origin + signature. Caller email / providerSubject /
+ * credentialId 단독으로는 세션을 만들지 않는다.
  */
 
 import {
@@ -21,14 +17,10 @@ import {
   Injectable,
   ServiceUnavailableException,
 } from "@nestjs/common";
-import { randomBytes, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
 import { join } from "node:path";
-import {
-  loadPhase0Env,
-  oauthConfigured,
-} from "../config/phase0.env";
-import { loadAuthWebauthnRp } from "./webauthn-rp";
+import { loadPhase0Env } from "../config/phase0.env";
 import { PostgresService } from "../db/postgres";
 import { NotificationPrefsService } from "../inbox/notification-prefs.service";
 import { LedgerProvisionService } from "../ledger/ledger.provision.service";
@@ -54,6 +46,13 @@ import {
   type StageASignupInput,
   type StageBProfileInput,
 } from "./auth.stage";
+import { MagicLinkService } from "./magic-link.service";
+import { OauthIdentityService } from "./oauth-identity.service";
+import { WebauthnAssertService } from "./webauthn-assert.service";
+import {
+  assertPasskeyCredentialUnclaimed,
+  rejectPasskeyCredentialInsertRace,
+} from "./passkey-registration.policy";
 
 const req = createRequire(__filename);
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -98,6 +97,9 @@ export class AuthService {
     private readonly practiceGrant: PracticeGrantService,
     private readonly notificationPrefs: NotificationPrefsService,
     private readonly privacy: PrivacyAccountService,
+    private readonly magicLink: MagicLinkService,
+    private readonly oauthIdentity: OauthIdentityService,
+    private readonly webauthn: WebauthnAssertService,
   ) {}
 
   /**
@@ -134,6 +136,16 @@ export class AuthService {
     if (forbidden) throw new BadRequestException(forbidden);
 
     const input = body as unknown as StageASignupInput;
+    if (
+      input.method === "email_magic" ||
+      input.method === "oauth_kakao" ||
+      input.method === "oauth_google" ||
+      input.method === "passkey"
+    ) {
+      throw new BadRequestException(
+        "caller identity is not authority — use magic-link/oauth/passkey verify",
+      );
+    }
     const err = validateStageA(input);
     if (err) throw new BadRequestException(err);
     this.assertDbConfigured();
@@ -207,95 +219,141 @@ export class AuthService {
   }
 
   oauthStart(providerRaw: string) {
+    return this.oauthIdentity.startReady(this.parseOauthProvider(providerRaw));
+  }
+
+  async oauthCallback(providerRaw: string, body: Record<string, unknown>) {
     const provider = this.parseOauthProvider(providerRaw);
-    const env = loadPhase0Env();
-    if (!oauthConfigured(env, provider)) {
-      return {
-        ok: true as const,
-        provider,
-        status: "not_configured" as const,
-        message:
-          "Set OAUTH_*_CLIENT_ID/SECRET in .env (Phase0 hosts) — never commit secrets",
-      };
+    const proven = await this.oauthIdentity.prove(provider, body ?? {});
+    this.assertDbConfigured();
+    const existingOauth = await this.db.query<{ user_id: string }>(
+      `SELECT user_id::text FROM public.auth_oauth_identities
+        WHERE provider = $1 AND provider_subject = $2 AND unlinked_at IS NULL`,
+      [provider, proven.providerSubject],
+    );
+    const isExisting = Boolean(existingOauth.rows[0]);
+    const terms = String(body.termsAcceptedAt ?? "");
+    const privacy = String(body.privacyAcceptedAt ?? "");
+    if (!isExisting && (!terms || !privacy)) {
+      throw new BadRequestException("TERMS_REQUIRED");
     }
-
-    const apiBase = env.apiHost.startsWith("http")
-      ? env.apiHost
-      : env.apiHost.includes("localhost")
-        ? `http://${env.apiHost}`
-        : `https://${env.apiHost}`;
-    const redirectUri = `${apiBase}/api/v1/auth/oauth/${provider}/callback`;
-    if (provider === "kakao") {
-      const u = new URL("https://kauth.kakao.com/oauth/authorize");
-      u.searchParams.set("client_id", env.oauthKakaoClientId!);
-      u.searchParams.set("redirect_uri", redirectUri);
-      u.searchParams.set("response_type", "code");
-      return {
-        ok: true as const,
-        provider,
-        status: "ready" as const,
-        authorizeUrl: u.toString(),
-      };
-    }
-
-    const u = new URL("https://accounts.google.com/o/oauth2/v2/auth");
-    u.searchParams.set("client_id", env.oauthGoogleClientId!);
-    u.searchParams.set("redirect_uri", redirectUri);
-    u.searchParams.set("response_type", "code");
-    u.searchParams.set("scope", "openid email profile");
-    return {
-      ok: true as const,
+    const { userId, isNew } = await this.findOrCreateUserByOauth(
       provider,
-      status: "ready" as const,
-      authorizeUrl: u.toString(),
-    };
-  }
-
-  oauthCallback(providerRaw: string, body: Record<string, unknown>) {
-    const provider = this.parseOauthProvider(providerRaw);
-    if (!body?.code && !body?.providerSubject) {
-      throw new BadRequestException("oauth code or providerSubject required");
+      proven.providerSubject,
+      proven.email,
+    );
+    if (isNew) {
+      await this.provisionLedgerBucketsForUser(userId);
+      await this.upsertStageAProfile(userId, {
+        method: provider === "kakao" ? "oauth_kakao" : "oauth_google",
+        termsAcceptedAt: terms,
+        privacyAcceptedAt: privacy,
+        marketingConsent: Boolean(body.marketingConsent),
+        referralCode:
+          typeof body.referralCode === "string" ? body.referralCode : undefined,
+        oauth: { provider, providerSubject: proven.providerSubject, email: proven.email },
+      });
     }
-    return this.signupStageA({
-      method: provider === "kakao" ? "oauth_kakao" : "oauth_google",
-      termsAcceptedAt: String(body.termsAcceptedAt ?? ""),
-      privacyAcceptedAt: String(body.privacyAcceptedAt ?? ""),
-      marketingConsent: Boolean(body.marketingConsent),
-      referralCode:
-        typeof body.referralCode === "string" ? body.referralCode : undefined,
-      oauth: {
-        provider,
-        providerSubject: String(body.providerSubject ?? body.code ?? ""),
-        email: typeof body.email === "string" ? body.email : undefined,
-      },
-    });
-  }
-
-  passkeyOptions(kind: "register" | "authenticate") {
-    const rp = loadAuthWebauthnRp();
+    const { accessToken, session } = await this.mintSession(userId);
     return {
       ok: true as const,
-      kind,
-      status: "ready" as const,
-      rpName: rp.rpName,
-      rpId: rp.rpId,
-      origin: rp.origin,
-      challenge: randomBytes(32).toString("base64url"),
+      stage: "A" as const,
+      onboarding:
+        session.onboardingStage === "B_complete"
+          ? ("complete" as const)
+          : ("incomplete" as const),
+      session,
+      accessToken,
       issuer: USER_JWT_ISSUER,
     };
   }
 
-  magicLinkRequest(body: Record<string, unknown>) {
-    const email = typeof body.email === "string" ? body.email.trim() : "";
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      throw new BadRequestException("valid email required");
+  passkeyOptions(kind: "register" | "authenticate") {
+    return this.webauthn.options(kind);
+  }
+
+  async passkeyRegisterVerify(body: Record<string, unknown>) {
+    const proven = await this.webauthn.prove("register", body ?? {}, {
+      findByCredentialId: (id) => this.lookupPasskey(id),
+    });
+    this.assertDbConfigured();
+    const terms = String(body.termsAcceptedAt ?? "");
+    const privacy = String(body.privacyAcceptedAt ?? "");
+    if (!terms || !privacy) {
+      throw new BadRequestException("TERMS_REQUIRED");
     }
-    return {
-      ok: true as const,
-      delivery: "resend" as const,
-      status: "accepted" as const,
-      // Never echo magic token
-    };
+    const { userId, isNew } = await this.registerPasskey(
+      proven.credentialId,
+      proven.publicKeySpki,
+      proven.signCount,
+    );
+    if (isNew) {
+      await this.provisionLedgerBucketsForUser(userId);
+      await this.upsertStageAProfile(userId, {
+        method: "passkey",
+        termsAcceptedAt: terms,
+        privacyAcceptedAt: privacy,
+        marketingConsent: Boolean(body.marketingConsent),
+        referralCode:
+          typeof body.referralCode === "string" ? body.referralCode : undefined,
+        passkey: { credentialId: proven.credentialId },
+      });
+    }
+    return this.sessionMintView(userId);
+  }
+
+  async passkeyAuthVerify(body: Record<string, unknown>) {
+    const proven = await this.webauthn.prove("authenticate", body ?? {}, {
+      findByCredentialId: (id) => this.lookupPasskey(id),
+    });
+    this.assertDbConfigured();
+    const existing = await this.lookupPasskey(proven.credentialId);
+    if (!existing) {
+      throw new BadRequestException("webauthn credential unknown");
+    }
+    await this.db.query(
+      `UPDATE public.auth_passkeys
+          SET sign_count = $2, last_used_at = now()
+        WHERE credential_id = $1 AND revoked_at IS NULL`,
+      [proven.credentialId, proven.signCount],
+    );
+    const row = await this.db.query<{ user_id: string }>(
+      `SELECT user_id::text FROM public.auth_passkeys
+        WHERE credential_id = $1 AND revoked_at IS NULL`,
+      [proven.credentialId],
+    );
+    const userId = row.rows[0]?.user_id;
+    if (!userId) throw new BadRequestException("webauthn credential unknown");
+    return this.sessionMintView(userId);
+  }
+
+  magicLinkRequest(body: Record<string, unknown>) {
+    return this.magicLink.request(body ?? {});
+  }
+
+  async magicLinkVerify(body: Record<string, unknown>) {
+    this.assertDbConfigured();
+    const token = typeof body.token === "string" ? body.token.trim() : "";
+    if (!token) {
+      throw new BadRequestException("magic link token required");
+    }
+    const previewEmail = await this.magicLink.peekEmail(token);
+    const exists = previewEmail ? await this.emailExists(previewEmail) : false;
+    const proven = await this.magicLink.prove(body ?? {}, { userExists: exists });
+    const { userId, isNew } = await this.findOrCreateUserByEmail(proven.email);
+    if (isNew) {
+      await this.provisionLedgerBucketsForUser(userId);
+      await this.upsertStageAProfile(userId, {
+        method: "email_magic",
+        termsAcceptedAt: String(body.termsAcceptedAt ?? ""),
+        privacyAcceptedAt: String(body.privacyAcceptedAt ?? ""),
+        marketingConsent: Boolean(body.marketingConsent),
+        referralCode:
+          typeof body.referralCode === "string" ? body.referralCode : undefined,
+        email: proven.email,
+      });
+    }
+    return this.sessionMintView(userId);
   }
 
   logout(sessionUser: SessionUser) {
@@ -399,35 +457,11 @@ export class AuthService {
   // ── identity resolution (find-or-create against existing SoT tables) ──
 
   private async resolveIdentity(
-    input: StageASignupInput,
+    _input: StageASignupInput,
   ): Promise<{ userId: string; isNew: boolean }> {
-    if (input.method === "oauth_kakao" || input.method === "oauth_google") {
-      const provider: OauthProvider =
-        input.method === "oauth_kakao" ? "kakao" : "google";
-      const subject = input.oauth?.providerSubject;
-      if (!subject) {
-        throw new BadRequestException("oauth.providerSubject required");
-      }
-      return this.findOrCreateUserByOauth(
-        provider,
-        subject,
-        input.oauth?.email ?? input.email,
-      );
-    }
-    if (input.method === "email_magic") {
-      if (!input.email) {
-        throw new BadRequestException("email required for email_magic");
-      }
-      return this.findOrCreateUserByEmail(input.email);
-    }
-    if (input.method === "passkey") {
-      const credentialId = input.passkey?.credentialId;
-      if (!credentialId) {
-        throw new BadRequestException("passkey.credentialId required");
-      }
-      return this.findOrCreateUserByPasskey(credentialId);
-    }
-    throw new BadRequestException("unsupported Stage A method");
+    throw new BadRequestException(
+      "caller identity is not authority — use magic-link/oauth/passkey verify",
+    );
   }
 
   private async findOrCreateUserByOauth(
@@ -498,43 +532,80 @@ export class AuthService {
     }
   }
 
-  /**
-   * Phase0: WebAuthn attestation/assertion signature verification is NOT
-   * implemented — credential_id is used as an opaque bearer identity only
-   * (public_key stored empty). Real cryptographic verification is Phase1.
-   */
-  private async findOrCreateUserByPasskey(
-    credentialId: string,
-  ): Promise<{ userId: string; isNew: boolean }> {
-    const existing = await this.db.query<{ user_id: string }>(
-      `SELECT user_id::text FROM public.auth_passkeys
+  private async emailExists(email: string): Promise<boolean> {
+    const existing = await this.db.query<{ id: string }>(
+      `SELECT id::text FROM public.users WHERE email = $1`,
+      [email],
+    );
+    return Boolean(existing.rows[0]);
+  }
+
+  private async lookupPasskey(credentialId: string): Promise<{
+    credentialId: string;
+    publicKeySpki: Buffer;
+    signCount: number;
+  } | null> {
+    const existing = await this.db.query<{
+      credential_id: string;
+      public_key: Buffer;
+      sign_count: string | number;
+    }>(
+      `SELECT credential_id, public_key, sign_count
+         FROM public.auth_passkeys
         WHERE credential_id = $1 AND revoked_at IS NULL`,
       [credentialId],
     );
-    if (existing.rows[0]) {
-      return { userId: existing.rows[0].user_id, isNew: false };
-    }
+    const row = existing.rows[0];
+    if (!row || !row.public_key || row.public_key.length === 0) return null;
+    return {
+      credentialId: row.credential_id,
+      publicKeySpki: Buffer.from(row.public_key),
+      signCount: Number(row.sign_count) || 0,
+    };
+  }
+
+  private async registerPasskey(
+    credentialId: string,
+    publicKeySpki: Buffer,
+    signCount: number,
+  ): Promise<{ userId: string; isNew: boolean }> {
+    // Registration proves possession of the *submitted* public key. It does
+    // NOT prove ownership of an already-registered credentialId. Existing
+    // credentials authenticate only through the stored-key assertion path.
+    const existing = await this.lookupPasskey(credentialId);
+    assertPasskeyCredentialUnclaimed(existing);
 
     const userId = await this.insertBareUser();
     try {
       await this.db.query(
-        `INSERT INTO public.auth_passkeys (user_id, credential_id, public_key)
-         VALUES ($1::uuid, $2, $3)`,
-        [userId, credentialId, Buffer.alloc(0)],
+        `INSERT INTO public.auth_passkeys (user_id, credential_id, public_key, sign_count)
+         VALUES ($1::uuid, $2, $3, $4)`,
+        [userId, credentialId, publicKeySpki, signCount],
       );
     } catch (e) {
       if (isUniqueViolation(e)) {
-        const again = await this.db.query<{ user_id: string }>(
-          `SELECT user_id::text FROM public.auth_passkeys WHERE credential_id = $1`,
-          [credentialId],
-        );
-        if (again.rows[0]) {
-          return { userId: again.rows[0].user_id, isNew: false };
-        }
+        // A concurrent registration may have claimed the credential after the
+        // pre-check. Never resolve that race by returning the winner's userId.
+        rejectPasskeyCredentialInsertRace();
       }
       throw e;
     }
     return { userId, isNew: true };
+  }
+
+  private async sessionMintView(userId: string) {
+    const { accessToken, session } = await this.mintSession(userId);
+    return {
+      ok: true as const,
+      stage: "A" as const,
+      onboarding:
+        session.onboardingStage === "B_complete"
+          ? ("complete" as const)
+          : ("incomplete" as const),
+      session,
+      accessToken,
+      issuer: USER_JWT_ISSUER,
+    };
   }
 
   private async insertBareUser(): Promise<string> {

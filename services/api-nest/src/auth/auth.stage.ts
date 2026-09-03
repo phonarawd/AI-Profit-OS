@@ -8,6 +8,7 @@ import {
   STAGE_B_MIN_AGE_YEARS,
   type OnboardingStage,
 } from "./auth.constants";
+import { isValidEmail } from "./identity-proof.email";
 
 /** Stage A (즉시 가입) — required + optional */
 export const STAGE_A_REQUIRED_FIELDS = [
@@ -157,7 +158,7 @@ export function validateStageB(
     return `birthDate must be age ${STAGE_B_MIN_AGE_YEARS}+`;
   }
   if (!opts.emailAlreadyKnown) {
-    if (!input.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
+    if (!input.email || !isValidEmail(input.email)) {
       return "email required when missing from Stage A identity";
     }
   }
