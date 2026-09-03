@@ -120,7 +120,11 @@
     "ops_api_health_status": 200,
     "same_origin_api_binding": "CLOSED_VERIFIED",
     "browser_smoke": "RERUN_REQUIRED_AFTER_EVIDENCE_REFRESH",
-    "status": "PARTIAL"
+    "status": "BOUND_TO_ISOLATED_STAGING",
+    "dedicated_staging_api": true,
+    "dedicated_staging_db": true,
+    "uses_production_api": false,
+    "uses_production_db": false
   },
   "blockers_observed": [
     "backend staging topology is READY: runtime 45dd5a15410bcb3b5f52dbe295d010f73cfc1e8c + isolated DB + trusted-CA TLS + Redis + DB-backed read are proven",

@@ -117,7 +117,7 @@ assert.equal(got.status, "READY");
 assert.equal(got.classification, "TRUE_ISOLATED_STAGING");
 assert.equal(got.verdict, "STAGING_TOPOLOGY=READY");
 assert.deepEqual(got.blockers, []);
-assert.equal(got.frontend_staging_status, "PENDING_NOT_CORE_TOPOLOGY");
+assert.equal(got.frontend_staging_status, "BOUND_TO_ISOLATED_STAGING");
 assert.equal(got.runtime_source_sha, currentSnapshot.candidate_sha);
 assert.equal(
   got.staging_schema_relation,
@@ -295,7 +295,7 @@ assert.equal(b3.isolated_verify_db.exists, "YES");
 assert.equal(b3.isolated_verify_db.usable, "RUNTIME_DB_BOUND_TLS_VERIFIED");
 assert.equal(b3.isolated_verify_db.branch_project_ref, STAGE_REF);
 assert.equal(b3.release_ready, "NO");
-assert.equal(b3.staging_e2e.status, "NOT_RUN");
+assert.equal(b3.staging_e2e.status, "PARTIAL");
 assert.equal(currentSnapshot.staging.render.runtime_health.db_configured, true);
 assert.equal(currentSnapshot.staging.render.runtime_health.db_ok, true);
 assert.equal(currentSnapshot.staging.render.runtime_health.database_tls_verified, true);
