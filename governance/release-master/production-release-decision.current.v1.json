@@ -1,23 +1,26 @@
 {
   "schema": "production-release-evidence.current.v1",
-  "observed_at": "2026-09-03T09:45:28Z",
-  "candidate_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
+  "observed_at": "2026-09-03T10:58:42.890Z",
+  "candidate_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
   "release_acceptance": null,
   "engine": {
     "final_acceptance": "NOT_ISSUED",
     "rebase_required": true,
     "ack_received": false,
-    "candidate_sha": "64757f2c5bd394d359c35483183ad879f5135d23"
+    "candidate_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0"
   },
   "staging": {
     "ready": false,
     "status": "NOT_READY",
-    "verdict": "STAGING_TOPOLOGY=NOT_READY",
+    "verdict": "STAGING_TOPOLOGY=READY",
     "blockers": [
-      "render_staging_db_binding_missing",
-      "render_staging_runtime_db_configured_not_true",
-      "render_staging_runtime_db_ok_not_true"
-    ]
+      "frontend_staging_e2e_not_proven"
+    ],
+    "backend_topology_ready": true,
+    "backend_db_health": true,
+    "backend_db_tls_verified": true,
+    "backend_db_backed_read": "PASS",
+    "frontend_e2e": "NOT_RUN"
   },
   "db_hardening": {
     "ok": false,
@@ -33,7 +36,7 @@
   "render_preflight": {
     "ready": false,
     "status": "NOT_READY",
-    "accepted_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
+    "accepted_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
     "blockers": [
       "auto_deploy_enabled",
       "production_live_sha_mismatch"
@@ -41,7 +44,7 @@
     "auto_deploy_required": "disabled"
   },
   "security": {
-    "exact_head_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
+    "exact_head_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
     "codeql_workflow": "success",
     "unresolved_p0": null,
     "unresolved_p1": null,
@@ -70,5 +73,13 @@
     "status": "NOT_PROVEN_CURRENT"
   },
   "production_mutation": 0,
-  "governance_parent_sha": "abd6162a763e29a90362cc89590679cb51132f80"
+  "governance_parent_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+  "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
+  "migration_effect_reconciliation": {
+    "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
+    "schema_effect_present_ledger_unrecorded": 10,
+    "actual_effect_pending": 1,
+    "blind_replay_forbidden": true,
+    "production_mutation": 0
+  }
 }

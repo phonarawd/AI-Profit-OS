@@ -1,0 +1,91 @@
+{
+  "schema": "governance.recovery.staging-runtime-db-binding.v1",
+  "recorded_at": "2026-09-03T10:58:42.890Z",
+  "candidate_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+  "production_mutation": 0,
+  "production_db_mutation": 0,
+  "secrets_recorded": false,
+  "render": {
+    "service_id": "srv-dacjnnm1egvs73cuh190",
+    "url": "https://ai-profit-os-staging-exact-1f3b36f.onrender.com",
+    "branch": "chatgpt/staging-exact-1f3b36f-20260903",
+    "deploy_id": "dep-dacl3n95efls73eqhan0",
+    "deploy_status": "LIVE",
+    "source_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+    "autoDeploy": "no"
+  },
+  "supabase_preview": {
+    "project_ref": "uluzxvdpynytytduuryy",
+    "parent_project_ref": "mgsytcetsiecllmhcyox",
+    "runtime_role": {
+      "name": "aipo_staging_runtime_20260903",
+      "login": true,
+      "inherit": true,
+      "bypassrls": true,
+      "superuser": false,
+      "createrole": false,
+      "createdb": false,
+      "service_role_member": true
+    },
+    "connection": {
+      "mode": "SUPAVISOR_SESSION_POOLER",
+      "port": 5432,
+      "managed_postgres_password_reset": false,
+      "tls_root_ca_configured": true,
+      "tls_certificate_verification": true,
+      "reject_unauthorized": true
+    }
+  },
+  "health": {
+    "status_code": 200,
+    "git_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+    "git_sha_source": "RENDER_GIT_COMMIT",
+    "db_configured": true,
+    "db_ok": true,
+    "db_detail": "up",
+    "redis_configured": true,
+    "redis_ok": true,
+    "redis_detail": "up",
+    "warnings_empty": true
+  },
+  "db_backed_public_read": {
+    "route": "GET /api/v1/growth/public-surface",
+    "status_code": 200,
+    "db_tables_read": [
+      "growth_ticker_config",
+      "trade_executions"
+    ],
+    "result_summary": {
+      "tickerMode": "off",
+      "counterMode": "off",
+      "ledgerTotal": 0,
+      "events": 0
+    },
+    "verdict": "PASS"
+  },
+  "startup_log_window": {
+    "start": "2026-09-03T10:55:30Z",
+    "end": "2026-09-03T11:05:00Z",
+    "permission_denied_count": 0,
+    "warning_count": 0,
+    "error_level_count": 0
+  },
+  "customer_data_zero": {
+    "auth_users": 0,
+    "public_users": 0,
+    "auth_sessions": 0,
+    "user_profiles": 0,
+    "magic_link_challenges": 0,
+    "ledger_journals": 0,
+    "ledger_entries": 0,
+    "practice_grants": 0,
+    "proven": true
+  },
+  "system_data_snapshot": {
+    "assets": 94,
+    "execution_policies": 1,
+    "growth_ticker_config": 1,
+    "trade_executions": 0
+  },
+  "verdict": "CLOSED_VERIFIED"
+}

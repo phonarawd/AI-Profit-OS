@@ -112,21 +112,13 @@ const currentSnapshot = JSON.parse(
   ),
 );
 got = evaluateStagingTopology(currentSnapshot);
-assert.equal(got.ready, false);
-assert.equal(got.status, "NOT_READY");
-assert.equal(got.classification, "BLOCKED_EXTERNAL_ACTION");
-assert.equal(got.verdict, "STAGING_TOPOLOGY=NOT_READY");
-assert.ok(got.blockers.includes("render_staging_db_binding_missing"));
-assert.ok(got.blockers.includes("render_staging_runtime_db_configured_not_true"));
-assert.ok(got.blockers.includes("render_staging_runtime_db_ok_not_true"));
-assert.ok(!got.blockers.includes("render_staging_runtime_health_missing"));
-assert.ok(!got.blockers.includes("render_staging_source_sha_mismatch"));
-assert.ok(!got.blockers.includes("render_staging_runtime_redis_configured_not_true"));
-assert.ok(!got.blockers.includes("render_staging_runtime_redis_ok_not_true"));
+assert.equal(got.ready, true);
+assert.equal(got.status, "READY");
+assert.equal(got.classification, "TRUE_ISOLATED_STAGING");
+assert.equal(got.verdict, "STAGING_TOPOLOGY=READY");
+assert.deepEqual(got.blockers, []);
+assert.equal(got.frontend_staging_status, "PENDING_NOT_CORE_TOPOLOGY");
 assert.equal(got.runtime_source_sha, currentSnapshot.candidate_sha);
-assert.ok(!got.blockers.includes("supabase_staging_not_ready"));
-assert.ok(!got.blockers.includes("supabase_staging_customer_data_not_proven_zero"));
-assert.ok(!got.blockers.includes("supabase_staging_schema_parity_not_proven"));
 assert.equal(
   got.staging_schema_relation,
   "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
@@ -300,10 +292,14 @@ assert.match(stagingWorkflow, /STAGING_API_HOST/);
 assert.doesNotMatch(stagingWorkflow, /secrets\.API_HOST/);
 assert.match(nonProdHost, /production API_HOST inheritance forbidden/);
 assert.equal(b3.isolated_verify_db.exists, "YES");
-assert.equal(b3.isolated_verify_db.usable, "RUNTIME_DB_UNBOUND");
+assert.equal(b3.isolated_verify_db.usable, "RUNTIME_DB_BOUND_TLS_VERIFIED");
 assert.equal(b3.isolated_verify_db.branch_project_ref, STAGE_REF);
 assert.equal(b3.release_ready, "NO");
 assert.equal(b3.staging_e2e.status, "NOT_RUN");
+assert.equal(currentSnapshot.staging.render.runtime_health.db_configured, true);
+assert.equal(currentSnapshot.staging.render.runtime_health.db_ok, true);
+assert.equal(currentSnapshot.staging.render.runtime_health.database_tls_verified, true);
+assert.equal(currentSnapshot.staging.render.runtime_health.db_backed_public_read_status, 200);
 assert.equal(b3.staging_e2e.requires.isolated_verify_db_exists, "YES");
 
 console.log(

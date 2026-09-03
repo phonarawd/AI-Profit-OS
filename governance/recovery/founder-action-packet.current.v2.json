@@ -1,8 +1,8 @@
 {
   "schema": "governance.recovery.founder-action-packet.current.v2",
-  "recorded_on": "2026-09-03T09:45:28Z",
-  "source": "GitHub + Render + Supabase current revalidation + exact staging runtime + current CI/security evidence",
-  "subject_integration_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
+  "recorded_on": "2026-09-03T10:58:42.890Z",
+  "source": "GitHub + Render + Supabase current revalidation + exact staging TLS DB binding + DB-backed runtime read + current CI/security evidence",
+  "subject_integration_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
   "production_release": "NO_GO",
   "invariants": {
     "integration_pr": 209,
@@ -20,7 +20,15 @@
       "SUPABASE_PREVIEW_HARDENING_REASSERT_CURRENT",
       "RENDER_EXACT_STAGING_SERVICE_CREATE",
       "RENDER_STAGING_REDIS_BINDING",
-      "RENDER_STAGING_ADAPTER_INGEST_TOKEN_CONFIG"
+      "RENDER_STAGING_ADAPTER_INGEST_TOKEN_CONFIG",
+      "RENDER_STAGING_INTERNAL_WALLET_TICK_TOKEN_CONFIG",
+      "SUPABASE_PREVIEW_RUNTIME_LOGIN_ROLE_CREATE",
+      "SUPABASE_PREVIEW_RUNTIME_ROLE_SERVICE_ROLE_GRANT",
+      "SUPABASE_PREVIEW_RUNTIME_ROLE_BYPASSRLS",
+      "RENDER_STAGING_DATABASE_URL_CONFIG",
+      "RENDER_STAGING_DATABASE_SSL_CA_CONFIG",
+      "EXACT_STAGING_BRANCH_FAST_FORWARD",
+      "RENDER_EXACT_STAGING_REDEPLOY"
     ],
     "engine_ack_mutation": 0,
     "ghas_dismissal": 0
@@ -28,7 +36,7 @@
   "github": {
     "main_sha": "98730b8c71a8c4c0b5e474460a6a24bea43e6966",
     "rescue_checkpoint_sha": "e312119582036ab1367ede74dd4c08ff3b22a951",
-    "integration_subject_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
+    "integration_subject_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
     "integration_pr": 209,
     "integration_pr_draft": true,
     "main_ruleset": {
@@ -44,7 +52,7 @@
       "mutation": 0,
       "founder_action_required": true
     },
-    "integration_governance_head_at_recording": "abd6162a763e29a90362cc89590679cb51132f80"
+    "integration_governance_head_at_recording": "4b9bd9c9be6a878e8558e58a7b59067d756797a0"
   },
   "render": {
     "workspace_id": "tea-da5qqo3m8hqs73djpvvg",
@@ -65,16 +73,21 @@
       "branch_label_note": "historical branch label; exactness is authoritative from live deploy SHA",
       "autoDeploy": "no",
       "autoDeployTrigger": "off",
-      "live_deploy_id": "dep-dack2n3lpq9s73fs8ea0",
-      "live_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
+      "live_deploy_id": "dep-dacl3n95efls73eqhan0",
+      "live_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
       "current_candidate_bound": true,
-      "runtime_health_observed_at": "2026-09-03T09:45:28.287012Z",
-      "database_url_configured": false,
-      "database_ok": false,
+      "runtime_health_observed_at": "2026-09-03T10:58:42.890Z",
+      "database_url_configured": true,
+      "database_ok": true,
       "redis_configured": true,
       "redis_ok": true,
       "warnings_empty": true,
-      "adapter_ingest_without_token_status": 401
+      "adapter_ingest_without_token_status": 401,
+      "database_tls_verified": true,
+      "internal_wallet_tick_token_configured": true,
+      "internal_wallet_without_token_status": 401,
+      "db_backed_public_read_status": 200,
+      "db_backed_public_read_route": "GET /api/v1/growth/public-surface"
     }
   },
   "supabase": {
@@ -92,19 +105,36 @@
       "final_schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
       "hardening_rehearsal_proven": true,
       "hardening_evidence": "governance/recovery/staging-db-hardening-snapshot.20260903.v2.json",
-      "render_binding_currently_proven": false,
+      "render_binding_currently_proven": true,
       "current_hardening_state_proven": true,
       "hardening_reassert_proven": true,
       "current_expected_delta_only": true,
       "render_exact_candidate_runtime_proven": true,
       "render_redis_runtime_proven": true,
-      "render_database_url_configured": false
+      "render_database_url_configured": true,
+      "render_database_runtime_proven": true,
+      "render_database_tls_verified": true,
+      "runtime_role": "aipo_staging_runtime_20260903",
+      "runtime_role_superuser": false,
+      "runtime_role_bypassrls": true
     }
   },
   "engine": {
     "final_acceptance": "NOT_ISSUED",
     "rebase_required": true,
-    "ack_received": false
+    "ack_received": false,
+    "current_truth": {
+      "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+      "live_aggregate": "dd86caca5782297368050998c6b24d1fa9ce78f8bf91bcf47dba1586337d5f66",
+      "baseline_aggregate": "2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8",
+      "live_path_count": 464,
+      "baseline_path_count": 450,
+      "changed_path_count": 33,
+      "missing_paths": [],
+      "qa_ready": true,
+      "can_issue": false,
+      "failure_class": "CURRENT_EPOCH_DRIFT_ONLY"
+    }
   },
   "integration_safety_restored": {
     "final_production_decision_gate": true,
@@ -119,8 +149,7 @@
     "tron_synthetic_derivation_removed": true
   },
   "blockers": [
-    "STAGING_RENDER_DB_BINDING_NOT_PROVEN_CURRENT",
-    "STAGING_RENDER_DATABASE_URL_NOT_CONFIGURED_CURRENT",
+    "STAGING_FRONTEND_E2E_NOT_PROVEN_CURRENT",
     "PRODUCTION_DB_HARDENING_NOT_APPLIED",
     "RENDER_AUTODEPLOY_ENABLED",
     "PRODUCTION_LIVE_SHA_DIFFERS_FROM_INTEGRATION",
@@ -145,13 +174,21 @@
     {
       "order": 2,
       "id": "STAGING_BINDING",
-      "action": "Exact candidate Render runtime and Redis health are proven; configure an authorized staging DATABASE_URL for the isolated Supabase preview, then prove DB health and frontend staging E2E.",
+      "action": "Exact candidate Render runtime is bound to the isolated Supabase preview through Supavisor session pooling with trusted-CA TLS; DB+Redis health and a DB-backed public read are proven.",
       "production_mutation": false,
-      "provider_mutation_required": true,
-      "status": "PARTIAL"
+      "provider_mutation_required": false,
+      "status": "CLOSED_VERIFIED"
     },
     {
       "order": 3,
+      "id": "STAGING_FRONTEND_E2E",
+      "action": "Bind the frontend staging preview to the exact staging API and complete browser E2E without Production fallback.",
+      "production_mutation": false,
+      "provider_mutation_required": true,
+      "status": "BLOCKED"
+    },
+    {
+      "order": 4,
       "id": "DB_HARDENING_REHEARSAL",
       "action": "Current reviewed hardening source was rehearsed on isolated staging with baseline parity, apply, rollback, reapply, and zero customer data proven.",
       "production_mutation": false,
@@ -159,7 +196,7 @@
       "status": "CLOSED_VERIFIED"
     },
     {
-      "order": 4,
+      "order": 5,
       "id": "FX_RUNTIME_FEED",
       "action": "Prove coingecko+frankfurter fx-core worker ingest into the exact candidate/staging path, then promote only through accepted-artifact authority; current Production FX snapshot feed is stale.",
       "production_mutation": false,
@@ -167,7 +204,7 @@
       "status": "BLOCKED"
     },
     {
-      "order": 5,
+      "order": 6,
       "id": "AUTH_EMAIL_RUNTIME",
       "action": "Prove live Resend provider configuration and successful Production-equivalent magic-link delivery before launch; source fail-closed CI is not provider-runtime proof.",
       "production_mutation": true,
@@ -175,28 +212,28 @@
       "status": "BLOCKED"
     },
     {
-      "order": 6,
+      "order": 7,
       "id": "TRON_HD_VAULT",
       "action": "Provide and prove canonical BIP32 secp256k1 authority for m/44'/195'/0'/0/{index}; keep 503 fail-closed until proven.",
       "production_mutation": false,
       "status": "BLOCKED"
     },
     {
-      "order": 7,
+      "order": 8,
       "id": "SECURITY_AND_ROLLBACK",
       "action": "Rollback target is bound and current CodeQL succeeded; full GHAS open-alert inventory remains not proven through the connected interface.",
       "production_mutation": false,
       "status": "PARTIAL"
     },
     {
-      "order": 8,
+      "order": 9,
       "id": "REL_502_CURRENT_EPOCH",
       "action": "After all tracked mutations stop, rerun protected-scope verification and reissue REL-502 only for the exact final SHA.",
       "production_mutation": false,
       "status": "PENDING"
     },
     {
-      "order": 9,
+      "order": 10,
       "id": "MAIN_RELEASE_GOVERNANCE",
       "action": "Remove or constrain the main ruleset bypass and keep main promotion impossible without explicit Founder authority; coordinate with disabling Render Production autoDeploy.",
       "production_mutation": true,
@@ -204,7 +241,7 @@
       "status": "PENDING"
     },
     {
-      "order": 10,
+      "order": 11,
       "id": "RENDER_RELEASE_CONTROL",
       "action": "Disable Production autoDeploy before accepted exact-SHA promotion.",
       "production_mutation": true,
@@ -212,7 +249,7 @@
       "status": "PENDING"
     },
     {
-      "order": 11,
+      "order": 12,
       "id": "PRODUCTION_DB_APPLY",
       "action": "Apply reviewed hardening migration to Production only after staging proof and explicit Founder authorization.",
       "production_mutation": true,
@@ -220,7 +257,7 @@
       "status": "PENDING"
     },
     {
-      "order": 12,
+      "order": 13,
       "id": "RELEASE_ACCEPTANCE",
       "action": "Build once, bind authoritative Engine run, obtain release acceptance, then evaluate final GO_CANDIDATE.",
       "production_mutation": false,
@@ -275,9 +312,17 @@
     "current_sha_codeql_or_equivalent_run": "SUCCESS",
     "current_authority": "FOUNDER_PACKET_PLUS_CURRENT_PROVIDER_EVIDENCE",
     "status": "PARTIAL",
-    "current_runtime_subject_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
-    "codeql_evidence_sha": "abd6162a763e29a90362cc89590679cb51132f80",
+    "current_runtime_subject_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+    "codeql_evidence_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
     "full_ghas_open_alert_inventory": "NOT_PROVEN"
   },
-  "governance_parent_sha": "abd6162a763e29a90362cc89590679cb51132f80"
+  "governance_parent_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+  "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
+  "migration_effect_reconciliation": {
+    "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
+    "schema_effect_present_ledger_unrecorded": 10,
+    "actual_effect_pending": 1,
+    "blind_replay_forbidden": true,
+    "production_mutation": 0
+  }
 }

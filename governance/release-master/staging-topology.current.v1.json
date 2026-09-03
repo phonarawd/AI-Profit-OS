@@ -1,8 +1,8 @@
 {
   "schema": "staging-topology-provider-snapshot.v2",
-  "recorded_at": "2026-09-03T09:45:28Z",
-  "source": "read-only GitHub/Render/Supabase revalidation + exact Render staging runtime health + staging DB hardening evidence · Production mutation=0",
-  "candidate_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
+  "recorded_at": "2026-09-03T10:58:42.890Z",
+  "source": "GitHub/Render/Supabase current revalidation + exact SHA runtime + Supavisor session pooler + trusted-CA TLS + DB-backed public read · Production mutation=0",
+  "candidate_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
   "production": {
     "render": {
       "service_name": "AI-Profit-OS",
@@ -38,23 +38,26 @@
       "kind": "web_service",
       "autoDeploy": "no",
       "autoDeployTrigger": "off",
-      "source_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
-      "live_deploy_id": "dep-dack2n3lpq9s73fs8ea0",
-      "supabase_project_ref": "",
+      "source_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+      "live_deploy_id": "dep-dacl3n95efls73eqhan0",
+      "supabase_project_ref": "uluzxvdpynytytduuryy",
       "configured_supabase_project_ref_env": "uluzxvdpynytytduuryy",
-      "binding_evidence": "DATABASE_URL_UNSET_CURRENT",
+      "binding_evidence": "SUPAVISOR_SESSION_POOLER_5432_TLS_CA_VERIFIED",
       "runtime_health": {
-        "observed_at": "2026-09-03T09:45:28.287012Z",
-        "git_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
+        "observed_at": "2026-09-03T10:58:42.890Z",
+        "git_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
         "git_sha_source": "RENDER_GIT_COMMIT",
-        "db_configured": false,
-        "db_ok": false,
-        "db_detail": "DATABASE_URL unset",
+        "db_configured": true,
+        "db_ok": true,
+        "db_detail": "up",
         "redis_configured": true,
         "redis_ok": true,
         "redis_detail": "up",
         "warnings_empty": true,
-        "adapter_ingest_without_token_status": 401
+        "adapter_ingest_without_token_status": 401,
+        "database_tls_verified": true,
+        "internal_wallet_without_token_status": 401,
+        "db_backed_public_read_status": 200
       }
     },
     "supabase": {
@@ -97,16 +100,25 @@
           "index_diff_count": 0
         }
       },
-      "current_detail_evidence": "governance/recovery/staging-db-hardening-snapshot.20260903.v2.json"
+      "current_detail_evidence": "governance/recovery/staging-db-hardening-snapshot.20260903.v2.json",
+      "runtime_role": "aipo_staging_runtime_20260903",
+      "runtime_role_bypassrls": true,
+      "runtime_role_superuser": false,
+      "runtime_role_service_role_member": true
     }
   },
-  "cloudflare_preview": null,
+  "cloudflare_preview": {
+    "exists": false,
+    "required_for_current_topology": false,
+    "dedicated_staging_api": false,
+    "dedicated_staging_db": false,
+    "status": "NOT_PROVEN_CURRENT"
+  },
   "blockers_observed": [
-    "exact Render staging runtime is bound to the candidate source SHA",
-    "Render DATABASE_URL is unset, so actual Render→Supabase preview DB binding is not proven",
-    "Redis runtime is configured and healthy",
-    "frontend staging E2E remains pending until backend DB binding is proven"
+    "backend staging topology is READY: exact SHA + isolated DB + trusted-CA TLS + Redis + DB-backed read are proven",
+    "frontend staging preview binding and browser E2E remain pending"
   ],
   "production_mutation": 0,
-  "governance_parent_sha": "abd6162a763e29a90362cc89590679cb51132f80"
+  "governance_parent_sha": "4b9bd9c9be6a878e8558e58a7b59067d756797a0",
+  "backend_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json"
 }
