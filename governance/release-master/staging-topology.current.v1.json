@@ -1,6 +1,6 @@
 {
   "schema": "staging-topology-provider-snapshot.v2",
-  "recorded_at": "2026-09-03T11:26:35.709Z",
+  "recorded_at": "2026-09-03T11:34:01.149Z",
   "source": "GitHub/Render/Supabase/Cloudflare current revalidation + exact runtime + Supavisor TLS + DB-backed read + web/ops same-origin API proxy proof · Production mutation=0",
   "candidate_sha": "072616d744a188872d8b7f652475ace319d0893a",
   "production": {
@@ -119,20 +119,22 @@
     "web_api_health_status": 200,
     "ops_api_health_status": 200,
     "same_origin_api_binding": "CLOSED_VERIFIED",
-    "browser_smoke": "RERUN_PENDING_CURRENT_EXPECTED_SHA",
-    "status": "PARTIAL",
+    "browser_smoke": "PASS",
+    "status": "CLOSED_VERIFIED",
     "dedicated_staging_api": true,
     "dedicated_staging_db": true,
     "uses_production_api": false,
-    "uses_production_db": false
+    "uses_production_db": false,
+    "browser_smoke_run": 33750291160
   },
   "blockers_observed": [
     "backend staging topology is READY: runtime 072616d744a188872d8b7f652475ace319d0893a + isolated DB + trusted-CA TLS + Redis + DB-backed read are proven",
     "Cloudflare web/ops preview same-origin /api/v1 proxy is bound to runtime 072616d744a188872d8b7f652475ace319d0893a",
-    "live Chromium smoke rerun is pending only because the prior expected-SHA evidence was stale",
+    "live Chromium smoke PASS for web+login+ops and exact staging API",
+    "authenticated user/money staging E2E remains not proven",
     "FX preview workers remain undeployed because staging-safe repository credentials are absent"
   ],
   "production_mutation": 0,
-  "governance_parent_sha": "94533b01efe8442b13c24cd5ce6e861dbf0d333e",
+  "governance_parent_sha": "9b3008c6e2ec628ca8a05d7f6319f1f2a9c9605b",
   "backend_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json"
 }
