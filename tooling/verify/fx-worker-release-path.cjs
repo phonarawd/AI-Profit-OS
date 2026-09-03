@@ -3,6 +3,7 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
+const { spawnSync } = require("node:child_process");
 
 const root = path.resolve(__dirname, "../..");
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "infra/workers.manifest.json"), "utf8"));
@@ -55,6 +56,10 @@ const fxSnapshot = fs.readFileSync(
   path.join(root, "services/api-nest/src/opportunities/fx-snapshot.service.ts"),
   "utf8",
 );
+const fxFreshness = fs.readFileSync(
+  path.join(root, "services/api-nest/src/opportunities/fx-marketplace-freshness.ts"),
+  "utf8",
+);
 assert.match(nestIngest, /if \(!this\.fxSnapshots\)/);
 assert.match(nestIngest, /FX_SNAPSHOT_SERVICE_UNAVAILABLE/);
 assert.match(nestIngest, /if \(!fxResult\.ok \|\| !fxResult\.snapshotId\)/);
@@ -66,4 +71,28 @@ assert.match(fxSnapshot, /ON CONFLICT \(id\) DO NOTHING[\s\S]*RETURNING id/);
 assert.match(fxSnapshot, /FX_SNAPSHOT_ID_COLLISION/);
 assert.match(fxSnapshot, /IS NOT DISTINCT FROM \$13::jsonb/);
 assert.match(fxSnapshot, /return \{ ok: true, snapshotId: id, created: false \}/);
-console.log("[verify:fx-worker-release-path] PASS (FX_CORE_EXACT · BUILD_ONCE_INCLUDED · SCHEDULED_INGEST · NEST_PERSIST_AND_CONFLICT_FAIL_CLOSED)");
+assert.doesNotMatch(fxSnapshot, /MARKETPLACE_LEG_CARRY_FORWARD_MS/);
+assert.doesNotMatch(fxSnapshot, /usdtPerUsd == null && usdtUsdOut/);
+for (const leg of ["gbpUsd", "eurUsd", "audUsd", "usdtPerUsd"]) {
+  assert.match(fxSnapshot, new RegExp('carryMarketplaceLeg\\(\\s*"' + leg + '"'));
+}
+assert.match(fxSnapshot, /delete rateProvenance\.usdtPerUsd/);
+assert.match(fxFreshness, /EXPECTED_SOURCE/);
+assert.match(fxFreshness, /COINGECKO_MARKETPLACE_TTL_MS = 15 \* 60 \* 1000/);
+assert.match(fxFreshness, /FRANKFURTER_MARKETPLACE_TTL_MS = 6 \* 60 \* 60 \* 1000/);
+assert.match(fxFreshness, /capturedMs > nowMs/);
+
+const freshnessRuntime = spawnSync(
+  process.execPath,
+  [
+    "--test",
+    "--experimental-strip-types",
+    "services/api-nest/src/opportunities/fx-marketplace-freshness.runtime.test.ts",
+  ],
+  { cwd: root, encoding: "utf8", timeout: 30000 },
+);
+process.stdout.write(freshnessRuntime.stdout || "");
+process.stderr.write(freshnessRuntime.stderr || "");
+assert.equal(freshnessRuntime.status, 0, "marketplace FX freshness runtime test failed");
+
+console.log("[verify:fx-worker-release-path] PASS (FX_CORE_EXACT · PERSIST_FAIL_CLOSED · PER_LEG_PROVENANCE_FRESHNESS)");
