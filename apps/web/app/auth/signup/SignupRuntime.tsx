@@ -4,7 +4,7 @@ import {
   continuePathAfterAuth,
   fetchAuthSession,
   isKakaoOAuthReady,
-  signupStageA,
+  requestMagicLink,
   startKakaoOAuth,
 } from "@aipo/sdk/auth";
 import {
@@ -56,6 +56,19 @@ export function SignupRuntime() {
         setError("지금은 카카오로 연결할 수 없어요.");
         return;
       }
+      try {
+        sessionStorage.setItem(
+          "aipo.oauth.terms",
+          JSON.stringify({
+            termsAcceptedAt: input.termsAcceptedAt,
+            privacyAcceptedAt: input.privacyAcceptedAt,
+            marketingConsent: input.marketingConsent,
+            referralCode: input.referralCode,
+          }),
+        );
+      } catch {
+        /* ignore */
+      }
       window.location.assign(out.authorizeUrl);
     } catch (caught) {
       setError(authUserMessage(caught));
@@ -69,18 +82,21 @@ export function SignupRuntime() {
     setNote(null);
     setBusy(true);
     try {
-      const session = await signupStageA(
-        {
-          method: "email_magic",
-          termsAcceptedAt: input.termsAcceptedAt,
-          privacyAcceptedAt: input.privacyAcceptedAt,
-          marketingConsent: input.marketingConsent,
-          referralCode: input.referralCode,
-          email: input.email ?? "",
-        },
-        { apiBase: "" },
-      );
-      router.replace(continuePathAfterAuth(session.onboardingStage));
+      await requestMagicLink(input.email ?? "", { apiBase: "" });
+      try {
+        sessionStorage.setItem(
+          "aipo.magic.terms",
+          JSON.stringify({
+            termsAcceptedAt: input.termsAcceptedAt,
+            privacyAcceptedAt: input.privacyAcceptedAt,
+            marketingConsent: input.marketingConsent,
+            referralCode: input.referralCode,
+          }),
+        );
+      } catch {
+        /* sessionStorage 없어도 요청은 접수됨 */
+      }
+      setNote("메일함을 확인해 주세요.");
     } catch (caught) {
       setError(authUserMessage(caught));
     } finally {

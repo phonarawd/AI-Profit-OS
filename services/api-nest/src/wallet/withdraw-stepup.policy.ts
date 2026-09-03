@@ -25,6 +25,11 @@ export const WITHDRAW_STEP_UP_CODES = {
   CHALLENGE_EXPIRED: "STEP_UP_CHALLENGE_EXPIRED",
   ORIGIN_REJECTED: "STEP_UP_ORIGIN_REJECTED",
   WEBAUTHN_REVOKED: "WEBAUTHN_REVOKED",
+  WEBAUTHN_STEP_UP_NOT_READY: "WEBAUTHN_STEP_UP_NOT_READY",
+  EMAIL_STEP_UP_VERIFICATION_REQUIRED: "EMAIL_STEP_UP_VERIFICATION_REQUIRED",
+  PIN_ENROLLMENT_STEP_UP_REQUIRED: "PIN_ENROLLMENT_STEP_UP_REQUIRED",
+  STEP_UP_TOKEN_EXPIRED: "STEP_UP_TOKEN_EXPIRED",
+  STEP_UP_TOKEN_REPLAYED: "STEP_UP_TOKEN_REPLAYED",
 } as const;
 
 export const ADMIN_CREDENTIAL_AUDIT = {
@@ -44,7 +49,11 @@ export function normalizeAppHost(appHost: string): string {
   } catch {
     /* fall through */
   }
-  return raw.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+  let host = raw;
+  if (host.startsWith("http://")) host = host.slice("http://".length);
+  else if (host.startsWith("https://")) host = host.slice("https://".length);
+  const slash = host.indexOf("/");
+  return slash >= 0 ? host.slice(0, slash) : host;
 }
 
 export function originAllowed(

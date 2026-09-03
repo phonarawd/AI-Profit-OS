@@ -150,17 +150,9 @@ export class AuthController {
     @Body() body: Record<string, unknown>,
     @Res({ passthrough: true }) res: CookieResponse,
   ) {
-    const out = await this.auth.signupStageA({
-      method: "passkey",
-      termsAcceptedAt: String(body?.termsAcceptedAt ?? ""),
-      privacyAcceptedAt: String(body?.privacyAcceptedAt ?? ""),
-      marketingConsent: Boolean(body?.marketingConsent),
-      referralCode:
-        typeof body?.referralCode === "string" ? body.referralCode : undefined,
-      passkey: {
-        credentialId: String(body?.credentialId ?? body?.id ?? ""),
-      },
-    });
+    const out = (await this.auth.passkeyRegisterVerify(
+      body ?? {},
+    )) as SessionMintBody;
     if (typeof out.accessToken === "string") {
       attachUserSessionCookie(res, out.accessToken);
     }
@@ -177,15 +169,9 @@ export class AuthController {
     @Body() body: Record<string, unknown>,
     @Res({ passthrough: true }) res: CookieResponse,
   ) {
-    // Authenticate existing passkey → session (M1 wires credential verify)
-    const out = await this.auth.signupStageA({
-      method: "passkey",
-      termsAcceptedAt: new Date().toISOString(),
-      privacyAcceptedAt: new Date().toISOString(),
-      passkey: {
-        credentialId: String(body?.credentialId ?? body?.id ?? "session"),
-      },
-    });
+    const out = (await this.auth.passkeyAuthVerify(
+      body ?? {},
+    )) as SessionMintBody;
     if (typeof out.accessToken === "string") {
       attachUserSessionCookie(res, out.accessToken);
     }
@@ -202,17 +188,7 @@ export class AuthController {
     @Body() body: Record<string, unknown>,
     @Res({ passthrough: true }) res: CookieResponse,
   ) {
-    const out = await this.auth.signupStageA({
-      method: "email_magic",
-      termsAcceptedAt: String(body?.termsAcceptedAt ?? new Date().toISOString()),
-      privacyAcceptedAt: String(
-        body?.privacyAcceptedAt ?? new Date().toISOString(),
-      ),
-      marketingConsent: Boolean(body?.marketingConsent),
-      referralCode:
-        typeof body?.referralCode === "string" ? body.referralCode : undefined,
-      email: typeof body?.email === "string" ? body.email : undefined,
-    });
+    const out = (await this.auth.magicLinkVerify(body ?? {})) as SessionMintBody;
     if (typeof out.accessToken === "string") {
       attachUserSessionCookie(res, out.accessToken);
     }

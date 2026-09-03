@@ -98,6 +98,26 @@ if (!phase0.includes("nats: false") && !phase0.includes("NATS ≠ Day-1")) {
   fails.push("Phase0 sweeper must document NATS ≠ Day-1 / nats:false");
 }
 
+// No real executor / no broadcast must never mutate event status to swept.
+const executorDecl = phase0.indexOf("const executor = opts?.executor");
+const noExecutorGuard = phase0.indexOf("if (!executor)");
+const execCall = phase0.indexOf("const exec = await executor(plan)");
+const broadcastGuard = phase0.indexOf("!exec.broadcast");
+const markSweptCall = phase0.indexOf("await this.markSwept");
+if (executorDecl < 0 || noExecutorGuard < 0 || execCall < 0) {
+  fails.push("Phase0 sweeper must have no-executor fail-closed path");
+}
+if (
+  broadcastGuard < 0 ||
+  markSweptCall < 0 ||
+  broadcastGuard > markSweptCall
+) {
+  fails.push("Phase0 sweeper must require broadcast=true before markSwept");
+}
+if (/sweepTxHash:\s*`dry:/.test(phase0)) {
+  fails.push("Phase0 sweeper must not synthesize dry sweepTxHash for DB mutation");
+}
+
 // Guard: when !allowSweep, return must set sweepCalls: 0 before any executor
 if (
   !/if\s*\(\s*!guard\.allowSweep\s*\)[\s\S]{0,2000}return\s*\{[\s\S]{0,400}sweepCalls:\s*0/.test(

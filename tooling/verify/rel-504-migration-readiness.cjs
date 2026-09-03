@@ -46,6 +46,22 @@ if (fixture.productionDbApply !== 0) fails.push("fixture productionDbApply must 
 if (fixture.applyLog !== 0) fails.push("fixture applyLog must be 0");
 if (fixture.applyOwner !== "REL-701-DB") fails.push("apply owner must stay REL-701-DB");
 if (fixture.projectRef !== "mgsytcetsiecllmhcyox") fails.push("fixture projectRef must stay mgsytcetsiecllmhcyox");
+if (fixture.blindReplayForbidden !== true) fails.push("blind replay must stay forbidden");
+if (fixture.productionMutation !== 0) fails.push("fixture productionMutation must be 0");
+const effectPresent = Array.isArray(fixture.schemaEffectPresentLedgerUnrecorded)
+  ? fixture.schemaEffectPresentLedgerUnrecorded
+  : [];
+const effectPending = Array.isArray(fixture.actualEffectPending)
+  ? fixture.actualEffectPending
+  : [];
+if (effectPresent.length !== 10) fails.push("schemaEffectPresentLedgerUnrecorded must contain 10 versions");
+if (effectPending.length !== 1 || effectPending[0] !== "20260903092000") {
+  fails.push("actualEffectPending must be exactly production_db_hardening");
+}
+if (!fixture.effectReconciliationEvidence) fails.push("effectReconciliationEvidence missing");
+else if (!fs.existsSync(path.join(root, fixture.effectReconciliationEvidence))) {
+  fails.push("effect reconciliation evidence file missing");
+}
 
 const rebaseRequired = /REBASE_REQUIRED = 1/.test(read("governance/engine-acceptance/FINAL_ACCEPTANCE.md"));
 for (const dep of fixture.deps || []) {
@@ -62,6 +78,9 @@ for (const needle of [
   "APPLY_LOG = 0",
   "APPLY_OWNER = REL-701-DB",
   "PROJECT_REF = mgsytcetsiecllmhcyox",
+  "PRIMARY_SCHEMA_EFFECT_PRESENT_LEDGER_UNRECORDED = 10",
+  "ACTUAL_EFFECT_PENDING = 1",
+  "BLIND_REPLAY_FORBIDDEN = 1",
 ]) {
   if (!ready.includes(needle)) fails.push("readiness doc missing " + needle);
 }
@@ -73,6 +92,12 @@ if (/apply_migration\s*\(/.test(ready)) {
 }
 if (/APPLY_LOG = 1/.test(ready) || /PRODUCTION_DB_APPLY = 1/.test(ready)) {
   fails.push("readiness doc flipped apply bits");
+}
+if (!/BLIND_REPLAY_FORBIDDEN/.test(plan) || !/PRODUCTION_DB_EFFECT_RECONCILIATION_AND_APPLY/.test(plan)) {
+  fails.push("REL-701-DB plan must require effect reconciliation and forbid blind replay");
+}
+if (/PRODUCTION_MIGRATION_APPLY: source_observations\/canonical_products\/match_results 원격 Supabase 반영/.test(plan)) {
+  fails.push("stale REL-701-DB blind apply wording reintroduced");
 }
 
 const migDir = path.join(root, "supabase", "migrations");

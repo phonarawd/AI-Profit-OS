@@ -27,6 +27,70 @@ export type PoolHealth = {
   lastBackgroundError: PoolErrorRecord | null;
 };
 
+type DatabasePoolTlsConfig = {
+  connectionString: string;
+  ssl?: { ca: string; rejectUnauthorized: true };
+};
+
+const DATABASE_SSL_QUERY_PARAMS = [
+  "sslmode",
+  "sslcert",
+  "sslkey",
+  "sslrootcert",
+] as const;
+
+function isSupabaseDatabaseHost(hostname: string): boolean {
+  const host = hostname.toLowerCase();
+  return (
+    (host.startsWith("db.") && host.endsWith(".supabase.co")) ||
+    host.endsWith(".pooler.supabase.com")
+  );
+}
+
+function normalizeDatabaseCaPem(raw: string | null): string | null {
+  if (!raw) return null;
+  const normalized = raw.replace(/\\n/g, "\n").trim();
+  return normalized.includes("-----BEGIN CERTIFICATE-----") &&
+    normalized.includes("-----END CERTIFICATE-----")
+    ? normalized + "\n"
+    : null;
+}
+
+/**
+ * Supabase DB TLS is always certificate-verified.
+ * Connection-string SSL query params are removed so pg-connection-string
+ * cannot override the explicit trusted-CA configuration.
+ */
+export function resolveDatabasePoolTls(
+  databaseUrl: string,
+  databaseSslCaPem: string | null,
+): DatabasePoolTlsConfig {
+  let parsed: URL;
+  try {
+    parsed = new URL(databaseUrl);
+  } catch {
+    throw new Error("DATABASE_URL invalid");
+  }
+
+  if (!isSupabaseDatabaseHost(parsed.hostname)) {
+    return { connectionString: databaseUrl };
+  }
+
+  const ca = normalizeDatabaseCaPem(databaseSslCaPem);
+  if (!ca) {
+    throw new Error(
+      "DATABASE_SSL_CA_PEM required for Supabase database TLS verification",
+    );
+  }
+
+  for (const key of DATABASE_SSL_QUERY_PARAMS) parsed.searchParams.delete(key);
+
+  return {
+    connectionString: parsed.toString(),
+    ssl: { ca, rejectUnauthorized: true },
+  };
+}
+
 /** Strip `//user:password@` credentials from anything we are about to log. */
 function redactCredentials(text: string): string {
   return String(text).replace(/\/\/[^\s/@]*:[^\s/@]*@/g, "//[redacted]@");
@@ -40,14 +104,15 @@ export class PostgresService implements OnModuleDestroy {
 
   private ensurePool(): Pool | null {
     if (this.pool) return this.pool;
-    const url = loadPhase0Env().databaseUrl;
+    const env = loadPhase0Env();
+    const url = env.databaseUrl;
     if (!url) return null;
+    const dbTls = resolveDatabasePoolTls(url, env.databaseSslCaPem);
     const pool = new Pool({
-      connectionString: url,
+      ...dbTls,
       max: 3,
       idleTimeoutMillis: 10_000,
       connectionTimeoutMillis: 5_000,
-      ssl: url.includes("supabase.co") ? { rejectUnauthorized: false } : undefined,
     });
     // node-postgres emits 'error' on idle/background clients. Without a listener
     // that is an unhandled EventEmitter error and Node terminates the whole API
@@ -98,9 +163,9 @@ export class PostgresService implements OnModuleDestroy {
   }
 
   async ping(): Promise<{ ok: boolean; detail: string }> {
-    const pool = this.ensurePool();
-    if (!pool) return { ok: false, detail: "DATABASE_URL unset" };
     try {
+      const pool = this.ensurePool();
+      if (!pool) return { ok: false, detail: "DATABASE_URL unset" };
       const r = await pool.query<{ ok: number }>("select 1 as ok");
       return r.rows[0]?.ok === 1
         ? { ok: true, detail: "up" }

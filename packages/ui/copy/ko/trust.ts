@@ -1,20 +1,21 @@
 /**
  * T.trust.* — UI §38 · §38.10 Market Partner Trust · §27.10 guide leads
- * JSX 하드코딩 금지 · sole “시세 참고” trust tone 금지 · 공식 협력 톤
+ * JSX 하드코딩 금지 · 데이터 출처를 협력·보증 관계로 과장 금지
  * disclaimer.* = CI locked · Admin override ❌
  */
 export const trust = {
   expectedNotGuaranteed: "예상 수익은 시장 상황에 따라 달라질 수 있어요",
   partners: {
-    stripHeadline: "🤝 공식 협력 · 글로벌 시세·데이터 연동",
-    stripSub: "대형 쇼핑몰·도소매 시장과 연동해 시세를 가져와요",
+    stripHeadline: "🤝 글로벌 시세·데이터 출처",
+    stripSub: "대형 쇼핑몰·도소매 시장에서 제공되는 시세·데이터를 비교해요",
+    sourceLabel: "데이터 출처",
     legCaption: "{buyLabel} ↔ {sellLabel}",
-    legFootnote: "공식 협력 · 시세·데이터 연동",
-    footerCompact: "공식 협력",
-    guideHeadline: "🤝 공식 협력사",
+    legFootnote: "시세·데이터 출처",
+    footerCompact: "시세·데이터 출처",
+    guideHeadline: "🤝 시세·데이터 출처",
     guideSub:
-      "시세·데이터를 가져오는 공식 협력사예요. 퍼뜩이 대신 사거나 팔지 않아요.",
-    gridSection: "협력사 목록",
+      "가격 비교에 사용하는 시세·데이터 출처예요. 퍼뜩이 해당 시장의 상품을 대신 사거나 팔지 않아요.",
+    gridSection: "데이터 출처 목록",
     successLegLog: "{buyLabel} ↔ {sellLabel} 시세 반영",
     blurbEbay: "글로벌 중고·수집품 시세를 가져와요",
     blurbAmazon: "아마존 마켓 시세를 가져와요",
@@ -54,7 +55,7 @@ export const trust = {
   },
   revenue: {
     headline: "💰 플랫폼은 어떻게 수익을 내나요?",
-    body: "시세 차이에서 플랫폼 마진을 받아요. 회원 입금금을 가져가지 않아요.",
+    body: "회원 잔액과 운영 수수료는 원장에서 별도 항목으로 기록돼요.",
     marginLabel: "포함된 운영 수수료",
     opportunityFootnote:
       "예상 수익에는 플랫폼 운영 수수료(마진)가 반영된 금액이에요.",
@@ -62,8 +63,8 @@ export const trust = {
     aIncome: "글로벌 시세 차이에서 플랫폼 마진을 받아요.",
     qUser: "회원 수익은?",
     aUser: "차익에서 마진·수수료를 뺀 예상 순수익이에요.",
-    qDeposit: "입금금을 가져가나요?",
-    aDeposit: "아니요. 입금은 내 지갑에 있고, 플랫폼은 거래마다 마진을 받아요.",
+    qDeposit: "입금은 어떻게 기록되나요?",
+    aDeposit: "입금 후 잔액은 서비스 원장에 기록되고, 운영 수수료는 별도 항목으로 기록돼요.",
     qMargin: "마진율은?",
     aMargin: "운영 설정값이며, 카드·상세에 포함된 수수료로 보여 드려요.",
   },
@@ -95,8 +96,8 @@ export const trust = {
   /** §51.17 Safe Stop Trust Metric · 손해·패배 프레이밍 금지 */
   safeStopCount: {
     title: "안전 중단 기록",
-    line: "AI가 손해 없이 멈춘 횟수 {n}",
-    hint: "조건이 안 맞으면 잔액 그대로 멈춰요",
+    line: "조건 불충족으로 중단된 횟수 {n}",
+    hint: "조건이 맞지 않으면 진행을 중단해요",
   },
   /** §51.18 Capital Band Journey */
   journey: {

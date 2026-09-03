@@ -1,0 +1,29 @@
+{
+  "schema": "render-pre-promotion-rollback-anchor.v1",
+  "observed_on": "2026-09-03",
+  "source": "read-only Render provider revalidation",
+  "provider": "render",
+  "workspace_id": "tea-da5qqo3m8hqs73djpvvg",
+  "service": {
+    "id": "srv-da5r1tqjobas73fl16dg",
+    "environment_id": "evm-da5r1tjbc2fs73a0b7hg",
+    "name": "AI-Profit-OS",
+    "repo": "https://github.com/phonarawd/AI-Profit-OS",
+    "url": "https://ai-profit-os.onrender.com",
+    "branch": "main"
+  },
+  "anchor": {
+    "role": "PRE_PROMOTION_ROLLBACK_TARGET",
+    "deploy_id": "dep-da938o142hec73eipre0",
+    "source_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec",
+    "status": "live",
+    "trigger": "api",
+    "provider_confirmed": true
+  },
+  "target_bound": true,
+  "mutation": 0,
+  "apply": false,
+  "production_release_authorized": false,
+  "founder_approval_required": true,
+  "rollback_execution": "BLOCKED_FOUNDER_ACTION"
+}

@@ -1,0 +1,60 @@
+{
+  "schema": "staging-authenticated-e2e.v1",
+  "recorded_on": "2026-09-03T13:41:16.055685Z",
+  "scope": "isolated exact staging only",
+  "runtime": {
+    "service_id": "srv-dacjnnm1egvs73cuh190",
+    "source_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "live_deploy_id": "dep-dacnei7qj5pc73dh58t0",
+    "auto_deploy": "no",
+    "app_host": "ai-profit-web-preview.ebay-adapter.workers.dev",
+    "ops_host": "ai-profit-ops-preview.ebay-adapter.workers.dev",
+    "api_host": "ai-profit-os-staging-exact-1f3b36f.onrender.com",
+    "jwt_user_secret_configured": true,
+    "jwt_secret_value_recorded": false
+  },
+  "authenticated_flow": {
+    "magic_link_verify_status": 201,
+    "session_status": 200,
+    "wallet_buckets_status": 200,
+    "wallet_buckets": {
+      "principal_usdt": "0",
+      "profit_usdt": "0",
+      "locked_usdt": "0",
+      "practice_usdt": "0",
+      "liability_usdt": "0"
+    },
+    "ledger_journals_status": 200,
+    "ledger_journals_total": 0,
+    "money_guard": {
+      "route": "POST /api/v1/wallet/profit/merge",
+      "requested_amount_usdt": "1",
+      "status": 403,
+      "code": "INSUFFICIENT_PROFIT",
+      "journal_rows_after": 0,
+      "ledger_entry_rows_after": 0
+    },
+    "classification": "CLOSED_VERIFIED"
+  },
+  "provider_recheck": {
+    "kakao_start_status": 201,
+    "kakao_provider_status": "not_configured",
+    "resend_magic_link_request_status": 503,
+    "resend_error": "MAGIC_LINK_DELIVERY_UNAVAILABLE"
+  },
+  "cleanup": {
+    "users": 0,
+    "user_profiles": 0,
+    "auth_sessions": 0,
+    "magic_link_challenges": 0,
+    "ledger_journals": 0,
+    "ledger_entries": 0,
+    "practice_grants": 0,
+    "e2e_bucket_rows": 0,
+    "e2e_http_response_rows": 0,
+    "token_value_retained": false
+  },
+  "current_integration_head_at_recording": "4b5272ba16442a08cb593fd67ab061bbb28ab474",
+  "exact_head_restage_required": true,
+  "production_mutation": 0
+}

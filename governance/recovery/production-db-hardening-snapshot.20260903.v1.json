@@ -1,0 +1,83 @@
+{
+  "schema": "production-db-hardening-provider-snapshot.v1",
+  "observed_at": "2026-09-03",
+  "source": "Supabase read-only list_migrations + list_branches + catalog/ACL/RLS/policy snapshot · mutation=0",
+  "project_ref": "mgsytcetsiecllmhcyox",
+  "production_mutation": 0,
+  "migration_ledger": {
+    "applied_count": 43,
+    "latest_version": "20260902155632",
+    "latest_name": "withdraw_broadcast_tron"
+  },
+  "isolated_staging": {
+    "branch_name": "staging-release-20260902",
+    "project_ref": "uluzxvdpynytytduuryy",
+    "parent_project_ref": "mgsytcetsiecllmhcyox",
+    "with_data": false,
+    "preview_project_status": "ACTIVE_HEALTHY"
+  },
+  "tables": {
+    "push_control": {
+      "policies": [],
+      "rls_forced": false,
+      "rls_enabled": false,
+      "service_role": [
+        "DELETE",
+        "INSERT",
+        "REFERENCES",
+        "SELECT",
+        "TRIGGER",
+        "TRUNCATE",
+        "UPDATE"
+      ]
+    },
+    "admin_audit_events": {
+      "policies": [],
+      "rls_forced": false,
+      "rls_enabled": true,
+      "service_role": [
+        "DELETE",
+        "INSERT",
+        "REFERENCES",
+        "SELECT",
+        "TRIGGER",
+        "TRUNCATE",
+        "UPDATE"
+      ]
+    },
+    "push_subscriptions": {
+      "policies": [],
+      "rls_forced": false,
+      "rls_enabled": false,
+      "service_role": [
+        "DELETE",
+        "INSERT",
+        "REFERENCES",
+        "SELECT",
+        "TRIGGER",
+        "TRUNCATE",
+        "UPDATE"
+      ]
+    }
+  },
+  "public_table_owners": {
+    "postgres": 93
+  },
+  "default_acl_public_tables": {
+    "postgres": [
+      "postgres",
+      "service_role"
+    ],
+    "supabase_admin": [
+      "anon",
+      "authenticated",
+      "postgres",
+      "service_role"
+    ]
+  },
+  "decision": {
+    "db_hardening_readiness": "NOT_READY",
+    "production_apply": 0,
+    "history_repair_forbidden": true
+  }
+}

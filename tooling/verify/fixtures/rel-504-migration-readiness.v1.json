@@ -1,13 +1,42 @@
 {
   "rel": "REL-504",
-  "deps": ["REL-003", "REL-408", "REL-502"],
+  "deps": [
+    "REL-003",
+    "REL-408",
+    "REL-502"
+  ],
   "protectedScopeMutation": false,
   "applyMigration": 0,
   "productionDbApply": 0,
   "applyLog": 0,
   "applyOwner": "REL-701-DB",
   "projectRef": "mgsytcetsiecllmhcyox",
-  "trackAVersions": ["20260819210000", "20260819220000", "20260820013000"],
+  "trackAVersions": [
+    "20260819210000",
+    "20260819220000",
+    "20260820013000"
+  ],
   "trackAReprice": "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
-  "extraVerifies": ["migrations-applied-parity.cjs", "rel-408-security-baseline.cjs"]
+  "extraVerifies": [
+    "migrations-applied-parity.cjs",
+    "rel-408-security-baseline.cjs"
+  ],
+  "blindReplayForbidden": true,
+  "effectReconciliationEvidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
+  "schemaEffectPresentLedgerUnrecorded": [
+    "20260819210000",
+    "20260819220000",
+    "20260820013000",
+    "20260821090000",
+    "20260823160000",
+    "20260823170000",
+    "20260823180000",
+    "20260823190000",
+    "20260823200000",
+    "20260823210000"
+  ],
+  "actualEffectPending": [
+    "20260903092000"
+  ],
+  "productionMutation": 0
 }

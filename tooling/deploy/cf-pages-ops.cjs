@@ -15,8 +15,26 @@ const {
   loadDotEnv,
   resolveWranglerEnv,
 } = require("./lib/env.cjs");
+const {
+  isProductionTarget,
+  requireAcceptedArtifactAuthority,
+} = require("./lib/accepted-artifact-authority.cjs");
 
-const target = process.argv[2] || "preview";
+const argv = process.argv.slice(2);
+const noRebuild = argv.includes("--no-rebuild");
+const target = argv.find((arg) => !arg.startsWith("--")) || "preview";
+if (isProductionTarget(target)) {
+  try {
+    requireAcceptedArtifactAuthority(target, process.env);
+  } catch (err) {
+    console.error("[cf:deploy:ops] " + String(err && err.message ? err.message : err));
+    process.exit(1);
+  }
+  if (!noRebuild) {
+    console.error("[cf:deploy:ops] FAIL_CLOSED:production_rebuild_forbidden");
+    process.exit(1);
+  }
+}
 requireRootDomainForProd(target);
 requireCloudflareCreds();
 loadDotEnv();
@@ -27,25 +45,33 @@ const configPath = path.join(root, "infra/ops/wrangler.toml");
 const envFlag = resolveWranglerEnv(target);
 const smokeSlot = envFlag === "production" ? "production" : "staging";
 
-console.log("[cf:deploy:ops] building apps/admin");
-const build = spawnSync("pnpm", ["--filter", "@aipo/admin", "build:cf"], {
-  cwd: root,
-  stdio: "inherit",
-  shell: true,
-});
-if (build.status !== 0) process.exit(build.status || 1);
+if (noRebuild) {
+  mustExist("apps/admin/.open-next/worker.js", "apps/admin OpenNext worker");
+  mustExist("apps/admin/.open-next/assets", "apps/admin OpenNext assets");
+  console.log("[cf:deploy:ops] no-rebuild · wrangler only");
+} else {
+  console.log("[cf:deploy:ops] building apps/admin");
+  const build = spawnSync("pnpm", ["--filter", "@aipo/admin", "build:cf"], {
+    cwd: root,
+    stdio: "inherit",
+    shell: true,
+  });
+  if (build.status !== 0) process.exit(build.status || 1);
+}
 
-const deployArgs = [
-  "exec",
-  "opennextjs-cloudflare",
-  "deploy",
-  "--config=" + configPath,
-  "--env=" + envFlag,
-];
+const deployArgs = noRebuild
+  ? ["exec", "wrangler", "deploy", "--no-bundle", "--config", configPath, "--env=" + envFlag]
+  : [
+      "exec",
+      "opennextjs-cloudflare",
+      "deploy",
+      "--config=" + configPath,
+      "--env=" + envFlag,
+    ];
 
 console.log("[cf:deploy:ops] OpenNext Workers deploy target=" + envFlag + " smoke=" + smokeSlot);
 const deploy = spawnSync("pnpm", deployArgs, {
-  cwd: appDir,
+  cwd: noRebuild ? root : appDir,
   stdio: "inherit",
   shell: true,
 });

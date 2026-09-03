@@ -12,13 +12,19 @@ const {
   isProdTarget,
   resolveWranglerEnv,
 } = require("./lib/env.cjs");
+const { PREBUILT_DIR, findPrebuiltEntry } = require("../release/artifact-provenance.cjs");
+const {
+  isProductionTarget,
+  requireAcceptedArtifactAuthority,
+} = require("./lib/accepted-artifact-authority.cjs");
 
-const ALLOWED_WORKER_SETS = Object.freeze(["phase0", "phase1", "p0-ebay"]);
+const ALLOWED_WORKER_SETS = Object.freeze(["phase0", "phase1", "p0-ebay", "fx-core"]);
 const DEFAULT_WORKER_SET = "phase0";
 const DEFAULT_TARGET = "preview";
 const WORKER_SET_RE = /^[a-z][a-z0-9-]*$/;
 const WORKER_NAME_RE = /^[a-z][a-z0-9-]*$/;
 const P0_EBAY_ONLY = Object.freeze(["ebay-adapter"]);
+const FX_CORE_ONLY = Object.freeze(["coingecko-adapter", "frankfurter-adapter"]);
 const P0_EBAY_FORBIDDEN = Object.freeze([
   "amazon-adapter",
   "yahoo-jp-adapter",
@@ -103,6 +109,16 @@ function resolveWorkers(manifest, workerSet) {
       throw err;
     }
   }
+  if (workerSet === "fx-core") {
+    const exact =
+      list.length === FX_CORE_ONLY.length &&
+      FX_CORE_ONLY.every((name, i) => list[i] === name);
+    if (!exact) {
+      const err = new Error("fx-core must be exactly [coingecko-adapter,frankfurter-adapter]");
+      err.code = "FX_CORE_EXACTNESS";
+      throw err;
+    }
+  }
   if (workerSet === "p0-ebay") {
     const exact =
       list.length === P0_EBAY_ONLY.length &&
@@ -127,30 +143,35 @@ function planTargetLabel(target) {
   return isProdTarget(target) ? "production" : "preview";
 }
 
-function formatPlan({ target, workerSet, workers, environment }) {
-  return [
+function formatPlan({ target, workerSet, workers, environment, noBundle }) {
+  const lines = [
     `target=${target}`,
     `worker_set=${workerSet}`,
     `worker_count=${workers.length}`,
     `worker_names=${workers.join(",")}`,
     `environment=${environment}`,
-  ].join("\n");
+  ];
+  if (noBundle) lines.push("no_bundle=true");
+  return lines.join("\n");
 }
 
-function buildPlan(manifest, target, workerSet) {
+function buildPlan(manifest, target, workerSet, extra) {
   const workers = resolveWorkers(manifest, workerSet);
   const environment = resolveWranglerEnv(target);
+  const noBundle = Boolean(extra && extra.noBundle);
   return {
     target: planTargetLabel(target),
     workerSet,
     workers,
     workerCount: workers.length,
     environment,
+    noBundle,
     text: formatPlan({
       target: planTargetLabel(target),
       workerSet,
       workers,
       environment,
+      noBundle,
     }),
   };
 }
@@ -228,10 +249,22 @@ function main() {
     loadDotEnv();
   }
 
+  const noBundle = flags.has("--no-bundle");
+  if (!dry && isProductionTarget(targetArg)) {
+    try {
+      requireAcceptedArtifactAuthority(targetArg, process.env);
+    } catch (err) {
+      fail(err && err.message ? err.message : String(err));
+    }
+    if (!noBundle) {
+      fail("FAIL_CLOSED:production_bundle_forbidden");
+    }
+  }
+
   const manifest = readWorkersManifest();
   let plan;
   try {
-    plan = buildPlan(manifest, targetArg, workerSet);
+    plan = buildPlan(manifest, targetArg, workerSet, { noBundle });
   } catch (err) {
     fail(err.message);
   }
@@ -245,12 +278,26 @@ function main() {
 
   for (const name of plan.workers) {
     const dir = path.join(root, "workers", name);
+    const wranglerArgs = [
+      "exec",
+      "wrangler",
+      "deploy",
+      "--config",
+      "wrangler.toml",
+      `--env=${plan.environment}`,
+    ];
+    if (noBundle) {
+      let entry;
+      try {
+        entry = findPrebuiltEntry(path.join(dir, PREBUILT_DIR));
+      } catch (err) {
+        fail(err && err.message ? err.message : "worker_prebuilt_missing:" + name);
+      }
+      wranglerArgs.splice(3, 0, "--no-bundle");
+      wranglerArgs.push(path.relative(dir, entry).replace(/\\/g, "/"));
+    }
     console.log(`[cf:deploy:workers] deploying ${name} …`);
-    const r = spawnSync(
-      "pnpm",
-      ["exec", "wrangler", "deploy", "--config", "wrangler.toml", `--env=${plan.environment}`],
-      { cwd: dir, stdio: "inherit", shell: true },
-    );
+    const r = spawnSync("pnpm", wranglerArgs, { cwd: dir, stdio: "inherit", shell: true });
     if (r.status !== 0) process.exit(r.status || 1);
   }
 
@@ -264,6 +311,7 @@ const exported = {
   DEFAULT_WORKER_SET,
   P0_EBAY_ONLY,
   P0_EBAY_FORBIDDEN,
+  FX_CORE_ONLY,
   assertSurfaceAllowed,
   buildPlan,
   formatPlan,

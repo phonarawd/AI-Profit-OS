@@ -35,6 +35,7 @@ const files = [
   "services/market-intelligence/src/catalog-runtime-seed.cjs",
   "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
   "services/api-nest/src/opportunities/fx-snapshot.service.ts",
+  "services/api-nest/src/opportunities/fx-marketplace-freshness.ts",
   "supabase/migrations/20260814130000_ptf00c_fx_marketplace_normalization.sql",
   "schemas/listing.v1.json",
   "schemas/price-observation.v1.json",
@@ -176,13 +177,45 @@ if (!/catch\s*\(e\)\s*\{[\s\S]{0,600}fxNormalizationFailed \+= 1/.test(seedSvcCo
   fails.push("FX normalization failure must be caught per-row (fail-closed skip), not thrown for the whole batch");
 }
 
-// --- fx-snapshot.service.ts: durable, immutable-insert, carry-forward-bounded ---
+// --- FX snapshot: durable immutable insert + per-leg provenance freshness ---
 const fxSvc = read("services/api-nest/src/opportunities/fx-snapshot.service.ts");
-for (const needle of ["ON CONFLICT (id) DO NOTHING", "CARRY_FORWARD_MS", "recordFxIngest", "getLatestUsableSnapshot"]) {
+for (const needle of [
+  "ON CONFLICT (id) DO NOTHING",
+  "recordFxIngest",
+  "getLatestUsableSnapshot",
+  "carryMarketplaceLeg",
+]) {
   if (!fxSvc.includes(needle)) fails.push(`fx-snapshot.service.ts missing ${needle}`);
 }
 if (/UPDATE public\.fx_snapshots/.test(stripComments(fxSvc))) {
   fails.push("fx-snapshot.service.ts must never UPDATE an existing fx_snapshots row (immutability)");
+}
+if (/MARKETPLACE_LEG_CARRY_FORWARD_MS/.test(fxSvc)) {
+  fails.push("marketplace FX legs must not inherit freshness from one shared latest-row timestamp");
+}
+
+const fxFreshness = read(
+  "services/api-nest/src/opportunities/fx-marketplace-freshness.ts",
+);
+for (const needle of [
+  "EXPECTED_SOURCE",
+  "COINGECKO_MARKETPLACE_TTL_MS = 15 * 60 * 1000",
+  "FRANKFURTER_MARKETPLACE_TTL_MS = 6 * 60 * 60 * 1000",
+  "capturedMs > nowMs",
+]) {
+  if (!fxFreshness.includes(needle)) {
+    fails.push(`fx-marketplace-freshness.ts missing ${needle}`);
+  }
+}
+for (const pair of [
+  ['usdtPerUsd: "coingecko"', "USDT/USD source authority"],
+  ['gbpUsd: "frankfurter"', "GBP/USD source authority"],
+  ['eurUsd: "frankfurter"', "EUR/USD source authority"],
+  ['audUsd: "frankfurter"', "AUD/USD source authority"],
+]) {
+  if (!fxFreshness.includes(pair[0])) {
+    fails.push(`fx marketplace freshness missing ${pair[1]}`);
+  }
 }
 
 // --- §5 historical contamination: migration must classify, never fabricate ---
@@ -244,5 +277,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:price-denomination-contract] PASS (nativeAmount/nativeCurrency contract · fail-closed unsupported/missing FX · legacy_unverified never fabricated · frankfurter raw-relay-only · schema locks currency=USDT)",
+  "[verify:price-denomination-contract] PASS (native denomination · per-leg FX provenance freshness · fail-closed missing FX · legacy_unverified · raw-relay-only)",
 );

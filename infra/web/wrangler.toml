@@ -24,6 +24,12 @@ PLATFORM_NAME = "AI Profit OS"
 name = "ai-profit-web-preview"
 workers_dev = true
 
+# Wrangler environments do not inherit top-level vars. Keep preview explicit so
+# staging cannot silently lose runtime metadata while production remains unchanged.
+[env.preview.vars]
+APP_NAME = "퍼뜩"
+PLATFORM_NAME = "AI Profit OS"
+
 [env.preview.assets]
 directory = "../../apps/web/.open-next/assets"
 binding = "ASSETS"

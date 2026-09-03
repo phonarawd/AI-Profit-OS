@@ -8,6 +8,9 @@ const { spawnSync } = require("child_process");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
+const LIVE_FETCH_ATTEMPTS = 3;
+const LIVE_FETCH_TIMEOUT_MS = 12000;
+const LIVE_FETCH_RETRY_DELAY_MS = 750;
 
 function read(rel) {
   const p = path.join(root, rel);
@@ -42,6 +45,8 @@ const opsDeploy = read("tooling/deploy/cf-pages-ops.cjs");
 const stagingDeploy = read("tooling/deploy/cf-deploy-staging.cjs");
 const stagingWorkflow = read(".github/workflows/deploy-staging.yml");
 const prodWorkflow = read(".github/workflows/deploy-cloudflare.yml");
+const preflight = read("tooling/deploy/cf-preflight.cjs");
+const browserSmoke = read("tooling/e2e/live-staging-browser-smoke.cjs");
 
 function todoCompleted(relId) {
   const id = relId.replace(/^REL-/i, "rel-").toLowerCase();
@@ -54,6 +59,27 @@ function yamlCompleted(relId) {
   const idx = plan.indexOf("ID: " + relId);
   if (idx < 0) return false;
   return /STATUS:\s*COMPLETED/.test(plan.slice(idx, idx + 240));
+}
+
+
+function sourceContainsExactUrlHost(source, expectedHost) {
+  const urls = String(source || "").match(/https?:\/\/[^\s"'`\\)]+/g) || [];
+  const wanted = String(expectedHost || "").trim().toLowerCase();
+  return urls.some((raw) => {
+    try {
+      return new URL(raw).hostname.toLowerCase() === wanted;
+    } catch {
+      return false;
+    }
+  });
+}
+
+function hostListHasExact(hosts, expectedHost) {
+  const wanted = String(expectedHost || "").trim().toLowerCase();
+  return (
+    Array.isArray(hosts) &&
+    hosts.some((host) => String(host || "").trim().toLowerCase() === wanted)
+  );
 }
 
 if (fixture.productionDomainMutation !== 0) {
@@ -126,8 +152,156 @@ if (/inputs:\s*\n\s*target:/.test(stagingWorkflow) && stagingWorkflow.includes("
 if (stagingWorkflow.includes("environment: production")) {
   fails.push("staging workflow must not use production GitHub environment");
 }
+if (
+  sourceContainsExactUrlHost(stagingWorkflow, "ai-profit-os.onrender.com") ||
+  /API_HOST:-\s*https:\/\/ai-profit-os\.onrender\.com/.test(stagingWorkflow) ||
+  /API="\$\{API_HOST:-/.test(stagingWorkflow)
+) {
+  fails.push("staging workflow must not default API_HOST to production Render");
+}
+if (stagingWorkflow.includes("secrets.API_HOST")) {
+  fails.push("staging workflow must not inherit production API_HOST secret");
+}
+if (!stagingWorkflow.includes("STAGING_API_HOST")) {
+  fails.push("staging workflow must require STAGING_API_HOST");
+}
+if (stagingWorkflow.includes("secrets.STAGING_API_HOST")) {
+  fails.push("staging workflow must not depend on a stale STAGING_API_HOST secret");
+}
+if (
+  !staging ||
+  staging.apiOrigin !== "https://ai-profit-os-staging-exact-1f3b36f.onrender.com"
+) {
+  fails.push("staging.apiOrigin must bind the exact isolated Render service");
+}
+if (!stagingWorkflow.includes("manifest.openNext?.staging?.apiOrigin")) {
+  fails.push("staging workflow must source API origin from manifest SSOT");
+}
+if (!stagingWorkflow.includes("chatgpt/staging-exact-1f3b36f-20260903")) {
+  fails.push("staging workflow push trigger must be restricted to exact staging branch");
+}
+if (!stagingWorkflow.includes("github.event_name == 'push'")) {
+  fails.push("staging workflow push trigger must deploy both preview surfaces");
+}
+if (!stagingWorkflow.includes('>> "$GITHUB_ENV"')) {
+  fails.push("staging workflow must propagate STAGING_API_HOST to later deploy steps");
+}
+if (!stagingWorkflow.includes("Exact staging API core readiness")) {
+  fails.push("staging workflow must gate preview deploy on exact live core readiness");
+}
+if (!stagingWorkflow.includes("const deadline = Date.now() + 180_000")) {
+  fails.push("staging core readiness must bounded-wait for exact backend deployment");
+}
+if (!stagingWorkflow.includes("body?.auth?.userJwtConfigured !== true")) {
+  fails.push("staging core readiness must fail closed when JWT user secret is unavailable");
+}
+if (
+  !stagingWorkflow.includes("Staging auth provider readiness") ||
+  !stagingWorkflow.includes("id: auth_provider_readiness") ||
+  !stagingWorkflow.includes("continue-on-error: true")
+) {
+  fails.push("staging workflow must isolate Kakao/Resend provider readiness for diagnostics");
+}
+if (!stagingWorkflow.includes("body?.auth?.kakaoConfigured !== true")) {
+  fails.push("staging provider readiness must detect unavailable Kakao");
+}
+if (!stagingWorkflow.includes("body?.auth?.resendConfigured !== true")) {
+  fails.push("staging provider readiness must detect unavailable Resend");
+}
+if (
+  !stagingWorkflow.includes("Staging readiness verdict") ||
+  !stagingWorkflow.includes("steps.auth_provider_readiness.outcome") ||
+  !stagingWorkflow.includes("[staging-readiness] BLOCKED Kakao/Resend provider readiness")
+) {
+  fails.push("staging final verdict must fail closed when auth providers are unavailable");
+}
+const fxCoreStart = stagingWorkflow.indexOf("- name: Deploy FX core preview");
+const fxBindStart = stagingWorkflow.indexOf("- name: Bind FX preview secrets", fxCoreStart);
+const fxCoreSlice =
+  fxCoreStart >= 0 && fxBindStart > fxCoreStart
+    ? stagingWorkflow.slice(fxCoreStart, fxBindStart)
+    : "";
+if (!fxCoreSlice || /if:\s*env\.FX_PREVIEW_READY\s*==/.test(fxCoreSlice)) {
+  fails.push("staging FX core preview must deploy independently of provider-secret readiness");
+}
+if (
+  !stagingWorkflow.includes("FX core preview fail-closed smoke") ||
+  !stagingWorkflow.includes("[fx-core-auth] PASS fail-closed status contract") ||
+  !stagingWorkflow.includes("v.ingestAuthConfigured ? 401 : 503")
+) {
+  fails.push("staging FX core preview must prove health + unauthenticated tick fail-closed");
+}
+if (
+  !stagingWorkflow.includes("FX preview credential health") ||
+  !stagingWorkflow.includes("FX_PREVIEW_CREDENTIAL_HEALTH=PASS")
+) {
+  fails.push("staging FX credential-ready path must prove live worker credential health");
+}
+if (
+  !stagingWorkflow.includes('if [ "${FX_PREVIEW_READY:-no}" != "yes" ]') ||
+  !stagingWorkflow.includes("[staging-readiness] BLOCKED FX provider readiness")
+) {
+  fails.push("staging final verdict must fail closed when FX providers are unavailable");
+}
+if (!stagingWorkflow.includes("app_host_not_staging_web") || !stagingWorkflow.includes("ops_host_not_staging_ops")) {
+  fails.push("staging workflow must reject localhost/wrong auth origins");
+}
+if (!stagingWorkflow.includes('GITHUB_REF_NAME') || !stagingWorkflow.includes('chatgpt/staging-exact-1f3b36f-20260903')) {
+  fails.push("staging workflow must execute from exact staging branch");
+}
+if (!stagingWorkflow.includes("runtime_sha_mismatch")) {
+  fails.push("staging workflow must require exact Render runtime SHA before frontend deploy");
+}
+if (!stagingWorkflow.includes("forbiddenHosts")) {
+  fails.push("staging workflow must deny manifest forbiddenHosts");
+}
+if (!hostListHasExact((staging && staging.forbiddenHosts) || [], "ai-profit-os.onrender.com")) {
+  fails.push("staging.forbiddenHosts must include production Render API host");
+}
+if (!hostListHasExact((staging && staging.forbiddenHosts) || [], "api.hiptk.app")) {
+  fails.push("staging.forbiddenHosts must include api.hiptk.app");
+}
 if (prodWorkflow.includes("workflow_dispatch") === false) {
   fails.push("production workflow_dispatch must remain on deploy-cloudflare.yml");
+}
+if (!prodWorkflow.includes("STAGING_API_HOST")) {
+  fails.push("deploy-cloudflare preview path must require STAGING_API_HOST");
+}
+if (!prodWorkflow.includes("non-prod-api-host.cjs")) {
+  fails.push("deploy-cloudflare preview path must run non-prod API isolation");
+}
+if (/if: inputs.target != 'production'[\s\S]*secrets\.API_HOST/.test(prodWorkflow)) {
+  fails.push("deploy-cloudflare preview must not inherit secrets.API_HOST");
+}
+if (!preflight.includes("requireNonProdApiIsolation")) {
+  fails.push("cf-preflight must isolate non-prod API host");
+}
+if (browserSmoke.includes("binding.candidate_sha")) {
+  fails.push("browser smoke must not trust governance candidate_sha over live Render source SHA");
+}
+if (
+  !browserSmoke.includes("binding.render?.source_sha") ||
+  !browserSmoke.includes("STAGING_EXPECTED_SHA")
+) {
+  fails.push("browser smoke must derive expected SHA from exact runtime evidence with explicit override support");
+}
+if (
+  !browserSmoke.includes("HEALTH_ATTEMPTS = 3") ||
+  !browserSmoke.includes("transient health retry")
+) {
+  fails.push("browser smoke must bounded-retry transient 5xx/network health failures");
+}
+
+const isolationTest = spawnSync(
+  process.execPath,
+  ["--test", path.join(root, "tooling/deploy/lib/non-prod-api-host.runtime.test.cjs")],
+  { cwd: root, encoding: "utf8", timeout: 30_000 },
+);
+if (isolationTest.status !== 0) {
+  fails.push(
+    "non-prod API isolation runtime FAIL: " +
+      String(isolationTest.stderr || isolationTest.stdout || "").split("\n")[0],
+  );
 }
 
 for (const rel of [
@@ -183,8 +357,32 @@ if (closed) {
   if (!yamlCompleted("REL-600")) fails.push("REL-600 YAML must be COMPLETED");
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchTransientSafe(url, options) {
+  let lastError;
+  for (let attempt = 1; attempt <= LIVE_FETCH_ATTEMPTS; attempt += 1) {
+    try {
+      return await fetch(url, {
+        ...options,
+        signal: AbortSignal.timeout(LIVE_FETCH_TIMEOUT_MS),
+      });
+    } catch (e) {
+      lastError = e;
+      if (attempt === LIVE_FETCH_ATTEMPTS) break;
+      console.warn(
+        `[verify:rel-600-staging] transient fetch retry ${attempt}/${LIVE_FETCH_ATTEMPTS - 1} ${url}`,
+      );
+      await sleep(LIVE_FETCH_RETRY_DELAY_MS * attempt);
+    }
+  }
+  throw lastError || new Error("live fetch failed after bounded retries");
+}
+
 async function live(url, ok) {
-  const res = await fetch(url, {
+  const res = await fetchTransientSafe(url, {
     redirect: "manual",
     headers: { "user-agent": "ai-profit-os-rel-600-verify/1" },
   });

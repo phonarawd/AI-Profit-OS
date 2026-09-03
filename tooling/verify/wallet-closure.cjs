@@ -68,6 +68,9 @@ for (const needle of [
 ]) {
   if (!sdkWallet.includes(needle)) fail("wallet SDK strict parser missing " + needle);
 }
+if (!sdkWallet.includes('const MONEY_RE = /^-?[0-9]+(\\.[0-9]+)?$/;')) {
+  fail("wallet SDK money parser must accept decimal USDT strings");
+}
 if (/reduce\(|\.reduce\(/.test(client)) {
   fail("wallet must not sum buckets as authority");
 }

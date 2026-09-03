@@ -25,6 +25,12 @@ ROBOTS = "noindex, nofollow"
 name = "ai-profit-ops-preview"
 workers_dev = true
 
+# Wrangler environments do not inherit top-level vars. Keep preview explicit so
+# staging cannot silently lose ops runtime metadata while production stays untouched.
+[env.preview.vars]
+APP_NAME = "AI Profit OS Ops"
+ROBOTS = "noindex, nofollow"
+
 [env.preview.assets]
 directory = "../../apps/admin/.open-next/assets"
 binding = "ASSETS"

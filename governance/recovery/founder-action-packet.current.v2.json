@@ -1,0 +1,424 @@
+{
+  "schema": "governance.recovery.founder-action-packet.current.v2",
+  "recorded_on": "2026-09-03T13:41:16.055685Z",
+  "source": "GitHub + Render + Supabase current revalidation; exact runtime 72ea791b + staging host/JWT fix + authenticated session/wallet/ledger/money-guard proof; Kakao/Resend/FX/TRON remain fail-closed; Production mutation=0",
+  "subject_integration_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+  "production_release": "NO_GO",
+  "invariants": {
+    "integration_pr": 209,
+    "integration_pr_state": "DRAFT_DO_NOT_MERGE",
+    "main_sha": "98730b8c71a8c4c0b5e474460a6a24bea43e6966",
+    "production_mutation": 0,
+    "production_db_apply": 0,
+    "production_provider_mutation": 0,
+    "staging_provider_mutation_performed": true,
+    "staging_provider_mutation_scope": [
+      "SUPABASE_PREVIEW_REBASE",
+      "SUPABASE_PREVIEW_RESET",
+      "SUPABASE_PREVIEW_BASELINE_PARITY",
+      "SUPABASE_PREVIEW_HARDENING_APPLY_ROLLBACK_REAPPLY",
+      "SUPABASE_PREVIEW_HARDENING_REASSERT_CURRENT",
+      "RENDER_EXACT_STAGING_SERVICE_CREATE",
+      "RENDER_STAGING_REDIS_BINDING",
+      "RENDER_STAGING_ADAPTER_INGEST_TOKEN_CONFIG",
+      "RENDER_STAGING_INTERNAL_WALLET_TICK_TOKEN_CONFIG",
+      "SUPABASE_PREVIEW_RUNTIME_LOGIN_ROLE_CREATE",
+      "SUPABASE_PREVIEW_RUNTIME_ROLE_SERVICE_ROLE_GRANT",
+      "SUPABASE_PREVIEW_RUNTIME_ROLE_BYPASSRLS",
+      "RENDER_STAGING_DATABASE_URL_CONFIG",
+      "RENDER_STAGING_DATABASE_SSL_CA_CONFIG",
+      "EXACT_STAGING_BRANCH_FAST_FORWARD",
+      "RENDER_EXACT_STAGING_REDEPLOY",
+      "CLOUDFLARE_STAGING_WEB_PREVIEW_REDEPLOY",
+      "CLOUDFLARE_STAGING_OPS_PREVIEW_REDEPLOY",
+      "CLOUDFLARE_STAGING_API_ORIGIN_BINDING",
+      "RENDER_STAGING_APP_OPS_API_HOST_CONFIG",
+      "RENDER_STAGING_JWT_USER_SECRET_CONFIG",
+      "RENDER_EXACT_STAGING_AUTH_E2E_PROBE_CLEANUP"
+    ],
+    "engine_ack_mutation": 0,
+    "ghas_dismissal": 0
+  },
+  "github": {
+    "main_sha": "98730b8c71a8c4c0b5e474460a6a24bea43e6966",
+    "rescue_checkpoint_sha": "e312119582036ab1367ede74dd4c08ff3b22a951",
+    "integration_subject_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "integration_pr": 209,
+    "integration_pr_draft": true,
+    "main_ruleset": {
+      "id": 20576556,
+      "name": "main-gate-required",
+      "enforcement": "active",
+      "required_status_checks": [
+        "verify-gate"
+      ],
+      "required_approving_review_count": 0,
+      "current_user_can_bypass": "always",
+      "release_risk": "BYPASS_PLUS_RENDER_MAIN_AUTODEPLOY",
+      "mutation": 0,
+      "founder_action_required": true
+    },
+    "integration_governance_head_at_recording": "5d37d812b6a807090c2558b985b1b42553d32a3e"
+  },
+  "render": {
+    "workspace_id": "tea-da5qqo3m8hqs73djpvvg",
+    "production": {
+      "service_id": "srv-da5r1tqjobas73fl16dg",
+      "environment_id": "evm-da5r1tjbc2fs73a0b7hg",
+      "url": "https://ai-profit-os.onrender.com",
+      "branch": "main",
+      "autoDeploy": "yes",
+      "autoDeployTrigger": "commit",
+      "live_deploy_id": "dep-da938o142hec73eipre0",
+      "live_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec"
+    },
+    "staging": {
+      "service_id": "srv-dacjnnm1egvs73cuh190",
+      "url": "https://ai-profit-os-staging-exact-1f3b36f.onrender.com",
+      "branch": "chatgpt/staging-exact-1f3b36f-20260903",
+      "branch_label_note": "historical branch label; exactness is authoritative from live deploy SHA",
+      "autoDeploy": "no",
+      "autoDeployTrigger": "off",
+      "live_deploy_id": "dep-dacnei7qj5pc73dh58t0",
+      "live_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+      "current_candidate_bound": true,
+      "runtime_health_observed_at": "2026-09-03T11:26:35.709Z",
+      "database_url_configured": true,
+      "database_ok": true,
+      "redis_configured": true,
+      "redis_ok": true,
+      "warnings_empty": true,
+      "adapter_ingest_without_token_status": 401,
+      "database_tls_verified": true,
+      "internal_wallet_tick_token_configured": true,
+      "internal_wallet_without_token_status": 401,
+      "db_backed_public_read_status": 200,
+      "db_backed_public_read_route": "GET /api/v1/growth/public-surface",
+      "frontend_web_proxy_status": 200,
+      "frontend_ops_proxy_status": 200,
+      "frontend_proxy_exact_runtime_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+      "frontend_proxy_binding_proven": true,
+      "auth_runtime_probe": {
+        "observed_at": "2026-09-03T13:41:16.055685Z",
+        "jwt_session_mint_status": 201,
+        "jwt_user_secret_configured": true,
+        "app_host_observed": "ai-profit-web-preview.ebay-adapter.workers.dev",
+        "ops_host_observed": "ai-profit-ops-preview.ebay-adapter.workers.dev",
+        "api_host_observed": "ai-profit-os-staging-exact-1f3b36f.onrender.com",
+        "auth_session_status": 200,
+        "wallet_buckets_status": 200,
+        "ledger_journals_status": 200,
+        "money_guard_status": 403,
+        "money_guard_code": "INSUFFICIENT_PROFIT",
+        "auth_readiness": "CLOSED_VERIFIED_RUNTIME_72EA",
+        "evidence": "governance/recovery/staging-authenticated-e2e.20260903.v1.json"
+      }
+    }
+  },
+  "supabase": {
+    "production_project_ref": "mgsytcetsiecllmhcyox",
+    "production_status": "ACTIVE_HEALTHY",
+    "applied_migrations": 43,
+    "latest_applied_migration": "20260902155632_withdraw_broadcast_tron",
+    "staging_branch": {
+      "name": "staging-release-20260902",
+      "project_ref": "uluzxvdpynytytduuryy",
+      "preview_project_status": "ACTIVE_HEALTHY",
+      "with_data": false,
+      "customer_data_zero_proven": true,
+      "baseline_schema_parity_proven": true,
+      "final_schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
+      "hardening_rehearsal_proven": true,
+      "hardening_evidence": "governance/recovery/staging-db-hardening-snapshot.20260903.v2.json",
+      "render_binding_currently_proven": true,
+      "current_hardening_state_proven": true,
+      "hardening_reassert_proven": true,
+      "current_expected_delta_only": true,
+      "render_exact_candidate_runtime_proven": true,
+      "render_redis_runtime_proven": true,
+      "render_database_url_configured": true,
+      "render_database_runtime_proven": true,
+      "render_database_tls_verified": true,
+      "runtime_role": "aipo_staging_runtime_20260903",
+      "runtime_role_superuser": false,
+      "runtime_role_bypassrls": true
+    }
+  },
+  "engine": {
+    "final_acceptance": "NOT_ISSUED",
+    "rebase_required": true,
+    "ack_received": false,
+    "current_truth": {
+      "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+      "live_aggregate": "dd86caca5782297368050998c6b24d1fa9ce78f8bf91bcf47dba1586337d5f66",
+      "baseline_aggregate": "2ff1760b7d721205657991e1c775bf95fea4ae944dfb8e23a5b85de9813a36e8",
+      "live_path_count": 464,
+      "baseline_path_count": 450,
+      "changed_path_count": 33,
+      "missing_paths": [],
+      "qa_ready": true,
+      "can_issue": false,
+      "failure_class": "CURRENT_EPOCH_DRIFT_ONLY"
+    }
+  },
+  "integration_safety_restored": {
+    "final_production_decision_gate": true,
+    "accepted_artifact_deploy_lock": true,
+    "release_manifest_identity_lock": true,
+    "authoritative_engine_run_binding": true,
+    "staging_production_api_fallback_blocked": true,
+    "staging_topology_fail_closed": true,
+    "production_db_hardening_source_staged": true,
+    "db_default_acl_readiness_checked": true,
+    "auth_magic_link_delivery_fail_closed": true,
+    "tron_synthetic_derivation_removed": true
+  },
+  "blockers": [
+    "STAGING_RESEND_DELIVERY_UNAVAILABLE",
+    "STAGING_KAKAO_NOT_CONFIGURED",
+    "STAGING_FRONTEND_E2E_NOT_PROVEN_CURRENT",
+    "PRODUCTION_DB_HARDENING_NOT_APPLIED",
+    "RENDER_AUTODEPLOY_ENABLED",
+    "PRODUCTION_LIVE_SHA_DIFFERS_FROM_INTEGRATION",
+    "FX_RUNTIME_FEED_NOT_ACTIVE_CURRENT",
+    "TRON_HD_VAULT_NOT_PROVEN",
+    "ENGINE_NOT_ISSUED",
+    "ENGINE_REBASE_REQUIRED",
+    "ENGINE_ACK_MISSING",
+    "RELEASE_ACCEPTANCE_MISSING",
+    "CURRENT_SHA_SECURITY_EVIDENCE_INCOMPLETE",
+    "PRODUCTION_MAGIC_LINK_DELIVERY_NOT_PROVEN_CURRENT",
+    "MAIN_RULESET_BYPASS_PRESENT"
+  ],
+  "next_actions": [
+    {
+      "order": 1,
+      "id": "CI_EXACT_HEAD",
+      "action": "Current source/runtime CI is green across CodeQL, Auth, eBay fault injection and UI suites; Engine remains intentionally NOT_ISSUED until explicit current-epoch rebase authority.",
+      "production_mutation": false,
+      "status": "PARTIAL"
+    },
+    {
+      "order": 2,
+      "id": "STAGING_BINDING",
+      "action": "Exact candidate Render runtime is bound to the isolated Supabase preview through Supavisor session pooling with trusted-CA TLS; DB+Redis health and a DB-backed public read are proven.",
+      "production_mutation": false,
+      "provider_mutation_required": false,
+      "status": "CLOSED_VERIFIED"
+    },
+    {
+      "order": 3,
+      "id": "STAGING_FRONTEND_E2E",
+      "action": "Authenticated magic-link session mint, session read, zero-balance wallet buckets, empty ledger read and insufficient-profit money guard are CLOSED_VERIFIED on exact runtime 72ea791b. Current integration head is ahead of that runtime, so final exact-head restage is still required; Kakao and Resend provider configuration remain open.",
+      "production_mutation": false,
+      "provider_mutation_required": true,
+      "status": "BLOCKED"
+    },
+    {
+      "order": 4,
+      "id": "DB_HARDENING_REHEARSAL",
+      "action": "Current reviewed hardening source was rehearsed on isolated staging with baseline parity, apply, rollback, reapply, and zero customer data proven.",
+      "production_mutation": false,
+      "provider_mutation_required": true,
+      "status": "CLOSED_VERIFIED"
+    },
+    {
+      "order": 5,
+      "id": "FX_RUNTIME_FEED",
+      "action": "Staging FX credentials are absent, so deploy-staging skips fx-core activation. CoinGecko/Frankfurter preview worker health returns 404 and latest staging/Production snapshots lack gbpUsd, eurUsd, audUsd and usdtPerUsd. Provide staging-safe credentials, deploy preview workers, run authenticated ticks, then prove all required legs.",
+      "production_mutation": false,
+      "provider_mutation_required": true,
+      "status": "BLOCKED"
+    },
+    {
+      "order": 6,
+      "id": "AUTH_EMAIL_RUNTIME",
+      "action": "Current exact staging probe returns 503 MAGIC_LINK_DELIVERY_UNAVAILABLE; source remains fail-closed. Configure and prove Resend delivery in staging first, then obtain Production-equivalent delivery evidence before launch.",
+      "production_mutation": true,
+      "founder_action_required": true,
+      "status": "BLOCKED"
+    },
+    {
+      "order": 7,
+      "id": "TRON_HD_VAULT",
+      "action": "Canonical TRC20 derivation remains fail-closed: no bound BIP32 secp256k1 deriver; Production/staging Vault matching secret metadata=0 and deposit_config singleton rows=0. Provide and prove canonical HSM/Vault xpub authority for m/44'/195'/0'/0/{index}.",
+      "production_mutation": false,
+      "status": "BLOCKED"
+    },
+    {
+      "order": 8,
+      "id": "SECURITY_AND_ROLLBACK",
+      "action": "Rollback target is bound and current CodeQL succeeded; full GHAS open-alert inventory remains not proven through the connected interface.",
+      "production_mutation": false,
+      "status": "PARTIAL"
+    },
+    {
+      "order": 9,
+      "id": "REL_502_CURRENT_EPOCH",
+      "action": "After all tracked mutations stop, rerun protected-scope verification and reissue REL-502 only for the exact final SHA.",
+      "production_mutation": false,
+      "status": "PENDING"
+    },
+    {
+      "order": 10,
+      "id": "MAIN_RELEASE_GOVERNANCE",
+      "action": "Remove or constrain the main ruleset bypass and keep main promotion impossible without explicit Founder authority; coordinate with disabling Render Production autoDeploy.",
+      "production_mutation": true,
+      "founder_action_required": true,
+      "status": "PENDING"
+    },
+    {
+      "order": 11,
+      "id": "RENDER_RELEASE_CONTROL",
+      "action": "Disable Production autoDeploy before accepted exact-SHA promotion.",
+      "production_mutation": true,
+      "founder_action_required": true,
+      "status": "PENDING"
+    },
+    {
+      "order": 12,
+      "id": "PRODUCTION_DB_APPLY",
+      "action": "Apply reviewed hardening migration to Production only after staging proof and explicit Founder authorization.",
+      "production_mutation": true,
+      "founder_action_required": true,
+      "status": "PENDING"
+    },
+    {
+      "order": 13,
+      "id": "RELEASE_ACCEPTANCE",
+      "action": "Build once, bind authoritative Engine run, obtain release acceptance, then evaluate final GO_CANDIDATE.",
+      "production_mutation": false,
+      "status": "PENDING"
+    }
+  ],
+  "rollback": {
+    "target_bound": true,
+    "role": "PRE_PROMOTION_ROLLBACK_TARGET",
+    "service_id": "srv-da5r1tqjobas73fl16dg",
+    "deploy_id": "dep-da938o142hec73eipre0",
+    "source_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec",
+    "provider_confirmed": true,
+    "execution": "BLOCKED_FOUNDER_ACTION"
+  },
+  "fx_runtime": {
+    "production_fx_snapshot_count": 1,
+    "latest_production_fx_snapshot_captured_at": "2026-08-09T14:48:14.452221Z",
+    "production_marketplace_fx_legs_present": false,
+    "usdt_per_usd_rows": 0,
+    "gbp_usd_rows": 0,
+    "eur_usd_rows": 0,
+    "aud_usd_rows": 0,
+    "source_release_path_restored_at_sha": "529c63e3c38a6101dd52bef2c2ad46937a14c42b",
+    "production_worker_promotion_performed": false,
+    "status": "BLOCKED",
+    "staging_fx_preview_worker_status": "NOT_DEPLOYED",
+    "staging_fx_activation_run": 33752631548,
+    "staging_fx_activation_classification": "BLOCKED_SECRET_ABSENT",
+    "staging_repository_adapter_ingest_token_present": false,
+    "staging_repository_coingecko_key_present": false,
+    "staging_fx_worker_mutation": 0,
+    "staging_fx_preview_worker_health": {
+      "coingecko": "404_NOT_DEPLOYED",
+      "frankfurter": "404_NOT_DEPLOYED"
+    },
+    "staging_latest_snapshot_required_legs": {
+      "gbpUsd": false,
+      "eurUsd": false,
+      "audUsd": false,
+      "usdtPerUsd": false
+    },
+    "production_latest_snapshot_required_legs": {
+      "gbpUsd": false,
+      "eurUsd": false,
+      "audUsd": false,
+      "usdtPerUsd": false
+    }
+  },
+  "evidence_commit_semantics": "subject_integration_sha is the tested runtime/source candidate; governance-only evidence commits may sit above it and must rerun CI before final release use.",
+  "auth_email_runtime": {
+    "production_live_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec",
+    "observed_window_start": "2026-09-02T08:00:00Z",
+    "observed_window_end": "2026-09-03T08:45:00Z",
+    "magic_link_delivery_503_count": 2,
+    "magic_link_delivery_503_timestamps": [
+      "2026-09-02T16:26:45.800Z",
+      "2026-09-03T05:56:24.503Z"
+    ],
+    "resend_http_failure_log_count": 0,
+    "live_provider_configuration": "NOT_PROVEN",
+    "root_cause": "NOT_PROVEN_PRE_PROVIDER_OR_CONFIGURATION_PATH_LIKELY",
+    "source_ci_scope": "FAIL_CLOSED_CONTRACT_ONLY_NOT_LIVE_PROVIDER",
+    "status": "BLOCKED",
+    "staging_probe_observed_at": "2026-09-03T12:57:28.479Z",
+    "staging_magic_link_request_status": 503,
+    "staging_magic_link_error": "MAGIC_LINK_DELIVERY_UNAVAILABLE",
+    "staging_probe_recipient_class": "example.test_non_deliverable",
+    "staging_probe_challenge_rows_after_cleanup": 0,
+    "staging_probe_after_jwt_host_fix": true
+  },
+  "security_evidence": {
+    "rel_408_role": "HISTORICAL_SNAPSHOT_ONLY",
+    "rel_408_measured_at": "2026-08-23",
+    "current_production_public_tables": 93,
+    "current_production_known_rls_off": [
+      "push_control",
+      "push_subscriptions"
+    ],
+    "current_sha_codeql_or_equivalent_run": "SUCCESS",
+    "current_authority": "FOUNDER_PACKET_PLUS_CURRENT_PROVIDER_EVIDENCE",
+    "status": "PARTIAL",
+    "current_runtime_subject_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "codeql_evidence_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "full_ghas_open_alert_inventory": "NOT_PROVEN"
+  },
+  "governance_parent_sha": "4b5272ba16442a08cb593fd67ab061bbb28ab474",
+  "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
+  "migration_effect_reconciliation": {
+    "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
+    "schema_effect_present_ledger_unrecorded": 10,
+    "actual_effect_pending": 1,
+    "blind_replay_forbidden": true,
+    "production_mutation": 0
+  },
+  "frontend_staging": {
+    "web_preview": "https://ai-profit-web-preview.ebay-adapter.workers.dev",
+    "ops_preview": "https://ai-profit-ops-preview.ebay-adapter.workers.dev",
+    "frontend_source_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "api_runtime_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "web_root_status": 200,
+    "ops_root_status": 200,
+    "web_api_status": 200,
+    "ops_api_status": 200,
+    "same_origin_api_binding": "CLOSED_VERIFIED",
+    "browser_smoke": "PASS",
+    "browser_smoke_run": 33753302274
+  },
+  "tron_hd_current": {
+    "observed_at": "2026-09-03T13:04:00.000Z",
+    "canonical_path": "m/44'/195'/0'/0/{index}",
+    "canonical_deriver_bound": false,
+    "production_vault_matching_secret_metadata_count": 0,
+    "staging_vault_matching_secret_metadata_count": 0,
+    "production_deposit_config_singleton_rows": 0,
+    "staging_deposit_config_singleton_rows": 0,
+    "default_hot_wallet_xpub_ref_is_locator_only": true,
+    "status": "BLOCKED"
+  },
+  "kakao_runtime": {
+    "observed_at": "2026-09-03T13:04:00.000Z",
+    "staging_start_http_status": 201,
+    "staging_provider_status": "not_configured",
+    "staging_oauth_state_rows_after_cleanup": 0,
+    "web_callback_source_verified": true,
+    "staging_release_cta_build_flag_verified": true,
+    "gate_verifier": "PASS",
+    "live_human_e2e": "NOT_RUN",
+    "status": "BLOCKED_CONFIG_AND_HUMAN_E2E",
+    "post_jwt_host_reprobe": true
+  },
+  "staging_authenticated_e2e": {
+    "evidence": "governance/recovery/staging-authenticated-e2e.20260903.v1.json",
+    "status": "CLOSED_VERIFIED_RUNTIME_72EA",
+    "exact_head_restage_required": true
+  }
+}

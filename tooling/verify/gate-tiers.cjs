@@ -12,6 +12,19 @@ const T0_ALWAYS = [
   "secrets.cjs",
   "plans-ssot.cjs",
   "brand-consumer.cjs",
+  "release-artifact-workflow-contract.cjs",
+  "production-release-decision.cjs",
+  "render-api-promotion-readiness.cjs",
+  "render-rollback-provenance.cjs",
+  "release-manifest-identity-lock.cjs",
+  "api-artifact-runtime-qa.cjs",
+  "api-runtime-qa-canonical.cjs",
+  "seo-schema.cjs",
+  "operator-footer.cjs",
+  "marketing-compliance.cjs",
+  "trust-copy.cjs",
+  "market-partner-trust.cjs",
+  "landing-3s.cjs",
 ];
 
 /** @type {string[]} */
@@ -20,6 +33,7 @@ const T1_PUSH = [
   "pg-module-scan.cjs",
   "brand-assets.cjs",
   "cf-infra.cjs",
+  "fx-worker-release-path.cjs",
   "ebay-worker-deploy-path.cjs",
   "p0-ebay-secret-provisioning.cjs",
   "nest-production-provenance.cjs",
@@ -41,6 +55,12 @@ const T1_PUSH = [
   "db-recovery.cjs",
   "privacy-purge.cjs",
   "api-nest-build.cjs",
+  "db-hardening-readiness.cjs",
+  "staging-db-hardening.cjs",
+  "staging-topology-readiness.cjs",
+  "auth-identity-proof.runtime.cjs",
+  "passkey-registration-hijack.runtime.cjs",
+  "webauthn-user-presence.runtime.cjs",
   "stubs/run-all.cjs",
 ];
 

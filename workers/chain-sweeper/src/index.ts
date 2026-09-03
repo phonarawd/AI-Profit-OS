@@ -1,3 +1,8 @@
+import {
+  authorizeManualChainTick,
+  requireWatcherIngestHeaders,
+} from "../../_shared/chain-machine-auth";
+
 /**
  * chain-sweeper — §43.2 Energy delegate + Treasury sweep.
  *
@@ -20,6 +25,8 @@ export interface Env {
   PHASE: string;
   NEST_SWEEP_TICK_URL?: string;
   WATCHER_INGEST_TOKEN?: string;
+  /** Manual HTTP /tick credential; cron does not require this. */
+  CHAIN_WORKER_TICK_TOKEN?: string;
   /** Injected for health / dry tests — decimal TRX */
   TREASURY_TRX_BALANCE?: string;
   MIN_TRX_STAKE_FOR_SWEEPER?: string;
@@ -46,6 +53,8 @@ export default {
     }
 
     if (url.pathname === "/tick" && request.method === "POST") {
+      const denied = authorizeManualChainTick(request, env);
+      if (denied) return denied;
       const result = await runTick(env);
       return Response.json(result);
     }
@@ -72,12 +81,7 @@ async function runTick(env: Env) {
   if (nestUrl) {
     const res = await fetch(nestUrl, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        ...(env.WATCHER_INGEST_TOKEN
-          ? { "x-watcher-token": env.WATCHER_INGEST_TOKEN }
-          : {}),
-      },
+      headers: requireWatcherIngestHeaders(env),
       body: JSON.stringify({ source: "chain-sweeper-worker" }),
     });
     const body = (await res.json().catch(() => ({}))) as Record<string, unknown>;

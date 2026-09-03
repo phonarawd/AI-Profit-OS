@@ -36,6 +36,9 @@ jobs:
           test "${#SHA}" -eq 40
 
       - name: Build once
+        env:
+          # Public build flag only. Provider secrets are never embedded in the artifact.
+          NEXT_PUBLIC_OAUTH_KAKAO_ENABLED: "1"
         run: |
           set -euo pipefail
           pnpm --filter @aipo/web build:cf
@@ -60,6 +63,8 @@ jobs:
           node tooling/release/prebuild-workers.cjs --from-repo
           test -f workers/push-dispatcher/.release-prebuilt/index.js
           test -f workers/ebay-adapter/.release-prebuilt/index.js
+          test -f workers/coingecko-adapter/.release-prebuilt/index.js
+          test -f workers/frankfurter-adapter/.release-prebuilt/index.js
 
       - name: Pack immutable artifact + digest
         run: |
@@ -76,3 +81,5 @@ jobs:
           path: _tmp_release_bundle/
           retention-days: 90
           if-no-files-found: error
+          # .open-next / .release-prebuilt 는 숨김 경로 — 기본 exclude면 digest 깨짐
+          include-hidden-files: true

@@ -18,6 +18,7 @@ export type Phase0Env = {
   opsHost: string;
   apiHost: string;
   databaseUrl: string | null;
+  databaseSslCaPem: string | null;
   redisUrl: string | null;
   supabaseUrl: string | null;
   supabaseRegion: string | null;
@@ -67,6 +68,14 @@ function read(key: string): string | null {
   return t.length ? t : null;
 }
 
+export const USER_JWT_SECRET_MIN_BYTES = 32;
+
+export function isUserJwtSecretStrong(
+  secret: string | null | undefined,
+): secret is string {
+  return typeof secret === "string" && Buffer.byteLength(secret, "utf8") >= USER_JWT_SECRET_MIN_BYTES;
+}
+
 function readInt(key: string, fallback: number): number {
   const raw = read(key);
   if (raw == null) return fallback;
@@ -98,6 +107,7 @@ export function loadPhase0Env(): Phase0Env {
     opsHost: read("OPS_HOST") ?? "localhost:3001",
     apiHost: read("API_HOST") ?? "localhost:4000",
     databaseUrl: read("DATABASE_URL"),
+    databaseSslCaPem: read("DATABASE_SSL_CA_PEM"),
     redisUrl: read("REDIS_URL"),
     supabaseUrl: read("SUPABASE_URL"),
     supabaseRegion: read("SUPABASE_REGION"),

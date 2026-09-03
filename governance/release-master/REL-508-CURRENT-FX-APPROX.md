@@ -7,7 +7,7 @@ STATUS = COMPLETED
 PLAN_LOCKED = TRUE
 PROTECTED_SCOPE_MUTATION = TRUE
 CERT_ISSUED = 0
-STALE_PENDING_REBASE = 0
+STALE_PENDING_REBASE = 1
 REBASE_OWNER = REL-502
 APPLY_MIGRATION = 0
 CLIENT_FX_MATH = 0
@@ -32,4 +32,4 @@ snapshot/amount 없으면 해당 KRW 필드 null. 0 으로 채우지 않는다.
 
 - client `Number()*rate` FAIL
 - missing → `"0"` FAIL
-- ISSUED 를 STALE 인 채 유지 FAIL — rebase 는 REL-502
+- REL-502 REBASE_REQUIRED 동안 CERT_ISSUED=0 · STALE_PENDING_REBASE=1 유지. current-epoch 재발급 후에만 ISSUED 전환

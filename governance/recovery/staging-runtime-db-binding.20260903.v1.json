@@ -1,0 +1,122 @@
+{
+  "schema": "governance.recovery.staging-runtime-db-binding.v1",
+  "recorded_at": "2026-09-03T12:07:01.851Z",
+  "candidate_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+  "production_mutation": 0,
+  "production_db_mutation": 0,
+  "secrets_recorded": false,
+  "render": {
+    "service_id": "srv-dacjnnm1egvs73cuh190",
+    "url": "https://ai-profit-os-staging-exact-1f3b36f.onrender.com",
+    "branch": "chatgpt/staging-exact-1f3b36f-20260903",
+    "deploy_id": "dep-dacm2vmk1f9s73cqsv9g",
+    "deploy_status": "LIVE",
+    "source_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "autoDeploy": "no"
+  },
+  "supabase_preview": {
+    "project_ref": "uluzxvdpynytytduuryy",
+    "parent_project_ref": "mgsytcetsiecllmhcyox",
+    "runtime_role": {
+      "name": "aipo_staging_runtime_20260903",
+      "login": true,
+      "inherit": true,
+      "bypassrls": true,
+      "superuser": false,
+      "createrole": false,
+      "createdb": false,
+      "service_role_member": true
+    },
+    "connection": {
+      "mode": "SUPAVISOR_SESSION_POOLER",
+      "port": 5432,
+      "managed_postgres_password_reset": false,
+      "tls_root_ca_configured": true,
+      "tls_certificate_verification": true,
+      "reject_unauthorized": true
+    }
+  },
+  "health": {
+    "status_code": 200,
+    "git_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "git_sha_source": "RENDER_GIT_COMMIT",
+    "db_configured": true,
+    "db_ok": true,
+    "db_detail": "up",
+    "redis_configured": true,
+    "redis_ok": true,
+    "redis_detail": "up",
+    "warnings_empty": null,
+    "observed_via": [
+      "cloudflare_web_preview_proxy",
+      "cloudflare_ops_preview_proxy"
+    ],
+    "direct_status_code": null,
+    "web_proxy_status_code": 200,
+    "ops_proxy_status_code": 200,
+    "proxy_health_observed_at": "2026-09-03T12:07:01.851Z"
+  },
+  "db_backed_public_read": {
+    "route": "GET /api/v1/growth/public-surface",
+    "status_code": 200,
+    "db_tables_read": [
+      "growth_ticker_config",
+      "trade_executions"
+    ],
+    "result_summary": {
+      "tickerMode": "off",
+      "counterMode": "off",
+      "ledgerTotal": 0,
+      "events": 0
+    },
+    "verdict": "PASS",
+    "observed_via": "direct_render",
+    "observed_at": "2026-09-03T11:26:35.709Z"
+  },
+  "startup_log_window": {
+    "start": "2026-09-03T11:25:30Z",
+    "end": "2026-09-03T11:27:30Z",
+    "permission_denied_count": 0,
+    "warning_count": 0,
+    "error_level_count": 0
+  },
+  "customer_data_zero": {
+    "auth_users": 0,
+    "public_users": 0,
+    "auth_sessions": 0,
+    "user_profiles": 0,
+    "magic_link_challenges": 0,
+    "ledger_journals": 0,
+    "ledger_entries": 0,
+    "practice_grants": 0,
+    "proven": true
+  },
+  "system_data_snapshot": {
+    "assets": 94,
+    "execution_policies": 1,
+    "growth_ticker_config": 1,
+    "trade_executions": 0
+  },
+  "verdict": "CLOSED_VERIFIED",
+  "frontend_proxy_binding": {
+    "web_preview": "https://ai-profit-web-preview.ebay-adapter.workers.dev",
+    "ops_preview": "https://ai-profit-ops-preview.ebay-adapter.workers.dev",
+    "frontend_source_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "backend_runtime_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "web_api_health_status": 200,
+    "ops_api_health_status": 200,
+    "exact_backend_match": true,
+    "cloudflare_deploy_run": 33752631548,
+    "verdict": "CLOSED_VERIFIED"
+  },
+  "browser_smoke": {
+    "workflow": "staging-browser-smoke",
+    "last_run": 33753302274,
+    "status": "PASS",
+    "result": "web+login+ops + Chromium exact API",
+    "expected_backend_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "observed_backend_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "product_failure_proven": false,
+    "recheck_required": false
+  }
+}

@@ -54,7 +54,7 @@ Web Vitals 수치 SLO 창작 0 (REL-404). RUM 파이프 는 코드에 없다. �
 | rollback_scheme | VERSIONING.md + release:id | semver + HUMAN tag | ALIGNED | REL-403 |
 | rollback_runbook | ROLLBACK_RUNBOOK.md | DRAFT_FOR_REL_602 | ALIGNED | REL-408 |
 | web_vitals_lab | REL-404 lighthouse budget | NUMERIC_SLO_INVENTED=0 | ALIGNED | REL-404 |
-| p0_p3_engine | FINAL_ACCEPTANCE | DEFECTS_P0/P1=0 ISSUED | ALIGNED | REL-502 |
+| p0_p3_engine | FINAL_ACCEPTANCE | DEFECTS_P0/P1=0 · current epoch NOT_ISSUED | STALE_PENDING_REBASE | REL-502 |
 | p0_p3_admin | R6_CERTIFICATION | KNOWN_P0~P3=0 | ALIGNED | REL-409 |
 
 ## 2. DEFERRED (blank cell = FAIL · ALIGNED 세탁 금지)

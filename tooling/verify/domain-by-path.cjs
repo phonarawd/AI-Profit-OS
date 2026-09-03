@@ -113,10 +113,37 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^\.github\/workflows\/release-(build|acceptance)\.yml$/.test(f) ||
+      /^tooling\/verify\/release-artifact-workflow-contract\.cjs$/.test(f),
+    scripts: ["release-artifact-workflow-contract.cjs"],
+  },
+  {
+    test: (f) =>
       /^services\/api-nest\/src\/health\.controller\.ts$/.test(f) ||
       /^services\/api-nest\/src\/config\/nest-provenance\.ts$/.test(f) ||
       /^tooling\/verify\/nest-production-provenance\.cjs$/.test(f),
     scripts: ["nest-production-provenance.cjs", "api-nest-build.cjs"],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/(robots|sitemap)\.ts$/.test(f) ||
+      /^apps\/web\/app\/(page|layout)\.tsx$/.test(f) ||
+      /^apps\/web\/app\/(ads|l)\//.test(f) ||
+      /^apps\/web\/app\/components\/GuestChrome\.tsx$/.test(f) ||
+      /^apps\/web\/app\/GuestFirstVisit\.tsx$/.test(f) ||
+      /^apps\/web\/public\/manifest\.webmanifest$/.test(f) ||
+      /^apps\/web\/public\/kyb\/trade-license-1135431\.html$/.test(f) ||
+      /^schemas\/operator-entity\.instance\.json$/.test(f) ||
+      /^packages\/ui\/copy\/ko\/(landing|trust|onboarding|operator)\.ts$/.test(f) ||
+      /^tooling\/verify\/seo-schema\.cjs$/.test(f),
+    scripts: [
+      "seo-schema.cjs",
+      "operator-footer.cjs",
+      "marketing-compliance.cjs",
+      "trust-copy.cjs",
+      "market-partner-trust.cjs",
+      "landing-3s.cjs",
+    ],
   },
   {
     test: (f) => /^(packages\/ui\/|apps\/web\/)/.test(f),
@@ -1206,13 +1233,82 @@ const RULES = [
       "auth-flows.cjs",
       "auth-session-cookie.cjs",
       "auth-rate-limit.cjs",
+      "auth-identity-proof.runtime.cjs",
+      "passkey-registration-hijack.runtime.cjs",
+      "webauthn-user-presence.runtime.cjs",
     ],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/wallet\/(tron-address(?:\.runtime\.test)?\.ts|deposit-address\.service\.ts)$/.test(f) ||
+      /^tooling\/verify\/tron-hd-derivation-fail-closed\.runtime\.cjs$/.test(f) ||
+      /^tooling\/verify\/krw-admin-decide\.cjs$/.test(f),
+    scripts: [
+      "tron-hd-derivation-fail-closed.runtime.cjs",
+      "krw-admin-decide.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/wallet\/withdraw-stepup\./.test(f) ||
+      /^tooling\/verify\/withdraw-stepup-security/.test(f),
+    scripts: ["withdraw-stepup-security.cjs"],
   },
   {
     test: (f) =>
       /^services\/api-nest\/src\/wallet\//.test(f) ||
       /^services\/api-nest\/src\/compliance\/kyc\.controller\.ts$/.test(f),
     scripts: ["wallet-kyc-session-auth.cjs"],
+  },
+  {
+    test: (f) =>
+      /^tooling\/verify\/rel-60[012]-staging/.test(f) ||
+      /^tooling\/verify\/staging-live-fetch-bounds\.cjs$/.test(f),
+    scripts: ["staging-live-fetch-bounds.cjs"],
+  },
+  {
+    test: (f) =>
+      /^\.github\/workflows\/(deploy-cloudflare|release-(build|acceptance))\.yml$/.test(f) ||
+      /^tooling\/deploy\/(cf-pages-(web|ops)|cf-workers)\.cjs$/.test(f) ||
+      /^tooling\/deploy\/lib\/accepted-artifact-authority\.cjs$/.test(f) ||
+      /^tooling\/release\/(api-artifact-runtime-qa|artifact-provenance|deploy-from-artifact|fetch-acceptance-artifact|fetch-release-bundle|require-accepted-sha|release-acceptance-verdict)\.cjs$/.test(f) ||
+      /^tooling\/verify\/(api-artifact-runtime-qa|api-runtime-qa-canonical)\.cjs$/.test(f) ||
+      /^tooling\/verify\/(production-deploy-path-lock|fetch-acceptance-artifact|release-acceptance|release-fetch-deploy-hardening|require-accepted-sha)\.cjs$/.test(f),
+    scripts: [
+      "api-artifact-runtime-qa.cjs",
+      "api-runtime-qa-canonical.cjs",
+      "production-deploy-path-lock.cjs",
+      "fetch-acceptance-artifact.cjs",
+      "release-acceptance.cjs",
+      "release-fetch-deploy-hardening.cjs",
+      "require-accepted-sha.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^tooling\/release\/staging-topology-readiness\.cjs$/.test(f) ||
+      /^tooling\/verify\/staging-topology-readiness\.cjs$/.test(f) ||
+      /^governance\/release-master\/staging-topology\.current\.v1\.json$/.test(f),
+    scripts: ["staging-topology-readiness.cjs"],
+  },
+  {
+    test: (f) =>
+      /^supabase\/staging\//.test(f) ||
+      /^governance\/(db-recon\/staging-hardening|recovery\/(staging-db-hardening-snapshot|supabase-app-owner-boundary|production-db-hardening-snapshot))/.test(f) ||
+      /^tooling\/(release\/db-hardening-readiness|verify\/(db-hardening-readiness|staging-db-hardening))\.cjs$/.test(f),
+    scripts: ["db-hardening-readiness.cjs", "staging-db-hardening.cjs"],
+  },
+  {
+    test: (f) =>
+      /^tooling\/release\/(production-release-decision|render-api-promotion-readiness|render-rollback-plan)\.cjs$/.test(f) ||
+      /^tooling\/verify\/(production-release-decision|render-api-promotion-readiness|render-rollback-provenance|release-manifest-identity-lock)\.cjs$/.test(f) ||
+      /^tooling\/release\/(artifact-provenance|release-acceptance-verdict)\.cjs$/.test(f),
+    scripts: [
+      "production-release-decision.cjs",
+      "render-api-promotion-readiness.cjs",
+      "render-rollback-provenance.cjs",
+      "release-manifest-identity-lock.cjs",
+    ],
   },
   {
     test: (f) => /^tooling\/verify\//.test(f),

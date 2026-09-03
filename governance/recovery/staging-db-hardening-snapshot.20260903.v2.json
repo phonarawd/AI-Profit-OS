@@ -1,0 +1,200 @@
+{
+  "schema": "staging-db-hardening-provider-snapshot.v2",
+  "observed_on": "2026-09-03",
+  "subject_integration_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
+  "project_ref": "uluzxvdpynytytduuryy",
+  "branch_id": "ebf3d613-fb68-44ab-aa0f-6713682f2d6e",
+  "branch_name": "staging-release-20260902",
+  "parent_project_ref": "mgsytcetsiecllmhcyox",
+  "preview_project_status": "ACTIVE_HEALTHY",
+  "branch_status": "FUNCTIONS_DEPLOYED",
+  "with_data": false,
+  "production_mutation": 0,
+  "production_db_apply": 0,
+  "baseline": {
+    "production_public_table_count": 93,
+    "staging_public_table_count": 93,
+    "public_table_column_rls_diff_count": 0,
+    "function_authority_diff_count": 0,
+    "default_acl_match": true,
+    "public_table_owners": {
+      "postgres": 93
+    },
+    "customer_rows": {
+      "auth_users": 0,
+      "public_users": 0,
+      "auth_sessions": 0,
+      "user_profiles": 0,
+      "magic_link_challenges": 0,
+      "ledger_journals": 0,
+      "ledger_entries": 0,
+      "practice_grants": 0
+    },
+    "customer_data_proven_zero": true,
+    "schema_parity_with_production": true,
+    "rollback_source": {
+      "path": "supabase/staging/20260903151500_preview_baseline_parity.sql",
+      "blob_sha": "59a2097f1decfc854fe44d805faf67ec6d4feac5"
+    }
+  },
+  "rehearsal": {
+    "source": {
+      "path": "supabase/migrations/20260903092000_production_db_hardening.sql",
+      "blob_sha": "827448e4c86cf14aca31c4f23151ceabb43dafb4"
+    },
+    "apply": "PASS",
+    "rollback": "PASS",
+    "reapply": "PASS",
+    "final_state": "PASS",
+    "final_schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
+    "final_raw_schema_parity_with_production": false,
+    "expected_delta_only": true,
+    "admin_audit_events": {
+      "rls_enabled": true,
+      "rls_forced": false,
+      "service_role": [
+        "INSERT",
+        "SELECT"
+      ],
+      "update": false,
+      "delete": false,
+      "truncate": false,
+      "mutation_trigger": true,
+      "truncate_trigger": true
+    },
+    "push_control": {
+      "rls_enabled": true,
+      "rls_forced": true,
+      "service_role": [
+        "SELECT",
+        "UPDATE"
+      ],
+      "deny_policies": [
+        "push_control_deny_anon",
+        "push_control_deny_authenticated"
+      ]
+    },
+    "push_subscriptions": {
+      "rls_enabled": true,
+      "rls_forced": true,
+      "service_role": [
+        "DELETE",
+        "INSERT",
+        "SELECT",
+        "UPDATE"
+      ],
+      "deny_policies": [
+        "push_subscriptions_deny_anon",
+        "push_subscriptions_deny_authenticated"
+      ]
+    },
+    "default_acl": {
+      "postgres": [
+        "postgres",
+        "service_role"
+      ],
+      "managed_supabase_admin_observed": [
+        "anon",
+        "authenticated",
+        "postgres",
+        "service_role"
+      ],
+      "managed_supabase_admin_mutation": 0
+    },
+    "customer_rows_after_reapply": {
+      "auth_users": 0,
+      "public_users": 0,
+      "auth_sessions": 0,
+      "user_profiles": 0,
+      "magic_link_challenges": 0,
+      "ledger_journals": 0,
+      "ledger_entries": 0,
+      "practice_grants": 0
+    },
+    "reassert": "PASS",
+    "current_state": "PASS"
+  },
+  "staging_migration_tail": [
+    "20260903072656_preview_baseline_parity",
+    "20260903073223_preview_baseline_function_authority",
+    "20260903073311_production_db_hardening_rehearsal_current",
+    "20260903073356_production_db_hardening_rehearsal_rollback",
+    "20260903073536_production_db_hardening_rehearsal_reapply",
+    "20260903081000_preview_function_authority_repair_current",
+    "20260903081006_production_db_hardening_rehearsal_reassert_current"
+  ],
+  "conclusions": {
+    "baseline_schema_parity_proven": true,
+    "customer_data_zero_proven": true,
+    "current_hardening_rehearsal_proven": true,
+    "rollback_proven": true,
+    "production_hardening_applied": false,
+    "render_staging_current_candidate_bound": true,
+    "release_ready": false,
+    "current_hardening_state_proven": true,
+    "current_expected_delta_only": true,
+    "render_staging_redis_runtime_proven": true,
+    "render_staging_database_url_configured": false,
+    "render_staging_db_binding_proven": false
+  },
+  "blockers_remaining": [
+    "STAGING_RENDER_DB_BINDING_NOT_PROVEN_CURRENT",
+    "STAGING_RENDER_DATABASE_URL_NOT_CONFIGURED_CURRENT",
+    "PRODUCTION_DB_HARDENING_NOT_APPLIED",
+    "RENDER_AUTODEPLOY_ENABLED",
+    "PRODUCTION_LIVE_SHA_DIFFERS_FROM_INTEGRATION",
+    "FX_RUNTIME_FEED_NOT_ACTIVE_CURRENT",
+    "TRON_HD_VAULT_NOT_PROVEN",
+    "ENGINE_NOT_ISSUED",
+    "ENGINE_REBASE_REQUIRED",
+    "ENGINE_ACK_MISSING",
+    "RELEASE_ACCEPTANCE_MISSING",
+    "CURRENT_SHA_SECURITY_EVIDENCE_INCOMPLETE"
+  ],
+  "source": "GitHub + Supabase current revalidation after staging-only hardening reassert + exact Render staging runtime evidence · Production mutation=0",
+  "current_revalidation": {
+    "drift_detected_before_reassert": true,
+    "observed_pre_reassert_relation": "PRODUCTION_BASELINE",
+    "drift_cause": "NOT_PROVEN",
+    "repair_scope": "STAGING_ONLY",
+    "repair_migrations": [
+      "20260903081000_preview_function_authority_repair_current",
+      "20260903081006_production_db_hardening_rehearsal_reassert_current"
+    ],
+    "current_expected_hardening_delta": {
+      "public_table_count_production": 93,
+      "public_table_count_staging": 93,
+      "columns_production": 931,
+      "columns_staging": 931,
+      "column_diff_count": 0,
+      "indexes_production": 236,
+      "indexes_staging": 236,
+      "index_diff_count": 0,
+      "rls_table_deltas": 2,
+      "added_deny_policies": 4,
+      "service_role_privileges_removed": 13,
+      "added_triggers": 1,
+      "added_functions": 1
+    },
+    "customer_data_zero_current": true,
+    "current_schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
+    "current_state": "PASS"
+  },
+  "render_runtime_revalidation": {
+    "service_id": "srv-dacjnnm1egvs73cuh190",
+    "url": "https://ai-profit-os-staging-exact-1f3b36f.onrender.com",
+    "branch": "chatgpt/staging-exact-1f3b36f-20260903",
+    "branch_label_note": "historical branch label; exactness is authoritative from live deploy SHA",
+    "autoDeploy": "no",
+    "live_deploy_id": "dep-dack2n3lpq9s73fs8ea0",
+    "live_source_sha": "64757f2c5bd394d359c35483183ad879f5135d23",
+    "exact_candidate_bound": true,
+    "health_observed_at": "2026-09-03T09:45:28.287012Z",
+    "database_url_configured": false,
+    "database_ok": false,
+    "redis_configured": true,
+    "redis_ok": true,
+    "warnings_empty": true,
+    "adapter_ingest_without_token_status": 401
+  }
+}

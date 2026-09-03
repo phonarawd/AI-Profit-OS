@@ -2,7 +2,9 @@ import { Controller, Get } from "@nestjs/common";
 import { nestProvenance } from "./config/nest-provenance";
 import {
   assertSupabaseRegionOrWarn,
+  isUserJwtSecretStrong,
   loadPhase0Env,
+  oauthConfigured,
 } from "./config/phase0.env";
 import { PostgresService } from "./db/postgres";
 import { InProcessEventBus } from "./events/in-process.bus";
@@ -44,6 +46,11 @@ export class HealthController {
         provider: "upstash-or-compose",
         configured: this.redis.configured(),
         ...cache,
+      },
+      auth: {
+        userJwtConfigured: isUserJwtSecretStrong(env.jwtUserSecret),
+        kakaoConfigured: oauthConfigured(env, "kakao"),
+        resendConfigured: Boolean(env.resendApiKey && env.resendFromEmail),
       },
       r2KycBucket: env.r2KycBucket,
       warnings: regionWarn ? [regionWarn] : [],

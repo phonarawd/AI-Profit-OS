@@ -1,3 +1,8 @@
+import {
+  authorizeManualChainTick,
+  requireWatcherIngestHeaders,
+} from "../../_shared/chain-machine-auth";
+
 /**
  * chain-watchers — §43.1 USDT Transfer single stream.
  *
@@ -21,8 +26,10 @@ export interface Env {
   PHASE: string;
   /** Nest ingest URL for Phase1 observe fan-in */
   NEST_USDT_OBSERVE_URL?: string;
-  /** Optional shared secret header */
+  /** Nest ingest machine credential; required whenever forwarding is configured. */
   WATCHER_INGEST_TOKEN?: string;
+  /** Manual HTTP /tick credential; cron does not require this. */
+  CHAIN_WORKER_TICK_TOKEN?: string;
   TRONGRID_BASE_URL?: string;
   TRONGRID_API_KEY?: string;
   /** JSON array of { trc20Address, userId } — Phase1 bootstrap; Nest is SoT */
@@ -48,6 +55,8 @@ export default {
     }
 
     if (url.pathname === "/tick" && request.method === "POST") {
+      const denied = authorizeManualChainTick(request, env);
+      if (denied) return denied;
       const result = await runTick(env);
       return Response.json(result);
     }
@@ -72,6 +81,8 @@ export default {
 };
 
 async function runTick(env: Env) {
+  const observeUrl = env.NEST_USDT_OBSERVE_URL;
+  const ingestHeaders = observeUrl ? requireWatcherIngestHeaders(env) : null;
   const entries = parseAddressIndex(env.DEPOSIT_ADDRESS_INDEX_JSON);
   const index = new AddressIndex(entries);
   const pull = await pullUsdtTransferStream(index, {
@@ -80,18 +91,12 @@ async function runTick(env: Env) {
     budgeter,
   });
 
-  const observeUrl = env.NEST_USDT_OBSERVE_URL;
   let forwarded = 0;
   if (observeUrl && pull.matched.length > 0) {
     for (const obs of pull.matched) {
       const res = await fetch(observeUrl, {
         method: "POST",
-        headers: {
-          "content-type": "application/json",
-          ...(env.WATCHER_INGEST_TOKEN
-            ? { "x-watcher-token": env.WATCHER_INGEST_TOKEN }
-            : {}),
-        },
+        headers: ingestHeaders!,
         body: JSON.stringify({
           txHash: obs.txHash,
           toAddress: obs.toAddress,

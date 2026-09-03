@@ -22,6 +22,7 @@ const required = [
   "apps/web/app/me/layout.tsx",
   "apps/web/app/me/AccountFrame.tsx",
   "apps/web/app/me/ProfileClient.tsx",
+  "apps/web/app/me/AccountHub.tsx",
   "apps/web/app/me/inbox/InboxClient.tsx",
   "apps/web/app/me/kyc/KycClient.tsx",
   "apps/web/app/me/settings/SettingsClient.tsx",
@@ -47,6 +48,7 @@ const required = [
   "apps/web/app/l/[variant]/page.tsx",
   "tooling/e2e/specs/account-journey.spec.cjs",
 ];
+
 for (const f of required) {
   if (!fs.existsSync(path.join(root, f))) fail(`missing: ${f}`);
 }
@@ -57,12 +59,27 @@ if (layout.includes("LegacyAppShell") || layout.includes("AppShellRoot")) {
 }
 
 const profile = read("apps/web/app/me/ProfileClient.tsx");
-if (!profile.includes("fetchAuthSession")) fail("profile must use fetchAuthSession");
-if (profile.includes("SafeStopTrustMetric") || profile.includes("depositUsdt")) {
+if (!profile.includes("fetchAuthSession")) {
+  fail("profile must use fetchAuthSession");
+}
+if (
+  profile.includes("SafeStopTrustMetric") ||
+  profile.includes("depositUsdt")
+) {
   fail("profile must not invent money zeros");
 }
-if (!profile.includes("/me/benefits") || !profile.includes("/me/settings")) {
-  fail("profile must keep benefits + settings links");
+
+/**
+ * ProfileClient owns auth/session state.
+ * AccountHub owns rendered Account Hub navigation.
+ * Verify benefits/settings against the actual UI owner.
+ */
+const accountHub = read("apps/web/app/me/AccountHub.tsx");
+if (
+  !accountHub.includes("/me/benefits") ||
+  !accountHub.includes("/me/settings")
+) {
+  fail("account hub must keep benefits + settings links");
 }
 
 const inbox = read("apps/web/app/me/inbox/InboxClient.tsx");
@@ -79,7 +96,10 @@ if (/kycStatus:\s*"approved"/.test(kyc) && /catch/.test(kyc)) {
 }
 
 const settings = read("apps/web/app/me/settings/SettingsClient.tsx");
-if (!settings.includes("SettingsPanel") || !settings.includes("logoutAuth")) {
+if (
+  !settings.includes("SettingsPanel") ||
+  !settings.includes("logoutAuth")
+) {
   fail("settings must keep prefs panel + logout owner");
 }
 if (!settings.includes("deleteAuthAccount")) {
@@ -93,22 +113,36 @@ for (const needle of [
   "/api/v1/wallet/deposit-disputes",
   "DEPOSIT_DISPUTE_SUBMITTED",
 ]) {
-  if (!support.includes(needle)) fail(`support missing ${needle}`);
+  if (!support.includes(needle)) {
+    fail(`support missing ${needle}`);
+  }
 }
-if (support.includes("라이브 채팅") || support.includes("fake chat")) {
+if (
+  support.includes("라이브 채팅") ||
+  support.includes("fake chat")
+) {
   fail("support must not invent live chat");
 }
 
 const peotteok = read("apps/web/app/me/peotteok/page.tsx");
-if (!peotteok.includes("usePeotteokChat") || !peotteok.includes("ai-orb.svg")) {
+if (
+  !peotteok.includes("usePeotteokChat") ||
+  !peotteok.includes("ai-orb.svg")
+) {
   fail("peotteok must keep chat owner and reuse spark-dash ai-orb");
 }
 
 const events = read("apps/web/app/me/events/page.tsx");
 const strategies = read("apps/web/app/me/strategies/page.tsx");
-if (events.includes("골격") || events.includes("도메인 todo") || events.includes("본구현")) {
+
+if (
+  events.includes("골격") ||
+  events.includes("도메인 todo") ||
+  events.includes("본구현")
+) {
   fail("events must not show developer leftover copy");
 }
+
 if (
   strategies.includes("골격") ||
   strategies.includes("도메인 todo") ||
@@ -123,7 +157,10 @@ if (membership.includes('membership: "sprout"')) {
 }
 
 const benefits = read("apps/web/app/me/benefits/page.tsx");
-if (benefits.includes('releasedMonthUsdt: "0"') && benefits.includes("unauthorized")) {
+if (
+  benefits.includes('releasedMonthUsdt: "0"') &&
+  benefits.includes("unauthorized")
+) {
   fail("benefits must not invent 0 on error");
 }
 
@@ -144,9 +181,12 @@ if (!ads.includes("Landing3s") || !landing.includes("Landing3s")) {
 }
 
 if (fails.length) {
-  console.error("[verify:account-hub-batch] FAIL\n- " + fails.join("\n- "));
+  console.error(
+    "[verify:account-hub-batch] FAIL\n- " + fails.join("\n- "),
+  );
   process.exit(1);
 }
+
 console.log(
   "[verify:account-hub-batch] PASS — /me leftover chrome 0 · auth/money truth · compat copy",
 );

@@ -34,14 +34,14 @@ function base64urlDecode(str) {
 }
 
 function assertSecret(secret) {
-  if (typeof secret !== "string" || secret.length < 32) {
-    throw new Error("JWT secret must be a string of >=32 chars (JWT_USER_SECRET/JWT_ADMIN_SECRET)");
+  if (typeof secret !== "string" || Buffer.byteLength(secret, "utf8") < 32) {
+    throw new Error("JWT secret must contain >=32 UTF-8 bytes (JWT_USER_SECRET/JWT_ADMIN_SECRET)");
   }
 }
 
 /**
  * @param {Record<string, unknown>} payload custom claims (e.g. { sub: userId })
- * @param {string} secret HS256 secret (>=32 chars) — never hardcode, env only
+ * @param {string} secret HS256 secret (>=32 UTF-8 bytes) — never hardcode, env only
  * @param {{issuer:string, audience:string, expiresInSec:number, nowMs?:number, jti?:string}} opts
  * @returns {string} compact JWS (header.payload.signature)
  */
@@ -70,7 +70,7 @@ function sign(payload, secret, opts) {
 
 /**
  * @param {string} token compact JWS
- * @param {string} secret HS256 secret (>=32 chars)
+ * @param {string} secret HS256 secret (>=32 UTF-8 bytes)
  * @param {{issuer?:string, audience?:string, nowMs?:number}} [opts]
  * @returns {Record<string, unknown>} verified payload
  * @throws on any malformed/tampered/expired/mismatched-claim token (fail-closed)

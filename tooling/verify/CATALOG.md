@@ -209,6 +209,7 @@
 | usdt-deposit-closure | REL-114 — `/wallet/deposit` USDT address owner · credit 0 · happy+deny — **live** |
 | krw-deposit-closure | REL-115 — `/wallet/deposit?tab=krw` pending≠credit · PG 0 · happy+deny — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |
+| withdraw-stepup-security | Money 43.6 — no fake WebAuthn proof, server verified email only, expiring HMAC token, single-use token, atomic consume, proven PIN enrollment — **live** |
 | usdt-withdraw-closure | REL-116 — `/wallet/withdraw/usdt` server accept · credit 0 · happy+deny — **live** |
 | krw-withdraw-closure | REL-117 — `/wallet/withdraw/krw` server accept · PG 0 · happy+deny — **live** |
 | transaction-history-closure | REL-118 — `/wallet/history` REL-015 list · mock 0 · empty≠401 — **live** |
@@ -234,8 +235,8 @@
 | assetlinks | PWA §24.3 — `/.well-known/assetlinks.json` · package↔SHA-256 · TWA ready (v7.22.49 · v2 `store-bridge-scaffold`) — **planned** |
 | store-bridge-artifacts | PWA §24.3 — Play=`.aab` · Uptodown=`.apk`\|`.xapk` · 혼용 제출 문서/스크립트 0 (v7.22.49 · v2) — **planned** |
 | store-uptodown-listing | PWA §24.3b — listing 한도·webview/VT/배포권 체크리스트 · Console Owns=PWA (v7.22.49 · v2 `store-bridge-uptodown-listing`) — **planned** |
-| attribution-chain · capi-consent · capi-config · capi-smoke · seo-schema | Infra §31.2c~§31.4 · UI §6.4c.1 (v7.22.55) — **planned** · D1~D3 dedup · consent=false send0 · capi-config/smoke · METRICS.md · Admin Worker health pointer |
-| marketing-compliance · operator-footer | Infra §31.4/§31.7 · UI §6.4c.1 (v7.22.55) — **live** · **marketing-compliance**=landing 금지어(수익·투자·USDT·테더·보장·차익·**괴리율**·재테크·알바 1:1)+`/l/*` auto fbq/ttq 0 · Lead emit=`consentMarketing===true` · **operator-footer**=schema↔instance **supportEmail**↔LandingOperatorFooter↔legal 3면 · UI PART2c 게이트 |
+| attribution-chain · capi-consent · capi-config · capi-smoke | Infra §31.2c~§31.4 · UI §6.4c.1 (v7.22.55) — **planned** · D1~D3 dedup · consent=false send0 · capi-config/smoke · METRICS.md · Admin Worker health pointer |
+| seo-schema · marketing-compliance · operator-footer | Infra §31.4/§31.7 · UI §6.4c.1 (POST-007) — **live** · **seo-schema**=hiptk.app Organization+WebSite·public sitemap·ads/l noindex·AI Profit OS public alias 0·DET pending gate · **marketing-compliance**=landing 금지어+auto pixel 0 · **operator-footer**=schema↔instance supportEmail↔LandingOperatorFooter↔legal 3면 |
 | platform-redesign-inventory | Index v7.23 R0-1 — Forensic baseline+route-contract-matrix · `governance/platform-redesign/*.v1.json` · classification=`defect\|intentional\|deferred\|missing_fact` only · 구현코드0 · path-trigger — **live** |
 | platform-fact-state-registry | Index v7.23 R0-2 — `fact-state-registry.v1.json` · Fact↔State 반복검증 · commonViewStates⊥domain FSM · reasonCode=`domain.resource.reason` · source/asOf/freshness/owner/provenance 필수 · 구현코드0 · path-trigger — **live** |
 | platform-change-control | Index v7.23 R0-3 — `change-control.v1.md` · L1/L2/L3+version bump · ADR-017 Light+Purple·IA 새 라벨·OpenNext Workers before/after/영향/rollback/승인 증거 · d903eef7 REFERENCE ONLY 흡수 crosswalk · 구현코드0 · path-trigger — **live** |
@@ -247,7 +248,7 @@
 | landing-guest-closure | REL-100 — **live** (guest `/` empty money truth · Landing3s CTA · Home freeze · Playwright landing-guest) |
 | home-closure | REL-105 — **live** (Home freeze · root legacy chrome 0 · guest+member single chrome · /dev isolation · 390/1440 + 2560/3440/3840 overflow · axe REL-012 · missing money ≠ 0 · /profits nav · production URL 0) |
 | acquisition-release | REL-101 — **live** (Canon signup/login/profile wired to Nest SDK · Kakao live NOT_RUN · PendingFigma 0) |
-| login-kakao-closure | REL-102 — **live** (login session/magic-link · LIVE_KAKAO_HUMAN_E2E=NOT_RUN 위조 0) |
+| login-kakao-closure | REL-102 — **live · CI Gate** (login session/magic-link · web callback · signup terms handoff · Nest POST OAuth finish · LIVE_KAKAO_HUMAN_E2E=NOT_RUN 위조 0) |
 | complete-profile-closure | REL-103 — **live** (Stage B PATCH · gender 0) |
 | onboarding-journey-closure | REL-104 — **live** (experiential OnboardingFlow · demo label · deposit funnel 0) |
 | settlement-rule-parity | REL-008 — **live** (`settlement_rule.rs` == `settlement_rule.cjs` on golden vectors · T0 path + T1 · `cargo build --release` 0 · REL-502 대체 0) |
@@ -283,11 +284,17 @@
 | match-tension-surface | Index §20.2 · UI §48.3b — Soft/Hard전등급동일 · 긴장감=과정Fact · 등급≠대기특권 · slaAlmost/priceNearMiss · 난수틱·가짜대기·당첨게이지0 (v7.22.30) · Audit A6 · **copy/Canon live** |
 | listing-legs-day1 | Engine §0.0.1a/§0.0.2 — ebay 멀티marketplace\|admin only · yahoo_jp Day-1 auto-publish FORBIDDEN · §38.10 partner 표기 OK(카피금지 supersede) · KR/Chrono24대체0 — **live** — **live** |
 | signup-ready-adapters | Engine §0.0 — ebay 멀티marketplaceId · pokemontcg+ygoprodeck · coingecko+frankfurter · yahoo-jp경로0 · Phase1 deploy (phase0 0) · Admin `/admin/adapters` health — **live** |
+| adapter-worker-machine-auth | Adapter Workers — public manual `/tick` requires x-adapter-token · Nest ingest token optional-spread forbidden · missing token fail-closed — **live** |
+| chain-worker-machine-auth | Chain Watcher/Sweeper — manual `/tick` requires x-chain-worker-token · Nest watcher ingest token required when forwarding · scheduled cron remains internal — **live** |
+| tron-hd-derivation-fail-closed | Wallet TRC20 — synthetic HMAC(secretRef,path) forbidden · canonical BIP32/secp256k1 deriver required · every stored row must rederive-match its derivation index before serve/watch/resolve · ingest caller userId is never ownership authority · unbound/mismatched provenance fails HTTP 503 before credit/INSERT — **live** |
+| marketing-capi-worker-machine-auth | Marketing CAPI Worker — `/health` public · every POST requires dedicated x-marketing-capi-token · token unset=503 / invalid=401 · current stub side effect 0 — **live** |
+| auth-runtime-readiness | API health — user JWT HS256 >=32 bytes · proof/mutation preflight · new-user profile before practice grant · every successful identity path idempotently repairs buckets/welcome/defaults before session mint — **live** |
+| database-tls-strict | PostgreSQL — Supabase direct+Supavisor hostname lock · Root CA required · rejectUnauthorized=true · connection-string TLS override removed — **live** |
 | adapter-matching-kpi | Engine §51.12+§51.15 — 등급매칭·SKU실패율 KPI(>15%/24h 알림·자동공개축소) · compareReady false>40% 시드점검 · stale>TTL 적색 · Admin `/admin/adapters` KPI·알림 · yahoo0 · Simulation S4 `adapterMatchFailureRate` 선행 — **live** |
 | kyc-withdraw-only · kyc-redirect · kyc-r2-only | Money §42 — **live** (출금1회게이트 · toast→/me/kyc@800ms · R2 kyc-docs private) |
 | krw-admin-decide | Money §41.3·§43.3 — **live** approve credit1 / reject0 · TRC20 address · PG사0 · CSV=L2+ (v7.22.12) |
 | deposit-confirm-stages · no-per-address-poll | Money §41·§43.1 — **live** 1conf UI/no ledger · 19conf deposit_usdt · single stream · Phase0 in-process · Phase1 deploy |
-| sweeper-trx-guard | Money §43.2 — **live** Energy+TRX min→sweep 0 · Admin deposit-settings pause · Phase0 in-process ≠NATS |
+| sweeper-trx-guard | Money §43.2 — **live** Energy+TRX min→sweep 0 · Admin deposit-settings pause · no bound executor/no broadcast→DB `swept` mutation 0 · Phase0 in-process ≠NATS |
 | admin-user-360 | Admin §9.8.7·§9.8.8 — netInflowUsdt · 유저360 탭 · notify audit (v7.22.13) |
 | match-success-rule | Engine §48.13.2 golden 6 · Soft60/Hard90 · REQUEUE/MATCH_TIMEOUT · P0b · random/timer 0 · presentation≠credit (v7.22.14) — **live** |
 | pricing-formula · fx-snapshot-formula · market-intel-engine | Engine §0.0 / §0.0.4.1~4.2 — Asset Master·pipeline·FORBIDDEN0 · Admin opportunities §36 · yahoo_jp0 — **live** |

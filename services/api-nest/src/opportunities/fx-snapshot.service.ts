@@ -10,8 +10,8 @@
  * fx_snapshot_id both depend on that immutability).
  *
  * Marketplace-normalization legs (gbpUsd/eurUsd/audUsd/usdtPerUsd) are
- * carried forward from the latest row only while within a bounded freshness
- * window — past that, they go null (fail-closed, never fabricated). The
+ * carried forward only from each leg's own source provenance while within
+ * that source's freshness window — past that, they go null (fail-closed). The
  * legacy KRW-approx-display leg keeps its pre-existing carry-forward
  * posture (display-only, not a money-authoritative gate) — repairing its
  * freshness policy is out of PTF-00C's price-denomination/resilience scope.
@@ -20,13 +20,11 @@ import { Injectable, Logger } from "@nestjs/common";
 import { PostgresService } from "../db/postgres";
 import { isPositiveAmount } from "../ledger/ledger.money";
 import { composeFxSnapshot, deriveMarketplaceLegs } from "./opportunities.mi";
-
-/** CoinGecko cacheHintSec=120s → generous carry-forward bound for its legs. */
-const COINGECKO_CARRY_FORWARD_MS = 15 * 60 * 1000;
-/** Frankfurter cacheHintSec=3600s (daily-cadence rate) → wider bound. */
-const FRANKFURTER_CARRY_FORWARD_MS = 6 * 60 * 60 * 1000;
-/** Marketplace legs may be carried from either adapter's last tick — use the wider bound. */
-const MARKETPLACE_LEG_CARRY_FORWARD_MS = FRANKFURTER_CARRY_FORWARD_MS;
+import {
+  carryMarketplaceLeg,
+  validateFxObservedAt,
+  type RateProvenance,
+} from "./fx-marketplace-freshness";
 
 export type FxNormalizationSnapshotRow = {
   id: string;
@@ -36,9 +34,6 @@ export type FxNormalizationSnapshotRow = {
   usdtPerUsd: string | null;
   capturedAt: string;
 };
-
-type LegProvenance = { source: string; capturedAt: string };
-type RateProvenance = Record<string, LegProvenance>;
 
 type LatestRow = {
   id: string;
@@ -77,12 +72,33 @@ export class FxSnapshotService {
     if (!this.db.configured()) return null;
     const row = await this.loadLatest();
     if (!row) return null;
+    const nowMs = Date.now();
     return {
       id: row.id,
-      gbpUsd: row.gbp_usd,
-      eurUsd: row.eur_usd,
-      audUsd: row.aud_usd,
-      usdtPerUsd: row.usdt_per_usd,
+      gbpUsd: carryMarketplaceLeg(
+        "gbpUsd",
+        row.gbp_usd,
+        row.rate_provenance,
+        nowMs,
+      ),
+      eurUsd: carryMarketplaceLeg(
+        "eurUsd",
+        row.eur_usd,
+        row.rate_provenance,
+        nowMs,
+      ),
+      audUsd: carryMarketplaceLeg(
+        "audUsd",
+        row.aud_usd,
+        row.rate_provenance,
+        nowMs,
+      ),
+      usdtPerUsd: carryMarketplaceLeg(
+        "usdtPerUsd",
+        row.usdt_per_usd,
+        row.rate_provenance,
+        nowMs,
+      ),
       capturedAt: row.captured_at,
     };
   }
@@ -120,10 +136,17 @@ export class FxSnapshotService {
       return { ok: false, snapshotId: null, created: false, reason: "DATABASE_URL_UNSET" };
     }
     const fx = input.fx && typeof input.fx === "object" ? input.fx : {};
-    const observedAt = this.isIsoDate(input.observedAt)
-      ? input.observedAt
-      : new Date().toISOString();
-    const nowMs = Date.parse(observedAt);
+    const observed = validateFxObservedAt(input.observedAt, Date.now());
+    if (!observed.ok) {
+      return {
+        ok: false,
+        snapshotId: null,
+        created: false,
+        reason: observed.reason,
+      };
+    }
+    const observedAt = observed.observedAt;
+    const nowMs = observed.observedMs;
 
     const raw = this.readAdapterFields(input.adapterId, fx);
     if (Object.keys(raw).length === 0) {
@@ -131,20 +154,47 @@ export class FxSnapshotService {
     }
 
     const prev = await this.loadLatest();
-    const carryMarketplace =
-      !!prev && nowMs - Date.parse(prev.captured_at) <= MARKETPLACE_LEG_CARRY_FORWARD_MS;
 
     // --- marketplace-normalization legs (P0-A/P0-B core) ---
+    // Carry authority is each leg's source provenance, never the newest row timestamp.
     const freshLegs = deriveMarketplaceLegs({
       usdtUsd: raw.usdtUsd,
       usdGbp: raw.usdGbp,
       usdEur: raw.usdEur,
       usdAud: raw.usdAud,
     });
-    const gbpUsd = freshLegs.gbpUsd ?? (carryMarketplace ? prev?.gbp_usd ?? null : null);
-    const eurUsd = freshLegs.eurUsd ?? (carryMarketplace ? prev?.eur_usd ?? null : null);
-    const audUsd = freshLegs.audUsd ?? (carryMarketplace ? prev?.aud_usd ?? null : null);
-    let usdtPerUsd = freshLegs.usdtPerUsd ?? (carryMarketplace ? prev?.usdt_per_usd ?? null : null);
+    const gbpUsd =
+      freshLegs.gbpUsd ??
+      carryMarketplaceLeg(
+        "gbpUsd",
+        prev?.gbp_usd ?? null,
+        prev?.rate_provenance ?? null,
+        nowMs,
+      );
+    const eurUsd =
+      freshLegs.eurUsd ??
+      carryMarketplaceLeg(
+        "eurUsd",
+        prev?.eur_usd ?? null,
+        prev?.rate_provenance ?? null,
+        nowMs,
+      );
+    const audUsd =
+      freshLegs.audUsd ??
+      carryMarketplaceLeg(
+        "audUsd",
+        prev?.aud_usd ?? null,
+        prev?.rate_provenance ?? null,
+        nowMs,
+      );
+    const usdtPerUsd =
+      freshLegs.usdtPerUsd ??
+      carryMarketplaceLeg(
+        "usdtPerUsd",
+        prev?.usdt_per_usd ?? null,
+        prev?.rate_provenance ?? null,
+        nowMs,
+      );
 
     // --- legacy KRW-approx display leg — unchanged carry-forward posture ---
     let usdtKrw: string;
@@ -195,16 +245,19 @@ export class FxSnapshotService {
       // fail closed rather than fabricate a KRW display rate.
       return { ok: false, snapshotId: null, created: false, reason: "FX_NO_KRW_LEG_AVAILABLE" };
     }
-    // usdtPerUsd should track usdtUsdOut when both are known from the same
-    // tick's coingecko reading and the marketplace leg carry-forward missed it.
-    if (usdtPerUsd == null && usdtUsdOut != null && isPositiveAmount(usdtUsdOut)) {
-      usdtPerUsd = deriveMarketplaceLegs({ usdtUsd: usdtUsdOut }).usdtPerUsd;
-    }
-
     const sources = Array.from(
       new Set([...(prev?.sources ?? []), input.adapterId]),
     );
-    const rateProvenance = this.mergeProvenance(prev?.rate_provenance ?? null, input.adapterId, observedAt, raw);
+    const rateProvenance = this.mergeProvenance(
+      prev?.rate_provenance ?? null,
+      input.adapterId,
+      observedAt,
+      raw,
+    );
+    if (gbpUsd == null) delete rateProvenance.gbpUsd;
+    if (eurUsd == null) delete rateProvenance.eurUsd;
+    if (audUsd == null) delete rateProvenance.audUsd;
+    if (usdtPerUsd == null) delete rateProvenance.usdtPerUsd;
 
     const unchanged =
       !!prev &&
@@ -220,7 +273,22 @@ export class FxSnapshotService {
     }
 
     const id = `fx_rt_${Date.parse(observedAt) || Date.now()}_${input.adapterId}`;
-    await this.db.query(
+    const params = [
+      id,
+      usdtKrw,
+      input.adapterId,
+      observedAt,
+      formulaId,
+      sources,
+      usdtUsdOut,
+      usdKrwFrank,
+      gbpUsd,
+      eurUsd,
+      audUsd,
+      usdtPerUsd,
+      JSON.stringify(rateProvenance),
+    ];
+    const inserted = await this.db.query<{ id: string }>(
       `INSERT INTO public.fx_snapshots (
          id, usd_krw, source, captured_at, formula_id, sources,
          usdt_usd, usd_krw_frank, gbp_usd, eur_usd, aud_usd, usdt_per_usd, rate_provenance
@@ -228,23 +296,40 @@ export class FxSnapshotService {
          $1, $2::numeric, $3, $4::timestamptz, $5, $6::text[],
          $7::numeric, $8::numeric, $9::numeric, $10::numeric, $11::numeric, $12::numeric, $13::jsonb
        )
-       ON CONFLICT (id) DO NOTHING`,
-      [
-        id,
-        usdtKrw,
-        input.adapterId,
-        observedAt,
-        formulaId,
-        sources,
-        usdtUsdOut,
-        usdKrwFrank,
-        gbpUsd,
-        eurUsd,
-        audUsd,
-        usdtPerUsd,
-        JSON.stringify(rateProvenance),
-      ],
+       ON CONFLICT (id) DO NOTHING
+       RETURNING id`,
+      params,
     );
+    if (!inserted.rows[0]) {
+      const replay = await this.db.query<{ id: string }>(
+        `SELECT id
+           FROM public.fx_snapshots
+          WHERE id = $1
+            AND usd_krw = $2::numeric
+            AND source = $3
+            AND captured_at = $4::timestamptz
+            AND formula_id = $5
+            AND sources = $6::text[]
+            AND usdt_usd IS NOT DISTINCT FROM $7::numeric
+            AND usd_krw_frank IS NOT DISTINCT FROM $8::numeric
+            AND gbp_usd IS NOT DISTINCT FROM $9::numeric
+            AND eur_usd IS NOT DISTINCT FROM $10::numeric
+            AND aud_usd IS NOT DISTINCT FROM $11::numeric
+            AND usdt_per_usd IS NOT DISTINCT FROM $12::numeric
+            AND rate_provenance IS NOT DISTINCT FROM $13::jsonb`,
+        params,
+      );
+      if (!replay.rows[0]) {
+        this.logger.error(`fx_snapshots id collision id=${id} adapter=${input.adapterId}`);
+        return {
+          ok: false,
+          snapshotId: null,
+          created: false,
+          reason: "FX_SNAPSHOT_ID_COLLISION",
+        };
+      }
+      return { ok: true, snapshotId: id, created: false };
+    }
     this.logger.log(`fx_snapshots +1 id=${id} adapter=${input.adapterId}`);
     return { ok: true, snapshotId: id, created: true };
   }
@@ -306,7 +391,4 @@ export class FxSnapshotService {
     return merged;
   }
 
-  private isIsoDate(v: string | null | undefined): v is string {
-    return typeof v === "string" && !Number.isNaN(Date.parse(v));
-  }
 }

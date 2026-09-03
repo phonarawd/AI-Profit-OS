@@ -13,7 +13,7 @@ import {
 } from "@nestjs/common";
 import { createRequire } from "node:module";
 import { join } from "node:path";
-import { loadPhase0Env } from "../config/phase0.env";
+import { isUserJwtSecretStrong, loadPhase0Env } from "../config/phase0.env";
 import {
   USER_JWT_AUDIENCE,
   USER_JWT_ISSUER,
@@ -72,8 +72,8 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     const env = loadPhase0Env();
-    if (!env.jwtUserSecret) {
-      // Fail-closed — never fall back to a hardcoded/default secret.
+    if (!isUserJwtSecretStrong(env.jwtUserSecret)) {
+      // HS256 requires >=256-bit key material. Fail closed on missing/weak secrets.
       throw new UnauthorizedException("AUTH_REQUIRED");
     }
 

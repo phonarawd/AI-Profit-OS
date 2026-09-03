@@ -35,7 +35,7 @@ type SessionReq = {
 
 /**
  * User wallet HTTP surface · /api/v1/wallet/*
- * 유저 라우트 = JwtAuthGuard + sessionUserId · practiceExpireTick = fail-closed machine-auth
+ * 유저 라우트 = JwtAuthGuard + sessionUserId · internal chain/tick routes = fail-closed machine-auth
  */
 @Controller("wallet")
 export class WalletController {
@@ -102,9 +102,13 @@ export class WalletController {
     return this.depositAddress.getOrCreate(this.sessionUserId(req));
   }
 
-  /** §43.1 observe Transfer — Phase0 tick / Phase1 worker ingest */
+  /** §43.1 observe Transfer — internal Phase0/Phase1 ingest · fail-closed machine-auth */
   @Post(WALLET_USER_ROUTES.usdtDepositObserve)
-  observeUsdtDeposit(@Body() body: Record<string, unknown>) {
+  observeUsdtDeposit(
+    @Headers("x-internal-wallet-token") headerToken: string | undefined,
+    @Body() body: Record<string, unknown>,
+  ) {
+    this.assertInternalWalletTickAuth(headerToken);
     return this.usdtDeposit.observe({
       txHash: String(body.txHash ?? ""),
       toAddress: String(body.toAddress ?? ""),
@@ -115,20 +119,30 @@ export class WalletController {
     });
   }
 
-  /** §43.1 Phase0 in-process single-stream tick */
+  /** §43.1 Phase0 in-process single-stream tick/status · fail-closed machine-auth */
   @Post(WALLET_USER_ROUTES.chainWatcherTick)
-  chainWatcherTick() {
+  chainWatcherTick(
+    @Headers("x-internal-wallet-token") headerToken: string | undefined,
+  ) {
+    this.assertInternalWalletTickAuth(headerToken);
     return this.chainWatcher.tick();
   }
 
   @Get(WALLET_USER_ROUTES.chainWatcherStatus)
-  chainWatcherStatus() {
+  chainWatcherStatus(
+    @Headers("x-internal-wallet-token") headerToken: string | undefined,
+  ) {
+    this.assertInternalWalletTickAuth(headerToken);
     return this.chainWatcher.describe();
   }
 
-  /** §43.2 Phase0 in-process Energy+TRX sweeper tick */
+  /** §43.2 Phase0 in-process Energy+TRX sweeper tick/status · fail-closed machine-auth */
   @Post(WALLET_USER_ROUTES.chainSweeperTick)
-  chainSweeperTick(@Body() body?: Record<string, unknown>) {
+  chainSweeperTick(
+    @Headers("x-internal-wallet-token") headerToken: string | undefined,
+    @Body() body?: Record<string, unknown>,
+  ) {
+    this.assertInternalWalletTickAuth(headerToken);
     return this.chainSweeper.tick({
       treasuryTrxBalance:
         typeof body?.treasuryTrxBalance === "string"
@@ -139,7 +153,10 @@ export class WalletController {
   }
 
   @Get(WALLET_USER_ROUTES.chainSweeperStatus)
-  chainSweeperStatus() {
+  chainSweeperStatus(
+    @Headers("x-internal-wallet-token") headerToken: string | undefined,
+  ) {
+    this.assertInternalWalletTickAuth(headerToken);
     return this.chainSweeper.describe();
   }
 
@@ -192,7 +209,6 @@ export class WalletController {
       userId: this.sessionUserId(req),
       method: String(body.method ?? "") as WithdrawStepUpMethod,
       origin: String(body.origin ?? ""),
-      email: typeof body.email === "string" ? body.email : undefined,
     });
   }
 
@@ -217,6 +233,7 @@ export class WalletController {
     return this.stepUp.setPin({
       userId: this.sessionUserId(req),
       pin: String(body.pin ?? ""),
+      enrollmentStepUpToken: String(body.stepUpToken ?? ""),
     });
   }
 

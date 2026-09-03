@@ -61,8 +61,32 @@ if (!envEx.includes("RESEND_FROM_EMAIL")) {
 }
 
 const auth = read("services/api-nest/src/auth/auth.service.ts");
-if (!auth.includes('delivery: "resend"')) {
+const magic = read("services/api-nest/src/auth/magic-link.service.ts");
+if (!auth.includes("magicLinkRequest") || !magic.includes('delivery: "resend"')) {
   fails.push("auth magic-link must use delivery resend (same SSOT path)");
+}
+if (!provider.includes("sendMagicLink")) {
+  fails.push("resend-email.provider must send an actual magic-link URL");
+}
+if (
+  !provider.includes("allowsDevDeliveryFallback") ||
+  !provider.includes('nodeEnv === "development"') ||
+  !provider.includes('nodeEnv === "test"') ||
+  !provider.includes('reason: "resend_api_key_missing"')
+) {
+  fails.push("Resend delivery must fail closed outside development/test when API key is missing");
+}
+
+const magicFailIndex = magic.indexOf("if (!sent.ok)");
+const magicFailBlock =
+  magicFailIndex >= 0 ? magic.slice(magicFailIndex, magicFailIndex + 900) : "";
+if (
+  !magicFailBlock.includes("ServiceUnavailableException") ||
+  !magicFailBlock.includes("MAGIC_LINK_DELIVERY_UNAVAILABLE") ||
+  !magicFailBlock.includes('consumeAtomic("magic_link", hash') ||
+  !magicFailBlock.includes("catch (error)")
+) {
+  fails.push("magic-link provider rejection/exception must invalidate challenge and surface as delivery unavailable");
 }
 
 const step = read("services/api-nest/src/wallet/withdraw-stepup.service.ts");

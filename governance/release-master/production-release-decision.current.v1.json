@@ -1,0 +1,112 @@
+{
+  "schema": "production-release-evidence.current.v1",
+  "observed_at": "2026-09-03T13:41:16.055685Z",
+  "candidate_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+  "release_acceptance": null,
+  "engine": {
+    "final_acceptance": "NOT_ISSUED",
+    "rebase_required": true,
+    "ack_received": false,
+    "candidate_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60"
+  },
+  "staging": {
+    "ready": false,
+    "status": "NOT_READY",
+    "verdict": "STAGING_TOPOLOGY=READY",
+    "blockers": [
+      "staging_runtime_not_current_integration_head",
+      "staging_kakao_not_configured",
+      "staging_resend_delivery_unavailable",
+      "staging_fx_runtime_feed_inactive"
+    ],
+    "backend_topology_ready": true,
+    "backend_db_health": true,
+    "backend_db_tls_verified": true,
+    "backend_db_backed_read": "PASS",
+    "frontend_e2e": "BROWSER_PASS_AUTHENTICATED_E2E_PASS_RUNTIME_72EA_CURRENT_HEAD_PENDING",
+    "frontend_proxy_binding": "CLOSED_VERIFIED",
+    "runtime_config": {
+      "jwt_user_secret_configured": true,
+      "app_host": "ai-profit-web-preview.ebay-adapter.workers.dev",
+      "ops_host": "ai-profit-ops-preview.ebay-adapter.workers.dev",
+      "api_host": "ai-profit-os-staging-exact-1f3b36f.onrender.com",
+      "kakao_provider": "not_configured",
+      "resend_magic_link_delivery": "503_MAGIC_LINK_DELIVERY_UNAVAILABLE"
+    },
+    "authenticated_e2e": {
+      "evidence": "governance/recovery/staging-authenticated-e2e.20260903.v1.json",
+      "status": "CLOSED_VERIFIED",
+      "magic_link_verify_status": 201,
+      "session_status": 200,
+      "wallet_buckets_status": 200,
+      "ledger_journals_status": 200,
+      "money_guard_status": 403
+    }
+  },
+  "db_hardening": {
+    "ok": false,
+    "status": "NOT_READY",
+    "fails": [
+      "rls_enabled_mismatch:push_control:expected=true:got=false",
+      "rls_enabled_mismatch:push_subscriptions:expected=true:got=false",
+      "forbidden_privilege:admin_audit_events:TRUNCATE",
+      "forbidden_privilege:push_control:TRUNCATE",
+      "forbidden_privilege:push_subscriptions:TRUNCATE"
+    ]
+  },
+  "render_preflight": {
+    "ready": false,
+    "status": "NOT_READY",
+    "accepted_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "blockers": [
+      "auto_deploy_enabled",
+      "production_live_sha_mismatch"
+    ],
+    "auto_deploy_required": "disabled"
+  },
+  "security": {
+    "exact_head_sha": "72ea791bf4aa322c96df34bfb52cfc71f7c93b60",
+    "codeql_workflow": "success",
+    "unresolved_p0": null,
+    "unresolved_p1": null,
+    "release_blocking_p2": null,
+    "unexplained_ghas": null,
+    "dismissals_without_evidence": null,
+    "alert_inventory_status": "NOT_PROVEN"
+  },
+  "tron_hd": {
+    "ready": false,
+    "derivation_path": "m/44'/195'/0'/0/{index}",
+    "vault_authority_proven": false,
+    "synthetic_derivation": false,
+    "canonical_deriver_bound": false,
+    "production_vault_matching_secret_metadata_count": 0,
+    "staging_vault_matching_secret_metadata_count": 0,
+    "production_deposit_config_singleton_rows": 0,
+    "staging_deposit_config_singleton_rows": 0,
+    "status": "BLOCKED"
+  },
+  "rollback": {
+    "ready": true,
+    "target_deploy_id": "dep-da938o142hec73eipre0",
+    "target_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec"
+  },
+  "quality": {
+    "known_errors": null,
+    "known_defects": null,
+    "known_contradictions": null,
+    "known_release_duplicates": null,
+    "stale_release_evidence": 0,
+    "status": "NOT_PROVEN_CURRENT"
+  },
+  "production_mutation": 0,
+  "governance_parent_sha": "4b5272ba16442a08cb593fd67ab061bbb28ab474",
+  "staging_db_binding_evidence": "governance/recovery/staging-runtime-db-binding.20260903.v1.json",
+  "migration_effect_reconciliation": {
+    "evidence": "governance/recovery/production-migration-effect-reconciliation.20260903.v1.json",
+    "schema_effect_present_ledger_unrecorded": 10,
+    "actual_effect_pending": 1,
+    "blind_replay_forbidden": true,
+    "production_mutation": 0
+  }
+}

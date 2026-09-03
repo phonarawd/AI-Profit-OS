@@ -15,9 +15,12 @@ on:
           - all
           - web
           - ops
+  push:
+    branches:
+      - chatgpt/staging-exact-1f3b36f-20260903
 
 concurrency:
-  group: cf-staging-${{ github.ref }}-${{ inputs.surface }}
+  group: cf-staging-${{ github.ref }}-${{ inputs.surface || 'all' }}
   cancel-in-progress: false
 
 jobs:
@@ -50,14 +53,18 @@ jobs:
       - name: Origin lock
         run: pnpm verify:opennext-workers-origin
 
-      # rewrite 전용 — production API_HOST/Render 기본값 금지. 명시적 STAGING_API_HOST만.
+      # rewrite 전용 — public staging origin is source-controlled in the staging manifest.
+      # GitHub secret drift must not silently keep preview on an old backend.
       - name: Preview API proxy env
-        env:
-          STAGING_API_HOST: ${{ secrets.STAGING_API_HOST }}
         run: |
           set -euo pipefail
+          STAGING_API_HOST="$(node -e '
+            const fs = require("fs");
+            const manifest = JSON.parse(fs.readFileSync("infra/domain.manifest.json", "utf8"));
+            process.stdout.write(String(manifest.openNext?.staging?.apiOrigin || ""));
+          ')"
           test -n "${STAGING_API_HOST:-}" || {
-            echo "Missing STAGING_API_HOST — staging must not inherit production API_HOST"
+            echo "Missing manifest openNext.staging.apiOrigin — staging must not inherit production API_HOST"
             exit 1
           }
           API="$STAGING_API_HOST"
@@ -80,18 +87,311 @@ jobs:
               process.exit(1);
             }
           ' "$API"
+          printf 'STAGING_API_HOST=%s\nAPI_HOST=%s\n' "$API" "$API" >> "$GITHUB_ENV"
           printf 'API_HOST=%s\n' "$API" >> .env
 
+      - name: Exact staging API core readiness
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = "chatgpt/staging-exact-1f3b36f-20260903" || {
+            echo "staging deploy must run from exact staging branch"
+            exit 1
+          }
+          node - <<'NODE'
+          const fs = require("fs");
+          const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+          (async () => {
+            const manifest = JSON.parse(fs.readFileSync("infra/domain.manifest.json", "utf8"));
+            const api = String(process.env.STAGING_API_HOST || "").replace(/\/$/, "");
+            const expectedSha = String(process.env.GITHUB_SHA || "");
+            const expectedWeb = String(manifest.openNext?.staging?.web?.workersDev || "");
+            const expectedOps = String(manifest.openNext?.staging?.ops?.workersDev || "");
+            const host = (value) => {
+              const raw = String(value || "");
+              if (!raw) return "";
+              return new URL(/^https?:\/\//i.test(raw) ? raw : "https://" + raw).hostname;
+            };
+            const deadline = Date.now() + 180_000;
+            let lastFails = ["health_not_checked"];
+            while (Date.now() < deadline) {
+              try {
+                const res = await fetch(api + "/api/v1/health", {
+                  headers: { "user-agent": "aipo-staging-core-readiness/1" },
+                  signal: AbortSignal.timeout(20000),
+                });
+                const body = await res.json().catch(() => null);
+                const fails = [];
+                if (res.status !== 200 || !body) fails.push("health_not_200_json");
+                if (body?.gitSha !== expectedSha) fails.push("runtime_sha_mismatch");
+                if (body?.db?.configured !== true || body?.db?.ok !== true) fails.push("db_not_ready");
+                if (body?.redis?.configured !== true || body?.redis?.ok !== true) fails.push("redis_not_ready");
+                if (body?.auth?.userJwtConfigured !== true) fails.push("jwt_user_secret_not_ready");
+                if (host(body?.hosts?.app) !== expectedWeb) fails.push("app_host_not_staging_web");
+                if (host(body?.hosts?.ops) !== expectedOps) fails.push("ops_host_not_staging_ops");
+                if (host(body?.hosts?.api) !== host(api)) fails.push("api_host_mismatch");
+                if (!fails.length) {
+                  console.log("[staging-core-readiness] PASS exact SHA + DB/Redis + JWT + staging origins");
+                  return;
+                }
+                lastFails = fails;
+              } catch (err) {
+                lastFails = ["health_fetch_failed:" + (err?.message || err)];
+              }
+              console.log("[staging-core-readiness] WAIT " + lastFails.join(","));
+              await sleep(10_000);
+            }
+            console.error("[staging-core-readiness] FAIL " + lastFails.join(","));
+            process.exit(1);
+          })().catch((err) => {
+            console.error("[staging-core-readiness] FAIL " + (err?.message || err));
+            process.exit(1);
+          });
+          NODE
+
+      - name: Staging auth provider readiness
+        id: auth_provider_readiness
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          (async () => {
+            const api = String(process.env.STAGING_API_HOST || "").replace(/\/$/, "");
+            const res = await fetch(api + "/api/v1/health", {
+              headers: { "user-agent": "aipo-staging-provider-readiness/1" },
+              signal: AbortSignal.timeout(20000),
+            });
+            const body = await res.json().catch(() => null);
+            const fails = [];
+            if (res.status !== 200 || !body) fails.push("health_not_200_json");
+            if (body?.auth?.kakaoConfigured !== true) fails.push("kakao_provider_not_ready");
+            if (body?.auth?.resendConfigured !== true) fails.push("resend_provider_not_ready");
+            if (fails.length) {
+              console.error("[staging-provider-readiness] BLOCKED " + fails.join(","));
+              process.exit(1);
+            }
+            console.log("[staging-provider-readiness] PASS Kakao + Resend");
+          })().catch((err) => {
+            console.error("[staging-provider-readiness] FAIL " + (err?.message || err));
+            process.exit(1);
+          });
+          NODE
+
       - name: Deploy web staging
-        if: inputs.surface == 'web' || inputs.surface == 'all'
+        if: github.event_name == 'push' || inputs.surface == 'web' || inputs.surface == 'all'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Public build flag only. Backend OAuth credentials remain server-side and fail closed.
+          NEXT_PUBLIC_OAUTH_KAKAO_ENABLED: "1"
         run: node tooling/deploy/cf-preflight.cjs staging web && node tooling/deploy/cf-pages-web.cjs staging
 
       - name: Deploy ops staging
-        if: inputs.surface == 'ops' || inputs.surface == 'all'
+        if: github.event_name == 'push' || inputs.surface == 'ops' || inputs.surface == 'all'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: node tooling/deploy/cf-preflight.cjs staging ops && node tooling/deploy/cf-pages-ops.cjs staging
+
+
+      # FX preview is fail-closed: core Workers are always deployable for
+      # health/auth proof, but provider-secret binding and authenticated ticks
+      # remain blocked until repository credentials are present and the ingest
+      # token is proven equal to the exact staging Nest token.
+      - name: FX preview credential parity
+        env:
+          ADAPTER_INGEST_TOKEN: ${{ secrets.ADAPTER_INGEST_TOKEN }}
+          COINGECKO_DEMO_API_KEY: ${{ secrets.COINGECKO_DEMO_API_KEY }}
+        run: |
+          set +x
+          echo "FX_PREVIEW_READY=no" >> "$GITHUB_ENV"
+          if [ -z "${ADAPTER_INGEST_TOKEN:-}" ]; then
+            echo "FX_ADAPTER_INGEST_TOKEN_PRESENT=NO"
+            echo "FX_PREVIEW_CLASSIFICATION=BLOCKED_SECRET_ABSENT"
+            exit 0
+          fi
+          echo "FX_ADAPTER_INGEST_TOKEN_PRESENT=YES"
+          if [ -z "${COINGECKO_DEMO_API_KEY:-}" ]; then
+            echo "COINGECKO_DEMO_API_KEY_PRESENT=NO"
+            echo "FX_PREVIEW_CLASSIFICATION=BLOCKED_COINGECKO_KEY_ABSENT"
+            exit 0
+          fi
+          echo "COINGECKO_DEMO_API_KEY_PRESENT=YES"
+          BASE="$(node -e '
+            const fs = require("fs");
+            const manifest = JSON.parse(fs.readFileSync("infra/domain.manifest.json", "utf8"));
+            process.stdout.write(String(manifest.openNext?.staging?.apiOrigin || ""));
+          ')"
+          URL="${BASE%/}/api/v1/internal/adapters/ingest"
+          CODE="$(curl --silent --show-error --output /tmp/fx-token-parity.json --write-out '%{http_code}' --max-time 20 \
+            -X POST "$URL" \
+            -H 'content-type: application/json' \
+            -H "x-adapter-token: $ADAPTER_INGEST_TOKEN" \
+            --data '{}')"
+          if [ "$CODE" = "400" ] && grep -q 'unknown adapter' /tmp/fx-token-parity.json; then
+            echo "FX_ADAPTER_TOKEN_PARITY=MATCH"
+            echo "FX_PREVIEW_READY=yes" >> "$GITHUB_ENV"
+            exit 0
+          fi
+          if [ "$CODE" = "401" ]; then
+            echo "FX_ADAPTER_TOKEN_PARITY=MISMATCH"
+            echo "FX_PREVIEW_CLASSIFICATION=BLOCKED_TOKEN_MISMATCH"
+            exit 0
+          fi
+          echo "FX_ADAPTER_TOKEN_PARITY=UNEXPECTED_HTTP_$CODE"
+          echo "FX_PREVIEW_CLASSIFICATION=BLOCKED_PARITY_NOT_PROVEN"
+
+      - name: Deploy FX core preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node tooling/deploy/cf-workers.cjs preview fx-core
+
+      - name: FX core preview fail-closed smoke
+        run: |
+          set -euo pipefail
+          for WORKER in coingecko-adapter frankfurter-adapter; do
+            BASE="https://${WORKER}-preview.ebay-adapter.workers.dev"
+            OUT="/tmp/${WORKER}-health.json"
+            rm -f "$OUT"
+            for ATTEMPT in 1 2 3 4 5; do
+              if curl --fail --silent --show-error --max-time 20 "$BASE/health" > "$OUT"; then
+                break
+              fi
+              if [ "$ATTEMPT" -eq 5 ]; then
+                echo "FX_CORE_HEALTH_UNAVAILABLE worker=$WORKER"
+                exit 1
+              fi
+              sleep 2
+            done
+            CODE="$(curl --silent --show-error --output "/tmp/${WORKER}-unauth-tick.json" --write-out '%{http_code}' --max-time 20 -X POST "$BASE/tick")"
+            printf '%s' "$CODE" > "/tmp/${WORKER}-unauth-tick.status"
+          done
+          node - <<'NODE'
+          const fs = require("fs");
+          for (const worker of ["coingecko-adapter", "frankfurter-adapter"]) {
+            const v = JSON.parse(fs.readFileSync("/tmp/" + worker + "-health.json", "utf8"));
+            if (
+              v?.ok !== true ||
+              v?.role !== "fx" ||
+              typeof v?.credentialsConfigured !== "boolean" ||
+              typeof v?.ingestAuthConfigured !== "boolean"
+            ) {
+              console.error("FX_CORE_HEALTH_INVALID", worker, JSON.stringify({
+                ok: v?.ok,
+                role: v?.role,
+                credentialsConfigured: v?.credentialsConfigured,
+                ingestAuthConfigured: v?.ingestAuthConfigured,
+              }));
+              process.exit(1);
+            }
+            const status = Number(fs.readFileSync("/tmp/" + worker + "-unauth-tick.status", "utf8").trim());
+            const expected = v.ingestAuthConfigured ? 401 : 503;
+            if (status !== expected) {
+              console.error("FX_CORE_UNAUTH_TICK_NOT_FAIL_CLOSED", worker, JSON.stringify({
+                status,
+                expected,
+                ingestAuthConfigured: v.ingestAuthConfigured,
+              }));
+              process.exit(1);
+            }
+            console.log("[fx-core-health] PASS " + worker + " credentialsConfigured=" + v.credentialsConfigured);
+            console.log("[fx-core-auth] PASS " + worker + " status=" + status + " ingestAuthConfigured=" + v.ingestAuthConfigured);
+          }
+          console.log("[fx-core-auth] PASS fail-closed status contract");
+          NODE
+
+      - name: Bind FX preview secrets
+        if: env.FX_PREVIEW_READY == 'yes'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          ADAPTER_INGEST_TOKEN: ${{ secrets.ADAPTER_INGEST_TOKEN }}
+          COINGECKO_DEMO_API_KEY: ${{ secrets.COINGECKO_DEMO_API_KEY }}
+        run: |
+          set +x
+          BASE="$(node -e '
+            const fs = require("fs");
+            const manifest = JSON.parse(fs.readFileSync("infra/domain.manifest.json", "utf8"));
+            process.stdout.write(String(manifest.openNext?.staging?.apiOrigin || ""));
+          ')"
+          NEST_ADAPTER_INGEST_URL="${BASE%/}/api/v1/internal/adapters/ingest"
+          for WORKER in coingecko-adapter frankfurter-adapter; do
+            printf '%s' "$ADAPTER_INGEST_TOKEN" | (
+              cd "workers/$WORKER" &&
+              pnpm exec wrangler secret put ADAPTER_INGEST_TOKEN --env preview --config wrangler.toml
+            )
+          done
+          printf '%s' "$COINGECKO_DEMO_API_KEY" | (
+            cd workers/coingecko-adapter &&
+            pnpm exec wrangler secret put COINGECKO_DEMO_API_KEY --env preview --config wrangler.toml
+          )
+          for WORKER in coingecko-adapter frankfurter-adapter; do
+            printf '%s' "$NEST_ADAPTER_INGEST_URL" | (
+              cd "workers/$WORKER" &&
+              pnpm exec wrangler secret put NEST_ADAPTER_INGEST_URL --env preview --config wrangler.toml
+            )
+          done
+
+      - name: FX preview credential health
+        if: env.FX_PREVIEW_READY == 'yes'
+        run: |
+          set -euo pipefail
+          for WORKER in coingecko-adapter frankfurter-adapter; do
+            URL="https://${WORKER}-preview.ebay-adapter.workers.dev/health"
+            OK=no
+            for ATTEMPT in 1 2 3 4 5; do
+              BODY="$(curl --fail --silent --show-error --max-time 20 "$URL")" || BODY=""
+              if printf '%s' "$BODY" | node -e '
+                let raw=""; process.stdin.on("data",c=>raw+=c).on("end",()=>{
+                  try { const v=JSON.parse(raw); process.exit(v?.ok===true && v?.credentialsConfigured===true ? 0 : 1); }
+                  catch { process.exit(1); }
+                });
+              '; then
+                OK=yes
+                break
+              fi
+              sleep 2
+            done
+            if [ "$OK" != "yes" ]; then
+              echo "FX_PREVIEW_CREDENTIAL_HEALTH_NOT_READY worker=$WORKER"
+              exit 1
+            fi
+          done
+          echo "FX_PREVIEW_CREDENTIAL_HEALTH=PASS"
+
+      - name: FX preview authenticated tick
+        if: env.FX_PREVIEW_READY == 'yes'
+        env:
+          ADAPTER_INGEST_TOKEN: ${{ secrets.ADAPTER_INGEST_TOKEN }}
+        run: |
+          set +x
+          curl --fail --silent --show-error --max-time 30 \
+            -X POST 'https://coingecko-adapter-preview.ebay-adapter.workers.dev/tick' \
+            -H "x-adapter-token: $ADAPTER_INGEST_TOKEN" > /tmp/coingecko-tick.json
+          curl --fail --silent --show-error --max-time 30 \
+            -X POST 'https://frankfurter-adapter-preview.ebay-adapter.workers.dev/tick' \
+            -H "x-adapter-token: $ADAPTER_INGEST_TOKEN" > /tmp/frankfurter-tick.json
+          node -e '
+            for (const p of ["/tmp/coingecko-tick.json","/tmp/frankfurter-tick.json"]) {
+              const v = JSON.parse(require("fs").readFileSync(p,"utf8"));
+              if (v.ok !== true || v.forwarded !== 1) {
+                console.error("FX_PREVIEW_TICK_NOT_FORWARDED", p, JSON.stringify({ok:v.ok,forwarded:v.forwarded,error:v.error||null}));
+                process.exit(1);
+              }
+            }
+            console.log("FX_PREVIEW_TICKS=FORWARDED");
+          '
+
+      - name: Staging readiness verdict
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.auth_provider_readiness.outcome }}" != "success" ]; then
+            echo "[staging-readiness] BLOCKED Kakao/Resend provider readiness"
+            exit 1
+          fi
+          if [ "${FX_PREVIEW_READY:-no}" != "yes" ]; then
+            echo "[staging-readiness] BLOCKED FX provider readiness"
+            exit 1
+          fi
+          echo "[staging-readiness] PASS"

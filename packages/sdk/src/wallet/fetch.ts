@@ -31,7 +31,7 @@ async function authHeaders(
   return headers;
 }
 
-const MONEY_RE = /^-?[0-9]+(\\.[0-9]+)?$/;
+const MONEY_RE = /^-?[0-9]+(\.[0-9]+)?$/;
 const WALLET_BUCKET_KEYS = [
   "userId",
   "principalUsdt",
