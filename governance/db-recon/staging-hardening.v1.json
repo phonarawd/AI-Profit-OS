@@ -1,0 +1,65 @@
+{
+  "schema": "governance.db-recon.staging-hardening.v1",
+  "observed_at": "2026-09-01T03:30:00.000Z",
+  "production_apply": 0,
+  "production_db_mutation": 0,
+  "evidence_class": "STATIC_VERIFIER_PASS",
+  "live_readonly": {
+    "migration_ledger_last": "20260821223109_beginner_onboarding_experience",
+    "admin_audit_events": {
+      "in_live": true,
+      "in_migration_ledger": false,
+      "repo_file": "supabase/migrations/20260823160000_admin_audit_events.sql",
+      "rls": true,
+      "force_rls": false,
+      "service_role": [
+        "DELETE",
+        "INSERT",
+        "REFERENCES",
+        "SELECT",
+        "TRIGGER",
+        "TRUNCATE",
+        "UPDATE"
+      ],
+      "repo_intent_service_role": ["SELECT", "INSERT"],
+      "truncate_trigger": false,
+      "service_role_bypassrls": true
+    },
+    "push_control": {
+      "rls": false,
+      "force_rls": false,
+      "anon_grants": [],
+      "authenticated_grants": [],
+      "service_role": "ALL"
+    },
+    "push_subscriptions": {
+      "rls": false,
+      "force_rls": false,
+      "anon_grants": [],
+      "authenticated_grants": [],
+      "service_role": "ALL"
+    },
+    "roles": {
+      "anon_bypassrls": false,
+      "authenticated_bypassrls": false,
+      "service_role_bypassrls": true,
+      "postgres_bypassrls": true,
+      "supabase_admin_bypassrls": true
+    },
+    "default_acl_public_tables": {
+      "postgres": ["postgres", "service_role"],
+      "supabase_admin": ["postgres", "anon", "authenticated", "service_role"]
+    }
+  },
+  "staging_sql": [
+    "supabase/staging/20260901120000_admin_audit_append_only.sql",
+    "supabase/staging/20260901120100_push_rls.sql",
+    "supabase/staging/20260901120200_default_acl.sql"
+  ],
+  "nest_push_usage": [
+    "services/api-nest/src/push/push-subscription.service.ts",
+    "services/api-nest/src/push/push-kill.service.ts",
+    "services/api-nest/src/kill-switch/kill-switch.service.ts"
+  ],
+  "note": "Do not apply these SQL files to Production. History repair is forbidden."
+}

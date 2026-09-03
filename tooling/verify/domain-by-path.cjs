@@ -1286,6 +1286,13 @@ const RULES = [
     scripts: ["staging-topology-readiness.cjs"],
   },
   {
+    test: (f) =>
+      /^supabase\/staging\//.test(f) ||
+      /^governance\/(db-recon\/staging-hardening|recovery\/(staging-db-hardening-snapshot|supabase-app-owner-boundary|production-db-hardening-snapshot))/.test(f) ||
+      /^tooling\/(release\/db-hardening-readiness|verify\/(db-hardening-readiness|staging-db-hardening))\.cjs$/.test(f),
+    scripts: ["db-hardening-readiness.cjs", "staging-db-hardening.cjs"],
+  },
+  {
     test: (f) => /^tooling\/verify\//.test(f),
     scripts: [],
   },
