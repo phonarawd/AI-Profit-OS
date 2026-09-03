@@ -386,7 +386,8 @@
     "engine-acceptance:selftest-product-rebase": "node tooling/engine-acceptance/selftest-product-rebase.cjs",
     "engine-acceptance:selftest-pre-rebase-harness": "node tooling/engine-acceptance/selftest-pre-rebase-harness.cjs",
     "verify:fx-worker-release-path": "node tooling/verify/fx-worker-release-path.cjs",
-    "verify:adapter-worker-machine-auth": "node tooling/verify/adapter-worker-machine-auth.cjs"
+    "verify:adapter-worker-machine-auth": "node tooling/verify/adapter-worker-machine-auth.cjs",
+    "verify:database-tls-strict": "node tooling/verify/database-tls-strict.cjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

@@ -18,6 +18,7 @@ export type Phase0Env = {
   opsHost: string;
   apiHost: string;
   databaseUrl: string | null;
+  databaseSslCaPem: string | null;
   redisUrl: string | null;
   supabaseUrl: string | null;
   supabaseRegion: string | null;
@@ -98,6 +99,7 @@ export function loadPhase0Env(): Phase0Env {
     opsHost: read("OPS_HOST") ?? "localhost:3001",
     apiHost: read("API_HOST") ?? "localhost:4000",
     databaseUrl: read("DATABASE_URL"),
+    databaseSslCaPem: read("DATABASE_SSL_CA_PEM"),
     redisUrl: read("REDIS_URL"),
     supabaseUrl: read("SUPABASE_URL"),
     supabaseRegion: read("SUPABASE_REGION"),
