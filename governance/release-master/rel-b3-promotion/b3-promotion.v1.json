@@ -1,7 +1,7 @@
 {
   "schema": "production-release.b3-promotion.v1",
   "id": "b-3-promotion",
-  "observed_at": "2026-09-03T11:26:35.709Z",
+  "observed_at": "2026-09-03T11:34:01.149Z",
   "status": "BLOCKED",
   "promotion_path_closed": false,
   "production_project_ref": "mgsytcetsiecllmhcyox",
@@ -35,7 +35,7 @@
   },
   "staging_e2e": {
     "status": "PARTIAL",
-    "reason": "Cloudflare web/ops preview same-origin API binding to exact runtime 072616d744a188872d8b7f652475ace319d0893a is proven; live Chromium smoke rerun is pending against refreshed expected-SHA evidence; authenticated money mutation remains not run.",
+    "reason": "Live Chromium smoke PASS for web+login+ops and same-origin exact API 072616d744a188872d8b7f652475ace319d0893a; authenticated user/money mutation E2E remains not run.",
     "requires": {
       "rc_formal": "PASS",
       "rc_sha": "bound",
@@ -66,7 +66,7 @@
     "supabase_branch_status": "FUNCTIONS_DEPLOYED",
     "supabase_with_data": false,
     "current_candidate_sha": "072616d744a188872d8b7f652475ace319d0893a",
-    "governance_parent_sha": "801dbf1b7711004b6d2e74528b802f829313ed2e",
+    "governance_parent_sha": "e067544635abf585b7fbe5294080c740129fc0bc",
     "production_mutation": 0,
     "supabase_preview_project_status": "ACTIVE_HEALTHY",
     "current_schema_relation": "PRODUCTION_BASELINE_PLUS_REVIEWED_HARDENING",
@@ -82,6 +82,7 @@
     "frontend_ops_api_status": 200,
     "frontend_proxy_exact_runtime_sha": "072616d744a188872d8b7f652475ace319d0893a",
     "frontend_proxy_binding": "CLOSED_VERIFIED",
-    "browser_smoke": "RERUN_PENDING_CURRENT_EXPECTED_SHA"
+    "browser_smoke": "PASS",
+    "browser_smoke_run": 33750291160
   }
 }
