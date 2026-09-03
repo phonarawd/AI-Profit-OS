@@ -59,6 +59,9 @@ export class DepositAddressService {
   async resolveUserIdByAddress(trc20Address: string): Promise<string | null> {
     const addr = (trc20Address ?? "").trim();
     if (!addr) return null;
+    // Address ownership is money authority. Never resolve a legacy row while
+    // canonical vault/HSM derivation authority is unavailable.
+    this.assertCanonicalAddressAuthority();
     const r = await this.db.query<{ user_id: string }>(
       `SELECT user_id::text AS user_id
          FROM public.user_deposit_addresses
@@ -72,6 +75,8 @@ export class DepositAddressService {
   async loadAddressIndex(): Promise<
     Array<{ trc20Address: string; userId: string }>
   > {
+    // Chain watcher must not bootstrap from legacy/synthetic address rows.
+    this.assertCanonicalAddressAuthority();
     const r = await this.db.query<{
       trc20_address: string;
       user_id: string;

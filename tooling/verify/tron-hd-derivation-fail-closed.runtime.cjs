@@ -26,6 +26,7 @@ function read(rel) {
 
 const tron = read("services/api-nest/src/wallet/tron-address.ts");
 const addr = read("services/api-nest/src/wallet/deposit-address.service.ts");
+const deposit = read("services/api-nest/src/wallet/usdt-deposit.service.ts");
 
 if (/\bcreateHmac\b/.test(tron) || /\bcreateHmac\b/.test(addr)) {
   fails.push("TRC20 path must not createHmac a synthetic address");
@@ -80,6 +81,22 @@ if (gateIdx >= 0 && insertIdx >= 0 && gateIdx > insertIdx) {
 }
 if (!addr.includes("ServiceUnavailableException") || !addr.includes("TRON_HD_DERIVATION_UNAVAILABLE")) {
   fails.push("missing deriver must map to HTTP 503 TRON_HD_DERIVATION_UNAVAILABLE");
+}
+for (const method of ["async resolveUserIdByAddress(", "async loadAddressIndex()"]) {
+  const start = addr.indexOf(method);
+  const end = start >= 0 ? addr.indexOf("\n  }", start) : -1;
+  const slice = start >= 0 && end > start ? addr.slice(start, end) : "";
+  const authority = slice.indexOf("this.assertCanonicalAddressAuthority()");
+  const query = slice.indexOf("this.db.query");
+  if (authority < 0 || query < 0 || authority > query) {
+    fails.push(method + " must require canonical authority before address-index DB read");
+  }
+}
+if (/input\.userId\s*\|\|/.test(deposit)) {
+  fails.push("USDT observe must not trust caller userId before address ownership resolution");
+}
+if (!deposit.includes("await this.addresses.resolveUserIdByAddress(toAddress)")) {
+  fails.push("USDT observe must resolve ownership server-side from toAddress");
 }
 
 if (fails.length) {

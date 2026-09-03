@@ -81,9 +81,10 @@ export class UsdtDepositService {
       };
     }
 
-    const resolved =
-      input.userId ||
-      (await this.addresses.resolveUserIdByAddress(toAddress));
+    // Caller-provided userId is never money authority, even on a
+    // machine-authenticated ingest route. Address ownership must be resolved
+    // server-side through the canonical-authority-gated address index.
+    const resolved = await this.addresses.resolveUserIdByAddress(toAddress);
     if (!resolved) {
       return {
         ok: true,
