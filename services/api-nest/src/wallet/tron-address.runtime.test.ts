@@ -9,6 +9,12 @@ const {
   TronHdDerivationUnavailableError,
 } = require("./tron-address.ts");
 
+function isUnavailable(
+  err: unknown,
+): err is Error & { code: string; status: number } {
+  return err instanceof TronHdDerivationUnavailableError;
+}
+
 test("no approved BIP32 deriver is bound", () => {
   assert.equal(resolveCanonicalTrc20Deriver(), null);
 });
@@ -17,7 +23,7 @@ test("requireCanonicalTrc20Deriver is 503 fail-closed", () => {
   assert.throws(
     () => requireCanonicalTrc20Deriver(),
     (err: unknown) =>
-      err instanceof TronHdDerivationUnavailableError &&
+      isUnavailable(err) &&
       err.code === TRON_HD_DERIVATION_UNAVAILABLE &&
       err.status === 503,
   );
@@ -31,7 +37,7 @@ test("secret-ref hashing cannot mint a spendable address", () => {
         derivationIndex: 0,
       }),
     (err: unknown) =>
-      err instanceof TronHdDerivationUnavailableError &&
+      isUnavailable(err) &&
       err.message === TRON_HD_DERIVATION_UNAVAILABLE,
   );
 });
@@ -48,7 +54,7 @@ test("persist/INSERT is not called when canonical deriver is missing", () => {
         },
       }),
     (err: unknown) =>
-      err instanceof TronHdDerivationUnavailableError &&
+      isUnavailable(err) &&
       err.status === 503,
   );
   assert.equal(persistCalls, 0);
