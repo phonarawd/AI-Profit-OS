@@ -77,12 +77,14 @@ if (
 
 const magicFailIndex = magic.indexOf("if (!sent.ok)");
 const magicFailBlock =
-  magicFailIndex >= 0 ? magic.slice(magicFailIndex, magicFailIndex + 320) : "";
+  magicFailIndex >= 0 ? magic.slice(magicFailIndex, magicFailIndex + 900) : "";
 if (
   !magicFailBlock.includes("ServiceUnavailableException") ||
-  !magicFailBlock.includes("MAGIC_LINK_DELIVERY_UNAVAILABLE")
+  !magicFailBlock.includes("MAGIC_LINK_DELIVERY_UNAVAILABLE") ||
+  !magicFailBlock.includes('consumeAtomic("magic_link", hash') ||
+  !magicFailBlock.includes("catch (error)")
 ) {
-  fails.push("magic-link provider failure must surface as delivery unavailable");
+  fails.push("magic-link provider rejection/exception must invalidate challenge and surface as delivery unavailable");
 }
 
 const step = read("services/api-nest/src/wallet/withdraw-stepup.service.ts");

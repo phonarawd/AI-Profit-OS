@@ -50,9 +50,21 @@ export class MagicLinkService {
       payload: { email },
     });
     const url = `${consumerOrigin()}/auth/magic?token=${token}`;
-    const sent = await this.resend.sendMagicLink({ to: email, url });
-    if (!sent.ok) {
-      // 전송 실패를 성공처럼 표시하지 않는다. raw token/provider reason 은 응답에 노출하지 않음.
+    try {
+      const sent = await this.resend.sendMagicLink({ to: email, url });
+      if (!sent.ok) {
+        // Delivery failed after the challenge was persisted. Invalidate it
+        // immediately so an undelivered proof can never remain usable.
+        await this.store.consumeAtomic("magic_link", hash, this.nowMs());
+        throw new ServiceUnavailableException("MAGIC_LINK_DELIVERY_UNAVAILABLE");
+      }
+    } catch (error) {
+      // Provider configuration errors (for example a missing/invalid FROM)
+      // and network/provider exceptions must have the same public fail-closed
+      // contract as an explicit provider rejection. Never leak provider
+      // details or turn this into a generic 500.
+      await this.store.consumeAtomic("magic_link", hash, this.nowMs());
+      if (error instanceof ServiceUnavailableException) throw error;
       throw new ServiceUnavailableException("MAGIC_LINK_DELIVERY_UNAVAILABLE");
     }
     return { ok: true, delivery: "resend", status: "accepted" };
