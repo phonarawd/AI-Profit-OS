@@ -90,7 +90,7 @@ jobs:
           printf 'STAGING_API_HOST=%s\nAPI_HOST=%s\n' "$API" "$API" >> "$GITHUB_ENV"
           printf 'API_HOST=%s\n' "$API" >> .env
 
-      - name: Exact staging API auth readiness
+      - name: Exact staging API core readiness
         run: |
           set -euo pipefail
           test "$GITHUB_REF_NAME" = "chatgpt/staging-exact-1f3b36f-20260903" || {
@@ -99,6 +99,7 @@ jobs:
           }
           node - <<'NODE'
           const fs = require("fs");
+          const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
           (async () => {
             const manifest = JSON.parse(fs.readFileSync("infra/domain.manifest.json", "utf8"));
             const api = String(process.env.STAGING_API_HOST || "").replace(/\/$/, "");
@@ -110,29 +111,67 @@ jobs:
               if (!raw) return "";
               return new URL(/^https?:\/\//i.test(raw) ? raw : "https://" + raw).hostname;
             };
+            const deadline = Date.now() + 180_000;
+            let lastFails = ["health_not_checked"];
+            while (Date.now() < deadline) {
+              try {
+                const res = await fetch(api + "/api/v1/health", {
+                  headers: { "user-agent": "aipo-staging-core-readiness/1" },
+                  signal: AbortSignal.timeout(20000),
+                });
+                const body = await res.json().catch(() => null);
+                const fails = [];
+                if (res.status !== 200 || !body) fails.push("health_not_200_json");
+                if (body?.gitSha !== expectedSha) fails.push("runtime_sha_mismatch");
+                if (body?.db?.configured !== true || body?.db?.ok !== true) fails.push("db_not_ready");
+                if (body?.redis?.configured !== true || body?.redis?.ok !== true) fails.push("redis_not_ready");
+                if (body?.auth?.userJwtConfigured !== true) fails.push("jwt_user_secret_not_ready");
+                if (host(body?.hosts?.app) !== expectedWeb) fails.push("app_host_not_staging_web");
+                if (host(body?.hosts?.ops) !== expectedOps) fails.push("ops_host_not_staging_ops");
+                if (host(body?.hosts?.api) !== host(api)) fails.push("api_host_mismatch");
+                if (!fails.length) {
+                  console.log("[staging-core-readiness] PASS exact SHA + DB/Redis + JWT + staging origins");
+                  return;
+                }
+                lastFails = fails;
+              } catch (err) {
+                lastFails = ["health_fetch_failed:" + (err?.message || err)];
+              }
+              console.log("[staging-core-readiness] WAIT " + lastFails.join(","));
+              await sleep(10_000);
+            }
+            console.error("[staging-core-readiness] FAIL " + lastFails.join(","));
+            process.exit(1);
+          })().catch((err) => {
+            console.error("[staging-core-readiness] FAIL " + (err?.message || err));
+            process.exit(1);
+          });
+          NODE
+
+      - name: Staging auth provider readiness
+        id: auth_provider_readiness
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          (async () => {
+            const api = String(process.env.STAGING_API_HOST || "").replace(/\/$/, "");
             const res = await fetch(api + "/api/v1/health", {
-              headers: { "user-agent": "aipo-staging-auth-readiness/1" },
+              headers: { "user-agent": "aipo-staging-provider-readiness/1" },
               signal: AbortSignal.timeout(20000),
             });
             const body = await res.json().catch(() => null);
             const fails = [];
             if (res.status !== 200 || !body) fails.push("health_not_200_json");
-            if (body?.gitSha !== expectedSha) fails.push("runtime_sha_mismatch");
-            if (body?.db?.configured !== true || body?.db?.ok !== true) fails.push("db_not_ready");
-            if (body?.redis?.configured !== true || body?.redis?.ok !== true) fails.push("redis_not_ready");
-            if (body?.auth?.userJwtConfigured !== true) fails.push("jwt_user_secret_not_ready");
             if (body?.auth?.kakaoConfigured !== true) fails.push("kakao_provider_not_ready");
             if (body?.auth?.resendConfigured !== true) fails.push("resend_provider_not_ready");
-            if (host(body?.hosts?.app) !== expectedWeb) fails.push("app_host_not_staging_web");
-            if (host(body?.hosts?.ops) !== expectedOps) fails.push("ops_host_not_staging_ops");
-            if (host(body?.hosts?.api) !== host(api)) fails.push("api_host_mismatch");
             if (fails.length) {
-              console.error("[staging-auth-readiness] FAIL " + fails.join(","));
+              console.error("[staging-provider-readiness] BLOCKED " + fails.join(","));
               process.exit(1);
             }
-            console.log("[staging-auth-readiness] PASS exact SHA + DB/Redis + JWT/Kakao/Resend + staging origins");
+            console.log("[staging-provider-readiness] PASS Kakao + Resend");
           })().catch((err) => {
-            console.error("[staging-auth-readiness] FAIL " + (err?.message || err));
+            console.error("[staging-provider-readiness] FAIL " + (err?.message || err));
             process.exit(1);
           });
           NODE
@@ -262,3 +301,13 @@ jobs:
             }
             console.log("FX_PREVIEW_TICKS=FORWARDED");
           '
+
+      - name: Staging readiness verdict
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.auth_provider_readiness.outcome }}" != "success" ]; then
+            echo "[staging-readiness] BLOCKED Kakao/Resend provider readiness"
+            exit 1
+          fi
+          echo "[staging-readiness] PASS"
