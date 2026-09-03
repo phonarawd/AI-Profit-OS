@@ -45,6 +45,8 @@ jobs:
 
       - name: Adapter worker machine auth
         run: pnpm verify:adapter-worker-machine-auth
+      - name: FX snapshot persistence fail closed
+        run: pnpm verify:fx-worker-release-path
       - name: Chain worker machine auth
         run: |
           pnpm verify:chain-worker-machine-auth

@@ -38,4 +38,24 @@ for (const worker of FX) {
 }
 const cg = fs.readFileSync(path.join(root, "workers/coingecko-adapter/src/index.ts"), "utf8");
 assert.match(cg, /COINGECKO_DEMO_API_KEY/);
-console.log("[verify:fx-worker-release-path] PASS (FX_CORE_EXACT · BUILD_ONCE_INCLUDED · ACCEPTED_ARTIFACT_DEPLOY · SCHEDULED_INGEST_CONTRACT)");
+
+const frank = fs.readFileSync(
+  path.join(root, "workers/frankfurter-adapter/src/index.ts"),
+  "utf8",
+);
+for (const workerSource of [cg, frank]) {
+  assert.match(workerSource, /if \(res\.ok\) forwarded = 1/);
+}
+
+const nestIngest = fs.readFileSync(
+  path.join(root, "services/api-nest/src/adapters/adapters.admin.service.ts"),
+  "utf8",
+);
+assert.match(nestIngest, /if \(!this\.fxSnapshots\)/);
+assert.match(nestIngest, /FX_SNAPSHOT_SERVICE_UNAVAILABLE/);
+assert.match(nestIngest, /if \(!fxResult\.ok \|\| !fxResult\.snapshotId\)/);
+assert.match(nestIngest, /FX_SNAPSHOT_PERSIST_FAILED:/);
+assert.match(nestIngest, /markFxIngestFailure/);
+assert.match(nestIngest, /ingestStatus = "red"/);
+assert.match(nestIngest, /throw new ServiceUnavailableException/);
+console.log("[verify:fx-worker-release-path] PASS (FX_CORE_EXACT · BUILD_ONCE_INCLUDED · SCHEDULED_INGEST · NEST_PERSIST_FAIL_CLOSED)");

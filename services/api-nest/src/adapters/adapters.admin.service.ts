@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   Optional,
+  ServiceUnavailableException,
   forwardRef,
 } from "@nestjs/common";
 import {
@@ -422,13 +423,26 @@ export class AdaptersAdminService {
     }
 
     // PTF-00C §4/§4-P0-B — durably persist real-time FX (previously ignored).
+    // HTTP success is authority that the FX snapshot path succeeded. A worker
+    // must never report forwarded=1 when Nest could not persist/resolve FX.
     let fxSnapshotId: string | null = null;
-    if ((adapterId === "coingecko" || adapterId === "frankfurter") && this.fxSnapshots) {
+    if (adapterId === "coingecko" || adapterId === "frankfurter") {
+      if (!this.fxSnapshots) {
+        this.markFxIngestFailure(adapterId, "FX_SNAPSHOT_SERVICE_UNAVAILABLE");
+        throw new ServiceUnavailableException("FX_SNAPSHOT_SERVICE_UNAVAILABLE");
+      }
       const fxResult = await this.fxSnapshots.recordFxIngest({
         adapterId,
         fx: body.fx,
         observedAt,
       });
+      if (!fxResult.ok || !fxResult.snapshotId) {
+        const reason = fxResult.reason ?? "UNKNOWN";
+        this.markFxIngestFailure(adapterId, reason);
+        throw new ServiceUnavailableException(
+          `FX_SNAPSHOT_PERSIST_FAILED:${reason}`,
+        );
+      }
       fxSnapshotId = fxResult.snapshotId;
     }
 
@@ -538,6 +552,15 @@ export class AdaptersAdminService {
       observedAt,
       providerTickId,
     });
+  }
+
+  private markFxIngestFailure(adapterId: string, reason: string): void {
+    const st = this.state.get(adapterId);
+    if (!st) return;
+    st.status = "red";
+    st.ingestStatus = "red";
+    st.lastError = reason;
+    this.state.set(adapterId, st);
   }
 
   private enqueueIdentityReview(items: IdentityReviewQueueItem[]): void {
