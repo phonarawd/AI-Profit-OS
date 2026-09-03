@@ -62,7 +62,7 @@ function yamlCompleted(relId) {
 
 
 function sourceContainsExactUrlHost(source, expectedHost) {
-  const urls = String(source || "").match(/https?:\\/\\/[^\\s"'\`\\\\)]+/g) || [];
+  const urls = String(source || "").match(/https?:\/\/[^\s"'`\\)]+/g) || [];
   const wanted = String(expectedHost || "").trim().toLowerCase();
   return urls.some((raw) => {
     try {
