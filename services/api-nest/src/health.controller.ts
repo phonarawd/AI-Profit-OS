@@ -45,6 +45,9 @@ export class HealthController {
         configured: this.redis.configured(),
         ...cache,
       },
+      auth: {
+        userJwtConfigured: Boolean(env.jwtUserSecret),
+      },
       r2KycBucket: env.r2KycBucket,
       warnings: regionWarn ? [regionWarn] : [],
     };

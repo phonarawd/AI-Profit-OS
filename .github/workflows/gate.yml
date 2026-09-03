@@ -54,6 +54,8 @@ jobs:
         run: |
           pnpm verify:marketing-capi-worker-machine-auth
           pnpm exec tsc -p workers/marketing-capi-dispatcher/tsconfig.json
+      - name: Auth runtime readiness signal
+        run: pnpm verify:auth-runtime-readiness
       - name: Database TLS strict
         run: pnpm verify:database-tls-strict
       - name: REL-222 admin ops 3-mode
