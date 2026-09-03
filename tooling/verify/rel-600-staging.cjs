@@ -46,6 +46,7 @@ const stagingDeploy = read("tooling/deploy/cf-deploy-staging.cjs");
 const stagingWorkflow = read(".github/workflows/deploy-staging.yml");
 const prodWorkflow = read(".github/workflows/deploy-cloudflare.yml");
 const preflight = read("tooling/deploy/cf-preflight.cjs");
+const browserSmoke = read("tooling/e2e/live-staging-browser-smoke.cjs");
 
 function todoCompleted(relId) {
   const id = relId.replace(/^REL-/i, "rel-").toLowerCase();
@@ -223,6 +224,21 @@ if (/if: inputs.target != 'production'[\s\S]*secrets\.API_HOST/.test(prodWorkflo
 }
 if (!preflight.includes("requireNonProdApiIsolation")) {
   fails.push("cf-preflight must isolate non-prod API host");
+}
+if (browserSmoke.includes("binding.candidate_sha")) {
+  fails.push("browser smoke must not trust governance candidate_sha over live Render source SHA");
+}
+if (
+  !browserSmoke.includes("binding.render?.source_sha") ||
+  !browserSmoke.includes("STAGING_EXPECTED_SHA")
+) {
+  fails.push("browser smoke must derive expected SHA from exact runtime evidence with explicit override support");
+}
+if (
+  !browserSmoke.includes("HEALTH_ATTEMPTS = 3") ||
+  !browserSmoke.includes("transient health retry")
+) {
+  fails.push("browser smoke must bounded-retry transient 5xx/network health failures");
 }
 
 const isolationTest = spawnSync(
