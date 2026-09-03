@@ -36,8 +36,9 @@ REMOTE_REF_DELETE = 0          (Night Guard 정책 · archive 태그로만 0-손
 |---|---|---|---|
 | 1 | Render prod `srv-da5r1tqjobas73fl16dg` **autoDeploy OFF** | main 병합 = prod API 자동배포(accepted-artifact 경로 우회) | Founder packet next_action 3 |
 | 2 | PR **#213 병합** (autoDeploy OFF 후) → main = 계보 진실 | 브랜치 보호/병합 판단 | §2 |
+| 2b | PR gate의 REL-603 automated age usability cohort는 **공유 CF preview 라이브**를 친다 — preview가 다른 RC(chatgpt/staging-exact-1f3b36f)에 바인딩된 동안 /profits participate-entry URL 기대가 어긋나 #212/#213 모두 같은 지점에서 FAIL(코드 결함 아님 · 환경 결합). preview를 PR head로 재배포하거나(계보 소유자) 라이브 코호트를 gate 밖 별도 워크플로로 분리 | 공유 스테이징 바인딩 결정 | gate run 33795996375 |
 | 3 | RC re-seal: `release-build` → `deploy-staging` → `release-acceptance` dispatch → `rc-formal.v1.json` binding 갱신 (계보 소유자) | Night Guard가 release/deploy 워크플로 dispatch 차단 | `night-guard-policy.mjs` |
-| 4 | 원격 브랜치 101개 삭제 (`.tmp/branch-cleanup-plan.json` → 태그 `archive/<name>`로 전부 보존됨) | `git push --delete` = Night Guard DENY | S3 |
+| 4 | 원격 브랜치 101개 삭제 (`governance/recovery/branch-cleanup-plan-20260904.json` `archiveRemote[]` → 태그 `archive/<name>`로 전부 보존됨 · `keepRemote[]`는 유지) | `git push --delete` = Night Guard DENY | S3 |
 | 5 | REL-701-DB: staging 증명 후 prod apply — 순서 주의: `20260901224000_withdraw_stepup_token_single_use` · `20260902032000_production_schema_parity`는 remote head(`20260902155632`)보다 **버전이 작아** plain `db push`가 건너뜀 → `--include-all` 또는 head 이후로 rename | Founder 명시 승인 | R7 표 · fixture note |
 | 6 | `push_control`/`push_subscriptions` RLS ON (`supabase/staging/20260901120100_push_rls.sql` → staging 증명 → prod) | prod DDL | Supabase critical advisor |
 | 7 | TRON HD 실키: BIP32 secp256k1 xpub authority + KMS four-eye (`feat/tron-hd-kms-founder-setup-20260904` PR) · TronGrid 키 · 테스트넷 E2E → 메인넷 소액 1회 | 시크릿·커스터디 | P0-1 |
