@@ -342,7 +342,7 @@ todos:
     content: "[Production] KAKAO_PRODUCTION_READINESS_VERIFICATION(A3 검증 우선, VERIFIED시에만 child A0 BLK 생성)"
     status: pending
   - id: rel-701-db
-    content: "[Production][A1][HUMAN_ESCALATION][Legacy:F-REL-001] PRODUCTION_MIGRATION_APPLY: source_observations/canonical_products/match_results 원격 Supabase 반영 - 실제 production DB mutation, Founder 명시 승인 필수, deps REL-504+REL-601(staging 회귀 PASS)+REL-602(rollback 연습 PASS), STAGING_BEFORE_PRODUCTION_DB_MUTATION 원칙 적용"
+    content: "[Production][A1][HUMAN_ESCALATION][Legacy:F-REL-001] PRODUCTION_DB_EFFECT_RECONCILIATION_AND_APPLY: committedUnapplied 11을 blind replay 하지 않는다(BLIND_REPLAY_FORBIDDEN). provider schema effect↔migration ledger↔source를 재확인하고 실제 missing effect만 itemize한다. 2026-09-03 current evidence상 10개 주요 schema effect는 이미 Production에 존재하며 ledger/provenance reconciliation 대상, 실제 effect-pending은 20260903092000 production_db_hardening 1개. 모든 Production DB mutation은 Founder 명시 승인 필수, deps REL-504+REL-601+REL-602, STAGING_BEFORE_PRODUCTION_DB_MUTATION."
     status: pending
   - id: rel-701
     content: "[Production][A1][HUMAN_ESCALATION] Production 앱 배포 실행(workflow_dispatch, deps REL-701-db)"

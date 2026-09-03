@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-09-03T10:16:15Z",
+  "subject_integration_sha": "f02b1072ccbc3e313d1855d19269036ee1c7c08d",
+  "production_project_ref": "mgsytcetsiecllmhcyox",
+  "staging_project_ref": "uluzxvdpynytytduuryy",
+  "production_mutation": 0,
+  "staging_mutation": {
+    "opportunity_price_overrides_numeric_typmod_repaired": true,
+    "rows_at_repair": 0,
+    "columns": [
+      "admin_buy_usdt numeric(36,18)",
+      "admin_sell_usdt numeric(36,18)",
+      "admin_margin_pct numeric(36,18)"
+    ]
+  },
+  "migration_counts": {
+    "local_files": 53,
+    "canonical_applied": 42,
+    "remote_raw_rows": 43,
+    "ledger_unrecorded_source_versions": 11
+  },
+  "classification": {
+    "blind_replay_forbidden": true,
+    "schema_effect_present_but_ledger_unrecorded": [
+      "20260819210000",
+      "20260819220000",
+      "20260820013000",
+      "20260821090000",
+      "20260823160000",
+      "20260823170000",
+      "20260823180000",
+      "20260823190000",
+      "20260823200000",
+      "20260823210000"
+    ],
+    "actual_effect_pending": [
+      "20260903092000"
+    ]
+  },
+  "provider_findings": {
+    "primary_objects_present_in_production": [
+      "source_observations",
+      "canonical_products",
+      "canonical_product_source_links",
+      "match_results",
+      "push_control",
+      "push_subscriptions",
+      "admin_audit_events",
+      "admin_kill_switches",
+      "opportunity_price_overrides",
+      "admin_ops_intents",
+      "admin_match_controls",
+      "admin_policy_versions",
+      "admin_policy_heads"
+    ],
+    "production_rls_off": [
+      "push_control",
+      "push_subscriptions"
+    ],
+    "staging_rls_off": [],
+    "production_push_policy_count": 0,
+    "staging_push_policy_count": 4,
+    "opportunity_price_overrides_source_and_production_numeric_typmod": "numeric(36,18)",
+    "opportunity_price_overrides_staging_numeric_typmod_after_repair": "numeric(36,18)"
+  },
+  "historical_ledger_anomalies": [
+    {
+      "name": "idempotency_request_fingerprint",
+      "production_entries": [
+        {
+          "version": "20260810212231",
+          "statement_count": 1,
+          "meaning": "historical early apply"
+        },
+        {
+          "version": "20260811062000",
+          "statement_count": 0,
+          "meaning": "later no-op record"
+        }
+      ],
+      "duplicate_sql_execution_proven": false
+    },
+    {
+      "name": "ledger_outbox_events",
+      "production_entry": {
+        "version": "20260811062100",
+        "statement_count": 0
+      },
+      "production_table_exists": true,
+      "production_row_count_observed": 2,
+      "missing_schema_effect_proven": false
+    }
+  ],
+  "reconciliation_rule": "REL-701-DB must reconcile provider schema effect versus ledger provenance first. A missing migration-ledger row is not authority to replay SQL. Only an explicitly reviewed effect plan may mutate Production after Founder approval."
+}
