@@ -72,7 +72,13 @@ if (noRebuild) {
 }
 
 const deployArgs = noRebuild
-  ? ["exec", "wrangler", "deploy", "--no-bundle", "--config", configPath, "--env=" + envFlag]
+  // REL-701 2026-09-04: --no-bundle을 쓰면 wrangler가 esbuild를 건너뛰어
+  // worker.js가 상대 경로로 import하는 sibling 모듈(OpenNext가 만드는 images.js 등)을
+  // 못 찾고 "No such module" (code 10021)로 배포가 거부된다.
+  // 일반 deploy 경로(else 분기)는 --no-bundle을 쓰지 않는다 — 여기서도 동일하게 일반
+  // bundling으로 맞춘다. Next.js/OpenNext 재빌드(rebuild)는 여전히 스킵,
+  // wrangler의 esbuild 패키징 단계만 정상적으로 돈다(재현 가능한 순수 기계적 단계, digest 검증은 이 이전에 끝남).
+  ? ["exec", "wrangler", "deploy", "--config", configPath, "--env=" + envFlag]
   : [
       "exec",
       "opennextjs-cloudflare",
