@@ -17,6 +17,26 @@ workers_dev = true
 directory = "../../apps/admin/.open-next/assets"
 binding = "ASSETS"
 
+# D1 6-G (2026-09-04), corrected by S1C (2026-09-05): same requirement as
+# infra/web/wrangler.toml - see the comment there and
+# tooling/deploy/cf-images-binding-preflight.cjs. apps/admin does not use
+# next/image itself today, but @opennextjs/cloudflare's built worker.js
+# references the Cloudflare Images virtual module unconditionally for
+# Next.js's built-in /_next/image route, so this binding is required for
+# Cloudflare's script-upload validation regardless of whether the app's own
+# code renders an <Image>. Free-by-default Images plan; no transformation
+# calls are expected from this surface, so no functional/billing cost.
+#
+# S1C CORRECTION: this top-level [images] table alone is NOT sufficient -
+# `images` is @nonInheritable in Wrangler 4.120.0 (same evidence as
+# infra/web/wrangler.toml's header comment) and this repo's deploy scripts
+# always pass --env=preview or --env=production, never a bare no-env
+# deploy. `[env.preview.images]`/`[env.production.images]` below are the
+# actual fix; this top-level table is kept only for completeness (bare
+# `wrangler dev`/no --env invocations).
+[images]
+binding = "IMAGES"
+
 [vars]
 APP_NAME = "AI Profit OS Ops"
 ROBOTS = "noindex, nofollow"
@@ -29,6 +49,24 @@ workers_dev = true
 directory = "../../apps/admin/.open-next/assets"
 binding = "ASSETS"
 
+# S1C correction (2026-09-05): `images` and `vars` are both @nonInheritable -
+# the preview environment needs its own copies, same as production below.
+[env.preview.images]
+binding = "IMAGES"
+
+[env.preview.vars]
+APP_NAME = "AI Profit OS Ops"
+ROBOTS = "noindex, nofollow"
+
 [env.production]
 name = "ai-profit-ops"
 workers_dev = true
+
+# D1 6-G, extended by S1C: same top-level-vars-not-inherited issue as
+# infra/web/wrangler.toml, plus the identical `images` non-inheritance gap.
+[env.production.images]
+binding = "IMAGES"
+
+[env.production.vars]
+APP_NAME = "AI Profit OS Ops"
+ROBOTS = "noindex, nofollow"

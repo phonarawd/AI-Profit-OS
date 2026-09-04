@@ -16,6 +16,40 @@ workers_dev = true
 directory = "../../apps/web/.open-next/assets"
 binding = "ASSETS"
 
+# D1 6-G (2026-09-04), corrected by S1C (2026-09-05): required regardless of
+# next.config.ts images.unoptimized. @opennextjs/cloudflare's built worker.js
+# always references the Cloudflare Images virtual module for the framework's
+# built-in /_next/image route; without this binding Cloudflare's
+# script-upload validation rejects the Worker with "No such module
+# cloudflare/images.js" [code: 10021] - this is a *build-time*
+# module-resolution requirement, not a runtime optimization choice, and
+# reproduced identically on 2 separate production deploy attempts (before and
+# after the images.unoptimized:true change). The Images binding itself is on
+# the free-by-default Images plan (5,000 free unique transformations/month,
+# no silent billing past that) and, since images.unoptimized is set both
+# globally and on the one live <Image> usage, no transformation call should
+# ever actually be made - this satisfies Cloudflare's static validation at
+# zero functional/billing cost under the current configuration.
+#
+# S1C CORRECTION: this top-level [images] table alone is NOT sufficient.
+# Wrangler 4.120.0 classifies `images` as @nonInheritable (confirmed against
+# https://github.com/cloudflare/workers-sdk/blob/wrangler@4.120.0/packages/workers-utils/src/config/environment.ts
+# and https://developers.cloudflare.com/workers/wrangler/environments/#non-inheritable-keys-and-environments)
+# - top-level non-inheritable values are NOT carried into `[env.<name>]`
+# sections. This repo's actual deploy scripts always pass --env=preview or
+# --env=production (tooling/deploy/cf-pages-web.cjs's resolveWranglerEnv()),
+# never a bare no-env deploy, so the top-level-only binding the original D1
+# 6-G commit added would still have left both real deploy targets without an
+# IMAGES binding, reproducing the identical "No such module
+# cloudflare/images.js" failure. `[env.preview.images]` and
+# `[env.production.images]` below are the actual fix; this top-level table is
+# kept only for completeness (bare `wrangler dev`/no --env invocations).
+# See tooling/deploy/cf-images-binding-preflight.cjs (rewritten in the same
+# correction to check each named environment structurally, not just the
+# top-level table via a whole-file regex).
+[images]
+binding = "IMAGES"
+
 [vars]
 APP_NAME = "퍼뜩"
 PLATFORM_NAME = "AI Profit OS"
@@ -28,6 +62,27 @@ workers_dev = true
 directory = "../../apps/web/.open-next/assets"
 binding = "ASSETS"
 
+# S1C correction (2026-09-05): `images` and `vars` are both @nonInheritable -
+# the preview environment needs its own copies, same as production below.
+[env.preview.images]
+binding = "IMAGES"
+
+[env.preview.vars]
+APP_NAME = "퍼뜩"
+PLATFORM_NAME = "AI Profit OS"
+
 [env.production]
 name = "ai-profit-web"
 workers_dev = true
+
+# D1 6-G, extended by S1C: wrangler's own build warns that top-level [vars]
+# is not inherited by [env.production] - restated explicitly here so
+# production actually receives the same APP_NAME/PLATFORM_NAME values as
+# workers_dev/preview. `images` has the identical non-inheritance problem
+# (see the top-level [images] comment above) - restated here too.
+[env.production.images]
+binding = "IMAGES"
+
+[env.production.vars]
+APP_NAME = "퍼뜩"
+PLATFORM_NAME = "AI Profit OS"
