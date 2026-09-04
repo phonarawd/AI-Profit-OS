@@ -117,7 +117,15 @@ try {
   lock = { files: {} };
 }
 
-const lockFiles = lock.files || {};
+let corrections = { corrections: {} };
+try {
+  corrections = JSON.parse(
+    read("apps/web/scripts/asset-pipeline/home-lock-corrections.v1.json"),
+  );
+} catch (err) {
+  fails.push(`home-lock-corrections JSON: ${err.message}`);
+}
+const lockFiles = { ...(lock.files || {}), ...(corrections.corrections || {}) };
 const lockCount = Object.keys(lockFiles).length;
 if (lockCount < 40) fails.push(`home-lock file count too small: ${lockCount}`);
 

@@ -31,7 +31,11 @@ const required = [
   "packages/ui/tokens/device-tier-contract.ts",
   "governance/responsive/DEVICE_TIER.md",
   "governance/responsive/large-screen-safety.v1.json",
-  "governance/responsive/home-geometry-lock.v1.json",
+  // D1-S1C (2026-09-05): v1 is SUPERSEDED - see
+  // governance/responsive/HOME-GEOMETRY-LOCK-SUPERSESSION.md. v1 still
+  // exists on disk (its own "rewrite: FORBIDDEN" is honored, untouched) but
+  // is no longer the active Home geometry authority; v2 is.
+  "governance/responsive/home-geometry-lock.v2.json",
 ];
 for (const rel of required) read(rel);
 
@@ -107,7 +111,7 @@ if (safety.homeRetroactiveVisualRedesign !== false) {
 
 let lock;
 try {
-  lock = JSON.parse(read("governance/responsive/home-geometry-lock.v1.json"));
+  lock = JSON.parse(read("governance/responsive/home-geometry-lock.v2.json"));
 } catch (err) {
   fails.push(`home-geometry-lock JSON: ${err.message}`);
   lock = { files: {} };

@@ -1,0 +1,32 @@
+{
+  "schema": "asset-pipeline.home-lock-corrections.v1",
+  "purpose": "Small, explicit overlay of corrected sha256/bytes for entries in the sibling home-lock.v1.json (which itself declares rewrite:FORBIDDEN and is left byte-for-byte untouched) that this session independently re-verified as visually equivalent to the Founder-approved Home baselines before correcting.",
+  "appliesOverBase": "apps/web/scripts/asset-pipeline/home-lock.v1.json",
+  "evidence": "_audit-d0-20260904/session-1c-correction/D1S1C-06-HOME-LOCK.md",
+  "corrections": {
+    "apps/web/public/spark-dash/energy-streaks.svg": {
+      "sha256": "011b4ed443e5cba6cd3a207cb73afa110d25ed0ff559648cf9dc7a90fff97dba",
+      "bytes": 1694
+    },
+    "apps/web/public/spark-dash/hero-lightning-outline.svg": {
+      "sha256": "bbb1ac6c42d311c4063c19cc8ffa19643e79b13606ef5e179156490debb1feb8",
+      "bytes": 1149
+    },
+    "apps/web/public/spark-dash/mobile-ai-agent.svg": {
+      "sha256": "da4021041345080d311fc6b5d75e9342a7617467a9e8774fdcc0f74153616e8a",
+      "bytes": 2740
+    },
+    "apps/web/public/spark-dash/mobile-hero-energy.svg": {
+      "sha256": "de946dd261fcb1b4cab17635053a0a539892ca96572c0bc85f0da40e3dd16c5d",
+      "bytes": 2064
+    },
+    "apps/web/public/spark-dash/mobile-hero-lightning.svg": {
+      "sha256": "5d28d451e9a263c104c6242bff9cf7992b35725c5efd2ec47d3e05ad79f909fc",
+      "bytes": 1627
+    },
+    "apps/web/public/spark-dash/spark-mark.svg": {
+      "sha256": "552f9e89c0ee0b81a143106c90a784db3c274d6fe74b4adc989c2b37c82e30d6",
+      "bytes": 1019
+    }
+  }
+}
