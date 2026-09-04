@@ -223,12 +223,14 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^apps\/web\/lib\/opportunity-card-map\.ts$/.test(f) ||
       /^apps\/web\/components\/spark-dash-home\/format\.ts$/.test(f) ||
-      /^packages\/ui\/components\/opportunity\/money-display\.ts$/.test(f) ||
-      /^packages\/ui\/components\/opportunity\/Opportunity(Card|Detail)\.tsx$/.test(
+      /^apps\/web\/components\/spark-dash-home\/Home(Desktop|Mobile)\.tsx$/.test(
         f,
       ) ||
+      /^apps\/web\/components\/spark-dash-profits\/Opportunity(Card|Metrics)\.tsx$/.test(
+        f,
+      ) ||
+      /^packages\/ui\/components\/opportunity\/money-display\.ts$/.test(f) ||
       /^packages\/ui\/components\/trust\/ParticipateProofPanel\.tsx$/.test(f) ||
       /^tooling\/e2e\/lib\/money-unavailable\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/money-unavailable\.spec\.cjs$/.test(f) ||
@@ -394,11 +396,10 @@ const RULES = [
   {
     test: (f) =>
       /^apps\/web\/app\/page\.tsx$/.test(f) ||
-      /^apps\/web\/app\/HomePageClient\.tsx$/.test(f) ||
-      /^apps\/web\/app\/_components\/HomePageClient\.tsx$/.test(f) ||
-      /^apps\/web\/components\/HomePageClient\.tsx$/.test(f) ||
+      /^apps\/web\/app\/HomeDesktopClient\.tsx$/.test(f) ||
+      /^apps\/web\/components\/spark-dash-home\//.test(f) ||
       /^packages\/sdk\/src\/user-feed\//.test(f) ||
-      /HomePrincipalRail/.test(f) ||
+      /^governance\/runtime-surfaces\.v1\.json$/.test(f) ||
       /home-principal-slots/.test(f) ||
       /^packages\/sdk\/src\/growth\//.test(f) ||
       /^services\/api-nest\/src\/growth\//.test(f),
@@ -1211,7 +1212,9 @@ const RULES = [
       /packages\/ui\/components\/lux\/(VirtualList|VirtualTicker|FluidCard|TouchButton|LivePayoutTicker)\./.test(
         f,
       ) ||
-      /packages\/ui\/components\/opportunity\/VirtualOpportunityList\./.test(f) ||
+      /apps\/web\/components\/spark-dash-profits\/VirtualOpportunityGrid\./.test(
+        f,
+      ) ||
       /packages\/sdk\/src\/device-tier\.ts/.test(f) ||
       /apps\/web\/components\/DeviceTierApply\./.test(f) ||
       /tooling\/verify\/responsive(\.cjs|\/)/.test(f),

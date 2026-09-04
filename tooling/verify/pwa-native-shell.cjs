@@ -202,18 +202,44 @@ try {
     timeout: 20_000,
     env: gitEnv,
   };
+  // --name-status (not --name-only): a legacy path showing status "D"
+  // (deleted) is the *expected end state* once a confirmed-dead file is
+  // removed (2026-09-04 cleanup) - not a Home mutation. Legacy paths are
+  // only a violation if they show up with any other status (still being
+  // edited instead of deleted). Live paths stay strict: any status at all
+  // is a real Home mutation regardless of legacy/live.
   const diff = execSync(
-    `git --no-pager diff --name-only HEAD -- ${watchPathsArg}`,
+    `git --no-pager diff --name-status HEAD -- ${watchPathsArg}`,
     gitOpts,
   );
   const staged = execSync(
-    `git --no-pager diff --cached --name-only -- ${watchPathsArg}`,
+    `git --no-pager diff --cached --name-status HEAD -- ${watchPathsArg}`,
     gitOpts,
   );
-  const changed = `${diff}\n${staged}`.replace(/\\/g, "/");
-  for (const rel of homeForbidden) {
-    if (changed.includes(rel)) {
-      fails.push(`Home freeze mutation: ${rel}`);
+  const statusLines = `${diff}\n${staged}`
+    .replace(/\\/g, "/")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
+  const legacySet = new Set(legacyHomePaths);
+  for (const line of statusLines) {
+    const m = line.match(/^([A-Z])\d*\s+(.+)$/);
+    if (!m) continue;
+    const [, status, filePath] = m;
+    const matchedLegacy = [...legacySet].find(
+      (rel) => filePath === rel || filePath.startsWith(rel + "/"),
+    );
+    if (matchedLegacy) {
+      if (status !== "D") {
+        fails.push(`Home freeze mutation (legacy, non-delete): ${filePath}`);
+      }
+      continue;
+    }
+    const matchedLive = liveHomePaths.find(
+      (rel) => filePath === rel || filePath.startsWith(rel + "/"),
+    );
+    if (matchedLive) {
+      fails.push(`Home freeze mutation (live): ${filePath}`);
     }
   }
 } catch {

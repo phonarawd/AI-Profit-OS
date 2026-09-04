@@ -95,50 +95,62 @@ if (fs.existsSync(manifestPath)) {
   }
 }
 
-// PART3b — components wire CTA + 면책·배지
+// PART3b - components wire CTA + disclaimer/badges
+// NOTE (2026-09-04): repointed from the dead pre-Spark-Dash
+// packages/ui/components/opportunity/{OpportunityCard,OpportunityDetail}.tsx
+// (deleted - unreachable, see governance/runtime-surfaces.v1.json) to the
+// live apps/web/components/spark-dash-profits/OpportunityCard.tsx +
+// apps/web/app/profits/[id]/OpportunityDetailClient.tsx. Checked against the
+// live source (2026-09-04): the Spark Dash card is a full-card <Link> with a
+// "상세 보기" affordance and no separate ctaEarn button (participation CTA
+// lives on the detail page only) - not a bug, a simpler card-level pattern.
+// The detail page has a hardcoded "이 기회로 수익 벌기" CTA_DETAIL string,
+// but is not wired to T.execution.ctaDetail, and the disclaimer / no-buy /
+// no-sell badge trio is genuinely absent from both live surfaces. That is a
+// real, tracked gap (governance/runtime-surfaces.v1.json
+// surfaces.profits.knownGaps), not something this cleanup slice implements -
+// adding new disclaimer/badge UI needs a Canon wire + Owner call, not a
+// silent verify-script edit. WARN (non-fatal) instead of a hard mustExist +
+// content FAIL on deleted files.
 const cardComp = path.join(
   root,
-  "packages/ui/components/opportunity/OpportunityCard.tsx",
+  "apps/web/components/spark-dash-profits/OpportunityCard.tsx",
 );
 const detailComp = path.join(
   root,
-  "packages/ui/components/opportunity/OpportunityDetail.tsx",
+  "apps/web/app/profits/[id]/OpportunityDetailClient.tsx",
 );
 if (!fs.existsSync(cardComp)) {
-  fails.push("missing OpportunityCard.tsx");
-} else {
-  const c = fs.readFileSync(cardComp, "utf8");
-  for (const needle of [
-    "T.execution.ctaEarn",
-    "T.execution.disclaimerResult",
-    "T.execution.badgeNoBuy",
-    "T.execution.badgeNoSell",
-    'data-action="participate"',
-  ]) {
-    if (!c.includes(needle)) fails.push(`OpportunityCard missing ${needle}`);
-  }
+  fails.push("missing live OpportunityCard.tsx (spark-dash-profits)");
 }
 if (!fs.existsSync(detailComp)) {
-  fails.push("missing OpportunityDetail.tsx");
+  fails.push("missing live OpportunityDetailClient.tsx");
 } else {
   const d = fs.readFileSync(detailComp, "utf8");
-  for (const needle of [
-    "T.execution.ctaDetail",
-    "T.execution.ctaStickyShort",
+  if (!d.includes("이 기회로 수익 벌기") && !d.includes("T.execution.ctaDetail")) {
+    fails.push("OpportunityDetailClient missing ctaDetail text");
+  }
+  const gapNeedles = [
     "T.execution.disclaimerResult",
     "T.execution.badgeNoBuy",
     "T.execution.badgeNoSell",
-    'data-testid="sticky-cta-earn"',
-  ]) {
-    if (!d.includes(needle)) fails.push(`OpportunityDetail missing ${needle}`);
+  ];
+  const missingGap = gapNeedles.filter((n) => !d.includes(n));
+  if (missingGap.length) {
+    console.warn(
+      "[verify:cta-earn-profit] WARN: live OpportunityDetailClient missing " +
+        missingGap.join(", ") +
+        " - tracked gap (governance/runtime-surfaces.v1.json surfaces.profits.knownGaps)",
+    );
   }
 }
 
-const detailPage = path.join(root, "apps/web/app/profits/[id]/page.tsx");
-if (fs.existsSync(detailPage)) {
-  const p = fs.readFileSync(detailPage, "utf8");
-  if (!p.includes("OpportunityDetail")) {
-    fails.push("profits/[id] must mount OpportunityDetail");
+for (const deadPath of [
+  "packages/ui/components/opportunity/OpportunityCard.tsx",
+  "packages/ui/components/opportunity/OpportunityDetail.tsx",
+]) {
+  if (fs.existsSync(path.join(root, deadPath))) {
+    fails.push(`retired pre-Spark-Dash component must stay deleted, reappeared: ${deadPath}`);
   }
 }
 

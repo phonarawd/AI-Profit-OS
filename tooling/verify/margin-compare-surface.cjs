@@ -22,10 +22,19 @@ function read(rel) {
   return fs.readFileSync(p, "utf8");
 }
 
+// NOTE (2026-09-04): PriceCompareMargin / OpportunityConfirm /
+// OpportunityReceiptMargin (all packages/ui/components/opportunity/*) are
+// Owner-decided RETIRE - the "arbitrageTypeKo scan badge / AdapterHealthChip
+// / PriceCompareMargin" 3-badge trust stack (governance/runtime-surfaces.v1.json
+// surfaces.home.retiredFeatures). Deleted (unreachable from any live route).
+// The Engine data model these fed (compareReady/buyPriceUsdt/sellPriceUsdt/
+// platformMarginUsdt) is still very much alive - confirmed used across 17+
+// services/api-nest files (opportunities.user.service.ts,
+// opportunity-reprice.service.ts, participate.service.ts, etc.) and checked
+// below via schema + pricing-formula.cjs. Only the specific client-side
+// PriceCompareMargin UI presentation is retired; the checks for it are now
+// a reintroduction guard, not a mustExist + content requirement.
 const files = [
-  "packages/ui/components/opportunity/PriceCompareMargin.tsx",
-  "packages/ui/components/opportunity/OpportunityConfirm.tsx",
-  "packages/ui/components/opportunity/OpportunityReceiptMargin.tsx",
   "packages/ui/copy/ko/margin.ts",
   "packages/ui/canon/surfaces/opportunity-card.wire.json",
   "packages/ui/canon/surfaces/opportunity-detail.wire.json",
@@ -36,37 +45,19 @@ const files = [
 ];
 for (const f of files) mustExist(f);
 
-const cmp = read("packages/ui/components/opportunity/PriceCompareMargin.tsx");
-for (const needle of [
-  "compareReady",
-  "buyPriceUsdt",
-  "sellPriceUsdt",
-  "expectedProfitUsdt",
-  "platformMarginUsdt",
-  "labelUserMargin",
-  "labelPlatformMargin",
-  "comparePending",
-  'data-testid="price-compare-margin"',
-  'variant === "utility"',
+for (const deadPath of [
+  "packages/ui/components/opportunity/PriceCompareMargin.tsx",
+  "packages/ui/components/opportunity/OpportunityConfirm.tsx",
+  "packages/ui/components/opportunity/OpportunityReceiptMargin.tsx",
 ]) {
-  if (!cmp.includes(needle)) {
-    fails.push(`PriceCompareMargin missing ${needle}`);
+  if (fs.existsSync(path.join(root, deadPath))) {
+    fails.push(`retired PriceCompareMargin-family UI must stay deleted, reappeared: ${deadPath}`);
   }
 }
-
-// 재계산 금지 — 산술로 마진/스프레드를 만들지 않음
-const arithPatterns = [
-  /parseFloat\s*\(\s*(buy|sell|expected|platform)/i,
-  /Number\s*\(\s*(buy|sell)/i,
-  /buyPriceUsdt\s*[-+*/]/,
-  /sellPriceUsdt\s*[-+*/]/,
-  /grossSpread/,
-  /subAmount|addAmount|mulAmount/,
-];
-for (const re of arithPatterns) {
-  if (re.test(cmp)) {
-    fails.push(`PriceCompareMargin must not recompute money (~${re})`);
-  }
+const liveCardSrc = read("apps/web/components/spark-dash-profits/OpportunityCard.tsx");
+const liveDetailSrc = read("apps/web/app/profits/[id]/OpportunityDetailClient.tsx");
+if (liveCardSrc.includes("PriceCompareMargin") || liveDetailSrc.includes("PriceCompareMargin")) {
+  fails.push("live Spark Dash card/detail must not reintroduce retired PriceCompareMargin");
 }
 
 const marginCopy = read("packages/ui/copy/ko/margin.ts");
@@ -125,25 +116,7 @@ for (const [id, rel] of four) {
   }
 }
 
-// 컴포넌트 사용 면
-const card = read("packages/ui/components/opportunity/OpportunityCard.tsx");
-const detail = read("packages/ui/components/opportunity/OpportunityDetail.tsx");
-const confirm = read(
-  "packages/ui/components/opportunity/OpportunityConfirm.tsx",
-);
-const receipt = read(
-  "packages/ui/components/opportunity/OpportunityReceiptMargin.tsx",
-);
-for (const [name, src] of [
-  ["OpportunityCard", card],
-  ["OpportunityDetail", detail],
-  ["OpportunityConfirm", confirm],
-  ["OpportunityReceiptMargin", receipt],
-]) {
-  if (!src.includes("PriceCompareMargin")) {
-    fails.push(`${name} must mount PriceCompareMargin`);
-  }
-}
+// 컴포넌트 사용 면 - retired, checked above via reintroduction guard
 
 // Engine formula pointer (재계산 Owns ≠ UI)
 const formula = read("services/market-intelligence/src/pricing-formula.cjs");
@@ -183,8 +156,8 @@ if (!catalog.includes("PriceCompareMargin")) {
 }
 
 const pkgUi = read("packages/ui/package.json");
-if (!pkgUi.includes("PriceCompareMargin")) {
-  fails.push("packages/ui package.json must export PriceCompareMargin");
+if (pkgUi.includes("PriceCompareMargin")) {
+  fails.push("packages/ui package.json must not export retired PriceCompareMargin");
 }
 
 if (fails.length) {

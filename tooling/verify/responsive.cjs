@@ -216,7 +216,6 @@ const part8cFiles = [
   "packages/ui/components/lux/VirtualTicker.tsx",
   "packages/ui/components/lux/FluidCard.tsx",
   "packages/ui/components/lux/TouchButton.tsx",
-  "packages/ui/components/opportunity/VirtualOpportunityList.tsx",
   "apps/web/components/DeviceTierApply.tsx",
 ];
 for (const f of part8cFiles) mustExist(f);
@@ -253,13 +252,13 @@ if (virtList && !virtList.includes("overscan")) {
   fails.push("VirtualList must expose overscan (default 3)");
 }
 
-const virtOpp = read("packages/ui/components/opportunity/VirtualOpportunityList.tsx");
-if (virtOpp && !virtOpp.includes("VIRTUAL_OPPORTUNITY_THRESHOLD")) {
-  fails.push("VirtualOpportunityList must define VIRTUAL_OPPORTUNITY_THRESHOLD");
-}
-if (virtOpp && !/=\s*20\b/.test(virtOpp) && !virtOpp.includes("20")) {
-  fails.push("VirtualOpportunityList threshold must be 20");
-}
+// NOTE (2026-09-04): dropped the VirtualOpportunityList.tsx content checks -
+// that component is dead (packages/ui, pre-Spark-Dash Canon era). The live
+// /profits windowing contract is VirtualOpportunityGrid.tsx, checked below.
+// Keeping a mustExist + content check on the dead file was the exact
+// verify-alive/UI-orphaned anti-pattern this branch exists to remove (see
+// governance/runtime-surfaces.v1.json). Retiring it here un-blocks deleting
+// packages/ui/components/opportunity/VirtualOpportunityList.tsx.
 
 const virtTicker = read("packages/ui/components/lux/VirtualTicker.tsx");
 if (virtTicker && !virtTicker.includes("VIRTUAL_TICKER_THRESHOLD")) {

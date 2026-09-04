@@ -50,15 +50,19 @@ function staticBudgetAudit() {
     fails.push("ProductImage must set sizes");
   }
 
-  const hero = read("packages/ui/components/home/HomeHeroIllustration.tsx");
-  if (!hero.includes('type="image/avif"') || !hero.includes('type="image/webp"')) {
-    fails.push("Home hero must keep AVIF/WebP sources");
-  }
-  if (!hero.includes('fetchPriority="high"')) {
-    fails.push("Home hero must stay high fetchPriority (not lazy)");
-  }
-  if (/loading=\{?["']lazy["']\}?/.test(hero)) {
-    fails.push("Home hero must not be marked lazy");
+  // NOTE (2026-09-04): packages/ui/components/home/HomeHeroIllustration.tsx
+  // (raster-image hero, AVIF/WebP <picture> sources) is deleted - dead,
+  // unreachable, part of the Owner-decided-retired Canon Home tree. The
+  // live Spark Dash hero (apps/web/components/spark-dash-home/HomeDesktop.tsx
+  // + HomeMobile.tsx) uses SVG <img> assets instead (SD_ASSETS.heroHalo /
+  // heroLightningOutline / opportunityEnergy / energyStreaks) - AVIF/WebP
+  // does not apply to vector assets. The real perf intent (hero loads
+  // eagerly, not deferred) is preserved by checking for the absence of
+  // loading="lazy" on the live hero markup instead.
+  const heroDesktop = read("apps/web/components/spark-dash-home/HomeDesktop.tsx");
+  const heroMobile = read("apps/web/components/spark-dash-home/HomeMobile.tsx");
+  if (/loading=\{?["']lazy["']\}?/.test(heroDesktop + heroMobile)) {
+    fails.push("Home hero images must not be marked lazy (above the fold)");
   }
 
   const ppe = read("packages/ui/performance/README.md");
