@@ -52,7 +52,13 @@ function hasLiveSecret(text) {
   for (const line of lines) {
     const t = line.trim();
     if (!t || t.startsWith("#")) continue;
-    if (/rediss?:\/\/\S*upstash\.io/i.test(t)) {
+    // D1 remediation note (2026-09-04, REM-D1-6H, CodeQL js/regex/missing-regexp-anchor
+    // alert #59): tightened with a right-side boundary so "upstash.io" must end the
+    // hostname (end-of-string, whitespace, or a port/path delimiter) rather than merely
+    // appear as a substring of a longer, unrelated hostname (e.g. "upstash.ioproxy.evil.com"
+    // would no longer false-match). This narrows, not weakens, detection - every real
+    // Upstash Redis URL this line was already designed to catch still matches.
+    if (/rediss?:\/\/\S*upstash\.io(?=[:/\s"'`]|$)/i.test(t)) {
       if (!/YOUR_UPSTASH_TOKEN|YOUR-ENDPOINT|\*{4,}|xxxx/i.test(t)) return true;
     }
     if (/^REDIS_URL=.*redis-cli\b/i.test(t)) return true;

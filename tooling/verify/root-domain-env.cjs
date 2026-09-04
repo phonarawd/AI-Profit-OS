@@ -8,12 +8,22 @@ const path = require("path");
 const root = path.resolve(__dirname, "../..");
 const fails = [];
 
+// D1 remediation note (2026-09-04, REM-D1-6H, CodeQL js/regex/missing-regexp-anchor
+// alerts #56/#57/#58): these patterns scan a whole multi-line file's text for a
+// placeholder-domain substring (see scanFile below - re.test(text) against the full
+// file content), so anchoring to start/end of STRING (^/$ without the m flag) would
+// break detection entirely (the placeholder is virtually never the file's *entire*
+// content). The correct, non-behaviour-weakening fix is a word-boundary (\b) on both
+// sides of the literal domain instead - this keeps "match this substring anywhere in
+// the file" working exactly as before, while preventing an accidental match inside a
+// longer identifier that merely contains the placeholder as a sub-string (e.g.
+// "subdomain.com" no longer false-matches "domain.com").
 const PLACEHOLDER_PATTERNS = [
   /\{ROOT_DOMAIN\}/,
   /\{domain\}/i,
-  /domain\.com/i,
-  /your-domain\.com/i,
-  /example\.com/i,
+  /\bdomain\.com\b/i,
+  /\byour-domain\.com\b/i,
+  /\bexample\.com\b/i,
 ];
 
 const SCAN_PATHS = [
