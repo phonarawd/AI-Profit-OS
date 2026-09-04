@@ -1,7 +1,19 @@
 /**
- * verify:day-pulse-live-only — UI §51.24.1
- * DayPulse = ledger/settlement live only · G4 demo/hybrid/blended merge 0
- * Admin DayPulse 수동 편집 UI 0
+ * verify:day-pulse-live-only - UI SS51.24.1
+ * DayPulse = ledger/settlement live only. G4 demo/hybrid/blended merge forbidden.
+ * Admin manual DayPulse edit UI forbidden.
+ *
+ * RETIRED 2026-09-04 (Owner decision, governance/runtime-surfaces.v1.json
+ * surfaces.home.retiredFeatures): the "home must mount DayPulse" requirement
+ * is dropped. Spark Dash Home (the live "/" surface) intentionally does not
+ * show a DayPulse settlement-count/safe-stop strip, and this must not be
+ * reintroduced. This file previously enforced that requirement by reading
+ * apps/web/app/HomePageClient.tsx (dead, unreachable) via
+ * fs.existsSync(...) fallback, which is also the forbidden pattern enforced
+ * by tooling/verify/live-surface-integrity.cjs.
+ *
+ * Everything else in this file (schema, service, component, Admin-edit-ban)
+ * is independent of which Home UI is live and remains in force.
  */
 const fs = require("fs");
 const path = require("path");
@@ -30,24 +42,17 @@ const files = [
   "packages/ui/components/loop/index.ts",
   "services/api-nest/src/loop/day-pulse.service.ts",
   "services/api-nest/src/loop/day-pulse.user.controller.ts",
-  "apps/web/app/page.tsx",
 ];
 for (const f of files) mustExist(f);
 
-const schema = JSON.parse(
-  read("schemas/day-opportunity-pulse.v1.json") || "{}",
-);
+const schema = JSON.parse(read("schemas/day-opportunity-pulse.v1.json") || "{}");
 if (schema.properties?.source?.const !== "live") {
   fails.push("day-opportunity-pulse.v1 source must be const live");
 }
 if (schema.properties?.g4Merge?.const !== false) {
   fails.push("day-opportunity-pulse.v1 g4Merge must be const false");
 }
-for (const need of [
-  "platformSafeStopToday",
-  "settlementCompletedToday",
-  "presence",
-]) {
+for (const need of ["platformSafeStopToday", "settlementCompletedToday", "presence"]) {
   if (!(schema.required || []).includes(need)) {
     fails.push(`day-opportunity-pulse.v1 must require ${need}`);
   }
@@ -67,9 +72,7 @@ for (const needle of [
     fails.push(`day-pulse.service missing: ${needle}`);
   }
 }
-const svcCode = svc
-  .replace(/\/\*[\s\S]*?\*\//g, "")
-  .replace(/\/\/.*$/gm, "");
+const svcCode = svc.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 if (/PublicTickerEvent|counter_mode|ticker_mode|demoTotal|blendedTotal/i.test(svcCode)) {
   fails.push("day-pulse.service must not reference G4 ticker/counter merge paths");
 }
@@ -90,36 +93,7 @@ if (/counter_mode|ticker_mode|blended|demoTotal/i.test(ui)) {
   fails.push("DayPulse must not display G4 counter/ticker modes");
 }
 
-/**
- * PART9c — DayPulse may live in HomePageClient (page.tsx thin entry) 또는
- * HomeExperience(ADR-017 v1.3, presentation layer 간접 mount) 경유
- */
-let home = read("apps/web/app/page.tsx");
-for (const rel of [
-  "apps/web/app/HomePageClient.tsx",
-  "apps/web/app/_components/HomePageClient.tsx",
-  "apps/web/components/HomePageClient.tsx",
-]) {
-  if (fs.existsSync(path.join(root, rel))) {
-    home = `${home}\n${read(rel)}`;
-    break;
-  }
-}
-home = `${home}\n${read("packages/ui/components/home/HomeExperience.tsx")}`;
-if (home && !home.includes("DayPulse")) {
-  fails.push("home must mount DayPulse [A2]");
-}
-if (home && !home.includes('data-home-slot="day-pulse"')) {
-  fails.push("home DayPulse must use data-home-slot=day-pulse");
-}
-const tickerSlot = home.match(/data-home-slot="ticker"[\s\S]*?<\/div>/);
-if (tickerSlot && tickerSlot[0].includes("DayPulse")) {
-  fails.push("DayPulse must not sit inside ticker slot");
-}
-
-const wire = JSON.parse(
-  read("packages/ui/canon/surfaces/day-pulse.wire.json") || "{}",
-);
+const wire = JSON.parse(read("packages/ui/canon/surfaces/day-pulse.wire.json") || "{}");
 if (wire.id !== "day-pulse") fails.push("day-pulse.wire id mismatch");
 for (const f of [
   "g4_demo_merge",
@@ -133,7 +107,7 @@ for (const f of [
   }
 }
 
-// Admin DayPulse 편집 UI 0 (L18)
+// Admin DayPulse manual-edit UI = 0 (independent of Home mounting status; still enforced)
 const adminRoot = path.join(root, "apps/admin");
 if (fs.existsSync(adminRoot)) {
   const walk = (dir) => {
@@ -141,8 +115,7 @@ if (fs.existsSync(adminRoot)) {
       const p = path.join(dir, name);
       const st = fs.statSync(p);
       if (st.isDirectory()) {
-        if (name === "node_modules" || name === ".next" || name === ".open-next")
-          continue;
+        if (name === "node_modules" || name === ".next" || name === ".open-next") continue;
         walk(p);
       } else if (/\.(tsx?|jsx?)$/.test(name)) {
         const t = fs.readFileSync(p, "utf8");
@@ -150,9 +123,7 @@ if (fs.existsSync(adminRoot)) {
           /DayPulse|day-pulse|dayPulse|platformSafeStopToday/.test(t) &&
           /(edit|Input|onChange|setPulse|manual)/i.test(t)
         ) {
-          fails.push(
-            `Admin DayPulse edit UI forbidden: ${path.relative(root, p)}`,
-          );
+          fails.push(`Admin DayPulse edit UI forbidden: ${path.relative(root, p)}`);
         }
       }
     }
@@ -162,10 +133,31 @@ if (fs.existsSync(adminRoot)) {
 
 const copy = read("packages/ui/copy/ko/loop.ts");
 if (copy && !copy.includes("mayStop:")) {
-  fails.push("loop.ts must define mayStop (shared §51.24)");
+  fails.push("loop.ts must define mayStop (shared SS51.24)");
 }
 if (copy && !copy.includes("safeStopToday:")) {
   fails.push("loop.ts missing safeStopToday");
+}
+
+// --- Home mounting requirement: RETIRED 2026-09-04 (see file header) ---
+// Explicit guard against silent reintroduction instead: DayPulse must not
+// appear in the live Home chain at all right now.
+let registry;
+try {
+  registry = JSON.parse(read("governance/runtime-surfaces.v1.json") || "{}");
+} catch {
+  registry = { surfaces: {} };
+}
+const homeClientRel = registry.surfaces?.home?.client || "apps/web/app/HomeDesktopClient.tsx";
+const homePresentation = registry.surfaces?.home?.presentation || [];
+const liveHomeSrc =
+  read(homeClientRel) + homePresentation.map((p) => read(p)).join("\n");
+if (/\bDayPulse\b/.test(liveHomeSrc)) {
+  fails.push(
+    "RETIRED FEATURE REINTRODUCED: DayPulse must not be mounted in live Home " +
+      "(governance/runtime-surfaces.v1.json surfaces.home.retiredFeatures - Owner decision 2026-09-04). " +
+      "If this is an intentional product change, update the registry first.",
+  );
 }
 
 if (fails.length) {
@@ -173,5 +165,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:day-pulse-live-only] PASS (live API · G4 merge0 · Admin edit0)",
+  "[verify:day-pulse-live-only] PASS (live API, G4 merge 0, Admin edit 0, retired-from-Home guard)",
 );

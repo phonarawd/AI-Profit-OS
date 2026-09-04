@@ -1,6 +1,16 @@
 /**
- * verify:ticker-pii-0 — UI §33.2a · Admin §35.4 pointer
- * PublicTickerEvent fields only · no email/userId/kind · DayPulse merge 0
+ * verify:ticker-pii-0 - UI SS33.2a - Admin SS35.4 pointer
+ * PublicTickerEvent fields only. No email/userId/kind. DayPulse merge 0.
+ *
+ * RETIRED 2026-09-04 (Owner decision, governance/runtime-surfaces.v1.json
+ * surfaces.home.retiredFeatures): "home must mount LivePayoutTicker /
+ * HomePayoutCounter" is dropped. Spark Dash Home intentionally has no live
+ * settlement ticker or cumulative payout counter; do not reintroduce.
+ * Previously enforced via fs.existsSync(HomePageClient.tsx) fallback, the
+ * forbidden pattern tooling/verify/live-surface-integrity.cjs now scans for.
+ *
+ * The PII schema/component-level checks below are independent of Home
+ * mounting and remain in force.
  */
 const fs = require("fs");
 const path = require("path");
@@ -43,7 +53,6 @@ for (const needle of [
     fails.push(`LivePayoutTicker missing ${needle}`);
   }
 }
-// Props type must not include kind/email as render fields
 if (/export type PublicTickerEvent[\s\S]*?\n};/.test(tickerComp)) {
   const m = tickerComp.match(/export type PublicTickerEvent = \{([\s\S]*?)\};/);
   if (m) {
@@ -82,41 +91,6 @@ for (const k of ["justSettled", "justReflected", "participantAmt", "forbiddenPhr
   if (!copy.includes(k)) fails.push(`T.ticker missing ${k}`);
 }
 
-/**
- * PART9c — ticker/counter/DayPulse may mount in HomePageClient (직접) 또는
- * HomeExperience(ADR-017 v1.3, presentation layer 간접 mount) 경유
- */
-let home = read("apps/web/app/page.tsx");
-for (const rel of [
-  "apps/web/app/HomePageClient.tsx",
-  "apps/web/app/_components/HomePageClient.tsx",
-  "apps/web/components/HomePageClient.tsx",
-]) {
-  if (fs.existsSync(path.join(root, rel))) {
-    home = `${home}\n${read(rel)}`;
-    break;
-  }
-}
-home = `${home}\n${read("packages/ui/components/home/HomeExperience.tsx")}`;
-if (!home.includes("LivePayoutTicker")) {
-  fails.push("home must mount LivePayoutTicker [A]");
-}
-if (!home.includes("HomePayoutCounter")) {
-  fails.push("home must mount HomePayoutCounter [F]");
-}
-// §51.24 — DayPulse [A2] OK · ticker 슬롯 안 merge만 금지
-if (home.includes("DayPulse")) {
-  const tickerSlot = home.match(
-    /data-home-slot="ticker"[\s\S]*?<\/div>/,
-  );
-  if (tickerSlot && tickerSlot[0].includes("DayPulse")) {
-    fails.push("home must not merge DayPulse into ticker slot");
-  }
-  if (!home.includes('data-home-slot="day-pulse"')) {
-    fails.push("DayPulse must use separate data-home-slot=day-pulse [A2]");
-  }
-}
-
 const wire = read("packages/ui/canon/surfaces/public-ticker.wire.json");
 if (!wire.includes("day_pulse_merge")) {
   fails.push("public-ticker.wire must forbid day_pulse_merge");
@@ -125,10 +99,29 @@ if (!wire.includes("day_pulse_merge")) {
 const idx = read("packages/ui/copy/ko/index.ts");
 if (!idx.includes("ticker")) fails.push("copy/ko index must export ticker");
 
+// --- Home mounting requirement: RETIRED 2026-09-04 (see file header) ---
+let registry;
+try {
+  registry = JSON.parse(read("governance/runtime-surfaces.v1.json") || "{}");
+} catch {
+  registry = { surfaces: {} };
+}
+const homeClientRel = registry.surfaces?.home?.client || "apps/web/app/HomeDesktopClient.tsx";
+const homePresentation = registry.surfaces?.home?.presentation || [];
+const liveHomeSrc =
+  read(homeClientRel) + homePresentation.map((p) => read(p)).join("\n");
+if (/LivePayoutTicker|HomePayoutCounter/.test(liveHomeSrc)) {
+  fails.push(
+    "RETIRED FEATURE REINTRODUCED: LivePayoutTicker/HomePayoutCounter must not be mounted " +
+      "in live Home (governance/runtime-surfaces.v1.json surfaces.home.retiredFeatures - Owner " +
+      "decision 2026-09-04). If this is an intentional product change, update the registry first.",
+  );
+}
+
 if (fails.length) {
   console.error("[verify:ticker-pii-0] FAIL\n- " + fails.join("\n- "));
   process.exit(1);
 }
 console.log(
-  "[verify:ticker-pii-0] PASS (PublicTicker PII0 · CountUp ledger-only · DayPulse merge0)",
+  "[verify:ticker-pii-0] PASS (PublicTicker PII 0, CountUp ledger-only, retired-from-Home guard)",
 );

@@ -1,6 +1,17 @@
 /**
- * verify:money-unavailable — REL-007
- * missing→0 금지. Home geometry 변경 없음.
+ * verify:money-unavailable - REL-007
+ * missing money must never become 0. Home geometry must not change (this
+ * verify is content-only).
+ *
+ * REWRITTEN 2026-09-04 (verify migration session): this file was MIXED - it
+ * already checked the live apps/web/components/spark-dash-home/format.ts
+ * correctly, but also hard-required the dead
+ * apps/web/lib/opportunity-card-map.ts and packages/ui/components/opportunity/
+ * OpportunityCard.tsx(old)/money-display.ts, and read HomeDesktop.tsx/
+ * HomeMobile.tsx without ever asserting anything about them (`void`-discarded).
+ * Dead assertions removed; the live read is upgraded into a real check; the
+ * card-language check is repointed to the live
+ * apps/web/components/spark-dash-profits/* card.
  */
 const fs = require("fs");
 const path = require("path");
@@ -9,20 +20,15 @@ const root = path.resolve(__dirname, "../..");
 const fails = [];
 
 function read(rel) {
-  return fs.readFileSync(path.join(root, rel), "utf8");
+  const p = path.join(root, rel);
+  if (!fs.existsSync(p)) {
+    fails.push(`missing: ${rel}`);
+    return "";
+  }
+  return fs.readFileSync(p, "utf8");
 }
 
-const mapSrc = read("apps/web/lib/opportunity-card-map.ts");
-if (
-  /asString\(\s*item\.requiredCapitalUsdt\s*,\s*"0"\s*\)/.test(mapSrc) ||
-  /asString\(\s*item\.expectedProfitUsdt\s*,\s*"0"\s*\)/.test(mapSrc)
-) {
-  fails.push("opportunity-card-map must not fallback money to 0");
-}
-if (!mapSrc.includes("asMoneyString")) {
-  fails.push("opportunity-card-map must use asMoneyString");
-}
-
+// --- live formatter contract (apps/web/components/spark-dash-home/format.ts) ---
 const formatSrc = read("apps/web/components/spark-dash-home/format.ts");
 if (!formatSrc.includes('if (raw == null || raw === "") return null;')) {
   fails.push("formatUsdtDisplay must return null for missing");
@@ -30,17 +36,36 @@ if (!formatSrc.includes('if (raw == null || raw === "") return null;')) {
 if (!formatSrc.includes("UNAVAILABLE")) {
   fails.push("format.ts must declare UNAVAILABLE state");
 }
-
-const homeDesktop = read("apps/web/components/spark-dash-home/HomeDesktop.tsx");
-const homeMobile = read("apps/web/components/spark-dash-home/HomeMobile.tsx");
-void homeDesktop;
-void homeMobile;
-
-const card = read("packages/ui/components/opportunity/OpportunityCard.tsx");
-if (!card.includes("formatUsdtOrUnavailable") || !card.includes("data-money-state")) {
-  fails.push("OpportunityCard must render UNAVAILABLE state");
+if (!formatSrc.includes("moneyOrDash")) {
+  fails.push("format.ts must export moneyOrDash (missing -> dash, not 0)");
 }
 
+// --- live Home surfaces must render money via the shared formatter, not ad-hoc fallback-to-0 ---
+const homeDesktop = read("apps/web/components/spark-dash-home/HomeDesktop.tsx");
+const homeMobile = read("apps/web/components/spark-dash-home/HomeMobile.tsx");
+for (const [name, src] of [
+  ["HomeDesktop.tsx", homeDesktop],
+  ["HomeMobile.tsx", homeMobile],
+]) {
+  if (!src.includes('from "./format"')) {
+    fails.push(`${name} must render money via ./format (moneyOrDash/splitUsdtParts), not ad-hoc formatting`);
+  }
+  if (/\?\?\s*"0"|\|\|\s*"0"(?!\d)/.test(src)) {
+    fails.push(`${name} must not fallback missing money to the string "0"`);
+  }
+}
+
+// --- live opportunity card (spark-dash-profits) must show UNAVAILABLE, not 0, for missing money ---
+const liveCard = read("apps/web/components/spark-dash-profits/OpportunityCard.tsx");
+const liveMetrics = read("apps/web/components/spark-dash-profits/OpportunityMetrics.tsx");
+if (!liveCard.includes("OpportunityMetrics")) {
+  fails.push("live OpportunityCard must render OpportunityMetrics (money fields)");
+}
+if (/\?\?\s*"0"|\|\|\s*"0"(?!\d)/.test(liveMetrics)) {
+  fails.push("live OpportunityMetrics must not fallback missing money to the string \"0\"");
+}
+
+// --- pure function contract (owner-agnostic, reused by e2e) ---
 const {
   moneyDisplayState,
 } = require(path.join(root, "tooling/e2e/lib/money-unavailable.cjs"));
@@ -69,7 +94,8 @@ if (!catalog.includes("money-unavailable")) {
   fails.push("CATALOG.md must list money-unavailable");
 }
 
-const jargon = `${card}\n${read("packages/ui/components/opportunity/money-display.ts")}`;
+// --- consumer money display must not leak IT jargon (live card + formatter only) ---
+const jargon = `${liveCard}\n${liveMetrics}\n${formatSrc}`;
 if (/\bAPI\b|\bStaging\b|\bDLQ\b|\bNATS\b|\bMock\b/.test(jargon)) {
   fails.push("consumer money display must not add IT jargon");
 }
@@ -81,5 +107,5 @@ if (fails.length) {
 }
 
 console.log(
-  "[verify:money-unavailable] PASS (missing≠0 · UNAVAILABLE · Home geometry untouched)",
+  "[verify:money-unavailable] PASS (live Home + live OpportunityCard: missing != 0, UNAVAILABLE/dash only)",
 );

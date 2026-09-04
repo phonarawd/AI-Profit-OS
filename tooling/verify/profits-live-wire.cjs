@@ -41,12 +41,11 @@ for (const f of files) mustExist(f);
 
 const listPage = read("apps/web/app/profits/page.tsx");
 const desktopClient = read("apps/web/app/ProfitsDesktopClient.tsx");
-const listClient = fs.existsSync(
-  path.join(root, "apps/web/app/profits/ProfitsPageClient.tsx"),
-)
-  ? read("apps/web/app/profits/ProfitsPageClient.tsx")
-  : "";
-const listSrc = `${listPage}\n${listClient}\n${desktopClient}`;
+// live surface owner = governance/runtime-surfaces.v1.json surfaces.profits.
+// apps/web/app/profits/ProfitsPageClient.tsx is a registered legacyOwner
+// (unreachable from apps/web/app/profits/page.tsx) and must not be consulted
+// here, existsSync or otherwise (verify:live-surface-integrity enforces this).
+const listSrc = `${listPage}\n${desktopClient}`;
 const detailPage = read("apps/web/app/profits/[id]/page.tsx");
 const feed = read("packages/sdk/src/user-feed/fetch.ts");
 const types = read("packages/sdk/src/user-feed/types.ts");
