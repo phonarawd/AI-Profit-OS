@@ -161,7 +161,10 @@ export type DepositConfigPatchInput = {
   pricingGuards?: Partial<Omit<DepositConfigPricingGuards, "requireMinProfitUsdt">>;
 };
 
-/** Day-1 defaults (Money §11.1 · §11.2 · §43.2) */
+/**
+ * Day-1 template / fixture only (Money §11.1 · §11.2 · §43.2).
+ * Not operational authority. Must not be persisted as money config.
+ */
 export const DAY1_DEPOSIT_CONFIG_DEFAULTS: Omit<
   DepositConfigV1,
   "updatedAt" | "updatedByAdminId"

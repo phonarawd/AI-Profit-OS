@@ -39,6 +39,17 @@ async function openKrw(page, mode, width = 1440, height = 1080) {
   await expect(page.getByTestId("wallet-deposit-page")).toBeVisible({
     timeout: 20000,
   });
+  const instr =
+    mode === "unauthorized"
+      ? "unauthorized"
+      : mode === "error"
+        ? "unavailable"
+        : "ready";
+  await expect(page.getByTestId("wallet-deposit-page")).toHaveAttribute(
+    "data-krw-instr-state",
+    instr,
+    { timeout: 20000 },
+  );
   await hideNextDevChrome(page);
 }
 
@@ -99,4 +110,14 @@ test("KRW deposit a11y has no new critical/serious", async ({ page }) => {
       })),
     })),
   ).toEqual([]);
+});
+
+test("KRW instructions stay fail-closed", async ({ page }) => {
+  await openKrw(page, "ready");
+  await expect(page.getByTestId("krw-deposit-instructions")).toBeVisible();
+  await expect(page.getByTestId("krw-instr-bank")).toHaveText("QA Bank");
+  await openKrw(page, "error");
+  await expect(page.getByTestId("krw-instr-unavailable")).toBeVisible();
+  await openKrw(page, "unauthorized");
+  await expect(page.getByTestId("krw-instr-unauthorized")).toBeVisible();
 });

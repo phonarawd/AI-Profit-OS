@@ -1,0 +1,18 @@
+{
+  "schema": "governance.recovery.ghas-judgment.v1",
+  "alert": 29,
+  "rule": "js/xss-through-dom",
+  "path": "packages/ui/components/kyc/KycFlow.tsx",
+  "class": "FALSE_POSITIVE_ACCEPTED_DESIGN",
+  "dismissed_on_github": 0,
+  "proof": {
+    "dangerouslySetInnerHTML": 0,
+    "innerHTML": 0,
+    "document.write": 0,
+    "preview": "URL.createObjectURL(user-selected File) → React <img src>",
+    "remote_url": 0,
+    "html_injection": 0
+  },
+  "reason": "Local blob preview of a file the user just picked. React attribute binding, not HTML sink. Not a stored XSS vector.",
+  "dismiss": 0
+}

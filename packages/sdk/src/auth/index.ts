@@ -13,6 +13,7 @@ export {
   signupStageA,
   startKakaoOAuth,
 } from "./fetch";
+export { finishOauth, verifyMagicLink } from "./proof";
 export { isKakaoOAuthReady, type KakaoReadyEnv } from "./kakao-ready";
 export {
   DELETE_ACCOUNT_CONFIRM_PHRASE,

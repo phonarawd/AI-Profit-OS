@@ -175,7 +175,13 @@ export class FactToolService {
     } catch {
       address = null;
     }
-    const cfg = await this.depositConfig.get();
+    let uiConfirmations = null;
+    try {
+      const cfg = await this.depositConfig.requirePersisted();
+      uiConfirmations = cfg.usdtOnchain.usdtUiConfirmations;
+    } catch {
+      uiConfirmations = null;
+    }
     return {
       tool: "getDepositUsdt",
       facts: [
@@ -187,7 +193,7 @@ export class FactToolService {
             networkName: "트론",
             hasAddress: Boolean(address),
             addressHint: address ? "입금 주소가 준비됐어요" : "입금 주소를 준비 중이에요",
-            uiConfirmations: cfg.usdtOnchain?.usdtUiConfirmations ?? null,
+            uiConfirmations,
             guideText:
               "테더(USDT)·트론 네트워크로만 보내 주세요. 충전하면 미션을 시작할 수 있어요.",
             deepLink: "/me/deposit",

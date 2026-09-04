@@ -2,10 +2,10 @@
   "schema": "governance.engine-acceptance.qa1-result.v1",
   "version": "1.0.0",
   "suite_id": "QA1",
-  "run_id": "qa1-deterministic-truth-20260824",
+  "run_id": "qa1-deterministic-truth-20260902",
   "todoId": "qa1-deterministic-truth",
-  "measuredAt": "2026-08-24T09:41:36.008Z",
-  "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
+  "measuredAt": "2026-09-02T17:53:17.125Z",
+  "baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
   "kill_switch": {
     "verified_before_checks": true,
     "target_env": "ci",
@@ -13,7 +13,7 @@
     "synthetic_account_namespace": "qa-synth-ci"
   },
   "dual_dirty": {
-    "working_tree_clean": true,
+    "working_tree_clean": false,
     "protected_scope_clean": true,
     "forced_clean_forbidden": true
   },
@@ -100,7 +100,7 @@
       "check_id": "QA1_DB_CONSISTENCY",
       "status": "PASS",
       "invariant_id": "INV-LEDGER-01",
-      "migrationCount": 51,
+      "migrationCount": 54,
       "migrations": [
         "20260808205842_extensions_vector.sql",
         "20260808205844_identity_nest_auth.sql",
@@ -152,7 +152,10 @@
         "20260823180000_opportunity_price_overrides.sql",
         "20260823190000_admin_ops_intents.sql",
         "20260823200000_admin_match_controls.sql",
-        "20260823210000_admin_policy_versions.sql"
+        "20260823210000_admin_policy_versions.sql",
+        "20260901224000_withdraw_stepup_token_single_use.sql",
+        "20260902032000_production_schema_parity.sql",
+        "20260902155632_withdraw_broadcast_tron.sql"
       ],
       "live_db_probe": {
         "status": "NOT_RUN",
@@ -193,9 +196,9 @@
               "exitCode": 0,
               "signal": null,
               "ok": true,
-              "stdout": "[verify:idempotency-conflict-detection] PASS (fingerprint helper · mig · ledger+participate conflict path · catalog)\n",
+              "stdout": "TAP version 13\n# (node:2979) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/AI-Profit-OS/AI-Profit-OS/services/api-nest/src/ledger/idempotency-fingerprint.runtime.test.ts is not specified and it doesn't parse as CommonJS.\n# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.\n# To eliminate this warning, add \"type\": \"module\" to /home/runner/work/AI-Profit-OS/AI-Profit-OS/services/api-nest/package.json.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: wallet idempotency semantic conflict\n    # Subtest: same KRW key and same amount/name match\n    ok 1 - same KRW key and same amount/name match\n      ---\n      duration_ms: 1.265448\n      type: 'test'\n      ...\n    # Subtest: same KRW key with a different amount conflicts\n    ok 2 - same KRW key with a different amount conflicts\n      ---\n      duration_ms: 0.711316\n      type: 'test'\n      ...\n    # Subtest: same withdraw key with a different destination conflicts\n    ok 3 - same withdraw key with a different destination conflicts\n      ---\n      duration_ms: 0.309116\n      type: 'test'\n      ...\n    1..3\nok 1 - wallet idempotency semantic conflict\n  ---\n  duration_ms: 3.428108\n  type: 'suite'\n  ...\n1..1\n# tests 3\n# suites 1\n# pass 3\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 316.552768\n[verify:idempotency-conflict-detection] PASS (fingerprint helper · mig · ledger+participate conflict path · catalog)\n",
               "stderr": "",
-              "summary": "[verify:idempotency-conflict-detection] PASS (fingerprint helper · mig · ledger+participate conflict path · catalog)"
+              "summary": "# todo 0 | # duration_ms 316.552768 | [verify:idempotency-conflict-detection] PASS (fingerprint helper · mig · ledger+participate conflict path · catalog)"
             }
           ]
         }
@@ -219,5 +222,5 @@
     "Does not issue ENGINE_ACCEPTED_FOR_UI.",
     "Idempotency INV-01 and INV-03 kept separate."
   ],
-  "checksum": "f9d733bf34b5462ecf62ccb53cf890fae189e44c61a6725c95a6244edaa9cb69"
+  "checksum": "cd740ea3472fa969fe71bf8c817b1173a831152d5088a37118c41b8a173215e1"
 }

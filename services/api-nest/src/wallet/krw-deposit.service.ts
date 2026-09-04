@@ -11,14 +11,20 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { randomBytes } from "node:crypto";
+import { randomBytes, randomInt } from "node:crypto";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { PostgresService } from "../db/postgres";
+import {
+  assertFingerprintMatch,
+  fingerprintPayload,
+  krwDepositSemantic,
+} from "../ledger/idempotency-fingerprint";
 import { formatAmount, parseAmount } from "../ledger/ledger.money";
 import { LedgerPostingService } from "../ledger/ledger.posting.service";
 import { LedgerProvisionService } from "../ledger/ledger.provision.service";
 import { SYSTEM_ACCOUNT_CODES } from "../ledger/ledger.types";
 import { KillSwitchService } from "../kill-switch/kill-switch.service";
+import { DepositConfigService } from "./deposit-config.service";
 import { WALLET_EVENTS } from "./wallet.events";
 import {
   KRW_DEPOSIT_TTL_MIN,
@@ -54,6 +60,7 @@ export class KrwDepositService {
     private readonly provision: LedgerProvisionService,
     private readonly bus: InProcessEventBus,
     private readonly killSwitch: KillSwitchService,
+    private readonly depositConfig: DepositConfigService,
   ) {}
 
   /** POST /wallet/krw-deposit-requests */
@@ -79,6 +86,7 @@ export class KrwDepositService {
     }
 
     await this.killSwitch.assertPath("deposit");
+    await this.depositConfig.requirePersisted();
     await this.expireStale();
 
     const existing = await this.db.query<RequestRow>(
@@ -87,7 +95,10 @@ export class KrwDepositService {
         WHERE idempotency_key = $1`,
       [input.idempotencyKey],
     );
-    if (existing.rows[0]) return this.toV1(existing.rows[0]);
+    if (existing.rows[0]) {
+      this.assertSameKrwIntent(existing.rows[0], input, name);
+      return this.toV1(existing.rows[0]);
+    }
 
     for (let attempt = 0; attempt < 12; attempt += 1) {
       const uniqueSuffixKrw = this.randomSuffix();
@@ -136,7 +147,10 @@ export class KrwDepositService {
               WHERE idempotency_key = $1`,
             [input.idempotencyKey],
           );
-          if (again.rows[0]) return this.toV1(again.rows[0]);
+          if (again.rows[0]) {
+            this.assertSameKrwIntent(again.rows[0], input, name);
+            return this.toV1(again.rows[0]);
+          }
         }
         if (/payable_amount|unique/i.test(msg)) continue;
         throw e;
@@ -172,6 +186,7 @@ export class KrwDepositService {
     fxSnapshotId?: string;
   }): Promise<KrwDepositDecideResult> {
     if (!input.adminId) throw new BadRequestException("adminId required");
+    await this.depositConfig.requirePersisted();
     if (!input.idempotencyKey || input.idempotencyKey.length < 8) {
       throw new BadRequestException("idempotencyKey minLength 8");
     }
@@ -430,12 +445,34 @@ export class KrwDepositService {
   }
 
   private randomSuffix(): number {
-    // 1..99 — unique end digits for bank statement matching
-    return (randomBytes(1)[0] % 99) + 1;
+    // 1..99 inclusive. randomInt upper bound is exclusive. No modulo bias.
+    return randomInt(1, 100);
   }
 
   private randomDepositCode(): string {
     return randomBytes(4).toString("hex").slice(0, 8);
+  }
+
+  private assertSameKrwIntent(
+    row: RequestRow,
+    input: { userId: string; requestedAmountKrw: number },
+    name: string,
+  ): void {
+    const stored = fingerprintPayload(
+      krwDepositSemantic({
+        userId: String(row.user_id),
+        requestedAmountKrw: Number(row.requested_amount_krw),
+        depositorName: String(row.depositor_name ?? ""),
+      }),
+    );
+    const incoming = fingerprintPayload(
+      krwDepositSemantic({
+        userId: input.userId,
+        requestedAmountKrw: input.requestedAmountKrw,
+        depositorName: name,
+      }),
+    );
+    assertFingerprintMatch({ stored, incoming });
   }
 
   private columns(): string {

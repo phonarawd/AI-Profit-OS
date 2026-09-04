@@ -477,8 +477,11 @@ function classifyNumericClaim(claim) {
  * @param {string} answerText
  * @returns {readonly object[]}
  */
+const CLAIM_TEXT_MAX = 8000;
+
 function extractNumericClaims(answerText) {
-  const text = String(answerText || "");
+  let text = String(answerText || "");
+  if (text.length > CLAIM_TEXT_MAX) text = text.slice(0, CLAIM_TEXT_MAX);
   const claims = [];
   const seen = new Set();
 

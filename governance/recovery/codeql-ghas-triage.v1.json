@@ -1,0 +1,50 @@
+{
+  "schema": "governance.recovery.codeql-ghas-triage.v1",
+  "observed_at": "2026-09-01T08:20:00Z",
+  "head_sha": "a38920b3d5beec23614cd78d0e4c851886285ce2",
+  "ACTIONS_CODEQL_ANALYZE": "PASS",
+  "GHAS_CODEQL_CHECK": "FAIL — not dismissed",
+  "GHAS_REMAINING_AT_HEAD": [
+    {
+      "path": "services/api-nest/src/common/admin-session.cookies.ts",
+      "title": "Clear text storage of mintAdminCsrfSecret",
+      "class": "FALSE_POSITIVE_PROVEN",
+      "reason": "Double-submit CSRF. Readable cookie + x-admin-csrf + timingSafeEqual. HttpOnly would break the design. Session cookie remains HttpOnly + SameSite=strict."
+    }
+  ],
+  "ADJUDICATED": [
+    {
+      "path": "services/api-nest/src/auth/identity-proof.crypto.ts",
+      "class": "CONFIRMED_SECURITY_DEFECT",
+      "fix": "ca4d63b bounded linear email scan"
+    },
+    {
+      "path": "services/api-nest/src/common/admin-session.controller.ts",
+      "class": "CONFIRMED_SECURITY_DEFECT",
+      "fix": "bbb245b planAdminLogout fail-closed CSRF"
+    },
+    {
+      "path": "services/api-nest/src/referral/referral-code.util.ts",
+      "class": "FALSE_POSITIVE_PROVEN",
+      "fix": "3f5f077 explicit 32-char mask; 256 divisible by 32"
+    },
+    {
+      "path": "tooling/recovery/classify-local-state.cjs",
+      "class": "SAFE_HARDENING",
+      "fix": "28fb416 direct read/stat try/catch"
+    },
+    {
+      "path": "services/api-nest/src/common/admin-token.ts",
+      "class": "CONFIRMED_SECURITY_DEFECT",
+      "fix": "d3e7326 linear Bearer extract; also jwt-auth.guard"
+    },
+    {
+      "path": "apps/admin/lib/admin-truth.runtime.test.ts",
+      "class": "FALSE_POSITIVE_PROVEN",
+      "fix": "d3e7326 exact masked equality; no host substring check"
+    }
+  ],
+  "DISMISSED_ON_GITHUB": 0,
+  "HTTPONLY_CSRF_COOKIE": "NOT_APPLIED",
+  "ENGINE_WORKFLOW": "HOLD_CONTROLLED_AMENDMENT"
+}

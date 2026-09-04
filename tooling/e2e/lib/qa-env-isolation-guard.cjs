@@ -20,6 +20,12 @@ function loadAllowlist() {
       "QA_ENV_ISOLATION_GUARD: allowlist productionProjectRef drift",
     );
   }
+  const refs = (raw.allowedProjectRefs || []).map((r) => String(r).toLowerCase());
+  if (refs.includes(PRODUCTION_PROJECT_REF.toLowerCase())) {
+    throw new Error(
+      "QA_ENV_ISOLATION_GUARD: production project ref must never be allowlisted",
+    );
+  }
   return raw;
 }
 
@@ -49,11 +55,22 @@ function parseHost(databaseUrl) {
 
 function isProductionTarget(input, allowlist) {
   const blob = collectBlob(input);
+  const ref = String(input.projectRef || "").toLowerCase();
+  const productionRef = PRODUCTION_PROJECT_REF.toLowerCase();
+
+  // Production always wins, even if an allowlist is malformed.
+  if (blob.includes(productionRef)) return true;
+
+  // An explicitly allowlisted non-production project ref may use a Supabase
+  // hostname without being mistaken for Production.
+  const allowedRefs = (allowlist.allowedProjectRefs || []).map((r) =>
+    String(r).toLowerCase(),
+  );
+  if (ref && allowedRefs.includes(ref)) return false;
+
+  // Unknown/shared Supabase targets remain fail-closed.
   const deny = allowlist.productionDenySubstrings || [];
-  if (deny.some((s) => s && blob.includes(String(s).toLowerCase()))) {
-    return true;
-  }
-  return blob.includes(PRODUCTION_PROJECT_REF);
+  return deny.some((s) => s && blob.includes(String(s).toLowerCase()));
 }
 
 function isAllowlisted(input, allowlist) {

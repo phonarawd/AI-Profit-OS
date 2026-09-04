@@ -69,11 +69,16 @@ if (nestRp.includes("withdraw-stepup")) {
 }
 
 const auth = read("services/api-nest/src/auth/auth.service.ts");
-if (!auth.includes("loadAuthWebauthnRp")) {
+const webauthnAssert = read("services/api-nest/src/auth/webauthn-assert.service.ts");
+const optionsOwner = auth.includes("loadAuthWebauthnRp") ? auth : webauthnAssert;
+if (!optionsOwner.includes("loadAuthWebauthnRp")) {
   fails.push("passkeyOptions must use loadAuthWebauthnRp");
 }
-if (!auth.includes("rpId:") || !auth.includes("origin:")) {
+if (!optionsOwner.includes("rpId:") || !optionsOwner.includes("origin:")) {
   fails.push("passkeyOptions must return rpId and origin");
+}
+if (!auth.includes("passkeyOptions") || !auth.includes("this.webauthn.options")) {
+  fails.push("auth.service must delegate passkeyOptions to WebAuthn assert");
 }
 
 const login = read("packages/ui/components/auth/AuthLogin.tsx");

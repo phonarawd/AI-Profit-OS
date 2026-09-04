@@ -13,6 +13,7 @@ import { PostgresService } from "../db/postgres";
 import { LedgerPostingService } from "../ledger/ledger.posting.service";
 import { LedgerProvisionService } from "../ledger/ledger.provision.service";
 import { DepositAddressService } from "./deposit-address.service";
+import { DepositConfigService } from "./deposit-config.service";
 import {
   decideDepositStage,
   USDT_DUST_MIN,
@@ -42,6 +43,7 @@ export class UsdtDepositService {
   constructor(
     private readonly db: PostgresService,
     private readonly addresses: DepositAddressService,
+    private readonly depositConfig: DepositConfigService,
     private readonly posting: LedgerPostingService,
     private readonly provision: LedgerProvisionService,
     private readonly bus: InProcessEventBus,
@@ -57,7 +59,6 @@ export class UsdtDepositService {
     toAddress: string;
     amountUsdt: string;
     confirmations: number;
-    userId?: string;
     reorg?: boolean;
   }): Promise<UsdtDepositObserveResult> {
     const txHash = (input.txHash ?? "").trim();
@@ -67,6 +68,7 @@ export class UsdtDepositService {
       throw new BadRequestException("txHash required");
     }
     if (!toAddress) throw new BadRequestException("toAddress required");
+    await this.depositConfig.requirePersisted();
     if (!/^\d+(\.\d+)?$/.test(amountUsdt)) {
       throw new BadRequestException("amountUsdt invalid");
     }
@@ -81,9 +83,7 @@ export class UsdtDepositService {
       };
     }
 
-    const resolved =
-      input.userId ||
-      (await this.addresses.resolveUserIdByAddress(toAddress));
+    const resolved = await this.addresses.resolveUserIdByAddress(toAddress);
     if (!resolved) {
       return {
         ok: true,

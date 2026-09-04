@@ -5,8 +5,8 @@
   "description": "yahoo-jp-adapter — Yahoo! JAPAN Auction official partner · Phase1+ listing leg (Engine §0.0.1c)",
   "scripts": {
     "dev": "wrangler dev --config wrangler.toml",
-    "deploy": "wrangler deploy --config wrangler.toml",
-    "deploy:prod": "wrangler deploy --config wrangler.toml --env production"
+    "deploy": "node ../../tooling/deploy/wrangler-worker-preview-only.cjs",
+    "deploy:prod": "node ../../tooling/deploy/forbid-direct-wrangler-prod.cjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260801.1",

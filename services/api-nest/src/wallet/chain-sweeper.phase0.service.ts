@@ -83,7 +83,7 @@ export class ChainSweeperPhase0Service {
     skipped: number;
     autoPaused: boolean;
   }> {
-    const cfg = await this.depositConfig.get();
+    const cfg = await this.depositConfig.requirePersisted();
     const onchain = cfg.usdtOnchain;
     const adminPaused = onchain.sweeperPaused === true;
 

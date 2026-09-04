@@ -13,6 +13,7 @@ build/
 .turbo/
 .vercel/
 .open-next/
+.release-prebuilt/
 .wrangler/
 out/
 coverage/
@@ -73,6 +74,9 @@ docker-data/
 test-results/
 playwright-report/
 blob-report/
+
+# Nested git worktrees (recovery integration · never commit)
+_worktree-*/
 
 # Misc
 .claude/

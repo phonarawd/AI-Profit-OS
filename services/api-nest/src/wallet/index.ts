@@ -1,5 +1,13 @@
 export { WalletModule } from "./wallet.module";
 export { DepositConfigService } from "./deposit-config.service";
+export {
+  CONFIG_NOT_READY,
+  parsePersistedDepositConfig,
+} from "./deposit-config.ready";
+export {
+  projectSafeKrwDepositInstructions,
+} from "./deposit-config.safe-krw";
+export type { SafeKrwDepositInstructions } from "./deposit-config.safe-krw";
 export { DepositAddressService } from "./deposit-address.service";
 export { DepositDisputeService } from "./deposit-dispute.service";
 export { KrwDepositService } from "./krw-deposit.service";
@@ -87,7 +95,11 @@ export {
 export { WALLET_EVENTS } from "./wallet.events";
 export { WALLET_ADMIN_ROUTES, WALLET_USER_ROUTES } from "./wallet.routes";
 export {
+  allocateCanonicalTrc20Address,
   deriveTrc20Address,
+  requireCanonicalTrc20Deriver,
+  resolveCanonicalTrc20Deriver,
+  TRON_HD_DERIVATION_UNAVAILABLE,
   TRON_HD_PATH_PREFIX,
   isTrc20AddressFormat,
 } from "./tron-address";

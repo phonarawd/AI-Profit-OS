@@ -33,6 +33,7 @@
   "forbiddenCspSources": ["*", "https:", "http:", "'unsafe-eval'"],
   "notes": {
     "scriptUnsafeInline": "Next/OpenNext hydration. Not a host wildcard.",
+    "scriptUnsafeEvalDevOnly": "Non-production next dest webpack/turbopack only. Production CSP must keep unsafe-eval forbidden.",
     "jsdelivr": "Current Pretendard @import in lux-theme.css.",
     "r2Wildcard": "Same REL-013 exception as image-hosts **.r2.cloudflarestorage.com.",
     "sw": "worker-src 'self' keeps /sw.js registration."

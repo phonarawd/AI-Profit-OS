@@ -1,6 +1,12 @@
 "use client";
 
-import { fetchWalletBuckets } from "@aipo/sdk/wallet";
+import {
+  classifyIdempotencyHttp,
+  createIdempotencyLifecycle,
+  fetchWalletBuckets,
+  krwDepositFingerprint,
+  mintMoneyIdempotencyKey,
+} from "@aipo/sdk/wallet";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 import {
   DepositConsult,
@@ -11,9 +17,20 @@ import {
 import { DepositAmountPanel } from "@aipo/ui/components/wallet/DepositAmountPanel";
 import { NetworkPlainWarning } from "@aipo/ui/components/wallet/NetworkPlainWarning";
 import { T } from "@aipo/ui/copy/ko";
+import {
+  classifyPrefsHttp,
+  parseUserUxPrefs,
+  resolveDepositTab,
+} from "./deposit-tab";
 import Link from "next/link";
+import {
+  classifyKrwInstructionsHttp,
+  parseSafeKrwDepositInstructions,
+  type KrwInstructionsView,
+  type SafeKrwDepositInstructions,
+} from "./krw-deposit-instructions";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "../wallet.module.css";
 
 function parseSuggest(raw: string | null): number {
@@ -44,7 +61,18 @@ type KrwPending = {
 
 function DepositContent() {
   const searchParams = useSearchParams();
-  const tab = searchParams.get("tab") === "krw" ? "krw" : "usdt";
+  const urlTab = searchParams.get("tab");
+  const [storedDeposit, setStoredDeposit] = useState<
+    import("./deposit-tab").UxDepositPref | null
+  >(null);
+  const [uxView, setUxView] = useState<import("./deposit-tab").PrefsReadView>("loading");
+  const [uxPrefs, setUxPrefs] = useState<import("./deposit-tab").UserUxPrefs | null>(null);
+  const resolvedTab = resolveDepositTab({
+    urlTab,
+    stored: storedDeposit,
+    prefsView: uxView,
+  });
+  const tab = resolvedTab.tab;
   const suggestUsdt = useMemo(
     () => parseSuggest(searchParams.get("suggest")),
     [searchParams],
@@ -59,6 +87,48 @@ function DepositContent() {
   const [depositorName, setDepositorName] = useState("");
   const [krwState, setKrwState] = useState<KrwState>("idle");
   const [krwPending, setKrwPending] = useState<KrwPending | null>(null);
+  const [instrState, setInstrState] = useState<KrwInstructionsView>("loading");
+  const [instructions, setInstructions] = useState<SafeKrwDepositInstructions | null>(null);
+  const krwIdem = useRef(
+    createIdempotencyLifecycle({ mint: () => mintMoneyIdempotencyKey("krw") }),
+  );
+
+  useEffect(() => {
+    const ac = new AbortController();
+    void (async () => {
+      try {
+        const res = await fetch("/api/v1/me/ux-prefs", {
+          credentials: "include",
+          cache: "no-store",
+          headers: { Accept: "application/json" },
+          signal: ac.signal,
+        });
+        if (!res.ok) {
+          setUxPrefs(null);
+          setStoredDeposit(null);
+          setUxView(classifyPrefsHttp(res.status));
+          return;
+        }
+        const parsed = parseUserUxPrefs(await res.json().catch(() => null));
+        if (!parsed) {
+          setUxPrefs(null);
+          setStoredDeposit(null);
+          setUxView("unavailable");
+          return;
+        }
+        setUxPrefs(parsed);
+        setStoredDeposit(parsed.depositPref);
+        setUxView("ready");
+      } catch {
+        if (!ac.signal.aborted) {
+          setUxPrefs(null);
+          setStoredDeposit(null);
+          setUxView("unavailable");
+        }
+      }
+    })();
+    return () => ac.abort();
+  }, []);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -114,6 +184,38 @@ function DepositContent() {
     return () => ac.abort();
   }, [tab]);
 
+  useEffect(() => {
+    if (tab !== "krw") return;
+    const ac = new AbortController();
+    setInstrState("loading");
+    setInstructions(null);
+    void (async () => {
+      try {
+        const res = await fetch("/api/v1/wallet/krw-deposit-instructions", {
+          credentials: "include",
+          cache: "no-store",
+          signal: ac.signal,
+        });
+        if (!res.ok) {
+          setInstrState(classifyKrwInstructionsHttp(res.status));
+          return;
+        }
+        const parsed = parseSafeKrwDepositInstructions(
+          await res.json().catch(() => null),
+        );
+        if (!parsed) {
+          setInstrState("unavailable");
+          return;
+        }
+        setInstructions(parsed);
+        setInstrState("ready");
+      } catch {
+        if (!ac.signal.aborted) setInstrState("unavailable");
+      }
+    })();
+    return () => ac.abort();
+  }, [tab]);
+
   const usdtHref = useMemo(() => {
     const q = new URLSearchParams(searchParams.toString());
     q.set("tab", "usdt");
@@ -127,12 +229,25 @@ function DepositContent() {
   }, [searchParams]);
 
   async function submitKrw() {
+    if (instrState !== "ready" || !instructions) {
+      setKrwState(instrState === "unauthorized" ? "unauthorized" : "unavailable");
+      setDenyCopy(
+        instrState === "unauthorized"
+          ? "로그인하면 원화 입금을 신청할 수 있어요."
+          : "입금 안내를 확인할 수 없음",
+      );
+      return;
+    }
     const amount = Number(krwAmount);
     if (!Number.isInteger(amount) || amount < 1 || depositorName.trim().length < 1) {
       setKrwState("denied");
       setDenyCopy("입금 신청에 필요한 값이 부족해요.");
       return;
     }
+    const started = krwIdem.current.begin(
+      krwDepositFingerprint(amount, depositorName),
+    );
+    if ("blocked" in started) return;
     setKrwState("submitting");
     setDenyCopy(null);
     try {
@@ -144,32 +259,44 @@ function DepositContent() {
         body: JSON.stringify({
           requestedAmountKrw: amount,
           depositorName: depositorName.trim(),
-          idempotencyKey: `krw_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+          idempotencyKey: started.key,
         }),
       });
       if (res.status === 401) {
+        krwIdem.current.retire();
         setKrwState("unauthorized");
         setDenyCopy("로그인하면 원화 입금을 신청할 수 있어요.");
         return;
       }
       if (res.status === 403) {
+        krwIdem.current.retire();
         setKrwState("denied");
         setDenyCopy("지금은 원화 입금을 신청할 수 없어요.");
         return;
       }
       if (!res.ok) {
+        if (classifyIdempotencyHttp(res.status) === "retain") krwIdem.current.retain();
+        else krwIdem.current.retire();
         setKrwState("unavailable");
         setDenyCopy("입금 신청을 확인할 수 없음");
         return;
       }
-      const json = (await res.json()) as KrwPending;
+      const json = (await res.json().catch(() => null)) as KrwPending | null;
+      if (!json) {
+        krwIdem.current.retain();
+        setKrwState("unavailable");
+        return;
+      }
       if (json.status === "pending") {
+        krwIdem.current.retire();
         setKrwPending(json);
         setKrwState("pending");
         return;
       }
+      krwIdem.current.retain();
       setKrwState("unavailable");
     } catch {
+      krwIdem.current.retain();
       setKrwState("unavailable");
     }
   }
@@ -179,16 +306,19 @@ function DepositContent() {
       className={styles.page}
       data-testid="wallet-deposit-page"
       data-deposit-tab={tab}
+      data-deposit-tab-source={resolvedTab.source}
       data-deposit-suggest={suggestUsdt > 0 ? String(suggestUsdt) : undefined}
       data-address-state={tab === "usdt" ? addressState : undefined}
       data-krw-state={tab === "krw" ? krwState : undefined}
+      data-krw-instr-state={tab === "krw" ? instrState : undefined}
       data-classification-owner="engine:§0.0.5.1"
     >
       <DepositConsult
         fact={{
           ...(principalUsdt ? { balanceUsdt: principalUsdt } : {}),
-          toneBand: "mid",
-          fontScale: "md",
+          ...(uxPrefs
+            ? { toneBand: uxPrefs.toneBand, fontScale: uxPrefs.fontScale }
+            : {}),
           depositPref: tab,
         }}
       />
@@ -269,6 +399,33 @@ function DepositContent() {
           <p className={styles.note}>
             원화는 신청만 받아요. 확인되기 전에는 잔액이 늘지 않아요.
           </p>
+          {instrState === "unauthorized" ? (
+            <p className={styles.lead} data-testid="krw-instr-unauthorized">
+              로그인하면 입금 안내를 볼 수 있어요.
+            </p>
+          ) : null}
+          {instrState === "unavailable" ? (
+            <p className={styles.err} data-testid="krw-instr-unavailable">
+              입금 안내를 확인할 수 없음
+            </p>
+          ) : null}
+          {instrState === "ready" && instructions ? (
+            <div
+              className={styles.addressBox}
+              data-testid="krw-deposit-instructions"
+            >
+              <p data-testid="krw-instr-bank">{instructions.bankName}</p>
+              <p className={styles.mono} data-testid="krw-instr-account">
+                {instructions.accountNumber}
+              </p>
+              <p data-testid="krw-instr-holder">{instructions.accountHolder}</p>
+              {instructions.noticeKo ? (
+                <p className={styles.note} data-testid="krw-instr-notice">
+                  {instructions.noticeKo}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
           <label className={styles.field}>
             입금자 이름
             <input
@@ -341,7 +498,11 @@ function DepositContent() {
             data-testid="deposit-continue"
             data-force-deposit="false"
             data-credited="false"
-            disabled={krwState === "submitting" || krwState === "pending"}
+            disabled={
+              krwState === "submitting" ||
+              krwState === "pending" ||
+              instrState !== "ready"
+            }
             onClick={() => {
               void submitKrw();
             }}

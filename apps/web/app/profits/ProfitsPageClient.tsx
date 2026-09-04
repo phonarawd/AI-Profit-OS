@@ -92,7 +92,7 @@ export function ProfitsPageClient({
           </p>
           <Link
             href="/wallet/deposit"
-            className="mt-4 inline-block text-sm text-lux-accent underline"
+            className="touch-target mt-4 inline-flex items-center text-sm text-lux-accent underline"
           >
             {T.user.empty.opportunitiesCta}
           </Link>

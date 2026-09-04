@@ -9,6 +9,7 @@ const {
   requireRootDomainForProd,
   requireCloudflareCreds,
   mustExist,
+  requireNonProdApiIsolation,
 } = require("./lib/env.cjs");
 
 const target = process.argv[2] || "preview";
@@ -17,6 +18,7 @@ const surface = process.argv[3] || "all";
 requireRootDomainForProd(target);
 requireCloudflareCreds();
 loadDotEnv();
+requireNonProdApiIsolation(target, { root, env: process.env });
 
 const requiredInfra = [
   "infra/web/wrangler.toml",

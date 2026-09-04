@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { T } from "@aipo/ui/copy/ko";
 import { ADMIN_MODULES } from "../routes";
 import { AdminSessionBar } from "./AdminSessionBar";
@@ -26,12 +26,27 @@ function isActive(pathname: string, href: string, id: number | string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+let persistedMenuOpen = false;
+
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpenState] = useState(persistedMenuOpen);
+  const previousPathname = useRef(pathname);
 
+  const setMenuOpen = (next: boolean | ((open: boolean) => boolean)) => {
+    const value = typeof next === "function" ? next(persistedMenuOpen) : next;
+    persistedMenuOpen = value;
+    setMenuOpenState(value);
+  };
+
+  // 마운트·동일 경로 effect 재실행은 닫지 않는다. 첫 클릭과 레이스가 난다.
   useEffect(() => {
-    setMenuOpen(false);
+    if (previousPathname.current === pathname) {
+      return;
+    }
+    previousPathname.current = pathname;
+    persistedMenuOpen = false;
+    setMenuOpenState(false);
   }, [pathname]);
 
   const currentLabel = useMemo(() => {

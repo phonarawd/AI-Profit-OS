@@ -170,6 +170,12 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     approve: write("wallet"),
     reject: write("wallet"),
   },
+  WithdrawReviewAdminController: {
+    list: read("wallet"),
+    get: read("wallet"),
+    approve: write("withdrawApprove"),
+    reject: write("withdrawApprove"),
+  },
   WithdrawCredentialsAdminController: {
     resetPin: write("withdrawPinReset"),
     revokeWebauthn: write("withdrawPinReset"),

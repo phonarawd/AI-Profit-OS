@@ -12,16 +12,16 @@ APPLY_MIGRATION = 0
 APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
-LOCAL_MIGRATION_FILES = 51
-REMOTE_APPLIED_SNAPSHOT = 41
-REMOTE_RAW_APPLIED = 42
-COMMITTED_UNAPPLIED = 10
+LOCAL_MIGRATION_FILES = 54
+REMOTE_APPLIED_SNAPSHOT = 42
+REMOTE_RAW_APPLIED = 43
+COMMITTED_UNAPPLIED = 12
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
 REL_502_ISSUED = 1
 ```
 
-이 문서는 READY 신호다. 원격 스키마 변경 명령이 아니다. production DDL = 0. apply owner 는 REL-701-DB 그대로다.
+이 문서는 migration-plan READY 신호다. Production release authorization 이 아니다. REL-502 ISSUED는 migration readiness 선행조건 충족만 의미하며 Production release authorization은 아니다. 원격 스키마 변경 명령이 아니며 production DDL = 0. apply owner 는 REL-701-DB 그대로다.
 
 ## 2026-08-24 LIVE TRUTH RECONCILIATION
 
@@ -33,19 +33,19 @@ REL_502_ISSUED = 1
 
 ## REVIEW
 
-- 로컬 `supabase/migrations/*.sql` 51 · filename `YYYYMMDDHHMMSS_*.sql`
+- 로컬 `supabase/migrations/*.sql` 53 · filename `YYYYMMDDHHMMSS_*.sql`
 - 원격 applied canonical snapshot `tooling/verify/fixtures/migrations-applied.v1.json` versions = 41 (asOf 2026-08-24, ref `mgsytcetsiecllmhcyox`)
 - 실제 remote raw applied rows = 42; alias/duplicate history를 fixture에 명시해 숨기지 않는다
-- file-only `committedUnapplied` 10 — 원격 apply 전. 이 단계에서 versions 로 옮기지 않는다
+- file-only `committedUnapplied` 12 — 원격 apply 전. 이 단계에서 versions 로 옮기지 않는다
 - Track A (REL-003) file restore 3: `20260819210000` · `20260819220000` · `20260820013000` + `opportunity-reprice.service.ts` 존재
 - REL-408 `SECURITY_BASELINE.md` · `REL-408-SECURITY-BASELINE.md` COMPLETED · APPLY_MIGRATION = 0
-- REL-502 `FINAL_ACCEPTANCE.md` STATUS = ISSUED
+- REL-502 `FINAL_ACCEPTANCE.md` STATUS = ISSUED · REBASE_REQUIRED = 0 · ACK_RECEIVED = 1
 
 ## VERIFY
 
 | command | expected |
 |---|---|
-| `pnpm verify:migrations-applied-parity` | PASS (51 local · 41 canonical applied · 42 raw remote rows · 10 pending) |
+| `pnpm verify:migrations-applied-parity` | PASS (53 local · 41 canonical applied · 42 raw remote rows · 12 pending) |
 | `pnpm verify:rel-408-security-baseline` | PASS |
 | `pnpm verify:rel-504-migration-readiness` | PASS |
 

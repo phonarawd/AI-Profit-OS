@@ -1,5 +1,6 @@
 import type { AdminFailure } from "./admin-api";
 import { T } from "@aipo/ui/copy/ko";
+export { maskLogPreview } from "./admin-log-mask";
 
 export const UNAVAILABLE_LABEL = "확인할 수 없음";
 
@@ -88,19 +89,4 @@ export function isUuid(value: string): boolean {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
     value.trim(),
   );
-}
-
-/** Admin log preview — resident/phone/token raw 0 */
-export function maskLogPreview(value: unknown): string | null {
-  const text = readText(value);
-  if (!text) return null;
-  return text
-    .replace(/\b\d{6}-?\d{7}\b/g, "[숨김]")
-    .replace(/\b01[016789]-?\d{3,4}-?\d{4}\b/g, "[숨김]")
-    .replace(/\bBearer\s+\S+/gi, "Bearer [숨김]")
-    .replace(/\bsk-[A-Za-z0-9]{8,}\b/g, "[숨김]")
-    .replace(
-      /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b/g,
-      "[숨김]",
-    );
 }

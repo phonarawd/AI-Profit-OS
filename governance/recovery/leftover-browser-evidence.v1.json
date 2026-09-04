@@ -1,0 +1,25 @@
+{
+  "schema": "governance.recovery.leftover-browser-evidence.v1",
+  "observed_at": "2026-09-01T11:50:00Z",
+  "source_sha": "8a1d4d47f0fab31610e8793fe45e2bbfbc0f4766",
+  "STATIC_NE_LOCAL_RUNTIME_NE_BROWSER_NE_REMOTE_CI_NE_RELEASE_READY": true,
+  "TICKETS": {
+    "93_double_click_idempotency": "STATIC_VERIFIER_PASS — leftover-web now requires posts===1, keys.size===1, non-empty key. Previous Chromium leftover showed 1 POST; tightened identity was not re-run this train (BROWSER_PASS=NOT_PROVEN).",
+    "94_ledger_detail": "BROWSER_PASS — prior Chromium leftover 768/1024 history detail kept 25.00 USDT server slip. Spec unchanged this train. REMOTE_CI_PASS=NOT_PROVEN.",
+    "95_save_rollback_rapid_intent": "STATIC_VERIFIER_PASS — leftover-web now has A-pending → B → late A → B authority. Unit latest-intent also PASS. LEFTOVER_BROWSER not executed this train (BROWSER_PASS=NOT_PROVEN).",
+    "96_sse_eof_trailing_abort": "BROWSER_PASS — prior Chromium peotteok EOF/trailing degrade. Spec unchanged this train. REMOTE_CI_PASS=NOT_PROVEN.",
+    "99_admin_session_csrf_logout": "BROWSER_PASS — prior Chromium logout CSRF cookie match. Nest revoke remains LOCAL_RUNTIME_PASS. REMOTE_CI_PASS=NOT_PROVEN.",
+    "65_admin_withdraw_review": "BROWSER_PASS — prior Chromium 768 review approve dblclick=1. Spec unchanged this train. REMOTE_CI_PASS=NOT_PROVEN.",
+    "67_krw_safe_instructions": "BROWSER_PASS — prior Chromium 390/768/1024/1440 KRW instructions. Spec unchanged this train. REMOTE_CI_PASS=NOT_PROVEN.",
+    "i4_release_readout": "BROWSER_PASS — prior Chromium 1024 system-control; 반영 완료 count 0. Spec unchanged this train. REMOTE_CI_PASS=NOT_PROVEN.",
+    "i5_beginner_language": "STATIC_VERIFIER_PASS — leftover-admin ticketI5 + critical-admin jargon deny. LEFTOVER_BROWSER not executed this train (BROWSER_PASS=NOT_PROVEN).",
+    "100_axe": "REMOTE_AXE_PASS — critical-axe.yml run 33504217203 SUCCESS on 8a1d4d47f0fab31610e8793fe45e2bbfbc0f4766. LOCAL_AXE_PASS=NOT_PROVEN this PC. FULL_PRODUCT_AXE=PARTIAL. NOT_CLOSED_VERIFIED."
+  },
+  "FIREFOX": "REMOTE_CI_PASS — critical-cross-browser consumer-engines (firefox) SUCCESS run 33504217517 on 8a1d4d47f0fab31610e8793fe45e2bbfbc0f4766. LOCAL_RUNTIME_PASS=NOT_PROVEN (engine not installed here). Leftover Firefox matrix ≠ this critical shell/overflow matrix.",
+  "WEBKIT": "REMOTE_CI_PASS — critical-cross-browser consumer-engines (webkit) SUCCESS run 33504217517 on 8a1d4d47f0fab31610e8793fe45e2bbfbc0f4766. Home session gate may stay home-session-loading (painted, not guest-resolved). LOCAL_RUNTIME_PASS=NOT_PROVEN. Skipped engine is not PASS.",
+  "CHROMIUM": "REMOTE_CI_PASS — critical-cross-browser consumer-engines (chromium) + admin-chromium SUCCESS run 33504217517 on 8a1d4d47f0fab31610e8793fe45e2bbfbc0f4766. Leftover Chromium tickets above were not re-run this train.",
+  "VIEWPORTS": "390/768/1024/1440 encoded and exercised in critical-cross-browser remote jobs. Leftover KRW/history viewport proof is prior Chromium only.",
+  "BROWSERSTACK": "BLOCKED_EXTERNAL_ACTION",
+  "HOME": "LOCKED",
+  "STATUS": "PARTIAL"
+}

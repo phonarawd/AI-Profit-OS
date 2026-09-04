@@ -3,6 +3,7 @@
  * GET /api/v1/wallet/buckets
  */
 
+import { resolveSdkApiBase } from "../internal/qa-loopback-api-base.js";
 import type {
   CreateWithdrawInput,
   WalletBucketsResponse,
@@ -31,7 +32,7 @@ async function authHeaders(
   return headers;
 }
 
-const MONEY_RE = /^-?[0-9]+(\\.[0-9]+)?$/;
+const MONEY_RE = /^-?[0-9]+(\.[0-9]+)?$/;
 const WALLET_BUCKET_KEYS = [
   "userId",
   "principalUsdt",
@@ -93,7 +94,7 @@ export async function fetchWalletBuckets(
   opts: WalletRequestOpts = {},
 ): Promise<WalletBucketsResponse> {
   const res = await fetch(
-    apiUrl(opts.apiBase ?? "", "/api/v1/wallet/buckets"),
+    apiUrl(resolveSdkApiBase(opts.apiBase), "/api/v1/wallet/buckets"),
     {
       method: "GET",
       headers: await authHeaders(opts),
@@ -116,7 +117,7 @@ async function postJson(
 ): Promise<unknown> {
   const headers = await authHeaders(opts);
   headers["Content-Type"] = "application/json";
-  const res = await fetch(apiUrl(opts.apiBase ?? "", path), {
+  const res = await fetch(apiUrl(resolveSdkApiBase(opts.apiBase), path), {
     method: "POST",
     headers,
     credentials: "include",

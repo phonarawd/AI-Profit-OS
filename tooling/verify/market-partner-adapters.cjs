@@ -194,8 +194,11 @@ for (const w of partnerWorkers) {
     }
   }
   const pkg = read(`workers/${w.name}/package.json`);
-  if (pkg && !/"deploy":\s*"wrangler deploy/.test(pkg)) {
-    fails.push(`${w.name} package.json missing wrangler deploy`);
+  if (pkg && !/wrangler-worker-preview-only\.cjs/.test(pkg)) {
+    fails.push(`${w.name} package.json deploy must use preview-only wrangler wrapper`);
+  }
+  if (pkg && /wrangler\s+deploy/.test(pkg) && /--env[=\s]+production/.test(pkg)) {
+    fails.push(`${w.name} package.json must not invoke wrangler deploy --env production`);
   }
   const wr = read(`workers/${w.name}/wrangler.toml`);
   if (wr) {

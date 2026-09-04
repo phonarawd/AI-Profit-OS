@@ -9,6 +9,12 @@ const path = require("path");
 const root = path.resolve(__dirname, "../..");
 const fails = [];
 
+function sanitizeLogLine(value) {
+  return String(value || "")
+    .replace(/[\r\n\u0000\u2028\u2029]/g, " ")
+    .slice(0, 300);
+}
+
 function read(rel) {
   const p = path.join(root, rel);
   if (!fs.existsSync(p)) {
@@ -82,6 +88,29 @@ if (!prodCsp.includes("frame-ancestors 'none'")) {
 }
 if (prodCsp.includes("'unsafe-eval'")) {
   fails.push("production CSP must not add unsafe-eval");
+}
+if (!prodCsp.includes("upgrade-insecure-requests")) {
+  fails.push("production CSP must keep upgrade-insecure-requests");
+}
+const destDoc = headerMap("document", { production: false });
+const destCsp = destDoc["Content-Security-Policy"];
+if (!destCsp.includes("'unsafe-eval'")) {
+  fails.push("non-production CSP must allow unsafe-eval for next dest hydrate");
+}
+if (destCsp.includes("upgrade-insecure-requests")) {
+  fails.push(
+    "non-production CSP must not upgrade-insecure-requests (WebKit loopback /api fetch)",
+  );
+}
+if (destDoc["Strict-Transport-Security"]) {
+  fails.push(
+    "non-production must not send HSTS (WebKit honors it on 127.0.0.1)",
+  );
+}
+if (assertNoWildcardAbuse(destCsp).some((a) => a !== "unsafe-eval")) {
+  fails.push(
+    "non-production CSP may only add dest unsafe-eval, not other wildcard abuse",
+  );
 }
 
 const sources = nextSecurityHeaderSources({ production: true });
@@ -164,14 +193,14 @@ function smoke() {
               server.close();
               resolve();
             })
-            .on("error", (err) => {
-              fails.push("api smoke error " + err.message);
+            .on("error", () => {
+              fails.push("api_smoke_error");
               server.close();
               resolve();
             });
         })
-        .on("error", (err) => {
-          fails.push("http smoke error " + err.message);
+        .on("error", () => {
+          fails.push("http_smoke_error");
           server.close();
           resolve();
         });
@@ -182,7 +211,7 @@ function smoke() {
 void smoke().then(() => {
   if (fails.length) {
     console.error("[verify:rel-401-security-headers] FAIL");
-    for (const f of fails) console.error(" -", f);
+    for (const f of fails) console.error(" -", sanitizeLogLine(f));
     process.exit(1);
   }
   console.log("[verify:rel-401-security-headers] PASS");

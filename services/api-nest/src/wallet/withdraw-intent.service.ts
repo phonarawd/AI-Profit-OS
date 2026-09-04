@@ -12,6 +12,11 @@ import {
 } from "@nestjs/common";
 import { InProcessEventBus } from "../events/in-process.bus";
 import { PostgresService } from "../db/postgres";
+import {
+  assertFingerprintMatch,
+  fingerprintPayload,
+  withdrawIntentSemantic,
+} from "../ledger/idempotency-fingerprint";
 import { assertAmountUsdt, cmpAmount, parseAmount } from "../ledger/ledger.money";
 import { RiskService } from "../risk/risk.service";
 import {
@@ -46,6 +51,7 @@ type IntentRow = {
   step_up_method: WithdrawStepUpMethod | null;
   step_up_verified_at: Date | null;
   created_at: Date;
+  destination: string | null;
 };
 
 export type WithdrawIntentCreateInput = {
@@ -131,7 +137,7 @@ export class WithdrawIntentService {
     await this.kycGuard.assertBeforeWithdraw(input.userId);
 
     // ── Guard #3 · WebAuthn/OTP/PIN §43.6 ────────────────────
-    const step = this.stepUp.assertStepUpToken({
+    this.stepUp.assertStepUpToken({
       userId: input.userId,
       stepUpToken: input.stepUpToken,
     });
@@ -191,8 +197,22 @@ export class WithdrawIntentService {
       [input.idempotencyKey],
     );
     if (existing.rows[0]) {
+      this.assertSameWithdrawIntent(existing.rows[0], {
+        userId: input.userId,
+        mode,
+        asset: input.asset,
+        amountUsdt,
+        destination: input.destination ?? null,
+        debitProfitUsdt,
+        debitPrincipalUsdt,
+      });
       return this.toV1(existing.rows[0], feeQuote.withdrawFeeUsdt);
     }
+
+    const step = await this.stepUp.consumeStepUpToken({
+      userId: input.userId,
+      stepUpToken: input.stepUpToken,
+    });
 
     try {
       const ins = await this.db.query<IntentRow>(
@@ -247,6 +267,15 @@ export class WithdrawIntentService {
           [input.idempotencyKey],
         );
         if (again.rows[0]) {
+          this.assertSameWithdrawIntent(again.rows[0], {
+            userId: input.userId,
+            mode,
+            asset: input.asset,
+            amountUsdt,
+            destination: input.destination ?? null,
+            debitProfitUsdt,
+            debitPrincipalUsdt,
+          });
           return this.toV1(again.rows[0], feeQuote.withdrawFeeUsdt);
         }
         throw new ConflictException("idempotency conflict");
@@ -331,8 +360,36 @@ export class WithdrawIntentService {
     return `id, user_id, mode, amount_usdt::text, asset,
             debit_profit_usdt::text, debit_principal_usdt::text,
             require_principal_confirm, principal_confirm_token,
-            status, idempotency_key, withdraw_fee_usdt::text,
+            status, destination, idempotency_key, withdraw_fee_usdt::text,
             step_up_method, step_up_verified_at, created_at`;
+  }
+
+  private assertSameWithdrawIntent(
+    row: IntentRow,
+    incoming: {
+      userId: string;
+      mode: WithdrawMode;
+      asset: WithdrawAsset;
+      amountUsdt: string;
+      destination: string | null;
+      debitProfitUsdt: string;
+      debitPrincipalUsdt: string;
+    },
+  ): void {
+    assertFingerprintMatch({
+      stored: fingerprintPayload(
+        withdrawIntentSemantic({
+          userId: String(row.user_id),
+          mode: row.mode,
+          asset: row.asset,
+          amountUsdt: String(row.amount_usdt),
+          destination: row.destination ?? null,
+          debitProfitUsdt: String(row.debit_profit_usdt),
+          debitPrincipalUsdt: String(row.debit_principal_usdt),
+        }),
+      ),
+      incoming: fingerprintPayload(withdrawIntentSemantic(incoming)),
+    });
   }
 
   private toV1(row: IntentRow, feeFallback: string): WithdrawIntentV1 {

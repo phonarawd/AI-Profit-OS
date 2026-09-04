@@ -12,20 +12,20 @@ todos:
     content: "[grok-4.5|256K] ADR-002 Consumer=퍼뜩 · retired 오늘수익+바로번다 · verify:brand-consumer"
     status: completed
   - id: constitution-28-core
-    content: "[grok-4.5|256K] → ACTIVE Index constitution-28-core (CONSTITUTION 14·17·20·22~46b)"
-    status: pending
+    content: "[grok-4.5|256K] → ACTIVE Index constitution-28-core (CONSTITUTION 14·17·20·22~46b) · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=PUTDUK_RELEASE_MASTER.plan.md"
+    status: completed
   - id: constitution-28-ai-money-ops
-    content: "[grok-4.5|256K] → ACTIVE Index constitution-28-ai-money-ops (47퍼뜩 AI·48·49·50·51·51r)"
-    status: pending
+    content: "[grok-4.5|256K] → ACTIVE Index constitution-28-ai-money-ops (47퍼뜩 AI·48·49·50·51·51r) · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=PUTDUK_RELEASE_MASTER.plan.md"
+    status: completed
   - id: schemas-contracts-core
-    content: "[grok-4.5|256K] → ACTIVE Index schemas-contracts-core"
-    status: pending
+    content: "[grok-4.5|256K] → ACTIVE Index schemas-contracts-core · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=PUTDUK_RELEASE_MASTER.plan.md"
+    status: completed
   - id: schemas-migrations-supabase
-    content: "[grok-4.5|256K] → ACTIVE Index schemas-migrations-supabase"
-    status: pending
+    content: "[grok-4.5|256K] → ACTIVE Index schemas-migrations-supabase · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=PUTDUK_RELEASE_MASTER.plan.md"
+    status: completed
   - id: monorepo-skeleton
-    content: "[composer-2.5|200K] → ACTIVE Index monorepo-skeleton"
-    status: pending
+    content: "[composer-2.5|200K] → ACTIVE Index monorepo-skeleton · [HISTORICAL_EXECUTION_CLOSED][DO_NOT_EXECUTE] canonical=PUTDUK_RELEASE_MASTER.plan.md"
+    status: completed
   - id: domain-todos-follow-01-06
     content: "[grok-4.5|256K] 엔진·머니·UI·Admin·PWA·Infra todo/모델배정은 각 분리 플랜 frontmatter SSOT (여기 중복 실행 금지)"
     status: completed

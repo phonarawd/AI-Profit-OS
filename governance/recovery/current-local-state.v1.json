@@ -1,0 +1,821 @@
+{
+  "schema": "governance.recovery.current-local-state.v1",
+  "observed_at": "2026-08-31T14:40:18.997Z",
+  "salvage": {
+    "branch": "cursor/rel-602-staging-rollback-a907",
+    "head": "ea8be39c3507779ba416087eb35a23da3ce7cd4c",
+    "origin_main": "2e75a13be17f32ff5337851f426f22aa777d86b9",
+    "origin_cursor": "cb6346cc2c9fbafa9de8b919dce7787974528c2f",
+    "vs_main_left_right": "139\t27",
+    "vs_cursor_left_right": "0\t24",
+    "local_only_commit_count": 24
+  },
+  "counts": {
+    "status_modified_tracked": 294,
+    "semantic": 44,
+    "crlf_only": 0,
+    "status_dirty_empty_diff": 250,
+    "untracked": 29
+  },
+  "local_commits": [
+    {
+      "sha": "ea8be39c3507779ba416087eb35a23da3ce7cd4c",
+      "title": "C-1~C-5를 닫는다. 퍼뜩 세션 Bearer와 persist/runtime/cost/confirm을 연결하고 production DB apply는 하지 않는다."
+    },
+    {
+      "sha": "ee7fe91beb67219f127cf32db78111ca7a5c83a5",
+      "title": "Lock C-6 AI data governance: send classes, Nest gate, consent/delete, quota/outage."
+    },
+    {
+      "sha": "ffdd98130a520c51c96aaa3d07cd4d6bcdc7e8ca",
+      "title": "E-1은 Founder 승인 후 stale PR을 merge 없이 닫고, main에 이미 포함된 브랜치와 닫힌 PR head만 삭제해 train/main 보호와 폐기 브랜드 description을 정리한다."
+    },
+    {
+      "sha": "fc755f1e5e638fb16fd846ffd7d7db6f8b043813",
+      "title": "Mark E-2 protect completed in Production Release Master and advance next pointer to E-1."
+    },
+    {
+      "sha": "d60efaf907c097d166120bada65c387d03219a1a",
+      "title": "Protect train and REL-502 release branches with main-parity GitHub ruleset."
+    },
+    {
+      "sha": "77fc9a1c6906e065142e63728448f51c699eeb4a",
+      "title": "/wallet leftover의 TEXT_ONLY 로딩과 재시도 공백을 D-3 skeleton과 common.retry로 닫고, sessionToken stub은 유지한다."
+    },
+    {
+      "sha": "acc36ec8769d52957f2369170dbb083e476cd32e",
+      "title": "/trades leftover의 TEXT_ONLY 로딩과 빠진 SuccessBucketCtas를 D-3 skeleton과 T.execution.progressTitle로 닫고, sessionToken stub은 유지한다."
+    },
+    {
+      "sha": "91381efece56241698639c3e6234e615dc3d7ce4",
+      "title": "profits-detail leftover의 TEXT_ONLY 로딩과 키 없는 CTA를 D-3 skeleton과 T.execution.ctaDetail로 닫고, sessionToken은 도입하지 않는다."
+    },
+    {
+      "sha": "92822896af7cf272133e7f86c4287cb79cda9eb0",
+      "title": "/profits leftover의 상세보기 CTA와 재시도 공백을 T.execution.ctaEarn과 common.retry로 닫고, Home과 sessionToken은 그대로 둔다."
+    },
+    {
+      "sha": "8ae9c4ff982a85a450e02eade7011f460b917ba0",
+      "title": "auth/account leftover의 TEXT_ONLY 로딩과 재시도 공백을 D-3 skeleton과 common.retry로 닫고, C-1 sessionToken은 건드리지 않는다."
+    },
+    {
+      "sha": "fe8a3904e53359474c5e1deb6a3270a58b889776",
+      "title": "UI-3 남은 지갑·마이·KYC·공통 상태는 13-state 계약만 잠그고 이 워크트리에는 앱을 배선하지 않는다."
+    },
+    {
+      "sha": "8fe2f301b0675869718a8ae622aa99117ab62b3a",
+      "title": "UI-3 /trades는 공통 13-state 계약만 잠그고 이 워크트리에는 앱을 배선하지 않는다."
+    },
+    {
+      "sha": "3f46dc6a86189485269b0fe41019a09f9bfe3ffb",
+      "title": "UI-3 profits detail는 공통 13-state 계약만 잠그고 이 워크트리에는 앱을 배선하지 않는다."
+    },
+    {
+      "sha": "8dfeaedc8196f1027604b002d8e54b05479eff2a",
+      "title": "UI-3 /profits 목록은 공통 13-state 계약만 잠그고 이 워크트리에는 앱을 배선하지 않는다."
+    },
+    {
+      "sha": "6e947949e5bb0e5f73191622676c08d6176aaba3",
+      "title": "UI-3 auth/account는 공통 13-state 계약만 잠그고 이 워크트리에는 앱을 배선하지 않는다."
+    },
+    {
+      "sha": "772d2201e139a3883d111984f94ef731e8bee2d5",
+      "title": "D-7 3D/모션은 이해기여·fallback·reduced-motion 인벤토리와 정적 실측으로 닫고 live LCP/CLS/INP를 PASS로 쓰지 않는다."
+    },
+    {
+      "sha": "be110afc6d827829046d4321797b17c519a78852",
+      "title": "D-6 viewport/실기기/a11y 매트릭스를 잠그고 미연결 실기기와 live 스캔을 PASS로 쓰지 않는다."
+    },
+    {
+      "sha": "899ca424c964d8953026ab40f859b0cde2aa5ed2",
+      "title": "D-5 LUX 런타임 경로를 인벤토리하고 재유입 가드를 두며 파일 삭제는 Founder에게 남긴다."
+    },
+    {
+      "sha": "7350e9e646a0fc24c4842cd71aac16f51e429571",
+      "title": "D-4 온보딩·매칭대기·참여전환은 실제 단계만 잠그고 이 워크트리에는 앱을 배선하지 않는다."
+    },
+    {
+      "sha": "07e84152df499c656fbf5b5db829af70954d40c0",
+      "title": "D-3 로딩은 구조를 유지하는 skeleton과 회복 CTA로 고정한다."
+    },
+    {
+      "sha": "11bcf2310bcebb85424a4e20a70fcce098b1df40",
+      "title": "J-0 출시 train을 origin/main 2e75a13에서 절단하고 조립 규칙을 잠근다."
+    },
+    {
+      "sha": "9d0764aba785daed6822e74f91ece6c3cebb83ad",
+      "title": "D-1 Spark+Toss 시각 권위와 allowlist를 잠그고 Lux 1층을 내린다."
+    },
+    {
+      "sha": "50b0766e967b6801d85c02175f524223f6577043",
+      "title": "UI-0 실행 기반을 실측 SHA와 Figma 권위로 잠근다."
+    },
+    {
+      "sha": "da300add705fe16e93fe7bdb18b3b3485ee95c11",
+      "title": "Pin api-nest TypeScript to @types/node so cookie-parser and pg stay module types."
+    }
+  ],
+  "semantic": [
+    {
+      "path": ".cursor/mcp.json",
+      "kind": "SEMANTIC",
+      "bucket": "SECRET-RISK",
+      "secret_flags": []
+    },
+    {
+      "path": ".cursor/permissions.json",
+      "kind": "SEMANTIC",
+      "bucket": "SECRET-RISK",
+      "secret_flags": []
+    },
+    {
+      "path": ".cursor/rules/home-presentation-freeze.mdc",
+      "kind": "SEMANTIC",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": ".cursor/rules/peotteok-performance-target.mdc",
+      "kind": "SEMANTIC",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": ".cursor/rules/visual-master-intake.mdc",
+      "kind": "SEMANTIC",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": ".env.example",
+      "kind": "SEMANTIC",
+      "bucket": "SECRET-RISK",
+      "secret_flags": []
+    },
+    {
+      "path": ".gitignore",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "apps/admin/next.config.ts",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "apps/web/app/me/support/page.tsx",
+      "kind": "SEMANTIC",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "apps/web/app/wallet/deposit/DepositClient.tsx",
+      "kind": "SEMANTIC",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "apps/web/app/wallet/deposit/page.tsx",
+      "kind": "SEMANTIC",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "apps/web/next-env.d.ts",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "apps/web/next.config.ts",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "apps/web/scripts/freeze-home-qa.mjs",
+      "kind": "SEMANTIC",
+      "bucket": "HOME-FROZEN",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/security/http-headers.v1.json",
+      "kind": "SEMANTIC",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "infra/api/runtime.json",
+      "kind": "SEMANTIC",
+      "bucket": "SECRET-RISK",
+      "secret_flags": []
+    },
+    {
+      "path": "packages/ui/canon/contracts/peotteok-home-visual-contract.v1.md",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "packages/ui/canon/surfaces/day-pulse.wire.json",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "packages/ui/canon/surfaces/execution-running.wire.json",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "packages/ui/canon/surfaces/home-visual-v2.wire.json",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "packages/ui/canon/surfaces/preflight-confirm.wire.json",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "packages/ui/canon/surfaces/public-ticker.wire.json",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "packages/ui/canon/surfaces/wallet-deposit.wire.json",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "packages/ui/copy/ko/wallet.ts",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "packages/ui/performance/README.md",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "packages/ui/performance/ppe-ladder.ts",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "packages/ui/tokens/peotteok-light.specification.md",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/cleanup/lowspec.cjs",
+      "kind": "SEMANTIC",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/e2e/expansion/qa-lab-expansion.v1.json",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/e2e/fixtures/qa-allowlist.v1.json",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/e2e/lib/qa-lab-expansion.cjs",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/e2e/specs/support-closure.spec.cjs",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/security/http-headers.cjs",
+      "kind": "SEMANTIC",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/verify/c6-data-governance.cjs",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/verify/day-pulse-live-only.cjs",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/verify/deposit-ai-template-path.cjs",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/verify/fixtures/rel-601-staging-regression.v1.json",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/verify/landing-guest-closure.cjs",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/verify/loop-psychology.cjs",
+      "kind": "SEMANTIC",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/verify/match-tension-surface.cjs",
+      "kind": "SEMANTIC",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/verify/preflight-may-stop.cjs",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/verify/rel-401-security-headers.cjs",
+      "kind": "SEMANTIC",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/verify/support-closure.cjs",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/verify/user-trader-jargon-0.cjs",
+      "kind": "SEMANTIC",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    }
+  ],
+  "crlf_only": [],
+  "status_dirty_empty_diff": [
+    ".cursor/rules/cursor-autonomous-ops.mdc",
+    ".cursor/rules/git-safety.mdc",
+    ".cursor/rules/korean-ui.mdc",
+    ".cursor/rules/phase0-ram.mdc",
+    ".cursor/rules/plan-file-serial.mdc",
+    ".cursor/rules/product-drift-lock.mdc",
+    ".cursor/rules/standing-authorization.mdc",
+    ".cursor/rules/ui-admin-boundary.mdc",
+    ".cursor/rules/verify-before-done.mdc",
+    ".github/workflows/deploy-cloudflare.yml",
+    ".github/workflows/gate.yml",
+    ".markdownlint-cli2.jsonc",
+    ".markdownlintignore",
+    ".vscode/settings.json",
+    "AGENTS.md",
+    "TOOLCHAIN.md",
+    "apps/web/app/HomeDesktopClient.tsx",
+    "apps/web/app/ads/[variant]/page.tsx",
+    "apps/web/app/ads/page.tsx",
+    "apps/web/app/auth/complete-profile/page.tsx",
+    "apps/web/app/auth/login/page.tsx",
+    "apps/web/app/auth/signup/page.tsx",
+    "apps/web/app/components/GuestChrome.tsx",
+    "apps/web/app/dev/spark-dash-desktop/page.tsx",
+    "apps/web/app/dev/spark-dash-mobile/page.tsx",
+    "apps/web/app/dev/spark-dash-profits/SparkDashProfitsPreviewClient.tsx",
+    "apps/web/app/dev/spark-dash-profits/page.tsx",
+    "apps/web/app/l/[variant]/page.tsx",
+    "apps/web/app/me/benefits/page.tsx",
+    "apps/web/app/me/guide/partners/page.tsx",
+    "apps/web/app/me/legal/license/page.tsx",
+    "apps/web/app/me/legal/oss/page.tsx",
+    "apps/web/app/me/legal/privacy/page.tsx",
+    "apps/web/app/me/legal/terms/page.tsx",
+    "apps/web/app/onboarding/page.tsx",
+    "apps/web/app/profits/ProfitsPageClient.tsx",
+    "apps/web/components/spark-dash-home/HomeDesktop.tsx",
+    "apps/web/components/spark-dash-home/HomeMobile.tsx",
+    "apps/web/components/spark-dash-home/assets.ts",
+    "apps/web/components/spark-dash-home/format.ts",
+    "apps/web/components/spark-dash-home/map-runtime.ts",
+    "apps/web/components/spark-dash-home/spark-dash-home.css",
+    "apps/web/components/spark-dash-home/spark-dash-mobile.css",
+    "apps/web/components/spark-dash-home/types.ts",
+    "apps/web/components/spark-dash-home/visual-fixture.ts",
+    "apps/web/components/spark-dash-profits/OpportunityCompareGuide.tsx",
+    "apps/web/components/spark-dash-profits/OpportunityMedia.tsx",
+    "apps/web/components/spark-dash-profits/OpportunityMetrics.tsx",
+    "apps/web/components/spark-dash-profits/OpportunityToolbar.tsx",
+    "apps/web/components/spark-dash-profits/ProfitsDiscoveryHeader.tsx",
+    "apps/web/components/spark-dash-profits/ProfitsShell.tsx",
+    "apps/web/components/spark-dash-profits/map-runtime.ts",
+    "apps/web/components/spark-dash-profits/spark-dash-profits-mobile.css",
+    "apps/web/components/spark-dash-profits/spark-dash-profits.css",
+    "apps/web/components/spark-dash-profits/types.ts",
+    "apps/web/components/spark-dash-profits/visual-fixture.ts",
+    "apps/web/components/spark-dash-room/spark-dash-room-mobile.css",
+    "apps/web/lib/use-withdraw-kyc-gate.ts",
+    "apps/web/public/spark-dash/energy-streaks.svg",
+    "apps/web/public/spark-dash/hero-lightning-outline.svg",
+    "apps/web/public/spark-dash/mobile-ai-agent.svg",
+    "apps/web/public/spark-dash/mobile-hero-energy.svg",
+    "apps/web/public/spark-dash/spark-mark.svg",
+    "eval/p_fact.jsonl",
+    "governance/consumer-home-approval/home-approval-freeze.v1.json",
+    "governance/release-master/REL-011-WEB-LINT.md",
+    "governance/release-master/REL-012-AXE-HARNESS.md",
+    "governance/release-master/REL-013-REMOTE-PATTERNS.md",
+    "governance/release-master/REL-014-PWA-NATIVE-SHELL.md",
+    "governance/release-master/REL-015-USER-LEDGER-QUERY.md",
+    "governance/release-master/rel-ui0-foundation/ui0-execution-foundation.v1.json",
+    "infra/ops/wrangler.toml",
+    "infra/web/wrangler.toml",
+    "packages/ui/brand/README.md",
+    "packages/ui/brand/assets/markets/README.md",
+    "packages/ui/brand/assets/markets/manifest.json",
+    "packages/ui/brand/brand.manifest.json",
+    "packages/ui/brand/brand.manifest.schema.json",
+    "packages/ui/brand/markets.ts",
+    "packages/ui/canon/README.md",
+    "packages/ui/canon/VISUAL_AUTHORITY_RESET.v1.md",
+    "packages/ui/canon/contracts/peotteok-home-conflict-resolution.v1.md",
+    "packages/ui/canon/contracts/peotteok-home-implementation-gate.v1.md",
+    "packages/ui/canon/contracts/peotteok-home-visual-implementation-contract.v1.md",
+    "packages/ui/canon/surfaces/auth-complete-profile.wire.json",
+    "packages/ui/canon/surfaces/auth-login.wire.json",
+    "packages/ui/canon/surfaces/auth-signup.wire.json",
+    "packages/ui/canon/surfaces/execution-safe-stop.wire.json",
+    "packages/ui/canon/surfaces/execution-success.wire.json",
+    "packages/ui/canon/surfaces/invite-home.wire.json",
+    "packages/ui/canon/surfaces/kyc-confirm.wire.json",
+    "packages/ui/canon/surfaces/kyc-doc-capture.wire.json",
+    "packages/ui/canon/surfaces/kyc-guide.wire.json",
+    "packages/ui/canon/surfaces/landing-3s.wire.json",
+    "packages/ui/canon/surfaces/market-partner-trust.wire.json",
+    "packages/ui/canon/surfaces/membership-home.wire.json",
+    "packages/ui/canon/surfaces/onboarding-demo-card.wire.json",
+    "packages/ui/canon/surfaces/onboarding-identity.wire.json",
+    "packages/ui/canon/surfaces/opportunity-card.wire.json",
+    "packages/ui/canon/surfaces/opportunity-detail.wire.json",
+    "packages/ui/canon/surfaces/wallet-home.wire.json",
+    "packages/ui/canon/surfaces/withdraw-mode.wire.json",
+    "packages/ui/components/auth/index.ts",
+    "packages/ui/components/auth/kakao-ready.ts",
+    "packages/ui/components/brand/BrandMark.tsx",
+    "packages/ui/components/brand/index.ts",
+    "packages/ui/components/execution/ProductThumb.tsx",
+    "packages/ui/components/execution/index.ts",
+    "packages/ui/components/home/HomeSessionBanner.tsx",
+    "packages/ui/components/kyc/KycFlow.tsx",
+    "packages/ui/components/kyc/index.ts",
+    "packages/ui/components/landing/Landing3s.tsx",
+    "packages/ui/components/landing/index.ts",
+    "packages/ui/components/legal/LegalDoc.tsx",
+    "packages/ui/components/lux/Badge.tsx",
+    "packages/ui/components/lux/CountUpNumber.tsx",
+    "packages/ui/components/lux/LivePayoutTicker.tsx",
+    "packages/ui/components/lux/MotionCTA.tsx",
+    "packages/ui/components/lux/Skeleton.tsx",
+    "packages/ui/components/lux/TouchButton.tsx",
+    "packages/ui/components/lux/index.ts",
+    "packages/ui/components/onboarding/OnboardingFlow.tsx",
+    "packages/ui/components/onboarding/index.ts",
+    "packages/ui/components/product/ProductImage.tsx",
+    "packages/ui/components/product/index.ts",
+    "packages/ui/components/product/product-image-sizes.ts",
+    "packages/ui/components/shell/BottomNav5.tsx",
+    "packages/ui/components/shell/SiteFooter.tsx",
+    "packages/ui/components/shell/index.ts",
+    "packages/ui/components/toast/ToastHost.tsx",
+    "packages/ui/components/toast/index.ts",
+    "packages/ui/components/toast/pushDedup.ts",
+    "packages/ui/components/toast/resolveToast.ts",
+    "packages/ui/components/trust/CapitalVsWageCompare.tsx",
+    "packages/ui/components/trust/DepositWhyGate.tsx",
+    "packages/ui/components/trust/GetUsdtGuide.tsx",
+    "packages/ui/components/trust/MarketPartnerGrid.tsx",
+    "packages/ui/components/trust/MarketPartnerLeg.tsx",
+    "packages/ui/components/trust/MarketPartnerTrustStrip.tsx",
+    "packages/ui/components/trust/ObjectionFourAccordion.tsx",
+    "packages/ui/components/trust/PlatformRevenueExplainer.tsx",
+    "packages/ui/components/trust/TrustFAQAccordion.tsx",
+    "packages/ui/components/trust/UsdtVsKrwCompareTable.tsx",
+    "packages/ui/components/trust/WhyUsdtCard.tsx",
+    "packages/ui/components/trust/index.ts",
+    "packages/ui/components/wallet/PrincipalConfirmSheet.tsx",
+    "packages/ui/components/wallet/SuccessBucketCtas.tsx",
+    "packages/ui/components/wallet/WithdrawModeCards.tsx",
+    "packages/ui/copy/ko/README.md",
+    "packages/ui/copy/ko/admin.ts",
+    "packages/ui/copy/ko/auth.ts",
+    "packages/ui/copy/ko/brand.ts",
+    "packages/ui/copy/ko/emoji.ts",
+    "packages/ui/copy/ko/execution.ts",
+    "packages/ui/copy/ko/guide.ts",
+    "packages/ui/copy/ko/kyc.ts",
+    "packages/ui/copy/ko/landing.ts",
+    "packages/ui/copy/ko/legal.ts",
+    "packages/ui/copy/ko/margin.ts",
+    "packages/ui/copy/ko/objections.ts",
+    "packages/ui/copy/ko/onboarding.ts",
+    "packages/ui/copy/ko/operator.ts",
+    "packages/ui/copy/ko/opportunity.ts",
+    "packages/ui/copy/ko/settings.ts",
+    "packages/ui/copy/ko/ticker.ts",
+    "packages/ui/copy/ko/trust.ts",
+    "packages/ui/copy/ko/user.ts",
+    "packages/ui/responsive/visual-regression/README.md",
+    "packages/ui/responsive/visual-regression/canon-structure.cjs",
+    "packages/ui/responsive/visual-regression/harness.manifest.json",
+    "packages/ui/responsive/visual-regression/viewports.json",
+    "packages/ui/tokens/LEGACY_ASSET_LIST.md",
+    "packages/ui/tokens/breakpoints.ts",
+    "packages/ui/tokens/component.css",
+    "packages/ui/tokens/font-scale.ts",
+    "packages/ui/tokens/lux-fintech.ts",
+    "packages/ui/tokens/peotteok-visual-foundation.v0.md",
+    "schemas/current-fx-approx.v1.json",
+    "services/ai-platform/src/assistant-router.cjs",
+    "services/ai-platform/src/coach-templates.cjs",
+    "services/api-nest/src/ai/ai-logs.admin.service.ts",
+    "services/api-nest/src/ai/fact-tool.service.ts",
+    "services/api-nest/src/auth/auth.controller.ts",
+    "services/api-nest/src/auth/auth.module.ts",
+    "services/api-nest/src/auth/auth.routes.ts",
+    "services/api-nest/src/auth/auth.service.ts",
+    "services/api-nest/src/auth/auth.stage.ts",
+    "services/api-nest/src/ledger/index.ts",
+    "services/api-nest/src/ledger/ledger.module.ts",
+    "services/api-nest/src/ledger/ledger.routes.ts",
+    "services/api-nest/src/ledger/ledger.types.ts",
+    "services/api-nest/src/opportunities/catalog-runtime-seed.service.ts",
+    "services/api-nest/src/opportunities/index.ts",
+    "services/api-nest/src/opportunities/opportunities.mi.ts",
+    "services/api-nest/src/opportunities/opportunities.module.ts",
+    "services/api-nest/src/opportunities/opportunity-reprice.service.ts",
+    "services/api-nest/src/risk/rules/p49_catalog.ts",
+    "services/api-nest/src/risk/rules/p49_circuit.ts",
+    "services/api-nest/src/trades/trades.execution.service.ts",
+    "services/api-nest/src/wallet/krw-deposit.admin.controller.ts",
+    "services/api-nest/src/wallet/krw-deposit.service.ts",
+    "services/api-nest/src/wallet/wallet.controller.ts",
+    "services/api-nest/src/wallet/wallet.routes.ts",
+    "services/api-nest/src/wallet/wallet.types.ts",
+    "services/engine-rust/settlement_rule.cjs",
+    "services/market-intelligence/package.json",
+    "services/market-intelligence/src/catalog-runtime-seed.cjs",
+    "services/market-intelligence/src/index.cjs",
+    "services/market-intelligence/src/index.d.ts",
+    "services/market-intelligence/src/pipeline.cjs",
+    "supabase/migrations/20260819210000_source_observations.sql",
+    "supabase/migrations/20260819220000_canonical_products.sql",
+    "supabase/migrations/20260820013000_match_results.sql",
+    "tooling/cleanup/cursor-roaming-live.cjs",
+    "tooling/cleanup/cursor-roaming.cjs",
+    "tooling/cursor/sync-plans-ssot.cjs",
+    "tooling/deploy/cf-pages-ops.cjs",
+    "tooling/deploy/cf-pages-web.cjs",
+    "tooling/deploy/lib/env.cjs",
+    "tooling/verify/admin-routes.cjs",
+    "tooling/verify/ai-coach-fact-only.cjs",
+    "tooling/verify/ai-lane-router.cjs",
+    "tooling/verify/asset-image-surface.cjs",
+    "tooling/verify/auth-flows.cjs",
+    "tooling/verify/brand-consumer.cjs",
+    "tooling/verify/catalog-runtime-seed.cjs",
+    "tooling/verify/cf-infra.cjs",
+    "tooling/verify/gate.cjs",
+    "tooling/verify/korean-ui.cjs",
+    "tooling/verify/krw-admin-decide.cjs",
+    "tooling/verify/kyc-surfaces.cjs",
+    "tooling/verify/mockup-governance.cjs",
+    "tooling/verify/no-it-jargon.cjs",
+    "tooling/verify/objection4.cjs",
+    "tooling/verify/part5-shell-toast.cjs",
+    "tooling/verify/plans-ssot.cjs",
+    "tooling/verify/principal-profit-abuse.cjs",
+    "tooling/verify/responsive.cjs",
+    "tooling/verify/stack-lock.cjs",
+    "tooling/verify/stubs/run-all.cjs",
+    "tooling/verify/sweeper-trx-guard.cjs",
+    "tooling/verify/tax-disclaimer.cjs",
+    "tooling/verify/trade-execution-hook.cjs",
+    "tooling/verify/ui0-execution-foundation.cjs",
+    "tooling/verify/user-opportunity-feed.cjs",
+    "tooling/verify/ux-design-system.cjs",
+    "tooling/verify/withdraw-mode-default.cjs",
+    "workers/push-dispatcher/package.json",
+    "workers/push-dispatcher/src/index.ts",
+    "workers/push-dispatcher/wrangler.toml"
+  ],
+  "untracked": [
+    {
+      "path": ".cursor/rules/growth-psychology-allowed.mdc",
+      "kind": "UNTRACKED",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "apps/web/components/support/TawkSupportWidget.tsx",
+      "kind": "UNTRACKED",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/db-recon/b0-recon-matrix.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/db-recon/b3-promotion-ledger.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/ethics-override/growth-psychology-allowed.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/recovery/current-local-state.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/recovery/dirty-classification-summary.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "SPLIT",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/release-inventory/b1-push-rls-design.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/release-inventory/b2-ownership-design.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/release-inventory/b3-promotion.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/release-inventory/d0-classify.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/release-inventory/d2-13state.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/release-inventory/g0-architecture.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/release-inventory/h-aqa-0.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/release-inventory/h0-hollow.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/release-inventory/i0-admin.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "governance/release-master/rel-b3-promotion/b3-promotion.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "packages/ui/growth-psychology/index.ts",
+      "kind": "UNTRACKED",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "packages/ui/growth-psychology/readiness.v1.ts",
+      "kind": "UNTRACKED",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "schemas/growth-psychology-config.v1.json",
+      "kind": "UNTRACKED",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/cleanup/ensure-next-ide-types.cjs",
+      "kind": "UNTRACKED",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/dev/ensure-kakao-env.cjs",
+      "kind": "UNTRACKED",
+      "bucket": "SECRET-RISK",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/dev/ensure-resend-env.cjs",
+      "kind": "UNTRACKED",
+      "bucket": "SECRET-RISK",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/mcp/browserstack-stdio.cjs",
+      "kind": "UNTRACKED",
+      "bucket": "SECRET-RISK",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/recovery/classify-local-state.cjs",
+      "kind": "UNTRACKED",
+      "bucket": "SPLIT",
+      "secret_flags": [
+        "service_role_literal"
+      ]
+    },
+    {
+      "path": "tooling/verify/b3-promotion.cjs",
+      "kind": "UNTRACKED",
+      "bucket": "KEEP",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/verify/growth-psychology-override.cjs",
+      "kind": "UNTRACKED",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/verify/growth-psychology-readiness.cjs",
+      "kind": "UNTRACKED",
+      "bucket": "HOLD",
+      "secret_flags": []
+    },
+    {
+      "path": "tooling/verify/lib/growth-psychology-allowed.cjs",
+      "kind": "UNTRACKED",
+      "bucket": "HOLD",
+      "secret_flags": []
+    }
+  ],
+  "production_mutation": 0,
+  "notes": [
+    "CRLF_ONLY paths have empty git diff --ignore-cr-at-eol",
+    "secret_flags list pattern ids only; values are not recorded",
+    "HOME-FROZEN paths must not enter recovery commits"
+  ]
+}

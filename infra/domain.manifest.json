@@ -43,7 +43,8 @@
         "ops.hiptk.app",
         "api.hiptk.app",
         "hiptk.app",
-        "go.hiptk.app"
+        "go.hiptk.app",
+        "ai-profit-os.onrender.com"
       ],
       "web": {
         "worker": "ai-profit-web-preview",
@@ -53,7 +54,7 @@
         "worker": "ai-profit-ops-preview",
         "workersDev": "ai-profit-ops-preview.ebay-adapter.workers.dev"
       },
-      "note": "REL-600 staging origin = wrangler [env.preview]. production workersDev/custom domain 불변. production workflow_dispatch 오용 금지."
+      "note": "REL-600 staging origin = wrangler [env.preview]. production workersDev/custom domain 불변. production workflow_dispatch 오용 금지. preview API = STAGING_API_HOST only · forbiddenHosts(API 포함) 금지 · production API_HOST 상속 금지."
     }
   },
   "pages": {

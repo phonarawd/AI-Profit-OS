@@ -185,6 +185,26 @@ expect(
   }).permission === "deny"
 );
 
+{
+  const posixPolicy = createPolicy({
+    workspaceRoot: "/home/runner/work/AI-Profit-OS/AI-Profit-OS",
+    homeDir: "C:\\Users\\PC",
+  });
+  expect(
+    "12b POSIX workspace must DENY Windows Desktop foreign path",
+    posixPolicy.decideRead({
+      file_path: "C:\\Users\\PC\\Desktop\\SomeOtherProject\\README.md",
+    }).permission === "deny"
+  );
+  expect(
+    "12c POSIX workspace must DENY unrelated Windows Cursor cache",
+    posixPolicy.decideRead({
+      file_path:
+        "C:\\Users\\PC\\.cursor\\projects\\c-Users-PC-Desktop-OtherApp\\terminals\\1.txt",
+    }).permission === "deny"
+  );
+}
+
 // --- 13–14 shell unique policies ---
 expect(
   "13 --no-verify Shell DENY",
@@ -388,7 +408,13 @@ expect(
   "hook 5 MCP ALLOW",
   hookMcp.status === 0 && hookMcp.permission === "allow"
 );
-const hookCache = runHook(preTool("Read", { path: cacheTerminals }));
+const livePolicy = createPolicy({ workspaceRoot: ROOT });
+const liveCacheTerminals = path.join(
+  livePolicy.allowedProjectCache,
+  "terminals",
+  "3.txt"
+);
+const hookCache = runHook(preTool("Read", { path: liveCacheTerminals }));
 expect(
   "hook 6 cache Read ALLOW",
   hookCache.status === 0 && hookCache.permission === "allow",
@@ -480,6 +506,7 @@ const mustMatch = [
   "WebFetch",
   "FetchMcpResource",
   "CallMcpTool",
+  "CallDynamicTool",
   "MCP:list_tables",
   "MCP:execute_sql",
 ];
@@ -533,6 +560,7 @@ const liveScripts = [
   "lib/hook-io.cjs",
   "lib/hook-io.mjs",
   "lib/project-boundary-policy.mjs",
+  "lib/night-guard-policy.mjs",
 ];
 for (const rel of liveScripts) {
   const abs = path.join(ROOT, ".cursor", "hooks", rel);

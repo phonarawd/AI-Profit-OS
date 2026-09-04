@@ -5,8 +5,8 @@
   "description": "USDT TRC20 single-stream chain-watchers · Phase0 Nest in-process · Phase1 CF deploy",
   "scripts": {
     "dev": "wrangler dev --config wrangler.toml",
-    "deploy": "wrangler deploy --config wrangler.toml",
-    "deploy:prod": "wrangler deploy --config wrangler.toml --env production"
+    "deploy": "node ../../tooling/deploy/wrangler-worker-preview-only.cjs",
+    "deploy:prod": "node ../../tooling/deploy/forbid-direct-wrangler-prod.cjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260801.1",

@@ -3,9 +3,8 @@
 import { FormEvent, useState } from "react";
 import { T } from "@aipo/ui/copy/ko";
 import {
-  clearAdminToken,
-  hasAdminToken,
-  setAdminToken,
+  connectAdminSession,
+  disconnectAdminSession,
 } from "../lib/admin-session";
 import { useAdminConnected } from "../lib/use-admin-session";
 
@@ -15,26 +14,25 @@ export function AdminSessionBar() {
   const [formOpen, setFormOpen] = useState(false);
   const [note, setNote] = useState<string | null>(null);
 
-  function onSubmit(event: FormEvent) {
+  async function onSubmit(event: FormEvent) {
     event.preventDefault();
     if (!draft.trim()) {
       setNote("관리자 연결 코드를 입력해 주세요.");
       return;
     }
-    setAdminToken(draft);
-    if (!hasAdminToken()) {
+    const ok = await connectAdminSession(draft);
+    setDraft("");
+    if (!ok) {
       setNote("관리자 연결 코드를 다시 확인해 주세요.");
       return;
     }
-    setDraft("");
     setFormOpen(false);
     setNote("관리자 연결을 완료했습니다. 화면을 다시 불러옵니다.");
-    // mount-only fetch 페이지들이 토큰으로 다시 조회되도록
     window.location.reload();
   }
 
-  function onClear() {
-    clearAdminToken();
+  async function onClear() {
+    await disconnectAdminSession();
     setDraft("");
     setFormOpen(false);
     setNote("관리자 연결을 끊었습니다.");

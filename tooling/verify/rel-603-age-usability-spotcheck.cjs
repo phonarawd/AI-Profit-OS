@@ -10,6 +10,15 @@ const { spawnSync } = require("child_process");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
+/** CodeQL: fixture→fetch taint 차단 — 상수 origin만 네트워크 사용 */
+const STAGING_WEB_ORIGIN =
+  "https://ai-profit-web-preview.ebay-adapter.workers.dev";
+const ALLOWED_SCENARIO_PATHS = Object.freeze({
+  S1: "/auth/signup",
+  S2: "/profits",
+  S3: "/profits",
+  S4: "/wallet",
+});
 
 function read(rel) {
   const p = path.join(root, rel);
@@ -193,13 +202,22 @@ for (const needle of [
 }
 
 const closed = yamlCompleted("REL-603") || todoStatus("REL-603") === "completed";
+const rel700Closed = yamlCompleted("REL-700") || todoStatus("REL-700") === "completed";
+const rel701PreClosed =
+  yamlCompleted("REL-701-PRE") || todoStatus("REL-701-PRE") === "completed";
 if (closed) {
   if (todoStatus("REL-603") !== "completed") fails.push("rel-603 todo must be completed");
   if (!yamlCompleted("REL-603")) fails.push("REL-603 YAML must be COMPLETED");
-  if (!plan.includes("FIRST_EXECUTION_TODO = REL-700")) {
+  if (rel700Closed && rel701PreClosed) {
+    if (!plan.includes("FIRST_EXECUTION_TODO = REL-701-DB")) {
+      fails.push("FIRST_EXECUTION_TODO must advance to REL-701-DB after REL-701-PRE");
+    }
+    if (!plan.includes("LAST_COMPLETED_TODO = REL-701-PRE")) {
+      fails.push("LAST_COMPLETED_TODO must be REL-701-PRE");
+    }
+  } else if (!plan.includes("FIRST_EXECUTION_TODO = REL-700")) {
     fails.push("FIRST_EXECUTION_TODO must advance to REL-700");
-  }
-  if (!plan.includes("LAST_COMPLETED_TODO = REL-603")) {
+  } else if (!plan.includes("LAST_COMPLETED_TODO = REL-603")) {
     fails.push("LAST_COMPLETED_TODO must be REL-603");
   }
   if (!plan.includes("HARD_STOP_AFTER = REL-603")) {
@@ -218,7 +236,16 @@ if (closed) {
 }
 
 async function liveScenario(scenario) {
-  const url = fixture.stagingWeb.replace(/\/$/, "") + scenario.path;
+  if (fixture.stagingWeb !== STAGING_WEB_ORIGIN) {
+    fails.push("staging web must equal locked preview origin");
+    return;
+  }
+  const pathPart = ALLOWED_SCENARIO_PATHS[scenario.id];
+  if (!pathPart || pathPart !== String(scenario.path || "")) {
+    fails.push("scenario path must equal locked allowlist for " + scenario.id);
+    return;
+  }
+  const url = STAGING_WEB_ORIGIN + pathPart;
   const res = await fetch(url, {
     redirect: "manual",
     headers: { "user-agent": "ai-profit-os-rel-603-verify/1" },
@@ -250,6 +277,13 @@ async function liveScenario(scenario) {
 }
 
 function runPlaywright() {
+  // Phase0 저사양 로컬: Playwright 풀 코호트는 CI가 증명한다 (CI=true면 절대 skip 불가).
+  if (process.env.CI !== "true" && process.env.AIPO_LOWSPEC_SKIP_HEAVY === "1") {
+    console.log(
+      "[verify:rel-603-age-usability-spotcheck] BLOCKED_LOCAL_ENVIRONMENT skip playwright · CI must prove",
+    );
+    return;
+  }
   const specPath = path.join(root, fixture.playwrightSpec);
   if (!fs.existsSync(specPath)) {
     fails.push("missing playwright spec " + fixture.playwrightSpec);
@@ -271,7 +305,7 @@ function runPlaywright() {
       env: {
         ...process.env,
         CI: "true",
-        REL603_STAGING_WEB: fixture.stagingWeb,
+        REL603_STAGING_WEB: STAGING_WEB_ORIGIN,
       },
       shell: process.platform === "win32",
     },

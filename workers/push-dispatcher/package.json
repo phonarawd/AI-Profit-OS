@@ -5,8 +5,8 @@
   "description": "PWA push dispatcher — REL-020 VAPID + kill · Phase0 Nest HTTP · Phase1+ NATS",
   "scripts": {
     "dev": "wrangler dev --config wrangler.toml",
-    "deploy": "wrangler deploy --config wrangler.toml",
-    "deploy:prod": "wrangler deploy --config wrangler.toml --env production"
+    "deploy": "node ../../tooling/deploy/wrangler-worker-preview-only.cjs",
+    "deploy:prod": "node ../../tooling/deploy/forbid-direct-wrangler-prod.cjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260801.1",

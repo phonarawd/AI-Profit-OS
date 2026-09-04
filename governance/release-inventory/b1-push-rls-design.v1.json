@@ -1,0 +1,30 @@
+{
+  "observed_at": "2026-08-29T18:45:00+09:00",
+  "apply": 0,
+  "public_exposure": "UNPROVEN",
+  "live": {
+    "push_control": {
+      "rls": false,
+      "policy_n": 0,
+      "anon_priv": "",
+      "auth_priv": "",
+      "rows": 1
+    },
+    "push_subscriptions": {
+      "rls": false,
+      "policy_n": 0,
+      "anon_priv": "",
+      "auth_priv": "",
+      "rows": 0
+    }
+  },
+  "list_tables_advisory": "rls_disabled CRITICAL",
+  "get_advisors_security": "89 INFO rls_enabled_no_policy; 0 CRITICAL in payload",
+  "design": {
+    "enable_only": "FORBIDDEN",
+    "intended": "ENABLE RLS + FORCE + deny-all policies for anon/authenticated + GRANT none + Nest service_role or security definer only",
+    "staging_proof": "privilege dump 2026-08-29: anon/auth CRUD empty — client libraries cannot DML even with RLS off, unless another role/grant exists (Data API/Nest E2E still UNVERIFIED)",
+    "isolated_verify_first": true,
+    "prod_apply": "Founder + B-3 only"
+  }
+}

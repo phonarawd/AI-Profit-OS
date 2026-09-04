@@ -6,6 +6,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const { pathToFileURL } = require("node:url");
 const { spawnSync } = require("node:child_process");
 
 const root = path.resolve(__dirname, "../..");
@@ -68,6 +69,12 @@ for (const needle of [
 ]) {
   if (!sdkWallet.includes(needle)) fail("wallet SDK strict parser missing " + needle);
 }
+if (sdkWallet.includes("\\\\.[0-9]+") || /MONEY_RE = \/\^-\?\[0-9\]\+\(\\\\.\[0-9\]\+\)\?\$\//.test(sdkWallet)) {
+  fail("wallet MONEY_RE must match decimal point, not a literal backslash");
+}
+if (!sdkWallet.includes("/^-?[0-9]+(\\.[0-9]+)?$/")) {
+  fail("wallet MONEY_RE must accept optional decimal fraction");
+}
 if (/reduce\(|\.reduce\(/.test(client)) {
   fail("wallet must not sum buckets as authority");
 }
@@ -79,6 +86,11 @@ if (layout.includes("LegacyAppShell") || layout.includes("AppShellRoot")) {
 }
 if (!spec.includes("unauthorized") || !spec.includes("ready")) {
   fail("committed spec must cover unauthorized/ready");
+}
+for (const needle of ["zero", "hang", "malformed", "error", "network", "768"]) {
+  if (!spec.includes(needle)) {
+    fail("committed spec must cover wallet state " + needle);
+  }
 }
 if (!pkg.includes('"verify:wallet-closure"')) {
   fail("package.json missing verify:wallet-closure");
@@ -92,6 +104,67 @@ if (!domain.includes("wallet-closure.cjs")) {
 if (!surface.includes('data-testid="wallet-home"')) {
   fail("wallet must keep wallet-home testid");
 }
+
+function assertWalletReaderBehavior() {
+  const fetchTs = pathToFileURL(path.join(root, "packages/sdk/src/wallet/fetch.ts")).href;
+  const run = spawnSync(
+    process.execPath,
+    [
+      "--experimental-strip-types",
+      "--eval",
+      `
+import { normalizeWalletBuckets } from ${JSON.stringify(fetchTs)};
+const base = {
+  userId: "11111111-1111-4111-8111-111111111111",
+  principalUsdt: "0",
+  profitUsdt: "0",
+  lockedUsdt: "0",
+  practiceUsdt: "0",
+  liabilityUsdt: "0",
+  asOfLedgerEntryId: "le_1",
+};
+function expectThrow(name, raw) {
+  try {
+    normalizeWalletBuckets(raw);
+    throw new Error("EXPECTED_THROW:" + name);
+  } catch (err) {
+    if (String(err && err.message).startsWith("EXPECTED_THROW:")) throw err;
+    if (String(err && err.message) !== "wallet_buckets_shape") {
+      throw new Error(name + " wrong error: " + (err && err.message));
+    }
+  }
+}
+const zero = normalizeWalletBuckets(base);
+if (zero.principalUsdt !== "0" || zero.profitUsdt !== "0") {
+  throw new Error("exact server zero must remain zero");
+}
+const decimal = normalizeWalletBuckets({ ...base, principalUsdt: "250.00", profitUsdt: "12.50" });
+if (decimal.principalUsdt !== "250.00" || decimal.profitUsdt !== "12.50") {
+  throw new Error("valid decimal money was rejected");
+}
+expectThrow("null", null);
+expectThrow("array", []);
+expectThrow("missing principal", ((o) => { const x = { ...o }; delete x.principalUsdt; return x; })(base));
+expectThrow("wrong-type principal", { ...base, principalUsdt: 0 });
+expectThrow("malformed decimal", { ...base, principalUsdt: "1." });
+expectThrow("backslash decoy", { ...base, principalUsdt: "1\\\\x00" });
+expectThrow("empty userId", { ...base, userId: "  " });
+expectThrow("missing ledger", ((o) => { const x = { ...o }; delete x.asOfLedgerEntryId; return x; })(base));
+expectThrow("extra key", { ...base, extra: "1" });
+console.log("wallet-reader-behavior PASS");
+      `,
+    ],
+    { cwd: root, encoding: "utf8" },
+  );
+  if (run.status !== 0) {
+    fail(
+      "wallet reader behavior failed: " +
+        String(run.stderr || run.stdout || "").split("\n")[0],
+    );
+  }
+}
+
+assertWalletReaderBehavior();
 
 function finish(extra) {
   if (fails.length) {

@@ -15,6 +15,7 @@ import { PracticeGrantService } from "../ledger/practice-grant.service";
 import { ChainSweeperPhase0Service } from "./chain-sweeper.phase0.service";
 import { ChainWatcherPhase0Service } from "./chain-watcher.phase0.service";
 import { DepositAddressService } from "./deposit-address.service";
+import { DepositConfigService } from "./deposit-config.service";
 import { DepositDisputeService } from "./deposit-dispute.service";
 import { KrwDepositService } from "./krw-deposit.service";
 import { ProfitMergeService } from "./profit-merge.service";
@@ -41,6 +42,7 @@ type SessionReq = {
 export class WalletController {
   constructor(
     private readonly depositAddress: DepositAddressService,
+    private readonly depositConfig: DepositConfigService,
     private readonly krwDeposit: KrwDepositService,
     private readonly depositDisputes: DepositDisputeService,
     private readonly usdtDeposit: UsdtDepositService,
@@ -104,20 +106,26 @@ export class WalletController {
 
   /** §43.1 observe Transfer — Phase0 tick / Phase1 worker ingest */
   @Post(WALLET_USER_ROUTES.usdtDepositObserve)
-  observeUsdtDeposit(@Body() body: Record<string, unknown>) {
+  observeUsdtDeposit(
+    @Headers("x-internal-wallet-token") headerToken: string | undefined,
+    @Body() body: Record<string, unknown>,
+  ) {
+    this.assertInternalWalletTickAuth(headerToken);
     return this.usdtDeposit.observe({
       txHash: String(body.txHash ?? ""),
       toAddress: String(body.toAddress ?? ""),
       amountUsdt: String(body.amountUsdt ?? ""),
       confirmations: Number(body.confirmations ?? 0),
-      userId: typeof body.userId === "string" ? body.userId : undefined,
       reorg: body.reorg === true,
     });
   }
 
   /** §43.1 Phase0 in-process single-stream tick */
   @Post(WALLET_USER_ROUTES.chainWatcherTick)
-  chainWatcherTick() {
+  chainWatcherTick(
+    @Headers("x-internal-wallet-token") headerToken: string | undefined,
+  ) {
+    this.assertInternalWalletTickAuth(headerToken);
     return this.chainWatcher.tick();
   }
 
@@ -128,7 +136,11 @@ export class WalletController {
 
   /** §43.2 Phase0 in-process Energy+TRX sweeper tick */
   @Post(WALLET_USER_ROUTES.chainSweeperTick)
-  chainSweeperTick(@Body() body?: Record<string, unknown>) {
+  chainSweeperTick(
+    @Headers("x-internal-wallet-token") headerToken: string | undefined,
+    @Body() body?: Record<string, unknown>,
+  ) {
+    this.assertInternalWalletTickAuth(headerToken);
     return this.chainSweeper.tick({
       treasuryTrxBalance:
         typeof body?.treasuryTrxBalance === "string"
@@ -141,6 +153,13 @@ export class WalletController {
   @Get(WALLET_USER_ROUTES.chainSweeperStatus)
   chainSweeperStatus() {
     return this.chainSweeper.describe();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(WALLET_USER_ROUTES.krwDepositInstructions)
+  getKrwDepositInstructions(@Req() req: SessionReq) {
+    this.sessionUserId(req);
+    return this.depositConfig.getSafeKrwDepositInstructions();
   }
 
   @UseGuards(JwtAuthGuard)
@@ -192,7 +211,6 @@ export class WalletController {
       userId: this.sessionUserId(req),
       method: String(body.method ?? "") as WithdrawStepUpMethod,
       origin: String(body.origin ?? ""),
-      email: typeof body.email === "string" ? body.email : undefined,
     });
   }
 
@@ -217,6 +235,7 @@ export class WalletController {
     return this.stepUp.setPin({
       userId: this.sessionUserId(req),
       pin: String(body.pin ?? ""),
+      enrollmentStepUpToken: String(body.stepUpToken ?? ""),
     });
   }
 

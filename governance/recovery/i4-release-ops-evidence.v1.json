@@ -1,0 +1,25 @@
+{
+  "schema": "governance.recovery.i4-release-ops-evidence.v1",
+  "observed_at": "2026-09-01T10:45:00Z",
+  "source_sha": "3d930bfedebc0479e85ad559837de5aaed0c6b08",
+  "I4_SCOPE": "Read-only release honesty on existing system-control. No 13th sidebar. No deploy button. Home 0.",
+  "OPERATOR_SURFACE": "PARTIAL — circuit page states that service reflection is not marked complete here. Dedicated release-ops module 0 (ADMIN_TOP_LEVEL_COUNT stays 12).",
+  "FORBIDDEN_OPERATOR_LEAK": "STATIC_CHECKED — page must not contain 반영 완료, REL-502, workflow, pipeline, GitHub, acceptance.",
+  "APPROVE_ROLLBACK": "ABSENT_BY_DESIGN — two-step apply exists only for kill/circuit/growth already on this page. No release approve/rollback control added.",
+  "TEST_OVERWRITE": "0 — acceptance/test overwrite controls not added.",
+  "FAKE_REFLECTED": "FORBIDDEN — data-forbid=fake_release_complete.",
+  "H_AQA_NOT_REPLACED": "YES — Admin does not substitute H-AQA/A evidence.",
+  "ADMIN_ROLE": "LOCKED_5 — inherited from I-1.",
+  "SERVER_SIDE_AUTHZ_VERIFIED": "PARTIAL — existing AdminGuard on kill/circuit. Release-ops has no write API.",
+  "RLS_OR_DATA_ACCESS_VERIFIED": "INHERITED_I1_PARTIAL_READ_ONLY — no Production mutation.",
+  "AUDIT_LOG_VERIFIED": "PARTIAL — I-1 only. Release approve audit N/A (control absent).",
+  "REAL_DATA_SOURCE_VERIFIED": "NOT_PROVEN — readout is honesty copy, not a live deploy status feed.",
+  "E2E_ALLOWED_AND_DENIED_CASES": "PARTIAL — static rel-213 PASS. Prior Chromium leftover ticketI4 at 1024 showed the readout and 0 반영 완료. Firefox/WebKit critical workflow is STATIC_VERIFIER_PASS only (REMOTE_CI_PASS=NOT_PROVEN). Live Nest deploy status 0.",
+  "RAW_ARTIFACTS": [
+    "apps/admin/app/admin/system-control/page.tsx",
+    "tooling/verify/rel-213-admin-system-control.cjs",
+    "tooling/e2e/specs/leftover-browser-admin.spec.cjs"
+  ],
+  "PLAN_TODO": "i-4-release-ops remains pending — STATUS is not CLOSED_VERIFIED",
+  "STATUS": "PARTIAL"
+}

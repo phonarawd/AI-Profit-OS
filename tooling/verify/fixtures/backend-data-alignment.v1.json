@@ -122,7 +122,12 @@
       "nestNeedle": "me/current-fx/approx"
     }
   ],
-  "engineFsmCore": ["running", "requeue", "success", "safe_stop"],
+  "engineFsmCore": [
+    "running",
+    "requeue",
+    "success",
+    "safe_stop"
+  ],
   "extraVerifies": [
     "migrations-applied-parity.cjs",
     "rel-408-security-baseline.cjs",

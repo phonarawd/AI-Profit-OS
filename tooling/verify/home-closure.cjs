@@ -10,6 +10,13 @@ const { spawnSync } = require("node:child_process");
 
 const root = path.resolve(__dirname, "../..");
 const fails = [];
+const { assertNoRuntimeMasquerade } = require("./lib/evidence-class.cjs");
+for (const msg of assertNoRuntimeMasquerade(
+  fs.readFileSync(__filename, "utf8"),
+  "home-closure",
+)) {
+  fails.push(msg);
+}
 
 function fail(msg) {
   fails.push(msg);
@@ -144,10 +151,18 @@ function finish(extra) {
     console.error("[verify:home-closure] FAIL\n- " + fails.join("\n- "));
     process.exit(1);
   }
+  const evidence =
+    extra === "browser"
+      ? "BROWSER_PASS"
+      : extra === "static-only" || extra === "ci-static"
+        ? "STATIC_VERIFIER_PASS"
+        : "STATIC_VERIFIER_PASS";
   console.log(
-    "[verify:home-closure] PASS (freeze · empty money · /profits nav · runtime Playwright" +
+    "[verify:home-closure] " +
+      evidence +
+      " (freeze · empty money · /profits nav" +
       (extra ? ` · ${extra}` : "") +
-      ")",
+      ") · RUNTIME_BEHAVIOR_PASS=NOT_CLAIMED · REMOTE_CI_PASS=NOT_PROVEN",
   );
 }
 

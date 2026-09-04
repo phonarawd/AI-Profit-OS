@@ -1,4 +1,4 @@
-import { getAdminToken } from "./admin-session";
+import { ADMIN_CSRF_HEADER, getAdminCsrf } from "./admin-session";
 
 export type AdminFailureKind =
   | "unauthorized"
@@ -70,8 +70,11 @@ export async function adminRequest<T>(
       headers[k] = v;
     }
   }
-  const token = getAdminToken();
-  if (token) headers.Authorization = `Bearer ${token}`;
+  const method = String(init.method ?? "GET").toUpperCase();
+  if (method !== "GET" && method !== "HEAD") {
+    const csrf = getAdminCsrf();
+    if (csrf) headers[ADMIN_CSRF_HEADER] = csrf;
+  }
 
   let res: Response;
   try {
@@ -79,7 +82,7 @@ export async function adminRequest<T>(
       ...init,
       headers,
       cache: "no-store",
-      credentials: "omit",
+      credentials: "include",
     });
   } catch {
     return {

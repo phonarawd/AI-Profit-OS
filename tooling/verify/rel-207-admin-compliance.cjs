@@ -69,8 +69,8 @@ if (page.includes("idDocR2Key}") || page.includes("selfieR2Key}")) {
   fails.push("compliance must not print R2 keys");
 }
 
-if (!api.includes("getAdminToken")) {
-  fails.push("admin-api must send Admin bearer, not user session");
+if (!api.includes('credentials: "include"') || !api.includes("getAdminCsrf")) {
+  fails.push("admin-api must use the HttpOnly admin session cookie, not a JS bearer");
 }
 if (api.includes("aipo_session")) {
   fails.push("admin-api must not read user session cookie");

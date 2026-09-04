@@ -3,6 +3,7 @@ import "./globals.css";
 import "./pwa-shell.css";
 import { ToastHost } from "@aipo/ui/components/toast";
 import { DeviceTierApply } from "../components/DeviceTierApply";
+import { FontScaleApply } from "../components/FontScaleApply";
 import { ConsumerSparkRoot } from "../components/spark-shell/ConsumerSparkRoot";
 import { PwaRuntime } from "../components/pwa/PwaRuntime";
 import { ObsRuntime } from "../components/observability/ObsRuntime";
@@ -41,14 +42,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" className="theme-peotteok-light" data-font-scale="md">
+    <html lang="ko" className="theme-peotteok-light" data-font-scale="md" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
         <link rel="preload" href={PRETENDARD_CSS} as="style" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              '(function(){try{var s=localStorage.getItem("peotteok_ux_font_scale");if(s==="md"||s==="lg"||s==="xl"){document.documentElement.setAttribute("data-font-scale",s);}}catch(e){}})();',
+          }}
+        />
       </head>
       <body className="min-h-dvh bg-lux-bg text-lux-text">
         <DeviceTierApply />
+        <FontScaleApply />
         <ConsumerSparkRoot>
           <ToastHost>{children}</ToastHost>
         </ConsumerSparkRoot>

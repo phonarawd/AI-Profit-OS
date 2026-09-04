@@ -38,6 +38,7 @@ const live = [
   "withdraw-mode-default.cjs",
   "principal-withdraw-reachable.cjs",
   "withdraw-fee-ledger.cjs",
+  "deposit-config-fail-closed.cjs",
   "min-holding-scope.cjs",
   "krw-admin-decide.cjs",
   "kyc-withdraw-only.cjs",

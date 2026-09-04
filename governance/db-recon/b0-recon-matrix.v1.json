@@ -1,0 +1,586 @@
+{
+  "schema": "governance.db-recon.b0-matrix.v1",
+  "observed_at": "2026-08-29T18:41:00+09:00",
+  "project_ref": "mgsytcetsiecllmhcyox",
+  "isolated_verify_db": "EXISTS=NO",
+  "b3_promotion_path": "governance/release-master/rel-b3-promotion/b3-promotion.v1.json",
+  "local_sha": "cb6346cc2c9fbafa9de8b919dce7787974528c2f",
+  "counts": {
+    "local_files": 49,
+    "remote_ledger": 42,
+    "matrix_rows": 56
+  },
+  "apply": 0,
+  "reapply": 0,
+  "history_rewrite": 0,
+  "dashboard_ddl": 0,
+  "rows": [
+    {
+      "source": "local_cb6346",
+      "version": "20260808205842",
+      "name": "extensions_vector",
+      "sql_hash": "9ce826bb6010f5732064b400feee2cbe819c281a7968fddbe4a0ef2dc2bf87eb",
+      "remote_version": "20260808205842",
+      "remote_name": "extensions_vector",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260808205844",
+      "name": "identity_nest_auth",
+      "sql_hash": "28bddb7c3a30c22009e97d2b60f647e599b88d1abfbb3a9c6e73fa9b42b5eae6",
+      "remote_version": "20260808205844",
+      "remote_name": "identity_nest_auth",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260808205846",
+      "name": "ledger_accounts_journals",
+      "sql_hash": "ac6e5aea5222c05f06b32db93b62dda49911e53436b58e77583f9d5cd2d04615",
+      "remote_version": "20260808205846",
+      "remote_name": "ledger_accounts_journals",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260808205848",
+      "name": "wallet_deposit_withdraw",
+      "sql_hash": "a6831c97c68cca7f0464bfeb04c51b18b734a790456940b5a191323807c917e6",
+      "remote_version": "20260808205848",
+      "remote_name": "wallet_deposit_withdraw",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260808205850",
+      "name": "opportunities_pricing",
+      "sql_hash": "9b95c49bdde12545d299d4bc9e91eb0f134cc1aea548c48442fb982c1fe78dc5",
+      "remote_version": "20260808205850",
+      "remote_name": "opportunities_pricing",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260808205853",
+      "name": "ai_twin_memory",
+      "sql_hash": "1dad4451b5a5b627fa35f48c16622e9fe535a564ed9b68fba227e0c427f503aa",
+      "remote_version": "20260808205853",
+      "remote_name": "ai_twin_memory",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260808205857",
+      "name": "referral_support_attribution",
+      "sql_hash": "ca8f3c5715328f09e8067dc4d2f01de5ca266dc3199a5b8b6ac2722861e26243",
+      "remote_version": "20260808205857",
+      "remote_name": "referral_support_attribution",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260808205901",
+      "name": "rls_ledger_guards",
+      "sql_hash": "6d9add8d47d4d85f57d801f5cd99a34702134df971f9589082cf8c16091a850d",
+      "remote_version": "20260808205901",
+      "remote_name": "rls_ledger_guards",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260808210600",
+      "name": "rls_security_hardening",
+      "sql_hash": "d8cb6cf984d60bb06c1ecd1cc6d15342be4d1ab44a25c60e4d913bb80cbbbbcc",
+      "remote_version": "20260808210600",
+      "remote_name": "rls_security_hardening",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260808224856",
+      "name": "auth_oauth_passkey_stage_a_b",
+      "sql_hash": "678b769cf294892b068872966e25e4ad63955a1342aa98f50f9504a5a62bee12",
+      "remote_version": "20260808224856",
+      "remote_name": "auth_oauth_passkey_stage_a_b",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260808234957",
+      "name": "deposit_config_fee_min_holding",
+      "sql_hash": "a824802c7ba62f6931cb58c6b11596e6f0ee95574259882834adaae6f82f6b47",
+      "remote_version": "20260808234957",
+      "remote_name": "deposit_config_fee_min_holding",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809000351",
+      "name": "kyc_decision_audit",
+      "sql_hash": "9d2ec0b3c761fc2dc198fec8ed72c4d82148db87f9fef68e0ff13056433d7c2f",
+      "remote_version": "20260809000351",
+      "remote_name": "kyc_decision_audit",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809001004",
+      "name": "withdraw_stepup_auth",
+      "sql_hash": "9e880e504befb050bef5f0f84a0e94a686b9539b22db3687d0d02cada2d640a9",
+      "remote_version": "20260809001004",
+      "remote_name": "withdraw_stepup_auth",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809002330",
+      "name": "chain_sweeper",
+      "sql_hash": "f34957c4f92491355cdb0a866191e8b42d8ff767ad71a1242e01aa31e3080ee0",
+      "remote_version": "20260809002330",
+      "remote_name": "chain_sweeper",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809003413",
+      "name": "risk_p49_abuse",
+      "sql_hash": "ed33cf30e0e174e3ab580429f5c696a207ef01fbc547aebec1ecc87ef9b1c947",
+      "remote_version": "20260809003413",
+      "remote_name": "risk_p49_abuse",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809010541",
+      "name": "practice_grants_onboarding",
+      "sql_hash": "f217b905114b1488a450cc56c99dcd7b9c529612284211771f4102b93eb5de79",
+      "remote_version": "20260809010541",
+      "remote_name": "practice_grants_onboarding",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809010849",
+      "name": "deposit_disputes",
+      "sql_hash": "06b4845536e60e9ce0cfc54b62e5820216de9b91d5dbb51471a40eb094e42ccb",
+      "remote_version": "20260809010849",
+      "remote_name": "deposit_disputes",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809010858",
+      "name": "referral_pool_fifo_clawback",
+      "sql_hash": "592d8278c0bb17f78cef77aeb9567c6b400388a656f3b3078767a47a967533c1",
+      "remote_version": "20260809010858",
+      "remote_name": "referral_pool_fifo_clawback",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809023230",
+      "name": "market_intelligence",
+      "sql_hash": "1cf3b9ea068bbfeb877d6a51e3410fbdd38caf90d1dcc7cd19577a216c4e5cbf",
+      "remote_version": "20260809023230",
+      "remote_name": "market_intelligence",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809023713",
+      "name": "user_opportunity_overrides_schema_align",
+      "sql_hash": "8e13ceb5edcc70e4a99de8b170a4a91f8fe50adaf215342a58e6b8f9b2ab79d3",
+      "remote_version": "20260809023713",
+      "remote_name": "user_opportunity_overrides_schema_align",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809042549",
+      "name": "mission_auto_accrual_fanout",
+      "sql_hash": "09712bc0922be960963fa2c1d94048f29e4a9f2b613714a8c268886949613a30",
+      "remote_version": "20260809042549",
+      "remote_name": "mission_auto_accrual_fanout",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809100440",
+      "name": "execution_policy_feed_audit",
+      "sql_hash": "9c9dfb82af0f987ed0e4370d47a24e0df8ccb6afb98840e4fd2f5b50f8c87875",
+      "remote_version": "20260809100440",
+      "remote_name": "execution_policy_feed_audit",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809101114",
+      "name": "user_membership_match_policy",
+      "sql_hash": "6b78a0bfe983022f4aed4564315437b5796680d8818c6e50748224e096e4662a",
+      "remote_version": "20260809101114",
+      "remote_name": "user_membership_match_policy",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809102109",
+      "name": "simulation_engine_m05_platform_reserve",
+      "sql_hash": "229b279d7f7537f3cea4af47b2112e8dac020eb6338369604e7da0514130d43f",
+      "remote_version": "20260809102109",
+      "remote_name": "simulation_engine_m05_platform_reserve",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809103208",
+      "name": "ai_feature_platform_pick_eval_shadow",
+      "sql_hash": "7b2d9199a9986cf37eefcae6851693b75ae383b4c01d1daa6b12c336fec0b8f7",
+      "remote_version": "20260809103208",
+      "remote_name": "ai_feature_platform_pick_eval_shadow",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809142108",
+      "name": "execution_policy_day1_bootstrap",
+      "sql_hash": "a3ceed879eaab590f6bbaf02deeb5707505c580e5e643790a4ccbac733929ab1",
+      "remote_version": "20260809142108",
+      "remote_name": "execution_policy_day1_bootstrap",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809143754",
+      "name": "user_opportunity_overrides_pin_cap_search_path",
+      "sql_hash": "e6249e6df8562813f5192b60a028d3decaf67fe64ec2dbc19293cbde0c44bea2",
+      "remote_version": "20260809143754",
+      "remote_name": "user_opportunity_overrides_pin_cap_search_path",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809144814",
+      "name": "catalog_runtime_day1_fx_bootstrap",
+      "sql_hash": "24e7b7e6e082d896b4f021cc1b8a6e9b5568d7cd552ab3eae420f7de8464e04f",
+      "remote_version": "20260809144814",
+      "remote_name": "catalog_runtime_day1_fx_bootstrap",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260809222034",
+      "name": "ops_inbox_hide_source_event",
+      "sql_hash": "77e72b06d68c490d4847d53114fc600867eda687104d56db75626da580f3b942",
+      "remote_version": "20260809222034",
+      "remote_name": "ops_inbox_hide_source_event",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260810024643",
+      "name": "growth_ticker_config",
+      "sql_hash": "d0cb7bd7189f19f077a44ac27f49e11dd050c6272a3baa4826fbf7052a62b1eb",
+      "remote_version": "20260810024643",
+      "remote_name": "growth_ticker_config",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260811062000",
+      "name": "idempotency_request_fingerprint",
+      "sql_hash": "a229f6e52fe26179542b87781071ed8aa98940e6e383334dd37b7ad365d4afbb",
+      "remote_version": "20260811062000",
+      "remote_name": "idempotency_request_fingerprint",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260811062100",
+      "name": "ledger_outbox_events",
+      "sql_hash": "5378fcdd8e747d17ac6831e93c601c83627a29c5f989ad7fdfea260a23148685",
+      "remote_version": "20260811062100",
+      "remote_name": "ledger_outbox_events",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260811194832",
+      "name": "shadow_replay_advisory_label",
+      "sql_hash": "a57e1e0b86c6958f57c981094c362d7b21be735d46a46533cdece6f645abc19b",
+      "remote_version": "20260811194832",
+      "remote_name": "shadow_replay_advisory_label",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260813025116",
+      "name": "ai_logs_answer_path_scope_redirect",
+      "sql_hash": "05cd4923355b3baa52dd715e6a0113a1e70f8df2ad725698f0bccbc2700ee54b",
+      "remote_version": "20260813025116",
+      "remote_name": "ai_logs_answer_path_scope_redirect",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260813202305",
+      "name": "privacy_purge_anonymize_indexes",
+      "sql_hash": "0c59a94adc4e45ff3e7bdb67e6e6b78b9335dbe68a88af53f1b35adddeaebc67",
+      "remote_version": "20260813202305",
+      "remote_name": "privacy_purge_anonymize_indexes",
+      "provenance": "LEDGER_VERSION_NAME_MATCH",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260814130000",
+      "name": "ptf00c_fx_marketplace_normalization",
+      "sql_hash": "ed4cfcd2feadead51b18266bc5183c78443819a3128b164d6433b41f961a3f75",
+      "remote_version": "20260814134038",
+      "remote_name": "ptf00c_fx_marketplace_normalization",
+      "provenance": "NAME_MATCH_VERSION_DRIFT",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260814130100",
+      "name": "ptf00c_provider_runtime_health",
+      "sql_hash": "c40c2b0c09038101a8fd2a570b3e58884b7d513e5a4e1a842c3692bc42a768c7",
+      "remote_version": "20260814134055",
+      "remote_name": "ptf00c_provider_runtime_health",
+      "provenance": "NAME_MATCH_VERSION_DRIFT",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260814130200",
+      "name": "ptf00c_provider_health_last_tick_partial",
+      "sql_hash": "0ee4ea7ace2c29e2b5c60cd7bef857399c41522a03acc987427b71a49d8aa374",
+      "remote_version": "20260814135111",
+      "remote_name": "ptf00c_provider_health_last_tick_partial",
+      "provenance": "NAME_MATCH_VERSION_DRIFT",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260814140000",
+      "name": "ptf00c_r1_provider_tick_ledger",
+      "sql_hash": "dfb697807bb4aae03acbef2273bbe168c2bfec349fc7a706dbf79e00cf7f7c3d",
+      "remote_version": "20260814152139",
+      "remote_name": "ptf00c_r1_provider_tick_ledger",
+      "provenance": "NAME_MATCH_VERSION_DRIFT",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260819210000",
+      "name": "source_observations",
+      "sql_hash": "b0cf9a7ac30b5ccb1fc9dbca22a9c305e2968dba9decb2953f3ee30ed4ae4ffa",
+      "remote_version": null,
+      "remote_name": null,
+      "provenance": "LOCAL_ONLY_FILE_TABLE_PREEXISTS",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260819220000",
+      "name": "canonical_products",
+      "sql_hash": "ee2790fa6f574846452287dab1b5ff23f901729f3604125074542059e734d931",
+      "remote_version": null,
+      "remote_name": null,
+      "provenance": "LOCAL_ONLY_FILE_TABLE_PREEXISTS",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260820013000",
+      "name": "match_results",
+      "sql_hash": "d28953d88c4a862ff9444df43a83bc06c5e01b8dca97bb6bf1c9d4a254342cb6",
+      "remote_version": null,
+      "remote_name": null,
+      "provenance": "LOCAL_ONLY_FILE_TABLE_PREEXISTS",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260821090000",
+      "name": "push_subscriptions_and_control",
+      "sql_hash": "f7a3b850ec5d6b0aa8d6472e91f08dde3a6f79c9d94f0f55131a2252e17f4427",
+      "remote_version": null,
+      "remote_name": null,
+      "provenance": "LOCAL_ONLY_FILE_TABLE_PREEXISTS",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260823160000",
+      "name": "admin_audit_events",
+      "sql_hash": "2cc815adda49cbbfcc35edf98bef71fc89f4e9ba5a7066d0cc11ba32446df736",
+      "remote_version": null,
+      "remote_name": null,
+      "provenance": "LOCAL_ONLY_FILE_TABLE_PREEXISTS",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260823170000",
+      "name": "admin_kill_switches",
+      "sql_hash": "1831437df39defcb26622dc23f7b36eb45c2dec401a7a6914d88db4c800dcf17",
+      "remote_version": null,
+      "remote_name": null,
+      "provenance": "LOCAL_ONLY_FILE_TABLE_PREEXISTS",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260823180000",
+      "name": "opportunity_price_overrides",
+      "sql_hash": "f7a762c7db31892f604a0e9ce9a0fe1812a0eeb67152c0020b91e1d99fc502cb",
+      "remote_version": null,
+      "remote_name": null,
+      "provenance": "LOCAL_ONLY_FILE_TABLE_PREEXISTS",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260823190000",
+      "name": "admin_ops_intents",
+      "sql_hash": "1c07f3f158678f59213be96f3bf442dca1a5a423cc1f0737420d4a3d1a7517f4",
+      "remote_version": null,
+      "remote_name": null,
+      "provenance": "LOCAL_ONLY_FILE_TABLE_PREEXISTS",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260823200000",
+      "name": "admin_match_controls",
+      "sql_hash": "f06a3b8cf5a8728541cb2a3ad8d9c6a9521a78a7728d3fa77cea50457064b4f7",
+      "remote_version": null,
+      "remote_name": null,
+      "provenance": "LOCAL_ONLY_FILE_TABLE_PREEXISTS",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "local_cb6346",
+      "version": "20260823210000",
+      "name": "admin_policy_versions",
+      "sql_hash": "ee45736b5dd3897712850a5805be13b1cc427981fa7f0232d1bcb25da862d162",
+      "remote_version": null,
+      "remote_name": null,
+      "provenance": "LOCAL_ONLY_FILE_TABLE_PREEXISTS",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "remote_only",
+      "version": "20260810212231",
+      "name": "idempotency_request_fingerprint",
+      "sql_hash": null,
+      "remote_version": "20260810212231",
+      "remote_name": "idempotency_request_fingerprint",
+      "local_twin_version": "20260811062000",
+      "provenance": "NAME_MATCH_VERSION_DRIFT_REMOTE_SIDE",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "remote_only",
+      "version": "20260814134038",
+      "name": "ptf00c_fx_marketplace_normalization",
+      "sql_hash": null,
+      "remote_version": "20260814134038",
+      "remote_name": "ptf00c_fx_marketplace_normalization",
+      "local_twin_version": "20260814130000",
+      "provenance": "NAME_MATCH_VERSION_DRIFT_REMOTE_SIDE",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "remote_only",
+      "version": "20260814134055",
+      "name": "ptf00c_provider_runtime_health",
+      "sql_hash": null,
+      "remote_version": "20260814134055",
+      "remote_name": "ptf00c_provider_runtime_health",
+      "local_twin_version": "20260814130100",
+      "provenance": "NAME_MATCH_VERSION_DRIFT_REMOTE_SIDE",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "remote_only",
+      "version": "20260814135111",
+      "name": "ptf00c_provider_health_last_tick_partial",
+      "sql_hash": null,
+      "remote_version": "20260814135111",
+      "remote_name": "ptf00c_provider_health_last_tick_partial",
+      "local_twin_version": "20260814130200",
+      "provenance": "NAME_MATCH_VERSION_DRIFT_REMOTE_SIDE",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "remote_only",
+      "version": "20260814152139",
+      "name": "ptf00c_r1_provider_tick_ledger",
+      "sql_hash": null,
+      "remote_version": "20260814152139",
+      "remote_name": "ptf00c_r1_provider_tick_ledger",
+      "local_twin_version": "20260814140000",
+      "provenance": "NAME_MATCH_VERSION_DRIFT_REMOTE_SIDE",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "remote_only",
+      "version": "20260817154827",
+      "name": "krw_deposit_fx_facts",
+      "sql_hash": null,
+      "remote_version": "20260817154827",
+      "remote_name": "krw_deposit_fx_facts",
+      "local_twin_version": null,
+      "provenance": "REMOTE_ONLY_NO_LOCAL_FILE",
+      "apply": "FORBIDDEN"
+    },
+    {
+      "source": "remote_only",
+      "version": "20260821223109",
+      "name": "beginner_onboarding_experience",
+      "sql_hash": null,
+      "remote_version": "20260821223109",
+      "remote_name": "beginner_onboarding_experience",
+      "local_twin_version": null,
+      "provenance": "REMOTE_ONLY_NO_LOCAL_FILE",
+      "apply": "FORBIDDEN"
+    }
+  ]
+}

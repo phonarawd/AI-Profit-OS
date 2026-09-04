@@ -1,0 +1,72 @@
+{
+  "schema": "governance.recovery.ghas-pr114-open.v1",
+  "observed_at": "2026-09-01T17:42:25Z",
+  "source": "GitHub code-scanning REST live",
+  "repo_default_alerts": 0,
+  "pr_114_merge_alerts_total": 30,
+  "analysis": {
+    "id": 1705965614,
+    "ref": "refs/pull/114/merge",
+    "commit_sha": "4867548a592810de22e2bf14a1f450cf1d421912",
+    "results_count": 51,
+    "note": "PR merge SHA, not recovery tip 38032daf / 0a57f1cb. Do not treat as current-candidate SARIF."
+  },
+  "dismissed_this_session": 0,
+  "known_design": [
+    {
+      "number": 3,
+      "rule": "js/clear-text-storage-of-sensitive-data",
+      "path": "services/api-nest/src/common/admin-session.cookies.ts",
+      "class": "FALSE_POSITIVE_ACCEPTED_DESIGN",
+      "proof": "tooling/verify/admin-csrf-double-submit.cjs",
+      "dismiss": 0
+    },
+    {
+      "number": 20,
+      "rule": "js/clear-text-storage-of-sensitive-data",
+      "path": "services/api-nest/src/auth/auth.controller.ts",
+      "class": "FALSE_POSITIVE_ACCEPTED_DESIGN",
+      "reason": "HttpOnly SameSite user session cookie storing JWT. Not a JS-readable secret.",
+      "dismiss": 0
+    }
+  ],
+  "fix_candidate_unverified_on_this_analysis": [
+    {
+      "number": 70,
+      "rule": "js/http-to-file-access",
+      "path": "tooling/release/api-artifact-runtime-qa.cjs",
+      "class": "FIX_PORTED_AWAITING_EXACT_HEAD_RESAN",
+      "note": "Canonical projection landed in 0a57f1cb. This analysis predates that SHA."
+    }
+  ],
+  "classified_this_session_no_dismiss": [
+    {
+      "number": 29,
+      "rule": "js/xss-through-dom",
+      "class": "FALSE_POSITIVE_ACCEPTED_DESIGN",
+      "packet": "governance/recovery/ghas-kyc-xss-through-dom.v1.json",
+      "dismiss": 0
+    },
+    {
+      "number": 30,
+      "rule": "js/xss-through-exception",
+      "class": "CONFIRMED_HARDENED",
+      "packet": "governance/recovery/ghas-coach-xss-through-exception.v1.json",
+      "dismiss": 0
+    }
+  ],
+  "open_unclassified_counts": {
+    "js/regex/missing-regexp-anchor": 10,
+    "js/file-system-race": 7,
+    "js/file-access-to-http": 6,
+    "js/polynomial-redos": 12,
+    "js/insecure-temporary-file": 2,
+    "js/missing-origin-check": 1,
+    "js/indirect-command-line-injection": 1,
+    "js/incomplete-multi-character-sanitization": 1,
+    "js/incomplete-url-substring-sanitization": 3,
+    "js/identity-replacement": 1
+  },
+  "unexplained_ghas": "NOT_ZERO",
+  "release_implication": "PRODUCTION_RELEASE=NO_GO until exact-head analysis is classified to unexplained=0 or accepted-design packets exist for every remaining alert"
+}

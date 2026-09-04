@@ -59,6 +59,7 @@ const userMethods = [
   "mergeProfit",
   "practiceWelcome",
   "myDepositAddress",
+  "getKrwDepositInstructions",
   "createKrwDeposit",
   "createDepositDispute",
   "createStepUpChallenge",

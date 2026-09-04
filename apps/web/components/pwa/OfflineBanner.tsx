@@ -1,5 +1,6 @@
 "use client";
 
+import { RecoveryRetry } from "@aipo/ui/components/primitives";
 import { useEffect, useState } from "react";
 import { pwaCopy } from "./copy";
 
@@ -20,16 +21,14 @@ export function OfflineBanner() {
   if (!offline) return null;
 
   return (
-    <aside className="pwa-overlay" role="status">
+    <aside className="pwa-overlay" role="status" data-canon="offline">
       <p className="pwa-overlay-title">{pwaCopy.offlineTitle}</p>
       <div className="pwa-overlay-actions">
-        <button
-          type="button"
+        <RecoveryRetry
           className="pwa-overlay-primary"
-          onClick={() => window.location.reload()}
-        >
-          {pwaCopy.offlineRetry}
-        </button>
+          testId="offline-retry"
+          onRetry={() => window.location.reload()}
+        />
       </div>
     </aside>
   );

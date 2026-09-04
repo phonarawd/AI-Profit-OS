@@ -13,6 +13,11 @@ const fails = [];
 const LIVE_FETCH_ATTEMPTS = 3;
 const LIVE_FETCH_TIMEOUT_MS = 12000;
 const LIVE_FETCH_RETRY_DELAY_MS = 750;
+/** CodeQL: fixture 파일 문자열을 fetch에 직접 흘리지 않음 — 상수 origin만 네트워크 사용 */
+const STAGING_WEB_ORIGIN =
+  "https://ai-profit-web-preview.ebay-adapter.workers.dev";
+const STAGING_OPS_ORIGIN =
+  "https://ai-profit-ops-preview.ebay-adapter.workers.dev";
 
 function read(rel) {
   const p = path.join(root, rel);
@@ -97,7 +102,20 @@ for (const dep of fixture.deps || []) {
 if (todoStatus("REL-602") !== "completed") fails.push("rel-602 todo must be completed");
 if (yamlStatus("REL-602") !== "COMPLETED") fails.push("REL-602 YAML must be COMPLETED");
 const rel603Closed = todoStatus("REL-603") === "completed" && yamlStatus("REL-603") === "COMPLETED";
-if (rel603Closed) {
+const rel700Closed = todoStatus("REL-700") === "completed" && yamlStatus("REL-700") === "COMPLETED";
+const rel701PreClosed =
+  todoStatus("REL-701-PRE") === "completed" && yamlStatus("REL-701-PRE") === "COMPLETED";
+if (rel603Closed && rel700Closed && rel701PreClosed) {
+  if (!plan.includes("FIRST_EXECUTION_TODO = REL-701-DB")) {
+    fails.push("FIRST_EXECUTION_TODO must advance to REL-701-DB after REL-701-PRE");
+  }
+  if (!plan.includes("LAST_COMPLETED_TODO = REL-701-PRE")) {
+    fails.push("LAST_COMPLETED_TODO must be REL-701-PRE after REL-701-PRE close");
+  }
+  if (!plan.includes("HARD_STOP_AFTER = REL-603")) {
+    fails.push("HARD_STOP_AFTER must remain REL-603 (staging hard-stop) until Founder prod auth");
+  }
+} else if (rel603Closed) {
   if (!plan.includes("FIRST_EXECUTION_TODO = REL-700")) fails.push("FIRST_EXECUTION_TODO must advance to REL-700 after REL-603");
   if (!plan.includes("LAST_COMPLETED_TODO = REL-603")) fails.push("LAST_COMPLETED_TODO must be REL-603 after REL-603 close");
   if (!plan.includes("HARD_STOP_AFTER = REL-603")) fails.push("HARD_STOP_AFTER must be REL-603 after REL-603 close");
@@ -109,8 +127,12 @@ if (rel603Closed) {
 
 const staging = manifest.openNext && manifest.openNext.staging;
 if (!staging || staging.wranglerEnv !== "preview") fails.push("manifest staging wranglerEnv must be preview");
-if (!fixture.stagingWeb.includes("ai-profit-web-preview")) fails.push("staging web must be preview");
-if (!fixture.stagingOps.includes("ai-profit-ops-preview")) fails.push("staging ops must be preview");
+if (fixture.stagingWeb !== STAGING_WEB_ORIGIN) {
+  fails.push("staging web must equal locked preview origin");
+}
+if (fixture.stagingOps !== STAGING_OPS_ORIGIN) {
+  fails.push("staging ops must equal locked preview origin");
+}
 if (!staging || staging.web.workersDev !== "ai-profit-web-preview.ebay-adapter.workers.dev") fails.push("staging web origin drift");
 if (!staging || staging.ops.workersDev !== "ai-profit-ops-preview.ebay-adapter.workers.dev") fails.push("staging ops origin drift");
 if (manifest.openNext.web.workersDev !== "ai-profit-web.ebay-adapter.workers.dev") fails.push("production web origin drift");
@@ -247,8 +269,9 @@ function runVerify(script) {
 (async function main() {
   if (fails.length === 0) {
     try {
-      await live(fixture.stagingWeb + "/", [200]);
-      await live(fixture.stagingOps + "/", [200, 307, 308]);
+      // 상수 origin만 사용 (fixture 값은 equality gate에서만 검증)
+      await live(STAGING_WEB_ORIGIN + "/", [200]);
+      await live(STAGING_OPS_ORIGIN + "/", [200, 307, 308]);
     } catch (e) {
       fails.push("live fetch error after bounded retries: " + (e.message || e));
     }

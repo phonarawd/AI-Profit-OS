@@ -1,0 +1,283 @@
+{
+  "schema": "governance.db-recon.live-catalog-snapshot.v1",
+  "observed_at": "2026-08-31T15:20:00.000Z",
+  "project_ref": "mgsytcetsiecllmhcyox",
+  "production_mutation": 0,
+  "tables": {
+    "source_observations": {
+      "owner": "postgres",
+      "rls_enabled": true,
+      "rls_forced": false,
+      "policies": [],
+      "anon_privileges": [],
+      "authenticated_privileges": [],
+      "service_role_privileges": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+      "indexes": [
+        {"name": "source_observations_observed_at_idx"},
+        {"name": "source_observations_pkey"},
+        {"name": "source_observations_source_item_observed_idx"}
+      ],
+      "triggers": [
+        {"name": "source_observations_forbid_mutation"}
+      ],
+      "constraints_match_git": true,
+      "constraints_note": "PK + 4 CHECK including source_observations_no_yahoo_chk present",
+      "comment": {"live": null, "git": null, "verdict": "EXACT_EQUIVALENT"},
+      "seed": {"verdict": "EXACT_EQUIVALENT", "note": "no singleton seed in Git"},
+      "functions": {"existence": ["source_observations_forbid_mutation"], "body_compared": true, "verdict": "EXACT_EQUIVALENT"}
+    },
+    "canonical_products": {
+      "owner": "postgres",
+      "rls_enabled": true,
+      "rls_forced": false,
+      "policies": [],
+      "anon_privileges": [],
+      "authenticated_privileges": [],
+      "service_role_privileges": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+      "indexes": [
+        {"name": "canonical_products_identity_idx"},
+        {"name": "canonical_products_identity_unique", "unique_constraint": true},
+        {"name": "canonical_products_pd_unique", "unique_constraint": true},
+        {"name": "canonical_products_pkey"}
+      ],
+      "triggers": [
+        {"name": "canonical_products_protect_immutable"}
+      ],
+      "constraints_match_git": true,
+      "constraints_note": "PK + PD unique + identity unique + PD format CHECK",
+      "comment": {"live": null, "git": null, "verdict": "EXACT_EQUIVALENT"},
+      "seed": {"verdict": "EXACT_EQUIVALENT", "note": "no singleton seed in Git"},
+      "functions": {"existence": ["canonical_products_protect_immutable"], "body_compared": true, "verdict": "EXACT_EQUIVALENT"}
+    },
+    "canonical_product_source_links": {
+      "owner": "postgres",
+      "rls_enabled": true,
+      "rls_forced": false,
+      "policies": [],
+      "anon_privileges": [],
+      "authenticated_privileges": [],
+      "service_role_privileges": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+      "indexes": [
+        {"name": "canonical_product_source_links_observation_uq", "unique_constraint": true},
+        {"name": "canonical_product_source_links_pkey"},
+        {"name": "canonical_product_source_links_product_source_item_uq", "unique_constraint": true}
+      ],
+      "triggers": [],
+      "constraints_match_git": true,
+      "constraints_note": "PK + 2 UNIQUE + 2 FK NO ACTION",
+      "comment": {"live": null, "git": null, "verdict": "EXACT_EQUIVALENT"},
+      "seed": {"verdict": "EXACT_EQUIVALENT", "note": "no singleton seed in Git"},
+      "functions": {"existence": [], "verdict": "EXACT_EQUIVALENT"}
+    },
+    "match_results": {
+      "owner": "postgres",
+      "rls_enabled": true,
+      "rls_forced": false,
+      "policies": [],
+      "anon_privileges": [],
+      "authenticated_privileges": [],
+      "service_role_privileges": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+      "indexes": [
+        {"name": "match_results_decision_idx"},
+        {"name": "match_results_left_idx"},
+        {"name": "match_results_pair_version_uq", "unique_constraint": true},
+        {"name": "match_results_pkey"},
+        {"name": "match_results_right_idx"}
+      ],
+      "triggers": [
+        {"name": "match_results_forbid_mutation"}
+      ],
+      "constraints_match_git": true,
+      "constraints_note": "PK + UNIQUE pair/version + 4 FK NO ACTION + decision/path CHECKs",
+      "comment": {"live": null, "git": null, "verdict": "EXACT_EQUIVALENT"},
+      "seed": {"verdict": "EXACT_EQUIVALENT", "note": "no singleton seed in Git"},
+      "functions": {"existence": ["match_results_forbid_mutation"], "body_compared": false, "verdict": "UNVERIFIED"}
+    },
+    "push_control": {
+      "owner": "postgres",
+      "rls_enabled": false,
+      "rls_forced": false,
+      "policies": [],
+      "anon_privileges": [],
+      "authenticated_privileges": [],
+      "service_role_privileges": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+      "indexes": [
+        {"name": "push_control_pkey"}
+      ],
+      "triggers": [],
+      "constraints_match_git": true,
+      "constraints_note": "PK id + CHECK id=1",
+      "comment": {"live": "REL-020 Admin pushEnabled kill · UI=REL-213", "verdict": "EXACT_EQUIVALENT"},
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "row id=1 push_enabled=true matches Git INSERT ON CONFLICT DO NOTHING"
+      },
+      "functions": {"existence": [], "verdict": "EXACT_EQUIVALENT"}
+    },
+    "push_subscriptions": {
+      "owner": "postgres",
+      "rls_enabled": false,
+      "rls_forced": false,
+      "policies": [],
+      "anon_privileges": [],
+      "authenticated_privileges": [],
+      "service_role_privileges": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+      "indexes": [
+        {"name": "push_subscriptions_pkey"},
+        {"name": "push_subscriptions_user_endpoint_uq", "unique_constraint": true},
+        {"name": "push_subscriptions_user_id_idx"}
+      ],
+      "triggers": [],
+      "constraints_match_git": true,
+      "constraints_note": "PK + UNIQUE(user_id,endpoint) + endpoint/platform CHECK + FK users ON DELETE CASCADE",
+      "comment": {"live": "REL-020 Web Push endpoints · schemas/push-subscription.v1", "verdict": "EXACT_EQUIVALENT"},
+      "seed": {"verdict": "EXACT_EQUIVALENT", "note": "no singleton seed in Git"},
+      "functions": {"existence": [], "verdict": "EXACT_EQUIVALENT"}
+    },
+    "admin_audit_events": {
+      "owner": "postgres",
+      "rls_enabled": true,
+      "rls_forced": false,
+      "policies": [],
+      "anon_privileges": [],
+      "authenticated_privileges": [],
+      "service_role_privileges": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+      "indexes": [
+        {"name": "admin_audit_events_actor_key_idx"},
+        {"name": "admin_audit_events_idem_uq", "unique_constraint": true},
+        {"name": "admin_audit_events_occurred_at_idx"},
+        {"name": "admin_audit_events_pkey"},
+        {"name": "admin_audit_events_result_idx"}
+      ],
+      "triggers": [
+        {"name": "admin_audit_events_forbid_mutation"}
+      ],
+      "constraints_match_git": true,
+      "constraints_note": "PK + UNIQUE idempotency_key + mode/result CHECK",
+      "comment": {"verdict": "EXACT_EQUIVALENT"},
+      "seed": {"verdict": "EXACT_EQUIVALENT", "note": "no singleton seed in Git"},
+      "functions": {"existence": ["admin_audit_events_forbid_mutation"], "body_compared": false, "verdict": "UNVERIFIED"}
+    },
+    "admin_kill_switches": {
+      "owner": "postgres",
+      "rls_enabled": true,
+      "rls_forced": false,
+      "policies": [],
+      "anon_privileges": [],
+      "authenticated_privileges": [],
+      "service_role_privileges": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+      "indexes": [
+        {"name": "admin_kill_switches_pkey"}
+      ],
+      "triggers": [
+        {"name": "admin_kill_switches_forbid_delete"}
+      ],
+      "constraints_match_git": true,
+      "constraints_note": "PK + id CHECK 9 values",
+      "comment": {"verdict": "EXACT_EQUIVALENT"},
+      "seed": {
+        "verdict": "EXACT_EQUIVALENT",
+        "note": "9 ids present, all engaged=false"
+      },
+      "functions": {"existence": ["admin_kill_switches_forbid_delete"], "body_compared": false, "verdict": "UNVERIFIED"}
+    },
+    "opportunity_price_overrides": {
+      "owner": "postgres",
+      "rls_enabled": true,
+      "rls_forced": false,
+      "policies": [],
+      "anon_privileges": [],
+      "authenticated_privileges": [],
+      "service_role_privileges": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+      "indexes": [
+        {"name": "opportunity_price_overrides_pkey"}
+      ],
+      "triggers": [
+        {"name": "opportunity_price_overrides_forbid_delete"}
+      ],
+      "constraints_match_git": true,
+      "constraints_note": "PK + reason_code/reason_min CHECK + FK opportunities ON DELETE CASCADE",
+      "comment": {"verdict": "EXACT_EQUIVALENT"},
+      "seed": {"verdict": "EXACT_EQUIVALENT", "note": "no singleton seed in Git"},
+      "functions": {"existence": ["opportunity_price_overrides_forbid_delete"], "body_compared": false, "verdict": "UNVERIFIED"}
+    },
+    "admin_ops_intents": {
+      "owner": "postgres",
+      "rls_enabled": true,
+      "rls_forced": false,
+      "policies": [],
+      "anon_privileges": [],
+      "authenticated_privileges": [],
+      "service_role_privileges": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+      "indexes": [
+        {"name": "admin_ops_intents_pkey"}
+      ],
+      "triggers": [
+        {"name": "admin_ops_intents_forbid_delete"}
+      ],
+      "constraints_match_git": true,
+      "constraints_note": "PK + family/mode/stage/impact/reason CHECK",
+      "comment": {"verdict": "EXACT_EQUIVALENT"},
+      "seed": {"verdict": "EXACT_EQUIVALENT", "note": "no singleton seed in Git"},
+      "functions": {"existence": ["admin_ops_intents_forbid_delete"], "body_compared": false, "verdict": "UNVERIFIED"}
+    },
+    "admin_match_controls": {
+      "owner": "postgres",
+      "rls_enabled": true,
+      "rls_forced": false,
+      "policies": [],
+      "anon_privileges": [],
+      "authenticated_privileges": [],
+      "service_role_privileges": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+      "indexes": [
+        {"name": "admin_match_controls_pkey"}
+      ],
+      "triggers": [
+        {"name": "admin_match_controls_forbid_delete"}
+      ],
+      "constraints_match_git": true,
+      "constraints_note": "PK + verb/kind/mode/stage/impact/reason/reassign/bulk CHECK",
+      "comment": {"verdict": "EXACT_EQUIVALENT"},
+      "seed": {"verdict": "EXACT_EQUIVALENT", "note": "no singleton seed in Git"},
+      "functions": {"existence": ["admin_match_controls_forbid_delete"], "body_compared": false, "verdict": "UNVERIFIED"}
+    },
+    "admin_policy_versions": {
+      "owner": "postgres",
+      "rls_enabled": true,
+      "rls_forced": false,
+      "policies": [],
+      "anon_privileges": [],
+      "authenticated_privileges": [],
+      "service_role_privileges": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+      "indexes": [
+        {"name": "admin_policy_versions_pkey"}
+      ],
+      "triggers": [
+        {"name": "admin_policy_versions_forbid_update"}
+      ],
+      "constraints_match_git": true,
+      "constraints_note": "composite PK + policy_key/label/severity/reason CHECK",
+      "comment": {"verdict": "EXACT_EQUIVALENT"},
+      "seed": {"verdict": "EXACT_EQUIVALENT", "note": "no singleton seed in Git"},
+      "functions": {"existence": ["admin_policy_versions_forbid_mutation"], "body_compared": false, "verdict": "UNVERIFIED"}
+    },
+    "admin_policy_heads": {
+      "owner": "postgres",
+      "rls_enabled": true,
+      "rls_forced": false,
+      "policies": [],
+      "anon_privileges": [],
+      "authenticated_privileges": [],
+      "service_role_privileges": ["DELETE", "INSERT", "REFERENCES", "SELECT", "TRIGGER", "TRUNCATE", "UPDATE"],
+      "indexes": [
+        {"name": "admin_policy_heads_pkey"}
+      ],
+      "triggers": [],
+      "constraints_match_git": true,
+      "constraints_note": "PK policy_key + label CHECK",
+      "comment": {"live": null, "git": null, "verdict": "EXACT_EQUIVALENT"},
+      "seed": {"verdict": "EXACT_EQUIVALENT", "note": "Git has no INSERT; live row count 0"},
+      "functions": {"existence": [], "verdict": "EXACT_EQUIVALENT"}
+    }
+  }
+}

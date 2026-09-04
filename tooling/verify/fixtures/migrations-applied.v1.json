@@ -1,8 +1,8 @@
 {
   "projectRef": "mgsytcetsiecllmhcyox",
-  "asOf": "2026-08-24",
-  "source": "Supabase connector execute_sql on supabase_migrations.schema_migrations",
-  "remoteRawAppliedCount": 42,
+  "asOf": "2026-09-04",
+  "source": "Supabase MCP list_migrations on supabase_migrations.schema_migrations (2026-09-04 live read-only: raw applied 43 · head 20260902155632_withdraw_broadcast_tron)",
+  "remoteRawAppliedCount": 43,
   "remoteHistoricalMappings": [
     {
       "remoteVersion": "20260810212231",
@@ -19,7 +19,7 @@
       "rawCountDelta": 0
     }
   ],
-  "note": "versions[] = canonical local version prefixes corresponding to remote-applied schema truth. committedUnapplied[] = repo-only migrations awaiting their authorized production apply. remoteRawAppliedCount preserves the actual schema_migrations row count. remoteHistoricalMappings explicitly records remote version aliases/history that must not be hidden by canonical local prefixes. 2026-08-24 reconciliation restored the exact remote-applied SQL for krw_deposit_fx_facts and beginner_onboarding_experience into the repo; production DB mutation = 0.",
+  "note": "versions[] = canonical local version prefixes corresponding to remote-applied schema truth. committedUnapplied[] = repo-only migrations awaiting their authorized production apply. remoteRawAppliedCount preserves the actual schema_migrations row count. remoteHistoricalMappings explicitly records remote version aliases/history that must not be hidden by canonical local prefixes. 2026-08-24 reconciliation restored the exact remote-applied SQL for krw_deposit_fx_facts and beginner_onboarding_experience into the repo; production DB mutation = 0. 2026-09-04 reconciliation: 20260902155632_withdraw_broadcast_tron is remote-applied (raw 43, remote head). committedUnapplied 20260901224000/20260902032000 precede the remote head and therefore need `supabase db push --include-all` (or a rename past the head) at REL-701-DB apply time — recorded, not hidden. Production DB mutation = 0.",
   "versions": [
     "20260808205842",
     "20260808205844",
@@ -61,7 +61,8 @@
     "20260814130200",
     "20260814140000",
     "20260817154827",
-    "20260821223109"
+    "20260821223109",
+    "20260902155632"
   ],
   "committedUnapplied": [
     "20260819210000",
@@ -73,6 +74,8 @@
     "20260823180000",
     "20260823190000",
     "20260823200000",
-    "20260823210000"
+    "20260823210000",
+    "20260901224000",
+    "20260902032000"
   ]
 }

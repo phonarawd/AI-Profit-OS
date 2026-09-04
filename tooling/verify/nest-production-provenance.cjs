@@ -24,6 +24,9 @@ if (!fs.existsSync(path.join(root, provRel))) fail("missing nest-provenance.ts")
 
 const health = fs.existsSync(path.join(root, healthRel)) ? read(healthRel) : "";
 const prov = fs.existsSync(path.join(root, provRel)) ? read(provRel) : "";
+const pubRelEarly = "services/api-nest/src/health.public.ts";
+const pubEarly = fs.existsSync(path.join(root, pubRelEarly)) ? read(pubRelEarly) : "";
+const healthSurface = health + "\n" + pubEarly;
 
 if (!/from\s+["']\.\/config\/nest-provenance["']/.test(health)) {
   fail("health.controller.ts must import nestProvenance from ./config/nest-provenance");
@@ -62,20 +65,41 @@ if (shaLiteral.test(health) || shaLiteral.test(prov)) {
   fail("health/provenance must not embed a 40-char commit SHA");
 }
 
-if (!/\bdb\s*:/.test(health) || !/\bredis\s*:/.test(health)) {
+if (!/\bdb\s*:/.test(healthSurface) || !/\bredis\s*:/.test(healthSurface)) {
   fail("health db/redis keys must remain");
 }
 if (!/this\.pg\.ping\(\)/.test(health) || !/this\.redis\.ping\(\)/.test(health)) {
   fail("health must keep db/redis ping semantics");
 }
-if (!/configured:\s*this\.pg\.configured\(\)/.test(health)) {
+if (!/this\.pg\.configured\(\)/.test(health) || !/dbConfigured/.test(health)) {
   fail("health db.configured semantics must remain");
 }
-if (!/configured:\s*this\.redis\.configured\(\)/.test(health)) {
+if (!/this\.redis\.configured\(\)/.test(health) || !/redisConfigured/.test(health)) {
   fail("health redis.configured semantics must remain");
+}
+if (!/configured:\s*input\.dbConfigured/.test(pubEarly) || !/ok:\s*input\.dbOk/.test(pubEarly)) {
+  fail("public health must expose db.configured/ok only");
+}
+if (!/configured:\s*input\.redisConfigured/.test(pubEarly) || !/ok:\s*input\.redisOk/.test(pubEarly)) {
+  fail("public health must expose redis.configured/ok only");
 }
 if (/db\s*:\s*\{[\s\S]*gitSha/.test(health) || /redis\s*:\s*\{[\s\S]*gitSha/.test(health)) {
   fail("gitSha must not be folded into db/redis payloads");
+}
+if (health.includes("this.bus") || health.includes("hosts:") || health.includes("r2KycBucket")) {
+  fail("public health must not expose bus, hosts, or r2KycBucket");
+}
+if (/\.\.\.db/.test(health) || /\.\.\.cache/.test(health) || health.includes("detail:")) {
+  fail("public health must not spread raw db/redis ping details");
+}
+if (health.includes("provider:") || /region:\s*env\.supabaseRegion/.test(health)) {
+  fail("public health must not expose provider/region inventory");
+}
+const pubRel = "services/api-nest/src/health.public.ts";
+if (!fs.existsSync(path.join(root, pubRel))) fail("missing health.public.ts");
+const pub = fs.existsSync(path.join(root, pubRel)) ? read(pubRel) : "";
+if (!pub.includes("publicHealthBody") || !pub.includes("assertPublicHealthSanitized")) {
+  fail("health.public.ts must sanitize and negatively test leaks");
 }
 
 const NEST_GIT_SHA_ENV = "RENDER_GIT_COMMIT";
@@ -96,6 +120,16 @@ if (readNestGitSha({ RENDER_GIT_COMMIT: "not-a-sha" }) !== null) {
 if (readNestGitSha({ RENDER_GIT_COMMIT: "deadbeef" }) !== "deadbeef") {
   fail("short hex SHA must pass");
 }
+
+const { spawnSync } = require("node:child_process");
+const pubTest = spawnSync(
+  process.execPath,
+  ["--test", "--experimental-strip-types", "services/api-nest/src/health.public.runtime.test.ts"],
+  { cwd: root, encoding: "utf8", timeout: 30_000 },
+);
+process.stdout.write(pubTest.stdout || "");
+process.stderr.write(pubTest.stderr || "");
+if (pubTest.status !== 0) fail("health.public runtime sanitization tests failed");
 
 if (fails.length) {
   console.error("[verify:nest-production-provenance] FAIL\n- " + fails.join("\n- "));

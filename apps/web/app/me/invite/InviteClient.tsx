@@ -1,6 +1,12 @@
 "use client";
 
-import { InviteHome } from "@aipo/ui/components/invite";
+import {
+  InviteHome,
+  classifyReferralHttp,
+  parseReferralMe,
+  type ReferralMeReady,
+} from "@aipo/ui/components/invite";
+import { parseUserUxPrefs, type UxToneBand } from "@aipo/ui/components/settings/ux-prefs-state";
 import { T } from "@aipo/ui/copy/ko";
 import { useEffect, useState } from "react";
 import {
@@ -10,35 +16,18 @@ import {
 } from "../AccountFrame";
 import styles from "../account.module.css";
 
-type ReferralEdge = {
-  code?: string;
-  status?: string;
-};
-
-type ReferralMe = {
-  enabled?: boolean;
-  rewardsEnabled?: boolean;
-  inviteCountUnlimited?: boolean;
-  edges?: ReferralEdge[];
-  myBinding?: { code?: string; status?: string } | null;
-  poolWaitToast?: string;
-};
-
 function sessionToken(): string | null {
   return null;
 }
 
-function isAuthFailure(status: number): boolean {
-  return status === 401 || status === 403;
-}
-
 export function InviteClient() {
   const [view, setView] = useState<AccountView>("loading");
-  const [data, setData] = useState<ReferralMe | null>(null);
+  const [data, setData] = useState<ReferralMeReady | null>(null);
   const [bindCode, setBindCode] = useState("");
   const [bindView, setBindView] = useState<
     "idle" | "saving" | "success" | "unavailable"
   >("idle");
+  const [toneBand, setToneBand] = useState<UxToneBand | null>(null);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -47,6 +36,16 @@ export function InviteClient() {
         const headers: Record<string, string> = { Accept: "application/json" };
         const token = sessionToken();
         if (token) headers.Authorization = `Bearer ${token}`;
+        const uxRes = await fetch("/api/v1/me/ux-prefs", {
+          credentials: "include",
+          cache: "no-store",
+          headers,
+          signal: ac.signal,
+        }).catch(() => null);
+        if (uxRes && uxRes.ok) {
+          const uxParsed = parseUserUxPrefs(await uxRes.json().catch(() => null));
+          if (uxParsed) setToneBand(uxParsed.toneBand);
+        }
         const res = await fetch("/api/v1/referral/me", {
           credentials: "include",
           cache: "no-store",
@@ -54,20 +53,26 @@ export function InviteClient() {
           signal: ac.signal,
         });
         if (ac.signal.aborted) return;
-        if (isAuthFailure(res.status)) {
+        if (!res.ok) {
           setData(null);
-          setView("unauthorized");
+          setView(classifyReferralHttp(res.status));
           return;
         }
-        if (!res.ok) {
+        const json = await res.json().catch(() => null);
+        if (ac.signal.aborted) return;
+        const parsed = parseReferralMe(json);
+        if (!parsed) {
           setData(null);
           setView("unavailable");
           return;
         }
-        const json = (await res.json()) as ReferralMe;
-        if (ac.signal.aborted) return;
-        setData(json);
-        setView(json.enabled === false ? "disabled" : "ready");
+        if (parsed.view === "disabled") {
+          setData(null);
+          setView("disabled");
+          return;
+        }
+        setData(parsed.data);
+        setView("ready");
       } catch (err) {
         if (ac.signal.aborted) return;
         if (err instanceof DOMException && err.name === "AbortError") return;
@@ -120,7 +125,7 @@ export function InviteClient() {
     );
   }
 
-  if (view === "unavailable" || data == null) {
+  if (view === "unavailable" || (view === "ready" && data == null)) {
     return (
       <AccountFrame
         title={T.invite.title}
@@ -132,7 +137,7 @@ export function InviteClient() {
     );
   }
 
-  if (view === "disabled") {
+  if (view === "disabled" || data == null) {
     return (
       <AccountFrame
         title={T.invite.title}
@@ -144,10 +149,6 @@ export function InviteClient() {
     );
   }
 
-  const edges = Array.isArray(data.edges) ? data.edges : null;
-  const ownCode = edges?.map((e) => e.code).find((c) => typeof c === "string" && c.trim());
-  const joined = edges ? edges.length : undefined;
-
   return (
     <AccountFrame
         title={T.invite.title}
@@ -157,22 +158,19 @@ export function InviteClient() {
       >
       <div className={styles.surface}>
         <InviteHome
-          inviteCode={ownCode ?? ""}
+          toneBand={toneBand}
+          inviteCode={data.referralCode}
           shareUrl=""
-          codeUnavailable={!ownCode}
-          stats={
-            edges
-              ? {
-                  joined,
-                  bonusProfitLabel:
-                    data.rewardsEnabled === true ? undefined : "확인할 수 없음",
-                }
-              : undefined
-          }
+          codeUnavailable={false}
+          stats={{
+            joined: data.joined,
+            bonusProfitLabel:
+              data.rewardsEnabled === true ? undefined : "확인할 수 없음",
+          }}
         />
       </div>
       <h2 className={styles.sectionTitle}>초대 코드 연결</h2>
-      {data.myBinding?.code ? (
+      {data.myBindingCode ? (
         <p className={styles.note}>이미 연결된 초대가 있어요.</p>
       ) : (
         <div className={styles.field}>

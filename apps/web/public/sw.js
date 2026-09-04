@@ -33,6 +33,15 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("message", (event) => {
+  const origin = event.origin;
+  if (origin && origin !== self.location.origin) return;
+  if (!origin && event.source && event.source.url) {
+    try {
+      if (new URL(event.source.url).origin !== self.location.origin) return;
+    } catch {
+      return;
+    }
+  }
   const data = event.data;
   if (data === "SKIP_WAITING" || (data && data.type === "SKIP_WAITING")) {
     self.skipWaiting();

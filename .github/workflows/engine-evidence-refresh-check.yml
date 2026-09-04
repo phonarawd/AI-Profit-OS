@@ -1,0 +1,102 @@
+name: engine-evidence-refresh-check
+
+on:
+  push:
+    branches:
+      - recovery/release-provenance-20260831
+    paths:
+      - "governance/recovery/engine-rebase-evidence.current.v1.json"
+      - "governance/recovery/engine-drift-inventory.current.v1.json"
+      - "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json"
+      - "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json"
+      - "governance/engine-acceptance/FINAL_ACCEPTANCE.md"
+      - ".github/workflows/engine-evidence-refresh-check.yml"
+      - "tooling/verify/engine-drift-inventory.cjs"
+      - "tooling/verify/rel-502-final-engine-acceptance.cjs"
+      - "tooling/verify/rel-503-protected-scope-watch.cjs"
+      - "tooling/verify/b3-promotion.cjs"
+      - "governance/release-master/RC_FORMAL.md"
+      - "governance/release-master/rc-formal.v1.json"
+  pull_request:
+    branches:
+      - recovery/release-provenance-20260831
+      - main
+    paths:
+      - "governance/recovery/engine-rebase-evidence.current.v1.json"
+      - "governance/recovery/engine-drift-inventory.current.v1.json"
+      - "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json"
+      - "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json"
+      - "governance/engine-acceptance/FINAL_ACCEPTANCE.md"
+      - ".github/workflows/engine-evidence-refresh-check.yml"
+      - "tooling/verify/engine-drift-inventory.cjs"
+      - "tooling/verify/rel-502-final-engine-acceptance.cjs"
+      - "tooling/verify/rel-503-protected-scope-watch.cjs"
+      - "tooling/verify/b3-promotion.cjs"
+      - "governance/release-master/RC_FORMAL.md"
+      - "governance/release-master/rc-formal.v1.json"
+      - "tooling/verify/rc-formal.cjs"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evidence-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+
+      - name: Verify current Engine drift inventory
+        run: node tooling/verify/engine-drift-inventory.cjs
+
+      - name: Verify REL-502 final engine acceptance
+        run: node tooling/verify/rel-502-final-engine-acceptance.cjs
+
+      - name: Verify REL-503 protected-scope watch
+        run: node tooling/verify/rel-503-protected-scope-watch.cjs
+
+      - name: Verify B3 isolated staging truth
+        run: node tooling/verify/b3-promotion.cjs
+
+      - name: Verify RC_FORMAL lock
+        run: node tooling/verify/rc-formal.cjs
+
+      - name: Verify current Engine acceptance evidence
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require("node:fs");
+          const psm = require("./tooling/verify/lib/rel-502-psm.cjs");
+          const ev = JSON.parse(fs.readFileSync("governance/recovery/engine-rebase-evidence.current.v1.json","utf8"));
+          const inv = JSON.parse(fs.readFileSync("governance/recovery/engine-drift-inventory.current.v1.json","utf8"));
+          const cert = fs.readFileSync("governance/engine-acceptance/FINAL_ACCEPTANCE.md","utf8");
+          const live = psm.compareProtectedScope();
+          const archiveInv = "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json";
+          const archiveEv = "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json";
+          const fails = [];
+          if (!fs.existsSync(archiveInv)) fails.push("predecessor inventory archive missing");
+          if (!fs.existsSync(archiveEv)) fails.push("predecessor evidence archive missing");
+          if (!cert.includes("BASELINE_ID = " + live.baselineId)) fails.push("cert baseline id");
+          if (inv.changed_paths !== live.changedPathCount) fails.push("current changed_paths vs live");
+          if (ev.changed_paths !== live.changedPathCount) fails.push("evidence changed_paths vs live");
+          if (ev.live_aggregate !== live.liveAggregate) fails.push("evidence live aggregate");
+          if (ev.baseline_aggregate !== live.baselineAggregate) fails.push("evidence baseline aggregate");
+          if (ev.live_aggregate !== ev.baseline_aggregate) fails.push("current aggregate mismatch");
+          if (fails.length) {
+            console.error("[engine-evidence-refresh] FAIL");
+            for (const f of fails) console.error(" - " + f);
+            process.exit(1);
+          }
+          console.log(
+            "[engine-evidence-refresh] PASS · live.changed_paths=" +
+              live.changedPathCount +
+              " · baseline=" +
+              live.baselineId +
+              " · history.preserved",
+          );
+          NODE

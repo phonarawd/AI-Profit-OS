@@ -2,11 +2,11 @@
   "schema": "governance.engine-acceptance.qa8-result.v1",
   "version": "1.0.0",
   "suite_id": "QA8",
-  "run_id": "qa8-security-privacy-20260824",
+  "run_id": "qa8-security-privacy-20260902",
   "todoId": "qa8-security-privacy",
-  "measuredAt": "2026-08-24T09:45:30.522Z",
-  "baseline_id": "ea-baseline-04ef3c7de4dd-2ff1760b7d72",
-  "mode": "full",
+  "measuredAt": "2026-09-02T17:55:32.200Z",
+  "baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
+  "mode": "tiny",
   "asvs_version": "5.0.0",
   "exhaustive_certification_claim": false,
   "kill_switch": {
@@ -25,8 +25,8 @@
     "security_privacy_world": {
       "check_id": "QA8_SECURITY_PRIVACY_WORLD",
       "status": "PASS",
-      "mode": "full",
-      "measuredAt": "2026-08-24T09:45:30.522Z",
+      "mode": "tiny",
+      "measuredAt": "2026-09-02T17:55:32.200Z",
       "seed": 20260813,
       "asvs_version": "5.0.0",
       "exhaustive_certification_claim": false,
@@ -41,16 +41,16 @@
           "attack_face": "admin_boundary",
           "critical": true,
           "status": "PASS",
-          "controllers_scanned": 25,
+          "controllers_scanned": 26,
           "unguarded_count": 0,
-          "guarded_count": 25,
+          "guarded_count": 26,
           "unguarded": [],
           "findings": [],
           "dynamic_child_verify": {
             "script": "tooling/verify/admin-boundary.cjs",
             "ok": true,
             "exitCode": 0,
-            "summary": "PASS - missing admin signing secret -> 401 (admin routes stay closed) (status=401) | [admin-guard.selftest] ALL PASS — real Nest HTTP admin boundary verified (25 checks) | [verify:admin-boundary] PASS (25 admin controllers · 115 routes classified · global APP_GUARD · real Nest HTTP adversarial round-trip)",
+            "summary": "PASS - missing admin signing secret -> 401 (admin routes stay closed) (status=401) | [admin-guard.selftest] ALL PASS — real Nest HTTP admin boundary verified (25 checks) | [verify:admin-boundary] PASS (26 admin controllers · 119 routes classified · global APP_GUARD · real Nest HTTP adversarial round-trip)",
             "cases_covered": [
               "no_token",
               "malformed_token",
@@ -145,7 +145,7 @@
             "script": "tooling/verify/auth-jwt-runtime.cjs",
             "ok": true,
             "exitCode": 0,
-            "summary": "PASS - malformed token -> 401 (status=401) | [jwt-guard.selftest] ALL PASS — real Nest HTTP server + JwtAuthGuard round-trip verified | [verify:auth-jwt-runtime] PASS (real HS256 sign/verify/tamper/expiry/issuer/audience + real Nest HTTP guard round-trip + 6 controllers wired)"
+            "summary": "PASS - webauthn expired challenge (webauthn challenge invalid) | [identity-proof.selftest] ALL PASS — 43 checks | [verify:auth-jwt-runtime] PASS (real HS256 sign/verify/tamper/expiry/issuer/audience + real Nest HTTP guard round-trip + 6 controllers wired)"
           },
           "static_findings": [],
           "findings": []
@@ -227,18 +227,18 @@
           "invariant_id": "INV-ISOLATION-01",
           "harness_probe": {
             "available": true,
-            "probed_path": "../../../../../tmp/aipo-harness/qa8-adversarial-final/qa8-adversarial.v1.json",
-            "age_ms": 59
+            "probed_path": "../../../../../tmp/aipo-harness/qa8-adversarial/qa8-adversarial.v1.json",
+            "age_ms": 69
           },
           "evidence": {
             "source": "run-qa8-adversarial.cjs (isolated CI Postgres + booted Nest, real HTTP)",
-            "measuredAt": "2026-08-24T09:45:30.465Z",
-            "case_count": 41,
+            "measuredAt": "2026-09-02T17:55:32.132Z",
+            "case_count": 42,
             "product_security_verdict": "PASS",
             "unknown_product_failures": 0,
             "inventory": {
-              "controller_count": 25,
-              "route_count": 115,
+              "controller_count": 26,
+              "route_count": 119,
               "controllers": [
                 "services/api-nest/src/adapters/adapters.admin.controller.ts",
                 "services/api-nest/src/admin-ops/admin-ops.admin.controller.ts",
@@ -264,7 +264,8 @@
                 "services/api-nest/src/wallet/deposit-config.admin.controller.ts",
                 "services/api-nest/src/wallet/deposit-dispute.admin.controller.ts",
                 "services/api-nest/src/wallet/krw-deposit.admin.controller.ts",
-                "services/api-nest/src/wallet/withdraw-credentials.admin.controller.ts"
+                "services/api-nest/src/wallet/withdraw-credentials.admin.controller.ts",
+                "services/api-nest/src/wallet/withdraw-review.admin.controller.ts"
               ],
               "drift": false,
               "controllers_without_case": []
@@ -340,5 +341,5 @@
     "Real defects recorded in defects.v1.json - discovery only, not repaired this wave.",
     "Does not issue ENGINE_ACCEPTED_FOR_UI. Does not start QA9."
   ],
-  "checksum": "7fc1296402dcce7eafbad9da90e7ce96c5d7af1b5f149ffb2190577880ce84c0"
+  "checksum": "a3d66ed28a79e5900079651c6dd3b904153948129f8cdf6739cb82fe7be332e9"
 }

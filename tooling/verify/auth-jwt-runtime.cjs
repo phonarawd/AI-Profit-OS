@@ -175,6 +175,7 @@ const guardedControllers = [
   "services/api-nest/src/referral/referral.controller.ts",
   "services/api-nest/src/ai/coach.controller.ts",
   "services/api-nest/src/wallet/home-money-read.user.controller.ts",
+  "services/api-nest/src/ux-prefs/user-ux-prefs.user.controller.ts",
 ];
 for (const rel of guardedControllers) {
   const t = read(rel);
@@ -222,6 +223,24 @@ if (build.status !== 0) {
     process.stderr.write(run.stderr || "");
     if (run.status !== 0 || !(run.stdout || "").includes("ALL PASS")) {
       fails.push("jwt-guard.selftest did not report ALL PASS (real Nest HTTP round-trip failed)");
+    }
+  }
+  const proofJs = path.join(
+    root,
+    "services/api-nest/dist/auth/identity-proof.selftest.js",
+  );
+  if (!fs.existsSync(proofJs)) {
+    fails.push("missing compiled identity-proof.selftest");
+  } else {
+    const proof = spawnSync(process.execPath, [proofJs], {
+      cwd: root,
+      encoding: "utf8",
+      timeout: 30_000,
+    });
+    process.stdout.write(proof.stdout || "");
+    process.stderr.write(proof.stderr || "");
+    if (proof.status !== 0 || !(proof.stdout || "").includes("ALL PASS")) {
+      fails.push("identity-proof.selftest did not report ALL PASS");
     }
   }
 }

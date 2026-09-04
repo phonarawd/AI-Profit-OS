@@ -1,0 +1,47 @@
+{
+  "schema": "governance.recovery.ci-job-classification.v1",
+  "observed_at": "2026-09-01T16:22:51Z",
+  "evidence_written_at": "2026-09-02T00:00:00Z",
+  "source_sha": "38032dafb04ce61ebdf5bf77e6d37df787ecf046",
+  "note": "PR #114 exact-head at observation. Local recovery later moved to 40754bc3. Do not reuse as current-HEAD evidence.",
+  "jobs": [
+    {
+      "name": "qa-matrix (QA6)",
+      "job_id": 99934933611,
+      "conclusion": "failure",
+      "class": "ENGINE_DRIFT_FAIL_CLOSED",
+      "not": ["FLAKE_PROVEN", "TEST_DEFECT", "PRODUCT_UI_DEFECT"],
+      "root_cause": "pnpm verify:engine-acceptance → selftest-qa7 hash_precheck expected MATCH got MISMATCH (prompt_hash and/or schema). Dedicated qa6-measure job succeeded. Threshold/scorer itself reported failed:0.",
+      "invariant": "Do not remove hash_precheck or verify:engine-acceptance from the matrix cell. REBASE_REQUIRED=1 until ACK + new-epoch MATCH.",
+      "rerun_without_classification": "FORBIDDEN"
+    },
+    {
+      "name": "qa-matrix (QA8)",
+      "job_id": 99934933777,
+      "conclusion": "failure",
+      "class": "ENGINE_DRIFT_FAIL_CLOSED",
+      "not": ["FLAKE_PROVEN", "TEST_DEFECT", "PRODUCT_UI_DEFECT"],
+      "root_cause": "Same selftest-qa7 hash_precheck MISMATCH after run-qa8. Dedicated qa8-adversarial job succeeded.",
+      "invariant": "Same as QA6 matrix cell.",
+      "rerun_without_classification": "FORBIDDEN"
+    },
+    {
+      "name": "webkit-home-session",
+      "class": "EXTERNAL_RUNTIME_BLOCKER",
+      "code": "BLOCKED_WEBKIT_FETCH",
+      "root_cause": "same-origin fetch('/api/v1/me/home-read') returns sameOriginError=Load failed. DOM remains home-session-loading for guest and authenticated. Same-origin QA middleware already in 8218297297741e770cea455e66005fb2dab10474.",
+      "product_code_change": "FORBIDDEN unless new evidence proves an application defect",
+      "assertion_weakening": "FORBIDDEN"
+    }
+  ],
+  "hash_precheck": {
+    "expected": "MATCH",
+    "actual": "MISMATCH",
+    "selftest": "tooling/engine-acceptance/selftest-qa7.cjs",
+    "fields": [
+      "acceptance_workflow_hash",
+      "prompt_hash",
+      "eval_dataset_hash"
+    ]
+  }
+}

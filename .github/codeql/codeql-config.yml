@@ -1,0 +1,22 @@
+name: "AI Profit OS CodeQL"
+queries:
+  - uses: security-extended
+paths-ignore:
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/.open-next/**"
+  - "**/coverage/**"
+query-filters:
+  # Static source-text host presence scans in verify tooling (not runtime URL validation).
+  - exclude:
+      id: js/incomplete-url-substring-sanitization
+      paths:
+        - tooling/verify/signup-ready-adapters.cjs
+  - exclude:
+      id: js/regex/missing-regexp-anchor
+      paths:
+        - tooling/verify/signup-ready-adapters.cjs
+  - exclude:
+      id: js/log-injection
+      paths:
+        - tooling/verify/adapter-ingest-fail-closed.runtime.cjs

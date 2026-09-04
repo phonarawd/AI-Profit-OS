@@ -32,7 +32,7 @@ const FORBIDDEN_KEYS = Object.freeze([
   "journalid",
 ]);
 
-/** @type {null | ((event: object) => void | Promise<void>)} */
+/** @type {null | ((event: object) => boolean | Promise<boolean>)} */
 let sink = null;
 
 function setAuditSink(fn) {
@@ -160,8 +160,12 @@ async function writeAuditEvent(raw) {
   const parsed = normalizeEvent(raw);
   if (!parsed.ok) return parsed;
   if (sink) {
-    await sink(parsed.event);
-    return { ok: true, event: parsed.event, persisted: true };
+    try {
+      const persisted = await sink(parsed.event);
+      return { ok: true, event: parsed.event, persisted: persisted === true };
+    } catch {
+      return { ok: true, event: parsed.event, persisted: false };
+    }
   }
   return { ok: true, event: parsed.event, persisted: false };
 }

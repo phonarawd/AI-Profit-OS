@@ -21,8 +21,9 @@ export interface Env {
   PHASE: string;
   /** Nest ingest URL for Phase1 observe fan-in */
   NEST_USDT_OBSERVE_URL?: string;
-  /** Optional shared secret header */
+  /** Optional shared secret header — Nest observe requires x-internal-wallet-token */
   WATCHER_INGEST_TOKEN?: string;
+  INTERNAL_WALLET_TICK_TOKEN?: string;
   TRONGRID_BASE_URL?: string;
   TRONGRID_API_KEY?: string;
   /** JSON array of { trc20Address, userId } — Phase1 bootstrap; Nest is SoT */
@@ -88,8 +89,11 @@ async function runTick(env: Env) {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          ...(env.WATCHER_INGEST_TOKEN
-            ? { "x-watcher-token": env.WATCHER_INGEST_TOKEN }
+          ...(env.INTERNAL_WALLET_TICK_TOKEN || env.WATCHER_INGEST_TOKEN
+            ? {
+                "x-internal-wallet-token":
+                  env.INTERNAL_WALLET_TICK_TOKEN || env.WATCHER_INGEST_TOKEN,
+              }
             : {}),
         },
         body: JSON.stringify({
@@ -97,7 +101,6 @@ async function runTick(env: Env) {
           toAddress: obs.toAddress,
           amountUsdt: obs.amountUsdt,
           confirmations: obs.confirmations,
-          userId: obs.userId,
         }),
       });
       if (res.ok) forwarded += 1;

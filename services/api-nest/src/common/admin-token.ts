@@ -12,6 +12,9 @@ import { createRequire } from "node:module";
 import { join } from "node:path";
 import { loadPhase0Env } from "../config/phase0.env";
 import { ADMIN_JWT_AUDIENCE, ADMIN_JWT_ISSUER } from "../auth/auth.constants";
+import { extractBearerToken } from "./bearer-header";
+
+export { extractBearerToken };
 
 const requireCjs = createRequire(__filename);
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -44,13 +47,6 @@ export class AdminTokenError extends Error {
   }
 }
 
-export function extractBearerToken(headerValue: unknown): string | null {
-  const raw = Array.isArray(headerValue) ? headerValue[0] : headerValue;
-  if (typeof raw !== "string") return null;
-  const m = /^Bearer\s+(.+)$/i.exec(raw.trim());
-  return m ? m[1].trim() : null;
-}
-
 function isoFromEpochSeconds(value: unknown): string | null {
   const n = Number(value);
   if (!Number.isFinite(n) || n <= 0) return null;
@@ -61,12 +57,7 @@ function isoFromEpochSeconds(value: unknown): string | null {
  * Authentication time stays REAL (`Date.now()` inside jwt.core.cjs) — the QA
  * domain Clock seam must never be able to resurrect an expired admin token.
  */
-export function verifyAdminAuthorizationHeader(
-  headerValue: unknown,
-): AdminPrincipal {
-  const token = extractBearerToken(headerValue);
-  if (!token) throw new AdminTokenError("ADMIN_AUTH_REQUIRED");
-
+export function verifyAdminAccessToken(token: string): AdminPrincipal {
   const secret = loadPhase0Env().jwtAdminSecret;
   if (!secret) {
     // Never open admin routes because the deployment forgot the secret.
@@ -98,4 +89,12 @@ export function verifyAdminAuthorizationHeader(
     issuedAt,
     expiresAt,
   };
+}
+
+export function verifyAdminAuthorizationHeader(
+  headerValue: unknown,
+): AdminPrincipal {
+  const token = extractBearerToken(headerValue);
+  if (!token) throw new AdminTokenError("ADMIN_AUTH_REQUIRED");
+  return verifyAdminAccessToken(token);
 }

@@ -25,6 +25,21 @@ function mustExist(rel) {
   if (!fs.existsSync(path.join(root, rel))) fails.push(`missing ${rel}`);
 }
 
+/** Static source must declare an absolute URL whose hostname equals `host`. */
+function sourceDeclaresHost(source, host) {
+  if (!source) return false;
+  const re = /https?:\/\/[^\s"'`\\]+/g;
+  let match;
+  while ((match = re.exec(source)) !== null) {
+    try {
+      if (new URL(match[0]).hostname === host) return true;
+    } catch {
+      // ignore malformed candidate literals in source text
+    }
+  }
+  return false;
+}
+
 const workers = [
   "ebay-adapter",
   "pokemontcg-adapter",
@@ -68,8 +83,11 @@ for (const name of workers) {
     if (/echo 'Phase1\+ only'/.test(pkg) || /echo \"Phase1\+ only\"/.test(pkg)) {
       fails.push(`${name} package.json deploy must use wrangler (not echo stub)`);
     }
-    if (!/"deploy":\s*"wrangler deploy/.test(pkg)) {
-      fails.push(`${name} package.json missing wrangler deploy script`);
+    if (!/wrangler-worker-preview-only\.cjs/.test(pkg)) {
+      fails.push(`${name} package.json deploy must use preview-only wrangler wrapper`);
+    }
+    if (/wrangler\s+deploy/.test(pkg) && /--env[=\s]+production/.test(pkg)) {
+      fails.push(`${name} package.json must not invoke wrangler deploy --env production`);
     }
   }
   const wr = read(`workers/${name}/wrangler.toml`);
@@ -108,10 +126,20 @@ if (ebayBrowse && !/X-EBAY-C-MARKETPLACE-ID/.test(ebayBrowse)) {
 // B: pokemontcg + ygoprodeck
 const poke = read("workers/pokemontcg-adapter/src/index.ts");
 const ygo = read("workers/ygoprodeck-adapter/src/index.ts");
-if (poke && !/pokemontcg\.io|api\.pokemontcg/.test(poke + (read("workers/pokemontcg-adapter/src/constants.ts") || ""))) {
+const pokeBundle = poke + (read("workers/pokemontcg-adapter/src/constants.ts") || "");
+if (
+  poke &&
+  !sourceDeclaresHost(pokeBundle, "api.pokemontcg.io") &&
+  !sourceDeclaresHost(pokeBundle, "pokemontcg.io")
+) {
   fails.push("pokemontcg-adapter must target api.pokemontcg.io");
 }
-if (ygo && !/ygoprodeck\.com/.test(ygo + (read("workers/ygoprodeck-adapter/src/constants.ts") || ""))) {
+const ygoBundle = ygo + (read("workers/ygoprodeck-adapter/src/constants.ts") || "");
+if (
+  ygo &&
+  !sourceDeclaresHost(ygoBundle, "db.ygoprodeck.com") &&
+  !sourceDeclaresHost(ygoBundle, "ygoprodeck.com")
+) {
   fails.push("ygoprodeck-adapter must target db.ygoprodeck.com");
 }
 if (poke && !/catalog_ref|listingLeg:\s*false/.test(poke)) {
@@ -124,13 +152,17 @@ if (ygo && !/catalog_ref|listingLeg:\s*false/.test(ygo)) {
 // C: coingecko + frankfurter
 const cg = read("workers/coingecko-adapter/src/constants.ts") || "";
 const fr = read("workers/frankfurter-adapter/src/constants.ts") || "";
-if (!/api\.coingecko\.com/.test(cg + (read("workers/coingecko-adapter/src/client.ts") || ""))) {
+const cgBundle = cg + (read("workers/coingecko-adapter/src/client.ts") || "");
+if (!sourceDeclaresHost(cgBundle, "api.coingecko.com")) {
   fails.push("coingecko-adapter must call api.coingecko.com");
 }
-if (!/frankfurter\.dev/.test(fr + (read("workers/frankfurter-adapter/src/client.ts") || ""))) {
+const frBundle = fr + (read("workers/frankfurter-adapter/src/client.ts") || "");
+if (
+  !sourceDeclaresHost(frBundle, "api.frankfurter.dev") &&
+  !sourceDeclaresHost(frBundle, "frankfurter.dev")
+) {
   fails.push("frankfurter-adapter must call api.frankfurter.dev");
 }
-
 // KR / non-partner scrapers still forbidden
 for (const banned of ["rolex-adapter", "chrono24-adapter", "tcgplayer-adapter"]) {
   if (fs.existsSync(path.join(root, "workers", banned))) {

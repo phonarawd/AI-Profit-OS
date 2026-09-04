@@ -1,0 +1,23 @@
+{
+  "observed_at": "2026-09-02T04:00:29Z",
+  "id": "b-3-promotion",
+  "apply": 0,
+  "production_db_apply": 0,
+  "isolated_verify_db": "EXISTS=YES",
+  "usable_isolated_verify_env": "YES",
+  "create_attempt": "Supabase isolated branch created after explicit hourly cost confirmation",
+  "promotion_path": "VERIFY_DB_READY_STAGING_E2E_PENDING",
+  "staging_e2e": "NOT_RUN (RC_FORMAL=NO · frontend staging binding pending)",
+  "prod_apply": "Founder + ledger only",
+  "ledger": "governance/db-recon/b3-promotion-ledger.v1.json",
+  "artifact": "governance/release-master/rel-b3-promotion/b3-promotion.v1.json",
+  "current_staging": {
+    "supabase_project_ref": "uluzxvdpynytytduuryy",
+    "render_service_id": "srv-dabph32fngtc73esj8rg",
+    "render_live_sha": "52877334c22f074ebe6bc4b280a96b6b896995c0",
+    "db_runtime": "PASS",
+    "redis_runtime": "PASS",
+    "schema_parity": "93/93",
+    "customer_data": 0
+  }
+}

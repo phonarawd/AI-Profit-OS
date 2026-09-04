@@ -1,0 +1,17 @@
+{
+  "observed_at": "2026-08-29T18:45:00+09:00",
+  "apply": 0,
+  "write_path": "UNVERIFIED",
+  "live": "almost all public tables RLS on + policy_n=0; two audit tables policy_n=1; anon/auth grants empty",
+  "design": {
+    "owner": "Nest JWT service only",
+    "data_api": "deny for money/identity/admin",
+    "policies": "explicit owner or service_role; ENABLE-only forbidden",
+    "proof_required": [
+      "Data API probe",
+      "GRANT dump",
+      "Nest E2E allow/deny"
+    ],
+    "prod_apply": "Founder + B-3"
+  }
+}

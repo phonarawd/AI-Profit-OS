@@ -68,10 +68,37 @@ const INTENTIONAL_FAIL_HTML =
 const CLEAN_PROBE_HTML =
   '<!doctype html><html lang="ko"><head><title>퍼뜩</title></head><body><main><h1>로그인</h1><button type="button">확인</button></main></body></html>';
 
+/**
+ * Browser Axe via evaluate(source). addScriptTag dies when Next remounts.
+ * Context-destroyed is retried once after domcontentloaded.
+ */
+async function scanPageAxe(page) {
+  const axeSource = resolveAxeCore().source;
+  const run = async () => {
+    await page.evaluate(axeSource);
+    return page.evaluate(async () =>
+      window.axe.run(document, {
+        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] },
+      }),
+    );
+  };
+  try {
+    return await run();
+  } catch (err) {
+    const msg = String(err && err.message ? err.message : err);
+    if (!/Execution context was destroyed|Target closed|navigation/i.test(msg)) {
+      throw err;
+    }
+    await page.waitForLoadState("domcontentloaded").catch(() => {});
+    return run();
+  }
+}
+
 module.exports = {
   AXE_SCAN_TARGETS,
   blockingViolations,
   runAxeOnHtml,
+  scanPageAxe,
   INTENTIONAL_FAIL_HTML,
   CLEAN_PROBE_HTML,
 };

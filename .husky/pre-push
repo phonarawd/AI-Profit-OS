@@ -1,1 +1,3 @@
+# pnpm next dest on Windows junctions cannot use Turbopack; webpack is the supported fallback.
+export NEXT_DEV_WEBPACK=1
 pnpm verify:gate:push

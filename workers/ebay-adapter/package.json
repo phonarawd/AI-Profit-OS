@@ -5,8 +5,8 @@
   "description": "ebay-adapter — Browse API multi marketplaceId · Phase1 CF deploy (ADR-003 · Engine §0.0)",
   "scripts": {
     "dev": "wrangler dev --config wrangler.toml",
-    "deploy": "wrangler deploy --config wrangler.toml",
-    "deploy:prod": "wrangler deploy --config wrangler.toml --env production"
+    "deploy": "node ../../tooling/deploy/wrangler-worker-preview-only.cjs",
+    "deploy:prod": "node ../../tooling/deploy/forbid-direct-wrangler-prod.cjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260801.1",

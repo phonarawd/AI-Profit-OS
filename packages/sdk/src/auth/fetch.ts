@@ -79,6 +79,30 @@ function asText(v: unknown): string | null {
   return typeof v === "string" && v.trim() ? v : null;
 }
 
+const EMAIL_MAX_LEN = 254;
+
+function isValidEmail(raw: string): boolean {
+  if (typeof raw !== "string") return false;
+  const n = raw.length;
+  if (n < 5 || n > EMAIL_MAX_LEN) return false;
+  let at = -1;
+  for (let i = 0; i < n; i += 1) {
+    const ch = raw[i]!;
+    if (ch === "@") {
+      if (at !== -1) return false;
+      at = i;
+      continue;
+    }
+    const code = ch.charCodeAt(0);
+    if (code <= 32) return false;
+  }
+  if (at <= 0 || at >= n - 3) return false;
+  const domain = raw.slice(at + 1);
+  const dot = domain.lastIndexOf(".");
+  if (dot <= 0 || dot === domain.length - 1) return false;
+  return true;
+}
+
 async function readJson(res: Response): Promise<unknown> {
   try {
     return await res.json();
@@ -206,7 +230,7 @@ export async function signupStageA(
   opts: AuthRequestOpts = {},
 ): Promise<AuthSession> {
   const email = input.email.trim();
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!email || !isValidEmail(email)) {
     throw new AuthError(400, "VALIDATION_ERROR");
   }
   if (!input.termsAcceptedAt || !input.privacyAcceptedAt) {
@@ -319,7 +343,7 @@ export async function requestMagicLink(
   opts: AuthRequestOpts = {},
 ): Promise<{ ok: true }> {
   const trimmed = email.trim();
-  if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+  if (!trimmed || !isValidEmail(trimmed)) {
     throw new AuthError(400, "VALIDATION_ERROR");
   }
   const headers = await authHeaders(opts);

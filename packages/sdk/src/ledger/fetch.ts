@@ -11,7 +11,7 @@ import type {
   UserJournalList,
 } from "./types";
 
-const MONEY_RE = /^[0-9]+(\\.[0-9]+)?$/;
+const MONEY_RE = /^[0-9]+(\.[0-9]+)?$/;
 function apiUrl(apiBase: string, path: string): string {
   const base = (apiBase || "").replace(/\/$/, "");
   const p = path.startsWith("/") ? path : `/${path}`;

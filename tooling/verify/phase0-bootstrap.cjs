@@ -141,12 +141,9 @@ if (!phaseEnv.includes("ap-northeast-2")) {
   fails.push("phase0.env must lock Seoul ap-northeast-2 check");
 }
 
-const oauthSvc = read("services/api-nest/src/auth/auth.service.ts");
+const oauthSvc = read("services/api-nest/src/auth/oauth-identity.service.ts");
 if (!oauthSvc.includes("oauthConfigured") || !oauthSvc.includes("OAUTH_")) {
-  // oauthConfigured import + env-driven authorize URL
-  if (!oauthSvc.includes("oauthConfigured")) {
-    fails.push("auth.service must wire oauthConfigured from phase0 env");
-  }
+  fails.push("oauth-identity.service must wire oauthConfigured from phase0 env");
 }
 
 const playbook = read("infra/phase0-migration-playbook.md");

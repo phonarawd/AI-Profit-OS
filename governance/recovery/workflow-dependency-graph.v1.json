@@ -1,0 +1,83 @@
+{
+  "schema": "governance.recovery.workflow-dependency-graph.v1",
+  "observed_at": "2026-08-31T14:45:00.000Z",
+  "observed_from": "HEAD ea8be39 working tree + origin/main 2e75a13 engine-acceptance.yml deploy-cloudflare.yml gate.yml",
+  "production_mutation": 0,
+  "verdict": "RELEASE_GRAPH_UNSAFE",
+  "workflows": {
+    "engine-acceptance.yml": {
+      "triggers": ["workflow_dispatch", "pull_request(paths)", "push(main, paths)"],
+      "jobs": [
+        "qa0-baseline",
+        "qa1-deterministic",
+        "qa2-synthetic-personas",
+        "qa-matrix[QA3,QA4,QA5,QA6,QA8]",
+        "qa7-ai-eval",
+        "qa5-fault",
+        "qa6-measure",
+        "qa8-adversarial",
+        "aggregator"
+      ],
+      "aggregator": {
+        "if": "always()",
+        "needs": [
+          "qa0-baseline",
+          "qa1-deterministic",
+          "qa2-synthetic-personas",
+          "qa-matrix"
+        ],
+        "missing_needs": [
+          "qa7-ai-eval",
+          "qa5-fault",
+          "qa6-measure",
+          "qa8-adversarial"
+        ],
+        "fails_on_dependency_failure": false,
+        "copies_use_or_true": true,
+        "role": "EVIDENCE_ONLY_NOT_VERDICT"
+      },
+      "qa7": {
+        "canonical_verdict_dependency": false,
+        "auto_on_pr_push": false,
+        "dispatch_only": true
+      },
+      "action_refs": "mutable_tags (@v6 / @v4)",
+      "top_level_permissions": "absent"
+    },
+    "deploy-cloudflare.yml": {
+      "triggers": ["workflow_dispatch"],
+      "production_selectable": true,
+      "canonical_acceptance_required": false,
+      "same_sha_required": false,
+      "artifact_digest_required": false,
+      "environment": "production (also used for preview target)",
+      "action_refs": "mutable_tags (@v6 / @v4)",
+      "top_level_permissions": "absent"
+    },
+    "gate.yml": {
+      "triggers": ["push(main)", "pull_request(main)"],
+      "role": "T2 verify:gate + cargo + OpenNext build",
+      "is_release_acceptance": false,
+      "action_refs": "mutable_tags + dtolnay/rust-toolchain@stable",
+      "top_level_permissions": "absent"
+    }
+  },
+  "observed_incident": {
+    "sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec",
+    "production_deploy_run": "33226347378",
+    "production_deploy_result": "SUCCESS",
+    "engine_acceptance_run": "33240856583",
+    "engine_acceptance_later": true,
+    "failed_jobs": ["QA6 matrix", "QA7 AI eval", "QA8 matrix"],
+    "aggregator": "SUCCESS"
+  },
+  "required_after_patch": {
+    "evidence_job": "acceptance-evidence (always collect)",
+    "verdict_job": "release-acceptance (fail-closed, all mandatory QA in needs)",
+    "production_deploy": "ACCEPTED_SHA == DEPLOY_SHA + artifact digest + release-acceptance success",
+    "build_once": true,
+    "artifact_digest_required": true,
+    "deploy_rebuild_forbidden": true,
+    "workflow_path_authoritative": true
+  }
+}

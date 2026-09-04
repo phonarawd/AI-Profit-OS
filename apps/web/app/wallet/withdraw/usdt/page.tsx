@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { T } from "@aipo/ui/copy/ko";
 import { SearchParamsBoundary } from "@aipo/ui/components/SearchParamsBoundary";
 import { WithdrawLiveForm } from "../../../../components/WithdrawLiveForm";
+import { WithdrawUnauthorizedNote } from "../../../../components/WithdrawUnauthorized";
 import { useWithdrawKycGate } from "../../../../lib/use-withdraw-kyc-gate";
 import styles from "../../wallet.module.css";
 
@@ -31,6 +32,9 @@ function UsdtWithdrawContent() {
       data-withdraw-default-mode="profit"
       data-withdraw-mode={mode}
       data-testid="wallet-withdraw-usdt"
+      data-kyc-authority={gate.authority}
+      data-kyc-status={gate.kycStatus ?? ""}
+      data-kyc-form={gate.allowWithdrawForm ? "1" : "0"}
     >
       <p className={styles.nav}>
         <a href="/wallet">지갑</a>
@@ -42,9 +46,7 @@ function UsdtWithdrawContent() {
       {gate.authority === "loading" ? (
         <p className="mt-3 text-sm" role="status">본인 확인 상태를 확인하는 중…</p>
       ) : null}
-      {gate.authority === "unauthorized" ? (
-        <p className="mt-3 text-sm" role="status">로그인하면 출금을 신청할 수 있어요.</p>
-      ) : null}
+      {gate.authority === "unauthorized" ? <WithdrawUnauthorizedNote /> : null}
       {gate.authority === "unavailable" ? (
         <p className="mt-3 text-sm" role="status">본인 확인 상태를 확인할 수 없음</p>
       ) : null}

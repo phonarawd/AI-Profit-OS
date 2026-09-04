@@ -66,9 +66,23 @@ function cursorRunning() {
   }
 }
 
-function sqlite3(args) {
+const SQLITE_SQL = Object.freeze({
+  countAgent: "SELECT COUNT(*) FROM cursorDiskKV WHERE key LIKE 'agentKv:blob:%';",
+  deleteAgent: "DELETE FROM cursorDiskKV WHERE key LIKE 'agentKv:blob:%';",
+  vacuum: "VACUUM;",
+});
+
+function sqlite3(dbPath, sql) {
+  if (!fs.existsSync(dbPath)) throw new Error("sqlite db missing");
+  if (!/\.(vscdb|db)$/i.test(dbPath)) throw new Error("sqlite path rejected");
+  if (!Object.values(SQLITE_SQL).includes(sql)) throw new Error("sqlite sql rejected");
   const cmd = process.platform === "win32" ? "sqlite3.exe" : "sqlite3";
-  return execSync(`${cmd} ${args}`, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
+  const r = spawnSync(cmd, [dbPath, sql], {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  if (r.status !== 0) throw new Error(String(r.stderr || "sqlite3 failed"));
+  return String(r.stdout || "").trim();
 }
 
 function findSqlite3() {
@@ -180,10 +194,10 @@ let agentDeleted = 0;
 if (fs.existsSync(stateDb) && findSqlite3()) {
   const beforeDb = fs.statSync(stateDb).size;
   try {
-    const count = sqlite3(`"${stateDb.replace(/"/g, '""')}" "SELECT COUNT(*) FROM cursorDiskKV WHERE key LIKE 'agentKv:blob:%';"`);
+    const count = sqlite3(stateDb, SQLITE_SQL.countAgent);
     agentDeleted = Number(count) || 0;
-    sqlite3(`"${stateDb.replace(/"/g, '""')}" "DELETE FROM cursorDiskKV WHERE key LIKE 'agentKv:blob:%';"`);
-    sqlite3(`"${stateDb.replace(/"/g, '""')}" "VACUUM;"`);
+    sqlite3(stateDb, SQLITE_SQL.deleteAgent);
+    sqlite3(stateDb, SQLITE_SQL.vacuum);
     const afterDb = fs.statSync(stateDb).size;
     removed.push(`state.vscdb agentKv×${agentDeleted} (${mb(beforeDb)} → ${mb(afterDb)})`);
   } catch (e) {
@@ -198,7 +212,7 @@ const convDb = path.join(roaming, "User", "globalStorage", "conversation-search.
 if (fs.existsSync(convDb) && findSqlite3()) {
   try {
     const b = fs.statSync(convDb).size;
-    sqlite3(`"${convDb.replace(/"/g, '""')}" "VACUUM;"`);
+    sqlite3(convDb, SQLITE_SQL.vacuum);
     removed.push(`conversation-search.db (${mb(b)} → ${mb(fs.statSync(convDb).size)})`);
   } catch {
     /* ignore */
@@ -214,7 +228,7 @@ if (fs.existsSync(aiTrack)) {
     if (!findSqlite3()) continue;
     try {
       const b = fs.statSync(dbPath).size;
-      sqlite3(`"${dbPath.replace(/"/g, '""')}" "VACUUM;"`);
+      sqlite3(dbPath, SQLITE_SQL.vacuum);
       removed.push(`ai-tracking/${name} (${mb(b)} → ${mb(fs.statSync(dbPath).size)})`);
     } catch {
       /* ignore */

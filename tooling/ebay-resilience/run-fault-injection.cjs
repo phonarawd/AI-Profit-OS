@@ -227,6 +227,11 @@ async function runEbayFaultInjection(opts = {}) {
   const coreHealthBefore = await httpJson("GET", productBaseUrl, "/api/v1/health", {}, undefined);
 
   // --- D (setup) — a stale eBay-sourced opportunity, seeded BEFORE the fault ---
+  const ingestToken = String(process.env.ADAPTER_INGEST_TOKEN || "").trim();
+  if (!ingestToken) {
+    throw harnessFailure("ADAPTER_INGEST_TOKEN required — ingest is fail-closed");
+  }
+  const ingestHeaders = { "x-adapter-token": ingestToken };
   const staleOpportunityId = databaseUrl ? await seedStaleEbayOpportunity(databaseUrl) : null;
 
   // --- A/B/C — full eBay OAuth outage tick, delivered as 3 identical batches ---
@@ -258,7 +263,7 @@ async function runEbayFaultInjection(opts = {}) {
       "POST",
       productBaseUrl,
       "/api/v1/internal/adapters/ingest",
-      {},
+      ingestHeaders,
       outageBody(batch),
     );
     outageIngestResponses.push({ batch, status: res.status, ok: res.parsed?.ok === true });
@@ -353,7 +358,7 @@ async function runEbayFaultInjection(opts = {}) {
     "POST",
     productBaseUrl,
     "/api/v1/internal/adapters/ingest",
-    {},
+    ingestHeaders,
     {
       adapterId: "ebay",
       worker: "ebay-adapter",

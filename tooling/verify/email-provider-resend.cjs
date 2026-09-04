@@ -61,8 +61,12 @@ if (!envEx.includes("RESEND_FROM_EMAIL")) {
 }
 
 const auth = read("services/api-nest/src/auth/auth.service.ts");
-if (!auth.includes('delivery: "resend"')) {
+const magic = read("services/api-nest/src/auth/magic-link.service.ts");
+if (!auth.includes("magicLinkRequest") || !magic.includes('delivery: "resend"')) {
   fails.push("auth magic-link must use delivery resend (same SSOT path)");
+}
+if (!provider.includes("sendMagicLink")) {
+  fails.push("resend-email.provider must send an actual magic-link URL");
 }
 
 const step = read("services/api-nest/src/wallet/withdraw-stepup.service.ts");

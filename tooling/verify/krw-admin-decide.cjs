@@ -87,6 +87,12 @@ const rejectFn = svc.match(/async reject\([\s\S]*?\n  async /);
 if (rejectFn && /postJournal/.test(rejectFn[0])) {
   fails.push("reject() must not call postJournal (credit 0)");
 }
+if (svc.includes("% 99") || svc.includes("%99")) {
+  fails.push("KRW suffix must not use modulo-biased randomBytes");
+}
+if (!svc.includes("randomInt(1, 100)")) {
+  fails.push("KRW suffix must use randomInt(1, 100) for the 1..99 domain");
+}
 if (!svc.includes("async reject(")) {
   fails.push("krw-deposit.service must expose reject()");
 }
@@ -153,7 +159,8 @@ for (const needle of [
   "user_deposit_addresses",
   "derivation_index",
   "trc20_address",
-  "deriveTrc20Address",
+  "allocateCanonicalTrc20Address",
+  "TRON_HD_DERIVATION_UNAVAILABLE",
   "getOrCreate",
 ]) {
   if (!addrSvc.includes(needle)) {
@@ -167,6 +174,12 @@ if (!tron.includes("m/44'/195'/0'/0/")) {
 }
 if (!tron.includes("0x41") && !tron.includes("[0x41]")) {
   fails.push("tron-address must use Tron 0x41 prefix");
+}
+if (/\bcreateHmac\b/.test(tron)) {
+  fails.push("tron-address must not HMAC a secret ref into a synthetic address");
+}
+if (!tron.includes("TRON_HD_DERIVATION_UNAVAILABLE")) {
+  fails.push("tron-address must fail closed as TRON_HD_DERIVATION_UNAVAILABLE");
 }
 
 const events = read("services/api-nest/src/wallet/wallet.events.ts");

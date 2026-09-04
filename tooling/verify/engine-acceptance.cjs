@@ -640,6 +640,20 @@ if (evidence) {
       if (evidence.qa_phase !== "QA-9") {
         fail("evidence-manifest.qa_phase must be QA-9 after qa9-acceptance-report completion");
       }
+      const currentEpoch = evidence.current_epoch;
+      if (!currentEpoch || currentEpoch.baseline_id !== baseline.id) {
+        fail("evidence.current_epoch must bind the current baseline after QA9");
+      } else {
+        if (currentEpoch.qa1_qa6_status !== "COMPLETE") {
+          fail("evidence.current_epoch.qa1_qa6_status must be COMPLETE after QA9");
+        }
+        if (currentEpoch.qa8_status !== "COMPLETE") {
+          fail("evidence.current_epoch.qa8_status must be COMPLETE after QA9");
+        }
+        if (currentEpoch.qa9_status !== "COMPLETE") {
+          fail("evidence.current_epoch.qa9_status must be COMPLETE after QA9");
+        }
+      }
       if (
         !["03_blocked_fix_round", "03_blocked_incomplete", "03_ui_entry_unlocked"].includes(
           evidence.next,
@@ -1426,11 +1440,17 @@ if (qa7Result && !pendingRerun) {
   if (!qa7Result.actions || qa7Result.actions.run_id !== qa7Result.run_id) {
     fail("qa7-result.actions.run_id must match run_id");
   }
-  if (qa7Result.actions.workflow !== "engine-acceptance") {
-    fail("qa7-result.actions.workflow must be engine-acceptance");
-  }
-  if (qa7Result.actions.event !== "workflow_dispatch") {
-    fail("qa7-result.actions.event must be workflow_dispatch");
+  const formalQa7ProducerEvents = {
+    "engine-acceptance": ["workflow_dispatch"],
+    "engine-current-epoch-publish-once": ["push"],
+  };
+  const allowedQa7Events = formalQa7ProducerEvents[qa7Result.actions.workflow];
+  if (!allowedQa7Events) {
+    fail("qa7-result.actions.workflow must be an approved formal QA7 producer");
+  } else if (!allowedQa7Events.includes(qa7Result.actions.event)) {
+    fail(
+      `qa7-result.actions.event ${qa7Result.actions.event} not allowed for formal producer ${qa7Result.actions.workflow}`,
+    );
   }
   if (qa7Result.actions.qa_phase !== "qa7") {
     fail("qa7-result.actions.qa_phase must be qa7");

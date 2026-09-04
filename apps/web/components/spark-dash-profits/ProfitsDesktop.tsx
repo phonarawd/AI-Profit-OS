@@ -17,9 +17,9 @@ function filterItems(
   return items.filter((item) => {
     if (filter === "joinable" && !item.joinable) return false;
     if (!q) return true;
-    return (
-      item.title.toLowerCase().includes(q) || item.partner.toLowerCase().includes(q)
-    );
+    const title = String(item.title || "").toLowerCase();
+    const partner = String(item.partner || "").toLowerCase();
+    return title.includes(q) || partner.includes(q);
   });
 }
 

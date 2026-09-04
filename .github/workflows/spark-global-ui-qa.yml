@@ -1,11 +1,15 @@
 name: spark-global-ui-qa
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     branches: [main]
     paths:
       - "apps/admin/**"
       - "packages/ui/brand/**"
+      - "packages/ui/copy/ko/admin.ts"
       - "packages/ui/components/trust/**"
       - "tooling/e2e/specs/admin-spark-shell.spec.cjs"
       - "tooling/e2e/specs/admin-entry-closure.spec.cjs"
@@ -20,23 +24,25 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
         with:
           version: 10.14.0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: "22"
           cache: "pnpm"
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: "1.85.0"
       - name: Install
         run: pnpm install --frozen-lockfile
-      - name: T1 push gate
-        run: pnpm verify:gate:push
-      - name: Install Chromium
-        run: pnpm exec playwright install --with-deps chromium
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+      - name: Stack lock + secrets
+        run: |
+          pnpm verify:stack-lock
+          pnpm verify:secrets
+        # Admin UI regression only. Full T0/T1 + REL-603 owned by gate.yml / consumer-spark-worldclass.
       - name: Spark Dash admin browser regression
         env:
           CI: "1"

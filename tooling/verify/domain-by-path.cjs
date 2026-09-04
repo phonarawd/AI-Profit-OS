@@ -1,8 +1,12 @@
 /**
  * T0 — 변경 경로 기준 도메인 verify (슬라이스 빠른 차단)
- * staged → unstaged → HEAD 대비 순으로 파일 목록 수집
+ * LOCAL: staged → unstaged → HEAD
+ * CI PR: merge-base/base SHA → HEAD (committed)
+ * CI PUSH: before SHA → HEAD (committed)
+ * CI base unresolved → fail closed (silent SKIP 금지)
  */
-const { execSync } = require("child_process");
+const { execFileSync } = require("child_process");
+const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "../..");
@@ -15,9 +19,11 @@ const RULES = [
       /^\.cursor\/hooks\.json$/.test(f) ||
       /^\.cursor\/rules\/project-isolation/.test(f) ||
       /^scripts\/verify-project-boundary\.mjs$/.test(f) ||
+      /^scripts\/verify-night-guard\.mjs$/.test(f) ||
       /^tooling\/verify\/project-boundary\.cjs$/.test(f) ||
+      /^tooling\/verify\/night-guard\.cjs$/.test(f) ||
       /^docs\/ops\/project-isolation-boundary-checklist\.md$/.test(f),
-    scripts: ["project-boundary.cjs"],
+    scripts: ["project-boundary.cjs", "night-guard.cjs"],
   },
   {
     test: (f) =>
@@ -62,9 +68,158 @@ const RULES = [
   },
   {
     test: (f) =>
+      /^governance\/recovery\/engine-(rebase-evidence|drift-inventory)\.current\.v1\.json$/.test(
+        f,
+      ) ||
+      /^governance\/recovery\/archive\/engine-(drift-inventory|rebase-evidence)\./.test(
+        f,
+      ) ||
+      /^tooling\/recovery\/build-engine-drift-inventory\.cjs$/.test(f) ||
+      /^tooling\/verify\/engine-drift-inventory\.cjs$/.test(f),
+    scripts: ["engine-drift-inventory.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/RC_FORMAL\.md$/.test(f) ||
+      /^governance\/release-master\/rc-formal\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/rc-formal\.cjs$/.test(f),
+    scripts: ["rc-formal.cjs"],
+  },
+  {
+    test: (f) =>
       /^tooling\/e2e\//.test(f) ||
-      /^tooling\/verify\/qa-env-isolation-guard\.cjs$/.test(f),
-    scripts: ["qa-env-isolation-guard.cjs", "auth-rate-limit.cjs", "axe-harness.cjs"],
+      /^tooling\/verify\/qa-env-isolation-guard\.cjs$/.test(f) ||
+      /^tooling\/verify\/critical-cross-browser\.cjs$/.test(f) ||
+      /^\.github\/workflows\/critical-cross-browser\.yml$/.test(f) ||
+      /^\.github\/workflows\/critical-axe\.yml$/.test(f),
+    scripts: [
+      "qa-env-isolation-guard.cjs",
+      "auth-rate-limit.cjs",
+      "axe-harness.cjs",
+      "leftover-browser-harness.cjs",
+      "full-product-axe-inventory.cjs",
+      "critical-cross-browser.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^apps\/web\/app\/error\.tsx$/.test(f) ||
+      /^apps\/web\/app\/me\/AccountHub\.tsx$/.test(f) ||
+      /^apps\/web\/components\/pwa\/OfflineBanner\.tsx$/.test(f) ||
+      /^apps\/web\/app\/trades\/\[id\]\/execute\/TradeExecuteClient\.tsx$/.test(f) ||
+      /^packages\/ui\/components\/primitives\//.test(f) ||
+      /^tooling\/verify\/leftover-shared-states\.cjs$/.test(f) ||
+      /^governance\/recovery\/leftover-shared-states-evidence\.v1\.json$/.test(f),
+    scripts: ["leftover-shared-states.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/db-recon\//.test(f) ||
+      /^governance\/release-inventory\/b1-push-rls-design\.v1\.json$/.test(f) ||
+      /^governance\/release-inventory\/b2-ownership-design\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/db-recon-inventory\.cjs$/.test(f) ||
+      /^tooling\/verify\/live-schema-forensic\.cjs$/.test(f) ||
+      /^tooling\/recovery\/(compare-sql-columns|build-live-schema-forensic)\.cjs$/.test(f),
+    scripts: ["db-recon-inventory.cjs", "live-schema-forensic.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/rel-b3-promotion\//.test(f) ||
+      /^governance\/db-recon\/b3-promotion-ledger\.v1\.json$/.test(f) ||
+      /^governance\/release-inventory\/b3-promotion\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/b3-promotion\.cjs$/.test(f),
+    scripts: ["b3-promotion.cjs"],
+  },
+  {
+    test: (f) =>
+      /^governance\/release-master\/release-acceptance\.v1\.json$/.test(f) ||
+      /^governance\/release-master\/release-artifact\.v1\.json$/.test(f) ||
+      /^tooling\/release\/(release-acceptance-verdict|collect-engine-jobs|require-accepted-sha|fetch-acceptance-artifact|fetch-release-bundle|artifact-provenance|build-once-artifact|bind-qa-artifact|deploy-from-artifact|artifact-runtime-qa|api-artifact-runtime-qa|api-artifact-provenance|prebuild-workers|render-rollback-plan|render-api-promotion-readiness|db-hardening-readiness|production-release-decision)\.cjs$/.test(
+        f,
+      ) ||
+      /^tooling\/verify\/release-acceptance\.cjs$/.test(f) ||
+      /^tooling\/verify\/release-manifest-identity-lock\.cjs$/.test(f) ||
+      /^tooling\/verify\/production-deploy-path-lock\.cjs$/.test(f) ||
+      /^tooling\/deploy\/lib\/accepted-artifact-authority\.cjs$/.test(f) ||
+      /^tooling\/verify\/fetch-acceptance-artifact\.cjs$/.test(f) ||
+      /^tooling\/verify\/require-accepted-sha\.cjs$/.test(f) ||
+      /^tooling\/verify\/release-fetch-deploy-hardening\.cjs$/.test(f) ||
+      /^tooling\/verify\/render-rollback-provenance\.cjs$/.test(f) ||
+      /^tooling\/verify\/render-api-promotion-readiness\.cjs$/.test(f) ||
+      /^tooling\/verify\/db-hardening-readiness\.cjs$/.test(f) ||
+      /^supabase\/staging\/20260901120/.test(f) ||
+      /^\.github\/workflows\/release-acceptance\.yml$/.test(f) ||
+      /^\.github\/workflows\/release-build\.yml$/.test(f) ||
+      /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
+      /^tooling\/deploy\/cf-pages-(web|ops)\.cjs$/.test(f) ||
+      /^tooling\/deploy\/cf-workers\.cjs$/.test(f),
+    scripts: [
+      "release-acceptance.cjs",
+      "release-manifest-identity-lock.cjs",
+      "production-deploy-path-lock.cjs",
+      "api-artifact-provenance.cjs",
+      "api-artifact-runtime-qa.cjs",
+      "fetch-acceptance-artifact.cjs",
+      "require-accepted-sha.cjs",
+      "release-fetch-deploy-hardening.cjs",
+      "render-rollback-provenance.cjs",
+      "render-api-promotion-readiness.cjs",
+      "db-hardening-readiness.cjs",
+      "production-release-decision.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^tooling\/release\/production-release-decision\.cjs$/.test(f) ||
+      /^tooling\/verify\/production-release-decision\.cjs$/.test(f),
+    scripts: ["production-release-decision.cjs"],
+  },
+  {
+    test: (f) =>
+      /^tooling\/verify\/release-engine-truth-consistency\.cjs$/.test(f) ||
+      /^governance\/release-master\/MIGRATION_READINESS\.md$/.test(f) ||
+      /^governance\/release-master\/R7_BACKEND_ALIGNMENT\.md$/.test(f) ||
+      /^governance\/release-master\/R8_INFRA_CORE\.md$/.test(f) ||
+      /^governance\/engine-acceptance\/FINAL_ACCEPTANCE\.md$/.test(f),
+    scripts: ["release-engine-truth-consistency.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/common\/admin-session\.(cookies|csrf|runtime\.test)\.ts$/.test(f) ||
+      /^tooling\/verify\/admin-csrf-double-submit\.cjs$/.test(f) ||
+      /^governance\/recovery\/csrf-double-submit-judgment\.v1\.json$/.test(f),
+    scripts: ["admin-csrf-double-submit.cjs"],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/ai\/coach\.controller\.ts$/.test(f) ||
+      /^tooling\/verify\/coach-sse-error-canonical\.cjs$/.test(f) ||
+      /^governance\/recovery\/ghas-coach-xss-through-exception\.v1\.json$/.test(
+        f,
+      ),
+    scripts: ["coach-sse-error-canonical.cjs"],
+  },
+  {
+    test: (f) =>
+      /^tooling\/release\/api-artifact-provenance\.cjs$/.test(f) ||
+      /^tooling\/release\/api-artifact-runtime-qa\.cjs$/.test(f) ||
+      /^tooling\/verify\/api-artifact-provenance\.cjs$/.test(f) ||
+      /^tooling\/verify\/api-artifact-runtime-qa\.cjs$/.test(f) ||
+      /^tooling\/verify\/api-runtime-qa-canonical\.cjs$/.test(f),
+    scripts: [
+      "api-artifact-provenance.cjs",
+      "api-artifact-runtime-qa.cjs",
+      "api-runtime-qa-canonical.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^\.github\/workflows\//.test(f) ||
+      /^\.github\/dependabot\.yml$/.test(f) ||
+      /^governance\/security\/workflow-action-pins\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/workflow-action-pin\.cjs$/.test(f) ||
+      /^tooling\/recovery\/apply-workflow-action-pins\.cjs$/.test(f),
+    scripts: ["workflow-action-pin.cjs"],
   },
   {
     test: (f) =>
@@ -86,6 +241,13 @@ const RULES = [
       /^tooling\/verify\/migrations-applied-parity\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/migrations-applied\.v1\.json$/.test(f),
     scripts: ["migrations-applied-parity.cjs"],
+  },
+  {
+    test: (f) =>
+      /^supabase\/staging\//.test(f) ||
+      /^governance\/db-recon\/staging-hardening\.v1\.json$/.test(f) ||
+      /^tooling\/verify\/staging-db-hardening\.cjs$/.test(f),
+    scripts: ["staging-db-hardening.cjs"],
   },
   {
     test: (f) =>
@@ -114,6 +276,8 @@ const RULES = [
   {
     test: (f) =>
       /^services\/api-nest\/src\/health\.controller\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/health\.public\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/health\.public\.runtime\.test\.ts$/.test(f) ||
       /^services\/api-nest\/src\/config\/nest-provenance\.ts$/.test(f) ||
       /^tooling\/verify\/nest-production-provenance\.cjs$/.test(f),
     scripts: ["nest-production-provenance.cjs", "api-nest-build.cjs"],
@@ -330,6 +494,9 @@ const RULES = [
       /^apps\/web\/app\/me\/account\.module\.css$/.test(f) ||
       /^apps\/web\/app\/me\/invite\//.test(f) ||
       /^packages\/ui\/components\/invite\//.test(f) ||
+      /^services\/api-nest\/src\/referral\/referral-code\.util/.test(f) ||
+      /^services\/api-nest\/src\/referral\/referral\.own-code\.service\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/referral\/referral\.controller\.ts$/.test(f) ||
       /^tooling\/e2e\/lib\/account-route-stubs\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/invite-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/invite-closure\.cjs$/.test(f),
@@ -342,6 +509,7 @@ const RULES = [
   {
     test: (f) =>
       /^apps\/web\/app\/me\/inbox\//.test(f) ||
+      /^packages\/ui\/components\/inbox\//.test(f) ||
       /^tooling\/e2e\/specs\/inbox-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/inbox-closure\.cjs$/.test(f),
     scripts: ["inbox-closure.cjs", "ops-inbox.cjs"],
@@ -360,6 +528,9 @@ const RULES = [
     test: (f) =>
       /^apps\/web\/app\/me\/settings\//.test(f) ||
       /^packages\/ui\/components\/settings\//.test(f) ||
+      /^services\/api-nest\/src\/ux-prefs\//.test(f) ||
+      /^apps\/web\/app\/wallet\/deposit\/deposit-tab\.ts$/.test(f) ||
+      /^apps\/web\/components\/FontScaleApply\.tsx$/.test(f) ||
       /^tooling\/e2e\/specs\/settings-closure\.spec\.cjs$/.test(f) ||
       /^tooling\/verify\/settings-closure\.cjs$/.test(f),
     scripts: ["settings-closure.cjs"],
@@ -440,6 +611,12 @@ const RULES = [
       "krw-deposit-closure.cjs",
       "support-closure.cjs",
     ],
+  },
+  {
+    test: (f) =>
+      /^packages\/ui\/copy\/ko\/admin\.ts$/.test(f) ||
+      /^tooling\/verify\/admin-novice-ui\.cjs$/.test(f),
+    scripts: ["admin-novice-ui.cjs"],
   },
   {
     test: (f) => /^apps\/admin\//.test(f),
@@ -668,7 +845,7 @@ const RULES = [
       /^tooling\/verify\/rel-502-final-engine-acceptance\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-502-final-engine-acceptance\.v1\.json$/.test(f) ||
       /^tooling\/verify\/lib\/rel-502-psm\.cjs$/.test(f),
-    scripts: ["rel-502-final-engine-acceptance.cjs"],
+    scripts: ["rel-502-final-engine-acceptance.cjs", "release-engine-truth-consistency.cjs"],
   },
   {
     test: (f) =>
@@ -683,7 +860,7 @@ const RULES = [
       /^governance\/release-master\/MIGRATION_READINESS\.md$/.test(f) ||
       /^tooling\/verify\/rel-504-migration-readiness\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-504-migration-readiness\.v1\.json$/.test(f),
-    scripts: ["rel-504-migration-readiness.cjs"],
+    scripts: ["rel-504-migration-readiness.cjs", "release-engine-truth-consistency.cjs"],
   },
   {
     test: (f) =>
@@ -692,7 +869,7 @@ const RULES = [
       /^tooling\/verify\/rel-505-r7-backend-alignment\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/backend-data-alignment\.v1\.json$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-505-r7-backend-alignment\.v1\.json$/.test(f),
-    scripts: ["rel-505-r7-backend-alignment.cjs"],
+    scripts: ["rel-505-r7-backend-alignment.cjs", "release-engine-truth-consistency.cjs"],
   },
   {
     test: (f) =>
@@ -709,7 +886,7 @@ const RULES = [
       /^governance\/release-master\/r8-cache-inventory\.v1\.json$/.test(f) ||
       /^tooling\/verify\/rel-506-r8-infra-core\.cjs$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-506-r8-infra-core\.v1\.json$/.test(f),
-    scripts: ["rel-506-r8-infra-core.cjs"],
+    scripts: ["rel-506-r8-infra-core.cjs", "release-engine-truth-consistency.cjs"],
   },
   {
     test: (f) =>
@@ -724,11 +901,16 @@ const RULES = [
     test: (f) =>
       /^governance\/release-master\/REL-600-STAGING\.md$/.test(f) ||
       /^infra\/domain\.manifest\.json$/.test(f) ||
-      /^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|origin-smoke)\.cjs$/.test(f) ||
+      /^tooling\/deploy\/cf-(pages-web|pages-ops|deploy-staging|origin-smoke|preflight)\.cjs$/.test(f) ||
+      /^tooling\/deploy\/lib\/non-prod-api-host(\.runtime\.test)?\.cjs$/.test(f) ||
       /^tooling\/verify\/rel-600-staging\.cjs$/.test(f) ||
+      /^tooling\/verify\/staging-topology-readiness\.cjs$/.test(f) ||
+      /^tooling\/release\/staging-topology-readiness\.cjs$/.test(f) ||
+      /^governance\/release-master\/staging-topology\.current\.v1\.json$/.test(f) ||
+      /^\.github\/workflows\/deploy-cloudflare\.yml$/.test(f) ||
       /^tooling\/verify\/fixtures\/rel-600-staging\.v1\.json$/.test(f) ||
       /^\.github\/workflows\/deploy-staging\.yml$/.test(f),
-    scripts: ["rel-600-staging.cjs"],
+    scripts: ["rel-600-staging.cjs", "staging-topology-readiness.cjs"],
   },
   {
     test: (f) =>
@@ -783,11 +965,16 @@ const RULES = [
   },
   {
     test: (f) =>
-      /^services\/api-nest\/src\/auth\/(privacy-account\.service|auth\.service|auth\.controller|auth\.stage)\.ts$/.test(
+      /^services\/api-nest\/src\/auth\/(privacy-account\.service|auth\.service|auth\.controller|auth\.stage|magic-link\.service|oauth-identity\.service|webauthn-assert\.service|passkey-registration\.policy|identity-proof\.)/.test(
         f,
       ) ||
       /^tooling\/verify\/privacy-purge\.cjs$/.test(f),
-    scripts: ["privacy-purge.cjs", "auth-flows.cjs", "auth-jwt-runtime.cjs"],
+    scripts: [
+      "privacy-purge.cjs",
+      "auth-flows.cjs",
+      "auth-jwt-runtime.cjs",
+      "auth-identity-proof.runtime.cjs",
+    ],
   },
   {
     test: (f) =>
@@ -1041,9 +1228,11 @@ const RULES = [
     test: (f) =>
       /^services\/api-nest\/src\/ledger\/ledger\.user/.test(f) ||
       /^services\/api-nest\/ledger-user-query\.core\.cjs$/.test(f) ||
+      /^packages\/sdk\/src\/ledger\//.test(f) ||
       /^tooling\/e2e\/lib\/ledger-user-query-harness\.cjs$/.test(f) ||
       /^tooling\/e2e\/specs\/ledger-user-query\.spec\.cjs$/.test(f) ||
-      /^tooling\/verify\/user-ledger-query\.cjs$/.test(f),
+      /^tooling\/verify\/user-ledger-query\.cjs$/.test(f) ||
+      /^tooling\/verify\/ledger-journal-reader\.runtime\.cjs$/.test(f),
     scripts: ["user-ledger-query.cjs"],
   },
   {
@@ -1110,6 +1299,8 @@ const RULES = [
   {
     test: (f) =>
       /^services\/api-nest\/src\/ledger\/idempotency-fingerprint\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/krw-deposit\.service\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/withdraw-intent\.service\.ts$/.test(f) ||
       /^supabase\/migrations\/.*idempotency_request_fingerprint\.sql$/.test(f) ||
       /^tooling\/verify\/idempotency-conflict-detection\.cjs$/.test(f),
     scripts: [
@@ -1206,6 +1397,38 @@ const RULES = [
       "auth-flows.cjs",
       "auth-session-cookie.cjs",
       "auth-rate-limit.cjs",
+      "auth-identity-proof.runtime.cjs",
+    ],
+  },
+  {
+    test: (f) =>
+      /^services\/api-nest\/src\/wallet\/deposit-config/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/withdraw-fee\.service\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/min-holding\.service\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/deposit-address\.service\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/tron-address\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/withdraw-stepup\./.test(f) ||
+      /^tooling\/verify\/withdraw-stepup-security/.test(f) ||
+      /^tooling\/verify\/usdt-ingest-machine-auth/.test(f) ||
+      /^tooling\/verify\/adapter-ingest-fail-closed/.test(f) ||
+      /^services\/api-nest\/src\/adapters\/adapters\.ingest\.controller\.ts$/.test(f) ||
+      /^tooling\/verify\/tron-hd-derivation-fail-closed/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/chain-sweeper/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/chain-watcher/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/usdt-deposit\.service\.ts$/.test(f) ||
+      /^services\/api-nest\/src\/wallet\/krw-deposit\.service\.ts$/.test(f) ||
+      /^tooling\/verify\/deposit-config-fail-closed/.test(f) ||
+      /^schemas\/deposit-config\.v1\.json$/.test(f) ||
+      /^schemas\/toast-codes\.v1\.json$/.test(f),
+    scripts: [
+      "deposit-config-fail-closed.cjs",
+      "withdraw-stepup-security.cjs",
+      "usdt-ingest-machine-auth.cjs",
+      "adapter-ingest-fail-closed.cjs",
+      "tron-hd-derivation-fail-closed.runtime.cjs",
+      "withdraw-fee-ledger.cjs",
+      "min-holding-scope.cjs",
+      "sweeper-trx-guard.cjs",
     ],
   },
   {
@@ -1215,34 +1438,204 @@ const RULES = [
     scripts: ["wallet-kyc-session-auth.cjs"],
   },
   {
+    test: (f) =>
+      /^tooling\/verify\/domain-by-path\.cjs$/.test(f) ||
+      /^tooling\/verify\/domain-by-path\.selftest\.cjs$/.test(f) ||
+      /^tooling\/verify\/domain-by-path-ci\.cjs$/.test(f) ||
+      /^\.github\/workflows\/gate\.yml$/.test(f),
+    scripts: ["domain-by-path-ci.cjs"],
+  },
+  {
+    test: (f) =>
+      /^tooling\/verify\/kyc-withdraw-only\.cjs$/.test(f) ||
+      /^tooling\/verify\/withdraw-kyc-gate\.runtime\.cjs$/.test(f) ||
+      /^tooling\/verify\/wallet-reader-http\.runtime\.cjs$/.test(f) ||
+      /^apps\/web\/lib\/use-withdraw-kyc-gate\.ts$/.test(f),
+    scripts: ["kyc-withdraw-only.cjs"],
+  },
+  {
     test: (f) => /^tooling\/verify\//.test(f),
     scripts: [],
   },
 ];
 
-function gitLines(cmd) {
+function normalizePath(file) {
+  return String(file || "").replace(/\\/g, "/");
+}
+
+function gitExecEnv(cwd) {
+  const env = {
+    PATH: process.env.PATH,
+    SystemRoot: process.env.SystemRoot,
+    windir: process.env.windir,
+    HOME: process.env.HOME,
+    USERPROFILE: process.env.USERPROFILE,
+    GIT_CONFIG_NOSYSTEM: "1",
+    GIT_TERMINAL_PROMPT: "0",
+  };
+  if (cwd && path.resolve(cwd) !== path.resolve(root)) {
+    delete env.GIT_DIR;
+    delete env.GIT_WORK_TREE;
+    delete env.GIT_INDEX_FILE;
+    delete env.GIT_OBJECT_DIRECTORY;
+    delete env.GIT_ALTERNATE_OBJECT_DIRECTORIES;
+    delete env.GIT_PREFIX;
+  }
+  return env;
+}
+
+const SAFE_GIT_REF = /^(?:refs\/heads\/)?[A-Za-z0-9](?:[A-Za-z0-9._/-]*[A-Za-z0-9])?$/;
+
+function assertSafeGitRef(value, label) {
+  const raw = String(value || "");
+  if (!SAFE_GIT_REF.test(raw) || raw.includes("..") || raw.includes("\\") || raw.includes("@{")) {
+    ciFailClosed("CI_GIT_ARG_REJECTED", label);
+  }
+  return raw.replace(/^refs\/heads\//, "");
+}
+
+function assertSafeGitRev(value, label) {
+  const raw = String(value || "");
+  if (raw === "HEAD" || isSha(raw)) return raw;
+  ciFailClosed("CI_GIT_ARG_REJECTED", label);
+}
+
+function gitLines(args, cwd, swallow) {
+  if (!Array.isArray(args) || args.length === 0 || args.some((part) => typeof part !== "string")) {
+    ciFailClosed("CI_GIT_ARG_REJECTED", "argv");
+  }
   try {
-    return execSync(cmd, { cwd: root, encoding: "utf8" })
+    return execFileSync("git", args, {
+      cwd: cwd || root,
+      encoding: "utf8",
+      env: gitExecEnv(cwd),
+      windowsHide: true,
+    })
       .split(/\r?\n/)
       .map((line) => line.trim())
       .filter(Boolean);
-  } catch {
-    return [];
+  } catch (err) {
+    if (swallow) return [];
+    const wrapped = new Error(
+      "CI_DIFF_UNRESOLVED: git " + args.join(" ") + " :: " + String(err && err.message),
+    );
+    wrapped.code = "CI_DIFF_UNRESOLVED";
+    throw wrapped;
   }
 }
 
-function getChangedFiles() {
-  const staged = gitLines("git diff --cached --name-only");
-  if (staged.length > 0) return staged.map(normalizePath);
-
-  const unstaged = gitLines("git diff --name-only");
-  if (unstaged.length > 0) return unstaged.map(normalizePath);
-
-  return gitLines("git diff --name-only HEAD").map(normalizePath);
+function isZeroSha(sha) {
+  return /^0+$/.test(String(sha || ""));
 }
 
-function normalizePath(file) {
-  return file.replace(/\\/g, "/");
+function isSha(sha) {
+  return /^[0-9a-f]{7,40}$/i.test(String(sha || "")) && !isZeroSha(sha);
+}
+
+function ciFailClosed(code, detail) {
+  const err = new Error(code + (detail ? ": " + detail : ""));
+  err.code = code;
+  throw err;
+}
+
+function detectDiffMode(env) {
+  const forced = String((env && env.AIPO_DOMAIN_DIFF_MODE) || "");
+  if (forced === "local") return "local";
+  if (forced === "ci_pr") return "ci_pr";
+  if (forced === "ci_push") return "ci_push";
+  const actions = String((env && env.GITHUB_ACTIONS) || "") === "true";
+  const event = String((env && env.GITHUB_EVENT_NAME) || "");
+  if (actions) {
+    if (event === "pull_request") return "ci_pr";
+    if (event === "push") return "ci_push";
+    return "ci_unknown";
+  }
+  return "local";
+}
+
+function readGithubEvent(env) {
+  const eventPath = String((env && env.GITHUB_EVENT_PATH) || "");
+  if (!eventPath) return null;
+  try {
+    return JSON.parse(fs.readFileSync(eventPath, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+function prBaseShaFromEnv(env) {
+  const direct = String(
+    (env && (env.AIPO_PR_BASE_SHA || env.GITHUB_EVENT_PULL_REQUEST_BASE_SHA)) ||
+      "",
+  );
+  if (isSha(direct)) return direct;
+  const event = readGithubEvent(env);
+  const fromEvent =
+    event &&
+    event.pull_request &&
+    event.pull_request.base &&
+    event.pull_request.base.sha;
+  return isSha(fromEvent) ? String(fromEvent) : "";
+}
+
+function resolveCiRange(env, cwd) {
+  const event = String((env && env.GITHUB_EVENT_NAME) || "");
+  const head = String((env && env.GITHUB_SHA) || "HEAD");
+  if (event === "pull_request" || (env && env.AIPO_DOMAIN_DIFF_MODE) === "ci_pr") {
+    const base = prBaseShaFromEnv(env);
+    if (isSha(base)) return { from: base, to: head, spec: base + "..." + head };
+    const rawRef = String((env && env.GITHUB_BASE_REF) || "");
+    if (!rawRef) ciFailClosed("CI_PR_BASE_UNRESOLVED", "missing PR base SHA/ref");
+    const ref = assertSafeGitRef(rawRef, "GITHUB_BASE_REF");
+    const headRev = assertSafeGitRev(head, "GITHUB_SHA");
+    const mb = gitLines(["merge-base", "origin/" + ref, headRev], cwd, true)[0];
+    if (!isSha(mb)) {
+      ciFailClosed(
+        "CI_PR_BASE_UNRESOLVED",
+        "origin/" + ref + " missing and event base SHA absent",
+      );
+    }
+    return { from: mb, to: head, spec: mb + "..." + head };
+  }
+  if (event === "push" || (env && env.AIPO_DOMAIN_DIFF_MODE) === "ci_push") {
+    const before = String(
+      (env && (env.AIPO_PUSH_BEFORE_SHA || env.GITHUB_EVENT_BEFORE)) || "",
+    );
+    if (!isSha(before)) {
+      ciFailClosed("CI_PUSH_BASE_UNRESOLVED", "missing/invalid before SHA");
+    }
+    return { from: before, to: head, spec: before + " " + head };
+  }
+  ciFailClosed("CI_CONTEXT_UNRESOLVED", "event=" + event);
+}
+
+function getLocalChangedFiles(cwd) {
+  const staged = gitLines(["diff", "--cached", "--name-only"], cwd, true);
+  if (staged.length > 0) return staged.map(normalizePath);
+
+  const unstaged = gitLines(["diff", "--name-only"], cwd, true);
+  if (unstaged.length > 0) return unstaged.map(normalizePath);
+
+  return gitLines(["diff", "--name-only", "HEAD"], cwd, true).map(normalizePath);
+}
+
+function getChangedFiles(opts) {
+  const env = (opts && opts.env) || process.env;
+  const cwd = (opts && opts.cwd) || root;
+  const mode = detectDiffMode(env);
+  if (mode === "local") return getLocalChangedFiles(cwd);
+  if (mode === "ci_unknown") {
+    ciFailClosed("CI_CONTEXT_UNRESOLVED", "GITHUB_ACTIONS without event");
+  }
+  const range = resolveCiRange(env, cwd);
+  const from = assertSafeGitRev(range.from, "diff.from");
+  const to = assertSafeGitRev(range.to, "diff.to");
+  const spec = String(range.spec || "").includes("...")
+    ? [from + "..." + to]
+    : [from, to];
+  return gitLines(["diff", "--name-only", ...spec], cwd, false).map(
+    normalizePath,
+  );
 }
 
 function scriptsForChangedFiles(files) {
@@ -1258,20 +1651,41 @@ function scriptsForChangedFiles(files) {
 }
 
 if (require.main === module) {
-  const files = getChangedFiles();
-  const scripts = scriptsForChangedFiles(files);
-  if (files.length === 0) {
-    console.log("[verify:domain-by-path] SKIP (no changed files)");
-    process.exit(0);
+  try {
+    const files = getChangedFiles({
+      cwd: process.env.AIPO_DOMAIN_DIFF_CWD || root,
+      env: process.env,
+    });
+    const scripts = scriptsForChangedFiles(files);
+    if (process.env.AIPO_DOMAIN_BY_PATH_LIST_ONLY === "1") {
+      process.stdout.write(JSON.stringify({ files, scripts }) + "\n");
+      process.exit(0);
+    }
+    if (files.length === 0) {
+      console.log("[verify:domain-by-path] SKIP (no changed files)");
+      process.exit(0);
+    }
+    console.log(
+      `[verify:domain-by-path] ${files.length} file(s) → ${scripts.length} domain check(s)`,
+    );
+    if (scripts.length === 0) {
+      process.exit(0);
+    }
+    const { runGateSteps } = require("./gate-runner.cjs");
+    runGateSteps(scripts, "verify:domain-by-path");
+  } catch (err) {
+    const code = err && err.code ? String(err.code) : "";
+    if (/^CI_/.test(code)) {
+      console.error("[verify:domain-by-path] FAIL " + err.message);
+      process.exit(1);
+    }
+    throw err;
   }
-  console.log(
-    `[verify:domain-by-path] ${files.length} file(s) → ${scripts.length} domain check(s)`,
-  );
-  if (scripts.length === 0) {
-    process.exit(0);
-  }
-  const { runGateSteps } = require("./gate-runner.cjs");
-  runGateSteps(scripts, "verify:domain-by-path");
 } else {
-  module.exports = { getChangedFiles, scriptsForChangedFiles };
+  module.exports = {
+    getChangedFiles,
+    scriptsForChangedFiles,
+    detectDiffMode,
+    resolveCiRange,
+  };
 }

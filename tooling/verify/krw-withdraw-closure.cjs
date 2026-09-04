@@ -71,6 +71,10 @@ if (page.includes("allowWithdrawForm || !gate.toastMessage")) {
 if (!page.includes("allowForm={gate.allowWithdrawForm}")) {
   fail("KRW withdraw form must require authoritative approved KYC");
 }
+if (!page.includes("WithdrawUnauthorizedNote")) {
+  fail("withdraw unauthorized must offer login recovery");
+}
+
 for (const needle of [
   '"/api/v1/compliance/kyc/status"',
   'credentials: "include"',

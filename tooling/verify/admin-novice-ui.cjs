@@ -53,7 +53,7 @@ for (const needle of [
   'type="password"',
   "관리자 연결 코드",
   'role="status"',
-  "hasAdminToken",
+  "connectAdminSession",
 ]) {
   requireText(session, needle, "AdminSessionBar");
 }
@@ -110,6 +110,14 @@ const bannedVisibleTerms = [
   "토큰",
   "시뮬레이션",
   "멤버십 강제",
+  "GitHub",
+  "Supabase",
+  "workflow",
+  "pipeline",
+  "acceptance",
+  "staging",
+  "CI/CD",
+  "E2E",
   "자본대",
   "실패율",
   "상품 마스터",
@@ -124,6 +132,21 @@ for (const rel of uiFiles) {
   }
 }
 
+
+const leakAttrs = [
+  "data-admin-" + "api",
+  "data-get-" + "api",
+  "data-put-" + "api",
+  "data-audit-" + "api",
+];
+for (const rel of uiFiles) {
+  const source = read(rel);
+  for (const attr of leakAttrs) {
+    if (source.includes(attr)) {
+      failures.push(rel + " exposes operator DOM path attribute");
+    }
+  }
+}
 const truth = read("apps/admin/lib/admin-truth.ts");
 requireText(truth, 'UNAVAILABLE_LABEL = "확인할 수 없음"', "admin truth");
 requireText(truth, "readStatusLabel", "admin truth");

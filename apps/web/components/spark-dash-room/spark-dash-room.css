@@ -291,7 +291,7 @@
 }
 
 .sdr-hint {
-  font-size: 0.71875rem;
+  font-size: 0.75rem;
 }
 
 .sdr-fact-div {
@@ -310,7 +310,7 @@
   border-radius: 999px;
   /* #ff2d6b on #591730 ≈ 3.67:1. Local darker rose keeps the pink token. */
   background: #2e101c;
-  font-size: 0.71875rem;
+  font-size: 0.75rem;
   font-weight: 650;
   color: #ff2d6b;
 }
@@ -480,7 +480,7 @@
   padding: 0.3125rem 0.625rem;
   border-radius: 999px;
   background: #ffedf2;
-  font-size: 0.71875rem;
+  font-size: 0.75rem;
   font-weight: 800;
   color: #c01048;
 }

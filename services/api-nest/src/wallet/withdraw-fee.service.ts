@@ -36,7 +36,7 @@ export class WithdrawFeeService {
     debitProfitUsdt?: string;
     debitPrincipalUsdt?: string;
   }): Promise<WithdrawFeeQuote> {
-    const cfg = await this.depositConfig.get();
+    const cfg = await this.depositConfig.requirePersisted();
     const krwWithdrawFeeKrw = cfg.krw.krwWithdrawFeeKrw;
 
     if (input.asset === "KRW") {

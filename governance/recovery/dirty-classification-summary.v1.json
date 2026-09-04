@@ -1,0 +1,35 @@
+{
+  "semantic_count": 44,
+  "crlf_only_count": 0,
+  "status_dirty_empty_diff_count": 250,
+  "untracked_count": 29,
+  "secret_flagged": [
+    {
+      "path": "tooling/recovery/classify-local-state.cjs",
+      "flags": [
+        "service_role_literal"
+      ]
+    }
+  ],
+  "home_frozen": [
+    "apps/web/scripts/freeze-home-qa.mjs"
+  ],
+  "keep": [
+    "governance/security/http-headers.v1.json",
+    "tooling/security/http-headers.cjs",
+    "tooling/verify/rel-401-security-headers.cjs",
+    "governance/db-recon/b0-recon-matrix.v1.json",
+    "governance/db-recon/b3-promotion-ledger.v1.json",
+    "governance/release-inventory/b1-push-rls-design.v1.json",
+    "governance/release-inventory/b2-ownership-design.v1.json",
+    "governance/release-inventory/b3-promotion.v1.json",
+    "governance/release-inventory/d0-classify.v1.json",
+    "governance/release-inventory/d2-13state.v1.json",
+    "governance/release-inventory/g0-architecture.v1.json",
+    "governance/release-inventory/h-aqa-0.v1.json",
+    "governance/release-inventory/h0-hollow.v1.json",
+    "governance/release-inventory/i0-admin.v1.json",
+    "governance/release-master/rel-b3-promotion/b3-promotion.v1.json",
+    "tooling/verify/b3-promotion.cjs"
+  ]
+}

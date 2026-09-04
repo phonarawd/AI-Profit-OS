@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { AdminAuditModule } from "../audit/admin-audit.module";
 import { KillSwitchModule } from "../kill-switch/kill-switch.module";
 import { ComplianceModule } from "../compliance/compliance.module";
 import { LedgerModule } from "../ledger/ledger.module";
@@ -25,11 +26,20 @@ import { WithdrawCredentialsAdminController } from "./withdraw-credentials.admin
 import { WithdrawCredentialsAdminService } from "./withdraw-credentials.admin.service";
 import { WithdrawFeeService } from "./withdraw-fee.service";
 import { WithdrawIntentService } from "./withdraw-intent.service";
+import { WithdrawReviewAdminController } from "./withdraw-review.admin.controller";
+import { WithdrawReviewService } from "./withdraw-review.service";
 import { WithdrawKycGuard } from "./withdraw-kyc.guard";
 import { WithdrawStepUpService } from "./withdraw-stepup.service";
 
 @Module({
-  imports: [LedgerModule, ComplianceModule, RiskModule, LoopModule, KillSwitchModule],
+  imports: [
+    LedgerModule,
+    ComplianceModule,
+    RiskModule,
+    LoopModule,
+    KillSwitchModule,
+    AdminAuditModule,
+  ],
   controllers: [
     WalletController,
     HomeMoneyReadUserController,
@@ -37,6 +47,7 @@ import { WithdrawStepUpService } from "./withdraw-stepup.service";
     KrwDepositAdminController,
     DepositDisputeAdminController,
     WithdrawCredentialsAdminController,
+    WithdrawReviewAdminController,
   ],
   providers: [
     DepositConfigService,
@@ -52,6 +63,7 @@ import { WithdrawStepUpService } from "./withdraw-stepup.service";
     ResendEmailProvider,
     WithdrawStepUpService,
     WithdrawIntentService,
+    WithdrawReviewService,
     WithdrawCredentialsAdminService,
     ProfitMergeService,
     FeedCacheInvalidateService,

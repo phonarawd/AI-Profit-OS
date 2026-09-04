@@ -1,0 +1,10 @@
+{
+  "schema": "governance.recovery.empty-diff-restore.v1",
+  "observed_at": "2026-08-31T14:42:00.000Z",
+  "method": "git restore --worktree -- <STATUS_DIRTY_EMPTY_DIFF path>",
+  "blanket_restore_forbidden": true,
+  "restored_count": 250,
+  "semantic_untouched": 44,
+  "home_geometry_files_in_restored_set": "included only when git diff was empty",
+  "production_mutation": 0
+}

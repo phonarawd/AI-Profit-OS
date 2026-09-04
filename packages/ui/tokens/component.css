@@ -32,11 +32,13 @@ html[data-font-scale="md"] {
 html[data-font-scale="lg"] {
   --font-scale: 1.15;
   --line-height-boost: 0.05;
+  font-size: 115%;
 }
 
 html[data-font-scale="xl"] {
   --font-scale: 1.3;
   --line-height-boost: 0.1;
+  font-size: 130%;
 }
 
 html[data-tone="senior"],

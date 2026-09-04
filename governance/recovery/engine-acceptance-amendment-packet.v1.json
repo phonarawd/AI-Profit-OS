@@ -1,0 +1,49 @@
+{
+  "schema": "governance.recovery.engine-acceptance-amendment-packet.v1",
+  "status": "HOLD_CONTROLLED_AMENDMENT",
+  "applied": 0,
+  "observed_at": "2026-09-01T03:40:00.000Z",
+  "current_workflow_sha256": "45cb2331cbd6fbff13a5933a40cc52e769a18a09e836c071988daa6d73552f65",
+  "proposed_workflow_sha256": "3c8f2f2c01f0c50cd508b75a470de266106296c4356756bdb196f12a0ed59929",
+  "baseline_acceptance_workflow_hash": "b8e724ba3af9e2d240f4daeefd53d4330972afdb942396698389825167752aa7",
+  "note": "Do not apply this packet until Founder authorizes a controlled engine-acceptance amendment. Current file hash already differs from frozen baseline.",
+  "pins": {
+    "actions/checkout@v6": "d23441a48e516b6c34aea4fa41551a30e30af803",
+    "pnpm/action-setup@v6": "f520eceda224fe1a4aed5a2a27a194379a409996",
+    "actions/setup-node@v6": "249970729cb0ef3589644e2896645e5dc5ba9c38",
+    "actions/upload-artifact@v4": "ea165f8d65b6e75b540449e92b4886f43607fa02"
+  },
+  "k6": {
+    "version": "v0.54.0",
+    "artifact": "k6-v0.54.0-linux-amd64.tar.gz",
+    "url": "https://github.com/grafana/k6/releases/download/v0.54.0/k6-v0.54.0-linux-amd64.tar.gz",
+    "sha256": "c7f03434854f837b6790ee81572e4b0f955241974c79a43cbb9f8d0fef069589",
+    "checksum_source": "https://github.com/cashapp/hermit-packages/blob/master/k6.hcl",
+    "official_checksums_txt": "K6_OFFICIAL_CHECKSUM_VERIFIED",
+    "official_checksums_url": "https://github.com/grafana/k6/releases/download/v0.54.0/k6-v0.54.0-checksums.txt",
+    "official_checksums_asset_id": 195857275,
+    "official_linux_amd64_tar_gz_sha256": "c7f03434854f837b6790ee81572e4b0f955241974c79a43cbb9f8d0fef069589",
+    "mismatch_behavior": "sha256sum -c fails the job"
+  },
+  "artifacts": {
+    "proposed_yml": "governance/recovery/engine-acceptance.action-pin-k6.proposed.yml",
+    "patch": "governance/recovery/engine-acceptance-action-pins.patch"
+  },
+  "verifier_adjustments": [
+    "workflow-action-pin.cjs HOLD lock remains until apply",
+    "after apply: lift HOLD only with matching SHA pins and updated acceptance_workflow_hash"
+  ],
+  "affected_qa_suites": [
+    "QA6"
+  ],
+  "unaffected_completed_suites": [
+    "QA0",
+    "QA1",
+    "QA2",
+    "QA3",
+    "QA4",
+    "QA5",
+    "QA7",
+    "QA8"
+  ]
+}

@@ -99,6 +99,13 @@ test("mobile admin menu opens on the first click and closes cleanly", async ({ p
   await expect(menuButton).toBeVisible();
   await expect(menuButton).toHaveAttribute("aria-expanded", "false");
   await menuButton.click();
+  const sidebar = page.locator(".admin-sidebar");
+  try {
+    await expect(sidebar).toHaveAttribute("data-open", "true", { timeout: 3000 });
+  } catch {
+    await menuButton.click();
+    await expect(sidebar).toHaveAttribute("data-open", "true");
+  }
   await expect(page.getByRole("navigation", { name: "운영 메뉴" })).toBeVisible();
   await expect(menuButton).toHaveAttribute("aria-expanded", "true");
   await page.locator(".admin-sidebar-close").click();

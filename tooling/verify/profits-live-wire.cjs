@@ -101,6 +101,15 @@ if (!metrics.includes("확인할 수 없음") || !mobile.includes("확인할 수
 if (!desktop.includes("onQuery") || !desktop.includes("onFilter")) {
   fail("search/filter controls must be wired");
 }
+if (!spec.includes("applyOpportunitySearch") || !spec.includes("zzz-no-match")) {
+  fail("profits-closure must type a non-matching query and prove filter-empty");
+}
+if (
+  !spec.includes("filter-empty") ||
+  !spec.includes("toHaveCount(0)")
+) {
+  fail("non-matching search must require zero cards, not idle no-op");
+}
 if (!spec.includes("UNAUTHORIZED") || !spec.includes("ERROR") || !spec.includes("EMPTY")) {
   fail("profits-closure must keep unauthorized/error/empty distinct");
 }

@@ -57,6 +57,38 @@ export function ledgerJournalSemantic(input: {
   };
 }
 
+export function krwDepositSemantic(input: {
+  userId: string;
+  requestedAmountKrw: number;
+  depositorName: string;
+}): unknown {
+  return {
+    userId: input.userId,
+    requestedAmountKrw: input.requestedAmountKrw,
+    depositorName: input.depositorName.trim(),
+  };
+}
+
+export function withdrawIntentSemantic(input: {
+  userId: string;
+  mode: string;
+  asset: string;
+  amountUsdt: string;
+  destination: string | null;
+  debitProfitUsdt: string;
+  debitPrincipalUsdt: string;
+}): unknown {
+  return {
+    userId: input.userId,
+    mode: input.mode,
+    asset: input.asset,
+    amountUsdt: input.amountUsdt,
+    destination: (input.destination ?? "").trim() || null,
+    debitProfitUsdt: input.debitProfitUsdt,
+    debitPrincipalUsdt: input.debitPrincipalUsdt,
+  };
+}
+
 export function participateSemantic(input: {
   userId: string;
   opportunityId: string;

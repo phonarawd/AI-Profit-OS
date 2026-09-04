@@ -102,6 +102,42 @@ try {
   /* expected */
 }
 
+const sdkLedger = read("packages/sdk/src/ledger/fetch.ts");
+if (!sdkLedger.includes("const MONEY_RE")) {
+  fails.push("ledger SDK must define MONEY_RE");
+}
+if (
+  sdkLedger.includes("\\\\.[0-9]+") ||
+  /MONEY_RE = \/\^\[0-9\]\+\(\\\\.\[0-9\]\+\)\?\$\//.test(sdkLedger)
+) {
+  fails.push("ledger MONEY_RE must match decimal point, not a literal backslash");
+}
+if (!sdkLedger.includes("/^[0-9]+(\\.[0-9]+)?$/")) {
+  fails.push("ledger MONEY_RE must accept optional decimal fraction");
+}
+
+const readerRuntime = "tooling/verify/ledger-journal-reader.runtime.cjs";
+if (!fs.existsSync(path.join(root, readerRuntime))) {
+  fails.push("missing: " + readerRuntime);
+} else {
+  const reader = spawnSync(process.execPath, [path.join(root, readerRuntime)], {
+    cwd: root,
+    encoding: "utf8",
+    timeout: 20_000,
+  });
+  process.stdout.write(reader.stdout || "");
+  process.stderr.write(reader.stderr || "");
+  if (
+    reader.status !== 0 ||
+    !(reader.stdout || "").includes("ledger-journal-reader-behavior PASS")
+  ) {
+    fails.push(
+      "ledger journal reader behavior failed: " +
+        String(reader.stderr || reader.stdout || "").split("\n")[0],
+    );
+  }
+}
+
 const pkg = read("package.json");
 const catalog = read("tooling/verify/CATALOG.md");
 const domain = read("tooling/verify/domain-by-path.cjs");

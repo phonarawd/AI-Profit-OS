@@ -57,6 +57,17 @@ type DisputeItem = {
   amountUsdt?: unknown;
 };
 
+type WithdrawReviewItem = {
+  id?: unknown;
+  userId?: unknown;
+  mode?: unknown;
+  amountUsdt?: unknown;
+  asset?: unknown;
+  destination?: unknown;
+  status?: unknown;
+  requirePrincipalConfirm?: unknown;
+};
+
 /**
  * Admin §9.1.1 / Money §41.6·§51.11 — `/admin/wallet?tab=disputes`
  * Disputes SoT = GET /api/v1/admin/wallet/deposit-disputes
@@ -76,12 +87,17 @@ function WalletContent() {
   const disputesApi = "/api/v1/admin/wallet/deposit-disputes";
   const creditApi = "/api/v1/admin/wallet/deposit-disputes/:id/credit";
   const rejectApi = "/api/v1/admin/wallet/deposit-disputes/:id/reject";
+  const reviewApi = "/api/v1/admin/wallet/withdraw-intents";
 
   const [config, setConfig] = useState<AdminResult<DepositConfig> | null>(null);
   const [krw, setKrw] = useState<AdminResult<{ items?: KrwItem[] }> | null>(null);
   const [disputes, setDisputes] = useState<AdminResult<{ items?: DisputeItem[] }> | null>(
     null,
   );
+  const [review, setReview] = useState<AdminResult<{ items?: WithdrawReviewItem[] }> | null>(
+    null,
+  );
+  const [reviewBusyId, setReviewBusyId] = useState<string | null>(null);
   const [actionNote, setActionNote] = useState<string | null>(null);
   const [creditAmount, setCreditAmount] = useState("");
   const [actionReason, setActionReason] = useState("");
@@ -89,22 +105,52 @@ function WalletContent() {
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      const [c, k, d] = await Promise.all([
+      const [c, k, d, w] = await Promise.all([
         adminGet<DepositConfig>("/api/v1/admin/wallet/deposit-config"),
         adminGet<{ items?: KrwItem[] }>(
           "/api/v1/admin/wallet/krw-deposit-requests?status=pending",
         ),
         adminGet<{ items?: DisputeItem[] }>(disputesApi),
+        adminGet<{ items?: WithdrawReviewItem[] }>(reviewApi),
       ]);
       if (cancelled) return;
       setConfig(c);
       setKrw(k);
       setDisputes(d);
+      setReview(w);
     })();
     return () => {
       cancelled = true;
     };
-  }, [disputesApi]);
+  }, [disputesApi, reviewApi]);
+
+  async function decideWithdraw(id: string, decision: "approve" | "reject") {
+    if (reviewBusyId) return;
+    if (decision === "reject" && actionReason.trim().length < 10) {
+      setActionNote("거절 사유는 10자 이상이어야 합니다.");
+      return;
+    }
+    if (!window.confirm(decision === "approve" ? "출금을 승인할까요?" : "출금을 거절할까요?")) {
+      return;
+    }
+    setReviewBusyId(id);
+    try {
+      const path =
+        decision === "approve"
+          ? `/api/v1/admin/wallet/withdraw-intents/${id}/approve`
+          : `/api/v1/admin/wallet/withdraw-intents/${id}/reject`;
+      const res = await adminSend(path, "POST", {
+        idempotencyKey: newIdempotencyKey(),
+        reason: actionReason.trim(),
+      });
+      setActionNote(res.ok ? "반영했습니다." : "반영하지 못했습니다.");
+      if (res.ok) {
+        setReview(await adminGet(reviewApi));
+      }
+    } finally {
+      setReviewBusyId(null);
+    }
+  }
 
   async function decideKrw(id: string, decision: "approve" | "reject") {
     if (decision === "reject" && actionReason.trim().length < 10) {
@@ -374,11 +420,89 @@ function WalletContent() {
           ) : null}
         </section>
       ) : (
-        <section className="mt-6" data-testid={`wallet-${tab}-panel`}>
+        <section
+          className="mt-6 space-y-2"
+          data-testid="wallet-review-panel"
+          data-review-api={reviewApi}
+          data-audit-required="true"
+        >
           <p className="text-sm text-lux-text-muted">
-            출금 확인 목록이 아직 연결되지 않았습니다.
+            사용자 확인이 끝난 출금만 대기열에 올립니다. 승인은 검수 결정이며, 잔액 반영은 다음 단계에서만 합니다.
           </p>
-          <AdminTruth value={null} />
+          <label className="block text-sm" htmlFor="withdraw-review-reason">
+            거절 사유
+          </label>
+          <textarea
+            id="withdraw-review-reason"
+            value={actionReason}
+            onChange={(e) => setActionReason(e.target.value)}
+            className="w-full max-w-md rounded border border-lux-border bg-lux-bg px-2 py-1 text-sm"
+          />
+          {!review ? (
+            <p className="text-sm text-lux-text-muted">{T.admin.state.loading}</p>
+          ) : !review.ok ? (
+            <AdminFetchNote failure={review.failure} />
+          ) : Array.isArray(review.data.items) && review.data.items.length === 0 ? (
+            <p className="text-sm text-lux-text-muted">대기 건이 없습니다.</p>
+          ) : Array.isArray(review.data.items) ? (
+            <ul className="space-y-3">
+              {review.data.items.map((item, idx) => {
+                const id = readText(item.id);
+                return (
+                  <li
+                    key={id ?? String(idx)}
+                    className="rounded border border-lux-border p-3 text-sm"
+                    data-testid="wallet-review-row"
+                  >
+                    <p>
+                      상태 <AdminTruth value={readStatusLabel(item.status)} />
+                    </p>
+                    <p>
+                      방식 <AdminTruth value={readText(item.mode)} />
+                    </p>
+                    <p>
+                      자산 <AdminTruth value={readText(item.asset)} />
+                    </p>
+                    <p>
+                      금액 <AdminTruth value={readAmount(item.amountUsdt)} />
+                    </p>
+                    <p>
+                      받는 곳 <AdminTruth value={readText(item.destination)} />
+                    </p>
+                    <p>
+                      회원 <AdminTruth value={readText(item.userId)} />
+                    </p>
+                    {id ? (
+                      <div className="mt-2 flex gap-2">
+                        <button
+                          type="button"
+                          className="rounded bg-lux-elevated px-2 py-1"
+                          disabled={reviewBusyId != null}
+                          onClick={() => void decideWithdraw(id, "approve")}
+                        >
+                          승인
+                        </button>
+                        <button
+                          type="button"
+                          className="rounded px-2 py-1 text-lux-text-muted"
+                          data-tone="danger"
+                          disabled={reviewBusyId != null}
+                          onClick={() => void decideWithdraw(id, "reject")}
+                        >
+                          거절
+                        </button>
+                      </div>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <AdminTruth value={null} />
+          )}
+          {actionNote ? (
+            <p className="text-sm text-lux-text-muted" role="status">{actionNote}</p>
+          ) : null}
         </section>
       )}
     </main>

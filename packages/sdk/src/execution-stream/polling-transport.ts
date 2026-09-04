@@ -12,7 +12,8 @@ import {
 } from "./types";
 
 function joinUrl(apiBase: string, path: string): string {
-  const base = apiBase.replace(/\/+$/, "");
+  let base = String(apiBase || "");
+  while (base.endsWith("/")) base = base.slice(0, -1);
   const p = path.startsWith("/") ? path : `/${path}`;
   return base ? `${base}${p}` : p;
 }

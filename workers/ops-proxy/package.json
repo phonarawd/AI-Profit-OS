@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev --config wrangler.toml",
-    "deploy": "wrangler deploy --config wrangler.toml",
-    "deploy:prod": "wrangler deploy --config wrangler.toml --env production"
+    "deploy": "node ../../tooling/deploy/forbid-direct-wrangler-prod.cjs",
+    "deploy:prod": "node ../../tooling/deploy/forbid-direct-wrangler-prod.cjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260809.1",

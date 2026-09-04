@@ -106,6 +106,22 @@ function localApiEndpoint(raw) {
   };
 }
 
+const AUTHENTICATED_EMPTY_HOME = {
+  viewState: "ready_empty",
+  reasonCode: "home.read.empty",
+  session: { status: "authenticated" },
+  money: null,
+  opportunity: null,
+  growth: null,
+  ledgerTotal: null,
+  todayPossibleProfitUsdt: null,
+  provenance: {
+    todayPossibleProfitUsdt: null,
+    ledgerTotal: null,
+  },
+  domainFsm: null,
+};
+
 function startApiStub() {
   if (process.env.LOCAL_WEB_RUNTIME_API_STUB !== "1") return Promise.resolve(null);
   const endpoint = localApiEndpoint(process.env.API_HOST);
@@ -115,14 +131,54 @@ function startApiStub() {
       res.end();
       return;
     }
-    res.statusCode = 401;
+    const pathName = String(req.url || "").split("?")[0];
+    const qaSession = String(req.headers["x-aipo-qa-session"] || "");
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     res.setHeader("Cache-Control", "no-store");
-    res.end(JSON.stringify({ message: "QA_AUTH_REQUIRED" }));
+    if (pathName.includes("/api/v1/me/home-read")) {
+      if (qaSession === "authenticated") {
+        res.statusCode = 200;
+        res.end(JSON.stringify(AUTHENTICATED_EMPTY_HOME));
+        return;
+      }
+      res.statusCode = 401;
+      res.end(
+        JSON.stringify({
+          viewState: "unauthorized",
+          reasonCode: "home.read.auth_required",
+          session: { status: "guest" },
+          money: null,
+          opportunity: null,
+          growth: null,
+          ledgerTotal: null,
+          todayPossibleProfitUsdt: null,
+          provenance: {
+            todayPossibleProfitUsdt: null,
+            ledgerTotal: null,
+          },
+          domainFsm: null,
+          error: "unauthorized",
+        }),
+      );
+      return;
+    }
+    res.statusCode = 401;
+    res.end(JSON.stringify({ error: "unauthorized", viewState: "unauthorized" }));
   });
   return new Promise((resolve, reject) => {
     server.once("error", reject);
     server.listen(endpoint.port, endpoint.host, () => resolve(server));
+  }).then(async (server) => {
+    const ok = await probe(
+      `http://${endpoint.host}:${endpoint.port}/api/v1/me/home-read`,
+    );
+    if (!ok) {
+      server.close();
+      throw new Error(
+        `local-web-runtime: API stub did not answer on ${endpoint.host}:${endpoint.port}`,
+      );
+    }
+    return server;
   });
 }
 
@@ -166,11 +222,19 @@ async function ensureLocalWebRuntime(opts = {}) {
   const apiStub = await startApiStub();
 
   const webNm = path.join(webRoot, "node_modules");
+  const nextNm = path.join(webNm, "next");
   let linkedNm = false;
   try {
     linkedNm = fs.lstatSync(webNm).isSymbolicLink();
   } catch {
     linkedNm = false;
+  }
+  if (!linkedNm) {
+    try {
+      linkedNm = fs.lstatSync(nextNm).isSymbolicLink();
+    } catch {
+      linkedNm = false;
+    }
   }
   const useWebpack = process.env.NEXT_DEV_WEBPACK === "1" || linkedNm;
   const nextArgs = productionMode

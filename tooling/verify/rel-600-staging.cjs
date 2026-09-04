@@ -42,6 +42,7 @@ const opsDeploy = read("tooling/deploy/cf-pages-ops.cjs");
 const stagingDeploy = read("tooling/deploy/cf-deploy-staging.cjs");
 const stagingWorkflow = read(".github/workflows/deploy-staging.yml");
 const prodWorkflow = read(".github/workflows/deploy-cloudflare.yml");
+const preflight = read("tooling/deploy/cf-preflight.cjs");
 
 function todoCompleted(relId) {
   const id = relId.replace(/^REL-/i, "rel-").toLowerCase();
@@ -54,6 +55,50 @@ function yamlCompleted(relId) {
   const idx = plan.indexOf("ID: " + relId);
   if (idx < 0) return false;
   return /STATUS:\s*COMPLETED/.test(plan.slice(idx, idx + 240));
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/** YAML/증거 텍스트에서 host가 다른 호스트의 부분문자열이 아닌지 확인한다. */
+function textContainsExactHost(text, host) {
+  const body = String(text || "");
+  const token = String(host || "").toLowerCase();
+  if (!token) return false;
+  const re = new RegExp(
+    "(?:^|[\\s\"'`=:@(,/>])(?:https?://)?" +
+      escapeRegExp(token) +
+      "(?:[\\s\"'`?#),/<]|$)",
+    "i",
+  );
+  return re.test(body);
+}
+
+function listContainsExactHost(list, host) {
+  const expected = String(host || "").toLowerCase();
+  return (list || []).some((item) => String(item || "").toLowerCase() === expected);
+}
+
+function textContainsExactOrigin(text, origin) {
+  let expected;
+  try {
+    expected = new URL(origin);
+  } catch {
+    return false;
+  }
+  if (expected.protocol !== "https:" && expected.protocol !== "http:") return false;
+  const body = String(text || "");
+  const found = body.match(/https?:\/\/[^\s"'<>]+/g) || [];
+  for (const raw of found) {
+    try {
+      const parsed = new URL(raw);
+      if (parsed.origin === expected.origin) return true;
+    } catch {
+      /* skip malformed token */
+    }
+  }
+  return false;
 }
 
 if (fixture.productionDomainMutation !== 0) {
@@ -126,8 +171,54 @@ if (/inputs:\s*\n\s*target:/.test(stagingWorkflow) && stagingWorkflow.includes("
 if (stagingWorkflow.includes("environment: production")) {
   fails.push("staging workflow must not use production GitHub environment");
 }
+if (
+  textContainsExactHost(stagingWorkflow, "ai-profit-os.onrender.com") ||
+  /API_HOST:-\s*https:\/\/ai-profit-os\.onrender\.com/.test(stagingWorkflow) ||
+  /API="\$\{API_HOST:-/.test(stagingWorkflow)
+) {
+  fails.push("staging workflow must not default API_HOST to production Render");
+}
+if (stagingWorkflow.includes("secrets.API_HOST")) {
+  fails.push("staging workflow must not inherit production API_HOST secret");
+}
+if (!stagingWorkflow.includes("STAGING_API_HOST")) {
+  fails.push("staging workflow must require STAGING_API_HOST");
+}
+if (!stagingWorkflow.includes("forbiddenHosts")) {
+  fails.push("staging workflow must deny manifest forbiddenHosts");
+}
+if (!listContainsExactHost((staging && staging.forbiddenHosts) || [], "ai-profit-os.onrender.com")) {
+  fails.push("staging.forbiddenHosts must include production Render API host");
+}
+if (!listContainsExactHost((staging && staging.forbiddenHosts) || [], "api.hiptk.app")) {
+  fails.push("staging.forbiddenHosts must include api.hiptk.app");
+}
 if (prodWorkflow.includes("workflow_dispatch") === false) {
   fails.push("production workflow_dispatch must remain on deploy-cloudflare.yml");
+}
+if (!prodWorkflow.includes("STAGING_API_HOST")) {
+  fails.push("deploy-cloudflare preview path must require STAGING_API_HOST");
+}
+if (!prodWorkflow.includes("non-prod-api-host.cjs")) {
+  fails.push("deploy-cloudflare preview path must run non-prod API isolation");
+}
+if (/if: inputs.target != 'production'[\s\S]*secrets\.API_HOST/.test(prodWorkflow)) {
+  fails.push("deploy-cloudflare preview must not inherit secrets.API_HOST");
+}
+if (!preflight.includes("requireNonProdApiIsolation")) {
+  fails.push("cf-preflight must isolate non-prod API host");
+}
+
+const isolationTest = spawnSync(
+  process.execPath,
+  ["--test", path.join(root, "tooling/deploy/lib/non-prod-api-host.runtime.test.cjs")],
+  { cwd: root, encoding: "utf8", timeout: 30_000 },
+);
+if (isolationTest.status !== 0) {
+  fails.push(
+    "non-prod API isolation runtime FAIL: " +
+      String(isolationTest.stderr || isolationTest.stdout || "").split("\n")[0],
+  );
 }
 
 for (const rel of [
@@ -170,10 +261,10 @@ if (closed) {
   if (!evidence.includes("PRODUCTION_WORKFLOW_DISPATCH = 0")) {
     fails.push("evidence missing PRODUCTION_WORKFLOW_DISPATCH");
   }
-  if (!evidence.includes("https://ai-profit-web-preview.ebay-adapter.workers.dev")) {
+  if (!textContainsExactOrigin(evidence, "https://ai-profit-web-preview.ebay-adapter.workers.dev")) {
     fails.push("evidence missing staging web URL");
   }
-  if (!evidence.includes("https://ai-profit-ops-preview.ebay-adapter.workers.dev")) {
+  if (!textContainsExactOrigin(evidence, "https://ai-profit-ops-preview.ebay-adapter.workers.dev")) {
     fails.push("evidence missing staging ops URL");
   }
   if (/CLOUDFLARE_API_TOKEN\s*=\s*[A-Za-z0-9_-]{20,}/.test(evidence)) {

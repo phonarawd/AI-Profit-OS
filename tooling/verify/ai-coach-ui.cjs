@@ -28,6 +28,7 @@ const files = [
   "packages/ui/canon/surfaces/peotteok-chat.wire.json",
   "packages/sdk/src/peotteok/usePeotteokChat.ts",
   "packages/sdk/src/peotteok/chat-sse.ts",
+  "packages/sdk/src/peotteok/sse-consume.ts",
   "apps/web/app/me/peotteok/page.tsx",
 ];
 for (const f of files) mustExist(f);
@@ -59,13 +60,19 @@ if (/execute_withdraw|approve_withdraw|ledger_post/.test(ui)) {
 }
 
 const sse = read("packages/sdk/src/peotteok/chat-sse.ts");
+const consume = read("packages/sdk/src/peotteok/sse-consume.ts");
 for (const needle of [
   "/api/v1/me/peotteok/chat",
   "/api/v1/me/peotteok/chips",
   "text/event-stream",
-  'startsWith("event:")',
 ]) {
   if (!sse.includes(needle)) fails.push(`chat-sse missing ${needle}`);
+}
+if (!sse.includes("finishPeotteokSse") || !consume.includes("eof_without_done")) {
+  fails.push("peotteok SSE must terminate EOF without protocol done");
+}
+if (!consume.includes('startsWith("event:")')) {
+  fails.push("sse-consume missing event: parser");
 }
 
 const hook = read("packages/sdk/src/peotteok/usePeotteokChat.ts");

@@ -29,8 +29,10 @@ export function OpportunityToolbar({
         </span>
         <input
           type="search"
+          data-sdp="search"
           value={query}
           onChange={(e) => onQuery(e.target.value)}
+          onInput={(e) => onQuery(e.currentTarget.value)}
           placeholder="상품 또는 파트너를 찾아보세요"
           aria-label="기회 검색"
         />

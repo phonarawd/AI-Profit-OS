@@ -4,6 +4,7 @@
  * NEVER invent ready_data from guest/expired
  */
 
+import { resolveSdkApiBase } from "../internal/qa-loopback-api-base.js";
 import type {
   HomeReadModelRequestOpts,
   HomeReadModelResponse,
@@ -127,7 +128,7 @@ export function normalizeHomeReadModel(
 export async function fetchHomeReadModel(
   opts: HomeReadModelRequestOpts = {},
 ): Promise<HomeReadModelResponse> {
-  const res = await fetch(apiUrl(opts.apiBase ?? "", "/api/v1/me/home-read"), {
+  const res = await fetch(apiUrl(resolveSdkApiBase(opts.apiBase), "/api/v1/me/home-read"), {
     method: "GET",
     headers: await authHeaders(opts),
     credentials: "include",

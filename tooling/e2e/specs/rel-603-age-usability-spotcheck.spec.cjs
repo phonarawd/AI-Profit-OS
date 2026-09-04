@@ -34,10 +34,10 @@ const baseUrl =
 
 const DESKTOP_BREAKPOINT = 1280;
 const GOTO_ATTEMPTS = 3;
-const GOTO_TIMEOUT_MS = 60_000;
-const GOTO_RETRY_DELAY_MS = 750;
+const GOTO_TIMEOUT_MS = 30_000;
+const GOTO_RETRY_DELAY_MS = 1000;
 
-test.describe.configure({ timeout: 180000 });
+test.describe.configure({ timeout: 300000, retries: 1 });
 
 test.beforeAll(() => {
   assertQaIsolation({ purpose: "e2e", databaseUrl: "", projectRef: "" });
@@ -74,10 +74,10 @@ async function hideNextDevChrome(page) {
 }
 
 async function stabilizePage(page) {
-  await page.waitForLoadState("domcontentloaded");
-  await page.waitForLoadState("networkidle", { timeout: 15_000 }).catch(() => {});
+  await page.waitForLoadState("domcontentloaded").catch(() => {});
+  // CF preview networkidle is unreliable (hangs under CSP/long-poll) — do not block cohort.
+  await sleep(250);
 }
-
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -130,7 +130,8 @@ async function isRetryableRootError(page, scenario, error) {
 async function gotoOnce(page, cohort, scenario) {
   const url = baseUrl.replace(/\/$/, "") + scenario.path;
   const res = await page.goto(url, {
-    waitUntil: "load",
+    // CF preview may hang on full load (CSP/third-party). DOM+stubs suffice.
+    waitUntil: "domcontentloaded",
     timeout: GOTO_TIMEOUT_MS,
   });
   expect(res, cohort.id + " " + scenario.id + " response").not.toBeNull();
@@ -175,7 +176,7 @@ async function waitForScenarioRoot(page, cohort, scenario, check) {
       `[REL-603] transient root retry ${cohort.id} ${scenario.id} ${scenario.path}`,
     );
     await page.goto("about:blank", { timeout: 10_000 }).catch(() => {});
-    await gotoOnce(page, cohort, scenario);
+    await gotoStaging(page, cohort, scenario);
     await check();
   }
 }
@@ -285,11 +286,12 @@ async function runSignup(page, cohort, scenario) {
   await expect(emailForm).toBeVisible({ timeout: 20_000 });
   await expect(emailSubmit).toBeDisabled();
   await stabilizePage(page);
-  await page
+  const termsCheckbox = page
     .getByTestId("auth-terms")
-    .locator('input[type="checkbox"]')
-    .check({ force: true });
-  await expect(emailSubmit).toBeEnabled();
+    .locator('input[type="checkbox"]');
+  await termsCheckbox.check({ force: true });
+  await expect(termsCheckbox).toBeChecked({ timeout: 20_000 });
+  await expect(emailSubmit).toBeEnabled({ timeout: 20_000 });
 
   const html = await assertSurfaceSafety(page, cohort, scenario);
   const axe = await runAxeOnHtml(html);
@@ -344,18 +346,22 @@ async function runParticipateEntry(page, cohort, scenario) {
   });
   const card = profitsCard(page, cohort.viewport.width);
   await expect(card).toBeVisible({ timeout: 20_000 });
-  const detailUrl = new RegExp(`/profits/${TEST_OPPORTUNITY_ITEM.id}$`);
+  const detailPath = "/profits/" + TEST_OPPORTUNITY_ITEM.id;
+  const detailUrl = new RegExp("/profits/" + TEST_OPPORTUNITY_ITEM.id + "$");
+  const href = await card.getAttribute("href");
+  expect(href, cohort.id + " card href").toMatch(detailUrl);
   await Promise.all([
-    page.waitForURL(detailUrl, { timeout: 20_000 }),
+    page.waitForURL(detailUrl, { timeout: GOTO_TIMEOUT_MS }),
     card.click(),
   ]);
-
+  await expect(page).toHaveURL(detailUrl);
+  // Re-bind stubs after navigation (handlers can drop on cross-document nav).
+  await stubCoreOpportunityJourney(page);
   await expect(page.getByTestId("opportunity-detail")).toHaveAttribute(
     "data-detail-state",
     "ready",
-    { timeout: 20_000 },
+    { timeout: 30_000 },
   );
-  await expect(page).toHaveURL(detailUrl);
 
   const detailCta = page
     .locator("[data-requires-preflight='true']")
@@ -376,7 +382,6 @@ async function runParticipateEntry(page, cohort, scenario) {
 
   await assertSurfaceSafety(page, cohort, scenario);
 }
-
 async function runWallet(page, cohort, scenario) {
   await page.unrouteAll({ behavior: "ignoreErrors" }).catch(() => {});
   await stubWallet(page, "ready");

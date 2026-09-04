@@ -29,9 +29,16 @@ import { requiredCapabilityFor } from "./admin-capabilities";
 import { adminRoleAllows, isKnownAdminRole } from "./admin-rbac.policy";
 import {
   AdminTokenError,
-  verifyAdminAuthorizationHeader,
+  extractBearerToken,
+  verifyAdminAccessToken,
   type AdminPrincipal,
 } from "./admin-token";
+import {
+  ADMIN_SESSION_COOKIE_NAME,
+  assertAdminCsrf,
+  requestHasQueryBearer,
+} from "./admin-session.cookies";
+import { isAdminAccessTokenRevoked } from "./admin-session.revoke";
 
 const requireCjs = createRequire(__filename);
 const auditCore = requireCjs(
@@ -54,6 +61,10 @@ export const ADMIN_ROUTE_SEGMENT = "admin";
 /** Populated only by this guard — never merged into `req.user` (trust domains stay split). */
 export type RequestWithAdmin = {
   headers?: Record<string, string | string[] | undefined>;
+  cookies?: Record<string, string | undefined>;
+  method?: string;
+  url?: string;
+  originalUrl?: string;
   admin?: AdminPrincipal;
 };
 
@@ -117,11 +128,36 @@ export class AdminGuard implements CanActivate {
     const handlerName = context.getHandler().name;
     const action = `${controllerName}.${handlerName}`;
 
+    if (requestHasQueryBearer(request.url ?? request.originalUrl)) {
+      throw new UnauthorizedException("ADMIN_AUTH_INVALID");
+    }
+
+    const cookieToken = String(
+      request.cookies?.[ADMIN_SESSION_COOKIE_NAME] ?? "",
+    ).trim();
+    const bearerToken = extractBearerToken(
+      request.headers?.authorization ?? request.headers?.Authorization,
+    );
+    const token = cookieToken || bearerToken;
+    if (!token) {
+      throw new UnauthorizedException("ADMIN_AUTH_REQUIRED");
+    }
+    if (isAdminAccessTokenRevoked(token)) {
+      throw new UnauthorizedException("ADMIN_AUTH_INVALID");
+    }
+
+    const method = String(request.method ?? "GET").toUpperCase();
+    if (cookieToken && /^(POST|PUT|PATCH|DELETE)$/.test(method)) {
+      try {
+        assertAdminCsrf(request);
+      } catch {
+        throw new UnauthorizedException("ADMIN_CSRF_INVALID");
+      }
+    }
+
     let principal: AdminPrincipal;
     try {
-      principal = verifyAdminAuthorizationHeader(
-        request.headers?.authorization ?? request.headers?.Authorization,
-      );
+      principal = verifyAdminAccessToken(token);
     } catch (e) {
       throw new UnauthorizedException(
         e instanceof AdminTokenError ? e.code : "ADMIN_AUTH_REQUIRED",

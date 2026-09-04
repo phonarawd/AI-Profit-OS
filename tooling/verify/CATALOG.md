@@ -1,4 +1,4 @@
-# verify:* Catalog (ADR-016 · §19 pointer)
+﻿# verify:* Catalog (ADR-016 · §19 pointer)
 
 **3-tier gate** — commit/push/CI 분리.
 
@@ -43,6 +43,9 @@
 | settlement-rule-parity | `verify:settlement-rule-parity` | T0 path + T1 always | ✅ live (REL-008 · rust==cjs golden vectors · REL-502 대체 0) |
 | web-lint | `verify:web-lint` | T0 path | ✅ live (REL-011 · apps/web eslint 실검사 · no-op echo 0 · 구문 오류 FAIL) |
 | axe-harness | `verify:axe-harness` | T0 path | ✅ live (REL-012 · axe-core committed Playwright spec · Home 390/1440+login · MCP 0 · Home freeze 0) |
+| leftover-browser-harness | `verify:leftover-browser-harness` | T0 path | live (leftover Chromium evidence specs gated LEFTOVER_BROWSER) |
+| leftover-shared-states | `verify:leftover-shared-states` | T0 path | live (app error.tsx · RecoveryRetry · PermissionDenied · execute receipt KEEP) |
+| full-product-axe-inventory | Axe inventory -- unlocked product + admin system-control serious/critical 0, Home locked defects separated -- **live** |
 | rel-402-dependency-audit | `verify:rel-402-dependency-audit` | T0 path + CI | ✅ live (REL-402 · pnpm audit high+ · local full scan 0 · exception ledger) |
 | rel-403-versioning | `verify:rel-403-versioning` | T0 path | ✅ live (REL-403 · semver + manual tag · HUMAN deploy · REL-602) |
 | rel-404-lighthouse-budget | `verify:rel-404-lighthouse-budget` | T0 path + CI | ✅ live (REL-404 · bundle/image/lazy budget · local full LH 0 · Home freeze) |
@@ -58,9 +61,17 @@
 | rel-501-money-red-team | `verify:rel-501-money-red-team` | T0 path + CI | live (REL-501 · 7 money modes · guard abort · ledger write 0) |
 | rel-502-final-engine-acceptance | `verify:rel-502-final-engine-acceptance` | T0 path + CI | live (REL-502 · PSM collect · drift fail-closed · REL-004 substitute 0) |
 | rel-503-protected-scope-watch | `verify:rel-503-protected-scope-watch` | T0 path + CI | live (REL-503 · ISSUED+drift=STALE · simulated 1-file · concealment 0) |
+| rc-formal | `verify:rc-formal` | T0 path | live (RC_FORMAL lock · ISSUED · drift 0 · history 82 · one-shot removed · prod apply 0) |
 | rel-504-migration-readiness | `verify:rel-504-migration-readiness` | T0 path + CI | live (REL-504 · READY · apply 0 · Track A files · REL-701-DB owner) |
 | backend-data-alignment | `verify:backend-data-alignment` | T0 path | live (R7 table · blank cell FAIL) |
 | rel-505-r7-backend-alignment | `verify:rel-505-r7-backend-alignment` | T0 path + CI | live (REL-505 · CERT_ISSUED 0 · current-fx wired · STALE pending rebase) |
+| release-engine-truth-consistency | `verify:release-engine-truth-consistency` | T0 path | live (Engine issuance mirrored across REL-504/505/506) |
+| api-runtime-qa-canonical | `verify:api-runtime-qa-canonical` | T0 path | live (HTTP decision-only, canonical evidence persist) |
+| production-release-decision | `verify:production-release-decision` | T0 path | live (acceptance is necessary-not-sufficient, current NO_GO) |
+| admin-csrf-double-submit | `verify:admin-csrf-double-submit` | T0 path | live (session HttpOnly, CSRF readable, dismiss 0) |
+| coach-sse-error-canonical | `verify:coach-sse-error-canonical` | T0 path | live (SSE error is constant coach_error; raw exception 0) |
+| release-manifest-identity-lock | `verify:release-manifest-identity-lock` | T0 path | live (manifest identity + deploy invariants fail closed) |
+| production-deploy-path-lock | `verify:production-deploy-path-lock` | T0 path | live (low-level prod helpers gated, acceptance required, rebuild/bundle forbidden) |
 | rel-508-current-fx-approx | `verify:rel-508-current-fx-approx` | T0 path + CI | live (REL-508 · Nest approx · null not 0 · STALE pending REL-502) |
 | rel-506-r8-infra-core | `verify:rel-506-r8-infra-core` | T0 path + CI | live (REL-506 · R8 Core · pages deploy 0 · Ads excluded · rum/tag deferred) |
 | rel-507-production-e2e | `verify:rel-507-production-e2e` | T0 path + CI | live (REL-507 · production-loop · isolation · invented success 0) |
@@ -96,8 +107,15 @@
 | `governance/engine-acceptance/**` (FINAL_ACCEPTANCE.md 제외) · `tooling/engine-acceptance/**` · `tooling/verify/engine-acceptance.cjs` · `.github/workflows/engine-acceptance.yml` | engine-acceptance |
 | `governance/figma/**` · `tooling/verify/figma-project-registry.cjs` | figma-project-registry |
 | `governance/visual-reconciliation/**` · `tooling/verify/locked-visual-reconciliation.cjs` · locked Account Hub `/me` | locked-visual-reconciliation |
+| `tooling/verify/domain-by-path.cjs` · `tooling/verify/domain-by-path.selftest.cjs` · `tooling/verify/domain-by-path-ci.cjs` · `.github/workflows/gate.yml` | domain-by-path-ci |
+| `.cursor/hooks/**` · `.cursor/hooks.json` · `scripts/verify-night-guard.mjs` · `tooling/verify/night-guard.cjs` · `scripts/verify-project-boundary.mjs` | night-guard · project-boundary |
 | `tooling/e2e/**` · `tooling/verify/qa-env-isolation-guard.cjs` | qa-env-isolation-guard |
+| `governance/db-recon/**` · b1-push-rls-design · b2-ownership-design · `tooling/verify/db-recon-inventory.cjs` · `tooling/verify/live-schema-forensic.cjs` | db-recon-inventory · live-schema-forensic |
+| `governance/release-master/rel-b3-promotion/**` · `b3-promotion-ledger` · `tooling/verify/b3-promotion.cjs` | b3-promotion |
+| `release-acceptance.v1.json` · `tooling/release/*acceptance*` · `engine-acceptance.yml` · `deploy-cloudflare.yml` | release-acceptance |
+| `.github/workflows/**` · `.github/dependabot.yml` · `workflow-action-pins.v1.json` · `tooling/verify/workflow-action-pin.cjs` | workflow-action-pin |
 | `tooling/e2e/lib/axe-scan.cjs` · `tooling/e2e/specs/axe-a11y.spec.cjs` · `tooling/verify/axe-harness.cjs` | axe-harness |
+| leftover-browser specs · leftover-browser-harness.cjs · leftover-browser-evidence.v1.json | leftover-browser-harness |
 | `apps/web/lib/opportunity-card-map.ts` · `apps/web/components/spark-dash-home/format.ts` · `packages/ui/components/opportunity/money-display.ts` · `tooling/e2e/lib/money-unavailable.cjs` · `tooling/e2e/specs/money-unavailable.spec.cjs` · `tooling/verify/money-unavailable.cjs` | money-unavailable |
 | `packages/ui/**` · `apps/web/**` | no-it-jargon · mockup-governance · canon-surfaces |
 | `apps/web/**` · `tooling/verify/web-lint.cjs` | web-lint |
@@ -130,6 +148,13 @@
 | `governance/engine-acceptance/PROTECTED_SCOPE_STALE_WATCH.md` · `tooling/engine-acceptance/protected-scope-watch.cjs` · `tooling/verify/rel-503-protected-scope-watch.cjs` | rel-503-protected-scope-watch |
 | `governance/release-master/MIGRATION_READINESS.md` · `tooling/verify/rel-504-migration-readiness.cjs` | rel-504-migration-readiness |
 | `governance/release-master/R7_BACKEND_ALIGNMENT.md` · `tooling/verify/backend-data-alignment.cjs` · `tooling/verify/rel-505-r7-backend-alignment.cjs` | backend-data-alignment · rel-505-r7-backend-alignment |
+| `tooling/verify/release-engine-truth-consistency.cjs` | release-engine-truth-consistency |
+| `tooling/verify/api-runtime-qa-canonical.cjs` | api-runtime-qa-canonical |
+| `tooling/release/production-release-decision.cjs` · `tooling/verify/production-release-decision.cjs` | production-release-decision |
+| `tooling/verify/admin-csrf-double-submit.cjs` | admin-csrf-double-submit |
+| `tooling/verify/coach-sse-error-canonical.cjs` | coach-sse-error-canonical |
+| `tooling/verify/release-manifest-identity-lock.cjs` | release-manifest-identity-lock |
+| `tooling/verify/production-deploy-path-lock.cjs` · `tooling/deploy/lib/accepted-artifact-authority.cjs` | production-deploy-path-lock |
 | `governance/release-master/REL-508-CURRENT-FX-APPROX.md` · `services/api-nest/src/opportunities/current-fx-approx*` · `schemas/current-fx-approx.v1.json` | rel-508-current-fx-approx |
 | `governance/release-master/R8_INFRA_CORE.md` · `governance/release-master/r8-cache-inventory.v1.json` · `tooling/verify/rel-506-r8-infra-core.cjs` | rel-506-r8-infra-core |
 | `tooling/e2e/specs/production-loop.spec.cjs` · `tooling/e2e/lib/production-loop.cjs` · `tooling/verify/rel-507-production-e2e.cjs` | rel-507-production-e2e |
@@ -164,7 +189,7 @@
 | idempotency-conflict-detection | Money post-r0 — **live** (same key+different payload → 409 · fingerprint · ledger+participate · mig request_fingerprint) |
 | committed-event-publication-durability | Money post-r0 — **live** (ledger TX outbox intent · emit≠ack · poller replay · Phase0 Postgres) |
 | money-wallet-auth-remediation | Money post-r0 Finding A+B — **live** (practiceWelcome JWT+sessionUserId · practiceExpireTick fail-closed machine-auth · Adapters fail-open 복제0) |
-| withdraw-fee-ledger · min-holding-scope | Money §11.1/§11.2 — **live** (deposit-config fee/minHolding · FEE_REVENUE · profit-only exempt) |
+| withdraw-fee-ledger · min-holding-scope · deposit-config-fail-closed | Money §11.1/§11.2 — **live** (deposit-config fee/minHolding · FEE_REVENUE · profit-only exempt) |
 | match-success-rule · simulation-gate | Engine §48/§51 — match-success-rule **live** · simulation-gate **live** (M0.5 S1~S4 · platform_reserve · Growth ON ≤24h · Admin growth?tab=simulation · system-control?tab=reserve) |
 | ai-feature-platform · shadow-replay-drift · no-success-rate-as-rule · no-ai-data-in-git | Engine ai-feature-platform — feature-platform + ai-platform L1/L2 · AI PICK · AI_LOG/Eval · L3 money0 · offline shadow-replay drift **0.000%** · failAction=`block_settlement`(persisted) + `ADVISORY_LABEL`=`drift_advisory_only`(settlement unwired · §47.16.6) · sellSuccessRate≠Rule/PICK · GitHub AI data0 — **live** |
 | twin-fact-separation | Engine §47 Personal AI — Twin≠money Fact · Memory+pgvector · Fact freshness · Answer Guard · P/G/S router — **live** |
@@ -209,6 +234,9 @@
 | usdt-deposit-closure | REL-114 — `/wallet/deposit` USDT address owner · credit 0 · happy+deny — **live** |
 | krw-deposit-closure | REL-115 — `/wallet/deposit?tab=krw` pending≠credit · PG 0 · happy+deny — **live** |
 | withdraw-flow-wire | UI PART9f2 — WithdrawAmountPanel + step-up challenge/verify + POST `/wallet/withdraw` idempotencyKey · PrincipalConfirmSheet client token pointer — **live** |
+| withdraw-stepup-security | Money 43.6 -- no fake WebAuthn proof, server verified email only, expiring HMAC token, atomic consume, proven PIN enrollment -- **live** |
+| adapter-ingest-fail-closed | Adapters ingest -- token unset 503, wrong token 401, fail-open removed -- **live** |
+| usdt-ingest-machine-auth | Money 43.1 -- machine-auth observe/tick/sweeper, address-index owner only, body.userId ignored -- **live** |
 | usdt-withdraw-closure | REL-116 — `/wallet/withdraw/usdt` server accept · credit 0 · happy+deny — **live** |
 | krw-withdraw-closure | REL-117 — `/wallet/withdraw/krw` server accept · PG 0 · happy+deny — **live** |
 | transaction-history-closure | REL-118 — `/wallet/history` REL-015 list · mock 0 · empty≠401 — **live** |
@@ -240,6 +268,8 @@
 | platform-fact-state-registry | Index v7.23 R0-2 — `fact-state-registry.v1.json` · Fact↔State 반복검증 · commonViewStates⊥domain FSM · reasonCode=`domain.resource.reason` · source/asOf/freshness/owner/provenance 필수 · 구현코드0 · path-trigger — **live** |
 | platform-change-control | Index v7.23 R0-3 — `change-control.v1.md` · L1/L2/L3+version bump · ADR-017 Light+Purple·IA 새 라벨·OpenNext Workers before/after/영향/rollback/승인 증거 · d903eef7 REFERENCE ONLY 흡수 crosswalk · 구현코드0 · path-trigger — **live** |
 | governance-observation-registry | Index v7.23 R0-4 + post-r0 — schema+registry · status enum · currentlyOccurring⊥reviewTrigger · R0 AtR0 locks=0 불변 · post-r0 Money wave1 promote4/materialize3 · Engine observed2 · Change Control `cc.money.r0-obs-promote-wave1` · path-trigger — **live** |
+| domain-by-path-ci | T0 path — **live** (LOCAL staged/unstaged · CI PR merge-base→HEAD · CI PUSH before→HEAD · missing base fail-closed · silent SKIP 0) |
+| night-guard | Cursor preToolUse Night Guard — **live** (OPERATION deny: Production DDL/DML/migration/repair/deploy/secret · GitHub ruleset/environment/protection · main/release/force push · `--no-verify` · fixture-only selftest · project_ref allow != write allow) |
 | qa-env-isolation-guard | REL-006 QA Lab — **live** (production ref `mgsytcetsiecllmhcyox` throw · money mutation fail-closed · committed Playwright spec · MCP-only DONE 0) |
 | money-unavailable | REL-007 — **live** (missing money → UNAVAILABLE · 실제 0 유지 · Home geometry 0) |
 | figma-project-registry | REL-009 + REL-131 — **live** (fileKey locked · REL-131 Desktop 192:194 + Mobile 192:434 FOUNDER_APPROVED_LOCKED · approvedAuthority=2 · V1/V2 SUPERSEDED preserved · other frames candidate · Home 46:2 BACKUP · Code Connect candidate-only · REL-131 apply 0) |

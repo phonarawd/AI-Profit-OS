@@ -1,0 +1,27 @@
+{
+  "schema": "governance.recovery.i6-admin-evidence.v1",
+  "observed_at": "2026-09-01T10:45:00Z",
+  "source_sha": "3d930bfedebc0479e85ad559837de5aaed0c6b08",
+  "I6_SCOPE": "Index of I-1..I-5 evidence. UI visibility alone is not PASS.",
+  "SLICES": {
+    "I1": { "file": "governance/recovery/i1-authz-evidence.v1.json", "status": "PARTIAL" },
+    "I2": { "status": "BLOCKED_HOME_LOCK" },
+    "I3": { "file": "governance/recovery/i3-ai-console-evidence.v1.json", "status": "PARTIAL" },
+    "I4": { "file": "governance/recovery/i4-release-ops-evidence.v1.json", "status": "PARTIAL" },
+    "I5": { "file": "governance/recovery/i5-ux-language-evidence.v1.json", "status": "PARTIAL" }
+  },
+  "ADMIN_ROLE": "LOCKED_5",
+  "SERVER_SIDE_AUTHZ_VERIFIED": "PARTIAL",
+  "RLS_OR_DATA_ACCESS_VERIFIED": "PARTIAL_READ_ONLY",
+  "AUDIT_LOG_VERIFIED": "PARTIAL",
+  "REAL_DATA_SOURCE_VERIFIED": "PARTIAL",
+  "E2E_ALLOWED_AND_DENIED_CASES": "PARTIAL",
+  "RAW_ARTIFACTS": [
+    "governance/recovery/i1-authz-evidence.v1.json",
+    "governance/recovery/i3-ai-console-evidence.v1.json",
+    "governance/recovery/i4-release-ops-evidence.v1.json",
+    "governance/recovery/i5-ux-language-evidence.v1.json"
+  ],
+  "PLAN_TODO": "i-6-admin-evidence remains pending — STATUS is not CLOSED_VERIFIED",
+  "STATUS": "PARTIAL"
+}
