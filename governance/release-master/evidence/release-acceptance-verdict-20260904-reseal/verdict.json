@@ -1,0 +1,25 @@
+{
+  "schema": "release-acceptance-verdict.v1",
+  "sha": "a3e5304d40d7b7042175177aab11f6b279f6214c",
+  "event_name": "workflow_dispatch",
+  "qa_phase": "full",
+  "kind": "PRODUCTION_RELEASE",
+  "verdict": "PASS",
+  "fails": [],
+  "aggregator_is_not_verdict": true,
+  "engine_run": {
+    "id": 33839618126,
+    "workflow": "engine-acceptance",
+    "workflow_name_auxiliary": true,
+    "path": ".github/workflows/engine-acceptance.yml",
+    "head_sha": "a3e5304d40d7b7042175177aab11f6b279f6214c",
+    "event": "workflow_dispatch",
+    "qa_phase": "full",
+    "qa_phase_proof": "full_job_signature",
+    "status": "completed"
+  },
+  "artifact_digest": "7c0a2ed577d36d88d61e99a70adb1cba1e6f8f9daca540fa93b2125a682e9bdc",
+  "artifact_source_sha": "a3e5304d40d7b7042175177aab11f6b279f6214c",
+  "artifact_built_once": true,
+  "api_runtime_verified": true
+}

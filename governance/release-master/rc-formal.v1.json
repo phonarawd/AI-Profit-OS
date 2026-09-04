@@ -2,7 +2,7 @@
   "schema": "governance.release-master.rc-formal.v1",
   "id": "rc-formal",
   "status": "LOCKED",
-  "source_sha_binding": "7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f",
+  "source_sha_binding": "a3e5304d40d7b7042175177aab11f6b279f6214c",
   "engine_final_acceptance": "ISSUED",
   "engine_baseline": "ea-baseline-0d8825e8f333-5ac0f4291966",
   "engine_rebase_id": "ea-rebase-ec3c9604d2ab-5ac0f4291966",
@@ -27,25 +27,26 @@
   "historical_inventory_ref": "governance/recovery/archive/engine-drift-inventory.pre-rebase-20260902.v1.json",
   "historical_evidence_ref": "governance/recovery/archive/engine-rebase-evidence.pre-rebase-20260902.v1.json",
   "predecessor_rc": {
-    "source_sha_binding": "84cb2ea05ddea0406d9b1f13cbe0b0781a744630",
-    "engine_baseline": "ea-baseline-74683b6e39a7-590263f0f273",
-    "release_build_run_id": 33617601225,
-    "release_acceptance_run_id": 33618547918,
-    "artifact_digest": "c5c56d320d33b015e84f403d83765f1c32c3422f076a7fc8e48c99d6fcfac988",
-    "superseded_reason": "post-seal protected-scope product changes (admin-session CSRF session binding · TRON broadcast migration reconcile) → PO-ACKed rebase ea-rebase-ec3c9604d2ab-5ac0f4291966 → current-epoch QA0-QA9 ISSUED → trunk integration PR #213 → re-seal on main"
+    "source_sha_binding": "7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f",
+    "engine_baseline": "ea-baseline-0d8825e8f333-5ac0f4291966",
+    "release_build_run_id": 33827816052,
+    "release_acceptance_run_id": 33829217490,
+    "artifact_digest": "5e37887b888aa2bcd4bb075ebcd956ea1c358322bdfbb7f10bdbe31df8ec6001",
+    "superseded_reason": "PR #217 merged to main (Night Guard founder-auth channel · REL-701-DB apply record · branch cleanup · RC re-seal docs, no product-path changes) → merge commit produced a new main tip SHA (a3e5304d) → production deploy gate (require-accepted-sha.cjs) requires an exact-SHA release-acceptance PASS with no reuse across SHAs → re-sealed release-build/engine-acceptance(full)/release-acceptance on a3e5304d"
   },
   "release_artifact": {
     "name": "release-bundle",
     "digest_alg": "sha256",
-    "artifact_digest": "5e37887b888aa2bcd4bb075ebcd956ea1c358322bdfbb7f10bdbe31df8ec6001",
-    "release_build_run_id": 33827816052,
-    "engine_acceptance_run_id": 33827842691,
-    "release_acceptance_run_id": 33829217490,
+    "artifact_digest": "7c0a2ed577d36d88d61e99a70adb1cba1e6f8f9daca540fa93b2125a682e9bdc",
+    "release_build_run_id": 33839611957,
+    "engine_acceptance_run_id": 33839618126,
+    "release_acceptance_run_id": 33840579078,
     "release_acceptance_verdict": "PASS",
     "api_artifact_digest": "bfbaab67e0358e2eddf1d0e53ad2ac5c790766be2c26eec6400a8c57553b669d",
-    "deploy_staging_run_id": 33827845069,
-    "render_staging_deploy_id": "dep-dad2cgn10e5c73d1amrg",
-    "evidence_dir": "governance/release-master/evidence/release-acceptance-verdict-20260904"
+    "deploy_staging_run_id": null,
+    "render_staging_deploy_id": null,
+    "deploy_staging_note": "SKIPPED_NOT_REQUIRED — not a require-accepted-sha.cjs input; prior staging bind (7c6a2b0a) stays valid evidence for the superseded predecessor RC only",
+    "evidence_dir": "governance/release-master/evidence/release-acceptance-verdict-20260904-reseal"
   },
-  "note": "source_sha_binding is exact immutable FINAL RC SHA on main (PR #213 merge commit · staging+artifact+acceptance proven 2026-09-04). Tip may add governance/plans/verify/e2e/workflow evidence-only. production_db_apply=1 records REL-701-DB Founder-authorized execution; production_deploy stays 0 until Founder REL-701 workflow_dispatch."
+  "note": "source_sha_binding is exact immutable RC SHA on main (PR #217 merge commit · re-sealed 2026-09-04 after PR #217 changed the main tip). Tip may add governance/plans/verify/e2e/workflow evidence-only. production_db_apply=1 records REL-701-DB Founder-authorized execution (unchanged, prior to this re-seal); production_deploy stays 0 until Founder REL-701 workflow_dispatch on this exact SHA."
 }
