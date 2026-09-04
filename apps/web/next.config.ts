@@ -15,6 +15,12 @@ const nextConfig: NextConfig = {
   images: {
     // REL-013: 공유 최소 allowlist만. hostname '*' / 임의 https 전체 허용 0.
     remotePatterns: [...PRODUCT_IMAGE_REMOTE_PATTERNS],
+    // Cloudflare Workers 런타임에는 Next 기본 이미지 최적화(sharp)가 없다.
+    // @opennextjs/cloudflare는 이를 Cloudflare Images `IMAGES` 바인딩으로 대체하는데,
+    // wrangler.toml에 그 바인딩이 없으면 배포 시 worker.js가 "No such module cloudflare/images.js"로 거부된다(code 10021).
+    // 이 원격 썸네일은 §0.0.6 참고용 상품 시세 이미지(프리미엄 Home 비주얼 자산 아님)이므로
+    // 새 유료/신규 바인딩 의존성을 추가하지 않고 최적화를 끈다 — 원본 그대로 서빙.
+    unoptimized: true,
   },
   async headers() {
     return nextSecurityHeaderSources();
