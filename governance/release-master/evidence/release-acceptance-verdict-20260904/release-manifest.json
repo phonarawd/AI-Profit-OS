@@ -1,0 +1,31 @@
+{
+  "schema": "release-artifact-manifest.v1",
+  "artifact_name": "release-bundle",
+  "source_sha": "7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f",
+  "built_once": true,
+  "artifact_digest": "5e37887b888aa2bcd4bb075ebcd956ea1c358322bdfbb7f10bdbe31df8ec6001",
+  "digest_alg": "sha256",
+  "rebuild_forbidden_at_deploy": true,
+  "worker_prebuilt": true,
+  "worker_deploy_no_bundle": true,
+  "worker_prebuilts": {
+    "push-dispatcher": {
+      "entry": "index.js",
+      "sha256": "39f3e95691e01df9d747613a9d6e2f942ed7d04b4ba5ad6644d048d523e125c1",
+      "bundled_once": true
+    },
+    "ebay-adapter": {
+      "entry": "index.js",
+      "sha256": "a64a7c01e7cafccfe22407a43ae452d3bfe732078bd35dfe70ef1dcdd14d36bb",
+      "bundled_once": true
+    }
+  },
+  "api_artifact": {
+    "artifact_kind": "api-nest",
+    "entry": "services/api-nest/dist/main.js",
+    "source_sha": "7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f",
+    "artifact_digest": "bfbaab67e0358e2eddf1d0e53ad2ac5c790766be2c26eec6400a8c57553b669d",
+    "digest_alg": "sha256",
+    "built_once": true
+  }
+}
