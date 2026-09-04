@@ -336,7 +336,7 @@ function walk(dir, out) {
   const offenders = [];
   for (const file of allTs) {
     const code = stripComments(fs.readFileSync(file, "utf8"));
-    if (/api\.ebay\.com|ebay\.com\/buy\/browse/i.test(code)) {
+    if (/\bapi\.ebay\.com\b|\bebay\.com\/buy\/browse\b/i.test(code)) {
       offenders.push(path.relative(root, file));
     }
   }
