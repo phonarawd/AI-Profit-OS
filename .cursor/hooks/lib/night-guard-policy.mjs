@@ -49,6 +49,50 @@ export const CODES = {
   INTERNAL: "NG_INTERNAL",
 };
 
+/**
+ * Founder 승인 채널 (범위·시한 제한 · 순수 검증).
+ *
+ * 엔트리(project-boundary.mjs)가 로컬 gitignored 파일
+ * `.cursor/night-guard.founder-auth.local.json` 을 읽어 validateFounderAuth()로
+ * 검증한 결과만 ctx.founderAuth 로 주입한다. 파일이 없거나 무효면 기존과 100% 동일(DENY).
+ *
+ * 스코프별 허용 연산은 아래 표에만 존재한다. 표 밖 연산은 승인이 있어도 DENY.
+ *   REL-701-DB : Production migration apply (supabase db push / migration up · MCP apply_migration)
+ *
+ * 승인으로도 절대 열리지 않는 것: migration-history repair · db reset · Production deploy/rollback ·
+ * secret/env 변이 · GitHub ruleset/protection · force push · main/release push · --no-verify.
+ */
+export const FOUNDER_AUTH_SCHEMA = "night-guard.founder-auth.v1";
+export const FOUNDER_AUTH_MAX_WINDOW_MS = 4 * 60 * 60 * 1000;
+export const FOUNDER_AUTH_SCOPES = Object.freeze({
+  "REL-701-DB": Object.freeze(["PROD_MIGRATION_APPLY"]),
+});
+
+export function validateFounderAuth(raw, nowMs) {
+  const now = Number.isFinite(nowMs) ? nowMs : Date.now();
+  const invalid = (reason) => ({ valid: false, scopes: [], reason });
+  if (!raw || typeof raw !== "object") return invalid("missing");
+  if (raw.schema !== FOUNDER_AUTH_SCHEMA) return invalid("schema");
+  const issued = Date.parse(String(raw.issuedAt || ""));
+  const expires = Date.parse(String(raw.expiresAt || ""));
+  if (!Number.isFinite(issued) || !Number.isFinite(expires)) return invalid("timestamps");
+  if (issued > now) return invalid("issued_in_future");
+  if (expires <= now) return invalid("expired");
+  if (expires - issued > FOUNDER_AUTH_MAX_WINDOW_MS) return invalid("window_too_long");
+  if (!String(raw.founderStatement || "").trim()) return invalid("statement");
+  const scopes = Array.isArray(raw.scopes)
+    ? raw.scopes.map(String).filter((s) => Object.prototype.hasOwnProperty.call(FOUNDER_AUTH_SCOPES, s))
+    : [];
+  if (scopes.length === 0) return invalid("no_known_scope");
+  return { valid: true, scopes, reason: "ok" };
+}
+
+function founderAllows(ctx, operation) {
+  const auth = ctx && ctx.founderAuth;
+  if (!auth || auth.valid !== true || !Array.isArray(auth.scopes)) return false;
+  return auth.scopes.some((s) => (FOUNDER_AUTH_SCOPES[s] || []).includes(operation));
+}
+
 export function deny(code, userMessage, agentMessage) {
   const msg = userMessage || code;
   return {
@@ -294,7 +338,7 @@ function denyDb(kind) {
   );
 }
 
-function decideSupabaseMcp(tool, args, blob) {
+function decideSupabaseMcp(tool, args, blob, ctx) {
   const name = lower(tool);
   const sql = sqlFromArgs(args);
   const ref = projectRefFromArgs(args, blob);
@@ -304,6 +348,7 @@ function decideSupabaseMcp(tool, args, blob) {
 
   if (/^apply_migration$/.test(name)) {
     if (staging) return allow();
+    if (founderAllows(ctx, "PROD_MIGRATION_APPLY")) return allow();
     return deny(
       CODES.PROD_MIGRATION_APPLY,
       "Blocked: Production migration apply.",
@@ -532,7 +577,7 @@ function decideGit(cmd) {
   return null;
 }
 
-function decideSupabaseCli(cmd) {
+function decideSupabaseCli(cmd, ctx) {
   if (!/\bsupabase\b/i.test(cmd)) return null;
   const stripped = stripQuoted(cmd);
   const staging = isExplicitlyNonProduction(cmd);
@@ -546,6 +591,7 @@ function decideSupabaseCli(cmd) {
   }
   if (/\bdb\s+push\b/i.test(stripped) || /\bmigration\s+up\b/i.test(stripped)) {
     if (staging) return allow();
+    if (founderAllows(ctx, "PROD_MIGRATION_APPLY")) return allow();
     return deny(
       CODES.PROD_MIGRATION_APPLY,
       "Blocked: Production migration apply.",
@@ -743,7 +789,7 @@ function decideGithubMcp(tool, args, blob) {
   return null;
 }
 
-function decideShell(payload) {
+function decideShell(payload, ctx) {
   const cmd = extractShellCommand(payload);
   if (!cmd.trim()) return allow();
 
@@ -753,7 +799,7 @@ function decideShell(payload) {
   const ghHit = decideGithubCli(cmd);
   if (ghHit) return ghHit;
 
-  const sbHit = decideSupabaseCli(cmd);
+  const sbHit = decideSupabaseCli(cmd, ctx);
   if (sbHit) return sbHit;
 
   const psqlHit = decidePsql(cmd);
@@ -768,7 +814,7 @@ function decideShell(payload) {
   return allow();
 }
 
-function decideMcp(payload) {
+function decideMcp(payload, ctx) {
   const input = parseToolInput(payload);
   const server = mcpServerOf(payload, input);
   const tool = mcpToolOf(payload, input);
@@ -776,7 +822,7 @@ function decideMcp(payload) {
   const blob = blobOf([server, tool, JSON.stringify(args), extractShellCommand(payload)]);
 
   if (isSupabaseSurface(server, tool, blob)) {
-    const hit = decideSupabaseMcp(tool, args, blob);
+    const hit = decideSupabaseMcp(tool, args, blob, ctx);
     if (hit) return hit;
   }
   if (isRenderSurface(server, tool, blob)) {
@@ -813,7 +859,7 @@ function isMcpTool(tool, payload, input) {
   return false;
 }
 
-export function decideNightGuard(payload) {
+export function decideNightGuard(payload, ctx) {
   try {
     if (!payload || typeof payload !== "object") return allow();
     const event = String(
@@ -827,16 +873,20 @@ export function decideNightGuard(payload) {
 
     const tool = toolNameOf(payload);
     const input = parseToolInput(payload);
+    const safeCtx = ctx && typeof ctx === "object" ? ctx : {};
 
     if (isShellTool(tool, payload, input) || payload.command || payload.cmd) {
-      return decideShell({
-        ...payload,
-        command: extractShellCommand(payload) || String((input && input.command) || ""),
-      });
+      return decideShell(
+        {
+          ...payload,
+          command: extractShellCommand(payload) || String((input && input.command) || ""),
+        },
+        safeCtx
+      );
     }
 
     if (isMcpTool(tool, payload, input)) {
-      return decideMcp(payload);
+      return decideMcp(payload, safeCtx);
     }
 
     return allow();

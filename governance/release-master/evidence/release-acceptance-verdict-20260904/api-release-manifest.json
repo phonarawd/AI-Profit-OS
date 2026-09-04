@@ -1,0 +1,19 @@
+{
+  "schema": "api-nest-artifact-manifest.v1",
+  "artifact_kind": "api-nest",
+  "not_web_kind": "web-open-next",
+  "source_sha": "7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f",
+  "entry": "services/api-nest/dist/main.js",
+  "artifact_digest": "bfbaab67e0358e2eddf1d0e53ad2ac5c790766be2c26eec6400a8c57553b669d",
+  "digest_alg": "sha256",
+  "built_once": true,
+  "deploy_forbidden_here": true,
+  "render_config_mutation": 0,
+  "registry": "BLOCKED_EXTERNAL_ACTION",
+  "acceptance": {
+    "WEB_ARTIFACT_ACCEPTED": false,
+    "API_ARTIFACT_ACCEPTED": false,
+    "inequality": "WEB_ARTIFACT_ACCEPTED != API_ARTIFACT_ACCEPTED",
+    "registry": "BLOCKED_EXTERNAL_ACTION"
+  }
+}

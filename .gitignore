@@ -81,3 +81,7 @@ _worktree-*/
 # Misc
 .claude/
 _docx_extract.txt
+
+# Local-only credentials / authorizations (never commit)
+.cursor/*.local.json
+.cursor/night-guard.founder-auth.local.json

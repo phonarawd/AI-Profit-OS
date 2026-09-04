@@ -1,0 +1,31 @@
+{
+  "sha": "7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f",
+  "event_name": "workflow_dispatch",
+  "qa_phase": "full",
+  "jobs": {
+    "qa0-baseline": "success",
+    "qa1-deterministic": "success",
+    "qa2-synthetic-personas": "success",
+    "qa-matrix:QA3": "success",
+    "qa-matrix:QA4": "success",
+    "qa-matrix:QA5": "success",
+    "qa-matrix:QA6": "success",
+    "qa-matrix:QA8": "success",
+    "qa7-ai-eval": "success",
+    "qa5-fault": "success",
+    "qa6-measure": "success",
+    "qa8-adversarial": "success",
+    "aggregator": "success"
+  },
+  "engine_run": {
+    "id": 33827842691,
+    "workflow": "engine-acceptance",
+    "workflow_name_auxiliary": true,
+    "path": ".github/workflows/engine-acceptance.yml",
+    "head_sha": "7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f",
+    "event": "workflow_dispatch",
+    "qa_phase": "full",
+    "qa_phase_proof": "full_job_signature",
+    "status": "completed"
+  }
+}

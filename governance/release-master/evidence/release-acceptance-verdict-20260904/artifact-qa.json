@@ -1,0 +1,24 @@
+{
+  "schema": "release-artifact-qa.v1",
+  "verified": true,
+  "source_sha": "7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f",
+  "artifact_digest": "5e37887b888aa2bcd4bb075ebcd956ea1c358322bdfbb7f10bdbe31df8ec6001",
+  "built_once": true,
+  "runtime": {
+    "verified": true,
+    "artifact_digest": "5e37887b888aa2bcd4bb075ebcd956ea1c358322bdfbb7f10bdbe31df8ec6001"
+  },
+  "api_runtime": {
+    "verified": true,
+    "reason": "pass",
+    "harness": "injected",
+    "route": "/api/v1/health",
+    "status": 200,
+    "service": "api-nest",
+    "git_sha": "7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f",
+    "git_sha_source": "RENDER_GIT_COMMIT",
+    "source_sha": "7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f",
+    "bundle_digest": "5e37887b888aa2bcd4bb075ebcd956ea1c358322bdfbb7f10bdbe31df8ec6001",
+    "api_artifact_digest": "bfbaab67e0358e2eddf1d0e53ad2ac5c790766be2c26eec6400a8c57553b669d"
+  }
+}

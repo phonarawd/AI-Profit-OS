@@ -1,17 +1,19 @@
 {
   "schema": "staging-topology-provider-snapshot.v2",
-  "recorded_at": "2026-09-02T10:25:00Z",
-  "source": "Render API + Cloudflare deploy-staging 33617609393 + staging /api/v1/health + Resend magic-link request",
+  "recorded_at": "2026-09-04T02:45:00Z",
+  "source": "Render API + Cloudflare deploy-staging 33827845069 + staging /api/v1/health (gitSha 7c6a2b0a) + CF preview proxied health (gitSha 7c6a2b0a) · RC re-seal on main after PR #213",
   "this_session": {
     "render_workspace_id": "tea-da5qqo3m8hqs73djpvvg",
-    "cf_deploy_run_id": 33617609393,
+    "cf_deploy_run_id": 33827845069,
     "cf_deploy_result": "PASS",
-    "release_build_run_id": 33617601225,
-    "release_acceptance_run_id": 33618547918,
+    "release_build_run_id": 33827816052,
+    "engine_acceptance_run_id": 33827842691,
+    "release_acceptance_run_id": 33829217490,
     "release_acceptance_verdict": "PASS",
-    "artifact_digest_sha256": "c5c56d320d33b015e84f403d83765f1c32c3422f076a7fc8e48c99d6fcfac988",
-    "magic_link_delivery": "PASS_REQUEST_ACCEPTED_RESEND",
-    "production_mutation": 0
+    "artifact_digest_sha256": "5e37887b888aa2bcd4bb075ebcd956ea1c358322bdfbb7f10bdbe31df8ec6001",
+    "magic_link_delivery": "PASS_REQUEST_ACCEPTED_RESEND (prior session · unchanged)",
+    "production_mutation": "REL-701-DB_ONLY (Founder-authorized migration apply 2026-09-04T02:33:15Z · deploy 0 · secret 0)",
+    "production_render_autodeploy_set_off": true
   },
   "production": {
     "render": {
@@ -20,7 +22,7 @@
       "environment_id": "evm-da5r1tjbc2fs73a0b7hg",
       "url": "https://ai-profit-os.onrender.com",
       "branch": "main",
-      "autoDeploy": "yes",
+      "autoDeploy": "no",
       "buildFilter": {
         "paths": [
           "services/api-nest/**",
@@ -31,11 +33,14 @@
       },
       "live_sha": "0a72b27dd0da3c422eca0f931cf668e7a760c8ec",
       "live_deploy_id": "dep-da938o142hec73eipre0",
-      "fresh_confirmed": true
+      "fresh_confirmed": true,
+      "autoDeployTrigger": "off"
     },
     "supabase": {
       "project_ref": "mgsytcetsiecllmhcyox",
-      "public_table_count": 93
+      "public_table_count": 93,
+      "schema_migrations_rows": 55,
+      "migration_head": "20260902155632"
     }
   },
   "staging": {
@@ -44,11 +49,11 @@
       "service_id": "srv-dabph32fngtc73esj8rg",
       "environment_scope": "service-scoped",
       "url": "https://ai-profit-os-staging.onrender.com",
-      "branch": "recovery/release-provenance-20260831",
+      "branch": "rel/rc-20260904-7c6a2b0a",
       "kind": "web_service",
       "autoDeploy": "no",
-      "source_sha": "84cb2ea05ddea0406d9b1f13cbe0b0781a744630",
-      "live_deploy_id": "dep-dabv9sifngtc73fdsu20",
+      "source_sha": "7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f",
+      "live_deploy_id": "dep-dad2cgn10e5c73d1amrg",
       "supabase_project_ref": "uluzxvdpynytytduuryy",
       "redis_resource_id": "red-dabpllv40ujc73a0ddcg",
       "runtime_health": {
@@ -86,17 +91,17 @@
     "web_workers_dev": "ai-profit-web-preview.ebay-adapter.workers.dev",
     "ops_workers_dev": "ai-profit-ops-preview.ebay-adapter.workers.dev",
     "binding_status": "BOUND_TO_STAGING",
-    "proxy_health_git_sha": "84cb2ea05ddea0406d9b1f13cbe0b0781a744630",
+    "proxy_health_git_sha": "7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f",
     "staging_api_host": "ai-profit-os-staging.onrender.com",
     "production_hosts_used": 0,
-    "deploy_run_id": 33617609393
+    "deploy_run_id": 33827845069
   },
   "release_boundary": {
     "staging_topology": "READY",
     "staging_infra_runtime": "PASS",
     "staging_full_e2e": "MAGIC_LINK_API_PASS_RESEND_ACCEPTED",
-    "production_db_mutation": 0,
-    "production_release": "NO_GO",
-    "staging_exact_final_rc": "BOUND_84cb2ea05ddea0406d9b1f13cbe0b0781a744630"
+    "production_db_mutation": "REL-701-DB_APPLIED_2026-09-04",
+    "production_release": "GO_PENDING_FOUNDER_REL-701_WORKFLOW_DISPATCH",
+    "staging_exact_final_rc": "BOUND_7c6a2b0abe259847b7b1d7939ce7e1d98e6f654f"
   }
 }

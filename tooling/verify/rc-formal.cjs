@@ -27,6 +27,10 @@ const REMOVED = [
   ".github/workflows/engine-rebase-approved-once.yml",
   ".github/workflows/engine-current-epoch-publish-once.yml",
 ];
+// RC re-seal 2026-09-04: current epoch (PO ACK ea-rebase-ec3c9604d2ab-5ac0f4291966 · QA0-QA9 ISSUED).
+// 하드코딩 = 잠금. 새 epoch 로의 re-seal 은 이 상수와 FINAL_ACCEPTANCE.md 를 함께 갱신해야 한다.
+const CURRENT_BASELINE = "ea-baseline-0d8825e8f333-5ac0f4291966";
+const APPLIED_FX = "tooling/verify/fixtures/migrations-applied.v1.json";
 
 const artRaw = read(ART);
 const doc = read(DOC);
@@ -74,13 +78,20 @@ if (art) {
           .stdout.split(/\r?\n/)
           .map((s) => s.trim())
           .filter(Boolean);
+        // evidence-only tip 허용 경로: 거버넌스 · 플랜 · 검증기 · e2e · 워크플로 · 에이전트 훅/셀프테스트 · ignore.
+        // 제품(apps/ services/ packages/ workers/ supabase/ schemas/ …)은 전부 불허 → re-seal 필요.
         const disallowed = diff.filter(
           (p) =>
             !p.startsWith("governance/") &&
             !p.startsWith(".cursor/plans/") &&
+            !p.startsWith(".cursor/hooks/") &&
+            !p.startsWith(".cursor/rules/") &&
             !p.startsWith("tooling/verify/") &&
             !p.startsWith("tooling/e2e/") &&
-            !p.startsWith(".github/workflows/"),
+            !p.startsWith(".github/workflows/") &&
+            !/^scripts\/(verify-|hook-)[^/]+\.mjs$/.test(p) &&
+            p !== ".gitignore" &&
+            p !== ".gitattributes",
         );
         if (disallowed.length) {
           fails.push(
@@ -92,7 +103,7 @@ if (art) {
     }
   }
   if (art.engine_final_acceptance !== "ISSUED") fails.push("engine_final_acceptance");
-  if (art.engine_baseline !== "ea-baseline-74683b6e39a7-590263f0f273") {
+  if (art.engine_baseline !== CURRENT_BASELINE) {
     fails.push("engine_baseline");
   }
   if (art.engine_qa9 !== "ENGINE_ACCEPTED_FOR_UI") fails.push("engine_qa9");
@@ -104,27 +115,80 @@ if (art) {
   if (art.one_shot_acceptance_workflows !== "REMOVED") {
     fails.push("one_shot_acceptance_workflows");
   }
-  if (art.production_db_apply !== 0) fails.push("production_db_apply must be 0");
-  if (art.production_deploy !== 0) fails.push("production_deploy must be 0");
-  if (art.production_schema_parity_migration !== "UNAPPLIED") {
-    fails.push("production_schema_parity_migration must stay UNAPPLIED");
+  // REL-701-DB 상태는 migration fixture(rel701db.status) 와 1:1 로 일치해야 한다 (은닉·선반영 모두 FAIL).
+  let rel701dbApplied = false;
+  try {
+    const fx = JSON.parse(read(APPLIED_FX) || "{}");
+    rel701dbApplied = Boolean(fx.rel701db && fx.rel701db.status === "APPLIED");
+  } catch (err) {
+    fails.push("migrations fixture unreadable: " + err.message);
   }
+  if (rel701dbApplied) {
+    if (art.production_db_apply !== 1) fails.push("production_db_apply must be 1 after REL-701-DB");
+    if (art.production_db_apply_owner !== "REL-701-DB") fails.push("production_db_apply_owner");
+    if (!/^\d{4}-\d{2}-\d{2}T/.test(String(art.production_db_apply_at || ""))) {
+      fails.push("production_db_apply_at must be ISO timestamp");
+    }
+    if (
+      !art.production_db_apply_evidence ||
+      !fs.existsSync(path.join(root, String(art.production_db_apply_evidence)))
+    ) {
+      fails.push("production_db_apply_evidence file missing");
+    }
+    if (art.production_schema_parity_migration !== "APPLIED_BY_REL-701-DB") {
+      fails.push("production_schema_parity_migration must be APPLIED_BY_REL-701-DB after apply");
+    }
+    if (art.next !== "REL-701_FOUNDER_WORKFLOW_DISPATCH") {
+      fails.push("next must be REL-701_FOUNDER_WORKFLOW_DISPATCH after REL-701-DB");
+    }
+  } else {
+    if (art.production_db_apply !== 0) fails.push("production_db_apply must be 0");
+    if (art.production_schema_parity_migration !== "UNAPPLIED") {
+      fails.push("production_schema_parity_migration must stay UNAPPLIED");
+    }
+    if (art.next !== "REL-701-DB_FOUNDER_AUTHORIZATION") {
+      fails.push("next must stay REL-701-DB_FOUNDER_AUTHORIZATION before REL-701-DB");
+    }
+  }
+  // Production deploy 는 이 레코드로 절대 승인되지 않는다 (REL-701 = Founder workflow_dispatch).
+  if (art.production_deploy !== 0) fails.push("production_deploy must be 0");
   if (art.apply_owner !== "REL-701-DB") fails.push("apply_owner");
   if (art.b3_production_promotion !== "CLOSED") {
     fails.push("b3 production promotion must stay CLOSED");
   }
-}
+  if (!art.release_artifact || art.release_artifact.release_acceptance_verdict !== "PASS") {
+    fails.push("release_artifact.release_acceptance_verdict must be PASS");
+  }
+  if (!art.release_artifact || !/^[0-9a-f]{64}$/.test(String(art.release_artifact.artifact_digest || ""))) {
+    fails.push("release_artifact.artifact_digest must be sha256 hex");
+  }
 
-for (const needle of [
-  "STATUS = LOCKED",
-  "ENGINE_FINAL_ACCEPTANCE = ISSUED",
-  "ENGINE_QA9 = ENGINE_ACCEPTED_FOR_UI",
-  "PRODUCTION_DB_APPLY = 0",
-  "PRODUCTION_DEPLOY = 0",
-  "PRODUCTION_SCHEMA_PARITY_MIGRATION = UNAPPLIED",
-  "NEXT = REL-701-DB_FOUNDER_AUTHORIZATION",
-]) {
-  if (!doc.includes(needle)) fails.push("doc missing " + needle);
+  const docNeedles = [
+    "STATUS = LOCKED",
+    "ENGINE_FINAL_ACCEPTANCE = ISSUED",
+    "ENGINE_QA9 = ENGINE_ACCEPTED_FOR_UI",
+    "PRODUCTION_DEPLOY = 0",
+    "ENGINE_BASELINE = " + CURRENT_BASELINE,
+  ];
+  if (rel701dbApplied) {
+    docNeedles.push(
+      "PRODUCTION_DB_APPLY = 1",
+      "PRODUCTION_SCHEMA_PARITY_MIGRATION = APPLIED_BY_REL-701-DB",
+      "NEXT = REL-701_FOUNDER_WORKFLOW_DISPATCH",
+    );
+  } else {
+    docNeedles.push(
+      "PRODUCTION_DB_APPLY = 0",
+      "PRODUCTION_SCHEMA_PARITY_MIGRATION = UNAPPLIED",
+      "NEXT = REL-701-DB_FOUNDER_AUTHORIZATION",
+    );
+  }
+  for (const needle of docNeedles) {
+    if (!doc.includes(needle)) fails.push("doc missing " + needle);
+  }
+  if (!doc.includes("RC_SOURCE_SHA_BINDING = " + binding)) {
+    fails.push("doc RC_SOURCE_SHA_BINDING must equal artifact source_sha_binding");
+  }
 }
 if (!/RC_SOURCE_SHA_BINDING = [0-9a-f]{40}/.test(doc)) {
   fails.push("doc missing exact RC_SOURCE_SHA_BINDING SHA");
@@ -143,8 +207,11 @@ if (live.changedPathCount !== 0) fails.push("live changed_paths must be 0");
 if (live.liveAggregate !== live.baselineAggregate) {
   fails.push("live aggregate must equal baseline aggregate");
 }
-if (live.baselineId !== "ea-baseline-74683b6e39a7-590263f0f273") {
+if (live.baselineId !== CURRENT_BASELINE) {
   fails.push("live baseline id");
+}
+if (!cert.includes("BASELINE_ID = " + CURRENT_BASELINE)) {
+  fails.push("FINAL_ACCEPTANCE BASELINE_ID must equal RC engine_baseline");
 }
 
 if (!fs.existsSync(path.join(root, ARCHIVE_INV))) {
@@ -174,5 +241,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:rc-formal] PASS (LOCKED · ISSUED · drift 0 · history 82 · one-shot removed · prod apply 0)",
+  "[verify:rc-formal] PASS (LOCKED · ISSUED · drift 0 · history 82 · one-shot removed · prod deploy 0 · REL-701-DB state mirrored)",
 );

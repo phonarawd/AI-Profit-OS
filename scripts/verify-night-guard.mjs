@@ -12,6 +12,8 @@ import {
   isReadOnlySql,
   CODES,
   PRODUCTION_SUPABASE_REF,
+  validateFounderAuth,
+  FOUNDER_AUTH_SCHEMA,
 } from "../.cursor/hooks/lib/night-guard-policy.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -381,6 +383,58 @@ expectAllow(
     path: path.join(ROOT, ".cursor", "hooks", "_night-guard-fixture.tmp"),
     contents: "ok",
   })
+);
+
+// --- Founder 승인 채널 (범위·시한 · 순수 검증 · 파일 I/O 0) ---
+const NOW = Date.parse("2026-09-04T03:00:00Z");
+const authRaw = (over) => ({
+  schema: FOUNDER_AUTH_SCHEMA,
+  issuedAt: "2026-09-04T02:30:00Z",
+  expiresAt: "2026-09-04T04:30:00Z",
+  scopes: ["REL-701-DB"],
+  founderStatement: "fixture statement",
+  ...(over || {}),
+});
+const validAuth = validateFounderAuth(authRaw(), NOW);
+expect("FOUNDER valid auth → REL-701-DB scope", validAuth.valid && validAuth.scopes.includes("REL-701-DB"));
+expect("FOUNDER expired → invalid", !validateFounderAuth(authRaw({ expiresAt: "2026-09-04T02:59:00Z" }), NOW).valid);
+expect("FOUNDER issued in future → invalid", !validateFounderAuth(authRaw({ issuedAt: "2026-09-04T03:01:00Z" }), NOW).valid);
+expect("FOUNDER window > 4h → invalid", !validateFounderAuth(authRaw({ expiresAt: "2026-09-04T09:00:00Z" }), NOW).valid);
+expect("FOUNDER wrong schema → invalid", !validateFounderAuth(authRaw({ schema: "x" }), NOW).valid);
+expect("FOUNDER unknown scope only → invalid", !validateFounderAuth(authRaw({ scopes: ["PROD_DEPLOY"] }), NOW).valid);
+expect("FOUNDER empty statement → invalid", !validateFounderAuth(authRaw({ founderStatement: " " }), NOW).valid);
+expect("FOUNDER missing → invalid", !validateFounderAuth(null, NOW).valid);
+
+const withAuth = { founderAuth: validAuth };
+const noAuth = { founderAuth: null };
+const applyProd = mcp("apply_migration", {
+  project_id: PRODUCTION_SUPABASE_REF,
+  name: "fixture_do_not_apply",
+  query: "select 1",
+});
+const pushProd = shell(
+  "supabase db push --include-all --db-url postgresql://postgres@db.mgsytcetsiecllmhcyox.supabase.co:5432/postgres"
+);
+expect("FOUNDER ctx allows apply_migration (REL-701-DB)", decideNightGuard(applyProd, withAuth).permission === "allow");
+expect("FOUNDER ctx allows supabase db push (REL-701-DB)", decideNightGuard(pushProd, withAuth).permission === "allow");
+expect("no ctx still denies apply_migration", decideNightGuard(applyProd, noAuth).code === CODES.PROD_MIGRATION_APPLY);
+expect("no ctx still denies db push", decideNightGuard(pushProd, noAuth).code === CODES.PROD_MIGRATION_APPLY);
+expect("invalid ctx shape still denies db push", decideNightGuard(pushProd, { founderAuth: { valid: "yes", scopes: ["REL-701-DB"] } }).code === CODES.PROD_MIGRATION_APPLY);
+// 승인이 있어도 절대 열리지 않는 것
+expect("FOUNDER ctx never opens migration repair", decideNightGuard(shell("supabase migration repair --status applied 20260821223109"), withAuth).code === CODES.MIGRATION_HISTORY_REPAIR);
+expect("FOUNDER ctx never opens db reset", decideNightGuard(shell("supabase db reset --project-ref " + PRODUCTION_SUPABASE_REF), withAuth).code === CODES.PROD_SUPABASE_DDL);
+expect("FOUNDER ctx never opens execute_sql INSERT", decideNightGuard(mcp("execute_sql", { project_id: PRODUCTION_SUPABASE_REF, query: "INSERT INTO deposit_config(id) VALUES ('x')" }), withAuth).code === CODES.PROD_SUPABASE_DML);
+expect("FOUNDER ctx never opens deploy_edge_function", decideNightGuard(mcp("deploy_edge_function", { project_id: PRODUCTION_SUPABASE_REF, name: "fixture" }), withAuth).code === CODES.PROD_DEPLOY);
+expect("FOUNDER ctx never opens wrangler deploy production", decideNightGuard(shell("pnpm exec wrangler deploy --env production"), withAuth).code === CODES.PROD_DEPLOY);
+expect("FOUNDER ctx never opens gh workflow run deploy-cloudflare", decideNightGuard(shell("gh workflow run deploy-cloudflare.yml"), withAuth).code === CODES.PROD_DEPLOY);
+expect("FOUNDER ctx never opens gh secret set", decideNightGuard(shell("gh secret set FOO --body fixture"), withAuth).code === CODES.PROD_SECRET_ENV);
+expect("FOUNDER ctx never opens ruleset mutation", decideNightGuard(shell("gh api repos/phonarawd/AI-Profit-OS/rulesets --method POST"), withAuth).code === CODES.GITHUB_RULESET);
+expect("FOUNDER ctx never opens force push", decideNightGuard(shell("git push --force origin main"), withAuth).code === CODES.FORCE_PUSH);
+expect("FOUNDER ctx never opens main push", decideNightGuard(shell("git push origin main"), withAuth).code === CODES.MAIN_PUSH);
+expect("FOUNDER ctx never opens --no-verify", decideNightGuard(shell("git commit --no-verify -m fixture"), withAuth).code === CODES.NO_VERIFY);
+expect(
+  "founder auth file is gitignored",
+  fs.readFileSync(path.join(ROOT, ".gitignore"), "utf8").includes(".cursor/night-guard.founder-auth.local.json")
 );
 
 // --- Composed hook (executable) ---

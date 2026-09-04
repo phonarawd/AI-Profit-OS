@@ -107,7 +107,17 @@ if (!mig.includes("push_subscriptions") || !mig.includes("push_control")) {
 const fixture = JSON.parse(
   read("tooling/verify/fixtures/migrations-applied.v1.json"),
 );
-if (!(fixture.committedUnapplied || []).includes("20260821090000")) {
+// REL-020 migration: REL-701-DB 실행 전 = committedUnapplied · 실행 후(fixture rel701db APPLIED) = versions + appliedVersions.
+// 이 슬라이스(REL-020) 자체는 apply 하지 않는다 — 적용 주체는 REL-701-DB 만.
+const rel020Applied = Boolean(fixture.rel701db && fixture.rel701db.status === "APPLIED");
+if (rel020Applied) {
+  if (
+    !(fixture.versions || []).includes("20260821090000") ||
+    !((fixture.rel701db.appliedVersions || []).includes("20260821090000"))
+  ) {
+    fails.push("REL-020 migration must be recorded applied by REL-701-DB after apply");
+  }
+} else if (!(fixture.committedUnapplied || []).includes("20260821090000")) {
   fails.push("REL-020 migration must be committedUnapplied (no production apply)");
 }
 
