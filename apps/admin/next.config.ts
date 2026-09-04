@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@aipo/ui", "@aipo/sdk", "@aipo/schemas"],
   images: {
     remotePatterns: [...PRODUCT_IMAGE_REMOTE_PATTERNS],
+    // apps/web과 동일한 이유 — Cloudflare Images `IMAGES` 바인딩 없이는
+    // 배포 시 worker.js가 "No such module cloudflare/images.js"로 거부된다(code 10021).
+    // 신규 바인딩 의존성 없이 원본 그대로 서빙.
+    unoptimized: true,
   },
   async headers() {
     return nextSecurityHeaderSources();
