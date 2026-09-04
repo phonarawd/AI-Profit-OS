@@ -64,7 +64,7 @@ export function MarketPartnerTrustStrip({
                 className="rounded-full border border-lux-border px-2.5 py-1 text-xs font-medium text-lux-text"
                 data-testid="market-partner-name-fallback"
               >
-                {logo.labelKo}
+                {logo.labelKo} · {T.trust.partners.sourceLabel}
               </span>
             )}
           </li>

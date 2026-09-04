@@ -81,3 +81,16 @@ _worktree-*/
 # Misc
 .claude/
 _docx_extract.txt
+
+# 임시 산출물 · 중첩 clone/worktree (레포 루트에 두지 않는다 · 정식 위치 = .tmp/ 또는 ../_aipo-worktrees/)
+.tmp/
+_tmp*
+_evidence-*/
+_worktree-*/
+wt-*/
+.playwright-mcp/
+supabase/.temp/
+services/api-nest/.tmp-auth-runtime/
+
+# 로컬 전용 도구 설정 (BrowserStack accessKey 등 시크릿 포함 가능)
+.cursor/*.local.json

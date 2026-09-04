@@ -19,8 +19,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://hiptk.app"),
   title: "퍼뜩",
-  description: "퍼뜩 — Global Opportunity Platform",
+  description: "AI 기반 글로벌 시세·가격 비교 및 동일상품 매칭 플랫폼",
   applicationName: "퍼뜩",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
