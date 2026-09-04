@@ -205,10 +205,20 @@ const closed = yamlCompleted("REL-603") || todoStatus("REL-603") === "completed"
 const rel700Closed = yamlCompleted("REL-700") || todoStatus("REL-700") === "completed";
 const rel701PreClosed =
   yamlCompleted("REL-701-PRE") || todoStatus("REL-701-PRE") === "completed";
+const rel701DbClosed =
+  yamlCompleted("REL-701-DB") && todoStatus("REL-701-DB") === "completed";
 if (closed) {
   if (todoStatus("REL-603") !== "completed") fails.push("rel-603 todo must be completed");
   if (!yamlCompleted("REL-603")) fails.push("REL-603 YAML must be COMPLETED");
-  if (rel700Closed && rel701PreClosed) {
+  if (rel700Closed && rel701PreClosed && rel701DbClosed) {
+    // REL-701-DB 완료 → 포인터 REL-701 (Founder workflow_dispatch 앱 배포)
+    if (!/^FIRST_EXECUTION_TODO = REL-701\s*$/m.test(plan)) {
+      fails.push("FIRST_EXECUTION_TODO must advance to REL-701 after REL-701-DB");
+    }
+    if (!plan.includes("LAST_COMPLETED_TODO = REL-701-DB")) {
+      fails.push("LAST_COMPLETED_TODO must be REL-701-DB");
+    }
+  } else if (rel700Closed && rel701PreClosed) {
     if (!plan.includes("FIRST_EXECUTION_TODO = REL-701-DB")) {
       fails.push("FIRST_EXECUTION_TODO must advance to REL-701-DB after REL-701-PRE");
     }

@@ -128,7 +128,15 @@ for (const needle of [
 const fixtureMig = JSON.parse(
   read("tooling/verify/fixtures/migrations-applied.v1.json") || "{}",
 );
-if (!(fixtureMig.committedUnapplied || []).includes("20260823210000")) {
+// REL-701-DB 실행 전 = committedUnapplied · 실행 후(fixture rel701db APPLIED) = versions + appliedVersions. 이 REL 은 apply 주체가 아니다.
+if (fixtureMig.rel701db && fixtureMig.rel701db.status === "APPLIED") {
+  if (
+    !(fixtureMig.versions || []).includes("20260823210000") ||
+    !((fixtureMig.rel701db.appliedVersions || []).includes("20260823210000"))
+  ) {
+    fails.push("20260823210000 must be recorded applied by REL-701-DB after apply");
+  }
+} else if (!(fixtureMig.committedUnapplied || []).includes("20260823210000")) {
   fails.push("20260823210000 must stay committedUnapplied");
 }
 

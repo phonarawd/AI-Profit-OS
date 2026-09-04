@@ -92,10 +92,45 @@ if (!ready.includes("COMMITTED_UNAPPLIED = " + applied.committedUnapplied.length
   fails.push("readiness COMMITTED_UNAPPLIED stale");
 }
 
+// REL-701-DB 실행 전 = Track A 는 committedUnapplied 에 머물러야 한다.
+// REL-701-DB 실행 후(plan YAML COMPLETED + fixture rel701db.status APPLIED) = versions 로 이동해야 하며
+// committedUnapplied 는 0 이어야 한다. 둘 사이 어중간한 상태는 FAIL (apply 상태 은닉 금지).
+const rel701dbDone =
+  yamlCompleted("REL-701-DB") && applied.rel701db && applied.rel701db.status === "APPLIED";
+if (yamlCompleted("REL-701-DB") !== Boolean(applied.rel701db && applied.rel701db.status === "APPLIED")) {
+  fails.push("REL-701-DB plan status and fixture rel701db block disagree");
+}
+if (rel701dbDone) {
+  if ((applied.committedUnapplied || []).length !== 0) {
+    fails.push("REL-701-DB executed but committedUnapplied is not empty");
+  }
+  if (!ready.includes("REL_701_DB_EXECUTED = 1")) {
+    fails.push("readiness doc must record REL_701_DB_EXECUTED = 1 after REL-701-DB");
+  }
+  if (!Array.isArray(applied.rel701db.appliedVersions) || applied.rel701db.appliedVersions.length === 0) {
+    fails.push("fixture rel701db.appliedVersions missing");
+  } else {
+    for (const ver of applied.rel701db.appliedVersions) {
+      if (!(applied.versions || []).includes(ver)) {
+        fails.push("REL-701-DB applied version not recorded in versions: " + ver);
+      }
+    }
+  }
+  if (!applied.rel701db.evidence || !fs.existsSync(path.join(root, applied.rel701db.evidence))) {
+    fails.push("REL-701-DB evidence file missing: " + applied.rel701db.evidence);
+  }
+  if (!applied.rel701db.applyLog || !fs.existsSync(path.join(root, applied.rel701db.applyLog))) {
+    fails.push("REL-701-DB apply log missing: " + applied.rel701db.applyLog);
+  }
+}
 for (const ver of fixture.trackAVersions || []) {
   const hit = localFiles.some((f) => f.startsWith(ver + "_"));
   if (!hit) fails.push("Track A migration missing locally: " + ver);
-  if (!(applied.committedUnapplied || []).includes(ver)) {
+  if (rel701dbDone) {
+    if (!(applied.versions || []).includes(ver)) {
+      fails.push("Track A version must be in versions after REL-701-DB: " + ver);
+    }
+  } else if (!(applied.committedUnapplied || []).includes(ver)) {
     fails.push("Track A version must stay committedUnapplied until REL-701-DB: " + ver);
   }
 }
@@ -143,5 +178,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  `[verify:rel-504-migration-readiness] PASS (READY · ${localFiles.length} local · ${applied.versions.length} canonical applied · ${applied.remoteRawAppliedCount} remote raw · apply 0 · REL-701-DB owner)`,
+  `[verify:rel-504-migration-readiness] PASS (READY · ${localFiles.length} local · ${applied.versions.length} canonical applied · ${applied.remoteRawAppliedCount} remote raw · REL-504 apply 0 · REL-701-DB owner${rel701dbDone ? " · REL-701-DB EXECUTED" : ""})`,
 );

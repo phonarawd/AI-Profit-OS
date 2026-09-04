@@ -105,7 +105,20 @@ const rel603Closed = todoStatus("REL-603") === "completed" && yamlStatus("REL-60
 const rel700Closed = todoStatus("REL-700") === "completed" && yamlStatus("REL-700") === "COMPLETED";
 const rel701PreClosed =
   todoStatus("REL-701-PRE") === "completed" && yamlStatus("REL-701-PRE") === "COMPLETED";
-if (rel603Closed && rel700Closed && rel701PreClosed) {
+const rel701DbClosed =
+  todoStatus("REL-701-DB") === "completed" && yamlStatus("REL-701-DB") === "COMPLETED";
+if (rel603Closed && rel700Closed && rel701PreClosed && rel701DbClosed) {
+  // REL-701-DB(Founder 승인 prod migration apply) 완료 → 포인터는 REL-701(Founder workflow_dispatch 앱 배포).
+  if (!/^FIRST_EXECUTION_TODO = REL-701\s*$/m.test(plan)) {
+    fails.push("FIRST_EXECUTION_TODO must advance to REL-701 after REL-701-DB");
+  }
+  if (!plan.includes("LAST_COMPLETED_TODO = REL-701-DB")) {
+    fails.push("LAST_COMPLETED_TODO must be REL-701-DB after REL-701-DB close");
+  }
+  if (!plan.includes("HARD_STOP_AFTER = REL-603")) {
+    fails.push("HARD_STOP_AFTER must remain REL-603 (staging hard-stop) until Founder prod deploy");
+  }
+} else if (rel603Closed && rel700Closed && rel701PreClosed) {
   if (!plan.includes("FIRST_EXECUTION_TODO = REL-701-DB")) {
     fails.push("FIRST_EXECUTION_TODO must advance to REL-701-DB after REL-701-PRE");
   }
