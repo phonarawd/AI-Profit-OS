@@ -60,7 +60,8 @@ if (noRebuild) {
 }
 
 const deployArgs = noRebuild
-  ? ["exec", "wrangler", "deploy", "--no-bundle", "--config", configPath, "--env=" + envFlag]
+  // REL-701 2026-09-04: apps/web과 동일한 이유로 --no-bundle 제거 (code 10021 회피).
+  ? ["exec", "wrangler", "deploy", "--config", configPath, "--env=" + envFlag]
   : [
       "exec",
       "opennextjs-cloudflare",
