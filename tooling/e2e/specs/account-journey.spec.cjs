@@ -42,7 +42,14 @@ test("account journey: hub → inbox → settings → guides → legal", async (
   await go(page, "/me/settings", stubSettings, "settings-page");
   await go(page, "/me/kyc", stubKyc, "kyc-page");
   await go(page, "/me/support", null, "support-page");
-  await go(page, "/me/peotteok", null, "peotteok-page");
+  // D1 remediation note (2026-09-04, REM-D1-6E): /me/peotteok's ai-orb only
+  // renders once fetchAuthSession() resolves view="ready" (GET
+  // /api/v1/auth/session). This go() call previously passed a null stub, so
+  // with no real Nest backend reachable in this harness the fetch failed and
+  // view stayed "unauthorized"/"unavailable" - the assertion right below
+  // could never pass. stubAccountHub intercepts exactly that endpoint (same
+  // stub already used for "/me" above), so reuse it here too.
+  await go(page, "/me/peotteok", stubAccountHub, "peotteok-page");
   await expect(page.getByTestId("peotteok-ai-orb")).toBeVisible();
   await go(page, "/me/guide/faq", null, "guide-faq");
   await go(page, "/me/guide/partners", null, "guide-partners");
