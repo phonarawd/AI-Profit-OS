@@ -52,14 +52,25 @@ const HOSTNAME_DENY = Object.freeze([
 
 const DB_URL_DENY = Object.freeze([
   /supabase\.co/i,
-  /supabase\.com/i,
+  // CodeQL js/regex/missing-regexp-anchor (alert 51, D1-S1C 2026-09-05): added
+  // \b boundaries. This is a fail-closed DENY list (blocks installing a
+  // synthetic QA clock if DATABASE_URL looks production-managed), so the
+  // safety-relevant direction is over-matching, not under-matching - \b
+  // still matches every real Supabase hostname (they are dot-delimited, so
+  // a word boundary always exists right before/after "supabase.com" in an
+  // actual hostname, e.g. "aws-0-<region>.pooler.supabase.com"), it only
+  // stops matching "supabase.com" as a coincidental mid-identifier
+  // substring, which is not a real hostname shape anyway.
+  /\bsupabase\.com\b/i,
   /peotteok\.(com|kr|app)/i,
   /ai-profit-os/i,
   /aiprofit/i,
   /\.workers\.dev/i,
   /\.pages\.dev/i,
   /aws-\d-/i,
-  /\.rds\.amazonaws\.com/i,
+  // CodeQL js/regex/missing-regexp-anchor (alert 52, D1-S1C 2026-09-05): same
+  // \b treatment and same reasoning as alert 51 above.
+  /\.rds\.amazonaws\.com\b/i,
   /\.pooler\.supabase/i,
 ]);
 

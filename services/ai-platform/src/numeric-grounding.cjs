@@ -364,7 +364,7 @@ function tryAcceptDerived(out, spec) {
       derivationId: meta.derivationId,
     });
   } catch {
-    // Untagged or non-allowlisted derivation → do not treat as grounded source
+    // Untagged or non-allowlisted derivation \u2192 do not treat as grounded source
     if (value == null || value === "") {
       out.push({
         field,
@@ -492,7 +492,7 @@ function extractNumericClaims(answerText) {
     claims.push(Object.freeze(claim));
   }
 
-  // UUID / id_like — exclude from grounding enforcement
+  // UUID / id_like \u2014 exclude from grounding enforcement
   for (const m of text.matchAll(
     /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi,
   )) {
@@ -504,16 +504,31 @@ function extractNumericClaims(answerText) {
     });
   }
 
-  // Currency with unit / symbol
+  // Currency with unit / symbol.
+  //
+  // D1-S1C security fix (2026-09-05, CodeQL js/polynomial-redos alerts
+  // 11-14): the previous unbounded digit-run quantifier pair, retried at
+  // every start position by matchAll on a long digit/comma run with no
+  // currency marker anywhere, measured empirically at real O(n^2) time
+  // (doubling input length roughly 4x'd wall-clock time - see
+  // _audit-d0-20260904/session-1c-correction/scripts/redos-scaling-probe.cjs
+  // and D1S1C-07-SECURITY-TRIAGE.md for the full evidence chain). This
+  // function already hard-caps input at CLAIM_TEXT_MAX above, bounding the
+  // old worst case to roughly 200ms per call - not unbounded, but still
+  // worth closing for defense-in-depth and to make the regex provably
+  // linear. Fix: bound each digit-run length to a value no real amount
+  // ever needs (18 integer digits/commas covers KRW past a quadrillion;
+  // 8 fractional digits covers crypto precision) - this removes the
+  // ambiguous-length backtracking with zero change to any realistic match.
   const currencyRe =
-    /(?:\$|USD|USDT|KRW|원)\s*([\d,]+(?:\.\d+)?)|([\d,]+(?:\.\d+)?)\s*(?:USDT|USD|KRW|원|달러|테더)/gi;
+    /(?:\$|USD|USDT|KRW|\uc6d0)\s*([\d,]{1,18}(?:\.\d{1,8})?)|([\d,]{1,18}(?:\.\d{1,8})?)\s*(?:USDT|USD|KRW|\uc6d0|\ub2ec\ub7ec|\ud14c\ub354)/gi;
   for (const m of text.matchAll(currencyRe)) {
     const raw = m[0];
     const value = normalizeScalar(m[1] || m[2]);
     if (value == null) continue;
     let currency = "USDT";
-    if (/KRW|원/.test(raw)) currency = "KRW";
-    else if (/\$|USD/.test(raw) && !/USDT|테더/.test(raw)) currency = "USD";
+    if (/KRW|\uc6d0/.test(raw)) currency = "KRW";
+    else if (/\$|USD/.test(raw) && !/USDT|\ud14c\ub354/.test(raw)) currency = "USD";
     add({
       kind: "currency",
       value,
@@ -524,10 +539,11 @@ function extractNumericClaims(answerText) {
     });
   }
 
-  // Percent
-  for (const m of text.matchAll(
-    /([\d,]+(?:\.\d+)?)\s*(?:%|퍼센트)|수익률\s*([\d,]+(?:\.\d+)?)/gi,
-  )) {
+  // Percent. D1-S1C fix for CodeQL js/polynomial-redos (alert 12): same
+  // bounded-length treatment as the currency regex above.
+  const percentRe =
+    /([\d,]{1,10}(?:\.\d{1,4})?)\s*(?:%|\ud37c\uc13c\ud2b8)|\uc218\uc775\ub960\s*([\d,]{1,10}(?:\.\d{1,4})?)/gi;
+  for (const m of text.matchAll(percentRe)) {
     const value = normalizeScalar(m[1] || m[2]);
     if (value == null) continue;
     add({
@@ -539,8 +555,10 @@ function extractNumericClaims(answerText) {
     });
   }
 
-  // Unit-bound quantity (건/개/명/회)
-  for (const m of text.matchAll(/([\d,]+)\s*(건|개|명|회)/g)) {
+  // Unit-bound quantity (\uac74/\uac1c/\uba85/\ud68c). D1-S1C fix for
+  // CodeQL js/polynomial-redos (alert 13): same bounded-length treatment.
+  const quantityRe = /([\d,]{1,12})\s*(\uac74|\uac1c|\uba85|\ud68c)/g;
+  for (const m of text.matchAll(quantityRe)) {
     const value = normalizeScalar(m[1]);
     if (value == null) continue;
     add({
@@ -552,9 +570,9 @@ function extractNumericClaims(answerText) {
     });
   }
 
-  // Dates — platform-relevant (never categorical exclude)
+  // Dates \u2014 platform-relevant (never categorical exclude)
   for (const m of text.matchAll(
-    /(\d{1,2})\s*월\s*(\d{1,2})\s*일|(\d{4})-(\d{2})-(\d{2})|(\d{4})\/(\d{1,2})\/(\d{1,2})/g,
+    /(\d{1,2})\s*\uc6d4\s*(\d{1,2})\s*\uc77c|(\d{4})-(\d{2})-(\d{2})|(\d{4})\/(\d{1,2})\/(\d{1,2})/g,
   )) {
     add({
       kind: "date",
@@ -570,10 +588,12 @@ function extractNumericClaims(answerText) {
     });
   }
 
-  // Ordinals — exclude from enforcement
-  for (const m of text.matchAll(
-    /(?:첫\s*번째|두\s*번째|세\s*번째|네\s*번째|다섯\s*번째|그중\s*(?:첫|두|세)|(\d+)\s*번째)/g,
-  )) {
+  // Ordinals \u2014 exclude from enforcement. D1-S1C fix for CodeQL
+  // js/polynomial-redos (alert 14): bounded digit-group length (ordinal
+  // numbers never realistically exceed 6 digits).
+  const ordinalRe =
+    /(?:\uccab\s*\ubc88\uc9f8|\ub450\s*\ubc88\uc9f8|\uc138\s*\ubc88\uc9f8|\ub124\s*\ubc88\uc9f8|\ub2e4\uc12f\s*\ubc88\uc9f8|\uadf8\uc911\s*(?:\uccab|\ub450|\uc138)|(\d{1,6})\s*\ubc88\uc9f8)/g;
+  for (const m of text.matchAll(ordinalRe)) {
     add({
       kind: "ordinal",
       value: m[1] ? normalizeScalar(m[1]) : m[0],
@@ -605,7 +625,7 @@ function dateMatchesFact(claim, grounded) {
   for (const d of dates) {
     const fv = String(d.value);
     if (fv.includes(raw) || raw.includes(fv.slice(0, 10))) return true;
-    // Korean "M월 D일" vs ISO
+    // Korean "M\uc6d4 D\uc77c" vs ISO
     const iso = fv.match(/(\d{4})-(\d{2})-(\d{2})/);
     if (iso && claim.parts) {
       const mm = String(Number(iso[2]));
@@ -636,7 +656,7 @@ function claimGrounded(claim, grounded) {
         claim.currency &&
         g.currency &&
         claim.currency !== g.currency &&
-        // USDT answers may say USD loosely — still require same family from fact
+        // USDT answers may say USD loosely \u2014 still require same family from fact
         !(claim.currency === "USD" && g.currency === "USDT")
       ) {
         return false;
@@ -672,7 +692,7 @@ function groundAnswerNumerics(input = {}) {
     ? input.factsUsed || input.facts_used
     : [];
 
-  // Canonical: inspect P · llm_p only
+  // Canonical: inspect P \u00b7 llm_p only
   if (lane !== "P" || answerPath !== "llm_p") {
     return Object.freeze({
       status: "pass",
@@ -749,7 +769,7 @@ function groundAnswerNumerics(input = {}) {
   }
 
   // Cross-currency sum invention: answer that adds mixed currencies without facts
-  if (/합치면|합계|더하면/.test(answerText)) {
+  if (/\ud569\uce58\uba74|\ud569\uacc4|\ub354\ud558\uba74/.test(answerText)) {
     const currencies = new Set(
       claims
         .filter((c) => c.kind === "currency" && c.currency)
