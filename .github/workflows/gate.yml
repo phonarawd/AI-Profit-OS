@@ -36,6 +36,12 @@ jobs:
       - name: REL-402 dependency audit
         env:
           AIPO_AUDIT: "1"
+          # registry.npmjs.org 소켓 타임아웃 관측(2026-09-04, 이 스텝에서만 반복) 대응.
+          # 게이트 완화 아님 — ignoreRegistryErrors=false 그대로, 실패 시 여전히 FAIL.
+          # pnpm 기본 fetch-retries=2(총 3회)를 5(총 6회)로만 늘려 재시도 확률을 높인다.
+          npm_config_fetch_retries: "5"
+          npm_config_fetch_timeout: "120000"
+          npm_config_fetch_retry_maxtimeout: "120000"
         run: pnpm verify:rel-402-dependency-audit
       - name: REL-404 lighthouse budget
         run: pnpm verify:rel-404-lighthouse-budget
