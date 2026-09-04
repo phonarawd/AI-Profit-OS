@@ -70,7 +70,7 @@ function extractGradeFromText(text) {
 
   // PSA/BGS/CGC/SGC + optional space/dash + grade
   const re =
-    /\b(PSA|BGS|Beckett|CGC|SGC)\s*[-:]?\s*(\d{1,2}(?:\.\d)?)\b/i;
+    /\b(PSA|BGS|Beckett|CGC|SGC)\s*(?:[-:]\s*)?(\d{1,2}(?:\.\d)?)\b/i;
   const m = rawText.match(re);
   if (m) {
     const companyKey = m[1].toLowerCase();
