@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { OpportunityCard } from "./OpportunityCard";
 import type { ProfitsOpportunity, ProfitsViewState } from "./types";
+import { VirtualOpportunityGrid } from "./VirtualOpportunityGrid";
 
 function OpportunitySkeleton() {
   return (
@@ -82,11 +82,5 @@ export function OpportunityGrid({
     );
   }
 
-  return (
-    <div className="sdp-grid" data-sdp="grid">
-      {items.map((item) => (
-        <OpportunityCard key={item.id} item={item} />
-      ))}
-    </div>
-  );
+  return <VirtualOpportunityGrid items={items} />;
 }
