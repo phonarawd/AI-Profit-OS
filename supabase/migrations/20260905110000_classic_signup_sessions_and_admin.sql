@@ -215,6 +215,21 @@ CREATE TABLE IF NOT EXISTS public.pending_registrations (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
+-- PUTDUK continuation session, Step 4: every OTHER constraint edit in this
+-- file (auth_sessions_replaced_by_id_fkey above, auth_magic_link_
+-- challenges_purpose_check above) uses DROP CONSTRAINT IF EXISTS + ADD
+-- CONSTRAINT so a migration re-run (partial-failure recovery, or a
+-- migration-tracking tool losing its own bookkeeping right after a commit)
+-- is a no-op instead of an error. This one constraint was a bare ADD
+-- CONSTRAINT with no such guard - Postgres has no ADD CONSTRAINT IF NOT
+-- EXISTS syntax, so a re-run would abort with "constraint ... already
+-- exists" instead of completing cleanly. Matched to the same safe pattern
+-- before this migration is applied anywhere (still COMMITTED_UNAPPLIED
+-- per governance/release-master/MIGRATION_READINESS.md at the time of this
+-- fix, so editing the file in place is safe - no environment has consumed
+-- the old text yet).
+ALTER TABLE public.pending_registrations
+  DROP CONSTRAINT IF EXISTS pending_registrations_token_hash_key;
 ALTER TABLE public.pending_registrations
   ADD CONSTRAINT pending_registrations_token_hash_key UNIQUE (token_hash);
 
