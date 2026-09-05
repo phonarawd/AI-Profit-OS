@@ -27,15 +27,15 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-0d8825e8f333-5ac0f4291966
 PREDECESSOR_BASELINE_ID = ea-baseline-74683b6e39a7-590263f0f273
 REBASE_ID = pending
-LIVE_AGGREGATE = cb6d0ebabf8a7a22bde1e316b86613fa3fd82e1ff3960096289a7e143d9ceacb
+LIVE_AGGREGATE = 5345e74b37ddbd5aff0e294e556e9561554dd606fd2a95bda22db6fef7837e61
 BASELINE_AGGREGATE = 5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9
-PATH_COUNT_LIVE = 509
+PATH_COUNT_LIVE = 510
 PATH_COUNT_BASELINE = 491
-CHANGED_PATHS = 35
-ADDED_PATHS = 18
-MUTATED_PATHS = 17
+CHANGED_PATHS = 38
+ADDED_PATHS = 19
+MUTATED_PATHS = 19
 MISSING_PATHS = 0
-EXIT_GATE = D1-S1F (2026-09-05) · S1F Founder 프로덕션 출시 지시서에 따른 classic-signup/session-rotation/turnstile/rate-limit/admin-users 신설(commit f2812062) + frontend(440fc2ed) + CodeQL clock.core.cjs 구조적 재작성(commit 7f9baf0a) + verify wiring(eb4737f8) + client refresh retry(d6023f16) + reuse-detection tests(0a9bf4ea) + PUTDUK continuation session(2026-09-06)의 settlement/safe-stop claim-before-post race 수정(commit f29a8e06)이 REBASE 없이 protected-scope 를 추가 변경(18 added · 17 mutated) · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 current-epoch QA0-QA9 재실행 전까지 ISSUED 금지
+EXIT_GATE = D1-S1F (2026-09-05) · S1F Founder 프로덕션 출시 지시서에 따른 classic-signup/session-rotation/turnstile/rate-limit/admin-users 신설(commit f2812062) + frontend(440fc2ed) + CodeQL clock.core.cjs 구조적 재작성(commit 7f9baf0a) + verify wiring(eb4737f8) + client refresh retry(d6023f16) + reuse-detection tests(0a9bf4ea) + PUTDUK continuation session(2026-09-06)의 settlement/safe-stop claim-before-post race 수정(commit f29a8e06) + participate lock/trade 단일 트랜잭션화(commit 876d93cd)가 REBASE 없이 protected-scope 를 추가 변경(19 added · 19 mutated) · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 current-epoch QA0-QA9 재실행 전까지 ISSUED 금지
 ```
 
 ## 판정 (D1-S1E 정정, 2026-09-05, append 성격의 사실 정정)
@@ -192,6 +192,35 @@ baseline aggregate `5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c
 classic-signup migration의 constraint 재실행 안전성 수정(`supabase/migrations/**`) —
 `protected-scope.v1.json`이 정의하는 root가 `services/api-nest` 계열에 한정되어 있어 이 파일들의
 변경은 REL-502 drift 판정에 들어가지 않는다.
+
+은폐 금지 · STATUS = NOT_ISSUED (불변) · CERT_ISSUED = 0 (불변) · PROTECTED_SCOPE_DRIFT = 1 (불변).
+이 세션은 ACK를 대리 작성하지 않았고, QA0-QA9를 로컬에서 가짜로 재실행하지 않았으며, 숫자를
+발급 조건에 맞춰 역산하지 않았다.
+
+## 판정 (PUTDUK continuation session 2차 정정, 2026-09-06, append 성격의 사실 정정)
+
+같은 continuation 세션이 Step 7.1(원금 잠금 원자성)을 마무리하며 `services/api-nest`
+protected-scope root를 세 곳 더 변경했다 (commit `876d93cd5081854e80fd8bfc7a5e5c47006eebc2`):
+
+- `services/api-nest/src/ledger/ledger.posting.service.ts` (MUTATED) — `postJournal`의 트랜잭션
+  본문을 `postJournalCore`로 추출(기존 호출자 10곳 동작 무변경)하고, 호출자가 이미 열어 둔
+  트랜잭션에 참여하는 `postJournalInTransaction` + `drainOutboxAfterCommit`을 신설했다.
+- `services/api-nest/src/opportunities/participate.service.ts` (MUTATED) — `insertAccepted()`가
+  lock journal과 trade_executions/participate_requests 생성을 하나의 `withTransaction`으로 묶어,
+  트랜잭션 중간 실패 시 lock journal도 함께 롤백되도록 했다(이전에는 lock journal이 별도로 먼저
+  커밋되어 실패 시 원금이 locked에 고아로 남을 수 있었다).
+- `services/api-nest/src/opportunities/participate.atomicity.selftest.ts` (ADDED) — 그 수정의
+  회귀 스위트(FakePostgresService가 실제 커밋/롤백 semantics를 모델링 · 4 케이스).
+
+이 정정은 그 사실을 은폐하거나 STATUS를 조작하지 않고 LIVE_AGGREGATE/PATH_COUNT_LIVE/
+CHANGED_PATHS/ADDED_PATHS/MUTATED_PATHS만 현재 HEAD의 실측값으로 갱신한다. STATUS/CERT_ISSUED/
+PROTECTED_SCOPE_DRIFT/REBASE_REQUIRED는 변경하지 않는다(계속 drift=true를 가리킴).
+
+live protected aggregate `5345e74b37ddbd5aff0e294e556e9561554dd606fd2a95bda22db6fef7837e61`는
+baseline aggregate `5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9`와 다르다
+(추가 19 · 변경 19 · 누락 0, 총 38 경로 — 직전 정정의 35개 경로에 위 세 경로가 더해진 값).
+재계산은 `tooling/verify/lib/rel-502-psm.cjs`의 `compareProtectedScope()`를 그대로 호출한
+실측값이며 hash를 손으로 만들지 않았다.
 
 은폐 금지 · STATUS = NOT_ISSUED (불변) · CERT_ISSUED = 0 (불변) · PROTECTED_SCOPE_DRIFT = 1 (불변).
 이 세션은 ACK를 대리 작성하지 않았고, QA0-QA9를 로컬에서 가짜로 재실행하지 않았으며, 숫자를

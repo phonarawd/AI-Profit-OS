@@ -1,13 +1,13 @@
 {
   "schema": "governance.recovery.engine-rebase-evidence.v1",
-  "computed_at": "2026-09-05T16:55:53.344Z",
+  "computed_at": "2026-09-05T17:40:00.773Z",
   "predecessor_head_sha": "0d8825e8f333ca309a1d6eaf26a3d826722d11fd",
   "baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
-  "live_aggregate": "cb6d0ebabf8a7a22bde1e316b86613fa3fd82e1ff3960096289a7e143d9ceacb",
+  "live_aggregate": "5345e74b37ddbd5aff0e294e556e9561554dd606fd2a95bda22db6fef7837e61",
   "baseline_aggregate": "5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9",
-  "path_count_live": 509,
+  "path_count_live": 510,
   "path_count_baseline": 491,
-  "changed_paths": 35,
+  "changed_paths": 38,
   "added_paths": [
     "services/api-nest/src/auth/classic-signup.policy.ts",
     "services/api-nest/src/auth/classic-signup.service.ts",
@@ -26,7 +26,8 @@
     "services/api-nest/src/users/users-admin.service.ts",
     "services/api-nest/src/users/users.admin.controller.ts",
     "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
-    "services/api-nest/src/trades/trades.execution.race.selftest.ts"
+    "services/api-nest/src/trades/trades.execution.race.selftest.ts",
+    "services/api-nest/src/opportunities/participate.atomicity.selftest.ts"
   ],
   "mutated_paths": [
     "services/api-nest/auth-rate-limit.cjs",
@@ -45,7 +46,9 @@
     "services/api-nest/src/config/phase0.env.ts",
     "services/api-nest/src/main.ts",
     "services/api-nest/src/wallet/resend-email.provider.ts",
-    "services/api-nest/src/trades/trades.execution.service.ts"
+    "services/api-nest/src/trades/trades.execution.service.ts",
+    "services/api-nest/src/ledger/ledger.posting.service.ts",
+    "services/api-nest/src/opportunities/participate.service.ts"
   ],
   "missing_paths": [],
   "drift": true,
@@ -82,7 +85,7 @@
     "QA8"
   ],
   "baseline_washing_check": "PASS_NO_IN_PLACE_HASH_REWRITE",
-  "note": "35-path drift vs baseline ea-baseline-0d8825e8f333-5ac0f4291966: 18 added + 17 mutated + 0 missing. Supersedes the prior 33-path note (kept in spirit, not verbatim - see git history for the exact prior text): the 33-path drift was caused by the S1F Founder production-launch directive's classic-signup/session-rotation/Turnstile/rate-limit/admin-members-directory backend (commit f2812062), a CodeQL structural fix to clock.core.cjs (commit 7f9baf0a), and a reuse-detection regression suite (commit 0a9bf4ea). This correction (PUTDUK continuation session, 2026-09-06) adds 2 more paths from commit f29a8e06 (trades.execution.service.ts modified, trades.execution.race.selftest.ts added) - the settlement/safe-stop claim-before-post race fix for Step 7.2 of the Founder's production-launch continuation prompt. Every path is individually categorized and explained in governance/recovery/engine-drift-inventory.current.v1.json (no unexplained drift). ACK is not issued. Baseline hashes were not rewritten. Formal ENGINE_ACCEPTANCE_REBASE_V1 ACK and current-epoch QA0-QA9 rerun are still required before FINAL_ACCEPTANCE can move to ISSUED. See governance/engine-acceptance/FINAL_ACCEPTANCE.md for the mirrored cert-level correction.",
+  "note": "38-path drift vs baseline ea-baseline-0d8825e8f333-5ac0f4291966: 19 added + 19 mutated + 0 missing. This correction (PUTDUK continuation session, 2026-09-06, commit 876d93cd) adds 3 more paths on top of the prior 35-path note (kept in spirit, see git history for the exact prior text): ledger.posting.service.ts and participate.service.ts (modified) plus participate.atomicity.selftest.ts (added) - the participate-lock/trade-insert single-transaction atomicity fix for Step 7.1 of the Founder's production-launch continuation prompt. Every path is individually categorized and explained in governance/recovery/engine-drift-inventory.current.v1.json (no unexplained drift). ACK is not issued. Baseline hashes were not rewritten. Formal ENGINE_ACCEPTANCE_REBASE_V1 ACK and current-epoch QA0-QA9 rerun are still required before FINAL_ACCEPTANCE can move to ISSUED. See governance/engine-acceptance/FINAL_ACCEPTANCE.md for the mirrored cert-level correction.",
   "inventory_ref": "governance/recovery/engine-drift-inventory.current.v1.json",
-  "scope_head_sha": "3bb854be2db1efc121613a45a7114468887ef135"
+  "scope_head_sha": "876d93cd5081854e80fd8bfc7a5e5c47006eebc2"
 }
