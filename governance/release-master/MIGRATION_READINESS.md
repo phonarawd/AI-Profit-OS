@@ -12,10 +12,10 @@ APPLY_MIGRATION = 0
 APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
-LOCAL_MIGRATION_FILES = 54
+LOCAL_MIGRATION_FILES = 55
 REMOTE_APPLIED_SNAPSHOT = 54
 REMOTE_RAW_APPLIED = 55
-COMMITTED_UNAPPLIED = 0
+COMMITTED_UNAPPLIED = 1
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
 REL_502_ISSUED = 0
@@ -30,6 +30,17 @@ REL_701_DB_EXECUTED = 1
 `NOT_ISSUED`로 되돌아갔다(`governance/engine-acceptance/FINAL_ACCEPTANCE.md`). 위
 `REL_502_ISSUED`를 그 사실대로 `0`으로 정정한다 — REL-504 자신의 migration readiness 판정
 (READY=1)은 이 정정으로 바뀌지 않는다(migration 계열 protected-scope 변경 없음).
+
+**S1F 정정 (2026-09-05):** S1F Founder 프로덕션 출시 지시서(일반 회원가입·세션 rotation·관리자
+회원목록)에 필요한 신규 컬럼/테이블을 위해 `supabase/migrations/20260905110000_classic_signup_
+sessions_and_admin.sql`을 추가했다(로컬 54 → 55). 이 마이그레이션은 추가형(ADD COLUMN IF NOT
+EXISTS · CREATE INDEX IF NOT EXISTS · 신규 테이블만)이고 적용 전 live schema를 read-only로
+확인했지만(기존 사용자 3명 · 대소문자 변형 중복 0 · 전화번호 값 1건 · 제약 이름 실측), 실제
+`apply_migration`은 이 세션에서 Cursor safety hook에 의해 차단됐다(`Blocked: Production migration
+apply`) — REL-701-DB와 같은 Founder 승인 경로로 나중에 적용해야 한다. 그 결과 `COMMITTED_
+UNAPPLIED`는 `0`에서 `1`로 정직하게 바뀐다(파일이 존재하고 커밋됐지만 원격에는 아직 적용되지
+않았다는 뜻 — 은폐가 아니라 정확한 카운트). `REMOTE_APPLIED_SNAPSHOT`/`REMOTE_RAW_APPLIED`는
+원격 상태를 가리키므로 변경되지 않는다(원격에 아무것도 적용하지 않았다).
 
 ## 2026-09-04 REL-701-DB EXECUTED (Founder-authorized · owner REL-701-DB · not this REL)
 
@@ -50,10 +61,10 @@ REL_701_DB_EXECUTED = 1
 
 ## REVIEW
 
-- 로컬 `supabase/migrations/*.sql` 54 · filename `YYYYMMDDHHMMSS_*.sql`
-- 원격 applied canonical snapshot `tooling/verify/fixtures/migrations-applied.v1.json` versions = 54 (asOf 2026-09-04 post REL-701-DB, ref `mgsytcetsiecllmhcyox`)
+- 로컬 `supabase/migrations/*.sql` 55 (D1-S1E 시점 54 + S1F `20260905110000_classic_signup_sessions_and_admin.sql` 1) · filename `YYYYMMDDHHMMSS_*.sql`
+- 원격 applied canonical snapshot `tooling/verify/fixtures/migrations-applied.v1.json` versions = 54 (asOf 2026-09-04 post REL-701-DB, ref `mgsytcetsiecllmhcyox`) — S1F 마이그레이션은 원격 미적용이므로 여기 포함되지 않는다
 - 실제 remote raw applied rows = 55; alias/duplicate history 5건을 fixture `remoteHistoricalMappings` 에 명시해 숨기지 않는다
-- file-only `committedUnapplied` 0 — REL-701-DB 실행으로 12 → 0 (REL-504 단계에서 옮긴 것이 아니라 REL-701-DB 실행 기록)
+- file-only `committedUnapplied` 1 — REL-701-DB 실행으로 12 → 0이 됐던 뒤, S1F가 신규 마이그레이션 1건을 추가해 다시 0 → 1 (Founder 승인 대기, 은폐 없이 정확히 카운트)
 - Track A (REL-003) file restore 3: `20260819210000` · `20260819220000` · `20260820013000` + `opportunity-reprice.service.ts` 존재
 - REL-408 `SECURITY_BASELINE.md` · `REL-408-SECURITY-BASELINE.md` COMPLETED · APPLY_MIGRATION = 0
 - REL-502 `FINAL_ACCEPTANCE.md` STATUS = NOT_ISSUED · REBASE_REQUIRED = 1 · ACK_RECEIVED = 0 (D1-S1E 2026-09-05 정정 — services/api-nest/clock.core.cjs drift)
@@ -62,7 +73,7 @@ REL_701_DB_EXECUTED = 1
 
 | command | expected |
 |---|---|
-| `pnpm verify:migrations-applied-parity` | PASS (54 local · 54 canonical applied · 55 raw remote rows · 0 pending) |
+| `pnpm verify:migrations-applied-parity` | PASS (55 local · 54 canonical applied · 55 raw remote rows · 1 pending) |
 | `pnpm verify:rel-408-security-baseline` | PASS |
 | `pnpm verify:rel-504-migration-readiness` | PASS |
 

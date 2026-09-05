@@ -55,7 +55,7 @@ missing snapshot/amount → null. KRW 0 위조 0. client `Number()*rate` 0.
 | auth_permission | Nest `JwtAuthGuard` | `supabase.auth` 0 in api-nest | ALIGNED | REL-405 |
 | rls | REL-408 80/80 ON | `SECURITY_BASELINE.md` | ALIGNED | REL-408 |
 | indexes | applied migration `CREATE INDEX` | file-only indexes 0 | ALIGNED (REL-701-DB 2026-09-04 · unapplied 0) | REL-408 / REL-701-DB |
-| migration_head | local `20260902155632` | remote applied `20260902155632` | ALIGNED (REL-701-DB executed 2026-09-04 02:34 UTC · `--include-all` · remote raw 43 → 55 · unapplied 12 → 0 · alias 5 intact · head unchanged) | REL-701-DB |
+| migration_head | local `20260905110000` | remote applied `20260902155632` | PENDING (REL-701-DB's own 12 versions executed 2026-09-04 02:34 UTC via `--include-all`, remote raw 43 → 55, unapplied 12 → 0 for that batch — S1F 2026-09-05 then committed 1 new file `20260905110000_classic_signup_sessions_and_admin.sql` unrelated to REL-701-DB's scope, not yet applied; local head now ahead of remote by that 1 file; future apply must use `--include-all` again since remote head is older than this local head) | REL-701-DB / S1F |
 | p0_p3_engine | REL-502 `FINAL_ACCEPTANCE` | DEFECTS_P0/P1 = 0 | STALE_PENDING_REBASE (D1-S1E: services/api-nest/clock.core.cjs drift, NOT_ISSUED) | REL-502 |
 | p0_p3_admin | REL-409 R6 cert | KNOWN_P0~P3 = 0 | ALIGNED | REL-409 |
 | ui_truth_home_money | home-money-read contract | Engine todayPossible 0 · fake zero 0 | ALIGNED | money / UI |

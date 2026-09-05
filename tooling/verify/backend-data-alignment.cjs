@@ -231,19 +231,43 @@ if (!r7Head) {
 }
 // head가 같아도 remote head보다 오래된 unapplied 파일이 있으면 plain `db push`가 건너뛴다 →
 // R7 표에 `--include-all`(또는 rename) apply 계획이 명시돼 있어야 한다. 숨기지 않는다.
-// REL-701-DB 실행 후(fixture rel701db.status APPLIED)에는 unapplied 0 + heads equal 이 진실이며,
-// R7 표 migration_head 행이 ALIGNED + REL-701-DB 실행을 명시해야 한다.
-const preHeadUnapplied = (appliedFx.committedUnapplied || []).filter((v) => v < remoteHead);
+// REL-701-DB 실행 후(fixture rel701db.status APPLIED)에는 REL-701-DB *자신의* 버전들만 unapplied 0
+// + heads equal 이 진실이다. committedUnapplied를 전역으로 "영원히 0"이라고 가정하지 않는다 —
+// REL-701-DB 완료 이후에도 개발은 계속되고 새 마이그레이션이 committed 될 수 있으며, 그 새
+// 파일들은 REL-701-DB 의 책임 범위가 아니다 (S1F 2026-09-05: 이 정확한 시나리오가 실제로 발생해
+// 이 스크립트의 과도하게 넓은 가정을 드러냈다 — rel-504-migration-readiness.cjs 에서 먼저 발견,
+// 동일 원인이라 여기도 동일하게 고친다). 그런 새 pending이 있으면 R7 표가 ALIGNED라고 거짓 주장
+// 하지 않고 정직하게 pending + include-all 계획을 명시해야 한다.
+const unappliedVersions = (appliedFx.committedUnapplied || []).map((v) =>
+  typeof v === "string" ? v : v.version,
+);
+const preHeadUnapplied = unappliedVersions.filter((v) => v < remoteHead);
 const rel701dbApplied = Boolean(appliedFx.rel701db && appliedFx.rel701db.status === "APPLIED");
 if (rel701dbApplied) {
-  if ((appliedFx.committedUnapplied || []).length !== 0) {
-    fails.push("REL-701-DB recorded APPLIED but committedUnapplied is not empty");
+  const rel701dbOwnVersions = new Set(
+    (appliedFx.rel701db && appliedFx.rel701db.appliedVersions) || [],
+  );
+  const stillPendingFromRel701db = unappliedVersions.filter((v) => rel701dbOwnVersions.has(v));
+  if (stillPendingFromRel701db.length !== 0) {
+    fails.push(
+      "REL-701-DB recorded APPLIED but its own version(s) are still committedUnapplied: " +
+        stillPendingFromRel701db.join(", "),
+    );
   }
-  if (localHead !== remoteHead) {
-    fails.push("REL-701-DB recorded APPLIED but local/remote heads differ");
-  }
-  if (!r7Head || !/migration_head[^\n]*ALIGNED[^\n]*REL-701-DB/.test(cert)) {
-    fails.push("R7 table migration_head row must read ALIGNED with REL-701-DB execution after apply");
+  const laterPending = unappliedVersions.filter((v) => !rel701dbOwnVersions.has(v));
+  if (laterPending.length === 0) {
+    if (localHead !== remoteHead) {
+      fails.push("REL-701-DB recorded APPLIED but local/remote heads differ");
+    }
+    if (!r7Head || !/migration_head[^\n]*ALIGNED[^\n]*REL-701-DB/.test(cert)) {
+      fails.push("R7 table migration_head row must read ALIGNED with REL-701-DB execution after apply");
+    }
+  } else if (!/include-all/.test(cert)) {
+    fails.push(
+      "later (post-REL-701-DB) pending migrations " +
+        laterPending.join(",") +
+        " require an explicit --include-all apply plan noted in the R7 table",
+    );
   }
 } else if (localHead === remoteHead) {
   if (preHeadUnapplied.length === 0) {
