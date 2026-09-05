@@ -255,13 +255,49 @@ if (baseline && live) {
   ) {
     fail("migrations.remoteVersions drift vs live");
   }
-  if (
-    !sortedEq(
-      baseline.migrations?.localVersions || [],
-      baseline.migrations?.remoteVersions || [],
-    )
-  ) {
-    fail("baseline local/remote migration versions not 1:1");
+  // S1F 2026-09-05: this used to require local/remote migration versions to
+  // be exactly equal (as sets), which silently assumed every committed
+  // migration file is always already applied remotely. That is not true
+  // once ongoing development commits a migration that is legitimately
+  // pending a Founder-gated apply (the same class of overly-broad
+  // assumption already found and fixed in tooling/verify/
+  // rel-504-migration-readiness.cjs and backend-data-alignment.cjs for the
+  // exact same underlying reason). A local-only version is fine as long as
+  // it is honestly tracked in migrations-applied.v1.json's
+  // committedUnapplied list - a remote-only version (something applied
+  // remotely with no local file at all) is never allowed.
+  const localVerSet = new Set(baseline.migrations?.localVersions || []);
+  const remoteVerSet = new Set(baseline.migrations?.remoteVersions || []);
+  const remoteOnly = [...remoteVerSet].filter((v) => !localVerSet.has(v));
+  if (remoteOnly.length !== 0) {
+    fail(
+      "baseline has remote-applied migration version(s) with no local file: " +
+        remoteOnly.join(","),
+    );
+  }
+  const localOnly = [...localVerSet].filter((v) => !remoteVerSet.has(v));
+  if (localOnly.length !== 0) {
+    const appliedFxPath = path.join(
+      root,
+      "tooling/verify/fixtures/migrations-applied.v1.json",
+    );
+    let unappliedVersions = [];
+    try {
+      const appliedFx = JSON.parse(fs.readFileSync(appliedFxPath, "utf8"));
+      unappliedVersions = (appliedFx.committedUnapplied || []).map((e) =>
+        typeof e === "string" ? e : e.version,
+      );
+    } catch {
+      /* fails below via unexplained.length check */
+    }
+    const unappliedSet = new Set(unappliedVersions);
+    const unexplained = localOnly.filter((v) => !unappliedSet.has(v));
+    if (unexplained.length !== 0) {
+      fail(
+        "baseline local-only migration version(s) not tracked in migrations-applied.v1.json committedUnapplied: " +
+          unexplained.join(","),
+      );
+    }
   }
 }
 

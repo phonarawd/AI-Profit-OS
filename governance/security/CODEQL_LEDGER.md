@@ -92,6 +92,22 @@ fail-closed deny(이전 regex 방식은 no-match=silent-allow였던 것보다 �
 PR ref에서 OPEN_UNTRIAGED = **0**. 남은 2건은 self-dismiss 대상이 아니라 자격 있는 사람의
 검토가 필요한 항목으로 그대로 유지한다.
 
+## 3.5 S1F 세션 (2026-09-05, PUTDUK S1F Founder 프로덕션 출시 지시서) — PR ref 신규 4건
+
+classic-signup/session-rotation/turnstile/rate-limit/admin-users 백엔드(commit f2812062)가
+PR ref에 4건의 새 alert를 만들었다. 전부 이 세션이 직접 작성한 코드다 - self-dismiss 0,
+아래 표대로 처리했다.
+
+| alert | rule | 파일:라인 | 처리 |
+|---|---|---|---|
+| 96 | js/incomplete-sanitization | users-admin.service.ts:129 | FIXED (구조적) - LIKE 패턴 이스케이프가 백슬래시 자체를 먼저 이중화하지 않고 %와 밑줄만 이스케이프해, 검색어에 백슬래시가 이미 있으면 결과 패턴이 재해석되어 와일드카드가 조용히 되살아날 수 있었다. 백슬래시를 먼저 이중화한 뒤 와일드카드를 이스케이프하도록 수정. |
+| 93,94 | js/clear-text-storage-of-sensitive-data | auth.controller.ts:66,75 (attachSessionCookies) | AWAITING_HUMAN_REVIEW, self-dismiss 0 - 아래 4절의 기존 default-branch alert 20(같은 파일, 같은 rule, D1 세션 이전부터 open)과 동일 클래스다. 이 세션이 attachSessionCookies를 재작성하면서 PR diff에 새로 잡혔을 뿐, 새로운 보안 결함을 만든 게 아니다. httpOnly+Secure(production)+SameSite=lax 쿠키에 opaque bearer 토큰(access/refresh)을 저장하는 표준 세션 패턴 - 보호는 저장값 자체의 암호화가 아니라 전송(HTTPS)+httpOnly(JS 접근 차단)+짧은 TTL(access 15분)+rotation(refresh, reuse 탐지 시 family 전체 폐기)에서 온다. 코드 변경 없음 - 판단은 Founder 또는 자격 있는 보안 리뷰어가 내려야 한다. |
+| 95 | js/insufficient-password-hash | pwned-password.service.ts:38 (sha1Hex) | AWAITING_HUMAN_REVIEW, self-dismiss 0 - 이 SHA-1은 비밀번호 저장/검증용이 아니라 HIBP Pwned Passwords k-anonymity 조회용이며 HIBP 공개 API 자체가 SHA-1 인덱스를 요구한다 - 알고리즘을 바꾸면 유출-비밀번호 차단 기능 자체가 깨진다. 실제 비밀번호 저장은 별도 password-hash.ts가 scrypt(OWASP N=2^17,r=8,p=1)로 처리하며 이 SHA-1 결과는 절대 저장/로그되지 않고 5-hex-prefix만 네트워크로 전송된다. 알고리즘 선택이 실제 보안 통제(HIBP 조회)를 깨뜨리는 트레이드오프이므로 코드로 임의 수정하지 않고 사람 판단으로 넘긴다. |
+
+이 4건은 CI CodeQL check를 계속 FAIL 상태로 둔다(의도적 - 93/94/95를 조용히 초록으로
+만들지 않는다). 96만 다음 rescan에서 FIXED로 자동 반영될 것으로 예상(추측 금지 - push 후
+실제 rescan으로 재확인).
+
 ## 4. Default branch 전용 OPEN_UNTRIAGED (main, 이번 세션 미착수, 19건)
 
 20(clear-text-storage,auth.controller.ts) · 29(xss-through-dom,KycFlow.tsx) ·
@@ -127,3 +143,9 @@ fixture 8) · **D1-S1F 추가 FIXED=2(80,81, 구조적 재작성)** · OPEN_UNTR
 이전 세션에서 이미 해소 확인됨 §3.4) · OPEN_UNTRIAGED_DEFAULT_BRANCH_ONLY=19(main이 아직
 이 커밋들을 받지 않음, kill-switch.cjs 53/54 포함) · SELF_DISMISS_COUNT=0(불변, 전부 실코드
 수정 또는 사람 검토 대기).
+
+**S1F 갱신 (2026-09-05, §3.5):** PR ref에 신규 4건(93,94,95,96) 실측 확인 - 96은 구조적
+FIXED(commit 예정), 93/94/95는 AWAITING_HUMAN_REVIEW로 신규 등재(self-dismiss 0). PR ref
+OPEN_UNTRIAGED는 이 3건 + 기존 38(이미 해소됨, 다음 rescan에서 소멸 확인 대상)이 아니라
+실질적으로 93/94/95 3건. CodeQL CI check는 이 3건이 사람 검토를 거치기 전까지 의도적으로
+FAIL 상태를 유지한다 - 초록으로 강제하지 않았다.

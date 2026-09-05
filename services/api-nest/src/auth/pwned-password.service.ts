@@ -34,6 +34,16 @@ export type PwnedCheckResult = {
 const HIBP_RANGE_URL = "https://api.pwnedpasswords.com/range/";
 const HIBP_TIMEOUT_MS = 3_000;
 
+/**
+ * CodeQL js/insufficient-password-hash (alert 95, S1F 2026-09-05) flags
+ * this call. Tracked in governance/security/CODEQL_LEDGER.md section 3.5
+ * as AWAITING_HUMAN_REVIEW - not self-dismissed. SHA-1 here is mandated by
+ * the HIBP Pwned Passwords public API itself (k-anonymity range lookup,
+ * not password storage/verification - see this file's own header
+ * comment). Changing the algorithm would break the breach-check feature
+ * entirely; actual password storage hashing lives in password-hash.ts
+ * (scrypt). No code change was made here pending human review.
+ */
 function sha1Hex(input: string): string {
   return createHash("sha1").update(input, "utf8").digest("hex").toUpperCase();
 }

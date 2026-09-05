@@ -56,6 +56,18 @@ type CookieResponse = {
   clearCookie: (name: string, opts?: { path?: string }) => void;
 };
 
+/**
+ * CodeQL js/clear-text-storage-of-sensitive-data (alerts 93, 94, S1F 2026-09-05)
+ * flags these two res.cookie(...) calls. Tracked in
+ * governance/security/CODEQL_LEDGER.md section 3.5 as AWAITING_HUMAN_REVIEW
+ * - not self-dismissed. Same class as the pre-existing default-branch
+ * alert 20 on this same file. Reasoning kept here for whoever reviews it:
+ * this is the standard httpOnly session-cookie pattern (protection comes
+ * from HTTPS transport + httpOnly (blocks JS/XSS read) + Secure in
+ * production + short access-token TTL + refresh-token rotation with
+ * reuse detection - not from encrypting the cookie payload itself). No
+ * code change was made here pending that human review.
+ */
 function attachSessionCookies(
   res: CookieResponse,
   tokens: { accessToken?: string; refreshToken?: string },

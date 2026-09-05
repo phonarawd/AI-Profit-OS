@@ -126,7 +126,17 @@ export class UsersAdminService {
     }
     const search = opts.search?.trim();
     if (search) {
-      params.push(`%${search.replace(/[%_]/g, "\\$&")}%`);
+      // CodeQL js/incomplete-sanitization fix: backslash itself MUST be
+      // escaped first. If we escape % and _ without first doubling any
+      // existing backslash, a search string containing its own backslash
+      // (e.g. "foo\%bar", a user literally searching for a percent sign)
+      // gets re-interpreted by Postgres's LIKE escape parser - the
+      // pre-existing backslash pairs up with our newly-inserted one and
+      // un-escapes the wildcard, silently turning a literal search into a
+      // wildcard match. Doubling backslashes first makes every backslash
+      // in the final pattern unambiguous.
+      const likeSafe = search.replace(/\\/g, "\\\\").replace(/[%_]/g, "\\$&");
+      params.push(`%${likeSafe}%`);
       const likeIdx = params.length;
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(search);
       if (isUuid) {

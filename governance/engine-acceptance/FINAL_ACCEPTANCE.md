@@ -27,7 +27,7 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-0d8825e8f333-5ac0f4291966
 PREDECESSOR_BASELINE_ID = ea-baseline-74683b6e39a7-590263f0f273
 REBASE_ID = pending
-LIVE_AGGREGATE = 15851e3baa8b1d7e3788e592eafae877ba50f225706ba67785397e7828ca5688
+LIVE_AGGREGATE = d6f82920868925538cb2ed471815050510e3d503dd4fb360e4ebcc496b4980b6
 BASELINE_AGGREGATE = 5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9
 PATH_COUNT_LIVE = 508
 PATH_COUNT_BASELINE = 491
@@ -100,10 +100,14 @@ drift=진짜 상태를 가리킴) 변경하지 않는다 — D1-S1E가 이미 NO
 이번 추가 drift는 새 결함을 만든 것이 아니라 기존에 열려 있던 같은 GAP을 더 정확한 숫자로
 다시 진술하는 것이다.
 
-live protected aggregate `15851e3baa8b1d7e3788e592eafae877ba50f225706ba67785397e7828ca5688`는
+live protected aggregate `d6f82920868925538cb2ed471815050510e3d503dd4fb360e4ebcc496b4980b6`는
 baseline aggregate `5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9`와 다르다
 (추가 17 · 변경 16 · 누락 0, 총 33 경로). 재계산은 `tooling/verify/lib/rel-502-psm.cjs`의
-`compareProtectedScope()`를 그대로 호출한 실측값이며 hash를 손으로 만들지 않았다.
+`compareProtectedScope()`를 그대로 호출한 실측값이며 hash를 손으로 만들지 않았다. (이 값은 이
+correction 작성 중 두 번 더 바뀌었다 - `users-admin.service.ts`의 CodeQL
+incomplete-string-escaping 구조적 수정, 그리고 `auth.controller.ts`/`pwned-password.service.ts`에
+governance/security/CODEQL_LEDGER.md §3.5를 가리키는 CodeQL 리뷰 주석 추가. 두 경우 모두
+이미 33개 목록에 있던 파일의 content hash만 갱신됐을 뿐 경로 수·목록은 그대로다.)
 
 추가된 경로 (17):
 - services/api-nest/src/auth/classic-signup.policy.ts

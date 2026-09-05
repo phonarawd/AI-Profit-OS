@@ -1,58 +1,885 @@
 {
   "schema": "governance.recovery.engine-drift-inventory.v1",
-  "computed_at": "2026-09-05T04:48:59.730Z",
+  "computed_at": "2026-09-05T14:30:59.628Z",
   "predecessor_head_sha": "0d8825e8f333ca309a1d6eaf26a3d826722d11fd",
-  "inventory_head_sha": "6587db1ba38afae05301568a9d5b1a6f5990ba54",
-  "changed_paths": 1,
-  "expected_changed_paths": 1,
+  "inventory_head_sha": "d448acb4b9458582e50149837681d3b88f7317f2",
+  "changed_paths": 33,
+  "expected_changed_paths": 33,
   "count_match": true,
   "by_category": {
-    "DOMAIN_CLOCK_SECURITY": 1
+    "AUTH_CLASSIC_SIGNUP_CORE": 5,
+    "AUTH_SESSION_ROTATION": 3,
+    "AUTH_LOGIN_RECOVERY": 3,
+    "AUTH_TURNSTILE_BOT_DEFENSE": 3,
+    "ADMIN_MEMBERS_DIRECTORY": 4,
+    "DB_SCHEMA_MIGRATION": 1,
+    "AUTH_RATE_LIMIT": 2,
+    "DOMAIN_CLOCK_SECURITY": 1,
+    "AUTH_WIRING_REFACTOR": 6,
+    "AUTH_MAGIC_LINK_CONSENT_FIX": 3,
+    "AUTH_EMAIL_FAIL_CLOSED": 2
   },
   "unexplained_count": 0,
   "ACK_RECEIVED": 0,
   "FINAL_ACCEPTANCE": "NOT_ISSUED",
   "REBASE_REQUIRED": 1,
-  "note": "D1-S1E/PUTDUK-FULL-RELEASE correction (2026-09-05): this evidence file was stale (still recorded the 2026-09-02 ISSUED/0-changed-path state) after commit a1d5c1516022a2bc58b16ff8c866ba19a4db8c10 re-touched protected-scope root services/api-nest on 2026-09-05, AFTER baseline ea-baseline-0d8825e8f333-5ac0f4291966 was formally issued. Refreshed to the live, honest 1-path drift state. Formal rebase + current-epoch QA0-QA9 rerun are still required before FINAL_ACCEPTANCE can move to ISSUED. Do not treat this file as an ACK.",
+  "note": "S1F correction (2026-09-05): supersedes the D1-S1E 1-path entry (services/api-nest/clock.core.cjs only, commit a1d5c1516022a2bc58b16ff8c866ba19a4db8c10). The S1F Founder production-launch directive then landed classic signup + session rotation + Turnstile + distributed rate limiting + admin members directory (commit f2812062dfe116a0127704a085ceb8b4d0bf25ff), a further structural CodeQL fix to the same clock.core.cjs (commit 7f9baf0a32ebe365898e58de0d702cb864845e52, superseding a1d5c151's mitigation on that one file), and a reuse-detection regression suite (commit 0a9bf4ea2e05f8be5d450cbe0fca47b84ea77785) - all still on protected-scope root services/api-nest, all still without a formal ENGINE_ACCEPTANCE_REBASE_V1 ACK. Live drift is now 33 paths (17 added, 16 modified, 0 missing), fully enumerated below with per-path category/reason/security_impact/required_rerun - not a single collapsed count. Formal rebase + current-epoch QA0-QA9 rerun are still required before FINAL_ACCEPTANCE can move to ISSUED. This correction does not ACK anything and does not rewrite baseline.v1.json.",
   "required_rerun_matrix": {
     "QA0": [],
     "QA1": [
-      "services/api-nest/clock.core.cjs"
+      "services/api-nest/src/auth/classic-signup.policy.ts",
+      "services/api-nest/src/auth/classic-signup.service.ts",
+      "services/api-nest/src/auth/password-hash.ts",
+      "services/api-nest/src/auth/pwned-password.service.ts",
+      "services/api-nest/src/auth/pwned-password.local-blocklist.ts",
+      "services/api-nest/src/auth/session-cookies.ts",
+      "services/api-nest/src/auth/session-rotation.service.ts",
+      "services/api-nest/src/auth/session-rotation.reuse.selftest.ts",
+      "services/api-nest/src/auth/password-auth.service.ts",
+      "services/api-nest/src/auth/password-reset.service.ts",
+      "services/api-nest/src/auth/find-id.service.ts",
+      "services/api-nest/src/common/turnstile.service.ts",
+      "services/api-nest/src/common/turnstile.guard.ts",
+      "services/api-nest/src/users/users-admin.module.ts",
+      "services/api-nest/src/users/users-admin.service.ts",
+      "services/api-nest/src/users/users.admin.controller.ts",
+      "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
+      "services/api-nest/auth-rate-limit.cjs",
+      "services/api-nest/clock.core.cjs",
+      "services/api-nest/src/app.module.ts",
+      "services/api-nest/src/auth/auth-rate-limit.guard.ts",
+      "services/api-nest/src/auth/auth.controller.ts",
+      "services/api-nest/src/auth/auth.module.ts",
+      "services/api-nest/src/auth/auth.routes.ts",
+      "services/api-nest/src/auth/auth.service.ts",
+      "services/api-nest/src/auth/identity-proof.selftest.ts",
+      "services/api-nest/src/auth/identity-proof.store.ts",
+      "services/api-nest/src/auth/jwt-auth.guard.ts",
+      "services/api-nest/src/auth/magic-link.service.ts",
+      "services/api-nest/src/common/admin-capabilities.ts",
+      "services/api-nest/src/config/phase0.env.ts",
+      "services/api-nest/src/main.ts",
+      "services/api-nest/src/wallet/resend-email.provider.ts"
     ],
-    "QA2": [],
+    "QA2": [
+      "services/api-nest/src/auth/classic-signup.policy.ts",
+      "services/api-nest/src/auth/classic-signup.service.ts",
+      "services/api-nest/src/auth/password-hash.ts",
+      "services/api-nest/src/auth/pwned-password.service.ts",
+      "services/api-nest/src/auth/pwned-password.local-blocklist.ts",
+      "services/api-nest/src/auth/session-rotation.service.ts",
+      "services/api-nest/src/auth/session-rotation.reuse.selftest.ts",
+      "services/api-nest/src/auth/password-auth.service.ts",
+      "services/api-nest/src/auth/password-reset.service.ts",
+      "services/api-nest/src/auth/find-id.service.ts",
+      "services/api-nest/src/common/turnstile.service.ts",
+      "services/api-nest/src/common/turnstile.guard.ts",
+      "services/api-nest/src/users/users-admin.service.ts",
+      "services/api-nest/src/users/users.admin.controller.ts",
+      "services/api-nest/auth-rate-limit.cjs",
+      "services/api-nest/src/auth/auth-rate-limit.guard.ts",
+      "services/api-nest/src/auth/auth.controller.ts",
+      "services/api-nest/src/auth/auth.service.ts",
+      "services/api-nest/src/auth/identity-proof.selftest.ts",
+      "services/api-nest/src/auth/identity-proof.store.ts",
+      "services/api-nest/src/auth/jwt-auth.guard.ts",
+      "services/api-nest/src/auth/magic-link.service.ts",
+      "services/api-nest/src/common/admin-capabilities.ts",
+      "services/api-nest/src/wallet/resend-email.provider.ts"
+    ],
     "QA3": [],
     "QA4": [
+      "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
       "services/api-nest/clock.core.cjs"
     ],
     "QA5": [],
     "QA6": [],
     "QA7": [],
     "QA8": [
-      "services/api-nest/clock.core.cjs"
+      "services/api-nest/src/auth/classic-signup.policy.ts",
+      "services/api-nest/src/auth/classic-signup.service.ts",
+      "services/api-nest/src/auth/password-hash.ts",
+      "services/api-nest/src/auth/pwned-password.service.ts",
+      "services/api-nest/src/auth/pwned-password.local-blocklist.ts",
+      "services/api-nest/src/auth/session-cookies.ts",
+      "services/api-nest/src/auth/session-rotation.service.ts",
+      "services/api-nest/src/auth/session-rotation.reuse.selftest.ts",
+      "services/api-nest/src/auth/password-auth.service.ts",
+      "services/api-nest/src/auth/password-reset.service.ts",
+      "services/api-nest/src/auth/find-id.service.ts",
+      "services/api-nest/src/common/turnstile.service.ts",
+      "services/api-nest/src/common/turnstile.guard.ts",
+      "services/api-nest/src/users/users-admin.module.ts",
+      "services/api-nest/src/users/users-admin.service.ts",
+      "services/api-nest/src/users/users.admin.controller.ts",
+      "services/api-nest/auth-rate-limit.cjs",
+      "services/api-nest/clock.core.cjs",
+      "services/api-nest/src/app.module.ts",
+      "services/api-nest/src/auth/auth-rate-limit.guard.ts",
+      "services/api-nest/src/auth/auth.controller.ts",
+      "services/api-nest/src/auth/auth.module.ts",
+      "services/api-nest/src/auth/auth.routes.ts",
+      "services/api-nest/src/auth/auth.service.ts",
+      "services/api-nest/src/auth/identity-proof.selftest.ts",
+      "services/api-nest/src/auth/identity-proof.store.ts",
+      "services/api-nest/src/auth/jwt-auth.guard.ts",
+      "services/api-nest/src/auth/magic-link.service.ts",
+      "services/api-nest/src/common/admin-capabilities.ts",
+      "services/api-nest/src/config/phase0.env.ts",
+      "services/api-nest/src/main.ts",
+      "services/api-nest/src/wallet/resend-email.provider.ts"
     ],
     "QA9": []
   },
   "paths": [
     {
-      "path": "services/api-nest/clock.core.cjs",
-      "kind": "modified",
-      "owning_commit": "a1d5c1516022a2bc58b16ff8c866ba19a4db8c10",
-      "owning_subject": "fix(security): close 4 CodeQL polynomial-redos + 2 missing-anchor alerts (S1C)",
+      "path": "services/api-nest/src/auth/classic-signup.policy.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
       "commit_count": 1,
       "commits": [
         {
-          "sha": "a1d5c1516022a2bc58b16ff8c866ba19a4db8c10",
-          "subject": "fix(security): close 4 CodeQL polynomial-redos + 2 missing-anchor alerts (S1C)"
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
         }
       ],
-      "category": "DOMAIN_CLOCK_SECURITY",
-      "reason": "CodeQL js/regex/missing-regexp-anchor alerts 51/52: added \\b word-boundary anchors to the DB_URL_DENY regex in the clock domain's DB-target guard (blocks a synthetic-clock/db-target harness check from matching a permissive substring instead of a real host boundary). No behavior change to evaluateSyntheticClockGate's real gating decisions - independently verified by tooling/verify/domain-clock.cjs (35 checks, unchanged pass) and the dedicated tooling/verify/regression/clock-core-db-url-deny.regression.cjs (positive/negative fixture pairs). Formal current-epoch QA0-QA9 rerun is still required before re-ISSUE per protected-scope policy - root-level protected-scope changes are not exempted by change size or by having their own passing regression suite.",
+      "category": "AUTH_CLASSIC_SIGNUP_CORE",
+      "reason": "S1F Section 5 field policy: username pattern/canonicalization, password length 15-128, reserved-username blocklist. Pure validation, no DB/network I/O. Covered by classic-signup.service.ts's own domain verify chain (identity-proof.selftest 43/43).",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/classic-signup.service.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_CLASSIC_SIGNUP_CORE",
+      "reason": "S1F Section 5 signup pipeline: pending_registrations hold -> email verification -> exactly-once users row creation, ledger bucket provisioning, first session mint. New account-creation code path with real DB writes.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/password-hash.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_CLASSIC_SIGNUP_CORE",
+      "reason": "scrypt password hashing (OWASP N=2^17,r=8,p=1), self-describing hash format for future rehash-on-login, concurrency-limited to protect the Node event loop. No plaintext persistence.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/pwned-password.service.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_CLASSIC_SIGNUP_CORE",
+      "reason": "HIBP Pwned Passwords k-anonymity check (5-char SHA-1 prefix only ever sent over the network). SHA-1 use here is HIBP-API-mandated and is not password-storage hashing - see the file's own header comment. Falls back to a local blocklist on HIBP outage. CodeQL flagged this call site (js/insufficient-password-hash) as part of the same PR push; tracked separately for Founder/human review in governance/security/CODEQL_LEDGER.md rather than silently dismissed here.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/pwned-password.local-blocklist.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_CLASSIC_SIGNUP_CORE",
+      "reason": "Small hardcoded blocklist of common/long passwords used only when HIBP is unreachable (degraded-mode safety net, not the primary check).",
       "security_impact": "LOW",
       "schema_impact": false,
       "prompt_impact": false,
       "required_rerun": [
         "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/session-cookies.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_SESSION_ROTATION",
+      "reason": "Refresh-token cookie constants (TTL, name, path) isolated into their own file to avoid editor-tooling collisions on the shared auth.constants.ts during this session.",
+      "security_impact": "LOW",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/session-rotation.service.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_SESSION_ROTATION",
+      "reason": "Refresh-token rotation + family-wide reuse detection guarding real account/session access: mintNewFamily, rotate (with optimistic-lock race handling), revokeFamily, revokeAllForUser, listActiveFamilies, revokeFamilyForUser. The single highest security-impact new file this session added.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/session-rotation.reuse.selftest.ts",
+      "kind": "added",
+      "owning_commit": "0a9bf4ea2e05f8be5d450cbe0fca47b84ea77785",
+      "owning_subject": "test(auth): add zero-to-first regression coverage for refresh-token reuse detection (S1F Section 11)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "0a9bf4ea2e05f8be5d450cbe0fca47b84ea77785",
+          "subject": "test(auth): add zero-to-first regression coverage for refresh-token reuse detection (S1F Section 11)"
+        }
+      ],
+      "category": "AUTH_SESSION_ROTATION",
+      "reason": "7-case regression suite added specifically to close the zero-coverage gap on session-rotation.service.ts's reuse-detection logic (normal rotation, replay-reuse, post-reuse family lockout, expired/forged tokens, concurrent-rotate race, DB-unconfigured fail-closed). Test-only file, no production code path.",
+      "security_impact": "LOW",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/password-auth.service.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_LOGIN_RECOVERY",
+      "reason": "Username-or-email + password login: constant-time-equivalent dummy-hash path for non-existent users (timing-attack mitigation), rehash-on-login for outdated hash params, account-status check.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/password-reset.service.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_LOGIN_RECOVERY",
+      "reason": "Password reset request/complete + logged-in password change. Account-existence-non-revealing responses; revokes all sessions for the user on completion.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/find-id.service.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_LOGIN_RECOVERY",
+      "reason": "Find-username-by-email with masked results, sent only to a verified email; account-existence-non-revealing response shape.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/common/turnstile.service.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_TURNSTILE_BOT_DEFENSE",
+      "reason": "Cloudflare Turnstile server-side siteverify call. Fails closed (ServiceUnavailableException) when TURNSTILE_SECRET_KEY is unset or the network call errors - never silently treats an unreachable Turnstile as a pass.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/common/turnstile.guard.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_TURNSTILE_BOT_DEFENSE",
+      "reason": "NestJS guard wiring TurnstileService onto public write endpoints (signup, login, password-reset, find-id, magic-link, resend).",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/users/users-admin.module.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "ADMIN_MEMBERS_DIRECTORY",
+      "reason": "NestJS module registration for the new admin members-directory controller/service.",
+      "security_impact": "LOW",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/users/users-admin.service.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "ADMIN_MEMBERS_DIRECTORY",
+      "reason": "GET /api/v1/admin/users list (paginated/searchable/status+signup-method filter/sortable, PII-masked) and GET .../:id (unmasked detail). Parameterized SQL, sort-column allowlist. A CodeQL js/incomplete-sanitization alert (LIKE-pattern backslash escaping) surfaced on this file in the same push and was fixed structurally in a follow-up commit on the same push (double-escape backslash before escaping wildcards) - not a schema/behavior change to the list contract.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/users/users.admin.controller.ts",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "ADMIN_MEMBERS_DIRECTORY",
+      "reason": "AdminGuard-protected controller mapping list/get to UsersAdminService, audit-logs every call.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql",
+      "kind": "added",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "DB_SCHEMA_MIGRATION",
+      "reason": "Additive-only migration (ADD COLUMN IF NOT EXISTS / CREATE INDEX IF NOT EXISTS / new tables) for classic signup, session rotation, and admin user list columns. Not yet applied to the remote Supabase project - apply_migration was blocked by a Cursor safety hook this session (Founder-approval gate, same class as REL-701-DB's own apply path). See governance/release-master/MIGRATION_READINESS.md and tooling/verify/fixtures/migrations-applied.v1.json committedUnapplied.",
+      "security_impact": "HIGH",
+      "schema_impact": true,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA4"
+      ]
+    },
+    {
+      "path": "services/api-nest/auth-rate-limit.cjs",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_RATE_LIMIT",
+      "reason": "Added decideAuthRateLimitAsync (Upstash Redis distributed limiting, fail-closed 503 on Redis-down for sensitive write routes). Existing synchronous decideAuthRateLimit (in-memory, used when Redis is not configured) is unchanged in its own behavior.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/clock.core.cjs",
+      "kind": "modified",
+      "owning_commit": "7f9baf0a32ebe365898e58de0d702cb864845e52",
+      "owning_subject": "fix(security): CodeQL #80/81 구조적 해결 - DATABASE_URL hostname suffix parse",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "7f9baf0a32ebe365898e58de0d702cb864845e52",
+          "subject": "fix(security): CodeQL #80/81 구조적 해결 - DATABASE_URL hostname suffix parse"
+        }
+      ],
+      "category": "DOMAIN_CLOCK_SECURITY",
+      "reason": "CodeQL #80/81 (js/regex/missing-regexp-anchor) fixed structurally: replaced the DB_URL_DENY regex-against-whole-string approach with safeDatabaseUrlHostname()+isManagedDatabaseHost() (URL parse -> hostname suffix compare), superseding the earlier a1d5c151 \\b-anchor mitigation recorded in this same inventory file's predecessor entry (that entry is preserved verbatim in the pre-rebase archive, not deleted). Independently verified by the rewritten tooling/verify/regression/clock-core-db-url-deny.regression.cjs (5 still-denied + 4 suffix-helper + 4 substring-bypass-now-allowed + 4 fail-closed-parse + 1 e2e) and verify:domain-clock (35 checks).",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
         "QA4",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/app.module.ts",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_WIRING_REFACTOR",
+      "reason": "Registered UsersAdminModule alongside the existing module graph. Pure DI wiring, no new business logic.",
+      "security_impact": "LOW",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/auth-rate-limit.guard.ts",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_RATE_LIMIT",
+      "reason": "canActivate converted to async to call decideAuthRateLimitAsync instead of the synchronous in-memory-only decider.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/auth.controller.ts",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_WIRING_REFACTOR",
+      "reason": "Added classic signup/login/find-id/password-reset/refresh/logout-all/sessions routes; refresh moved off JwtAuthGuard by design (must work after the access token has actually expired, reading only the refresh cookie). A CodeQL js/clear-text-storage-of-sensitive-data alert on attachSessionCookies's res.cookie(...) calls surfaced in the same push and is tracked (not silently dismissed) in governance/security/CODEQL_LEDGER.md for Founder/human review - httpOnly+Secure+SameSite is the existing, unchanged mitigation, not a new gap this diff introduced.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/auth.module.ts",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_WIRING_REFACTOR",
+      "reason": "Provider registration for the new classic-signup/password-auth/password-reset/session-rotation/turnstile services.",
+      "security_impact": "LOW",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/auth.routes.ts",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_WIRING_REFACTOR",
+      "reason": "Added the new classic-auth route-name constants (kept namespaced to avoid colliding with the existing oauth/passkey/magic-link route names).",
+      "security_impact": "LOW",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/auth.service.ts",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_WIRING_REFACTOR",
+      "reason": "Injected SessionRotationService; mintSession/revokeSession now delegate to it; added refreshFromToken/logoutAll/listSessions/revokeSessionFamily; removed the now-dead unused revokeAllSessions and unused imports.",
+      "security_impact": "HIGH",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/identity-proof.selftest.ts",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_MAGIC_LINK_CONSENT_FIX",
+      "reason": "Updated to expect MagicLinkService.request() to throw ServiceUnavailableException on a genuine Resend send failure (bug fix - it previously returned {ok:true} on failure, masking a real send error from the caller). Test-only change, still 43/43 PASS.",
+      "security_impact": "LOW",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/identity-proof.store.ts",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_MAGIC_LINK_CONSENT_FIX",
+      "reason": "PostgresProofStore now stores/retrieves terms_accepted_at/privacy_accepted_at/marketing_consent/referral_code for magic-link challenges, fixing the cross-device consent bug (consent captured at request() time server-side instead of relying on the requesting browser's own sessionStorage at verify() time).",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/jwt-auth.guard.ts",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_WIRING_REFACTOR",
+      "reason": "SessionUser gained familyId, decoded from the token's fam claim, for family-scoped logout/session-list operations. No change to the guard's actual accept/reject decision logic.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/auth/magic-link.service.ts",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_MAGIC_LINK_CONSENT_FIX",
+      "reason": "request() now accepts and stores consent server-side instead of trusting a client-supplied consent flag at prove() time; request() now throws on a genuine Resend send failure instead of returning {ok:true}.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/common/admin-capabilities.ts",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "ADMIN_MEMBERS_DIRECTORY",
+      "reason": "Added UsersAdminController capability entries (list/get -> read('users')) to the existing deny-by-default admin RBAC map.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/config/phase0.env.ts",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_TURNSTILE_BOT_DEFENSE",
+      "reason": "Added turnstileSecretKey to the typed env loader (nullable, fail-closed when absent - no default/hardcoded fallback).",
+      "security_impact": "LOW",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/main.ts",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_EMAIL_FAIL_CLOSED",
+      "reason": "Added a ResendEmailProvider().assertReadyForEnv() startup check so production/staging boot fails closed when the Resend API key or verified from-email is missing, instead of silently degrading to accepted_dev-style fake success at request time.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA8"
+      ]
+    },
+    {
+      "path": "services/api-nest/src/wallet/resend-email.provider.ts",
+      "kind": "modified",
+      "owning_commit": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+      "owning_subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)",
+      "commit_count": 1,
+      "commits": [
+        {
+          "sha": "f2812062dfe116a0127704a085ceb8b4d0bf25ff",
+          "subject": "feat(auth): classic signup + session rotation + admin users list backend (S1F)"
+        }
+      ],
+      "category": "AUTH_EMAIL_FAIL_CLOSED",
+      "reason": "assertReadyForEnv() added; sendOtp/sendMagicLink now throw ServiceUnavailableException on a genuine send failure instead of returning {ok:true,status:\"accepted\"}; added sendSignupVerification/sendPasswordReset/sendFindIdResult for the new classic-auth flows.",
+      "security_impact": "MEDIUM",
+      "schema_impact": false,
+      "prompt_impact": false,
+      "required_rerun": [
+        "QA1",
+        "QA2",
         "QA8"
       ]
     }

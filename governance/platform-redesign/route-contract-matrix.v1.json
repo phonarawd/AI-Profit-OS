@@ -4,7 +4,7 @@
   "redesignStage": "R0",
   "todoId": "platform-redesign-r0-inventory",
   "measuredAt": "2026-09-04T15:44:04.303Z",
-  "commitSha": "b3401d35977233eac83009f0f28fdcdbce834cfa",
+  "commitSha": "d448acb4b9458582e50149837681d3b88f7317f2",
   "pathSeparator": "/",
   "classificationEnum": [
     "defect",
@@ -2052,6 +2052,137 @@
       "verifyIds": [],
       "classification": "intentional",
       "classificationRef": "cls-d1-6e-wallet-history-journalid"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/auth/signup/classic",
+      "physicalPage": "apps/web/app/auth/signup/classic/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "auth-signup"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "POST /api/v1/auth/signup/classic"
+      ],
+      "ownerPlan": "06-infra",
+      "verifyIds": [
+        "acquisition-release",
+        "auth-flows",
+        "auth-jwt-runtime"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/auth/verify-email",
+      "physicalPage": "apps/web/app/auth/verify-email/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "POST /api/v1/auth/signup/classic/verify"
+      ],
+      "ownerPlan": "06-infra",
+      "verifyIds": [
+        "acquisition-release",
+        "auth-flows",
+        "auth-jwt-runtime"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/auth/find-id",
+      "physicalPage": "apps/web/app/auth/find-id/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "auth-login"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "POST /api/v1/auth/find-id"
+      ],
+      "ownerPlan": "06-infra",
+      "verifyIds": [
+        "acquisition-release",
+        "auth-flows",
+        "auth-jwt-runtime"
+      ],
+      "classification": "deferred"
+    },
+    {
+      "app": "web",
+      "logicalRoute": "/auth/reset-password",
+      "physicalPage": "apps/web/app/auth/reset-password/page.tsx",
+      "productContract": {
+        "status": "absent",
+        "path": null
+      },
+      "visualContract": {
+        "status": "absent",
+        "path": null
+      },
+      "implementationContract": {
+        "status": "absent",
+        "path": null
+      },
+      "canonWires": [
+        "auth-login"
+      ],
+      "copyRefs": [
+        "packages/ui/copy/ko"
+      ],
+      "apiHints": [
+        "POST /api/v1/auth/password-reset/request",
+        "POST /api/v1/auth/password-reset/complete"
+      ],
+      "ownerPlan": "06-infra",
+      "verifyIds": [
+        "acquisition-release",
+        "auth-flows",
+        "auth-jwt-runtime"
+      ],
+      "classification": "deferred"
     }
   ],
   "notes": [

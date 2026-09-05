@@ -3,28 +3,37 @@
   "schema": "governance.platform-redesign.baseline.v1",
   "redesignStage": "R0",
   "todoId": "platform-redesign-r0-inventory",
-  "measuredAt": "2026-09-04T15:44:04.303Z",
+  "measuredAt": "2026-09-05T14:24:05.376Z",
   "pathSeparator": "/",
-  "commitSha": "b3401d35977233eac83009f0f28fdcdbce834cfa",
+  "commitSha": "d448acb4b9458582e50149837681d3b88f7317f2",
   "dirtyPaths": [
+    "_tmp_add_matrix_rows.cjs",
+    "_tmp_build_drift_inventory.cjs",
+    "_tmp_drift_paths.json",
+    "_tmp_regen_baseline.cjs",
+    "_tmp_write_drift_files.cjs",
     "governance/platform-redesign/baseline.v1.json",
-    "governance/platform-redesign/route-contract-matrix.v1.json"
+    "governance/recovery/engine-drift-inventory.current.v1.json",
+    "governance/recovery/engine-rebase-evidence.current.v1.json",
+    "governance/release-master/rel-106-profits/runtime-ready-1440.png",
+    "governance/release-master/rel-106-profits/runtime-ready-390.png",
+    "services/api-nest/src/users/users-admin.service.ts"
   ],
   "counts": {
     "webLogicalRoutes": 41,
-    "webPhysicalPages": 50,
+    "webPhysicalPages": 54,
     "adminPhysicalPages": 22,
     "adminTopLevel": 12,
     "canonPhysicalWires": 38,
     "canonManifestSurfaces": 33,
     "wiresNotInManifest": 5,
-    "nestImports": 27,
-    "localMigrations": 54,
+    "nestImports": 28,
+    "localMigrations": 55,
     "remoteMigrations": 54,
     "brandAssets": 31,
     "publicBrandAssets": 24,
-    "verifyScripts": 340,
-    "verifyPackageIds": 331,
+    "verifyScripts": 343,
+    "verifyPackageIds": 334,
     "contracts": 15
   },
   "web": {
@@ -92,6 +101,10 @@
         "physicalPage": "apps/web/app/auth/complete-profile/page.tsx"
       },
       {
+        "logicalRoute": "/auth/find-id",
+        "physicalPage": "apps/web/app/auth/find-id/page.tsx"
+      },
+      {
         "logicalRoute": "/auth/login",
         "physicalPage": "apps/web/app/auth/login/page.tsx"
       },
@@ -108,8 +121,20 @@
         "physicalPage": "apps/web/app/auth/oauth/kakao/page.tsx"
       },
       {
+        "logicalRoute": "/auth/reset-password",
+        "physicalPage": "apps/web/app/auth/reset-password/page.tsx"
+      },
+      {
+        "logicalRoute": "/auth/signup/classic",
+        "physicalPage": "apps/web/app/auth/signup/classic/page.tsx"
+      },
+      {
         "logicalRoute": "/auth/signup",
         "physicalPage": "apps/web/app/auth/signup/page.tsx"
+      },
+      {
+        "logicalRoute": "/auth/verify-email",
+        "physicalPage": "apps/web/app/auth/verify-email/page.tsx"
       },
       {
         "logicalRoute": "/dev/spark-dash-desktop",
@@ -912,7 +937,8 @@
       "KillSwitchModule",
       "AdminOpsModule",
       "MatchControlModule",
-      "SourcePolicyModule"
+      "SourcePolicyModule",
+      "UsersAdminModule"
     ]
   },
   "migrations": {
@@ -970,7 +996,8 @@
       "supabase/migrations/20260823210000_admin_policy_versions.sql",
       "supabase/migrations/20260901224000_withdraw_stepup_token_single_use.sql",
       "supabase/migrations/20260902032000_production_schema_parity.sql",
-      "supabase/migrations/20260902155632_withdraw_broadcast_tron.sql"
+      "supabase/migrations/20260902155632_withdraw_broadcast_tron.sql",
+      "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql"
     ],
     "localVersions": [
       "20260808205842",
@@ -1026,7 +1053,8 @@
       "20260823210000",
       "20260901224000",
       "20260902032000",
-      "20260902155632"
+      "20260902155632",
+      "20260905110000"
     ],
     "remoteFixturePath": "tooling/verify/fixtures/migrations-applied.v1.json",
     "remoteVersions": [
@@ -1186,6 +1214,8 @@
       "tooling/verify/auth-jwt-runtime.cjs",
       "tooling/verify/auth-rate-limit.cjs",
       "tooling/verify/auth-session-cookie.cjs",
+      "tooling/verify/auth-session-refresh-fetch.runtime.cjs",
+      "tooling/verify/auth-session-rotation-reuse.runtime.cjs",
       "tooling/verify/auth-surfaces.cjs",
       "tooling/verify/axe-harness.cjs",
       "tooling/verify/b3-promotion.cjs",
@@ -1337,6 +1367,7 @@
       "tooling/verify/opportunity-scan-surface.cjs",
       "tooling/verify/ops-inbox.cjs",
       "tooling/verify/p0-ebay-secret-provisioning.cjs",
+      "tooling/verify/packages-ui-typecheck.cjs",
       "tooling/verify/part5-shell-toast.cjs",
       "tooling/verify/participate-http.cjs",
       "tooling/verify/participate-proof.cjs",
@@ -1535,6 +1566,8 @@
       "verify:auth-jwt-runtime",
       "verify:auth-rate-limit",
       "verify:auth-session-cookie",
+      "verify:auth-session-refresh-fetch",
+      "verify:auth-session-rotation-reuse",
       "verify:auth-surfaces",
       "verify:axe-harness",
       "verify:b3-promotion",
@@ -1681,6 +1714,7 @@
       "verify:opportunity-scan-surface",
       "verify:ops-inbox",
       "verify:p0-ebay-secret-provisioning",
+      "verify:packages-ui-typecheck",
       "verify:part5-shell-toast",
       "verify:participate-http",
       "verify:participate-proof",

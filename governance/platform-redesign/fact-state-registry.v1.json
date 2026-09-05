@@ -8,7 +8,7 @@
   "basedOn": {
     "baselinePath": "governance/platform-redesign/baseline.v1.json",
     "routeContractMatrixPath": "governance/platform-redesign/route-contract-matrix.v1.json",
-    "baselineCommitSha": "b3401d35977233eac83009f0f28fdcdbce834cfa",
+    "baselineCommitSha": "d448acb4b9458582e50149837681d3b88f7317f2",
     "baselineTodoId": "platform-redesign-r0-inventory"
   },
   "commonViewStates": [

@@ -1,16 +1,49 @@
 {
   "schema": "governance.recovery.engine-rebase-evidence.v1",
-  "computed_at": "2026-09-05T04:48:59.730Z",
+  "computed_at": "2026-09-05T14:30:59.628Z",
   "predecessor_head_sha": "0d8825e8f333ca309a1d6eaf26a3d826722d11fd",
   "baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
-  "live_aggregate": "7b46b6b27a89d0c36f3c9cf4acdcd545da93eae938602af83c3c86510773a4a1",
+  "live_aggregate": "d6f82920868925538cb2ed471815050510e3d503dd4fb360e4ebcc496b4980b6",
   "baseline_aggregate": "5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9",
-  "path_count_live": 491,
+  "path_count_live": 508,
   "path_count_baseline": 491,
-  "changed_paths": 1,
-  "added_paths": [],
+  "changed_paths": 33,
+  "added_paths": [
+    "services/api-nest/src/auth/classic-signup.policy.ts",
+    "services/api-nest/src/auth/classic-signup.service.ts",
+    "services/api-nest/src/auth/password-hash.ts",
+    "services/api-nest/src/auth/pwned-password.service.ts",
+    "services/api-nest/src/auth/pwned-password.local-blocklist.ts",
+    "services/api-nest/src/auth/session-cookies.ts",
+    "services/api-nest/src/auth/session-rotation.service.ts",
+    "services/api-nest/src/auth/session-rotation.reuse.selftest.ts",
+    "services/api-nest/src/auth/password-auth.service.ts",
+    "services/api-nest/src/auth/password-reset.service.ts",
+    "services/api-nest/src/auth/find-id.service.ts",
+    "services/api-nest/src/common/turnstile.service.ts",
+    "services/api-nest/src/common/turnstile.guard.ts",
+    "services/api-nest/src/users/users-admin.module.ts",
+    "services/api-nest/src/users/users-admin.service.ts",
+    "services/api-nest/src/users/users.admin.controller.ts",
+    "supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql"
+  ],
   "mutated_paths": [
-    "services/api-nest/clock.core.cjs"
+    "services/api-nest/auth-rate-limit.cjs",
+    "services/api-nest/clock.core.cjs",
+    "services/api-nest/src/app.module.ts",
+    "services/api-nest/src/auth/auth-rate-limit.guard.ts",
+    "services/api-nest/src/auth/auth.controller.ts",
+    "services/api-nest/src/auth/auth.module.ts",
+    "services/api-nest/src/auth/auth.routes.ts",
+    "services/api-nest/src/auth/auth.service.ts",
+    "services/api-nest/src/auth/identity-proof.selftest.ts",
+    "services/api-nest/src/auth/identity-proof.store.ts",
+    "services/api-nest/src/auth/jwt-auth.guard.ts",
+    "services/api-nest/src/auth/magic-link.service.ts",
+    "services/api-nest/src/common/admin-capabilities.ts",
+    "services/api-nest/src/config/phase0.env.ts",
+    "services/api-nest/src/main.ts",
+    "services/api-nest/src/wallet/resend-email.provider.ts"
   ],
   "missing_paths": [],
   "drift": true,
@@ -36,16 +69,18 @@
   },
   "required_reruns": [
     "QA1",
+    "QA2",
     "QA4",
     "QA8"
   ],
   "invalidated_suites": [
     "QA1",
+    "QA2",
     "QA4",
     "QA8"
   ],
   "baseline_washing_check": "PASS_NO_IN_PLACE_HASH_REWRITE",
-  "note": "1-path drift vs baseline ea-baseline-0d8825e8f333-5ac0f4291966 (measured 2026-09-02T17:41:00.381Z), caused solely by commit a1d5c1516022a2bc58b16ff8c866ba19a4db8c10 (CodeQL js/regex/missing-regexp-anchor fix, \\b-anchor added to the DB_URL_DENY regex in services/api-nest/clock.core.cjs), which landed 2026-09-05 in the same D1 zero-known-defect audit lineage AFTER this baseline was formally issued. This evidence file previously and incorrectly still recorded the pre-drift 0-changed-path/ISSUED state (stale since 2026-09-02); refreshed here to the live, honest state. ACK is not issued. Baseline hashes were not rewritten (baseline.v1.json itself is untouched). Formal ENGINE_ACCEPTANCE_REBASE_V1 ACK and current-epoch QA0-QA9 rerun (QA7 needs real GitHub Actions evidence per this repo's own established practice) are still required before FINAL_ACCEPTANCE can move to ISSUED. See governance/engine-acceptance/FINAL_ACCEPTANCE.md and _audit-d0-20260904/FOUNDER-GATE-REL502-REBASE.md for full history and evidence.",
+  "note": "33-path drift vs baseline ea-baseline-0d8825e8f333-5ac0f4291966 (measured 2026-09-02T17:41:00.381Z): 17 added + 16 mutated + 0 missing, superseding the D1-S1E 1-path entry. Caused by the S1F Founder production-launch directive's classic-signup/session-rotation/Turnstile/rate-limit/admin-members-directory backend (commit f2812062), a further CodeQL structural fix to clock.core.cjs (commit 7f9baf0a, superseding the D1-S1E a1d5c151 mitigation on that same file), and a reuse-detection regression suite (commit 0a9bf4ea) - all landed 2026-09-05 in the same D1 zero-known-defect audit lineage, all still on protected-scope root services/api-nest, all after this baseline was formally issued. Every path is individually categorized and explained in governance/recovery/engine-drift-inventory.current.v1.json (no unexplained drift). ACK is not issued. Baseline hashes were not rewritten (baseline.v1.json itself is untouched - baseline_aggregate above is unchanged from the predecessor evidence). Formal ENGINE_ACCEPTANCE_REBASE_V1 ACK and current-epoch QA0-QA9 rerun (at minimum QA1/QA2/QA4/QA8 per the per-path required_rerun union; QA7 needs real GitHub Actions evidence per this repo's own established practice) are still required before FINAL_ACCEPTANCE can move to ISSUED. See governance/engine-acceptance/FINAL_ACCEPTANCE.md for the mirrored cert-level correction.",
   "inventory_ref": "governance/recovery/engine-drift-inventory.current.v1.json",
-  "scope_head_sha": "6587db1ba38afae05301568a9d5b1a6f5990ba54"
+  "scope_head_sha": "d448acb4b9458582e50149837681d3b88f7317f2"
 }
