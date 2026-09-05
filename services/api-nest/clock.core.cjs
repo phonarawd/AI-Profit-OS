@@ -50,29 +50,86 @@ const HOSTNAME_DENY = Object.freeze([
   /supabase\.co$/i,
 ]);
 
-const DB_URL_DENY = Object.freeze([
-  /supabase\.co/i,
-  // CodeQL js/regex/missing-regexp-anchor (alert 51, D1-S1C 2026-09-05): added
-  // \b boundaries. This is a fail-closed DENY list (blocks installing a
-  // synthetic QA clock if DATABASE_URL looks production-managed), so the
-  // safety-relevant direction is over-matching, not under-matching - \b
-  // still matches every real Supabase hostname (they are dot-delimited, so
-  // a word boundary always exists right before/after "supabase.com" in an
-  // actual hostname, e.g. "aws-0-<region>.pooler.supabase.com"), it only
-  // stops matching "supabase.com" as a coincidental mid-identifier
-  // substring, which is not a real hostname shape anyway.
-  /\bsupabase\.com\b/i,
-  /peotteok\.(com|kr|app)/i,
-  /ai-profit-os/i,
-  /aiprofit/i,
-  /\.workers\.dev/i,
-  /\.pages\.dev/i,
-  /aws-\d-/i,
-  // CodeQL js/regex/missing-regexp-anchor (alert 52, D1-S1C 2026-09-05): same
-  // \b treatment and same reasoning as alert 51 above.
-  /\.rds\.amazonaws\.com\b/i,
-  /\.pooler\.supabase/i,
+/**
+ * Managed/production Postgres host suffixes — structural fix for CodeQL
+ * js/regex/missing-regexp-anchor alerts 80/81 (D1-S1F 2026-09-05).
+ *
+ * History: alerts 51/52 (D1-S1C) added `\b` word-boundary anchors to the
+ * previous regex-against-whole-DSN-string DENY list. CodeQL's dataflow
+ * engine still flagged the result (alerts 80/81) because it treats
+ * `DATABASE_URL` as a URL-shaped value and considers ANY `regex.test(url)`
+ * — anchored or not — capable of matching "anywhere" in the string
+ * (e.g. inside a query parameter or userinfo component), independent of
+ * which direction (allow/deny) the match drives.
+ *
+ * Real fix (not another anchor): parse the DSN with `URL` and compare ONLY
+ * the resolved `.hostname` component against known managed-host suffixes.
+ * A crafted value like `postgres://x/db?x=rds.amazonaws.com` or
+ * `postgres://rds.amazonaws.com@evil.example/db` can no longer influence
+ * the decision — `new URL(...).hostname` for those is `x` / `evil.example`,
+ * never `rds.amazonaws.com`. This is strictly at least as strict as the
+ * previous regex list for every real hostname shape (see the regression
+ * suite), and is fail-closed on parse failure (unlike an unanchored regex,
+ * which would simply not match and silently ALLOW an unparseable target —
+ * see isManagedDatabaseHost() below).
+ *
+ * `aws-\d-`/`.pooler.supabase` are intentionally dropped as separate
+ * entries: Supabase pooler hostnames (e.g.
+ * "aws-0-ap-northeast-2.pooler.supabase.com") already end in
+ * ".supabase.com", so the "supabase.com"/"supabase.co" suffix entries below
+ * cover them with zero loss of coverage — one precise check instead of two
+ * overlapping substring heuristics.
+ */
+const DB_HOST_DENY_SUFFIXES = Object.freeze([
+  "supabase.co",
+  "supabase.com",
+  "rds.amazonaws.com",
+  "peotteok.com",
+  "peotteok.kr",
+  "peotteok.app",
+  "hiptk.app", // infra/domain.manifest.json rootDomain (current production root)
+  "ai-profit-os.com",
+  "aiprofit.com",
+  "workers.dev",
+  "pages.dev",
 ]);
+
+/** `host` IS `suffix`, or a real subdomain of it — never a coincidental substring. */
+function hostMatchesManagedSuffix(host, suffix) {
+  return host === suffix || host.endsWith("." + suffix);
+}
+
+/**
+ * Extract only the hostname component of a Postgres-style connection URL.
+ * Returns null for anything that does not parse as a URL with an authority
+ * — callers MUST treat null as "unknown target" (fail closed), never as
+ * safe. Never returns/logs the raw DSN (credentials live before `@`, which
+ * `URL.hostname` never includes).
+ */
+function safeDatabaseUrlHostname(raw) {
+  if (typeof raw !== "string") return null;
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  let parsed;
+  try {
+    parsed = new URL(trimmed);
+  } catch {
+    return null;
+  }
+  const host = (parsed.hostname || "").toLowerCase().replace(/\.+$/, "");
+  return host || null;
+}
+
+/**
+ * True when `databaseUrl` structurally targets a known managed/production
+ * Postgres host. Parse failure returns true (fail closed — never allow a
+ * synthetic clock against a target this function cannot positively clear).
+ */
+function isManagedDatabaseHost(databaseUrl) {
+  const host = safeDatabaseUrlHostname(databaseUrl);
+  if (host === null) return true;
+  return DB_HOST_DENY_SUFFIXES.some((suffix) => hostMatchesManagedSuffix(host, suffix));
+}
 
 const SYNTHETIC_NS_RE = /^qa-synth-[a-z0-9][a-z0-9_-]{1,62}$/i;
 
@@ -144,7 +201,7 @@ function evaluateSyntheticClockGate(env = process.env, hostname = undefined) {
   else allow("public_host_env", "none production-like");
 
   const databaseUrl = readEnv(env, "DATABASE_URL");
-  if (databaseUrl && DB_URL_DENY.some((re) => re.test(databaseUrl))) {
+  if (databaseUrl && isManagedDatabaseHost(databaseUrl)) {
     // Never redact-leak the DSN — only the fact that it is production-like.
     deny("database_target", "production/managed DATABASE_URL");
   } else {
@@ -284,7 +341,10 @@ module.exports = {
   ALLOWED_TARGET_ENV,
   HOSTNAME_ALLOWLIST,
   HOSTNAME_DENY,
-  DB_URL_DENY,
+  DB_HOST_DENY_SUFFIXES,
+  hostMatchesManagedSuffix,
+  safeDatabaseUrlHostname,
+  isManagedDatabaseHost,
   SYNTHETIC_NS_RE,
   PUBLIC_HOST_KEYS,
   evaluateSyntheticClockGate,

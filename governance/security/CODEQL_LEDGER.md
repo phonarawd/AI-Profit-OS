@@ -34,13 +34,29 @@ push 후 CodeQL 워크플로 재스캔 결과로 이 문서를 다시 갱신한�
 남기고 split해 토큰화한 뒤 금지 리터럴과 완전일치(===) 비교. regex substring 매칭 자체를
 없애 CodeQL의 URL-like 휴리스틱 적용 대상이 사라진다. 회귀 13/13 PASS.
 
-80/81(clock.core.cjs:64,73, DB_URL_DENY)은 의도적으로 미해결 유지: 이 정규식은 URL 검증이
-아니라 DENY list이며 이 파일 자체 comment가 "안전 방향은 over-matching"이라고 명시한다.
-단어경계 앵커는 실제 hostname을 약화시키지 않고 coincidental substring만 막으므로,
-anchor를 없애면 더 안전해지는 방향이지 덜 안전해지는 방향이 아니다. 또한 이 파일은
-protected-scope root(services/api-nest) 안에 있어 REL-502 drift를 유발하는 그 파일이다.
-진짜 false positive이고 risk/reward가 맞지 않아 이번 세션은 건드리지 않는다.
-판정: AWAITING_HUMAN_REVIEW (self-dismiss 0).
+80/81(clock.core.cjs:64,73, DB_URL_DENY)은 이 세션 작성 시점에는 의도적으로 미해결 유지했다:
+이 정규식은 URL 검증이 아니라 DENY list이며 이 파일 자체 comment가 "안전 방향은
+over-matching"이라고 명시한다. 단어경계 앵커는 실제 hostname을 약화시키지 않고
+coincidental substring만 막으므로, anchor를 없애면 더 안전해지는 방향이지 덜 안전해지는
+방향이 아니다. 또한 이 파일은 protected-scope root(services/api-nest) 안에 있어 REL-502
+drift를 유발하는 그 파일이다. 당시 판정: risk/reward가 맞지 않아 이 세션은 건드리지 않음
+(AWAITING_HUMAN_REVIEW, self-dismiss 0).
+
+**D1-S1F 갱신 (2026-09-05, PUTDUK S1F Founder 지시 §10, 위 판단을 대체):** Founder 지시서가
+"경계 문자를 계속 덧붙이거나 alert를 self-dismiss하지 말고 DATABASE_URL을 안전하게 parse해
+hostname만 추출, `host === suffix` 또는 `host.endsWith('.' + suffix)`로 관리형 DB hostname을
+판정하라"고 명시적으로 지시했다 — 위 "risk/reward 안 맞음" 판단을 명시적으로 override한다.
+`services/api-nest/clock.core.cjs`의 `DB_URL_DENY` regex-against-whole-string 배열을
+`safeDatabaseUrlHostname()`(Node `URL` parse) + `isManagedDatabaseHost()`(suffix 비교,
+parse 실패 시 fail-closed=true)로 전면 교체 — anchor 추가가 아니라 정규식 매칭 자체를
+제거한 구조적 재작성. `aws-\d-`/`.pooler.supabase` 별도 엔트리는 `supabase.com`/`.co`
+suffix가 이미 포함(pooler 호스트는 항상 `*.supabase.com`으로 끝남)하므로 커버리지 손실 없이
+제거. 회귀: `tooling/verify/regression/clock-core-db-url-deny.regression.cjs` — 기존
+production DSN 5종 여전히 deny, userinfo/query/path/sibling-label에 관리형 토큰을 심은
+4종 substring-bypass 케이스는 이제 정확히 allow(호스트만 본다는 증거), parse 불가 입력은
+fail-closed deny(이전 regex 방식은 no-match=silent-allow였던 것보다 더 안전). PASS.
+`verify:domain-clock` 35/35 PASS(kill-switch parity 포함). 판정: **FIXED (구조적, self-dismiss
+아님)** — §3.3/§6 카운트 갱신.
 
 ### 3.2 Fixture-only 8/8 해소 (테스트 파일의 OLD vulnerable pattern 재선언 제거)
 
@@ -52,11 +68,11 @@ protected-scope root(services/api-nest) 안에 있어 REL-502 drift를 유발하
 
 세 파일 모두 탐지력/오탐회피 커버리지 그대로 유지, 실행 가능한 취약 패턴 재선언만 제거.
 
-### 3.3 미해결 3건 (라이브 재조회, 이전 세션 종료 시점)
+### 3.3 미해결 3건 (라이브 재조회, 이전 세션 종료 시점) — 80/81은 3.1 D1-S1F 갱신으로 FIXED
 
 | alert | rule | 파일:라인 | 분류 |
 |---|---|---|---|
-| 80,81 | js/regex/missing-regexp-anchor | clock.core.cjs:64,73 | AWAITING_HUMAN_REVIEW |
+| 80,81 | js/regex/missing-regexp-anchor | clock.core.cjs:64,73 | FIXED (D1-S1F, §3.1 갱신 참조) — remote rescan 대기 |
 | 38 | js/file-system-race | day-pulse-live-only.cjs:121 | OPEN_UNTRIAGED (무관 사전 항목) — 아래 3.4에서 해소 |
 
 ### 3.4 이번 세션(2026-09-05, PUTDUK FULL REAL-MONEY PRODUCTION RELEASE) 추가 해소: 3 -> 2
@@ -96,12 +112,18 @@ _audit-d0-20260904/session-1d-correction/scripts/fix-anchor-53-54-55.cjs, 미추
 
 ## 5. 출시 조건 대조
 
-untriaged 0 = 미충족(19건 잔존, main 전용). reachable Critical/High 0 = #20/#29 사람 검토
-필요(AWAITING_HUMAN_SECURITY_REVIEWER, self-dismiss 0). 테스트 코드 alert 해결 = 완료(8/8).
-self-dismiss = 0. 최종 RC 재스캔 = Phase L에서 별도 수행.
+untriaged 0 = 미충족(19건 잔존, main 전용, 80/81은 D1-S1F에서 구조적으로 FIXED되어 이 19건
+집계에서 제외 — kill-switch.cjs의 53/54만 별도로 남음). reachable Critical/High 0 = #20/#29
+사람 검토 필요(AWAITING_HUMAN_SECURITY_REVIEWER, self-dismiss 0). 테스트 코드 alert 해결 =
+완료(8/8). self-dismiss = 0. 최종 RC 재스캔 = Phase L(REL-502 rebase)에서 별도 수행 — 이
+문서의 "FIXED" 표시는 로컬 코드 수정+regression 증거이며, remote CodeQL rescan으로 alert
+번호 자체가 사라지는 것은 push 후 실제 스캔 결과로 재확인한다(추측 금지).
 
 ## 6. 요약
 
-DEFAULT_BRANCH_OPEN=37(불변) · PR_REF_BEFORE=15 · PR_REF_AFTER=3(실측) ·
-CLOSED_THIS_SESSION=12(구조적 4 + fixture 8) · AWAITING_HUMAN_REVIEW_PR_REF=2(80,81) ·
-OPEN_UNTRIAGED_PR_REF=1(38) · OPEN_UNTRIAGED_DEFAULT_BRANCH_ONLY=19 · SELF_DISMISS_COUNT=0.
+DEFAULT_BRANCH_OPEN=37(불변, 아직 push 전) · PR_REF_BEFORE=15 · PR_REF_AFTER(이전 세션
+종료 시점)=3(실측, day-pulse 2차 수정 후) · CLOSED_THIS_SESSION(이전 세션)=12(구조적 4 +
+fixture 8) · **D1-S1F 추가 FIXED=2(80,81, 구조적 재작성)** · OPEN_UNTRIAGED_PR_REF=1(38,
+이전 세션에서 이미 해소 확인됨 §3.4) · OPEN_UNTRIAGED_DEFAULT_BRANCH_ONLY=19(main이 아직
+이 커밋들을 받지 않음, kill-switch.cjs 53/54 포함) · SELF_DISMISS_COUNT=0(불변, 전부 실코드
+수정 또는 사람 검토 대기).
