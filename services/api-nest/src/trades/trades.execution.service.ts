@@ -267,6 +267,59 @@ export class TradeExecutionService {
     if (trade.ledger_journal_id) {
       return this.toState(trade);
     }
+    const deadlines = {
+      softDeadlineAt: new Date(
+        settlementRule.softDeadlineMs(input.acceptedAtMs),
+      ).toISOString(),
+      hardDeadlineAt: new Date(
+        settlementRule.hardDeadlineMs(input.acceptedAtMs),
+      ).toISOString(),
+    };
+
+    // Money-safety fix (PUTDUK continuation session, Step 7.2): claim the
+    // terminal transition FIRST via this single atomic status-guarded
+    // UPDATE, and only the caller that actually wins the claim (1 row
+    // returned) may post the settlement journal below. The previous
+    // ordering posted the journal unconditionally before this UPDATE ran,
+    // so a concurrent finalizeSafeStop call racing on the same
+    // still-"running" row (e.g. two overlapping polling ticks, or a
+    // client retry-after-timeout racing the original in-flight request)
+    // could both decide a terminal outcome and each post its own journal
+    // (settlement:<tradeId> AND participate_unlock:<tradeId> - different
+    // idempotency keys, so postJournal's own dedupe never catches this) -
+    // double-crediting principal and leaving the locked bucket short.
+    // Claiming atomically first makes that impossible: Postgres serializes
+    // concurrent single-statement UPDATEs against the same row, so at most
+    // one of the racing calls ever sees 1 row affected here.
+    const asset = { ...trade.asset, rematchCount: input.rematchCount };
+    const claimed = await this.db.query<TradeRow>(
+      `UPDATE public.trade_executions
+          SET status = 'success',
+              result_code = 'MATCH_SUCCESS',
+              step_index = 4,
+              progress_pct = 100,
+              log_line = $2,
+              expected_profit_usdt = $3::numeric,
+              settled_profit_usdt = $3::numeric,
+              asset = $4::jsonb,
+              updated_at = now()
+        WHERE id = $1::uuid
+          AND status IN ('running', 'requeue')
+        RETURNING id::text, user_id::text, opportunity_id::text, pricing_version,
+                  status, result_code, step_index, progress_pct::text, log_line,
+                  expected_profit_usdt::text, settled_profit_usdt::text,
+                  ledger_journal_id::text, idempotency_key, asset,
+                  created_at, updated_at`,
+      [trade.id, "MATCH_SUCCESS", input.expectedProfitUsdt, JSON.stringify(asset)],
+    );
+
+    if (claimed.rows.length === 0) {
+      // Lost the race - some other concurrent call already finalized this
+      // trade (to success, or to a different terminal result). Never post
+      // a journal in this branch; return whatever the winner committed.
+      const finalRow = (await this.reloadTrade(trade.id)) ?? trade;
+      return this.toState(finalRow, deadlines);
+    }
 
     const lines: PostingLineInput[] = [
       {
@@ -305,6 +358,10 @@ export class TradeExecutionService {
       );
     }
 
+    // This call already exclusively owns the "success" claim above, so
+    // idempotencyKey here is now belt-and-suspenders (a process crash
+    // between the claim and this post is a separate durability gap -
+    // Step 7.3 - not the concurrency race this fix closes).
     const journal = await this.posting.postJournal({
       idempotencyKey: `settlement:${trade.id}`,
       journalType: "settlement",
@@ -318,49 +375,20 @@ export class TradeExecutionService {
 
     // SettlementCompletedFanout listens to LEDGER_EVENTS.journalPosted — do not emit here
 
-    const asset = {
-      ...trade.asset,
-      rematchCount: input.rematchCount,
-    };
-    // P1-3: status-guarded WHERE — a concurrent execute-tick that already
-    // finalized this trade must not be overwritten (0 rows ⇒ reload+return
-    // the row the OTHER call already committed, never the stale in-memory one).
     const { rows } = await this.db.query<TradeRow>(
       `UPDATE public.trade_executions
-          SET status = 'success',
-              result_code = 'MATCH_SUCCESS',
-              step_index = 4,
-              progress_pct = 100,
-              log_line = $2,
-              expected_profit_usdt = $3::numeric,
-              settled_profit_usdt = $3::numeric,
-              ledger_journal_id = $4::uuid,
-              asset = $5::jsonb,
+          SET ledger_journal_id = $2::uuid,
               updated_at = now()
         WHERE id = $1::uuid
-          AND status IN ('running', 'requeue')
         RETURNING id::text, user_id::text, opportunity_id::text, pricing_version,
                   status, result_code, step_index, progress_pct::text, log_line,
                   expected_profit_usdt::text, settled_profit_usdt::text,
                   ledger_journal_id::text, idempotency_key, asset,
                   created_at, updated_at`,
-      [
-        trade.id,
-        "MATCH_SUCCESS",
-        input.expectedProfitUsdt,
-        journal.id,
-        JSON.stringify(asset),
-      ],
+      [trade.id, journal.id],
     );
-    const finalRow = rows[0] ?? (await this.reloadTrade(trade.id)) ?? trade;
-    return this.toState(finalRow, {
-      softDeadlineAt: new Date(
-        settlementRule.softDeadlineMs(input.acceptedAtMs),
-      ).toISOString(),
-      hardDeadlineAt: new Date(
-        settlementRule.hardDeadlineMs(input.acceptedAtMs),
-      ).toISOString(),
-    });
+    const finalRow = rows[0] ?? claimed.rows[0];
+    return this.toState(finalRow, deadlines);
   }
 
   private async applyRequeue(
@@ -416,36 +444,27 @@ export class TradeExecutionService {
     acceptedAtMs: number,
     capitalUsdt?: string,
   ): Promise<TradeExecutionState> {
+    const deadlines = {
+      softDeadlineAt: new Date(
+        settlementRule.softDeadlineMs(acceptedAtMs),
+      ).toISOString(),
+      hardDeadlineAt: new Date(
+        settlementRule.hardDeadlineMs(acceptedAtMs),
+      ).toISOString(),
+    };
     const capital =
       capitalUsdt ?? (await this.loadCapitalUsdt(trade.id, trade.user_id));
-    if (cmpAmount(capital, "0") > 0 && !trade.ledger_journal_id) {
-      await this.posting.postJournal({
-        idempotencyKey: `participate_unlock:${trade.id}`,
-        journalType: "participate_unlock",
-        referenceType: "trade",
-        referenceId: trade.id,
-        memo: `safe_stop ${resultCode}`,
-        createdBy: trade.user_id,
-        lines: [
-          {
-            account: { userId: trade.user_id, bucket: "locked" },
-            direction: "debit",
-            amountUsdt: capital,
-          },
-          {
-            account: { userId: trade.user_id, bucket: "principal" },
-            direction: "credit",
-            amountUsdt: capital,
-          },
-        ],
-      });
-    }
-
     const status: TradeExecutionState["status"] =
       resultCode === "SYSTEM_FAILED" ? "failed" : "safe_stop";
     const presentation = this.presentationProgress(nowMs, acceptedAtMs);
-    // P1-3: status-guarded WHERE — see finalizeMatchSuccess comment.
-    const { rows } = await this.db.query<TradeRow>(
+
+    // Money-safety fix (PUTDUK continuation session, Step 7.2): claim the
+    // terminal transition FIRST via this atomic status-guarded UPDATE -
+    // see the matching comment in finalizeMatchSuccess for the exact race
+    // this ordering closes (this call and a concurrent finalizeMatchSuccess
+    // both reading the same still-"running" row could otherwise each post
+    // their own journal for the same locked capital).
+    const claimed = await this.db.query<TradeRow>(
       `UPDATE public.trade_executions
           SET status = $2,
               result_code = $3,
@@ -460,23 +479,55 @@ export class TradeExecutionService {
                   expected_profit_usdt::text, settled_profit_usdt::text,
                   ledger_journal_id::text, idempotency_key, asset,
                   created_at, updated_at`,
-      [
-        trade.id,
-        status,
-        resultCode,
-        presentation.stepIndex,
-        presentation.progressPct,
-      ],
+      [trade.id, status, resultCode, presentation.stepIndex, presentation.progressPct],
     );
-    const finalRow = rows[0] ?? (await this.reloadTrade(trade.id)) ?? trade;
-    return this.toState(finalRow, {
-      softDeadlineAt: new Date(
-        settlementRule.softDeadlineMs(acceptedAtMs),
-      ).toISOString(),
-      hardDeadlineAt: new Date(
-        settlementRule.hardDeadlineMs(acceptedAtMs),
-      ).toISOString(),
+
+    if (claimed.rows.length === 0) {
+      // Lost the race - some other concurrent call already finalized this
+      // trade. Never post an unlock journal in this branch.
+      const finalRow = (await this.reloadTrade(trade.id)) ?? trade;
+      return this.toState(finalRow, deadlines);
+    }
+
+    if (cmpAmount(capital, "0") <= 0 || trade.ledger_journal_id) {
+      return this.toState(claimed.rows[0], deadlines);
+    }
+
+    const journal = await this.posting.postJournal({
+      idempotencyKey: `participate_unlock:${trade.id}`,
+      journalType: "participate_unlock",
+      referenceType: "trade",
+      referenceId: trade.id,
+      memo: `safe_stop ${resultCode}`,
+      createdBy: trade.user_id,
+      lines: [
+        {
+          account: { userId: trade.user_id, bucket: "locked" },
+          direction: "debit",
+          amountUsdt: capital,
+        },
+        {
+          account: { userId: trade.user_id, bucket: "principal" },
+          direction: "credit",
+          amountUsdt: capital,
+        },
+      ],
     });
+
+    const { rows } = await this.db.query<TradeRow>(
+      `UPDATE public.trade_executions
+          SET ledger_journal_id = $2::uuid,
+              updated_at = now()
+        WHERE id = $1::uuid
+        RETURNING id::text, user_id::text, opportunity_id::text, pricing_version,
+                  status, result_code, step_index, progress_pct::text, log_line,
+                  expected_profit_usdt::text, settled_profit_usdt::text,
+                  ledger_journal_id::text, idempotency_key, asset,
+                  created_at, updated_at`,
+      [trade.id, journal.id],
+    );
+    const finalRow = rows[0] ?? claimed.rows[0];
+    return this.toState(finalRow, deadlines);
   }
 
   private presentationProgress(

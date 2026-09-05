@@ -1357,6 +1357,7 @@ const RULES = [
       "settlement-rule-parity.cjs",
       "participate-http.cjs",
       "execute-rule-loop.cjs",
+      "trades-execution-race.runtime.cjs",
     ],
   },
   {
