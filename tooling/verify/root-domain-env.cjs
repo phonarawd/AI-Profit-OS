@@ -5,26 +5,27 @@
 const fs = require("fs");
 const path = require("path");
 
+const { hasExactDomainToken } = require("./lib/domain-token-scan.cjs");
+
 const root = path.resolve(__dirname, "../..");
 const fails = [];
 
-// D1 remediation note (2026-09-04, REM-D1-6H, CodeQL js/regex/missing-regexp-anchor
-// alerts #56/#57/#58): these patterns scan a whole multi-line file's text for a
-// placeholder-domain substring (see scanFile below - re.test(text) against the full
-// file content), so anchoring to start/end of STRING (^/$ without the m flag) would
-// break detection entirely (the placeholder is virtually never the file's *entire*
-// content). The correct, non-behaviour-weakening fix is a word-boundary (\b) on both
-// sides of the literal domain instead - this keeps "match this substring anywhere in
-// the file" working exactly as before, while preventing an accidental match inside a
-// longer identifier that merely contains the placeholder as a sub-string (e.g.
-// "subdomain.com" no longer false-matches "domain.com").
-const PLACEHOLDER_PATTERNS = [
-  /\{ROOT_DOMAIN\}/,
-  /\{domain\}/i,
-  /\bdomain\.com\b/i,
-  /\byour-domain\.com\b/i,
-  /\bexample\.com\b/i,
-];
+// D1-S1E/PUTDUK-FULL-RELEASE remediation (2026-09-05, CodeQL
+// js/regex/missing-regexp-anchor residual alerts #89/#90/#91, descending from
+// the already-closed #56/#57/#58): the prior \b-word-boundary anchor fix was
+// still flagged because CodeQL classifies these values as URL-like and does
+// not consider ANY regex-boundary flavor sufficient for that classification.
+// The structural fix (tooling/verify/lib/domain-token-scan.cjs) drops
+// regex-substring matching for the literal-host checks entirely: it tokenizes
+// the file text on non-hostname characters and requires an EXACT (===) match
+// against a whole token, so "subdomain.com" can never false-match "domain.com"
+// and no regex is evaluated against the raw text for these 3 checks at all.
+// The 2 template-placeholder patterns below ({ROOT_DOMAIN}/{domain}) are
+// UNCHANGED and were never flagged - their delimiters ({ and }) are already
+// not hostname-continuation characters, so CodeQL's URL heuristic does not
+// apply to them.
+const TEMPLATE_PLACEHOLDER_PATTERNS = [/\{ROOT_DOMAIN\}/, /\{domain\}/i];
+const FORBIDDEN_LITERAL_HOSTS = ["domain.com", "your-domain.com", "example.com"];
 
 const SCAN_PATHS = [
   "infra/web/wrangler.toml",
@@ -39,9 +40,14 @@ function scanFile(rel) {
     return;
   }
   const text = fs.readFileSync(full, "utf8");
-  for (const re of PLACEHOLDER_PATTERNS) {
+  for (const re of TEMPLATE_PLACEHOLDER_PATTERNS) {
     if (re.test(text)) {
       fails.push(`${rel}: contains placeholder ${re}`);
+    }
+  }
+  for (const host of FORBIDDEN_LITERAL_HOSTS) {
+    if (hasExactDomainToken(text, host)) {
+      fails.push(`${rel}: contains placeholder host ${host}`);
     }
   }
 }
