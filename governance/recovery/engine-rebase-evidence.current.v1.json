@@ -1,13 +1,13 @@
 {
   "schema": "governance.recovery.engine-rebase-evidence.v1",
-  "computed_at": "2026-09-05T18:06:19.394Z",
+  "computed_at": "2026-09-05T18:16:11.402Z",
   "predecessor_head_sha": "0d8825e8f333ca309a1d6eaf26a3d826722d11fd",
   "baseline_id": "ea-baseline-0d8825e8f333-5ac0f4291966",
-  "live_aggregate": "bf784d90b71eeef6da11eac97c07a4a45be3baa3f1bea6f6b42e803b9677814a",
+  "live_aggregate": "1204bbe5a7dae38ef4e604a3efab4943c70855200daf49c491d12f7180ccecb5",
   "baseline_aggregate": "5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9",
-  "path_count_live": 513,
+  "path_count_live": 514,
   "path_count_baseline": 491,
-  "changed_paths": 43,
+  "changed_paths": 44,
   "added_paths": [
     "services/api-nest/src/auth/classic-signup.policy.ts",
     "services/api-nest/src/auth/classic-signup.service.ts",
@@ -30,7 +30,8 @@
     "services/api-nest/src/opportunities/participate.atomicity.selftest.ts",
     "services/api-nest/src/trades/trades.admin.controller.ts",
     "services/api-nest/src/trades/trades.admin.routes.ts",
-    "services/api-nest/src/trades/trades.reconcile.selftest.ts"
+    "services/api-nest/src/trades/trades.reconcile.selftest.ts",
+    "services/api-nest/src/trades/trades.payout-reserve.selftest.ts"
   ],
   "mutated_paths": [
     "services/api-nest/auth-rate-limit.cjs",
@@ -90,7 +91,7 @@
     "QA8"
   ],
   "baseline_washing_check": "PASS_NO_IN_PLACE_HASH_REWRITE",
-  "note": "43-path drift vs baseline ea-baseline-0d8825e8f333-5ac0f4291966: 22 added + 21 mutated + 0 missing. This correction (PUTDUK continuation session, 2026-09-06, commit c05cf24c) adds 5 more paths on top of the prior 38-path note (kept in spirit, see git history for the exact prior text): trades.admin.controller.ts/trades.admin.routes.ts/trades.reconcile.selftest.ts (added) plus trades.module.ts/trades/index.ts (modified) - the durable server-side reconcile-tick fix for Step 7.3 of the Founder's production-launch continuation prompt. Every path is individually categorized and explained in governance/recovery/engine-drift-inventory.current.v1.json (no unexplained drift). ACK is not issued. Baseline hashes were not rewritten. Formal ENGINE_ACCEPTANCE_REBASE_V1 ACK and current-epoch QA0-QA9 rerun are still required before FINAL_ACCEPTANCE can move to ISSUED. See governance/engine-acceptance/FINAL_ACCEPTANCE.md for the mirrored cert-level correction.",
+  "note": "44-path drift vs baseline ea-baseline-0d8825e8f333-5ac0f4291966: 23 added + 21 mutated + 0 missing. This correction (PUTDUK continuation session, 2026-09-06, commit 30f25ea3) adds 1 more path on top of the prior 43-path note (kept in spirit, see git history for the exact prior text): trades.payout-reserve.selftest.ts (added) - the real payout-reserve feasibility gate fix for Step 7.4 of the Founder's production-launch continuation prompt (the final of the three Step-7 money-safety fixes this session made: 7.1 participate-lock atomicity, 7.3 durable server-side termination, 7.4 this one). Every path is individually categorized and explained in governance/recovery/engine-drift-inventory.current.v1.json (no unexplained drift). ACK is not issued. Baseline hashes were not rewritten. Formal ENGINE_ACCEPTANCE_REBASE_V1 ACK and current-epoch QA0-QA9 rerun are still required before FINAL_ACCEPTANCE can move to ISSUED. See governance/engine-acceptance/FINAL_ACCEPTANCE.md for the mirrored cert-level correction.",
   "inventory_ref": "governance/recovery/engine-drift-inventory.current.v1.json",
-  "scope_head_sha": "c05cf24c518bbd364d304a96c87d9141b5057e4c"
+  "scope_head_sha": "30f25ea3de67131bd839c63930aef03d0b82c978"
 }
