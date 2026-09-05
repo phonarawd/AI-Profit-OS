@@ -68,8 +68,13 @@ protected-scope root(services/api-nest) 안에 있어 REL-502 drift를 유발하
 
 두 수정 모두 구조적 제거(anchor/난독화 아님). 동작 동일성 확인: 두 번 모두 PASS 메시지
 불변, 실제 admin 파일 트리 재스캔해 결과 0건 유지. 1차 수정만으로는 CodeQL이 새 alert(92)를
-찾아냈다는 사실 자체가 "anchor만 추가"식 피상적 수정이 durable하지 않다는 산증거 -
-2차 수정 후 실측 재확인은 아래에 기록한다(가정치를 확정치로 쓰지 않음).
+찾아냈다는 사실 자체가 "anchor만 추가"식 피상적 수정이 durable하지 않다는 산증거다.
+
+**2차 수정 push 후 live 재확인 (commit bd84cbe8, 2026-09-05T10:06Z):**
+`refs/pull/221/merge` open = **2**건, 전부 80/81 (clock.core.cjs, AWAITING_HUMAN_REVIEW로
+이미 §3.1에서 분류됨). day-pulse-live-only.cjs 관련 alert(38, 92) 완전 소멸 확인.
+PR ref에서 OPEN_UNTRIAGED = **0**. 남은 2건은 self-dismiss 대상이 아니라 자격 있는 사람의
+검토가 필요한 항목으로 그대로 유지한다.
 
 ## 4. Default branch 전용 OPEN_UNTRIAGED (main, 이번 세션 미착수, 19건)
 
