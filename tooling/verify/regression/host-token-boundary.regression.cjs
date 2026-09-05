@@ -8,11 +8,16 @@
  * Coverage:
  *  1. real, legitimate usages (the exact shapes present in the actual
  *     source files web-remote-patterns.cjs scans) must still be detected.
- *  2. discrimination: a string that the OLD `text.includes(host)` check
- *     would have wrongly accepted (host is a mere substring of a longer,
- *     unrelated token) is confirmed to really have matched under the old
- *     logic (so this test is not vacuous), and confirmed to correctly NOT
- *     match under the new boundary-checked helper.
+ *  2. discrimination: attacker-crafted strings where a host is a mere
+ *     substring of a longer, unrelated token must NOT match the boundary-
+ *     checked helper (2026-09-05 PUTDUK-FULL-RELEASE Phase B update: this
+ *     no longer locally re-defines a bare `text.includes(host)` "OLD_CHECK"
+ *     function to prove it WOULD have matched - CodeQL
+ *     js/incomplete-url-substring-sanitization flagged that intentionally-
+ *     naive helper itself as a live finding, even though it exists only to
+ *     demonstrate the fixed helper's improvement. The negative assertions
+ *     below are equally meaningful without it: they directly prove the
+ *     REAL, shipped helper rejects each attacker-crafted case).
  *  3. end-to-end: the real verify:web-remote-patterns script must still PASS
  *     against the current tree (proves the fix did not break the live check).
  */
@@ -48,29 +53,20 @@ expect(
   true,
 );
 
-// --- 2. discrimination: OLD .includes() would wrongly match; NEW must not ---
-const OLD_CHECK = (text, host) => text.includes(host);
-
+// --- 2. discrimination: attacker-crafted strings where the host is merely a
+//        substring of a longer, unrelated token must NOT match the real,
+//        shipped helper (a bare `text.includes(host)` naive check - not
+//        defined here at all anymore - would wrongly have matched both) ---
 const attackerLike1 = "https://fake-r2.cloudflarestorage.com.attacker.net/steal";
 expect(
-  "sanity: the OLD .includes() check really did match the attacker-crafted string (test not vacuous)",
-  OLD_CHECK(attackerLike1, "r2.cloudflarestorage.com"),
-  true,
-);
-expect(
-  "the NEW includesHostToken must NOT match a host that is merely a substring of a longer attacker-crafted token",
+  "includesHostToken must NOT match a host that is merely a substring of a longer attacker-crafted token",
   includesHostToken(attackerLike1, "r2.cloudflarestorage.com"),
   false,
 );
 
 const attackerLike2 = "notreallyimages.pokemontcg.io.example.com";
 expect(
-  "sanity: the OLD .includes() check really did match the second attacker-crafted string",
-  OLD_CHECK(attackerLike2, "images.pokemontcg.io"),
-  true,
-);
-expect(
-  "the NEW includesHostToken must NOT match the second attacker-crafted string",
+  "includesHostToken must NOT match the second attacker-crafted string",
   includesHostToken(attackerLike2, "images.pokemontcg.io"),
   false,
 );
@@ -92,5 +88,5 @@ if (failures.length) {
   process.exit(1);
 }
 console.log(
-  "[regression:host-token-boundary] PASS (3 real-usage + 4 discrimination assertions + 1 end-to-end run)",
+  "[regression:host-token-boundary] PASS (3 real-usage + 2 discrimination assertions (against the real shipped helper, no locally-redefined naive check) + 1 end-to-end run)",
 );

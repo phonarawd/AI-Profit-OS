@@ -1,30 +1,37 @@
 /**
- * Regression test for CodeQL js/regex/missing-regexp-anchor alert 55
- * (D1-S1D 2026-09-05): tooling/verify/ebay-resilience.cjs:339 - the
- * "Nest must never call OUT to eBay directly" boundary check.
+ * Regression test for the "Nest must never call OUT to eBay directly"
+ * boundary check in tooling/verify/ebay-resilience.cjs (§11).
  *
  * Run: node tooling/verify/regression/ebay-resilience-anchor-55.regression.cjs
  *
- * Same \b word-boundary fix class already applied to
- * services/api-nest/clock.core.cjs (alerts 51/52) and
- * tooling/verify/{root-domain-env,secrets}.cjs (alerts 56-59).
+ * History: originally a \b-word-boundary regex fix for CodeQL
+ * js/regex/missing-regexp-anchor alert 55 (D1-S1D, 2026-09-05). That anchor
+ * style was re-flagged under a new alert number (82) because CodeQL
+ * classifies the checked value as URL-like and does not accept any anchor
+ * flavor as sufficient for that classification (PUTDUK-FULL-RELEASE Phase B,
+ * 2026-09-05). ebay-resilience.cjs itself was then rewritten to use
+ * tooling/verify/lib/domain-token-scan.cjs's exact-token comparison instead
+ * of a regex `.test()` against the whole file text - this test now exercises
+ * that real, shipped implementation directly (via the exported helper
+ * functions, not a second, locally-defined regex literal), plus an
+ * end-to-end run of the real script.
  *
- * NOTE: this session's sibling alerts 53/54 (tooling/engine-acceptance/
- * kill-switch.cjs DB_URL_DENY, identical fix shape) were investigated and a
- * fix was drafted, but committing any change under tooling/engine-acceptance/
- * currently trips an UNRELATED, PRE-EXISTING verify:engine-acceptance FAIL
- * ("protected_scope_manifest.aggregate drift vs live hash") that reproduces
- * identically even with kill-switch.cjs fully reverted to HEAD (isolated via
- * `git stash` before/after - see D1-MASTER-STATE.json correctionEvent_D1S1D
- * for the exact isolation evidence). That drift is a separate, real, already-
- * latent defect gating the formal REL-502 rebase ceremony
- * (governance/engine-acceptance/**), not something to fix as a drive-by
- * CodeQL cleanup. Alerts 53/54 are therefore left OPEN_UNTRIAGED with this
- * evidence attached, not silently dismissed.
+ * Coverage:
+ *  1. real violations (api.ebay.com / ebay.com/buy/browse as their own
+ *     token) must still be caught.
+ *  2. a different-but-substring host (e.g. "myapi.ebay.com" - a genuinely
+ *     different, longer hostname, not api.ebay.com) must NOT be caught -
+ *     proves the exact-token comparison, not merely "not vacuous" via a
+ *     second regex.
+ *  3. end-to-end: the real verify:ebay-resilience script must still PASS.
  */
 "use strict";
 const path = require("path");
 const root = path.resolve(__dirname, "../../..");
+const {
+  hasExactDomainToken,
+  hasExactHostPathToken,
+} = require(path.join(root, "tooling/verify/lib/domain-token-scan.cjs"));
 
 const failures = [];
 function expect(label, actual, expected) {
@@ -33,37 +40,35 @@ function expect(label, actual, expected) {
   }
 }
 
-const OLD_EBAY_RE = /api\.ebay\.com|ebay\.com\/buy\/browse/i;
-const NEW_EBAY_RE = /\bapi\.ebay\.com\b|\bebay\.com\/buy\/browse\b/i;
-
-// --- discrimination: OLD regex matches a different-but-substring host; NEW must not ---
-const coincidentalHost = "myapi.ebay.com"; // a genuinely different host, not api.ebay.com
-expect(
-  "sanity: OLD ebay-resilience regex really did match a different-but-substring host (test not vacuous)",
-  OLD_EBAY_RE.test(coincidentalHost),
-  true,
-);
-expect(
-  "NEW ebay-resilience regex must NOT match the different host",
-  NEW_EBAY_RE.test(coincidentalHost),
-  false,
-);
-
-// --- real violations must still be caught ---
+// --- 1. real violations must still be caught (exact token match) ---
 const realViolation1 = 'const url = "https://api.ebay.com/buy/browse/v1/item_summary/search";';
 const realViolation2 = "const path = 'ebay.com/buy/browse endpoint';";
 expect(
-  "NEW ebay-resilience regex must still catch a real api.ebay.com reference",
-  NEW_EBAY_RE.test(realViolation1),
+  "real api.ebay.com reference must still be caught",
+  hasExactDomainToken(realViolation1, "api.ebay.com"),
   true,
 );
 expect(
-  "NEW ebay-resilience regex must still catch a real ebay.com/buy/browse reference",
-  NEW_EBAY_RE.test(realViolation2),
+  "real ebay.com/buy/browse reference must still be caught",
+  hasExactHostPathToken(realViolation2, "ebay.com/buy/browse"),
   true,
 );
 
-// --- end-to-end: the real verify:ebay-resilience script must still PASS ---
+// --- 2. discrimination: a different, longer hostname must not match ---
+const coincidentalHost = "myapi.ebay.com"; // a genuinely different host, not api.ebay.com
+expect(
+  "a different-but-substring host (myapi.ebay.com) must NOT match api.ebay.com",
+  hasExactDomainToken(coincidentalHost, "api.ebay.com"),
+  false,
+);
+const differentPath = "ebay.com/buy/browse/extra-segment";
+expect(
+  "a different, longer path must NOT match the exact ebay.com/buy/browse token",
+  hasExactHostPathToken(differentPath, "ebay.com/buy/browse"),
+  false,
+);
+
+// --- 3. end-to-end: the real verify:ebay-resilience script must still PASS ---
 const { spawnSync } = require("node:child_process");
 const e2e = spawnSync(process.execPath, [path.join(root, "tooling/verify/ebay-resilience.cjs")], {
   cwd: root,
@@ -80,5 +85,5 @@ if (failures.length) {
   process.exit(1);
 }
 console.log(
-  "[regression:ebay-resilience-anchor-55] PASS (2 discrimination + 2 real-violation + 1 end-to-end)",
+  "[regression:ebay-resilience-anchor-55] PASS (2 real-violation + 2 discrimination + 1 end-to-end, exact-token helper only, no locally-defined regex literal)",
 );
