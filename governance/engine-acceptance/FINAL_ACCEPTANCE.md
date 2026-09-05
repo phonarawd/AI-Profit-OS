@@ -27,15 +27,15 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-0d8825e8f333-5ac0f4291966
 PREDECESSOR_BASELINE_ID = ea-baseline-74683b6e39a7-590263f0f273
 REBASE_ID = pending
-LIVE_AGGREGATE = 5345e74b37ddbd5aff0e294e556e9561554dd606fd2a95bda22db6fef7837e61
+LIVE_AGGREGATE = bf784d90b71eeef6da11eac97c07a4a45be3baa3f1bea6f6b42e803b9677814a
 BASELINE_AGGREGATE = 5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9
-PATH_COUNT_LIVE = 510
+PATH_COUNT_LIVE = 513
 PATH_COUNT_BASELINE = 491
-CHANGED_PATHS = 38
-ADDED_PATHS = 19
-MUTATED_PATHS = 19
+CHANGED_PATHS = 43
+ADDED_PATHS = 22
+MUTATED_PATHS = 21
 MISSING_PATHS = 0
-EXIT_GATE = D1-S1F (2026-09-05) · S1F Founder 프로덕션 출시 지시서에 따른 classic-signup/session-rotation/turnstile/rate-limit/admin-users 신설(commit f2812062) + frontend(440fc2ed) + CodeQL clock.core.cjs 구조적 재작성(commit 7f9baf0a) + verify wiring(eb4737f8) + client refresh retry(d6023f16) + reuse-detection tests(0a9bf4ea) + PUTDUK continuation session(2026-09-06)의 settlement/safe-stop claim-before-post race 수정(commit f29a8e06) + participate lock/trade 단일 트랜잭션화(commit 876d93cd)가 REBASE 없이 protected-scope 를 추가 변경(19 added · 19 mutated) · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 current-epoch QA0-QA9 재실행 전까지 ISSUED 금지
+EXIT_GATE = D1-S1F (2026-09-05) · S1F Founder 프로덕션 출시 지시서에 따른 classic-signup/session-rotation/turnstile/rate-limit/admin-users 신설(commit f2812062) + frontend(440fc2ed) + CodeQL clock.core.cjs 구조적 재작성(commit 7f9baf0a) + verify wiring(eb4737f8) + client refresh retry(d6023f16) + reuse-detection tests(0a9bf4ea) + PUTDUK continuation session(2026-09-06)의 settlement/safe-stop claim-before-post race 수정(commit f29a8e06) + participate lock/trade 단일 트랜잭션화(commit 876d93cd) + durable server-side reconcile-tick(commit c05cf24c)가 REBASE 없이 protected-scope 를 추가 변경(22 added · 21 mutated) · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 current-epoch QA0-QA9 재실행 전까지 ISSUED 금지
 ```
 
 ## 판정 (D1-S1E 정정, 2026-09-05, append 성격의 사실 정정)
@@ -219,6 +219,36 @@ PROTECTED_SCOPE_DRIFT/REBASE_REQUIRED는 변경하지 않는다(계속 drift=tru
 live protected aggregate `5345e74b37ddbd5aff0e294e556e9561554dd606fd2a95bda22db6fef7837e61`는
 baseline aggregate `5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9`와 다르다
 (추가 19 · 변경 19 · 누락 0, 총 38 경로 — 직전 정정의 35개 경로에 위 세 경로가 더해진 값).
+재계산은 `tooling/verify/lib/rel-502-psm.cjs`의 `compareProtectedScope()`를 그대로 호출한
+실측값이며 hash를 손으로 만들지 않았다.
+
+은폐 금지 · STATUS = NOT_ISSUED (불변) · CERT_ISSUED = 0 (불변) · PROTECTED_SCOPE_DRIFT = 1 (불변).
+이 세션은 ACK를 대리 작성하지 않았고, QA0-QA9를 로컬에서 가짜로 재실행하지 않았으며, 숫자를
+발급 조건에 맞춰 역산하지 않았다.
+
+## 판정 (PUTDUK continuation session 3차 정정, 2026-09-06, append 성격의 사실 정정)
+
+같은 continuation 세션이 Step 7.3(서버측 durable 종결)을 마무리하며 `services/api-nest`
+protected-scope root를 다섯 곳 더 변경했다 (commit `c05cf24c518bbd364d304a96c87d9141b5057e4c`):
+
+- `services/api-nest/src/trades/trades.admin.controller.ts` (ADDED) — `POST /api/v1/admin/
+  trades/reconcile-tick` (AdminGuard · capability `circuit:write` · audit-logged).
+- `services/api-nest/src/trades/trades.admin.routes.ts` (ADDED) — 그 라우트 상수.
+- `services/api-nest/src/trades/trades.reconcile.selftest.ts` (ADDED) — 회귀 스위트(5 케이스).
+- `services/api-nest/src/trades/trades.module.ts` (MUTATED) — `TradesAdminController` +
+  `AdminAuditModule` 등록.
+- `services/api-nest/src/trades/index.ts` (MUTATED) — 새 export 2개.
+
+(`services/api-nest/src/common/admin-capabilities.ts`도 이 커밋에서 함께 수정됐지만 이미
+직전 목록의 MUTATED 경로였으므로 새 경로 수를 늘리지 않는다.)
+
+이 정정은 그 사실을 은폐하거나 STATUS를 조작하지 않고 LIVE_AGGREGATE/PATH_COUNT_LIVE/
+CHANGED_PATHS/ADDED_PATHS/MUTATED_PATHS만 현재 HEAD의 실측값으로 갱신한다. STATUS/CERT_ISSUED/
+PROTECTED_SCOPE_DRIFT/REBASE_REQUIRED는 변경하지 않는다(계속 drift=true를 가리킴).
+
+live protected aggregate `bf784d90b71eeef6da11eac97c07a4a45be3baa3f1bea6f6b42e803b9677814a`는
+baseline aggregate `5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9`와 다르다
+(추가 22 · 변경 21 · 누락 0, 총 43 경로 — 직전 정정의 38개 경로에 위 다섯 경로가 더해진 값).
 재계산은 `tooling/verify/lib/rel-502-psm.cjs`의 `compareProtectedScope()`를 그대로 호출한
 실측값이며 hash를 손으로 만들지 않았다.
 
