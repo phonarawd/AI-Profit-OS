@@ -1406,7 +1406,12 @@ const RULES = [
   {
     test: (f) =>
       (/^services\/api-nest\//.test(f) && /auth/i.test(f)) ||
-      /packages\/.*jwt/i.test(f),
+      /packages\/.*jwt/i.test(f) ||
+      // S1F Section 6.3/6.4 - Turnstile + distributed rate limiter live
+      // under src/common/ (not src/auth/) but are launch-critical auth
+      // write-endpoint defenses, so they must trigger the same domain
+      // gate as everything else on the signup/login/reset path.
+      /^services\/api-nest\/src\/common\/turnstile\.(service|guard)\.ts$/.test(f),
     scripts: [
       "auth-jwt-runtime.cjs",
       "auth-flows.cjs",
@@ -1414,6 +1419,16 @@ const RULES = [
       "auth-rate-limit.cjs",
       "auth-identity-proof.runtime.cjs",
     ],
+  },
+  {
+    // S1F Section 9.1 - admin members directory. The controller filename
+    // already matches the generic "*.admin.controller.ts" -> admin-boundary
+    // rule above, but the service file (users-admin.service.ts) does not
+    // match any suffix pattern on its own - this closes that gap so a
+    // service-only change (e.g. a new SQL filter) still re-runs the real
+    // adversarial RBAC round-trip.
+    test: (f) => /^services\/api-nest\/src\/users\//.test(f),
+    scripts: ["admin-boundary.cjs"],
   },
   {
     test: (f) =>
