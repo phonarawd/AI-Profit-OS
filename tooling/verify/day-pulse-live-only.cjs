@@ -27,11 +27,19 @@ function mustExist(rel) {
 
 function read(rel) {
   const p = path.join(root, rel);
-  if (!fs.existsSync(p)) {
-    fails.push(`missing: ${rel}`);
-    return "";
+  // Single read attempt (no existsSync-then-readFileSync check-then-use
+  // race, js/file-system-race): the file may be created/removed between a
+  // separate check and this read, so treat ENOENT from the read itself as
+  // the only "missing" signal instead of pre-checking first.
+  try {
+    return fs.readFileSync(p, "utf8");
+  } catch (err) {
+    if (err && err.code === "ENOENT") {
+      fails.push(`missing: ${rel}`);
+      return "";
+    }
+    throw err;
   }
-  return fs.readFileSync(p, "utf8");
 }
 
 const files = [
@@ -108,28 +116,48 @@ for (const f of [
 }
 
 // Admin DayPulse manual-edit UI = 0 (independent of Home mounting status; still enforced)
+// No existsSync(adminRoot)-then-walk check-then-use race (js/file-system-race):
+// attempt the walk directly and treat a missing root as "nothing to scan"
+// via the readdirSync call's own ENOENT, not a separate pre-check.
 const adminRoot = path.join(root, "apps/admin");
-if (fs.existsSync(adminRoot)) {
-  const walk = (dir) => {
-    for (const name of fs.readdirSync(dir)) {
-      const p = path.join(dir, name);
-      const st = fs.statSync(p);
-      if (st.isDirectory()) {
-        if (name === "node_modules" || name === ".next" || name === ".open-next") continue;
-        walk(p);
-      } else if (/\.(tsx?|jsx?)$/.test(name)) {
-        const t = fs.readFileSync(p, "utf8");
-        if (
-          /DayPulse|day-pulse|dayPulse|platformSafeStopToday/.test(t) &&
-          /(edit|Input|onChange|setPulse|manual)/i.test(t)
-        ) {
-          fails.push(`Admin DayPulse edit UI forbidden: ${path.relative(root, p)}`);
-        }
+function walkAdmin(dir) {
+  let entries;
+  try {
+    entries = fs.readdirSync(dir);
+  } catch (err) {
+    if (err && err.code === "ENOENT") return;
+    throw err;
+  }
+  for (const name of entries) {
+    const p = path.join(dir, name);
+    let st;
+    try {
+      st = fs.statSync(p);
+    } catch (err) {
+      if (err && err.code === "ENOENT") continue;
+      throw err;
+    }
+    if (st.isDirectory()) {
+      if (name === "node_modules" || name === ".next" || name === ".open-next") continue;
+      walkAdmin(p);
+    } else if (/\.(tsx?|jsx?)$/.test(name)) {
+      let t;
+      try {
+        t = fs.readFileSync(p, "utf8");
+      } catch (err) {
+        if (err && err.code === "ENOENT") continue;
+        throw err;
+      }
+      if (
+        /DayPulse|day-pulse|dayPulse|platformSafeStopToday/.test(t) &&
+        /(edit|Input|onChange|setPulse|manual)/i.test(t)
+      ) {
+        fails.push(`Admin DayPulse edit UI forbidden: ${path.relative(root, p)}`);
       }
     }
-  };
-  walk(adminRoot);
+  }
 }
+walkAdmin(adminRoot);
 
 const copy = read("packages/ui/copy/ko/loop.ts");
 if (copy && !copy.includes("mayStop:")) {

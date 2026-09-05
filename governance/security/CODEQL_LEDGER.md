@@ -10,9 +10,11 @@ LAST_LIVE_REVERIFY_UTC = 2026-09-05T08:00:00Z
 | universe | ref | open | 비고 |
 |---|---|---|---|
 | default branch | main | 37 | PR #221 미병합, 원본 그대로 |
-| PR #221 head/merge-ref | refs/pull/221/merge | 3 | 이번 세션 실측: 15 -> 3 |
+| PR #221 head/merge-ref | refs/pull/221/merge | 3 (재스캔 전) | 2026-09-05 세션 시작 시점 실측: 15 -> 3 |
 
-37과 3은 서로 다른 ref의 서로 다른 스캔이며 더하거나 빼지 않는다.
+37과 3은 서로 다른 ref의 서로 다른 스캔이며 더하거나 빼지 않는다. §3.4에서 3 -> 2로
+추가 수정(day-pulse-live-only.cjs file-system-race) - 이 표의 "3"은 그 수정 이전 값이며,
+push 후 CodeQL 워크플로 재스캔 결과로 이 문서를 다시 갱신한다(가정치를 확정치로 쓰지 않음).
 
 ## 2. 이전 세션이 이미 닫은 16개
 
@@ -50,12 +52,22 @@ protected-scope root(services/api-nest) 안에 있어 REL-502 drift를 유발하
 
 세 파일 모두 탐지력/오탐회피 커버리지 그대로 유지, 실행 가능한 취약 패턴 재선언만 제거.
 
-### 3.3 미해결 3건 (라이브 재조회)
+### 3.3 미해결 3건 (라이브 재조회, 이전 세션 종료 시점)
 
 | alert | rule | 파일:라인 | 분류 |
 |---|---|---|---|
 | 80,81 | js/regex/missing-regexp-anchor | clock.core.cjs:64,73 | AWAITING_HUMAN_REVIEW |
-| 38 | js/file-system-race | day-pulse-live-only.cjs:121 | OPEN_UNTRIAGED (무관 사전 항목) |
+| 38 | js/file-system-race | day-pulse-live-only.cjs:121 | OPEN_UNTRIAGED (무관 사전 항목) — 아래 3.4에서 해소 |
+
+### 3.4 이번 세션(2026-09-05, PUTDUK FULL REAL-MONEY PRODUCTION RELEASE) 추가 해소: 3 -> 2
+
+| alert | 파일 | 조치 |
+|---|---|---|
+| 38 | tooling/verify/day-pulse-live-only.cjs | `read()` 헬퍼의 `existsSync`+`readFileSync` 체크-후-사용을 단일 `readFileSync` try/catch(ENOENT)로 교체. Admin 스캔의 `existsSync(adminRoot)`+`walk()`도 동일하게 `readdirSync`/`statSync`/`readFileSync` 각각을 try/catch(ENOENT)로 감싸는 단일 시도로 재작성 - 두 곳 모두 구조적 제거(anchor/난독화 아님). 동작 동일성 확인: PASS 메시지 불변, 실제 admin 파일 트리 재스캔해 결과 0건 유지 |
+
+이번 세션 실측 재조회(`refs/pull/221/merge`) 결과 open **3**건 확인 후 위 수정 적용,
+재스캔 전 예상 = 2건(80,81 clock.core.cjs만 AWAITING_HUMAN_REVIEW로 잔존). GitHub CodeQL
+재스캔은 push 후 자동 실행되며 이 문서는 push 직후 실측으로 재확인한다(자가 dismiss 0).
 
 ## 4. Default branch 전용 OPEN_UNTRIAGED (main, 이번 세션 미착수, 19건)
 
