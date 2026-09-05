@@ -1359,6 +1359,7 @@ const RULES = [
       "execute-rule-loop.cjs",
       "trades-execution-race.runtime.cjs",
       "participate-atomicity.runtime.cjs",
+      "trades-reconcile.runtime.cjs",
     ],
   },
   {
@@ -1468,7 +1469,15 @@ const RULES = [
     // match any suffix pattern on its own - this closes that gap so a
     // service-only change (e.g. a new SQL filter) still re-runs the real
     // adversarial RBAC round-trip.
-    test: (f) => /^services\/api-nest\/src\/users\//.test(f),
+    test: (f) =>
+      /^services\/api-nest\/src\/users\//.test(f) ||
+      // PUTDUK continuation session, Step 7.3: admin-capabilities.ts is
+      // the deny-by-default classification source of truth for EVERY
+      // admin controller/route - a change here (e.g. adding
+      // TradesAdminController.reconcileTick) had no domain-by-path rule
+      // at all before this, so a real classification mistake here could
+      // land without the adversarial RBAC round-trip test ever re-running.
+      f === "services/api-nest/src/common/admin-capabilities.ts",
     scripts: ["admin-boundary.cjs"],
   },
   {

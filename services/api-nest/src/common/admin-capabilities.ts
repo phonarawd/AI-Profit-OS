@@ -213,6 +213,9 @@ export const ADMIN_CAPABILITY_POLICY: Readonly<
     list: read("users"),
     get: read("users"),
   },
+  TradesAdminController: {
+    reconcileTick: write("circuit"),
+  },
 });
 
 export function requiredCapabilityFor(

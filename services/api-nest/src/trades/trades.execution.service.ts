@@ -8,6 +8,7 @@
 import {
   Inject,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -128,6 +129,8 @@ const LIST_LIMIT = 50;
 
 @Injectable()
 export class TradeExecutionService {
+  private readonly log = new Logger(TradeExecutionService.name);
+
   constructor(
     private readonly db: PostgresService,
     private readonly posting: LedgerPostingService,
@@ -137,6 +140,98 @@ export class TradeExecutionService {
     private readonly simulation: SimulationAdminService,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
+
+  /**
+   * Money-safety fix (PUTDUK continuation session, Step 7.3): executeTick
+   * above is only ever invoked by the trade's OWNING user's own browser
+   * polling (Phase0 "polling-now" design, apps/web/app/trades/[id]/
+   * execute). If that user closes the tab, loses network, or the browser
+   * crashes right after participating, nothing calls executeTick() for
+   * that trade again - it stays "running" forever with its locked capital
+   * never resolved, invisible to every existing check.
+   *
+   * This is a durable, server-side finalization path independent of any
+   * browser: finds trades whose hard deadline has already passed (with a
+   * grace buffer so it never races a still-legitimately-polling user's own
+   * final tick) and calls executeTick on their behalf using the trade's
+   * own owning user_id - reusing 100% of the existing, already claim-
+   * before-post-atomic (Step 7.2) finalization logic instead of
+   * duplicating it. settlement_rule.evaluateExecution's own hard-deadline
+   * check (nowMs >= hardDeadlineMs -> "MATCH_TIMEOUT", checked before any
+   * other rule) guarantees this always resolves to a real terminal
+   * outcome (safe_stop, full principal refund) - never a no-op, and never
+   * a fabricated success (MATCH_SUCCESS requires the Rule's own match
+   * conditions, which the hard-deadline check short-circuits past first).
+   *
+   * Exposed via POST /api/v1/admin/trades/reconcile-tick
+   * (TradesAdminController), following the exact same Phase0 "externally-
+   * triggered batch tick" shape ChainSweeperPhase0Service.tick() already
+   * established for the wallet sweeper (wallet/chain-sweeper/tick) - no
+   * NATS/Temporal/@nestjs/schedule needed for Phase0. An operator or an
+   * external periodic caller must still actually call this endpoint on a
+   * schedule (the same still-open scheduling-infrastructure gap the
+   * pre-existing chain-sweeper tick has) - this method's job is only to
+   * guarantee a real, correct finalization path exists once called,
+   * closing the "zero code path at all" gap this fix targets.
+   */
+  async reconcileStuckTrades(opts?: {
+    limit?: number;
+    graceSec?: number;
+  }): Promise<{
+    candidates: number;
+    reconciled: number;
+    results: Array<{
+      tradeId: string;
+      userId: string;
+      status: TradeExecutionState["status"];
+      resultCode?: TradeExecutionState["resultCode"];
+    }>;
+  }> {
+    const limit = Math.min(100, Math.max(1, opts?.limit ?? 25));
+    const graceSec = Math.max(0, opts?.graceSec ?? 30);
+    const cutoffMs =
+      this.clock.nowMs() - (settlementRule.HARD_SEC + graceSec) * 1000;
+
+    const { rows } = await this.db.query<{ id: string; user_id: string }>(
+      `SELECT id::text, user_id::text
+         FROM public.trade_executions
+        WHERE status IN ('running', 'requeue')
+          AND created_at <= $1
+        ORDER BY created_at ASC
+        LIMIT $2`,
+      [new Date(cutoffMs).toISOString(), limit],
+    );
+
+    const results: Array<{
+      tradeId: string;
+      userId: string;
+      status: TradeExecutionState["status"];
+      resultCode?: TradeExecutionState["resultCode"];
+    }> = [];
+    for (const row of rows) {
+      try {
+        const state = await this.executeTick(row.user_id, row.id);
+        results.push({
+          tradeId: row.id,
+          userId: row.user_id,
+          status: state.status,
+          resultCode: state.resultCode,
+        });
+      } catch (err) {
+        this.log.error(
+          `reconcileStuckTrades: executeTick failed tradeId=${row.id} userId=${row.user_id}: ${String(err)}`,
+        );
+        results.push({ tradeId: row.id, userId: row.user_id, status: "running" });
+      }
+    }
+
+    const stillStuck = new Set(["running", "requeue"]);
+    return {
+      candidates: rows.length,
+      reconciled: results.filter((r) => !stillStuck.has(r.status)).length,
+      results,
+    };
+  }
 
   async get(userId: string, tradeId: string): Promise<TradeExecutionState> {
     this.assertSessionUserId(userId);
