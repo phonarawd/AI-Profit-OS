@@ -1358,7 +1358,25 @@ const RULES = [
       "participate-http.cjs",
       "execute-rule-loop.cjs",
       "trades-execution-race.runtime.cjs",
+      "participate-atomicity.runtime.cjs",
     ],
+  },
+  {
+    // PUTDUK continuation session, Step 7.1 - ledger.posting.service.ts is
+    // not matched by the broad money/bucket/ledger regex's own file-name
+    // substring test's neighbor above only via "ledger", which already
+    // triggers pg-module-scan/bucket-invariant; this narrower, precise
+    // rule additionally re-runs the exact lock+trade atomicity regression
+    // whenever the shared posting core or its one current
+    // postJournalInTransaction caller changes, without broadening the
+    // wider money/bucket/deposit/withdraw/referral/mission/benefit regex
+    // (which would re-run this build+compile-heavy check for many
+    // unrelated files that regex already matches).
+    test: (f) =>
+      f === "services/api-nest/src/ledger/ledger.posting.service.ts" ||
+      f === "services/api-nest/src/opportunities/participate.atomicity.selftest.ts" ||
+      f === "tooling/verify/participate-atomicity.runtime.cjs",
+    scripts: ["participate-atomicity.runtime.cjs"],
   },
   {
     test: (f) =>

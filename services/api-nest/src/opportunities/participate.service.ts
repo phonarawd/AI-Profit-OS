@@ -722,30 +722,56 @@ export class ParticipateService {
       fxSnapshotId: string;
     };
   }): Promise<ParticipateResult> {
-    // Lock capital principal → locked (§49) before trade rows
-    const lockJournal = await this.posting.postJournal({
-      idempotencyKey: `participate_lock:${input.idempotencyKey}`,
-      journalType: "participate_lock",
-      referenceType: "participate_request",
-      referenceId: input.idempotencyKey,
-      memo: "participate principal→locked",
-      fxSnapshotId: input.asset.fxSnapshotId,
-      createdBy: input.userId,
-      lines: [
-        {
-          account: { userId: input.userId, bucket: "principal" },
-          direction: "debit",
-          amountUsdt: input.amountUsdt,
-        },
-        {
-          account: { userId: input.userId, bucket: "locked" },
-          direction: "credit",
-          amountUsdt: input.amountUsdt,
-        },
-      ],
-    });
-
+    // Money-safety fix (PUTDUK continuation session, Step 7.1): the
+    // participate_lock journal (principal -> locked, posted below via
+    // postJournalInTransaction) and the trade_executions/participate_
+    // requests rows that account for that lock now commit as ONE atomic
+    // transaction. The previous design posted the lock journal in its own,
+    // already-committed transaction and only THEN opened a second,
+    // separate transaction for the trade/participate_request insert - if
+    // that second transaction failed for any reason (DB error, dropped
+    // connection, process crash), the user's principal stayed orphaned in
+    // "locked" forever with no trade to ever unlock it, and nothing in
+    // this codebase reconciled that. Now either everything below commits
+    // together, or a failure at any point (including the lock journal
+    // itself) rolls the entire thing back and principal never left
+    // "principal" in the first place - there is no window where locked
+    // capital can exist without a matching trade row.
+    //
+    // Idempotent-replay contract: if this exact idempotencyKey is retried
+    // concurrently (duplicate submit / client retry racing the original
+    // in-flight request), postJournalInTransaction's own INSERT on
+    // ledger_journals.idempotency_key hits a unique-violation and aborts
+    // THIS transaction (ROLLBACK, nothing partially applied) - the error
+    // propagates to participate()'s existing catch block, which already
+    // detects "idempotency_key|unique" in the message and returns the
+    // winner's row via findByIdempotency instead of a hard failure. That
+    // catch was written for the participate_requests-level idempotency key
+    // and works unchanged for this ledger-level one too - same contract,
+    // same recovery path.
     const created = await this.db.withTransaction(async (client) => {
+      const lockJournal = await this.posting.postJournalInTransaction(client, {
+        idempotencyKey: `participate_lock:${input.idempotencyKey}`,
+        journalType: "participate_lock",
+        referenceType: "participate_request",
+        referenceId: input.idempotencyKey,
+        memo: "participate principal→locked",
+        fxSnapshotId: input.asset.fxSnapshotId,
+        createdBy: input.userId,
+        lines: [
+          {
+            account: { userId: input.userId, bucket: "principal" },
+            direction: "debit",
+            amountUsdt: input.amountUsdt,
+          },
+          {
+            account: { userId: input.userId, bucket: "locked" },
+            direction: "credit",
+            amountUsdt: input.amountUsdt,
+          },
+        ],
+      });
+
       const capturedAt = new Date().toISOString();
       const tradeIns = await client.query<{ id: string }>(
         `INSERT INTO public.trade_executions (
@@ -829,10 +855,21 @@ export class ParticipateService {
         );
       }
 
-      return { tradeId, participateRequestId, proof };
+      return {
+        tradeId,
+        participateRequestId,
+        proof,
+        lockReused: lockJournal.reused === true,
+      };
     });
 
-    if (!lockJournal.reused) {
+    if (!created.lockReused) {
+      // Mirrors postJournal's own outbox-drain-after-commit contract:
+      // postJournalInTransaction deliberately does not drain (the caller's
+      // transaction may not have committed yet when it returns) - this
+      // point, after this.db.withTransaction has already returned
+      // successfully, is the first moment the commit is actually durable.
+      await this.posting.drainOutboxAfterCommit();
       this.bus.emit(OPPORTUNITY_EVENTS.participateConfirmed, {
         userId: input.userId,
         opportunityId: input.opportunityId,
@@ -855,7 +892,7 @@ export class ParticipateService {
       amountUsdt: input.amountUsdt,
       status: "accepted",
       tradeStatus: "running",
-      reused: Boolean(lockJournal.reused),
+      reused: created.lockReused,
       priceSoftAccept: input.priceSoftAccept,
       proof: created.proof,
     };

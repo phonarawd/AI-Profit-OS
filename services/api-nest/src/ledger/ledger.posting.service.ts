@@ -63,147 +63,9 @@ export class LedgerPostingService {
 
     let result: LedgerJournalRow;
     try {
-      result = await this.db.withTransaction(async (client) => {
-        // Enable balance projection updates for this TX only (§17 guard)
-        await client.query("SELECT set_config('app.ledger_posting', 'on', true)");
-
-        const existing = await this.findByIdempotency(
-          client,
-          input.idempotencyKey,
-        );
-        if (existing) {
-          await this.assertExistingFingerprint(
-            client,
-            existing.id,
-            requestFingerprint,
-          );
-          return { ...existing, reused: true };
-        }
-
-        const resolved = await this.resolveLines(client, input.lines);
-        this.assertPracticeIsolation(input.journalType, resolved);
-        this.assertBalanced(resolved);
-
-        const accountIds = [
-          ...new Set(resolved.map((l) => l.account.id)),
-        ].sort();
-        const locked = await this.lockAccountsAsc(client, accountIds);
-        const byId = new Map(locked.map((a) => [a.id, a]));
-
-        const deltas = new Map<string, string>();
-        for (const line of resolved) {
-          const acc = byId.get(line.account.id);
-          if (!acc) throw new NotFoundException(`account ${line.account.id}`);
-          const next = this.applyDelta(
-            acc.balance_usdt,
-            acc.account_kind,
-            line.direction,
-            line.amountUsdt,
-          );
-          if (acc.account_kind === "user_bucket" && cmpAmount(next, "0") < 0) {
-            throw new BadRequestException("INSUFFICIENT_BALANCE");
-          }
-          deltas.set(acc.id, next);
-          acc.balance_usdt = next;
-        }
-
-        const journal = await client.query<{
-          id: string;
-          idempotency_key: string;
-          journal_type: JournalType;
-          reference_type: string | null;
-          reference_id: string | null;
-          memo: string | null;
-          fx_snapshot_id: string | null;
-          created_by: string | null;
-          created_at: Date;
-        }>(
-          `INSERT INTO public.ledger_journals (
-             idempotency_key, journal_type, reference_type, reference_id,
-             memo, fx_snapshot_id, created_by, request_fingerprint
-           ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
-           RETURNING id, idempotency_key, journal_type, reference_type, reference_id,
-                     memo, fx_snapshot_id, created_by, created_at`,
-          [
-            input.idempotencyKey,
-            input.journalType,
-            input.referenceType ?? null,
-            input.referenceId ?? null,
-            input.memo ?? null,
-            input.fxSnapshotId ?? null,
-            input.createdBy ?? null,
-            requestFingerprint,
-          ],
-        );
-
-        const j = journal.rows[0];
-        if (!j) throw new ConflictException("journal insert failed");
-
-        const entries: LedgerEntryRow[] = [];
-        for (const line of resolved) {
-          const er = await client.query<{
-            id: string;
-            journal_id: string;
-            account_id: string;
-            direction: "debit" | "credit";
-            amount_usdt: string;
-            created_at: Date;
-          }>(
-            `INSERT INTO public.ledger_entries (
-               journal_id, account_id, direction, amount_usdt
-             ) VALUES ($1,$2,$3,$4::numeric)
-             RETURNING id, journal_id, account_id, direction, amount_usdt::text, created_at`,
-            [j.id, line.account.id, line.direction, line.amountUsdt],
-          );
-          const e = er.rows[0];
-          entries.push({
-            id: e.id,
-            journalId: e.journal_id,
-            accountId: e.account_id,
-            direction: e.direction,
-            amountUsdt: formatAmount(parseAmount(e.amount_usdt)),
-            createdAt: e.created_at.toISOString(),
-          });
-        }
-
-        for (const [accountId, balance] of deltas) {
-          await client.query(
-            `UPDATE public.ledger_accounts
-               SET balance_usdt = $2::numeric
-             WHERE id = $1`,
-            [accountId, balance],
-          );
-        }
-
-        // Clause1 — publication intent in same TX as ledger commit (emit≠여기)
-        await client.query(
-          `INSERT INTO public.ledger_outbox_events (journal_id, event_name, payload)
-           VALUES ($1, $2, $3::jsonb)`,
-          [
-            j.id,
-            LEDGER_EVENTS.journalPosted,
-            JSON.stringify({
-              journalId: j.id,
-              journalType: j.journal_type,
-              idempotencyKey: j.idempotency_key,
-            }),
-          ],
-        );
-
-        return {
-          id: j.id,
-          idempotencyKey: j.idempotency_key,
-          journalType: j.journal_type,
-          referenceType: j.reference_type,
-          referenceId: j.reference_id,
-          memo: j.memo,
-          fxSnapshotId: j.fx_snapshot_id,
-          createdBy: j.created_by,
-          createdAt: j.created_at.toISOString(),
-          entries,
-          reused: false,
-        } satisfies LedgerJournalRow;
-      });
+      result = await this.db.withTransaction((client) =>
+        this.postJournalCore(client, input, requestFingerprint),
+      );
     } catch (err: unknown) {
       // Unique violation on idempotency_key (23505) → silent reuse
       if (
@@ -232,6 +94,185 @@ export class LedgerPostingService {
       await this.outbox.drain(20);
     }
     return result;
+  }
+
+  /**
+   * Money-safety fix (PUTDUK continuation session, Step 7.1): posts a
+   * journal on a transaction the CALLER already opened and will commit or
+   * roll back as a whole, instead of postJournal's own always-separate
+   * transaction. Exists so a caller like ParticipateService can make
+   * "lock principal->locked" and "create the trade/participate_request
+   * rows that account for that lock" a single atomic unit - if the
+   * caller's later statements fail for any reason, this journal's ledger
+   * entries and balance updates roll back with them, so a mid-flow DB
+   * error can never leave locked capital with no matching trade (the
+   * previous two-separate-transactions design's real gap).
+   *
+   * Deliberately does NOT swallow a 23505 unique-violation the way
+   * postJournal does - inside a caller-managed transaction, a constraint
+   * violation aborts that whole transaction (Postgres marks it failed
+   * until ROLLBACK), so there is no safe "quietly read the existing row on
+   * this same connection" fallback here. The caller must catch the error
+   * to their transaction, ROLLBACK, and only then check for prior
+   * completion on a fresh connection (which ParticipateService.
+   * insertAccepted does - see its own comment for the exact contract).
+   * Outbox draining is also the caller's responsibility, once, after its
+   * own transaction actually commits - draining here would run before the
+   * caller's other writes are even durable.
+   */
+  async postJournalInTransaction(
+    client: PoolClient,
+    input: PostJournalInput,
+  ): Promise<LedgerJournalRow> {
+    this.validateInput(input);
+    const requestFingerprint = this.fingerprintForInput(input);
+    return this.postJournalCore(client, input, requestFingerprint);
+  }
+
+  private async postJournalCore(
+    client: PoolClient,
+    input: PostJournalInput,
+    requestFingerprint: string,
+  ): Promise<LedgerJournalRow> {
+    // Enable balance projection updates for this TX only (§17 guard)
+    await client.query("SELECT set_config('app.ledger_posting', 'on', true)");
+
+    const existing = await this.findByIdempotency(client, input.idempotencyKey);
+    if (existing) {
+      await this.assertExistingFingerprint(client, existing.id, requestFingerprint);
+      return { ...existing, reused: true };
+    }
+
+    const resolved = await this.resolveLines(client, input.lines);
+    this.assertPracticeIsolation(input.journalType, resolved);
+    this.assertBalanced(resolved);
+
+    const accountIds = [...new Set(resolved.map((l) => l.account.id))].sort();
+    const locked = await this.lockAccountsAsc(client, accountIds);
+    const byId = new Map(locked.map((a) => [a.id, a]));
+
+    const deltas = new Map<string, string>();
+    for (const line of resolved) {
+      const acc = byId.get(line.account.id);
+      if (!acc) throw new NotFoundException(`account ${line.account.id}`);
+      const next = this.applyDelta(
+        acc.balance_usdt,
+        acc.account_kind,
+        line.direction,
+        line.amountUsdt,
+      );
+      if (acc.account_kind === "user_bucket" && cmpAmount(next, "0") < 0) {
+        throw new BadRequestException("INSUFFICIENT_BALANCE");
+      }
+      deltas.set(acc.id, next);
+      acc.balance_usdt = next;
+    }
+
+    const journal = await client.query<{
+      id: string;
+      idempotency_key: string;
+      journal_type: JournalType;
+      reference_type: string | null;
+      reference_id: string | null;
+      memo: string | null;
+      fx_snapshot_id: string | null;
+      created_by: string | null;
+      created_at: Date;
+    }>(
+      `INSERT INTO public.ledger_journals (
+         idempotency_key, journal_type, reference_type, reference_id,
+         memo, fx_snapshot_id, created_by, request_fingerprint
+       ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+       RETURNING id, idempotency_key, journal_type, reference_type, reference_id,
+                 memo, fx_snapshot_id, created_by, created_at`,
+      [
+        input.idempotencyKey,
+        input.journalType,
+        input.referenceType ?? null,
+        input.referenceId ?? null,
+        input.memo ?? null,
+        input.fxSnapshotId ?? null,
+        input.createdBy ?? null,
+        requestFingerprint,
+      ],
+    );
+
+    const j = journal.rows[0];
+    if (!j) throw new ConflictException("journal insert failed");
+
+    const entries: LedgerEntryRow[] = [];
+    for (const line of resolved) {
+      const er = await client.query<{
+        id: string;
+        journal_id: string;
+        account_id: string;
+        direction: "debit" | "credit";
+        amount_usdt: string;
+        created_at: Date;
+      }>(
+        `INSERT INTO public.ledger_entries (
+           journal_id, account_id, direction, amount_usdt
+         ) VALUES ($1,$2,$3,$4::numeric)
+         RETURNING id, journal_id, account_id, direction, amount_usdt::text, created_at`,
+        [j.id, line.account.id, line.direction, line.amountUsdt],
+      );
+      const e = er.rows[0];
+      entries.push({
+        id: e.id,
+        journalId: e.journal_id,
+        accountId: e.account_id,
+        direction: e.direction,
+        amountUsdt: formatAmount(parseAmount(e.amount_usdt)),
+        createdAt: e.created_at.toISOString(),
+      });
+    }
+
+    for (const [accountId, balance] of deltas) {
+      await client.query(
+        `UPDATE public.ledger_accounts
+           SET balance_usdt = $2::numeric
+         WHERE id = $1`,
+        [accountId, balance],
+      );
+    }
+
+    // Clause1 — publication intent in same TX as ledger commit (emit≠여기)
+    await client.query(
+      `INSERT INTO public.ledger_outbox_events (journal_id, event_name, payload)
+       VALUES ($1, $2, $3::jsonb)`,
+      [
+        j.id,
+        LEDGER_EVENTS.journalPosted,
+        JSON.stringify({
+          journalId: j.id,
+          journalType: j.journal_type,
+          idempotencyKey: j.idempotency_key,
+        }),
+      ],
+    );
+
+    return {
+      id: j.id,
+      idempotencyKey: j.idempotency_key,
+      journalType: j.journal_type,
+      referenceType: j.reference_type,
+      referenceId: j.reference_id,
+      memo: j.memo,
+      fxSnapshotId: j.fx_snapshot_id,
+      createdBy: j.created_by,
+      createdAt: j.created_at.toISOString(),
+      entries,
+      reused: false,
+    } satisfies LedgerJournalRow;
+  }
+
+  /**
+   * Lets a caller that owns a transaction (postJournalInTransaction) drain
+   * the outbox exactly once, after its own transaction has actually
+   * committed - draining is otherwise private to postJournal itself.
+   */
+  async drainOutboxAfterCommit(): Promise<void> {
+    await this.outbox.drain(20);
   }
 
   async getByIdempotencyKey(key: string): Promise<LedgerJournalRow | null> {
