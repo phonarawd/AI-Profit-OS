@@ -39,6 +39,7 @@
 | admin-routes | `verify:admin-routes` | T1 | ✅ live |
 | admin-novice-ui | `verify:admin-novice-ui` | T0 path | ✅ live (초보 관리자용 한국어 · 반응형 셸 · 접근성 · 상태 진실성) |
 | api-nest-build | `verify:api-nest-build` | T1 | ✅ live |
+| packages-ui-typecheck | `verify:packages-ui-typecheck` | T0 path (packages/ui/**) | ✅ live (D1-BLK-004 · standalone tsc · negative fixture · 기존 앱별 typecheck과 중복/충돌 0) |
 | stubs/run-all | domain stubs | T1 | ✅ live |
 | settlement-rule-parity | `verify:settlement-rule-parity` | T0 path + T1 always | ✅ live (REL-008 · rust==cjs golden vectors · REL-502 대체 0) |
 | web-lint | `verify:web-lint` | T0 path | ✅ live (REL-011 · apps/web eslint 실검사 · no-op echo 0 · 구문 오류 FAIL) |

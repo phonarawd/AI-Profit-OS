@@ -285,6 +285,18 @@ const RULES = [
     scripts: ["nest-production-provenance.cjs", "api-nest-build.cjs"],
   },
   {
+    // D1-BLK-004 (2026-09-05): packages/ui had zero standalone typecheck
+    // coverage — any file no app happened to import was never type-checked
+    // by anything. Scoped to packages/ui/** only (not apps/web/**, which is
+    // handled by its own per-app tsc as before) so this does not duplicate
+    // or slow down unrelated apps/web-only slices.
+    test: (f) =>
+      /^packages\/ui\//.test(f) ||
+      /^tooling\/verify\/packages-ui-typecheck\.cjs$/.test(f) ||
+      /^tooling\/verify\/fixtures\/packages-ui-typecheck-negative\.fixture\.tsx$/.test(f),
+    scripts: ["packages-ui-typecheck.cjs"],
+  },
+  {
     test: (f) => /^(packages\/ui\/|apps\/web\/)/.test(f),
     scripts: ["no-it-jargon.cjs", "mockup-governance.cjs", "canon-surfaces.cjs"],
   },

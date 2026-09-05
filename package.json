@@ -237,6 +237,7 @@
     "verify:passkey-registration-hijack": "node tooling/verify/passkey-registration-hijack.runtime.cjs",
     "verify:webauthn-user-presence": "node tooling/verify/webauthn-user-presence.runtime.cjs",
     "verify:api-nest-build": "node tooling/verify/api-nest-build.cjs",
+    "verify:packages-ui-typecheck": "node tooling/verify/packages-ui-typecheck.cjs",
     "seed:catalog-runtime": "node tooling/seed/catalog-runtime.cjs",
     "verify:admin-user-opportunity-override": "node tooling/verify/admin-user-opportunity-override.cjs",
     "verify:deposit-network-plain-ko": "node tooling/verify/deposit-network-plain-ko.cjs",
