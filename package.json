@@ -235,6 +235,7 @@
     "verify:auth-jwt-runtime": "node tooling/verify/auth-jwt-runtime.cjs",
     "verify:auth-identity-proof": "node tooling/verify/auth-identity-proof.runtime.cjs",
     "verify:auth-session-refresh-fetch": "node tooling/verify/auth-session-refresh-fetch.runtime.cjs",
+    "verify:auth-session-rotation-reuse": "node tooling/verify/auth-session-rotation-reuse.runtime.cjs",
     "verify:passkey-registration-hijack": "node tooling/verify/passkey-registration-hijack.runtime.cjs",
     "verify:webauthn-user-presence": "node tooling/verify/webauthn-user-presence.runtime.cjs",
     "verify:api-nest-build": "node tooling/verify/api-nest-build.cjs",

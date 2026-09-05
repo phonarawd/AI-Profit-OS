@@ -1421,6 +1421,17 @@ const RULES = [
     ],
   },
   {
+    // S1F Section 11 - refresh-token rotation + reuse detection. This is
+    // the highest-value regression suite this session added (see
+    // session-rotation.reuse.runtime.test.ts's own header comment) - it
+    // had zero automated coverage before, despite guarding real
+    // account/session takeover-recovery behavior.
+    test: (f) =>
+      f === "services/api-nest/src/auth/session-rotation.service.ts" ||
+      f === "services/api-nest/src/auth/session-rotation.reuse.selftest.ts",
+    scripts: ["auth-session-rotation-reuse.runtime.cjs"],
+  },
+  {
     // S1F Section 7 - client-side refresh-and-retry-once fetch wrapper. A
     // regression here silently reverts users to "logged out every 15
     // minutes" (see governance/release-master/evidence/
