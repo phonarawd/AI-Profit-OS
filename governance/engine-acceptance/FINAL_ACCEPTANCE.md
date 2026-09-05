@@ -27,15 +27,15 @@ NEXT = ENGINE_ACCEPTANCE_REBASE_V1
 BASELINE_ID = ea-baseline-0d8825e8f333-5ac0f4291966
 PREDECESSOR_BASELINE_ID = ea-baseline-74683b6e39a7-590263f0f273
 REBASE_ID = pending
-LIVE_AGGREGATE = 7b46b6b27a89d0c36f3c9cf4acdcd545da93eae938602af83c3c86510773a4a1
+LIVE_AGGREGATE = 15851e3baa8b1d7e3788e592eafae877ba50f225706ba67785397e7828ca5688
 BASELINE_AGGREGATE = 5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9
-PATH_COUNT_LIVE = 491
+PATH_COUNT_LIVE = 508
 PATH_COUNT_BASELINE = 491
-CHANGED_PATHS = 1
-ADDED_PATHS = 0
-MUTATED_PATHS = 1
+CHANGED_PATHS = 33
+ADDED_PATHS = 17
+MUTATED_PATHS = 16
 MISSING_PATHS = 0
-EXIT_GATE = D1-S1E (2026-09-05) · services/api-nest/clock.core.cjs \b-anchor 보안수정(commit a1d5c151, CodeQL 51/52) 이 REBASE 없이 protected-scope 를 변경 · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 current-epoch QA0-QA9 재실행 전까지 ISSUED 금지
+EXIT_GATE = D1-S1F (2026-09-05) · S1F Founder 프로덕션 출시 지시서에 따른 classic-signup/session-rotation/turnstile/rate-limit/admin-users 신설(commit f2812062) + frontend(440fc2ed) + CodeQL clock.core.cjs 구조적 재작성(commit 7f9baf0a) + verify wiring(eb4737f8) + client refresh retry(d6023f16) + reuse-detection tests(0a9bf4ea) 가 REBASE 없이 protected-scope 를 추가 변경(17 added · 16 mutated) · ENGINE_ACCEPTANCE_REBASE_V1 ACK 후 current-epoch QA0-QA9 재실행 전까지 ISSUED 금지
 ```
 
 ## 판정 (D1-S1E 정정, 2026-09-05, append 성격의 사실 정정)
@@ -89,3 +89,69 @@ Product mutation을 green 추적에 사용하지 않았다.
 이 정정이 만들어낸 새 결함이 아니라, 이미 있던 진짜 drift가 이제 정확히 하나의 원인으로 드러난
 것이다. plan의 REL-502 STATUS를 되돌릴지는 release-phase 권한을 가진 Founder/PO의 결정이며,
 이 세션은 그 결정을 대신하지 않는다.
+
+## 판정 (S1F 정정, 2026-09-05, append 성격의 사실 정정)
+
+D1-S1E 정정 이후, 같은 세션(S1F Founder 프로덕션 출시 지시서)이 `services/api-nest` protected-scope
+root를 다시, 그리고 훨씬 크게 변경했다. 이 정정은 그 사실을 은폐하거나 STATUS를 조작하지 않고
+LIVE_AGGREGATE/PATH_COUNT_LIVE/CHANGED_PATHS/ADDED_PATHS/MUTATED_PATHS만 현재 HEAD의 실측값으로
+갱신한다. STATUS/CERT_ISSUED/PROTECTED_SCOPE_DRIFT/REBASE_REQUIRED는 이미 정확했으므로(모두
+drift=진짜 상태를 가리킴) 변경하지 않는다 — D1-S1E가 이미 NOT_ISSUED로 정정해 두었기 때문에,
+이번 추가 drift는 새 결함을 만든 것이 아니라 기존에 열려 있던 같은 GAP을 더 정확한 숫자로
+다시 진술하는 것이다.
+
+live protected aggregate `15851e3baa8b1d7e3788e592eafae877ba50f225706ba67785397e7828ca5688`는
+baseline aggregate `5ac0f4291966300b4e547c91aa1af172fb20b108f5d45f8612bd9b8f970c65a9`와 다르다
+(추가 17 · 변경 16 · 누락 0, 총 33 경로). 재계산은 `tooling/verify/lib/rel-502-psm.cjs`의
+`compareProtectedScope()`를 그대로 호출한 실측값이며 hash를 손으로 만들지 않았다.
+
+추가된 경로 (17):
+- services/api-nest/src/auth/classic-signup.policy.ts
+- services/api-nest/src/auth/classic-signup.service.ts
+- services/api-nest/src/auth/find-id.service.ts
+- services/api-nest/src/auth/password-auth.service.ts
+- services/api-nest/src/auth/password-hash.ts
+- services/api-nest/src/auth/password-reset.service.ts
+- services/api-nest/src/auth/pwned-password.local-blocklist.ts
+- services/api-nest/src/auth/pwned-password.service.ts
+- services/api-nest/src/auth/session-cookies.ts
+- services/api-nest/src/auth/session-rotation.reuse.selftest.ts
+- services/api-nest/src/auth/session-rotation.service.ts
+- services/api-nest/src/common/turnstile.guard.ts
+- services/api-nest/src/common/turnstile.service.ts
+- services/api-nest/src/users/users-admin.module.ts
+- services/api-nest/src/users/users-admin.service.ts
+- services/api-nest/src/users/users.admin.controller.ts
+- supabase/migrations/20260905110000_classic_signup_sessions_and_admin.sql
+
+변경된 경로 (16):
+- services/api-nest/auth-rate-limit.cjs
+- services/api-nest/clock.core.cjs (CodeQL #80/81 구조적 재작성, commit 7f9baf0a — D1-S1E가 이미
+  기록한 \b-anchor 수정과는 다른, 이후의 별도 변경)
+- services/api-nest/src/app.module.ts
+- services/api-nest/src/auth/auth-rate-limit.guard.ts
+- services/api-nest/src/auth/auth.controller.ts
+- services/api-nest/src/auth/auth.module.ts
+- services/api-nest/src/auth/auth.routes.ts
+- services/api-nest/src/auth/auth.service.ts
+- services/api-nest/src/auth/identity-proof.selftest.ts
+- services/api-nest/src/auth/identity-proof.store.ts
+- services/api-nest/src/auth/jwt-auth.guard.ts
+- services/api-nest/src/auth/magic-link.service.ts
+- services/api-nest/src/common/admin-capabilities.ts
+- services/api-nest/src/config/phase0.env.ts
+- services/api-nest/src/main.ts
+- services/api-nest/src/wallet/resend-email.provider.ts
+
+이 변경들은 S1F 지시서 Section 3~11(일반 회원가입/세션 rotation/Turnstile/분산 rate limit/관리자
+회원목록)의 실제 구현이며, 각각 domain verify(`identity-proof.selftest` 43/43 ·
+`admin-guard.selftest` 25/25 · `auth-session-rotation-reuse` 7/7 · `domain-clock` 등)로 독립
+검증됐다 — 하지만 REL-502 protected-scope 정책은 개별 변경의 검증 여부가 아니라 root 자체
+변경 여부로 drift를 판정하므로, formal `ENGINE_ACCEPTANCE_REBASE_V1` ACK + current-epoch QA0-QA9
+재실행 없이는 계속 NOT_ISSUED다.
+
+은폐 금지 · STATUS = NOT_ISSUED (불변) · CERT_ISSUED = 0 (불변) · PROTECTED_SCOPE_DRIFT = 1 (불변).
+이 세션은 ACK를 대리 작성하지 않았고, QA0-QA9를 로컬에서 가짜로 재실행하지 않았으며, 숫자를
+발급 조건에 맞춰 역산하지 않았다. `ev.qa.ready`는 현재 `true`(current-epoch QA1-9 evidence
+존재)이지만 `ev.scope.drift`가 `true`인 한 `canIssue`는 계속 `false`다 — QA 준비 상태와 무관하게
+protected-scope drift 단독으로 발급을 막는다.
