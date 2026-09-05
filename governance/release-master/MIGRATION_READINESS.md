@@ -18,11 +18,18 @@ REMOTE_RAW_APPLIED = 55
 COMMITTED_UNAPPLIED = 0
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
-REL_502_ISSUED = 1
+REL_502_ISSUED = 0
 REL_701_DB_EXECUTED = 1
 ```
 
 이 문서는 migration-plan READY 신호다. Production release authorization 이 아니다. REL-502 ISSUED는 migration readiness 선행조건 충족만 의미하며 Production release authorization은 아니다. REL-504 자체는 원격 스키마 변경 명령이 아니며 이 REL의 production DDL = 0. apply owner 는 REL-701-DB 그대로이며, REL-701-DB 는 2026-09-04 에 별도 Founder 승인으로 **실행 완료**됐다(아래 절).
+
+**D1-S1E 정정 (2026-09-05):** REL-701-DB 실행 자체와 이 문서의 migration 카운트(로컬 54 ·
+원격 canonical 54 · raw 55)는 변경되지 않았다. 다만 그 이후 같은 D1 audit lineage의 commit
+`a1d5c151`이 `services/api-nest/clock.core.cjs`(protected-scope root)를 변경해 REL-502가
+`NOT_ISSUED`로 되돌아갔다(`governance/engine-acceptance/FINAL_ACCEPTANCE.md`). 위
+`REL_502_ISSUED`를 그 사실대로 `0`으로 정정한다 — REL-504 자신의 migration readiness 판정
+(READY=1)은 이 정정으로 바뀌지 않는다(migration 계열 protected-scope 변경 없음).
 
 ## 2026-09-04 REL-701-DB EXECUTED (Founder-authorized · owner REL-701-DB · not this REL)
 
@@ -49,7 +56,7 @@ REL_701_DB_EXECUTED = 1
 - file-only `committedUnapplied` 0 — REL-701-DB 실행으로 12 → 0 (REL-504 단계에서 옮긴 것이 아니라 REL-701-DB 실행 기록)
 - Track A (REL-003) file restore 3: `20260819210000` · `20260819220000` · `20260820013000` + `opportunity-reprice.service.ts` 존재
 - REL-408 `SECURITY_BASELINE.md` · `REL-408-SECURITY-BASELINE.md` COMPLETED · APPLY_MIGRATION = 0
-- REL-502 `FINAL_ACCEPTANCE.md` STATUS = ISSUED · REBASE_REQUIRED = 0 · ACK_RECEIVED = 1
+- REL-502 `FINAL_ACCEPTANCE.md` STATUS = NOT_ISSUED · REBASE_REQUIRED = 1 · ACK_RECEIVED = 0 (D1-S1E 2026-09-05 정정 — services/api-nest/clock.core.cjs drift)
 
 ## VERIFY
 

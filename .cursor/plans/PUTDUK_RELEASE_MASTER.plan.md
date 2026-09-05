@@ -303,8 +303,8 @@ todos:
     content: "[QA-Expansion] 금융/red-team -- DONE 7 modes + guard abort + product codes + ledger write 0"
     status: completed
   - id: rel-502
-    content: "[QA-Expansion][A2] FINAL ENGINE ACCEPTANCE -- DONE formal rebase + current-epoch QA0-QA9 + FINAL_ACCEPTANCE ISSUED"
-    status: completed
+    content: "[QA-Expansion][A2] FINAL ENGINE ACCEPTANCE -- PENDING: protected-scope re-touched after baseline issue (services/api-nest/clock.core.cjs, CodeQL anchor fix a1d5c151). FINAL_ACCEPTANCE.md is honestly NOT_ISSUED, PROTECTED_SCOPE_DRIFT=1, REBASE_REQUIRED=1. Needs real Human/PO ENGINE_ACCEPTANCE_REBASE_V1 ACK plus current-epoch QA0-QA9 rerun on the final release-candidate SHA, after all protected-scope work for this release is done. Founder decision: PUTDUK FULL REAL-MONEY PRODUCTION RELEASE directive section 3.1/18 (2026-09-05)."
+    status: pending
   - id: rel-503
     content: "[QA-Expansion] protected-scope STALE 감시 메커니즘 상시화"
     status: completed
@@ -3400,7 +3400,7 @@ PROTECTED_SCOPE_MUTATION: false
 ```yaml
 ID: REL-502
 TITLE: FINAL ENGINE ACCEPTANCE
-STATUS: COMPLETED
+STATUS: PENDING
 SOURCE_PLAN: ai_profit_os_02_5_engine_acceptance_c3d4e5f6.plan.md
 SOURCE_TODO_IDS:
   - rel-502
