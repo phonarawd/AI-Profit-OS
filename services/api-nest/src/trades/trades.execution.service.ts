@@ -22,6 +22,7 @@ import {
   parseAmount,
 } from "../ledger/ledger.money";
 import { LedgerPostingService } from "../ledger/ledger.posting.service";
+import { PayoutReservationService } from "../ledger/payout-reservation.service";
 import {
   SYSTEM_ACCOUNT_CODES,
   type PostingLineInput,
@@ -136,6 +137,7 @@ export class TradeExecutionService {
     private readonly executionPolicy: ExecutionPolicyAdminService,
     private readonly simulation: SimulationAdminService,
     @Inject(CLOCK) private readonly clock: Clock,
+    private readonly reservations: PayoutReservationService,
   ) {}
 
   /**
@@ -296,6 +298,7 @@ export class TradeExecutionService {
     const circuit = await this.circuit.getState();
     const userState = await this.risk.getUserState(trade.user_id);
     const simulationPayoutFeasible = await this.resolveSimulationPayoutFeasible(
+      trade.id,
       trade.opportunity_id,
       compareReady,
     );
@@ -368,119 +371,131 @@ export class TradeExecutionService {
       ).toISOString(),
     };
 
-    // Money-safety fix (PUTDUK continuation session, Step 7.2): claim the
-    // terminal transition FIRST via this single atomic status-guarded
-    // UPDATE, and only the caller that actually wins the claim (1 row
-    // returned) may post the settlement journal below. The previous
-    // ordering posted the journal unconditionally before this UPDATE ran,
-    // so a concurrent finalizeSafeStop call racing on the same
-    // still-"running" row (e.g. two overlapping polling ticks, or a
-    // client retry-after-timeout racing the original in-flight request)
-    // could both decide a terminal outcome and each post its own journal
-    // (settlement:<tradeId> AND participate_unlock:<tradeId> - different
-    // idempotency keys, so postJournal's own dedupe never catches this) -
-    // double-crediting principal and leaving the locked bucket short.
-    // Claiming atomically first makes that impossible: Postgres serializes
-    // concurrent single-statement UPDATEs against the same row, so at most
-    // one of the racing calls ever sees 1 row affected here.
+    // claim + in-app settlement journal 한 TX. 수익 원천 = 가상 비용계정.
     const asset = { ...trade.asset, rematchCount: input.rematchCount };
-    const claimed = await this.db.query<TradeRow>(
-      `UPDATE public.trade_executions
-          SET status = 'success',
-              result_code = 'MATCH_SUCCESS',
-              step_index = 4,
-              progress_pct = 100,
-              log_line = $2,
-              expected_profit_usdt = $3::numeric,
-              settled_profit_usdt = $3::numeric,
-              asset = $4::jsonb,
-              updated_at = now()
-        WHERE id = $1::uuid
-          AND status IN ('running', 'requeue')
-        RETURNING id::text, user_id::text, opportunity_id::text, pricing_version,
-                  status, result_code, step_index, progress_pct::text, log_line,
-                  expected_profit_usdt::text, settled_profit_usdt::text,
-                  ledger_journal_id::text, idempotency_key, asset,
-                  created_at, updated_at`,
-      [trade.id, "MATCH_SUCCESS", input.expectedProfitUsdt, JSON.stringify(asset)],
-    );
+    const outcome = await this.db.withTransaction(async (client) => {
+      const locked = await client.query<TradeRow>(
+        `SELECT id::text, user_id::text, opportunity_id::text, pricing_version,
+                status, result_code, step_index, progress_pct::text, log_line,
+                expected_profit_usdt::text, settled_profit_usdt::text,
+                ledger_journal_id::text, idempotency_key, asset,
+                created_at, updated_at
+           FROM public.trade_executions
+          WHERE id = $1::uuid
+          FOR UPDATE`,
+        [trade.id],
+      );
+      const current = locked.rows[0];
+      if (!current) return { kind: "missing" as const };
+      if (current.ledger_journal_id) {
+        return { kind: "already" as const, row: current };
+      }
+      if (TERMINAL_STATUSES.has(current.status)) {
+        return { kind: "orphan" as const, row: current };
+      }
 
-    if (claimed.rows.length === 0) {
-      // Lost the race - some other concurrent call already finalized this
-      // trade (to success, or to a different terminal result). Never post
-      // a journal in this branch; return whatever the winner committed.
+      const claimed = await client.query<TradeRow>(
+        `UPDATE public.trade_executions
+            SET status = 'success',
+                result_code = 'MATCH_SUCCESS',
+                step_index = 4,
+                progress_pct = 100,
+                log_line = $2,
+                expected_profit_usdt = $3::numeric,
+                settled_profit_usdt = $3::numeric,
+                asset = $4::jsonb,
+                updated_at = now()
+          WHERE id = $1::uuid
+            AND status IN ('running', 'requeue')
+          RETURNING id::text, user_id::text, opportunity_id::text, pricing_version,
+                    status, result_code, step_index, progress_pct::text, log_line,
+                    expected_profit_usdt::text, settled_profit_usdt::text,
+                    ledger_journal_id::text, idempotency_key, asset,
+                    created_at, updated_at`,
+        [trade.id, "MATCH_SUCCESS", input.expectedProfitUsdt, JSON.stringify(asset)],
+      );
+      if (claimed.rows.length === 0) {
+        return { kind: "lost" as const };
+      }
+
+      const profitSource =
+        await this.reservations.resolveMatchProfitSource(client);
+      const lines: PostingLineInput[] = [
+        {
+          account: { userId: trade.user_id, bucket: "locked" },
+          direction: "debit",
+          amountUsdt: input.capitalUsdt,
+        },
+        {
+          account: { userId: trade.user_id, bucket: "principal" },
+          direction: "credit",
+          amountUsdt: input.capitalUsdt,
+        },
+      ];
+      if (cmpAmount(input.expectedProfitUsdt, "0") > 0) {
+        lines.push(
+          {
+            account: { systemCode: profitSource },
+            direction: "debit",
+            amountUsdt: input.expectedProfitUsdt,
+          },
+          {
+            account: { userId: trade.user_id, bucket: "profit" },
+            direction: "credit",
+            amountUsdt: input.expectedProfitUsdt,
+          },
+        );
+      }
+      if (cmpAmount(input.platformMarginUsdt, "0") > 0) {
+        lines.push(
+          {
+            account: { systemCode: profitSource },
+            direction: "debit",
+            amountUsdt: formatAmount(parseAmount(input.platformMarginUsdt)),
+          },
+          {
+            account: { systemCode: SYSTEM_ACCOUNT_CODES.FEE_REVENUE },
+            direction: "credit",
+            amountUsdt: formatAmount(parseAmount(input.platformMarginUsdt)),
+          },
+        );
+      }
+
+      const journal = await this.posting.postJournalInTransaction(client, {
+        idempotencyKey: `settlement:${trade.id}`,
+        journalType: "settlement",
+        referenceType: "trade",
+        referenceId: trade.id,
+        memo: "MATCH_SUCCESS in-app ledger settlement",
+        fxSnapshotId: input.fxSnapshotId,
+        createdBy: trade.user_id,
+        lines,
+      });
+
+      const { rows } = await client.query<TradeRow>(
+        `UPDATE public.trade_executions
+            SET ledger_journal_id = $2::uuid,
+                updated_at = now()
+          WHERE id = $1::uuid
+          RETURNING id::text, user_id::text, opportunity_id::text, pricing_version,
+                    status, result_code, step_index, progress_pct::text, log_line,
+                    expected_profit_usdt::text, settled_profit_usdt::text,
+                    ledger_journal_id::text, idempotency_key, asset,
+                    created_at, updated_at`,
+        [trade.id, journal.id],
+      );
+      return { kind: "won" as const, row: rows[0] ?? claimed.rows[0] };
+    });
+
+    if (outcome.kind === "already" || outcome.kind === "orphan") {
+      return this.toState(outcome.row, deadlines);
+    }
+    if (outcome.kind === "lost" || outcome.kind === "missing") {
       const finalRow = (await this.reloadTrade(trade.id)) ?? trade;
       return this.toState(finalRow, deadlines);
     }
-
-    const lines: PostingLineInput[] = [
-      {
-        account: { userId: trade.user_id, bucket: "locked" },
-        direction: "debit",
-        amountUsdt: input.capitalUsdt,
-      },
-      {
-        account: { userId: trade.user_id, bucket: "principal" },
-        direction: "credit",
-        amountUsdt: input.capitalUsdt,
-      },
-      {
-        account: { systemCode: SYSTEM_ACCOUNT_CODES.OPPORTUNITY_POOL },
-        direction: "debit",
-        amountUsdt: input.expectedProfitUsdt,
-      },
-      {
-        account: { userId: trade.user_id, bucket: "profit" },
-        direction: "credit",
-        amountUsdt: input.expectedProfitUsdt,
-      },
-    ];
-    if (cmpAmount(input.platformMarginUsdt, "0") > 0) {
-      lines.push(
-        {
-          account: { systemCode: SYSTEM_ACCOUNT_CODES.OPPORTUNITY_POOL },
-          direction: "debit",
-          amountUsdt: formatAmount(parseAmount(input.platformMarginUsdt)),
-        },
-        {
-          account: { systemCode: SYSTEM_ACCOUNT_CODES.FEE_REVENUE },
-          direction: "credit",
-          amountUsdt: formatAmount(parseAmount(input.platformMarginUsdt)),
-        },
-      );
-    }
-
-    // This call already exclusively owns the "success" claim above, so
-    // idempotencyKey here is now belt-and-suspenders (a process crash
-    // between the claim and this post is a separate durability gap -
-    // Step 7.3 - not the concurrency race this fix closes).
-    const journal = await this.posting.postJournal({
-      idempotencyKey: `settlement:${trade.id}`,
-      journalType: "settlement",
-      referenceType: "trade",
-      referenceId: trade.id,
-      memo: "MATCH_SUCCESS settlement",
-      fxSnapshotId: input.fxSnapshotId,
-      createdBy: trade.user_id,
-      lines,
-    });
-
-    // SettlementCompletedFanout listens to LEDGER_EVENTS.journalPosted — do not emit here
-
-    const { rows } = await this.db.query<TradeRow>(
-      `UPDATE public.trade_executions
-          SET ledger_journal_id = $2::uuid,
-              updated_at = now()
-        WHERE id = $1::uuid
-        RETURNING id::text, user_id::text, opportunity_id::text, pricing_version,
-                  status, result_code, step_index, progress_pct::text, log_line,
-                  expected_profit_usdt::text, settled_profit_usdt::text,
-                  ledger_journal_id::text, idempotency_key, asset,
-                  created_at, updated_at`,
-      [trade.id, journal.id],
-    );
-    const finalRow = rows[0] ?? claimed.rows[0];
-    return this.toState(finalRow, deadlines);
+    await this.posting.drainOutboxAfterCommit();
+    return this.toState(outcome.row, deadlines);
   }
 
   private async applyRequeue(
@@ -550,76 +565,104 @@ export class TradeExecutionService {
       resultCode === "SYSTEM_FAILED" ? "failed" : "safe_stop";
     const presentation = this.presentationProgress(nowMs, acceptedAtMs);
 
-    // Money-safety fix (PUTDUK continuation session, Step 7.2): claim the
-    // terminal transition FIRST via this atomic status-guarded UPDATE -
-    // see the matching comment in finalizeMatchSuccess for the exact race
-    // this ordering closes (this call and a concurrent finalizeMatchSuccess
-    // both reading the same still-"running" row could otherwise each post
-    // their own journal for the same locked capital).
-    const claimed = await this.db.query<TradeRow>(
-      `UPDATE public.trade_executions
-          SET status = $2,
-              result_code = $3,
-              step_index = $4,
-              progress_pct = $5,
-              log_line = $3,
-              updated_at = now()
-        WHERE id = $1::uuid
-          AND status IN ('running', 'requeue')
-        RETURNING id::text, user_id::text, opportunity_id::text, pricing_version,
-                  status, result_code, step_index, progress_pct::text, log_line,
-                  expected_profit_usdt::text, settled_profit_usdt::text,
-                  ledger_journal_id::text, idempotency_key, asset,
-                  created_at, updated_at`,
-      [trade.id, status, resultCode, presentation.stepIndex, presentation.progressPct],
-    );
+    const outcome = await this.db.withTransaction(async (client) => {
+      const locked = await client.query<TradeRow>(
+        `SELECT id::text, user_id::text, opportunity_id::text, pricing_version,
+                status, result_code, step_index, progress_pct::text, log_line,
+                expected_profit_usdt::text, settled_profit_usdt::text,
+                ledger_journal_id::text, idempotency_key, asset,
+                created_at, updated_at
+           FROM public.trade_executions
+          WHERE id = $1::uuid
+          FOR UPDATE`,
+        [trade.id],
+      );
+      const current = locked.rows[0];
+      if (!current) return { kind: "missing" as const };
+      if (current.ledger_journal_id) {
+        return { kind: "already" as const, row: current };
+      }
+      if (TERMINAL_STATUSES.has(current.status)) {
+        return { kind: "orphan" as const, row: current };
+      }
 
-    if (claimed.rows.length === 0) {
-      // Lost the race - some other concurrent call already finalized this
-      // trade. Never post an unlock journal in this branch.
+      const claimed = await client.query<TradeRow>(
+        `UPDATE public.trade_executions
+            SET status = $2,
+                result_code = $3,
+                step_index = $4,
+                progress_pct = $5,
+                log_line = $3,
+                updated_at = now()
+          WHERE id = $1::uuid
+            AND status IN ('running', 'requeue')
+          RETURNING id::text, user_id::text, opportunity_id::text, pricing_version,
+                    status, result_code, step_index, progress_pct::text, log_line,
+                    expected_profit_usdt::text, settled_profit_usdt::text,
+                    ledger_journal_id::text, idempotency_key, asset,
+                    created_at, updated_at`,
+        [trade.id, status, resultCode, presentation.stepIndex, presentation.progressPct],
+      );
+      if (claimed.rows.length === 0) {
+        return { kind: "lost" as const };
+      }
+
+      const lines: PostingLineInput[] = [];
+      if (cmpAmount(capital, "0") > 0) {
+        lines.push(
+          {
+            account: { userId: trade.user_id, bucket: "locked" },
+            direction: "debit",
+            amountUsdt: capital,
+          },
+          {
+            account: { userId: trade.user_id, bucket: "principal" },
+            direction: "credit",
+            amountUsdt: capital,
+          },
+        );
+      }
+
+      if (lines.length < 2) {
+        return { kind: "won" as const, row: claimed.rows[0], drained: false };
+      }
+
+      const journal = await this.posting.postJournalInTransaction(client, {
+        idempotencyKey: `participate_unlock:${trade.id}`,
+        journalType: "participate_unlock",
+        referenceType: "trade",
+        referenceId: trade.id,
+        memo: `safe_stop ${resultCode}`,
+        createdBy: trade.user_id,
+        lines,
+      });
+
+      const { rows } = await client.query<TradeRow>(
+        `UPDATE public.trade_executions
+            SET ledger_journal_id = $2::uuid,
+                updated_at = now()
+          WHERE id = $1::uuid
+          RETURNING id::text, user_id::text, opportunity_id::text, pricing_version,
+                    status, result_code, step_index, progress_pct::text, log_line,
+                    expected_profit_usdt::text, settled_profit_usdt::text,
+                    ledger_journal_id::text, idempotency_key, asset,
+                    created_at, updated_at`,
+        [trade.id, journal.id],
+      );
+      return { kind: "won" as const, row: rows[0] ?? claimed.rows[0], drained: true };
+    });
+
+    if (outcome.kind === "already" || outcome.kind === "orphan") {
+      return this.toState(outcome.row, deadlines);
+    }
+    if (outcome.kind === "lost" || outcome.kind === "missing") {
       const finalRow = (await this.reloadTrade(trade.id)) ?? trade;
       return this.toState(finalRow, deadlines);
     }
-
-    if (cmpAmount(capital, "0") <= 0 || trade.ledger_journal_id) {
-      return this.toState(claimed.rows[0], deadlines);
+    if (outcome.drained) {
+      await this.posting.drainOutboxAfterCommit();
     }
-
-    const journal = await this.posting.postJournal({
-      idempotencyKey: `participate_unlock:${trade.id}`,
-      journalType: "participate_unlock",
-      referenceType: "trade",
-      referenceId: trade.id,
-      memo: `safe_stop ${resultCode}`,
-      createdBy: trade.user_id,
-      lines: [
-        {
-          account: { userId: trade.user_id, bucket: "locked" },
-          direction: "debit",
-          amountUsdt: capital,
-        },
-        {
-          account: { userId: trade.user_id, bucket: "principal" },
-          direction: "credit",
-          amountUsdt: capital,
-        },
-      ],
-    });
-
-    const { rows } = await this.db.query<TradeRow>(
-      `UPDATE public.trade_executions
-          SET ledger_journal_id = $2::uuid,
-              updated_at = now()
-        WHERE id = $1::uuid
-        RETURNING id::text, user_id::text, opportunity_id::text, pricing_version,
-                  status, result_code, step_index, progress_pct::text, log_line,
-                  expected_profit_usdt::text, settled_profit_usdt::text,
-                  ledger_journal_id::text, idempotency_key, asset,
-                  created_at, updated_at`,
-      [trade.id, journal.id],
-    );
-    const finalRow = rows[0] ?? claimed.rows[0];
-    return this.toState(finalRow, deadlines);
+    return this.toState(outcome.row, deadlines);
   }
 
   private presentationProgress(
@@ -648,9 +691,13 @@ export class TradeExecutionService {
   }
 
   private async resolveSimulationPayoutFeasible(
+    _tradeId: string,
     opportunityId: string,
     compareReady: boolean,
   ): Promise<boolean> {
+    if (compareReady !== true) {
+      return false;
+    }
     const latest = await this.simulation.latestOrNull();
     const feasibility = (
       latest?.report as
@@ -661,64 +708,19 @@ export class TradeExecutionService {
       Array.isArray(feasibility) &&
       feasibility.some((f) => f.opportunityId === opportunityId)
     ) {
-      return payoutFeasible(opportunityId, feasibility);
+      if (payoutFeasible(opportunityId, feasibility) !== true) {
+        return false;
+      }
     }
-    if (compareReady !== true) {
-      // evaluatePayoutFeasibility's own compareReady===false branch always
-      // returned false too - preserved so a stale-price opportunity still
-      // fails this gate for the same reason it always did.
-      return false;
-    }
-    // Money-safety fix (PUTDUK continuation session, Step 7.4): no
-    // per-opportunity simulation report exists yet - the code used to
-    // fall back to evaluatePayoutFeasibility() from services/simulation-
-    // engine, which (confirmed by reading it) has NO connection to any
-    // real balance at all: with no forceInfeasible/explicit override, it
-    // unconditionally returns payoutFeasible:true. R8 in settlement_rule.
-    // cjs's evaluateRules (ctx.simulationPayoutFeasible !== true ->
-    // BELOW_MIN_PROFIT) is the ONLY gate standing between a match and an
-    // actual profit credit that SYS:OPPORTUNITY_POOL cannot back - with
-    // the stub, that gate was always open. evaluatePayoutFeasibility()
-    // itself is left untouched (it is also used by the admin growth-
-    // simulation stress-test feature via its own forceInfeasible/
-    // explicit-override test hooks, which this fix does not touch) -
-    // this fallback is replaced with a real check instead.
     return this.checkPayoutReserveFeasible();
   }
 
   /**
-   * Real (not simulated) payout-reserve check: SYS:OPPORTUNITY_POOL's
-   * current balance must cover the SUM of expected_profit_usdt across
-   * every currently in-flight (running/requeue) trade, not just this
-   * one. A snapshot compare-only check (no explicit reservation ledger
-   * entry) is intentionally conservative rather than exact: it assumes
-   * every other in-flight trade could ALSO succeed simultaneously, which
-   * is the safe direction to be wrong in for a solvency check, and it is
-   * re-evaluated on every single executeTick call (not just once at
-   * participate time), so a pool that becomes insufficient after this
-   * trade already started running still flips this to false on its very
-   * next tick - before finalizeMatchSuccess ever runs for it - rather
-   * than only being checked once and then trusted forever.
+   * 매칭 수익은 내부 장부 지급. SYS:OPPORTUNITY_POOL 선적립을 요구하지 않는다.
+   * 관리자 시뮬레이션이 명시적으로 infeasible면 그 신호만 추가 fail-closed.
    */
-  private async checkPayoutReserveFeasible(): Promise<boolean> {
-    const poolRow = await this.db.query<{ balance_usdt: string }>(
-      `SELECT balance_usdt::text
-         FROM public.ledger_accounts
-        WHERE code = $1`,
-      [SYSTEM_ACCOUNT_CODES.OPPORTUNITY_POOL],
-    );
-    const poolBalance = poolRow.rows[0]?.balance_usdt;
-    if (poolBalance == null) {
-      // Missing pool account - fail closed, never treat "unknown" as funded.
-      return false;
-    }
-    const exposureRow = await this.db.query<{ total: string }>(
-      `SELECT COALESCE(sum(expected_profit_usdt), 0)::text AS total
-         FROM public.trade_executions
-        WHERE status IN ('running', 'requeue')`,
-    );
-    const totalInFlightExposure = exposureRow.rows[0]?.total ?? "0";
-    return cmpAmount(poolBalance, totalInFlightExposure) >= 0;
+  private checkPayoutReserveFeasible(): boolean {
+    return this.reservations.isInAppPayoutFeasible();
   }
 
   private async resolveRulePolicy(

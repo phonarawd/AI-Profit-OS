@@ -12,10 +12,10 @@ APPLY_MIGRATION = 0
 APPLY_LOG = 0
 APPLY_OWNER = REL-701-DB
 PROJECT_REF = mgsytcetsiecllmhcyox
-LOCAL_MIGRATION_FILES = 55
+LOCAL_MIGRATION_FILES = 56
 REMOTE_APPLIED_SNAPSHOT = 54
 REMOTE_RAW_APPLIED = 55
-COMMITTED_UNAPPLIED = 1
+COMMITTED_UNAPPLIED = 2
 TRACK_A_FILE_RESTORE = 3
 REL_408_BASELINE = 1
 REL_502_ISSUED = 0
@@ -41,6 +41,10 @@ apply`) — REL-701-DB와 같은 Founder 승인 경로로 나중에 적용해야
 UNAPPLIED`는 `0`에서 `1`로 정직하게 바뀐다(파일이 존재하고 커밋됐지만 원격에는 아직 적용되지
 않았다는 뜻 — 은폐가 아니라 정확한 카운트). `REMOTE_APPLIED_SNAPSHOT`/`REMOTE_RAW_APPLIED`는
 원격 상태를 가리키므로 변경되지 않는다(원격에 아무것도 적용하지 않았다).
+
+**2026-09-06:** `20260906060000_payout_reservation_and_execution_confirm.sql` 추가
+(로컬 55 → 56 · `COMMITTED_UNAPPLIED` 1 → 2). `SYS:MATCH_PROFIT_EXPENSE` seed only.
+Production apply 0. 원격 카운트 불변.
 
 ## 2026-09-04 REL-701-DB EXECUTED (Founder-authorized · owner REL-701-DB · not this REL)
 

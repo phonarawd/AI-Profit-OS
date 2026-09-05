@@ -32,6 +32,7 @@
  * runtime) so each race can be exercised directly without also having to
  * fake the settlement_rule.cjs Rust bridge and every executeTick dependency.
  */
+import { PayoutReservationService } from "../ledger/payout-reservation.service";
 import { TradeExecutionService } from "./trades.execution.service";
 import type { PostgresService } from "../db/postgres";
 import type { LedgerPostingService } from "../ledger/ledger.posting.service";
@@ -88,8 +89,24 @@ class FakeTradeDb {
     return true;
   }
 
+  async withTransaction<T>(
+    fn: (client: FakeTradeDb) => Promise<T>,
+  ): Promise<T> {
+    return fn(this);
+  }
+
   async query<T>(sql: string, params: unknown[] = []): Promise<{ rows: T[] }> {
     const p = params as unknown[];
+
+    if (sql.includes("FOR UPDATE")) {
+      this.queryLog.push("lock-for-update");
+      return { rows: [{ ...this.row } as unknown as T] };
+    }
+
+    if (sql.includes("FROM public.ledger_accounts")) {
+      this.queryLog.push("match-profit-source");
+      return { rows: [] };
+    }
 
     // finalizeMatchSuccess's claim UPDATE.
     if (sql.includes("SET status = 'success'")) {
@@ -179,6 +196,21 @@ class FakePostingService {
     this.byKey.set(input.idempotencyKey, journal);
     return journal;
   }
+
+  async postJournalInTransaction(
+    _client: unknown,
+    input: {
+      idempotencyKey: string;
+      journalType: string;
+      [key: string]: unknown;
+    },
+  ): Promise<{ id: string }> {
+    return this.postJournal(input);
+  }
+
+  async drainOutboxAfterCommit(): Promise<void> {
+    /* no-op in fake */
+  }
 }
 
 function makeService(db: FakeTradeDb, posting: FakePostingService): TradeExecutionService {
@@ -190,6 +222,7 @@ function makeService(db: FakeTradeDb, posting: FakePostingService): TradeExecuti
     undefined as never,
     undefined as never,
     undefined as never,
+    new PayoutReservationService(),
   );
 }
 

@@ -32,6 +32,7 @@ import {
   CREDIT_NORMAL_KINDS,
   DEBIT_NORMAL_KINDS,
   PRACTICE_FORBIDDEN_JOURNAL_TYPES,
+  SOLVENCY_CONSTRAINED_KINDS,
   type AccountRef,
   type JournalType,
   type LedgerEntryRow,
@@ -161,7 +162,10 @@ export class LedgerPostingService {
         line.direction,
         line.amountUsdt,
       );
-      if (acc.account_kind === "user_bucket" && cmpAmount(next, "0") < 0) {
+      if (
+        SOLVENCY_CONSTRAINED_KINDS.has(acc.account_kind) &&
+        cmpAmount(next, "0") < 0
+      ) {
         throw new BadRequestException("INSUFFICIENT_BALANCE");
       }
       deltas.set(acc.id, next);

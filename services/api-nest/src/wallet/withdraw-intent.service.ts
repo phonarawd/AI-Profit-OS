@@ -2,6 +2,8 @@
  * Money §49.3 — WithdrawIntent create with fixed guard order.
  * Guard #1 withdrawApplyBlocked · #2 KYC · #3 step-up · mode/confirm checks.
  * Ledger posting (auth_ok → ledger_posted) = principal-profit-withdraw follow-up.
+ * 매칭 수익은 내부 장부 잔액이다. 실USDT/실KRW는 이 출금 경로의 broadcast에서만 나간다.
+ * broadcast 전에 hot wallet/treasury 실잔액이 출금액보다 부족하면 fail-closed.
  */
 
 import {

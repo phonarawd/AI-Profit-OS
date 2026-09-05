@@ -1,12 +1,7 @@
 /**
- * verify:trades-payout-reserve - PUTDUK continuation session, Step 7.4
- * required regression: "evaluatePayoutFeasibility() has no real
- * connection to SYS:OPPORTUNITY_POOL's actual balance - fix it to check
- * the real ledger before MATCH_SUCCESS can ever credit profit."
- *
- * TradeExecutionService uses TypeScript parameter properties, so
- * node:test + --experimental-strip-types cannot run this directly - same
- * compiled-dist convention as trades.execution.race.selftest.ts.
+ * verify:trades-payout-reserve
+ * 매칭 수익은 내부 장부 지급이다. SYS:OPPORTUNITY_POOL 잔액으로
+ * MATCH_SUCCESS를 막지 않는다. 실자금 솔벤시는 출금 단계다.
  */
 "use strict";
 
@@ -35,13 +30,14 @@ const svcFile = "services/api-nest/src/trades/trades.execution.service.ts";
 
 const testSrc = read(testFile);
 const svc = read(svcFile);
+const types = read("services/api-nest/src/ledger/ledger.types.ts");
 const pkg = read("package.json");
 const domain = read("tooling/verify/domain-by-path.cjs");
 
 for (const needle of [
   "resolveSimulationPayoutFeasible",
-  "the confirmed live case",
-  "fail closed",
+  "virtual match profit",
+  "compareReady=false",
 ]) {
   if (!testSrc.includes(needle)) {
     fail(`payout-reserve selftest missing coverage marker: ${needle}`);
@@ -50,21 +46,22 @@ for (const needle of [
 if (!svc.includes("checkPayoutReserveFeasible")) {
   fail("trades.execution.service.ts must implement checkPayoutReserveFeasible");
 }
-if (!/SYS:OPPORTUNITY_POOL|SYSTEM_ACCOUNT_CODES\.OPPORTUNITY_POOL/.test(svc)) {
-  fail("checkPayoutReserveFeasible must query the real SYS:OPPORTUNITY_POOL account");
+if (!svc.includes("resolveMatchProfitSource")) {
+  fail("trades.execution.service.ts must resolve in-app profit source");
 }
-// The stub must no longer be CALLED - only mentioned in the explanatory
-// comment above resolveSimulationPayoutFeasible describing the bug this
-// fix closes. Strip comments before checking so that explanation does
-// not trip this check on itself.
+if (!types.includes("MATCH_PROFIT_EXPENSE")) {
+  fail("ledger.types must define MATCH_PROFIT_EXPENSE");
+}
 const svcNoComments = svc.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 if (/evaluatePayoutFeasibility/.test(svcNoComments)) {
   fail(
-    "trades.execution.service.ts must not call the evaluatePayoutFeasibility() stub anymore (outside comments) - it has no real balance connection",
+    "trades.execution.service.ts must not call evaluatePayoutFeasibility() stub (outside comments)",
   );
 }
-if (!/status IN \('running', 'requeue'\)/.test(svc)) {
-  fail("checkPayoutReserveFeasible must sum exposure across running/requeue trades");
+if (/SYSTEM_ACCOUNT_CODES\.OPPORTUNITY_POOL/.test(svcNoComments)) {
+  fail(
+    "match payout must not gate on SYS:OPPORTUNITY_POOL — that is real-money, not in-app profit",
+  );
 }
 if (!pkg.includes('"verify:trades-payout-reserve"')) {
   fail("package.json missing verify:trades-payout-reserve");
@@ -109,5 +106,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  "[verify:trades-payout-reserve] PASS - real payout-reserve feasibility gate covered",
+  "[verify:trades-payout-reserve] PASS - in-app match profit is not gated on on-chain pool",
 );

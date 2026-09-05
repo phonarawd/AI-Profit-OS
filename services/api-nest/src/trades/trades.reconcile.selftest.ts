@@ -18,6 +18,7 @@
  * dependency graph (RiskService/MoneyCircuitService/ExecutionPolicy
  * AdminService/SimulationAdminService) a second time.
  */
+import { PayoutReservationService } from "../ledger/payout-reservation.service";
 import { TradeExecutionService } from "./trades.execution.service";
 import type { PostgresService } from "../db/postgres";
 import type { TradeExecutionState } from "./trades.execution.service";
@@ -51,6 +52,7 @@ function makeService(db: FakeReconcileDb): TradeExecutionService {
     undefined as never,
     undefined as never,
     { nowMs: () => Date.parse("2026-09-06T00:10:00.000Z") } as never,
+    new PayoutReservationService(),
   );
 }
 

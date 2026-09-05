@@ -8,6 +8,7 @@ import { LedgerProvisionService } from "./ledger.provision.service";
 import { LedgerReconService } from "./ledger.recon.service";
 import { LedgerUserController } from "./ledger.user.controller";
 import { LedgerUserQueryService } from "./ledger.user-query.service";
+import { PayoutReservationService } from "./payout-reservation.service";
 import { PracticeGrantService } from "./practice-grant.service";
 
 @Module({
@@ -21,6 +22,7 @@ import { PracticeGrantService } from "./practice-grant.service";
     LedgerAdminService,
     LedgerUserQueryService,
     PracticeGrantService,
+    PayoutReservationService,
   ],
   exports: [
     LedgerOutboxService,
@@ -31,6 +33,7 @@ import { PracticeGrantService } from "./practice-grant.service";
     LedgerAdminService,
     LedgerUserQueryService,
     PracticeGrantService,
+    PayoutReservationService,
   ],
 })
 export class LedgerModule {}
